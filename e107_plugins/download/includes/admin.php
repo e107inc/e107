@@ -1673,7 +1673,6 @@ $columnInfo = array(
 	         	// Process triggers before calling admin_update so trigger messages can be shown
 	         	$data = array('method'=>'update', 'table'=>'download', 'id'=>$id, 'plugin'=>'download', 'function'=>'update_download');
 	         	$hooks = $e107->e_event->triggerHook($data);
-	         	require_once(e_HANDLER."message_handler.php");
 	        
 	   			$mes->add($hooks, E_MESSAGE_SUCCESS);
 		

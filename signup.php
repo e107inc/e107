@@ -2,21 +2,16 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2012 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * User signup
- *
- * $URL$
- * $Id$
  * 
  */
 
 
 require_once("class2.php");
-
-
 
 
 $qs = explode(".", e_QUERY);
@@ -90,7 +85,6 @@ if((e_QUERY == 'resend') && !USER && ($pref['user_reg_veri'] == 1))
 		// Start by looking up the user
 		if(!$sql->db_Select("user", "*", "(`user_loginname` = '".$clean_email."' OR `user_name` = '".$clean_email."' OR `user_email` = '".$clean_email."' ) AND `user_ban`=".USER_REGISTERED_NOT_VALIDATED." AND `user_sess` !='' LIMIT 1"))
 		{
-			require_once(e_HANDLER."message_handler.php");
 			message_handler("ALERT",LAN_SIGNUP_64.': '.$clean_email); // email (or other info) not valid.
 			require_once(FOOTERF);
 			exit();
@@ -104,7 +98,6 @@ if((e_QUERY == 'resend') && !USER && ($pref['user_reg_veri'] == 1))
 			{
 				if ($sql->db_select('user', 'user_id, user_email', "user_email='".$new_email."'"))
 				{	// Email address already used by someone
-					require_once(e_HANDLER."message_handler.php");
 					message_handler("ALERT",LAN_SIGNUP_106); 	// Duplicate email
 					require_once(FOOTERF);
 					exit();
@@ -116,7 +109,6 @@ if((e_QUERY == 'resend') && !USER && ($pref['user_reg_veri'] == 1))
 			}
 			else
 			{
-				require_once(e_HANDLER."message_handler.php");
 				message_handler("ALERT",LAN_SIGNUP_52); // Incorrect Password.
 				require_once(FOOTERF);
 				exit();
@@ -381,7 +373,6 @@ if (e_QUERY)
 if (isset($_POST['register']) && $pref['user_reg'] == 1) 
 {	
 	$e107cache->clear("online_menu_totals");
-	require_once(e_HANDLER."message_handler.php");
 	if (isset($_POST['rand_num']) && $signup_imagecode)
 	{	
 		if ($badCodeMsg = e107::getSecureImg()->invalidCode($_POST['rand_num'], $_POST['code_verify'])) // better: allows class to return the error. 
@@ -492,7 +483,6 @@ if (isset($_POST['register']) && $pref['user_reg'] == 1)
 		// All validated here - handle any errors
 		if ($error) //FIXME - this ignores the errors caused by invalid image-code. 
 		{
-			require_once(e_HANDLER."message_handler.php");
 			$temp = array();
 			if (count($extraErrors))
 			{

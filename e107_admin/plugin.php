@@ -2,13 +2,10 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2012 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * $URL$
- * $Id$
- * 
  * Plugin administration area
  *
  */
@@ -97,11 +94,9 @@ define('PLUGIN_SHOW_REFRESH', FALSE);
 
 global $user_pref;
 
-
 require_once(e_HANDLER.'plugin_class.php');
 require_once(e_HANDLER.'file_class.php');
-require_once(e_HANDLER."form_handler.php");
-require_once (e_HANDLER.'message_handler.php');
+
 
 if(isset($_POST['uninstall_cancel']))
 {
@@ -115,9 +110,8 @@ $pman = new pluginManager;
 define("e_PAGETITLE",ADLAN_98." - ".$pman->pagetitle);
 require_once("auth.php");
 $pman->pluginObserver();
-
-
-
+$mes = e107::getMessage();
+$frm = e107::getForm();
 
 require_once("footer.php");
 exit;

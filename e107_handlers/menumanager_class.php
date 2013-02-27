@@ -2,22 +2,17 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2012 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $URL$
- * $Id$
  */
 
 if (!defined('e107_INIT')) { exit; }
 
-
+require_once(e_HANDLER."form_handler.php");
 
 class e_menuManager {
-
 
         var $menu_areas = array();
         var $curLayout;
@@ -32,8 +27,8 @@ class e_menuManager {
 
 		function __construct($dragdrop=FALSE)
 		{
-        		global $pref, $HEADER,$FOOTER, $NEWSHEADER;
-
+        		global $HEADER,$FOOTER, $NEWSHEADER;
+        		$pref = e107::getPref();
 
                 $this->debug = FALSE;
 
@@ -138,8 +133,10 @@ class e_menuManager {
 // -------------------------------------------------------------------------
 
 	function menuRenderIframe($url='')
-	{
-        global $ns,$sql;
+	{ 
+		$ns = e107::getRender();
+		$sql = e107::getDb();
+
         if(!$url)
 		{
         	$url = e_SELF."?configure=".$this->curLayout;
@@ -156,8 +153,7 @@ class e_menuManager {
 	function menuRenderMessage()
 	{
 	  //	return $this->menuMessage;
-	  	$emessage = eMessage::getInstance();
-		$text = $emessage->render('menuUi');
+		$text = e107::getMessage()->render('menuUi');
 	  //	$text .= "ID = ".$this->menuId;
 		return $text;
 		
@@ -166,8 +162,7 @@ class e_menuManager {
 
 	function menuAddMessage($message, $type = E_MESSAGE_INFO, $session = false)
 	{
-		$emessage = eMessage::getInstance();
- 		$emessage->add(array($message, 'menuUi'), $type, $session);
+ 		e107::getMessage()->add(array($message, 'menuUi'), $type, $session);
 	}
 
     // -------------------------------------------------------------------------
@@ -235,7 +230,10 @@ class e_menuManager {
 
 	    function menuModify()
 		{
-			global $pref,$sql,$admin_log,$ns;
+			global $admin_log;
+			$pref = e107::getPref();
+			$sql = e107::getDb();
+			$ns = e107::getRender();
 
 			$menu_act = "";
 
@@ -303,7 +301,9 @@ class e_menuManager {
 
 	function menuSetPreset()
 	{
-		global $pref,$sql,$location,$admin_log;
+		global $location,$admin_log;
+		$pref = e107::getPref();
+		$sql = e107::getDb();
 
 	    if(!$menuAreas = $this->getMenuPreset())
 		{
@@ -349,7 +349,8 @@ class e_menuManager {
 
 	function menuScanMenus()
 	{
-		global $sql, $sql2;
+		global $sql2;
+		$sql = e107::getDb();
 
 			$efile = new e_file;
 			$efile->dirFilter = array('/', 'CVS', '.svn', 'languages');
@@ -396,7 +397,7 @@ class e_menuManager {
    						if($sql->db_Insert("menus",$insert))
 						{
 					  		// Could do admin logging here - but probably not needed
-							$message .= MENLAN_10." - ".$file['fname']."<br />";
+							$message .= MENLAN_10." - ".$file['fname']."<br />"; //FIXME
 						}
 					}
 				}
@@ -423,11 +424,11 @@ class e_menuManager {
 				if (stristr($menustr, $menu_name) === FALSE)
 				{
 					$sql2->db_Delete("menus", "menu_name='$menu_name'");
-					$message .= MENLAN_11." - ".$menu_name."<br />";
+					$message .= MENLAN_11." - ".$menu_name."<br />"; // FIXME
 				}
 			}
 
-			$this->menuAddMessage(vartrue($message), E_MESSAGE_INFO);
+			$this->menuAddMessage(vartrue($message), E_MESSAGE_INFO); //FIXME
 
 	}
 
@@ -529,7 +530,6 @@ class e_menuManager {
 		$text .= "</td></tr>
 		</table>
 		<div class='buttons-bar center'>";
-		//	<input class='button' type='submit' name='class_submit' value='".MENLAN_6."' />
         $text .= $frm->admin_button('class_submit', MENLAN_6, 'update');
 
 		$text .= "<input type='hidden' name='menu_id' value='".intval($_GET['vis'])."' />
@@ -549,7 +549,9 @@ class e_menuManager {
 
 	function menuActivate()    // Activate Multiple Menus.
 	{
-		global $sql, $admin_log, $pref;
+		global $admin_log;
+		$pref = e107::getPref();
+		$sql = e107::getDb();
 
 		$location = $this->menuActivateLoc;
 
@@ -594,7 +596,7 @@ class e_menuManager {
 
 	function menuSetCustomPages($array)
 	{
-		global $pref;
+		$pref = e107::getPref();
 		$key = key($array);
 		$pref['sitetheme_custompages'][$key] = array_filter(explode(" ",$array[$key]));
 		save_prefs();
@@ -605,7 +607,7 @@ class e_menuManager {
 
 	function getMenuPreset()
 	{
-		global $pref;
+		$pref = e107::getPref();
 
 		$layout = $this->curLayout;
 
@@ -694,7 +696,9 @@ class e_menuManager {
 
 	function menuSaveVisibility()
 	{
-		global $sql, $admin_log;
+		global $admin_log;
+		$sql = e107::getDb();
+
 		$pagelist = explode("\r\n", $_POST['pagelist']);
 		for ($i = 0 ; $i < count($pagelist) ; $i++)
 		{
@@ -790,8 +794,12 @@ class e_menuManager {
 
 	function menuRenderPage()
 	{
-		global $sql, $ns, $HEADER, $FOOTER, $rs, $pref, $tp;
-
+		global $HEADER, $FOOTER, $rs;
+		$pref   = e107::getPref();  
+		$sql    = e107::getDb();     
+		$tp     = e107::getParser(); 
+		$ns     = e107::getRender(); 
+		
 		//FIXME - XHTML cleanup, front-end standards (elist, forms etc)
 		echo "<div id='portal'>";
 		$this->parseheader($HEADER);  // $layouts_str;
@@ -987,7 +995,11 @@ class e_menuManager {
 
 	function checklayout($str)
 	{ // Displays a basic representation of the theme
-		global $pref, $ns, $PLUGINS_DIRECTORY, $rs, $sc_style, $tp, $menu_order;
+		global $PLUGINS_DIRECTORY, $rs, $sc_style, $menu_order;
+		$pref   = e107::getPref();  
+		$tp     = e107::getParser(); 
+		$ns     = e107::getRender();  
+
 		
 		$menuLayout = ($this->curLayout != $pref['sitetheme_deflayout']) ? $this->curLayout : "";
 		
@@ -1137,8 +1149,9 @@ class e_menuManager {
 
 	function menuRenderMenu($row,$menu_count,$rep = FALSE)
 	{
-		global $ns,$rs,$menu,$menu_info,$menu_act;
-		global $style;
+		global $rs,$menu,$menu_info,$menu_act, $style;
+		$ns = e107::getRender();
+
 		$style = $this->style;
 		//      $menu_count is empty in here
 		//FIXME extract
@@ -1335,7 +1348,8 @@ class e_menuManager {
 
     function menuSetConfigList()
 	{
-        	global $sql,$pref;
+        	$sql = e107::getDb();
+        	$pref = e107::getPref();
 
 			$sql -> db_Select("menus", "*", "menu_location != 0 ORDER BY menu_path,menu_name");
 			while($row = $sql-> db_Fetch())
