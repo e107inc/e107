@@ -2,16 +2,10 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_admin/wmessage.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 require_once("../class2.php");
@@ -120,13 +114,6 @@ if (isset($_POST['main_delete']))
 	}
 }
 
-/*
-if (isset($message)) 
-{
-	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
-}
-*/
-
 $ns->tablerender($caption, $mes->render() . $text);
 
 // Show Existing -------
@@ -135,7 +122,6 @@ if ($action == "main" || $action == "")
 	if ($wm_total = $sql->db_Select("generic", "*", "gen_type='wmessage' ORDER BY gen_id ASC")) 
 	{
 		$wmList = $sql->db_getList();
-	//	$text = $rs->form_open('post', e_SELF, 'myform_wmessage', '', '');
 		$text = $frm->open('myform_wmessage','post',e_SELF);
 		$text .= "
             <table class='table adminlist'>
@@ -163,8 +149,8 @@ if ($action == "main" || $action == "")
 				<td>".strip_tags($tp->toHTML($row['gen_ip']))."</td>
 				<td>".r_userclass_name($row['gen_intdata'])."</td>
             	<td class='center nowrap'>
-					<a href='".e_SELF."?create.edit.{$row['gen_id']}'>".ADMIN_EDIT_ICON."</a>
-					<input type='image' title='".LAN_DELETE."' name='main_delete[".$row['gen_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".LAN_CONFIRMDEL." [ID: {$row['gen_id']} ]')\"/>
+            		<a href='".e_SELF."?create.edit.{$row['gen_id']}'>".ADMIN_EDIT_ICON."</a>
+            		<input type='image' title='".LAN_DELETE."' name='main_delete[".$row['gen_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".LAN_CONFIRMDEL." [ID: {$row['gen_id']} ]')\"/>
 				</td>
 			</tr>";
 		}
@@ -173,7 +159,6 @@ if ($action == "main" || $action == "")
 		$text .= $frm->close();
 	
 	} else {
-		//$text .= "<div style='text-align:center'>".WMLAN_09."</div>";
 		$mes->addInfo(WMLAN_09);
 	}
 	
@@ -198,51 +183,41 @@ if ($action == "create" || $action == "edit")
 			<col class='col-label' />
 			<col class='col-control' />
 		</colgroup>
-		";
-
-	$text .= "
 		<tr>
-		<td>".WMLAN_10."</td>
-		<td>
-		<input type='text' class='tbox' id='wm_caption' name='wm_caption' maxlength='80' style='width:95%' value=\"".$tp->toForm(vartrue($row['gen_ip']))."\" />
-		</td>
+			<td>".WMLAN_10."</td>
+			<td>".$frm->text(wm_caption, $tp->toForm(vartrue($row['gen_ip'])), 80)."</td>
+		</tr>
+		<tr>
+			<td>".WMLAN_04."</td>
+			<td><textarea class='e-wysiwyg tbox' id='data' name='data' cols='70' rows='15' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this)'>".$tp->toForm(vartrue($row['gen_chardata']))."</textarea></td>
 		</tr>";
-
-	$text .= "<tr>
-		<td>".WMLAN_04."</td>
-		<td>
-		<textarea class='e-wysiwyg tbox' id='data' name='data' cols='70' rows='15' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this)'>".$tp->toForm(vartrue($row['gen_chardata']))."</textarea>
-		<br />";
 
 	//	$text .= display_help("helpb", "admin"); //XXX Serves as BC Check 
 
-
 	$text .= "
-		</td>
+		<tr>
+			<td>".LAN_VISIBILITY."</td>
+			<td>".r_userclass("wm_active", vartrue($row['gen_intdata']), "off", "public,guest,nobody,member,admin,classes")."</td>
 		</tr>
-		<tr><td>".LAN_VISIBILITY."</td>
-		<td>".r_userclass("wm_active", vartrue($row['gen_intdata']), "off", "public,guest,nobody,member,admin,classes")."</td></tr>
-		</table>";
+		</table>
 
-	$text .= "
 		<div class='buttons-bar center'>";
 
-	if($sub_action == "edit")
-	{
-    	$text .= $frm->admin_button('wm_update', LAN_UPDATE, 'update');
-	}
-	else
-	{
-    	$text .= $frm->admin_button('wm_insert', LAN_CREATE, 'create');
-	}
+			if($sub_action == "edit")
+			{
+		    	$text .= $frm->admin_button('wm_update', LAN_UPDATE, 'update');
+			}
+			else
+			{
+		    	$text .= $frm->admin_button('wm_insert', LAN_CREATE, 'create');
+			}
 
 	$text .= "<input type='hidden' name='wm_id' value='".$id."' />";
 	$text .= "</div>
 		</fieldset>
-		</form>
-		";
+		</form>";
 	
-	$ns->tablerender(WMLAN_01.SEP.LAN_CREATE, $mes->render() . $text);
+	$ns->tablerender(WMLAN_00.SEP.LAN_CREATE, $mes->render() . $text);
 }
 
 
@@ -259,21 +234,12 @@ if ($action == "opt") {
 			<col class='col-control' />
 		</colgroup>
 		<tr>
-
-		<td>
-		".WMLAN_05."<br />
-		<span class='smalltext'>".WMLAN_06."</span>
-		</td>
-		<td>". (varset($pref['wm_enclose'], 0) ? "<input type='checkbox' name='wm_enclose' value='1' checked='checked' />" : "<input type='checkbox' name='wm_enclose' value='1' />")."
-		</td>
+			<td>".WMLAN_05."</td>
+			<td>".$frm->checkbox('wm_enclose', 1, varset($pref['wm_enclose'],0))."<span class='field-help'>".WMLAN_06."</span></td>
 		</tr>
 		<tr>
-
-		<td>
-		".WMLAN_07."
-		</td>
-		<td>". (varset($pref['wmessage_sc'], 0) ? "<input type='checkbox' name='wmessage_sc' value='1' checked='checked' />" : "<input type='checkbox' name='wmessage_sc' value='1' />")."
-		</td>
+			<td>".WMLAN_07."</td>
+			<td>".$frm->checkbox('wmessage_sc', 1, varset($pref['wmessage_sc'],0))."</td>
 		</tr>
 		</table>
 
@@ -285,8 +251,6 @@ if ($action == "opt") {
 		";
 
 	$ns->tablerender(WMLAN_00.SEP.LAN_PREFS, $mes->render() . $text);
-
-
 }
 
 function wmessage_adminmenu() 
@@ -323,6 +287,4 @@ function welcome_adminlog($msg_num='00', $id=0, $woffle='')
 	}
 	$admin_log->log_event('WELCOME_'.$msg_num,$msg,E_LOG_INFORMATIVE,'');
 }
-
-
 ?>
