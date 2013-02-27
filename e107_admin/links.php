@@ -69,7 +69,7 @@ class links_admin_ui extends e_admin_ui
 	protected $batchDelete 	= true;
 	protected $batchCopy 	= true;
 	protected $listOrder = 'link_category,link_order ASC';
-	protected $listSorting = true; // TODO - should enable the 'sort' icon in the 'options' column. 
+	protected $listSorting = true; 
 
 
 	public $current_parent = 0;
@@ -78,7 +78,7 @@ class links_admin_ui extends e_admin_ui
 	protected $fields = array(
 		'checkboxes' 		=> array('title'=> '',				'width' => '3%','forced' => true, 'thclass' => 'center first','class' => 'center first'),
 		'link_button'		=> array('title'=> LAN_ICON, 		'type'=>'icon',			'width'=>'5%', 'thclass' => 'center', 'class'=>'center'),
-		'link_id'			=> array('title'=> LAN_ID, 			'noedit'=>TRUE),
+		'link_id'			=> array('title'=> LAN_ID, 			'type'=>'text','readParms'=>'link=link_url&target=dialog','noedit'=>TRUE),
 		'link_name'	   		=> array('title'=> LCLAN_15,		'width'=>'auto','type'=>'text', 'inline'=>true, 'required' => true, 'validate' => true),
 	   'link_category'     => array('title'=> LAN_TEMPLATE,    'type' => 'dropdown', 'inline'=>true, 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
     

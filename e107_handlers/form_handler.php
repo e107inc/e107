@@ -2172,12 +2172,17 @@ class e_form
                     $ext        = vartrue($parms['target']) =='blank' ? " rel='external' " : ""; // new window
                     $modal      = vartrue($parms['target']) =='modal' ? " data-toggle='modal' data-cache='false' data-target='#uiModal' " : "";
             
+                     $data = $this->getController()->getListModel()->toArray();
                     if($parms['link'] == 'sef') //XXX @Miro - Thoughts?
-                    {
-                         $data = $this->getController()->getListModel()->toArray();
+                    {  
                          $urlData = $this->getController()->getUrl();
                          $link = e107::getUrl()->create($urlData['profile'], $data);    
                     }
+                    elseif(vartrue($data[$parms['link']])) // support for a field-name as the link. eg. link_url. 
+                    {
+                        $link = $tp->replaceConstants(vartrue($data[$parms['link']]));        
+                    }
+                    
                     
              		$value = "<a class='e-tip{$dialog}' {$ext} href='".$link."' {$modal} title='Quick View'>".$value."</a>";
 				}
