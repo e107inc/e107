@@ -2270,6 +2270,14 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @var array edit/create form tabs
 	 */
 	protected $tabs = array();
+	
+	/**
+	 * TODO Example: 
+	 * Contains required data for auto-assembling URL from every record
+	 * For greater control - override url() method
+	 * @var array edit/create form tabs
+	 */
+	protected $url = array();
 
 	/**
 	 * Structure same as TreeModel parameters used for building the load() SQL
