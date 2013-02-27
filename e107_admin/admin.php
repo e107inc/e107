@@ -28,6 +28,11 @@ if(vartrue($_GET['iframe']) == 1)
 $e_sub_cat = 'main';
 
 
+if (varset($pref['adminstyle'])=='cascade' || varset($pref['adminstyle'])=='beginner') // Deprecated Admin-include. 
+{
+    $pref['adminstyle'] = 'infopanel'; 
+}
+
 if(strpos($pref['adminstyle'], 'infopanel') === 0)
 {
 	require_once(e_ADMIN.'includes/'.$pref['adminstyle'].'.php');
@@ -43,10 +48,10 @@ if(strpos($pref['adminstyle'], 'infopanel') === 0)
 require_once(e_ADMIN.'boot.php');
 require_once(e_ADMIN.'auth.php');
 require_once(e_HANDLER.'upload_handler.php');
-// require_once (e_HANDLER."message_handler.php");
+
 $mes = e107::getMessage();
 
-if (!isset($pref['adminstyle'])) $pref['adminstyle'] = 'classis';		// Shouldn't be needed - but just in case
+if (!isset($pref['adminstyle'])) $pref['adminstyle'] = 'infopanel';		// Shouldn't be needed - but just in case
 
 
 // --- check for htmlarea.
@@ -175,79 +180,7 @@ $td = 1;
 // DEPRECATED 
 function render_links($link, $title, $description, $perms, $icon = FALSE, $mode = FALSE)
 {
-	
 	return e107::getNav()->renderAdminButton($link, $title, $description, $perms, $icon, $mode);
-	
-
-	/*
-	global $td,$tp;
-	$text = '';
-	if (getperms($perms))
-	{
-		$description = strip_tags($description);
-		if ($mode == 'adminb')
-		{
-			$text = "<tr><td class='forumheader3'>
-				<div class='td' style='text-align:left; vertical-align:top; width:100%'
-				onmouseover=\"eover(this, 'forumheader5')\" onmouseout=\"eover(this, 'td')\" onclick=\"document.location.href='".$link."'\">
-				".$icon." <b>".$title."</b> ".($description ? "[ <span class='field-help'>".$description."</span> ]" : "")."</div></td></tr>";
-		}
-		else
-		{
-
-			if($mode != "div" && $mode != 'div-icon-only')
-			{
-				if ($td == (ADLINK_COLS+1))
-				{
-					$text .= '</tr>';
-					$td = 1;
-				}
-				if ($td == 1)
-				{
-					$text .= '<tr>';
-				}
-			}
-			
-			
-			switch ($mode) 
-			{
-				case 'default':
-					$text .= "<td class='td' style='text-align:left; vertical-align:top; width:20%; white-space:nowrap'
-					onmouseover=\"eover(this, 'forumheader5')\" onmouseout=\"eover(this, 'td')\" onclick=\"document.location.href='".$link."'\">".$icon." ".$tp->toHTML($title,FALSE,"defs, emotes_off")."</td>";
-				break;
-				
-				case 'classis':
-					$text .= "<td style='text-align:center; vertical-align:top; width:20%'><a class='core-mainpanel-link-icon' href='".$link."' title='{$description}'>".$icon."</a><br />
-					<a class='core-mainpanel-link-text' href='".$link."' title='{$description}'><b>".$tp->toHTML($title,FALSE,"defs, emotes_off")."</b></a><br /><br /></td>";			
-				break;
-					
-				case 'beginner':
-					 $text .= "<td style='text-align:center; vertical-align:top; width:20%' ><a class='core-mainpanel-link-icon' href='".$link."' >".$icon."</a>
-					<div style='padding:5px'>
-					<a class='core-mainpanel-link-text' href='".$link."' title='".$description."'><b>".$tp->toHTML($title,FALSE,"defs, emotes_off")."</b></a></div><br /><br /><br /></td>";		
-				break;
-					
-				case 'div':
-					$text .= "<div class='core-mainpanel-block'><a class='core-mainpanel-link-icon e-tip' href='".$link."' title='{$description}'>".$icon."</a><br />
-					<a class='core-mainpanel-link-text e-tip' href='".$link."' title='{$description}'>".$tp->toHTML($title,FALSE,"defs, emotes_off")."</a>
-					</div>";					
-				break;
-				
-				case 'div-icon-only':
-					$text .= "<div class='core-mainpanel-block'><a class='core-mainpanel-link-icon e-tip' href='".$link."' title='{$description}'>".$icon."</a></div>";					
-				break;
-				
-				default:
-					
-					break;
-			}
-			
-			$td++;
-		}
-	}
-	return $text;
-	
-	 */
 }
 
 

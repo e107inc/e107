@@ -1187,7 +1187,7 @@ class e_navigation
 		global $td;
 		$tp = e107::getParser();
 		$mes = e107::getMessage();
-		$cols = defset('ADLINK_COLS',3);
+		$cols = defset('ADLINK_COLS',5);
 	
 		
 		$text = '';
@@ -1221,13 +1221,13 @@ class e_navigation
 				switch ($mode) 
 				{
 					case 'default':
-						$text .= "<td class='td' style='text-align:left; vertical-align:top; width:20%; white-space:nowrap'
-						onmouseover=\"eover(this, 'forumheader5')\" onmouseout=\"eover(this, 'td')\" onclick=\"document.location.href='".$link."'\">".$icon." ".$tp->toHTML($title,FALSE,"defs, emotes_off")."</td>";
+						$text .= "<td class='td' style='text-align:left; vertical-align:top; width:20%; white-space:nowrap'>
+						 <a class='core-mainpanel-link-icon e-tip' href='".$link."' title='{$description}'>".$icon." ".$tp->toHTML($title,FALSE,"defs, emotes_off")."</a></td>";
 					break;
 					
 					case 'classis':
 						$text .= "<td style='text-align:center; vertical-align:top; width:20%'><a class='core-mainpanel-link-icon' href='".$link."' title='{$description}'>".$icon."</a><br />
-						<a class='core-mainpanel-link-text' href='".$link."' title='{$description}'><b>".$tp->toHTML($title,FALSE,"defs, emotes_off")."</b></a><br /><br /></td>";			
+						<a class='core-mainpanel-link-text' href='".$link."' title='{$description}'><b>".$tp->toHTML($title,FALSE,"defs, emotes_off")."</b></a></td>";			
 					break;
 						
 					case 'beginner':
