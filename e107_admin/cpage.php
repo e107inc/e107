@@ -244,7 +244,8 @@ class page_admin_ui extends e_admin_ui
         protected $batchLink    = true;
 		protected $sortField	= 'page_order';
 		protected $orderStep 	= 10;
-		protected $url         	= array('profile'=>'page/view', 'name' => 'page_title', 'description' => '', 'link'=>'{e_BASE}page.php?id=[id]'); // 'link' only needed if profile not provided. 
+		//protected $url         	= array('profile'=>'page/view', 'name' => 'page_title', 'description' => '', 'link'=>'{e_BASE}page.php?id=[id]'); // 'link' only needed if profile not provided. 
+		protected $url         	= array('route'=>'page/view/index', 'vars' => array('id' => 'page_id', 'sef' => 'page_sef'), 'name' => 'page_title', 'description' => ''); // 'link' only needed if profile not provided. 
 		protected $tabs		 	= array("Main","Advanced");
 	//		protected $listSorting = true; 
 	
