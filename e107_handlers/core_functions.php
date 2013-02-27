@@ -296,5 +296,86 @@ if (!function_exists('multiarray_sort')) {
     }
 }
 
+/**
+ * Array Storage Class. 
+ */
+class e_array {
+
+    /**
+    * Returns an array from stored array data.
+    *
+    * @param string $ArrayData
+    * @return array stored data
+    */
+    public function read($ArrayData) 
+    {
+        if ($ArrayData == ""){
+            return false;
+        }
+        
+        // Saftety mechanism for 0.7 -> 0.8 transition. 
+        if(substr($ArrayData,0,2)=='a:' || substr($ArrayData,0,2)=='s:')
+        {
+            $dat = unserialize($ArrayData);
+            $ArrayData = $this->WriteArray($dat,FALSE);
+        }
+        
+        
+        $data = "";
+        $ArrayData = '$data = '.trim($ArrayData).';';
+        @eval($ArrayData);
+        if (!isset($data) || !is_array($data)) {
+            trigger_error("Bad stored array data - <br /><br />".htmlentities($ArrayData), E_USER_ERROR);
+            return false;
+        }
+        return $data;        
+    }
+    
+    
+    /**
+    * Return a string containg exported array data.
+    *
+    * @param array $ArrayData array to be stored
+    * @param bool $AddSlashes default true, add slashes for db storage, else false
+    * @return string
+    */
+    public function write($ArrayData, $AddSlashes = true) 
+    {       
+        if (!is_array($ArrayData)) {
+            return false;
+        }
+        $Array = var_export($ArrayData, true);
+        if ($AddSlashes == true) {
+            $Array = addslashes($Array);
+        }
+        return $Array;        
+    }
+
+
+    /**
+     * DEPRECATED - Backwards Compatible. Use write() instead; 
+    * @param array $ArrayData array to be stored
+    * @param bool $AddSlashes default true, add slashes for db storage, else false
+    * @returnReturn a string containg exported array data.
+     */
+    function WriteArray($ArrayData, $AddSlashes = true) {
+        
+        return  $this->write($ArrayData, $AddSlashes);   
+
+    }
+
+    /**
+    * DEPRECATED: Use read(); instead. 
+    * Returns an array from stored array data.
+    *
+    * @param string $ArrayData
+    * @return array stored data
+    */
+    function ReadArray($ArrayData) 
+    {
+        return $this->read($ArrayData);
+    }
+}
+
 
 ?>

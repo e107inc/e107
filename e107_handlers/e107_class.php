@@ -134,7 +134,6 @@ class e107
 	 * @var array
 	 */
 	protected static $_known_handlers = array(
-		'ArrayData'						 => '{e_HANDLER}arraystorage_class.php',
 		'UserHandler'					 => '{e_HANDLER}user_handler.php',
 		'comment'						 => '{e_HANDLER}comment_class.php',
 		'convert'						 => '{e_HANDLER}date_handler.php',
@@ -154,6 +153,7 @@ class e107
 		'e_admin_request'				 => '{e_HANDLER}admin_ui.php',
 		'e_admin_response'				 => '{e_HANDLER}admin_ui.php',
 		'e_admin_ui'					 => '{e_HANDLER}admin_ui.php',
+        'e_array'                        => '{e_HANDLER}core_functions.php', // Old ArrayStorage. 
 		'e_bbcode'						 => '{e_HANDLER}bbcode_handler.php',
 		'e_file'						 => '{e_HANDLER}file_class.php',
 		'e_form'						 => '{e_HANDLER}form_handler.php',
@@ -1171,7 +1171,7 @@ class e107
 	 */
 	public static function getArrayStorage()
 	{
-		return self::getSingleton('ArrayData', true);
+		return self::getSingleton('e_array', true);
 	}
 
 	/**
