@@ -111,7 +111,7 @@ define('RL_LAN_118', 'Flag');
 define('RL_LAN_120', 'Users on-line');
 
 
-define('RL_LAN_121', 'System Logs Options');
+//define('RL_LAN_121', 'System Logs Options');
 define('RL_LAN_122', 'System Logs Configuration');
 define('RL_LAN_123', 'User audit trail class');
 define('RL_LAN_124', 'User audit trail actions');

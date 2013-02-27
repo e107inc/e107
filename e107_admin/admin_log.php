@@ -2,14 +2,11 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2012 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Administration Area - Admin Log
- *
- * $URL$
- * $Id$
  *
 */
 
@@ -17,7 +14,6 @@
  *
  *	@package     e107
  *	@subpackage	admin
- *	@version 	$Id$;
  *
  *	Handle display of the various system logs
  */
@@ -50,7 +46,6 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 // Load language files for log messages
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_log_messages.php'); //... for core functions
 
-$mes = e107::getMessage();
 
 if(is_array($pref['lan_log_list'])) //... and for any plugins which support it
 {
@@ -165,13 +160,17 @@ if(isset($back_count) && isset($next_action))
 		$qs[1] = $old_date;
 		$qs[2] = $back_count;
 	}
-	else $mes->addWarning(RL_LAN_050);
-		//$message = RL_LAN_050;
+	else 
+	{
+		$mes->addWarning(RL_LAN_050);
+	}
 }
 
 if(!isset($admin_log))
+{
 	$mes->addWarning("Admin Log not valid");
-	//$message .= "  Admin Log not valid";
+}
+
 
 // Actually delete back events - admin or user audit log
 if(($action == "backdel") && isset($_POST['backdeltype']))
@@ -206,23 +205,18 @@ if(($action == "backdel") && isset($_POST['backdeltype']))
 		}
 		else
 		{
-			//$message = RL_LAN_054." : ".$sql->mySQLresult;
 			$mes->addWarning(RL_LAN_054." : ".$sql->mySQLresult);
 		}
-	} else
-		$mes->addInfo(LAN_NO_CHANGE); 
+	} 
+	else
+	{
+		$mes->addInfo(LAN_NO_CHANGE);
+	}
 
 	$action = "config";
 	unset($qs[1]);
 	unset($qs[2]);
 }
-
-/*
-if(varsettrue($message))
-{
-	$ns->tablerender("", "<div style='text-align:center'><b>$message</b></div>");
-}
-*/
 
 // Prompt to delete back events
 if(($action == "confdel") || ($action == "auditdel"))
@@ -418,16 +412,7 @@ if($action == "config")
 				<tbody>
 					<tr>
 						<td>".RL_LAN_044."</td>
-						<td>
-							<select name='sys_log_perpage' class='tbox select'>
-								<option value='10' ".($pref['sys_log_perpage'] == '10' ? " selected='selected' " : "")." >10</option>
-								<option value='20' ".($pref['sys_log_perpage'] == '20' ? " selected='selected' " : "")." >20</option>
-								<option value='30' ".($pref['sys_log_perpage'] == '30' ? " selected='selected' " : "")." >30</option>
-								<option value='40' ".($pref['sys_log_perpage'] == '40' ? " selected='selected' " : "")." >40</option>
-								<option value='50' ".($pref['sys_log_perpage'] == '50' ? " selected='selected' " : "")." >50</option>
-							</select>
-							<div class='field-help'>".RL_LAN_064."</div>
-						</td>
+						<td>".$frm->selectbox('sys_log_perpage', array(10, 20, 30, 40, 50), $pref['sys_log_perpage'])."<span class='field-help'>".RL_LAN_064."</span></td>
 					</tr>
 	";
 
@@ -439,13 +424,12 @@ if($action == "config")
 				<select class='tbox' name='user_audit_class'>
 					".$e_userclass->vetted_tree('user_audit_class', array($e_userclass, 'select'), varset($pref['user_audit_class'], ''), 'nobody,admin,member,new,mods,main,classes')."
 				</select>
-				<div class='field-help'>".RL_LAN_026."</div>
+				<span class='field-help'>".RL_LAN_026."</span>
 			</td>
 		</tr>
 		<tr>
 			<td>".RL_LAN_124."</td>
-			<td>
-				".RL_LAN_031."
+			<td>".RL_LAN_031."
 	";
 	foreach($audit_checkboxes as $k => $t)
 	{
@@ -467,15 +451,13 @@ if($action == "config")
 						<td>".RL_LAN_008."</td>
 						<td>
 							<div class='auto-toggle-area autocheck'>
-								<input class='checkbox' type='checkbox' name='roll_log_active' value='1' ".($pref['roll_log_active'] == 1 ? " checked='checked' " : "")." />
+								".$frm->checkbox('roll_log_active', 1, varset($pref['roll_log_active'],0))."
 							</div>
 						</td>
 					</tr>
 					<tr>
 						<td>".RL_LAN_009."</td>
-						<td>
-						   <input class='tbox' type='text' name='roll_log_days' size='10' value='".$pref['roll_log_days']."' maxlength='5' />
-						</td>
+						<td>".$frm->text('roll_log_days', $pref['roll_log_days'], 5)."</td>
 					</tr>
 				</tbody>
 			</table>
@@ -500,9 +482,7 @@ if($action == "config")
 				<tbody>
 					<tr>
 						<td>".RL_LAN_045." </td>
-						<td>
-							".gen_log_delete('rolllog_clearadmin')." ".RL_LAN_046.$frm->admin_button('deleteoldadmin', 'no-value', 'delete', RL_LAN_049)."						
-						</td>
+						<td>".gen_log_delete('rolllog_clearadmin')." ".RL_LAN_046.$frm->admin_button('deleteoldadmin', 'no-value', 'delete', RL_LAN_049)."</td>
 					</tr>
 	";
 
@@ -511,9 +491,7 @@ if($action == "config")
 	$text .= "
 					<tr>
 						<td>".RL_LAN_066." </td>
-						<td>
-							".gen_log_delete('rolllog_clearaudit')." ".RL_LAN_046.$frm->admin_button('deleteoldaudit', 'no-value', 'delete', RL_LAN_049)."
-						</td>
+						<td>".gen_log_delete('rolllog_clearaudit')." ".RL_LAN_046.$frm->admin_button('deleteoldaudit', 'no-value', 'delete', RL_LAN_049)."</td>
 					</tr>
 				</tbody>
 			</table>
@@ -523,7 +501,7 @@ if($action == "config")
 	</fieldset>
 	";
 
-	$ns->tablerender(RL_LAN_121, $mes->render().$text);
+	$ns->tablerender(ADLAN_155.SEP.LAN_OPTIONS, $mes->render().$text);
 }
 
 //====================================================================
@@ -749,17 +727,10 @@ if(isset($page_title[$action]))
 		{
 			case 'datetimes':
 				$text .= "
-					<td>
-						<input class='checkbox' type='checkbox' name='start_enabled' id='start-enabled' value='1'".($start_enabled == 1 ? " checked='checked' " : "")."/><label for='start-enabled'>".RL_LAN_013."</label>
-					</td>
-					<td>
-						".time_box("starttime", $start_time, $back_day_count[$action], FALSE)."
-					</td>
-					<td>
-						<input class='checkbox' type='checkbox' name='end_enabled' id='end-enabled' value='1'".($end_enabled == 1 ? " checked='checked' " : "")."/><label for='end-enabled'>".RL_LAN_014."</label></td>
-					<td>
-						".time_box("endtime", $end_time, $back_day_count[$action], TRUE)."
-					</td>
+					<td>".$frm->checkbox('start-enabled', 1, varset($pref['start-enabled'],0))."<label for='start-enabled'>".RL_LAN_013."</label></td>
+					<td>".time_box("starttime", $start_time, $back_day_count[$action], FALSE)."</td>
+					<td>".$frm->checkbox('end-enabled', 1, varset($pref['end-enabled'],0))."<label for='end-enabled'>".RL_LAN_014."</label></td>
+					<td>".time_box("endtime", $end_time, $back_day_count[$action], TRUE)."</td>
 				";
 				$filter_cols = 4;
 				break;
@@ -786,13 +757,7 @@ if(isset($page_title[$action]))
 			case 'priority':
 				$text .= "
 					<td>".RL_LAN_058."</td>
-					<td>
-						<select name='roll_pri_cond' class='tbox'>
-							<option value='xx' ".($pri_filter_cond == 'xx' ? " selected='selected' " : "")." >&nbsp;</option>
-							<option value='gt' ".($pri_filter_cond == 'gt' ? " selected='selected' " : "")." >&gt;=</option>
-							<option value='eq' ".($pri_filter_cond == 'eq' ? " selected='selected' " : "")." >==</option>
-							<option value='lt' ".($pri_filter_cond == 'lt' ? " selected='selected' " : "")." >&lt;=</option>
-						</select>
+					<td>".$frm->selectbox('roll_pri_cond', array('xx' => '&nbsp;', 'gt' => '&gt;=', 'eq' => '==', 'lt' => '&lt;='), $pri_filter_cond)."
 						<input class='tbox' type='text' name='roll_pri_val' id='roll-pri-val' size='20' value='{$pri_filter_val}' maxlength='10' />
 					</td>
 				";
@@ -803,7 +768,7 @@ if(isset($page_title[$action]))
 					<td>".RL_LAN_060."</td>
 					<td>
 						<input class='tbox' type='text' name='roll_ipaddress_filter' size='20' value='".e107::getIPHandler()->ipDecode($ipaddress_filter)."' maxlength='20' />
-						<div class='field-help'>".RL_LAN_061."</div>
+						<span class='field-help'>".RL_LAN_061."</span>
 					</td>
 				";
 				$filter_cols += 2;
@@ -813,7 +778,7 @@ if(isset($page_title[$action]))
 					<td>".RL_LAN_015."</td>
 					<td>
 						<input class='tbox' type='text' name='roll_user_filter' size='20' value='".$user_filter."' maxlength='10' />
-						<div class='field-help'>".RL_LAN_016."</div>
+						<span class='field-help'>".RL_LAN_016."</span>
 					</td>
 				";
 				$filter_cols += 2;
@@ -823,7 +788,7 @@ if(isset($page_title[$action]))
 					<td>".RL_LAN_029."</td>
 					<td>
 						<input class='tbox' type='text' name='roll_event_filter' size='20' value='".$event_filter."' maxlength='10' />
-						<div class='field-help'>".RL_LAN_061."</div>
+						<span class='field-help'>".RL_LAN_061."</span>
 					</td>
 				";
 				$filter_cols += 2;
@@ -833,7 +798,7 @@ if(isset($page_title[$action]))
 					<td>".RL_LAN_059."</td>
 					<td>
 						<input class='tbox' type='text' name='roll_caller_filter' size='40' value='".$caller_filter."' maxlength='40' />
-						<div class='field-help'>".RL_LAN_061."</div>
+						<span class='field-help'>".RL_LAN_061."</span>
 					</td>
 				";
 				$filter_cols += 2;
