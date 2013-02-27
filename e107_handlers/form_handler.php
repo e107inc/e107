@@ -1953,7 +1953,6 @@ class e_form
 	 */
 	function renderValue($field, $value, $attributes, $id = 0)
 	{
-	
 		$parms = array();
 		if(isset($attributes['readParms']))
 		{
@@ -1963,7 +1962,7 @@ class e_form
 	
 		if(vartrue($attributes['inline'])) $parms['editable'] = true; // attribute alias
 		if(vartrue($attributes['sort'])) $parms['sort'] = true; // attribute alias
-		
+
 		$tp = e107::getParser();
 		switch($field) // special fields
 		{
@@ -2166,10 +2165,21 @@ class e_form
 				}
 				if(vartrue($parms['link']) && $id && is_numeric($id)) 
 				{
-					$link = str_replace('[id]',$id,$parms['link']);
-					$link = $tp->replaceConstants($link); // SEF URL is not important since we're in admin.
-					$dialog = vartrue($parms['dialog']) ? " e-dialog" : "";
-					$value = "<a class='e-tip{$dialog}' href='".$link."' title='Quick View'>".$value."</a>";
+					$link       = str_replace('[id]',$id,$parms['link']);
+					$link       = $tp->replaceConstants($link); // SEF URL is not important since we're in admin.
+					
+					$dialog     = vartrue($parms['target']) =='dialog' ? " e-dialog" : ""; // iframe
+                    $ext        = vartrue($parms['target']) =='blank' ? " rel='external' " : ""; // new window
+                    $modal      = vartrue($parms['target']) =='modal' ? " data-toggle='modal' data-cache='false' data-target='#uiModal' " : "";
+            
+                    if($parms['link'] == 'sef') //XXX @Miro - Thoughts?
+                    {
+                         $data = $this->getController()->getListModel()->toArray();
+                         $urlData = $this->getController()->getUrl();
+                         $link = e107::getUrl()->create($urlData['profile'], $data);    
+                    }
+                    
+             		$value = "<a class='e-tip{$dialog}' {$ext} href='".$link."' {$modal} title='Quick View'>".$value."</a>";
 				}
 				
 				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
@@ -2180,6 +2190,8 @@ class e_form
 
 				$value = vartrue($parms['pre']).$value.vartrue($parms['post']);
 			break;
+            
+            
 
 			case 'bbarea':
 			case 'textarea':

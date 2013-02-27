@@ -80,12 +80,13 @@ class links_admin_ui extends e_admin_ui
 		'link_button'		=> array('title'=> LAN_ICON, 		'type'=>'icon',			'width'=>'5%', 'thclass' => 'center', 'class'=>'center'),
 		'link_id'			=> array('title'=> LAN_ID, 			'noedit'=>TRUE),
 		'link_name'	   		=> array('title'=> LCLAN_15,		'width'=>'auto','type'=>'text', 'inline'=>true, 'required' => true, 'validate' => true),
-		'link_parent' 		=> array('title'=> 'Sublink of', 	'type' => 'method', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
+	   'link_category'     => array('title'=> LAN_TEMPLATE,    'type' => 'dropdown', 'inline'=>true, 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
+    
+    	'link_parent' 		=> array('title'=> 'Sublink of', 	'type' => 'method', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
 		'link_url'	   		=> array('title'=> LAN_URL, 		'width'=>'auto', 'type'=>'text', 'inline'=>true, 'required'=>true,'validate' => true),
-		'link_sefurl' 		=> array('title'=> LAN_SEFURL, 		'type' => 'text', 'inline'=>true, 'width' => 'auto'),
+	//	'link_sefurl' 		=> array('title'=> LAN_SEFURL, 		'type' => 'text', 'inline'=>true, 'width' => 'auto'),
 		'link_class' 		=> array('title'=> LAN_USERCLASS, 	'type' => 'userclass','inline'=>true, 'writeParms' => 'classlist=public,guest,nobody,member,classes,admin,main', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
 		'link_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'textarea', 'width' => 'auto'), // 'method'=>'tinymce_plugins',  ?
-		'link_category' 	=> array('title'=> LAN_TEMPLATE, 	'type' => 'dropdown', 'inline'=>true, 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
 		'link_order' 		=> array('title'=> LAN_ORDER, 		'type' => 'number', 'width' => 'auto', 'nolist'=>true),
 		'link_open'			=> array('title'=> LCLAN_19, 		'type' => 'dropdown', 'inline'=>true, 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
 		'link_function'		=> array('title'=> 'Function', 		'type' => 'method', 'data'=>'str', 'width' => 'auto', 'thclass' => 'left first'),
@@ -115,11 +116,12 @@ class links_admin_ui extends e_admin_ui
 			3	=> "3 - Footer",
 			4	=> "4 - Alt",
 			5	=> "5 - Alt",
-	//		6	=> "6 - Alt", // If more than 5 are required, then something is not right with the themeing method. 
+			6	=> "6 - Alt", // If more than 6 are required, then something is not right with the themeing method. 
 	//		7	=> "7 - Alt",
 	//		8	=> "8 - Alt",
 	//		9	=> "9 - Alt",
 	//		10	=> "10 - Alt"
+	       255 => "(Unassigned)",
 		);
 
 		$this->fields['link_open']['writeParms'] = array(
