@@ -2263,6 +2263,13 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @var int reorder step
 	 */
 	protected $orderStep = 1;
+	
+	/**
+	 * Example: array('0' => 'Tab label', '1' => 'Another label');
+	 * Referenced from $field property per field - 'tab => xxx' where xxx is the tab key (identifier)
+	 * @var array edit/create form tabs
+	 */
+	protected $tabs = array();
 
 	/**
 	 * Structure same as TreeModel parameters used for building the load() SQL
