@@ -102,8 +102,8 @@ class banlist_ui extends e_admin_ui
 		  'banlist_datestamp' 	=>   array ( 'title' => 'LAN_DATESTAMP', 	'type' => 'datestamp', 	'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => 'auto=1&hidden=1&readonly=1', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banlist_banexpires' 	=>   array ( 'title' => 'Expires',	 		'type' => 'method', 	'data' => 'int', 'inline'=>true, 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banlist_admin' 		=>   array ( 'title' => 'Admin', 			'type' => 'boolean', 	'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'banlist_reason' 		=>   array ( 'title' => 'Reason', 			'type' => 'text', 		'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'banlist_notes' 		=>   array ( 'title' => 'Notes', 			'type' => 'text', 		'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'banlist_reason' 		=>   array ( 'title' => 'Reason', 			'type' => 'text', 		'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'banlist_notes' 		=>   array ( 'title' => 'Notes', 			'type' => 'text', 		'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		  'options' 			=>   array ( 'title' => 'Options', 			'type' => '', 			'data' => '', 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
 		
@@ -124,7 +124,7 @@ class banlist_ui extends e_admin_ui
 		{
 			if($_POST['something']) // example 
 			{
-				$this->processSomething();				
+				//$this->processSomething();				
 			}		
 		}
 	
@@ -1364,6 +1364,7 @@ function banlist_adminlog($msg_num = '00', $woffle = '')
  */
 function headerjs()
 {
+/*
 	require_once(e_HANDLER.'js_helper.php');
 	$ret = "
 		<script type='text/javascript'>
@@ -1371,9 +1372,6 @@ function headerjs()
 			(".e_jshelper::toString(LAN_JSCONFIRM).").addModLan('core', 'delete_confirm');
 			if(typeof e107Admin == 'undefined') var e107Admin = {}
 
-			/**
-			 * OnLoad Init Control
-			 */
 			e107Admin.initRules = {
 				'Helper': true,
 				'AdminMenu': false
@@ -1383,9 +1381,9 @@ function headerjs()
 	";
 
 	return $ret;
+
+*/
 }
 
 require_once(e_ADMIN."footer.php");
 exit;
-
-?>

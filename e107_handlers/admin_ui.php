@@ -135,7 +135,7 @@ class e_admin_request
 		// Set current id
 		if(isset($this->_request_qry[$this->_id_key]))
 		{
-			$this->_id = preg_replace('/[^\w\-]/', '', $this->_request_qry[$this->_id_key]);
+			$this->_id = preg_replace('/[^\w\-.]/', '', $this->_request_qry[$this->_id_key]);
 		}
 
 		$this->_posted_qry =& $_POST; //raw?
@@ -2819,7 +2819,7 @@ class e_admin_controller_ui extends e_admin_controller
 		{
 			foreach ($selected as $i => $_sel) 
 			{
-				$selected[$i] = preg_replace('/[^\w\-]/', '', $_sel);
+				$selected[$i] = preg_replace('/[^\w\-.]/', '', $_sel);
 			}
 		}
 		
@@ -3144,7 +3144,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 			default:
 				$choice = explode('|', str_replace('{ID}', $id, $choice), 3);
-				$this->redirectAction(preg_replace('/[^\w\-]/', '', $choice[0]), vartrue($choice[1]), vartrue($choice[2]));
+				$this->redirectAction(preg_replace('/[^\w\-.]/', '', $choice[0]), vartrue($choice[1]), vartrue($choice[2]));
 			break;
 		}
 		return;
@@ -3879,7 +3879,7 @@ class e_admin_ui extends e_admin_controller_ui
 				$selected = explode(',', $this->getPosted('delete_confirm_value'));
 				foreach ($selected as $i => $_sel) 
 				{
-					$selected[$i] = preg_replace('/[^\w\-]/', '', $_sel);
+					$selected[$i] = preg_replace('/[^\w\-.]/', '', $_sel);
 				}
 			}
 		}
@@ -4414,7 +4414,7 @@ class e_admin_ui extends e_admin_controller_ui
 		{
 			
 			list($tmp,$id) = explode("-", $row, 2);
-			$id = preg_replace('/[^\w\-]/', '', $id);
+			$id = preg_replace('/[^\w\-.]/', '', $id);
 			if(!is_numeric($id)) $id = "'{$id}'";
 			if($sql->db_Update($this->table, $this->sortField." = {$c} WHERE ".$this->pid." = ".$id))
 			{
