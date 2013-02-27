@@ -1,21 +1,15 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Copyright (C) 2008-2009 e107 Inc
-|     http://e107.org
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/contact.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * /contact.php
+ *
 */
+
 require_once("class2.php");
 
 // security image may be disabled by removing the appropriate shortcodes from the template.
@@ -150,7 +144,7 @@ if(isset($_POST['send-contactus']))
     }
 	else
 	{
-		require_once(e_HANDLER."message_handler.php");
+		require_once(e_HANDLER."message_handler.php"); //FIXME needs removing
 		message_handler("P_ALERT", $error);
 	}
 

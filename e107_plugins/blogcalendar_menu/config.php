@@ -8,9 +8,6 @@
  *
  * Plugin Administration - Blog calendar menu
  *
- * $URL$
- * $Id$
- *
 */
 $eplug_admin = TRUE;
 require_once("../../class2.php");
@@ -24,8 +21,6 @@ if (!getperms("1"))
 }
 require_once(e_ADMIN."auth.php");
 
-require_once(e_HANDLER."form_handler.php");
-require_once(e_HANDLER."message_handler.php");
 $frm = e107::getForm();
 $mes = e107::getMessage();
 

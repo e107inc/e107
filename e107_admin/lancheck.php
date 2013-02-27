@@ -2,17 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Administration Area - Language check
  * With code from Izydor and Lolo.
- *
- * $Source: /cvs_backup/e107_0.8/e107_admin/lancheck.php,v $
- * $Revision$
- * $Date$
- * $Author$
  *
 */
 require_once("../class2.php");
@@ -25,13 +20,10 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 $e_sub_cat = 'language';
 require_once("auth.php");
-require_once(e_HANDLER."message_handler.php");
-require_once(e_HANDLER."form_handler.php");
 
 $frm = e107::getForm();
 $mes = e107::getMessage();
 $lck = new lancheck;
-
 
 $qry = explode("|",e_QUERY);
 $f = $qry[0];
@@ -41,7 +33,6 @@ $mode = $qry[2];
 // Write the language file.
 if(isset($_POST['submit']))
 {
-
 	unset($input);
 	$kom_start = chr(47)."*";
 	$kom_end = "*".chr(47);

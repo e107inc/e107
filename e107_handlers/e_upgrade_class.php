@@ -2,16 +2,10 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/e_upgrade_class.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -70,9 +64,8 @@ class e_upgrade
 
 		if(($cache==TRUE) && ($cacheData = $e107cache->retrieve($cacheString, 3600, TRUE)))
 		{
-	        require_once(e_HANDLER."message_handler.php");
-			$emessage = &eMessage::getInstance();
-			$emessage->add($cacheData);
+			$mes = e107::getMessage();
+			$mes->addInfo($cacheData);
 			$e107cache->CachePageMD5  = "";
 			return;
 		}
@@ -111,9 +104,7 @@ class e_upgrade
 
 			if($txt)
 			{
-	            require_once (e_HANDLER."message_handler.php");
-				$emessage = &eMessage::getInstance();
-				$emessage->add($txt);
+				$mes->addInfo($txt);
 				if($cache==TRUE)
 				{
 					$e107cache->set($cacheString, $txt, TRUE);
@@ -128,10 +119,9 @@ class e_upgrade
 	
 	
 
-
     function checkAllPlugins()
 	{
-		global $pref;
+		$pref = e107::getPref();
 		$sql = e107::getDB();
         if($sql -> db_Select_Gen("SELECT * FROM #plugin WHERE plugin_installflag = 1 AND plugin_releaseUrl !=''"))
 		{
@@ -163,5 +153,3 @@ class e_upgrade
 
 
 }
-
-
