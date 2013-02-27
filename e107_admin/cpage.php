@@ -182,12 +182,12 @@ class menu_admin_ui extends e_admin_ui
 		protected $batchCopy 	= true;	
 	//	protected $sortField	= 'page_order';
 		protected $orderStep 	= 10;
-		protected $itemRoute 	= 'page/view?page_id=page_id&page_sef=page_sef';
+		protected $url 	        = 'page/view';
 
 		
 		protected $fields = array(
 			'checkboxes'		=> array('title'=> '',				'type' => null, 		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
-			'page_id'			=> array('title'=> 'ID',			'tab' => 0,	'width'=>'5%', 			'forced'=> TRUE),
+			'page_id'			=> array('title'=> 'ID',			'type'=>'text',   'tab' => 0,	'width'=>'5%', 'readParms'=>'link=sef&dialog=1','forced'=> TRUE),
          	'page_theme' 		=> array('title'=> "Menu Name", 	'tab' => 0,	'type' => 'text', 		'width' => 'auto','nolist'=>true),
 		
 		    'page_title'	   	=> array('title'=> LAN_TITLE, 		'tab' => 0,	'type' => 'text', 		'width'=>'25%','readParms'=>'link={e_BASE}page.php?[id]&dialog=1'),
@@ -229,11 +229,11 @@ class menu_form_ui extends e_admin_form_ui
 //  MAIN Pages. 
 class page_admin_ui extends e_admin_ui
 {
-		protected $pluginTitle = ADLAN_42;
-		protected $pluginName = 'core';
-		protected $table = "page";
+		protected $pluginTitle  = ADLAN_42;
+		protected $pluginName   = 'core';
+		protected $table        = "page";
 		
-		protected $listQry = "SELECT p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE p.page_theme = '' "; // without any Order or Limit.
+		protected $listQry      = "SELECT p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE p.page_theme = '' "; // without any Order or Limit.
 		//protected $editQry = "SELECT * FROM #comments WHERE comment_id = {ID}";
 		
 		protected $pid 			= "page_id";
@@ -241,18 +241,19 @@ class page_admin_ui extends e_admin_ui
 		protected $perPage 		= 10;
 		protected $batchDelete 	= true;
 		protected $batchCopy 	= true;	
+        protected $batchLink    = true;
 		protected $sortField	= 'page_order';
 		protected $orderStep 	= 10;
-		protected $itemRoute 	= 'page/view?page_id=page_id&page_sef=page_sef';
+		protected $url         	= array('profile'=>'page/view', 'name' => 'page_title', 'description' => '', 'link'=>'{e_BASE}page.php?id=[id]'); // 'link' only needed if profile not provided. 
 		protected $tabs		 	= array("Main","Advanced");
 	//		protected $listSorting = true; 
 	
 		
 		protected $fields = array(
 			'checkboxes'		=> array('title'=> '',				'type' => null, 		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
-			'page_id'			=> array('title'=> LAN_ID,			'tab' => 0,	'width'=>'5%', 			'forced'=> TRUE),
+			'page_id'			=> array('title'=> LAN_ID,			'type' => 'text', 'tab' => 0,	'width'=>'5%', 			'forced'=> TRUE, 'readParms'=>'link=sef&target=dialog'),
             'page_chapter' 		=> array('title'=> 'Book/Chapter', 	'tab' => 0,	'type' => 'dropdown', 	'width' => '20%', 'filter' => true, 'batch'=>true, 'inline'=>true),
-            'page_title'	   	=> array('title'=> LAN_TITLE, 		'tab' => 0,	'type' => 'text', 		'width'=>'25%','readParms'=>'link={e_BASE}page.php?[id]&dialog=1'),
+            'page_title'	   	=> array('title'=> LAN_TITLE, 		'tab' => 0,	'type' => 'text', 'inline'=>true,		'width'=>'25%'),
 			'page_theme' 		=> array('title'=> LAN_TYPE, 		'tab' => 0,	'type' => 'text', 		'width' => 'auto','nolist'=>true, 'noedit'=>true),
 			'page_template' 	=> array('title'=> LAN_TEMPLATE, 		'tab' => 0,	'type' => 'dropdown', 	'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
         
@@ -260,7 +261,7 @@ class page_admin_ui extends e_admin_ui
 			'page_text' 		=> array('title'=> CUSLAN_9,		'tab' => 0,	'type' => 'bbarea',		'data'=>'str',	'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1', 'writeParms'=>'media=page'), 
 		
 			'page_datestamp' 	=> array('title'=> LAN_DATE, 		'tab' => 1,	'type' => 'datestamp', 	'data'=>'int',	'width' => 'auto','writeParms'=>'auto=1'),
-            'page_class' 		=> array('title'=> LAN_USERCLASS, 	'tab' => 1,	'type' => 'userclass', 	'data'=>'int', 'width' => 'auto',  'filter' => true, 'batch' => true),
+            'page_class' 		=> array('title'=> LAN_USERCLASS, 	'tab' => 1,	'type' => 'userclass', 	'data'=>'int', 'inline'=>true, 'width' => 'auto',  'filter' => true, 'batch' => true),
 			'page_rating_flag' 	=> array('title'=> LAN_RATING, 		'tab' => 1,	'type' => 'boolean', 	'data'=>'int', 'width' => '5%', 'thclass' => 'center', 'class' => 'center' ),
 			'page_comment_flag' => array('title'=> ADLAN_114,		'tab' => 1,	'type' => 'boolean', 	'data'=>'int', 'width' => '5%', 'thclass' => 'center', 'class' => 'center' ),
 		//	'page_password' 	=> array('title'=> LXAN_USER_05, 	'type' => 'text', 'width' => 'auto'),								

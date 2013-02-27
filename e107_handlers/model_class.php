@@ -521,6 +521,12 @@ class e_model extends e_object
 	 * @var string
 	 */
 	protected $_db_table;
+    
+    /**
+     * Current url Profile
+     * @var string
+     */
+    protected $_url;
 
     /**
      * Runtime cache of parsed from {@link _getData()} keys
@@ -581,6 +587,28 @@ class e_model extends e_object
 		return $this;
 	}
 
+
+    /**
+     * Set model Url Profile
+     * @param string $table
+     * @return e_model
+     */
+    public function setUrl($url)
+    {
+        $this->_url = $url;
+        return $this;
+    }
+    
+    
+    /**
+     * Get url profile
+     * @return array
+     */
+    public function getUrl()
+    {
+        return $this->_url;
+    }
+    
     /**
      * Get data fields array
      * @return array
@@ -3416,5 +3444,71 @@ class e_admin_tree_model extends e_front_tree_model
 		$this->_db_errmsg = $sql->getLastErrorText();
 		return $res;	
 	}
+    
+    
+     /**
+     * Batch Url Creation Table Rows. 
+     */
+    public function url($ids)
+    {
+        $tp         = e107::getParser();
+        $ids        = array_map(array($tp, 'toDB'), $ids);
+        $idstr      = implode(', ', $ids);
+        $sql        = e107::getDb();
+        $allData    = $this->toArray();
+        $urlData    = $this->getUrl();
+
+        $this->addMessageDebug('Using Url Profile:'.$urlData['profile']);   
+        
+        foreach($ids as $id)
+        {          
+            $data = vartrue($allData[$id]);
+            $name = $urlData['name'];
+            $desc = $urlData['description'];
+            
+            $link = vartrue($urlData['profile']) ? e107::getUrl()->create($urlData['profile'], $data) : str_replace("[id]", $id, $urlData['link']);  
+            
+            $link = str_replace(e_HTTP,"",$link); // work-around fix. 
+            
+            $linkArray = array(
+                'link_name'         => $tp->toDB($data[$name]),
+                'link_url'          => $link,
+                'link_description'  => $tp->toDB($desc),
+                'link_button'       => '',
+                'link_category'     => 255, // Using an unassigned template rather than inactive link-class, since other inactive links may already exist. 
+                'link_order'        => 0,
+                'link_parent'       => 0,
+                'link_open'         => '',
+                'link_class'        => 0
+            );
+            
+            
+            $res = $sql->insert('links',$linkArray);
+            
+            if($res !== FALSE)
+            {
+                 $this->addMessageSuccess('Created Sitelink: <b>'.$data[$name]."</b>");    
+            }
+            else 
+            {
+                if($sql->getLastErrorNumber())
+                {
+                    $this->addMessageError('SQL Link Creation Error', $session_messages); //TODO - Lan
+                    $this->addMessageDebug('SQL Link Creation Error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
+                }  
+                $this->_db_errno = $sql->getLastErrorNumber();
+                $this->_db_errmsg = $sql->getLastErrorText();     
+            }
+                         
+        }
+        
+        if($res !== FALSE)
+        {
+            $this->addMessageSuccess("<br />New sitelinks are currently unassigned. You should now modify these links to your liking.<br /><br /><a class='btn btn-small btn-primary' href='".e_ADMIN."links.php?searchquery=&filter_options=link_category__255'>Modify Links</a>");        
+        }
+        
+        return true; 
+ 
+    }
 
 }

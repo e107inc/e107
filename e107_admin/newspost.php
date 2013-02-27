@@ -349,16 +349,19 @@ class news_admin_ui extends e_admin_ui
 	protected $perPage 		= 10; //no limit
 	protected $batchDelete 	= true;
 	protected $batchCopy 	= true;
+    protected $batchLink    = true;
 	protected $listOrder	= "news_id desc";
+    protected $url          = array('profile'=>'news/view/item', 'name' => 'news_title', 'description' => 'news_summary', 'link'=>'{e_BASE}news.php?extend.[id]'); // 'link' only needed if profile not provided. 
+    
 		
 	protected $listQry = "SELECT n.*,u.user_id,u.user_name FROM #news AS n LEFT JOIN #user AS u ON n.news_author = u.user_id "; // without any Order or Limit.
 		
 		
 	protected $fields = array(
 				'checkboxes'	   		=> array('title' => '', 			'type' => null, 		'width' => '3%', 	'thclass' => 'center first', 	'class' => 'center', 	'nosort' => true, 'toggle' => 'news_selected', 'forced' => TRUE),
-				'news_id'				=> array('title' => LAN_NEWS_45, 	'type' => 'number', 	'width' => '5%', 	'thclass' => 'center', 			'class' => 'center',  	'nosort' => false),
+				'news_id'				=> array('title' => LAN_NEWS_45, 	'type' => 'text', 	'width' => '5%', 	'thclass' => 'center', 			'class' => 'center',  	'nosort' => false, 'readParms'=>'link=sef&target=blank'),
  				'news_thumbnail'		=> array('title' => NWSLAN_67, 		'type' => 'method', 		'width' => '110px',	'thclass' => 'center', 			'class' => "center", 		'nosort' => false, 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>false),		  		
- 				'news_title'			=> array('title' => LAN_TITLE, 		'type' => 'method', 		'width' => 'auto', 'thclass' => '', 				'class' => null, 		'nosort' => false, 'readParms'=>'link={e_BASE}news.php?extend.[id]&dialog=1'),
+ 				'news_title'			=> array('title' => LAN_TITLE, 		'type' => 'text', 'inline'=>true,		'width' => 'auto', 'thclass' => '', 				'class' => null, 		'nosort' => false),
 				'news_summary'			=> array('title' => LAN_NEWS_27, 	'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),			
 				
 				'news_meta_keywords'	=> array('title' => LAN_KEYWORDS, 	'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),

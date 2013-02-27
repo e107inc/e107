@@ -2285,7 +2285,10 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	protected $batchCopy = false;
 	
-
+    /**
+     * @var boolean
+     */
+    protected $batchLink = false;
 	/**
 	 * Could be LAN constant (mulit-language support)
 	 *
@@ -2339,6 +2342,12 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		return $this->batchCopy;
 	}
+    
+    
+    public function getBatchLink()
+    {
+        return $this->batchLink;
+    }
 
 	/**
 	 * @return string
@@ -2365,6 +2374,16 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		return $this->tabs;
 	}
+
+
+        /**
+     * Get URL profile
+     * @return array
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
 	
 
 	/**
@@ -3905,7 +3924,19 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->redirect();	
 	}
 
-
+    /** TODO
+     * Batch copy trigger
+     * @param array $selected
+     * @return void
+     */
+    protected function handleListUrlBatch($selected)
+    {
+        // Batch Copy 
+        $set_messages = true;
+        $this->getTreeModel()->url($selected);
+        if($set_messages) $this->getTreeModel()->setMessages();
+        $this->redirect();  
+    }
 	/**
 	 * Batch boolean trigger
 	 * @param array $selected
@@ -4646,6 +4677,7 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->_model = new e_admin_model();
 		$this->_model->setModelTable($this->table)
 			->setFieldIdName($this->pid)
+            ->setUrl($this->url)
 			->setValidationRules($this->validationRules)
 			->setDbTypes($this->fieldTypes)
 			->setDataFields($this->dataFields)
@@ -4665,6 +4697,7 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->_tree_model = new e_admin_tree_model();
 		$this->_tree_model->setModelTable($this->table)
 			->setFieldIdName($this->pid)
+            ->setUrl($this->url)
 			->setMessageStackName('admin_ui_tree_'.$this->table)
 			->setParams(array('model_class' => 'e_admin_model', 'model_message_stack' => 'admin_ui_model_'.$this->table ,'db_query' => $this->listQry));
 
@@ -4828,7 +4861,7 @@ class e_admin_form_ui extends e_form
 	public function getModal($caption = '', $type='')
 	{
 		return '
-		 <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog"  aria-hidden="true">
+		 <div id="uiModal" class="modal hide fade" tabindex="-1" role="dialog"  aria-hidden="true">
 			<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 			 &nbsp;
@@ -4876,8 +4909,8 @@ class e_admin_form_ui extends e_form
 			'form_post' => '', // markup to be added after closing form element
 			'fields' => $controller->getFields(), // see e_admin_ui::$fields
 			'fieldpref' => $controller->getFieldPref(), // see e_admin_ui::$fieldpref
-			'table_pre' => '', // $this->getModal(), // markup to be added before opening table element
-			'table_post' => !$tree[$id]->isEmpty() ? $this->renderBatch($controller->getBatchDelete(),$controller->getBatchCopy()) : '',
+			'table_pre' => $this->getModal(), //'' , // markup to be added before opening table element
+			'table_post' => !$tree[$id]->isEmpty() ? $this->renderBatch($controller->getBatchDelete(),$controller->getBatchCopy(),$controller->getBatchLink()) : '',
 			'fieldset_pre' => '', // markup to be added before opening fieldset element
 			'fieldset_post' => '', // markup to be added after closing fieldset element
 			'perPage' => $controller->getPerPage(), // if 0 - no next/prev navigation
@@ -5101,7 +5134,7 @@ class e_admin_form_ui extends e_form
 	}
 
 	// FIXME - use e_form::batchoptions(), nice way of buildig batch dropdown - news administration show_batch_options()
-	function renderBatch($allow_delete = false,$allow_copy= false)
+	function renderBatch($allow_delete = false,$allow_copy= false, $allow_url=false)
 	{
 		
 		// $allow_copy = TRUE;
@@ -5122,6 +5155,7 @@ class e_admin_form_ui extends e_form
 					".$this->option(LAN_BATCH_LABEL_SELECTED, '')."
 					".($allow_copy ? $this->option(LAN_COPY, 'copy', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."					
 					".($allow_delete ? $this->option(LAN_DELETE, 'delete', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."					
+				    ".($allow_url ? $this->option(LAN_UI_BATCH_CREATELINK, 'url', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."   
 					".$this->renderBatchFilter('batch')."
 				".$this->select_close()."
 				".$this->admin_button('e__execute_batch', 'e__execute_batch', 'batch e-hide-if-js', 'Execute', array('id' => false))."

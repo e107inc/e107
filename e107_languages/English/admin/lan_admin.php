@@ -169,10 +169,10 @@ define("ADLAN_151", "Main");
 define("ADLAN_152", "Enter Code");
 
 define("ADLAN_153", "Administration Area");
-define('ADLAN_154', "Error contacting Sourceforge to check for new version");
+define("ADLAN_154", "Error contacting Sourceforge to check for new version");
 
-define('ADLAN_155', 'System Logs');
-define('ADLAN_156', 'Admin log, user audit, rolling log');
+define("ADLAN_155", "System Logs");
+define("ADLAN_156", "Admin log, user audit, rolling log");
 
 define("ADLAN_157", "Schedule Tasks");
 define("ADLAN_158", "Cron Jobs and Automated Maintenance");
@@ -183,17 +183,17 @@ define("ADLAN_161", "Custom Fields?");
 define("ADLAN_162", "A newer version of your site-theme is available:");
 define("ADLAN_163", "A newer version of an installed plugin is available:");  
 
-define('ADLAN_CL_1', 'Settings');
-define('ADLAN_CL_2', 'Users');
-define('ADLAN_CL_3', 'Content');
-define('ADLAN_CL_4', 'Coms');
-define('ADLAN_CL_5', 'Files');
-define('ADLAN_CL_6', 'Tools');
-define('ADLAN_CL_7', 'Plugins');
+define("ADLAN_CL_1", "Settings");
+define("ADLAN_CL_2", "Users");
+define("ADLAN_CL_3", "Content");
+define("ADLAN_CL_4", "Coms");
+define("ADLAN_CL_5", "Files");
+define("ADLAN_CL_6", "Tools");
+define("ADLAN_CL_7", "Plugins");
 
-define('ADLAN_CL_8', 'Misc');
+define("ADLAN_CL_8", "Misc");
 
-define('ADLAN_CL_20', 'About');
+define("ADLAN_CL_20", "About");
 
 define("ADLAN_LAT_1", "Latest");
 
@@ -223,8 +223,8 @@ define("LAN_UPDATE","Update");
 define("LAN_ADD", "Add");
 define("LAN_SAVE","Save");
 define("LAN_SAVED","Saved");
-define('LAN_SETSAVED','Your settings have been saved');
-define('LAN_NOCHANGE_NOTSAVED', 'Nothing changed - not saved');
+define("LAN_SETSAVED","Your settings have been saved");
+define("LAN_NOCHANGE_NOTSAVED", "Nothing changed - not saved");
 define("LAN_CONFIRMDEL","Please confirm you wish to delete");
 define("LAN_JSCONFIRM","Are you sure?");
 define("LAN_OPTIONS","Options");
@@ -296,8 +296,8 @@ define("LAN_NOPERMISSION", "no permissions");
 define("LAN_CREDITS","Credits");
 define("LAN_NEWVERSION","New Version Available");
 
-define("LAN_CHECKALL", 'Check All');
-define("LAN_UNCHECKALL", 'Uncheck All');
+define("LAN_CHECKALL", "Check All");
+define("LAN_UNCHECKALL", "Uncheck All");
 define("LAN_DELCHECKED", "Delete Checked");
 
 define("LAN_USERCLASS", "Userclass");
@@ -319,7 +319,7 @@ define("LAN_URL", "URL");
 define("LAN_USER", "User");
 define("LAN_OWNER", "Owner");
 define("LAN_NAME", "Name");
-define('LAN_EMAIL','Email address');
+define("LAN_EMAIL","Email address");
 define("LAN_ID", "ID");
 define("LAN_TITLE", "Title");
 define("LAN_DESCRIPTION", "Description");
@@ -346,33 +346,36 @@ define("LAN_SECURITYL_9", "Paranoid");
 define("LAN_SECURITYL_10", "Insane");
 
 // XXX - move Admin UI related LANS below, add new lan_form.php file (for both front/back-end)
-define('LAN_BATCH_LABEL_SELECTED', 'With selected...'); // Batch dropdown default option
-define('LAN_BATCH_LABEL_PREFIX', 'Modify');
-define('LAN_LABEL_LABEL_SELECTED', 'Filter'); // Filter dropdown default option
-define('LAN_FILTER_LABEL_PREFIX', 'Filter by');
-define('LAN_FILTER_LABEL_DISPLAYALL', 'Display All');
-define('LAN_FILTER_LABEL_CLEAR', 'Clear Filter');
-define('LAN_FILTER_LABEL_TYPED', '(typed)');
+define("LAN_BATCH_LABEL_SELECTED", "With selected..."); // Batch dropdown default option
+define("LAN_BATCH_LABEL_PREFIX", "Modify");
+define("LAN_LABEL_LABEL_SELECTED", "Filter"); // Filter dropdown default option
+define("LAN_FILTER_LABEL_PREFIX", "Filter by");
+define("LAN_FILTER_LABEL_DISPLAYALL", "Display All");
+define("LAN_FILTER_LABEL_CLEAR", "Clear Filter");
+define("LAN_FILTER_LABEL_TYPED", "(typed)");
 
-define('LAN_UI_NOPID_ERROR', 'There is no <strong>Primary ID</strong> set');
-define('LAN_UI_BATCHDEL_ERROR', 'Batch delete not allowed!');
-define('LAN_UI_404_BODY_ERROR', 'Requested page was not found!');
-define('LAN_UI_404_TITLE_ERROR', 'Page Not Found');
-define('LAN_UI_404_METHOD_ERROR', 'Action <strong>%1$s</strong> not found!');
-define('LAN_UI_403_BODY_ERROR', 'Access to the requested page is denied.');
-define('LAN_UI_403_TITLE_ERROR', 'Access denied');
-define('LAN_UI_FORM_METHOD_ERROR', 'FATAL ERROR: The field name <strong>%1$s</strong> is not allowed. Please rename the key <strong>%1$s</strong> to something else in your fields array and database table (if required).');
+//FIXME Remove html 
+define("LAN_UI_NOPID_ERROR", "There is no <strong>Primary ID</strong> set");
+define("LAN_UI_BATCHDEL_ERROR", "Batch delete not allowed!");
+define("LAN_UI_404_BODY_ERROR", "Requested page was not found!");
+define("LAN_UI_404_TITLE_ERROR", "Page Not Found");
+define("LAN_UI_404_METHOD_ERROR", "Action <strong>%1$s</strong> not found!");
+define("LAN_UI_403_BODY_ERROR", "Access to the requested page is denied.");
+define("LAN_UI_403_TITLE_ERROR", "Access denied");
+define("LAN_UI_FORM_METHOD_ERROR", "FATAL ERROR: The field name <strong>%1$s</strong> is not allowed. Please rename the key <strong>%1$s</strong> to something else in your fields array and database table (if required).");
 
-define('LAN_UI_BATCH_UPDATE_SUCCESS', '<strong>%1$s</strong> set for <strong>%2$d</strong> record(s).');
-define('LAN_UI_BATCH_REVERSED_SUCCESS', '<strong>%1$d</strong> records successfully reversed.');
-define('LAN_UI_BATCH_BOOL_SUCCESS', '<strong>%1$d</strong> records successfully updated.');
-define('LAN_UI_BATCH_DEATTACH_SUCCESS', '<strong>%1$s</strong> removed from <strong>%2$d</strong> record(s).');
+//FIXME - remove % code and HTML from LANS below and replace with "[x]" and bbcode. 
+define("LAN_UI_BATCH_UPDATE_SUCCESS", "<strong>%1$s</strong> set for <strong>%2$d</strong> record(s).");
+define("LAN_UI_BATCH_REVERSED_SUCCESS", "<strong>%1$d</strong> records successfully reversed.");
+define("LAN_UI_BATCH_BOOL_SUCCESS", "<strong>%1$d</strong> records successfully updated.");
+define("LAN_UI_BATCH_DEATTACH_SUCCESS", "<strong>%1$s</strong> removed from <strong>%2$d</strong> record(s).");
 
-define('LAN_UI_EDIT_LABEL', 'Update record #%1$s');
-define('LAN_UI_CREATE_LABEL', 'Create new record');
-define('LAN_UI_PREF_LABEL', 'Settings');
-define('LAN_UI_DELETE_LABEL', 'Confirm Delete');
-define('LAN_UI_DELETE_WARNING', 'You are about to delete <strong>%1$d</strong> records. Please confirm to continue.');
+define("LAN_UI_EDIT_LABEL", "Update record #%1$s");
+define("LAN_UI_CREATE_LABEL", "Create new record");
+define("LAN_UI_PREF_LABEL", "Settings");
+define("LAN_UI_DELETE_LABEL", "Confirm Delete");
+define("LAN_UI_DELETE_WARNING", "You are about to delete <strong>%1$d</strong> records. Please confirm to continue.");
+define("LAN_UI_BATCH_CREATELINK", "Create Link");
 
 define("LAN_USER_MANAGEALL", "Manage all User, Userclass and Extended User-Field settings");
 define("LAN_USER_LIST", "User List");
