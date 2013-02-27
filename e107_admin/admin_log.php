@@ -67,9 +67,7 @@ if(is_array($pref['lan_log_list'])) //... and for any plugins which support it
 unset($qs);
 
 require_once (e_ADMIN.'auth.php');
-require_once (e_HANDLER.'message_handler.php');
-require_once (e_HANDLER.'form_handler.php');
-//$frm = new e_form(false);
+
 $mes = e107::getMessage();
 $frm = e107::getForm();
 

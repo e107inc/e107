@@ -33,10 +33,6 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 $e_sub_cat = 'admin';
 require_once('auth.php');
 
-
-require_once(e_HANDLER."form_handler.php");
-require_once(e_HANDLER."message_handler.php");
-//$frm = new e_form(true);
 $frm = e107::getForm();
 $mes = e107::getMessage();
 $prm = e107::getUserPerms();

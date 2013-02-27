@@ -22,7 +22,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 $e_sub_cat = 'meta';
 require_once("auth.php");
-require_once(e_HANDLER."message_handler.php");
+
 $mes = e107::getMessage();
 $frm = e107::getForm();
 $ns = e107::getRender();

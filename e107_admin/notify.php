@@ -37,7 +37,7 @@ require_once('auth.php');
 
 require_once(e_HANDLER.'userclass_class.php');
 require_once(e_HANDLER.'form_handler.php');
-require_once(e_HANDLER.'message_handler.php');
+
 
 //$emessage = &eMessage::getInstance();
 

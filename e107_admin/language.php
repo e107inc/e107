@@ -22,8 +22,8 @@ e107::coreLan('language', true);
 
 $e_sub_cat = 'language';
 require_once ("auth.php");
-require_once (e_HANDLER."form_handler.php");
-require_once (e_HANDLER."message_handler.php");
+
+
 $frm = e107::getForm();
 $mes = e107::getMessage();
 $tabs = table_list(); // array("news","content","links");

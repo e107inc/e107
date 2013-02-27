@@ -32,11 +32,8 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 $e_sub_cat = 'frontpage';
 require_once ('auth.php');
-require_once (e_HANDLER.'form_handler.php');
-require_once (e_HANDLER.'message_handler.php');
-$mes = e107::getMessage();
 
-require_once (e_HANDLER.'userclass_class.php');
+$mes = e107::getMessage();
 
 $frontPref = e107::pref('core');              		 	// Get prefs
 
@@ -344,7 +341,7 @@ class frontpage
 
 	public function __construct($fp)
 	{
-		$this->frm = new e_form();
+		$this->frm = e107::getForm();
 		$this->frontPage = $fp;
 	}
 
