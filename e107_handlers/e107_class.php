@@ -2675,9 +2675,10 @@ class e107
 
 	  
 		$e_ROOT = realpath(dirname(__FILE__)."/../"); 
+          
 		if ((substr($e_ROOT,-1) != '/') && (substr($e_ROOT,-1) != '\\') ) 
 		{
-			$e_ROOT .= (strpos($e_ROOT,':\\')!==false) ? '\\' : '/';  // Should be functioning correctly on both windows and Linux now. 
+			$e_ROOT .= DIRECTORY_SEPARATOR;  // Should function correctly on both windows and Linux now. 
 		}
 
 		define('e_ROOT',$e_ROOT);	
