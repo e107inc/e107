@@ -374,7 +374,7 @@ define("LAN_UI_EDIT_LABEL", "Update record #%1$s");
 define("LAN_UI_CREATE_LABEL", "Create new record");
 define("LAN_UI_PREF_LABEL", "Settings");
 define("LAN_UI_DELETE_LABEL", "Confirm Delete");
-define("LAN_UI_DELETE_WARNING", "You are about to delete <strong>%1$d</strong> records. Please confirm to continue.");
+define("LAN_UI_DELETE_WARNING", "You are about to delete [x] records. Please confirm to continue.");
 define("LAN_UI_BATCH_CREATELINK", "Create Link");
 
 define("LAN_USER_MANAGEALL", "Manage all User, Userclass and Extended User-Field settings");
