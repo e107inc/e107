@@ -2,27 +2,24 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2012 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
- *
- * $URL$
- * $Id$
  *
  */
 
 if (!defined('e107_INIT')) { exit; }
 
-
 /**
  *
  * @package     e107
  * @category	e107_handlers
- * @version     $Id$
  * @author      e107inc
  *
  *	Plugin administration handler
  */
+
+// TODO LAN
 
 e107::coreLan('plugin', true);
 
@@ -267,8 +264,7 @@ class e107plugin
 		}
 		$sql->db_Mark_Time('After Scanning Plugin Files');
 		$p_installed = e107::getPref('plug_installed', array()); // load preference;
-		require_once(e_HANDLER."message_handler.php");
-		$mes = eMessage::getInstance();
+		$mes = e107::getMessage();
 
 		foreach ($pluginList as $p)
 		{
@@ -277,7 +273,7 @@ class e107plugin
 
 			if (strpos($plugin_path, 'e107_') !== FALSE)
 			{
-				$mes->add("Folder error: <i>{$p['path']}</i>.  'e107_' is not permitted within plugin folder names.", E_MESSAGE_WARNING);
+				$mes->addWarning("Folder error: <i>{$p['path']}</i>.  'e107_' is not permitted within plugin folder names.");
 				continue;
 			}
 			
@@ -293,7 +289,7 @@ class e107plugin
 			if (!$this->parse_plugin($p['path']))
 			{
 				//parsing of plugin.php/plugin.xml failed.
-				$mes->add("Parsing failed - file format error: {$p['path']}", E_MESSAGE_ERROR);
+				$mes->addError("Parsing failed - file format error: {$p['path']}");
 				continue; // Carry on and do any others that are OK
 			}
 
@@ -372,11 +368,11 @@ class e107plugin
 						
 						if (e107::getDb()->db_Insert("plugin", "0, '".$tp->toDB($pName, true)."', '".$tp->toDB($plug_info['@attributes']['version'], true)."', '".$tp->toDB($plugin_path, true)."',{$_installed}, '{$eplug_addons}', '".$this->manage_category($plug_info['category'])."', '".varset($plug_info['@attributes']['releaseUrl'])."' "))
 						{
-								$mes->add("Added <b>".$tp->toHTML($pName,false,"defs")."</b> to the plugin table.", E_MESSAGE_DEBUG);
+								$mes->addDebug("Added <b>".$tp->toHTML($pName,false,"defs")."</b> to the plugin table.");
 							}
 							else
 							{
-								$mes->add("Failed to add ".$tp->toHTML($pName,false,"defs")." to the plugin table.", E_MESSAGE_DEBUG);
+								$mes->addDebug("Failed to add ".$tp->toHTML($pName,false,"defs")." to the plugin table.");
 							}
 						}
 					}
@@ -436,7 +432,7 @@ class e107plugin
 			return;
 		}
 
-		$mes = eMessage::getInstance();
+		$mes = e107::getMessage();
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		$med = e107::getMedia();
@@ -451,7 +447,7 @@ class e107plugin
 		{
 			if (vartrue($this->unInstallOpts['delete_ipool'], FALSE))
 			{
-				$status = ($med->removePath(e_PLUGIN.$plugin, 'icon')) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+				$status = ($med>removePath(e_PLUGIN.$plugin, 'icon')) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 				$mes->add('Removing Icons from Media-Manager', $status);
 			}
 			return;
@@ -577,7 +573,7 @@ class e107plugin
 		$type = $this->ue_field_type($field_attrib);
 		$type_name = $this->ue_field_type_name($type);
 		
-		$mes->add("Extended Field: ".$action.": ".$field_name." : ".$type_name, E_MESSAGE_DEBUG);
+		$mes->addDebug("Extended Field: ".$action.": ".$field_name." : ".$type_name);
 		
 		// predefined
 		if($type == EUF_PREFIELD)
@@ -771,7 +767,7 @@ class e107plugin
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
 
-		$mes->add("Userclass: ".$action.": ".$class_name." : ".$class_description, E_MESSAGE_DEBUG);
+		$mes->addDebug("Userclass: ".$action.": ".$class_name." : ".$class_description);
 
 		if (!$e107->user_class->isAdmin())
 		{
@@ -783,7 +779,7 @@ class e107plugin
 			if ($e107->user_class->ucGetClassIDFromName($class_name) !== FALSE)
 			{ // Class already exists.
 				return TRUE; // That's probably OK
-				}
+			}
 			$i = $e107->user_class->findNewClassID();
 			if ($i !== FALSE)
 			{
@@ -1355,7 +1351,7 @@ class e107plugin
 				$tableList = $dbHandler->get_table_def('', $path.$sqlFile);
 				if (!is_array($tableList))
 				{
-					$mes->add("Can't read SQL definition: ".$path.$sqlFile, E_MESSAGE_ERROR);
+					$mes->addError("Can't read SQL definition: ".$path.$sqlFile);
 					break;
 				}
 				// Got the required definition here
@@ -1392,7 +1388,7 @@ class e107plugin
 							}
 							else
 							{
-								$mes->add("Table {$ct[1]} left in place.", E_MESSAGE_SUCCESS);
+								$mes->addSuccess("Table {$ct[1]} left in place.");
 							}
 							break;
 					}
@@ -1505,7 +1501,7 @@ class e107plugin
 					$text .= "&nbsp;<a href='".$this->plugConfigFile."'>[".LAN_CONFIGURE."]</a>";
 				}
 
-				$mes->add($text, E_MESSAGE_SUCCESS);
+				$mes->addSuccess($text);
 			}
 
 		}
@@ -1531,7 +1527,7 @@ class e107plugin
 	function XmlDependencies($tag)
 	{
 		$canContinue = TRUE;
-		$mes = eMessage::getInstance();
+		$mes = e107::getMessage();
 		$error = array();
 
 		foreach ($tag as $dt => $dv)
@@ -1588,7 +1584,7 @@ class e107plugin
 		if (count($error))
 		{
 			$text = '<b>'.LAN_INSTALL_FAIL.'</b><br />'.implode('<br />', $error);
-			$mes->add($text, E_MESSAGE_ERROR);
+			$mes->addError($text);
 		}
 
 		return $canContinue;
@@ -1617,6 +1613,7 @@ class e107plugin
 	public function XmlLanguageFileCheck($fileEnd, $prefName, $when, $isInstalled, $justPath = FALSE, $plugin = '')
 	{
 		$core = e107::getConfig('core');
+		$mes = e107::getMessage();
 		
 		if (trim($plugin) == '') $plugin = $this->plugFolder;
 		if (!$plugin) return FALSE;			// No plugin name - error
@@ -1648,7 +1645,7 @@ class e107plugin
 			case 'refresh':
 				if ($currentPref != $pathEntry)
 				{
-					e107::getMessage()->addDebug('Adding '.$plugin.' to '.$prefName);
+					$mes->addDebug('Adding '.$plugin.' to '.$prefName);
 					$core->setPref($prefName.'/'.$plugin, $pathEntry);
 					$updated = true;
 				}
@@ -1656,7 +1653,7 @@ class e107plugin
 			case 'uninstall':
 				if ($currentPref)
 				{
-					e107::getMessage()->addDebug('Removing '.$plugin.' from '.$prefName);
+					$mes->addDebug('Removing '.$plugin.' from '.$prefName);
 					$core->removePref($prefName.'/'.$plugin);
 					$updated = true;
 				}
@@ -1772,7 +1769,7 @@ class e107plugin
 						if($result !== NULL)
 						{
 							$status = ($result) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-							$mes->add("Adding Link: {$linkName} with url [{$url}] and perm {$perm} ", $status); //TODO LAN
+							$mes->add("Adding Link: {$linkName} with url [{$url}] and perm {$perm} ", $status); 
 						}					
 					}
 
@@ -1871,10 +1868,6 @@ class e107plugin
 	}
 
 
-
-
-
-	
 	
 	/**
 	 * Process XML Tag <bbcodes>
@@ -1969,6 +1962,7 @@ class e107plugin
 			}
 		}
 	}
+
 
 	/**
 	 * Process XML Tag <extendedFields>
@@ -2069,7 +2063,7 @@ class e107plugin
 
 			if (varset($tag['@attributes']['value']))
 			{
-				$mes->add("Deprecated plugin.xml spec. found. Use the following format: ".htmlentities("<pref name='name'>value</pref>"), E_MESSAGE_ERROR);
+				$mes->addError("Deprecated plugin.xml spec. found. Use the following format: ".htmlentities("<pref name='name'>value</pref>"));
 			}
 
 			switch ($function)
@@ -2079,7 +2073,7 @@ class e107plugin
 					$ret = $config->add($key, $value);
 					if($ret->data_has_changed == TRUE)
 					{
-						$mes->add("Adding Pref: ".$key, E_MESSAGE_SUCCESS);	
+						$mes->addSuccess("Adding Pref: ".$key);	
 					}								
 					break;
 
@@ -2089,19 +2083,19 @@ class e107plugin
 
 					{
 						$config->remove($key, $value);
-						$mes->add("Removing Pref: ".$key, E_MESSAGE_SUCCESS);
+						$mes->addSuccess("Removing Pref: ".$key);
 					}
 					else
 					{
 						$config->update($key, $value);
-						$mes->add("Updating Pref: ".$key, E_MESSAGE_SUCCESS);
+						$mes->addSuccess("Updating Pref: ".$key);
 					}
 
 					break;
 
 				case 'uninstall':
 					$config->remove($key, $value);
-					$mes->add("Removing Pref: ".$key, E_MESSAGE_SUCCESS);
+					$mes->addSuccess("Removing Pref: ".$key);
 					break;
 			}
 		}
@@ -2123,7 +2117,7 @@ class e107plugin
 	 */
 	function execute_function($path = null, $what = '', $when = '', $callbackData = null)
 	{
-		$mes = eMessage::getInstance();
+		$mes = e107::getMessage();
 		
 		if($path == null)
 		{
@@ -2150,7 +2144,7 @@ class e107plugin
 		{
 			if(e_PAGE == 'e107_update.php')
 			{
-				$mes->add("Found setup file <b>".$path."_setup.php</b> ", E_MESSAGE_DEBUG);
+				$mes->addDebug("Found setup file <b>".$path."_setup.php</b> ");
 			}
 			
 			include_once($setup_file);
@@ -2165,7 +2159,7 @@ class e107plugin
 				{
 					if(e_PAGE == 'e107_update.php')
 					{
-						$mes->add("Executing setup function <b>".$class_name." :: ".$method_name."()</b>", E_MESSAGE_DEBUG);
+						$mes->addDebug("Executing setup function <b>".$class_name." :: ".$method_name."()</b>");
 					}
 					if(null !== $callbackData) return call_user_func_array(array($obj, $method_name), $callbackData);
 					return call_user_func(array($obj, $method_name), $this);
@@ -2174,7 +2168,7 @@ class e107plugin
 				{
 					if(e_PAGE == 'e107_update.php')
 					{
-						$mes->add("Setup function ".$class_name." :: ".$method_name."() NOT found.", E_MESSAGE_DEBUG);
+						$mes->addDebug("Setup function ".$class_name." :: ".$method_name."() NOT found.");
 					}
 					return FALSE;
 				}
@@ -2260,15 +2254,13 @@ class e107plugin
 			if ($result === TRUE)
 			{
 				$text .= EPL_ADLAN_19.'<br />';
-
-				$mes->add(EPL_ADLAN_19, E_MESSAGE_SUCCESS);
-				//success
-				}
+				$mes->addSuccess(EPL_ADLAN_19);
+			}
 			else
 			{
-				$mes->add(EPL_ADLAN_18, E_MESSAGE_ERROR);
-				//fail
-				}
+				$mes->addError(EPL_ADLAN_18);
+
+			}
 		}
 
 		/*		if (is_array($eplug_prefs))
@@ -2335,8 +2327,8 @@ class e107plugin
 	 */
 	function install_plugin($id)
 	{
-		global $ns, $sysprefs, $mySQLprefix;
-
+		global $sysprefs, $mySQLprefix;
+		$ns = e107::getRender();
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 
@@ -2390,8 +2382,8 @@ class e107plugin
 		
 		// reset
 		$core->set('bbcode_list', array())
-			->set('shortcode_legacy_list', array())
-			->set('shortcode_list', array());
+			 ->set('shortcode_legacy_list', array())
+			 ->set('shortcode_list', array());
 		
 		$query = "SELECT * FROM #plugin WHERE plugin_addons !='' ORDER BY plugin_path ASC";
 
@@ -2515,6 +2507,7 @@ class e107plugin
 	function getAddons($plugin_path, $debug = FALSE)
 	{
 		$fl = e107::getFile();
+		$mes = e107::getMessage();
 
 		$p_addons = array();
 
@@ -2540,7 +2533,6 @@ class e107plugin
 					}
 					echo $plugin_path."/".$addon.".php - ".$passfail."<br />";
 				}
-				$mes = e107::getMessage();
 				// $mes->add('Detected addon: <b>'.$addon.'</b>', E_MESSAGE_DEBUG);
 
 				$p_addons[] = $addon;
@@ -2772,7 +2764,7 @@ class e107plugin
 		
 		if ($this->plug_vars === FALSE)
 		{
-			$mes->add("Error reading {$plugName}/plugin.xml", E_MESSAGE_ERROR);
+			$mes->addError("Error reading {$plugName}/plugin.xml");
 			return FALSE;
 		}
 
@@ -2818,3 +2810,4 @@ class e107plugin
 	}
 
 }
+?>
