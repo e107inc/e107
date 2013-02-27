@@ -1365,6 +1365,7 @@ class e_form
 			break;	
 			
 			case 'warning':
+            case 'confirm':
 				$options['class'] .= 'btn-warning';
 			break;
 			
@@ -1879,6 +1880,7 @@ class e_form
 
 		$trclass = vartrue($fieldvalues['__trclass']) ?  ' class="'.$trclass.'"' : '';
 		unset($fieldvalues['__trclass']);
+        
 
 		foreach ($fieldarray as $field => $data)
 		{
@@ -1889,6 +1891,9 @@ class e_form
 				$field = $data['alias'];
 			}
 			
+			
+           
+            
 			//Not found
 			if((!varset($data['forced']) && !in_array($field, $currentlist)) || varset($data['nolist']))
 			{
@@ -1906,7 +1911,13 @@ class e_form
 			}
 
 			$tdclass = vartrue($data['class']);
-			if($field == 'checkboxes') $tdclass = $tdclass ? $tdclass.' autocheck e-pointer' : 'autocheck e-pointer';
+            
+            if($field == 'checkboxes') $tdclass = $tdclass ? $tdclass.' autocheck e-pointer' : 'autocheck e-pointer';
+            
+			if($field == 'options') $tdclass = $tdclass ? $tdclass.' options' : 'options';
+            
+            
+            
 			// there is no other way for now - prepare user data
 			if('user' == vartrue($data['type']) /* && isset($data['readParms']['idField'])*/)
 			{
@@ -3480,9 +3491,11 @@ class e_form
 	}
 	
 	
-
-	// JUST A DRAFT - generic renderForm solution
-	/*
+	/**
+     * Generic renderForm solution
+     * @param @forms
+     * @param @nocontainer
+     */
 	function renderForm($forms, $nocontainer = false)
 	{
 		$text = '';
@@ -3518,9 +3531,10 @@ class e_form
 		}
 		return $text;
 	}
-    */
-	// JUST A DRAFT - generic renderFieldset solution, will be split to renderTable, renderCol/Row/Box etc
-	/*
+  
+    /**
+     * Generic renderFieldset solution, will be split to renderTable, renderCol/Row/Box etc - Still in use. 
+     */
 	function renderFieldset($id, $fdata)
 	{
 		$colgroup = '';
@@ -3618,7 +3632,7 @@ class e_form
 		";
 		return $text;
 	}
-    */
+ 
 	// The 2 functions below are for demonstration purposes only, and may be moved/modified before release.
 	/*
 	function filterType($fieldarray)

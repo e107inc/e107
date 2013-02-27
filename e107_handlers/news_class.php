@@ -174,8 +174,8 @@ class news {
 				$data['data']['news_id'] = $news['news_id'];
 	
 				e107::getEvent()->trigger('newsupd', $data['data']);
-				$message = LAN_NEWS_21;
-				$emessage->add(LAN_NEWS_21, E_MESSAGE_SUCCESS, $smessages);
+				$message = LAN_UPDATED;
+				$emessage->add(LAN_UPDATED, E_MESSAGE_SUCCESS, $smessages);
 				e107::getCache()->clear('news.php');
 
 

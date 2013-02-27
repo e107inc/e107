@@ -4930,11 +4930,15 @@ class e_admin_form_ui extends e_form
 		$id_array = explode(',', $ids);
 		$delcount = count($id_array);
 		
-		if(!empty($controller->deleteConfirmMessage)) 
-			e107::getMessage()->addWarning(sprintf($controller->deleteConfirmMessage, $delcount));
+		if(!empty($controller->deleteConfirmMessage))
+        { 
+			e107::getMessage()->addWarning(str_replace("[x]","<b>".$delcount."</b>", $controller->deleteConfirmMessage));
+        }
 		else 
-			e107::getMessage()->addWarning(sprintf(LAN_UI_DELETE_WARNING, $delcount));
-
+        {
+			e107::getMessage()->addWarning(str_replace("[x]","<b>".$delcount."</b>",LAN_UI_DELETE_WARNING));
+        }
+    
 		$fieldsets['confirm'] = array(
 			'fieldset_pre' => '', // markup to be added before opening fieldset element
 			'fieldset_post' => '', // markup to be added after closing fieldset element
@@ -4946,7 +4950,7 @@ class e_admin_form_ui extends e_form
 			'table_rows' => '', // rows array (<td> tags)
 			'table_body' => '', // string body - used only if rows empty
 			'pre_triggers' => '',
-			'triggers' => array('hidden' => $this->hidden('etrigger_delete['.$ids.']', $ids), 'delete_confirm' => array(LAN_CONFDELETE, 'submit', $ids), 'cancel' => array(LAN_CANCEL, 'cancel')),
+			'triggers' => array('hidden' => $this->hidden('etrigger_delete['.$ids.']', $ids), 'delete_confirm' => array(LAN_CONFDELETE, 'confirm', $ids), 'cancel' => array(LAN_CANCEL, 'cancel')),
 		);
 		if($delcount > 1)
 		{

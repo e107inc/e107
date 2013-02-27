@@ -734,6 +734,8 @@ i.searchquery	{
 .tab-pane table.adminform td 	{ border-top:0px}
 .tab-pane table.adminform tr 	{ border-bottom:1px solid #DDDDDD}	
 
+.table .options					{ white-space:nowrap }
+
 /****************************************************************/	
 
 
