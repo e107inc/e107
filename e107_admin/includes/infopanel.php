@@ -72,10 +72,10 @@ EOF;
 		}
 		
 		
-		$array_functions_assoc = e107::getNav()->adminLinks('assoc');
+	//	$array_functions_assoc = e107::getNav()->adminLinks('assoc');
 	
-		$this->iconlist = array_merge($array_functions_assoc, e107::getNav()->pluginLinks(E_16_PLUGMANAGER, "array"));
-		
+	//	$this->iconlist = array_merge($array_functions_assoc, e107::getNav()->pluginLinks(E_16_PLUGMANAGER, "array"));
+		$this->iconlist = e107::getNav()->adminLinks();
 		
 	}
 	
@@ -158,7 +158,7 @@ EOF;
 			
 		}
 		
-	
+       
 		
 	//	"<form method='post' action='".e_SELF."?".e_QUERY."'>";
 		
@@ -184,6 +184,9 @@ EOF;
 		        </span>';
 		
 		*/
+		
+	//	print_a($user_pref['core-infopanel-mye107']);
+        
 		$mainPanel .= "
 		
 		
@@ -597,6 +600,8 @@ EOF;
 		global  $user_pref;
 			
 		$text = "";
+        
+     
 	
 	
 		foreach ($this->iconlist as $key=>$icon)

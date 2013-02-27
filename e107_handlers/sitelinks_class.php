@@ -642,7 +642,11 @@ class e_navigation
 	// Previously $array_functions variable. 
 	function adminLinks($mode=false)
 	{
-		
+	
+        if($mode == 'plugin')
+        {
+             return $this->pluginLinks(E_16_PLUGMANAGER, "array") ;   
+        }	
 			if($mode=='sub')
 			{
 				
@@ -717,26 +721,58 @@ class e_navigation
 			38 => array(e_ADMIN.'comment.php', LAN_COMMENTMAN, LAN_COMMENTMAN, 'B', 5, E_16_COMMENT, E_32_COMMENT)
 		);	
 		
-		
-			
-		if($mode == 'assoc')
-		{
-			$newarray = asortbyindex($array_functions, 1);
-			$array_functions_assoc = $this->convert_core_icons($newarray);
-			return $array_functions_assoc;
-		}
-		
-		return $array_functions;	
+		if($mode == 'legacy')
+        {
+            return $array_functions; // Old BC format.      
+        }
+
+		$newarray = asortbyindex($array_functions, 1);
+    	$array_functions_assoc = $this->convert_core_icons($newarray);
+        
+       if($mode == 'core') // Core links only. 
+        {          
+            return $array_functions_assoc;          
+        }
+            
+        $merged = array_merge($array_functions_assoc, $this->pluginLinks(E_16_PLUGMANAGER, "array")); 
+        $sorted = multiarray_sort($merged,'title'); // this deleted the e-xxxx and p-xxxxx keys. 
+        return $this->restoreKeys($sorted); // we restore the keys with this. 
+        
 	}
 
 
-	function convert_core_icons($newarray)  // Put core button array in the same format as plugin button array.
+
+    private function restoreKeys($newarray)  // Put core button array in the same format as plugin button array.
+    {       
+        $array_functions_assoc = array();
+        
+        foreach($newarray as $key=>$val)
+        {
+           if(varset($val['key'])) // Plugin Array.  
+            {
+                $key = $val['key']; 
+             
+                $array_functions_assoc[$key] = $val;   
+            }
+        }
+    
+        return $array_functions_assoc;
+    }
+
+
+
+
+	private function convert_core_icons($newarray)  // Put core button array in the same format as plugin button array.
 	{
+	 
+	    $array_functions_assoc = array();
+        
 	    foreach($newarray as $key=>$val)
 		{
 			if(varset($val[0]))
 			{
 				$key = "e-".basename($val[0],".php");
+                $val['key'] = $key;
 				$val['icon'] = $val[5];
 				$val['icon_32'] = $val[6];
 				$val['title'] = $val[1];
@@ -746,6 +782,7 @@ class e_navigation
 				$val['perms'] = $val['3'];
 				$array_functions_assoc[$key] = $val;
 			}
+
 		}
 	
 	    return $array_functions_assoc;
@@ -836,6 +873,7 @@ class e_navigation
 						$plugin_icon = $eplug_icon_small ? "<img class='icon S16' src='".e_PLUGIN.$eplug_icon_small."' alt=''  />" : E_16_PLUGIN;
 						$plugin_icon_32 = $eplug_icon ? "<img class='icon S32' src='".e_PLUGIN.$eplug_icon."' alt=''  />" :  E_32_PLUGIN;
 						$plugin_array['p-'.$plugin_path] = array(
+						  'key'      => 'p-'.$plugin_path,
 						  'link'      => e_PLUGIN.$plugin_path."/".$eplug_conffile, 
 						  'title'     => $eplug_name, 'caption' => $eplug_caption, 
 						  'perms'     => "P".varset($plug_id[$plugin_path]), 

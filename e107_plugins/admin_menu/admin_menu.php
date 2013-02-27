@@ -25,10 +25,11 @@ if (ADMIN == TRUE)
 	
 	$nav = e107::getNav();
 	
-	$admin = $nav->adminLinks('assoc');
-	$plugins = $nav->pluginLinks('assoc');
+//	$admin = $nav->adminLinks('assoc');
+//	$plugins = $nav->pluginLinks('assoc');
 
-	$array_functions = array_merge($admin, $plugins);
+//	$array_functions = array_merge($admin, $plugins);
+    $array_functions = $nav->adminLinks();
 
 	// print_a($array_functions);
 
