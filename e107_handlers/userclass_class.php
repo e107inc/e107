@@ -23,7 +23,6 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-require_once(e_HANDLER.'arraystorage_class.php');
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_userclass.php');
 
@@ -123,10 +122,11 @@ class user_class
 		$this->class_tree = array();
 		$this->class_parents = array();
 
-		$array = new ArrayData;
+      
+        
 		if ($temp = $e107->ecache->retrieve_sys(UC_CACHE_TAG))
 		{
-			$this->class_tree = $array->ReadArray($temp);
+			$this->class_tree = e107::getArrayStorage()->read($temp);
 			unset($temp);
 		}
 		else
@@ -167,7 +167,7 @@ class user_class
 				}
 			}
 
-			$userCache = $array->WriteArray($this->class_tree, FALSE);
+			$userCache = e107::getArrayStorage()->write($this->class_tree, FALSE);
 			$e107->ecache->set_sys(UC_CACHE_TAG,$userCache);
 			unset($userCache);
 		}

@@ -26,8 +26,6 @@ require_once(e_HANDLER.'form_handler.php');
 $rs = new form;
 
 
-//e107_require_once(e_HANDLER.'arraystorage_class.php');
-//$eArrayStorage = new ArrayData();
 unset($text);
 
 include_lan(e_PLUGIN.'pdf/languages/English_admin_pdf.php');
