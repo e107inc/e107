@@ -2,20 +2,13 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/admin_chatbox.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 require_once("../../class2.php");
-$frm    = e107::getForm();
 
 if (!plugInstalled('chatbox_menu') || !getperms("P")) 
 {
@@ -27,8 +20,8 @@ include_lan( e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/admin_chatbox_menu.
 
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."userclass_class.php");
-require_once(e_HANDLER."message_handler.php");
 $mes = e107::getMessage();
+$frm    = e107::getForm();
 
 if (isset($_POST['updatesettings'])) 
 {
@@ -49,7 +42,6 @@ if (isset($_POST['updatesettings']))
 	}
 }
 
-; 
 
 if (isset($_POST['prune'])) 
 {
@@ -89,9 +81,12 @@ if (isset($_POST['recalculate']))
 
 $ns->tablerender($caption, $mes->render() . $text);
 
-$chatbox_posts = $pref['chatbox_posts'];
+if(!isset($pref['cb_mod']))
+{
+	$pref['cb_mod'] = e_UC_ADMIN;
+}
 
-$text = "<div>
+$text = "
 	<form method='post' action='".e_SELF."' id='cbform' >
     <table class='table adminform'>
     	<colgroup span='2'>
@@ -99,97 +94,42 @@ $text = "<div>
     		<col class='col-control' />
     	</colgroup>
 	<tr>
-	<td>".CHBLAN_11.":</td>
-	<td>
-	<select name='chatbox_posts' class='tbox'>";
-if ($chatbox_posts == 5) {
-	$text .= "<option selected='selected'>5</option>\n";
-} else {
-	$text .= "<option>5</option>\n";
-}
-if ($chatbox_posts == 10) {
-	$text .= "<option selected='selected'>10</option>\n";
-} else {
-	$text .= "<option>10</option>\n";
-}
-if ($chatbox_posts == 15) {
-	$text .= "<option selected='selected'>15</option>\n";
-} else {
-	$text .= "<option>15</option>\n";
-}
-if ($chatbox_posts == 20) {
-	$text .= "<option selected='selected'>20</option>\n";
-} else {
-	$text .= "<option>20</option>\n";
-}
-if ($chatbox_posts == 25) {
-	$text .= "<option selected='selected'>25</option>\n";
-} else {
-	$text .= "<option>25</option>\n";
-}
-
-if(!isset($pref['cb_mod']))
-{
-	$pref['cb_mod'] = e_UC_ADMIN;
-}
-
-$text .= "</select>
-<span class='field-help'>".CHBLAN_12."</span>
-	</td>
+		<td>".CHBLAN_11.":</td>
+		<td>".$frm->selectbox('chatbox_posts', array(5, 10, 15, 20, 25), $pref['chatbox_posts'])."<span class='field-help'>".CHBLAN_12."</span></td>
 	</tr>
-
-	<tr><td>".CHBLAN_32.": </td>
-	<td>". r_userclass("cb_mod", $pref['cb_mod'], 'off', "nobody,main,admin, classes")."
-	</td>
+	<tr>
+		<td>".CHBLAN_32.": </td>
+		<td>". r_userclass("cb_mod", $pref['cb_mod'], 'off', "nobody,main,admin, classes")."</td>
 	</tr>
-
-	<tr><td>".CHBLAN_36."</td>
-	<td>".
-	($pref['cb_layer'] == 0 ? "<input type='radio' name='cb_layer' value='0' checked='checked' />" : "<input type='radio' name='cb_layer' value='0' />")."&nbsp;&nbsp;". CHBLAN_37."<br />".
-	($pref['cb_layer'] == 1 ? "<input type='radio' name='cb_layer' value='1' checked='checked' />" : "<input type='radio' name='cb_layer' value='1' />")."&nbsp;&nbsp;".CHBLAN_29."&nbsp;--&nbsp;". CHBLAN_30.": <input class='tbox' type='text' name='cb_layer_height' size='8' value='".$pref['cb_layer_height']."' maxlength='3' /><br />".
-	($pref['cb_layer'] == 2 ? "<input type='radio' name='cb_layer' value='2' checked='checked' />" : "<input type='radio' name='cb_layer' value='2' />")."&nbsp;&nbsp;". CHBLAN_38."
-	</td>
+	<tr>
+		<td>".CHBLAN_36."</td>
+		<td>".$frm->radio_multi('cb_layer', array(0 => CHBLAN_37, 1 => CHBLAN_29, 2 => CHBLAN_38), $pref['cb_layer'], true, false) /* FIXME $frm->text('cb_layer', $pref['cb_layer_height'], 3)*/."</td>
 	</tr>
 	";
 
 	if($pref['smiley_activate'])
 	{
-		$text .= "<tr><td>".CHBLAN_31."?: </td>
-		<td>". ($pref['cb_emote'] ? "<input type='checkbox' name='cb_emote' value='1' checked='checked' />" : "<input type='checkbox' name='cb_emote' value='1' />")."
-		</td>
-		</tr>
-		";
+		$text .= "<tr>
+				  	<td>".CHBLAN_31."?: </td>
+					<td>".$frm->checkbox('cb_emote', 1, varset($pref['cb_emote'],0))."</td>
+				  </tr>";
 	}
 
-	$text .= "<tr>
-	<td>".LAN_PRUNE.":</td>
-	<td>
-	".CHBLAN_23." <select name='chatbox_prune' class='tbox'>
-	<option></option>
-	<option value='86400'>".CHBLAN_24."</option>
-	<option value='604800'>".CHBLAN_25."</option>
-	<option value='2592000'>".CHBLAN_26."</option>
-	<option value='1'>".CHBLAN_27."</option>
-	</select>
-	".$frm->admin_button('prune', LAN_PRUNE, 'other')."
-	<span class='field-help'>".CHBLAN_22."</span>
-	</td>
-	</tr>";
-
-
-	$text .= "<tr>
-	<td>".CHBLAN_34.":</td>
-	<td>
-	".$frm->admin_button('recalculate', CHBLAN_35, 'other')."
-	</td>
+	$text .= "
+	<tr>
+		<td>".LAN_PRUNE.":</td>
+		<td>".CHBLAN_23.$frm->selectbox('chatbox_prune', array(86400 => CHBLAN_24, 604800 => CHBLAN_25, 2592000 => CHBLAN_26, 1 => CHBLAN_27), '', '', true).$frm->admin_button('prune', LAN_PRUNE, 'other')."<span class='field-help'>".CHBLAN_22."</span></td>
 	</tr>
-	</table>";
+	<tr>
+		<td>".CHBLAN_34.":</td>
+		<td>".$frm->admin_button('recalculate', CHBLAN_35, 'other')."</td>
+	</tr>
+	</table>
 
-	$text .= "<div class='buttons-bar center'>
-	".$frm->admin_button('updatesettings', LAN_UPDATE, 'update')."
+	<div class='buttons-bar center'>
+		".$frm->admin_button('updatesettings', LAN_UPDATE, 'update')."
 	</div>
-	</form>
-	</div>";
+	</form>";
 
 $ns->tablerender(CHBLAN_20, $text);
 
