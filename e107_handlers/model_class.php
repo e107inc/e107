@@ -523,7 +523,8 @@ class e_model extends e_object
 	protected $_db_table;
     
     /**
-     * Current url Profile
+     * Current url Profile data
+	 * Example: array('route'=>'page/view/index', 'vars' => array('id' => 'page_id', 'sef' => 'page_sef'), 'name' => 'page_title', 'description' => '');
      * @var string
      */
     protected $_url;
@@ -599,7 +600,6 @@ class e_model extends e_object
         return $this;
     }
     
-    
     /**
      * Get url profile
      * @return array
@@ -607,6 +607,52 @@ class e_model extends e_object
     public function getUrl()
     {
         return $this->_url;
+    }
+    
+    /**
+     * Generic URL assembling method
+	 * @param array $options [optional] see eRouter::assemble() for $options structure
+	 * @param boolean $extended [optional] if true, method will return an array containing url, title and description of the url
+     * @return mixed URL string or extended array data
+     */
+    public function url($options = array(), $extended = false)
+    {
+        $urldata = $this->getUrl();
+		if(empty($urldata) || !vartrue($urldata['route'])) return ($extended ? array() : null);
+		
+		$eurl = e107::getUrl();
+		
+		if(empty($options)) $options = array();
+		elseif(!is_array($options)) parse_str($options, $options);
+		
+		$vars = $this->toArray();
+		if(!vartrue($options['allow']))
+		{
+			if(vartrue($urldata['vars']) && is_array($urldata['vars']))
+			{
+				$vars = array();
+				foreach ($urldata['vars'] as $var => $field) 
+				{
+					if($field === true) $field = $var;
+					$vars[$var] = $this->get($field);
+				}
+			}
+		}
+		
+		$method = isset($options['sc']) ? 'sc' : 'create';
+		
+		$url = e107::getUrl()->$method($urldata['route'], $vars, $options);
+		
+		if(!$extended)
+		{
+			return $url;
+		}
+		
+		return array(
+			'url' => $url, 
+			'name' => vartrue($urldata['name']) ? $this->get($urldata['name']) : '',
+			'description' => vartrue($urldata['description']) ? $this->get($urldata['description']) : '',
+		);
     }
     
     /**
@@ -3446,69 +3492,21 @@ class e_admin_tree_model extends e_front_tree_model
 	}
     
     
-     /**
-     * Batch Url Creation Table Rows. 
-     */
-    public function url($ids)
+	/**
+	 * Get urls/url data for given nodes
+	 */
+    public function url($ids, $options = array(), $extended = false)
     {
-        $tp         = e107::getParser();
-        $ids        = array_map(array($tp, 'toDB'), $ids);
-        $idstr      = implode(', ', $ids);
-        $sql        = e107::getDb();
-        $allData    = $this->toArray();
-        $urlData    = $this->getUrl();
-
-        $this->addMessageDebug('Using Url Profile:'.$urlData['profile']);   
-        
-        foreach($ids as $id)
-        {          
-            $data = vartrue($allData[$id]);
-            $name = $urlData['name'];
-            $desc = $urlData['description'];
-            
-            $link = vartrue($urlData['profile']) ? e107::getUrl()->create($urlData['profile'], $data) : str_replace("[id]", $id, $urlData['link']);  
-            
-            $link = str_replace(e_HTTP,"",$link); // work-around fix. 
-            
-            $linkArray = array(
-                'link_name'         => $tp->toDB($data[$name]),
-                'link_url'          => $link,
-                'link_description'  => $tp->toDB($desc),
-                'link_button'       => '',
-                'link_category'     => 255, // Using an unassigned template rather than inactive link-class, since other inactive links may already exist. 
-                'link_order'        => 0,
-                'link_parent'       => 0,
-                'link_open'         => '',
-                'link_class'        => 0
-            );
-            
-            
-            $res = $sql->insert('links',$linkArray);
-            
-            if($res !== FALSE)
-            {
-                 $this->addMessageSuccess('Created Sitelink: <b>'.$data[$name]."</b>");    
-            }
-            else 
-            {
-                if($sql->getLastErrorNumber())
-                {
-                    $this->addMessageError('SQL Link Creation Error', $session_messages); //TODO - Lan
-                    $this->addMessageDebug('SQL Link Creation Error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
-                }  
-                $this->_db_errno = $sql->getLastErrorNumber();
-                $this->_db_errmsg = $sql->getLastErrorText();     
-            }
-                         
-        }
-        
-        if($res !== FALSE)
-        {
-            $this->addMessageSuccess("<br />New sitelinks are currently unassigned. You should now modify these links to your liking.<br /><br /><a class='btn btn-small btn-primary' href='".e_ADMIN."links.php?searchquery=&filter_options=link_category__255'>Modify Links</a>");        
-        }
-        
-        return true; 
- 
+    	$ret = array();
+    	foreach ($ids as $id) 
+    	{
+    		if(!$this->hasNode($id)) continue;
+			
+			$model = $this->getNode($id);
+			if($this->getUrl()) $model->setUrl($this->getUrl()); // copy url config data if available
+			$ret[$id] = $model->url($options, $extended);
+		}
+		return $ret;
     }
 
 }

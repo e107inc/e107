@@ -2188,7 +2188,7 @@ class e_form
 				{
 					$value = $tp->htmlwrap($value, (int)$parms['wrap'], varset($parms['wrapChar'], ' '));
 				}
-				if(vartrue($parms['link']) && $id && is_numeric($id)) 
+				if(vartrue($parms['link']) && $id/* && is_numeric($id)*/) 
 				{
 					$link       = str_replace('[id]',$id,$parms['link']);
 					$link       = $tp->replaceConstants($link); // SEF URL is not important since we're in admin.
@@ -2197,19 +2197,21 @@ class e_form
                     $ext        = vartrue($parms['target']) =='blank' ? " rel='external' " : ""; // new window
                     $modal      = vartrue($parms['target']) =='modal' ? " data-toggle='modal' data-cache='false' data-target='#uiModal' " : "";
             
-                     $data = $this->getController()->getListModel()->toArray();
-                    if($parms['link'] == 'sef') //XXX @Miro - Thoughts?
-                    {  
-                         $urlData = $this->getController()->getUrl();
-                         $link = e107::getUrl()->create($urlData['profile'], $data);    
+                    if($parms['link'] == 'sef' && $this->getController()->getListModel()) 
+                    {
+                    	$model = $this->getController()->getListModel();
+						// copy url config
+						$model->setUrl($this->getController()->getUrl());
+						// assemble the url
+                    	$link = $model->url();
                     }
                     elseif(vartrue($data[$parms['link']])) // support for a field-name as the link. eg. link_url. 
                     {
                         $link = $tp->replaceConstants(vartrue($data[$parms['link']]));        
                     }
                     
-                    
-             		$value = "<a class='e-tip{$dialog}' {$ext} href='".$link."' {$modal} title='Quick View'>".$value."</a>";
+					// in case something goes wrong...
+                    if($link) $value = "<a class='e-tip{$dialog}' {$ext} href='".$link."' {$modal} title='Quick View'>".$value."</a>";
 				}
 				
 				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up

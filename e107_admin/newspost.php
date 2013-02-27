@@ -353,7 +353,13 @@ class news_admin_ui extends e_admin_ui
 	protected $batchCopy 	= true;
     protected $batchLink    = true;
 	protected $listOrder	= "news_id desc";
-    protected $url          = array('profile'=>'news/view/item', 'name' => 'news_title', 'description' => 'news_summary', 'link'=>'{e_BASE}news.php?extend.[id]'); // 'link' only needed if profile not provided. 
+	// true for 'vars' value means use same var
+    protected $url          = array(
+    	'route'=>'news/view/item', 
+    	'name' => 'news_title', 
+    	'description' => 'news_summary', 
+    	'vars'=> array('news_id' => true, 'news_sef' => true, 'category_id' => 'news_category', 'category_sef' => true) // FIXME category_sef missing, we have to retrieve category data on the list view
+	); // 'link' only needed if profile not provided. 
     
 		
 	protected $listQry = "SELECT n.*,u.user_id,u.user_name FROM #news AS n LEFT JOIN #user AS u ON n.news_author = u.user_id "; // without any Order or Limit.

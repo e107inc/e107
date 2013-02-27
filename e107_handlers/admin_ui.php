@@ -3933,25 +3933,100 @@ class e_admin_ui extends e_admin_controller_ui
 	protected function handleListCopyBatch($selected)
 	{
 		// Batch Copy 
-		$set_messages = true;
 		$this->getTreeModel()->copy($selected);
-		if($set_messages) $this->getTreeModel()->setMessages();
+		// move messages to default stack 
+		$this->getTreeModel()->setMessages();
+		// send messages to session
+		e107::getMessage()->moveToSession();
+		// redirect
 		$this->redirect();	
 	}
 
-    /** TODO
-     * Batch copy trigger
+    /** 
+     * Batch URL trigger
      * @param array $selected
      * @return void
      */
     protected function handleListUrlBatch($selected)
     {
         // Batch Copy 
-        $set_messages = true;
-        $this->getTreeModel()->url($selected);
-        if($set_messages) $this->getTreeModel()->setMessages();
-        $this->redirect();  
+        if($this->_add2nav($selected))
+		{
+			//e107::getMessage()->moveToSession();
+			//$this->redirect();
+		}
     }
+	
+	
+	protected function _add2nav($selected)
+	{
+		if(empty($selected)) return false;// TODO warning message
+		
+		if(!is_array($selected)) $selected  = array($selected);
+
+        $sql        = e107::getDb();
+		$urlData	= $this->getUrl();
+		$allData 	= $this->getTreeModel()->url($selected, array('sc' => true), true);
+
+        e107::getMessage()->addDebug('Using Url Route:'.$urlData['route']);   
+        
+		$scount = 0;
+        foreach($allData as $id => $data)
+        {
+            $name = $data['name'];
+            $desc = $data['description'];
+            
+            $link = $data['url'];
+            
+            $link = str_replace('{e_BASE}', "", $link); // TODO temporary here, discuss
+            
+            // _FIELD_TYPES auto created inside mysql handler now
+            $linkArray = array(
+                'link_name'         => $name, 
+                'link_url'          => $link,
+                'link_description'  => e107::getParser()->toDB($desc), // retrieved field type is string, we might need todb here
+                'link_button'       => '',
+                'link_category'     => 255, // Using an unassigned template rather than inactive link-class, since other inactive links may already exist. 
+                'link_order'        => 0,
+                'link_parent'       => 0,
+                'link_open'         => '',
+                'link_class'        => 0,
+                'link_sefurl'		=> e107::getParser()->toDB($urlData['route'].'?'.$id),
+            );
+            
+            $res = $sql->insert('links', $linkArray);
+            
+            // FIXME lans
+            if($res !== FALSE)
+            {
+                 e107::getMessage()->addSuccess('Created Sitelink: <b>'.($name ? $name : 'n/a')."</b>");   
+				 $scount++; 
+            }
+            else 
+            {
+                if($sql->getLastErrorNumber())
+                {
+                    e107::getMessage()->addError('SQL Link Creation Error'); //TODO - Lan
+                    e107::getMessage()->addDebug('SQL Link Creation Error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
+                }  
+				else
+				{
+					e107::getMessage()->addError('Unknown error: <b>'.$name."</b> not added");  
+				}
+            }
+                         
+        }
+        
+        if($scount > 0)
+        {
+            e107::getMessage()->addSuccess("<br /><strong>{$scount}</strong> new sitelinks were added but are currently unassigned. You should now modify these links to your liking.<br /><br /><a class='btn btn-small btn-primary' href='".e_ADMIN_ABS."links.php?searchquery=&filter_options=link_category__255'>Modify Links</a>");
+			return $scount;        
+        }
+        
+        return false; 
+ 
+	}
+	
 	/**
 	 * Batch boolean trigger
 	 * @param array $selected
