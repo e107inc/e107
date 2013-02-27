@@ -12,7 +12,6 @@
  * $Id: admin.php 12212 2011-05-11 22:25:02Z e107coders $
 */
 
-//require_once(e_HANDLER.'admin_handler.php'); - autoloaded - see class2.php __autoload()
 if (!defined('e107_INIT')){ exit; } 
 
 class plugin_download_admin extends e_admin_dispatcher

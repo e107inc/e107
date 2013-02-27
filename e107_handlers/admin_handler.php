@@ -16,58 +16,6 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-// Better Array-sort by key function by acecream (22-Apr-2003 11:02) http://php.net/manual/en/function.asort.php
-if (!function_exists('asortbyindex')) 
-{
-	function asortbyindex($array, $key)
-	{
-	   foreach ($array as $i => $k)
-	   {
-	        $sort_values[$i] = $array[$i][$key];
-	   }
-	   asort ($sort_values);
-	   reset ($sort_values);
-	   while (list ($arr_key, $arr_val) = each ($sort_values))
-	   {
-	          $sorted_arr[] = $array[$arr_key];
-	   }
-	   return $sorted_arr;
-	}
-}
-
-if (!function_exists('multiarray_sort')) {
-    function multiarray_sort(&$array, $key, $order = 'asc', $natsort = true, $case = true)
-    {
-        if(!is_array($array)) return $array;
-
-        $order = strtolower($order);
-        foreach ($array as $i => $arr)
-        {
-           $sort_values[$i] = $arr[$key];
-        }
-
-        if(!$natsort) 
-        {
-        	($order=='asc')? asort($sort_values) : arsort($sort_values);
-        }
-		elseif(isset($sort_values))
-        {
-             $case ? natsort($sort_values) : natcasesort($sort_values);
-             if($order != 'asc') $sort_values = array_reverse($sort_values, true);
-        }
-		
-		if(!isset($sort_values))
-		{
-			return;				
-		}
-			
-        reset ($sort_values);
-
-        while (list ($arr_key, $arr_val) = each ($sort_values))
-        {
-             $sorted_arr[] = $array[$arr_key];
-        }
-        return $sorted_arr;
-    }
-}
+// DEBUG INFO ONLY - do NOT translate. 
+e107::getMessage()->addDebug("admin_handler.php is deprecated. You can simply remove it from your script and continue to use its functions which can now be found inside core_functions.php");
 

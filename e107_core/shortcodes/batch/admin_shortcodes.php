@@ -1082,8 +1082,7 @@ class admin_shortcodes
 			global $sql, $pref, $tp;
 			parse_str($parm);
 			require(e_ADMIN.'ad_links.php');
-			require_once(e_HANDLER.'admin_handler.php');
-			
+		
 			
 			function adnav_cat($cat_title, $cat_link, $cat_img, $cat_id=FALSE)
 			{
@@ -1286,7 +1285,6 @@ class admin_shortcodes
 		global $$tmpl;
 
 		require_once(e_ADMIN.'ad_links.php'); //FIXME loaded in boot.php but $admin_cat is not available here. 
-		require_once(e_HANDLER.'admin_handler.php');
 		
 		if($parm == 'home' || $parm == 'logout' || $parm == 'language' || $parm == 'pm')
 		{

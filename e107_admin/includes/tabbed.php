@@ -28,7 +28,6 @@ class tabbed
         $plugs = e107::getNav()->pluginLinks(E_16_PLUGMANAGER, "array");
         
         $this->links = array_merge($core,$plugs);
-        require_once(e_HANDLER."admin_handler.php");
         $this->links = multiarray_sort($this->links,'title'); //XXX Move this function in e107_class? 
         $this->render();         
     }  

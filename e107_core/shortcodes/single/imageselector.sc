@@ -59,7 +59,6 @@ if($scaction == 'select' || $scaction == 'all')
 	$text .= "<select{$multi}{$tabindex}{$class} name='{$name}' id='{$name_id}' onchange=\"replaceSC('imagepreview={$name}|{$width}|{$height}',this.form,'{$name_id}_prev'); \">
 	<option value=''>".$label."</option>\n";
 
-	require_once(e_HANDLER.'admin_handler.php');
 	foreach($imagelist as $imagedirlabel => $icons)
 	{
 

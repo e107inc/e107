@@ -721,7 +721,6 @@ class e_navigation
 			
 		if($mode == 'assoc')
 		{
-			require_once(e_HANDLER.'admin_handler.php');
 			$newarray = asortbyindex($array_functions, 1);
 			$array_functions_assoc = $this->convert_core_icons($newarray);
 			return $array_functions_assoc;

@@ -42,7 +42,6 @@ if(strpos($pref['adminstyle'], 'infopanel') === 0)
 
 require_once(e_ADMIN.'boot.php');
 require_once(e_ADMIN.'auth.php');
-require_once(e_HANDLER.'admin_handler.php');
 require_once(e_HANDLER.'upload_handler.php');
 // require_once (e_HANDLER."message_handler.php");
 $mes = e107::getMessage();
