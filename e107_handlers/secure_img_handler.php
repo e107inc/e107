@@ -54,7 +54,8 @@ class secure_image
 		$this->THIS_DIR 			= $imgp;
 		$this->BASE_DIR 			= realpath($imgp.'..'.DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
 		$this->HANDLERS_DIRECTORY 	= $HANDLERS_DIRECTORY;
-		$this->IMAGES_DIRECTORY 	= str_replace('/', DIRECTORY_SEPARATOR, $IMAGES_DIRECTORY);
+	//	$this->IMAGES_DIRECTORY 	= str_replace('/', DIRECTORY_SEPARATOR, $IMAGES_DIRECTORY);
+        $this->IMAGES_DIRECTORY     =  $IMAGES_DIRECTORY;
 		$this->MYSQL_INFO = array('db' => $mySQLdefaultdb, 'server' => $mySQLserver, 'user' => $mySQLuser, 'password' => $mySQLpassword, 'prefix' => $mySQLprefix);
 	}
 
@@ -136,7 +137,7 @@ class secure_image
 		}
 
 		$code = $this->create_code();
-		return "<img src='".e_HTTP.$this->HANDLERS_DIRECTORY."secure_img_render.php?{$code}' class='icon secure-image' alt='' />";
+		return "<img src='".e_HTTP.$this->IMAGES_DIRECTORY."secimg.php?{$code}' class='icon secure-image' alt='Missing Code' />";
 	}
 	
 	
