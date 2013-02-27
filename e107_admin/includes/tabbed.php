@@ -24,11 +24,13 @@ class tabbed
     
     function __construct()
     {
-        $core = e107::getNav()->adminLinks('assoc');
-        $plugs = e107::getNav()->pluginLinks(E_16_PLUGMANAGER, "array");
+     //   $core = e107::getNav()->adminLinks('assoc');
+     //   $plugs = e107::getNav()->pluginLinks(E_16_PLUGMANAGER, "array");
         
-        $this->links = array_merge($core,$plugs);
-        $this->links = multiarray_sort($this->links,'title'); //XXX Move this function in e107_class? 
+     //   $this->links = array_merge($core,$plugs);
+    //    $this->links = multiarray_sort($this->links,'title'); //XXX Move this function in e107_class? 
+        
+        $this->links = e107::getNav()->adminLinks();
         $this->render();         
     }  
     

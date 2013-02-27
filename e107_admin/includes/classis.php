@@ -12,7 +12,6 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-require_once(e_HANDLER."message_handler.php");
 $mes = e107::getMessage(); 
 $buts = "";
 

@@ -1273,7 +1273,7 @@ class admin_shortcodes
 		$pref = e107::getPref();
 
 		$admin_cat 				= e107::getNav()->adminCats();		
-		$array_functions 		= e107::getNav()->adminLinks();
+		$array_functions 		= e107::getNav()->adminLinks('legacy');
 		$array_sub_functions	= e107::getNav()->adminLinks('sub');
 
 		$tp 	= e107::getParser();

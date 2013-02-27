@@ -635,7 +635,7 @@ $array_functions = array(
 );
 */
 
-$array_functions = e107::getNav()->adminLinks(); // replacement see e107_handlers/sitelinks.php
+$array_functions = e107::getNav()->adminLinks('legacy'); // replacement see e107_handlers/sitelinks.php
 
 
 // SecretR - BC only, obsolete meta title auto detection
