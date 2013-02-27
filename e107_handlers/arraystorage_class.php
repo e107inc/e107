@@ -22,6 +22,13 @@ if (!defined('e107_INIT')) { exit; }
 */
 class ArrayData {
 
+
+    function __construct()
+    {
+        // DO Not translate - debug info only. 
+        e107::getMessage()->addDebug("Deprecated ArrayStorage Class in use. Please remove references to arraystorage_class.php and use e107::getArrayStorage(); instead.");   
+      
+    }
 	/**
 	* Return a string containg exported array data.
 	*
