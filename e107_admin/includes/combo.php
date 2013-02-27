@@ -12,11 +12,12 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-require_once(e_HANDLER."message_handler.php");
 $mes = e107::getMessage();
+$newarray = e107::getNav()->adminLinks('core');
+
 
 $text = "<div style='text-align:center'>
-	<table style='".ADMIN_WIDTH."'>";
+	<table class='table'>";
 $buts = "";
 while (list($key, $funcinfo) = each($newarray)) {
 	$buts .= e107::getNav()->renderAdminButton($funcinfo[0], $funcinfo[1], $funcinfo[2], $funcinfo[3], $funcinfo[5], 'default');
@@ -33,7 +34,7 @@ if($buts != ""){
 }
 
 $text = "<div style='text-align:center'>
-	<table style='".ADMIN_WIDTH."'>";
+	<table class='table'>";
 
 
 $text .= e107::getNav()->pluginLinks(E_32_PLUGMANAGER, "classis");

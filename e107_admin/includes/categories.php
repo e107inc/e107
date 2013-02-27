@@ -15,9 +15,12 @@ if (!defined('e107_INIT')) { exit; }
 $mes = e107::getMessage();
 
 $text = "<div style='text-align:center'>
-	<table class='fborder' style='".ADMIN_WIDTH."'>";
+	<table class='table'>";
 	
 $admin_cat = e107::getNav()->adminCats();
+
+ $newarray = e107::getNav()->adminLinks('core');
+$plugin_array = e107::getNav()->adminLinks('plugin');
 
 foreach ($admin_cat['id'] as $cat_key => $cat_id)
 {
@@ -44,49 +47,12 @@ foreach ($admin_cat['id'] as $cat_key => $cat_id)
 	{
 		$text_rend = e107::getNav()->renderAdminButton(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "Z", E_16_PLUGMANAGER, 'default');
 
-		$xml = e107::getXml();
-		$xml->filter = array('@attributes' => FALSE,'administration' => FALSE);	// .. and they're all going to need the same filter
-
 		if ($text_rend)
 		{
 			$text_check = TRUE;
 		}
 		$text_cat .= $text_rend;
-		if ($sql->db_Select("plugin", "*", "plugin_installflag=1"))
-		{
-			while ($row = $sql->db_Fetch())
-			{
-				extract($row);		//  plugin_id int(10) unsigned NOT NULL auto_increment,
-									//	plugin_name varchar(100) NOT NULL default '',
-									//	plugin_version varchar(10) NOT NULL default '',
-									//	plugin_path varchar(100) NOT NULL default '',
-									//	plugin_installflag tinyint(1) unsigned NOT NULL default '0',
-									//	plugin_addons text NOT NULL,
-
-				if (is_readable(e_PLUGIN.$plugin_path."/plugin.xml"))
-				{
-					$readFile = $xml->loadXMLfile(e_PLUGIN.$plugin_path.'/plugin.xml', true, true);
-					$eplug_name = $tp->toHTML($readFile['name'],FALSE,"defs, emotes_off");
-					$eplug_conffile = $readFile['administration']['configFile'];
-					$eplug_icon_small 	= $plugin_path.'/'.$readFile['administration']['iconSmall'];
-					$eplug_icon 		= $plugin_path.'/'.$readFile['administration']['icon'];
-					$eplug_caption = $readFile['administration']['caption'];
-				}
-				elseif (is_readable(e_PLUGIN.$plugin_path."/plugin.php"))
-				{
-					include(e_PLUGIN.$plugin_path."/plugin.php");
-				}
-				if ($eplug_conffile)
-				{
-					$eplug_name = $tp->toHTML($eplug_name,FALSE,"defs, emotes_off");
-					$plugin_icon = $eplug_icon_small ? "<img src='".e_PLUGIN.$eplug_icon_small."' alt='".$eplug_caption."' class='icon S16' />" : E_16_PLUGIN;
-					$plugin_array[ucfirst($eplug_name)] = array('link' => e_PLUGIN.$plugin_path."/".$eplug_conffile, 'title' => $eplug_name, 'caption' => $eplug_caption, 'perms' => "P".$plugin_id, 'icon' => $plugin_icon);
-					$text_check = TRUE;
-				}
-				unset($eplug_conffile, $eplug_name, $eplug_caption, $eplug_icon_small);
-			}
-		}
-		ksort($plugin_array, SORT_STRING);
+        
 		foreach ($plugin_array as $plug_key => $plug_value)
 		{
 			$text_cat .= e107::getNav()->renderAdminButton($plug_value['link'], $plug_value['title'], $plug_value['caption'], $plug_value['perms'], $plug_value['icon'], 'default');
