@@ -60,6 +60,11 @@ class eMessage
 	protected $_session_handler = null;
 	
 	/**
+	 * @var array
+	 */
+	protected $_unique = array();
+	
+	/**
 	 * Singleton instance
 	 * 
 	 * @var eMessage
@@ -108,7 +113,7 @@ class eMessage
 	/**
 	 * Set message session id
 	 * @param string $name 
-	 * @return object $this
+	 * @return eMessage
 	 */
 	public function setSessionId($name = '')
 	{
@@ -128,7 +133,7 @@ class eMessage
 	
 	/**
 	 * Get session handler
-	 * @return unknown_type
+	 * @return eMessage
 	 */
 	public function getSessionHandler()
 	{
@@ -140,6 +145,22 @@ class eMessage
 		}
 		return $this->_session_handler;
 	}
+	
+	
+	/**
+	 * Set unique message stacks
+	 * @param string $mstack message stack which should have only unique message values
+	 * @return eMessage
+	 */
+	public function setUnique($mstack)
+	{
+		if(!in_array($mstack, $this->_unique))
+		{
+			$this->_unique[] = $mstack;
+		}
+		return $this;
+	}
+
 
 	/**
 	 * Add message to a type stack and default message stack
@@ -166,6 +187,8 @@ class eMessage
 		
 		if(!$session)
 		{
+			// unique messages only
+			if(in_array($mstack, $this->_unique) && in_array($msg, $this->_sysmsg[$type][$mstack])) return $this;
 			if($this->isType($type)) $this->_sysmsg[$type][$mstack][] = $msg;
 			return $this;
 		}
@@ -287,6 +310,9 @@ class eMessage
 
 		if($this->isType($type)) 
 		{
+			// unique messages only
+			if(in_array($mstack, $this->_unique) && in_array($msg, $SESSION[$type][$mstack])) return $this;
+			
 			$SESSION[$type][$mstack][] = $message;
 			$this->getSessionHandler()->set($this->_session_id, $SESSION);
 		}
@@ -477,7 +503,9 @@ class eMessage
 		}
 		elseif (is_array($message))
 		{
-			$message = array_unique($message); // quick fix for duplicates. 
+			// XXX quick fix disabled because of various troubles - fix attempt made inside pref handler (the source of the problem)
+			// New feature added - setUnique($mstack) -> array_unique only for given message stacks
+			//$message = array_unique($message); // quick fix for duplicates. 
 			$message = "<div class='s-message-item'>".implode("</div>\n<div class='s-message-item'>", $message)."</div>";
 		}
 		
@@ -678,6 +706,14 @@ class eMessage
 				if(!isset($this->_sysmsg[$_type][$to_stack]))
 				{
 					$this->_sysmsg[$_type][$to_stack] = array();
+				}
+				if(in_array($from_stack, $this->_unique))
+				{
+					// check the destination stack messages, remove duplicates
+					foreach ($this->_sysmsg[$_type][$from_stack] as $i => $_m) 
+					{
+						if(in_array($_m, $this->_sysmsg[$_type][$to_stack])) unset($this->_sysmsg[$_type][$from_stack][$i]);
+					}
 				}
 				$this->_sysmsg[$_type][$to_stack] = array_merge($this->_sysmsg[$_type][$to_stack], $this->_sysmsg[$_type][$from_stack]);
 				unset($this->_sysmsg[$_type][$from_stack]);
