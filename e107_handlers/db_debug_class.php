@@ -33,6 +33,13 @@ class e107_db_debug {
 	var $scbcount;
 	var $deprecated_funcs = array();
 	var $aLog = array();	// Generalized debug log (only seen during debug)
+	
+	function __construct()
+    {
+       
+        
+        
+    }
 
 	function e107_db_debug() {
 		global $eTimingStart;
@@ -64,7 +71,11 @@ class e107_db_debug {
 		$this->ShowIf('Shortcodes / BBCode',$this->Show_SC_BB());
 		$this->ShowIf('Paths', $this->Show_PATH());
 		$this->ShowIf('Deprecated Function Usage', $this->Show_DEPRECATED());
-		$this->ShowIf('Included Files', $this->Show_Includes());
+        if(E107_DBG_INCLUDES)
+        {
+            $this->aIncList = get_included_files(); 
+        }   
+		$this->ShowIf('Included Files: '.count($this->aIncList), $this->Show_Includes());
 	}
 	
 	function ShowIf($title,$str)
@@ -635,10 +646,11 @@ class e107_db_debug {
 	{
 		if (!E107_DBG_INCLUDES) return FALSE;
 
-		$aIncList = get_included_files();
+		
+        
 		$text = "<table class='fborder table table-striped'>\n";
 		$text .= "<tr><td class='forumheader3'>".
-							implode("&nbsp;</td></tr>\n<tr><td class='forumheader3'>", $aIncList).
+							implode("&nbsp;</td></tr>\n<tr><td class='forumheader3'>", $this->aIncList).
 							"&nbsp;</td></tr>\n";
 		$text .= "</table>\n";
 		return $text;
