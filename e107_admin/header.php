@@ -41,6 +41,7 @@ if(e_PAGE != 'menus.php') // Quick fix for Menu Manager inactive drop-down probl
 	e107::css('core', 	'colorbox/colorbox.css', 'jquery');
 }
 
+e107::js('core',    'bootstrap/js/bootstrap-modal.js', 'jquery', 2);  // Special Version see: https://github.com/twitter/bootstrap/pull/4224
  
 e107::css('core', 	'bootstrap-editable/css/bootstrap-editable.css', 'jquery');
 e107::js('core', 	'bootstrap-editable/js/bootstrap-editable.min.js', 'jquery', 2);
@@ -394,6 +395,28 @@ e107::getJs()->renderJs('header_inline', 5);
 
 echo "</head>
 <body".$body_onload.">\n";
+
+echo getModal();
+
+  function getModal($caption = '', $type='')
+    {
+        return '
+         <div id="uiModal" class="modal hide fade" tabindex="-1" role="dialog"  aria-hidden="true">
+            <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+             &nbsp;
+             </div>
+             <div class="modal-body">
+             <p>Loading…</p>
+             </div>
+             <div class="modal-footer">
+                <a href="#" data-dismiss="modal" class="btn btn-primary">Close</a>
+            </div>
+        </div>';        
+            
+    }
+
+
 
 // Header included notification, from this point header includes are not possible
 define('HEADER_INIT', TRUE);
