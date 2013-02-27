@@ -4857,24 +4857,7 @@ class e_admin_form_ui extends e_form
 		return $this->renderCreateForm($forms, $models, e_AJAX_REQUEST);
 	}
 
-	// Inline Modal Code Markup 
-	public function getModal($caption = '', $type='')
-	{
-		return '
-		 <div id="uiModal" class="modal hide fade" tabindex="-1" role="dialog"  aria-hidden="true">
-			<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-			 &nbsp;
-			 </div>
-			 <div class="modal-body">
-			 <p>Loading…</p>
-			 </div>
-			 <div class="modal-footer">
-				<a href="#" data-dismiss="modal" class="btn btn-primary">Close</a>
-			</div>
-		</div>';		
-			
-	}
+
 
 	/**
 	 * Create list view
@@ -4909,7 +4892,7 @@ class e_admin_form_ui extends e_form
 			'form_post' => '', // markup to be added after closing form element
 			'fields' => $controller->getFields(), // see e_admin_ui::$fields
 			'fieldpref' => $controller->getFieldPref(), // see e_admin_ui::$fieldpref
-			'table_pre' => $this->getModal(), //'' , // markup to be added before opening table element
+			'table_pre' => '', // markup to be added before opening table element
 			'table_post' => !$tree[$id]->isEmpty() ? $this->renderBatch($controller->getBatchDelete(),$controller->getBatchCopy(),$controller->getBatchLink()) : '',
 			'fieldset_pre' => '', // markup to be added before opening fieldset element
 			'fieldset_post' => '', // markup to be added after closing fieldset element
