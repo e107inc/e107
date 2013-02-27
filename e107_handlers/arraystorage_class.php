@@ -6,18 +6,12 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/arraystorage_class.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 if (!defined('e107_INIT')) { exit; }
 
 /**
-* Allows Storage of arrays without use of serialize functions
+* DEPRECATED: Allows Storage of arrays without use of serialize functions
 *
 */
 class ArrayData {
@@ -26,8 +20,16 @@ class ArrayData {
     function __construct()
     {
         // DO Not translate - debug info only. 
-        e107::getMessage()->addDebug("Deprecated ArrayStorage Class in use. Please remove references to arraystorage_class.php and use e107::getArrayStorage(); instead.");   
-      
+   
+       if(E107_DEBUG_LEVEL > 0)
+       { 
+           $dep = debug_backtrace();
+           foreach($dep as $d)
+           {
+             e107::getMessage()->addDebug("Deprecated ArrayStorage Class called by ".str_replace(e_ROOT,"",$d['file'])." on line ".$d['line']);
+           }
+           e107::getMessage()->addDebug("Please remove references to <b>arraystorage_class.php</b> and use e107::getArrayStorage(); instead."); 
+       }
     }
 	/**
 	* Return a string containg exported array data.

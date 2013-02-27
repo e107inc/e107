@@ -2673,13 +2673,14 @@ class e107
 		// Absolute file-path of directory containing class2.php
 		//	define("e_ROOT", realpath(dirname(__FILE__)."/../")."/");
 
-		// TODO - We need new way to do this, this file could be located under the web root!
-		$e_ROOT = realpath(dirname(__FILE__)."/../"); // Works in Windows, fails on Linux.
-		if ((substr($e_ROOT,-1) != '/') && (substr($e_ROOT,-1) != '\\'))
+	  
+		$e_ROOT = realpath(dirname(__FILE__)."/../"); 
+		if ((substr($e_ROOT,-1) != '/') && (substr($e_ROOT,-1) != '\\') ) 
 		{
-			$e_ROOT .= '/';
+			$e_ROOT .= (strpos($e_ROOT,':\\')!==false) ? '\\' : '/';  // Should be functioning correctly on both windows and Linux now. 
 		}
-		define('e_ROOT', $e_ROOT);			// Specified format gives trailing slash already (at least on Windows)
+
+		define('e_ROOT',$e_ROOT);	
 
 		$this->relative_base_path = (!self::isCli()) ? $path : e_ROOT;
 		$this->http_path = "http://{$_SERVER['HTTP_HOST']}{$this->server_path}";

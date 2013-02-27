@@ -89,8 +89,8 @@ define('e_CORE', $siteRoot.'core/');				// @TODO: Allow for override
 define('e107_INIT', TRUE);
 
 
-require_once('../../'.$HANDLERS_DIRECTORY.'arraystorage_class.php');
-$eArrayStorage = new ArrayData();
+require_once('../../'.$HANDLERS_DIRECTORY.'core_functions.php');
+$eArrayStorage = new e_array();
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
