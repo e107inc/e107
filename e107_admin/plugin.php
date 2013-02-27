@@ -2421,7 +2421,7 @@ exit;
 			
 			echo $mes->render();
 			
-			$ns->tablerender(LADLAN_98.SEP."Plugin Builder".SEP.LAN_CREATED.": plugin.xml", "<pre style='font-size:80%'>".$xmlText."</pre>");	
+			$ns->tablerender(ADLAN_98.SEP."Plugin Builder".SEP.LAN_CREATED.": plugin.xml", "<pre style='font-size:80%'>".$xmlText."</pre>");	
 	
 			
 			$ns->tablerender(LAN_CREATED.": admin_config.php", "<pre style='font-size:80%'>".$text."</pre>");
