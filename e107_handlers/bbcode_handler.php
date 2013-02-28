@@ -538,24 +538,103 @@ class e_bbcode
   		return "<div id='bbcode-panel-".$id."' class='mceToolbar bbcode-panel' {$visible}>".$tp->parseTemplate($BBCODE_TEMPLATE,TRUE)."</div>";		
 	}
 	
+    
+
+   function processTag($tag, $html)
+    {
+        $html = "<html><body>".$html."</body></html>";
+        $doc = new DOMDocument();     
+        $doc->loadHTML($html);
+
+        $tmp = $doc->getElementsByTagName($tag);
+        
+        $var = array();
+
+        $attributes = array('class','style','width','height','src','alt','href');
+        
+        $params = array(
+            'img'   =>  array('style','width','height','alt')
+        );
+        
+        // Generate array for $var ($code_text) & $params ($parm);
+        foreach ($tmp as $tg)
+        {
+            $var = array();
+            $parm = array();
+            
+            foreach($attributes as $att)
+            {
+                $v = (string) $tg->getAttribute($att);  
+                         
+                if(trim($v) != '')
+                {
+                   $var[$att] = $v;
+                   if(in_array($att, $params[$tag]))
+                    {
+                        $parm[$att] = $att."=".str_replace(" ","",$var[$att]); 
+                    }
+                }                                
+            }
+     
+            $inc = ($parm) ? "  ".implode("&",$parm) : "";  // the parm - eg. [img $parm]whatever[/img]
+     
+            switch ($tag) 
+            {
+                case 'img':
+                    
+                    $e_http = str_replace("/",'\/',e_HTTP);
+                    $regex      = "/".$e_http."thumb.php\?src=[^>]*({e_MEDIA_IMAGE}[^&]*)(.*)/i";
+                //    echo "REGEX = ".$regex;
+                    $code_text = preg_replace($regex,"$1",$var['src']);
+                    $code_reg   = str_replace("/","\/",$code_text);
+     
+                    
+                    $search     = '/<img([^>]*)'.$code_reg.'([^>]*)>/i'; // Must match the specific line - not just the tag. 
+                    $replace    = "[img{$inc}]".$code_text."[/img]"; // bbcode replacement.  
+                break;
+                
+                default:
+                     echo "TAG = ".$tag;
+                break;
+            }
+           
+           $html = preg_replace($search,$replace,$html);  
+        }
+  
+        return str_replace(array("<html><body>","</body></html>"),"",$html); 
+    }
+        
+    
+    
 	/**
 	 * Convert HTML to bbcode. 
 	 */
 	function htmltoBBcode($text)
 	{
+	    
+       
 		$text = str_replace("<!-- bbcode-html-start -->","[html]",$text);
 		$text = str_replace("<!-- bbcode-html-end -->","[/html]",$text);
 	//	$text = str_replace('<!-- pagebreak -->',"[newpage=]",$text);
-
+    
+        
 
 		if(substr($text,0,6)=='[html]')
 		{
 			return $text;
 		}
-		
+        
+       
+       
+        $text = $this->processTag('img', $text);
+        
+       
+       
 		// Youtube conversion (TinyMce)
 		
 	//	return $text;
+	
+	//   $text = preg_replace('/<img(?:\s*)?(?:class="([^"]*)")?(?:\s*)?(?:style="([^"]*)")?\s?(?:src="thumb.php\?src=([^"]*)&w=([\d]*)?&h=([\d]*)?")(?:\s*)?(?:\s*)?(?:width="([\d]*)")?\s*(?:height="([\d]*)")?(?:\s*)?(?:alt="([^"]*)")? \/>/i',"[img style=width:$4px;height:$5px; alt=$8]$3[/img]",$text ); 
 	
 		$text = preg_replace('/<img class="youtube-([\w]*)" style="([^"]*)" src="([^"]*)" alt="([^"]*)" \/>/i',"[youtube=$1]$4[/youtube]",$text);	
 		$text = preg_replace('/<!-- Start YouTube-([\w,]*)-([\w]*) -->([^!]*)<!-- End YouTube -->/i','[youtube=$1]$2[/youtube]',$text);	
@@ -565,8 +644,8 @@ class e_bbcode
 		$text = preg_replace("/<a.*?href=\"(.*?)\".*?>(.*?)<\/a>/i","[link=$1]$2[/link]",$text);
 		$text = preg_replace('/<div style="text-align: ([\w]*);">([\s\S]*)<\/div>/i',"[$1]$2[/$1]",$text); // verified
 		$text = preg_replace('/<div class="bbcode-(?:[\w]*).* style="text-align: ([\w]*);">([\s\S]*)<\/div>/i',"[$1]$2[/$1]",$text); // left / right / center
-		$text = preg_replace('/<img(?:\s*)?(?:style="([^"]*)")?\s?(?:src="([^"]*)")(?:\s*)?(?:alt="(\S*)")?(?:\s*)?(?:width="([\d]*)")?\s*(?:height="([\d]*)")?(?:\s*)?\/>/i',"[img style=width:$4px;height:$5px;$1]$2[/img]",$text );
-		$text = preg_replace('/<img class="(?:[^"]*)"(?:\s*)?(?:style="([^"]*)")?\s?(?:src="([^"]*)")(?:\s*)?(?:alt="(\S*)")?(?:\s*)?(?:width="([\d]*)")?\s*(?:height="([\d]*)")?(?:\s*)?\/>/i',"[img style=width:$4px;height:$5px;$1]$2[/img]",$text );
+	//	$text = preg_replace('/<img(?:\s*)?(?:style="([^"]*)")?\s?(?:src="([^"]*)")(?:\s*)?(?:alt="(\S*)")?(?:\s*)?(?:width="([\d]*)")?\s*(?:height="([\d]*)")?(?:\s*)?\/>/i',"[img style=width:$4px;height:$5px;$1]$2[/img]",$text );
+	//	$text = preg_replace('/<img class="(?:[^"]*)"(?:\s*)?(?:style="([^"]*)")?\s?(?:src="([^"]*)")(?:\s*)?(?:alt="(\S*)")?(?:\s*)?(?:width="([\d]*)")?\s*(?:height="([\d]*)")?(?:\s*)?\/>/i',"[img style=width:$4px;height:$5px;$1]$2[/img]",$text );
 	//	$text = preg_replace('/<span (?:class="bbcode-color" )?style=\"color: ?(.*?);\">(.*?)<\/span>/i',"[color=$1]$2[/color]",$text);
 		$text = preg_replace('/<span (?:class="bbcode underline bbcode-u)(?:[^>]*)>(.*?)<\/span>/i',"[u]$1[/u]",$text);
 	//	$text = preg_replace('/<table([^"]*)>/i', "[table $1]",$text);
@@ -586,10 +665,9 @@ class e_bbcode
 		$text = preg_replace('/<blockquote([\w :\-_;="]*)?>/i', "[blockquote]",$text);
 		$text = preg_replace('/<p([\w :\-_;="]*)?>/i', "",$text);  // Causes issues : [p] [/p] everywhere. 
 		
-		
-		$ehttp = str_replace("/",'\/',e_HTTP);
-		$text = preg_replace('/thumb.php\?src='.$ehttp.'([^&]*)([^\[]*)/i', "$1",$text);
-		$text = preg_replace('/thumb.php\?src=([^&]*)([^\[]*)/i', "$1",$text);
+	//	$ehttp = str_replace("/",'\/',e_HTTP);
+	//	$text = preg_replace('/thumb.php\?src='.$ehttp.'([^&]*)([^\[]*)/i', "$1",$text);
+	//	$text = preg_replace('/thumb.php\?src=([^&]*)([^\[]*)/i', "$1",$text);
 		
 			
 		// Mostly closing tags. 
@@ -630,7 +708,7 @@ class e_bbcode
 		$paths = array(
 			e107::getFolder('images'),
 			e107::getFolder('plugins'),
-			e107::getFolder('media_images'),
+		//	e107::getFolder('media_images'),
 			e107::getFolder('media_files'),
 			e107::getFolder('media_videos')
 		);

@@ -43,36 +43,23 @@ $(document).ready(function()
 	
 	function eMediaAttribute(e)
 	{		
-		var style 		= '';
-		var bb 			= '';
-	
-		var target 		= $(e).attr('data-target');
-	//	var path		= $(e).attr('data-path');
-	//	var preview 	= $(e).attr('data-preview');
-	//	var src			= $(e).attr('data-src');
-		
+		var style 			= '';
+		var bb 				= '';
+			
 		var src 			= $('#src').attr('value'); // working old
 		var path 			= $('#path').attr('value'); // working old
 		var preview 		= $('#preview').attr('value'); // working old
 		
 		var width 			= $('#width').val();	
-		var height			= $('#height').val();			
+		var height			= $('#height').val();	
+				
 		var margin_top 		= $('#margin-top').val();				
 		var margin_bottom 	= $('#margin-bottom').val();	
 		var margin_right 	= $('#margin-right').val();	
 		var margin_left 	= $('#margin-left').val();	
 		var _float 			= $('#float').val();	
-						
-		if(width !='')
-		{				
-			style  = style + 'width:' + width + 'px;';	
-		}
 
-		if(height !='')
-		{				
-			style  = style + 'height:' + height + 'px;';	
-		}				
-					
+									
 		if(margin_right !='')
 		{				
 			style  = style + 'margin-right:' + margin_right + 'px;';	
@@ -98,6 +85,22 @@ $(document).ready(function()
 			style  = style + 'float:' + _float + ';';	
 		}
 		
+		// Set the Html / Wysiwyg Value.
+		var html = '<img style=\"' + style + '\" src=\"'+ src +'\" alt=\"\" width=\"' + width + '\" height=\"' + height + '\" />'; 
+		$('#html_holder').val(html);  
+		
+		// Only Do width/height styling on bbcodes --
+		if(width !='')
+		{				
+			style  = style + 'width:' + width + 'px;';	
+		}
+
+		if(height !='')
+		{				
+			style  = style + 'height:' + height + 'px;';	
+		}	
+		
+
 		bb = '[img';
 		
 		if(style !='')
@@ -109,13 +112,10 @@ $(document).ready(function()
 		bb = bb + path;
 		bb = bb + '[/img]';
 				
-		$('#bbcode_holder').val(bb);
-		//	document.getElementById('bbcode_holder').value = bb;
+		$('#bbcode_holder').val(bb); // Set the BBcode Value. 
 				
 			//	var html = '<img style=\"' + style + '\" src=\"'+ src +'\" />'; 
-		var html = '<img style=\"' + style + '\" src=\"'+ src +'\" alt=\"\" width=\"' + width + '\" height=\"' + height + '\"/>'; 
 
-		$('#html_holder').val(html);
 	}
 	
 		
@@ -124,8 +124,7 @@ $(document).ready(function()
 		
 				// $(".e-media-select").click(function () {  
 		$(".e-media-select").live("click", function(){
-  	
-    		
+  	 		
     		//	console.log(this);
 
 				var id			= $(this).attr('data-id');
@@ -133,10 +132,13 @@ $(document).ready(function()
 				var path		= $(this).attr('data-path');
 				var preview 	= $(this).attr('data-preview');
 				var src			= $(this).attr('data-src');
-				var bbcode		= $(this).attr('data-bbcode');
+				var bbcode		= $(this).attr('data-bbcode'); // TinyMce/Textarea insert mode
 				var name		= $(this).attr('data-name');
-						
-					//alert(target);			
+				var width		= $(this).attr('data-width');
+				var height		= ''; // disable for now - will be updated by bb parser. // $(this).attr('data-height');		
+				
+				
+			//	alert(width);			
 						
 				$(this).addClass("media-select-active");
 				$(this).closest("img").addClass("active");			
@@ -168,6 +170,9 @@ $(document).ready(function()
 				
 				$('#path').attr('value',path); // working old
 				$('#src').attr('src',src);	// working old
+				
+				$('#width').val(width);	
+				$('#height').val(height);		
 				
 				$('img#' + target + "_prev", window.top.document).attr('src',preview); // set new value
 				$('div#' + target + "_prev", window.top.document).html(preview); // set new value

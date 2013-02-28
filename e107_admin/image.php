@@ -1091,10 +1091,15 @@ class media_admin_ui extends e_admin_ui
 			</div>";
 			
 			// TODO to eventually be hidden. 
-			$text .= "bbcode: <input title='bbcode' type='text' readonly='readonly' style='border:0px; width:700px' id='bbcode_holder' name='bbcode_holder' value='' />
-			<input title='html' type='hidden' style='width:800px' id='html_holder' name='html_holder' value='' />
-			<input title='src' type='hidden' style='width:600px' id='src' name='src' value='' />
-			<input title='path' type='hidden' style='width:600px' id='path' name='path' value='' />				
+			
+			$type = (E107_DEBUG_LEVEL > 0) ?  "text" : "hidden";
+			$br = (E107_DEBUG_LEVEL > 0) ?  "<br />" : "";   
+			
+			$text .= "
+			".$br."<input title='bbcode' type='{$type}' readonly='readonly' class='span11' id='bbcode_holder' name='bbcode_holder' value='' />
+			".$br."<input title='html' type='{$type}' class='span11' readonly='readonly' id='html_holder' name='html_holder' value='' />
+			".$br."<input title='src' type='{$type}' class='span11' readonly='readonly' id='src' name='src' value='' />
+			".$br."<input title='path' type='{$type}' class='span11' readonly='readonly' id='path' name='path' value='' />				
 			";		
 						
 		}

@@ -568,23 +568,31 @@ class e_media
 		$w	= false;
 		$h = false;
 			
-		if($bbcode)
+		if($bbcode) // ie. TinyMce Editor, not imagepicker(); 
 		{
 			e107::getBB()->setClass($category);
 			$w = e107::getBB()->resizeWidth(); // resize the image according to prefs. 
 			$h = e107::getBB()->resizeHeight();
-			e107::getBB()->clearclass();	
+			e107::getBB()->clearclass();
+				
+			$w = vartrue($w,300);
+            $h = vartrue($w,200);
 		}
 		
 		
 		
 		$tp = e107::getParser();
-	//	e107::getParser()
+	
+		/*
+            $media_path : Inserted into html tags eg. <img src='here'...
+        */
+
+		
 		
 		foreach($images as $im)
 		{
 			$class 			= ($category !='_icon') ? "media-select-image" : "media-select-icon";
-			$media_path 	= ($w || $h) ? $tp->thumbUrl($im['media_url'], "w={$w}&h={$h}") : $tp->replaceConstants($im['media_url'],'full'); // max-size 
+			$media_path 	= ($w || $h) ? $tp->thumbUrl($im['media_url'], "&w={$w}") : $tp->thumbUrl($im['media_url']); // $tp->replaceConstants($im['media_url'],'full'); // max-size 
 				
 			$realPath 		= $tp->thumbUrl($im['media_url'], $att);
 			$diz 			= $tp->toAttribute($im['media_title'])."\n".$im['media_dimensions'];		
@@ -615,7 +623,7 @@ class e_media
 		 	
 		 	$img_url = ($cat !='_icon') ? e107::getParser()->thumbUrl($im['media_url'], $att) : $media_path;
 			
-			$text .= "<a class='{$class} e-tip' data-id='{$im['media_id']}' data-src='{$media_path}' data-bbcode='{$data_bb}' data-target='{$tagid}' data-path='{$im['media_url']}' data-preview='{$realPath}' title=\"".$diz."\" style='float:left' href='#' onclick=\"{$onclicki}\" >";
+			$text .= "<a class='{$class} e-tip' data-id='{$im['media_id']}' data-width='{$w}' data-height='{$h}' data-src='{$media_path}' data-bbcode='{$data_bb}' data-target='{$tagid}' data-path='{$im['media_url']}' data-preview='{$realPath}' title=\"".$diz."\" style='float:left' href='#' onclick=\"{$onclicki}\" >";
 			$text .= "<img src='".$img_url."' alt=\"".$im['media_title']."\" title=\"{$diz}\" />";
 			$text .= "</a>\n\n";
 		}	

@@ -69,6 +69,8 @@ class wysiwyg
 	$text .= "
 
 	function tinymce_e107Paths(type, source) {
+	       
+	   
 	";
 
 	$tp = e107::getParser();
@@ -76,7 +78,7 @@ class wysiwyg
 	$paths = array(
 		e107::getFolder('images'),
 		e107::getFolder('plugins'),
-		e107::getFolder('media_images'),
+	//	e107::getFolder('media_images'), //XXX Leave disabled - breaks thumb.php={e_MEDIA_IMAGE} which is required.  
 		e107::getFolder('media_files'),
 		e107::getFolder('media_videos')
 	);
@@ -284,7 +286,7 @@ class wysiwyg
 			'entity_encoding'					=> 'raw',
 			'convert_fonts_to_styles'			=> 'true',
 			'remove_script_host'				=> 'true',
-			'relative_urls'						=> 'true',
+			'relative_urls'						=> 'false', //Media Manager prefers it like this. 
 			'preformatted'						=> 'true',
 			'document_base_url'					=> SITEURL,
 			'theme_advanced_styles'				=> 'border=border;fborder=fborder;tbox=tbox;caption=caption;fcaption=fcaption;forumheader=forumheader;forumheader3=forumheader3',

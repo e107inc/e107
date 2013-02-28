@@ -3,7 +3,7 @@
 
 // General purpose image bbcode. As well as the obvious insertion of a picture:
 // 	a) if filname begins with 'th_' or 'thumb_', creates link to main image opening in new window
-//	b) If filename contains '*', treats it as a wildcard, and displays a random image from all matching file names found
+//	b) If filename contains '*', treats it as a wildcard, and displays a random image from all matching file names found ? really?
 //
 // Can use simple classes for float - e.g.:
 // .floatleft {clear: right; float: left; margin: 0px 5px 5px 0px; padding:2px; border: 0px;}
@@ -30,22 +30,94 @@ class bb_img extends e_bb_base
 		return '[img]'.$code_text.'[/img]';
 	}
 	
+    /**
+     * Media Manager bbcode. eg. using {e_MEDIA_IMAGE} and auto-resizing. 
+     * @return <img> tag with resized image. 
+     */
+    private function mediaImage($code_text,$parm)
+    {
+        $tp = e107::getParser();
+          
+        $code_text  = str_replace('{e_MEDIA_IMAGE}', e_HTTP."thumb.php?src={e_MEDIA_IMAGE}", $code_text);
+        $imgParms    = $this->processParm($code_text, $parm);
+        
+        foreach($imgParms as $k => $v)
+        {
+           // $parmStr .= " ".$k.'="'.$v.'"';
+            $p[] = $tp->toAttribute($k).'="'.$tp->toAttribute($v).'"';
+        } 
+        
+       
+        $w = e107::getBB()->resizeWidth(); // varies depending on the class set by external script. see admin->media-manager->prefs
+        
+        
+        $w = vartrue($imgParms['width']) ? intval($imgParms['width']) : vartrue(e107::getBB()->resizeWidth(),300);
+     //   $h = vartrue($imgParms['height']) ? intval($imgParms['height']) : e107::getBB()->resizeHeight();
+        
+        $resize = "&w=".$w; // Always resize - otherwise the thumbnailer returns nothing. 
+        $parmStr = implode(" ",$p);
+    
+   //     print_a($imgParms);
+   //     print_a($parmStr);
+        
+        return "<img src=\"".$code_text.$resize."\" {$parmStr} />";
+    }
+
+    /**
+     * Process the [img] bbcode parm. ie. [img parms]something[/img]
+     */
+    private function processParm($code_text, $parm)
+    {      
+        $tp = e107::getParser(); 
+        
+        $imgParms               = array();
+        $parmStr                = "";
+     
+        $parm = preg_replace('#onerror *=#i','',$parm);
+        $parm = str_replace("amp;", "&", $parm);
+        
+     //   $parm = str_replace(" ","&",$parm); // Needed as parse_str() doesn't know how to handle spaces. Could return [width] => '400 AltValue'
+        
+        parse_str($parm,$imgParms);
+        
+        foreach($tmp as $p => $v)
+        {
+         //   $imgParms[$p]=$v;
+        }
+        
+        if(!vartrue($imgParms['alt'])) // Generate an Alt value from filename if one not found.  
+        {
+           preg_match("/([\w]*)(?:\.png|\.jpg|\.jpeg|\.gif)/i", $code_text, $match); // Generate required Alt attribute. 
+           $imgParms['alt']        = ucwords(str_replace("_"," ",$match[1])); 
+        }
+        
+        $imgParms['class']      = "bbcode ".e107::getBB()->getClass('img');;  //  This will be overridden if a new class is specified        
+        
+        return $imgParms;       
+    }  
+    
 	
 	function toHTML($code_text, $parm)
-	{
+    {
+       
 		$tp = e107::getParser();
-		$pref = e107::getPref();
-		
-		$class = e107::getBB()->getClass('img');
-		
+        $pref = e107::getPref();
 
-		
-		if (trim($code_text) == "") return ""; 						// Do nothing on empty file
-		if (preg_match("#\.php\?.*#",$code_text)){return "";}
+        if (trim($code_text) == "") return "";                      // Do nothing on empty file
+        
+        if(substr($code_text,0,15) == '{e_MEDIA_IMAGE}') // Image from Media-Manager. 
+        {  
+            return $this->mediaImage($code_text, $parm);          
+        }
+        
+        
+    
+        
+		if (preg_match("#\.php\?.*#",$code_text)){return "";} //XXX Breaks MediaManager Images, so do it after mediaManager check. 
 		
 		$addlink = FALSE;
-		
-		
+
+        
 		// Automatic Img Resizing -- 
 		$w = e107::getBB()->resizeWidth(); // varies depending on the class set by external script. see admin->media-manager->prefs
 		$h = e107::getBB()->resizeHeight();
@@ -57,39 +129,20 @@ class bb_img extends e_bb_base
 		}
 		// ------------------------
 		
-		
-		
-		
 		$search = array('"', '{E_IMAGE}', '{E_FILE}', '{e_IMAGE}', '{e_FILE}');
 		$replace = array('&#039;', e_IMAGE_ABS, e_FILE_ABS, e_IMAGE_ABS, e_FILE_ABS);
 		$replaceInt = array('&#039;', e_IMAGE, e_FILE, e_IMAGE, e_FILE);
 		$intName = str_replace($search, $replaceInt, $code_text);			// Server-relative file names
-		unset($imgParms);
-		$imgParms['class']="bbcode {$class}";  //  This will be overridden if a new class is specified
 		
-		$imgParms['alt']='';
-		
+	
 		$code_text = str_replace($search, $replace, $code_text);
 		$code_text = $tp -> toAttribute($code_text);
+        
 		$img_file = pathinfo($code_text);		// 'External' file name. N.B. - might still contain a constant such as e_IMAGE
 		
-		if($parm)
-		{
-			$parm = preg_replace('#onerror *=#i','',$parm);
-			$parm = str_replace("amp;", "&", $parm);
-			parse_str($parm,$tmp);
-			foreach($tmp as $p => $v)
-			{
-				$imgParms[$p]=$v;
-			}
-		}
-		$parmStr="";
-		foreach($imgParms as $k => $v)
-		{
-		  $parmStr .= $tp -> toAttribute($k)."='".$tp -> toAttribute($v)."' ";
-		}
+        $parmStr = $this->processParm($code_text, $parm);
 		
-		
+
 		
 		// Select a random file if required
 		if (strpos($img_file['basename'],'*') !== FALSE)
