@@ -48,7 +48,7 @@ require_once(HEADERF);
 		$value = ($value2 ? $value2 : $value);
 	//	$str .= "\n<a href='javascript:void(0);' onmousedown=\"javascript:insertEmotion('$key')\"><img src=\"".e_IMAGE_ABS."emotes/" . $pref['emotepack'] . "/$key\" style=\"border:0; padding-top:2px;\" alt=\"\" /></a> ";
 	
-		$str .= "\n<img class='selectEmote' src=\"".e_IMAGE_ABS."emotes/" . $pref['emotepack'] . "/$key\" style=\"border:0; padding-top:2px;\" alt=\"\" />";
+		$str .= "\n<img class='tinyInsertEmote' src=\"".e_IMAGE_ABS."emotes/" . $pref['emotepack'] . "/$key\" style=\"border:0; padding-top:2px;\" alt=\"\" />";
 		
 	}
 
@@ -58,6 +58,9 @@ require_once(HEADERF);
  echo $str;
 
 function headerjs(){
+    
+    return;
+    
 	global $pref;
 //	$js = "<script type='text/javascript' src='../../tiny_mce_popup.js'></script>";
 	$js .= " <script type='text/javascript'>
@@ -68,8 +71,10 @@ function headerjs(){
 
 	function insertEmotion(file_name, title) {
 		var html = '<img src=\'".e_IMAGE_ABS."emotes/".$pref['emotepack']."/' + file_name + '\' alt=\'' + file_name + '\' />';
-		tinyMCE.execCommand('mceInsertContent', false, html);
-		tinyMCEPopup.close();
+		 tinyMCE.selectedInstance.execCommand('mceInsertContent',0,html);
+		//tinyMCE.execCommand('mceInsertContent', false, html);
+		
+		//tinyMCEPopup.close();
 	}
 	";
 

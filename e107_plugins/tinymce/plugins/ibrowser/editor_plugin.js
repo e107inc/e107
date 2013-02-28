@@ -37,6 +37,10 @@
 				title : 'ibrowser.desc',
 		//		cmd : 'mceibrowser',
 			onclick: function() {
+				
+			//	 $('div.modal-body').load(url + "/ibrowser.php");
+    		//		$('#uiModal').modal('show');
+				
 					$.colorbox({ 
 						href: url + "/ibrowser.php",
 						iframe: true,
