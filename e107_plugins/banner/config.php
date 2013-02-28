@@ -2,16 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Banner Menu Configuration (OLD - redirects to e107_admin/banner.php)
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/banner/config.php,v $
- * $Revision$
- * $Date$
- * $Author$
  *
 */
 
@@ -22,7 +18,6 @@
  *
  *	@package	e107_plugins
  *	@subpackage	banner
- *	@version 	$Id$;
  *
  *	@todo - try and access file for menu config without a redirect
  */
@@ -37,6 +32,7 @@ require_once("../../class2.php");
 header('Location:'.e_PLUGIN_ABS.'banner/admin_banner.php?menu');
 exit;
 
+/*
 if (!getperms("1")) 		// Access to those who can change prefs, theme etc
 {
 	header("location:".e_BASE."index.php");
@@ -289,5 +285,5 @@ function headerjs() {
 		</script>\n";
 	return $script_js;
 }
-
+*/
 ?>
