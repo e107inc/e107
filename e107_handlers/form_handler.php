@@ -3466,7 +3466,7 @@ class e_form
 							
 							foreach($defsubmitopt as $k=>$v)
 							{
-								$text .= "<li><a href='#' class='e-noclick'>".$this->radio('__after_submit_action', $k, $selected == $v, "label=".$v)."</a></li>";	
+								$text .= "<li><a href='#' class='e-noclick'>".$this->radio('__after_submit_action', $k, $selected == $k, "label=".$v)."</a></li>";	
 							}
 							
 							//$text .= '
