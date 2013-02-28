@@ -1810,9 +1810,9 @@ class e_parse
 
 	public function thumbUrl($url, $options = array(), $raw = false, $full = false)
 	{
-		if(substr($url,0,3)=="{e_") // Fix for broken links that use {e_MEDIA} etc. 
+		if(substr($url,0,3)=="{e_") // Fix for broken links that use {e_MEDIA} etc. //XXX This is bad. 
 		{
-			$url = $this->replaceConstants($url,'abs');			
+			//$url = $this->replaceConstants($url,'abs');			
 		}
 				
 		if(!is_array($options))
@@ -1823,7 +1823,7 @@ class e_parse
 		if($raw) $url = $this->createConstants($url, 'mix');
 		
 		$baseurl = ($full ? SITEURL : e_HTTP).'thumb.php?';
-		
+        
 		$thurl = 'src='.$url.'&amp;';
 				
 		if(vartrue($options['aw']) || vartrue($options['ah']))
