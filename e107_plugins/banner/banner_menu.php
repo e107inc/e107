@@ -2,16 +2,10 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/banner/banner_menu.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 /**
@@ -21,7 +15,6 @@
  *
  *	@package	e107_plugins
  *	@subpackage	banner
- *	@version 	$Id$;
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -37,7 +30,7 @@ To define your own banner to use here ...
 3. Save file
 */
 
-include_lan(e_PLUGIN.'banner/languages/'.e_LANGUAGE.'_menu_banner.php');
+//include_lan(e_PLUGIN.'banner/languages/'.e_LANGUAGE.'_menu_banner.php');
 
 if(file_exists(THEME.'banner_template.php'))
 {
@@ -52,7 +45,7 @@ $menu_pref = e107::getConfig('menu')->getPref('');
 if(isset($campaign))
 {
 	$parm = $campaign;
-	$bannersccode = file_get_contents(e_CORE.'shortcodes/single/banner.sc');
+	$bannersccode = file_get_contents(e_CORE.'shortcodes/single/banner.sc'); // FIXME file not there?
 	$BANNER = eval($bannersccode);
 	$txt = $BANNER_MENU_START;
 	$txt .= preg_replace("/\{(.*?)\}/e", '$\1', $BANNER_MENU);

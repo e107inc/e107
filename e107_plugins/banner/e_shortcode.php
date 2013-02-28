@@ -1,9 +1,13 @@
 <?php
 /*
-* Copyright (c) e107 Inc 2009 - e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id$
-*
-* Banner shortcode batch class - shortcodes available site-wide. ie. equivalent to multiple .sc files.
+ * e107 website system
+ *
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Banner shortcode
+ *
 */
 
 /**
@@ -13,14 +17,14 @@
  *
  *	@package	e107_plugins
  *	@subpackage	banner
- *	@version 	$Id$;
  */
 
-class banner_shortcodes // must match the plugin's folder name. ie. [PLUGIN_FOLDER]_shortcodes
+class banner_shortcodes
 {	
 	function sc_banner($parm)
 	{
 		$e107 = e107::getInstance();
+		$sql = e107::getDb();
 			
 		$ret = '';
 	
@@ -33,9 +37,9 @@ class banner_shortcodes // must match the plugin's folder name. ie. [PLUGIN_FOLD
 		AND banner_active IN (".USERCLASS_LIST.")
 		ORDER BY RAND($seed) LIMIT 1";
 	
-		if($e107->sql->db_Select('banner', 'banner_id, banner_image, banner_clickurl', $query))
+		if($sql->db_Select('banner', 'banner_id, banner_image, banner_clickurl', $query))
 		{
-			$row = $e107->sql->db_Fetch();
+			$row = $sql->db_Fetch();
 	
 			if(!$row['banner_image'])
 			{
@@ -43,7 +47,7 @@ class banner_shortcodes // must match the plugin's folder name. ie. [PLUGIN_FOLD
 			}
 	
 			$fileext1 = substr(strrchr($row['banner_image'], '.'), 1);
-			$e107->sql->db_Update('banner', 'banner_impressions=banner_impressions+1 WHERE banner_id='.(int)$row['banner_id']);
+			$sql->db_Update('banner', 'banner_impressions=banner_impressions+1 WHERE banner_id='.(int)$row['banner_id']);
 			switch ($fileext1)
 			{
 				case 'swf':
