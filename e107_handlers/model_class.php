@@ -527,7 +527,7 @@ class e_model extends e_object
 	 * Example: array('route'=>'page/view/index', 'vars' => array('id' => 'page_id', 'sef' => 'page_sef'), 'name' => 'page_title', 'description' => '');
      * @var string
      */
-    protected $_url;
+    protected $_url = array();
 
     /**
      * Runtime cache of parsed from {@link _getData()} keys
@@ -596,6 +596,7 @@ class e_model extends e_object
      */
     public function setUrl($url)
     {
+    	if(!is_array($url)) $url = array('route' => $url);
         $this->_url = $url;
         return $this;
     }
@@ -617,7 +618,7 @@ class e_model extends e_object
      */
     public function url($options = array(), $extended = false)
     {
-        $urldata = $this->getUrl();
+        $urldata = $this->getUrl(); 
 		if(empty($urldata) || !vartrue($urldata['route'])) return ($extended ? array() : null);
 		
 		$eurl = e107::getUrl();
