@@ -823,6 +823,8 @@ class e_form
 	{		
 		//size - large|medium|small
 		//width should be explicit set by current admin theme
+		$size = 'span12';
+		
 		switch($size)
 		{
 			case 'small':
@@ -832,6 +834,7 @@ class e_form
 						
 			case 'medium':
 				$rows = '10';
+               
 				$height = "style='height:375px'"; // inline required for wysiwyg
 			break;
 
