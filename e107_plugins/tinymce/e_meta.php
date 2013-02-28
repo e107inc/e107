@@ -55,6 +55,10 @@ if(e_WYSIWYG || strpos(e_SELF,"tinymce/admin_config.php") )
 	e107::js('inline',"
 	
 	$(function() {
+	                
+	            
+
+	    
 		
 			$('.e-wysiwyg').each(function() {
 													
@@ -71,6 +75,22 @@ if(e_WYSIWYG || strpos(e_SELF,"tinymce/admin_config.php") )
                 tinyMCE.selectedInstance.execCommand('mceInsertContent',0,val);
                 return false;       
             });
+            
+            $('img.tinyInsertEmote').live('click',function() {
+               
+                var src = $(this).attr('src');     
+                  alert(src); 
+            //  var html = '<img src=\''+src +'\' alt=\'emote\' />';
+              tinyMCE.execCommand('mceInsertRawHTML',false, 'hi there');
+              ;
+              $('.mceContentBody', window.top.document).tinymce().execCommand('mceInsertContent',false,src);
+
+             //   tinyMCE.selectedInstance.execCommand('mceInsertContent',0,src);                
+                             
+                $('#uiModal').modal('hide');
+                return true;       
+            });
+           
 						
 				
 			// When new tab is added - convert textarea to TinyMce. 

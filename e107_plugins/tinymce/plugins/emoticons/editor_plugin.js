@@ -37,6 +37,13 @@
 				title : 'emoticons.desc',
 				onclick: function(){
                 	
+                
+                	
+                //	 $("div.modal-body").html('hi there');
+                	 $('div.modal-body').load(url + "/emoticons.php");
+    				$('#uiModal').modal('show');
+                	
+                	/*
                 	$.colorbox({
                 		href: url + "/emoticons.php",
                 		iframe: true,
@@ -46,6 +53,7 @@
 						opacity: 0.3,
 						scrolling: false
                 	});
+                	*/
                 },
 				//cmd : 'mceEmotion',
 				image : url + '/images/emoticons.png'
