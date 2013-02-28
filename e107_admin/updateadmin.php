@@ -8,10 +8,6 @@
  *
  * Administration Area - Update Admin
  *
- * $Source: /cvs_backup/e107_0.8/e107_admin/updateadmin.php,v $
- * $Revision$
- * $Date$
- * $Author$
  *
 */
 
@@ -23,7 +19,6 @@ e107::lan('core','updateadmin',true);
 $e_sub_cat = 'admin_pass';
 
 require_once(e_ADMIN.'auth.php');
-require_once(e_HANDLER.'message_handler.php');
 // require_once(e_HANDLER.'user_handler.php'); //use e107::getUserSession() instead. 
 require_once(e_HANDLER.'validator_class.php');
 $userMethods = e107::getUserSession();
