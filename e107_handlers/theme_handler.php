@@ -1174,14 +1174,14 @@ class themeHandler
 					{
 						$mainid = "selectmain[".$theme['id']."]";
 						$text .= $this->frm->admin_button('submit_adminstyle', TPVLAN_35, 'update');
-						$text .= $this->frm->admin_button($mainid, TPVLAN_10, 'other');
+						//$text .= $this->frm->admin_button($mainid, TPVLAN_10, 'other');
 					
 					}
 					else // main
 					{
 						$adminid = "selectadmin[".$theme['id']."]";
 						$text .= $this->frm->admin_button('submit_style', TPVLAN_35, 'update');
-						$text .= $this->frm->admin_button($adminid, TPVLAN_32, 'other');
+						//$text .= $this->frm->admin_button($adminid, TPVLAN_32, 'other');
 					}
 					
 					$text .= "<input type='hidden' name='curTheme' value='".$theme['path']."' />";
