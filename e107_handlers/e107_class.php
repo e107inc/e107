@@ -140,6 +140,7 @@ class e107
 		'db'							 => '{e_HANDLER}mysql_class.php',
 		'e107Email'						 => '{e_HANDLER}mail.php',
 		'e107_event'					 => '{e_HANDLER}event_class.php',
+		'e107_db_debug'                  => '{e_HANDLER}db_debug_class.php',
 		'e107_traffic'					 => '{e_HANDLER}traffic_class.php',
 		'e107_user_extended'			 => '{e_HANDLER}user_extended_class.php',
 		'e107plugin'					 => '{e_HANDLER}plugin_class.php',
@@ -1254,6 +1255,17 @@ class e107
 	{
 		return self::getSingleton('convert', true);
 	}
+
+
+    /**
+     * Retrieve date handler singleton object - preferred method. 
+     *
+     * @return convert
+     */
+    public static function getDebug() //XXX Discuss  - possible with current setup?
+    {
+        return self::getSingleton('e107_db_debug', true);
+    }
 
 	/**
 	 * Retrieve notify handler singleton object
