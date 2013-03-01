@@ -2462,9 +2462,9 @@ class e_parser extends e_parse
          //   $tag = strval(basename($path));
             
             $tag = preg_replace('/([a-z0-9\[\]\/]*)?\/([\w]*)(\[(\d)*\])?$/i', "$2", $path);
-            if(!in_array($tag, $this->allowedTags))
+			$allowed = in_array($tag, $this->allowedTags);
+            if(!$allowed)
             {
-                  
                  if(strpos($path,'/code/') !== false || strpos($path,'/pre/') !== false) // treat as html. 
                  {
                     $this->pathList[] = $path; 
@@ -2474,29 +2474,28 @@ class e_parser extends e_parse
                 
                 $this->removedList['tags'][] = $tag;
                 $this->nodesToDelete[] = $node; 
+				continue;
             }
-             
+            
             foreach ($node->attributes as $attr)
             {
                 $name = $attr->nodeName;
-                $value = $attr->nodeValue; // Check value against blacklist. 
+                $value = $attr->nodeValue; // Check value against whitelist. 
 
                 if(!in_array($name, $this->allowedAttributes) )
                 {
-                     $node->removeAttribute($name);   
-                     $this->removedList['attributes'][] = $name;
+					$node->removeAttribute($name);
+                    $this->removedList['attributes'][] = $tag.'['.$name.']';
                 }
-                
-                if($this->inValidAttributeVal($value))
-                {
-                    $node->setAttribute($name, '#---sanitized---#');       
-                }       
-            } 
-
-            
-            foreach($removeAttributes as $att)
-            {
-                $node->removeAttribute($att);     
+				else
+				{
+	                if($this->inValidAttributeVal($value))
+	                {
+	                	$node->removeAttribute($name);
+	                    $node->setAttribute($name, '#---sanitized---#');   
+						$this->removedList['sanitized'][] = $tag.'['.$name.']';    
+	                }
+				}       
             } 
         }
         
@@ -2530,8 +2529,9 @@ class e_parser extends e_parse
      */   
     function invalidAttributeVal($val)
     {
+    	// FIXME default (strict) match and filters for certain attributes (e.g. src, href, etc) 
         $invalid = array("javascript:","alert(","vbscript:","data:text/html", "mhtml:", "data:image"); 
-        
+		
         foreach($invalid as $v)
         {
             if(stripos($val,$v)!==false) //TODO More reliable check. 
@@ -2592,6 +2592,8 @@ Some example text<br />
 
 <script>alert('something')</script>
 </code>
+<svg><![CDATA[><image xlink:href="]]><img src=xx:x onerror=alert(2)//"></svg>
+<style><img src="</style><img src=x onerror=alert(1)//">
 <x '="foo"><x foo='><img src=x onerror=alert(1)//'> <!-- IE 6-9 --> <! '="foo"><x foo='><img src=x onerror=alert(2)//'> <? '="foo"><x foo='><img src=x onerror=alert(3)//'>
 <embed src="javascript:alert(1)"></embed> // O10.10↓, OM10.0↓, GC6↓, FF <img src="javascript:alert(2)"> <image src="javascript:alert(2)"> // IE6, O10.10↓, OM10.0↓ <script src="javascript:alert(3)"></script> // IE6, O11.01↓, OM10.1↓
 <div style=width:1px;filter:glow onfilterchange=alert(1)>x</div>
