@@ -2342,7 +2342,7 @@ class e_parse
  * Start Fresh and Build on it over time to become eventual replacement to e_parse. 
  * Cameron's DOM-based parser. 
  */
-class e_parser
+class e_parser extends e_parse
 {
     private $domObj             = null;
     private $removedList        = array();
@@ -2358,7 +2358,8 @@ class e_parser
         
     public function __construct()
     {
-        $this->domObj = new DOMDocument();
+       $this->domObj = new DOMDocument();
+    
          /*
         $meths = get_class_methods('DomDocument');
         sort($meths);
@@ -2391,7 +2392,7 @@ class e_parser
      */
     public function test()
     {
-        $tp = e107::getParser();
+      //  $tp = e107::getParser();
         $sql = e107::getDb();
         
         $html = $this->getXss();
@@ -2404,17 +2405,17 @@ class e_parser
         echo "<h3>\$tp->dataFilter()</h3>";
         // echo $tp->dataFilter($html); // Remove Comment for a real mess! 
         $sql->db_Mark_Time('Start Parser Test');
-        print_a($tp->dataFilter($html));   
+        print_a($this->dataFilter($html));   
         $sql->db_Mark_Time('tp->dataFilter');
          
         echo "<h3>\$tp->toHtml()</h3>";
         // echo $tp->dataFilter($html); // Remove Comment for a real mess! 
-        print_a($tp->tohtml($html));
+        print_a($this->tohtml($html));
         $sql->db_Mark_Time('tp->toHtml');     
         
         echo "<h3>\$tp->toDB()</h3>";
         // echo $tp->dataFilter($html); // Remove Comment for a real mess! 
-        print_a($tp->toDB($html)); 
+        print_a($this->toDB($html)); 
         $sql->db_Mark_Time('tp->toDB');             
         
         
@@ -2440,15 +2441,17 @@ class e_parser
     /**
      * Process and clean HTML from user input. 
      * @param $html raw HTML
+     * TODO Html5 tag support. 
      */
     public function cleanHtml($html='')
     {
         if(!vartrue($html)){ return; }
                            
-        $html = "<!doctype html><html><body>".$html."</body></html>"; // Set it up for processing. 
+        $html = '<!DOCTYPE html ><html><head><meta charset="UTF-8"><title>html 5 test</title></head><body>'.$html.'</body></html>'; // Set it up for processing. 
         $doc  = $this->domObj;   
           
         $doc->loadHTML($html);
+        $doc->resolveExternals = true;
         
         $tmp = $doc->getElementsByTagName('*');   
 
@@ -2615,8 +2618,10 @@ Some example text<br />
 <form id="test"></form><button form="test" formaction="javascript:alert(1)">X</button>
 <input onfocus=write(1) autofocus>
 <video poster=javascript:alert(1)//></video>
+<video>somemovei.mp4</video>
 <body onscroll=alert(1)><br><br><br><br><br><br>...<br><br><br><br><input autofocus>
-
+<a href='somewhere.html' src='invalidatrribute' />Test</a>
+<article id="something">Some text goes here</article>
 EOF;
 
 return $html;            
