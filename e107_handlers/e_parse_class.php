@@ -2403,18 +2403,18 @@ class e_parser extends e_parse
  
         echo "<h2>Standard v2 Parser</h2>";
         echo "<h3>\$tp->dataFilter()</h3>";
-        // echo $tp->dataFilter($html); // Remove Comment for a real mess! 
+        // echo $this->dataFilter($html); // Remove Comment for a real mess! 
         $sql->db_Mark_Time('Start Parser Test');
         print_a($this->dataFilter($html));   
         $sql->db_Mark_Time('tp->dataFilter');
          
         echo "<h3>\$tp->toHtml()</h3>";
-        // echo $tp->dataFilter($html); // Remove Comment for a real mess! 
+        // echo $this->dataFilter($html); // Remove Comment for a real mess! 
         print_a($this->tohtml($html));
         $sql->db_Mark_Time('tp->toHtml');     
         
         echo "<h3>\$tp->toDB()</h3>";
-        // echo $tp->dataFilter($html); // Remove Comment for a real mess! 
+        // echo $this->dataFilter($html); // Remove Comment for a real mess! 
         print_a($this->toDB($html)); 
         $sql->db_Mark_Time('tp->toDB');             
         
@@ -2447,7 +2447,7 @@ class e_parser extends e_parse
     {
         if(!vartrue($html)){ return; }
                            
-        $html = '<!DOCTYPE html ><html><head><meta charset="UTF-8"><title>html 5 test</title></head><body>'.$html.'</body></html>'; // Set it up for processing. 
+        $html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>html 5 test</title></head><body>'.$html.'</body></html>'; // Set it up for processing. 
         $doc  = $this->domObj;   
           
         $doc->loadHTML($html);
@@ -2487,7 +2487,7 @@ class e_parser extends e_parse
                      $this->removedList['attributes'][] = $name;
                 }
                 
-                if(inValidAttributeVal($value))
+                if($this->inValidAttributeVal($value))
                 {
                     $node->setAttribute($name, '#---sanitized---#');       
                 }       
