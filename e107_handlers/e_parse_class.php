@@ -2337,3 +2337,293 @@ class e_parse
 	}
 }
 
+
+/**
+ * Start Fresh and Build on it over time to become eventual replacement to e_parse. 
+ * Cameron's DOM-based parser. 
+ */
+class e_parser
+{
+    private $domObj             = null;
+    private $removedList        = array();
+    private $nodesToDelete      = array();
+    private $nodesToConvert     = array();
+    private $pathList           = array();
+    private $allowedAttributes  = array('id','href','src','style','class', 'alt', 'title'); // allow posting of data-* ?
+    private $allowedTags        = array('html', 'body','div','a','img','table','tr', 'td', 'th', 'tbody', 'thead', 'colgroup', 'b', 
+                                        'i', 'pre','code', 'strong', 'u', 'em','ul','li','img','h1','h2','h3','h4','h5','h6','p',
+                                        'div','pre','section','article', 'blockquote','hgroup','aside','figure','span', 'video', 'br',
+                                        'small', 'caption' 
+                                    );
+        
+    public function __construct()
+    {
+        $this->domObj = new DOMDocument();
+         /*
+        $meths = get_class_methods('DomDocument');
+        sort($meths);
+        print_a($meths);
+        */        
+    }  
+    
+    /**
+     * Set Allowed Tags. 
+     * @param $array 
+     */
+    public function setAllowedTags($array=array())
+    {
+        $this->allowedTags = $array;    
+    } 
+
+ 
+     /**
+     * Set Allowed Attributes. 
+     * @param $array 
+     */
+    public function setAllowedAttributes($array=array())
+    {
+        $this->allowedAttributes = $array;    
+    } 
+ 
+    
+    /**
+     * Perform and render XSS Test Comparison
+     */
+    public function test()
+    {
+        $tp = e107::getParser();
+        $sql = e107::getDb();
+        
+        $html = $this->getXss();
+                   
+        echo "<h2>Unprocessed XSS</h2>";
+        // echo $html; // Remove Comment for a real mess! 
+        print_a($html);
+ 
+        echo "<h2>Standard v2 Parser</h2>";
+        echo "<h3>\$tp->dataFilter()</h3>";
+        // echo $tp->dataFilter($html); // Remove Comment for a real mess! 
+        $sql->db_Mark_Time('Start Parser Test');
+        print_a($tp->dataFilter($html));   
+        $sql->db_Mark_Time('tp->dataFilter');
+         
+        echo "<h3>\$tp->toHtml()</h3>";
+        // echo $tp->dataFilter($html); // Remove Comment for a real mess! 
+        print_a($tp->tohtml($html));
+        $sql->db_Mark_Time('tp->toHtml');     
+        
+        echo "<h3>\$tp->toDB()</h3>";
+        // echo $tp->dataFilter($html); // Remove Comment for a real mess! 
+        print_a($tp->toDB($html)); 
+        $sql->db_Mark_Time('tp->toDB');             
+        
+        
+        echo "<h2>New Parser</h2>"; 
+        echo "<h3>Processed</h3>";
+        $cleaned = $this->cleanHtml($html);  
+        print_a($cleaned);
+        $sql->db_Mark_Time('new Parser');    
+        
+        echo "<h3>Processed &amp; Rendered</h3>";
+        echo $cleaned;
+        
+        echo "<h2>New Parser - Data</h2>"; 
+        echo "<h3>Converted Paths</h3>";
+        print_a($this->pathList);
+                   
+        echo "<h3>Removed Tags and Attributes</h3>";
+        print_a($this->removedList);
+         //   print_a($p); 
+    }
+ 
+    
+    /**
+     * Process and clean HTML from user input. 
+     * @param $html raw HTML
+     */
+    public function cleanHtml($html='')
+    {
+        if(!vartrue($html)){ return; }
+                           
+        $html = "<!doctype html><html><body>".$html."</body></html>"; // Set it up for processing. 
+        $doc  = $this->domObj;   
+          
+        $doc->loadHTML($html);
+        
+        $tmp = $doc->getElementsByTagName('*');   
+
+        foreach($tmp as $node)
+        {
+    
+            $path = $node->getNodePath();
+         //   $tag = strval(basename($path));
+            
+            $tag = preg_replace('/([a-z0-9\[\]\/]*)?\/([\w]*)(\[(\d)*\])?$/i', "$2", $path);
+            if(!in_array($tag, $this->allowedTags))
+            {
+                  
+                 if(strpos($path,'/code/') !== false || strpos($path,'/pre/') !== false) // treat as html. 
+                 {
+                    $this->pathList[] = $path; 
+                    $this->nodesToConvert[] = $node->parentNode; // $node; 
+                    continue;
+                 }
+                
+                $this->removedList['tags'][] = $tag;
+                $this->nodesToDelete[] = $node; 
+            }
+             
+            foreach ($node->attributes as $attr)
+            {
+                $name = $attr->nodeName;
+                $value = $attr->nodeValue; // Check value against blacklist. 
+
+                if(!in_array($name, $this->allowedAttributes) )
+                {
+                     $node->removeAttribute($name);   
+                     $this->removedList['attributes'][] = $name;
+                }
+                
+                if(inValidAttributeVal($value))
+                {
+                    $node->setAttribute($name, '#---sanitized---#');       
+                }       
+            } 
+
+            
+            foreach($removeAttributes as $att)
+            {
+                $node->removeAttribute($att);     
+            } 
+        }
+        
+        // Remove some stuff. 
+        foreach($this->nodesToDelete as $node)
+        {
+            $node->parentNode->removeChild($node);
+        }  
+        
+        // Convert <code> and <pre> Tags to Htmlentities. 
+        foreach($this->nodesToConvert as $node) //TODO Work on code processing and highlighting. 
+        {
+            $value = $node->C14N();
+            $value = str_replace("&#xD;","",$value);
+            $node->nodeValue = htmlentities($value);
+        }  
+       
+       
+        $cleaned = $doc->saveHTML();
+        
+        $cleaned = str_replace(array('<body>','</body>','<html>','</html>','<!DOCTYPE html>'),'',$cleaned); // filter out tags. 
+           
+        return $cleaned;
+    }
+ 
+ 
+    /**
+     * Check for Invalid Attribute Values
+     * @param $val string 
+     * @return true/false
+     */   
+    function invalidAttributeVal($val)
+    {
+        $invalid = array("javascript:","alert(","vbscript:","data:text/html", "mhtml:", "data:image"); 
+        
+        foreach($invalid as $v)
+        {
+            if(stripos($val,$v)!==false) //TODO More reliable check. 
+            {
+                return true;    
+            }   
+            
+        }
+        
+        return false;    
+    }   
+    
+       
+    
+    /**
+     * XSS HTML code to test against
+     */
+    private function getXss()
+    {
+
+$html = <<<EOF
+<frameset onload=alert(1) data-something=where>
+<table background="javascript:alert(1)"><tr><td><a href="something.php" onclick="alert(1)">Hi there</a></td></tr></table>
+<div>
+<!--<img src="--><img src=x onerror=alert(1)//">
+<comment><img src="</comment><img src=x onerror=alert(1)//">
+<ul>
+<li style=list-style:url() onerror=alert(1)></li> <div style=content:url(data:image/svg+xml,%3Csvg/%3E);visibility:hidden onload=alert(1)></div>
+</ul>
+</div>
+</frameset>
+<head><base href="javascript://"/></head><body><a href="/. /,alert(1)//#">XXX</a></body>
+<SCRIPT FOR=document EVENT=onreadystatechange>alert(1)</SCRIPT>
+<OBJECT CLASSID="clsid:333C7BC4-460F-11D0-BC04-0080C7055A83"><PARAM NAME="DataURL" VALUE="javascript:alert(1)"></OBJECT>
+<b <script>alert(1)//</script>0</script></b>
+<div id="div1"><input value="``onmouseover=alert(1)"></div> <div id="div2"></div><
+script>document.getElementById("div2").innerHTML = document.getElementById("div1").innerHTML;</script>
+Some example text<br />
+<b>This is bold</b><br />
+<i>This is italic</i><br />
+<small>Some small text</small>
+<pre>This is pre-formatted
+        <script>alert('something')</script>
+        <b>Bold Stuff</b>
+        <pre>something</pre>
+        <code>code</code>
+        <b>BOLD</b>
+        function myfunction()
+        {
+            
+        }
+ </pre>
+<code>
+        function myfunction()
+        {
+            
+        }
+
+<script>alert('something')</script>
+</code>
+<x '="foo"><x foo='><img src=x onerror=alert(1)//'> <!-- IE 6-9 --> <! '="foo"><x foo='><img src=x onerror=alert(2)//'> <? '="foo"><x foo='><img src=x onerror=alert(3)//'>
+<embed src="javascript:alert(1)"></embed> // O10.10↓, OM10.0↓, GC6↓, FF <img src="javascript:alert(2)"> <image src="javascript:alert(2)"> // IE6, O10.10↓, OM10.0↓ <script src="javascript:alert(3)"></script> // IE6, O11.01↓, OM10.1↓
+<div style=width:1px;filter:glow onfilterchange=alert(1)>x</div>
+<object allowscriptaccess="always" data="test.swf"></object>
+[A] <? foo="><script>alert(1)</script>"> <! foo="><script>alert(1)</script>"> </ foo="><script>alert(1)</script>"> [B] <? foo="><x foo='?><script>alert(1)</script>'>"> [C] <! foo="[[[x]]"><x foo="]foo><script>alert(1)</script>"> [D] <% foo><x foo="%><script>alert(1)</script>">
+<iframe src=mhtml:http://html5sec.org/test.html!xss.html></iframe> <iframe src=mhtml:http://html5sec.org/test.gif!xss.html></iframe>
+<html> <body> <b>some content without two new line \n\n</b> Content-Type: multipart/related; boundary="******"<b>some content without two new line</b> --****** Content-Location: xss.html Content-Transfer-Encoding: base64 PGlmcmFtZSBuYW1lPWxvIHN0eWxlPWRpc3BsYXk6bm9uZT48L2lmcmFtZT4NCjxzY3JpcHQ+DQp1 cmw9bG9jYXRpb24uaHJlZjtkb2N1bWVudC5nZXRFbGVtZW50c0J5TmFtZSgnbG8nKVswXS5zcmM9 dXJsLnN1YnN0cmluZyg2LHVybC5pbmRleE9mKCcvJywxNSkpO3NldFRpbWVvdXQoImFsZXJ0KGZy YW1lc1snbG8nXS5kb2N1bWVudC5jb29raWUpIiwyMDAwKTsNCjwvc2NyaXB0PiAgICAg --******-- </body> </html>
+<!-- IE 5-9 --> <div id=d><x xmlns="><iframe onload=alert(1)"></div> <script>d.innerHTML+='';</script> <!-- IE 10 in IE5-9 Standards mode --> <div id=d><x xmlns='"><iframe onload=alert(2)//'></div> <script>d.innerHTML+='';</script>
+<img[a][b]src=x[d]onerror[c]=[e]"alert(1)">
+<a href="[a]java[b]script[c]:alert(1)">XXX</a>
+<img src="x` `<script>alert(1)</script>"` `>
+<img src onerror /" '"= alt=alert(1)//">
+<title onpropertychange=alert(1)></title><title title=></title>
+<!-- IE 5-8 standards mode --> <a href=http://foo.bar/#x=`y></a><img alt="`><img src=xx:x onerror=alert(1)></a>"> <!-- IE 5-9 standards mode --> <!a foo=x=`y><img alt="`><img src=xx:x onerror=alert(2)//"> <?a foo=x=`y><img alt="`><img src=xx:x onerror=alert(3)//">
+<!--[if]><script>alert(1)</script --> <!--[if<img src=x onerror=alert(2)//]> -->
+<script> Blabla </script>
+<script src="/\example.com\foo.js"></script> // Safari 5.0, Chrome 9, 10 <script src="\\example.com\foo.js"></script> // Safari 5.0
+<object id="x" classid="clsid:CB927D12-4FF7-4a9e-A169-56E4B8A75598"></object> <object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" onqt_error="alert(1)" style="behavior:url(#x);"><param name=postdomevents /></object>
+<!-- `<img/src=xx:xx onerror=alert(1)//--!>
+<xmp> <% </xmp> <img alt='%></xmp><img src=xx:x onerror=alert(1)//'> <script> x='<%' </script> %>/ alert(2) </script> XXX <style> *['<!--']{} </style> -->{} *{color:red}</style>
+<a style="-o-link:'javascript:alert(1)';-o-link-source:current">X</a>
+<style>p[foo=bar{}*{-o-link:'javascript:alert(1)'}{}*{-o-link-source:current}*{background:red}]{background:green};</style>
+<div style="font-family:'foo[a];color:red;';">XXX</div>
+<form id="test"></form><button form="test" formaction="javascript:alert(1)">X</button>
+<input onfocus=write(1) autofocus>
+<video poster=javascript:alert(1)//></video>
+<body onscroll=alert(1)><br><br><br><br><br><br>...<br><br><br><br><input autofocus>
+
+EOF;
+
+return $html;            
+            
+    }
+        
+    
+    
+    
+}
