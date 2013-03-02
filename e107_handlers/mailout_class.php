@@ -21,8 +21,6 @@
  *	@package	e107
  *	@subpackage	e107_handlers
  *	@version 	$Id: mailout_class.php 11315 2010-02-10 18:18:01Z secretr $;
- *
- *	@todo	last visit date needs XHTML calendar on display, and needs to accept varying input formats
  */
 
 if (!defined('e107_INIT')) { exit; }

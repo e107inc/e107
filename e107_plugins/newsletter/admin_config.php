@@ -11,6 +11,16 @@
  * $URL$
  * $Id$
 */
+
+/**
+ *	e107 Newsletter plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	newsletter
+ *	@version 	$Id$;
+ */
+
+
 require_once('../../class2.php');
 if (!getperms('P')) 
 {
