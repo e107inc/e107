@@ -15,6 +15,15 @@
  *
 */
 
+/**
+ *	e107 pdf generation plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	pdf
+ *	@version 	$Id$;
+ */
+
+
 require_once('../../class2.php');
 if (!getperms('P') || !plugInstalled('pdf')) 
 {

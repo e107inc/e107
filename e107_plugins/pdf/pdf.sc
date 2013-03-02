@@ -1,7 +1,14 @@
 /*
- * e107 website system Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * e107 website system Copyright (C) 2008-2013 e107 Inc (e107.org)
  * $Id$
 */
+/**
+ *	e107 pdf generation plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	pdf
+ *	@version 	$Id$;
+ */
 
 if (!plugInstalled('pdf')) 
 {

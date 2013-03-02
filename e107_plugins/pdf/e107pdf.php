@@ -2,17 +2,25 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Plugin - PDF generator
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/pdf/e107pdf.php,v $
- * $Revision$
- * $Date$
- * $Author$
-*/
+ * $URL$
+ * $Id$
+ */
+
+
+/**
+ *	e107 pdf generation plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	pdf
+ *	@version 	$Id$;
+ */
+
 if (!defined('e107_INIT')) { exit; }
 
 /*
