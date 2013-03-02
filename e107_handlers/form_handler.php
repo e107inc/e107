@@ -315,7 +315,7 @@ class e_form
 		$title = "Media Manager : ".$category;
 
 		$ret = "<a title=\"{$title}\" rel='external' class='e-dialog' href='".$url."'>".$label."</a>"; // using colorbox. 
-	// $ret = "<a title=\"{$title}\" data-toggle='modal' data-cache='false' data-target='#eModal' href='".$url."'>".$label."</a>"; // using bootstrap. 
+	// $ret = "<a title=\"{$title}\" data-toggle='modal' data-cache='false' data-target='#uiModal' href='".$url."'>".$label."</a>"; // using bootstrap. 
 
 	
 	//	$footer = "<div style=\'padding:5px;text-align:center\' <a href=\'#\' >Save</a></div>";

@@ -295,7 +295,7 @@ class wysiwyg
 		
 			
 	//		'theme_advanced_statusbar_location'	=> 'bottom',
-			'theme_advanced_resizing'			=> 'false',
+			'theme_advanced_resizing'			=> 'true',
 			'remove_linebreaks'					=> 'false',
 			'extended_valid_elements'			=> vartrue($config['extended_valid_elements']), 
 	//		'pagebreak_separator'				=> "[newpage]", 

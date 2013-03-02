@@ -723,10 +723,10 @@ i.searchquery	{
 
 .nav-tabs > .active > a, .nav-tabs > .active > a:hover, .nav-tabs > .active > a:focus
 {
-	background-color: rgb(255, 255, 255);
-	cursor: text;	
+	background-color: rgb(246, 246, 246);
 	margin-bottom:-1px;
-
+	background-image: -moz-linear-gradient(to bottom, rgb(255, 255, 255) 0%, rgb(246, 246, 246) 100%);
+	border-bottom:1px solid rgb(246, 246, 246);
 }
 
 .tab-pane 						{  }
