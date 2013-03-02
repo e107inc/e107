@@ -2465,7 +2465,7 @@ class e_parser
         
    //     $html = mb_convert_encoding($html, 'UTF-8');     
             
-        $html = '<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html ><html><head><meta charset="utf-8"></head><body>'.$html.'</body></html>'; // Set it up for processing. 
+        $html = '<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html><html><head><meta charset="utf-8"></head><body>'.$html.'</body></html>'; // Set it up for processing. 
         $doc  = $this->domObj;   
         
         $doc->loadHTML($html); 
@@ -2510,7 +2510,7 @@ class e_parser
                      continue;
                 }
                 
-                if(invalidAttributeVal( $value)) // Check value against blacklist. 
+                if(invalidAttributeVal( $value)) // Check value against whitelist. 
                 {
 					$node->removeAttribute($name);
                     $node->setAttribute($name, '#---sanitized---#');
@@ -2529,7 +2529,7 @@ class e_parser
         }  
         
         // Convert <code> and <pre> Tags to Htmlentities. 
-        foreach($this->nodesToConvert as $node) //TODO Work on code processing and highlighting . 
+        foreach($this->nodesToConvert as $node)  
         {
             $value = $node->C14N();
 
