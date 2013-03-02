@@ -23,6 +23,51 @@ $(document).ready(function()
 		$.fn.editable.defaults.mode = 'popup';
 		$('.e-editable').editable();
 		
+		// Fix for boostrap modal cache. 
+		
+	//	$('.modal').on('hidden',function(){
+	//	    $(this).removeData('.modal');
+		 //   $('#uiModal .modal-label').text('Loading');
+		 //   $('#uiModal .modal-body').html('default_body');
+	//	});
+		
+		$('body').on('hidden', '.modal', function () {
+			$(this).removeData('modal');
+			 $('#uiModal .modal-label').text('Loading...');
+			$('#uiModal .modal-body').text('&nbsp;');
+			});
+		
+	
+		/*
+		
+		$('a[data-toggle="modal"]').on('click', function()
+		{
+			$(this).removeData('modal');
+			$('#uiModal .modal-header').text($(this).attr('title'));
+			var link = $(this).attr('href');
+			alert(link);
+			$('#uiModal .modal-body').html( 'table' );
+			//return false;
+			
+			return this;
+			
+			$('#uiModal .modal-body').load(link, function(response, status, xhr) 
+		        {
+		            if (status === 'error') 
+		            {
+		                //console.log('got here');
+		                $('#uiModal .modal-body').html('<h2>Oh boy</h2><p>Sorry, but there was an error:' + xhr.status + ' ' + xhr.statusText+ '</p>');
+		            }
+		return false;
+		            return this;
+		        }
+		    )
+			
+		});
+		
+		*/
+
+		
 		
 		// run tips on .field-help 
 		$("button,input,textarea,select,label,.e-tip").each(function(c) {
