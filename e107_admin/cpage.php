@@ -45,7 +45,14 @@ class page_admin extends e_admin_dispatcher
 			'path' 			=> null,
 			'ui' 			=> 'menu_admin_form_ui',
 			'uipath' 		=> null
-		)			
+		),
+		'dialog'		=> array(
+			'controller' 	=> 'menu_admin_ui',
+			'path' 			=> null,
+			'ui' 			=> 'menu_admin_form_ui',
+			'uipath' 		=> null
+		)
+			
 	);	
 	
 	protected $adminMenu = array(
@@ -185,7 +192,7 @@ class menu_admin_ui extends e_admin_ui
 		
 		protected $fields = array(
 			'checkboxes'		=> array('title'=> '',				'type' => null, 		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
-			'page_id'			=> array('title'=> 'ID',			'type'=>'text',   'tab' => 0,	'width'=>'5%', 'readParms'=>'link=sef&dialog=1','forced'=> TRUE),
+			'page_id'			=> array('title'=> 'ID',			'type'=>'text',   'tab' => 0,	'width'=>'5%', 'readParms'=>'','forced'=> TRUE),
          	'page_theme' 		=> array('title'=> "Menu Name", 	'tab' => 0,	'type' => 'text', 		'width' => 'auto','nolist'=>true),
 		
 		    'page_title'	   	=> array('title'=> LAN_TITLE, 		'tab' => 0,	'type' => 'text', 		'width'=>'25%', 'inline'=>true,/*'readParms'=>'link={e_BASE}page.php?[id]&dialog=1'*/),
@@ -198,6 +205,98 @@ class menu_admin_ui extends e_admin_ui
 		);
 	
 		protected $fieldpref = array("page_id","page_theme", "page_title", "page_text");	
+		
+		
+		function init()
+		{
+			$this->fields['page_id']['readParms'] = array('link'=> e_SELF."?mode=dialog&action=preview&id=[id]", 'target'=> 'modal', 'iframe' => true);
+			
+			
+			if(E107_DEBUG_LEVEL > 0 && e_AJAX_REQUEST)
+			{
+				echo "REQUEST = ".e_REQUEST_SELF; //XXX Why no Query String ?? FIXME
+				// $this->getAction()	
+			}
+			
+			
+			
+			if($this->getMode() == 'dialog')
+			{
+				
+				$this->getRequest()->setAction('preview');
+				
+			//	$this->setDefaultAction('previewPage');
+				
+			//	echo "ACTIOn = ".$this->getAction();
+				
+				define('e_IFRAME', TRUE);
+				
+				// return;
+			};
+				
+			
+		}
+
+		function CreateHeader()
+		{
+			e107::css('inline',' body { background-color: green } ');	
+		}
+		
+		// Create Menu in Menu Table
+		function afterCreate($newdata,$olddata, $id)
+		{
+			$tp = e107::getParser();
+			$sql = e107::getDb();
+			$mes = e107::getMessage();
+			
+			$menu_name = $tp->toDB($newdata['page_theme']); // not to be confused with menu-caption.
+			$menu_path = intval($id);
+				
+			if (!$sql->select('menus', 'menu_name', "`menu_path` = ".$menu_path." LIMIT 1")) 	
+			{		
+				$insert = array('menu_name' => $menu_name, 'menu_path' => $menu_path);
+			
+				if($sql->insert('menus', $insert) !== false)
+				{
+					
+					$mes->addDebug("Menu Created");
+					return true;
+				}
+			}	
+			
+		}
+		
+		// Update Menu in Menu Table
+		function afterUpdate($newdata,$olddata,$id)
+		{
+			$tp = e107::getParser();
+			$sql = e107::getDb();
+			$mes = e107::getMessage();
+			
+			$menu_name = $tp->toDB($newdata['page_theme']); // not to be confused with menu-caption.
+				
+			if ($sql->select('menus', 'menu_name', "`menu_path` = ".$id." LIMIT 1")) 	
+			{		
+				if($sql->update('menus', "menu_name='{$menu_name}' WHERE menu_path=".$id." LIMIT 1") !== false)
+				{
+					$mes->addDebug("Menu Updated");
+					return true;
+				}
+			}				
+		}
+		
+		
+		function previewPage() //XXX FIXME Doesn't work when in Ajax mode.. why???
+		{
+			print_a($_GET);
+			
+		//	$id = $this->getListModel()->get('page_id');
+			$tp = e107::getParser();			
+		}
+					
+				
+			
+		
 		
 }
 
@@ -286,7 +385,8 @@ class page_admin_ui extends e_admin_ui
 		protected $templates = array();
 
 		function init()
-		{
+		{		
+			
 			$this->templates = e107::getLayouts('', 'page', 'front', '', false, false); 
 			$this->fields['page_template']['writeParms'] = $this->templates;
 			
@@ -314,6 +414,8 @@ class page_admin_ui extends e_admin_ui
 
 }
 
+
+	;
 
 
 new page_admin();
