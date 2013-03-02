@@ -8,8 +8,6 @@
  *
  * Linkwords plugin - admin page
  *
- * $URL$
- * $Id$
  */
 
 require_once('../../class2.php');
@@ -22,10 +20,10 @@ require_once(e_ADMIN.'auth.php');
 include_lan(e_PLUGIN.'linkwords/languages/'.e_LANGUAGE.'_admin_linkwords.php');
 define('LW_CACHE_TAG', 'nomd5_linkwords');
 
-require_once(e_HANDLER.'message_handler.php');
-$mes = e107::getMessage();
 
+$mes = e107::getMessage();
 $tp = e107::getParser();
+$frm = e107::getForm();
 
 $lw_context_areas = array(
 			'TITLE' => LWLAN_33,
@@ -154,14 +152,12 @@ if (isset($_POST['submit_linkword']) || isset($_POST['update_linkword']))
 			$id = intval(varset($_POST['lw_edit_id'],0));
 			if (($id > 0) && $sql->db_UpdateArray('linkwords', $data, ' WHERE `linkword_id`='.$id))
 			{
-				//$message = LWLAN_3;
 				$mes->addSuccess(LAN_UPDATED);
 				$logString = 'ID: '.$id.'[!br!]'.$logString;
 				$admin_log->log_event('LINKWD_02',$logString,'');
 			}
 			else
 			{
-				//$message = LWLAN_57;
 				$mes->addError(LAN_UPDATED_FAILED);
 			}
 		}
@@ -196,9 +192,7 @@ else
 
 if (($action == 'words') || ($action == 'edit'))
 {
-	
-	$frm = e107::getForm();
-	
+		
 $text = "
 <form method='post' action='".e_SELF."?words'>
 <table class='table adminform'>
