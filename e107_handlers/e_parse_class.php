@@ -29,7 +29,7 @@ define('E_UTF8_PACK', e_HANDLER.'utf8/');
 
 define("E_NL", chr(2));
 
-class e_parse
+class e_parse extends e_parser
 {
 	/**
 	 * Determine how to handle utf-8.
@@ -240,6 +240,7 @@ class e_parse
 	public function __construct()
 	{
 		// initialise the type of UTF-8 processing methods depending on PHP version and mb string extension
+		$this->init();
 		$this->initCharset();
 
 		// Preprocess the supermods to be useful default arrays with all values
@@ -2342,14 +2343,19 @@ class e_parse
  * Start Fresh and Build on it over time to become eventual replacement to e_parse. 
  * Cameron's DOM-based parser. 
  */
-class e_parser extends e_parse
+class e_parser
 {
-    private $domObj             = null;
+    public $domObj             = null;
     private $removedList        = array();
     private $nodesToDelete      = array();
     private $nodesToConvert     = array();
     private $pathList           = array();
-    private $allowedAttributes  = array('id','href','src','style','class', 'alt', 'title'); // allow posting of data-* ?
+    private $allowedAttributes  = array(
+                                    'default'   => array('id', 'style', 'class'),
+                                    'img'       => array('id', 'src', 'style', 'class', 'alt', 'title', 'width', 'height'),
+                                    'a'         => array('id', 'href', 'style', 'class', 'title'),
+                                  ); 
+    private $badAttrValues       = array("javascript[\s]*?:","alert\(","vbscript[\s]*?:","data:text/html", "mhtml[\s]*?:", "data:[\s]*?image");
     private $allowedTags        = array('html', 'body','div','a','img','table','tr', 'td', 'th', 'tbody', 'thead', 'colgroup', 'b', 
                                         'i', 'pre','code', 'strong', 'u', 'em','ul','li','img','h1','h2','h3','h4','h5','h6','p',
                                         'div','pre','section','article', 'blockquote','hgroup','aside','figure','span', 'video', 'br',
@@ -2358,7 +2364,7 @@ class e_parser extends e_parse
         
     public function __construct()
     {
-       $this->domObj = new DOMDocument();
+       $this->init();
     
          /*
         $meths = get_class_methods('DomDocument');
@@ -2366,6 +2372,15 @@ class e_parser extends e_parse
         print_a($meths);
         */        
     }  
+
+    /**
+     * Used by e_parse to start
+     */
+    function init()
+    {
+        $this->domObj = new DOMDocument();    
+        
+    }
     
     /**
      * Set Allowed Tags. 
@@ -2403,18 +2418,18 @@ class e_parser extends e_parse
  
         echo "<h2>Standard v2 Parser</h2>";
         echo "<h3>\$tp->dataFilter()</h3>";
-        // echo $this->dataFilter($html); // Remove Comment for a real mess! 
-        $sql->db_Mark_Time('Start Parser Test');
+        // echo $tp->dataFilter($html); // Remove Comment for a real mess! 
+        $sql->db_Mark_Time('------ Start Parser Test -------');
         print_a($this->dataFilter($html));   
         $sql->db_Mark_Time('tp->dataFilter');
          
         echo "<h3>\$tp->toHtml()</h3>";
-        // echo $this->dataFilter($html); // Remove Comment for a real mess! 
+        // echo $tp->dataFilter($html); // Remove Comment for a real mess! 
         print_a($this->tohtml($html));
         $sql->db_Mark_Time('tp->toHtml');     
         
         echo "<h3>\$tp->toDB()</h3>";
-        // echo $this->dataFilter($html); // Remove Comment for a real mess! 
+        // echo $tp->dataFilter($html); // Remove Comment for a real mess! 
         print_a($this->toDB($html)); 
         $sql->db_Mark_Time('tp->toDB');             
         
@@ -2424,7 +2439,7 @@ class e_parser extends e_parse
         $cleaned = $this->cleanHtml($html);  
         print_a($cleaned);
         $sql->db_Mark_Time('new Parser');    
-        
+      //  $sql->db_Mark_Time('------ End Parser Test -------');
         echo "<h3>Processed &amp; Rendered</h3>";
         echo $cleaned;
         
@@ -2434,6 +2449,7 @@ class e_parser extends e_parse
                    
         echo "<h3>Removed Tags and Attributes</h3>";
         print_a($this->removedList);
+        
          //   print_a($p); 
     }
  
@@ -2446,12 +2462,15 @@ class e_parser extends e_parse
     public function cleanHtml($html='')
     {
         if(!vartrue($html)){ return; }
-                           
-        $html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>html 5 test</title></head><body>'.$html.'</body></html>'; // Set it up for processing. 
+        
+   //     $html = mb_convert_encoding($html, 'UTF-8');     
+            
+        $html = '<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html ><html><head><meta charset="utf-8"></head><body>'.$html.'</body></html>'; // Set it up for processing. 
         $doc  = $this->domObj;   
-          
-        $doc->loadHTML($html);
-        $doc->resolveExternals = true;
+        
+        $doc->loadHTML($html); 
+        $doc->encoding = 'UTF-8'; //FIXME 
+     //   $doc->resolveExternals = true;
         
         $tmp = $doc->getElementsByTagName('*');   
 
@@ -2462,41 +2481,45 @@ class e_parser extends e_parse
          //   $tag = strval(basename($path));
             
             $tag = preg_replace('/([a-z0-9\[\]\/]*)?\/([\w]*)(\[(\d)*\])?$/i', "$2", $path);
-			$allowed = in_array($tag, $this->allowedTags);
-            if(!$allowed)
+            if(!in_array($tag, $this->allowedTags))
             {
-                 if(strpos($path,'/code/') !== false || strpos($path,'/pre/') !== false) // treat as html. 
+                  
+                 if(strpos($path,'/code/') !== false || strpos($path,'/pre/') !== false) //  treat as html. 
                  {
                     $this->pathList[] = $path; 
-                    $this->nodesToConvert[] = $node->parentNode; // $node; 
+                    $this->nodesToConvert[] =  $node->parentNode; // $node; 
                     continue;
                  }
                 
                 $this->removedList['tags'][] = $tag;
                 $this->nodesToDelete[] = $node; 
-				continue;
+                continue;
             }
-            
+             
             foreach ($node->attributes as $attr)
             {
                 $name = $attr->nodeName;
-                $value = $attr->nodeValue; // Check value against whitelist. 
+                $value = $attr->nodeValue; 
+                
+                $allow = varset($this->allowedAttributes[$tag], $this->allowedAttributes['default']);
 
-                if(!in_array($name, $this->allowedAttributes) )
+                if(!in_array($name, $allow))
+                {
+                     $node->removeAttribute($name);   
+                     $this->removedList['attributes'][] = $name. " from <".$tag.">";
+                     continue;
+                }
+                
+                if(invalidAttributeVal( $value)) // Check value against blacklist. 
                 {
 					$node->removeAttribute($name);
-                    $this->removedList['attributes'][] = $tag.'['.$name.']';
-                }
-				else
-				{
-	                if($this->inValidAttributeVal($value))
-	                {
-	                	$node->removeAttribute($name);
-	                    $node->setAttribute($name, '#---sanitized---#');   
-						$this->removedList['sanitized'][] = $tag.'['.$name.']';    
-	                }
-				}       
+                    $node->setAttribute($name, '#---sanitized---#');
+					$node->removeAttribute($name);
+	                $node->setAttribute($name, '#---sanitized---#');   
+					$this->removedList['sanitized'][] = $tag.'['.$name.']';    
+                }       
             } 
+
         }
         
         // Remove some stuff. 
@@ -2506,18 +2529,37 @@ class e_parser extends e_parse
         }  
         
         // Convert <code> and <pre> Tags to Htmlentities. 
-        foreach($this->nodesToConvert as $node) //TODO Work on code processing and highlighting. 
+        foreach($this->nodesToConvert as $node) //TODO Work on code processing and highlighting . 
         {
             $value = $node->C14N();
+
             $value = str_replace("&#xD;","",$value);
-            $node->nodeValue = htmlentities($value);
+            
+            if($node->nodeName == 'pre')
+            {
+                $value = substr($value,5);
+                $end = strrpos($value,"</pre>");
+                $value = substr($value,0,$end);
+            }
+            
+            if($node->nodeName == 'code')
+            {
+                $value = substr($value,6);
+                $end = strrpos($value,"</code>");
+                $value = substr($value,0,$end);
+            }
+            
+            $value = htmlentities(htmlentities($value)); // Needed 
+            $node->nodeValue = $value;
         }  
        
        
         $cleaned = $doc->saveHTML();
         
-        $cleaned = str_replace(array('<body>','</body>','<html>','</html>','<!DOCTYPE html>'),'',$cleaned); // filter out tags. 
-           
+        $cleaned = str_replace(array('<body>','</body>','<html>','</html>','<!DOCTYPE html>','<meta charset="UTF-8">','<?xml version="1.0" encoding="utf-8"?>'),'',$cleaned); // filter out tags. 
+    
+        $cleaned = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
+        
         return $cleaned;
     }
  
@@ -2529,12 +2571,9 @@ class e_parser extends e_parse
      */   
     function invalidAttributeVal($val)
     {
-    	// FIXME default (strict) match and filters for certain attributes (e.g. src, href, etc) 
-        $invalid = array("javascript:","alert(","vbscript:","data:text/html", "mhtml:", "data:image"); 
-		
-        foreach($invalid as $v)
+        foreach($this->badAttrValues as $v) // global list because a bad value is bad regardless of the attribute it's in. ;-)
         {
-            if(stripos($val,$v)!==false) //TODO More reliable check. 
+            if(preg_match('/'.$v.'/i',$v)!==false)  
             {
                 return true;    
             }   
@@ -2553,6 +2592,13 @@ class e_parser extends e_parse
     {
 
 $html = <<<EOF
+Internationalization Test: 
+ภาษาไทย <br />
+日本語 <br />
+简体中文 <br />
+<a href='somewhere.html' src='invalidatrribute' >Test</a>
+<a href='javascript: something' src='invalidatrribute' >Test regex</a>
+<img href='invalidattribute' src='myimage.jpg' />
 <frameset onload=alert(1) data-something=where>
 <table background="javascript:alert(1)"><tr><td><a href="something.php" onclick="alert(1)">Hi there</a></td></tr></table>
 <div>
@@ -2622,8 +2668,10 @@ Some example text<br />
 <video poster=javascript:alert(1)//></video>
 <video>somemovei.mp4</video>
 <body onscroll=alert(1)><br><br><br><br><br><br>...<br><br><br><br><input autofocus>
-<a href='somewhere.html' src='invalidatrribute' />Test</a>
+
 <article id="something">Some text goes here</article>
+
+
 EOF;
 
 return $html;            
