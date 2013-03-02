@@ -239,7 +239,7 @@ class menu_admin_ui extends e_admin_ui
 
 		function CreateHeader()
 		{
-			e107::css('inline',' body { background-color: green } ');	
+			// e107::css('inline',' body { background-color: green } ');	
 		}
 		
 		// Create Menu in Menu Table

@@ -36,8 +36,12 @@ $(document).ready(function()
 			 $('#uiModal .modal-label').text('Loading...');
 			$('#uiModal .modal-body').text('&nbsp;');
 			});
-		
-	
+		$('a[data-toggle="modal"]').on('click', function()
+			{
+				var link = $(this).attr('href');
+				alert(link);
+			}
+		);
 		/*
 		
 		$('a[data-toggle="modal"]').on('click', function()
