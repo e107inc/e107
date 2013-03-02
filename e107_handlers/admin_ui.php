@@ -4530,6 +4530,8 @@ class e_admin_ui extends e_admin_controller_ui
 
 	/**
 	 * User defined pre-create logic, return false to prevent DB query execution
+	 * @param $new_data
+	 * @param $old_data
 	 */
 	public function beforeCreate($new_data, $old_data)
 	{
@@ -4537,6 +4539,9 @@ class e_admin_ui extends e_admin_controller_ui
 
 	/**
 	 * User defined after-create logic
+	 * @param $new_data
+	 * @param $old_data
+	 * @param $id
 	 */
 	public function afterCreate($new_data, $old_data, $id)
 	{
@@ -4544,6 +4549,8 @@ class e_admin_ui extends e_admin_controller_ui
 
 	/**
 	 * User defined error handling, return true to suppress model messages
+	 * @param $new_data
+	 * @param $old_data
 	 */
 	public function onCreateError($new_data, $old_data)
 	{
@@ -4551,6 +4558,8 @@ class e_admin_ui extends e_admin_controller_ui
 
 	/**
 	 * User defined pre-update logic, return false to prevent DB query execution
+	 * @param $new_data
+	 * @param $old_data
 	 */
 	public function beforeUpdate($new_data, $old_data, $id)
 	{
@@ -4558,6 +4567,8 @@ class e_admin_ui extends e_admin_controller_ui
 
 	/**
 	 * User defined after-update logic
+	 * @param $new_data 
+	 * @param $old_data
 	 */
 	public function afterUpdate($new_data, $old_data, $id)
 	{
