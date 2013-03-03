@@ -62,7 +62,7 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 	
 	// e107::css('core', 	'core/admin.css', 'jquery');
 //	e107::js('core', 	'core/admin.jquery.js', 'jquery', 4);
-	// e107::js('core','bootstrap/js/bootstrap.min.js');
+ e107::js('core','bootstrap/js/bootstrap-tooltip.js');
 //	e107::css('core','bootstrap/css/bootstrap.min.css');
 	e107::js('inline', "
 		$(function() {
@@ -219,19 +219,45 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 	select.menu-btn { text-align:left }
 	
 	label { font-size: 12px;  line-height:14px }
+	label.input							{margin-right:10px }
 	
-	#core-menumanager-main 				{ width:100%; margin-left:auto; margin-right:auto }
+	#core-menumanager-main 						{ width:100%; margin-left:auto; margin-right:auto }
 	
 	
-	table.table 						{ width: 95% ; margin-left:auto; margin-right:auto; }
+	table.table 								{ width: 95% ; margin-left:auto; margin-right:auto; }
 	
-	label.selection-row  				{ padding:6px ; cursor: pointer; width:90%}
+	label.selection-row  						{ padding:6px ; cursor: pointer; width:90%}
 	
-	table.table tbody > tr >td 			{  }
-	table.table tbody > tr >td label 	{ padding:15px; display:block; cursor: pointer; font-size:14px ;  }
+	table.table tbody > tr >td 					{  }
+	table.table tbody > tr >td label 			{ padding:15px; display:block; cursor: pointer; font-size:14px ;  }
+	table.table tbody > tr >td label > input	{ margin-right: 10px; }
+	
 	
 	.table-striped tbody > tr:nth-child(2n+1) > td, .table-striped tbody > tr:nth-child(2n+1) > th {
     	background-color: rgb(249, 249, 249);
+	}
+	
+	.menu-panel {
+    min-height: 20px;
+    padding: 19px;
+    margin-bottom: 20px;
+    background-color: rgb(245, 245, 245);
+    border: 1px solid rgb(227, 227, 227);
+    border-radius: 4px 4px 4px 4px;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.05) inset;
+}
+	
+	.menu-panel-header
+	 {
+    display: block;
+    padding: 3px 15px;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 20px;
+    color: rgb(153, 153, 153);
+    text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+	
 	}
 	
 	",'jquery');

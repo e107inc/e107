@@ -1930,10 +1930,10 @@ class admin_newspost
 		$frm = e107::getForm();
 
 		$text = '';
-		if (isset($_POST['preview']))
-		{
-			$text = $this->preview_item($this->getId());
-		}
+	///	if (isset($_POST['preview'])) // Deprecated
+	//	{
+		//	$text = $this->preview_item($this->getId());
+	//	}
 
 
 		$sub_action = $this->getSubAction();
@@ -2387,9 +2387,11 @@ class admin_newspost
 					</table>
 				</fieldset>
 				</div>
-				<div class='buttons-bar center'>
-					".$frm->admin_button('preview', isset($_POST['preview']) ? NWSLAN_24 : NWSLAN_27 , 'other')."
-					".$frm->admin_button('submit_news', ($id && $sub_action != "sn" && $sub_action != "upload") ? NWSLAN_25 : NWSLAN_26 , 'update')."
+				<div class='buttons-bar center'>";
+				
+				//	".$frm->admin_button('preview', isset($_POST['preview']) ? NWSLAN_24 : NWSLAN_27 , 'other')."
+				
+				$text .= $frm->admin_button('submit_news', ($id && $sub_action != "sn" && $sub_action != "upload") ? NWSLAN_25 : NWSLAN_26 , 'update')."
 					".$frm->checkbox('create_edit_stay', 1, isset($_POST['create_edit_stay'])).$frm->label(LAN_NEWS_54, 'create_edit_stay', 1)."
 					<input type='hidden' name='news_id' value='{$id}' />
 				</div>
