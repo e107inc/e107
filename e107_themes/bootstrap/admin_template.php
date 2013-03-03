@@ -220,8 +220,12 @@ $ADMIN_HEADER .= '<div class="container-fluid">
 			{ADMIN_HELP}
 			{ADMIN_SITEINFO=creditsonly}
 			{SETSTYLE=default}
-			{ADMIN_STATUS=infopanel}
+			<div class="well">
 			{ADMIN_LATEST=infopanel}
+			</div>
+			<div class="well">
+			{ADMIN_STATUS=infopanel}
+			</div>
 			{ADMIN_LOG=request}
 			{ADMIN_MSG=request}
 			{ADMIN_PLUGINS}
