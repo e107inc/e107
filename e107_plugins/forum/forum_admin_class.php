@@ -8,9 +8,6 @@
 *
 * Forum admin functions
 *
-* $URL$
-* $Id$
-*
 */
 
 /* TODO

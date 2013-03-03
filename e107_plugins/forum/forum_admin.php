@@ -6,10 +6,6 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $URL$
- * $Id$
  */
 
 $eplug_admin = true;
@@ -29,9 +25,9 @@ require_once(e_HANDLER.'form_handler.php');
 require_once(e_HANDLER.'ren_help.php'); // FIXME
 require_once(e_PLUGIN.'forum/forum_class.php');
 require_once(e_PLUGIN.'forum/forum_admin_class.php');
-//$emessage = eMessage::getInstance();
+
 $mes = e107::getMessage();
-$rs = new form; // FIX TODO needs $frm
+//$rs = new form; // FIX TODO needs $frm
 $for = new e107forum;
 $forum = new forumAdmin;
 $sql = e107::getDb();
@@ -218,7 +214,7 @@ if(isset($_POST['update_parent']))
 	$tmp['data']['forum_postclass'] = $_POST['forum_postclass'];
 	$tmp['data']['forum_threadclass'] = $_POST['forum_threadclass'];
 	$sql->db_Update('forum', $tmp);
-	//$forum->show_message(FORLAN_14);
+
 	$mes->addSuccess(LAN_UPDATED);
 	$action = 'main';
 }
@@ -238,12 +234,10 @@ if(isset($_POST['submit_forum']))
 	$tmp['forum_parent'] = (int)$_POST['forum_parent'];
 	if($sql->db_Insert('forum', $tmp))
 	{
-		//$forum->show_message(FORLAN_36.' - '.LAN_CREATED);
 		$mes->addSuccess(LAN_CREATED);
 	}
 	else
 	{
-		//$forum->show_message(FORLAN_36.' - '.LAN_CREATED_FAILED);
 		$mes->addError(LAN_CREATED_FAILED);
 	}
 }
@@ -265,7 +259,6 @@ if(isset($_POST['update_forum']))
 	$sql->db_Update('forum', $tmp);
 	$sql->db_Update('forum', $tmp2);
 
-	//$forum->show_message(FORLAN_12);
 	$mes->addSuccess(LAN_UPDATED);
 	$action = 'main';
 }
@@ -279,7 +272,6 @@ if (isset($_POST['update_order']))
 		$tmp = explode('.', $id);
 		$sql->db_Update('forum', "forum_order=".$tmp[1]." WHERE forum_id=".$tmp[0]);
 	}
-	//$forum->show_message(FORLAN_73);
 	$mes->addSuccess(LAN_UPDATED);
 }
 
@@ -307,10 +299,8 @@ if (isset($_POST['updateoptions']))
 	$fPref->set('maxwidth', $_POST['forum_maxwidth']);
 	$fPref->set('linkimg', $_POST['forum_linkimg']);
 	$fPref->save(true, true);
-	//$emessage->add(FORLAN_10, E_MESSAGE_SUCCESS);
-	$mes->addSuccess();
 
-//	$forum->show_message(FORLAN_10);
+	$mes->addSuccess();
 }
 
 $ns->tablerender($caption, $mes->render() . $text);
@@ -318,7 +308,6 @@ $ns->tablerender($caption, $mes->render() . $text);
 if (isset($_POST['do_prune']))
 {
 	$msg = $for->forumPrune($_POST['prune_type'], $_POST['prune_days'], $_POST['pruneForum']);
-	//$forum->show_message($msg);
 	$mes->addSuccess($msg);
 	$action = 'main';
 }
@@ -348,7 +337,6 @@ $ns->tablerender($caption, $mes->render() . $text);
 
 if (vartrue($delete) == 'main') {
 	if ($sql->db_Delete('forum', "forum_id='$del_id' ")) {
-		//$forum->show_message(FORLAN_96);
 		$mes->addSuccess(LAN_DELETED);
 	}
 	else 
@@ -473,6 +461,4 @@ function forum_admin_adminmenu()
 	global $action;
 	$forum->show_options($action);
 }
-
-
 ?>

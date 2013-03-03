@@ -8,9 +8,6 @@
  *
  * Plugin Administration - Clock menu
  *
- *
- * $URL$
- * $Id$
  */
 
 
@@ -24,9 +21,6 @@ if (!getperms('1'))
 require_once(e_ADMIN.'auth.php');
 include_lan(e_PLUGIN.'clock_menu/languages/admin/'.e_LANGUAGE.'.php');
 
-require_once(e_HANDLER.'form_handler.php');
-require_once(e_HANDLER.'message_handler.php');
-$rs = new form;
 $frm = e107::getForm();
 $mes = e107::getMessage();
 $menu_pref = e107::getConfig('menu')->getPref('');
@@ -72,8 +66,7 @@ $text = "
 	
 	<tr>
 		<td>".CLOCK_AD_L5.": </td>
-		<td>".($menu_pref['clock_format'] == 1 ? $rs->form_checkbox("clock_format", 1, 1) : $rs->form_checkbox("clock_format", 1, 0) )."
-		<span class='field-help'>".CLOCK_AD_L6."</span></td>
+		<td>".$frm->checkbox('clock_format', 1, varset($menu_pref['clock_format'], 0))."<span class='field-help'>".CLOCK_AD_L6."</span></td>
 	</tr>
 
 	<tr>
