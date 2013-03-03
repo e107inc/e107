@@ -1229,6 +1229,7 @@ class e_menuManager {
 
 	function menuRenderMenu($row,$menu_count,$rep = FALSE)
 	{
+	
 		global $rs,$menu,$menu_info,$menu_act, $style;
 		$ns = e107::getRender();
 
@@ -1335,7 +1336,7 @@ class e_menuManager {
 		$text .= '<a title="'.LAN_DELETE.'" id="remove-'.$menu_id.'-'.$menu_location.'" class="e-tip delete e-menumanager-delete menu-btn" href="'.e_SELF.'?configure='.$this->curLayout.'&amp;mode=deac&amp;id='.$menu_id.'">'.ADMIN_DELETE_ICON.'</a>
 		
 		<span id="status-'.$menu_id.'" style="display:none">'.($rep == true ? "" : "insert").'</span>
-		<span></div>';
+		</span></div>';
 
 		$text .= ($rep == true) ? "</div>" : "";
 

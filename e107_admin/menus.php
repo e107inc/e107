@@ -140,7 +140,8 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 	
 	
 	e107::css('inline',"	.column { width:100%;  padding-bottom: 100px; }
-	.regularMenu { border:1px dotted silver; margin-bottom:6px; padding-left:3px; padding-right:3px }
+	
+	.regularMenu { border-bottom:1px dotted silver; margin-bottom:6px; padding-left:3px; padding-right:3px }
 	
 	.portlet { margin: 0 1em 1em 0; }
 	.portlet-header { margin: 0.3em; padding-bottom: 4px; padding-left: 0.2em; cursor:move }
