@@ -541,7 +541,7 @@ class e_menuManager {
 		$checked = ($listtype == 1) ? " checked='checked' " : "";
 		
 		$text .= $frm->radio('listtype', 1, $checked, array('label'=>MENLAN_26, 'class'=> 'e-save'));
-	//	$text .= "<br />";
+		$text .= "<br />";
 	//	$text .= "<input type='radio' class='e-save' {$checked} name='listtype' value='1' /> ".MENLAN_26."<br />";
 		$checked = ($listtype == 2) ? " checked='checked' " : "";
 		
@@ -551,7 +551,7 @@ class e_menuManager {
 		// $text .= "<input type='radio' class='e-save' {$checked} name='listtype' value='2' /> ".MENLAN_27."<br />";
 		
 		$text .= "</div>
-		<div class='row'>
+		<div class='row' style='padding:10px'>
 			
 			<div class='pull-left span3' >
 		
