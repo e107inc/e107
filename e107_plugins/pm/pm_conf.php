@@ -2,16 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * PM Plugin - administration
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_conf.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 
@@ -20,7 +16,6 @@
  *
  *	@package	e107_plugins
  *	@subpackage	pm
- *	@version 	$Id$;
  */
 
 
@@ -48,9 +43,7 @@ if (!e107::isInstalled('pm') || !getperms('P'))
 
 require_once(e_PLUGIN.'pm/pm_class.php');
 //require_once(e_HANDLER.'userclass_class.php');		Should already be loaded
-require_once(e_HANDLER.'form_handler.php');
-require_once (e_HANDLER.'message_handler.php');
-//$emessage = &eMessage :: getInstance();
+require_once(e_HANDLER."form_handler.php"); // FIXME form options below need rewriting to $frm->
 $mes = e107::getMessage();
 
 $action = e_QUERY;
@@ -134,15 +127,12 @@ if (isset($_POST['update_prefs']))
 	//	$sysprefs->setArray('pm_prefs');
 	//print_a($temp);
 		e107::getPlugConfig('pm')->setPref($temp)->save();
-	//	$emessage->add(ADLAN_PM_4, E_MESSAGE_SUCCESS);
 	}
 	else
 	{
-		//$emessage->add(ADLAN_PM_76, E_MESSAGE_INFO);
 		$mes->addInfo(LAN_NO_CHANGE);
 	}
 }
-
 
 
 // Mantenance options
@@ -183,13 +173,11 @@ if (isset($_POST['pm_maint_execute']))
 }
 
 
-
 if(isset($_POST['addlimit']))
 {
 	$id = intval($_POST['newlimit_class']);
 	if($sql->db_Select('generic','gen_id',"gen_type = 'pm_limit' AND gen_datestamp = ".$id))
 	{
-		//$emessage->add(ADLAN_PM_5, E_MESSAGE_INFO);		// 'Limit for selected user class already exists'
 		$mes->addInfo(ADLAN_PM_5); // 'Limit for selected user class already exists'
 	}
 	else
@@ -205,13 +193,11 @@ if(isset($_POST['addlimit']))
 		if($sql->db_Insert('generic', $limArray))
 		{
 			$e107->admin_log->logArrayAll('PM_ADM_05', $limArray);
-			//$emessage->add(ADLAN_PM_6, E_MESSAGE_SUCCESS);
 			$mes->addSuccess(ADLAN_PM_6);
 		}
 		else
 		{
 			$e107->admin_log->log_event('PM_ADM_08', '');
-			//$emessage->add(ADLAN_PM_7, E_MESSAGE_ERROR);
 			$mes->addError(ADLAN_PM_7); 
 		}
 	}
@@ -224,7 +210,6 @@ if(isset($_POST['updatelimits']))
 	{
 		$pm_prefs['pm_limits'] = $limitVal;
 		//$sysprefs->setArray('pm_prefs');
-		//$emessage->add(ADLAN_PM_8, E_MESSAGE_SUCCESS);
 		$mes->addSuccess(ADLAN_PM_8);
 	}
 	foreach(array_keys($_POST['inbox_count']) as $id)
@@ -236,13 +221,11 @@ if(isset($_POST['updatelimits']))
 			if($sql->db_Delete('generic','gen_id = '.$id))
 			{
 				$e107->admin_log->log_event('PM_ADM_07', 'ID: '.$id);
-				//$emessage->add($id.ADLAN_PM_9, E_MESSAGE_SUCCESS);
 				$mes->addSuccess($id.ADLAN_PM_9);
 			}
 			else
 			{
 				$e107->admin_log->log_event('PM_ADM_10', '');
-				//$emessage->add($id.ADLAN_PM_10, E_MESSAGE_ERROR);
 				$mes->addError($id.ADLAN_PM_10);
 			}
 		}
@@ -257,13 +240,11 @@ if(isset($_POST['updatelimits']))
 			if ($sql->db_Update('generic',array('data' => $limArray, 'WHERE' => 'gen_id = '.$id)))
 			{
 				$e107->admin_log->logArrayAll('PM_ADM_06', $limArray);
-				//$emessage->add($id.ADLAN_PM_11, E_MESSAGE_SUCCESS);
 				$mes->addSuccess($id.ADLAN_PM_11);
 			}
 			else
 			{
 				$e107->admin_log->log_event('PM_ADM_09', '');
-				//$emessage->add($id.ADLAN_PM_7, E_MESSAGE_ERROR);
 				$mes->addError($id.ADLAN_PM_7);
 			}
 		}
@@ -271,12 +252,6 @@ if(isset($_POST['updatelimits']))
 }
 
 
-/*
-if ($emessage->hasMessage())
-{
-	$e107->ns->tablerender(ADLAN_PM_58, $emessage->render());
-}
-*/
 $ns->tablerender($caption, $mes->render() . $text);
 
 
@@ -295,7 +270,6 @@ switch ($action)
 }
 
 require_once(e_ADMIN.'footer.php');
-
 
 
 

@@ -8,9 +8,6 @@
  *
  * Plugin Administration - Comment menu
  *
- *
- * $URL$
- * $Id$
  */
 
 $eplug_admin = TRUE;
@@ -24,8 +21,6 @@ if (!getperms("1"))
 	exit() ;
 }
 require_once(e_ADMIN."auth.php");
-require_once(e_HANDLER.'form_handler.php');
-require_once(e_HANDLER.'message_handler.php');
 $frm = e107::getForm();
 $mes = e107::getMessage();
 $menu_config = e107::getConfig('menu'); 
