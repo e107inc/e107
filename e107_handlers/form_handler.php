@@ -901,18 +901,13 @@ class e_form
 		
 		$text = "";
 		
-		if(vartrue($options['label'])) // Bootstrap compatible markup
-		{
-			$text .= "<label class='checkbox'>";	
-		}
+		$pre = (vartrue($options['label'])) ? "<label class='checkbox'>" : ""; // Bootstrap compatible markup
+		$post = (vartrue($options['label'])) ? $options['label']."</label>" : "";
+		unset($options['label']); // not to be used as attribute; 
 		
 		$text .= "<input type='checkbox' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
 		
-		if(vartrue($options['label']))
-		{
-			$text .= $options['label']."</label>";	
-		}
-		return $text;
+		return $pre.$text.$post;
 	}
 
 	function checkbox_label($label_title, $name, $value, $checked = false, $options = array())
@@ -981,8 +976,23 @@ class e_form
 		return $this->_uc->uc_get_classname($classnum);
 	}
 
+	/**
+	 * A Radio Button Form Element
+	 * @param $name
+	 * @param @value array pair-values|string - auto-detected. 
+	 * @param $checked boolean
+	 * @param $options 
+	 */
 	function radio($name, $value, $checked = false, $options = array())
 	{
+		
+		if(!is_array($options)) parse_str($options, $options);
+		
+		if(is_array($value))
+		{
+			return $this->radio_multi($name, $value, $checked, $options); 		
+		}
+		
 		$options = $this->format_options('radio', $name, $options);
 		$options['checked'] = $checked; //comes as separate argument just for convenience
 		// $options['class'] = 'inline';	
@@ -1042,6 +1052,7 @@ class e_form
 
 
 	/**
+	 * XXX INTERNAL ONLY - Use radio() with the 'multiple=1' option instead of using this directly. 
 	 * @param string $name 
 	 * @param array $elements = arrays value => label
 	 * @param string/integer $checked = current value
@@ -1050,6 +1061,9 @@ class e_form
 	 */
 	function radio_multi($name, $elements, $checked, $multi_line = false, $help = null)
 	{
+		
+		
+		
 		/* // Bootstrap Test. 
 		 return'    <label class="checkbox">
     <input type="checkbox" value="">
@@ -1087,7 +1101,7 @@ class e_form
 			return implode("&nbsp;&nbsp;", $text);
 		
 		// return implode("\n", $text);
-		return "<div class='field-spacer haa'>".implode("</div><div class='field-spacer'>", $text)."</div>";
+		return "<div class='field-spacer'>".implode("</div><div class='field-spacer'>", $text)."</div>";
 
 	}
 
