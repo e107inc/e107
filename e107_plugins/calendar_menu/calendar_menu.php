@@ -89,7 +89,7 @@ foreach ($ev_list as $cal_row)
 
 // set up month array for calendar display
 $cal_months	= array(EC_LAN_0, EC_LAN_1, EC_LAN_2, EC_LAN_3, EC_LAN_4, EC_LAN_5, EC_LAN_6, EC_LAN_7, EC_LAN_8, EC_LAN_9, EC_LAN_10, EC_LAN_11);
-if ($this->ecal_class->pref['eventpost_dateformat'] == 'my')
+if ($ecal_class->pref['eventpost_dateformat'] == 'my')
 {
 	$calendar_title = $cal_months[$cal_current_month-1] .' '. $cal_current_year;
 }
@@ -98,7 +98,7 @@ else
 	$calendar_title = $cal_current_year .' '. $cal_months[$cal_current_month-1];
 }
 
-switch ($this->ecal_class->pref['eventpost_menulink']) 
+switch ($ecal_class->pref['eventpost_menulink']) 
 {
 	case 0 :  
 		$calendar_title = "<a {$CALENDAR_MENU_HDG_LINK_CLASS} href='".e_PLUGIN."calendar_menu/event.php' >".$calendar_title."</a>";
@@ -110,7 +110,7 @@ switch ($this->ecal_class->pref['eventpost_menulink'])
 }
 
 $cal_text = $CALENDAR_MENU_START;
-if ($this->ecal_class->pref['eventpost_showeventcount']=='1')
+if ($ecal_class->pref['eventpost_showeventcount']=='1')
 {
 	if ($cal_totev)
 	{
@@ -166,7 +166,7 @@ for($cal_c = 1; $cal_c <= $numberdays; $cal_c++)
 		if ($cal_event_count)
 		{   // Show icon if it exists
 			$cal_css += 2;		// Gives 3 for today, 4 for other day
-			if (isset($this->ecal_class->pref['eventpost_showmouseover']) && ($this->ecal_class->pref['eventpost_showmouseover'] == 1))
+			if (isset($ecal_class->pref['eventpost_showmouseover']) && ($ecal_class->pref['eventpost_showmouseover'] == 1))
 			{
 				$cal_ins = " title='";
 				foreach ($cal_titles[$cal_c] as $cur_title)
@@ -225,7 +225,7 @@ if ($cal_loop != 0)
 $cal_text .= $CALENDAR_MENU_END;
 // Now handle the data, cache as well
 ob_start();					// Set up a new output buffer
-$ns->tablerender($calendar_title, $cal_text, 'calendar_menu');
+e107::getRender()->tablerender($calendar_title, $cal_text, 'calendar_menu');
 $cache_data = ob_get_flush();			// Get the page content, and display it
 $e107->ecache->set($cache_tag, $cache_data);	// Save to cache
 unset($ev_list);
