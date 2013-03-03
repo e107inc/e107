@@ -703,8 +703,8 @@ $calSc->setCalDate($dateArray);					// Tell shortcodes the date to display
 $calSc->catFilter = $cat_filter;					// Category filter
 $calSc->eventDisplayCodes = $EVENT_EVENT_DATETIME;	// Templates for different event types
 
-$monthstart		= mktime(0, 0, 0, $month, 1, $year);
-$monthend		= mktime(0, 0, 0, $month + 1, 1, $year) -1 ;
+$monthstart		= gmmktime(0, 0, 0, $month, 1, $year);
+$monthend		= gmmktime(0, 0, 0, $month + 1, 1, $year) -1 ;
 
 $nowmonth	= $ecal_class->cal_date['mon'];
 $nowyear	= $ecal_class->cal_date['year'];
