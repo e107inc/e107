@@ -875,7 +875,7 @@ class e_menuManager {
 
 		$text .= "<tr><td style='width:65%;text-align:center;padding-bottom:4px'>".MENLAN_36."...</td>
 		<td style='width:50%;padding-bottom:4px;text-align:center'>...".MENLAN_37."</td></tr>";
-		$text .= "<tr><td style='width:35%;vertical-align:top;text-align:center'>";
+		$text .= "<tr><td  style='width:35%;vertical-align:top;text-align:center'>";
 
 	 	$sql->select("menus", "menu_name, menu_id, menu_pages, menu_path", "1 GROUP BY menu_name ORDER BY menu_name ASC");
 
@@ -938,7 +938,7 @@ class e_menuManager {
 		$text .= (!$this->dragDrop) ? "</tbody></table>" : "";
 		$text .= "</div>";
 
-		$text .= "</td><td style='width:50%;vertical-align:top;text-align:center'><br />";
+		$text .= "</td><td id='menu-manage-actions' ><br />";
 		foreach ($this->menu_areas as $menu_act)
 		{
 			$text .= "<input type='submit' class='menu-btn button' id='menuActivate_".trim($menu_act)."' name='menuActivate[".trim($menu_act)."]' value='".MENLAN_13." ".trim($menu_act)."' /><br /><br />\n";
@@ -1320,8 +1320,8 @@ class e_menuManager {
 		
 		$visibilityLink = e_SELF."?enc=".base64_encode('lay='.$this->curLayout.'&vis='.$menu_id.'&iframe=1');
 		
-		$text .= '
-		<a class="e-menumanager-option menu-btn" target="_top" href="'.$visibilityLink.'" title="'.MENLAN_20.'">'.ADMIN_VIEW_ICON.'</a>';
+		$text .= '<span class="menu-options-buttons">
+		<a class="e-menumanager-option menu-btn" data-modal-caption="'.MENLAN_20.'" href="'.$visibilityLink.'" title="'.MENLAN_20.'">'.ADMIN_VIEW_ICON.'</a>';
 
 		if($conf)
 		{
@@ -1330,16 +1330,16 @@ class e_menuManager {
 		}
 		
 		$editLink = e_SELF."?enc=".base64_encode('lay='.$this->curLayout.'&parmsId='.$menu_id.'&iframe=1');
-		$text .= '<a class="e-menumanager-option menu-btn e-tip" target="_top" href="'.$editLink.'" title="Configure parameters">'.ADMIN_EDIT_ICON.'</a>';
+		$text .= '<a data-modal-caption="Configure parameters" class="e-menumanager-option menu-btn e-tip" target="_top" href="'.$editLink.'" title="Configure parameters">'.ADMIN_EDIT_ICON.'</a>';
 
 		$text .= '<a title="'.LAN_DELETE.'" id="remove-'.$menu_id.'-'.$menu_location.'" class="e-tip delete e-menumanager-delete menu-btn" href="'.e_SELF.'?configure='.$this->curLayout.'&amp;mode=deac&amp;id='.$menu_id.'">'.ADMIN_DELETE_ICON.'</a>
 		
 		<span id="status-'.$menu_id.'" style="display:none">'.($rep == true ? "" : "insert").'</span>
-		</div>';
+		<span></div>';
 
 		$text .= ($rep == true) ? "</div>" : "";
 
-		$text .= "</div>";
+	//	$text .= "</div>";
 		
 		if(!$this->dragDrop)
 		{
