@@ -36,6 +36,7 @@ $e_sub_cat = 'userclass';
 
 require_once(e_HANDLER.'userclass_class.php');		// Modified class handler
 $e_userclass = new user_class_admin;				// Admin functions - should just obliterate any previous object created in class2.php
+													// @TODO: Does core object manager need to know somehow?
 
 require_once(e_HANDLER.'form_handler.php');
 
@@ -496,7 +497,7 @@ switch ($action)
 		<tr id='userclass_type_standard' ".(UC_TYPE_GROUP == $userclass_type ? " style='display:none'" : "").">
 		<td>".UCSLAN_24."</td>
 		<td>";
-	  $text .= "<select name='userclass_editclass' class='tbox'>".$e_userclass->vetted_tree('userclass_editclass',array($e_userclass,'select'), $userclass_editclass,'nobody,public,main,admin,classes,matchclass,member').'</select>';
+	  $text .= "<select name='userclass_editclass' class='tbox'>".$e_userclass->vetted_tree('userclass_editclass',array($e_userclass,'select'), $userclass_editclass,'nobody,public,main,admin,classes,matchclass,member, no-excludes').'</select>';
 	$text .= "<div class='field-help'>".UCSLAN_32."</div></td>
 	   	</tr>
 		";
@@ -525,7 +526,7 @@ switch ($action)
 		<tr>
 		<td>".UCSLAN_35."</td>
 		<td>";
-	  $text .= "<select name='userclass_parent' class='tbox'>".$e_userclass->vetted_tree('userclass_parent',array($e_userclass,'select'), $userclass_parent,'main,admin,nobody,public,classes,matchclass,member').'</select>';
+	  $text .= "<select name='userclass_parent' class='tbox'>".$e_userclass->vetted_tree('userclass_parent',array($e_userclass,'select'), $userclass_parent,'main,admin,nobody,public,classes,matchclass,member, no-excludes').'</select>';
 //		.r_userclass("userclass_parent", $userclass_parent, "off", "admin,classes,matchclass,public,member").
 	$text .= "<div class='field-help'>".UCSLAN_36."</div></td>
 		</tr></table>
@@ -1020,7 +1021,7 @@ require_once(e_ADMIN.'footer.php');
 
 
 
-// @TODO: Is this function still required?
+// @TODO: Is this function still required? - Yes - setGroupStatus() used on class add/edit page
 function headerjs()
 {
 	$params  = e107::getRegistry('pageParams');

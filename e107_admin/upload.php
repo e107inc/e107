@@ -404,7 +404,7 @@ switch ($action)
 	  $text .= "
 		<tr>
 		  <td class='forumheader3'><select name='file_class_select[]' class='tbox'>
-		  ".$e_userclass->vetted_tree('file_class_select',array($e_userclass,'select'), $uclass,'member,main,classes,admin')."
+		  ".$e_userclass->vetted_tree('file_class_select',array($e_userclass,'select'), $uclass,'member,main,classes,admin, no-excludes')."
 		  </select></td>
 		  <td class='forumheader3'><input type='text' name='file_type_list[]' value='{$uinfo['type']}' class='tbox' size='40' /></td>
 		  <td class='forumheader3' style='text-align:center'><input type='text' name='file_maxupload[]' value='{$uinfo['maxupload']}' class='tbox' size='10' /></td>
@@ -415,7 +415,7 @@ switch ($action)
 	$text .= "
 	  <tr>
 		  <td class='forumheader3'><select name='file_class_select[]' class='tbox'>
-		  ".$e_userclass->vetted_tree('file_class_select',array($e_userclass,'select'), '','member,main,classes,admin,blank')."
+		  ".$e_userclass->vetted_tree('file_class_select',array($e_userclass,'select'), '','member,main,classes,admin,blank, no-excludes')."
 		  </select></td>
 		  <td class='forumheader3'><input type='text' name='file_type_list[]' value='' class='tbox' size='40' /></td>
 		  <td class='forumheader3' style='text-align:center'><input type='text' name='file_maxupload[]' value='".ini_get('upload_max_filesize')."' class='tbox' size='10' /></td>

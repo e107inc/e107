@@ -175,7 +175,7 @@ class usersettings_shortcodes extends e_shortcode
 		  $inclass = implode(',',$is_checked);
 		
 	//	  $ret = "<table style='width:95%;margin-left:0px'><tr><td class='defaulttext'>";
-		  $ret .= $e_userclass->vetted_tree('class',array($e_userclass,checkbox_desc),$inclass,'editable');
+		  $ret .= $e_userclass->vetted_tree('class',array($e_userclass,checkbox_desc),$inclass,'editable, no-excludes');
 	//	  $ret .= "</td></tr></table>\n";
 		
 		return $ret;

@@ -422,7 +422,7 @@ if($action == "config")
 			<td>".RL_LAN_123."</td>
 			<td>
 				<select class='tbox' name='user_audit_class'>
-					".$e_userclass->vetted_tree('user_audit_class', array($e_userclass, 'select'), varset($pref['user_audit_class'], ''), 'nobody,admin,member,new,mods,main,classes')."
+					".$e_userclass->vetted_tree('user_audit_class', array($e_userclass, 'select'), varset($pref['user_audit_class'], ''), 'nobody,admin,member,new,mods,main,classes, no-excludes')."
 				</select>
 				<span class='field-help'>".RL_LAN_026."</span>
 			</td>

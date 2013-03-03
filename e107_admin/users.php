@@ -773,7 +773,7 @@ class users_admin_ui extends e_admin_ui
 					<tbody>
 					<tr>
 						<td>";
-		$text .= $e_userclass->vetted_tree('userclass', array($e_userclass,'checkbox_desc'), $sysuser->getValue('class'), 'classes');
+		$text .= $e_userclass->vetted_tree('userclass', array($e_userclass,'checkbox_desc'), $sysuser->getValue('class'), 'classes, no-excludes');
 		$text .= '
 						</td>
 					</tr>
@@ -1259,7 +1259,7 @@ class users_admin_ui extends e_admin_ui
 			// TODO lan above
 
 		if (!isset ($user_data['user_class'])) $user_data['user_class'] = varset($pref['initial_user_classes']);
-		$temp = $e_userclass->vetted_tree('class', array($e_userclass, 'checkbox_desc'), $user_data['user_class'], 'classes');
+		$temp = $e_userclass->vetted_tree('class', array($e_userclass, 'checkbox_desc'), $user_data['user_class'], 'classes, no-excludes');
 
 		if ($temp)
 		{
