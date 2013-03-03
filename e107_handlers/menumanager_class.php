@@ -259,7 +259,7 @@ class e_menuManager {
 
 			if ($menu_act == "bot")
 			{
-				$menu_count = $sql->db_Count("menus", "(*)", " WHERE menu_location='{$location}' AND menu_layout = '".$this->dbLayout."'  ");
+				$menu_count = $sql->count("menus", "(*)", " WHERE menu_location='{$location}' AND menu_layout = '".$this->dbLayout."'  ");
 				$sql->db_Update("menus", "menu_order=".($menu_count+1)." WHERE menu_order='{$position}' AND menu_location='{$location}' AND menu_layout = '$this->dbLayout'  ");
 				$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_location='{$location}' AND menu_order > {$position} AND menu_layout = '".$this->dbLayout."' ");
 				$admin_log->log_event('MENU_06',$location.'[!br!]'.$position.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
@@ -363,7 +363,7 @@ class e_menuManager {
 				$file['path'] = str_replace(e_PLUGIN,"",$file['path']);
 				$file['fname'] = str_replace(".php","",$file['fname']);
 				$valid_menu = FALSE;
-				$existing_menu = $sql->db_Count("menus", "(*)", "WHERE menu_name='{$file['fname']}'");
+				$existing_menu = $sql->count("menus", "(*)", "WHERE menu_name='{$file['fname']}'");
 				if (file_exists(e_PLUGIN.$parent_dir.'/plugin.xml') || file_exists(e_PLUGIN.$parent_dir.'/plugin.php'))
 				{
 					if (e107::isInstalled($parent_dir))
@@ -476,7 +476,7 @@ class e_menuManager {
 		<tr>
 		<td>
 		Parameters (query string format):
-		".$frm->text('menu_parms', $row['menu_parms'], 900, 'class=e-save span8')."
+		".$frm->text('menu_parms', $row['menu_parms'], 900, 'class=e-save span7')."
 		</td>
 		</tr>
 		</table>";
@@ -597,7 +597,7 @@ class e_menuManager {
 
 		$location = $this->menuActivateLoc;
 
-		$menu_count = $sql->db_Count("menus", "(*)", " WHERE menu_location=".$location." AND menu_layout = '".$this->dbLayout."' ");
+		$menu_count = $sql->count("menus", "(*)", " WHERE menu_location=".$location." AND menu_layout = '".$this->dbLayout."' ");
 		
 		foreach($this->menuActivateIds as $sel_mens)
 		{
@@ -839,7 +839,7 @@ class e_menuManager {
 				//Check to see if menu is already active in the new area, if not then move it
 				if(!$sql->select('menus', 'menu_id', "menu_name='{$row['menu_name']}' AND menu_location = ".$this->menuNewLoc." AND menu_layout='".$this->dbLayout ."' LIMIT 1"))
 				{
-					$menu_count = $sql->db_Count("menus", "(*)", " WHERE menu_location=".$this->menuNewLoc);
+					$menu_count = $sql->count("menus", "(*)", " WHERE menu_location=".$this->menuNewLoc);
 					$sql->db_Update("menus", "menu_location='{$this->menuNewLoc}', menu_order=".($menu_count+1)." WHERE menu_id=".$this->menuId);
 					$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_location='{$location}' AND menu_order > {$position} AND menu_layout='".$this->dbLayout ."' ");
 				}
@@ -905,7 +905,7 @@ class e_menuManager {
 				$row['menu_name'] = preg_replace("#_menu$#i", "", $row['menu_name']);
 	            if($pnum = $this->checkMenuPreset($menuPreset,$row['menu_name'].'_menu'))
 				{
-		        	$pdeta = MENLAN_39." {$pnum}";
+		        	$pdeta = MENLAN_39."  {$pnum}";
 				}
 			}
 
@@ -1067,10 +1067,20 @@ class e_menuManager {
 			$ret[] = $match;
 		}
 	}
+	
+	function renderPanel($caption,$text)
+	{
+		$plugtext = "<div class='menu-panel'>";
+		$plugtext .= "<div class='menu-panel-header' title=\"".MENLAN_34."\">".$caption."</div>";
+		$plugtext .= $text;
+		$plugtext .= "</div>";	
+		return $plugtext;
+	}
 
 	function checklayout($str)
 	{ // Displays a basic representation of the theme
 		global $PLUGINS_DIRECTORY, $rs, $sc_style, $menu_order;
+		$PLUGINS_DIRECTORY = e107::getFolder('PLUGINS');
 		$pref   = e107::getPref();  
 		$tp     = e107::getParser(); 
 		$ns     = e107::getRender();  
@@ -1118,9 +1128,13 @@ class e_menuManager {
 				$link = e_PLUGIN . $plug . "/config.php";
 			}
 			
-			$plugtext = ($link) ? "(" . MENLAN_34 . ":<a href='$link' title='" . LAN_CONFIGURE . "'>" . LAN_CONFIGURE . "</a>)" : "(" . MENLAN_34 . ")";
+		//	$plugtext = "<div class='menu-panel'>";
+		//	$plugtext .= "<div class='menu-panel-header' title=\"".MENLAN_34."\">".$plug."</div>";
+			$plugtext = ($link) ? "(" . MENLAN_34 . ":<a href='$link btn-menu' title='" . LAN_CONFIGURE . "'>" . LAN_CONFIGURE . "</a>)" : "";
+		//	$plugtext .= "</div>";
 			echo "<br />";
-			$ns->tablerender($plug, $plugtext);
+			echo $this->renderPanel($plug, $plugtext);
+			// $ns->tablerender($plug, $plugtext);
 		}
 		else if(strstr($str, "MENU"))
 		{
@@ -1137,25 +1151,16 @@ class e_menuManager {
 						$menuText .= $sc_style['MENU']['pre'];
 					}
 					
-					
+
 					// ---------------
 					$menuText .= "\n\n<!-- START AREA ".$menu." -->";
-					$menuText .= "
-					<div id='start-area-".$menu."'>";
-				
-					
-					
-										
-					$menuText .= "<div class='fborder forumheader' style='font-weight:bold;display:block;text-align:center; font-size:14px' >
-					" . MENLAN_14 . "  " . $menu . "
-					</div>
-										\n\n";
-					
-					
-			
+					$menuText .= "<div id='start-area-".$menu."' class='menu-panel'>";
+
+					$menuText .= "<div class='menu-panel-header' >" . MENLAN_14 . "  " . $menu . "</div>\n\n";
+
 					$sql9 = new db();
 				//	$sql9 = e107::getDb('sql9');
-					if($sql9->db_Count("menus", "(*)", " WHERE menu_location='$menu' AND menu_layout = '" . $this->dbLayout . "' "))
+					if($sql9->count("menus", "(*)", " WHERE menu_location='$menu' AND menu_layout = '" . $this->dbLayout . "' "))
 					{
 						unset($text);
 						$menuText .= $rs->form_open("post", e_SELF . "?configure=" . $this->curLayout, "frm_menu_" . intval($menu));
@@ -1325,7 +1330,7 @@ class e_menuManager {
 		}
 		
 		$editLink = e_SELF."?enc=".base64_encode('lay='.$this->curLayout.'&parmsId='.$menu_id.'&iframe=1');
-		$text .= '<a class="e-menumanager-option menu-btn" target="_top" href="'.$editLink.'" title="Configure parameters">'.ADMIN_EDIT_ICON.'</a>';
+		$text .= '<a class="e-menumanager-option menu-btn e-tip" target="_top" href="'.$editLink.'" title="Configure parameters">'.ADMIN_EDIT_ICON.'</a>';
 
 		$text .= '<a title="'.LAN_DELETE.'" id="remove-'.$menu_id.'-'.$menu_location.'" class="e-tip delete e-menumanager-delete menu-btn" href="'.e_SELF.'?configure='.$this->curLayout.'&amp;mode=deac&amp;id='.$menu_id.'">'.ADMIN_DELETE_ICON.'</a>
 		
