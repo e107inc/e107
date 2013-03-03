@@ -740,15 +740,15 @@ i.searchquery	{
 
 /****************************************************************/	
 
-ul#e-status						{ list-style: none;; margin:0px}
+ul#e-status						{ list-style: none; margin:0px 14px }
 ul#e-status li 					{ padding-bottom:6px; }
 ul#e-status						{ line-height:20px }
 ul#e-status li  a  span.badge	{ float:right; }
 ul#e-status li  a:hover  		{ text-decoration: none; }
 
-ul#e-latest						{ list-style: none; margin:0px}
+ul#e-latest						{ list-style: none; margin:0px 14px}
 ul#e-latest li 					{ padding-bottom:6px; }
-ul#e-latest						{ line-height:20px }
+ul#e-latest						{ line-height:17px }
 ul#e-latest li  a  span.badge	{ float:right; }
 ul#e-latest li  a:hover  		{ text-decoration: none; }
 
