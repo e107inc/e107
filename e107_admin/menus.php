@@ -72,7 +72,7 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 			$('.e-menumanager-option').on('click', function(){
     			
     			var link = $(this).attr('href');
-				var caption = $(this).attr('title');
+				var caption = $(this).attr('data-modal-caption');
 				window.parent.$('#uiModal .modal-caption').text(caption);	
 				window.parent.$('#uiModal .modal-body').load(link, function(){
 				 					   
@@ -213,13 +213,15 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
     padding-top: 7px;
     padding-right: 5px;
     text-align: left;
-    white-space: nowrap;
+   
 	}
+	.menu-options-buttons	{ white-space: nowrap }
+	#menu-manage-actions		{ width:50%; vertical-align:top; text-align:center; padding:15px }
 	
 	select.menu-btn { text-align:left }
 	
 	label { font-size: 12px;  line-height:14px }
-	label.input							{margin-right:10px }
+	label.input									{margin-right:10px;  }
 	
 	#core-menumanager-main 						{ width:100%; margin-left:auto; margin-right:auto }
 	
@@ -230,7 +232,7 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 	
 	table.table tbody > tr >td 					{  }
 	table.table tbody > tr >td label 			{ padding:15px; display:block; cursor: pointer; font-size:14px ;  }
-	table.table tbody > tr >td label > input	{ margin-right: 10px; }
+	table.table tbody > tr >td label > input	{ margin-right: 10px; float: left; }
 	
 	
 	.table-striped tbody > tr:nth-child(2n+1) > td, .table-striped tbody > tr:nth-child(2n+1) > th {
