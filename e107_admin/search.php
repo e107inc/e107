@@ -8,9 +8,6 @@
  *
  * Search Administration
  *
- * $URL$
- * $Id$
- *
 */
 
 require_once('../class2.php');
@@ -193,9 +190,6 @@ if (isset($_POST['update_prefs']))
 		save_prefs();
 	}
 }
-
-require_once(e_HANDLER."form_handler.php");
-$rs = new form; //FIXME
 
 $handlers_total = count($search_prefs['core_handlers']) + count($search_prefs['plug_handlers']);
 

@@ -1,21 +1,14 @@
 <?php
 /*
-+----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Copyright (C) 2001-2002 Steve Dunstan (jalist@e107.org)
-|     Copyright (C) 2008-2010 e107 Inc (e107.org)
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $URL$
-|     $Revision$
-|     $Id$
-|     $Author$
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Administration - File inspector
+ * 
+ */
 ini_set('zlib.output_compression', 0);
 header('Content-Encoding: none'); // turn off gzip. 
 ob_implicit_flush(true);
@@ -33,7 +26,7 @@ if (!getperms('Y'))
 	exit;
 }
 $error_handler->debug = FALSE;
-require_once(e_HANDLER.'form_handler.php');
+//require_once(e_HANDLER.'form_handler.php');
 $DOCS_DIRECTORY = $HELP_DIRECTORY;		// Give a sensible, albeit probably invalid, value
 if (substr($HELP_DIRECTORY,-5,5) == 'help/')
 {
@@ -46,7 +39,7 @@ foreach ($maindirs as $maindirs_key => $maindirs_value) {
 
 require_once('core_image.php');
 
-$rs = new form;
+//$rs = new form;
 set_time_limit(18000);
 $e_sub_cat = 'fileinspector';
 
@@ -921,7 +914,8 @@ class file_inspector {
 	
 	function snapshot_interface() 
 	{
-		global $ns, $rs;
+		$ns = e107::getRender();
+		$frm = e107::getRender();
 		$text = "";
 		
 		if (isset($_POST['create_snapshot'])) 
@@ -940,7 +934,7 @@ class file_inspector {
 			</td>
 			</tr>
 			<tr>
-			<td style='text-align:center' class='forumheader'>".$rs -> form_button('submit', 'main_page', 'Return To Main Page')."</td>
+			<td style='text-align:center' class='forumheader'>".$frm->admin_button('main_page', 'Return To Main Page', 'submit')."</td>
 			</tr>
 			</table>
 			</form>
@@ -973,7 +967,7 @@ class file_inspector {
 		</tr>
 		
 		<tr>
-		<td class='forumheader' style='text-align:center' colspan='2'>".$rs -> form_button('submit', 'create_snapshot', 'Create Snapshot')."</td>
+		<td class='forumheader' style='text-align:center' colspan='2'>".$frm->admin_button('create_snapshot', 'Create Snapshot', 'create')."</td>
 		</tr>
 		</table>
 		</form>
