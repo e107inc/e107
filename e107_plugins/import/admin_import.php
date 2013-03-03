@@ -683,7 +683,7 @@ function showImportOptions($mode='csv')
 		$text .= "
 		<tr><td>".LAN_CONVERT_16."</td>
 		<td>";
-  		$text .= $e_userclass->vetted_tree('classes_select',array($e_userclass,'checkbox'), varset($_POST['classes_select']),'main,admin,classes,matchclass');
+  		$text .= $e_userclass->vetted_tree('classes_select',array($e_userclass,'checkbox'), varset($_POST['classes_select']),'main,admin,classes,matchclass, no-excludes');
   		$text .= "</td></tr>";
 	}
  	

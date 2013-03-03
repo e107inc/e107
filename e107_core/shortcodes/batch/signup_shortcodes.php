@@ -270,7 +270,7 @@ class signup_shortcodes extends e_shortcode
 		  }*/
 
 		  $ret = $USERCLASS_SUBSCRIBE_START;
-		  $ret .= $e_userclass->vetted_tree('class',array($this,show_signup_class),varset($signupData['user_class'],''),'editable');
+		  $ret .= $e_userclass->vetted_tree('class',array($this,show_signup_class),varset($signupData['user_class'],''),'editable, no-excludes');
 			$ret .= $USERCLASS_SUBSCRIBE_END;
 			return $ret;
 		}

@@ -1785,7 +1785,7 @@ class adminDownload extends download
             <tr>
                <td>
                   <select name='file_class_select[]' class='tbox'>
-                     ".$e_userclass->vetted_tree('file_class_select',array($e_userclass,'select'), $uclass,'member,main,classes,admin')."
+                     ".$e_userclass->vetted_tree('file_class_select',array($e_userclass,'select'), $uclass,'member,main,classes,admin, no-excludes')."
                   </select>
                </td>
                <td><input type='text' name='file_type_list[]' value='{$uinfo['type']}' class='tbox' size='40'/></td>
@@ -1801,7 +1801,7 @@ class adminDownload extends download
                         </tr>
                         <tr>
                            <td><select name='file_class_select[]' class='tbox'>
-                           ".$e_userclass->vetted_tree('file_class_select',array($e_userclass,'select'), '','member,main,classes,admin,blank')."
+                           ".$e_userclass->vetted_tree('file_class_select',array($e_userclass,'select'), '','member,main,classes,admin,blank, no-excludes')."
                            </select></td>
                            <td><input type='text' name='file_type_list[]' value='' class='tbox' size='40'/></td>
                            <td colspan='2'><input type='text' name='file_maxupload[]' value='".ini_get('upload_max_filesize')."' class='tbox' size='10'/></td>
