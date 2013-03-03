@@ -312,55 +312,30 @@ class admin_shortcodes
 		
 		
 		if (ADMIN) {
-			if (!function_exists('admin_latest'))
+			if (!function_exists('admin_latest')) //XXX Is this still necessary?
 			{
 				function admin_latest($parm='')
 				{
 					
-					$sql = e107::getDb();
-					$ns = e107::getRender();
-					$pref = e107::getPref();
-					$mes = e107::getMessage();
+					$sql 	= e107::getDb();
+					$ns 	= e107::getRender();
+					$pref 	= e107::getPref();
+					$mes 	= e107::getMessage();
 
-					$active_uploads = $sql -> db_Count('upload', '(*)', 'WHERE upload_active = 0');
-					$submitted_news = $sql -> db_Count('submitnews', '(*)', 'WHERE submitnews_auth = 0');
-					$comments_pending = $sql -> db_Count("comments", "(*)", "WHERE comment_blocked = 2 ");
+					$active_uploads 	= $sql->count('upload', '(*)', 'WHERE upload_active = 0');
+					$submitted_news 	= $sql->count('submitnews', '(*)', 'WHERE submitnews_auth = 0');
+					$comments_pending 	= $sql->count("comments", "(*)", "WHERE comment_blocked = 2 ");
 
-					$text = "<div class='left'><div style='padding-bottom: 2px;'>".E_16_NEWS.($submitted_news ? " <a href='".e_ADMIN."newspost.php?mode=sub&amp;action=list'>".ADLAN_LAT_2.": $submitted_news</a>" : ' '.ADLAN_LAT_2.': 0').'</div>';
-					$text .= "<div style='padding-bottom: 2px;'>".E_16_COMMENT. " <a href='".e_ADMIN_ABS."comment.php?searchquery=&filter_options=comment_blocked__2'>".ADLAN_LAT_9.": $comments_pending</a></div>";		
+				//	$text = "<div class='left'><div style='padding-bottom: 2px;'>".E_16_NEWS.($submitted_news ? " <a href='".e_ADMIN."newspost.php?mode=sub&amp;action=list'>".ADLAN_LAT_2.": $submitted_news</a>" : ' '.ADLAN_LAT_2.': 0').'</div>';
+				//	$text .= "<div style='padding-bottom: 2px;'>".E_16_COMMENT. " <a href='".e_ADMIN_ABS."comment.php?searchquery=&filter_options=comment_blocked__2'>".ADLAN_LAT_9.": $comments_pending</a></div>";		
 		
-					$text .= "<div style='padding-bottom: 2px;'>".E_16_UPLOADS." <a href='".e_ADMIN."upload.php'>".ADLAN_LAT_7.": $active_uploads</a></div>";
+			//		$text .= "<div style='padding-bottom: 2px;'>".E_16_UPLOADS." <a href='".e_ADMIN."upload.php'>".ADLAN_LAT_7.": $active_uploads</a></div>";
 
-					
-					// for BC only. 
-					if(vartrue($pref['e_latest_list']))
-					{
-						foreach($pref['e_latest_list'] as $val)
-						{
-							if (is_readable(e_PLUGIN.$val.'/e_latest.php'))
-							{
-								include_once(e_PLUGIN.$val.'/e_latest.php');
-								if(!class_exists($val."_latest"))
-								{
-									$mes->addDebug("<strong>".$val ."</strong> using deprecated e_latest method");	
-								}
-							}
-						}
-                    }
-
-
-
-					$configs = e107::getAddonConfig('e_latest');
-					foreach($configs as $k=>$v)
-					{
-						foreach($v as $val)
-						{
-							$link =  "<a href='".$val['url']."'>".$val['title'].": ".$val['total']."</a>";
-							$text .= "<div style='padding-bottom: 2px;'>".$val['icon']." ".$link."</div>\n";	
-						}	
-					}
-
-
+					$oldconfigs = array();
+					$oldconfigs['e-news'][0] = array('icon'=>E_16_NEWS, 'title'=>ADLAN_LAT_2, 'url'=> e_ADMIN."newspost.php?mode=sub&amp;action=list", 'total'=>$submitted_news);
+					$oldconfigs['e-comment'][0] = array('icon'=>E_16_COMMENT, 'title'=>ADLAN_LAT_9, 'url'=> e_ADMIN_ABS."comment.php?searchquery=&filter_options=comment_blocked__2", 'total'=>$comments_pending);
+					$oldconfigs['e-upload'][0] = array('icon'=>E_16_UPLOADS, 'title'=>ADLAN_LAT_7, 'url'=> e_ADMIN."upload.php", 'total'=>$active_uploads);
+				
 					$messageTypes = array('Broken Download', 'Dev Team Message');
 					$queryString = '';
 					foreach($messageTypes as $types)
@@ -369,11 +344,51 @@ class admin_shortcodes
 					}
 					$queryString = substr($queryString, 0, -3);
 
-					if($amount = $sql -> db_Select('generic', '*', $queryString))
+					if($amount = $sql->select('generic', '*', $queryString))
 					{
-						$text .= "<br /><b><a href='".e_ADMIN_ABS."message.php'>".ADLAN_LAT_8." [".$amount."]</a></b>";
+					//	$text .= "<br /><b><a href='".e_ADMIN_ABS."message.php'>".ADLAN_LAT_8." [".$amount."]</a></b>";
+						
+						$oldconfigs['e-generic'][0] = array('icon'=>E_16_NOTIFY, 'title'=>ADLAN_LAT_8, 'url'=> e_ADMIN_ABS."message.php", 'total'=>$amount);
 					}
-					$text .= "</div>";
+				
+
+					if(vartrue($pref['e_latest_list']))
+					{
+						foreach($pref['e_latest_list'] as $val)
+						{
+							$text = "";
+							if (is_readable(e_PLUGIN.$val.'/e_latest.php'))
+							{
+								include_once(e_PLUGIN.$val.'/e_latest.php');
+								if(!class_exists($val."_latest"))
+								{
+									$mes->addDebug("<strong>".$val ."</strong> using deprecated e_latest method");	
+									$oldconfigs[$val] = admin_shortcodes::legacyToConfig($text);
+								}
+							}
+						}
+                    }
+
+					$configs = e107::getAddonConfig('e_latest');
+					$allconfigs = array_merge($oldconfigs,$configs);	
+					
+					$allconfigs = multiarray_sort($allconfigs,'title'); //XXX FIXME - not sorting correctly. 
+		
+					$text = "<ul id='e-latest'>";
+					foreach($allconfigs as $k=>$v)
+					{
+						foreach($v as $val)
+						{
+							$class = admin_shortcodes::getBadge($val['total']); 
+							$link =  "<a href='".$val['url']."'>".str_replace(":"," ",$val['title'])." <span class='".$class."'>".$val['total']."</span></a>";	
+							$text .= "<li>".$val['icon']." ".$link."</li>\n";	
+						}	
+					}
+					$text .= "</ul>";
+
+
+				
+				//	$text .= "</div>";
 					
 					return ($parm != 'norender') ? $ns -> tablerender(ADLAN_LAT_1, $text, '', TRUE) : $text;	
 
@@ -946,7 +961,7 @@ class admin_shortcodes
 				
 		if (getperms('0') || getperms('4'))
 		{
-			if (!function_exists('admin_status'))
+			if (!function_exists('admin_status')) //XXX Discuss.. do we still need to embed this function within the shortcode?
 			{
 				function admin_status($parm='')
 				{
@@ -956,11 +971,12 @@ class admin_shortcodes
 					$pref = e107::getPref();
 					
 					
-					$members = $sql -> db_Count('user');
-					$unverified = $sql -> db_Count('user', '(*)', 'WHERE user_ban=2');
-					$banned = $sql -> db_Count('user', '(*)', 'WHERE user_ban=1');
-					$comments = $sql -> db_Count('comments');
+					$members 		= $sql->count('user');
+					$unverified 	= $sql->count('user', '(*)', 'WHERE user_ban=2');
+					$banned 		= $sql->count('user', '(*)', 'WHERE user_ban=1');
+					$comments 		= $sql->count('comments');
 
+					/*
 					$unver = ($unverified ? " <a href='".e_ADMIN."users.php?searchquery=&amp;filter_options=user_ban__2&amp;filter=unverified'> ".ADLAN_111.": {$unverified}</a>" : ADLAN_111);
 					$lban = ($banned) ? "<a href='".e_ADMIN_ABS."users.php??searchquery=&filter_options=user_ban__1&filter=banned'>".ADLAN_112. ": ".$banned."</a>" : ADLAN_112.":";
 					$lcomment = ($comments) ? "<a href='".e_ADMIN_ABS."comment.php'>".ADLAN_114.": ".$comments."</a>" : ADLAN_114;
@@ -972,47 +988,72 @@ class admin_shortcodes
 						<div style='padding-bottom: 2px;'>".E_16_BANLIST." ".$lban."</div>
 						<div style='padding-bottom: 2px;'>".E_16_COMMENT." ".$lcomment."</div>\n\n";
 						
-
+					*/
 					// for BC only. 	
+	
+					
+					$oldconfigs['e-user'][0] 		= array('icon'=>E_16_USER, 'title'=>ADLAN_110, 'url'=> e_ADMIN_ABS."users.php?filter=0", 'total'=>$members);
+					$oldconfigs['e-user'][1] 		= array('icon'=>E_16_USER, 'title'=>ADLAN_111, 'url'=> e_ADMIN."users.php?searchquery=&amp;filter_options=user_ban__2&amp;filter=unverified", 'total'=>$unverified);
+					$oldconfigs['e-user'][2] 		= array('icon'=>E_16_BANLIST, 'title'=>ADLAN_112, 'url'=> e_ADMIN."users.phpsearchquery=&filter_options=user_ban__1&filter=banned", 'total'=>$banned);
+					$oldconfigs['e-comments'][0] 	= array('icon'=>E_16_COMMENT, 'title'=>ADLAN_114, 'url'=> e_ADMIN_ABS."comment.php", 'total'=>$comments);
+				
+					if($flo = $sql->count('generic', '(*)', "WHERE gen_type='failed_login'"))
+					{
+						//$text .= "\n\t\t\t\t\t<div style='padding-bottom: 2px;'>".E_16_FAILEDLOGIN." <a href='".e_ADMIN_ABS."fla.php'>".ADLAN_146.": $flo</a></div>";	
+						$oldconfigs['e-failed'][0]	= array('icon'=>E_16_FAILEDLOGIN, 'title'=>ADLAN_146, 'url'=>e_ADMIN_ABS."fla.php", 'total'=>$flo);
+					}
+					
+					
+					
 					if(vartrue($pref['e_status_list']))
 					{
 						foreach($pref['e_status_list'] as $val)
 						{
-							$text .= "\n\t\t\t\t\t";
+							$text = "";
 							if (is_readable(e_PLUGIN.$val.'/e_status.php'))
 							{
+								
 								include_once(e_PLUGIN.$val.'/e_status.php');
 								if(!class_exists($val."_status"))
 								{
-									$mes->addDebug("<strong>".$val ."</strong> using deprecated e_status method");	
+									$mes->addDebug("<strong>".$val ."</strong> using deprecated e_status method. See the chatbox plugin folder for a working example of the new one. ");	
 								}
+								
+								$oldconfigs[$val] = admin_shortcodes::legacyToConfig($text);
 							}
 						}
 					}
-
+								
 					// New in v2.x
 					$configs = e107::getAddonConfig('e_status');
-					foreach($configs as $k=>$v)
+					
+					if(!is_array($configs))
+					{
+						$configs = array();	
+					}
+
+					$allconfigs = array_merge($oldconfigs,$configs);	
+					
+					$allconfigs = multiarray_sort($allconfigs,'title'); //XXX FIXME - not sorting correctly. 
+		
+					$text = "<ul id='e-status'>";
+					foreach($allconfigs as $k=>$v)
 					{
 						foreach($v as $val)
 						{
-							$link =  "<a href='".$val['url']."'>".$val['title'].": ".$val['total']."</a>";
-							$text .= "<div style='padding-bottom: 2px;'>".$val['icon']." ".$link."</div>\n";	
+							$class = admin_shortcodes::getBadge($val['total']); 
+							$link =  "<a href='".$val['url']."'>".str_replace(":"," ",$val['title'])." <span class='".$class."'>".$val['total']."</span></a>";	
+							$text .= "<li>".$val['icon']." ".$link."</li>\n";	
 						}	
 					}
+					$text .= "</ul>";
 
-
-					if($flo = $sql->db_Count('generic', '(*)', "WHERE gen_type='failed_login'"))
-					{
-						$text .= "\n\t\t\t\t\t<div style='padding-bottom: 2px;'>".E_16_FAILEDLOGIN." <a href='".e_ADMIN_ABS."fla.php'>".ADLAN_146.": $flo</a></div>";
-					}
-					
 					if($parm == 'list')
 					{
 					//	$text = str_replace("<div style='padding-bottom: 2px;'>","<li>",$text);;	
 					}
 					
-					$text .= "\n\t\t\t\t\t</div>";
+				//	$text .= "\n\t\t\t\t\t</div>";
 					
 					
 					return ($parm != 'norender') ? $ns -> tablerender(LAN_STATUS, $text, '', TRUE) : $text;
@@ -1035,6 +1076,57 @@ class admin_shortcodes
 			}
 		}
 	}
+
+	function getBadge($total, $type = 'latest')
+	{
+		
+		/*
+		 *  	<span class="badge">1</span>
+Success 	2 	<span class="badge badge-success">2</span>
+Warning 	4 	<span class="badge badge-warning">4</span>
+Important 	6 	<span class="badge badge-important">6</span>
+Info 	8 	<span class="badge badge-info">8</span>
+Inverse 	10 	<span class="badge badge-inverse">10</span>
+		 */
+		
+		$class = 'badge ';
+		if($total > 100 && $type == 'latest')
+		{
+			$class .= 'badge-important';
+		}
+		elseif($total > 50 && $type == 'latest')
+		{
+			$class .= 'badge-warning';
+		}
+		elseif($total > 0)
+		{
+			$class .= 'badge-info';
+		}
+	
+		
+		return $class;		
+	}
+
+
+	/**
+	 * Attempt to Convert Old $text string into new array format (e_status and e_latest)
+	 */
+	function legacyToConfig($text)
+	{
+		$var = array();
+		preg_match_all('/(<img[^>]*>)[\s]*<a[^>]href=(\'|")([^\'"]*)(\'|")>([^<]*)<\/a>[: ]*([\d]*)/is',$text, $match);
+		foreach($match[5] as $k=>$m)
+		{
+			$var[$k]['icon'] 	= $match[1][$k];
+			$var[$k]['title'] 	= $match[5][$k];
+			$var[$k]['url']		= $match[3][$k];
+			$var[$k]['total'] 	= $match[6][$k];
+		}
+		return $var;
+			
+	}
+			
+		
 
 	function sc_admin_update()
 	{
