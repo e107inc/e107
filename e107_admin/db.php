@@ -481,7 +481,7 @@ class system_tools
 		<form method='post' action='".e_SELF."' id='core-db-main-form'>
 			<fieldset id='core-db-plugin-scan'>
 			<legend class='e-hideme'>".DBLAN_10."</legend>
-				<table class='table adminlist'>
+				<table class='table table-striped adminlist'>
 				<colgroup>
 					<col style='width: 60%' />
 					<col style='width: 40%' />
