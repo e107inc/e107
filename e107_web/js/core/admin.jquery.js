@@ -34,14 +34,21 @@ $(document).ready(function()
 		$('body').on('hidden', '.modal', function () {
 			$(this).removeData('modal');
 			 $('#uiModal .modal-label').text('Loading...');
-			$('#uiModal .modal-body').text('&nbsp;');
+			$('#uiModal .modal-body').html('&nbsp;');
 			});
+			
 		$('a[data-toggle="modal"]').on('click', function()
 			{
 				var link = $(this).attr('href');
+				// $('#uiModal .modal-body').html(link);
 				alert(link);
 			}
 		);
+		
+
+
+		
+		
 		/*
 		
 		$('a[data-toggle="modal"]').on('click', function()
@@ -333,24 +340,7 @@ $(document).ready(function()
 	$(function() {
 		
 		//$(".e-menumanager-delete").live("click", function(e){
-		$(".e-menumanager-delete").click(function(e){
-			e.preventDefault();
-			var area = 'remove';
-			var remove = $(this).attr('id');
-			var opt = remove.split('-');
-			var hidem = "#block-" + opt[1] +'-' + opt[2];
-			$(hidem).hide("slow");
-			// alert(hidem);
-			$.ajax({
-				  type: "POST",
-				  url: "menus.php?ajax_used=1",
-				  data: { removeid: remove, area: area }
-			//	  data: { linkid: linkid, neworder: neworder }
-				}).done(function( msg ) {
-					
-				//	alert(msg );
-				});		
-			});
+		
 			
 			$( ".column" ).sortable({
 				connectWith: ".column",

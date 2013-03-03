@@ -142,7 +142,7 @@ class e_menuManager {
         	$url = e_SELF."?configure=".$this->curLayout;
 		}
 
-		$cnt = $sql->db_Select("menus", "*", "menu_location > 0 AND menu_layout = '$curLayout' ORDER BY menu_name "); // calculate height to remove vertical scroll-bar.
+		$cnt = $sql->select("menus", "*", "menu_location > 0 AND menu_layout = '$curLayout' ORDER BY menu_name "); // calculate height to remove vertical scroll-bar.
 
 		$text = "<object type='text/html' id='menu_iframe' data='".$url."' width='100%' style='overflow:auto;width: 100%; height: ".(($cnt*90)+600)."px; border: 0px' ></object>";
 		
@@ -315,9 +315,9 @@ class e_menuManager {
 		foreach($menuAreas as $val)
 		{
 
-			if($sql->db_Select("menus", 'menu_name, menu_path' , "menu_name = '".$val['menu_name']."' LIMIT 1"))
+			if($sql->select("menus", 'menu_name, menu_path' , "menu_name = '".$val['menu_name']."' LIMIT 1"))
 			{
-				$row=$sql->db_Fetch();
+				$row=$sql->fetch();
 
 	        	if(!$sql->db_Update('menus', "menu_order='{$val['menu_order']}', menu_location = ".$val['menu_location'].", menu_class= ".$val['menu_class']." WHERE menu_name='".$val['menu_name']."' AND menu_layout = '".$this->dbLayout."' LIMIT 1 "))
 				{
@@ -407,10 +407,10 @@ class e_menuManager {
 			if (!is_object($sql2)) $sql2 = new db;		// Shouldn't be needed
 			foreach ($this->menu_areas as $menu_act)
 			{
-				if ($sql->db_Select("menus", "menu_id", "menu_location={$menu_act} ORDER BY menu_order ASC"))
+				if ($sql->select("menus", "menu_id", "menu_location={$menu_act} ORDER BY menu_order ASC"))
 				{
 					$c = 1;
-					while ($row = $sql->db_Fetch())
+					while ($row = $sql->fetch())
 					{
 						$sql2->db_Update("menus", "menu_order={$c} WHERE menu_id=".$row['menu_id']);
 						$c++;
@@ -418,8 +418,8 @@ class e_menuManager {
 				}
 			}
 
-			$sql->db_Select("menus", "*", "menu_path NOT REGEXP('[0-9]+') ");
-			while (list($menu_id, $menu_name, $menu_location, $menu_order) = $sql->db_Fetch(MYSQL_NUM))
+			$sql->select("menus", "*", "menu_path NOT REGEXP('[0-9]+') ");
+			while (list($menu_id, $menu_name, $menu_location, $menu_order) = $sql->fetch(MYSQL_NUM))
 			{
 				if (stristr($menustr, $menu_name) === FALSE)
 				{
@@ -460,33 +460,42 @@ class e_menuManager {
 		$frm = e107::getForm();
 		$sql = e107::getDb();
 		
-		if(!$sql->db_Select("menus", "*", "menu_id=".$id))
+		if(!$sql->select("menus", "*", "menu_id=".$id))
 		{
         	$this->menuAddMessage("Couldn't Load Menu",E_MESSAGE_ERROR);
             return;
 		};
-		$row = $sql->db_Fetch();
+		$row = $sql->fetch();
 		
 		// TODO lan
 		$text = "<div style='text-align:center;'>
-		<form  method='post' action='".e_SELF."?lay=".$this->curLayout."'>
+		<form  id='e-save-form' method='post' action='".e_SELF."?lay=".$this->curLayout."'>
         <fieldset id='core-menus-parametersform'>
 		<legend>Menu parameters ".$row['menu_name']."</legend>
-        <table class='adminform'>
+        <table class='table adminform'>
 		<tr>
 		<td>
 		Parameters (query string format):
-		".$frm->text('menu_parms', $row['menu_parms'], 900)."
+		".$frm->text('menu_parms', $row['menu_parms'], 900, 'class=e-save span8')."
 		</td>
 		</tr>
-		</table>
-		<div class='buttons-bar center'>";
-        $text .= $frm->admin_button('parms_submit', LAN_SAVE, 'update');
-		$text .= "<input type='hidden' name='menu_id' value='".$id."' />
-		</div>
+		</table>";
+	/*
+		
+			$text .= "
+			<div class='buttons-bar center'>";
+			$text .= $frm->admin_button('parms_submit', LAN_SAVE, 'update');
+			$text .= "<input type='hidden' name='menu_id' value='".$id."' />
+			</div>";
+			
+		*/
+		$text .= $frm->hidden('mode','parms');
+		$text .= $frm->hidden('menu_id',$id);
+		$text .= "
 		</fieldset>
 		</form>
 		</div>";
+		
 		return $text;
 		//$caption = MENLAN_7." ".$row['menu_name'];
 		//$ns->tablerender($caption, $text);
@@ -497,49 +506,82 @@ class e_menuManager {
 	{
 		if(!vartrue($_GET['vis'])) return;
 
-		global $sql,$ns,$frm;
+		$sql = e107::getDb();
+		$ns = e107::getRender();
+		$frm = e107::getForm();
+		
 		require_once(e_HANDLER."userclass_class.php");
-		if(!$sql->db_Select("menus", "*", "menu_id=".intval($_GET['vis'])))
+		
+		if(!$sql->select("menus", "*", "menu_id=".intval($_GET['vis'])))
 		{
         	$this->menuAddMessage("Couldn't Load Menu",E_MESSAGE_ERROR);
             return;
-		};
-		$row = $sql->db_Fetch();
-		$listtype = substr($row['menu_pages'], 0, 1);
+		}
+		
+		$row = $sql->fetch();
+		
+		$listtype 	= substr($row['menu_pages'], 0, 1);
 		$menu_pages = substr($row['menu_pages'], 2);
 		$menu_pages = str_replace("|", "\n", $menu_pages);
 
-		$text = "<div style='text-align:center;'>
-		<form  method='post' action='".e_SELF."?lay=".$this->curLayout."&amp;iframe=1'>
-        <fieldset id='core-menus-visibilityform'>
-		<legend>". MENLAN_7." ".$row['menu_name']."</legend>
-        <table class='adminform'>
-		<tr>
-		<td>
-		<input type='hidden' name='menuAct[{$row['menu_id']}]' value='sv.{$row['menu_id']}' />
-		".MENLAN_4." ".
-		r_userclass('menu_class', $row['menu_class'], "off", "public,member,guest,admin,main,classes,nobody")."
-		</td>
-		</tr>
-		<tr><td><br />";
+		$text = "<div>
+			<form class='form-horizontal' id='e-save-form' method='post' action='".e_SELF."?lay=".$this->curLayout."&amp;iframe=1'>
+	        <fieldset>
+			<legend>". MENLAN_7." ".$row['menu_name']."</legend>
+	        <table class='table adminform'>
+			<tr>
+			<td>
+			<input type='hidden' name='menuAct[{$row['menu_id']}]' value='sv.{$row['menu_id']}' />
+			".MENLAN_4." ".
+			r_userclass('menu_class', $row['menu_class'], "off", "public,member,guest,admin,main,classes,nobody")."
+			</td>
+			</tr>
+			<tr><td><div class='radio'>
+		";
 		$checked = ($listtype == 1) ? " checked='checked' " : "";
-		$text .= "<input type='radio' {$checked} name='listtype' value='1' /> ".MENLAN_26."<br />";
+		
+		$text .= $frm->radio('listtype', 1, $checked, array('label'=>MENLAN_26, 'class'=> 'e-save'));
+	//	$text .= "<br />";
+	//	$text .= "<input type='radio' class='e-save' {$checked} name='listtype' value='1' /> ".MENLAN_26."<br />";
 		$checked = ($listtype == 2) ? " checked='checked' " : "";
-		$text .= "<input type='radio' {$checked} name='listtype' value='2' /> ".MENLAN_27."<br /><br />".MENLAN_28."<br />";
-		$text .= "<textarea name='pagelist' cols='60' rows='10' class='tbox'>$menu_pages</textarea>";
-		$text .= "</td></tr>
-		</table>
+		
+		$text .= $frm->radio('listtype', 2, $checked, array('label'=>MENLAN_27, 'class'=> 'e-save'));
+		
+		
+		// $text .= "<input type='radio' class='e-save' {$checked} name='listtype' value='2' /> ".MENLAN_27."<br />";
+		
+		$text .= "</div>
+		<div class='row'>
+			
+			<div class='pull-left span3' >
+		
+				<textarea name='pagelist' class='e-save span3' cols='60' rows='8' class='tbox'>$menu_pages</textarea>
+			</div>
+			<div class='  span4'><small>".MENLAN_28."</small></div>
+		</div></td></tr>
+		</table>";
+		
+		$text .= $frm->hidden('mode','visibility'); 
+		$text .= $frm->hidden('menu_id',intval($_GET['vis'])); // "<input type='hidden' name='menu_id' value='".intval($_GET['vis'])."' />";
+		
+		/*
+		$text .= "
 		<div class='buttons-bar center'>";
         $text .= $frm->admin_button('class_submit', MENLAN_6, 'update');
 
-		$text .= "<input type='hidden' name='menu_id' value='".intval($_GET['vis'])."' />
-		</div>
+		
+		</div>";
+		 */ 
+		$text .= "
 		</fieldset>
 		</form>
 		</div>";
+	
+		
 		return $text;
-		$caption = MENLAN_7." ".$row['menu_name'];
-		$ns->tablerender($caption, $text);
+		//$caption = MENLAN_7." ".$row['menu_name'];
+		//$ns->tablerender($caption, $text);
+		//echo $text;
 	}
 
 
@@ -560,12 +602,12 @@ class e_menuManager {
 		foreach($this->menuActivateIds as $sel_mens)
 		{
 			//Get info from menu being activated
-			if($sql->db_Select("menus", 'menu_name, menu_path' , "menu_id = ".intval($sel_mens)." "))
+			if($sql->select("menus", 'menu_name, menu_path' , "menu_id = ".intval($sel_mens)." "))
 			{
-				$row=$sql->db_Fetch();
+				$row=$sql->fetch();
 				//If menu is not already activated in that area, add the record.
 				//$query = "SELECT menu_name,menu_path FROM #menus WHERE menu_name='".$row['menu_name']."' AND menu_layout = '".$this->dbLayout."' AND menu_location = ".$location." LIMIT 1 ";
-				//if(!$sql->db_Select_gen($query, $this->debug))
+				//if(!$sql->gen($query, $this->debug))
 				{
 
                    $insert = array(
@@ -676,25 +718,32 @@ class e_menuManager {
 	{
 		$sql = e107::getDb();
 		$parms = $sql->escape(strip_tags($_POST['menu_parms']));
-		$check = $sql->db_Update("menus", "menu_parms='".$parms."' WHERE menu_id=".$this->menuId);
+		
+		$check = $sql->db_Update("menus", "menu_parms='".$parms."' WHERE menu_id=".intval($_POST['menu_id'])." LIMIT 1");
+		
 		
 		if($check)
 		{
+			return array('msg'=>'All Okay','error'=>false);
 			// FIXME - menu log
 			//$admin_log->log_event('MENU_02',$_POST['menu_parms'].'[!br!]'.$parms.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
-			$this->menuAddMessage(LAN_SAVED,E_MESSAGE_SUCCESS);
+		//	$this->menuAddMessage(LAN_SAVED,E_MESSAGE_SUCCESS);
 		}
 		elseif(false === $check)
 		{
-            $this->menuAddMessage(LAN_UPDATED_FAILED,E_MESSAGE_ERROR);
+			return array('msg'=>LAN_UPDATED_FAILED,'error'=>true);
+            
 		}
-		else $this->menuAddMessage(LAN_NOCHANGE_NOTSAVED,E_MESSAGE_INFO);
+		else
+		{
+			return array('msg'=>'No Changes Made','error'=>false); // $this->menuAddMessage(LAN_NOCHANGE_NOTSAVED,E_MESSAGE_INFO);
+		}
 	}
 
 
 	// --------------------------------------------------------------------------
 
-	function menuSaveVisibility()
+	function menuSaveVisibility() // Used by Ajax
 	{
 		global $admin_log;
 		$sql = e107::getDb();
@@ -709,41 +758,48 @@ class e_menuManager {
 		$pageparms = preg_replace("#\|$#", "", $pageparms);
 		$pageparms = (trim($_POST['pagelist']) == '') ? '' : $pageparms;
 
-		if($sql->db_Update("menus", "menu_class='".$_POST['menu_class']."', menu_pages='{$pageparms}' WHERE menu_id=".intval($this->menuId)))
+		if($sql->db_Update("menus", "menu_class='".intval($_POST['menu_class'])."', menu_pages='{$pageparms}' WHERE menu_id=".intval($_POST['menu_id'])))
 		{
 			$admin_log->log_event('MENU_02',$_POST['menu_class'].'[!br!]'.$pageparms.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
-			$message = "<br />".MENLAN_8."<br />";
-			$this->menuAddMessage($message,E_MESSAGE_SUCCESS);
+						
+			return array('msg'=>LAN_UPDATED, 'error'=> false);
+			//$this->menuAddMessage($message,E_MESSAGE_SUCCESS);
 		}
 		else
 		{
-	     	$message = "the update failed";
-            $this->menuAddMessage($message,E_MESSAGE_ERROR);
+	     	return array('msg'=>LAN_UPDATED_FAILED, 'error'=> true, 'posted'=>$_POST);
+          //  $this->menuAddMessage($message,E_MESSAGE_ERROR);
 		}
 
 	}
 
-
+	function setMenuId($id)
+	{
+		$this->menuId = intval($id);	
+	}
 
 	// -----------------------------------------------------------------------
 
 	function menuDeactivate()
 	{	// Get current menu name
-		global $sql,$admin_log;
+		global $admin_log;
+		$sql = e107::getDb();
 		
 		//echo "FOUND= ".$this->menuId;
+		$error = false;
 
-		if($sql->db_Select('menus', 'menu_name', 'menu_id='.$this->menuId, 'default'))
+		if($sql->gen('SELECT menu_name FROM #menus WHERE menu_id = '.$this->menuId.' LIMIT 1'))
 		{
 			
-			$row = $sql->db_Fetch();
+			$row = $sql->fetch();
 			//Check to see if there is already a menu with location = 0 (to maintain BC)
-			if($sql->db_Select('menus', 'menu_id', "menu_name='{$row['menu_name']}' AND menu_location = 0 AND menu_layout ='".$this->dbLayout."' LIMIT 1"))
+			if($sql->select('menus', 'menu_id', "menu_name='{$row['menu_name']}' AND menu_location = 0 AND menu_layout ='".$this->dbLayout."' LIMIT 1"))
 			{
 				//menu_location=0 already exists, we can just delete this record
 				if(!$sql->db_Delete('menus', 'menu_id='.$this->menuId))
 				{
 					$message = "Deletion Failed";
+					$error = true;
 				}
 			}
 			else
@@ -752,6 +808,7 @@ class e_menuManager {
 				if(!$sql->db_Update("menus", "menu_location=0, menu_order=0, menu_class=0, menu_pages='' WHERE menu_id=".$this->menuId))
 				{
 	            	$message = "FAILED";
+					$error = true;
 				}
 			}
 			//Move all other menus up
@@ -760,10 +817,12 @@ class e_menuManager {
 		}
 		else
 		{
-			$message = "NO CHANGES MADE";	
+			$message = "NO CHANGES MADE : ".$this->menuId;	
+			$error = true;
+			
 		}
 
-		echo $message;
+		return array('msg'=>$message,'error'=>$error);
 	}
 
 
@@ -774,11 +833,11 @@ class e_menuManager {
 
 			global $admin_log,$sql;
 
-			if($sql->db_Select('menus', 'menu_name', 'menu_id='.$this->menuId, 'default'))
+			if($sql->select('menus', 'menu_name', 'menu_id='.$this->menuId, 'default'))
 			{
-				$row = $sql->db_Fetch();
+				$row = $sql->fetch();
 				//Check to see if menu is already active in the new area, if not then move it
-				if(!$sql->db_Select('menus', 'menu_id', "menu_name='{$row['menu_name']}' AND menu_location = ".$this->menuNewLoc." AND menu_layout='".$this->dbLayout ."' LIMIT 1"))
+				if(!$sql->select('menus', 'menu_id', "menu_name='{$row['menu_name']}' AND menu_location = ".$this->menuNewLoc." AND menu_layout='".$this->dbLayout ."' LIMIT 1"))
 				{
 					$menu_count = $sql->db_Count("menus", "(*)", " WHERE menu_location=".$this->menuNewLoc);
 					$sql->db_Update("menus", "menu_location='{$this->menuNewLoc}', menu_order=".($menu_count+1)." WHERE menu_id=".$this->menuId);
@@ -799,6 +858,7 @@ class e_menuManager {
 		$sql    = e107::getDb();     
 		$tp     = e107::getParser(); 
 		$ns     = e107::getRender(); 
+		$frm 	= e107::getForm();
 		
 		//FIXME - XHTML cleanup, front-end standards (elist, forms etc)
 		echo "<div id='portal'>";
@@ -810,18 +870,20 @@ class e_menuManager {
 
 		echo "<div style='text-align:center'>";
 		echo $rs->form_open("post", e_SELF."?configure=".$this->curLayout, "menuActivation");
-		$text = "<table style='width:80%;margin-left:auto;margin-right:auto'>";
+		$text = "<table class='table' style='margin-left:auto;margin-right:auto'>";
 
 
-		$text .= "<tr><td style='width:50%;text-align:center;padding-bottom:4px'>".MENLAN_36."...</td><td style='width:50%;padding-bottom:4px;text-align:center'>...".MENLAN_37."</td></tr>";
-		$text .= "<tr><td style='width:50%;vertical-align:top;text-align:center'>";
+		$text .= "<tr><td style='width:65%;text-align:center;padding-bottom:4px'>".MENLAN_36."...</td>
+		<td style='width:50%;padding-bottom:4px;text-align:center'>...".MENLAN_37."</td></tr>";
+		$text .= "<tr><td style='width:35%;vertical-align:top;text-align:center'>";
 
-	 	$sql->db_Select("menus", "menu_name, menu_id, menu_pages, menu_path", "1 GROUP BY menu_name ORDER BY menu_name ASC");
+	 	$sql->select("menus", "menu_name, menu_id, menu_pages, menu_path", "1 GROUP BY menu_name ORDER BY menu_name ASC");
 
 		if(!$this->dragDrop)
 		{
-			$text .= "<div class='column' id='portal-column-block-list' style='border:1px inset black;height:200px;display:block;overflow:auto;margin-bottom:20px'>";
-			$text .= "<table id='core-menumanager-main' style='width:100%;margin-left:auto;margin-right:auto' cellspacing='0' cellpadding='0'>\n";
+			$text .= "<div class='column' id='portal-column-block-list' style='border:1px inset black;height:250px;display:block;overflow:auto;margin-bottom:20px'>";
+			$text .= "<table class='table-striped core-menumanager-main' id='core-menumanager-main'  >
+			<tbody>\n";
 
 		}
 		else
@@ -830,7 +892,7 @@ class e_menuManager {
 		}
 
         $color = "";
-		while ($row = $sql->db_Fetch())
+		while ($row = $sql->fetch())
 		{
 			$pdeta = "";
 	        $color = ($color == "white") ? "#DDDDDD" : "white";
@@ -851,10 +913,20 @@ class e_menuManager {
 			{
 				$menuInf = (strlen($row['menu_path']) > 1) ? ' ('.substr($row['menu_path'],0,-1).')' : '';
 	    		$text .= "<tr style='background-color:$color;color:black'>
-				<td style='text-align:left; color:black;'><input type='checkbox' id='menuselect-{$row['menu_id']}' name='menuselect[]' value='{$row['menu_id']}' /><label for='menuselect-{$row['menu_id']}'>".$row['menu_name'].$menuInf."</label></td>
-	            <td style='color:black'> ".$pdeta."&nbsp;</td>
+				<td style='text-align:left; color:black;'>";
+				
+				
+			//	$text .= "
+			////	<input type='checkbox' id='menuselect-{$row['menu_id']}' name='menuselect[]' value='{$row['menu_id']}' />
+			//	<label class='selection-row' for='menuselect-{$row['menu_id']}'>".$row['menu_name'].$menuInf."</label>";
+				
+				$text .= $frm->checkbox('menuselect[]',$row['menu_id'],'',array('label'=>$row['menu_name'].$menuInf));
+		
+				$text .= "
+				</td>
+				<td style='color:black'>&nbsp; ".$pdeta."&nbsp;</td>
 				</tr>\n";
-	        }
+			}
 			else
 			{
 				// Menu Choices box. 
@@ -863,13 +935,13 @@ class e_menuManager {
 	  			$text .= "</div>\n";
 			}
 		}
-		$text .= (!$this->dragDrop) ? "</table>" : "";
+		$text .= (!$this->dragDrop) ? "</tbody></table>" : "";
 		$text .= "</div>";
 
 		$text .= "</td><td style='width:50%;vertical-align:top;text-align:center'><br />";
 		foreach ($this->menu_areas as $menu_act)
 		{
-			$text .= "<input type='submit' class='btn button' id='menuActivate_".trim($menu_act)."' name='menuActivate[".trim($menu_act)."]' value='".MENLAN_13." ".trim($menu_act)."' /><br /><br />\n";
+			$text .= "<input type='submit' class='menu-btn button' id='menuActivate_".trim($menu_act)."' name='menuActivate[".trim($menu_act)."]' value='".MENLAN_13." ".trim($menu_act)."' /><br /><br />\n";
 		}
 
 
@@ -877,7 +949,7 @@ class e_menuManager {
 		{
 			if(isset($pref['sitetheme_layouts'][$layout]['menuPresets']))
 			{
-		    	$text .= "<input type='submit' class='btn button' name='menuUsePreset' value=\"".MENLAN_40."\" onclick=\"return jsconfirm('".$tp->toJS(MENLAN_41)."')\" /><br /><br />\n";  // Use Menu Presets
+		    	$text .= "<input type='submit' class='menu-btn button' name='menuUsePreset' value=\"".MENLAN_40."\" onclick=\"return jsconfirm('".$tp->toJS(MENLAN_41)."')\" /><br /><br />\n";  // Use Menu Presets
 				$text .= "<input type='hidden' name='menuPreset' value='".$layout."' />";
 			}
 			$text .= "<input type='hidden'  name='curLayout' value='".$layout."' />";
@@ -913,8 +985,8 @@ class e_menuManager {
 // onchange=\"urljump(this.options[selectedIndex].value);\"
 
 		$text = "<form  method='post' action='".e_SELF."?configure=".$this->curLayout."'>";
-		$text .= "<div class='buttons-bar center'>".MENLAN_30." ";
-        $text .= "<select name='custom_select' id='menuManagerSelect' >\n";  // window.frames['menu_iframe'].location=this.options[selectedIndex].value ???
+		$text .= "<div class='buttons-bar'>".MENLAN_30." ";
+        $text .= "<select name='custom_select' id='menuManagerSelect' class='tbox' >\n";  // window.frames['menu_iframe'].location=this.options[selectedIndex].value ???
 
 
 	    $search = array("_","legacyDefault","legacyCustom");
@@ -937,6 +1009,9 @@ class e_menuManager {
 
 	    $text .= "</select>
 		</div></form>";
+		
+		// $text .= "<div id='visibility'>Something here</div>";
+		
 		  return $text;
 	}
 
@@ -1087,13 +1162,13 @@ class e_menuManager {
 						
 						$MODE = 1;
 						
-						$sql9->db_Select("menus", "*", "menu_location='$menu' AND menu_layout='" . $this->dbLayout . "' ORDER BY menu_order");
+						$sql9->select("menus", "*", "menu_location='$menu' AND menu_layout='" . $this->dbLayout . "' ORDER BY menu_order");
 						$menu_count = $sql9->db_Rows();
 						
 						$cl = ($this->dragDrop) ? "'portlet" : "regularMenu";
 						
 						$menuText .= "\n<div class='column' id='area-".$menu."'>\n\n";
-						while($row = $sql9->db_Fetch(MYSQL_ASSOC))
+						while($row = $sql9->fetch(MYSQL_ASSOC))
 						{
 							$menuText .= "\n\n\n <!-- Menu Start ".$row['menu_name']. "-->\n";
 							$menuText .= "<div class='{$cl}' id='block-".$row['menu_id']."-".$menu."'>\n";
@@ -1190,10 +1265,12 @@ class e_menuManager {
 		{
 		  $conf = "{$menu_path}config";
 		}
-
+//
+	//	$text = "<div style='white-space:nowrap'>";
+		$text .= '<div class="menuOptions">';
 		if(!$this->dragDrop)
 		{
-			$text .= "<select id='menuAct_".$menu_id."' name='menuAct[$menu_id]' class='tbox' onchange='this.form.submit()' >";
+			$text .= "<select id='menuAct_".$menu_id."' name='menuAct[$menu_id]' class='menu-btn' onchange='this.form.submit()' >";
 			$text .= $rs->form_option(MENLAN_25, TRUE, " ");
 		//	$text .= $rs->form_option(MENLAN_15, "", "deac.{$menu_info}");
 	
@@ -1233,26 +1310,31 @@ class e_menuManager {
 				
 		//DEBUG remove inline style, switch to simple quoted string for title text value
 		//TODO hardcoded text
-		$text .= '<div class="menuOptions">
-		<a class="e-dialog" target="_top" href="'.e_SELF.'?lay='.$this->curLayout.'&amp;vis='.$menu_id.'&amp;iframe=1" title="'.MENLAN_20.'">'.ADMIN_VIEW_ICON.'</a>';
+		
+	//	$visibilityLink = e_SELF.'?'.urlencode('lay='.$this->curLayout.'&amp;vis='.$menu_id.'&amp;iframe=1');
+		
+		$visibilityLink = e_SELF."?enc=".base64_encode('lay='.$this->curLayout.'&vis='.$menu_id.'&iframe=1');
+		
+		$text .= '
+		<a class="e-menumanager-option menu-btn" target="_top" href="'.$visibilityLink.'" title="'.MENLAN_20.'">'.ADMIN_VIEW_ICON.'</a>';
 
 		if($conf)
 		{
-			$text .= '<a target="_top" href="'.e_SELF.'?lay='.$this->curLayout.'&amp;mode=conf&amp;path='.urlencode($conf).'&amp;id='.$menu_id.'" 
+			$text .= '<a class="menu-btn" target="_top" href="'.e_SELF.'?lay='.$this->curLayout.'&amp;mode=conf&amp;path='.urlencode($conf).'&amp;id='.$menu_id.'" 
 			title="Configure menu">'.ADMIN_CONFIGURE_ICON.'</a>';
 		}
 		
-		$text .= '<a target="_top" href="'.e_SELF.'?lay='.$this->curLayout.'&amp;parmsId='.$menu_id.'" 
-		title="Configure parameters">'.ADMIN_EDIT_ICON.'</a>';
+		$editLink = e_SELF."?enc=".base64_encode('lay='.$this->curLayout.'&parmsId='.$menu_id.'&iframe=1');
+		$text .= '<a class="e-menumanager-option menu-btn" target="_top" href="'.$editLink.'" title="Configure parameters">'.ADMIN_EDIT_ICON.'</a>';
 
-		$text .= '<a title="'.LAN_DELETE.'" id="remove-'.$menu_id.'-'.$menu_location.'" class="e-tip delete e-menumanager-delete" href="'.e_SELF.'?configure='.$this->curLayout.'&amp;mode=deac&amp;id='.$menu_id.'">'.ADMIN_DELETE_ICON.'</a>
+		$text .= '<a title="'.LAN_DELETE.'" id="remove-'.$menu_id.'-'.$menu_location.'" class="e-tip delete e-menumanager-delete menu-btn" href="'.e_SELF.'?configure='.$this->curLayout.'&amp;mode=deac&amp;id='.$menu_id.'">'.ADMIN_DELETE_ICON.'</a>
 		
 		<span id="status-'.$menu_id.'" style="display:none">'.($rep == true ? "" : "insert").'</span>
 		</div>';
 
 		$text .= ($rep == true) ? "</div>" : "";
 
-		
+		$text .= "</div>";
 		
 		if(!$this->dragDrop)
 		{
@@ -1262,12 +1344,7 @@ class e_menuManager {
 
 			return $ns->tablerender($caption, $text,'', true);
 			
-					ob_start();
 			
-			$THEX = ob_get_contents();
-			ob_end_clean();
-		
-			return $THEX;	
 		}
 		else
 		{
@@ -1281,25 +1358,55 @@ class e_menuManager {
 
 	}
 
-	function menuSaveAjax()
+	function menuSaveAjax($mode = null)
 	{
-	
-     
-		$this->debug = TRUE;
 		
-	    global $sql;
-
-
-		list($tmp,$area) = explode("-",$_POST['area']);
 		
-		if($_POST['area'] == 'remove')
+		if($mode == 'visibility')
 		{
-			list($tmp,$deleteID) = explode("-",$_POST['removeid']);	
-			$this->menuId = $deleteID;
-			$this->menuDeactivate();		
-			echo "Removed {$deleteId}";
+		
+			$ret = $this->menuSaveVisibility();	
+			echo json_encode($ret);
+			return;		
+		}		
+		
+		if($mode == 'delete')
+		{
+			list($tmp,$area) = explode("-",$_POST['area']);
+		
+			if($_POST['area'] == 'remove')
+			{
+				list($tmp,$deleteID) = explode("-",$_POST['removeid']);	
+				$this->menuId = $deleteID;
+
+				$ret = $this->menuDeactivate();	
+				echo json_encode($ret);
+				
+				return;
+			}	
+			
+		}
+		
+		
+		if($mode == 'parms') 
+		{
+			$ret = $this->menuSaveParameters();	
+			echo json_encode($ret);
 			return;
 		}
+		
+		
+		
+     	print_r($_POST);
+		return;
+	 
+	 
+		$this->debug = TRUE;
+		
+		$sql = e107::getDb();
+
+
+		
 
 		// Allow deletion by ajax, but not the rest when drag/drop disabled.  
 
@@ -1309,7 +1416,7 @@ class e_menuManager {
 		list($tmp,$insertID) = explode("-",$_POST['insert']);	
 		$insert[] = $insertID;
 
-		print_r($_POST);
+		
 
 		if($_POST['mode'] == 'insert'  && count($insert) && $area) // clear out everything before rewriting everything to db. 
 		{
@@ -1351,8 +1458,8 @@ class e_menuManager {
         	$sql = e107::getDb();
         	$pref = e107::getPref();
 
-			$sql -> db_Select("menus", "*", "menu_location != 0 ORDER BY menu_path,menu_name");
-			while($row = $sql-> db_Fetch())
+			$sql -> select("menus", "*", "menu_location != 0 ORDER BY menu_path,menu_name");
+			while($row = $sql-> fetch())
 			{
 				$link = "";
 

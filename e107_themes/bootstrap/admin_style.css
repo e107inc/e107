@@ -83,7 +83,7 @@ a.brand:hover img 			{
 
 } 
 
-.modal 										{ min-width:800px }
+.modal 										{ min-width:800px; left:42% }
  
 @media (min-width: 1500px) { 
 	
