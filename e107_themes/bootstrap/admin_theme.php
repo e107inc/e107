@@ -482,6 +482,7 @@ define("E_32_TRUE", "<i class='S32 e-true-32'></i>");
 
 
 	// FOR BC 
+
 	define("ADMIN_EDIT_ICON_PATH", e_IMAGE_ABS."admin_images/edit_32.png");
 	define("ADMIN_DELETE_ICON_PATH", e_IMAGE_ABS."admin_images/delete_32.png");
 	define("ADMIN_WARNING_ICON_PATH", e_IMAGE_ABS."admin_images/warning_32.png");

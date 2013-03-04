@@ -80,7 +80,7 @@ $(document).ready(function()
 		
 		
 		// run tips on .field-help 
-		$("button,input,textarea,select,label,.e-tip").each(function(c) {
+		$("input,textarea,select,label,.e-tip").each(function(c) {
 						
 			var t = $(this).nextAll(".field-help");
 			t.hide();
