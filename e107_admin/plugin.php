@@ -293,13 +293,13 @@ class pluginManager{
 		$xml = e107::getXml();
 		$mes = e107::getMessage();
 		
-		$mes->addWarning("Some older plugins may produce unpredictable results.");
+	//	$mes->addWarning("Some older plugins may produce unpredictable results.");
 
 		$from = intval(varset($_GET['frm']));
 		$srch = preg_replace('/[^\w]/','', vartrue($_GET['srch'])); 
 	
 	//	$file = SITEURLBASE.e_PLUGIN_ABS."release/release.php";  // temporary testing
-		$file = "http://e107.org/feed?type=plugin&frm=".$from."&srch=".$srch;
+		$file = "http://e107.org/feed?type=plugin&frm=".$from."&srch=".$srch."&limit=10";
 		
 		$xml->setOptArrayTags('plugin'); // make sure 'plugin' tag always returns an array
 		$xdata = $xml->loadXMLfile($file,'advanced');
@@ -380,7 +380,7 @@ class pluginManager{
 					continue;	
 				}
 				// echo '<br />v='.$v;
-				$text .= "<td style='height: 80px' class='".vartrue($this->fields[$v]['class'],'left')."'>".$frm->renderValue($v, $val[$v], $this->fields[$v], $key)."</td>\n";
+				$text .= "<td style='height: 40px' class='".vartrue($this->fields[$v]['class'],'left')."'>".$frm->renderValue($v, $val[$v], $this->fields[$v], $key)."</td>\n";
 			}
 			$text .= "<td class='center'>".$this->options($val)."</td>";
 			$text .= "</tr>";		
