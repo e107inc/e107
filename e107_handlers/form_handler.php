@@ -2332,8 +2332,15 @@ class e_form
 				if(!vartrue($parms['noparse'])) $value = $tp->toHTML($value, (vartrue($parms['bb']) ? true : false), vartrue($parms['parse']));
 				if(vartrue($parms['expand']) || vartrue($parms['truncate']) || vartrue($parms['htmltruncate']))
 				{
-					$ttl = vartrue($parms['expand'], '&nbsp;...');
-					$expand = '&nbsp;<a href="#'.$elid.'-expand" class="e-show-if-js e-expandit">'.defset($ttl, $ttl)."</a>";
+					$ttl = vartrue($parms['expand']);
+					if($ttl == 1)
+					{
+						$ttl = "<button class='btn btn-mini pull-right'>More..</button>";
+						// $expand = "";
+					}
+					
+					$expands = '<a href="#'.$elid.'-expand" class="e-show-if-js e-expandit">'.defset($ttl, $ttl)."</a>";
+					
 				}
 
 				$oldval = $value;
@@ -2352,8 +2359,11 @@ class e_form
 				if($toexpand)
 				{
 					// force hide! TODO - core style .expand-c (expand container)
-					$value .= '<div class="expand-c" style="display: none" id="'.$elid.'-expand"><div>'.str_replace($truncated,' ',$oldval).'</div></div>';
+					$value .= '<span class="expand-c" style="display: none" id="'.$elid.'-expand"><span>'.str_replace($truncated,' ',$oldval).'</span></span>';
+					$value .= $expands; // Keep it at the bottom so it does't cut the sentence. 
 				}
+				
+				
 			break;
 
 			case 'icon':

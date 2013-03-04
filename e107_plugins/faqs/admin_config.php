@@ -189,7 +189,7 @@ class faq_main_ui extends e_admin_ui
 			'checkboxes'			=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'faq_id'				=> array('title'=> LAN_ID,			'tab' => 0, 'type' => 'int',			'width' =>'5%', 'forced'=> TRUE),
          	'faq_question' 			=> array('title'=> "Question",		'tab' => 0, 'type' => 'text',			'width' => 'auto', 'thclass' => 'left first', 'required'=>TRUE, 'readParms'=>'editable=1'), 
-         	'faq_answer' 			=> array('title'=> "Answer",		'tab' => 0,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), 
+         	'faq_answer' 			=> array('title'=> "Answer",		'tab' => 0,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=1&truncate=50&bb=1'), 
 		 	'faq_parent' 			=> array('title'=> LAN_CATEGORY,	'tab' => 0,	'type' => 'dropdown',		'data'=> 'int', 'inline'=>true,'width' => '10%', 'filter'=>TRUE, 'batch'=>TRUE),		
 			'faq_comment' 			=> array('title'=> "Comment",		'tab' => 1, 'type' => 'userclass',		'data' => 'int',	'width' => 'auto', 'inline'=> true),	// User id
 			'faq_datestamp' 		=> array('title'=> LAN_DATE,		'tab' => 1, 'type' => 'datestamp',		'data'=> 'int','width' => 'auto', 'noedit' => false,'writeParms'=>'auto=1'),	

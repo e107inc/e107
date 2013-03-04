@@ -150,17 +150,17 @@ class pluginManager{
 
 		   		"plugin_checkboxes"		=> array("title" => "", "forced"=>TRUE, "width"=>"3%"),
 				"plugin_icon"			=> array("title" => EPL_ADLAN_82, "type"=>"icon", "width" => "5%", "thclass" => "middle center",'class'=>'center', "url" => ""),
-				"plugin_name"			=> array("title" => EPL_ADLAN_10, "type"=>"text", "width" => "20%", "thclass" => "middle", "url" => ""),
+				"plugin_name"			=> array("title" => EPL_ADLAN_10, "type"=>"text", "width" => "15%", "thclass" => "middle", "url" => ""),
  				"plugin_version"		=> array("title" => EPL_ADLAN_11, "type"=>"numeric", "width" => "5%", "thclass" => "middle", "url" => ""),
     			"plugin_date"			=> array("title" => "Released ", "type"=>"text", "width" => "auto", "thclass" => "middle"),
     			
     			"plugin_folder"			=> array("title" => EPL_ADLAN_64, "type"=>"text", "width" => "10%", "thclass" => "middle", "url" => ""),
 				"plugin_category"		=> array("title" => LAN_CATEGORY, "type"=>"text", "width" => "10%", "thclass" => "middle", "url" => ""),
-                "plugin_author"			=> array("title" => EPL_ADLAN_12, "type"=>"text", "width" => "auto", "thclass" => "middle", "url" => ""),
+                "plugin_author"			=> array("title" => EPL_ADLAN_12, "type"=>"text", "width" => "5%", "thclass" => "middle", "url" => ""),
   				"plugin_website"		=> array("title" => EPL_WEBSITE, "type"=>"url", "width" => "5%", "thclass" => "middle center", "url" => ""),
-				"plugin_compatible"		=> array("title" => EPL_ADLAN_13, "type"=>"text", "width" => "auto", "thclass" => "middle", "url" => ""),
+				"plugin_compatible"		=> array("title" => EPL_ADLAN_13, "type"=>"text", "width" => "5%", "thclass" => "middle", "url" => ""),
 			
-				"plugin_description"	=> array("title" => EPL_ADLAN_14, "type"=>"text", "width" => "auto", "thclass" => "middle center", "url" => ""),
+				"plugin_description"	=> array("title" => EPL_ADLAN_14, "type"=>"bbarea", "width" => "30%", "thclass" => "middle center",  'readParms' => 'expand=1&truncate=180&bb=1'),
 				"plugin_compliant"		=> array("title" => EPL_ADLAN_81, "type"=>"text", "width" => "5%", "thclass" => "middle center", "url" => ""),
 		//		"plugin_release"		=> array("title" => EPL_ADLAN_81, "type"=>"text", "width" => "5%", "thclass" => "middle center", "url" => ""),
 		//		"plugin_notes"			=> array("title" => EPL_ADLAN_83, "type"=>"url", "width" => "5%", "thclass" => "middle center", "url" => ""),
@@ -326,7 +326,7 @@ class pluginManager{
 					'plugin_category'		=> vartrue($r['category'][0]),
 					'plugin_author'			=> vartrue($row['author']),
 					'plugin_version'		=> $row['version'],
-					'plugin_description'	=> $tp->text_truncate(vartrue($r['description'][0]),200),
+					'plugin_description'	=> nl2br(vartrue($r['description'][0])),
 					'plugin_compatible'		=> $badge,
 				
 					'plugin_website'		=> vartrue($row['authorUrl']),
@@ -359,7 +359,7 @@ class pluginManager{
 					
 					
 					
-					<table class='table adminlist'>
+					<table id=core-plugin-list' class='table adminlist'>
 						".$frm->colGroup($fieldList,$this->fieldpref).
 						$frm->thead($fieldList,$this->fieldpref)."
 						<tbody>
@@ -380,7 +380,7 @@ class pluginManager{
 					continue;	
 				}
 				// echo '<br />v='.$v;
-				$text .= "<td class='".vartrue($this->fields[$v]['class'],'left')."'>".$frm->renderValue($v, $val[$v], $this->fields[$v])."</td>\n";
+				$text .= "<td style='height: 80px' class='".vartrue($this->fields[$v]['class'],'left')."'>".$frm->renderValue($v, $val[$v], $this->fields[$v], $key)."</td>\n";
 			}
 			$text .= "<td class='center'>".$this->options($val)."</td>";
 			$text .= "</tr>";		
