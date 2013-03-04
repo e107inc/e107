@@ -484,10 +484,12 @@ class themeHandler
 		//	$mes->addWarning("This area is experimental.");
 	
 			$from = intval(varset($_GET['frm']));
-		
+			$limit = 18;
 		//	$file = SITEURLBASE.e_PLUGIN_ABS."release/release.php";  // temporary testing
 			
-			$file = "http://e107.org/feed?type=theme&frm=".$from."&srch=".$srch;
+			$file = "http://e107.org/feed?type=theme&frm=".$from."&srch=".$srch."&limit=".$limit;
+			
+			$mes->addDebug("File = ".$file);
 			
 			$xml->setOptArrayTags('theme,screenshots/image'); // make sure 'theme' tag always returns an array
 		//	$xdata = $xml->loadXMLfile($file,'advanced',true);
@@ -506,85 +508,94 @@ class themeHandler
 			// XML data array. 
 			$c = 1;
 		
-			foreach($xdata['theme'] as $r)
+		
+			if(is_array($xdata['theme'] ))
 			{
-				if(E107_DBG_PATH)
+		
+				foreach($xdata['theme'] as $r)
 				{
-					$mes->addDebug(print_a($r,true));	
-				}
+					if(E107_DBG_PATH)
+					{
+						$mes->addDebug(print_a($r,true));	
+					}
+					
+					$theme = array(
+						'name'			=> stripslashes($r['@attributes']['name']),
+						'category'		=> $r['category'],
+						'preview' 		=> $r['screenshots']['image'],
+						'date'			=> $r['@attributes']['date'],
+						'version'		=> $r['@attributes']['version'],
+						'thumbnail'		=> $r['@attributes']['thumbnail'],
+						'url'			=> $r['@attributes']['url'],
+						'author'		=> $r['@attributes']['author'],
+						'website'		=> $r['@attributes']['authorUrl'],
+						'compatibility'	=> $r['@attributes']['compatibility'],
+						'description'	=> varset($r['description']),
+					);
+					
+					$text .= $this->renderTheme(FALSE, $theme);
+					/*
+	    		
+				    [author] => e107 Inc
+				    [summary] => Bootstrap e107 admin theme
+				    [category] => generic
+				    [keywords] => Array
+				        (
+				            [word] => Array
+				                (
+				                    [0] => bootstrap
+				                    [1] => clean
+				                )
 				
-				$theme = array(
-					'name'			=> $r['@attributes']['name'],
-					'category'		=> $r['category'],
-					'preview' 		=> $r['screenshots']['image'],
-					'date'			=> $r['@attributes']['date'],
-					'version'		=> $r['@attributes']['version'],
-					'thumbnail'		=> $r['@attributes']['thumbnail'],
-					'url'			=> $r['@attributes']['url'],
-					'author'		=> $r['@attributes']['author'],
-					'website'		=> $r['@attributes']['authorUrl'],
-					'compatibility'	=> $r['@attributes']['compatibility'],
-					'description'	=> varset($r['description']),
-				);
+				        )
+						[name] => bootstrap
+				    [version] => 1.0
+				    [date] => 2012-12-01
+				    [compatibility] => 2.0
+				    [releaseUrl] => 
+				    [email] => e107inc@something.com
+				    [website] => http://e107.org
+				    [info] => Bootstrap e107 admin theme
+				    [compliance] => Array
+				        (
+				            [@attributes] => Array
+				                (
+				                    [xhtml] => 
+				                    [css] => 
+				                )
 				
-				$text .= $this->renderTheme(FALSE, $theme);
-				/*
-    		
-			    [author] => e107 Inc
-			    [summary] => Bootstrap e107 admin theme
-			    [category] => generic
-			    [keywords] => Array
-			        (
-			            [word] => Array
-			                (
-			                    [0] => bootstrap
-			                    [1] => clean
-			                )
-			
-			        )
-					[name] => bootstrap
-			    [version] => 1.0
-			    [date] => 2012-12-01
-			    [compatibility] => 2.0
-			    [releaseUrl] => 
-			    [email] => e107inc@something.com
-			    [website] => http://e107.org
-			    [info] => Bootstrap e107 admin theme
-			    [compliance] => Array
-			        (
-			            [@attributes] => Array
-			                (
-			                    [xhtml] => 
-			                    [css] => 
-			                )
-			
-			        )
-			
-			    [xhtmlcompliant] => 
-			    [csscompliant] => 
-			    [path] => bootstrap		
-							
-			*/	
+				        )
 				
-			}	
-				
-			$text .= "<div class='clear'>&nbsp;</div>";
-			
-			$amount = 20;
-		
-		
-			if($total > $amount)
-			{
-				$parms = $total.",".$amount.",".$from.",".e_SELF.'?mode='.$_GET['mode'].'&amp;frm=[FROM]';
-				$text .= "<div style='text-align:center;margin-top:10px'>".$tp->parseTemplate("{NEXTPREV=$parms}",TRUE)."</div>";
+				    [xhtmlcompliant] => 
+				    [csscompliant] => 
+				    [path] => bootstrap		
+								
+				*/	
+					
+				}	
+					
+				$text .= "<div class='clear'>&nbsp;</div>";
 			}
+			else 
+			{
+				$mes->addInfo("No Themes found which match your search criteria");		
+			}	
+				$amount =$limit;
 			
-			$ns->tablerender(TPVLAN_26.SEP."Available for Download", $mes->render().$text);
+			
 				
+				
+				$ns->tablerender(TPVLAN_26.SEP."Available for Download", $text. $mes->render());
+					
+				if($total > $amount)
+				{
+					$parms = $total.",".$amount.",".$from.",".e_SELF.'?mode='.$_GET['mode'].'&amp;frm=[FROM]';
+					echo"<div class='center'>".$tp->parseTemplate("{NEXTPREV=$parms}",TRUE)."</div>";
+				}
 			
+			
+		
 		}
-		
-		
 		
 
 		
