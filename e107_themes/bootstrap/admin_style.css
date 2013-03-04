@@ -108,6 +108,8 @@ a.brand:hover img 			{
 .nav ul li ul.dropdown-menu a:hover img
 											{ filter: none;   -webkit-filter: grayscale(0%); }
 
+td.options 									{ 	}
+
 legend 										{ display:none }
 
 .btn 										{ vertical-align: top; }
@@ -177,8 +179,8 @@ img.S32:hover 				{}
 .adminlist tr.even							{ background-color:#f6f6f6; }
 .adminlist .col-selection-cont 				{ position: relative; float:right; }
 
-
-
+div.e-search input[type='text']				{ padding-left:25px }
+div.e-search i								{ margin-right:-20px; margin-left:5px; z-index:100; position:relative; }
 /******** SyS Messages / Message text formatting */
 
 .s-message .s-message-title { height: 32px; background: 0 50% no-repeat; padding-left: 42px; line-height: 32px; }

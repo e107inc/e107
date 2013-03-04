@@ -1304,7 +1304,7 @@ class user_class_admin extends user_class
 		$is_open = TRUE;
 		$tag_name = 'uclass_tree_'.$listnum;
 
-		$ret = "<div class='uclass_tree' style='height: 20px'>\n";
+		$ret = "<div class='uclass_tree' >\n";
 
 		foreach ($indent_images as $im)
 		{

@@ -1171,6 +1171,81 @@ class e_form
 		$text .= $this->option_multi($option_array, $selected)."\n".$this->select_close();
 		return $text;
 	}
+	
+	
+	
+	
+	
+	//TODO 
+	/**
+	 * Universal Userclass selector - checkboxes, dropdown, everything. 
+	 * @param $name - form element name
+	 * @param $curval - current userclass value(s) as array or comma separated. 
+	 * @param $type - 'checkbox', 'dropdown', 
+	 * @param options - query string or array. 'options=admin,mainadmin,classes&vetted=1&exclusions=0' etc. 
+	 * @return the userclass form element 
+	 */
+	function userclass($name, $curval, $type, $options)
+	{
+
+		
+	}
+	
+	
+	/**
+	 * Renders a generic search box. If $filter has values, a filter box will be included with the options provided. 
+	 * 
+	 */
+	function search($name, $searchVal, $submitName, $filterName='', $filterArray=false, $filterVal=false)
+	{
+		
+		
+		$text = '<div class="input-append e-search"><i class="icon-search"></i>
+    		'.$this->text($name, $searchVal,20,'class=search-query').'
+   			 <button class="btn btn-primary" name="'.$submitName.'" type="submit">'.LAN_GO.'</button>
+    	</div>';
+		
+		
+		
+		if(is_array($filter))
+		{
+			$text .= $this->selectbox($$filterName, $filterArray, $filterVal); 
+		}
+		
+	//	$text .= $this->admin_button($submitName,LAN_SEARCH,'search');
+		
+		return $text;
+		
+		/*
+		$text .= 
+		
+						<select style="display: none;" data-original-title="Filter the results below" name="filter_options" id="filter-options" class="e-tip tbox select filter" title="">
+							<option value="">Display All</option>
+							<option value="___reset___">Clear Filter</option>
+								<optgroup class="optgroup" label="Filter by&nbsp;Category">
+<option value="faq_parent__1">General</option>
+<option value="faq_parent__2">Misc</option>
+<option value="faq_parent__4">Test 3</option>
+	</optgroup>
+
+						</select><div class="btn-group bootstrap-select e-tip tbox select filter"><button id="filter-options" class="btn dropdown-toggle clearfix" data-toggle="dropdown"><span class="filter-option pull-left">Display All</span>&nbsp;<span class="caret"></span></button><ul style="max-height: none; overflow-y: auto;" class="dropdown-menu" role="menu"><li rel="0"><a tabindex="-1" class="">Display All</a></li><li rel="1"><a tabindex="-1" class="">Clear Filter</a></li><li rel="2"><dt class="optgroup-div">Filter by&nbsp;Category</dt><a tabindex="-1" class="opt ">General</a></li><li rel="3"><a tabindex="-1" class="opt ">Misc</a></li><li rel="4"><a tabindex="-1" class="opt ">Test 3</a></li></ul></div>
+						<div class="e-autocomplete"></div>
+						
+						
+			<button type="submit" name="etrigger_filter" value="etrigger_filter" id="etrigger-filter" class="btn filter e-hide-if-js btn-primary"><span>Filter</span></button>
+		
+						<span class="indicator" style="display: none;">
+							<img src="/e107_2.0/e107_images/generic/loading_16.gif" class="icon action S16" alt="Loading...">
+						</span>	
+		
+		*/
+	}	
+	
+	
+	
+	
+	
+	
 
 	function uc_select($name, $current_value, $uc_options, $select_options = array(), $opt_options = array())
 	{

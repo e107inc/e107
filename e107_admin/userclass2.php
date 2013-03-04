@@ -957,11 +957,11 @@ class uclass_manager
     	$this->fields = array(
 			'userclass_icon' 			=> array('title'=> UCSLAN_68,	'type' => 'icon', 		'width' => '5%',	'thclass' => 'center', 'class' => 'center'),
 			'userclass_id'				=> array('title'=> LAN_ID,		'type' => 'int', 		'width' => '5%',	'thclass' => 'left'),
-            'userclass_name'	   		=> array('title'=> UCSLAN_12,	'type' => 'text', 		'width' => 'auto',	'thclass' => 'left'),
-			'userclass_description'   	=> array('title'=> UCSLAN_13,	'type' => 'text', 		'width' => 'auto',	'thclass' => 'left'),
+            'userclass_name'	   		=> array('title'=> UCSLAN_12,	'type' => 'text', 		'inline'=>true, 	'width' => 'auto',	'thclass' => 'left'),
+			'userclass_description'   	=> array('title'=> UCSLAN_13,	'type' => 'text', 		'inline'=>true, 	'width' => 'auto',	'thclass' => 'left'),
          	'userclass_editclass' 		=> array('title'=> UCSLAN_24,	'type' => 'userclass',	'width' => 'auto',	'thclass' => 'left'),
 			'userclass_parent' 			=> array('title'=> UCSLAN_35,	'type' => 'userclass',	'width' => 'auto',	'thclass' => 'left'),
-            'userclass_visibility' 		=> array('title'=> UCSLAN_34,	'type' => 'userclass',	'width' => 'auto',	'thclass' => 'left'),
+            'userclass_visibility' 		=> array('title'=> UCSLAN_34,	'type' => 'userclass',	'inline'=>true, 	'width' => 'auto',	'thclass' => 'left'),
 			'userclass_type' 			=> array('title'=> UCSLAN_79,	'type' => 'method',		'width' => '10%',	'thclass' => 'left',	'class'=>'left' ),
    			'options' 					=> array('title'=> LAN_OPTIONS, 'type' => null,			'width' => '10%',	'thclass' => 'center last', 'forced'=>TRUE,  'class'=>'center', 'readParms' => array('deleteClass' => e_UC_NOBODY))
 		);
@@ -1088,6 +1088,7 @@ function headerjs()
 		";
 	}
 
+	//XXX FIXME Rewrite using jQuery selectors. 
 	$script_js .= "
 function setGroupStatus(dropdown)
 {
