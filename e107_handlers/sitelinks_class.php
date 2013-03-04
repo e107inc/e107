@@ -1465,7 +1465,8 @@ class navigation_shortcodes extends e_shortcode
 			return;	
 		}	
 		
-		$text = $this->template['submenu_start'];
+		// XXX possible dead loop if LINK_SUB SC present in submenu_start template
+		$text = e107::getParser()->parseTemplate($this->template['submenu_start'], true, $this);
 			
 		foreach($this->var['link_sub'] as $val)
 		{
@@ -1475,7 +1476,8 @@ class navigation_shortcodes extends e_shortcode
 			$text .= e107::getParser()->parseTemplate($tmpl, TRUE);		
 		}
 
-		$text .= $this->template['submenu_end'];
+		// XXX possible dead loop if LINK_SUB SC present in submenu_end template
+		$text .= e107::getParser()->parseTemplate($this->template['submenu_end'], true, $this);
 		
 		return $text;
 	}
