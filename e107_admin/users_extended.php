@@ -2,14 +2,10 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2011 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $URL$
- * $Id$
  */
 
 require_once('../class2.php');
@@ -35,7 +31,6 @@ $e_sub_cat = 'user_extended';
 
 $curtype = '1';
 require_once("auth.php");
-require_once(e_HANDLER.'message_handler.php');
 $ue = new e107_user_extended;
 $user = new users_ext;
 
@@ -44,9 +39,6 @@ $mes = e107::getMessage();
 
 require_once(e_HANDLER.'user_extended_class.php');
 require_once(e_HANDLER.'userclass_class.php');
-
-
-
 
 
 
