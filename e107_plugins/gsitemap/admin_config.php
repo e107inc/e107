@@ -8,7 +8,6 @@
  *
  * Plugin Administration - gsitemap
  *
- *
 */
 require_once("../../class2.php");
 if(!getperms("P") || !plugInstalled('gsitemap'))
@@ -212,78 +211,61 @@ class gsitemap
 		$text = "
 		<form action='".e_SELF."' id='form' method='post'>
 		<table class='table adminform'>
-
+	    <colgroup span='2'>
+    		<col class='col-label' />
+    		<col class='col-control' />
+    	</colgroup>
 		<tr>
-		<td style='width:25%'>".LAN_NAME."
-		<span class='smalltext'>&nbsp;</span></td>
-		<td>
-		<input class='tbox' type='text' style='width:90%' name='gsitemap_name' size='40' value='".$editArray['gsitemap_name']."' maxlength='100' />
-		</td>
+			<td>".LAN_NAME."</td>
+			<td>".$frm->text('gsitemap_name', $editArray['gsitemap_name'], '100', array('class' => 'tbox input-text span3'))."</td>
 		</tr>
 
 		<tr>
-		<td style='width:25%'>".LAN_URL."
-		<span class='smalltext'>&nbsp;</span></td>
-		<td>
-		<input class='tbox' type='text' style='width:90%' name='gsitemap_url' size='40' value='".$editArray['gsitemap_url']."' maxlength='100' />
-		<input class='tbox' type='hidden'  name='gsitemap_lastmod' size='40' value='".time()."' maxlength='100' />
+			<td>".LAN_URL."</td>
+			<td>".$frm->text('gsitemap_url', $editArray['gsitemap_url'], '100', array('class' => 'tbox input-text span3'))."
+				<input class='tbox' type='hidden'  name='gsitemap_lastmod' size='40' value='".time()."' maxlength='100' /></td>
+		</tr>
+		<tr>
+			<td>".GSLAN_10."</td>
+			<td>
+				<select class='tbox' name='gsitemap_freq'>\n";
+				foreach($this->freq_list as $k=>$fq)
+				{
+					$sel = ($editArray['gsitemap_freq'] == $k)? "selected='selected'" : "";
+					$text .= "<option value='$k' $sel>".$fq."</option>\n";
+				}
+
+				$text.="</select>
+			</td>
+		</tr>
+		<tr>
+			<td>".GSLAN_9."</td>
+			<td>
+				<select class='tbox' name='gsitemap_priority' >\n";
+
+				for ($i=0.1; $i<1.0; $i=$i+0.1) 
+				{
+					$sel = ($editArray['gsitemap_priority'] == number_format($i,1))? "selected='selected'" : "";
+					$text .= "<option value='".number_format($i,1)."' $sel>".number_format($i,1)."</option>\n";
+				};
+
+				$text.="</select></td>
+		</tr>
+		<tr>
+			<td>".LAN_ORDER."</td>
+			<td><select name='gsitemap_order' class='tbox'>";
+
+				for($i=0;$i<$count;$i++){
+					$text .= $editArray['gsitemap_order'] == $i ? "<option value='".$i."' selected='selected'>".$i."</option>" : "<option value='".$i."'>".$i."</option>";
+				}
+				$text .= "</select>
 		</td>
 		</tr>
-
-
 		<tr>
-		<td style='width:25%'>".GSLAN_10."
-		<span class='smalltext'>&nbsp;</span></td>
-		<td>
-		<select class='tbox' name='gsitemap_freq' >\n";
-
-		foreach($this->freq_list as $k=>$fq)
-		{
-			$sel = ($editArray['gsitemap_freq'] == $k)? "selected='selected'" : "";
-			$text .= "<option value='$k' $sel>".$fq."</option>\n";
-		}
-
-		$text.="</select>
-		</td>
-		</tr>
-
-		<tr>
-		<td>".GSLAN_9."<br />
-		<span class='smalltext'>&nbsp;</span></td>
-		<td>
-		<select class='tbox' name='gsitemap_priority' >\n";
-
-		for ($i=0.1; $i<1.0; $i=$i+0.1) 
-		{
-			$sel = ($editArray['gsitemap_priority'] == number_format($i,1))? "selected='selected'" : "";
-			$text .= "<option value='".number_format($i,1)."' $sel>".number_format($i,1)."</option>\n";
-		};
-
-		$text.="</select></td>
-		</tr>
-
-
-		<tr>
-		<td>".LAN_ORDER."</td>
-		<td><select name='gsitemap_order' class='tbox'>";
-
-		for($i=0;$i<$count;$i++){
-			$text .= $editArray['gsitemap_order'] == $i ? "<option value='".$i."' selected='selected'>".$i."</option>" : "<option value='".$i."'>".$i."</option>";
-		}
-		$text .="
-		</select>
-		</td>
-		</tr>
-
-		<tr>
-		<td>".LAN_VISIBILITY."</td>
-		<td>";
-		$text .= r_userclass("gsitemap_active", $editArray['gsitemap_active'], 'off', "nobody,public,guest,member,admin,classes,language");
-		$text .="
-		</td>
+			<td>".LAN_VISIBILITY."</td>
+			<td>".r_userclass("gsitemap_active", $editArray['gsitemap_active'], 'off', "nobody,public,guest,member,admin,classes,language")."		</td>
 		</tr>
 		</table>
-
 		<div class='buttons-bar center'>";
 		if(is_array($editArray))
 		{
@@ -293,7 +275,6 @@ class gsitemap
 		else
 		{
 			$text .= $frm->admin_button('add_link',LAN_CREATE,'create');
-			// $text .= "<input class='button' type='submit' name='add_link' value='".LAN_CREATE."' />";
 		}
 
 		$text .= "</div>
@@ -431,11 +412,11 @@ class gsitemap
 			<col style='width:40%' />
 		</colgroup>
 		<thead>
-		<tr>
-		<td>".GSLAN_2."</td>
-		<td>".LAN_TYPE."</td>
-		<td>".LAN_NAME."</td>
-		<td>".LAN_URL."</td>
+			<tr>
+			<td>".GSLAN_2."</td>
+			<td>".LAN_TYPE."</td>
+			<td>".LAN_NAME."</td>
+			<td>".LAN_URL."</td>
 		</tr>
 		</thead>
 		<tbody>
@@ -445,10 +426,10 @@ class gsitemap
 		{
 			$text .= "
 			<tr>
-			<td><input type='checkbox' name='importid[]' value='".$ia['name']."^".$ia['url']."^".$ia['type']."' /></td>
-			<td>".$ia['type']."</td>
-			<td>".$ia['name']."</td>
-			<td><span class='smalltext'>".str_replace(SITEURL,"",$ia['url'])."</span></td>
+				<td><input type='checkbox' name='importid[]' value='".$ia['name']."^".$ia['url']."^".$ia['type']."' /></td>
+				<td>".$ia['type']."</td>
+				<td>".$ia['name']."</td>
+				<td><span class='smalltext'>".str_replace(SITEURL,"",$ia['url'])."</span></td>
 			</tr>
 			";
 		}
@@ -536,11 +517,11 @@ class gsitemap
 		
 		$text = "<b>".GSLAN_33."</b><br /><br />
 		<ul>
-		<li>".GSLAN_34."</li>
-		<li>".GSLAN_35."</li>
-		<li>".GSLAN_36."</li>
-		<li>".str_replace($srch,$repl,GSLAN_37)."</li>
-		<li>".str_replace("[URL]","<a href='".$LINK_2."'>".$LINK_2."</a>",GSLAN_38)."</li>
+			<li>".GSLAN_34."</li>
+			<li>".GSLAN_35."</li>
+			<li>".GSLAN_36."</li>
+			<li>".str_replace($srch,$repl,GSLAN_37)."</li>
+			<li>".str_replace("[URL]","<a href='".$LINK_2."'>".$LINK_2."</a>",GSLAN_38)."</li>
 		<ul>
 		";
 
