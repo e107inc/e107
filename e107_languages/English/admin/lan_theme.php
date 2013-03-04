@@ -70,6 +70,8 @@ define("TPVLAN_53", "Suggested Plugins");
 define("TPVLAN_54", "Menu Presets");
 define("TPVLAN_55", "Default");
 define("TPVLAN_56", "Visibility Filter");
+define("TPVLAN_57", "Compatibility");
+
 
 
 
