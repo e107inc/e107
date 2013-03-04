@@ -33,6 +33,7 @@ class e107_db_debug {
 	var $scbcount;
 	var $deprecated_funcs = array();
 	var $aLog = array();	// Generalized debug log (only seen during debug)
+	var $aIncList = array(); // Included files
 	
 	function __construct()
     {
