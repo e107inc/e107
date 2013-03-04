@@ -180,7 +180,8 @@ img.S32:hover 				{}
 .adminlist .col-selection-cont 				{ position: relative; float:right; }
 
 div.e-search input[type='text']				{ padding-left:25px }
-div.e-search i								{ margin-right:-20px; margin-left:5px; z-index:100; position:relative; }
+div.e-search i								{ margin-right:-20px; margin-left:5px; margin-top:0px; z-index:100; position:relative; }
+div.e-search								{ margin-bottom:-5px; margin-top:10px }
 /******** SyS Messages / Message text formatting */
 
 .s-message .s-message-title { height: 32px; background: 0 50% no-repeat; padding-left: 42px; line-height: 32px; }

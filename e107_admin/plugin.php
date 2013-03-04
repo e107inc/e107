@@ -348,7 +348,7 @@ class pluginManager{
 		
 		$text = "
 			<form action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='get'>
-			<div>".$frm->search('srch', $srch, 'go', $filterName, $filterArray, $filterVal).$frm->hidden('mode','online')."</div>
+			<div class='e-search'>".$frm->search('srch', $srch, 'go', $filterName, $filterArray, $filterVal).$frm->hidden('mode','online')."</div>
 			</form>
 		
 			<form action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='post'>

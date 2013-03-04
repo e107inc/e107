@@ -418,10 +418,10 @@ class themeHandler
 		$mes = e107::getMessage();
 		$ns = e107::getRender();
 		$tp = e107::getParser();
+		$frm = e107::getForm();
+		$srch = preg_replace('/[^\w]/','', vartrue($_GET['srch'])); 
 		
-		echo "<div>
-		<form enctype='multipart/form-data' method='post' action='".e_SELF."?".$mode."'>\n";
-
+		echo "<div>";
 		
 		if($mode == "main" || !$mode) // Show Main Configuration
 		{
@@ -432,7 +432,7 @@ class themeHandler
 					$text = $this->renderTheme(1, $theme);
 				}
 			}
-			
+			echo "<form enctype='multipart/form-data' method='post' action='".e_SELF."?".$mode."'>\n";
 			$ns->tablerender(TPVLAN_26.SEP.TPVLAN_33, $mes->render().$text);
 		}
 		
@@ -447,6 +447,7 @@ class themeHandler
 					$text = $this->renderTheme(2, $theme);
 				}
 			}
+			echo "<form enctype='multipart/form-data' method='post' action='".e_SELF."?".$mode."'>\n";
 			$ns->tablerender(TPVLAN_26.SEP.TPVLAN_34, $mes->render().$text);
 		}
 		
@@ -458,7 +459,8 @@ class themeHandler
 		
 		// Show All Themes
 		if($mode == "choose")
-		{	
+		{
+			
 			$text = "";
 			foreach ($this->themeArray as $key=>$theme)
 			{
@@ -466,6 +468,7 @@ class themeHandler
 				// print_a($theme);
 			}
 			$text .= "<div class='clear'>&nbsp;</div>";
+			echo "<form enctype='multipart/form-data' method='post' action='".e_SELF."?".$mode."'>\n";	
 			$ns->tablerender(TPVLAN_26.SEP.TPVLAN_39, $mes->render().$text);
 			
 			
@@ -483,12 +486,18 @@ class themeHandler
 			$from = intval(varset($_GET['frm']));
 		
 		//	$file = SITEURLBASE.e_PLUGIN_ABS."release/release.php";  // temporary testing
-			$file = "http://e107.org/feed?type=theme&frm=".$from;
+			
+			$file = "http://e107.org/feed?type=theme&frm=".$from."&srch=".$srch;
 			
 			$xml->setOptArrayTags('theme,screenshots/image'); // make sure 'theme' tag always returns an array
 		//	$xdata = $xml->loadXMLfile($file,'advanced',true);
 			$xdata = $xml->loadXMLfile($file,true,false);
 			$total = $xdata['@attributes']['total'];
+			
+			$text = "
+			<form action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='get'>
+				<div class='e-search'>".$frm->search('srch', $srch, 'go', $filterName, $filterArray, $filterVal).$frm->hidden('mode','online')."</div>
+			</form>";
 	
 	
 		//	print_a($xdata);
@@ -496,7 +505,7 @@ class themeHandler
 	
 			// XML data array. 
 			$c = 1;
-				$text = "";
+		
 			foreach($xdata['theme'] as $r)
 			{
 				if(E107_DBG_PATH)
