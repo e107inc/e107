@@ -1446,7 +1446,8 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$menu_vars[$id]['image_large'] = "<img src='".$admin_cat['lrg_img'][$i]."' alt='".$admin_cat['title'][$i]."' class='icon S32' />";
 			$menu_vars[$id]['image_src'] = $admin_cat['img'][$i];
 			$menu_vars[$id]['image_large_src'] = $admin_cat['lrg_img'][$i];
-			$menu_vars[$id]['perm'] = '';
+			// FIX - 'perm' should not be set or navigation->admin() will be broken (bad permissions) for non main administrators
+			//$menu_vars[$id]['perm'] = '';
 			$menu_vars[$id]['sort'] = $admin_cat['sort'][$i];
 		}
 
