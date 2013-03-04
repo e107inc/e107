@@ -6,6 +6,8 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
+ * Plugin - Chatbox
+ *
  */
 
 require_once("../../class2.php");
@@ -103,7 +105,7 @@ $text = "
 	</tr>
 	<tr>
 		<td>".CHBLAN_36."</td>
-		<td>".$frm->radio_multi('cb_layer', array(0 => CHBLAN_37, 1 => CHBLAN_29, 2 => CHBLAN_38), $pref['cb_layer'], true, false) /* FIXME $frm->text('cb_layer', $pref['cb_layer_height'], 3)*/."</td>
+		<td>".$frm->radio_multi('cb_layer', array(0 => CHBLAN_37, 1 => str_replace("[x]", $frm->text('cb_layer_height', $pref['cb_layer_height'], 3), CHBLAN_29), 2 => CHBLAN_38), $pref['cb_layer'], true)."</td>
 	</tr>
 	";
 
