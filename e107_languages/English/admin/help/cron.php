@@ -3,6 +3,6 @@
 
 
 $mes = e107::getMessage();
-echo $mes->render();
+echo $mes->render('default','info',false);
 
 ?>
