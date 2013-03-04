@@ -1721,6 +1721,76 @@ class e_db_mysql
 
 
 
+
+	/**
+	 * Dump MySQL Table(s) to a file in the Backup folder. 
+	 * @param $table string - name without the prefix or '*' for all
+	 * @param $file string - optional file name. or leave blank to generate. 
+	 * @param $options - additional preferences. 
+	 */
+	function backup($table='*', $file='', $options=null)
+	{
+		$dbtable 		= $this->mySQLdefaultdb; 
+		$fileName		= ($table =='*') ? SITENAME : $table; 
+		$fileName	 	= preg_replace('/[^\w]/i',"",$fileName);
+		$backupFile 	= ($file) ? e_BACKUP.$file : e_BACKUP.$this->mySQLPrefix.$fileName."_".date("Y-m-d-H-i-s").".sql";
+		$tableList 		= ($table=='*') ? $this->db_TableList() : array($table); 
+			
+		foreach ($tableList as $table)
+		{
+			unset($text);
+			$text = "";
+			
+			$this->gen("SHOW CREATE TABLE `".$this->mySQLPrefix.$table."`");
+			$row2 = $this->fetch();
+			$text .= $row2['Create Table'];
+			$text .= ";\n\n";
+			
+			file_put_contents($backupFile,$text,FILE_APPEND);
+		//	echo $text;
+		//	ob_end_clean(); // prevents memory exhaustian on large databases but breaks layout. .  
+			
+			$count = $this->gen("SELECT * FROM `#".$table."`");
+			$data_array = "";
+			
+			//TODO After so many rows (50,000?), make a new files to avoid overly large inserts. 
+			while($row = $this->fetch())
+			{
+				$fields = array_keys($row);	
+				$text = "\nINSERT INTO `".$this->mySQLPrefix.$table."` (`".implode("` ,`",$fields)."`) VALUES \n";	
+				file_put_contents($backupFile,$text,FILE_APPEND);	
+				
+				$d = array();
+				foreach($fields as $val)
+				{
+					$d[] = is_numeric($row[$val]) ? $row[$val] : "'".mysql_real_escape_string($row[$val])."'"; 				
+				}
+	
+				$data_array = "(".implode(", ",$d).");\n"; 
+				file_put_contents($backupFile, $data_array, FILE_APPEND); // Do this here to save memory. 
+		
+			}
+				
+			$text = "\n\n\n";		
+			file_put_contents($backupFile, $text, FILE_APPEND);
+			unset($fields);	
+
+		}
+				
+		// file_put_contents('memory.log', 'memory used in line ' . __LINE__ . ' is: ' . memory_get_usage() . PHP_EOL, FILE_APPEND);
+		
+	}
+
+
+
+
+
+
+
+
+
+
+
 	/**
 	* @return text string relating to error (empty string if no error)
 	* @param unknown $from
