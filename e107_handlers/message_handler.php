@@ -443,30 +443,33 @@ class eMessage
 	}
 
 	/**
-	 * Output all accumulated messages
+	 * Output all accumulated messages OR a specific type of messages. eg. 'info', 'warning', 'error', 'success'
 	 *
 	 * @param string $mstack message stack name
-	 * @param bool $session merge with session messages
+	 * @param bool|string $options  - true : merge with session messages or enter a type 'info', 'warning', 'error', 'success'
 	 * @param bool $reset reset all messages
 	 * @param bool $raw force return type array
 	 * @return array|string messages
 	 */
-	public function render($mstack = 'default', $session = false, $reset = true, $raw = false)
+	public function render($mstack = 'default', $options = false, $reset = true, $raw = false)
 	{
-		if($session)
+		if($options === true )
 		{
 			$this->mergeWithSession(true, $mstack);
 		}
 		$ret = array();
 		$unique = array(); 
-		foreach ($this->_get_types() as $type)
+		
+		$typesArray = (is_string($options) && in_array($options, $this->_get_types()))  ? array($options) : $this->_get_types();		
+		
+		foreach ($typesArray as $type)
 		{
 			if(E_MESSAGE_DEBUG === $type && !deftrue('E107_DEBUG_LEVEL'))
 			{
 				continue;
 			}
 			$message = $this->get($type, $mstack, $raw);
-					
+
 			if(!empty($message))
 			{
 				$ret[$type] = $message;
