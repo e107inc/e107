@@ -2,17 +2,17 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2002-2012 e107 Inc (e107.org)
+ * Copyright (C) 2002-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * Event calendar - template files for the event calendar listings
+ * Event calendar - templates for listings option
  *
  * $URL: https://e107.svn.sourceforge.net/svnroot/e107/trunk/e107_0.7/usersettings.php $
  * $Id: usersettings.php 11645 2010-08-01 12:57:11Z e107coders $
  */
-
-/*
+ 
+/**
   Templates file for the event calendar listings (display/print/pdf).
   There can be more than one template defined, in which case they are selectable.
   There are four strings to define:
@@ -54,7 +54,7 @@ $sc_style['EC_PR_LIST_TITLE']['post'] = "</h3>";
 $EVENT_CAL_PDF_NAMES['default'] = EC_LAN_165;
 $EVENT_CAL_PDF_HEADER['default'] = "{EC_PR_LIST_TITLE}<br />{EC_PR_CAT_LIST}<br />".EC_LAN_168."{EC_PR_LIST_START=%d-%m-%Y}<br />".EC_LAN_169."{EC_PR_LIST_END=%d-%m-%Y}<br />";
 $EVENT_CAL_PDF_BODY['default'] = "{EC_PR_CHANGE_YEAR}{EC_PR_CHANGE_MONTH}{EC_MAIL_SHORT_DATE} {EC_MAIL_TIME_START}  {EC_MAIL_TITLE}<br />\n";
-$EVENT_CAL_PDF_FOOTER['default'] = "---End of List---<br />{EC_IFNOT_DISPLAY=EC_NOW_DATE}{EC_IFNOT_DISPLAY=EC_NOW_TIME}<br />{EC_PRINT_BUTTON}";
+$EVENT_CAL_PDF_FOOTER['default'] = EC_LAN_138."<br />{EC_IFNOT_DISPLAY=EC_NOW_DATE}{EC_IFNOT_DISPLAY=EC_NOW_TIME}<br />{EC_PRINT_BUTTON}";
 
 
 // - A simple tabular style
