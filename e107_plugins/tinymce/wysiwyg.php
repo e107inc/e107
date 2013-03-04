@@ -230,7 +230,8 @@ class wysiwyg
 			$template = "public.xml";			
 		}
 		
-		$config = e107::getXml()->loadXMLfile(e_PLUGIN."tinymce/templates/".$template,true); //TODO System and theme folder checks for overrides. 
+		$configPath = (is_readable(THEME."templates/tinymce/".$template)) ? THEME."templates/tinymce/".$template : e_PLUGIN."tinymce/templates/".$template;
+		$config 	= e107::getXml()->loadXMLfile($configPath, true); 
 
 
 		//TODO Cache!
