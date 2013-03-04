@@ -8,8 +8,6 @@
  *
  * Event calendar plugin - admin functions
  *
- * $URL*
- * $Id$
  */
 
 /**
@@ -19,7 +17,6 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id$;
  */
 
 $eplug_admin = true;		// Make sure we show admin theme
@@ -34,15 +31,11 @@ if (!getperms('P'))
 	
 include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'_admin_calendar_menu.php');
 
-require_once(e_HANDLER.'form_handler.php');
 $frm = e107::getForm();
-
-require_once(e_HANDLER.'message_handler.php');
 $mes = e107::getMessage();
-
-
 $sql = e107::getDb();
 $uc = e107::getUserClass();		// Userclass object pointer
+
 $message = '';
 $calendarmenu_text = '';
 
