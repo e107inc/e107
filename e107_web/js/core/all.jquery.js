@@ -3,7 +3,8 @@ $.ajaxSetup({
 	dataFilter: function(data, type) {
 		if(type != 'json' || !data) return data;
 		return data.replace(/^\/\*-secure-([\s\S]*)\*\/\s*$/, '$1');
-	}
+	},
+	cache: false // Was Really NEeded!
 });
 
 $(document).ready(function()
