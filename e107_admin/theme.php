@@ -48,7 +48,7 @@ e107::css("inline","
 
 .admin-theme-select-active	{ background-color:red;float:left }
 
-.admin-theme-cell			{ width:202px; height:160px; padding:10px; -moz-border-radius: 5px; border-radius: 5px; margin:5px}
+.admin-theme-cell			{ width:202px; height:160px; padding:10px; -moz-border-radius: 5px; border-radius: 5px; margin:10px 10px 5px 0px}
 
 .admin-theme-cell-default   { border:1px dotted silver; background-color:#DDDDDD }
 
