@@ -1426,6 +1426,7 @@ class e_admin_dispatcher
 	 */
 	function renderMenu()
 	{
+		
 		$tp = e107::getParser();
 		$var = array();
 		$selected = false;
@@ -1498,6 +1499,32 @@ class e_admin_dispatcher
 		$selected = vartrue($this->adminMenuAliases[$selected], $selected);
 		return e107::getNav()->admin($this->menuTitle, $selected, $var);
 	}
+
+
+	/**
+	 * Render Help Text in <ul> format. XXX TODO
+	 */
+	function renderHelp()
+	{
+		
+		
+		
+	}
+
+	
+	/** 
+	 * Check for table issues and warn the user. XXX TODO 
+	 * ie. user is using French interface but no french tables found for the current DB tables. 
+	 */
+	function renderWarnings()
+	{
+		
+		
+		
+		
+	}
+	
+
 }
 
 class e_admin_controller
@@ -5364,9 +5391,12 @@ class e_admin_form_ui extends e_form
 						$parms['raw'] = true;
 						$val['writeParms'] = $parms;
 						$tmp = $this->renderElement($key, '', $val);
-						foreach ($tmp as $k => $name)
-						{
-							$option[$key.'__'.$k] = $name;
+						if(is_array($tmp))
+						{	
+							foreach ($tmp as $k => $name)
+							{
+								$option[$key.'__'.$k] = $name;
+							}
 						}
 					break;
 

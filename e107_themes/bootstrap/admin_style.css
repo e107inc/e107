@@ -169,7 +169,7 @@ img.S32:hover 				{}
 /* Admin List Table */ 
 .adminlist, .adminform 						{ width:100%;  border:1px solid #ddd; background-color: #F6F6F6}
 .adminlist th 								{ border-bottom:1px solid #ddd;    }
-.adminlist td 								{ border-bottom:1px solid #ddd; border-right: 1px solid #ddd;  }
+.adminlist td 								{ border-bottom:1px solid #ddd }
 .adminlist th.last,
 .adminlist td.last 							{ border-right: 0px solid;}
 .adminlist tr.last td						{ border-bottom: 0px solid;}

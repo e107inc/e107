@@ -174,7 +174,7 @@ class users_admin_ui extends e_admin_ui
 	//protected $editQry = "SELECT * FROM #users WHERE comment_id = {ID}";
 	
 	protected $pid 			= "user_id";
-	protected $perPage 		= 30;
+	protected $perPage 		= 10;
 	protected $batchDelete 	= true;
 	protected $listOrder 	= 'user_id DESC'; 
 	

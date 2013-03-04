@@ -1296,34 +1296,34 @@ class e_form
 		{
 			case 'edit':
 				$image = ADMIN_EDIT_ICON_PATH;
-				$icon = "e-edit-16";
+				$icon = "e-edit-32";
 				$options['class'] = $options['class'] == 'action' ? 'action edit' : $options['class'];
 			break;
 
 			case 'delete':
 				$image = ADMIN_DELETE_ICON_PATH;
-				$icon = "e-delete-16";
+				$icon = "e-delete-32";
 				$options['class'] = $options['class'] == 'action' ? 'action delete' : $options['class'];
 				$options['other'] = 'data-confirm="'.LAN_JSCONFIRM.'"';
 			break;
 
 			case 'execute':
 				$image = ADMIN_EXECUTE_ICON_PATH;
-				$icon = "e-execute-16";
+				$icon = "e-execute-32";
 				$options['class'] = $options['class'] == 'action' ? 'action execute' : $options['class'];
 			break;
 
 			case 'view':
 				$image = ADMIN_VIEW_ICON_PATH;
-				$icon = "e-view-16";
+				$icon = "e-view-32";
 				$options['class'] = $options['class'] == 'action' ? 'action view' : $options['class'];
 			break;
 		}
 		$options['title'] = $title;//shorthand
 		
-	//	return  "<button type='submit' name='{$name}' data-placement='left' value='{$value}'".$this->get_attributes($options, $name, $value)."  ><i class='S16 {$icon}'></i></button>";
+		return  "<button type='submit' class='btn' data-toggle='tooltip' name='{$name}' data-placement='left' value='{$value}'".$this->get_attributes($options, $name, $value)."  ><i class='S32 {$icon}'></i></button>";
 
-		return "<input class='e-tip S16 {$icon}' data-placement='left' type='image' src='{$image}' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
+	//	return "<input class='e-tip S16 {$icon} btn btn-large' data-placement='left' type='image' src='{$image}' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
 	}
 
 	/**
@@ -2037,13 +2037,13 @@ class e_form
 					//$edit_query = array('mode' => varset($query['mode']), 'action' => varset($query['action']), 'id' => $id);
 					$query = http_build_query($query);
 					
-					$value = "";
+					$value = "<div class='btn-group'>";
 					
 					if(vartrue($parms['sort']))//FIXME use a global variable such as $fieldpref
 					{
 						$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 						$from = intval(vartrue($_GET['from'],0));
-						$value .= "<a class='e-sort sort-trigger' style='display:inline-block;vertical-align:middle;cursor:move' href='".e_SELF."?mode={$mode}&action=sort&ajax_used=1&from={$from}' title='Re-order'>".ADMIN_SORT_ICON."</a> ";	
+						$value .= "<a class='e-sort sort-trigger btn ' style='cursor:move' href='".e_SELF."?mode={$mode}&action=sort&ajax_used=1&from={$from}' title='Re-order'>".ADMIN_SORT_ICON."</a> ";	
 					}	
 					
 					$cls = false;
@@ -2054,8 +2054,13 @@ class e_form
 					}	
 					if(false === $cls || check_class($cls))
 					{
-						$value .= "<a href='".e_SELF."?{$query}' class='e-tip' title='".LAN_EDIT."' data-placement='left'>
-						<img class='icon action edit list' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' /></a>";
+						/*
+						$value .= "<a href='".e_SELF."?{$query}' class='e-tip btn btn-large' title='".LAN_EDIT."' data-placement='left'>
+												<img class='icon action edit list' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' /></a>";
+												*/
+						
+						$value .= "<a href='".e_SELF."?{$query}' class='btn' title='".LAN_EDIT."' data-toggle='tooltip' data-placement='left'>
+						".ADMIN_EDIT_ICON."</a>";
 					}
 
 					$delcls = vartrue($attributes['noConfirm']) ? ' no-confirm' : '';
@@ -2064,15 +2069,16 @@ class e_form
 						$cls = (deftrue($parms['deleteClass'])) ? constant($parms['deleteClass']) : $parms['deleteClass'];
 						if(check_class($cls))
 						{
-							$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete'.$delcls));
+							$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn'.$delcls));
 						}
 					}
 					else
 					{
-						$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete'.$delcls));
+						$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn'.$delcls));
 					}
 				}
 				//$attributes['type'] = 'text';
+				$value .= "</div>";
 				return $value;
 			break;
 
