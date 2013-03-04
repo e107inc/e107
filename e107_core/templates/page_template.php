@@ -161,7 +161,7 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 	$PAGE_TEMPLATE['nav']['end'] 					= '</ul>';	
 	
 	
-	$PAGE_TEMPLATE['nav']['submenu_start'] 			= '<ul class="page-nav" id="{LINK_PARENT}" role="menu" >';
+	$PAGE_TEMPLATE['nav']['submenu_start'] 			= '<ul class="page-nav" id="page-nav-{LINK_PARENT}" role="menu" >';
 	
 	
 	$PAGE_TEMPLATE['nav']['submenu_item'] 			= '
