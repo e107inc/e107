@@ -40,15 +40,14 @@ $(document).ready(function()
 		$('a[data-toggle="modal"]').on('click', function()
 			{
 				var link = $(this).attr('href');
+				var caption  = $(this).attr('data-modal-caption');
+				 $('#uiModal .modal-caption').text(caption);
+				// $('#uiModal .modal-label').text('Loading...');
 				// $('#uiModal .modal-body').html(link);
-				alert(link);
+				// alert(caption);
 			}
 		);
-		
 
-
-		
-		
 		/*
 		
 		$('a[data-toggle="modal"]').on('click', function()

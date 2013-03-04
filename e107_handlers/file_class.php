@@ -657,5 +657,129 @@ class e_file
 	
 	
 	
+	/**
+	 * Download a Plugin or Theme to Temp, then test and move to plugin/theme folder and backup to system backup folder. 
+	 * @param $remotefile URL
+	 * @param $type plugin or theme
+	 */
+	public function download($remotefile, $type='theme')
+	{
+		$tp = e107::getParser();
+		
+		$localfile = md5($remotefile.time()).".zip";
+		$status 	= "Downloading...";
+		
+		$result 	= $this->getRemoteFile($remotefile,$localfile);
+			
+		if(!file_exists(e_TEMP.$localfile))
+		{
+			$status = ADMIN_FALSE_ICON."<br /><a href='".$remotefile."'>Download Manually</a>";
+			
+			if(E107_DEBUG_LEVEL > 0)
+			{
+				$status .= 'local='.$localfile;
+				//$status .= ($result) ? "Downloaded" : "Couldn't get Remote";
+			}
+
+			echo $status;
+			exit;	
+		}
+
+	
+	//	chmod(e_PLUGIN,0777);
+		chmod(e_TEMP.$localfile,0755);
+		
+		require_once(e_HANDLER."pclzip.lib.php");
+		
+		$archive 	= new PclZip(e_TEMP.$localfile);
+		$unarc 		= ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_TEMP, PCLZIP_OPT_SET_CHMOD, 0755)); // Store in TEMP first. 
+		$dir 		= $this->getRootFolder($unarc);	
+		$destpath 	= ($type == 'theme') ? e_THEME : e_PLUGIN;
+		
+		@copy(e_TEMP.$localfile,e_BACKUP.$dir.".zip"); // Make a Backup in the system folder. 
+		
+		if($dir && is_dir($destpath.$dir))
+		{
+			$alert = $tp->toJS("Theme Already Installed".$destpath.$dir);
+			echo "<script>alert('".$alert."')</script>";
+			@unlink(e_TEMP.$localfile);
+			exit;	
+		}
+	
+		if(is_dir(e_TEMP.$dir)) 
+		{
+			$status = "Unzipping...";
+			if(!rename(e_TEMP.$dir,$destpath.$dir))
+			{
+				$alert = $tp->toJS("Couldn't Move Theme to Theme Folder");
+				echo "<script>alert('".$alert."')</script>";
+				@unlink(e_TEMP.$localfile);
+				exit;	
+			}	
+			
+			$alert = $tp->toJS("Download Complete!");
+			echo "<script>alert('".$alert."')</script>";
+			
+		//	$dir 		= basename($unarc[0]['filename']);
+		//	$plugPath	= preg_replace("/[^a-z0-9-\._]/", "-", strtolower($dir));	
+			$status = ADMIN_TRUE_ICON;			
+			
+		}
+	// 	elseif(already_a_directory
+		else 
+		{
+			// print_a($fileList);
+			$status = ADMIN_FALSE_ICON."<br /><a href='".$remotefile."'>Download Manually</a>";
+			if(E107_DEBUG_LEVEL > 0)
+			{
+				$status .= print_a($unarc, true);
+			}
+			//
+		//	 $status = "There was a problem";	
+			//unlink(e_UPLOAD.$localfile);
+		}
+		
+	//	echo "<script>alert('".$tp->toJS($status)."')</script>";
+		echo $status;
+		@unlink(e_TEMP.$localfile);
+	
+	//	echo "file=".$file;
+		exit;				
+	}		
+		
+		
+	/**
+	 * Runs through the zip archive array and finds the root directory. 
+	 */
+	private function getRootFolder($unarc)
+	{
+		foreach($unarc as $d)
+		{
+			$target = trim($d['stored_filename'],'/');
+		
+			$test = basename(str_replace(e_TEMP,"", $d['stored_filename']),'/');
+			
+			if($d['folder'] == 1 && $target == $test)  // 
+			{
+			//	$text .= "\\n test = ".$test;
+				$text .= "\\n test=".$test;
+				$text .= "\\n target=".$target;
+				if(E107_DEBUG_LEVEL > 0)
+				{
+					echo "<script>alert('".$text."')</script>";
+				}
+				return $target; 
+		
+			}			
+		}
+		
+		return false;
+						
+	}		
+		
+		
+		
+
+	
 
 }

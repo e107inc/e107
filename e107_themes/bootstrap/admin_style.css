@@ -84,7 +84,8 @@ a.brand:hover img 			{
 } 
 
 .modal 										{ min-width:800px; left:42% }
- 
+.modal-header								{ padding-left:20px; background-image: -moz-linear-gradient(center top , rgb(253, 253, 253) 0%, rgb(234, 234, 234) 100%); }
+
 @media (min-width: 1500px) { 
 	
 .sidebar-nav 								{ font-size:15px; }

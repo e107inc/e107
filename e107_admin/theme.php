@@ -70,11 +70,10 @@ if(e_AJAX_REQUEST)
 }
 	
 
-
 if(e_AJAX_REQUEST)
 {
 	if(vartrue($_GET['src'])) // Process Theme Download. 
-	{				
+	{					
 		$string =  base64_decode($_GET['src']);	
 		parse_str($string,$p);
 		
@@ -84,69 +83,15 @@ if(e_AJAX_REQUEST)
 		//	print_a($p);
 			exit;
 		}
-				
+					
 		$remotefile = $p['url'];
-			
-		$localfile = md5($remotefile.time()).".zip";
-		$status = "Downloading...";
 		
-		e107::getFile()->getRemoteFile($remotefile,$localfile);
-		
-		if(!file_exists(e_TEMP.$localfile))
-		{
-			$status = ADMIN_FALSE_ICON."<br /><a href='".$remotefile."'>Download Manually</a>";
-			echo $status;
-			exit;	
-		}
-	//	chmod(e_PLUGIN,0777);
-		chmod(e_TEMP.$localfile,0755);
-		
-		require_once(e_HANDLER."pclzip.lib.php");
-		$archive = new PclZip(e_TEMP.$localfile);
-		$unarc = ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_THEME, PCLZIP_OPT_SET_CHMOD, 0755));
-	//	chmod(e_PLUGIN,0755);
-		$dir 		= basename($unarc[0]['filename']);
-	//		chmod(e_UPLOAD.$localfile,0666);
-	
-	
-	
-		/* Cannot use this yet until 'folder' is included in feed. 
-		if($dir != $p['plugin_folder'])
-		{
+		e107::getFile()->download($remotefile,'theme');
+		exit;
 			
-			echo "<br />There is a problem with the data submitted by the author of the plugin.";
-			echo "dir=".$dir;
-			echo "<br />pfolder=".$p['plugin_folder'];
-			exit;
-		}	
-		*/
-			
-		if($unarc[0]['folder'] ==1 && is_dir($unarc[0]['filename']))
-		{
-			$status = "Unzipping...";
-			$dir 		= basename($unarc[0]['filename']);
-			$plugPath	= preg_replace("/[^a-z0-9-\._]/", "-", strtolower($dir));	
-			$status = ADMIN_TRUE_ICON;
-			//unlink(e_UPLOAD.$localfile);
-			
-		}
-		else 
-		{
-			// print_a($fileList);
-			$status = ADMIN_FALSE_ICON."<br /><a href='".$remotefile."'>Download Manually</a>";
-			//echo $archive->errorInfo(true);
-			// $status = "There was a problem";	
-			//unlink(e_UPLOAD.$localfile);
-		}
-		
-		echo $status;
-	//	@unlink(e_TEMP.$localfile);
-	
-	//	echo "file=".$file;
-		exit;				
 	}		
 		
-	
+	// Theme Info Ajax 
 	$tm = (string) $_GET['id'];	
 	$data = $themec->getThemeInfo($tm);
 	echo $themec->renderThemeInfo($data);
@@ -157,7 +102,7 @@ else
 {
 		require_once("auth.php");
 	
-
+	/*
 		echo '
 
 		 <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog"  aria-hidden="true">
@@ -171,7 +116,8 @@ else
 			    <div class="modal-footer">
 			    <a href="#" data-dismiss="modal" class="btn btn-primary">Close</a>
 			    </div>
-			    </div>';	
+			    </div>';
+	 */	
 }				
 
 
