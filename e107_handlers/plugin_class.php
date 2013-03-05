@@ -1498,7 +1498,7 @@ class e107plugin
 
 				if ($this->plugConfigFile)
 				{
-					$text .= "&nbsp;<a href='".$this->plugConfigFile."'>[".LAN_CONFIGURE."]</a>";
+					$text .= "<br /><a class='btn btn-primary' href='".$this->plugConfigFile."'>".LAN_CONFIGURE."</a>";
 				}
 
 				$mes->addSuccess($text);
@@ -2314,7 +2314,7 @@ class e107plugin
 		$text .= (isset($eplug_done) ? "<br />{$eplug_done}" : "<br />".LAN_INSTALL_SUCCESSFUL);
 		if ($eplug_conffile)
 		{
-			$text .= "&nbsp;<a href='".e_PLUGIN.$eplug_folder."/".$eplug_conffile."'>[".LAN_CONFIGURE."]</a>";
+			$text .= "<br /><a class='btn btn-primary' href='".e_PLUGIN.$eplug_folder."/".$eplug_conffile."'>".LAN_CONFIGURE."</a>";
 		}
 
 		return $text;
