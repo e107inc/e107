@@ -281,6 +281,14 @@ class pluginManager{
 	}
 	
 	
+	private function compatibilityLabel($val='')
+	{
+		$badge = (vartrue($val) > 1.9) ? "<span class='label label-warning'>Made for v2</span>" : '1.x';
+		return $badge;	
+	}
+	
+	
+	
 	function pluginOnline()
 	{
 		global $plugin;
@@ -314,7 +322,7 @@ class pluginManager{
 		{
 			$row = $r['@attributes'];
 			
-				$badge = ($row['compatibility'] > 1.9) ? "<span class='label label-warning'>Made for v2</span>" : '1.x';
+				$badge = $this->compatibilityLabel($row['compatibility']);;
 				$featured = ($row['featured']== 1) ? " <span class='label label-info'>Featured</span>" : '';
 			
 				$data[] = array(
@@ -971,6 +979,7 @@ class pluginManager{
 					$plugAuthor = varset($plug_vars['author']['@attributes']['name'],'');
 					$plugURL = varset($plug_vars['author']['@attributes']['url'],'');
 					$plugDate	= varset($plug_vars['@attributes']['date'],'');
+					$compatibility	= varset($plug_vars['@attributes']['compatibility'],'');
 					
 					$description = varset($plug_vars['description']['@attributes']['lang']) ? $tp->toHTML($plug_vars['description']['@attributes']['lang'], false, "defs,emotes_off, no_make_clickable") : $tp->toHTML($plug_vars['description']['@value'], false, "emotes_off, no_make_clickable") ;
 					
@@ -1011,9 +1020,12 @@ class pluginManager{
                     $text .= (in_array("plugin_author",$this->fieldpref)) ? "<td class='middle'><a href='mailto:".$plugEmail."' title='".$plugEmail."'>".$plugAuthor."</a>&nbsp;</td>" : "";
                     $text .= (in_array("plugin_website",$this->fieldpref)) ? "<td class='center middle'>".($plugURL ? "<a href='{$plugURL}' title='{$plugURL}' >".ADMIN_URL_ICON."</a>" : "")."</td>" : "";
                     $text .= (in_array("plugin_notes",$this->fieldpref)) ? "<td class='center middle'>".($plugReadme ? "<a href='".e_PLUGIN.$plug['plugin_path']."/".$plugReadme."' title='".$plugReadme."'>".ADMIN_INFO_ICON."</a>" : "&nbsp;")."</td>" : "";
+					
+				
+                   $text .= (in_array("plugin_compatible",$this->fieldpref)) ? "<td class='center middle'>".$this->compatibilityLabel($plug_vars['@attributes']['compatibility'])."</td>" : "";
+					
 					$text .= (in_array("plugin_description",$this->fieldpref)) ? "<td class='middle'>".$description."</td>" : "";
-                    $text .= (in_array("plugin_compatible",$this->fieldpref)) ? "<td class='center middle'>".varset($plug_vars['@attributes']['compatibility'],'')."</td>" : "";
-					$text .= (in_array("plugin_compliant",$this->fieldpref)) ? "<td class='center middle'>".((varset($plug_vars['compliant']) || varsettrue($plug_vars['@attributes']['xhtmlcompliant'])) ? ADMIN_TRUE_ICON : "&nbsp;")."</td>" : "";
+                 	$text .= (in_array("plugin_compliant",$this->fieldpref)) ? "<td class='center middle'>".((varset($plug_vars['compliant']) || varsettrue($plug_vars['@attributes']['xhtmlcompliant'])) ? ADMIN_TRUE_ICON : "&nbsp;")."</td>" : "";
 
 
                 	// Plugin options Column --------------
