@@ -2459,20 +2459,25 @@ class e_parser
      * @param $html raw HTML
      * TODO Html5 tag support. 
      */
-    public function cleanHtml($html='')
+    public function cleanHtml($html='',$root='*')
     {
         if(!vartrue($html)){ return; }
         
    //     $html = mb_convert_encoding($html, 'UTF-8');     
-            
-        $html = '<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html><html><head><meta charset="utf-8"></head><body>'.$html.'</body></html>'; // Set it up for processing. 
+        
+       	$html = '<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html><html><head><meta charset="utf-8"></head><body>'.$html.'</body></html>'; 
+		
+         
+        // Set it up for processing. 
         $doc  = $this->domObj;   
         
         $doc->loadHTML($html); 
         $doc->encoding = 'UTF-8'; //FIXME 
      //   $doc->resolveExternals = true;
         
-        $tmp = $doc->getElementsByTagName('*');   
+    //    $tmp = $doc->getElementsByTagName('*');   
+
+		$tmp = $doc->getElementsByTagName($root);   
 
         foreach($tmp as $node)
         {
@@ -2510,12 +2515,10 @@ class e_parser
                      continue;
                 }
                 
-                if(invalidAttributeVal( $value)) // Check value against whitelist. 
+                if($this->invalidAttributeVal( $value)) // Check value against whitelist. 
                 {
 					$node->removeAttribute($name);
                     $node->setAttribute($name, '#---sanitized---#');
-					$node->removeAttribute($name);
-	                $node->setAttribute($name, '#---sanitized---#');   
 					$this->removedList['sanitized'][] = $tag.'['.$name.']';    
                 }       
             } 
@@ -2571,10 +2574,14 @@ class e_parser
      */   
     function invalidAttributeVal($val)
     {
+    	
+    	
         foreach($this->badAttrValues as $v) // global list because a bad value is bad regardless of the attribute it's in. ;-)
         {
-            if(preg_match('/'.$v.'/i',$v)!==false)  
+            if(preg_match('/'.$v.'/i',$val)==true)  
             {
+				$this->removedList['blacklist'][]	= "Match found for '{$v}' in '{$val}'";	
+            	
                 return true;    
             }   
             
@@ -2597,6 +2604,7 @@ Internationalization Test:
 日本語 <br />
 简体中文 <br />
 <a href='somewhere.html' src='invalidatrribute' >Test</a>
+A GOOD LINK: <a href='http://mylink.php'>Some Link</a>
 <a href='javascript: something' src='invalidatrribute' >Test regex</a>
 <img href='invalidattribute' src='myimage.jpg' />
 <frameset onload=alert(1) data-something=where>
