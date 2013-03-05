@@ -253,7 +253,7 @@ unset($dateArray);
 $ds = '';			// Gets set if viewing a single day
 if (isset($_POST['jump']))
 {
-	$dateArray	= getdate(mktime(0, 0, 0, $_POST['jumpmonth'], 1, $_POST['jumpyear']));
+	$dateArray	= $ecal_class->gmgetdate(mktime(0, 0, 0, $_POST['jumpmonth'], 1, $_POST['jumpyear']));
 }
 else
 {
