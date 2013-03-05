@@ -8,8 +8,6 @@
  *
  *	Stats logging plugin - admin functions
  *
- * $URL$
- * $Id$
  */
 
 require_once('../../class2.php');
@@ -491,7 +489,9 @@ switch ($action)
 	//===========================================================
 	//				DELETE HISTORY
 	//===========================================================
-	$text = "<div style='text-align:center'>
+	$mes->addWarning(ADSTAT_L76);
+	$text = "
+
 	<form method='post' action='".e_SELF."?history'>
 	<table class='table adminlist'>
 	<colgroup>
@@ -506,7 +506,7 @@ switch ($action)
 		<tr><td colspan='2'  style='text-align:center' class='forumheader'>
 		<input type='hidden' name='delete_month' value='{$keep_month}' />
 		<input type='hidden' name='delete_year' value='{$keep_year}' />
-		<input class='button' type='submit' name='actually_delete' value='".ADSTAT_L73."' /><br />".ADSTAT_L74."
+		".$frm->admin_button('actually_delete', LAN_CONFDELETE, 'delete')."<br />".ADSTAT_L74."
 	</td></tr>";
 	  $text .= "<tr><td>".ADSTAT_L75."</td><td>".implode("<br />",get_for_delete($keep_year,$keep_month))."</td></tr>";
 	}
@@ -551,11 +551,10 @@ switch ($action)
 	
 	<div class='buttons-bar center'>
 	".$frm->admin_button('delete_history',LAN_DELETE,'delete')."
-	<span class='field-help'>".ADSTAT_L76."</span>
 	</div>
 	
-	</form></div>";
-	$ns->tablerender(ADSTAT_L69, $text);
+	</form>";
+	$ns->tablerender(ADSTAT_L69, $mes->render().$text);
     break;	// case 'history'
 
 }

@@ -6,8 +6,6 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * $URL$
- * $Id$
  */
 
 //define("ADSTAT_ON", "On");
@@ -84,7 +82,7 @@ define ('ADSTAT_L69', 'Delete historical data');
 define ('ADSTAT_L70', 'Delete data older than:');
 define ('ADSTAT_L71', 'Delete Data');
 define ('ADSTAT_L72', 'Confirm deletion of data older than first day of:');
-define ('ADSTAT_L73', 'Confirm');
+//define ('ADSTAT_L73', 'Confirm');
 define ('ADSTAT_L74', '(List of data entries which will be deleted below)');
 define ('ADSTAT_L75', 'Records for deletion');
 define ('ADSTAT_L76', 'Caution! Once deleted, the data cannot be recovered. Backup or export your database first');
