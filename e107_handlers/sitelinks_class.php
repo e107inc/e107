@@ -1418,6 +1418,11 @@ class navigation_shortcodes extends e_shortcode
 	
 	var $template;
 	
+	function sc_link_id($parm='')
+	{
+		return intval($this->var['link_id']);		
+	}
+	
 	function sc_link_name($parm='')
 	{
 		return e107::getParser()->toHtml($this->var['link_name'],false,'defs');		
