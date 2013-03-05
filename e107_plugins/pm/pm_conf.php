@@ -270,15 +270,6 @@ switch ($action)
 
 require_once(e_ADMIN.'footer.php');
 
-function yes_no($fname, $curval = '')
-{
-	require_once(e_HANDLER."form_handler.php");
-		$ret = 
-		form::form_radio($fname, '1', ($curval ? '1' : '0'), '', '').LAN_YES.' '.
-		form::form_radio($fname, '0', ($curval ? '0' : '1'), '', '').LAN_NO;
-		return $ret;
-}
-
 function show_options($pm_prefs)
 {
 	$frm    = e107::getForm();
@@ -665,7 +656,7 @@ function doMaint($opts, $pmPrefs)
 
 	if (isset($opts['blocked']))
 	{
-		if ($res = $e107->sql->db_Select_gen("DELETE `#private_msg_block` FROM `#private_msg_block` LEFT JOIN `#user` ON `#private_msg_block`.`pm_block_from` = `#user`.`user_id`
+		if ($res = $sql->db_Select_gen("DELETE `#private_msg_block` FROM `#private_msg_block` LEFT JOIN `#user` ON `#private_msg_block`.`pm_block_from` = `#user`.`user_id`
 					WHERE `#user`.`user_id` IS NULL"))
 		{
 			$start = max($start + 1, time());
@@ -676,7 +667,7 @@ function doMaint($opts, $pmPrefs)
 			$start = max($start + 1, time());
 			$results[E_MESSAGE_SUCCESS][$start] = str_replace('--COUNT--', $res, ADLAN_PM_69);
 		}
-		if ($res = $e107->sql->db_Select_gen("DELETE `#private_msg_block` FROM `#private_msg_block` LEFT JOIN `#user` ON `#private_msg_block`.`pm_block_to` = `#user`.`user_id`
+		if ($res = $sql->db_Select_gen("DELETE `#private_msg_block` FROM `#private_msg_block` LEFT JOIN `#user` ON `#private_msg_block`.`pm_block_to` = `#user`.`user_id`
 					WHERE `#user`.`user_id` IS NULL"))
 		{
 			$start = max($start + 1, time());
