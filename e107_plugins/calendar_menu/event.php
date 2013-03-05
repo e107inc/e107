@@ -201,7 +201,7 @@ if ($mult_count > 1)
 
 if (isset($_POST['jump']))
 {
-  $smarray	= getdate(gmmktime(0, 0, 0, $_POST['jumpmonth'], 1, $_POST['jumpyear']));
+  $smarray	= $ecal_class->gmgetdate(gmmktime(0, 0, 0, $_POST['jumpmonth'], 1, $_POST['jumpyear']));
   $month	= $smarray['mon'];
   $year		= $smarray['year'];
 }
@@ -222,7 +222,7 @@ else
   }
   else
   {
-    if (is_numeric($action)) $smarray = getdate($action); else $smarray = getdate($ds);
+    if (is_numeric($action)) $smarray = $ecal_class->gmgetdate($action); else $smarray = $ecal_class->gmgetdate($ds);
     $month		= $smarray['mon'];
     $year		= $smarray['year'];
   }
