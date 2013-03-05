@@ -140,9 +140,12 @@ class convert
 		{
 			return str_replace($r, $s,$mask);
 		}
+		elseif(strpos($mask,'%')!==FALSE)
+		{
+			return str_replace($s,$r, $mask);	
+		}
 		
-		
-		return str_replace($s,$r, $mask);
+		return $mask; 
 		
 		// Keep this info here: 
 		/*
