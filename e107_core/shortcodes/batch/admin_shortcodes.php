@@ -1,14 +1,12 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id$
 *
 * Admin shortcode batch - class
 */
 /**
  *	@package    e107
  *	@subpackage	shortcodes
- *	@version 	$Id$;
  *
  *	Shortcodes for admin items
  */
@@ -994,7 +992,7 @@ class admin_shortcodes
 					
 					$oldconfigs['e-user'][0] 		= array('icon'=>E_16_USER, 'title'=>ADLAN_110, 'url'=> e_ADMIN_ABS."users.php?filter=0", 'total'=>$members);
 					$oldconfigs['e-user'][1] 		= array('icon'=>E_16_USER, 'title'=>ADLAN_111, 'url'=> e_ADMIN."users.php?searchquery=&amp;filter_options=user_ban__2&amp;filter=unverified", 'total'=>$unverified);
-					$oldconfigs['e-user'][2] 		= array('icon'=>E_16_BANLIST, 'title'=>ADLAN_112, 'url'=> e_ADMIN."users.phpsearchquery=&filter_options=user_ban__1&filter=banned", 'total'=>$banned);
+					$oldconfigs['e-user'][2] 		= array('icon'=>E_16_BANLIST, 'title'=>ADLAN_112, 'url'=> e_ADMIN."users.php?searchquery=&filter_options=user_ban__1&filter=banned", 'total'=>$banned);
 					$oldconfigs['e-comments'][0] 	= array('icon'=>E_16_COMMENT, 'title'=>ADLAN_114, 'url'=> e_ADMIN_ABS."comment.php", 'total'=>$comments);
 				
 					if($flo = $sql->count('generic', '(*)', "WHERE gen_type='failed_login'"))
