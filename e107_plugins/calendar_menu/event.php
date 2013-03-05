@@ -273,11 +273,11 @@ else
     {
         if (is_numeric($action)) 
 		{
-			$dateArray = getdate($action); 
+			$dateArray	= $ecal_class->gmgetdate($action);
 		}
 		else 
 		{
-			$dateArray = getdate($ds);
+			$dateArray	= $ecal_class->gmgetdate($ds);
 		}
     }
 }
