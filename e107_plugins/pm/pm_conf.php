@@ -43,7 +43,6 @@ if (!e107::isInstalled('pm') || !getperms('P'))
 
 require_once(e_PLUGIN.'pm/pm_class.php');
 //require_once(e_HANDLER.'userclass_class.php');		Should already be loaded
-require_once(e_HANDLER."form_handler.php"); // FIXME form options below need rewriting to $frm->
 $mes = e107::getMessage();
 
 $action = e_QUERY;
@@ -271,17 +270,14 @@ switch ($action)
 
 require_once(e_ADMIN.'footer.php');
 
-
-
 function yes_no($fname, $curval = '')
 {
+	require_once(e_HANDLER."form_handler.php");
 		$ret = 
 		form::form_radio($fname, '1', ($curval ? '1' : '0'), '', '').LAN_YES.' '.
 		form::form_radio($fname, '0', ($curval ? '0' : '1'), '', '').LAN_NO;
 		return $ret;
 }
-
-
 
 function show_options($pm_prefs)
 {
@@ -297,31 +293,31 @@ function show_options($pm_prefs)
 	<tbody>
 	<tr>
 		<td>".ADLAN_PM_16."</td>
-		<td>".form::form_text('pm_option-title', 20, $pm_prefs['title'], 50)."</td>
+		<td>".$frm->text('pm_option-title', $pm_prefs['title'], '50')."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_17."</td>
-		<td>".yes_no('pm_option-animate', $pm_prefs['animate'])."</td>
+		<td>".$frm->radio_switch('pm_option-animate', $pm_prefs['animate'], LAN_YES, LAN_NO)."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_18."</td>
-		<td>".yes_no('pm_option-dropdown', $pm_prefs['dropdown'])."</td>
+		<td>".$frm->radio_switch('pm_option-dropdown', $pm_prefs['dropdown'], LAN_YES, LAN_NO)."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_19."</td>
-		<td>".form::form_text('pm_option-read_timeout', 5, $pm_prefs['read_timeout'], 5)."</td>
+		<td>".$frm->text('pm_option-read_timeout', $pm_prefs['read_timeout'], '5', array('class' => 'tbox input-text'))."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_20."</td>
-		<td>".form::form_text('pm_option-unread_timeout', 5, $pm_prefs['unread_timeout'], 5)."</td>
+		<td>".$frm->text('pm_option-unread_timeout', $pm_prefs['unread_timeout'], '5', array('class' => 'tbox input-text'))."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_21."</td>
-		<td>".yes_no('pm_option-popup', $pm_prefs['popup'])."</td>
+		<td>".$frm->radio_switch('pm_option-popup', $pm_prefs['popup'], LAN_YES, LAN_NO)."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_22."</td>
-		<td>".form::form_text('pm_option-popup_delay', 5, $pm_prefs['popup_delay'], 5)." ".ADLAN_PM_44."</td>
+		<td>".$frm->text('pm_option-popup_delay', $pm_prefs['popup_delay'], '5', array('class' => 'tbox input-text'))." ".ADLAN_PM_44."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_23."</td>
@@ -329,7 +325,7 @@ function show_options($pm_prefs)
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_24."</td>
-		<td>".form::form_text('pm_option-perpage', 5, $pm_prefs['perpage'], 5)."</td>
+		<td>".$frm->text('pm_option-perpage', $pm_prefs['perpage'], '5', array('class' => 'tbox input-text'))."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_25."</td>
@@ -345,7 +341,7 @@ function show_options($pm_prefs)
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_28."</td>
-		<td>".form::form_text('pm_option-attach_size-', 8, $pm_prefs['attach_size'], 8)." kB</td>
+		<td>".$frm->text('pm_option-attach_size', $pm_prefs['attach_size'], '8', array('class' => 'tbox input-text'))." kB</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_29."</td>
@@ -361,7 +357,7 @@ function show_options($pm_prefs)
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_81."</td>
-		<td>".form::form_text('pm_option-pm_max_send', 5, $pm_prefs['pm_max_send'], 5)."<span class='field-help'>".ADLAN_PM_82."</span></td>
+		<td>".$frm->text('pm_option-pm_max_send', $pm_prefs['pm_max_send'], '5', array('class' => 'tbox input-text'))."<span class='field-help'>".ADLAN_PM_82."</span></td>
 	</tr>
 	</tbody>
 	</table>
@@ -373,9 +369,6 @@ function show_options($pm_prefs)
 	";
 	return $txt;
 }
-
-
-
 
 
 function show_limits($pm_prefs)
@@ -530,10 +523,10 @@ function add_limit($pm_prefs)
 }
 
 
-
-
 function show_maint($pmPrefs)
 {
+	$frm = e107::getForm();
+
 	$txt = "
 	<fieldset id='plugin-pm-maint'>
 	<legend>".ADLAN_PM_62."</legend>
@@ -546,15 +539,15 @@ function show_maint($pmPrefs)
 	<tbody>
 	<tr>
 		<td>".ADLAN_PM_63."</td>
-		<td>".yes_no('pm_maint_sent', '0')."</td>
+		<td>".$frm->radio_switch('pm_maint_sent', '', LAN_YES, LAN_NO)."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_64."</td>
-		<td>".yes_no('pm_maint_rec', '0')."</td>
+		<td>".$frm->radio_switch('pm_maint_rec', '', LAN_YES, LAN_NO)."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_65."</td>
-		<td>".yes_no('pm_maint_blocked', '0')."</td>
+		<td>".$frm->radio_switch('pm_maint_blocked', '', LAN_YES, LAN_NO)."</td>
 	</tr>
 	";
 
@@ -563,19 +556,19 @@ function show_maint($pmPrefs)
 		$txt .= "
 		<tr>
 			<td>".ADLAN_PM_71."</td>
-			<td>".yes_no('pm_maint_expired', '0')."</td>
+			<td>".$frm->radio_switch('pm_maint_expired', '', LAN_YES, LAN_NO)."</td>
 		</tr>";
 	}
 
 	$txt .= "
 	<tr>
 		<td>".ADLAN_PM_78."</td>
-		<td>".yes_no('pm_maint_attach', '0')."</td>
+		<td>".$frm->radio_switch('pm_maint_attach', '', LAN_YES, LAN_NO)."</td>
 	</tr>
 	</tbody>
 	</table>
 	<div class='buttons-bar center'>
-	".e107::getForm()->admin_button('pm_maint_execute','no-value','delete', LAN_EXECUTE)."
+		".$frm->admin_button('pm_maint_execute','no-value','delete', LAN_GO)."
 	</div>
 	</form>
 	</fieldset>
