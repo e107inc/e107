@@ -233,14 +233,14 @@ class html_import extends base_import_class
 				
 			<td>".$data['title']."</td>\n
 			<td>".$tp->text_truncate($data['body'],150)."</td>\n
-			<td class='center middle'>
+			<td>
 			 		<a class='e-dialog' href='".$this->localPath.$key."'>".$key."</a>
 			 	</td>
 			
 			";
 
              $text .= "
-			 	<td class='center middle'>
+			 	<td>
 			 		".$frm->selectbox('add__'.$key,array('news'=>'News','page'=>'Page','0'=>'Ignore'))."
 			 	</td>
 			 </tr>";
@@ -262,7 +262,7 @@ class html_import extends base_import_class
 		</fieldset>
 	</form>";
 
-	$ns->tablerender(LAN_CONVERT_01,$text);
+	$ns->tablerender(LAN_PLUGIN_IMPORT_NAME.SEP.$this->feedUrl,$text);
 		
 		
 		

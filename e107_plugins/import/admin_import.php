@@ -536,7 +536,7 @@ function showStartPage()
 		</fieldset>
 	</form>";
 
-	$ns->tablerender(LAN_CONVERT_01, $emessage->render().$text);
+	$ns->tablerender(LAN_PLUGIN_IMPORT_NAME, $emessage->render().$text);
 
 }
 
@@ -703,7 +703,7 @@ function showImportOptions($mode='csv')
   	if (varset($current_db_type)) $temp .= " flagbits('{$current_db_type}');";
   	if (varset($temp)) $text .= "<script type=\"text/javascript\"> {$temp}</script>";
 
-  	$ns -> tablerender(LAN_CONVERT_01." :: ".$importType, $emessage->render().$text);
+  	$ns -> tablerender(LAN_PLUGIN_IMPORT_NAME.SEP.$importType, $emessage->render().$text);
 
 }
 
