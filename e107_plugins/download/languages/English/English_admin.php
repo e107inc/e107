@@ -9,7 +9,7 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
-define("LAN_PLUGIN_DOWNLOAD_NAME",	   "Downloads");
+// define("LAN_PLUGIN_DOWNLOAD_NAME",	   "Downloads");
 define("LAN_DL_OPTIONS",               "Options"); //FIXME Use Generic
 define("LAN_DL_DOWNLOAD_OPT_GENERAL",  "General");
 define("LAN_DL_DOWNLOAD_OPT_BROKEN",   "Reporting");

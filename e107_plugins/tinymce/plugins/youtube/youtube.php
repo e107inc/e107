@@ -4,10 +4,16 @@ require_once("../../../../class2.php");
 
 
 define("e_IFRAME",true);
+
+
+
 e107::css('inline',"
 
-.sizeblock { display:inline-block; width: 180px; padding:4px }
-
+	.sizeblock { display:inline-block; width: 180px; margin:6px; font-size:14px}
+	input[type='radio'] {  vertical-align: middle; padding-right:10px; }
+	.e-footer-info		{ color: silver }
+	body 	{ background-color: #EEEEEE }
+	label 	{ vertical-align:middle; line-height:12px}
 ");
 
 e107::js('tinymce','tiny_mce_popup.js'); 
@@ -15,23 +21,23 @@ e107::js('inline',"
 
 $(document).ready(function()
 {
-		$('#insert').click(function () {
+		$('#e-insert').click(function () {
 					
 			var url = $('#youtubeURL').val();
 			var size = $('input:radio[name=size]:checked').val();
 			var convert = {};
 			
-			convert['tiny'] 	= 'width:320px;height:205px';
-			convert['small'] 	= 'width:560px;height:340px';
-			convert['medium'] 	= 'width:640px;height:385px';
-			convert['large'] 	= 'width:853px;height:505px';
-			convert['huge'] 	= 'width:1280px;height:745px';
+			convert['tiny'] 	= {width: '302px', height: '205px'}; 
+			convert['small'] 	= {width: '560px', height: '340px'};
+			convert['medium'] 	= {width: '604px', height: '385px'}; 
+			convert['large'] 	= {width: '853px', height: '505px'};
+			convert['huge'] 	= {width: '1280px',height: '745px'};
 				
 			if(url === null)
 			{
 				
 				alert('Please enter a valid Youtube URL');
-				return;
+				return false;
 			}
 				
 
@@ -49,37 +55,34 @@ $(document).ready(function()
 			else
 			{
 				var style = convert[size];
+				var w = convert[size]['width'];
+				var h = convert[size]['height'];
 			}
+			
+		//	alert('width='+w + ' height='+h);
 				      
-        	if (code === '') {
+        	if (code === '') 
+        	{
         		alert('Please enter a valid Youtube URL');
 				return;	
         	}
+			 
+			 
+			var html = '<iframe width=\"'+ w +'\" height=\"'+ h +'\" src=\"http://www.youtube.com/embed/YNrn-7zjmYw\" frameborder=\"0\" allowfullscreen></iframe>';
 			
-			var s = '[youtube='+size+']'+code+'[/youtube]';
+			tinyMCEPopup.editor.execCommand('mceInsertContent', false, html);
+  	 		tinyMCEPopup.close();
 			
-			var p = $.ajax({
-					type: 'POST',
-					url: '".e_PLUGIN_ABS."tinymce/plugins/e107bbcode/parser.php',
-					data: { content: s, mode: 'tohtml' },
-					async: false,
-
-					dataType: 'html',
-					success: function(html) {
-				      return html;
-				    }
-				}).responseText;
 			
-			tinyMCEPopup.editor.execCommand('mceInsertContent', false, p);
-      		 
 		//	tinyMCEPopup.editor.execCommand('mceInsertContent', false, '<img class=\"youtube-' + size + '\" src=\"http://img.youtube.com/vi/' + code + '/0.jpg\"   alt=\"' + code + '\" style=\"' + style + '\" />');
-       		parent.$.colorbox.close()	
+
+      		
 		});
 		
 		
-		$('#cancel').click(function () {
+		$('#e-cancel').click(function () {
 					
-			parent.$.colorbox.close()	
+			tinyMCEPopup.close();
 		});
 	
 });		
@@ -117,23 +120,22 @@ require_once(e_ADMIN."auth.php");
 			break;
 */
 
-$text = '<div><form onsubmit="YoutubeDialog.insert();return false;" action="#">
-	<p><label for="youtubeURL">Youtube URL or Code</label>
-    <input id="youtubeURL" name="youtubeURL" type="text" class="text" style="width:97%" autofocus="autofocus" /></p>
-
-	<div class="sizeblock"><input type="radio" name="size" value="tiny" checked="checked" />Tiny (320 x 205)</div>
-	<div class="sizeblock"><input type="radio" name="size" value="small" />Small (560 x 340)</div>
-	<div class="sizeblock"><input type="radio" name="size" value="medium" />Medium (640 x 385)</div>
-	<div class="sizeblock"><input type="radio" name="size" value="large" />Large (854 x 505)</div>
-	<div class="sizeblock"><input type="radio" name="size" value="huge" />Huge (1280 x 745)</div>
-	<div class="sizeblock"><input type="radio" name="size" value="custom" />Custom 
-	<input type="text" id="width" name="width" value="" size="3" /> x <input type="text" id="height" name="height" value="" size="3" /></div>
+$text = '<div>
+<p>
+	<input id="youtubeURL" placeholder="Youtube URL or Code" name="youtubeURL" type="text" class="text" style="width:97%" autofocus />
+</p><label class="radio sizeblock"><input type="radio" name="size" value="tiny" checked="checked" /> Tiny (320 x 205)</label>
+	<label class="radio sizeblock"><input type="radio" name="size" value="small" /> Small (560 x 340)</label>
+	<label class="radio sizeblock"><input type="radio" name="size" value="medium" /> Medium (640 x 385)</label>
+	<label class="radio sizeblock"><input type="radio" name="size" value="large" /> Large (854 x 505)</label>
+	<label class="radio sizeblock form-inline"><input type="radio" name="size" value="huge" /> Huge (1280 x 745)</label>
+	<label class="youtube-custom sizeblock" style="white-space:nowrap"><input type="radio" name="size" value="custom" /> Custom 
+	<input class="span1" type="text" id="width" name="width" maxlength="4" value="" size="3" /> x <input class="span1" type="text" id="height" name="height" value="" size="3" maxlength="4" />
+	</label>
 	
-	<div style="padding:10px">
-		<input type="button" id="insert" name="insert" value="Insert"  />		
-		<input type="button" id="cancel" name="cancel" value="'.LAN_CANCEL.'" />		
+	<div class="right" style="padding:10px">
+		<input class="btn btn-primary" type="button" id="e-insert" name="insert" value="Insert"  />		
+		<input class="btn" type="button" id="e-cancel" name="cancel" value="'.LAN_CANCEL.'"/>		
 	</div>
-</form>
 </div>';
 
 $ns = e107::getRender();

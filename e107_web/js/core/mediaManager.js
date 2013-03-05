@@ -286,10 +286,13 @@ $(document).ready(function()
   				src = src + '&search='+search;	
   			}
   			
+  		
+  			
+  			//TODO Animate. 
   			$(id).load(src,function() {
   				// alert(src);
-  			//	$(this).hide();
-    			// $(this).SlideLeft();
+  				// $(this).hide();
+    			// $(this).show('slow'); // .slideLeft();
 			});
 				
 			

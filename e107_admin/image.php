@@ -844,7 +844,7 @@ class media_admin_ui extends e_admin_ui
 
 		if($this->getQuery('iframe'))
 		{
-					
+			e107::js('tinymce','tiny_mce_popup.js'); 		
  			$this->getResponse()->setIframeMod(); // disable header/footer menus etc. 
  			
  			if(!$this->getQuery('for'))
@@ -982,7 +982,7 @@ class media_admin_ui extends e_admin_ui
 			<div class='tab-content'>
 			<div class='tab-pane active' id='core-media-select'>
 			<legend>Library</legend>
-			<div class='table' style='display:block; height:500px'>
+			<div class='table' style='display:block'>
 		
 			";
 			

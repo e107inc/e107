@@ -23,43 +23,33 @@
         */
         init: function (ed, url) {
             // Register the command so that it can be invoked by using tinyMCE.activeEditor.execCommand('mceExample');
-            /*
+          
             ed.addCommand('mceYoutube', function () {
                 ed.windowManager.open({
-                    file: url + '/youtube.htm',
-                    width: 320 + parseInt(ed.getLang('example.delta_width', 0)),
-                    height: 120 + parseInt(ed.getLang('example.delta_height', 0)),
-                    inline: 1
+                    file: url + '/youtube.php',
+                    width: 600 + parseInt(ed.getLang('example.delta_width', 0)),
+                    height: 240 + parseInt(ed.getLang('example.delta_height', 0)),
+                    inline: 1,
+                    title: 'YouTube'
                 }, {
                     plugin_url: url, // Plugin absolute URL
                     some_custom_arg: 'custom arg' // Custom argument
                 });
             });
-			*/ 
+			
 			
 			
             // Register example button
             ed.addButton('youtube', {
                 title: 'youtube.desc',
-                onclick: function(){
-                	
-                	$.colorbox({
-                		href: url + "/youtube.php",
-                		iframe: true,
-                		width:"500px",
-						height:"240px",
-						speed:10,
-						opacity: 0.3
-                	});
-                },
-           //     cmd: 'mceYoutube',
+               	cmd: 'mceYoutube',
                 image: url + '/img/youtube.gif'
             });
 
             // Add a node change handler, selects the button in the UI when a image is selected
             ed.onNodeChange.add(function (ed, cm, n) {
                 var active = false;
-                if (n.nodeName == 'IMG') {
+                if (n.nodeName == 'IFRAME') {
                     try {
                         var src = n.attributes["src"].value;
                         var alt = n.attributes["alt"].value;

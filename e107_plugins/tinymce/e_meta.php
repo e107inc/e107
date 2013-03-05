@@ -23,7 +23,7 @@ if(e_WYSIWYG || strpos(e_SELF,"tinymce/admin_config.php") )
 	}
 	else
 	{
-		e107::js('tinymce','tiny_mce_popup.js','jquery');
+	//	e107::js('tinymce','tiny_mce_popup.js','jquery');
 	}
 	
 	if(ADMIN)
@@ -76,20 +76,22 @@ if(e_WYSIWYG || strpos(e_SELF,"tinymce/admin_config.php") )
                 return false;       
             });
             
+         /*
             $('img.tinyInsertEmote').live('click',function() {
-               
-                var src = $(this).attr('src');     
-                  alert(src); 
-            //  var html = '<img src=\''+src +'\' alt=\'emote\' />';
-              tinyMCE.execCommand('mceInsertRawHTML',false, 'hi there');
-              ;
-              $('.mceContentBody', window.top.document).tinymce().execCommand('mceInsertContent',false,src);
-
-             //   tinyMCE.selectedInstance.execCommand('mceInsertContent',0,src);                
-                             
-                $('#uiModal').modal('hide');
-                return true;       
-            });
+                        
+                         var src = $(this).attr('src');     
+                           alert(src); 
+                     //  var html = '<img src=\''+src +'\' alt=\'emote\' />';
+                       tinyMCE.execCommand('mceInsertRawHTML',false, 'hi there');
+                       ;
+                       $('.mceContentBody', window.top.document).tinymce().execCommand('mceInsertContent',false,src);
+         
+                      //   tinyMCE.selectedInstance.execCommand('mceInsertContent',0,src);                
+                                      
+                         $('#uiModal').modal('hide');
+                         return true;       
+                     });*/
+         
            
 						
 				
@@ -127,7 +129,11 @@ if(e_WYSIWYG || strpos(e_SELF,"tinymce/admin_config.php") )
 				tinyMCEPopup.close();
 			});
 			
-		
+			$('.e-dialog-close').click(function(){
+				
+				tinyMCEPopup.close();
+			});
+			
 			
 							
 					

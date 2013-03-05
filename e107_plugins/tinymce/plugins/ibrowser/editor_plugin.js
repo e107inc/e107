@@ -23,19 +23,21 @@
 			ed.addCommand('mceibrowser', function() {
 				ed.windowManager.open({
 					file : url + '/ibrowser.php',
-					width : 830 + parseInt(ed.getLang('ibrowser.delta_width', 0)),
-					height : 770 + parseInt(ed.getLang('ibrowser.delta_height', 0)),
-					inline : 1
+					width : 1050, //  + parseInt(ed.getLang('ibrowser.delta_width', 0)),
+					height : 520, //  + parseInt(ed.getLang('ibrowser.delta_height', 0)),
+					inline : 1,
+					title : 'Media Manager',
 				}, {
 					plugin_url : url, // Plugin absolute URL
-					some_custom_arg : 'custom arg' // Custom argument
+					modal_caption : 'custom arg' // Custom argument
 				});
 			});
 
 			// Register ibrowser button
 			ed.addButton('ibrowser', {
 				title : 'ibrowser.desc',
-		//		cmd : 'mceibrowser',
+				cmd : 'mceibrowser',
+				/*
 			onclick: function() {
 				
 			//	 $('div.modal-body').load(url + "/ibrowser.php");
@@ -50,6 +52,7 @@
 						opacity: 0.4
 					 });	
 				},
+			*/
 				image : url + '/images/ibrowser.gif'
 			});
 
