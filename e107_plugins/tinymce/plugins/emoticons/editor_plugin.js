@@ -23,8 +23,8 @@
 			ed.addCommand('mceEmotion', function() {
 				ed.windowManager.open({
 					file :  url + '/emoticons.php',
-					width : 220 + parseInt(ed.getLang('emoticons.delta_width', 0)),
-					height : 220 + parseInt(ed.getLang('emoticons.delta_height', 0)),
+					width : 480 + parseInt(ed.getLang('emoticons.delta_width', 0)),
+					height : 340 + parseInt(ed.getLang('emoticons.delta_height', 0)),
 					inline : 1
 				}, {
 					plugin_url : url, // Plugin absolute URL
@@ -35,13 +35,13 @@
 			// Register example button
 			ed.addButton('emoticons', {
 				title : 'emoticons.desc',
-				onclick: function(){
-                	
-                
+			//	onclick: function(){
+                cmd : 'mceEmotion',
+				 
                 	
                 //	 $("div.modal-body").html('hi there');
-                	 $('div.modal-body').load(url + "/emoticons.php");
-    				$('#uiModal').modal('show');
+                //	 $('div.modal-body').load(url + "/emoticons.php");
+    			//	$('#uiModal').modal('show');
                 	
                 	/*
                 	$.colorbox({
@@ -54,7 +54,7 @@
 						scrolling: false
                 	});
                 	*/
-                },
+              //  },
 				//cmd : 'mceEmotion',
 				image : url + '/images/emoticons.png'
 			});

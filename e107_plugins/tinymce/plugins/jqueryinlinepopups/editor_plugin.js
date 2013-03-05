@@ -44,16 +44,17 @@
 
 		open : function(f, p) {
 
+			var t = this, id, opt = '', ed = t.editor, dw = 0, dh = 0, vp, po, mdf, clf, we, w, u, parentWindow;
+
 			f = f || {};
 			p = p || {};
 
 			// Run native windows
-			if (!f.inline) {
+			if (!f.inline)
 				return t.parent(f, p);
-			}
 				
 			var 
-				t = this,
+				// t = this,
 				id = DOM.uniqueId(),
 
 				// Dialog config
@@ -90,8 +91,8 @@
 			}
 
 			// Inline content
-			if (f.content){
-
+			if (f.content)
+			{
 				if (f.type == 'confirm'){
 					config.buttons = [{
 						'text': 'Ok',
@@ -114,14 +115,34 @@
 					}];
 				}
 
-				dialog.html($('<div />', {
-					'class': 'ui-dialog-tinymce-content',
-					'html': f.content
-				}));
+				$('#uiModal .modal-body').html(f.content);
+				$('#uiModal .modal-footer').text('');
+				$('#uiModal').modal('show');
+				
+				return; 			
+				
 			}
 			// iFramed document
 			else 
 			{
+				
+					
+				var src = (f.url === undefined) ?  f.file : f.url;
+				var wdt	= f.width + 'px';
+				$('#uiModal .modal-caption').text(f.title);
+			//	$('#uiModal').css('height',f.height + "px");
+				$('#uiModal').width(wdt);
+				$('#uiModal').css('min-width','800px');
+				
+				$('#uiModal .modal-body').html("<iframe src='" + src + "' width='100%' height='" + (f.height + 60) + "px' frameborder='0'></iframe>"); 
+				$('#uiModal .modal-footer').text('');
+				$('#uiModal .modal-header').hide();
+				
+				$('#uiModal').modal('show');
+				
+			//	return;
+				
+				/*
 				var iframe = $('<iframe />', { 
 					id: id + '_ifr',
 					frameborder: 0 
@@ -132,7 +153,9 @@
 				})
 				.attr('scrollbars', 'no')
 				.appendTo(dialog);
+				*/
 			}
+			
 
 			p.mce_inline = true;
 			p.mce_window_id = id;
@@ -142,20 +165,21 @@
 			this.params = p;
 			this.onOpen.dispatch(this, f, p);
 
-			dialog
-			.dialog(config)
-			.dialog('option', 'width', dialog.innerWidth())
-			.dialog('option', 'position', dialog.dialog('option', 'position'));
+		//	dialog
+		//	.dialog(config)
+		//	.dialog('option', 'width', dialog.innerWidth())
+		//	.dialog('option', 'position', dialog.dialog('option', 'position'));
 			
 			// Load in iframe src
-			if (!f.content) {
-				iframe.attr( 'src', f.url || f.file );
-			}
+		//	if (!f.content) {
+		//		iframe.attr( 'src', f.url || f.file );
+		//	}
 
 			// Add window
 			t.windows[id] = w;
 
 			return w;
+			
 		},
 
 		resizeBy : function(dw, dh, id) { return; },
@@ -164,6 +188,11 @@
 
 		close : function(win, id) {
 	
+			$('#uiModal').modal('hide');
+			$('#uiModal .modal-header').show();
+		
+			return;
+			/*
 			var t = this, w, id = id || win.frameElement.id.replace(/_ifr$/, '');
 
 			// Probably not inline
@@ -176,9 +205,12 @@
 				w.element.dialog('destroy').remove();
 				delete t.windows[id];
 			}
+			*/
 		},
 
 		setTitle : function(w, ti) {
+			$('#uiModal .modal-caption').text(ti);
+			return;
 			var id = w.frameElement.id.replace(/_ifr$/, '');
 			$('#ui-dialog-title-dialog-' + id).html(ti);
 		},

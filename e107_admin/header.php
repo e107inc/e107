@@ -420,12 +420,18 @@ echo getModal();
 			return;
 		}
 		
+		if(e_PAGE == "image.php")
+		{
+			return;	
+		}
+		
 		
         return '
+       
          <div id="uiModal" class="modal hide fade" tabindex="-1" role="dialog"  aria-hidden="true">
             <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-             <h3 class="modal-caption">&nbsp;</h3>
+            	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+             	<h4 class="modal-caption">&nbsp;</h4>
              </div>
              <div class="modal-body">
              <p>Loading…</p>
