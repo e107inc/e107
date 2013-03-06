@@ -24,7 +24,7 @@ class base_import_class
 	var $DBPrefix = '';
 	var $currentTask = '';
 	var $copyUserInfo = TRUE;
-	var $arrayData = array();
+	protected $arrayData = array();
 
 	/**
 	 * Connect to the external DB if not already connected
