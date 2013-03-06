@@ -18,34 +18,35 @@
 //		a) This file name - add '_class.php' to get the file name
 //		b) The array index of certain variables
 // Array element key defines the function prefix and the class name; value is displayed in drop-down selection box
-$import_class_names['PHPFusion_import'] = 'PHP Fusion';
-$import_class_comment['PHPFusion_import'] = 'Based on V5.1';
-$import_class_support['PHPFusion_import'] = array('users');
-$import_default_prefix['PHPFusion_import'] = '';
-
 
 require_once('import_classes.php');
 
 class PHPFusion_import extends base_import_class
 {
+	
+	public $title		= 'PHP Fusion';
+	public $description	= 'Based on V5.1';
+	public $supported	=  array('users');
+	public $mprefix		= false;
+	
   // Set up a query for the specified task.
   // Returns TRUE on success. FALSE on error
-  function setupQuery($task, $blank_user=FALSE)
-  {
-    if ($this->ourDB == NULL) return FALSE;
-    switch ($task)
+	function setupQuery($task, $blank_user=FALSE)
 	{
-	  case 'users' :
-	    $result = $this->ourDB->db_Select_gen("SELECT * FROM {$this->DBPrefix}users");
-		if ($result === FALSE) return FALSE;
-		break;
-	  default :
-	    return FALSE;
+	    if ($this->ourDB == NULL) return FALSE;
+	    switch ($task)
+		{
+		  case 'users' :
+		    $result = $this->ourDB->db_Select_gen("SELECT * FROM {$this->DBPrefix}users");
+			if ($result === FALSE) return FALSE;
+			break;
+		  default :
+		    return FALSE;
+		}
+		$this->copyUserInfo = !$blank_user;
+		$this->currentTask = $task;
+		return TRUE;
 	}
-	$this->copyUserInfo = !$blank_user;
-	$this->currentTask = $task;
-	return TRUE;
-  }
 
 
   //------------------------------------

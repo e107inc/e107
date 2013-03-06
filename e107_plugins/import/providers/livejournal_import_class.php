@@ -15,15 +15,23 @@
 // require_once('import_classes.php');
 require_once('rss_import_class.php');
 
-$import_class_names['livejournal_import'] 		= 'LiveJournal';
-$import_class_comment['livejournal_import'] 	= 'Import up to 500 items from yourblog.livejournal.com';
-$import_class_support['livejournal_import'] 	= array('news');
-$import_default_prefix['livejournal_import'] 	= '';
+//$import_class_names['livejournal_import'] 		= 'LiveJournal';
+//$import_class_comment['livejournal_import'] 	= 'Import up to 500 items from yourblog.livejournal.com';
+//$import_class_support['livejournal_import'] 	= array('news');
+//$import_default_prefix['livejournal_import'] 	= '';
 
 class livejournal_import extends rss_import
 {
-	var $cleanupHtml = false;
-	var $defaultClass = false;
+
+	
+	public $title		= 'LiveJournal';
+	public $description	= 'Import up to 500 items from yourblog.livejournal.com';
+	public $supported	= array('news');
+	public $mprefix		= false;
+
+
+	var $cleanupHtml 	= false;
+	var $defaultClass 	= false;
 	/*
 
 	 */

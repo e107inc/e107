@@ -14,15 +14,21 @@
  * $Author: secretr $
  */
 
-$import_class_names['html_import'] 		= 'HTML';
-$import_class_comment['html_import'] 	= 'Import content from an html website. eg. created with Frontpage, Dreamweaver or Notepad etc. ';
-$import_class_support['html_import'] 	= array('news','page');
-$import_default_prefix['html_import'] 	= '';
+//$import_class_names['html_import'] 		= 'HTML';
+//$import_class_comment['html_import'] 	= 'Import content from an html website. eg. created with Frontpage, Dreamweaver or Notepad etc. ';
+//$import_class_support['html_import'] 	= array('news','page');
+//$import_default_prefix['html_import'] 	= '';
 
 require_once('import_classes.php');
 
 class html_import extends base_import_class
 {
+	public $title		= 'HTML';
+	public $description	= 'Import content from an html website. eg. created with Frontpage, Dreamweaver or Notepad etc. ';
+	public $supported	= array('news','page');
+	public $mprefix		= false;
+	
+	
 	public $override 	= true;
 	var $sourceType 	= 'rss';
 	var $feedUrl		= null;
@@ -36,7 +42,6 @@ class html_import extends base_import_class
 	function init()
 	{
 		$this->feedUrl	= vartrue($_POST['siteUrl'],false);
-		$this->feedUrl	= "http://drboylan.com/";
 		$this->feedUrl 	= rtrim($this->feedUrl,"/");
 		
 		if($_POST['preview'])
@@ -100,27 +105,10 @@ class html_import extends base_import_class
 		$this->arrayData = array();
 		
 		print_a($_POST);
-		
-		
-	
-		
-		
-		
-		
-		
-		
-					
-					
-				
-				
-			
-			
-		
-		
-	
-	
+
+
 		$file = $this->feedUrl;
-						
+
     	switch ($task)
 		{		
 			case 'news' :

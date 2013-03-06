@@ -18,16 +18,21 @@
 //		a) This file name - add '_class.php' to get the file name
 //		b) The array index of certain variables
 // Array element key defines the function prefix and the class name; value is displayed in drop-down selection box
-$import_class_names['smf_import'] = 'SMF (Simple Machines Forum)';
-$import_class_comment['smf_import'] = 'Supports users only';
-$import_class_support['smf_import'] = array('users');
-$import_default_prefix['smf_import'] = '';
 
 
 require_once('import_classes.php');
 
 class smf_import extends base_import_class
 {
+	
+	public $title			= 'SMF (Simple Machines Forum)';
+	public $description		= 'Supports users only';
+	public $supported		= array('news','page','links');
+	public $mprefix			= array('users');
+	public $sourceType 		= 'db';		
+	
+	
+	
   // Set up a query for the specified task.
   // Returns TRUE on success. FALSE on error
   function setupQuery($task, $blank_user=FALSE)

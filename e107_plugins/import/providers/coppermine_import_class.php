@@ -19,16 +19,24 @@
 //		b) The array index of certain variables
 // Array element key defines the function prefix and the class name; value is displayed in drop-down selection box
 // Info derived from version 1.4.16
-$import_class_names['coppermine_import'] = 'Coppermine';
-$import_class_comment['coppermine_import'] = 'Standalone gallery version';
-$import_class_support['coppermine_import'] = array('users');
-$import_default_prefix['coppermine_import'] = 'CPG_';
+//$import_class_names['coppermine_import'] = 'Coppermine';
+//$import_class_comment['coppermine_import'] = 'Standalone gallery version';
+//$import_class_support['coppermine_import'] = array('users');
+//$import_default_prefix['coppermine_import'] = 'CPG_';
 
 
 require_once('import_classes.php');
 
 class coppermine_import extends base_import_class
 {
+	
+	public $title		= 'Coppermine';
+	public $description	= 'Standalone gallery version';
+	public $supported	= array('users');
+	public $mprefix		= 'CPG_';
+	
+	
+	
   // Set up a query for the specified task.
   // Returns TRUE on success. FALSE on error
   function setupQuery($task, $blank_user=FALSE)
@@ -57,13 +65,14 @@ class coppermine_import extends base_import_class
   function copyUserData(&$target, &$source)
   {
 	if ($this->copyUserInfo) $target['user_id'] = $source['user_id'];
-	$target['user_name'] = $source['user_name'];
-	$target['user_loginname'] = $source['user_name'];
-	$target['user_login'] = $source['user_name'];
-	$target['user_password'] = $source['user_password'];
-	$target['user_email'] = $source['user_email'];
-	$target['user_join'] = strtotime($source['user_regdate']);
-	$target['user_lastvisit'] = strtotime($source['user_lastvisit']);
+	$target['user_name'] 		= $source['user_name'];
+	$target['user_loginname'] 	= $source['user_name'];
+	$target['user_login'] 		= $source['user_name'];
+	$target['user_password'] 	= $source['user_password'];
+	$target['user_email'] 		= $source['user_email'];
+	$target['user_join'] 		= strtotime($source['user_regdate']);
+	$target['user_lastvisit'] 	= strtotime($source['user_lastvisit']);
+	
 	switch ($source['user_group'])
 	{
 	  case 1 : 		// Admin
@@ -76,6 +85,7 @@ class coppermine_import extends base_import_class
 		$target['user_ban'] = 2;
 		break;
 	}
+	
 	return $target;
 
 	/* Unused fields:

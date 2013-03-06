@@ -21,18 +21,26 @@
 //		b) The array index of certain variables
 // Array element key defines the function prefix and the class name; value is displayed in drop-down selection box
 
-$import_class_names['rss_import'] 		= 'RSS';
-$import_class_comment['rss_import'] 	= 'Import content via RSS v2.0 feeds from virtually any website.';
-$import_class_support['rss_import'] 	= array('news','page','links');
-$import_default_prefix['rss_import'] 	= '';
+
 
 require_once('import_classes.php');
 
 class rss_import extends base_import_class
 {
-	var $sourceType = 'rss';
-	var $feedUrl	= null;
-	var $defaultClass = false;
+	
+	public $title			= 'RSS';
+	public $description		= 'Import content via RSS v2.0 feeds from virtually any website.';
+	public $supported		= array('news','page','links');
+	public $mprefix			= false;
+	public $sourceType 		= 'rss';	
+	
+	
+
+	var $feedUrl			= null;
+	var $defaultClass 		= false;
+	
+	
+	
 	
 	function init()
 	{
@@ -42,7 +50,7 @@ class rss_import extends base_import_class
 	function config()
 	{
 		$var[0]['caption']	= "Feed URL";
-		$var[0]['html'] 	= "<input class='tbox' type='text' name='rss_feed' size='80' value='{$_POST['rss_feed']}' maxlength='250' />";
+		$var[0]['html'] 	= "<input class='tbox span7' type='text' name='rss_feed' size='180' value='{$_POST['rss_feed']}' maxlength='250' />";
 
 		return $var;
 	}
@@ -52,10 +60,15 @@ class rss_import extends base_import_class
   // Returns TRUE on success. FALSE on error
 	function setupQuery($task, $blank_user=FALSE)
 	{
+		$mes = e107::getMessage();
+		
 		$this->arrayData = array();
 		
 		$xml = e107::getXml();	
 		$file = $this->feedUrl;
+			
+		$mes->addDebug("rss_import::setupQuery - \$task:  ".$task);	
+		$mes->addDebug("rss_import::setupQuery - \$file:  ".$file);	
 					
     	switch ($task)
 		{		
@@ -66,7 +79,15 @@ class rss_import extends base_import_class
 				// $rawData = $xml->getRemoteFile($file);
 				//	print_a($rawData);
 				$array = $xml->loadXMLfile($file,'advanced');
-				if ($array === FALSE || $file === FALSE) return FALSE;
+				
+			//	$mes->addDebug("rss - setupQuery - RSS array:  ".print_a($array,true));	
+				
+				if ($array === FALSE || $file === FALSE) 
+				{
+					$mes->addError("No data returned from : ".$file);
+					return FALSE;
+				}
+					
 				
 				foreach($array['channel']['item'] as $val)
 				{
@@ -119,10 +140,9 @@ class rss_import extends base_import_class
 			$body = $content;
 		}
 				
-		$body 								= $this->saveImages($body,'news');
-		$keywords 							= $this->process('category',$source);
-			
-				
+		$body 			= $this->saveImages($body,'news');
+		$keywords 		= $this->process('category',$source);
+							
 		if(!vartrue($source['title'][0]))
 		{
 			list($title,$newbody) = explode("<br />",$body,2);
@@ -288,13 +308,15 @@ class rss_import extends base_import_class
 			
 			foreach($matches[0] as $link)
 			{
+				$filename = basename($link);
+				
 				if(file_exists($relPath."/".$filename))
 				{
 					continue;
 				}
 				
-				$filename = basename($link);
 				$fl->getRemoteFile($link,$relPath."/".$filename,'media');
+				
 				$search[] = $link;
 				$replace[] = $tp->createConstants(e_MEDIA.$relPath."/".$filename,1);
 			}	

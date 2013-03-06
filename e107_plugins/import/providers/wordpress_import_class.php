@@ -21,15 +21,23 @@
 //		b) The array index of certain variables
 // Array element key defines the function prefix and the class name; value is displayed in drop-down selection box
 
-$import_class_names['wordpress_import'] 	= 'Wordpress';
-$import_class_comment['wordpress_import'] 	= 'Tested with version 3.4.x (salted passwords)';
-$import_class_support['wordpress_import'] 	= array('users','news','page','links');
-$import_default_prefix['wordpress_import'] 	= 'wp_';
+//$import_class_names['wordpress_import'] 	= 'Wordpress';
+//$import_class_comment['wordpress_import'] 	= 'Tested with version 3.4.x (salted passwords)';
+//$import_class_support['wordpress_import'] 	= array('users','news','page','links');
+//$import_default_prefix['wordpress_import'] 	= 'wp_';
 
 require_once('import_classes.php');
 
 class wordpress_import extends base_import_class
 {
+	public $title		= 'Wordpress';
+	public $description	= 'Tested with version 3.4.x (salted passwords)';
+	public $supported	= array('users','news','page','links');
+	public $mprefix		= 'wp_';	
+	
+	
+
+	
   // Set up a query for the specified task.
   // Returns TRUE on success. FALSE on error
 	function setupQuery($task, $blank_user=FALSE)
