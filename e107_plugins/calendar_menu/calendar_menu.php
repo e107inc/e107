@@ -60,7 +60,7 @@ $cal_current_month	= $cal_datearray['mon'];
 $cal_current_year	= $cal_datearray['year'];
 $numberdays	= date("t", $ecal_class->cal_timedate); // number of days in this month
 $cal_monthstart		= gmmktime(0, 0, 0, $cal_current_month, 1, $cal_current_year);			// Time stamp for first day of month
-$cal_firstdayarray	= getdate($cal_monthstart);												
+$cal_firstdayarray	= $ecal_class->gmgetdate($cal_monthstart);												
 $cal_monthend		= gmmktime(0, 0, 0, $cal_current_month + 1, 1, $cal_current_year) -1;		// Time stamp for last day of month
 //$cal_thismonth	= $cal_datearray['mon'];
 $cal_thisday	= $cal_datearray['mday'];	// Today
@@ -138,7 +138,7 @@ for ($i = 0; $i < 7; $i++)
 }
 $cal_text .= $CALENDAR_MENU_HEADER_END;  // Close off header row, open first date row
 // Calculate number of days to skip before 'real' days on first line of calendar
-$firstdayoffset = date('w',$cal_start) - $ecal_class->ec_first_day_of_week;
+$firstdayoffset = gmdate('w',$cal_start) - $ecal_class->ec_first_day_of_week;
 if ($firstdayoffset < 0) $firstdayoffset+= 7;
 for ($cal_c = 0; $cal_c < $firstdayoffset; $cal_c++)
 {
