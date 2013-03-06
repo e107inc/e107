@@ -26,15 +26,24 @@
 // require_once('import_classes.php');
 require_once('rss_import_class.php');
 
-$import_class_names['blogger_import'] 		= 'Blogger';
-$import_class_comment['blogger_import'] 	= 'Import up to 500 items from yourblog.blogspot.com';
-$import_class_support['blogger_import'] 	= array('news');
-$import_default_prefix['blogger_import'] 	= '';
+//$import_class_names['blogger_import'] 		= 'Blogger';
+//$import_class_comment['blogger_import'] 	= 'Import up to 500 items from yourblog.blogspot.com';
+//$import_class_support['blogger_import'] 	= array('news');
+//$import_default_prefix['blogger_import'] 	= '';
 
 class blogger_import extends rss_import
-{
-	var $cleanupHtml = false;
-	var $defaultClass = false;
+{	
+	public $title		= "Blogger";
+	public $description	= 'Import up to 500 items from yourblog.blogspot.com';
+	public $supported	=  array('news');
+	public $mprefix		= false;
+	
+	public $cleanupHtml = false;
+	public $defaultClass = false;
+	
+	
+	
+	
 	/*
 	 If the first 500 posts of your blog feed are here:
 

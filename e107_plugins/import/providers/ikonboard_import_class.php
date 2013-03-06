@@ -20,15 +20,18 @@
 //		b) The array index of certain variables
 // Array element key defines the function prefix and the class name; value is displayed in drop-down selection box
 // Module based on ikonboard version current about September 2007 - may well support other versions
-$import_class_names['ikonboard_import'] = 'Ikonboard';
-$import_class_comment['ikonboard_import'] = 'About Sept 2007';
-$import_class_support['ikonboard_import'] = array('users');
-$import_default_prefix['ikonboard_import'] = 'ib_';
 
 require_once('import_classes.php');
 
 class ikonboard_import extends base_import_class
 {
+	public $title			= 'Ikonboard';
+	public $description		= 'About Sept 2007';
+	public $supported		= array('users');
+	public $mprefix			= 'ib_';
+	
+	
+	
   // Set up a query for the specified task.
   // Returns TRUE on success. FALSE on error
   // If $blank_user is true, certain cross-referencing user info is to be zeroed

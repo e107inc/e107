@@ -20,42 +20,52 @@
 //		b) The array index of certain variables
 // Array element key defines the function prefix and the class name; value is displayed in drop-down selection box
 // Module based on Drupal 5.7 and 6.1 schemas; may well work with other versions
-$import_class_names['drupal_import'] = 'Drupal 5.7/6.1';
-$import_class_comment['drupal_import'] = 'Basic import';
-$import_class_support['drupal_import'] = array('users');
-$import_default_prefix['drupal_import'] = '';
+//$import_class_names['drupal_import'] = 'Drupal 5.7/6.1';
+//$import_class_comment['drupal_import'] = 'Basic import';
+//$import_class_support['drupal_import'] = array('users');
+//$import_default_prefix['drupal_import'] = '';
 
 require_once('import_classes.php');
 
 class drupal_import extends base_import_class
 {
+	
+	public $title		= 'Drupal 5.7/6.1';
+	public $description	= 'Basic import';
+	public $supported	= array('users');
+	public $mprefix		= false;
+	
+	
   // Set up a query for the specified task.
   // Returns TRUE on success. FALSE on error
   // If $blank_user is true, certain cross-referencing user info is to be zeroed
-  function setupQuery($task, $blank_user=FALSE)
-  {
-    if ($this->ourDB == NULL) return FALSE;
-    switch ($task)
+	function setupQuery($task, $blank_user=FALSE)
 	{
-	  case 'users' :
-	    $result = $this->ourDB->db_Select_gen("SELECT * FROM {$this->DBPrefix}users WHERE `status`=1");
-		if ($result === FALSE) return FALSE;
-		break;
-	  case 'forumdefs' :
-	    return FALSE;
-	  case 'forumposts' :
-	    return FALSE;
-	  case 'polls' :
-	    return FALSE;
-	  case 'news' :
-	    return FALSE;
-	  default :
-	    return FALSE;
+	    if ($this->ourDB == NULL) return FALSE;
+		
+	    switch ($task)
+		{
+		  case 'users' :
+		    $result = $this->ourDB->db_Select_gen("SELECT * FROM {$this->DBPrefix}users WHERE `status`=1");
+			if ($result === FALSE) return FALSE;
+			break;
+		  case 'forumdefs' :
+		    return FALSE;
+		  case 'forumposts' :
+		    return FALSE;
+		  case 'polls' :
+		    return FALSE;
+		  case 'news' :
+		    return FALSE;
+		  default :
+		    return FALSE;
+		}
+
+		$this->copyUserInfo = !$blank_user;
+		$this->currentTask = $task;
+		
+		return TRUE;
 	}
-	$this->copyUserInfo = !$blank_user;
-	$this->currentTask = $task;
-	return TRUE;
-  }
 
 
   
@@ -64,22 +74,26 @@ class drupal_import extends base_import_class
   //------------------------------------
   
   // Copy data read from the DB into the record to be returned.
-  function copyUserData(&$target, &$source)
-  {
-	if ($this->copyUserInfo) $target['user_id'] = $source['uid'];
-	$target['user_name'] = $source['name'];
-	$target['user_loginname'] = $source['name'];
-	$target['user_password'] = $source['pass'];
-	$target['user_email'] = $source['mail'];
-	$target['user_signature'] = $source['signature'];
-	$target['user_join'] = $source['created'];			
-	$target['user_lastvisit'] = $source['login'];		// Could use $source['access']
-    $target['user_image'] = $source['picture'];
-	// $source['init'] is email address used to sign up from
-    $target['user_timezone'] = $source['timezone'];		// May need conversion varchar(8)
-    $target['user_language'] = $source['language'];		// May need conversion varchar(12)
-	return $target;
-  }
+	function copyUserData(&$target, &$source)
+	{
+		if ($this->copyUserInfo)
+		{
+			$target['user_id'] 			= $source['uid'];
+			$target['user_name'] 		= $source['name'];
+			$target['user_loginname'] 	= $source['name'];
+			$target['user_password'] 	= $source['pass'];
+			$target['user_email'] 		= $source['mail'];
+			$target['user_signature'] 	= $source['signature'];
+			$target['user_join'] 		= $source['created'];			
+			$target['user_lastvisit'] 	= $source['login'];		// Could use $source['access']
+		    $target['user_image'] 		= $source['picture'];
+			// $source['init'] is email address used to sign up from
+		    $target['user_timezone'] 	= $source['timezone'];		// May need conversion varchar(8)
+		    $target['user_language'] 	= $source['language'];		// May need conversion varchar(12)
+		    
+			return $target;
+		}
+	}
 }
 
 

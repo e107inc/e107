@@ -18,34 +18,37 @@
 //		a) This file name - add '_class.php' to get the file name
 //		b) The array index of certain variables
 // Array element key defines the function prefix and the class name; value is displayed in drop-down selection box
-$import_class_names['PHPNuke_import'] = 'PHP Nuke';
-$import_class_comment['PHPNuke_import'] = 'Supports users only - uses PHPBB2';
-$import_class_support['PHPNuke_import'] = array('users');
-$import_default_prefix['PHPNuke_import'] = 'nuke_';
-
 
 require_once('import_classes.php');
 
 class PHPNuke_import extends base_import_class
 {
+	
+	
+	public $title			= 'PHP Nuke';
+	public $description		= 'Supports users only - uses PHPBB2';
+	public $supported		= array('users');
+	public $mprefix			= 'nuke_';
+
+	
   // Set up a query for the specified task.
   // Returns TRUE on success. FALSE on error
-  function setupQuery($task, $blank_user=FALSE)
-  {
-    if ($this->ourDB == NULL) return FALSE;
-    switch ($task)
+	function setupQuery($task, $blank_user=FALSE)
 	{
-	  case 'users' :
-	    $result = $this->ourDB->db_Select_gen("SELECT * FROM {$this->DBPrefix}users WHERE `user_active`=1");
-		if ($result === FALSE) return FALSE;
-		break;
-	  default :
-	    return FALSE;
+		if ($this->ourDB == NULL) return FALSE;
+		switch ($task)
+		{
+		  case 'users' :
+		    $result = $this->ourDB->db_Select_gen("SELECT * FROM {$this->DBPrefix}users WHERE `user_active`=1");
+			if ($result === FALSE) return FALSE;
+			break;
+		  default :
+		    return FALSE;
+		}
+		$this->copyUserInfo = !$blank_user;
+		$this->currentTask = $task;
+		return TRUE;
 	}
-	$this->copyUserInfo = !$blank_user;
-	$this->currentTask = $task;
-	return TRUE;
-  }
 
 
   //------------------------------------

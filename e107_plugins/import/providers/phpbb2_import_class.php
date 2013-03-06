@@ -28,19 +28,22 @@ To do:
 //		a) This file name - add '_class.php' to get the file name
 //		b) The array index of certain variables
 // Array element key defines the function prefix and the class name; value is displayed in drop-down selection box
-$import_class_names['phpbb2_import'] = 'PHPBB Version 2/3';
-$import_class_comment['phpbb2_import'] = 'Should do most versions, and Dragonfly';
-//$import_class_support['phpbb2_import'] = array('users','forumdefs', 'forumposts');
-$import_class_support['phpbb2_import'] = array('users');
-$import_default_prefix['phpbb2_import'] = 'phpbb_';
+
 
 require_once('import_classes.php');
 
 class phpbb2_import extends base_import_class
 {
 
-  var $catcount = 0;				// Counts forum IDs
-  var $id_map = array();			// Map of PHPBB forum IDs ==> E107 forum IDs
+	public $title		= 'PHPBB Version 2/3';
+	public $description	= 'Should do most versions, and Dragonfly';
+	public $supported	=  array('users');
+	public $mprefix		= 'phpbb_';
+	
+
+
+	var $catcount = 0;				// Counts forum IDs
+	var $id_map = array();			// Map of PHPBB forum IDs ==> E107 forum IDs
   
   
   // Set up a query for the specified task.
