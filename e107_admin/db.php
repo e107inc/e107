@@ -127,11 +127,11 @@ class system_tools
 			'exportForm'			=> array('diz'=>DBLAN_58, 'label'=> DBLAN_58),
 			'sc_override_scan'		=> array('diz'=>DBLAN_55, 'label'=> DBLAN_56),
 			'convert_to_utf8'		=> array('diz'=>'Convert Database to UTF-8','label'=>'Convert DB to UTF-8'),
-			'correct_perms'			=> array('diz'=>'Correct File and Directory perms','label'=>'Correct Perms')
+			'correct_perms'			=> array('diz'=>'Correct File and Directory permissions','label'=>'Correct Perms')
 		);
 
-	
-
+		$this->_options = multiarray_sort($this->_options, 'label');
+				
 		if(isset($_POST['delplug']))
 		{
 			$this->delete_plugin_entry($_POST['pref_type']);
@@ -487,22 +487,31 @@ class system_tools
 					<col style='width: 40%' />
 				</colgroup>
 				<tbody>";
+				
+		$text = "<div>";
+
 
 		foreach($this->_options as $key=>$val)
 		{
+			
+			$text .= "<div class='pull-left' style='width:50%;padding-bottom:10px'>
+			<a class='btn btn-large pull-left' style='margin-right:10px' href='".e_SELF."?mode=".$key."' title=\"".$val['label']."\">".ADMIN_EXECUTE_ICON."</a>
+			<h4 style='margin-bottom:3px'><a href='".e_SELF."?mode=".$key."' title=\"".$val['label']."\">".$val['label']."</a></h4><small>".$val['diz']."</small>
+			</div>";
+			/*
 			$text .= "<tr>
 						<td>".$val['diz']."</td>
 						<td>
-						<a href='".e_SELF."?mode=".$key."' title=\"".$val['label']."\">".ADMIN_EXECUTE_ICON."</a>
+						<a class='btn btn-large' href='".e_SELF."?mode=".$key."' title=\"".$val['label']."\">".ADMIN_EXECUTE_ICON."</a>
 							".
 					//		$frm->submit_image('db_execute['.$key.']', '1', 'execute', $val['label']).
 						//	$frm->radio('db_execute', $key).$frm->label($val['label'], 'db_execute', $key).
 							"
 						</td>
 					</tr>\n";
-
+			*/
 		}
-
+/*
 		$text .= "
 
 				</tbody>
@@ -514,7 +523,7 @@ class system_tools
 			</fieldset>
 		</form>
 		";
-
+*/
 		e107::getRender()->tablerender(DBLAN_10, $mes->render().$text);
 	}
 
