@@ -2403,25 +2403,41 @@ class e_parser
  
     
 	/**
-	 * Return an Array of all tags found in an HTML document. 
-	 * XXX Working on it currently. 
+	 * Return an Array of all specific tags found in an HTML document and their attributes.  
+	 * @param $html - raw html code
+	 * @param $taglist - comma separated list of tags to search or '*' for all. 
+	 * @param $header - if the $html includes the <html> <head> or <body> tags - it should be set to true. 
 	 */
-	public function getTag($html, $tags)
+	public function getTags($html, $taglist='*', $header = false)
 	{
-		$doc = $this->domObj;   
-        
-        $doc->loadHTML($html); 	
-			
-		$html = "<html><body>".$html."</body></html>";
-        $doc = new DOMDocument();     
-        $doc->loadHTML($html);
-
-        $tmp = $doc->getElementsByTagName($tag);
 		
-		foreach($tmp as $k=>$tg)
+		if($header == false)
 		{
-			 $ret[$tag] = (string) $tg->getAttribute($att);  	
+			$html = "<html><body>".$html."</body></html>";	
+		}	
+		
+		$doc = $this->domObj;   
+		       
+        $doc->loadHTML($html); 	
+	
+		$tg = explode(",", $taglist);
+		$ret = array();
+		
+		foreach($tg as $find)
+		{
+	        $tmp = $doc->getElementsByTagName($find);
 			
+			foreach($tmp as $k=>$node)
+			{
+				$tag = $node->nodeName;
+				
+				foreach ($node->attributes as $attr)
+	            {
+					$name = $attr->nodeName;
+	           		$value = $attr->nodeValue; 
+					$ret[$tag][$k][$name] = $value; 
+				}	
+			}
 		}
 		
 		return $ret;

@@ -268,6 +268,11 @@ class e_file
 	function get_file_info($path_to_file, $imgcheck = true)
 	{
 		$finfo = array();
+		
+		if(filesize($path_to_file) < 2) // Don't try and read 0 byte files. 
+		{
+			return false; 	
+		}
 
 		if($imgcheck && ($tmp = getimagesize($path_to_file)))
 		{
@@ -300,8 +305,11 @@ class e_file
         $fp = fopen($path.$local_file, 'w'); // media-directory is the root. 
        
         $cp = curl_init($remote_url);
-        curl_setopt($cp, CURLOPT_FILE, $fp);
-       
+		curl_setopt($cp, CURLOPT_FILE, $fp);
+		curl_setopt($cp, CURLOPT_HEADER, 0);
+		curl_setopt($cp, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"); 
+		curl_setopt($cp, CURLOPT_COOKIEFILE, e_SYSTEM.'cookies.txt');
+
         $buffer = curl_exec($cp);
        
         curl_close($cp);
