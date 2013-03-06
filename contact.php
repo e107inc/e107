@@ -62,7 +62,7 @@ if(isset($_POST['send-contactus']))
     }
 
 // Check subject line.
-	if(strlen(trim($_POST['subject'])) < 2)
+	if(varset($_POST['subject']) && strlen(trim($_POST['subject'])) < 2)
 	{
 		$error .= LANCONTACT_13."\\n";
     }
