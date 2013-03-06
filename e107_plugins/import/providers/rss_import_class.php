@@ -39,18 +39,25 @@ class rss_import extends base_import_class
 	var $feedUrl			= null;
 	var $defaultClass 		= false;
 	
-	
-	
-	
+
 	function init()
 	{
-		$this->feedUrl	= vartrue($_POST['rss_feed'],false);
+		$this->feedUrl		= vartrue($_POST['rss_feed'],false);
+		$this->saveImages	= vartrue($_POST['rss_saveimages'],false);
 	}
+	
+	
 	
 	function config()
 	{
+		$frm = e107::getForm();
+		
 		$var[0]['caption']	= "Feed URL";
 		$var[0]['html'] 	= "<input class='tbox span7' type='text' name='rss_feed' size='180' value='{$_POST['rss_feed']}' maxlength='250' />";
+
+		$var[1]['caption']	= "Save Images Locally";
+		$var[1]['html'] 	= $frm->checkbox('rss_saveimages',1);
+
 
 		return $var;
 	}
@@ -291,6 +298,54 @@ class rss_import extends base_import_class
 		$tp = e107::getParser();
 		$search = array();
 		$replace = array();
+		$fl = e107::getFile();
+
+
+		$result = $tp->getTags($body, 'img');
+			
+		if($result)
+		{
+			$relPath = 'images/'. substr(md5($this->feedUrl),0,10);
+		
+			if(!is_dir(e_MEDIA.$relPath))
+			{
+				mkdir(e_MEDIA.$relPath,'0755');	
+			}
+		
+			foreach($result['img'] as $att)
+			{
+				$filename = basename($att['src']);
+
+				if(file_exists(e_MEDIA.$relPath."/".$filename))
+				{
+					continue;
+				}
+					
+				$fl->getRemoteFile($att['src'], $relPath."/".$filename, 'media');
+
+				if(filesize(e_MEDIA.$relPath."/".$filename) > 0)
+				{
+					$search[] = $att['src'];
+					$replace[] = $tp->createConstants(e_MEDIA.$relPath."/".$filename,1);	
+				}
+			}	
+		
+		}
+		else
+		{
+			$mes->addDebug("No Images Found: ".print_a($result,true));
+		}
+		
+		if(count($search))
+		{
+			$mes->addDebug("Found: ".print_a($search,true));
+			$mes->addDebug("Replaced: ".print_a($replace,true));
+			$med->import($cat,e_MEDIA.$relPath);	
+		}
+		
+		return str_replace($search,$replace,$body);
+		
+		
 		
 		
 	//	echo htmlentities($body);
@@ -299,7 +354,7 @@ class rss_import extends base_import_class
 			
 		if(is_array($matches[0]))
 		{
-			$relPath = 'images/'.md5($this->feedUrl);
+			$relPath = 'images/'. substr(md5($this->feedUrl),0,10);
 			
 			if(!is_dir(e_MEDIA.$relPath))
 			{
@@ -315,7 +370,7 @@ class rss_import extends base_import_class
 					continue;
 				}
 				
-				$fl->getRemoteFile($link,$relPath."/".$filename,'media');
+				$fl->getRemoteFile($link,$relPath."/".$filename, 'media');
 				
 				$search[] = $link;
 				$replace[] = $tp->createConstants(e_MEDIA.$relPath."/".$filename,1);

@@ -493,7 +493,7 @@ class import_main_ui extends e_admin_ui
 			<td >$importType ".LAN_CONVERT_24."</td>
 			<td >";
 	
-			$defCheck = (count($proObj->supported==1)) ? true : false;
+			$defCheck = (count($proObj->supported)==1) ? true : false;
 	   	  	foreach ($this->importTables as $k => $v)
 		  	{
 				if(in_array($k, $proObj->supported)) // display only the options supported.
