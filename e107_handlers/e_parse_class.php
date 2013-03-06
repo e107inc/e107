@@ -2402,6 +2402,34 @@ class e_parser
     } 
  
     
+	/**
+	 * Return an Array of all tags found in an HTML document. 
+	 * XXX Working on it currently. 
+	 */
+	public function getTag($html, $tags)
+	{
+		$doc = $this->domObj;   
+        
+        $doc->loadHTML($html); 	
+			
+		$html = "<html><body>".$html."</body></html>";
+        $doc = new DOMDocument();     
+        $doc->loadHTML($html);
+
+        $tmp = $doc->getElementsByTagName($tag);
+		
+		foreach($tmp as $k=>$tg)
+		{
+			 $ret[$tag] = (string) $tg->getAttribute($att);  	
+			
+		}
+		
+		return $ret;
+	}
+	
+	
+	
+	
     /**
      * Perform and render XSS Test Comparison
      */
@@ -2459,30 +2487,50 @@ class e_parser
      * @param $html raw HTML
      * TODO Html5 tag support. 
      */
-    public function cleanHtml($html='',$root='*')
+    public function cleanHtml($html='')
     {
         if(!vartrue($html)){ return; }
         
    //     $html = mb_convert_encoding($html, 'UTF-8');     
         
-       	$html = '<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html><html><head><meta charset="utf-8"></head><body>'.$html.'</body></html>'; 
-		
+        if(preg_match("/<body/i",$html)!==true) // HTML Fragment
+		{
+       		$html = '<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html><html><head><meta charset="utf-8"></head><body>'.$html.'</body></html>'; 
+		}
+		else  // Full HTML page. 
+		{
+		//	$this->allowedTags[] = 'head';
+		//	$this->allowedTags[] = 'body';
+		//	$this->allowedTags[] = 'title';
+			//$this->allowedTags[] = 'meta';
+		}
          
+		if(!is_object($this->domObj))
+		{
+			$this->init();	
+		}
+		 
         // Set it up for processing. 
         $doc  = $this->domObj;   
         
-        $doc->loadHTML($html); 
+        @$doc->loadHTML($html); 
         $doc->encoding = 'UTF-8'; //FIXME 
      //   $doc->resolveExternals = true;
         
     //    $tmp = $doc->getElementsByTagName('*');   
+    
+       	$this->nodesToConvert 	= array(); // required. 
+		$this->nodesToDelete 	= array(); // required. 
+		$this->removedList		= array();
 
-		$tmp = $doc->getElementsByTagName($root);   
-
+		$tmp = $doc->getElementsByTagName('*');   
+		
         foreach($tmp as $node)
         {
     
             $path = $node->getNodePath();
+			
+		//	echo "<br />Path = ".$path;
          //   $tag = strval(basename($path));
             
             $tag = preg_replace('/([a-z0-9\[\]\/]*)?\/([\w]*)(\[(\d)*\])?$/i', "$2", $path);
