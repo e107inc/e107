@@ -260,7 +260,19 @@ if (!function_exists('asortbyindex'))
     }
 }
 
-if (!function_exists('multiarray_sort')) {
+if (!function_exists('multiarray_sort')) 
+{
+	
+	
+	/**
+	 * Sort a Multi-Dimensional array
+	 * @param $array
+	 * @param $key
+	 * @param $order
+	 * @param $natsort
+	 * @param $case
+	 * @return sorted array. 
+	 */
     function multiarray_sort(&$array, $key, $order = 'asc', $natsort = true, $case = true)
     {
         if(!is_array($array)) return $array;
@@ -281,6 +293,7 @@ if (!function_exists('multiarray_sort')) {
              if($order != 'asc') $sort_values = array_reverse($sort_values, true);
         }
         
+
         if(!isset($sort_values))
         {
             return;             
@@ -290,7 +303,8 @@ if (!function_exists('multiarray_sort')) {
 
         while (list ($arr_key, $arr_val) = each ($sort_values))
         {
-             $sorted_arr[] = $array[$arr_key];
+ 			$key = is_numeric($arr_key) ? "" : $arr_key; // retain assoc-array keys. 
+ 			$sorted_arr[$key] = $array[$arr_key];
         }
         return $sorted_arr;
     }
