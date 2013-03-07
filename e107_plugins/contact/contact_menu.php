@@ -2,6 +2,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+e107::lan('core','contact');
+
 $head = '<form id="contact-menu" action="'.e_BASE.'contact.php" method="post" >';
 
 
