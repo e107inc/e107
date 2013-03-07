@@ -16,15 +16,10 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
-define('e_MINIMAL',true);
+//define('e_MINIMAL',true);
 require_once("../../class2.php");
-if (!getperms("P")) 
-{
-	header("location:".e_BASE."index.php");
-	exit;
-}
 
-
+e107::lan('faqs', 'admin');
 
 class faq_admin extends e_admin_dispatcher
 {
