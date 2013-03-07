@@ -8,12 +8,12 @@
 
 define("CUSLAN_9", 	"Text");
 define("CUSLAN_11", "Meta description");
-define("CUSLAN_12", "Create page");
+define("CUSLAN_12", "Create Page/Menu");
 define("CUSLAN_29", "List pages if no page selected");
 define("CUSLAN_30", "Expiry time for cookie (in seconds)");
 define("CUSLAN_31", "Create menu");
-define('CUSLAN_48', "Pages");
-define('CUSLAN_49', "Menus");
+define('CUSLAN_48', "Page List");
+define('CUSLAN_49', "Menu List");
 
 // define("CUSLAN_1", "Title");
 // define("CUSLAN_2", "Type");
