@@ -1930,7 +1930,7 @@ class e107
 		{
 			return self::getCoreTemplate($id, $key, $override, $merge, $info);
 		}
-		if(null == $id) // loads {$plug_name}/templates/{$plug_name}_template.php and an array ${PLUG_NAME}_TEMPLATE
+		if(null == $id || true === $id) // loads {$plug_name}/templates/{$plug_name}_template.php and an array ${PLUG_NAME}_TEMPLATE
 		{
 			$id = $plug_name;
 		}
