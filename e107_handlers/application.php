@@ -2739,6 +2739,7 @@ class eController
 	public function dispatch($actionMethodName)
 	{
 		$request = $this->getRequest();
+		$content = '';
 		
 		// init() could modify the dispatch status
 		if($request->isDispatched())
@@ -2750,7 +2751,10 @@ class eController
 				if($request->isDispatched())
 				{
 					$request->populateRequestParams();
-					$this->$actionMethodName();
+					
+					// allow return output
+					$content = $this->$actionMethodName();
+					if(!empty($content)) $this->addBody($content);
 					
 					if($request->isDispatched())
 					{
