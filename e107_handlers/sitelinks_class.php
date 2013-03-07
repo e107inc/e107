@@ -1072,7 +1072,8 @@ class e_navigation
 			
 			if (isset($e107_vars[$act]['divider'])) 
 			{
-			 	$text .= "<li class='divider'></li>";	 //TODO add to Template. 
+			 //	$text .= "<li class='divider'></li>";	
+			 	$text .= $tmpl['divider'];
 				continue;	
 			}
 			

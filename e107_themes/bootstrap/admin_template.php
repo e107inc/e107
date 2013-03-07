@@ -380,6 +380,9 @@ $E_ADMIN_MENU['end'] = '
 </ul>
 ';
 
+$E_ADMIN_MENU['divider'] = '<li class="divider"></li>'; 
+
+
 /* NEW ADMIN SLIDE DOWN MENU TEMPLATE
  * see function admin_navigation() in e107_files/shortcodes/admin_navigation.php
  * TODO move it together with menu.css/menu.js to the theme templates/e107_files folder (default menu render)
