@@ -27,7 +27,8 @@ e107::coreLan('footer', true);
 // DEPRECATED - plugins should load their lans manually
 // plugin autoload, will be removed in the future! 
 // here mostly because of BC reasons
-if(!deftrue('e_MINIMAL'))
+//if(!deftrue('e_MINIMAL'))
+if(!deftrue('e_ADMIN_UI'))
 {
 
 	$_plugins = e107::getPref('plug_installed');
