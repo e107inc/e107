@@ -57,11 +57,13 @@ class page_admin extends e_admin_dispatcher
 	
 	protected $adminMenu = array(
 		'page/list'		=> array('caption'=> CUSLAN_48, 'perm' => '5'),
+		'menu/list'		=> array('caption'=> CUSLAN_49, 'perm' => 'J', 'tab' => 2),	
 		'page/create' 	=> array('caption'=> CUSLAN_12, 'perm' => '5'),
+		'other' 		=> array('divider'=> true),
 		'cat/list' 		=> array('caption'=> "List Books/Chapters", 'perm' => '5'), // Create Category. 
 		'cat/create' 	=> array('caption'=> "Add Book/Chapter", 'perm' => '5'), // Category List
-		'divider' 		=> true, 
-		'menu/list'		=> array('caption'=> CUSLAN_49, 'perm' => 'J', 'tab' => 2),	
+		'other2' 		=> array('divider'=> true),
+	
 	//	'menu/create' 	=> array('caption'=> CUSLAN_31, 'perm' => 'J', 'tab' => 2),
 		'page/prefs'	=> array('caption'=> LAN_OPTIONS, 'perm' => '0')		
 	);
@@ -72,7 +74,7 @@ class page_admin extends e_admin_dispatcher
 		'menu/edit'		=> 'menu/create'				
 	);	
 	
-	protected $menuTitle = 'Custom Pages';
+	protected $menuTitle = ADLAN_42;
 }
 
 class page_admin_form_ui extends e_admin_form_ui
