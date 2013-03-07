@@ -1372,31 +1372,31 @@ class e_form
 			case 'edit':
 				$image = ADMIN_EDIT_ICON_PATH;
 				$icon = "e-edit-32";
-				$options['class'] = $options['class'] == 'action' ? 'action edit' : $options['class'];
+				$options['class'] = $options['class'] == 'action' ? 'btn action edit' : $options['class'];
 			break;
 
 			case 'delete':
 				$image = ADMIN_DELETE_ICON_PATH;
 				$icon = "e-delete-32";
-				$options['class'] = $options['class'] == 'action' ? 'action delete' : $options['class'];
+				$options['class'] = $options['class'] == 'action' ? 'btn action delete' : $options['class'];
 				$options['other'] = 'data-confirm="'.LAN_JSCONFIRM.'"';
 			break;
 
 			case 'execute':
 				$image = ADMIN_EXECUTE_ICON_PATH;
 				$icon = "e-execute-32";
-				$options['class'] = $options['class'] == 'action' ? 'action execute' : $options['class'];
+				$options['class'] = $options['class'] == 'action' ? 'btn action execute' : $options['class'];
 			break;
 
 			case 'view':
 				$image = ADMIN_VIEW_ICON_PATH;
 				$icon = "e-view-32";
-				$options['class'] = $options['class'] == 'action' ? 'action view' : $options['class'];
+				$options['class'] = $options['class'] == 'action' ? 'btn action view' : $options['class'];
 			break;
 		}
 		$options['title'] = $title;//shorthand
 		
-		return  "<button type='submit' class='btn' data-toggle='tooltip' name='{$name}' data-placement='left' value='{$value}'".$this->get_attributes($options, $name, $value)."  ><i class='S32 {$icon}'></i></button>";
+		return  "<button type='submit' name='{$name}' data-placement='left' value='{$value}'".$this->get_attributes($options, $name, $value)."  ><i class='S32 {$icon}'></i></button>";
 
 	//	return "<input class='e-tip S16 {$icon} btn btn-large' data-placement='left' type='image' src='{$image}' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
 	}
