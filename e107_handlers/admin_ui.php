@@ -996,6 +996,17 @@ class e_admin_dispatcher
 	 * @var array
 	 */
 	protected $adminMenu = array();
+	
+
+	/**
+	 * Optional (set by child class).
+	 * Page titles for pages not in adminMenu (e.g. main/edit)
+	 * Format array(mod/action => Page Title)
+	 * @var string
+	 */
+	protected $pageTitles = array(
+		'main/edit' => LAN_MANAGE,
+	);
 
 	/**
 	 * Optional (set by child class).
@@ -1151,6 +1162,15 @@ class e_admin_dispatcher
 	public function getMenuData()
 	{
 		return $this->adminMenu;
+	}
+	
+	/**
+	 * Get admin menu array
+	 * @return array
+	 */
+	public function getPageTitles()
+	{
+		return $this->pageTitles;
 	}
 
 	/**
@@ -1796,11 +1816,15 @@ class e_admin_controller
 		if(true === $title)
 		{
 			$_dispatcher = $this->getDispatcher();
-			$data = $_dispatcher->getMenuData();
+			$data = $_dispatcher->getPageTitles();
 			$search = $this->getMode().'/'.$this->getAction();
-			if(isset($data[$search])) $res = $data[$search];
-			else return $this;
-			
+			if(isset($data[$search])) $res['caption'] = $data[$search];
+			else 
+			{
+				$data = $_dispatcher->getMenuData();
+				if(isset($data[$search])) $res = $data[$search];
+				else return $this;
+			}
 			$title = $res['caption'];
 		}
 		$this->getResponse()->appendTitle($title);
