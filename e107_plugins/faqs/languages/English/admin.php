@@ -5,8 +5,13 @@
 *
 * 'FAQ plugin' admin-area language definitions
 */
-//TODO 
+ 
 
-
-
-?>
+define('LANA_FAQ_CREATE_ITEM', 'Create FAQ');
+define('LANA_FAQ_CATEGORIES', 'Categories');
+define('LANA_FAQ_CREATE_CATEGORY', 'Create Category');
+define('LANA_FAQ_QUESTION', 'Question');
+define('LANA_FAQ_ANSWER', 'Answer');
+define('LANA_FAQ_COMMENT', 'Comment');
+define('LANA_FAQ_UNAME', 'User name');
+define('LANA_FAQ_ULOGINNAME', 'User login');
