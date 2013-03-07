@@ -984,7 +984,7 @@ function update_706_to_800($type='')
 			return update_needed("Pages/Menus Table requires updating.");	
 		}
 		
-		if($sql->update('page',"menu_title = page_title, menu_text = page_text WHERE menu_title = '' AND menu_text = '' "))
+		if($sql->update('page',"menu_title = page_title, menu_text = page_text, menu_template='default' WHERE menu_title = '' AND menu_text = '' "))
 		{
 			$mes->addDebug("Successfully updated pages/menus table to new format. ");
 		}
