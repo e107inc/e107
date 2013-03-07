@@ -5255,7 +5255,7 @@ class e_admin_form_ui extends e_form
 					cont.css({ opacity: 1 });
 				});
 			};
-			\$('#searchquery').keyup(searchQueryHandler);
+			\$('#searchquery').on('keyup', searchQueryHandler);
 		", 'jquery');
 
 		return $text;
