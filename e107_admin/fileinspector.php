@@ -57,13 +57,16 @@ if(isset($_GET['scan']))
 
 	
 
-	 echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
-	 <html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en'> 
+	 echo "<!DOCTYPE html>
+	 <html> 
 	 <head>  	
 	 <title>Results</title>  
 	 ".$fi->headerCss()." ".headerjs()."
-	 <body style='background-color:white'>\n";
-	 
+	 <body style='background-color:#EEEEEE'>\n";
+
+//	define('e_IFRAME', true);
+//	require_once(e_ADMIN."auth.php");
+		 
 	 
 	
 	 
@@ -84,6 +87,7 @@ if(isset($_GET['scan']))
 		$fi->scan_results();	
 	}
 	
+//	require_once(e_ADMIN."footer.php");
 	
 	echo "</body></html>";
 	
@@ -96,12 +100,23 @@ else
 	require_once(e_ADMIN.'auth.php');
 	
 	
-	if (e_QUERY) {
+//	if (e_QUERY) {
 	// $fi -> snapshot_interface();
-	} else if (isset($_POST['scan'])) {
+	//}
+
+	if (varset($_POST['scan'])) 
+	{
 		 $fi->exploit_interface();
 		 $fi->scan_config();
-	} else {
+	} 
+	elseif($_GET['mode'] == 'run')
+	{
+		$mes = e107::getMessage();
+		$mes->addInfo("You need to run a scan first!");	
+		echo $mes->render();
+	}
+	else 
+	{
 		$fi->scan_config();
 	}
 }
@@ -170,24 +185,39 @@ class file_inspector {
 		$frm = e107::getForm();
 		$ns = e107::getRender();
 		
+		if($_GET['mode'] == 'run')
+		{
+			return;	
+		}
+		
 
 		$text = "<div style='text-align: center'>
-		<form action='".e_SELF."' method='post' id='scanform'>
-		<table class='table adminform'>
+		<form action='".e_SELF."?mode=run' method='post' id='scanform'>
+		<table class='table table-striped adminform'>
 		<tr>
 		<td class='fcaption' colspan='2'>".FC_LAN_2."</td>
 		</tr>";
+		
+		$coreOpts = array('full'=>FC_LAN_6, 'all'=>FC_LAN_4, 'none'=> FC_LAN_12);
 		
 		$text .= "<tr>
 		<td style='width: 35%'>
 		".FC_LAN_3." ".FC_LAN_5.":
 		</td>
-		<td colspan='2' style='width: 65%'>
-		<input type='radio' name='core' value='all'".(($_POST['core'] == 'all' || !isset($_POST['core'])) ? " checked='checked'" : "")." /> ".FC_LAN_4."&nbsp;&nbsp;
-		<input type='radio' name='core' value='fail'".($_POST['core'] == 'fail' ? " checked='checked'" : "")." /> ".FC_LAN_6."&nbsp;&nbsp;
-		<input type='radio' name='core' value='none'".($_POST['core'] == 'none' ? " checked='checked'" : "")." /> ".FC_LAN_12."&nbsp;&nbsp;
+		<td colspan='2' style='width: 65%'>".$frm->selectbox('core',$coreOpts,$_POST['core'])."	</td>
+		</tr>";
+		
+		
+		$dispOpt = array('tree'=>FC_LAN_15, 'list'=>FC_LAN_16);	
+		$text .= "<tr>
+		<td style='width: 35%'>
+		".FC_LAN_14.":
+		</td>
+		<td colspan='2' style='width: 65%'>".$frm->selectbox('type', $dispOpt, $_POST['type'])."	</td>
 		</td>
 		</tr>";
+		
+		
 		
 		$text .= "<tr>
 		<td style='width: 35%'>
@@ -233,16 +263,7 @@ class file_inspector {
 		<input type='radio' name='integrity' value='0'".($_POST['integrity'] == '0' ? " checked='checked'" : "")." /> ".FC_LAN_10."&nbsp;&nbsp;
 		</td></tr>";
 		
-		
-		$text .= "<tr>
-		<td style='width: 35%'>
-		".FC_LAN_14.":
-		</td>
-		<td colspan='2' style='width: 65%'>
-		<input type='radio' name='type' value='tree'".(($_POST['type'] == 'tree' || !isset($_POST['type'])) ? " checked='checked'" : "")." /> ".FC_LAN_15."&nbsp;&nbsp;
-		<input type='radio' name='type' value='list'".($_POST['type'] == 'list' ? " checked='checked'" : "")." /> ".FC_LAN_16."&nbsp;&nbsp;
-		</td>
-		</tr>";
+	
 		
 
 		
@@ -693,20 +714,20 @@ class file_inspector {
 			<td class='fcaption' colspan='2'>".FR_LAN_2."</td>
 			</tr>";
 
-			$text .= "<tr style='display: none'><td style='width:50%'></td><td style='width:50%'></td></tr>";
+			$text .= "<tr style='display: none'><td style='width:60%'></td><td style='width:40%'></td></tr>";
 		
 			$text .= "<tr>
-			<td style='width:50%'>
-			<div style='height: 400px; overflow: auto'>
+			<td style='width:60%;padding:0px'>
+			<div style='height: 400px; width:101%; overflow: auto'>
 			".$scan_text."
 			</div>
 			</td>
-			<td style='width:50%; vertical-align: top'><div style='height: 400px; overflow: auto'>";
+			<td style='width:40%; vertical-align: top'><div style='height: 400px; overflow: auto'>";
 		} 
 		else 
 		{
 			$text = "<div style='text-align:center'>
-			<table class='table adminlist'>
+			<table class='table table-striped adminlist'>
 			<tr>
 			<td class='fcaption' colspan='2'>".FR_LAN_2."</td>
 			</tr>";
@@ -715,24 +736,23 @@ class file_inspector {
 			<td colspan='2'>";
 		}
 
-		$text .= "<table class='t table adminlist' id='initial'>";
+		$text .= "<table class='table-striped table adminlist' id='initial'>";
 		
 		if ($_POST['type'] == 'tree') 
 		{
-			$text .= "<tr><td class='f' style='padding-left: 4px'>
-			<img src='".e_IMAGE."fileinspector/fileinspector.png' class='i' alt='' />&nbsp;<b>".FR_LAN_3."</b></td>
-			<td class='s' style='text-align: right; padding-right: 4px' onclick=\"sh('f_".dechex(crc32($this -> root_dir))."')\">
-			<img src='".e_IMAGE."fileinspector/forward.png' class='i' alt='' /></td></tr>";
+			$text .= "<tr><th class='f' >".FR_LAN_3."</th>
+			<th class='s' style='text-align: right; padding-right: 4px' onclick=\"sh('f_".dechex(crc32($this -> root_dir))."')\">
+			<b class='caret'></b></th></tr>";
 		} 
 		else 
 		{
-			$text .= "<tr><td class='f' style='padding-left: 4px' colspan='2'>
-			<img src='".e_IMAGE."fileinspector/fileinspector.png' class='i' alt='' />&nbsp;<b>".FR_LAN_3."</b></td>
-			</tr>";
+			$text .= "<tr><th class='f' colspan='2'>".FR_LAN_3."</th></tr>";
 		}
 
-		if ($_POST['core'] != 'none') {
-			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_core.png' class='i' alt='' />&nbsp;".FR_LAN_4.":&nbsp;".($this -> count['core']['num'] ? $this -> count['core']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['core']['size'], 2)."</td></tr>";
+		if ($_POST['core'] != 'none') 
+		{
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_core.png' class='i' alt='' />&nbsp;".FR_LAN_4.":&nbsp;".($this -> count['core']['num'] ? $this -> count['core']['num'] : FR_LAN_21)."&nbsp;</td>
+			<td class='s'>".$this -> parsesize($this -> count['core']['size'], 2)."</td></tr>";
 		}
 		if ($_POST['missing']) {
 			$text .= "<tr><td class='f' colspan='2'><img src='".e_IMAGE."fileinspector/file_missing.png' class='i' alt='' />&nbsp;".FR_LAN_22.":&nbsp;".($this -> count['missing']['num'] ? $this -> count['missing']['num'] : FR_LAN_21)."&nbsp;</td></tr>";
@@ -763,8 +783,7 @@ class file_inspector {
 			$integrity_icon = $this -> count['fail']['num'] ? 'integrity_fail.png' : 'integrity_pass.png';
 			$integrity_text = $this -> count['fail']['num'] ? '( '.$this -> count['fail']['num'].' '.FR_LAN_19.' )' : '( '.FR_LAN_20.' )';
 			$text .= "<tr><td colspan='2'>&nbsp;</td></tr>";
-			$text .= "<tr><td class='f' style='padding-left: 4px' colspan='2'>
-			<img src='".e_IMAGE."fileinspector/".$integrity_icon."' class='i' alt='' />&nbsp;<b>".FR_LAN_7."</b> ".$integrity_text."</td></tr>";
+			$text .= "<tr><th class='f' colspan='2'>".FR_LAN_7." ".$integrity_text."</th></tr>";
 		
 			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_check.png' class='i' alt='' />&nbsp;".FR_LAN_8.":&nbsp;".($this -> count['pass']['num'] ? $this -> count['pass']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['pass']['size'], 2)."</td></tr>";
 			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_fail.png' class='i' alt='' />&nbsp;".FR_LAN_9.":&nbsp;".($this -> count['fail']['num'] ? $this -> count['fail']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['fail']['size'], 2)."</td></tr>";
@@ -803,7 +822,7 @@ class file_inspector {
 		{
 			$text .= "<br /></td></tr><tr>
 			<td colspan='2'>
-			<table class='t'>";
+			<table class='t table table-striped'>";
 			if (!$this -> results && $_POST['regex']) {
 				$text .= "<tr><td class='f' style='padding-left: 4px; text-align: center' colspan='2'>".FR_LAN_23."</td></tr>";
 			}
@@ -1029,7 +1048,10 @@ class file_inspector {
 			return;
 		}
 		
-		echo "<div style='display:block;position:absolute;top:20px;width:100%;'>
+		
+		
+		
+		echo "<div class='{$disp}' style='display:block;position:absolute;top:20px;width:100%;'>
 		<div style='width:700px;position:relative;margin-left:auto;margin-right:auto;text-align:center'>";
 		
 		$active = "active";
@@ -1039,10 +1061,11 @@ class file_inspector {
 			$inc = 100;
 			$active = "";
 		}
+
 		
 		
 		echo '<div class="progress progress-striped '.$active.'">
-    			<div class="bar" style="width: '.$inc.'%;"></div>
+    			<div class="bar" style="width: '.$inc.'%"></div>
    		 </div>';
 		
 	//	exit;
@@ -1053,12 +1076,12 @@ class file_inspector {
 		*/
 		
 		
-		echo "<div style='width:100%;background-color:white'>".$diz."</div>";
+		echo "<div style='width:100%;background-color:#EEEEEE'>".$diz."</div>";
 		
 		
 		if($total > 0)
 		{
-			echo "<div style='width:100%;background-color:white;text-align:center'>".$inc ."%</div>";	
+			echo "<div style='width:100%;background-color:#EEEEEE;text-align:center'>".$inc ."%</div>";	
 		}
 		
 		echo "</div>
@@ -1069,11 +1092,12 @@ class file_inspector {
 	
 	function exploit_interface()
 	{
-		global $ns;
+	//	global $ns;
+		$ns = e107::getRender();
 		
 		$query = http_build_query($_POST);
 		
-		$text = "<iframe src='".e_SELF."?$query' width='96%' style='margin-left:auto;margin-right:auto;margin:20px;width: 96%; height: 700px; border: 0px' frameborder='0' scrolling='auto' ></iframe>";
+		$text = "<iframe src='".e_SELF."?$query' width='96%' style='margin-left:0px;width: 96%; height: 100%; min-height: 800px; max-height:1100px; border: 0px' frameborder='0' scrolling='auto' ></iframe>";
 		 $ns -> tablerender(FR_LAN_1, $text);
 	}
 		
@@ -1162,6 +1186,17 @@ class file_inspector {
 	
 	
 	
+}
+
+function fileinspector_adminmenu() //FIXME - has problems when navigation is on the LEFT instead of the right. 
+{
+	$var['setup']['text'] = "Setup";
+	$var['setup']['link'] = e_SELF."?mode=setup";
+	
+	$var['run']['text'] = "Results";
+	$var['run']['link'] = e_SELF."?mode=run";
+
+	e107::getNav()->admin(FC_LAN_1, $_GET['mode'], $var);
 }
 
 require_once(e_ADMIN.'footer.php');
