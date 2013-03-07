@@ -30,10 +30,10 @@ class base_import_class
 	 * Connect to the external DB if not already connected
 	 */
 	function db_Connect($server, $user, $password, $database, $prefix)
-	{
+	{		
 		if ($this->ourDB == NULL)
 		{
-	  		$this->ourDB = new db;
+	  		$this->ourDB = e107::getDb('ourDB');
 	  		$result = $this->ourDB->db_Connect($server, $user, $password, $database);
 	  		$this->DBPrefix = $prefix;
 	  		if ($result)
