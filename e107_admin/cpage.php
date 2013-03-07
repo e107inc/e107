@@ -60,9 +60,9 @@ class page_admin extends e_admin_dispatcher
 		'page/create' 	=> array('caption'=> CUSLAN_12, 'perm' => '5'),
 		'cat/list' 		=> array('caption'=> "List Books/Chapters", 'perm' => '5'), // Create Category. 
 		'cat/create' 	=> array('caption'=> "Add Book/Chapter", 'perm' => '5'), // Category List
-		
+		'divider' 		=> true, 
 		'menu/list'		=> array('caption'=> CUSLAN_49, 'perm' => 'J', 'tab' => 2),	
-		'menu/create' 	=> array('caption'=> CUSLAN_31, 'perm' => 'J', 'tab' => 2),
+	//	'menu/create' 	=> array('caption'=> CUSLAN_31, 'perm' => 'J', 'tab' => 2),
 		'page/prefs'	=> array('caption'=> LAN_OPTIONS, 'perm' => '0')		
 	);
 	
