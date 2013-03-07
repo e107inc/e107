@@ -1048,6 +1048,7 @@ $columnInfo = array(
 			$sql = e107::getDb();
 			$tp = e107::getParser();
 			$fl = e107::getFile();
+			$mes = e107::getMessage();
 			
 		//	print_a($this);
 	
@@ -1096,7 +1097,8 @@ $columnInfo = array(
 	
 	      if (!$sql->db_Select("download_category"))
 	      {
-	         $ns->tablerender(ADLAN_24, "<div style='text-align:center'>".DOWLAN_5."</div>");
+	         //$ns->tablerender(ADLAN_24, "<div style='text-align:center'>".DOWLAN_5."</div>");
+	         $mes->addInfo(DOWLAN_5); 
 	         return;
 	      }
 	      $download_active = 1;
