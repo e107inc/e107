@@ -447,7 +447,7 @@ class e107plugin
 		{
 			if (vartrue($this->unInstallOpts['delete_ipool'], FALSE))
 			{
-				$status = ($med>removePath(e_PLUGIN.$plugin, 'icon')) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+				$status = ($med->removePath(e_PLUGIN.$plugin, 'icon')) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 				$mes->add('Removing Icons from Media-Manager', $status);
 			}
 			return;
