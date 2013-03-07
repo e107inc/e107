@@ -986,6 +986,7 @@ function update_706_to_800($type='')
 		
 		if($sql->update('page',"menu_title = page_title, menu_text = page_text, menu_template='default' WHERE menu_title = '' AND menu_text = '' "))
 		{
+			$mes = e107::getMessage();
 			$mes->addDebug("Successfully updated pages/menus table to new format. ");
 		}
 	
