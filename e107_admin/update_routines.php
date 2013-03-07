@@ -976,7 +976,24 @@ function update_706_to_800($type='')
 
 	//TODO - send notification messages to Log. 
 	
+
+	if($sql->gen("SELECT * FROM #page WHERE page_theme != '' AND menu_title = '' LIMIT 1"))
+	{
+		if ($just_check)
+		{
+			return update_needed("Pages/Menus Table requires updating.");	
+		}
+		
+		if($sql->update('page',"menu_title = page_title, menu_text = page_text WHERE menu_title = '' AND menu_text = '' "))
+		{
+			$mes->addDebug("Successfully updated pages/menus table to new format. ");
+		}
 	
+	}
+	
+	
+	
+		
 
 	
 	

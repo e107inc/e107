@@ -232,7 +232,17 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 	label.selection-row  						{ padding:6px ; cursor: pointer; width:90%}
 	
 	table.table tbody > tr >td 					{  }
-	table.table tbody > tr >td label 			{ padding:15px; display:block; cursor: pointer; font-size:14px ;  }
+	
+	
+	table.table tbody > tr > td label {
+    display: block;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 2em;
+    padding-left: 15px;
+}
+	
+	
 	table.table tbody > tr >td label > input	{ margin-right: 10px; float: left; }
 	
 	

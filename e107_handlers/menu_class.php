@@ -262,13 +262,33 @@ class e_menu
 			echo "\n<!-- Menu Start: ".$mname." -->\n";
 		}
 		e107::getDB()->db_Mark_Time($mname);
-		if(is_numeric($mpath))
+		
+		if(is_numeric($mpath)) // Custom Page/Menu 
 		{
-			$sql->db_Select("page", "*", "page_id=".intval($mpath)." ");
-			$page = $sql->db_Fetch();
+			$sql->select("page", "*", "page_id=".intval($mpath)." ");
+			$page = $sql->fetch();
+			
 			$caption = $e107->tp->toHTML($page['page_title'], true, 'parse_sc, constants');
-			$text = $e107->tp->toHTML($page['page_text'], true, 'parse_sc, constants');
+			
+			if(vartrue($page['menu_template'])) // New v2.x templates. see core/menu_template.php 
+			{
+				$template = e107::getCoreTemplate('menu',$page['menu_template']);	
+				$page_shortcodes = e107::getScBatch('page',null,'cpage');  
+				$page_shortcodes->page = $page;
+				  
+			// 	print_a($template['body']);           
+				$text = $tp->parseTemplate($template['body'], true, $page_shortcodes);
+			// 	echo "TEMPLATE= ($mpath)".$page['menu_template'];
+				
+			}
+			else 
+			{
+				
+				$text = $e107->tp->toHTML($page['page_text'], true, 'parse_sc, constants');
+			}
+			
 			e107::getRender()->tablerender($caption, $text);
+			
 		}
 		else
 		{

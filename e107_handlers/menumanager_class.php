@@ -850,6 +850,67 @@ class e_menuManager {
 
 	// =-----------------------------------------------------------------------------
 
+	
+	function renderOptionRow($row)
+	{
+		$sql    = e107::getDb();     
+		$tp     = e107::getParser(); 
+		$ns     = e107::getRender(); 
+		$frm 	= e107::getForm();
+		
+		
+		$text = "";
+		
+		$pdeta = "";
+	        $color = ($color == "white") ? "#DDDDDD" : "white";
+			if($row['menu_pages'] == "dbcustom")
+			{
+				$pdeta = MENLAN_42;
+			}
+			else
+			{
+				$row['menu_name'] = preg_replace("#_menu$#i", "", $row['menu_name']);
+	            if($pnum = $this->checkMenuPreset($menuPreset,$row['menu_name'].'_menu'))
+				{
+		        	$pdeta = MENLAN_39."  {$pnum}";
+				}
+			}
+
+	        if(!$this->dragDrop)
+			{
+				$menuInf = (!is_numeric($row['menu_path'])) ? ' ('.substr($row['menu_path'],0,-1).')' : " ( #".$row['menu_path']." )";
+	    	//	$menuInf = $row['menu_path'];
+	    		
+	    		$text .= "<tr style='background-color:$color;color:black'>
+				<td style='text-align:left; color:black;' class='checkbox'>";
+				
+				
+			//	$text .= "
+			////	<input type='checkbox' id='menuselect-{$row['menu_id']}' name='menuselect[]' value='{$row['menu_id']}' />
+			//	<label class='selection-row' for='menuselect-{$row['menu_id']}'>".$row['menu_name'].$menuInf."</label>";
+				
+				$text .= $frm->checkbox('menuselect[]',$row['menu_id'],'',array('label'=>$row['menu_name'].$menuInf));
+		
+				$text .= "
+				</td>
+				<td style='color:black'>&nbsp; ".$pdeta."&nbsp;</td>
+				</tr>\n";
+			}
+			else
+			{
+				// Menu Choices box. 
+	            $text .= "<div class='portlet block block-archive' id='block-".$row['menu_id']."' style='border:1px outset black;text-align:left;color:black'>";
+			 	$text .= $this->menuRenderMenu($row, $menu_count,true);
+	  			$text .= "</div>\n";
+			}	
+		
+		return $text;
+	}
+	
+	
+	
+	
+	
 
 	function menuRenderPage()
 	{
@@ -877,64 +938,55 @@ class e_menuManager {
 		<td style='width:50%;padding-bottom:4px;text-align:center'>...".MENLAN_37."</td></tr>";
 		$text .= "<tr><td  style='width:35%;vertical-align:top;text-align:center'>";
 
-	 	$sql->select("menus", "menu_name, menu_id, menu_pages, menu_path", "1 GROUP BY menu_name ORDER BY menu_name ASC");
+	 
+		
+
+
 
 		if(!$this->dragDrop)
 		{
 			$text .= "<div class='column' id='portal-column-block-list' style='border:1px inset black;height:250px;display:block;overflow:auto;margin-bottom:20px'>";
-			$text .= "<table class='table-striped core-menumanager-main' id='core-menumanager-main'  >
+			$text .= "<table class='table table-striped core-menumanager-main' id='core-menumanager-main'  >
 			<tbody>\n";
 
 		}
 		else
 		{
-        	$text .= "<div class='column' id='remove' style='border:1px solid silver'>\n";
+       // 	$text .= "<div class='column' id='remove' style='border:1px solid silver'>\n";
 		}
 
         $color = "";
+		
+		$pageMenu = array();
+		$pluginMenu = array();
+		
+		$sql->select("menus", "menu_name, menu_id, menu_pages, menu_path", "1 GROUP BY menu_name ORDER BY menu_name ASC");
 		while ($row = $sql->fetch())
 		{
-			$pdeta = "";
-	        $color = ($color == "white") ? "#DDDDDD" : "white";
-			if($row['menu_pages'] == "dbcustom")
+			if(is_numeric($row['menu_path']))
 			{
-				$pdeta = MENLAN_42;
+				$pageMenu[] = $row;	
 			}
-			else
+			else 
 			{
-				$row['menu_name'] = preg_replace("#_menu$#i", "", $row['menu_name']);
-	            if($pnum = $this->checkMenuPreset($menuPreset,$row['menu_name'].'_menu'))
-				{
-		        	$pdeta = MENLAN_39."  {$pnum}";
-				}
+				$pluginMenu[] = $row;	
 			}
-
-	        if(!$this->dragDrop)
-			{
-				$menuInf = (strlen($row['menu_path']) > 1) ? ' ('.substr($row['menu_path'],0,-1).')' : '';
-	    		$text .= "<tr style='background-color:$color;color:black'>
-				<td style='text-align:left; color:black;'>";
-				
-				
-			//	$text .= "
-			////	<input type='checkbox' id='menuselect-{$row['menu_id']}' name='menuselect[]' value='{$row['menu_id']}' />
-			//	<label class='selection-row' for='menuselect-{$row['menu_id']}'>".$row['menu_name'].$menuInf."</label>";
-				
-				$text .= $frm->checkbox('menuselect[]',$row['menu_id'],'',array('label'=>$row['menu_name'].$menuInf));
-		
-				$text .= "
-				</td>
-				<td style='color:black'>&nbsp; ".$pdeta."&nbsp;</td>
-				</tr>\n";
-			}
-			else
-			{
-				// Menu Choices box. 
-	            $text .= "<div class='portlet block block-archive' id='block-".$row['menu_id']."' style='border:1px outset black;text-align:left;color:black'>";
-			 	$text .= $this->menuRenderMenu($row, $menu_count,true);
-	  			$text .= "</div>\n";
-			}
+						
 		}
+
+		$text .= "<tr><th colspan='2'>Your Menus</th></tr>";
+
+		foreach($pageMenu as $row)
+		{	
+			$text .= $this->renderOptionRow($row);	
+		}
+		
+		$text .= "<tr><th colspan='2' >Plugin Menus</th></tr>";
+		foreach($pluginMenu as $row)
+		{	
+			$text .= $this->renderOptionRow($row);	
+		}
+
 		$text .= (!$this->dragDrop) ? "</tbody></table>" : "";
 		$text .= "</div>";
 

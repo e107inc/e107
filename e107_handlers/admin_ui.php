@@ -1464,8 +1464,11 @@ class e_admin_dispatcher
 
 					default:
 						$k2 = $k;
+						
 					break;
 				}
+
+				
 
 				// Access check done above
 				// if($val['perm']!= null) // check perms
@@ -1478,13 +1481,23 @@ class e_admin_dispatcher
 				// else
 				{
 					$var[$key][$k2] = $v;
+				
 				}
 
 			}
+		
+			
+			
 			// TODO slide down menu options?
 			if(!vartrue($var[$key]['link']))
 			{
 				$var[$key]['link'] = e_SELF.'?mode='.$tmp[0].'&amp;action='.$tmp[1]; // FIXME - URL based on $modes, remove url key
+			}
+
+				
+			if(varset($val['tab']))
+			{
+				$var[$key]['link'] .= "&amp;tab=".$val['tab'];	
 			}
 
 			/*$var[$key]['text'] = $val['caption'];
