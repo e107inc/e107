@@ -361,8 +361,8 @@ class page_admin_ui extends e_admin_ui
 		function init()
 		{
 			
-			// USED IN Menu LIST-MODE ONLY. 
-			if($this->getMode() == 'menu' && $this->getACtion() == 'list')
+			// USED IN Menu LIST/INLINE-EDIT MODE ONLY. 
+			if($this->getMode() == 'menu' && ($this->getACtion() == 'list' || $this->getACtion() == 'inline'))
 			{
 			
 				$this->listQry = "SELECT p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE p.page_theme != '' "; // without any Order or Limit.
