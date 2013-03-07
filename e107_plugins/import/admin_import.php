@@ -176,7 +176,7 @@ class import_main_ui extends e_admin_ui
 	function importPage()
 	{
 		
-		print_a($_POST);
+	//	print_a($_POST);
 	
 		
 		$this->deleteExisting = varset($_POST['import_delete_existing_data'],0);
