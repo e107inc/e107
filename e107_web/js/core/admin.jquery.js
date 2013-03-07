@@ -21,7 +21,13 @@ $(document).ready(function()
 		});
 		
 		$.fn.editable.defaults.mode = 'popup';
-		$('.e-editable').editable();
+		
+	
+		$('div.e-container').editable({
+			selector: '.e-editable'
+		});
+		
+//		$('.e-editable').editable();
 		
 		// Fix for boostrap modal cache. 
 		
