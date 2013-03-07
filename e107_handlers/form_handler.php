@@ -1578,7 +1578,7 @@ class e_form
 
 			if(substr($option,0,5) =='data-')
 			{
-				$ret .= " ".$option." = '{$optval}'";	
+				$ret .= " ".$option."='{$optval}'";	
 			}
 				
 		}
