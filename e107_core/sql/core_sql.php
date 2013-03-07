@@ -386,6 +386,12 @@ CREATE TABLE page (
   page_theme varchar(50) NOT NULL default '',
   page_template varchar(50) NOT NULL default '',
   page_order int(4) unsigned NOT NULL default '9999',
+  
+  menu_title varchar(50) NOT NULL default '',  
+  menu_text mediumtext NOT NULL,
+  menu_image varchar(250) NOT NULL default '',
+  menu_template varchar(50) NOT NULL default '',
+  
   PRIMARY KEY  (page_id)
 ) ENGINE=MyISAM;
 # --------------------------------------------------------

@@ -34,6 +34,7 @@ e-tabs fieldset 			{ padding:0px ; padding-left:3px; border-top:0px;}
 #tab-container table  		{ border-top:0px;}
 #tab-container td  			{ border-top:0px; border-bottom:1px solid rgb(221, 221, 221) }
 .tab-border 				{ border-left: 1px solid #ddd; }
+.tab-content 				{ overflow: visible }
 
 .core-mainpanel-block 		{ text-align:center; width:110px; float:left; height:48px; display:block; padding:20px 5px 20px 5px; margin: 0px 6px 30px 6px;  }
 .core-mainpanel-link-text 	{ text-decoration: none; display:block;  }

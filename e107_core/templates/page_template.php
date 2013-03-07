@@ -95,14 +95,7 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 	$PAGE_TEMPLATE['custom']['tableRender'] 	= '';
 	
 	
-#### Panel Template - Used by e107_plugins/page/page_menu.php 
-	$PAGE_TEMPLATE['panel']['start'] 			= ''; 
-	$PAGE_TEMPLATE['panel']['body'] 			= '{CPAGEBODY}'; 
-	$PAGE_TEMPLATE['panel']['authorize'] 		= '';
-	$PAGE_TEMPLATE['panel']['restricted'] 		= '';
-	$PAGE_TEMPLATE['panel']['end'] 				= ''; 
-	$PAGE_TEMPLATE['panel']['noTableRender'] 	= false;
-//	$PAGE_TEMPLATE['panel']['tableRender'] 		= '';	// needed?
+
 	
 	
 

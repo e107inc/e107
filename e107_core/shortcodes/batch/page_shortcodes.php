@@ -167,6 +167,39 @@ class cpage_shortcodes extends e_shortcode
 		}
 		return '<a class="cpage" href="'.$url.'">'.$this->sc_cpagetitle().'</a>';
 	}
+	
+	function sc_cpagebutton($parm)
+	{
+		$url = $this->sc_cpageurl();
+		
+		if($parm == 'href' || !$url)
+		{
+			return $url;
+		}
+		return '<a class="cpage btn btn-small" href="'.$url.'">Read More..</a>';
+	}	
+	
+	
+	function sc_cmenutitle($parm='')
+	{	
+		return e107::getParser()->toHTML($this->getParserVars()->menu_title, true, 'TITLE');
+	}	
+
+
+	function sc_cmenubody($parm='')
+	{
+		// print_a($this);
+		return e107::getParser()->toHTML($this->page['menu_text'], true, 'BODY');
+	}
+	
+	
+	function sc_cmenuimage($parm='')
+	{
+		// print_a($this);
+		$img = e107::getParser()->thumbUrl($this->page['menu_image']);
+		return "<img src='".$img."' alt='' />";
+	}	
+
 
 	function sc_cpageurl()
 	{
