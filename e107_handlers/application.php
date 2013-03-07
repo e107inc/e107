@@ -2925,8 +2925,8 @@ class eControllerFront extends eController
 	protected $access = array();
 	
 	/**
-	 * Per action access
-	 * Format 'action' => userclass
+	 * User input filter (_GET)
+	 * Format 'action' => array(var => validationArray)
 	 * @var array
 	 */
 	protected $filter = array();
