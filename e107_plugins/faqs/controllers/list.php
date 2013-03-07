@@ -18,8 +18,26 @@
  *	FAQ plugin list controller
  */
  
-class plugin_faqs_list_controller extends eController
+class plugin_faqs_list_controller extends eControllerFront
 {
+	/**
+	 * Plugin name - used to check if plugin is installed
+	 * Set this only if plugin requires installation
+	 * @var string
+	 */
+	protected $plugin = 'faqs';
+	
+	/**
+	 * User input filter (_GET)
+	 * Format 'action' => array(var => validationArray)
+	 * @var array
+	 */
+	protected $filter = array(
+		'all' => array(
+			'category' => array('int', '0:'),
+		),
+	);
+	
 	public function init()
 	{
 		e107::lan('faqs', 'front');
@@ -41,7 +59,17 @@ class plugin_faqs_list_controller extends eController
 		$FAQ_END = e107::getTemplate('faqs', true, 'end');
 		$FAQ_LISTALL = e107::getTemplate('faqs', true, 'all');
 
-		$query = "SELECT f.*,cat.* FROM #faqs AS f LEFT JOIN #faqs_info AS cat ON f.faq_parent = cat.faq_info_id WHERE cat.faq_info_class IN (".USERCLASS_LIST.") ORDER BY cat.faq_info_order,f.faq_order ";
+		// request parameter based on filter (int match in this case, see $this->filter[all][category]) - SAFE to be used in a query
+		$category = $this->getRequest()->getRequestParam('category');
+		$where = '';
+		if($category)
+		{
+			$where = " AND f.faq_parent={$category}";
+		}
+		$query = "
+			SELECT f.*,cat.* FROM #faqs AS f 
+			LEFT JOIN #faqs_info AS cat ON f.faq_parent = cat.faq_info_id 
+			WHERE cat.faq_info_class IN (".USERCLASS_LIST."){$where} ORDER BY cat.faq_info_order,f.faq_order ";
 		$sql->gen($query);
 		
 		$prevcat = "";
@@ -70,7 +98,7 @@ class plugin_faqs_list_controller extends eController
 		$text .= $tp->parseTemplate($FAQ_LISTALL['end'], true);
 		$text .= $tp->parseTemplate($FAQ_END, true);
 
-		$this->addTitle(FAQLAN_FAQ);
+		$this->addTitle(LAN_PLUGIN_FAQS_FRONT_NAME);
 		
 		$this->addBody($text);
 	}

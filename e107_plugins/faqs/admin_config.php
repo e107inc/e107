@@ -1,25 +1,24 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Copyright (C) 2008-2009 e107 Inc (e107.org)
-|     http://e107.org
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/faqs/admin_config.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
-*/
-//define('e_MINIMAL',true);
-require_once("../../class2.php");
+ * e107 website system
+ *
+ * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ */
 
-e107::lan('faqs', 'admin');
+/**
+ *
+ * @package     e107
+ * @subpackage  faqs
+ * @version     $Id$
+ * @author      e107inc
+ *
+ *	FAQ plugin admin UI
+ */
+
+require_once("../../class2.php");
 
 class faq_admin extends e_admin_dispatcher
 {
@@ -41,9 +40,9 @@ class faq_admin extends e_admin_dispatcher
 
 	protected $adminMenu = array(
 		'main/list'		=> array('caption'=> LAN_MANAGE, 'perm' => '0'),
-		'main/create'	=> array('caption'=> 'Create FAQ', 'perm' => '0'),
-		'cat/list' 		=> array('caption'=> 'Categories', 'perm' => '0'),
-		'cat/create' 	=> array('caption'=> "Create Category", 'perm' => '0'),
+		'main/create'	=> array('caption'=> LANA_FAQ_CREATE_ITEM, 'perm' => '0'),
+		'cat/list' 		=> array('caption'=> LANA_FAQ_CATEGORIES, 'perm' => '0'),
+		'cat/create' 	=> array('caption'=> LANA_FAQ_CREATE_CATEGORY, 'perm' => '0'),
 		'main/prefs' 	=> array('caption'=> LAN_PREFS, 'perm' => '0'),
 	//	'main/custom'	=> array('caption'=> 'Custom Page', 'perm' => '0')		
 	);
@@ -57,7 +56,7 @@ class faq_admin extends e_admin_dispatcher
 
 class faq_cat_ui extends e_admin_ui
 { 	 	 
-		protected $pluginTitle	= 'FAQs';
+		protected $pluginTitle	= LAN_PLUGIN_FAQS_NAME;
 		protected $pluginName	= 'plugin';
 		protected $table 		= "faqs_info";
 		protected $pid			= "faq_info_id";
@@ -183,14 +182,14 @@ class faq_main_ui extends e_admin_ui
     	protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'faq_id'				=> array('title'=> LAN_ID,			'tab' => 0, 'type' => 'int',			'width' =>'5%', 'forced'=> TRUE),
-         	'faq_question' 			=> array('title'=> "Question",		'tab' => 0, 'type' => 'text',			'width' => 'auto', 'thclass' => 'left first', 'required'=>TRUE, 'readParms'=>'editable=1'), 
-         	'faq_answer' 			=> array('title'=> "Answer",		'tab' => 0,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=1&truncate=50&bb=1'), 
+         	'faq_question' 			=> array('title'=> LANA_FAQ_QUESTION,		'tab' => 0, 'type' => 'text',			'width' => 'auto', 'thclass' => 'left first', 'required'=>TRUE, 'readParms'=>'editable=1'), 
+         	'faq_answer' 			=> array('title'=> LANA_FAQ_ANSWER,		'tab' => 0,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=1&truncate=50&bb=1'), 
 		 	'faq_parent' 			=> array('title'=> LAN_CATEGORY,	'tab' => 0,	'type' => 'dropdown',		'data'=> 'int', 'inline'=>true,'width' => '10%', 'filter'=>TRUE, 'batch'=>TRUE),		
-			'faq_comment' 			=> array('title'=> "Comment",		'tab' => 1, 'type' => 'userclass',		'data' => 'int',	'width' => 'auto', 'inline'=> true),	// User id
+			'faq_comment' 			=> array('title'=> LANA_FAQ_COMMENT,		'tab' => 1, 'type' => 'userclass',		'data' => 'int',	'width' => 'auto', 'inline'=> true),	// User id
 			'faq_datestamp' 		=> array('title'=> LAN_DATE,		'tab' => 1, 'type' => 'datestamp',		'data'=> 'int','width' => 'auto', 'noedit' => false,'writeParms'=>'auto=1'),	
             'faq_author' 			=> array('title'=> LAN_USER,		'tab' => 1, 'type' => 'user',			'data'=> 'int', 'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'writeParms' => 'currentInit=1', 'filter' => true, 'batch' => true, 'nolist' => true	),	 	// Photo
-       		'u.user_name' 			=> array('title'=> "User name",		'tab' => 1, 'type' => 'user',			'width' => 'auto', 'noedit' => true, 'readParms'=>'idField=faq_author&link=1'),	// User name
-       		'u.user_loginname' 		=> array('title'=> "User login",	'tab' => 1, 'type' => 'user',			'width' => 'auto', 'noedit' => true, 'readParms'=>'idField=faq_author&link=1'),	// User login name
+       		'u.user_name' 			=> array('title'=> LANA_FAQ_UNAME,		'tab' => 1, 'type' => 'user',			'width' => 'auto', 'noedit' => true, 'readParms'=>'idField=faq_author&link=1'),	// User name
+       		'u.user_loginname' 		=> array('title'=> LANA_FAQ_ULOGINNAME,	'tab' => 1, 'type' => 'user',			'width' => 'auto', 'noedit' => true, 'readParms'=>'idField=faq_author&link=1'),	// User login name
 			'faq_order' 			=> array('title'=> LAN_ORDER,		'tab' => 1, 'type' => 'number',			'data'=> 'int','width' => '5%', 'thclass' => 'center','nolist' => false, 'noedit'=>false, 'readParms'=>'editable=1'),	
 			'options' 				=> array('title'=> LAN_OPTIONS,				 	'type' => null,				'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center','readParms'=>'sort=1')
 		);
@@ -200,9 +199,9 @@ class faq_main_ui extends e_admin_ui
 		
 		// optional, if $pluginName == 'core', core prefs will be used, else e107::getPluginConfig($pluginName);
 		protected $prefs = array( 
-			'add_faq'	   				=> array('title'=> 'Allow submitting of FAQs by:', 'type'=>'userclass'),
-			'submit_question'	   		=> array('title'=> 'Allow submitting of Questions by:', 'type'=>'userclass'),		
-			'classic_look'				=> array('title'=> 'Use Classic Layout', 'type'=>'boolean')
+			'add_faq'	   				=> array('title'=> LANA_FAQ_PREF_1, 'type'=>'userclass', 'help' => 'Under construction'),
+			'submit_question'	   		=> array('title'=> LANA_FAQ_PREF_2, 'type'=>'userclass', 'help' => 'Under construction'),		
+			'classic_look'				=> array('title'=> LANA_FAQ_PREF_3, 'type'=>'boolean', 'help' => 'Under construction')
 		);
 
 	protected $categories = array();
@@ -308,4 +307,3 @@ e107::getAdminUI()->runPage();
 require_once(e_ADMIN."footer.php");
 exit;
 
-?>

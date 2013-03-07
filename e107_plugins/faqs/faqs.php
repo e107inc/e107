@@ -14,7 +14,13 @@
  * $Author$
  */
 
+ // SUBJECT OF REMOVAL
+ 
 require_once ("../../class2.php");
+
+$url = e107::getUrl()->create('faqs/list/all', false, 'full=1&noencode=1');
+header('Location: '.$url);
+exit;
 
 include_lan(e_PLUGIN."faqs/languages/".e_LANGUAGE."/".e_LANGUAGE."_front.php");
 
