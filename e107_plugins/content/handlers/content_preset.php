@@ -1,13 +1,16 @@
 <?php
 /* $Id$ */
-require_once("../../../class2.php");
-require_once(e_HANDLER."form_handler.php");
+require_once('../../../class2.php');
+require_once(e_HANDLER.'form_handler.php');
 $rs = new form;
 
 include_lan(e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content.php");
 include_lan(e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content_admin.php");
 
 $months = array(CONTENT_ADMIN_DATE_LAN_0, CONTENT_ADMIN_DATE_LAN_1, CONTENT_ADMIN_DATE_LAN_2, CONTENT_ADMIN_DATE_LAN_3, CONTENT_ADMIN_DATE_LAN_4, CONTENT_ADMIN_DATE_LAN_5, CONTENT_ADMIN_DATE_LAN_6, CONTENT_ADMIN_DATE_LAN_7, CONTENT_ADMIN_DATE_LAN_8, CONTENT_ADMIN_DATE_LAN_9, CONTENT_ADMIN_DATE_LAN_10, CONTENT_ADMIN_DATE_LAN_11);
+
+$text = '';
+$value = '';
 
 if(isset($_POST['addpreset']))
 {
@@ -17,7 +20,8 @@ if(isset($_POST['addpreset']))
 	}
 	else
 	{
-		$err = "";
+		$err = '';
+		$_POST['field'] = $tp->toDB($_POST['field']);
 		switch ($_POST['type'])
 		{
 			case 'text' :
@@ -27,7 +31,7 @@ if(isset($_POST['addpreset']))
 				}
 				else
 				{
-					$value = $_POST['field']."^".$_POST['type']."^".$_POST['text_size']."^".$_POST['text_maxsize'];
+					$value = $_POST['field'].'^text^'.intval($_POST['text_size'])."^".intval($_POST['text_maxsize']);
 				}
 				break;
 			case 'area' :
@@ -36,7 +40,7 @@ if(isset($_POST['addpreset']))
 				}
 				else
 				{
-					$value = $_POST['field']."^".$_POST['type']."^".$_POST['area_cols']."^".$_POST['area_rows'];
+					$value = $_POST['field'].'^area^'.intval($_POST['area_cols'])."^".intval($_POST['area_rows']);
 				}
 				break;
 			case 'select' :
@@ -47,7 +51,7 @@ if(isset($_POST['addpreset']))
 				}
 				else
 				{
-					$value = $_POST['field']."^".$_POST['type']."^".$options;
+					$value = $_POST['field'].'^select^'.$options;
 				}
 				break;
 			case 'date' :
@@ -57,7 +61,7 @@ if(isset($_POST['addpreset']))
 				}
 				else
 				{
-					$value = $_POST['field']."^".$_POST['type']."^".$_POST['date_year_from']."^".$_POST['date_year_to'];
+					$value = $_POST['field'].'^date^'.intval($_POST['date_year_from']).'^'.intval($_POST['date_year_to']);
 				}
 				break;
 			case 'checkbox' :
@@ -67,7 +71,7 @@ if(isset($_POST['addpreset']))
 				}
 				else
 				{
-					$value = $_POST['field']."^".$_POST['type']."^".$_POST['checkbox_value'];
+					$value = $_POST['field'].'^checkbox^'.$_POST['checkbox_value'];
 				}
 				break;
 			case 'radio' :
@@ -88,7 +92,7 @@ if(isset($_POST['addpreset']))
 							$radio .= $_POST['radio_text'][$i]."^".$_POST['radio_value'][$i]."^";
 						}
 						$radio = substr($radio,0,-1);
-						$value = $_POST['field']."^".$_POST['type']."^".$radio;
+						$value = $_POST['field'].'^radio^'.$radio;
 					}
 				}
 				break;
