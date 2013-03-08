@@ -993,14 +993,21 @@ class e_form
 			return $this->radio_multi($name, $value, $checked, $options); 		
 		}
 		
+		$labelFound = vartrue($options['label']);
+		unset($options['label']); // label attribute not valid in html5
+		
 		$options = $this->format_options('radio', $name, $options);
 		$options['checked'] = $checked; //comes as separate argument just for convenience
 		// $options['class'] = 'inline';	
 		$text = "";
 		
-		if(vartrue($options['label'])) // Bootstrap compatible markup
+	
+		
+		
+		if($labelFound) // Bootstrap compatible markup
 		{
 			$text .= "<label class='radio'>";	
+			
 		}
 		
 		$text .= "<input type='radio' name='{$name}' value='".$value."'".$this->get_attributes($options, $name, $value)." />";
@@ -1010,9 +1017,9 @@ class e_form
 			$text .= "<div class='field-help'>".$options['help']."</div>";
 		}
 		
-		if(vartrue($options['label']))
+		if($labelFound)
 		{
-			$text .= $options['label']."</label>";	
+			$text .= $labelFound."</label>";	
 		}
 		
 		return $text;
@@ -2567,6 +2574,16 @@ class e_form
 			case 'method': // Custom Function			
 				$method = $attributes['field']; // prevents table alias in method names. ie. u.my_method. 
 				$value = call_user_func_array(array($this, $method), array($value, 'read', $parms));
+				
+					// Inline Editing.  
+				if(!vartrue($attributes['noedit']) && vartrue($parms['editable'])) // avoid bad markup, better solution coming up
+				{
+					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
+					$methodParms = call_user_func_array(array($this, $method), array($value, 'inline', $parms));
+					$source = str_replace('"',"'",json_encode($methodParms));
+					$value = "<a class='e-tip e-editable editable-click' data-type='select' data-name='".$field."' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\"  data-pk='".$id."' data-url='".e_SELF."?mode=&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$value."</a>";
+				}
+							
 			break;
 
 			case 'hidden':
