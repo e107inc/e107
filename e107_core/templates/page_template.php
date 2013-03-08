@@ -143,16 +143,6 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 	
 	$PAGE_TEMPLATE['nav']['end'] 					= '</ul>';		
 	
-	$PAGE_TEMPLATE['nav']['item_active'] 			= '
-														<li class="active">
-															<a role="button"  href="{LINK_URL}">
-															 {LINK_IMAGE} {LINK_NAME}
-															</a>
-														</li>
-													';	
-	
-	$PAGE_TEMPLATE['nav']['end'] 					= '</ul>';	
-	
 	
 	$PAGE_TEMPLATE['nav']['submenu_start'] 			= '<ul class="page-nav" id="page-nav-{LINK_PARENT}" role="menu" >';
 	
@@ -166,6 +156,12 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 	
 	$PAGE_TEMPLATE['nav']['submenu_loweritem'] 		= '
 														<li role="menuitem" >
+															<a href="{LINK_URL}">{LINK_IMAGE}{LINK_NAME}</a>
+															{LINK_SUB}
+														</li>
+													';
+	$PAGE_TEMPLATE['nav']['submenu_loweritem_active'] 		= '
+														<li role="menuitem" class="active">
 															<a href="{LINK_URL}">{LINK_IMAGE}{LINK_NAME}</a>
 															{LINK_SUB}
 														</li>

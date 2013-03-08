@@ -1303,7 +1303,7 @@ class e_navigation
 		foreach ($data as $_data) 
 		{		
 			$sc->setVars($_data);
-			$active			= ($this->isActive($_data)) ? "_active" : "";
+			$active			= ($this->isActive($_data)) ? "_active" : ""; 
 			$itemTmpl 		= count($_data['link_sub']) > 0 ? $template['item_submenu'.$active] : $template['item'.$active];
 			$ret 			.= e107::getParser()->parseTemplate($itemTmpl, TRUE);			
 		}
@@ -1343,7 +1343,8 @@ class e_navigation
 	        if($val['link_parent'] == $pid) 
 	        {
 	            $val['link_sub'] = $this->isDynamic($val);
-	            $this->compile($inArray, $val['link_sub'], $val['link_id']);
+				// prevent loop of death
+	            if( $val['link_id'] != $pid) $this->compile($inArray, $val['link_sub'], $val['link_id']);
 	            $outArray[] = $val;   
 	        }
 	    }
@@ -1471,33 +1472,18 @@ class navigation_shortcodes extends e_shortcode
 			return;	
 		}	
 		
-		// XXX possible dead loop if LINK_SUB SC present in submenu_start template
-		$text = e107::getParser()->parseTemplate($this->template['submenu_start'], true, $this);
+		$text = e107::getParser()->parseTemplate(str_replace('{LINK_SUB}', '', $this->template['submenu_start']), true, $this);
 			
 		foreach($this->var['link_sub'] as $val)
 		{
 			$this->setVars($val);		
-			$active	= (e107::getNav()->isActive($val)) ? "_active" : "";	
-			$tmpl = vartrue($val['link_sub']) ? varset($this->template['submenu_loweritem']) : varset($this->template['submenu_item'.$active]);	
+			$active	= (e107::getNav()->isActive($val)) ? "_active" : "";
+			$tmpl = vartrue($val['link_sub']) ? varset($this->template['submenu_loweritem'.$active]) : varset($this->template['submenu_item'.$active]);	
 			$text .= e107::getParser()->parseTemplate($tmpl, TRUE);		
 		}
 
-		// XXX possible dead loop if LINK_SUB SC present in submenu_end template
-		$text .= e107::getParser()->parseTemplate($this->template['submenu_end'], true, $this);
+		$text .= e107::getParser()->parseTemplate(str_replace('{LINK_SUB}', '', $this->template['submenu_end']), true, $this);
 		
 		return $text;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-	
-?>

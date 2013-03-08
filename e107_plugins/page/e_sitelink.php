@@ -40,6 +40,28 @@ class page_sitelink // include plugin-folder in the name.
 		$sublinks 	= array();
 		$arr 		= array();	
 		
+		// map current when in auto mode
+		if(vartrue($options['auto']))
+		{
+			// current book found, top book not set
+			if(vartrue($options['cbook']) && !vartrue($options['book']))
+			{
+				$options['book'] = $options['cbook'];
+			}
+			
+			// current chapter found, top chapter not set
+			if(vartrue($options['cchapter']) && !vartrue($options['chapter']))
+			{
+				$options['chapter'] = $options['cchapter'];
+			}
+			
+			// current chapter found, top chapter not set
+			if(vartrue($options['cpage']) && !vartrue($options['page']))
+			{
+				$options['page'] = $options['cpage'];
+			}
+		}
+		
 		// find the chapter if required
 		if(vartrue($options['page']) && !vartrue($options['chapter']))
 		{
@@ -78,7 +100,7 @@ class page_sitelink // include plugin-folder in the name.
 				'link_parent'		=> $row['page_chapter'],
 				'link_open'			=> '',
 				'link_class'		=> intval($row['page_class']),
-				'link_active'		=> ($options['page'] && $row['page_id'] == $options['page']),
+				'link_active'		=> ($options['cpage'] && $row['page_id'] == $options['cpage']),
 			);
 		}
 
@@ -108,7 +130,6 @@ class page_sitelink // include plugin-folder in the name.
 		$books = $sql->retrieve("SELECT * FROM #page_chapters WHERE ".$filter." ORDER BY chapter_order ASC" , true);
 		foreach($books as $row)
 		{
-			
 			$arr[] = array(
 				'link_id'			=> $row['chapter_id'],
 				'link_name'			=> $row['chapter_name'],
@@ -124,13 +145,12 @@ class page_sitelink // include plugin-folder in the name.
 				'link_open'			=> '',
 				'link_class'		=> 0, 
 				'link_sub'			=> varset($sublinks[$row['chapter_id']]),
-				'link_active'		=> false,
+				'link_active'		=> $row['chapter_parent'] == 0 ? $options['cbook'] && $options['cbook'] == $row['chapter_id'] : $options['cchapter'] && $options['cchapter'] == $row['chapter_id'],
 			);	
-			$parent = vartrue($options['book']) ? intval($row['chapter_parent']) : 0;
-			
 		}
 		
 		$outArray 	= array();
+		$parent = vartrue($options['book']) ? $options['book'] : 0;
 		$ret =  e107::getNav()->compile($arr, $outArray, $parent);		
 		
 		if(!$title) return $ret;
