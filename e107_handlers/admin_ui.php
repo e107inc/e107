@@ -2368,6 +2368,12 @@ class e_admin_controller_ui extends e_admin_controller
      * @var boolean
      */
     protected $batchLink = false;
+	
+    /**
+     * @var boolean
+     */
+    protected $batchFeaturebox = false;
+	
 	/**
 	 * Could be LAN constant (mulit-language support)
 	 *
@@ -2428,6 +2434,13 @@ class e_admin_controller_ui extends e_admin_controller
         return $this->batchLink;
     }
 
+
+    public function getBatchFeaturebox()
+    {
+        return $this->batchFeaturebox;
+    }
+	
+	
 	/**
 	 * @return string
 	 */
@@ -2464,6 +2477,16 @@ class e_admin_controller_ui extends e_admin_controller
         return $this->url;
     }
 	
+
+      /**
+     * Get Featurebox Copy 
+     * @return array
+     */
+    public function getFeaturebox()
+    {
+        return $this->featurebox;
+    }
+
 
 	/**
 	 * Get all field data
@@ -4013,13 +4036,30 @@ class e_admin_ui extends e_admin_controller_ui
      */
     protected function handleListUrlBatch($selected)
     {
-        // Batch Copy 
         if($this->_add2nav($selected))
 		{
 			//e107::getMessage()->moveToSession();
 			//$this->redirect();
 		}
     }
+
+
+	/** TODO
+	 * Batch Featurebox Transfer
+	 * @param array $selected
+	 * @return void
+	 */
+	protected function handleListFeatureboxBatch($selected)
+	{
+		 if($this->_add2featurebox($selected))
+		{
+			//e107::getMessage()->moveToSession();
+			//$this->redirect();
+		}
+	}
+
+
+
 	
 	
 	protected function _add2nav($selected)
@@ -4090,6 +4130,89 @@ class e_admin_ui extends e_admin_controller_ui
         return false; 
  
 	}
+
+
+
+
+
+
+	
+	protected function _add2featurebox($selected)
+	{
+		if(empty($selected)) return false;// TODO warning message
+		
+		if(!is_array($selected)) $selected  = array($selected);
+
+        $sql        = e107::getDb();
+		//$allData	= $this->getFeaturebox();
+		$allData 	= $this->getTreeModel()->featurebox($selected, array('sc' => true), true);
+
+        e107::getMessage()->addDebug('Using Featurebox Info:'.print_a($data,true));   
+        
+		
+	//	print_a($allData);
+	echo "EXIT";
+		exit;
+		
+		
+		$scount = 0;
+        foreach($allData as $id => $data)
+        {
+            $name = $data['name'];
+            $desc = $data['text'];
+             
+            $fbArray = array(
+                	'fb_title' 		=> varset($data['name']), 
+     				'fb_text' 		=> varset($data['text']), 
+					'fb_image' 		=> varset($data['image']),
+					'fb_imageurl'	=> varset($data['url']), 
+            );
+            
+            $res = $sql->insert('featurebox', $fbArray);
+            
+            // FIXME lans
+            if($res !== FALSE)
+            {
+                 e107::getMessage()->addSuccess('Created Featurebox Item: <b>'.($name ? $name : 'n/a')."</b>");   
+				 $scount++; 
+            }
+            else 
+            {
+                if($sql->getLastErrorNumber())
+                {
+                    e107::getMessage()->addError('SQL Featurebox Creation Error'); //TODO - Lan
+                    e107::getMessage()->addDebug('SQL Featurebox Creation Error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
+                }  
+				else
+				{
+					e107::getMessage()->addError('Unknown error: <b>'.$name."</b> not added");  
+				}
+            }
+                         
+        }
+        
+        if($scount > 0)
+        {
+            e107::getMessage()->addSuccess("<br /><strong>{$scount}</strong> new sitelinks were added but are currently unassigned. You should now modify these links to your liking.<br /><br /><a class='btn btn-small btn-primary' href='".e_ADMIN_ABS."links.php?searchquery=&filter_options=link_category__255'>Modify Links</a>");
+			return $scount;        
+        }
+        
+        return false; 
+ 
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
 	
 	/**
 	 * Batch boolean trigger
@@ -5058,7 +5181,7 @@ class e_admin_form_ui extends e_form
 			'fields' => $controller->getFields(), // see e_admin_ui::$fields
 			'fieldpref' => $controller->getFieldPref(), // see e_admin_ui::$fieldpref
 			'table_pre' => '', // markup to be added before opening table element
-			'table_post' => !$tree[$id]->isEmpty() ? $this->renderBatch($controller->getBatchDelete(),$controller->getBatchCopy(),$controller->getBatchLink()) : '',
+			'table_post' => !$tree[$id]->isEmpty() ? $this->renderBatch($controller->getBatchDelete(),$controller->getBatchCopy(),$controller->getBatchLink(),$controller->getBatchFeaturebox()) : '',
 			'fieldset_pre' => '', // markup to be added before opening fieldset element
 			'fieldset_post' => '', // markup to be added after closing fieldset element
 			'perPage' => $controller->getPerPage(), // if 0 - no next/prev navigation
@@ -5286,7 +5409,7 @@ class e_admin_form_ui extends e_form
 	}
 
 	// FIXME - use e_form::batchoptions(), nice way of buildig batch dropdown - news administration show_batch_options()
-	function renderBatch($allow_delete = false,$allow_copy= false, $allow_url=false)
+	function renderBatch($allow_delete = false,$allow_copy= false, $allow_url=false, $allow_featurebox=false)
 	{
 		
 		// $allow_copy = TRUE;
@@ -5308,6 +5431,8 @@ class e_admin_form_ui extends e_form
 					".($allow_copy ? $this->option(LAN_COPY, 'copy', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."					
 					".($allow_delete ? $this->option(LAN_DELETE, 'delete', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."					
 				    ".($allow_url ? $this->option(LAN_UI_BATCH_CREATELINK, 'url', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."   
+				  	".($allow_featurebox ? $this->option(LAN_UI_BATCH_CREATEFEATUREBOX, 'featurebox', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."   
+			
 					".$this->renderBatchFilter('batch')."
 				".$this->select_close()."
 				".$this->admin_button('e__execute_batch', 'e__execute_batch', 'batch e-hide-if-js', LAN_GO, array('id' => false))."

@@ -289,24 +289,39 @@ class menu_form_ui extends e_admin_form_ui
 //  MAIN Pages. 
 class page_admin_ui extends e_admin_ui
 {
-		protected $pluginTitle  = ADLAN_42;
-		protected $pluginName   = 'core';
-		protected $table        = "page";
+		protected $pluginTitle  	= ADLAN_42;
+		protected $pluginName   	= 'core';
+		protected $table        	= "page";
 		
-		protected $listQry      = "SELECT p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE p.page_theme = '' "; // without any Order or Limit.
+		protected $listQry      	= "SELECT p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE p.page_theme = '' "; // without any Order or Limit.
 		//protected $editQry = "SELECT * FROM #comments WHERE comment_id = {ID}";
 		
-		protected $pid 			= "page_id";
-		protected $listOrder 	= 'p.page_order asc'; // desc would require changes to ajax sorting. 
-		protected $perPage 		= 10;
-		protected $batchDelete 	= true;
-		protected $batchCopy 	= true;	
-        protected $batchLink    = true;
-		protected $sortField	= 'page_order';
-		protected $orderStep 	= 10;
+		protected $pid 				= "page_id";
+		protected $listOrder 		= 'p.page_order asc'; // desc would require changes to ajax sorting. 
+		protected $perPage 			= 10;
+		protected $batchDelete 		= true;
+		protected $batchCopy 		= true;	
+        protected $batchLink    	= true;
+	  	protected $batchFeaturebox   = true;
+		protected $sortField		= 'page_order';
+		protected $orderStep 		= 10;
 		//protected $url         	= array('profile'=>'page/view', 'name' => 'page_title', 'description' => '', 'link'=>'{e_BASE}page.php?id=[id]'); // 'link' only needed if profile not provided. 
-		protected $url         	= array('route'=>'page/view/index', 'vars' => array('id' => 'page_id', 'sef' => 'page_sef'), 'name' => 'page_title', 'description' => ''); // 'link' only needed if profile not provided. 
-		protected $tabs		 	= array("Page","Page Options","Menu");
+		protected $url         		= array('route'=>'page/view/index', 'vars' => array('id' => 'page_id', 'sef' => 'page_sef'), 'name' => 'page_title', 'description' => ''); // 'link' only needed if profile not provided. 
+		protected $tabs		 		= array("Page","Page Options","Menu");
+		protected $featurebox		= array('title'=>'page_title', 'text'=>'page_text');
+		
+		/*
+		 * 	'fb_title' 			=> array('title'=> LAN_TITLE,			'type' => 'text',			'inline'=>true,  'width' => 'auto', 'thclass' => 'left'), 
+     	'fb_text' 			=> array('title'=> FBLAN_08,			'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1','writeParms'=>'template=admin'), 
+		//DEPRECATED 'fb_mode' 			=> array('title'=> FBLAN_12,			'type' => 'dropdown',		'data'=> 'int',	'width' => '5%', 'filter'=>TRUE, 'batch'=>TRUE),		
+		//DEPRECATED 'fb_rendertype' 	=> array('title'=> FBLAN_22,			'type' => 'dropdown',		'data'=> 'int',	'width' => 'auto', 'noedit' => TRUE),	
+        'fb_template' 		=> array('title'=> LAN_TEMPLATE,			'type' => 'layouts',		'data'=> 'str', 'width' => 'auto', 'writeParms' => 'plugin=featurebox', 'filter' => true, 'batch' => true),	 	// Photo
+		'fb_image' 			=> array('title'=> "Image",				'type' => 'image',			'width' => 'auto', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60'),
+		'fb_imageurl' 		=> array('title'=> "Image Link",		'type' => 'url',			'width' => 'auto'),
+		'fb_class' 	
+		 */
+		
+		
 	//		protected $listSorting = true; 
 	
 		// PAGE LIST/EDIT and MENU EDIT modes. 
