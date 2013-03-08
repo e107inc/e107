@@ -8,7 +8,7 @@
 		<link url='admin_list_config.php' description='LIST_PLUGIN_3' icon='icon/list_32.png' iconSmall='icon/list_16.png' primary='true'>LIST_PLUGIN_3</link>	
 	</adminLinks>
 	<siteLinks>
-		<link url="{e_PLUGIN}list_new/list.php" >LIST_PLUGIN_1</link>
+		<link url="{e_PLUGIN}list_new/list.php" >LAN_PLUGIN_LISTNEW_NAME</link>
 	</siteLinks>
 	<pluginPrefs>
 	</pluginPrefs>
