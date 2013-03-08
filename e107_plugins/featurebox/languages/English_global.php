@@ -6,11 +6,15 @@
 * Featurebox global language defines
 */
 
-define("LAN_PLUGIN_FEATUREBOX_NAME", "Feature Box");
+define("LAN_PLUGIN_FEATUREBOX_NAME", 		"Feature Box");
 define("LAN_PLUGIN_FEATUREBOX_DESCRIPTION", "Displays an animated area on the top of your page with news-items and other content you would like to feature.");
+define("LAN_PLUGIN_FEATUREBOX_BATCH",  		"Create Featurebox Item");
+
 
 // Install/uninstall messages
-define('FBLAN_INSTALL_01', 'Adding Default category table data.');
-define('FBLAN_INSTALL_02', 'Adding Default table data.');
+define('FBLAN_INSTALL_01', 'Adding Default category table data.'); //XXX Use Generic
+define('FBLAN_INSTALL_02', 'Adding Default table data.'); //XXX Use Generic
+
+
 
 ?>
