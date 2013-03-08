@@ -295,9 +295,10 @@ class e_validator
 	 * Validate data
 	 *
 	 * @param array $data
+	 * @param boolean $availableOnly check only against available data if true
 	 * @return boolean
 	 */
-	function validate($data)
+	function validate($data, $availableOnly = false)
 	{
 		$this->reset();
 
@@ -309,9 +310,13 @@ class e_validator
 			$this->_valid_data = $data;
 			return true;
 		}
-
+		
+		$fieldList = $rules;
+		if($availableOnly) $fieldList = array_keys($data);
+		
 		foreach ($rules as $field_name)
 		{
+			if(!in_array($field_name, $fieldList)) continue;
 			$value = varset($data[$field_name], null);
 			$required = $this->isRequiredField($field_name);
 			if(($required || $this->isOptionalField($field_name)) && !$this->validateField($field_name, $value, $required))

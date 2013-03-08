@@ -4547,7 +4547,11 @@ class e_admin_ui extends e_admin_controller_ui
 		$_POST[$_name] = $_value; // set current field only
 		
 		// generic handler - same as regular edit form submit
-		$res = $this->_manageSubmit('beforeUpdate', 'afterUpdate', 'onUpdateError', 'edit');
+		$this->convertToData($_POST);
+		$model->setPostedData($_POST, null, false, false)
+			->setParam('validateAvailable', true) // new param to control validate of available data only, reset on validate event
+			->update(true);
+		//$res = $this->_manageSubmit('beforeUpdate', 'afterUpdate', 'onUpdateError', 'edit');
 			
 		if($model->hasError())
 		{
