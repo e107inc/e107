@@ -77,6 +77,12 @@ class themeHandler
 			$this->themeUpload();
 		}
 		
+		if(vartrue($_POST['installContent']))
+		{
+			$this->installContent($_POST['installContent']);		
+		}
+		
+		
 		$this->themeArray = (defined('E107_INSTALL')) ? $this->getThemes('xml') : $this->getThemes();
 		
 		//     print_a($this -> themeArray);
@@ -597,10 +603,7 @@ class themeHandler
 		
 		}
 		
-		if($mode == 'choose')
-		{
-			echo "<div class='left'>".$frm->checkbox("install-demo-content",1)." Install Demo Content if available.</div>";
-		}
+
 		echo "</form>\n</div>\n";
 		
 
@@ -1348,17 +1351,17 @@ class themeHandler
 			$med->import('_common_image', e_THEME.$name, "^.*?logo.*?(\.png|\.jpeg|\.jpg|\.JPG|\.GIF|\.PNG)$");	
 			$med->import('_common_image', e_THEME.$name, '', 'min-size=20000');	
 			
-			$XMLImportfile = e_THEME.$name."/install/install.xml";
 			
-			if(vartrue($_POST['install-demo-content']) && is_readable($XMLImportfile))
-			{
-				e107::getXml()->e107Import($XMLImportfile, 'replace', true, false); // Overwrite specific core pref and tables entries. 
-				$mes->addDebug('Theme Prefs/Tables (install.xml) imported.');	
-			}
 			
+		
+			$this->installContentCheck($name);
 			
 			
 			$this->theme_adminlog('01', $name.', style.css');
+			
+			
+			
+			
 			return TRUE;
 		}
 		else
@@ -1368,6 +1371,71 @@ class themeHandler
 		}
 	
 	}
+
+
+
+	function installContentCheck($name)
+	{
+		$file = e_THEME.$name."/install/install.xml";
+		$frm = e107::getForm();
+		
+		if(!is_readable($file))
+		{
+			return false;		
+		}		
+		
+		$mes = e107::getMessage();
+		
+		$xmlArray = e107::getXml()-> loadXMLfile($file, 'advanced');
+		
+		$text = "
+		<form action='".e_SELF."' method='post'>
+		<div>This theme would like to make the following changes to your database:
+		<ul>";
+		
+		$lng = e107::getLanguage();
+		
+		foreach($xmlArray['database']['dbTable'] as $key=>$val)
+		{
+			$count = count($val['item']);
+			$data = array('x'=> $count, 'y' => $val['@attributes']['name']); 	
+			$lan = "Replace/Overwrite [x] record(s) in your [y] table. ";
+	
+			$text .= "<li>".$lng->translate($lan, $data)."</li>";
+				
+		}
+		$text .= "</ul>
+		".$frm->admin_button('installContent',$name, 'warning', "Agree")."
+		".$frm->admin_button('dismiss',0, 'cancel', 'Dismiss')."
+		</div>
+		</form>
+		";
+	//	$text .= print_a($xmlArray, true);
+		$mes->addWarning($text);
+	
+
+	}
+		
+		
+	function installContent($name)
+	{
+		$mes = e107::getMessage();
+		$file = e_THEME.$name."/install/install.xml";
+		e107::getXml()->e107Import($file, 'replace', true, false); // Overwrite specific core pref and tables entries. 
+		$mes->addSuccess(LAN_UPDATED);
+	}
+				
+			
+			
+		
+
+
+
+
+
+
+
+
 	
 	function findDefault($theme)
 	{

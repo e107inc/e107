@@ -324,6 +324,26 @@ class language{
 		return FALSE;
 		
 	}
+
+
+	/**
+	 * Generic variable translator for LAN definitions. 
+	 * @example $lng->translate("My name is [x] and I own a [y]", array('x'=>"John", 'y'=>"Cat")); 
+	 */
+	function translate($lan, $array= array())
+	{
+		foreach($array as $k=>$v)
+		{
+			$search[] = "[".$k."]";
+			$replace[] = "<b>".$v."</b>";
+		}
+		
+		return str_replace($search, $replace, $lan);
+	}
+
+
+
+
 	
 
 	/**
