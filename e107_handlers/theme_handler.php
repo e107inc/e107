@@ -597,8 +597,10 @@ class themeHandler
 		
 		}
 		
-
-		
+		if($mode == 'choose')
+		{
+			echo "<div class='left'>".$frm->checkbox("install-demo-content",1)." Install Demo Content if available.</div>";
+		}
 		echo "</form>\n</div>\n";
 		
 
@@ -1329,7 +1331,7 @@ class themeHandler
 		$core->set('sitetheme_deflayout', $deflayout);
 		$core->set('sitetheme_custompages', $customPages);
 		$core->set('sitetheme_version', $version);
-		$core->set('sitetheme_releaseUrl', $this->themeArray[$name]['releaseUrl']);
+	//	$core->set('sitetheme_releaseUrl', $this->themeArray[$name]['releaseUrl']);
 		
 		$sql->db_Delete("menus", "menu_layout !='' ");
 		
@@ -1344,6 +1346,17 @@ class themeHandler
 			
 			$med = e107::getMedia();
 			$med->import('_common_image', e_THEME.$name, "^.*?logo.*?(\.png|\.jpeg|\.jpg|\.JPG|\.GIF|\.PNG)$");	
+			$med->import('_common_image', e_THEME.$name, '', 'min-size=20000');	
+			
+			$XMLImportfile = e_THEME.$name."/install/install.xml";
+			
+			if(vartrue($_POST['install-demo-content']) && is_readable($XMLImportfile))
+			{
+				e107::getXml()->e107Import($XMLImportfile, 'replace', true, false); // Overwrite specific core pref and tables entries. 
+				$mes->addDebug('Theme Prefs/Tables (install.xml) imported.');	
+			}
+			
+			
 			
 			$this->theme_adminlog('01', $name.', style.css');
 			return TRUE;

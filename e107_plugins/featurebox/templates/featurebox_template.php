@@ -8,6 +8,67 @@
 
 global $sc_style;
 
+
+// e107 v2.x Defaults. 
+
+$FEATUREBOX_TEMPLATE['bootstrap_carousel_left'] = '
+   <!-- slide -->
+                            <div class="{FEATUREBOX_ACTIVE} item slide{FEATUREBOX_COUNTER}">
+                                <div class="row">
+                                    <div class="span6">
+                                    	{FEATUREBOX_IMAGE}
+                                     </div>
+                                    <div class="span4">
+                                        <h1>
+                                            {FEATUREBOX_TITLE}
+                                        </h1>
+                                        {FEATUREBOX_TEXT}
+                                    </div>
+                                </div>
+                            </div>
+   <!-- -->
+   
+';
+
+$FEATUREBOX_TEMPLATE['bootstrap_carousel_right'] = '
+ 							<div class="{FEATUREBOX_ACTIVE} item slide{FEATUREBOX_COUNTER}">
+                                <div class="row">
+                                    <div class="span4 animated fadeInUpBig">
+                                        <h1>{FEATUREBOX_TITLE}</h1>
+                                        {FEATUREBOX_TEXT}
+                                    </div>
+                                    <div class="span6 animated fadeInDownBig">
+                                         {FEATUREBOX_IMAGE}
+                                    </div>
+                                </div>
+                            </div>
+';
+
+
+$FEATUREBOX_TEMPLATE['bootstrap_carousel_image'] = '
+ 							<div class="item slide3 animated fadeInUpBig">
+                               {FEATUREBOX_IMAGE}
+                            </div>
+';
+
+
+// ----------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+$sc_style['FEATUREBOX_IMAGE|image_left']['pre'] = '<img class="f-left" src="';
+$sc_style['FEATUREBOX_IMAGE|image_left']['post'] = '" alt="" />';
+
 $FEATUREBOX_TEMPLATE['default'] = '<!-- Feature box Item -->
 	<div class="featurebox-item" >
 		<h3>{FEATUREBOX_TITLE|default}</h3>
@@ -16,8 +77,7 @@ $FEATUREBOX_TEMPLATE['default'] = '<!-- Feature box Item -->
 ';
 
 
-$sc_style['FEATUREBOX_IMAGE|image_left']['pre'] = '<img class="f-left" src="';
-$sc_style['FEATUREBOX_IMAGE|image_left']['post'] = '" alt="" />';
+
 $FEATUREBOX_TEMPLATE['image_left'] = '
 	<div class="featurebox-item">
 		{FEATUREBOX_IMAGE|image_left=src}<h3>{FEATUREBOX_TITLE|image_left}</h3>{FEATUREBOX_TEXT|image_left}
@@ -77,12 +137,19 @@ $FEATUREBOX_TEMPLATE['tabs'] = '
 
 
 $FEATUREBOX_INFO = array(
-	'default' 		=> array('title' => 'Default (core)', 		'description' => 'Title and description - no image'),
-	'image_right' 	=> array('title' => 'Right image (core)',	'description' => 'Right floated image'),
-	'image_left'	=> array('title' => 'Left image (core)'	, 	'description' => 'Left floated image'),
-	'camera'		=> array('title' => 'Camera item',	'description' => 'For use with the "camera" category'),
-	'camera_caption' => array('title' => 'Camera item with caption',	'description' => 'For use with the "camera" category'),
-	'accordion' 	=> array('title' => 'Accordion Item',	'description' => 'For use with accordion'),
-	'tabs' 			=> array('title' => 'Tab Item',	'description' => 'For use with tabs')
+	
+	'bootstrap_carousel_default' 	=> array('title' => 'Bootstrap', 							'description' => 'Title and Description'),
+	'bootstrap_carousel_image' 		=> array('title' => 'Bootstrap Carousel (Image-Only)', 		'description' => 'Image Only'),
+	'bootstrap_carousel_left' 		=> array('title' => 'Bootstrap Carousel (Image-left)', 		'description' => 'Image aligned left with title and text on the right'),
+	'bootstrap_carousel_right' 		=> array('title' => 'Bootstrap Carousel (Image-right)', 	'description' => 'Image aligned right with title and text on the left'),
+	
+	'default' 						=> array('title' => 'Generic', 								'description' => 'Title and description - no image'),
+	'image_left'					=> array('title' => 'Generic - (Image-left)'	, 			'description' => 'Left floated image'),
+	'image_right' 					=> array('title' => 'Generic - (Image-right)',				'description' => 'Right floated image'),
+
+	'camera'						=> array('title' => 'Camera item',							'description' => 'For use with the "camera" category'),
+	'camera_caption' 				=> array('title' => 'Camera item with caption',				'description' => 'For use with the "camera" category'),
+	'accordion' 					=> array('title' => 'Accordion Item',						'description' => 'For use with accordion'),
+	'tabs' 							=> array('title' => 'Tab Item',								'description' => 'For use with tabs')
 );
 ?>

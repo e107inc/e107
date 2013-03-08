@@ -18,6 +18,8 @@ e107::css('inline',"
 	.area			{ border-left: 1px solid rgb(221, 221, 221); border-bottom: 1px solid rgb(221, 221, 221);
 					  background-color: rgb(246, 246, 246); margin-top:-1px 
 					}
+	span.badge		{ cursor: pointer }
+	span.label		{ cursor: pointer }
 
 ");
 
@@ -44,6 +46,16 @@ $(document).ready(function()
 			tinyMCEPopup.close();
 		});
 		
+		
+		$('span.label, span.badge').click(function () {
+                var cls = $(this).attr('class');
+                var html = '<span class=\"' + cls + '\">' + $(this).text() + '</span>&nbsp;';
+				tinyMCEPopup.editor.execCommand('mceInsertContent', false, html);
+				tinyMCEPopup.close();
+		});
+		
+	
+		
 		$('#e-cancel').click(function () {
 					
 			tinyMCEPopup.close();
@@ -57,6 +69,10 @@ $(document).ready(function()
 
 class e_bootstrap
 {
+				
+	private $styleClasses = array(''=>'Default', 'primary'=>"Primary", 'success'=>"Success", 'info'=>"Info", 'warning'=>"Warning",'danger'=>"Danger",'inverse'=>"Inverse");
+			
+		
 	
 	function init()
 	{
@@ -66,14 +82,14 @@ class e_bootstrap
 		<ul class="nav nav-tabs">
 		<li class="active" ><a href="#mbuttons" data-toggle="tab">Buttons</a></li>';
 		
-	//	$text .= '<li><a href="#mprofile" data-toggle="tab">Profile</a></li>';
+		$text .= '<li><a href="#badges" data-toggle="tab">Labels &amp; Badges</a></li>';
 		
 		$text .= '</ul>';
 		 
 		$text .= '<div class="tab-content">
 		<div class="tab-pane active left" id="mbuttons">'.$this->buttonForm().'</div>';
 		
-	//	$text = '<div class="tab-pane" id="mprofile">Wow</div>';
+		$text .= '<div class="tab-pane left" id="badges">'.$this->badgeForm().'</div>';
 		
 		$text .= '</div>';
 
@@ -90,8 +106,9 @@ class e_bootstrap
 	{
 		$frm = e107::getForm();
 		
-		$buttonTypes = array(''=>'Default', 'primary'=>"Primary", 'success'=>"Success", 'info'=>"Info", 'warning'=>"Warning",'danger'=>"Danger",'inverse'=>"Inverse");
 		$buttonSizes = array(''=>'Default', 'btn-mini'=>"Mini", 'btn-small'=>"Small", 'btn-large' => "Large");
+		
+		$buttonTypes = $this->styleClasses;
 			
 		$butSelect = "";
 		$butSelect .= "<div class='form-inline' style='padding:5px'>";	
@@ -145,6 +162,36 @@ class e_bootstrap
 		return $text;
 		
 	}
+
+
+
+	function badgeForm()
+	{
+		unset($this->styleClasses['primary']);
+		
+		foreach($this->styleClasses as $key=>$type)
+		{
+			$classLabel = ($key != '') ? " label-".$key : "";
+			$classBadge = ($key != '') ? " badge-".$key : "";	
+			
+			$text .= '<div style="padding:10px"><span class="label'.$classLabel.'">'.$type.'</span>&nbsp;';
+			$text .= '<span class="badge'.$classBadge.'">'.$type.'</span>';
+			$text .= "</div>";
+		} 
+		
+		return $text;      
+	
+	}
+	
+				
+				
+			
+			
+		
+		
+		
+
+
 	
 	
 }

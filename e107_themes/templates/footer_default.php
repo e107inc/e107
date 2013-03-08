@@ -321,9 +321,9 @@ unset($uclist, $bcache);
 if(!deftrue('e_POWEREDBY_DISABLE')) 
 {
 	// No IDs or Classes - hinder js disable. 
-	echo "<div style='margin:20px; text-align:center;position: display:block; relative; bottom: 90px; z-index:30000; opacity:1.0; color: silver'>Proudly powered by <a style='color:silver' href='http://e107.org/' title='e107 Content Management System'>e107</a></div>";
+	echo "<div style='margin:20px; text-align:center;position: display:block; position: relative; bottom: 90px; z-index:30000; opacity:1.0; color: silver'>Proudly powered by <a style='color:silver' href='http://e107.org/' title='e107 Content Management System'>e107</a></div>";
 }
-echo "</body></html>";
+echo "\n</body>\n</html>";
 
 //
 // I Send the buffered page data, along with appropriate headers

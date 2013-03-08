@@ -148,6 +148,19 @@ class plugin_featurebox_item extends e_model
 		}
 				
 	}
+	
+	
+	/**
+	 * Returns 'active' for the first-slide. - often used by Bootstrap. 
+	 */
+	public function sc_featurebox_active()
+	{
+		$count = $this->getParam('counter', 1);
+		return ($count == 1) ? "active" : "";
+	}
+	
+	
+	
 
 	/**
 	 * Item counter number (starting from 1)
