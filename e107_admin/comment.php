@@ -83,7 +83,9 @@ class comments_admin_ui extends e_admin_ui
     	protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'comment_id'			=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 'forced'=> TRUE),
-       		'comment_type' 			=> array('title'=> "Type",			'type' => 'method',			'width' => '10%',  'filter'=>TRUE),	
+            'comment_blocked' 		=> array('title'=> "Status",		'type' => 'method',		'inline'=>true, 'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),	 	// Photo
+	
+	   		'comment_type' 			=> array('title'=> "Type",			'type' => 'method',			'width' => '10%',  'filter'=>TRUE),	
 			
 			'comment_item_id' 		=> array('title'=> "item id",		'type' => 'number',			'width' => '5%'),
          	'comment_subject' 		=> array('title'=> "subject",		'type' => 'text',			'width' => 'auto', 'thclass' => 'left first'), // Display name
@@ -92,8 +94,7 @@ class comments_admin_ui extends e_admin_ui
          	'comment_author_name' 	=> array('title'=> "authorName",	'type' => 'user',			'width' => 'auto', 'readParms'=>'idField=comment_author_id&link=1', 'noedit' => true, 'forceSave' => true),	// User name
          	'u.user_name' 			=> array('title'=> "System user",	'type' => 'user',			'width' => 'auto', 'readParms'=>'idField=comment_author_id&link=1', 'noedit' => true),	// User name
 		    'comment_datestamp' 	=> array('title'=> LAN_DATESTAMP,	'type' => 'datestamp',		'width' => 'auto'),	// User date
-            'comment_blocked' 		=> array('title'=> "Status",		'type' => 'method',		'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),	 	// Photo
-			'comment_ip' 			=> array('title'=> "IP",			'type' => 'ip',			'width' => '10%', 'thclass' => 'center' ),	 // Real name (no real vetting)
+      		'comment_ip' 			=> array('title'=> "IP",			'type' => 'ip',			'width' => '10%', 'thclass' => 'center' ),	 // Real name (no real vetting)
 			'comment_lock' 			=> array('title'=> "Lock",			'type' => 'boolean',		'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),
 			'options' 				=> array('title'=> LAN_OPTIONS,		'type' => null,				'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
 		);
@@ -147,22 +148,28 @@ class comments_admin_form_ui extends e_admin_form_ui
 		}
 	}
 
-	function comment_blocked($curVal,$mode) // not really necessary since we can use 'dropdown' - but just an example of a custom function. 
+	function comment_blocked($curVal,$mode, $parms) // not really necessary since we can use 'dropdown' - but just an example of a custom function. 
 	{
+		$frm = e107::getForm();
 		
-		
-		 
-		if($mode == 'read')
-		{
-			$blocked = array("","blocked","pending");
-			return $blocked[$curVal];
-		}
-		
-		if($mode == 'filter' || $mode == 'batch') // Custom Filter List for release_type
-		{
-			$blocked = array("approved","blocked","pending");
+		$blocked = array("approved","blocked", "pending");
+
+		if($mode == 'filter' || $mode == 'batch' || $mode == 'inline') // Custom Filter List for release_type
+		{			
 			return $blocked;
 		}
+		
+		if($mode == 'read')
+		{
+			// $blocked = array("","blocked","pending");
+			return varset($blocked[$curVal], ''); // $blocked[$curVal];	
+		}
+		
+		if($mode == 'write')
+		{
+			return $frm->selectbox("comment_blocked", $blocked, $curVal);	
+		}
+				
 		
 	}
 
