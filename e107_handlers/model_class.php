@@ -2204,17 +2204,6 @@ class e_front_model extends e_model
     		return $this;
     	}
 
-		/* XXX - Wrong? Should validator keep track on validated data at all?
-		// retrieve only valid data
-		if($validate)
-		{
-			$data = $this->getValidator()->getValidData();
-		}
-		else // retrieve all posted data
-		{
-			$data = $this->getPostedData();
-		}*/
-
 		$data = $this->getPostedData();
 		$valid_data = $validate ? $this->getValidator()->getValidData() : array();
 
@@ -2312,7 +2301,17 @@ class e_front_model extends e_model
 		{
 			$data = $this->getPostedData();
 		}
-		return $this->getValidator()->validate($data);
+		
+		// New param to control validate process - useful when part of the data is going to be updated
+		// Use it with cautious!!!
+		$availableOnly = false;
+		if($this->getParam('validateAvailable')) 
+		{
+			$availableOnly = true;
+			$this->setParam('validateAvailable', null); // reset it
+		}
+		
+		return $this->getValidator()->validate($data, $availableOnly);
     }
 
     /**
