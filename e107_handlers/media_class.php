@@ -43,11 +43,15 @@ class e_media
 	 * @param string $fmask [optional] filetypes eg. .jpg|.gif IMAGES is the default mask. 
 	 * @return e_media
 	 */
-	public function import($cat='',$epath,$fmask='')
+	public function import($cat='',$epath,$fmask='',$options=array())
 	{
 		if(!vartrue($cat)){ return $this;}
 		
-	
+		if(is_string($options))
+		{
+			parse_str($options,$options);	
+		}
+		
 		if(!is_readable($epath))
 		{
 			return $this;
@@ -72,6 +76,18 @@ class e_media
 		$count = 0;
 		foreach($img_array as $f)
 		{
+			
+			if(vartrue($options['min-width']) && ($f['img-width'] < $options['min-width']))
+			{
+				continue;	
+			}
+			
+			if(vartrue($options['min-size']) && ($f['fsize'] < $options['min-size']))
+			{
+				continue;	
+			}
+			
+				
 			$fullpath = $tp->createConstants($f['path'].$f['fname'],1);
 			// echo "<br />cat=".$cat;
 			$insert = array(

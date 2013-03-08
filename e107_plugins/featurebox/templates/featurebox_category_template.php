@@ -1,15 +1,53 @@
 <?php
 /*
-* Copyright (c) e107 Inc 2009 - e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id$
+* Copyright (c) e107 Inc 2013 - e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
 *
 * Featurebox core category templates
 */
 
 // TODO - list of all available shortcodes & schortcode parameters
-
-// avoid PHP warnings
 $FEATUREBOX_CATEGORY_TEMPLATE = array();
+
+
+// v2.x Default - Bootstrap. 
+
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_carousel']['list_start'] = '
+ <!-- starts carousel -->
+	<div class="row animated fadeInDown">
+		<div class="span12">
+			<div id="myCarousel" class="carousel slide">
+				<!-- carousel items -->
+				<div class="carousel-inner">
+';
+
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_carousel']['list_end'] = '
+				</div>
+	 				
+	 				<!-- Carousel nav -->
+                    <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+                    <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+                    
+			</div><!-- end myCarousel -->
+		</div><!-- end span12 -->
+	</div><!-- end row -->
+
+<!-- end carousel -->
+';
+
+
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_carousel']['col_start'] = '';
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_carousel']['col_end'] = '';
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_carousel']['item_start'] = '';
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_carousel']['item_end'] = '';
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_carousel']['item_separator'] = '';
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_carousel']['item_empty'] = '';
+
+
+
+
+
+// GENERIC template avoid PHP warnings
+
 
 /*
  * Default Template
@@ -34,8 +72,9 @@ $FEATUREBOX_CATEGORY_TEMPLATE['default']['item_start'] = '';
 $FEATUREBOX_CATEGORY_TEMPLATE['default']['item_end'] = '';
 $FEATUREBOX_CATEGORY_TEMPLATE['default']['item_separator'] = '<div class="clear"><!-- --></div>';
 
-// empty item  - used with col templates, no shortcodes just basic markup
+
 $FEATUREBOX_CATEGORY_TEMPLATE['default']['item_empty'] = '';
+
 
 // no dynamic load support
 //$FEATUREBOX_CATEGORY_TEMPLATE['default']['nav_start'] = '';
@@ -47,6 +86,9 @@ $FEATUREBOX_CATEGORY_TEMPLATE['default']['item_empty'] = '';
 //$FEATUREBOX_CATEGORY_TEMPLATE['default']['js'] = '';
 // inline JS, without <script> tags
 //$FEATUREBOX_CATEGORY_TEMPLATE['default']['js_inline'] = '';
+
+
+
 
 /*
  * Dynamic Template
@@ -247,11 +289,12 @@ $FEATUREBOX_CATEGORY_TEMPLATE['camera']['js_type'] = 'jquery';
  * @var array
  */
 $FEATUREBOX_CATEGORY_INFO = array(
-	'tabs' 			=> array('title' => 'Tabs (jquery)'	, 'description' => 'Tabbed Feature box items utlizing jQuery UI'),
-	'camera' 		=> array('title' => 'Image-Slider (jquery)'	, 'description' => 'Image transitions using the "Camera" jquery plugin'),
-	'accordion' 	=> array('title' => 'Accordion (jquery)'	, 'description' => 'Accordion utilizing jQuery UI'),
-	'default' 		=> array('title' => 'Default (prototype.js)', 'description' => 'Flat - show by category limit'),
-	'dynamic' 		=> array('title' => 'Dynamic (prototype.js)', 'description' => 'Load items on click (AJAX)'),
-	'tabs-proto' 	=> array('title' => 'Tabs (prototype.js)'	, 'description' => 'Tabbed Feature box items')
+	'bootstrap_carousel' 	=> array('title' => 'Bootstrap Carousel', 		'description' => "Bootstrap's Hero slider"),
+	'tabs' 					=> array('title' => 'Tabs (jquery UI)'	,	 	'description' => 'Tabbed Feature box items utlizing jQuery UI'),
+	'camera' 				=> array('title' => 'Image-Slider (jquery)'	, 	'description' => 'Image transitions using the "Camera" jquery plugin'),
+	'accordion' 			=> array('title' => 'Accordion (jquery)'	, 	'description' => 'Accordion utilizing jQuery UI'),
+	'default' 				=> array('title' => 'Default (prototype.js)', 'description' => 'Flat - show by category limit'),
+	'dynamic' 				=> array('title' => 'Dynamic (prototype.js)', 'description' => 'Load items on click (AJAX)'),
+	'tabs-proto' 			=> array('title' => 'Tabs (prototype.js)'	, 'description' => 'Tabbed Feature box items')
 );
 ?>

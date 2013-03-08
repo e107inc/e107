@@ -2213,6 +2213,17 @@ class e_form
 				}
 				$attributes['writeParms']['raw'] = true;
 				$tmp = $this->renderElement($field, '', $attributes);
+				
+				// Inline Editing.  //FIXME! 
+				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
+				{
+					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
+					$source = str_replace('"',"'",json_encode($wparms));
+					$value = "<a class='e-tip e-editable editable-click' data-name='".$field."' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='select' data-pk='".$id."' data-url='".e_SELF."?mode=&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$value."</a>";
+				}
+				
+				
+				
 							
 			//	$value = $pre.vartrue($tmp[$value]).$post; // FIXME "Fatal error: Only variables can be passed by reference" featurebox list page. 
 			break;

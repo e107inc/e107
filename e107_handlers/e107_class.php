@@ -1744,7 +1744,10 @@ class e107
 			$obj = new $class_name;
 			if(method_exists($obj, $method_name))
 			{
-				$mes->debug('Executing <strong>'.$class_name.' :: '.$method_name.'()</strong>');
+				if(E107_DBG_INCLUDES)
+				{
+					$mes->debug('Executing <strong>'.$class_name.' :: '.$method_name.'()</strong>');
+				}
 				return call_user_func(array($obj, $method_name),$param);
 			}
 			else

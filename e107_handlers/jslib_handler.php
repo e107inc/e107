@@ -29,6 +29,8 @@ class e_jslib
     public function renderHeader($where = 'front', $return = false)
     {
     	$ret = '';
+		
+		/* DEPRECATED 
 		$ret .= "
 			<script type=\"text/javascript\">
 				var e107Path = {
@@ -47,6 +49,7 @@ class e_jslib
 				};
 			</script>
 		";
+		 */
     	// FIXED: convert e107.js.php to pure e107.js file
     	// FIXED: 'e_jslib_browser_cache' used by js_manager - add it together with all new prefs (JS management tab, Site preferences area)
 		// FIXED: option to use external sources (e.g. google) even if JS is combined (script tags for external sources)
