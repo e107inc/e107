@@ -8,6 +8,35 @@
 (function() {
 	tinymce.create('tinymce.plugins.e107BBCodePlugin', {
 		init : function(ed, url) {
+			
+			ed.addCommand('mceBoot', function() {
+				ed.windowManager.open({
+					file : url + '/dialog.php',
+					width : 900 , // + parseInt(ed.getLang('e107bbcode.delta_width', 0)),
+					height : 400, //  + parseInt(ed.getLang('e107bbcode.delta_height', 0)),
+					inline : 1
+				}, {
+					plugin_url : url, // Plugin absolute URL
+					some_custom_arg : 'custom arg' // Custom argument
+				});
+			});
+
+			// Register  button
+			ed.addButton('e107bbcode', {
+				title : 'example.desc',
+				cmd : 'mceBoot',
+				image : url + '/img/bootstrap.png'
+			});
+
+			// Add a node change handler, selects the button in the UI when a image is selected
+			ed.onNodeChange.add(function(ed, cm, n) {
+				cm.setActive('example', n.nodeName == 'IMG');
+			});
+			
+			
+			// ------------
+			
+			
 			var t = this, dialect = ed.getParam('bbcode_dialect', 'e107').toLowerCase();
 
 			ed.onBeforeSetContent.add(function(ed, o) {

@@ -212,7 +212,9 @@ class wysiwyg
 
 
 	function getConfig($config=FALSE)
-	{		
+	{
+		$tp = e107::getParser();	
+				
 		if(getperms('0'))
 		{
 			$template = "mainadmin.xml";		
@@ -249,6 +251,11 @@ class wysiwyg
 			'plugins'			=> $this->filter_plugins($config['tinymce_plugins'])
 		);
 
+		$content_css = vartrue($config['content_css'], "{e_WEB_ABS}js/bootstrap/css/bootstrap.min.css"); 
+		$content_styles = array('Bootstrap Button' => 'btn btn-primary', 'Bootstrap Table' => 'table');
+
+
+
 		$this->config += array(
 
 			'theme_advanced_buttons1'			=> $config['tinymce_buttons1'],
@@ -257,7 +264,9 @@ class wysiwyg
 			'theme_advanced_buttons4'			=> vartrue($config['tinymce_buttons4']),
 			'theme_advanced_toolbar_location'	=> vartrue($config['theme_advanced_toolbar_location'],'top'),
 			'theme_advanced_toolbar_align'		=> 'left',
-			'theme_advanced_blockformats' 		=> 'p,h2,h3,blockquote,code',
+			'theme_advanced_blockformats' 		=> 'p,h2,h3,h4,h5,h6,blockquote,pre,code',
+			'theme_advanced_styles'				=> str_replace(array("+")," ",http_build_query($content_styles)),  //'Bootstrap Button=btn btn-primary;Bootstrap Table=table;border=border;fborder=fborder;tbox=tbox;caption=caption;fcaption=fcaption;forumheader=forumheader;forumheader3=forumheader3',
+		
 			// 'theme_advanced_resize_vertical' 		=> 'true',
 			'dialog_type' 						=> "modal",		
 		//	'theme_advanced_source_editor_height' => '400',
@@ -305,6 +314,7 @@ class wysiwyg
 			'auto_cleanup_word'					=> 'true',
 			'cleanup'							=> 'true',
 			'convert_fonts_to_spans'			=> 'true',
+			'content_css'						=> $tp->replaceConstants($content_css),
 			'trim_span_elements'				=> 'true',
 			'inline_styles'						=> 'true',
 			'auto_resize'						=> 'false',
@@ -322,7 +332,6 @@ class wysiwyg
 			'relative_urls'						=> 'false', //Media Manager prefers it like this. 
 			'preformatted'						=> 'true',
 			'document_base_url'					=> SITEURL,
-			'theme_advanced_styles'				=> 'border=border;fborder=fborder;tbox=tbox;caption=caption;fcaption=fcaption;forumheader=forumheader;forumheader3=forumheader3',
 			'verify_css_classes'				=> 'false'
 
 		);
