@@ -19,7 +19,7 @@ class core_news_sef_full_url extends eUrlConfig
 				'legacy' 		=> '{e_BASE}news.php', 
 				'format'		=> 'path', 
 				'defaultRoute'	=> 'list/items', 
-				'urlSuffix' 	=> '.e107',	// just for fun!
+				'urlSuffix' 	=> '',
 				'allowVars' 	=> false, 
 				'matchValue' => 'empty',	
 				
