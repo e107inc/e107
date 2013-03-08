@@ -70,6 +70,13 @@ $NAVIGATION_TEMPLATE['main']['submenu_loweritem'] = '
 			</li>
 ';
 
+$NAVIGATION_TEMPLATE['main']['submenu_loweritem_active'] = '
+			<li role="menuitem" class="dropdown-submenu active">
+				<a href="{LINK_URL}">{LINK_IMAGE}{LINK_NAME}</a>
+				{LINK_SUB}
+			</li>
+';
+
 $NAVIGATION_TEMPLATE['main']['submenu_item_active'] = '
 			<li role="menuitem" class="active">
 				<a href="{LINK_URL}">{LINK_IMAGE}{LINK_NAME}</a>

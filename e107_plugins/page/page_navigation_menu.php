@@ -12,33 +12,31 @@ if (!defined('e107_INIT')) { exit; }
 
 $template = e107::getCoreTemplate('page','nav');
 
-### Auto mode - detect the current location
-if(empty($parm))
+$parm = eHelper::scParams($parm);
+$request = e107::getRegistry('core/pages/request');
+if($request && is_array($request))
 {
-	$request = e107::getRegistry('core/pages/request');
-	$parm = array();
-	if($request && is_array($request))
+	switch ($request['action']) 
 	{
-		switch ($request['action']) 
-		{
-			case 'listChapters':
-				$parm['book'] = $request['id'];
-			break;
-			
-			case 'listPages':
-				$parm['chapter'] = $request['id'];
-			break;
-			
-			case 'showPage':
-				$parm['page'] = $request['id'];
-			break;
-		}
+		case 'listChapters':
+			$parm['cbook'] = $request['id'];
+		break;
+		
+		case 'listPages':
+			$parm['cchapter'] = $request['id'];
+		break;
+		
+		case 'showPage':
+			$parm['cpage'] = $request['id'];
+		break;
 	}
-	if($parm) $parm = http_build_query($parm);
 }
 
+if($parm) $parm = http_build_query($parm, null, '&');
+else $parm = '';
+
 ### Retrieve
-$links = e107::getAddon('page', 'e_sitelink', 'page_sitelink');
+$links = e107::getAddon('page', 'e_sitelink');
 $data = $links->pageNav($parm);
 if(isset($data['title']) && !vartrue($template['noAutoTitle']))
 {
@@ -46,6 +44,8 @@ if(isset($data['title']) && !vartrue($template['noAutoTitle']))
 	$template['caption'] = $data['title'];
 	$data = $data['body'];
 }
+
+if(empty($data)) return;
 $text = e107::getNav()->render($data, $template) ;
 
 ### Render
