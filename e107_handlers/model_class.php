@@ -528,6 +528,14 @@ class e_model extends e_object
      * @var string
      */
     protected $_url = array();
+	
+	
+    /**
+     * Current Featurebox Profile data
+	 * Example: array('title' => 'page_title', 'text' => '');
+     * @var string
+     */
+    protected $_featurebox = array();
 
     /**
      * Runtime cache of parsed from {@link _getData()} keys
@@ -609,6 +617,28 @@ class e_model extends e_object
     {
         return $this->_url;
     }
+ 
+    /**
+     * Set model Featurebox  Profile
+     * @param string $table
+     * @return e_model
+     */
+    public function setFeaturebox($fb)
+    {
+    //	if(!is_array($url)) $url = array('route' => $url);
+        $this->_featurebox = $fb;
+        return $this;
+    }
+    
+    /**
+     * Get Featurebox profile
+     * @return array
+     */
+    public function getFeaturebox()
+    {
+        return $this->_featurebox;
+    } 
+ 
     
     /**
      * Generic URL assembling method
@@ -655,6 +685,29 @@ class e_model extends e_object
 			'description' => vartrue($urldata['description']) ? $this->get($urldata['description']) : '',
 		);
     }
+ 
+ 
+     /**
+     * Generic Featurebox assembling method
+     * @return mixed URL string or extended array data
+     */
+    public function featurebox($options = array(), $extended = false)
+    {
+    	   		
+		
+    }
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
     
     /**
      * Get data fields array
@@ -3506,6 +3559,39 @@ class e_admin_tree_model extends e_front_tree_model
 			$model = $this->getNode($id);
 			if($this->getUrl()) $model->setUrl($this->getUrl()); // copy url config data if available
 			$ret[$id] = $model->url($options, $extended);
+		}
+		return $ret;
+    }
+	
+	
+	
+	    
+	/**
+	 * Get urls/url data for given nodes
+	 */
+    public function featurebox($ids, $options = array(), $extended = false)
+    {
+    	$ret = array();
+		
+		
+		
+    	foreach ($ids as $id) 
+    	{
+    		
+		// 	print_a($this->getData());
+			
+			
+			
+    		if(!$this->hasNode($id)) continue;
+			
+			$model = $this->getNode($id);
+			;
+			print_a($this->getData());
+			
+			
+		//	if($this->getFeaturebox()) $model->setFeaturebox($this->getFeaturebox()); // copy url config data if available
+		//	$ret[$id] = $model->featurebox($options, $extended);
+		//	print_a($ret);
 		}
 		return $ret;
     }
