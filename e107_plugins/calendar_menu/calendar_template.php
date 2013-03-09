@@ -63,7 +63,7 @@ $sc_style['EC_NEXT_YEAR']['post'] = '';
 
 
 $CALENDAR_TIME_TABLE = "
-<table cellpadding='0' cellspacing='1' class='table fborder' style='width:100%'>
+<table cellpadding='0' cellspacing='1' class='table fborder'>
 <tr>
 	<td class='forumheader' style='width:18%; text-align:left'>{EC_PREV_MONTH}</td>
 	<td class='fcaption' style='width:64%; text-align:center'>{EC_CURRENT_MONTH}</td>
@@ -87,7 +87,7 @@ $sc_style['EC_NAV_LINKCURRENTMONTH']['post'] = "";
 $CALENDAR_NAVIGATION_TABLE = "
 <div style='text-align:center; margin-bottom:20px;'>
 <form method='post' action='" . e_SELF . "?" . e_QUERY . "' id='calform'>
-<table border='0' cellpadding='0' cellspacing='0' style='width:100%;'>
+<table class='table'>
 <tr>
 <td style='text-align:center;'>{EC_NAV_CATEGORIES} {EC_NAV_BUT_ALLEVENTS} {EC_NAV_BUT_VIEWCAT} {EC_NAV_BUT_ENTEREVENT} {EC_NAV_BUT_SUBSCRIPTION} {EC_NAV_BUT_PRINTLISTS} {EC_NAV_LINKCURRENTMONTH}</td>
 </tr>\n
@@ -101,7 +101,7 @@ $CALENDAR_NAVIGATION_TABLE = "
 $sc_style['EC_EVENTLIST_CAPTION']['pre'] = "<tr><td class='fcaption' colspan='2'>";
 $sc_style['EC_EVENTLIST_CAPTION']['post'] = ":<br /><br /></td></tr>\n";
 
-$EVENT_EVENTLIST_TABLE_START = "<table style='width:100%' class='table fborder'>{EC_EVENTLIST_CAPTION}";
+$EVENT_EVENTLIST_TABLE_START = "<table class='table fborder'>{EC_EVENTLIST_CAPTION}";
 $EVENT_EVENTLIST_TABLE_END = "</table>";
 
 
@@ -110,7 +110,7 @@ $EVENT_EVENTLIST_TABLE_END = "</table>";
 $sc_style['EC_EVENTARCHIVE_CAPTION']['pre'] = "<tr><td colspan='2' class='fcaption'>";
 $sc_style['EC_EVENTARCHIVE_CAPTION']['post'] = "</td></tr>\n";
 
-$EVENT_ARCHIVE_TABLE_START = "<br /><table style='width:100%' class='table fborder'>{EC_EVENTARCHIVE_CAPTION}";
+$EVENT_ARCHIVE_TABLE_START = "<br /><table class='table fborder'>{EC_EVENTARCHIVE_CAPTION}";
 $EVENT_ARCHIVE_TABLE = "
 <tr>
 	<td style='width:35%; vertical-align:top' class='forumheader3'>{EC_EVENT_RECENT_ICON}{EC_EVENTARCHIVE_DATE}</td>
@@ -123,7 +123,7 @@ $EVENT_ARCHIVE_TABLE_END = "</table>";
 
 
 // EVENT SHOW EVENT ------------------------------------------------------------
-$EVENT_EVENT_TABLE_START = "<table style='width:100%' class='table fborder' cellspacing='0' cellpadding='0'>";
+$EVENT_EVENT_TABLE_START = "<table class='table fborder' cellspacing='0' cellpadding='0'>";
 $EVENT_EVENT_TABLE_END = "</table>";
 
 $sc_style['EC_EVENT_HEADING_DATE']['pre'] = "";
@@ -199,7 +199,7 @@ $EVENT_EVENT_TABLE = "
 //------------------------------------------
 $CALENDAR_CALENDAR_START = "
 <div style='text-align:center'>
-<table cellpadding='0' cellspacing='1' class='table fborder' style='background-color:#DDDDDD; width:100%'>
+<table class='table fborder' style='background-color:#DDDDDD; width:100%'>
 <colgroup>
 <col style='width:14%; padding-bottom:0px;padding-right:0px; margin-right:0px; padding:2px;' />
 <col style='width:14%; padding-bottom:0px;padding-right:0px; margin-right:0px; padding:2px;' />
