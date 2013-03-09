@@ -349,12 +349,13 @@ class page_admin_ui extends e_admin_ui
 			'page_order' 		=> array('title'=> LAN_ORDER, 		'tab' => 1,	'type' => 'number', 'width' => 'auto', 'inline'=>true),
 			
 			// Menu Tab  XXX 'page_theme' is 'menu_name' - not caption. 
-			'page_theme' 		=> array('title'=> "Menu Name", 		'tab' => 2,	'type' => 'text', 		'width' => 'auto','nolist'=>true, "help"=>"Will be listed in the Menu-Manager under this name or may be called using {MENU=name} in your theme."),
+			'page_theme' 		=> array('title'=> "Menu Name", 		'tab' => 2,	'type' => 'text', 		'width' => 'auto','nolist'=>true, "help"=>"Will be listed in the Menu-Manager under this name or may be called using {MENU|name} in your theme."),
 		   	'menu_title'	   	=> array('title'=> "Menu Title", 	'nolist'=>true, 'tab' => 2,	'type' => 'text', 'inline'=>true,		'width'=>'25%', "help"=>"Caption displayed on the menu item."),
 			'menu_text' 		=> array('title'=> "Menu Body",		'nolist'=>true, 'tab' => 2,	'type' => 'bbarea',		'data'=>'str',	'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1', 'writeParms'=>'media=page' ), 
-			'menu_image'		=> array('title' =>"Menu Image", 	'nolist'=>true, 'tab' => 2,	'type' => 'image', 		'width' => '110px',	'thclass' => 'center', 			'class' => "center", 		'nosort' => false, 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>false),		  					
 			'menu_template' 	=> array('title'=> "Menu Template", 'nolist'=>true, 'tab' => 2,	'type' => 'dropdown', 	'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
-        	
+        
+			'menu_image'		=> array('title' =>"Menu Image", 	'nolist'=>true, 'tab' => 2,	'type' => 'image', 		'width' => '110px',	'thclass' => 'center', 			'class' => "center", 		'nosort' => false, 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>false),		  					
+			
 	
 	
 	   	//	'page_ip_restrict' 	=> array('title'=> LXXAN_USER_07, 'type' => 'text', 'width' => 'auto'),	 // Avatar
@@ -390,14 +391,14 @@ class page_admin_ui extends e_admin_ui
 					'menu_image'		=> array('title' =>"Menu Image", 	 	'type' => 'image', 		'width' => '110px',	'thclass' => 'left', 'class' => "left", 'nosort' => false, 'readParms'=>'thumb=80&thumb_urlraw=0&thumb_aw=80','readonly'=>false),		  					
 				
 				  	'page_theme' 		=> array('title'=> "Menu Name", 	'type' => 'text', 		'width' => 'auto','nolist'=>true, "help"=>"Will be listed in the Menu-Manager under this name"),
-				
+					'menu_template' 	=> array('title'=> "Menu Template",  	'type' => 'dropdown', 	'width' => 'auto', 'filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
+       
 				// 	'page_author' 		=> array('title'=> LAN_AUTHOR, 		'tab' => 0,	'type' => 'user', 		'data'=>'int','width' => 'auto', 'thclass' => 'left'),
 					'page_datestamp' 	=> array('title'=> LAN_DATE, 		'type' => 'datestamp', 	'data'=>'int',	'width' => 'auto','writeParms'=>'auto=1&readonly=1'),
 		     
 			  		'menu_title'	   	=> array('title'=> "Menu Title", 	'forced'=> TRUE, 	'type' => 'text', 		'inline'=>true,		'width'=>'25%'),
 					'menu_text' 		=> array('title'=> "Menu Body",		 	'type' => 'bbarea',		'data'=>'str',	'width' => 'auto', 'readParms' => 'expand=...&truncate=50&bb=1', 'writeParms'=>'media=page'), 
-					'menu_template' 	=> array('title'=> "Menu Template",  	'type' => 'dropdown', 	'width' => 'auto', 'filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
-       
+				
 					'options' 	=> array('title'=> LAN_OPTIONS, 'type' => null,	'noselector' => true, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center','readParms'=>'deleteClass=252')
 				);
 	

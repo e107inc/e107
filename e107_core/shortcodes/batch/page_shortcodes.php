@@ -168,7 +168,7 @@ class cpage_shortcodes extends e_shortcode
 		return '<a class="cpage" href="'.$url.'">'.$this->sc_cpagetitle().'</a>';
 	}
 	
-	function sc_cpagebutton($parm)
+	function sc_cpagebutton($parm,$options)
 	{
 		$url = $this->sc_cpageurl();
 		
@@ -176,13 +176,23 @@ class cpage_shortcodes extends e_shortcode
 		{
 			return $url;
 		}
-		return '<a class="cpage btn btn-small" href="'.$url.'">Read More..</a>';
+		
+		parse_str($options,$options);
+		
+		$text = vartrue($options['text'], "Read more..");
+		$size = vartrue($options['size'], "");
+		$inc = ($size) ? " btn-".$size : "";
+		
+		return '<a class="cpage btn'.$inc.'" href="'.$url.'">'.$text.'</a>';
 	}	
 	
 	
 	function sc_cmenutitle($parm='')
-	{	
-		return e107::getParser()->toHTML($this->getParserVars()->menu_title, true, 'TITLE');
+	{
+		$tp 	= e107::getParser(); 
+		$title 	= $tp->glyph($this->page['menu_title']); // (preg_replace('/i_([\w]*)/',"<i class='i_$1'></i>",$this->page['menu_title']); 
+		
+		return $tp->toHTML($title, true, 'TITLE');
 	}	
 
 
@@ -197,6 +207,11 @@ class cpage_shortcodes extends e_shortcode
 	{
 		// print_a($this);
 		$img = e107::getParser()->thumbUrl($this->page['menu_image']);
+		if($parm == 'url')
+		{
+			return $img;	
+		}
+		
 		return "<img src='".$img."' alt='' />";
 	}	
 
