@@ -357,12 +357,14 @@ $text .= "
 						<td>".PRFLAN_5."</td>
 						<td>
 							".$frm->textarea('sitetag', $pref['sitetag'], 3, 59)."
+							<div class='field-help'>Used by some themes. Place 'SITETAG' in your theme to use this value.</div>
 						</td>
 					</tr>
 					<tr>
 						<td>".PRFLAN_6."</td>
 						<td>
 							".$frm->textarea('sitedescription', $pref['sitedescription'], 3, 80)."
+							<div class='field-help'>Used by some themes. Place 'SITEDESCRIPTION' in your theme to use this value.</div>
 						</td>
 					</tr>
 					
@@ -370,6 +372,7 @@ $text .= "
 						<td>".PRFLAN_9."</td>
 						<td>
 							".$frm->textarea('sitedisclaimer', str_replace(array('<', '>', '"'), array('&lt;', '&gt;', '&quot;'), $pref['sitedisclaimer']), 3, 80)."
+							<div class='field-help'>Used by some themes. Place 'SITEDISCLAIMER' in your theme to use this value.</div>
 						</td>
 					</tr>
 				</tbody>
