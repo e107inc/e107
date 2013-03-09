@@ -273,7 +273,7 @@ class e_menu
 		
 		if(is_numeric($mpath) || ($mname === false)) // Custom Page/Menu 
 		{
-			$query = ($mname === false) ? "page_theme = '".$mpath."' " :  "page_id=".intval($mpath)." "; // load by ID or load by menu-name (page_theme)
+			$query = ($mname === false) ? "menu_name = '".$mpath."' " :  "page_id=".intval($mpath)." "; // load by ID or load by menu-name (menu_name)
 			
 			$sql->select("page", "*", $query);
 			$page = $sql->fetch();

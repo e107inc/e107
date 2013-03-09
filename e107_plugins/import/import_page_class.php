@@ -48,7 +48,7 @@ class page_import
 			'page_password'			=> '',
 			'page_class'			=> '0',
 			'page_ip_restrict'		=> '',
-			'page_theme'			=> '',
+			'menu_name'			=> '',
 			'page_template'			=> 'default'
 
 	);

@@ -1445,6 +1445,11 @@ class e_db_mysql
 	}
 
 
+	function db_Field($table,$fieldid="",$key="", $retinfo = FALSE)
+	{
+		return $this->field($table,$fieldid,$key, $retinfo);		
+	}
+
 
 	/**
 	 *	Determines if a plugin field (and key) exist. OR if fieldid is numeric - return the field name in that position.
@@ -1455,7 +1460,7 @@ class e_db_mysql
 	 *	@param boolean $retinfo = FALSE - just returns array of field names. TRUE - returns all field info
 	 *	@return array|boolean - FALSE on error, field information on success
 	 */
-    function db_Field($table,$fieldid="",$key="", $retinfo = FALSE)
+    function field($table,$fieldid="",$key="", $retinfo = FALSE)
 	{
 		if(!$this->mySQLdefaultdb)
 		{

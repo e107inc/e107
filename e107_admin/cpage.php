@@ -182,7 +182,7 @@ class menu_admin_ui extends e_admin_ui
 		protected $pluginName = 'core';
 		protected $table = "page";
 		
-		protected $listQry = "SELECT p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE p.page_theme != '' "; // without any Order or Limit.
+		protected $listQry = "SELECT p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE p.menu_name != '' "; // without any Order or Limit.
 		//protected $editQry = "SELECT * FROM #comments WHERE comment_id = {ID}";
 		
 		protected $pid 			= "page_id";
@@ -196,7 +196,7 @@ class menu_admin_ui extends e_admin_ui
 		protected $fields = array(
 			'checkboxes'		=> array('title'=> '',				'type' => null, 		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'page_id'			=> array('title'=> 'ID',			'type'=>'text',   'tab' => 0,	'width'=>'5%', 'readParms'=>'','forced'=> TRUE),
-         	'page_theme' 		=> array('title'=> "Menu Name", 	'tab' => 0,	'type' => 'text', 		'width' => 'auto','nolist'=>true),
+         	'menu_name' 		=> array('title'=> "Menu Name", 	'tab' => 0,	'type' => 'text', 		'width' => 'auto','nolist'=>true),
 		
 		    'page_title'	   	=> array('title'=> LAN_TITLE, 		'tab' => 0,	'type' => 'text', 		'width'=>'25%', 'inline'=>true),
 		//	'page_template' 	=> array('title'=> 'Template', 		'tab' => 0,	'type' => 'dropdown', 	'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),     
@@ -207,7 +207,7 @@ class menu_admin_ui extends e_admin_ui
 			'options' 	=> array('title'=> LAN_OPTIONS, 'type' => null,	'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center'
 		);
 	
-		protected $fieldpref = array("page_id","page_theme", "page_title", "page_text");	
+		protected $fieldpref = array("page_id","menu_name", "page_title", "page_text");	
 		
 		
 		function init()
@@ -348,8 +348,8 @@ class page_admin_ui extends e_admin_ui
 		
 			'page_order' 		=> array('title'=> LAN_ORDER, 		'tab' => 1,	'type' => 'number', 'width' => 'auto', 'inline'=>true),
 			
-			// Menu Tab  XXX 'page_theme' is 'menu_name' - not caption. 
-			'page_theme' 		=> array('title'=> "Menu Name", 		'tab' => 2,	'type' => 'text', 		'width' => 'auto','nolist'=>true, "help"=>"Will be listed in the Menu-Manager under this name or may be called using {MENU|name} in your theme."),
+			// Menu Tab  XXX 'menu_name' is 'menu_name' - not caption. 
+			'menu_name' 		=> array('title'=> "Menu Name", 		'tab' => 2,	'type' => 'text', 		'width' => 'auto','nolist'=>true, "help"=>"Will be listed in the Menu-Manager under this name or may be called using {MENU|name} in your theme."),
 		   	'menu_title'	   	=> array('title'=> "Menu Title", 	'nolist'=>true, 'tab' => 2,	'type' => 'text', 'inline'=>true,		'width'=>'25%', "help"=>"Caption displayed on the menu item."),
 			'menu_text' 		=> array('title'=> "Menu Body",		'nolist'=>true, 'tab' => 2,	'type' => 'bbarea',		'data'=>'str',	'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1', 'writeParms'=>'media=page' ), 
 			'menu_template' 	=> array('title'=> "Menu Template", 'nolist'=>true, 'tab' => 2,	'type' => 'dropdown', 	'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
@@ -381,7 +381,7 @@ class page_admin_ui extends e_admin_ui
 			if($this->getMode() == 'menu' && ($this->getACtion() == 'list' || $this->getACtion() == 'inline'))
 			{
 			
-				$this->listQry = "SELECT p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE p.page_theme != '' "; // without any Order or Limit.
+				$this->listQry = "SELECT p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE p.menu_name != '' "; // without any Order or Limit.
 			
 				$this->batchDelete 	= false;
 				$this->fields = array(
@@ -390,7 +390,7 @@ class page_admin_ui extends e_admin_ui
 		       
 					'menu_image'		=> array('title' =>"Menu Image", 	 	'type' => 'image', 		'width' => '110px',	'thclass' => 'left', 'class' => "left", 'nosort' => false, 'readParms'=>'thumb=80&thumb_urlraw=0&thumb_aw=80','readonly'=>false),		  					
 				
-				  	'page_theme' 		=> array('title'=> "Menu Name", 	'type' => 'text', 	'inline'=>true,	'width' => 'auto','nolist'=>false, "help"=>"Will be listed in the Menu-Manager under this name"),
+				  	'menu_name' 		=> array('title'=> "Menu Name", 	'type' => 'text', 	'inline'=>true,	'width' => 'auto','nolist'=>false, "help"=>"Will be listed in the Menu-Manager under this name"),
 					'menu_template' 	=> array('title'=> "Menu Template",  	'type' => 'dropdown', 	'width' => 'auto', 'filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
        
 				// 	'page_author' 		=> array('title'=> LAN_AUTHOR, 		'tab' => 0,	'type' => 'user', 		'data'=>'int','width' => 'auto', 'thclass' => 'left'),
@@ -402,7 +402,7 @@ class page_admin_ui extends e_admin_ui
 					'options' 	=> array('title'=> LAN_OPTIONS, 'type' => null,	'noselector' => true, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center','readParms'=>'deleteClass=252')
 				);
 	
-				$this->fieldpref = array("page_id","page_theme", "menu_title", "menu_text", 'menu_image', 'menu_template');	
+				$this->fieldpref = array("page_id","menu_name", "menu_title", "menu_text", 'menu_image', 'menu_template');	
 			}
 				
 							
@@ -444,7 +444,7 @@ class page_admin_ui extends e_admin_ui
 			$sql = e107::getDb();
 			$mes = e107::getMessage();
 			
-			$menu_name = $tp->toDB($newdata['page_theme']); // not to be confused with menu-caption.
+			$menu_name = $tp->toDB($newdata['menu_name']); // not to be confused with menu-caption.
 			$menu_path = intval($id);
 				
 			if (!$sql->select('menus', 'menu_name', "`menu_path` = ".$menu_path." LIMIT 1")) 	
@@ -465,14 +465,14 @@ class page_admin_ui extends e_admin_ui
 		
 		function beforeCreate($newdata,$olddata)
 		{
-			$newdata['page_theme'] = preg_replace('/[^\w-*]/','',$newdata['page_theme']);
+			$newdata['menu_name'] = preg_replace('/[^\w-*]/','',$newdata['menu_name']);
 
 			return $newdata;	
 		}
 		
 		function beforeUpdate($newdata,$olddata)
 		{
-			$newdata['page_theme'] = preg_replace('/[^\w-*]/','',$newdata['page_theme']);
+			$newdata['menu_name'] = preg_replace('/[^\w-*]/','',$newdata['menu_name']);
 
 			return $newdata;	
 		}		

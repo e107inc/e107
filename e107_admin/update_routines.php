@@ -953,6 +953,7 @@ function update_706_to_800($type='')
 
 
 	/* -------------- Upgrade Entire Table Structure - Multi-Language Supported ----------------- */
+	// ONLY ever add fields, never deletes. 
 	
 	require_once(e_HANDLER."db_verify_class.php");
 	$dbv = new db_verify;
@@ -984,18 +985,14 @@ function update_706_to_800($type='')
 			return update_needed("Pages/Menus Table requires updating.");	
 		}
 		
-		if($sql->update('page',"menu_title = page_title, menu_text = page_text, menu_template='default' WHERE menu_title = '' AND menu_text = '' "))
+		if($sql->update('page',"menu_name = page_theme, menu_title = page_title, menu_text = page_text, menu_template='default' WHERE menu_title = '' AND menu_text = '' "))
 		{
+			$sql->gen("ALTER TABLE `#page` DROP `page_theme`");
 			$mes = e107::getMessage();
 			$mes->addDebug("Successfully updated pages/menus table to new format. ");
 		}
 	
 	}
-	
-	
-	
-		
-
 	
 	
 	// --- Notify Prefs
