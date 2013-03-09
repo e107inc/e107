@@ -715,7 +715,10 @@ class e_parse_shortcode
 	 */
 	function doCode($matches)
 	{
-		global $pref, $e107cache, $menu_pref, $sc_style, $parm, $sql;
+		global $pref, $e107cache, $menu_pref, $sc_style; 
+	//	global $parm, $sql; XXX Why Global $parm?
+		
+		$sql = e107::getDb();
 
 		if ($this->eVars)
 		{
@@ -728,27 +731,38 @@ class e_parse_shortcode
 		{
 			return $matches[0];
 		}
-
-		if (strpos($matches[1], '='))
+		
+		// look for the $sc_mode FIRST to avoid issues with '=' eg. {SETIMAGE=something|w=200}
+		// Shortcode Layout {CODE=PARM|MODE} XXX @Miro - do you also require support for the other way around? ie. {CODE|MODE=PARM} ?
+		
+		if (strpos($matches[1], '|'))
 		{
-			list($code, $parm) = explode('=', $matches[1], 2);
-		}
-		else
-		{
-			$code = $matches[1];
-			$parm = '';
-		}
-		//look for the $sc_mode
-		if (strpos($code, '|'))
-		{
-			list($code, $sc_mode) = explode("|", $code, 2);
-			$code = trim($code);
+			list($rawcode, $sc_mode) = explode("|", $matches[1], 2);
+			$rawcode = trim($rawcode);
 			$sc_mode = trim($sc_mode);
+//			
+	//		print_a("{".$matches[1]."}   RAWCODE: ".$rawcode."   MODE: ".$sc_mode."  "); 
 		}
 		else
 		{
 			$sc_mode = '';
+			$rawcode = $matches[1];
 		}
+		
+		if (strpos($rawcode, '='))
+		{
+			list($code, $parm) = explode('=', $rawcode, 2);
+	//		print_a("{".$matches[1]."}   CODE: ".code."   PARM: ".$parm."  MODE: ".$sc_mode."  "); 
+		}
+		else
+		{
+			$code = $rawcode;
+			$parm = '';
+		}
+	
+//	
+		
+		
 		$parm = trim($parm);
 		$parm = str_replace(array('[[', ']]'), array('{', '}'), $parm);
 
@@ -893,7 +907,15 @@ class e_parse_shortcode
 						}
 						elseif (function_exists($_function))
 						{
-							$ret = call_user_func($_function, $parm);
+							if($sc_mode)
+							{
+								$ret = call_user_func($_function, $parm, $sc_mode);	// v2.x
+							}
+							else 
+							{
+								$ret = call_user_func($_function, $parm);	
+							}
+							
 						}
 					}
 					else
