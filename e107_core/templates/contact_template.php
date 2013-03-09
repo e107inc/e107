@@ -52,9 +52,7 @@ $CONTACT_TEMPLATE['menu'] =  '
  
 
 
-if(!isset($CONTACT_FORM))
-{
-  $CONTACT_FORM = "
+  $CONTACT_TEMPLATE['form'] = "
 	<form action='".e_SELF."' method='post' id='contactForm' >
 	<table style='".USER_WIDTH."' cellpadding='1' cellspacing='7'>
 	{CONTACT_PERSON}
@@ -80,7 +78,9 @@ if(!isset($CONTACT_FORM))
 	</td></tr>
 	</table>
 	</form>";
-}
 
+			
+		
+	
 
 ?>

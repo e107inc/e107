@@ -16,13 +16,13 @@ e107::css('inline',"
 	.selectEmote 		{ display:inline-block; cursor:pointer;margin:3px }
 	body				{ text-align:center }
 	.area				{ border-left: 1px solid rgb(221, 221, 221); border-bottom: 1px solid rgb(221, 221, 221);
-					 	 background-color: rgb(246, 246, 246); margin-top:-1px 
+					 	 background-color: rgb(246, 246, 246); margin-top:-1px; padding:20px; 
 						}
 	span.badge			{ cursor: pointer }
 	span.label			{ cursor: pointer }
 	ul.glyphicons		{ list-style:none; margin-left:0px; font-size:120%}
 	ul.glyphicons  li	{ float:left; border-bottom:1px solid silver; cursor:pointer; width:190px; padding:5px; }
-	
+	a, li					{  outline: 0; }    
 
 ");
 
@@ -195,7 +195,7 @@ class e_bootstrap
 			$classLabel = ($key != '') ? " label-".$key : "";
 			$classBadge = ($key != '') ? " badge-".$key : "";	
 			
-			$text .= '<div style="padding:10px"><span class="label'.$classLabel.'">'.$type.'</span>&nbsp;';
+			$text .= '<div class="area"><span class="label'.$classLabel.'">'.$type.'</span>&nbsp;';
 			$text .= '<span class="badge'.$classBadge.'">'.$type.'</span>';
 			$text .= "</div>";
 		} 
@@ -359,7 +359,7 @@ class e_bootstrap
 		$frm = e107::getForm();
 		$sel = array(''=>'Dark Gray','icon-white'=>'White');	
 			
-		$text .= "<div style='padding:10px'>";
+		$text .= "<div  class='area'>";
 		$text .= "<div class='inline-form'>Color: ".$frm->selectbox('glyph-color',$sel)."     Custom: ".$frm->text('glyph-custom','').$frm->button('glyph-save','Go')."</div>";	
 					
 		$text .= "<ul class='glyphicons clearfix'>";

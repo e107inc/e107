@@ -255,12 +255,12 @@ class wysiwyg
 	
 		$cssFiles = $fl->get_files(THEME,"\.css",'',2);
 		
-		$css[] = "{e_WEB_ABS}js/bootstrap/css/bootstrap.min.css";
+		
 		foreach($cssFiles as $val)
 		{
 			$css[] = str_replace(THEME,THEME_ABS,$val['path'].$val['fname']);	
 		}
-
+		$css[] = "{e_WEB_ABS}js/bootstrap/css/bootstrap.min.css";
 		$content_css = vartrue($config['content_css'], implode(",",$css)); 
 		
 		$content_styles = array('Bootstrap Button' => 'btn btn-primary', 'Bootstrap Table' => 'table');

@@ -21,8 +21,15 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 require_once(HEADERF);
 
-if (!vartrue($CONTACT_FORM)) {
-	if (file_exists(THEME."contact_template.php")) {
+
+
+
+
+
+if (!vartrue($CONTACT_FORM))
+ {
+	if (file_exists(THEME."contact_template.php")) 
+	{
 		require_once(THEME."contact_template.php");
 	}
 	else
@@ -34,7 +41,7 @@ if (!vartrue($CONTACT_FORM)) {
 			exit;
 		}
 		
-		require_once(e_THEME."templates/contact_template.php");
+		$CONTACT_FORM = e107::getCoreTemplate('contact','form'); // require_once(e_THEME."templates/contact_template.php");
 	}
 }
 
