@@ -444,7 +444,7 @@ function update_706_to_800($type='')
 			if ($just_check) return update_needed();
 			while ($row = e107::getDb()->db_Fetch(MYSQL_ASSOC))
 			{
-				$status = e107::getDb('sql2')->db_Update('core',"e107_value=\"".convert_serialized($row['e107_value'])."\" WHERE e107_name='".$row['e107_name']."'");				
+				$status = e107::getDb('sql2')->update('core',"e107_value=\"".convert_serialized($row['e107_value'])."\" WHERE e107_name='".$row['e107_name']."'");				
 				$log->logMessage(LAN_UPDATE_22.$row['e107_name'], $status);
 			}	
 		}	
@@ -503,11 +503,11 @@ function update_706_to_800($type='')
 		foreach($changeMenuPaths as $val)
 		{
 			$qry = "SELECT menu_path FROM `#menus` WHERE menu_name = '".$val['menu']."' AND (menu_path='".$val['oldpath']."' || menu_path='".$val['oldpath']."/' ) LIMIT 1";
-			if($sql->db_Select_gen($qry))
+			if($sql->gen($qry))
 			{
 				if ($just_check) return update_needed('Menu path changed required:  '.$val['menu'].' ');
 				$updqry = "menu_path='".$val['newpath']."/' WHERE menu_name = '".$val['menu']."' AND (menu_path='".$val['oldpath']."' || menu_path='".$val['oldpath']."/' ) ";
-				$status = $sql->db_Update('menus', $updqry) ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
+				$status = $sql->update('menus', $updqry) ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
 				$log->logMessage(LAN_UPDATE_23.'<b>'.$val['menu'].'</b> : '.$val['oldpath'].' => '.$val['newpath'], $status); // LAN_UPDATE_25;				
 				// catch_error($sql);
 			}	
@@ -525,13 +525,13 @@ function update_706_to_800($type='')
 		//if online_extended is activated, we need to activate the new 'online' menu, and delete this record
 		if($row['menu_location']!=0)
 		{
-			$status = $sql->db_Update('menus', "menu_name='online_menu', menu_path='online/' WHERE menu_path='online_extended_menu' || menu_path='online_extended_menu/' ") ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
+			$status = $sql->update('menus', "menu_name='online_menu', menu_path='online/' WHERE menu_path='online_extended_menu' || menu_path='online_extended_menu/' ") ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
 			$log->logMessage(LAN_UPDATE_23."<b>online_menu</b> : online/", $status); 				
 		}
 		else
 		{	//else if the menu is not active
 			//we need to delete the online_extended menu row, and change the online_menu to online
-			$sql->db_Delete('menus', " menu_path='online_extended_menu' || menu_path='online_extended_menu/' ");
+			$sql->delete('menus', " menu_path='online_extended_menu' || menu_path='online_extended_menu/' ");
 			$log->logMessage(LAN_UPDATE_31, E_MESSAGE_DEBUG);
 		}
 		catch_error($sql);
@@ -542,7 +542,7 @@ function update_706_to_800($type='')
 	{
 		if ($just_check) return update_needed();
 
-		$status = $sql->db_Update('menus', "menu_path='online/' WHERE menu_path='online_menu' || menu_path='online_menu/' ") ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
+		$status = $sql->update('menus', "menu_path='online/' WHERE menu_path='online_menu' || menu_path='online_menu/' ") ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
 		$log->logMessage(LAN_UPDATE_23."<b>online_menu</b> : online/", $status); 		
 		catch_error($sql);
 	}
@@ -583,7 +583,7 @@ function update_706_to_800($type='')
 		if ($just_check) return update_needed('Comment table author field update');
 
 		if ((!$sql->db_Field('comments','comment_author_id'))		// Check to see whether new fields already added - maybe data copy failed part way through
-			&& (!$sql->db_Select_gen("ALTER TABLE `#comments`
+			&& (!$sql->gen("ALTER TABLE `#comments`
 				ADD COLUMN comment_author_id int(10) unsigned NOT NULL default '0' AFTER `comment_author`,
 				ADD COLUMN comment_author_name varchar(100) NOT NULL default '' AFTER `comment_author_id`")))
 		{
@@ -593,14 +593,14 @@ function update_706_to_800($type='')
 		}
 		else
 		{
-			if (FALSE ===$sql->db_Update('comments',"comment_author_id=SUBSTRING_INDEX(`comment_author`,'.',1),  comment_author_name=SUBSTRING(`comment_author` FROM POSITION('.' IN `comment_author`)+1)"))
+			if (FALSE ===$sql->update('comments',"comment_author_id=SUBSTRING_INDEX(`comment_author`,'.',1),  comment_author_name=SUBSTRING(`comment_author` FROM POSITION('.' IN `comment_author`)+1)"))
 			{
 				// Flag error
 				$log->logMessage(LAN_UPDATE_21.'comments', E_MESSAGE_ERROR); 	
 			}
 			else
 			{	// Delete superceded field - comment_author
-				if (!$sql->db_Select_gen("ALTER TABLE `#comments` DROP COLUMN `comment_author`"))
+				if (!$sql->gen("ALTER TABLE `#comments` DROP COLUMN `comment_author`"))
 				{
 					// Flag error
 					$log->logMessage(LAN_UPDATE_24.'comments - comment_author', E_MESSAGE_ERROR); 	
@@ -667,7 +667,7 @@ function update_706_to_800($type='')
 			if (str_replace('varchar', 'char', strtolower($row['Type'])) != 'char(250)')
 			{
 				if ($just_check) return update_needed('Update newsfeed field definition');
-				$status = $sql->db_Select_gen("ALTER TABLE `".MPREFIX."newsfeed` MODIFY `newsfeed_url` VARCHAR(250) NOT NULL DEFAULT '' ") ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+				$status = $sql->gen("ALTER TABLE `".MPREFIX."newsfeed` MODIFY `newsfeed_url` VARCHAR(250) NOT NULL DEFAULT '' ") ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 				//$updateMessages[] = LAN_UPDATE_40;
 				$log->logMessage(LAN_UPDATE_21."newsfeed",$status);
 			//	catch_error($sql);
@@ -684,7 +684,7 @@ function update_706_to_800($type='')
 			if (str_replace('varchar', 'char', strtolower($row['Type'])) != 'char(255)')
 			{
 				if ($just_check) return update_needed('Update download table field definition');
-				$sql->db_Select_gen("ALTER TABLE `#download` MODIFY `download_url` VARCHAR(255) NOT NULL DEFAULT '' ");
+				$sql->gen("ALTER TABLE `#download` MODIFY `download_url` VARCHAR(255) NOT NULL DEFAULT '' ");
 				//$updateMessages[] = LAN_UPDATE_52;  //FIXME
 				$log->logMessage(LAN_UPDATE_52, E_MESSAGE_SUCCESS);
 				catch_error($sql);
@@ -695,13 +695,13 @@ function update_706_to_800($type='')
 	//TODO use generic function for this update. 
 	if ($sql->db_Table_exists('download_mirror'))
 	{	// Need to extend field download_url varchar(255) NOT NULL default ''
-		if ($sql->db_Select_gen("SHOW FIELDS FROM ".MPREFIX."download_mirror LIKE 'mirror_url'"))
+		if ($sql->gen("SHOW FIELDS FROM ".MPREFIX."download_mirror LIKE 'mirror_url'"))
 		{
 			$row = $sql -> db_Fetch();
 			if (str_replace('varchar', 'char', strtolower($row['Type'])) != 'char(255)')
 			{
 				if ($just_check) return update_needed('Update download mirror table field definition');
-				$sql->db_Select_gen("ALTER TABLE `".MPREFIX."download_mirror` MODIFY `mirror_url` VARCHAR(255) NOT NULL DEFAULT '' ");
+				$sql->gen("ALTER TABLE `".MPREFIX."download_mirror` MODIFY `mirror_url` VARCHAR(255) NOT NULL DEFAULT '' ");
 				$log->logMessage(LAN_UPDATE_53, E_MESSAGE_SUCCESS);
 				
 				catch_error($sql);
@@ -733,7 +733,7 @@ function update_706_to_800($type='')
 	if ($sql->db_Table_exists('dblog') && !$sql->db_Table_exists('admin_log'))
 	{
 		if ($just_check) return update_needed('Rename dblog to admin_log');
-		$sql->db_Select_gen('ALTER TABLE `'.MPREFIX.'dblog` RENAME `'.MPREFIX.'admin_log`');
+		$sql->gen('ALTER TABLE `'.MPREFIX.'dblog` RENAME `'.MPREFIX.'admin_log`');
 		catch_error($sql);
 		//$updateMessages[] = LAN_UPDATE_43; 
 		$log->logMessage(LAN_UPDATE_43, E_MESSAGE_DEBUG);
@@ -744,7 +744,7 @@ function update_706_to_800($type='')
 	if ($sql->db_Table_exists('rl_history') && !$sql->db_Table_exists('dblog'))
 	{
 		if ($just_check) return update_needed('Rename rl_history to dblog');
-		$sql->db_Select_gen('ALTER TABLE `'.MPREFIX.'rl_history` RENAME `'.MPREFIX.'dblog`');
+		$sql->gen('ALTER TABLE `'.MPREFIX.'rl_history` RENAME `'.MPREFIX.'dblog`');
 		//$updateMessages[] = LAN_UPDATE_44; 
 		$log->logMessage(LAN_UPDATE_44, E_MESSAGE_DEBUG);
 		catch_error($sql);
@@ -762,7 +762,7 @@ function update_706_to_800($type='')
 			$defs = $db_parser->get_table_def($nt,e_ADMIN.'sql/core_sql.php');
 			if (count($defs)) // **** Add in table here
 			{	
-				$status = $sql->db_Select_gen('CREATE TABLE `'.MPREFIX.$defs[0][1].'` ('.$defs[0][2].') TYPE='.$defs[0][3]) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+				$status = $sql->gen('CREATE TABLE `'.MPREFIX.$defs[0][1].'` ('.$defs[0][2].') TYPE='.$defs[0][3]) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 			//	$updateMessages[] = LAN_UPDATE_45.$defs[0][1];		
 				$log->logMessage(LAN_UPDATE_27.$defs[0][1], $status);
 				// catch_error($sql);
@@ -820,7 +820,7 @@ function update_706_to_800($type='')
 				$log->logMessage("Update Query used: ".$qry, E_MESSAGE_DEBUG);	
 			} 
 		  
-			$status = $sql->db_Select_gen($qry) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR; 
+			$status = $sql->gen($qry) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR; 
 			$log->logMessage(LAN_UPDATE_21.$ct, $status);
 		  	catch_error($sql);
 		}
@@ -883,7 +883,7 @@ function update_706_to_800($type='')
 							 $message = "Update Query used: ".$qry."<br />";
 							 $log->logMessage($message, E_MESSAGE_DEBUG);	
 						}
-						$sql->db_Select_gen($qry);
+						$sql->gen($qry);
 						$updateMessages[] = LAN_UPDATE_51.$ct;  
 						$log->logMessage(LAN_UPDATE_51.$ct, E_MESSAGE_SUCCESS);
 						catch_error($sql);
@@ -901,7 +901,7 @@ function update_706_to_800($type='')
 		if ($sql->db_Table_exists($ot))
 		{
 			if ($just_check) return update_needed("Delete table: ".$ot);
-			$status = $sql->db_Select_gen('DROP TABLE `'.MPREFIX.$ot.'`') ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
+			$status = $sql->gen('DROP TABLE `'.MPREFIX.$ot.'`') ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
 			$log->logMessage(LAN_UPDATE_25.$ot, $status);			
 		}
 	}
@@ -918,7 +918,7 @@ function update_706_to_800($type='')
 		  if (strtolower($field_info['Type']) != 'varchar(45)')
 		  {
             if ($just_check) return update_needed('Update IP address field '.$f.' in table '.$t);
-			$status = $sql->db_Select_gen("ALTER TABLE `".MPREFIX.$t."` MODIFY `{$f}` VARCHAR(45) NOT NULL DEFAULT '';") ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
+			$status = $sql->gen("ALTER TABLE `".MPREFIX.$t."` MODIFY `{$f}` VARCHAR(45) NOT NULL DEFAULT '';") ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
 			$log->logMessage(LAN_UPDATE_26.$t.' - '.$f, $status);				
 			// catch_error($sql);
 		  }
@@ -985,7 +985,7 @@ function update_706_to_800($type='')
 			return update_needed("Pages/Menus Table requires updating.");	
 		}
 		
-		if($sql->update('page',"menu_name = page_theme, menu_title = page_title, menu_text = page_text, menu_template='default' WHERE menu_title = '' AND menu_text = '' "))
+		if($sql->update('page',"menu_name = page_theme, menu_title = page_title, menu_text = page_text, menu_template='default', page_title = '', page_text = '' WHERE menu_title = '' AND menu_text = '' "))
 		{
 			$sql->gen("ALTER TABLE `#page` DROP `page_theme`");
 			$mes = e107::getMessage();
@@ -1032,7 +1032,7 @@ function update_706_to_800($type='')
 		$s_prefs = $tp -> toDB($notify_prefs);
 		$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
 		// Could we use $sysprefs->set($s_prefs,'notify_prefs') instead - avoids caching problems  ????
-		$status = ($sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'") !== FALSE) ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
+		$status = ($sql -> update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'") !== FALSE) ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
 		$message = str_replace('--COUNT--',$nt_changed,LAN_UPDATE_20);
 		$log->logMessage($message, $status);
 	}
@@ -1063,7 +1063,7 @@ function update_706_to_800($type='')
 			);
 			$mailHandler->mailtoDb($mailRecord, TRUE);
 			$mailHandler->saveEmail($mailRecord, TRUE);
-			$sql2->db_Delete('generic', 'gen_id='.intval($row['gen_id']));		// Delete as we go in case operation fails part way through
+			$sql2->delete('generic', 'gen_id='.intval($row['gen_id']));		// Delete as we go in case operation fails part way through
 			$i++;
 		}
 		unset($mailHandler);
@@ -1166,15 +1166,15 @@ function update_706_to_800($type='')
 	// Media Category Update
 	if($sql->db_Field("core_media_cat","media_cat_nick"))
 	{
-		$count = $sql->db_Select_gen("SELECT * FROM `#core_media_cat` WHERE media_cat_nick = '_common'  ");
+		$count = $sql->gen("SELECT * FROM `#core_media_cat` WHERE media_cat_nick = '_common'  ");
 		if($count ==1)
 		{
 			if ($just_check) return update_needed('Media-Manager Categories needs to be updated.');	
-			$sql->db_Update('core_media_cat', "media_cat_owner = media_cat_nick, media_cat_category = media_cat_nick WHERE media_cat_nick REGEXP '_common|news|page|_icon_16|_icon_32|_icon_48|_icon_64' ");
-			$sql->db_Update('core_media_cat', "media_cat_owner = '_icon', media_cat_category = media_cat_nick WHERE media_cat_nick REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' ");
-			$sql->db_Update('core_media_cat', "media_cat_owner = 'download', media_cat_category='download_image' WHERE media_cat_nick = 'download' ");
-			$sql->db_Update('core_media_cat', "media_cat_owner = 'download', media_cat_category='download_thumb' WHERE media_cat_nick = 'downloadthumb' ");
-			$sql->db_Update('core_media_cat', "media_cat_owner = 'news', media_cat_category='news_thumb' WHERE media_cat_nick = 'newsthumb' ");
+			$sql->update('core_media_cat', "media_cat_owner = media_cat_nick, media_cat_category = media_cat_nick WHERE media_cat_nick REGEXP '_common|news|page|_icon_16|_icon_32|_icon_48|_icon_64' ");
+			$sql->update('core_media_cat', "media_cat_owner = '_icon', media_cat_category = media_cat_nick WHERE media_cat_nick REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' ");
+			$sql->update('core_media_cat', "media_cat_owner = 'download', media_cat_category='download_image' WHERE media_cat_nick = 'download' ");
+			$sql->update('core_media_cat', "media_cat_owner = 'download', media_cat_category='download_thumb' WHERE media_cat_nick = 'downloadthumb' ");
+			$sql->update('core_media_cat', "media_cat_owner = 'news', media_cat_category='news_thumb' WHERE media_cat_nick = 'newsthumb' ");
 			e107::getMessage()->addDebug("core-media-cat Categories and Ownership updated");
 			if(mysql_query("ALTER TABLE `".MPREFIX."core_media_cat` DROP `media_cat_nick`"))
 			{
@@ -1194,34 +1194,34 @@ function update_706_to_800($type='')
 	
 	
 	// Media Update
-	$count = $sql->db_Select_gen("SELECT * FROM `#core_media` WHERE media_category = 'newsthumb' OR media_category = 'downloadthumb'  LIMIT 1 ");
+	$count = $sql->gen("SELECT * FROM `#core_media` WHERE media_category = 'newsthumb' OR media_category = 'downloadthumb'  LIMIT 1 ");
 	if($count ==1)
 	{
 		if ($just_check) return update_needed('Media-Manager Data needs to be updated.');
-		$sql->db_Update('core_media', "media_category='download_image' WHERE media_category = 'download' ");
-		$sql->db_Update('core_media', "media_category='download_thumb' WHERE media_category = 'downloadthumb' ");
-		$sql->db_Update('core_media', "media_category='news_thumb' WHERE media_category = 'newsthumb' ");		
+		$sql->update('core_media', "media_category='download_image' WHERE media_category = 'download' ");
+		$sql->update('core_media', "media_category='download_thumb' WHERE media_category = 'downloadthumb' ");
+		$sql->update('core_media', "media_category='news_thumb' WHERE media_category = 'newsthumb' ");		
 		e107::getMessage()->addDebug("core-media Category names updated");
 	}
 
 
 	// Media Update - core media and core-file. 
-	$count = $sql->db_Select_gen("SELECT * FROM `#core_media` WHERE media_category = '_common' LIMIT 1 ");
+	$count = $sql->gen("SELECT * FROM `#core_media` WHERE media_category = '_common' LIMIT 1 ");
 	if($count ==1)
 	{
 		if ($just_check) return update_needed('Media-Manager Category Data needs to be updated.');
-		$sql->db_Update('core_media', "media_category='_common_image' WHERE media_category = '_common' ");
+		$sql->update('core_media', "media_category='_common_image' WHERE media_category = '_common' ");
 		e107::getMessage()->addDebug("core-media _common Category updated");
 	}
 	
 	
 	
 	// Media Update - core media and core-file. CATEGORY
-	$count = $sql->db_Select_gen("SELECT * FROM `#core_media_cat` WHERE media_cat_category = '_common' LIMIT 1 ");
+	$count = $sql->gen("SELECT * FROM `#core_media_cat` WHERE media_cat_category = '_common' LIMIT 1 ");
 	if($count ==1)
 	{
 		if ($just_check) return update_needed('Media-Manager Category Data needs to be updated.');
-		$sql->db_Update('core_media_cat', "media_cat_category='_common_image' WHERE media_cat_category = '_common' ");
+		$sql->update('core_media_cat', "media_cat_category='_common_image' WHERE media_cat_category = '_common' ");
 		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_file', '(Common Area)', 'Media in this category will be available in all areas of admin. ', 253, '', 0);");
 		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_file', 'Download Files', '', 253, '', 0);");		
 		e107::getMessage()->addDebug("core-media-cat _common Category updated");
@@ -1230,7 +1230,7 @@ function update_706_to_800($type='')
 
 	
 	
-	$count = $sql->db_Select_gen("SELECT * FROM `#core_media_cat` WHERE `media_cat_owner` = '_common' LIMIT 1 ");
+	$count = $sql->gen("SELECT * FROM `#core_media_cat` WHERE `media_cat_owner` = '_common' LIMIT 1 ");
 
 	if($count != 1)
 	{
@@ -1262,7 +1262,7 @@ function update_706_to_800($type='')
 	$fl = e107::getFile();
 	$dl_images = $fl->get_files(e_FILE.'downloadimages');
 
-	if(count($dl_images) && !$sql->db_Select_gen("SELECT * FROM `#core_media` WHERE `media_category` = 'download_image' "))
+	if(count($dl_images) && !$sql->gen("SELECT * FROM `#core_media` WHERE `media_category` = 'download_image' "))
 	{
 		if ($just_check) return update_needed('Import Download Images into Media Manager');
 		$med->import('download_image',e_FILE.'downloadimages');
@@ -1272,7 +1272,7 @@ function update_706_to_800($type='')
 	$dl_files = $fl->get_files(e_FILE.'downloads', "","standard",5); // don't use e_DOWNLOAD or a loop may occur.
 	$public_files = $fl->get_files(e_FILE.'public');
 	
-	if((count($dl_files) || count($public_files)) && !$sql->db_Select_gen("SELECT * FROM `#core_media` WHERE `media_category` = 'download_file' "))
+	if((count($dl_files) || count($public_files)) && !$sql->gen("SELECT * FROM `#core_media` WHERE `media_category` = 'download_file' "))
 	{
 		if ($just_check) return update_needed('Import Download and Public Files into Media Manager');
 	// check for file-types;
@@ -1300,7 +1300,7 @@ function update_706_to_800($type='')
 
 
 			
-	$count = $sql->db_Select_gen("SELECT * FROM `#core_media_cat` WHERE media_cat_owner='_icon'  ");
+	$count = $sql->gen("SELECT * FROM `#core_media_cat` WHERE media_cat_owner='_icon'  ");
 	
 	if(!$count)
 	{
@@ -1509,7 +1509,7 @@ function copy_user_timezone()
 	{
 		while ($row = $sql->db_Fetch())
 		{
-			$sql2->db_Update('user_extended',"`user_timezone`='{$row['user_timezone']}' WHERE `user_extended_id`={$row['user_id']}");
+			$sql2->update('user_extended',"`user_timezone`='{$row['user_timezone']}' WHERE `user_extended_id`={$row['user_id']}");
 		}
 	}
 	return TRUE;		// All done!
