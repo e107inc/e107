@@ -65,6 +65,8 @@ class e_parse extends e_parser
 
 	// Highlight query
 	var $e_query;
+	
+	public $thumbWidth = 100;
 
 	// Set up the defaults
 	var $e_optDefault = array(
@@ -1833,7 +1835,7 @@ class e_parse extends e_parser
 		}
 		else
 		{
-			if(!vartrue($options['w']) && !vartrue($options['h'])) $options['w'] = 100;
+			if(!vartrue($options['w']) && !vartrue($options['h'])) $options['w'] = $this->thumbWidth;
 			$thurl .= 'w='.((integer) vartrue($options['w'], 0)).'&amp;h='.((integer) vartrue($options['h'], 0));
 		}
 		
@@ -2444,6 +2446,13 @@ class e_parser
 	}
 	
 	
+	
+	// Parse i_xxxx to bootstrap glyph format. 
+	public function glyph($text)
+	{
+		$text = preg_replace('/\[(i_[\w]*)\]/',"<i class='$1'></i>", $text); 		
+		return $text;	
+	}
 	
 	
     /**
