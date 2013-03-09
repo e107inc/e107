@@ -30,6 +30,28 @@ $sc_style['CONTACT_IMAGECODE_INPUT']['pre'] = "";
 $sc_style['CONTACT_IMAGECODE_INPUT']['post'] = "</td></tr>";
 
 
+
+$CONTACT_TEMPLATE['menu'] =  '
+	<div>
+		<div class="control-group">
+			<label >Name</label>
+   			 {CONTACT_NAME}
+		 </div>
+		 
+		<div class="control-group">
+			<label class="control-label" for="contactEmail">Email</label>
+				{CONTACT_EMAIL}
+		</div>
+		<div class="control-group">
+			<label>Comments</label>
+			{CONTACT_BODY=rows=5&cols=50}							
+		</div>
+		{CONTACT_SUBMIT_BUTTON}
+	</div>       
+ ';
+ 
+
+
 if(!isset($CONTACT_FORM))
 {
   $CONTACT_FORM = "
