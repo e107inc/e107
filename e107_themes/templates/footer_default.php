@@ -320,8 +320,8 @@ unset($uclist, $bcache);
 
 if(!deftrue('e_POWEREDBY_DISABLE')) 
 {
-	// No IDs or Classes - hinder js disable. 
-	echo "<div style='margin:20px; text-align:center;position: display:block; position: relative; bottom: 90px; z-index:30000; opacity:1.0; color: silver'>Proudly powered by <a style='color:silver' href='http://e107.org/' title='e107 Content Management System'>e107</a></div>";
+	// No IDs or Classes - hinder js disable. 	
+	echo "<div style='text-align:center; display:block; position: absolute; width:100%;height:20px; margin-top:-30px; z-index:30000; opacity:1.0; color: silver'>Proudly powered by <a style='color:silver' href='http://e107.org/' title='e107 Content Management System'>e107</a></div>";
 }
 echo "\n</body>\n</html>";
 
