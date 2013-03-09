@@ -390,7 +390,7 @@ class page_admin_ui extends e_admin_ui
 		       
 					'menu_image'		=> array('title' =>"Menu Image", 	 	'type' => 'image', 		'width' => '110px',	'thclass' => 'left', 'class' => "left", 'nosort' => false, 'readParms'=>'thumb=80&thumb_urlraw=0&thumb_aw=80','readonly'=>false),		  					
 				
-				  	'page_theme' 		=> array('title'=> "Menu Name", 	'type' => 'text', 		'width' => 'auto','nolist'=>true, "help"=>"Will be listed in the Menu-Manager under this name"),
+				  	'page_theme' 		=> array('title'=> "Menu Name", 	'type' => 'text', 	'inline'=>true,	'width' => 'auto','nolist'=>false, "help"=>"Will be listed in the Menu-Manager under this name"),
 					'menu_template' 	=> array('title'=> "Menu Template",  	'type' => 'dropdown', 	'width' => 'auto', 'filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
        
 				// 	'page_author' 		=> array('title'=> LAN_AUTHOR, 		'tab' => 0,	'type' => 'user', 		'data'=>'int','width' => 'auto', 'thclass' => 'left'),
@@ -411,7 +411,7 @@ class page_admin_ui extends e_admin_ui
 			unset($this->templates['panel'], $this->templates['nav']);
 			
 			$this->fields['page_template']['writeParms'] = $this->templates;			
-			$this->fields['menu_template']['writeParms'] = e107::getLayouts('', 'menu', 'front', '', false, false); 
+			$this->fields['menu_template']['writeParms'] = e107::getLayouts('', 'menu', 'front', '', true, false); 
 			
 			$sql = e107::getDb();
 			$sql->gen("SELECT chapter_id,chapter_name,chapter_parent FROM #page_chapters ORDER BY chapter_parent asc, chapter_order");
@@ -465,11 +465,17 @@ class page_admin_ui extends e_admin_ui
 		
 		function beforeCreate($newdata,$olddata)
 		{
+			$newdata['page_theme'] = preg_replace('/[^\w-*]/','',$newdata['page_theme']);
+
 			return $newdata;	
-			
 		}
 		
-		
+		function beforeUpdate($newdata,$olddata)
+		{
+			$newdata['page_theme'] = preg_replace('/[^\w-*]/','',$newdata['page_theme']);
+
+			return $newdata;	
+		}		
 		
 		// Update Menu in Menu Table
 		function afterUpdate($newdata,$olddata,$id)
