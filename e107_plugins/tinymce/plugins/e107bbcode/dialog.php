@@ -20,8 +20,8 @@ e107::css('inline',"
 						}
 	span.badge			{ cursor: pointer }
 	span.label			{ cursor: pointer }
-	ul.glyphicons		{ list-style:none; margin-left:0px}
-	ul.glyphicons  li	{ float:left; border-bottom:1px solid silver; cursor:pointer; width:160px; padding:5px; }
+	ul.glyphicons		{ list-style:none; margin-left:0px; font-size:120%}
+	ul.glyphicons  li	{ float:left; border-bottom:1px solid silver; cursor:pointer; width:190px; padding:5px; }
 	
 
 ");
@@ -58,12 +58,15 @@ $(document).ready(function()
 		});
 		
 	
-		$('ul.glyphicons li').click(function () {
+		$('ul.glyphicons li, #glyph-save').click(function () {
 		
-				//var color = $('input:select[name=glyph-color]:selected').val();
-			//	alert(color);
-                var cls = $(this).find('i').attr('class');	
+				var color = $('#glyph-color').val();	
+				var custom = $('#glyph-custom').val();			
+                var cls = (custom != '') ? custom : $(this).find('i').attr('class');	
+	
                 var html = '<i class=\"' + cls + '\"></i>&nbsp;';
+				
+			//	alert(html);
 				tinyMCEPopup.editor.execCommand('mceInsertContent', false, html);
 				tinyMCEPopup.close();
 		});
@@ -354,10 +357,10 @@ class e_bootstrap
        );					
 
 		$frm = e107::getForm();
-		$sel = array(''=>'Gray','icon-white'=>'White');	
+		$sel = array(''=>'Dark Gray','icon-white'=>'White');	
 			
 		$text .= "<div style='padding:10px'>";
-		$text .= "<div>Color: ".$frm->selectbox('glyph-color',$sel)."</div>";	
+		$text .= "<div class='inline-form'>Color: ".$frm->selectbox('glyph-color',$sel)."     Custom: ".$frm->text('glyph-custom','').$frm->button('glyph-save','Go')."</div>";	
 					
 		$text .= "<ul class='glyphicons clearfix'>";
 		foreach($icons as $ic)

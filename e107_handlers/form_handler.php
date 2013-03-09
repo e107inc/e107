@@ -1417,6 +1417,23 @@ class e_form
 		return $this->admin_button('etrigger_'.$name, $value, $action, $label, $options);
 	}
 
+
+	/**
+	 * Generic Button Element. 
+	 * @param string $name
+	 * @param string $value
+	 * @param string $action [optional] default is submit
+	 * @param string $label [optional]
+	 * @param string|array $options [optional]
+	 * @return string
+	 */
+	public function button($name, $value, $action = 'submit', $label = '', $options = array())
+	{
+		return $this->admin_button($name, $value, $action, $label, $options);
+		
+	}
+
+	
 	/**
 	 *
 	 * @param string $name
