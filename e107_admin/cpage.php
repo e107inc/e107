@@ -293,7 +293,7 @@ class page_admin_ui extends e_admin_ui
 		protected $pluginName   	= 'core';
 		protected $table        	= "page";
 		
-		protected $listQry      	= "SELECT p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE p.page_theme = '' "; // without any Order or Limit.
+		protected $listQry      	= "SELECT p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE p.page_title != '' "; // without any Order or Limit.
 		//protected $editQry = "SELECT * FROM #comments WHERE comment_id = {ID}";
 		
 		protected $pid 				= "page_id";
