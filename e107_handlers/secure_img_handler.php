@@ -103,7 +103,8 @@ class secure_image
 	function r_image()
 	{
 		$code = $this->create_code();
-		return "<img src='".e_HTTP.$this->HANDLERS_DIRECTORY."secure_img_render.php?{$code}' alt='' />";
+		return "<img src='".e_HTTP.$this->HANDLERS_DIRECTORY."secure_img_render.php?{$code}' alt='' />
+		<input type='text' id='email2' name='email2' value='' style='display:none' />";
 	}
 
 
