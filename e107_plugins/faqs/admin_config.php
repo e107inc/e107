@@ -39,10 +39,10 @@ class faq_admin extends e_admin_dispatcher
 	);	
 
 	protected $adminMenu = array(
-		'main/list'		=> array('caption'=> LAN_MANAGE, 'perm' => '0'),
-		'main/create'	=> array('caption'=> LANA_FAQ_CREATE_ITEM, 'perm' => '0'),
-		'cat/list' 		=> array('caption'=> LANA_FAQ_CATEGORIES, 'perm' => '0'),
-		'cat/create' 	=> array('caption'=> LANA_FAQ_CREATE_CATEGORY, 'perm' => '0'),
+		'main/list'		=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
+		'main/create'	=> array('caption'=> LANA_FAQ_CREATE_ITEM, 'perm' => 'P'),
+		'cat/list' 		=> array('caption'=> LANA_FAQ_CATEGORIES, 'perm' => 'P'),
+		'cat/create' 	=> array('caption'=> LANA_FAQ_CREATE_CATEGORY, 'perm' => 'P'),
 		'main/prefs' 	=> array('caption'=> LAN_PREFS, 'perm' => '0'),
 	//	'main/custom'	=> array('caption'=> 'Custom Page', 'perm' => '0')		
 	);
