@@ -58,8 +58,8 @@ class gallery_shortcodes extends e_shortcode
 		$tp 		= e107::getParser();	
 		$parms 		= eHelper::scParams($parm);
 		
-		$w 			= vartrue($parms['w']) ? $parms['w'] : 190;
-		$h 			= vartrue($parms['h']) ? $parms['h'] : 150;	
+		$w 			= vartrue($parms['w']) ? $parms['w'] : 160;
+		$h 			= vartrue($parms['h']) ? $parms['h'] : 120;	
 		
 		$class 		= ($this->slideMode == TRUE) ? 'gallery-slideshow-thumb' : 'gallery-thumb';
 		$rel 		= ($this->slideMode == TRUE) ? 'lightbox.SlideGallery' : 'lightbox.Gallery';
@@ -117,8 +117,8 @@ class gallery_shortcodes extends e_shortcode
 	{
 		$parms = eHelper::scParams($parm);
 		
-		$w 			= vartrue($parms['w']) ? $parms['w'] : 190;
-		$h 			= vartrue($parms['h']) ? $parms['h'] : 150;	
+		$w 			= vartrue($parms['w']) ? $parms['w'] : 260;
+		$h 			= vartrue($parms['h']) ? $parms['h'] : 180;	
 		$att 		= 'aw='.$w.'&ah='.$h.'&x=1'; // 'aw=190&ah=150';
 		
 		$url = e107::getUrl()->create('gallery/index/list', $this->var);
