@@ -8,40 +8,48 @@
 
   
 $GALLERY_TEMPLATE['LIST_START'] = 
-	"<div class='gallery-list-start'>";
+	'<ul class="thumbnails gallery">';
 
 		
-$GALLERY_TEMPLATE['LIST_ITEM'] = 
-	"<div class='gallery-list-item'>
-	<div>{GALLERY_THUMB}</div>
-	<div class='gallery-list-caption'>{GALLERY_CAPTION}</div>
+$GALLERY_TEMPLATE['LIST_ITEM'] =  '
+ <li class="span2">
+	<div class="thumbnail">
+		{GALLERY_THUMB}
+		<h5>{GALLERY_CAPTION}</h5>
 	</div>
-	";
+</li>';
 
 $GALLERY_TEMPLATE['LIST_END'] = 
-	"</div>
-	<div class='gallery-list-end' >
-	<div class='gallery-list-nextprev'>{GALLERY_NEXTPREV}</div>
-	<div class='gallery-list-back'><a href='{GALLERY_BASEURL}'>Back to Categories</a></div>
+	"</ul>
+	<div class='center' >
+		<div class='gallery-list-nextprev'>{GALLERY_NEXTPREV}</div>
+		<div class='gallery-list-back'><a class='btn' href='{GALLERY_BASEURL}'>Back to Categories</a></div>
 	</div>
-	";
+";
 	
 	
 $GALLERY_TEMPLATE['CAT_START'] = 
-	"<div class='gallery-cat-start'>";
+	'<ul class="thumbnails gallery-cat">';
+	
+	    
+$GALLERY_TEMPLATE['CAT_ITEM'] = '
+ <li class="span3">
+	<div class="thumbnail">
+		{GALLERY_CAT_THUMB}
+		<h3>{GALLERY_CAT_TITLE}</h3>
+	</div>
+</li>';
 
-		
+/*		
 $GALLERY_TEMPLATE['CAT_ITEM'] = 
 	"<div class='gallery-cat-item'>
 	<div class='gallery-cat-thumb'>{GALLERY_CAT_THUMB}</div>
 	<div class='gallery-cat-title'><h3>{GALLERY_CAT_TITLE}</h3></div>
 	</div>
 	";
-
+*/
 $GALLERY_TEMPLATE['CAT_END'] = 
-	"</div>
-	<div class='gallery-cat-end'>
-	</div>
+	"</ul>
 	";
 
 // {GALLERY_SLIDESHOW=X}  X = Gallery Category. Default: 1 (ie. 'gallery_1') Overrides preference in admin. 
