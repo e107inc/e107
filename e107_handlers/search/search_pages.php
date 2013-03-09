@@ -24,7 +24,7 @@ $search_fields = array('page_title', 'page_text');
 $weights = array('1.2', '0.6');
 $no_results = LAN_198;
 
-$where = "page_class IN (".USERCLASS_LIST.") AND `page_theme` = '' AND".$advanced_where;
+$where = "page_class IN (".USERCLASS_LIST.") AND `menu_name` = '' AND".$advanced_where;
 $order = array('page_datestamp' => DESC);
 $table = "page";
 

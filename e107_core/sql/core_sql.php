@@ -383,10 +383,9 @@ CREATE TABLE page (
   page_password varchar(50) NOT NULL default '',
   page_class varchar(250) NOT NULL default '',
   page_ip_restrict text NOT NULL,
-  page_theme varchar(50) NOT NULL default '',
   page_template varchar(50) NOT NULL default '',
   page_order int(4) unsigned NOT NULL default '9999',
-  
+  menu_name varchar(50) NOT NULL default '',  
   menu_title varchar(50) NOT NULL default '',  
   menu_text mediumtext NOT NULL,
   menu_image varchar(250) NOT NULL default '',

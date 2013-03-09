@@ -80,7 +80,7 @@ class core_page_sef_noid_url extends eUrlConfig
 		
 		$sql = e107::getDb('url');
 		$name = e107::getParser()->toDB($name);
-		if($sql->db_Select('page', 'page_id', "page_theme='' AND page_sef='{$name}'")) 
+		if($sql->db_Select('page', 'page_id', "menu_name='' AND page_sef='{$name}'")) 
 		{
 			$name = $sql->db_Fetch();
 			$request->setRequestParam('name', $name['page_id']);

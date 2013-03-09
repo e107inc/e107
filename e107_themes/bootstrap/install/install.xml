@@ -208,7 +208,7 @@
 			<field name="page_password"></field>
 			<field name="page_class">0</field>
 			<field name="page_ip_restrict"></field>
-			<field name="page_theme"></field>
+			<field name="menu_name"></field>
 			<field name="page_template">default</field>
 			<field name="page_order">9999</field>
 		</item>
@@ -227,7 +227,7 @@
 			<field name="page_password"></field>
 			<field name="page_class">0</field>
 			<field name="page_ip_restrict"></field>
-			<field name="page_theme"></field>
+			<field name="menu_name"></field>
 			<field name="page_template">panel</field>
 			<field name="page_order">9999</field>
 		</item>

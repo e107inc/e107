@@ -224,7 +224,7 @@ class pageClass
 		}
 		else
 		{
-			if(!$sql->db_Select("page", "*", "page_theme='' AND page_chapter=".intval($chapt)." AND page_class IN (".USERCLASS_LIST.") ORDER BY page_order ASC "))
+			if(!$sql->db_Select("page", "*", "menu_name='' AND page_chapter=".intval($chapt)." AND page_class IN (".USERCLASS_LIST.") ORDER BY page_order ASC "))
 			{
 				$text = "<ul class='page-pages-list page-pages-none'><li>".LAN_PAGE_2."</li></ul>";
 			}

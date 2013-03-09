@@ -42,7 +42,7 @@ $front_page['news'] = array('page' => 'news.php', 'title' => ADLAN_0);
 //$front_page['download'] = array('page' => 'download.php', 'title' => ADLAN_24);		// Its a plugin now
 $front_page['wmessage'] = array('page' => 'index.php', 'title' => ADLAN_28);
 
-if($sql->db_Select('page', 'page_id, page_title', "page_theme=''"))
+if($sql->db_Select('page', 'page_id, page_title', "menu_name=''"))
 {
 	$front_page['custom']['title'] = FRTLAN_30;
 	while($row = $sql->db_Fetch())
