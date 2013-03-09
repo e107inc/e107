@@ -152,7 +152,14 @@ class e_file
 			
 		return $f;	
 	}
-
+	
+	function setMode($mode)
+	{
+		$this->mode= $mode; 
+	}
+			
+		
+	
 	/**
 	 * Read files from given path
 	 *

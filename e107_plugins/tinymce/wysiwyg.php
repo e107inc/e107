@@ -214,6 +214,7 @@ class wysiwyg
 	function getConfig($config=FALSE)
 	{
 		$tp = e107::getParser();	
+		$fl = e107::getFile();
 				
 		if(getperms('0'))
 		{
@@ -251,7 +252,17 @@ class wysiwyg
 			'plugins'			=> $this->filter_plugins($config['tinymce_plugins'])
 		);
 
-		$content_css = vartrue($config['content_css'], "{e_WEB_ABS}js/bootstrap/css/bootstrap.min.css"); 
+	
+		$cssFiles = $fl->get_files(THEME,"\.css",'',2);
+		
+		$css[] = "{e_WEB_ABS}js/bootstrap/css/bootstrap.min.css";
+		foreach($cssFiles as $val)
+		{
+			$css[] = str_replace(THEME,THEME_ABS,$val['path'].$val['fname']);	
+		}
+
+		$content_css = vartrue($config['content_css'], implode(",",$css)); 
+		
 		$content_styles = array('Bootstrap Button' => 'btn btn-primary', 'Bootstrap Table' => 'table');
 
 
