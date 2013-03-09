@@ -209,7 +209,7 @@ class e_menu
 		
 		$buffer_output = (E107_DBG_INCLUDES) ? false : true; // Turn off when trouble-shooting includes. Default - return all output.
 		
-		
+
 		if(isset($tmp[1])&&$tmp[1]=='echo')
 		{
 			$buffer_output = false;
@@ -222,6 +222,7 @@ class e_menu
 		{
 			ob_start();
 		}
+		
 		e107::getRender()->eMenuArea = $tmp[0];
 		foreach($this->eMenuActive[$tmp[0]] as $row)
 		{
@@ -246,11 +247,18 @@ class e_menu
 	 * @param boolean $return
 	 * return string if required
 	 */
-	public function renderMenu($mpath, $mname, $parm = '', $return = false)
+	public function renderMenu($mpath, $mname='', $parm = '', $return = false)
 	{
-		global $sql; // required at the moment.
-		global $ns, $tp, $sc_style, $e107_debug;
+	//	global $sql; // required at the moment.
+		global $sc_style, $e107_debug;
+		
+		
 		$e107 = e107::getInstance();
+		
+		$sql = e107::getDb();
+		$ns = e107::getRender();
+		$tp = e107::getParser();
+		
 
 		if($return)
 		{
@@ -263,12 +271,14 @@ class e_menu
 		}
 		e107::getDB()->db_Mark_Time($mname);
 		
-		if(is_numeric($mpath)) // Custom Page/Menu 
+		if(is_numeric($mpath) || ($mname === false)) // Custom Page/Menu 
 		{
-			$sql->select("page", "*", "page_id=".intval($mpath)." ");
+			$query = ($mname === false) ? "page_theme = '".$mpath."' " :  "page_id=".intval($mpath)." "; // load by ID or load by menu-name (page_theme)
+			
+			$sql->select("page", "*", $query);
 			$page = $sql->fetch();
 			
-			$caption = $e107->tp->toHTML($page['page_title'], true, 'parse_sc, constants');
+			$caption = $tp->toHTML($page['page_title'], true, 'parse_sc, constants');
 			
 			if(vartrue($page['menu_template'])) // New v2.x templates. see core/menu_template.php 
 			{
@@ -279,15 +289,19 @@ class e_menu
 			// 	print_a($template['body']);           
 				$text = $tp->parseTemplate($template['body'], true, $page_shortcodes);
 			// 	echo "TEMPLATE= ($mpath)".$page['menu_template'];
+			
+			//	e107::getRender()->tablerender($caption, $text);
+				echo $text;
 				
 			}
 			else 
 			{
 				
 				$text = $e107->tp->toHTML($page['page_text'], true, 'parse_sc, constants');
+				e107::getRender()->tablerender($caption, $text);
 			}
 			
-			e107::getRender()->tablerender($caption, $text);
+			
 			
 		}
 		else
@@ -302,13 +316,9 @@ class e_menu
 			//{
 			//	$mpath .= '/';
 			//}
+			
 			$mpath = trim($mpath, '/').'/'; // faster...
 			$e107_debug ? include(e_PLUGIN.$mpath.$mname.'.php') : @include(e_PLUGIN.$mpath.$mname.'.php');
-
-			/*if(file_exists(e_PLUGIN.$mpath."/".$mname.".php"))
-			{
-				include_once (e_PLUGIN.$mpath."/".$mname.".php");
-			}*/
 		}
 		e107::getDB()->db_Mark_Time("(After ".$mname.")");
 		if($error_handler->debug==true)
