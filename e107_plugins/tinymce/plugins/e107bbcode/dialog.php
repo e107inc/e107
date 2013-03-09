@@ -13,13 +13,16 @@ exit;
 
 e107::css('inline',"
 
-	.selectEmote 	{ display:inline-block; cursor:pointer;margin:3px }
-	body			{ text-align:center }
-	.area			{ border-left: 1px solid rgb(221, 221, 221); border-bottom: 1px solid rgb(221, 221, 221);
-					  background-color: rgb(246, 246, 246); margin-top:-1px 
-					}
-	span.badge		{ cursor: pointer }
-	span.label		{ cursor: pointer }
+	.selectEmote 		{ display:inline-block; cursor:pointer;margin:3px }
+	body				{ text-align:center }
+	.area				{ border-left: 1px solid rgb(221, 221, 221); border-bottom: 1px solid rgb(221, 221, 221);
+					 	 background-color: rgb(246, 246, 246); margin-top:-1px 
+						}
+	span.badge			{ cursor: pointer }
+	span.label			{ cursor: pointer }
+	ul.glyphicons		{ list-style:none; margin-left:0px}
+	ul.glyphicons  li	{ float:left; border-bottom:1px solid silver; cursor:pointer; width:160px; padding:5px; }
+	
 
 ");
 
@@ -55,6 +58,17 @@ $(document).ready(function()
 		});
 		
 	
+		$('ul.glyphicons li').click(function () {
+		
+				//var color = $('input:select[name=glyph-color]:selected').val();
+			//	alert(color);
+                var cls = $(this).find('i').attr('class');	
+                var html = '<i class=\"' + cls + '\"></i>&nbsp;';
+				tinyMCEPopup.editor.execCommand('mceInsertContent', false, html);
+				tinyMCEPopup.close();
+		});
+	
+	
 		
 		$('#e-cancel').click(function () {
 					
@@ -79,18 +93,22 @@ class e_bootstrap
 		$ns = e107::getRender();
 		
 		$text = '
-		<ul class="nav nav-tabs">
-		<li class="active" ><a href="#mbuttons" data-toggle="tab">Buttons</a></li>';
+		<ul class="nav nav-tabs">';
+		
+		$text .= '<li class="active" ><a href="#mbuttons" data-toggle="tab">Buttons</a></li>';
 		
 		$text .= '<li><a href="#badges" data-toggle="tab">Labels &amp; Badges</a></li>';
-		
+	
+		$text .= '<li><a href="#glyphs" data-toggle="tab">Glyphicons</a></li>';	
 		$text .= '</ul>';
 		 
-		$text .= '<div class="tab-content">
-		<div class="tab-pane active left" id="mbuttons">'.$this->buttonForm().'</div>';
+		$text .= '<div class="tab-content">';
+		
+		$text .= '<div class="tab-pane active left" id="mbuttons">'.$this->buttonForm().'</div>';
 		
 		$text .= '<div class="tab-pane left" id="badges">'.$this->badgeForm().'</div>';
 		
+		$text .= '<div class="tab-pane left" id="glyphs">'.$this->glyphicons().'</div>';
 		$text .= '</div>';
 
 		echo $text;
@@ -187,7 +205,177 @@ class e_bootstrap
 				
 			
 			
-		
+	function glyphicons()
+	{
+		$icons = array(
+			"icon-glass",
+            "icon-music",
+            "icon-search",
+            "icon-envelope",
+            "icon-heart",
+            "icon-star",
+            "icon-star-empty",
+            "icon-user",
+            "icon-film",
+            "icon-th-large",
+            "icon-th",
+            "icon-th-list",
+            "icon-ok",
+            "icon-remove",
+            "icon-zoom-in",
+            "icon-zoom-out",
+            "icon-off",
+            "icon-signal",
+            "icon-cog",
+            "icon-trash",
+            "icon-home",
+            "icon-file",
+            "icon-time",
+            "icon-road",
+            "icon-download-alt",
+            "icon-download",
+            "icon-upload",
+            "icon-inbox",
+            "icon-play-circle",
+            "icon-repeat",
+            "icon-refresh",
+            "icon-list-alt",
+            "icon-lock",
+            "icon-flag",
+            "icon-headphones",
+            "icon-volume-off",
+            "icon-volume-down",
+            "icon-volume-up",
+            "icon-qrcode",
+            "icon-barcode",
+            "icon-tag",
+            "icon-tags",
+            "icon-book",
+            "icon-bookmark",
+            "icon-print",
+            "icon-camera",
+            "icon-font",
+            "icon-bold",
+            "icon-italic",
+            "icon-text-height",
+            "icon-text-width",
+            "icon-align-left",
+            "icon-align-center",
+            "icon-align-right",
+            "icon-align-justify",
+            "icon-list",
+
+            "icon-indent-left",
+            "icon-indent-right",
+            "icon-facetime-video",
+            "icon-picture",
+            "icon-pencil",
+            "icon-map-marker",
+            "icon-adjust",
+            "icon-tint",
+            "icon-edit",
+            "icon-share",
+            "icon-check",
+            "icon-move",
+            "icon-step-backward",
+            "icon-fast-backward",
+            "icon-backward",
+            "icon-play",
+            "icon-pause",
+            "icon-stop",
+            "icon-forward",
+            "icon-fast-forward",
+            "icon-step-forward",
+            "icon-eject",
+            "icon-chevron-left",
+            "icon-chevron-right",
+            "icon-plus-sign",
+            "icon-minus-sign",
+            "icon-remove-sign",
+            "icon-ok-sign",
+
+            "icon-question-sign",
+            "icon-info-sign",
+            "icon-screenshot",
+            "icon-remove-circle",
+            "icon-ok-circle",
+            "icon-ban-circle",
+            "icon-arrow-left",
+            "icon-arrow-right",
+            "icon-arrow-up",
+            "icon-arrow-down",
+            "icon-share-alt",
+            "icon-resize-full",
+            "icon-resize-small",
+            "icon-plus",
+            "icon-minus",
+            "icon-asterisk",
+            "icon-exclamation-sign",
+            "icon-gift",
+            "icon-leaf",
+            "icon-fire",
+            "icon-eye-open",
+            "icon-eye-close",
+            "icon-warning-sign",
+            "icon-plane",
+            "icon-calendar",
+            "icon-random",
+            "icon-comment",
+            "icon-magnet",
+
+            "icon-chevron-up",
+            "icon-chevron-down",
+            "icon-retweet",
+            "icon-shopping-cart",
+            "icon-folder-close",
+            "icon-folder-open",
+            "icon-resize-vertical",
+            "icon-resize-horizontal",
+            "icon-hdd",
+            "icon-bullhorn",
+            "icon-bell",
+            "icon-certificate",
+            "icon-thumbs-up",
+            "icon-thumbs-down",
+            "icon-hand-right",
+            "icon-hand-left",
+            "icon-hand-up",
+            "icon-hand-down",
+            "icon-circle-arrow-right",
+            "icon-circle-arrow-left",
+            "icon-circle-arrow-up",
+            "icon-circle-arrow-down",
+            "icon-globe",
+            "icon-wrench",
+            "icon-tasks",
+            "icon-filter",
+            "icon-briefcase",
+            "icon-fullscreen"
+       );					
+
+		$frm = e107::getForm();
+		$sel = array(''=>'Gray','icon-white'=>'White');	
+			
+		$text .= "<div style='padding:10px'>";
+		$text .= "<div>Color: ".$frm->selectbox('glyph-color',$sel)."</div>";	
+					
+		$text .= "<ul class='glyphicons clearfix'>";
+		foreach($icons as $ic)
+		{
+			$text .= '<li><i class="'.$ic.'"></i> '.$ic.'</li>';
+			$text .= "\n";
+		}
+					
+		$text .= "</ul>";	
+		$text .= "</div>";
+
+		return $text;
+
+}
+					
+				
+			
+			
 		
 		
 

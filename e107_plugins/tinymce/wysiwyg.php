@@ -323,7 +323,8 @@ class wysiwyg
 			'media_strict'						=> 'false',
 			'width'								=> vartrue($config['width'],'100%'),
 		//	'height'							=> '90%', // higher causes padding at the top?
-		//	'forced_root_block'					=> '',
+			'forced_root_block'					=> 'false', //remain as false or it will mess up some theme layouts. 
+		
 			'convert_newlines_to_brs'			=> 'true', // will break [list] if set to true
 		//	'force_p_newlines'					=> 'false',
 			'entity_encoding'					=> 'raw',
