@@ -81,7 +81,7 @@ class page_sitelink // include plugin-folder in the name.
 		{
 			$query .= 1;
 		}
-		$query 		.= " ORDER BY page_order"; 
+		$query 		.= " AND page_title !='' ORDER BY page_order"; 
 		
 		$data 		= $sql->retrieve($query, true);
 		$_pdata 	= array();
