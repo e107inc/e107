@@ -2,16 +2,10 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/import/admin_import.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 
@@ -20,7 +14,6 @@
  *
  *	@package	e107_plugins
  *	@subpackage	import
- *	@version 	$Id$;
 
 
 Routine manages import from other databases
@@ -44,15 +37,8 @@ require_once("../../class2.php");
 // define("USE_PERSISTANT_DB",TRUE);
 
 
-require_once (e_HANDLER.'form_handler.php');
-$frm = new e_form();
-require_once(e_HANDLER.'message_handler.php');
-
-$emessage = &eMessage::getInstance(); //nothing wrong with doing it twice
-
-
-
-
+$frm = e107::getForm();
+$mes = e107::getMessage();
 
 include_lan(e_PLUGIN.'import/languages/'.e_LANGUAGE.'_admin_import.php');
 

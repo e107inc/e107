@@ -30,8 +30,8 @@ if (!e107::isInstalled('banner'))
 
 e107::includeLan(e_PLUGIN."banner/languages/".e_LANGUAGE."_banner.php");
 
-require_once(e_HANDLER."form_handler.php");
-$rs = new form;
+require_once(e_HANDLER."form_handler.php"); // FIXME
+$rs = new form; // FIXME
 	
 if (e_QUERY) {
 	$query_string = intval(e_QUERY);

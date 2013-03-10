@@ -8,8 +8,6 @@
  *
  * Plugin - Newsletter
  *
- * $URL$
- * $Id$
 */
 
 /**
@@ -17,7 +15,6 @@
  *
  *	@package	e107_plugins
  *	@subpackage	newsletter
- *	@version 	$Id$;
  */
 
 
@@ -32,7 +29,6 @@ require_once(e_ADMIN.'auth.php');
 // Include ren_help for display_help (while showing BBcodes)
 require_once(e_HANDLER.'ren_help.php');
 
-require_once(e_HANDLER.'message_handler.php');
 $mes = e107::getMessage();
 
 if (e_QUERY) 
@@ -136,7 +132,6 @@ class newsletter
 
 		if(!$sql->db_Select('newsletter', '*', "newsletter_parent='0'  ORDER BY newsletter_id DESC"))
 		{
-			//$text = NLLAN_05;
 			$mes->addInfo(NLLAN_05);
 		}
 		else
@@ -176,11 +171,10 @@ class newsletter
 		}
 		$ns->tablerender(NLLAN_10, $mes->render() . $text);
 
-		unset($text); // FIXME  fix to prevent 'existing newsletters' table from showing twice 
+		unset($text); // FIXME  fix to prevent 'existing newsletters' table from showing twice, is this ok?
 
 		if(!$sql->db_Select('newsletter', '*', "newsletter_parent!='0' ORDER BY newsletter_id DESC"))
 		{
-			//$text = NLLAN_11;
 			$mes->addinfo(NLLAN_11);
 		}
 		else
@@ -299,14 +293,12 @@ class newsletter
 		if(isset($_POST['editid']))
 		{
 			$sql -> db_Update('newsletter', "newsletter_title='{$letter['newsletter_title']}', newsletter_text='{$letter['newsletter_text']}', newsletter_header='{$letter['newsletter_header']}', newsletter_footer='{$letter['newsletter_footer']}' WHERE newsletter_id=".intval($_POST['editid']));
-			//$this -> message = NLLAN_27;
 			$mes->addSuccess(LAN_UPDATED);
 		}
 		else
 		{
 			$letter['newsletter_datestamp'] = time();
 			$sql->db_Insert('newsletter', $letter);
-			//$this -> message = NLLAN_28;
 			$mes->addSuccess(LAN_CREATED);
 		}
 	}
@@ -396,14 +388,12 @@ class newsletter
 		if (isset($_POST['editid']))
 		{
 			$sql->db_Update('newsletter', "newsletter_title='{$letter['newsletter_title']}', newsletter_text='{$letter['newsletter_text']}', newsletter_parent='".$letter['newsletter_parent']."', newsletter_issue='".$letter['newsletter_issue']."' WHERE newsletter_id=".intval($_POST['editid']));
-			//$this -> message = NLLAN_38;
 			$mes->addSuccess(LAN_UPDATED);
 		}
 		else
 		{
 			$letter['newsletter_datestamp'] = time();
 			$sql->db_Insert('newsletter', $letter);
-			//$this -> message = NLLAN_39;
 			$mes->addSuccess(NLLAN_39);
 		}
 
