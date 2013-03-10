@@ -6,18 +6,11 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_admin/notify.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 /**
  *	@package    e107
  *	@subpackage	admin
- *	@version 	$Id$;
  *
  *	'Notify' admin page - selects action on various events 
  */
@@ -34,14 +27,8 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 $e_sub_cat = 'notify';
 
 require_once('auth.php');
-
 require_once(e_HANDLER.'userclass_class.php');
-require_once(e_HANDLER.'form_handler.php');
 
-
-//$emessage = &eMessage::getInstance();
-
-$rs = new form;
 $frm = e107::getForm();
 $nc = new notify_config;
 $uc = new user_class;

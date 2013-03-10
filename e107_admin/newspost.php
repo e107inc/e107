@@ -1925,8 +1925,6 @@ class admin_newspost
 		$this->_pre_create();
 
 		require_once(e_HANDLER."userclass_class.php");
-	//	require_once(e_HANDLER."form_handler.php");
-	//	$frm = new e_form(true); //enable inner tabindex counter
 		$frm = e107::getForm();
 
 		$text = '';
@@ -3068,9 +3066,7 @@ class admin_newspost
 
 	function showMaintenance()
 	{
-		require_once(e_HANDLER."form_handler.php");
 		$frm = e107::getForm();
-
 
 		$text = "
 			<form method='post' action='".e_SELF."?maint' id='core-newspost-maintenance-form'>
