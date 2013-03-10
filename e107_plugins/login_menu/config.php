@@ -2,16 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Plugin Administration - Login menu
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/config.php,v $
- * $Revision$
- * $Date$
- * $Author$
  *
 */
 
@@ -23,7 +19,6 @@
  *
  *	@package	e107_plugins
  *	@subpackage	login
- *	@version 	$Id$;
  *
  *	@todo - sanitise options
  */
@@ -45,8 +40,8 @@ $loginClass = new login_menu_class();
 $menuPref = e107::getConfig('menu');				// Pref object
 $loginPrefs = $menuPref->getPref('login_menu');		// Array of login-related values
 
-require_once(e_HANDLER.'message_handler.php');
 $mes = e107::getMessage();
+$frm = e107::getForm();
 
 if (isset($_POST['update_menu']))
 {
@@ -115,7 +110,6 @@ if (!isset($loginPrefs['new_news']))
 	$loginPrefs['new_members'] = '0';
 }
 
-$frm = e107::getForm();
 
 $text = "
 	<form method='post' action='".e_SELF."'>
