@@ -315,6 +315,11 @@ class e_media
 	 */	
 	public function countImages($cat,$search=null)
 	{
+		
+		return $this->getImages($cat, 0, 'all',$search);
+		
+		/*
+		
 		$inc 		= array();
 		$searchinc 	= array();
 		
@@ -345,6 +350,7 @@ class e_media
 		}
 		
 		return e107::getDb()->db_Select_gen($query);	
+		*/
 	}
 	
 	
@@ -387,9 +393,12 @@ class e_media
 
 		
 		$ret = array();
-	//	$query = "SELECT * FROM #core_media WHERE media_userclass IN (".USERCLASS_LIST.") AND ( ".implode(" OR ",$inc)." ) " ;	
 		
-		$query = "SELECT * FROM #core_media WHERE `media_category` REGEXP '(^|,)".implode("|",$catArray)."(,|$)' AND `media_userclass` IN (".USERCLASS_LIST.")  " ;	
+		
+		$fields = ($amount == 'all') ? "media_id" : "*";
+		
+		$query = "SELECT ".$fields." FROM #core_media WHERE `media_category` REGEXP '(^|,)".implode("|",$catArray)."(,|$)' AND `media_userclass` IN (".USERCLASS_LIST.")  " ;	
+	//	$query = "SELECT ".$fields." FROM #core_media WHERE media_userclass IN (".USERCLASS_LIST.") AND ( ".implode(" OR ",$inc)." ) " ;	
 			
 		if($search)
 		{
@@ -397,6 +406,11 @@ class e_media
 		}
 		
 		$query .= " ORDER BY media_id DESC";
+
+		if($amount == 'all')
+		{
+			return e107::getDb()->gen($query);		
+		}
 
 		
 		if($amount)

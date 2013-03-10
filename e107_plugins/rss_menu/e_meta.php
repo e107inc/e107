@@ -23,7 +23,7 @@ global $PLUGINS_DIRECTORY;
 $tp = e107::getParser();
 $sql = e107::getDb();
 
-if($sql->db_Select("rss", "*", "rss_class='0' AND rss_limit>0 ORDER BY rss_name"))
+if(USER_AREA && $sql->db_Select("rss", "*", "rss_class='0' AND rss_limit>0 ORDER BY rss_name"))
 {
 	while($row=$sql->db_Fetch())
 	{	// Wildcard topic_id's should not be listed

@@ -354,7 +354,7 @@ class page_admin_ui extends e_admin_ui
 			'menu_text' 		=> array('title'=> "Menu Body",		'nolist'=>true, 'tab' => 2,	'type' => 'bbarea',		'data'=>'str',	'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1', 'writeParms'=>'media=page' ), 
 			'menu_template' 	=> array('title'=> "Menu Template", 'nolist'=>true, 'tab' => 2,	'type' => 'dropdown', 	'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
         
-			'menu_image'		=> array('title' =>"Menu Image", 	'nolist'=>true, 'tab' => 2,	'type' => 'image', 		'width' => '110px',	'thclass' => 'center', 			'class' => "center", 		'nosort' => false, 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>false),		  					
+			'menu_image'		=> array('title' =>"Menu Image", 	'nolist'=>true, 'tab' => 2,	'type' => 'image', 		'width' => '110px',	'thclass' => 'center', 			'class' => "center", 'nosort' => false, 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','writeParms'=>'media=page', 'readonly'=>false),		  					
 			
 	
 	
@@ -388,7 +388,7 @@ class page_admin_ui extends e_admin_ui
 					'checkboxes'		=> array('title'=> '',				'type' => null, 		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 					'page_id'			=> array('title'=> 'ID',			'type'=>'text',   'tab' => 0,	'width'=>'5%', 'readParms'=>'','forced'=> TRUE),
 		       
-					'menu_image'		=> array('title' =>"Menu Image", 	 	'type' => 'image', 		'width' => '110px',	'thclass' => 'left', 'class' => "left", 'nosort' => false, 'readParms'=>'thumb=80&thumb_urlraw=0&thumb_aw=80','readonly'=>false),		  					
+					'menu_image'		=> array('title' =>"Menu Image", 	 	'type' => 'image', 		'width' => '110px',	'thclass' => 'left', 'class' => "left", 'nosort' => false, 'readParms'=>'thumb=80&thumb_urlraw=0&thumb_aw=80', 'readonly'=>false),		  					
 				
 				  	'menu_name' 		=> array('title'=> "Menu Name", 	'type' => 'text', 	'inline'=>true,	'width' => 'auto','nolist'=>false, "help"=>"Will be listed in the Menu-Manager under this name"),
 					'menu_template' 	=> array('title'=> "Menu Template",  	'type' => 'dropdown', 	'width' => 'auto', 'filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
