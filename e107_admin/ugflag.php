@@ -2,16 +2,11 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2024 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Administration - Site Maintenance
- *
- * $Source: /cvs_backup/e107_0.8/e107_admin/ugflag.php,v $
- * $Revision$
- * $Date$
- * $Author$
  *
  */
 require_once ('../class2.php');
@@ -25,12 +20,8 @@ $e_sub_cat = 'maintain';
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
-require_once (e_HANDLER.'form_handler.php');
-require_once (e_HANDLER.'message_handler.php');
-$emessage = eMessage::getInstance();
-$emessage_method = e_AJAX_REQUEST ? 'add' : 'addSession';
-
-$frm = new e_form(true);
+$mes = e107::getMessage();
+$frm = e107::getForm();
 
 if(isset($_POST['updatesettings']))
 {
@@ -59,10 +50,13 @@ if(isset($_POST['updatesettings']))
 	{
 		$admin_log->log_event(($pref['maintainance_flag'] == 0) ? 'MAINT_02' : 'MAINT_01', $pref['maintainance_text'], E_LOG_INFORMATIVE, '');
 		save_prefs();
-		$emessage->$emessage_method(UGFLAN_1, E_MESSAGE_SUCCESS);
+		$mes->addSuccess(UGFLAN_1);
 	}
 	else
-		$emessage->$emessage_method(UGFLAN_7);
+	{
+		$mes->addInfo(LAN_NO_CHANGE);
+	}
+
 		
 	if(!e_AJAX_REQUEST)
 	{
@@ -71,7 +65,7 @@ if(isset($_POST['updatesettings']))
 	}
 }
 
-require_once ("auth.php");
+require_once("auth.php");
 
 $text = "
 	<form method='post' action='".e_SELF."' id='core-ugflag-form'>
@@ -91,26 +85,19 @@ $elements = array(e_UC_PUBLIC=>LAN_DISABLED,
 $text .= "
 					<tr>
 						<td>".UGFLAN_2.": </td>
-						<td>
-							".$frm->radio_multi('maintainance_flag', $elements, $pref['maintainance_flag'], TRUE)."
-						</td>
+						<td>".$frm->radio_multi('maintainance_flag', $elements, $pref['maintainance_flag'], TRUE)."</td>
 					</tr>";
 
 //TODO multilanguage pref					
 $text .= "
 					<tr>
-						<td>".UGFLAN_5."
-							
-						</td>
-						<td>
-						".$frm->bbarea('maintainance_text', vartrue($pref['maintainance_text']), 'maintenance', 'small')."
-						<div class='smalltext clear'>".UGFLAN_6."</div>
-						</td>
+						<td>".UGFLAN_5."</td>
+						<td>".$frm->bbarea('maintainance_text', vartrue($pref['maintainance_text']), 'maintenance', 'small')."<div class='smalltext clear'>".UGFLAN_6."</div></td>
 					</tr>
 				</tbody>
 			</table>
 			<div class='buttons-bar center'>
-				".$frm->admin_button('updatesettings', UGFLAN_3, 'update')."
+				".$frm->admin_button('updatesettings', LAN_UPDATE, 'update')."
 			</div>
 		</fieldset>
 	</form>
@@ -121,13 +108,13 @@ $text .= "
 if(!e_AJAX_REQUEST)
 {
 	echo "<div id='ajax-container'>\n";
-	$e107->ns->tablerender(UGFLAN_4, $emessage->render().$text, 'core-ugflag');
+	$ns->tablerender(UGFLAN_4, $mes->render().$text, 'core-ugflag');
 	echo "\n</div>";
 	require_once (e_ADMIN."footer.php");
 	exit();
 }
 
-$e107->ns->tablerender(UGFLAN_4, $emessage->render().$text, 'core-ugflag');
+$ns->tablerender(UGFLAN_4, $mes->render().$text, 'core-ugflag');
 
 /**
  * Handle page DOM within the page header
