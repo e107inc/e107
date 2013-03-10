@@ -12,4 +12,7 @@
 	<adminLinks>
 		<link url='admin_banner.php' description='Configure Banners' icon='images/banners_32.png' iconSmall='images/banners_16.png' primary='true' >Configure Banners</link>	
 	</adminLinks>
+	<mediaCategories>
+		<category type="image">Banners</category>
+	</mediaCategories>
 </e107Plugin>

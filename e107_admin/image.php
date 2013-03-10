@@ -541,13 +541,15 @@ class media_form_ui extends e_admin_form_ui
 		$bbcode = (vartrue($_GET['bbcode']) == 'file')  ? "file" : "";
 	//	$save = ($_GET['bbcode']!='file')  ? "e-dialog-save" : "";
 	// e-dialog-close
-		$text = $this->renderValue('options',$value,'',$id);
+	
 	
 		// File Picker. 
 		if($_GET['action'] == 'dialog')
 		{		
-			$text .= "<input type='button' value='Select' data-placement='left' class='e-media-select e-dialog-save e-dialog-close btn' data-id='{$id}' data-name=\"".$title."\" data-target='{$tagid}' data-bbcode='{$bbcode}' data-path='{$path}' data-preview='{$preview}' title=\"".$title."\"  />";
+			$text = "<input type='button' value='Select' data-placement='left' class='e-media-select e-dialog-save e-dialog-close btn btn-primary btn-large' data-id='{$id}' data-name=\"".$title."\" data-target='{$tagid}' data-bbcode='{$bbcode}' data-path='{$path}' data-preview='{$preview}' title=\"".$title."\"  />";
 		}
+
+		$text .= $this->renderValue('options',$value,'',$id);
 		
 		return "<div class='nowrap'>".$text."</div>";
 		
@@ -906,6 +908,7 @@ class media_admin_ui extends e_admin_ui
 		$file		= (substr($cat,-5) == "_file") ? TRUE : FALSE;
 		$mes = e107::getMessage();
 		$mes->addDebug("For:".$cat);
+
 		
 		if($file)
 		{
@@ -958,7 +961,10 @@ class media_admin_ui extends e_admin_ui
 	function mediaSelectUpload($type='image') 
 	{
 		$frm = e107::getForm();
-		$bbcodeMode = ($this->getQuery('bbcode')=='img') ? 'bbcode=img' : FALSE;
+		
+		
+		$options = array();
+		$options['bbcode'] = ($this->getQuery('bbcode')=='img') ? 'img' : FALSE;
 						
 		$text = "
 			
@@ -966,15 +972,17 @@ class media_admin_ui extends e_admin_ui
 				<li class='active'><a data-toggle='tab' href='#core-media-select'>Choose from Library</a></li>
 				<li><a data-toggle='tab' href='#core-media-upload'>Upload a File</a></li>";
 		
-		if($bbcodeMode)
+		if($options['bbcode'])
 		{
 			$text .= "<li><a data-toggle='tab' href='#core-media-style'>Appearance</a></li>\n";	
 		}
 		
 		if($_GET['from'])
 		{
-			$bbcodeMode .= "&from=".intval($_GET['from']);
+			$options['from'] .= intval($_GET['from']);
 		}
+		
+	
 		
 				
 		$text .= "
@@ -986,7 +994,12 @@ class media_admin_ui extends e_admin_ui
 		
 			";
 			
-		$tag = ($bbcodeMode) ? "" : $this->getQuery('tagid');
+		$tag = ($options['bbcode']) ? "" : $this->getQuery('tagid');
+		
+		if($_GET['w'])
+		{
+			$options['w'] = intval($_GET['w']);
+		}
 		
 		if($type == 'file')
 		{
@@ -996,7 +1009,7 @@ class media_admin_ui extends e_admin_ui
 		}
 		else 
 		{
-			$text .= e107::getMedia()->mediaSelect($this->getQuery('for'),$this->getQuery('tagid'),$bbcodeMode); // eg. news, news-thumbnail				
+			$text .= e107::getMedia()->mediaSelect($this->getQuery('for'),$this->getQuery('tagid'), $options); // eg. news, news-thumbnail				
 		}
 			
 		$text .= "
@@ -1022,7 +1035,7 @@ class media_admin_ui extends e_admin_ui
 		 * 
 		 */
 		
-		if($bbcodeMode)
+		if($options['bbcode'])
 		{
 			$text .= "<div class='tab-pane' id='core-media-style'>
 				<legend>Appearance</legend>
@@ -1076,7 +1089,7 @@ class media_admin_ui extends e_admin_ui
 		$text .= "</div>";
 		
 		// For BBCODE mode. //TODO image-float. 
-		if($bbcodeMode)
+		if($options['bbcode'])
 		{
 			
 						
