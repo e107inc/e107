@@ -361,12 +361,20 @@ class e_media
 		{
 			$cat = str_replace("+","",$cat);
 			// $inc[] = "media_category = '_common_image' ";
-			$inc[] = "media_category REGEXP '(^|,)(_common_image)(,|$)' "; 
+		//	$inc[] = "media_category REGEXP '(^|,)(_common_image)(,|$)' "; 
+		//		$inc[] = "media_category LIKE '%_common_image%' "; 
+			$catArray[] = '_common_image';
 		}
 		if($cat)
 		{
-			$inc[] = "media_category REGEXP '(^|,)(".$cat.")(,|$)' "; // for multiple category field. 
+			$catArray[] = $cat; 
+	//		$inc[] = "media_category LIKE '%".$cat."%' "; // for multiple category field. 
+		//	$inc[] = "media_category REGEXP '(^|,)(".$cat.")(,|$)' "; // for multiple category field. 
 		}
+		
+		
+	//	$inc[] = "media_category REGEXP '(^|,)_common_image|banner_image(,|$)' ";
+		
 		// TODO check the category is valid. 
 		
 		if($search)
@@ -379,22 +387,24 @@ class e_media
 
 		
 		$ret = array();
-		$query = "SELECT * FROM #core_media WHERE media_userclass IN (".USERCLASS_LIST.") AND ( ".implode(" OR ",$inc)." ) " ;	
+	//	$query = "SELECT * FROM #core_media WHERE media_userclass IN (".USERCLASS_LIST.") AND ( ".implode(" OR ",$inc)." ) " ;	
+		
+		$query = "SELECT * FROM #core_media WHERE `media_category` REGEXP '(^|,)".implode("|",$catArray)."(,|$)' AND `media_userclass` IN (".USERCLASS_LIST.")  " ;	
 			
 		if($search)
 		{
 			$query .= " AND ( ".implode(" OR ",$searchinc)." ) " ;	
 		}
 		
-		$query .= " ORDER BY media_datestamp DESC";
+		$query .= " ORDER BY media_id DESC";
 
 		
 		if($amount)
 		{
 			$query .= " LIMIT ".$from." ,".$amount;	
 		}
-		e107::getDb()->db_Select_gen($query);
-		while($row = e107::getDb()->db_Fetch(MYSQL_ASSOC))
+		e107::getDb()->gen($query);
+		while($row = e107::getDb()->fetch(MYSQL_ASSOC))
 		{
 			$id = $row['media_id'];
 			$ret[$id] = $row;
@@ -503,7 +513,13 @@ class e_media
 	public function mediaSelect($category='',$tagid=null,$att=null)
 	{
 	
-		parse_str($att,$option); // grab 'onclick' . 
+		if(is_string($att))
+		{
+			parse_str($att,$option); // grab 'onclick' . 
+		}
+		else {
+			$option = $att;
+		}
 			
 		$frm 		= ($option['from']) ? $option['from'] : 0;
 		$limit 		= ($option['limit']) ? $option['limit'] : 20;
@@ -511,8 +527,6 @@ class e_media
 		$bbcode		= ($option['bbcode']) ? $option['bbcode'] : null;
 		$navMode	= ($option['nav']) ? TRUE : FALSE;
 		$search		= ($option['search']) ? $option['search'] : null;
-
-	
 		
 		if($category !='_icon')
 		{
@@ -539,8 +553,9 @@ class e_media
 		
 	//	$total_images 	= $this->getImages($cat); // for use by next/prev in filter at some point. 
 	
-		$att 			= 'aw=120&ah=100';		
-		$prevId 		= $tagid."_prev";
+		$prevAtt		= '&aw='.vartrue($option['w'],$w); // .'&ah=100';	// Image Parsed back to Form as PREVIEW image. 	
+		$prevId 		= $tagid."_prev"; // ID of image in Form. 
+		$thumbAtt		= 'aw=120&ah=100';	// Thumbnail of the Media-Manager Preview. 	
 		
 		// EXAMPLE of FILTER GUI. 
 	//	$text .= "CAT=".$cat;
@@ -603,14 +618,16 @@ class e_media
             $media_path : Inserted into html tags eg. <img src='here'...
         */
 
-		
+	//	print_a($images);
+	//	return;
 		
 		foreach($images as $im)
 		{
 			$class 			= ($category !='_icon') ? "media-select-image" : "media-select-icon";
 			$media_path 	= ($w || $h) ? $tp->thumbUrl($im['media_url'], "&w={$w}") : $tp->thumbUrl($im['media_url']); // $tp->replaceConstants($im['media_url'],'full'); // max-size 
 				
-			$realPath 		= $tp->thumbUrl($im['media_url'], $att);
+			$realPath 		= $tp->thumbUrl($im['media_url'], $prevAtt); // Parsed back to Form as Preview Image. 
+			
 			$diz 			= $tp->toAttribute($im['media_title'])."\n".$im['media_dimensions'];		
 			$repl 			= array($im['media_url'],$media_path);
 			
@@ -637,7 +654,7 @@ class e_media
 			
 			$data_bb = ($bbcode) ? "img" : "";
 		 	
-		 	$img_url = ($cat !='_icon') ? e107::getParser()->thumbUrl($im['media_url'], $att) : $media_path;
+		 	$img_url = ($cat !='_icon') ? e107::getParser()->thumbUrl($im['media_url'], $thumbAtt) : $media_path;
 			
 			$text .= "<a data-toggle='context' class='{$class} e-tip' data-id='{$im['media_id']}' data-width='{$w}' data-height='{$h}' data-src='{$media_path}' data-bbcode='{$data_bb}' data-target='{$tagid}' data-path='{$im['media_url']}' data-preview='{$realPath}' title=\"".$diz."\" style='float:left' href='#' onclick=\"{$onclicki}\" >";
 			$text .= "<img class='image-rounded' src='".$img_url."' alt=\"".$im['media_title']."\" title=\"{$diz}\" />";

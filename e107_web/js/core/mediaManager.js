@@ -165,6 +165,7 @@ $(document).ready(function()
 					//alert(bbpath);		
 				}
 				
+				
 				$('#src').attr('value',src); // working old
 				$('#preview').attr('src',preview);	// working old
 				
@@ -173,6 +174,7 @@ $(document).ready(function()
 				
 				$('#width').val(width);	
 				$('#height').val(height);		
+				
 				
 				$('img#' + target + "_prev", window.top.document).attr('src',preview); // set new value
 				$('div#' + target + "_prev", window.top.document).html(preview); // set new value

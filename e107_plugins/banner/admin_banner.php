@@ -497,7 +497,12 @@ if ($action == "create")
 					</tr>
 					<tr>
 						<td>".BNRLAN_14."</td>
-						<td>
+						<td>".$frm->imagepicker('banner_image', $_POST['banner_image'], '', 'media=banner&w=600');
+						
+						
+						
+	/*					
+						$text .= "
 							<div class='field-spacer'>
 								<button class='btn button action' type='button' value='no-value' onclick='e107Helper.toggle(\"banner-repo\")'><span>".BNRLAN_32."</span></button> 
 							</div>
@@ -542,7 +547,10 @@ if ($action == "create")
 		$c++;
 	}
 	$text .= "
-							</div>
+							</div>";
+		*/					
+							
+			$text .= "
 						</td>
 					</tr>
 					<tr>

@@ -292,26 +292,34 @@ class e_form
 	/**
 	 * Internal Function used by imagepicker and filepicker
 	 */ 
-	private function mediaUrl($category = '', $label = '', $tagid='', $extras='')
+	private function mediaUrl($category = '', $label = '', $tagid='', $extras=null)
 	{
 		
 		$cat = ($category) ? '&amp;for='.$category : "";
 		if(!$label) $label = ' Upload an image or file';
 		if($tagid) $cat .= '&amp;tagid='.$tagid; 
 		
-		parse_str($extras);
+		if(is_string($extras))
+		{
+			parse_str($extras,$extras);
+		}
 		
-		if(vartrue($bbcode)) $cat .= '&amp;bbcode=1'; 
-		
-		if(!vartrue($mode)) $mode = 'main';
-		if(!vartrue($action)) $action = 'dialog';
-
+		if(vartrue($extras['bbcode'])) $cat .= '&amp;bbcode=1'; 	
+		$mode = vartrue($extras['mode'],'main');
+		$action = vartrue($extras['action'],'dialog'); 
 		// $tabs // TODO - option to choose which tabs to display.  
 		
 		//TODO Parse selection data back to parent form. 
 
 		$url = e_ADMIN_ABS."image.php?mode={$mode}&amp;action={$action}".$cat;
 		$url .= "&amp;iframe=1";
+		
+		if(vartrue($extras['w']))
+		{
+			$url .= "&amp;w=".$extras['w'];	
+		}
+		
+		
 		$title = "Media Manager : ".$category;
 
 		$ret = "<a title=\"{$title}\" rel='external' class='e-dialog' href='".$url."'>".$label."</a>"; // using colorbox. 
@@ -441,21 +449,18 @@ class e_form
 
 
 	/**
-	 * FIXME - better GUI, {IMAGESELECTOR} rewrite, flexibility, thumbnails, tooltip image preivew, etc.
-	 * FIXME - use the media-manager as an image selector.
-	 * SC Parameter list:
-	 * - media: if present - load from media table
-	 * - path: server pats to be listed (separated by |) - only if 'media' param is not present
-	 * - subdirs: folder search depth (default is 10)
-	 * - width: preview width in pixels
-	 * - height: preview height in pixels
-	 * Additional usage is <code>$sc_parameters = 'news'</code>
-	 * where
-	 * Full list can be found in shortcodes/imageselector.php
+	 * FIXME {IMAGESELECTOR} rewrite
+	
 	 * @param string $name input name
 	 * @param string $default default value
 	 * @param string $label custom label
 	 * @param string $sc_parameters shortcode parameters
+	 *  --- SC Parameter list --- 
+	 * - media: if present - load from media table
+	 * - w: preview width in pixels
+	 * - h: preview height in pixels
+	 * @example $frm->imagepicker('banner_image', $_POST['banner_image'], '', 'banner'); // all images from category 'banner_image' + common images. 
+	 * @example $frm->imagepicker('banner_image', $_POST['banner_image'], '', 'media=banner&w=600');
 	 * @return string html output
 	 */
 	function imagepicker($name, $default, $label = '', $sc_parameters = '')
@@ -483,14 +488,14 @@ class e_form
 		else
 		{
 			//$default = $default_url = e_IMAGE_ABS."generic/blank.gif";
-			$default_url = e_IMAGE_ABS."generic/blank.gif";
+			$default_url = e_IMAGE_ABS."generic/nomedia.png";
 			$blank = TRUE;
 		}
 		
 		//$width = intval(vartrue($sc_parameters['width'], 150));
 		$cat = $tp->toDB(vartrue($sc_parameters['media']));	
 		
-		if($cat == '_icon')
+		if($cat == '_icon') // ICONS
 		{
 			$ret = "<div class='imgselector-container'  style='display:block;width:64px;min-height:64px'>";
 			$thpath = isset($sc_parameters['nothumb']) || vartrue($hide) ? $default : $default_thumb;
@@ -498,21 +503,27 @@ class e_form
 			$label = "<img id='{$name_id}_prev' src='{$default_url}' alt='{$default_url}' class='image-selector' style='{$style}' />";
 				
 		}
-		else
+		else // Images 
 		{
 			
 			$title = (vartrue($sc_parameters['help'])) ? "title='".$sc_parameters['help']."'" : "";
+			$width = vartrue($sc_parameters['w'], 120);
+			$height = vartrue($sc_parameters['h'], 100);
 
-			$ret = "<div class='imgselector-container e-tip' {$title} style='display:block;width:120px;min-height:100px'>";
-			$att = 'aw=120&ah=100';
+			$ret = "<div class='imgselector-container e-tip' {$title} style='display:block;width:".$width."px;min-height:".$height."px;'>";
+			$att = 'aw='.$width."'&ah=".$height."'";
 			$thpath = isset($sc_parameters['nothumb']) || vartrue($hide) ? $default : $tp->thumbUrl($default_thumb, $att, true);
-			$label = "<img id='{$name_id}_prev' src='{$default_url}' alt='{$default_url}' class='image-selector' style='width:120px;height:100px;border:1px dashed black;' />";
+			$label = "<img id='{$name_id}_prev' src='{$default_url}' alt='{$default_url}' class='image-selector' style='display:block;border:1px dashed black;' />";
 			
+			if($cat != 'news' && $cat !='page') 
+			{
+			 	$cat = $cat . "_image";		
+			}
 		}
 		
+	
 		
-		
-		$ret .= $this->mediaUrl($cat, $label,$name_id);
+		$ret .= $this->mediaUrl($cat, $label,$name_id,$sc_parameters);
 		$ret .= "</div>\n";
 		$ret .=	"<input type='hidden' name='{$name}' id='{$name_id}' value='{$default}' />"; 
 	//	$ret .=	$this->text($name,$default); // to be hidden eventually. 
@@ -545,9 +556,12 @@ class e_form
 		$default_label 	= ($default) ? $default : "Choose a file";
 		$label 		= "<span id='{$name_id}_prev' class='btn btn-small'>".basename($default_label)."</span>";
 			
+		$sc_parameters['mode'] = 'main';
+		$sc_parameters['action'] = 'dialog';	
+			
 		
 	//	$ret .= $this->mediaUrl($cat, $label,$name_id,"mode=dialog&action=list");
-			$ret .= $this->mediaUrl($cat, $label,$name_id,"mode=main&action=dialog");
+			$ret .= $this->mediaUrl($cat, $label,$name_id,$sc_parameters);
 		$ret .=	"<input type='hidden' name='{$name}' id='{$name_id}' value='{$default}' style='width:400px' />"; 
 			
 		return $ret;

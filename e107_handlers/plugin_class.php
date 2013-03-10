@@ -1850,7 +1850,7 @@ class e107plugin
 					$data['class'] = 253;
 					$status = e107::getMedia()->createCategory($data) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 					$mes->add("Adding Media Category: {$data['category']}", $status);				
-					
+					e107::getMedia()->import($data['category'],e_PLUGIN.$folder, false,'min-size=20000'); 
 					$c++;					
 				}	
 			
