@@ -196,6 +196,10 @@ function update_10x_to_103($type='')
 				catch_error();
 				mysql_query("ALTER TABLE `".MPREFIX."news` ADD INDEX `news_datestamp` (`news_datestamp`)");
 				catch_error();
+				mysql_query("ALTER TABLE `".MPREFIX."news` ADD INDEX `news_start` ( `news_start` )");
+				catch_error();
+				
+				; 
 				// $e107cache->delete("nq_admin_update");
 				return '';		
 			}

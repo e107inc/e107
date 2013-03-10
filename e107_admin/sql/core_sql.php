@@ -279,7 +279,9 @@ CREATE TABLE news (
   news_sticky tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (news_id),
   KEY news_sticky (news_sticky),
-  KEY news_datestamp (news_datestamp)  
+  KEY news_datestamp (news_datestamp),  
+  KEY news_start (news_start)    
+  
 ) ENGINE=MyISAM;
 
 
