@@ -982,14 +982,48 @@ $social_external = array(
  
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-sociallogin'>
-					<legend>Social Login Options</legend>
-					<div>Note: This section requires further testing</div>
+					<legend>Social Options</legend>
+					<div class='alert alert-warning'>Note: This section requires further testing</div>
 					<table class='table adminform'>
 						<colgroup>
 							<col class='col-label' />
 							<col class='col-control' />
 						</colgroup>
 						<tbody>
+						<tr>
+						<th colspan='2'>External Social Pages</th>
+					</tr>
+					<tr>
+						<td>Your Facebook page</td>
+						<td>
+							".$frm->text('facebook_link', $pref['facebook_link'])."
+							<div class='field-help'>Used in some themes to provide a link to your Facebook page. (FACEBOOK_LINK)</div>
+						</td>
+					</tr>	
+					<tr>
+						<td>Your Twitter page</td>
+						<td>
+							".$frm->text('twitter_link', $pref['twitter_link'])."
+							<div class='field-help'>Used in some themes to provide a link to your Twitter page. (TWITTER_LINK)</div>
+						</td>
+					</tr>		
+					<tr>
+						<td>Your Youtube page</td>
+						<td>
+							".$frm->text('youtube_link', $pref['youtube_link'])."
+							<div class='field-help'>Used in some themes to provide a link to your Youtube page. (YOUTUBE_LINK)</div>
+						</td>
+					</tr>
+						<tr>
+						<td>Your Google+ page</td>
+						<td>
+							".$frm->text('google_link', $pref['google_link'])."
+							<div class='field-help'>Used in some themes to provide a link to your Google+ page. (GOOGLE_LINK)</div>
+						</td>
+					</tr>			
+					<tr>
+						<th colspan='2'>Social Logins</th>
+					</tr>
 					<tr>
 						<td>Enable Social Logins</td>
 						<td>
@@ -1893,7 +1927,7 @@ function prefs_adminmenu()
 	$var['core-prefs-email']['text'] = "Email &amp; Contact Info.";
 	$var['core-prefs-registration']['text'] = PRFLAN_28;
 	$var['core-prefs-signup']['text'] = PRFLAN_19;
-	$var['core-prefs-sociallogin']['text'] = "Social Logins";
+	$var['core-prefs-sociallogin']['text'] = "Social Options";
 	
 	$var['core-prefs-comments']['text'] = PRFLAN_210;
 	$var['core-prefs-uploads']['text'] = "File Uploading"; // TODO LAN
