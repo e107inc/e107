@@ -2,16 +2,10 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/chatbox_menu.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 /**
@@ -19,16 +13,21 @@
  *
  *	@package	e107_plugins
  *	@subpackage	chatbox
- *	@version 	$Id$;
  */
 error_reporting(0);
 
-global $tp, $e107cache, $e_event, $e107, $pref;
+global $e107cache, $e_event, $e107;
+$tp = e107::getParser();
+$pref = e107::getPref(); 
+
 if (!plugInstalled('chatbox_menu')) 
 {
 	return '';
 }
 
+include_lan(e_PLUGIN.'chatbox_menu/languages/'.e_LANGUAGE.'/'.e_LANGUAGE.'.php');
+
+// FIXME - start - LAN is not loaded
 if(($pref['cb_layer']==2) || isset($_POST['chatbox_ajax']))
 {
 	if(isset($_POST['chat_submit']))
@@ -40,6 +39,8 @@ if(($pref['cb_layer']==2) || isset($_POST['chatbox_ajax']))
 		include_lan(e_PLUGIN.'chatbox_menu/languages/'.e_LANGUAGE.'/'.e_LANGUAGE.'.php');
 	}
 }
+// FIXME - end
+
 
 if(!defined('e_HANDLER')){ exit; }
 require_once(e_HANDLER.'emote.php');
@@ -151,12 +152,12 @@ else
 	$texta .= "
 	<textarea class='tbox chatbox' id='cmessage' name='cmessage' cols='20' rows='5' style='".($cb_width ? "width:".$cb_width.";" : '')." overflow: auto' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
 	<br />
-	<input class='button' type='submit' id='chat_submit' name='chat_submit' value='".CHATBOX_L4."' {$oc}/>
-	<input class='button' type='reset' name='reset' value='".CHATBOX_L5."' />";
+	<input class='btn button' type='submit' id='chat_submit' name='chat_submit' value='".CHATBOX_L4."' {$oc}/>
+	<input class='btn button' type='reset' name='reset' value='".CHATBOX_L5."' />";
 
 	if($pref['cb_emote'] && $pref['smiley_activate']){
 		$texta .= "
-		<input class='button' type ='button' style='cursor:pointer' size='30' value='".CHATBOX_L14."' onclick=\"expandit('emote')\" />
+		<input class='btn button' type='button' style='cursor:pointer' size='30' value='".CHATBOX_L14."' onclick=\"expandit('emote')\" />
 		<div style='display:none' id='emote'>".r_emote()."
 		</div>\n";
 	}
