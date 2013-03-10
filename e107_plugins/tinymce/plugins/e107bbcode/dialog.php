@@ -43,7 +43,7 @@ $(document).ready(function()
 			var buttonClass = (buttonType != '') ? 'btn-'+buttonType : '';
 					
 
-			var html = '<a class=\"btn ' + buttonClass + ' ' + buttonSize + '\" href=\"' + buttonUrl + '\" >' + buttonText + '</a>';
+			var html = '<a class=\"btn ' + buttonClass + ' ' + buttonSize + '\" href=\"' + buttonUrl + '\" >' + buttonText + '</a> ';
 		//	alert(html);		
 			tinyMCEPopup.editor.execCommand('mceInsertContent', false, html);
 			tinyMCEPopup.close();
