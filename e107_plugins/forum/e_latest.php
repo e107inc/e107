@@ -11,7 +11,7 @@ class forum_latest // include plugin-folder in the name.
 		
 		$var[0]['icon'] 	= E_16_FORUM;
 		$var[0]['title'] 	= ADLAN_LAT_6;
-		$var[0]['url']		= e_PLUGIN."forum/forum_admin.php";
+		$var[0]['url']		= e_PLUGIN."forum/forum_admin.php?sr";
 		$var[0]['total'] 	= $reported_posts;
 
 		return $var;
