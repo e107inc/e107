@@ -1119,11 +1119,14 @@ class e_form
 	
 			$text[] = $this->radio($name, $value, (string) $checked === (string) $value)."".$this->label($label, $name, $value).(isset($helpLabel) ? "<div class='field-help'>".$helpLabel."</div>" : '');
 		}
-		if(!$multi_line)
+		
+		if($multi_line === false)
+		{
 			return implode("&nbsp;&nbsp;", $text);
+		}
 		
 		// return implode("\n", $text);
-		return "<div class='field-spacer'>".implode("</div><div class='field-spacer'>", $text)."</div>";
+		return "<div class='field-spacer' style='width:50%;float:left'>".implode("</div><div class='field-spacer' style='width:50%;float:left'>", $text)."</div>";
 
 	}
 
