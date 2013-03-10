@@ -23,7 +23,14 @@ if (!defined('e107_INIT')) { exit; }
 
 class faqs_shortcodes extends e_shortcode
 {
-	// var $var;
+	public $counter = 1;
+	
+	// Simply FAQ count when needed. 
+	function sc_faq_counter($parm='')
+	{
+		return $this->counter;	
+	}
+	
 	
 	function sc_faq_question($parm='')
 	{
@@ -32,12 +39,12 @@ class faqs_shortcodes extends e_shortcode
 		if($parm == 'expand')
 		{
 			$id = "faq_".$this->var['faq_id'];
-			$text = "<a class='e-expandit faq-question' href='#{$id}'>".$tp->toHtml($this->var['faq_question'])."</a>
+			$text = "<a class='e-expandit faq-question' href='#{$id}'>".$tp->toHtml($this->var['faq_question'],true)."</a>
 			<div id='{$id}' class='e-hideme faq-answer faq_answer'>".$tp->toHTML($this->var['faq_answer'],TRUE)."</div>";		
 		}
 		else
 		{
-			$text = $tp->toHtml($this->var['faq_question']);		
+			$text = $tp->toHtml($this->var['faq_question'],true);		
 		}
 		return $text;
 	}
@@ -50,8 +57,7 @@ class faqs_shortcodes extends e_shortcode
 	
 	function sc_faq_answer()
 	{
-		$tp = e107::getParser();
-		return "<div class='faq-answer'>".$tp -> toHtml($this->var['faq_answer'])."</div>";	
+		return e107::getParser()->toHtml($this->var['faq_answer'],true); 
 	}
 	
 	function sc_faq_edit()

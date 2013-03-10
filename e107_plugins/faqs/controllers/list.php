@@ -76,10 +76,12 @@ class plugin_faqs_list_controller extends eControllerFront
 		$sc = e107::getScBatch('faqs', true);
 
 		$text = $tp->parseTemplate($FAQ_START, true);
+		
+		$sc->counter = 1;
 		while ($rw = $sql->db_Fetch())
 		{
 			$sc->setVars($rw);	
-
+			
 			if($rw['faq_info_order'] != $prevcat)
 			{
 				if($prevcat !='')
@@ -93,7 +95,7 @@ class plugin_faqs_list_controller extends eControllerFront
 
 			$text .= $tp->parseTemplate($FAQ_LISTALL['item'], true);
 			$prevcat = $rw['faq_info_order'];
-
+			$sc->counter++;
 		}
 		$text .= $tp->parseTemplate($FAQ_LISTALL['end'], true);
 		$text .= $tp->parseTemplate($FAQ_END, true);
