@@ -467,12 +467,14 @@ class e_form
 	{
 		$tp = e107::getParser();
 		$name_id = $this->name2id($name);
+		
 		if(is_string($sc_parameters))
 		{
 			if(strpos($sc_parameters, '=') === false) $sc_parameters = 'media='.$sc_parameters;
 			parse_str($sc_parameters, $sc_parameters);
 		}
 		
+	
 		$default_thumb = $default;
 		if($default)
 		{
@@ -515,13 +517,12 @@ class e_form
 			$thpath = isset($sc_parameters['nothumb']) || vartrue($hide) ? $default : $tp->thumbUrl($default_thumb, $att, true);
 			$label = "<img id='{$name_id}_prev' src='{$default_url}' alt='{$default_url}' class='image-selector' style='display:block;border:1px dashed black;' />";
 			
-			if($cat != 'news' && $cat !='page') 
+			if($cat != 'news' && $cat !='page' && $cat !='') 
 			{
 			 	$cat = $cat . "_image";		
 			}
 		}
 		
-	
 		
 		$ret .= $this->mediaUrl($cat, $label,$name_id,$sc_parameters);
 		$ret .= "</div>\n";
