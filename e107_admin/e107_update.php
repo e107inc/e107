@@ -231,7 +231,7 @@ class e107Update
 	
 	function updatePlugin($path)
 	{
-		e107::getPlugin()->install_plugin_xml($path, 'upgrade');
+		 e107::getPlugin()->install_plugin_xml($path, 'upgrade');
 	}
 	
 	

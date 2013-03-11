@@ -957,7 +957,9 @@ function update_706_to_800($type='')
 	
 	require_once(e_HANDLER."db_verify_class.php");
 	$dbv = new db_verify;
-	$dbv->compareAll(); // core & plugins
+	$exclude =  array_keys(e107::getPlugin()->updateRequired()); // search xxxxx_setup.php and check for 'upgrade_required()' == true. 
+
+	$dbv->compareAll($exclude); // core & plugins, but not plugins calling for an update with xxxxx_setup.php 	
 	
 	if(count($dbv->errors))
 	{
@@ -968,17 +970,18 @@ function update_706_to_800($type='')
 			return update_needed("Database Tables require updating.");
 		}
 		
+		$dbv->compileResults();	
+		$dbv->runFix(); // Fix entire core database structure and plugins too. 	
 	}
-
-	$dbv->compileResults();
+	
 	// print_a($dbv->results);
 	// print_a($dbv->fixList);	
-	$dbv->runFix(); // Fix entire core database structure. 
+
 
 	//TODO - send notification messages to Log. 
 	
 
-	if($sql->gen("SELECT * FROM #page WHERE page_theme != '' AND menu_title = '' LIMIT 1"))
+	if($sql->field('page','page_theme') && $sql->gen("SELECT * FROM #page WHERE page_theme != '' AND menu_title = '' LIMIT 1"))
 	{
 		if ($just_check)
 		{
