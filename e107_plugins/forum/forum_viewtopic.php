@@ -279,8 +279,8 @@ if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread
 		<p>" . LAN_393 . ":<br />
 		<textarea cols='60' rows='4' class='tbox' name='post' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
 		<br />
-		<input type='submit' name='fpreview' value='" . LAN_394 . "' class='button' /> &nbsp;
-		<input type='submit' name='reply' value='" . LAN_395 . "' class='button' />
+		<input type='submit' name='fpreview' value='" . LAN_394 . "' class='btn button' /> &nbsp;
+		<input type='submit' name='reply' value='" . LAN_395 . "' class='btn button' />
 		<input type='hidden' name='thread_id' value='$thread_parent' />
 		</p>
 		</form>";
