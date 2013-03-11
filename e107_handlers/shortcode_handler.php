@@ -715,7 +715,10 @@ class e_parse_shortcode
 	 */
 	function doCode($matches)
 	{
+		
 		global $pref, $e107cache, $menu_pref, $sc_style, $parm, $sql;
+		
+		$parmArray = false;
 
 		if ($this->eVars)
 		{
@@ -729,7 +732,14 @@ class e_parse_shortcode
 			return $matches[0];
 		}
 
-		if (strpos($matches[1], '='))
+		if(preg_match('/^([A-Z]*):(.*)/', $matches[1], $newMatch))
+		{
+			$code = $newMatch[1];
+			$parmStr = trim($newMatch[2]);
+			parse_str($parmStr,$parm);
+			$parmArray = true;
+		}
+		elseif (strpos($matches[1], '='))
 		{
 			list($code, $parm) = explode('=', $matches[1], 2);
 		}
@@ -749,9 +759,14 @@ class e_parse_shortcode
 		{
 			$sc_mode = '';
 		}
-		$parm = trim($parm);
-		$parm = str_replace(array('[[', ']]'), array('{', '}'), $parm);
-
+		
+		if($parmArray == false)
+		{
+			$parm = trim($parm);
+			$parm = str_replace(array('[[', ']]'), array('{', '}'), $parm);
+		}
+		
+		
 		if (E107_DBG_BBSC || E107_DBG_SC || E107_DBG_TIMEDETAILS)
 		{
 			global $db_debug;
@@ -887,13 +902,12 @@ class e_parse_shortcode
 						include_once(e_CORE.'shortcodes/single/'.strtolower($code).'.php');
 
 						if (class_exists($_class, false)) // prevent __autoload - performance
-
 						{
-							$ret = call_user_func(array($_class, $_function), $parm);
+							$ret = call_user_func(array($_class, $_function), array($parm, $sc_mode));
 						}
 						elseif (function_exists($_function))
 						{
-							$ret = call_user_func($_function, $parm);
+							$ret = call_user_func($_function, $parm, $sc_mode);
 						}
 					}
 					else

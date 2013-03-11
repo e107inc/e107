@@ -96,6 +96,15 @@ class _system_cron
 	// Very basic and needs improvement. (for large DBs)
 	function dbBackup()
 	{
+		
+		$sql = e107::getDb();
+		$sql->backup('*');
+		
+		
+		
+		return;
+		
+		
 		require(e_BASE."e107_config.php");
 
 		$sql = e107::getDb();
