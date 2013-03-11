@@ -49,7 +49,11 @@ class forum_setup
 	 */
 	function upgrade_required()
 	{
-		return false;	 // true to trigger an upgrade alert, and false to not. 
+		if(!e107::getDb()->field('forum','forum_thread'))
+		{
+			return true;	 // true to trigger an upgrade alert, and false to not. 	
+		}
+		
 	}
 	
 
@@ -57,7 +61,7 @@ class forum_setup
 	{
 		//Redirect upgrade to customized upgrade routine
 		
-		// e107::getRedirect()->redirect(e_PLUGIN.'forum/forum_update.php');
+		e107::getRedirect()->redirect(e_PLUGIN.'forum/forum_update.php');
 		
 		//header('Location: '.e_PLUGIN.'forum/forum_update.php');
 	}
