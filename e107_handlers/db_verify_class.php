@@ -155,9 +155,15 @@ class db_verify
 	
 	/**
 	 * Check core tables and installed plugin tables
+	 * @param $exclude - array of plugins to exclude. 
 	 */
-	function compareAll()
+	function compareAll($exclude = array())
 	{
+		foreach($exclude as $val)
+		{
+			unset($this->tables[$val]);
+		}
+		
 		$dtables = array_keys($this->tables);
 
 		foreach($dtables as $tb)
@@ -175,6 +181,7 @@ class db_verify
 	}
 	
 	
+
 	
 	
 	
@@ -225,7 +232,7 @@ class db_verify
 			if(isset($debugA) && (e_PAGE == 'db.php'))
 			{
 									
-				$debug = "<table border='1'>
+				$debug = "<table class='table' border='1'>
 				<tr><td style='padding:5px;font-weight:bold'>FILE: ".$tbl." (key=".$key.")</td>
 				<td style='padding:5px;font-weight:bold'>SQL: ".$tbl."</td>
 				</tr>
