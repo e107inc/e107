@@ -44,9 +44,10 @@ $USER_SHORT_TEMPLATE_START = "
 	<br />
 	<br />
 	{USER_FORM_START}
-	<p>".LAN_USER_70.": {USER_FORM_RECORDS} ".LAN_USER_57." {USER_FORM_ORDER}
+	<div class='form-inline'>
+	".LAN_USER_70.": {USER_FORM_RECORDS} ".LAN_USER_57." {USER_FORM_ORDER}
 	{USER_FORM_SUBMIT}
-	</p>
+	</div>
 	{USER_FORM_END}
 	</div>
 	<br />
@@ -54,10 +55,10 @@ $USER_SHORT_TEMPLATE_START = "
 	<table style='".USER_WIDTH."' class='table fborder e-list'>
 	<thead>
 	<tr>
-	<td class='fcaption' style='width:2%'>&nbsp;</td>
-	<td class='fcaption' style='width:20%'>".LAN_USER_58."</td>
-	<td class='fcaption' style='width:20%'>".LAN_USER_60."</td>
-	<td class='fcaption' style='width:20%'>".LAN_USER_59."</td>
+	<th class='fcaption' style='width:2%'>&nbsp;</th>
+	<th class='fcaption' style='width:20%'>".LAN_USER_58."</th>
+	<th class='fcaption' style='width:20%'>".LAN_USER_60."</th>
+	<th class='fcaption' style='width:20%'>".LAN_USER_59."</th>
 	</tr>
 	</thead>
 	<tbody>
