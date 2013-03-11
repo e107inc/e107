@@ -128,7 +128,7 @@ $fVars->SEARCH = "
 <input class='tbox' type='text' name='q' size='20' value='' maxlength='50' />
 <input type='hidden' name='r' value='0' />
 <input type='hidden' name='ref' value='forum' />
-<input class='button' type='submit' name='s' value='".LAN_180."' />
+<input class='btn button' type='submit' name='s' value='".LAN_180."' />
 </p>
 </form>\n";
 

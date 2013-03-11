@@ -88,14 +88,14 @@ class plugin_forum_post_shortcodes extends e_shortcode
 	function sc_buttons()
 	{
 		global $action, $eaction;
-		$ret = "<input class='button' type='submit' name='fpreview' value='".LAN_323."' /> ";
+		$ret = "<input class='btn button' type='submit' name='fpreview' value='".LAN_323."' /> ";
 		if ($action != 'nt')
 		{
-			$ret .= ($eaction ? "<input class='button' type='submit' name='update_reply' value='".LAN_78."' />" : "<input class='button' type='submit' name='reply' value='".LAN_74."' />");
+			$ret .= ($eaction ? "<input class='btn button' type='submit' name='update_reply' value='".LAN_78."' />" : "<input class='btn button' type='submit' name='reply' value='".LAN_74."' />");
 		}
 		else
 		{
-			$ret .= ($eaction ? "<input class='button' type='submit' name='update_thread' value='".LAN_77."' />" : "<input class='button' type='submit' name='newthread' value='".LAN_64."' />");
+			$ret .= ($eaction ? "<input class='btn button' type='submit' name='update_thread' value='".LAN_77."' />" : "<input class='btn button' type='submit' name='newthread' value='".LAN_64."' />");
 		}
 		return $ret;
 	}
