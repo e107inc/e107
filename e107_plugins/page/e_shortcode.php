@@ -28,4 +28,14 @@ class page_shortcodes extends e_shortcode
 			return e107::getNav()->render($data, $template) ;
 					
 		}
+		
+		
+		
+		/**
+		 *  New in v2.x. eg. {CMENU=feature-1} Renders a menu called 'feature-1' as found in the e107_page table  See admin Pages/Menus . 
+		 */
+		function sc_cmenu($parm='',$mode='')
+		{
+			return e107::getMenu()->renderMenu($parm, false);									
+		}
 }
