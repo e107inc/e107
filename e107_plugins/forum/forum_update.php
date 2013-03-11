@@ -79,6 +79,7 @@ function step1()
 {
 	global $f;
 	$e107 = e107::getInstance();
+	$mes = e107::getMessage();
 	//Check attachment dir permissions
 	if(!isset($f->updateInfo['skip_attach']))
 	{

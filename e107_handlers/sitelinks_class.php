@@ -1092,7 +1092,7 @@ class e_navigation
 			$rid = str_replace(array(' ', '_'), '-', $act).($id ? "-{$id}" : '');
 			
 			//XXX  && !is_numeric($act) ???
-			if (($active_page == $act)|| (str_replace("?", "", e_PAGE.e_QUERY) == str_replace("?", "", $act)))
+			if (($active_page == (string) $act)|| (str_replace("?", "", e_PAGE.e_QUERY) == str_replace("?", "", $act)))
 			{
 				$temp = $tmpl['button_active'.$kpost];
 			}
