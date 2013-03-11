@@ -376,7 +376,7 @@ function forumjump()
 	{
 		$text .= "\n<option value='" . $key . "'>" . $val . "</option>";
 	}
-	$text .= "</select> <input class='button' type='submit' name='fjsubmit' value='" . LAN_03 . "' /></p></form>";
+	$text .= "</select> <input class='btn button' type='submit' name='fjsubmit' value='" . LAN_03 . "' /></p></form>";
 	return $text;
 }
 
@@ -642,7 +642,7 @@ class e107ForumThread
 					</tr>
 					<tr>
 					<td colspan='2' style='text-align:center;'><br />
-					<input class='button' type='submit' name='report_thread' value='" . LAN_419 . "' />
+					<input class='btn button' type='submit' name='report_thread' value='" . LAN_419 . "' />
 					</td>
 					</tr>
 					</table>";

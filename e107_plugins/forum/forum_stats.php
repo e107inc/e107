@@ -36,8 +36,8 @@ $bar = (file_exists(THEME.'images/bar.png') ? THEME.'images/bar.png' : e_PLUGIN.
 
 require_once(HEADERF);
 
-$total_posts = $sql->db_Count('forum_post');
-$total_topics = $sql->db_Count('forum_thread');
+$total_posts = $sql->count('forum_post');
+$total_topics = $sql->count('forum_thread');
 $total_replies = $total_posts - $total_topics;
 $total_views = 0;
 $query = 'SELECT sum(thread_views) AS total FROM `#forum_thread` ';
@@ -58,7 +58,7 @@ $postsperday = ($open_days < 1 ? $total_posts : round($total_posts / $open_days)
 
 
 $query = "SHOW TABLE STATUS FROM `{$mySQLdefaultdb}`";
-$sql -> db_Select_gen($query);
+$sql->gen($query);
 $array = $sql -> db_getList();
 foreach($array as $table)
 {
@@ -77,7 +77,7 @@ LEFT JOIN #forum AS f ON f.forum_id = ft.thread_forum_id
 WHERE ft.thread_active > 0
 AND f.forum_class IN (".USERCLASS_LIST.")
 ORDER BY ft.thread_total_replies DESC LIMIT 0,10";
-$sql -> db_Select_gen($query);
+$sql->gen($query);
 $most_activeArray = $sql -> db_getList();
 
 $query = "
@@ -87,7 +87,7 @@ LEFT JOIN #forum AS f ON f.forum_id = ft.thread_forum_id
 WHERE f.forum_class IN (".USERCLASS_LIST.")
 ORDER BY ft.thread_views DESC LIMIT 0,10";
 
-$sql -> db_Select_gen($query);
+$sql->gen($query);
 $most_viewedArray = $sql -> db_getList();
 
 /*$sql->db_Select("user", "user_id, user_name, user_forums", "ORDER BY user_forums DESC LIMIT 0, 10", "no_where");
@@ -105,7 +105,7 @@ SELECT COUNT(fp.post_id) AS post_count, u.user_name, u.user_id, fp.post_thread F
 LEFT JOIN #user AS u ON fp.post_user = u.user_id
 GROUP BY fp.post_user
 ORDER BY post_count DESC LIMIT 0,10";
-$sql -> db_Select_gen($query);
+$sql->gen($query);
 $top_repliers_data = $sql -> db_getList('ALL', false, false, 'user_id');
 
 // build top posters meanwhile
@@ -125,7 +125,7 @@ SELECT COUNT(ft.thread_id) AS thread_count, u.user_id FROM #forum_thread as ft
 LEFT JOIN #user AS u ON ft.thread_user = u.user_id
 WHERE u.user_id IN ({$ids})
 GROUP BY ft.thread_user";
-$sql -> db_Select_gen($query);
+$sql->gen($query);
 $top_repliers_data_c = $sql -> db_getList('ALL', false, false, 'user_id');
 
 $top_repliers = array();
@@ -153,7 +153,7 @@ SELECT COUNT(ft.thread_id) AS thread_count, u.user_name, u.user_id FROM #forum_t
 LEFT JOIN #user AS u ON ft.thread_user = u.user_id
 GROUP BY ft.thread_user
 ORDER BY thread_count DESC LIMIT 0,10";
-$sql -> db_Select_gen($query);
+$sql->gen($query);
 $top_topic_starters_data = $sql -> db_getList();
 $top_topic_starters = array();
 foreach($top_topic_starters_data as $poster)
@@ -199,16 +199,30 @@ foreach($posters as $poster)
 */
 
 
+function showBar($perc)
+{
+	
+	return	"<div class='progress'>
+    <div class='bar' style='width: ".intval($perc)."%;'></div>
+    </div>";
+
+//	<div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div>
+//	<div style='background-image: url($bar); width: ".intval($percentage)."%; height: 14px; float: left;'></div>
+//	<div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div>
+	
+	
+}
+
+
 $text = "
 <div class='spacer'>
-<table style='width: 100%;' class='fborder'>
+<table style='width: 100%;' class='fborder table'>
 <tr>
-<td class='forumheader'>".FSLAN_1."</td>
+<th class='forumheader' colspan='2'>".FSLAN_1."</th>
 </tr>
 
 <tr>
-<td class='forumheader3'>
-	<table style='width: 100%;'>
+	
 	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_2.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$open_date}</td></tr>
 	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_3.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$open_since}</td></tr>
 	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_4.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$total_posts}</td></tr>
@@ -219,23 +233,22 @@ $text = "
 	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_8.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$db_size}</td></tr>
 	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_9.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$avg_row_len}</td></tr>
 
-	</table>
-</td>
+
 </tr>
 </table>
 </div>
 
 <div class='spacer'>
-<table style='width: 100%;' class='fborder'>
+<table style='width: 100%;' class='fborder table'>
 <tr>
 <td class='forumheader' colspan='5'>".FSLAN_10."</td>
 </tr>
 <tr>
-<td style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_11."</td>
-<td style='width: 40%;' class='fcaption'>".FSLAN_12."</td>
-<td style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_13."</td>
-<td style='width: 20%; text-align: center;' class='fcaption'>".FSLAN_14."</td>
-<td style='width: 20%; text-align: center;' class='fcaption'>".FSLAN_15."</td>
+<th style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_11."</th>
+<th style='width: 40%;' class='fcaption'>".FSLAN_12."</th>
+<th style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_13."</th>
+<th style='width: 20%; text-align: center;' class='fcaption'>".FSLAN_14."</th>
+<th style='width: 20%; text-align: center;' class='fcaption'>".FSLAN_15."</th>
 </tr>
 ";
 
@@ -267,16 +280,16 @@ $text .= "</table>
 </div>
 
 <div class='spacer'>
-<table style='width: 100%;' class='fborder'>
+<table style='width: 100%;' class='fborder table'>
 <tr>
 <td class='forumheader' colspan='5'>".FSLAN_16."</td>
 </tr>
 <tr>
-<td style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_11."</td>
-<td style='width: 40%;' class='fcaption'>".FSLAN_12."</td>
-<td style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_17."</td>
-<td style='width: 20%; text-align: center;' class='fcaption'>".FSLAN_14."</td>
-<td style='width: 20%; text-align: center;' class='fcaption'>".FSLAN_15."</td>
+<th style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_11."</th>
+<th style='width: 40%;' class='fcaption'>".FSLAN_12."</th>
+<th style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_17."</th>
+<th style='width: 20%; text-align: center;' class='fcaption'>".FSLAN_14."</th>
+<th style='width: 20%; text-align: center;' class='fcaption'>".FSLAN_15."</th>
 </tr>
 ";
 
@@ -308,17 +321,20 @@ $text .= "</table>
 </div>
 
 <div class='spacer'>
-<table style='width: 100%;' class='fborder'>
+<table style='width: 100%;' class='fborder table'>
 <tr>
 <td class='forumheader' colspan='5'>".FSLAN_18."</td>
 </tr>
+<thead>
 <tr>
-<td style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_11."</td>
-<td style='width: 20%;' class='fcaption'>".FSLAN_19."</td>
-<td style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_20."</td>
-<td style='width: 10%; text-align: center;' class='fcaption'>%</td>
-<td style='width: 50%; text-align: center;' class='fcaption'>&nbsp;</td>
+<th style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_11."</th>
+<th style='width: 20%;' class='fcaption'>".FSLAN_19."</th>
+<th style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_20."</th>
+<th style='width: 10%; text-align: center;' class='fcaption'>%</th>
+<th style='width: 50%; text-align: center;' class='fcaption'>&nbsp;</th>
 </tr>
+</thead>
+<tbody>
 ";
 
 $count=1;
@@ -330,32 +346,27 @@ foreach($top_posters as $ma)
 	<td style='width: 20%;' class='forumheader3'><a href='".e_BASE."user.php?id.$user_id'>$user_name</a></td>
 	<td style='width: 10%; text-align: center;' class='forumheader3'>$user_forums</td>
 	<td style='width: 10%; text-align: center;' class='forumheader3'>$percentage%</td>
-	<td style='width: 50%;' class='forumheader3'>
-
-	<div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div>
-	<div style='background-image: url($bar); width: ".intval($percentage)."%; height: 14px; float: left;'></div>
-	<div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div>
-
+	<td style='width: 50%;' class='forumheader3'>".showBar($percentage)."
 	</td>
 	</tr>
 	";
 	$count++;
 }
-$text .= "
+$text .= "</tbody>
 </table>
 </div>
 
 <div class='spacer'>
-<table style='width: 100%;' class='fborder'>
+<table style='width: 100%;' class='fborder table'>
 <tr>
 <td class='forumheader' colspan='5'>".FSLAN_21."</td>
 </tr>
 <tr>
-<td style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_11."</td>
-<td style='width: 20%;' class='fcaption'>".FSLAN_19."</td>
-<td style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_20."</td>
-<td style='width: 10%; text-align: center;' class='fcaption'>%</td>
-<td style='width: 50%; text-align: center;' class='fcaption'>&nbsp;</td>
+<th style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_11."</th>
+<th style='width: 20%;' class='fcaption'>".FSLAN_19."</th>
+<th style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_20."</th>
+<th style='width: 10%; text-align: center;' class='fcaption'>%</th>
+<th style='width: 50%; text-align: center;' class='fcaption'>&nbsp;</th>
 </tr>
 ";
 
@@ -368,13 +379,7 @@ foreach($top_topic_starters as $ma)
 	<td style='width: 20%;' class='forumheader3'><a href='".e_BASE."user.php?id.$user_id'>$user_name</a></td>
 	<td style='width: 10%; text-align: center;' class='forumheader3'>$user_forums</td>
 	<td style='width: 10%; text-align: center;' class='forumheader3'>$percentage%</td>
-	<td style='width: 50%; text-align: center;' class='forumheader3'>
-
-	<div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div>
-	<div style='background-image: url($bar); width: ".intval($percentage)."%; height: 14px; float: left;'></div>
-	<div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div>
-
-	</td>
+	<td style='width: 50%; text-align: center;' class='forumheader3'>".showBar($percentage)."</td>
 	</tr>
 	";
 	$count++;
@@ -384,16 +389,16 @@ $text .= "</table>
 
 
 <div class='spacer'>
-<table style='width: 100%;' class='fborder'>
+<table style='width: 100%;' class='fborder table'>
 <tr>
 <td class='forumheader' colspan='5'>".FSLAN_22."</td>
 </tr>
 <tr>
-<td style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_11."</td>
-<td style='width: 20%;' class='fcaption'>".FSLAN_19."</td>
-<td style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_20."</td>
-<td style='width: 10%; text-align: center;' class='fcaption'>%</td>
-<td style='width: 50%; text-align: center;' class='fcaption'>&nbsp;</td>
+<th style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_11."</th>
+<th style='width: 20%;' class='fcaption'>".FSLAN_19."</th>
+<th style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_20."</th>
+<th style='width: 10%; text-align: center;' class='fcaption'>%</th>
+<th style='width: 50%; text-align: center;' class='fcaption'>&nbsp;</th>
 </tr>
 ";
 
@@ -406,13 +411,7 @@ foreach($top_repliers as $ma)
 	<td style='width: 20%;' class='forumheader3'><a href='".e_BASE."user.php?id.$user_id'>$user_name</a></td>
 	<td style='width: 10%; text-align: center;' class='forumheader3'>$user_forums</td>
 	<td style='width: 10%; text-align: center;' class='forumheader3'>$percentage%</td>
-	<td style='width: 50%; text-align: center;' class='forumheader3'>
-
-	<div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div>
-	<div style='background-image: url($bar); width: ".intval($percentage)."%; height: 14px; float: left;'></div>
-	<div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div>
-
-	</td>
+	<td style='width: 50%; text-align: center;' class='forumheader3'>".showBar($percentage)."</td>
 	</tr>
 	";
 	$count++;

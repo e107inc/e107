@@ -127,7 +127,7 @@ function step2()
 		This step will create the new forum_thread, forum_post, and forum_attach tables.  It will also create a forum_new table that will become the 'real' forum table once the data from the current table is migrated.
 		<br /><br />
 		<form method='post'>
-		<input class='button' type='submit' name='create_tables' value='Proceed with table creation' />
+		<input class='btn button' type='submit' name='create_tables' value='Proceed with table creation' />
 		</form>
 		";
 		$ns->tablerender('Step 2: Forum table creation', $text);
@@ -188,7 +188,7 @@ function step3()
 		* user_plugin_forum_viewed (to track threads viewed by each user<br />
 		<br /><br />
 		<form method='post'>
-		<input class='button' type='submit' name='create_extended' value='Proceed with field creation' />
+		<input class='btn button' type='submit' name='create_extended' value='Proceed with field creation' />
 		</form>
 		";
 		$e107->ns->tablerender($stepCaption, $text);
@@ -227,7 +227,7 @@ function step3()
 			$text .= "
 			<br /><br />
 			<form method='post'>
-			<input class='button' type='submit' name='nextStep[4]' value='Proceed to step 4' />
+			<input class='btn button' type='submit' name='nextStep[4]' value='Proceed to step 4' />
 			</form>
 			";
 	}
@@ -252,7 +252,7 @@ function step4()
 		Depending on the size of your user table, this step could take a while.
 		<br /><br />
 		<form method='post'>
-		<input class='button' type='submit' name='move_user_data' value='Proceed with user data move' />
+		<input class='btn button' type='submit' name='move_user_data' value='Proceed with user data move' />
 		</form>
 		";
 		$ns->tablerender($stepCaption, $text);
@@ -355,7 +355,7 @@ function step4()
 	");
 	
 	$text = "<form method='post' action='".e_SELF."?step=5'>
-	<input class='button' type='submit' name='nextStep[5]' value='Proceed to step 5' />
+	<input class='btn button' type='submit' name='nextStep[5]' value='Proceed to step 5' />
 	</form>";
 
 	$ns->tablerender($stepCaption, $mes->render().$text);
@@ -378,7 +378,7 @@ function step5()
 		");
 		$text = "
 		<form method='post'>
-		<input class='button' type='submit' name='move_forum_data' value='Proceed with forum data move' />
+		<input class='btn button' type='submit' name='move_forum_data' value='Proceed with forum data move' />
 		</form>
 		";
 		$ns->tablerender($stepCaption, $mes->render().$text);
@@ -430,7 +430,7 @@ function step5()
 
 		$text = "
 		<form method='post' action='".e_SELF."?step=6'>
-		<input class='button' type='submit' name='nextStep[6]' value='Proceed to step 6' />
+		<input class='btn button' type='submit' name='nextStep[6]' value='Proceed to step 6' />
 		</form>
 		";
 
@@ -468,7 +468,7 @@ function step6()
 		<br /><br />
 		There are {$count} forum threads to convert, we will be doing it in steps of: {$limitDropdown}
 		<br /><br />
-		<input class='button' type='submit' name='move_thread_data' value='Begin thread data move' />
+		<input class='btn button' type='submit' name='move_thread_data' value='Begin thread data move' />
 		</form>
 		";
 		$ns->tablerender($stepCaption, $mes->render(). $text);
@@ -541,7 +541,7 @@ function step6()
 	{
 		$mes->addSuccess("Thread migration is complete!!");
 		$text = "<form method='post' action='".e_SELF."?step=7'>
-		<input class='button' type='submit' name='nextStep[7]' value='Proceed to step 7' />
+		<input class='btn button' type='submit' name='nextStep[7]' value='Proceed to step 7' />
 		</form>";
 		
 		$ns->tablerender($stepCaption, $mes->render(). $text);
@@ -560,7 +560,7 @@ function step7()
 		This step will calculate post count information for all users, as well as recount all for thread and reply counts.
 		<br /><br />
 		<form method='post'>
-		<input class='button' type='submit' name='calculate_usercounts' value='Proceed with post count calculation' />
+		<input class='btn button' type='submit' name='calculate_usercounts' value='Proceed with post count calculation' />
 		</form>
 		";
 		$e107->ns->tablerender($stepCaption, $text);
@@ -585,7 +585,7 @@ function step7()
 	Successfully recalculated forum posts for ".count($counts)." users.
 	<br /><br />
 	<form method='post' action='".e_SELF."?step=8'>
-	<input class='button' type='submit' name='nextStep[8]' value='Proceed to step 8' />
+	<input class='btn button' type='submit' name='nextStep[8]' value='Proceed to step 8' />
 	</form>
 	";
 	$e107->ns->tablerender($stepCaption, $text);
@@ -601,7 +601,7 @@ function step8()
 		This step will recalculate all thread and forum lastpost information
 		<br /><br />
 		<form method='post'>
-		<input class='button' type='submit' name='calculate_lastpost' value='Proceed with lastpost calculation' />
+		<input class='btn button' type='submit' name='calculate_lastpost' value='Proceed with lastpost calculation' />
 		</form>
 		";
 		$e107->ns->tablerender($stepCaption, $text);
@@ -620,7 +620,7 @@ function step8()
 	Successfully recalculated lastpost information for all forums and threads.
 	<br /><br />
 	<form method='post' action='".e_SELF."?step=9'>
-	<input class='button' type='submit' name='nextStep[9]' value='Proceed to step 9' />
+	<input class='btn button' type='submit' name='nextStep[9]' value='Proceed to step 9' />
 	</form>
 	";
 	$e107->ns->tablerender($stepCaption, $text);
@@ -636,7 +636,7 @@ function step9()
 		This step will recalculate all poll information that has been entered in the forums.
 		<br /><br />
 		<form method='post'>
-		<input class='button' type='submit' name='migrate_polls' value='Proceed with poll migration' />
+		<input class='btn button' type='submit' name='migrate_polls' value='Proceed with poll migration' />
 		</form>
 		";
 		$e107->ns->tablerender($stepCaption, $text);
@@ -685,7 +685,7 @@ function step9()
 	Successfully migrated forum poll information for ".count($threadList)." thread poll(s).
 	<br /><br />
 	<form method='post' action='".e_SELF."?step=10'>
-	<input class='button' type='submit' name='nextStep[10]' value='Proceed to step 10' />
+	<input class='btn button' type='submit' name='nextStep[10]' value='Proceed to step 10' />
 	</form>
 	";
 	$e107->ns->tablerender($stepCaption, $text);
@@ -708,7 +708,7 @@ function step10()
 		All files will be moved from the e107_files/public directory into the e107_plugins/forum/attachment directory and related posts will be updated accordingly.
 		<br /><br />
 		<form method='post'>
-		<input class='button' type='submit' name='migrate_attachments' value='Proceed with attachment migration' />
+		<input class='btn button' type='submit' name='migrate_attachments' value='Proceed with attachment migration' />
 		</form>
 		";
 		$ns->tablerender($stepCaption, $text);
@@ -915,7 +915,7 @@ function step10()
 	Successfully migrated forum attachment information for ".count($postList)." post(s).
 	<br /><br />
 	<form method='post' action='".e_SELF."?step=11'>
-	<input class='button' type='submit' name='nextStep[11]' value='Proceed to step 11' />
+	<input class='btn button' type='submit' name='nextStep[11]' value='Proceed to step 11' />
 	</form>
 	";
 	$e107->ns->tablerender($stepCaption, $text);
@@ -934,7 +934,7 @@ function step11()
 		we will try to identify these files and delete them.
 		<br /><br />
 		<form method='post'>
-		<input class='button' type='submit' name='delete_orphans' value='Proceed with attachment deletion' />
+		<input class='btn button' type='submit' name='delete_orphans' value='Proceed with attachment deletion' />
 		</form>
 		";
 		$e107->ns->tablerender($stepCaption, $text);
@@ -976,7 +976,7 @@ function step11()
 				{$failText}
 				<br /><br />
 				<form method='post' action='".e_SELF."?step=12'>
-				<input class='button' type='submit' name='nextStep[12]' value='Proceed to step 12' />
+				<input class='btn button' type='submit' name='nextStep[12]' value='Proceed to step 12' />
 				</form>
 			";
 			$e107->ns->tablerender($stepCaption, $text);
@@ -994,13 +994,13 @@ function step11()
 		}
 		else
 		{
-			$extra = "<input class='button' type='submit' name='delete_orphans' value='Show files' />&nbsp; &nbsp; &nbsp; &nbsp;";
+			$extra = "<input class='btn button' type='submit' name='delete_orphans' value='Show files' />&nbsp; &nbsp; &nbsp; &nbsp;";
 		}
 		$text .= "
 			<br /><br />
 			<form method='post'>
 			{$extra}
-			<input class='button' type='submit' name='delete_orphans' value='Delete files' />
+			<input class='btn button' type='submit' name='delete_orphans' value='Delete files' />
 			</form>
 		";
 		$e107->ns->tablerender($stepCaption, $text);
@@ -1012,7 +1012,7 @@ function step11()
 			There were no orphaned files found <br />
 			<br /><br />
 			<form method='post' action='".e_SELF."?step=12'>
-			<input class='button' type='submit' name='nextStep[12]' value='Proceed to step 12' />
+			<input class='btn button' type='submit' name='nextStep[12]' value='Proceed to step 12' />
 			</form>
 		";
 		$e107->ns->tablerender($stepCaption, $text);
@@ -1039,7 +1039,7 @@ function step12()
 		<br /><br />
 		<br /><br />
 		<form method='post'>
-		<input class='button' type='submit' name='delete_old' value='Remove old forum tables' />
+		<input class='btn button' type='submit' name='delete_old' value='Remove old forum tables' />
 		</form>
 		";
 		$ns->tablerender($stepCaption, $text);

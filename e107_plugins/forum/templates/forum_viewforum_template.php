@@ -20,7 +20,7 @@ $FORUM_VIEW_START = "
 
 	<div style='text-align:center'>
 	<div class='spacer'>
-	<table style='".USER_WIDTH."' class='fborder' >
+	<table style='".USER_WIDTH."' class='fborder table' >
 	<tr>
 	<td class='fcaption'>{BREADCRUMB}</td>
 	</tr>
@@ -45,7 +45,7 @@ $FORUM_VIEW_START = "
 	<div class='spacer'>
 	{MESSAGE}
 	<div class='spacer'>
-	<table style='".USER_WIDTH."' class='fborder'>
+	<table style='".USER_WIDTH."' class='fborder table'>
 	<tr>
 	<td style='width:3%' class='fcaption'>&nbsp;</td>
 	<td style='width:47%' class='fcaption'>{THREADTITLE}</td>
@@ -61,7 +61,7 @@ if(!$FORUM_VIEW_START_CONTAINER)
 	$FORUM_VIEW_START_CONTAINER = "
 	<div style='text-align:center'>
 	<div class='spacer'>
-	<table style='".USER_WIDTH."' class='fborder' >
+	<table style='".USER_WIDTH."' class='fborder table' >
 	<tr>
 	<td class='fcaption'>{BREADCRUMB}</td>
 	</tr>
@@ -159,7 +159,7 @@ if (!$FORUM_VIEW_END) {
 		</table>
 
 		<div class='spacer'>
-		<table class='fborder' style='".USER_WIDTH."'>
+		<table class='fborder table' style='".USER_WIDTH."'>
 		<tr>
 		<td style='vertical-align:middle; width:50%' class='forumheader3'><span class='smalltext'>{MODERATORS}</span></td>
 		<td style='vertical-align:middle; width:50%' class='forumheader3'><span class='smalltext'>{BROWSERS}</span></td>
@@ -168,7 +168,7 @@ if (!$FORUM_VIEW_END) {
 		</div>
 
 		<div class='spacer'>
-		<table class='fborder' style='".USER_WIDTH."'>
+		<table class='fborder table' style='".USER_WIDTH."'>
 		<tr>
 		<td style='vertical-align:middle; width:50%' class='forumheader3'>{ICONKEY}</td>
 		<td style='vertical-align:middle; text-align:center; width:50%' class='forumheader3'><span class='smallblacktext'>{PERMS}</span><br /><br />{SEARCH}

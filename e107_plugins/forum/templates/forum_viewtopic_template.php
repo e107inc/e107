@@ -33,7 +33,7 @@ $sc_style['USER_EXTENDED']['location.text_value']['post'] = "<br />";
 
 $FORUMSTART = "<a id='top'></a><div style='text-align:center'>
 	<div class='spacer'>
-	<table style='".USER_WIDTH."' class='fborder'>
+	<table style='".USER_WIDTH."' class='fborder table'>
 	<tr>
 	<td class='fcaption'>
 	{BACKLINK}
@@ -81,7 +81,7 @@ $FORUMSTART = "<a id='top'></a><div style='text-align:center'>
 	</table>
 
 	<div class='spacer'>
-	<table style='".USER_WIDTH."' class='fborder'>
+	<table style='".USER_WIDTH."' class='fborder table'>
 	<tr>
 	<td style='width:20%; text-align:center' class='fcaption'>
 	".LAN_402."

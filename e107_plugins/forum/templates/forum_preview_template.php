@@ -15,7 +15,7 @@ if (!defined('e107_INIT')) { exit; }
 if(!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%;margin-left:auto;margin-right:auto"); }
 
 $FORUM_PREVIEW = "<div style='text-align:center'>
-<table style='".USER_WIDTH."' class='fborder'>
+<table style='".USER_WIDTH."' class='fborder table'>
 <tr>
 <td colspan='2' class='fcaption' style='vertical-align:top'>".LAN_323.
 ($action != "nt" ? "</td>" : " ( ".LAN_62.$tsubject." )</td>")."

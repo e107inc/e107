@@ -62,7 +62,7 @@ $fileattach = "
 			<input class='tbox' name='file_userfile[]' type='file' size='47' />
 		</span>
 		</div>
-		<input class='button' type='button' name='addoption' value='".LAN_417."' onclick=\"duplicateHTML('fiupopt','fiupsection')\" />
+		<input class='btn button' type='button' name='addoption' value='".LAN_417."' onclick=\"duplicateHTML('fiupopt','fiupsection')\" />
 	</td>
 </tr>
 ";
@@ -88,7 +88,7 @@ $FORUMPOST = "
 <div style='text-align:center'>
 <div class='spacer'>
 {FORMSTART}
-<table style='".USER_WIDTH."' class='fborder'>
+<table style='".USER_WIDTH."' class='fborder table'>
 <tr>
 <td colspan='2' class='fcaption'>{BACKLINK}
 </td>
@@ -132,7 +132,7 @@ $FORUMPOST_REPLY = "
 <div style='text-align:center'>
 <div class='spacer'>
 {FORMSTART}
-<table style='".USER_WIDTH."' class='fborder'>
+<table style='".USER_WIDTH."' class='fborder table'>
 <tr>
 <td colspan='2' class='fcaption'>{BACKLINK}
 </td>
@@ -179,7 +179,7 @@ $FORUMPOST_REPLY = "
 if(!vartrue($LATESTPOSTS_START))
 {
 $LATESTPOSTS_START = "
-<table style='".USER_WIDTH."' class='fborder'>
+<table style='".USER_WIDTH."' class='fborder table'>
 <tr>
 <td colspan='2' class='fcaption' style='vertical-align:top'>".
 LAN_101."{LATESTPOSTSCOUNT}".LAN_102."
@@ -210,7 +210,7 @@ $LATESTPOSTS_END = "
 if(!vartrue($THREADTOPIC_REPLY))
 {
 $THREADTOPIC_REPLY = "
-<table style='".USER_WIDTH."' class='fborder'>
+<table style='".USER_WIDTH."' class='fborder table'>
 <tr>
 	<td colspan='2' class='fcaption' style='vertical-align:top'>".LAN_100."</td>
 </tr>
