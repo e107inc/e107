@@ -992,35 +992,37 @@ $text .= "
 						<tbody>
 						<tr>
 						<th colspan='2'>External Social Pages</th>
+					</tr>";
+					
+//XXX XURL Definitions. 
+
+$xurls = array(
+	'facebook'		=> 	array('label'=>"Facebook", "placeholder"=>"eg. https://www.facebook.com/e107CMS"),
+	'twitter'		=>	array('label'=>"Twitter",	"placeholder"=>"eg. https://twitter.com/e107"),
+	'youtube'		=>	array('label'=>"Youtube",	"placeholder"=>"eg.https://youtube.com/e107Inc"),
+	'google'		=>	array('label'=>"Google+",	"placeholder"=>"eg.. "),
+	'linkedin'		=>	array('label'=>"LinkedIn",	"placeholder"=>"eg. http://www.linkedin.com/groups?home=&gid=1782682")
+);	
+	
+	foreach($xurls as $k=>$var)
+	{
+		$keypref = "xurl[".$k."]";
+		$def = "XURL_". strtoupper($k);
+		
+		$opts = array('size'=>'xxlarge','placeholder'=> $var['placeholder']);	
+						
+		$text .= "
+					<tr>
+						<td>Your ".$var['label']." page</td>
+						<td>
+							".$frm->text($keypref, $pref['xurl'][$k], false, $opts)."
+							<div class='field-help'>Used by some themes to provide a link to your ".$var['label']." page. (".$def.")</div>
+						</td>
 					</tr>
-					<tr>
-						<td>Your Facebook page</td>
-						<td>
-							".$frm->text('facebook_link', $pref['facebook_link'])."
-							<div class='field-help'>Used in some themes to provide a link to your Facebook page. (FACEBOOK_LINK)</div>
-						</td>
-					</tr>	
-					<tr>
-						<td>Your Twitter page</td>
-						<td>
-							".$frm->text('twitter_link', $pref['twitter_link'])."
-							<div class='field-help'>Used in some themes to provide a link to your Twitter page. (TWITTER_LINK)</div>
-						</td>
-					</tr>		
-					<tr>
-						<td>Your Youtube page</td>
-						<td>
-							".$frm->text('youtube_link', $pref['youtube_link'])."
-							<div class='field-help'>Used in some themes to provide a link to your Youtube page. (YOUTUBE_LINK)</div>
-						</td>
-					</tr>
-						<tr>
-						<td>Your Google+ page</td>
-						<td>
-							".$frm->text('google_link', $pref['google_link'])."
-							<div class='field-help'>Used in some themes to provide a link to your Google+ page. (GOOGLE_LINK)</div>
-						</td>
-					</tr>			
+				";
+	}		
+					
+			$text .= "		
 					<tr>
 						<th colspan='2'>Social Logins</th>
 					</tr>

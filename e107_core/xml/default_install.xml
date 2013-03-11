@@ -341,6 +341,7 @@ City, State, Country
 		<core name="wmessage_sc">0</core>
 		<core name="wysiwyg">1</core>
 		<core name="xup_enabled">1</core>
+		<core name="xurl">1</core>
 		<core name="xmlfeed_languagepacks">http://www.e107.org/themeupdate.php</core>
 		<core name="xmlfeed_security">http://www.e107.org/themeupdate.php</core>	
 		<emote name="alien!png">!alien</emote>

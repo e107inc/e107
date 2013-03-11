@@ -223,10 +223,13 @@ function update_check()
 //--------------------------------------------
 function update_core_prefs($type='')
 {
-	global $pref, $e107info;
+	$pref = e107::getPref();
+	global $e107info;
 	$admin_log = e107::getAdminLog();
 	$do_save = FALSE;
 	$should = get_default_prefs();
+	
+	
 
 	$just_check = $type == 'do' ? FALSE : TRUE;		// TRUE if we're just seeing if an update is needed
    
