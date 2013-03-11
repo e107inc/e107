@@ -221,17 +221,17 @@ class e_form
 			}		
 		}
 		
-		if(vartrue($options['size']) && is_numeric($options['size']))
+		if(vartrue($options['size']) && !is_numeric($options['size']))
 		{
 			$options['class'] .= " input-".$options['size'];	
 			unset($options['size']); // don't include in html 'size='. 	
 		}
 			
-		
+		$mlength = vartrue($maxlength) ? "maxlength=".$maxlength : "";
 		
 		$options = $this->format_options('text', $name, $options);
 		//never allow id in format name-value for text fields
-		return "<input type='text' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
+		return "<input type='text' name='{$name}' value='{$value}' {$mlength} ".$this->get_attributes($options, $name)." />";
 	}
 
 

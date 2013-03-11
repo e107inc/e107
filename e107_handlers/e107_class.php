@@ -2605,6 +2605,8 @@ class e107
 		define('e_UC_MEMBER', 253);
 		define('e_UC_ADMIN', 254);
 		define('e_UC_NOBODY', 255);
+		
+
 
 		return $this;
 	}
@@ -2966,6 +2968,14 @@ class e107
 			define('e_LOGIN', SITEURL.(file_exists(e_BASE.'customlogin.php') ? 'customlogin.php' : 'login.php'));	
 		}
 		
+		$pref = e107::getPref('xurl');
+		
+		define('XURL_FACEBOOK', vartrue($pref['facebook'],false));
+		define('XURL_TWITTER', vartrue($pref['twitter'],false));
+		define('XURL_YOUTUBE', vartrue($pref['youtube'],false));
+		define('XURL_GOOGLE', vartrue($pref['google'],false));
+		define('XURL_LINKEDIN', vartrue($pref['linkedin'],false));
+				
 		return $this;
 	}
 
