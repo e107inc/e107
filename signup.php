@@ -13,7 +13,10 @@
 
 require_once("class2.php");
 
-
+if(vartrue($_POST['email2'])) // spam-trap. 
+{
+	exit; 	
+}
 $qs = explode(".", e_QUERY);
 
 if($qs[0] != 'activate')

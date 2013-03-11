@@ -176,6 +176,10 @@ class e_form
 	 * @param $value
 	 * @param $maxlength
 	 * @param $options
+	 *  - size: mini, small, medium, large, xlarge, xxlarge
+	 *  - class: 
+	 *  - typeahead: 'users' 
+	 * 
 	 */
 	function text($name, $value, $maxlength = 80, $options= array())
 	{
@@ -183,7 +187,8 @@ class e_form
 		{
 			parse_str($options,$options);
 		}
-		
+
+		/*
 		if(!vartrue($options['class']))
 		{
 			if($maxlength < 10)
@@ -205,6 +210,7 @@ class e_form
 				$options['class'] = 'tbox input-text';
 			}
 		}	
+		*/
 		
 		if(vartrue($options['typeahead']))
 		{
@@ -215,7 +221,12 @@ class e_form
 			}		
 		}
 		
-	
+		if(vartrue($options['size']) && is_numeric($options['size']))
+		{
+			$options['class'] .= " input-".$options['size'];	
+			unset($options['size']); // don't include in html 'size='. 	
+		}
+			
 		
 		
 		$options = $this->format_options('text', $name, $options);

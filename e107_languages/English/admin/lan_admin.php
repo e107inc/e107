@@ -340,6 +340,10 @@ define("LAN_CATEGORIES", "Categories");
 define("LAN_DEMO_FORBIDDEN", "Changes on this page are not possible in demo mode.");
 define("LAN_COPYRIGHT", "Copyright");
 
+define("LAN_CREATE_CATEGORY", "Create Category");
+define("LAN_CREATE_ITEM",	"Create Item");
+
+
 define("LAN_SECURITYL_0", "Looking for trouble (none)");
 define("LAN_SECURITYL_5", "Balanced");
 define("LAN_SECURITYL_7", "High");
