@@ -19,8 +19,8 @@ $sc_style['LASTEDIT']['pre'] = "<br /><br /><span class='smallblacktext'>[ ".LAN
 $sc_style['LASTEDITBY']['pre'] = ' '.FORLAN_BY.' ';
 $sc_style['LASTEDITBY']['post'] = ' ]</span>';
 
-$sc_style['LEVEL']['pre'] = "<div class='spacer'>";
-$sc_style['LEVEL']['post'] = "</div>";
+$sc_style['LEVEL']['pre'] = "";
+$sc_style['LEVEL']['post'] = "";
 
 $sc_style['ATTACHMENTS']['pre'] = "<div id='forum_attachments'><br />";
 $sc_style['ATTACHMENTS']['post'] = "</div>";
@@ -31,6 +31,9 @@ $sc_style['ANON_IP']['post'] = "</div>";
 $sc_style['USER_EXTENDED']['location.text_value']['mid'] = ": ";
 $sc_style['USER_EXTENDED']['location.text_value']['post'] = "<br />";
 
+
+
+/*
 $FORUMSTART = "<a id='top'></a><div style='text-align:center'>
 	<div class='spacer'>
 	<table style='".USER_WIDTH."' class='fborder table'>
@@ -284,7 +287,7 @@ $FORUMDELETEDSTYLE = "<tr>
 	<td colspan='2'>
 	</td>
 	</tr>";
-
+*/
 
 $FORUM_CRUMB['sitename']['value'] = "<a class='forumlink' href='{SITENAME_HREF}'>{SITENAME}</a>";
 $FORUM_CRUMB['sitename']['sep'] = " :: ";
@@ -350,19 +353,21 @@ $FORUMTOPIC_TEMPLATE['end'] = "</tr></table>
 $FORUMTOPIC_TEMPLATE['thread'] ="
 	<tr>
 		<td class='forumheader' style='vertical-align:middle'>{NEWFLAG} {USERCOMBO}{ANON_IP}</td>
-		<td class='smallblacktext'>{THREADDATESTAMP}</td>
+		<td>{THREADDATESTAMP}</td>
 		<td style='text-align:right'>{POSTOPTIONS}</td>
 	</tr>
 	
 	<tr>
-		<td class='forumheader3' style='vertical-align:top'>
+		<td class='forumheader3'>
 				{CUSTOMTITLE}
 				{AVATAR}
+				<div>
 				<small>
-					{LEVEL=badge}{LEVEL=pic}
+					{LEVEL=badge} {LEVEL=pic}
 				</small>
+				</div>
 		</td>
-		<td colspan='2' class='forumheader3' style='vertical-align:top'>
+		<td colspan='2'>
 			{POLL}
 			{POST}
 			
