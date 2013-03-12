@@ -494,10 +494,12 @@ class convert
 		{
 		  if (($i > 4) || ($result[$i] != 0))
 		  {  // Only show non-zero values, except always show minutes/seconds
-		    $outputArray[] = $result[$i]." ".($result[$i] == 1 ? $params[$i][2] : $params[$i][3]);
+		    $outputArray[] = $result[$i]." ".($result[$i] == 1 ? $params[$i][2] : $params[$i][3]) ;
+			
+			if($format == 'short' && $i == 1) { break; }
 		  }
 		}
-		return ($mode ? $outputArray : implode(", ", $outputArray));
+		return ($mode ? $outputArray : implode(", ", $outputArray) . " ago"); //XXX LAN
 	}
 
 

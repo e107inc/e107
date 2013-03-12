@@ -513,7 +513,7 @@ $text = $tp->parseTemplate($FORUMPOST, true);
 
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-if ($forum->prefs->get('forum_enclose'))
+if ($forum->prefs->get('enclose'))
 {
 	$ns->tablerender($forum->prefs->get('title'), $text);
 }

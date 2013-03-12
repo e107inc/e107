@@ -93,14 +93,18 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 	function sc_avatar()
 	{
+		
+		//return e107::getParser()->parseTemplate("{AVATAR=".$this->postInfo['user_image']."}");
+		
+		
 		if ($this->postInfo['post_user'])
 		{
 			if(!$avatar = getcachedvars('forum_avatar_'.$this->postInfo['post_user']))
 			{
 				if ($this->postInfo['user_image'])
 				{
-					require_once(e_HANDLER.'avatar_handler.php');
-					$avatar = "<div class='spacer'><img src='".avatar($this->postInfo['user_image'])."' alt='' /></div><br />";
+				//	require_once(e_HANDLER.'avatar_handler.php');
+					$avatar = "<img src='".e_MEDIA_AVATAR.$this->postInfo['user_image']."' alt=\"".$this->postInfo['user_name']."\"/>";
 				}
 				else
 				{
@@ -272,8 +276,14 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 		$rankInfo = e107::getRank()->getRanks($this->postInfo['post_user']);
 		// FIXME - level handler!!!
-
+		
+		if($parm == 'badge')
+		{
+			return "<span class='label label-info'>".$rankInfo['name']."</span>";	
+		}
+		
 		if(!$parm) { $parm = 'name'; }
+
 
 		switch($parm)
 		{
@@ -315,8 +325,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	}
 
 	function sc_lasteditby()
-	{
-		if(isset($this->postInfo['edit_name']))
+	{		if(isset($this->postInfo['edit_name']))
 		{
 			if($parm == 'link')
 			{
@@ -339,5 +348,57 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		// Defined in case an indicator is required
 		return '';
 	}
+	
+	function sc_usercombo()
+	{
+		
+		$tp = e107::getParser();
+		
+	//	$text2 = $this->sc_level('special');
+	//	$text .= $this->sc_level('pic');
+		
+		$ue = $tp->parseTemplate("{USER_EXTENDED=location.text_value}",true);	
+		$username = $this->postInfo['user_name'];
+								
+		$text = '<div class="btn-group">
+
+    <a class="btn btn-small" href="'.e_BASE.'user.php?'.$this->postInfo['post_user'].'">'.$username.'</a>
+    <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
+    <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+    ';		
+	
+	$text .= "<li><a href='#'>".$this->sc_level('userid')."</a></li>";
+	$text .=  "<li><a href='#'>".$this->sc_joined()."</a></li>";
+	if($ue)
+	{
+		$text .= "<li><a hre='#'>".$ue."</a></li>";
+	}
+	$text .= "<li><a href='#'>".$this->sc_posts()."</a></li>";
+	
+	$text .= "<li class='divider'></li>";
+	
+	if(plugInstalled('pm') && ($this->postInfo['post_user'] > 0))
+	{
+		$text .= "<li><a href='".e_PLUGIN_ABS."pm/pm.php?send.{$this->postInfo['post_user']}'>Send Private Message</a></li>";
+	}
+	
+	if($website = $this->sc_website())
+	{
+		$text .= "<li>".$website."</li>";	
+	}
+
+//	{EMAILIMG}
+//	{WEBSITEIMG}
+	
+	$text .= "</ul>
+	</div>";			
+				
+				
+		return $text;
+	}
+	
+	
 }
 ?>

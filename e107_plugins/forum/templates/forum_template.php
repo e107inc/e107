@@ -65,4 +65,60 @@ if (!isset($FORUM_TRACK_END))
 	$FORUM_TRACK_END = "</table>\n</div>\n</div>";
 }
 
+
+/*
+$FORUM_MAIN_START	= "<br />MAIN START";
+$FORUM_MAIN_PARENT 	= "<br />MAIN PARENT";
+$FORUM_MAIN_FORUM		= "<br />MAIN FORUM";
+$FORUM_MAIN_END		= "<br />MAIN END";
+$FORUM_NEWPOSTS_START	= "<br />NEWPOSTS-START";
+$FORUM_NEWPOSTS_MAIN 	= "<br />NEWPOSTS-MAIN";
+$FORUM_NEWPOSTS_END 	= "<br />NEWPOSTS END";
+$FORUM_TRACK_START	= "<br />TRACK-START";
+$FORUM_TRACK_MAIN	= "<br />TRACK-MAIN";
+$FORUM_TRACK_END	= "<br />TRACK-END";
+*/
+
+$FORUM_TEMPLATE['main-start']			= "<table class='table table-striped'>
+											<colgroup>
+											<col style='width:3%' />
+											<col />
+											<col />
+											<col />
+											<col />
+											</colgroup>
+											<tr>
+											<th colspan='5'>{FORUMTITLE}</th>
+											</tr>";
+
+$FORUM_TEMPLATE['main-parent']			= 	"<tr>
+											<th colspan='2'>{PARENTNAME} {PARENTSTATUS}</th>
+											<th>".LAN_55."</th>
+											<th>".FORLAN_21."</th>
+											<th>".FORLAN_22."</th>											
+											</tr>";											
+											
+																						
+$FORUM_TEMPLATE['main-forum']			= 	"<tr>
+											<td>{NEWFLAG}</td>
+											<td>{FORUMNAME}<br /><small>{FORUMDESCRIPTION}</small>{FORUMSUBFORUMS}</td>
+											<td>{THREADSX}</td>
+											<td>{REPLIESX}</td>
+											<td><small>{LASTPOSTUSER} {LASTPOSTDATE}</small></td>
+											</tr>";
+
+$FORUM_TEMPLATE['main-end']				= "</table>";
+
+
+
+
+
+
+
+
+
+
+
+
+
 ?>

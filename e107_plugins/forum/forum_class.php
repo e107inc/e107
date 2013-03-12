@@ -1202,6 +1202,7 @@ class e107forum
 			$FORUM_CRUMB['thread']['value'] = str_replace($search, $replace, $FORUM_CRUMB['thread']['value']);
 
 			$FORUM_CRUMB['fieldlist'] = 'sitename,forums,parent,subparent,forum,thread';
+		//	$FORUM_CRUMB['style'] = 'bootstrap';
 			$BREADCRUMB = $e107->tp->parseTemplate('{BREADCRUMB=FORUM_CRUMB}', true);
 		}
 		else

@@ -211,6 +211,28 @@ if (!isset($FORUM_MAIN_START))
 	}
 }
 include(e_PLUGIN.'forum/templates/forum_template.php');
+
+
+if(is_array($FORUM_TEMPLATE)) // new v2.x format. 
+{
+		
+	$FORUM_MAIN_START		= $FORUM_TEMPLATE['main-start']; 
+	$FORUM_MAIN_PARENT 		= $FORUM_TEMPLATE['main-parent'];
+	$FORUM_MAIN_FORUM		= $FORUM_TEMPLATE['main-forum'];
+	$FORUM_MAIN_END			= $FORUM_TEMPLATE['main-end'];
+
+	$FORUM_NEWPOSTS_START	= $FORUM_TEMPLATE['main-start']; // $FORUM_TEMPLATE['new-start'];
+	$FORUM_NEWPOSTS_MAIN 	= $FORUM_TEMPLATE['main-forum']; // $FORUM_TEMPLATE['new-main'];
+	$FORUM_NEWPOSTS_END 	= $FORUM_TEMPLATE['main-end']; // $FORUM_TEMPLATE['new-end'];
+
+	$FORUM_TRACK_START		= $FORUM_TEMPLATE['main-start']; // $FORUM_TEMPLATE['track-start'];
+	$FORUM_TRACK_MAIN		= $FORUM_TEMPLATE['main-forum']; // $FORUM_TEMPLATE['track-main'];
+	$FORUM_TRACK_END		= $FORUM_TEMPLATE['main-end']; // $FORUM_TEMPLATE['track-end'];	
+		
+}
+
+
+
 require_once(HEADERF);
 
 $forumList = $forum->forumGetForumList();
@@ -306,6 +328,15 @@ function parse_forum($f, $restricted_string = '')
 	$fVars->THREADS = $f['forum_threads'];
 	$fVars->REPLIES = $f['forum_replies'];
 	$fVars->FORUMSUBFORUMS = '';
+	
+	
+	$badgeReplies = ($f['forum_replies']) ? "badge-info" : "";
+	$badgeThreads = ($f['forum_threads']) ? "badge-info" : "";
+	
+	$fVars->THREADSX = "<span class='badge {$badgeThreads}'>".$f['forum_threads']."</span>";
+	$fVars->REPLIESX = "<span class='badge {$badgeReplies}'>".$f['forum_replies']."</span>";
+
+
 
 	if(is_array($forumList['subs'][$f['forum_id']]))
 	{
@@ -335,11 +366,16 @@ function parse_forum($f, $restricted_string = '')
 		{
 			$lastpost_name = $e107->tp->toHTML($f['forum_lastpost_user_anon']);
 		}
+		$fVars->LASTPOSTUSER = $lastpost_name;
+		$fVars->LASTPOSTDATE .=  $gen->computeLapse($lastpost_datestamp, time(), false, false, 'short');
 		$lastpost_datestamp = $gen->convert_date($lastpost_datestamp, 'forum');
 		$fVars->LASTPOST = $lastpost_datestamp.'<br />'.$lastpost_name." <a href='".$e107->url->create('forum/thread/last', array('name' => $lastpost_name, 'id' => $lastpost_thread))."'>".IMAGE_post2.'</a>';
+		
 	}
 	else
 	{
+		$fVars->LASTPOSTUSER = "";
+		$fVars->LASTPOSTDATE = "-";
 		$fVars->LASTPOST = '-';
 	}
 	return $e107->tp->simpleParse($FORUM_MAIN_FORUM, $fVars);

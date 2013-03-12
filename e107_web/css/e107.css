@@ -20,6 +20,8 @@
 .clear-l { clear: right }
 .clear-r { clear: left }
 
+td.text-center { text-align:center; }
+
 /* Core Icons */
 .icon { border: 0 }
 .icon.action { vertical-align: middle }
