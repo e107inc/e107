@@ -302,7 +302,7 @@ if (count($threadList) )
 		{
 			$reg_threads ++;
 		}
-		if ($reg_threads == '1' && !$unstuck && $stuck)
+		if ($reg_threads == '1') //  Removed as not needed in new template. && !$unstuck && $stuck
 		{
 			if($FORUM_NORMAL_ROW)
 			{

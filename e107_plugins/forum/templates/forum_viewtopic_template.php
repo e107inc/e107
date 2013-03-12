@@ -351,7 +351,7 @@ $FORUMTOPIC_TEMPLATE['thread'] ="
 	<tr>
 		<td class='forumheader' style='vertical-align:middle'>{NEWFLAG} {USERCOMBO}{ANON_IP}</td>
 		<td class='smallblacktext'>{THREADDATESTAMP}</td>
-		<td style='text-align:right'>{EMAILITEM} {PRINTITEM} {REPORTIMG}{EDITIMG}{QUOTEIMG}	</td>
+		<td style='text-align:right'>{POSTOPTIONS}</td>
 	</tr>
 	
 	<tr>
@@ -365,28 +365,27 @@ $FORUMTOPIC_TEMPLATE['thread'] ="
 		<td colspan='2' class='forumheader3' style='vertical-align:top'>
 			{POLL}
 			{POST}
-			{ATTACHMENTS}
-			{LASTEDIT}{LASTEDITBY=link}
-			{SIGNATURE}
+			
 		</td>
 	</tr>
-	
+
 	<tr>
 	 	<td class='finfobar'>
-			<span class='smallblacktext'>
-			{TOP}
-			</span>
+			<div class='dropup'>
+			{TOP=caret}
+			</div>
 		</td>
 		<td class='finfobar' style='vertical-align:top'>
-			
-			
+			{ATTACHMENTS}
+			{LASTEDIT}{LASTEDITBY=link}
+			{SIGNATURE}	
 		</td>
 		
 		<td style='text-align:right'>
-			{MODOPTIONS}
 		</td>
 	
 	</tr>
+
 	<tr>
 	<td colspan='3'>
 	</td>
