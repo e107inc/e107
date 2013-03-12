@@ -218,16 +218,19 @@ class e_ranks
 			{
 				//Main Site Admin
 				$data['special'] = "<img src='".$this->_getImage($this->ranks['special'][1])."' alt='".$this->_getName($this->ranks['special'][1])."' title='".$this->_getName($this->ranks['special'][1])."' />";
+				$data['name'] = $this->_getName($this->ranks['special'][1]);
 			}
 			else
 			{
 				//Site Admin
 				$data['special'] = "<img src='".$this->_getImage($this->ranks['special'][2])."' alt='".$this->_getName($this->ranks['special'][2])."' title='".$this->_getName($this->ranks['special'][2])."' />";
+				$data['name'] = $this->_getName($this->ranks['special'][2]);
 			}
 		}
 		elseif($moderator)
 		{
 			$data['special'] = "<img src='".$this->_getImage($this->ranks['special'][3])."' alt='".$this->_getName($this->ranks['special'][3])."' title='".$this->_getName($this->ranks['special'][3])."' />";
+			$data['name'] = $this->_getName($this->ranks['special'][3]);
 		}
 
 		$userData['user_daysregged'] = max(1, round((time() - $userData['user_join']) / 86400));
@@ -256,7 +259,10 @@ class e_ranks
 		}
 		if($rank !== false)
 		{
-			$data['name'] = $this->_getName($this->ranks['data'][$rank]);
+			if(!isset($data['name']))
+			{
+				$data['name'] = $this->_getName($this->ranks['data'][$rank]);
+			}
 			$img_title = ($this->ranks['data'][$rank]['name'] ? " alt='{$data['name']}' title='{$data['name']}'" : ' alt = ""');
 			$data['pic'] = "<img {$img_title} src='".$this->_getImage($this->ranks['data'][$rank])."'{$img_title} />";
 		}

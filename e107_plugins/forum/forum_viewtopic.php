@@ -154,6 +154,19 @@ if (!vartrue($FORUMSTART))
 	}
 }
 
+
+// New in v2.x
+if(is_array($FORUMTOPIC_TEMPLATE))
+{
+	$FORUMSTART 			= $FORUMTOPIC_TEMPLATE['start'];
+	$FORUMTHREADSTYLE		= $FORUMTOPIC_TEMPLATE['thread'];
+	$FORUMEND				= $FORUMTOPIC_TEMPLATE['end'];
+	$FORUMREPLYSTYLE 		= $FORUMTOPIC_TEMPLATE['replies'];	
+}
+
+
+
+
 // get info for main thread -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 $tVars = new e_vars;
 $forum->set_crumb(true, '', $tVars); // Set $BREADCRUMB (and BACKLINK)
@@ -161,9 +174,9 @@ $forum->set_crumb(true, '', $tVars); // Set $BREADCRUMB (and BACKLINK)
 //$tVars->BACKLINK = $tVars->BREADCRUMB;
 //$tVars->FORUM_CRUMB = $crumbs['forum_crumb'];
 $tVars->THREADNAME = $e107->tp->toHTML($thread->threadInfo['thread_name'], true, 'no_hook, emotes_off');
-$tVars->NEXTPREV = "&lt;&lt; <a href='" . $e107->url->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>" . LAN_389 . "</a>";
-$tVars->NEXTPREV .= ' | ';
-$tVars->NEXTPREV .= "<a href='" . $e107->url->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>" . LAN_390 . "</a> &gt;&gt;";
+$tVars->NEXTPREV = "<a class='btn btn-small' href='" . $e107->url->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>&laquo; " . LAN_389 . "</a>";
+// $tVars->NEXTPREV .= ' | ';
+$tVars->NEXTPREV .= "<a class='btn btn-small' href='" . $e107->url->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>" . LAN_390 . " &raquo;</a>";
 
 if ($forum->prefs->get('track') && USER)
 {
@@ -171,7 +184,7 @@ if ($forum->prefs->get('track') && USER)
 	$url = $e107->url->create('forum/thread/view', array('id' => $thread->threadId), 'encode=0'); // encoding could break AJAX call
 	$tVars->TRACK .= "
 			<span id='forum-track-trigger-container'>
-			<a href='{$url}' id='forum-track-trigger'>{$img}</a>
+			<a class='btn btn-small' href='{$url}' id='forum-track-trigger'>{$img}</a>
 			</span>
 			<script type='text/javascript'>
 			e107.runOnLoad(function(){
@@ -189,6 +202,7 @@ if ($forum->prefs->get('track') && USER)
 			</script>
 	";
 }
+
 
 $tVars->MODERATORS = LAN_321 . implode(', ', $forum->modArray);
 
@@ -215,11 +229,69 @@ if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'thread'))
 	$tVars->BUTTONS .= "<a href='" . $e107->url->create('forum/thread/new', array('id' => $thread->threadInfo['thread_forum_id'])) . "'>" . IMAGE_newthread . "</a>";
 }
 
+
+$tVars->BUTTONSX = forumbuttons($thread);
+
+function forumbuttons($thread)
+{
+	global $forum; 
+	
+	
+	
+	if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread->threadInfo['thread_active'])
+	{
+		$replyUrl = "<a class='btn btn-primary' href='" . e107::getUrl()->create('forum/thread/reply', array('id' => $thread->threadId)) . "'>Post a Reply</a>";
+	}
+	if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'thread'))
+	{
+		$options[] = " <a  href='" . e107::getUrl()->create('forum/thread/new', array('id' => $thread->threadInfo['thread_forum_id'])) . "'>Create New Thread</a>";
+	}	
+	
+	$options[] = "<a href='" . e107::getUrl()->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>Go to " . LAN_389 . "</a>"; //FIXME LAN
+	$options[] = "<a href='" . e107::getUrl()->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>Go to " . LAN_390 . "</a>";  //FIXME LAN
+
+	
+	
+	
+	$text = '<div class="btn-group">
+   '.$replyUrl.'
+    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+    <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+    ';
+	
+	foreach($options as $key => $val)
+	{
+		$text .= '<li>'.$val.'</li>';
+	}
+	
+	$jumpList = $forum->forumGetAllowed();
+	
+	$text .= "<li class='divider'></li>";
+	
+	foreach($jumpList as $key=>$val)
+	{
+		$text .= '<li><a href ="'.$key.'">Go to '.$val.'</a></li>';	
+	}
+	
+	$text .= '
+    </ul>
+    </div>';
+	
+	
+	return $text;
+	
+}
+
+
+
 $tVars->POLL = vartrue($pollstr);
 
 $tVars->FORUMJUMP = forumjump();
 
 $tVars->MESSAGE = $thread->message;
+
 
 $forstr = $tp->simpleParse($FORUMSTART, $tVars);
 
@@ -277,10 +349,10 @@ if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread
 		$tVars->QUICKREPLY = "
 		<form action='" . $e107->url->create('forum/thread/reply', array('id' => $thread->threadId)) . "' method='post'>
 		<p>" . LAN_393 . ":<br />
-		<textarea cols='60' rows='4' class='tbox' name='post' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
+		<textarea cols='80' rows='4' class='tbox input-xxlarge' name='post' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
 		<br />
 		<input type='submit' name='fpreview' value='" . LAN_394 . "' class='btn button' /> &nbsp;
-		<input type='submit' name='reply' value='" . LAN_395 . "' class='btn button' />
+		<input type='submit' name='reply' value='" . LAN_395 . "' class='btn btn-success button' />
 		<input type='hidden' name='thread_id' value='$thread_parent' />
 		</p>
 		</form>";

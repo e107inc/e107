@@ -300,4 +300,104 @@ $FORUM_CRUMB['subparent']['sep'] = " :: ";
 
 $FORUM_CRUMB['forum']['value'] = "<a class='forumlink' href='{FORUM_HREF}'>{FORUM_TITLE}</a>";
 
+
+// {MODERATORS} {THREADSTATUS}
+$FORUMTOPIC_TEMPLATE['start'] 	= "<a id='top'></a>
+	
+	<div class='row'>
+		<div class='span6 pull-left'>{BACKLINK}</div>
+	</div>
+	
+	<div class='row'>
+		<div class='span9 pull-left'><h3>{THREADNAME}</h3></div><div class='span3 pull-right right' style='padding-top:10px'>{BUTTONSX}</div>
+	</div>
+	
+	{MESSAGE}
+
+
+	<table class='table table-striped'>
+	<colgroup>
+		<col style='width:20%' />
+		<col />
+		<col />
+	</colgroup>
+		<tr>
+			<th>".LAN_402."</th>
+			<th colspan='2'>".LAN_403."</th>
+		</tr>
+	";
+
+	
+	
+$FORUMTOPIC_TEMPLATE['end'] = "</tr></table>
+
+	<div class='center'>{QUICKREPLY}</div>
+
+	<table class='table'>
+	<tr>
+	<td style='width:80%'>{GOTOPAGES}
+	</td>
+	<td style='width:20%; text-align: right; white-space: nowrap'>
+	{BUTTONSX}
+	</td>
+	</tr>
+
+	</table>
+	</div>
+	";
+
+	
+$FORUMTOPIC_TEMPLATE['thread'] ="
+	<tr>
+		<td class='forumheader' style='vertical-align:middle'>{NEWFLAG} {USERCOMBO}{ANON_IP}</td>
+		<td class='smallblacktext'>{THREADDATESTAMP}</td>
+		<td style='text-align:right'>{EMAILITEM} {PRINTITEM} {REPORTIMG}{EDITIMG}{QUOTEIMG}	</td>
+	</tr>
+	
+	<tr>
+		<td class='forumheader3' style='vertical-align:top'>
+				{CUSTOMTITLE}
+				{AVATAR}
+				<small>
+					{LEVEL=badge}{LEVEL=pic}
+				</small>
+		</td>
+		<td colspan='2' class='forumheader3' style='vertical-align:top'>
+			{POLL}
+			{POST}
+			{ATTACHMENTS}
+			{LASTEDIT}{LASTEDITBY=link}
+			{SIGNATURE}
+		</td>
+	</tr>
+	
+	<tr>
+	 	<td class='finfobar'>
+			<span class='smallblacktext'>
+			{TOP}
+			</span>
+		</td>
+		<td class='finfobar' style='vertical-align:top'>
+			
+			
+		</td>
+		
+		<td style='text-align:right'>
+			{MODOPTIONS}
+		</td>
+	
+	</tr>
+	<tr>
+	<td colspan='3'>
+	</td>
+	</tr>";	
+
+
+	$FORUMTOPIC_TEMPLATE['replies'] = $FORUMTOPIC_TEMPLATE['thread']; 
+	
+	
+	
+
+//$FORUMDELETEDSTYLE		= "<br />DELETED";
+
 ?>
