@@ -27,10 +27,16 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		}
 	}
 
+	/**
+	 * What does this do?
+	 */
 	function sc_threaddatestamp()
 	{
 		$gen = e107::getDateConvert(); // XXX _URL_ check if all required info is there
-		return "<a id='post_{$this->postInfo['post_id']}' href='".$this->e107->url->create('forum/thread/post', array('name' => $this->postInfo['thread_name'], 'thread' => $this->postInfo['post_thread'], 'id' => $this->postInfo['post_id']))."'>".IMAGE_post."</a> ".$gen->convert_date($this->postInfo['post_datestamp'], 'forum');
+		
+		// XXX what is this line meant to do?
+		// $text = "<a id='post_{$this->postInfo['post_id']}' href='".$this->e107->url->create('forum/thread/post', array('name' => $this->postInfo['thread_name'], 'thread' => $this->postInfo['post_thread'], 'id' => $this->postInfo['post_id']))."'>".IMAGE_post."</a> ";
+		return $gen->convert_date($this->postInfo['post_datestamp'], 'forum');
 	}
 
 	function sc_post()
