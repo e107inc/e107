@@ -11,9 +11,11 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		$this->e107 = e107::getInstance();
 	}
 
-	function sc_top()
+	function sc_top($parm='')
 	{
-		return "<a href='".e_SELF.'?'.e_QUERY."#top' onclick=\"window.scrollTo(0,0);\">".LAN_10.'</a>';
+		$text = ($parm == 'caret') ?  "<span class='caret'></span>" : LAN_10;
+		
+		return "<a href='".e_SELF.'?'.e_QUERY."#top' onclick=\"window.scrollTo(0,0);\">".$text.'</a>';
 	}
 
 	function sc_joined()
@@ -398,6 +400,76 @@ class plugin_forum_view_shortcodes extends e_shortcode
 				
 		return $text;
 	}
+	
+	
+	function sc_postoptions()
+	{
+		
+		// {EMAILITEM} {PRINTITEM} {REPORTIMG}{EDITIMG}{QUOTEIMG}
+		
+		$text = '<div class="btn-group">
+    	<button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
+    	Options
+    	<span class="caret"></span>
+    	</button>
+    	<ul class="dropdown-menu left">';
+			
+    	
+		$text .= "<li><a href='".e_HTTP."email.php?plugin:forum.".$this->postInfo['post_thread']."'>".FORLAN_101."</a></li>";
+		$text .= "<li><a href='".e_HTTP."print.php?plugin:forum.".$this->postInfo['post_thread']."'>Print</a></li>";
+	
+		if (USER) // Report
+		{
+			$text .= "<li><a href='".$this->e107->url->create('forum/thread/report', "id={$this->postInfo['post_thread']}&post={$this->postInfo['post_id']}")."'>Report</a></li>";
+		}
+	
+		// Edit
+		if ( (USER && $this->postInfo['post_user'] == USERID && $this->thread->threadInfo['thread_active']))
+		{
+			$text .= "<li><a href='".e107::getUrl()->create('forum/thread/edit', array('id' => $this->postInfo['post_id']))."'>Edit</a></li>";
+			
+		}
+	
+		if($this->forum->checkperm($this->postInfo['post_forum'], 'post'))
+		{
+			$text .= "<li><a href='".e107::getUrl()->create('forum/thread/quote', array('id' => $this->postInfo['post_id']))."'>Quote</a></li>";
+		}
+	
+	
+		if (MODERATOR)
+		{
+			$text .= "<li class='divider'> </li>";
+			$type = ($this->postInfo['thread_start']) ? 'thread' : 'Post';
+
+			if ((USER && $this->postInfo['post_user'] != USERID && $this->thread->threadInfo['thread_active']))
+			{
+				$text .= "<li><a href='".e107::getUrl()->create('forum/thread/edit', array('id' => $this->postInfo['post_id']))."'>Edit</a></li>";
+			}
+			
+			$text .= "<li><a href='#'>Delete (fixme)</a></li>"; //FIXME - putting a form here could break layout. Ajax?
+
+			if ($type == 'thread')
+			{
+				$text .= "<li><a href='" . e107::getUrl()->create('forum/thread/move', array('id' => $this->postInfo['post_id']))."'>Move</a></li>";
+			}
+			else
+			{
+				$text .= "<li><a href='" . e107::getUrl()->create('forum/thread/split', array('id' => $this->postInfo['post_id']))."'>Split</a></li>";
+		
+			}
+		}
+
+
+	
+		$text .= '
+		</ul>
+		</div>';
+		
+		return $text;
+		
+		
+	}
+	
 	
 	
 }
