@@ -496,7 +496,7 @@ if ($e107_popup != 1)
 	}
 	else 
 	{
-		e107::css("inline","body { padding:10px } "); // default padding for iFrame-only. 
+		e107::css("inline","body { padding:0px } "); // default padding for iFrame-only. 
 	}
 
 	e107::getDb()->db_Mark_Time('(End: Parse Admin Header)');
