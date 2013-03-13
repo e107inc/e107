@@ -334,18 +334,13 @@ $FORUM_VIEWTOPIC_TEMPLATE['start'] 	= "<a id='top'></a>
 	
 $FORUM_VIEWTOPIC_TEMPLATE['end'] = "</tr></table>
 
-	<div class='center'>{QUICKREPLY}</div>
-
-	<table class='table'>
-	<tr>
-	<td style='width:80%'>{GOTOPAGES}
-	</td>
-	<td style='width:20%; text-align: right; white-space: nowrap'>
-	{BUTTONSX}
-	</td>
-	</tr>
-
-	</table>
+	
+	<div class='row clearfix'>
+		<div class='span3 pull-left'>{GOTOPAGES}</div>
+		<div class='span6 center'>{QUICKREPLY}</div>
+		<div class='span3 pull-right right '>{BUTTONSX}</div>
+	</div>
+	
 	</div>
 	";
 
