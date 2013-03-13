@@ -2970,7 +2970,7 @@ class e107
 		
 		$p = e107::getPref();
 		
-		if(varset($p['xurl']) && is_array($p['xurl']))
+		if(varset($p['xurl']) && is_array($p['xurl'])) // avoid fatal errors if pref missing.
 		{
 			$pref = $p['xurl'];
 			define('XURL_FACEBOOK', vartrue($pref['facebook'],false));
@@ -2978,7 +2978,15 @@ class e107
 			define('XURL_YOUTUBE', vartrue($pref['youtube'],false));
 			define('XURL_GOOGLE', vartrue($pref['google'],false));
 			define('XURL_LINKEDIN', vartrue($pref['linkedin'],false));
-		}		
+		}
+		else 
+		{
+			define('XURL_FACEBOOK',false);
+			define('XURL_TWITTER', false);
+			define('XURL_YOUTUBE', false);
+			define('XURL_GOOGLE', false);
+			define('XURL_LINKEDIN', false);
+		}
 		return $this;
 	}
 
