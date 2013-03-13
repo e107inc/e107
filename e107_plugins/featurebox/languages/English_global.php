@@ -14,7 +14,5 @@ define("LAN_PLUGIN_FEATUREBOX_BATCH",  		"Create Featurebox Item");
 // Install/uninstall messages
 define('FBLAN_INSTALL_01', 'Adding Default category table data.'); //XXX Use Generic
 define('FBLAN_INSTALL_02', 'Adding Default table data.'); //XXX Use Generic
-
-
-
-?>
+define('FBLAN_INSTALL_03', 'Unassigned'); 
+define('FBLAN_INSTALL_04', 'General'); 

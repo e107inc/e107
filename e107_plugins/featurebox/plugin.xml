@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Id: plugin.xml,v 1.9 2009-12-08 17:21:31 secretr Exp $ -->
-<e107Plugin name="Featurebox" lan="LAN_PLUGIN_FEATUREBOX_NAME" version="1.0" date="2012-08-01" compatibility="2.0" installRequired="true">
+<e107Plugin name="Featurebox" lan="LAN_PLUGIN_FEATUREBOX_NAME" version="1.1" date="2012-08-01" compatibility="2.0" installRequired="true">
 	<author name="e107 Inc." url="http://e107.org"  />
 	<description lan="LAN_PLUGIN_FEATUREBOX_DESCRIPTION">Displays an animated area on the top of your page with news-items and other content you would like to feature.</description>
 	<category>content</category>

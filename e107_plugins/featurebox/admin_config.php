@@ -77,13 +77,46 @@ class fb_category_ui extends e_admin_ui
 		'fb_category_parms' 	=> array('title'=> 'Parameters (optional)',		'type' => 'textarea',	'data' => 'str', 	'width' => 'auto', 'thclass' => 'left', 'class' => 'left','writeParms' => 'expand=Advanced&help=Optional Javascript Parameters (format subject to change)'),		
 		
 		'options' 				=> array('title'=> LAN_OPTIONS,			'type' => null,								'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center')
-	);	
+	);
+	
+	public function init()
+	{
+		### Prevent modification of the 'unassigned' system category
+		if($this->getAction() == 'edit')
+		{
+			$this->getModel()->load((int) $this->getId());
+			
+			// FIXME lan
+			if($this->getModel()->get('fb_category_template') === 'unassigned')
+			{
+				e107::getMessage()->addError("<strong>".FBLAN_INSTALL_03."</strong> is system category and can't be modified.", 'default', true);
+				$this->redirect('list');
+			}
+		}
+		elseif($this->getAction() == 'inline')
+		{
+			$this->getModel()->load((int) $this->getId());
+			if($this->getModel()->get('fb_category_template') === 'unassigned')
+			{
+				$protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
+				header($protocol.': 403 Forbidden', true, 403);
+				echo "'".FBLAN_INSTALL_03."' is system category and can't be modified.";
+				exit;
+			}
+		}
+	}
 	
 	/**
 	 * Prevent deletion of categories in use
 	 */
 	public function beforeDelete($data, $id)
 	{
+		// FIXME lan
+		if($data['fb_category_template'] === 'unassigned')
+		{
+			$this->getTreeModel()->addMessageError("<strong>".FBLAN_INSTALL_03."</strong> is system category and can't be deleted.");
+			return false;
+		}
 		if (e107::getDb()->db_Count('featurebox', '(*)', 'fb_category='.intval($id)))
 		{
 			$this->getTreeModel()->addMessageWarning("Can't delete <strong>{$data['fb_category_title']}</strong> - category is in use!");
@@ -105,7 +138,7 @@ class fb_category_ui extends e_admin_ui
 		if(!varset($new_data['fb_category_template']))
 		{
 			$new_data['fb_category_template'] = 'default';
-		}
+		}var_dump($new_data);
 		return $new_data;
 	}
 	
@@ -168,7 +201,10 @@ class fb_main_ui extends e_admin_ui
 	protected $pid 				= "fb_id";
 	protected $perPage 			= 10;
 	protected $batchDelete 		= true;
-	protected $batchCopy 	= true;
+	protected $batchCopy 		= true;
+	protected $sortField		= 'fb_order';
+	protected $orderStep 		= 1;
+	protected $listOrder 		= 'fb_order asc';
 	
 	protected $fields = array(
 		'checkboxes'		=> array('title'=> '',					'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center first', 'class'=>'center'),
@@ -183,7 +219,7 @@ class fb_main_ui extends e_admin_ui
 		'fb_imageurl' 		=> array('title'=> "Image Link",		'type' => 'url',			'width' => 'auto'),
 		'fb_class' 			=> array('title'=> LAN_VISIBILITY,		'type' => 'userclass',		'data' => 'int', 'inline'=>true, 'width' => 'auto', 'filter' => true, 'batch' => true),	// User id
 		'fb_order' 			=> array('title'=> LAN_ORDER,			'type' => 'number',			'data'=> 'int','width' => '5%' ),
-		'options' 			=> array('title'=> LAN_OPTIONS,			'type' => null,				'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
+		'options' 			=> array('title'=> LAN_OPTIONS,			'type' => null,				'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center', 'readParms'=>'sort=1')
 	);
 	 
 	protected $fieldpref = array('checkboxes', 'fb_id', 'fb_category', 'fb_title', 'fb_template', 'fb_class', 'fb_order', 'options');

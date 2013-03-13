@@ -3561,38 +3561,4 @@ class e_admin_tree_model extends e_front_tree_model
 		}
 		return $ret;
     }
-	
-	
-	
-	    
-	/**
-	 * Get urls/url data for given nodes
-	 */
-    public function featurebox($ids, $options = array(), $extended = false)
-    {
-    	$ret = array();
-		
-		
-		
-    	foreach ($ids as $id) 
-    	{
-    		
-		// 	print_a($this->getData());
-			
-			
-			
-    		if(!$this->hasNode($id)) continue;
-			
-			$model = $this->getNode($id);
-			;
-			print_a($this->getData());
-			
-			
-		//	if($this->getFeaturebox()) $model->setFeaturebox($this->getFeaturebox()); // copy url config data if available
-		//	$ret[$id] = $model->featurebox($options, $extended);
-		//	print_a($ret);
-		}
-		return $ret;
-    }
-
 }

@@ -2342,6 +2342,13 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @var array edit/create form tabs
 	 */
 	protected $url = array();
+	
+	/**
+	 * TODO Example: 
+	 * Contains required data for mapping featurebox fields
+	 * @var array edit/create form tabs
+	 */
+	protected $featurebox = array();
 
 	/**
 	 * Structure same as TreeModel parameters used for building the load() SQL
@@ -4038,8 +4045,8 @@ class e_admin_ui extends e_admin_controller_ui
     {
         if($this->_add2nav($selected))
 		{
-			//e107::getMessage()->moveToSession();
-			//$this->redirect();
+			e107::getMessage()->moveToSession();
+			$this->redirect();
 		}
     }
 
@@ -4053,14 +4060,10 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		 if($this->_add2featurebox($selected))
 		{
-			//e107::getMessage()->moveToSession();
-			//$this->redirect();
+			e107::getMessage()->moveToSession();
+			$this->redirect();
 		}
 	}
-
-
-
-	
 	
 	protected function _add2nav($selected)
 	{
@@ -4131,52 +4134,56 @@ class e_admin_ui extends e_admin_controller_ui
  
 	}
 
-
-
-
-
-
-	
 	protected function _add2featurebox($selected)
 	{
 		if(empty($selected)) return false;// TODO warning message
 		
-		if(!is_array($selected)) $selected  = array($selected);
+		if(!is_array($selected)) $selected = array($selected);
 
         $sql        = e107::getDb();
-		//$allData	= $this->getFeaturebox();
-		$allData 	= $this->getTreeModel()->featurebox($selected, array('sc' => true), true);
-
-        e107::getMessage()->addDebug('Using Featurebox Info:'.print_a($data,true));   
-        
-		
-	//	print_a($allData);
-	echo "EXIT";
-		exit;
-		
+		$tree = $this->getTreeModel();
+		$urlData = $this->getTreeModel()->url($selected, array('sc' => true), false);
+		$data = $this->featurebox;
 		
 		$scount = 0;
-        foreach($allData as $id => $data)
+        foreach($selected as $id)
         {
-            $name = $data['name'];
-            $desc = $data['text'];
-             
-            $fbArray = array(
-                	'fb_title' 		=> varset($data['name']), 
-     				'fb_text' 		=> varset($data['text']), 
-					'fb_image' 		=> varset($data['image']),
-					'fb_imageurl'	=> varset($data['url']), 
+        	if(!$tree->hasNode($id)) 
+        	{
+        		e107::getMessage()->addError('Item #ID '.htmlspecialchars($id).' not found.');
+        		continue; // TODO message
+        	} 
+        	
+        	$model = $tree->getNode($id);
+            if($data['url'] === true)
+			{
+				$url = $urlData[$id];
+			}
+			else $url = $model->get($data['url']);
+			$name = $model->get($data['name']);
+			
+			$category = e107::getDb()->retrieve('featurebox_category', 'fb_category_id', "fb_category_template='unassigned'");
+			
+            $fbArray = array (
+                	'fb_title' 		=> $name, 
+     				'fb_text' 		=> $model->get($data['description']), 
+					'fb_image' 		=> vartrue($data['image']) ? $model->get($data['image']) : '',
+					'fb_imageurl'	=> $url, 
+					'fb_class' 		=> isset($data['visibility']) && $data['visibility'] !== false ? $model->get($data['visibility']) : e_UC_ADMIN,
+					'fb_template' 	=> 'default',
+					'fb_category' 	=> $category, // TODO popup - choose category
+					'fb_order' 		=> $scount, 
             );
-            
+
             $res = $sql->insert('featurebox', $fbArray);
-            
+
             // FIXME lans
             if($res !== FALSE)
             {
                  e107::getMessage()->addSuccess('Created Featurebox Item: <b>'.($name ? $name : 'n/a')."</b>");   
 				 $scount++; 
             }
-            else 
+            else
             {
                 if($sql->getLastErrorNumber())
                 {
@@ -4193,7 +4200,7 @@ class e_admin_ui extends e_admin_controller_ui
         
         if($scount > 0)
         {
-            e107::getMessage()->addSuccess("<br /><strong>{$scount}</strong> new sitelinks were added but are currently unassigned. You should now modify these links to your liking.<br /><br /><a class='btn btn-small btn-primary' href='".e_ADMIN_ABS."links.php?searchquery=&filter_options=link_category__255'>Modify Links</a>");
+            e107::getMessage()->addSuccess("<br /><strong>{$scount}</strong> new featurebox items were added but are currently unassigned. You should now modify these items to your liking.<br /><br /><a class='btn btn-small btn-primary' href='".e_PLUGIN_ABS."featurebox/admin_config.php?searchquery=&filter_options=fb_category__{$category}'>Modify Featurebox Items</a>");
 			return $scount;        
         }
         

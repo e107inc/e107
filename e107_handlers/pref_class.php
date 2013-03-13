@@ -78,7 +78,7 @@ class e_pref extends e_front_model
 		require_once(e_HANDLER.'cache_handler.php');
 
 		$this->prefid = preg_replace('/[^\w\-]/', '', $prefid);
-		e107::getMessage()->setUnique($this->prefid); // attempt to fix 
+		
 		if(empty($alias))
 		{
 			$alias = $prefid;
@@ -502,7 +502,8 @@ class e_pref extends e_front_model
 		{
 			return false;
 		}
-
+		e107::getMessage()->setUnique($this->prefid); // attempt to fix 
+		
 		if($from_post)
 		{
 			$this->mergePostedData(); //all posted data is sanitized and filtered vs preferences/_data_fields array

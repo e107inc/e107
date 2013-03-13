@@ -308,7 +308,7 @@ class page_admin_ui extends e_admin_ui
 		//protected $url         	= array('profile'=>'page/view', 'name' => 'page_title', 'description' => '', 'link'=>'{e_BASE}page.php?id=[id]'); // 'link' only needed if profile not provided. 
 		protected $url         		= array('route'=>'page/view/index', 'vars' => array('id' => 'page_id', 'sef' => 'page_sef'), 'name' => 'page_title', 'description' => ''); // 'link' only needed if profile not provided. 
 		protected $tabs		 		= array("Page","Page Options","Menu");
-		protected $featurebox		= array('title'=>'page_title', 'text'=>'page_text');
+		protected $featurebox		= array('name'=>'page_title', 'description'=>'page_text', 'image' => 'menu_image', 'visibility' => 'page_class', 'url' => true);
 		
 		/*
 		 * 	'fb_title' 			=> array('title'=> LAN_TITLE,			'type' => 'text',			'inline'=>true,  'width' => 'auto', 'thclass' => 'left'), 

@@ -33,13 +33,21 @@ class featurebox_setup
 		
 		$query = array();
 		$query['fb_category_id'] = 0;
-		$query['fb_category_title'] = 'General';
+		$query['fb_category_title'] = FBLAN_INSTALL_04;
 		$query['fb_category_template'] = 'default';
 		$query['fb_category_random'] = 0;
 		$query['fb_category_class'] = e_UC_PUBLIC;
 		$query['fb_category_limit'] = 1;
 		$inserted = e107::getDb()->db_Insert('featurebox_category', $query);
-		$status = $inserted ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR; 
+		
+		$query['fb_category_id'] = 0;
+		$query['fb_category_title'] = FBLAN_INSTALL_03;
+		$query['fb_category_template'] = 'unassigned';
+		$query['fb_category_random'] = 0;
+		$query['fb_category_class'] = e_UC_NOBODY;
+		$query['fb_category_limit'] = 0;
+		$inserted1 = e107::getDb()->db_Insert('featurebox_category', $query);
+		$status = $inserted && $inserted1 ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR; 
 		$mes->add(FBLAN_INSTALL_01, $status);
 		
 		if($inserted)
@@ -75,11 +83,28 @@ class featurebox_setup
 	{
 		// print_a($var);
 	}
-
+*/	
 	function upgrade_post($var)
 	{
-		// $sql = e107::getDb();
+		$sql = e107::getDb();
+		$currentVersion = $var->current_plug['plugin_version'];
+		//$newVersion = $var->plug_vars['@attributes']['version'];
+		if($currentVersion == '1.0')
+		{
+			$query = array();
+			$query['fb_category_id'] = 0;
+			$query['fb_category_title'] = FBLAN_INSTALL_03;
+			$query['fb_category_template'] = 'unassigned';
+			$query['fb_category_random'] = 0;
+			$query['fb_category_class'] = e_UC_NOBODY;
+			$query['fb_category_limit'] = 0;
+			$inserted = $sql->db_Insert('featurebox_category', $query);
+			$status = $inserted ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR; 
+			e107::getMessage()->add(FBLAN_INSTALL_01, $status);
+			if($sql->getLastErrorNumber())
+			{
+				e107::getMessage()->addDebug($sql->getLastErrorText().'<br /><pre>'.$sql->getLastQuery().'</pre>');
+			}
+		}
 	}
-*/	
 }
-?>
