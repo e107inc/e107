@@ -376,11 +376,9 @@ $FORUMTOPIC_TEMPLATE['thread'] ="
 
 	<tr>
 	 	<td class='finfobar'>
-			<div class='dropup'>
-			{TOP=caret}
-			</div>
+			&nbsp;
 		</td>
-		<td class='finfobar' style='vertical-align:top'>
+		<td class='finfobar'>
 			{ATTACHMENTS}
 			{LASTEDIT}{LASTEDITBY=link}
 			{SIGNATURE}	

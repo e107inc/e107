@@ -224,6 +224,48 @@ $THREADTOPIC_REPLY = "
 ";
 }
 
+
+
+$FORUMPOST_TEMPLATE['form']		= "
+									<div style='text-align:center'>
+									<div class='spacer'>
+									{FORMSTART}
+									<table style='".USER_WIDTH."' class='fborder table'>
+									<tr>
+									<td colspan='2' class='fcaption'>{BACKLINK}
+									</td>
+									</tr>
+									{USERBOX}
+									{SUBJECTBOX}
+									<tr>
+									<td class='forumheader2' style='width:20%'>{POSTTYPE}</td>
+									<td class='forumheader2' style='width:80%'>
+									{POSTBOX}<br />
+									{EMAILNOTIFY}<br />
+									{NOEMOTES}<br />
+									{POSTTHREADAS}
+									</td>
+									</tr>
+									{POLL}
+									{FILEATTACH}
+									
+									<tr style='vertical-align:top'>
+									<td colspan='2' class='forumheader' style='text-align:center'>
+									{BUTTONS}
+									</td>
+									</tr>
+									</table>
+									{FORMEND}
+									
+									</div></div>
+";
+$FORUMPOST_TEMPLATE['reply']	= "";
+
+
+$FORUMPOST = $FORUMPOST_TEMPLATE['form'];
+
+
+
 $FORUM_CRUMB['sitename']['value'] = "<a class='forumlink' href='{SITENAME_HREF}'>{SITENAME}</a>";
 $FORUM_CRUMB['sitename']['sep'] = " :: ";
 
