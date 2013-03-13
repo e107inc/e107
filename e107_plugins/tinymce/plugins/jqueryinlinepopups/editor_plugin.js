@@ -26,7 +26,7 @@
 		getInfo : function() {
 			return {
 				longname : 'jQuery UI Inline Popups',
-				author : 'Richard Willis',
+				author : 'Richard Willis. Modified by e107 Inc.',
 				authorurl : 'http://badsyntax.co',
 				infourl : 'http://is.gd/j1FuI',
 				version : '0.1b'
@@ -131,8 +131,10 @@
 				var wdt	= f.width + 'px';
 				$('#uiModal .modal-caption').text(f.title);
 			//	$('#uiModal').css('height',f.height + "px");
+				var windowHeight = $(window).height() - 50;
 				$('#uiModal').width(wdt);
 				$('#uiModal').css('min-width','800px');
+				$('#uiModal').css('max-height', $(window).height());
 				
 				$('#uiModal .modal-body').html("<iframe src='" + src + "' width='100%' height='" + (f.height + 60) + "px' frameborder='0'></iframe>"); 
 				$('#uiModal .modal-footer').text('');

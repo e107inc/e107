@@ -86,8 +86,9 @@ a.brand:hover img 			{
 
 .modal 										{ min-width:800px; left:38%; z-index:10001}
 .modal-header								{ border-radius: 6px 6px 6px 6px; border-bottom:1px solid #DDDDDD; padding-left:20px; background-image: -moz-linear-gradient(center top , rgb(253, 253, 253) 0%, rgb(234, 234, 234) 100%); }
-.modal-body									{ max-height:800px }
+.modal-body									{ max-height:500px; padding:10px }
 #media-select-container						{ min-height:378px }
+.modal.fade.in 								{  top: 5%; }
 
 @media (min-width: 1500px) { 
 	
