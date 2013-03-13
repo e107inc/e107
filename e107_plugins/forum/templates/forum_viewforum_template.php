@@ -295,7 +295,7 @@ $FORUMVIEW_TEMPLATE['header'] 				= "<div class='row'><div class='span9 pull-lef
 										
 											{SUBFORUMS}";
 
-$FORUMVIEW_TEMPLATE['item'] 				= "<tr><td>{ICON}</td><td>{THREADNAME}<div><small class='clearfix'>by {POSTER} {THREADTIMELAPSE}  {PAGESX}</small></div></td><td>{REPLIESX}</td><td>{VIEWSX}</td><td><small>{LASTPOSTUSER} {LASTPOSTDATE} </small><span class='pull-right'>{ADMINOPTIONS}</span></td></tr>\n";
+$FORUMVIEW_TEMPLATE['item'] 				= "<tr><td>{ICON}</td><td>{THREADNAME}<div><small class='clearfix'>by {POSTER} {THREADTIMELAPSE}  {PAGESX}</small></div></td><td>{REPLIESX}</td><td>{VIEWSX}</td><td><small>{LASTPOSTUSER} {LASTPOSTDATE} </small><div class='span2 right pull-right'>{ADMINOPTIONS}</div></td></tr>\n";
 $FORUMVIEW_TEMPLATE['item-sticky'] 			= $FORUMVIEW['item'] ; // "<tr><td>{THREADNAME}</td></tr>\n";
 $FORUMVIEW_TEMPLATE['item-announce'] 		= $FORUMVIEW['item'] ; // "<tr><td>{THREADNAME}</td></tr>\n";
 
@@ -305,7 +305,7 @@ $FORUMVIEW_TEMPLATE['sub-item']				= "<tr><td>{NEWFLAG}</td>
 											<td><div>{SUB_FORUMTITLE}</div><small>{SUB_DESCRIPTION}</small></td>
 											<td>{SUB_REPLIESX}</td>
 											<td>{SUB_THREADSX}</td>
-											<td>{SUB_LASTPOST}</td>
+											<td><small>{SUB_LASTPOSTUSER} {SUB_LASTPOSTDATE}</small></td>
 											</tr>\n";
 									
 $FORUMVIEW_TEMPLATE['sub-footer']			= "";		

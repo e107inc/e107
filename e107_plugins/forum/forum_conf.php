@@ -57,7 +57,8 @@ if(!in_array(USERID, array_keys($modList)))
 
 require_once(HEADERF);
 
-if (isset($_POST['deletepollconfirm'])) {
+if (isset($_POST['deletepollconfirm'])) 
+{
 	$sql->db_Delete("poll", "poll_id='".intval($thread_parent)."' ");
 	$sql->db_Select("forum_t", "*", "thread_id='".$thread_id."' ");
 	$row = $sql->db_Fetch();
@@ -135,14 +136,19 @@ if ($action == "delete_poll")
 if ($action == 'move')
 {
 	$postInfo = $forum->postGet($id, 0, 1);
-	$text = "
-		<form method='post' action='".e_SELF.'?'.e_QUERY."'>
-		<div style='text-align:center'>
-		<table style='".ADMIN_WIDTH."'>
-		<tr>
-		<td style='text-align:right'>".FORCONF_24.": </td>
-		<td style='text-align:left'>
-		<select name='forum_move' class='tbox'>";
+	
+	/*
+	 * <form class="form-horizontal">
+<div class="control-group">
+<label class="control-label" for="inputEmail">Email</label>
+<div class="controls">
+<input type="text" id="inputEmail" placeholder="Email">
+</div>
+</div>
+	 */
+	
+	$frm = e107::getForm();
+	
 	$qry = "
 	SELECT f.forum_id, f.forum_name, fp.forum_name AS forum_parent, sp.forum_name AS sub_parent
 	FROM `#forum` AS f
@@ -152,16 +158,28 @@ if ($action == 'move')
 	AND f.forum_id != ".(int)$threadInfo['thread_forum_id']."
 	ORDER BY f.forum_parent ASC, f.forum_sub, f.forum_order ASC
 	";
-	$e107->sql->db_Select_gen($qry);
-	$fList = $e107->sql->db_getList();
+	
+	$sql->gen($qry);
+	$fList = $sql->db_getList();
+	
+	
+	$text = "
+		<form class='forum-horizontal' method='post' action='".e_SELF.'?'.e_QUERY."'>
+		<div style='text-align:center'>
+		<table class='table table-striped' style='".ADMIN_WIDTH."'>
+		<tr>
+		<td>".FORCONF_24.": </td>
+		<td>
+		<select name='forum_move' class='tbox'>";
+
 
 	foreach($fList as $f)
 	{
 		if(substr($f['forum_name'], 0, 1) != '*')
 		{
 			$f['sub_parent'] = ltrim($f['sub_parent'], '*');
-			$for_name = $f['forum_parent'].' -> ';
-			$for_name .= ($f['sub_parent'] ? $f['sub_parent'].' -> ' : '');
+			$for_name = $f['forum_parent'].' > ';
+			$for_name .= ($f['sub_parent'] ? $f['sub_parent'].' > ' : '');
 			$for_name .= $f['forum_name'];
 			$text .= "<option value='{$f['forum_id']}'>".$for_name."</option>";
 		}
@@ -170,24 +188,32 @@ if ($action == 'move')
 		</td>
 		</tr>
 		<tr>
-		<td colspan='2'><br />
-		<b>".FORCONF_32."</b><br />
-		<input type='radio' name='rename_thread' checked='checked' value='none' /> ".FORCONF_28."<br />
-		<input type='radio' name='rename_thread' value='add' /> ".FORCONF_29.' ['.FORCONF_27.'] '.FORCONF_30."<br />
-		<input type='radio' name='rename_thread' value='rename' /> ".FORCONF_31." <input type='text' class='tbox' name='newtitle' size='60' maxlength='250' value='".$tp->toForm($info['thread_name'])."'/>
-		</td>
-		</tr>
-		<tr style='vertical-align: top;'>
-		<td colspan='2'  style='text-align:center'><br />
-		<input class='btn button' type='submit' name='move' value='".FORCONF_25."' />
-		<input class='btn button' type='submit' name='movecancel' value='".FORCONF_14."' />
-		</td>
+		<td >".FORCONF_32."</td>
+		<td><div class='radio'>
+		".$frm->radio('rename_thread','none',true, 'label='.FORCONF_28)."
+		".$frm->radio('rename_thread', 'add', false, array('label'=> FORCONF_29.' ['.FORCONF_27.'] '.FORCONF_30)). "
+		<div class='form-inline'>".$frm->radio('rename_thread','rename', false, array('label'=>FORCONF_31))."
+		".$frm->text('newtitle', $tp->toForm($threadInfo['thread_name']), 250)."
+		</div>
+		</div></td>
 		</tr>
 		</table>
+		<div class='center'>
+		<input class='btn btn-primary button' type='submit' name='move' value='".FORCONF_25."' />
+		<input class='btn button' type='submit' name='movecancel' value='".FORCONF_14."' />
 		</div>
-		</form><br />";
-	$text = $e107->ns->tablerender($e107->tp->toHTML($threadInfo['thread_name']), $e107->tp->toHTML($postInfo[0]['post_entry']), '', true).$ns->tablerender('', $text, '', true);
-	$e107->ns->tablerender(FORCONF_25, $text);
+		
+		</div>
+		</form>";
+		
+		$ns = e107::getRender();
+		$tp = e107::getParser();
+		
+		$threadName = $tp->toHTML($threadInfo['thread_name'], true);
+		$threadText = $tp->toHTML($postInfo[0]['post_entry'], true);
+		
+	$text .= "<h3>".$threadName."</h3><div>".$threadText."</div>"; // $e107->ns->tablerender(, ), '', true).$ns->tablerender('', $text, '', true);
+	$ns->tablerender(FORCONF_25, $text);
 
 }
 require_once(FOOTERF);

@@ -91,11 +91,11 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		$ret = "<input class='btn button' type='submit' name='fpreview' value='".LAN_323."' /> ";
 		if ($action != 'nt')
 		{
-			$ret .= ($eaction ? "<input class='btn button' type='submit' name='update_reply' value='".LAN_78."' />" : "<input class='btn button' type='submit' name='reply' value='".LAN_74."' />");
+			$ret .= ($eaction ? "<input class='btn btn-primary button' type='submit' name='update_reply' value='".LAN_78."' />" : "<input class='btn btn-primary button' type='submit' name='reply' value='".LAN_74."' />");
 		}
 		else
 		{
-			$ret .= ($eaction ? "<input class='btn button' type='submit' name='update_thread' value='".LAN_77."' />" : "<input class='btn button' type='submit' name='newthread' value='".LAN_64."' />");
+			$ret .= ($eaction ? "<input class='btn button btn-primary' type='submit' name='update_thread' value='".LAN_77."' />" : "<input class='btn btn-primary button' type='submit' name='newthread' value='".LAN_64."' />");
 		}
 		return $ret;
 	}

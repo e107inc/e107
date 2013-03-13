@@ -22,6 +22,11 @@ if (!$e107->isInstalled('forum'))
 }
 include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_viewforum.php');
 
+
+
+
+
+
 if (isset($_POST['fjsubmit']))
 {
 	// TODO - load from DB and find forum_name
@@ -558,6 +563,13 @@ function parse_thread($thread_info)
 			$_TEMPLATE = $FORUM_VIEW_FORUM;
 			break;
 	}
+	
+	
+	if(substr($_TEMPLATE,0,4) == '<tr>') // Inject id into table row. //XXX Find a better way to do this without placing in template. . 
+	{
+		$_TEMPLATE = "<tr id='thread-{$threadId}'>".substr($_TEMPLATE,4);	
+	}
+	
 
 	return $tp->simpleParse($_TEMPLATE, $tVars);
 }
@@ -607,10 +619,15 @@ function parse_sub($subInfo)
 			$lp_name = $subInfo['forum_lastpost_user_anon'];
 		}
 		$tVars->SUB_LASTPOST = $lp_date.'<br />'.$lp_name.' '.$lp_thread;
+		
+		$tVars->SUB_LASTPOSTDATE = $gen->computeLapse($tmp[0], time(), false, false, 'short'); 
+		$tVars->SUB_LASTPOSTUSER = $lp_name;
 	}
 	else
 	{
 		$tVars->SUB_LASTPOST = '-';
+		$tVars->SUB_LASTPOSTUSER = '';
+		$tVars->SUB_LASTPOSTDATE = '';
 	}
 	return $tp->simpleParse($FORUM_VIEW_SUB, $tVars);
 }
@@ -643,11 +660,18 @@ function fadminoptions($thread_info)
    
 	//FIXME - not fully working. 
 	
-	$moveUrl = $e107->url->create('forum/thread/move', "id=".$thread_info['thread_id']);
+	$moveUrl 		= $e107->url->create('forum/thread/move', "id=".$thread_info['thread_id']);
+	$lockUnlock 	= ($thread_info['thread_active'] ) ? 'lock' : 'unlock';
+	$stickUnstick 	= ($thread_info['thread_sticky'] == 1) ? 'unstick' : 'stick';
+	$id = intval($thread_info['thread_id']);
+	
+	$lan = array('stick'=>'Stick','unstick'=>'Unstick','lock'=>"Lock", 'unlock'=>"Unlock");
 
-	$text .= "<li><a href='#'>Delete</a></li>";
-	$text .= "<li><a href='#'>Stick/Unstick</a></li>";
-	$text .= "<li><a href='#'><i class='icon_lock'></i> Lock/Unlock</a></li>";
+
+	$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='delete' data-forum-thread='".$id."'>Delete</a></li>";
+	$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='".$stickUnstick."' data-forum-thread='".$id."'>".$lan[$stickUnstick]."</a></li>";
+	$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='".$lockUnlock."' data-forum-thread='".$id."'><i class='icon_lock'></i> ".$lan[$lockUnlock]."</a></li>";
+	
 	$text .= "<li><a href='{$moveUrl}'>Move</a></li>";
 
 /*
@@ -659,7 +683,7 @@ function fadminoptions($thread_info)
 	$text .= "<li>".($thread_info['thread_active'] ? "<input type='image' ".IMAGE_admin_lock." name='lock_{$threadId}' value='thread_action' /> Lock" : "<input type='image' ".IMAGE_admin_unlock." name='unlock_{$threadId}' value='thread_action' /> Unlock"). "
 		</li>";
 		
-	$text .= "<li><a href='".$e107->url->create('forum/thread/move', "id={$threadId}")."'>".IMAGE_admin_move.'</a> Move</li>';
+	$text .= "<li><a href='".$e107->url->create('forum/thread/move', "id={$thread_info['thread_id']}")."'>Move</a></li>";
 */		
 	
 	$text .= "</ul></div>";
