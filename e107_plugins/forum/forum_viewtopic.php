@@ -156,12 +156,12 @@ if (!vartrue($FORUMSTART))
 
 
 // New in v2.x
-if(is_array($FORUMTOPIC_TEMPLATE))
+if(is_array($FORUM_VIEWTOPIC_TEMPLATE))
 {
-	$FORUMSTART 			= $FORUMTOPIC_TEMPLATE['start'];
-	$FORUMTHREADSTYLE		= $FORUMTOPIC_TEMPLATE['thread'];
-	$FORUMEND				= $FORUMTOPIC_TEMPLATE['end'];
-	$FORUMREPLYSTYLE 		= $FORUMTOPIC_TEMPLATE['replies'];	
+	$FORUMSTART 			= $FORUM_VIEWTOPIC_TEMPLATE['start'];
+	$FORUMTHREADSTYLE		= $FORUM_VIEWTOPIC_TEMPLATE['thread'];
+	$FORUMEND				= $FORUM_VIEWTOPIC_TEMPLATE['end'];
+	$FORUMREPLYSTYLE 		= $FORUM_VIEWTOPIC_TEMPLATE['replies'];	
 }
 
 
@@ -344,15 +344,16 @@ unset($loop_uid);
 
 if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread->threadInfo['thread_active'])
 {
+	//XXX Show only on the last page??
 	if (!vartrue($forum_quickreply))
 	{
 		$tVars->QUICKREPLY = "
 		<form action='" . $e107->url->create('forum/thread/reply', array('id' => $thread->threadId)) . "' method='post'>
 		<p>" . LAN_393 . ":<br />
-		<textarea cols='80' rows='4' class='tbox input-xxlarge' name='post' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
+		<textarea cols='80' rows='4' id='forum-quickreply-text' class='tbox input-xxlarge' name='post' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
 		<br />
 		<input type='submit' name='fpreview' value='" . LAN_394 . "' class='btn button' /> &nbsp;
-		<input type='submit' name='reply' value='" . LAN_395 . "' class='btn btn-success button' />
+		<input type='submit' data-forum-post='".$thread->threadInfo['thread_forum_id']."' data-forum-thread='".$threadId."' data-forum-action='quickreply' name='reply' value='" . LAN_395 . "' class='btn btn-success button' />
 		<input type='hidden' name='thread_id' value='$thread_parent' />
 		</p>
 		</form>";
