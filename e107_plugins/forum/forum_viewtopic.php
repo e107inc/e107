@@ -213,6 +213,8 @@ if ($thread->pages > 1)
 	if(!$thread->page) $thread->page = 1;
 	$url = rawurlencode(e107::getUrl()->create('forum/thread/view', array('name' => $thread->threadInfo['thread_name'], 'id' => $thread->threadId, 'page' => '[FROM]')));
 	$parms = "total={$thread->pages}&type=page&current={$thread->page}&url=".$url."&caption=off";
+	
+	//XXX FIXME - pull-down template not practical here. Can we force another?
 	$tVars->GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
 /*
 	$parms = ($thread->pages).",1,{$thread->page},url::forum::thread::func=view&id={$thread->threadId}&page=[FROM],off";
@@ -349,14 +351,14 @@ if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread
 	{
 		$tVars->QUICKREPLY = "
 		<form action='" . $e107->url->create('forum/thread/reply', array('id' => $thread->threadId)) . "' method='post'>
-		<p>" . LAN_393 . ":<br />
-		<textarea cols='80' rows='4' id='forum-quickreply-text' class='tbox input-xxlarge' name='post' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
-		<br />
-		<input type='submit' name='fpreview' value='" . LAN_394 . "' class='btn button' /> &nbsp;
+		<textarea cols='80' placeholder=\"Post a quick reply\" rows='4' id='forum-quickreply-text' class='tbox input-xxlarge' name='post' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
+		<div class='center'>
 		<input type='submit' data-forum-post='".$thread->threadInfo['thread_forum_id']."' data-forum-thread='".$threadId."' data-forum-action='quickreply' name='reply' value='" . LAN_395 . "' class='btn btn-success button' />
 		<input type='hidden' name='thread_id' value='$thread_parent' />
-		</p>
+		</div>
 		</form>";
+		
+		// Preview should be reserved for the full 'Post reply' page. <input type='submit' name='fpreview' value='" . LAN_394 . "' class='btn button' /> &nbsp;
 	}
 	else
 	{

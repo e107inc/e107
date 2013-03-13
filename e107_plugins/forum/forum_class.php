@@ -145,7 +145,7 @@ class e107forum
 				//	$sc->setScVar('postInfo', $postInfo);
 					
 				//	$ret['html'] = $tp->parseTemplate($tmpl, true, vartrue($forum_shortcodes)) . "\n";
-					$ret['html'] = "<tr><td>".$tp->toHtml($_POST['text'])."</td></tr>";	
+					$ret['html'] = "<tr><td>Help! I can't pass the template!</td><td colspan='2'>".$tp->toHtml($_POST['text'])."</td></tr>";	
 					$this->postAdd($postInfo); // save it. 
 					$ret['status'] = 'ok';
 					$ret['msg'] = print_r($postInfo,true); // "You post has been added"; 
