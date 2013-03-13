@@ -9,6 +9,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	{
 		parent::__construct();
 		$this->e107 = e107::getInstance();
+		$this->forum = 	new e107forum();
 	}
 
 	function sc_top($parm='')
@@ -20,7 +21,8 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 	function sc_joined()
 	{
-		global $gen;
+
+		$gen = e107::getDate();
 		if ($this->postInfo['post_user'])
 		{
 			return LAN_06.': '.$gen->convert_date($this->postInfo['user_join'], 'forum').'<br />';
@@ -30,9 +32,14 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	/**
 	 * What does this do?
 	 */
-	function sc_threaddatestamp()
+	function sc_threaddatestamp($parm='')
 	{
 		$gen = e107::getDateConvert(); // XXX _URL_ check if all required info is there
+		
+		if($parm == 'relative')
+		{
+			return $gen->computeLapse($this->postInfo['post_datestamp'], time(), false, false, 'short'); 	
+		}
 		
 		// XXX what is this line meant to do?
 		// $text = "<a id='post_{$this->postInfo['post_id']}' href='".$this->e107->url->create('forum/thread/post', array('name' => $this->postInfo['thread_name'], 'thread' => $this->postInfo['post_thread'], 'id' => $this->postInfo['post_id']))."'>".IMAGE_post."</a> ";
@@ -325,7 +332,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 	function sc_lastedit()
 	{
-		global $gen;
+		$gen = e107::getDate();
 		if ($this->postInfo['post_edit_datestamp'])
 		{
 			return $gen->convert_date($this->postInfo['post_edit_datestamp'],'forum');
@@ -452,7 +459,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 				$text .= "<li><a href='".e107::getUrl()->create('forum/thread/edit', array('id' => $this->postInfo['post_id']))."'>Edit</a></li>";
 			}
 			
-			$text .= "<li><a href='#'>Delete (fixme)</a></li>"; //FIXME - putting a form here could break layout. Ajax?
+			$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='deletepost' data-forum-post='".$this->postInfo['post_id']."'>Delete (fixme)</a></li>"; 
 
 			if ($type == 'thread')
 			{

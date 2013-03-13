@@ -17,15 +17,19 @@ if (!defined('e107_INIT')) { exit; }
 /* Forum Header File */
 if (!defined('e107_INIT')) { exit; }
 
-$code = <<<EON
+$jscode = <<<EON
 
 $(document).ready(function() 
 {
-	$('a[data-forum-thread]').on('click', function(e)
+	$('a[data-forum-action], input[data-forum-action]').on('click', function(e)
 	{
 			
 		var action = $(this).attr('data-forum-action');	
 		var thread = $(this).attr('data-forum-thread');		
+		var post 	= $(this).attr('data-forum-post');		
+		var text 	= $('#forum-quickreply-text').val();
+		
+		
 		
 		if(action != 'stick' && action !='unstick')
 		{
@@ -37,17 +41,31 @@ $(document).ready(function()
 		$.ajax({
 			type: "POST",
 			url: script,
-			data: { thread: thread, action: action },
-			success: function(data) { 	
+			data: { thread: thread, action: action, post: post, text: text },
+			success: function(data) {
+			  		// alert(data); 	
 			  	
 				var d = $.parseJSON(data);
 				
-				alert(d.msg);
-				
-				if(d.hide)
+				if(d)
 				{
-					var t = '#thread-' + thread ; 
-					$(t).hide('slow');
+					if(d.msg)
+					{
+						alert(d.msg);
+					}
+					
+					if(action == 'quickreply')
+					{
+						$('#forum-viewtopic tr:last').after(d.html);
+						return;
+					}
+					
+					
+					if(d.hide)
+					{
+						var t = '#thread-' + thread ; 
+						$(t).hide('slow');
+					}
 				}					
 			}
 		  
@@ -64,7 +82,7 @@ $(document).ready(function()
 
 EON;
 
-e107::js('inline',$code,'jquery');
+e107::js('inline',$jscode,'jquery');
 
 
 
@@ -81,6 +99,7 @@ class e107forum
 	public function __construct()
 	{
 		$this->e107 = e107::getInstance();
+		$tp = e107::getParser();
 		$this->userViewed = array();
 		$this->modArray = array();
 		$this->loadPermList();
@@ -88,6 +107,58 @@ class e107forum
 		if(!$this->prefs->get('postspage')) {
 			$this->setDefaults();
 		}
+		
+	
+		
+		$tp = e107::getParser();
+		
+		if(e_AJAX_REQUEST)
+		{
+			if(varset($_POST['action']) == 'quickreply' && vartrue($_POST['text']))
+			{		
+								
+					$postInfo = array();
+					$postInfo['post_ip'] = e107::getIPHandler()->getIP(FALSE);
+					if (USER)
+					{
+						$postInfo['post_user'] = USERID;
+				
+					}
+					else
+					{
+						$postInfo['post_user_anon'] = $_POST['anonname'];
+					}
+
+					$postInfo['post_entry'] = $_POST['text'];
+					$postInfo['post_forum'] = intval($_POST['post']);
+					$postInfo['post_datestamp'] = time();
+					$postInfo['post_thread'] = intval($_POST['thread']);
+					
+				//	$ret['msg'] = print_r($_POST,true);
+		
+				
+					$tmpl = e107::getTemplate('forum','forum_viewtopic','replies');
+					//FIXME - send parsed template back to $ret['html'] for inclusion in page. 
+					
+				//	$sc  = e107::getScBatch('view', 'forum');
+				//	$ret['msg'] = print_r($sc, true);
+				//	$sc->setScVar('postInfo', $postInfo);
+					
+				//	$ret['html'] = $tp->parseTemplate($tmpl, true, vartrue($forum_shortcodes)) . "\n";
+					$ret['html'] = "<tr><td>".$tp->toHtml($_POST['text'])."</td></tr>";	
+					$this->postAdd($postInfo); // save it. 
+					$ret['status'] = 'ok';
+					$ret['msg'] = print_r($postInfo,true); // "You post has been added"; 
+	
+				 echo json_encode($ret);  
+			}	
+
+			exit;
+
+		}
+		
+		
+		
 		
 		if(e_AJAX_REQUEST && MODERATOR) // see javascript above. 
 		{
@@ -112,6 +183,25 @@ class e107forum
 					else
 					{
 						$ret['msg'] 	= "Couldn't Delete the Thread";
+						$ret['status'] 	= 'error';	
+					}
+				break;
+				
+				case 'deletepost':
+					if(!$postId = vartrue($_POST['post']))
+					{
+						exit;	
+					}
+					
+					if($this->postDelete($postId))
+					{
+						$ret['msg'] 	= 'Deleted Post #'.$id;
+						$ret['hide'] 	= true; 
+						$ret['status'] 	= 'ok';	
+					}
+					else
+					{
+						$ret['msg'] 	= "Couldn't Delete the Post";
 						$ret['status'] 	= 'error';	
 					}
 				break;
@@ -166,7 +256,11 @@ class e107forum
 						$ret['msg'] = "failed to unstick thread";
 						$ret['status'] 	= 'error';	
 					}
-				break;			
+				break;	
+				
+				
+				
+						
 				
 				default:
 					$ret['status'] 	= 'error';	
@@ -209,6 +303,9 @@ class e107forum
 		$this->fieldTypes['forum']['forum_lastpost_user']	 	= 'int';
 */
 	}
+
+
+
 
 
 

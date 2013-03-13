@@ -305,7 +305,7 @@ $FORUM_CRUMB['forum']['value'] = "<a class='forumlink' href='{FORUM_HREF}'>{FORU
 
 
 // {MODERATORS} {THREADSTATUS}
-$FORUMTOPIC_TEMPLATE['start'] 	= "<a id='top'></a>
+$FORUM_VIEWTOPIC_TEMPLATE['start'] 	= "<a id='top'></a>
 	
 	<div class='row'>
 		<div class='span6 pull-left'>{BACKLINK}</div>
@@ -318,7 +318,7 @@ $FORUMTOPIC_TEMPLATE['start'] 	= "<a id='top'></a>
 	{MESSAGE}
 
 
-	<table class='table table-striped'>
+	<table id='forum-viewtopic' class='table table-striped'>
 	<colgroup>
 		<col style='width:20%' />
 		<col />
@@ -332,7 +332,7 @@ $FORUMTOPIC_TEMPLATE['start'] 	= "<a id='top'></a>
 
 	
 	
-$FORUMTOPIC_TEMPLATE['end'] = "</tr></table>
+$FORUM_VIEWTOPIC_TEMPLATE['end'] = "</tr></table>
 
 	<div class='center'>{QUICKREPLY}</div>
 
@@ -350,15 +350,15 @@ $FORUMTOPIC_TEMPLATE['end'] = "</tr></table>
 	";
 
 	
-$FORUMTOPIC_TEMPLATE['thread'] ="
+$FORUM_VIEWTOPIC_TEMPLATE['thread'] ="
 	<tr>
-		<td class='forumheader' style='vertical-align:middle'>{NEWFLAG} {USERCOMBO}{ANON_IP}</td>
-		<td>{THREADDATESTAMP}</td>
+		<td>{NEWFLAG} {USERCOMBO}{ANON_IP}</td>
+		<td>{THREADDATESTAMP=relative}</td>
 		<td style='text-align:right'>{POSTOPTIONS}</td>
 	</tr>
 	
 	<tr>
-		<td class='forumheader3'>
+		<td>
 				{CUSTOMTITLE}
 				{AVATAR}
 				<div>
@@ -366,6 +366,7 @@ $FORUMTOPIC_TEMPLATE['thread'] ="
 					{LEVEL=badge} {LEVEL=pic}
 				</small>
 				</div>
+			
 		</td>
 		<td colspan='2'>
 			{POLL}
@@ -395,7 +396,7 @@ $FORUMTOPIC_TEMPLATE['thread'] ="
 	</tr>";	
 
 
-	$FORUMTOPIC_TEMPLATE['replies'] = $FORUMTOPIC_TEMPLATE['thread']; 
+	$FORUM_VIEWTOPIC_TEMPLATE['replies'] = $FORUM_VIEWTOPIC_TEMPLATE['thread']; 
 	
 	
 	
