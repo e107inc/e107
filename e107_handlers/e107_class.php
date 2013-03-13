@@ -2968,14 +2968,17 @@ class e107
 			define('e_LOGIN', SITEURL.(file_exists(e_BASE.'customlogin.php') ? 'customlogin.php' : 'login.php'));	
 		}
 		
-		$pref = e107::getPref('xurl');
+		$p = e107::getPref();
 		
-		define('XURL_FACEBOOK', vartrue($pref['facebook'],false));
-		define('XURL_TWITTER', vartrue($pref['twitter'],false));
-		define('XURL_YOUTUBE', vartrue($pref['youtube'],false));
-		define('XURL_GOOGLE', vartrue($pref['google'],false));
-		define('XURL_LINKEDIN', vartrue($pref['linkedin'],false));
-				
+		if(varset($p['xurl']) && is_array($p['xurl']))
+		{
+			$pref = $p['xurl'];
+			define('XURL_FACEBOOK', vartrue($pref['facebook'],false));
+			define('XURL_TWITTER', vartrue($pref['twitter'],false));
+			define('XURL_YOUTUBE', vartrue($pref['youtube'],false));
+			define('XURL_GOOGLE', vartrue($pref['google'],false));
+			define('XURL_LINKEDIN', vartrue($pref['linkedin'],false));
+		}		
 		return $this;
 	}
 
