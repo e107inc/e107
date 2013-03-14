@@ -39,12 +39,24 @@ if (!e_QUERY)
 	exit;
 }
 
-include_lan(e_PLUGIN . 'forum/languages/'.e_LANGUAGE.'/lan_forum_viewtopic.php');
+// include_lan(e_PLUGIN . 'forum/languages/'.e_LANGUAGE.'/lan_forum_viewtopic.php');
 include_once (e_PLUGIN . 'forum/forum_class.php');
-include_once(e_PLUGIN . 'forum/templates/forum_icons_template.php');
+
 
 $forum = new e107forum();
 $thread = new e107ForumThread();
+
+if(e_AJAX_REQUEST)
+{
+	$forum->ajaxQuickReply();
+}
+	
+if(e_AJAX_REQUEST && MODERATOR) // see javascript above. 
+{
+	$forum->ajaxModerate();
+}
+		
+
 
 if (isset($_GET['last']))
 {

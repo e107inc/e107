@@ -39,7 +39,7 @@ $(document).ready(function()
 			url: script,
 			data: { thread: thread, action: action, post: post, text: text },
 			success: function(data) {
-			  		 alert(data); 	
+			  	//	 alert(data); 	
 			  	
 				var d = $.parseJSON(data);
 				
@@ -50,9 +50,10 @@ $(document).ready(function()
 						alert(d.msg);
 					}
 					
-					if(action == 'quickreply')
+					if(action == 'quickreply' && d.status == 'ok')
 					{
 						$('#forum-viewtopic tr:last').after(d.html);
+						$('#forum-quickreply-text').val('');
 						return;
 					}
 					
@@ -82,7 +83,7 @@ e107::js('inline',$jscode,'jquery');
 
 
 include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum.php');
-
+include_once(e_PLUGIN . 'forum/templates/forum_icons_template.php');
 
 
 
@@ -105,61 +106,87 @@ class e107forum
 		}
 		
 	
-		
+//		var_dump($this->prefs);
+
+/*
+		$this->fieldTypes['forum_post']['post_user'] 			= 'int';
+		$this->fieldTypes['forum_post']['post_forum'] 			= 'int';
+		$this->fieldTypes['forum_post']['post_datestamp'] 		= 'int';
+		$this->fieldTypes['forum_post']['post_edit_datestamp']	= 'int';
+		$this->fieldTypes['forum_post']['post_edit_user']		= 'int';
+		$this->fieldTypes['forum_post']['post_thread'] 			= 'int';
+		$this->fieldTypes['forum_post']['post_options'] 		= 'escape';
+		$this->fieldTypes['forum_post']['post_attachments'] 	= 'escape';
+
+		$this->fieldTypes['forum_thread']['thread_user'] 		= 'int';
+		$this->fieldTypes['forum_thread']['thread_lastpost'] 	= 'int';
+		$this->fieldTypes['forum_thread']['thread_lastuser'] 	= 'int';
+		$this->fieldTypes['forum_thread']['thread_sticky'] 		= 'int';
+		$this->fieldTypes['forum_thread']['thread_forum_id'] 	= 'int';
+		$this->fieldTypes['forum_thread']['thread_active'] 		= 'int';
+		$this->fieldTypes['forum_thread']['thread_datestamp']	= 'int';
+		$this->fieldTypes['forum_thread']['thread_views'] 		= 'int';
+		$this->fieldTypes['forum_thread']['thread_replies'] 	= 'int';
+		$this->fieldTypes['forum_thread']['thread_options'] 	= 'escape';
+
+		$this->fieldTypes['forum']['forum_lastpost_user']	 	= 'int';
+*/
+	}
+
+
+
+	function ajaxQuickReply()
+	{
 		$tp = e107::getParser();
-		
-		if(e_AJAX_REQUEST)
-		{
-			if(varset($_POST['action']) == 'quickreply' && vartrue($_POST['text']))
-			{		
-								
-					$postInfo = array();
-					$postInfo['post_ip'] = e107::getIPHandler()->getIP(FALSE);
-					if (USER)
-					{
-						$postInfo['post_user'] = USERID;
-				
-					}
-					else
-					{
-						$postInfo['post_user_anon'] = $_POST['anonname'];
-					}
 
+		if(varset($_POST['action']) == 'quickreply' && vartrue($_POST['text']))
+		{		
+							
+				$postInfo = array();
+				$postInfo['post_ip'] = e107::getIPHandler()->getIP(FALSE);
+				if (USER)
+				{
+					$postInfo['post_user'] = USERID;
+			
+				}
+				else
+				{
+					$postInfo['post_user_anon'] = $_POST['anonname'];
+				}
 					$postInfo['post_entry'] = $_POST['text'];
-					$postInfo['post_forum'] = intval($_POST['post']);
-					$postInfo['post_datestamp'] = time();
-					$postInfo['post_thread'] = intval($_POST['thread']);
-					
-				//	$ret['msg'] = print_r($_POST,true);
-		
+				$postInfo['post_forum'] = intval($_POST['post']);
+				$postInfo['post_datestamp'] = time();
+				$postInfo['post_thread'] = intval($_POST['thread']);
 				
-					$tmpl = e107::getTemplate('forum','forum_viewtopic','replies');
-					//FIXME - send parsed template back to $ret['html'] for inclusion in page. 
-					
-					$sc  = e107::getScBatch('view', 'forum');
-					$ret['msg'] = print_r($sc, true);
-					$sc->setScVar('postInfo', $postInfo);
-					
-				//	$ret['html'] = $tp->parseTemplate($tmpl, true, vartrue($forum_shortcodes)) . "\n";
-					$ret['html'] = "<tr><td>Help! I can't pass the template!</td><td colspan='2'>".$tp->toHtml($_POST['text'])."</td></tr>";	
-					$this->postAdd($postInfo); // save it. 
-					$ret['status'] = 'ok';
-					$ret['msg'] = print_r($postInfo,true); // "You post has been added"; 
+				$this->postAdd($postInfo); // save it. 
+				$postInfo['user_name'] = USERNAME;
+				$postInfo['user_email'] = USEREMAIL;
+				$postInfo['user_image'] = USERIMAGE; 
+			
+				$tmpl = e107::getTemplate('forum','forum_viewtopic','replies');
+				$sc  = e107::getScBatch('view', 'forum');
+				$sc->setScVar('postInfo', $postInfo);
+				
+				$ret['html'] = $tp->parseTemplate($tmpl, true, vartrue($forum_shortcodes)) . "\n";
+			//	$ret['html'] = "<tr><td>Help! I can't pass the template!</td><td colspan='2'>".$tp->toHtml($_POST['text'])."</td></tr>";	
+				
+				$ret['status'] = 'ok';
+				$ret['msg'] = "Your post has been added"; 
+
+			//echo $ret;
+			 echo json_encode($ret);  
+		}	
+
+		exit;
+
+	}
 	
-				echo $ret;
-				 echo json_encode($ret);  
-			}	
-
-			exit;
-
-		}
-		
-		
-		
-		
-		if(e_AJAX_REQUEST && MODERATOR) // see javascript above. 
-		{
-			if(!vartrue($_POST['thread']))
+	
+	
+	
+	function ajaxModerate()
+	{
+		if(!vartrue($_POST['thread']))
 			{
 				exit;	
 			}
@@ -268,43 +295,15 @@ class e107forum
 			echo json_encode($ret);  
 			
 			exit;
-		}
-		
-		
-		
-		
-		
-//		var_dump($this->prefs);
-
-/*
-		$this->fieldTypes['forum_post']['post_user'] 			= 'int';
-		$this->fieldTypes['forum_post']['post_forum'] 			= 'int';
-		$this->fieldTypes['forum_post']['post_datestamp'] 		= 'int';
-		$this->fieldTypes['forum_post']['post_edit_datestamp']	= 'int';
-		$this->fieldTypes['forum_post']['post_edit_user']		= 'int';
-		$this->fieldTypes['forum_post']['post_thread'] 			= 'int';
-		$this->fieldTypes['forum_post']['post_options'] 		= 'escape';
-		$this->fieldTypes['forum_post']['post_attachments'] 	= 'escape';
-
-		$this->fieldTypes['forum_thread']['thread_user'] 		= 'int';
-		$this->fieldTypes['forum_thread']['thread_lastpost'] 	= 'int';
-		$this->fieldTypes['forum_thread']['thread_lastuser'] 	= 'int';
-		$this->fieldTypes['forum_thread']['thread_sticky'] 		= 'int';
-		$this->fieldTypes['forum_thread']['thread_forum_id'] 	= 'int';
-		$this->fieldTypes['forum_thread']['thread_active'] 		= 'int';
-		$this->fieldTypes['forum_thread']['thread_datestamp']	= 'int';
-		$this->fieldTypes['forum_thread']['thread_views'] 		= 'int';
-		$this->fieldTypes['forum_thread']['thread_replies'] 	= 'int';
-		$this->fieldTypes['forum_thread']['thread_options'] 	= 'escape';
-
-		$this->fieldTypes['forum']['forum_lastpost_user']	 	= 'int';
-*/
 	}
-
-
-
-
-
+				
+				
+			
+			
+		
+		
+		
+	
 
 	private function loadPermList()
 	{
