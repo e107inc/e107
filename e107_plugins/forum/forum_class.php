@@ -68,7 +68,7 @@ $(document).ready(function()
 						var t = '#thread-' + thread ; 
 						var p = '#post-' + post ; 
 						
-						alert(p);
+				//		alert(p);
 						$(t).hide('slow');
 						$(p).hide('slow').slideUp(800);
 					}
