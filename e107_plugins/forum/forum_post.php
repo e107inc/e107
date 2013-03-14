@@ -153,7 +153,7 @@ if (isset($_POST['fpreview']))
 	$tsubject = $tp->post_toHTML($_POST['subject'], true);
 	$tpost = $tp->post_toHTML($_POST['post'], true);
 
-	if ($_POST['poll_title'] != '' && check_class($forum->prefs->get('forum_poll')))
+	if ($_POST['poll_title'] != '' && check_class($forum->prefs->get('poll')))
 	{
 		require_once(e_PLUGIN."poll/poll_class.php");
 		$poll = new poll;

@@ -10,10 +10,6 @@
 *
 */
 
-if (!defined('e107_INIT')) { exit; }
-
-
-
 /* Forum Header File */
 if (!defined('e107_INIT')) { exit; }
 
@@ -43,7 +39,7 @@ $(document).ready(function()
 			url: script,
 			data: { thread: thread, action: action, post: post, text: text },
 			success: function(data) {
-			  		// alert(data); 	
+			  		 alert(data); 	
 			  	
 				var d = $.parseJSON(data);
 				
@@ -85,7 +81,7 @@ EON;
 e107::js('inline',$jscode,'jquery');
 
 
-
+include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum.php');
 
 
 
@@ -140,9 +136,9 @@ class e107forum
 					$tmpl = e107::getTemplate('forum','forum_viewtopic','replies');
 					//FIXME - send parsed template back to $ret['html'] for inclusion in page. 
 					
-				//	$sc  = e107::getScBatch('view', 'forum');
-				//	$ret['msg'] = print_r($sc, true);
-				//	$sc->setScVar('postInfo', $postInfo);
+					$sc  = e107::getScBatch('view', 'forum');
+					$ret['msg'] = print_r($sc, true);
+					$sc->setScVar('postInfo', $postInfo);
 					
 				//	$ret['html'] = $tp->parseTemplate($tmpl, true, vartrue($forum_shortcodes)) . "\n";
 					$ret['html'] = "<tr><td>Help! I can't pass the template!</td><td colspan='2'>".$tp->toHtml($_POST['text'])."</td></tr>";	
@@ -150,6 +146,7 @@ class e107forum
 					$ret['status'] = 'ok';
 					$ret['msg'] = print_r($postInfo,true); // "You post has been added"; 
 	
+				echo $ret;
 				 echo json_encode($ret);  
 			}	
 

@@ -24,7 +24,7 @@ if (!$e107->isInstalled('forum'))
 	exit;
 }
 
-include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum.php');
+// include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum.php');
 
 require_once(e_PLUGIN.'forum/forum_class.php');
 $forum = new e107forum;
