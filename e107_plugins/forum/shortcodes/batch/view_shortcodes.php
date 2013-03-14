@@ -381,7 +381,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
     <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
     <span class="caret"></span>
     </button>
-    <ul class="dropdown-menu">
+    <ul class="dropdown-menu left">
     ';		
 	
 	$text .= "<li><a href='#'>".$this->sc_level('userid')."</a></li>";

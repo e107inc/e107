@@ -305,6 +305,7 @@ $FORUM_CRUMB['forum']['value'] = "<a class='forumlink' href='{FORUM_HREF}'>{FORU
 
 
 // {MODERATORS} {THREADSTATUS}
+/*
 $FORUM_VIEWTOPIC_TEMPLATE['start'] 	= "<a id='top'></a>
 	
 	<div class='row'>
@@ -389,11 +390,87 @@ $FORUM_VIEWTOPIC_TEMPLATE['thread'] ="
 	<td colspan='3'>
 	</td>
 	</tr>";	
+*/
+
+$FORUM_VIEWTOPIC_TEMPLATE['start'] 	= "
+
+	<div class='row'>
+		<div class='span6 pull-left'>{BACKLINK}</div>
+	</div>
+	
+	<div class='row'>
+		<div class='span9 pull-left'><h3>{THREADNAME}</h3></div><div class='span3 pull-right right' style='padding-top:10px'>{BUTTONSX}</div>
+	</div>
+	
+	{MESSAGE}
+	
+											
+<ul id='forum-viewtopic' class='unstyled'>
+<li class='divider'></li>
+";
+
+$FORUM_VIEWTOPIC_TEMPLATE['thread'] = "
+									<li>
+										<div class='row-fluid btn-navbar'>
+												<div class='span2 center'>{NEWFLAG}<small>
+														{LEVEL=badge} {LEVEL=pic}
+													</small> {ANON_IP}</div>
+												<div class='span6 offset1 muted'><small>{THREADDATESTAMP=relative}</small></div>
+												<div class='span3 right'>{POSTOPTIONS}</div>	
+										
+										</div>
+										
+										<div class='row-fluid'  >
+											<div class='span2 center'>
+													{CUSTOMTITLE}
+													{AVATAR}
+													{USERCOMBO}
+													<div>
+													
+													</div>
+											</div>
+											<div class='span9 offset1'>
+												{POLL}
+												{POST}
+												
+											</div>
+										</div>
+										
+										
+										<div class='row-fluid'>
+											<div class='span2 finfobar'>
+												&nbsp;
+											</td>
+											<div class='span9 finfobar' >
+												{ATTACHMENTS}
+												{LASTEDIT}{LASTEDITBY=link}
+												{SIGNATURE}	
+											</td>
+											
+											<div class='span3'>
+											</div>
+										</div>
+										
+										
+									</li>
+									<li class='divider'></li>";
+
+$FORUM_VIEWTOPIC_TEMPLATE['end'] = "</ul>
+<div class='row clearfix'>
+		<div class='span3 pull-left'>{GOTOPAGES}</div>
+		<div class='span6 center'>{QUICKREPLY}</div>
+		<div class='span3 pull-right right '>{BUTTONSX}</div>
+	</div>
+	{THREADSTATUS}
+	
+	";
+
+
 
 
 	$FORUM_VIEWTOPIC_TEMPLATE['replies'] = $FORUM_VIEWTOPIC_TEMPLATE['thread']; 
 	
-	
+
 	
 
 //$FORUMDELETEDSTYLE		= "<br />DELETED";

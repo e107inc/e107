@@ -53,7 +53,8 @@ $(document).ready(function()
 					
 					if(action == 'quickreply' && d.status == 'ok')
 					{
-						$('#forum-viewtopic tr:last').after(d.html);
+					//	alert(d.html);
+						$('#forum-viewtopic li:last').after(d.html).hide().slideDown(800);
 						$('#forum-quickreply-text').val('');
 						return;
 					}
