@@ -24,7 +24,7 @@ if (!$e107->isInstalled('forum'))
 	exit;
 }
 
-include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_post.php');
+// include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_post.php');
 
 if (isset($_POST['fjsubmit']))
 {

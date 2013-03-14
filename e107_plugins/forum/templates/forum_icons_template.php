@@ -14,7 +14,7 @@
 
 if ( ! defined('e107_INIT')) { exit(); }
 
-include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_viewforum.php');
+// include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_viewforum.php');
 
 // Thread info
 

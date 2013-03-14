@@ -1581,6 +1581,11 @@ class e107
 	 */
 	public static function css($type, $data, $dep = null, $media = 'all', $preComment = '', $postComment = '', $dependence = null)
 	{
+		if(strstr($data,'bootstrap') && !defined("e_BOOTSTRAP")) // detect bootstrap is enabled. - used in nextprev.sc currently. 
+		{
+			define("e_BOOTSTRAP", true);	
+		}
+		
 		$jshandler = e107::getJs();
 		$jshandler->setDependency($dep);
 		
@@ -2237,6 +2242,11 @@ class e107
 		else $fname = e_LANGUAGE;
 
 		$path = $theme.$fname.'.php';
+		
+		if(E107_DBG_INCLUDES)
+		{
+			e107::getMessage()->addDebug("Attempting to Load: ".$path);	
+		}	
 
 		e107::setRegistry($cstring, true);
 		self::includeLan($path, false);

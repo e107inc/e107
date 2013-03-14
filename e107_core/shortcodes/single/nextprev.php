@@ -75,11 +75,32 @@ function nextprev_shortcode($parm = '')
 		$total_items = intval($parm['total']);
 		$check_render = true;
 
+		if(vartrue($parm['glyphs']) && (e_BOOTSTRAP === true))
+		{
+			$LAN_NP_FIRST 		= "<i class='icon-fast-backward'></i>";
+			$LAN_NP_PREVIOUS 	= "<i class='icon-backward'></i>";
+			$LAN_NP_NEXT 		= "<i class='icon-forward'></i>";
+			$LAN_NP_LAST 		= "<i class='icon-fast-forward'></i>";
+		}
+		else
+		{
+			$LAN_NP_FIRST 		= LAN_NP_FIRST;
+			$LAN_NP_PREVIOUS 	= LAN_NP_PREVIOUS;
+			$LAN_NP_NEXT 		= LAN_NP_NEXT;
+			$LAN_NP_LAST 		= LAN_NP_LAST ;
+		}
+
 		// search for template keys - default_start, default_end etc.
 		if(isset($parm['tmpl_prefix']))
 		{
 			// forced
 			$tprefix = vartrue($parm['tmpl_prefix'], 'default');
+			//$perpage = $parm['amount'] !== 'all' ? intval($parm['amount']) : $total_items;
+		}
+		elseif(isset($parm['tmpl']))
+		{
+			// forced
+			$tprefix = vartrue($parm['tmpl'], 'default');
 			//$perpage = $parm['amount'] !== 'all' ? intval($parm['amount']) : $total_items;
 		}
 		// default, based on prefs
@@ -258,7 +279,7 @@ function nextprev_shortcode($parm = '')
 			if($show_first && !empty($tmpl[$tprefix.'nav_first']))
 			{
 				$e_vars->url = str_replace('[FROM]', $first_page, $url);
-				$e_vars->label = LAN_NP_FIRST;
+				$e_vars->label = $LAN_NP_FIRST;
 				$e_vars->url_label = LAN_NP_URLFIRST;
 				$ret_array[] = $tp->simpleParse($tmpl[$tprefix.'nav_first'], $e_vars);
 			}
@@ -266,7 +287,7 @@ function nextprev_shortcode($parm = '')
 			if(!empty($tmpl[$tprefix.'nav_prev']))
 			{
 				$e_vars->url = str_replace('[FROM]', $prev_page, $url);
-				$e_vars->label = LAN_NP_PREVIOUS;
+				$e_vars->label = $LAN_NP_PREVIOUS;
 				$e_vars->url_label = LAN_NP_URLPREVIOUS;
 				$ret_array[] = $tp->simpleParse($tmpl[$tprefix.'nav_prev'], $e_vars);
 			}
@@ -305,7 +326,7 @@ function nextprev_shortcode($parm = '')
 			if(!empty($tmpl[$tprefix.'nav_next']))
 			{
 				$e_vars->url = str_replace('[FROM]', $next_page, $url);
-				$e_vars->label = LAN_NP_NEXT;
+				$e_vars->label = $LAN_NP_NEXT;
 				$e_vars->url_label = LAN_NP_URLNEXT;
 				$ret_array[] = $tp->simpleParse($tmpl[$tprefix.'nav_next'], $e_vars);
 			}
@@ -313,7 +334,7 @@ function nextprev_shortcode($parm = '')
 			if($show_last && !empty($tmpl[$tprefix.'nav_last']))
 			{
 				$e_vars->url = str_replace('[FROM]', $last_page, $url);//$last_page
-				$e_vars->label = LAN_NP_LAST;
+				$e_vars->label = $LAN_NP_LAST;
 				$e_vars->url_label = LAN_NP_URLLAST;
 				$ret_array[] = $tp->simpleParse($tmpl[$tprefix.'nav_last'], $e_vars);
 			}

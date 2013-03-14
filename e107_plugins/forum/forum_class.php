@@ -24,6 +24,7 @@ $(document).ready(function()
 		var thread = $(this).attr('data-forum-thread');		
 		var post 	= $(this).attr('data-forum-post');		
 		var text 	= $('#forum-quickreply-text').val();
+		var insert	= $(this).attr('data-forum-insert');
 		
 		
 		
@@ -37,7 +38,7 @@ $(document).ready(function()
 		$.ajax({
 			type: "POST",
 			url: script,
-			data: { thread: thread, action: action, post: post, text: text },
+			data: { thread: thread, action: action, post: post, text: text, insert:insert },
 			success: function(data) {
 			  	//	 alert(data); 	
 			  	
@@ -81,8 +82,8 @@ EON;
 
 e107::js('inline',$jscode,'jquery');
 
-
-include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum.php');
+e107::lan('forum','lan_forum');
+// include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum.php');
 include_once(e_PLUGIN . 'forum/templates/forum_icons_template.php');
 
 
@@ -134,41 +135,51 @@ class e107forum
 	}
 
 
-
+	/**
+	 * Handle the Ajax quick-reply. 
+	 */
 	function ajaxQuickReply()
 	{
 		$tp = e107::getParser();
 
 		if(varset($_POST['action']) == 'quickreply' && vartrue($_POST['text']))
 		{		
-							
+	
 				$postInfo = array();
 				$postInfo['post_ip'] = e107::getIPHandler()->getIP(FALSE);
+				
 				if (USER)
 				{
 					$postInfo['post_user'] = USERID;
-			
+
 				}
 				else
 				{
 					$postInfo['post_user_anon'] = $_POST['anonname'];
 				}
-					$postInfo['post_entry'] = $_POST['text'];
-				$postInfo['post_forum'] = intval($_POST['post']);
-				$postInfo['post_datestamp'] = time();
-				$postInfo['post_thread'] = intval($_POST['thread']);
+				
+				$postInfo['post_entry'] 		= $_POST['text'];
+				$postInfo['post_forum'] 		= intval($_POST['post']);
+				$postInfo['post_datestamp'] 	= time();
+				$postInfo['post_thread'] 		= intval($_POST['thread']);
 				
 				$this->postAdd($postInfo); // save it. 
+				
 				$postInfo['user_name'] = USERNAME;
 				$postInfo['user_email'] = USEREMAIL;
 				$postInfo['user_image'] = USERIMAGE; 
-			
-				$tmpl = e107::getTemplate('forum','forum_viewtopic','replies');
-				$sc  = e107::getScBatch('view', 'forum');
-				$sc->setScVar('postInfo', $postInfo);
-				
-				$ret['html'] = $tp->parseTemplate($tmpl, true, vartrue($forum_shortcodes)) . "\n";
-			//	$ret['html'] = "<tr><td>Help! I can't pass the template!</td><td colspan='2'>".$tp->toHtml($_POST['text'])."</td></tr>";	
+
+				if($_POST['insert'] == 1)
+				{
+					$tmpl = e107::getTemplate('forum','forum_viewtopic','replies');
+					$sc  = e107::getScBatch('view', 'forum');
+					$sc->setScVar('postInfo', $postInfo);
+					$ret['html'] = $tp->parseTemplate($tmpl, true, vartrue($forum_shortcodes)) . "\n";
+				}
+				else 
+				{
+					$ret['html'] = false;
+				}
 				
 				$ret['status'] = 'ok';
 				$ret['msg'] = "Your post has been added"; 
