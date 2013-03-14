@@ -224,7 +224,7 @@ if ($thread->pages > 1)
 {
 	if(!$thread->page) $thread->page = 1;
 	$url = rawurlencode(e107::getUrl()->create('forum/thread/view', array('name' => $thread->threadInfo['thread_name'], 'id' => $thread->threadId, 'page' => '[FROM]')));
-	$parms = "total={$thread->pages}&type=page&current={$thread->page}&url=".$url."&caption=off";
+	$parms = "total={$thread->pages}&type=page&current={$thread->page}&url=".$url."&caption=off&tmpl=default&navcount=4&glyphs=1";
 	
 	//XXX FIXME - pull-down template not practical here. Can we force another?
 	$tVars->GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
@@ -361,11 +361,13 @@ if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread
 	//XXX Show only on the last page??
 	if (!vartrue($forum_quickreply))
 	{
+		$ajaxInsert = ($thread->pages == $thread->page) ? 1 : 0;
+		
 		$tVars->QUICKREPLY = "
 		<form action='" . $e107->url->create('forum/thread/reply', array('id' => $thread->threadId)) . "' method='post'>
 		<textarea cols='80' placeholder=\"Post a quick reply\" rows='4' id='forum-quickreply-text' class='tbox input-xxlarge' name='post' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
 		<div class='center'>
-		<input type='submit' data-forum-post='".$thread->threadInfo['thread_forum_id']."' data-forum-thread='".$threadId."' data-forum-action='quickreply' name='reply' value='" . LAN_395 . "' class='btn btn-success button' />
+		<input type='submit' data-forum-insert='".$ajaxInsert."' data-forum-post='".$thread->threadInfo['thread_forum_id']."' data-forum-thread='".$threadId."' data-forum-action='quickreply' name='reply' value='" . LAN_395 . "' class='btn btn-success button' />
 		<input type='hidden' name='thread_id' value='$thread_parent' />
 		</div>
 		</form>";
@@ -378,6 +380,8 @@ if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread
 	}
 }
 
+
+
 $forend = $tp->simpleParse($FORUMEND, $tVars);
 
 $forumstring = $forstr . $forthr . vartrue($forrep) . $forend;
@@ -388,16 +392,17 @@ if ($thread->threadInfo['thread_lastpost'] > USERLV && !in_array($thread->thread
 {
 	$tst = $forum->threadMarkAsRead($thread->threadId);
 }
-
+$mes = e107::getMessage();
 require_once (HEADERF);
+
 
 if ($forum->prefs->get('enclose'))
 {
-	$ns->tablerender(LAN_01, $forumstring, array('forum_viewtopic', 'main'));
+	$ns->tablerender(LAN_01, $forumstring, $mes->render(). array('forum_viewtopic', 'main'));
 }
 else
 {
-	echo $forumstring;
+	echo $mes->render() . $forumstring;
 }
 
 // end -------------------------------------------------------------------------------------------------------------------------------------------------------------------
