@@ -14,19 +14,19 @@
 if (!defined('e107_INIT')) { exit; }
 if(!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%;margin-left:auto;margin-right:auto"); }
 
-$sc_style['LASTEDIT']['pre'] = "<br /><br /><span class='smallblacktext'>[ ".LAN_29.' ';
+$sc_style['LASTEDIT']['pre'] = LAN_29.' ';
 
 $sc_style['LASTEDITBY']['pre'] = ' '.FORLAN_BY.' ';
-$sc_style['LASTEDITBY']['post'] = ' ]</span>';
+$sc_style['LASTEDITBY']['post'] = '';
 
 $sc_style['LEVEL']['pre'] = "";
 $sc_style['LEVEL']['post'] = "";
 
-$sc_style['ATTACHMENTS']['pre'] = "<div id='forum_attachments'><br />";
+$sc_style['ATTACHMENTS']['pre'] = "<div>";
 $sc_style['ATTACHMENTS']['post'] = "</div>";
 
-$sc_style['ANON_IP']['pre'] = "<br /><div class='smalltext'>";
-$sc_style['ANON_IP']['post'] = "</div>";
+$sc_style['ANON_IP']['pre'] = "";
+$sc_style['ANON_IP']['post'] = "";
 
 $sc_style['USER_EXTENDED']['location.text_value']['mid'] = ": ";
 $sc_style['USER_EXTENDED']['location.text_value']['post'] = "<br />";
@@ -410,13 +410,14 @@ $FORUM_VIEWTOPIC_TEMPLATE['start'] 	= "
 ";
 
 $FORUM_VIEWTOPIC_TEMPLATE['thread'] = "
-									<li>
+									<li id='post-{POSTID}'>
 										<div class='row-fluid btn-navbar'>
 												<div class='span2 center'>{NEWFLAG}<small>
 														{LEVEL=badge} {LEVEL=pic}
 													</small> {ANON_IP}</div>
-												<div class='span6 offset1 muted'><small>{THREADDATESTAMP=relative}</small></div>
-												<div class='span3 right'>{POSTOPTIONS}</div>	
+												<div class='span4  muted'><small>{THREADDATESTAMP=relative}</small></div>
+												<div class='span5 muted right'><small>{LASTEDIT}{LASTEDITBY=link}</small></div>
+												<div class='span1 right'>{POSTOPTIONS}</div>	
 										
 										</div>
 										
@@ -429,7 +430,7 @@ $FORUM_VIEWTOPIC_TEMPLATE['thread'] = "
 													
 													</div>
 											</div>
-											<div class='span9 offset1'>
+											<div class='span9 '>
 												{POLL}
 												{POST}
 												
@@ -440,12 +441,10 @@ $FORUM_VIEWTOPIC_TEMPLATE['thread'] = "
 										<div class='row-fluid'>
 											<div class='span2 finfobar'>
 												&nbsp;
-											</td>
-											<div class='span9 finfobar' >
-												{ATTACHMENTS}
-												{LASTEDIT}{LASTEDITBY=link}
-												{SIGNATURE}	
-											</td>
+											</div>
+											<div class='span9  finfobar' >
+												<small>{ATTACHMENTS}  {SIGNATURE=clean}</small>
+											</div>
 											
 											<div class='span3'>
 											</div>

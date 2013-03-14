@@ -11,23 +11,13 @@
 */
 define("PAGE_NAME", "Forum");
 
-define("LAN_01", "Forums");
-define("LAN_02", "Back to top");
-define("LAN_03", "Go");
-define("LAN_53", "Thread");
-define("LAN_54", "Starter");
-define("LAN_55", "Replies");
-define("LAN_56", "Views");
-define("LAN_57", "Latest Post");
-define("LAN_58", "There are no topics in this forum yet.");
-define("LAN_59", "You must be a registered member and logged in to post on this forum. Click on signup or login from the login menu.");
+
 // define("LAN_79", "New posts");
 //define("LAN_80", " No new posts");
 // define("LAN_81", "Closed thread");
 // define("LAN_180", "Search");
 // define("LAN_199", "Unread post exists");
-define("LAN_202", "Sticky");
-define("LAN_203", "Sticky/Closed");
+
 //define("LAN_204", "You <b>can</b> start new threads");
 //define("LAN_205", "You <b>cannot</b> start new threads");
 //define("LAN_206", "You <b>can</b> post replies");

@@ -46,6 +46,12 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		return $gen->convert_date($this->postInfo['post_datestamp'], 'forum');
 	}
 
+	function sc_postid()
+	{	
+		return $this->postInfo['post_id'];
+	}
+
+
 	function sc_post()
 	{
 		$emote = (isset($this->postInfo['post_options']['no_emote']) ? ',emotes_off' : '');
@@ -189,10 +195,11 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		}
 	}
 
-	function sc_signature()
+	function sc_signature($parm='')
 	{
 		if(!USER) { return ''; }
 		global $forum;
+		$tp = e107::getParser();
 		static $forum_sig_shown;
 		if($forum->prefs->get('sig_once'))
 		{
@@ -200,7 +207,14 @@ class plugin_forum_view_shortcodes extends e_shortcode
 			if(getcachedvars($_tmp)) { return ''; }
 			cachevars($_tmp, 1);
 		}
-		return ($this->postInfo['user_signature'] ? "<br /><hr style='width:15%; text-align:left' /><span class='smalltext'>".$this->e107->tp->toHTML($this->postInfo['user_signature'], true).'</span>' : '');
+		
+		if($parm == 'clean')
+		{
+			return ($this->postInfo['user_signature'] ? trim($tp->toHTML($this->postInfo['user_signature'], true)) : "");
+		}
+		
+		
+		return ($this->postInfo['user_signature'] ? "<br /><hr style='width:15%; text-align:left' /><span class='smalltext'>".trim($tp->toHTML($this->postInfo['user_signature'], true)).'</span>' : '');
 	}
 
 	function sc_profileimg()

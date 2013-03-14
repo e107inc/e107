@@ -25,6 +25,20 @@ define("LAN_08", "Website");
 define("LAN_09", "Visits to site since registration");
 define("LAN_10", "Back to top");
 define("LAN_65", "Jump");
+
+
+define("LAN_53", "Thread");
+define("LAN_54", "Starter");
+define("LAN_55", "Replies");
+define("LAN_56", "Views");
+define("LAN_57", "Latest Post");
+define("LAN_58", "There are no topics in this forum yet.");
+define("LAN_59", "You must be a registered member and logged in to post on this forum. Click on signup or login from the login menu.");
+define("LAN_202", "Sticky");
+define("LAN_203", "Sticky/Closed");
+
+
+
 define("LAN_66", "This thread is now closed");
 define("LAN_67", "Posts");
 define("LAN_194", "Guest");
@@ -188,10 +202,17 @@ define("LAN_439", "here");
 define("LAN_440", "to go to the registration page.");
 
 define("LAN_441", "View forum statistics");
+
+define('FORLAN_21', 'Threads');
+define('FORLAN_22', 'Last Post');
+define('FORLAN_23', 'Poll');
 	
 define('FORLAN_441', 'No rules defined.');
 define('FORLAN_442', 'My Uploads');
 define('FORLAN_443', '[user deleted]');
 define('FORLAN_444', 'sub-forums');
+
+
+
 
 ?>
