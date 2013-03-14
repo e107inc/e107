@@ -51,10 +51,13 @@ $(document).ready(function()
 						alert(d.msg);
 					}
 					
-					if(action == 'quickreply' && d.status == 'ok')
+					if(action == 'quickreply' && d.status == 'ok' )
 					{
 					//	alert(d.html);
-						$('#forum-viewtopic li:last').after(d.html).hide().slideDown(800);
+						if(d.html != false)
+						{
+							$('#forum-viewtopic li:last').after(d.html).hide().slideDown(800);
+						}
 						$('#forum-quickreply-text').val('');
 						return;
 					}
@@ -63,7 +66,11 @@ $(document).ready(function()
 					if(d.hide)
 					{
 						var t = '#thread-' + thread ; 
+						var p = '#post-' + post ; 
+						
+						alert(p);
 						$(t).hide('slow');
+						$(p).hide('slow').slideUp(800);
 					}
 				}					
 			}
@@ -164,11 +171,12 @@ class e107forum
 				$postInfo['post_datestamp'] 	= time();
 				$postInfo['post_thread'] 		= intval($_POST['thread']);
 				
-				$this->postAdd($postInfo); // save it. 
-				
+				$postInfo['post_id']  = $this->postAdd($postInfo); // save it. 
+					
 				$postInfo['user_name'] = USERNAME;
 				$postInfo['user_email'] = USEREMAIL;
 				$postInfo['user_image'] = USERIMAGE; 
+				$postInfo['user_signature'] = USERSIG; 
 
 				if($_POST['insert'] == 1)
 				{
@@ -198,12 +206,14 @@ class e107forum
 	
 	function ajaxModerate()
 	{
-		if(!vartrue($_POST['thread']))
+			if(!vartrue($_POST['thread']) && !vartrue($_POST['post']))
 			{
 				exit;	
 			}
 			
 			$id = intval($_POST['thread']);
+			
+		//	print_r($_POST);
 			
 			$ret = array('hide'=>false,'msg'=>'','status'=>null); 
 			
@@ -226,18 +236,19 @@ class e107forum
 				case 'deletepost':
 					if(!$postId = vartrue($_POST['post']))
 					{
+						echo "No Post";
 						exit;	
 					}
 					
 					if($this->postDelete($postId))
 					{
-						$ret['msg'] 	= 'Deleted Post #'.$id;
+						$ret['msg'] 	= 'Deleted Post #'.$postId;
 						$ret['hide'] 	= true; 
 						$ret['status'] 	= 'ok';	
 					}
 					else
 					{
-						$ret['msg'] 	= "Couldn't Delete the Post";
+						$ret['msg'] 	= "Couldn't Delete the Post #".$postId;
 						$ret['status'] 	= 'error';	
 					}
 				break;
@@ -1649,13 +1660,18 @@ class e107forum
 	 */
 	function postDelete($postId, $updateCounts = true)
 	{
-		$postId = (int)$postId;
-		$e107 = e107::getInstance();
-		if(!$e107->sql->db_Select('forum_post', '*', 'post_id = '.$postId))
+		$postId 	= (int)$postId;
+		$e107 		= e107::getInstance();
+		
+		$sql 		= e107::getDb();
+		$deleted 	= false; 
+		
+		if(!$sql->db_Select('forum_post', '*', 'post_id = '.$postId))
 		{
 			echo 'NOT FOUND!'; return;
 		}
-		$row = $e107->sql->fetch(MYSQL_ASSOC);
+		
+		$row = $sql->fetch(MYSQL_ASSOC);
 
 		//delete attachments if they exist
 		if($row['post_attachments'])
@@ -1664,7 +1680,10 @@ class e107forum
 		}
 
 		// delete post
-		$e107->sql->delete('forum_post', 'post_id='.$postId);
+		if($sql->delete('forum_post', 'post_id='.$postId))
+		{
+			$deleted = true; 
+		}
 
 		if($updateCounts)
 		{
@@ -1686,7 +1705,7 @@ class e107forum
 			// update forum lastpost info
 			$this->forumUpdateLastpost('forum', $row['post_forum']);
 		}
-		return $threadInfo['thread_total_replies'];
+		return $deleted; // return boolean. $threadInfo['thread_total_replies'];
 	}
 
 }

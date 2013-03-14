@@ -46,7 +46,7 @@ include_once (e_PLUGIN . 'forum/forum_class.php');
 $forum = new e107forum();
 $thread = new e107ForumThread();
 
-if(e_AJAX_REQUEST)
+if(e_AJAX_REQUEST && varset($_POST['action']) == 'quickreply')
 {
 	$forum->ajaxQuickReply();
 }
@@ -329,6 +329,8 @@ foreach ($postList as $postInfo)
 	$e_hide_query = "SELECT post_id FROM `#forum_post` WHERE (`post_thread` = {$threadId} AND post_user= " . USERID . ' LIMIT 1';
 	$e_hide_hidden = FORLAN_HIDDEN;
 	$e_hide_allowed = USER;
+	
+	
 
 	if ($tnum > 1)
 	{
