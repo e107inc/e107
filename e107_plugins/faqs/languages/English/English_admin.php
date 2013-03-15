@@ -13,6 +13,9 @@ define('LANA_FAQ_ANSWER', 'Answer');
 define('LANA_FAQ_COMMENT', 'Comment'); //FIXME Use generic
 define('LANA_FAQ_UNAME', 'User name'); //FIXME Use generic
 define('LANA_FAQ_ULOGINNAME', 'User login'); //FIXME Use generic
+define('LANA_FAQ_TAGS', 'Tags');
+define('LANA_FAQ_TAGS_HELP', 'Comma separated tag list');
+
 define('LANA_FAQ_PREF_1', 'Allow submitting of FAQs by:');
 define('LANA_FAQ_PREF_2', 'Allow submitting of Questions by:');
 define('LANA_FAQ_PREF_3', 'Use Classic Layout');

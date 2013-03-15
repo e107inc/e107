@@ -185,7 +185,10 @@ class faq_main_ui extends e_admin_ui
          	'faq_question' 			=> array('title'=> LANA_FAQ_QUESTION,		'tab' => 0, 'type' => 'text',			'width' => 'auto', 'thclass' => 'left first', 'required'=>TRUE, 'readParms'=>'editable=1'), 
          	'faq_answer' 			=> array('title'=> LANA_FAQ_ANSWER,		'tab' => 0,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=1&truncate=50&bb=1'), 
 		 	'faq_parent' 			=> array('title'=> LAN_CATEGORY,	'tab' => 0,	'type' => 'dropdown',		'data'=> 'int', 'inline'=>true,'width' => '10%', 'filter'=>TRUE, 'batch'=>TRUE),		
+
+			'faq_tags' 				=> array('title'=> LANA_FAQ_TAGS,		'tab' => 1, 'type' => 'text',		'data' => 'str',	'width' => 'auto', 'inline'=> true, 'help' => LANA_FAQ_TAGS_HELP),	// User id
 			'faq_comment' 			=> array('title'=> LANA_FAQ_COMMENT,		'tab' => 1, 'type' => 'userclass',		'data' => 'int',	'width' => 'auto', 'inline'=> true),	// User id
+			
 			'faq_datestamp' 		=> array('title'=> LAN_DATE,		'tab' => 1, 'type' => 'datestamp',		'data'=> 'int','width' => 'auto', 'noedit' => false,'writeParms'=>'auto=1'),	
             'faq_author' 			=> array('title'=> LAN_USER,		'tab' => 1, 'type' => 'user',			'data'=> 'int', 'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'writeParms' => 'currentInit=1', 'filter' => true, 'batch' => true, 'nolist' => true	),	 	// Photo
        		'u.user_name' 			=> array('title'=> LANA_FAQ_UNAME,		'tab' => 1, 'type' => 'user',			'width' => 'auto', 'noedit' => true, 'readParms'=>'idField=faq_author&link=1'),	// User name
