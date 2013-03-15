@@ -48,15 +48,15 @@ if(isset($_POST['chat_submit']) && $_POST['cmessage'] != "")
 		$nick = trim(preg_replace("#\[.*\]#si", "", $tp -> toDB($_POST['nick'])));
 
 		$cmessage = $_POST['cmessage'];
-		$cmessage = preg_replace("#\[.*?\](.*?)\[/.*?\]#s", "\\1", $cmessage);
+		$cmessage = trim(preg_replace("#\[.*?\](.*?)\[/.*?\]#s", "\\1", $cmessage));
 
 		$fp = new floodprotect;
-		if($fp -> flood("chatbox", "cb_datestamp"))
+		if($fp -> flood('chatbox', 'cb_datestamp'))
 		{
-			if((strlen(trim($cmessage)) < 1000) && trim($cmessage) != "")
+			if((strlen($cmessage) < 1000) && ($cmessage != ''))
 			{
 				$cmessage = $tp -> toDB($cmessage);
-				if($sql -> db_Select("chatbox", "*", "cb_message='$cmessage' AND cb_datestamp+84600>".time()))
+				if($sql -> db_Select('chatbox', '*', "cb_message='{$cmessage}' AND cb_datestamp+84600>".time()))
 				{
 					$emessage = CHATBOX_L17;
 				}
@@ -66,29 +66,30 @@ if(isset($_POST['chat_submit']) && $_POST['cmessage'] != "")
 					$ip = $e107->getip();
 					if(USER)
 					{
-						$nick = USERID.".".USERNAME;
-						$sql -> db_Update("user", "user_chats=user_chats+1, user_lastpost='".time()."' WHERE user_id='".USERID."' ");
+						$nick = USERID.'.'.USERNAME;
+						$sql -> db_Update('user', "user_chats=user_chats+1, user_lastpost='".time()."' WHERE user_id=".USERID);
 					}
 					else if(!$nick)
 					{
-						$nick = "0.Anonymous";
+						$nick = '0.Anonymous';
 					}
 					else
 					{
-						if($sql -> db_Select("user", "*", "user_name='$nick' ")){
+						if($sql->db_Select('user', '*', "user_name='{$nick}' "))
+						{
 							$emessage = CHATBOX_L1;
 						}
 						else
 						{
-							$nick = "0.".$nick;
+							$nick = '0.'.$nick;
 						}
 					}
 					if(!$emessage)
 					{
-						$sql -> db_Insert("chatbox", "0, '$nick', '$cmessage', '".time()."', '0' , '$ip' ");
-						$edata_cb = array("cmessage" => $cmessage, "ip" => $ip);
-						$e_event -> trigger("cboxpost", $edata_cb);
-						$e107cache->clear("nq_chatbox");
+						$sql -> db_Insert('chatbox', "0, '{$nick}', '{$cmessage}', '".time()."', '0' , '{$ip}' ");
+						$edata_cb = array('cmessage' => $cmessage, 'ip' => $ip);
+						$e_event -> trigger('cboxpost', $edata_cb);
+						$e107cache->clear('nq_chatbox');
 					}
 				}
 			}
@@ -104,7 +105,8 @@ if(isset($_POST['chat_submit']) && $_POST['cmessage'] != "")
 	}
 }
 
-if(!USER && !$pref['anon_post']){
+if(!USER && !$pref['anon_post'])
+{
 	if($pref['user_reg'])
 	{
 		$texta = "<div style='text-align:center'>".CHATBOX_L3."</div><br /><br />";
@@ -112,7 +114,7 @@ if(!USER && !$pref['anon_post']){
 }
 else
 {
-	$cb_width = (defined("CBWIDTH") ? CBWIDTH : "");
+	$cb_width = (defined('CBWIDTH') ? CBWIDTH : '');
 
 	if($pref['cb_layer'] == 2)
 	{
@@ -146,7 +148,8 @@ else
 	<input class='button' type='submit' id='chat_submit' name='chat_submit' value='".CHATBOX_L4."' {$oc}/>
 	<input class='button' type='reset' name='reset' value='".CHATBOX_L5."' />";
 
-	if($pref['cb_emote'] && $pref['smiley_activate']){
+	if($pref['cb_emote'] && $pref['smiley_activate'])
+	{
 		$texta .= "
 		<input class='button' type ='button' style='cursor:pointer' size='30' value='".CHATBOX_L14."' onclick=\"expandit('emote')\" />
 		<div style='display:none' id='emote'>".r_emote()."
@@ -156,7 +159,8 @@ else
 	$texta .="</div>\n</form>\n";
 }
 
-if($emessage != ""){
+if($emessage != "")
+{
 	$texta .= "<div style='text-align:center'><b>".$emessage."</b></div>";
 }
 

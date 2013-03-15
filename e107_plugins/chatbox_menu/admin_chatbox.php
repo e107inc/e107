@@ -18,7 +18,7 @@
 */
 require_once("../../class2.php");
 
-if(!isset($pref['plug_installed']['chatbox']) || !getperms("P")) { header("location:".e_BASE."index.php"); exit; }
+if(!isset($pref['plug_installed']['chatbox_menu']) || !getperms("P")) { header("location:".e_BASE."index.php"); exit; }
 
 include_lan(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE."_config.php");
 
