@@ -20,11 +20,11 @@ $FAQS_TEMPLATE['end']	= "
 
 $FAQS_TEMPLATE['all']['start'] = "
 <div>
-	<h2 class='faq-listall'>{FAQ_CATEGORY}</h2>
+	<h2 class='faq-listall'>{FAQ_CATEGORY=extend}</h2>
 	<ul class='faq-listall'>
 ";
 $FAQS_TEMPLATE['all']['item'] = "
-		<li class='faq-listall'>{FAQ_QUESTION=expand}</li>
+		<li class='faq-listall'>{FAQ_QUESTION=expand|tags=1}</li>
 ";
 $FAQS_TEMPLATE['all']['end'] = "
 	</ul>

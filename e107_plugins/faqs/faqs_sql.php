@@ -6,6 +6,7 @@ CREATE TABLE faqs (
   faq_comment tinyint(1) unsigned NOT NULL default '0',
   faq_datestamp int(10) unsigned NOT NULL default '0',
   faq_author int(10) unsigned default NULL,
+  faq_tags varchar(255)  NOT NULL default '',
   faq_order int(6) unsigned NOT NULL default '0',
   PRIMARY KEY  (faq_id)
 ) ENGINE=MyISAM;

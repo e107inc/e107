@@ -35,6 +35,7 @@ class plugin_faqs_list_controller extends eControllerFront
 	protected $filter = array(
 		'all' => array(
 			'category' => array('int', '0:'),
+			'tag' => array('str', '2:'),
 		),
 	);
 	
@@ -61,23 +62,37 @@ class plugin_faqs_list_controller extends eControllerFront
 
 		// request parameter based on filter (int match in this case, see $this->filter[all][category]) - SAFE to be used in a query
 		$category = $this->getRequest()->getRequestParam('category');
-		$where = '';
+		$where = array();
 		if($category)
 		{
-			$where = " AND f.faq_parent={$category}";
+			$where[] = "f.faq_parent={$category}";
 		}
+		$tag = $this->getRequest()->getRequestParam('tag');
+		if($tag)
+		{
+			$where[] = "FIND_IN_SET ('".$tp->toDB($tag)."', f.faq_tags)";
+		}
+		
+		if($where)
+		{
+			$where = ' AND '.implode(' AND ' , $where);
+		}
+		else $where = '';
+
 		$query = "
 			SELECT f.*,cat.* FROM #faqs AS f 
 			LEFT JOIN #faqs_info AS cat ON f.faq_parent = cat.faq_info_id 
 			WHERE cat.faq_info_class IN (".USERCLASS_LIST."){$where} ORDER BY cat.faq_info_order,f.faq_order ";
-		$sql->gen($query);
+		$sql->gen($query, false);
 		
 		$prevcat = "";
 		$sc = e107::getScBatch('faqs', true);
+		$sc->counter = 1;
+		$sc->tag = htmlspecialchars($tag, ENT_QUOTES, 'utf-8');
+		$sc->category = $category;
 
 		$text = $tp->parseTemplate($FAQ_START, true);
 		
-		$sc->counter = 1;
 		while ($rw = $sql->db_Fetch())
 		{
 			$sc->setVars($rw);	
