@@ -243,14 +243,14 @@ if ($query[0] == 'settings')
 					</tr>
 					<tr>
 						<td>".SEALAN_12."</td>
-						<td>
+						<td class='form-inline'>
 							".$frm->radio_multi('time_restrict', array(0 => LAN_DISABLED, 1 => SEALAN_13), $search_prefs['time_restrict'])."&nbsp;
 							".$frm->text('time_secs', $tp -> toForm($search_prefs['time_secs']), 3, 'class=tbox&size=5')."&nbsp;".SEALAN_14."
 						</td>
 					</tr>
 					<tr>
 						<td>".SEALAN_3."</td>
-						<td>
+						<td class='form-inline'>
 							".$frm->radio_switch('search_sort', $search_prefs['mysql_sort'], 'MySQL', SEALAN_31)."&nbsp;
 							".$frm->text('php_limit', $tp -> toForm($search_prefs['php_limit']), 5, 'class=tbox&size=5')."&nbsp;".SEALAN_32."
 							<span class='field-help'>".SEALAN_49."</span>
@@ -385,7 +385,7 @@ else
 								</select>
 							</td>
 							<td class='center'>
-								<a href='".e_SELF."?edit.c.".$key."'>".ADMIN_EDIT_ICON."</a>
+								<a class='btn btn-large' href='".e_SELF."?edit.c.".$key."'>".ADMIN_EDIT_ICON."</a>
 							</td>
 						</tr>
 		";
@@ -411,7 +411,7 @@ else
 								</select>
 							</td>
 							<td class='center'>
-								<a href='".e_SELF."?edit.p.".$plug_dir."'>".ADMIN_EDIT_ICON."</a>
+								<a class='btn btn-large' href='".e_SELF."?edit.p.".$plug_dir."'>".ADMIN_EDIT_ICON."</a>
 							</td>
 						</tr>
 		";
