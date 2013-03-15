@@ -22,7 +22,7 @@ $css = "body 				{ text-align: left; font-size:13px; line-height:1.5em; font-wei
 			a:hover				{ color:#134B63; text-decoration:none; }
 			.bold				{ font-weight:bold; }
 			.center				{ text-align:center; }
-			.wrapper			{ width:800px; height:415px; margin:0px auto 0px 0px; padding-bottom:10px; background-color: #ebeef0; border-radius: 3px; -webkit-border-radius: 3px; -moz-border-radius: 3px; }
+			.wrapper			{ width:800px; height:415px; margin:0px auto 0px 0px; padding-bottom:10px;  }
 			.wrapper-top		{ height:10px; }
 			.wrapper-bottom		{ height:6px; }
 			.wrapper-middle		{ min-height:389px; background-color:#FDFDFD0; }

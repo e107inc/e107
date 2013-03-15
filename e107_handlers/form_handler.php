@@ -2472,7 +2472,7 @@ class e_form
 						}
 						$thsrc = $tp->thumbUrl(vartrue($parms['pre']).$value, $thparms, varset($parms['thumb_urlraw']));
 						$alt = $src;
-						$ttl = '<img src="'.$thsrc.'" alt="'.$alt.'" class="e-thumb" />';
+						$ttl = '<img src="'.$thsrc.'" alt="'.$alt.'" class="thumbnail e-thumb" />';
 						$value = '<a href="'.$src.'" class="e-dialog e-image-preview" title="'.$alt.'" rel="external">'.$ttl.'</a>';
 					}
 					else

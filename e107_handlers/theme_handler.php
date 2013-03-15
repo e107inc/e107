@@ -1722,7 +1722,7 @@ class themeHandler
 
 		
 		$custom = array();
-		
+		/*
 		foreach ($vars['layouts'] as $layout)
 		{
 			foreach ($layout as $key=>$val)
@@ -1730,31 +1730,49 @@ class themeHandler
 				$name = $val['@attributes']['name'];
 				unset($val['@attributes']['name']);
 				$lays[$name] = $val;
+
 				
 				if(isset($val['customPages']))
 				{
-					$custom[$name] = array_filter(explode(" ", $val['customPages']));
+					$cusArray = explode(" ", $val['customPages']);
+					$custom[$name] = array_filter($cusArray);
 				}
 				if(isset($val['custompages']))
 				{
+					$cusArray = explode(" ", $val['custompages']);
 					$custom[$name] = array_filter(explode(" ", $val['custompages']));
 				}
 			}
 		}
+		*/
+		
+		foreach($vars['layouts']['layout'] as $k=>$val)
+		{
+			$name = $val['@attributes']['name'];
+			unset($val['@attributes']['name']);
+			$lays[$name] = $val;
+			
+			if(is_string($val['custompages']))
+			{
+				$custom[$name] = array_filter(explode(" ", $val['custompages']));	
+			}		
+		}
+
 		
 		$vars['layouts'] 		= $lays;
 		$vars['path'] 			= $path;
 		$vars['custompages'] 	= $custom;
 
 		$mes = e107::getMessage(); // DEBUG
-	/*
-		if($path == "bootstrap" || $path == "e107v4a")
+	
+		if($path == "bootstrap" )
 		{
+		
 			$mes->addDebug("<h2>".$path."</h2>");
 			$mes->addDebug(print_a($vars,true));
 			$mes->addDebug("<hr />");
 		}
-	*/
+
 	
 		return $vars;
 	}

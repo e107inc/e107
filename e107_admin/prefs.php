@@ -1452,9 +1452,8 @@ $text .= "
 
 					<tr>
 						<td>".PRFLAN_48.":</td>
-						<td>
-							<div class='field-spacer'>".$frm->radio_multi('user_tracking', array('cookie' => PRFLAN_49, 'session' => PRFLAN_50), $pref['user_tracking'])."</div>
-							".PRFLAN_55.": <br />".$frm->text('cookie_name', $pref['cookie_name'], 20)."
+						<td class='form-inline'>
+							".$frm->radio_multi('user_tracking', array('cookie' => PRFLAN_49, 'session' => PRFLAN_50), $pref['user_tracking'])." ".PRFLAN_55.": ".$frm->text('cookie_name', $pref['cookie_name'], 20)."
 						</td>
 					</tr>
 					
@@ -1731,8 +1730,9 @@ $text .= "
 
 		
 		$js_types = array(
-			array('id'	=> 'prototype',		'name'=> 'Prototype (local)'),
 			array('id'	=> 'jquery', 		'name'=> 'jQuery (local)'),		
+			array('id'	=> 'prototype',		'name'=> 'Prototype (local)'),
+			
  		);	
 		
 		//TODO // separate switch for CDN.. or automatic fall-back. 	
