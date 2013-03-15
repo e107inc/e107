@@ -155,9 +155,10 @@ $E_ADMIN_NAVIGATION['end'] = '</ul>';
 			<div class="clear"><!-- --></div>
 		</div>
  */
- 
-   
-$ADMIN_HEADER = '<div class="navbar navbar-inverse navbar-fixed-top">
+
+$inverse = (e107::getPref('admincss') == "light_style.css") ? "navbar-inverse" : "";
+    
+$ADMIN_HEADER = '<div class="navbar '.$inverse.' navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid">  
           <a class="brand " href="'.e_ADMIN_ABS.'admin.php" title="Return to Front Panel"><img class="admin-logo" src="'.THEME.'images/e107_adminlogo.png" alt="e107" /></a>

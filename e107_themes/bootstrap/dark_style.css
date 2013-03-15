@@ -1,0 +1,17 @@
+/* info: Dark stylesheet */
+
+tr.first a, th a {
+    color: rgb(198, 198, 198);
+}
+
+thead tr {
+	
+ background-color: rgb(54, 54, 54);
+    background-image: linear-gradient(to bottom, rgb(68, 68, 68), rgb(34, 34, 34));
+    border: 1px solid rgb(3, 3, 3);
+}
+
+.adminlist tr > td {
+	
+min-height:50px;
+}

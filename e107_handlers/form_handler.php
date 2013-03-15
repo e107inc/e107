@@ -512,8 +512,8 @@ class e_form
 		{
 			$ret = "<div class='imgselector-container'  style='display:block;width:64px;min-height:64px'>";
 			$thpath = isset($sc_parameters['nothumb']) || vartrue($hide) ? $default : $default_thumb;
-			$style = ($blank) ? "border:1px dashed black;width:64px;height:64px" : "border:1px dashed black";
-			$label = "<img id='{$name_id}_prev' src='{$default_url}' alt='{$default_url}' class='image-selector' style='{$style}' />";
+			$style = ($blank) ? "width:64px;height:64px" : "";
+			$label = "<img id='{$name_id}_prev' src='{$default_url}' alt='{$default_url}' class='well well-small image-selector' style='{$style}' />";
 				
 		}
 		else // Images 
@@ -526,7 +526,7 @@ class e_form
 			$ret = "<div class='imgselector-container e-tip' {$title} style='display:block;width:".$width."px;min-height:".$height."px;'>";
 			$att = 'aw='.$width."'&ah=".$height."'";
 			$thpath = isset($sc_parameters['nothumb']) || vartrue($hide) ? $default : $tp->thumbUrl($default_thumb, $att, true);
-			$label = "<img id='{$name_id}_prev' src='{$default_url}' alt='{$default_url}' class='image-selector' style='display:block;border:1px dashed black;' />";
+			$label = "<img id='{$name_id}_prev' src='{$default_url}' alt='{$default_url}' class='well well-small image-selector' style='display:block;' />";
 			
 			if($cat != 'news' && $cat !='page' && $cat !='') 
 			{
@@ -1960,7 +1960,7 @@ class e_form
 
 		return "
 		<thead>
-	  		<tr>".$text."</tr>
+	  		<tr >".$text."</tr>
 		</thead>
 		";
 
