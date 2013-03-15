@@ -2191,8 +2191,8 @@ function show_avatars()
 			//style attribute allowed here - server side width/height control
 			//autocheck class - used for JS selectors (see eCoreImage object)
 			$text .= "
-			<div class='image-box f-left center autocheck' style='width: ".(intval($pref['im_width'])+40)."px; height: ".(intval($pref['im_height'])+100)."px;'>
-				<div class='spacer'>
+			<div class='image-box f-left center autocheck' style='margin:5px; width: ".(intval($pref['im_width'])+40)."px; height: ".(intval($pref['im_height'])+100)."px;'>
+				<div class='well'>
 				<div class='image-users'>{$users}</div>
 				<div class='image-preview'>{$img_src}</div>
 				<div class='image-delete'>

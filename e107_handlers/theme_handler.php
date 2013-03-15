@@ -951,6 +951,8 @@ class themeHandler
 				$borderStyle = "admin-theme-cell-default";
 			}
 			
+			$borderStyle = 'well';
+			
 			$text = "
 				<div class='f-left block-text admin-theme-cell ".$borderStyle."'>
 					<div class='admin-theme-thumb'>".$thumbnail."</div>
@@ -988,7 +990,7 @@ class themeHandler
 				<tr>
 					<td><b>".TPVLAN_11."</b></td>
 					<td>".$theme['version']."</td>
-					<td class='center middle' rowspan='6' style='text-align:center; vertical-align:middle;width:25%'>".$thumbnail."</td>
+					<td class='well center middle' rowspan='6' style='text-align:center; vertical-align:middle;width:25%'>".$thumbnail."</td>
 					</tr>";
 		
 					$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_4."</b>:</td><td style='vertical-align:top'>".$author."</td></tr>";
@@ -1182,7 +1184,7 @@ class themeHandler
 								{
 									$text2 = "
 										<td class='center'>".
-										$frm->radio('admincss', $css['name'], vartrue($pref['admincss'],"admin_style.css"))."
+										$frm->radio('admincss', $css['name'], vartrue($pref['admincss'])== $css['name'])."
 										</td>
 										<td><label for='admincss'>".$css['name']."</label></td>
 										<td>".($css['info'] ? $css['info'] : ($css['name'] == "admin_style.css" ? TPVLAN_23 : TPVLAN_24))."</td>\n";
@@ -1191,7 +1193,7 @@ class themeHandler
 							
 							if($mode == 1) // SITE-THEME Mode
 							{
-								if(substr($css['name'], 0, 6) == "admin_")
+								if(substr($css['name'], 0, 6) == "admin_" || !strstr($css['name'],'style'))
 								{
 									continue;
 								}
@@ -1477,7 +1479,7 @@ class themeHandler
 		
 		$themeArray = $this->getThemes("id");
 		$pref['admintheme'] = $themeArray[$this->id];
-		$pref['admincss'] = file_exists(e_THEME.$pref['admintheme'].'/admin_style.css') ? 'admin_style.css' : 'style.css';
+		$pref['admincss'] = file_exists(e_THEME.$pref['admintheme'].'/dark_style.css') ? 'dark_style.css' : 'light_style.css';
 		$e107cache->clear_sys();
 		if(save_prefs())
 		{
