@@ -1260,13 +1260,15 @@ class e_install
 		// [SecretR] should work now - fixed log errors (argument noLogs = true) change to false to enable log
 		
 		$coreConfig = $this->e107->e107_dirs['CORE_DIRECTORY']. "xml/default_install.xml";		
-		e107::getXml()->e107Import($coreConfig, 'add', true, false); // Add core pref values
-		$this->logLine('Core prefs written');
+		$ret = e107::getXml()->e107Import($coreConfig, 'add', true, false); // Add core pref values
+		$this->logLine('Attempting to Write Core Prefs.');
+		$this->logLine(print_r($ret, true));
 		
 		if($XMLImportfile) // We cannot rely on themes to include all prefs..so use 'replace'. 
 		{
-			e107::getXml()->e107Import($XMLImportfile, 'replace', true, false); // Overwrite specific core pref and tables entries. 
-			$this->logLine('Theme Prefs/Tables (install.xml) written');
+			$ret2 = e107::getXml()->e107Import($XMLImportfile, 'replace', true, false); // Overwrite specific core pref and tables entries. 
+			$this->logLine('Attempting to write Theme Prefs/Tables (install.xml)');
+			$this->logLine(print_r($ret2, true));
 		}
 		
 		//Create default plugin-table entries.
