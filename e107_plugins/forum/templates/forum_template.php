@@ -79,7 +79,12 @@ $FORUM_TRACK_MAIN	= "<br />TRACK-MAIN";
 $FORUM_TRACK_END	= "<br />TRACK-END";
 */
 
-$FORUM_TEMPLATE['main-start']			= "<table class='table table-striped'>
+$FORUM_TEMPLATE['main-start']			= "<div class='row'>
+	<div class='right'>
+		{SEARCH}
+	</div>
+	
+</div><table class='table table-striped'>
 											<colgroup>
 											<col style='width:3%' />
 											<col />
@@ -108,7 +113,21 @@ $FORUM_TEMPLATE['main-forum']			= 	"<tr>
 											</tr>";
 
 $FORUM_TEMPLATE['main-end']				= "</table>";
+/*
+$FORUM_TEMPLATE['main-end']				.= "
 
+<div class='center'>
+	<small class='muted'>{PERMS}</small>
+	</div>
+<table style='".USER_WIDTH."' class='fborder table'>\n<tr>
+<td colspan='2' style='width:60%' class='fcaption'>{INFOTITLE}</td>\n</tr>\n<tr>
+<td rowspan='4' style='width:5%; text-align:center' class='forumheader3'>{LOGO}</td>
+<td style='width:auto' class='forumheader3'>{USERINFO}</td>\n</tr>
+<tr>\n<td style='width:95%' class='forumheader3'>{INFO}</td>\n</tr>
+<tr>\n<td style='width:95%' class='forumheader3'>{FORUMINFO}</td>\n</tr>
+<tr>\n<td style='width:95%' class='forumheader3'>{USERLIST}<br />{STATLINK}</td>\n</tr>\n</table>
+";
+*/
 
 
 

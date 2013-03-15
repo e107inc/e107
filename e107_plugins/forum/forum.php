@@ -123,13 +123,13 @@ $fVars->ICONKEY = "
 </tr>\n</table>\n";
 
 $fVars->SEARCH = "
-<form method='get' action='".e_BASE."search.php'>
-<p>
+<form method='get' class='form-inline input-append' action='".e_BASE."search.php'>
+
 <input class='tbox' type='text' name='q' size='20' value='' maxlength='50' />
+<input class='btn button' type='submit' name='s' value='".LAN_180."' />
 <input type='hidden' name='r' value='0' />
 <input type='hidden' name='ref' value='forum' />
-<input class='btn button' type='submit' name='s' value='".LAN_180."' />
-</p>
+
 </form>\n";
 
 $fVars->PERMS = (USER == TRUE || ANON == TRUE ? LAN_204." - ".LAN_206." - ".LAN_208 : LAN_205." - ".LAN_207." - ".LAN_209);
