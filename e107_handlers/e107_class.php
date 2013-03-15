@@ -279,7 +279,13 @@ class e107
 	 */
 	public function initInstall($e107_paths, $e107_root_path, $e107_config_override = array())
 	{
-			
+	
+		$e107_config = 'e107_config.php';
+		if (!file_exists($e107_config))  // prevent blank-page with missing file during install. 
+		{	
+			file_put_contents($e107_config, '');
+		}	
+		
 		// Do some security checks/cleanup, prepare the environment
 		$this->prepare_request();
 		
