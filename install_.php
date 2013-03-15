@@ -39,7 +39,7 @@ define("E107_INSTALL",TRUE);
 
 if($_SERVER['QUERY_STRING'] != "debug")
 {
-	error_reporting(E_ALL ^ E_NOTICE); //3rd Party Plugins may cause PHP Notices at the conclusion of installation. 
+	error_reporting(0); // suppress all errors unless debugging. 
 }
 else
 {
@@ -1882,4 +1882,4 @@ function template_data()
 	return $data;
 }
 
-?>
+
