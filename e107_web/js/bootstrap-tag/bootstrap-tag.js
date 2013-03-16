@@ -38,7 +38,7 @@
       
       that.element.parent().prepend(that.element.detach().attr('type', 'hidden'))
       that.element
-        .wrap($('<div class="tags">'))
+        .wrap($('<div class="tags well well-small">'))
         .parent()
         .on('click', function () {
           that.input.focus()

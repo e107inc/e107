@@ -761,6 +761,13 @@ ul#e-latest li  a:hover  		{ text-decoration: none; }
 /* Bootstrap tags */
 .tags {
 	display: inline-block;
+	margin-bottom:0px;
+	max-width:640px;
+}
+
+.tags input {
+	margin-bottom: 0px;
+	width: 100px;
 }
 
 .tag {
@@ -770,7 +777,7 @@ ul#e-latest li  a:hover  		{ text-decoration: none; }
   	margin-left: 0;
   	vertical-align:top;
   	margin-top:3px;
-
+  	
 }
 
 span.tag button.close {
