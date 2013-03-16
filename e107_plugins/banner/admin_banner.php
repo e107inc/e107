@@ -466,15 +466,11 @@ if ($action == "create")
 					</tr>
 					<tr>
 						<td>".BNRLAN_12."</td>
-						<td>
-							<input class='tbox input-text' type='text' size='30' maxlength='20' id='clientlogin' name='client_login' value='".$_POST['client_login']."' />
-						</td>
+						<td>".$frm->text('client_login', $_POST['client_login'], '20')."</td>
 					</tr>
 					<tr>
 						<td>".BNRLAN_13."</td>
-						<td>
-							<input class='tbox input-text' type='text' size='30' maxlength='50' id='clientpassword' name='client_password' value='".$_POST['client_password']."' />
-						</td>
+						<td>".$frm->text('client_password', $_POST['client_password'], '50')."</td>
 					</tr>
 					<tr>
 						<td>".BNRLAN_14."</td>
@@ -536,16 +532,11 @@ if ($action == "create")
 					</tr>
 					<tr>
 						<td>".BNRLAN_15."</td>
-						<td>
-							<input class='tbox input-text' type='text' size='50' maxlength='150' name='click_url' value='".$_POST['click_url']."' />
-						</td>
+						<td>".$frm->text('click_url', $_POST['click_url'], '150')."</td>
 					</tr>
 					<tr>
 						<td>".BNRLAN_16."</td>
-						<td>
-							<input class='tbox input-text' type='text' size='10' maxlength='10' name='impressions_purchased' value='".$_POST['impressions_purchased']."' />
-							<span class='field-help'>".BNRLAN_31."</span>
-						</td>
+						<td>".$frm->number('impressions_purchased', $_POST['impressions_purchased'], 10)."<span class='field-help'>".BNRLAN_31."</span></td>
 					</tr>
 					<tr>
 						<td>".BNRLAN_17."</td>
