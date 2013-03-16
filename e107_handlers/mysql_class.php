@@ -1297,17 +1297,29 @@ class e_db_mysql
 
 	}
 
+
+	/** 
+	 * Deprecated alias of the rows() function below. 
+	 */
+	function db_getList($fields = 'ALL', $amount = FALSE, $maximum = FALSE, $ordermode=FALSE)
+	{
+		return $this->rows($fields, $amount, $maximum, $ordermode);
+	}
+	
+	
+	
 	/**
 	* @return array
 	* @param string fields to retrieve
 	* @desc returns fields as structured array
 	* @access public
+	* @return rows of the database as an array. 
 	*/
-	function db_getList($fields = 'ALL', $amount = FALSE, $maximum = FALSE, $ordermode=FALSE)
+	function rows($fields = 'ALL', $amount = FALSE, $maximum = FALSE, $ordermode=FALSE)
 	{
 		$list = array();
 		$counter = 1;
-		while ($row = $this->db_Fetch())
+		while ($row = $this->fetch())
 		{
 			foreach($row as $key => $value)
 			{

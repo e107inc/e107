@@ -640,7 +640,7 @@ class media_admin_ui extends e_admin_ui
           	'media_size' 			=> array('title'=> "Size",			'type' => 'number',		'data'=> 'int',		'width' => 'auto', 'noedit'=>TRUE),
 			'media_dimensions' 		=> array('title'=> "Dimensions",	'type' => 'text',		'data'=> 'str',		'width' => '5%', 'readonly'=>TRUE, 'class'=>'nowrap','noedit'=>TRUE),
 			'media_userclass' 		=> array('title'=> LAN_USERCLASS,	'type' => 'userclass',	'data'=> 'str',		'inline'=>true, 'width' => '10%', 'thclass' => 'center','filter'=>TRUE,'batch'=>TRUE ),
-			'media_tags' 			=> array('title'=> "Tags/Keywords",	'type' => 'text',		'data'=> 'str',		'width' => '10%',  'filter'=>TRUE,'batch'=>TRUE ),
+			'media_tags' 			=> array('title'=> "Tags/Keywords",	'type' => 'tags',		'data'=> 'str',		'width' => '10%',  'filter'=>TRUE,'batch'=>TRUE ),
 			'media_usedby' 			=> array('title'=> '',				'type' => 'text',		'data'=> 'text', 	'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'nolist'=>true, 'readonly'=>TRUE	),
 
 			'options' 				=> array('title'=> LAN_OPTIONS,		'type' => 'method',			'data'=> null,		'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center', 'batch'=>true, 'noedit'=>true)
@@ -2133,6 +2133,14 @@ function show_avatars()
 	}
 	else
 	{
+		
+		$tmp = $sql->retrieve('user','user_image','user_image !="" ', true);
+		$imageUsed = array();
+
+		foreach($tmp as $val)
+		{
+			$imageUsed[] = $val['user_image'];	
+		}
 		$text = "
 			<form method='post' action='".e_SELF."?avatars' id='core-iamge-show-avatars-form'>
 			<fieldset id='core-iamge-show-avatars'>
@@ -2141,10 +2149,11 @@ function show_avatars()
 		$count = 0;
 		while (list($key, $image_name) = each($dirlist))
 		{
-			$users = IMALAN_21." | ";
+			//$users = IMALAN_21." | ";
 			$row = array('user_id' => '');
 			$image_pre = '';
 			$disabled = false;
+			/*
 			if ($sql->db_Select("user", "*", "user_image='-upload-".$tp->toDB($image_name)."' OR user_sess='".$tp->toDB($image_name)."'"))
 			{
 				$row = $sql->db_Fetch();
@@ -2153,9 +2162,14 @@ function show_avatars()
 			}
 			else
 			{
-				$users = '<span class="warning">'.IMALAN_22.'</span>';
+				
 			}
-
+		*/
+		
+		// : 
+		
+			$users = (in_array($image_name,$imageUsed)) ? "<small class='text-warning'>Image in use</small>" : '<small>'.IMALAN_22.'</small>';
+			
 			//directory?
 			if(is_dir(e_MEDIA."avatars/".$image_name))
 			{
@@ -2182,10 +2196,7 @@ function show_avatars()
 				$img_src = "<label for='image-action-{$count}' title='".IMALAN_56."'>
 				<img class='e-tip' src='".$img_path."' alt='{$image_name}' title='".IMALAN_66.": {$image_name}' />
 				</label>";
-			//	if ($image_size[0] > $pref['im_width'] || $image_size[1] > $pref['im_height'])
-			//	{
-				//	$img_src = "<a class='image-preview' href='".e_MEDIA."avatars/".rawurlencode($image_name)."' rel='external'>".IMALAN_57."</a>";
-			//	}
+
 			}
 
 			//style attribute allowed here - server side width/height control
@@ -2212,14 +2223,14 @@ function show_avatars()
 					".$frm->admin_button('e_check_all', LAN_CHECKALL, 'action')."
 					".$frm->admin_button('e_uncheck_all', LAN_UNCHECKALL, 'action')."
 					".$frm->admin_button('submit_show_delete_multi', LAN_DELCHECKED, 'delete')."
-					".$frm->admin_button('submit_show_deleteall', IMALAN_25, 'delete')."
-					".$frm->admin_button('submit_cancel_show', IMALAN_68, 'cancel')."
+					".$frm->admin_button('submit_show_deleteall', "Delete all unused images", 'delete')."
+					
 				</div>
 			</div>
 			</fieldset>
 			</form>
 		";
-
+		// $frm->admin_button('submit_cancel_show', IMALAN_68, 'cancel')
 	}
 
 	echo $mes->render().$text;
