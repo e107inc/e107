@@ -76,9 +76,11 @@ function loadJSAddons()
 	
 	e107::js('core', 	'password/jquery.pwdMeter.js', 'jquery', 2);
 	
-	
-	e107::js("core",	"tags/jquery.tagit.js","jquery",3);
-	e107::css('core', 	'tags/jquery.tagit.css', 'jquery');
+	// e107::css('core', 	'bootstrap-tag/bootstrap-tag.css', 'jquery');
+	e107::js('core', 	'bootstrap-tag/bootstrap-tag.js', 'jquery', 2);
+		
+//	e107::js("core",	"tags/jquery.tagit.js","jquery",3);
+//	e107::css('core', 	'tags/jquery.tagit.css', 'jquery');
 	
 	e107::css('core', 	'core/admin.jquery.css', 'jquery');
 	e107::js("core",	"core/admin.jquery.js","jquery",4); // Load all default functions.
