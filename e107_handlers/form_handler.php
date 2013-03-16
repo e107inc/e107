@@ -2757,7 +2757,7 @@ class e_form
 			case 'number':
 				$maxlength = vartrue($parms['maxlength'], 255);
 				unset($parms['maxlength']);
-				if(!vartrue($parms['size'])) $parms['size'] = 15;
+				if(!vartrue($parms['size'])) $parms['size'] = 'mini';
 				if(!vartrue($parms['class'])) $parms['class'] = 'tbox number e-spinner';
 				if(!$value) $value = '0';
 				$ret =  vartrue($parms['pre']).$this->text($key, $value, $maxlength, $parms).vartrue($parms['post']);

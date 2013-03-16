@@ -55,10 +55,12 @@ $BBCODE_TEMPLATE_SUBMITNEWS = "
 $BBCODE_TEMPLATE_ADMIN = "
 	{BB_HELP=admin}
 	<div class='field-spacer'><!-- --></div>
+	<div class='btn-group inline-text'>
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=format}{BB=justify}{BB=center}{BB=left}
 	{BB=right}{BB=bq}{BB=list}{BB=table}{BB=fontcol}{BB=fontsize}{BB=emotes}
 	{BB_PREIMAGEDIR}
 	{BB=preimage}{BB=prefile}{BB=flash}{BB=youtube}
+	</div>
 	<div class='field-spacer'><!-- --></div>
 ";
 

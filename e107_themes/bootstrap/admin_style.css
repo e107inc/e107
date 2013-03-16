@@ -94,6 +94,8 @@ a.brand:hover img 			{
 .sidebar-nav 								{ font-size:15px; }
 
 } 
+
+img.image-selector							{ margin-bottom:0px; }
       
 .nav-collapse 								{ margin-top:8px; }
 .dropdown-menu 								{ box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3); }

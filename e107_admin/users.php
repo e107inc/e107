@@ -1220,10 +1220,10 @@ class users_admin_ui extends e_admin_ui
 
 		<tr>
 			<td>".USRLAN_128."</td>
-			<td>
+			<td ><div class='form-inline'>
 			".$frm->text('loginname', varset($user_data['user_loginname']), varset($pref['loginname_maxlength'], 30))."&nbsp;&nbsp;
 			".$frm->checkbox_label(USRLAN_170, 'generateloginname', 1, varset($pref['predefinedLoginName'], false))."
-			</td>
+			</div></td>
 		</tr>
 
 		<tr>
