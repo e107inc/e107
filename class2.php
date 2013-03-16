@@ -631,6 +631,22 @@ define('SITEDISCLAIMER', $tp->toHTML($pref['sitedisclaimer'], '', 'emotes_off,de
 define('SITECONTACTINFO', $tp->toHTML($pref['sitecontactinfo'], true, 'emotes_off,defs'));
 define('SITEEMAIL', vartrue($pref['replyto_email'],$pref['siteadminemail']));
 
+if(is_array($pref['xurl']))
+{
+	define('XURL_FACEBOOK', vartrue($pref['xurl']['facebook'], false));
+	define('XURL_TWITTER', vartrue($pref['xurl']['twitter'], false));
+	define('XURL_YOUTUBE', vartrue($pref['xurl']['youtube'], false));
+	define('XURL_GOOGLE', vartrue($pref['xurl']['google'], false));
+	define('XURL_LINKEDIN', vartrue($pref['xurl']['linkedin'], false));
+}
+else
+{
+	define('XURL_FACEBOOK',false);
+	define('XURL_TWITTER', false);
+	define('XURL_YOUTUBE', false);
+	define('XURL_GOOGLE', false);
+	define('XURL_LINKEDIN', false);	
+}
 
 /* Withdrawn 0.8
 // legacy module.php file loading.
