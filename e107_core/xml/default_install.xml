@@ -5,7 +5,7 @@
 		<core name="admin_alerts_uniquemenu">0</core>
 		<core name="admin_separate_plugins">0</core>
 		<core name="admin_slidedown_subs">1</core>
-		<core name="admincss">light_style.css</core>
+		<core name="admincss">admin_dark.css</core>
 		<core name="adminpwordchange">0</core>
 		<core name="adminstyle">infopanel</core>
 		<core name="admintheme">bootstrap</core>
@@ -341,7 +341,7 @@ City, State, Country
 		<core name="wmessage_sc">0</core>
 		<core name="wysiwyg">1</core>
 		<core name="xup_enabled">1</core>
-		<core name="xurl">1</core>
+		<core name="xurl"><![CDATA[array ()]]></core>
 		<core name="xmlfeed_languagepacks">http://www.e107.org/themeupdate.php</core>
 		<core name="xmlfeed_security">http://www.e107.org/themeupdate.php</core>	
 		<emote name="alien!png">!alien</emote>

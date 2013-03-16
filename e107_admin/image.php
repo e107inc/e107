@@ -2168,7 +2168,7 @@ function show_avatars()
 		
 		// : 
 		
-			$users = (in_array($image_name,$imageUsed)) ? "<small class='text-warning'>Image in use</small>" : '<small>'.IMALAN_22.'</small>';
+			$users = (in_array($image_name,$imageUsed)) ? "<spam class='badge badge-warning'>Image in use</span>" : '<spam class="badge">Not in use</span>';
 			
 			//directory?
 			if(is_dir(e_MEDIA."avatars/".$image_name))
@@ -2193,8 +2193,13 @@ function show_avatars()
 				// Resized on-the-fly - avatar-size no longer an issue. 
 				$attr = "aw=".$pref['im_width']."&ah=".$pref['im_height'];
 				$img_path = $tp->thumbUrl(e_MEDIA_ABS."avatars/".$image_name,$attr);
-				$img_src = "<label for='image-action-{$count}' title='".IMALAN_56."'>
-				<img class='e-tip' src='".$img_path."' alt='{$image_name}' title='".IMALAN_66.": {$image_name}' />
+				
+				$for = $frm->name2id('multiaction-'.$image_name);
+				
+				$img_src = "<label for='".$for."' >
+				<div class='thumbnail'>
+				<img  src='".$img_path."' alt='{$image_name}' title='".IMALAN_66.": {$image_name}' />
+				</div>
 				</label>";
 
 			}
@@ -2202,7 +2207,7 @@ function show_avatars()
 			//style attribute allowed here - server side width/height control
 			//autocheck class - used for JS selectors (see eCoreImage object)
 			$text .= "
-			<div class='image-box f-left center autocheck' style='margin:5px; width: ".(intval($pref['im_width'])+40)."px; height: ".(intval($pref['im_height'])+100)."px;'>
+			<div class='buttons-bar image-box f-left center autocheck' style='margin:5px; width: ".(intval($pref['im_width'])+40)."px; height: ".(intval($pref['im_height'])+100)."px;'>
 				<div class='well'>
 				<div class='image-users'>{$users}</div>
 				<div class='image-preview'>{$img_src}</div>
