@@ -1239,7 +1239,7 @@ class e_navigation
 					break;
 						
 					case 'div':
-						$text .= "<div class='core-mainpanel-block'><a class='core-mainpanel-link-icon e-tip muted' href='".$link."' title='{$description}'>".$icon."<br />
+						$text .= "<div class='core-mainpanel-block'><a data-toggle='tooltip' class='core-mainpanel-link-icon  muted' href='".$link."' title='{$description}'>".$icon."<br />
 						<small class='core-mainpanel-link-text'>".$tp->toHTML($title,FALSE,"defs, emotes_off")."</small></a>	
 						</div>";					
 					break;

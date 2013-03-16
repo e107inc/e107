@@ -211,7 +211,7 @@ function poll_list()
 	}
 	$text .= "</form>";
 	
-	$ns->tablerender(POLLAN_MENU_CAPTION." - ".POLLAN_1, $mes->render(). $text);
+	$ns->tablerender(POLLAN_MENU_CAPTION.SEP.POLLAN_1, $mes->render(). $text);
 }
 
 

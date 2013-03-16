@@ -333,8 +333,8 @@ class forumAdmin
 			$text .= "
 			<table class='table adminlist'>
 			<tr>
-				<td colspan='2'>".FORLAN_28."</td>
-				<td>".LAN_OPTIONS."</td>
+				<th colspan='2'>".FORLAN_28."</th>
+				<th>".LAN_OPTIONS."</th>
 			</tr>";
 			while ($row = $sql->db_Fetch(MYSQL_ASSOC))
 			{
@@ -363,8 +363,8 @@ class forumAdmin
 				{
 					$text .= "
 					<div style='text-align:left; padding-left: 30px'>
-					<a href='".e_SELF."?cat.edit.{$parent['forum_id']}'>".ADMIN_EDIT_ICON."</a>
-					<a href='".e_SELF."?delete.{$parent['forum_id']}'>".ADMIN_DELETE_ICON."</a>
+					<a class='btn btn-large' href='".e_SELF."?cat.edit.{$parent['forum_id']}'>".ADMIN_EDIT_ICON."</a>
+					<a class='btn btn-large' href='".e_SELF."?delete.{$parent['forum_id']}'>".ADMIN_DELETE_ICON."</a>
 					</div>
 					";
 				}
@@ -412,9 +412,9 @@ class forumAdmin
 							$sub_img = count($subList[$forum['forum_parent']][$forum['forum_id']]) ? IMAGE_sub : IMAGE_nosub;
 							$text .= "
 							<div style='text-align:left; padding-left: 30px'>
-							<a href='".e_SELF."?create.edit.{$forum['forum_id']}'>".ADMIN_EDIT_ICON."</a>
-							<a href='".e_SELF."?delete.{$forum['forum_id']}'>".ADMIN_DELETE_ICON."</a>
-							&nbsp;&nbsp;<a href='".e_SELF."?subs.{$forum['forum_id']}'>".$sub_img."</a> (".count($subList[$forum['forum_parent']][$forum['forum_id']]).")
+							<a class='btn btn-large' href='".e_SELF."?create.edit.{$forum['forum_id']}'>".ADMIN_EDIT_ICON."</a>
+							<a class='btn btn-large' href='".e_SELF."?delete.{$forum['forum_id']}'>".ADMIN_DELETE_ICON."</a>
+							&nbsp;&nbsp;<a class='btn btn-large' href='".e_SELF."?subs.{$forum['forum_id']}'>".$sub_img."</a> (".count($subList[$forum['forum_parent']][$forum['forum_id']]).")
 							</div>
 							";
 						}

@@ -519,7 +519,7 @@ class poll
 				$text .= "</span><br />";
 			}
 
-			$text .="</div><input class='button' type='button' name='addoption' value='".LAN_6."' onclick=\"duplicateHTML('pollopt','pollsection')\" /><br />
+			$text .="</div><input class='btn' type='button' name='addoption' value='".LAN_6."' onclick=\"duplicateHTML('pollopt','pollsection')\" /><br />
 			</td></tr>
 
 
@@ -556,7 +556,7 @@ class poll
 		<tr>
 		<td style='width:30%'><div class='normaltext'>".POLLAN_3.":</div></td>
 		<td style='width:70%'>
-		<input class='tbox' type='text' name='poll_title' size='70' value='".$tp -> post_toForm(varset($_POST['poll_title']))."' maxlength='200' />";
+		<input class='tbox input-xxlarge' type='text' name='poll_title' size='70' value='".$tp -> post_toForm(varset($_POST['poll_title']))."' maxlength='200' />";
 
 		$option_count = (varset($_POST['poll_option']) && count($_POST['poll_option']) ? count($_POST['poll_option']) : 2);
 
@@ -568,11 +568,11 @@ class poll
 		for($count = 1; $count <= $option_count; $count++)
 		{
 			$opt = ($count==1) ? "id='pollopt'" : "";
-			$text .="<span {$opt}><input  class='tbox' type='text' name='poll_option[]' size='40' value=\"".$tp -> post_toForm($_POST['poll_option'][($count-1)])."\" maxlength='200' />";
+			$text .="<span class='form-inline' style='display:inline-block; padding-bottom:5px' {$opt}><input  class='tbox input-large' type='text' name='poll_option[]' size='40' value=\"".$tp -> post_toForm($_POST['poll_option'][($count-1)])."\" maxlength='200' />";
 			$text .= "</span><br />";
 		}
 
-		$text .="</div><input class='btn button' type='button' name='addoption' value='".POLLAN_8."' onclick=\"duplicateHTML('pollopt','pollsection')\" /><br />
+		$text .="</div><input class='btn' type='button' name='addoption' value='".POLLAN_8."' onclick=\"duplicateHTML('pollopt','pollsection')\" /><br />
 		</td></tr>
 
 		<tr>
