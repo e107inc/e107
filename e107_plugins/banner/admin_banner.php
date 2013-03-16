@@ -41,7 +41,6 @@ $mes = e107::getMessage();
 $tp = e107::getParser();
 
 include_lan(e_PLUGIN.'banner/languages/'.e_LANGUAGE.'_admin_banner.php');
-//include_lan(e_PLUGIN.'banner/languages/'.e_LANGUAGE.'_menu_banner.php');
 
 
 if(e_QUERY)
@@ -90,8 +89,11 @@ if (isset($_POST['update_menu']))
 
 if (vartrue($_POST['createbanner']) || vartrue($_POST['updatebanner']))
 {
-	$start_date	= (!$_POST['startmonth'] || !$_POST['startday'] || !$_POST['startyear'] ? 0 : mktime (0, 0, 0, $_POST['startmonth'], $_POST['startday'], $_POST['startyear']));
-	$end_date 	= (!$_POST['endmonth'] || !$_POST['endday'] || !$_POST['endyear'] ? 0 : mktime (0, 0, 0, $_POST['endmonth'], $_POST['endday'], $_POST['endyear']));
+	print_a($_POST);
+	//$start_date	= (!$_POST['startmonth'] || !$_POST['startday'] || !$_POST['startyear'] ? 0 : mktime (0, 0, 0, $_POST['startmonth'], $_POST['startday'], $_POST['startyear']));
+	//$end_date 	= (!$_POST['endmonth'] || !$_POST['endday'] || !$_POST['endyear'] ? 0 : mktime (0, 0, 0, $_POST['endmonth'], $_POST['endday'], $_POST['endyear']));
+	$start_date = $_POST['banner_startdate'];
+	$end_date 	= $_POST['banner_enddate'];
 	$cli 		= $tp->toDB($_POST['client_name'] ? $_POST['client_name'] : $_POST['banner_client_sel']);
 	$cLogin 	= $tp->toDB($_POST['client_login']);
 	$cPassword 	= $tp->toDB($_POST['client_password']);
@@ -99,41 +101,19 @@ if (vartrue($_POST['createbanner']) || vartrue($_POST['updatebanner']))
 	$banURL 	= $tp->toDB($_POST['click_url']);
 	$cam 		= $tp->toDB($_POST['banner_campaign'] ? $_POST['banner_campaign'] : $_POST['banner_campaign_sel']);
 
-	/* FIXME - can be removed?
-	if ($_POST['banner_pages'])
-	{	// Section redundant?
-		$postcampaign = $tp->toDB($_POST['banner_campaign'] ? $_POST['banner_campaign'] : $_POST['banner_campaign_sel']);
-		$pagelist = explode("\r", $_POST['banner_pages']);
-		for($i = 0 ; $i < count($pagelist) ; $i++)
-		{
-			$pagelist[$i] = trim($pagelist[$i]);
-		}
-		$plist = implode("|", $pagelist);
-		$pageparms = $postcampaign."^".$_POST['banner_listtype']."-".$plist;
-		$pageparms = preg_replace("#\|$#", "", $pageparms);
-		$pageparms = (trim($_POST['banner_pages']) == '') ? '' : $pageparms;
-		$cam = $pageparms;
-		$logString = $postcampaign.'[!br!]';
-	}
-	else
-	{
-		$cam = $tp->toDB($_POST['banner_campaign'] ? $_POST['banner_campaign'] : $_POST['banner_campaign_sel']);
-	}
-	*/
-
 	$logString .= $cam.'[!br!]'.$cli.'[!br!]'.$banImage.'[!br!]'.$banURL;
 	if ($_POST['createbanner'])
 	{
-		e107::getMessage()->addAuto($sql->db_Insert("banner", "0, '".$cli."', '".$cLogin."', '".$cPassword."', '".$banImage."', '".$banURL."', '".intval($_POST['impressions_purchased'])."', '{$start_date}', '{$end_date}', '".intval($_POST['banner_class'])."', 0, 0, '', '".$cam."'"), 'insert', LAN_CREATED, false, false);
+		e107::getMessage()->addAuto($sql->db_Insert("banner", "0, '".$cli."', '".$cLogin."', '".$cPassword."', '".$banImage."', '".$banURL."', '".intval($_POST['impressions_purchased'])."', '".$start_date."', '".$end_date."', '".intval($_POST['banner_class'])."', 0, 0, '', '".$cam."'"), 'insert', LAN_CREATED, false, false);
 		banners_adminlog('02',$logString);
 	}
 	else // updating, not creating
 	{
-		e107::getMessage()->addAuto($sql->db_Update("banner", "banner_clientname='".$cli."', banner_clientlogin='".$cLogin."', banner_clientpassword='".$cPassword."', banner_image='".$banImage."', banner_clickurl='".$banURL."', banner_impurchased='".intval($_POST['impressions_purchased'])."', banner_startdate='{$start_date}', banner_enddate='{$end_date}', banner_active='".intval($_POST['banner_class'])."', banner_campaign='".$cam."' WHERE banner_id=".intval($_POST['eid'])), 'update', LAN_UPDATED, false, false);
+		e107::getMessage()->addAuto($sql->db_Update("banner", "banner_clientname='".$cli."', banner_clientlogin='".$cLogin."', banner_clientpassword='".$cPassword."', banner_image='".$banImage."', banner_clickurl='".$banURL."', banner_impurchased='".intval($_POST['impressions_purchased'])."', banner_startdate='".$start_date."', banner_enddate='".$end_date."', banner_active='".intval($_POST['banner_class'])."', banner_campaign='".$cam."' WHERE banner_id=".intval($_POST['eid'])), 'update', LAN_UPDATED, false, false);
 		banners_adminlog('03',$logString);
 	}
 
-	unset($_POST['client_name'], $_POST['client_login'], $_POST['client_password'], $_POST['banner_image'], $_POST['click_url'], $_POST['impressions_purchased'], $start_date, $end_date, $_POST['banner_enabled'], $_POST['startday'], $_POST['startmonth'], $_POST['startyear'], $_POST['endday'], $_POST['endmonth'], $_POST['endyear'], $_POST['banner_class'], /*$_POST['banner_pages'],*/ $_POST['banner_listtype']);
+	unset($_POST['client_name'], $_POST['client_login'], $_POST['client_password'], $_POST['banner_image'], $_POST['click_url'], $_POST['impressions_purchased'], $start_date, $end_date, $_POST['banner_enabled'], $_POST['banner_startdate'], $_POST['banner_enddate'], $_POST['banner_class'], $_POST['banner_listtype']);
 }
 
 /* DELETE ACTIONS */
@@ -332,7 +312,10 @@ if ($action == "create")
 				$_POST['impressions_purchased'] = $banner_row['banner_impurchased'];
 				$_POST['banner_campaign'] = $banner_row['banner_campaign'];
 				$_POST['banner_active'] = $banner_row['banner_active'];
+				$_POST['banner_startdate'] = $banner_row['banner_startdate'];
+				$_POST['banner_enddate'] = $banner_row['banner_enddate'];
 
+				/*
 				if ($banner_row['banner_startdate']) {
 					$tmp = getdate($banner_row['banner_startdate']);
 					$_POST['startmonth'] = $tmp['mon'];
@@ -345,6 +328,7 @@ if ($action == "create")
 					$_POST['endday'] = $tmp['mday'];
 					$_POST['endyear'] = $tmp['year'];
 				}
+				*/
 
 				if (strpos($_POST['banner_campaign'], "^") !== FALSE) {
 					$campaignsplit = explode("^", $_POST['banner_campaign']);
@@ -568,8 +552,9 @@ if ($action == "create")
 					</tr>
 					<tr>
 					<td>".BNRLAN_17."</td>
-					<td>
-						<select name='startday' class='tbox'>
+					<td>".$frm->datepicker('banner_startdate', $_POST['banner_startdate'],'type=date')."</td>";
+				
+				/*<select name='startday' class='tbox'>
 							<option value='0'>&nbsp;</option>
 	";
 
@@ -594,12 +579,14 @@ if ($action == "create")
 		$text .= "<option value='{$a}'".(($a == $_POST['startyear']) ? " selected='selected'" : "").">".$a."</option>";
 	}
 	$text .= "
-						</select>
-						<span class='field-help'>".BNRLAN_31."</span>
+						</select>*/
+				$text .="	<span class='field-help'>".BNRLAN_31."</span>
 					</td>
 				</tr>
 				<tr>
 					<td>".BNRLAN_18."</td>
+					<td>".$frm->datepicker('banner_enddate', $_POST['banner_enddate'],'type=date')."</td>";
+					/*
 					<td>
 						<select name='endday' class='tbox'>
 							<option value='0'>&nbsp;</option>
@@ -626,6 +613,8 @@ if ($action == "create")
 						</select>
 						<span class='field-help'>".BNRLAN_31."</span>
 					</td>
+					*/
+		$text .= "	
 				</tr>
 				<tr>
 					<td>".LAN_VISIBILITY."</td>
