@@ -2168,7 +2168,7 @@ function show_avatars()
 		
 		// : 
 		
-			$users = (in_array($image_name,$imageUsed)) ? "<spam class='badge badge-warning'>Image in use</span>" : '<span class="badge">Not in use</span>';
+			$users = (in_array($image_name,$imageUsed)) ? "<span class='badge badge-warning'>Image in use</span>" : '<span class="badge">Not in use</span>';
 			
 			//directory?
 			if(is_dir(e_MEDIA."avatars/".$image_name))
