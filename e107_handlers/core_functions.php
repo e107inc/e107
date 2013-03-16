@@ -280,7 +280,7 @@ if (!function_exists('multiarray_sort'))
         $order = strtolower($order);
         foreach ($array as $i => $arr)
         {
-           $sort_values[$i] = $arr[$key];
+           $sort_values[$i] = varset($arr[$key]);
         }
 
         if(!$natsort) 

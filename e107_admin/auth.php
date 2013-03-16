@@ -24,7 +24,7 @@ if($core->get('admintheme') != 'bootstrap')
 {
 	$core->update('admintheme','bootstrap');
 	$core->update('adminstyle','infopanel');
-	$core->update('admincss','admin_style.css');
+	$core->update('admincss','admin_dark.css');
 	$core->set('e_jslib_core',array('prototype' => 'none', 'jquery'=> 'auto'));
 	$core->save();	
 	e107::getRedirect()->redirect(e_SELF);		
