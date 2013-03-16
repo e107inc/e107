@@ -14,6 +14,10 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+e107::css('inline','
+a.e-wysiwyg-toggle { margin-top:5px }
+');
+
 if(e_WYSIWYG || strpos(e_SELF,"tinymce/admin_config.php") )
 {
 	if(e_PAGE != 'image.php')
@@ -29,7 +33,7 @@ if(e_WYSIWYG || strpos(e_SELF,"tinymce/admin_config.php") )
 	if(ADMIN)
 	{
 	    $insert = "$('#'+id).after('<div>";
-	    $insert .= "<a href=\"#\" id=\"' + id + '\" class=\"e-wysiwyg-toggle btn btn-mini\">Switch to bbcode<\/a>";
+	    $insert .= "<a href=\"#\" id=\"' + id + '\" class=\"e-wysiwyg-toggle btn btn-inverse btn-mini\">Switch to bbcode<\/a>";
         
 	     if(e_PAGE == 'mailout.php')
         {
