@@ -758,6 +758,28 @@ ul#e-latest						{ line-height:17px }
 ul#e-latest li  a  span.badge	{ float:right; }
 ul#e-latest li  a:hover  		{ text-decoration: none; }
 
+/* Bootstrap tags */
+.tags {
+	display: inline-block;
+}
+
+.tag {
+	margin-right:5px;
+	display: inline-block;
+  	float: none;
+  	margin-left: 0;
+  	vertical-align:top;
+  	margin-top:3px;
+
+}
+
+span.tag button.close {
+	float: none;
+	padding-left:5px;
+}
+
+
+
 /*
 
 body { background-color: rgb(68, 68, 68); }

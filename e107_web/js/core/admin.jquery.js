@@ -137,7 +137,7 @@ $(document).ready(function()
 			
 		});
 		
-		$(".e-tags").tagit();
+		$(".e-tags").tag();
 		
 		
 
