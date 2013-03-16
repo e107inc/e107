@@ -9,7 +9,11 @@ body 						{ background-color: #EEEEEE;  }
     border-color: rgb(37, 37, 37);
 }
 
-
+.popover,
+.popover-title {
+	background-image: -moz-linear-gradient(center top , rgb(253, 253, 253) 0%, rgb(234, 234, 234) 100%);
+	border-bottom: 0px;	
+}
 
 
 .adminlist, .adminform 		{  border:1px solid #ddd; background-color: #F6F6F6}
@@ -35,6 +39,9 @@ body 						{ background-color: #EEEEEE;  }
 	background-color: rgb(246, 246, 246);
 	
 }
+
+.modal-header	{ border-bottom:1px solid #DDDDDD;  background-image: -moz-linear-gradient(center top , rgb(253, 253, 253) 0%, rgb(234, 234, 234) 100%); }
+
 
 .tab-pane table.adminform td 	{ border-top:0px}
 

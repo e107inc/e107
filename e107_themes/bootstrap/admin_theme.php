@@ -10,12 +10,12 @@ e107::lan('theme');
 e107::js('core','bootstrap/js/bootstrap.min.js');
 e107::css('core','bootstrap/css/bootstrap.min.css');
 e107::css('core','bootstrap/css/bootstrap-responsive.min.css');
- e107::css('core','bootstrap/css/jquery-ui.custom.css');
+// e107::css('core','bootstrap/css/jquery-ui.custom.css');
 e107::css('theme','admin_style.css');
 
 e107::css('theme','ie_all.css',null,'all',"<!--[if IE]>","<![endif]-->");
 
-// e107::css('theme','dark_style.css');
+
 /*
 $drop = "
 $(function() {
