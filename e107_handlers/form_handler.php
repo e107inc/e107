@@ -166,7 +166,8 @@ class e_form
 	function tags($name, $value, $maxlength = 200, $options = array())
 	{
 		if(is_string($options)) parse_str($options, $options);
-		$options['class'] = 'tbox input-text e-tags';
+		$options['class'] = 'tbox span1 e-tags';
+		$options['size'] = 7;
 		return $this->text($name, $value, $maxlength, $options);	
 	}
 
@@ -2337,6 +2338,7 @@ class e_form
 				$value = vartrue($attributes['writeParms']['__options']['pre']).vartrue($attributes['writeParms'][$value]).vartrue($attributes['writeParms']['__options']['post']);
 			break;
 
+			case 'tags':
 			case 'text':
 				
 				if(vartrue($parms['truncate']))
@@ -2772,6 +2774,10 @@ class e_form
 				$maxlength = vartrue($parms['maxlength'], 255);
 				unset($parms['maxlength']);
 				$ret =  vartrue($parms['pre']).$this->text($key, $value, $maxlength, $parms).vartrue($parms['post']); // vartrue($parms['__options']) is limited. See 'required'=>true
+			break;
+			
+			case 'tags':
+				$ret =  vartrue($parms['pre']).$this->tags($key, $value, $maxlength, $parms).vartrue($parms['post']); // vartrue($parms['__options']) is limited. See 'required'=>true
 			break;
 
 			case 'textarea':
