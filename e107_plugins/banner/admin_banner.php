@@ -89,11 +89,8 @@ if (isset($_POST['update_menu']))
 
 if (vartrue($_POST['createbanner']) || vartrue($_POST['updatebanner']))
 {
-	print_a($_POST);
-	//$start_date	= (!$_POST['startmonth'] || !$_POST['startday'] || !$_POST['startyear'] ? 0 : mktime (0, 0, 0, $_POST['startmonth'], $_POST['startday'], $_POST['startyear']));
-	//$end_date 	= (!$_POST['endmonth'] || !$_POST['endday'] || !$_POST['endyear'] ? 0 : mktime (0, 0, 0, $_POST['endmonth'], $_POST['endday'], $_POST['endyear']));
-	$start_date = $_POST['banner_startdate'];
-	$end_date 	= $_POST['banner_enddate'];
+	$start_date = vartrue(e107::getDate()->convert($_POST['banner_startdate'],'inputdate'), 0);
+	$end_date 	= vartrue(e107::getDate()->convert($_POST['banner_enddate'],'inputdate'), 0);
 	$cli 		= $tp->toDB($_POST['client_name'] ? $_POST['client_name'] : $_POST['banner_client_sel']);
 	$cLogin 	= $tp->toDB($_POST['client_login']);
 	$cPassword 	= $tp->toDB($_POST['client_password']);
@@ -551,82 +548,22 @@ if ($action == "create")
 						</td>
 					</tr>
 					<tr>
-					<td>".BNRLAN_17."</td>
-					<td>".$frm->datepicker('banner_startdate', $_POST['banner_startdate'],'type=date')."</td>";
-				
-				/*<select name='startday' class='tbox'>
-							<option value='0'>&nbsp;</option>
-	";
-
-	for($a = 1; $a <= 31; $a++) {
-		$text .= "<option value='{$a}'".(($a == $_POST['startday']) ? " selected='selected'" : "").">".$a."</option>";
-	}
-
-	$text .= "
-						</select>
-						<select name='startmonth' class='tbox'>
-							<option value='0'>&nbsp;</option>
-	";
-	for($a = 1; $a <= 12; $a++) {
-		$text .= "<option value='{$a}'".(($a == $_POST['startmonth']) ? " selected='selected'" : "").">".$a."</option>";
-	}
-	$text .= "
-						</select>
-						<select name='startyear' class='tbox'>
-							<option value='0'>&nbsp;</option>
-	";
-	for($a = 2003; $a <= 2025; $a++) {
-		$text .= "<option value='{$a}'".(($a == $_POST['startyear']) ? " selected='selected'" : "").">".$a."</option>";
-	}
-	$text .= "
-						</select>*/
-				$text .="	<span class='field-help'>".BNRLAN_31."</span>
-					</td>
-				</tr>
-				<tr>
-					<td>".BNRLAN_18."</td>
-					<td>".$frm->datepicker('banner_enddate', $_POST['banner_enddate'],'type=date')."</td>";
-					/*
-					<td>
-						<select name='endday' class='tbox'>
-							<option value='0'>&nbsp;</option>
-	";
-	for($a = 1; $a <= 31; $a++) {
-		$text .= "<option value='{$a}'".(($a == $_POST['endday']) ? " selected='selected'" : "").">".$a."</option>";
-	}
-	$text .= "
-						</select>
-						<select name='endmonth' class='tbox'>
-							<option value='0'>&nbsp;</option>";
-	for($a = 1; $a <= 12; $a++) {
-		$text .= "<option value='{$a}'".(($a == $_POST['endmonth']) ? " selected='selected'" : "").">".$a."</option>";
-	}
-	$text .= "
-						</select>
-						<select name='endyear' class='tbox'>
-							<option value='0}'>&nbsp;</option>
-	";
-	for($a = 2003; $a <= 2025; $a++) {
-		$text .= "<option value='{$a}'".(($a == $_POST['endyear']) ? " selected='selected'" : "").">".$a."</option>";
-	}
-	$text .= "
-						</select>
-						<span class='field-help'>".BNRLAN_31."</span>
-					</td>
-					*/
-		$text .= "	
-				</tr>
-				<tr>
-					<td>".LAN_VISIBILITY."</td>
-					<td>
-						".$e_userclass->uc_dropdown('banner_class', $_POST['banner_active'], 'public,member,guest,admin,classes,nobody,classes')."
-					</td>
-				</tr>
-				</tbody>
-			</table>
-			<div class='buttons-bar center'>
-
-	";
+						<td>".BNRLAN_17."</td>
+						<td>".$frm->datepicker('banner_startdate', $_POST['banner_startdate'],'type=date')."</td>
+					</tr>
+					<tr>
+						<td>".BNRLAN_18."</td>
+						<td>".$frm->datepicker('banner_enddate', $_POST['banner_enddate'],'type=date')."</td>			
+					</tr>
+					<tr>
+						<td>".LAN_VISIBILITY."</td>
+						<td>
+							".$e_userclass->uc_dropdown('banner_class', $_POST['banner_active'], 'public,member,guest,admin,classes,nobody,classes')."
+						</td>
+					</tr>
+					</tbody>
+				</table>
+				<div class='buttons-bar center'>";
 	if 	($sub_action == "edit" && $id) 
 	{
 		$text .= $frm->admin_button('updatebanner','no-value','create', LAN_UPDATE);
