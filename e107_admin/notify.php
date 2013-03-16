@@ -113,10 +113,26 @@ class notify_config
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
 
+// <div>".NT_LAN_2.":</div>
 
 		$text = "
-		<div>".NT_LAN_2.":</div>
+		
 		<form action='".e_SELF."?results' method='post' id='scanform'>
+		    <ul class='nav nav-tabs'>
+    <li class='active'><a href='#core' data-toggle='tab'>Users</a></li>
+    <li><a href='#news' data-toggle='tab'>News</a></li>
+    <li><a href='#mail' data-toggle='tab'>Mail</a></li>
+    <li><a href='#files' data-toggle='tab'>Files</a></li>";
+	
+	foreach ($this -> notify_prefs['plugins'] as $id => $var)
+	{
+		$text .= "<li><a href='#notify-".$id."' data-toggle='tab'>".ucfirst($id)."</a></li>";
+	}
+	
+	$text .= "
+    </ul>
+    <div class='tab-content'>
+    <div class='tab-pane active' id='core'>
 		<fieldset id='core-notify-config'>
 		<legend>".NU_LAN_1."</legend>
         <table class='table adminform'>
@@ -144,6 +160,10 @@ class notify_config
 
 
 		$text .= "</table></fieldset>
+		</div>
+		
+		
+		<div class='tab-pane' id='news'>
 		<fieldset id='core-notify-3'>
         <legend>".NN_LAN_1."</legend>
         <table class='table adminform'>
@@ -158,6 +178,10 @@ class notify_config
 		$text .= $this -> render_event('newsdel', NN_LAN_5);
 
 		$text .= "</table></fieldset>
+		</div>
+		
+		
+		<div class='tab-pane' id='mail'>
 		<fieldset id='core-notify-4'>
         <legend>".NM_LAN_1."</legend>
         <table class='table adminform'>
@@ -170,6 +194,10 @@ class notify_config
 
 
 		$text .= "</table></fieldset>
+		</div>
+		
+		
+		<div class='tab-pane' id='files'>
 		<fieldset id='core-notify-5'>
         <legend>".NF_LAN_1."</legend>
         <table class='table adminform'>
@@ -180,14 +208,19 @@ class notify_config
 
 		$text .= $this -> render_event('fileupload', NF_LAN_2);
 
-		$text .= "</table>";
+		$text .= "</table>
+		</fieldset>
+		</div>";
+
+
 
 		foreach ($this -> notify_prefs['plugins'] as $plugin_id => $plugin_settings)
 		{
             if(is_readable(e_PLUGIN.$plugin_id.'/e_notify.php'))
 			{
 				require(e_PLUGIN.$plugin_id.'/e_notify.php');
-				$text .= "</fieldset>
+				//$text .= "</fieldset>
+				$text .= "<div class='tab-pane' id='notify-".$plugin_id."'>
 				<fieldset id='core-notify-".str_replace(" ","_",$config_category)."'>
 		        <legend>".$config_category."</legend>
 		        <table class='table adminform'>
@@ -199,11 +232,13 @@ class notify_config
 				{
 					$text .= $this -> render_event($event_id, $event_text);
 				}
-				$text .= "</table> ";
+				$text .= "</table>
+				</div>";
 			}
 		}
 
 		$text .= "
+	
 		<div class='buttons-bar center'>";
         $text .= $frm->admin_button('update', LAN_UPDATE,'update');
 		$text .= "
