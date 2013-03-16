@@ -212,7 +212,7 @@ if (!defsettrue('e_IFRAME') && isset($pref['admincss']) && $pref['admincss'])
 	//echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
 	$e_js->themeCSS($css_file);
 	
-	if(e107::getPref('admincss') == "dark_style.css")
+	if(e107::getPref('admincss') == "admin_dark.css")
 	{
 		$e_js->coreCSS('bootstrap/css/darkstrap.css');	
 		

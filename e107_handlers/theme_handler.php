@@ -707,13 +707,14 @@ class themeHandler
 		{
 			$itext .= "<tr>
 					<td style='vertical-align:top; width:24%'><b>".TPVLAN_50."</b>:</td>
-					<td style='vertical-align:top'><table class='table' style='margin-left:0px;margin-right:auto' >
+					<td class='well' style='vertical-align:top'>
+					<table class='table' style='margin-left:0px;margin-right:auto' >
 						<tr>";
 			$itext .= ($mode == 1) ? "<td class='fcaption' style='text-align:center;vertical-align:top;'>Default</td>" : "";
 			$itext .= "
-							<td class='fcaption'>Title</td>
-							<td class='fcaption'>Requirements</td>
-							<td class='fcaption' style='text-align:center;width:100px'>Menu Preset</td>
+							<th class='fcaption'>Title</th>
+							<th class='fcaption'>Requirements</th>
+							<th class='fcaption' style='text-align:center;width:100px'>Menu Preset</th>
 						</tr>\n";
 			
 			foreach ($theme['layouts'] as $key=>$val)
@@ -928,7 +929,7 @@ class themeHandler
 			$previewPath = e_BASE."index.php?themepreview.".$theme['id'];
 		}
 		
-		$thumbnail = "<img src='".$thumbPath."' style='width:200px; height:160px;'  alt='' />";
+		$thumbnail = "<img src='".$thumbPath."' style='width:200px; height:130px;'  alt='' />";
 		$preview_icon 	= "<a title='Preview : ".$theme['name']."' rel='external' class='e-dialog' href='".$previewPath."'>".E_32_SEARCH."</a>";
 	
 	//	$thumbnail .= "</a>";
@@ -955,7 +956,7 @@ class themeHandler
 			
 			$text = "
 				<div class='f-left block-text admin-theme-cell ".$borderStyle."'>
-					<div class='admin-theme-thumb'>".$thumbnail."</div>
+					<div class='well admin-theme-thumb'>".$thumbnail."</div>
 					<div id='".$frm->name2id($theme['name'])."' class='admin-theme-options'>".$main_icon.$admin_icon.$info_icon.$preview_icon."</div>
 					<div class='admin-theme-title'>".$theme['name']." ".$theme['version']."</div>	
 				</div>";
@@ -1182,12 +1183,14 @@ class themeHandler
 												
 								if(!$css['nonadmin'])
 								{
+									$for = $frm->name2id("admincss-".$css['name']);
 									$text2 = "
 										<td class='center'>".
 										$frm->radio('admincss', $css['name'], vartrue($pref['admincss'])== $css['name'])."
 										</td>
-										<td><label for='admincss'>".$css['name']."</label></td>
-										<td>".($css['info'] ? $css['info'] : ($css['name'] == "admin_style.css" ? TPVLAN_23 : TPVLAN_24))."</td>\n";
+										<td><label for='".$for."'>".$css['info']."</label></td>";
+										
+									$text2 .= "<td>".($css['info'] ? $css['info'] : ($css['name'] == "admin_style.css" ? TPVLAN_23 : TPVLAN_24))."</td>\n";
 								}
 							}
 							
@@ -1479,7 +1482,7 @@ class themeHandler
 		
 		$themeArray = $this->getThemes("id");
 		$pref['admintheme'] = $themeArray[$this->id];
-		$pref['admincss'] = file_exists(e_THEME.$pref['admintheme'].'/dark_style.css') ? 'dark_style.css' : 'light_style.css';
+		$pref['admincss'] = file_exists(e_THEME.$pref['admintheme'].'/admin_dark.css') ? 'admin_dark.css' : 'admin_light.css';
 		$e107cache->clear_sys();
 		if(save_prefs())
 		{

@@ -156,7 +156,7 @@ $E_ADMIN_NAVIGATION['end'] = '</ul>';
 		</div>
  */
 
-$inverse = (e107::getPref('admincss') == "light_style.css") ? "navbar-inverse" : "";
+$inverse = (e107::getPref('admincss') == "admin_light.css") ? "navbar-inverse" : "";
     
 $ADMIN_HEADER = '<div class="navbar '.$inverse.' navbar-fixed-top">
       <div class="navbar-inner">

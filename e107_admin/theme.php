@@ -26,7 +26,7 @@ $e_sub_cat = 'theme_manage';
 
 e107::css("inline","
 .hide						{ display: none }
-.admin-theme-thumb			{ height:130px;overflow:hidden;border:1px solid black;margin-bottom:10px   }
+.admin-theme-thumb			{ height:130px;overflow:hidden;border:1px solid black; margin:0px; margin-bottom:10px; padding:0px;   }
 .admin-theme-thumb:hover	{ opacity:0.4 }
 
 .admin-theme-options		{ transition: opacity .20s ease-in-out;
