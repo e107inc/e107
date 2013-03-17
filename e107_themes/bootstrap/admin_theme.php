@@ -623,7 +623,7 @@ function tablestyle($caption, $text, $mode)
 	default:
 		echo '
 			<div class="block">
-				<h4>'.$caption.'</h4>
+				<h4 class="caption">'.$caption.'</h4>
 				<div class="block-text">
 					'.$text.'
 				</div>
