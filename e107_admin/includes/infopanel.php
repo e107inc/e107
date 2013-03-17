@@ -309,10 +309,7 @@ EOF;
 
 	function renderChart()
 	{
-		// REQUIRES Log Plugin to be installed. 
-		
-		
-		
+		// REQUIRES Log Plugin to be installed. 		
 		if (e107::isInstalled('log')) 
 		{
 			return $this->renderStats();
@@ -325,7 +322,7 @@ EOF;
 		}
 		else
 		{
-			return "Log Statistics Plugin Not Installed";
+			return "<div class='center' style='padding:20px'><a class='btn btn-small' href='".e_ADMIN."plugin.php?avail'>Install Site Stats Plugin</a></div>";
 			// $text2 .= $ns->tablerender("Visitors This Week", "Log Statistics Plugin Not Installed","core-infopanel_stats",true);	
 		}
 		
@@ -678,7 +675,11 @@ EOF;
 			return;	
 		}
 
-		
+
+		if(!e107::isInstalled("log"))
+		{
+			return;	
+		}
 		
 				
 		$sql = e107::getDB();
@@ -817,6 +818,7 @@ EOF;
 	
 	function renderStats()
 	{
+		
 		return '<canvas id="canvas1" class="center" width="710" height="300" style="width:100%; height:100%">
         	Your web-browser does not support the HTML 5 canvas element.
    		 </canvas>';	
