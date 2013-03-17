@@ -37,6 +37,26 @@ $NEXTPREV_TEMPLATE['default_items_end'] = '';
 //$NEXTPREV_TEMPLATE['default_separator'] = '<span class="nextprev-sep"><!-- --></span>';
 $NEXTPREV_TEMPLATE['default_separator'] = '&nbsp;';
 
+/*  ************************************************************ */
+
+// Basic template - as used in admin theme-manager - find themes. 
+//XXX FIXME - use $NEXTPREV_TEMPLATE['basic']['start'] format.??
+
+$NEXTPREV_TEMPLATE['basic_start'] 				= '<!-- Start of Next/Prev --><div class="btn-group ">';
+$NEXTPREV_TEMPLATE['basic_end'] 				= '</div><!-- End of Next/Prev -->';
+$NEXTPREV_TEMPLATE['basic_nav_caption'] 		= ''; 
+$NEXTPREV_TEMPLATE['basic_nav_first'] 			= '';
+$NEXTPREV_TEMPLATE['basic_nav_prev'] 			= '<a class="btn btn-primary nextprev-item prev e-tip" href="{url}" title="{url_label}"><i class="icon-backward"></i></a>'; 
+$NEXTPREV_TEMPLATE['basic_nav_last'] 			= ''; 
+$NEXTPREV_TEMPLATE['basic_nav_next'] 			= '<a class="btn btn-primary nextprev-item next e-tip" href="{url}" title="{url_label}"><i class="icon-forward"></i></a>';
+$NEXTPREV_TEMPLATE['basic_items_start'] 		= '';
+$NEXTPREV_TEMPLATE['basic_item'] 				= ''; 
+$NEXTPREV_TEMPLATE['basic_item_current'] 		= '<a class="btn btn-primary">{label}</a>'; 
+$NEXTPREV_TEMPLATE['basic_items_end'] 			= '';
+$NEXTPREV_TEMPLATE['basic_separator'] 			= '';
+
+
+
 
 // ADMIN TEMPLATE see admin-ui. 
 
