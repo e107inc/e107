@@ -358,7 +358,7 @@ EOF;
 		
 		$dashboard = '
 		  <ul class="nav nav-tabs">
-		    <li class="active"><a href="#tab1" data-toggle="tab"><i class="icon-globe"></i> Stats</a></li>
+		    <li class="active"><a href="#tab1" data-toggle="tab"><i class="icon-signal"></i> Stats</a></li>
 		    <li ><a href="#tab2" data-toggle="tab"><i class="icon-user"></i> Online</a></li>
 		  </ul>
 		  
