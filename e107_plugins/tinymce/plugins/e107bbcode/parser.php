@@ -67,7 +67,8 @@ if($_POST['mode'] == 'tobbcode')
         $content = str_replace($srch, $repl, $content);
     
     // resize the thumbnail to match wysiwyg width/height. 
-        $psrch = '/<img src="{e_BASE}thumb.php\?src=([\S]*)w=([\d]*)&amp;h=([\d]*)"(.*)width="([\d]*)" height="([\d]*)"/i';
+    
+        $psrch = '/<img[^>]*src="{e_BASE}thumb.php\?src=([\S]*)w=([\d]*)&amp;h=([\d]*)"(.*)width="([\d]*)" height="([\d]*)"/i';
         $prepl = '<img src="{e_BASE}thumb.php?src=$1w=$5&amp;h=$6"$4width="$5" height="$6" ';
     
          $content = preg_replace($psrch, $prepl, $content);

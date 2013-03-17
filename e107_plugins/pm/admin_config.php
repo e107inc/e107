@@ -66,13 +66,13 @@ class private_msg_ui extends e_admin_ui
 		protected $pluginName		= 'pm';
 		protected $table			= 'private_msg';
 		protected $pid				= 'pm_id';
-		protected $perPage 			= 10; 
-        protected $listQry          = '';
+		protected $perPage 			= 5; 
+        protected $listQry          = 'SELECT  p.*, u.user_name FROM #private_msg AS p LEFT JOIN  #user AS u ON u.user_id = p.pm_from ';
         protected $listOrder        = "pm_sent DESC";
 			
 		protected $fields 		= array (  'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
 		  'pm_id'             => array ( 'title' => LAN_ID,       'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'pm_from'           => array ( 'title' => 'From',       'type' => 'number', 'noedit'=>true, 'data' => 'int', 'filter'=>true, 'width' => '10%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'pm_from'           => array ( 'title' => 'From',       'type' => 'user', 'noedit'=>true, 'data' => 'int', 'filter'=>true, 'width' => '10%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'pm_to'             => array ( 'title' => 'To',         'type' => 'user', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		  'pm_sent'           => array ( 'title' => LAN_DATE,     'type' => 'datestamp', 'data' => 'int', 'width' => '10%', 'help' => '', 'readParms' => '', 'writeParms' => 'auto=1&readonly=1', 'class' => 'center', 'thclass' => 'center',  ),
 		  'pm_subject'        => array ( 'title' => LAN_TITLE,    'type' => 'text', 'data' => 'str', 'width' => '15%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
@@ -99,12 +99,28 @@ class private_msg_ui extends e_admin_ui
                 define('e_IFRAME', true);   
             }
      
+ 		
             // Prevent snooping of other people's messages. ;-) //XXX Not working Yet. FIXME!
             if(varset($_GET['filter_options'])) 
             {
                 list($tmp,$field,$id) = explode("__",$_GET['filter_options']);
-                
-                
+			
+				if($field == 'pm_to') // Inbox 
+				{
+				
+				//	$this->listQry		= "'SELECT  p.*, u.user_name FROM #private_msg AS p LEFT JOIN  #user AS u ON u.user_id = p.pm_from ';"; 
+
+					$this->fields['pm_to']['nolist'] = true; 
+					$this->fields['options']['readParms'] = 'editClass='.e_UC_NOBDY;
+						
+				}
+				
+				if($field == 'pm_from') // Outbox 
+				{
+				//	$this->fields['pm_from']['nolist'] = true; 	
+					$this->fields['options']['readParms'] = 'editClass='.e_UC_NOBDY;
+				}
+					
              //   echo "FIELD = ".$field;
               //  $this->getDispatcher()->setRequest('filter_options')
                 
@@ -115,7 +131,10 @@ class private_msg_ui extends e_admin_ui
            
                 if($field == 'pm_from' && $id != USERID)
                 {
+                		echo "<h3>HI THERE</h3>";
+                	
                     $_GET['filter_options'] = 'batch__pm_from__'.USERID;    
+              
                 }     
     
             }

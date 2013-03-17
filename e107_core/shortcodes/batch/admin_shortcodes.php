@@ -600,7 +600,11 @@ class admin_shortcodes
       {
             $countDisp = '';    
       }
-           
+         
+		$inboxUrl = e_PLUGIN.'pm/admin_config.php?'.'searchquery=&amp;iframe=1&amp;filter_options=bool__pm_to__'.USERID; 
+		$outboxUrl = e_PLUGIN.'pm/admin_config.php?'.'searchquery=&amp;iframe=1&amp;filter_options=bool__pm_from__'.USERID;
+		$composeUrl = e_PLUGIN.'pm/admin_config.php?'.'mode=main&amp;iframe=1&amp;action=create';
+
        $text = '<ul class="nav nav-pills">
         <li class="dropdown">
             <a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" href="#" >
@@ -608,9 +612,9 @@ class admin_shortcodes
             </a> 
             <ul class="dropdown-menu" role="menu" >
                 <li class="nav-header">Private Messages</li>
-                    <li><a class="e-dialog" href="'.e_PLUGIN.'pm/admin_config.php?searchquery=&amp;iframe=1&amp;filter_options=bool__pm_to__'.USERID.'" >Inbox</a></li>
-                    <li><a class="e-dialog" href="'.e_PLUGIN.'pm/admin_config.php?searchquery=&amp;iframe=1&amp;filter_options=bool__pm_from__'.USERID.'">Outbox</a></li>
-                    <li><a class="e-dialog" href="'.e_PLUGIN.'pm/admin_config.php?mode=main&amp;action=create&amp;iframe=1">Compose</a></li>
+                    <li><a class="e-modal" data-cache="false" data-modal-caption="Inbox" data-target="#uiModal" href="'.$inboxUrl.'" >Inbox</a></li>
+                    <li><a class="e-modal" data-cache="false" data-modal-caption="Outbox" data-target="#uiModal" href="'.$outboxUrl.'">Outbox</a></li>
+                    <li><a class="e-modal" data-cache="false" data-modal-caption="Compose" data-target="#uiModal" href="'.$composeUrl.'">Compose</a></li>
                 </ul>
         </li>
         </ul>

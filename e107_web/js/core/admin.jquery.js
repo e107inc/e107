@@ -60,8 +60,24 @@ $(document).ready(function()
 				// alert(caption);
 			}
 		);
+		
+		
+		/*  Bootstrap Modal window within an iFrame */
+		$('.e-modal').on('click', function(e) 
+		{
+    		e.preventDefault();
+    		var url 		= $(this).attr('href');
+    		var caption  	= $(this).attr('data-modal-caption');
+			var height 		= ($(window).height() * 0.7) - 50;
+			
+    		$('.modal-body').html('<div class="well"><iframe width="100%" height="'+height+'px" frameborder="0" scrolling="auto" style="display:block;background-color:transparent" allowtransparency="true" src="' + url + '"></iframe></div>');
+    		$('.modal-caption').text(caption);
+    		$('.modal').modal('show');
+    	});	
 
-		/*
+		
+
+	/*
 		
 		$('a[data-toggle="modal"]').on('click', function()
 		{
@@ -154,29 +170,6 @@ $(document).ready(function()
 		$(".adminlist tr:first").addClass("first");
   		$(".adminlist tr:last").addClass("last");
 				
-
-		
-		// Modal Box - uses inline hidden content  // NEEDS work - see customize link for admin-infopanel. 
-		
-		$(".e-modal-iframe").click(function (e) {
-			var id = $(this).attr("href");
-				e.preventDefault();
-                var page = $(this).attr("href")
-                var pagetitle = $(this).attr("title")
-                var $dialog = $("<div></div>")
-                .html("<iframe style=\"border: 0px; \" src=\"" + page + "\" width=\"100%\" height=\"100%\"></iframe>")
-                .dialog({
-                    autoOpen: false,
-                    modal: true,
-                    width:800,
-                    height: 700,
-                    minWidth: 800,
-                    minHeight: 700,
-				 	maxHeight: 700,
-                    title: pagetitle
-                });
-                $dialog.dialog("open");
-		});
 		
 		
 		// Admin Prefs Navigation
