@@ -582,7 +582,18 @@ function tablestyle($caption, $text, $mode)
 	}
 	
 
-	
+	if(e_IFRAME === true)
+	{
+		echo '
+			<div class="block">
+				<div class="block-text">
+					'.$text.'
+				</div>
+			</div>
+		';
+		
+		return;
+	}
 	
 	
 	
