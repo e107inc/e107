@@ -988,7 +988,7 @@ function update_706_to_800($type='')
 			return update_needed("Pages/Menus Table requires updating.");	
 		}
 		
-		if($sql->update('page',"menu_name = page_theme, menu_title = page_title, menu_text = page_text, menu_template='default', page_title = '', page_text = '' WHERE menu_title = '' AND menu_text = '' "))
+		if($sql->update('page',"menu_name = page_theme, menu_title = page_title, menu_text = page_text, menu_template='default', page_title = '', page_text = '' WHERE page_theme !='' AND menu_title = '' AND menu_text = '' "))
 		{
 			$sql->gen("ALTER TABLE `#page` DROP `page_theme`");
 			$mes = e107::getMessage();
