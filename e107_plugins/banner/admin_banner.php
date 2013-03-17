@@ -160,25 +160,32 @@ elseif ($action == "delete" && $sub_action) // confirm delete
 }
 
 
-if ($sql->db_Select("banner"))
+if ($sql->select("banner"))
 {
-	while ($banner_row = $sql->db_Fetch())
+	while ($banner_row = $sql->fetch())
 	{
 		if (strpos($banner_row['banner_campaign'], "^") !== FALSE) {
 			$campaignsplit = explode("^", $banner_row['banner_campaign']);
 			$banner_row['banner_campaign'] = $campaignsplit[0];
 		}
 
-		if ($banner_row['banner_campaign']) {
-			$campaigns[] = $banner_row['banner_campaign'];
+		if ($banner_row['banner_campaign']) 
+		{
+			$campaigns[$banner_row['banner_campaign']] = $banner_row['banner_campaign'];
 		}
-		if ($banner_row['banner_clientname']) {
-			$clients[] = $banner_row['banner_clientname'];
+		
+		if ($banner_row['banner_clientname']) 
+		{
+			$clients[$banner_row['banner_clientname']] = $banner_row['banner_clientname'];
 		}
-		if ($banner_row['banner_clientlogin']) {
+
+		if ($banner_row['banner_clientlogin']) 
+		{
 			$logins[] = $banner_row['banner_clientlogin'];
 		}
-		if ($banner_row['banner_clientpassword']) {
+		
+		if ($banner_row['banner_clientpassword']) 
+		{
 			$passwords[] = $banner_row['banner_clientpassword'];
 		}
 	}
@@ -187,7 +194,7 @@ if ($sql->db_Select("banner"))
 
 if (!$action) 
 {	
-	if (!$banner_total = $sql->db_Select("banner")) 
+	if (!$banner_total = $sql->select("banner")) 
 	{
 		$mes->addInfo(BNRLAN_00); 
 	} 
@@ -220,7 +227,8 @@ if (!$action)
 					</thead>
 					<tbody>";
 
-		while ($banner_row = $sql->db_Fetch()) {
+		while ($banner_row = $sql->fetch())
+		{
 
 			$clickpercentage = ($banner_row['banner_clicks'] && $banner_row['banner_impressions'] ? round(($banner_row['banner_clicks'] / $banner_row['banner_impressions']) * 100)."%" : "-");
 			$impressions_left = ($banner_row['banner_impurchased'] ? $banner_row['banner_impurchased'] - $banner_row['banner_impressions'] : BNRLAN_6);
@@ -256,10 +264,10 @@ if (!$action)
 							<td class='center'>".$clickpercentage."</td>
 							<td class='center'>".$impressions_purchased."</td>
 							<td class='center'>".$impressions_left."</td>
-							<td class='center'>
+							<td class='center options'>
 
-								<a href='".e_SELF."?create.edit.".$banner_row['banner_id']."'>".ADMIN_EDIT_ICON."</a>
-								<a class='action delete' id='banner-delete-{$banner_row['banner_id']}' href='".e_SELF."?delete.".$banner_row['banner_id']."' rel='no-confirm' title='".LAN_CONFDELETE."'>".ADMIN_DELETE_ICON."</a>
+								<a class='btn btn-large' href='".e_SELF."?create.edit.".$banner_row['banner_id']."'>".ADMIN_EDIT_ICON."</a>
+								<a class='btn btn-large action delete' id='banner-delete-{$banner_row['banner_id']}' href='".e_SELF."?delete.".$banner_row['banner_id']."' rel='no-confirm' title='".LAN_CONFDELETE."'>".ADMIN_DELETE_ICON."</a>
 							</td>
 						</tr>
 					";
@@ -293,13 +301,13 @@ if ($action == "create")
 {
 	if ($sub_action == "edit" && $id) 
 	{
-		if (!$sql->db_Select("banner", "*", "banner_id = '".$id."'")) // FIXME check not working for some reason
+		if (!$sql->select("banner", "*", "banner_id = '".$id."'")) // FIXME check not working for some reason
 		{ 
 			$mes->addWarning(BNRLAN_01); 
 		} 
 		else 
 		{
-			while ($banner_row = $sql->db_Fetch()) 
+			while ($banner_row = $sql->fetch()) 
 			{
 				$_POST['client_name'] = $banner_row['banner_clientname'];
 				$_POST['client_login'] = $banner_row['banner_clientlogin'];
@@ -356,47 +364,36 @@ if ($action == "create")
 						<td>
 	";
 
-	if (count($campaigns)) {
-		$for_var = array();
-		$text .= "
-							<div class='field-spacer'>
-							<select name='banner_campaign_sel' id='banner_campaign_sel' class='tbox'>
-								<option>".LAN_SELECT."</option>
-		";
-		$c = 0;
-		while ($campaigns[$c]) {
-			if (!isset($for_var[$campaigns[$c]])) {
-				$text .= "<option".(($_POST['banner_campaign'] == $campaigns[$c]) ? " selected='selected'" : "").">".$campaigns[$c]."</option>";
-				$for_var[$campaigns[$c]] = $campaigns[$c];
-			}
-			$c++;
-		}
-		unset($for_var);
-		//TODO - ajax add campaign - FIXME currently not working as intended 
-		$text .= "
-							</select> ".$frm->admin_button('add_new_campaign', BNRLAN_27, 'other', '', array('other' => "onclick=\"e107Helper.toggle('add-new-campaign-cont', false); \$('banner_campaign_sel').selectedIndex=0; return false;\""))."
-							</div>
 
-							<div class='field-spacer e-hideme' id='add-new-campaign-cont'>
-								<input class='tbox' type='text' size='30' maxlength='100' name='banner_campaign' value='' />
-								<span class='field-help'>".BNRLAN_26."</span>
-							</div>
-		";
+	if (count($campaigns)) 
+	{
+		$text .= $frm->selectbox('banner_campaign_sel',$campaigns,$_POST['banner_campaign'],'',LAN_SELECT);
+		$text .= $frm->text('banner_campaign','','',array('placeholder'=> 'Or enter a new campaign'));	
 	}
 	else
 	{
-		$text .= "<input class='tbox' type='text' size='30' maxlength='100' name='banner_campaign' value='' />";
+		$text .= $frm->text('banner_campaign');	
 	}
-	$text .= "
-						<span class='field-help'>".BNRLAN_25."</span></td>
-					</tr>
-					<tr>
-					<td>".BNRLAN_1."</td>
-					<td>
+	$text .= "<span class='field-help'>".BNRLAN_25."</span>
+		</td>
+	</tr>
+
+	<tr>
+		<td>".BNRLAN_1."</td>
+		<td>
 	";
 
-	if (count($clients)) {
+	if (count($clients)) 
+	{
+		$text .= $frm->selectbox('banner_client_sel',$clients, $_POST['client_name'],'', LAN_SELECT);
+		$text .= $frm->text('client_name','','',array('placeholder'=> 'Or enter a new client'));	
+		
+		
+		/*
+		
+		
 		$text .= "
+		
 						<div class='field-spacer'>
 						<select name='banner_client_sel' id='banner_client_sel' class='tbox' onchange=\"Banner_Change_Details()\">
 							<option>".LAN_SELECT."</option>
@@ -452,13 +449,14 @@ if ($action == "create")
 							}
 						</script>
 		";
+		 
+		 */
 	}
 	else
 	{
-		$text .= "
-							<input class='tbox' type='text' size='30' maxlength='100' name='client_name' value='' />
-							<span class='field-help'>".BNRLAN_29."</span>
-		";
+		
+		$text .= $frm->text('client_name',$_POST['client_name']);	
+		$text .= "<span class='field-help'>".BNRLAN_29."</span>";
 	}
 
 	$text .= "
@@ -470,7 +468,7 @@ if ($action == "create")
 					</tr>
 					<tr>
 						<td>".BNRLAN_13."</td>
-						<td>".$frm->text('client_password', $_POST['client_password'], '50')."</td>
+						<td>".$frm->password('client_password', $_POST['client_password'], '50','strength=1&generate=1&required=0')."</td>
 					</tr>
 					<tr>
 						<td>".BNRLAN_14."</td>
@@ -554,7 +552,9 @@ if ($action == "create")
 					</tr>
 					</tbody>
 				</table>
+				
 				<div class='buttons-bar center'>";
+				
 	if 	($sub_action == "edit" && $id) 
 	{
 		$text .= $frm->admin_button('updatebanner','no-value','create', LAN_UPDATE);
@@ -587,8 +587,8 @@ if ($action == "menu")
 		$menu_pref['banner_caption'] = BNRLAN_38;
 	}
 
-	$category_total = $sql -> db_Select("banner", "DISTINCT(banner_campaign) as banner_campaign", "ORDER BY banner_campaign", "mode=no_where");
-	while ($banner_row = $sql -> db_Fetch())
+	$category_total = $sql -> select("banner", "DISTINCT(banner_campaign) as banner_campaign", "ORDER BY banner_campaign", "mode=no_where");
+	while ($banner_row = $sql -> fetch())
 	{
 		$all_catname[] = $banner_row['banner_campaign'];
 
