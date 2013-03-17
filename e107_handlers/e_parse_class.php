@@ -2408,7 +2408,7 @@ class e_parser
 	 * Return an Array of all specific tags found in an HTML document and their attributes.  
 	 * @param $html - raw html code
 	 * @param $taglist - comma separated list of tags to search or '*' for all. 
-	 * @param $header - if the $html includes the <html> <head> or <body> tags - it should be set to true. 
+	 * @param $header - if the $html includes the html head or body tags - it should be set to true. 
 	 */
 	public function getTags($html, $taglist='*', $header = false)
 	{

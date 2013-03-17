@@ -5,8 +5,6 @@ body, td, pre{
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 11px;
   line-height: 20px;
-  color: #333333;
-  background-color: #ffffff;
 }
 
 body.mceForceColors {

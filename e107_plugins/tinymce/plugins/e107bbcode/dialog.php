@@ -15,13 +15,13 @@ e107::css('inline',"
 
 	.selectEmote 		{ display:inline-block; cursor:pointer;margin:3px }
 	body				{ text-align:center }
-	.area				{ border-left: 1px solid rgb(221, 221, 221); border-bottom: 1px solid rgb(221, 221, 221);
-					 	 background-color: rgb(246, 246, 246); margin-top:-1px; padding:20px; 
+	.area				{  
+					 	  margin-top:-1px; padding:20px; 
 						}
 	span.badge			{ cursor: pointer }
 	span.label			{ cursor: pointer }
 	ul.glyphicons		{ list-style:none; margin-left:0px; font-size:120%}
-	ul.glyphicons  li	{ float:left; border-bottom:1px solid silver; cursor:pointer; width:190px; padding:5px; }
+	ul.glyphicons  li	{ float:left;  cursor:pointer; width:190px; padding:5px; }
 	a, li					{  outline: 0; }    
 
 ");
@@ -169,7 +169,7 @@ class e_bootstrap
 		</tr>
 		<tr>
 			<td>Button Url</td>
-			<td><p>".$frm->text('buttonUrl','',255)."</p></td>
+			<td><p>".$frm->text('buttonUrl','',255,'size=xxlarge')."</p></td>
 		</tr>
 			
 				
@@ -362,10 +362,13 @@ class e_bootstrap
 		$text .= "<div  class='area'>";
 		$text .= "<div class='inline-form'>Color: ".$frm->selectbox('glyph-color',$sel)."     Custom: ".$frm->text('glyph-custom','').$frm->button('glyph-save','Go')."</div>";	
 					
-		$text .= "<ul class='glyphicons clearfix'>";
+		$text .= "<ul class='glyphicons well clearfix'>";
+		
+		$inverse = (e107::getPref('admincss') == "admin_dark.css") ? " icon-white" : "";
+		
 		foreach($icons as $ic)
 		{
-			$text .= '<li><i class="'.$ic.'"></i> '.$ic.'</li>';
+			$text .= '<li><i class="'.$ic.$inverse.'"></i> '.$ic.'</li>';
 			$text .= "\n";
 		}
 					
