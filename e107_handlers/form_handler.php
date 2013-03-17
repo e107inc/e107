@@ -1166,7 +1166,7 @@ class e_form
 	 * @param array $option_array
 	 * @param boolean $selected [optional]
 	 * @param string|array $options [optional]
-	 * @param boolean $defaultBlank [optional] set to TRUE if the first entry should be blank
+	 * @param boolean|string $defaultBlank [optional] set to TRUE if the first entry should be blank, or to a string to use it for the blank description. 
 	 * @return string HTML text for display
 	 */
 	function selectbox($name, $option_array, $selected = false, $options = array(), $defaultBlank= false)
@@ -1192,7 +1192,8 @@ class e_form
 		}
 		elseif($defaultBlank)
 		{
-			$text .= $this->option('&nbsp;', '');
+			$diz = is_string($defaultBlank) ? $defaultBlank : '&nbsp;';
+			$text .= $this->option($diz, '');
 		}
 		
 		if(varset($options['useValues'])) // use values as keys. 
