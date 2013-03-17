@@ -405,7 +405,9 @@ $(document).ready(function()
 		
 				
 		$(".e-dialog-close").live("click", function(){
-			parent.$.colorbox.close()	
+			parent.$('.modal').modal('hide');
+			
+			// parent.$.colorbox.close()	
 		}); 
 		
 		
@@ -430,16 +432,10 @@ $(document).ready(function()
         	return false;
 		});
 		*/
-
-
-		
-		
-		$(".e-dialog-close").click(function () {
-			parent.$.colorbox.close()
-		}); 
 		
 		
 		// Modal Box - uses inline hidden content 
+		/*
 		$(".e-modal").click(function () {
 			var id = $(this).attr("href");
 			$(id).dialog({
@@ -449,7 +445,7 @@ $(document).ready(function()
 				 modal: true
 			 });
 		});
-	
+		*/
 		  
 		
 		
