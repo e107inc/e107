@@ -15,6 +15,16 @@ thead tr {
 	
 min-height:50px;
 }
+
+.datepicker {
+	background-color: #191919;
+}
+
+.datepicker thead tr:first-child th:hover, .datepicker tfoot tr:first-child th:hover {
+   
+    background-color: #191919;
+}
+
 /*
 .bootstrap-select, bootstrap-select button
 {

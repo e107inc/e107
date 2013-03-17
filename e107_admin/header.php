@@ -63,12 +63,14 @@ function loadJSAddons()
 	
 	e107::js('core', 	'bootstrap-jasny/js/jasny-bootstrap.js', 'jquery', 2);
 	
-	//e107::css('core', 	'bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css', 'jquery');
-	//e107::js('core', 	'bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js', 'jquery', 2);
+	e107::css('core', 	'bootstrap-datetimepicker/css/datetimepicker.css', 'jquery');
+	e107::js('core', 	'bootstrap-datetimepicker/js/bootstrap-datetimepicker.js', 'jquery', 2);
+	
+	
 	
 	e107::js('core', 	'jquery.elastic.js', 'jquery', 2);
 	
-	e107::js('core', 	'jquery-ui-timepicker-addon.js', 'jquery', 2);
+	// e107::js('core', 	'jquery-ui-timepicker-addon.js', 'jquery', 2);
 	
 	
 	//e107::css('core', 	'chosen/chosen.css', 'jquery');
