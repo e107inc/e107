@@ -8,8 +8,6 @@
  *
  * Plugin - Newsletter 
  *
- * $URL$
- * $Id$
 */
 
 //define('NLLAN_01', 'Newsletter');

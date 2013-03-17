@@ -112,10 +112,6 @@ class newsletter
 			$this->createIssue();
 		}
 
-		/*if($this -> message)
-		{
-			$ns->tablerender('', "<div style='text-align:center'><b>".$this -> message.'</b></div>');
-		}*/
 		if($mes)
 		{
 			$ns->tablerender($caption, $mes->render() . $text);
@@ -130,7 +126,7 @@ class newsletter
 		$mes = e107::getMessage();
 		$tp = e107::getParser();
 
-		if(!$sql->db_Select('newsletter', '*', "newsletter_parent='0'  ORDER BY newsletter_id DESC"))
+		if(!$sql->select('newsletter', '*', "newsletter_parent='0'  ORDER BY newsletter_id DESC"))
 		{
 			$mes->addInfo(NLLAN_05);
 		}
@@ -148,11 +144,11 @@ class newsletter
 				<td>".LAN_ID."</td>
 				<td>".LAN_NAME."</td>
 				<td>".NLLAN_07."</td>
-				<td>".LAN_OPTIONS."</td>
+				<td class='center options'>".LAN_OPTIONS."</td>
 			</tr>
 			";
 
-			$nlArray = $sql->db_getList();
+			$nlArray = $sql->db_getList(); 
 			foreach($nlArray as $data)
 			{
 				$text .= "
@@ -160,7 +156,11 @@ class newsletter
 					<td>".$data['newsletter_id']."</td>
 					<td>".$data['newsletter_title']."</td>
 					<td>".((substr_count($data['newsletter_subscribers'], chr(1))!= 0)?"<a href='".e_SELF."?vs.".$data['newsletter_id']."'>".substr_count($data['newsletter_subscribers'], chr(1))."</a>":substr_count($data['newsletter_subscribers'], chr(1)))."</td>
-					<td><a href='".e_SELF."?edit.".$data['newsletter_id']."'>".ADMIN_EDIT_ICON."</a><input type='image' title='".LAN_DELETE."' name='delete[newsletter_".$data['newsletter_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [ID: ".$data['newsletter_id']." ]")."') \"/></td>
+					<td>
+						<a class='btn btn-large' href='".e_SELF."?edit.".$data['newsletter_id']."'>".ADMIN_EDIT_ICON."</a>
+						<input type='image' title='".LAN_DELETE."' name='delete[newsletter_".$data['newsletter_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [ID: ".$data['newsletter_id']." ]")."') \"/>
+
+					</td>
 				</tr>
 				";
 			}
@@ -171,9 +171,9 @@ class newsletter
 		}
 		$ns->tablerender(NLLAN_10, $mes->render() . $text);
 
-		unset($text); // FIXME  fix to prevent 'existing newsletters' table from showing twice, is this ok?
+		unset($text);
 
-		if(!$sql->db_Select('newsletter', '*', "newsletter_parent!='0' ORDER BY newsletter_id DESC"))
+		if(!$sql->select('newsletter', '*', "newsletter_parent!='0' ORDER BY newsletter_id DESC"))
 		{
 			$mes->addinfo(NLLAN_11);
 		}
@@ -193,7 +193,7 @@ class newsletter
 				<td>".NLLAN_12."</td>
 				<td>".NLLAN_13."</td>
 				<td>".NLLAN_14."</td>
-				<td>".LAN_OPTIONS."</td>
+				<td class='center options'>".LAN_OPTIONS."</td>
 			</tr>
 			";
 
@@ -207,7 +207,7 @@ class newsletter
 					<td>".$data['newsletter_issue']."</td>
 					<td>[ ".$data['newsletter_parent']." ] ".$data['newsletter_title']."</td>
 					<td>".($data['newsletter_flag'] ? LAN_YES : "<input class='button' type='submit' name='nlmailnow_".$data['newsletter_id']."' value='".NLLAN_17."' onclick=\"return jsconfirm('".$tp->toJS(NLLAN_18)."') \" />")."</td>
-					<td><a href='".e_SELF."?edit.".$data['newsletter_id']."'>".ADMIN_EDIT_ICON."</a><input type='image' title='".LAN_DELETE."' name='delete[issue_".$data['newsletter_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(NLLAN_19." [ID: ".$data['newsletter_id']." ]")."') \"/>
+					<td><a class='btn btn-large' href='".e_SELF."?edit.".$data['newsletter_id']."'>".ADMIN_EDIT_ICON."</a><input type='image' title='".LAN_DELETE."' name='delete[issue_".$data['newsletter_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(NLLAN_19." [ID: ".$data['newsletter_id']." ]")."') \"/>
 				
 				</td>
 				</tr>
@@ -241,9 +241,13 @@ class newsletter
 		$text .= "
 		<form action='".e_SELF."' id='newsletterform' method='post'>
 		<table class='table adminform'>
+		<colgroup span='2'>
+    		<col class='col-label' />
+    		<col class='col-control' />
+    	</colgroup>
 		<tr>
 			<td>".LAN_TITLE."</td>
-			<td><input class='tbox' type='text' name='newsletter_title' size='60' value='{$newsletter_title}' maxlength='200' /></td>
+			<td>".$frm->text('newsletter_title', $newsletter_title, '200')."</td>
 		</tr>
 		<tr>
 			<td>".LAN_DESCRIPTION."</td>
@@ -332,6 +336,10 @@ class newsletter
 		$text .= "
 		<form action='".e_SELF."' id='newsletterform' method='post'>
 		<table class='table adminform'>
+		<colgroup span='2'>
+    		<col class='col-label' />
+    		<col class='col-control' />
+    	</colgroup>
 		<tr>
 			<td>".NLLAN_30."</td>
 			<td>
@@ -348,20 +356,20 @@ class newsletter
 
 		<tr>
 			<td>".NLLAN_31."</td>
-			<td><input class='tbox' type='text' name='newsletter_title' size='60' value='{$newsletter_title}' maxlength='200' /></td>
+			<td>".$frm->text('newsletter_title', $newsletter_title, '200')."</td>
 		</tr>
 		<tr>
 			<td>".NLLAN_32."</td>
-			<td><input class='tbox' type='text' name='newsletter_issue' size='10' value='{$newsletter_issue}' maxlength='200' /></td>
+			<td>".$frm->number('newsletter_', $newsletter_issue, '200')."</td>
 		</tr>
 		<tr>
 			<td>".NLLAN_33."</td>
 			<td>
-				<textarea class='tbox' id='data' name='newsletter_text' cols='80' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>{$edit['newsletter_text']}</textarea><br/>".display_help('helpa')."</td>
+				<textarea class='tbox' id='data' name='newsletter_text' cols='80' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>{$edit['newsletter_text']}</textarea></td>
 		</tr>
 		</table>
 		<div class='buttons-bar center'>
-			".($edit ? $frm->admin_button('createIssue', LAN_UPDATE, 'update')."\n<input type='hidden' name='editid' value='{$edit['newsletter_id']}' />" : $frm->admin_button('createIssue', LAN_CREATE, 'submit'))."
+			".($edit ? $frm->admin_button('createIssue', LAN_UPDATE, 'update')."<input type='hidden' name='editid' value='{$edit['newsletter_id']}' />" : $frm->admin_button('createIssue', LAN_CREATE, 'submit'))."
 		</div>
 		</form>
 		</div>
@@ -418,14 +426,14 @@ class newsletter
 		$issue = intval(str_replace('nlmailnow_', '', $issue));
 
 		// Get details of current newsletter issue
-		if(!$sql->db_Select('newsletter', '*', 'newsletter_id='.$issue))
+		if(!$sql->select('newsletter', '*', 'newsletter_id='.$issue))
 		{
 			return FALSE;
 		}
-		$newsletterInfo = $sql->db_Fetch(MYSQL_ASSOC);
+		$newsletterInfo = $sql->fetch(MYSQL_ASSOC);
 
 		// Get parent details - has header/footer and subscriber list
-		if(!$sql -> db_Select('newsletter', '*', "newsletter_id='".$newsletterInfo['newsletter_parent']."' "))
+		if(!$sql->select('newsletter', '*', "newsletter_id='".$newsletterInfo['newsletter_parent']."' "))
 		{
 			return FALSE;
 		}
@@ -523,9 +531,9 @@ class newsletter
 	{
 		$sql = e107::getDb();
 
-		if($sql->db_Select("newsletter", "*", "newsletter_id='{$id}'"))
+		if($sql->select("newsletter", "*", "newsletter_id='{$id}'"))
 		{
-			$foo = $sql->db_Fetch();
+			$foo = $sql->fetch();
 			if(!$foo['newsletter_parent'])
 			{
 				$this -> defineNewsletter($foo);
@@ -552,14 +560,14 @@ class newsletter
 		if(strpos($tmp['key'], 'newsletter') === 0)
 		{
 			$id = intval(str_replace('newsletter_', '', $tmp['key']));
-			$sql->db_Delete('newsletter', "newsletter_id='{$id}'");
+			$sql->delete('newsletter', "newsletter_id='{$id}'");
 			//$this -> message = NLLAN_42;
 			$mes->addSuccess(LAN_DELETED);
 		}
 		else
 		{
 			$id = intval(str_replace('issue_', '', $tmp['key']));
-			$sql->db_Delete('newsletter', "newsletter_id='{$id}' ");
+			$sql->delete('newsletter', "newsletter_id='{$id}' ");
 			//$this -> message = NLLAN_43;
 			$mes->addSuccess(LAN_DELETED);
 		}
@@ -686,7 +694,6 @@ class newsletter
 		  ";
 		if ($_nl_sanatized == 1)
 		{
-			//$vs_text .= "<br /><div style='text-align:center;'>".NLLAN_66."</div>";
 			$mes->addInfo(NLLAN_66);
 		}
 		
@@ -698,8 +705,8 @@ class newsletter
 	function remove_subscribers($p_id, $p_key) 
 	{
 		$sql = e107::getDb();
-		$sql -> db_Select('newsletter', '*', 'newsletter_id='.intval($p_id));
-		if($nl_row = $sql-> db_Fetch(MYSQL_ASSOC))
+		$sql ->select('newsletter', '*', 'newsletter_id='.intval($p_id));
+		if($nl_row = $sql->fetch(MYSQL_ASSOC))
 		{
 			$subscribers_list = array_flip(explode(chr(1), $nl_row['newsletter_subscribers']));
 			unset($subscribers_list[$p_key]);
