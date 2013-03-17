@@ -49,12 +49,18 @@ $(document).ready(function()
 			 $('#uiModal .modal-label').text('Loading...');
 			$('#uiModal .modal-body').html('&nbsp;');
 			});
+		
+		
+		
 			
 		$('a[data-toggle="modal"]').on('click', function()
 			{
 				var link = $(this).attr('href');
 				var caption  = $(this).attr('data-modal-caption');
+				var height 		= ($(window).height() * 0.9) - 50;
+				
 				 $('#uiModal .modal-caption').text(caption);
+				 $('.modal').height(height);
 				// $('#uiModal .modal-label').text('Loading...');
 				// $('#uiModal .modal-body').html(link);
 				// alert(caption);

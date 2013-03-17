@@ -334,14 +334,15 @@ class e_form
 		
 		$title = "Media Manager : ".$category;
 
-		$ret = "<a title=\"{$title}\" rel='external' class='e-dialog' href='".$url."'>".$label."</a>"; // using colorbox. 
-	// $ret = "<a title=\"{$title}\" data-toggle='modal' data-cache='false' data-target='#uiModal' href='".$url."'>".$label."</a>"; // using bootstrap. 
+	//	$ret = "<a title=\"{$title}\" rel='external' class='e-dialog' href='".$url."'>".$label."</a>"; // using colorbox. 
+	 $ret = "<a title=\"{$title}\" class='e-modal' data-modal-caption='Media Manager' ' data-cache='false' data-target='#uiModal' href='".$url."'>".$label."</a>"; // using bootstrap. 
 
 	
 	//	$footer = "<div style=\'padding:5px;text-align:center\' <a href=\'#\' >Save</a></div>";
 	$footer = '';
 		if(!e107::getRegistry('core/form/mediaurl'))
 		{
+			/*
 			e107::js('core','core/admin.js','prototype');
 			e107::js('core','core/dialog.js','prototype');
 			e107::js('core','core/draggable.js','prototype');
@@ -360,7 +361,7 @@ class e_form
 				});
 			
 			','prototype');
-			
+			*/
 			e107::setRegistry('core/form/mediaurl', true);
 		}
 		return $ret;
@@ -2474,9 +2475,9 @@ class e_form
 							$thparms['aw'] = intval($parms['thumb_aw']);
 						}
 						$thsrc = $tp->thumbUrl(vartrue($parms['pre']).$value, $thparms, varset($parms['thumb_urlraw']));
-						$alt = $src;
+						$alt = basename($src);
 						$ttl = '<img src="'.$thsrc.'" alt="'.$alt.'" class="thumbnail e-thumb" />';
-						$value = '<a href="'.$src.'" class="e-dialog e-image-preview" title="'.$alt.'" rel="external">'.$ttl.'</a>';
+						$value = '<a href="'.$src.'" data-modal-caption="'.$alt.'" data-target="#uiModal" class="e-modal e-image-preview" title="'.$alt.'" rel="external">'.$ttl.'</a>';
 					}
 					else
 					{
