@@ -405,12 +405,12 @@ if (isset($_POST['edit_existing']))
 	// Drop tables ? isset()
 	if (varset($_POST['create_edit_existing']))
 	{
-		$baction = 'create';
+		$baction = 'btn create';
 		$bcaption = LANG_LAN_06;
 	}
 	else
 	{
-		$baction = 'update';
+		$baction = 'btn update';
 		$bcaption = LAN_UPDATE;
 	}
 	$text .= "
@@ -503,7 +503,7 @@ function multilang_prefs()
 					<tr>
 						<td>
 							".LANG_LAN_18."
-							<div class='label-note'>".LANG_LAN_19."</div>
+							<small>".LANG_LAN_19."</small>
 						</td>
 						<td>
 							<textarea name='multilanguage_subdomain' rows='5' cols='15'>{$pref['multilanguage_subdomain']}</textarea>
@@ -658,8 +658,8 @@ function multilang_db()
 			if (count($installed))
 			{
 				//FIXME sprintf
-				$text .= "<button class='edit' type='submit' name='edit_existing' value='no-value'><span>".LAN_EDIT."</span></button>
-						<button class='delete' type='submit' name='del_existing' value='no-value' title='".sprintf(LANG_LAN_33, $e_language).' '.LAN_JSCONFIRM."'><span>".LAN_DELETE."</span></button>";
+				$text .= "<button class='btn btn-primary edit' type='submit' name='edit_existing' value='no-value'><span>".LAN_EDIT."</span></button>
+						<button class='btn btn-danger delete' type='submit' name='del_existing' value='no-value' title='".sprintf(LANG_LAN_33, $e_language).' '.LAN_JSCONFIRM."'><span>".LAN_DELETE."</span></button>";
 			}
 			elseif ($e_language != $pref['sitelanguage'])
 			{
