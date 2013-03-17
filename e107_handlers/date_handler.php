@@ -110,13 +110,13 @@ class convert
 	function toMask($mask, $legacy = false)
 	{
 		$convert = array(
-			'%Y'	=> 'yy',	// jquery-ui docs say 'yy' but yy produces '13' instead of '2013'
+			'%Y'	=> 'yyyy',	// jquery-ui docs say 'yy' but yy produces '13' instead of '2013'
 			'%d'	=> 'dd',
 			'%m'	=> 'mm',		
 			'%B'	=> 'MM', 	// Full month name, based on the locale
 			'%A'	=> 'DD', 	// A full textual representation of the day
 	
-			'%y'	=> 'y',
+			'%y'	=> 'yy',
 			'%a'	=> 'D', 	// An abbreviated textual representation of the day
 			'%b'	=> 'M', 	// Abbreviated month name, based on the locale
 			'%h'	=> 'M', 	// Abbreviated month name, based on the locale (an alias of %b)

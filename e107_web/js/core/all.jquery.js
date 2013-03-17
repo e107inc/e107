@@ -158,17 +158,17 @@ $(document).ready(function()
 		
 		
 		// Dates --------------------------------------------------
-		/*	
-			// http://tarruda.github.com/bootstrap-datetimepicker/
-			//	$('.e-datetime').datetimepicker();
-			
-			$('.e-datetime').datetimepicker({
-    	 		language: 'en',
-    	  		pick12HourFormat: true
- 	  	 	});
 		
-		*/
-			
+			// https://github.com/smalot/bootstrap-datetimepicker
+				
+			$("input.e-date").each(function() {
+        		$(this).datepicker({
+        			 format: $(this).attr("data-date-format"),
+        			 weekStart: $(this).attr("data-date-firstday")
+        		 });    		 
+    		});
+	
+		/*	
 			$("input.e-date").each(function() {
         		$(this).datepicker({
         			 dateFormat: $(this).attr("data-date-format"),
@@ -226,7 +226,7 @@ $(document).ready(function()
         		 $(this).datetimepicker('setDate', $("#"+newid).val());   		 
     		});
     		
-	
+	*/
 		
 		// Tabs -----------------------------------------------------
 		
