@@ -21,7 +21,7 @@
  */
 
 
-// TODO FIXME needs validation (e.g. Click URL field is not checked  to be sure it's an URL)
+// TODO FIXME needs validation (e.g. Click URL field is not checked  to be sure it's an URL) - also required fields?
 
 require_once('../../class2.php');
 if (!getperms('D'))
@@ -319,21 +319,6 @@ if ($action == "create")
 				$_POST['banner_active'] = $banner_row['banner_active'];
 				$_POST['banner_startdate'] = $banner_row['banner_startdate'];
 				$_POST['banner_enddate'] = $banner_row['banner_enddate'];
-
-				/*
-				if ($banner_row['banner_startdate']) {
-					$tmp = getdate($banner_row['banner_startdate']);
-					$_POST['startmonth'] = $tmp['mon'];
-					$_POST['startday'] = $tmp['mday'];
-					$_POST['startyear'] = $tmp['year'];
-				}
-				if ($banner_row['banner_enddate']) {
-					$tmp = getdate($banner_row['banner_enddate']);
-					$_POST['endmonth'] = $tmp['mon'];
-					$_POST['endday'] = $tmp['mday'];
-					$_POST['endyear'] = $tmp['year'];
-				}
-				*/
 
 				if (strpos($_POST['banner_campaign'], "^") !== FALSE) {
 					$campaignsplit = explode("^", $_POST['banner_campaign']);
