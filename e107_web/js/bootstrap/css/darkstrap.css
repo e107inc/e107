@@ -145,7 +145,7 @@ textarea::-webkit-input-placeholder {
 
 [class^="icon-"],
 [class*=" icon-"] {
-  background-image: url("../img/glyphicons-halflings.png");
+  background-image: url("../img/glyphicons-halflings-white.png");
 }
 
 .icon-white,
