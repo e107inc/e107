@@ -503,11 +503,25 @@ class themeHandler
 			$total = $xdata['@attributes']['total'];
 			
 			$text = "
-			<form action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='get'>
-				<div class='e-search'>".$frm->search('srch', $srch, 'go', $filterName, $filterArray, $filterVal).$frm->hidden('mode','online')."</div>
-			</form>";
+			<form class='form-search' action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='get'>
+				<div class='clearfix'>
+				<div class='span2'>".$frm->search('srch', $srch, 'go', $filterName, $filterArray, $filterVal).$frm->hidden('mode','online')."</div>";
+		
+			$amount =$limit;
+			
+			
+			if($total > $amount)
+			{
+				//$parms = $total.",".$amount.",".$from.",".e_SELF.'?mode='.$_GET['mode'].'&amp;frm=[FROM]';
+				
+				$url = rawurlencode(e_SELF.'?mode='.$_GET['mode'].'&frm=[FROM]');
+				$parms = "total=".$total."&amount=".$amount."&current=".$from."&url=".$url."&caption=off&tmpl=basic&navcount=4&glyphs=1";
+				
+				$text .= "<div class='span5' style='margin-left: 100px;margin-top:10px'>".$tp->parseTemplate("{NEXTPREV=$parms}",TRUE)."</div>";
+			}
 	
-	
+			$text .= "</div></div></form>";
+			
 		//	print_a($xdata);
 			//TODO use admin_ui including filter capabilities by sending search queries back to the xml script. 
 	
@@ -586,18 +600,14 @@ class themeHandler
 			{
 				$mes->addInfo("No Themes found which match your search criteria");		
 			}	
-				$amount =$limit;
+				
 			
 			
 				
 				
 				$ns->tablerender(TPVLAN_26.SEP."Available for Download", $text. $mes->render());
 					
-				if($total > $amount)
-				{
-					$parms = $total.",".$amount.",".$from.",".e_SELF.'?mode='.$_GET['mode'].'&amp;frm=[FROM]';
-					echo"<div class='center'>".$tp->parseTemplate("{NEXTPREV=$parms}",TRUE)."</div>";
-				}
+	
 			
 			
 		
@@ -1758,6 +1768,10 @@ class themeHandler
 			if(is_string($val['custompages']))
 			{
 				$custom[$name] = array_filter(explode(" ", $val['custompages']));	
+			}
+			elseif(is_array($val['custompages']))
+			{
+				$custom[$name] = $val['custompages'];	
 			}		
 		}
 
@@ -1768,12 +1782,12 @@ class themeHandler
 
 		$mes = e107::getMessage(); // DEBUG
 	
-		if($path == "bootstrap" )
+		if($path == "leasure" )
 		{
 		
-			$mes->addDebug("<h2>".$path."</h2>");
-			$mes->addDebug(print_a($vars,true));
-			$mes->addDebug("<hr />");
+		//	$mes->addDebug("<h2>".$path."</h2>");
+		//	$mes->addDebug(print_a($vars,true));
+		//	$mes->addDebug("<hr />");
 		}
 
 	

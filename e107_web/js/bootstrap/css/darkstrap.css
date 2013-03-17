@@ -145,8 +145,9 @@ textarea::-webkit-input-placeholder {
 
 [class^="icon-"],
 [class*=" icon-"] {
-  background-image: url("../img/glyphicons-halflings-white.png");
+  background-image: url("../img/glyphicons-halflings.png");
 }
+
 
 .icon-white,
 .nav-pills > .active > a > [class^="icon-"],
@@ -160,7 +161,15 @@ textarea::-webkit-input-placeholder {
 .dropdown-menu > .active > a > [class^="icon-"],
 .dropdown-menu > .active > a > [class*=" icon-"],
 .dropdown-submenu:hover > a > [class^="icon-"],
-.dropdown-submenu:hover > a > [class*=" icon-"] {
+.dropdown-submenu:hover > a > [class*=" icon-"],
+h1 > [class^="icon-"],
+h2 > [class^="icon-"],
+h3 > [class^="icon-"],
+h4 > [class^="icon-"],
+h5 > [class^="icon-"],
+.btn-primary > [class^="icon-"],
+.nav-tabs > li > a > [class^="icon-"]
+{
   background-image: url("../img/glyphicons-halflings-white.png");
 }
 

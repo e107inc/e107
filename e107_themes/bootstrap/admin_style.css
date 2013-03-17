@@ -756,7 +756,7 @@ ul#e-latest						{ line-height:17px }
 ul#e-latest li  a  span.badge	{ float:right; }
 ul#e-latest li  a:hover  		{ text-decoration: none; }
 
-/* Bootstrap tags */
+/* Bootstrap tags input */
 .tags {
 	display: inline-block;
 	margin-bottom:0px;
@@ -783,7 +783,11 @@ span.tag button.close {
 	padding-left:5px;
 }
 
-
+/* Theme Manager - Find online */
+.form-search > div > div > div > i.icon-search
+{
+	vertical-align:middle;
+}
 
 /*
 
