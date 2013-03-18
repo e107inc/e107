@@ -2,21 +2,18 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2012 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * $URL$
- * $Id$
  */
 
 require_once('class2.php');
-//include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 e107::coreLan('search');
 
 if (!check_class($pref['search_restrict'])) {
 	require_once(HEADERF);
-	$ns -> tablerender(LAN_SEARCH_20, "<div style='text-align: center'>".LAN_SEARCH_21."</div>");
+	$ns->tablerender(LAN_SEARCH_20, "<div style='text-align: center'>".LAN_SEARCH_21."</div>");
 	require_once(FOOTERF);
 	exit;
 }
@@ -304,7 +301,7 @@ if ($search_prefs['selector'] == 1)
   $SEARCH_VARS->SEARCH_MAIN_UNCHECKALL = "<input class='btn button' type='button' name='UnCheckAll' value='".LAN_SEARCH_2."' onclick='uncheckAll(this); uncheckG();' />";
 }
 
-$SEARCH_VARS->SEARCH_MAIN_SUBMIT = "<input type='hidden' name='r' value='0' /><input class='button' type='submit' name='s' value='".LAN_180."' />";
+$SEARCH_VARS->SEARCH_MAIN_SUBMIT = "<input type='hidden' name='r' value='0' /><input class='btn button' type='submit' name='s' value='".LAN_180."' />";
 
 $SEARCH_VARS->ENHANCED_ICON = "<img src='".e_IMAGE_ABS."generic/search_basic.png' style='width: 16px; height: 16px; vertical-align: top'
 alt='".LAN_SEARCH_23."' title='".LAN_SEARCH_23."' onclick=\"expandit('en_in'); expandit('en_ex'); expandit('en_ep'); expandit('en_be')\"/>";
