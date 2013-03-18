@@ -1813,9 +1813,11 @@ class e_parse extends e_parser
 
 	public function thumbUrl($url, $options = array(), $raw = false, $full = false)
 	{
-		if(substr($url,0,3)=="{e_") // Fix for broken links that use {e_MEDIA} etc. //XXX This is bad. 
+		if(substr($url,0,3)=="{e_") // Fix for broken links that use {e_MEDIA} etc.
 		{
-			//$url = $this->replaceConstants($url,'abs');			
+			//$url = $this->replaceConstants($url,'abs');	
+			// always switch to 'nice' urls when SC is used	
+			$url = str_replace($tp->getUrlConstants('sc'), $tp->getUrlConstants('raw'), $url);	
 		}
 				
 		if(!is_array($options))
