@@ -32,7 +32,8 @@ if($_POST['mode'] == 'tohtml')
      
     if(check_class($pref['post_html'])) // raw HTML within [html] tags. 
     {
-    	if(strstr($content,"[img]") || strstr($content, "[b]") || strstr($content, "[link")) // BC - convert old BB code text to html. 
+    	// Quick and dirty. 
+    	if(strstr($content,"[img]") || strstr($content, "[b]") || strstr($content, "[link") || strstr($content, "[youtube")) // BC - convert old BB code text to html. 
 		{
 			e107::getBB()->clearClass();
 			
