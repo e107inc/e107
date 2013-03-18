@@ -250,7 +250,7 @@ class e_menu
 	public function renderMenu($mpath, $mname='', $parm = '', $return = false)
 	{
 	//	global $sql; // required at the moment.
-		global $sc_style, $e107_debug;
+		global $sc_style, $e107_debug, $style;
 		
 		
 		$e107 = e107::getInstance();
@@ -278,7 +278,7 @@ class e_menu
 			$sql->select("page", "*", $query);
 			$page = $sql->fetch();
 			
-			$caption = $tp->toHTML($page['page_title'], true, 'parse_sc, constants');
+			$caption = $tp->toHTML($page['menu_title'], true, 'parse_sc, constants');
 			
 			if(vartrue($page['menu_template'])) // New v2.x templates. see core/menu_template.php 
 			{
@@ -289,19 +289,23 @@ class e_menu
 			// 	print_a($template['body']);           
 				$text = $tp->parseTemplate($template['body'], true, $page_shortcodes);
 			// 	echo "TEMPLATE= ($mpath)".$page['menu_template'];
-			
-			//	e107::getRender()->tablerender($caption, $text);
-				echo $text;
+				
+				if($template['noTableRender'] !==true)
+				{
+					e107::getRender()->tablerender($caption, $text);
+				}
+				else
+				{
+					echo $text;
+				}
 				
 			}
 			else 
 			{
 				
-				$text = $e107->tp->toHTML($page['page_text'], true, 'parse_sc, constants');
+				$text = $e107->tp->toHTML($page['menu_text'], true, 'parse_sc, constants');
 				e107::getRender()->tablerender($caption, $text);
 			}
-			
-			
 			
 		}
 		else
