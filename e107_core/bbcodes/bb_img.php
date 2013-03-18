@@ -38,7 +38,8 @@ class bb_img extends e_bb_base
     {
         $tp = e107::getParser();
           
-        $code_text  = str_replace('{e_MEDIA_IMAGE}', e_HTTP."thumb.php?src={e_MEDIA_IMAGE}", $code_text);
+		// Replace the bbcode path with a real one. 
+        $code_text  = str_replace('{e_MEDIA_IMAGE}', e_HTTP."thumb.php?src=e_MEDIA_IMAGE/", $code_text);
         $imgParms    = $this->processParm($code_text, $parm);
         
         foreach($imgParms as $k => $v)
