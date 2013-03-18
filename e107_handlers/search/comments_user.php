@@ -6,17 +6,11 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/search/comments_user.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 if (!defined('e107_INIT')) { exit; }
 
-$comments_title = LAN_SEARCH_98;
+$comments_title = ADLAN_0;
 $comments_type_id = 'profile';
 $comments_return['user'] = "u.user_name";
 $comments_table['user'] = "LEFT JOIN #user AS u ON c.comment_type='profile' AND u.user_id = c.comment_item_id";
