@@ -620,8 +620,7 @@ class e_media
 			$h = e107::getBB()->resizeHeight();
 			e107::getBB()->clearclass();
 				
-			$w = vartrue($w,300);
-            $h = vartrue($w,200);
+			
 		}
 		
 		
@@ -637,6 +636,14 @@ class e_media
 		
 		foreach($images as $im)
 		{
+			list($dbWidth,$dbHeight) = explode(" x ",$im['media_dimensions']);	
+				
+			$w = ($dbWidth > 400) ? 400 : intval($dbWidth);		
+		//	$w = vartrue($w,0);
+       //     $h = vartrue($w,0);		
+					
+				
+			
 			$class 			= ($category !='_icon') ? "media-select-image" : "media-select-icon";
 			$media_path 	= ($w || $h) ? $tp->thumbUrl($im['media_url'], "&w={$w}") : $tp->thumbUrl($im['media_url']); // $tp->replaceConstants($im['media_url'],'full'); // max-size 
 				
