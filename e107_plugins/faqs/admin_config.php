@@ -12,7 +12,6 @@
  *
  * @package     e107
  * @subpackage  faqs
- * @version     $Id$
  * @author      e107inc
  *
  *	FAQ plugin admin UI
