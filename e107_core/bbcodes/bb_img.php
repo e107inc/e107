@@ -51,7 +51,7 @@ class bb_img extends e_bb_base
         $w = e107::getBB()->resizeWidth(); // varies depending on the class set by external script. see admin->media-manager->prefs
         
         
-        $w = vartrue($imgParms['width']) ? intval($imgParms['width']) : vartrue(e107::getBB()->resizeWidth(),300);
+        $w = vartrue($imgParms['width']) ? intval($imgParms['width']) : vartrue(e107::getBB()->resizeWidth(),0);
      //   $h = vartrue($imgParms['height']) ? intval($imgParms['height']) : e107::getBB()->resizeHeight();
         
         $resize = "&w=".$w; // Always resize - otherwise the thumbnailer returns nothing. 

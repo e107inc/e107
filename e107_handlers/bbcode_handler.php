@@ -464,6 +464,7 @@ class e_bbcode
 	// return the class for a bbcode
 	function getClass($type='')
 	{
+				
 		$ret = "bbcode-".$type;
 		if($this->class)
 		{
