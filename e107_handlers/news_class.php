@@ -2,21 +2,18 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * News handler
  *
- * $URL$
- * $Id$
 */
 
 /**
  *
  * @package     e107
  * @subpackage	e107_handlers
- * @version     $Id$
  * @author      e107inc
  *
  * Classes:
@@ -196,8 +193,8 @@ class news {
 				{
 					$data['data']['news_id'] = $news['news_id'];
 	
-					$emessage->add(LAN_NEWS_46, E_MESSAGE_INFO, $smessages);
-					$message = "<strong>".LAN_NEWS_46."</strong>";
+					$emessage->add(LAN_NO_CHANGE, E_MESSAGE_INFO, $smessages);
+					$message = "<strong>".LAN_NO_CHANGE."</strong>";
 					
 
 					//FIXME - triggerHook should return array(message, message_type)
