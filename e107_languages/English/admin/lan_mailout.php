@@ -286,6 +286,6 @@ define('LAN_MAILOUT_259', '');
 
 define('LAN_SEND', 'Send');
 define('LAN_HOLD', 'Hold');
-define('LAN_SUBMIT', 'Do it!');
+//define('LAN_SUBMIT', 'Do it!'); LAN_RUN
 
 ?>
