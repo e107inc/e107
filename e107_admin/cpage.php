@@ -371,7 +371,7 @@ class page_admin_ui extends e_admin_ui
 		);
 
 		protected $books = array();
-		protected $cats = array();
+		protected $cats = array(0 => 'None');
 		protected $templates = array();
 
 		function init()
@@ -415,6 +415,8 @@ class page_admin_ui extends e_admin_ui
 			
 			$sql = e107::getDb();
 			$sql->gen("SELECT chapter_id,chapter_name,chapter_parent FROM #page_chapters ORDER BY chapter_parent asc, chapter_order");
+			
+			
 			while($row = $sql->fetch())
 			{
 				$cat = $row['chapter_id'];
