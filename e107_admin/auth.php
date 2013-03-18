@@ -163,31 +163,27 @@ else
 		
 		e107::css('inline',"
 		
-			body 				{ 	text-align: left; font-size:15px; line-height:1.5em; font-weight:normal; font-family:Arial, Helvetica, sans-serif; background:#081D28 url(".e_IMAGE."logo_template_large.png) no-repeat 50% 40px; }
+			body 				{ 	text-align: left; font-size:15px; line-height:1.5em; font-weight:normal; 
+									font-family:Arial, Helvetica, sans-serif; background-attachment: scroll; 
+									background-color: rgb(47, 47, 47); color: rgb(198, 198, 198);
+									background-clip: border-box; background-image: url(".e_IMAGE."logo_template_large.png); 
+									background-origin: padding-box; background-position: 50% 40px; 
+									background-repeat: no-repeat; background-size: auto auto 
+								}
 			a					{ 	color:#F6931E; text-decoration:none; }
 			a:hover				{ 	color:silver; text-decoration:none; }
 			.bold				{ 	font-weight:bold; }
 			.field				{ 	text-align:center;padding:5px }
 			.field input		{	padding:5px; 
-									border-width:1px;							
-    								border-style:solid;
-    								border-color:#aaa #c8c8c8 #c8c8c8 #aaa;
-									background:#fff;
-									font:16px arial, helvetica, sans-serif;
-									-moz-border-radius: 4px;
-									-webkit-border-radius: 4px;
-									border-radius: 4px;
-									-moz-box-shadow: 1px 1px 2px #999 inset;
-									-webkit-box-shadow: 1px 1px 2px #999 inset;
-									box-shadow: 1px 1px 2px #999 inset;
+								
 								}
 			
 			.field input:focus	{
-									border:1px solid #F6931E;
+									
 								}
 								
 			.field input:hover	{
-									border:1px solid #F6931E;
+									
 								}
 			
 			#login-admin 		{
@@ -196,13 +192,8 @@ else
 									margin-top:12%;
 									width:400px; 
 									padding: 10px 20px 0 20px;
-									-moz-border-radius:5px;
-									-webkit-border-radius:5px;
-									border-radius:5px;
-									-moz-box-shadow:5px 5px 20px #000000;
-									-webkit-box-shadow:5px 5px 20px #000000;
-									box-shadow:5px 5px 20px #000000;	
-									background-color: #FEFEFE;
+					
+								
 									/*	
 									
 									*/
@@ -267,8 +258,9 @@ class auth
 		$text = "<form id='admin-login' method='post' action='".e_SELF."' {$incChap} >
 		<div id='login-admin' class='well center'>
 		<div {$class}>
-		<h3>".e_DOMAIN." admin area</h3>
-        
+		<div class='navbar navbar-inner'>
+		<h4>admin area</h4>
+        </div>
 		    <div class='field'>
 		    	<label for='username'>".ADLAN_89."</label> 
 		    	<input class='tbox e-tip' type='text' required='required' name='authname' placeholder='".ADLAN_89."' id='username' size='30' value='' maxlength='".varset($pref['loginname_maxlength'], 30)."' />
