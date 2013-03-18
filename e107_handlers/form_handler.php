@@ -3242,15 +3242,17 @@ class e_form
 						$text .= "</div>";	
 					}
 					
-					$text .= "</div>";				 
+					$text .= "</div>";			
+					$text .= $this->renderCreateButtonsBar($elid, $data, $model, $tabId);	// Create/Update Buttons etc. 	 
 				 	
 				}
 				else   // No Tabs Present 
 				{
-					$text .= $this->renderCreateFieldset($elid, $data, $model, false);			
+					$text .= $this->renderCreateFieldset($elid, $data, $model, false);		
+					$text .= $this->renderCreateButtonsBar($elid, $data, $model, false);	// Create/Update Buttons etc. 	
 				}
 				
-				$text .= $this->renderCreateButtonsBar($elid, $data, $model);	// Create/Update Buttons etc. 
+				
 			}
 
 			$text .= "
@@ -3297,12 +3299,10 @@ class e_form
 		$hidden_fields = array();
 		foreach($fdata['fields'] as $key => $att)
 		{
-			
-			if($tab !== false && varset($att['tab'],0) !== $tab)
+			if($tab !== false && varset($att['tab'], 0) !== $tab)
 			{
 				continue;
 			}
-				
 			
 			// convert aliases - not supported in edit mod
 			if(vartrue($att['alias']) && !$model->hasData($key))
@@ -3331,7 +3331,19 @@ class e_form
 					$keyName .= '['.$path.']';
 				}
 			}
-		//	print_a($att)."<br />";
+			
+			if('hidden' === $att['type'])
+			{
+				if(!is_array($att['writeParms'])) parse_str(varset($att['writeParms']), $tmp);
+				else $tmp = $att['writeParms'];
+				
+				if(!vartrue($tmp['show']))
+				{
+					continue;
+				}
+				unset($tmp);
+			}
+			
 			// type null - system (special) fields
 			if(vartrue($att['type']) !== null && !vartrue($att['noedit']) && $key != $model->getFieldIdName())
 			{
@@ -3505,11 +3517,10 @@ class e_form
 		foreach($fdata['fields'] as $key => $att)
 		{
 			
-			if($att['tab'] !== $tab)
+			if($tab !== false && varset($att['tab'], 0) !== $tab)
 			{
 				continue;
 			}
-				
 			
 			// convert aliases - not supported in edit mod
 			if(vartrue($att['alias']) && !$model->hasData($key))
@@ -3538,7 +3549,21 @@ class e_form
 					$keyName .= '['.$path.']';
 				}
 			}
-		//	print_a($att)."<br />";
+			
+			if('hidden' === $att['type'])
+			{
+				if(!is_array($att['writeParms'])) parse_str(varset($att['writeParms']), $tmp);
+				else $tmp = $att['writeParms'];
+				
+				if(!vartrue($tmp['show']))
+				{
+					$hidden_fields[] = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()));
+					unset($tmp);
+					continue;
+				}
+				unset($tmp);
+			}
+			
 			// type null - system (special) fields
 			if(vartrue($att['type']) !== null && !vartrue($att['noedit']) && $key != $model->getFieldIdName())
 			{
@@ -3558,19 +3583,6 @@ class e_form
 						$model_required[$key][] = $att['title'];
 						$model_required[$key][] = varset($att['error']);
 					}
-				}
-
-				
-				if('hidden' === $att['type'])
-				{
-					parse_str(varset($att['writeParms']), $tmp);
-					if(!vartrue($tmp['show']))
-					{
-						$hidden_fields[] = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()));
-						unset($tmp);
-						continue;
-					}
-					unset($tmp);
 				}
 				 
 				/*
@@ -3604,7 +3616,6 @@ class e_form
 				
 		$text .= "
 				".implode("\n", $hidden_fields)."
-				".$required_help."
 				".vartrue($fdata['table_post'])."
 				<div class='buttons-bar center'>
 		";
