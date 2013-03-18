@@ -32,6 +32,16 @@ if($_POST['mode'] == 'tohtml')
      
     if(check_class($pref['post_html'])) // raw HTML within [html] tags. 
     {
+    	if(strstr($content,"[img]") || strstr($content, "[b]") || strstr($content, "[link")) // BC - convert old BB code text to html. 
+		{
+			e107::getBB()->clearClass();
+			
+			$content = str_replace('\r\n',"<br />",$content);
+			$content =  nl2br($content, true);
+			$content = $tp->toHtml($content, true);	
+		}		
+    		
+    	
         $content = str_replace("{e_BASE}","",$content); // We want {e_BASE} in the final data going to the DB, but not the editor. 
    
         $srch = array("<!-- bbcode-html-start -->","<!-- bbcode-html-end -->","[html]","[/html]");
@@ -61,11 +71,11 @@ if($_POST['mode'] == 'tobbcode')
     
 	if(check_class($pref['post_html'])) // Plain HTML mode. 
     {
-        $srch = array('src="'.e_HTTP.'thumb.php?');
-        $repl = array('src="{e_BASE}thumb.php?');
+        $srch = array('src="'.e_HTTP.'thumb.php?','src="/{e_MEDIA_IMAGE}');
+        $repl = array('src="{e_BASE}thumb.php?','src="{e_BASE}thumb.php?src={e_MEDIA_IMAGE}');
     
         $content = str_replace($srch, $repl, $content);
-    
+        
     // resize the thumbnail to match wysiwyg width/height. 
     
         $psrch = '/<img[^>]*src="{e_BASE}thumb.php\?src=([\S]*)w=([\d]*)&amp;h=([\d]*)"(.*)width="([\d]*)" height="([\d]*)"/i';
