@@ -1,21 +1,13 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Copyright (C) 2008-2009 e107 Inc (e107.org)
-|     http://e107.org
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_admin/comment.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ */
+
 require_once("../class2.php");
 if (!getperms("B")) 
 {
@@ -39,9 +31,9 @@ class comments_admin extends e_admin_dispatcher
 
 
 	protected $adminMenu = array(
-		'main/list'		=> array('caption'=> 'Manage', 'perm' => '0'),
+		'main/list'		=> array('caption'=> LAN_MANAGE, 'perm' => '0'),
 	//	'main/create' 	=> array('caption'=> LAN_CREATE, 'perm' => '0'),
-		'main/prefs' 	=> array('caption'=> 'Settings', 'perm' => '0'),
+		'main/prefs' 	=> array('caption'=> LAN_PREFS, 'perm' => '0'),
 	//	'main/custom'	=> array('caption'=> 'Custom Page', 'perm' => '0')		
 	);
 
@@ -83,18 +75,18 @@ class comments_admin_ui extends e_admin_ui
     	protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'comment_id'			=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 'forced'=> TRUE),
-            'comment_blocked' 		=> array('title'=> "Status",		'type' => 'method',		'inline'=>true, 'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),	 	// Photo
+            'comment_blocked' 		=> array('title'=> LAN_STATUS,		'type' => 'method',		'inline'=>true, 'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),	 	// Photo
 	
-	   		'comment_type' 			=> array('title'=> "Type",			'type' => 'method',			'width' => '10%',  'filter'=>TRUE),	
+	   		'comment_type' 			=> array('title'=> LAN_TYPE,			'type' => 'method',			'width' => '10%',  'filter'=>TRUE),	
 			
 			'comment_item_id' 		=> array('title'=> "item id",		'type' => 'number',			'width' => '5%'),
          	'comment_subject' 		=> array('title'=> "subject",		'type' => 'text',			'width' => 'auto', 'thclass' => 'left first'), // Display name
          	'comment_comment' 		=> array('title'=> "comment",		'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
-		 	'comment_author_id' 	=> array('title'=> "author",		'type' => 'user',			'data' => 'int',	'width' => 'auto', 'writeParms' => 'nameField=comment_author_name'),	// User id
+		 	'comment_author_id' 	=> array('title'=> LAN_AUTHOR,		'type' => 'user',			'data' => 'int',	'width' => 'auto', 'writeParms' => 'nameField=comment_author_name'),	// User id
          	'comment_author_name' 	=> array('title'=> "authorName",	'type' => 'user',			'width' => 'auto', 'readParms'=>'idField=comment_author_id&link=1', 'noedit' => true, 'forceSave' => true),	// User name
          	'u.user_name' 			=> array('title'=> "System user",	'type' => 'user',			'width' => 'auto', 'readParms'=>'idField=comment_author_id&link=1', 'noedit' => true),	// User name
 		    'comment_datestamp' 	=> array('title'=> LAN_DATESTAMP,	'type' => 'datestamp',		'width' => 'auto'),	// User date
-      		'comment_ip' 			=> array('title'=> "IP",			'type' => 'ip',			'width' => '10%', 'thclass' => 'center' ),	 // Real name (no real vetting)
+      		'comment_ip' 			=> array('title'=> LAN_UP,			'type' => 'ip',			'width' => '10%', 'thclass' => 'center' ),	 // Real name (no real vetting)
 			'comment_lock' 			=> array('title'=> "Lock",			'type' => 'boolean',		'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),
 			'options' 				=> array('title'=> LAN_OPTIONS,		'type' => null,				'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
 		);
@@ -105,11 +97,11 @@ class comments_admin_ui extends e_admin_ui
 		// optional, if $pluginName == 'core', core prefs will be used, else e107::getPluginConfig($pluginName);
 		
 		protected $prefs = array(
+			'comments_disabled'		=> array('title'=>PRFLAN_161, 	'type'=>'boolean'), // FIXME reverse? Check with Settings > Preferences > Comments/Posting
 			'anon_post'				=> array('title'=>PRFLAN_32, 	'type'=>'boolean'),
 			'comments_icon'			=> array('title'=>PRFLAN_89, 	'type'=>'boolean'),
 			'nested_comments'		=> array('title'=>PRFLAN_88, 	'type'=>'boolean'),
-			'allowCommentEdit'		=> array('title'=>PRFLAN_90, 	'type'=>'boolean'),
-			'comments_disabled'		=> array('title'=>PRFLAN_161, 	'type'=>'boolean'),
+			'allowCommentEdit'		=> array('title'=>PRFLAN_90, 	'type'=>'boolean'),			
 			'comments_emoticons'	=> array('title'=>PRFLAN_166, 	'type'=>'boolean')
 		);
 				

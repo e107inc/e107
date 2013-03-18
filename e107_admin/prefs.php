@@ -1569,7 +1569,7 @@ $text .= "
 				</colgroup>
 				<tbody>
 					<tr>
-						<td>Allow users to post comments: </td>
+						<td>".PRFLAN_161.":</td>
 						<td>
 							".$frm->radio_switch('comments_disabled', $pref['comments_disabled'], LAN_NO, LAN_YES,array('reverse'=>1))."
 						</td>
