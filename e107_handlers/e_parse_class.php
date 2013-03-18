@@ -1817,7 +1817,7 @@ class e_parse extends e_parser
 		{
 			//$url = $this->replaceConstants($url,'abs');	
 			// always switch to 'nice' urls when SC is used	
-			$url = str_replace($tp->getUrlConstants('sc'), $tp->getUrlConstants('raw'), $url);	
+			$url = str_replace($this->getUrlConstants('sc'), $this->getUrlConstants('raw'), $url);	
 		}
 				
 		if(!is_array($options))
