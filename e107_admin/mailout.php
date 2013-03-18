@@ -8,9 +8,6 @@
  *
  * Administration - Mailout
  *
- * $URL$
- * $Id$
- *
 */
 
 
@@ -19,7 +16,6 @@
  *
  *	@package	e107
  *	@subpackage	admin
- *	@version 	$Id$;
  */
 
 /*
@@ -1052,7 +1048,7 @@ function show_maint($debug = FALSE)
 
 		$text .= "<tr><td>".LAN_MAILOUT_182."</td><td>
 		
-		".$frm->admin_button('email_dross','no-value','delete',LAN_SUBMIT)."
+		".$frm->admin_button('email_dross','no-value','delete', LAN_RUN)."
 		<br /><span class='field-help'>".LAN_MAILOUT_252."</span></td></tr>";
 		$text .= "</tbody></table>\n</fieldset></form>";
 

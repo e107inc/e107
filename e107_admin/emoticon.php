@@ -351,7 +351,7 @@ class emotec
 		</fieldset>
 	</form>";
 
-		$e107->ns->tablerender(EMOLAN_PAGE_TITLE.' - '.LAN_EDIT.": '".$packID."'", $text);
+		$e107->ns->tablerender(EMOLAN_PAGE_TITLE.SEP.LAN_EDIT.": '".$packID."'", $text);
 	}
 
 
