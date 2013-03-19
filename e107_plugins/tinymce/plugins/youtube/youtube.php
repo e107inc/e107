@@ -12,7 +12,7 @@ e107::css('inline',"
 	.sizeblock { display:inline-block; width: 180px; margin:6px; font-size:14px}
 	input[type='radio'] {  vertical-align: middle; padding-right:10px; }
 	.e-footer-info		{ color: silver }
-	body 	{ background-color: #EEEEEE }
+	
 	label 	{ vertical-align:middle; line-height:12px}
 ");
 
@@ -68,7 +68,7 @@ $(document).ready(function()
         	}
 			 
 			 
-			var html = '<iframe width=\"'+ w +'\" height=\"'+ h +'\" src=\"http://www.youtube.com/embed/YNrn-7zjmYw\" frameborder=\"0\" allowfullscreen></iframe>';
+			var html = '<iframe width=\"'+ w +'\" height=\"'+ h +'\" src=\"http://www.youtube.com/embed/' + code + '\" frameborder=\"0\" allowfullscreen></iframe>';
 			
 			tinyMCEPopup.editor.execCommand('mceInsertContent', false, html);
   	 		tinyMCEPopup.close();
