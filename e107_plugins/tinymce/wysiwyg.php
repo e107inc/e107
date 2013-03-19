@@ -326,6 +326,8 @@ class wysiwyg
 			'cleanup'							=> 'true',
 			'convert_fonts_to_spans'			=> 'true',
 			'content_css'						=> $tp->replaceConstants($content_css),
+			'popup_css'							=> 'false', 
+			
 			'trim_span_elements'				=> 'true',
 			'inline_styles'						=> 'true',
 			'auto_resize'						=> 'false',
