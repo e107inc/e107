@@ -206,6 +206,9 @@ if (isset($eplug_css) && $eplug_css)
 		$e_js->otherCSS($kcss);
 	}
 }
+
+
+
 	if(e107::getPref('admincss') == "admin_dark.css")
 	{
 		$e_js->coreCSS('bootstrap/css/darkstrap.css');	
@@ -218,9 +221,6 @@ if (!defsettrue('e_IFRAME') && isset($pref['admincss']) && $pref['admincss'])
 	$css_file = file_exists(THEME.'admin_'.$pref['admincss']) ? 'admin_'.$pref['admincss'] : $pref['admincss'];
 	//echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
 	$e_js->themeCSS($css_file);
-	
-
-	
 	
 }
 elseif (isset($pref['themecss']) && $pref['themecss'])
@@ -336,6 +336,19 @@ if (vartrue($pref['e_meta_list']))
 		}
 	}
 }
+
+// --- Load plugin Header  files  --------
+if (vartrue($pref['e_header_list']) && is_array($pref['e_header_list']))
+{
+	foreach($pref['e_header_list'] as $val)
+	{
+		// no checks fore existing file - performance
+		e107_include(e_PLUGIN.$val."/e_header.php");
+	}
+}
+unset($e_headers);
+
+
 
 //XXX - do we still need it? Now we have better way of doing this - admin tools (see below)
 if (function_exists('headerjs'))
