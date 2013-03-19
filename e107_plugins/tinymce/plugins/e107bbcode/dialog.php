@@ -131,10 +131,10 @@ class e_bootstrap
 				
 			
 		
+		$text = "<div class='alert alert-warning'>Warning: These will only work if you have a bootstrap-based theme installed</div>";
 		
 		
-		
-		$text = '
+		$text .= '
 		<ul class="nav nav-tabs">';
 		
 		$text .= '<li class="active" ><a href="#mbuttons" data-toggle="tab">Buttons</a></li>';

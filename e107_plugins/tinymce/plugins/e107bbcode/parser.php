@@ -32,8 +32,8 @@ if($_POST['mode'] == 'tohtml')
         
 //	$content = e107::getBB()->htmltoBBcode($content);	//XXX This breaks inserted images from media-manager. :/
     e107::getBB()->setClass($_SESSION['media_category']);
-
-	if(check_class($pref['post_html'])) // raw HTML within [html] tags. 
+     
+    if(check_class($pref['post_html'])) // raw HTML within [html] tags. 
     {
     	
     	if(strstr($content,"[html]") === false) // BC - convert old BB code text to html. 
@@ -41,7 +41,7 @@ if($_POST['mode'] == 'tohtml')
 			e107::getBB()->clearClass();
 			
 			$content = str_replace('\r\n',"<br />",$content);
-			$content =  nl2br($content, true); // replace any that were missed. 
+			$content =  nl2br($content, true);
 			$content = $tp->toHtml($content, true);	
 		}		
     		
@@ -74,18 +74,17 @@ if($_POST['mode'] == 'tobbcode')
     
 	if(check_class($pref['post_html'])) // Plain HTML mode. 
     {
-        $srch = array('src="'.e_HTTP.'thumb.php?','src="/{e_MEDIA_IMAGE}');
-        $repl = array('src="{e_BASE}thumb.php?','src="{e_BASE}thumb.php?src=e_MEDIA_IMAGE/');
-    
-        $content = str_replace($srch, $repl, $content);
+        $srch 		= array('src="'.e_HTTP.'thumb.php?','src="/{e_MEDIA_IMAGE}');
+        $repl 		= array('src="{e_BASE}thumb.php?','src="{e_BASE}thumb.php?src=e_MEDIA_IMAGE/');
+        $content 	= str_replace($srch, $repl, $content);
 
     // resize the thumbnail to match wysiwyg width/height. 
     
-        $psrch = '/<img[^>]*src="{e_BASE}thumb.php\?src=([\S]*)w=([\d]*)&amp;h=([\d]*)"(.*)width="([\d]*)" height="([\d]*)"/i';
-        $prepl = '<img src="{e_BASE}thumb.php?src=$1w=$5&amp;h=$6"$4width="$5" height="$6" ';
+        $psrch 		= '/<img[^>]*src="{e_BASE}thumb.php\?src=([\S]*)w=([\d]*)&amp;h=([\d]*)"(.*)width="([\d]*)" height="([\d]*)"/i';
+        $prepl 		= '<img src="{e_BASE}thumb.php?src=$1w=$5&amp;h=$6"$4width="$5" height="$6" ';
     
-         $content = preg_replace($psrch, $prepl, $content);
-		 $content = $tp->parseBBTags($content,true); // replace html with bbcode equivalent 
+		$content 	= preg_replace($psrch, $prepl, $content);
+		$content 	= $tp->parseBBTags($content,true); // replace html with bbcode equivalent 
         
         echo ($content) ? "[html]".$content."[/html]" : ""; // Add the tags before saving to DB. 
     }
