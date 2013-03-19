@@ -21,7 +21,7 @@ e107::js('inline',"
 $(document).ready(function()
 {
 		$('.selectEmote').click(function () {			
-			var file_name = $(this).attr('src');
+			var file_name = $(this).attr('data-src');
 			var html = '<img src=\"' + file_name + '\" alt=\"\" />';
 			tinyMCEPopup.editor.execCommand('mceInsertContent', false, html);
 			tinyMCEPopup.close();
@@ -41,7 +41,7 @@ $(document).ready(function()
 		
 e107::lan('core','admin',TRUE);
 
-require_once(HEADERF);
+require_once(e_ADMIN."auth.php");
 
 
 	$emotes = $sysprefs->getArray("emote_".$pref['emotepack']);
@@ -53,7 +53,7 @@ require_once(HEADERF);
 		$key = preg_replace("#_(\w{3})$#", ".\\1", $key);
 		$value2 = substr($value, 0, strpos($value, " "));
 		$value = ($value2 ? $value2 : $value);
-			$str .= "\n<button class='btn btn-large selectEmote pull-left'>
+			$str .= "\n<button data-src=\"".e_IMAGE_ABS."emotes/" . $pref['emotepack'] . "/$key\" class='btn btn-large selectEmote pull-left'>
 			<img src=\"".e_IMAGE_ABS."emotes/" . $pref['emotepack'] . "/$key\" style=\"min-width:32px; min-height:32px; border:0px\" alt=\"\" />
 			</button>";
 		
@@ -68,7 +68,7 @@ $ns->tablerender("Emoticons",$str);
 
 
 
-require_once(FOOTERF);
+require_once(e_ADMIN."footer.php");
 exit;
 
 
