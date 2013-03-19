@@ -9,6 +9,7 @@
 	tinymce.create('tinymce.plugins.e107BBCodePlugin', {
 		init : function(ed, url) {
 			
+			// Bootstrap 
 			ed.addCommand('mceBoot', function() {
 				ed.windowManager.open({
 					file : url + '/dialog.php',
@@ -22,11 +23,33 @@
 			});
 
 			// Register  button
-			ed.addButton('e107bbcode', {
-				title : 'example.desc',
+			ed.addButton('bootstrap', {
+				title : 'Insert Bootstrap Elements',
 				cmd : 'mceBoot',
 				image : url + '/img/bootstrap.png'
 			});
+			
+			// e107 Bbcode 
+			ed.addCommand('mcee107', function() {
+				ed.windowManager.open({
+					file : url + '/dialog.php?bbcode',
+					width : 900 , // + parseInt(ed.getLang('e107bbcode.delta_width', 0)),
+					height : 450, //  + parseInt(ed.getLang('e107bbcode.delta_height', 0)),
+					inline : 1
+				}, {
+					plugin_url : url, // Plugin absolute URL
+					some_custom_arg : 'custom arg' // Custom argument
+				});
+			});
+
+			// Register  button
+			ed.addButton('e107bbcode', {
+				title : 'Insert e107 Bbcode',
+				cmd : 'mcee107',
+				image : url + '/img/bbcode.png'
+			});
+			
+			
 
 			// Add a node change handler, selects the button in the UI when a image is selected
 			ed.onNodeChange.add(function(ed, cm, n) {

@@ -4,7 +4,7 @@ define("e_ADMIN_AREA", true);
 require_once("../../../../class2.php");
 //e107::lan('core','admin',TRUE);
 define("e_IFRAME",true);
-require_once(e_ADMIN."auth.php");			
+//require_once(e_ADMIN."auth.php");			
 
 
 if(!USER || check_class($pref['post_html']) == FALSE){
@@ -71,7 +71,33 @@ $(document).ready(function()
 				tinyMCEPopup.close();
 		});
 	
+		$('#bbcodeInsert').click(function () 
+		{
+				s = $('#bbcodeValue').val();
+				s = s.trim(s);
 	
+				var html = $.ajax({
+					type: 'POST',
+					url: './parser.php',
+					data: { content: s, mode: 'tohtml' },
+					async       : false,
+
+					dataType: 'html',
+					success: function(html) {
+				      return html;
+				    }
+				}).responseText;
+
+				html = '<bbcode alt=\"'+encodeURIComponent(s)+'\">' + html + '</bbcode>   ' ;
+				
+				tinyMCEPopup.editor.execCommand('mceInsertContent', false, html);
+				tinyMCEPopup.close();
+		});
+	
+		$('a.bbcodeSelect').click(function () {
+			var html = $(this).html();	
+			$('#bbcodeValue').val(html);
+		});
 		
 		$('#e-cancel').click(function () {
 					
@@ -95,6 +121,19 @@ class e_bootstrap
 	{
 		$ns = e107::getRender();
 		
+		
+		if(e_QUERY == 'bbcode')
+		{
+			echo $this->bbcodeForm();		
+			return;
+		}
+					
+				
+			
+		
+		
+		
+		
 		$text = '
 		<ul class="nav nav-tabs">';
 		
@@ -103,6 +142,7 @@ class e_bootstrap
 		$text .= '<li><a href="#badges" data-toggle="tab">Labels &amp; Badges</a></li>';
 	
 		$text .= '<li><a href="#glyphs" data-toggle="tab">Glyphicons</a></li>';	
+		
 		$text .= '</ul>';
 		 
 		$text .= '<div class="tab-content">';
@@ -112,6 +152,8 @@ class e_bootstrap
 		$text .= '<div class="tab-pane left" id="badges">'.$this->badgeForm().'</div>';
 		
 		$text .= '<div class="tab-pane left" id="glyphs">'.$this->glyphicons().'</div>';
+		
+	
 		$text .= '</div>';
 
 		echo $text;
@@ -204,9 +246,46 @@ class e_bootstrap
 	
 	}
 	
-				
-				
+	
+	function bbcodeForm()
+	{
+		$list = e107::getPref('bbcode_list');
+		
+		$text .= "
+		<h4>e107 Bbcodes</h4>
+		<div class='well'>
+		<table class='table table-striped'>
+		<tr><th>Plugin</th>
+		<th>Bbcode</th>
+		</tr>
+		";
+		foreach($list as $plugin=>$val)
+		{
+			$text .= "<tr><td>".$plugin."</td>
+			<td>";
 			
+			foreach($val as $bb=>$v)
+			{
+				$text .= "<a href='#' class='bbcodeSelect' style='cursor:pointer'>[".$bb."][/".$bb."]</a>";
+			}
+			$text .= "</td>
+			</tr>";
+		}
+			
+		$text .= "</table>
+		</div>";
+			
+		$frm = e107::getForm();
+		$text .= $frm->text('bbcodeValue','',false,'size=xlarge');
+		$text .= $frm->button('bbcodeInsert','go','other','Insert');
+			
+		
+		return $text;
+				
+		
+	}
+				
+	
 			
 	function glyphicons()
 	{

@@ -26,6 +26,9 @@ if($_POST['mode'] == 'tohtml')
     
 	// XXX @Cam possible fix - convert to BB first, see news admin AJAX request/response values for reference why
 	$content = stripslashes($_POST['content']);
+
+	
+
         
 //	$content = e107::getBB()->htmltoBBcode($content);	//XXX This breaks inserted images from media-manager. :/
     e107::getBB()->setClass($_SESSION['media_category']);
@@ -47,6 +50,7 @@ if($_POST['mode'] == 'tohtml')
    
         $srch = array("<!-- bbcode-html-start -->","<!-- bbcode-html-end -->","[html]","[/html]");
         $content = str_replace($srch,"",$content);
+		$content = e107::getBB()->parseBBCodes($content); // parse the <bbcode> tag so we see the HTML equivalent while editing!
         echo $content;
     }
     else  // bbcode Mode. 
@@ -76,13 +80,14 @@ if($_POST['mode'] == 'tobbcode')
         $repl = array('src="{e_BASE}thumb.php?','src="{e_BASE}thumb.php?src=e_MEDIA_IMAGE/');
     
         $content = str_replace($srch, $repl, $content);
-        
+
     // resize the thumbnail to match wysiwyg width/height. 
     
         $psrch = '/<img[^>]*src="{e_BASE}thumb.php\?src=([\S]*)w=([\d]*)&amp;h=([\d]*)"(.*)width="([\d]*)" height="([\d]*)"/i';
         $prepl = '<img src="{e_BASE}thumb.php?src=$1w=$5&amp;h=$6"$4width="$5" height="$6" ';
     
          $content = preg_replace($psrch, $prepl, $content);
+		 $content = $tp->parseBBTags($content,true); // replace html with bbcode equivalent 
         
         echo ($content) ? "[html]".$content."[/html]" : ""; // Add the tags before saving to DB. 
     }

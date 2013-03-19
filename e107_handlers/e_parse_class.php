@@ -1421,14 +1421,15 @@ class e_parse extends e_parser
 
 						case 'html' : // This overrides and deprecates html.bb
 							$proc_funcs = TRUE;
-							$convertNL = FALSE;
-							$code_text = str_replace("\r\n", " ", $code_text);
+							$noBreak = TRUE;
+						//	$code_text = str_replace("\r\n", " ", $code_text);
 							$code_text = html_entity_decode($code_text, ENT_QUOTES, CHARSET);
 							$html_start = "<!-- bbcode-html-start -->"; // markers for html-to-bbcode replacement. 
 							$html_end	= "<!-- bbcode-html-end -->";
 							$full_text = str_replace(array("[html]","[/html]"), "",$code_text); // quick fix.. security issue?							
 							$full_text =$this->replaceConstants($full_text,'abs');	
 							$full_text = $html_start.$full_text.$html_end;
+							$full_text = $this->parseBBTags($full_text); // strip <bbcode> tags. 
 							break;
 							
 						case 'table' : // strip <br /> from end of <table>		
@@ -1558,9 +1559,10 @@ class e_parse extends e_parser
 						// Reduce newlines in all forms to a single newline character (finds '\n', '\r\n', '\n\r')
 						if (!$opts['nobreak'])
 						{
-							if ($convertNL)
+							if ($convertNL && substr($sub_blk,0,6) != '[html]') //XXX Quick Fix, find a cleaner way. 
 							{
 								// We may need to convert to <br /> later
+							
 								$sub_blk = preg_replace("#[\r]*\n[\r]*#", E_NL, $sub_blk);
 							}
 							else
@@ -2431,18 +2433,31 @@ class e_parser
 		{
 	        $tmp = $doc->getElementsByTagName($find);
 			
+			 
 			foreach($tmp as $k=>$node)
 			{
 				$tag = $node->nodeName;
+				$inner = $node->C14N();
+				 $inner = str_replace("&#xD;","",$inner);
 				
 				foreach ($node->attributes as $attr)
 	            {
 					$name = $attr->nodeName;
 	           		$value = $attr->nodeValue; 
 					$ret[$tag][$k][$name] = $value; 
-				}	
+				}
+				
+				$ret[$tag][$k]['@value'] = $inner; 
+				
+					
 			}
 		}
+		
+		if($header == false)
+		{
+			unset($ret['html'],$ret['body']);
+		}	
+		
 		
 		return $ret;
 	}
@@ -2456,6 +2471,29 @@ class e_parser
 		return $text;	
 	}
 	
+	/** 
+	 * Parse new <bbcode> tags into bbcode output. 
+	 * @param $retainTags : when you want to replace html and retain the <bbcode> tags wrapping it. 
+	 * @return html 
+	 */
+	function parseBBTags($text,$retainTags = false)
+	{
+		$bbcodes = $this->getTags($text, 'bbcode');
+			
+		foreach($bbcodes as $v)
+		{
+			foreach($v as $val)
+			{
+				$tag = urldecode($val['alt']);
+				$repl = ($retainTags == true) ? '$1'.$tag.'$2' : $tag;
+				$text = preg_replace('/(<bbcode[^>]*>).*(<\/bbcode>)/s',$repl, $text); //FIXME - handle multiple instances of bbcodes. 
+			}	
+		}
+		return $text;
+	}
+
+
+
 	
     /**
      * Perform and render XSS Test Comparison
