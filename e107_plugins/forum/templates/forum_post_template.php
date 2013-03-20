@@ -225,21 +225,22 @@ $THREADTOPIC_REPLY = "
 }
 
 
+// New in v2.x - requires a bootstrap theme be loaded.  
 
-$FORUMPOST_TEMPLATE['form']		= "
+$FORUMPOST_TEMPLATE['form']		= " 
 									<div style='text-align:center'>
 									<div class='spacer'>
 									{FORMSTART}
-									<table style='".USER_WIDTH."' class='fborder table'>
+									<table class='table'>
 									<tr>
-									<td colspan='2' class='fcaption'>{BACKLINK}
+									<td colspan='2'>{BACKLINK}
 									</td>
 									</tr>
 									{USERBOX}
 									{SUBJECTBOX}
 									<tr>
-									<td class='forumheader2' style='width:20%'>{POSTTYPE}</td>
-									<td class='forumheader2' style='width:80%'>
+									<td style='width:20%'>{POSTTYPE}</td>
+									<td style='width:80%'>
 									{POSTBOX}<br />
 									{EMAILNOTIFY}<br />
 									{NOEMOTES}<br />
@@ -247,10 +248,10 @@ $FORUMPOST_TEMPLATE['form']		= "
 									</td>
 									</tr>
 									{POLL}
-									{FILEATTACH}
+									{FILEATTACH} 
 									
 									<tr style='vertical-align:top'>
-									<td colspan='2' class='forumheader' style='text-align:center'>
+									<td colspan='2' style='text-align:center'>
 									{BUTTONS}
 									</td>
 									</tr>
@@ -260,9 +261,6 @@ $FORUMPOST_TEMPLATE['form']		= "
 									</div></div>
 ";
 $FORUMPOST_TEMPLATE['reply']	= "";
-
-
-$FORUMPOST = $FORUMPOST_TEMPLATE['form'];
 
 
 

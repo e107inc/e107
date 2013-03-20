@@ -352,6 +352,9 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 					require_once(e_PLUGIN."forum/templates/forum_posted_template.php");
 				}
 			}
+	
+			
+
 
 			echo (isset($_POST['newthread']) ? $FORUMTHREADPOSTED : $FORUMREPLYPOSTED);
 			require_once(FOOTERF);
@@ -503,6 +506,11 @@ if (!vartrue($FORUMPOST))
   }
 }
 
+if(isset($FORUMPOST_TEMPLATE) && (e_BOOTSTRAP === true))
+{
+	$FORUMPOST 			= $FORUMPOST_TEMPLATE['form'];	
+	$FORUMPOST_REPLY	 = $FORUMPOST_TEMPLATE['form'];	
+}
 
 if($action == 'rp')
 {
