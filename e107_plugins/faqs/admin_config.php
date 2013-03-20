@@ -224,49 +224,28 @@ class faq_main_ui extends e_admin_ui
 		$this->fields['faq_parent']['writeParms'] = $this->categories;
 	}
 	
-	
-	
-		
-	/**
-	 * FAQ categories
-	 * @var array
-	 */
-	
-
-	/**
-	 * Get FAQ Category data
-	 *
-	 * @param integer $id [optional] get category title, false - return whole array
-	 * @param mixed $default [optional] default value if not found (default 'n/a')
-	 * @return array
-	 */
-	 /*
-	function getFaqCategory($id = false, $default = 'n/a')
+	public function beforeCreate($new_data)
 	{
-		
-		if(null === $this->categories) //auto-retrieve on first call
+		// trim spaces
+		if(!empty($new_data['faq_tags']))
 		{
-			$sql = e107::getDb();
-			if($sql->db_Select('faqs_info'))
-			{
-				while ($row = $sql->db_Fetch())
-				{
-					$this->categories[$row['faq_info_id']] = $row['faq_info_title'];
-				}
-			}
-			else
-			{
-				$this->categories = array(); //prevent PHP warnings
-			}
+			$new_data['faq_tags'] = implode(',', array_map('trim', explode(',', $new_data['faq_tags'])));
 		}
-		if(false === $id)
-		{
-			return $this->categories;
-		}
-		return vartrue($this->categories[$id], $default);
+
+		return $new_data;
 	}
-	  */
-		
+	
+	
+	public function beforeUpdate($new_data, $old_data, $id)
+	{
+		// trim spaces
+		if(!empty($new_data['faq_tags']))
+		{
+			$new_data['faq_tags'] = implode(',', array_map('trim', explode(',', $new_data['faq_tags'])));
+		}
+
+		return $new_data;
+	}
 }
 
 class faq_admin_form_ui extends e_admin_form_ui
