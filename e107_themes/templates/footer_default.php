@@ -335,9 +335,10 @@ $etag = md5($page);
 //header('Pragma:');
 // previously disabled or there is posted data
 $canCache = e107::canCache();
+ header("Cache-Control: must-revalidate", true);	
 if($canCache && !deftrue('e_NOCACHE') && $_SERVER['REQUEST_METHOD'] === 'GET' && $_SERVER['QUERY_STRING'] != 'logout')
 {
-	header("Cache-Control: must-revalidate", true);	
+	// header("Cache-Control: must-revalidate", true);	
 	if(e107::getPref('site_page_expires')) // TODO - allow per page
 	{ 
 		if (function_exists('date_default_timezone_set')) 
