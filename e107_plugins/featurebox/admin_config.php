@@ -44,7 +44,7 @@ class fb_admin extends e_admin_dispatcher
 		'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
 		'category/list' 	=> array('caption'=> LAN_CATEGORIES, 'perm' => 'P'),
 		'category/create'	=> array('caption'=> "Create Category", 'perm' => 'P'),
-	//	'main/prefs' 	=> array('caption'=> LAN_PREFS, 'perm' => '0'),
+		'main/prefs' 	=> array('caption'=> LAN_PREFS, 'perm' => '0'),
 	//	'main/custom'	=> array('caption'=> 'Custom Page', 'perm' => '0')		
 	);
 
@@ -225,7 +225,10 @@ class fb_main_ui extends e_admin_ui
 	 
 	protected $fieldpref = array('checkboxes', 'fb_id', 'fb_category', 'fb_title', 'fb_template', 'fb_class', 'fb_order', 'options');
 	
-	protected $prefs = array();
+	protected $prefs = array( 
+		'menu_category'	   	=> array('title'=> "Featurebox Menu Category", 'type'=>'dropdown', 'help' => 'Category to use for the featurebox menu')
+	);
+
 	
 
 	
@@ -238,19 +241,19 @@ class fb_main_ui extends e_admin_ui
 			while ($row = e107::getDb()->db_Fetch())
 			{
 				$id = $row['fb_category_id'];
+				$tmpl = $row['fb_category_template'];
 				$categories[$id] = $row['fb_category_title'];
+				$menuCat[$tmpl] = $row['fb_category_title'];
 			}
 		}
 
-		$this->fields['fb_category']['writeParms'] 		= $categories;
-		// DEPRECATED
-		//$this->fields['fb_rendertype']['writeParms'] 	= array(FBLAN_23,FBLAN_24);
-		//$this->fields['fb_mode']['writeParms'] 			= array(FBLAN_13,FBLAN_14);
-		
+		$this->fields['fb_category']['writeParms'] 		= $categories;	
 		$this->fields['fb_category']['readParms'] 		= $categories;
-		// DEPRECATED
-		//$this->fields['fb_rendertype']['readParms'] 	= array(FBLAN_23,FBLAN_24);
-		//$this->fields['fb_mode']['readParms'] 			= array(FBLAN_13,FBLAN_14);			
+		
+		unset($menuCat['unassigned']);
+		
+		$this->prefs['menu_category']['writeParms'] 	= $menuCat;
+		$this->prefs['menu_category']['readParms'] 		= $menuCat;
 
 	}
 		
