@@ -1123,8 +1123,8 @@ else
 }
 
 $layout = isset($layout) ? $layout : '_default';
-define('HEADERF', e_THEME."templates/header{$layout}.php");
-define('FOOTERF', e_THEME."templates/footer{$layout}.php");
+define('HEADERF', e_CORE."templates/header{$layout}.php");
+define('FOOTERF', e_CORE."templates/footer{$layout}.php");
 
 if (!file_exists(HEADERF))
 {

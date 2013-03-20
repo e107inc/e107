@@ -335,7 +335,7 @@ $etag = md5($page);
 //header('Pragma:');
 // previously disabled or there is posted data
 $canCache = e107::canCache();
- header("Cache-Control: must-revalidate", true);	
+ header("Cache-Control: must-revalidate", true); //XXX testing it here to check for improvement. 
 if($canCache && !deftrue('e_NOCACHE') && $_SERVER['REQUEST_METHOD'] === 'GET' && $_SERVER['QUERY_STRING'] != 'logout')
 {
 	// header("Cache-Control: must-revalidate", true);	
