@@ -263,7 +263,7 @@ class auth
         </div>
 		    <div class='field'>
 		    	<label for='username'>".ADLAN_89."</label> 
-		    	<input class='tbox e-tip' type='text' required='required' name='authname' placeholder='".ADLAN_89."' id='username' size='30' value='' maxlength='".varset($pref['loginname_maxlength'], 30)."' />
+		    	<input class='tbox e-tip' type='text' autofocus required='required' name='authname' placeholder='".ADLAN_89."' id='username' size='30' value='' maxlength='".varset($pref['loginname_maxlength'], 30)."' />
 		    	<div class='field-help'>Please enter your username or email</div>
 		   	</div>			
 		
