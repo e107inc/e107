@@ -133,7 +133,7 @@ $FEATUREBOX_CATEGORY_TEMPLATE['dynamic']['js_type'] = 'prototype';
 
 
 // ------------------------------------------ TABS (Legacy Prototype.js) ---------------------------
-
+/*
 $FEATUREBOX_CATEGORY_TEMPLATE['tabs-proto']['list_start'] = '
 <div class="box featurebox admintabs" id="featurebox-tab-container">
 	{FEATUREBOX_NAVIGATION|tabs=loop&uselimit}
@@ -169,44 +169,44 @@ $FEATUREBOX_CATEGORY_TEMPLATE['tabs-proto']['js'] = '{e_WEB_JS}core/tabs.js';
 // inline JS, without <script> tags
 $FEATUREBOX_CATEGORY_TEMPLATE['tabs-proto']['js_inline'] = 'new e107Widgets.Tabs("featurebox-tab-container", { bookmarkFix: false });';
 $FEATUREBOX_CATEGORY_TEMPLATE['tabs-proto']['js_type'] = 'prototype';
+*/
+
+// ------------------------------------------ TABS (Bootstrap) ----------------------------------------------
 
 
-// ------------------------------------------ TABS (jquery) ----------------------------------------------
-
-
-$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['list_start'] = '
-<div class="box featurebox e-tabs" id="featurebox-tab-container">
-	{FEATUREBOX_NAVIGATION|tabs=loop&uselimit}	
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['list_start'] = '
+<div class="box featurebox tab-content">
+	{FEATUREBOX_NAVIGATION|bootstrap_tabs=loop&uselimit}	
 ';
 
-$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['list_end'] = '
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['list_end'] = '
 	</div>
 	<div class="clear"><!-- --></div>
 </div>
 ';
 // no column support
-$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['col_start'] = '<div id="tab-{FEATUREBOX_COLSCOUNT}-activate"><div class="tab-content">';
-$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['col_end'] = '</div></div>';
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['col_start'] = '<div id="tab-{FEATUREBOX_COLSCOUNT}" class="tab-pane {FEATUREBOX_ACTIVE}">';
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['col_end'] = '</div>';
 
 // ajax navigation (unobtrusive)
-$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['item_start'] = '';
-$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['item_end'] = '';
-$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['item_separator'] = '<div class="clear"><!-- --></div>';
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['item_start'] = '';
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['item_end'] = '';
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['item_separator'] = '<div class="clear"><!-- --></div>';
 
 // empty item  - used with col templates, no shortcodes just basic markup
-$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['item_empty'] = '';
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['item_empty'] = '';
 
-$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['nav_start'] = '<ul>';
-$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['nav_item'] = '<li><a href="#tab-{FEATUREBOX_COUNTER}-activate">{FEATUREBOX_TITLE}</a></li>';
-$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['nav_end'] = '</ul>';
-$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['nav_separator'] = '';
-//<div class="e-tabs">
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['nav_start'] = '<ul class="nav nav-tabs">';
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['nav_item'] = '<li class="{FEATUREBOX_ACTIVE}"><a data-toggle="tab" href="#tab-{FEATUREBOX_COUNTER}">{FEATUREBOX_TITLE}</a></li>';
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['nav_end'] = '</ul>';
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['nav_separator'] = '';
+//<div class="e-bootstrap_tabs">
 // external JS, comma separated list
 
-$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['js'] = '';
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['js'] = '';
 // inline JS, without <script> tags
-$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['js_inline'] = '';
-$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['js_type'] = 'jquery';
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['js_inline'] = '';
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['js_type'] = 'jquery';
 
 
 
@@ -290,11 +290,11 @@ $FEATUREBOX_CATEGORY_TEMPLATE['camera']['js_type'] = 'jquery';
  */
 $FEATUREBOX_CATEGORY_INFO = array(
 	'bootstrap_carousel' 	=> array('title' => 'Bootstrap Carousel', 		'description' => "Bootstrap's Hero slider"),
-	'tabs' 					=> array('title' => 'Tabs (jquery UI)'	,	 	'description' => 'Tabbed Feature box items utlizing jQuery UI'),
+	'bootstrap_tabs'		=> array('title' => 'Bootstrap Tabs'	,	 	'description' => 'Tabbed Feature box items'),
 	'camera' 				=> array('title' => 'Image-Slider (jquery)'	, 	'description' => 'Image transitions using the "Camera" jquery plugin'),
 	'accordion' 			=> array('title' => 'Accordion (jquery)'	, 	'description' => 'Accordion utilizing jQuery UI'),
-	'default' 				=> array('title' => 'Default (prototype.js)', 'description' => 'Flat - show by category limit'),
-	'dynamic' 				=> array('title' => 'Dynamic (prototype.js)', 'description' => 'Load items on click (AJAX)'),
-	'tabs-proto' 			=> array('title' => 'Tabs (prototype.js)'	, 'description' => 'Tabbed Feature box items')
+	'default' 				=> array('title' => 'Default', 					'description' => 'Flat - show by category limit'),
+//  DEPRECATED	'dynamic' 				=> array('title' => 'Dynamic (prototype.js)', 	'description' => 'Load items on click (AJAX)'),
+// DEPRECATED	'tabs-proto' 			=> array('title' => 'Tabs (prototype.js)'	, 	'description' => 'Tabbed Feature box items')
 );
 ?>
