@@ -41,6 +41,14 @@ class ecache {
 	}
 
 	/**
+	 * Set the MD5 Hash
+	 */
+	public function setMD5($text)
+	{
+		$this->CachePageMD5 = md5($text);	
+	}
+
+	/**
 	* @return string
 	* @param string $query
 	* @desc Internal class function that returns the filename of a cache file based on the query.
@@ -107,7 +115,7 @@ class ecache {
 	* @desc Returns the data from the cache file associated with $query, else it returns false if there is no cache for $query.
 	* @scope public
 	*/
-	function retrieve($CacheTag, $MaximumAge = false, $ForcedCheck = false, $syscache = false)
+	public function retrieve($CacheTag, $MaximumAge = false, $ForcedCheck = false, $syscache = false)
 	{
 		if(($ForcedCheck != false ) || ($syscache == false && $this->UserCacheActive) || ($syscache == true && $this->SystemCacheActive) && !e107::getParser()->checkHighlighting())
 		{
@@ -161,9 +169,9 @@ class ecache {
 
 	/**
 	 *
-	 * @param string $CacheTag - name of tag for future retrieval
-	 * @param data $Data		- data to be cached
-	 * @param boolean $ForceCache [optional] if TRUE, writes cache even when disabled
+	 * @param string $CacheTag - name of tag for future retrieval - should NOT contain an MD5. 
+	 * @param data $Data - data to be cached
+	 * @param boolean $ForceCache [optional] if TRUE, writes cache even when disabled in admin prefs. 
 	 * @param boolean $bRaw [optional] if TRUE, writes data exactly as provided instead of prefacing with php leadin
 	 * @param boolean $syscache [optional]
 	 * @return none
@@ -181,7 +189,7 @@ class ecache {
 
 	/**
 	* @return void
-	* @param string $CacheTag - name of tag for future retrieval
+	* @param string $CacheTag - name of tag for future retrieval - should NOT contain an MD5
 	* @param string $Data - data to be cached
 	* @param bool   $ForceCache (optional, default false) - if TRUE, writes cache even when disabled
 	* @param bool   $bRaw (optional, default false) - if TRUE, writes data exactly as provided instead of prefacing with php leadin
@@ -210,7 +218,7 @@ class ecache {
 	 * @return bool
 	 *
 	 */
-	function clear($CacheTag = '', $syscache = false, $related = false)
+	public function clear($CacheTag = '', $syscache = false, $related = false)
 	{
 		$file = ($CacheTag) ? preg_replace("#\W#", "_", $CacheTag)."*.cache.php" : "*.cache.php";
 		e107::getEvent()->triggerAdminEvent('cache_clear', "cachetag=$CacheTag&file=$file&syscache=$syscache");
@@ -276,8 +284,8 @@ class ecache {
 	}
 	
 	
-	// Clear Full Catche
 	/**
+	 * Clear Full Cache
 	 * @param string $type: content | system| browser | db | image
 	 * @example clearAll('db');
 	 */
