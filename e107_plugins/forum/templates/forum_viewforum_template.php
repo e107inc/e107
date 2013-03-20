@@ -15,7 +15,7 @@ if (!defined('e107_INIT')) { exit; }
 if(!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
 
 
-/*
+
 if (!$FORUM_VIEW_START)
 {
 $FORUM_VIEW_START = "
@@ -257,7 +257,7 @@ if (!$FORUM_NORMAL_ROW) {
 }
 
 
-*/
+
 
 
 
@@ -278,7 +278,7 @@ $FORUM_CRUMB['forum']['value'] = "{FORUM_TITLE}";
 
 
 
-// New in v2.x - replaces all of the above $FORUM_VIEW_xxxx etc. 
+// New in v2.x - requires a bootstrap theme be loaded.  
 
 // <small>{BREADCRUMB}</small>  //FIXME Breadcrumb looks crummy
 

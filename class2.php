@@ -1603,6 +1603,7 @@ function init_session()
 		define('GUEST', true);
 		define('USERCLASS', '');
 		define('USEREMAIL', '');
+		define('USERSIGNATURE', '');
 
 		if($user->hasSessionError())
 		{
@@ -1623,6 +1624,7 @@ function init_session()
 		define('USERPHOTO', $user->get('user_sess'));
 		define('USERJOINED', $user->get('user_join'));
 		define('USERVISITS', $user->get('user_visits'));
+		define('USERSIGNATURE', $user->get('user_signature'));
 
 		define('ADMIN', $user->isAdmin());
 		define('ADMINID', $user->getAdminId());

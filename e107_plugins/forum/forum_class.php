@@ -176,7 +176,7 @@ class e107forum
 				$postInfo['user_name'] = USERNAME;
 				$postInfo['user_email'] = USEREMAIL;
 				$postInfo['user_image'] = USERIMAGE; 
-				$postInfo['user_signature'] = USERSIG; 
+				$postInfo['user_signature'] = USERSIGNATURE; 
 
 				if($_POST['insert'] == 1)
 				{

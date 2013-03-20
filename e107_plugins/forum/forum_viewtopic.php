@@ -168,7 +168,7 @@ if (!vartrue($FORUMSTART))
 
 
 // New in v2.x
-if(is_array($FORUM_VIEWTOPIC_TEMPLATE))
+if(is_array($FORUM_VIEWTOPIC_TEMPLATE) && (e_BOOTSTRAP === true))
 {
 	$FORUMSTART 			= $FORUM_VIEWTOPIC_TEMPLATE['start'];
 	$FORUMTHREADSTYLE		= $FORUM_VIEWTOPIC_TEMPLATE['thread'];

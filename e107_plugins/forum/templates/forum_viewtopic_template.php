@@ -33,7 +33,7 @@ $sc_style['USER_EXTENDED']['location.text_value']['post'] = "<br />";
 
 
 
-/*
+
 $FORUMSTART = "<a id='top'></a><div style='text-align:center'>
 	<div class='spacer'>
 	<table style='".USER_WIDTH."' class='fborder table'>
@@ -287,7 +287,7 @@ $FORUMDELETEDSTYLE = "<tr>
 	<td colspan='2'>
 	</td>
 	</tr>";
-*/
+
 
 $FORUM_CRUMB['sitename']['value'] = "<a class='forumlink' href='{SITENAME_HREF}'>{SITENAME}</a>";
 $FORUM_CRUMB['sitename']['sep'] = " :: ";
@@ -305,92 +305,8 @@ $FORUM_CRUMB['forum']['value'] = "<a class='forumlink' href='{FORUM_HREF}'>{FORU
 
 
 // {MODERATORS} {THREADSTATUS}
-/*
-$FORUM_VIEWTOPIC_TEMPLATE['start'] 	= "<a id='top'></a>
-	
-	<div class='row'>
-		<div class='span6 pull-left'>{BACKLINK}</div>
-	</div>
-	
-	<div class='row'>
-		<div class='span9 pull-left'><h3>{THREADNAME}</h3></div><div class='span3 pull-right right' style='padding-top:10px'>{BUTTONSX}</div>
-	</div>
-	
-	{MESSAGE}
 
-
-	<table id='forum-viewtopic' class='table table-striped'>
-	<colgroup>
-		<col style='width:20%' />
-		<col />
-		<col />
-	</colgroup>
-		<tr>
-			<th>".LAN_402."</th>
-			<th colspan='2'>".LAN_403."</th>
-		</tr>
-	";
-
-	
-	
-$FORUM_VIEWTOPIC_TEMPLATE['end'] = "</tr></table>
-
-	
-	<div class='row clearfix'>
-		<div class='span3 pull-left'>{GOTOPAGES}</div>
-		<div class='span6 center'>{QUICKREPLY}</div>
-		<div class='span3 pull-right right '>{BUTTONSX}</div>
-	</div>
-	
-	</div>
-	";
-
-	
-$FORUM_VIEWTOPIC_TEMPLATE['thread'] ="
-	<tr>
-		<td>{NEWFLAG} {USERCOMBO}{ANON_IP}</td>
-		<td>{THREADDATESTAMP=relative}</td>
-		<td style='text-align:right'>{POSTOPTIONS}</td>
-	</tr>
-	
-	<tr>
-		<td>
-				{CUSTOMTITLE}
-				{AVATAR}
-				<div>
-				<small>
-					{LEVEL=badge} {LEVEL=pic}
-				</small>
-				</div>
-			
-		</td>
-		<td colspan='2'>
-			{POLL}
-			{POST}
-			
-		</td>
-	</tr>
-
-	<tr>
-	 	<td class='finfobar'>
-			&nbsp;
-		</td>
-		<td class='finfobar'>
-			{ATTACHMENTS}
-			{LASTEDIT}{LASTEDITBY=link}
-			{SIGNATURE}	
-		</td>
-		
-		<td style='text-align:right'>
-		</td>
-	
-	</tr>
-
-	<tr>
-	<td colspan='3'>
-	</td>
-	</tr>";	
-*/
+// New in v2.x - requires a bootstrap theme be loaded.  
 
 $FORUM_VIEWTOPIC_TEMPLATE['start'] 	= "
 

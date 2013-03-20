@@ -213,7 +213,7 @@ if (!isset($FORUM_MAIN_START))
 include(e_PLUGIN.'forum/templates/forum_template.php');
 
 
-if(is_array($FORUM_TEMPLATE)) // new v2.x format. 
+if(is_array($FORUM_TEMPLATE) && (e_BOOTSTRAP === true)) // new v2.x format. 
 {
 		
 	$FORUM_MAIN_START		= $FORUM_TEMPLATE['main-start']; 

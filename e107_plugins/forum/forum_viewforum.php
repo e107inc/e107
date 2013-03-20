@@ -86,21 +86,21 @@ if (!vartrue($FORUM_VIEW_START))
 }
 
 
-if(is_array($FORUM_VIEWFORUM_TEMPLATE)) // New Template. 
+if(is_array($FORUM_VIEWFORUM_TEMPLATE) && (e_BOOTSTRAP === true)) // New v2.x bootstrap Template. 
 {
 	
-$FORUM_VIEW_START_CONTAINER		= $FORUM_VIEWFORUM_TEMPLATE['start'];
-$FORUM_VIEW_START				= $FORUM_VIEWFORUM_TEMPLATE['header'];
-$FORUM_VIEW_FORUM				= $FORUM_VIEWFORUM_TEMPLATE['item'];
-$FORUM_VIEW_FORUM_STICKY		= $FORUM_VIEWFORUM_TEMPLATE['item-sticky'];
-$FORUM_VIEW_FORUM_ANNOUNCE		= $FORUM_VIEWFORUM_TEMPLATE['item-announce'];
-$FORUM_VIEW_END					= $FORUM_VIEWFORUM_TEMPLATE['footer'];
-$FORUM_VIEW_END_CONTAINER		= $FORUM_VIEWFORUM_TEMPLATE['end'];
-$FORUM_VIEW_SUB_START			= $FORUM_VIEWFORUM_TEMPLATE['sub-header'];		
-$FORUM_VIEW_SUB					= $FORUM_VIEWFORUM_TEMPLATE['sub-item'];		
-$FORUM_VIEW_SUB_END				= $FORUM_VIEWFORUM_TEMPLATE['sub-footer'];		
-$FORUM_IMPORTANT_ROW			= $FORUM_VIEWFORUM_TEMPLATE['divider-important'];
-$FORUM_NORMAL_ROW				= $FORUM_VIEWFORUM_TEMPLATE['divider-normal'];	
+	$FORUM_VIEW_START_CONTAINER		= $FORUM_VIEWFORUM_TEMPLATE['start'];
+	$FORUM_VIEW_START				= $FORUM_VIEWFORUM_TEMPLATE['header'];
+	$FORUM_VIEW_FORUM				= $FORUM_VIEWFORUM_TEMPLATE['item'];
+	$FORUM_VIEW_FORUM_STICKY		= $FORUM_VIEWFORUM_TEMPLATE['item-sticky'];
+	$FORUM_VIEW_FORUM_ANNOUNCE		= $FORUM_VIEWFORUM_TEMPLATE['item-announce'];
+	$FORUM_VIEW_END					= $FORUM_VIEWFORUM_TEMPLATE['footer'];
+	$FORUM_VIEW_END_CONTAINER		= $FORUM_VIEWFORUM_TEMPLATE['end'];
+	$FORUM_VIEW_SUB_START			= $FORUM_VIEWFORUM_TEMPLATE['sub-header'];		
+	$FORUM_VIEW_SUB					= $FORUM_VIEWFORUM_TEMPLATE['sub-item'];		
+	$FORUM_VIEW_SUB_END				= $FORUM_VIEWFORUM_TEMPLATE['sub-footer'];		
+	$FORUM_IMPORTANT_ROW			= $FORUM_VIEWFORUM_TEMPLATE['divider-important'];
+	$FORUM_NORMAL_ROW				= $FORUM_VIEWFORUM_TEMPLATE['divider-normal'];	
 	
 }
 
@@ -184,6 +184,12 @@ if($forum->checkPerm($forumId, 'post'))
 	$fVars->NEWTHREADBUTTON = "<a href='".$e107->url->create('forum/thread/new', array('id' => $forumId))."'>".IMAGE_newthread.'</a>';
 	$fVars->NEWTHREADBUTTONX = newthreadjump($e107->url->create('forum/thread/new', array('id' => $forumId))); // "<a class='btn btn-primary' href='".."'>New Thread</a>";
 }
+
+if(e_BOOTSTRAP !== true)
+{
+	$fVars->NEWTHREADBUTTONX = $fVars->NEWTHREADBUTTON;
+}
+
 
 if(substr($forumInfo['forum_name'], 0, 1) == '*')
 {
@@ -569,6 +575,14 @@ function parse_thread($thread_info)
 	{
 		$_TEMPLATE = "<tr id='thread-{$threadId}'>".substr($_TEMPLATE,4);	
 	}
+	
+	if(e_BOOTSTRAP !== true)
+	{
+		$tVars->REPLIESX = 	$tVars->REPLIES;
+		$tVars->VIEWSX	 = $tVars->VIEWS;
+		$tVars->ADMINOPTIONS = $tVars->ADMIN_ICONS;
+	}
+	
 	
 
 	return $tp->simpleParse($_TEMPLATE, $tVars);

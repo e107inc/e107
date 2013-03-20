@@ -79,12 +79,16 @@ $FORUM_TRACK_MAIN	= "<br />TRACK-MAIN";
 $FORUM_TRACK_END	= "<br />TRACK-END";
 */
 
+// New in v2.x - requires a bootstrap theme be loaded.  
+
+
 $FORUM_TEMPLATE['main-start']			= "<div class='row'>
-	<div class='right'>
-		{SEARCH}
-	</div>
-	
-</div><table class='table table-striped'>
+											<div class='right'>
+												{SEARCH}
+											</div>
+											
+											</div>
+											<table class='table table-striped'>
 											<colgroup>
 											<col style='width:3%' />
 											<col />
