@@ -673,7 +673,7 @@ function sendProgress()
 // Update Preferences. (security handled elsewhere)
 function saveMailPrefs(&$mes) // $emessage to $mes, working?
 {
-	$pref = e107::getPref();
+	//$pref = e107::getPref();
 	$e107 = e107::getInstance();
 
 	$bounceOpts = array('none' => LAN_MAILOUT_232, 'auto' => LAN_MAILOUT_233, 'mail' => LAN_MAILOUT_234);
@@ -740,9 +740,15 @@ function saveMailPrefs(&$mes) // $emessage to $mes, working?
 	$temp['mailout_enabled'] = implode(',',varset($_POST['mail_mailer_enabled'], ''));
 	$temp['mail_log_options'] = intval($_POST['mail_log_option']).','.intval($_POST['mail_log_email']);
 
-	if ($e107->admin_log->logArrayDiffs($temp, $pref, 'MAIL_03'))
+	foreach ($temp as &$t)
 	{
-		save_prefs();		// Only save if changes - generates its own message
+		if ($t === NULL) $t = '';
+	}
+	$pref = e107::pref('core');              		 	// Core Prefs Array.
+	if (e107::getAdminLog()->logArrayDiffs($temp, $pref, 'MAIL_03'))
+	{
+		e107::getConfig()->updatePref($temp);
+		e107::getConfig()->save(false);		// Only save if changes - generates its own message
 	}
 	else
 	{
@@ -906,8 +912,6 @@ function show_prefs($mailAdmin)
 		<span class='field-help'>".LAN_MAILOUT_157."</span>
 		</td>
 	</tr>\n";
-
-	$mes->addDebug("@Steve :  email address sources pref are not being saved");
 	
 	if (isset($pref['e_mailout_list']))  // Allow selection of email address sources
 	{ 

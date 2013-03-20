@@ -539,11 +539,11 @@ if(isset($page_title[$action]))
 		'comments' => array(14, 7, 7, 7, 14, 3, 10, 12, 5, 17, 1, 1, 1), 
 		'online' => array(18, 15, 7, 14, 32, 6, 4, 4));
 	$col_titles = array(
-		'adminlog' => array(RL_LAN_019, RL_LAN_032, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_025, RL_LAN_033), 
-		'auditlog' => array(RL_LAN_019, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_025, RL_LAN_033), 
-		'rolllog' => array(RL_LAN_019, RL_LAN_032, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_024, RL_LAN_025, RL_LAN_033), 
-		'downlog' => array(RL_LAN_019, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_068, RL_LAN_069), 
-		'detailed' => array(LAN_TIME, RL_LAN_096, RL_LAN_098, RL_LAN_032, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_025, RL_LAN_033),  
+		'adminlog' => array(RL_LAN_019, RL_LAN_032, RL_LAN_020, RL_LAN_104, LAN_USER, RL_LAN_023, RL_LAN_025, RL_LAN_033), 
+		'auditlog' => array(RL_LAN_019, RL_LAN_020, RL_LAN_104, LAN_USER, RL_LAN_023, RL_LAN_025, RL_LAN_033), 
+		'rolllog' => array(RL_LAN_019, RL_LAN_032, RL_LAN_020, RL_LAN_104, LAN_USER, RL_LAN_023, RL_LAN_024, RL_LAN_025, RL_LAN_033), 
+		'downlog' => array(RL_LAN_019, RL_LAN_020, RL_LAN_104, LAN_USER, RL_LAN_068, RL_LAN_069), 
+		'detailed' => array(LAN_TIME, RL_LAN_096, RL_LAN_098, RL_LAN_032, RL_LAN_020, RL_LAN_104, LAN_USER, RL_LAN_023, RL_LAN_025, RL_LAN_033),  
 		'online' => array(RL_LAN_019, RL_LAN_020, LAN_ID, LAN_USER, RL_LAN_116, RL_LAN_117, RL_LAN_118, RL_LAN_116));
 
 
