@@ -1587,7 +1587,7 @@ class e107
 	 */
 	public static function css($type, $data, $dep = null, $media = 'all', $preComment = '', $postComment = '', $dependence = null)
 	{
-		if(strstr($data,'bootstrap') && !defined("e_BOOTSTRAP")) // detect bootstrap is enabled. - used in nextprev.sc currently. 
+		if((strstr($data,'bootstrap.css') || strstr($data,'bootstrap.min.css')) && !defined("e_BOOTSTRAP")) // detect bootstrap is enabled. - used in nextprev.sc and forum currently. 
 		{
 			define("e_BOOTSTRAP", true);	
 		}
