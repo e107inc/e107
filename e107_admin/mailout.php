@@ -907,22 +907,30 @@ function show_prefs($mailAdmin)
 		</td>
 	</tr>\n";
 
-	if (isset($pref['e_mailout_list']))
-	{  // Allow selection of email address sources
-		$text .= "<tr>
-		<td>".LAN_MAILOUT_77."</td>
-		<td> 
-	  ";
-	  $mail_enable = explode(',',$pref['mailout_enabled']);
-	  foreach ($pref['e_mailout_list'] as $mailer => $v)	  {
-		$check = (in_array($mailer,$mail_enable)) ? "checked='checked'" : "";
-		$text .= "&nbsp;<input type='checkbox' name='mail_mailer_enabled[]' value='{$mailer}' {$check} /> {$mailer}<br />";
-	  }
-	  $text .= "</td></tr>\n";
+	$mes->addDebug("@Steve :  email address sources pref are not being saved");
+	
+	if (isset($pref['e_mailout_list']))  // Allow selection of email address sources
+	{ 
+		$text .= "
+		<tr>
+			<td>".LAN_MAILOUT_77."</td>
+			<td> ";
+			
+	  		$mail_enable = explode(',',$pref['mailout_enabled']);
+	  
+			foreach ($pref['e_mailout_list'] as $mailer => $v)	 
+			 {
+				$check = (in_array($mailer,$mail_enable)) ? "checked='checked'" : "";
+				$text .= "&nbsp;<input type='checkbox' name='mail_mailer_enabled[]' value='{$mailer}' {$check} /> {$mailer}<br />";
+			}
+			  
+	 	 $text .= "</td></tr>\n";
 	}
 
 	list($mail_log_option,$mail_log_email) = explode(',',varset($pref['mail_log_options'],'0,0'));
+	
 	$check = ($mail_log_email == 1) ? " checked='checked'" : "";
+	
 	$text .= "<tr>
 		<td>".LAN_MAILOUT_72."</td>
 		<td> 

@@ -483,15 +483,17 @@ class mailoutAdminClass extends e107MailManager
 		$ret = '';
 		$tab = '';
 		$tabc = '';
-		
-		$ret .= "<div class='admintabs' id='tab-container'>\n";
+
 		
 		foreach ($this->mailHandlers as $key => $m)
 		{
 			if ($m->mailerEnabled)
 			{
-				$tab .= "<li id='tab-main_".$key."'><a href='#main-mail-".$key."'>".$m->mailerName."</a></li>";
-				$tabc .= "<div id='main-mail-".$key."' style='padding:0px;border-collapse:collapse;'>";
+				$lactive = ($key == 'core') ? " class='active'" : '';
+				$tab .= "<li".$lactive."><a data-toggle='tab' href='#main-mail-".$key."'>".$m->mailerName."</a></li>";
+				
+				$pactive = ($key == 'core') ? 'active' : '';
+				$tabc .= "<div id='main-mail-".$key."' class='tab-pane ".$pactive."'>";
 				
 				$content = $m->showSelect(TRUE, varset($selectorInfo[$key], FALSE));
 				
@@ -520,7 +522,8 @@ class mailoutAdminClass extends e107MailManager
 		}
 
 //		$ret .= "<ul class='e-tabs e-hideme' id='core-mail-tabs'>".$tab."</ul>";		// This hides tabs!
-		$ret .= "<ul class='e-tabs' id='core-mail-tabs'>".$tab."</ul>";
+		$ret .= "<ul class='nav nav-tabs'>".$tab."</ul>";
+			$ret .= "<div class='tab-content'>\n";
 		$ret .= $tabc;	
 		$ret .= "</div>";
 		
