@@ -998,7 +998,7 @@ if(isset($page_title[$action]))
 
 	// Next-Previous. ==========================
 
-	$text .= sprintf(RL_LAN_126, $num_entry);
+	$text .= sprintf(str_replace("[x]", "<strong>%d</strong>", RL_LAN_126), $num_entry);
 	if($num_entry > $amount)
 	{
 		$parms = "{$num_entry},{$amount},{$from},".e_SELF."?".$action.".[FROM]";

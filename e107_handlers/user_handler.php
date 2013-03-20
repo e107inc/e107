@@ -1496,7 +1496,7 @@ class e_userperms
 		$frm = e107::getForm();
 		return "
 			<div class='buttons-bar center'>
-				".$frm->admin_button('update_admin', ADMSLAN_52, 'update')."
+				".$frm->admin_button('update_admin', LAN_UPDATE, 'update')."
 				".$frm->admin_button('go_back', LAN_BACK, 'cancel')."
 			</div>
 		";
@@ -1593,8 +1593,8 @@ class e_userperms
 			}
 	 	}
 		
-		//$sql->db_Update("user", "user_perms='{$perm}' WHERE user_id='{$modID}' ")
-		e107::getMessage()->addAuto($sysuser->set('user_perms', $perm)->save(), 'update', sprintf(ADMSLAN_2, $tp->toDB($_POST['ad_name'])), false, false);
+		//$sql->db_Update("user", "user_perms='{$perm}' WHERE user_id='{$modID}' ") 
+		e107::getMessage()->addAuto($sysuser->set('user_perms', $perm)->save(), 'update', sprintf(LAN_UPDATED, $tp->toDB($_POST['ad_name'])), false, false);
 		$logMsg = str_replace(array('--ID--', '--NAME--'),array($modID, $a_name),ADMSLAN_72).$perm;
 		$admin_log->log_event('ADMIN_01',$logMsg,E_LOG_INFORMATIVE,'');
 	}
