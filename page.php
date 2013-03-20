@@ -30,9 +30,9 @@ if(!e_QUERY)
 	if(is_array($tmp))
 	{
 		$ns->tablerender($tmp['title'], $text, 'cpage');
-		require_once(FOOTERF);
-		exit;
 	}
+	require_once(FOOTERF);
+	exit;
 }
 elseif(vartrue($_GET['bk'])) //  List Chapters within a specific Book
 {
