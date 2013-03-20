@@ -44,7 +44,7 @@ $CONTACT_TEMPLATE['menu'] =  '
 		</div>
 		<div class="control-group">
 			<label>Comments</label>
-			{CONTACT_BODY=rows=5&cols=50}							
+			{CONTACT_BODY=rows=5&cols=30}							
 		</div>
 		{CONTACT_SUBMIT_BUTTON}
 	</div>       
