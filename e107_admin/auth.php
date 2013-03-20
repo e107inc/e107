@@ -223,9 +223,9 @@ else
 			
 			h2					{ text-align: center; color: #FAAD3D;  }
 			
-			#username			{background: url(".e_IMAGE."admin_images/admins_16.png) no-repeat scroll 7px 7px; padding-left:30px; }
+			#username			{background: url(".e_IMAGE."admin_images/admins_16.png) no-repeat scroll 7px 7px; padding-left:30px; width:218px; }
 				 
-			#userpass			{background: url(".e_IMAGE."admin_images/lock_16.png) no-repeat scroll 7px 7px; padding-left:30px; }
+			#userpass			{background: url(".e_IMAGE."admin_images/lock_16.png) no-repeat scroll 7px 7px; padding-left:30px; width:218px; }
 			
 			input[disabled] 	{	color: silver;	}
 			button[disabled] span	{	color: silver;	}
