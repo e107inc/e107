@@ -166,8 +166,7 @@ else
 			body 				{ 	text-align: left; font-size:15px; line-height:1.5em; font-weight:normal; 
 									font-family:Arial, Helvetica, sans-serif; background-attachment: scroll; 
 									background-color: rgb(47, 47, 47); color: rgb(198, 198, 198);
-									background-clip: border-box; background-image: url(".e_IMAGE."logo_template_large.png); 
-									background-origin: padding-box; background-position: 50% 40px; 
+									
 									background-repeat: no-repeat; background-size: auto auto 
 								}
 			a					{ 	color:#F6931E; text-decoration:none; }
@@ -185,11 +184,20 @@ else
 			.field input:hover	{
 									
 								}
+			#logo				{ background-image: url(".e_IMAGE."logo_template_large.png); 
+									height:140px; 
+									width:310px;
+									padding-right:5px;
+									margin-left:auto;
+									margin-right:auto;
+									margin-top:2%;
+									
+								}
 			
 			#login-admin 		{
 									margin-left:auto;
 									margin-right:auto;
-									margin-top:12%;
+									margin-top:2%;
 									width:400px; 
 									padding: 10px 20px 0 20px;
 					
@@ -256,6 +264,7 @@ class auth
 		$class = (e_QUERY == 'failed') ? "class='e-shake'" : "";
 			
 		$text = "<form id='admin-login' method='post' action='".e_SELF."' {$incChap} >
+		<div id='logo' ></div>
 		<div id='login-admin' class='well center'>
 		<div {$class}>
 		<div class='navbar navbar-inner'>
