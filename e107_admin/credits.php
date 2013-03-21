@@ -1,16 +1,13 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-
-|     Copyright (C) 2008-2013 e107 Inc (e107.org)
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $URL$
-|     $Id$
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Credits
+ *
 */
 
 require_once("../class2.php");
@@ -25,7 +22,7 @@ $css = "body 				{ text-align: left; font-size:13px; line-height:1.5em; font-wei
 			.wrapper			{ width:800px; height:415px; margin:0px auto 0px 0px; padding-bottom:10px;  }
 			.wrapper-top		{ height:10px; }
 			.wrapper-bottom		{ height:6px; }
-			.wrapper-middle		{ min-height:389px; background-color:#FDFDFD0; }
+			.wrapper-middle		{ min-height:389px; background-color:#F6F6F6; }
 			.logo				{  }
 			.credits-content	{ padding:160px 20px 20px 20px; background:url(".e_IMAGE_ABS."admin_images/credits_logo.png) no-repeat 50% 30px; }
         	.copyright			{ text-align:center; margin-top:30px}
@@ -44,7 +41,7 @@ require_once(e_ADMIN."auth.php");
                     <p>
                         Cameron Hanly, Miroslav Yovchev, Steven Davies,<br />
                         Henk Jongedijk, James Currie, Martin Nicholls,<br /> 
-                        Steven Davies, Thom Michelbrink, Tijn Kuyper
+                        Steven Davies, Thom Michelbrink, Tijn Kuyper.
                     </p>
                     <h1>3rd Parties</h1>
                     <p>
