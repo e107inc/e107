@@ -111,7 +111,7 @@ class private_msg_ui extends e_admin_ui
 					$this->listQry		= "SELECT  p.*, u.user_name FROM #private_msg AS p LEFT JOIN  #user AS u ON u.user_id = p.pm_from "; 
 
 					$this->fields['pm_to']['nolist'] = true; 
-					$this->fields['options']['readParms'] = 'editClass='.e_UC_NOBDY;
+					$this->fields['options']['readParms'] = 'editClass='.e_UC_NOBODY;
 						
 				}
 				
@@ -119,7 +119,7 @@ class private_msg_ui extends e_admin_ui
 				{
 					$this->listQry		= "SELECT  p.*, u.user_name FROM #private_msg AS p LEFT JOIN  #user AS u ON u.user_id = p.pm_to "; 
 					$this->fields['pm_from']['nolist'] = true; 
-					$this->fields['options']['readParms'] = 'editClass='.e_UC_NOBDY;
+					$this->fields['options']['readParms'] = 'editClass='.e_UC_NOBODY;
 				}
 					
              //   echo "FIELD = ".$field;
