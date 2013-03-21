@@ -1150,7 +1150,7 @@ class e_userperms
 
 	function __construct()
 	{
-		require_once(e_ADMIN."ad_links.php");
+	//	require_once(e_ADMIN."ad_links.php");
 		$this->core_perms = array(
 
 		// In the same order as admin navigation! 
