@@ -1985,7 +1985,7 @@ class eRouter
 		# Modify params if required
 		if($params) 
 		{
-			if($config['mapVars'])
+			if(varset($config['mapVars']))
 			{
 				foreach ($config['mapVars'] as $srcKey => $dstKey)
 				{
@@ -1998,7 +1998,7 @@ class eRouter
 			}
 			
 			// false means - no vars are allowed, nothing to preserve here
-			if($config['allowVars'] === false) $params = array();
+			if(varset($config['allowVars']) === false) $params = array();
 			// default empty array value - try to guess what's allowed - mapVars is the best possible candidate
 			elseif(empty($config['allowVars']) && !empty($config['mapVars'])) $params = array_unique(array_values($config['mapVars']));
 			// disallow everything but valid URL parameters

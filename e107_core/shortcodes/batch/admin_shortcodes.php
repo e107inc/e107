@@ -1207,6 +1207,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 	 * Legacy Admin Menu Routine. 
 	 * Currently Used by Jayya admin. 
 	 */
+	 /*
 	function sc_admin_alt_nav($parm)
 	{
 		
@@ -1325,15 +1326,15 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 					$plugs_text .= $plugin_compile;
 				}
 			}
-            /*
-			if (getperms('Z'))
-			{
-				$pclass_extended = $active_plugs ? 'header' : '';
-				$plugin_text = adnav_main(ADLAN_98, e_ADMIN.'plugin.php', E_16_PLUGMANAGER, FALSE, $pclass_extended);
-				$render_plugins = TRUE;
-			}*/
-
-			if ($render_plugins)
+         
+	//		if (getperms('Z'))
+	//		{
+	//			$pclass_extended = $active_plugs ? 'header' : '';
+	//			$plugin_text = adnav_main(ADLAN_98, e_ADMIN.'plugin.php', E_16_PLUGMANAGER, FALSE, $pclass_extended);
+	//			$render_plugins = TRUE;
+	//		}
+	
+	 			if ($render_plugins)
 			{
 				$text .= adnav_cat(ADLAN_CL_7, '', E_16_CAT_PLUG, 'plugMenu');
 				$text .= "<div id='plugMenu' class='menu' onmouseover=\"menuMouseover(event)\">";
@@ -1393,7 +1394,8 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			return $text;
 		}
 	}
-
+	*/
+	
 	/**
 	 * New Admin Navigation Routine. 
 	 */
