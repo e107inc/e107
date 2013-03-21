@@ -633,13 +633,13 @@ class e_news_tree extends e_front_tree_model
 		$where = vartrue($params['db_where']);
 		if($category_id)
 		{
-			$where = ($where ? ' AND ' : '').' news_category='.$category_id.' AND';
+			$where .= ($where ? ' AND ' : '').' n.news_category='.intval($category_id);
 		}
 		if($where) $where = 'WHERE '.$where;
 		
 		$this->setParam('model_class', 'e_news_item');
 			
-		$db_order = vartrue($params['db_order'], 'news_datestamp DESC');
+		$db_order = vartrue($params['db_order'], 'n.news_datestamp DESC');
 		$db_limit = vartrue($params['db_limit'], '0,10');
 		
 		
@@ -672,7 +672,9 @@ class e_news_tree extends e_front_tree_model
 		$where = ($where ? ' AND ' : '')."n.news_start < {$time} AND (n.news_end=0 || n.news_end>{$time})
 			AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
 		";
-			
+		
+		$params['db_where'] = $where;
+		
 		return $this->loadJoin($category_id, $force, $params);
 	}
 	
