@@ -32,7 +32,7 @@ if (defined('THEME') && file_exists(THEME.'admin_template.php'))
 }
 else
 {
-	require_once (e_BASE.$e107->getFolder('themes').'templates/admin_template.php');
+	require_once (e_CORE.'templates/admin_template.php');
 }
 
 

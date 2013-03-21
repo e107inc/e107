@@ -43,7 +43,7 @@ if (file_exists(THEME."online_template.php"))
 }
 else
 {
-  require_once(e_THEME."templates/online_template.php");
+  require_once(e_CORE."templates/online_template.php");
 }
 
 global $listuserson;

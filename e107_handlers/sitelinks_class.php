@@ -554,17 +554,56 @@ class e_navigation
 	 */
 	var $admin_cat = array();
 	
-	/**
-	 * Structure: $data[category][parentId] = array(Link Data)
-	 * @var array DB data
-	 */
-//	var $data = null;
 	
-	/**
-	 * Structure: $indeces[flat][link_id] = link_parent; $indeces[ordered][link_id] = link_order
-	 * @var array
-	 */
-//	var $indeces = null;
+	var $iconArray = array(
+	'main' => E_32_MAIN,
+	'admin' => E_32_ADMIN,
+	'admin_pass' => E_32_ADPASS,
+	'banlist' => E_32_BANLIST,
+	'cache' => E_32_CACHE,
+	'comment' => E_32_COMMENT,
+	'credits' => E_32_CREDITS,
+	'cron'	=> E_32_CRON,
+	'custom' => E_32_CUST,
+	// 'custom_field' => E_32_CUSTOMFIELD,
+	'database' => E_32_DATAB,
+	'docs' => E_32_DOCS,
+	//'download' => E_32_DOWNL,
+	'emoticon' => E_32_EMOTE,
+	'filemanage' => E_32_FILE,
+	'fileinspector' => E_32_INSPECT,
+	'frontpage' => E_32_FRONT,
+	'image' => E_32_IMAGES,
+	'language' => E_32_LANGUAGE,
+	'links' => E_32_LINKS,
+	'mail' => E_32_MAIL,
+	'maintain' => E_32_MAINTAIN,
+	'menus' => E_32_MENUS,
+	'meta' => E_32_META,
+	'newsfeed' => E_32_NEWSFEED,
+	'news' => E_32_NEWS,
+	'notify' => E_32_NOTIFY,
+	'phpinfo' => E_32_PHP,
+	'plug_manage' => E_32_PLUGMANAGER,
+	'poll' => E_32_POLLS,
+	'prefs' => E_32_PREFS,
+	'search' => E_32_SEARCH,
+	'syslogs' => E_32_ADMINLOG,
+	'theme_manage' => E_32_THEMEMANAGER,
+	'maintain' => E_32_MAINTAIN,
+	'upload' => E_32_UPLOADS,
+	'eurl' => E_32_EURL,
+	'userclass' => E_32_USERCLASS,
+	'user_extended' => E_32_USER_EXTENDED,
+	'users' => E_32_USER,
+	'wmessage' => E_32_WELCOME 
+	);
+
+	function getIconArray()
+	{
+		return $this->iconArray;	
+	}
+
 	
 	/**
 	 * Structure $this->_md5cache[$category] = md5HASH

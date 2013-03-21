@@ -15,7 +15,7 @@
 */
 
 if (!defined('e107_INIT')) { exit; }
-
+/*
 if (file_exists(THEME.'admin_images/admin_images.php')) {
 	e107_require_once(THEME.'admin_images/admin_images.php');
 }
@@ -82,11 +82,14 @@ if (!defined('E_32_CAT_ABOUT')) {
 if (!defined('E_16_NAV_MAIN')) {
 	define('E_16_NAV_MAIN', e_IMAGE.'admin_images/main_16.png');
 }
+ * */
 /*
 if (!defined('E_16_NAV_DOCS')) {
 	define('E_16_NAV_DOCS', e_IMAGE.'admin_images/docs_16.png');
 }
 */
+
+/*
 if (!defined('E_16_NAV_LEAV')) {
 	define('E_16_NAV_LEAV', e_IMAGE.'admin_images/leave_16.png');
 }
@@ -316,9 +319,12 @@ if (!defined('E_32_CRON')) {
 if (!defined('E_32_CUST')) {
 	define('E_32_CUST', "<img class='icon S32' src='".e_IMAGE."admin_images/custom_32.png' alt='' />");
 }
+ * */
 /*if (!defined('E_32_CUSTOMFIELD')) {
 	define('E_32_CUSTOMFIELD', "<img class='icon S16' src='".e_IMAGE."admin_images/custom_field_32.png' alt='' />");
 }*/
+
+/*
 if (!defined('E_32_DATAB')) {
 	define('E_32_DATAB', "<img class='icon S32' src='".e_IMAGE."admin_images/database_32.png' alt='' />");
 }
@@ -448,51 +454,10 @@ if (!defined('E_32_SYSINFO')) {
 
 define("E_16_E107",  "<img class='icon S16' src='".e_IMAGE."e107_icon_16.png' alt='' />");
 define("E_32_E107",  "<img class='icon S32' src='".e_IMAGE."e107_icon_32.png' alt='' />");
-
+*/
 //XXX Move to e_navigation ?
 
-$e_icon_array = array(
-	'main' => E_32_MAIN,
-	'admin' => E_32_ADMIN,
-	'admin_pass' => E_32_ADPASS,
-	'banlist' => E_32_BANLIST,
-	'cache' => E_32_CACHE,
-	'comment' => E_32_COMMENT,
-	'credits' => E_32_CREDITS,
-	'cron'	=> E_32_CRON,
-	'custom' => E_32_CUST,
-	// 'custom_field' => E_32_CUSTOMFIELD,
-	'database' => E_32_DATAB,
-	'docs' => E_32_DOCS,
-	//'download' => E_32_DOWNL,
-	'emoticon' => E_32_EMOTE,
-	'filemanage' => E_32_FILE,
-	'fileinspector' => E_32_INSPECT,
-	'frontpage' => E_32_FRONT,
-	'image' => E_32_IMAGES,
-	'language' => E_32_LANGUAGE,
-	'links' => E_32_LINKS,
-	'mail' => E_32_MAIL,
-	'maintain' => E_32_MAINTAIN,
-	'menus' => E_32_MENUS,
-	'meta' => E_32_META,
-	'newsfeed' => E_32_NEWSFEED,
-	'news' => E_32_NEWS,
-	'notify' => E_32_NOTIFY,
-	'phpinfo' => E_32_PHP,
-	'plug_manage' => E_32_PLUGMANAGER,
-	'poll' => E_32_POLLS,
-	'prefs' => E_32_PREFS,
-	'search' => E_32_SEARCH,
-	'syslogs' => E_32_ADMINLOG,
-	'theme_manage' => E_32_THEMEMANAGER,
-	'maintain' => E_32_MAINTAIN,
-	'upload' => E_32_UPLOADS,
-	'eurl' => E_32_EURL,
-	'userclass' => E_32_USERCLASS,
-	'user_extended' => E_32_USER_EXTENDED,
-	'users' => E_32_USER,
-	'wmessage' => E_32_WELCOME );
+
 
 //FIXME array structure - see shortcodes/admin_navigation.php
 // Moved to sitelinks_class.php - e_navigation; 

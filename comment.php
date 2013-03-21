@@ -556,7 +556,7 @@ if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'] && $table == 'n
 		}
 		else 
 		{
-			require_once(e_THEME."templates/trackback_template.php");
+			require_once(e_CORE."templates/trackback_template.php");
 		}
 
 		$text = "";
