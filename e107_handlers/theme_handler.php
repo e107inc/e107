@@ -1727,7 +1727,7 @@ class themeHandler
 		$vars['path'] 			= $path;
 		$vars['@attributes']['default'] = (varset($vars['@attributes']['default']) && strtolower($vars['@attributes']['default']) == 'true') ? 1 : 0;
 		$vars['preview'] 		= varset($vars['screenshots']['image']);
-		$vars['thumbnail'] 		= $vars['preview'][0];
+		$vars['thumbnail'] 		= varset($vars['preview'][0]);
 		
 		unset($vars['authorEmail'], $vars['authorUrl'], $vars['xhtmlCompliant'], $vars['cssCompliant'], $vars['description'],$vars['screenshots']);
 		
@@ -1765,13 +1765,17 @@ class themeHandler
 			unset($val['@attributes']['name']);
 			$lays[$name] = $val;
 			
-			if(is_string($val['custompages']))
+			
+			if(isset($val['custompages']))
 			{
-				$custom[$name] = array_filter(explode(" ", $val['custompages']));	
-			}
-			elseif(is_array($val['custompages']))
-			{
-				$custom[$name] = $val['custompages'];	
+				if(is_string($val['custompages']))
+				{
+					$custom[$name] = array_filter(explode(" ", $val['custompages']));	
+				}
+				elseif(is_array($val['custompages']))
+				{
+					$custom[$name] = $val['custompages'];	
+				}
 			}		
 		}
 
