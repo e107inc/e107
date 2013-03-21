@@ -132,7 +132,7 @@ if(isset($_POST['submit']))
 	else
 	{
 		$caption = LAN_CHECK_PAGE_TITLE.' - '.LAN_CHECK_24;
-		$mes->addSuccess(sprintf(LAN_CHECK_23, basename($writeit)));
+		$mes->addSuccess(sprintf(str_replace("[x]", "%s", LAN_CHECK_23), basename($writeit)));
 	}
 	fclose($writeit);
 
@@ -270,11 +270,11 @@ if(isset($_POST['language_sel']) && isset($_POST['language']))
 	{
 		e107::getConfig()->setPref('lancheck/'.$_POST['language'],1);
 		e107::getConfig()->save(FALSE);
-		$mes->addSuccess(LAN_CHECK_27.'<b>'.$lck->error_count.'</b>');		
+		$mes->addSuccess(LAN_CHECK_27.'<b>: '.$lck->error_count.'</b>');		
 	}
 	else  
 	{
-		$mes->addWarning(LAN_CHECK_27.'<b>'.$lck->error_count.'</b>');
+		$mes->addWarning(LAN_CHECK_27.'<b>: '.$lck->error_count.'</b>');
 	}
 	
 
@@ -342,7 +342,7 @@ class lancheck
 					$utf_error = "";
 	
 					$bomkey = str_replace(".php","",$k_check);
-					$bom_error = ($check['bom'][$bomkey]) ? "<span class='error'><em>".LAN_CHECK_15."</em></span><br />" : ""; // illegal chars
+					$bom_error = ($check['bom'][$bomkey]) ? "<span class='error'><em>".str_replace("[php]", "<?php", LAN_CHECK_15)."</em></span><br />" : ""; // illegal chars
 	
 					foreach($subkeys as $sk)
 					{

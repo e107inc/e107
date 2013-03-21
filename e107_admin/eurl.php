@@ -510,7 +510,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 				$info .= "<tr><td>".$label."
 					
 					</td>
-					<td><strong>".LAN_EURL_LOCATION."</strong> ".$path."
+					<td><strong>".LAN_EURL_LOCATION."</strong>: ".$path."
                     <p>".vartrue($section['description'], LAN_EURL_PROFILE_INFO)."</p><small>".implode("<br />", $exampleUrl)."</small></td></tr>
 					
 				";
@@ -628,7 +628,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 						".LAN_EURL_CORE_INDEX_INFO."
 					</td>
 					<td>
-						".LAN_EURL_FORM_HELP_EXAMPLE." <br /><strong>".e107::getUrl()->create('/', '', array('full' => 1))."</strong>
+						".LAN_EURL_FORM_HELP_EXAMPLE.":<br /><strong>".e107::getUrl()->create('/', '', array('full' => 1))."</strong>
 					</td>
 				</tr>
 				";
@@ -656,7 +656,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 			
 			// default language		
 			$text .= $this->text('eurl_aliases['.$lanDef[0].']['.$module.']', $defVal).' ['.$lanDef[1].']'.$this->help(LAN_EURL_FORM_HELP_DEFAULT);
-			$help[] = '['.$lanDef[1].'] '.LAN_EURL_FORM_HELP_EXAMPLE.'<br /><strong>'.$url.'</strong>';
+			$help[] = '['.$lanDef[1].'] '.LAN_EURL_FORM_HELP_EXAMPLE.':<br /><strong>'.$url.'</strong>';
 			
 			if($lans)
 			{
@@ -667,7 +667,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 					$defVal = isset($currentAliases[$code]) && in_array($module, $currentAliases[$code]) ? array_search($module, $currentAliases[$code]) : $module; 
 					$text .= "<div class='spacer'><!-- --></div>";
 					$text .= $this->text('eurl_aliases['.$code.']['.$module.']', $defVal).' ['.$lan.']'.$this->help(LAN_EURL_FORM_HELP_ALIAS_1.' <strong>'.$lan.'</strong>');
-					$help[] = '['.$lan.'] '.LAN_EURL_FORM_HELP_EXAMPLE.'<br /><strong>'.$url.'</strong>';
+					$help[] = '['.$lan.'] '.LAN_EURL_FORM_HELP_EXAMPLE.':<br /><strong>'.$url.'</strong>';
 				}
 			}
 			

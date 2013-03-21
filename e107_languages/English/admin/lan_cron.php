@@ -1,14 +1,11 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_cron.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
+ * Copyright (C) 2008-2013 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Admin Language File
+ *
 */
+
 if (!defined("PAGE_NAME")) { define("PAGE_NAME", "Schedule Tasks"); }
 
 // Menu
@@ -31,7 +28,7 @@ define("LAN_CRON_02_1", "Mail Queue");
 define("LAN_CRON_02_2", "Process mail queue.");
 
 define("LAN_CRON_03_1", "Mail Bounce Check");
-define("LAN_CRON_03_2", "'Check for bounced emails.");
+define("LAN_CRON_03_2", "Check for bounced emails.");
 
 define("LAN_CRON_04_1", "Ban Retrigger Check");
 define("LAN_CRON_04_2", "Process bounce retriggers.");

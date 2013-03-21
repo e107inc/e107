@@ -309,7 +309,7 @@ $text .= "
 						<!-- <a href='filemanager.php'><img src='".$imagedir."home.png' alt='".FMLAN_16."' /></a> -->
 							<input type='hidden' name='MAX_FILE_SIZE' value='{$max_file_size}' />
 						</th>
-						<th class='center'>".FMLAN_17."</th>
+						<th class='center'>".LAN_SIZE."</th>
 						<th class='center'>".FMLAN_18."</th>
 						<th class='center'>".FMLAN_19."</th>
 					</tr>

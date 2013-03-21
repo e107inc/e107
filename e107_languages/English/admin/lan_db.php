@@ -1,11 +1,12 @@
 <?php
 /*
- * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id$
+ * Copyright (C) 2008-2013 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
  *
  * Admin Language File
  *
 */
+
+
 define("DBLAN_1", "Core settings backed up in database.");
 // define("DBLAN_2", "Select to save a backup of your e107 database");
 // define("DBLAN_3", "Backup SQL database");
@@ -29,7 +30,7 @@ define("DBLAN_20", "Preferences Editor");
 // define("DBLAN_21", "Delete Checked");
 define("DBLAN_22", "Plugin View and Scan");
 define("DBLAN_23", "Scan Completed");
-define("DBLAN_24", "Name");
+//define("DBLAN_24", "Name");
 define("DBLAN_25", "Directory");
 define("DBLAN_26", "Included add-ons");
 define("DBLAN_27", "Installed");

@@ -1,14 +1,14 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_download.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
+ * Copyright (C) 2008-2013 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Admin Language File
+ *
 */
+
+// Moc: NOT IN USE, REMOVE?  (downloads is converted to a plugin in v2)
+
+
 define("DOWLAN_1", "Download added to database.");
 define("DOWLAN_2", "Download updated in database.");
 define("DOWLAN_3", "Download deleted.");

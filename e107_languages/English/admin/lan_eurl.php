@@ -1,15 +1,9 @@
 <?php
 /*
- * e107 website system
+ * Copyright (C) 2008-2013 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
  *
- * Copyright (C) e107 Inc (e107.org)
- * Released under the terms and conditions of the
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ * Admin Language File
  *
- * Administration Language File
- *
- * $URL$
- * $Id$
 */
 
 define("LAN_EURL_NAME", "Manage Site URLs");
@@ -27,15 +21,15 @@ define("LAN_EURL_PROFILE", "Profile");
 
 define("LAN_EURL_INFOALT", "Info");
 define("LAN_EURL_PROFILE_INFO", "Profile info not available");
-define("LAN_EURL_LOCATION", "Profile Location:");
+define("LAN_EURL_LOCATION", "Profile Location");
 define("LAN_EURL_LOCATION_NONE", "Config file not available");
 define("LAN_EURL_FORM_HELP_DEFAULT", "Alias when in default language.");
 define("LAN_EURL_FORM_HELP_ALIAS_0", "Default value is ");
 define("LAN_EURL_FORM_HELP_ALIAS_1", "Alias when in ");
-define("LAN_EURL_FORM_HELP_EXAMPLE", "Base URL: ");
+define("LAN_EURL_FORM_HELP_EXAMPLE", "Base URL");
 
 // messages
-define("LAN_EURL_ERR_ALIAS_MODULE", "Alias &quot;%1\$s&quot; can't be saved - there is a system URL profile with the same name. Please choose another alias value for system URL profile &quot;%2\$s&quot;");
+define("LAN_EURL_ERR_ALIAS_MODULE", "Alias &quot;%1\$s&quot; can't be saved - there is a system URL profile with the same name. Please choose another alias value for system URL profile &quot;%2\$s&quot;"); // FIXME HTML IN LAN
 
 // settings
 define("LAN_EURL_SETTINGS_PATHINFO", "Remove filename from the URL");
