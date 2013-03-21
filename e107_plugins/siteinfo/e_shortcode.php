@@ -44,30 +44,56 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 		parse_str(vartrue($parm));		// Optional {LOGO=file=file_name} or {LOGO=link=url} or {LOGO=file=file_name&link=url}
 		// Paths to image file, link are relative to site base
 		$tp = e107::getParser();
-				
+
 		$logopref = e107::getConfig('core')->get('sitelogo');
-		$logo = $tp->replaceConstants($logopref);
-	
-		if(vartrue($logopref) && is_readable($logo))
+		$logop = $tp->replaceConstants($logopref);
+
+		if($parm == 'login') // Login Page. BC fix. 
 		{
-			$logo = $tp->replaceConstants($logopref,'abs');
-			$path = $tp->replaceConstants($logopref);
+			if(vartrue($logopref) && is_readable($logop))
+			{
+				$logo = $tp->replaceConstants($logopref,'abs');
+				$path = $tp->replaceConstants($logopref);
+			}
+			elseif(is_readable(THEME."images/login_logo.png"))
+			{
+				
+				$logo = THEME_ABS."images/login_logo.png";	
+				$path = THEME."images/login_logo.png";	
+			}
+			else
+			{
+				$logo = e_IMAGE_ABS."logo.png";	
+				$path = e_IMAGE."logo.png";			
+			}	
 		}
-		elseif (isset($file) && $file && is_readable($file))
+		else 
 		{
-			$logo = e_HTTP.$file;						// HTML path
-			$path = e_BASE.$file;						// PHP path
+			
+			if(vartrue($logopref) && is_readable($logop))
+			{
+				$logo = $tp->replaceConstants($logopref,'abs');
+				$path = $tp->replaceConstants($logopref);
+			}
+			elseif (isset($file) && $file && is_readable($file))
+			{
+				$logo = e_HTTP.$file;						// HTML path
+				$path = e_BASE.$file;						// PHP path
+			}
+			else if (is_readable(THEME.'images/e_logo.png'))
+			{
+				$logo = THEME_ABS.'images/e_logo.png';		// HTML path
+				$path = THEME.'images/e_logo.png';			// PHP path
+			}
+			else
+			{
+				$logo = e_IMAGE_ABS.'logo.png';				// HTML path
+				$path = e_IMAGE.'logo.png';					// PHP path
+			}
+			
 		}
-		else if (is_readable(THEME.'images/e_logo.png'))
-		{
-			$logo = THEME_ABS.'images/e_logo.png';		// HTML path
-			$path = THEME.'images/e_logo.png';			// PHP path
-		}
-		else
-		{
-			$logo = e_IMAGE_ABS.'logo.png';				// HTML path
-			$path = e_IMAGE.'logo.png';					// PHP path
-		}
+		
+		//TODO Parm for resizing the logo image with thumb.php 
 
 		$dimensions = getimagesize($path);
 
