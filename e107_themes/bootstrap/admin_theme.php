@@ -129,7 +129,7 @@ function tablestyle($caption, $text, $mode)
 	}
 	
 
-	if(e_IFRAME === true)
+	if(deftrue('e_IFRAME'))
 	{
 		echo '
 			<div class="block">
