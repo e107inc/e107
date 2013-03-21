@@ -1,10 +1,9 @@
 <?php
 /*
- * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id$
+ * Copyright (C) 2008-2013 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
  *
  * Admin Language File
- * 
+ *
 */
 
 // define("LCLAN_1", "Options Saved");
@@ -63,7 +62,7 @@ define("LINKLAN_1", "Opens in 800x600 window");
 // define("LINKLAN_3", "No Parent (Normal Link)");
 define("LINKLAN_4", "Sublink Generator");
 define("LINKLAN_5", "Generate Sublinks");
-define("LINKLAN_6", "Create sublinks from:");
+define("LINKLAN_6", "Create sublinks from");
 define("LINKLAN_7", "Create sublinks under which link?");
 define("LINKLAN_8", "News Categories");
 define("LINKLAN_9", "Download Categories");

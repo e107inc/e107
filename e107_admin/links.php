@@ -216,7 +216,7 @@ class links_admin_ui extends e_admin_ui
 					</colgroup>
 					<tbody>
 						<tr>
-							<td>".LINKLAN_6."</td>
+							<td>".LINKLAN_6.":</td>
 							<td>
 		";
 

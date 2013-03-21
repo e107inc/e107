@@ -500,7 +500,7 @@ class frontpage
 				</div>
 				<div class='buttons-bar center'>
 					".$this->frm->hidden('fp_order', $rule_info['order'])."
-					".FRTLAN_43.e107::getUserClass()->uc_dropdown('class', $rule_info['class'], 'public,guest,member,admin,main,classes')."
+					".FRTLAN_43.": ".e107::getUserClass()->uc_dropdown('class', $rule_info['class'], 'public,guest,member,admin,main,classes')."
 					".$this->frm->admin_button('fp_save_new', LAN_UPDATE, 'update')."
 					".$this->frm->admin_button('fp_cancel', LAN_CANCEL, 'cancel')."
 				</div>
@@ -633,7 +633,7 @@ class frontpage
 	function add_other($ob_name, $cur_val, $cur_page)
 	{
 	  	return  "
-			<td>".$this->frm->radio($ob_name, 'other', $cur_val)."&nbsp;".$this->frm->label(FRTLAN_15, $ob_name, 'other')."</td>
+			<td>".$this->frm->radio($ob_name, 'other', $cur_val)."&nbsp;".$this->frm->label(FRTLAN_15.":", $ob_name, 'other')."</td>
 			<td>".$this->frm->text($ob_name.'_other', ($cur_val ? $cur_page : ''), 150, "size=50&id={$ob_name}-other-txt")."</td>
 		";
 	}

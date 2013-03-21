@@ -1,18 +1,17 @@
 <?php
 /*
- * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id$
+ * Copyright (C) 2008-2013 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
  *
  * Admin Language File
  *
 */
 
-define("LANG_LAN_00","%s could not be created (already exists).");
-define("LANG_LAN_01","%s was deleted (if existing) and created.");
-define("LANG_LAN_02","%s couldn't be deleted.");
-define("LANG_LAN_03","Tables");
+define("LANG_LAN_00", "%s could not be created (already exists)."); // FIXME HTML in LAN
+define("LANG_LAN_01", "%s was deleted (if existing) and created."); // FIXME HTML in LAN
+define("LANG_LAN_02", "%s couldn't be deleted."); // FIXME HTML in LAN
+define("LANG_LAN_03", "Tables");
 
-define("LANG_LAN_05","Not Installed");
+define("LANG_LAN_05", "Not Installed");
 define("LANG_LAN_06", "Create tables");
 define("LANG_LAN_07", "Drop existing tables?");
 define("LANG_LAN_08", "Replace existing tables (data will be lost).");
@@ -33,23 +32,22 @@ define("LANG_LAN_22", "Language Pack created successfully.");
 define("LANG_LAN_23", "Create Language-Pack (zip)");
 define("LANG_LAN_24", "Generate");
 define("LANG_LAN_25", "Language-Pack Creation Status");
-define('LANG_LAN_26', "Load language files only for current language");
-define('LANG_LAN_27', "If checked, and a required language can't be found, there will be an error");
+define("LANG_LAN_26", "Load language files only for current language");
+define("LANG_LAN_27", "If checked, and a required language cannot be found, there will be an error");
 
-//FIXME - LAN conflict. 
+//FIXME - LAN conflict & HTML IN LAN
 //0.8 - in conflict with 0.7. 
-define('LANG_LAN_PAGE_TITLE', 'Languages');
-define('LANG_LAN_28', '%s deleted.');
-define('LANG_LAN_29', '%s couldn\'t be deleted.');
-define('LANG_LAN_30', '%s created.');
-// define('LANG_LAN_31', '%s couldn\'t be deleted.');
-define('LANG_LAN_32', '%s was disabled but left intact.');
-define('LANG_LAN_33', 'Delete all tables in %s?');
+define("LANG_LAN_PAGE_TITLE", "Languages");
+define("LANG_LAN_28", "%s deleted.");
+define("LANG_LAN_29", "%s could not be deleted.");
+define("LANG_LAN_30", "%s created.");
+// define("LANG_LAN_31", "%s couldn\"t be deleted.");
+define("LANG_LAN_32", "%s was disabled but left intact.");
+define("LANG_LAN_33", "Delete all tables in %s?");
 
-// define('LANG_LAN_09', 'Are you sure?');
-define('LANG_LAN_34', 'Available Language Packs');
-define('LANG_LAN_35', "The following language packs are available for this version of e107.");
-define('LANG_LAN_36', "Language-Pack errors found! Please first verify your language files are without errors, before creating a language-pack.");
-
+// define("LANG_LAN_09", "Are you sure?");
+define("LANG_LAN_34", "Available Language Packs");
+define("LANG_LAN_35", "The following language packs are available for this version of e107.");
+define("LANG_LAN_36", "Language-Pack errors found! Please first verify your language files are without errors, before creating a language-pack.");
 
 ?>

@@ -1,14 +1,11 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_filemanager.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
+ * Copyright (C) 2008-2013 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Admin Language File
+ *
 */
+
 // define("FMLAN_1", "Uploaded");
 // define("FMLAN_2", "to");
 // define("FMLAN_3", "directory");
@@ -25,7 +22,7 @@ define("FMLAN_13", "files");
 define("FMLAN_14", "directory");
 define("FMLAN_15", "directories");
 define("FMLAN_16", "Root directory");
-define("FMLAN_17", "Name");
+//define("FMLAN_17", "Name");
 define("FMLAN_18", "Size");
 define("FMLAN_19", "Last Modified");
 

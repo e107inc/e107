@@ -914,7 +914,7 @@ class system_tools
 							</colgroup>
 							<thead>
 								<tr>
-									<th>".DBLAN_24."</th>
+									<th>".LAN_NAME."</th>
 									<th>".DBLAN_25."</th>
 									<th>".DBLAN_26."</th>
 									<th class='center last'>".DBLAN_27."</th>

@@ -293,7 +293,7 @@ class emotec
 		<form method='post' action='".e_SELF."#etabTabContainer=emoticon-packages'>
 			<fieldset id='core-emoticon-configure'>
 				<legend class='e-hideme'>".LAN_EDIT."</legend>
-				<div class='info-bar'><strong>".sprintf(EMOLAN_31, count($eArray))."</strong></div>
+				<div class='info-bar'><strong>".sprintf(str_replace("[x]", "%u", EMOLAN_31), count($eArray))."</strong></div>
 				<table class='table adminlist'>
 					<colgroup>
 						<col style='width:20px' />
@@ -401,11 +401,11 @@ class emotec
 
 		if (file_put_contents($fname,$f_string) === FALSE)
 		{
-			$mes->addWarning('<strong>'.EMOLAN_30.'</strong>'.str_replace(e_IMAGE, e_IMAGE_ABS, $fname));
+			$mes->addWarning('<strong>'.EMOLAN_30.'</strong>:'.str_replace(e_IMAGE, e_IMAGE_ABS, $fname));
 		}
 		else
 		{
-			$mes->addSuccess('<strong>'.EMOLAN_29.'</strong>'.str_replace(e_IMAGE, e_IMAGE_ABS, $fname));
+			$mes->addSuccess('<strong>'.EMOLAN_29.'</strong>:'.str_replace(e_IMAGE, e_IMAGE_ABS, $fname));
 		}
 	}
 
@@ -475,7 +475,7 @@ class emotec
 			if (($do_one == $value) || !$do_one &&  (!$sql -> db_Select("core", "*", "e107_name='emote_".$value."' ")))
 			{  // Pack info not in DB, or to be re-scanned
 			  $no_error = TRUE;
-			  $File_type = EMOLAN_32;
+			  $File_type = EMOLAN_32.":";
 				// Array of all files in the directory of the selected emote pack
 				$fileArray = $fl -> get_files(e_IMAGE."emotes/".$value);		// We actually want all the files in the directory
 				$confFile = '';
@@ -519,7 +519,7 @@ class emotec
 					}
 					// $tmp = addslashes(serialize($confArray));
 					$tmp = e107::getArrayStorage()->WriteArray($confArray);
-					$File_type = EMOLAN_22;
+					$File_type = EMOLAN_22.":";
 				}
 				/* end  */
 
@@ -629,13 +629,13 @@ class emotec
 					// Save pack info in the database
 				//	$tmp = addslashes(serialize($confArray));
 					$tmp = e107::getArrayStorage()->WriteArray($confArray);
-					$File_type = EMOLAN_23;
+					$File_type = EMOLAN_23.":";
 				}
 
 				if($confFile['type'] == "php")
 				{
 					include_once(e_IMAGE."emotes/".$value."/".$confFile['file']);
-					$File_type = EMOLAN_24;
+					$File_type = EMOLAN_24.":";
 					$tmp = $_emoteconf;		// Use consistent name
 				}
 
@@ -653,7 +653,7 @@ class emotec
 				}
 				else
 				{  // Error occurred
-				  $mes->addError(EMOLAN_27." '{$value}'");
+				  $mes->addError(EMOLAN_27.": '{$value}'");
 				}
 			}
 		}
@@ -664,7 +664,7 @@ class emotec
 		{
 		   	foreach ($pack_local as $p => $d)
 			{
-		    	$mes->addInfo(EMOLAN_34.$p.EMOLAN_35);
+		    	$mes->addInfo(EMOLAN_34.":".$p.EMOLAN_35);
 		  		$sql->db_Delete("core","`e107_name` = 'emote_{$p}'");
 			}
 		}
