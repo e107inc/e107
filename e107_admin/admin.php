@@ -15,9 +15,9 @@
  */
 
 require_once('../class2.php');
+include_once(e107::coreTemplatePath('admin_icons')); // Needs to be loaded before infopanel AND in boot.php 
 
-//TODO - marj prepare language reorganisation
-//include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+
 
 if(vartrue($_GET['iframe']) == 1)
 {

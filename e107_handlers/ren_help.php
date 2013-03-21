@@ -57,7 +57,7 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	}
 	else
 	{
-		include(e_THEME."templates/bbcode_template.php");
+		include(e_CORE."templates/bbcode_template.php");
 	}
 
 	if($mode != 2 && $mode != "forum")

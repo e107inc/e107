@@ -63,18 +63,7 @@ if ($action == "comments")
 			$user_name = e107::getSystemUser($id, false)->getName(LAN_ANONYMOUS);
 		}
 
-	/*if (!isset($USERPOSTS_TEMPLATE))
-	{
-		if (file_exists(THEME."userposts_template.php"))
-		{
-			require_once(THEME."userposts_template.php");
-		}
-		else
-		{
-			require_once(e_THEME."templates/userposts_template.php");
-		}
 
-	}*/
 	// new template engine - override in THEME/templates/userposts_template.php
 	$USERPOSTS_TEMPLATE = e107::getCoreTemplate('userposts');
 

@@ -99,6 +99,9 @@ class admin_shortcodes
 		if (ADMIN)
 		{
 			global $e_sub_cat, $e_icon_array, $PLUGINS_DIRECTORY;
+			
+			$e_icon_array = e107::getNav()->getIconArray();
+			
 			if (e_CURRENT_PLUGIN)
 			{
 				$eplug_icon = '';

@@ -387,10 +387,13 @@ require_once(HEADERF);
 // render search config
 
 if (!isset($SEARCH_TOP_TABLE)) {
-	if (file_exists(THEME."search_template.php")) {
+	if (file_exists(THEME."search_template.php")) 
+	{
 		require(THEME."search_template.php");
-	} else {
-		require(e_THEME."templates/search_template.php");
+	} 
+	else 
+	{
+		require(e_CORE."templates/search_template.php");
 	}
 }
 

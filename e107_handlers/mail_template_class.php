@@ -112,7 +112,7 @@ class e107MailTemplate
 			{
 				$fileList[] = $extraFile;
 			}
-			$fileList[] = e_THEME.'templates/email_template.php';
+			$fileList[] = e_CORE.'templates/email_template.php';
 			foreach ($fileList as $templateFileName )		// Override file, optional plugin file then defaults
 			{
 

@@ -1800,7 +1800,7 @@ class mailoutAdminClass extends e107MailManager
 	public function getEmailTemplateNames($sel = 'all')
 	{
 		$ret = array();
-		foreach (array(e_THEME.'templates/email_template.php', THEME.'templates/email_template.php') as $templateFileName )	// Override file then defaults
+		foreach (array(e_CORE.'templates/email_template.php', THEME.'templates/email_template.php') as $templateFileName )	// Override file then defaults
 		if (is_readable($templateFileName))
 		{
 			require($templateFileName);
