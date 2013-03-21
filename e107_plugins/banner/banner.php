@@ -92,10 +92,17 @@ if (isset($_POST['clientsubmit'])) {
 			 
 			if (!$BANNER_TABLE) 
 			{
-				if (file_exists(THEME."banner_template.php")) {
+				if (file_exists(THEME."templates/banner/banner_template.php")) 
+				{
+					require(THEME."templates/banner/banner_template.php");
+				} 
+				elseif (file_exists(THEME."banner_template.php")) 
+				{
 					require(THEME."banner_template.php");
-				} else {
-					require(e_BASE.$THEMES_DIRECTORY."templates/banner_template.php");
+				} 
+				else 
+				{
+					require(e_PLUGIN."banner/banner_template.php");
 				}
 			}
 			$textstring .= preg_replace("/\{(.*?)\}/e", '$\1', $BANNER_TABLE);
@@ -104,10 +111,13 @@ if (isset($_POST['clientsubmit'])) {
 	 
 	if (!$BANNER_TABLE) 
 	{
-		if (file_exists(THEME."banner_template.php")) {
+		if (file_exists(THEME."banner_template.php")) 
+		{
 			require(THEME."banner_template.php");
-		} else {
-			require(e_BASE.$THEMES_DIRECTORY."templates/banner_template.php");
+		} 
+		else 
+		{
+			require(e_PLUGIN."banner/banner_template.php");
 		}
 	}
 	$textstart = preg_replace("/\{(.*?)\}/e", '$\1', $BANNER_TABLE_START);

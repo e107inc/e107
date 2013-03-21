@@ -26,16 +26,16 @@ if(is_readable(THEME."membersonly_template.php"))
 }
 else
 {
-	require_once(e_THEME."templates/membersonly_template.php");
+	require_once(e_CORE."templates/membersonly_template.php");
 }
 
-$HEADER=""; 
-$FOOTER=""; 
+
+define('e_IFRAME',true);
 
 include_once(HEADERF);
 
 echo $MEMBERSONLY_BEGIN;
-$ns->tablerender($MEMBERSONLY_CAPTION, $MEMBERSONLY_TABLE); 
+$ns->tablerender($MEMBERSONLY_CAPTION, $MEMBERSONLY_TABLE, 'membersonly'); 
 echo $MEMBERSONLY_END;
 
 ?>

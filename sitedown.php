@@ -38,7 +38,7 @@ if (!$SITEDOWN_TABLE)
 	}
 	else
 	{
-		require_once(e_THEME.'templates/sitedown_template.php');
+		require_once(e_CORE.'templates/sitedown_template.php');
 	}
 }
 echo $tp->parseTemplate($SITEDOWN_TABLE, TRUE, $sitedown_shortcodes);
