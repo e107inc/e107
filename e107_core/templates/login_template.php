@@ -4,12 +4,12 @@
 if (!defined('e107_INIT')) { exit; }
 
 // ##### LOGIN HEADER TABLE -----------------------------------------------------------------------
-if(!isset($LOGIN_TABLE_HEADER))
+if(!isset($LOGIN_TABLE_HEADER)) //FIXME - use {LOGO} . 
 {
 	$LOGIN_TABLE_HEADER .= "
 	<div style='width:100%;text-align:center; margin-left: auto;margin-right: auto'><br />
 		<div style='text-align:center;width:70%;margin-left: auto;margin-right: auto'>
-			".(file_exists(THEME."images/login_logo.png") ? "<img src='".THEME_ABS."images/login_logo.png' alt='' />\n" : "<img src='".e_IMAGE."logo.png' alt='' />\n" );
+			{LOGO=login}";
 }
 
 // ##### LOGIN TABLE -----------------------------------------------------------------------------
@@ -52,7 +52,9 @@ if(!isset($LOGIN_TABLE))
 		  <td class='forumheader3' rowspan='".($LOGIN_TABLE_SECIMG_SECIMG ? 3 : 2)."' style='width:20%; vertical-align: middle; margin-left: auto; margin-right: auto; text-align: center;'>".(file_exists(THEME."images/password.png") ? "<img src='".THEME_ABS."images/password.png' alt='' />\n" : "<img src='".e_IMAGE."generic/password.png' alt='' />\n" )."</td>\n</tr>\n
 		  <tr>\n<td class='forumheader3'>".LAN_LOGIN_2."</td>\n<td class='forumheader3'>{LOGIN_TABLE_PASSWORD}
 		  </td>\n</tr>\n";
-	if($LOGIN_TABLE_SECIMG_SECIMG)
+		  
+		  
+	if(LOGIN_CAPTCHA)
 	{
 		$LOGIN_TABLE .= "<tr><td class='forumheader3'>{LOGIN_TABLE_SECIMG_LAN}</td>\n<td class='forumheader3'>{LOGIN_TABLE_SECIMG_HIDDEN} {LOGIN_TABLE_SECIMG_SECIMG} {LOGIN_TABLE_SECIMG_TEXTBOC}</td>\n</tr>\n";
 	}
@@ -66,16 +68,37 @@ if(!isset($LOGIN_TABLE))
 if(!isset($LOGIN_TABLE_FOOTER))
 {
 			$LOGIN_TABLE_FOOTER = "
-			<div style='width:70%;margin-right:auto;margin-left:auto'>
+			<div style='margin-bottom:100px; width:70%;margin-right:auto;margin-left:auto'>
 				<div style='text-align:center'><br />
 					{LOGIN_TABLE_FOOTER_USERREG}
-					&nbsp;&nbsp;&nbsp;<a href='".e_BASE."fpw.php'>".LAN_LOGIN_12."</a>
+					
 				</div>
 			</div>
 		</div>
 	</div>";
 }
 // ##### ------------------------------------------------------------------------------------------
+
+
+
+// Starter for v2. - Bootstrap 
+
+$LOGIN_TEMPLATE['xxxxx'] = '
+
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <input type="text" class="input-block-level" placeholder="Email address">
+        <input type="password" class="input-block-level" placeholder="Password">
+        <label class="checkbox">
+          <input type="checkbox" value="remember-me"> Remember me
+        </label>
+        <button class="btn btn-large btn-primary" type="submit">Sign in</button>
+
+ ';
+
+
+
+
+
 
 
 ?>
