@@ -832,6 +832,39 @@ h4.caption { margin-bottom:20px; }
 }
 
 
+.plupload_start
+{
+    color: rgb(255, 255, 255);
+    text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.25);
+    background-color: rgb(91, 183, 91);
+    background-image: linear-gradient(to bottom, rgb(98, 196, 98), rgb(81, 163, 81));
+    background-repeat: repeat-x;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+}
+
+a.plupload_disabled:hover {background: transparent; border-color:inherit }
+
+.plupload_start:hover, .plupload_start:focus, .plupload_start:active,  a.plupload_disabled:hover {
+    color: rgb(255, 255, 255);
+    background-color: rgb(81, 163, 81);
+}
+
+li.plupload_delete a {
+	
+	 background: url(images/adminicons_16.png) no-repeat top left;
+ 	display:inline-block;
+ 	width:17px;
+ 	height:16px;
+ 	*margin-right: .3em;
+	line-height: 14px;
+	vertical-align: text-top;
+	background-position: -525px 0; width: 16px; height: 16px; 	
+}
+
+
+
+
+
 /*
 
 body { background-color: rgb(68, 68, 68); }
