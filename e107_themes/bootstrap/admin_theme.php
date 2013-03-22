@@ -48,17 +48,6 @@ else
 $no_core_css = TRUE;
 
 
-
-function theme_head() {
-
-	$ret = '
-		<!--[if lte IE 7]>
-			<script type="text/javascript" src="'.THEME_ABS.'menu/menu.js"></script>
-		<![endif]-->
-	';
-	return $ret;
-}
-
 function tablestyle($caption, $text, $mode) 
 {
 	global $style;
@@ -142,52 +131,68 @@ function tablestyle($caption, $text, $mode)
 		return;
 	}
 	
+	if(trim($caption) == '')
+	{
+		$style = 'no_caption';	
+	}
 	
 	
-	
-	switch(varset($style, 'admin_content')) {
+	switch(varset($style, 'admin_content'))
+	{
 
-	case 'admin_menu' :
-		echo '
+		case 'admin_menu' :
+			echo '
+					<div class="well sidebar-nav" >  
+					<div class="nav-header">'.$caption.'</div>
+					'.$text.'
+				</div>
+			';
+		break;
+	
+		case 'site_info' :
+			echo '
 				<div class="well sidebar-nav" >  
-				<div class="nav-header">'.$caption.'</div>
-				'.$text.'
-			</div>
-		';
-	break;
-
-	case 'site_info' :
-		echo '
-			<div class="well sidebar-nav" >  
-				<div class="nav-header">'.$caption.'</div>
-				<p style="padding:10px">
-					'.$text.'
-				</p>
-			</div>
-		';
-	break;
-/*
-	case 'admin_content':
-		echo '
-			<div class="block">
-				<h2 class="caption">'.$caption.'</h2>
-				<div class="block-text">
-					'.$text.'
+					<div class="nav-header">'.$caption.'</div>
+					<p style="padding:10px">
+						'.$text.'
+					</p>
 				</div>
-			</div>
-		';
-	break;
-*/
-	default:
-		echo '
-			<div class="block">
-				<h4 class="caption">'.$caption.'</h4>
-				<div class="block-text">
-					'.$text.'
+			';
+		break;
+	/*
+		case 'admin_content':
+			echo '
+				<div class="block">
+					<h2 class="caption">'.$caption.'</h2>
+					<div class="block-text">
+						'.$text.'
+					</div>
 				</div>
-			</div>
-		';
-	break;
+			';
+		break;
+	*/
+	
+		case 'no_caption' :
+			echo '
+				<div class="block">
+					<div class="block-text">
+						'.$text.'
+					</div>
+				</div>
+			';
+		break;
+	
+	
+		default:
+			echo '
+				<div class="block">
+					<h4 class="caption">'.$caption.'</h4>
+					<div class="block-text">
+						'.$text.'
+					</div>
+				</div>
+			';
+		break;
 	}
 }
 
