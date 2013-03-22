@@ -79,7 +79,7 @@ else
 	
 	$sec_img = e107::getSecureImg();
 
-	$use_imagecode = ($pref['logcode'] && extension_loaded("gd"));
+	$use_imagecode = (vartrue($pref['admincode']) && extension_loaded("gd"));
 
 	if ($_POST['authsubmit'])
 	{

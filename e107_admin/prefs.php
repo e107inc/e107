@@ -1387,22 +1387,39 @@ $text .= "
 							<div class='field-help'>".PRFLAN_61."</div>
 						</td>
 					</tr>
-					<tr>
-						<td>".PRFLAN_76.": </td>
-						<td>
+					<!-- Secure Image -->
+					
 ";
 
-if($hasGD)
-{
-	$text .= $frm->radio_switch('signcode', $pref['signcode']);
-}
-else
-{
-	$text .= PRFLAN_133;
-}
-$text .= "
-						</td>
-					</tr>
+	$secureImage = array('signcode'=>PRFLAN_76, 'logcode'=>PRFLAN_81, "fpwcode"=>PRFLAN_138,'admincode'=>PRFLAN_222);
+	
+	foreach($secureImage as $key=>$label)
+	{
+		
+		$label = str_replace($srch,$repl,$label);
+		
+		$text .= "<tr><td>".$label."</td><td>";	
+		if($hasGD)
+		{
+			$text .= $frm->radio_switch($key, $pref[$key]);
+		}
+		else
+		{
+			$text .= PRFLAN_133;
+		}
+		
+		$text .= "
+		<div class='field-help'>".PRFLAN_223."</div>
+		</td></tr>\n";
+		
+	}
+
+
+/*
+
+
+					
+	$text .= "
 					<tr>
 						<td>".PRFLAN_81.": </td>
 						<td>
@@ -1434,8 +1451,11 @@ else
 
 $text .= "
 						</td>
-					</tr>
-					<tr>
+					</tr>";
+ * 
+ 
+ */
+$text .= "					<tr>
 						<td>".PRFLAN_92.": </td>
 						<td>
 							".$frm->radio_switch('user_reg_secureveri', $pref['user_reg_secureveri'])."
