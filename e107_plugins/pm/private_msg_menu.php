@@ -74,15 +74,31 @@ $sc_style['PM_BLOCKED_SENDERS_MANAGE']['post'] = '</a> ]';
 if(!isset($pm_menu_template))
 {
 	//FIXME URL Breaks
+	/*
 	$pm_menu_template = "
-	<a href='{U/RL=pm|main|f=box&box=inbox}'>".PM_INBOX_ICON."</a>
-	<a href='{U/RL=pm|main|f=box&box=inbox}'>".LAN_PM_25."</a>
+	<a href='{URL=pm|main|f=box&box=inbox}'>".PM_INBOX_ICON."</a>
+	<a href='{URL=pm|main|f=box&box=inbox}'>".LAN_PM_25."</a>
 	{PM_NEWPM_ANIMATE}
 	<br />
 	{PM_INBOX_TOTAL} ".LAN_PM_36.", {PM_INBOX_UNREAD} ".LAN_PM_37." {PM_INBOX_FILLED}
 	<br />
-	<a href='{U/RL=pm|main|f=box&box=outbox}'>".PM_OUTBOX_ICON."</a>
-	<a href='{U/RL=pm|main|f=box&box=outbox}'>".LAN_PM_26."</a><br />
+	<a href='{URL=pm|main|f=box&box=outbox}'>".PM_OUTBOX_ICON."</a>
+	<a href='{URL=pm|main|f=box&box=outbox}'>".LAN_PM_26."</a><br />
+	{PM_OUTBOX_TOTAL} ".LAN_PM_36.", {PM_OUTBOX_UNREAD} ".LAN_PM_37." {PM_OUTBOX_FILLED}
+	{PM_SEND_PM_LINK}
+	{PM_BLOCKED_SENDERS_MANAGE}
+	";
+	*/
+	
+	$pm_menu_template = "
+	<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>".PM_INBOX_ICON."</a>
+	<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>".LAN_PM_25."</a>
+	{PM_NEWPM_ANIMATE}
+	<br />
+	{PM_INBOX_TOTAL} ".LAN_PM_36.", {PM_INBOX_UNREAD} ".LAN_PM_37." {PM_INBOX_FILLED}
+	<br />
+	<a href='".e_PLUGIN_ABS."pm/pm.php?outbox'>".PM_OUTBOX_ICON."</a>
+	<a href='".e_PLUGIN_ABS."pm/pm.php?outbox'>".LAN_PM_26."</a><br />
 	{PM_OUTBOX_TOTAL} ".LAN_PM_36.", {PM_OUTBOX_UNREAD} ".LAN_PM_37." {PM_OUTBOX_FILLED}
 	{PM_SEND_PM_LINK}
 	{PM_BLOCKED_SENDERS_MANAGE}
