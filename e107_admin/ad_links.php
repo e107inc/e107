@@ -522,7 +522,7 @@ $admin_cat['sort'][20] = false;
 */
 
 
-$admin_cat = e107::getNav()->adminCats(); // see e107_handlers/sitelinks.php
+//XXX  $admin_cat = e107::getNav()->adminCats(); // see e107_handlers/sitelinks.php
 
 
 
@@ -600,10 +600,10 @@ $array_functions = array(
 );
 */
 
+/*
 $array_functions = e107::getNav()->adminLinks('legacy'); // replacement see e107_handlers/sitelinks.php
-
-
 // SecretR - BC only, obsolete meta title auto detection
+ //XXX Moved to boot.php
 if(!defset('e_ADMIN_UI') && !defset('e_PAGETITLE'))
 {
 	foreach($array_functions as $val)
@@ -615,3 +615,4 @@ if(!defset('e_ADMIN_UI') && !defset('e_PAGETITLE'))
 		}
 	}
 }
+*/
