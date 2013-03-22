@@ -972,12 +972,12 @@ class media_admin_ui extends e_admin_ui
 				<li class='active'><a data-toggle='tab' href='#core-media-select'>Choose from Library</a></li>
 				<li><a data-toggle='tab' href='#core-media-upload'>Upload a File</a></li>";
 		
-		if($options['bbcode'])
+		if(varset($options['bbcode']))
 		{
 			$text .= "<li><a data-toggle='tab' href='#core-media-style'>Appearance</a></li>\n";	
 		}
 		
-		if($_GET['from'])
+		if(varset($_GET['from']))
 		{
 			$options['from'] .= intval($_GET['from']);
 		}
@@ -996,7 +996,7 @@ class media_admin_ui extends e_admin_ui
 			
 		$tag = ($options['bbcode']) ? "" : $this->getQuery('tagid');
 		
-		if($_GET['w'])
+		if(varset($_GET['w']))
 		{
 			$options['w'] = intval($_GET['w']);
 		}
@@ -1039,7 +1039,9 @@ class media_admin_ui extends e_admin_ui
 		{
 			$text .= "<div class='tab-pane' id='core-media-style'>
 				<legend>Appearance</legend>
-				<table class='table adminform'>
+				<div class='row'>
+				<div class='span6'>
+				<table class='table'>
 				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
@@ -1060,30 +1062,34 @@ class media_admin_ui extends e_admin_ui
 					
 					<tr>
 						<td>Margin-Left: </td>
-						<td><input class='e-media-attribute' type='text' id='margin-left' name='margin_left' value='' /></td>
+						<td><input class='e-media-attribute input-mini' type='text' id='margin-left' name='margin_left' value='' /> px</td>
 					</tr>
 					
 					<tr>
 						<td>Margin-Right: </td>
-						<td><input class='e-media-attribute' type='text' id='margin-right' name='margin_right' value=''  /></td>
+						<td><input class='e-media-attribute input-mini' type='text' id='margin-right' name='margin_right' value=''  /> px</td>
 					</tr>
 					
 					<tr>
 						<td>Margin-Top: </td>
-						<td><input class='e-media-attribute' type='text' id='margin-top' name='margin_top' value=''  /></td>
+						<td><input class='e-media-attribute input-mini' type='text' id='margin-top' name='margin_top' value=''  /> px</td>
 					</tr>
 					
 					<tr>
 						<td>Margin-Bottom: </td>
-						<td><input class='e-media-attribute' type='text' id='margin-bottom' name='margin_bottom' value=''  /></td>
+						<td><input class='e-media-attribute input-mini' type='text' id='margin-bottom' name='margin_bottom' value=''  /> px</td>
 					</tr>
 		
 			</tbody></table>
-			<table><tr><td>Preview<br /></td></tr>
-			<tr><td style='text-align:center'>
-			<img id='preview' src='".e_IMAGE_ABS."generic/blank.gif' style='border:1px solid silver; min-width:220px; min-height:180px;' />
+			</div>
+			<div class='span6'>
+			<h5>Preview</h5>
+		
+			<img class='well' id='preview' src='".e_IMAGE_ABS."generic/blank.gif' style='min-width:220px; min-height:180px;' />
 			
-			</td></tr></table>
+		
+			</div>
+			</div>
 			</div>";
 		}	
 		$text .= "</div>";

@@ -80,10 +80,11 @@ if($_POST['mode'] == 'tobbcode')
 
     // resize the thumbnail to match wysiwyg width/height. 
     
-        $psrch 		= '/<img[^>]*src="{e_BASE}thumb.php\?src=([\S]*)w=([\d]*)&amp;h=([\d]*)"(.*)width="([\d]*)" height="([\d]*)"/i';
-        $prepl 		= '<img src="{e_BASE}thumb.php?src=$1w=$5&amp;h=$6"$4width="$5" height="$6" ';
+    //    $psrch 		= '/<img[^>]*src="{e_BASE}thumb.php\?src=([\S]*)w=([\d]*)&amp;h=([\d]*)"(.*)width="([\d]*)" height="([\d]*)"/i';
+    //    $prepl 		= '<img src="{e_BASE}thumb.php?src=$1w=$5&amp;h=$6"$4width="$5" height="$6" ';
     
-		$content 	= preg_replace($psrch, $prepl, $content);
+	//	$content 	= preg_replace($psrch, $prepl, $content);
+		$content = updateImg($content);
 		$content 	= $tp->parseBBTags($content,true); // replace html with bbcode equivalent 
         
         echo ($content) ? "[html]".$content."[/html]" : ""; // Add the tags before saving to DB. 
@@ -98,6 +99,45 @@ if($_POST['mode'] == 'tobbcode')
 		
 }
 
+/**
+ * Rebuld <img> tags with modified thumbnail size. 
+ */
+function updateImg($text)
+{
+		
+	$arr = e107::getParser()->getTags($text,'img');
+	
+	$srch = array("?","&");
+	$repl = array("\?","&amp;");
 
+	foreach($arr['img'] as $img)
+	{
+		$regexp = '#(<img[^>]*src="'.str_replace($srch, $repl, $img['src']).'"[^>]*>)#';
+
+		$width 	= vartrue($img['width']) 	? ' width="'.$img['width'].'"' : '';
+		$height = vartrue($img['height'])	? ' height="'.$img['height'].'"' : '';
+		$style 	= vartrue($img['style'])	? ' style="'.$img['style'].'"' : '';
+		$class 	= vartrue($img['class'])	? ' class="'.$img['class'].'"' : '';
+		$alt 	= vartrue($img['alt'])		? ' alt="'.$img['alt'].'"' : '';
+		
+		list($url,$qry) = explode("?",$img['src']);
+		
+		parse_str($qry,$qr);
+		
+		$qr['w'] = $img['width'];
+		$qr['h'] = $img['height'];
+		
+		$src = $url."?".urldecode(http_build_query($qr));
+		
+		$replacement = '<img'.$class.$style.' src="'.$src.'"'.$width.$height.$alt.' />';
+		
+		$text = preg_replace($regexp, $replacement, $text);	
+		
+		
+	}	
+
+	return $text;
+
+}
 
 ?>
