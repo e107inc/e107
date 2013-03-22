@@ -755,7 +755,7 @@ class e_navigation
 			34 => array(e_ADMIN.'docs.php', 		ADLAN_12,	ADLAN_13,	'',	20, E_16_DOCS, E_32_DOCS),
 		// TODO System Info.
 		//	35 => array('#TODO', 'System Info', 'System Information', '', 20, '', ''),
-			36 => array(e_ADMIN.'credits.php', LAN_CREDITS, LAN_CREDITS, '', 20, E_16_CREDITS, E_32_CREDITS),
+			36 => array(e_ADMIN.'credits.php', LAN_CREDITS, LAN_CREDITS, '', 20, E_16_E107, E_32_E107),
 		//	37 => array(e_ADMIN.'custom_field.php', ADLAN_161, ADLAN_162, 'U', 4, E_16_CUSTOMFIELD, E_32_CUSTOMFIELD),
 			38 => array(e_ADMIN.'comment.php', LAN_COMMENTMAN, LAN_COMMENTMAN, 'B', 5, E_16_COMMENT, E_32_COMMENT)
 		);	
