@@ -100,7 +100,7 @@ class e_media
 				'media_name'		=> $f['fname'],
 				'media_author'		=> USERID,
 				'media_size'		=> $f['fsize'],
-				'media_dimensions'	=> $f['img-width']." x ".$f['img-height'],
+				'media_dimensions'	=> vartrue($f['img-width']) ? $f['img-width']." x ".$f['img-height'] : "",
 				'media_usedby'		=> '',
 				'media_tags'		=> '',
 				'media_type'		=> $f['mime']
