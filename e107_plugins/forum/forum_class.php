@@ -90,7 +90,7 @@ EON;
 
 e107::js('inline',$jscode,'jquery');
 
-e107::lan('forum','lan_forum');
+e107::lan('forum','English_front');
 // include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum.php');
 include_once(e_PLUGIN . 'forum/templates/forum_icons_template.php');
 
