@@ -322,6 +322,7 @@ define("LAN_OWNER", "Owner");
 define("LAN_NAME", "Name");
 define("LAN_EMAIL","Email address");
 define("LAN_ID", "ID");
+define("LAN_IP", "IP Address");
 define("LAN_TITLE", "Title");
 define("LAN_DESCRIPTION", "Description");
 define("LAN_VISIBILITY", "Visibility");
