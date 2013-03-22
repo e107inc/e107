@@ -448,7 +448,7 @@ echo getModal();
 		
 		if(e_PAGE == "image.php")
 		{
-			return;	
+	//		return;	
 		}
 		
 		

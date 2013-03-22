@@ -467,11 +467,8 @@ class e_media
 		
 	/**
 	 * Generate Simple Thumbnail window for image -selection 
-	 * TODO Use Whole-page popup window
-	 * TODO Add an upload Tab?. 
-	 * TODO Real-time ajax filter by keyword
 	 */
-	public function imageSelect($cat,$formid='imageSel')
+	private function imageSelect($cat,$formid='imageSel')
 	{
 		$sql = e107::getDb();
 		$tp = e107::getParser();
@@ -505,20 +502,23 @@ class e_media
 	}
 
 
-	public function mediaSelectNav($category,$att)
+	private function mediaSelectNav($category, $tagid='', $option=null)
 	{
-		parse_str($att,$option); 
+		if(is_string($option))
+		{
+			parse_str($option,$option); 
+		}
 		
-		$cat = varset($category) ? '&amp;for='.$category : "";
+		$cat = varset($category) 			? '&amp;for='.$category : "";
+		$cat .= varset($tagid) 				? '&amp;tagid='.$tagid : ""; 
 		
-	//	if(!$label) $label = ' Upload an image or file';
-		if(varset($option['tagid'])) $cat .= '&amp;tagid='.$option['tagid']; 
-		if(varset($option['bbcode'])) $cat .= '&amp;bbcode='.$option['bbcode']; 
+		$cat .= varset($option['bbcode']) 	? '&amp;bbcode='.$option['bbcode'] : ""; 		
+		$cat .= varset($option['limit']) 	? "&amp;limit=".$option['limit'] : "";
+		$cat .= varset($option['frm']) 		? "&amp;frm=".$option['frm'] : "";
+		$cat .= varset($option['w']) 		? "&amp;w=".$option['w'] : "";
+					
+		$url = e_ADMIN_ABS."image.php?mode=main&amp;action=nav&amp;iframe=1".$cat."&amp;from=0";
 		
-		$cat .= varset($option['limit']) ? "&amp;limit=".$option['limit'] : "";
-		$cat .= varset($option['frm']) ? "&amp;frm=".$option['frm'] : "";
-			
-		$url = e_ADMIN_ABS."image.php?mode=main&amp;action=nav&amp;iframe=1".$cat;
 		return $url;	
 	}
 
@@ -571,23 +571,26 @@ class e_media
 		$prevId 		= $tagid."_prev"; // ID of image in Form. 
 		$thumbAtt		= 'aw=120&ah=100';	// Thumbnail of the Media-Manager Preview. 	
 		
+		
 		// EXAMPLE of FILTER GUI. 
 		$text = "";
 		$dipTotal = (($frm + $limit) < $total) ? ($frm + $limit) : $total;
 
 		if($navMode === false)
 		{
-
+		//	$data_src = $this->mediaSelectNav($category,$tagid, "bbcode=".$bbcode)."&amp;from=0";
+			$data_src = $this->mediaSelectNav($category,$tagid, $option); // ."&amp;from=0";
+		
 			// Inline style to override jquery-ui stuff. 
 			$text .= "<div class='input-append' style='margin-top:10px;font-size:12px'>
-			<input type='text' style='padding-left:24px;margin-right:-20px' id='media-search' title='Enter some text to filter results' name='search' value='' class='e-tip' data-target='media-select-container' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' />
+			<input type='text' style='padding-left:24px;margin-right:-20px' id='media-search' title='Enter some text to filter results' name='search' value='' class='e-tip' data-target='media-select-container' data-src='".$data_src."' />
 			<i class='icon-search searchquery' style='top:4px;left:-212px'></i>";
 		//	$text .= "<input type='button' value='Go' class='btn btn-primary e-media-nav' data-target='media-select-container' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' /> "; // Manual filter, if onkeyup ajax fails for some reason. 
-			$text .= "<button type='button' value='Go' class='btn btn-primary e-media-nav' data-target='media-select-container' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' >Go</button>"; // Manual filter, if onkeyup ajax fails for some reason. 
+			$text .= "<button type='button' value='Go' class='btn btn-primary e-media-nav' data-target='media-select-container' data-src='".$data_src."' >Go</button>"; // Manual filter, if onkeyup ajax fails for some reason. 
 	
-			$text .= "&nbsp;<button type='button' title='previous page' class='btn e-nav e-media-nav e-tip'  data-target='media-select-container' data-nav-total='".$total."' data-nav-dir='down' data-nav-inc='".$limit."' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' >&laquo;</button>"; // see next page of images. 
+			$text .= "&nbsp;<button type='button' title='previous page' class='btn e-nav e-media-nav e-tip'  data-target='media-select-container' data-nav-total='".$total."' data-nav-dir='down' data-nav-inc='".$limit."' data-src='".$data_src."' >&laquo;</button>"; // see next page of images. 
 		
-			$text .= "<button type='button' title='next page' class='btn e-nav e-media-nav e-tip' style='text-align:center'  data-target='media-select-container' data-nav-total='".$total."' data-nav-dir='up' data-nav-inc='".$limit."' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' >&raquo;</button>"; // see next page of images. 
+			$text .= "<button type='button' title='next page' class='btn e-nav e-media-nav e-tip' style='text-align:center'  data-target='media-select-container' data-nav-total='".$total."' data-nav-dir='up' data-nav-inc='".$limit."' data-src='".$data_src."' >&raquo;</button>"; // see next page of images. 
 			$text .= "</div>";
 		
 			$text .= "
@@ -623,7 +626,7 @@ class e_media
 			
 		}
 		
-		
+//		print_a($option);
 		
 		$tp = e107::getParser();
 	
@@ -641,9 +644,7 @@ class e_media
 			$w = ($dbWidth > 400) ? 400 : intval($dbWidth);		
 		//	$w = vartrue($w,0);
        //     $h = vartrue($w,0);		
-					
-				
-			
+								
 			$class 			= ($category !='_icon') ? "media-select-image" : "media-select-icon";
 			$media_path 	= ($w || $h) ? $tp->thumbUrl($im['media_url'], "&w={$w}") : $tp->thumbUrl($im['media_url']); // $tp->replaceConstants($im['media_url'],'full'); // max-size 
 				

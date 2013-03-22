@@ -56,6 +56,11 @@ if(vartrue($_GET['action']) == 'nav' && e_AJAX_REQUEST) //XXX Doesn't work corre
 			$bbcodeMode .= "&from=".intval($_GET['from']);
 		}
 		
+		if($_GET['w'])
+		{
+			$bbcodeMode .= "&w=".intval($_GET['w']);
+		}
+		
 		$bbcodeMode .= "&nav=1";
 			
 		$tag = ($bbcodeMode===false) ? false : $_GET['tagid']; // eg. news, news-thumbnail	
