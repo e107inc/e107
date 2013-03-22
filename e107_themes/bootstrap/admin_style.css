@@ -247,7 +247,9 @@ i.s-message-debug	{ background-position: -1480px 0; width: 32px; height: 32px;  
 }
 
 
-.button {
+.button,
+.plupload_button,
+.plupload_button:hover{
   display: inline-block;
   *display: inline;
   /* IE7 inline-block hack */
@@ -790,6 +792,46 @@ span.tag button.close {
 }
 
 h4.caption { margin-bottom:20px; }
+
+.plupload_container  {
+	padding:0px; 
+	margin: 10px 20px;
+	background: transparent; 
+}
+
+.plupload_header { background: transparent }
+
+.plupload_header_content { background: transparent; padding-left:0px; min-height:30px; } 
+
+.plupload_wrapper { font: inherit; }
+.plupload_header_title { display: none; }
+
+.plupload_filelist_header,
+.plupload_filelist_footer  {  
+	
+    background-color: rgb(54, 54, 54);
+    background-image: linear-gradient(to bottom, rgb(68, 68, 68), rgb(34, 34, 34));
+    border: 1px solid rgb(3, 3, 3);
+    color: rgb(198, 198, 198);
+	height: inherit;
+	}
+
+.plupload_filelist .plupload_file_name {
+	width: 80%;	
+}
+
+.plupload_filelist li { background: transparent }
+
+.plupload_file_status span {
+   color: rgb(198, 198, 198);
+}
+
+.plupload_scroll .plupload_filelist
+{
+	background: transparent;
+}
+
+
 /*
 
 body { background-color: rgb(68, 68, 68); }
