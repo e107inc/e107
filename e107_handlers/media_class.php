@@ -509,14 +509,14 @@ class e_media
 	{
 		parse_str($att,$option); 
 		
-		$cat = ($category) ? '&amp;for='.$category : "";
+		$cat = varset($category) ? '&amp;for='.$category : "";
 		
-		if(!$label) $label = ' Upload an image or file';
-		if($option['tagid']) $cat .= '&amp;tagid='.$option['tagid']; 
-		if($option['bbcode']) $cat .= '&amp;bbcode='.$option['bbcode']; 
+	//	if(!$label) $label = ' Upload an image or file';
+		if(varset($option['tagid'])) $cat .= '&amp;tagid='.$option['tagid']; 
+		if(varset($option['bbcode'])) $cat .= '&amp;bbcode='.$option['bbcode']; 
 		
-		$cat .= ($option['limit']) ? "&amp;limit=".$option['limit'] : "";
-		$cat .= ($option['frm']) ? "&amp;frm=".$option['frm'] : "";
+		$cat .= varset($option['limit']) ? "&amp;limit=".$option['limit'] : "";
+		$cat .= varset($option['frm']) ? "&amp;frm=".$option['frm'] : "";
 			
 		$url = e_ADMIN_ABS."image.php?mode=main&amp;action=nav&amp;iframe=1".$cat;
 		return $url;	
@@ -535,12 +535,12 @@ class e_media
 			$option = $att;
 		}
 			
-		$frm 		= ($option['from']) ? $option['from'] : 0;
-		$limit 		= ($option['limit']) ? $option['limit'] : 20;
+		$frm 		= varset($option['from']) ? $option['from'] : 0;
+		$limit 		= varset($option['limit']) ? $option['limit'] : 20;
 		$newfrm 	= $frm + $limit; 
-		$bbcode		= ($option['bbcode']) ? $option['bbcode'] : null;
-		$navMode	= ($option['nav']) ? TRUE : FALSE;
-		$search		= ($option['search']) ? $option['search'] : null;
+		$bbcode		= varset($option['bbcode']) ? $option['bbcode'] : null;
+		$navMode	= varset($option['nav']) ? TRUE : FALSE;
+		$search		= varset($option['search']) ? $option['search'] : null;
 		
 		if($category !='_icon')
 		{
@@ -572,7 +572,7 @@ class e_media
 		$thumbAtt		= 'aw=120&ah=100';	// Thumbnail of the Media-Manager Preview. 	
 		
 		// EXAMPLE of FILTER GUI. 
-	//	$text .= "CAT=".$cat;
+		$text = "";
 		$dipTotal = (($frm + $limit) < $total) ? ($frm + $limit) : $total;
 
 		if($navMode === false)
@@ -603,7 +603,7 @@ class e_media
 		 	parent.document.getElementById('".$prevId."').src = '".e_IMAGE_ABS."generic/blank.gif';
 		 	 return false;";
 			
-			$text .= "<a class='{$class} media-select-none e-dialog-close' data-src='{$im['media_url']}' style='vertical-align:middle;display:block;float:left;' href='#' onclick=\"{$onclick_clear}\" >
+			$text .= "<a class='{$class} media-select-none e-dialog-close' data-src='".varset($im['media_url'])."' style='vertical-align:middle;display:block;float:left;' href='#' onclick=\"{$onclick_clear}\" >
 			<div style='text-align:center;position: relative; top: 30%'>No image</div>
 			</a>";		
 		}
@@ -649,7 +649,7 @@ class e_media
 				
 			$realPath 		= $tp->thumbUrl($im['media_url'], $prevAtt); // Parsed back to Form as Preview Image. 
 			
-			$diz 			= $tp->toAttribute($im['media_title'])."\n".$im['media_dimensions'];		
+			$diz 			= $tp->toAttribute(varset($im['media_title']))."\n".varset($im['media_dimensions']);		
 			$repl 			= array($im['media_url'],$media_path);
 			
 			if($bbcode == null) // e107 Media Manager

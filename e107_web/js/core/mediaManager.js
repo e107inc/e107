@@ -85,9 +85,12 @@ $(document).ready(function()
 			style  = style + 'float:' + _float + ';';	
 		}
 		
+		
+		
 		// Set the Html / Wysiwyg Value.
 		var html = '<img class="img-rounded" style=\"' + style + '\" src=\"'+ src +'\" alt=\"\" width=\"' + width + '\" height=\"' + height + '\" />'; 
 		$('#html_holder').val(html);  
+		
 		
 		// Only Do width/height styling on bbcodes --
 		if(width !='')
