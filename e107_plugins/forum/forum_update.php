@@ -167,19 +167,21 @@ function step2()
 	}
 	else
 	{
-			$text = "<form method='post' action='".e_SELF."?step=4'>
-			<input class='btn button' type='submit' name='nextStep[4]' value='Proceed to step 3' />
+			$text = "<form method='post' action='".e_SELF."?step=3'>
+			<input class='btn button' type='submit' name='nextStep[3]' value='Proceed to step 3' />
 			</form>";
 	}
 	$ns->tablerender('Step 2: Forum table creation', $mes->render(). $text);
 }
 
 
-// DEPRECATED - Done automatically via plugin-class. 
-/*
+// FIXME - use e107::getPlugin()->manage_extended_field('add', $name, $attrib, $source) 
+
 function step3()
 {
 	$e107 = e107::getInstance();
+	$ns = e107::getRender();
+	
 	$stepCaption = 'Step 3: Extended user field creation';
 	if(!isset($_POST['create_extended']))
 	{
@@ -192,15 +194,19 @@ function step3()
 		<input class='btn button' type='submit' name='create_extended' value='Proceed with field creation' />
 		</form>
 		";
-		$e107->ns->tablerender($stepCaption, $text);
+		
+		$ns->tablerender($stepCaption, $text);
 		return;
 	}
+	
 	require_once(e_HANDLER.'user_extended_class.php');
 	$ue = new e107_user_extended;
+	
 	$fieldList = array(
-	'plugin_forum_posts' => EUF_INTEGER,
-	'plugin_forum_viewed' => EUF_TEXTAREA
+		'plugin_forum_posts' => EUF_INTEGER,
+		'plugin_forum_viewed' => EUF_TEXTAREA
 	);
+	
 	$failed = false;
 	foreach($fieldList as $fieldName => $fieldType)
 	{
@@ -216,6 +222,7 @@ function step3()
 			$failed = true;
 		}
 	}
+	
 	if($failed)
 	{
 		$text .= '
@@ -227,15 +234,16 @@ function step3()
 	{
 			$text .= "
 			<br /><br />
-			<form method='post'>
+			<form method='post' action='".e_SELF."?step=4'>
 			<input class='btn button' type='submit' name='nextStep[4]' value='Proceed to step 4' />
 			</form>
 			";
 	}
-	$e107->ns->tablerender($stepCaption, $text);
+	
+	$ns->tablerender($stepCaption, $text);
 
 }
-*/
+
 function step4()
 {
 	global $pref;
