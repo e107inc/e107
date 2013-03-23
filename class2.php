@@ -389,7 +389,8 @@ $sql->db_Mark_Time('Start: Extract Core Prefs');
 e107_require_once(e_HANDLER.'cache_handler.php');
 
 //DEPRECATED, BC, call the method only when needed, $e107->arrayStorage caught by __get()
-$eArrayStorage = e107::getArrayStorage();  //TODO - find & replace $eArrayStorage, $e107->arrayStorage
+e107_require_once(e_HANDLER.'arraystorage_class.php'); // ArrayData(); BC Fix only. 
+$eArrayStorage = e107::getArrayStorage();  //TODO - find & replace $eArrayStorage with e107::getArrayStorage();
 
 //DEPRECATED, BC, call the method only when needed, $e107->e_event caught by __get()
 $e_event = e107::getEvent(); //TODO - find & replace $e_event, $e107->e_event
