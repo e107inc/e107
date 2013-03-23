@@ -16,29 +16,6 @@ e107::css('core','bootstrap/css/jquery-ui.custom.css');
 
 //define("STANDARDS_MODE",TRUE);
 
-function theme_head() 
-{
-	return; 
-
-	/*	
-	$theme_pref = e107::getThemePref();
-	
-	$ret = '';
-
-    if(THEME_LAYOUT == "alternate") // as matched by $HEADER['alternate'];
-	{
-        $ret .= "<!-- Include Something --> ";
-	}
-
-	if($theme_pref['_blank_example'] == 3)  // Pref from admin -> thememanager.
-	{
-        $ret .= "<!-- Include Something Else --> ";
-	}
-	
-	return $ret;
-	*/
-}
-
 
 
 $OTHERNEWS_STYLE = '<div class="span4">
@@ -92,7 +69,10 @@ function tablestyle($caption, $text, $mode='')
           return;
 	}
 			
-		
+	if($mode == 'login_page')
+	{
+		$type = 'no_caption';	
+	}
 	
 	switch($type) 
 	{
@@ -118,6 +98,10 @@ function tablestyle($caption, $text, $mode='')
 					</div>
 				</div>
 			';
+		break;
+		
+		case 'no_caption':
+			echo $text;
 		break;
 	
 		default: // Main Content Style. 
@@ -148,7 +132,7 @@ $HEADER['default'] = '
           <a class="brand" href="'.SITEURL.'">{SITENAME}</a>
           <div class="nav-collapse collapse">
             <p class="navbar-text pull-right">
-              Logged in as <a href="#" class="navbar-link">'.USERNAME.'</a>
+             '.(!USERID ? '<a class="navbar-link" href="'.e_LOGIN.'">Sign in</a>': 'Logged in as <a href="#" class="navbar-link">'.USERNAME.'</a>').'
             </p>
            {NAVIGATION=main}
           </div><!--/.nav-collapse -->
@@ -169,7 +153,28 @@ $HEADER['default'] = '
 		 {SETSTYLE=default}
 ';
 
+
+
 $FOOTER['default'] = '
+		 {SETSTYLE=span4}
+      	
+		</div><!--/span-->
+	</div><!--/row-->
+
+<hr>
+
+<footer class="center"> 
+	Copyright &copy; 2008-2013 e107 Inc (e107.org)<br />
+</footer>
+
+</div><!--/.fluid-container-->';
+
+
+$HEADER['default-home'] = $HEADER['default'];
+
+
+$FOOTER['default-home'] = '
+		{WMESSAGE}
 		 {SETSTYLE=span4}
 		 
 		 <div class="row-fluid">
@@ -189,12 +194,6 @@ $FOOTER['default'] = '
 </footer>
 
 </div><!--/.fluid-container-->';
-
-
-
-
-
-
 
 
 

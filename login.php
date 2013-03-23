@@ -20,7 +20,7 @@
 require_once("class2.php");
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
-if ((USER || e_LOGIN != e_SELF) && !getperms('0')) // Disable page if user logged in, or some custom e_LOGIN value is used.
+if ((USER || e_LOGIN != e_SELF) && e_QUERY !== 'preview') // Disable page if user logged in, or some custom e_LOGIN value is used.
 {
 	header('location:'.e_BASE.'index.php');      
 	exit();
@@ -92,6 +92,15 @@ if (!USER || getperms('0'))
 	}
 	
 	$sc = e107::getScBatch('login');
+	
+	if((e_BOOTSTRAP === true) && isset($LOGIN_TEMPLATE['page']))
+	{
+		$LOGIN_TABLE_HEADER = $LOGIN_TEMPLATE['page']['header'];
+		$LOGIN_TABLE 		= "<form class='form-signin' method='post' action='".e_SELF."' onsubmit='hashLoginPassword(this)' >".$LOGIN_TEMPLATE['page']['body']."</form>";
+		$LOGIN_TABLE_FOOTER = $LOGIN_TEMPLATE['page']['footer'];
+	}
+	
+	
 	$text = $tp->parseTemplate($LOGIN_TABLE,true);
 	
 	
@@ -105,7 +114,7 @@ if (!USER || getperms('0'))
 	
 //	echo preg_replace("/\{(.*?)\}/e", 'varset($\1,"\1")', $LOGIN_TABLE_HEADER);
 	$login_message = SITENAME; //	$login_message = LAN_LOGIN_3." | ".SITENAME;
-		
+	echo LOGINMESSAGE;
 	echo $tp->parseTemplate($LOGIN_TABLE_HEADER);
 	$ns->tablerender($login_message, $text, 'login_page');
 	echo $tp->parseTemplate($LOGIN_TABLE_FOOTER);

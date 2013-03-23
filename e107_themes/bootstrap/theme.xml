@@ -14,6 +14,9 @@
 	</screenshots>
 	<layouts>
 		<layout name='default' title='Default' default='true' />
+		<layout name='default-home' title='Default Home'>
+			<custompages>FRONTPAGE</custompages>	
+		</layout>
 		<layout name='hero' title='Hero'>
 			<custompages>usersettings.php</custompages>
 		</layout>

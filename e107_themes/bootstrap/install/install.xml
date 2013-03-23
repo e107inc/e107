@@ -9,7 +9,7 @@
 			<field name="gen_user_id">1</field>
 			<field name="gen_ip">Hello World!</field>
 			<field name="gen_intdata">0</field>
-			<field name="gen_chardata"><![CDATA[This is a template for a simple marketing or informational website. The text you are reading is the &#039;Welcome Message&#039; and the items below are &quot;News Items&quot;. ]]></field>
+			<field name="gen_chardata"><![CDATA[This is a twitter bootstrap template for a simple marketing or informational website. The only difference is that e107 is managing the content. ie. The text you are reading is the &#039;Welcome Message&#039; and the items below are &quot;News Items&quot;. Visit the admin-area to modify. ]]></field>
 		</item>
 	</dbTable>
 	<dbTable name="news">
@@ -170,7 +170,7 @@
 			<field name="menu_class">0</field>
 			<field name="menu_pages"></field>
 			<field name="menu_path">news/</field>
-			<field name="menu_layout"></field>
+			<field name="menu_layout">default-home</field>
 			<field name="menu_parms"></field>
 		</item>
 		<item>
@@ -181,7 +181,7 @@
 			<field name="menu_class">0</field>
 			<field name="menu_pages"></field>
 			<field name="menu_path">news/</field>
-			<field name="menu_layout"></field>
+			<field name="menu_layout">default-home</field>
 			<field name="menu_parms"></field>
 		</item>
 	</dbTable>
