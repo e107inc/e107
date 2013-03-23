@@ -639,6 +639,7 @@ if(is_array($pref['xurl']))
 	define('XURL_YOUTUBE', vartrue($pref['xurl']['youtube'], false));
 	define('XURL_GOOGLE', vartrue($pref['xurl']['google'], false));
 	define('XURL_LINKEDIN', vartrue($pref['xurl']['linkedin'], false));
+	define('XURL_GITHUB', vartrue($pref['xurl']['github'], false));
 }
 else
 {
@@ -647,6 +648,7 @@ else
 	define('XURL_YOUTUBE', false);
 	define('XURL_GOOGLE', false);
 	define('XURL_LINKEDIN', false);	
+	define('XURL_GITHUB', false);	
 }
 
 /* Withdrawn 0.8

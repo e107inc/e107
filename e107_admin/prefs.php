@@ -1001,7 +1001,8 @@ $xurls = array(
 	'twitter'		=>	array('label'=>"Twitter",	"placeholder"=>"eg. https://twitter.com/e107"),
 	'youtube'		=>	array('label'=>"Youtube",	"placeholder"=>"eg.https://youtube.com/e107Inc"),
 	'google'		=>	array('label'=>"Google+",	"placeholder"=>"eg.. "),
-	'linkedin'		=>	array('label'=>"LinkedIn",	"placeholder"=>"eg. http://www.linkedin.com/groups?home=&gid=1782682")
+	'linkedin'		=>	array('label'=>"LinkedIn",	"placeholder"=>"eg. http://www.linkedin.com/groups?home=&gid=1782682"),
+	'github'		=>	array('label'=>"Github",	"placeholder"=>"eg. https://github.com/e107inc")
 );	
 	
 	foreach($xurls as $k=>$var)
