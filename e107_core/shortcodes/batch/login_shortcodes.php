@@ -36,13 +36,19 @@ class login_shortcodes extends e_shortcode
 	
 	function sc_login_table_username($parm='') //FIXME use $frm
 	{
-		return "<input class='tbox' type='text' name='username' id='username' size='40' maxlength='100' />";
+		$pref = e107::getPref();
+		$allowEmailLogin = varset($pref['allowEmailLogin'],0);
+		$ulabel = array(LAN_LOGIN_1,LAN_LOGIN_28,LAN_LOGIN_29);
+		$placeholder =  $ulabel[$allowEmailLogin];	
+		
+		
+		return "<input class='tbox input-block-level' type='text' name='username' id='username' size='40' maxlength='100' placeholder=\"".$placeholder."\"  />";
 	}
 	
 	function sc_login_table_password($parm='') //FIXME use $frm
 	{
 		$pref = e107::getPref();
-		$text = "<input class='tbox' type='password' name='userpass' id='userpass' size='40' maxlength='100' />";
+		$text = "<input class='tbox  input-block-level' type='password' name='userpass' id='userpass' size='40' maxlength='100' placeholder=\"".LAN_LOGIN_2."\" />";
 		
 		if (!USER && e107::getSession()->is('challenge') && varset($pref['password_CHAP'],0)) 
 		{
@@ -92,7 +98,9 @@ class login_shortcodes extends e_shortcode
 	
 	function sc_login_table_submit($parm="") //FIXME use $frm
 	{
-		return "<input class='btn btn-primary button' type='submit' name='userlogin' value=\"".LAN_LOGIN_9."\" />";
+		
+		$class = ($parm == 'large') ? "btn-large" : "";		
+		return "<input class='btn btn-primary ".$class." button' type='submit' name='userlogin' value=\"".LAN_LOGIN_9."\" />";
 	}
 	
 	

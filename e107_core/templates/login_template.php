@@ -54,7 +54,7 @@ if(!isset($LOGIN_TABLE))
 		  </td>\n</tr>\n";
 		  
 		  
-	if(LOGIN_CAPTCHA)
+	if(LOGIN_CAPTCHA) //FIXME - add shortcode for this. 
 	{
 		$LOGIN_TABLE .= "<tr><td class='forumheader3'>{LOGIN_TABLE_SECIMG_LAN}</td>\n<td class='forumheader3'>{LOGIN_TABLE_SECIMG_HIDDEN} {LOGIN_TABLE_SECIMG_SECIMG} {LOGIN_TABLE_SECIMG_TEXTBOC}</td>\n</tr>\n";
 	}
@@ -82,22 +82,34 @@ if(!isset($LOGIN_TABLE_FOOTER))
 
 
 // Starter for v2. - Bootstrap 
+$LOGIN_TEMPLATE['page']['header'] = "
+	<div>
+		<div class='center' style='padding:50px; margin-left:auto; margin-right: auto'>
+			{LOGO=login}
+		</div>";
 
-$LOGIN_TEMPLATE['xxxxx'] = '
+$LOGIN_TEMPLATE['page']['body'] = '
 
-        <h2 class="form-signin-heading">Please sign in</h2>
-        <input type="text" class="input-block-level" placeholder="Email address">
-        <input type="password" class="input-block-level" placeholder="Password">
+        <h2 class="form-signin-heading">'.LAN_LOGIN_4.'</h2>
+       {LOGIN_TABLE_USERNAME}
+        {LOGIN_TABLE_PASSWORD}
+         {LOGIN_TABLE_SECIMG_SECIMG} {LOGIN_TABLE_SECIMG_TEXTBOC}
         <label class="checkbox">
-          <input type="checkbox" value="remember-me"> Remember me
+         {LOGIN_TABLE_AUTOLOGIN} {LOGIN_TABLE_AUTOLOGIN_LAN}
         </label>
-        <button class="btn btn-large btn-primary" type="submit">Sign in</button>
+        {LOGIN_TABLE_SUBMIT=large}
 
  ';
 
-
-
-
+$LOGIN_TEMPLATE['page']['footer'] =  "
+			<div style='margin-bottom:100px; width:70%;margin-right:auto;margin-left:auto'>
+				<div style='text-align:center'><br />
+					{LOGIN_TABLE_FOOTER_USERREG}
+					
+				</div>
+			</div>
+	</div>";
+	
 
 
 
