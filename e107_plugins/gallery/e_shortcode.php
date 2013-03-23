@@ -58,8 +58,8 @@ class gallery_shortcodes extends e_shortcode
 		$tp 		= e107::getParser();	
 		$parms 		= eHelper::scParams($parm);
 		
-		$w 			= vartrue($parms['w']) ? $parms['w'] : 160;
-		$h 			= vartrue($parms['h']) ? $parms['h'] : 120;	
+		$w 			= vartrue($parms['w']) ? $parms['w'] : 190; // 160;
+		$h 			= vartrue($parms['h']) ? $parms['h'] : 130;	
 		
 		$class 		= ($this->slideMode == TRUE) ? 'gallery-slideshow-thumb' : 'gallery-thumb';
 		$rel 		= ($this->slideMode == TRUE) ? 'lightbox.SlideGallery' : 'lightbox.Gallery';
@@ -117,15 +117,15 @@ class gallery_shortcodes extends e_shortcode
 	{
 		$parms = eHelper::scParams($parm);
 		
-		$w 			= vartrue($parms['w']) ? $parms['w'] : 260;
-		$h 			= vartrue($parms['h']) ? $parms['h'] : 180;	
+		$w 			= vartrue($parms['w']) ? $parms['w'] : 300; // 260;
+		$h 			= vartrue($parms['h']) ? $parms['h'] : 200; // 180;	
 		$att 		= 'aw='.$w.'&ah='.$h.'&x=1'; // 'aw=190&ah=150';
 		
 		$url = e107::getUrl()->create('gallery/index/list', $this->var);
 		
 		if(isset($parms['thumbsrc'])) return e107::getParser()->thumbUrl($this->var['media_cat_image'],$att);
 		
-		$text = "<a href='".$url."'>";
+		$text = "<a class='thumbnail' href='".$url."'>";
 		$text .= "<img src='".e107::getParser()->thumbUrl($this->var['media_cat_image'],$att)."' alt='' />";
 		$text .= "</a>";
 		return $text;		
