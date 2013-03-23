@@ -250,7 +250,7 @@ class e_menu
 	public function renderMenu($mpath, $mname='', $parm = '', $return = false)
 	{
 	//	global $sql; // required at the moment.
-		global $sc_style, $e107_debug, $style;
+		global $sc_style, $e107_debug;
 		
 		
 		$e107 = e107::getInstance();
