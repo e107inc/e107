@@ -34,7 +34,7 @@ $GALLERY_TEMPLATE['CAT_START'] =
 	    
 $GALLERY_TEMPLATE['CAT_ITEM'] = '
  <li class="span3">
-	<div class="thumbnail">
+	<div >
 		{GALLERY_CAT_THUMB}
 		<h3>{GALLERY_CAT_TITLE}</h3>
 	</div>
