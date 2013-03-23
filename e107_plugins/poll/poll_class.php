@@ -22,6 +22,19 @@ class poll
 {
 	var $pollRow;
 	var $pollmode;
+	var $barl = null;
+	var $barr = null;
+	var $bar = null;
+
+
+	function __construct()
+	{
+		$this->barl = (file_exists(THEME.'images/barl.png') ? THEME_ABS.'images/barl.png' : e_PLUGIN_ABS.'poll/images/barl.png');
+		$this->barr = (file_exists(THEME.'images/barr.png') ? THEME_ABS.'images/barr.png' : e_PLUGIN_ABS.'poll/images/barr.png');
+		$this->bar = (file_exists(THEME.'images/bar.png') ? THEME_ABS.'images/bar.png' : e_PLUGIN_ABS.'poll/images/bar.png');	
+	}
+
+
 
 	/*
 	function remove_poll_cookies
@@ -56,7 +69,9 @@ class poll
 	*/
 	function delete_poll($existing)
 	{
-		global $sql, $admin_log;
+		global $admin_log;
+		$sql = e107::getDb();
+		
 		if ($sql -> db_Delete("polls", " poll_id='".intval($existing)."' "))
 		{
 			if (function_exists("admin_purge_related"))
@@ -76,7 +91,13 @@ class poll
 	*/
 	function submit_poll($mode=1)
 	{
-		global $tp, $sql, $admin_log;
+		global $admin_log;
+		
+		
+		$tp = e107::getParser();
+		$sql = e107::getDb();
+		
+		
 		$poll_title		= $tp->toDB($_POST['poll_title']);
 		$poll_comment	= $tp -> toDB($_POST['poll_comment']);
 		$multipleChoice	= intval($_POST['multipleChoice']);
@@ -156,7 +177,10 @@ class poll
 
 	function get_poll($query)
 	{
-		global $sql, $e107;
+		global $e107;
+		
+		$sql = e107::getDb();
+		
 		if ($sql->db_Select_gen($query))
 		{
 			$pollArray = $sql -> db_Fetch();
@@ -271,7 +295,12 @@ class poll
 
 	function render_poll($pollArray = "", $type = "menu", $POLLMODE = "", $returnMethod=FALSE)
 	{
-		global $POLLSTYLE, $sql, $tp, $ns;
+		$ns = e107::getRender();
+		$tp = e107::getParser();
+		$sql = e107::getDb();
+		
+		global $POLLSTYLE;
+		
 		switch ($POLLMODE)
 		{
 			case 'query' :	// Show poll, register any vote
@@ -290,9 +319,7 @@ class poll
 				break;
 		}
 
-		$barl = (file_exists(THEME.'images/barl.png') ? THEME_ABS.'images/barl.png' : e_PLUGIN_ABS.'poll/images/barl.png');
-		$barr = (file_exists(THEME.'images/barr.png') ? THEME_ABS.'images/barr.png' : e_PLUGIN_ABS.'poll/images/barr.png');
-		$bar = (file_exists(THEME.'images/bar.png') ? THEME_ABS.'images/bar.png' : e_PLUGIN_ABS.'poll/images/bar.png');
+		
 
 		if ($type == 'preview')
 		{
@@ -422,7 +449,8 @@ class poll
 					foreach ($optionArray as $option)
 					{
 						$OPTION = $tp->toHTML($option, TRUE);
-						$BAR = ($percentage[$count] ? "<div style='width: 100%'><div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div><div style='background-image: url($bar); width: ".min(intval($percentage[$count]), 90)."%; height: 14px; float: left;'></div><div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div></div>" : "");
+						$BAR = $this->generateBar($percentage[$count]);
+				//		$BAR = ($percentage[$count] ? "<div style='width: 100%'><div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div><div style='background-image: url($bar); width: ".min(intval($percentage[$count]), 90)."%; height: 14px; float: left;'></div><div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div></div>" : "");
 						$PERCENTAGE = $percentage[$count]."%";
 						$VOTES = POLLAN_31.": ".$voteArray[$count];
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_VOTED_LOOP : $POLL_VOTED_LOOP));
@@ -478,6 +506,29 @@ class poll
 			$ns->tablerender($caption, $text, 'poll');
 		}
 	}
+
+
+	
+	function generateBar($perc)
+	{
+		if(e_BOOTSTRAP === true)
+		{
+			return	"<div class='progress'>
+		    <div class='bar' style='width: ".intval($perc)."%;'></div>
+		    </div>";	
+		}
+		else
+		{
+			$barl = $this->barl;
+			$barr = $this->barr;
+			$bar = $this->bar;
+			return ($perc ? "<div style='width: 100%'><div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div><div style='background-image: url($bar); width: ".min(intval($perc), 90)."%; height: 14px; float: left;'></div><div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div></div>" : "");	
+		}	
+	}
+
+
+
+
 
 	/*
 	function renderPollForm
