@@ -1430,6 +1430,7 @@ class e_parse extends e_parser
 							$full_text =$this->replaceConstants($full_text,'abs');	
 							$full_text = $html_start.$full_text.$html_end;
 							$full_text = $this->parseBBTags($full_text); // strip <bbcode> tags. 
+							$opts['nobreak'] = true;
 							break;
 							
 						case 'table' : // strip <br /> from end of <table>		
