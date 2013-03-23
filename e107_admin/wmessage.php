@@ -236,15 +236,21 @@ if ($action == "opt") {
 		<tr>
 			<td>".WMLAN_05."</td>
 			<td>".$frm->checkbox('wm_enclose', 1, varset($pref['wm_enclose'],0))."<span class='field-help'>".WMLAN_06."</span></td>
-		</tr>
+		</tr>";
+	
+	/*	DEPRECATED - see header_default.php {WMESSAGE}
+	$text .= "
 		<tr>
 			<td>".WMLAN_07."</td>
 			<td>".$frm->checkbox('wmessage_sc', 1, varset($pref['wmessage_sc'],0))."</td>
-		</tr>
+		</tr>";
+	*/	
+	
+	$text .= "
 		</table>
 
 		<div class='buttons-bar center'>
-			".$text .= $frm->admin_button('updateoptions', LAN_SAVE)."
+			". $frm->admin_button('updateoptions', LAN_SAVE)."
 		</div>
 		</fieldset>
 		</form>

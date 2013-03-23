@@ -622,10 +622,11 @@ if ($e107_popup != 1) {
 		if(file_exists(e_BASE.'install.php')){ echo "<div class='installer'><br /><b>*** ".CORE_LAN4." ***</b><br />".CORE_LAN5."</div><br /><br />"; }
 	}
 
-// Display Welcome Message when old method activated.
-
-	echo $e107->tp->parseTemplate("{WMESSAGE=header}");
-
+	// Display Welcome Message when old method activated.
+	if(!strstr($HEADER,"{WMESSAGE")===false && !strstr($FOOTER,"{WMESSAGE")===false) // Auto-detection to override old pref. 
+	{
+		echo e107::getParser()->parseTemplate("{WMESSAGE}");
+	}
 
 
 	if(defined("PREVIEWTHEME")) 
