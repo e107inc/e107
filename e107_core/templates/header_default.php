@@ -2,14 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2012 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Default Header
  *
- * $URL$
- * $Id$
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -21,7 +19,9 @@ if(!defined('USER_AREA'))
 define('ADMIN_AREA',FALSE);
 
 $e107 = e107::getInstance();
-$e107->sql->db_Mark_Time('(Header Top)');
+$sql = e107::getDb();
+
+$sql->db_Mark_Time('(Header Top)');
 
 
 
@@ -579,7 +579,7 @@ echo "<body".$body_onload.">\n";
 // Header included notification, from this point header includes are not possible
 define('HEADER_INIT', TRUE);
 
-$e107->sql->db_Mark_Time("Main Page Body");
+$sql->db_Mark_Time("Main Page Body");
 
 //
 // K: (The rest is ignored for popups, which have no menus)

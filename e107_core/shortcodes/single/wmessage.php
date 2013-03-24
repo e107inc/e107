@@ -1,7 +1,5 @@
 <?php
 
-// $Id$
-
 function wmessage_shortcode($parm)
 {
 	$e107 = e107::getInstance();
@@ -42,7 +40,8 @@ function wmessage_shortcode($parm)
 	if (deftrue('e_FRONTPAGE') || ($parm == 'force') || ((e_SELF == $front_url) && (($parm == 'ignore_query') || (e_QUERY == $front_qry))))
 	{
 		// Actually want to display a welcome message here
-		global $ns;
+		$ns = e107::getRender();
+		$tp = e107::getParser();
 
 		if($cacheData = $e107cache->retrieve('wmessage'))
 		{
@@ -52,20 +51,19 @@ function wmessage_shortcode($parm)
 
 		if (!defined('WMFLAG'))
 		{
-
 			$qry = "
 			SELECT * FROM #generic
 			WHERE gen_type ='wmessage' AND gen_intdata IN (".USERCLASS_LIST.')';
 			$wmessage = array();
 			$wmcaption = '';
-			if($e107->sql->db_Select_gen($qry))
+			if($sql->gen($qry))
 			{
-				while ($row = $e107->sql->db_Fetch())
+				while ($row = $sql->fetch())
 				{
-					$wmessage[] = $e107->tp->toHTML($row['gen_chardata'], TRUE, 'BODY, defs', 'admin');
+					$wmessage[] = $tp->toHTML($row['gen_chardata'], TRUE, 'BODY, defs', 'admin');
 					if(!$wmcaption)
 					{
-						$wmcaption = $e107->tp->toHTML($row['gen_ip'], TRUE, 'TITLE');
+						$wmcaption = $tp->toHTML($row['gen_ip'], TRUE, 'TITLE');
 					}
 				}
 			}

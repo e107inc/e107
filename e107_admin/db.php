@@ -2,16 +2,11 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Administration - Database Utilities
- *
- * $URL$
- * $Revision$
- * $Id$
- * $Author$
  *
 */
 
@@ -69,7 +64,7 @@ if(isset($_POST['exportXmlFile']))
 {
 	if(exportXmlFile($_POST['xml_prefs'],$_POST['xml_tables'],$_POST['package_images']))
 	{
-		$mes = eMessage::getInstance();
+		$mes = e107::getMessage();
 		$mes->add(LAN_SUCCESS, E_MESSAGE_SUCCESS);
 	}
 
@@ -244,13 +239,6 @@ class system_tools
 		e107::getRender()->tablerender(DBLAN_10.SEP."Correcting File and Directory Permissions", $mes->render());	
 		
 	}
-
-
-
-
-
-
-
 
 
 	private function convertUTF8Form()
@@ -467,7 +455,6 @@ class system_tools
 	}
 
 
-
 	/**
 	 * Render Options
 	 * @return none
@@ -537,7 +524,7 @@ class system_tools
 		 // Get largest allowable file upload
 
 		$frm = e107::getSingleton('e_form');
-		$mes = eMessage::getInstance();
+		$mes = e107::getMessage();
 
 				require_once(e_HANDLER.'upload_handler.php');
 				  $max_file_size = get_user_max_upload();
@@ -582,7 +569,7 @@ class system_tools
 	 */
 	private function exportXmlForm()
 	{
-		$mes = eMessage::getInstance();
+		$mes = e107::getMessage();
 		$frm = e107::getSingleton('e_form');
 
 
@@ -702,12 +689,12 @@ class system_tools
 
 		foreach($ret['success'] as $table)
 		{
-			eMessage::getInstance()->add("Inserted $table", E_MESSAGE_SUCCESS);
+			e107::getMessage()->addSuccess("Inserted $table");
 		}
 
 		foreach($ret['failed'] as $table)
 		{
-			eMessage::getInstance()->add("Failed to Insert $table", E_MESSAGE_ERROR);
+			e107::getMessage()->addError("Failed to Insert $table");
 		}
 	}
 
@@ -736,12 +723,11 @@ class system_tools
 	{
 		//TODO Add drop-down for editing personal perfs also. ie. user pref of self. (admin)
 
-		global $pref, $e107;
+		global $e107;
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
-		
-
-
+		$tp = e107::getParser();
+		$pref = e107::getPref();
 
 		$config = ($type == 'core') ? e107::getConfig('core') : e107::getPlugConfig($type);
 
@@ -790,7 +776,7 @@ class system_tools
 		foreach($spref as $key => $val)
 		{
 			$ptext = (is_array($val)) ? "<pre>".print_r($val, TRUE)."</pre>" : htmlspecialchars($val, ENT_QUOTES, 'utf-8');
-			$ptext = $e107->tp->textclean($ptext, 80);
+			$ptext = $tp->textclean($ptext, 80);
 
 			$text .= "
 				<tr>
@@ -824,8 +810,7 @@ class system_tools
 	 */
 	private function scan_override()
 	{
-		global $pref, $mes;
-		
+		$pref = e107::getPref();		
 		$mes = e107::getMessage();
 		$f = e107::getFile();
 		$config = e107::getConfig();
@@ -931,7 +916,7 @@ class system_tools
 
 			$text .= "
 								<tr>
-									<td>".$e107->tp->toHtml($row['plugin_name'], FALSE, "defs,emotes_off")."</td>
+									<td>".$tp->toHtml($row['plugin_name'], FALSE, "defs,emotes_off")."</td>
 	               					<td>".$row['plugin_path']."</td>
 									<td>";
 
@@ -1020,7 +1005,7 @@ function exportXmlFile($prefs,$tables,$package=FALSE,$debug=FALSE)
 {
 	$xml = e107::getSingleton('xmlClass');
 	$tp = e107::getParser();
-	$mes = eMessage::getInstance();
+	$mes = e107::getMessage();
 
 	//TODO LANs
 
@@ -1220,7 +1205,7 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 			</form>
 		";
 
-		$e107->ns->tablerender(DBLAN_10.SEP.DBLAN_39, $mes->render().$text);
+		$ns->tablerender(DBLAN_10.SEP.DBLAN_39, $mes->render().$text);
 	}
 	else
 	{
@@ -1527,7 +1512,7 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 			</form>
 		";
 
-		$e107->ns->tablerender(DBLAN_10.SEP.DBLAN_50, $mes->render().$text);
+		$ns->tablerender(DBLAN_10.SEP.DBLAN_50, $mes->render().$text);
 	}
 }
 

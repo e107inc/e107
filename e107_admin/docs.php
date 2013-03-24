@@ -107,6 +107,6 @@ $text .= "
 	<div id='docs-bottom-nav'><!-- --></div>
 ";
 
-$e107->ns->tablerender(LAN_DOCS, $text, 'docs');
+$ns->tablerender(LAN_DOCS, $text, 'docs');
 require_once("footer.php");
 ?>

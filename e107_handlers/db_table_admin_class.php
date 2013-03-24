@@ -2,16 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Database utilities
  *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/db_table_admin_class.php,v $
- * $Revision$
- * $Date$
- * $Author$
 */
 
 /*
@@ -37,7 +33,7 @@ class db_table_admin
 	// Return as for get_table_def
 	function get_current_table($table_name, $prefix = "")
 	{
-		global $sql;
+		$sql = e107::getDb();
 		if(!isset($sql))
 		{
 			$sql = new db;
@@ -673,7 +669,7 @@ class db_table_admin
 					}
 					else
 					{
-						$ret = $sql->db_Select_gen($qry);
+						$ret = $sql->gen($qry);
 					}
 					if ($ret === FALSE)
 					{
@@ -699,7 +695,7 @@ class db_table_admin
 			{
 				$createText = preg_replace('#create +table +(\w*?) +#i', 'CREATE TABLE '.$newTableName.' ', $createText);
 			}
-			return $e107->sql->db_Select_gen($createText);
+			return $sql->gen($createText);
 		}
 		
 	}

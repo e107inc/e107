@@ -683,15 +683,15 @@ function saveMailPrefs(&$mes) // $emessage to $mes, working?
 	// Allow qmail as an option as well - works much as sendmail
 	if ((strpos($_POST['sendmail'],'sendmail') !== FALSE) || (strpos($_POST['sendmail'],'qmail') !== FALSE))
 	{
-		$temp['sendmail'] = $e107->tp->toDB($_POST['sendmail']);
+		$temp['sendmail'] = $tp->toDB($_POST['sendmail']);
 	}
 	else
 	{
 		$temp['sendmail'] = '';
 	}
-	$temp['smtp_server'] 	= $e107->tp->toDB($_POST['smtp_server']);
-	$temp['smtp_username'] 	= $e107->tp->toDB($_POST['smtp_username']);
-	$temp['smtp_password'] 	= $e107->tp->toDB($_POST['smtp_password']);
+	$temp['smtp_server'] 	= $tp->toDB($_POST['smtp_server']);
+	$temp['smtp_username'] 	= $tp->toDB($_POST['smtp_username']);
+	$temp['smtp_password'] 	= $tp->toDB($_POST['smtp_password']);
 
 	$smtp_opts = array();
 	switch (trim($_POST['smtp_options']))
@@ -711,7 +711,7 @@ function saveMailPrefs(&$mes) // $emessage to $mes, working?
 
 	$temp['smtp_options'] = implode(',',$smtp_opts);
 
-	$temp['mail_sendstyle'] = $e107->tp->toDB($_POST['mail_sendstyle']);
+	$temp['mail_sendstyle'] = $tp->toDB($_POST['mail_sendstyle']);
 	$temp['mail_pause'] 	= intval($_POST['mail_pause']);
 	$temp['mail_pausetime'] = intval($_POST['mail_pausetime']);
 	$temp['mail_workpertick'] = intval($_POST['mail_workpertick']);
@@ -724,17 +724,17 @@ function saveMailPrefs(&$mes) // $emessage to $mes, working?
 			$temp['mail_bounce_email'] = '';
 			break;
 		case 'auto' :
-			$temp['mail_bounce_email'] = $e107->tp->toDB($_POST['mail_bounce_email2']);
+			$temp['mail_bounce_email'] = $tp->toDB($_POST['mail_bounce_email2']);
 			break;
 		case 'mail' :
-			$temp['mail_bounce_email'] = $e107->tp->toDB($_POST['mail_bounce_email']);
+			$temp['mail_bounce_email'] = $tp->toDB($_POST['mail_bounce_email']);
 			$temp['mail_bounce_auto'] = intval($_POST['mail_bounce_auto']);
 			break;
 	}
-	$temp['mail_bounce_pop3'] = $e107->tp->toDB($_POST['mail_bounce_pop3']);
-	$temp['mail_bounce_user'] =	$e107->tp->toDB($_POST['mail_bounce_user']);
-	$temp['mail_bounce_pass'] = $e107->tp->toDB($_POST['mail_bounce_pass']);
-	$temp['mail_bounce_type'] = $e107->tp->toDB($_POST['mail_bounce_type']);
+	$temp['mail_bounce_pop3'] = $tp->toDB($_POST['mail_bounce_pop3']);
+	$temp['mail_bounce_user'] =	$tp->toDB($_POST['mail_bounce_user']);
+	$temp['mail_bounce_pass'] = $tp->toDB($_POST['mail_bounce_pass']);
+	$temp['mail_bounce_type'] = $tp->toDB($_POST['mail_bounce_type']);
 	$temp['mail_bounce_delete'] = intval(varset($_POST['mail_bounce_delete'], 0));
 
 	$temp['mailout_enabled'] = implode(',',varset($_POST['mail_mailer_enabled'], ''));
