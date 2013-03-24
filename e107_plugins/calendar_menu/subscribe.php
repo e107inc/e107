@@ -8,10 +8,6 @@
  *
  * Event calendar plugin - mail subscription to events notification
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/subscribe.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 /**
@@ -21,7 +17,6 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id$;
  */
 
 if (!defined('e_SINGLE_ENTRY'))
@@ -51,8 +46,8 @@ if ((USER) && (isset($ecal_class->pref['eventpost_asubs']) && ($ecal_class->pref
 
 	if (isset($_POST['upsubs']))
 	{
-		$cal_cats = $e107->tp->toDB($_POST['event_list']);		// IDs of allowed categories
-		$cal_subs = $e107->tp->toDB($_POST['event_subd']);		// Checkbox results
+		$cal_cats = e107::getParser()->toDB($_POST['event_list']);		// IDs of allowed categories
+		$cal_subs = e107::getParser()->toDB($_POST['event_subd']);		// Checkbox results
 		$cal_db->db_Delete('event_subs', "event_userid='" . USERID . "'");		// Delete all for this user to start
 		foreach($cal_cats as $cal_row)
 		{	// Now add in a subscription for each allowed category
@@ -120,7 +115,7 @@ else
 	else
 		$caltext = EC_LAN_143;	// No facility
 } 
-$e107->ns->tablerender(EC_LAN_124, $caltext);
+e107::getRender()->tablerender(EC_LAN_124, $caltext);
 require_once(FOOTERF);
 
 ?>

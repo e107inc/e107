@@ -7,11 +7,6 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  *	RSS news feed shim
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/e_rss.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 /**
@@ -21,7 +16,6 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id$;
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -29,7 +23,6 @@ if (!defined('e107_INIT')) { exit; }
 if (!e107::isInstalled('calendar_menu')) return;
 
 include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'_admin_calendar_menu.php');		// RSS messages are in admin language file
-
 
 
 //##### create feed for admin, return array $eplug_rss_feed --------------------------------

@@ -25,6 +25,7 @@ class banner_shortcodes
 	{
 		$e107 = e107::getInstance();
 		$sql = e107::getDb();
+		$tp = e107::getParser();
 			
 		$ret = '';
 	
@@ -33,7 +34,7 @@ class banner_shortcodes
 		$seed = mt_rand(1,2000000000);
 		$time = time();
 	
-		$query = " (banner_startdate=0 OR banner_startdate <= {$time}) AND (banner_enddate=0 OR banner_enddate > {$time}) AND (banner_impurchased=0 OR banner_impressions<=banner_impurchased)".($parm ? " AND banner_campaign='".$e107->tp->toDB($parm)."'" : '')."
+		$query = " (banner_startdate=0 OR banner_startdate <= {$time}) AND (banner_enddate=0 OR banner_enddate > {$time}) AND (banner_impurchased=0 OR banner_impressions<=banner_impurchased)".($parm ? " AND banner_campaign='".$tp->toDB($parm)."'" : '')."
 		AND banner_active IN (".USERCLASS_LIST.")
 		ORDER BY RAND($seed) LIMIT 1";
 	

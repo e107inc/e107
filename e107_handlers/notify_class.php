@@ -8,17 +8,12 @@
 *
 * Forum plugin notify configuration
 *
-* $Source: /cvs_backup/e107_0.8/e107_handlers/notify_class.php,v $
-* $Revision$
-* $Date$
-* $Author$
 *
 */
 
 /**
  *	@package    e107
  *	@subpackage	e107_handlers
- *	@version 	$Id$;
  *
  *	Handler for 'notify' events - sends email notifications to the appropriate user groups
  */
@@ -67,9 +62,11 @@ class notify
 	function send($id, $subject, $message)
 	{
 		$e107 = e107::getInstance();
+		$tp = e107::getParser();
+		$sql = e107::getDb();
 
-		$subject = $e107->tp->toEmail(SITENAME.': '.$subject);
-		$message = $e107->tp->toEmail($message);
+		$subject = $tp->toEmail(SITENAME.': '.$subject);
+		$message = $tp->toEmail($message);
 		$emailFilter = '';
 		$notifyTarget = $this->notify_prefs['event'][$id]['class'];
 		if ($notifyTarget == '-email')
@@ -110,10 +107,10 @@ class notify
 			{
 				$qry .= ' AND `user_id` != '.USERID;
 			}
-			if (FALSE !== ($count = $e107->sql->db_Select_gen($qry)))
+			if (FALSE !== ($count = $sql->gen($qry)))
 			{
 				// Now add email addresses to the list
-				while ($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
+				while ($row = $sql->fetch(MYSQL_ASSOC))
 				{
 					if ($row['user_email'] != $emailFilter)
 					{

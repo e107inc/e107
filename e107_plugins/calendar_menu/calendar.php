@@ -8,10 +8,6 @@
  *
  * Event calendar plugin - large calendar display
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 /**
@@ -21,14 +17,16 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id$;
  */
 
 if (!defined('e_SINGLE_ENTRY'))
 {
 	require_once('../../class2.php');
 }
+
 $e107 = e107::getInstance();
+$tp = e107::getParser();
+
 if (!$e107->isInstalled('calendar_menu')) header('Location: '.e_BASE.'index.php');
 
 if (isset($_POST['viewallevents']))
@@ -113,10 +111,10 @@ $calSc->catFilter = $cat_filter;
 //-------------------------------------------------
 
 // time switch buttons
-$cal_text = $e107->tp->parseTemplate($CALENDAR_TIME_TABLE, FALSE, $calSc);
+$cal_text = $tp->parseTemplate($CALENDAR_TIME_TABLE, FALSE, $calSc);
 
 // navigation buttons
-$nav_text = $e107->tp->parseTemplate($CALENDAR_NAVIGATION_TABLE, FALSE, $calSc);
+$nav_text = $tp->parseTemplate($CALENDAR_NAVIGATION_TABLE, FALSE, $calSc);
 
 // We'll need virtually all of the event-related fields, so get them regardless. Just cut back on category fields
 $ev_list = $ecal_class->get_events($monthstart, $monthend, FALSE, $cat_filter, TRUE, '*', 'event_cat_name,event_cat_icon');
@@ -185,16 +183,16 @@ $start		= $monthstart;
 $numberdays	= gmdate("t", $start); // number of days in this month
 
 $text = "";
-$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_START, FALSE, $calSc);
-$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_HEADER_START, FALSE, $calSc);
+$text .= $tp->parseTemplate($CALENDAR_CALENDAR_START, FALSE, $calSc);
+$text .= $tp->parseTemplate($CALENDAR_CALENDAR_HEADER_START, FALSE, $calSc);
 
 // Display the column headers
 for ($i = 0; $i < 7; $i++)
 {
 	$calSc->headerDay = $ecal_class->day_offset_string($i);
-	$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_HEADER, FALSE, $calSc);
+	$text .= $tp->parseTemplate($CALENDAR_CALENDAR_HEADER, FALSE, $calSc);
 } 
-$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_HEADER_END, FALSE, $calSc);
+$text .= $tp->parseTemplate($CALENDAR_CALENDAR_HEADER_END, FALSE, $calSc);
 
 
 // Calculate number of days to skip before 'real' days on first line of calendar
@@ -203,7 +201,7 @@ if ($firstdayoffset < 0) $firstdayoffset+= 7;
 
 for ($i=0; $i<$firstdayoffset; $i++) 
 {
-	$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_DAY_NON, FALSE, $calSc);
+	$text .= $tp->parseTemplate($CALENDAR_CALENDAR_DAY_NON, FALSE, $calSc);
 }
 
 $loop = $firstdayoffset;
@@ -218,15 +216,15 @@ for ($c = 1; $c <= $numberdays; $c++)
    // Highlight the current day.
     if ($nowday == $c && $month == $nowmonth && $year == $nowyear)
     {      	//today
-		$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_DAY_TODAY, FALSE, $calSc);
+		$text .= $tp->parseTemplate($CALENDAR_CALENDAR_DAY_TODAY, FALSE, $calSc);
 	}
 	elseif ($got_ev)
 	{	//day has events
-		$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_DAY_EVENT, FALSE, $calSc);
+		$text .= $tp->parseTemplate($CALENDAR_CALENDAR_DAY_EVENT, FALSE, $calSc);
     } 
     else
     {   // no events and not today
-		$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_DAY_EMPTY, FALSE, $calSc);
+		$text .= $tp->parseTemplate($CALENDAR_CALENDAR_DAY_EMPTY, FALSE, $calSc);
     } 
 	if ($got_ev)
 	{
@@ -246,10 +244,10 @@ for ($c = 1; $c <= $numberdays; $c++)
 			}
 			//setScVar('event_calendar_shortcodes', 'event', $ev);			// Give shortcodes the event data
 			$calSc->event = $ev;
-			$text .= $e107->tp->parseTemplate($CALENDAR_SHOWEVENT, FALSE, $calSc);
+			$text .= $tp->parseTemplate($CALENDAR_SHOWEVENT, FALSE, $calSc);
 		} 
 	}
-	$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_DAY_END, FALSE, $calSc);
+	$text .= $tp->parseTemplate($CALENDAR_CALENDAR_DAY_END, FALSE, $calSc);
 
 	$loop++;
 	if ($loop == 7)
@@ -257,7 +255,7 @@ for ($c = 1; $c <= $numberdays; $c++)
 		$loop = 0;
 		if($c != $numberdays)
 		{
-			$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_WEEKSWITCH, FALSE, $calSc);
+			$text .= $tp->parseTemplate($CALENDAR_CALENDAR_WEEKSWITCH, FALSE, $calSc);
 		}
 	}
 	$start += 86400;
@@ -268,12 +266,12 @@ if($loop!=0)
 {
 	for ($c=$loop; $c<7; $c++) 
 	{
-		$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_DAY_NON, FALSE, $calSc);
+		$text .= $tp->parseTemplate($CALENDAR_CALENDAR_DAY_NON, FALSE, $calSc);
 	}
 }
-$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_END, FALSE, $calSc);
+$text .= $tp->parseTemplate($CALENDAR_CALENDAR_END, FALSE, $calSc);
 
-$e107->ns->tablerender(EC_LAN_79, $cal_text . $nav_text . $text);
+$ns->tablerender(EC_LAN_79, $cal_text . $nav_text . $text);
 
 // Claim back memory from key variables
 unset($ev_list);

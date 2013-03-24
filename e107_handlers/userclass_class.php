@@ -8,15 +8,12 @@
  *
  * User class functions
  *
- * $URL$
- * $Id$
  */
 
 /**
  *
  *	@package     e107
  *	@subpackage	e107_handlers
- *	@version 	$Id$;
  *
  *	This class handles all user-related user class functions.  Admin functions inherit from it.
  */
@@ -1660,7 +1657,7 @@ class user_class_admin extends user_class
 			{
 				$new_userclass = $cid;
 			}
-			$uc_sql->db_Update('user', "user_class='".$e107->tp->toDB($new_userclass, true)."' WHERE user_id=".intval($uid));
+			$uc_sql->db_Update('user', "user_class='".e107::getParser()->toDB($new_userclass, true)."' WHERE user_id=".intval($uid));
 		}
 	}
 
@@ -1829,8 +1826,6 @@ class user_class_admin extends user_class
 		$e107->ecache->clear_sys(UC_CACHE_TAG);
 	}
 }
-
-
 
 
 

@@ -8,10 +8,6 @@
  *
  *	Event calendar - generate lists
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/ec_pf_page.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 /**
@@ -21,7 +17,6 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id$;
  */
 
 /*
@@ -44,6 +39,8 @@ if (!defined('e_SINGLE_ENTRY'))
 	require_once('../../class2.php');
 }
 $e107 = e107::getInstance();
+$tp = e107::getParser();
+
 if (!$e107->isInstalled('calendar_menu')) header('Location: '.e_BASE.'index.php');
 include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'.php');
 define('PAGE_NAME', EC_LAN_80);
@@ -130,7 +127,7 @@ if (!isset($ec_qs[0]) || !isset($ec_qs[1]))
 	</tr><tr>
 	<td class='forumheader3'>".EC_LAN_155."</td>
 	<td class='forumheader3' style='text_align:center'>";
-	$cal_text .= $e107->tp->parseTemplate('{EC_NAV_CATEGORIES=nosubmit}', FALSE, $calSc);
+	$cal_text .= $tp->parseTemplate('{EC_NAV_CATEGORIES=nosubmit}', FALSE, $calSc);
 	$cal_text .= "</td>
 	</tr>";
 	if (isset($EVENT_CAL_PDF_NAMES) && is_array($EVENT_CAL_PDF_NAMES) && (count($EVENT_CAL_PDF_NAMES) > 1))
@@ -290,7 +287,7 @@ if ($cal_totev > 0)
 	// If printing, wrap in a form so the button works 
 	if ($ec_output_type == 'print') $cal_text .= "<form action=''>\n";
 	// Add header
-	$cal_text .= $e107->tp->parseTemplate($EVENT_CAL_PDF_HEADER[$ec_pdf_template], FALSE, $calSc);
+	$cal_text .= $tp->parseTemplate($EVENT_CAL_PDF_HEADER[$ec_pdf_template], FALSE, $calSc);
 	// Debug code
 	//  echo "Start date: ".strftime("%d-%m-%Y %H:%M:%S",$ec_start_date)."<br />";
 	//  echo "End date:   ".strftime("%d-%m-%Y %H:%M:%S",$ec_end_date)."<br />";
@@ -315,7 +312,7 @@ if ($cal_totev > 0)
 		$calSc->numEvents = $cal_totev;				// Number of events to display
 		$calSc->event = $thisevent;					// Give shortcodes the event data
 		$calSc->changeFlags = array('yc' => $ec_year_change, 'mc' => $ec_month_change, 'dc' => $ec_day_change);					// Give shortcodes the event data
-		$cal_text .= $e107->tp->parseTemplate($EVENT_CAL_PDF_BODY[$ec_pdf_template], FALSE, $calSc);
+		$cal_text .= $tp->parseTemplate($EVENT_CAL_PDF_BODY[$ec_pdf_template], FALSE, $calSc);
 		  
 		$ec_last_year = $thisevent_start_date['year'];
 		$ec_last_month = $thisevent_start_date['mon'];
@@ -323,7 +320,7 @@ if ($cal_totev > 0)
 	}
 
 	// Add footer
-	$cal_text .= $e107->tp->parseTemplate($EVENT_CAL_PDF_FOOTER[$ec_pdf_template], FALSE, $calSc);
+	$cal_text .= $tp->parseTemplate($EVENT_CAL_PDF_FOOTER[$ec_pdf_template], FALSE, $calSc);
 	if ($ec_output_type == 'print') $cal_text .= "</form>\n";
 }
 else
@@ -334,7 +331,7 @@ else
 switch($ec_output_type)
 {
 	case 'display':
-		$e107->ns->tablerender(EC_LAN_80, $cal_text, 'ec_pf_page');
+		$ns->tablerender(EC_LAN_80, $cal_text, 'ec_pf_page');
 		require_once (FOOTERF);
 	break;
 	
