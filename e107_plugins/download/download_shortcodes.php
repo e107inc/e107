@@ -604,10 +604,10 @@ class download_shortcodes
    }
    function sc_download_cat_search()
    {
-      return "<form method='get' action='".e_BASE."search.php'>
+      return "<form class='form-search' method='get' action='".e_BASE."search.php'>
       		  <p>
-      		  <input class='tbox' type='text' name='q' size='30' value='' maxlength='50' />
-      		  <input class='button' type='submit' name='s' value='".LAN_dl_41."' />
+      		  <input class='tbox search-query' type='text' name='q' size='30' value='' maxlength='50' />
+      		  <input class='btn button' type='submit' name='s' value='".LAN_dl_41."' />
       		  <input type='hidden' name='r' value='0' />
       		  </p>
       		  </form>";
