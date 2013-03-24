@@ -320,15 +320,13 @@ class news_shortcodes extends e_shortcode
 
 	function sc_newsimage($parm = '')
 	{
+		$tp = e107::getParser();
 		if(!$this->news_item['news_thumbnail'])
 		{
 			return '';
 		}
-		
-		$w = vartrue($pref['resize_dimensions']['news-image']['w']);
-		$h = vartrue($pref['resize_dimensions']['news-image']['h']);
-	
-		if($this->news_item['news_thumbnail'][0] == '{' && ($w || $h))
+			
+		if($this->news_item['news_thumbnail'][0] == '{' ) // Always resize. Use {SETIMAGE: w=x&y=x&crop=0} PRIOR to calling shortcode to change. 
 		{
 			$src = $tp->thumbUrl($this->news_item['news_thumbnail'],"w={$w}&h={$h}");	
 		}

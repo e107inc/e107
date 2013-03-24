@@ -241,7 +241,7 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 			</div>\n";
 	
 		}*/
-	
+
 	if(vartrue($NEWSLISTSTYLE))
 	{
 		 $template =  $NEWSLISTSTYLE;
@@ -730,14 +730,15 @@ else
 	$thispostday = 0;
 	$pref['newsHeaderDate'] = 1;
 	$gen = new convert();
-	if(vartrue($NEWSLISTSTYLE)) $template =  $NEWSLISTSTYLE;
+	/*
+	if(vartrue($NEWSLISTSTYLE)) $template =  $NEWSLISTSTYLE; v1.x doesn't do this.. so no point doing it here. 
 	else 
 	{
 		$tmp = e107::getTemplate('news', 'news', 'list');
 		$template = $tmp['item'];
 		unset($tmp);
 	}
-
+	*/
 	if (!defined("DATEHEADERCLASS")) {
 		define("DATEHEADERCLASS", "nextprev");
 		// if not defined in the theme, default class nextprev will be used for new date header
@@ -748,7 +749,7 @@ else
 	$param['current_action'] = $action;
 	
 	// Get Correct Template 
-	// XXX we use $NEWSLISTSTYLE above - correct as we are currently in list mode
+	// XXX we use $NEWSLISTSTYLE above - correct as we are currently in list mode - XXX No this is not NEWSLISTSTYLE - which provides only summaries. 
 	// TODO requires BC testing if we comment this one
 	if(vartrue($NEWSSTYLE)) 
 	{
@@ -756,7 +757,7 @@ else
 	}
 	else 
 	{
-		$tmp = e107::getTemplate('news', 'news', 'list');
+		$tmp = e107::getTemplate('news', 'news', 'default'); // default - we show the full items, except for the 'extended' part.. 
 		$template = $tmp['item'];
 		unset($tmp);
 	}

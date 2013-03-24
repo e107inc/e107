@@ -13,13 +13,51 @@ global $sc_style;
 ###### Default list item (temporary) - TODO rewrite news, template standards ######
 //$NEWS_MENU_TEMPLATE['list']['start']       = '<ul class="nav nav-list news-menu-months">';
 //$NEWS_MENU_TEMPLATE['list']['end']         = '</ul>';
+
+$NEWS_MENU_TEMPLATE['list']['start']       = '<div class="thumbnails">';
+$NEWS_MENU_TEMPLATE['list']['end']         = '</div>';
+
+
+// XXX The ListStyle template offers a listed summary of items with a minimum of 10 items per page. 
+// As displayed by news.php?cat.1 OR news.php?all 
+// {NEWSBODY} should not appear in the LISTSTYLE as it is NOT the same as what would appear on news.php (no query) 
+
+// Template/CSS to be reviewed for best bootstrap implementation 
 $NEWS_TEMPLATE['list']['item'] = '
-	<div class="list-item">
-		<h2>{NEWSURLTITLE}</h2>
+	{SETIMAGE: w=400&h=300&crop=1}
+	<div class="thumbnail">
+		<div class="row-fluid">
+				<div class="span3">
+                   <div class="thumbnail">
+                        {NEWSIMAGE}
+                    </div>
+				</div>
+				<div class="span9">
+                   <h3>{NEWSTITLELINK}</h3>
+                      <p>
+                       	{NEWSSUMMARY}
+					</p>
+                    <p>
+                       <a href="{NEWSURL}" class="btn btn-info">Read More</a>
+                   </p>
+ 				</div>
+		</div>
+	</div>
+';
+
+//$NEWS_MENU_TEMPLATE['list']['separator']   = '<br />';
+
+
+
+// XXX As displayed by news.php (no query) or news.php?list.1.1 (ie. regular view of a particular category)
+$NEWS_TEMPLATE['default']['item'] = '
+	{SETIMAGE: w=400}
+	<div class="view-item">
+		<h2>{NEWSTITLE}</h2>
 		<div class="category">in {NEWSCATEGORY}</div>
 		<div class="date">{NEWSDATE=short}</div>
 		<div class="author">{NEWSAUTHOR}</div>
- 		
+
 		<div class="body">
 			{NEWSIMAGE}
 			{NEWSBODY}
@@ -30,12 +68,18 @@ $NEWS_TEMPLATE['list']['item'] = '
 		</div>
 	</div>
 ';
-//$NEWS_MENU_TEMPLATE['list']['separator']   = '<br />';
+
+
+
+
 
 ###### Default view item (temporary) - TODO rewrite news, template standards ######
 //$NEWS_MENU_TEMPLATE['view']['start']       = '<ul class="nav nav-list news-menu-months">';
 //$NEWS_MENU_TEMPLATE['view']['end']         = '</ul>';
+
+// As displayed by news.php?extend.1
 $NEWS_TEMPLATE['view']['item'] = '
+{SETIMAGE: w=800}
 	<div class="view-item">
 		<h2>{NEWSTITLE}</h2>
 		<div class="category">in {NEWSCATEGORY}</div>
