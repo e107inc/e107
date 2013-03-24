@@ -8,8 +8,6 @@
  *
  * Administration Area - Emotions Settings & Packs
  *
- * $URL$
- * $Id$
  *
 */
 
@@ -275,6 +273,7 @@ class emotec
 		$frm = e107::getForm();
 		$tp = e107::getParser();
 		$fl = e107::getFile();
+		$ns = e107::getRender(); 
 		
 		$corea = "emote_".$packID;
 
@@ -442,6 +441,7 @@ class emotec
 		$sql = e107::getDb(); 
 		$fl = e107::getFile();
 		$ns = e107::getRender();
+		$mes = e107::getMessage();
 
 		// Pick up a list of emote packs from the database
 		$pack_local = array();
