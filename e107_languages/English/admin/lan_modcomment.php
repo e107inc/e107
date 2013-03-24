@@ -1,14 +1,11 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_modcomment.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
+ * Copyright (C) 2008-2013 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Admin Language File
+ *
 */
+
 define("MDCLAN_1", "Moderated.");
 define("MDCLAN_2", "No comments for this item");
 define("MDCLAN_3", "Member");
@@ -26,9 +23,5 @@ define("MDCLAN_13", "blocked");
 define("MDCLAN_14", "lock comments");
 define("MDCLAN_15", "open");
 define("MDCLAN_16", "locked");
-define("MDCLAN_17", "");
-define("MDCLAN_18", "");
-define("MDCLAN_19", "");
-define("MDCLAN_20", "");
 
 ?>

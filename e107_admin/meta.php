@@ -2,14 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Administration Area - Meta Tags
  *
- * $URL$
- * $Id$
  *
 */
 require_once("../class2.php");
@@ -60,7 +58,6 @@ if (isset($_POST['metasubmit']))
 
 	$admin_log->log_event('META_01', 'meta_news_summary=>'.$pref['meta_news_summary'].'[!br!]'.e_LANGUAGE, E_LOG_INFORMATIVE, '');
 	save_prefs();
-	//$mes->add(METLAN_1." (".e_LANGUAGE.")", E_MESSAGE_SUCCESS);
 }
 
 $meta 			= vartrue($pref['meta_tag']);
