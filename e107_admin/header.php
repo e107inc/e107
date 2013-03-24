@@ -174,7 +174,8 @@ else // XHTML
 	echo(defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
 	echo "<meta http-equiv='content-type' content='text/html; charset=utf-8' />\n";
 }
-echo (defined("VIEWPORT")) ? "<meta name=\"viewport\" content=\"".VIEWPORT."\" />\n" : "";
+echo "<meta name=\"viewport\" content=\"width=device-width; initial-scale=1; maximum-scale=1\" />\n"; // Works better for iOS but still has some issues. 
+// echo (defined("VIEWPORT")) ? "<meta name=\"viewport\" content=\"".VIEWPORT."\" />\n" : "";
 
 echo "<title>".(defined("e_PAGETITLE") ? e_PAGETITLE." - " : (defined("PAGE_NAME") ? PAGE_NAME." - " : "")).LAN_head_4." :: ".SITENAME."</title>\n";
 

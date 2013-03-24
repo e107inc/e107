@@ -25,6 +25,9 @@ min-height:50px;
     background-color: #191919;
 }
 
+.nav-collapse .nav > li > a:hover, .nav-collapse .nav > li > a:focus, .nav-collapse .dropdown-menu a:hover, .nav-collapse .dropdown-menu a:focus {
+    background-color: rgb(54, 54, 54);
+}
 
 
 

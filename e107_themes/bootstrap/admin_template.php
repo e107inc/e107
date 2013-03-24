@@ -160,47 +160,26 @@ $inverse = (e107::getPref('admincss') == "admin_light.css") ? "navbar-inverse" :
     
 $ADMIN_HEADER = '<div class="navbar '.$inverse.' navbar-fixed-top">
       <div class="navbar-inner">
-        <div class="container-fluid">  
+        <div class="container-fluid"> 
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a> 
           <a class="brand " href="'.e_ADMIN_ABS.'admin.php" title="Return to Front Panel"><img class="admin-logo" src="'.THEME.'images/e107_adminlogo.png" alt="e107" /></a>
           <div class="nav-collapse collapse">
-            <div class="dropdown nav pull-right navbar-text ">
+            
+            
+			<div class="dropdown nav">
+			{ADMIN_NAVIGATION=no-main}        	 
+   			 </div>
+   			 <div class="dropdown nav pull-right navbar-text ">
             {ADMIN_PM}
             {ADMIN_NAVIGATION=home}
 			{ADMIN_NAVIGATION=language}
 			{ADMIN_NAVIGATION=logout}
 		
             </div>
-            
-			<div class="dropdown nav">
-			{ADMIN_NAVIGATION=no-main}
-			
-			<!--
-				<ul class="nav" role="navigation">
-                    <li class="dropdown">
-                      <a id="drop1" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-                      <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
-                        <li><a href="http://google.com">Action</a></li>
-                        <li><a href="#anotherAction">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#">Separated link</a></li>
-                      </ul>
-                    </li>
-                    <li class="dropdown">
-                      <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">Dropdown 2 <b class="caret"></b></a>
-                      <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
-                        <li><a tabindex="-1" href="#">Action</a></li>
-                        <li><a tabindex="-1" href="#">Another action</a></li>
-                        <li><a tabindex="-1" href="#">Something else here</a></li>
-                        <li class="divider"></li>
-                        <li><a tabindex="-1" href="#">Separated link</a></li>
-                      </ul>
-                    </li>
-                  </ul>
-             -->    
-          
-        	 
-   			 </div>
           </div><!--/.nav-collapse -->
         </div>
       </div>
