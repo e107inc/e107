@@ -6,17 +6,14 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * e107 Main
+ * Online handler
  *
- * $URL$
- * $Id$
 */
 
 
 /**
  *	@package    e107
  *	@subpackage	e107_handlers
- *	@version 	$Id$;
  *
  *	Handler to keep track of online users
  */
@@ -106,7 +103,7 @@ class e_online
 			// $page = (strpos(e_SELF, 'content') !== FALSE) ? e_SELF.'.'.e_QUERY : $page;
 			$page = e_REQUEST_URI; // mod rewrite & single entry support
 			// FIXME parse url, trigger registered e_online callbacks
-			$page = $e107->tp->toDB($page, true);								/// @todo - try not to use toDB() - triggers prefilter
+			$page = e107::getParser()->toDB($page, true);								/// @todo - try not to use toDB() - triggers prefilter
 			$ip = e107::getIPHandler()->getIP(FALSE);
 			$udata = ($user->isUser() ? $user->getId().'.'.$user->getName() : '0');
 			$agent = $_SERVER['HTTP_USER_AGENT'];
@@ -132,9 +129,9 @@ class e_online
 			if ($user->isUser() && !$user->getParentId())
 			{
 				// Find record that matches IP or visitor, or matches user info
-				if ($sql->db_Select('online', '*', "(`online_ip` = '{$ip}' AND `online_user_id` = '0') OR `online_user_id` = '{$udata}'"))
+				if ($sql->select('online', '*', "(`online_ip` = '{$ip}' AND `online_user_id` = '0') OR `online_user_id` = '{$udata}'"))
 				{
-					$row = $sql->db_Fetch();
+					$row = $sql->fetch();
 
 					if ($row['online_user_id'] == $udata)
 					{
@@ -174,11 +171,11 @@ class e_online
 							$query = "`online_user_id` = '{$udata}'{$update_page}, `online_pagecount` = ".intval($row['online_pagecount'])." WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0' LIMIT 1";
 						}
 					}
-					$sql->db_Update('online', $query);
+					$sql->update('online', $query);
 				}
 				else
 				{
-					$sql->db_Insert('online',$insert_query);
+					$sql->insert('online',$insert_query);
 				}
 			}
 			// don't do anything if main admin logged in as another user
@@ -187,7 +184,7 @@ class e_online
 				//Current page request is from a guest
 				if ($sql->db_Select('online', '*', "`online_ip` = '{$ip}' AND `online_user_id` = '0'"))
 				{	// Recent visitor
-					$row = $sql->db_Fetch();
+					$row = $sql->fetch();
 
 					if ($row['online_timestamp'] < (time() - $online_timeout)) //It has been at least 'timeout' seconds since this ip has connected
 					{
@@ -201,11 +198,11 @@ class e_online
 						//   echo "here {$online_pagecount}";
 						$query="`online_pagecount` = {$row['online_pagecount']}{$update_page} WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0' LIMIT 1";
 					}
-					$sql->db_Update('online', $query);
+					$sql->update('online', $query);
 				}
 				else
 				{	// New visitor
-					$sql->db_Insert('online',$insert_query);
+					$sql->insert('online',$insert_query);
 				}
 			}
 
@@ -240,16 +237,16 @@ class e_online
 			// Speed up ajax requests
 			if(!deftrue('e_AJAX_REQUEST'))
 			{
-				$sql->db_Delete('online', '`online_timestamp` < '.(time() - $online_timeout));
+				$sql->delete('online', '`online_timestamp` < '.(time() - $online_timeout));
 
 				// FIXME - don't use constants below, save data in class vars, call e_online signleton - e107::getOnline()
 			//	$total_online = $sql->db_Count('online'); // 1 less query! :-)
-				if ($total_online = $sql->db_Select_gen('SELECT * FROM #online WHERE online_pagecount > 0 ORDER BY online_timestamp DESC'))
+				if ($total_online = $sql->gen('SELECT * FROM #online WHERE online_pagecount > 0 ORDER BY online_timestamp DESC'))
 				{
 					$member_list = '';
 					$members_online = 0;
 					$listuserson = array();
-					while ($row = $sql->db_Fetch())
+					while ($row = $sql->fetch())
 					{
 						$row['online_bot'] = $this->isBot($row['online_agent']);
 				
@@ -349,9 +346,6 @@ class e_online
 		}
 		return false;
 	}
-
-	
-
 	
 
 }

@@ -8,9 +8,6 @@
  *
  * Event calendar plugin - calendar menu display
  *
- * $URL$
- * $Id$
- *
  */
  
 /**
@@ -20,12 +17,13 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id$;
  */
 
 
 if (!defined('e107_INIT')) { exit; }
 $e107 = e107::getInstance();
+$tp = e107::getParser();
+
 if (!$e107->isInstalled('calendar_menu')) return '';
 
 if (!isset($ecal_class)) 
@@ -133,7 +131,7 @@ for ($i = 0; $i < 7; $i++)
 {
 	$cal_day = $ecal_class->day_offset_string($i);
 	$cal_text .= $CALENDAR_MENU_HEADER_FRONT;
-	$cal_text .= $e107->tp->text_truncate($cal_day, 1, '');		// Unlikely to have room for more than 1 letter
+	$cal_text .= $tp->text_truncate($cal_day, 1, '');		// Unlikely to have room for more than 1 letter
 	$cal_text .= $CALENDAR_MENU_HEADER_BACK;
 }
 $cal_text .= $CALENDAR_MENU_HEADER_END;  // Close off header row, open first date row

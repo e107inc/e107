@@ -8,10 +8,6 @@
  *
  * Calender plugin - event listing and event entry
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/event.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 /**
@@ -21,7 +17,6 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id$;
  */
 
 if (!defined('e_SINGLE_ENTRY'))
@@ -30,6 +25,7 @@ if (!defined('e_SINGLE_ENTRY'))
 }
 $e107 = e107::getInstance();
 $frm = e107::getForm();
+$tp = e107::getParser();
 
 if (!$e107->isInstalled('calendar_menu'))
 {
@@ -130,11 +126,11 @@ if ((isset($_POST['ne_insert']) || isset($_POST['ne_update'])) && ($cal_super  |
 		}
 
 		$ev_end			= $ecal_class->make_date($_POST['end_hour'], $_POST['end_minute'],$_POST['end_date']);
-		$ev_title		= $e107->tp->toDB($_POST['ne_title']);
-		$ev_location	= $e107->tp->toDB($_POST['ne_location']);
-		$ev_event		= $e107->tp->toDB($_POST['ne_event']);
-		$ev_email		= $e107->tp -> toDB($_POST['ne_email']);
-		$ev_thread		= $e107->tp->toDB($_POST['ne_thread']);
+		$ev_title		= $tp->toDB($_POST['ne_title']);
+		$ev_location	= $tp->toDB($_POST['ne_location']);
+		$ev_event		= $tp->toDB($_POST['ne_event']);
+		$ev_email		= $tp >toDB($_POST['ne_email']);
+		$ev_thread		= $tp->toDB($_POST['ne_thread']);
 		$temp_date 		= $ecal_class->gmgetdate($ecal_class->make_date(0,0,$_POST['start_date']));
 		$ev_allday		= intval($_POST['allday']);
 		$recurring		= intval($_POST['ec_recur_type']);
@@ -301,7 +297,7 @@ if ($cal_super || check_class($ecal_class->pref['eventpost_admin']))
 	  $wr_record = array();
 	  foreach ($ev_fields as $k => $v)
 	  {
-		$wr_record[$k] = $e107->tp->toDB($_POST['ev_'.$k]);
+		$wr_record[$k] = $tp->toDB($_POST['ev_'.$k]);
 	  }
 	  $wr_record['event_author'] = USERID.".".USERNAME;
 	  $wr_record['event_datestamp'] = time();
@@ -712,10 +708,10 @@ $nowyear	= $ecal_class->cal_date['year'];
 
 $text2 = "";
 // time switch buttons
-$text2 .= $e107->tp->parseTemplate($CALENDAR_TIME_TABLE, FALSE, $calSc);
+$text2 .= $tp->parseTemplate($CALENDAR_TIME_TABLE, FALSE, $calSc);
 
 // navigation buttons
-$text2 .= $e107->tp->parseTemplate($CALENDAR_NAVIGATION_TABLE, FALSE, $calSc);
+$text2 .= $tp->parseTemplate($CALENDAR_NAVIGATION_TABLE, FALSE, $calSc);
 
 
 // ****** CAUTION - the category dropdown also used $sql object - take care to avoid interference!
@@ -751,9 +747,9 @@ if ($ds == 'event')
     }
     $next10_start = $thisEvent['event_start'] +1;
 	$calSc->event = $thisEvent;			// Give shortcodes the event data
-	$text2 .= $e107->tp->parseTemplate($EVENT_EVENT_TABLE_START, FALSE, $calSc);
-	if ($ec_err) $text2.= "Software Error<br />"; else $text2 .= $e107->tp->parseTemplate($EVENT_EVENT_TABLE, FALSE, $calSc);
-	$text2 .= $e107->tp->parseTemplate($EVENT_EVENT_TABLE_END, FALSE, $calSc);
+	$text2 .= $tp->parseTemplate($EVENT_EVENT_TABLE_START, FALSE, $calSc);
+	if ($ec_err) $text2.= "Software Error<br />"; else $text2 .= $tp->parseTemplate($EVENT_EVENT_TABLE, FALSE, $calSc);
+	$text2 .= $tp->parseTemplate($EVENT_EVENT_TABLE_END, FALSE, $calSc);
 }
 else
 {
@@ -801,14 +797,14 @@ else
 	// display event list for current month
 	if(count($tim_arr))
 	{
-		$text2 .= $e107->tp->parseTemplate($EVENT_EVENTLIST_TABLE_START, FALSE, $calSc);
+		$text2 .= $tp->parseTemplate($EVENT_EVENTLIST_TABLE_START, FALSE, $calSc);
 		foreach ($tim_arr as $tim => $ptr)
 		{
 			$ev_list[$ptr]['event_start'] = $tim;
 			$calSc->event = $ev_list[$ptr];			// Give shortcodes the event data
-			$text2 .= $e107->tp->parseTemplate($EVENT_EVENT_TABLE, FALSE, $calSc);
+			$text2 .= $tp->parseTemplate($EVENT_EVENT_TABLE, FALSE, $calSc);
 		}
-		$text2 .= $e107->tp->parseTemplate($EVENT_EVENTLIST_TABLE_END, FALSE, $calSc);
+		$text2 .= $tp->parseTemplate($EVENT_EVENTLIST_TABLE_END, FALSE, $calSc);
 	}
 }
 
@@ -827,20 +823,20 @@ if ($num != 0)
 	foreach ($ev_list as $thisEvent)
 	{
 		$calSc->event = $thisEvent;			// Give shortcodes the event data
-		$archive_events .= $e107->tp->parseTemplate($EVENT_ARCHIVE_TABLE, FALSE, $calSc);
+		$archive_events .= $tp->parseTemplate($EVENT_ARCHIVE_TABLE, FALSE, $calSc);
 	}
 }
 else
 {
-	$archive_events = $e107->tp->parseTemplate($EVENT_ARCHIVE_TABLE_EMPTY, FALSE, $calSc);
+	$archive_events = $tp->parseTemplate($EVENT_ARCHIVE_TABLE_EMPTY, FALSE, $calSc);
 }
 
-$text2 .= $e107->tp->parseTemplate($EVENT_ARCHIVE_TABLE_START, FALSE, $calSc);
+$text2 .= $tp->parseTemplate($EVENT_ARCHIVE_TABLE_START, FALSE, $calSc);
 $text2 .= $archive_events;
-$text2 .= $e107->tp->parseTemplate($EVENT_ARCHIVE_TABLE_END, FALSE, $calSc);
+$text2 .= $tp->parseTemplate($EVENT_ARCHIVE_TABLE_END, FALSE, $calSc);
 
 
-$e107->ns->tablerender($e107->tp->ParseTemplate('{EC_EVENT_PAGE_TITLE}', FALSE, $calSc), $text2);
+$ns->tablerender($tp->ParseTemplate('{EC_EVENT_PAGE_TITLE}', FALSE, $calSc), $text2);
 
 // Claim back memory no longer required
 unset($ev_list);

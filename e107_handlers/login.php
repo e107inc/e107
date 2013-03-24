@@ -1,16 +1,13 @@
 <?php
-
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2011 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * e107 Main
+ * Login handler
  *
- * $Id$
- * $URL$
 */
 
 
@@ -557,9 +554,9 @@ class userlogin
 	 */
 	protected function logNote($title, $text)
 	{
-		$e107 = &e107::getInstance();
-		$title = $e107->tp->toDB($title);
-		$text  = $e107->tp->toDB($text);
+		$e107 = e107::getInstance();
+		$title = e107::getParser()->toDB($title);
+		$text  = e107::getParser()->toDB($text);
 		$e107->admin_log->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", $title, $text, FALSE, LOG_TO_ROLLING);
 	}
 
@@ -572,9 +569,9 @@ class userlogin
 	 */
 	protected function genNote($username, $msg1)
 	{
-		$e107 = &e107::getInstance();
-		$message = $e107->tp->toDB($msg1." ::: ".LAN_LOGIN_1.": ".$username);
-		$e107->sql->db_Insert("generic", "0, 'failed_login', '".time()."', 0, '{$this->userIP}', 0, '{$message}'");
+		$e107 = e107::getInstance();
+		$message = e107::getParser()->toDB($msg1." ::: ".LAN_LOGIN_1.": ".$username);
+		e107::getDb()->insert("generic", "0, 'failed_login', '".time()."', 0, '{$this->userIP}', 0, '{$message}'");
 	}
 
 

@@ -2,14 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2012 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * e107 Menu Class
  *
- * $URL$
- * $Id$
 */
 
 if(!defined('e107_INIT'))
@@ -251,14 +249,11 @@ class e_menu
 	{
 	//	global $sql; // required at the moment.
 		global $sc_style, $e107_debug;
-		
-		
-		$e107 = e107::getInstance();
-		
+				
+		$e107 = e107::getInstance();		
 		$sql = e107::getDb();
 		$ns = e107::getRender();
-		$tp = e107::getParser();
-		
+		$tp = e107::getParser();		
 
 		if($return)
 		{
@@ -292,7 +287,7 @@ class e_menu
 				
 				if($template['noTableRender'] !==true)
 				{
-					e107::getRender()->tablerender($caption, $text);
+					$ns->tablerender($caption, $text);
 				}
 				else
 				{
@@ -301,10 +296,9 @@ class e_menu
 				
 			}
 			else 
-			{
-				
-				$text = $e107->tp->toHTML($page['menu_text'], true, 'parse_sc, constants');
-				e107::getRender()->tablerender($caption, $text);
+			{				
+				$text = $tp->toHTML($page['menu_text'], true, 'parse_sc, constants');
+				$ns->tablerender($caption, $text);
 			}
 			
 		}

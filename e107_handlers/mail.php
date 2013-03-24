@@ -5,20 +5,14 @@
  * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
- *
- * e107 Main
- *
- * $URL: https://e107.svn.sourceforge.net/svnroot/e107/trunk/e107_0.8/e107_handlers/redirection_class.php $
- * $Id: redirection_class.php 11922 2010-10-27 11:31:18Z secretr $
- * $Revision: 11315 $
+ * 
+ * Mail handler
  */
 
 /**
  * 
  * @package     e107
  * @subpackage	e107_handlers
- * @version     $Revision: 12078 $
- * @author      $Author: e107coders $
  *
  *	Mailout handler - concerned with processing and sending a single email
  *	Extends the PHPMailer class
@@ -174,6 +168,7 @@ class e107Email extends PHPMailer
 
 		$e107 = e107::getInstance();
 		$pref = e107::pref('core');
+		$tp = e107::getParser();
 
 		$this->CharSet = 'utf-8';
 		$this->SetLanguage(CORE_LC);
@@ -273,8 +268,8 @@ class e107Email extends PHPMailer
 		}
 		if (varsettrue($pref['mail_bounce_email'])) $this->Sender = $pref['mail_bounce_email'];
 
-		$this->FromName = $e107->tp->toHTML(varsettrue($pref['replyto_name'],$overrides['siteadmin']),'','RAWTEXT');
-		$this->From = $e107->tp->toHTML(varsettrue($pref['replyto_email'],$overrides['siteadminemail']),'','RAWTEXT');
+		$this->FromName = $tp->toHTML(varsettrue($pref['replyto_name'],$overrides['siteadmin']),'','RAWTEXT');
+		$this->From = $tp->toHTML(varsettrue($pref['replyto_email'],$overrides['siteadminemail']),'','RAWTEXT');
 		$this->WordWrap = 76;			// Set a sensible default
 
 		// Now look for any overrides - slightly cumbersome way of doing it, but does give control over what can be set from here

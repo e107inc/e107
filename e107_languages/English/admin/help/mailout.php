@@ -2,23 +2,17 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/help/mailout.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 if (!defined('e107_INIT')) { exit; }
 
-
 $e107 = e107::getInstance();
-$action = $e107->tp->toDB(varset($_GET['mode'],'makemail'));
+
+$action = e107::getParser()->toDB(varset($_GET['mode'],'makemail'));
 
   switch ($action)
   {
@@ -82,4 +76,4 @@ $action = $e107->tp->toDB(varset($_GET['mode'],'makemail'));
 	  $text = 'Undocumented option';
   }
 
-$ns -> tablerender('Mail Help', $text);
+$ns->tablerender('Mail Help', $text);

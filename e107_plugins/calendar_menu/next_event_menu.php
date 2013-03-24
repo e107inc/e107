@@ -96,7 +96,7 @@ else
 	$cal_text.= EC_LAN_141;
 }
 
-$calendar_title = $e107->tp->toHTML($menu_title,FALSE,'TITLE');		// Allows multi-language title, shortcodes
+$calendar_title = e107::getParser()->toHTML($menu_title,FALSE,'TITLE');		// Allows multi-language title, shortcodes
 if ($link_in_heading == 1)
 {
 	$calendar_title = "<a class='forumlink' href='".e_PLUGIN_ABS."calendar_menu/event.php' >".$calendar_title."</a>";
@@ -104,7 +104,7 @@ if ($link_in_heading == 1)
 
 // Now handle the data, cache as well
 ob_start();					// Set up a new output buffer
-$e107->ns->tablerender($calendar_title, $cal_text, 'next_event_menu');
+e107::getRender()->tablerender($calendar_title, $cal_text, 'next_event_menu');
 $cache_data = ob_get_flush();			// Get the page content, and display it
 $e107->ecache->set($cache_tag, $cache_data);	// Save to cache
 

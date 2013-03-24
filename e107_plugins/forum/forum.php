@@ -2,14 +2,11 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2011 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Forum main page
- *
- * $URL$
- * $Id$
  *
 */
 if(!defined('e107_INIT'))
@@ -17,6 +14,8 @@ if(!defined('e107_INIT'))
 	require_once('../../class2.php');
 }
 $e107 = e107::getInstance();
+$tp = e107::getParser();
+
 if (!$e107->isInstalled('forum'))
 {
 	// FIXME GLOBAL - get rid of all e_BASE|e_HTTP|Whatever/index.php - just point to SITEURL
@@ -87,15 +86,15 @@ if($rules_text != '')
 {
 	$fVars->USERINFO .= " | <a href='".$e107->url->create('forum/forum/rules')."'>".LAN_433.'</a>';
 }
-$total_topics = $sql->db_Count("forum_thread", "(*)");
-$total_replies = $sql->db_Count("forum_post", "(*)");
-$total_members = $sql->db_Count("user");
-$newest_member = $sql->db_Select("user", "*", "user_ban='0' ORDER BY user_join DESC LIMIT 0,1");
+$total_topics = $sql->count("forum_thread", "(*)");
+$total_replies = $sql->count("forum_post", "(*)");
+$total_members = $sql->count("user");
+$newest_member = $sql->select("user", "*", "user_ban='0' ORDER BY user_join DESC LIMIT 0,1");
 list($nuser_id, $nuser_name) = $sql->db_Fetch();
 if(!defined('e_TRACKING_DISABLED'))
 {
-	$member_users = $sql->db_Select("online", "*", "online_location REGEXP('forum.php') AND online_user_id!='0' ");
-	$guest_users = $sql->db_Select("online", "*", "online_location REGEXP('forum.php') AND online_user_id='0' ");
+	$member_users = $sql->select("online", "*", "online_location REGEXP('forum.php') AND online_user_id!='0' ");
+	$guest_users = $sql->select("online", "*", "online_location REGEXP('forum.php') AND online_user_id='0' ");
 	$users = $member_users+$guest_users;
 	$fVars->USERLIST = LAN_426;
 	global $listuserson;
@@ -137,7 +136,7 @@ $fVars->PERMS = (USER == TRUE || ANON == TRUE ? LAN_204." - ".LAN_206." - ".LAN_
 $fVars->INFO = "";
 if (USER == TRUE)
 {
-	$total_new_threads = $sql->db_Count('forum_thread', '(*)', "WHERE thread_datestamp>'".USERLV."' ");
+	$total_new_threads = $sql->count('forum_thread', '(*)', "WHERE thread_datestamp>'".USERLV."' ");
 	if (USERVIEWED != "")
 	{
 		$tmp = explode(".", USERVIEWED);		// List of numbers, separated by single period
@@ -305,6 +304,7 @@ function parse_forum($f, $restricted_string = '')
 	global $FORUM_MAIN_FORUM, $gen, $forum, $newflag_list, $forumList;
 	$fVars = new e_vars;
 	$e107 = e107::getInstance();
+	$tp = e107::getParser();
 
 	if(USER && is_array($newflag_list) && in_array($f['forum_id'], $newflag_list))
 	{
@@ -320,8 +320,8 @@ function parse_forum($f, $restricted_string = '')
 	{
 		$f['forum_name'] = substr($f['forum_name'], 1);
 	}
-	$f['forum_name'] = $e107->tp->toHTML($f['forum_name'], true, 'no_hook');
-	$f['forum_description'] = $e107->tp->toHTML($f['forum_description'], true, 'no_hook');
+	$f['forum_name'] = $tp->toHTML($f['forum_name'], true, 'no_hook');
+	$f['forum_description'] = $tp->toHTML($f['forum_description'], true, 'no_hook');
 	
 	$fVars->FORUMNAME = "<a href='".$e107->url->create('forum/forum/view', $f)."'>{$f['forum_name']}</a>";
 	$fVars->FORUMDESCRIPTION = $f['forum_description'].($restricted_string ? "<br /><span class='smalltext'><i>$restricted_string</i></span>" : "");
@@ -364,7 +364,7 @@ function parse_forum($f, $restricted_string = '')
 		}
 		else
 		{
-			$lastpost_name = $e107->tp->toHTML($f['forum_lastpost_user_anon']);
+			$lastpost_name = $tp->toHTML($f['forum_lastpost_user_anon']);
 		}
 		$fVars->LASTPOSTUSER = $lastpost_name;
 		$fVars->LASTPOSTDATE .=  $gen->computeLapse($lastpost_datestamp, time(), false, false, 'short');
@@ -378,19 +378,20 @@ function parse_forum($f, $restricted_string = '')
 		$fVars->LASTPOSTDATE = "-";
 		$fVars->LASTPOST = '-';
 	}
-	return $e107->tp->simpleParse($FORUM_MAIN_FORUM, $fVars);
+	return $tp->simpleParse($FORUM_MAIN_FORUM, $fVars);
 }
 
 function parse_subs($subList, $lastpost_datestamp)
 {
 	$e107 = e107::getInstance();
+	$tp = e107::getParser();
 	$ret = array();
 	$ret['text'] = '';
 	foreach($subList as $sub)
 	{
 		$ret['text'] .= ($ret['text'] ? ', ' : '');
 		$suburl = $e107->url->create('forum/forum/view', $sub);
-		$ret['text'] .= "<a href='{$suburl}'>".$e107->tp->toHTML($sub['forum_name']).'</a>';
+		$ret['text'] .= "<a href='{$suburl}'>".$tp->toHTML($sub['forum_name']).'</a>';
 		$ret['threads'] += $sub['forum_threads'];
 		$ret['replies'] += $sub['forum_replies'];
 		$tmp = explode('.', $sub['forum_lastpost_info']);
@@ -429,13 +430,13 @@ if (e_QUERY == 'track')
 				}
 
 				$url = $e107->url->create('forum/thread/view', $row); // configs will be able to map thread_* vars to the url
-				$trackVars->TRACKPOSTNAME = "<a href='{$url}'>".$e107->tp->toHTML($row['thread_name']).'</a>';
+				$trackVars->TRACKPOSTNAME = "<a href='{$url}'>".$tp->toHTML($row['thread_name']).'</a>';
 				$trackVars->UNTRACK = "<a href='".e_SELF."?untrack.".$row['thread_id']."'>".LAN_392."</a>";
-				$forum_trackstring .= $e107->tp->simpleParse($FORUM_TRACK_MAIN, $trackVars);
+				$forum_trackstring .= $tp->simpleParse($FORUM_TRACK_MAIN, $trackVars);
 			}
 		}
-		$forum_track_start = $e107->tp->simpleParse($FORUM_TRACK_START, $trackVars);
-		$forum_track_end = $e107->tp->simpleParse($FORUM_TRACK_END, $trackVars);
+		$forum_track_start = $tp->simpleParse($FORUM_TRACK_START, $trackVars);
+		$forum_track_end = $tp->simpleParse($FORUM_TRACK_END, $trackVars);
 		if ($forum->prefs->get('enclose'))
 		{
 			$ns->tablerender($forum->prefs->get('title'), $forum_track_start.$forum_trackstring.$forum_track_end, array('forum', 'main1'));
@@ -464,19 +465,19 @@ if (e_QUERY == 'new')
 		{
 			$nVars->STARTERTITLE = "<a href='".$e107->url->create('user/profile/view', array('id' => $thread['thread_lastuser'], 'name' => $author_name))."'>{$author_name}</a><br />".$datestamp;
 		}
-		$nVars->NEWSPOSTNAME = "<a href='".$e107->url->create('forum/thread/last', $thread)."'>".$e107->tp->toHTML($thread['thread_name'], TRUE, 'no_make_clickable, no_hook').'</a>';
+		$nVars->NEWSPOSTNAME = "<a href='".$e107->url->create('forum/thread/last', $thread)."'>".$tp->toHTML($thread['thread_name'], TRUE, 'no_make_clickable, no_hook').'</a>';
 
-		$forum_newstring .= $e107->tp->simpleParse($FORUM_NEWPOSTS_MAIN, $nVars);
+		$forum_newstring .= $tp->simpleParse($FORUM_NEWPOSTS_MAIN, $nVars);
 	}
 
 	if (!$newThreadList)
 	{
 		$nVars->NEWSPOSTNAME = LAN_198;
-		$forum_newstring = $e107->tp->simpleParse($FORUM_NEWPOSTS_MAIN, $nVars);
+		$forum_newstring = $tp->simpleParse($FORUM_NEWPOSTS_MAIN, $nVars);
 
 	}
-	$forum_new_start = $e107->tp->simpleParse($FORUM_NEWPOSTS_START, $nVars);
-	$forum_new_end = $e107->tp->simpleParse($FORUM_NEWPOSTS_END, $nVars);
+	$forum_new_start = $tp->simpleParse($FORUM_NEWPOSTS_START, $nVars);
+	$forum_new_end = $tp->simpleParse($FORUM_NEWPOSTS_END, $nVars);
 
 	if ($forum->prefs->get('enclose'))
 	{
@@ -488,8 +489,8 @@ if (e_QUERY == 'new')
 	}
 }
 
-$forum_main_start = $e107->tp->simpleParse($FORUM_MAIN_START, $fVars);
-$forum_main_end = $e107->tp->simpleParse($FORUM_MAIN_END, $fVars);
+$forum_main_start = $tp->simpleParse($FORUM_MAIN_START, $fVars);
+$forum_main_end = $tp->simpleParse($FORUM_MAIN_END, $fVars);
 
 if ($forum->prefs->get('enclose'))
 {
@@ -503,7 +504,6 @@ require_once(FOOTERF);
 
 function forum_rules($action = 'check')
 {
-	$e107 = e107::getInstance();
 	if (ADMIN == true)
 	{
 		$type = 'forum_rules_admin';
@@ -516,18 +516,19 @@ function forum_rules($action = 'check')
 	{
 		$type = 'forum_rules_guest';
 	}
-	$result = $e107->sql->db_Select('generic', 'gen_chardata', "gen_type = '$type' AND gen_intdata = 1");
+	$result = e107::getDb()->select('generic', 'gen_chardata', "gen_type = '$type' AND gen_intdata = 1");
 	if ($action == 'check') { return $result; }
 
 	if ($result)
 	{
-		$row = $e107->sql->db_Fetch();
-		$rules_text = $e107->tp->toHTML($row['gen_chardata'], true);
+		$row = e107::getDb()->fetch();
+		$rules_text = e107::getParser()->toHTML($row['gen_chardata'], true);
 	}
 	else
 	{
 		$rules_text = FORLAN_441;
 	}
-	$e107->ns->tablerender(LAN_433, "<div style='text-align:center'>{$rules_text}</div>", array('forum', 'forum_rules'));
+	e107::getRender()->tablerender(LAN_433, "<div style='text-align:center'>{$rules_text}</div>", array('forum', 'forum_rules'));
 }
+
 ?>

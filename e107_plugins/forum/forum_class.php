@@ -2,7 +2,7 @@
 /*
 * e107 website system
 *
-* Copyright (c) 2008-2011 e107 Inc (e107.org)
+* Copyright (c) 2008-2013 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
@@ -254,7 +254,7 @@ class e107forum
 				break;
 				
 				case 'lock':
-					if(e107::getDB()->update('forum_thread', 'thread_active=0 WHERE thread_id='.$id))
+					if(e107::getDb()->update('forum_thread', 'thread_active=0 WHERE thread_id='.$id))
 					{
 						$ret['msg'] = FORLAN_CLOSE;
 						$ret['status'] 	= 'ok';	
@@ -267,7 +267,7 @@ class e107forum
 				break;
 
 				case 'unlock':
-					if(e107::getDB()->update('forum_thread', 'thread_active=1 WHERE thread_id='.$id))
+					if(e107::getDb()->update('forum_thread', 'thread_active=1 WHERE thread_id='.$id))
 					{
 						$ret['msg'] = FORLAN_OPEN;
 						$ret['status'] 	= 'ok';	
@@ -280,7 +280,7 @@ class e107forum
 				break;
 
 				case 'stick':
-					if(e107::getDB()->update('forum_thread', 'thread_sticky=1 WHERE thread_id='.$id))
+					if(e107::getDb()->update('forum_thread', 'thread_sticky=1 WHERE thread_id='.$id))
 					{
 						$ret['msg'] = FORLAN_STICK;
 						$ret['status'] 	= 'ok';	
@@ -293,7 +293,7 @@ class e107forum
 				break;
 
 				case 'unstick':
-					if(e107::getDB()->update('forum_thread', 'thread_sticky=0 WHERE thread_id='.$id))
+					if(e107::getDb()->update('forum_thread', 'thread_sticky=0 WHERE thread_id='.$id))
 					{
 						$ret['msg'] = FORLAN_UNSTICK;
 						$ret['status'] 	= 'ok';		
@@ -374,6 +374,7 @@ class e107forum
 	private function _getForumPermList()
 	{
 		$e107 = e107::getInstance();
+		$sql = e107::getDb();
 
 		$this->permList = array();
 		$qryList = array();
@@ -401,10 +402,10 @@ class e107forum
 
 		foreach($qryList as $key => $qry)
 		{
-			if($e107->sql->gen($qry))
+			if($sql->gen($qry))
 			{
 				$tmp = array();
-				while($row = $e107->sql->fetch())
+				while($row = $sql->fetch())
 				{
 					$tmp[$row['forum_id']] = 1;
 					$tmp[$row['forum_parent']] = 1;
@@ -443,10 +444,12 @@ class e107forum
 	function getTrackedThreadList($id, $retType = 'array')
 	{
 		$e107 = e107::getInstance();
+		$sql = e107::getDb();
+
 		$id = (int)$id;
-		if($e107->sql->db_Select('forum_track', 'track_thread', 'track_userid = '.$id))
+		if($sql->select('forum_track', 'track_thread', 'track_userid = '.$id))
 		{
-			while($row = $e107->sql->fetch(MYSQL_ASSOC))
+			while($row = $sql->fetch(MYSQL_ASSOC))
 			{
 				$ret[] = $row['track_thread'];
 			}
@@ -469,10 +472,11 @@ class e107forum
 		$result = false;
 
 		$e107 = e107::getInstance();
+		$sql = e107::getDb();
 		$info = array();
 //		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_post'];
 		$info['data'] = $postInfo;
-		$postId = $e107->sql->db_Insert('forum_post', $info);
+		$postId = $sql->insert('forum_post', $info);
 		$forumInfo = array();
 
 		if($postId && $updateThread)
@@ -501,7 +505,7 @@ class e107forum
 //			$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
 			$info['_FIELD_TYPES']['thread_total_replies'] = 'cmd';
 
-			$result = $e107->sql->update('forum_thread', $info);
+			$result = $sql->update('forum_thread', $info);
 
 		}
 
@@ -534,7 +538,7 @@ class e107forum
 			$info['data'] = $forumInfo;
 			$info['data']['forum_lastpost_info'] = $postInfo['post_datestamp'].'.'.$postInfo['post_thread'];
 			$info['WHERE'] = 'forum_id = '.$postInfo['post_forum'];
-			$result = $e107->sql->update('forum', $info);
+			$result = $sql->update('forum', $info);
 		}
 
 		if($result && USER && $addUserPostCount)
@@ -544,7 +548,7 @@ class e107forum
 			VALUES ('.USERID.', 1)
 			ON DUPLICATE KEY UPDATE user_plugin_forum_posts = user_plugin_forum_posts + 1
 			';
-			$result = $e107->sql->gen($qry);
+			$result = $sql->gen($qry);
 		}
 		return $postId;
 	}
@@ -557,7 +561,7 @@ class e107forum
 		$info = array();
 //		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
 		$info['data'] = $threadInfo;
-		if($newThreadId = $e107->sql->db_Insert('forum_thread', $info))
+		if($newThreadId = e107::getDb()->insert('forum_thread', $info))
 		{
 			$postInfo['post_thread'] = $newThreadId;
 			$newPostId = $this->postAdd($postInfo, false);
@@ -608,36 +612,33 @@ class e107forum
 	}
 
 
-
 	function threadUpdate($threadId, $threadInfo)
 	{
-		$e107 = e107::getInstance();
 		$info = array();
 		$info['data'] = $threadInfo;
 //		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
 		$info['WHERE'] = 'thread_id = '.(int)$threadId;
-		$e107->sql->update('forum_thread', $info);
+		e107::getDb()->update('forum_thread', $info);
 	}
 
 	
 	
 	function postUpdate($postId, $postInfo)
 	{
-		$e107 = e107::getInstance();
 		$info = array();
 		$info['data'] = $postInfo;
 //		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_post'];
 		$info['WHERE'] = 'post_id = '.(int)$postId;
-		$e107->sql->update('forum_post', $info);
+		e107::getDb()->update('forum_post', $info);
 	}
 
 	
 	
 	function threadGet($id, $joinForum = true, $uid = USERID)
 	{
-		$e107 = e107::getInstance();
 		$id = (int)$id;
 		$uid = (int)$uid;
+		$sql = e107::getDb();
 
 		if($joinForum)
 		{
@@ -661,9 +662,9 @@ class e107forum
 			FROM `#forum_thread`
 			WHERE thread_id = '.$id;
 		}
-		if($e107->sql->gen($qry))
+		if($sql->gen($qry))
 		{
-			$tmp = $e107->sql->fetch(MYSQL_ASSOC);
+			$tmp = $sql->fetch(MYSQL_ASSOC);
 			if($tmp)
 			{
 				if(trim($tmp['thread_options']) != '')
@@ -677,12 +678,12 @@ class e107forum
 	}
 
 
-
 	function postGet($id, $start, $num = NULL)
 	{
 		$id = (int)$id;
 		$ret = false;
-		$e107 = e107::getInstance();
+		$sql = e107::getDb();
+
 		if('post' === $start)
 		{
 			$qry = '
@@ -709,10 +710,10 @@ class e107forum
 				LIMIT {$start}, {$num}
 			";
 		}
-		if($e107->sql->gen($qry))
+		if($sql->gen($qry))
 		{
 			$ret = array();
-			while($row = $e107->sql->fetch(MYSQL_ASSOC))
+			while($row = $sql->fetch(MYSQL_ASSOC))
 			{
 				$ret[] = $row;
 			}
@@ -722,21 +723,20 @@ class e107forum
 	}
 
 
-
 	function threadGetUserPostcount($threadId)
 	{
 		$threadId = (int)$threadId;
-		$e107 = e107::getInstance();
+		$sql = e107::getDb();
 		$ret = false;
 		$qry = "
 		SELECT post_user, count(post_user) AS post_count FROM `#forum_post`
 		WHERE post_thread = {$threadId} AND post_user IS NOT NULL
 		GROUP BY post_user
 		";
-		if($e107->sql->gen($qry))
+		if($sql->gen($qry))
 		{
 			$ret = array();
-			while($row = $e107->sql->fetch(MYSQL_ASSOC))
+			while($row = $sql->fetch(MYSQL_ASSOC))
 			{
 				$ret[$row['post_user']] = $row['post_count'];
 			}
@@ -744,7 +744,6 @@ class e107forum
 		return $ret;
 	}
 
-	
 	
 	function threadGetUserViewed($uid = USERID)
 	{
@@ -763,20 +762,21 @@ class e107forum
 	}
 
 
-
 	function postDeleteAttachments($type = 'post', $id='', $f='')
 	{
 		$e107 = e107::getInstance();
+		$sql = $e107::getDb();
+
 		$id = (int)$id;
 		if(!$id) { return; }
 		if($type == 'thread')
 		{
-			if(!$e107->sql->db_Select('forum_post', 'post_id', 'post_attachments IS NOT NULL'))
+			if(!$sql->select('forum_post', 'post_id', 'post_attachments IS NOT NULL'))
 			{
 				return true;
 			}
 			$postList = array();
-			while($row = $e107->sql->dbFetch(MYSQL_ASSOC))
+			while($row = $sql->Fetch(MYSQL_ASSOC))
 			{
 				$postList[] = $row['post_id'];
 			}
@@ -787,11 +787,11 @@ class e107forum
 		}
 		if($type == 'post')
 		{
-			if(!$e107->sql->db_Select('forum_post', 'post_attachments', 'post_id = '.$id))
+			if(!$sql->select('forum_post', 'post_attachments', 'post_id = '.$id))
 			{
 				return true;
 			}
-			$tmp = $e107->sql->fetch(MYSQL_ASSOC);
+			$tmp = $sql->fetch(MYSQL_ASSOC);
 			$attachments = explode(',', $tmp['post_attachments']);
 			foreach($attachments as $k => $a)
 			{
@@ -823,10 +823,9 @@ class e107forum
 			$info['data'] = $tmp;
 			$info['_FILE_TYPES']['post_attachments'] = 'escape';
 			$info['WHERE'] = 'post_id = '.$id;
-			$e107->sql->update('forum_post', $info);
+			$sql->update('forum_post', $info);
 		}
 	}
-
 
 
 	/**
@@ -837,15 +836,15 @@ class e107forum
 	{
 		$threadId = (int)$threadId;
 		$postId = (int)$postId;
-		$e107 = e107::getInstance();
-		return $e107->sql->db_Count('forum_post', '(*)', "WHERE post_id <= {$postId} AND post_thread = {$threadId} ORDER BY post_id ASC");
+		return e107::getDb()->count('forum_post', '(*)', "WHERE post_id <= {$postId} AND post_thread = {$threadId} ORDER BY post_id ASC");
 	}
-
 
 
 	function forumUpdateLastpost($type, $id, $updateThreads = false)
 	{
-		global $sql, $tp;
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+
 		$sql2 = new db;
 		if ($type == 'thread')
 		{
@@ -875,7 +874,7 @@ class e107forum
 		{
 			if ($id == 'all')
 			{
-				if ($sql->db_Select('forum', 'forum_id', 'forum_parent != 0'))
+				if ($sql->select('forum', 'forum_id', 'forum_parent != 0'))
 				{
 					while ($row = $sql->fetch(MYSQL_ASSOC))
 					{
@@ -895,7 +894,7 @@ class e107forum
 				$lp_user = 'NULL';
 				if($updateThreads == true)
 				{
-					if ($sql2->db_Select('forum_t', 'thread_id', "thread_forum_id = $id AND thread_parent = 0"))
+					if ($sql2->select('forum_t', 'thread_id', "thread_forum_id = $id AND thread_parent = 0"))
 					{
 						while ($row = $sql2->fetch(MYSQL_ASSOC))
 						{
@@ -904,7 +903,7 @@ class e107forum
 						}
 					}
 				}
-				if ($sql->db_Select('forum_thread', 'thread_id, thread_lastuser, thread_lastuser_anon, thread_datestamp', 'thread_forum_id='.$id.' ORDER BY thread_datestamp DESC LIMIT 1'))
+				if ($sql->select('forum_thread', 'thread_id, thread_lastuser, thread_lastuser_anon, thread_datestamp', 'thread_forum_id='.$id.' ORDER BY thread_datestamp DESC LIMIT 1'))
 				{
 					$row = $sql->fetch(MYSQL_ASSOC);
 					$lp_info = $row['thread_datestamp'].'.'.$row['thread_id'];
@@ -926,7 +925,7 @@ class e107forum
 	
 	function forumMarkAsRead($forum_id)
 	{
-		$e107 = e107::getInstance();
+		$sql = e107::getDb();
 		$extra = '';
 		$newIdList = array();
 		if ($forum_id !== 0)
@@ -946,9 +945,9 @@ class e107forum
 		}
 		$qry = 'thread_lastpost > '.USERLV.$extra;
 
-		if ($e107->sql->db_Select('forum_thread', 'thread_id', $qry))
+		if ($sql->select('forum_thread', 'thread_id', $qry))
 		{
-			while ($row = $e107->sql->fetch(MYSQL_ASSOC))
+			while ($row = $sql->fetch(MYSQL_ASSOC))
 			{
 		  		$newIdList[] = $row['thread_id'];
 			}
@@ -966,7 +965,7 @@ class e107forum
 	function threadMarkAsRead($threadId)
 	{
 		global $currentUser;
-		$e107 = e107::getInstance();
+
 		$_tmp = preg_split('#\,+#', $currentUser['user_plugin_forum_viewed']);
 		if(!is_array($threadId)) { $threadId = array($threadId); }
 		foreach($threadId as $tid)
@@ -975,17 +974,16 @@ class e107forum
 		}
 		$tmp = array_unique($tmp);
 		$viewed = trim(implode(',', $_tmp), ',');
-		return $e107->sql->update('user_extended', "user_plugin_forum_viewed = '{$viewed}' WHERE user_extended_id = ".USERID);
+		return e107::getDb()->update('user_extended', "user_plugin_forum_viewed = '{$viewed}' WHERE user_extended_id = ".USERID);
 	}
 
 
 
 	function forum_getparents()
 	{
-		global $sql;
-		if ($sql->db_Select('forum', '*', 'forum_parent=0 ORDER BY forum_order ASC'))
+		if (e107::getDb()->select('forum', '*', 'forum_parent=0 ORDER BY forum_order ASC'))
 		{
-			while ($row = $sql->fetch(MYSQL_ASSOC)) {
+			while ($row = e107::getDb()->fetch(MYSQL_ASSOC)) {
 				$ret[] = $row;
 			}
 			return $ret;
@@ -997,14 +995,15 @@ class e107forum
 
 	function forumGetMods($uclass = e_UC_ADMIN, $force=false)
 	{
+		$sql = e107::getDb();
 		if(count($this->modArray) && !$force)
 		{
 			return $this->modArray;
 		}
 		if($uclass == e_UC_ADMIN || trim($uclass) == '')
 		{
-			$this->e107->sql->db_Select('user', 'user_id, user_name','user_admin = 1 ORDER BY user_name ASC');
-			while($row = $this->e107->sql->fetch(MYSQL_ASSOC))
+			$sql->select('user', 'user_id, user_name','user_admin = 1 ORDER BY user_name ASC');
+			while($row = $sql->fetch(MYSQL_ASSOC))
 			{
 				$this->modArray[$row['user_id']] = $row['user_name'];
 			}
@@ -1027,7 +1026,7 @@ class e107forum
 
 	function forumGetForumList($all=false)
 	{
-		$e107 = e107::getInstance();
+		$sql = e107::getDb();
 		$where = ($all ? '' : " WHERE forum_id IN ({$this->permList['view_list']}) ");
 
 		$qry = '
@@ -1035,10 +1034,10 @@ class e107forum
 		LEFT JOIN `#user` AS u ON f.forum_lastpost_user IS NOT NULL AND u.user_id = f.forum_lastpost_user
 		'.$where.
 		'ORDER BY f.forum_order ASC';
-		if ($e107->sql->gen($qry))
+		if ($sql->gen($qry))
 		{
 			$ret = array();
-			while ($row = $e107->sql->fetch())
+			while ($row = $sql->fetch())
 			{
 				if(!$row['forum_parent'])
 				{
@@ -1059,10 +1058,9 @@ class e107forum
 	}
 
 
-
 	function forum_getforums($type = 'all')
 	{
-		global $sql;
+		$e107::getDb();
 		$qry = "
 		SELECT f.*, u.user_name FROM #forum AS f
 		LEFT JOIN #user AS u ON SUBSTRING_INDEX(f.forum_lastpost_user,'.',1) = u.user_id
@@ -1088,10 +1086,9 @@ class e107forum
 	}
 
 
-
 	function forumGetSubs($forum_id = '')
 	{
-		global $sql;
+		$sql = e107::getDb();
 		$where = ($forum_id != '' && $forum_id != 'bysub' ? 'AND forum_sub = '.(int)$forum_id : '');
 		$qry = "
 		SELECT f.*, u.user_name FROM `#forum` AS f
@@ -1122,7 +1119,6 @@ class e107forum
 	}
 
 	
-	
 	/**
 	* List of forums with unread threads
 	*
@@ -1136,6 +1132,7 @@ class e107forum
 	{
 		if (!USER) {return false; }		// Can't determine new threads for non-logged in users
 		$e107 = e107::getInstance();
+		$sql = e107::getDb();
 		$viewed = '';
 
 		if($e107->currentUser['user_plugin_forum_viewed'])
@@ -1147,9 +1144,9 @@ class e107forum
 		SELECT DISTINCT f.forum_sub, ft.thread_forum_id FROM `#forum_thread` AS ft
 		LEFT JOIN `#forum` AS f ON f.forum_id = ft.thread_forum_id
 		WHERE ft.thread_lastpost > '.USERLV.' '.$viewed;
-		if($e107->sql->gen($_newqry))
+		if($sql->gen($_newqry))
 		{
-			while($row = $e107->sql->fetch(MYSQL_ASSOC))
+			while($row = $sql->fetch(MYSQL_ASSOC))
 			{
 				$ret[] = $row['thread_forum_id'];
 				if($row['forum_sub'])
@@ -1166,7 +1163,6 @@ class e107forum
 	}
 
 
-
 	function thread_user($post_info)
 	{
 		if($post_info['user_name'])
@@ -1181,10 +1177,10 @@ class e107forum
 	}
 
 
-
 	function track($which, $uid, $threadId, $force=false)
 	{
 		$e107 = e107::getInstance();
+		$sql = e107::getDb();
 
 		if ($this->prefs->get('track') != 1 && !$force) { return false; }
 
@@ -1197,17 +1193,17 @@ class e107forum
 				$tmp = array();
 				$tmp['data']['track_userid'] = $uid;
 				$tmp['data']['track_thread'] = $threadId;
-				$result = $e107->sql->db_Insert('forum_track', $tmp);
+				$result = $sql->insert('forum_track', $tmp);
 				unset($tmp);
 				break;
 
 			case 'delete':
 			case 'del':
-			 	$result = $e107->sql->delete('forum_track', "`track_userid` = {$uid} AND `track_thread` = {$threadId}");
+			 	$result = $sql->delete('forum_track', "`track_userid` = {$uid} AND `track_thread` = {$threadId}");
 			 	break;
 
 			case 'check':
-				$result = $e107->sql->db_Count('forum_track', '(*)', "WHERE `track_userid` = {$uid} AND `track_thread` = {$threadId}");
+				$result = $sql->count('forum_track', '(*)', "WHERE `track_userid` = {$uid} AND `track_thread` = {$threadId}");
 				break;
 		}
 		return $result;
@@ -1233,10 +1229,9 @@ class e107forum
 	}
 
 
-
 	function forumGetAllowed($type='view')
 	{
-		global $sql;
+		$sql = e107::getDb();
 		$forumList = implode(',', $this->permList[$type]);
 		$qry = "
 		SELECT forum_id, forum_name FROM `#forum`
@@ -1252,12 +1247,12 @@ class e107forum
 		}
 		return $ret;
 	}
-
 	
 	
 	function forumGetThreads($forumId, $from, $view)
 	{
 		$e107 = e107::getInstance();
+		$sql = e107::getDb();
 		$forumId = (int)$forumId;
 		$qry = "
 		SELECT t.*, u.user_name, lpu.user_name AS lastpost_username from `#forum_thread` as t
@@ -1270,9 +1265,9 @@ class e107forum
 		LIMIT ".(int)$from.','.(int)$view;
 
 		$ret = array();
-		if ($e107->sql->gen($qry))
+		if ($sql->gen($qry))
 		{
-			while ($row = $e107->sql->fetch(MYSQL_ASSOC))
+			while ($row = $sql->fetch(MYSQL_ASSOC))
 			{
 				$ret[] = $row;
 			}
@@ -1281,10 +1276,10 @@ class e107forum
 	}
 
 
-
 	function threadGetLastpost($id)
 	{
 		$e107 = e107::getInstance();
+		$sql = e107::getDb();
 		$id = (int)$id;
 		$qry = "
 		SELECT p.post_user, p.post_user_anon, p.post_datestamp, p.post_thread, u.user_name FROM `#forum_post` AS p
@@ -1292,9 +1287,9 @@ class e107forum
 		WHERE p.post_thread = {$id}
 		ORDER BY p.post_datestamp DESC LIMIT 0,1
 		";
-		if ($e107->sql->gen($qry))
+		if ($sql->gen($qry))
 		{
-			return $e107->sql->fetch(MYSQL_ASSOC);
+			return $sql->fetch(MYSQL_ASSOC);
 		}
 		return false;
 	}
@@ -1302,9 +1297,8 @@ class e107forum
 //	function forum_get_topic_count($forum_id)
 //	{
 //		$e107 = e107::getInstance();
-//		return $e107->sql->db_Count('forum_thread', '(*)', 'WHERE thread_forum_id='.(int)$forum_id);
+//		return $sql->count('forum_thread', '(*)', 'WHERE thread_forum_id='.(int)$forum_id);
 //	}
-
 
 
 	function threadGetNextPrev($which, $threadId, $forumId, $lastpost)
@@ -1335,15 +1329,14 @@ class e107forum
 			thread_sticky DESC,
 			thread_lastpost {$sort}
 			LIMIT 1";
-			if ($e107->sql->gen($qry))
+			if ($sql->gen($qry))
 			{
-				$row = $e107->sql->fetch();
+				$row = $sql->fetch();
 				return $row['thread_id'];
 
 			}
 			return false;
 	}
-
 
 
 	function threadIncView($id)
@@ -1369,7 +1362,7 @@ class e107forum
 
 	function threadGetNew($count = 50, $unread = true, $uid = USERID)
 	{
-		$e107 = e107::getInstance();
+		$sql = e107::getDb();
 		$viewed = '';
 		if($unread)
 		{
@@ -1399,27 +1392,27 @@ class e107forum
 		ORDER BY t.thread_lastpost DESC LIMIT 0, ".(int)$count;
 
 
-		if($e107->sql->gen($qry))
+		if($sql->gen($qry))
 		{
-			$ret = $e107->sql->db_getList();
+			$ret = $sql->db_getList();
 		}
 		return $ret;
 	}
 
 
-
 	function forumPrune($type, $days, $forumArray)
 	{
 		$e107 = e107::getInstance();
+		$sql = e107::getDb();
 		$prunedate = time() - (int)$days * 86400;
 		$forumList = implode(',', $forumArray);
 
 		if($type == 'delete')
 		{
 			//Get list of threads to prune
-			if ($e107->sql->db_Select('forum_thread', 'thread_id', "thread_lastpost < {$prunedate} AND thread_sticky != 1 AND thread_forum_id IN ({$forumList})"))
+			if ($sql->select('forum_thread', 'thread_id', "thread_lastpost < {$prunedate} AND thread_sticky != 1 AND thread_forum_id IN ({$forumList})"))
 			{
-				$threadList = $e107->sql->db_getList();
+				$threadList = $sql->db_getList();
 				foreach($threadList as $thread)
 				{
 					$this->threadDelete($thread['thread_id'], false);
@@ -1438,20 +1431,20 @@ class e107forum
 		}
 		if($type == 'make_inactive')
 		{
-			$pruned = $e107->sql->update('forum_thread', "thread_active=0 WHERE thread_lastpost < {$prunedate} thread_forum_id IN ({$forumList})");
+			$pruned = $sql->update('forum_thread', "thread_active=0 WHERE thread_lastpost < {$prunedate} thread_forum_id IN ({$forumList})");
 			return FORLAN_8.' '.$pruned.' '.FORLAN_91;
 		}
 	}
 
 
-
 	function forumUpdateCounts($forumId, $recalcThreads = false)
 	{
 		$e107 = e107::getInstance();
+		$sql = e107::getDb();
 		if($forumId == 'all')
 		{
-			$e107->sql->db_Select('forum', 'forum_id', 'forum_parent != 0');
-			$flist = $e107->sql->db_getList();
+			$sql->select('forum', 'forum_id', 'forum_parent != 0');
+			$flist = $sql->db_getList();
 			foreach($flist as $f)
 			{
 				set_time_limit(60);
@@ -1460,19 +1453,19 @@ class e107forum
 			return;
 		}
 		$forumId = (int)$forumId;
-		$threads = $e107->sql->db_Count('forum_thread', '(*)', 'WHERE thread_forum_id='.$forumId);
-		$replies = $e107->sql->db_Count('forum_post', '(*)', 'WHERE post_forum='.$forumId);
-		$e107->sql->update('forum', "forum_threads={$threads}, forum_replies={$replies} WHERE forum_id={$forumId}");
+		$threads = $sql->count('forum_thread', '(*)', 'WHERE thread_forum_id='.$forumId);
+		$replies = $sql->count('forum_post', '(*)', 'WHERE post_forum='.$forumId);
+		$sql->update('forum', "forum_threads={$threads}, forum_replies={$replies} WHERE forum_id={$forumId}");
 		if($recalcThreads == true)
 		{
 			set_time_limit(60);
-			$e107->sql->db_Select('forum_post', 'post_thread, count(post_thread) AS replies', "post_forum={$forumId} GROUP BY post_thread");
-			$tlist = $e107->sql->db_getList();
+			$sql->select('forum_post', 'post_thread, count(post_thread) AS replies', "post_forum={$forumId} GROUP BY post_thread");
+			$tlist = $sql->db_getList();
 			foreach($tlist as $t)
 			{
 				$tid = $t['post_thread'];
 				$replies = (int)$t['replies'];
-				$e107->sql->update('forum_thread', "thread_total_replies={$replies} WHERE thread_id={$tid}");
+				$sql->update('forum_thread', "thread_total_replies={$replies} WHERE thread_id={$tid}");
 			}
 		}
 	}
@@ -1481,7 +1474,7 @@ class e107forum
 
 	function getUserCounts()
 	{
-		global $sql;
+		$sql = e107::getDb();
 		$qry = "
 		SELECT post_user, count(post_user) AS cnt FROM `#forum_post`
 		WHERE post_user > 0
@@ -1586,7 +1579,6 @@ class e107forum
 	}
 
 
-
 	/**
 	 * Delete a Thread
 	 * @param $threadId integer
@@ -1595,8 +1587,7 @@ class e107forum
 	 */
 	function threadDelete($threadId, $updateForumLastpost = true)
 	{
-		$e107 = e107::getInstance();
-		
+		$e107 = e107::getInstance();		
 		$sql = e107::getDb();
 		$status = false; 
 		
@@ -1651,7 +1642,6 @@ class e107forum
 	}
 
 
-
 	/**
 	 * Delete a Post
 	 * @param $postId integer
@@ -1661,12 +1651,11 @@ class e107forum
 	function postDelete($postId, $updateCounts = true)
 	{
 		$postId 	= (int)$postId;
-		$e107 		= e107::getInstance();
-		
+		$e107 		= e107::getInstance();		
 		$sql 		= e107::getDb();
 		$deleted 	= false; 
 		
-		if(!$sql->db_Select('forum_post', '*', 'post_id = '.$postId))
+		if(!$sql->select('forum_post', '*', 'post_id = '.$postId))
 		{
 			echo 'NOT FOUND!'; return;
 		}
@@ -1690,14 +1679,14 @@ class e107forum
 			//decrement user post counts
 			if ($row['post_user'])
 			{
-				$e107->sql->update('user_extended', 'user_plugin_forum_posts=GREATEST(user_plugin_forum_posts-1,0) WHERE user_extended_id='.$row['post_user']);
+				$sql->update('user_extended', 'user_plugin_forum_posts=GREATEST(user_plugin_forum_posts-1,0) WHERE user_extended_id='.$row['post_user']);
 			}
 
 			// update thread with correct reply counts
-			$e107->sql->update('forum_thread', "thread_total_replies=GREATEST(thread_total_replies-1,0) WHERE thread_id=".$row['post_thread']);
+			$sql->update('forum_thread', "thread_total_replies=GREATEST(thread_total_replies-1,0) WHERE thread_id=".$row['post_thread']);
 
 			// update forum with correct thread/reply counts
-			$e107->sql->update('forum', "forum_replies=GREATEST(forum_replies-1,0) WHERE forum_id=".$row['post_forum']);
+			$sql->update('forum', "forum_replies=GREATEST(forum_replies-1,0) WHERE forum_id=".$row['post_forum']);
 
 			// update thread lastpost info
 			$this->forumUpdateLastpost('thread', $row['post_thread']);
@@ -1767,7 +1756,6 @@ function img_path($filename)
 
 	return $image;
 }
-
 
 
 
