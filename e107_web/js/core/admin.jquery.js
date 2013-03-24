@@ -246,7 +246,7 @@ $(document).ready(function()
 				var linkid = $(ui.item).attr("id"); 
 			//	 $("td").removeClass("e-moving","slow"); 
 			     	
-				var script = $(".sort-trigger:first").attr("href"); 
+				var script = $(".sort-trigger:first").attr("data-target"); 
 
 				$.ajax({
 				  type: "POST",
