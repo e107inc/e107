@@ -343,13 +343,13 @@ class userlogin
 
 		$query = $this->getLookupQuery($username, $forceLogin);
 
-		if ($sql->select('user', '*', $query) !== 1) 	// Handle duplicate emails as well
+		if (e107::getDb()->select('user', '*', $query) !== 1) 	// Handle duplicate emails as well
 		{	// Invalid user
 			return $this->invalidLogin($username,LOGIN_BAD_USER);
 		}
 
 		// User is in DB here
-		$this->userData = $sql->fetch(MYSQL_ASSOC);		// Get user info
+		$this->userData = e107::getDb()->fetch(MYSQL_ASSOC);		// Get user info
 		$this->userData['user_perms'] = trim($this->userData['user_perms']);
 		$this->lookEmail = $this->lookEmail && ($username == $this->userData['user_email']);		// Know whether login name or email address used now
 		
