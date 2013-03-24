@@ -69,6 +69,9 @@ class userlogin
 	public function login($username, $userpass, $autologin, $response = '', $noredirect = false)
 	{
 		$pref = e107::getPref();
+		$tp = e107::getParser();
+		$sql = e107::getDb();
+
 		$e_event = e107::getEvent();
 		$_E107 = e107::getE107();
 		
@@ -79,9 +82,6 @@ class userlogin
 		{
 			return FALSE;
 		}
-
-		$tp = e107::getParser();
-		$sql = e107::getDb();
 		
 		$forceLogin = ($autologin === 'signup');
 		if(!$forceLogin && $autologin === 'provider') $forceLogin = 'provider';
@@ -227,7 +227,7 @@ class userlogin
 		/* restrict more than one person logging in using same us/pw */
 		if($pref['disallowMultiLogin'])
 		{
-			if($this->e107->sql->db_Select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'"))
+			if($sql->db_Select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'"))
 			{
 				return $this->invalidLogin($username,LOGIN_MULTIPLE,$user_id);
 			}
@@ -263,7 +263,7 @@ class userlogin
 			{	// 'New user' probationary period expired - we can take them out of the class
 				$this->userData['user_class'] = $this->e107->user_class->ucRemove(e_UC_NEWUSER, $this->userData['user_class']);
 //				$this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Login new user complete",$this->userData['user_class'],FALSE,FALSE);
-				$this->e107->sql->db_Update('user',"`user_class` = '".$this->userData['user_class']."'", 'WHERE `user_id`='.$this->userData['user_id']);
+				$sql->update('user',"`user_class` = '".$this->userData['user_class']."'", 'WHERE `user_id`='.$this->userData['user_id']);
 				unset($class_list[e_UC_NEWUSER]);
 				$edata_li = array('user_id' => $user_id, 'user_name' => $username, 'class_list' => implode(',',$class_list), 'user_email'=> $user_email);
 				$e_event->trigger('userNotNew', $edata_li);
@@ -343,13 +343,13 @@ class userlogin
 
 		$query = $this->getLookupQuery($username, $forceLogin);
 
-		if ($this->e107->sql->db_Select('user', '*', $query) !== 1) 	// Handle duplicate emails as well
+		if ($sql->select('user', '*', $query) !== 1) 	// Handle duplicate emails as well
 		{	// Invalid user
 			return $this->invalidLogin($username,LOGIN_BAD_USER);
 		}
 
 		// User is in DB here
-		$this->userData = $this->e107->sql->db_Fetch(MYSQL_ASSOC);		// Get user info
+		$this->userData = $sql->fetch(MYSQL_ASSOC);		// Get user info
 		$this->userData['user_perms'] = trim($this->userData['user_perms']);
 		$this->lookEmail = $this->lookEmail && ($username == $this->userData['user_email']);		// Know whether login name or email address used now
 		
@@ -458,7 +458,7 @@ class userlogin
 	 */
 	protected function invalidLogin($username, $reason, $extra_text = '')
 	{
-		global $pref;
+		global $pref, $sql;
 
 		$doCheck = FALSE;			// Flag set if need to ban check
 		switch ($reason)
@@ -534,11 +534,11 @@ class userlogin
 		{		// See if ban required (formerly the checkibr() function)
 			if($pref['autoban'] == 1 || $pref['autoban'] == 3)
 			{ // Flood + Login or Login Only.
-				$fails = $this->e107->sql->db_Count("generic", "(*)", "WHERE gen_ip='{$this->userIP}' AND gen_type='failed_login' ");
+				$fails = $sql->count("generic", "(*)", "WHERE gen_ip='{$this->userIP}' AND gen_type='failed_login' ");
 				if($fails > 10)
 				{
 					e107::getIPHandler()->add_ban(4,LAN_LOGIN_18,$this->userIP,1);
-					e107::getDb()->db_Insert("generic", "0, 'auto_banned', '".time()."', 0, '{$this->userIP}', '{$extra_text}', '".LAN_LOGIN_20.": ".$this->e107->tp -> toDB($username).", ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
+					e107::getDb()->insert("generic", "0, 'auto_banned', '".time()."', 0, '{$this->userIP}', '{$extra_text}', '".LAN_LOGIN_20.": ".$this->e107->tp -> toDB($username).", ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
 				}
 			}
 		}

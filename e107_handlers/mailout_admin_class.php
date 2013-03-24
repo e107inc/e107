@@ -921,7 +921,7 @@ class mailoutAdminClass extends e107MailManager
 		{
 			// TODO - use download plugin API
 			
-			if($sql->db_Select("download", "download_url,download_name", "download_id !='' ORDER BY download_name"))
+			if($sql->select("download", "download_url,download_name", "download_id !='' ORDER BY download_name"))
 			{
 				$text .= "<tr>
 				<td>".LAN_MAILOUT_07.": </td>
@@ -929,7 +929,7 @@ class mailoutAdminClass extends e107MailManager
 				$text .= "<select class='tbox' name='email_attachment' >
 				<option value=''>&nbsp;</option>\n";
 								
-				while ($row = $this->e107->sql->db_Fetch()) 
+				while ($row = $sql->fetch()) 
 				{
 					$selected = ($mailSource['mail_attach'] == $row['download_url']) ? "selected='selected'" : '';
 	//				$text .= "<option value='".urlencode($row['download_url'])."' {$selected}>".htmlspecialchars($row['download_name'])."</option>\n";

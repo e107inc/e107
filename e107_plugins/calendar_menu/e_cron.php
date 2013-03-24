@@ -226,13 +226,13 @@ class calendar_menu_cron // include plugin-folder in the name.
 			if ($this->debugLevel >= 2) $this->logLine("\r\n    Query is: ".$cal_query);
 		}
 
-		if  ($num_cat_proc = $this->e107->sql->db_Select_gen($cal_query))
+		if  ($num_cat_proc = e107::getDb()->gen($cal_query))
 		{  // Got at least one event to process here
 			if ($this->logRequirement > 1)
 				$this->logLine(' - '.$num_cat_proc.' categories found to process');
 
 			$this->checkDB();		// Make sure we've got another DB object
-			while ($thisevent = $this->e107->sql->db_Fetch())
+			while ($thisevent = e107::getDb()->fetch())
 			{  // Process one event at a time
 
 				$this->logLine('    Processing event: '.$event_title);
@@ -397,7 +397,7 @@ class calendar_menu_cron // include plugin-folder in the name.
 		}
 		elseif ($num_cat === FALSE)
 		{
-			$this->logLine('  DB read error for '.$shot_type.': '.$this->e107->sql->$mySQLlastErrNum.':'.$this->e107->sql->$mySQLlastErrText);
+			$this->logLine('  DB read error for '.$shot_type.': '.e107::getDb()->$mySQLlastErrNum.':'.e107::getDb()->$mySQLlastErrText);
 		}
 		elseif ($this->logRequirement > 1)
 		{
