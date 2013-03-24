@@ -3,14 +3,11 @@
 /*
 * e107 website system
 *
-* Copyright (C) 2008-2012 e107 Inc (e107.org)
+* Copyright (C) 2008-2013 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
 * Administration Area - Users
-*
-* $URL$
-* $Id$
 *
 */
 require_once ('../class2.php');
@@ -40,7 +37,7 @@ class users_admin extends e_admin_dispatcher
 
 	protected $adminMenu = array(
 		'main/list'		=> array('caption'=> LAN_MANAGE, 'perm' => '0'),
-		'main/add' 	=> array('caption'=> LAN_USER_QUICKADD, 'perm' => '4|U0|U1'),
+		'main/add' 		=> array('caption'=> LAN_USER_QUICKADD, 'perm' => '4|U0|U1'),
 		'main/prefs' 	=> array('caption'=> LAN_OPTIONS, 'perm' => '4|U2'),
 		'main/ranks'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3')		
 	);
@@ -53,10 +50,10 @@ class users_admin extends e_admin_dispatcher
 
 */
 	protected $adminMenuAliases = array(
-		'main/edit'	=> 'main/list',
-		'main/admin'=> 'main/list',
+		'main/edit'		=> 'main/list',
+		'main/admin'	=> 'main/list',
 		'main/userclass'=> 'main/list',					
-		'main/test'=> 'main/list',					
+		'main/test'		=> 'main/list',					
 	);	
 	
 	protected $menuTitle = 'users';
@@ -258,7 +255,7 @@ class users_admin_ui extends e_admin_ui
 			// FIXME use the handler to build fields and field attributes
 			// FIXME a way to load 3rd party language files for extended user fields
 			e107::coreLan('user_extended'); 	
-			while ($row = $sql->db_Fetch())
+			while ($row = $sql->fetch())
 			{
 				$field = "user_".$row['user_extended_struct_name'];
 				$title = ucfirst(str_replace("user_","",$field));
@@ -324,7 +321,7 @@ class users_admin_ui extends e_admin_ui
 	public function ListBanTrigger($userid)
 	{
 		$sql = e107::getDb();
-		$message = e107::getMessage();
+		$mes = e107::getMessage();
 		$admin_log = e107::getAdminLog();
 		$iph = e107::getIPHandler();
 		
@@ -332,44 +329,44 @@ class users_admin_ui extends e_admin_ui
 		if(!$sysuser->getId())
 		{
 			// TODO lan
-			e107::getMessage()->addError('User not found.');
+			$mes->addError('User not found.');
 			return;
 		}
 		$row = $sysuser->getData();
 		
 		if (($row['user_perms'] == "0") || ($row['user_perms'] == "0."))
 		{
-			$message->addWarning(USRLAN_7);
+			$mes->addWarning(USRLAN_7);
 		}
 		else
 		{
 			if ($sql->update("user","user_ban='1' WHERE user_id='".$userid."' "))
 			{
 				$admin_log->log_event('USET_05', str_replace(array('--UID--','--NAME--'), array($row['user_id'], $row['user_name']), USRLAN_161), E_LOG_INFORMATIVE);
-				$message->addSuccess("(".$userid.".".$row['user_name']." - {$row['user_email']}) ".USRLAN_8);
+				$mes->addSuccess("(".$userid.".".$row['user_name']." - {$row['user_email']}) ".USRLAN_8);
 			}
 			if (trim($row['user_ip']) == "")
 			{
-				$message->addInfo(USRLAN_135);
+				$mes->addInfo(USRLAN_135);
 			}
 			else
 			{
 				if($sql->count('user', '(*)', "user_ip = '{$row['user_ip']}' AND user_ban=0 AND user_id <> {$userid}") > 0)
 				{
 					// Other unbanned users have same IP address
-					$message->addWarning(str_replace("{IP}", $iph->ipDecode($row['user_ip']), USRLAN_136));
+					$mes->addWarning(str_replace("{IP}", $iph->ipDecode($row['user_ip']), USRLAN_136));
 				}
 				else
 				{
 					if ($iph->add_ban(6, USRLAN_149.$row['user_name'].'/'.$row['user_loginname'], $row['user_ip'], USERID))
 					{
 						// Successful IP ban
-						$message->addSuccess(str_replace("{IP}", $iph->ipDecode($row['user_ip']), USRLAN_137));
+						$mes->addSuccess(str_replace("{IP}", $iph->ipDecode($row['user_ip']), USRLAN_137));
 					}
 					else
 					{
 						// IP address on whitelist
-						$message->addWarning(str_replace("{IP}", $iph->ipDecode($row['user_ip']), USRLAN_150));
+						$mes->addWarning(str_replace("{IP}", $iph->ipDecode($row['user_ip']), USRLAN_150));
 					}
 				}
 			}
@@ -388,7 +385,7 @@ class users_admin_ui extends e_admin_ui
 		$admin_log = e107::getAdminLog();
 		$sysuser = e107::getSystemUser($userid, false);
 		$userMethods = e107::getUserSession();
-		$emessage = e107::getMessage();
+		$mes = e107::getMessage();
 		
 		$uid = intval($userid);
 		if ($sysuser->getId())
@@ -406,7 +403,7 @@ class users_admin_ui extends e_admin_ui
 			
 			$admin_log->log_event('USET_10', str_replace(array('--UID--', '--NAME--', '--EMAIL--'), array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email')), USRLAN_166), E_LOG_INFORMATIVE);
 			$e_event->trigger('userfull', $row);
-			$emessage->addSuccess(USRLAN_86." (#".$sysuser->getId()." : ".$sysuser->getName().' - '.$sysuser->getValue('email').")");
+			$mes->addSuccess(USRLAN_86." (#".$sysuser->getId()." : ".$sysuser->getName().' - '.$sysuser->getValue('email').")");
 			
 			$this->getTreeModel()->load(true);
 
@@ -422,18 +419,18 @@ class users_admin_ui extends e_admin_ui
 				if($sysuser->email('email', $options))
 				{
 					// TODO lan
-					$emessage->addSuccess("Email sent to: ".$sysuser->getName().' ('.$sysuser->getValue('email').')');
+					$mes->addSuccess("Email sent to: ".$sysuser->getName().' ('.$sysuser->getValue('email').')');
 				}
 				else 
 				{
-					$emessage->addError("Failed to send email to: ".$sysuser->getName().' ('.$sysuser->getValue('email').')');
+					$mes->addError("Failed to send email to: ".$sysuser->getName().' ('.$sysuser->getValue('email').')');
 				}
 			}
 		}
 		else
 		{
 			// TODO lan
-			e107::getMessage()->addError('User not found.');
+			$mes->addError('User not found.');
 			return;
 		}
 	}
@@ -443,9 +440,11 @@ class users_admin_ui extends e_admin_ui
 	 */
 	public function ListLoginasTrigger($userid)
 	{
+		$mes = e107::getMessage();
+
 		if(e107::getUser()->getSessionDataAs())
 		{
-			e107::getMessage()->addWarning(USRLAN_AS_3);
+			$mes->addWarning(USRLAN_AS_3);
 		}
 	  	elseif(e107::getUser()->loginAs($userid))
 	  	{ 
@@ -453,7 +452,7 @@ class users_admin_ui extends e_admin_ui
 			$user = e107::getUser();
 			
 			// TODO - lan
-			e107::getMessage()->addSuccess('Successfully logged in as '.$sysuser->getName().' <a href="'.e_ADMIN_ABS.'users.php?mode=main&amp;action=logoutas">[logout]</a>')
+			$mes->addSuccess('Successfully logged in as '.$sysuser->getName().' <a href="'.e_ADMIN_ABS.'users.php?mode=main&amp;action=logoutas">[logout]</a>')
 				->addSuccess('Please, <a href="'.SITEURL.'" rel="external">Leave Admin</a> to browse the system as this user. Use &quot;Logout&quot; option in Administration to end front-end session');
 			
 			$search = array('--UID--', '--NAME--', '--EMAIL--', '--ADMIN_UID--', '--ADMIN_NAME--', '--ADMIN_EMAIL--');
@@ -509,11 +508,12 @@ class users_admin_ui extends e_admin_ui
 	{
 		$user = e107::getUser();
 		$sysuser = e107::getSystemUser($userid, false);
+		$mes = e107::getMessage();
 		
 		if(!$user->checkAdminPerms('3'))
 		{
 			// TODO lan
-			e107::getMessage()->addError("You don't have enough permissions to do this.", 'default', true);
+			$mes->addError("You don't have enough permissions to do this.", 'default', true);
 			
 			// TODO lan
 			$lan = 'Security violation (not enough permissions) - Administrator --ADMIN_UID-- (--ADMIN_NAME--, --ADMIN_EMAIL--) tried to remove admin status from --UID-- (--NAME--, --EMAIL--)';
@@ -526,20 +526,20 @@ class users_admin_ui extends e_admin_ui
 
 		if ($sysuser->isMainAdmin())
 		{
-			e107::getMessage()->addError(USRLAN_5);
+			$mes->addError(USRLAN_5);
 		}
 		else
 		{
 			if($sysuser->set('user_admin', '0')->set('user_perms', '')->save())
 			{
 				e107::getAdminLog()->log_event('USET_09',str_replace(array('--UID--', '--NAME--', '--EMAIL--'),array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email')), USRLAN_165),E_LOG_INFORMATIVE);
-				e107::getMessage()->addSuccess($sysuser->getName()." (".$sysuser->getValue('email').") ".USRLAN_6);
+				$mes->addSuccess($sysuser->getName()." (".$sysuser->getValue('email').") ".USRLAN_6);
 				$this->getTreeModel()->load(true);
 			}
 			else
 			{
 				// TODO lan
-				e107::getMessage()->addError('Unknown error. Action failed.');
+				$mes->addError('Unknown error. Action failed.');
 			}
 		}
 	}
@@ -560,11 +560,12 @@ class users_admin_ui extends e_admin_ui
 		$user = e107::getUser();
 		$sysuser = e107::getSystemUser($userid, false);
 		$admin_log = e107::getAdminLog();
+		$mes = e107::getMessage();
 		
 		if(!$user->checkAdminPerms('3'))
 		{
 			// TODO lan
-			e107::getMessage()->addError("You don't have enough permissions to do this.", 'default', true);
+			$mes->addError("You don't have enough permissions to do this.", 'default', true);
 			// TODO lan
 			$lan = 'Security violation (not enough permissions) - Administrator --ADMIN_UID-- (--ADMIN_NAME--, --ADMIN_EMAIL--) tried to make --UID-- (--NAME--, --EMAIL--) system admin';
 			$search = array('--UID--', '--NAME--', '--EMAIL--', '--ADMIN_UID--', '--ADMIN_NAME--', '--ADMIN_EMAIL--');
@@ -578,7 +579,7 @@ class users_admin_ui extends e_admin_ui
 		if(!$sysuser->getId())
 		{
 			// TODO lan
-			e107::getMessage()->addError("User not found.", 'default', true);
+			$mes->addError("User not found.", 'default', true);
 			$this->redirect('list', 'main', true);
 		}
 		
@@ -587,7 +588,7 @@ class users_admin_ui extends e_admin_ui
 			$sysuser->set('user_admin', 1)->save(); //"user","user_admin='1' WHERE user_id={$userid}"
 			$lan = str_replace(array('--UID--', '--NAME--', '--EMAIL--'), array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email')), USRLAN_164);
 			$admin_log->log_event('USET_08', $lan, E_LOG_INFORMATIVE);
-			e107::getMessage()->addSuccess($lan);
+			$mes->addSuccess($lan);
 		}
 		
 		if($this->getPosted('update_admin')) e107::getUserPerms()->updatePerms($userid, $_POST['perms']);
@@ -645,7 +646,7 @@ class users_admin_ui extends e_admin_ui
 		if(!$sysuser->getId())
 		{
 			// TODO lan
-			$emessage->addError('User not found.');
+			$mes->addError('User not found.');
 			return false;
 		}
 
@@ -661,7 +662,7 @@ class users_admin_ui extends e_admin_ui
 			if(!$this->checkAllowed($a)) 
 			{
 				// TODO lan
-				$emessage->addError('Insufficient permissions, operation aborted.');
+				$mes->addError('Insufficient permissions, operation aborted.');
 				return false;
 			}
 			
@@ -714,18 +715,18 @@ class users_admin_ui extends e_admin_ui
 			}
 			$admin_log->log_event('USET_14', str_replace(array('--UID--','--CLASSES--'), array($id, $svar), UCSLAN_11), E_LOG_INFORMATIVE);
 
-            $emessage->add(nl2br($message), E_MESSAGE_SUCCESS);
+            $mes->addSuccess(nl2br($message));
 		}
 		else
 		{
-           	//	$emessage->add("Update Failed", E_MESSAGE_ERROR);
+           	//	$mes->add("Update Failed", E_MESSAGE_ERROR);
         	if($check === false)
 			{
 				$sysuser->setMessages(); // move messages to the default stack
 			}
 			else
 			{
-				$emessage->addInfo(LAN_NO_CHANGE);
+				$mes->addInfo(LAN_NO_CHANGE);
 			}
 		}
 	}
@@ -816,14 +817,14 @@ class users_admin_ui extends e_admin_ui
 		if(!$sysuser->getId())
 		{
 			// TODO lan
-			$emessage->addError('User not found.');
+			$mes->addError('User not found.');
 			return false;
 		}
 
 		if(!$key || !$sysuser->getValue('ban'))
 		{
 			// TODO lan
-			$emessage->addError('Missing activation key.');
+			$mes->addError('Missing activation key.');
 			return false;
 		}
 		
@@ -865,11 +866,11 @@ class users_admin_ui extends e_admin_ui
 		if ($check)
 		{
 			$admin_log->log_event('USET_11', str_replace(array('--ID--','--NAME--','--EMAIL--'), array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email')), USRLAN_167), E_LOG_INFORMATIVE);
-			$emessage->addSuccess(USRLAN_140.": <a href='mailto:".$sysuser->getValue('email')."?body=".$return_address."' title=\"".LAN_USER_08."\" >".$sysuser->getName()." (".$sysuser->getValue('email').")</a> ({$lan}) ");
+			$mes->addSuccess(USRLAN_140.": <a href='mailto:".$sysuser->getValue('email')."?body=".$return_address."' title=\"".LAN_USER_08."\" >".$sysuser->getName()." (".$sysuser->getValue('email').")</a> ({$lan}) ");
 		}
 		else
 		{
-			$emessage->addError(USRLAN_141.": ".$sysuser->getName().' ('.$sysuser->getValue('email').')');
+			$mes->addError(USRLAN_141.": ".$sysuser->getName().' ('.$sysuser->getValue('email').')');
 		}
 		return $check;
 	}
@@ -886,7 +887,7 @@ class users_admin_ui extends e_admin_ui
 		if(!$sysuser->getId())
 		{
 			// TODO lan
-			$emessage->addError('User not found.', 'default', true);
+			$mes->addError('User not found.', 'default', true);
 			$this->redirect('list', 'main', true);
 		}
 		
@@ -895,12 +896,12 @@ class users_admin_ui extends e_admin_ui
 		{
 			// TODO lan
 			$this->setParam('testSucces', $result);
-			$emessage->addSuccess($email.' - Valid');
+			$mes->addSuccess($email.' - Valid');
 		}
 		else
 		{
 			// TODO lan
-			$emessage->addError($email.' - Invalid', 'default', true);
+			$mes->addError($email.' - Invalid', 'default', true);
 			$this->redirect('list', 'main', true);
 		}
 
@@ -981,7 +982,7 @@ class users_admin_ui extends e_admin_ui
 		if(!$sysuser->getId())
 		{
 			// TODO lan
-			$emessage->addError('User not found.', 'default', true);
+			$mes->addError('User not found.', 'default', true);
 			return;
 		}
 		
@@ -1179,12 +1180,14 @@ class users_admin_ui extends e_admin_ui
 			// Always show Login name and password
 			//if (isset($_POST['generateloginname']))
 			{
-				$mes->addSuccess($message)->addSuccess(USRLAN_173.': <strong>'.htmlspecialchars($user_data['user_loginname'], ENT_QUOTES, CHARSET).'</strong>');	
+				$mes->addSuccess($message)
+					->addSuccess(USRLAN_173.': <strong>'.htmlspecialchars($user_data['user_loginname'], ENT_QUOTES, CHARSET).'</strong>');	
 			}
 				
 			//if (isset($_POST['generatepassword']))
 			{
-				$mes->addSuccess($message)->addSuccess(USRLAN_172.': <strong>'.htmlspecialchars($savePassword, ENT_QUOTES, CHARSET).'</strong>');	
+				$mes->addSuccess($message)
+					->addSuccess(USRLAN_172.': <strong>'.htmlspecialchars($savePassword, ENT_QUOTES, CHARSET).'</strong>');	
 			}
 			return;
 		}
@@ -1427,6 +1430,7 @@ class users_admin_ui extends e_admin_ui
 		$pref = e107::getPref();
 		$emessage = e107::getMessage();
 		$ui = $this->getUI();
+		$tp = e107::getParser();
 
 		$ranks = e107::getRank()->getRankData();
 		$tmp = e107::getFile()->get_files(e_IMAGE.'ranks', '.*?\.(png|gif|jpg)');
@@ -1458,7 +1462,7 @@ class users_admin_ui extends e_admin_ui
 		$frm->thead($fields, array_keys($fields));
 	
 		$info = $ranks['special'][1];
-		$val = $e107->tp->toForm($info['name']);
+		$val = $tp->toForm($info['name']);
 		$text .= "
 		<tr>
 			<td>".LAN_MAINADMIN."</td>
@@ -1471,7 +1475,7 @@ class users_admin_ui extends e_admin_ui
 		</tr>
 		";
 		$info = $ranks['special'][2];
-		$val = $e107->tp->toForm($info['name']);
+		$val = $tp->toForm($info['name']);
 		$text .= "
 		<tr>
 			<td>".LAN_ADMIN."</td>
@@ -1560,7 +1564,7 @@ class users_admin_ui extends e_admin_ui
 				<i><a href=\"banlist.php?".$ipd."\">".USFLAN_5."</a></i>
 
 				<br /><br />";
-			while (list($cb_id, $cb_nick, $cb_message, $cb_datestamp, $cb_blocked, $cb_ip ) = $sql->db_Fetch())
+			while (list($cb_id, $cb_nick, $cb_message, $cb_datestamp, $cb_blocked, $cb_ip ) = $sql->fetch())
 			{
 				$datestamp = $obj->convert_date($cb_datestamp, "short");
 				$post_author_id = substr($cb_nick, 0, strpos($cb_nick, "."));
@@ -1578,7 +1582,7 @@ class users_admin_ui extends e_admin_ui
 			$text .= "<hr />";
 
 			$sql->db_Select("comments", "*", "comment_ip='$ipd' LIMIT 0,20");
-			while (list($comment_id, $comment_item_id, $comment_author, $comment_author_email, $comment_datestamp, $comment_comment, $comment_blocked, $comment_ip) = $sql->db_Fetch())
+			while (list($comment_id, $comment_item_id, $comment_author, $comment_author_email, $comment_datestamp, $comment_comment, $comment_blocked, $comment_ip) = $sql->fetch())
 			{
 				$datestamp = $obj->convert_date($comment_datestamp, "short");
 				$post_author_id = substr($comment_author, 0, strpos($comment_author, "."));
@@ -1703,7 +1707,7 @@ class users_admin_ui extends e_admin_ui
 							}
 							if ($sql->db_Select('user','user_id, user_name, user_email',"user_email='".$usr_email."' "))
 							{
-								$row = $sql->db_Fetch();
+								$row = $sql->fetch();
 								if ($sql->db_Update('user',"`user_email`='' WHERE `user_id` = '".$row['user_id']."' ") !== false)
 								{
 								// echo "Deleting user email {$row['user_email']} for user {$row['user_name']}, id={$row['user_id']}<br />";

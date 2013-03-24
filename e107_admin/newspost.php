@@ -2,14 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * News Administration
  *
- * $URL $
- * $Id$
 */
 
 require_once('../class2.php');
@@ -218,7 +216,7 @@ class news_sub_ui extends e_admin_ui
 		{
 			$sql = e107::getDb();
 			$sql->db_Select_gen("SELECT category_id,category_name FROM #news_category");
-			while($row = $sql->db_Fetch())
+			while($row = $sql->fetch())
 			{
 				$cat = $row['category_id'];
 				$this->cats[$cat] = $row['category_name'];
@@ -425,7 +423,7 @@ class news_admin_ui extends e_admin_ui
 		
 		$sql = e107::getDb();
 		$sql->db_Select_gen("SELECT category_id,category_name FROM #news_category");
-		while($row = $sql->db_Fetch())
+		while($row = $sql->fetch())
 		{
 			$cat = $row['category_id'];
 			$this->cats[$cat] = $row['category_name'];
@@ -508,7 +506,7 @@ class news_admin_ui extends e_admin_ui
 		if ($sql->select("submitnews", "*", "submitnews_id=".intval($id)))
 			{
 	
-				//list($id, $submitnews_name, $submitnews_email, $_POST['news_title'], $submitnews_category, $_POST['news_body'], $submitnews_datestamp, $submitnews_ip, $submitnews_auth, $submitnews_file) = $sql->db_Fetch();
+				//list($id, $submitnews_name, $submitnews_email, $_POST['news_title'], $submitnews_category, $_POST['news_body'], $submitnews_datestamp, $submitnews_ip, $submitnews_auth, $submitnews_file) = $sql->fetch();
 				$row = $sql->fetch();
 				$_POST['news_title'] = $row['submitnews_title'];
 				$_POST['news_body'] = $row['submitnews_item'];
@@ -558,9 +556,9 @@ class news_admin_ui extends e_admin_ui
 		{		
 			if(!isset($_POST['submit_news']))
 			{
-				if(e107::getDb()->db_Select('news', '*', 'news_id='.intval($_GET['id'])))
+				if(e107::getDb()->select('news', '*', 'news_id='.intval($_GET['id'])))
 				{
-					$row = e107::getDb()->db_Fetch();
+					$row = e107::getDb()->fetch();
 
 				//	if(!isset($this->news_categories[$row['news_category']]))
 					{
@@ -1013,7 +1011,7 @@ class admin_newspost
 	{
 		e107::getDb()->db_Mark_Time('News Administration');
 		$this->news_categories = array();
-		if(e107::getDb()->db_Select('news_category', '*', (getperms('0') ? '' : 'category_manager IN ('.USERCLASS_LIST.')')))
+		if(e107::getDb()->select('news_category', '*', (getperms('0') ? '' : 'category_manager IN ('.USERCLASS_LIST.')')))
 		{
 			$this->news_categories = e107::getDb()->db_getList('ALL', FALSE, FALSE, 'category_id');
 		}
@@ -1128,10 +1126,10 @@ class admin_newspost
 		switch ($delete) {
 			case 'main':
 							
-				if ($e107->sql->db_Count('news','(*)',"news_id={$del_id}"))
+				if ($sql->count('news','(*)',"news_id={$del_id}"))
 				{
 					e107::getEvent()->trigger("newsdel", $del_id);
-					if($e107->sql->db_Delete("news", "news_id={$del_id}"))
+					if($sql->delete("news", "news_id={$del_id}"))
 					{
 						$admin_log->log_event('NEWS_01',$del_id,E_LOG_INFORMATIVE,'');
 						$this->show_message(NWSLAN_31." #".$del_id." ".NWSLAN_32, E_MESSAGE_SUCCESS);
@@ -1149,16 +1147,16 @@ class admin_newspost
 				
 				if(!getperms('0|7')) $this->noPermissions();
 
-				if (($count = $e107->sql->db_Count('news','(news_id)',"news_category={$del_id}")) === false || $count > 0)
+				if (($count = $sql->count('news','(news_id)',"news_category={$del_id}")) === false || $count > 0)
 				{
 					$this->show_message('Category is in used in <strong>'.$count.'</strong> news items and cannot be deleted.', E_MESSAGE_ERROR);
 					return false;
 				}
 				
-				if ($e107->sql->db_Count('news_category','(*)',"category_id={$del_id}"))
+				if ($sql->count('news_category','(*)',"category_id={$del_id}"))
 				{
 					e107::getEvent()->trigger("newscatdel", $del_id);
-					if ($e107->sql->db_Delete("news_category", "category_id={$del_id}"))
+					if ($sql->delete("news_category", "category_id={$del_id}"))
 					{
 						$admin_log->log_event('NEWS_02',$del_id,E_LOG_INFORMATIVE,'');
 						$this->show_message(NWSLAN_33." #".$del_id." ".NWSLAN_32, E_MESSAGE_SUCCESS);
@@ -1168,7 +1166,7 @@ class admin_newspost
 			break;
 
 			case 'sn':
-				if ($e107->sql->db_Delete("submitnews", "submitnews_id={$del_id}"))
+				if ($sql->delete("submitnews", "submitnews_id={$del_id}"))
 				{
 					$admin_log->log_event('NEWS_03',$del_id,E_LOG_INFORMATIVE,'');
 					$this->show_message(NWSLAN_34." #".$del_id." ".NWSLAN_32);
@@ -1385,7 +1383,7 @@ class admin_newspost
 				{
 					$this->error = true;
 					$this->show_message('mySQL Error detected!', E_MESSAGE_ERROR);
-					eMessage::getInstance()->addS('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), E_MESSAGE_DEBUG);
+					e107::getMessage()->addDebug('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText());
 				}
 			}
 		}
@@ -1518,7 +1516,7 @@ class admin_newspost
 			$order = $_POST['multi_category_order'][$cid];
 			$cnt += (int) e107::getDb()->db_Update('news_category', 'category_manager='.intval($val).', category_order='.intval($order).' WHERE category_id='.intval($cid));
 		}
-		if($cnt) eMessage::getInstance()->add(LAN_UPDATED, E_MESSAGE_SUCCESS);
+		if($cnt) e107::getMessage()->addSuccess(LAN_UPDATED);
 	}
 
 	function _observe_save_prefs()
@@ -1704,7 +1702,7 @@ class admin_newspost
 				// PREPARE SOME DATA
 				// safe to pass $row as it contains username and id only (no sensitive data), user_id and user_name will be internal converted to 'id', 'name' vars 
 				$row['user_name'] 			= "<a href='".e107::getUrl()->create('user/profile/view', $row)."' title='{$row['user_name']}'>{$row['user_name']}</a>";		
-				$row['news_title'] 			= "<a href='".e107::getUrl()->create('news/view/item', $row)."'>".$e107->tp->toHTML($row['news_title'], false, 'TITLE')."</a>";
+				$row['news_title'] 			= "<a href='".e107::getUrl()->create('news/view/item', $row)."'>".$tp->toHTML($row['news_title'], false, 'TITLE')."</a>";
 				$row['category_name'] 		= "<a href='".e107::getUrl()->create('news/list/items', $row)."'>".$row['category_name']."</a>";
 				$row['news_render_type'] 	= $ren_type[$row['news_render_type']];
 	
@@ -1743,14 +1741,14 @@ class admin_newspost
 
 
 
-	//	$newsposts = $e107->sql->db_Count('news');
+	//	$newsposts = $sql->count('news');
 
 		if ($newsposts > $amount)
 		{
 		//	$parms = $newsposts.",".$amount.",".$this->getFrom().",".e_SELF."?".$this->getAction().'.'.($this->getSubAction() ? $this->getSubAction() : 0).'.'.$this->_sort_order.".[FROM]";
 			$parms = $newsposts.",".$amount.",".$this->getFrom().",".e_SELF."?action=".$this->getAction().'&amp;sub='.($this->getSubAction() ? $this->getSubAction() : 0).'&amp;id='.$this->_sort_order.'&amp;filter='.intval($_GET['filter']).'&amp;srch='.$_GET['srch']."&amp;frm=[FROM]";
 			
-			$nextprev = $e107->tp->parseTemplate("{NEXTPREV={$parms}}");
+			$nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
 			if ($nextprev) $text .= "<div class='nextprev-bar'>".$nextprev."</div>";
 
 		}
@@ -1765,7 +1763,7 @@ class admin_newspost
 		$classes = e107::getUserClass()->uc_get_classlist();
 
 		// Grab news Category Names;
-		e107::getDb()->db_Select('news_category', '*');
+		e107::getDb()->select('news_category', '*');
         $newscatarray = e107::getDb()->db_getList();
 		$news_category = $news_manage = array();
         foreach($newscatarray as $val)
@@ -1886,9 +1884,9 @@ class admin_newspost
 		{
 			if(!isset($_POST['submit_news']))
 			{
-				if(e107::getDb()->db_Select('news', '*', 'news_id='.intval($this->getId())))
+				if(e107::getDb()->select('news', '*', 'news_id='.intval($this->getId())))
 				{
-					$row = e107::getDb()->db_Fetch();
+					$row = e107::getDb()->fetch();
 
 					if(!isset($this->news_categories[$row['news_category']]))
 					{
@@ -1943,10 +1941,10 @@ class admin_newspost
 
 		if ($sub_action == "sn" && !varset($_POST['preview']))
 		{
-			if ($sql->db_Select("submitnews", "*", "submitnews_id=".$this->getId(), TRUE))
+			if ($sql->select("submitnews", "*", "submitnews_id=".$this->getId(), TRUE))
 			{
-				//list($id, $submitnews_name, $submitnews_email, $_POST['news_title'], $submitnews_category, $_POST['news_body'], $submitnews_datestamp, $submitnews_ip, $submitnews_auth, $submitnews_file) = $sql->db_Fetch();
-				$row = $sql->db_Fetch();
+				//list($id, $submitnews_name, $submitnews_email, $_POST['news_title'], $submitnews_category, $_POST['news_body'], $submitnews_datestamp, $submitnews_ip, $submitnews_auth, $submitnews_file) = $sql->fetch();
+				$row = $sql->fetch();
 				$_POST['news_title'] = $row['submitnews_title'];
 				$_POST['news_body'] = $row['submitnews_item'];
 				$_POST['cat_id'] = $row['submitnews_category'];
@@ -1971,8 +1969,8 @@ class admin_newspost
 
 		if ($sub_action == "upload" && !varset($_POST['preview']))
 		{
-			if ($sql->db_Select('upload', '*', "upload_id=".$this->getId())) {
-				$row = $sql->db_Fetch();
+			if ($sql->select('upload', '*', "upload_id=".$this->getId())) {
+				$row = $sql->fetch();
 				$post_author_id = substr($row['upload_poster'], 0, strpos($row['upload_poster'], "."));
 				$post_author_name = substr($row['upload_poster'], (strpos($row['upload_poster'], ".")+1));
 				$match = array();
@@ -2083,8 +2081,8 @@ class admin_newspost
 		if(!getperms('0') && !check_class($pref['news_editauthor']))
 		{
 			$auth = ($_POST['news_author']) ? intval($_POST['news_author']) : USERID;
-			$e107->sql->db_Select("user", "user_name", "user_id={$auth} LIMIT 1");
-           	$row = $e107->sql->db_Fetch(MYSQL_ASSOC);
+			$sql->select("user", "user_name", "user_id={$auth} LIMIT 1");
+           	$row = $sql->fetch(MYSQL_ASSOC);
 			$text .= "<input type='hidden' name='news_author' value='".$auth.chr(35).$row['user_name']."' />";
 			$text .= "<a href='".$e107->url->create('user/profile/view', 'name='.$row['user_name'].'&id='.$_POST['news_author'])."'>".$row['user_name']."</a>";
 		}
@@ -2109,7 +2107,7 @@ class admin_newspost
 			}
 
 	        $sql->db_Select_gen($qry);
-	        while($row = $sql->db_Fetch())
+	        while($row = $sql->fetch())
 	        {
 	        	if(vartrue($_POST['news_author']))
 				{
@@ -2410,8 +2408,8 @@ class admin_newspost
 
 		$e107 = &e107::getInstance();
 
-		$_POST['news_title'] = $e107->tp->toDB($_POST['news_title']);
-		$_POST['news_summary'] = $e107->tp->toDB($_POST['news_summary']);
+		$_POST['news_title'] = $tp->toDB($_POST['news_title']);
+		$_POST['news_summary'] = $tp->toDB($_POST['news_summary']);
 
 		$_POST['news_id'] = $id;
 
@@ -2450,18 +2448,18 @@ class admin_newspost
 			$_POST['news_datestamp'] = time();
 		}
 
-		$e107->sql->db_Select("news_category", "*", "category_id='".intval($_POST['cat_id'])."'");
-		list($_POST['category_id'], $_POST['category_name'], $_POST['category_icon']) = $e107->sql->db_Fetch();
+		$sql->select("news_category", "*", "category_id='".intval($_POST['cat_id'])."'");
+		list($_POST['category_id'], $_POST['category_name'], $_POST['category_icon']) = $sql->fetch();
 
 	   	list($_POST['user_id'],$_POST['user_name']) = explode(chr(35), $_POST['news_author']);
 		$_POST['news_author'] = $_POST['user_id'];
-		$_POST['comment_total'] = $id ? $e107->sql->db_Count("comments", "(*)", " WHERE comment_item_id={$id} AND comment_type='0'") : 0;
+		$_POST['comment_total'] = $id ? $sql->count("comments", "(*)", " WHERE comment_item_id={$id} AND comment_type='0'") : 0;
 		$_PR = $_POST;
 
-		$_PR['news_body'] = $e107->tp->post_toHTML($_PR['news_body'],FALSE);
-		$_PR['news_title'] = $e107->tp->post_toHTML($_PR['news_title'],FALSE,"emotes_off, no_make_clickable");
-		$_PR['news_summary'] = $e107->tp->post_toHTML($_PR['news_summary']);
-		$_PR['news_extended'] = $e107->tp->post_toHTML($_PR['news_extended']);
+		$_PR['news_body'] = $tp->post_toHTML($_PR['news_body'],FALSE);
+		$_PR['news_title'] = $tp->post_toHTML($_PR['news_title'],FALSE,"emotes_off, no_make_clickable");
+		$_PR['news_summary'] = $tp->post_toHTML($_PR['news_summary']);
+		$_PR['news_extended'] = $tp->post_toHTML($_PR['news_extended']);
 		$_PR['news_file'] = $_POST['news_file'];
 		$_PR['news_thumbnail'] = basename($_POST['news_thumbnail']);
 
@@ -2474,7 +2472,7 @@ class admin_newspost
 					<tbody>
 						<tr>
 							<td colspan='2'>
-								".$e107->tp->parseTemplate('{NEWSINFO}').$ix->render_newsitem($_PR, 'return')."
+								".$tp->parseTemplate('{NEWSINFO}').$ix->render_newsitem($_PR, 'return')."
 							</td>
 						</tr>
 					</tbody>
@@ -2493,9 +2491,9 @@ class admin_newspost
 		$e107 = e107::getInstance();
 
 		$category = array();
-		if ($e107->sql->db_Select("news_category", "*", "category_id=".$this->getId()))
+		if ($sql->select("news_category", "*", "category_id=".$this->getId()))
 		{
-			$category = $e107->sql->db_Fetch();
+			$category = $sql->fetch();
 		}
 
 		if(empty($category))
@@ -2576,9 +2574,9 @@ class admin_newspost
 		
 		if ($this->getSubAction() == "edit" && !isset($_POST['update_category']))
 		{
-			if (e107::getDb()->db_Select("news_category", "*", "category_id=".$this->getId()))
+			if (e107::getDb()->select("news_category", "*", "category_id=".$this->getId()))
 			{
-				$category = e107::getDb()->db_Fetch();
+				$category = e107::getDb()->fetch();
 			}
 			
 		}
@@ -2957,14 +2955,14 @@ class admin_newspost
 		$sql = e107::getDb();
 		
 		$newsCat = array();
-		$sql->db_Select('news_category');
-		while($row = $sql->db_Fetch())
+		$sql->select('news_category');
+		while($row = $sql->fetch())
 		{
 			$newsCat[$row['category_id']] = $tp->toHTML($row['category_name'],FALSE,'TITLE');
 		}
 		
 		
-		if ($sql->db_Select("submitnews", "*", "submitnews_id !='' ORDER BY submitnews_id DESC"))
+		if ($sql->select("submitnews", "*", "submitnews_id !='' ORDER BY submitnews_id DESC"))
 		{
 			$text .= "
 			<form action='".e_SELF."?sn' method='post'>
@@ -2995,7 +2993,7 @@ class admin_newspost
 						</thead>
 						<tbody>
 			";
-			while ($row = $sql->db_Fetch())
+			while ($row = $sql->fetch())
 			{
 				$buttext = ($row['submitnews_auth'] == 0)? NWSLAN_58 :	NWSLAN_103;
 
@@ -3029,7 +3027,7 @@ class admin_newspost
 							<div class='field-spacer center nowrap'>
 								".$frm->admin_button("category_view_{$row['submitnews_id']}", NWSLAN_27, 'action', '', array('id'=>false, 'other'=>"onclick=\"expandit('submitted_".$row['submitnews_id']."')\""))."
 								".$frm->admin_button("category_edit_{$row['submitnews_id']}", $buttext, 'action', '', array('id'=>false, 'other'=>"onclick=\"document.location='".e_SELF."?create.sn.{$row['submitnews_id']}'\""))."
-								".$frm->admin_button("delete[sn_{$row['submitnews_id']}]", LAN_DELETE, 'delete', '', array('id'=>false, 'title'=>$e107->tp->toJS(NWSLAN_38." [".LAN_NEWS_45.": {$row['submitnews_id']} ]")))."
+								".$frm->admin_button("delete[sn_{$row['submitnews_id']}]", LAN_DELETE, 'delete', '', array('id'=>false, 'title'=>$tp->toJS(NWSLAN_38." [".LAN_NEWS_45.": {$row['submitnews_id']} ]")))."
 							</div>
 						</td>
 					</tr>
@@ -3117,7 +3115,7 @@ class admin_newspost
 		$canDelete = isset($_POST['newsdeletecomments']);
 		if ($result = e107::getDb()->db_Select_gen($qry))
 		{
-			while ($row = e107::getDb()->db_Fetch(MYSQL_ASSOC))
+			while ($row = e107::getDb()->fetch(MYSQL_ASSOC))
 			{
 				if ($canDelete && ($row['news_allow_comments'] != 0) && ($row['c_count'] > 0))	// N.B. sense of 'news_allow_comments' is 0 = allow!!!
 				{		// Delete comments
@@ -3181,7 +3179,7 @@ class admin_newspost
 		$var['pref']['perm'] = "0";
 
 //TODO remove commented code before release.
-	//	$c = $e107->sql->db_Count('submitnews');
+	//	$c = $sql->count('submitnews');
 	//	if ($c) {
 			$var['sn']['text'] = NWSLAN_47." ({$c})";
 			$var['sn']['link'] = e_SELF."?action=sn";

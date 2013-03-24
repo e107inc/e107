@@ -162,6 +162,7 @@ class admin_shortcodes
 		$e107 = e107::getInstance();
 		$sql = e107::getDb();
 		$pref = e107::getPref();
+		$ns = e107::getRender();
 		
 		e107::plugLan('user_menu', '', true);
 		
@@ -300,7 +301,7 @@ class admin_shortcodes
 		if(isset($params['nomenu'])) { return $select; }
 		if($select) { $text .= "<div class='center'>{$select}</div>"; }
 
-		return $e107->ns->tablerender(UTHEME_MENU_L2, $text, '', true);
+		return $ns->tablerender(UTHEME_MENU_L2, $text, '', true);
 
 	}
 

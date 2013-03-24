@@ -2,16 +2,11 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * Manage/View failed login attempts
- *
- * $Source: /cvs_backup/e107_0.8/e107_admin/fla.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * Manage failed login attempts
  *
 */
 require_once('../class2.php');
@@ -137,7 +132,6 @@ $gen = new convert;
 $fla_total = $sql->db_Count('generic', '(*)', "WHERE gen_type='failed_login'");
 if(!$sql->db_Select('generic', '*', "gen_type='failed_login' ORDER BY gen_datestamp DESC LIMIT {$from},{$amount}"))
 {
-	//$text = $mes->render()."<div class='center'>".FLALAN_2."</div>";
 	$mes->addInfo(FLALAN_2);
 }
 else
@@ -179,7 +173,7 @@ else
 	{
 		extract($fa);//FIXME kill extract()
 		
-		$gen_chardata = str_replace(":::", "<br />", $e107->tp->toHTML($gen_chardata));
+		$gen_chardata = str_replace(":::", "<br />", $tp->toHTML($gen_chardata));
 		$host = e107::getIPHandler()->get_host_name(getenv($gen_ip));
 		$text .= "
 						<tr>
@@ -210,8 +204,6 @@ else
 	$nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
 	if ($nextprev)
 		$text .= "<div class='nextprev-bar'>".$nextprev."</div>";
-
-
 
 
 }

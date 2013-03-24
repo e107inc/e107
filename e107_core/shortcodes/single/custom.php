@@ -1,7 +1,8 @@
 <?php
 function custom_shortcode($parm)
 {
-	global $pref;
+	$pref = e107::getPref();
+	$tp = e107::getParser();
 	$e107 = e107::getInstance();
 	$custom_query = explode('+', $parm);
 	switch($custom_query[0])
@@ -55,7 +56,7 @@ function custom_shortcode($parm)
 			else
 			{
 				$quotes = file($qotdf_file);
-				$quote = $e107->tp->toHTML($quotes[rand(0, count($quotes) -1 )], true);
+				$quote = $tp->toHTML($quotes[rand(0, count($quotes) -1 )], true);
 			}
 			return $quote;
 			break;
@@ -90,7 +91,7 @@ function custom_shortcode($parm)
 			break;
 
 		case 'welcomemessage':
-			return $e107->tp->parseTemplate('{WMESSAGE}');
+			return $tp->parseTemplate('{WMESSAGE}');
 			break;
 	}
 }
