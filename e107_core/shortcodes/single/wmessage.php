@@ -42,6 +42,7 @@ function wmessage_shortcode($parm)
 		// Actually want to display a welcome message here
 		$ns = e107::getRender();
 		$tp = e107::getParser();
+		$sql = e107::getDb();
 
 		if($cacheData = $e107cache->retrieve('wmessage'))
 		{
