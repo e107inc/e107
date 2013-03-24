@@ -1,14 +1,11 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
+ * Copyright (C) 2008-2013 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Admin Language File
+ *
 */
+
 // define("NWSLAN_1", "News story deleted.");
 // define("NWSLAN_2", "Please tick the confirm box to delete this news item.");
 // define("NWSLAN_3", "No news items yet.");
@@ -19,7 +16,7 @@ define("NWSLAN_6", "Category");
 // define("NWSLAN_9", "tick to confirm");
 define("NWSLAN_10", "No news categories");
 // define("NWSLAN_11", "Add/Edit Categories");
-define("NWSLAN_12", "Title");
+//define("NWSLAN_12", "Title");
 define("NWSLAN_13", "Body");
 define("NWSLAN_14", "Extended");
 define("NWSLAN_15", "Comments");
@@ -130,7 +127,7 @@ define("NWSLAN_123", "Posted");
 // define("NWSLAN_126", "IP");
 
 define("NWSLAN_127", "URL identifier");
-define("NWSLAN_128", "Set a string to be used in news pages URL. This will only work proper .htaccess rules and <a href='%s'>eURL config</a><br />Resolved URL based on current value: ");
+define("NWSLAN_128", "Set a string to be used in news pages URL. This will only work proper .htaccess rules and <a href='%s'>eURL config</a><br />Resolved URL based on current value: "); //FIXME HTML
 
 // define("LAN_NEWS_5", "Error! - Was unable to update news item into database!");
 // define("LAN_NEWS_6", "News entered into database.");
@@ -165,7 +162,7 @@ define("LAN_NEWS_33", "Set the date stamp for the current news item");
 define("LAN_NEWS_34", "Trackback");
 define("LAN_NEWS_35", "Add trackback URLs");
 // define("LAN_NEWS_36", "<b>Pingback</b> (send a pingback to all URLs in this post)");
-define("LAN_NEWS_37", "<b>Trackback URLs:</b> (one URL per line)");
+define("LAN_NEWS_37", "One URL per line)");
 // define("LAN_NEWS_38", "Insert images");
 
 // define("LAN_NEWS_39", "click on file to insert at cursor position");
@@ -174,9 +171,9 @@ define("LAN_NEWS_37", "<b>Trackback URLs:</b> (one URL per line)");
 // define("LAN_NEWS_42", "Files");
 // define("LAN_NEWS_43", "(no images in /e107_images/newspost_images)");  // deprecated see lan_admin.php
 // define("LAN_NEWS_44", "Trackback not enabled.");
-define("LAN_NEWS_45", "ID");
+//define("LAN_NEWS_45", "ID");
 // define("LAN_NEWS_46", "News item not updated as no changes were made.");
-// define('LAN_NEWS_47', 'Nothing changed - not updated');
+// define("LAN_NEWS_47", "Nothing changed - not updated");
 // define("LAN_NEWS_48", "No Image");
 
 define("LAN_NEWS_49", "Render-type");
@@ -187,17 +184,14 @@ define("LAN_NEWS_52", "General Information");
 define("LAN_NEWS_53", "Advanced Options");
 define("LAN_NEWS_54", "stay in edit mode");
 
+define("LAN_NEWS_55", "Maintenance");				// Was LAN_NEWS_50 in 0.7
+define("LAN_NEWS_56", "Recalculate comment counts");
+define("LAN_NEWS_57", "Proceed");
+define("LAN_NEWS_58", "Update complete - --UPDATE-- comment counts updated, --DELETED-- disallowed comments deleted");
+define("LAN_NEWS_59", "News Maintenance");
 
-define('LAN_NEWS_55', 'Maintenance');				// Was LAN_NEWS_50 in 0.7
-define('LAN_NEWS_56', 'Recalculate comment counts');
-define('LAN_NEWS_57', 'Proceed');
-define('LAN_NEWS_58', 'Update complete - --UPDATE-- comment counts updated, --DELETED-- disallowed comments deleted');
-define('LAN_NEWS_59', 'News Maintenance');
-
-define('LAN_NEWS_60', 'Comment Total');
-define('LAN_NEWS_61', 'Also delete disallowed comments');
-define('LAN_NEWS_62', 'Error accessing database, or no news items found');
-
-
+define("LAN_NEWS_60", "Comment Total");
+define("LAN_NEWS_61", "Also delete disallowed comments");
+define("LAN_NEWS_62", "Error accessing database, or no news items found");
 
 ?>

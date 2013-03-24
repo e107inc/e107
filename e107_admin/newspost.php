@@ -365,7 +365,7 @@ class news_admin_ui extends e_admin_ui
 		
 	protected $fields = array(
 				'checkboxes'	   		=> array('title' => '', 			'type' => null, 		'width' => '3%', 	'thclass' => 'center first', 	'class' => 'center', 	'nosort' => true, 'toggle' => 'news_selected', 'forced' => TRUE),
-				'news_id'				=> array('title' => LAN_NEWS_45, 	'type' => 'text', 	'width' => '5%', 	'thclass' => 'center', 			'class' => 'center',  	'nosort' => false, 'readParms'=>'link=sef&target=blank'),
+				'news_id'				=> array('title' => LAN_ID, 	'type' => 'text', 	'width' => '5%', 	'thclass' => 'center', 			'class' => 'center',  	'nosort' => false, 'readParms'=>'link=sef&target=blank'),
  				'news_thumbnail'		=> array('title' => NWSLAN_67, 		'type' => 'method', 		'width' => '110px',	'thclass' => 'center', 			'class' => "center", 		'nosort' => false, 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>false),		  		
  				'news_title'			=> array('title' => LAN_TITLE, 		'type' => 'text', 'inline'=>true,		'width' => 'auto', 'thclass' => '', 				'class' => null, 		'nosort' => false),
 				'news_summary'			=> array('title' => LAN_NEWS_27, 	'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),			
@@ -855,7 +855,7 @@ class admin_newspost
 
 		$this->fields = array(
 				'checkboxes'	   		=> array('title' => '', 			'type' => null, 		'data'=> false, 'width' => '3%', 	'thclass' => 'center first', 	'class' => 'center', 	'nosort' => true, 'toggle' => 'news_selected', 'forced' => TRUE),
-				'news_id'				=> array('title' => LAN_NEWS_45, 	'type' => 'number', 	'data'=> 'int', 'width' => '5%', 	'thclass' => 'center', 			'class' => 'center',  	'nosort' => false),
+				'news_id'				=> array('title' => LAN_ID, 	'type' => 'number', 	'data'=> 'int', 'width' => '5%', 	'thclass' => 'center', 			'class' => 'center',  	'nosort' => false),
  				'news_thumbnail'		=> array('title' => NWSLAN_67, 	'type' => 'image', 			'data'=> 'str', 'width' => '110px',	'thclass' => 'center', 			'class' => "center", 		'nosort' => false, 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','writeParams' => 'path={e_MEDIA}','readonly'=>false),		  		
  				'news_title'			=> array('title' => LAN_TITLE, 		'type' => 'text', 		'data'=> 'str','width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 				'news_summary'			=> array('title' => LAN_NEWS_27, 	'type' => 'text', 		'data'=> 'str','width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),			
@@ -2035,7 +2035,7 @@ class admin_newspost
 								</td>
 							</tr>
 							<tr>
-								<td>".NWSLAN_12.":</td>
+								<td>".LAN_TITLE.":</td>
 								<td>
 								<input type='text' name='news_title' value=\"". $tp->post_toForm(vartrue($_POST['news_title']))."\" class='tbox' style='width:90%' required='required' />
 									".
@@ -2354,7 +2354,7 @@ class admin_newspost
 								</tr>
 		";
 
-		if($pref['trackbackEnabled']){
+		if($pref['trackbackEnabled']){ // FIXME onclick expandit not working
 			$text .= "
 								<tr>
 									<td>".LAN_NEWS_34.":</td>
@@ -2362,7 +2362,7 @@ class admin_newspost
 										<a class='e-pointer' onclick='expandit(this);'>".LAN_NEWS_35."</a>
 										<div class='e-hideme'>
 											<div class='field-spacer'>
-												<span class='smalltext'>".LAN_NEWS_37."</span>
+												<span class='field-help>".LAN_NEWS_37."</span>
 											</div>
 											<div class='field-spacer'>
 												<textarea class='tbox textarea' name='trackback_urls' style='width:95%' cols='80' rows='5'>".$_POST['trackback_urls']."</textarea>
@@ -2712,7 +2712,7 @@ class admin_newspost
 						</colgroup>
 						<thead>
 							<tr>
-								<th class='center'>".LAN_NEWS_45."</th>
+								<th class='center'>".LAN_ID."</th>
 								<th class='center'>".LAN_ICON."</th>
 								<th>".NWSLAN_6."</th>
 								<th>Manage Permissions</th>
@@ -3027,7 +3027,7 @@ class admin_newspost
 							<div class='field-spacer center nowrap'>
 								".$frm->admin_button("category_view_{$row['submitnews_id']}", NWSLAN_27, 'action', '', array('id'=>false, 'other'=>"onclick=\"expandit('submitted_".$row['submitnews_id']."')\""))."
 								".$frm->admin_button("category_edit_{$row['submitnews_id']}", $buttext, 'action', '', array('id'=>false, 'other'=>"onclick=\"document.location='".e_SELF."?create.sn.{$row['submitnews_id']}'\""))."
-								".$frm->admin_button("delete[sn_{$row['submitnews_id']}]", LAN_DELETE, 'delete', '', array('id'=>false, 'title'=>$tp->toJS(NWSLAN_38." [".LAN_NEWS_45.": {$row['submitnews_id']} ]")))."
+								".$frm->admin_button("delete[sn_{$row['submitnews_id']}]", LAN_DELETE, 'delete', '', array('id'=>false, 'title'=>$tp->toJS(NWSLAN_38." [".LAN_ID.": {$row['submitnews_id']} ]")))."
 							</div>
 						</td>
 					</tr>

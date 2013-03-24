@@ -1,14 +1,11 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_menus.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
+ * Copyright (C) 2008-2013 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Admin Language File
+ *
 */
+
 define("MENLAN_1", "Visible to all");
 define("MENLAN_2", "Visible to members only");
 define("MENLAN_3", "Visible to administrators only");
@@ -35,11 +32,11 @@ define("MENLAN_22", "Inactive Menus");
 
 define("MENLAN_23", "Move to bottom");
 define("MENLAN_24", "Move to top");
-define("MENLAN_25", "Function ...");
+define("MENLAN_25", "Function...");
 
-define("MENLAN_26", "This menu will only be <strong>SHOWN</strong> on the following pages");
-define("MENLAN_27", "This menu will only be <strong>HIDDEN</strong> on the following pages");
-define("MENLAN_28", "Enter one page per line, enter enough of the url to distinguish it properly.  If you need the ending of the url to match exactly, use a ! at the end of the page name <br />For example: <strong>page.php?1!</strong>");
+define("MENLAN_26", "This menu will only be <strong>SHOWN</strong> on the following pages"); //FIXME HTML
+define("MENLAN_27", "This menu will only be <strong>HIDDEN</strong> on the following pages"); //FIXME HTML
+define("MENLAN_28", "Enter one page per line, enter enough of the url to distinguish it properly.  If you need the ending of the url to match exactly, use a ! at the end of the page name <br />For example: <strong>page.php?1!</strong>"); //FIXME HTML
 
 define("MENLAN_29", "Select Layout");
 define("MENLAN_30", "To see the menu areas and their positions for custom layouts, select the custom layout here:");

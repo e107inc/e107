@@ -2,16 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Administration - Site Preferences
  *
- * $URL$
- * $Revision$
- * $Id$
- * $Author$
  */
 require_once ("../class2.php");
 
@@ -253,7 +249,7 @@ function sendTest()
 		require_once(e_HANDLER.'mail.php');
 		$add = ($pref['mailer']) ? " (".strtoupper($pref['mailer']).")" : ' (PHP)';
 		$sendto = trim($_POST['testaddress']);
-		if (!sendemail($sendto, LAN_MAILOUT_113." ".SITENAME.$add, LAN_MAILOUT_114,LAN_MAILOUT_189)) 
+		if (!sendemail($sendto, LAN_MAILOUT_113." ".SITENAME.$add, str_replace("[br]", "\n", LAN_MAILOUT_114),LAN_MAILOUT_189)) 
 		{
 			$mes->addError(($pref['mailer'] == 'smtp')  ? LAN_MAILOUT_67 : LAN_MAILOUT_106);
 		} 
@@ -1336,7 +1332,7 @@ if(file_exists(e_PLUGIN."geshi/geshi.php"))
 						<td>".PRFLAN_118."?:</div></td>
 						<td>
 							".$frm->radio_switch('useGeshi', $pref['useGeshi'])."
-							<div class='smalltext field-help'>".PRFLAN_119."</div>
+							<div class='smalltext field-help'>".str_replace("[link]", "http://qbnz.com/highlighter/", PRFLAN_119)."</div>
 						</td>
 					</tr>
 					<tr>

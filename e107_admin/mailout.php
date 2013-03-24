@@ -197,7 +197,7 @@ switch ($action)
 					require_once(e_HANDLER.'mail.php');
 					$add = ($pref['mailer']) ? " (".strtoupper($pref['mailer']).")" : ' (PHP)';
 					$sendto = trim($_POST['testaddress']);
-					if (!sendemail($sendto, LAN_MAILOUT_113." ".SITENAME.$add, LAN_MAILOUT_114,LAN_MAILOUT_189)) 
+					if (!sendemail($sendto, LAN_MAILOUT_113." ".SITENAME.$add, str_replace("[br]", "\n", LAN_MAILOUT_114),LAN_MAILOUT_189)) 
 					{
 						$mes->addError(($pref['mailer'] == 'smtp')  ? LAN_MAILOUT_67 : LAN_MAILOUT_106);
 					} 

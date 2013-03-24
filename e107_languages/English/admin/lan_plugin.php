@@ -1,14 +1,13 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_plugin.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
+ * Copyright (C) 2008-2013 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Admin Language File
+ *
 */
+
+// TODO LAN CLEANUP
+
 define("EPL_ADLAN_0", "Install");
 define("EPL_ADLAN_1", "Uninstall");
 define("EPL_ADLAN_2", "Are you certain you want to uninstall this plugin?");
@@ -54,9 +53,9 @@ define("EPL_ADLAN_39", "The file could not be uploaded as the ".e_PLUGIN." folde
 define("EPL_ADLAN_40", "Admin Message");
 define("EPL_ADLAN_41", "That file does not appear to be a valid .zip or .tar archive.");
 define("EPL_ADLAN_42", "An error has occurred, unable to un-archive the file");
-define("EPL_ADLAN_43", "Your plugin has been uploaded and unzipped; to install go to <a href='".e_ADMIN."plugin.php?avail'>the uninstalled plugins page</a>.");
+define("EPL_ADLAN_43", "Your plugin has been uploaded and unzipped; to install go to <a href='".e_ADMIN."plugin.php?avail'>the uninstalled plugins page</a>."); // FIXME HTML
 define("EPL_ADLAN_44", "Auto plugin upload and extraction is disabled as upload to your plugins folder is not allowed at present - if you want to be able to do this, please change the permissions on your ".e_PLUGIN." folder to allow uploads.");
-define("EPL_ADLAN_45", "Your menu item has been uploaded and unzipped, to activate go to <a href='".e_ADMIN."menus.php'>your menus page</a>.");
+define("EPL_ADLAN_45", "Your menu item has been uploaded and unzipped, to activate go to <a href='".e_ADMIN."menus.php'>your menus page</a>."); //FIXME HTML
 define("EPL_ADLAN_46", "PCLZIP extract error:");
 define("EPL_ADLAN_47", "PCLTAR extract error: ");
 define("EPL_ADLAN_48", "code:");

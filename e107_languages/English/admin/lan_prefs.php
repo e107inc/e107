@@ -1,16 +1,10 @@
 <?php
-
 /*
- * e107 website system
+ * Copyright (C) 2008-2013 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
- * Released under the terms and conditions of the
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ * Admin Language File
  *
- * Administration - Language file for Site Preferences
- *
-
- */
+*/
 
 define("PRFLAN_1", "Site Information");
 define("PRFLAN_2", "Site Name");
@@ -65,7 +59,7 @@ define("PRFLAN_56", "Timezone");
 define("PRFLAN_58", "Restrict website to members only");
 define("PRFLAN_59", "ticking will restrict all areas apart from the front page and signup page to members only");
 define("PRFLAN_60", "Enable SSL");
-define("PRFLAN_61", "Only enable SSL if <span class='error'>you are sure you know what you are doing!</span>");
+define("PRFLAN_61", "Only enable SSL if you are sure you know what you are doing!");
 define("PRFLAN_76", "Display CAPTCHA on signup page.");
 define("PRFLAN_77", "Admin Display Options ");
 define("PRFLAN_78", "Leave blank to disable");
@@ -93,7 +87,7 @@ define("CUSTSIG_16", "Minimum Length for Passwords");
 define("CUSTSIG_17", "Subscribe to content/mailouts");
 define("CUSTSIG_18", "Disallow usernames");
 define("CUSTSIG_19", "usernames containing the following text will be rejected, separate entries by commas");
-define('CUSTSIG_20', 'User Custom Title');
+define("CUSTSIG_20", "User Custom Title");
 
 define("PRFLAN_91", "If someone is attacking your site by multiple requests to your server, his IP will be automatically banned ! Best done with server config if possible!!!");
 define("PRFLAN_92", "Secure signup verification -- hide password in email?");
@@ -107,10 +101,10 @@ define("PRFLAN_101", "Text Rendering");
 define("PRFLAN_102", "Replace clickable URLs");
 define("PRFLAN_103", "If ticked, and 'Make Clickable' (above) is also ticked, posted URLs or Email addresses are displayed as a hyperlink using text from the textboxes below. This keeps very long URLs/Emails from breaking layout.");
 define("PRFLAN_104", "URL replacement text");
-define("PRFLAN_105", "Replacement visible text for clickable URLs. Image can be used by using &lt;img&gt; tag, with full path to image");
+define("PRFLAN_105", "Replacement visible text for clickable URLs. Image can be used by using &lt;img&gt; tag, with full path to image"); //FIXME HTML
 define("PRFLAN_106", "Core preferences saved to database.");
 define("PRFLAN_107", "Email link replace text");
-define("PRFLAN_108", "text to replace email links with, image can be used by using &lt;img&gt; tag, with full path to image");
+define("PRFLAN_108", "text to replace email links with, image can be used by using &lt;img&gt; tag, with full path to image"); //FIXME HTML
 define("PRFLAN_109", "Wrap long words in main text");
 define("PRFLAN_110", "words longer than the length entered will be wrapped onto a new line");
 define("PRFLAN_111", "Wrap long words in menu text");
@@ -119,7 +113,7 @@ define("PRFLAN_113", "Off");
 define("PRFLAN_116", "Class which can post HTML");
 define("PRFLAN_117", "This will allow users to post most HTML code anywhere on the site, select the userclass to allow this.");
 define("PRFLAN_118", "Use Geshi for syntax highlighting");
-define("PRFLAN_119", "Geshi is an open source multi-language syntax highlighter, see http://qbnz.com/highlighter/ for more information");
+define("PRFLAN_119", "Geshi is an open source multi-language syntax highlighter, see [link] for more information");
 define("PRFLAN_120", "Default Geshi syntax language");
 define("PRFLAN_121", "if no language is specified in the code bbtag, this language will be used for highlighting");
 define("PRFLAN_122", "Enable WYSIWYG textareas");
@@ -135,18 +129,18 @@ define("PRFLAN_130", "Activating this will prevent more than one person logging 
 // define("PRFLAN_132", "Activating this will allow authorized users to post [php] code in certain areas");
 define("PRFLAN_133", "GD extension required, not found");
 define("PRFLAN_134", "Redirect all requests to site URL");
-define("PRFLAN_135", "for example, if your site URL above is set http://foo.com, anyone requesting http://www.foo.com will be redirected to http://foo.com");
+define("PRFLAN_135", "for example, if your site URL above is set to http://foo.com, anyone requesting http://www.foo.com will be redirected to http://foo.com"); //FIXME HTML
 define("PRFLAN_136", "Maximum Signups permitted from the same IP address.");
 define("PRFLAN_137", "Display Memory Usage");
 define("PRFLAN_138", "Display CAPTCHA on forgotten password page.");
-define("PRFLAN_139", "Display warning when main administrator password hasn't changed for at least 30 days");
+define("PRFLAN_139", "Display warning when main administrator password has't changed for at least 30 days");
 define("PRFLAN_140", "Text to display after signup form has been submitted.");
 //define("PRFLAN_141", "Allow registration using XML User Profiles");
 define("PRFLAN_142", "Flood Only");
 define("PRFLAN_143", "Failed Login Only");
 define("PRFLAN_144", "Flood &amp; Failed Login");
 define("PRFLAN_145", "Links in new window");
-define("PRFLAN_146", "Tick here to make all links open in a new window (<i>this will apply sitewide</i>). ");
+define("PRFLAN_146", "Tick here to make all links open in a new window (this will apply sitewide). ");
 define("PRFLAN_147", "Developer Mode");
 define("PRFLAN_148", "Activate developer functions. This is for developers only. Do not use on production sites for security reasons.");
 define("PRFLAN_149", "Advanced Features");
@@ -174,38 +168,38 @@ define("PRFLAN_168", "Site Contact Person(s)");
 define("PRFLAN_169", "If the chosen group contains more than one person, the user will be asked to select a person from the group.");
 //define("PRFLAN_170", "Use reverse DNS to allow host banning");
 //define("PRFLAN_171", "Turning this option on will allow you to ban users by hostname, rather then just IP or email address.  <br />NOTE: This may affect pageload times on some hosts");
-define('PRFLAN_172', 'Login Name maximum length (10..100)');
-define('PRFLAN_173', 'Check for e107 updates once/day');
-define('PRFLAN_174', 'Name for responses to emails from site');
-define('PRFLAN_175', 'This will appear in the \'From\' field of registration and other emails from this site');
-define('PRFLAN_176', 'Email address for emails from site');
-define('PRFLAN_177', 'Address specified for replies to emails from this site.');
-define('PRFLAN_178', 'Password transmission method');
-define('PRFLAN_179', '(Only supported if using sessions for user tracking.)');
-define('PRFLAN_180', 'Plaintext');
-define('PRFLAN_181', 'CHAP, plaintext fallback');
-define('PRFLAN_182', 'CHAP only');
-define('PRFLAN_183', ' CHAP requires JS enabled in user\'s browser');
-define('PRFLAN_184', 'User login method');
-// define('PRFLAN_185', '(as well as login name)');
-// define('PRFLAN_186', 'Yes');
-// define('PRFLAN_187', 'No');
-define('PRFLAN_188', 'Password encoding');
-define('PRFLAN_189', 'md5 (Legacy)');
-define('PRFLAN_190', 'Salted');
-define('PRFLAN_191', '(md5 is usually adequate for an Intranet, and often for other sites)');
-define('PRFLAN_192', 'Generate random predefined login names according to a pattern');
-define('PRFLAN_193', 'To allow users to set their own login names, leave blank');
-define('PRFLAN_194', '# alpha[br]. numeric[br]* alphanumeric[br]Other chars used as entered.');
-// define('PRFLAN_195', 'Changed values:');
-define('PRFLAN_196', 'Log all page accesses');
-define('PRFLAN_197', 'Auto-login new user after clicking on signup link');
-define('PRFLAN_198', 'If disabled, user has to explicitly log in after signup');
-//define('PRFLAN_199', '');
+define("PRFLAN_172", "Login Name maximum length (10..100)");
+define("PRFLAN_173", "Check for e107 updates once/day");
+define("PRFLAN_174", "Name for responses to emails from site");
+define("PRFLAN_175", "This will appear in the 'From' field of registration and other emails from this site");
+define("PRFLAN_176", "Email address for emails from site");
+define("PRFLAN_177", "Address specified for replies to emails from this site.");
+define("PRFLAN_178", "Password transmission method");
+define("PRFLAN_179", "(Only supported if using sessions for user tracking.)");
+define("PRFLAN_180", "Plaintext");
+define("PRFLAN_181", "CHAP, plaintext fallback");
+define("PRFLAN_182", "CHAP only");
+define("PRFLAN_183", " CHAP requires JS enabled in user's browser");
+define("PRFLAN_184", "User login method");
+// define("PRFLAN_185", "(as well as login name)");
+// define("PRFLAN_186", "Yes");
+// define("PRFLAN_187", "No");
+define("PRFLAN_188", "Password encoding");
+define("PRFLAN_189", "md5 (Legacy)");
+define("PRFLAN_190", "Salted");
+define("PRFLAN_191", "(md5 is usually adequate for an Intranet, and often for other sites)");
+define("PRFLAN_192", "Generate random predefined login names according to a pattern");
+define("PRFLAN_193", "To allow users to set their own login names, leave blank");
+define("PRFLAN_194", "# alpha[br]. numeric[br]* alphanumeric[br]Other chars used as entered.");
+// define("PRFLAN_195", "Changed values:");
+define("PRFLAN_196", "Log all page accesses");
+define("PRFLAN_197", "Auto-login new user after clicking on signup link");
+define("PRFLAN_198", "If disabled, user has to explicitly log in after signup");
+//define("PRFLAN_199", "");
 
 //0.8
-define("PRFLAN_154a", "If 'Admin Approval' is selected, it is recommended that you enable email notification on user signup <a href='".e_ADMIN."notify.php'>here</a>.");
-define('PRFLAN_196a', 'Log directory:');
+define("PRFLAN_154a", "If 'Admin Approval' is selected, it is recommended that you enable email notification on user signup <a href='.e_ADMIN.'notify.php'>here</a>."); //FIXME HMTL
+define("PRFLAN_196a", "Log directory:");
 
 define("PRFLAN_199", "Show Admin Sub-links");
 define("PRFLAN_200", "If enabled, Admin slide down navigation menu (if supported by the current theme) will render sub-links when needed (e.g. News - Create news item).");
@@ -216,24 +210,24 @@ define("PRFLAN_204", "Separate plugins into their own menu.");
 define("PRFLAN_205", "If enabled, plugins will be displayed in their own navigation menu, similar to e107 v0.7 and before.");
 define("PRFLAN_206", "Members-only URL exceptions");
 define("PRFLAN_207", "Members only-mode will be disabled for URLs that match any of the terms in this list. One per line.");
-define('PRFLAN_208', 'User class which can email links to items on site');
-define('PRFLAN_209', 'Other Features');
-define('PRFLAN_210', 'Comments/Posting');
-define('PRFLAN_211', 'Cannot make email address optional if required for validation or login');
-define('PRFLAN_212', 'Value for --FIELD-- too high - changed to --VALUE--');
-define('PRFLAN_213', 'Value for --FIELD-- too low - changed to --VALUE--');
-define('PRFLAN_214', "Site Logo");
-define('PRFLAN_215', 'Class which can post &lt;script&gt; and similar tags');
-define('PRFLAN_216', '(Requires HTML posting rights as well)');
-define('PRFLAN_217', 'Filter HTML content');
-define('PRFLAN_218', 'If \'off\', puts users at increased risk of XSS exploits posted by members of the above class, or prior to 0.7.24');
+define("PRFLAN_208", "User class which can email links to items on site");
+define("PRFLAN_209", "Other Features");
+define("PRFLAN_210", "Comments/Posting");
+define("PRFLAN_211", "Cannot make email address optional if required for validation or login");
+define("PRFLAN_212", "Value for --FIELD-- too high - changed to --VALUE--");
+define("PRFLAN_213", "Value for --FIELD-- too low - changed to --VALUE--");
+define("PRFLAN_214", "Site Logo");
+define("PRFLAN_215", "Class which can post &lt;script&gt; and similar tags");
+define("PRFLAN_216", "(Requires HTML posting rights as well)");
+define("PRFLAN_217", "Filter HTML content");
+define("PRFLAN_218", "If 'off', puts users at increased risk of XSS exploits posted by members of the above class, or prior to 0.7.24");
 
-define('PRFLAN_219', 'Not allowed characters found in Cookie name (alphanumeric characters allowed only). Cookie name not saved.');
-define('PRFLAN_220', 'HTML Abuse filter (experimental)');
-define('PRFLAN_221', 'Blocks some unmatched tags for those allowed to post HTML');
+define("PRFLAN_219", "Not allowed characters found in Cookie name (alphanumeric characters allowed only). Cookie name not saved.");
+define("PRFLAN_220", "HTML Abuse filter (experimental)");
+define("PRFLAN_221", "Blocks some unmatched tags for those allowed to post HTML");
 define("PRFLAN_222", "Display CAPTCHA on admin-area login page.");
 define("PRFLAN_223", "Completely Automated Public Turing test to tell Computers and Humans Apart");
-// define('PRFLAN_222', 'Moderate Comments made by');
-// define('PRFLAN_223', 'Comments will require manual approval by an admin prior to being visible to other users');
+// define("PRFLAN_222", "Moderate Comments made by");
+// define("PRFLAN_223", "Comments will require manual approval by an admin prior to being visible to other users");
 
 ?>

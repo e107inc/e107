@@ -2,17 +2,13 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_admin/modcomment.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
+
+// Moc: up for removal? Replaced by /e107_admin/comment.php
 
 require_once("../class2.php");
 if (!getperms("B")) {
@@ -25,7 +21,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 require_once("auth.php");
 require_once(e_HANDLER."comment_class.php");
 $cobj = new comment;
-global $tp;
+$tp = e107::getParser();
 
 $tmp	= explode(".", e_QUERY);
 $table	= $tmp[0];

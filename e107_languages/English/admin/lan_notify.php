@@ -1,21 +1,17 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_notify.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
+ * Copyright (C) 2008-2013 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Admin Language File
+ *
 */
 
 define("NT_LAN_1", "Notify");
 define("NT_LAN_2", "Receive email notification on");
-define("NT_LAN_3", "Off");
-define("NT_LAN_4", "Head admin");
-define("NT_LAN_5", "Class");
-define("NT_LAN_6", "Email");
+//define("NT_LAN_3", "Off");
+//define("NT_LAN_4", "Head admin");
+//define("NT_LAN_5", "Class");
+//define("NT_LAN_6", "Email");
 
 define("NU_LAN_1", "User Events");
 define("NU_LAN_2", "User signup");
