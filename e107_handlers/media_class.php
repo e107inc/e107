@@ -569,7 +569,7 @@ class e_media
 	
 		$prevAtt		= '&aw='.vartrue($option['w'],$w); // .'&ah=100';	// Image Parsed back to Form as PREVIEW image. 	
 		$prevId 		= $tagid."_prev"; // ID of image in Form. 
-		$thumbAtt		= 'aw=120&ah=100';	// Thumbnail of the Media-Manager Preview. 	
+		$thumbAtt		= 'aw=120&ah=120';	// Thumbnail of the Media-Manager Preview. 	
 		
 		
 		// EXAMPLE of FILTER GUI. 
@@ -606,7 +606,7 @@ class e_media
 		 	parent.document.getElementById('".$prevId."').src = '".e_IMAGE_ABS."generic/blank.gif';
 		 	 return false;";
 			
-			$text .= "<a class='{$class} media-select-none e-dialog-close' data-src='".varset($im['media_url'])."' style='vertical-align:middle;display:block;float:left;' href='#' onclick=\"{$onclick_clear}\" >
+			$text .= "<a class='thumbnail {$class} media-select-none e-dialog-close' data-src='".varset($im['media_url'])."' style='vertical-align:middle;display:block;float:left;' href='#' onclick=\"{$onclick_clear}\" >
 			<div style='text-align:center;position: relative; top: 30%'>No image</div>
 			</a>";		
 		}
@@ -678,7 +678,7 @@ class e_media
 		 	
 		 	$img_url = ($cat !='_icon') ? e107::getParser()->thumbUrl($im['media_url'], $thumbAtt) : $media_path;
 			
-			$text .= "<a data-toggle='context' class='{$class} e-tip' data-id='{$im['media_id']}' data-width='{$w}' data-height='{$h}' data-src='{$media_path}' data-bbcode='{$data_bb}' data-target='{$tagid}' data-path='{$im['media_url']}' data-preview='{$realPath}' title=\"".$diz."\" style='float:left' href='#' onclick=\"{$onclicki}\" >";
+			$text .= "<a data-toggle='context' class='thumbnail {$class} e-tip' data-id='{$im['media_id']}' data-width='{$w}' data-height='{$h}' data-src='{$media_path}' data-bbcode='{$data_bb}' data-target='{$tagid}' data-path='{$im['media_url']}' data-preview='{$realPath}' title=\"".$diz."\" style='float:left' href='#' onclick=\"{$onclicki}\" >";
 			$text .= "<img class='image-rounded' src='".$img_url."' alt=\"".$im['media_title']."\" title=\"{$diz}\" />";
 			$text .= "</a>\n\n";
 		}	
