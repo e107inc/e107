@@ -67,6 +67,8 @@ class e_parse extends e_parser
 	var $e_query;
 	
 	public $thumbWidth = 100;
+	
+	public $thumbHeight = 0;
 
 	// Set up the defaults
 	var $e_optDefault = array(
@@ -1834,13 +1836,23 @@ class e_parse extends e_parser
         
 		$thurl = 'src='.$url.'&amp;';
 				
-		if(vartrue($options['aw']) || vartrue($options['ah']))
+		if(vartrue($options['aw']) || vartrue($options['ah']) || $this->thumbCrop == 1)
 		{
+			if($this->thumbCrop == 1 && !vartrue($options['aw']) && !vartrue($options['ah'])) // Allow templates to determine dimensions. See {SETIMAGE}
+			{
+				$options['aw']	= $this->thumbWidth;
+				$options['ah']	 = $this->thumbHeight;
+			}
+			
 			$thurl .= 'aw='.((integer) vartrue($options['aw'], 0)).'&amp;ah='.((integer) vartrue($options['ah'], 0));
 		}
 		else
 		{
-			if(!vartrue($options['w']) && !vartrue($options['h'])) $options['w'] = $this->thumbWidth;
+			if(!vartrue($options['w']) && !vartrue($options['h'])) // Allow templates to determine dimensions. See {SETIMAGE}
+			{
+				 $options['w'] = $this->thumbWidth;
+				 $options['h'] = $this->thumbHeight;
+			}
 			$thurl .= 'w='.((integer) vartrue($options['w'], 0)).'&amp;h='.((integer) vartrue($options['h'], 0));
 		}
 		
