@@ -2,14 +2,10 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $URL$
- * $Id$
  */
 
 if (!defined('e107_INIT'))  exit;
@@ -17,6 +13,7 @@ if (!defined('e107_INIT'))  exit;
 global $menu_pref;
 
 $e107 = e107::getInstance();
+$sql = e107::getDb();
 $gen = new convert;
 
 include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_newforumposts_menu.php');
@@ -38,9 +35,9 @@ LEFT JOIN `#user` AS u ON u.user_id = p.post_user
 WHERE {$maxage} p.post_forum IN ({$forumList})
 ORDER BY p.post_datestamp DESC LIMIT 0, ".$menu_pref['newforumposts_display'];
 
-if($results = $e107->sql->db_Select_gen($qry))
+if($results = $sql->gen($qry))
 {
-	while($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
+	while($row = $sql->fetch(MYSQL_ASSOC))
 	{
 		$datestamp = $gen->convert_date($row['post_datestamp'], 'short');
 		$id = $row['thread_id'];
@@ -62,8 +59,8 @@ if($results = $e107->sql->db_Select_gen($qry))
 			}
 		}
 
-		$post = strip_tags($e107->tp->toHTML($row['post_entry'], true, 'emotes_off, no_make_clickable', '', $pref['menu_wordwrap']));
-		$post = $e107->tp->text_truncate($post, $menu_pref['newforumposts_characters'], $menu_pref['newforumposts_postfix']);
+		$post = strip_tags(e107::getParser()->toHTML($row['post_entry'], true, 'emotes_off, no_make_clickable', '', $pref['menu_wordwrap']));
+		$post = e107::getParser()->text_truncate($post, $menu_pref['newforumposts_characters'], $menu_pref['newforumposts_postfix']);
 
 		$url = $e107->url->create('forum/thread/last', $row);
 		//TODO legacy bullet is not use here anymore
@@ -84,4 +81,4 @@ else
 {
 	$text = NFP_2;
 }
-$e107->ns->tablerender($menu_pref['newforumposts_caption'], $text, 'nfp_menu');
+e107::getRender()->tablerender($menu_pref['newforumposts_caption'], $text, 'nfp_menu');

@@ -55,7 +55,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	function sc_post()
 	{
 		$emote = (isset($this->postInfo['post_options']['no_emote']) ? ',emotes_off' : '');
-		return $this->e107->tp->toHTML($this->postInfo['post_entry'], true, 'USER_BODY'.$emote, 'class:'.$this->postInfo['user_class']);
+		return e107::getParser()->toHTML($this->postInfo['post_entry'], true, 'USER_BODY'.$emote, 'class:'.$this->postInfo['user_class']);
 	}
 
 	function sc_postdeleted()
@@ -108,7 +108,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	{
 		if(plugInstalled('pm') && ($this->postInfo['post_user'] > 0))
 		{
-			return $this->e107->tp->parseTemplate("{SENDPM={$this->postInfo['post_user']}}");
+			return e107::getParser()->parseTemplate("{SENDPM={$this->postInfo['post_user']}}");
 		}
 	}
 
@@ -164,7 +164,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		}
 		else
 		{
-			return '<b>'.$this->e107->tp->toHTML($this->postInfo['post_user_anon']).'</b>';
+			return '<b>'.e107::getParser()->toHTML($this->postInfo['post_user_anon']).'</b>';
 		}
 
 	}
@@ -173,7 +173,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	{
 		if($this->postInfo['user_name'])
 		{
-			return (!$this->postInfo['user_hideemail'] ? $this->e107->tp->parseTemplate("{EMAILTO={$this->postInfo['user_email']}}") : '');
+			return (!$this->postInfo['user_hideemail'] ? e107::getParser()->parseTemplate("{EMAILTO={$this->postInfo['user_email']}}") : '');
 		}
 		return '';
 
@@ -183,7 +183,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	{
 		if($this->postInfo['thread_start'])
 		{
-			return $this->e107->tp->parseTemplate("{EMAIL_ITEM=".FORLAN_101."^plugin:forum.{$this->postInfo['post_thread']}}");
+			return e107::getParser()->parseTemplate("{EMAIL_ITEM=".FORLAN_101."^plugin:forum.{$this->postInfo['post_thread']}}");
 		}
 	}
 
@@ -191,7 +191,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	{
 		if($this->postInfo['thread_start'])
 		{
-			return $this->e107->tp->parseTemplate("{PRINT_ITEM=".FORLAN_102."^plugin:forum.{$this->postInfo['post_thread']}}");
+			return e107::getParser()->parseTemplate("{PRINT_ITEM=".FORLAN_102."^plugin:forum.{$this->postInfo['post_thread']}}");
 		}
 	}
 
@@ -221,7 +221,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	{
 		if (USER && $this->postInfo['user_name'])
 		{
-			return $this->e107->tp->parseTemplate("{PROFILE={$this->postInfo['post_user']}}");
+			return e107::getParser()->parseTemplate("{PROFILE={$this->postInfo['post_user']}}");
 		}
 	}
 
@@ -245,7 +245,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	{
 		if ($this->postInfo['user_customtitle'])
 		{
-			return $this->e107->tp->toHTML($this->postInfo['user_customtitle']).'<br />';
+			return e107::getParser()->toHTML($this->postInfo['user_customtitle']).'<br />';
 		}
 	}
 

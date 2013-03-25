@@ -15,6 +15,7 @@ if(!defined('e107_INIT'))
 }
 $e107 = e107::getInstance();
 $tp = e107::getParser();
+$sql = e107::getDb();
 
 if (!$e107->isInstalled('forum'))
 {
@@ -419,9 +420,9 @@ if (e_QUERY == 'track')
 		WHERE thread_id IN({$trackedThreadList})
 		ORDER BY thread_lastpost DESC
 		";
-		if($e107->sql->db_Select_gen($qry))
+		if($sql->gen($qry))
 		{
-			while($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
+			while($row = $sql->fetch(MYSQL_ASSOC))
 			{
 				$trackVars->NEWIMAGE = IMAGE_nonew_small;
 				if ($row['thread_datestamp'] > USERLV && !in_array($row['thread_id'], $viewed))

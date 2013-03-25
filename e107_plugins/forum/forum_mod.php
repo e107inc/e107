@@ -2,14 +2,10 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $URL$
- * $Id$
  */
 
 if (!defined('e107_INIT')) { exit(); }
@@ -18,6 +14,7 @@ include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_admin.php');
 function forum_thread_moderate($p)
 {
 	$e107 = e107::getInstance();
+	$sql = e107::getDb();
 	foreach ($p as $key => $val)
 	{
 		if (preg_match("#(.*?)_(\d+)_x#", $key, $matches))
@@ -28,22 +25,22 @@ function forum_thread_moderate($p)
 			switch ($act)
 			{
 				case 'lock':
-				$e107->sql->db_Update('forum_thread', 'thread_active=0 WHERE thread_id='.$id);
+				$sql->update('forum_thread', 'thread_active=0 WHERE thread_id='.$id);
 				return FORLAN_CLOSE;
 				break;
 
 				case 'unlock':
-				$e107->sql->db_Update('forum_thread', 'thread_active=1 WHERE thread_id='.$id);
+				$sql->update('forum_thread', 'thread_active=1 WHERE thread_id='.$id);
 				return FORLAN_OPEN;
 				break;
 
 				case 'stick':
-				$e107->sql->db_Update('forum_thread', 'thread_sticky=1 WHERE thread_id='.$id);
+				$sql->update('forum_thread', 'thread_sticky=1 WHERE thread_id='.$id);
 				return FORLAN_STICK;
 				break;
 
 				case 'unstick':
-				$e107->sql->db_Update('forum_thread', 'thread_sticky=0 WHERE thread_id='.$id);
+				$sql->update('forum_thread', 'thread_sticky=0 WHERE thread_id='.$id);
 				return FORLAN_UNSTICK;
 				break;
 

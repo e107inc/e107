@@ -2,16 +2,11 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * List Admin Class
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list_admin_class.php,v $
- * $Revision$
- * $Date$
- * $Author$
  *
 */
 if (!defined('e107_INIT')) { exit; }
@@ -47,17 +42,19 @@ class list_admin
 	 */
 	function db_update_menu()
 	{
+		$sql = e107::getDb();
+		$tp = e107::getParser();
 		// Get the preferences so we've got a reference for changes
 		$list_pref = $this->parent->getListPrefs();
 		$temp = array();
 		while(list($key, $value) = each($_POST))
 		{
-			if($value != LIST_ADMIN_2){ $temp[$this->e107->tp->toDB($key)] = $this->e107->tp->toDB($value); }
+			if($value != LIST_ADMIN_2){ $temp[$tp->toDB($key)] = $tp->toDB($value); }
 		}
 		if ($this->e107->admin_log->logArrayDiffs($temp, $list_pref, 'LISTNEW_01'))
 		{
 			$tmp = $this->e107->arrayStorage->WriteArray($list_pref);
-			$this->e107->sql->db_Update("core", "e107_value='{$tmp}' WHERE e107_name='list' ");
+			$sql->update("core", "e107_value='{$tmp}' WHERE e107_name='list' ");
 			$message = LIST_ADMIN_3;
 		}
 		else
@@ -98,7 +95,8 @@ class list_admin
 	 */
 	function parse_global_options($type)
 	{
-		global $rs, $fl;
+		global $rs;
+		$fl = e107::getFile();
 
 		$text = '';
 
@@ -247,7 +245,7 @@ class list_admin
 		for($i=0;$i<count($this->parent->sections);$i++)
 		{
 			$this->row['FIELD_TITLE'] = $this->parent->titles[$i];
-			$this->row['FIELD_ITEM'] = $rs->form_text($this->parent->sections[$i]."_".$type."_caption", 30, $this->e107->tp->toHTML($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_caption"],"","defs"), "50", "tbox");
+			$this->row['FIELD_ITEM'] = $rs->form_text($this->parent->sections[$i]."_".$type."_caption", 30, e1007::getParser()->toHTML($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_caption"],"","defs"), "50", "tbox");
 			$this->row['FIELD'] .= $this->parseTemplate('FIELD_TABLE');
 		}
 		$this->row['FIELD'] .= $this->parseTemplate('FIELD_TABLE_END');
@@ -268,6 +266,7 @@ class list_admin
 	function parse_menu_options($type)
 	{
 		global $rs;
+		$tp = e107::getParser();
 
 		$this->row['ID'] = "list-new-".str_replace('_', '-', $type);
 		$this->row['TITLE'] = ($type == "new_menu" ? LIST_ADMIN_OPT_5 : LIST_ADMIN_OPT_3);
@@ -280,7 +279,7 @@ class list_admin
 		$this->row['HEADING'] = LIST_ADMIN_LAN_3;
 		$this->row['HELP'] = LIST_ADMIN_LAN_4;
 		$this->row['CONTID'] = "list-new-menu-{$type}-expandable-caption";
-		$this->row['FIELD'] = $rs->form_text($type."_caption", "30", $this->e107->tp->toHTML($this->parent->list_pref[$type."_caption"],"","defs"), "50", "tbox");
+		$this->row['FIELD'] = $rs->form_text($type."_caption", "30", $tp->toHTML($this->parent->list_pref[$type."_caption"],"","defs"), "50", "tbox");
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
 		//menu preference : icon : use
@@ -375,6 +374,7 @@ class list_admin
 	function parse_page_options($type)
 	{
 		global $rs;
+		$tp = e107::getParser();
 
 		$display = ($type == "recent_page" ? "display:none;" : '');
 
@@ -389,7 +389,7 @@ class list_admin
 		$this->row['HEADING'] = LIST_ADMIN_LAN_3;
 		$this->row['HELP'] = LIST_ADMIN_LAN_4;
 		$this->row['CONTID'] = "list-new-page-{$type}-expandable-caption";
-		$this->row['FIELD'] = $rs->form_text($type."_caption", "30", $this->e107->tp->toHTML($this->parent->list_pref[$type."_caption"],"","defs"), "50", "tbox");
+		$this->row['FIELD'] = $rs->form_text($type."_caption", "30", $tp->toHTML($this->parent->list_pref[$type."_caption"],"","defs"), "50", "tbox");
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
 		//page preference : icon : use
@@ -475,7 +475,7 @@ class list_admin
 		$this->row['HEADING'] = LIST_ADMIN_LAN_24;
 		$this->row['HELP'] = LIST_ADMIN_LAN_25;
 		$this->row['CONTID'] = "list-new-page-{$type}-expandable-wtext";
-		$this->row['FIELD'] = $rs->form_textarea($type."_welcometext", "50", "5", $this->e107->tp->toHTML($this->parent->list_pref[$type."_welcometext"],"","defs"), "", "tbox");
+		$this->row['FIELD'] = $rs->form_textarea($type."_welcometext", "50", "5", $tp->toHTML($this->parent->list_pref[$type."_welcometext"],"","defs"), "", "tbox");
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
 		if($type == "new_page")
@@ -542,7 +542,7 @@ class list_admin
 		$frm = e107::getForm();
 		
 		$this->row['TOPIC'] = LIST_ADMIN_11;
-		$this->row['FIELD'] = $frm->admin_button('update_menu',LIST_ADMIN_2,'update'); // $rs->form_button("submit", 'update_menu', LIST_ADMIN_2);
+		$this->row['FIELD'] = $frm->admin_button('update_menu',LIST_ADMIN_2,'update'); 
 		return "<tr><td class='buttons-bar center' colspan='2'>".$frm->admin_button('update_menu',LIST_ADMIN_2,'update')."</td></tr>"; 
 		return $this->parseTemplate('TOPIC_ROW_NOEXPAND');
 	}

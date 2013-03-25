@@ -540,6 +540,7 @@ class private_message
 	 */
 	function get_users_inclass($class)
 	{
+		$sql = e107::getDb();
 		if($class == e_UC_MEMBER)
 		{
 			$qry = "SELECT user_id, user_name, user_email, user_class FROM `#user` WHERE 1";
@@ -550,12 +551,12 @@ class private_message
 		}
 		elseif($class)
 		{
-			$regex = "(^|,)(".$this->e107->tp->toDB($class).")(,|$)";
+			$regex = "(^|,)(".e107::getParser()->toDB($class).")(,|$)";
 			$qry = "SELECT user_id, user_name, user_email, user_class FROM `#user` WHERE user_class REGEXP '{$regex}'";
 		}
-		if($this->e107->sql->db_Select_gen($qry))
+		if($sql->gen($qry))
 		{
-			$ret = $this->e107->sql->db_getList();
+			$ret = $sql->getList();
 			return $ret;
 		}
 		return FALSE;

@@ -2,14 +2,11 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2011 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Forum View Topic
- *
- * $URL$
- * $Id$
  *
 */
 
@@ -641,6 +638,8 @@ class e107ForumThread
 	{
 		global $forum, $thread;
 		$e107 = e107::getInstance();
+		$ns = e107::getRender();
+		$sql = e107::getDb();
 
 		if (!isset($_GET['f']))
 		{
@@ -703,15 +702,15 @@ class e107ForumThread
 						sendemail(SITEADMINEMAIL, $subject, $report);
 					}
 					// no reference of 'head' $threadInfo['head']['thread_name']
-					$e107->sql->db_Insert('generic', "0, 'reported_post', " . time() . ", '" . USERID . "', '{$this->threadInfo['thread_name']}', " . intval($this->threadId) . ", '{$report_add}'");
+					$sql->insert('generic', "0, 'reported_post', " . time() . ", '" . USERID . "', '{$this->threadInfo['thread_name']}', " . intval($this->threadId) . ", '{$report_add}'");
 					define('e_PAGETITLE', LAN_01 . " / " . LAN_428);
 					$url = $e107->url->create('forum/thread/post', array('id' => $postId, 'name' => $postInfo['thread_name'], 'thread' => $threadId)); // both post info and thread info contain thread name
 					$text = LAN_424 . "<br /><br /><a href='{$url}'>" . LAN_429 . '</a>';
-					return $e107->ns->tablerender(LAN_414, $text, array('forum_viewtopic', 'report'), true);
+					return $ns->tablerender(LAN_414, $text, array('forum_viewtopic', 'report'), true);
 				}
 				else
 				{
-					$thread_name = $e107->tp->toHTML($postInfo['thread_name'], true, 'no_hook, emotes_off');
+					$thread_name = e107::getParser()->toHTML($postInfo['thread_name'], true, 'no_hook, emotes_off');
 					define('e_PAGETITLE', LAN_01 . ' / ' . LAN_426 . ' ' . $thread_name);
 					$url = $e107->url->create('forum/thread/post', array('id' => $postId, 'name' => $postInfo['thread_name'], 'thread' => $threadId));
 					$actionUrl = $e107->url->create('forum/thread/report', "id={$threadId}&post={$postId}");
@@ -740,7 +739,7 @@ class e107ForumThread
 					</td>
 					</tr>
 					</table>";
-					return $e107->ns->tablerender(LAN_414, $text, array('forum_viewtopic', 'report2'), true);
+					return e107::getRender()->tablerender(LAN_414, $text, array('forum_viewtopic', 'report2'), true);
 				}
 //				require_once (FOOTERF);
 				exit;

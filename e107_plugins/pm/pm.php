@@ -144,7 +144,7 @@ class pm_extended extends private_message
 		
 		$text = "<form {$enc} method='post' action='".e_SELF."' id='dataform'>
 		<div><input type='hidden' name='numsent' value='{$pm_outbox['outbox']['total']}' />".
-		$this->e107->tp->parseTemplate($PM_SEND_PM, TRUE).
+		e107::getParser()->parseTemplate($PM_SEND_PM, TRUE).
 		'</div></form>';
 		return $text;
 	}
@@ -267,7 +267,7 @@ class pm_extended extends private_message
 			$pm_info['pm_read'] = $now;
 			$this->pm_mark_read($pmid, $pm_info);
 		}
-		$txt = $this->e107->tp->parseTemplate($PM_SHOW, true);
+		$txt = e107::getParser()->parseTemplate($PM_SHOW, true);
 		$this->e107->ns->tablerender(LAN_PM, $txt);
 		if (!$comeFrom)
 		{
@@ -302,21 +302,21 @@ class pm_extended extends private_message
 		$sc->pmBlocks = $pmBlocks; 
 	
 		$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
-		$txt .= $this->e107->tp->parseTemplate($PM_BLOCKED_HEADER, true);
+		$txt .= e107::getParser()->parseTemplate($PM_BLOCKED_HEADER, true);
 		if($pmTotalBlocked = count($pmBlocks))
 		{
 			foreach($pmBlocks as $pmBlocked)
 			{
 				$sc->pmBlocked = $pmBlocked; 
 			//	setScVar('pm_handler_shortcodes','pmBlocked', $pmBlocked);
-				$txt .= $this->e107->tp->parseTemplate($PM_BLOCKED_TABLE, true);
+				$txt .= e107::getParser()->parseTemplate($PM_BLOCKED_TABLE, true);
 			}
 		}
 		else
 		{
-			$txt .= $this->e107->tp->parseTemplate($PM_BLOCKED_EMPTY, true);
+			$txt .= e107::getParser()->parseTemplate($PM_BLOCKED_EMPTY, true);
 		}
-		$txt .= $this->e107->tp->parseTemplate($PM_BLOCKED_FOOTER, true);
+		$txt .= e107::getParser()->parseTemplate($PM_BLOCKED_FOOTER, true);
 		$txt .= '</form>';
 		return $txt;
 	}

@@ -291,7 +291,7 @@ class userlogin
 							$fp = SITEURL.$fp;
 						}
 						//$redir = ((strpos($fp, 'http') === FALSE) ? SITEURL : '').$this->e107->tp->replaceConstants($fp, TRUE, FALSE);
-						$redir = $this->e107->tp->replaceConstants($fp, TRUE, FALSE);
+						$redir = e107::getParser()->replaceConstants($fp, TRUE, FALSE);
 		//				$this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Redirect active",$redir,FALSE,FALSE);
 					}
 					break;
@@ -364,17 +364,18 @@ class userlogin
 	public function getLookupQuery($username, $forceLogin, $dbAlias = '')
 	{
 		$pref = e107::getPref();
+		$tp = e107::getParser();
 
 		$username = preg_replace("/\sOR\s|\=|\#/", "", $username);
 		
 		if($forceLogin === 'provider')
 		{
-			return "{$dbAlias}`user_xup`='".$this->e107->tp->toDB($username)."'";
+			return "{$dbAlias}`user_xup`='".$tp->toDB($username)."'";
 		}
 
-        $qry[0] = "{$dbAlias}`user_loginname`= '".$this->e107->tp->toDB($username)."'";  // username only  (default)
-		$qry[1] = "{$dbAlias}`user_email` = '".$this->e107->tp->toDB($username)."'";   // email only
-		$qry[2] = (strpos($username,'@') !== FALSE ) ? "{$dbAlias}`user_loginname`= '".$this->e107->tp->toDB($username)."'  OR {$dbAlias}`user_email` = '".$this->e107->tp -> toDB($username)."'" : $qry[0];  //username or email
+        $qry[0] = "{$dbAlias}`user_loginname`= '".$tp->toDB($username)."'";  // username only  (default)
+		$qry[1] = "{$dbAlias}`user_email` = '".$tp->toDB($username)."'";   // email only
+		$qry[2] = (strpos($username,'@') !== FALSE ) ? "{$dbAlias}`user_loginname`= '".$tp->toDB($username)."'  OR {$dbAlias}`user_email` = '".$tp->toDB($username)."'" : $qry[0];  //username or email
 		
 
 		// Look up user in DB - even if email addresses allowed, still look up by user name as well - user could have specified email address for their login name
@@ -538,7 +539,7 @@ class userlogin
 				if($fails > 10)
 				{
 					e107::getIPHandler()->add_ban(4,LAN_LOGIN_18,$this->userIP,1);
-					e107::getDb()->insert("generic", "0, 'auto_banned', '".time()."', 0, '{$this->userIP}', '{$extra_text}', '".LAN_LOGIN_20.": ".$this->e107->tp -> toDB($username).", ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
+					e107::getDb()->insert("generic", "0, 'auto_banned', '".time()."', 0, '{$this->userIP}', '{$extra_text}', '".LAN_LOGIN_20.": ".e107::getParser()->toDB($username).", ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
 				}
 			}
 		}

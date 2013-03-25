@@ -61,13 +61,13 @@ class list_forum
 		}
 
 
-		if(!$results = $this->parent->e107->sql->db_Select_gen($qry))
+		if(!$results = $this->parent->$sql->gen($qry))
 		{
 			$list_data = LIST_FORUM_2;
 		}
 		else
 		{
-			$forumArray = $this->parent->e107->sql->db_getList();
+			$forumArray = $this->parent->e107->$sql->getList();
 			$path = e_PLUGIN."forum/";
 
 			foreach($forumArray as $forumInfo)
