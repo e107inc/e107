@@ -2,16 +2,11 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Members e_list Handler
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/section/list_members.php,v $
- * $Revision$
- * $Date$
- * $Author$
  *
 */
 
@@ -32,6 +27,7 @@ class list_members
 
 	function getListData()
 	{
+		$sql = e107::getDb();
 		$list_caption = $this->parent->settings['caption'];
 		$list_display = ($this->parent->settings['open'] ? "" : "none");
 
@@ -44,13 +40,13 @@ class list_members
 
 		$bullet = $this->parent->getBullet($this->parent->settings['icon']);
 
-		if(!$this->parent->e107->sql->db_Select_gen("SELECT user_id,user_name,user_join FROM #user WHERE ".$qry))
+		if(!$this->parent->$sql->gen("SELECT user_id,user_name,user_join FROM #user WHERE ".$qry))
 		{ 
 			$list_data = LIST_MEMBER_2;
 		}
 		else
 		{
-			while($row = $this->parent->e107->sql->db_Fetch())
+			while($row = $this->parent->$sql->fetch())
 			{
 				$record = array();
 				$rowheading = $this->parent->parse_heading($row['user_name']);

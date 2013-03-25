@@ -51,7 +51,7 @@ class online_shortcodes
 
 	function sc_online_tracking_disabled()
 	{
-		return $this->e107->tp->toHTML(LAN_ONLINE_TRACKING_MESSAGE,TRUE);
+		return e107::getParser()->toHTML(LAN_ONLINE_TRACKING_MESSAGE,TRUE);
 	}
 
 	
@@ -99,7 +99,7 @@ class online_shortcodes
 		if($ret == false) 
 		{
 			$newest_member_sql = $this->e107->sql->db_Select('user', 'user_id, user_name', "user_ban='0' ORDER BY user_join DESC LIMIT 1");
-			$row = $this->e107->sql->db_Fetch();
+			$row = e107::getDb()->fetch();
 			$ret = "<a href='".e_HTTP."user.php?id.".$row['user_id']."'>".$row['user_name']."</a>";
 			$this->e107->ecache->set('online_menu_member_newest', $ret);
 		}

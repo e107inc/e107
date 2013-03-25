@@ -23,20 +23,21 @@ class e_tagwords_download
 			$this->row = $this->getRecord($id);
 		}
 		$url = e_BASE."download.php?view.".$this->row['download_id'];
-		return "<a href='".$url."'>".$this->e107->tp->toHTML($this->row['download_name'], TRUE, '')."</a>";
+		return "<a href='".$url."'>".e107::getParser()->toHTML($this->row['download_name'], TRUE, '')."</a>";
 	}
 
 	function getRecord($id)
 	{
+		$sql = e107::getDb();
 		$this->row = '';
 
 		$qry = "SELECT d.*
 		FROM #download as d
 		WHERE d.download_id='{$id}' AND d.download_class REGEXP '".e_CLASS_REGEXP."' ";
 
-		if($this->e107->sql->db_Select_gen($qry))
+		if($sql->gen($qry))
 		{
-			$this->row=$this->e107->sql->db_Fetch();
+			$this->row=$sql->fetch();
 		}
 		return $this->row;
 	}

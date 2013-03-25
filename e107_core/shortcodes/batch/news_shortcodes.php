@@ -1,14 +1,13 @@
 <?php
 /*
-* Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id$
-*
-* News shortcode batch
+ * Copyright (C) 2008-2013 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * News shortcode batch
 */
+
 /**
  *	@package    e107
  *	@subpackage	shortcodes
- *	@version 	$Id$;
  *
  *	Shortcodes for news item display
  */
@@ -50,11 +49,12 @@ class news_shortcodes extends e_shortcode
 	
 	function sc_newsbody($parm)
 	{
+		$tp = e107::getParser();
 		e107::getBB()->setClass("news");
-		$news_body = $this->e107->tp->toHTML($this->news_item['news_body'], true, 'BODY, fromadmin', $this->news_item['news_author']);
+		$news_body = $tp->toHTML($this->news_item['news_body'], true, 'BODY, fromadmin', $this->news_item['news_author']);
 		if($this->news_item['news_extended'] && (isset($_POST['preview']) || $this->param['current_action'] == 'extend') && $parm != 'noextend')
 		{
-			$news_body .= $this->e107->tp->toHTML($this->news_item['news_extended'], true, 'BODY, fromadmin', $this->news_item['news_author']);
+			$news_body .= $tp->toHTML($this->news_item['news_extended'], true, 'BODY, fromadmin', $this->news_item['news_author']);
 		}
 		e107::getBB()->clearClass();
 		return $news_body;
@@ -144,7 +144,7 @@ class news_shortcodes extends e_shortcode
 
 	function sc_newscategory($parm)
 	{
-		$category_name = $this->e107->tp->toHTML($this->news_item['category_name'], FALSE ,'defs');
+		$category_name = e107::getParser()->toHTML($this->news_item['category_name'], FALSE ,'defs');
 		return "<a class='".$GLOBALS['NEWS_CSSMODE']."_category' style='".(isset($this->param['catlink']) ? $this->param['catlink'] : "#")."' href='".$this->e107->url->create('news/list/category', $this->news_item)."'>".$category_name."</a>";
 	}
 
@@ -204,7 +204,7 @@ class news_shortcodes extends e_shortcode
 	{
 		$pref = e107::getPref();
 		if (!$pref['plug_installed']['pdf']) { return ''; }
-		return $this->e107->tp->parseTemplate('{PDF='.LAN_NEWS_24.'^news.'.$this->news_item['news_id'].'}');
+		return e107::getParser()->parseTemplate('{PDF='.LAN_NEWS_24.'^news.'.$this->news_item['news_id'].'}');
 	}
 
 	function sc_newsid()
@@ -252,13 +252,13 @@ class news_shortcodes extends e_shortcode
 
 	function sc_captionclass()
 	{
-		$news_title = $this->e107->tp->toHTML($this->news_item['news_title'], TRUE,'TITLE');
+		$news_title = e107::getParser()->toHTML($this->news_item['news_title'], TRUE,'TITLE');
 		return "<div class='category".$this->news_item['news_category']."'>".($this->news_item['news_render_type'] == 1 ? "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$news_title."</a>" : $news_title)."</div>";
 	}
 
 	function sc_admincaption()
 	{
-		$news_title = $this->e107->tp->toHTML($this->news_item['news_title'], TRUE,'TITLE');
+		$news_title = e107::getParser()->toHTML($this->news_item['news_title'], TRUE,'TITLE');
 		return "<div class='".(defined('ADMINNAME') ? ADMINNAME : "null")."'>".($this->news_item['news_render_type'] == 1 ? "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$news_title."</a>" : $news_title)."</div>";
 	}
 
@@ -333,7 +333,7 @@ class news_shortcodes extends e_shortcode
 		else
 		{
 			// We store SC path in DB now + BC
-			$src = $this->news_item['news_thumbnail'][0] == '{' ? e107::getParser()->replaceConstants($this->news_item['news_thumbnail'], 'abs') : e_IMAGE_ABS."newspost_images/".$this->news_item['news_thumbnail'];			
+			$src = $this->news_item['news_thumbnail'][0] == '{' ? $tp->replaceConstants($this->news_item['news_thumbnail'], 'abs') : e_IMAGE_ABS."newspost_images/".$this->news_item['news_thumbnail'];			
 		}
 		
 		
@@ -431,7 +431,7 @@ class news_shortcodes extends e_shortcode
 		$parm = explode('|', $parm, 2);
 		$parm[1] = 'news_id='.$this->news_item['news_id'].(varset($parm[1]) ? '&'.$parm[1] : '');
 		e107::setRegistry('core/news/schook_data', array('data' => $this->news_item, 'params' => $this->param));
-		return $this->e107->tp->parseTemplate('{'.strtoupper($parm[0]).'='.$parm[1].'}');
+		return e107::getParser()->parseTemplate('{'.strtoupper($parm[0]).'='.$parm[1].'}');
 	}
 
 	function sc_newsinfo()
@@ -447,7 +447,7 @@ class news_shortcodes extends e_shortcode
 		$info .= '<br />'.($news_item['news_allow_comments'] ? LAN_NEWS_13 : LAN_NEWS_12);
 		$info .= LAN_NEWS_14.$news_item['news_start'].$news_item['news_end'].'<br />';
 		$info .= LAN_NEWS_15.strlen($news_item['news_body']).LAN_NEWS_16.strlen($news_item['news_extended']).LAN_NEWS_17."<br /><br />";
-		//return $this->e107->ns->tablerender(LAN_NEWS_18, $info);
+		//return $ns->tablerender(LAN_NEWS_18, $info);
 		return $info;
 	}
 

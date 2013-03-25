@@ -15,8 +15,9 @@ class plugin_forum_post_shortcodes extends e_shortcode
 	{
 		$parm = ($parm ? $parm : 10);
 		global $LATESTPOSTS_START, $LATESTPOSTS_END, $LATESTPOSTS_POST;
+		$tp = e107::getParser();
 
-		$txt = $this->e107->tp->parseTemplate($LATESTPOSTS_START, true);
+		$txt = $tp->parseTemplate($LATESTPOSTS_START, true);
 		$start = max($this->threadInfo['thread_total_replies'] - $parm, 0);
 		$num = min($this->threadInfo['thread_total_replies'], $parm);
 
@@ -26,9 +27,9 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		for($i = count($tmp); $i > 0; $i--)
 		{
 			$bach->setScVar('postInfo', $tmp[$i-1]);
-			$txt .= $this->e107->tp->parseTemplate($LATESTPOSTS_POST, true);
+			$txt .= $tp->parseTemplate($LATESTPOSTS_POST, true);
 		}
-		$txt .= $this->e107->tp->parseTemplate($LATESTPOSTS_END, true);
+		$txt .= $tp->parseTemplate($LATESTPOSTS_END, true);
 		return $txt;
 	}
 
@@ -37,7 +38,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		global $THREADTOPIC_REPLY;
 		$tmp = $this->forum->postGet($this->threadInfo['thread_id'], 0, 1);
 		e107::getScBatch('view', 'forum')->setScVar('postInfo', $tmp[0]);
-		return $this->e107->tp->parseTemplate($THREADTOPIC_REPLY, true);
+		return e107::getParser()->parseTemplate($THREADTOPIC_REPLY, true);
 	}
 
 	function sc_formstart()

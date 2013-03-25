@@ -2,16 +2,11 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Chatbox e_list Handler
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/e_list.php,v $
- * $Revision$
- * $Date$
- * $Author$
  *
 */
 if (!defined('e107_INIT')) { exit; }
@@ -25,6 +20,7 @@ class list_chatbox_menu
 
 	function getListData()
 	{
+		$sql = e107::getDb();
 		$list_caption = $this->parent->settings['caption'];
 		$list_display = ($this->parent->settings['open'] ? "" : "none");
 
@@ -41,13 +37,13 @@ class list_chatbox_menu
 
 		$bullet = $this->parent->getBullet($this->parent->settings['icon']);
 
-		if(!$chatbox_posts = $this->parent->e107->sql->db_Select_gen("SELECT * FROM #chatbox WHERE ".$qry))
+		if(!$chatbox_posts = $this->parent->$sql->gen("SELECT * FROM #chatbox WHERE ".$qry))
 		{ 
 			$list_data = LIST_CHATBOX_2;
 		}
 		else
 		{
-			while($row = $this->parent->e107->sql->db_Fetch())
+			while($row = $this->parent->$sql->fetch())
 			{
 				$cb_id = substr($row['cb_nick'] , 0, strpos($row['cb_nick'] , "."));
 				$cb_nick = substr($row['cb_nick'] , (strpos($row['cb_nick'] , ".")+1));
