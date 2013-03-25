@@ -85,7 +85,7 @@ $elements = array(e_UC_PUBLIC=>LAN_DISABLED,
 $text .= "
 					<tr>
 						<td>".UGFLAN_2.": </td>
-						<td>".$frm->radio_multi('maintainance_flag', $elements, $pref['maintainance_flag'], TRUE)."</td>
+						<td>".$frm->radio('maintainance_flag', $elements, $pref['maintainance_flag'], TRUE)."</td>
 					</tr>";
 
 //TODO multilanguage pref					

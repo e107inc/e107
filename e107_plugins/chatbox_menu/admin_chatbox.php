@@ -105,7 +105,7 @@ $text = "
 	</tr>
 	<tr>
 		<td>".CHBLAN_36."</td>
-		<td>".$frm->radio_multi('cb_layer', array(0 => CHBLAN_37, 1 => str_replace("[x]", $frm->text('cb_layer_height', $pref['cb_layer_height'], 3), CHBLAN_29), 2 => CHBLAN_38), $pref['cb_layer'], true)."</td>
+		<td>".$frm->radio('cb_layer', array(0 => CHBLAN_37, 1 => str_replace("[x]", $frm->text('cb_layer_height', $pref['cb_layer_height'], 3), CHBLAN_29), 2 => CHBLAN_38), $pref['cb_layer'], true)."</td>
 	</tr>
 	";
 

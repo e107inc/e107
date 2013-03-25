@@ -188,7 +188,7 @@ $text = "
 	<td>"; 
 	$array = array(NFLAN_13,NFLAN_14,NFLAN_20,NFLAN_21);
 	$text .= 
-	$frm->radio_multi('newsfeed_active', $array, ($newsfeeed_active ? $newsfeeed_active : 0), true, NFLAN_22)."
+	$frm->radio('newsfeed_active', $array, ($newsfeeed_active ? $newsfeeed_active : 0), true, NFLAN_22)."
 	</td>
 </tr>
 <tr>

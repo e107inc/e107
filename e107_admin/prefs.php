@@ -308,8 +308,8 @@ $text = "
 					<tr>
 						<td>".PRFLAN_134."</td>
 						<td>
-							".$frm->radio('redirectsiteurl', 1, $pref['redirectsiteurl']).$frm->label(LAN_ENABLED, 'redirectsiteurl', 1)."&nbsp;&nbsp;
-							".$frm->radio('redirectsiteurl', 0, !$pref['redirectsiteurl']).$frm->label(LAN_DISABLED, 'redirectsiteurl', 0)."
+							".$frm->radio('redirectsiteurl', 1, $pref['redirectsiteurl'], array('label'=>LAN_ENABLED))." 
+							".$frm->radio('redirectsiteurl', 0, !$pref['redirectsiteurl'], array('label'=>LAN_DISABLED))."
 							<div class='field-help'>".PRFLAN_135."</div>
 						</td>
 					</tr>
@@ -1470,7 +1470,7 @@ $text .= "					<tr>
 					<tr>
 						<td>".PRFLAN_48.":</td>
 						<td class='form-inline'>
-							".$frm->radio_multi('user_tracking', array('cookie' => PRFLAN_49, 'session' => PRFLAN_50), $pref['user_tracking'])." ".PRFLAN_55.": ".$frm->text('cookie_name', $pref['cookie_name'], 20)."
+							".$frm->radio('user_tracking', array('cookie' => PRFLAN_49, 'session' => PRFLAN_50), $pref['user_tracking'])." ".PRFLAN_55.": ".$frm->text('cookie_name', $pref['cookie_name'], 20)."
 						</td>
 					</tr>
 					
@@ -1763,7 +1763,7 @@ $text .= "
 			$name = $arr['name'];
 			$text .= "<tr>
 				<td>".$name."</td>
-				<td>".$frm->radio_multi("e_jslib_core[{$k}]",$js_options,$pref['e_jslib_core'][$k])."</td>
+				<td>".$frm->radio("e_jslib_core[{$k}]", $js_options, $pref['e_jslib_core'][$k])."</td>
 				</tr>";
 		}
 								
