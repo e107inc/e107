@@ -91,7 +91,7 @@ if(!isset($pref['cb_mod']))
 $text = "
 	<form method='post' action='".e_SELF."' id='cbform' >
     <table class='table adminform'>
-    	<colgroup span='2'>
+    	<colgroup>
     		<col class='col-label' />
     		<col class='col-control' />
     	</colgroup>
@@ -105,7 +105,7 @@ $text = "
 	</tr>
 	<tr>
 		<td>".CHBLAN_36."</td>
-		<td>".$frm->radio('cb_layer', array(0 => CHBLAN_37, 1 => str_replace("[x]", $frm->text('cb_layer_height', $pref['cb_layer_height'], 3), CHBLAN_29), 2 => CHBLAN_38), $pref['cb_layer'], true)."</td>
+		<td>".$frm->radio('cb_layer', array(0 => CHBLAN_37, 1 => str_replace("[x]", $frm->number('cb_layer_height', $pref['cb_layer_height'], 3), CHBLAN_29), 2 => CHBLAN_38), $pref['cb_layer'], array('sep' => '<br />'))."</td>
 	</tr>
 	";
 
@@ -113,7 +113,7 @@ $text = "
 	{
 		$text .= "<tr>
 				  	<td>".CHBLAN_31."?: </td>
-					<td>".$frm->checkbox('cb_emote', 1, varset($pref['cb_emote'],0))."</td>
+					<td>".$frm->radio_switch('cb_emote', $pref['cb_emote'])."</td>
 				  </tr>";
 	}
 
