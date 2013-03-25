@@ -851,7 +851,7 @@ class e_form
 	{		
 		//size - large|medium|small
 		//width should be explicit set by current admin theme
-		$size = 'span12';
+		$size = 'input-large';
 		
 		switch($size)
 		{
@@ -869,7 +869,7 @@ class e_form
 			case 'large':
 			default:
 				$rows = '15';
-				$size = 'large span10';
+				$size = 'large input-block-level';
 			//	$height = "style='height:500px;width:1025px'"; // inline required for wysiwyg
 			break;
 		}
@@ -1011,7 +1011,7 @@ class e_form
 	 * @param $checked boolean
 	 * @param $options 
 	 */
-	function radio($name, $value, $checked = false, $options = array())
+	function radio($name, $value, $checked = false, $options = null)
 	{
 		
 		if(!is_array($options)) parse_str($options, $options);
@@ -1031,10 +1031,10 @@ class e_form
 		
 	
 		
-		
+	//	return print_a($options,true);
 		if($labelFound) // Bootstrap compatible markup
 		{
-			$text .= "<label class='radio'>";	
+			$text .= "<label class='radio inline'>";	
 			
 		}
 		
@@ -1073,28 +1073,47 @@ class e_form
 			$options_off = array('class' => 'e-expandit-off');			
 		}
 		
+		$options_on['label'] = $label_enabled ? $label_enabled : LAN_ENABLED; 
+		$options_off['label'] = $label_disabled ? $label_disabled : LAN_DISABLED; 
+		
 		if(vartrue($options['reverse'])) // reverse order. 
 		{
 			unset($options['reverse']);
-			return $this->radio($name, 0, !$checked_enabled, $options_off)."".$this->label($label_disabled ? $label_disabled : LAN_DISABLED, $name, 0)."&nbsp;&nbsp;".
-			$this->radio($name, 1, $checked_enabled, $options_on)."".$this->label($label_enabled ? $label_enabled : LAN_ENABLED, $name, 1);			
+			
+			return $this->radio($name, 0, !$checked_enabled, $options_off)." ".
+			$this->radio($name, 1, $checked_enabled, $options_on);			
+			
+		//	return $this->radio($name, 0, !$checked_enabled, $options_off)."".$this->label($label_disabled ? $label_disabled : LAN_DISABLED, $name, 0)."&nbsp;&nbsp;".
+		//	$this->radio($name, 1, $checked_enabled, $options_on)."".$this->label($label_enabled ? $label_enabled : LAN_ENABLED, $name, 1);			
 		}
 		
-		return $this->radio($name, 1, $checked_enabled, $options_on)."".$this->label($label_enabled ? $label_enabled : LAN_ENABLED, $name, 1)."&nbsp;&nbsp;
-			".$this->radio($name, 0, !$checked_enabled, $options_off)."".$this->label($label_disabled ? $label_disabled : LAN_DISABLED, $name, 0);
+			$label = defset($label, $label);
+			
+			$helpLabel = (is_array($help)) ? vartrue($help[$value]) : $help;
+		
+		// Bootstrap Style Code - for use later. 	
+	
+			
+		//	['help'] = $helpLabel;
+		//	$text[] = $this->radio($name, $value, (string) $checked === (string) $value, $options);
+		return $this->radio($name, 1, $checked_enabled, $options_on)." 	".$this->radio($name, 0, !$checked_enabled, $options_off);
+		
+		
+	//	return $this->radio($name, 1, $checked_enabled, $options_on)."".$this->label($label_enabled ? $label_enabled : LAN_ENABLED, $name, 1)."&nbsp;&nbsp;
+	//		".$this->radio($name, 0, !$checked_enabled, $options_off)."".$this->label($label_disabled ? $label_disabled : LAN_DISABLED, $name, 0);
 
 	}
 
 
 	/**
-	 * XXX INTERNAL ONLY - Use radio() with the 'multiple=1' option instead of using this directly. 
+	 * XXX INTERNAL ONLY - Use radio() instead. array will automatically trigger this internal method.  
 	 * @param string $name 
 	 * @param array $elements = arrays value => label
 	 * @param string/integer $checked = current value
 	 * @param boolean $multi_line
 	 * @param mixed $help array of field help items or string of field-help (to show on all)
 	 */
-	function radio_multi($name, $elements, $checked, $multi_line = false, $help = null)
+	private function radio_multi($name, $elements, $checked, $options=array(), $help = null)
 	{
 		
 		
@@ -1117,6 +1136,7 @@ class e_form
 		
 		
 		$text = array();
+				
 		if(is_string($elements)) parse_str($elements, $elements);
 		
 		foreach ($elements as $value => $label)
@@ -1126,27 +1146,37 @@ class e_form
 			$helpLabel = (is_array($help)) ? vartrue($help[$value]) : $help;
 		
 		// Bootstrap Style Code - for use later. 	
-		//	$options['label'] = $label;
-		//	$options['help'] = $helpLabel;
-		//	$text[] = $this->radio($name, $value, (string) $checked === (string) $value, $options);
+			$options['label'] = $label;
+			$options['help'] = $helpLabel;
+			$text[] = $this->radio($name, $value, (string) $checked === (string) $value, $options);
 	
-			$text[] = $this->radio($name, $value, (string) $checked === (string) $value)."".$this->label($label, $name, $value).(isset($helpLabel) ? "<div class='field-help'>".$helpLabel."</div>" : '');
+		//	$text[] = $this->radio($name, $value, (string) $checked === (string) $value)."".$this->label($label, $name, $value).(isset($helpLabel) ? "<div class='field-help'>".$helpLabel."</div>" : '');
 		}
 		
 		if($multi_line === false)
 		{
-			return implode("&nbsp;&nbsp;", $text);
+		//	return implode("&nbsp;&nbsp;", $text);
 		}
 		
+		
+		$separator = varset($options['sep']," ");
+	//	return print_a($text,true);
+		return implode($separator, $text);
+		
 		// return implode("\n", $text);
-		return "<div class='field-spacer' style='width:50%;float:left'>".implode("</div><div class='field-spacer' style='width:50%;float:left'>", $text)."</div>";
+		//XXX Limiting markup. 
+	//	return "<div class='field-spacer' style='width:50%;float:left'>".implode("</div><div class='field-spacer' style='width:50%;float:left'>", $text)."</div>";
 
 	}
 
+	/**
+	 * Just for BC - use the $options['label'] instead. 
+	 */
 	function label($text, $name = '', $value = '')
 	{
+		e107::getMessage()->addDebug("Deprecated \$frm->label() used");
 		$for_id = $this->_format_id('', $name, $value, 'for');
-		return "<label$for_id class='e-tip '>{$text}</label>";
+		return "<label$for_id class='e-tip legacy'>{$text}</label>";
 	}
 	
 	function help($text)
@@ -1759,7 +1789,7 @@ class e_form
 				break;
 
 			case 'radio':
-				$def_options['class'] = 'radio inline';
+				//$def_options['class'] = ' ';
 				unset($def_options['size'], $def_options['selected']);
 				break;
 
@@ -2866,7 +2896,7 @@ class e_form
 				}
 
 				//$this->selectbox($key, $layouts, $value)
-				$ret =  (vartrue($parms['raw']) ? $layouts[0] : $this->radio_multi($key, $layouts[0], $value, true, $info));
+				$ret =  (vartrue($parms['raw']) ? $layouts[0] : $this->radio_multi($key, $layouts[0], $value,array('sep'=>"<br />"), $info));
 			break;
 
 			case 'templates': //to do - exclude param (exact match)

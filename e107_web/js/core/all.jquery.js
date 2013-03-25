@@ -108,6 +108,12 @@ $(document).ready(function()
 		// On 
 		$(".e-expandit-on").click(function () {
        		
+       		if($(this).is("input") && $(this).attr("type")=='radio')
+       		{
+       			idt = $(this).parent().nextAll("div.e-expandit-container");	
+       			$(idt).show("slow");	
+       			return true;
+       		}
        		var href = ($(this).is("a")) ? $(this).attr("href") : '';
 						
 			if(href === "#" || href == "") 
@@ -133,6 +139,13 @@ $(document).ready(function()
 		// Off. 
 		$(".e-expandit-off").click(function () {
        		
+			if($(this).is("input") && $(this).attr("type")=='radio')
+       		{
+       			idt = $(this).parent().nextAll("div.e-expandit-container");	
+       			$(idt).hide("slow");	
+       			return true;
+       		}
+       				
        		var href = ($(this).is("a")) ? $(this).attr("href") : '';
 						
 			if(href === "#" || href == "") 
