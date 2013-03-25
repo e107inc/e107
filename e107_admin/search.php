@@ -238,13 +238,13 @@ if ($query[0] == 'settings')
 					<tr>
 						<td>".SEALAN_35."</td>
 						<td>
-							".$frm->radio_multi('selector', array(2 => SEALAN_36, 1 => SEALAN_37, 0 => SEALAN_38), $search_prefs['selector'])."
+							".$frm->radio('selector', array(2 => SEALAN_36, 1 => SEALAN_37, 0 => SEALAN_38), $search_prefs['selector'])."
 						</td>
 					</tr>
 					<tr>
 						<td>".SEALAN_12."</td>
 						<td class='form-inline'>
-							".$frm->radio_multi('time_restrict', array(0 => LAN_DISABLED, 1 => SEALAN_13), $search_prefs['time_restrict'])."&nbsp;
+							".$frm->radio('time_restrict', array(0 => LAN_DISABLED, 1 => SEALAN_13), $search_prefs['time_restrict'])."&nbsp;
 							".$frm->text('time_secs', $tp -> toForm($search_prefs['time_secs']), 3, 'class=tbox&size=mini')."&nbsp;".SEALAN_14."
 						</td>
 					</tr>
