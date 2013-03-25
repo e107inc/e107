@@ -76,11 +76,14 @@ class plugin_forum_post_shortcodes extends e_shortcode
 	function sc_postbox()
 	{
 		global $post;
+		return e107::getForm()->bbarea('post',$post,'forum');
+		
+		
 		$rows = (e_WYSIWYG) ? 15 : 10;
 		$ret = "<textarea class='e-wysiwyg tbox' id='post' name='post' cols='70' rows='{$rows}' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$post</textarea>\n<br />\n";
-		if(!e_WYSIWYG)
+	//	if(!e_WYSIWYG)
 		{
-			$ret .= display_help('helpb', 'forum');
+	//		$ret .= display_help('helpb', 'forum');
 		}
 		return $ret;
 	}
@@ -124,14 +127,47 @@ class plugin_forum_post_shortcodes extends e_shortcode
 			}
 		}
 	}
+	
+
+	function sc_poll($parm='')
+	{		
+		global $forum, $poll_form, $action;
+		
+		if(!$poll_form)
+		{
+			if(is_readable(e_PLUGIN."poll/poll_class.php")) 
+			{
+				require_once(e_PLUGIN."poll/poll_class.php");
+				$pollo = new poll;
+				$poll_form = $pollo -> renderPollForm("forum");
+			}
+		}
+
+		if ($action == 'nt' && check_class($forum->prefs->get('poll')) && strpos(e_QUERY, 'edit') === false)
+		{
+			return "<tr><td><a href='#pollform' class='e-expandit'>Add Poll</a></td><td>
+			<div id='pollform' style='display:none'>
+			<table class='table table-striped'>".$poll_form."</table></div></td></tr>";
+		}
+		return '';
+	}
 
 	function sc_postthreadas()
 	{
 		global $action, $threadInfo;
+		
 		if (MODERATOR && $action == "nt")
 		{
 			$thread_sticky = (isset($_POST['threadtype']) ? $_POST['threadtype'] : vartrue($threadInfo['thread_sticky'])); // no reference of 'head' $threadInfo['head']['thread_sticky']
-			return "<br /><span class='defaulttext'>".LAN_400."<input name='threadtype' type='radio' value='0' ".(!$thread_sticky ? "checked='checked' " : "")." />".LAN_1."&nbsp;<input name='threadtype' type='radio' value='1' ".($thread_sticky == 1 ? "checked='checked' " : "")." />".LAN_2."&nbsp;<input name='threadtype' type='radio' value='2' ".($thread_sticky == 2 ? "checked='checked' " : "")." />".LAN_3."</span>";
+				
+			$opts = array(0 => "Normal", 1 => "Sticky", 2 => "Announcement");	
+				
+			return e107::getForm()->radio('threadtype',$opts, $thread_sticky);
+			
+			
+			
+			return "<br /><span class='defaulttext'>post thread as 
+			<input name='threadtype' type='radio' value='0' ".(!$thread_sticky ? "checked='checked' " : "")." />".LAN_1."&nbsp;<input name='threadtype' type='radio' value='1' ".($thread_sticky == 1 ? "checked='checked' " : "")." />".LAN_2."&nbsp;<input name='threadtype' type='radio' value='2' ".($thread_sticky == 2 ? "checked='checked' " : "")." />".LAN_3."</span>";
 		}
 		return '';
 	}
@@ -153,6 +189,8 @@ class plugin_forum_post_shortcodes extends e_shortcode
 
 	function sc_emailnotify()
 	{
+
+		
 		global $threadInfo, $action, $eaction;
 
 		$pref = e107::getPlugPref('forum');
@@ -181,15 +219,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		return '';
 	}
 
-	function sc_poll()
-	{
-		global $forum, $poll_form, $action;
-		if ($action == 'nt' && check_class($forum->prefs->get('poll')) && strpos(e_QUERY, 'edit') === false)
-		{
-			return $poll_form;
-		}
-		return '';
-	}
+
 
 }
 ?>
