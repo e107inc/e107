@@ -2,14 +2,11 @@
 /*
  * e107 website system
  *
- * Copyright (C) e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Tagwords Shortcodes
- *
- * $URL$
- * $Id$
  *
 */
 if (!defined('e107_INIT')) { exit; }
@@ -48,7 +45,7 @@ class tagwords_shortcodes extends e_shortcode
 	{
 		global $tag;
 
-		$value = (isset($_GET['q']) ? $this->e107->tp->toForm($_GET['q']) : '');
+		$value = (isset($_GET['q']) ? e107::getParser()->toForm($_GET['q']) : '');
 		switch($sc_mode)
 		{
 			case 'menu':
@@ -143,7 +140,7 @@ class tagwords_shortcodes extends e_shortcode
 		switch($sc_mode)
 		{
 			case 'result':
-				return "<b>".$tag->num."</b> ".($tag->num==1 ? LAN_TAG_8 : LAN_TAG_9)." '<b>".$this->e107->tp->toHTML($_GET['q'],true)."</b>'";
+				return "<b>".$tag->num."</b> ".($tag->num==1 ? LAN_TAG_8 : LAN_TAG_9)." '<b>".e107::getParser()->toHTML($_GET['q'],true)."</b>'";
 				break;
 			case 'form':
 			default:
@@ -274,7 +271,7 @@ class tagwords_shortcodes extends e_shortcode
 		global $tag;
 		if( varsettrue($tag->pref['tagwords_view_search'])==1 || varsettrue($tag->pref['tagwords_view_sort'])==1 || varsettrue($tag->pref['tagwords_view_style'])==1 || varsettrue($tag->pref['tagwords_view_area'])==1 )
 		{
-			return $this->e107->tp->parseTemplate($tag->template['options'], true, $tag->shortcodes);
+			return e107::getParser()->parseTemplate($tag->template['options'], true, $tag->shortcodes);
 		}
 	}
 
@@ -380,14 +377,14 @@ class tagwords_shortcodes extends e_shortcode
 	{
 		global $tag;
 		$id = 'tagwords_menu_caption';
-		return "<input class='tbox' type='text' id='".$id."' name='".$id."' value='".$this->e107->tp->toForm($tag->pref[$id],"","defs")."' size='30' maxlength='100' />";
+		return "<input class='tbox' type='text' id='".$id."' name='".$id."' value='".e107::getParser()->toForm($tag->pref[$id],"","defs")."' size='30' maxlength='100' />";
 	}
 
 	function sc_tag_opt_seperator()
 	{
 		global $tag;
 		$id = 'tagwords_word_seperator';
-		return "<input class='tbox' type='text' id='".$id."' name='".$id."' value='".$this->e107->tp->toForm($tag->pref[$id])."' size='3' maxlength='10' />";
+		return "<input class='tbox' type='text' id='".$id."' name='".$id."' value='".e107::getParser()->toForm($tag->pref[$id])."' size='3' maxlength='10' />";
 	}
 
 	function sc_tag_opt_activeareas()

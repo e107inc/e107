@@ -13,6 +13,7 @@ if (!defined('e107_INIT'))  exit;
 global $menu_pref;
 
 $e107 = e107::getInstance();
+$tp = e107::getParser();
 $sql = e107::getDb();
 $gen = new convert;
 
@@ -42,7 +43,7 @@ if($results = $sql->gen($qry))
 		$datestamp = $gen->convert_date($row['post_datestamp'], 'short');
 		$id = $row['thread_id'];
 		$topic = ($row['thread_datestamp'] == $row['post_datestamp'] ?  '' : 'Re:');
-		$topic .= strip_tags($e107->tp->toHTML($row['thread_name'], true, 'emotes_off, no_make_clickable, parse_bb', '', $pref['menu_wordwrap']));
+		$topic .= strip_tags($tp->toHTML($row['thread_name'], true, 'emotes_off, no_make_clickable, parse_bb', '', $pref['menu_wordwrap']));
 		if($row['post_user_anon'])
 		{
 			$poster = $row['post_user_anon'];
@@ -51,7 +52,7 @@ if($results = $sql->gen($qry))
 		{
 			if($row['user_name'])
 			{
-				$poster = "<a href='".$e107->url->create('user/profile/view', array('name' => $row['user_name'], 'id' => $row['post_user']))."'>{$row['user_name']}</a>";
+				$poster = "<a href='".e107::getUrl()->create('user/profile/view', array('name' => $row['user_name'], 'id' => $row['post_user']))."'>{$row['user_name']}</a>";
 			}
 			else
 			{
@@ -59,10 +60,10 @@ if($results = $sql->gen($qry))
 			}
 		}
 
-		$post = strip_tags(e107::getParser()->toHTML($row['post_entry'], true, 'emotes_off, no_make_clickable', '', $pref['menu_wordwrap']));
-		$post = e107::getParser()->text_truncate($post, $menu_pref['newforumposts_characters'], $menu_pref['newforumposts_postfix']);
+		$post = strip_tags($tp->toHTML($row['post_entry'], true, 'emotes_off, no_make_clickable', '', $pref['menu_wordwrap']));
+		$post = $tp->text_truncate($post, $menu_pref['newforumposts_characters'], $menu_pref['newforumposts_postfix']);
 
-		$url = $e107->url->create('forum/thread/last', $row);
+		$url = e107::getUrl()->create('forum/thread/last', $row);
 		//TODO legacy bullet is not use here anymore
 		//$bullet = "<img src='".THEME_ABS.'images/'.(defined('BULLET') ? BULLET : 'bullet2.gif')."' alt='' />";
 		

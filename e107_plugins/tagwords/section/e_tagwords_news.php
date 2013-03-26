@@ -1,7 +1,6 @@
 <?php
 /**
- * Copyright (C) e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id$
+ * Copyright (C) 2008-2013 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
  * 
  * Tagwords core section
  */
@@ -29,12 +28,14 @@ class e_tagwords_news
 		}
 		//$url = e_BASE."news.php?item.".$this->row['news_id'];
 		$url = e107::getUrl()->create('news/view/item', $this->row);
-		return "<a href='".$url."'>".$this->e107->tp->toHTML($this->row['news_title'], TRUE, '')."</a>";
+		return "<a href='".$url."'>".e107::getParser()->toHTML($this->row['news_title'], TRUE, '')."</a>";
 	}
 
 	function getRecord($id)
 	{
+		$sql = e107::getDb();
 		$this->row = '';
+
 		//FIXME - only if news mod rewrite is on
 		$qry = "SELECT n.*, nc.* 
 		FROM #news as n
@@ -44,12 +45,11 @@ class e_tagwords_news
 		AND (n.news_end=0 || n.news_end>".time().") 
 		AND n.news_class REGEXP '".e_CLASS_REGEXP."' ";
 
-		if($this->e107->sql->db_Select_gen($qry))
+		if($sql->gen($qry))
 		{
-			$this->row=$this->e107->sql->db_Fetch();
+			$this->row= $sql->fetch();
 		}
 		return $this->row;
 	}
 }
-
 ?>

@@ -292,7 +292,7 @@ class e_form
 		$ret .= "
 			<div id='{$id}-iconpicker' class='e-hideme'>
 				<div class='expand-container' id='{$id}-iconpicker-cn'>
-					".(!$ajax ? $e107->tp->parseTemplate('{ICONPICKER='.$sc_parameters.'}') : '')."
+					".(!$ajax ? $tp->parseTemplate('{ICONPICKER='.$sc_parameters.'}') : '')."
 				</div>
 			</div>
 		";

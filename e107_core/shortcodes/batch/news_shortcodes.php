@@ -37,7 +37,7 @@ class news_shortcodes extends e_shortcode
 
 	function sc_newstitle()
 	{
-		return $this->e107->tp->toHTML($this->news_item['news_title'], TRUE, 'TITLE');
+		return e107::getParser()->toHTML($this->news_item['news_title'], TRUE, 'TITLE');
 	}
 
 	function sc_newsurltitle()
@@ -76,7 +76,7 @@ class news_shortcodes extends e_shortcode
 			}
 			else
 			{
-				return "<a href='".$this->e107->url->create('user/profile/view', $this->news_item)."'>".$this->news_item['user_name']."{$parm}</a>";
+				return "<a href='".e107::getUrl()->create('user/profile/view', $this->news_item)."'>".$this->news_item['user_name']."{$parm}</a>";
 			}
 		}
 		return "<a href='http://e107.org'>e107</a>";
@@ -101,14 +101,14 @@ class news_shortcodes extends e_shortcode
 
 		if (vartrue($pref['multilanguage']))
 		{	// Can have multilanguage news table, monlingual comment table. If the comment table is multilingual, it'll only count entries in the current language
-			$news_item['news_comment_total'] = $sql->db_Count("comments", "(*)", "WHERE comment_item_id='".$news_item['news_id']."' AND comment_type='0' ");
+			$news_item['news_comment_total'] = $sql->count("comments", "(*)", "WHERE comment_item_id='".$news_item['news_id']."' AND comment_type='0' ");
 		}
 
 		//XXX - ??? - another query? We should cache it in news table.
 		if ($pref['comments_icon'] && $news_item['news_comment_total'])
 		{
-			$sql->db_Select('comments', 'comment_datestamp', "comment_item_id='".intval($news_item['news_id'])."' AND comment_type='0' ORDER BY comment_datestamp DESC LIMIT 0,1");
-			list($comments['comment_datestamp']) = $sql->db_Fetch();
+			$sql->select('comments', 'comment_datestamp', "comment_item_id='".intval($news_item['news_id'])."' AND comment_type='0' ORDER BY comment_datestamp DESC LIMIT 0,1");
+			list($comments['comment_datestamp']) = $sql->fetch();
 			$latest_comment = $comments['comment_datestamp'];
 			if ($latest_comment > USERLV )
 			{
@@ -145,7 +145,7 @@ class news_shortcodes extends e_shortcode
 	function sc_newscategory($parm)
 	{
 		$category_name = e107::getParser()->toHTML($this->news_item['category_name'], FALSE ,'defs');
-		return "<a class='".$GLOBALS['NEWS_CSSMODE']."_category' style='".(isset($this->param['catlink']) ? $this->param['catlink'] : "#")."' href='".$this->e107->url->create('news/list/category', $this->news_item)."'>".$category_name."</a>";
+		return "<a class='".$GLOBALS['NEWS_CSSMODE']."_category' style='".(isset($this->param['catlink']) ? $this->param['catlink'] : "#")."' href='".e107::getUrl()->create('news/list/category', $this->news_item)."'>".$category_name."</a>";
 	}
 
 	function sc_newsdate($parm)
@@ -244,7 +244,7 @@ class news_shortcodes extends e_shortcode
 			}
 			else
 			{
-				return $es1."<a href='".$this->e107->url->create('news/view/item', $this->news_item)."'>".EXTENDEDSTRING."</a>".$es2;
+				return $es1."<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".EXTENDEDSTRING."</a>".$es2;
 			}
 		}
 		return '';
@@ -313,7 +313,7 @@ class news_shortcodes extends e_shortcode
 			break;
 
 			default:
-				return "<a href='".$this->e107->url->create('news/view/item', $this->news_item)."'><img class='news_image' src='".$src."' alt='' style='".$this->param['thumbnail']."' /></a>";
+				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='news_image' src='".$src."' alt='' style='".$this->param['thumbnail']."' /></a>";
 			break;
 		}
 	}
@@ -349,7 +349,7 @@ class news_shortcodes extends e_shortcode
 
 			case 'url':
 			default:
-				return "<a href='".$this->e107->url->create('news/view/item', $this->news_item)."'><img class='news_image' src='".$src."' alt='' style='".$this->param['thumbnail']."' /></a>";
+				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='news_image' src='".$src."' alt='' style='".$this->param['thumbnail']."' /></a>";
 			break;
 		}
 	}
@@ -362,7 +362,7 @@ class news_shortcodes extends e_shortcode
 	function sc_newstitlelink($parm = '')
 	{
 		parse_str($parm, $parms);
-		$url = $this->e107->url->create('news/view/item', $this->news_item);
+		$url = e107::getUrl()->create('news/view/item', $this->news_item);
 		if(isset($parms['href']))
 		{
 			return $url;
@@ -372,7 +372,7 @@ class news_shortcodes extends e_shortcode
 
 	function sc_newsurl()
 	{
-		return $this->e107->url->create('news/view/item', $this->news_item);
+		return e107::getUrl()->create('news/view/item', $this->news_item);
 	}
 
 	function sc_newscaticon($parm = '')
@@ -409,7 +409,7 @@ class news_shortcodes extends e_shortcode
 
 			case 'url':
 			default:
-				return "<a href='".$this->e107->url->create('news/list/category', $this->news_item)."'><img style='".$this->param['caticon']."' src='".$src."' alt='' /></a>";
+				return "<a href='".e107::getUrl()->create('news/list/category', $this->news_item)."'><img style='".$this->param['caticon']."' src='".$src."' alt='' /></a>";
 			break;
 		}
 	}
@@ -462,7 +462,6 @@ class news_shortcodes extends e_shortcode
 		}
 		return implode(", ",$words);			
 	}
-
 
 }
 ?>

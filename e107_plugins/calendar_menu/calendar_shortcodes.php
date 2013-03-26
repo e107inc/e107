@@ -8,11 +8,6 @@
  *
  * Shortcodes for event calendar
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_shortcodes.php,v $
- * $Revision$
- * $Date$
- * $Author$
- *
 */
 
 /**
@@ -22,7 +17,6 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id$;
  */
 
 /*
@@ -204,7 +198,7 @@ class event_calendar_shortcodes
 	private $prop;		// Start date for new event entry
 	private	$ds = '';	// Display type for some shortcodes (mostly event listing)
 
-	private	$ourDB;		// For when we need a DB object
+	//private	$ourDB;		// For when we need a DB object
 
 
 	public function __construct()
@@ -369,17 +363,19 @@ class event_calendar_shortcodes
 	// Categories listing
 	public function sc_ec_nav_categories($parm = '')
 	{
-		if ($this->ourDB == NULL)
+		/*if ($this->ourDB == NULL)
 		{
-			$this->ourDB = new db;			// @todo use new method
+			$this->ourDB = new db;			// @todo use new method - Moc: done, check if functional. 
 		}
+		*/
+		$sql = e107::getDb();
 		($parm == 'nosubmit') ? $insert = '' : $insert = "onchange='this.form.submit()'";
 		$ret = "<select name='event_cat_ids' class='tbox' style='width:140px;' {$insert} >\n<option value='all'>".EC_LAN_97."</option>\n";
 
 		$cal_arg = ($this->ecalClass->cal_super ? '' : " find_in_set(event_cat_class,'".USERCLASS_LIST."') AND ");
 		$cal_arg .= "(event_cat_name != '".EC_DEFAULT_CATEGORY."') ";
-		$this->ourDB->db_Select("event_cat", "*", $cal_arg);
-		while ($row = $this->ourDB->db_Fetch())
+		$sql->select("event_cat", "*", $cal_arg);
+		while ($row = $sql->fetch())
 		{
 			$selected = ($row['event_cat_id'] == $this->catFilter) ? " selected='selected'" : '';
 			$ret .= "<option class='tbox' value='".$row['event_cat_id']."'{$selected}>".$row['event_cat_name']."</option>\n";
@@ -409,14 +405,14 @@ class event_calendar_shortcodes
 	{
 		if (!$this->event['event_allday']) return '';
 		if (trim($parm) == '') return '';
-		return $this->e107->tp->parseTemplate('{'.$parm.'}', FALSE, $this);
+		return e107::getParser()->parseTemplate('{'.$parm.'}', FALSE, $this);
 	}
 
 	public function sc_ec_ifnot_allday($parm= '')
 	{
 		if ($this->event['event_allday']) return '';
 		if (trim($parm) == '') return '';
-		return $this->e107->tp->parseTemplate('{'.$parm.'}', FALSE, $this);
+		return e107::getParser()->parseTemplate('{'.$parm.'}', FALSE, $this);
 	}
 
 	public function sc_ec_ifnot_sameday($parm= '')
@@ -424,7 +420,7 @@ class event_calendar_shortcodes
 		if (intval($this->event['event_end']/86400) == intval($this->event['event_start']/86400)) return '';
 		if (!$this->event['event_allday']) return '';
 		if (trim($parm) == '') return;
-		return $this->e107->tp->parseTemplate('{'.$parm.'}', FALSE, $this);
+		return e107::getParser()->parseTemplate('{'.$parm.'}', FALSE, $this);
 	}
 
 	public function sc_ec_if_sameday($parm= '')
@@ -432,7 +428,7 @@ class event_calendar_shortcodes
 		if (intval($this->event['event_end']/86400) != intval($this->event['event_start']/86400)) return '';
 		if (!$this->event['event_allday']) return '';
 		if (trim($parm) == '') return;
-		return $this->e107->tp->parseTemplate('{'.$parm.'}', FALSE, $this);
+		return e107::getParser()->parseTemplate('{'.$parm.'}', FALSE, $this);
 	}
 
 
@@ -490,7 +486,6 @@ class event_calendar_shortcodes
 	}
 
 
-
 	public function sc_ec_mail_time_end($parm = '')
 	{
 		if ($this->event['event_allday'] ||($this->event['event_end'] == $this->event['event_start'])) return '';
@@ -513,9 +508,8 @@ class event_calendar_shortcodes
 
 	public function sc_ec_mail_details($parm = '')
 	{
-		return $this->e107->tp->toHTML($this->event['event_details'], TRUE,'E_BODY');
+		return e107::getParser()->toHTML($this->event['event_details'], TRUE,'E_BODY');
 	}
-
 
 
 	public function sc_ec_mail_category($parm = '')
@@ -524,12 +518,10 @@ class event_calendar_shortcodes
 	}
 
 
-
-
 	public function sc_ec_mail_contact($parm = '')
 	{
 		if ($this->event['event_contact'] == '') return '';
-		return $this->e107->tp->toHTML($this->event['event_contact'],TRUE,'LINKTEXT');
+		return e107::getParser()->toHTML($this->event['event_contact'],TRUE,'LINKTEXT');
 	}
 
 
@@ -567,7 +559,7 @@ class event_calendar_shortcodes
 	{
 		if(isset($this->ecalClass->pref['eventpost_lenday']) && $this->ecalClass->pref['eventpost_lenday'])
 		{
-		  return "<strong>".$this->e107->tp->text_truncate($this->headerDay,$this->ecalClass->pref['eventpost_lenday'],'')."</strong>";
+		  return "<strong>".e107::getParser()->text_truncate($this->headerDay,$this->ecalClass->pref['eventpost_lenday'],'')."</strong>";
 		}
 		else
 		{
@@ -648,10 +640,10 @@ class event_calendar_shortcodes
 	public function sc_ec_showevent_heading()
 	{
 		$linkut = mktime(0 , 0 , 0 , $this->month, $this->curDay, $this->year);
-		$show_title = $this->e107->tp->toHTML($this->event['event_title'],FALSE,'TITLE');	// Remove entities in case need to truncate
+		$show_title = e107::getParser()->toHTML($this->event['event_title'],FALSE,'TITLE');	// Remove entities in case need to truncate
 		if(isset($this->event['fulltopic']) && !$this->event['fulltopic'])
 		{
-		  $show_title = $this->e107->tp->text_truncate($show_title, 10, '...');
+		  $show_title = e107::getParser()->text_truncate($show_title, 10, '...');
 		}
 		if($this->event['startofevent'])
 		{
@@ -770,7 +762,7 @@ class event_calendar_shortcodes
 
 	public function sc_ec_event_details()
 	{
-		return $this->e107->tp->toHTML($this->event['event_details'], TRUE, 'BODY');
+		return e107::getParser()->toHTML($this->event['event_details'], TRUE, 'BODY');
 	}
 
 
@@ -804,7 +796,7 @@ class event_calendar_shortcodes
 		{	// Add a bbcode if none exists
 			$tm = '[link=mailto:'.trim($tm).']'.substr($tm,0,strpos($tm,'@')).'[/link]';
 		}
-		return $this->e107->tp->toHTML($tm,TRUE,'LINKTEXT');	// Return obfuscated email link
+		return e107::getParser()->toHTML($tm,TRUE,'LINKTEXT');	// Return obfuscated email link
 	}
 
 
@@ -843,7 +835,7 @@ class event_calendar_shortcodes
 		if ($this->event['event_allday']) $et += 2;
 		if (is_array($this->eventDisplayCodes))
 		{
-			return $this->e107->tp->parseTemplate($this->eventDisplayCodes[$et], FALSE, $this);
+			return e107::getParser()->parseTemplate($this->eventDisplayCodes[$et], FALSE, $this);
 		}
 		return '--** No template set **--';
 	}
@@ -879,7 +871,7 @@ class event_calendar_shortcodes
 	public function sc_ec_eventarchive_details()
 	{
 		$number = 40;
-		$rowtext = $this->e107->tp->toHTML($this->event['event_details'], TRUE, 'BODY');
+		$rowtext = e107::getParser()->toHTML($this->event['event_details'], TRUE, 'BODY');
 		$rowtext = strip_tags($rowtext);
 		$words = explode(' ', $rowtext);
 		$ret = implode(' ', array_slice($words, 0, $number));
@@ -979,8 +971,6 @@ class event_calendar_shortcodes
 	}
 
 
-
-
 // Specific to the 'listings' page
 //--------------------------------
 
@@ -988,8 +978,6 @@ class event_calendar_shortcodes
 	{
 		return $this->printVars['lt'];
 	}
-
-
 
 	public function sc_ec_pr_cat_list()
 	{
@@ -1058,42 +1046,42 @@ class event_calendar_shortcodes
 	{
 		if ($this->printVars['ot'] != 'print') return;
 		if (trim($parm) == '') return;
-		return $this->e107->tp->parseTemplate('{'.$parm.'}', FALSE, $this);
+		return e107::getParser()->parseTemplate('{'.$parm.'}', FALSE, $this);
 	}
 
 	public function sc_ec_ifnot_print($parm = '')
 	{
 		if ($this->printVars['ot'] == 'print') return;
 		if (trim($parm) == '') return;
-		return $this->e107->tp->parseTemplate('{'.$parm.'}', FALSE, $this);
+		return e107::getParser()->parseTemplate('{'.$parm.'}', FALSE, $this);
 	}
 
 	public function sc_ec_if_display($parm = '')
 	{
 		if ($this->printVars['ot'] != 'display') return;
 		if (trim($parm) == '') return;
-		return $this->e107->tp->parseTemplate('{'.$parm.'}', FALSE, $this);
+		return e107::getParser()->parseTemplate('{'.$parm.'}', FALSE, $this);
 	}
 
 	public function sc_ec_ifnot_display($parm = '')
 	{
 		if ($this->printVars['ot'] == 'display') return;
 		if (trim($parm) == '') return;
-		return $this->e107->tp->parseTemplate('{'.$parm.'}', FALSE, $this);
+		return e107::getParser()->parseTemplate('{'.$parm.'}', FALSE, $this);
 	}
 
 	public function sc_ec_if_pdf($parm = '')
 	{
 		if ($this->printVars['ot'] != 'pdf') return;
 		if (trim($parm) == '') return;
-		return $this->e107->tp->parseTemplate('{'.$parm.'}', FALSE, $this);
+		return e107::getParser()->parseTemplate('{'.$parm.'}', FALSE, $this);
 	}
 
 	public function sc_ec_ifnot_pdf($parm = '')
 	{
 		if ($this->printVars['ot'] == 'pdf') return;
 		if (trim($parm) == '') return;
-		return $this->e107->tp->parseTemplate('{'.$parm.'}', FALSE, $this);
+		return e107::getParser()->parseTemplate('{'.$parm.'}', FALSE, $this);
 	}
 
 }	// END - shortcode class

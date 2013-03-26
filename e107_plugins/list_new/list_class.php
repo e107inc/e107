@@ -2,16 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * List Class
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list_class.php,v $
- * $Revision$
- * $Date$
- * $Author$
  *
 */
 if (!defined('e107_INIT')) { exit; }
@@ -93,7 +89,7 @@ class listclass
 	{
 		//for each call to the template, provide the correct data set through load_globals
 		//list_shortcodes::load_globals();
-		return $this->e107->tp->parseTemplate($this->template[$template], true, $this->shortcodes);
+		return e107::getParser()->parseTemplate($this->template[$template], true, $this->shortcodes);
 	}
 
 	/**
@@ -104,9 +100,10 @@ class listclass
 	 */
 	function getListPrefs()
 	{
+		$sql = e107::getDb();
 		//check preferences from database
-		$num_rows = $this->e107->sql->db_Select_gen("SELECT * FROM #core WHERE e107_name='list' ");
-		$row = $this->e107->sql->db_Fetch();
+		$num_rows = $sql->gen("SELECT * FROM #core WHERE e107_name='list' ");
+		$row = $sql->fetch();
 
 		//insert default preferences
 		if (empty($row['e107_value']))
@@ -115,8 +112,8 @@ class listclass
 			$this->list_pref = $this->getDefaultPrefs();
 			$tmp = $this->e107->arrayStorage->WriteArray($this->list_pref);
 
-			$this->e107->sql->db_Insert("core", "'list', '$tmp' ");
-			$this->e107->sql->db_Select_gen("SELECT * FROM #core WHERE e107_name='list' ");
+			$sql->insert("core", "'list', '$tmp' ");
+			$sql->gen("SELECT * FROM #core WHERE e107_name='list' ");
 		}
 
 		$this->list_pref = $this->e107->arrayStorage->ReadArray($row['e107_value']);
@@ -161,16 +158,16 @@ class listclass
 			$s = $this->sections[$i];
 			if(varsettrue($this->list_pref[$s."_".$mode."_display"]) == '1')
 			{
-				$arr[$s]['caption'] = varsettrue($this->list_pref[$s."_".$mode."_caption"]);
-				$arr[$s]['display'] = varsettrue($this->list_pref[$s."_".$mode."_display"]);
-				$arr[$s]['open'] = varsettrue($this->list_pref[$s."_".$mode."_open"]);
-				$arr[$s]['author'] = varsettrue($this->list_pref[$s."_".$mode."_author"]);
-				$arr[$s]['category'] = varsettrue($this->list_pref[$s."_".$mode."_category"]);
-				$arr[$s]['date'] = varsettrue($this->list_pref[$s."_".$mode."_date"]);
-				$arr[$s]['icon'] = varsettrue($this->list_pref[$s."_".$mode."_icon"]);
-				$arr[$s]['amount'] = varsettrue($this->list_pref[$s."_".$mode."_amount"]);
-				$arr[$s]['order'] = varsettrue($this->list_pref[$s."_".$mode."_order"]);
-				$arr[$s]['section'] = $s;
+				$arr[$s]['caption'] 	= varsettrue($this->list_pref[$s."_".$mode."_caption"]);
+				$arr[$s]['display'] 	= varsettrue($this->list_pref[$s."_".$mode."_display"]);
+				$arr[$s]['open'] 		= varsettrue($this->list_pref[$s."_".$mode."_open"]);
+				$arr[$s]['author'] 		= varsettrue($this->list_pref[$s."_".$mode."_author"]);
+				$arr[$s]['category'] 	= varsettrue($this->list_pref[$s."_".$mode."_category"]);
+				$arr[$s]['date'] 		= varsettrue($this->list_pref[$s."_".$mode."_date"]);
+				$arr[$s]['icon'] 		= varsettrue($this->list_pref[$s."_".$mode."_icon"]);
+				$arr[$s]['amount'] 		= varsettrue($this->list_pref[$s."_".$mode."_amount"]);
+				$arr[$s]['order'] 		= varsettrue($this->list_pref[$s."_".$mode."_order"]);
+				$arr[$s]['section'] 	= $s;
 			}
 		}
 		//sort array on order values set in preferences
@@ -206,6 +203,7 @@ class listclass
 	 */
 	function getContentSections($mode='')
 	{
+		$sql = $e107::getDb();
 		global $pref;
 
 		if (!$content_install = isset($pref['plug_installed']['content']))
@@ -216,10 +214,10 @@ class listclass
 		$content_types = array();
 
 		//get top level categories
-		if($mainparents = $this->e107->sql->db_Select_gen("SELECT content_id, content_heading FROM #pcontent WHERE content_parent = '0' AND (content_datestamp=0 || content_datestamp < ".time().") AND (content_enddate=0 || content_enddate>".time().") ORDER BY content_heading"))
+		if($mainparents = $sql->gen("SELECT content_id, content_heading FROM #pcontent WHERE content_parent = '0' AND (content_datestamp=0 || content_datestamp < ".time().") AND (content_enddate=0 || content_enddate>".time().") ORDER BY content_heading"))
 		{
 			$content_name = 'content';
-			while($row = $this->e107->sql->db_Fetch())
+			while($row = $sql->fetch())
 			{
 				$content_types[] = "content_".$row['content_id'];
 				if(varsettrue($mode) == "add")
@@ -287,7 +285,7 @@ class listclass
 			{
 				if(!in_array($s, $this->content_types))
 				{
-					if ($plugin_installed = isset($pref['plug_installed'][$this->e107->tp->toDB($s, true)]))
+					if ($plugin_installed = isset($pref['plug_installed'][e107::getParser()->toDB($s, true)]))
 					{
 						$prf["$s_recent_menu_caption"] = $s;
 						$prf["$s_recent_page_caption"] = $s;
@@ -570,7 +568,7 @@ class listclass
 				$listArray = $class->getListData();
 				if (e107::getPref('profanity_filter'))
 				{
-					$parser = e107::getParser();
+					$tp = e107::getParser();
 					if (!is_object($parser->e_pf))
 					{
 						require_once(e_HANDLER.'profanity_filter.php');
@@ -580,7 +578,7 @@ class listclass
 					{
 						if (isset($v['heading']))
 						{
-							$listArray[$k]['heading'] = $parser->e_pf->filterProfanities($v['heading']);
+							$listArray[$k]['heading'] = $tp->e_pf->filterProfanities($v['heading']);
 						}
 					}
 				}
@@ -725,7 +723,7 @@ class listclass
 	 */
 	function displayTimelapse()
 	{
-		global $rs;
+		global $rs; //FIXME $frm
 
 		if(isset($this->list_pref['new_page_timelapse']) && $this->list_pref['new_page_timelapse'])
 		{

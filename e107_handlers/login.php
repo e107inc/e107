@@ -204,7 +204,7 @@ class userlogin
 		if (($this->passResult !== FALSE) && ($this->passResult !== PASSWORD_VALID))
 		{  // May want to rewrite password using salted hash (or whatever the preferred method is) - $pass_result has the value to write
 			// If login by email address also allowed, will have to write that value too
-//		  	$this->e107->sql->db_Update('user',"`user_password` = '{$pass_result}' WHERE `user_id`=".intval($this->userData['user_id']));
+//		  	$sql->update('user',"`user_password` = '{$pass_result}' WHERE `user_id`=".intval($this->userData['user_id']));
 		}
 
 
@@ -290,7 +290,7 @@ class userlogin
 							$fp = str_replace(e_HTTP, '', $fp);		// This handles sites in a subdirectory properly (normally, will replace nothing)
 							$fp = SITEURL.$fp;
 						}
-						//$redir = ((strpos($fp, 'http') === FALSE) ? SITEURL : '').$this->e107->tp->replaceConstants($fp, TRUE, FALSE);
+						//$redir = ((strpos($fp, 'http') === FALSE) ? SITEURL : '').$tp->replaceConstants($fp, TRUE, FALSE);
 						$redir = e107::getParser()->replaceConstants($fp, TRUE, FALSE);
 		//				$this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Redirect active",$redir,FALSE,FALSE);
 					}
