@@ -1,0 +1,47 @@
+<?php
+/*
++ ----------------------------------------------------------------------------------------------+
+|     e107 website system  : http://e107.org
+|     Steve Dunstan 2001-2002 : jalist@e107.org
+|     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.8/e107_themes/index.html,v $
+|     $Revision: 1.2 $
+|     $Date: 2008-08-08 20:16:12 $
+|     $Author: e107steved $
++-----------------------------------------------------------------------------------------------+
+*/
+
+
+if (!defined('e107_INIT')) { exit; }
+
+// Parameters available:   $line, $file, $message
+
+
+
+echo "<?xml version='1.0' encoding='utf-8' ?>\n";
+echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
+echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">\n";
+echo "<head>
+<title>".LAN_ERROR_43."</title>
+<meta http-equiv='content-type' content='text/html; charset=utf-8' />
+<meta http-equiv='content-style-type' content='text/css' />
+<meta http-equiv='content-language' content='en' />
+</head>\n
+<body>\n
+<div id='bodytext'>";
+if (is_readable(e_IMAGE.'logo.png'))
+{
+  echo "<img src='".e_IMAGE_ABS.'logo.png'."' alt='".LAN_ERROR_44."' />";
+}
+echo "<div style='text-align:center; font: 14px verdana, tahoma, arial, helvetica, sans-serif;'>";
+echo LAN_ERROR_38.'<br />';
+echo LAN_ERROR_39.'<br />';
+echo LAN_ERROR_40.'<br /><br /><br /></div>';
+echo "<div style='text-align:center; font: 12px verdana, tahoma, arial, helvetica, sans-serif;'>";
+echo LAN_ERROR_41.'<br />';
+echo "<b>CRITICAL_ERROR: </b><br />Line {$line} {$file}<br />
+<br />".LAN_ERROR_42.$message."</div>\n";
+echo "</div></body>\n</html>";
+
+?>
