@@ -253,7 +253,7 @@ if (!$action)
 								".($banner_row['banner_clientname'] ? $banner_row['banner_clientname'] : BNRLAN_8)."
 								<div class='e-hideme clear' id='banner-infocell-{$banner_row['banner_id']}'>
 									<div class='indent'>
-										<div class='field-spacer'><strong>".BNRLAN_24.": </strong>".$banner_row['banner_campaign']."</div>
+										<div class='field-spacer'><strong>".BNRLAN_11.": </strong>".$banner_row['banner_campaign']."</div>
 										<div class='field-spacer'><strong>".LAN_VISIBILITY." </strong>".r_userclass_name($banner_row['banner_active'])." ".$textvisivilitychanged."</div>
 										<div class='field-spacer'><strong>".BNRLAN_9.": </strong>".$start_date."</div>
 										<div class='field-spacer'><strong>".BNRLAN_10.": </strong>".$end_date."</div>
