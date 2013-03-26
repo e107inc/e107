@@ -90,7 +90,7 @@ if (isset($_POST['updateprefs']))
 	  }
 	  else
 	  {
-	    $pref[$key] = $tp->toDB($value);
+	    $pref[$key] = $tp->toDB($value, false, false, 'pReFs');
 	  }
 	}
 

@@ -171,7 +171,7 @@ class e_parse
 			{
 				$no_encode = TRUE;
 			}
-			if (!isset($pref['html_abuse']) || $pref['html_abuse'])
+			if (($mod != 'pReFs') && ((!isset($pref['html_abuse']) || $pref['html_abuse'])))
 			{
 				if ($this->htmlAbuseFilter($data)) $no_encode = FALSE;
 			}
