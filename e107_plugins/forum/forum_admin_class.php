@@ -136,7 +136,7 @@ class forumAdmin
 		}
 		require_once(e_PLUGIN.'forum/forum_class.php');
 		$f = new e107Forum;
-		if($sql->delect('forum_thread', 'thread_id','thread_forum_id='.$forumId))
+		if($sql->delete('forum_thread', 'thread_id','thread_forum_id='.$forumId))
 		{
 			$list = $sql->db_getList();
 			foreach($list as $t)
