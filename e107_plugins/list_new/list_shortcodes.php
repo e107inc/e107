@@ -40,9 +40,9 @@ class list_shortcodes
 	{
 		global $rc;
 		$e107 = e107::getInstance();
-//		$e107->tp->e_sc->scClasses['list_shortcodes']->rc = $rc;
-//		$e107->tp->e_sc->scClasses['list_shortcodes']->row = $rc->row;
-//		$e107->tp->e_sc->scClasses['list_shortcodes']->list_pref = $rc->list_pref;
+//		$tp->e_sc->scClasses['list_shortcodes']->rc = $rc;
+//		$tp->e_sc->scClasses['list_shortcodes']->row = $rc->row;
+//		$tp->e_sc->scClasses['list_shortcodes']->list_pref = $rc->list_pref;
 	}
 */
 

@@ -1,10 +1,10 @@
 <?php
 /**
- * Copyright (C) e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id$
+ * Copyright (C) 2008-2013 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
  * 
  * Tagwords core section
  */
+
 if (!defined('e107_INIT')) { exit; }
 
 class e_tagwords_page
@@ -29,23 +29,23 @@ class e_tagwords_page
 		}
 		$url = e_BASE."page.php?".$this->row['page_id'];
 		$url = e107::getUrl()->create('page/view', $this->row, 'allow=page_id,page_title,page_sef');
-		return "<a href='".$url."'>".$this->e107->tp->toHTML($this->row['page_title'], TRUE, '')."</a>";
+		return "<a href='".$url."'>".e107::getParser()->toHTML($this->row['page_title'], TRUE, '')."</a>";
 	}
 
 	function getRecord($id)
 	{
+		$sql = e107::getDb();
 		$this->row = '';
 
 		$qry = "SELECT p.*, u.user_id, u.user_name FROM #page AS p
 		LEFT JOIN #user AS u ON p.page_author = u.user_id
 		WHERE p.page_id='{$id}' AND p.page_class IN (".USERCLASS_LIST.") ";
 
-		if($this->e107->sql->db_Select_gen($qry))
+		if($sql->gen($qry))
 		{
-			$this->row=$this->e107->sql->db_Fetch();
+			$this->row = $sql->fetch();
 		}
 		return $this->row;
 	}
 }
-
 ?>

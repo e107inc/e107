@@ -2,14 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  *	PM plugin - base class API
  *
- * $URL$
- * $Id$
  */
 
 
@@ -18,7 +16,6 @@
  *
  *	@package	e107_plugins
  *	@subpackage	pm
- *	@version 	$Id$;
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -27,7 +24,6 @@ class private_message
 {
 	protected 	$e107;
 	protected	$pmPrefs;
-
 
 	/**
 	 *	Constructor
@@ -38,9 +34,7 @@ class private_message
 	public	function __construct($prefs)
 	{
 		$this->e107 = e107::getInstance();
-		$this->pmPrefs = $prefs;
-	}
-
+		$this->pmPrefs = $prefs;	}
 
 
 	/**
@@ -63,7 +57,7 @@ class private_message
 		}
 		else
 		{
-			$this->e107->sql->db_Select_gen("UPDATE `#private_msg` SET `pm_read` = {$now} WHERE `pm_id`=".intval($pm_id));
+			e107::getDb()->gen("UPDATE `#private_msg` SET `pm_read` = {$now} WHERE `pm_id`=".intval($pm_id)); // TODO does this work properly?
 			if(strpos($pm_info['pm_option'], '+rr') !== FALSE)
 			{
 				$this->pm_send_receipt($pm_info);
@@ -87,9 +81,9 @@ class private_message
 		LEFT JOIN #user AS uf ON uf.user_id = pm.pm_from
 		WHERE pm.pm_id='".intval($pmid)."'
 		";
-		if ($this->e107->sql->db_Select_gen($qry))
+		if (e107::getDb()->gen($qry))
 		{
-			$row = $this->e107->sql->db_Fetch();
+			$row = e107::getDb()->fetch();
 			return $row;
 		}
 		return FALSE;
@@ -114,7 +108,8 @@ class private_message
 	 */
 	function add($vars)
 	{
-		$tp = $this->e107->tp;
+		$tp = e107::getParser();
+		$sql = e107::getDb();
 		$pmsize = 0;
 		$attachlist = '';
 		$pm_options = '';
@@ -208,7 +203,7 @@ class private_message
 					$pmInfo['to_array'] = $targets[$i];			// Should be in exactly the right format
 					$genInfo['gen_intdata'] = count($targets[$i]);
 					$genInfo['gen_chardata'] = $array->WriteArray($pmInfo,TRUE);
-					$this->e107->sql->db_Insert('generic', array('data' => $genInfo, '_FIELD_TYPES' => array('gen_chardata' => 'string')));	// Don't want any of the clever sanitising now
+					$sql->insert('generic', array('data' => $genInfo, '_FIELD_TYPES' => array('gen_chardata' => 'string')));	// Don't want any of the clever sanitising now
 				}
 				$toclass .= ' ['.$totalSend.']';
 				$tolist = $targets[count($targets) - 1];		// Send the residue now (means user probably isn't kept hanging around too long if sending lots)
@@ -219,7 +214,7 @@ class private_message
 				set_time_limit(30);
 				$info['pm_to'] = intval($u['user_id']);		// Sending to a single user now
 
-				if($pmid = $this->e107->sql->db_Insert('private_msg', $info))
+				if($pmid = $sql->insert('private_msg', $info))
 				{
 					if($class == FALSE)
 					{
@@ -241,7 +236,7 @@ class private_message
 				$info['pm_to'] = $toclass;		// Class info to put into outbox
 				$info['pm_sent_del'] = 0;
 				$info['pm_read_del'] = 1;
-				if(!$pmid = $this->e107->sql->db_Insert('private_msg', $info))
+				if(!$pmid = $sql->insert('private_msg', $info))
 				{
 					$ret .= LAN_PM_41.'<br />';
 				}
@@ -251,7 +246,7 @@ class private_message
 		else
 		{	// Sending to a single person
 			$info['pm_to'] = intval($vars['to_info']['user_id']);		// Sending to a single user now
-			if($pmid = $this->e107->sql->db_Insert('private_msg', $info))
+			if($pmid = $sql->insert('private_msg', $info))
 			{
 				if(check_class($this->pmPrefs['notify_class'], $vars['to_info']['user_class']))
 				{
@@ -277,12 +272,13 @@ class private_message
 	 */
 	function del($pmid, $force = FALSE)
 	{
+		$sql = e107::getDb();
 		$pmid = (int)$pmid;
 		$ret = '';
 		$newvals = '';
-		if($this->e107->sql->db_Select('private_msg', '*', 'pm_id = '.$pmid.' AND (pm_from = '.USERID.' OR pm_to = '.USERID.')'))
+		if($sql->select('private_msg', '*', 'pm_id = '.$pmid.' AND (pm_from = '.USERID.' OR pm_to = '.USERID.')'))
 		{
-			$row = $this->e107->sql->db_Fetch();
+			$row = $sql->fetch();
 			if (!$force && ($row['pm_to'] == USERID))
 			{
 				$newvals = 'pm_read_del = 1';
@@ -315,11 +311,11 @@ class private_message
 				{
 					$ret .= str_replace(array('--GOOD--', '--FAIL--'), $aCount, LAN_PM_71).'<br />';
 				}
-				$this->e107->sql->db_Delete('private_msg', 'pm_id = '.$pmid);
+				$sq->delete('private_msg', 'pm_id = '.$pmid);
 			}
 			else
 			{
-				$this->e107->sql->db_Update('private_msg', $newvals.' WHERE pm_id = '.$pmid);
+				$sql->update('private_msg', $newvals.' WHERE pm_id = '.$pmid);
 			}
 			return $ret;
 		}
@@ -332,7 +328,7 @@ class private_message
 	public function url($action, $params = array(), $options = array())
 	{
 		if(strpos($action, '/') === false) $action = 'view/'.$action;
-		$this->e107->url->create('pm/'.$action, $params, $options);
+		e107::getUrl()->create('pm/'.$action, $params, $options);
 	}
 
 	/**
@@ -391,11 +387,12 @@ class private_message
 	 */
 	function block_get($to = USERID)
 	{
+		$sql = e107::getDb();
 		$ret = array();
 		$to = intval($to);		// Precautionary
-		if ($this->e107->sql->db_Select('private_msg_block', 'pm_block_from', 'pm_block_to = '.$to))
+		if ($sql->select('private_msg_block', 'pm_block_from', 'pm_block_to = '.$to))
 		{
-			while($row = $this->e107->sql->db_Fetch(MYSQL_ASSOC))
+			while($row = $sql->fetch(MYSQL_ASSOC))
 			{
 				$ret[] = $row['pm_block_from'];
 			}
@@ -413,11 +410,12 @@ class private_message
 	 */
 	function block_get_user($to = USERID)
 	{
+		$sql = e107::getDb();
 		$ret = array();
 		$to = intval($to);		// Precautionary
-		if ($this->e107->sql->db_Select_gen('SELECT pm.*, u.user_name FROM `#private_msg_block` AS pm LEFT JOIN `#user` AS u ON `pm`.`pm_block_from` = `u`.`user_id` WHERE pm_block_to = '.$to))
+		if ($sql->gen('SELECT pm.*, u.user_name FROM `#private_msg_block` AS pm LEFT JOIN `#user` AS u ON `pm`.`pm_block_from` = `u`.`user_id` WHERE pm_block_to = '.$to))
 		{
-			while($row = $this->e107->sql->db_Fetch(MYSQL_ASSOC))
+			while($row = $sql->fetch(MYSQL_ASSOC))
 			{
 				$ret[] = $row;
 			}
@@ -436,18 +434,19 @@ class private_message
 	 */
 	function block_add($from, $to = USERID)
 	{
+		$sql = e107::getDb();
 		$from = intval($from);
-		if($this->e107->sql->db_Select('user', 'user_name, user_perms', 'user_id = '.$from))
+		if($sql->select('user', 'user_name, user_perms', 'user_id = '.$from))
 		{
-			$uinfo = $this->e107->sql->db_Fetch();
+			$uinfo = $sql->fetch();
 			if (($uinfo['user_perms'] == '0') || ($uinfo['user_perms'] == '0.'))
 			{  // Don't allow block of main admin
 				return LAN_PM_64;
 			}
 		  
-			if(!$this->e107->sql->db_Count('private_msg_block', '(*)', 'WHERE pm_block_from = '.$from." AND pm_block_to = '".$this->e107->tp->toDB($to)."'"))
+			if(!$sql->count('private_msg_block', '(*)', 'WHERE pm_block_from = '.$from." AND pm_block_to = '".e107::getParser()->toDB($to)."'"))
 			{
-				if($this->e107->sql->db_Insert('private_msg_block', array(
+				if($sql->insert('private_msg_block', array(
 						'pm_block_from' => $from,
 						'pm_block_to' => $to,
 						'pm_block_datestamp' => time()
@@ -483,14 +482,15 @@ class private_message
 	 */
 	function block_del($from, $to = USERID)
 	{
+		$sql = e107::getDb();
 		$from = intval($from);
-		if($this->e107->sql->db_Select('user', 'user_name', 'user_id = '.$from))
+		if($sql->select('user', 'user_name', 'user_id = '.$from))
 		{
-			$uinfo = $this->e107->sql->db_Fetch();
-			if($this->e107->sql->db_Select('private_msg_block', 'pm_block_id', 'pm_block_from = '.$from.' AND pm_block_to = '.intval($to)))
+			$uinfo = $sql->fetch();
+			if($sql->select('private_msg_block', 'pm_block_id', 'pm_block_from = '.$from.' AND pm_block_to = '.intval($to)))
 			{
-				$row = $this->e107->sql->db_Fetch();
-				if($this->e107->sql->db_Delete('private_msg_block', 'pm_block_id = '.intval($row['pm_block_id'])))
+				$row = $sql->fetch();
+				if($sql->delete('private_msg_block', 'pm_block_id = '.intval($row['pm_block_id'])))
 				{
 					return str_replace('{UNAME}', $uinfo['user_name'], LAN_PM_44);
 				}
@@ -520,11 +520,12 @@ class private_message
 	 */
 	function pm_getuid($var)
 	{
+		$sql = e107::getDb();
 		$var = strip_if_magic($var);
 		$var = str_replace("'", '&#039;', trim($var));		// Display name uses entities for apostrophe
-		if($this->e107->sql->db_Select('user', 'user_id, user_name, user_class, user_email', "user_name LIKE '".$this->e107->sql -> escape($var, FALSE)."'"))
+		if($sql->select('user', 'user_id, user_name, user_class, user_email', "user_name LIKE '".$sql->escape($var, FALSE)."'"))
 		{
-			$row = $this->e107->sql->db_Fetch();
+			$row = $sql->fetch();
 			return $row;
 		}
 		return FALSE;
@@ -556,7 +557,7 @@ class private_message
 		}
 		if($sql->gen($qry))
 		{
-			$ret = $sql->getList();
+			$ret = $sql->db_getList();
 			return $ret;
 		}
 		return FALSE;
@@ -574,6 +575,7 @@ class private_message
 	 */
 	function pm_get_inbox($uid = USERID, $from = 0, $limit = 10)
 	{
+		$sql = e107::getDb();
 		$ret = array();
 		$total_messages = 0;
 		$uid = intval($uid);
@@ -587,10 +589,10 @@ class private_message
 		ORDER BY pm.pm_sent DESC
 		LIMIT ".$from.", ".$limit."
 		";
-		if($this->e107->sql->db_Select_gen($qry))
+		if($sql->gen($qry))
 		{
-			$total_messages = $this->e107->sql->total_results;		// Total number of messages
-			$ret['messages'] = $this->e107->sql->db_getList();
+			$total_messages = $sql->total_results;		// Total number of messages
+			$ret['messages'] = $sql->db_getList();
 		}
 		$ret['total_messages'] = $total_messages;		// Should always be defined
 		return $ret;
@@ -609,7 +611,6 @@ class private_message
 	function pm_get_outbox($uid = USERID, $from = 0, $limit = 10)
 	{
 		$sql = e107::getDb();
-		
 		$ret = array();
 		$total_messages = 0;
 		$uid = intval($uid);
@@ -623,7 +624,7 @@ class private_message
 		ORDER BY pm.pm_sent DESC
 		LIMIT ".$from.', '.$limit;
 		
-		if($sql->db_Select_gen($qry))
+		if($sql->gen($qry))
 		{
 			$total_messages = $sql->total_results;		// Total number of messages
 			$ret['messages'] = $sql->db_getList();

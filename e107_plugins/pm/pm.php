@@ -2,16 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  *	PM plugin - main user interface
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 
@@ -20,7 +16,6 @@
  *
  *	@package	e107_plugins
  *	@subpackage	pm
- *	@version 	$Id$;
  */
 
 
@@ -34,13 +29,10 @@ if (!e107::isInstalled('pm'))
 	exit;
 }
 
-
-
 if(vartrue($_POST['keyword']))
 {
 	pm_user_lookup();
 }
-
 
 
 require_once(e_PLUGIN.'pm/pm_class.php');
@@ -83,9 +75,6 @@ $pmManager = new pmbox_manager($pm_prefs);
 
 
 
-
-
-
 class pm_extended extends private_message
 {
 	protected	$pmManager = NULL;
@@ -122,9 +111,9 @@ class pm_extended extends private_message
 		if($to_uid)
 		{
 			$sql2 = new db;
-			if($sql2->db_Select('user', 'user_name', 'user_id = '.intval($to_uid)))
+			if($sql2->select('user', 'user_name', 'user_id = '.intval($to_uid)))
 			{
-				$row=$sql2->db_Fetch();
+				$row = $sql2->fetch();
 				$pm_info['from_name'] = $row['user_name'];
 			}
 		}
@@ -196,8 +185,6 @@ class pm_extended extends private_message
 	}
 
 
-
-
 	/**
 	 *	Show outbox
 	 *	@param int $start - offset into list
@@ -239,7 +226,6 @@ class pm_extended extends private_message
 	}
 
 
-
 	/**
 	 *	Show details of a pm
 	 *	@param int $pmid - DB ID for PM
@@ -249,42 +235,48 @@ class pm_extended extends private_message
 	 */
 	function show_pm($pmid, $comeFrom = '')
 	{
+		$ns = e107::getRender();
+
 		$tpl_file = THEME.'pm_template.php';
 		include_once(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
 		$pm_info = $this->pm_get($pmid);
+
 	//	setScVar('pm_handler_shortcodes','pmInfo', $pm_info);
 		$sc = e107::getScBatch('pm',TRUE);
 		$sc->setVars($pm_info);	
+
 		if($pm_info['pm_to'] != USERID && $pm_info['pm_from'] != USERID)
 		{
-			$this->e107->ns->tablerender(LAN_PM, LAN_PM_60);
+			$ns->tablerender(LAN_PM, LAN_PM_60);
 			require_once(FOOTERF);
 			exit;
 		}
+
 		if($pm_info['pm_read'] == 0 && $pm_info['pm_to'] == USERID)
 		{	// Inbox
 			$now = time();
 			$pm_info['pm_read'] = $now;
 			$this->pm_mark_read($pmid, $pm_info);
 		}
+
 		$txt = e107::getParser()->parseTemplate($PM_SHOW, true);
-		$this->e107->ns->tablerender(LAN_PM, $txt);
+		$ns->tablerender(LAN_PM, $txt);
+
 		if (!$comeFrom)
 		{
 			if ($pm_info['pm_from'] == USERID) { $comeFrom = 'outbox'; } 
 		}
+
 		// Need to show inbox or outbox from start
 		if ($comeFrom == 'outbox')
 		{	// Show Outbox
-			$this->e107->ns->tablerender(LAN_PM." - ".LAN_PM_26, $this->show_outbox(), 'PM');
+			$ns->tablerender(LAN_PM." - ".LAN_PM_26, $this->show_outbox(), 'PM');
 		} 
 		else
 		{	// Show Inbox
-			$this->e107->ns->tablerender(LAN_PM.' - '.LAN_PM_25, $this->show_inbox(), 'PM');
+			$ns->tablerender(LAN_PM.' - '.LAN_PM_25, $this->show_inbox(), 'PM');
 		}
 	}
-
-
 
 
 	/**
@@ -295,34 +287,33 @@ class pm_extended extends private_message
 	 */
 	public function showBlocked($start = 0)
 	{
+		$tp = e107::getParser();
 		$tpl_file = THEME.'pm_template.php';
 		include(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
 		$pmBlocks = $this->block_get_user();			// TODO - handle pagination, maybe (is it likely to be necessary?)
+
 		$sc = e107::getScBatch('pm',TRUE);
 		$sc->pmBlocks = $pmBlocks; 
 	
 		$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
-		$txt .= e107::getParser()->parseTemplate($PM_BLOCKED_HEADER, true);
+		$txt .= $tp->parseTemplate($PM_BLOCKED_HEADER, true);
 		if($pmTotalBlocked = count($pmBlocks))
 		{
 			foreach($pmBlocks as $pmBlocked)
 			{
 				$sc->pmBlocked = $pmBlocked; 
 			//	setScVar('pm_handler_shortcodes','pmBlocked', $pmBlocked);
-				$txt .= e107::getParser()->parseTemplate($PM_BLOCKED_TABLE, true);
+				$txt .= $tp->parseTemplate($PM_BLOCKED_TABLE, true);
 			}
 		}
 		else
 		{
-			$txt .= e107::getParser()->parseTemplate($PM_BLOCKED_EMPTY, true);
+			$txt .= $tp->parseTemplate($PM_BLOCKED_EMPTY, true);
 		}
-		$txt .= e107::getParser()->parseTemplate($PM_BLOCKED_FOOTER, true);
+		$txt .= $tp->parseTemplate($PM_BLOCKED_FOOTER, true);
 		$txt .= '</form>';
 		return $txt;
 	}
-
-
-
 
 
 	/**
@@ -333,8 +324,7 @@ class pm_extended extends private_message
 	function post_pm()
 	{
 		// print_a($_POST);
-		
-		
+				
 		if(!check_class($this->pmPrefs['pm_class']))
 		{
 			return LAN_PM_12;
@@ -382,7 +372,7 @@ class pm_extended extends private_message
 					{
 						if($to_info = $this->pm_getuid($to))
 						{	// Check whether sender is blocked - if so, add one to count
-							if(!$this->e107->sql->db_Update('private_msg_block',"pm_block_count=pm_block_count+1 WHERE pm_block_from = '".USERID."' AND pm_block_to = '".$tp -> toDB($to)."'"))
+							if(!e107::getDb()->update('private_msg_block',"pm_block_count=pm_block_count+1 WHERE pm_block_from = '".USERID."' AND pm_block_to = '".$tp->toDB($to)."'"))
 							{
 								$_POST['to_array'][] = $to_info;
 							}
@@ -400,7 +390,7 @@ class pm_extended extends private_message
 						return LAN_PM_17;
 					}
 
-					if($this->e107->sql->db_Update('private_msg_block',"pm_block_count=pm_block_count+1 WHERE pm_block_from = '".USERID."' AND pm_block_to = '{$to_info['user_id']}'"))
+					if(e107::getDb()->update('private_msg_block',"pm_block_count=pm_block_count+1 WHERE pm_block_from = '".USERID."' AND pm_block_to = '{$to_info['user_id']}'"))
 					{
 						return LAN_PM_18.$to_info['user_name'];
 					}
@@ -480,10 +470,10 @@ function pm_user_lookup()
 	$sql = e107::getDb();
 
 	$query = "SELECT * FROM #user WHERE user_name REGEXP '^".$_POST['keyword']."' ";
-	if($sql -> db_Select_gen($query))
+	if($sql->gen($query))
 	{
 		echo '[';
-		while($row = $sql-> db_Fetch())
+		while($row = $sql->fetch())
 		{
 			  $u[] =  "{\"caption\":\"".$row['user_name']."\",\"value\":".$row['user_id']."}";
 		 }
@@ -493,8 +483,6 @@ function pm_user_lookup()
 	}
 	exit;
 }
-
-
 
 
 
@@ -532,7 +520,7 @@ if($unread_timeout > 0)
 if(count($del_qry) > 0)
 {
 	$qry = implode(' OR ', $del_qry).' AND (pm_from = '.USERID.' OR pm_to = '.USERID.')';
-	if($sql->db_Select('private_msg', 'pm_id', $qry))
+	if($sql->select('private_msg', 'pm_id', $qry))
 	{
 		$delList = $sql->db_getList();
 		foreach($delList as $p)
@@ -541,7 +529,6 @@ if(count($del_qry) > 0)
 		}
 	}
 }
-
 
 
 if('del' == $action || isset($_POST['pm_delete_selected']))
@@ -578,7 +565,6 @@ if('del' == $action || isset($_POST['pm_delete_selected']))
 }
 
 
-
 if('delblocked' == $action || isset($_POST['pm_delete_blocked_selected']))
 {
 	if(isset($_POST['pm_delete_blocked_selected']))
@@ -606,12 +592,14 @@ if('block' == $action)
 	$pm_proc_id = 0;
 }
 
+
 if('unblock' == $action)
 {
 	$message = $pm->block_del($pm_proc_id);
 	$action = 'inbox';
 	$pm_proc_id = 0;
 }
+
 
 if('get' == $action)
 {
@@ -631,13 +619,10 @@ if(isset($_POST['postpm']))
 $mes = e107::getMessage();
 
 if($message != '')
-{
-	
+{	
 	$mes->add($message);
-	
 //	$ns->tablerender('', "<div class='alert alert-block'>". $message."</div>");
 }
-
 
 
 //-----------------------------------------
@@ -688,11 +673,4 @@ switch ($action)
 
 require_once(FOOTERF);
 exit;
-
-
-
-
-
-
-
 ?>

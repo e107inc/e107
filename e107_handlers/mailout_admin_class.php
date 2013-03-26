@@ -8,9 +8,6 @@
  *
  * Mailout - admin-related functions
  *
- * $URL$
- * $Id$
- *
  */
 
 /**
@@ -18,7 +15,6 @@
  * 
  *	@package     e107
  *	@subpackage	e107_handlers
- *	@version 	$Id: mailout_admin_class.php 12775 2012-06-01 08:09:14Z e107coders $;
 */
 
 
@@ -112,41 +108,41 @@ class mailoutAdminClass extends e107MailManager
 
 	// Array of info associated with each task we might do
 	protected $tasks = array(
-			'makemail' => array('title' => LAN_MAILOUT_190, 'defaultSort' => '', 'defaultTable' => ''),
-			'saved' => array('title' => LAN_MAILOUT_191, 'defaultSort' => 'mail_source_id', 'defaultTable' => 'mail_content'),
-			'marksend' => array('title' => 'Internal: marksend', 'defaultSort' => 'mail_source_id', 'defaultTable' => 'mail_content'),
-			'sent' => array('title' => LAN_MAILOUT_192, 'defaultSort' => 'mail_source_id', 'defaultTable' => 'mail_content'),
-			'pending' => array('title' => LAN_MAILOUT_193, 'defaultSort' => 'mail_source_id', 'defaultTable' => 'mail_content'),
-			'held' => array('title' => LAN_MAILOUT_194, 'defaultSort' => 'mail_source_id', 'defaultTable' => 'mail_content'),
+			'makemail' 	=> array('title' => LAN_MAILOUT_190, 'defaultSort' => '', 'defaultTable' => ''),
+			'saved'		=> array('title' => LAN_MAILOUT_191, 'defaultSort' => 'mail_source_id', 'defaultTable' => 'mail_content'),
+			'marksend' 	=> array('title' => 'Internal: marksend', 'defaultSort' => 'mail_source_id', 'defaultTable' => 'mail_content'),
+			'sent' 		=> array('title' => LAN_MAILOUT_192, 'defaultSort' => 'mail_source_id', 'defaultTable' => 'mail_content'),
+			'pending' 	=> array('title' => LAN_MAILOUT_193, 'defaultSort' => 'mail_source_id', 'defaultTable' => 'mail_content'),
+			'held' 		=> array('title' => LAN_MAILOUT_194, 'defaultSort' => 'mail_source_id', 'defaultTable' => 'mail_content'),
 			'recipients' => array('title' => LAN_MAILOUT_173, 'defaultSort' => 'mail_recipient_email', 'defaultTable' => 'mail_recipients'),
 			'mailtargets' => array('title' => LAN_MAILOUT_173, 'defaultSort' => 'mail_recipient_email', 'defaultTable' => 'mail_recipients'),
-			'prefs' => array('title' => ADLAN_40, 'defaultSort' => '', 'defaultTable' => ''),
-			'maint' => array('title' => ADLAN_40, 'defaultSort' => '', 'defaultTable' => '')
+			'prefs' 	=> array('title' => ADLAN_40, 'defaultSort' => '', 'defaultTable' => ''),
+			'maint' 	=> array('title' => ADLAN_40, 'defaultSort' => '', 'defaultTable' => '')
 			);
 
 
 	// Options for mail listing dropdown - actions apertaining to a stored email
 	protected $modeOptions = array(
 		'saved' => array(
-			'mailedit' => LAN_MAILOUT_163,
-			'maildelete' => LAN_DELETE,
+			'mailedit' 		=> LAN_MAILOUT_163,
+			'maildelete' 	=> LAN_DELETE,
 			'mailshowtemplate' => LAN_MAILOUT_254
 			),
 		'pending' => array(
 			'mailsendimmediately' => "Send Immediately",
-			'mailhold' => LAN_MAILOUT_159,
-			'mailcancel' => LAN_MAILOUT_160,
-			'mailtargets' => LAN_MAILOUT_181
+			'mailhold' 		=> LAN_MAILOUT_159,
+			'mailcancel' 	=> LAN_MAILOUT_160,
+			'mailtargets' 	=> LAN_MAILOUT_181
 			),
 		'held' => array(
-			'mailsendnow' => LAN_MAILOUT_158,
-			'mailcancel' => LAN_MAILOUT_160,
-			'mailtargets' => LAN_MAILOUT_181
+			'mailsendnow' 	=> LAN_MAILOUT_158,
+			'mailcancel' 	=> LAN_MAILOUT_160,
+			'mailtargets' 	=> LAN_MAILOUT_181
 			),
 		'sent' => array(
-			'mailcopy' => LAN_MAILOUT_251,
-			'maildelete' => LAN_DELETE,
-			'mailtargets' => LAN_MAILOUT_181
+			'mailcopy' 		=> LAN_MAILOUT_251,
+			'maildelete' 	=> LAN_DELETE,
+			'mailtargets' 	=> LAN_MAILOUT_181
 			),
 		'recipients' => array(
 			'mailonedelete' => LAN_DELETE
@@ -156,9 +152,9 @@ class mailoutAdminClass extends e107MailManager
 
 	// List of fields to be included in email display for various options
 	protected $mailDetailDisplay = array(
-		'basic' => array('mail_source_id' => 1, 'mail_title' => 1, 'mail_subject' => 1, 'mail_body' => 200),
-		'send' => array('mail_source_id' => 1, 'mail_title' => 1, 'mail_subject' => 1, 'mail_body' => 500, 'mail_send_style' => 1),
-		'template' => array('mail_source_id' => 1, 'mail_title' => 1, 'mail_subject' => 1, 'mail_body' => 200, 'mail_body_templated' => 'chars'),
+		'basic' 	=> array('mail_source_id' => 1, 'mail_title' => 1, 'mail_subject' => 1, 'mail_body' => 200),
+		'send' 		=> array('mail_source_id' => 1, 'mail_title' => 1, 'mail_subject' => 1, 'mail_body' => 500, 'mail_send_style' => 1),
+		'template' 	=> array('mail_source_id' => 1, 'mail_title' => 1, 'mail_subject' => 1, 'mail_body' => 200, 'mail_body_templated' => 'chars'),
 	);
 	
 
@@ -191,7 +187,7 @@ class mailoutAdminClass extends e107MailManager
 		}
 		if (isset($_GET['fld']))
 		{
-			$temp = $this->e107->tp->toDB($_GET['fld']);
+			$temp = e107::getParser()->toDB($_GET['fld']);
 			if (is_array($this->fields[$dbTable][$temp]))
 			{
 				$this->sortField = $temp;
@@ -199,7 +195,7 @@ class mailoutAdminClass extends e107MailManager
 		}
 		if (isset($_GET['asc']))
 		{
-			$temp = strtolower($this->e107->tp->toDB($_GET['asc']));
+			$temp = strtolower(e107::getParser()->toDB($_GET['asc']));
 			if (($temp == 'asc') || ($temp == 'desc'))
 			{
 				$this->sortOrder = $temp;
@@ -207,7 +203,6 @@ class mailoutAdminClass extends e107MailManager
 		}
 		$this->newMode($mode);
 	}
-
 
 
 	/**
@@ -319,8 +314,6 @@ class mailoutAdminClass extends e107MailManager
 		}
 	}
 
-
-
 	/**
 	 *	Get the user name associated with a user ID.
 	 *	The result is cached in case required again
@@ -335,9 +328,9 @@ class mailoutAdminClass extends e107MailManager
 		{
 			// Look up user
 			$this->checkDB(2);			// Make sure DB object created
-			if ($this->db2->db_Select('user','user_name, user_loginname', 'user_id='.intval($uid)))
+			if ($this->db2->select('user','user_name, user_loginname', 'user_id='.intval($uid)))
 			{
-				$row = $this->db2->db_Fetch(MYSQL_ASSOC);
+				$row = $this->db2->fetch(MYSQL_ASSOC);
 				$this->userCache[$uid] = $row['user_name'].' ('.$row['user_loginname'].')';
 			}
 			else
@@ -347,9 +340,6 @@ class mailoutAdminClass extends e107MailManager
 		}
 		return $this->userCache[$uid];
 	}
-
-
-
 
 
 	/**
@@ -581,8 +571,8 @@ class mailoutAdminClass extends e107MailManager
 				GROUP BY uc.userclass_id
 						";
 
-		$this->db2->db_Select_gen($query);
-		while ($row = $this->db2->db_Fetch()) 
+		$this->db2->gen($query);
+		while ($row = $this->db2->fetch()) 
 		{
 			$public = ($row['userclass_editclass'] == e_UC_PUBLIC)? "(".LAN_MAILOUT_10.")" : "";
 			$selected = ($row['userclass_id'] == $curSel) ? " selected='selected'" : '';
@@ -678,10 +668,10 @@ class mailoutAdminClass extends e107MailManager
 			$errList[] = LAN_MAILOUT_201;
 			return $errList;
 		}
-		if (!trim($email['mail_subject'])) $errList[] = LAN_MAILOUT_200;
-		if (!trim($email['mail_body'])) $errList[] = LAN_MAILOUT_202;
-		if (!trim($email['mail_sender_name'])) $errList[] = LAN_MAILOUT_203;
-		if (!trim($email['mail_sender_email'])) $errList[] = LAN_MAILOUT_204;
+		if (!trim($email['mail_subject'])) $errList[] 		= LAN_MAILOUT_200;
+		if (!trim($email['mail_body'])) $errList[] 			= LAN_MAILOUT_202;
+		if (!trim($email['mail_sender_name'])) $errList[] 	= LAN_MAILOUT_203;
+		if (!trim($email['mail_sender_email'])) $errList[] 	= LAN_MAILOUT_204;
 		if (strlen($email['mail_send_style']) == 0)
 		{	// Can be a template name now
 			$errList[] = LAN_MAILOUT_205;
@@ -722,7 +712,6 @@ class mailoutAdminClass extends e107MailManager
 	}
 
 
-
 	/**
 	 * Generate a table which shows some information about an email.
 	 * Intended to be part of a 2-column table - includes the row detail, but not the surrounding table definitions
@@ -761,7 +750,7 @@ class mailoutAdminClass extends e107MailManager
 						$text .= $gen->convert_date($val, 'short');
 						break;
 					case 'trunc200' :
-						$text .= $this->e107->tp->text_truncate($val, 200, '...');
+						$text .= e107::getParser()->text_truncate($val, 200, '...');
 						break;
 					case 'chars' :			// Show generated html as is
 						$text .= htmlspecialchars($val, ENT_COMPAT, 'UTF-8');
@@ -836,12 +825,12 @@ class mailoutAdminClass extends e107MailManager
 		global $HANDLERS_DIRECTORY;
 		global $mailAdmin;
 		
-		$sql = e107::getDb();
-		$ns = e107::getRender();
-		$tp = e107::getParser();
-		$frm = e107::getForm();
-		$mes = e107::getMessage();
-		$pref = e107::getPref();
+		$sql 	= e107::getDb();
+		$ns 	= e107::getRender();
+		$tp 	= e107::getParser();
+		$frm 	= e107::getForm();
+		$mes 	= e107::getMessage();
+		$pref 	= e107::getPref();
 		
 		if (!is_array($mailSource))
 		{
@@ -1014,8 +1003,6 @@ class mailoutAdminClass extends e107MailManager
 	}
 
 
-
-
 	/**
 	 *		Helper function manages the shortcodes which can be inserted
 	 */
@@ -1032,9 +1019,9 @@ class mailoutAdminClass extends e107MailManager
 
 			$sc = array(
 				'|DISPLAYNAME|' => LAN_MAILOUT_14,
-				'|USERNAME|' => LAN_MAILOUT_16,
+				'|USERNAME|' 	=> LAN_MAILOUT_16,
 				'|SIGNUP_LINK|' => LAN_MAILOUT_17,
-				'|USERID|' => LAN_MAILOUT_18,
+				'|USERID|' 		=> LAN_MAILOUT_18,
 				'|USERLASTVISIT|' => LAN_MAILOUT_178
 			);
 
@@ -1081,8 +1068,8 @@ class mailoutAdminClass extends e107MailManager
 	 */
 	public function showEmailTemplate($mailId)
 	{
-		$mes = e107::getMessage();
-		$ns = e107::getRender();
+		$mes 	= e107::getMessage();
+		$ns 	= e107::getRender();
 
 		$mailData = $this->retrieveEmail($mailId);
 		
@@ -1115,8 +1102,6 @@ class mailoutAdminClass extends e107MailManager
 		$text .= "</form>";
 		$ns->tablerender(ADLAN_136.SEP.LAN_MAILOUT_255.$mailId, $text);
 	}
-
-
 
 
 	/**
@@ -1280,8 +1265,6 @@ class mailoutAdminClass extends e107MailManager
 		$text .= '</fieldset></form>';
 		$ns->tablerender(ADLAN_136.SEP.$this->tasks[$type]['title'], $text);
 	}
-
-
 
 
 	/**
@@ -1499,7 +1482,8 @@ class mailoutAdminClass extends e107MailManager
 		$gen = new convert;
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
-		$tp = e107::getRender();
+		$tp = e107::getParser();
+		$ns = e107::getRender();
 
 		$mailData = $this->retrieveEmail($mailID);
 		
@@ -1572,7 +1556,7 @@ class mailoutAdminClass extends e107MailManager
 								$text .= $gen->convert_date($row[$fieldName], 'short');
 								break;
 							case 'trunc200' :
-								$text .= $this->e107->tp->text_truncate($row[$fieldName], 200, '...');
+								$text .= $tp->text_truncate($row[$fieldName], 200, '...');
 								break;
 							case 'chars' :			// Show generated html as is
 								$text .= htmlspecialchars($row[$fieldName], ENT_COMPAT, 'UTF-8');
@@ -1652,7 +1636,7 @@ class mailoutAdminClass extends e107MailManager
 		{
 			if ($res) $results[] = str_replace(array('--COUNT--', '--TABLE--'), array($res, 'mail_content'), LAN_MAILOUT_227);
 		}
-		if (($res = $this->db2->db_Delete('mail_recipients', '`mail_status` = '.MAIL_STATUS_TEMP)) === FALSE)
+		if (($res = $this->db2->delete('mail_recipients', '`mail_status` = '.MAIL_STATUS_TEMP)) === FALSE)
 		{
 			$results[] = 'Error '.$this->db2->mySQLlastErrNum.':'.$this->db2->mySQLlastErrText.' deleting temporary records from mail_recipients';
 			$noError = FALSE;
@@ -1663,7 +1647,7 @@ class mailoutAdminClass extends e107MailManager
 		}
 
 		// Now look for 'orphaned' recipient records
-		if (($res = $this->db2->db_Select_gen("DELETE `#mail_recipients` FROM `#mail_recipients` 
+		if (($res = $this->db2->gen("DELETE `#mail_recipients` FROM `#mail_recipients` 
 					LEFT JOIN `#mail_content` ON `#mail_recipients`.`mail_detail_id` = `#mail_content`.`mail_source_id`
 					WHERE `#mail_content`.`mail_source_id` IS NULL")) === FALSE)
 		{
@@ -1676,7 +1660,7 @@ class mailoutAdminClass extends e107MailManager
 		}
 
 		// Scan content table for anomalies, out of time records
-		if (($res = $this->db2->db_Select_gen("SELECT * FROM `#mail_content` 
+		if (($res = $this->db2->gen("SELECT * FROM `#mail_content` 
 					WHERE (`mail_content_status` >".MAIL_STATUS_FAILED.") AND (`mail_content_status` <=".MAIL_STATUS_MAX_ACTIVE.")
 					AND ((`mail_togo_count`=0) OR ( (`mail_last_date` != 0) AND (`mail_last_date` < ".time().")))")) === FALSE)
 		{
@@ -1686,7 +1670,7 @@ class mailoutAdminClass extends e107MailManager
 		else
 		{
 			$items = array();	// Store record number of any content record that needs to be changed
-			while ($row = $this->db2->db_Fetch(MYSQL_ASSOC))
+			while ($row = $this->db2->fetch(MYSQL_ASSOC))
 			{
 				$items[] = $row['mail_source_id'];
 				if ($row['mail_source_id'])
@@ -1722,7 +1706,7 @@ class mailoutAdminClass extends e107MailManager
 			$notLast = TRUE;	// This forces one more loop, so we can clean up for last record read
 			$changeCount = 0;
 			$saveRow = array();
-			while (($row = $this->db2->db_Fetch(MYSQL_ASSOC)) || $notLast)
+			while (($row = $this->db2->fetch(MYSQL_ASSOC)) || $notLast)
 			{
 				if (($lastMail > 0 && $row === FALSE) || ($lastMail != $row['mail_source_id']))
 				{	// Change of mail ID here - handle any accumulated info
@@ -1740,7 +1724,7 @@ class mailoutAdminClass extends e107MailManager
 						{
 						// *************** Update mail record here *********************
 							$this->checkDB(1);
-							$this->db->db_Update('mail_content', array('data' => $changes, 'WHERE' => '`mail_source_id` = '.$lastMail, '_FIELDS' => $this->dbTypes['mail_content']));
+							$this->db->update('mail_content', array('data' => $changes, 'WHERE' => '`mail_source_id` = '.$lastMail, '_FIELDS' => $this->dbTypes['mail_content']));
 							$line = "Count update for {$saveRow['mail_source_id']} - {$saveRow['mail_togo_count']}, {$saveRow['mail_sent_count']}, {$saveRow['mail_fail_count']}, {$saveRow['mail_bounce_count']} => ";
 							$line .= implode (', ', $counters);
 							$results[] = $line;

@@ -2,14 +2,11 @@
 /*
 * e107 website system
 *
-* Copyright (C) 2008-2011 e107 Inc (e107.org)
+* Copyright (C) 2008-2013 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
 * RSS Feed management
-*
-* $URL$
-* $Id$
 *
 */
 
@@ -31,6 +28,7 @@ if (!$e107->isInstalled('rss_menu'))
 	exit;
 }
 
+$tp = e107::getParser();
 
 require_once(e_PLUGIN.'rss_menu/rss_shortcodes.php');
 require_once(e_HANDLER.'userclass_class.php');
@@ -61,9 +59,9 @@ else
 if (e_QUERY)
 {
 	$tmp = explode('.', e_QUERY);
-	$content_type = $e107->tp->toDB($tmp[0]);
+	$content_type = $tp->toDB($tmp[0]);
 	$rss_type = intval(varset($tmp[1],0));
-	$topic_id = $e107->tp->toDB($tmp[2],'');
+	$topic_id = $tp->toDB($tmp[2],'');
 }
 
 // List available rss feeds
@@ -72,16 +70,16 @@ if (!$rss_type)
 	require_once(HEADERF);
 	// require_once(e_PLUGIN.'rss_menu/rss_template.php');		Already loaded
 
-	if(!$sql->db_Select('rss', '*', "`rss_class`=0 AND `rss_limit`>0 AND `rss_topicid` NOT REGEXP ('\\\*') ORDER BY `rss_name`"))
+	if(!$sql->select('rss', '*', "`rss_class`=0 AND `rss_limit`>0 AND `rss_topicid` NOT REGEXP ('\\\*') ORDER BY `rss_name`"))
 	{
 		$ns->tablerender(LAN_ERROR, RSS_LAN_ERROR_4);
 	}
 	else
 	{
 		$text = $RSS_LIST_HEADER;
-		while($row=$sql->db_Fetch())
+		while($row = $sql->fetch())
 		{
-			$text .= $e107->tp->parseTemplate($RSS_LIST_TABLE, FALSE, $rss_shortcodes);
+			$text .= $tp->parseTemplate($RSS_LIST_TABLE, FALSE, $rss_shortcodes);
 		}
 		$text .= $RSS_LIST_FOOTER;
 		$ns->tablerender(RSS_MENU_L2, $text);
@@ -111,10 +109,10 @@ if(is_numeric($content_type) && isset($conversion[$content_type]) )
 
 $check_topic = ($topic_id ? " AND rss_topicid = '".$topic_id."' " : "");
 
-if(!$sql -> db_Select('rss', '*', "rss_class!=2 AND rss_url='".$content_type."' ".$check_topic." AND rss_limit>0 "))
+if(!$sql->select('rss', '*', "rss_class!=2 AND rss_url='".$content_type."' ".$check_topic." AND rss_limit>0 "))
 {	// Check if wildcard present for topic_id
 	$check_topic = ($topic_id ? " AND rss_topicid = '".str_replace($topic_id, "*", $topic_id)."' " : "");
-	if(!$sql -> db_Select('rss', '*', "rss_class!=2 AND rss_url='".$content_type."' ".$check_topic." AND rss_limit>0 "))
+	if(!$sql->select('rss', '*', "rss_class!=2 AND rss_url='".$content_type."' ".$check_topic." AND rss_limit>0 "))
 	{
 		require_once(HEADERF);
 		$ns->tablerender('', RSS_LAN_ERROR_1);
@@ -123,12 +121,12 @@ if(!$sql -> db_Select('rss', '*', "rss_class!=2 AND rss_url='".$content_type."' 
 	}
 	else
 	{
-		$row = $sql->db_Fetch();
+		$row = $sql->fetch();
 	}
 }
 else
 {
-	$row = $sql->db_Fetch();
+	$row = $sql->fetch();
 }
 
 
@@ -212,7 +210,7 @@ class rssCreate
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 				WHERE n.news_class IN (".USERCLASS_LIST.") AND NOT (n.news_class REGEXP ".$nobody_regexp.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") {$render} {$topic} ORDER BY n.news_datestamp DESC LIMIT 0,".$this -> limit;
-				$sql->db_Select_gen($this -> rssQuery);
+				$sql->gen($this->rssQuery);
 				$tmp = $sql->db_getList();
 				$this -> rssItems = array();
 				$loop=0;
@@ -262,7 +260,7 @@ class rssCreate
 			case 5:
 				$path='';
 				$this -> rssQuery = "SELECT * FROM `#comments` WHERE `comment_blocked` = 0 ORDER BY `comment_datestamp` DESC LIMIT 0,".$this -> limit;
-				$sql->db_Select_gen($this -> rssQuery);
+				$sql->gen($this -> rssQuery);
 				$tmp = $sql->db_getList();
 				$this -> rssItems = array();
 				$loop=0;
@@ -409,9 +407,9 @@ class rssCreate
 						<!-- content type=\"".$this -> contentType."\" -->
 						<rss version=\"0.92\">
 						<channel>
-						<title>".$this->e107->tp->toRss($rss_title)."</title>
+						<title>".$tp->toRss($rss_title)."</title>
 						<link>".$pref['siteurl']."</link>
-						<description>".$this->e107->tp->toRss($pref['sitedescription'])."</description>
+						<description>".$tp->toRss($pref['sitedescription'])."</description>
 						<lastBuildDate>".$itemdate = date("r", ($time + $this -> offset))."</lastBuildDate>
 						<docs>http://backend.userland.com/rss092</docs>\n";
 
@@ -421,11 +419,11 @@ class rssCreate
 
 						echo "
 							<item>
-							<title>".$this->e107->tp->toRss($value['title'])."</title>
-							<description>".substr($this->e107->tp->toRss($value['description']),0,150);
+							<title>".$tp->toRss($value['title'])."</title>
+							<description>".substr($tp->toRss($value['description']),0,150);
 						if($pref['rss_shownewsimage'] == 1 && strlen(trim($value['news_thumbnail'])) > 0)
 						{
-							$news_thumbnail = SITEURLBASE.e_IMAGE_ABS."newspost_images/".$this->e107->tp->toRss($value['news_thumbnail']);
+							$news_thumbnail = SITEURLBASE.e_IMAGE_ABS."newspost_images/".$tp->toRss($value['news_thumbnail']);
 							echo "&lt;a href=&quot;".$link."&quot;&gt;&lt;img src=&quot;".$news_thumbnail."&quot; height=&quot;50&quot; border=&quot;0&quot; hspace=&quot;10&quot; vspace=&quot;10&quot; align=&quot;right&quot;&gt;&lt;/a&gt;";
 							unset($news_thumbail);
 						}
@@ -451,14 +449,14 @@ class rssCreate
 					xmlns:sy=\"http://purl.org/rss/1.0/modules/syndication/\"
 				>
 				<channel>
-				<title>".$this->e107->tp->toRss($rss_title)."</title>
+				<title>".$tp->toRss($rss_title)."</title>
 				<link>".$pref['siteurl']."</link>
-				<description>".$this->e107->tp->toRss($pref['sitedescription'])."</description>\n";
+				<description>".$tp->toRss($pref['sitedescription'])."</description>\n";
 
-				echo $this->e107->tp->toHtml($rss_custom_channel,FALSE)."\n"; // must not convert to CDATA.
+				echo $tp->toHtml($rss_custom_channel,FALSE)."\n"; // must not convert to CDATA.
 
 				echo "<language>".CORE_LC.(defined("CORE_LC2") ? "-".CORE_LC2 : "")."</language>
-				<copyright>".$this->e107->tp->toRss(SITEDISCLAIMER)."</copyright>
+				<copyright>".$tp->toRss(SITEDISCLAIMER)."</copyright>
 				<managingEditor>".$this->nospam($pref['siteadminemail'])." (".$pref['siteadmin'].")</managingEditor>
 				<webMaster>".$this->nospam($pref['siteadminemail'])." (".$pref['siteadmin'].")</webMaster>
 				<pubDate>".date("r",($time + $this -> offset))."</pubDate>
@@ -475,12 +473,12 @@ class rssCreate
 				{
 					echo "
 					<image>
-					<title>".$this->e107->tp->toRss($rss_title)."</title>
+					<title>".$tp->toRss($rss_title)."</title>
 					<url>".(strstr(SITEBUTTON, "http:")!==FALSE ? SITEBUTTON : SITEURL.str_replace("../", "",SITEBUTTON))."</url>
 					<link>".$pref['siteurl']."</link>
 					<width>88</width>
 					<height>31</height>
-					<description>".$this->e107->tp->toRss($pref['sitedescription'])."</description>
+					<description>".$tp->toRss($pref['sitedescription'])."</description>
 					</image>\n";
 				}
 
@@ -489,7 +487,7 @@ class rssCreate
 				echo "
 				<textInput>
 				<title>Search</title>
-				<description>Search ".$this->e107->tp->toRss($pref['sitename'])."</description>
+				<description>Search ".$tp->toRss($pref['sitename'])."</description>
 				<name>query</name>
 				<link>".SITEURL.(substr(SITEURL, -1) == "/" ? "" : "/")."search.php</link>
 				</textInput>";
@@ -502,17 +500,17 @@ class rssCreate
 
 					echo "
 						<item>
-						<title>".$this->e107->tp->toRss($value['title'])."</title>\n";
+						<title>".$tp->toRss($value['title'])."</title>\n";
 
 					if($link)
 					{
 						echo "<link>".$link."</link>\n";
 					}
 
-					echo "<description>".$this->e107->tp->toRss($value['description'],TRUE);
+					echo "<description>".$tp->toRss($value['description'],TRUE);
 					if($pref['rss_shownewsimage'] == 1 && strlen(trim($value['news_thumbnail'])) > 0) //FIXME - Fixed path and height?
 					{
-						$news_thumbnail = SITEURLBASE.e_IMAGE_ABS."newspost_images/".$this->e107->tp->toRss($value['news_thumbnail']);
+						$news_thumbnail = SITEURLBASE.e_IMAGE_ABS."newspost_images/".$tp->toRss($value['news_thumbnail']);
 						echo "&lt;a href=&quot;".$link."&quot;&gt;&lt;img src=&quot;".$news_thumbnail."&quot; height=&quot;50&quot; border=&quot;0&quot; hspace=&quot;10&quot; vspace=&quot;10&quot; align=&quot;right&quot;&gt;&lt;/a&gt;";
 						unset($news_thumbail);
 					}
@@ -525,7 +523,7 @@ class rssCreate
 
 					if($value['category_name'] && $catlink)
 					{
-						echo "<category domain='".$catlink."'>".$this->e107->tp->toRss($value['category_name'])."</category>\n";
+						echo "<category domain='".$catlink."'>".$tp->toRss($value['category_name'])."</category>\n";
 					}
 
 					if($value['comment'])
@@ -573,9 +571,9 @@ class rssCreate
 				<!-- content type=\"".$this -> contentType."\" -->
 				<rdf:RDF xmlns=\"http://purl.org/rss/1.0/\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:sy=\"http://purl.org/rss/1.0/modules/syndication/\" xmlns:admin=\"http://webns.net/mvcb/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\">
 				<channel rdf:about=\"".$pref['siteurl']."\">
-				<title>".$this->e107->tp->toRss($rss_title)."</title>
+				<title>".$tp->toRss($rss_title)."</title>
 				<link>".$pref['siteurl']."</link>
-				<description>".$this->e107->tp->toRss($pref['sitedescription'])."</description>
+				<description>".$tp->toRss($pref['sitedescription'])."</description>
 				<dc:language>".CORE_LC.(defined("CORE_LC2") ? "-".CORE_LC2 : "")."</dc:language>
 				<dc:date>".$this->get_iso_8601_date($time + $this -> offset). "</dc:date>
 				<dc:creator>".$this->nospam($pref['siteadminemail'])."</dc:creator>
@@ -608,15 +606,15 @@ class rssCreate
 
 					echo "
 						<item rdf:about=\"".$link."\">
-						<title>".$this->e107->tp->toRss($value['title'])."</title>
+						<title>".$tp->toRss($value['title'])."</title>
 						<link>".$link."</link>
 						<dc:date>".$this->get_iso_8601_date($time + $this -> offset)."</dc:date>
 						<dc:creator>".$value['author']."</dc:creator>
-						<dc:subject>".$this->e107->tp->toRss($value['category_name'])."</dc:subject>
-						<description>".$this->e107->tp->toRss($value['description']);
+						<dc:subject>".$tp->toRss($value['category_name'])."</dc:subject>
+						<description>".$tp->toRss($value['description']);
 					if($pref['rss_shownewsimage'] == 1 && strlen(trim($value['news_thumbnail'])) > 0)
 					{
-						$news_thumbnail = SITEURLBASE.e_IMAGE_ABS."newspost_images/".$this->e107->tp->toRss($value['news_thumbnail']);
+						$news_thumbnail = SITEURLBASE.e_IMAGE_ABS."newspost_images/".$tp->toRss($value['news_thumbnail']);
 						echo "&lt;a href=&quot;".$link."&quot;&gt;&lt;img src=&quot;".$news_thumbnail."&quot; height=&quot;50&quot; border=&quot;0&quot; hspace=&quot;10&quot; vspace=&quot;10&quot; align=&quot;right&quot;&gt;&lt;/a&gt;";
 						unset($news_thumbail);
 					}
@@ -640,7 +638,7 @@ class rssCreate
 					// Required
 					echo "
 					<id>".$pref['siteurl']."</id>\n
-					<title type='text'>".$this->e107->tp->toRss($rss_title)."</title>\n
+					<title type='text'>".$tp->toRss($rss_title)."</title>\n
 					<updated>".$this->get_iso_8601_date($time + $this -> offset)."</updated>\n";
 
 					// Recommended
@@ -676,7 +674,7 @@ class rssCreate
 						// Required
 						echo "
 						<id>".$value['link']."</id>\n
-						<title type='text'>".$this->e107->tp->toRss($value['title'])."</title>\n
+						<title type='text'>".$tp->toRss($value['title'])."</title>\n
 						<updated>".$this->get_iso_8601_date($value['pubdate'] + $this -> offset)."</updated>\n";
 
 						// Recommended
@@ -691,10 +689,10 @@ class rssCreate
 						//<content>complete story here</content>\n
 						echo "
 						<link rel='alternate' type='text/html' href='".$value['link']."' />\n
-						<summary type='text'>".$this->e107->tp->toRss($value['description']);
+						<summary type='text'>".$tp->toRss($value['description']);
 						if($pref['rss_shownewsimage'] == 1 && strlen(trim($value['news_thumbnail'])) > 0)
 						{
-							$news_thumbnail = SITEURLBASE.e_IMAGE_ABS."newspost_images/".$this->e107->tp->toRss($value['news_thumbnail']);
+							$news_thumbnail = SITEURLBASE.e_IMAGE_ABS."newspost_images/".$tp->toRss($value['news_thumbnail']);
 							echo "&lt;a href=&quot;".$value['link']."&quot;&gt;&lt;img src=&quot;".$news_thumbnail."&quot; height=&quot;50&quot; border=&quot;0&quot; hspace=&quot;10&quot; vspace=&quot;10&quot; align=&quot;right&quot;&gt;&lt;/a&gt;";
 							unset($news_thumbail);
 						}
@@ -702,7 +700,7 @@ class rssCreate
 
 						// Optional
 						if($value['category_name']){
-							echo "<category term='".$this->e107->tp->toRss($value['category_name'])."'/>\n";
+							echo "<category term='".$tp->toRss($value['category_name'])."'/>\n";
 						}
 						//<contributor>
 						//	<name>Jane Doe</name>

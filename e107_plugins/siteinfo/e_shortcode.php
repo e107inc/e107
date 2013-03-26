@@ -1,7 +1,6 @@
 <?php
 /*
-* Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id$
+* Copyright (C) 2008-2013 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
 *
 * Siteinfo shortcode batch
 */
@@ -11,16 +10,14 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 {
 	function sc_sitebutton()
 	{
-		$e107 = e107::getInstance();
-		$path = ($_POST['sitebutton'] && $_POST['ajax_used']) ? $e107->tp->replaceConstants($_POST['sitebutton']) : (strstr(SITEBUTTON, 'http:') ? SITEBUTTON : e_IMAGE.SITEBUTTON);
+		$path = ($_POST['sitebutton'] && $_POST['ajax_used']) ? e107::getParser()->replaceConstants($_POST['sitebutton']) : (strstr(SITEBUTTON, 'http:') ? SITEBUTTON : e_IMAGE.SITEBUTTON);
 		//TODO use CSS class?
 		return '<a href="'.SITEURL.'"><img src="'.$path.'" alt="'.SITENAME.'" /></a>';
 	}
 
 	function sc_sitedisclaimer()
 	{
-		$e107 = e107::getInstance();
-		return $e107->tp->toHtml(SITEDISCLAIMER, true, 'constants defs');
+		return e107::getParser()->toHtml(SITEDISCLAIMER, true, 'constants defs');
 	}
 
 	function sc_sitename($parm)

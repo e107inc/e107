@@ -2,16 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * e107 Main
+ * Online shortcodes
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/online/online_shortcodes.php,v $
- * $Revision$
- * $Date$
- * $Author$
 */
 if (!defined('e107_INIT')) { exit; }
 
@@ -86,7 +82,7 @@ class online_shortcodes
 		$total_members = $this->e107->ecache->retrieve("online_menu_member_total", 120);
 		if($total_members == false) 
 		{
-			$total_members = $this->e107->sql->db_Count('user','(*)',"where user_ban='0'");
+			$total_members = e107::getDb()->count('user','(*)',"where user_ban='0'");
 			$this->e107->ecache->set("online_menu_member_total", $total_members);
 		}
 		return $total_members;
@@ -95,11 +91,12 @@ class online_shortcodes
 
 	function sc_online_member_newest()
 	{
+		$sql = e107::getDb();
 		$ret = $this->e107->ecache->retrieve('online_menu_member_newest', 120);
 		if($ret == false) 
 		{
-			$newest_member_sql = $this->e107->sql->db_Select('user', 'user_id, user_name', "user_ban='0' ORDER BY user_join DESC LIMIT 1");
-			$row = e107::getDb()->fetch();
+			$newest_member_sql = $sql->select('user', 'user_id, user_name', "user_ban='0' ORDER BY user_join DESC LIMIT 1");
+			$row = $sql->fetch();
 			$ret = "<a href='".e_HTTP."user.php?id.".$row['user_id']."'>".$row['user_name']."</a>";
 			$this->e107->ecache->set('online_menu_member_newest', $ret);
 		}

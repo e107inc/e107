@@ -8,10 +8,6 @@
  *
  * Forthcoming events menu handler for event calendar
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/next_event_menu.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 /**
@@ -21,7 +17,6 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id$;
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -87,7 +82,7 @@ if ($cal_totev > 0)
 		$cal_totev --;    // Can use this to modify inter-event gap
 		$calSc->numEvents = $cal_totev;				// Number of events to display
 		$calSc->event = $thisEvent;					// Give shortcodes the event data
-		$cal_text .= $e107->tp->parseTemplate($EVENT_CAL_FE_LINE,FALSE, $calSc);
+		$cal_text .= $tp->parseTemplate($EVENT_CAL_FE_LINE,FALSE, $calSc);
 	}
 }
 else
@@ -96,7 +91,7 @@ else
 	$cal_text.= EC_LAN_141;
 }
 
-$calendar_title = e107::getParser()->toHTML($menu_title,FALSE,'TITLE');		// Allows multi-language title, shortcodes
+$calendar_title = $tp->toHTML($menu_title,FALSE,'TITLE');		// Allows multi-language title, shortcodes
 if ($link_in_heading == 1)
 {
 	$calendar_title = "<a class='forumlink' href='".e_PLUGIN_ABS."calendar_menu/event.php' >".$calendar_title."</a>";

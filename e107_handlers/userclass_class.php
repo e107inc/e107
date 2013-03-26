@@ -1678,10 +1678,9 @@ class user_class_admin extends user_class
 		{
 			$newarray = array_diff(explode(',', $curclass), array('', $cid));
 			$new_userclass = implode(',', $newarray);
-			$uc_sql->db_Update('user', "user_class='".$e107->tp->toDB($new_userclass, true)."' WHERE user_id=".intval($uid));
+			$uc_sql->update('user', "user_class='".e107::getParser()->toDB($new_userclass, true)."' WHERE user_id=".intval($uid));
 		}
 	}
-
 
 
 

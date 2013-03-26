@@ -263,8 +263,8 @@ class calendar_menu_cron // include plugin-folder in the name.
 				//	MAIL_CONTACT, MAIL_THREAD (maybe). Also MAIL_LINK, MAIL_SHORT_DATE 
 				// Best to strip entities here rather than at entry - handles old events as well
 				// Note that certain user-related substitutions will work, however - |USERID|, |USERNAME|, |DISPLAYNAME|
-				$cal_title = html_entity_decode($this->e107->tp->parseTemplate($this->ecal_class->pref['eventpost_mailsubject'], TRUE),ENT_QUOTES,CHARSET);
-				$cal_msg = html_entity_decode($this->e107->tp->parseTemplate($cal_msg, TRUE),ENT_QUOTES,CHARSET);
+				$cal_title = html_entity_decode(e107::getParser()->parseTemplate($this->ecal_class->pref['eventpost_mailsubject'], TRUE),ENT_QUOTES,CHARSET);
+				$cal_msg = html_entity_decode(e107::getParser()->parseTemplate($cal_msg, TRUE),ENT_QUOTES,CHARSET);
 			  
 				// Four cases for the query:
 				//	1. No forced mailshots - based on event_subs table only									Need INNER JOIN
