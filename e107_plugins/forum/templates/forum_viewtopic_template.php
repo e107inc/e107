@@ -2,13 +2,10 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2011 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- * $URL$
- * $Id$
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -310,11 +307,11 @@ $FORUM_CRUMB['forum']['value'] = "<a class='forumlink' href='{FORUM_HREF}'>{FORU
 
 $FORUM_VIEWTOPIC_TEMPLATE['start'] 	= "
 
-	<div class='row'>
+	<div class='row-fluid'>
 		<div class='span6 pull-left'>{BACKLINK}</div>
 	</div>
 	
-	<div class='row'>
+	<div class='row-fluid'>
 		<div class='span9 pull-left'><h3>{THREADNAME}</h3></div><div class='span3 pull-right right' style='padding-top:10px'>{BUTTONSX}</div>
 	</div>
 	
