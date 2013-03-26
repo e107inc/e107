@@ -1,162 +1,150 @@
 <?php
+
 if ( ! defined('e107_INIT')) { exit(); }
-include_lan(e_THEME."_blank/languages/".e_LANGUAGE.".php");
 
-// TODO theme.xml - add them to jslib/php source
-e107::getJs()->requireCoreLib('core/decorate.js')
-	->requireCoreLib('core/tabs.js');
+e107::lan('theme','English');
+e107::js('core','bootstrap/js/bootstrap.min.js');
+e107::css('core','bootstrap/css/bootstrap-responsive.min.css');
+//e107::js('theme', 'js/theme.js');
+//e107::css('url', 'external url ');
+//define("VIEWPORT","width=device-width, initial-scale=1.0");
 
-//$register_sc[]='FS_ADMIN_ALT_NAV';
-$no_core_css = TRUE;
-
-define("STANDARDS_MODE",TRUE);
-
-// TODO - JS/CSS handling via JSManager
-function theme_head() {
-
-	$theme_pref = e107::getThemePref();
-
-	$ret = '';
-	$ret .= '
-		<link rel="stylesheet" href="'.THEME_ABS.'menu/menu.css" type="text/css" media="all" />
-		<!--[if IE]>
-		<link rel="stylesheet" href="'.THEME_ABS.'ie_all.css" type="text/css" media="all" />
-		<![endif]-->
-		<!--[if lte IE 7]>
-			<script type="text/javascript" src="'.THEME_ABS.'menu/menu.js"></script>
-		<![endif]-->
-	';
-
-    $ret .= "
-    <script type='text/javascript'>
-       /**
-    	* Decorate all tables having e-list class
-    	*/
-        e107.runOnLoad( function() {
-            \$\$('table.e-list').each(function(element) {
-            	e107Utils.Decorate.table(element, { tr_td: 'first last' });
-            });
-        }, document, true);
-
-    </script>";
-
-    if(THEME_LAYOUT == "alternate") // as matched by $HEADER['alternate'];
-	{
-        $ret .= "<!-- Include Something --> ";
-	}
-
-	if($theme_pref['_blank_example'] == 3)  // Pref from admin -> thememanager.
-	{
-        $ret .= "<!-- Include Something Else --> ";
-	}
+// Custom Shortcodes. 
+//$register_sc[]='BLANK';
 
 
-	return $ret;
-}
-
-function tablestyle($caption, $text, $mod) 
+function tablestyle($caption, $text, $mode='') 
 {
-	global $style;
+    global $style;
 	
-	$type = $style;
-	if(empty($caption))
+	if($mode == 'wmessage')
 	{
-		$type = 'box';
+		$style = '';	
 	}
 	
-	switch($type) 
-	{
+    switch($style) 
+    {
 
-		case 'menu' :
-			echo '
-				<div class="block">
-					<h4 class="caption">'.$caption.'</h4>
-					'.$text.'
-				</div>
-			';
+        case 'home': 
+            echo $caption;
+			echo $text; 
 		break;
-		
-		case 'box':
-			echo '
-				<div class="block">
-					<div class="block-text">
-						'.$text.'
-					</div>
-				</div>
-			';
+
+		case 'menu': 
+            echo $caption;
+			echo $text; 
 		break;
-	
-		default:
-			echo '
-				<div class="block">
-					<h1 class="caption">'.$caption.'</h1>
-					<div class="block-text">
-						'.$text.'
-					</div>
-				</div>
-			';
+
+		case 'full': 
+            echo $caption;
+			echo $text; 
+		break;
+
+		default: 
+        	echo $caption;
+			echo $text; 
 		break;
 	}
+	
 }
+
+
+
+// DEFAULT
 
 $HEADER['default'] = '
-<div class="wrapper">
-	<div class="header">
-		<div class="header-content">
-			BLANK HEADER
-		</div>
-		<div style="height: 20px;"><!-- --></div>
-		<div class="navigation">
-			<div id="main-nav">{SITELINKS}</div>
-			<div class="clear"><!-- --></div>
-		</div>
-	</div>
-	<div class="page-body">
-		<table class="main-table" cellpadding="0" cellspacing="0">
-			<tr>
-
-				<td class="col-left">
-				{SETSTYLE=menu}
-				{MENU=1}
-				</td>
-
-				<td>
-					<div class="col-main">
-						<div class="inner-wrapper">
-						{SETSTYLE=content}
-						{FEATUREBOX|default=notablestyle}
-						{FEATUREBOX|dynamic=notablestyle}
-';
-$FOOTER['default'] = '
-						{FEATUREBOX|tabs=notablestyle&cols='.e107::getThemePref('fb_tabs_cols', 1).'}
-						</div>
-					</div>
-				</td>
-				<td class="col-right">
-					<div class="col-right">
-						{SETSTYLE=menu}
-						{MENU=2}
-					</div>
-				</td>
-			</tr>
-		</table>
-	</div>
-	<div class="footer">
-		<!-- -->
-	</div>
-</div>
+{SETSTYLE=default}
+{SETIMAGE: w=0}
+    
 ';
 
-$HEADER['alternate'] = '';
-$FOOTER['alternate'] = '';
+$FOOTER['default'] = ' 
+{SETSTYLE=menu}
+{MENU=1}
+';                 
 
-/*
-
-	$CUSTOMHEADER, CUSTOMFOOTER and $CUSTOMPAGES are deprecated.
-	Default custom-pages can be assigned in theme.xml
-
- */
+               
 
 
+
+// HOME page
+
+$HEADER['home'] = '
+	{SETSTYLE=hero}
+	{SETIMAGE: w=0} 
+';
+
+	
+$FOOTER['home'] = '	
+
+';
+
+
+// FULL PAGE (no menus) - eg. Forum
+
+$HEADER['full'] = '
+       {SETSTYLE=full}
+	   {SETIMAGE: w=0} 
+';
+
+$FOOTER['full'] = '
+
+   
+';
+
+
+
+
+// News item styling
+$NEWSSTYLE = '
+{NEWSTITLE}
+{NEWSAUTHOR}
+{NEWSDATE=short}
+{NEWSIMAGE}
+{NEWSBODY} {EXTENDED}
+
+';
+
+// Comment Styling
+$COMMENTSTYLE = '
+{AVATAR} 
+{USERNAME}
+{REPLY}
+{TIMEDATE}
+{COMMENT} 
+';
+
+// news.php?cat.1
+$NEWSLISTSTYLE = '
+{NEWSTITLE}
+{NEWSDATE=short}
+{NEWSAUTHOR}
+{NEWSIMAGE}
+{NEWSBODY} 
+{EXTENDED}
+{EMAILICON} 
+{PRINTICON}
+{PDFICON}
+{ADMINOPTIONS}
+{NEWSCOMMENTS}
+';
+
+$NEWSARCHIVE ='
+{ARCHIVE_BULLET}
+{ARCHIVE_LINK}
+{ARCHIVE_AUTHOR}
+{ARCHIVE_DATESTAMP}
+{ARCHIVE_CATEGORY}
+';
+//Render news categories on the bottom of the page
+$NEWSCAT = '
+{NEWSCATEGORY}
+{NEWSCAT_ITEM}
+';
+//Loop for news items in category
+$NEWSCAT_ITEM = '
+{NEWSTITLELINK}
+    
+';
 
 ?>
