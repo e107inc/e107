@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2002-2012 e107 Inc (e107.org)
+ * Copyright (C) 2002-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -41,7 +41,7 @@ $cal_current_month	= $cal_datearray['mon'];
 $cal_current_year	= $cal_datearray['year'];
 $numberdays	= date("t", $ecal_class->cal_timedate); // number of days in this month
 $cal_monthstart		= gmmktime(0, 0, 0, $cal_current_month, 1, $cal_current_year);			// Time stamp for first day of month
-$cal_firstdayarray	= getdate($cal_monthstart);												
+$cal_firstdayarray	= $ecal_class->gmgetdate($cal_monthstart);												
 $cal_monthend		= gmmktime(0, 0, 0, $cal_current_month + 1, 1, $cal_current_year) -1;		// Time stamp for last day of month
 //$cal_thismonth	= $cal_datearray['mon'];
 $cal_thisday	= $cal_datearray['mday'];	// Today
