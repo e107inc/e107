@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2002-2012 e107 Inc (e107.org)
+ * Copyright (C) 2002-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -21,10 +21,10 @@ $eplug_name = 'EC_ADLAN_1';
 $eplug_version = "3.70";
 $eplug_author = "jalist / cameron / McFly / Barry / Lisa_ / steved";
 $eplug_url = "http://e107.org";
-$eplug_email = "jalist@e107.org";
+$eplug_email = "e107@e107.org";
 $eplug_description = EC_LAN_107;
 $eplug_compatible = "e107v7";
-$eplug_readme = "readme.pdf";
+//$eplug_readme = "readme.pdf";
 $eplug_compliant = TRUE;
 $eplug_folder = "calendar_menu";		// Name of the plugin's folder
 
@@ -116,7 +116,7 @@ $eplug_prefs = array(
 "eventpost_numevents" => 3,
 "eventpost_checkrecur" => 1,
 "eventpost_linkheader" => 0,
-"eventpost_fe_set" => "",
+"eventpost_fe_set" => '',
 "eventpost_fe_hideifnone" => '0',
 "eventpost_fe_showrecent" => 0,
 "eventpost_showcaticon" => 0,
@@ -167,14 +167,14 @@ $eplug_tables = array(
 	event_cat_description text,
 	event_cat_force_class int(10) unsigned NOT NULL default '0',
 	PRIMARY KEY  (event_cat_id)
-	) TYPE=MyISAM;"
+	) ENGINE=MyISAM;"
 	,
 	"CREATE TABLE ".MPREFIX."event_subs (
 	event_subid int(10) unsigned NOT NULL auto_increment,
 	event_userid  int(10) unsigned NOT NULL default '0',
 	event_cat  int(10) unsigned NOT NULL default '0',
 	PRIMARY KEY  (event_subid)
-	) TYPE=MyISAM;", $ec_insert_entries);
+	) ENGINE=MyISAM;", $ec_insert_entries);
 
 
 // Create a link in main menu (yes=TRUE, no=FALSE) 
@@ -259,7 +259,7 @@ $upgrade_alter_tables = array_merge($upgrade_alter_tables,array(
 	event_userid  int(10) unsigned NOT NULL default '0',
 	event_cat  int(10) unsigned NOT NULL default '0',
 	PRIMARY KEY  (event_subid)
-	) TYPE=MyISAM;"
+	) ENGINE=MyISAM;"
 ));
 $version_notes .= "<u>3.5</u><br />".EC_ADLAN_A156."<br />";
 }
