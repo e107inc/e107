@@ -243,23 +243,14 @@ $FORUMPOST_TEMPLATE['form']		= "
 									<td style='width:80%'>
 									{POSTBOX}
 									{EMAILNOTIFY}
-							
-									
-									</td>
-									</tr>
-									<td style='width:20%'>Post thread as</td>
-									<td style='width:80%'>
-									{POSTTHREADAS} 
 									</td></tr>
-									{POLL}
-									{FILEATTACH} 
-									
-									<tr style='vertical-align:top'>
-									<td colspan='2' style='text-align:center'>
-									{BUTTONS}
-									</td>
-									</tr>
-									</table>
+									<td style='width:20%'>Post Options</td>
+									<td style='width:80%'>
+									{POSTOPTIONS}
+									</td></tr></table>
+									<div class='text-center'>									
+										{BUTTONS}
+									</div>
 									{FORMEND}
 									
 									</div></div>

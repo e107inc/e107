@@ -377,6 +377,23 @@ class poll
 		{
 		   	require(e_PLUGIN.'poll/templates/poll_template.php');
 		}
+		
+		if($type == 'forum' && e_BOOTSTRAP === true)
+		{
+	
+			require_once(e_PLUGIN."forum/templates/forum_poll_template.php");
+			
+			$POLL_FORUM_NOTVOTED_START = $FORUM_POLL_TEMPLATE['form']['start'];
+			$POLL_FORUM_NOTVOTED_LOOP = $FORUM_POLL_TEMPLATE['form']['item'];
+			$POLL_FORUM_NOTVOTED_END = $FORUM_POLL_TEMPLATE['form']['end'];
+			
+			$POLL_FORUM_VOTED_START = $FORUM_POLL_TEMPLATE['results']['start'];
+			$POLL_FORUM_VOTED_LOOP = $FORUM_POLL_TEMPLATE['results']['item'];
+			$POLL_FORUM_VOTED_END = $FORUM_POLL_TEMPLATE['results']['end'];	
+			
+		}
+		
+		
 
 		$preview = FALSE;
 		if ($type == 'preview')
@@ -394,39 +411,61 @@ class poll
 			$comment_total = $sql->db_Count("comments", "(*)", "WHERE `comment_item_id`='".intval($pollArray['poll_id'])."' AND `comment_type`=4");
 		}
 
-		$QUESTION = $tp -> toHTML($pollArray['poll_title'], TRUE, "emotes_off, defs");
-		$VOTE_TOTAL = POLLAN_31.": ".$voteTotal;
-		$COMMENTS = ($pollArray['poll_comment'] ? " <a href='".e_BASE."comment.php?comment.poll.".$pollArray['poll_id']."'>".POLLAN_27.": ".$comment_total."</a>" : "");
-		$poll_count = $sql->db_Count("polls", "(*)", "WHERE poll_id <= '".$pollArray['poll_id']."'");
+		$sc = e107::getScBatch('poll');
+		$sc->setVars($pollArray);
+
+
+
+		$QUESTION 		= $tp -> toHTML($pollArray['poll_title'], TRUE, "emotes_off, defs");
+		
+		
+		$VOTE_TOTAL 	= POLLAN_31.": ".$voteTotal;
+		$COMMENTS 		= ($pollArray['poll_comment'] ? " <a href='".e_BASE."comment.php?comment.poll.".$pollArray['poll_id']."'>".POLLAN_27.": ".$comment_total."</a>" : "");
+		
+		
+		$poll_count 	= $sql->db_Count("polls", "(*)", "WHERE poll_id <= '".$pollArray['poll_id']."'");
 		$OLDPOLLS = '';
+		
 		if ($poll_count > 1)
 		{		
 			$OLDPOLLS = ($type == 'menu' ? "<a href='".e_PLUGIN_ABS."poll/oldpolls.php'>".POLLAN_28."</a>" : "");
 		}
-		$AUTHOR = POLLAN_35." ".($type == 'preview' || $type == 'forum' ? USERNAME : "<a href='".e_BASE."user.php?id.".$pollArray['poll_admin_id']."'>".$pollArray['user_name']."</a>");
+		
+		$AUTHOR 		= POLLAN_35." ".($type == 'preview' || $type == 'forum' ? USERNAME : "<a href='".e_BASE."user.php?id.".$pollArray['poll_admin_id']."'>".$pollArray['user_name']."</a>");
+
+	
+		
 
 		switch ($POLLMODE)
 		{
 			case 'notvoted':
 				$text = "<form method='post' action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."'>\n".preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_NOTVOTED_START : $POLL_NOTVOTED_START));
 				$count = 1;
+				$sc->answerCount = 1;
 				$alt = 0; // alternate style.
+				
+				$template = ($type == "forum") ? $POLL_FORUM_NOTVOTED_LOOP : $POLL_NOTVOTED_LOOP;
+				
 				foreach ($optionArray as $option) 
 				{
+					$sc->answerOption = $option; 
 					//	$MODE = ($mode) ? $mode : "";		/* debug */
-					$OPTIONBUTTON = ($pollArray['poll_allow_multiple'] ? "<input type='checkbox' name='votea[]' value='$count' />" : "<input type='radio' name='votea' value='$count' />");
-					$OPTION = $tp->toHTML($option, TRUE);
-					if (isset($POLL_NOTVOTED_LOOP_ALT) && $POLL_NOTVOTED_LOOP_ALT && $type != "forum")
-					{ // alternating style
-						$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($alt == 0 ? $POLL_NOTVOTED_LOOP : $POLL_NOTVOTED_LOOP_ALT));
-						$alt = ($alt ==0) ? 1 : 0;
-					}
-					else
-					{
-						$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_NOTVOTED_LOOP : $POLL_NOTVOTED_LOOP));
-					}
+				//	$OPTIONBUTTON = ($pollArray['poll_allow_multiple'] ? "<input type='checkbox' name='votea[]' value='$count' />" : "<input type='radio' name='votea' value='$count' />");
+				//	$OPTION = $tp->toHTML($option, TRUE);
+				
+			//		$OPTIONBUTTON = $tp->parseTemplate("{OPTIONBUTTON}",true);
+					
+				//	$OPTION = $tp->parseTemplate("{OPTION}",true);
+					
+			//		$OPTION = $tp->parseTemplate("{ANSWER}",true);
+						
+					$text .= $tp->parseTemplate($template, true);	
+						
 					$count ++;
+					$sc->answerCount++;
 				}
+				
+				
 				$SUBMITBUTTON = "<input class='button btn' type='submit' name='pollvote' value='".POLLAN_30."' />";
 				if (('preview' == $type || $preview == TRUE) && strpos(e_SELF, "viewtopic") === FALSE)
 				{
@@ -486,13 +525,15 @@ class poll
 		}
 
 		if (!defined("POLLRENDERED")) define("POLLRENDERED", TRUE);
+		
 		$caption = (file_exists(THEME."images/poll_menu.png") ? "<img src='".THEME_ABS."images/poll_menu.png' alt='' /> ".POLLAN_MENU_CAPTION : POLLAN_MENU_CAPTION);
+		
 		if ($type == 'preview')
 		{
 			$caption = POLLAN_23;
 			$text = "<div style='text-align:center; margin-left: auto; margin-right: auto;'>\n<table style='width:350px' class='fborder'>\n<tr>\n<td>\n$text\n</td></tr></table></div>";
 		}
-		else if ($type == 'forum')
+		elseif ($type == 'forum')
 		{
 			$caption = LAN_4;
 		}
@@ -535,10 +576,99 @@ class poll
 	$mode = "admin" :: called from admin_config.php
 	$mode = "forum" :: called from forum_post.php
 	*/	
+	/**
+	 * Render a Poll creation Form
+	 * @param $mode string - admin | forum | front 
+	 */
 	function renderPollForm($mode='admin')
 	{
 		$tp = e107::getParser();
 		$frm = e107::getForm();
+		
+		
+		//XXX New v2.x default for front-end. Currently used by forum-post in bootstrap mode. 
+		if ($mode == 'front')
+		{
+				
+			
+			$text = "
+			
+			<div class='alert alert-info'>
+				<small >".LAN_386."</small>
+			</div>
+			
+			<div class='control-group'>
+				<div>
+					<input class='tbox input-xxlarge' placeholder=\"Poll Question\" type='text' name='poll_title' size='70' value='".$tp->post_toForm(vartrue($_POST['poll_title']))."' maxlength='200' />
+				</div>";
+
+			$option_count = vartrue($_POST['poll_option']) ? count($_POST['poll_option']) : 2;
+			$text .= "		
+				<div id='pollsection'>";
+	
+				for($count = 1; $count <= $option_count; $count++)
+				{
+					if ($count != 1 && $_POST['poll_option'][($count-1)] =="")
+					{
+					//	break;
+					}
+					$opt = ($count==1) ? "id='pollopt' class='btn-group input-append' " : "";
+					$text .="<span {$opt}><input placeholder=\"Poll Answer\" class='tbox' type='text' name='poll_option[]' size='40' value=\"".$_POST['poll_option'][($count-1)]."\" maxlength='200' />";
+					$text .= "</span><br />";
+				}
+	
+				$text .="</div>
+				<div class='control-group'>
+				<input class='btn' type='button' name='addoption' value='".LAN_6."' onclick=\"duplicateHTML('pollopt','pollsection')\" /><br />
+				</div>
+			</div>";
+			
+			//FIXME - get this looking good with Bootstrap CSS only. 
+			
+			$opts = array(1=> "yes", 0=> "no");
+				
+			// Set to IP address.. Can add a pref to Poll admin for 'default front-end storage method' if demand is there for it. 
+		
+		$text .= "
+			 <div class='form-horizontal control-group'>
+			<label class='control-label'>".POLL_506."</label>
+			<div class='controls'>
+			". $frm->radio('multipleChoice',$opts, vartrue($_POST['multipleChoice'], 0) ).$frm->hidden('storageMethod',1)."
+			</div>
+			</div>
+			
+		";
+		
+		return $text;
+		
+			
+	/*
+			$text .= "
+				<div class='controls controls-row'>".POLL_506."
+				
+				<input type='radio' name='multi/pleChoice' value='1'".(vartrue($_POST['multipleChoice']) ? " checked='checked'" : "")." /> ".POLL_507."&nbsp;&nbsp;
+				<input type='radio' name='multi/pleChoice' value='0'".(!$_POST['multipleChoice'] ? " checked='checked'" : "")." /> ".POLL_508."
+				
+				</div>";
+			*/
+		
+			//XXX Should NOT be decided by USER 
+			/*
+			$text .= "
+
+			<div>
+			".POLLAN_16."
+			
+			<input type='radio' name='storageMethod' value='0'".(!vartrue($_POST['storageMethod']) ? " checked='checked'" : "")." /> ".POLLAN_17."<br />
+			<input type='radio' name='storageMethod' value='1'".($_POST['storageMethod'] == 1 ? " checked='checked'" : "")." /> ".POLLAN_18."<br />
+			<input type='radio' name='storageMethod' value='2'".($_POST['storageMethod'] ==2 ? " checked='checked'" : "")." /> ".POLLAN_19."
+			</div>
+			";
+			*/
+		
+			
+		}
+		
 		
 		//TODO Hardcoded FORUM code needs to be moved somewhere. 
 		if ($mode == 'forum')
@@ -706,17 +836,63 @@ class poll
 	}
 }
 
-echo '<script type="text/javascript">
-<!--
-function setcook(pollid){
-	var name = "poll_"+pollid;
-	var date = new Date();
-	var value = pollid;
-	date.setTime(date.getTime()+(365*24*60*60*1000));
-	var expires = "; expires="+date.toGMTString();
-	document.cookie = name+"="+value+expires+"; path=/";
+
+
+
+class poll_shortcodes extends e_shortcode
+{
+	var $answerOption = array();
+	var $answerCount;
+
+	function sc_option($parm='')
+	{
+	 	return $this->answerOption;
+	}
+
+
+	function sc_optionbutton($parm='')
+	{
+		return ($this->var['poll_allow_multiple'] ? "<input type='checkbox' name='votea[]' value='$count' />" : "<input type='radio' name='votea' value='".$this->answerCount."' />");		
+	}
+
+	function sc_question($parm = "")
+	{
+		$tp = e107::getParser();
+		return $tp -> toHTML($this->var['poll_title'], TRUE, "emotes_off, defs");		
+	}
+	
+	function sc_answer($parm='')
+	{
+		$frm = e107::getForm();
+		$opt = array('label'=> $this->answerOption);
+		return $frm->radio('votea', $this->answerCount,false, $opt);	
+	//	$this->answerOption
+	}
+		
 }
-//-->
-</script>
-';
+
+
+
+
+
+
+
+
+
+
+
+
+e107::js('inline', '
+
+	function setcook(pollid){
+		var name = "poll_"+pollid;
+		var date = new Date();
+		var value = pollid;
+		date.setTime(date.getTime()+(365*24*60*60*1000));
+		var expires = "; expires="+date.toGMTString();
+		document.cookie = name+"="+value+expires+"; path=/";
+	}
+		');
+
+
 ?>

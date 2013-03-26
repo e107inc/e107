@@ -129,23 +129,113 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		}
 	}
 	
+	
+	function sc_forumattachment()
+	{
+		$pref = e107::getPref();
+		global $forum;
+		
+		//. <div>".($pref['image_post'] ? "Attach file / image" : "Attach file")."</div>
+		
+		$tooltip = "Allowed file types | ".vartrue($allowed_filetypes).". Any other file type will be deleted instantly. 
+			Maximum file size: ".(vartrue($max_upload_size) ? $max_upload_size."bytes" : ini_get('upload_max_filesize'));
+		
+		$fileattach = "
+		
+		
+			<div>	
+				<div id='fiupsection'>
+				<span id='fiupopt'>
+					<input class='tbox e-tip' title=\"".$tooltip."\" name='file_userfile[]' type='file' size='47' />
+				</span>
+				</div>
+				<input class='btn button' type='button' name='addoption' value=\"Add Another\" onclick=\"duplicateHTML('fiupopt','fiupsection')\" />
+			</div>
+		
+		";	
+		
+		if ($forum->prefs->get('attach') && (check_class($pref['upload_class']) || getperms('0')))
+		{
+			return $fileattach;
+		}
+		
+	}
+	
+	function sc_postoptions($parm='')
+	{
+		$type = $this->sc_postthreadas();
+		$poll 	= $this->sc_poll('front');
+		$attach = $this->sc_forumattachment();
+		
+		$text = "
+		<ul class='nav nav-tabs'>
+		<li class='active'><a href='#type' data-toggle='tab'>Type</a></li>";
+		
+		$text .= ($poll) ? "<li><a href='#poll' data-toggle='tab'>Poll</a></li>\n" : "";
+		$text .= ($attach) ? "<li><a href='#attach' data-toggle='tab'>Attachment</a></li>\n" : "";
+		
+		$text .= "
+		</ul>
+				<div class='tab-content text-left'>
+					<div class='tab-pane active' id='type'>
+						<div class='control-group'>
+							<label class='control-label'>Post thread as:</label>
+							<div class='controls'>
+								".$type."
+							</div>
+						</div>
+					</div>
+				";
+				
+		if($poll)
+		{
+			$text .= "<div class='tab-pane' id='poll'>
+						".$poll."
+					</div>";	
+			
+		}
+					
+		if($attach)
+		{
+			$text .= "
+			<div class='tab-pane' id='attach'>
+						".$attach."
+					</div>";	
+		}			
+										
+		$text .= "			
+		</div>";
+		
+			
+		return $text;
+		
+		
+		
+	}
+	
 
 	function sc_poll($parm='')
 	{		
-		global $forum, $poll_form, $action;
-		
-		if(!$poll_form)
+		global $forum,  $action;
+
+		if(is_readable(e_PLUGIN."poll/poll_class.php")) 
 		{
-			if(is_readable(e_PLUGIN."poll/poll_class.php")) 
-			{
-				require_once(e_PLUGIN."poll/poll_class.php");
-				$pollo = new poll;
-				$poll_form = $pollo -> renderPollForm("forum");
-			}
+			require_once(e_PLUGIN."poll/poll_class.php");
+			$pollo = new poll;
+			$type = ($parm == 'front') ? 'front' : 'forum';
+			
+			$poll_form = $pollo -> renderPollForm($type);
 		}
+
 
 		if ($action == 'nt' && check_class($forum->prefs->get('poll')) && strpos(e_QUERY, 'edit') === false)
 		{
+			if($parm == 'front')
+			{
+				return $poll_form;	
+			}
+			
+			
 			return "<tr><td><a href='#pollform' class='e-expandit'>Add Poll</a></td><td>
 			<div id='pollform' style='display:none'>
 			<table class='table table-striped'>".$poll_form."</table></div></td></tr>";
@@ -153,22 +243,21 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		return '';
 	}
 
+
 	function sc_postthreadas()
 	{
 		global $action, $threadInfo;
 		
 		if (MODERATOR && $action == "nt")
 		{
-			$thread_sticky = (isset($_POST['threadtype']) ? $_POST['threadtype'] : vartrue($threadInfo['thread_sticky'])); // no reference of 'head' $threadInfo['head']['thread_sticky']
+			$thread_sticky = (isset($_POST['threadtype']) ? $_POST['threadtype'] : vartrue($threadInfo['thread_sticky'],0)); // no reference of 'head' $threadInfo['head']['thread_sticky']
 				
 			$opts = array(0 => "Normal", 1 => "Sticky", 2 => "Announcement");	
 				
 			return e107::getForm()->radio('threadtype',$opts, $thread_sticky);
 			
-			
-			
-			return "<br /><span class='defaulttext'>post thread as 
-			<input name='threadtype' type='radio' value='0' ".(!$thread_sticky ? "checked='checked' " : "")." />".LAN_1."&nbsp;<input name='threadtype' type='radio' value='1' ".($thread_sticky == 1 ? "checked='checked' " : "")." />".LAN_2."&nbsp;<input name='threadtype' type='radio' value='2' ".($thread_sticky == 2 ? "checked='checked' " : "")." />".LAN_3."</span>";
+		//	return "<br /><span class='defaulttext'>post thread as 
+		//	<input name='threadtype' type='radio' value='0' ".(!$thread_sticky ? "checked='checked' " : "")." />".LAN_1."&nbsp;<input name='threadtype' type='radio' value='1' ".($thread_sticky == 1 ? "checked='checked' " : "")." />".LAN_2."&nbsp;<input name='threadtype' type='radio' value='2' ".($thread_sticky == 2 ? "checked='checked' " : "")." />".LAN_3."</span>";
 		}
 		return '';
 	}

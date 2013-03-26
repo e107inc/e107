@@ -131,16 +131,21 @@ if ($thread->message)
 	e107::getMessage()->add($thread->message);
 }
 
-if (isset($thread->threadInfo['thread_options']['poll']))
-{
-	if (!defined('POLLCLASS'))
-	{
-		include (e_PLUGIN . 'poll/poll_class.php');
-	}
+
+
+//if (isset($thread->threadInfo['thread_options']['poll'])) //XXX Currently Failing - misconfigured thread-options. 
+//{
 	$_qry = 'SELECT * FROM `#polls` WHERE `poll_datestamp` = ' . $thread->threadId;
-	$poll = new poll;
-	$pollstr = "<div class='spacer'>" . $poll->render_poll($_qry, 'forum', 'query', true) . '</div>';
-}
+	if($sql->gen($_qry))
+	{
+		if (!defined('POLLCLASS'))
+		{
+			include_once(e_PLUGIN . 'poll/poll_class.php');
+		}
+		$poll = new poll;
+		$pollstr = "<div class='spacer'>" . $poll->render_poll($_qry, 'forum', 'query', true) . '</div>';
+	}
+//}
 //Load forum templates
 // FIXME - new template paths!
 if (file_exists(THEME . 'forum_design.php'))
