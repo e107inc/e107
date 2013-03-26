@@ -631,7 +631,7 @@ if ($action == "menu")
 						</tr>
 						<tr>
 							<td>".BNRLAN_41."</td>
-							<td>".$frm->text('banner_amount', $menu_pref['banner_amount'], 2, array ('class' => 'tbox input-text'))."<span class='field-help'>".BNRLAN_42."</span></td>
+							<td>".$frm->number('banner_amount', $menu_pref['banner_amount'], 3)."<span class='field-help'>".BNRLAN_42."</span></td>
 						</tr>
 						<tr>
 							<td>".BNRLAN_43."</td>
