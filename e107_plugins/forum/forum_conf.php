@@ -2,14 +2,10 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $URL$
- * $Id$
  */
 
 require_once('../../class2.php');
@@ -19,6 +15,10 @@ if (!$e107->isInstalled('forum'))
 	header('Location: '.e_BASE.'index.php');
 	exit;
 }
+
+$ns = e107::getRender();
+$tp = e107::getParser();
+
 require_once(e_PLUGIN.'forum/forum_class.php');
 $forum = new e107forum;
 
@@ -28,7 +28,7 @@ $e_sub_cat = 'forum';
 
 if(!USER || !isset($_GET['f']) || !isset($_GET['id']))
 {
-	header('location:'.$e107->url->create('/'), array(), array('encode' => false, 'full' => 1));
+	header('location:'.$e107::getUrl()->create('/'), array(), array('encode' => false, 'full' => 1));
 	exit;
 }
 
@@ -51,7 +51,7 @@ $modList = $forum->forumGetMods($threadInfo->forum_moderators);
 //If user is not a moderator of indicated forum, redirect to index page
 if(!in_array(USERID, array_keys($modList)))
 {
-	header('location:'.$e107->url->create('/'), array(), array('encode' => false, 'full' => 1));
+	header('location:'.$e107::getUrl()->create('/'), array(), array('encode' => false, 'full' => 1));
 	exit;
 }
 
@@ -59,12 +59,12 @@ require_once(HEADERF);
 
 if (isset($_POST['deletepollconfirm'])) 
 {
-	$sql->db_Delete("poll", "poll_id='".intval($thread_parent)."' ");
-	$sql->db_Select("forum_t", "*", "thread_id='".$thread_id."' ");
-	$row = $sql->db_Fetch();
+	$sql->delete("poll", "poll_id='".intval($thread_parent)."' ");
+	$sql->select("forum_t", "*", "thread_id='".$thread_id."' ");
+	$row = $sql->fetch();
 	 extract($row);
 	$thread_name = str_replace("[poll] ", "", $thread_name);
-	$sql->db_Update("forum_t", "thread_name='$thread_name' WHERE thread_id='$thread_id' ");
+	$sql->update("forum_t", "thread_name='$thread_name' WHERE thread_id='$thread_id' ");
 	$message = FORCONF_5;
 	$url = e_PLUGIN."forum/forum_viewtopic.php?".$thread_id;
 }
@@ -83,7 +83,7 @@ if (isset($_POST['move']))
 	}
 	elseif($_POST['rename_thread'] == 'rename' && trim($_POST['newtitle']) != '')
 	{
-		$newThreadTitle = $e107->tp->toDB($_POST['newtitle']);
+		$newThreadTitle = $tp->toDB($_POST['newtitle']);
 		$newThreadTitleType = 1;
 	}
 
@@ -93,7 +93,7 @@ if (isset($_POST['move']))
 	$forum->threadMove($threadId, $toForum, $newThreadTitle, $newThreadTitleType);
 
 	$message = FORCONF_9;// XXX _URL_ thread name
-	$url = $e107->url->create('forum/thread/view', 'id='.$threadId);
+	$url = $e107::getUrl()->create('forum/thread/view', 'id='.$threadId);
 }
 
 if (isset($_POST['movecancel']))
@@ -104,7 +104,7 @@ if (isset($_POST['movecancel']))
 
 	$message = FORCONF_10;
 //	$url = e_PLUGIN."forum/forum_viewforum.php?".$info['forum_id'];
-	$url = $e107->url->create('forum/forum/view', 'id='.$postInfo[0]['post_forum']);// XXX _URL_ thread name
+	$url = $e107::getUrl()->create('forum/forum/view', 'id='.$postInfo[0]['post_forum']);// XXX _URL_ thread name
 }
 
 if ($message)
@@ -161,8 +161,7 @@ if ($action == 'move')
 	
 	$sql->gen($qry);
 	$fList = $sql->db_getList();
-	
-	
+		
 	$text = "
 		<form class='forum-horizontal' method='post' action='".e_SELF.'?'.e_QUERY."'>
 		<div style='text-align:center'>
@@ -205,9 +204,7 @@ if ($action == 'move')
 		
 		</div>
 		</form>";
-		
-		$ns = e107::getRender();
-		$tp = e107::getParser();
+	
 		
 		$threadName = $tp->toHTML($threadInfo['thread_name'], true);
 		$threadText = $tp->toHTML($postInfo[0]['post_entry'], true);

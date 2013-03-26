@@ -28,7 +28,7 @@ class forumAdmin
 		$var['main']['link'] = e_SELF;
 		$var['cat']['text'] = FORLAN_83;
 		$var['cat']['link'] = e_SELF.'?cat';
-		if ($sql->db_Select('forum', 'forum_id', "forum_parent='0' LIMIT 1"))
+		if ($sql->select('forum', 'forum_id', "forum_parent='0' LIMIT 1"))
 		{
 			$var['create']['text'] = FORLAN_77;
 			$var['create']['link'] = e_SELF.'?create';
@@ -57,10 +57,10 @@ class forumAdmin
 		$id = (int)$id;
 		$confirm = isset($_POST['confirm']) ? true : false;
 
-		if($sql->db_Select('forum', '*', "forum_id = {$id}"))
+		if($sql->select('forum', '*', "forum_id = {$id}"))
 		{
 			$txt = "";
-			$row = $sql->db_Fetch();
+			$row = $sql->fetch();
 			if($row['forum_parent'] == 0)
 			{
 				$txt .= $this->delete_parent($id, $confirm);
@@ -91,7 +91,7 @@ class forumAdmin
 		$ns = e107::getRender();
 
 		//$ret = '';
-		if($sql->db_Select('forum', 'forum_id', "forum_parent = {$id} AND forum_sub = 0"))
+		if($sql->select('forum', 'forum_id', "forum_parent = {$id} AND forum_sub = 0"))
 		{
 			$fList = $sql->db_getList();
 			foreach($fList as $f)
@@ -101,7 +101,7 @@ class forumAdmin
 		}
 		if($confirm)
 		{
-			if($sql->db_Delete('forum', "forum_id = {$id}"))
+			if($sql->delete('forum', "forum_id = {$id}"))
 			{
 				//$ret .= 'Forum parent successfully deleted'; 
 				$mes->addSuccess(LAN_DELETED);
@@ -126,7 +126,7 @@ class forumAdmin
 		$forumId = (int)$forumId;
 //		echo "id = $forumId <br />";
 		// Check for any sub forums
-		if($sql->db_Select('forum', 'forum_id', "forum_sub = {$forumId}"))
+		if($sql->select('forum', 'forum_id', "forum_sub = {$forumId}"))
 		{
 			$list = $sql->db_getList();
 			foreach($list as $f)
@@ -136,7 +136,7 @@ class forumAdmin
 		}
 		require_once(e_PLUGIN.'forum/forum_class.php');
 		$f = new e107Forum;
-		if($sql->db_Select('forum_thread', 'thread_id','thread_forum_id='.$forumId))
+		if($sql->delect('forum_thread', 'thread_id','thread_forum_id='.$forumId))
 		{
 			$list = $sql->db_getList();
 			foreach($list as $t)
@@ -144,7 +144,7 @@ class forumAdmin
 				$f->threadDelete($t['thread_id'], false);
 			}
 		}
-		return $sql->db_Delete('forum', 'forum_id = '.$forumId);
+		return $sql->delete('forum', 'forum_id = '.$forumId);
 	}
 
 	function delete_forum($id, $confirm = false)
@@ -155,7 +155,7 @@ class forumAdmin
 		$mes = e107::getMessage();
 
 		//$ret = '';
-		if($sql->db_Select('forum', 'forum_id', 'forum_sub = '.$id))
+		if($sql->select('forum', 'forum_id', 'forum_sub = '.$id))
 		{
 			$fList = $sql->db_getList();
 			foreach($fList as $f)
@@ -177,8 +177,8 @@ class forumAdmin
 			} 			
 		}
 
-		$sql->db_Select('forum', 'forum_name, forum_threads, forum_replies', 'forum_id = '.$id);
-		$row = $sql->db_Fetch();
+		$sql->select('forum', 'forum_name, forum_threads, forum_replies', 'forum_id = '.$id);
+		$row = $sql->fetch();
 		//return "Forum {$id} [".$tp->toHTML($row['forum_name'])."] has {$row['forum_threads']} threads, {$row['forum_replies']} replies. <br />".$ret;
 		$mes->addInfo("Forum {$id} [".$tp->toHTML($row['forum_name'])."] has {$row['forum_threads']} threads and {$row['forum_replies']} replies."); //FIXME combine multiple info's into one message
 
@@ -207,8 +207,8 @@ class forumAdmin
 			//return $ret;
 		}
 
-		$sql->db_Select('forum', '*', 'forum_id = '.$id);
-		$row = $sql->db_Fetch();
+		$sql->select('forum', '*', 'forum_id = '.$id);
+		$row = $sql->fetch();
 		//return "Sub-forum {$id} [".$tp->toHTML($row['forum_name'])."] has {$row['forum_threads']} threads, {$row['forum_replies']} replies. <br />".$ret;
 		$mes->addInfo("Sub-forum {$id} [".$tp->toHTML($row['forum_name'])."] has {$row['forum_threads']} threads, {$row['forum_replies']} replies."); // FIXME show just once  on confirm and not LAN_DELETED
 		$ns->tablerender($caption, $mes->render() . $text);
@@ -240,27 +240,27 @@ class forumAdmin
 		<form method='post' action='".e_SELF.'?'.e_QUERY."'>
 		<table class='table adminlist'>
 		<tr>
-		<td>".LAN_ID."</td>
-		<td>".LAN_NAME."</td>
-		<td>".LAN_DESCRIPTION."</td>
-		<td>".FORLAN_37."</td>
-		<td>".FORLAN_20."</td>
+			<td>".LAN_ID."</td>
+			<td>".LAN_NAME."</td>
+			<td>".LAN_DESCRIPTION."</td>
+			<td>".FORLAN_37."</td>
+			<td>".FORLAN_20."</td>
 		</tr>
 		";
-		if($sql->db_Select('forum', 'forum_id, forum_name, forum_description, forum_order', "forum_sub = {$id} ORDER by forum_order ASC"))
+		if($sql->select('forum', 'forum_id, forum_name, forum_description, forum_order', "forum_sub = {$id} ORDER by forum_order ASC"))
 		{
 			$subList = $sql->db_getList();
 			foreach($subList as $sub)
 			{
 				$txt .= "
 				<tr>
-				<td style='vertical-align:top'>{$sub['forum_id']}</td>
-				<td style='vertical-align:top'><input class='tbox' type='text' name='subname[{$sub['forum_id']}]' value='{$sub['forum_name']}' size='30' maxlength='255' /></td>
-				<td style='vertical-align:top'><textarea cols='60' rows='2' class='tbox' name='subdesc[{$sub['forum_id']}]'>{$sub['forum_description']}</textarea></td>
-				<td style='vertical-align:top'><input class='tbox' type='text' name='suborder[{$sub['forum_id']}]' value='{$sub['forum_order']}' size='3' maxlength='4' /></td>
-				<td style='vertical-align:top; text-align:center'>
-				<a href='".e_SELF."?delete.{$sub['forum_id']}'>".ADMIN_DELETE_ICON."</a>
-				</td>
+					<td style='vertical-align:top'>{$sub['forum_id']}</td>
+					<td style='vertical-align:top'><input class='tbox' type='text' name='subname[{$sub['forum_id']}]' value='{$sub['forum_name']}' size='30' maxlength='255' /></td>
+					<td style='vertical-align:top'><textarea cols='60' rows='2' class='tbox' name='subdesc[{$sub['forum_id']}]'>{$sub['forum_description']}</textarea></td>
+					<td style='vertical-align:top'><input class='tbox' type='text' name='suborder[{$sub['forum_id']}]' value='{$sub['forum_order']}' size='3' maxlength='4' /></td>
+					<td style='vertical-align:top; text-align:center'>
+					<a href='".e_SELF."?delete.{$sub['forum_id']}'>".ADMIN_DELETE_ICON."</a>
+					</td>
 				</tr>
 				";
 			}
@@ -323,7 +323,7 @@ class forumAdmin
 			$text = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
 		}
 
-		if (!$parent_amount = $sql->db_Select('forum', '*', "forum_parent='0' ORDER BY forum_order ASC"))
+		if (!$parent_amount = $sql->select('forum', '*', "forum_parent='0' ORDER BY forum_order ASC"))
 		{
 			//$text .= "<tr><td style='text-align:center' colspan='3'>".FORLAN_29."</td></tr>";
 			$mes->addInfo(FORLAN_29);
@@ -336,7 +336,7 @@ class forumAdmin
 				<th colspan='2'>".FORLAN_28."</th>
 				<th>".LAN_OPTIONS."</th>
 			</tr>";
-			while ($row = $sql->db_Fetch(MYSQL_ASSOC))
+			while ($row = $sql->fetch(MYSQL_ASSOC))
 			{
 				$parentList[] = $row;
 			}
@@ -370,7 +370,7 @@ class forumAdmin
 				}
 				$text .= "</td></tr>";
 
-				$forumCount = $sql->db_Select('forum', '*', "forum_parent='".$parent['forum_id']."' AND forum_sub = 0 ORDER BY forum_order ASC");
+				$forumCount = $sql->select('forum', '*', "forum_parent='".$parent['forum_id']."' AND forum_sub = 0 ORDER BY forum_order ASC");
 				if (!$forumCount)
 				{
 					$text .= "<td colspan='4' style='text-align:center'>".FORLAN_29."</td>";
@@ -378,7 +378,7 @@ class forumAdmin
 				else
 				{
 					$forumList = array();
-					while ($row = $sql->db_Fetch(MYSQL_ASSOC))
+					while ($row = $sql->fetch(MYSQL_ASSOC))
 					{
 						$forumList[] = $row;
 					}
@@ -387,10 +387,10 @@ class forumAdmin
 						$text .= "
 						<tr>
 						<td style='width:5%; text-align:center'>".IMAGE_new."</td>\n<td style='width:55%'><a href='".$e107->url->create('forum/forum/view', $forum)."'>".$tp->toHTML($forum['forum_name'])."</a>";
-//						<td style='width:5%; text-align:center'>".IMAGE_new."</td>\n<td style='width:55%'><a href='".e_PLUGIN."forum/forum_viewforum.php?{$forum['forum_id']}'>".$e107->tp->toHTML($forum['forum_name'])."</a>";
+//						<td style='width:5%; text-align:center'>".IMAGE_new."</td>\n<td style='width:55%'><a href='".e_PLUGIN."forum/forum_viewforum.php?{$forum['forum_id']}'>".$tp->toHTML($forum['forum_name'])."</a>";
 
 						$text .= "
-						<br /><span class='smallblacktext'>".$e107->tp->toHTML($forum['forum_description'])."&nbsp;</span>
+						<br /><span class='smallblacktext'>".$tp->toHTML($forum['forum_description'])."&nbsp;</span>
 						<br /><b>".FORLAN_140.":</b> ".$e107->user_class->uc_get_classname($forum['forum_class'])."&nbsp;&nbsp;<b>".FORLAN_141.":</b> ".$e107->user_class->uc_get_classname($forum['forum_postclass'])."
 
 						</td>
@@ -449,9 +449,9 @@ class forumAdmin
 		$id = (int)$id;
 		if ($sub_action == 'edit' && !$_POST['update_parent'])
 		{
-			if ($sql->db_Select('forum', '*', "forum_id=$id"))
+			if ($sql->select('forum', '*', "forum_id=$id"))
 			{
-				$row = $sql->db_Fetch(MYSQL_ASSOC);
+				$row = $sql->fetch(MYSQL_ASSOC);
 			}
 		}
 		else
@@ -514,9 +514,9 @@ class forumAdmin
 		$id = (int)$id;
 		if ($sub_action == 'edit' && !$_POST['update_forum'])
 		{
-			if ($sql->db_Select('forum', '*', "forum_id=$id"))
+			if ($sql->select('forum', '*', "forum_id=$id"))
 			{
-				$fInfo = $sql->db_Fetch(MYSQL_ASSOC);
+				$fInfo = $sql->fetch(MYSQL_ASSOC);
 			}
 		}
 		else
@@ -537,9 +537,9 @@ class forumAdmin
 		<td>".FORLAN_22.":</td>
 		<td>";
 
-		$sql->db_Select('forum', '*', 'forum_parent=0');
+		$sql->select('forum', '*', 'forum_parent=0');
 		$text .= "<select name='forum_parent' class='tbox'>\n";
-		while (list($fid, $fname) = $sql->db_Fetch(MYSQL_NUM))
+		while (list($fid, $fname) = $sql->fetch(MYSQL_NUM))
 		{
 			$sel = ($fid == vartrue($fInfor['forum_parent']) ? "selected='selected'" : '');
 			$text .= "<option value='{$fid}' {$sel}>{$fname}</option>\n";
@@ -625,7 +625,7 @@ class forumAdmin
 		<tr>
 			<td>
 			";
-			if($sql->db_Select("forum", "*", "1 ORDER BY forum_order"))
+			if($sql->select("forum", "*", "1 ORDER BY forum_order"))
 			{
 				$fList = $sql->db_getList();
 				foreach($fList as $f)
@@ -676,7 +676,6 @@ class forumAdmin
 		$ns = e107::getRender();
 		$sql    = e107::getDb(); 
 		$e107 = e107::getInstance();
-		//$emessage = eMessage::getInstance();
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
 
@@ -829,10 +828,10 @@ class forumAdmin
 		$mes = e107::getMessage();
 
 		if ($sub_action) {
-			$sql -> db_Select("generic", "*", "gen_id='".$sub_action."'");
-			$row = $sql -> db_Fetch();
-			$sql -> db_Select("user", "*", "user_id='". $row['gen_user_id']."'");
-			$user = $sql -> db_Fetch();
+			$sql->select("generic", "*", "gen_id='".$sub_action."'");
+			$row = $sql->fetch();
+			$sql->select("user", "*", "user_id='". $row['gen_user_id']."'");
+			$user = $sql->fetch();
 			$con = new convert;
 			$text = "
 			<table class='table adminlist'>
@@ -875,7 +874,7 @@ class forumAdmin
 			} 
 			else
 			{
-				if ($reported_total = $sql->db_Select("generic", "*", "gen_type='reported_post' OR gen_type='Reported Forum Post'"))
+				if ($reported_total = $sql->select("generic", "*", "gen_type='reported_post' OR gen_type='Reported Forum Post'"))
 				{
 					$text .= "
 					<table class='table adminlist'>
@@ -883,7 +882,7 @@ class forumAdmin
 						<td>".FORLAN_170."</td>
 						<td>".LAN_OPTIONS."</td>
 					</tr>";
-					while ($row = $sql->db_Fetch())
+					while ($row = $sql->fetch())
 					{
 						$text .= "<tr>
 						<td<a href='".e_SELF."?sr.".$row['gen_id']."'>".FORLAN_171." #".$row['gen_intdata']."</a></td>
@@ -911,7 +910,7 @@ class forumAdmin
 		$sql = e107::getDB();
 		$frm = e107::getForm();
 
-		//		$sql -> db_Select("forum", "forum_id, forum_name", "forum_parent!=0 ORDER BY forum_order ASC");
+		//		$sql->select("forum", "forum_id, forum_name", "forum_parent!=0 ORDER BY forum_order ASC");
 		$qry = "
 		SELECT f.forum_id, f.forum_name, sp.forum_name AS sub_parent, fp.forum_name AS forum_parent
 		FROM #forum AS f
@@ -920,8 +919,8 @@ class forumAdmin
 		WHERE f.forum_parent != 0
 		ORDER BY f.forum_parent ASC, f.forum_sub, f.forum_order ASC
 		";
-		$sql -> db_Select_gen($qry);
-		$forums = $sql -> db_getList();
+		$sql->gen($qry);
+		$forums = $sql->db_getList();
 
 		$text = "
 		<form method='post' action='".e_SELF."?".e_QUERY."'>\n
@@ -1026,30 +1025,30 @@ class forumAdmin
 			$tp = e107::getParser();
 			$frm = e107::getForm();
 
-			$sql->db_Select("wmessage");
-			list($null) = $sql->db_Fetch();
-			list($null) = $sql->db_Fetch();
-			list($null) = $sql->db_Fetch();
-			list($id, $guestrules, $wm_active4) = $sql->db_Fetch();
-			list($id, $memberrules, $wm_active5) = $sql->db_Fetch();
-			list($id, $adminrules, $wm_active6) = $sql->db_Fetch();
+			$sql->select("wmessage");
+			list($null) = $sql->fetch();
+			list($null) = $sql->fetch();
+			list($null) = $sql->fetch();
+			list($id, $guestrules, $wm_active4) = $sql->fetch();
+			list($id, $memberrules, $wm_active5) = $sql->fetch();
+			list($id, $adminrules, $wm_active6) = $sql->fetch();
 
-			if($sql->db_Select('generic','*',"gen_type='forum_rules_guest'"))
+			if($sql->select('generic','*',"gen_type='forum_rules_guest'"))
 			{
-				$guest_rules = $sql->db_Fetch();
+				$guest_rules = $sql->fetch();
 			}
-			if($sql->db_Select('generic','*',"gen_type='forum_rules_member'"))
+			if($sql->select('generic','*',"gen_type='forum_rules_member'"))
 			{
-				$member_rules = $sql->db_Fetch();
+				$member_rules = $sql->fetch();
 			}
-			if($sql->db_Select('generic','*',"gen_type='forum_rules_admin'"))
+			if($sql->select('generic','*',"gen_type='forum_rules_admin'"))
 			{
-				$admin_rules = $sql->db_Fetch();
+				$admin_rules = $sql->fetch();
 			}
 
-			$guesttext = $tp->toFORM(vartrue($guest_rules['gen_chardata']));
+			$guesttext 	= $tp->toFORM(vartrue($guest_rules['gen_chardata']));
 			$membertext = $tp->toFORM(vartrue($member_rules['gen_chardata']));
-			$admintext = $tp->toFORM(vartrue($admin_rules['gen_chardata']));
+			$admintext 	= $tp->toFORM(vartrue($admin_rules['gen_chardata']));
 
 			$text = "
 			<form method='post' action='".e_SELF."?rules'  id='wmform'>

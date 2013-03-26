@@ -24,7 +24,7 @@ if (!$e107->isInstalled('forum'))
 
 if (isset($_POST['fjsubmit']))
 {
-	header('location:' . $e107->url->create('forum/forum/view', array('id'=>(int) $_POST['forumjump']), 'full=1&encode=0'));
+	header('location:' . e107::getUrl()->create('forum/forum/view', array('id'=>(int) $_POST['forumjump']), 'full=1&encode=0'));
 	exit;
 }
 $highlight_search = isset($_POST['highlight_search']);
@@ -32,7 +32,7 @@ $highlight_search = isset($_POST['highlight_search']);
 if (!e_QUERY)
 {
 	//No parameters given, redirect to forum home
-	header('Location:' . $e107->url->create('forum/forum/main', array(), 'full=1&encode=0'));
+	header('Location:' . e107::getUrl()->create('forum/forum/main', array(), 'full=1&encode=0'));
 	exit;
 }
 
@@ -96,7 +96,7 @@ if (USER && (USERID != $thread->threadInfo['thread_user'] || $thread->threadInfo
 	$forum->threadIncview($thread->threadInfo['thread_id']);
 }
 
-define('e_PAGETITLE', strip_tags($tp->toHTML($thread->threadInfo['thread_name'], true, 'no_hook, emotes_off')).' / '.$e107->tp->toHTML($thread->threadInfo['forum_name'], true, 'no_hook, emotes_off').' / '.LAN_01);
+define('e_PAGETITLE', strip_tags($tp->toHTML($thread->threadInfo['thread_name'], true, 'no_hook, emotes_off')).' / '.$tp->toHTML($thread->threadInfo['forum_name'], true, 'no_hook, emotes_off').' / '.LAN_01);
 $forum->modArray = $forum->forumGetMods($thread->threadInfo['forum_moderators']);
 define('MODERATOR', (USER && $forum->isModerator(USERID)));
 
@@ -187,7 +187,7 @@ $forum->set_crumb(true, '', $tVars); // Set $BREADCRUMB (and BACKLINK)
 //$tVars->BREADCRUMB = $crumbs['breadcrumb'];
 //$tVars->BACKLINK = $tVars->BREADCRUMB;
 //$tVars->FORUM_CRUMB = $crumbs['forum_crumb'];
-$tVars->THREADNAME = $e107->tp->toHTML($thread->threadInfo['thread_name'], true, 'no_hook, emotes_off');
+$tVars->THREADNAME = $tp->toHTML($thread->threadInfo['thread_name'], true, 'no_hook, emotes_off');
 $tVars->NEXTPREV = "<a class='btn btn-small' href='" . $e107->url->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>&laquo; " . LAN_389 . "</a>";
 // $tVars->NEXTPREV .= ' | ';
 $tVars->NEXTPREV .= "<a class='btn btn-small' href='" . $e107->url->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>" . LAN_390 . " &raquo;</a>";
@@ -349,13 +349,13 @@ foreach ($postList as $postInfo)
 		}
 
 		e107::getScBatch('view', 'forum')->setScVar('postInfo', $postInfo);
-		$forrep .= $e107->tp->parseTemplate($_style, true, $forum_shortcodes) . "\n";
+		$forrep .= $tp->parseTemplate($_style, true, $forum_shortcodes) . "\n";
 	}
 	else
 	{
 		$postInfo['thread_start'] = true;
 		e107::getScBatch('view', 'forum')->setScVar('postInfo', $postInfo);
-		$forthr = $e107->tp->parseTemplate($FORUMTHREADSTYLE, true, vartrue($forum_shortcodes)) . "\n";
+		$forthr = $tp->parseTemplate($FORUMTHREADSTYLE, true, vartrue($forum_shortcodes)) . "\n";
 	}
 }
 unset($loop_uid);
@@ -645,7 +645,8 @@ class e107ForumThread
 		$e107 = e107::getInstance();
 		$ns = e107::getRender();
 		$sql = e107::getDb();
-
+		$tp = e107::getParser();
+		
 		if (!isset($_GET['f']))
 		{
 			return;
@@ -698,7 +699,7 @@ class e107ForumThread
 
 				if (isset($_POST['report_thread']))
 				{
-					$report_add = $e107->tp->toDB($_POST['report_add']);
+					$report_add = $tp->toDB($_POST['report_add']);
 					if ($forum->prefs->get('reported_post_email'))
 					{
 						require_once (e_HANDLER . 'mail.php');
