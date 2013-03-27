@@ -30,6 +30,8 @@ e107::coreLan('user'); // Generic user-related language defines
 
 define('SIGNUP_DEBUG', FALSE);
 
+e107::js('core', 'jquery.mailcheck.min.js','jquery',2);
+
 include_once(e_HANDLER.'user_extended_class.php');
 $usere = new e107_user_extended;
 // require_once(e_HANDLER.'calendar/calendar_class.ph_');
