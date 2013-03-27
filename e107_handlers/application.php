@@ -336,8 +336,12 @@ class eDispatcher
 		// dispatch based on rule settings
 		if(!$className)
 		{
-			throw new eException("Invalid controller '".$request->getControllerName()."'");
+			if($controllerName == 'index') // v2.x upgrade has not been run yet. 
+			{
+				e107::getRedirect()->redirect(e_ADMIN."admin.php");	
+			}
 			
+			throw new eException("Invalid controller '".$controllerName."'");
 		}
 		
 		$controller = new $className($request, $response);
