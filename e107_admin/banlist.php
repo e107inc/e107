@@ -997,7 +997,7 @@ switch ($action)
 			";
 
 
-		foreach ($ipAdministrator->getValidReasonList() as $i)
+		foreach ($ipAdministrator->getValidReasonList() as $i) //FIXME $frm->label()
 		{
 			$text .= "
 							<tr>
@@ -1039,10 +1039,10 @@ switch ($action)
 								<th>&nbsp;</th>
 							</tr>
 							<tr>
-								<td colspan='3'>".$frm->checkbox('ban_over_import', 1).$frm->label(BANLAN_43, 'ban_over_import', 1)."</td>
+								<td colspan='3'>".$frm->checkbox('ban_over_import', 1, '', array('label' => BANLAN_43))."</td>
 							</tr>
 							<tr>
-								<td colspan='3'>".$frm->checkbox('ban_over_expiry', 1).$frm->label(BANLAN_44, 'ban_over_expiry', 1)."</td>
+								<td colspan='3'>".$frm->checkbox('ban_over_expiry', 1, '', array('label' => BANLAN_44))."</td>
 							</tr>
 							<tr>
 								<td>".BANLAN_46."</td>
