@@ -1018,7 +1018,7 @@ class e_form
 		
 		if(is_array($value))
 		{
-			return $this->radio_multi($name, $value, $checked, $options); 		
+			return $this->radio_multi($name, $value, $checked, $options);
 		}
 		
 		$labelFound = vartrue($options['label']);
@@ -1138,6 +1138,13 @@ class e_form
 		$text = array();
 				
 		if(is_string($elements)) parse_str($elements, $elements);
+		if(!is_array($options)) parse_str($options, $options);
+		$help = '';
+		if(vartrue($options['help']))
+		{
+			$help = "<div class='field-help'>".$options['help']."</div>";
+			unset($options['help']);
+		}
 		
 		foreach ($elements as $value => $label)
 		{
@@ -1161,7 +1168,7 @@ class e_form
 		
 		$separator = varset($options['sep']," ");
 	//	return print_a($text,true);
-		return implode($separator, $text);
+		return implode($separator, $text).$help;
 		
 		// return implode("\n", $text);
 		//XXX Limiting markup. 
