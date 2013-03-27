@@ -2,14 +2,11 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Forum upgrade routines
- *
- * $URL$
- * $Id$
  *
 */
 
@@ -31,6 +28,7 @@ $timestart = microtime();
 
 $f = new forumUpgrade;
 $e107 = e107::getInstance();
+$sql = e107::getDb();
 
 $upgradeNeeded = $f->checkUpdateNeeded();
 $upgradeNeeded = true;
@@ -112,7 +110,7 @@ function step1()
 			</form>
 			";
 		}
-		$e107->ns->tablerender('Step 1: Attachment directory permissions', $mes->render(). $text);
+		e107::getRender()->tablerender('Step 1: Attachment directory permissions', $mes->render(). $text);
 	}
 }
 
@@ -348,7 +346,7 @@ function step4()
 						$tmp['track_userid'] = $userId;
 						$tmp['track_thread'] = $threadId;
 
-						$e107->sql->db_Insert('forum_track', $tmp);
+						e107::getDb()->insert('forum_track', $tmp);
 					}
 				}
 			}
@@ -613,7 +611,7 @@ function step8()
 		<input class='btn button' type='submit' name='calculate_lastpost' value='Proceed with lastpost calculation' />
 		</form>
 		";
-		$e107->ns->tablerender($stepCaption, $text);
+		e107::getRender()->tablerender($stepCaption, $text);
 		return;
 	}
 
@@ -632,12 +630,13 @@ function step8()
 	<input class='btn button' type='submit' name='nextStep[9]' value='Proceed to step 9' />
 	</form>
 	";
-	$e107->ns->tablerender($stepCaption, $text);
+	e107::getRender()->tablerender($stepCaption, $text);
 }
 
 function step9()
 {
 	$e107 = e107::getInstance();
+	$sql = e107::getDb();
 	$stepCaption = 'Step 9: Migrate poll information';
 	if(!isset($_POST['migrate_polls']))
 	{
@@ -648,7 +647,7 @@ function step9()
 		<input class='btn button' type='submit' name='migrate_polls' value='Proceed with poll migration' />
 		</form>
 		";
-		$e107->ns->tablerender($stepCaption, $text);
+		e107::getRender()->tablerender($stepCaption, $text);
 		return;
 	}
 
@@ -657,17 +656,17 @@ function step9()
 	LEFT JOIN `#forum_thread` AS t ON t.thread_id =  p.poll_datestamp
 	WHERE t.thread_id IS NOT NULL
 	";
-	if($e107->sql->db_Select_gen($qry))
+	if($sql->gen($qry))
 	{
-		while($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
+		while($row = $sql->fetch(MYSQL_ASSOC))
 		{
 			$threadList[] = $row['thread_id'];
 		}
 		foreach($threadList as $threadId)
 		{
-			if($e107->sql->db_Select('forum_thread', 'thread_options', 'thread_id = '.$threadId, 'default'))
+			if($sql->select('forum_thread', 'thread_options', 'thread_id = '.$threadId, 'default'))
 			{
-				$row = $e107->sql->db_Fetch(MYSQL_ASSOC);
+				$row = $sql->fetch(MYSQL_ASSOC);
 				if($row['thread_options'])
 				{
 					$opts = unserialize($row['thread_options']);
@@ -681,7 +680,7 @@ function step9()
 				$tmp['thread_options'] = serialize($opts);
 				$tmp['WHERE'] = 'thread_id = '.$threadId;
 //				$tmp['_FIELD_TYPES']['thread_options'] = 'escape';
-				$e107->sql->db_Update('forum_thread', $tmp);
+				$sql->update('forum_thread', $tmp);
 			}
 		}
 	}
@@ -697,7 +696,7 @@ function step9()
 	<input class='btn button' type='submit' name='nextStep[10]' value='Proceed to step 10' />
 	</form>
 	";
-	$e107->ns->tablerender($stepCaption, $text);
+	e107::getRender()->tablerender($stepCaption, $text);
 }
 
 function step10()
@@ -927,12 +926,13 @@ function step10()
 	<input class='btn button' type='submit' name='nextStep[11]' value='Proceed to step 11' />
 	</form>
 	";
-	$e107->ns->tablerender($stepCaption, $text);
+	$ns->tablerender($stepCaption, $text);
 }
 
 function step11()
 {
 	$e107 = e107::getInstance();
+	$ns = e107::getRender();
 	$stepCaption = 'Step 11: Delete old attachments';
 	if(!isset($_POST['delete_orphans']))
 	{
@@ -946,7 +946,7 @@ function step11()
 		<input class='btn button' type='submit' name='delete_orphans' value='Proceed with attachment deletion' />
 		</form>
 		";
-		$e107->ns->tablerender($stepCaption, $text);
+		e107::getRender()->tablerender($stepCaption, $text);
 		return;
 	}
 
@@ -988,7 +988,7 @@ function step11()
 				<input class='btn button' type='submit' name='nextStep[12]' value='Proceed to step 12' />
 				</form>
 			";
-			$e107->ns->tablerender($stepCaption, $text);
+			$ns->tablerender($stepCaption, $text);
 			return;
 		}
 		$text = "There were {$numFiles} orphaned files found<br /><br />";
@@ -1012,7 +1012,7 @@ function step11()
 			<input class='btn button' type='submit' name='delete_orphans' value='Delete files' />
 			</form>
 		";
-		$e107->ns->tablerender($stepCaption, $text);
+		$ns->tablerender($stepCaption, $text);
 		return;
 	}
 	else
@@ -1024,7 +1024,7 @@ function step11()
 			<input class='btn button' type='submit' name='nextStep[12]' value='Proceed to step 12' />
 			</form>
 		";
-		$e107->ns->tablerender($stepCaption, $text);
+		$ns->tablerender($stepCaption, $text);
 		return;
 	}
 }
@@ -1139,16 +1139,17 @@ class forumUpgrade
 
 	function getUpdateInfo()
 	{
+		$sql = e107::getDb();
 		$e107 = e107::getInstance();
-		if($e107->sql->db_Select('generic', '*', "gen_type = 'forumUpgrade'"))
+		if($select('generic', '*', "gen_type = 'forumUpgrade'"))
 		{
-			$row = $e107->sql->db_Fetch(MYSQL_ASSOC);
+			$row = $sql->fetch(MYSQL_ASSOC);
 			$this->updateInfo = unserialize($row['gen_chardata']);
 		}
 		else
 		{
 			$qry = "INSERT INTO `#generic` (gen_type) VALUES ('forumUpgrade')";
-			$e107->sql->db_Select_gen($qry);
+			$sql->gen($qry);
 			$this->updateInfo = array();
 		}
 	}
@@ -1158,7 +1159,7 @@ class forumUpgrade
 		$e107 = e107::getInstance();
 		$info = mysql_real_escape_string(serialize($this->updateInfo));
 		$qry = "UPDATE `#generic` Set gen_chardata = '{$info}' WHERE gen_type = 'forumUpgrade'";
-		$e107->sql->db_Select_gen($qry);
+		e107::getDb()->gen($qry);
 	}
 
 	function setNewVersion()
@@ -1178,9 +1179,9 @@ class forumUpgrade
 		global $forum;
 		$e107 = e107::getInstance();
 		$threadId = (int)$threadId;
-		if($e107->sql->db_Select('forum_t', '*', "thread_parent = {$threadId} OR thread_id = {$threadId}", 'default'))
+		if(e107::getDb()->select('forum_t', '*', "thread_parent = {$threadId} OR thread_id = {$threadId}", 'default'))
 		{
-			$threadData = $e107->sql->db_getList();
+			$threadData = e107::getDb()->db_getList();
 			foreach($threadData as $post)
 			{
 				if($post['thread_parent'] == 0)
@@ -1226,7 +1227,7 @@ class forumUpgrade
 //		$thread['_FIELD_TYPES'] = $forum->fieldTypes['forum_thread'];
 //		$thread['_FIELD_TYPES']['thread_name'] = 'escape'; //use escape to prevent double entities
 
-		$result =  $e107->sql->db_Insert('forum_thread', $thread);
+		$result =  e107::getDb()->insert('forum_thread', $thread);
 		return $result;
 
 //		return $e107->sql->db_Insert('forum_thread', $thread);
@@ -1254,7 +1255,7 @@ class forumUpgrade
 //		$newPost['_FIELD_TYPES']['post_entry'] = 'escape'; //use escape to prevent double entities
 //		print_a($newPost);
 //		exit;
-		$result =$e107->sql->db_Insert('forum_post', $newPost);
+		$result = e107::getDb()->insert('forum_post', $newPost);
 //		exit;
 		return $result;
 
