@@ -50,13 +50,13 @@ if (isset($_POST['wm_update']))
 	$wmId = intval($_POST['wm_id']);
 	welcome_adminlog('02', $wmId, $wm_title);
 	//$message = ($sql->db_Update("generic", "gen_chardata ='{$data}',gen_ip ='{$wm_title}', gen_intdata='".$_POST['wm_active']."' WHERE gen_id=".$wmId." ")) ? LAN_UPDATED : LAN_UPDATED_FAILED;
-	if ($sql->db_Update("generic", "gen_chardata ='{$data}',gen_ip ='{$wm_title}', gen_intdata='".$_POST['wm_active']."' WHERE gen_id=".$wmId." "))
+	if ($sql->update("generic", "gen_chardata ='{$data}',gen_ip ='{$wm_title}', gen_intdata='".$_POST['wm_active']."' WHERE gen_id=".$wmId." "))
 	{
 		$mes->addSuccess(LAN_UPDATED);
 	}
 	else 
 	{
-		$mes->addError(LAN_UPDATED_FAILED); // TODO ? $sql show error?
+		$mes->addError(LAN_UPDATED_FAILED); 
 	}
 }
 
@@ -72,7 +72,7 @@ if (isset($_POST['wm_insert']))
 	}
 	else
 	{
-		$mes->addError(LAN_CREATED_FAILED); // TODO ? $sql show error?
+		$mes->addError(LAN_CREATED_FAILED); 
 	}
 }
 
@@ -103,23 +103,21 @@ if (isset($_POST['main_delete']))
 {
 	$del_id = array_keys($_POST['main_delete']);
 	welcome_adminlog('03', $wmId, '');
-	//$message = ($sql->db_Delete("generic", "gen_id='".$del_id[0]."' ")) ? LAN_DELETED : LAN_DELETED_FAILED ;
-	if ($sql->db_Delete("generic", "gen_id='".$del_id[0]."' "))
+	if ($sql->delete("generic", "gen_id='".$del_id[0]."' "))
 	{
 		$mes->addSuccess(LAN_DELETED);
 	}
 	else 
 	{
-		$mes->addError(LAN_DELETED_FAILED); // TODO ? $sql show error?
+		$mes->addError(LAN_DELETED_FAILED); 
 	}
 }
-
 $ns->tablerender($caption, $mes->render() . $text);
 
 // Show Existing -------
 if ($action == "main" || $action == "") 
 {
-	if ($wm_total = $sql->db_Select("generic", "*", "gen_type='wmessage' ORDER BY gen_id ASC")) 
+	if ($wm_total = $sql->select("generic", "*", "gen_type='wmessage' ORDER BY gen_id ASC")) 
 	{
 		$wmList = $sql->db_getList();
 		$text = $frm->open('myform_wmessage','post',e_SELF);
@@ -171,8 +169,8 @@ if ($action == "create" || $action == "edit")
 
 	if ($sub_action == "edit")
 	{
-		$sql->db_Select("generic", "gen_intdata, gen_ip, gen_chardata", "gen_id = $id");
-		$row = $sql->db_Fetch();
+		$sql->select("generic", "gen_intdata, gen_ip, gen_chardata", "gen_id = $id");
+		$row = $sql->fetch();
 	}
 
 	$text = "
@@ -235,7 +233,7 @@ if ($action == "opt") {
 		</colgroup>
 		<tr>
 			<td>".WMLAN_05."</td>
-			<td>".$frm->checkbox('wm_enclose', 1, varset($pref['wm_enclose'],0))."<span class='field-help'>".WMLAN_06."</span></td>
+			<td>".$frm->radio_switch('wm_enclose', varset($pref['wm_enclose']))."<span class='field-help'>".WMLAN_06."</span></td>
 		</tr>";
 	
 	/*	DEPRECATED - see header_default.php {WMESSAGE}
