@@ -560,6 +560,7 @@ function step6()
 function step7()
 {
 	$e107 = e107::getInstance();
+	$ns = e107::getRender();
 	$stepCaption = 'Step 7: Calculate user post counts';
 	if(!isset($_POST['calculate_usercounts']))
 	{
@@ -570,7 +571,7 @@ function step7()
 		<input class='btn button' type='submit' name='calculate_usercounts' value='Proceed with post count calculation' />
 		</form>
 		";
-		$e107->ns->tablerender($stepCaption, $text);
+		$ns->tablerender($stepCaption, $text);
 		return;
 	}
 
@@ -595,7 +596,7 @@ function step7()
 	<input class='btn button' type='submit' name='nextStep[8]' value='Proceed to step 8' />
 	</form>
 	";
-	$e107->ns->tablerender($stepCaption, $text);
+	$ns->tablerender($stepCaption, $text);
 }
 
 function step8()
