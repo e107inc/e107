@@ -17,6 +17,8 @@
  *
  *	FAQ plugin list controller
  */
+
+
  
 class plugin_faqs_list_controller extends eControllerFront
 {
@@ -42,6 +44,7 @@ class plugin_faqs_list_controller extends eControllerFront
 	public function init()
 	{
 		e107::lan('faqs', 'front');
+		e107::css('faqs','faqs.css'); 
 	}
 	
 	public function actionIndex()
