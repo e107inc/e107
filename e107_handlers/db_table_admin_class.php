@@ -695,7 +695,7 @@ class db_table_admin
 			{
 				$createText = preg_replace('#create +table +(\w*?) +#i', 'CREATE TABLE '.$newTableName.' ', $createText);
 			}
-			return $sql->gen($createText);
+			return e107::getDb()->gen($createText);
 		}
 		
 	}
