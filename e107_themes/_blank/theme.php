@@ -3,11 +3,17 @@
 if ( ! defined('e107_INIT')) { exit(); }
 
 e107::lan('theme','English');
+
+e107::meta('viewport', 'width=device-width, initial-scale=1.0');
+//e107::meta('apple-mobile-web-app-capable','yes');
+
 e107::js('core','bootstrap/js/bootstrap.min.js');
-e107::css('core','bootstrap/css/bootstrap-responsive.min.css');
 //e107::js('theme', 'js/theme.js');
+
+e107::css('core','bootstrap/css/bootstrap-responsive.min.css');
+//e107::css('theme','assets/css/style.css');
 //e107::css('url', 'external url ');
-//define("VIEWPORT","width=device-width, initial-scale=1.0");
+
 
 // Custom Shortcodes. 
 //$register_sc[]='BLANK';
@@ -48,49 +54,58 @@ function tablestyle($caption, $text, $mode='')
 	
 }
 
-
+// IMPORTANT: make sure there are no characters after <<<TMPL or TMPL;
 
 // DEFAULT
 
-$HEADER['default'] = '
+$HEADER['default'] = <<<TMPL
+
 {SETSTYLE=default}
 {SETIMAGE: w=0}
     
-';
+TMPL;
 
-$FOOTER['default'] = ' 
+
+
+$FOOTER['default'] = <<<TMPL
+
 {SETSTYLE=menu}
 {MENU=1}
-';                 
+
+TMPL;
 
                
 
-
-
 // HOME page
 
-$HEADER['home'] = '
-	{SETSTYLE=hero}
+$HEADER['home'] = <<<TMPL
+
+	{SETSTYLE=home}
 	{SETIMAGE: w=0} 
-';
-
 	
-$FOOTER['home'] = '	
+TMPL;
 
-';
+
+$FOOTER['home'] = <<<TMPL
+
+
+TMPL;
 
 
 // FULL PAGE (no menus) - eg. Forum
 
-$HEADER['full'] = '
+$HEADER['full'] = <<<TMPL
+
        {SETSTYLE=full}
 	   {SETIMAGE: w=0} 
-';
+	   
+TMPL;
 
-$FOOTER['full'] = '
+
+$FOOTER['full'] = <<<TMPL
 
    
-';
+TMPL;
 
 
 
