@@ -34,11 +34,9 @@ e107::js('core',	'jquery.mailcheck.min.js','jquery',2);
 e107::js('core','bootstrap/js/bootstrap-tooltip.js','jquery');
 e107::css('core','bootstrap/css/tooltip.css','jquery');
 
-//e107::js("core",	"tooltip/jquery.tipsy.js","jquery",3);
-// e107::css('core', 	'tooltip/tipsy.css', 'jquery');
 // ------------------
 
-e107::js('core', 	'jquery.elastic.js', 'jquery', 2);
+// e107::js('core', 	'jquery.elastic.js', 'jquery', 2);
 e107::js('core', 	'rate/js/jquery.raty.js', 'jquery', 2);
 e107::css('core', 	'core/all.jquery.css', 'jquery');
 
@@ -81,15 +79,22 @@ e107::js("core",	"core/all.jquery.js","jquery",5); // Load all default functions
 // A: Define themeable header parsing
 //
 
-if (!function_exists("parseheader")) {
-	function parseheader($LAYOUT){
-		global $tp;
-		$tmp = explode("\n", $LAYOUT);
-		for ($c=0; $c < count($tmp); $c++) {
-			if (preg_match("/{.+?}/", $tmp[$c])) {
-				echo $tp -> parseTemplate($tmp[$c]);
-			} else {
-				echo $tmp[$c];
+if (!function_exists("parseheader")) 
+{
+	function parseheader($LAYOUT)
+	{
+		$tp 	= e107::getParser();
+		$tmp 	= explode("\n", $LAYOUT);
+		
+		foreach ($tmp as $line) 
+		{
+			if (preg_match("/{.+?}/", $line))
+			{
+				echo $tp->parseTemplate($line)."\n";  // retain line-breaks. 
+			} 
+			else 
+			{
+				echo $line."\n"; // retain line-breaks. 
 			}
 		}
 	}
@@ -133,7 +138,7 @@ else
 if(vartrue($pref['meta_copyright'][e_LANGUAGE])) e107::meta('copyright',$pref['meta_copyright'][e_LANGUAGE]);
 if(vartrue($pref['meta_author'][e_LANGUAGE])) e107::meta('author',$pref['meta_author'][e_LANGUAGE]);
 if($pref['sitebutton']) e107::meta('og:image',$tp->replaceConstants($pref['sitelogo'],'full'));
-if(defined("VIEWPORT")) e107::meta('viewport',VIEWPORT); 
+if(defined("VIEWPORT")) e107::meta('viewport',VIEWPORT); //BC ONLY 
 
 echo e107::getUrl()->response()->renderMeta()."\n";
 
@@ -551,13 +556,13 @@ echo "</head>\n";
             $FOOTER = ($CUSTOMFOOTER) ? $CUSTOMFOOTER : $FOOTER;
         }
     }
-    elseif($def && $def != "legacyCustom" && (isset($CUSTOMHEADER[$def]) || isset($CUSTOMFOOTER[$def]))) // 0.7 themes
+    elseif($def && $def != "legacyCustom" && (isset($CUSTOMHEADER[$def]) || isset($CUSTOMFOOTER[$def]))) // 0.7/1.x themes
     {
         // echo " MODE 0.7";
         $HEADER = ($CUSTOMHEADER[$def]) ? $CUSTOMHEADER[$def] : $HEADER;
         $FOOTER = ($CUSTOMFOOTER[$def]) ? $CUSTOMFOOTER[$def] : $FOOTER;
     }
-    elseif($def && isset($HEADER[$def]) && isset($FOOTER[$def])) // 0.8 themes - we use only $HEADER and $FOOTER arrays.
+    elseif($def && isset($HEADER[$def]) && isset($FOOTER[$def])) // 2.0 themes - we use only $HEADER and $FOOTER arrays.
     {
       //    echo " MODE 0.8";
         $HEADER = $HEADER[$def];
@@ -605,8 +610,16 @@ if ($e107_popup != 1) {
 		parseheader($NEWSHEADER);
 	}
 	else
-	{
-    	parseheader($HEADER);
+	{	
+		if(deftrue('DEMO_CONTENT')) // embedded content relative to THEME directory - update paths. 
+		{
+			$HEADER = preg_replace('#(src|href)=("|\')([^:\'"]*)("|\')#','$1=$2'.THEME.'$3$4', $HEADER);	
+			$FOOTER = preg_replace('#(src|href)=("|\')([^:\'"]*)("|\')#','$1=$2'.THEME.'$3$4', $FOOTER);	
+		}
+		
+   		parseheader($HEADER);
+		
+	//	echo $HEADER;
 	}
 
 	unset($def);
@@ -623,7 +636,7 @@ if ($e107_popup != 1) {
 	}
 
 	// Display Welcome Message when old method activated.
-	if(!strstr($HEADER,"{WMESSAGE")===false && !strstr($FOOTER,"{WMESSAGE")===false) // Auto-detection to override old pref. 
+	if(strstr($HEADER,"{WMESSAGE")===false && strstr($FOOTER,"{WMESSAGE")===false) // Auto-detection to override old pref. 
 	{
 		echo e107::getParser()->parseTemplate("{WMESSAGE}");
 	}
