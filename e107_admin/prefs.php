@@ -307,10 +307,12 @@ $text = "
 					</tr>
 					<tr>
 						<td>".PRFLAN_134."</td>
-						<td>
+						<td>";
+						/*
 							".$frm->radio('redirectsiteurl', 1, $pref['redirectsiteurl'], array('label'=>LAN_ENABLED))." 
 							".$frm->radio('redirectsiteurl', 0, !$pref['redirectsiteurl'], array('label'=>LAN_DISABLED))."
-							<div class='field-help'>".PRFLAN_135."</div>
+						*/
+						$text .= $frm->radio_switch('redirectsiteurl', $pref['redirectsiteurl'])."<div class='field-help'>".PRFLAN_135."</div>
 						</td>
 					</tr>
 					<tr>
@@ -552,12 +554,18 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 					</tr>
 					<tr>
 						<td>".PRFLAN_164."</td>
-						<td>
+						<td>";
+						/*
 							".$frm->radio('contact_emailcopy', 1, $pref['contact_emailcopy'])."
 							".$frm->label(LAN_ENABLED, 'contact_emailcopy', 1)."&nbsp;&nbsp;
 							".$frm->radio('contact_emailcopy', 0, !$pref['contact_emailcopy'])."
 							".$frm->label(LAN_DISABLED, 'contact_emailcopy', 0)."
 							<div class='smalltext field-help'>".PRFLAN_165."</div>
+						*/
+					$text .= $frm->radio_switch('contact_emailcopy', $pref['contact_emailcopy'])."<div class='smalltext field-help'>".PRFLAN_165."</div>
+
+
+
 						</td>
 					</tr>
 						</tbody>
@@ -1122,9 +1130,9 @@ $text .= "
 						<tr>
 							<td>".$key."</td>
 							<td>
-								".$frm->radio($value, 0, !$pref[$value]).$frm->label(CUSTSIG_12, $value, 0)."&nbsp;&nbsp;
-								".$frm->radio($value, 1, ($pref[$value] == 1)).$frm->label(CUSTSIG_14, $value, 1)."&nbsp;&nbsp;
-								".$frm->radio($value, 2, ($pref[$value] == 2)).$frm->label(CUSTSIG_15, $value, 2)."
+								".$frm->radio($value, 0, !$pref[$value], array('label' => CUSTSIG_12))."&nbsp;&nbsp;
+								".$frm->radio($value, 1, ($pref[$value] == 1), array('label' => CUSTSIG_14))."&nbsp;&nbsp;
+								".$frm->radio($value, 2, ($pref[$value] == 2), array('label' => CUSTSIG_15))."
 							</td>
 						</tr>
 		";
