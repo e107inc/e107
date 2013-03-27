@@ -11,21 +11,12 @@
 		<image></image>
 	</screenshots>
 	<layouts>
-		<layout name='default' title='3 Columns' default='true' >
-		<menuPresets>
-				<area id='1' >
-                	<menu name='login' />
-					<menu name='compliance' />
-				</area>
-				<area id='2'>
-					<menu name='online' perm='admin' />
-					<menu name='powered_by' />
-					<menu name='sitebutton' />
-				</area>
-			</menuPresets>
+		<layout name='default' title='Default' default='true' />
+		<layout name='home' title='Home'>
+			<custompages>FRONTPAGE</custompages>
 		</layout>
-		<layout name='alternate' title='2 Columns'>
-		<custompages>usersettings.php</custompages>
+		<layout name='full' title='Full'>
+			<custompages>/forum</custompages>
 		</layout>
 	</layouts>
 </e107Theme>
