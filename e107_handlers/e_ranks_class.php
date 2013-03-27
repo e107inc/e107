@@ -2,14 +2,10 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $URL$
- * $Id$
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -28,6 +24,7 @@ class e_ranks
 
 
 		$e107 = e107::getInstance();
+		$sql = e107::getDb();
 		//Check to see if we can get it from cache
 		if($force == false && ($ranks = $e107->ecache->retrieve_sys('nomd5_user_ranks')))
 		{
@@ -37,10 +34,10 @@ class e_ranks
 		{
 			//force is true, or cache doesn't exist, or system cache disabled, let's get it from table
 			$this->ranks = array();
-			if($e107->sql->db_Select('generic', '*', "gen_type = 'user_rank_data' ORDER BY gen_intdata ASC"))
+			if($sql->select('generic', '*', "gen_type = 'user_rank_data' ORDER BY gen_intdata ASC"))
 			{
 				$i=0;
-				while($row = $e107->sql->db_Fetch())
+				while($row = $sql->fetch())
 				{
 					$tmp = array();
 					$tmp['name'] = $row['gen_ip'];
