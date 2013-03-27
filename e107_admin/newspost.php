@@ -2278,8 +2278,7 @@ class admin_newspost
 							<tr>
 								<td>".NWSLAN_15.":</td>
 								<td>
-									".$frm->radio('news_allow_comments', 0, !vartrue($_POST['news_allow_comments']))."".$frm->label(LAN_ENABLED, 'news_allow_comments', 0)."&nbsp;&nbsp;
-									".$frm->radio('news_allow_comments', 1, vartrue($_POST['news_allow_comments']))."".$frm->label(LAN_DISABLED, 'news_allow_comments', 1)."
+									".$frm->radio_switch('news_allow_comments', vartrue($_POST['news_allow_comments']))."
 									<div class='field-help'>
 										".NWSLAN_18."
 									</div>
@@ -2346,7 +2345,7 @@ class admin_newspost
 								<tr>
 									<td>".LAN_NEWS_28.":</td>
 									<td>
-										".$frm->checkbox('news_sticky', '1', vartrue($_POST['news_sticky'])).$frm->label(LAN_NEWS_29, 'news_sticky', '1')."
+										".$frm->checkbox('news_sticky', '1', vartrue($_POST['news_sticky']), array('label' => LAN_NEWS_29))."
 										<div class='field-help'>
 											".LAN_NEWS_30."
 										</div>
@@ -2388,7 +2387,7 @@ class admin_newspost
 				//	".$frm->admin_button('preview', isset($_POST['preview']) ? NWSLAN_24 : NWSLAN_27 , 'other')."
 				
 				$text .= $frm->admin_button('submit_news', ($id && $sub_action != "sn" && $sub_action != "upload") ? NWSLAN_25 : NWSLAN_26 , 'update')."
-					".$frm->checkbox('create_edit_stay', 1, isset($_POST['create_edit_stay'])).$frm->label(LAN_NEWS_54, 'create_edit_stay', 1)."
+					".$frm->checkbox('create_edit_stay', 1, isset($_POST['create_edit_stay']), array('label' => LAN_NEWS_54))."
 					<input type='hidden' name='news_id' value='{$id}' />
 				</div>
 			</form>
