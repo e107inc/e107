@@ -826,7 +826,7 @@ class e107
 	 * @param string $name core|core_backup|emote|menu|search|notify 
 	 * @return e_core_pref
 	 */
-	public static function getConfig($name = 'core', $load = true)
+	public static function getConfig($name = 'core', $load = true, $refresh=false)
 	{
 		
 		if(isset(self::$_plug_config_arr[$name])) //FIXME Load pluginPref Object instead - Not quite working with calendar_menu. 
@@ -834,7 +834,7 @@ class e107
 			return self::getPlugConfig($name);
 		}
 		
-		if(!isset(self::$_core_config_arr[$name]))
+		if(!isset(self::$_core_config_arr[$name]) || ($refresh == true)) // required by update_routines to clear out earlier values. 
 		{
 			e107_require_once(e_HANDLER.'pref_class.php'); 
 			self::$_core_config_arr[$name] = new e_core_pref($name, $load);		
