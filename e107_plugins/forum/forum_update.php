@@ -1142,7 +1142,7 @@ class forumUpgrade
 	{
 		$sql = e107::getDb();
 		$e107 = e107::getInstance();
-		if($select('generic', '*', "gen_type = 'forumUpgrade'"))
+		if($sql->select('generic', '*', "gen_type = 'forumUpgrade'"))
 		{
 			$row = $sql->fetch(MYSQL_ASSOC);
 			$this->updateInfo = unserialize($row['gen_chardata']);
