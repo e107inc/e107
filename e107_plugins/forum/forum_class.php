@@ -102,13 +102,18 @@ class e107forum
 	private $userViewed, $permList;
 	public $modArray, $prefs;
 
-	public function __construct()
+	public function __construct($update= false)
 	{
 		$this->e107 = e107::getInstance();
 		$tp = e107::getParser();
 		$this->userViewed = array();
 		$this->modArray = array();
-		$this->loadPermList();
+		
+		if($update === false)
+		{
+			$this->loadPermList();
+		}
+		
 		$this->prefs = e107::getPlugConfig('forum');
 		if(!$this->prefs->get('postspage')) {
 			$this->setDefaults();
@@ -911,7 +916,7 @@ class e107forum
 				}
 				if($row['thread_lastuser_anon'])
 				{
-					$sql->update('forum', "forum_lastpost_user = 0, forum_lastpost_anon = '{$row['thread_lastuser_anon']}', forum_lastpost_info = '{$lp_info}' WHERE forum_id=".$id);
+					$sql->update('forum', "forum_lastpost_user = 0, forum_lastpost_user_anon = '{$row['thread_lastuser_anon']}', forum_lastpost_info = '{$lp_info}' WHERE forum_id=".$id);
 				}
 				else
 				{
@@ -1306,6 +1311,8 @@ class e107forum
 //		echo "threadid = $threadId <br />forum id = $forumId <br />";
 //		return;
 		$e107 = e107::getInstance();
+		$sql = e107::getDb();
+		
 		$threadId = (int)$threadId;
 		$forumId = (int)$forumId;
 		$lastpost = (int)$lastpost;

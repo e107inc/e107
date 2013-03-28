@@ -442,8 +442,9 @@ class e107_user_extended
 
 	function user_extended_field_exist($name)
 	{
-	  global $sql, $tp;
-	  return $sql->db_Count('user_extended_struct','(*)', "WHERE user_extended_struct_name = '".$tp -> toDB($name, true)."'");
+	  	$sql = e107::getDb('sql2');
+		$tp = e107::getParser();
+		return $sql->count('user_extended_struct','(*)', "WHERE user_extended_struct_name = '".$tp -> toDB($name, true)."'");
 	}
 
 	function clear_cache()
@@ -461,48 +462,58 @@ class e107_user_extended
 
 	function user_extended_add($name, $text, $type, $parms, $values, $default, $required, $read, $write, $applicable, $order='', $parent)
 	{
-	  global $sql, $tp;
-	  $this->clear_cache();
-	  if(is_array($name))
-	  {
-		extract($name);
-	  }
-	  if(!is_numeric($type))
-	  {
-		$type = $this->typeArray[$type];
-	  }
+		global $sql, $tp;
+		
+		$this->clear_cache();
+		
+		if(is_array($name))
+	  	{
+			extract($name);
+		}
+		
+	 	 if(!is_numeric($type))
+	  	{
+			$type = $this->typeArray[$type];
+	  	}
 
-	  if (!$this->user_extended_field_exist($name) && !$this->user_extended_reserved($name))
-	  {
-		$field_info = $this->user_extended_type_text($type, $default);
-		
-		// wrong type
-		if(false === $field_info) return false;
-		
-		if($order === '' && $field_info)
+		if($this->user_extended_field_exist($name))
 		{
-		  if($sql->db_Select('user_extended_struct','MAX(user_extended_struct_order) as maxorder','1'))
-		  {
-			$row = $sql->db_Fetch();
-			if(is_numeric($row['maxorder']))
+			return TRUE;	
+		}
+
+		if (!$this->user_extended_reserved($name))
+		{
+			$field_info = $this->user_extended_type_text($type, $default);
+		
+			// wrong type
+			if(false === $field_info) return false;
+		
+			if($order === '' && $field_info)
 			{
-			  $order = $row['maxorder']+1;
+			  if($sql->select('user_extended_struct','MAX(user_extended_struct_order) as maxorder','1'))
+			  {
+				$row = $sql->fetch();
+				if(is_numeric($row['maxorder']))
+				{
+				  $order = $row['maxorder']+1;
+				}
+			  }
 			}
-		  }
+			// field of type category
+			if($field_info)
+			{
+				$sql->gen('ALTER TABLE #user_extended ADD user_'.$tp -> toDB($name, true).' '.$field_info);
+			}
+			
+			$sql->insert('user_extended_struct',"null,'".$tp -> toDB($name, true)."','".$tp -> toDB($text, true)."','".intval($type)."','".$tp -> toDB($parms, true)."','".$tp -> toDB($values, true)."', '".$tp -> toDB($default, true)."', '".intval($read)."', '".intval($write)."', '".intval($required)."', '0', '".intval($applicable)."', '".intval($order)."', '".intval($parent)."'");
+			
+			if ($this->user_extended_field_exist($name))
+			{
+			  return TRUE;
+			}
 		}
-		// field of type category
-		if($field_info)
-		{
-			$sql->db_Select_gen('ALTER TABLE #user_extended ADD user_'.$tp -> toDB($name, true).' '.$field_info);
-		}
-		
-		$sql->db_Insert('user_extended_struct',"null,'".$tp -> toDB($name, true)."','".$tp -> toDB($text, true)."','".intval($type)."','".$tp -> toDB($parms, true)."','".$tp -> toDB($values, true)."', '".$tp -> toDB($default, true)."', '".intval($read)."', '".intval($write)."', '".intval($required)."', '0', '".intval($applicable)."', '".intval($order)."', '".intval($parent)."'");
-		if ($this->user_extended_field_exist($name))
-		{
-		  return TRUE;
-		}
-	  }
-	  return FALSE;
+
+		return FALSE;
 	}
 
 
