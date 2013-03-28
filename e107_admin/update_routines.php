@@ -128,7 +128,7 @@ if (!$dont_check_update)
 	}
 	
 	// set 'master' to true to prevent other upgrades from running before it is complete. 
-	$dbupdate['706_to_800'] = array('master'=>true, 'title'=>LAN_UPDATE_8.' 1.x '.LAN_UPDATE_9.' 2.0','message'=>"Depending on your particular configuration, the v1.x - 2.0 upgrade may need to be run several times");
+	$dbupdate['706_to_800'] = array('master'=>true, 'title'=>LAN_UPDATE_8.' 1.x '.LAN_UPDATE_9.' 2.0','message'=>"Depending on your particular configuration, you may need to be run several upgrade processes.");
 	$dbupdate['core_prefs'] = array('master'=>true, 'title'=>LAN_UPDATE_13);						// Prefs check
 //	$dbupdate['70x_to_706'] = LAN_UPDATE_8.' .70x '.LAN_UPDATE_9.' .706';
 }		// End if (!$dont_check_update)
@@ -226,7 +226,9 @@ function update_check()
 //--------------------------------------------
 function update_core_prefs($type='')
 {
-	global $pref, $e107info; // $pref must be kept as global 
+	global $e107info; // $pref,  $pref must be kept as global 
+	
+	$pref = e107::getConfig('core', true, true)->getPref();
 	$admin_log = e107::getAdminLog();
 	$do_save = FALSE;
 	$should = get_default_prefs();
@@ -245,7 +247,8 @@ function update_core_prefs($type='')
 	}
 	if ($do_save)
 	{
-		save_prefs();
+		//save_prefs();
+		e107::getConfig('core')->setPref($pref)->save();
 		$admin_log->logMessage(LAN_UPDATE_14.$e107info['e107_version'], E_MESSAGE_NODISPLAY, E_MESSAGE_INFO);
 		$admin_log->flushMessages('UPDATE_03',E_LOG_INFORMATIVE);
 		//$admin_log->log_event('UPDATE_03',LAN_UPDATE_14.$e107info['e107_version'].'[!br!]'.implode(', ',$accum),E_LOG_INFORMATIVE,'');	// Log result of actual update
@@ -295,6 +298,7 @@ function update_706_to_800($type='')
 	$ns = e107::getRender();
 	
 	e107::getCache()->clearAll('db');
+	e107::getCache()->clearAll('system');
 
 	// List of unwanted $pref values which can go
 	$obs_prefs = array('frontpage_type','rss_feeds', 'log_lvcount', 'zone', 'upload_allowedfiletype', 'real', 'forum_user_customtitle',
@@ -409,22 +413,10 @@ function update_706_to_800($type='')
 		$log->logMessage(LAN_UPDATE_14.$e107info['e107_version'], E_MESSAGE_NODISPLAY);
 	}
 
-	// Check that custompages have been imported from current theme.php file
-	if(!array_key_exists('sitetheme_custompages',$pref))
-	{
-		$th = e107::getSingleton('themeHandler');
-		$tmp = $th->getThemeInfo($pref['sitetheme']);
-		if(is_array($tmp['custompages']))
-		{
-			if ($just_check) return update_needed('SiteTheme Custom Page Pref fix');
-			$pref['sitetheme_custompages'] = $tmp['custompages'];
-			$do_save = TRUE;
-		}
-	}
 
 
 
-	// Check notify prefs
+
 
 
 
@@ -457,7 +449,9 @@ function update_706_to_800($type='')
 
 
 	// Move the maximum online counts from menu prefs to a separate pref - 'history'
-	$menuConfig = e107::getConfig('menu'); 
+	e107::getCache()->clearAll('system');
+	$menuConfig = e107::getConfig('menu',true,true); 
+	
 	if ($menuConfig->get('most_members_online') || $menuConfig->get('most_guests_online') || $menuConfig->get('most_online_datestamp'))
 	{
 		$status = E_MESSAGE_DEBUG;
@@ -482,6 +476,7 @@ function update_706_to_800($type='')
 		if ($result === TRUE)
 		{
 			$resultMessage = 'Historic member counts updated';
+			$result = $menuConfig->save(false, true, false); // Only re-save if successul. 	
 		}
 		elseif ($result === FALSE)
 		{
@@ -493,7 +488,7 @@ function update_706_to_800($type='')
 			$resultMessage = 'Historic member counts already updated';
 			$status = E_MESSAGE_INFO;
 		}
-		$result = $menuConfig->save(false, true, false);	// Save updated menuprefs - without the counts
+		// $result = $menuConfig->save(false, true, false);	// Save updated menuprefs - without the counts - don't delete them if it fails. 
 		//$updateMessages[] = $statusTexts[$status].': '.$resultMessage;		// Admin log message
 		$log->logMessage($resultMessage,$status);									// User message
 	}
@@ -1252,20 +1247,39 @@ function update_706_to_800($type='')
 	{
 		if ($just_check) return update_needed('Add Media-Manager Categories and Import existing images.');
 		
+		$e107_core_media_cat = array(
+		  	array('media_cat_id'=>0,'media_cat_owner'=>'_common','media_cat_category'=>'_common_image','media_cat_title'=>'(Common Images)','media_cat_sef'=>'','media_cat_diz'=>'Media in this category will be available in all areas of admin.','media_cat_class'=>'253','media_cat_image'=>'','media_cat_order'=>'0'),
+		  	array('media_cat_id'=>0,'media_cat_owner'=>'_common','media_cat_category'=>'_common_file','media_cat_title'=>'(Common Files)','media_cat_sef'=>'','media_cat_diz'=>'Media in this category will be available in all areas of admin.','media_cat_class'=>'253','media_cat_image'=>'','media_cat_order'=>'0'),
+		 	array('media_cat_id'=>0,'media_cat_owner'=>'news','media_cat_category'=>'news','media_cat_title'=>'News','media_cat_sef'=>'','media_cat_diz'=>'Will be available in the news area.','media_cat_class'=>'253','media_cat_image'=>'','media_cat_order'=>'1'),
+		 	array('media_cat_id'=>0,'media_cat_owner'=>'page','media_cat_category'=>'page','media_cat_title'=>'Custom Pages','media_cat_sef'=>'','media_cat_diz'=>'Will be available in the custom pages area of admin.','media_cat_class'=>'253','media_cat_image'=>'','media_cat_order'=>'0'),
+		  	array('media_cat_id'=>0,'media_cat_owner'=>'download','media_cat_category'=>'download_image','media_cat_title'=>'Download Images','media_cat_sef'=>'','media_cat_diz'=>'','media_cat_class'=>'253','media_cat_image'=>'','media_cat_order'=>'0'),
+		  	array('media_cat_id'=>0,'media_cat_owner'=>'download','media_cat_category'=>'download_thumb','media_cat_title'=>'Download Thumbnails','media_cat_sef'=>'','media_cat_diz'=>'','media_cat_class'=>'253','media_cat_image'=>'','media_cat_order'=>'0'),
+		  	array('media_cat_id'=>0,'media_cat_owner'=>'download','media_cat_category'=>'download_file','media_cat_title'=>'Download Files','media_cat_sef'=>'','media_cat_diz'=>'','media_cat_class'=>'253','media_cat_image'=>'','media_cat_order'=>'0'),
+		  	array('media_cat_id'=>0,'media_cat_owner'=>'news','media_cat_category'=>'news_thumb','media_cat_title'=>'News Thumbnails (Legacy)','media_cat_sef'=>'','media_cat_diz'=>'Legacy news thumbnails.','media_cat_class'=>'253','media_cat_image'=>'','media_cat_order'=>'1'),
+		);
 		
-		$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_image', '(Common Images)', 'Media in this category will be available in all areas of admin. ', 253, '', 0, 1);");
-		$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_file', '(Common Files)', 'Media in this category will be available in all areas of admin. ', 253, '', 0, 2);");
+		
+		foreach($e107_core_media_cat as $insert)
+		{
+			$sql->insert('core_media_cat', $insert);	
+		}
+		
+		
+		
+		
+	//	$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_image', '(Common Images)', '', 'Media in this category will be available in all areas of admin. ', 253, '', 1);");
+	//	$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_file', '(Common Files)', '', 'Media in this category will be available in all areas of admin. ', 253, '', 2);");
 	
-		$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'news', 'news', 'News', 'Will be available in the news area. ', 253, '', 1, 3);");
-		$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'page', 'page', 'Custom Pages', 'Will be available in the custom pages area of admin. ', 253, '', 0, 4);");
+	//	$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'news', 'news', 'News', '', 'Will be available in the news area. ', 253, '', 3);");
+	//	$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'page', 'page', 'Custom Pages', '', 'Will be available in the custom pages area of admin. ', 253, '', 4);");
 		
-		$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_image', 'Download Images', '', 253, '', 0, 5);");
-		$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_thumb', 'Download Thumbnails', '', 253, '', 0, 6);");
-		$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_file', 'Download Files', '', 253, '', 0, 7);");
+	//	$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_image','', 'Download Images', '', 253, '', 5);");
+	//	$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_thumb', '', 'Download Thumbnails', '', 253, '', 6);");
+	//	$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_file', '', 'Download Files', '', 253, '', 7);");
 				
 	//	mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'gallery', 'gallery_1', 'Gallery', 'Visible to the public at /gallery.php', 0, '', 0);");
 		
-		$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'news', 'news_thumb', 'News Thumbnails (Legacy)', 'Legacy news thumbnails. ', 253, '', 1, 8);");		
+	//	$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'news', 'news_thumb', 'News Thumbnails (Legacy)', '', 'Legacy news thumbnails. ', 253, '', 8);");		
 		
 		$med->import('news_thumb', e_IMAGE.'newspost_images',"^thumb_");
 		$med->import('news',e_IMAGE.'newspost_images');
@@ -1274,7 +1288,7 @@ function update_706_to_800($type='')
 	}
 	else 
 	{
-		e107::getMessage()->addDebug("Media COUNT was ".$count. " LINE: ".__LINE__);
+//		e107::getMessage()->addDebug("Media COUNT was ".$count. " LINE: ".__LINE__);
 	}
 	
 	// Check for Legacy Download Images. 
@@ -1349,7 +1363,28 @@ function update_706_to_800($type='')
 	// Any other images should be imported manually via Media Manager batch-import.
 
 	// ------------------------------------------------------------------
+
+	// Check that custompages have been imported from current theme.php file
+
+	if (!$just_check) 
+	{
+		$th = e107::getSingleton('themeHandler');
+		$tmp = $th->getThemeInfo($pref['sitetheme']);
+		if($th->setTheme($pref['sitetheme']))
+		{
+			e107::getMessage()->addDebug("Updated SiteTheme prefs");
+		}
+		else
+		{
+			e107::getMessage()->addDebug("Couldn't update SiteTheme prefs");	
+		}
+	}	
 	
+	
+	
+	
+	
+		
 
 	if ($do_save)
 	{

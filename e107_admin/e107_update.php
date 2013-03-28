@@ -14,6 +14,7 @@
  * $Author$
  *
 */
+define("e_MINIMAL",true);
 require_once ("../class2.php");
 
 // include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
@@ -274,17 +275,19 @@ class e107Update
 			{
 				$text .= "<tr><td>".$data['title']."</td>";
 				
-				if(vartrue($data['message']))
-				{
-					$mes->addInfo($data['message']);	
-				}
+				
 				
 				if(call_user_func("update_".$func))
 				{
-					$text .= "<td>".LAN_UPDATE_3."</td>";
+					$text .= "<td>".ADMIN_TRUE_ICON."</td>";
 				}
 				else
 				{
+					if(vartrue($data['message']))
+					{
+						$mes->addInfo($data['message']);	
+					}
+					
 					$this->updates ++;
 					
 					$text .= "<td>".$frm->admin_button('update_core['.$func.']', LAN_UPDATE, 'warning', '', "id=e-{$func}&disabled=".$this->disabled)."</td>";

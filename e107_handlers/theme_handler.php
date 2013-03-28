@@ -99,7 +99,14 @@ class themeHandler
 			{
 				//	$this -> id = str_replace("selectmain_", "", $key);
 				$this->id = key($post);
-				$this->setTheme();
+				if($this->setTheme())
+				{
+					$mes->addSuccess(TPVLAN_3);
+				}
+				else
+				{
+					$mes->addError(TPVLAN_3);
+				}
 			}
 			
 			if(strstr($key, "selectadmin"))
@@ -407,7 +414,14 @@ class themeHandler
 				{
 					$themeArray = $this->getThemes();
 					$this->id = $themeArray[$folderName]['id'];
-					$this->setTheme();
+					if($this->setTheme())
+					{
+						$mes->addSuccess(TPVLAN_3);
+					}
+					else
+					{
+						$mes->addError(TPVLAN_3);
+					}
 				
 				}
 				
@@ -1358,8 +1372,8 @@ class themeHandler
 		if($core->save())
 		{
 			//TODO LANs
-			$mes->add(TPVLAN_3." <b>'".$name." v".$version."'</b>", E_MESSAGE_SUCCESS);
-			$mes->add("Default Layout: ".$deflayout, E_MESSAGE_SUCCESS);
+			
+			$mes->addDebug("Default Layout: ".$deflayout);
 			$mes->addDebug("Custom Pages: ".print_a($customPages,true));
 			
 			$med = e107::getMedia();
@@ -1381,7 +1395,7 @@ class themeHandler
 		}
 		else
 		{
-			$mes->add(TPVLAN_3." <b>'".$name."'</b>", E_MESSAGE_ERROR);
+		//	$mes->add(TPVLAN_3." <b>'".$name."'</b>", E_MESSAGE_ERROR);
 			return FALSE;
 		}
 	
