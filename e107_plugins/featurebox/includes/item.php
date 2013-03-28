@@ -87,8 +87,23 @@ class plugin_featurebox_item extends e_model
 
 		$title = vartrue($parm['text']) ? defset($parm['text']) : FBLAN_02;
 		$alt = $tp->toAttribute($this->get('fb_title'), false, 'TITLE');
-		return '<a id="featurebox-url-'.$this->getId().'" href="'.$url.'" title="'.$alt.'" rel="'.$tp->toAttribute(vartrue($parm['rel'], '')).'">'.$title.'</a>';
+		
+		$buttonCls = vartrue($parm['button']) ? "class='btn' " : "";
+		
+		return '<a '.$buttonCls.'id="featurebox-url-'.$this->getId().'" href="'.$url.'" title="'.$alt.'" rel="'.$tp->toAttribute(vartrue($parm['rel'], '')).'">'.$title.'</a>';
 	}
+	
+	
+	
+	public function sc_featurebox_button($parm='')
+	{
+		return $this->sc_featurebox_url('button=1');
+		
+	}
+		
+		
+	
+	
 
 	public function sc_featurebox_text()
 	{
