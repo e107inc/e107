@@ -770,7 +770,7 @@ class e107forum
 	function postDeleteAttachments($type = 'post', $id='', $f='')
 	{
 		$e107 = e107::getInstance();
-		$sql = $e107::getDb();
+		$sql = e107::getDb();
 
 		$id = (int)$id;
 		if(!$id) { return; }
@@ -1065,7 +1065,7 @@ class e107forum
 
 	function forum_getforums($type = 'all')
 	{
-		$e107::getDb();
+		$sql = e107::getDb();
 		$qry = "
 		SELECT f.*, u.user_name FROM #forum AS f
 		LEFT JOIN #user AS u ON SUBSTRING_INDEX(f.forum_lastpost_user,'.',1) = u.user_id
