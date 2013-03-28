@@ -43,7 +43,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_e107_update.php');
 
 // If following line uncommented, enables a test routine
 // define('TEST_UPDATE',TRUE);
-$update_debug = FALSE;			// TRUE gives extra messages in places
+$update_debug = TRUE;			// TRUE gives extra messages in places
 //$update_debug = TRUE;			// TRUE gives extra messages in places
 if (defined('TEST_UPDATE')) $update_debug = TRUE;
 
@@ -120,13 +120,16 @@ if (!$dont_check_update)
 		}
 	}
 
+
 	// List of potential updates
 	if (defined('TEST_UPDATE'))
 	{
 		$dbupdate['test_code'] = 'Test update routine';
 	}
-	$dbupdate['core_prefs'] = LAN_UPDATE_13;						// Prefs check
-	$dbupdate['706_to_800'] = LAN_UPDATE_8.' 1.x '.LAN_UPDATE_9.' 2.0 (Must be run first)';
+	
+	// set 'master' to true to prevent other upgrades from running before it is complete. 
+	$dbupdate['706_to_800'] = array('master'=>true, 'title'=>LAN_UPDATE_8.' 1.x '.LAN_UPDATE_9.' 2.0','message'=>"Depending on your particular configuration, the v1.x - 2.0 upgrade may need to be run several times");
+	$dbupdate['core_prefs'] = array('master'=>true, 'title'=>LAN_UPDATE_13);						// Prefs check
 //	$dbupdate['70x_to_706'] = LAN_UPDATE_8.' .70x '.LAN_UPDATE_9.' .706';
 }		// End if (!$dont_check_update)
 
@@ -413,7 +416,7 @@ function update_706_to_800($type='')
 		$tmp = $th->getThemeInfo($pref['sitetheme']);
 		if(is_array($tmp['custompages']))
 		{
-			if ($just_check) return update_needed();
+			if ($just_check) return update_needed('SiteTheme Custom Page Pref fix');
 			$pref['sitetheme_custompages'] = $tmp['custompages'];
 			$do_save = TRUE;
 		}
@@ -429,7 +432,7 @@ function update_706_to_800($type='')
 
 	if (isset($pref['forum_user_customtitle']) && !isset($pref['signup_option_customtitle']))
 	{
-		if ($just_check) return update_needed();
+		if ($just_check) return update_needed('Rename a core pref');
 		$pref['signup_option_customtitle'] = $pref['forum_user_customtitle'];
 		unset($pref['forum_user_customtitle']);
 		$log->logMessage(LAN_UPDATE_20.'customtitle', E_MESSAGE_SUCCESS);		
@@ -441,7 +444,7 @@ function update_706_to_800($type='')
     $serialz_qry .= "AND e107_name IN (".implode(",",$serialized_prefs).") ";
 		if(e107::getDb()->db_Select("core", "*", $serialz_qry))
 		{
-			if ($just_check) return update_needed();
+			if ($just_check) return update_needed('Convert serialized core prefs');
 			while ($row = e107::getDb()->db_Fetch(MYSQL_ASSOC))
 			{
 				$status = e107::getDb('sql2')->update('core',"e107_value=\"".convert_serialized($row['e107_value'])."\" WHERE e107_name='".$row['e107_name']."'");				
@@ -540,7 +543,7 @@ function update_706_to_800($type='')
 	//change menu_path for online_menu (if it still exists)
 	if($sql->db_Select('menus', 'menu_path', "menu_path='online_menu' || menu_path='online_menu/'"))
 	{
-		if ($just_check) return update_needed();
+		if ($just_check) return update_needed('change menu_path for online menu');
 
 		$status = $sql->update('menus', "menu_path='online/' WHERE menu_path='online_menu' || menu_path='online_menu/' ") ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
 		$log->logMessage(LAN_UPDATE_23."<b>online_menu</b> : online/", $status); 		
@@ -729,6 +732,21 @@ function update_706_to_800($type='')
 
 
 	// Tables defined in core_sql.php to be RENAMED. 
+	
+	
+	// Next bit will be needed only by the brave souls who used an early CVS - probably delete before release
+	if ($sql->db_Table_exists('rl_history') && !$sql->db_Table_exists('dblog'))
+	{
+		if ($just_check) return update_needed('Rename rl_history to dblog');
+		$sql->gen('ALTER TABLE `'.MPREFIX.'rl_history` RENAME `'.MPREFIX.'dblog`');
+		//$updateMessages[] = LAN_UPDATE_44; 
+		$log->logMessage(LAN_UPDATE_44, E_MESSAGE_DEBUG);
+		catch_error($sql);
+	}	
+	
+	
+	
+	
 	//---------------------------------
 	if ($sql->db_Table_exists('dblog') && !$sql->db_Table_exists('admin_log'))
 	{
@@ -739,16 +757,7 @@ function update_706_to_800($type='')
 		$log->logMessage(LAN_UPDATE_43, E_MESSAGE_DEBUG);
 	}
 
-	
-	// Next bit will be needed only by the brave souls who used an early CVS - probably delete before release
-	if ($sql->db_Table_exists('rl_history') && !$sql->db_Table_exists('dblog'))
-	{
-		if ($just_check) return update_needed('Rename rl_history to dblog');
-		$sql->gen('ALTER TABLE `'.MPREFIX.'rl_history` RENAME `'.MPREFIX.'dblog`');
-		//$updateMessages[] = LAN_UPDATE_44; 
-		$log->logMessage(LAN_UPDATE_44, E_MESSAGE_DEBUG);
-		catch_error($sql);
-	}
+
 	  
 	// New tables required (list at top. Definitions in core_sql.php)
 	// ALL DEPRECATED by db_verify class.. see below. 
@@ -894,13 +903,16 @@ function update_706_to_800($type='')
 	}
 
 */	
-
+	
+	
 	// Obsolete tables (list at top)
+	$sql->mySQLtableList = false; // clear the cached table list. 
 	foreach ($obs_tables as $ot)
 	{
 		if ($sql->db_Table_exists($ot))
 		{
 			if ($just_check) return update_needed("Delete table: ".$ot);
+			
 			$status = $sql->gen('DROP TABLE `'.MPREFIX.$ot.'`') ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
 			$log->logMessage(LAN_UPDATE_25.$ot, $status);			
 		}
@@ -1000,8 +1012,11 @@ function update_706_to_800($type='')
 	
 	// --- Notify Prefs
 	
-		$notify_prefs = $sysprefs -> get('notify_prefs');
-	$notify_prefs = $eArrayStorage -> ReadArray($notify_prefs);
+//	$notify_prefs = $sysprefs -> get('notify_prefs');
+//	$notify_prefs = $eArrayStorage -> ReadArray($notify_prefs);
+	e107::getCache()->clearAll('system');
+
+	$notify_prefs = e107::getConfig('notify',true,true)->getPref();
 
 	$nt_changed = 0;
 	if(vartrue($notify_prefs['event']))
@@ -1030,6 +1045,7 @@ function update_706_to_800($type='')
 			}
 		}
 	}
+	
 	if ($nt_changed)
 	{
 		$s_prefs = $tp -> toDB($notify_prefs);
@@ -1040,7 +1056,7 @@ function update_706_to_800($type='')
 		$log->logMessage($message, $status);
 	}
 	
-	
+
 	
 	
 	
@@ -1179,7 +1195,7 @@ function update_706_to_800($type='')
 			$sql->update('core_media_cat', "media_cat_owner = 'download', media_cat_category='download_thumb' WHERE media_cat_nick = 'downloadthumb' ");
 			$sql->update('core_media_cat', "media_cat_owner = 'news', media_cat_category='news_thumb' WHERE media_cat_nick = 'newsthumb' ");
 			e107::getMessage()->addDebug("core-media-cat Categories and Ownership updated");
-			if(mysql_query("ALTER TABLE `".MPREFIX."core_media_cat` DROP `media_cat_nick`"))
+			if($sql->gen("ALTER TABLE `".MPREFIX."core_media_cat` DROP `media_cat_nick`"))
 			{
 				e107::getMessage()->addDebug("core-media-cat `media_cat_nick` field removed.");	
 			}
@@ -1225,14 +1241,11 @@ function update_706_to_800($type='')
 	{
 		if ($just_check) return update_needed('Media-Manager Category Data needs to be updated.');
 		$sql->update('core_media_cat', "media_cat_category='_common_image' WHERE media_cat_category = '_common' ");
-		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_file', '(Common Area)', 'Media in this category will be available in all areas of admin. ', 253, '', 0);");
-		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_file', 'Download Files', '', 253, '', 0);");		
+		$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_file', '(Common Area)', 'Media in this category will be available in all areas of admin. ', 253, '', 0);");
+		$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_file', 'Download Files', '', 253, '', 0);");		
 		e107::getMessage()->addDebug("core-media-cat _common Category updated");
 	}
-		
-
-	
-	
+			
 	$count = $sql->gen("SELECT * FROM `#core_media_cat` WHERE `media_cat_owner` = '_common' LIMIT 1 ");
 
 	if($count != 1)
@@ -1240,24 +1253,28 @@ function update_706_to_800($type='')
 		if ($just_check) return update_needed('Add Media-Manager Categories and Import existing images.');
 		
 		
-		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_image', '(Common Images)', 'Media in this category will be available in all areas of admin. ', 253, '', 0);");
-		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_file', '(Common Files)', 'Media in this category will be available in all areas of admin. ', 253, '', 0);");
+		$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_image', '(Common Images)', 'Media in this category will be available in all areas of admin. ', 253, '', 0, 1);");
+		$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_file', '(Common Files)', 'Media in this category will be available in all areas of admin. ', 253, '', 0, 2);");
 	
-		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'news', 'news', 'News', 'Will be available in the news area. ', 253, '', 1);");
-		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'page', 'page', 'Custom Pages', 'Will be available in the custom pages area of admin. ', 253, '', 0);");
+		$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'news', 'news', 'News', 'Will be available in the news area. ', 253, '', 1, 3);");
+		$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'page', 'page', 'Custom Pages', 'Will be available in the custom pages area of admin. ', 253, '', 0, 4);");
 		
-		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_image', 'Download Images', '', 253, '', 0);");
-		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_thumb', 'Download Thumbnails', '', 253, '', 0);");
-		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_file', 'Download Files', '', 253, '', 0);");
+		$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_image', 'Download Images', '', 253, '', 0, 5);");
+		$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_thumb', 'Download Thumbnails', '', 253, '', 0, 6);");
+		$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_file', 'Download Files', '', 253, '', 0, 7);");
 				
 	//	mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'gallery', 'gallery_1', 'Gallery', 'Visible to the public at /gallery.php', 0, '', 0);");
 		
-		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'news', 'news_thumb', 'News Thumbnails (Legacy)', 'Legacy news thumbnails. ', 253, '', 1);");		
+		$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'news', 'news_thumb', 'News Thumbnails (Legacy)', 'Legacy news thumbnails. ', 253, '', 1, 8);");		
 		
 		$med->import('news_thumb', e_IMAGE.'newspost_images',"^thumb_");
 		$med->import('news',e_IMAGE.'newspost_images');
 		$med->import('page',e_IMAGE.'custom');
 		
+	}
+	else 
+	{
+		e107::getMessage()->addDebug("Media COUNT was ".$count. " LINE: ".__LINE__);
 	}
 	
 	// Check for Legacy Download Images. 
@@ -1316,7 +1333,7 @@ function update_706_to_800($type='')
 		(0, '_icon', '_icon_64', 'Icons 64px', 'Available where icons are used in admin. ', 253, '', 0);
 		";
 		
-		if(!mysql_query($query))
+		if(!$sql->gen($query))
 		{
 			// echo "mysyql error";
 		 	// error or already exists.	
@@ -1344,7 +1361,7 @@ function update_706_to_800($type='')
 	
 	//FIXME grab message-stack from $log for the log. 
 
-	if ($just_check) return TRUE;
+	//if ($just_check) return TRUE;
 	$log->flushMessages('UPDATE_01');		// Write admin log entry, update message handler
 	//$admin_log->log_event('UPDATE_01',LAN_UPDATE_14.$e107info['e107_version'].'[!br!]'.implode('[!br!]',$updateMessages),E_LOG_INFORMATIVE,'');	// Log result of actual update
 	return $just_check;
@@ -1527,7 +1544,7 @@ function update_needed($message='')
 
 	$emessage = e107::getMessage();
 
-	if ($update_debug) $emessage->add("Update: ".$message, E_MESSAGE_DEBUG);
+//	if ($update_debug) $emessage->add("Update: ".$message, E_MESSAGE_DEBUG);
 	if(E107_DEBUG_LEVEL)
 	{
 		$tmp = debug_backtrace();

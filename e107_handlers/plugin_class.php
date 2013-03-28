@@ -366,7 +366,7 @@ class e107plugin
 						
 						$_installed = ($plug_info['@attributes']['installRequired'] == 'true' || $plug_info['@attributes']['installRequired'] == 1 ? 0 : 1);
 						
-						if (e107::getDb()->db_Insert("plugin", "0, '".$tp->toDB($pName, true)."', '".$tp->toDB($plug_info['@attributes']['version'], true)."', '".$tp->toDB($plugin_path, true)."',{$_installed}, '{$eplug_addons}', '".$this->manage_category($plug_info['category'])."', '".varset($plug_info['@attributes']['releaseUrl'])."' "))
+						if (e107::getDb()->db_Insert("plugin", "0, '".$tp->toDB($pName, true)."', '".$tp->toDB($plug_info['@attributes']['version'], true)."', '".$tp->toDB($plugin_path, true)."',{$_installed}, '{$eplug_addons}', '".$this->manage_category($plug_info['category'])."' "))
 						{
 								$mes->addDebug("Added <b>".$tp->toHTML($pName,false,"defs")."</b> to the plugin table.");
 							}
@@ -1461,7 +1461,7 @@ class e107plugin
 
 		if ($function == 'install' || $function == 'upgrade')
 		{
-			$sql->update('plugin', "plugin_installflag = 1, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['@attributes']['version']}', plugin_category ='".$this->manage_category($plug_vars['category'])."', plugin_releaseUrl= '".varset($plug_vars['@attributes']['releaseUrl'])."' WHERE plugin_id = ".$id);
+			$sql->update('plugin', "plugin_installflag = 1, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['@attributes']['version']}', plugin_category ='".$this->manage_category($plug_vars['category'])."' WHERE plugin_id = ".$id);
 			$p_installed[$plug['plugin_path']] = $plug_vars['@attributes']['version'];
 
 			e107::getConfig('core')->setPref('plug_installed', $p_installed);
@@ -1470,7 +1470,7 @@ class e107plugin
 
 		if ($function == 'uninstall')
 		{
-			$sql->update('plugin', "plugin_installflag = 0, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['@attributes']['version']}', plugin_category ='".$this->manage_category($plug_vars['category'])."', plugin_releaseUrl= '".varset($plug_vars['@attributes']['releaseUrl'])."' WHERE plugin_id = ".$id);
+			$sql->update('plugin', "plugin_installflag = 0, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['@attributes']['version']}', plugin_category ='".$this->manage_category($plug_vars['category'])."' WHERE plugin_id = ".$id);
 			unset($p_installed[$plug['plugin_path']]);
 			e107::getConfig('core')->setPref('plug_installed', $p_installed);
 

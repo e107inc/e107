@@ -163,6 +163,7 @@ class e107Update
 {
 	var $core = array();
 	var $updates = 0;
+	var $disabled = 0;
 	
 	
 	function __construct($core=null)
@@ -197,7 +198,7 @@ class e107Update
 	{
 		$mes = e107::getMessage();
 		
-		foreach($this->core as $func => $rmks)
+		foreach($this->core as $func => $data)
 		{
 			if(function_exists('update_'.$func)) // Legacy Method. 
 			{
@@ -207,7 +208,7 @@ class e107Update
 				{
 					if(function_exists("update_".$func))
 					{
-						$message = LAN_UPDATE_7." {$rmks}";
+						$message = LAN_UPDATE_7." ".$data['title'];
 						$error = call_user_func("update_".$func, "do");
 						
 						if($error != '')
@@ -250,7 +251,7 @@ class e107Update
 		{
 			$text .= "<tr>
 					<td>".$val['@attributes']['name']."</td>
-					<td>".$frm->admin_button('update['.$path.']', LAN_UPDATE, 'warning')."</td>
+					<td>".$frm->admin_button('update['.$path.']', LAN_UPDATE, 'warning', '', 'disabled='.$this->disabled)."</td>
 					</tr>";			
 		}
 		
@@ -263,15 +264,21 @@ class e107Update
 	function core()
 	{
 		$frm = e107::getForm();
+		$mes = e107::getMessage();
 		
 		$text = "";
 		
-		foreach($this->core as $func => $rmks)
+		foreach($this->core as $func => $data)
 		{
 			if(function_exists("update_".$func))
 			{
-				$text .= "<tr><td>{$rmks}</td>";
-	
+				$text .= "<tr><td>".$data['title']."</td>";
+				
+				if(vartrue($data['message']))
+				{
+					$mes->addInfo($data['message']);	
+				}
+				
 				if(call_user_func("update_".$func))
 				{
 					$text .= "<td>".LAN_UPDATE_3."</td>";
@@ -279,7 +286,12 @@ class e107Update
 				else
 				{
 					$this->updates ++;
-					$text .= "<td>".$frm->admin_button('update_core['.$func.']', LAN_UPDATE, 'warning', '', "id=e-{$func}")."</td>";
+					
+					$text .= "<td>".$frm->admin_button('update_core['.$func.']', LAN_UPDATE, 'warning', '', "id=e-{$func}&disabled=".$this->disabled)."</td>";
+					if($data['master'] == true)
+					{
+						$this->disabled = 1;	
+					}
 				}
 				$text .= "</tr>\n";
 			}	
