@@ -100,6 +100,39 @@ $(document).ready(function()
     		$('.modal').modal('show');
     	});	
 
+
+
+
+
+		
+		$('.e-progress').on('click', function(e) 
+		{
+			alert('progress clicked');
+			var target = 'progress';
+			var script = $(this).attr('data-progress');
+			
+			var progresspump = setInterval(function(){
+		  			
+		  		
+			$.get(script, function(data){		  	
+		  
+		 		$("#"+target).css('width',data+'%');   /* update the progress bar width */
+		 		$("#"+target).html(data+'%');     /* and display the numeric value */
+		    
+		      if(data > 99.999) {
+		        clearInterval(progresspump);
+		        $("#progressouter").removeClass("active");
+		        $("#progress").html("Done");
+		      }
+		    
+		     });  
+
+		  }, 2000);
+		});
+		
+		
+		
+		
 		
 
 	/*
