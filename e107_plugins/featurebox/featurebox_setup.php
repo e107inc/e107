@@ -31,26 +31,23 @@ class featurebox_setup
 		e107::includeLan(e_PLUGIN.'featurebox/languages/'.e_LANGUAGE.'_admin_featurebox.php');
 		$mes = e107::getMessage();
 		
-		$query = array();
-		$query['fb_category_id'] = 0;
-		$query['fb_category_title'] = FBLAN_INSTALL_04;
-		$query['fb_category_template'] = 'default';
-		$query['fb_category_random'] = 0;
-		$query['fb_category_class'] = e_UC_PUBLIC;
-		$query['fb_category_limit'] = 1;
-		$inserted = e107::getDb()->db_Insert('featurebox_category', $query);
+		$e107_featurebox_category = array(
+ 			array('fb_category_id'=> 1,'fb_category_title'=>FBLAN_INSTALL_04,'fb_category_icon'=>'','fb_category_template'=>'bootstrap_carousel','fb_category_random'=>'0','fb_category_class'=>'0','fb_category_limit'=>'0','fb_category_parms'=>''),
+			array('fb_category_id'=> 2,'fb_category_title'=>FBLAN_INSTALL_05,'fb_category_icon'=>'','fb_category_template'=>'bootstrap_tabs','fb_category_random'=>'0','fb_category_class'=>'0','fb_category_limit'=>'0','fb_category_parms'=>''),
+			array('fb_category_id'=> 3,'fb_category_title'=>FBLAN_INSTALL_03,'fb_category_icon'=>'','fb_category_template'=>'unassigned','fb_category_random'=>'0','fb_category_class'=>'255','fb_category_limit'=>'0','fb_category_parms'=>'')
+		);
 		
-		$query['fb_category_id'] = 0;
-		$query['fb_category_title'] = FBLAN_INSTALL_03;
-		$query['fb_category_template'] = 'unassigned';
-		$query['fb_category_random'] = 0;
-		$query['fb_category_class'] = e_UC_NOBODY;
-		$query['fb_category_limit'] = 0;
-		$inserted1 = e107::getDb()->db_Insert('featurebox_category', $query);
-		$status = $inserted && $inserted1 ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR; 
+		$count = 0;
+		foreach($e107_featurebox_category as $insert)
+		{
+			$count = e107::getDb()->db_Insert('featurebox_category', $insert) ?  $count + 1 : $count;	
+		}
+		
+	
+		$status = ($count == 3) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR; 
 		$mes->add(FBLAN_INSTALL_01, $status);
 		
-		if($inserted)
+		if($status)
 		{
 			$query = array();
 			$query['fb_id'] = 0;
@@ -60,10 +57,11 @@ class featurebox_setup
 			$query['fb_mode'] = 0;
 			$query['fb_class'] = e_UC_PUBLIC;
 			$query['fb_rendertype'] = 0;
-			$query['fb_template'] = 'default';
+			$query['fb_template'] = 'bootstrap_carousel';
 			$query['fb_order'] = 0;
 			$query['fb_image'] = '';
 			$query['fb_imageurl'] = '';
+			
 			$status = e107::getDb('sql2')->db_Insert('featurebox', $query) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR; 
 		}
 		else 
