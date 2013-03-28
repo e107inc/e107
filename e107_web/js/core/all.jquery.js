@@ -1,6 +1,6 @@
 // handle secured json string - the Prototype implementation
 
-/
+
 $.ajaxSetup({
 	dataFilter: function(data, type) {
 		if(type != 'json' || !data) return data;
