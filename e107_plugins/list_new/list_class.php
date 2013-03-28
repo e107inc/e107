@@ -203,7 +203,7 @@ class listclass
 	 */
 	function getContentSections($mode='')
 	{
-		$sql = $e107::getDb();
+		$sql = e107::getDb();
 		global $pref;
 
 		if (!$content_install = isset($pref['plug_installed']['content']))
