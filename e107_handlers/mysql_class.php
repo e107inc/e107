@@ -490,7 +490,8 @@ class e_db_mysql
 		$table = $this->db_IsLang($table);
 
 		$this->mySQLcurTable = $table;
-		if ($arg != '' && !$noWhere)
+		
+		if ($arg != '' && ($noWhere === false || $noWhere === 'default'))  // 'default' for BC. 
 		{
 			if ($this->mySQLresult = $this->db_Query('SELECT '.$fields.' FROM '.$this->mySQLPrefix.$table.' WHERE '.$arg, NULL, 'db_Select', $debug, $log_type, $log_remark))
 			{
@@ -503,7 +504,7 @@ class e_db_mysql
 				return FALSE;
 			}
 		}
-		elseif ($arg != '' && $noWhere)
+		elseif ($arg != '' && ($noWhere !== false) && ($noWhere !== 'default')) // 'default' for BC. 
 		{
 			if ($this->mySQLresult = $this->db_Query('SELECT '.$fields.' FROM '.$this->mySQLPrefix.$table.' '.$arg, NULL, 'db_Select', $debug, $log_type, $log_remark))
 			{
@@ -1489,7 +1490,7 @@ class e_db_mysql
 		}
 
         $result = mysql_query("SHOW COLUMNS FROM ".$this->mySQLPrefix.$table,$this->mySQLaccess);
-        if (mysql_num_rows($result) > 0)
+        if ($result && mysql_num_rows($result) > 0)
 		{
 			$c=0;
 			while ($row = mysql_fetch_assoc($result))
