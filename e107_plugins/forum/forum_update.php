@@ -23,7 +23,7 @@ if (!getperms('P'))
 error_reporting(E_ALL);
 require_once(e_PLUGIN.'forum/forum_class.php');
 require_once(e_ADMIN.'auth.php');
-$forum = new e107forum;
+$forum = new e107forum(true);
 $timestart = microtime();
 
 $f = new forumUpgrade;
@@ -177,8 +177,8 @@ function step2()
 
 function step3()
 {
-	$e107 = e107::getInstance();
 	$ns = e107::getRender();
+	$mes = e107::getMessage();
 	
 	$stepCaption = 'Step 3: Extended user field creation';
 	if(!isset($_POST['create_extended']))
@@ -208,37 +208,35 @@ function step3()
 	$failed = false;
 	foreach($fieldList as $fieldName => $fieldType)
 	{
-		$text .= 'Creating extended user field user_'.$fieldName.' -> ';
+		
 		$result = $ue->user_extended_add_system($fieldName, $fieldType);
-		if($result)
+
+		if($result === true)
 		{
-			$text .= 'Success <br />';
+			$mes->addSuccess('Creating extended user field user_'.$fieldName);
 		}
 		else
 		{
-			$text .= 'Failed <br />';
+			$mes->addError('Creating extended user field user_'.$fieldName);
 			$failed = true;
 		}
 	}
 	
 	if($failed)
 	{
-		$text .= '
-		<br /><br />
-		Creation of extended field(s) failed.  You can not continue until these are create successfully!
-		';
+		$mes->addError("Creation of extended field(s) failed.  You can not continue until these are create successfully!");
+		
 	}
 	else
 	{
 			$text .= "
-			<br /><br />
 			<form method='post' action='".e_SELF."?step=4'>
 			<input class='btn button' type='submit' name='nextStep[4]' value='Proceed to step 4' />
 			</form>
 			";
 	}
 	
-	$ns->tablerender($stepCaption, $text);
+	$ns->tablerender($stepCaption, $mes->render(). $text);
 
 }
 
@@ -275,7 +273,7 @@ function step4()
 		if(substr($k, 0, 6) == 'forum_')
 		{
 			$nk = substr($k, 6);
-			echo "Converting $k to $nk<br />";
+			$mes->addDebug("Converting $k to $nk");
 			$old_prefs[$nk] = $v;
 			$coreConfig->remove($k);
 		}
@@ -321,12 +319,13 @@ function step4()
 			$realm = trim($realm, '-.');
 			$trackList = preg_split('#\D+#', $realm);
 
-//			echo 'user_id = '.$userId.'<br />';
-//			echo 'viewed = '.$viewed.'<br />';
-//			echo 'realm = '.$realm.'<br />';
-//			echo 'tracking = ' . implode(',', $trackList).'<br />';
-//			print_a($trackList);
-//			echo "<br /><br />";
+			
+			$debug = 'user_id = '.$userId.'<br />';
+			$debug .= 'viewed = '.$viewed.'<br />';
+			$debug .= 'realm = '.$realm.'<br />';
+			$debug .= 'tracking = ' . implode(',', $trackList).'<br />';
+			$debug .= print_a($trackList,true);
+			$mes->addDebug($debug);
 
 			if($viewed != '')
 			{
@@ -380,10 +379,10 @@ function step5()
 	$stepCaption = 'Step 5: Migrate forum data';
 	if(!isset($_POST['move_forum_data']))
 	{
-		$mes->addInfo("This step will copy all of your forum configuration from the `forum` table into the `forum_new` table.<br />
+		$text ="This step will copy all of your forum configuration from the `forum` table into the `forum_new` table.<br />
 		Once the information is successfully copied, the existing 1.0 forum table will be renamed `forum_old` and the newly created `forum_new` table will be renamed `forum`.<br />
-		");
-		$text = "
+		<br /><br />";
+		$text .= "
 		<form method='post'>
 		<input class='btn button' type='submit' name='move_forum_data' value='Proceed with forum data move' />
 		</form>
@@ -392,7 +391,7 @@ function step5()
 		return;
 	}
 
-	$counts = array('parens' => 0, 'forums' => 0, 'subs' => 0); //XXX Typo on 'parents' ?
+	$counts = array('parents' => 0, 'forums' => 0, 'subs' => 0); //XXX Typo on 'parents' ?
 
 	if($sql->select('forum'))
 	{
@@ -416,10 +415,19 @@ function step5()
 			$tmp['forum_threadclass'] = $tmp['forum_postclass'];
 			$tmp['forum_options'] = '_NULL_';
 //			$tmp['_FIELD_TYPES'] = $ftypes['_FIELD_TYPES'];
-			$sql->insert('forum_new', $tmp);
+			if($sql->insert('forum_new', $tmp))
+			{
+				
+			}
+			else
+			{
+				$mes->addError("Insert failed on ".print_a($tmp,true));
+			}
+	
+				
 		}
 
-		$mes->addInfo ( "
+		$mes->addSuccess ( "
 		Forum data move results:
 		<ul>
 		<li>Number of forum parents processed: {$counts['parents']} </li>
@@ -429,10 +437,10 @@ function step5()
 		");
 
 		$result = $sql->gen('RENAME TABLE `#forum`  TO `#forum_old` ') ? e_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-		$mes->add("Renaming forum to forum_old",$result);
+		$mes->add("Renaming forum to forum_old", $result);
 
 		$result = $sql->gen('RENAME TABLE `#forum_new`  TO `#forum` ') ? e_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-		$mes->add("Renaming forum_new to forum",$result);
+		$mes->add("Renaming forum_new to forum", $result);
 		
 
 		$text = "
@@ -463,21 +471,21 @@ function step6()
 	{
 		$count = $sql->count('forum_t', '(*)', "WHERE thread_parent = 0 AND thread_id > {$lastThread}");
 		$limitDropdown = createThreadLimitDropdown($count);
-		$text = "
-		<form method='post'>
-		This step will copy all of your existing forum threads and posts into the new `forum_thread` and `forum_post` tables.<br /><br />
+		
+		$text = "This step will copy all of your existing forum threads and posts into the new `forum_thread` and `forum_post` tables.<br /><br />
 		Depending on your forum size and speed of server, this could take some time.  This routine will attempt to do it in steps in order to
 		reduce the possibility of data loss and server timeouts.<br />
 		<br />
 		Your current timeout appears to be set at {$maxTime} seconds.  This routine will attempt to extend this time in order to process all threads,
 		success will depend on your server configuration.  If you get a timeout while performing this function, return to this page and select fewer threads
 		to process.
-		<br /><br />
+		";
+		
+		$text .= "<form method='post'>
 		There are {$count} forum threads to convert, we will be doing it in steps of: {$limitDropdown}
 		<br /><br />
 		<input class='btn button' type='submit' name='move_thread_data' value='Begin thread data move' />
-		</form>
-		";
+		</form>";
 		$ns->tablerender($stepCaption, $mes->render(). $text);
 		return;
 	}
@@ -501,7 +509,7 @@ function step6()
 	{
 		$postCount = 0;
 		$threadList = $sql->db_getList();
-		$text = '';
+		
 		foreach($threadList as $t)
 		{
 			set_time_limit(30);
@@ -509,7 +517,7 @@ function step6()
 			$result = $f->migrateThread($id);
 			if($result === false)
 			{
-				echo "ERROR! Failed to migrate thread id: {$id}<br />";
+				$mes->addError("ERROR! Failed to migrate thread id: {$id}");
 			}
 			else
 			{
@@ -518,11 +526,13 @@ function step6()
 				$f->setUpdateInfo();
 			}
 		}
-		$text .= '<br />Successfully converted '.count($threadList)." threads and {$postCount} replies.<br />";
-		$text .= "Last thread id = {$t['thread_id']}<br />";
+		
+		$mes->addSuccess('Successfully converted '.count($threadList)." threads and {$postCount} replies");
+		$mes->addSuccess("Last thread id = {$t['thread_id']}");
 
 
 		$count = $sql->count('forum_t', '(*)', "WHERE thread_parent = 0	AND thread_id > {$f->updateInfo['lastThread']}");
+		
 		if($count)
 		{
 			$limitDropdown = createThreadLimitDropdown($count);
@@ -714,7 +724,7 @@ function step10()
 	{
 		$text = "
 		This step will migrate all forum attachment information.<br />
-		All files will be moved from the e107_files/public directory into the e107_plugins/forum/attachment directory and related posts will be updated accordingly.
+		All files will be moved from the e107_files/public directory into the ".e_MEDIA."plugins/forum/attachment directory and related posts will be updated accordingly.
 		<br /><br />
 		<form method='post'>
 		<input class='btn button' type='submit' name='migrate_attachments' value='Proceed with attachment migration' />
@@ -1058,8 +1068,8 @@ function step12()
 
 	$qryArray = array(
 		"DROP TABLE `#forum_old`",
-		"DROP TABLE `#forum_t",
-		"DELETE * FROM `#generic` WHERE gen_type = 'forumUpgrade'"
+		"DROP TABLE `#forum_t`",
+		"DELETE FROM `#generic` WHERE gen_type = 'forumUpgrade' "
 	);
 	
 	foreach($qryArray as $qry)
@@ -1091,7 +1101,7 @@ class forumUpgrade
 	{
 		$this->updateInfo['lastThread'] = 0;
 		$this->attachmentData = array();
-		$this->logf = e_MEDIA.'files/forum_upgrade.txt';
+		$this->logf = e_LOG.'forum_upgrade.txt';
 		$this->getUpdateInfo();
 	}
 
