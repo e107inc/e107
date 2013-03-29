@@ -17,9 +17,7 @@
 		<layout name='default-home' title='Default Home'>
 			<custompages>FRONTPAGE</custompages>	
 		</layout>
-		<layout name='hero' title='Hero'>
-			<custompages>usersettings.php</custompages>
-		</layout>
+		<layout name='hero' title='Hero' />
 		<layout name='marketing-narrow' title='Marketing Narrow' />
 	</layouts>
 </e107Theme>
