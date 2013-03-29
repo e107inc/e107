@@ -42,13 +42,13 @@ function user_avatar_shortcode($parm='')
 	
 	if (vartrue($image)) 
 	{
-		$img = (strpos($image,"://")!==false) ? $image : $tp->thumbUrl(e_MEDIA."avatars/".$image,"aw=".$width."&ah=".$height);
+		$img = (strpos($image,"://")!==false) ? $image : $tp->thumbUrl(e_MEDIA."avatars/".$image,"w=".$width."&h=".$height);
 		$text = "<img class='user-avatar e-tip' src='".$img."' alt='' style='width:".$width."px; height:".$height."px' />
 		";
 	}
 	else
 	{
-		$img = $tp->thumbUrl(e_IMAGE."generic/blank_avatar.jpg","aw=".$width."&ah=".$height);
+		$img = $tp->thumbUrl(e_IMAGE."generic/blank_avatar.jpg","w=".$width."&h=".$height);
 		$text = "<img class='user-avatar' src='".$img."' alt='' />";
 	}
 	

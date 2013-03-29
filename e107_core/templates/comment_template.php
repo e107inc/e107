@@ -129,7 +129,7 @@ $COMMENT_TEMPLATE['ITEM'] = '
 			<div class="row-fluid">
 				
 					<div class="comment-box-username span1">{USERNAME}</div>
-					<div class="comment-box-date span2">{TIMEDATE}</div>
+					<div class="comment-box-date span2">{TIMEDATE=relative}</div>
 					<div class="comment-status span3">{COMMENT_STATUS}</div>
 					<div class="comment-moderate span6">{COMMENT_RATE} {REPLY} {COMMENTEDIT} {COMMENT_MODERATE}</div>
 				

@@ -74,10 +74,13 @@ class comment_shortcodes extends e_shortcode
 	
 	
 	function sc_timedate($parm='') 
-	{
-		global $TIMEDATE, $datestamp, $gen;
-		$datestamp = $gen->convert_date($this->var['comment_datestamp'], "short");
-		return $datestamp;
+	{		
+		if($parm == 'relative')
+		{
+			return e107::getDate()->computeLapse($this->var['comment_datestamp'],time(),false, false, 'short');	
+		}
+		
+		return e107::getDate()->convert_date($this->var['comment_datestamp'], "short");
 	}
 	
 	
@@ -251,7 +254,7 @@ class comment_shortcodes extends e_shortcode
 	function sc_comment_input($parm='')
 	{	
 		$options = array(
-			'class'			=> 'tbox input comment-input',
+			'class'			=> 'tbox input-xxlarge comment-input',
 			'placeholder'	=> "Leave a message..." // TODO Lan
 		);
 					

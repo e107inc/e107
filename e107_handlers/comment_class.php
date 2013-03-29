@@ -258,10 +258,12 @@ class comment
 			
 			// -------------------------------------------------------------
 			
-			$indent = ($action == 'reply') ? "style='margin-left:40px'" : "";
+			$indent = ($action == 'reply') ? " class='offset1' " : "";
 			$formid = ($action == 'reply') ? "e-comment-form-reply" : "e-comment-form";
 			
 			$text = "\n<div id='{$formid}' {$indent}>\n".e107::getMessage()->render('postcomment', true, false, false);//temporary here
+			
+		//	$text .= "Indent = ".$indent;
 			$text .= "<form id='{$formid}' method='post' action='".str_replace('http:', '', $_SERVER['REQUEST_URI'])."'  >";	
 					
 			$data = array(
@@ -408,12 +410,12 @@ class comment
 			
 		if (vartrue($pref['nested_comments']))
 		{
-			$width2 = 100 - $width;
-			$total_width = "95%";
+		//	$width2 = 100 - $width;
+		//	$total_width = "95%";
 			if ($width)
 			{		
 				$renderstyle = $COMMENT_TEMPLATE['ITEM_START'];
-				$renderstyle .= "<div style='margin-left:{$width}%'>".$COMMENT_TEMPLATE['ITEM']."</div>";	
+				$renderstyle .= "<div class='offset".$width."' >".$COMMENT_TEMPLATE['ITEM']."</div>";	
 				$renderstyle .= $COMMENT_TEMPLATE['ITEM_END'];					
 			}
 			else
@@ -487,9 +489,9 @@ class comment
 			ORDER BY comment_datestamp
 			";
 			$sql_nc = new db; /* a new db must be created here, for nested comment  */
-			if ($sub_total = $sql_nc->db_Select_gen($sub_query))
+			if ($sub_total = $sql_nc->gen($sub_query))
 			{
-				while ($row1 = $sql_nc->db_Fetch())
+				while ($row1 = $sql_nc->fetch())
 				{
 					
 					if($this->isPending($row1))
@@ -501,7 +503,11 @@ class comment
 					
 					if ($pref['nested_comments'])
 					{
-						$width = min($width + 3, 80);
+						
+					//	$width = min($width + 1, 80);
+						$width = $width+1;
+					//	$width = $width=+1;
+					//	$text .= "WIDTH=".$width;
 					}
 					$text .= $this->render_comment($row1, $table, $action, $id, $width, $subject, $addrating);
 					unset($width);
@@ -978,6 +984,11 @@ class comment
 			//XXX Do NOT add to template - too important to allow for modification. 
 			$text = "<ul id='comments-container'>\n".$text."\n</ul>";
 		}
+		else
+		{
+			$text = "<ul id='comments-container'><li><!-- --></li></ul>";	
+		}
+		
 		$search = array("{MODERATE}","{COMMENTS}","{COMMENTFORM}","{COMMENTNAV}");
 		$replace = array($modcomment,$text,$comment,$pagination);
 		$TEMPL = str_replace($search,$replace,$this->template['LAYOUT']);		

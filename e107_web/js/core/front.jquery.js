@@ -43,7 +43,7 @@ $(document).ready(function()
 			var formid 	= (pid != '0') ? "#e-comment-form-reply" : "#e-comment-form";
 			var data 	= $('form'+formid).serialize() ;
 			var total 	= parseInt($("#e-comment-total").text());		
-	
+				
 			$.ajax({
 			  type: 'POST',
 			  url: url + '?ajax_used=1&mode=submit',
@@ -59,7 +59,7 @@ $(document).ready(function()
 				if($('#comments-container').length){
 				//	alert('true');
 				}else{
-					$("#e-comment-form").parent().prepend("<div id='comments-container'></div>");
+			//		$("#e-comment-form").parent().prepend("<div id='comments-container'></div>");
 				}
 				
 				if(pid != 0)
@@ -119,6 +119,8 @@ $(document).ready(function()
 			  url: url + '?ajax_used=1&mode=reply',
 			  data: { itemid: sp[3], table: table },
 			  success: function(data) {
+			  	
+			 // 	alert(url);
 			  	var a = $.parseJSON(data);
 			  
 				if(!a.error)
