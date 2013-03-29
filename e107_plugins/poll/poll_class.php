@@ -545,7 +545,7 @@ class poll
 		if ($type == 'preview')
 		{
 			$caption = POLLAN_23.SEP."Preview";
-			$text = "<div style='text-align:center; margin-left: auto; margin-right: auto;'>\n<table style='width:350px' class='fborder'>\n<tr>\n<td>\n$text\n</td></tr></table></div>";
+			$text = "<div class='clearfix'>\n<div class='well span3'>".$text."</div></div>";
 		}
 		elseif ($type == 'forum')
 		{

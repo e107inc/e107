@@ -188,7 +188,7 @@ $POLL_TEMPLATE = array();
 
 $POLL_TEMPLATE['form']['start'] = "
 <div class='clearfix'>
-	<div class='well'>
+	<div>
 		<div class='control-group'>
 			<ul class='nav nav-list'>
 				<li class='nav-header'>
@@ -219,7 +219,7 @@ $POLL_TEMPLATE['form']['end'] = "
 
 $POLL_TEMPLATE['results']['start'] = "
 <div class='clearfix'>
-	<div class='well'>
+	<div>
 		<h5>Poll: {QUESTION}</h5>
 ";
 
@@ -230,6 +230,7 @@ $POLL_TEMPLATE['results']['item'] = "
 
 $POLL_TEMPLATE['results']['end'] = "
 		<div class='text-center'><small>{VOTE_TOTAL}</small></div>
+		 {COMMENTS} {OLDPOLLS}
 	</div>
 </div>
 ";
