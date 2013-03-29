@@ -113,7 +113,7 @@ if(e_AJAX_REQUEST) // TODO improve security
 		
 		$_SESSION['comment_author_name'] = $clean_authorname;
 		
-		
+		$row['comment_pid'] 		= $pid;
 		$row['comment_item_id']		= intval($_POST['itemid']);
 		$row['comment_type']		= e107::getComment()->getCommentType($tp->toDB($_POST['table'],true));
 		$row['comment_subject'] 	= $tp->toDB($_POST['subject']);
@@ -135,7 +135,7 @@ if(e_AJAX_REQUEST) // TODO improve security
 		{
 			
 			$row['comment_id']			= $newid; 		
-			$width = ($pid) ? 5 : 0;
+			$width = ($pid) ? 1 : 0;
 			
 			$ret['html'] = "\n<!-- Appended -->\n";
 			$ret['html'] .= e107::getComment()->render_comment($row,'comments','comment',intval($_POST['itemid']),$width);
