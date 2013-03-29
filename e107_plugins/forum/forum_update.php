@@ -20,15 +20,35 @@ if (!getperms('P'))
 	exit;
 }
 
+
 error_reporting(E_ALL);
 require_once(e_PLUGIN.'forum/forum_class.php');
 require_once(e_ADMIN.'auth.php');
+
+if(e_QUERY == "reset")
+{
+	unset($_SESSION['forumUpgrade']);
+	unset($_SESSION['forumupdate_thread_last']);
+	unset($_SESSION['forumupdate_thread_count']);
+}
+//unset($_SESSION['forumupdate_thread_last']);
+//	unset($_SESSION['forumupdate_thread_count']);
+
 $forum = new e107forum(true);
 $timestart = microtime();
 
 $f = new forumUpgrade;
 $e107 = e107::getInstance();
 $sql = e107::getDb();
+
+if(e_AJAX_REQUEST)
+{
+	step6_ajax();
+	exit;
+	
+}
+
+
 
 $upgradeNeeded = $f->checkUpdateNeeded();
 $upgradeNeeded = true;
@@ -75,7 +95,11 @@ exit;
 
 function step1()
 {
+	
 	global $f;
+	$f->updateInfo['currentStep'] = 1;
+	$f->setUpdateInfo();
+	
 	$e107 = e107::getInstance();
 	$mes = e107::getMessage();
 	//Check attachment dir permissions
@@ -454,7 +478,7 @@ function step5()
 	}
 }
 
-function step6()
+function step6x()
 {
 	global $f;
 	$e107 = e107::getInstance();
@@ -565,6 +589,92 @@ function step6()
 	}
 
 }
+
+function step6()
+{
+	$sql = e107::getDb();
+	$ns = e107::getRender();
+	$mes = e107::getMessage();
+	$stepCaption = 'Step 6: Thread and post data';
+
+	
+	$_SESSION['forumupdate_thread_total'] = $sql->count('forum_t', '(*)', "WHERE thread_parent = 0");
+	$_SESSION['forumupdate_thread_count'] = 0;
+	$_SESSION['forumupdate_thread_last'] = 0;
+			
+	$text = "This step will copy all of your existing forum threads and posts into the new `forum_thread` and `forum_post` tables.<br />
+		Depending on your forum size and speed of server, this could take some time.<br /><br /> ";
+		
+//		$text .= "<form method='post'>
+//		There are {$count} forum threads to convert, we will be doing it in steps of: {$limitDropdown}
+//		<br /><br />";
+		
+		$text .= '
+		<div class="row-fluid">
+			<div class="span9 well">
+				<div class="progress progress-success progress-striped active" id="progressouter">
+	   				<div class="bar" id="progress"></div>
+				</div>
+			
+			<a id="step6" data-progress="'.e_SELF.'" data-progress-show="step7" data-progress-hide="step6" class="btn btn-primary e-progress" >Begin thread data move</a>
+			</div>
+		</div>';
+		
+		$text .= "<form method='post' action='".e_SELF."?step=7'>
+		<input id='step7' style='display:none' class='btn button' type='submit' name='nextStep[7]' value='Proceed to step 7' />
+		</form>";
+		$ns->tablerender($stepCaption, $mes->render(). $text);
+	
+	
+}
+
+
+
+
+
+function step6_ajax()
+{
+	global $f;
+	$sql = e107::getDb();
+	
+	$lastThread = vartrue($_SESSION['forumupdate_thread_last'],0);
+		
+	$qry = "
+	SELECT thread_id FROM `#forum_t`
+	WHERE thread_parent = 0
+	AND thread_id > {$lastThread}
+	ORDER BY thread_id ASC
+	LIMIT 0, 300
+	";
+	
+	if($sql->gen($qry))
+	{
+		$threadList = $sql->db_getList();
+		
+		foreach($threadList as $t)
+		{
+			$id = (int)$t['thread_id'];
+			$result = $f->migrateThread($id);
+			
+			if($result === false)
+			{
+				echo "Error";
+			}
+			else
+			{
+				$_SESSION['forumupdate_thread_last'] = $id;
+				$_SESSION['forumupdate_thread_count']++;
+			}
+		}		
+	
+	}
+	
+	echo round(($_SESSION['forumupdate_thread_count'] / $_SESSION['forumupdate_thread_total'] ) * 100); 
+
+}
+			
+			
+
 
 
 function step7()
@@ -940,6 +1050,8 @@ function step10()
 	$ns->tablerender($stepCaption, $text);
 }
 
+
+
 function step11()
 {
 	$e107 = e107::getInstance();
@@ -1069,8 +1181,11 @@ function step12()
 	$qryArray = array(
 		"DROP TABLE `#forum_old`",
 		"DROP TABLE `#forum_t`",
-		"DELETE FROM `#generic` WHERE gen_type = 'forumUpgrade' "
+		
 	);
+	
+	// "DELETE FROM `#generic` WHERE gen_type = 'forumUpgrade' "
+	unset($_SESSION['forumUpgrade']);
 	
 	foreach($qryArray as $qry)
 	{
@@ -1152,6 +1267,17 @@ class forumUpgrade
 	{
 		$sql = e107::getDb();
 		$e107 = e107::getInstance();
+		
+		if($_SESSION['forumUpgrade'])
+		{
+			$this->updateInfo = $_SESSION['forumUpgrade'];
+		} 
+		else
+		{
+			$this->updateInfo = array();	
+		}
+		
+		return;
 		if($sql->select('generic', '*', "gen_type = 'forumUpgrade'"))
 		{
 			$row = $sql->fetch(MYSQL_ASSOC);
@@ -1167,6 +1293,10 @@ class forumUpgrade
 
 	function setUpdateInfo()
 	{
+		$_SESSION['forumUpgrade'] = $this->updateInfo;
+		return;
+		
+		
 		$e107 = e107::getInstance();
 		$info = mysql_real_escape_string(serialize($this->updateInfo));
 		$qry = "UPDATE `#generic` Set gen_chardata = '{$info}' WHERE gen_type = 'forumUpgrade'";
@@ -1216,18 +1346,59 @@ class forumUpgrade
 	function addThread(&$post)
 	{
 		global $forum;
-		$e107 = e107::getInstance();
+		
+		/*
+		 * v1.x 
+		 * thread_id 			
+		 * thread_name 	
+		 * thread_thread 	
+		 * thread_forum_id 
+		 * thread_datestamp 	
+		 * thread_parent 	
+		 * thread_user 	
+		 * thread_views
+		 * thread_active 	
+		 * thread_lastpost 	
+		 * thread_s 	
+		 * thread_edit_datestamp 	
+		 * thread_lastuser 	
+		 * thread_total_replies
+		 */
+		
+		/*
+		 * v2.x
+		 * thread_id 	
+		 * thread_name 	
+		 * thread_forum_id 	
+		 * thread_views 	
+		 * thread_active 	
+		 * thread_lastpost 	
+		 * thread_sticky 	
+		 * thread_datestamp 	
+		 * thread_user 	
+		 * thread_user_anon 	
+		 * thread_lastuser 	
+		 * thread_lastuser_anon 	
+		 * thread_total_replies 	
+		 * thread_options
+		 */
+		
 		$thread = array();
-		$thread['thread_id'] = $post['thread_id'];
-		$thread['thread_name'] = $post['thread_name'];
-		$thread['thread_forum_id'] = $post['thread_forum_id'];
-		$thread['thread_datestamp'] = $post['thread_datestamp'];
-		$thread['thread_views'] = $post['thread_views'];
-		$thread['thread_active'] = $post['thread_active'];
-		$thread['thread_sticky'] = $post['thread_s'];
-		$userInfo = $this->getUserInfo($post['thread_user']);
-		$thread['thread_user'] = $userInfo['user_id'];
-		$thread['thread_user_anon'] = $userInfo['anon_name'];
+		$thread['thread_id'] 			= $post['thread_id'];
+		$thread['thread_name'] 			= $post['thread_name'];
+		$thread['thread_forum_id'] 		= $post['thread_forum_id'];
+		$thread['thread_datestamp'] 	= $post['thread_datestamp'];
+		$thread['thread_lastpost'] 		= $post['thread_lastpost'];
+		$thread['thread_views'] 		= $post['thread_views'];
+		$thread['thread_active'] 		= $post['thread_active'];
+		$thread['thread_sticky'] 		= $post['thread_s'];
+	//	$thread['thread_lastuser']		= $post['thread_lastuser'];
+		$thread['thread_total_replies']	= $post['thread_total_replies'];
+		
+		$userInfo 						= $this->getUserInfo($post['thread_user']);
+		$thread['thread_user'] 			= $userInfo['user_id'];
+		$thread['thread_user_anon'] 	= $userInfo['anon_name'];
+		
 		//  If thread marked as 'tracked by starter', we must convert to using forum_track table
 		if($thread['thread_active'] == 99 && $thread['thread_user'] > 0)
 		{
@@ -1250,17 +1421,18 @@ class forumUpgrade
 		global $forum;
 		$e107 = e107::getInstance();
 		$newPost = array();
-		$newPost['post_id'] = $post['thread_id'];
-		$newPost['post_thread'] = ($post['thread_parent'] == 0 ? $post['thread_id'] : $post['thread_parent']);
-		$newPost['post_entry'] = $post['thread_thread'];
-		$newPost['post_forum'] = $post['thread_forum_id'];
-		$newPost['post_datestamp'] = $post['thread_datestamp'];
+		$newPost['post_id'] 			= $post['thread_id'];
+		$newPost['post_thread'] 		= ($post['thread_parent'] == 0 ? $post['thread_id'] : $post['thread_parent']);
+		$newPost['post_entry'] 			= $post['thread_thread'];
+		$newPost['post_forum'] 			= $post['thread_forum_id'];
+		$newPost['post_datestamp'] 		= $post['thread_datestamp'];
 		$newPost['post_edit_datestamp'] = ($post['thread_edit_datestamp'] ? $post['thread_edit_datestamp'] : '_NULL_');
 
-		$userInfo = $this->getUserInfo($post['thread_user']);
-		$newPost['post_user'] = $userInfo['user_id'];
-		$newPost['post_user_anon'] = $userInfo['anon_name'];
-		$newPost['post_ip'] = $userInfo['user_ip'];
+		$userInfo 						= $this->getUserInfo($post['thread_user']);
+		
+		$newPost['post_user'] 			= $userInfo['user_id'];
+		$newPost['post_user_anon'] 		= $userInfo['anon_name'];
+		$newPost['post_ip'] 			= $userInfo['user_ip'];
 
 //		$newPost['_FIELD_TYPES'] = $forum->fieldTypes['forum_post'];
 //		$newPost['_FIELD_TYPES']['post_entry'] = 'escape'; //use escape to prevent double entities
@@ -1451,7 +1623,7 @@ function forum_update_adminmenu()
 		$action = 1;
 
 		$var[1]['text'] = '1 - Permissions';
-		$var[1]['link'] = e_SELF;
+		$var[1]['link'] = e_SELF."?step=1";
 
 		$var[2]['text'] = '2 - Create new tables';
 		$var[2]['link'] = '#';
