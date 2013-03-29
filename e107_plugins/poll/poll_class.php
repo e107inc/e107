@@ -598,7 +598,7 @@ class poll
 	{
 		$tp = e107::getParser();
 		$frm = e107::getForm();
-		
+	//	echo "MODE=".$mode;
 		
 		//XXX New v2.x default for front-end. Currently used by forum-post in bootstrap mode. 
 		if ($mode == 'front')
