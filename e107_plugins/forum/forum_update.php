@@ -43,9 +43,24 @@ $sql = e107::getDb();
 
 if(e_AJAX_REQUEST)
 {
-	step6_ajax();
-	exit;
+	if(!vartrue($_GET['mode']))
+	{
+		echo "data-progress-mode not set!";
+		exit;
+	}
 	
+	$func = 'step'.intval($_GET['mode'])."_ajax";
+
+	if(function_exists($func))
+	{
+		call_user_func($func);
+	}
+	else 
+	{
+		echo $func ."() doesn't exist!";	
+	}
+
+	exit;
 }
 
 
@@ -616,7 +631,7 @@ function step6()
 	   				<div class="bar" id="progress"></div>
 				</div>
 			
-			<a id="step6" data-progress="'.e_SELF.'" data-progress-show="step7" data-progress-hide="step6" class="btn btn-primary e-progress" >Begin thread data move</a>
+			<a id="step6" data-progress="'.e_SELF.'" data-progress-mode="6" data-progress-show="step7" data-progress-hide="step6" class="btn btn-primary e-progress" >Begin thread data move</a>
 			</div>
 		</div>';
 		
@@ -719,6 +734,18 @@ function step7()
 	$ns->tablerender($stepCaption, $text);
 }
 
+
+function step7_ajax() //TODO 
+{
+					
+				
+			
+		
+	
+}
+				
+
+
 function step8()
 {
 	$e107 = e107::getInstance();
@@ -753,6 +780,21 @@ function step8()
 	";
 	e107::getRender()->tablerender($stepCaption, $text);
 }
+
+
+
+function step8_ajax() //TODO 
+{
+					
+				
+			
+		
+	
+}
+
+
+
+
 
 function step9()
 {
@@ -818,6 +860,15 @@ function step9()
 	</form>
 	";
 	e107::getRender()->tablerender($stepCaption, $text);
+}
+
+function step9_ajax() //TODO 
+{
+					
+				
+			
+		
+	
 }
 
 function step10()
@@ -1050,7 +1101,14 @@ function step10()
 	$ns->tablerender($stepCaption, $text);
 }
 
-
+function step10_ajax() //TODO 
+{
+					
+				
+			
+		
+	
+}
 
 function step11()
 {
@@ -1151,6 +1209,9 @@ function step11()
 		return;
 	}
 }
+
+
+
 
 function step12()
 {

@@ -323,7 +323,7 @@ class poll
 
 		if ($type == 'preview')
 		{
-			$optionArray = $pollArray['poll_option'];
+			$optionArray = array_filter($pollArray['poll_option']);
 			$voteArray = array();
 			$voteArray = array_pad($voteArray, count($optionArray), 0);
 			$pollArray['poll_allow_multiple'] = $pollArray['multipleChoice'];
@@ -378,18 +378,32 @@ class poll
 		   	require(e_PLUGIN.'poll/templates/poll_template.php');
 		}
 		
-		if($type == 'forum' && e_BOOTSTRAP === true)
+	
+		
+		if(deftrue('e_BOOTSTRAP'))
 		{
 	
-			require_once(e_PLUGIN."forum/templates/forum_poll_template.php");
+			if($type == 'forum')
+			{
+				require_once(e_PLUGIN."forum/templates/forum_poll_template.php");
+				
+				$POLL_FORUM_NOTVOTED_START = $FORUM_POLL_TEMPLATE['form']['start'];
+				$POLL_FORUM_NOTVOTED_LOOP = $FORUM_POLL_TEMPLATE['form']['item'];
+				$POLL_FORUM_NOTVOTED_END = $FORUM_POLL_TEMPLATE['form']['end'];
+				
+				$POLL_FORUM_VOTED_START = $FORUM_POLL_TEMPLATE['results']['start'];
+				$POLL_FORUM_VOTED_LOOP = $FORUM_POLL_TEMPLATE['results']['item'];
+				$POLL_FORUM_VOTED_END = $FORUM_POLL_TEMPLATE['results']['end'];	
+			}
 			
-			$POLL_FORUM_NOTVOTED_START = $FORUM_POLL_TEMPLATE['form']['start'];
-			$POLL_FORUM_NOTVOTED_LOOP = $FORUM_POLL_TEMPLATE['form']['item'];
-			$POLL_FORUM_NOTVOTED_END = $FORUM_POLL_TEMPLATE['form']['end'];
+				$POLL_NOTVOTED_START = $POLL_TEMPLATE['form']['start'];
+				$POLL_NOTVOTED_LOOP = $POLL_TEMPLATE['form']['item'];
+				$POLL_NOTVOTED_END = $POLL_TEMPLATE['form']['end'];
+				
+				$POLL_VOTED_START = $POLL_TEMPLATE['results']['start'];
+				$POLL_VOTED_LOOP = $POLL_TEMPLATE['results']['item'];
+				$POLL_VOTED_END = $POLL_TEMPLATE['results']['end'];	
 			
-			$POLL_FORUM_VOTED_START = $FORUM_POLL_TEMPLATE['results']['start'];
-			$POLL_FORUM_VOTED_LOOP = $FORUM_POLL_TEMPLATE['results']['item'];
-			$POLL_FORUM_VOTED_END = $FORUM_POLL_TEMPLATE['results']['end'];	
 			
 		}
 		
@@ -469,7 +483,7 @@ class poll
 				$SUBMITBUTTON = "<input class='button btn' type='submit' name='pollvote' value='".POLLAN_30."' />";
 				if (('preview' == $type || $preview == TRUE) && strpos(e_SELF, "viewtopic") === FALSE)
 				{
-					$SUBMITBUTTON = "[".POLLAN_30."]";
+					$SUBMITBUTTON = "<input class='button btn e-tip' type='button' name='null' title='Disabled' value='".POLLAN_30."' />";
 				}
 
 				$text .= "\n".preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_NOTVOTED_END : $POLL_NOTVOTED_END))."\n</form>";
@@ -530,7 +544,7 @@ class poll
 		
 		if ($type == 'preview')
 		{
-			$caption = POLLAN_23;
+			$caption = POLLAN_23.SEP."Preview";
 			$text = "<div style='text-align:center; margin-left: auto; margin-right: auto;'>\n<table style='width:350px' class='fborder'>\n<tr>\n<td>\n$text\n</td></tr></table></div>";
 		}
 		elseif ($type == 'forum')
