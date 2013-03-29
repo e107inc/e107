@@ -107,27 +107,53 @@ $(document).ready(function()
 		
 		$('.e-progress').on('click', function(e) 
 		{
-			alert('progress clicked');
-			var target = 'progress';
-			var script = $(this).attr('data-progress');
+		//	alert('Process Started');
+			
+			var target 	= 'progress';
+			var script 	= $(this).attr('data-progress');
+			var show 	= $(this).attr('data-progress-show');
+			var hide 	= $(this).attr('data-progress-hide');
+			var mode 	= $(this).attr('data-progress-mode');
+			var interval = $(this).attr('data-progress-interval');
+			
+			if(interval === undefined)
+			{
+				interval = 1000;	
+			}
+			
+			$("#"+target).css('width','1%'); // so we know it's running.   
 			
 			var progresspump = setInterval(function(){
-		  			
-		  		
-			$.get(script, function(data){		  	
+		  				
+			$.get(script, { mode: mode }).done( function(data){		  	  	
 		  
-		 		$("#"+target).css('width',data+'%');   /* update the progress bar width */
-		 		$("#"+target).html(data+'%');     /* and display the numeric value */
+		  	//	alert(data);
+		 		$("#"+target).css('width',data+'%');   	// update the progress bar width */
+		 		$("#"+target).html(data+'%');     		// display the numeric value */
 		    
-		      if(data > 99.999) {
-		        clearInterval(progresspump);
-		        $("#progressouter").removeClass("active");
-		        $("#progress").html("Done");
-		      }
+				if(data > 99.999) {
+		      	
+			   		clearInterval(progresspump);
+			        
+			        $("#progressouter").removeClass("active");
+			        $("#"+target).html("Done");
+			        
+			        if(hide !== 'undefined')
+			        {
+			        	$('#'+hide).hide();	
+			        }
+			        
+			        if(show !== 'undefined')
+			        {
+			        	$('#'+show).show('slow');	
+			        }
+			      
+		        
+		      	}
 		    
 		     });  
 
-		  }, 2000);
+		  }, interval);
 		});
 		
 		
