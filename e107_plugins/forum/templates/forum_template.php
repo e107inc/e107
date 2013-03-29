@@ -111,8 +111,8 @@ $FORUM_TEMPLATE['main-parent']			= 	"<tr>
 $FORUM_TEMPLATE['main-forum']			= 	"<tr>
 											<td>{NEWFLAG}</td>
 											<td>{FORUMNAME}<br /><small>{FORUMDESCRIPTION}</small>{FORUMSUBFORUMS}</td>
-											<td>{THREADSX}</td>
 											<td>{REPLIESX}</td>
+											<td>{THREADSX}</td>
 											<td><small>{LASTPOSTUSER} {LASTPOSTDATE}</small></td>
 											</tr>";
 

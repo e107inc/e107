@@ -466,7 +466,7 @@ class forumAdmin
 		$text = "
 		<form method='post' action='".e_SELF.'?'.e_QUERY."'>
 		<table class='table adminform'>
-		<colgroup span='2'>
+		<colgroup>
     		<col class='col-label' />
     		<col class='col-control' />
     	</colgroup>
@@ -533,21 +533,24 @@ class forumAdmin
 		$text = "
 		<form method='post' action='".e_SELF.'?'.e_QUERY."'>\n
 		<table class='table adminform'>
+		<colgroup>
+    		<col class='col-label' />
+    		<col class='col-control' />
+    	</colgroup>
 		<tr>
-		<td>".FORLAN_22.":</td>
-		<td>";
+			<td>".FORLAN_22.":</td>
+			<td>";
 
-		$sql->select('forum', '*', 'forum_parent=0');
-		$text .= "<select name='forum_parent' class='tbox'>\n";
-		while (list($fid, $fname) = $sql->fetch(MYSQL_NUM))
-		{
-			$sel = ($fid == vartrue($fInfor['forum_parent']) ? "selected='selected'" : '');
-			$text .= "<option value='{$fid}' {$sel}>{$fname}</option>\n";
-		}
-		$text .= "</select>
-		</td>
+			$sql->select('forum', '*', 'forum_parent=0');
+			$text .= "<select name='forum_parent' class='tbox'>\n";
+			while (list($fid, $fname) = $sql->fetch(MYSQL_NUM))
+			{
+				$sel = ($fid == vartrue($fInfor['forum_parent']) ? "selected='selected'" : '');
+				$text .= "<option value='{$fid}' {$sel}>{$fname}</option>\n";
+			}
+			$text .= "</select>
+			</td>
 		</tr>
-
 		<tr>
 			<td>".LAN_NAME.":</td>
 			<td><input class='tbox' type='text' name='forum_name' size='60' value='".$tp->toForm(vartrue($fInfo['forum_name']))."' maxlength='250' /><span class='field-help'>".FORLAN_179."</span></td>
