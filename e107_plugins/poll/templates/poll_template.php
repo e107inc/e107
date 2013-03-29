@@ -179,4 +179,63 @@ $POLL_FORUM_VOTED_END = "
 </div>
 ";
 
+
+
+/*	v2.x template for  polls when user has not voted 	*/
+
+$POLL_TEMPLATE = array();
+
+
+$POLL_TEMPLATE['form']['start'] = "
+<div class='clearfix'>
+	<div class='well'>
+		<div class='control-group'>
+			<ul class='nav nav-list'>
+				<li class='nav-header'>
+					Poll: {QUESTION}
+				</li>
+";
+
+$POLL_TEMPLATE['form']['item'] = "
+			<li>
+				{ANSWER} 
+			</li>";
+
+$POLL_TEMPLATE['form']['end'] = "
+			</ul>
+		</div>
+		<div class='control-group'>
+			 <div class='controls text-center'>
+				{SUBMITBUTTON}	
+			</div>
+		</div>
+	</div>
+</div>
+";
+
+
+
+/*	v2.x template for polls when user HAS voted		*/
+
+$POLL_TEMPLATE['results']['start'] = "
+<div class='clearfix'>
+	<div class='well'>
+		<h5>Poll: {QUESTION}</h5>
+";
+
+$POLL_TEMPLATE['results']['item'] = "
+			<strong>{OPTION}</strong><small class='pull-right'><a href='#' class='e-tip' title=\"{VOTES}\">{PERCENTAGE}</a></small>
+			{BAR}
+";
+
+$POLL_TEMPLATE['results']['end'] = "
+		<div class='text-center'><small>{VOTE_TOTAL}</small></div>
+	</div>
+</div>
+";
+
+
+
+
+
 ?>

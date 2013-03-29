@@ -164,7 +164,7 @@ function poll_list()
 	$fields = array(
 			'poll_id'				=> array('title'=> LAN_ID, 'width'=>'5%', 'forced'=> TRUE),
             'poll_title'	   		=> array('title'=> POLLAN_3, 'width'=>'auto'),
-			'poll_options' 			=> array('title'=> POLLAN_4, 'type' => 'text', 'width' => 'auto', 'thclass' => 'center' ),	 // No real vetting
+			'poll_options' 			=> array('title'=> POLLAN_4, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left' ),	 // No real vetting
 		//	'poll_start_datestamp' 	=> array('title'=> LAN_AUTHOR, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left first'), // Display name
 		//	'poll_end_datestamp' 	=> array('title'=> LAN_DATE, 'type' => 'text', 'width' => 'auto'),	// User name
             'poll_vote_userclass' 	=> array('title'=> LAN_USERCLASS, 'type' => 'text', 'width' => 'auto'),	 	// Photo
@@ -188,18 +188,22 @@ function poll_list()
 		{
 			extract($row); // FIXME
 			
+			$pollopts = explode(chr(1),$poll_options);
+			
+			$pollopts = array_filter($pollopts);
+			
 			$text .= "
 			<tr>
 				<td>$poll_id</td>";
 				$text .= (in_array("poll_title",$fieldpref)) ? "<td class='left'>".$tp -> toHTML($poll_title, TRUE,"no_hook, emotes_off, defs")."</td>" : "";              
-                $text .= (in_array("poll_options",$fieldpref)) ? "<td class='left'>".(str_replace(chr(1),"<br />",$poll_options))."</td>" : "";
+                $text .= (in_array("poll_options",$fieldpref)) ? "<td class='left'><ul><li>".implode("</li><li>",$pollopts)."</li></ul></td>" : "";
 		 		$text .= (in_array("poll_comment",$fieldpref)) ? "<td>".($poll_comment ? LAN_YES : LAN_NO)."</td>" : "";
 				$text .= (in_array("poll_vote_userclass",$fieldpref)) ? "<td>".(r_userclass_name($poll_vote_userclass))."</td>" : "";
 				
 				$text .= "
-				<td class='center'>
-					<input type='image' name='edit[{$poll_id}]' value='edit' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' />
-					<input type='image' name='delete[$poll_id]' value='del' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$poll_id."]")."') \" src='".ADMIN_DELETE_ICON_PATH."' alt='".LAN_DELETE."' title='".LAN_DELETE."' style='border:0px' />
+				<td class='center' style='white-space:nowrap'>
+					<input class='btn btn-large' type='image' name='edit[{$poll_id}]' value='edit' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' />
+					<input class='btn btn-large' type='image' name='delete[$poll_id]' value='del' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$poll_id."]")."') \" src='".ADMIN_DELETE_ICON_PATH."' alt='".LAN_DELETE."' title='".LAN_DELETE."' style='border:0px' />
 				</td>
 			</tr>";
 		}

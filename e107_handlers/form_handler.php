@@ -864,6 +864,7 @@ class e_form
 				$rows = '10';
                
 				$height = "style='height:375px'"; // inline required for wysiwyg
+				$size = "input-block-level";
 			break;
 
 			case 'large':
@@ -890,7 +891,7 @@ class e_form
 	
 
 		$ret .=	e107::getBB()->renderButtons($template,$help_tagid);
-		$ret .=	$this->textarea($name, $value, $rows, 150, $options, $counter);
+		$ret .=	$this->textarea($name, $value, $rows, 70, $options, $counter); // higher thank 70 will break some layouts. 
 			
 		$ret .= "</div>\n";
 		
