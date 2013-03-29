@@ -1410,11 +1410,12 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		$admin_cat 				= e107::getNav()->adminCats();		
 		$array_functions 		= e107::getNav()->adminLinks('legacy');
-		$array_sub_functions	= e107::getNav()->adminLinks('sub');
+		$array_sub_functions	= e107::getNav()->adminLinks('sub');	
+		
 
 		$tp 	= e107::getParser();
 		$e107	= e107::getInstance();
-		$sql	= e107::getDb();
+		$sql	= e107::getDb('sqlp');
 
 		parse_str($parm, $parms);
 		$tmpl = strtoupper(varset($parms['tmpl'], 'E_ADMIN_NAVIGATION'));
@@ -1502,16 +1503,15 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		$plug = new e107plugin;
 		$tmp = array();
 
-   		if($sql->db_Select("plugin", "*", "plugin_installflag=1 ORDER BY plugin_path"))
+   		if($sql->db_Select("plugin", "*", "plugin_installflag =1 ORDER BY plugin_path"))
 		{
 			while($row = $sql->db_Fetch())
 			{
 				
-				
 				if($plug->parse_plugin($row['plugin_path']))
 				{
 					$plug_vars = $plug->plug_vars;
-					
+
 					if($row['plugin_path']=='calendar_menu')
 					{
 				//		print_a($plug_vars);
