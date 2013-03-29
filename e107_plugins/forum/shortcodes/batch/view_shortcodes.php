@@ -368,8 +368,11 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 	function sc_poll()
 	{
-		global $pollstr;
-		return $pollstr;
+		if($this->postInfo['thread_start'] == 1)
+		{
+			global $pollstr;
+			return $pollstr;
+		}
 	}
 
 	function sc_newflag()
