@@ -27,7 +27,7 @@ define("XMLRPC_PREFS_006", "Blog Name for client");
 
 define("XMLRPC_HELP_001", "Instructions");
 define("XMLRPC_HELP_010", "General");
-define("XMLRPC_HELP_011", "This plugin itself does nothing! It's  only for settings some XMLRPC varibles. Point your XMLRPC client (eg: Windows Live Writer) to <b>http://".SITEURL."metaweblog.php</b> and fill out the requested values. Warning! This plugin is experimental!");
+define("XMLRPC_HELP_011", "This plugin itself does nothing! It's  only for settings some XMLRPC varibles. Point your XMLRPC client (eg: Windows Live Writer) to <strong>".SITEURL."metaweblog.php</strong> and fill out the requested values. Warning! This plugin is experimental!");
 define("XMLRPC_HELP_020", "Plugin title");
 define("XMLRPC_HELP_021", "No matter plugin does not output");
 define("XMLRPC_HELP_030", "News render type");
