@@ -321,7 +321,7 @@ class e_array {
     * @param string $ArrayData
     * @return array stored data
     */
-    public function read($ArrayData) 
+    public function unserialize($ArrayData) 
     {
         if ($ArrayData == ""){
             return false;
@@ -353,7 +353,7 @@ class e_array {
     * @param bool $AddSlashes default true, add slashes for db storage, else false
     * @return string
     */
-    public function write($ArrayData, $AddSlashes = true) 
+    public function serialize($ArrayData, $AddSlashes = false) 
     {       
         if (!is_array($ArrayData)) {
             return false;
@@ -374,7 +374,13 @@ class e_array {
      */
     function WriteArray($ArrayData, $AddSlashes = true) {
         
-        return  $this->write($ArrayData, $AddSlashes);   
+        return  $this->serialize($ArrayData, $AddSlashes);   
+
+    }
+	
+	function write($ArrayData, $AddSlashes = true) {
+        
+        return  $this->serialize($ArrayData, $AddSlashes);   
 
     }
 
@@ -387,7 +393,12 @@ class e_array {
     */
     function ReadArray($ArrayData) 
     {
-        return $this->read($ArrayData);
+        return $this->unserialize($ArrayData);
+    }
+	
+	 function read($ArrayData) 
+    {
+        return $this->unserialize($ArrayData);
     }
 }
 

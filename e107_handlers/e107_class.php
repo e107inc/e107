@@ -1405,6 +1405,29 @@ class e107
 	}
 
 
+  /**
+    * Return a string containg exported array data. - preferred. 
+    *
+    * @param array $ArrayData array to be stored
+    * @param bool $AddSlashes default false, add slashes for db storage, else false
+    * @return string
+    */
+    public static function serialize($ArrayData, $AddSlashes = false) 
+    {       
+       return self::getArrayStorage()->serialize($ArrayData, $AddSlashes); 
+    }
+	
+	  /**
+    * Returns an array from stored array data.
+    *
+    * @param string $ArrayData
+    * @return array stored data
+    */
+    public static function unserialize($ArrayData) 
+    {       
+       return self::getArrayStorage()->unserialize($ArrayData); 
+    }
+
 
 	/**
 	 * Retrieve current user model object.
