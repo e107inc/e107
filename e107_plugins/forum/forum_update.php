@@ -1140,6 +1140,9 @@ function step10()
 
 }
 
+/**
+ * Attachments 
+ */
 function step10_ajax()//TODO
 {
 	$sql = e107::getDb();
@@ -1150,7 +1153,7 @@ function step10_ajax()//TODO
 	$qry = "
 	SELECT post_id, post_thread, post_entry, post_user FROM `#forum_post`
 	WHERE post_entry REGEXP '_[[:digit:]]+_FT'
-	AND post_id > {$lastPost} LIMIT 1
+	AND post_id > {$lastPost} LIMIT 200
 	";
 
 	if ($sql->gen($qry))
@@ -1314,7 +1317,7 @@ function step10_ajax()//TODO
 				{
 					$info['WHERE'] = 'post_id = ' . $post['post_id'];
 					$info['post_attachments'] = e107::getArrayStorage()->write($newValues);
-				//	$sql->update('forum_post', $info); // XXX screwed up due to Fields-defs. 
+				//	$sql->update('forum_post', $info); // XXX FIXME TODO screwed up due to _FIELD_DEFS 
 					
 					$sql->update('forum_post',"post_entry = \"".$info['post_entry']."\", post_attachments=\"".$info['post_attachments']."\" WHERE post_id = ".$post['post_id']." LIMIT 1");
 				}

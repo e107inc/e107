@@ -786,7 +786,7 @@ class e107forum
 		}
 		else
 		{
-			$tmp = get_user_data($uid);
+			$tmp = e107::user($uid);
 			$viewed = $tmp['user_plugin_forum_viewed'];
 			unset($tmp);
 		}
