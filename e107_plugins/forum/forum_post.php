@@ -254,13 +254,14 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 			//	$_tmp = $ur['type'].'*'.$ur['file'];
 			//	if($ur['thumb']) { $_tmp .= '*'.$ur['thumb']; }
 			//	if($ur['fname']) { $_tmp .= '*'.$ur['fname']; }
-				
+								
 				$type = $ur['type'];
-				$newValues[$type][] = $ur['fname'];
+				$newValues[$type][] = $ur['file'];
 				// $attachments[] = $_tmp;
 			}
-		//	$postInfo['_FIELD_TYPES']['post_attachments'] = 'array'; //XXX Horrible "FIELD_TYPES" idea.  
-			$postInfo['post_attachments'] = e107::serialize($newValues); //FIXME 
+			
+		//	$postInfo['_FIELD_TYPES']['post_attachments'] = 'array'; 
+			$postInfo['post_attachments'] = e107::serialize($newValues); //FIXME XXX - broken encoding when saved to DB. 
 		}
 //		var_dump($uploadResult);
 
