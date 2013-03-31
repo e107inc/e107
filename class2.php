@@ -1311,8 +1311,9 @@ function getperms($arg, $ap = ADMINPERMS)
 }
 
 /**
+ * @DEPRECATED
  * Get the user data from user and user_extended tables
- * SO MUCH DEPRECATED!
+ * SO MUCH DEPRECATED! Use e107::user($uid);
  *
  *
  * @return array
