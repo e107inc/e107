@@ -251,12 +251,16 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 			foreach($uploadResult as $ur)
 			{
 				//$postInfo['post_entry'] .= $ur['txt'];
-				$_tmp = $ur['type'].'*'.$ur['file'];
-				if($ur['thumb']) { $_tmp .= '*'.$ur['thumb']; }
-				if($ur['fname']) { $_tmp .= '*'.$ur['fname']; }
-				$attachments[] = $_tmp;
+			//	$_tmp = $ur['type'].'*'.$ur['file'];
+			//	if($ur['thumb']) { $_tmp .= '*'.$ur['thumb']; }
+			//	if($ur['fname']) { $_tmp .= '*'.$ur['fname']; }
+				
+				$type = $ur['type'];
+				$newValues[$type][] = basename($ur['fname']);
+				// $attachments[] = $_tmp;
 			}
-			$postInfo['post_attachments'] = implode(',', $attachments);
+		//	$postInfo['_FIELD_TYPES']['post_attachments'] = 'array'; //XXX Horrible "FIELD_TYPES" idea.  
+			$postInfo['post_attachments'] = e107::getArrayStorage()->write($newValues); //FIXME 
 		}
 //		var_dump($uploadResult);
 
@@ -554,16 +558,22 @@ function process_upload()
 
 	$postId = (int)$postId;
 	$ret = array();
-//	var_dump($_FILES);
 
 	if (isset($_FILES['file_userfile']['error']))
 	{
 		require_once(e_HANDLER.'upload_handler.php');
-		$attachmentDir = e_PLUGIN.'forum/attachments/';
-		$thumbDir = e_PLUGIN.'forum/attachments/thumb/';
+		
+		$attachmentDir = $forum->getAttachmentPath(USERID);
+
+		if(!is_dir($attachmentDir))
+		{
+			mkdir($attachmentDir,0755);	
+		}
+	//	$thumbDir = e_PLUGIN.'forum/attachments/thumb/';
 
 		if ($uploaded = process_uploaded_files($attachmentDir, 'attachment', ''))
 		{
+			
 			foreach($uploaded as $upload)
 			{
 			  if ($upload['error'] == 0)
@@ -573,11 +583,14 @@ function process_upload()
 				$_file = '';
 				$_thumb = '';
 				$_fname = '';
-				$fpath = '{e_PLUGIN}forum/attachments/';
+				$fpath = '';
 				if(strstr($upload['type'], 'image'))
 				{
 					$_type = 'img';
-					if($forum->prefs->get('maxwidth', 0) > 0)
+					
+					//XXX v2.x Image-resizing is now dynamic. 
+
+					/*if($forum->prefs->get('maxwidth', 0) > 0)
 					{
 						require_once(e_HANDLER.'resize_handler.php');
 						$orig_file = $upload['name'];
@@ -612,10 +625,12 @@ function process_upload()
 						}
 					}
 					else
+					 
+					 */
 					{	//resizing disabled, show original
-						$parms = image_getsize($attachmentDir.$upload['name']);
+					//	$parms = image_getsize($attachmentDir.$upload['name']);
 						//resizing disabled, show original
-						$_txt = "[br]<div class='spacer'>[img{$parms}]".$fpath.$upload['name']."[/img]</div>\n";
+						$_txt = "[br][img]".$fpath.$upload['name']."[/img]\n";
 						$_file = $upload['name'];
 					}
 				}
@@ -638,9 +653,14 @@ function process_upload()
 			    echo 'Error in uploaded file: '.(isset($upload['rawname']) ? $upload['rawname'] : $upload['name']).'<br />';
 			  }
 			}
+
+
 			return $ret;
 		}
 	}
+
+//exit;
+
 }
 
 function image_getsize($fname)

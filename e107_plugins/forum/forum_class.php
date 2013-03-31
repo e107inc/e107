@@ -148,8 +148,9 @@ class e107forum
 	}
 
 	
-	function getAttachmentPath($user=0)
+	function getAttachmentPath($user)
 	{
+		$user = intval($user);
 		$tp = e107::getParser();
 		$baseDir = e_MEDIA.'plugins/forum/attachments/';
 		$baseDir .= ($user) ? "user_". $tp->leadingZeros($user, 6) : "anon";
@@ -852,7 +853,7 @@ class e107forum
 			}
 			$info = array();
 			$info['data'] = $tmp;
-			$info['_FILE_TYPES']['post_attachments'] = 'escape';
+			$info['_FILE_TYPES']['post_attachments'] = 'array';
 			$info['WHERE'] = 'post_id = '.$id;
 			$sql->update('forum_post', $info);
 		}
