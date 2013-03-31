@@ -224,17 +224,13 @@ class themeHandler
 	function getThemeInfo($file)
 	{
 		$STYLESHEET = FALSE;
-		
-		$reject = array('$.',
-			 '$..',
-			 '/',
-			 'CVS',
-			 'thumbs.db',
-			 '*._$',
-			 'index',
-			 'null*',
-			 'e_*');
-		$handle2 = $this->fl->get_files(e_THEME.$file."/", ".php|.css|.xml|preview.jpg|preview.png", $reject, 1);
+		$mes = e107::getMessage();
+
+		$reject = array('e_.*');
+
+		$handle2 = e107::getFile()->get_files(e_THEME.$file."/", ".php|.css|.xml|preview.jpg|preview.png", $reject, 1);
+
+
 		foreach ($handle2 as $fln)
 		{
 			$file2 = str_replace(e_THEME.$file."/", "", $fln['path']).$fln['fname'];
@@ -245,18 +241,12 @@ class themeHandler
 				$themeArray[$file]['preview'] = e_THEME.$file."/".$file2;
 			}
 
-			
 			// ----------------  get information string for css file
 
-			
 			if(strstr($file2, "css") && !strstr($file2, "menu.css") && strpos($file2, "e_") !== 0)
 			{
-				
-				if($fp = fopen(e_THEME.$file."/".$file2, "r"))
+				if($cssContents = file_get_contents(e_THEME.$file."/".$file2))
 				{
-					// FIXME: use info from theme.xml alternateStyleSheet instead
-					$cssContents = fread($fp, filesize(e_THEME.$file."/".$file2));
-					fclose($fp);
 					$nonadmin = preg_match('/\* Non-Admin(.*?)\*\//', $cssContents) ? true : false;
 					preg_match('/\* info:(.*?)\*\//', $cssContents, $match);
 					$match[1] = varset($match[1], '');
@@ -271,6 +261,10 @@ class themeHandler
 					{
 						$STYLESHEET = TRUE;
 					}
+				}
+				else
+				{
+				//	$mes->addDebug("Couldn't read file: ".e_THEME.$file."/".$file2);	
 				}
 			}
 

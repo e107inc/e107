@@ -1304,11 +1304,15 @@ function update_706_to_800($type='')
 	}
 	
 	$dl_files = $fl->get_files(e_FILE.'downloads', "","standard",5); // don't use e_DOWNLOAD or a loop may occur.
-	$public_files = $fl->get_files(e_FILE.'public');
+
+	
+	$publicFilter = array('_FT', '^thumbs\.db$','^Thumbs\.db$','.*\._$','^\.htaccess$','^\.cvsignore$','^\.ftpquota$','^index\.html$','^null\.txt$','\.bak$','^.tmp'); // Default file filter (regex format)
+//	$publicFilter = array(1);
+	$public_files = $fl->get_files(e_FILE.'public','',$publicFilter);
 	
 	if((count($dl_files) || count($public_files)) && !$sql->gen("SELECT * FROM `#core_media` WHERE `media_category` = 'download_file' "))
 	{
-		if ($just_check) return update_needed('Import Download and Public Files into Media Manager');
+		if ($just_check) return update_needed('Import '.count($dl_files).' Download File(s) and '.count($public_files).' Public File(s) into Media Manager');
 	// check for file-types;
 		if (is_readable(e_ADMIN.'filetypes.php'))
 		{

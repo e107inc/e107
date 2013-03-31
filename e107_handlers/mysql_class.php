@@ -727,7 +727,7 @@ class e_db_mysql
 
 	  	if (is_array($arg))  // Remove the need for a separate db_UpdateArray() function.
 	  	{
-		   	$new_data = '';
+		   
 			if(!isset($arg['_FIELD_TYPES']) && !isset($arg['data']))
 		   	{
 			   	//Convert data if not using 'new' format
@@ -750,10 +750,13 @@ class e_db_mysql
 			}
 
 			$fieldTypes = $this->_getTypes($arg);
+
+
+			$new_data = '';
 			foreach ($arg['data'] as $fn => $fv)
 			{
 				$new_data .= ($new_data ? ', ' : '');
-				$new_data .= "`{$fn}`=".$this->_getFieldValue($fn, $fv, $fieldTypes);
+				$new_data .= "`{$fn}`=".$this->_getFieldValue($fn, $fv, $fieldTypes); 
 			}
 			$arg = $new_data .(isset($arg['WHERE']) ? ' WHERE '. $arg['WHERE'] : '');
 		}
@@ -868,7 +871,9 @@ class e_db_mysql
 	  	}
 	}
 
-	/* Similar to db_Update(), but splits the variables and the 'WHERE' clause.
+	/**
+	 *  @DEPRECATED
+	 	Similar to db_Update(), but splits the variables and the 'WHERE' clause.
 		$vars may be an array (fieldname=>newvalue) of fields to be updated, or a simple list.
 		$arg is usually a 'WHERE' clause
 		The way the code is written at the moment, a call to db_Update() with just the first two parameters specified can be

@@ -2142,7 +2142,7 @@ class e107plugin
 
 		if (is_readable($setup_file))
 		{
-			if(e_PAGE == 'e107_update.php')
+			if(e_PAGE == 'e107_update.php' && E107_DBG_INCLUDES)
 			{
 				$mes->addDebug("Found setup file <b>".$path."_setup.php</b> ");
 			}
@@ -2157,7 +2157,7 @@ class e107plugin
 				
 				if (method_exists($obj, $method_name))
 				{
-					if(e_PAGE == 'e107_update.php')
+					if(e_PAGE == 'e107_update.php' && E107_DBG_INCLUDES)
 					{
 						$mes->addDebug("Executing setup function <b>".$class_name." :: ".$method_name."()</b>");
 					}
@@ -2166,7 +2166,7 @@ class e107plugin
 				}
 				else
 				{
-					if(e_PAGE == 'e107_update.php')
+					if(e_PAGE == 'e107_update.php' && E107_DBG_INCLUDES)
 					{
 						$mes->addDebug("Setup function ".$class_name." :: ".$method_name."() NOT found.");
 					}
