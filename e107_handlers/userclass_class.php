@@ -164,7 +164,7 @@ class user_class
 				}
 			}
 
-			$userCache = e107::getArrayStorage()->write($this->class_tree, FALSE);
+			$userCache = e107::serialize($this->class_tree, FALSE);
 			$e107->ecache->set_sys(UC_CACHE_TAG,$userCache);
 			unset($userCache);
 		}

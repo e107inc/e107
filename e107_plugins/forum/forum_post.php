@@ -256,11 +256,11 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 			//	if($ur['fname']) { $_tmp .= '*'.$ur['fname']; }
 				
 				$type = $ur['type'];
-				$newValues[$type][] = basename($ur['fname']);
+				$newValues[$type][] = $ur['fname'];
 				// $attachments[] = $_tmp;
 			}
 		//	$postInfo['_FIELD_TYPES']['post_attachments'] = 'array'; //XXX Horrible "FIELD_TYPES" idea.  
-			$postInfo['post_attachments'] = e107::getArrayStorage()->write($newValues); //FIXME 
+			$postInfo['post_attachments'] = e107::serialize($newValues); //FIXME 
 		}
 //		var_dump($uploadResult);
 

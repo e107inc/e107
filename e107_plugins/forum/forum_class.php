@@ -168,7 +168,7 @@ class e107forum
 		$fid 	= intval($data['dl']);
 		
 		$array 	= $sql->retrieve('forum_post','post_user,post_attachments','post_id='.intval($data['id']));
-		$attach = e107::getArrayStorage()->read($array['post_attachments']);
+		$attach = e107::serialize($array['post_attachments']);
 		$file 	= $this->getAttachmentPath($array['post_user']).varset($attach['file'][$fid]);
 
 		e107::getFile()->send($file);	

@@ -791,7 +791,7 @@ class e_db_mysql
 		{
 			if(!isset($arg['_FIELD_TYPES']['_DEFAULT']))
 			{
-				$arg['_FIELD_TYPES']['_DEFAULT'] = 'todb';
+				$arg['_FIELD_TYPES']['_DEFAULT'] = 'string';
 			}
 			$fieldTypes = $arg['_FIELD_TYPES'];
 			unset($arg['_FIELD_TYPES']);
