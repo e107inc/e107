@@ -2835,7 +2835,7 @@ class admin_newspost
 							<tr>
 								<td>".NWSLAN_86."</td>
 								<td>
-									".$frm->checkbox_switch('news_cats', 1, $pref['news_cats'])."
+									".$frm->radio_switch('news_cats', $pref['news_cats'])."
 								</td>
 							</tr>
 							<tr>
@@ -2890,13 +2890,13 @@ class admin_newspost
 							<tr>
 								<td>".NWSLAN_107."</td>
 								<td>
-									".$frm->checkbox_switch('subnews_htmlarea', '1', $pref['subnews_htmlarea'])."
+									".$frm->radio_switch('subnews_htmlarea', $pref['subnews_htmlarea'])."
 								</td>
 							</tr>
 							<tr>
 								<td>".NWSLAN_100."</td>
 								<td>
-									".$frm->checkbox_switch('subnews_attach', '1', $pref['subnews_attach'])."
+									".$frm->radio_switch('subnews_attach', $pref['subnews_attach'])."
 								</td>
 							</tr>
 							<tr>
@@ -2910,7 +2910,7 @@ class admin_newspost
 								<td>".NWSLAN_111."</td>
 								<td>
 									<div class='auto-toggle-area autocheck'>
-										".$frm->checkbox_switch('news_newdateheader', '1', $pref['news_newdateheader'])."
+										".$frm->radio_switch('news_newdateheader', $pref['news_newdateheader'])."
 										<div class='field-help'>".NWSLAN_112."</div>
 									</div>
 								</td>
@@ -2919,7 +2919,7 @@ class admin_newspost
 								<td>".NWSLAN_113."</td>
 								<td>
 									<div class='auto-toggle-area autocheck'>
-										".$frm->checkbox_switch('news_unstemplate', '1', vartrue($pref['news_unstemplate']))."
+										".$frm->radio_switch('news_unstemplate', vartrue($pref['news_unstemplate']))."
 										<div class='field-help'>".NWSLAN_114."</div>
 									</div>
 								</td>

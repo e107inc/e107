@@ -1102,7 +1102,8 @@ switch ($action)
 
 		if(!$ban_total = $sql->db_Select("banlist", "*", $filter." ORDER BY banlist_ip"))
 		{
-			$text .= "<div class='center'>".$no_values[$action]."</div>";
+			//$text .= "<div class='center'>".$no_values[$action]."</div>";
+			$mes->addInfo($no_values[$action]);
 		}
 		else
 		{
