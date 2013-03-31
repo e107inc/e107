@@ -6,8 +6,6 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * $URL$
- * $Id$
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -33,7 +31,6 @@ class poll
 		$this->barr = (file_exists(THEME.'images/barr.png') ? THEME_ABS.'images/barr.png' : e_PLUGIN_ABS.'poll/images/barr.png');
 		$this->bar = (file_exists(THEME.'images/bar.png') ? THEME_ABS.'images/bar.png' : e_PLUGIN_ABS.'poll/images/bar.png');	
 	}
-
 
 
 	/*
@@ -72,7 +69,7 @@ class poll
 		global $admin_log;
 		$sql = e107::getDb();
 		
-		if ($sql -> db_Delete("polls", " poll_id='".intval($existing)."' "))
+		if ($sql->delete("polls", " poll_id='".intval($existing)."' "))
 		{
 			if (function_exists("admin_purge_related"))
 			{
@@ -99,7 +96,7 @@ class poll
 		
 		
 		$poll_title		= $tp->toDB($_POST['poll_title']);
-		$poll_comment	= $tp -> toDB($_POST['poll_comment']);
+		$poll_comment	= $tp->toDB($_POST['poll_comment']);
 		$multipleChoice	= intval($_POST['multipleChoice']);
 		$showResults	= intval($_POST['showResults']);
 		$pollUserclass	= intval($_POST['pollUserclass']);
@@ -116,7 +113,7 @@ class poll
 
 		if (POLLACTION == 'edit' || vartrue($_POST['poll_id']))
 		{
-			$sql -> db_Update("polls", "poll_title='{$poll_title}', 
+			$sql->update("polls", "poll_title='{$poll_title}', 
 			  				   poll_options='{$poll_options}', 
 							   poll_comment='{$poll_comment}', 
 							   poll_type={$mode},
@@ -127,8 +124,8 @@ class poll
 							   WHERE poll_id=".intval(POLLID));
 
 			/* update poll results - bugtracker #1124 .... */
-			$sql -> db_Select("polls", "poll_votes", "poll_id='".intval(POLLID)."' ");
-			$foo = $sql -> db_Fetch();
+			$sql->select("polls", "poll_votes", "poll_id='".intval(POLLID)."' ");
+			$foo = $sql->fetch();
 			$voteA = explode(chr(1), $foo['poll_votes']);
 
 			$opt = count($poll_option) - count($voteA);
@@ -139,7 +136,7 @@ class poll
 				{
 					$foo['poll_votes'] .= '0'.chr(1);
 				}
-				$sql -> db_Update("polls", "poll_votes='".$foo['poll_votes']."' WHERE poll_id='".intval(POLLID)."' ");
+				$sql->update("polls", "poll_votes='".$foo['poll_votes']."' WHERE poll_id='".intval(POLLID)."' ");
 			}
 
 			$admin_log->log_event('POLL_02','ID: '.POLLID.' - '.$poll_title,'');
@@ -156,20 +153,20 @@ class poll
 			if ($mode == 1)
 			{
 				/* deactivate other polls */
-				if ($sql -> db_Select("polls", "*", "poll_type=1 AND poll_vote_userclass!=255"))
+				if ($sql->select("polls", "*", "poll_type=1 AND poll_vote_userclass!=255"))
 				{
-					$deacArray = $sql -> db_getList();
+					$deacArray = $sql->db_getList();
 					foreach ($deacArray as $deacpoll)
 					{
-						$sql -> db_Update("polls", "poll_end_datestamp='".time()."', poll_vote_userclass='255' WHERE poll_id=".$deacpoll['poll_id']);
+						$sql->update("polls", "poll_end_datestamp='".time()."', poll_vote_userclass='255' WHERE poll_id=".$deacpoll['poll_id']);
 					}
 				}
-				$ret = $sql -> db_Insert("polls", "'0', ".time().", ".intval($active_start).", ".intval($active_end).", ".ADMINID.", '{$poll_title}', '{$poll_options}', '{$votes}', '', '1', '".$tp -> toDB($poll_comment)."', '".intval($multipleChoice)."', '".intval($showResults)."', '".intval($pollUserclass)."', '".intval($storageMethod)."'");
+				$ret = $sql->insert("polls", "'0', ".time().", ".intval($active_start).", ".intval($active_end).", ".ADMINID.", '{$poll_title}', '{$poll_options}', '{$votes}', '', '1', '".$tp->toDB($poll_comment)."', '".intval($multipleChoice)."', '".intval($showResults)."', '".intval($pollUserclass)."', '".intval($storageMethod)."'");
 				$admin_log->log_event('POLL_03','ID: '.$ret.' - '.$poll_title,'');		// Intentionally only log admin-entered polls
 			}
 			else
 			{
-				$sql -> db_Insert("polls", "'0', ".intval($_POST['iid']).", '0', '0', ".USERID.", '$poll_title', '$poll_options', '$votes', '', '2', '0', '".intval($multipleChoice)."', '0', '0', '".intval($storageMethod)."'");
+				$sql->insert("polls", "'0', ".intval($_POST['iid']).", '0', '0', ".USERID.", '$poll_title', '$poll_options', '$votes', '', '2', '0', '".intval($multipleChoice)."', '0', '0', '".intval($storageMethod)."'");
 			}
 		}
 		return $message;
@@ -177,13 +174,12 @@ class poll
 
 	function get_poll($query)
 	{
-		global $e107;
-		
+		global $e107;		
 		$sql = e107::getDb();
 		
-		if ($sql->db_Select_gen($query))
+		if ($sql->gen($query))
 		{
-			$pollArray = $sql -> db_Fetch();
+			$pollArray = $sql->fetch();
 			if (!check_class($pollArray['poll_vote_userclass']))
 			{
 				$POLLMODE = 'disallowed';
@@ -312,9 +308,9 @@ class poll
 				$POLLMODE = $this->pollmode;
 				break;
 			case 'results' :
-				if ($sql->db_Select_gen($pollArray))
+				if ($sql->gen($pollArray))
 				{
-					$pollArray = $sql -> db_Fetch();
+					$pollArray = $sql->fetch();
 				}
 				break;
 		}
@@ -402,8 +398,7 @@ class poll
 				
 				$POLL_VOTED_START = $POLL_TEMPLATE['results']['start'];
 				$POLL_VOTED_LOOP = $POLL_TEMPLATE['results']['item'];
-				$POLL_VOTED_END = $POLL_TEMPLATE['results']['end'];	
-			
+				$POLL_VOTED_END = $POLL_TEMPLATE['results']['end'];			
 			
 		}
 		
@@ -422,7 +417,7 @@ class poll
 		$comment_total = 0;
 		if ($pollArray['poll_comment'])
 		{	// Only get comments if they're allowed on poll. And we only need the count ATM
-			$comment_total = $sql->db_Count("comments", "(*)", "WHERE `comment_item_id`='".intval($pollArray['poll_id'])."' AND `comment_type`=4");
+			$comment_total = $sql->count("comments", "(*)", "WHERE `comment_item_id`='".intval($pollArray['poll_id'])."' AND `comment_type`=4");
 		}
 
 		$sc = e107::getScBatch('poll');
@@ -430,14 +425,14 @@ class poll
 
 
 
-		$QUESTION 		= $tp -> toHTML($pollArray['poll_title'], TRUE, "emotes_off, defs");
+		$QUESTION 		= $tp->toHTML($pollArray['poll_title'], TRUE, "emotes_off, defs");
 		
 		
 		$VOTE_TOTAL 	= POLLAN_31.": ".$voteTotal;
 		$COMMENTS 		= ($pollArray['poll_comment'] ? " <a href='".e_BASE."comment.php?comment.poll.".$pollArray['poll_id']."'>".POLLAN_27.": ".$comment_total."</a>" : "");
 		
 		
-		$poll_count 	= $sql->db_Count("polls", "(*)", "WHERE poll_id <= '".$pollArray['poll_id']."'");
+		$poll_count 	= $sql->count("polls", "(*)", "WHERE poll_id <= '".$pollArray['poll_id']."'");
 		$OLDPOLLS = '';
 		
 		if ($poll_count > 1)
@@ -544,7 +539,7 @@ class poll
 		
 		if ($type == 'preview')
 		{
-			$caption = POLLAN_23.SEP."Preview";
+			$caption = POLLAN_23.SEP."Preview"; // TODO LAN
 			$text = "<div class='clearfix'>\n<div class='well span3'>".$text."</div></div>";
 		}
 		elseif ($type == 'forum')
@@ -602,8 +597,7 @@ class poll
 		
 		//XXX New v2.x default for front-end. Currently used by forum-post in bootstrap mode. 
 		if ($mode == 'front')
-		{
-				
+		{				
 			
 			$text = "
 			
@@ -751,7 +745,7 @@ class poll
 		<tr>
 		<td style='width:30%'><div class='normaltext'>".POLLAN_3.":</div></td>
 		<td style='width:70%'>
-		<input class='tbox input-xxlarge' type='text' name='poll_title' size='70' value='".$tp -> post_toForm(varset($_POST['poll_title']))."' maxlength='200' />";
+		<input class='tbox input-xxlarge' type='text' name='poll_title' size='70' value='".$tp->post_toForm(varset($_POST['poll_title']))."' maxlength='200' />";
 
 		$option_count = (varset($_POST['poll_option']) && count($_POST['poll_option']) ? count($_POST['poll_option']) : 2);
 
@@ -763,7 +757,7 @@ class poll
 		for($count = 1; $count <= $option_count; $count++)
 		{
 			$opt = ($count==1) ? "id='pollopt'" : "";
-			$text .="<span class='form-inline' style='display:inline-block; padding-bottom:5px' {$opt}><input  class='tbox input-large' type='text' name='poll_option[]' size='40' value=\"".$tp -> post_toForm($_POST['poll_option'][($count-1)])."\" maxlength='200' />";
+			$text .="<span class='form-inline' style='display:inline-block; padding-bottom:5px' {$opt}><input  class='tbox input-large' type='text' name='poll_option[]' size='40' value=\"".$tp->post_toForm($_POST['poll_option'][($count-1)])."\" maxlength='200' />";
 			$text .= "</span><br />";
 		}
 
@@ -872,7 +866,7 @@ class poll_shortcodes extends e_shortcode
 	function sc_question($parm = "")
 	{
 		$tp = e107::getParser();
-		return $tp -> toHTML($this->var['poll_title'], TRUE, "emotes_off, defs");		
+		return $tp->toHTML($this->var['poll_title'], TRUE, "emotes_off, defs");		
 	}
 	
 	function sc_answer($parm='')
@@ -884,12 +878,6 @@ class poll_shortcodes extends e_shortcode
 	}
 		
 }
-
-
-
-
-
-
 
 
 

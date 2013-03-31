@@ -54,7 +54,7 @@ if (isset($_POST['submit']))
 	if($_POST['poll_title'])
 	{
 		define("POLLID",$_POST['poll_id']);
-		$poll -> submit_poll();
+		$poll->submit_poll();
 		$mes->addSuccess(LAN_CREATED);
 		unset($_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], $_POST['poll_comment']);
 	}
@@ -82,9 +82,9 @@ if (varset($_POST['edit']) || varset($_GET['mode'])=='create' && !varset($_POST[
 			define("POLLACTION",'edit');
 		}
 			
-		$poll_total = $sql->db_Select("polls");
+		$poll_total = $sql->select("polls");
 		$text = $poll -> renderPollForm();
-		$ns->tablerender(POLLAN_MENU_CAPTION." - ".POLLAN_2, $mes->render() . $text);
+		$ns->tablerender(POLLAN_MENU_CAPTION.SEP.POLLAN_2, $mes->render() . $text);
 }
 
 
@@ -101,11 +101,11 @@ function edit_poll()
 	$sql = e107::getDb();
 	$id = key($_POST['edit']);
 	
-	if ($sql->db_Select("polls", "*", "poll_id=".$id)) 
+	if ($sql->select("polls", "*", "poll_id=".$id)) 
 	{
 		$_GET['mode'] = 'create';
-		$row = $sql->db_Fetch();
-		extract($row);
+		$row = $sql->fetch();
+		extract($row); // FIXME
 
 		$tmpArray = explode(chr(1), $poll_options);
 
@@ -177,14 +177,14 @@ function poll_list()
 	$text = "
 		<form action='".e_SELF."' method='post' id='del_poll'>";
 	
-	if ($poll_total = $sql->db_Select("polls", "*", "poll_type=1")) 
+	if ($poll_total = $sql->select("polls", "*", "poll_type=1")) 
 	{
 		$text .= "<table class='table adminlist'>";
 		$text .= $frm->colGroup($fields,$fieldpref).
 				$frm->thead($fields,$fieldpref);
 	    $text .= "<tbody>";		
 			
-		while ($row = $sql->db_Fetch())
+		while ($row = $sql->fetch())
 		{
 			extract($row); // FIXME
 			
@@ -195,7 +195,7 @@ function poll_list()
 			$text .= "
 			<tr>
 				<td>$poll_id</td>";
-				$text .= (in_array("poll_title",$fieldpref)) ? "<td class='left'>".$tp -> toHTML($poll_title, TRUE,"no_hook, emotes_off, defs")."</td>" : "";              
+				$text .= (in_array("poll_title",$fieldpref)) ? "<td class='left'>".$tp->toHTML($poll_title, TRUE,"no_hook, emotes_off, defs")."</td>" : "";              
                 $text .= (in_array("poll_options",$fieldpref)) ? "<td class='left'><ul><li>".implode("</li><li>",$pollopts)."</li></ul></td>" : "";
 		 		$text .= (in_array("poll_comment",$fieldpref)) ? "<td>".($poll_comment ? LAN_YES : LAN_NO)."</td>" : "";
 				$text .= (in_array("poll_vote_userclass",$fieldpref)) ? "<td>".(r_userclass_name($poll_vote_userclass))."</td>" : "";

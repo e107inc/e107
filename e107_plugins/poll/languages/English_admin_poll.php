@@ -6,8 +6,6 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * $URL$
- * $Id$
  */
 
 //define("POLL_ADLAN01", "Poll");
