@@ -72,6 +72,8 @@ class e_file
 	 * @var array
 	 */
 	public $fileFilter;
+	
+	public $filesRejected = array();
 
 	/**
 	 * Defines what array format should return get_files() method
@@ -194,7 +196,7 @@ class e_file
 		}
 		if (($omit == 'standard') || ($omit == ''))
 		{
-			$omit = array();
+			$omit = $this->fileFilter;
 		}
 		else
 		{
@@ -223,11 +225,12 @@ class e_file
 					$rejected = FALSE;
 
 					// Check against the generic file reject filter
-					foreach($this->fileFilter as $rmask)
+					foreach($omit as $rmask)
 					{
 						if(preg_match("#".$rmask."#", $file))
 						{
 							$rejected = TRUE;
+							$this->filesRejected[] = $file;
 							break;			// continue 2 may well work
 						}
 					}
@@ -571,13 +574,12 @@ class e_file
 	{
 		global $e107;
 		
-		$pref = e107::getPref();
-		$tp = e107::getParser();
+		$pref 					= e107::getPref();
+		$tp 					= e107::getParser();
 		
-		
-		$DOWNLOADS_DIRECTORY = e_BASE.e107::getFolder('DOWNLOADS');
-		$FILES_DIRECTORY = e_BASE.e107::getFolder('FILES');
-		$MEDIA_DIRECTORY	= realpath(e_MEDIA_FILE);
+		$DOWNLOADS_DIRECTORY 	= e_BASE.e107::getFolder('DOWNLOADS');
+		$FILES_DIRECTORY 		= e_BASE.e107::getFolder('FILES');
+		$MEDIA_DIRECTORY		= realpath(e_MEDIA); //  could be image, file or other type. 
 		
 		$file = $tp->replaceConstants($file);
 		
@@ -594,6 +596,9 @@ class e_file
 		$path = realpath($filename);
 		$path_downloads = realpath($DOWNLOADS_DIRECTORY);
 		$path_public = realpath($FILES_DIRECTORY."public/");
+		
+		
+		
 		if(!strstr($path, $path_downloads) && !strstr($path,$path_public) && !strstr($path, $MEDIA_DIRECTORY)) 
 		{
 	        if(E107_DEBUG_LEVEL > 0 && ADMIN)

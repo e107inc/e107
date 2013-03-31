@@ -70,36 +70,61 @@ class plugin_forum_view_shortcodes extends e_shortcode
 			$ret = '<pre>'.print_r($info, true).'</pre>';
 		}
 	}
+	
+
+	
 
 	function sc_attachments()
 	{
+		$tp = e107::getParser();
+		
 		if($this->postInfo['post_attachments'])
 		{
-			$baseDir = e_MEDIA_ABS.'files/plugins/forum/attachments/';
-			$attachments = explode(',', $this->postInfo['post_attachments']);
-			$txt = '';
-			foreach($attachments as $a)
-			{
-				$info = explode('*', $a);
-				switch($info[0])
-				{
-					case 'file':
-					$txt .= IMAGE_attachment." <a href='{$baseDir}{$info[1]}'>{$info[2]}</a><br />";
-					break;
+			$baseDir = $this->forum->getAttachmentPath($this->postInfo['post_user']);
 
-					case 'img':
-					//if image has a thumb, show it and link to main
-					if(isset($info[2]))
+			$images = array();
+
+			$attachArray = e107::getArrayStorage()->read($this->postInfo['post_attachments']);
+		
+			foreach($attachArray as $type=>$vals)
+			{
+				foreach($vals as $key=>$file)
+				{
+					list($date,$user,$tmp,$name) = explode("_",$file,4);
+
+					switch($type)
 					{
-						$txt .= "<a href='{$baseDir}{$info[1]}'><img src='{$baseDir}thumb/{$info[2]}' alt='' /></a><br />";
-					}
-					else
-					{
-						$txt .= "<img src='{$baseDir}{$info[1]}' alt='' /><br />";
-					}
-				}
+						case 'file':
+						
+							$url = e_SELF."?id=".$this->postInfo['post_id']."&amp;dl=".$key;
+							$txt .= IMAGE_attachment." <a href='".$url."'>{$name}</a><br />";
+							
+						break;
+
+						case 'img': //Always use thumb to hide the hash. 
+						
+							$thumb = $tp->thumbUrl($baseDir.$file,'x=1',true);
+							$full = $tp->thumbUrl($baseDir.$file,'w=1000&x=1', true);
+							
+							$inc = (vartrue($parm['modal'])) ? "data-toggle='modal' data-target='#".$parm['modal']."' " : "";
+							$images[] = "<a  {$inc} rel='external' href='{$full}'><img class='thumbnail' src='{$thumb}' alt='' /></a>";
+							
+						break;
+					}	
+					
+				}	
+				
 			}
+			
+			if(count($images) )
+			{
+				return (deftrue('e_BOOTSTRAP')) ? "<ul class='thumbnails'><li>".implode("</li><li>",$images)."</li></ul>" : implode("<br />",$images);	
+			}
+			
+			
 			return $txt;
+			
+			
 		}
 
 	}

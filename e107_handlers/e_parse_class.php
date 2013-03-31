@@ -1816,6 +1816,12 @@ class e_parse extends e_parser
 		return $text;
 	}
 
+	/**
+	 * @param $url
+	 * @param $options ??
+	 * @param $raw ??
+	 * @param $full
+	 */
 	public function thumbUrl($url, $options = array(), $raw = false, $full = false)
 	{
 		if(substr($url,0,3)=="{e_") // Fix for broken links that use {e_MEDIA} etc.
@@ -2419,7 +2425,21 @@ class e_parser
     {
         $this->allowedAttributes = $array;    
     } 
+
+
  
+	/**
+	 * Add leading zeros to a number. eg. 3 might become 000003
+	 * @param $num integer 
+	 * @param $numDigits - total number of digits
+	 * @return number with leading zeros. 
+	 */
+	public function leadingZeros($num,$numDigits)
+	{
+		return sprintf("%0".$numDigits."d",$num);
+	}
+
+
     
 	/**
 	 * Return an Array of all specific tags found in an HTML document and their attributes.  

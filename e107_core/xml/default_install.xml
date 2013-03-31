@@ -81,7 +81,6 @@
   'news' => 'news',
   'page' => 'page',
 )]]></core>
-		<core name="email_notify">0</core>
 		<core name="email_text"></core>
 		<core name="emotepack">default</core>
 		<core name="enable_rdns">0</core>

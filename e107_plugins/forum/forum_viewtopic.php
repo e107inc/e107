@@ -36,12 +36,24 @@ if (!e_QUERY)
 	exit;
 }
 
+
+
+
 // include_lan(e_PLUGIN . 'forum/languages/'.e_LANGUAGE.'/lan_forum_viewtopic.php');
 include_once (e_PLUGIN . 'forum/forum_class.php');
 
 
 $forum = new e107forum();
 $thread = new e107ForumThread();
+
+if(vartrue($_GET['id']) && isset($_GET['dl']))
+{
+	$forum->sendFile($_GET);
+	exit;
+			
+}
+
+
 
 if(e_AJAX_REQUEST && varset($_POST['action']) == 'quickreply')
 {

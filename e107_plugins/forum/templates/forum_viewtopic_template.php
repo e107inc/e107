@@ -339,14 +339,12 @@ $FORUM_VIEWTOPIC_TEMPLATE['thread'] = "
 													{CUSTOMTITLE}
 													{AVATAR}
 													{USERCOMBO}
-													<div>
 													
-													</div>
 											</div>
 											<div class='span9 '>
 												{POLL}
 												{POST}
-												
+												{ATTACHMENTS}
 											</div>
 										</div>
 										
@@ -356,7 +354,7 @@ $FORUM_VIEWTOPIC_TEMPLATE['thread'] = "
 												&nbsp;
 											</div>
 											<div class='span9  finfobar' >
-												<small>{ATTACHMENTS}  {SIGNATURE=clean}</small>
+												<small> {SIGNATURE=clean}</small>
 											</div>
 											
 											<div class='span3'>

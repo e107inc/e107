@@ -147,6 +147,32 @@ class e107forum
 */
 	}
 
+	
+	function getAttachmentPath($user=0)
+	{
+		$tp = e107::getParser();
+		$baseDir = e_MEDIA.'plugins/forum/attachments/';
+		$baseDir .= ($user) ? "user_". $tp->leadingZeros($user, 6) : "anon";
+		$baseDir .= "/";
+
+		return $baseDir;
+	}
+
+
+
+
+	function sendFile($data)
+	{
+		$sql 	= e107::getDb();
+		$fid 	= intval($data['dl']);
+		
+		$array 	= $sql->retrieve('forum_post','post_user,post_attachments','post_id='.intval($data['id']));
+		$attach = e107::getArrayStorage()->read($array['post_attachments']);
+		$file 	= $this->getAttachmentPath($array['post_user']).varset($attach['file'][$fid]);
+
+		e107::getFile()->send($file);	
+	}
+
 
 	/**
 	 * Handle the Ajax quick-reply. 
