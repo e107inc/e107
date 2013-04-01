@@ -18,7 +18,9 @@ CREATE TABLE faqs_info (
   faq_info_parent int(10) unsigned default '0',
   faq_info_class int(5) default '0',
   faq_info_order tinyint(3) unsigned NOT NULL default '0',
-  faq_info_icon varchar(255) NOT NULL,
+  faq_info_icon varchar(255) NOT NULL default '',
+  faq_info_metad varchar(255) NOT NULL default '',
+  faq_info_metak varchar(255) NOT NULL default '',
   PRIMARY KEY  (faq_info_id)
 ) ENGINE=MyISAM;
 
