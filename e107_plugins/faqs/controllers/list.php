@@ -114,10 +114,25 @@ class plugin_faqs_list_controller extends eControllerFront
 			$text .= $tp->parseTemplate($FAQ_LISTALL['item'], true);
 			$prevcat = $rw['faq_info_order'];
 			$sc->counter++;
+			if($category) $meta = $rw;
 		}
 		$text .= $tp->parseTemplate($FAQ_LISTALL['end'], true);
 		$text .= $tp->parseTemplate($FAQ_END, true);
-
+		
+		// add meta data if there is parent category
+		if(!empty($meta))
+		{
+			$response = $this->getResponse();
+			if($meta['faq_info_metad'])
+			{
+				$response->addMetaDescription($meta['faq_info_metad']);
+			}
+			if($meta['faq_info_metak'])
+			{
+				$response->addMetaKeywords($meta['faq_info_metak']);
+			}
+		}
+		
 		$this->addTitle(LAN_PLUGIN_FAQS_FRONT_NAME);
 		
 		$this->addBody($text);
