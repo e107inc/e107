@@ -4567,7 +4567,10 @@ class e_admin_ui extends e_admin_controller_ui
 			header("Status: 400 Bad Request", true, 400);
 			$this->logajax("Bad Request");
 			// DEBUG e107::getMessage()->addError('Error test.', $model->getMessageStackName())->addError('Another error test.', $model->getMessageStackName());
-			$message = e107::getMessage()->get('error', $model->getMessageStackName(), true);
+			
+			if(E107_DEBUG_LEVEL) $message = e107::getMessage()->get('debug', $model->getMessageStackName(), true);
+			else $message = e107::getMessage()->get('error', $model->getMessageStackName(), true);
+			
 			if(!empty($message)) echo implode(' ', $message);
 			return;
 		}
