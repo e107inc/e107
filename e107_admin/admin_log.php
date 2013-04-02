@@ -434,13 +434,13 @@ if($action == "config")
 	foreach($audit_checkboxes as $k => $t)
 	{
 		$text .= "
-							<div class='field-spacer'><input class='checkbox' type='checkbox' id='user-audit-opts-{$k}' name='user_audit_opts[]' value='{$k}' ".(isset($user_signup_opts[$k]) ? " checked='checked' " : "")." /><label for='user-audit-opts-{$k}'>{$t}</label></div>
+		<div class='field-spacer'><input class='checkbox' type='checkbox' id='user-audit-opts-{$k}' name='user_audit_opts[]' value='{$k}' ".(isset($user_signup_opts[$k]) ? " checked='checked' " : "")." /><label for='user-audit-opts-{$k}'>{$t}</label></div>
 		";
+		//$text .= $frm->checkbox('user_audit_opts[]', $k, $user_signup_opts[$k], array('label' => $t)); //FIXME buggy/non-functional
 	}
-	$text .= "
-							<div class='field-spacer f-left'>".$frm->admin_button('check_all', 'jstarget:user_audit_opts', 'action', LAN_CHECKALL).$frm->admin_button('uncheck_all', 'jstarget:user_audit_opts', 'action', LAN_UNCHECKALL)."</div>
-						</td>
-					</tr>
+		$text .= $frm->admin_button('check_all', 'jstarget:user_audit_opts', 'action', LAN_CHECKALL).$frm->admin_button('uncheck_all', 'jstarget:user_audit_opts', 'action', LAN_UNCHECKALL)."
+			</td>
+		</tr>
 	";
 
 
