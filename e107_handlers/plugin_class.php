@@ -365,17 +365,17 @@ class e107plugin
 						$pName = vartrue($plug_info['@attributes']['lan']) ? $plug_info['@attributes']['lan'] : $plug_info['@attributes']['name'] ;
 						
 						$_installed = ($plug_info['@attributes']['installRequired'] == 'true' || $plug_info['@attributes']['installRequired'] == 1 ? 0 : 1);
-						
-						if (e107::getDb()->db_Insert("plugin", "0, '".$tp->toDB($pName, true)."', '".$tp->toDB($plug_info['@attributes']['version'], true)."', '".$tp->toDB($plugin_path, true)."',{$_installed}, '{$eplug_addons}', '".$this->manage_category($plug_info['category'])."' "))
+						// XXX @Cameron - fixed PLUGIN table populate error due to the new releaseURL column, temporary fix - empty value
+						if (e107::getDb()->db_Insert("plugin", "0, '".$tp->toDB($pName, true)."', '".$tp->toDB($plug_info['@attributes']['version'], true)."', '".$tp->toDB($plugin_path, true)."',{$_installed}, '{$eplug_addons}', '".$this->manage_category($plug_info['category'])."', '' "))
 						{
-								$mes->addDebug("Added <b>".$tp->toHTML($pName,false,"defs")."</b> to the plugin table.");
-							}
-							else
-							{
-								$mes->addDebug("Failed to add ".$tp->toHTML($pName,false,"defs")." to the plugin table.");
-							}
+							$mes->addDebug("Added <b>".$tp->toHTML($pName,false,"defs")."</b> to the plugin table.");
+						}
+						else
+						{
+							$mes->addDebug("Failed to add ".$tp->toHTML($pName,false,"defs")." to the plugin table.");
 						}
 					}
+				}
 			}
 			else
 			{ // May be useful that we ignore what will usually be copies/backups of plugins - but don't normally say anything
