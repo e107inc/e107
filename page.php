@@ -316,8 +316,8 @@ class pageClass
 		$this->batch->setVars(new e_vars($ret))->setScVar('page', $this->page);
 		
 		define('e_PAGETITLE', eHelper::formatMetaTitle($ret['title']));
-		define('META_DESCRIPTION', $this->page['page_metadscr']);
-		define('META_KEYWORDS', $this->page['page_metakeys']);
+		if($this->page['page_metadscr']) define('META_DESCRIPTION', eHelper::formatMetaDescription($this->page['page_metadscr']));
+		if($this->page['page_metakeys']) define('META_KEYWORDS', eHelper::formatMetaKeys($this->page['page_metakeys']));
 		//return $ret;
 	}
 
