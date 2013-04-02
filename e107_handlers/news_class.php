@@ -643,7 +643,7 @@ class e_news_tree extends e_front_tree_model
 		$db_limit = vartrue($params['db_limit'], '0,10');
 		
 		
-		$query = "SELECT  SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
+		$query = "SELECT  SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon FROM #news AS n
 			LEFT JOIN #user AS u ON n.news_author = u.user_id
 			LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 			{$where}
