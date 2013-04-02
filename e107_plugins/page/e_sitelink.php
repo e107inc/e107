@@ -69,19 +69,19 @@ class page_sitelink // include plugin-folder in the name.
 		}	
 
 		$query		= "SELECT * FROM #page WHERE ";
+		$q = array();
 		if(vartrue($options['chapter']))
 		{
-			$query .= "page_chapter = ".intval($options['chapter']);	 		
+			$q[] = "page_chapter = ".intval($options['chapter']);	 		
 		}
 		elseif(vartrue($options['book']))
 		{
-			$query .= "page_chapter IN (SELECT chapter_id FROM #page_chapters WHERE chapter_parent=".intval($options['book']).")";	 		
+			$q[] = "page_chapter IN (SELECT chapter_id FROM #page_chapters WHERE chapter_parent=".intval($options['book']).")";	 		
 		}
-		else
-		{
-			$query .= 1;
-		}
-		$query 		.= " AND page_title !='' ORDER BY page_order"; 
+		// XXX discuss FIXED remove DB check, use default title - AND page_title !=''
+		$q[] 		= "page_class IN (".USERCLASS_LIST.")";
+		
+		$query 		.= implode(' AND ', $q)." ORDER BY page_order"; 
 		
 		$data 		= $sql->retrieve($query, true);
 		$_pdata 	= array();
@@ -91,7 +91,7 @@ class page_sitelink // include plugin-folder in the name.
 			$pid = $row['page_chapter'];
 			$sublinks[$pid][] = $_pdata[] = array(
 				'link_id'			=> $row['page_id'],
-				'link_name'			=> $row['page_title'],
+				'link_name'			=> $row['page_title'] ? $row['page_title'] : 'No title', // FIXME lan
 				'link_url'			=> e107::getUrl()->create('page/view', $row, array('allow' => 'page_sef,page_title,page_id')),
 				'link_description'	=> '',
 				'link_button'		=> '',
