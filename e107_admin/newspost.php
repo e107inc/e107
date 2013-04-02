@@ -2495,12 +2495,25 @@ class admin_newspost
 					</table>
 				</fieldset>
 				</div>
-				<div class='buttons-bar center'>";
+				<div class='buttons-bar center'>
+				<div class=' btn-group'>";
 				
 				//	".$frm->admin_button('preview', isset($_POST['preview']) ? NWSLAN_24 : NWSLAN_27 , 'other')."
 				
-				$text .= $frm->admin_button('submit_news', ($id && $sub_action != "sn" && $sub_action != "upload") ? NWSLAN_25 : NWSLAN_26 , 'update')."
-					".$frm->checkbox('create_edit_stay', 1, isset($_POST['create_edit_stay']), array('label' => LAN_NEWS_54))."
+				$text .= $frm->admin_button('submit_news', ($id && $sub_action != "sn" && $sub_action != "upload") ? NWSLAN_25 : NWSLAN_26 , 'update');
+
+				$text .= '<button class="btn btn-success dropdown-toggle left" data-toggle="dropdown">
+									<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu col-selection">
+									<li class="nav-header">After submit:</li>
+							';
+				$text .= "<li><a href='#' class='e-noclick'>".$frm->checkbox('create_edit_stay', 1, isset($_POST['create_edit_stay']), array('label' => LAN_NEWS_54))."</a></li>";	
+
+													
+									
+				$text .= "</ul>
+					</div>
 					<input type='hidden' name='news_id' value='{$id}' />
 				</div>
 			</form>
