@@ -69,7 +69,7 @@ class links_admin_ui extends e_admin_ui
 	protected $batchDelete 	= true;
 	protected $batchCopy 	= true;
 	protected $listOrder = 'link_category,link_order ASC';
-	protected $listSorting = true; 
+	protected $sortField	= 'link_order';
     
     //FIXME TOOD - Filter out 'unassigned' entries by default. 
 
@@ -88,7 +88,7 @@ class links_admin_ui extends e_admin_ui
 	//	'link_sefurl' 		=> array('title'=> LAN_SEFURL, 		'type' => 'text', 'inline'=>true, 'width' => 'auto'),
 		'link_class' 		=> array('title'=> LAN_USERCLASS, 	'type' => 'userclass','inline'=>true, 'writeParms' => 'classlist=public,guest,nobody,member,classes,admin,main', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
 		'link_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'textarea', 'width' => 'auto'), // 'method'=>'tinymce_plugins',  ?
-		'link_order' 		=> array('title'=> LAN_ORDER, 		'type' => 'number', 'width' => 'auto', 'nolist'=>true),
+		'link_order' 		=> array('title'=> LAN_ORDER, 		'type' => 'number', 'width' => 'auto', 'nolist'=>false, 'inline' => true),
 		'link_open'			=> array('title'=> LCLAN_19, 		'type' => 'dropdown', 'inline'=>true, 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
 		'link_function'		=> array('title'=> 'Function', 		'type' => 'method', 'data'=>'str', 'width' => 'auto', 'thclass' => 'left first'),
 		
