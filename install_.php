@@ -1876,8 +1876,33 @@ function template_data()
 		<!-- Placed at the end of the document so the pages load faster -->
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 		<script src="'.e_JS.'bootstrap/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="'.e_JS.'core/admin.jquery.js"></script>
-		<script type="text/javascript" src="'.e_JS.'core/all.jquery.js"></script>
+		<script type="text/javascript">
+		
+		$(document).ready(function()
+		{
+		
+			$("input,textarea,select,label,.e-tip").each(function(c) {
+						
+			var t = $(this).nextAll(".field-help");
+			t.hide();
+		
+			$(this).tooltip({
+				title: function() {
+					var tip = t.html();			
+					return tip; 
+				},
+				fade: true,
+				html: true,
+				placement: "right",
+				delay: { show: 200, hide: 200 } 
+			});
+		
+		});
+		
+		});
+		
+		</script>
+		
 	  </body>
 	</html>
 	';
