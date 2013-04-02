@@ -403,26 +403,48 @@ class news_admin_ui extends e_admin_ui
 		'2' =>	"Sidebar - Othernews",
 		'3' =>	"Sidebar - Othernews 2",
 		
-		'5' =>	"Featurebox"
+		//'5' =>	"Featurebox"
 	);
 		
 
 	function init()
 	{
+		// Ping Changes to Services. 
+		$pingServices = e107::getPref('news_ping_services');
+		//TODO Use Ajax with progress-bar. 
 		
-		//TODO Handle Ping Services // see e107_plugins/gsitemap/e_module.php =
-		// needs to be integrated into core and removed from gsitemap. 
-		// Loop through $pref['news_ping_services']	and ping.
-		 
-		if(vartrue($_POST['news_ping'],false))
-		{
-			$mes = e107::getMessage();
-			$mes->addDebug("Ping not yet implemented",'default',true);			
+		if(vartrue($_POST['news_ping'],false) && (count($pingServices)>0) && ($_POST['news_userclass'] == e_UC_PUBLIC))
+		{			
+			include (e_HANDLER.'xmlrpc/xmlrpc.inc.php');
+			include (e_HANDLER.'xmlrpc/xmlrpcs.inc.php');
+			include (e_HANDLER.'xmlrpc/xmlrpc_wrappers.inc.php');
+
+			$extendedServices = array('blogsearch.google.com');
+
+			$port = 80;
+
+			foreach($pingServices as $fullUrl)
+			{
+				$fullUrl = str_replace("http://","", trim($fullUrl));
+				list($server,$path) = explode("/",$fullUrl, 2);		
+
+				$path 			= "/".$path;
+
+				$weblog_name	= SITENAME;
+				$weblog_url		= $_SERVER['HTTP_HOST'].e_HTTP;
+				$changes_url	= $_SERVER['HTTP_HOST'].e_HTTP."news.php?extend.".$_POST['news_id'];
+				$cat_or_rss		= $_SERVER['HTTP_HOST'].e_PLUGIN_ABS."rss_menu/rss.php?1.2";
+				$extended		= (in_array($server, $extendedServices)) ? true : false;
+
+				$this->ping($server, $port, $path, $weblog_name, $weblog_url, $changes_url, $cat_or_rss, $extended);
+
+			}
+		
 		}
 		
 		
 		$sql = e107::getDb();
-		$sql->db_Select_gen("SELECT category_id,category_name FROM #news_category");
+		$sql->gen("SELECT category_id,category_name FROM #news_category");
 		while($row = $sql->fetch())
 		{
 			$cat = $row['category_id'];
@@ -430,16 +452,107 @@ class news_admin_ui extends e_admin_ui
 		}
 		asort($this->cats);
 		$this->fields['news_category']['writeParms'] = $this->cats;
-				
+
 		$this->fields['news_render_type']['writeParms'] = $this->news_renderTypes; // array(NWSLAN_75,NWSLAN_76,NWSLAN_77,NWSLAN_77." 2","Featurebox");
 		$this->newspost = new admin_newspost;
 		$this->newspost->news_renderTypes = $this->news_renderTypes;
 		$this->newspost->observer();
-		
-	
-
  
 	}
+
+
+	   /* Multi-purpose ping for any XML-RPC server that supports the Weblogs.Com interface. */
+    function ping($xml_rpc_server, $xml_rpc_port, $xml_rpc_path, $weblog_name, $weblog_url, $changes_url, $cat_or_rss='', $extended = false)
+	{
+
+        $name_param 		= new xmlrpcval($weblog_name, 'string');
+        $url_param 			= new xmlrpcval($weblog_url, 'string');
+        $changes_param 		= new xmlrpcval($changes_url, 'string');
+        $cat_or_rss_param 	= new xmlrpcval($cat_or_rss, 'string');
+        $method_name 		= ($extended) ? "weblogUpdates.extendedPing" : "weblogUpdates.ping";
+		
+        if ($cat_or_rss != "") 
+        {
+            $params = array($name_param, $url_param, $changes_param, $cat_or_rss_param);
+			$call_text = "$method_name(\"$weblog_name\", \"$weblog_url\", \"$changes_url\", \"$cat_or_rss\")";
+		} 
+        else 
+        {
+            if ($changes_url != "") 
+            {
+              	$params = array($name_param, $url_param, $changes_param);
+				$call_text = "$method_name(\"$weblog_name\", \"$weblog_url\", \"$changes_url\")";
+			}
+			 else 
+			 {
+				$params = array($name_param, $url_param);
+				$call_text = "$method_name(\"$weblog_name\", \"$weblog_url\")";
+			}
+        }
+
+        // create the message
+        $message 	= new xmlrpcmsg($method_name, $params);
+        $client 	= new xmlrpc_client($xml_rpc_path, $xml_rpc_server, $xml_rpc_port);
+        $response 	= $client->send($message);
+       
+        $this->log_ping("Request: " . $call_text);
+        $this->log_ping($message->serialize(), true);
+		
+        if ($response == 0) 
+        {
+            $error_text = "Error: " . $xml_rpc_server . ": " . $client->errno . " " . $client->errstring;
+            $this->report_error($error_text);
+            $this->log_ping($error_text);
+            return false;
+        }
+		
+        if ($response->faultCode() != 0)  
+        {
+            $error_text = "Error: " . $xml_rpc_server . ": " . $response->faultCode() . " " . $response->faultString();
+            $this->report_error($error_text);
+            return false;
+        }
+		
+        $response_value = $response->value();
+        if ($this->debug)
+		{
+			 $this->report_error($response_value->serialize());
+		}
+		
+        $this->log_ping($response_value->serialize(), true);
+		
+		$fl_error 	= $response_value->structmem('flerror');
+		$message 	= $response_value->structmem('message');
+
+        // read the response
+        if ($fl_error->scalarval() != false) 
+        {
+            $error_text = "Error: " . $xml_rpc_server . ": " . $message->scalarval();
+			$this->report_error($error_text);
+			$this->log_ping($error_text);
+			return false;
+		}
+
+        return true;
+	}
+
+
+
+    // save ping data to a log file
+    function log_ping($message, $xml_data = false) 
+    {
+       	$message = $xml_data." ".$message;
+		file_put_contents(e_LOG."news_ping.log", $message, FILE_APPEND);
+    }
+
+	  // sDisplay Ping errors. 
+	function report_error($message)
+	{
+		e107::getMessage()->addError($message);	
+	}
+
+
+
 		
 	function createPage()
 	{
@@ -2807,6 +2920,8 @@ class admin_newspost
 		$frm = e107::getForm();
 
 		$sefbaseDiz = str_replace(array("[br]","[","]"), array("<br />","<a href='".e_ADMIN_ABS."eurl.php'>","</a>"), NWSLAN_128 );
+		$pingOpt = array('placeholder'=>'eg. blogsearch.google.com/ping/RPC2');
+
 
 		$text = "
 			<form method='post' action='".e_SELF."?pref' id='core-newspost-settings-form'>
@@ -2828,8 +2943,8 @@ class admin_newspost
 							<tr>
 								<td>Ping Services</td>
 								<td>
-									".$frm->textarea('news_ping_services', implode("\n",$pref['news_ping_services']), 4, 100)."
-									<div class='field-help'>Notify these services when you create/update news items.</div>
+									".$frm->textarea('news_ping_services', implode("\n",$pref['news_ping_services']), 4, 100,$pingOpt)."
+									<div class='field-help'>Notify these services when you create/update news items. <br />One per line.</div>
 								</td>
 							</tr>
 							<tr>
