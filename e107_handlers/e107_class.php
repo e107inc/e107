@@ -386,6 +386,8 @@ class e107
 		// override all
 		$this->e107_dirs = array_merge($this->defaultDirs($override), $override);
 		
+		// TODO add e_MEDIA_BASE, e_SYSTEM_BASE (free of site path constants);
+		
 		if(strpos($this->e107_dirs['MEDIA_DIRECTORY'],$this->site_path) === false)
 		{
 			$this->e107_dirs['MEDIA_DIRECTORY'] .= $this->site_path."/"; // multisite support.  
@@ -394,6 +396,12 @@ class e107
 		if(strpos($this->e107_dirs['SYSTEM_DIRECTORY'],$this->site_path) === false)
 		{
 			$this->e107_dirs['SYSTEM_DIRECTORY'] .= $this->site_path."/"; // multisite support.  
+		}
+
+		// FIXME Quick fix - override base cache folder for legacy configs (e.g. e107_files/cache), discuss 
+		if(strpos($this->e107_dirs['CACHE_DIRECTORY'], $this->site_path) === false)
+		{
+			$this->e107_dirs['CACHE_DIRECTORY'] = $this->e107_dirs['SYSTEM_DIRECTORY']."cache/"; // multisite support.  
 		}
 		
 		return $this;
