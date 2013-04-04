@@ -198,7 +198,7 @@ class event_calendar_shortcodes
 	private $prop;		// Start date for new event entry
 	private	$ds = '';	// Display type for some shortcodes (mostly event listing)
 
-	//private	$ourDB;		// For when we need a DB object
+	private	$ourDB;		// For when we need a DB object
 
 
 	public function __construct()
@@ -363,19 +363,19 @@ class event_calendar_shortcodes
 	// Categories listing
 	public function sc_ec_nav_categories($parm = '')
 	{
-		/*if ($this->ourDB == NULL)
+		if ($this->ourDB == NULL)
 		{
-			$this->ourDB = new db;			// @todo use new method - Moc: done, check if functional. 
+			$this->ourDB = new db;			// @todo use new method 
 		}
-		*/
-		$sql = e107::getDb();
+		
 		($parm == 'nosubmit') ? $insert = '' : $insert = "onchange='this.form.submit()'";
 		$ret = "<select name='event_cat_ids' class='tbox' style='width:140px;' {$insert} >\n<option value='all'>".EC_LAN_97."</option>\n";
 
 		$cal_arg = ($this->ecalClass->cal_super ? '' : " find_in_set(event_cat_class,'".USERCLASS_LIST."') AND ");
 		$cal_arg .= "(event_cat_name != '".EC_DEFAULT_CATEGORY."') ";
-		$sql->select("event_cat", "*", $cal_arg);
-		while ($row = $sql->fetch())
+		$this->ourDB->db_Select("event_cat", "*", $cal_arg);
+		
+		while ($row = $this->ourDB->db_Fetch())
 		{
 			$selected = ($row['event_cat_id'] == $this->catFilter) ? " selected='selected'" : '';
 			$ret .= "<option class='tbox' value='".$row['event_cat_id']."'{$selected}>".$row['event_cat_name']."</option>\n";
