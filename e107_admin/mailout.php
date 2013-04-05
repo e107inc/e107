@@ -675,6 +675,7 @@ function saveMailPrefs(&$mes) // $emessage to $mes, working?
 {
 	//$pref = e107::getPref();
 	$e107 = e107::getInstance();
+	$tp = e107::getParser();
 
 	$bounceOpts = array('none' => LAN_MAILOUT_232, 'auto' => LAN_MAILOUT_233, 'mail' => LAN_MAILOUT_234);
 	unset($temp);
