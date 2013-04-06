@@ -1,5 +1,19 @@
 $(document).ready(function()
 {
+		// Change hash when a tab changes
+		$('.nav-tabs a').on('shown', function (event) {
+			var hash = event.target.href.toString().split('#')[1], form = $(event.target).parents('form')[0];
+		    window.location.hash = '/' + hash;
+		    if(form) {
+		    	$(form).attr('action', $(form).attr('action').split('#')[0] + '#/' + hash);
+		    }
+		});
+		
+		// tabs hash
+		if(/^#\/\w+/.test(window.location.hash)) {
+			var hash = window.location.hash.substr(2);
+			if(hash.match('^tab')) $('.nav-tabs a[href=#' + hash + ']').tab('show');
+		}
 	
 		$('.e-typeahead').each(function() { 		
 	 		
@@ -259,24 +273,31 @@ $(document).ready(function()
 		// Admin Prefs Navigation
 		
 		 $(".plugin-navigation a").click(function () {
-		 	
-		 //	alert(document.location.hash);
-		 	
 		 	$(".plugin-navigation a").each(function(index) {
     			var ot = $(this).attr("href");
-				$(ot).hide();
+				$(ot).hide().removeClass('e-hideme');
 				$(this).closest("li").removeClass("active");
 				$(this).switchClass( "link-active", "link", 0 );
 			});
-	   		var id = $(this).attr("href");
+	   		var id = $(this).attr("href"), hash = id.substr(1), form = $('.admin-menu')[0]; // FIXME - a better way to detect the page form
 			$(this).switchClass( "link", "link-active", 30 );
 			$(this).closest("li").addClass("active");
-			$(id).show({
+			$(id).removeClass('e-hideme').show({
 				effect: "slide"
-				});
-				return false; //FIXME See admin/prefs navigation. 
+			});
+			// 'remember' the active navigation pane
+			window.location.hash = 'nav-' + hash;
+		  	if(form) {
+		    	$(form).attr('action', $(form).attr('action').split('#')[0] + '#nav-' + hash);
+		    }
+			    
+			return false; //FIXME See admin/prefs navigation. 
 		}); 
 		
+		// plugin navigation hash
+		if(/^#nav-+/.test(window.location.hash)) {
+			$("a[href='" + window.location.hash.replace('nav-', '') + "']").click();
+		}
 		
 		// backend 
 		$(".e-password").pwdMeter({
@@ -558,9 +579,6 @@ $(document).ready(function()
 
 				// Text-area AutoGrow
 	//	$("textarea.e-autoheight").elastic();
-
-		
-		
 })
 
 
