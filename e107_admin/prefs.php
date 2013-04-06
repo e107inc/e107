@@ -27,35 +27,6 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 $e_sub_cat = 'prefs';
 e107::lan('core','mailout','admin');
 
-//FIXME temporary fix - need universal solution. 
-e107::js('inline',"
-$(document).ready(function()
-{	
-	var hash = document.location.hash;
-	if(hash)
-	{
-		$('.plugin-navigation a').each(function(index) {
-    			var ot = $(this).attr('href');
-				$(ot).hide();
-				$(this).closest('li').removeClass('active');
-				$(this).switchClass( 'link-active', 'link', 0 );
-			});
-		var button = '#eplug-nav-' + hash.replace('#', '') + '-prev-nav';
-		$(hash).show();
-		$(button).switchClass('link', 'link-active', 30 );
-		$(button).closest('li').addClass('active');
-	}
-	else
-	{
-		$('#core-prefs-main').show();	
-	}
-	
-	
-		
-});	
-","jquery");
-
-
 e107::js('inline',"
 	function disp(type) 
 	{
