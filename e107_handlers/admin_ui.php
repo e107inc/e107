@@ -2339,14 +2339,14 @@ class e_admin_controller_ui extends e_admin_controller
 	 * TODO Example: 
 	 * Contains required data for auto-assembling URL from every record
 	 * For greater control - override url() method
-	 * @var array edit/create form tabs
+	 * @var array
 	 */
 	protected $url = array();
 	
 	/**
 	 * TODO Example: 
 	 * Contains required data for mapping featurebox fields
-	 * @var array edit/create form tabs
+	 * @var array
 	 */
 	protected $featurebox = array();
 
@@ -4492,8 +4492,8 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function ListHeader()
 	{
-		e107::js('core','core/tabs.js','prototype');
-		e107::js('core','core/admin.js','prototype');
+		//e107::js('core','core/tabs.js','prototype');
+		//e107::js('core','core/admin.js','prototype');
 	}
 
 	/**
@@ -5146,6 +5146,7 @@ class e_admin_form_ui extends e_form
 				'tabs' => false, // TODO - NOT IMPLEMENTED YET - enable tabs (only if fieldset count is > 1)
 				'fieldsets' => array(
 					'settings' => array(
+						'tabs'	=> $controller->getTabs(), //used within a single form. 
 						'legend' => $legend,
 						'fields' => $controller->getPrefs(), //see e_admin_ui::$prefs
 						'after_submit_options' => false,
