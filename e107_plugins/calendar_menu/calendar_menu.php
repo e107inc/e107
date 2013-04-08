@@ -111,7 +111,7 @@ for ($i = 0; $i < 7; $i++)
 }
 $cal_text .= $CALENDAR_MENU_HEADER_END;  // Close off header row, open first date row
 // Calculate number of days to skip before 'real' days on first line of calendar
-$firstdayoffset = date('w',$cal_start) - $ecal_class->ec_first_day_of_week;
+$firstdayoffset = gmdate('w',$cal_start) - $ecal_class->ec_first_day_of_week;
 if ($firstdayoffset < 0) $firstdayoffset+= 7;
 for ($cal_c = 0; $cal_c < $firstdayoffset; $cal_c++)
 {
