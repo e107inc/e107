@@ -83,16 +83,6 @@ if (!isset($gen) || !is_object($gen))
 	$gen = new convert;
 }
 
-/* // Deprecated method to indicate new forum posts
-if (file_exists(THEME."forum/new_small.png")) 
-{
-  $ICON = "<img src='".THEME."forum/new_small.png' alt='' />";
-}
-else
-{
-  $ICON = "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/new_small.png' alt='' />";
-}
-*/
 $TOTAL_TOPICS = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent=0 ");
 $TOTAL_REPLIES = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent!=0 ");
 $sql->db_Select_gen("SELECT sum(thread_views) FROM ".MPREFIX."forum_t");
@@ -190,8 +180,13 @@ foreach($forumArray as $forumInfo)
 			$iconalt = NFPM_L24;
 		}
 	}
-	
-	$ICON = "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/". $iconfile. "' alt='".$iconalt."' title='".$iconalt."' />";
+
+	$icon_path = e_PLUGIN_ABS."forum/images/".IMODE."/";
+	if(file_exists(THEME."forum/".$iconfile))
+	{
+		$icon_path = THEME."forum/";
+	}
+	$ICON = "<img src='".$icon_path.$iconfile."' alt='".$iconalt."' title='".$iconalt."' />";
 	$x = explode(chr(1), $thread_user);
 	$tmp = explode(".", $x[0], 2);
 	if($user_name)
