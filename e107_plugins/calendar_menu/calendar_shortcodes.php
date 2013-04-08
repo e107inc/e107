@@ -57,7 +57,7 @@ SC_BEGIN EC_MONTH_LIST
 	for ($ii = 0; $ii < 12; $ii++)
 	{
     	$m = $ii + 1;
-    	$monthjump = mktime(0, 0, 0, $m, 1, $year);
+    	$monthjump = gmmktime(0, 0, 0, $m, 1, $year);
 		$EC_MONTH_LIST .= "<a href='".e_SELF."?".$monthjump."'>".$monthabb[$ii]."</a> &nbsp;";
 	}
 	return $EC_MONTH_LIST;

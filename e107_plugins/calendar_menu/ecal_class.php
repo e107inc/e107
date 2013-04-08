@@ -367,7 +367,8 @@ class ecal_class
 	// time() -date('Z') gives the correction to 'null out' the TZ and DST adjustments that getdate() does
 	function gmgetdate($date)
 	{
-		$value = getdate($date-date('Z'));
+		$value = getdate($date-date('Z') + (date('I') ? 3600 : 0));
+		
 		$value['month'] = $this->months[$value['mon'] - 1];		// Looks like getdate doesn't use the specified site language
 		return $value;
 	}
