@@ -70,7 +70,6 @@ else
 {	// Get date from query
 	$datearray	= $ecal_class->gmgetdate($qs[0]);
 }
-print_a($datearray);
 
 // Note: A lot of the following variables are used within the shortcodes
 $month		= $datearray['mon'];							// Number of month being shown
