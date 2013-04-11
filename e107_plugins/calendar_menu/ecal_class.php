@@ -43,12 +43,9 @@ class ecal_class
 
 	var $site_timedate;					// Site time/date stamp - adjusted for time zone
 	var $user_timedate;					// Time/date based on user's time zone
-
 	var $cal_timedate;					// Time/date stamp used by event calendar (user set)
-
 	var $now_date;						// Time/date array from $time_now
 	var $site_date;						// Time/date array from $site_timedate
-
 	var $cal_date;						// Time/date array from $cal_timedate
 	
 	var $cal_super;						// True if current user is a calendar supervisor
@@ -70,7 +67,8 @@ class ecal_class
 	
 	var $ec_first_day_of_week = 0;		// First day of the week
 	var $days = array(EC_LAN_25, EC_LAN_19, EC_LAN_20, EC_LAN_21, EC_LAN_22, EC_LAN_23, EC_LAN_24);	// Array Sunday..Saturday
-	var $months	= array(EC_LAN_0, EC_LAN_1, EC_LAN_2, EC_LAN_3, EC_LAN_4, EC_LAN_5, EC_LAN_6, EC_LAN_7, EC_LAN_8, EC_LAN_9, EC_LAN_10, EC_LAN_11);
+	var $months	= array(EC_LAN_0, EC_LAN_1, EC_LAN_2, EC_LAN_3, EC_LAN_4, EC_LAN_5, EC_LAN_6,
+						EC_LAN_7, EC_LAN_8, EC_LAN_9, EC_LAN_10, EC_LAN_11);		// 'Long' month names
 
 	public $recur_type = array(
 				'0' => EC_LAN_RECUR_00,		// 'no'
@@ -98,7 +96,6 @@ class ecal_class
 				);
 
 
-
 	function ecal_class()
 	{  // Constructor
 		global $pref;
@@ -117,13 +114,13 @@ class ecal_class
 		switch ($pref['eventpost_caltime'])
 		{
 			case 1 :
-			  $this->cal_timedate  = $this->site_timedate;		// Site time
-			  break;
+				$this->cal_timedate  = $this->site_timedate;		// Site time
+				break;
 			case 2 :
-			  $this->cal_timedate  = $this->user_timedate;		// User
-			  break;
+				$this->cal_timedate  = $this->user_timedate;		// User
+				break;
 			default :
-			  $this->cal_timedate = $this->time_now;			// Server time - default
+				$this->cal_timedate = $this->time_now;			// Server time - default
 		}
 		$this->now_date  = getdate($this->time_now);
 		$this->site_date = getdate($this->site_timedate);	// Array with h,m,s, day, month year etc
@@ -150,16 +147,16 @@ class ecal_class
 		switch ($pref['eventpost_timedisplay'])
 		{
 			case 2 : 
-			  $this->time_format_string = "%I:%M %p";      // 12-hour display
-			  break;
+				$this->time_format_string = "%I:%M %p";      // 12-hour display
+				break;
 			case 3 :
-			  $this->time_format_string = $pref['eventpost_timecustom'];      // custom display
-			  if (isset($this->time_format_string)) break;
+				$this->time_format_string = $pref['eventpost_timecustom'];      // custom display
+				if (isset($this->time_format_string)) break;
 			case 4 : 
-			  $this->time_format_string = "%H:%M";      // 24-hour display with separator
-			  break;
+				$this->time_format_string = "%H:%M";      // 24-hour display with separator
+				break;
 			default :
-			  $this->time_format_string = "%H%M";      // default to 24-hour display
+				$this->time_format_string = "%H%M";      // default to 24-hour display
 		}
 
 		if (!isset($pref['eventpost_datedisplay'])) $pref['eventpost_datedisplay'] = 1;
@@ -170,62 +167,62 @@ class ecal_class
 			$this->date_separator = '.';
 			if ($temp > 3)
 			{
-			  $temp -= 3;
-			  $this->date_separator = '/';
+				$temp -= 3;
+				$this->date_separator = '/';
 			}
 		}
 
 		switch ($temp)
 		{  // Event entry calendar
 			case 2 :
-			  $this->cal_format_string = "d".$this->date_separator."m".$this->date_separator."Y";
-			  $this->dcal_format_string = "%d".$this->date_separator."%m".$this->date_separator."%Y";
-			  $this->java_format_code = 2;
-			  break;
+				$this->cal_format_string = "d".$this->date_separator."m".$this->date_separator."Y";
+				$this->dcal_format_string = "%d".$this->date_separator."%m".$this->date_separator."%Y";
+				$this->java_format_code = 2;
+				break;
 			case 3 :
-			  $this->cal_format_string = "m".$this->date_separator."d".$this->date_separator."Y";
-			  $this->dcal_format_string = "%m".$this->date_separator."%d".$this->date_separator."%Y";
-			  $this->java_format_code = 3;
-			  break;
+				$this->cal_format_string = "m".$this->date_separator."d".$this->date_separator."Y";
+				$this->dcal_format_string = "%m".$this->date_separator."%d".$this->date_separator."%Y";
+				$this->java_format_code = 3;
+				break;
 			default :  // 'original' defaults
-			  $this->cal_format_string = "Y".$this->date_separator."m".$this->date_separator."d";
-			  $this->dcal_format_string = "%Y".$this->date_separator."%m".$this->date_separator."%d";
-			  $this->java_format_code = 1;
+				$this->cal_format_string = "Y".$this->date_separator."m".$this->date_separator."d";
+				$this->dcal_format_string = "%Y".$this->date_separator."%m".$this->date_separator."%d";
+				$this->java_format_code = 1;
 		}
 
 		if (!isset($pref['eventpost_dateevent'])) $pref['eventpost_dateevent'] = 1;
 		switch ($pref['eventpost_dateevent'])
 		{  // Event list date display
 			case 0 :
-			  $this->event_date_format_string = $pref['eventpost_eventdatecustom'];
-			  break;
+				$this->event_date_format_string = $pref['eventpost_eventdatecustom'];
+				break;
 			case 2 : 
-			  $this->event_date_format_string = "%a %d %b %Y";
-			  break;
+				$this->event_date_format_string = "%a %d %b %Y";
+				break;
 			case 3 : 
-			  $this->event_date_format_string = "%a %d-%m-%y";
-			  break;
+				$this->event_date_format_string = "%a %d-%m-%y";
+				break;
 			default : 
-			  $this->event_date_format_string = "%A %d %B %Y";
+				$this->event_date_format_string = "%A %d %B %Y";
 		}
 
 		if (!isset($pref['eventpost_datenext'])) $pref['eventpost_datenext'] = 1;
 		switch ($pref['eventpost_datenext'])
 		{  // Forthcoming event date display
 			case 0 : 
-			  $this->next_date_format_string = $pref['eventpost_nextdatecustom'];
-			  break;
+				$this->next_date_format_string = $pref['eventpost_nextdatecustom'];
+				break;
 			case 2 : 
-			  $this->next_date_format_string = "%d %b";
-			  break;
+				$this->next_date_format_string = "%d %b";
+				break;
 			case 3 : 
-			  $this->next_date_format_string = "%B %d";
-			  break;
+				$this->next_date_format_string = "%B %d";
+				break;
 			case 4 : 
-			  $this->next_date_format_string = "%b %d";
-			  break;
+				$this->next_date_format_string = "%b %d";
+				break;
 			default : 
-			  $this->next_date_format_string = "%d %B";
+				$this->next_date_format_string = "%d %B";
 		}
 
 		switch (varset($pref['eventpost_weekstart'],'sun'))
@@ -239,39 +236,55 @@ class ecal_class
 			case 4 :
 			case 5 :
 			case 6 :
-			  $this->ec_first_day_of_week = $pref['eventpost_weekstart']; break;
+				$this->ec_first_day_of_week = $pref['eventpost_weekstart']; break;
 			default :
-			  $this->ec_first_day_of_week = 1;
+				$this->ec_first_day_of_week = 1;
 		}
 	}
 
-	
+
+
+	/**
+	 *	Returns a time string from a time stamp, formatted as 24-hour, 12-hour or custom as set in prefs
+	 */
 	function time_string($convtime)
-	{  // Returns a time string from a time stamp, formatted as 24-hour, 12-hour or custom as set in prefs
+	{
 		return gmstrftime($this->time_format_string, $convtime);
 	}
 
 
+	/**
+	 *	Returns a date string from a date stamp, formatted for display in event list
+	 */
 	function event_date_string($convdate)
-	{  // Returns a date string from a date stamp, formatted for display in event list
+	{
 		return gmstrftime($this->event_date_format_string,$convdate);
 	}
 	
 	
+	/**
+	 *	Returns a date string from a date stamp, formatted for display in forthcoming event menu
+	 */
 	function next_date_string($convdate)
-	{  // Returns a date string from a date stamp, formatted for display in forthcoming event menu
+	{
 		return gmstrftime($this->next_date_format_string,$convdate);
 	}
 	
 	
+	/**
+	 *	Returns a date as dd-mm-yyyy or yyyy-mm-dd according to prefs (for event entry)
+	 */
 	function full_date($convdate)
-	{  // Returns a date as dd-mm-yyyy or yyyy-mm-dd according to prefs (for event entry)
+	{
 		return gmdate($this->cal_format_string, $convdate);
 	}
 
-	
+
+	/**
+	 *	Turns a date as entered in the calendar into a time stamp (for event entry)
+	 */
 	function make_date($new_hour, $new_minute, $date_string)
-	{   // Turns a date as entered in the calendar into a time stamp (for event entry)
+	{
 		$tmp = explode($this->date_separator, $date_string);
 		switch ($this->java_format_code)
 		{
@@ -284,25 +297,39 @@ class ecal_class
 		}
 	}
 	
-	// Return day of week string relative to the start of the week
+	/**
+	 *	Return day of week string relative to the start of the week
+	 */
 	function day_offset_string($doff)
 	{
 		return $this->days[($doff+$this->ec_first_day_of_week) % 7];
 	}
 
 
+	/**
+	 *	Single entry point for all calendar-related logging.
+	 *
+	 *	Also triggers a 'notify' event:
+	 *		'ecalnew' when single or multiple events added
+	 *		'ecaledit' when an event changed or deleted
+	 *
+	 *	@param integer $event_type - type of event being logged:
+	 *		1 - add event
+	 *  	2 - edit event
+	 *  	3 - delete event
+	 *  	4 - Bulk delete
+	 *  	5 - add multiple events
+	 *	@param string $event_title - included in logged message
+	 *	@param string $event_string - included in logged message
+	 *	@param integer $event_start - start time of event where appropriate
+	 *
+	 *	@return - none
+	 */
 	function cal_log($event_type, $event_title = '', $event_string='', $event_start=0, $eventId = 0)
-	{  // All calendar-related logging intentionally passed through a single point to maintain control
-	   // (so we could also add other info if we wanted)
-	   // Event types:
-	   //   1 - add event
-	   //	2 - edit event
-	   //	3 - delete event
-	   // 	4 - Bulk delete
-	   //	5 - multiple add
+	{
 		global $pref, $admin_log, $e_event, $PLUGINS_DIRECTORY;
 	  
-	  $log_titles = array(	'1' => EC_ADM_01,
+		$log_titles = array('1' => EC_ADM_01,
 							'2' => EC_ADM_02,
 							'3' => EC_ADM_03,
 							'4' => EC_ADM_04,
@@ -314,7 +341,8 @@ class ecal_class
 							'10' => EC_ADM_10,
 							'11' => EC_ADM_11
 							);
-// Do the notifies first
+
+		// Do the notifies first
 		$cmessage = $log_titles[$event_type]."<br />";
 		if ($event_start > 0)
 		{
@@ -350,6 +378,9 @@ class ecal_class
 
 
 
+	/**
+	 *	Get text related to a numeric event category
+	 */
 	function get_category_text($ev_cat)
 	{
 		global $sql;
@@ -363,8 +394,12 @@ class ecal_class
 	}
 
 
-	// Implements a version of getdate that expects a GMT date and doesn't do TZ/DST adjustments
-	// time() -date('Z') gives the correction to 'null out' the TZ and DST adjustments that getdate() does
+
+
+	/**
+	 *	Implements a version of getdate that expects a GMT date and doesn't do TZ/DST adjustments
+	 *	time() -date('Z') gives the correction to 'null out' the TZ and DST adjustments that getdate() does
+	 */
 	function gmgetdate($date)
 	{
 		$value = getdate($date-date('Z') + (date('I') ? 3600 : 0));
@@ -394,14 +429,14 @@ class ecal_class
 	 *	Generate a list of regularly recurring events based on a 'first event' date, an interval and start/finish times
 	 *	Returns an array of start times
 	 *
-	 *	All parameters are Unix time stamps or numbers of seconds
+	 *	All fields are Unix-style time/date stamps
 	 *	@param int $first_event	Earliest possible date/time for first occurrence of event (may not be precisely what's required)
 	 *	@param int $last_event
-	 *	@param int $interval - time between successive events
+	 *	@param int $interval - interval between events (in seconds)
 	 *	@param int $start_time
-	 *	@param int $end_time - date/time of last event
+	 *	@param int $end_time - last date in time window
 	 *
-	 *	@return array of time stamps
+	 *	@return array of start date/time entries
 	 */
 	function gen_recur_regular($first_event, $last_event, $interval, $start_time, $end_time)
 	{
@@ -417,24 +452,31 @@ class ecal_class
 	}
 
 
+	/**
+	 * Internal utility - adds an offset of months and years to a date
+	 * @param array $main_date - a date in PHP standard array format
+	 * @param array $adder - a month+year offset in PHP standard array format
+	 *
+	 * @return array where 'mon' and 'year' fields filled in
+	 */
 	function add_dates($main_date,$adder)
-	{  // Adds an offset of months and years to a date
-	  if ($adder['mon'])
-	  {
-		$main_date['mon'] += $adder['mon'];
-		if ($main_date['mon'] > 12)
+	{
+		if ($adder['mon'])
 		{
-		  $main_date['mon'] -= 12;
-		  $main_date['year']++;
+			$main_date['mon'] += $adder['mon'];
+			if ($main_date['mon'] > 12)
+			{
+				$main_date['mon'] -= 12;
+				$main_date['year']++;
+			}
 		}
-	  }
-	  if ($adder['year']) $main_date['year'] += $adder['year'];
-	  return $main_date;
+		if ($adder['year']) $main_date['year'] += $adder['year'];
+		return $main_date;
 	}
 
 	
 	/**
-	 *	Generate a list of recurring events based on a 'first event' date, an interval type and start/finish times
+	 *	Generate a list of recurring events based on a 'first event' date, an interval type and start/finish window
 	 *	Returns an array of start times
 	 *
 	 *	For day number, '0' = 'Sunday'
@@ -443,13 +485,13 @@ class ecal_class
 	 *	$start_time, $end_time define the window currently of interest (usually a month)
 	 *
 	 *	All parameters are Unix time stamps or numbers of seconds
-	 *	@param int $first_event	Earliest possible date/time for first occurrence of event (may not be precisely what's required)
-	 *	@param int $last_event
-	 *	@param int $interval - type of recurring event
-	 *	@param int $start_time
-	 *	@param int $end_time - date/time of last event
+	 *	@param int $first_event - earliest date for events
+	 *	@param int $last_event - latest time for date of event
+	 *	@param int $interval_type - numeric code defining the interval between events (N.B> day number zero is Sunday)
+	 *	@param int $start_time - start time for each event
+	 *	@param int $end_time - end time for each event
 	 *
-	 *	@return array of time stamps
+	 *	@return array of events (may be empty)
 	 */
 	function gen_recur($first_event, $last_event, $interval_type, $start_time, $end_time)
 	{
@@ -484,17 +526,17 @@ class ecal_class
 		switch ($interval_type)
 		{
 			case 1 :	// Annual
-			  $inc_array['year'] = 1;
-			  break;
+				$inc_array['year'] = 1;
+				break;
 			case 2 :	// Biannual
-			  $inc_array['mon'] = 6;
-			  break;
+				$inc_array['mon'] = 6;
+				break;
 			case 3 :	// Quarterly
-			  $inc_array['mon'] = 3;
-			  break;
+				$inc_array['mon'] = 3;
+				break;
 			case 4 :	// Monthly
-			  $inc_array['mon'] = 1;
-			  break;
+				$inc_array['mon'] = 1;
+				break;
 			case 100 :	// Monthly on nth Sunday in month
 			case 101 :	// Monthly on nth Monday in month
 			case 102 :	// Monthly on nth Tuesday in month
@@ -502,20 +544,20 @@ class ecal_class
 			case 104 :	// Monthly on nth Thursday in month
 			case 105 :	// Monthly on nth Friday in month
 			case 106 :	// Monthly on nth Saturday in month
-	//		  echo "Specific day of month: ".$day_number."<br />";
-			  $inc_array['mon'] = 1;
-			  $event['mon'] = $temp['mon'];
-			  $event['year'] = $temp['year'];
-			  $event['mday'] = 1;		// Start calculating from first day of each month
-			  break;
+				//		  echo "Specific day of month: ".$day_number."<br />";
+				$inc_array['mon'] = 1;
+				$event['mon'] = $temp['mon'];
+				$event['year'] = $temp['year'];
+				$event['mday'] = 1;		// Start calculating from first day of each month
+				break;
 			default :
-			  return FALSE;		// Invalid interval type
+				return FALSE;		// Invalid interval type
 		}
 
-//	  echo "First date: ".$event['mon']."-".$event['year']."<br />";
-	  // Now loop through using the increment - we may discard a few, but getting clever may be worse!
+		//	  echo "First date: ".$event['mon']."-".$event['year']."<br />";
+		// Now loop through using the increment - we may discard a few, but getting clever may be worse!
 		$cont = TRUE;
-  
+	  
 		do 
 		{
 			$tstamp = gmmktime($event['hours'],$event['minutes'],$event['seconds'],$event['mon'],$event['mday'],$event['year']);
@@ -539,9 +581,10 @@ class ecal_class
 			}
 			$event = $this->add_dates($event,$inc_array);
 		} while ($cont);
-	  
+
 		return $ret;
 	}
+
 
 
 	/**
@@ -565,7 +608,7 @@ class ecal_class
 			$mharr = explode(',',$must_have);
 			foreach ($mharr as $mh)
 			{
-			  if (!in_array(trim($mh), $temp)) $temp[] = trim($mh);
+				if (!in_array(trim($mh), $temp)) $temp[] = trim($mh);
 			}
 		}
 		foreach ($temp as $fld)
@@ -583,167 +626,199 @@ class ecal_class
 
 
 	/**
-	 *	Read a list of events between start and end dates
+	 *	Return all events between a given start and end date
 	 *	If $start_only is TRUE, only searches based on the start date/time
-	 *	Potential option to hook in other routines later
+	 *	Potential option to hook in other routines here later
+	 *	@param int $start_time - earliest time for events
+	 *	@param int $end_time - latest time for start of event
+	 *	@param boolean $start_only - TRUE to scan based on start time only. FALSE to select events which overlap the specified time window
+	 *	@param boolean|string $cat_filter = FALSE is 'no categories' - returns an empty array.
+	 * 					$cat_filter = '*' means 'all categories'
+	 * 					otherwise $cat_filter mst be a comma-separated list of category IDs.
+	 *	@param string $event_fields - comma separated list of fields to read from the event record; '*' for all fields
+	 *	@param string $cat_fields - comma separated list of fields to read from the category record; '*' for all fields
+	 *
+	 *	@return array of events (may be empty)
 	 */
 	function get_events($start_time, $end_time, $start_only=FALSE, $cat_filter=0, $inc_recur=FALSE, $event_fields='*', $cat_fields='*')
 	{
-	  global $sql;
+		global $sql;
 	  
-	  $ret = array();
-	  $cat_lj = '';
-	  $category_filter = '';
-	  $extra = '';
-	  $so = '';
+		$ret = array();
+		$cat_lj = '';
+		$category_filter = '';
+		$extra = '';
+		$so = '';
 
-	  $event_fields = $this->gen_field_list('e',$event_fields,'event_start,event_end,event_datestamp');
-	  if ($cat_fields) 
-	  {
-		$cat_fields = ', '.$this->gen_field_list('ec',$cat_fields);
-		$cat_lj = ' LEFT JOIN #event_cat as ec ON e.event_category = ec.event_cat_id ';
-	  }
-
-	  if ($cat_filter && ($cat_filter != '*')) $category_filter = " AND find_in_set(e.event_category, '".$cat_filter."') ";
-	  if ($inc_recur) $extra = " OR (e.event_recurring >'0' AND (e.event_start < ".intval($end_time)." AND e.event_end >= ".intval($start_time).")) ";
-	  
-	  $so = $start_only ? 'start' : 'end';
-	  $qry = "SELECT {$event_fields}{$cat_fields} FROM #event as e {$cat_lj}
-		WHERE (
-		(e.event_recurring = '0' AND ((e.event_{$so} >= ".intval($start_time)." AND e.event_start < ".intval($end_time).")))
-		{$extra})
-		{$category_filter} 
-		{$this->extra_query} 
-		ORDER BY e.event_start ASC
-	  ";
-	  
-	  if ($sql->db_Select_gen($qry))
-	  {
-		while ($row = $sql->db_Fetch())
+		$event_fields = $this->gen_field_list('e',$event_fields,'event_start,event_end,event_datestamp');
+		if ($cat_fields) 
 		{
-		  // Always add the 'is_recent' marker if required
-		  if ((($this->max_recent_show != 0) && (time() - $row['event_datestamp']) <= $this->max_recent_show)) $row['is_recent'] = TRUE; 
-		  if ($row['event_recurring'] == 0)
-		  {
-			$ret[] = $row;
-		  }
-		  else
-		  {  // Recurring events to handle
-			$temp = $this->gen_recur($row['event_start'],$row['event_end'],$row['event_recurring'],$start_time,$end_time);
-			if (count($temp)) 
-			{
-			  $row['event_start'] = $temp;		// Have an array of start times
-			  $ret[] = $row;
-			}
-		  }
+			$cat_fields = ', '.$this->gen_field_list('ec',$cat_fields);
+			$cat_lj = ' LEFT JOIN #event_cat as ec ON e.event_category = ec.event_cat_id ';
 		}
-	  }
-	  return $ret;
+
+		if ($cat_filter && ($cat_filter != '*')) $category_filter = " AND find_in_set(e.event_category, '".$cat_filter."') ";
+		if ($inc_recur) $extra = " OR (e.event_recurring >'0' AND (e.event_start < ".intval($end_time)." AND e.event_end >= ".intval($start_time).")) ";
+	  
+		$so = $start_only ? 'start' : 'end';
+		$qry = "SELECT {$event_fields}{$cat_fields} FROM #event as e {$cat_lj}
+			WHERE (
+			(e.event_recurring = '0' AND ((e.event_{$so} >= ".intval($start_time)." AND e.event_start < ".intval($end_time).")))
+			{$extra})
+			{$category_filter} 
+			{$this->extra_query} 
+			ORDER BY e.event_start ASC
+		  ";
+	  
+		if ($sql->db_Select_gen($qry))
+		{
+			while ($row = $sql->db_Fetch())
+			{
+				// Always add the 'is_recent' marker if required
+				if ((($this->max_recent_show != 0) && (time() - $row['event_datestamp']) <= $this->max_recent_show)) $row['is_recent'] = TRUE; 
+				if ($row['event_recurring'] == 0)
+				{
+					$ret[] = $row;
+				}
+				else
+				{  // Recurring events to handle
+					$temp = $this->gen_recur($row['event_start'],$row['event_end'],$row['event_recurring'],$start_time,$end_time);
+					if (count($temp)) 
+					{
+						$row['event_start'] = $temp;		// Have an array of start times
+						$ret[] = $row;
+					}
+				}
+			}
+		}
+		return $ret;
 	}
 
 
-	// Function to return up to a maximum number of events between a given start and end date
-	// It always uses the event start date only
-	// It tries to keep the actual number of events in memory to a minimum by discarding when it can.
-	// Once there are $num_events read, it pulls in the $end_time to speed up checks
+
+
+	/**
+	 * Function to return up to a maximum number of events between a given start and end date
+	 *  It always uses the event start date only
+	 * It tries to keep the actual number of events in memory to a minimum by discarding when it can.
+	 * Once there are $num_events read, it pulls in the $end_time to speed up checks
+	 * @param int $num_event - number of events required
+	 * @param int $start_time - earliest time for events
+	 * @param int $end_time - latest time for start of event
+	 * @param boolean|string $cat_filter = FALSE is 'no categories' - returns an empty array.
+	 * 					$cat_filter = '*' means 'all categories'
+	 * 					otherwise $cat_filter mst be a comma-separated list of category IDs.
+	 * @param boolean $inc_recur TRUE to include recurring events
+	 * @param string $event_fields - comma separated list of fields to read from the event record; '*' for all fields
+	 * @param string $cat_fields - comma separated list of fields to read from the category record; '*' for all fields
+	 *
+	 * @return array of events (may be empty)
+	 */
 	function get_n_events($num_event, $start_time, $end_time, $cat_filter=0, $inc_recur=FALSE, $event_fields='*', $cat_fields='*')
 	{
-	  global $sql;
+		global $sql;
 
-	  $ret = array();
-	  $cat_lj = '';
-	  $category_filter = '';
-	  $extra = '';
+		$ret = array();
+		$cat_lj = '';
+		$category_filter = '';
+		$extra = '';
 
-	  $event_fields = $this->gen_field_list('e',$event_fields,'event_start,event_end,event_datestamp,event_recurring');
-	  if ($cat_fields) 
-	  {
-		$cat_fields = ', '.$this->gen_field_list('ec',$cat_fields);
-		$cat_lj = ' LEFT JOIN #event_cat as ec ON e.event_category = ec.event_cat_id ';
-	  }
-	  
-	  if ($cat_filter && ($cat_filter != '*')) $category_filter = " AND find_in_set(e.event_category, '".$cat_filter."') ";
-	  if ($inc_recur) $extra = " OR (e.event_recurring >'0' AND (e.event_start <= ".intval($end_time)." AND e.event_end >= ".intval($start_time).")) ";
-	
-	  $qry = "SELECT {$event_fields}{$cat_fields} FROM #event as e {$cat_lj}
-		WHERE (
-		(e.event_recurring = '0' AND (e.event_start >= ".intval($start_time)." AND e.event_start <= ".intval($end_time).") )
-		{$extra})
-		{$category_filter} 
-		{$this->extra_query} 
-		ORDER BY e.event_start ASC
-	  ";
-	  
-//	echo "get_n_events Query: ".$qry."<br />";
-	
-	  if ($sql->db_Select_gen($qry))
-	  {
-		while ($row = $sql->db_Fetch())
+		$event_fields = $this->gen_field_list('e',$event_fields,'event_start,event_end,event_datestamp,event_recurring');
+		if ($cat_fields) 
 		{
-		  // Always add the 'is_recent' marker if required
-		  if ((($this->max_recent_show != 0) && (time() - $row['event_datestamp']) <= $this->max_recent_show)) $row['is_recent'] = TRUE; 
-		  unset($temp);
-		  if ($row['event_recurring'] == 0)
-		  {	
-//		    echo "Standard:  ".$row['event_start']."  ".$row['event_title']."<br />";
-			$temp = array($row['event_start']);
-		  }
-		  else
-		  {  // Recurring events to handle
-//		  echo "Recurring: ".$row['event_start']."  ".$row['event_title']."  -   ".$row['event_recurring']."  -  ";
-			$temp = $this->gen_recur($row['event_start'],$row['event_end'],$row['event_recurring'],$start_time,$end_time);
-//			echo count($temp)."results generated<br />";
-		  }
-
-		  if (count($temp)) 
-		  {  // We have one or more events to add to the array
-			foreach ($temp as $ts)
+			$cat_fields = ', '.$this->gen_field_list('ec',$cat_fields);
+			$cat_lj = ' LEFT JOIN #event_cat as ec ON e.event_category = ec.event_cat_id ';
+		}
+	  
+		if ($cat_filter && ($cat_filter != '*')) $category_filter = " AND find_in_set(e.event_category, '".$cat_filter."') ";
+		if ($inc_recur) $extra = " OR (e.event_recurring >'0' AND (e.event_start <= ".intval($end_time)." AND e.event_end >= ".intval($start_time).")) ";
+	
+		$qry = "SELECT {$event_fields}{$cat_fields} FROM #event as e {$cat_lj}
+			WHERE (
+			(e.event_recurring = '0' AND (e.event_start >= ".intval($start_time)." AND e.event_start <= ".intval($end_time).") )
+			{$extra})
+			{$category_filter} 
+			{$this->extra_query} 
+			ORDER BY e.event_start ASC
+		  ";
+	  
+		//	echo "get_n_events Query: ".$qry."<br />";
+	
+		if ($sql->db_Select_gen($qry))
+		{
+			while ($row = $sql->db_Fetch())
 			{
-//		    echo "Process:  ".$ts."  ".$row['event_start']."  ".$row['event_title']."  ".$end_time."<br />";
-			  if ($ts <= $end_time)   // We may have pulled in $end_time from the value passed initially
-			  {
-				$row['event_start'] = $ts;			// Fill this in - may be a recurring event
-//		  echo "Add: ".$row['event_start']."  ".$row['event_title']."<br />";
-		  
-				if ((count($ret) == 0) || ($ts > $ret[count($ret)-1]['event_start']))
-				{  // Can just add on end
-//				  echo "Add at end<br />";
-				  $ret[] = $row;
+				// Always add the 'is_recent' marker if required
+				if ((($this->max_recent_show != 0) && (time() - $row['event_datestamp']) <= $this->max_recent_show)) $row['is_recent'] = TRUE; 
+				unset($temp);
+				if ($row['event_recurring'] == 0)
+				{	
+					//	echo "Standard:  ".$row['event_start']."  ".$row['event_title']."<br />";
+					$temp = array($row['event_start']);
 				}
 				else
-				{  // Find a slot
-				  $i = count($ret);
-				  while (($i > 0) && ($ret[$i-1]['event_start'] > $ts)) $i--;
-				  // $i has the number of the event before which to insert this new event.
-				  if ($i == 0)
-				  {
-					array_unshift($ret,$row);	// Just insert at beginning
-//					echo "Insert at front<br />";
-				  }
-				  else
-				  {  // Proper insert needed just before element $i
-//				    $tmp = array_unshift(array_slice($ret, $i),$row);
-//					array_splice($ret, $i, count($ret), $tmp); 
-					array_splice($ret, $i, count($ret), array_merge(array($row),array_slice($ret, $i))); 
-//					echo "Insert at ".$i."<br />";
-				  }
+				{  // Recurring events to handle
+					//	echo "Recurring: ".$row['event_start']."  ".$row['event_title']."  -   ".$row['event_recurring']."  -  ";
+					$temp = $this->gen_recur($row['event_start'],$row['event_end'],$row['event_recurring'],$start_time,$end_time);
+					//		echo count($temp)."results generated<br />";
 				}
-			  }
-			  if (count($ret) > $num_event)
-			  {  // Knock one off the end
-//			    echo "Delete, count is ".count($ret)."<br />";
-				if ($ret[count($ret)-1]['event_start'] < $end_time) $end_time = $ret[count($ret)-1]['event_start'];	// Pull in end time if we can
-				array_pop($ret);
-			  }
+
+				if (count($temp)) 
+				{  // We have one or more events to add to the array
+					foreach ($temp as $ts)
+					{
+						//	echo "Process:  ".$ts."  ".$row['event_start']."  ".$row['event_title']."  ".$end_time."<br />";
+						if ($ts <= $end_time)   // We may have pulled in $end_time from the value passed initially
+						{
+							$row['event_start'] = $ts;			// Fill this in - may be a recurring event
+							//		  echo "Add: ".$row['event_start']."  ".$row['event_title']."<br />";
+
+							if ((count($ret) == 0) || ($ts > $ret[count($ret)-1]['event_start']))
+							{  // Can just add on end
+								//			echo "Add at end<br />";
+								$ret[] = $row;
+							}
+							else
+							{  // Find a slot
+								$i = count($ret);
+								while (($i > 0) && ($ret[$i-1]['event_start'] > $ts)) $i--;
+								// $i has the number of the event before which to insert this new event.
+								if ($i == 0)
+								{
+									array_unshift($ret,$row);	// Just insert at beginning
+									//		echo "Insert at front<br />";
+								}
+								else
+								{  // Proper insert needed just before element $i
+									//		$tmp = array_unshift(array_slice($ret, $i),$row);
+									//		array_splice($ret, $i, count($ret), $tmp); 
+									array_splice($ret, $i, count($ret), array_merge(array($row),array_slice($ret, $i))); 
+									//		echo "Insert at ".$i."<br />";
+								}
+							}
+						}
+						if (count($ret) > $num_event)
+						{  // Knock one off the end
+							//			    echo "Delete, count is ".count($ret)."<br />";
+							if ($ret[count($ret)-1]['event_start'] < $end_time) $end_time = $ret[count($ret)-1]['event_start'];	// Pull in end time if we can
+							array_pop($ret);
+						}
+					}
+				}
 			}
-		  }
 		}
-	  }
-	  return $ret;
+		return $ret;
 	} // End - function get_n_events()
 
 
 
+
+	/**
+	 * Get text relating to recurring item
+	 * @param int numeric code for type of recurring item
+	 *
+	 * @return string corresponding text description
+	 */
 	function get_recur_text($recurring)
 	{
 		if ($recurring >= 100)

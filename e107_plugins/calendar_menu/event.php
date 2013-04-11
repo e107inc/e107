@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2002-2012 e107 Inc (e107.org)
+ * Copyright (C) 2002-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -16,35 +16,36 @@ require_once('../../class2.php');
 
 if (isset($_POST['viewallevents']))
 {  // Triggered from NAV_BUT_ALLEVENTS
-    Header('Location: '.e_PLUGIN."calendar_menu/calendar.php?".$_POST['enter_new_val']);
-	exit;
+    Header('Location: '.e_PLUGIN.'calendar_menu/calendar.php?'.$_POST['enter_new_val']);
+	exit();
 }
 
 if (isset($_POST['doit']))
 {  // Triggered from NAV_BUT_ENTEREVENT
-    Header("Location: ".e_PLUGIN."calendar_menu/event.php?ne.".$_POST['enter_new_val']);
-	exit;
+    Header('Location: '.e_PLUGIN.'calendar_menu/event.php?ne.'.$_POST['enter_new_val']);
+	exit();
 }
 
 if (isset($_POST['subs']))
 {
-    Header("Location: ".e_PLUGIN."calendar_menu/subscribe.php");
+    Header('Location: '.e_PLUGIN.'calendar_menu/subscribe.php');
 }
 
 if (isset($_POST['printlists']))
 {
     Header("Location: " . e_PLUGIN . "calendar_menu/ec_pf_page.php");
+	exit();
 } 
 
-include_lan(e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php");
-define("PAGE_NAME", EC_LAN_80);
+include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'.php');
+define('PAGE_NAME', EC_LAN_80);
 
 require_once(e_PLUGIN.'calendar_menu/ecal_class.php');
 global $ecal_class;
 if (!is_object($ecal_class)) $ecal_class = new ecal_class;
 $cal_super = $ecal_class->cal_super;
 
-require_once(e_PLUGIN."calendar_menu/calendar_shortcodes.php");
+require_once(e_PLUGIN.'calendar_menu/calendar_shortcodes.php');
 require_once(e_HANDLER."calendar/calendar_class.php");
 $cal = new DHTML_Calendar(true);
 
@@ -75,86 +76,86 @@ $ev_fields = array(
 //--------------------------------------
 // Event to add or update
 //--------------------------------------
-if ($cal_super && (isset($_POST['ne_insert']) || isset($_POST['ne_update'])))
+if ((isset($_POST['ne_insert']) || isset($_POST['ne_update'])) && ($cal_super  || check_class($ecal_class->pref['eventpost_admin'])))
 {  
-  $ev_start		= $ecal_class->make_date($_POST['ne_hour'], $_POST['ne_minute'],$_POST['start_date']);
-  if (($_POST['ne_event'] == "") || !isset($_POST['qs']))
-  {	// Problem - tell user to go away - fields are blank (mostly checked by JS)
-	header("location:event.php?".$ev_start.".0.m3");
-  }
-  elseif (!isset($_POST['ne_category']) || (intval($_POST['ne_category']) == 0))
-  {
-	header("location:event.php?".$ev_start.".0.m6");
-  }
-  else
-  {
-	$ev_end			= $ecal_class->make_date($_POST['end_hour'], $_POST['end_minute'],$_POST['end_date']);
-    $ev_title		= $tp->toDB($_POST['ne_title']);
-    $ev_location	= $tp->toDB($_POST['ne_location']);
-    $ev_event		= $tp->toDB($_POST['ne_event']);
-	$ev_email		= $tp -> toDB($_POST['ne_email']);
-	$ev_category	= intval($_POST['ne_category']);
-	$ev_thread		= $tp -> toDB($_POST['ne_thread']);
-	$temp_date 		= $ecal_class->gmgetdate($ecal_class->make_date(0,0,$_POST['start_date']));
-	$ev_allday		= intval($_POST['allday']);
-	$recurring		= intval($_POST['ec_recur_type']);
-	if ($recurring >= 100) $recurring += intval($_POST['ec_recur_week']) - 100;
-	// 
-    if ($_POST['recurring'] == 1)
+	$ev_start = $ecal_class->make_date($_POST['ne_hour'], $_POST['ne_minute'],$_POST['start_date']);
+	if (($_POST['ne_event'] == '') || !isset($_POST['qs']))
+	{	// Problem - tell user to go away - fields are blank (mostly checked by JS)
+		header('location:event.php?'.$ev_start.'.0.m3');
+	}
+	elseif (!isset($_POST['ne_category']) || (intval($_POST['ne_category']) == 0))
 	{
-	  $rec_m = $temp_date['mday'];		// Day of month
-      $rec_y = $temp_date['mon'];			// Month number
-    }
+		header('location:event.php?'.$ev_start.'.0.m6');
+	}
 	else
 	{
-      $rec_m = "";
-      $rec_y = "";
-    }
+		$ev_end			= $ecal_class->make_date($_POST['end_hour'], $_POST['end_minute'],$_POST['end_date']);
+		$ev_title		= $tp->toDB($_POST['ne_title']);
+		$ev_location	= $tp->toDB($_POST['ne_location']);
+		$ev_event		= $tp->toDB($_POST['ne_event']);
+		$ev_email		= $tp->toDB($_POST['ne_email']);
+		$ev_category	= intval($_POST['ne_category']);
+		$ev_thread		= $tp->toDB($_POST['ne_thread']);
+		$temp_date 		= $ecal_class->gmgetdate($ecal_class->make_date(0,0,$_POST['start_date']));
+		$ev_allday		= intval($_POST['allday']);
+		$recurring		= intval($_POST['ec_recur_type']);
+		if ($recurring >= 100) $recurring += intval($_POST['ec_recur_week']) - 100;
+		// 
+		if ($_POST['recurring'] == 1)
+		{
+			$rec_m = $temp_date['mday'];		// Day of month
+			$rec_y = $temp_date['mon'];			// Month number
+		}
+		else
+		{
+			$rec_m = '';
+			$rec_y = '';
+		}
 
-	$report_msg = '.m3';
-    if (isset($_POST['ne_insert']))
-	{  // Bits specific to inserting a new event
-      $qs = preg_replace("/ne./i", "", $_POST['qs']);	
-	  if ($_POST['ec_gen_multiple'])
-	  {
-	    $mult_count = $ecal_class->gen_recur($ev_start,$ev_end,$recurring,$ev_start,$ev_end);
-	  }
-	  if ($mult_count <= 1)
-	  {
-		$qry = " 0, '".intval($ev_start)."', '".intval($ev_end)."', '".$ev_allday."', '".$recurring."', '".time()."', '$ev_title', '$ev_location', '$ev_event', '".USERID.".".USERNAME."', '".$ev_email."', '".$ev_category."', '".$ev_thread."', '".intval($rec_m)."', '".intval($rec_y)."' ";
-        $evId = $sql->db_Insert("event", $qry);
-		$ecal_class->cal_log(1,'db_Insert',$qry, $ev_start, $evId);
-		$report_msg = '.m4';
-	  }
-	}
+		$report_msg = '.m3';
+		if (isset($_POST['ne_insert']))
+		{  // Bits specific to inserting a new event
+			$qs = preg_replace("/ne./i", "", $_POST['qs']);	
+			if ($_POST['ec_gen_multiple'])
+			{
+				$mult_count = $ecal_class->gen_recur($ev_start,$ev_end,$recurring,$ev_start,$ev_end);
+			}
+			if ($mult_count <= 1)
+			{
+				$qry = " 0, '".intval($ev_start)."', '".intval($ev_end)."', '".$ev_allday."', '".$recurring."', '".time()."', '$ev_title', '$ev_location', '$ev_event', '".USERID.".".USERNAME."', '".$ev_email."', '".$ev_category."', '".$ev_thread."', '".intval($rec_m)."', '".intval($rec_y)."' ";
+		        $evId = $sql->db_Insert("event", $qry);
+				$ecal_class->cal_log(1,'db_Insert',$qry, $ev_start, $evId);
+				$report_msg = '.m4';
+			}
+		}
 	
-	if (isset($_POST['ne_update']))
-	{  // Bits specific to updating an existing event
-		$evId = intval($_POST['id']);
-		$qry = "event_start='".intval($ev_start)."', event_end='".intval($ev_end)."', event_allday='".$ev_allday."', event_recurring='".$recurring."', event_datestamp= '".time()."', event_title= '$ev_title', event_location='$ev_location', event_details='$ev_event', event_contact='".$ev_email."', event_category='".$ev_category."', event_thread='".$ev_thread."', event_rec_m='".intval($rec_m)."', event_rec_y='".intval($rec_y)."' WHERE event_id=".$evId;
-        $sql->db_Update("event", $qry);
-		$ecal_class->cal_log(2,'db_Update',$qry, $ev_start, $evId);
-        $qs = preg_replace("/ed./i", "", $_POST['qs']);
-		$report_msg = '.m5';
+		if (isset($_POST['ne_update']))
+		{  // Bits specific to updating an existing event
+			$evId = intval($_POST['id']);
+			$qry = "event_start='".intval($ev_start)."', event_end='".intval($ev_end)."', event_allday='".$ev_allday."', event_recurring='".$recurring."', event_datestamp= '".time()."', event_title= '$ev_title', event_location='$ev_location', event_details='$ev_event', event_contact='".$ev_email."', event_category='".$ev_category."', event_thread='".$ev_thread."', event_rec_m='".intval($rec_m)."', event_rec_y='".intval($rec_y)."' WHERE event_id=".$evId;
+			$sql->db_Update("event", $qry);
+			$ecal_class->cal_log(2,'db_Update',$qry, $ev_start, $evId);
+			$qs = preg_replace("/ed./i", "", $_POST['qs']);
+			$report_msg = '.m5';
+		}
+		if ($mult_count <= 1)
+		{
+		// Now clear cache  - just do the lot for now - get clever later
+		$e107cache->clear('nq_event_cal');
+		header('location:event.php?'.$ev_start.'.'.$qs.$report_msg);
+		}
 	}
-	if ($mult_count <= 1)
-	{
-	// Now clear cache  - just do the lot for now - get clever later
-	$e107cache->clear('nq_event_cal');
-    header("location:event.php?".$ev_start.".".$qs.$report_msg);
-	}
-  }
 }
 
 
 
-$action = "";		// Remove notice
+$action = '';
 
 require_once(HEADERF);
 
 if ($mult_count > 1)
 {	// Need to handle writing of multiple events - display confirmation form
-	$message = str_replace('-NUM-',count($mult_count),EC_LAN_88);
+	$message = str_replace('-NUM-', count($mult_count), EC_LAN_88);
 	$text = "
 		<form method='post' action='".e_SELF."?mc.{$ev_start}.{$ev_end}' id='mulconf'><table style='width:98%' class='fborder' >
 		<colgroup><col style='width:30%' /><col style='width:70%' /></colgroup>
@@ -181,7 +182,7 @@ if ($mult_count > 1)
     // Only display for forum thread/link if required.  No point if not wanted
     if (isset($pref['eventpost_forum']) && $pref['eventpost_forum'] == 1)
     {
-      $text .= "<tr><td class='forumheader3'>".EC_LAN_58." </td><td class='forumheader3'>".$ev_thread."</td></tr>";
+		$text .= "<tr><td class='forumheader3'>".EC_LAN_58." </td><td class='forumheader3'>".$ev_thread."</td></tr>";
     }
     $text .= "<tr><td class='forumheader3'>".EC_LAN_59."</td><td class='forumheader3'>".$ev_email."</td></tr>
 		<tr><td class='forumheader' colspan='2' style='text-align:center'>
@@ -190,7 +191,7 @@ if ($mult_count > 1)
 			<input type='hidden' name='qs' value='".e_QUERY."' />";
 	foreach ($ev_fields as $k => $v)
 	{
-	  $text .= "<input type='hidden' name='ev_{$k}' value='".$$v."' />";
+		$text .= "<input type='hidden' name='ev_{$k}' value='".$$v."' />";
 	}
 	$text .= "</td></tr></table></form>";
 
@@ -207,25 +208,25 @@ if (isset($_POST['jump']))
 }
 else
 {
-  if (e_QUERY)
-  {
-	$qs			= explode(".", e_QUERY);
-	$action		= $qs[0];			// Often a date if just viewing
-	$ds			= varset($qs[1],"");
-	$eveid		= varset($qs[2], "");
-  }
+	if (e_QUERY)
+	{
+		$qs			= explode('.', e_QUERY);
+		$action		= trim($qs[0]);			// Often a date if just viewing
+		$ds			= varset($qs[1],'');
+		$eveid		= intval(varset($qs[2], 0));
+	}
 
-  if ($action == "")
-  {
-    $month		= $ecal_class->cal_date['mon'];
-    $year		= $ecal_class->cal_date['year'];
-  }
-  else
-  {
-    if (is_numeric($action)) $smarray = $ecal_class->gmgetdate($action); else $smarray = $ecal_class->gmgetdate($ds);
-    $month		= $smarray['mon'];
-    $year		= $smarray['year'];
-  }
+	if ($action == '')
+	{
+		$month		= $ecal_class->cal_date['mon'];
+		$year		= $ecal_class->cal_date['year'];
+	}
+	else
+	{
+		if (is_numeric($action)) $smarray = $ecal_class->gmgetdate($action); else $smarray = $ecal_class->gmgetdate($ds);
+		$month		= $smarray['mon'];
+		$year		= $smarray['year'];
+	}
 }
 
 
@@ -320,10 +321,11 @@ $poss_message = array('m1' => EC_LAN_41, 'm2' => EC_LAN_42, 'm3' => EC_LAN_43, '
 					  'm6' => EC_LAN_145, 'm7' => 'Could have saved -NUM- events');
 if (isset($qs[2])) if (isset($poss_message[$qs[2]]))
 {
- $message = $poss_message[$qs[2]];
- $ec = varset($qs[3],0);
- if ($ec) $message = str_replace('-NUM-',$ec,$message);
+	$message = $poss_message[$qs[2]];
+	$ec = varset($qs[3],0);
+	if ($ec) $message = str_replace('-NUM-',$ec,$message);
 }
+
 
 if (isset($message))
 {
@@ -333,91 +335,92 @@ if (isset($message))
 
 function merge_date_time($date, $time)
 {
-  return ((86400*intval($date/86400)) + ($time % 86400));
+	return ((86400*intval($date/86400)) + ($time % 86400));
 }
 
 //-------------------------------------
 // 		enter new event form
 //-------------------------------------
-if ($action == "ne" || $action == "ed")
+if ($action == 'ne' || $action == 'ed')
 {
-  if ($ecal_class->cal_super || check_class($pref['eventpost_admin']))
-  {
-	function make_calendar($boxname, $boxvalue)
+	if ($ecal_class->cal_super || check_class($pref['eventpost_admin']))
 	{
-	  global $ecal_class, $cal;
-	
-        unset($cal_options);
-        unset($cal_attrib);
-        $cal_options['firstDay'] = $ecal_class->ec_first_day_of_week;
-        $cal_options['showsTime'] = false;
-        $cal_options['showOthers'] = true;
-        $cal_options['weekNumbers'] = false;
-        $cal_options['ifFormat'] = $ecal_class->dcal_format_string;
-        $cal_attrib['class'] = "tbox";
-        $cal_attrib['size'] = "12";
-        $cal_attrib['name'] = $boxname;
-        $cal_attrib['value'] = $boxvalue;
-        return $cal->make_input_field($cal_options, $cal_attrib);
-	}
-
-
-	function make_hourmin($boxname,$cur_hour,$cur_minute)
-	{
-	  global $pref;
-	  if (isset($pref['eventpost_fivemins'])) $incval = 5; else $incval = 1;
-	  $retval = " <select name='{$boxname}hour' id='{$boxname}hour' class='tbox'>\n";
-	  for($count = "00"; $count <= "23"; $count++)
-	  {
-		$val = sprintf("%02d", $count);
-		$retval .= "<option value='{$val}' ".(isset($cur_hour) && $count == $cur_hour ? "selected='selected'" :"")." >".$val."</option>\n";
-	  }
-	  $retval .= "</select>\n
-		<select name='{$boxname}minute' class='tbox'>\n";
-	  for($count = "00"; $count <= "59"; $count+= $incval)
-	  {
-		$val = sprintf("%02d", $count);
-		$retval .= "<option ".(isset($cur_minute) && $count == $cur_minute ? "selected='selected'" :"")." value='{$val}'>".$val."</option>\n";
-	  }
-	  $retval .= "</select>\n";
-	  return $retval;
-	}
-
-	function recur_select($curval)
-	{
-	  global $ecal_class;
-	  while ($curval > 150) { $curval -= 100; }		// Could have values up to about 406
-	  $ret = "<select class='tbox' name='ec_recur_type' onchange=\"proc_recur(this.value);\">";
-	  foreach ($ecal_class->recur_type as $k => $v)
-	  {
-	    $selected = ($curval == $k) ? " selected = 'selected'" : "";
-	    $ret .= "<option value='{$k}'{$selected}>{$v}</option>\n";
-	  }
-	  $ret .= "</select>\n";
-	  return $ret;
-	}
+		function make_calendar($boxname, $boxvalue)
+		{
+		  global $ecal_class, $cal;
+		
+	        unset($cal_options);
+	        unset($cal_attrib);
+	        $cal_options['firstDay'] = $ecal_class->ec_first_day_of_week;
+	        $cal_options['showsTime'] = false;
+	        $cal_options['showOthers'] = true;
+	        $cal_options['weekNumbers'] = false;
+	        $cal_options['ifFormat'] = $ecal_class->dcal_format_string;
+	        $cal_attrib['class'] = "tbox";
+	        $cal_attrib['size'] = "12";
+	        $cal_attrib['name'] = $boxname;
+	        $cal_attrib['value'] = $boxvalue;
+	        return $cal->make_input_field($cal_options, $cal_attrib);
+		}
 	
 	
-	function recur_week_select($curval)
-	{
-	  global $ecal_class;
-	  $disp = $curval < 100 ? " style='display:none;'" : "";
-	  $curval -= intval($curval % 10);		// Should make it an exact multiple of 100
-	  $ret = "<span id='rec_week_sel'{$disp}><select class='tbox' name='ec_recur_week'>";
-	  foreach ($ecal_class->recur_week as $k => $v)
-	  {
-	    $selected = ($curval == $k) ? " selected = 'selected'" : "";
-	    $ret .= "<option value='{$k}'{$selected}>{$v}</option>\n";
-	  }
-	  $ret .= "</select></span>\n";
-	  return $ret;
-	}
+		function make_hourmin($boxname,$cur_hour,$cur_minute)
+		{
+		  global $pref;
+		  if (isset($pref['eventpost_fivemins'])) $incval = 5; else $incval = 1;
+		  $retval = " <select name='{$boxname}hour' id='{$boxname}hour' class='tbox'>\n";
+		  for($count = "00"; $count <= "23"; $count++)
+		  {
+			$val = sprintf("%02d", $count);
+			$retval .= "<option value='{$val}' ".(isset($cur_hour) && $count == $cur_hour ? "selected='selected'" :"")." >".$val."</option>\n";
+		  }
+		  $retval .= "</select>\n
+			<select name='{$boxname}minute' class='tbox'>\n";
+		  for($count = "00"; $count <= "59"; $count+= $incval)
+		  {
+			$val = sprintf("%02d", $count);
+			$retval .= "<option ".(isset($cur_minute) && $count == $cur_minute ? "selected='selected'" :"")." value='{$val}'>".$val."</option>\n";
+		  }
+		  $retval .= "</select>\n";
+		  return $retval;
+		}
+	
+		function recur_select($curval)
+		{
+		  global $ecal_class;
+		  while ($curval > 150) { $curval -= 100; }		// Could have values up to about 406
+		  $ret = "<select class='tbox' name='ec_recur_type' onchange=\"proc_recur(this.value);\">";
+		  foreach ($ecal_class->recur_type as $k => $v)
+		  {
+		    $selected = ($curval == $k) ? " selected = 'selected'" : "";
+		    $ret .= "<option value='{$k}'{$selected}>{$v}</option>\n";
+		  }
+		  $ret .= "</select>\n";
+		  return $ret;
+		}
+		
+		
+		function recur_week_select($curval)
+		{
+		  global $ecal_class;
+		  $disp = $curval < 100 ? " style='display:none;'" : "";
+		  $curval -= intval($curval % 10);		// Should make it an exact multiple of 100
+		  $ret = "<span id='rec_week_sel'{$disp}><select class='tbox' name='ec_recur_week'>";
+		  foreach ($ecal_class->recur_week as $k => $v)
+		  {
+		    $selected = ($curval == $k) ? " selected = 'selected'" : "";
+		    $ret .= "<option value='{$k}'{$selected}>{$v}</option>\n";
+		  }
+		  $ret .= "</select></span>\n";
+		  return $ret;
+		}
 
 
 	switch ($action)
 	{
-      case "ed" :	// Editing existing event - read from database
-        $sql->db_Select("event", "*", "event_id='".intval($qs[1])."' ");
+      case 'ed' :	// Editing existing event - read from database
+        $sql->db_Select('event', '*', 'event_id='.intval($qs[1]));
+
         list($null, $ne_start, $ne_end, $allday, $recurring, $ne_datestamp, $ne_title, $ne_location, $ne_event, $ne_author, $ne_email, $ne_category, $ne_thread) = $sql->db_Fetch();
 
         $smarray = $ecal_class->gmgetdate($ne_start);
@@ -433,7 +436,7 @@ if ($action == "ne" || $action == "ed")
         $caption = EC_LAN_66; // edit Event
         break;
 		
-	  case "ne" :	// New event - initialise everything
+	  case 'ne' :	// New event - initialise everything
         $smarray = $ecal_class->gmgetdate($qs[1]);
         $month = $smarray['mon'];
         $year = $smarray['year'];
@@ -667,12 +670,12 @@ if ($action == "ne" || $action == "ed")
 
         $ns->tablerender($caption, $text);
         require_once(FOOTERF);
-        exit;
+        exit();
     }
     else
     {
-        header("location:".e_PLUGIN."calendar_menu/event.php");
-        exit;
+		header('location:'.e_PLUGIN.'calendar_menu/event.php');
+        exit();
     }
 }   // End of "Enter New Event"
 
@@ -682,9 +685,9 @@ if ($action == "ne" || $action == "ed")
 // $month, $year have the month required
 //-----------------------------------------------
 $monthstart		= gmmktime(0, 0, 0, $month, 1, $year);
-$firstdayarray	= getdate($monthstart);
+$firstdayarray	= $ecal_class->gmgetdate($monthstart);
 $monthend		= gmmktime(0, 0, 0, $month + 1, 1, $year) -1 ;
-$lastdayarray	= getdate($monthend);
+$lastdayarray	= $ecal_class->gmgetdate($monthend);
 
 $prevmonth		= ($month-1);
 $prevyear		= $year;
@@ -732,10 +735,10 @@ else
 
 $text2 = "";
 // time switch buttons
-$text2 .= $tp -> parseTemplate($CALENDAR_TIME_TABLE, FALSE, $calendar_shortcodes);
+$text2 .= $tp->parseTemplate($CALENDAR_TIME_TABLE, FALSE, $calendar_shortcodes);
 
 // navigation buttons
-$text2 .= $tp -> parseTemplate($CALENDAR_NAVIGATION_TABLE, FALSE, $calendar_shortcodes);
+$text2 .= $tp->parseTemplate($CALENDAR_NAVIGATION_TABLE, FALSE, $calendar_shortcodes);
 
 
 // ****** CAUTION - the category dropdown also used $sql object - take care to avoid interference!
@@ -743,7 +746,7 @@ $text2 .= $tp -> parseTemplate($CALENDAR_NAVIGATION_TABLE, FALSE, $calendar_shor
 $ev_list = array();
 
 
-if ($ds == "event")
+if ($ds == 'event')
 {		// Show single event - bit of a special case
 	$ec_err = FALSE;
 	$qry = "
@@ -776,63 +779,64 @@ if ($ds == "event")
 }
 else
 {
-  if ($ds == 'one')
-  {  // Show events from one day
-    $tmp			= getdate($action);
-    $selected_day	= $tmp['mday'];
-    $selected_mon	= $tmp['mon'];
-    $start_time		= $action;
-    $end_time		= $action + 86399;
-	$next10_start   = $end_time + 1;
-    $cap_title		= " - ".$months[$selected_mon-1]." ".$selected_day;
-  }
-  else
-  {  // Display whole of selected month
-    $start_time		= $monthstart;
-    $end_time		= $monthend;
-	$next10_start   = $end_time + 1;
-    $cap_title		= '';
-  }
+	if ($ds == 'one')
+	{  // Show events from one day
+	    $tmp			= $ecal_class->gmgetdate($action);
+	    $selected_day	= $tmp['mday'];
+	    $selected_mon	= $tmp['mon'];
+		$start_time		= intval($action);
+		$end_time		= $action + 86399;
+		$next10_start   = $end_time + 1;
+	    $cap_title		= " - ".$months[$selected_mon-1]." ".$selected_day;
+	}
+	else
+	{  // Display whole of selected month
+		$start_time		= $monthstart;
+		$end_time		= $monthend;
+		$next10_start   = $end_time + 1;
+	    $cap_title		= '';
+	}
 
-//  echo "Start: ".$start_time."  End: ".$end_time."  Cat_filter: ".$cat_filter."<br />";
+	//  echo "Start: ".$start_time."  End: ".$end_time."  Cat_filter: ".$cat_filter."<br />";
 	// We'll need virtually all of the event-related fields, so get them regardless
-  $ev_list = $ecal_class->get_events($start_time, $end_time, FALSE, $cat_filter, TRUE, '*', 'event_cat_name,event_cat_icon');
+	$ev_list = $ecal_class->get_events($start_time, $end_time, FALSE, $cat_filter, TRUE, '*', 'event_cat_name,event_cat_icon');
 
 //  echo count($ev_list)." records found<br />";
   
-// Now go through and multiply up any recurring records
-  $tim_arr = array();
-  foreach ($ev_list as $k=>$event)
-  {
-    if (is_array($event['event_start']))
+	// Now go through and multiply up any recurring records
+	$tim_arr = array();
+	foreach ($ev_list as $k=>$event)
 	{
-	  foreach ($event['event_start'] as $t)
-	  {
-	    $tim_arr[$t] = $k;
-	  }
+		if (is_array($event['event_start']))
+		{
+			foreach ($event['event_start'] as $t)
+			{
+				$tim_arr[$t] = $k;
+			}
+		}
+		else
+		{
+		  $tim_arr[$event['event_start']] = $k;
+		}
 	}
-	else
-	{
-	  $tim_arr[$event['event_start']] = $k;
-	}
-  }
   
-  // Add a sort in here
-  ksort($tim_arr);
+	// Add a sort in here - time/date order
+	ksort($tim_arr);
 
-// display event list for current month
-  if(count($tim_arr))
-  {
-	$text2 .= $tp -> parseTemplate($EVENT_EVENTLIST_TABLE_START, FALSE, $calendar_shortcodes);
-	foreach ($tim_arr as $tim => $ptr)
+	// display event list for current month
+	if(count($tim_arr))
 	{
-	  $ev_list[$ptr]['event_start'] = $tim;
-//	  $text2 .= show_event($ev_list[$ptr]);
-	  $thisevent = $ev_list[$ptr];
-	  $text2 .= $tp -> parseTemplate($EVENT_EVENT_TABLE, TRUE, $calendar_shortcodes);
+		$text2 .= $tp -> parseTemplate($EVENT_EVENTLIST_TABLE_START, FALSE, $calendar_shortcodes);
+		foreach ($tim_arr as $tim => $ptr)
+		{
+			$ev_list[$ptr]['event_start'] = $tim;
+	
+			//	  $text2 .= show_event($ev_list[$ptr]);
+			$thisevent = $ev_list[$ptr];
+			$text2 .= $tp -> parseTemplate($EVENT_EVENT_TABLE, TRUE, $calendar_shortcodes);
+		}
+		$text2 .= $tp -> parseTemplate($EVENT_EVENTLIST_TABLE_END, FALSE, $calendar_shortcodes);
 	}
-	$text2 .= $tp -> parseTemplate($EVENT_EVENTLIST_TABLE_END, FALSE, $calendar_shortcodes);
-  }
 }
 
 
@@ -845,21 +849,21 @@ $ev_list = $ecal_class->get_n_events(10, $next10_start, $next10_start+86400000, 
 $num = count($ev_list);
 if ($num != 0)
 {
-  $archive_events = "";
-  foreach ($ev_list as $thisevent)
-  {
-//    echo "Event start: ".$thisevent['event_start']."<br />";
-	$archive_events .= $tp -> parseTemplate($EVENT_ARCHIVE_TABLE, FALSE, $calendar_shortcodes);
-  }
+	$archive_events = '';
+	foreach ($ev_list as $thisevent)
+	{
+		//    echo "Event start: ".$thisevent['event_start']."<br />";
+		$archive_events .= $tp->parseTemplate($EVENT_ARCHIVE_TABLE, FALSE, $calendar_shortcodes);
+	}
 }
 else
 {
-  $archive_events = $tp -> parseTemplate($EVENT_ARCHIVE_TABLE_EMPTY, FALSE, $calendar_shortcodes);
+	$archive_events = $tp -> parseTemplate($EVENT_ARCHIVE_TABLE_EMPTY, FALSE, $calendar_shortcodes);
 }
 
-$text2 .= $tp -> parseTemplate($EVENT_ARCHIVE_TABLE_START, FALSE, $calendar_shortcodes);
+$text2 .= $tp->parseTemplate($EVENT_ARCHIVE_TABLE_START, FALSE, $calendar_shortcodes);
 $text2 .= $archive_events;
-$text2 .= $tp -> parseTemplate($EVENT_ARCHIVE_TABLE_END, FALSE, $calendar_shortcodes);
+$text2 .= $tp->parseTemplate($EVENT_ARCHIVE_TABLE_END, FALSE, $calendar_shortcodes);
 
 
 $caption = EC_LAN_80; // "Event List";

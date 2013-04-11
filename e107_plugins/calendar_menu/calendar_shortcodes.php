@@ -277,7 +277,7 @@ SC_BEGIN EC_EVENTLIST_CAPTION
 	}
     elseif ($ds != 'event')
     {
-		$EC_EVENTLIST_CAPTION = EC_LAN_112.$months[date("m", $monthstart)-1];
+		$EC_EVENTLIST_CAPTION = EC_LAN_112.$months[gmdate("m", $monthstart)-1];
 	}
 	return $EC_EVENTLIST_CAPTION;
 SC_END
