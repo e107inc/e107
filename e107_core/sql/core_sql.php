@@ -429,6 +429,7 @@ CREATE TABLE plugin (
   plugin_installflag tinyint(1) unsigned NOT NULL default '0',
   plugin_addons text NOT NULL,
   plugin_category varchar(100) NOT NULL default '',
+  plugin_releaseUrl varchar(255) NOT NULL default '',
   PRIMARY KEY  (plugin_id),
   UNIQUE KEY plugin_path (plugin_path)
 ) ENGINE=MyISAM;
