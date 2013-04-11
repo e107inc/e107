@@ -174,6 +174,18 @@ if(defset('e_DEBUG')==TRUE)
 	$error_handler->debug = true;
 	error_reporting(E_ALL);	
 	$e107_debug = true;
+	list($majorVersion,$tmp) = explode(".",phpversion(),2);
+	
+	if($majorVersion == 4) // DEBUG ONLY - no need to translate. 
+	{
+		echo "<div style='border-radius: 10px; font-size:16px; margin:40px; padding:40px;background-color:#F2DEDE;color:#B94A48'>
+		<b>WARNING</b>: You are using PHP4 which is no longer maintained as of January 2008 and poses a high security risk if you should choose to continue to use it.<br />
+		Please ask your hosting provider or server administrator to upgrade to the latest stable version of PHP5. 
+		</div>";	
+	}
+	
+	unset($majorVersion,$tmp);
+	
 }
 
 if(isset($CLASS2_INCLUDE) && ($CLASS2_INCLUDE!=''))
