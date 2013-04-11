@@ -986,7 +986,7 @@ function update_706_to_800($type='')
 
 
 	//TODO - send notification messages to Log. 
-	
+
 
 	if($sql->field('page','page_theme') && $sql->gen("SELECT * FROM #page WHERE page_theme != '' AND menu_title = '' LIMIT 1"))
 	{
@@ -1002,6 +1002,16 @@ function update_706_to_800($type='')
 			$mes->addDebug("Successfully updated pages/menus table to new format. ");
 		}
 	
+	}
+	
+	if($sql->field('plugin','plugin_releaseUrl'))
+	{
+		if ($just_check) return update_needed('plugin_releaseUrl is deprecated and needs to be removed. ');
+		if($sql->gen("ALTER TABLE `#plugin` DROP `plugin_releaseUrl`"))
+		{
+			e107::getMessage()->addDebug("Successfully removed plugin_releaseUrl. ");
+		}
+		
 	}
 	
 	

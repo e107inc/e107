@@ -366,8 +366,20 @@ class e107plugin
 						
 						$_installed = ($plug_info['@attributes']['installRequired'] == 'true' || $plug_info['@attributes']['installRequired'] == 1 ? 0 : 1);
 						
-						if (e107::getDb()->db_Insert("plugin", "0, '".$tp->toDB($pName, true)."', '".$tp->toDB($plug_info['@attributes']['version'], true)."', '".$tp->toDB($plugin_path, true)."',{$_installed}, '{$eplug_addons}', '".$this->manage_category($plug_info['category'])."' "))
-						{
+						
+						$pInsert = array(
+							'plugin_id' 			=> 0,
+							'plugin_name'			=> $tp->toDB($pName, true),
+							'plugin_version'		=> $tp->toDB($plug_info['@attributes']['version'], true),
+							'plugin_path'			=> $tp->toDB($plugin_path, true),
+							'plugin_installflag'	=> $_installed,
+							'plugin_addons'			=> $eplug_addons,
+							'plugin_category'		=> $this->manage_category($plug_info['category'])
+						);
+						
+					//		if (e107::getDb()->db_Insert("plugin", "0, '".$tp->toDB($pName, true)."', '".$tp->toDB($plug_info['@attributes']['version'], true)."', '".$tp->toDB($plugin_path, true)."',{$_installed}, '{$eplug_addons}', '".$this->manage_category($plug_info['category'])."' "))
+							if (e107::getDb()->insert("plugin", $pInsert))
+							{
 								$mes->addDebug("Added <b>".$tp->toHTML($pName,false,"defs")."</b> to the plugin table.");
 							}
 							else
