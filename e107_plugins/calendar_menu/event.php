@@ -96,7 +96,7 @@ $ev_fields = array(
 //--------------------------------------
 if ((isset($_POST['ne_insert']) || isset($_POST['ne_update'])) && ($cal_super  || check_class($ecal_class->pref['eventpost_admin'])))
 {  
-	$ev_start	= $ecal_class->make_date($_POST['ne_hour'], $_POST['ne_minute'],$_POST['start_date']);
+	$ev_start = $ecal_class->make_date($_POST['ne_hour'], $_POST['ne_minute'],$_POST['start_date']);
 	if (($_POST['ne_event'] == '') || !isset($_POST['qs']))
 	{	// Problem - tell user to go away - fields are blank (mostly checked by JS)
 		header('location:event.php?'.$ev_start.'.0.m3');
@@ -129,7 +129,7 @@ if ((isset($_POST['ne_insert']) || isset($_POST['ne_update'])) && ($cal_super  |
 		$ev_title		= $tp->toDB($_POST['ne_title']);
 		$ev_location	= $tp->toDB($_POST['ne_location']);
 		$ev_event		= $tp->toDB($_POST['ne_event']);
-		$ev_email		= $tp >toDB($_POST['ne_email']);
+		$ev_email		= $tp->toDB($_POST['ne_email']);
 		$ev_thread		= $tp->toDB($_POST['ne_thread']);
 		$temp_date 		= $ecal_class->gmgetdate($ecal_class->make_date(0,0,$_POST['start_date']));
 		$ev_allday		= intval($_POST['allday']);
@@ -146,27 +146,27 @@ if ((isset($_POST['ne_insert']) || isset($_POST['ne_update'])) && ($cal_super  |
 			$rec_m = '';
 			$rec_y = '';
 		}
-		
+
 		$report_msg = '.m3';
 		if (isset($_POST['ne_insert']))
 		{  // Bits specific to inserting a new event
-		  $qs = preg_replace("/ne./i", "", $_POST['qs']);	
-		  if ($_POST['ec_gen_multiple'])
-		  {
-			$mult_count = $ecal_class->gen_recur($ev_start,$ev_end,$recurring,$ev_start,$ev_end);
-		  }
-		  if ($mult_count <= 1)
-		  {
-			$qry = " 0, '".intval($ev_start)."', '".intval($ev_end)."', '".$ev_allday."', '".$recurring."', '".time()."', '$ev_title', '$ev_location', '$ev_event', '".USERID.".".USERNAME."', '".$ev_email."', '".$ev_category."', '".$ev_thread."', '".intval($rec_m)."', '".intval($rec_y)."' ";
-			$sql->db_Insert('event', $qry);
-
-			$id = mysql_insert_id();
-			$data = array('method'=>'create', 'table'=>'event', 'id'=>$id, 'plugin'=>'calendar_menu', 'function'=>'dbCalendarCreate');
-			$e_event->triggerHook($data);
-
-			$ecal_class->cal_log(1,'db_Insert',$qry, $ev_start);
-			$report_msg = '.m4';
-		  }
+			$qs = preg_replace("/ne./i", "", $_POST['qs']);	
+			if ($_POST['ec_gen_multiple'])
+			{
+				$mult_count = $ecal_class->gen_recur($ev_start,$ev_end,$recurring,$ev_start,$ev_end);
+			}
+			if ($mult_count <= 1)
+			{
+				$qry = " 0, '".intval($ev_start)."', '".intval($ev_end)."', '".$ev_allday."', '".$recurring."', '".time()."', '$ev_title', '$ev_location', '$ev_event', '".USERID.".".USERNAME."', '".$ev_email."', '".$ev_category."', '".$ev_thread."', '".intval($rec_m)."', '".intval($rec_y)."' ";
+				$sql->db_Insert('event', $qry);
+	
+				$id = mysql_insert_id();
+				$data = array('method'=>'create', 'table'=>'event', 'id'=>$id, 'plugin'=>'calendar_menu', 'function'=>'dbCalendarCreate');
+				$e_event->triggerHook($data);
+	
+				$ecal_class->cal_log(1,'db_Insert',$qry, $ev_start);
+				$report_msg = '.m4';
+			}
 		}
 		
 		if (isset($_POST['ne_update']))
@@ -261,13 +261,13 @@ else
 		$eveid		= intval(varset($qs[2], 0));
 	}
 
-    if ($action == '')
-    {
+	if ($action == '')
+	{
 		$dateArray	= $ecal_class->cal_date;		// Use todays date
-    }
-    else
-    {
-        if (is_numeric($action)) 
+	}
+	else
+	{
+		if (is_numeric($action)) 
 		{
 			$dateArray	= $ecal_class->gmgetdate($action);
 		}
@@ -671,12 +671,12 @@ if ($action == 'ne' || $action == 'ed')
 
         $ns->tablerender($caption, $text);
         require_once(FOOTERF);
-        exit;
+        exit();
     }
     else
     {
-        header('location:'.e_PLUGIN.'calendar_menu/event.php');
-        exit;
+		header('location:'.e_PLUGIN.'calendar_menu/event.php');
+        exit();
     }
 }   // End of "Enter New Event"
 
@@ -755,7 +755,7 @@ else
 {
 	if ($ds == 'one')
 	{  // Show events from one day
-//		$tmp			= getdate($action);
+//		$tmp			= $ecal_class->gmgetdate($action);
 //		$selected_day	= $tmp['mday'];
 //		$selected_mon	= $tmp['mon'];
 		$start_time		= intval($action);
