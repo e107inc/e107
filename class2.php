@@ -173,6 +173,7 @@ if(defset('e_DEBUG')==TRUE)
 {
 	$error_handler->debug = true;
 	error_reporting(E_ALL);	
+	$e107_debug = true;
 }
 
 if(isset($CLASS2_INCLUDE) && ($CLASS2_INCLUDE!=''))
