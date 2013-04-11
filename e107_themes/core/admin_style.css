@@ -169,9 +169,9 @@ div.menu div.menuItemSep { border-top:1px solid #a5a5a5; border-bottom:1px solid
 .menuItem .header a { border-bottom:1px solid #b3b3b3; }
 
 /* XXX These Are required */
-.sc-imageselector { min-width: 345px; max-width: 700px; width: 30%; }
-select.bb-preimageselect { min-width: 345px; max-width: 700px; width: 30%; }
-table.bb-preimageselect { -moz-box-shadow: 2px 2px 4px #999; -webkit-box-shadow: 2px 2px 4px #999; box-shadow: 2px 2px 4px #999; }
+.admin_main_col select.sc-imageselector { min-width: 345px; max-width: 80%; width: auto; !important;  }
+.admin_main_col select.bb-preimageselect { min-width: 345px; max-width: 700px; width: 30%; }
+.admin_main_col table.bb-preimageselect { -moz-box-shadow: 2px 2px 4px #999; -webkit-box-shadow: 2px 2px 4px #999; box-shadow: 2px 2px 4px #999; }
 
 #new-version { color:#FFCC00; width:250px; padding:5px; float:right; margin-left:50px;margin-top:10px; }
 #new-version-caption {font-weight:bold}
