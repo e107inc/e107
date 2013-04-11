@@ -40,7 +40,7 @@ class parseXml {
 	}
 
 
-    function getRemoteXmlFile($address, $timeout = 10)
+    function getRemoteXmlFile($address='', $timeout = 10)
 	{
 		// Could do something like: if ($timeout <= 0) $timeout = $pref['get_remote_timeout'];  here
 		$timeout = min($timeout, 120);
