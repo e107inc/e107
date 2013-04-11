@@ -641,7 +641,7 @@ class users_admin_ui extends e_admin_ui
 		$sql = e107::getDb();
 
 		$remuser = true;
-        $emessage = e107::getMessage();
+        $mes = e107::getMessage();
 		
 		if(!$sysuser->getId())
 		{
@@ -812,7 +812,7 @@ class users_admin_ui extends e_admin_ui
 		$admin_log = e107::getAdminLog();
 		$sysuser = e107::getSystemUser($id, false);
 		$key = $sysuser->getValue('sess');
-		$emessage = e107::getMessage();
+		$mes = e107::getMessage();
 		
 		if(!$sysuser->getId())
 		{
@@ -881,7 +881,7 @@ class users_admin_ui extends e_admin_ui
 	public function TestObserver()
 	{
 		$sysuser = e107::getSystemUser($this->getId(), false);
-		$emessage = e107::getMessage();
+		$mes = e107::getMessage();
 		$email = $sysuser->getValue('email');
 		
 		if(!$sysuser->getId())
@@ -1428,7 +1428,7 @@ class users_admin_ui extends e_admin_ui
 		$frm = e107::getForm();
 		$e107 = e107::getInstance();
 		$pref = e107::getPref();
-		$emessage = e107::getMessage();
+		$mes = e107::getMessage();
 		$ui = $this->getUI();
 		$tp = e107::getParser();
 
