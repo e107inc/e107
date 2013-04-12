@@ -3883,7 +3883,7 @@ class eResponse
 		{
 			return $this;
 		}
-		$this->_render_mod[$ns] = (string) $ns;
+		$this->_render_mod[$ns] = (string) $render_mod;
 		return $this;
 	}
 
