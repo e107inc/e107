@@ -183,6 +183,7 @@ class e_jshelper
     	}
 
     	if(null !== $action) echo $this->buildXmlResponse();
+		while (@ob_end_flush());
     	exit;
     }
 
@@ -211,6 +212,7 @@ class e_jshelper
     	    $this->addResponseAction($action, $data_array);
     	}
 		if(null !== $action) echo $this->buildJSONResponse();
+		while (@ob_end_flush());
     	exit;
     }
     
@@ -254,6 +256,7 @@ class e_jshelper
     { 
     	header('Content-type: text/html; charset='.CHARSET, true);
     	echo $this->addTextResponse($data_text)->buildTextResponse();
+		while (@ob_end_flush());
     	exit;
     }
     
@@ -334,7 +337,7 @@ class e_jshelper
 
         //Safari expects some kind of output, even empty
         echo ($errextended ? $errextended : ' ');
-
+		while (@ob_end_flush());
         exit;
     }
 
