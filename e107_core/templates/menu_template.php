@@ -6,8 +6,7 @@
 
 	$MENU_TEMPLATE['default']['start'] 					= ''; 
 	$MENU_TEMPLATE['default']['body'] 					= '{CMENUBODY}'; 
-	$MENU_TEMPLATE['default']['noTableRender'] 			= true;
-
+	$MENU_TEMPLATE['default']['noTableRender'] 			= false; // XXX Let the theme decide. 
 
 	$MENU_TEMPLATE['button']['start'] 					= '<div class="cpage-menu">'; 
 	$MENU_TEMPLATE['button']['body'] 					= '{CMENUBODY}{CPAGEBUTTON}'; 
