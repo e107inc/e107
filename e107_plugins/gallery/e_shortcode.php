@@ -62,7 +62,8 @@ class gallery_shortcodes extends e_shortcode
 		$h 			= vartrue($parms['h']) ? $parms['h'] : 130;	
 		
 		$class 		= ($this->slideMode == TRUE) ? 'gallery-slideshow-thumb' : 'gallery-thumb';
-		$rel 		= ($this->slideMode == TRUE) ? 'lightbox.SlideGallery' : 'lightbox.Gallery';
+	//	$rel 		= ($this->slideMode == TRUE) ? 'lightbox.SlideGallery' : 'lightbox.Gallery';
+			$rel 		= ($this->slideMode == TRUE) ? 'prettyPhoto[slide]' : 'prettyPhoto[gal]';
 		$att 		= 'aw='.$w.'&ah='.$h.'&x=1'; // 'aw=190&ah=150';
 		
 		$srcFull = $tp->thumbUrl($this->var['media_url'], $this->attFull);
@@ -77,10 +78,12 @@ class gallery_shortcodes extends e_shortcode
 		elseif(isset($parms['imageurl'])) return $tp->replaceConstants($this->var['media_url'], 'full');
 		
 		$caption = $tp->toAttribute($this->var['media_caption']) ;	
-		$caption .= ($this->downloadable) ? " <a class='e-tip smalltext' title='Right-click > Save Link As' href='".$srcFull."'>Download</a>" : "";
+		$description = ($this->downloadable) ? " <a class='btn btn-mini e-tip' title='Right-click > Save Link As' href='".$srcFull."'>Download</a>" : "";
 		
-		$text = "<a class='".$class."' title=\"".$caption."\" href='".$srcFull."'  rel='{$rel}' >";
-		$text .= "<img class='".$class."' src='".$tp->thumbUrl($this->var['media_url'],$att)."' alt='' />";
+		$description .= $tp->toAttribute($this->var['media_description']);
+		
+		$text = "<a class='".$class."' title=\"".$description."\" href='".$srcFull."'  rel='{$rel}' >";
+		$text .= "<img class='".$class."' src='".$tp->thumbUrl($this->var['media_url'],$att)."'  alt=\"".$caption."\" />";
 		$text .= "</a>";
 		
 		return $text;	

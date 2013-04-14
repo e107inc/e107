@@ -7,18 +7,39 @@
 */
 if (!defined('e107_INIT')) { exit; }
 
-e107::js('gallery', 'jslib/lightbox/js/lightbox.js','jquery');
-e107::css('gallery', 'jslib/lightbox/css/lightbox.css','jquery');
+//e107::js('gallery', 'jslib/lightbox/js/lightbox.js','jquery');
+//e107::css('gallery', 'jslib/lightbox/css/lightbox.css','jquery');
+
+// See: http://www.no-margin-for-errors.com/projects/prettyPhoto-jquery-lightbox-clone
+e107::js('gallery', 'jslib/prettyPhoto/js/jquery.prettyPhoto.js','jquery');
+e107::css('gallery', 'jslib/prettyPhoto/css/prettyPhoto.css','jquery');
 
 e107::js('gallery', 'jslib/jquery.cycle.all.js','jquery');
 e107::css('gallery', 'gallery_style.css');
 
-e107::css('inline', "
+//e107::css('inline', "
 /* Gallery CSS */
-a.lb-close			{ width:27px; height:27px; background:url(".SITEURLBASE.e_PLUGIN_ABS."gallery/images/close.png) no-repeat 0 0; }
-.lb-loader			{ background:url(".SITEURLBASE.e_PLUGIN_ABS."gallery/images/loading.gif) no-repeat 50% 49%; }
+//a.lb-close			{ width:27px; height:27px; background:url(".SITEURLBASE.e_PLUGIN_ABS."gallery/images/close.png) no-repeat 0 0; }
+//.lb-loader			{ background:url(".SITEURLBASE.e_PLUGIN_ABS."gallery/images/loading.gif) no-repeat 50% 49%; }
+//
+//",'jquery');
 
-",'jquery');
+
+
+$prettyPhoto = <<<JS
+$(document).ready(function(){
+    $("a[rel^='prettyPhoto']").prettyPhoto(
+	    {
+	    	theme: 'pp_default', /* pp_default , light_rounded , dark_rounded , light_square , dark_square ,facebook */
+	    	overlay_gallery: false
+	    }
+    );
+  });
+JS;
+
+e107::js('inline',$prettyPhoto,'jquery');
+
+
 
 
 $gp = e107::getPlugPref('gallery');

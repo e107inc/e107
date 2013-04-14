@@ -21,10 +21,7 @@
  *	Ultra-simple Image-Gallery
  */
  
- /*
-  * THIS SCRIPT IS HIGHLY EXPERIMENTAL. USE AT OWN RISK. 
-  * 
-  */
+
 require_once("../../class2.php");
 if (!plugInstalled('gallery'))
 {
