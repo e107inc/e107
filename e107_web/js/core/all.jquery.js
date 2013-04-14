@@ -224,7 +224,7 @@ $(document).ready(function()
 		
 		// Tabs -----------------------------------------------------
 		
-		
+		/*
 		$(function() {
 			$( "#tab-container" ).tabs({cache: true});
 		});	
@@ -249,7 +249,7 @@ $(document).ready(function()
 			
 			return false;
 		});
-		
+		*/
 		
 		// --------------- Email ----------------------------------------
 		
@@ -444,7 +444,7 @@ $(document).ready(function()
 		
 		
 				
-		$(".e-shake" ).effect("shake","",100);
+
 		
     	$('.e-rate').each(function() {
     		var path 		= $(this).attr("data-path");

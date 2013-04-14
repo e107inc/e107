@@ -33,6 +33,9 @@ $(document).ready(function()
 	 	});
 	
 	
+
+	
+	
 		// run tips on title attribute. 
 		$(".e-tip").each(function() {
 						
