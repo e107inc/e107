@@ -1148,27 +1148,40 @@ class e_menuManager {
 		{
 			echo $tp->parseTemplate("{LOGO}");
 		}
-		else if(strstr($str, "SITENAME"))
+		elseif(strstr($str, "SITENAME"))
 		{
 			echo "[SiteName]";
 		}
-		else if(strstr($str, "SITETAG"))
+		elseif(strstr($str, "SITETAG"))
 		{
 			echo "<div style='padding: 2px'>[SiteTag]</div>";
 		}
-		else if(strstr($str, "SITELINKS"))
+		elseif(strstr($str, "SITELINKS"))
 		{
 			echo "<div style='padding: 2px; text-align: center'>[SiteLinks]</div>";
 		}
-		else if(strstr($str, "LANGUAGELINKS"))
+		elseif(strstr($str, "LANGUAGELINKS"))
 		{
 			echo "<div class=text style='padding: 2px; text-align: center'>[Language]</div>";
 		}
-		else if(strstr($str, "CUSTOM"))
+		elseif(strstr($str, "CUSTOM"))
 		{
 			$cust = preg_replace("/\W*\{CUSTOM=(.*?)(\+.*)?\}\W*/si", "\\1", $str);
 			echo "<div style='padding: 2px'>[" . $cust . "]</div>";
 		}
+		elseif(strstr($str, "CMENU"))
+		{
+			$cust = preg_replace("/\W*\{CMENU=(.*?)(\+.*)?\}\W*/si", "\\1", $str);
+			echo $tp->parseTemplate("{CMENU=".$cust."}",true);
+		//	echo $this->renderPanel('Embedded Custom Menu',$cust);
+		}
+		elseif(strstr($str, "SETIMAGE"))
+		{
+			$cust = preg_replace("/\W*\{SETIMAGE(.*?)(\+.*)?\}\W*/si", "\\1", $str);
+			echo $tp->parseTemplate("{SETIMAGE".$cust."}",true);
+		//	echo $this->renderPanel('Embedded Custom Menu',$cust);
+		}
+		
 		// Display embedded Plugin information.
 		else if(strstr($str, "PLUGIN"))
 		{
