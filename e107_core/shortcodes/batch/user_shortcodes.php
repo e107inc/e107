@@ -2,14 +2,11 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * User information - shortcodes
- *
- * $URL$
- * $Id$
  *
  */
 if (!defined('e107_INIT')) { exit; }
@@ -19,13 +16,13 @@ class user_shortcodes extends e_shortcode
 {
 	
 	function sc_total_chatposts($parm) {
-		global $sql;
+		$sql = e107::getDb();
 		if(!$chatposts = getcachedvars('total_chatposts'))
 		{
 		  $chatposts = 0;				// In case plugin not installed
 		  if (isset($pref['plug_installed']['chatbox_menu']))
 		  {
-			$chatposts = $sql->db_Count("chatbox");
+			$chatposts = $sql->count("chatbox");
 		  }
 		  cachevars('total_chatposts', $chatposts);
 		}
@@ -36,10 +33,10 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_total_commentposts($parm) 
 	{
-		global $sql;
+		$sql = e107::getDb();
 		if(!$commentposts = getcachedvars('total_commentposts'))
 		{
-			$commentposts = $sql->db_Count("comments");
+			$commentposts = $sql->count("comments");
 			cachevars('total_commentposts', $commentposts);
 		}
 		return $commentposts;
@@ -49,10 +46,10 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_total_forumposts($parm) 
 	{
-		global $sql;
+		$sql = e107::getDb();
 		if(!$forumposts = getcachedvars('total_forumposts'))
 		{
-			$forumposts = $sql->db_Count("forum_t");
+			$forumposts = $sql->count("forum_thread");
 			cachevars('total_forumposts', $forumposts);
 		}
 		return $forumposts;
@@ -81,7 +78,7 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_user_downloads($parm) 
 	{
-		return e107::getDb()->db_Count("download_requests","(*)","where download_request_userid=".$this->var['user_id']);
+		return e107::getDb()->count("download_requests","(*)","where download_request_userid=".$this->var['user_id']);
 	}
 	
 	function sc_user_chatper($parm) 
@@ -92,7 +89,7 @@ class user_shortcodes extends e_shortcode
 		  $chatposts = 0;			// In case plugin not installed
 		  if (isset($pref['plug_installed']['chatbox_menu']))
 		  {
-			$chatposts = $sql->db_Count("chatbox");
+			$chatposts = $sql->count("chatbox");
 		  }
 		  cachevars('total_chatposts', $chatposts);
 		}
@@ -106,7 +103,7 @@ class user_shortcodes extends e_shortcode
 		$sql = e107::getDb();
 		if(!$commentposts = getcachedvars('total_commentposts'))
 		{
-			$commentposts = $sql->db_Count("comments");
+			$commentposts = $sql->count("comments");
 			cachevars('total_commentposts', $commentposts);
 		}
 		return ($commentposts!=0) ? round(($this->var['user_comments']/$commentposts) * 100, 2): 0;
@@ -119,7 +116,7 @@ class user_shortcodes extends e_shortcode
 		$sql = e107::getDb();
 		if(!$forumposts = getcachedvars('total_forumposts'))
 		{
-		  $forumposts = (isset($pref['plug_installed']['forum'])) ? $sql->db_Count("forum_t"): 0;
+		  $forumposts = (isset($pref['plug_installed']['forum'])) ? $sql->count("forum_thread"): 0;
 		  cachevars('total_forumposts', $forumposts);
 		}
 		return ($forumposts!==0) ? round(($this->var['user_forums']/$forumposts) * 100, 2): 0;
@@ -438,15 +435,15 @@ class user_shortcodes extends e_shortcode
 		if(!$userjump = getcachedvars('userjump'))
 		{
 		//  $sql->db_Select("user", "user_id, user_name", "`user_id` > ".intval($this->var['user_id'])." AND `user_ban`=0 ORDER BY user_id ASC LIMIT 1 ");
-		  $sql->db_Select_gen("SELECT user_id, user_name FROM `#user` FORCE INDEX (PRIMARY) WHERE `user_id` > ".intval($this->var['user_id'])." AND `user_ban`=0 ORDER BY user_id ASC LIMIT 1 ");
-		  if ($row = $sql->db_Fetch())
+		  $sql->gen("SELECT user_id, user_name FROM `#user` FORCE INDEX (PRIMARY) WHERE `user_id` > ".intval($this->var['user_id'])." AND `user_ban`=0 ORDER BY user_id ASC LIMIT 1 ");
+		  if ($row = $sql->fetch())
 		  {
 			$userjump['next']['id'] = $row['user_id'];
 			$userjump['next']['name'] = $row['user_name'];
 		  }
 		//  $sql->db_Select("user", "user_id, user_name", "`user_id` < ".intval($this->var['user_id'])." AND `user_ban`=0 ORDER BY user_id DESC LIMIT 1 ");
-		  $sql->db_Select_gen("SELECT user_id, user_name FROM `#user` FORCE INDEX (PRIMARY) WHERE `user_id` < ".intval($this->var['user_id'])." AND `user_ban`=0 ORDER BY user_id DESC LIMIT 1 ");
-		  if ($row = $sql->db_Fetch())
+		  $sql->gen("SELECT user_id, user_name FROM `#user` FORCE INDEX (PRIMARY) WHERE `user_id` < ".intval($this->var['user_id'])." AND `user_ban`=0 ORDER BY user_id DESC LIMIT 1 ");
+		  if ($row = $sql->fetch())
 		  {
 			$userjump['prev']['id'] = $row['user_id'];
 			$userjump['prev']['name'] = $row['user_name'];
