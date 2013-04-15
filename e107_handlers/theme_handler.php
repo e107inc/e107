@@ -1337,7 +1337,7 @@ class themeHandler
 	 * @param string $name [optional] name (folder) of the theme to set.
 	 * @return boolean TRUE on success, FALSE otherwise
 	 */
-	function setTheme($name = '')
+	function setTheme($name = '', $contentCheck = true)
 	{
 		$core = e107::getConfig('core');
 		$sql = e107::getDb();
@@ -1376,8 +1376,10 @@ class themeHandler
 			
 			
 			
-		
-			$this->installContentCheck($name);
+			if($contentCheck === true)
+			{
+				$this->installContentCheck($name);
+			}
 			
 			
 			$this->theme_adminlog('01', $name.', style.css');

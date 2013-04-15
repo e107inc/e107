@@ -1384,7 +1384,7 @@ function update_706_to_800($type='')
 	{
 		$th = e107::getSingleton('themeHandler');
 		$tmp = $th->getThemeInfo($pref['sitetheme']);
-		if($th->setTheme($pref['sitetheme']))
+		if($th->setTheme($pref['sitetheme'], false))
 		{
 			e107::getMessage()->addDebug("Updated SiteTheme prefs");
 		}
