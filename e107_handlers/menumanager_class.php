@@ -1158,7 +1158,7 @@ class e_menuManager {
 		}
 		elseif(strstr($str, "SITELINKS"))
 		{
-			echo "<div style='padding: 2px; text-align: center'>[SiteLinks]</div>";
+			echo "[SiteLinks]";
 		}
 		elseif(strstr($str, "LANGUAGELINKS"))
 		{
@@ -1414,7 +1414,7 @@ class e_menuManager {
 		if(!$this->dragDrop)
 		{
 				
-			return "<b class='muted'>".$caption."</b><br />". $text;
+			return "<b class='muted' style='color:#2F2F2F;text-align:left'>".$caption."</b><br />". $text;
 		//	return;
 	
 

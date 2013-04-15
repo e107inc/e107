@@ -240,7 +240,9 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 		
 	}
 	
-	.menu-options-buttons	{ white-space: nowrap }
+	.menuOptions > select { max-width:100% }
+	
+	.menu-options-buttons	{  }
 	#menu-manage-actions		{ width:50%; vertical-align:top; text-align:center; padding:15px }
 	
 	select.menu-btn { text-align:left }
