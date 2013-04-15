@@ -1207,7 +1207,7 @@ class users_admin_ui extends e_admin_ui
 		
 		$this->addTitle(LAN_USER_QUICKADD);
 		
-		$text = "<div>".$frm->open("core-user-adduser-form")."
+		$text = "<div>".$frm->open("core-user-adduser-form",null,null,'autocomplete=0')."
 		<fieldset id='core-user-adduser'>
         <table class='table adminform'>
 		<colgroup>
