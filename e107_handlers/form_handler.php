@@ -104,18 +104,24 @@ class e_form
 			$method = "post";	
 		}
 	
-		$class = "";
+		$class 			= "";
+		$autoComplete 	= "";
 	
 		parse_str($options,$options);
 	
 		$target = str_replace("&", "&amp;", $target);
-		
+	
 		if(vartrue($options['class']))
 		{
 			$class = "class='".$options['class']."'";
 		}
 		
-		$text = "\n<form {$class} action='{$target}' id='".$this->name2id($name)."' method = '{$method}'>\n";
+		if(isset($options['autocomplete'])) // leave as isset()
+		{
+			$autoComplete = " autocomplete='".($options['autocomplete'] ? 'on' : 'off')."'";	
+		}
+		
+		$text = "\n<form {$class} action='{$target}' id='".$this->name2id($name)."' method = '{$method}'{$autoComplete}>\n";
 		
 		if($method == 'get' && strpos($target,'='))
 		{
@@ -187,6 +193,11 @@ class e_form
 		if(is_string($options))
 		{
 			parse_str($options,$options);
+		}
+
+		if(!vartrue($options['class']))
+		{
+			$options['class'] = "tbox";		
 		}
 
 		/*
@@ -1722,18 +1733,30 @@ class e_form
 	 * @param array|string $user_options
 	 * @return array merged options
 	 */
-	function format_options($type, $name, $user_options)
+	function format_options($type, $name, $user_options=null)
 	{
-		if(is_string($user_options)) parse_str($user_options, $user_options);
-
-		$def_options = $this->_default_options($type);
-
-		foreach (array_keys($user_options) as $key)
+		if(is_string($user_options))
 		{
-			if(!isset($def_options[$key]) && substr($key,0,5)!='data-') unset($user_options[$key]); // data-xxxx exempt //remove it?
+			parse_str($user_options, $user_options); 
 		}
 
-		$user_options['name'] = $name; //required for some of the automated tasks
+		$def_options = $this->_default_options($type);
+	
+
+		if(is_array($user_options))
+		{
+			$user_options['name'] = $name; //required for some of the automated tasks
+			
+			foreach (array_keys($user_options) as $key)
+			{
+				if(!isset($def_options[$key]) && substr($key,0,5)!='data-') unset($user_options[$key]); // data-xxxx exempt //remove it?
+			}	
+		}
+		else 
+		{
+			$user_options = array('name' => $name); //required for some of the automated tasks	
+		}
+		
 		return array_merge($def_options, $user_options);
 	}
 
