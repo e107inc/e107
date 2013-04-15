@@ -185,7 +185,7 @@ class login_menu_class
 
             $nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
         	$qry = "
-        	SELECT  count(*) as count FROM #forum_t  as t
+        	SELECT  count(*) as count FROM #forum_thread  as t
         	LEFT JOIN #forum as f
         	ON t.thread_forum_id = f.forum_id
         	WHERE t.thread_datestamp > ".USERLV." and f.forum_class IN (".USERCLASS_LIST.") AND NOT (f.forum_class REGEXP ".$nobody_regexp.")
