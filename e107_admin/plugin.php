@@ -1498,6 +1498,8 @@ class pluginBuilder
 		var $pluginName = '';
 		var $special = array();
 		var $tableCount = 0;
+		var $tableList = array();
+		var $createFiles = false; 
 	
 		function __construct()
 		{
@@ -1507,6 +1509,11 @@ class pluginBuilder
 			if(vartrue($_GET['newplugin']))
 			{
 				$this->pluginName = $_GET['newplugin'];
+			}
+			
+			if(vartrue($_GET['createFiles']))
+			{
+				$this->createFiles	= true; 
 			}
 				
 			
@@ -1641,7 +1648,7 @@ class pluginBuilder
 				$ret =  $dv->getTables($data);
 			}
 		
-			$text = $frm->open('newplugin-step3','post', e_SELF.'?mode=create&newplugin='.$newplug.'&step=3');
+			$text = $frm->open('newplugin-step3','post', e_SELF.'?mode=create&newplugin='.$newplug.'&createFiles='.$this->createFiles.'&step=3');
 			
 			$text .= "<ul class='nav nav-tabs'>\n";
 			$text .= "<li class='active'><a data-toggle='tab' href='#xml'>Basic Info.</a></li>";
@@ -1651,6 +1658,7 @@ class pluginBuilder
 			foreach($ret['tables'] as $key=>$table)
 			{
 				$text .= "<li><a data-toggle='tab'  href='#".$table."'>Table: ".$table."</a></li>";
+				$this->tableList[] = $table;
 			}
 			$text .= "<li><a data-toggle='tab'  href='#preferences'>Preferences</a></li>";
 			
@@ -1801,6 +1809,8 @@ class pluginBuilder
 			
 			$size 		= 30;
 			$help		= '';
+			$pattern	= "";
+			$required	= false;
 			
 			switch ($info)
 			{
@@ -1918,7 +1928,7 @@ class pluginBuilder
 					'about'		=> 'about'
 					);
 				
-					$text = $frm->selectbox($name, $options,'','required=1', true);	
+					$text = $frm->selectbox($name, $options,'','required=1&class=null', true);	
 				break;
 				
 				
@@ -1989,14 +1999,17 @@ TEMPLATE;
 			$result = e107::getParser()->simpleParse($template, $newArray);
 			$path = e_PLUGIN.$this->pluginName."/plugin.xml";
 			
-			if(file_put_contents($path,$result))
-			{
-				$mes->addSuccess("Saved: ".$path);
-			}
-			else {
-				$mes->addError("Couldn't Save: ".$path);
-			}
 			
+			if($this->createFiles == true)
+			{
+				if(file_put_contents($path,$result) )
+				{
+					$mes->addSuccess("Saved: ".$path);
+				}
+				else {
+					$mes->addError("Couldn't Save: ".$path);
+				}
+			}
 			return  htmlentities($result);
 			
 		//	$ns->tablerender(LAN_CREATED.": plugin.xml", "<pre  style='font-size:80%'>".htmlentities($result)."</pre>");	
@@ -2018,9 +2031,17 @@ TEMPLATE;
 			
 			$this->table = $table."_ui";
 			
+			$c=0;
+			foreach($modes as $id=>$md)
+			{
+				$tbl = $this->tableList[$c];
+				$defaultMode[$tbl] = $id;	
+				$c++;
+			}
 			
+		//	print_a($defaultMode);
 				
-			$text .= 	$frm->hidden($this->table.'[pluginName]', $this->pluginName, 15).
+			$text = 	$frm->hidden($this->table.'[pluginName]', $this->pluginName, 15).
 						$frm->hidden($this->table.'[table]', $table, 15);
 				
 			if($this->tableCount > 1)
@@ -2029,7 +2050,7 @@ TEMPLATE;
 				$text .= "
 					<tr>
 						<td>Mode</td>
-						<td>".$frm->selectbox($this->table."[mode]",$modes, '', 'required=1', true)."</td>
+						<td>".$frm->selectbox($this->table."[mode]",$modes, $defaultMode[$table], 'required=1&class=null', true)."</td>
 					</tr>
 					
 				";
@@ -2051,6 +2072,7 @@ TEMPLATE;
 							<th>Width</th>
 							<th class='center'>Batch</th>
 							<th class='center'>Filter</th>
+							<th class='center'>Inline</th>
 							<th class='center e-tip' title='Field is required to be filled'>Validate</th>
 							<th class='center e-tip' title='Displayed by Default'>Display</th>
 							<th>HelpTip</th>
@@ -2070,14 +2092,15 @@ TEMPLATE;
 					<td>".$frm->text($this->table."[fields][".$name."][title]", $this->guess($name, $val,'title'),35, 'required=1')."</td>
 					<td>".$this->fieldType($name, $val)."</td>
 					<td>".$this->fieldData($name, $val)."</td>
-					<td>".$frm->text($this->table."[fields][".$name."][width]", $this->guess($name, $val,'width'), 4)."</td>
+					<td>".$frm->text($this->table."[fields][".$name."][width]", $this->guess($name, $val,'width'), 4, 'size=mini')."</td>
 					<td class='center'>".$frm->checkbox($this->table."[fields][".$name."][batch]", true, $this->guess($name, $val,'batch'))."</td>
 					<td class='center'>".$frm->checkbox($this->table."[fields][".$name."][filter]", true, $this->guess($name, $val,'filter'))."</td>
+					<td class='center'>".$frm->checkbox($this->table."[fields][".$name."][inline]", true, $this->guess($name, $val,'inline'))."</td>
 					<td class='center'>".$frm->checkbox($this->table."[fields][".$name."][validate]", true)."</td>
 					<td class='center'>".$frm->checkbox($this->table."[fields][".$name."][fieldpref]", true, $this->guess($name, $val,'fieldpref'))."</td>
-					<td>".$frm->text($this->table."[fields][".$name."][help]",'', 50)."</td>
-					<td>".$frm->text($this->table."[fields][".$name."][readParms]",'', 35)."</td>
-					<td>".$frm->text($this->table."[fields][".$name."][writeParms]",'', 35).
+					<td>".$frm->text($this->table."[fields][".$name."][help]",'', 50,'size=medium')."</td>
+					<td>".$frm->text($this->table."[fields][".$name."][readParms]",'', 20,'size=small')."</td>
+					<td>".$frm->text($this->table."[fields][".$name."][writeParms]",'', 20,'size=small').
 					$frm->hidden($this->table."[fields][".$name."][class]", $this->guess($name, $val,'class')).
 					$frm->hidden($this->table."[fields][".$name."][thclass]", $this->guess($name, $val,'thclass')).
 					"</td>
@@ -2139,6 +2162,15 @@ TEMPLATE;
 					);	
 				break;
 				
+				case 'decimal':
+					$array = array(
+					"number"	=> "Text Box",
+					"dropdown"	=> "DropDown",
+					"method"	=> "Custom Function",
+					"hidden"	=> "Hidden",
+					);	
+				break;
+				
 				case 'varchar':
 				case 'tinytext':
 				$array = array(
@@ -2170,7 +2202,7 @@ TEMPLATE;
 		//	asort($array);
 			
 			$fname = $this->table."[fields][".$name."][type]";
-			return $frm->selectbox($fname, $array, $this->guess($name, $val),'required=1', true);
+			return $frm->selectbox($fname, $array, $this->guess($name, $val),'required=1&class=null', true);
 			
 		}
 
@@ -2202,6 +2234,7 @@ TEMPLATE;
 					$ret['type'] = 'boolean';
 					$ret['batch'] = false;
 					$ret['filter'] = false;
+					$ret['inline'] = false;
 					$ret['width'] = '5%';
 				break;
 				
@@ -2214,6 +2247,7 @@ TEMPLATE;
 					$ret['batch'] = false;
 					$ret['filter'] = true;
 					$ret['fieldpref'] = true;
+					$ret['inline'] = false;
 				break;
 				
 				case 'name':
@@ -2225,6 +2259,7 @@ TEMPLATE;
 					$ret['batch'] = false;
 					$ret['filter'] = false;
 					$ret['fieldpref'] = true;
+					$ret['inline'] = true;
 				break;
 				
 				case 'author':
@@ -2232,6 +2267,7 @@ TEMPLATE;
 					$ret['type'] = 'user';
 					$ret['batch'] = false;
 					$ret['filter'] = false;
+					$ret['inline'] = false;
 				break;
 				
 				case 'thumb':
@@ -2241,6 +2277,7 @@ TEMPLATE;
 					$ret['type'] = 'image';
 					$ret['batch'] = false;
 					$ret['filter'] = false;
+					$ret['inline'] = false;
 				break;
 
 				case 'total':
@@ -2250,6 +2287,7 @@ TEMPLATE;
 					$ret['type'] = 'number';
 					$ret['batch'] = false;
 					$ret['filter'] = false;
+					$ret['inline'] = false;
 				break;
 
 				case 'category':
@@ -2258,6 +2296,7 @@ TEMPLATE;
 					$ret['batch'] = true;
 					$ret['filter'] = true;
 					$ret['fieldpref'] = true;
+					$ret['inline'] = false;
 				break;
 				
 				case 'type':
@@ -2266,6 +2305,7 @@ TEMPLATE;
 					$ret['batch'] = true;
 					$ret['filter'] = true;
 					$ret['fieldpref'] = true;
+					$ret['inline'] = true;
 				break;
 								
 				case 'icon':
@@ -2274,6 +2314,7 @@ TEMPLATE;
 					$ret['type'] = 'icon';
 					$ret['batch'] = false;
 					$ret['filter'] = false;
+					$ret['inline'] = false;
 				break;
 				
 				case 'website':
@@ -2283,6 +2324,7 @@ TEMPLATE;
 					$ret['type'] = 'url';
 					$ret['batch'] = false;
 					$ret['filter'] = false;
+					$ret['inline'] = true;
 				break;
 				
 				case 'visibility':
@@ -2292,12 +2334,14 @@ TEMPLATE;
 					 $ret['batch'] = true;
 					 $ret['filter'] = true;
 					 $ret['fieldpref'] = true;
+					$ret['inline'] = true;
 				break;
 				
 				case 'description':
 					$ret['title'] = 'LAN_DESCRIPTION';
 					 $ret['type'] = ($val['type'] == 'TEXT') ? 'textarea' : 'text';
 					 $ret['width'] = '40%';
+					$ret['inline'] = false;
 				break;
 				
 				default:
@@ -2307,6 +2351,7 @@ TEMPLATE;
 					$ret['filter'] = false;
 					$ret['thclass'] = 'center';
 					$ret['width'] = 'auto';
+					$ret['inline'] = false;
 					break;
 			}
 			
@@ -2364,7 +2409,7 @@ TEMPLATE;
 			unset($_POST['step'],$_POST['xml']);
 	
 
-$text .= "\n
+$text = "\n
 // Generated e107 Plugin Admin Area 
 
 require_once('../../class2.php');
@@ -2447,6 +2492,7 @@ $text .= "
 				"    ",
 				"'batch' => '1'",
 				"'filter' => '1'",
+				"'inline' => '1'",
 				"'validate' => '1'",
 				", 'fieldpref' => '1'",
 				"'type' => ''",
@@ -2460,6 +2506,7 @@ $text .= "
 				 " ",
 				"'batch' => true",
 				"'filter' => true",
+				"'inline' => true",
 				"'validate' => true",
 				"",
 				"'type' => null",
@@ -2478,7 +2525,7 @@ $text .= "
 				
 				foreach($vars['fields'] as $k=>$v)
 				{
-					if($v['fieldpref'] && $k != 'checkboxes' && $k !='options')
+					if(isset($v['fieldpref']) && $k != 'checkboxes' && $k !='options')
 					{
 						$FIELDPREF[] = "'".$k."'";
 					}							
@@ -2502,8 +2549,8 @@ class ".$table." extends e_admin_ui
 		
 		
 		
-		/*
-		protected $prefs = array(
+	/*
+		protected \$prefs = array(
 			'pref_type'	   				=> array('title'=> 'type', 'type'=>'text', 'data' => 'string', 'validate' => true),
 			'pref_folder' 				=> array('title'=> 'folder', 'type' => 'boolean', 'data' => 'integer'),
 			'pref_name' 				=> array('title'=> 'name', 'type' => 'text', 'data' => 'string', 'validate' => 'regex', 'rule' => '#^[\w]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')
@@ -2524,7 +2571,7 @@ class ".$table." extends e_admin_ui
 			\$ns->tablerender('Hello',\$text);	
 			
 		}
-		*/
+	*/
 			
 }
 				
@@ -2536,7 +2583,7 @@ class ".$vars['table']."_form_ui extends e_admin_form_ui
 
 foreach($vars['fields'] as $fld=>$val)
 {
-	if($val['type'] != 'method')
+	if(varset($val['type']) != 'method')
 	{
 		continue;	
 	}	
@@ -2597,21 +2644,28 @@ exit;
 			$startPHP = chr(60)."?php";		
 			$endPHP =  "?>";
 			
-			if(file_put_contents($generatedFile, $startPHP .$text . $endPHP))
+			if($this->createFiles == true)
 			{
-				$mes->addSuccess("<a href='".$generatedFile."'>Click Here</a> to vist your generated admin area");
-			}	
-			else 
+				if(file_put_contents($generatedFile, $startPHP .$text . $endPHP))
+				{
+					$mes->addSuccess("<a href='".$generatedFile."'>Click Here</a> to vist your generated admin area");
+				}	
+				else 
+				{
+					$mes->addError("Could not write to ".$generatedFile);
+				}
+			}
+			else
 			{
-				$mes->addError("Could not write to ".$generatedFile);
+				$mes->addInfo("No Files have been created. Please Copy &amp; Paste the code below into your files. ");	
 			}
 			
 			echo $mes->render();
 			
-			$ns->tablerender(ADLAN_98.SEP."Plugin Builder".SEP.LAN_CREATED.": plugin.xml", "<pre style='font-size:80%'>".$xmlText."</pre>");	
+			$ns->tablerender(ADLAN_98.SEP."Plugin Builder".SEP." plugin.xml", "<pre style='font-size:80%'>".$xmlText."</pre>");	
 	
 			
-			$ns->tablerender(LAN_CREATED.": admin_config.php", "<pre style='font-size:80%'>".$text."</pre>");
+			$ns->tablerender("admin_config.php", "<pre style='font-size:80%'>".$text."</pre>");
 			
 		//	
 			return;
