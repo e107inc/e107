@@ -32,10 +32,31 @@ $(document).ready(function()
 	 		})
 	 	});
 	
+		/* Switch to Tab containing invalid form field. */
+		$('input[type=submit],button[type=submit]').on('click', function() {
+			
+			var id 		= $(this).closest('form').attr('id');
+			var found 	= false;
+		          
+            $('#'+id).find(':invalid').each(function(index, node) {
+			
+				var tab = $('#'+node.id).closest('.tab-pane').attr('id');
+		
+				if(tab && (found == false))
+				{
+					$('a[href="#'+tab+'"]').tab('show');
+					found = true;
+					//alert(node.id+' : '+tab);
+				}
+             	//   var label = $('label[for=' + node.id + ']');
+            })
+            
+            return true;
+		});
 	
+	 	
+		 	
 
-	
-	
 		// run tips on title attribute. 
 		$(".e-tip").each(function() {
 						
