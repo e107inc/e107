@@ -141,8 +141,9 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 	
 	e107::css('inline',"	.column { width:100%;  padding-bottom: 100px; }
 	
+
 	.regularMenu { border-bottom:1px dotted silver; margin-bottom:6px; padding-left:3px; padding-right:3px; padding-bottom:20px }
-	
+	#core-menumanager-main th {color: silver; font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;  font-size:14px; font-weight: bold; line-height:24px; background-color:#2F2F2F }
 	.portlet { margin: 0 1em 1em 0; }
 	.portlet-header { margin: 0.3em; padding-bottom: 4px; padding-left: 0.2em; cursor:move }
 	.portlet-header .ui-icon { float: right; }
@@ -220,9 +221,10 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 	#menu-manage-actions		{ width:50%; vertical-align:top; text-align:center; padding:15px }
 	
 	select.menu-btn { text-align:left }
+
 	
-	label { font-size: 12px;  line-height:14px }
-	label.input									{margin-right:10px;  }
+	label 										{  font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; color:black;  line-height:14px }
+	label.input									{ margin-right:10px;  }
 	
 	#core-menumanager-main 						{ width:100%; margin-left:auto; margin-right:auto }
 	
@@ -240,10 +242,13 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
     font-size: 14px;
     line-height: 2em;
     padding-left: 15px;
+	font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; 
+	color:black;  
+	
 }
 	
 	
-	table.table tbody > tr >td label > input	{ margin-right: 10px; float: left; }
+	table.table tbody > tr >td label > input	{ margin-left:5px; margin-right: 10px; float: left; }
 	
 	
 	.table-striped tbody > tr:nth-child(2n+1) > td, .table-striped tbody > tr:nth-child(2n+1) > th {
@@ -256,8 +261,11 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
     margin-bottom: 20px;
     background-color: rgb(245, 245, 245);
     border: 1px solid rgb(227, 227, 227);
-    border-radius: 4px 4px 4px 4px;
+    border-radius: 5px;
     box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.05) inset;
+	color: #2F2F2F;
+	font-size: 13px;
+	font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; 
 }
 	
 	.menu-panel-header
@@ -266,6 +274,7 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 	    padding: 10px;
 	    font-size: 13px;
 	    font-weight: bold;
+		font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; 
 	    line-height: 20px;
 
 		border-radius: 5px;

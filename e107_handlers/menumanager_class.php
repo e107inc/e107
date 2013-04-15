@@ -498,8 +498,7 @@ class e_menuManager {
 		</div>";
 		
 		return $text;
-		//$caption = MENLAN_7." ".$row['menu_name'];
-		//$ns->tablerender($caption, $text);
+	
 	}
 
 
@@ -932,11 +931,11 @@ class e_menuManager {
 
 		echo "<div style='text-align:center'>";
 		echo $rs->form_open("post", e_SELF."?configure=".$this->curLayout, "menuActivation");
-		$text = "<table class='table' style='margin-left:auto;margin-right:auto'>";
+		$text = "<table  style='width:100%;margin-left:auto;margin-right:auto'>";
 
 
-		$text .= "<tr><td style='width:65%;text-align:center;padding-bottom:4px'>".MENLAN_36."...</td>
-		<td style='width:50%;padding-bottom:4px;text-align:center'>...".MENLAN_37."</td></tr>";
+		$text .= "<tr><td style='width:65%;text-align:center;padding-bottom:8px'>".MENLAN_36."...</td>
+		<td style='width:50%;padding-bottom:8px;text-align:center'>...".MENLAN_37."</td></tr>";
 		$text .= "<tr><td  style='width:35%;vertical-align:top;text-align:center'>";
 
 	 
@@ -994,7 +993,7 @@ class e_menuManager {
 		$text .= "</td><td id='menu-manage-actions' ><br />";
 		foreach ($this->menu_areas as $menu_act)
 		{
-			$text .= "<input type='submit' class='menu-btn button' id='menuActivate_".trim($menu_act)."' name='menuActivate[".trim($menu_act)."]' value='".MENLAN_13." ".trim($menu_act)."' /><br /><br />\n";
+			$text .= "<input type='submit' class='menu-btn' id='menuActivate_".trim($menu_act)."' name='menuActivate[".trim($menu_act)."]' value='".MENLAN_13." ".trim($menu_act)."' /><br /><br />\n";
 		}
 
 
@@ -1002,7 +1001,7 @@ class e_menuManager {
 		{
 			if(isset($pref['sitetheme_layouts'][$layout]['menuPresets']))
 			{
-		    	$text .= "<input type='submit' class='menu-btn button' name='menuUsePreset' value=\"".MENLAN_40."\" onclick=\"return jsconfirm('".$tp->toJS(MENLAN_41)."')\" /><br /><br />\n";  // Use Menu Presets
+		    	$text .= "<input type='submit' class='menu-btn' name='menuUsePreset' value=\"".MENLAN_40."\" onclick=\"return jsconfirm('".$tp->toJS(MENLAN_41)."')\" /><br /><br />\n";  // Use Menu Presets
 				$text .= "<input type='hidden' name='menuPreset' value='".$layout."' />";
 			}
 			$text .= "<input type='hidden'  name='curLayout' value='".$layout."' />";
@@ -1011,7 +1010,10 @@ class e_menuManager {
 		$text .= "</td>";
 
 		$text .= "</tr></table>";
-		$ns -> tablerender(MENLAN_22, $text);
+		
+	
+	//	$ns -> tablerender(MENLAN_22.'blabla', $text);
+		echo $this->renderPanel(MENLAN_22, $text);
         echo $rs->form_close();
 		echo "</div>";
 
@@ -1038,8 +1040,8 @@ class e_menuManager {
 // onchange=\"urljump(this.options[selectedIndex].value);\"
 
 		$text = "<form class='form-inline' method='post' action='".e_SELF."?configure=".$this->curLayout."'>";
-		$text .= "<div class='buttons-bar'>Layout ";
-        $text .= "<select name='custom_select' id='menuManagerSelect'  >\n"; //tbox class will break links.  // window.frames['menu_iframe'].location=this.options[selectedIndex].value ???
+		$text .= "<div class='buttons-bar'>Layout: ";
+        $text .= "<select name='custom_select' style='width:auto' id='menuManagerSelect'  >\n"; //tbox class will break links.  // window.frames['menu_iframe'].location=this.options[selectedIndex].value ???
 
 
 	    $search = array("_","legacyDefault","legacyCustom");
@@ -1376,18 +1378,18 @@ class e_menuManager {
 		$visibilityLink = e_SELF."?enc=".base64_encode('lay='.$this->curLayout.'&vis='.$menu_id.'&iframe=1');
 		
 		$text .= '<span class="menu-options-buttons">
-		<a class="e-menumanager-option menu-btn" data-modal-caption="'.MENLAN_20.'" href="'.$visibilityLink.'" title="'.MENLAN_20.'">'.ADMIN_VIEW_ICON.'</a>';
+		<a class="e-menumanager-option menu-btn" data-modal-caption="'.MENLAN_20.'" href="'.$visibilityLink.'" title="'.MENLAN_20.'"><i class="S16 e-search-16"></i></a>';
 
 		if($conf)
 		{
 			$text .= '<a class="menu-btn" target="_top" href="'.e_SELF.'?lay='.$this->curLayout.'&amp;mode=conf&amp;path='.urlencode($conf).'&amp;id='.$menu_id.'" 
-			title="Configure menu">'.ADMIN_CONFIGURE_ICON.'</a>';
+			title="Configure menu"><i class="S16 e-configure-16"></i></a>';
 		}
 		
 		$editLink = e_SELF."?enc=".base64_encode('lay='.$this->curLayout.'&parmsId='.$menu_id.'&iframe=1');
-		$text .= '<a data-modal-caption="Configure parameters" class="e-menumanager-option menu-btn e-tip" target="_top" href="'.$editLink.'" title="Configure parameters">'.ADMIN_EDIT_ICON.'</a>';
+		$text .= '<a data-modal-caption="Configure parameters" class="e-menumanager-option menu-btn e-tip" target="_top" href="'.$editLink.'" title="Configure parameters"><i class="S16 e-edit-16" ></i></a>';
 
-		$text .= '<a title="'.LAN_DELETE.'" id="remove-'.$menu_id.'-'.$menu_location.'" class="e-tip delete e-menumanager-delete menu-btn" href="'.e_SELF.'?configure='.$this->curLayout.'&amp;mode=deac&amp;id='.$menu_id.'">'.ADMIN_DELETE_ICON.'</a>
+		$text .= '<a title="'.LAN_DELETE.'" id="remove-'.$menu_id.'-'.$menu_location.'" class="e-tip delete e-menumanager-delete menu-btn" href="'.e_SELF.'?configure='.$this->curLayout.'&amp;mode=deac&amp;id='.$menu_id.'"><i class="S16 e-delete-16"></i></a>
 		
 		<span id="status-'.$menu_id.'" style="display:none">'.($rep == true ? "" : "insert").'</span>
 		</span></div>';
