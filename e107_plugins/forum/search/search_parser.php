@@ -2,16 +2,10 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/search/search_parser.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -43,10 +37,10 @@ $no_results = LAN_198;
 
 $where = "f.forum_class REGEXP '".e_CLASS_REGEXP."' AND fp.forum_class REGEXP '".e_CLASS_REGEXP."' AND".$advanced_where;
 $order = array('thread_datestamp' => DESC);
-$table = "forum_t AS t LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
+$table = "forum_thread AS t LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
 		LEFT JOIN #forum AS f ON t.thread_forum_id = f.forum_id
 		LEFT JOIN #forum AS fp ON f.forum_parent = fp.forum_id
-		LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id";
+		LEFT JOIN #forum_thread AS tp ON t.thread_parent = tp.thread_id";
 
 $ps = $sch -> parsesearch($table, $return_fields, $search_fields, $weights, 'search_forum', $no_results, $where, $order);
 $text .= $ps['text'];

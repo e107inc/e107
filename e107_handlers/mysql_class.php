@@ -2,14 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2012 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * mySQL Handler
+ * MySQL Handler
  *
- * $URL$
- * $Id$
 */
 
 
@@ -18,7 +16,6 @@
  *
  *	@package    e107
  *	@subpackage	e107_handlers
- *	@version 	$Id$;
  *	@todo separate cache for db type tables
  *
  * WARNING!!! System config  should be DIRECTLY called inside db handler like this:
@@ -965,7 +962,7 @@ class e_db_mysql
 	* @desc Count the number of rows in a select<br />
 	* <br />
 	* Example:<br />
-	* <code>$topics = e107::getDb()->count("forum_t", "(*)", "thread_forum_id='".$forum_id."' AND thread_parent='0'");</code>
+	* <code>$topics = e107::getDb()->count("forum_thread", "(*)", "thread_forum_id='".$forum_id."' AND thread_parent='0'");</code>
 	*
 	* @access public
 	*/

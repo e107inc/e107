@@ -2,14 +2,10 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $URL$
- * $Id$
  */
 
 require_once("../../class2.php");
@@ -57,7 +53,7 @@ if($msg)
 $fi = new e_file;
 $mask = ".*_".USERID."_FT.*";
 $fileList = $fi->get_files(e_UPLOAD, $mask);
-if($sql->db_Select('forum_t','thread_id, thread_thread, thread_parent', "thread_thread REGEXP '.*_".USERID."_FT.*'"))
+if($sql->db_Select('forum_thread','thread_id, thread_thread, thread_parent', "thread_thread REGEXP '.*_".USERID."_FT.*'"))
 {
 	$threadList = $sql->db_getList();
 }
