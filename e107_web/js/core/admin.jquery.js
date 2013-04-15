@@ -428,12 +428,14 @@ $(document).ready(function()
 		// Menu Manager Layout drop-down options
 		$("#menuManagerSelect").change(function(){
 			var link = $(this).val();
-			$("#menu_iframe").attr("data",link);
+			$("#menu_iframe").attr("src",link);			
 			return false;		
 		});
 		
-		
-	
+		$('#menu_iframe').load(function() {
+		   this.style.height = this.contentWindow.document.body.offsetHeight + 100 + 'px';
+		});
+			
 		
 		
 		$(".e-shake" ).effect("shake",{times: 10, distance: 2},20);
