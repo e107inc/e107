@@ -142,10 +142,11 @@ class e_menuManager {
         	$url = e_SELF."?configure=".$this->curLayout;
 		}
 
-		$cnt = $sql->select("menus", "*", "menu_location > 0 AND menu_layout = '$curLayout' ORDER BY menu_name "); // calculate height to remove vertical scroll-bar.
+	//	$cnt = $sql->select("menus", "*", "menu_location > 0 AND menu_layout = '$curLayout' ORDER BY menu_name "); // calculate height to remove vertical scroll-bar.
 
-		$text = "<object class='well' type='text/html' id='menu_iframe' data='".$url."' width='100%' style='overflow:auto;width: 100%; height: ".(($cnt*90)+600)."px; border: 0px' ></object>";
-		
+	//	$text = "<object class='well' type='text/html' id='menu_iframe' data='".$url."' width='100%' style='overflow:auto;width: 100%; height: ".(($cnt*90)+600)."px; border: 0px' ></object>";
+		$text = "<iframe class='well' id='menu_iframe' src='".$url."' width='100%' scrolling='no' style='width: 100%; height: 800px; border: 0px' ></iframe>";
+	
 		return $text;
 	}
 
@@ -1036,9 +1037,9 @@ class e_menuManager {
 		
 // onchange=\"urljump(this.options[selectedIndex].value);\"
 
-		$text = "<form  method='post' action='".e_SELF."?configure=".$this->curLayout."'>";
-		$text .= "<div class='buttons-bar'>".MENLAN_30." ";
-        $text .= "<select name='custom_select' id='menuManagerSelect' class='tbox' >\n";  // window.frames['menu_iframe'].location=this.options[selectedIndex].value ???
+		$text = "<form class='form-inline' method='post' action='".e_SELF."?configure=".$this->curLayout."'>";
+		$text .= "<div class='buttons-bar'>Layout ";
+        $text .= "<select name='custom_select' id='menuManagerSelect'  >\n"; //tbox class will break links.  // window.frames['menu_iframe'].location=this.options[selectedIndex].value ???
 
 
 	    $search = array("_","legacyDefault","legacyCustom");
@@ -1056,10 +1057,11 @@ class e_menuManager {
 
 			$url = e_SELF."?configure=".$key;
 			
-			$text .= "<option value='$url' {$selected}>".$layoutName."</option>";
+			$text .= "<option value='".$url."' {$selected}>".$layoutName."</option>";
 		}
 
 	    $text .= "</select>
+	    <div class='field-help'>".MENLAN_30."</div>
 		</div></form>";
 		
 		// $text .= "<div id='visibility'>Something here</div>";
@@ -1397,10 +1399,11 @@ class e_menuManager {
 		if(!$this->dragDrop)
 		{
 				
-		
+			return "<b class='muted'>".$caption."</b><br />". $text;
+		//	return;
 	
 
-			return $ns->tablerender($caption, $text,'', true);
+		//	return $ns->tablerender($caption, $text,'', true); Theme style too unpredictable. 
 			
 			
 		}

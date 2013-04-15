@@ -32,14 +32,14 @@ define("MENLAN_22", "Inactive Menus");
 
 define("MENLAN_23", "Move to bottom");
 define("MENLAN_24", "Move to top");
-define("MENLAN_25", "Function...");
+define("MENLAN_25", "Action...");
 
 define("MENLAN_26", "This menu will only be <strong>SHOWN</strong> on the following pages"); //FIXME HTML
 define("MENLAN_27", "This menu will only be <strong>HIDDEN</strong> on the following pages"); //FIXME HTML
 define("MENLAN_28", "Enter one page per line, enter enough of the url to distinguish it properly.  If you need the ending of the url to match exactly, use a ! at the end of the page name <br />For example: <strong>page.php?1!</strong>"); //FIXME HTML
 
 define("MENLAN_29", "Select Layout");
-define("MENLAN_30", "To see the menu areas and their positions for custom layouts, select the custom layout here:");
+define("MENLAN_30", "To see the menu areas and their positions for custom layouts, select the custom layout here.");
 define("MENLAN_31", "Default Layout");
 define("MENLAN_32", "Newsheader Layout");
 define("MENLAN_33", "Custom Layout");

@@ -141,7 +141,7 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 	
 	e107::css('inline',"	.column { width:100%;  padding-bottom: 100px; }
 	
-	.regularMenu { border-bottom:1px dotted silver; margin-bottom:6px; padding-left:3px; padding-right:3px }
+	.regularMenu { border-bottom:1px dotted silver; margin-bottom:6px; padding-left:3px; padding-right:3px; padding-bottom:20px }
 	
 	.portlet { margin: 0 1em 1em 0; }
 	.portlet-header { margin: 0.3em; padding-bottom: 4px; padding-left: 0.2em; cursor:move }
@@ -262,14 +262,17 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 	
 	.menu-panel-header
 	 {
-    display: block;
-    padding: 3px 15px;
-    font-size: 11px;
-    font-weight: bold;
-    line-height: 20px;
-    color: rgb(153, 153, 153);
-    text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.5);
-    text-transform: uppercase;
+    	display: block;
+	    padding: 10px;
+	    font-size: 13px;
+	    font-weight: bold;
+	    line-height: 20px;
+
+		border-radius: 5px;
+	    text-transform: uppercase;
+		margin-bottom:10px;
+		background-color: rgb(0, 136, 204);
+		color: white;
 	
 	}
 	
