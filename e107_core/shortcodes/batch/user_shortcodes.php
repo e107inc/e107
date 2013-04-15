@@ -9,6 +9,7 @@
  * User information - shortcodes
  *
  */
+
 if (!defined('e107_INIT')) { exit; }
 
 
@@ -17,14 +18,14 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_total_chatposts($parm) {
 		$sql = e107::getDb();
-		if(!$chatposts = getcachedvars('total_chatposts'))
+		if(!$chatposts = e107::getRegistry('total_chatposts'))
 		{
-		  $chatposts = 0;				// In case plugin not installed
-		  if (isset($pref['plug_installed']['chatbox_menu']))
+		  $chatposts = 0; // In case plugin not installed
+		  if(e107::isInstalled("chatbox_menu"))
 		  {
 			$chatposts = $sql->count("chatbox");
 		  }
-		  cachevars('total_chatposts', $chatposts);
+		  e107::setRegistry('total_chatposts', $chatposts);
 		}
 		return $chatposts;
 	}
@@ -34,10 +35,10 @@ class user_shortcodes extends e_shortcode
 	function sc_total_commentposts($parm) 
 	{
 		$sql = e107::getDb();
-		if(!$commentposts = getcachedvars('total_commentposts'))
+		if(!$commentposts = e107::getRegistry('total_commentposts'))
 		{
 			$commentposts = $sql->count("comments");
-			cachevars('total_commentposts', $commentposts);
+			e107::setRegistry('total_commentposts', $commentposts);
 		}
 		return $commentposts;
 	}
@@ -47,10 +48,10 @@ class user_shortcodes extends e_shortcode
 	function sc_total_forumposts($parm) 
 	{
 		$sql = e107::getDb();
-		if(!$forumposts = getcachedvars('total_forumposts'))
+		if(!$forumposts = e107::getRegistry('total_forumposts'))
 		{
 			$forumposts = $sql->count("forum_thread");
-			cachevars('total_forumposts', $forumposts);
+			e107::setRegistry('total_forumposts', $forumposts);
 		}
 		return $forumposts;
 	}
@@ -66,7 +67,8 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_user_forumposts($parm) 
 	{
-		return $this->var['user_forums'];
+		//return $this->var['user_forums']; //FIXME column not present in v2. Possible fix on next line.
+		return e107::getDb()->count("forum_thread","(*)","where thread_user=".$this->var['user_id']);
 	}
 	
 	
@@ -84,14 +86,15 @@ class user_shortcodes extends e_shortcode
 	function sc_user_chatper($parm) 
 	{
 		$sql = e107::getDb();
-		if(!$chatposts = getcachedvars('total_chatposts'))
+		
+		if(!$chatposts = e107::getRegistry('total_chatposts'))
 		{
-		  $chatposts = 0;			// In case plugin not installed
-		  if (isset($pref['plug_installed']['chatbox_menu']))
-		  {
-			$chatposts = $sql->count("chatbox");
-		  }
-		  cachevars('total_chatposts', $chatposts);
+			$chatposts = 0; // In case plugin not installed
+	  		if (e107::isInstalled("chatbox_menu"))
+	  		{
+				$chatposts = $sql->count("chatbox");
+	  		}
+	  		e107::setRegistry('total_chatposts', $chatposts);
 		}
 		return ($chatposts!=0) ? round(($this->var['user_chats']/$chatposts) * 100, 2): 0;
 	}
@@ -101,10 +104,10 @@ class user_shortcodes extends e_shortcode
 	function sc_user_commentper($parm) 
 	{
 		$sql = e107::getDb();
-		if(!$commentposts = getcachedvars('total_commentposts'))
+		if(!$commentposts = e107::getRegistry('total_commentposts'))
 		{
 			$commentposts = $sql->count("comments");
-			cachevars('total_commentposts', $commentposts);
+			e107::setRegistry('total_commentposts', $commentposts);
 		}
 		return ($commentposts!=0) ? round(($this->var['user_comments']/$commentposts) * 100, 2): 0;
 	}
@@ -114,15 +117,16 @@ class user_shortcodes extends e_shortcode
 	function sc_user_forumper($parm) 
 	{
 		$sql = e107::getDb();
-		if(!$forumposts = getcachedvars('total_forumposts'))
+		if(!$forumposts = e107::getRegistry('total_forumposts'))
 		{
-		  $forumposts = (isset($pref['plug_installed']['forum'])) ? $sql->count("forum_thread"): 0;
-		  cachevars('total_forumposts', $forumposts);
+			$forumposts = (e107::isInstalled("forum")) ? $sql->count("forum_thread"): 0;
+			e107::setRegistry('total_forumposts', $forumposts);
+			$user_forumposts = $sql->count("forum_thread","(*)","where thread_user=".$this->var['user_id']);
 		}
-		return ($forumposts!==0) ? round(($this->var['user_forums']/$forumposts) * 100, 2): 0;
+		return ($forumposts!==0) ? round(($user_forumposts/$forumposts) * 100, 2): 0;
 	}
 	
-	
+
 	
 	function sc_user_level($parm) 
 	{
@@ -349,7 +353,8 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_user_forum_link($parm) 
 	{
-		return $this->var['user_forums'] ? "<a href='".e_HTTP."userposts.php?0.forums.".$this->var['user_id']."'>".LAN_USER_37."</a>" : "";
+		$user_forumposts = e107::getDb()->count("forum_thread","(*)","where thread_user=".$this->var['user_id']);
+		return $user_forumposts ? "<a href='".e_HTTP."userposts.php?0.forums.".$this->var['user_id']."'>".LAN_USER_37."</a>" : "";
 	}
 
 	
@@ -358,7 +363,7 @@ class user_shortcodes extends e_shortcode
 	{
 		$pref = e107::getPref();
 		$tp = e107::getParser();
-		if(isset($pref['plug_installed']['pm']) && ($this->var['user_id'] > 0))
+		if(e107::isInstalled("pm") && ($this->var['user_id'] > 0))
 		{
 		  return $tp->parseTemplate("{SENDPM={$this->var['user_id']}}");
 		}
@@ -432,7 +437,7 @@ class user_shortcodes extends e_shortcode
 		$sql = e107::getDb();
 		if (!$full_perms) return;
 		$url = e107::getUrl();
-		if(!$userjump = getcachedvars('userjump'))
+		if(!$userjump = e107::getRegistry('userjump'))
 		{
 		//  $sql->db_Select("user", "user_id, user_name", "`user_id` > ".intval($this->var['user_id'])." AND `user_ban`=0 ORDER BY user_id ASC LIMIT 1 ");
 		  $sql->gen("SELECT user_id, user_name FROM `#user` FORCE INDEX (PRIMARY) WHERE `user_id` > ".intval($this->var['user_id'])." AND `user_ban`=0 ORDER BY user_id ASC LIMIT 1 ");
@@ -448,7 +453,7 @@ class user_shortcodes extends e_shortcode
 			$userjump['prev']['id'] = $row['user_id'];
 			$userjump['prev']['name'] = $row['user_name'];
 		  }
-		  cachevars('userjump', $userjump);
+		  e107::setRegistry('userjump', $userjump);
 		}
 		if($parm == 'prev')
 		{
