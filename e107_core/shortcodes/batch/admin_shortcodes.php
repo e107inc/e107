@@ -1815,6 +1815,8 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
         $var['menumanager']['text'] = LAN_MENULAYOUT;
 		$var['menumanager']['link'] = e_ADMIN_ABS.'menus.php';
+		
+		$var['nothing']['divider'] = true;
 
 		if(vartrue($pref['menuconfig_list']))
 		{
