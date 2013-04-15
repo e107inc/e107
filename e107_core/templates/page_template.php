@@ -75,7 +75,7 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 	$PAGE_TEMPLATE['default']['end'] = '</div>'; 
 	
 	// options per template - disable table render
-	$PAGE_TEMPLATE['default']['noTableRender'] = false;
+//	$PAGE_TEMPLATE['default']['noTableRender'] = false; //XXX Deprecated
 	
 	// define different tablerender mode here
 	$PAGE_TEMPLATE['default']['tableRender'] = 'cpage';
@@ -91,7 +91,7 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 	';
 	
 	$PAGE_TEMPLATE['custom']['end'] 			= '</div>'; 
-	$PAGE_TEMPLATE['custom']['noTableRender'] 	= true;
+//	$PAGE_TEMPLATE['custom']['noTableRender'] 	= true;  //XXX Deprecated
 	$PAGE_TEMPLATE['custom']['tableRender'] 	= '';
 	
 	

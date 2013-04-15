@@ -285,20 +285,20 @@ class e_menu
 				$text = $tp->parseTemplate($template['body'], true, $page_shortcodes);
 			// 	echo "TEMPLATE= ($mpath)".$page['menu_template'];
 				
-				if($template['noTableRender'] !==true)
-				{
-					$ns->tablerender($caption, $text);
-				}
-				else
-				{
-					echo $text;
-				}
+			//	if($template['noTableRender'] !==true) // XXX Deprecated - causes confusion while themeing. 
+			//	{
+					$ns->tablerender($caption, $text, 'cmenu-'.$page['menu_template']);
+			//	}
+			//	else
+			//	{
+			//		echo $text;
+			//	}
 				
 			}
 			else 
 			{				
 				$text = $tp->toHTML($page['menu_text'], true, 'parse_sc, constants');
-				$ns->tablerender($caption, $text);
+				$ns->tablerender($caption, $text, 'cmenu');
 			}
 			
 		}

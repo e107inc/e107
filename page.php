@@ -439,12 +439,12 @@ class pageClass
 			$ret = e107::getParser()->simpleParse($template, $vars);
 		}
 		
-		if(vartrue($this->template['noTableRender']))
-		{
-			return $ret;
-		}
+	//	if(vartrue($this->template['noTableRender'])) //XXX Deprecated - use tablerender $mode instead. eg. cpage-templatename : echo $text;
+	//	{
+	//		return $ret;
+	//	}
 		
-		$mode = vartrue($this->template['tableRender'], 'cpage');
+		$mode = vartrue($this->template['tableRender'], 'cpage-'.$template);
 		$title = $vars->title;
 		
 		return e107::getRender()->tablerender($title, $ret, $mode, true);
