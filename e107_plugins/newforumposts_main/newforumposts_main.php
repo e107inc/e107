@@ -67,7 +67,7 @@ elseif(!isset($NEWFORUMPOSTSTYLE_HEADER))
 
 $results = $sql->db_Select_gen("
 SELECT t.thread_id, t.thread_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, t.thread_active, t.thread_s, f.forum_id, f.forum_name, f.forum_class, u.user_name, fp.forum_class, lp.user_name AS lp_name
-FROM #forum_t AS t
+FROM #forum_thread AS t
 LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
 LEFT JOIN #user AS lp ON SUBSTRING_INDEX(t.thread_lastuser,'.',1) = lp.user_id
 LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
@@ -93,9 +93,9 @@ else
 	$ICON = "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/new_small.png' alt='' />";
 }
 */
-$TOTAL_TOPICS = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent='0' ");
-$TOTAL_REPLIES = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent!='0' ");
-$sql->db_Select_gen("SELECT sum(thread_views) FROM ".MPREFIX."forum_t");
+$TOTAL_TOPICS = $sql->db_Count("forum_thread", "(*)", " WHERE thread_parent='0' ");
+$TOTAL_REPLIES = $sql->db_Count("forum_thread", "(*)", " WHERE thread_parent!='0' ");
+$sql->db_Select_gen("SELECT sum(thread_views) FROM #forum_thread");
 $tmp = $sql->db_Fetch();
 $TOTAL_VIEWS = $tmp[0];
 $text = preg_replace("/\{(.*?)\}/e", '$\1', $NEWFORUMPOSTSTYLE_HEADER);

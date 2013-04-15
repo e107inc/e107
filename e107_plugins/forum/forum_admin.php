@@ -154,7 +154,7 @@ if(isset($_POST['update_subs']))
 			if ($sql->delete("forum", "forum_id='$id' "))
 			{
 				$msg .= FORLAN_150."  ". LAN_ID.":"." ".$id." ".LAN_DELETED."<br />";
-				$cnt = $sql->delete("forum_t", "thread_forum_id = {$id}");
+				$cnt = $sql->delete("forum_thread", "thread_forum_id = {$id}");
 				$msg .= $cnt." ".FORLAN_152." ".LAN_DELETED."<br />";
 			}
 		}

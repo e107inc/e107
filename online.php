@@ -234,7 +234,7 @@ Think these are no longer used
 				$t_page = 1;
 			}
 			$qry = "
-			SELECT t.thread_name, f.forum_name, f.forum_class from #forum_t AS t
+			SELECT t.thread_name, f.forum_name, f.forum_class from #forum_thread AS t
 			LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
 			WHERE t.thread_id = ".intval($tmp[0])
 			;
@@ -256,11 +256,11 @@ Think these are no longer used
 				$online_location_page = ONLINE_EL13.": \"".CLASSRESTRICTED."\"";
 			}
 		} elseif(strstr($online_location, "_post")) {
-			$sql->db_Select("forum_t", "thread_name, thread_forum_id", "thread_forum_id=".intval($tmp[0])." AND thread_parent=0");
-			$forum_t = $sql->db_Fetch();
-			$sql->db_Select("forum", "forum_name", "forum_id=".$forum_t['thread_forum_id']);
+			$sql->db_Select("forum_thread", "thread_name, thread_forum_id", "thread_forum_id=".intval($tmp[0])." AND thread_parent=0");
+			$forum_thread = $sql->db_Fetch();
+			$sql->db_Select("forum", "forum_name", "forum_id=".$forum_thread['thread_forum_id']);
 			$forum = $sql->db_Fetch();
-			$online_location_page = ONLINE_EL12.": ".ONLINE_EL13." .:. ".$forum['forum_name']."->".ONLINE_EL14." .:. ".$forum_t['thread_name'];
+			$online_location_page = ONLINE_EL12.": ".ONLINE_EL13." .:. ".$forum['forum_name']."->".ONLINE_EL14." .:. ".$forum_thread['thread_name'];
 			$online_location = e_PLUGIN."forum/forum_viewtopic.php?$tmp[0].$tmp[1]";
 		}
   }

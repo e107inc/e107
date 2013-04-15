@@ -36,7 +36,7 @@ $id = (int)$_GET['id'];
 $action = $_GET['f'];
 
 $qry = "
-SELECT t.*, f.*, fp.forum_id AS forum_parent_id FROM #forum_t as t
+SELECT t.*, f.*, fp.forum_id AS forum_parent_id FROM #forum_thread as t
 LEFT JOIN #forum AS f ON t.thread_forum_id = f.forum_id
 LEFT JOIN #forum AS fp ON fp.forum_id = f.forum_parent
 WHERE t.thread_id = {$thread_id}
@@ -60,11 +60,11 @@ require_once(HEADERF);
 if (isset($_POST['deletepollconfirm'])) 
 {
 	$sql->delete("poll", "poll_id='".intval($thread_parent)."' ");
-	$sql->select("forum_t", "*", "thread_id='".$thread_id."' ");
+	$sql->select("forum_thread", "*", "thread_id='".$thread_id."' ");
 	$row = $sql->fetch();
 	 extract($row);
 	$thread_name = str_replace("[poll] ", "", $thread_name);
-	$sql->update("forum_t", "thread_name='$thread_name' WHERE thread_id='$thread_id' ");
+	$sql->update("forum_thread", "thread_name='$thread_name' WHERE thread_id='$thread_id' ");
 	$message = FORCONF_5;
 	$url = e_PLUGIN."forum/forum_viewtopic.php?".$thread_id;
 }
