@@ -151,8 +151,21 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 	.ui-sortable-placeholder { border: 1px dotted black; visibility: visible !important; height: 50px !important; }
 	.ui-sortable-placeholder * { visibility: hidden; }
 	
+	[class^='icon-'], [class*=' icon-'] {
+	    display: inline-block;
+	    width: 14px;
+	    height: 14px;
+	    margin-top: 1px;
+	    line-height: 14px;
+	    vertical-align: text-top;
+	    background-image: url('".e_JS."bootstrap/img/glyphicons-halflings.png');
+	    background-position: 14px 14px;
+	    background-repeat: no-repeat;
+	}
 	
-	
+	.icon-search {
+	  background-position: -48px 0;
+	}
 	
 	
 	
@@ -212,11 +225,21 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 	.tbox { text-align:left }
 	
 	.menuOptions {
-    padding-top: 7px;
-    padding-right: 5px;
-    text-align: left;
+    	padding-top: 7px;
+    	padding-right: 5px;
+    	text-align: left;
+		opacity: 0;
+		transition: opacity .25s ease-in-out;
+   		-moz-transition: opacity .25s ease-in-out;
+   		-webkit-transition: opacity .25s ease-in-out;
    
 	}
+	
+	.menuOptions:hover {
+		opacity: 1;
+		
+	}
+	
 	.menu-options-buttons	{ white-space: nowrap }
 	#menu-manage-actions		{ width:50%; vertical-align:top; text-align:center; padding:15px }
 	

@@ -51,7 +51,7 @@ td.center, th.center 		{ text-align:center }
 
 .col-label 					{ width:25%; }
 
-.sidebar-nav 				{ padding: 9px 0; font-size:11px; min-width:150px; }
+/* .sidebar-nav 				{ padding: 9px 0; font-size:11px; min-width:150px; } */
 
 #cboxTitle					{ font-weight:bold; color: black }
 .chzn-container				{ border: 1px solid #ddd; }
