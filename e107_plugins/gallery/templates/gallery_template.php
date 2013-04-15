@@ -65,8 +65,8 @@ $GALLERY_TEMPLATE['SLIDESHOW_WRAPPER'] = '
 			</div>
 			
 			<div class="gallery-slideshow-controls">		
-            	<a href="#" class="carousel-control gal-next" style="float: right">Next &rsaquo;</a>           
-                <a href="#" class="carousel-control gal-prev" >&lsaquo; Previous</a>
+            	<a href="#" class="gallery-control gal-next" style="float: right">Next &rsaquo;</a>           
+                <a href="#" class="gallery-control gal-prev" >&lsaquo; Previous</a>
                 <span class="gallery-slide-jumper-container">{GALLERY_JUMPER}</span>
             </div>
          
