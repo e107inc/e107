@@ -934,8 +934,8 @@ class e_menuManager {
 		$text = "<table  style='width:100%;margin-left:auto;margin-right:auto'>";
 
 
-		$text .= "<tr><td style='width:65%;text-align:center;padding-bottom:8px'>".MENLAN_36."...</td>
-		<td style='width:50%;padding-bottom:8px;text-align:center'>...".MENLAN_37."</td></tr>";
+		$text .= "<tr><td style='color:#2F2F2F;width:65%;text-align:center;padding-bottom:8px'>".MENLAN_36."...</td>
+		<td style='color:#2F2F2F;width:50%;padding-bottom:8px;text-align:center'>...".MENLAN_37."</td></tr>";
 		$text .= "<tr><td  style='width:35%;vertical-align:top;text-align:center'>";
 
 	 
