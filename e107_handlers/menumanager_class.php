@@ -1040,7 +1040,7 @@ class e_menuManager {
 // onchange=\"urljump(this.options[selectedIndex].value);\"
 
 		$text = "<form class='form-inline' method='post' action='".e_SELF."?configure=".$this->curLayout."'>";
-		$text .= "<div class='buttons-bar'>Layout: ";
+		$text .= "<div class='buttons-bar'>Theme Layout: ";
         $text .= "<select name='custom_select' style='width:auto' id='menuManagerSelect'  >\n"; //tbox class will break links.  // window.frames['menu_iframe'].location=this.options[selectedIndex].value ???
 
 
@@ -1297,7 +1297,7 @@ class e_menuManager {
 
 		$menu_name = preg_replace("#_menu#i", "", $menu_name);
 		//TODO we need a CSS class for this
-		$vis = ($menu_class || strlen($menu_pages) > 1) ? " <span class='required'>*</span> " : "";
+		$vis = ($menu_class || strlen($menu_pages) > 1) ? " <span class='required'><i class='icon-search'></i></span> " : "";
 		//DEBUG div not allowed in final tags 	$caption = "<div style='text-align:center'>{$menu_name}{$vis}</div>";
 		// use theme render style instead
 		

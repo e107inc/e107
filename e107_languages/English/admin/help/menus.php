@@ -21,6 +21,7 @@ if (!getperms("2")) {
 }
 
 $sql = e107::getDb();
+$tp = e107::getParser();
 
 if(isset($_POST['reset']))
 {
@@ -44,19 +45,18 @@ else
 
 $frm = e107::getForm();
 
-$text = "
-You can arrange where and in which order your menu items are from here. 
-Use the dropdown menu to move the menus up and down until you are satisfied with their positioning.
-<br />
-<br />
-If you find the menus are not updating properly click on the refresh button.
-<br />
+$text = "The Menu-Manager allows you to place and arrange your menus within your theme template. 
+[u]Hover[/u] over the sub-areas to modify existing menu items. 
+
+If you find the menus are not updating correctly, clicking the refresh button below may help. 
+[html]
 <form method='post' id='menurefresh' action='".$_SERVER['PHP_SELF']."'>
 <div>
 ".$frm->admin_button('reset','Refresh','cancel')."</div>
 </form>
-<br />
-<div class='indent'><span class='required'>*</span> indicates menu visibility has been modified</div>
+<div class='indent'><span class='required'><i class='icon-search icon-white'></i></span> indicates that the menu's visibility has been modified.</div>
+[/html]
 ";
 
+$text = $tp->toHtml($text,true);
 $ns -> tablerender("Menus Help", $text);

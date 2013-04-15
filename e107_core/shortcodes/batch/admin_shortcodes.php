@@ -1844,7 +1844,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
    //		$keys = array_keys($var);
 	//	$action = (in_array($this->action,$keys)) ? $this->action : "installed";
 
-		e107::getNav()->admin(ADLAN_6,$action, $var);
+		e107::getNav()->admin("Menu Manager",$action, $var);
 	 //  e_admin/_menu(ADLAN_6,$action, $var);
 
 	}
