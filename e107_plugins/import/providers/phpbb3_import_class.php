@@ -14,30 +14,14 @@
  * $Author$
  */
 
-/*
-To do:
-	1. Forum config import (once McFly's finished updated forums)
-	2. Forum topic import
-			Check that thread_parent set correctly
-	3. Polls import
-	4. News import
-*/
-
-
-// Each import file has an identifier which must be the same for:
-//		a) This file name - add '_class.php' to get the file name
-//		b) The array index of certain variables
-// Array element key defines the function prefix and the class name; value is displayed in drop-down selection box
-
-
 require_once('import_classes.php');
 
-class phpbb2_import extends base_import_class
+class phpbb3_import extends base_import_class
 {
 
-	public $title		= 'PHPBB Version 2';
-	public $description	= 'Should do most versions, and Dragonfly';
-	public $supported	=  array('users');
+	public $title		= 'PHPBB Version 3';
+	public $description	= 'Experimental';
+	public $supported	=  array('users','forum','forumthread','forumpost','forumtrack');
 	public $mprefix		= 'phpbb_';
 	
 
@@ -49,27 +33,52 @@ class phpbb2_import extends base_import_class
   // Set up a query for the specified task.
   // Returns TRUE on success. FALSE on error
   // If $blank_user is true, certain cross-referencing user info is to be zeroed
-  function setupQuery($task, $blank_user=FALSE)
-  {
-    if ($this->ourDB == NULL) return FALSE;
-    switch ($task)
+	function setupQuery($task, $blank_user=FALSE)
 	{
-	  case 'users' :
-	    $result = $this->ourDB->db_Select_gen("SELECT * FROM {$this->DBPrefix}users WHERE `user_active` = 1");
-		if ($result === FALSE) return FALSE;
-		break;
-	  case 'forumdefs' :
-	    return FALSE;
-	  case 'forumposts' :
-	    return FALSE;
-	  case 'polls' :
-	    return FALSE;
-	  case 'news' :
-	    return FALSE;
-	  default :
-	    return FALSE;
-	}
-	$this->copyUserInfo = !$blank_user;
+    	if ($this->ourDB == NULL) return FALSE;
+		
+	    switch ($task)
+		{
+		  	case 'users' :
+				$result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}users ");
+				if ($result === FALSE) return FALSE;
+			break;
+			
+		  	case 'forum' :
+				$result = $this->ourDB->gen("SELECT * FROM `{$this->DBPrefix}forums`");
+				if ($result === FALSE) return FALSE;	  
+			break;
+				
+			case 'forumthread' :
+				$result = $this->ourDB->gen("SELECT * FROM `{$this->DBPrefix}topics`");
+				if ($result === FALSE) return FALSE;	  
+			break;
+				
+			case 'forumpost' :
+				$result = $this->ourDB->gen("SELECT * FROM `{$this->DBPrefix}posts`");
+				if ($result === FALSE) return FALSE;	  
+			break;				
+
+			case 'forumtrack' :
+				$result = $this->ourDB->gen("SELECT * FROM `{$this->DBPrefix}forums_track`");
+				if ($result === FALSE) return FALSE;	  
+			break;
+
+				
+		  	case 'polls' :
+		    	return FALSE;
+			break;  
+			
+		  	case 'news' :
+				  return FALSE;	
+			break;
+		  
+			  
+		  	default :
+		    return FALSE;
+		}
+
+	$this->copyUserInfo = true; // !$blank_user;
 	$this->currentTask = $task;
 	return TRUE;
   }
@@ -81,46 +90,179 @@ class phpbb2_import extends base_import_class
   //------------------------------------
   
   // Copy data read from the DB into the record to be returned.
-  function copyUserData(&$target, &$source)
-  {
-	if ($this->copyUserInfo) $target['user_id'] = $source['user_id'];
-	$target['user_name'] = $source['username'];
-	$target['user_loginname'] = $source['username'];
-	if ((substr($source['user_password']) == '$H$') && (strlen($source['user_password']) == 34))
-	{ // Convert salted password to E107 style (they use the same basic coding)
-	  $target['user_password'] = substr_replace($source['user_password'], '$E$',0,3);
-	}
-	else
-	{  // Probably an old md5 password
-	$target['user_password'] = $source['user_password'];
-	}
-	$target['user_email'] = $source['user_email'];
-	$target['user_signature'] = $this->proc_bb($source['user_sig'],'phpbb,bblower');
-	$target['user_hideemail'] = $source['user_viewemail'];
-	$target['user_join'] = $source['user_regdate'];
-	$target['user_forums'] = $source['user_posts'];
-	$target['user_admin'] = $source['user_level'];
-	$target['user_lastvisit'] = $source['user_lastvisit'];
-	switch ($source['user_avatar_type'])
+  /**
+   * $target - e107_users table
+   * $source - phpbb_user table : https://wiki.phpbb.com/Table.phpbb_users
+   */
+	function copyUserData(&$target, &$source)
 	{
-	  default: 
-	    $target['user_image'] = $source['user_avatar'];
+	// if ($this->copyUserInfo)
+		$target['user_id'] 			= $source['user_id'];
+		$target['user_name'] 		= $source['username'];
+		$target['user_loginname'] 	= $source['username'];
+		
+		if ((substr($source['user_password'],0,3) == '$H$') && (strlen($source['user_password']) == 34)) // Convert salted password to E107 style (they use the same basic coding)
+		{ 
+			$target['user_password'] = substr_replace($source['user_password'], '$E$',0,3);
+		}
+		else // Probably an old md5 password
+		{  
+			$target['user_password'] = $source['user_password'];
+		}
+		
+		$target['user_email'] 		= $source['user_email'];
+		$target['user_signature'] 	= $this->proc_bb($source['user_sig'],'phpbb,bblower');
+		$target['user_hideemail'] 	= $source['user_allow_viewemail'];
+		$target['user_join'] 		= $source['user_regdate'];
+	//	$target['user_forums'] 		= $source['user_posts'];
+		$target['user_admin'] 		= 0; //  $source['user_level'];
+		$target['user_lastvisit'] 	= $source['user_lastvisit'];
+		$target['user_ban']			= $source['user_type'];
+		
+		switch ($source['user_avatar_type'])
+		{
+		  default: 
+		    $target['user_image'] = $source['user_avatar'];
+		}
+		
+	//	$target['user_plugin_forum_viewed'];
+		$target['user_plugin_forum_posts']	= $source['user_posts'];
+		
+		$target['user_timezone'] 	= $source['user_timezone'];		// source is decimal(5,2)
+		$target['user_language'] 	= $source['user_lang'];			// May need conversion
+		$target['user_location'] 	= $source['user_from'];
+		$target['user_icq'] 		= $source['user_icq'];
+		$target['user_aim'] 		= $source['user_aim'];
+		$target['user_yahoo'] 		= $source['user_yim'];
+		$target['user_msn'] 		= $source['user_msnm'];
+		$target['user_homepage'] 	= $source['user_website'];
+	//	$target['user_'] = $source[''];
+	//	$target[] = $source['user_active];		// PHPBB2
+	//	$target['user_lastpost'] = $source['user_lastpost_time'];	// PHPBB3
+		return $target;
 	}
-	$target['user_timezone'] = $source['user_timezone'];		// source is decimal(5,2)
-	$target['user_language'] = $source['user_lang'];			// May need conversion
-	$target['user_location'] = $source['user_from'];
-	$target['user_icq'] = $source['user_icq'];
-	$target['user_aim'] = $source['user_aim'];
-	$target['user_yahoo'] = $source['user_yim'];
-	$target['user_msn'] = $source['user_msnm'];
-	$target['user_homepage'] = $source['user_website'];
-//	$target['user_'] = $source[''];
-//	$target[] = $source['user_active];		// PHPBB2
-//	$target['user_lastpost'] = $source['user_lastpost_time'];	// PHPBB3
-	return $target;
-  }
+
+ 
+ 	/**
+	 * $target - e107_forum table
+	 * $source - phpbb_forums table : https://wiki.phpbb.com/Table.phpbb_forums
+	 */
+	function copyForumData(&$target, &$source)
+	{
+		$target['forum_id'] 				= $source['forum_id'];
+		$target['forum_name'] 				= $source['forum_name'];
+		$target['forum_description'] 		= $source['forum_desc'];
+		$target['forum_parent']				= $source['parent_id'];
+		$target['forum_sub']				= "";
+		$target['forum_datestamp']			= time();
+		$target['forum_moderators']			= "";
+	
+		$target['forum_threads'] 			= $source['forum_topics'];
+		$target['forum_replies']			= "";
+		$target['forum_lastpost_user']		= $source['forum_last_poster_id'];
+		$target['forum_lastpost_user_anon']	= $source['forum_last_poster_name'];
+		$target['forum_lastpost_info']		= $source['forum_last_post_time'];
+		//	$target['forum_class']				= "";
+		// $target['forum_order']	
+		// $target['forum_postclass']	
+		// $target['forum_threadclass']	
+		// $target['forum_options']	
+	
+	
+		return $target;
+	}
+
+	
+	/**
+	 * $target - e107 forum_threads
+	 * $source - phpbb_topics : https://wiki.phpbb.com/Table.phpbb_topics
+	 */
+	function copyForumThreadData(&$target, &$source)
+	{
+		
+		$target['thread_id'] 				= $source['topic_id'];
+		$target['thread_name'] 				= $source['topic_title'];
+		$target['thread_forum_id'] 			= $source['forum_id'];
+		$target['thread_views'] 			= $source['topic_views'];
+	//	$target['thread_active'] 			= $source['topic_status'];
+		$target['thread_lastpost'] 			= $source['topic_last_post_id'];
+		$target['thread_sticky'] 			= $source['topic_time_limit'];
+		$target['thread_datestamp'] 		= $source['topic_time'];
+		$target['thread_user'] 				= $source['topic_poster'];
+		$target['thread_user_anon'] 		= $source['topic_first_poster_name'];
+		$target['thread_lastuser'] 			= $source['topic_last_poster_id'];
+		$target['thread_lastuser_anon'] 	= $source['topic_last_poster_name'];
+		$target['thread_total_replies'] 	= $source['topic_replies'];
+	//	$target['thread_options'] 			= $source['topic_'];
+	
+		return $target;
+	}
+
+ 	
+	/**
+	 * $target - e107_forum_post table
+	 * $source - phpbb_posts table : https://wiki.phpbb.com/Table.phpbb_posts
+	 */
+	function copyForumPostData(&$target, &$source)
+	{
+		$target['post_id'] 					= $source[''];
+		$target['post_entry'] 				= $source['post_text'];
+		$target['post_thread'] 				= $source['topic_id'];
+		$target['post_forum'] 				= $source['forum_id'];
+	//	$target['post_status'] 				= $source[''];
+		$target['post_datestamp'] 			= $source['post_time'];
+		$target['post_user'] 				= $source['poster_id'];
+		$target['post_edit_datestamp'] 		= $source['post_edit_time'];
+		$target['post_edit_user'] 			= $source['post_edit_user'];
+		$target['post_ip'] 					= $source['poster_ip'];
+	//	$target['post_user_anon'] 			= $source[''];
+	//	$target['post_attachments'] 		= $source[''];
+	//	$target['post_options'] 			= $source[''];
+		
+		
+		return $target;
+	}
+
+
+
+	/**
+	 * $target - e107_forum_track
+	 * $source	- phpbb_forums_track : https://wiki.phpbb.com/Table.phpbb_forums_track
+	 */
+	function copyForumTrackData(&$target, &$source)
+	{
+		$target['track_userid'] = $source['user_id'];
+		$target['track_thread'] = $source['forum_id'];
+
+		return $target;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ---------------------------------------------- OLD ---------------------------------
+
+
+
   
-  
+
   function convertForumParent(&$target, &$source)
   {
 	$this->catcount++;
@@ -132,9 +274,15 @@ class phpbb2_import extends base_import_class
     $target['forum_moderators'] = e_UC_ADMIN;
 //    $target['forum_'] = $source[''];
 //    $target['forum_'] = $source[''];
+
+
+
   }
   
-  
+  /**
+   * $target - e107 table
+   * $source - phpbb3 table 
+   */
   function convertForum(&$target, &$source, $catid)
   {
 	$this->catcount++;
@@ -150,7 +298,23 @@ class phpbb2_import extends base_import_class
 //    $target['forum_'] = $source[''];
   }
 }
-
+/*
+e107 
+thread_id
+thread_name
+thread_forum_id
+thread_views
+thread_active
+thread_lastpost
+thread_sticky
+thread_datestamp
+thread_user
+thread_user_anon
+thread_lastuser
+thread_lastuser_anon
+thread_total_replies
+thread_options
+ * 
 
 /*
 Historical info for conversion below here

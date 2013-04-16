@@ -79,13 +79,21 @@ class base_import_class
 				return $this->saveMediaData($dataRecord);
 			break;
 			
-	  		case 'forumdefs' :
+	  		case 'forum' :
 	    		return $this->saveForumData($dataRecord);
 	    	break;
 			
-	  		case 'forumposts' :
-	    		return $this->savePostData($dataRecord);
+		  	case 'forumthread' :
+	    		return $this->saveForumThreadData($dataRecord);
+	    	break;		
+			
+	  		case 'forumpost' :
+	    		return $this->saveForumPostData($dataRecord);
 	    	break;
+	
+		  	case 'forumtrack' :
+	    		return $this->saveForumTrackData($dataRecord);
+	    	break;			
 			
 	  		case 'polls' :
 	    	break;
@@ -134,10 +142,20 @@ class base_import_class
 				return $this->copyMediaData($initial, $result);
 	  		break;
 						
-	  		case 'forumdefs' :
+	  		case 'forum' :
+				return $this->copyForumData($initial, $result);
 	  		break; 
+			
+			case 'forumthread' :
+				return $this->copyForumThreadData($initial, $result);
+	  		break;
 				
-	  		case 'forumposts' :
+	  		case 'forumpost' :
+				return $this->copyForumPostData($initial, $result);
+	  		break;
+			
+			case 'forumtrack' :
+				return $this->copyForumTrackData($initial, $result);
 	  		break;
 		  
 	  		case 'polls' :
@@ -189,85 +207,105 @@ class base_import_class
 	{
 		return $target;
 	}
-}
-
-
-//===========================================================
-//				UTILITY ROUTINES
-//===========================================================
-
-// Process all bbcodes in the passed value; return the processed string.
-// Works recursively
-// Start by assembling matched pairs. Then map and otherwise process as required.
-// Divide the value into five bits:
-//      Preamble - up to the identified bbcode (won't contain bbcode)
-//		BBCode start code
-//		Inner - text between the two bbcodes (may contain another bbcode)
-//		BBCode end code
-//		Trailer - remaining unprocessed text (may contain more bbcodes)
-// (Note: preg_split might seem obvious, but doesn't pick out the actual codes
-function proc_bb($value, $options = "", $maptable = null)
-{
-  $bblower = (strpos($options,'bblower') !== FALSE) ? TRUE : FALSE;		// Convert bbcode to lower case
-  $bbphpbb = (strpos($options,'phpbb') !== FALSE) ? TRUE : FALSE;		// Strip values as phpbb
-  $nextchar = 0;
-  $loopcount = 0;
- 
-  while ($nextchar < strlen($value))
-  {
-    $firstbit = '';
-    $middlebit = '';
-    $lastbit = '';
-    $loopcount++;
-	if ($loopcount > 10) return 'Max depth exceeded';
-    unset($bbword);
-    $firstcode = strpos($value,'[',$nextchar);
-    if ($firstcode === FALSE) return $value;   	// Done if no square brackets
-    $firstend = strpos($value,']',$firstcode);
-    if ($firstend === FALSE) return $value;		// Done if no closing bracket
-    $bbword = substr($value,$firstcode+1,$firstend - $firstcode - 1);	// May need to process this more if parameter follows
-	$bbparam = '';
-	$temp = strpos($bbword,'=');
-	if ($temp !== FALSE)
+	
+	function copyForumData(&$target, &$source)
 	{
-	  $bbparam = substr($bbword,$temp);
-	  $bbword  = substr($bbword,0,-strlen($bbparam));
+		return $target;
 	}
-    if (($bbword) && ($bbword == trim($bbword)))
-    {
-      $laststart = strpos($value,'[/'.$bbword,$firstend);    // Find matching end
-	  $lastend   = strpos($value,']',$laststart);
-	  if (($laststart === FALSE) || ($lastend === FALSE))
-	  {   //  No matching end character
-	    $nextchar = $firstend;	// Just move scan pointer along 
-	  }
-	  else
-	  {  // Got a valid bbcode pair here
+	
+	function copyForumPostData(&$target, &$source)
+	{
+		return $target;
+	}
+	
+	function copyForumThreadData(&$target, &$source)
+	{
+		return $target;
+	}
+	
+	function copyForumTrackData(&$target, &$source)
+	{
+		return $target;
+	}
+
+
+	
+	//===========================================================
+	//				UTILITY ROUTINES
+	//===========================================================
+	
+	// Process all bbcodes in the passed value; return the processed string.
+	// Works recursively
+	// Start by assembling matched pairs. Then map and otherwise process as required.
+	// Divide the value into five bits:
+	//      Preamble - up to the identified bbcode (won't contain bbcode)
+	//		BBCode start code
+	//		Inner - text between the two bbcodes (may contain another bbcode)
+	//		BBCode end code
+	//		Trailer - remaining unprocessed text (may contain more bbcodes)
+	// (Note: preg_split might seem obvious, but doesn't pick out the actual codes
+	function proc_bb($value, $options = "", $maptable = null)
+	{
+	  $bblower = (strpos($options,'bblower') !== FALSE) ? TRUE : FALSE;		// Convert bbcode to lower case
+	  $bbphpbb = (strpos($options,'phpbb') !== FALSE) ? TRUE : FALSE;		// Strip values as phpbb
+	  $nextchar = 0;
+	  $loopcount = 0;
+	 
+	  while ($nextchar < strlen($value))
+	  {
 	    $firstbit = '';
-	    if ($firstcode > 0) $firstbit = substr($value,0,$firstcode);
-	    $middlebit = substr($value,$firstend+1,$laststart - $firstend-1);
-	    $lastbit = substr($value,$lastend+1,strlen($value) - $lastend);
-	    // Process bbcodes here
-		if ($bblower) $bbword = strtolower($bbword);
-		if ($bbphpbb && (strpos($bbword,':') !== FALSE)) $bbword = substr($bbword,0,strpos($bbword,':'));
-		if ($maptable)
-		{   // Do mapping
-		  if (array_key_exists($bbword,$maptable)) $bbword = $maptable[$bbword];
+	    $middlebit = '';
+	    $lastbit = '';
+	    $loopcount++;
+		if ($loopcount > 10) return 'Max depth exceeded';
+	    unset($bbword);
+	    $firstcode = strpos($value,'[',$nextchar);
+	    if ($firstcode === FALSE) return $value;   	// Done if no square brackets
+	    $firstend = strpos($value,']',$firstcode);
+	    if ($firstend === FALSE) return $value;		// Done if no closing bracket
+	    $bbword = substr($value,$firstcode+1,$firstend - $firstcode - 1);	// May need to process this more if parameter follows
+		$bbparam = '';
+		$temp = strpos($bbword,'=');
+		if ($temp !== FALSE)
+		{
+		  $bbparam = substr($bbword,$temp);
+		  $bbword  = substr($bbword,0,-strlen($bbparam));
 		}
-	    $bbbegin = '['.$bbword.$bbparam.']';
-	    $bbend   = '[/'.$bbword.']';
-	    return $firstbit.$bbbegin.proc_bb($middlebit,$options,$maptable).$bbend.proc_bb($lastbit,$options,$maptable);
-	  }
-    }
-	else
-	{
-	  $nextchar = $firstend+1;
+	    if (($bbword) && ($bbword == trim($bbword)))
+	    {
+	      $laststart = strpos($value,'[/'.$bbword,$firstend);    // Find matching end
+		  $lastend   = strpos($value,']',$laststart);
+		  if (($laststart === FALSE) || ($lastend === FALSE))
+		  {   //  No matching end character
+		    $nextchar = $firstend;	// Just move scan pointer along 
+		  }
+		  else
+		  {  // Got a valid bbcode pair here
+		    $firstbit = '';
+		    if ($firstcode > 0) $firstbit = substr($value,0,$firstcode);
+		    $middlebit = substr($value,$firstend+1,$laststart - $firstend-1);
+		    $lastbit = substr($value,$lastend+1,strlen($value) - $lastend);
+		    // Process bbcodes here
+			if ($bblower) $bbword = strtolower($bbword);
+			if ($bbphpbb && (strpos($bbword,':') !== FALSE)) $bbword = substr($bbword,0,strpos($bbword,':'));
+			if ($maptable)
+			{   // Do mapping
+			  if (array_key_exists($bbword,$maptable)) $bbword = $maptable[$bbword];
+			}
+		    $bbbegin = '['.$bbword.$bbparam.']';
+		    $bbend   = '[/'.$bbword.']';
+		    return $firstbit.$bbbegin.$this->proc_bb($middlebit,$options,$maptable).$bbend.$this->proc_bb($lastbit,$options,$maptable);
+		  }
+	    }
+		else
+		{
+		  $nextchar = $firstend+1;
+		}
+	  }  //endwhile;
+	  
 	}
-  }  //endwhile;
-  
+
 }
-
-
 
 
 ?>

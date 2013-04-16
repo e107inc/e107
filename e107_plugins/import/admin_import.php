@@ -30,7 +30,7 @@ Options supported:
 */
 
 
- define('IMPORT_DEBUG',FALSE);
+ define('IMPORT_DEBUG',TRUE);
 // define('IMPORT_DEBUG',TRUE);
 
 require_once("../../class2.php");
@@ -91,15 +91,20 @@ class import_main_ui extends e_admin_ui
 	protected $deleteExisting		= false; // delete content from existing table during import. 
 	protected $selectedTables		= array(); // User selection of what tables to import. eg. news, pages etc. 
 	protected $importClass			= null;
-	
+	protected $checked_class_list	= '';
 	
 	// Definitions of available areas to import
 	protected $importTables = array(
-		'users' 		=> array('message' => LAN_CONVERT_25, 	'classfile' => 'import_user_class.php', 'classname' => 'user_import'),
-		'news' 			=> array('message' => LAN_CONVERT_28,	'classfile' => 'import_news_class.php', 'classname' => 'news_import'),
-		'page' 			=> array('message' => "Pages",			'classfile' => 'import_page_class.php', 'classname' => 'page_import'),
-		'links' 		=> array('message' => "Links", 			'classfile' => 'import_links_class.php', 'classname' => 'links_import'),	
-		'media' 		=> array('message' => "Media", 			'classfile' => 'import_media_class.php', 'classname' => 'media_import'),
+		'users' 		=> array('message' => LAN_CONVERT_25, 			'classfile' => 'import_user_class.php', 'classname' => 'user_import'),
+		'news' 			=> array('message' => LAN_CONVERT_28,			'classfile' => 'import_news_class.php', 'classname' => 'news_import'),
+		'page' 			=> array('message' => "Pages",					'classfile' => 'import_page_class.php', 'classname' => 'page_import'),
+		'links' 		=> array('message' => "Links", 					'classfile' => 'import_links_class.php', 'classname' => 'links_import'),	
+		'media' 		=> array('message' => "Media", 					'classfile' => 'import_media_class.php', 'classname' => 'media_import'),
+		'forum' 		=> array('message' => "Forum", 					'classfile' => 'import_forum_class.php', 'classname' => 'forum_import'),
+		'forumthread' 	=> array('message' => "Forum Topics/Threads", 	'classfile' => 'import_forum_class.php', 'classname' => 'forumthread_import', 'nolist'=>true),
+		'forumpost' 	=> array('message' => "Forum Posts", 			'classfile' => 'import_forum_class.php', 'classname' => 'forumpost_import', 'nolist'=>true),
+		'forumtrack' 	=> array('message' => "Forum Track", 			'classfile' => 'import_forum_class.php', 'classname' => 'forumtrack_import', 'nolist'=>true),
+	//	'forumpost' 		=> array('message' => "Media", 			'classfile' => 'import_media_class.php', 'classname' => 'media_import'),
 		'comments' 		=> array('message'=> "Comments"),
 	//	'forumdefs' 	=> array('message' => LAN_CONVERT_26),
 	//	'forumposts' 	=> array('message' => LAN_CONVERT_48), 
@@ -167,6 +172,11 @@ class import_main_ui extends e_admin_ui
 		
 		$this->deleteExisting = varset($_POST['import_delete_existing_data'],0);
 		
+		if(varset($_POST['classes_select']))
+		{
+			$this->checked_class_list = implode(',',$_POST['classes_select']);
+		}
+		
 		if($_POST['selectedTables'])
 		{
 			$this->selectedTables = $_POST['selectedTables'];
@@ -198,7 +208,7 @@ class import_main_ui extends e_admin_ui
 		$mes = e107::getMessage();
 		$frm = e107::getForm();
 		
-		
+		$tableCount = 0;
 	//	$mes->addDebug(print_a($this->providers,true));
 		
 		$text = "
@@ -218,9 +228,11 @@ class import_main_ui extends e_admin_ui
 					<thead>
 					<tr>
 		            	<th>".LAN_CONVERT_06."</th>";
-		                foreach($this->importTables as $name)   // 1 column for each of users, news, forum etc.
+		                foreach($this->importTables as $val)   // 1 column for each of users, news, forum etc.
 						{
-		                	$text .= "<th class='center'>".$name['message']."</th>";
+							if(vartrue($val['nolist'])){ continue; }
+		                	$text .= "<th class='center'>".$val['message']."</th>";
+							$tableCount++;
 		 				}
 		
 						$text.="
@@ -234,7 +246,7 @@ class import_main_ui extends e_admin_ui
 					<td><img src='".e_PLUGIN."import/images/csv.png' alt='' style='float:left;height:32px;width:32px;margin-right:4px'>CSV</td>
 					<td class='center'>".ADMIN_TRUE_ICON."</td>";
 					
-					for ($i=0; $i < count($this->importTables)-1; $i++) 
+					for ($i=0; $i < $tableCount-1; $i++) 
 					{ 
 						$text .= "<td>&nbsp;</td>";	
 					}
@@ -257,6 +269,7 @@ class import_main_ui extends e_admin_ui
 		
 					 foreach($this->importTables as $key=>$val)
 					 {
+					 	if(vartrue($val['nolist'])){ continue; }
 		 			 	$text .= "<td class='center'>".(in_array($key,$info['supported']) ? ADMIN_TRUE_ICON : "&nbsp;")."</td>\n";
 					 }
 		
@@ -453,7 +466,10 @@ class import_main_ui extends e_admin_ui
 			</tr>
 			<tr>
 			<td >$importType ".LAN_CONVERT_20."</td>
-			<td ><input class='tbox' type='text' name='dbParamUsername' size='30' value='".varset($_POST['dbParamUsername'])."' maxlength='100' /></td>
+			<td >
+				<input class='tbox' type='text' name='dbParamUsername' size='30' value='".varset($_POST['dbParamUsername'])."' maxlength='100' />
+				<div class='field-help'>Must be different from the one e107 uses.</div>
+			</td>
 			</tr>
 			<tr>
 			<td >$importType ".LAN_CONVERT_21."</td>
@@ -648,8 +664,9 @@ class import_main_ui extends e_admin_ui
 				 				 	
 			if($k == 'users')  // Do any type-specific default setting
 			{
-				$exporter->overrideDefault('user_class', $checked_class_list);
-				break;
+				$mes->addDebug("dbImport(): Overriding Default for user_class: ".$this->checked_class_list);	
+				$exporter->overrideDefault('user_class', $this->checked_class_list);
+			//	break;
 			}
 					
 			if ($this->deleteExisting)
@@ -694,7 +711,7 @@ class import_main_ui extends e_admin_ui
 		
 		/// - old BELOW ----------------------------------------	
 	
-	
+		/*
 		foreach ($this->importTables as $k => $v)
 		{
 			if (isset($this->selectedTables[$k]))
@@ -775,6 +792,7 @@ class import_main_ui extends e_admin_ui
 					
 			  }
 			}
+		 */
 	
 		//	  $msg = LAN_CONVERT_29;
 		return true;
