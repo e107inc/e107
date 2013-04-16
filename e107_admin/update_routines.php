@@ -964,8 +964,16 @@ function update_706_to_800($type='')
 	
 	require_once(e_HANDLER."db_verify_class.php");
 	$dbv = new db_verify;
-	$exclude =  array_keys(e107::getPlugin()->updateRequired()); // search xxxxx_setup.php and check for 'upgrade_required()' == true. 
-
+	
+	if($plugUpgradeReq = e107::getPlugin()->updateRequired())
+	{
+		$exclude =  array_keys($plugUpgradeReq); // search xxxxx_setup.php and check for 'upgrade_required()' == true. 
+	}
+	else 
+	{
+		$exclude = false;	
+	}
+	
 	$dbv->compareAll($exclude); // core & plugins, but not plugins calling for an update with xxxxx_setup.php 	
 	
 	if(count($dbv->errors))

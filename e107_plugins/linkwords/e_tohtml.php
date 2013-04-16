@@ -144,6 +144,11 @@ class e_tohtml_linkwords
 	function to_html($text,$area = 'olddefault')
 	{
 			
+		if(is_string($this->area_opts))
+		{
+			$this->area_opts = e107::unserialize($this->area_opts);	
+		}	
+			
 		if (!$this->lw_enabled || !count($this->area_opts) || !array_key_exists($area,$this->area_opts) || !$this->area_opts[$area]) return $text;		// No linkwords in disabled areas
 	
 // Split up by HTML tags and process the odd bits here

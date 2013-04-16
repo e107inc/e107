@@ -1356,10 +1356,15 @@ class themeHandler
 		$core->set('sitetheme_layouts', $layout);
 		$core->set('sitetheme_deflayout', $deflayout);
 		$core->set('sitetheme_custompages', $customPages);
+		
 		$core->set('sitetheme_version', $version);
 	//	$core->set('sitetheme_releaseUrl', $this->themeArray[$name]['releaseUrl']);
 		
-		$sql->db_Delete("menus", "menu_layout !='' ");
+		
+		if($contentCheck === true)
+		{
+			$sql->db_Delete("menus", "menu_layout !='' ");
+		}
 		
 		e107::getCache()->clear_sys();
 		
