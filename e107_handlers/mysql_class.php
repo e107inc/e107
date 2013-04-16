@@ -680,7 +680,7 @@ class e_db_mysql
 	function replace($table, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
 		$arg['_REPLACE'] = TRUE;
-		return $this->db_Insert($table, $arg, $debug, $log_type, $log_remark);
+		return $this->insert($table, $arg, $debug, $log_type, $log_remark);
 	}
 	
 	/**
@@ -848,10 +848,6 @@ class e_db_mysql
 				return ($fieldValue && $fieldValue !== 'NULL' ? "'".$this->escape($fieldValue, false)."'" : 'NULL');
 				break;
 
-			case 'escape':
-				return "'".$this->escape($fieldValue, false)."'";
-			break;
-				
 			case 'array':
 				if(is_array($fieldValue))
 				{
@@ -860,10 +856,14 @@ class e_db_mysql
 				return "'". (string) $fieldValue."'";
 			break;
 
-			case 'todb':
-			default:
+			case 'todb': // using as default causes serious BC issues. 
 				if($fieldValue == '') { return "''"; }
 				return "'".e107::getParser()->toDB($fieldValue)."'";
+			break;
+			
+			case 'escape':
+			default:
+				return "'".$this->escape($fieldValue, false)."'";
 			break;
 	  	}
 	}
@@ -911,6 +911,17 @@ class e_db_mysql
 		return FALSE;
 	  }
 	}
+
+	/**
+	 * Truncate a table
+	 * @param string $table - table name without e107 prefix
+	 */
+	function truncate($table=null)
+	{
+		if($table == null){ return; }
+		return $this->gen("TRUNCATE TABLE `#".$table."` "); 	
+	}
+
 
 	/**
 	* @return array MySQL row
@@ -2060,9 +2071,13 @@ class e_db_mysql
 						case 'char' :
 						case 'text' :
 						case 'varchar' :
-							$outDefs['_FIELD_TYPES'][$v['name']] = 'todb';
+							$outDefs['_FIELD_TYPES'][$v['name']] = 'escape'; //XXX toDB() causes serious BC issues. 
 							break;
 					}
+					
+				//	if($v['name'])
+					
+					
 					if (isset($v['nulltype']) && !isset($v['default']))
 					{
 						$outDefs['_NOTNULL'][$v['name']] = '';
