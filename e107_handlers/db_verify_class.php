@@ -157,11 +157,15 @@ class db_verify
 	 * Check core tables and installed plugin tables
 	 * @param $exclude - array of plugins to exclude. 
 	 */
-	function compareAll($exclude = array())
+	function compareAll($exclude = null)
 	{
-		foreach($exclude as $val)
+		
+		if(is_array($exclude))
 		{
-			unset($this->tables[$val]);
+			foreach($exclude as $val)
+			{
+				unset($this->tables[$val]);
+			}
 		}
 		
 		$dtables = array_keys($this->tables);

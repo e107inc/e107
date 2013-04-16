@@ -81,7 +81,7 @@ class bb_img extends e_bb_base
         
         parse_str($parm,$imgParms);
         
-        foreach($tmp as $p => $v)
+      //  foreach($tmp as $p => $v)
         {
          //   $imgParms[$p]=$v;
         }
