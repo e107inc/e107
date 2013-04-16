@@ -17,15 +17,7 @@ if (!getperms('4'))
 }
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
-$e_sub_cat = 'failed_login';
-require_once('auth.php');
 
-$frm = e107::getForm();
-$mes = e107::getMessage();
-
-$tmp = (e_QUERY) ? explode('.', e_QUERY) : '';
-$from = intval(varset($tmp[0], 0));
-$amount = intval(varset($tmp[1], 50));
 
 /*
 'generic' table:
@@ -38,6 +30,161 @@ $amount = intval(varset($tmp[1], 50));
   gen_chardata 	- ban detail as known
 
 */
+
+
+class failed_login_admin extends e_admin_dispatcher
+{
+	protected $modes = array(	
+	
+		'main'	=> array(
+			'controller' 	=> 'generic_ui',
+			'path' 			=> null,
+			'ui' 			=> 'generic_form_ui',
+			'uipath' 		=> null
+		),
+
+	);
+
+	protected $adminMenu = array(
+		'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
+	);
+
+	protected $adminMenuAliases = array(
+		'main/edit'	=> 'main/list'				
+	);	
+	
+	protected $menuTitle = ADLAN_146;
+}
+
+
+
+
+				
+class generic_ui extends e_admin_ui
+{
+			
+		protected $pluginTitle		= ADLAN_146;
+		protected $pluginName		= 'failed_login';
+		protected $table			= 'generic';
+		protected $pid				= 'gen_id';
+		protected $perPage 			= 10; 
+		protected $listQry			= "SELECT * FROM #generic WHERE gen_type='failed_login' ORDER BY gen_datestamp DESC";
+			
+		protected $fields 		= array (  'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
+		  'gen_id' 				=> array ( 'title' => LAN_ID,	 'nolist'=>true,	'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+	//	  'gen_type' 			=> array ( 'title' => LAN_BAN, 	'type' => 'method', 'data' => 'str', 'width' => 'auto', 'batch' => true, 'filter' => true, 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'gen_datestamp' 		=> array ( 'title' => LAN_DATESTAMP, 'type' => 'datestamp', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'gen_chardata' 		=> array ( 'title' => 'Chardata', 'type' => 'method', 'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+	
+	//	  'gen_user_id' 		=> array ( 'title' => LAN_BAN, 'type' => 'method', 'batch'=>true, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'gen_ip' 				=> array ( 'title' => LAN_IP, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+	//	  'gen_intdata' 		=> array ( 'title' =>  LAN_BAN, 'type' => 'method', 'batch'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'options'				=> array ( 'title' => 'Options', 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1', 'readParms'=>'edit=0'  ),
+		);		
+		
+		protected $fieldpref = array('gen_datestamp', 'gen_ip', 'gen_chardata');
+		
+			
+		// optional
+		public function init()
+		{
+			if($_POST['etrigger_batch'] == 'gen_intdata__1' && count($_POST['e-multiselect'])) // Do we need BAN here?
+			{
+				$dels = implode(',',$_POST['e-multiselect']);	
+				//$e107::getDb()->insert('banlist',
+			}
+		}
+	
+
+			
+}
+				
+
+
+class generic_form_ui extends e_admin_form_ui
+{
+
+	
+	// Custom Method/Function 
+	function gen_intdata($curVal,$mode)
+	{
+		$frm = e107::getForm();		
+		 		
+		switch($mode)
+		{
+			case 'read': // List Page
+				return $curVal;
+			break;
+			
+			case 'write': // Edit Page
+				return $frm->text('gen_type',$curVal);		
+			break;
+			
+			case 'filter':
+			case 'batch':
+				return  array(1=>LAN_BAN);
+			break;
+		}
+	}
+
+	
+	// Custom Method/Function 
+	function gen_chardata($curVal,$mode)
+	{
+		$frm = e107::getForm();		
+		 		
+		switch($mode)
+		{
+			case 'read': // List Page
+				return str_replace(":::","<br />",$curVal);
+			break;
+			
+			case 'write': // Edit Page
+				return $frm->text('gen_chardata',$curVal);		
+			break;
+			
+			case 'filter':
+			case 'batch':
+			//	return  $array; 
+			break;
+		}
+	}
+
+}		
+		
+		
+new failed_login_admin();
+
+require_once(e_ADMIN."auth.php");
+e107::getAdminUI()->runPage();
+
+require_once(e_ADMIN."footer.php");
+exit;
+
+
+
+
+
+// ---------- OLD STUFF BELOW - For Review --- //
+
+
+
+
+
+
+$e_sub_cat = 'failed_login';
+//require_once('auth.php');
+
+$frm = e107::getForm();
+$mes = e107::getMessage();
+
+$tmp = (e_QUERY) ? explode('.', e_QUERY) : '';
+$from = intval(varset($tmp[0], 0));
+$amount = intval(varset($tmp[1], 50));
+
+
+
+
 
 function deleteBan($banID, $banIP = '')
 {
