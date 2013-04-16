@@ -2245,7 +2245,7 @@ class e_form
 						$cls = (deftrue($parms['editClass'])) ? constant($parms['editClass']) : $parms['editClass'];
 
 					}	
-					if(false === $cls || check_class($cls))
+					if((false === $cls || check_class($cls)) && varset($parms['edit'],1) == 1)
 					{
 						/*
 						$value .= "<a href='".e_SELF."?{$query}' class='e-tip btn btn-large' title='".LAN_EDIT."' data-placement='left'>
@@ -2257,7 +2257,7 @@ class e_form
 					}
 
 					$delcls = vartrue($attributes['noConfirm']) ? ' no-confirm' : '';
-					if(varset($parms['deleteClass']))
+					if(varset($parms['deleteClass']) && varset($parms['delete'],1) == 1)
 					{
 						$cls = (deftrue($parms['deleteClass'])) ? constant($parms['deleteClass']) : $parms['deleteClass'];
 						if(check_class($cls))
