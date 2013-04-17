@@ -57,10 +57,18 @@ class admin_shortcodes
 	function sc_admin_help()
 	{
 		if (!ADMIN) { return ''; }
-
+	
+		$ns = e107::getRender();
+		$pref = e107::getPref();
+	
+		if(function_exists('e_help')) // new in v2.x for non-admin-ui admin pages. 
+		{
+			$tmp =  e_help();
+			return $ns->tablerender($tmp['caption'],$tmp['text'],'',true);
+		}
+		
 		$helpfile = '';
-		global $ns, $pref;			// Used by the help renderer
-
+		
 		if(strpos(e_SELF, e_ADMIN_ABS) !== FALSE)
 		{
 			if (is_readable(e_LANGUAGEDIR.e_LANGUAGE.'/admin/help/'.e_PAGE))
