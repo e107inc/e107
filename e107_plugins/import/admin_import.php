@@ -126,13 +126,11 @@ class import_main_ui extends e_admin_ui
 			$tag = str_replace('_class.php','',$file['fname']);
 			
 			$key = str_replace("_import_class.php","",$file['fname']);
-			
-			$this->providers[$key] = $this->getMeta($tag);
-			
-			
+
 			include_once($file['path'].$file['fname']);		// This will set up the variables
 			
-			
+			$this->providers[$key] = $this->getMeta($tag);
+
 			if(vartrue($_GET['type']))
 			{
 				$this->importClass = $_GET['type']."_import";
@@ -155,6 +153,10 @@ class import_main_ui extends e_admin_ui
 		{
 			$obj = new $class_name;
 			return array('title' => vartrue($obj->title), 'description' => vartrue($obj->description), 'supported' => vartrue($obj->supported));
+		}
+		else
+		{
+			e107::getMessage()->addDebug("Missing class: ".$class_name);	
 		}
 		
 	}
@@ -245,7 +247,9 @@ class import_main_ui extends e_admin_ui
 		
 					</tr>
 					</thead>
-					<tbody>
+					<tbody>";
+					/*
+					$text .= "
 		
 					<tr>
 					<td><img src='".e_PLUGIN."import/images/csv.png' alt='' style='float:left;height:32px;width:32px;margin-right:4px'>CSV</td>
@@ -258,12 +262,11 @@ class import_main_ui extends e_admin_ui
 		
 					
 					$text .= "<td class='center middle'>".$frm->admin_button('import_type', 'csv', 'other',"Select")."</td></tr>";
-		
+					*/
 		
 		        foreach ($this->providers as $k=>$info)
 				{
 					$title = $info['title'];
-					
 					
 					$iconFile = e_PLUGIN."import/images/".str_replace("_import","",strtolower($k)).".png";		
 					
@@ -339,11 +342,11 @@ class import_main_ui extends e_admin_ui
 		}
 		
 		
-	//	if ($msg)
-	//	{
-	//		$mes->add($msg, E_MESSAGE_INFO); //  $ns -> tablerender(LAN_CONVERT_30, $msg);
-	//		$msg = '';
-	//	}
+//		if ($msg)
+//		{
+//			$mes->add($msg, E_MESSAGE_INFO); //  $ns -> tablerender(LAN_CONVERT_30, $msg);
+//			$msg = '';
+//		}
 	
 		if ($abandon)
 		{
@@ -354,7 +357,9 @@ class import_main_ui extends e_admin_ui
 			".$frm->admin_button('dummy_continue',LAN_CONTINUE, 'execute')."
 			</div>
 			</form>";
-			$ns -> tablerender(LAN_CONVERT_30,$mes->render(). $text);
+			echo $mes->render(). $text;
+			
+		//	$ns -> tablerender(LAN_CONVERT_30,$mes->render(). $text);
 			
 		}
 	}
