@@ -369,20 +369,65 @@ class e107_user_extended
 		return $ret;
 	}
 
-	// Get the definition of all fields, or those in a specific category, indexed by field ID (or some other field by specifying $indexField)
+	// BC Alias of getFieldList(). 
 	function user_extended_get_fieldList($cat = "", $indexField = 'user_extended_struct_id')
 	{
-		global $sql;
-		$more = ($cat != '') ? " AND user_extended_struct_parent = ".intval($cat)." " : "";
-		if($sql->db_Select("user_extended_struct", "*", "user_extended_struct_type > 0 AND user_extended_struct_text != '_system_' {$more} ORDER BY user_extended_struct_order ASC"))
+		return $this->getFieldList($cat, $indexField); 	
+	}
+		
+
+	/**
+	 * Get the definition of all fields, or those in a specific category, indexed by field ID (or some other field by specifying $indexField)
+	 * @param $cat
+	 * @param $indexField;
+	 * @param $system - include system fields. 
+	 */
+	function getFieldList($cat = "", $indexField = 'user_extended_struct_id', $system = false)
+	{
+		if(!$indexField)
 		{
-			while($row = $sql->db_Fetch(MYSQL_ASSOC))
+			 $indexField = 'user_extended_struct_id';	
+		}
+		
+		$sql = e107::getDb('ue');
+		
+		$more = ($cat != '') ? " AND user_extended_struct_parent = ".intval($cat)." " : "";
+		$sys = ($system == false) ? " AND user_extended_struct_text != '_system_' " : "";
+		
+		if($sql->select("user_extended_struct", "*", "user_extended_struct_type > 0 {$sys} {$more} ORDER BY user_extended_struct_order ASC"))
+		{
+			while($row = $sql->fetch(MYSQL_ASSOC))
 			{
 				$ret[$row[$indexField]] = $row;
 			}
 		}
 		return $ret;
 	}
+
+
+	/**
+	 * Return the list of user_extended fields. 
+	 * @return array
+	 */
+	function getFieldNames()
+	{
+		$ret = array();
+		
+		$sql = e107::getDb('ue');
+		
+		if($sql->select("user_extended_struct", "*", "user_extended_struct_type > 0 ORDER BY user_extended_struct_order ASC"))
+		{
+			while($row = $sql->fetch(MYSQL_ASSOC))
+			{
+				$ret[] = 'user_'.$row['user_extended_struct_name'];
+			}
+		}
+		return $ret;
+		
+	}
+			
+		
+
 
 
 	// Return the field creation text for a definition
@@ -708,7 +753,7 @@ class e107_user_extended
 				break;
 
 			case EUF_DATE : //date
-				return e107::getForm()->datepicker($fname,$curval,'dateformat=yy-mm-dd');	
+				return e107::getForm()->datepicker($fname,$curval,'dateformat=yyyy-mm-dd');	
 				break;
 
 			case EUF_LANGUAGE : // language
@@ -732,23 +777,40 @@ class e107_user_extended
 		return $ret;
 	}
 
+
+	// BC Alias of getStructure();
 	function user_extended_getStruct($orderby="user_extended_struct_order")
+	{
+		return $this->getStructure($orderby);	
+	}
+
+
+
+
+	/**
+	 * Preferred version of user_extended_getStruct();
+	 */
+	function getStructure($orderby="user_extended_struct_order")
 	{
 		if($ueStruct = getcachedvars('ue_struct'))
 		{
 			return $ueStruct;
 		}
-		global $tp;
+		
+		$tp = e107::getParser();
+		
 		$ret = array();
 		$parms = "";
+		
 		if($orderby != "")
 		{
 			$parms = "1 ORDER BY ".$tp -> toDB($orderby, true);
 		}
-		$sql_ue = new db;		// Use our own db to avoid interference with other objects
-		if($sql_ue->db_Select('user_extended_struct','*',$parms))
+		
+		$sql_ue = e107::getDb('ue'); // new db;		// Use our own db to avoid interference with other objects
+		if($sql_ue->select('user_extended_struct','*',$parms))
 		{
-			while($row = $sql_ue->db_Fetch())
+			while($row = $sql_ue->fetch())
 			{
 				$ret['user_'.$row['user_extended_struct_name']] = $row;
 			}
