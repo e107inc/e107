@@ -36,28 +36,34 @@ class user_import
 
 // Every field must be in exactly one of the arrays $userDefaults, $userSpecial, $userMandatory  
 	var $userDefaults = array(
-		'user_id' => 0,
-		'user_customtitle' => '',
-		'user_sess' => '',			// Photo
-		'user_email' => '',
-		'user_signature' => '',
-		'user_image' => '',			// Avatar
-		'user_hideemail' => 1,
-		'user_lastvisit' => 0,
+		'user_id' 			=> 0,
+		'user_name' 		=> '',
+		'user_loginname'	=> '',
+		'user_password'		=> '',
+		'user_customtitle' 	=> '',
+		'user_sess' 		=> '',			// Photo
+		'user_email' 		=> '',
+		'user_signature' 	=> '',
+		'user_image' 		=> '',			// Avatar
+		'user_hideemail' 	=> 1,
+		'user_join'			=> 0,
+		'user_realm'		=> 0,
+		'user_pwchange'		=> 0,
+		'user_lastvisit' 	=> 0,
 		'user_currentvisit' => 0,
-		'user_lastpost' => 0,
-		'user_chats' => 0,
-		'user_comments' => 0,
-		'user_ip' => '',
-		'user_ban' => 0,
-		'user_prefs' => '',
+		'user_lastpost' 	=> 0,
+		'user_chats' 		=> 0,
+		'user_comments' 	=> 0,
+		'user_ip' 			=> '',
+		'user_ban' 			=> 0,
+		'user_prefs' 		=> '',
 	 //	'user_viewed' => '',
-		'user_visits' => 0,
-		'user_admin' => 0,
-		'user_login' => '',			// User real name
-		'user_class' => '',
-		'user_perms' => '',
-		'user_xup' =>  ''
+		'user_visits' 		=> 0,
+		'user_admin' 		=> 0,
+		'user_login'		=> '',			// User real name
+		'user_class' 		=> '',
+		'user_perms' 		=> '',
+		'user_xup' 			=>  ''
 	);
 
 
@@ -68,59 +74,45 @@ class user_import
 	var $userMandatory = array(
 		'user_name', 'user_loginname', 'user_password'
 	);
-  
-  
-  // Predefined fields which may appear in the extended user fields
-	var $userExtended = array(
-		'user_language',
-		'user_country',
-		'user_location',
-		'user_aim',
-		'user_icq',
-		'user_yahoo',
-		'user_msn',
-		'user_homepage',
-		'user_birthday',
-		'user_timezone',
-		'user_plugin_forum_posts'
-		);
-		
-	// Array is set up with those predefined extended fields which are actually in use
+  	
+	// Array is set up with the predefined extended fields which are actually in use
 	var $actualExtended = array();
 
 
   // Constructor
 	function user_import()
 	{
-		global $sql;
 		$this->userDB = new db;			// Have our own database object to write to the user table
-
-		// Create list of predefined extended user fields which are present
-		if($ret = getcachedvars("userdata_{$uid}"))
-		{
-		  foreach ($this->userExtended as $v)
-		  {
-		    if (isset($ret[$v])) $this->actualExtended[] = $v;
-		  }
-		}
+		$this->actualExtended = e107::getUserExt()->getFieldNames(); // Create list of predefined extended user fields which are present
 	}
 
 
   // Empty the user DB - by default leaving only the main admin.
 	function emptyTargetDB($inc_admin = FALSE)
 	{
-	    $delClause = '';
+	    
 	    if ($inc_admin === TRUE)
 		{
-		  $this->blockMainAdmin = FALSE;
+			$this->blockMainAdmin = FALSE;
+			$delClause = '';
+			$extClause = '';
 		}
 		else
 		{
-		  $this->blockMainAdmin = TRUE;
-		  $delClause = 'user_id != 1';
+			$this->blockMainAdmin = TRUE;
+			$delClause = 'user_id != 1 AND user_perms != "0" ';
+			$extClause = 'user_extended_id != 1';
 		}
-		$this->userDB->delete('user',$delClause);
-		$this->userDB->delete('user_extended',$delClause);
+
+		if($this->userDB->delete('user',$delClause))
+		{
+			e107::getMessage()->addDebug("Emptied User table");	
+		}
+		
+		if($this->userDB->delete('user_extended',$extClause))
+		{
+			e107::getMessage()->addDebug("Emptied User-extended table");	
+		}
 	}
   
   
@@ -162,20 +154,25 @@ class user_import
 		}
 		
 		$extendedFields = array();
+		$userFields 	= array_keys($this->userDefaults);
 		
 		foreach ($userRecord as $k => $v)
 		{
-			if (in_array($k,$this->userExtended))
+			if (!in_array($k, $userFields)) // Not present in e107_user table. 
 			{
-		    	if (in_array($k,$this->actualExtended))
+		    	if (in_array($k,$this->actualExtended)) // Present in e107_user_extended table. 
 				{
 					 $extendedFields[$k] = $v;		// Pull out any extended field values which are needed
 				}
+				else 
+				{
+					e107::getMessage()->addDebug("Removing user-field due to missing user-extended field {$k} ");	
+				}			
 				
 				unset($userRecord[$k]);			// And always delete from the original data record
 			}
 		}
-		
+				
 		foreach ($userRecord as $k => $v) // Check only valid fields being passed
 		{	
 		  	if (!array_key_exists($k,$this->userDefaults) && !in_array($k,$this->userSpecial) && !in_array($k,$this->userMandatory)   )         //
@@ -226,7 +223,7 @@ class user_import
 		{
 			$extendedFields['user_extended_id'] = varset($userRecord['user_id'],0) ? $userRecord['user_id'] : $result;
 			
-			if($this->userDB->insert('user_extended',$extendedFields) === false)
+			if($this->userDB->replace('user_extended',$extendedFields) === false)
 			{
 				e107::getMessage()->addDebug("Failed to insert extended fields: ".print_a($extendedFields));
 				return 6;
