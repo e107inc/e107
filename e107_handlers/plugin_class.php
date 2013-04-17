@@ -372,6 +372,8 @@ class e107plugin
 			{
 				foreach($var as $tab) 
 				{
+					$tab = str_replace("TYPE=MyISAM","ENGINE=MyISAM",$tab);
+					
 					if(strtolower(CHARSET) == 'utf8' && !preg_match("/MyISAM.*CHARSET ?= ?utf8/i",$tab)) // Make all tables utf-8. 
 					{
 						$tab = str_replace("MyISAM", "MyISAM DEFAULT CHARSET=utf8", $tab);		
