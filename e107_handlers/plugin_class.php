@@ -1016,11 +1016,14 @@ class e107plugin
 			case 'add':
 				foreach ($var as $tab)
 				{
+					
+					$tab = str_replace("TYPE=MyISAM","ENGINE=MyISAM",$tab);
 										
 					if(!preg_match("/MyISAM.*CHARSET ?= ?utf8/i",$tab))
 					{
 						$tab = str_replace("MyISAM", "MyISAM DEFAULT CHARSET=utf8", $tab);		
 					}
+					
 					
 					$mes->addDebug($tab);
 					if (false === $sql->db_Query($tab))
