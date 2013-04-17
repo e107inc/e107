@@ -605,7 +605,7 @@ class e_form
 	 * @param array or str 
 	 * @example $frm->datepicker('my_field',time(),'type=date');
 	 * @example $frm->datepicker('my_field',time(),'type=datetime&inline=1');
-	 * @example $frm->datepicker('my_field',time(),'type=date&dateformat=yy-mm-dd');
+	 * @example $frm->datepicker('my_field',time(),'type=date&dateformat=yyyy-mm-dd');
 	 * 
 	 * @url http://trentrichardson.com/examples/timepicker/
 	 */
@@ -1825,7 +1825,6 @@ class e_form
 				break;
 
 			case 'checkbox':
-				$def_options['class'] = 'checkbox';
 				unset($def_options['size'],  $def_options['selected']);
 				break;
 
