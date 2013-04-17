@@ -77,10 +77,6 @@ $(document).ready(function()
 			// $(this).css( 'cursor', 'pointer' )
 		});
 		
-		if($.fn.editable.defaults.mode)
-		{
-			$.fn.editable.defaults.mode = 'popup';
-		}
 		
 		$("#uiModal").draggable({
    			 handle: ".modal-header"
