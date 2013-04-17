@@ -111,6 +111,42 @@ class phpbb3_import extends base_import_class
 		return $tp->leadingZeros($y,4)."-".$tp->leadingZeros($m,2)."-".$tp->leadingZeros($d,2);
 	}
 	  
+	  
+	function convertUserclass($perm='')
+	{
+		if($perm == '')
+		{
+			return; 	
+		}
+				
+		$conv = array(1 => e_UC_GUEST, 4 => e_UC_MODS, 6 => e_UC_BOTS, 7 => e_UC_NEWUSER);
+		
+		return vartrue($conv[$perm]) ? $conv[$perm] : "";
+		/*
+		 * 	1		GUESTS
+			2		REGISTERED
+			3		REGISTERED_COPPA
+			4		GLOBAL_MODERATORS
+			5		ADMINISTRATORS
+			6		BOTS
+			7		NEWLY_REGISTERED
+		 * 
+		 */
+	}  
+	  
+	function convertUserBan($data)
+	{
+		if($data == 3) // founder in phpbb3, but 'bounced' in e107. 
+		{
+			return;	
+		}	
+		else
+		{
+			return $data;	
+		}
+		
+	} 
+	
   //------------------------------------
   //	Internal functions below here
   //------------------------------------
@@ -140,13 +176,13 @@ class phpbb3_import extends base_import_class
 		$target['user_chats']			= '';
 		$target['user_comments']		= '';
 		$target['user_ip']				= $source['user_ip'];
-		$target['user_ban']				= $source['user_type'];
+		$target['user_ban']				= $this->convertUserBan($source['user_type']);
 		$target['user_prefs']			= '';
 		$target['user_visits']			= '';
-		$target['user_admin']			= 0;
+		$target['user_admin']			= ($source['group_id'] == 5 || $source['user_type']==3) ? 1 : 0 ;  //user_type == 3 is 'founder'
 		$target['user_login']			= '';
-		$target['user_class']			= '';
-		$target['user_perms']			= '';
+		$target['user_class']			= $this->convertUserclass($source['group_id']);
+		$target['user_perms']			= ($source['user_type']==3) ? '0' : '';
 		$target['user_realm']			= '';
 		$target['user_pwchange']		= $source['user_passchg'];
 		$target['user_xup']				= '';
@@ -169,6 +205,8 @@ class phpbb3_import extends base_import_class
 		
 
 		return $target;
+		
+		
 
 	}
 
