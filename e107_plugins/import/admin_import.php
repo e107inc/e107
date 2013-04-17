@@ -339,11 +339,11 @@ class import_main_ui extends e_admin_ui
 		}
 		
 		
-		if ($msg)
-		{
-			$mes->add($msg, E_MESSAGE_INFO); //  $ns -> tablerender(LAN_CONVERT_30, $msg);
-			$msg = '';
-		}
+	//	if ($msg)
+	//	{
+	//		$mes->add($msg, E_MESSAGE_INFO); //  $ns -> tablerender(LAN_CONVERT_30, $msg);
+	//		$msg = '';
+	//	}
 	
 		if ($abandon)
 		{

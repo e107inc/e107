@@ -235,7 +235,7 @@ class phpbb3_import extends base_import_class
 	 */
 	function copyForumPostData(&$target, &$source)
 	{
-		$target['post_id'] 					= $source[''];
+		$target['post_id'] 					= $source['post_id'];
 		$target['post_entry'] 				= $source['post_text'];
 		$target['post_thread'] 				= $source['topic_id'];
 		$target['post_forum'] 				= $source['forum_id'];
