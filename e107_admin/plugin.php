@@ -91,6 +91,7 @@ e107::coreLan('plugin', true);
 $e_sub_cat = 'plug_manage';
 
 define('PLUGIN_SHOW_REFRESH', FALSE);
+define('PLUGIN_SCAN_INTERVAL', 900);
 
 global $user_pref;
 
@@ -204,6 +205,15 @@ require_once("auth.php");
 $pman->pluginObserver();
 $mes = e107::getMessage();
 $frm = e107::getForm();
+
+function e_help()
+{
+	return array(
+		'caption'	=> "Scan for Changes",
+		'text'		=> "Plugin folders are scanned every ".(PLUGIN_SCAN_INTERVAL / 60) ." minutes for changes. Click the button below to scan now.
+			<p><a class='btn btn-mini btn-primary' href='".e_SELF."?refresh'>Refresh</a></p>"
+	);
+}
 
 require_once("footer.php");
 exit;
@@ -319,8 +329,13 @@ class pluginManager{
 		{
         	$this -> pluginUninstall();
 		}
+		
+		if($this->action == "refresh")
+		{
+        	$this -> pluginCheck(true); // forced
+		}
 
-        if($this->action == "install")
+        if($this->action == "install" || $this->action == "refresh")
 		{
         	$this -> pluginInstall();
     		$this -> action = "installed";
@@ -894,10 +909,18 @@ class pluginManager{
 // -----------------------------------------------------------------------------
 
 		// Check for new plugins, create entry in plugin table ...
-    function pluginCheck()
+    function pluginCheck($force=false)
 	{
 		global $plugin;
-		$plugin->update_plugins_table('update');
+		
+		if((time() > vartrue($_SESSION['nextPluginFolderScan'],0)) || $force == true)
+		{
+			$plugin->update_plugins_table('update');
+		}
+		
+		$_SESSION['nextPluginFolderScan'] = time() + 360;
+		//echo "TIME = ".$_SESSION['nextPluginFolderScan'];
+		
     }
 		// ----------------------------------------------------------
 		//        render plugin information ...
