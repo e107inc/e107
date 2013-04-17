@@ -255,7 +255,7 @@ $pref['membersonly_exceptions'] = implode("\n",$pref['membersonly_exceptions']);
 $text = "
 <div id='core-prefs'>
 	<form class='admin-menu' method='post' action='".e_SELF."'>
-		<fieldset class='e-hideme' id='core-prefs-main'>
+		<fieldset id='core-prefs-main'>
 			<legend>".PRFLAN_1."</legend>
 			<table class='table adminform'>
 				<colgroup>
