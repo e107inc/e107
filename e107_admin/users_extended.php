@@ -260,13 +260,13 @@ if(isset($_POST['deactivate']))
 
 
 
-/*if($sql->db_Select("user_extended_struct","DISTINCT(user_extended_struct_parent)"))
+/*if($sql->select("user_extended_struct","DISTINCT(user_extended_struct_parent)"))
 {
 	$plist = $sql->db_getList();
 	foreach($plist as $_p)
 	{
 		$o = 0;
-		if($sql->db_Select("user_extended_struct", "user_extended_struct_id", "user_extended_struct_parent = {$_p['user_extended_struct_parent']} && user_extended_struct_type != 0 ORDER BY user_extended_struct_order ASC"))
+		if($sql->select("user_extended_struct", "user_extended_struct_id", "user_extended_struct_parent = {$_p['user_extended_struct_parent']} && user_extended_struct_type != 0 ORDER BY user_extended_struct_order ASC"))
 		{
 			$_list = $sql->db_getList();
 			foreach($_list as $r)
@@ -302,9 +302,9 @@ if(isset($_POST['table_db']) && !$_POST['add_field'] && !$_POST['update_field'])
 
 if ($action == "editext")
 {
-	if($sql->db_Select('user_extended_struct','*',"user_extended_struct_id = '{$sub_action}'"))
+	if($sql->select('user_extended_struct','*',"user_extended_struct_id = '{$sub_action}'"))
 	{
-		$tmp = $sql->db_Fetch();
+		$tmp = $sql->fetch();
 		$user->show_extended($tmp);
 	}
 	else
@@ -322,9 +322,9 @@ if($action == 'cat')
 {
 	if(is_numeric($sub_action))
 	{
-		if($sql->db_Select('user_extended_struct','*',"user_extended_struct_id = '{$sub_action}'"))
+		if($sql->select('user_extended_struct','*',"user_extended_struct_id = '{$sub_action}'"))
 		{
-			$tmp = $sql->db_Fetch();
+			$tmp = $sql->fetch();
 		}
 	}
 	$user->show_categories($tmp);
@@ -373,13 +373,13 @@ class users_ext
 	function reorderItems()
 	{
 		$sql = e107::getDb();
-		if($sql->db_Select("user_extended_struct","DISTINCT(user_extended_struct_parent)"))
+		if($sql->select("user_extended_struct","DISTINCT(user_extended_struct_parent)"))
 		{
 			$plist = $sql->db_getList();
 			foreach($plist as $_p)
 			{
 				$o = 0;
-				if($sql->db_Select("user_extended_struct", "user_extended_struct_id", "user_extended_struct_parent = {$_p['user_extended_struct_parent']} && user_extended_struct_type != 0 ORDER BY user_extended_struct_order ASC"))
+				if($sql->select("user_extended_struct", "user_extended_struct_id", "user_extended_struct_parent = {$_p['user_extended_struct_parent']} && user_extended_struct_type != 0 ORDER BY user_extended_struct_order ASC"))
 				{
 					$_list = $sql->db_getList();
 					foreach($_list as $r)
@@ -397,25 +397,31 @@ class users_ext
 
 	function delete_extended($_name)
 	{
-		global $ue,$admin_log;
-        $emessage = eMessage::getInstance();
-		
+		$ue 	= e107::getUserExt();
+		$log 	= e107::getAdminLog();
+		$mes 	= e107::getMessage();
+
 		if ($ue->user_extended_remove($_name, $_name))
 		{
-			$admin_log->log_event('EUF_07',$_name, E_LOG_INFORMATIVE,'');
-			$emessage->add(EXTLAN_30." [".$_name."]", E_MESSAGE_SUCCESS);
+			$log->add('EUF_07',$_name, E_LOG_INFORMATIVE);
+			$mes->addSuccess(LAN_DELETED." [".$_name."]");
 			e107::getCache()->clear_sys('user_extended_struct', true);
 		}
 		else
 		{
-        	$emessage->add(LAN_ERROR." [".$_name."]", E_MESSAGE_ERROR);
+        	$mes->addError(LAN_ERROR." [".$_name."]");
 		}
 	}
 
 	function showExtendedList()
 	{
-        global $sql, $ns, $ue, $curtype, $tp, $mySQLdefaultdb, $action, $sub_action,$frm;
+        global $ue, $curtype, $tp, $mySQLdefaultdb, $action, $sub_action;
 
+		$ue = e107::getUserExt();
+        $frm = e107::getForm();
+        $ns = e107::getRender();
+		$sql = e107::getDb();
+		
 		$extendedList = $ue->user_extended_get_fields();
 
         $emessage = e107::getMessage();
@@ -484,11 +490,13 @@ class users_ext
 							$text .= "
 						  	</td>
 							<td class='center' style='width:10%;white-space:nowrap'>
-
-							<a class='btn btn-large' style='text-decoration:none' href='".e_SELF."?editext.".$id."'>".ADMIN_EDIT_ICON."</a>
-		 					<input class='btn btn-large' type='image' title='".LAN_DELETE."' name='eudel[".$name."]' src='".ADMIN_DELETE_ICON_PATH."' value='".$id."' onclick='return confirm(\"".EXTLAN_27."\")' />
-							</td>
-							</tr>
+							
+							<a class='btn' style='text-decoration:none' href='".e_SELF."?editext.".$id."'>".ADMIN_EDIT_ICON."</a>
+		 					".$frm->submit_image('eudel['.$name.']',$id, 'delete',  LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn'.$delcls));
+		 					
+		 					// ."<input class='btn btn-large' type='image' title='".LAN_DELETE."' name='eudel[".$name."]' src='".ADMIN_DELETE_ICON_PATH."' value='".$id."' onclick='return confirm(\"".EXTLAN_27."\")' />
+							$text .= "</td>
+								</tr>
 							";
 							$i++;
 					  }
@@ -648,8 +656,11 @@ class users_ext
 			$text .= "<tr><td>".EXTLAN_63."</td><td><select style='width:99%' class='tbox e-select' name='field_id' >\n
 			<option value='' class='caption'>".EXTLAN_61."</option>\n";
 			$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
-			if($sql -> db_Select_gen("DESCRIBE ".MPREFIX."{$table_list}")){
-		   		while($row3 = $sql -> db_Fetch()){
+			
+			if($sql->gen("DESCRIBE ".MPREFIX."{$table_list}"))
+			{
+		   		while($row3 = $sql->fetch())
+		   		{
     				$field_name=$row3['Field'];
 					$selected =  ($curVals[1] == $field_name) ? " selected='selected' " : "";
 					$text .="<option value=\"$field_name\" $selected>".$field_name."</option>\n";
@@ -660,8 +671,11 @@ class users_ext
 			$text .= EXTLAN_64."</td><td><select style='width:99%' class='tbox e-select' name='field_value' >
 			<option value='' class='caption'>".EXTLAN_61."</option>\n";
 			$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
-			if($sql -> db_Select_gen("DESCRIBE ".MPREFIX."{$table_list}")){
-		   		while($row3 = $sql -> db_Fetch()){
+			
+			if($sql->gen("DESCRIBE ".MPREFIX."{$table_list}"))
+			{
+		   		while($row3 = $sql->fetch())
+		   		{
     				$field_name=$row3['Field'];
 					$selected =  ($curVals[2] == $field_name) ? " selected='selected' " : "";
 					$text .="<option value=\"$field_name\" $selected>".$field_name."</option>\n";
@@ -672,8 +686,11 @@ class users_ext
 			$text .= LAN_ORDER."</td><td><select style='width:99%' class='tbox e-select' name='field_order' >
 			<option value='' class='caption'>".EXTLAN_61."</option>\n";
 			$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
-			if($sql -> db_Select_gen("DESCRIBE ".MPREFIX."{$table_list}")){
-		   		while($row3 = $sql -> db_Fetch()){
+			
+			if($sql ->gen("DESCRIBE ".MPREFIX."{$table_list}"))
+			{
+		   		while($row3 = $sql->fetch())
+		   		{
     				$field_name=$row3['Field'];
 					$selected =  ($curVals[3] == $field_name) ? " selected='selected' " : "";
 					$text .="<option value=\"$field_name\" $selected>".$field_name."</option>\n";

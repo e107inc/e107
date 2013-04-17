@@ -94,6 +94,14 @@ class e_admin_log
 		$this->_messages = array();
 	}
 
+	/**
+	 * BC Alias of add(); 
+	 */
+	public function log_event($event_title, $event_detail, $event_type = E_LOG_INFORMATIVE , $event_code = '')
+	{
+		return $this->add($event_title, $event_detail, $event_type, $event_code);	
+	}
+
 
 	/**
 	 * Alternative admin log entry point - compatible with legacy calls, and a bit simpler to use than the generic entry point.
@@ -107,12 +115,12 @@ class e_admin_log
 	 * This is stored as 'LAN_AL_STRING_NN', and must be defined in a language file which is loaded during log display.
 	 *
 	 * @param string $event_title
-	 * @param mixed $event_detail
+	 * @param mixed $event_details
 	 * @param integer $event_type [optional] Log level
 	 * @param unknown $event_code [optional]
 	 * @return e_admin_log
 	 */
-	public function log_event($event_title, $event_detail, $event_type = E_LOG_INFORMATIVE , $event_code = '')
+	public function add($event_title, $event_detail, $event_type = E_LOG_INFORMATIVE , $event_code = '')
 	{
 		if ($event_code == '')
 		{

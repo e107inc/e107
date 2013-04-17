@@ -237,7 +237,8 @@ class e107_user_extended
 	// Return FALSE if acceptable, TRUE if fail , error message on regex fail if the message is defined
 	function user_extended_validate_entry($val, $params)
 	{
-		global $tp;
+		$tp = e107::getParser();
+		
 		$parms = explode('^,^', $params['user_extended_struct_parms']);
 		$requiredField = $params['user_extended_struct_required'] == 1;
 		$regex = $tp->toText($parms[1]);
@@ -278,7 +279,8 @@ class e107_user_extended
 	 */
 	public function userExtendedValidateAll($inArray, $hideArray, $isSignup=FALSE)
 	{
-		global $tp;
+		$tp = e107::getParser();
+		
 		$eufVals = array();		// 'Answer' array
 		$hideFlags = array();
 		
@@ -327,18 +329,26 @@ class e107_user_extended
 		return $eufVals;
 	}
 
-
-
-
+	/**
+	 * BC Alias of getCategories();
+	 * @DEPRECATED
+	 */
 	function user_extended_get_categories($byID = TRUE)
 	{
+		return $this->getCategories($byID);	
+	}
+
+
+	function getCategories($byID = TRUE)
+	{
 	   	$ret = array();
-		global $sql;
+		$sql = e107::getDb('ue');
+		
 		if($sql->db_Select("user_extended_struct", "*", "user_extended_struct_type = 0 ORDER BY user_extended_struct_order ASC"))
 		{
 			if($byID == TRUE)
 			{
-				while($row = $sql->db_Fetch())
+				while($row = $sql->fetch())
 				{
 					$ret[$row['user_extended_struct_id']][] = $row;
 				}
@@ -351,17 +361,26 @@ class e107_user_extended
 		return $ret;
 	}
 
+	/**
+	 * BC Alias of getFields();
+	 * @DEPRECATED
+	 */
+	function user_extended_get_fields($cat = "")
+	{
+		return $this->getFields($cat);	
+	}
+
 
 	// Get the definition of all fields, or those in a specific category, grouped by category ID
 	// Reads non-system fields only
-	function user_extended_get_fields($cat = "")
+	function getFields($cat = "")
 	{
-		global $sql;
+		$sql = e107::getDb('ue');
 		$ret = array();
 		$more = ($cat) ? " AND user_extended_struct_parent = ".intval($cat)." " : "";
-		if($sql->db_Select("user_extended_struct", "*", "user_extended_struct_type > 0 AND user_extended_struct_text != '_system_' {$more} ORDER BY user_extended_struct_order ASC"))
+		if($sql->select("user_extended_struct", "*", "user_extended_struct_type > 0 AND user_extended_struct_text != '_system_' {$more} ORDER BY user_extended_struct_order ASC"))
 		{
-			while($row = $sql->db_Fetch(MYSQL_ASSOC))
+			while($row = $sql->fetch(MYSQL_ASSOC))
 			{
 				$ret[$row['user_extended_struct_parent']][] = $row;
 			}
@@ -369,7 +388,10 @@ class e107_user_extended
 		return $ret;
 	}
 
-	// BC Alias of getFieldList(). 
+	/**
+	 * BC Alias of getFieldList(). 
+	 * @DEPRECATED
+	 */
 	function user_extended_get_fieldList($cat = "", $indexField = 'user_extended_struct_id')
 	{
 		return $this->getFieldList($cat, $indexField); 	
@@ -433,7 +455,8 @@ class e107_user_extended
 	// Return the field creation text for a definition
 	function user_extended_type_text($type, $default)
 	{
-	  global $tp;
+	  $tp = e107::getParser();
+	  
 	  if(!is_numeric($type))
 	  {
 	  	return false;
@@ -504,10 +527,11 @@ class e107_user_extended
 	  return $this->user_extended_add($name, '_system_', $type, $source, '', $default, 0, 255, 255, 255, 0, 0);
 	}
 
-
 	function user_extended_add($name, $text, $type, $parms, $values, $default, $required, $read, $write, $applicable, $order='', $parent)
 	{
-		global $sql, $tp;
+		
+		$sql = e107::getDb('ue');
+		$tp = e107::getParser();
 		
 		$this->clear_cache();
 		
@@ -565,7 +589,9 @@ class e107_user_extended
 
 	function user_extended_modify($id, $name, $text, $type, $parms, $values, $default, $required, $read, $write, $applicable, $parent)
 	{
-		global $sql, $tp;
+		$sql = e107::getDb('ue');
+		$tp = e107::getParser();
+		
 		if ($this->user_extended_field_exist($name))
 		{
 			$field_info = $this->user_extended_type_text($type, $default);
@@ -597,7 +623,9 @@ class e107_user_extended
 
 	function user_extended_remove($id, $name)
 	{
-		global $sql, $tp;
+		$sql = e107::getDb('ue');
+		$tp = e107::getParser();
+		
 		$this->clear_cache(); 
 		if ($this->user_extended_field_exist($name))
 		{
@@ -774,7 +802,9 @@ class e107_user_extended
 			return $ret;
 
 		case EUF_DB_FIELD : //db_field
-				global $sql;
+				
+		
+				$sql = e107::getDb('ue');
 				$order = ($choices[3]) ? "ORDER BY ".$tp -> toDB($choices[3], true) : "";
 
 				if($sql->db_Select($tp -> toDB($choices[0], true), $tp -> toDB($choices[1], true).",".$tp -> toDB($choices[2], true), "1 $order")){
@@ -844,7 +874,8 @@ class e107_user_extended
 			return $ueStruct;
 		}
 		
-		$tp = e107::getParser();
+		$tp 	= e107::getParser();
+		$sql_ue = e107::getDb('ue'); // new db;		// Use our own db to avoid interference with other objects
 		
 		$ret = array();
 		$parms = "";
@@ -854,7 +885,6 @@ class e107_user_extended
 			$parms = "1 ORDER BY ".$tp -> toDB($orderby, true);
 		}
 		
-		$sql_ue = e107::getDb('ue'); // new db;		// Use our own db to avoid interference with other objects
 		if($sql_ue->select('user_extended_struct','*',$parms))
 		{
 			while($row = $sql_ue->fetch())
@@ -862,6 +892,7 @@ class e107_user_extended
 				$ret['user_'.$row['user_extended_struct_name']] = $row;
 			}
 		}
+		
 		cachevars('ue_struct',$ret);
 		return $ret;
 	}
