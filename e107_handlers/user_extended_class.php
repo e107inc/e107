@@ -628,66 +628,113 @@ class e107_user_extended
 
 	function user_extended_edit($struct, $curval)
 	{
-	  global $tp;
-	  if(trim($curval) == "" && $struct['user_extended_struct_default'] != "")
-	  {
-		$curval = $struct['user_extended_struct_default'];
-	  }
-	  $choices = explode(",",$struct['user_extended_struct_values']);
-	  foreach($choices as $k => $v)
-	  {
-		$choices[$k] = str_replace("[E_COMMA]", ",", $choices[$k]);
-	  }
-	  $parms = explode("^,^",$struct['user_extended_struct_parms']);
-	  $include = preg_replace("/\n/", " ", $tp->toHtml($parms[0]));
-	  $regex = $tp->toText($parms[1]);
-	  $regexfail = $tp->toText($parms[2]);
-	  $fname = "ue[user_".$struct['user_extended_struct_name']."]";
-	  if(strpos($include, 'class') === FALSE)
-	  {
-		$include .= " class='tbox' ";
-	  }
+		$tp = e107::getParser();
+		$frm = e107::getForm();
+		
+		if(trim($curval) == "" && $struct['user_extended_struct_default'] != "")
+		{
+			$curval = $struct['user_extended_struct_default'];
+		}
+		
+		$choices = explode(",",$struct['user_extended_struct_values']);
+		
+		foreach($choices as $k => $v)
+		{
+			$choices[$k] = str_replace("[E_COMMA]", ",", $v);
+		}
+		
+		$parms 		= explode("^,^",$struct['user_extended_struct_parms']);
+		$include 	= preg_replace("/\n/", " ", $tp->toHtml($parms[0]));
+		$regex 		= $tp->toText($parms[1]);
+		$regexfail 	= $tp->toText($parms[2]);
+		$fname 		= "ue[user_".$struct['user_extended_struct_name']."]";
+		
+		if(strpos($include, 'class') === FALSE)
+		{
+			$include .= " class='tbox' ";
+		}
 
 
-	  switch($struct['user_extended_struct_type'])
-	  {
-		case EUF_TEXT :  //textbox
-		case EUF_INTEGER :  //integer
-		  $ret = "<input name='{$fname}' value='{$curval}' {$include} />";
-		  return $ret;
-		  break;
+		switch($struct['user_extended_struct_type'])
+		{
+			case EUF_TEXT :  //textbox
+			case EUF_INTEGER :  //integer
+		 		$ret = "<input name='{$fname}' value='{$curval}' {$include} />";
+		  		return $ret;
+		  	break;
 
-		case EUF_RADIO : //radio
-		  $ret = '';
-		  foreach($choices as $choice)
-		  {
-			$choice = trim($choice);
-			$choice = deftrue($choice, $choice);
-			$chk = ($curval == $choice)? " checked='checked' " : "";
-			$ret .= "<input {$include} type='radio' name='{$fname}' value='{$choice}' {$chk} /> {$choice}";
-		  }
-		  return $ret;
+			case EUF_RADIO : //radio
+			
+				$ret = '';
+			
+				foreach($choices as $choice)
+				{
+					$choice = trim($choice);
+					if(strpos($choice,"|")!==FALSE)
+					{
+		            	list($val,$label) = explode("|",$choice);
+					}
+					elseif(strpos($choice," => ")!==FALSE) // new in v2.x
+					{
+		            	list($val,$label) = explode(" => ",$choice);
+					}
+					else
+					{
+		            	$val = $choice;
+						$label = $choice;
+					}
+					
+					$label = deftrue($label, $label);
+					
+					if(deftrue('e_BOOTSTRAP'))
+					{
+						$ret .= $frm->radio($fname,$val,($curval == $val),array('label'=>$label));	
+					}
+					else 
+					{
+						$chk = ($curval == $val)? " checked='checked' " : "";
+						$ret .= "<input {$include} type='radio' name='{$fname}' value='{$val}' {$chk} /> {$label}";	
+					}
+					
+				}
+			
+				return $ret;
+				
 		  break;
 
         case EUF_CHECKBOX : //checkboxes
-		  foreach($choices as $choice)
-		  {
-			$choice = trim($choice);
-			if(strpos($choice,"|")!==FALSE)
+			foreach($choices as $choice)
 			{
-            	list($val,$label) = explode("|",$choice);
+				$choice = trim($choice);
+				
+				if(strpos($choice,"|")!==FALSE)
+				{
+	            	list($val,$label) = explode("|",$choice);
+				}
+				elseif(strpos($choice," => ")!==FALSE) // new in v2.x
+				{
+	            	list($val,$label) = explode(" => ",$choice);
+				}
+				else
+				{
+	            	$val = $choice;
+					$label = $choice;
+				}
+				$label = deftrue($label, $label);
+				
+				if(deftrue('e_BOOTSTRAP'))
+				{
+					$ret .= $frm->checkbox($fname,$val,($curval == $val),array('label'=>$label));	
+				}
+				else 
+				{
+					$chk = ($curval == $val)? " checked='checked' " : "";
+					$ret .= "<input {$include} type='checkbox' name='{$fname}[]' value='{$val}' {$chk} /> {$label}<br />";
+				}
 			}
-			else
-			{
-            	$val = $choice;
-				$label = $choice;
-			}
-			$label = deftrue($label, $label);
-			$chk = ($curval == $val)? " checked='checked' " : "";
-			$ret .= "<input {$include} type='checkbox' name='{$fname}[]' value='{$val}' {$chk} /> {$label}<br />";
-		  }
-		  return $ret;
-		  break;
+			
+			return $ret;
+		break;
 
 		case EUF_DROPDOWN : //dropdown
 		  $ret = "<select {$include} name='{$fname}'>\n";

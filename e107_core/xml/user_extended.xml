@@ -50,6 +50,20 @@
 		<read>253</read>
 		<write>253</write>
 	</item>
+	<item name="skype">
+		<type>text</type>
+		<include_text>class='tbox' size='40' maxlength='254'</include_text>
+		<applicable>253</applicable>
+		<read>253</read>
+		<write>253</write>
+	</item>
+	<item name="gender">
+		<type>radio</type>
+		<values>M => UE_LAN_MALE,F => UE_LAN_FEMALE</values>
+		<applicable>253</applicable>
+		<read>253</read>
+		<write>253</write>
+	</item>
 	<item name="homepage">
 		<type>text</type>
 		<include_text>class='tbox' size='40' maxlength='254'</include_text>

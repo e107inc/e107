@@ -483,10 +483,10 @@ class users_ext
 							}
 							$text .= "
 						  	</td>
-							<td class='center' style='width:10%'>
+							<td class='center' style='width:10%;white-space:nowrap'>
 
-							<a style='text-decoration:none' href='".e_SELF."?editext.".$id."'>".ADMIN_EDIT_ICON."</a>
-		 					<input type='image' title='".LAN_DELETE."' name='eudel[".$name."]' src='".ADMIN_DELETE_ICON_PATH."' value='".$id."' onclick='return confirm(\"".EXTLAN_27."\")' />
+							<a class='btn btn-large' style='text-decoration:none' href='".e_SELF."?editext.".$id."'>".ADMIN_EDIT_ICON."</a>
+		 					<input class='btn btn-large' type='image' title='".LAN_DELETE."' name='eudel[".$name."]' src='".ADMIN_DELETE_ICON_PATH."' value='".$id."' onclick='return confirm(\"".EXTLAN_27."\")' />
 							</td>
 							</tr>
 							";
@@ -990,15 +990,17 @@ class users_ext
 		}
 		$var['main']['text'] = EXTLAN_34;
 		$var['main']['link'] = e_SELF;
+		
+		$var['pre']['text'] = EXTLAN_45;
+		$var['pre']['link'] = e_SELF."?pre";
 
-		$var['editext']['text'] = EXTLAN_45;
+		$var['editext']['text'] = "Add Custom Field";
 		$var['editext']['link'] = e_SELF."?editext";
 
 		$var['cat']['text'] = EXTLAN_35;
 		$var['cat']['link'] = e_SELF."?cat";
 
-		$var['pre']['text'] = EXTLAN_56;
-		$var['pre']['link'] = e_SELF."?pre";
+	
 
 		show_admin_menu(EXTLAN_9, $action, $var);
 	}

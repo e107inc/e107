@@ -50,4 +50,13 @@ define('UE_LAN_TIMEZONE_DESC', 'User Timezone (from predefined list)');
 
 define("LAN_UE_FAIL_HOMEPAGE", "Invalid entry for home page setting");
 
+define("UE_LAN_SKYPE","Skype");
+define("UE_LAN_SKYPE_DESC","Skype Address");
+define("UE_LAN_GENDER","Gender");
+define("UE_LAN_GENDER_DESC","Gender");
+define("UE_LAN_MALE","Male");
+define("UE_LAN_FEMALE","Female");
+
+
+
 ?>
