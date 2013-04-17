@@ -782,12 +782,12 @@ else
 		{
 			foreach ($event['event_start'] as $t)
 			{
-				$tim_arr[$t] = $k;
+				$tim_arr[$t][] = $k;
 			}
 		}
 		else
 		{
-		  $tim_arr[$event['event_start']] = $k;
+		  $tim_arr[$event['event_start']][] = $k;
 		}
 	}
   
@@ -798,7 +798,9 @@ else
 	if(count($tim_arr))
 	{
 		$text2 .= $tp->parseTemplate($EVENT_EVENTLIST_TABLE_START, FALSE, $calSc);
-		foreach ($tim_arr as $tim => $ptr)
+		//foreach ($tim_arr as $tim => $ptr)
+		foreach ($tim_arr as $tim => $evList)
+		foreach ($evList as $ptr)
 		{
 			$ev_list[$ptr]['event_start'] = $tim;
 			$calSc->event = $ev_list[$ptr];			// Give shortcodes the event data
