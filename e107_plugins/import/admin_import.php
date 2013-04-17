@@ -177,6 +177,11 @@ class import_main_ui extends e_admin_ui
 			$this->checked_class_list = implode(',',$_POST['classes_select']);
 		}
 		
+		if(vartrue($_POST['createUserExtended'])) //TODO 
+		{
+			$this->createUserExtended = true; 
+		}
+		
 		if($_POST['selectedTables'])
 		{
 			$this->selectedTables = $_POST['selectedTables'];
@@ -493,28 +498,41 @@ class import_main_ui extends e_admin_ui
 			$text .= "
 			<tr>
 			<td >$importType ".LAN_CONVERT_24."</td>
-			<td >";
+			<td>";
 	
 			$defCheck = (count($proObj->supported)==1) ? true : false;
 	   	  	foreach ($this->importTables as $k => $v)
 		  	{
 				if(in_array($k, $proObj->supported)) // display only the options supported.
 				{
-					$text .= $frm->checkbox('selectedTables['.$k.']', $k, $defCheck)."&nbsp;".$v['message']; 	
+					$text .= $frm->checkbox('selectedTables['.$k.']', $k, $defCheck,array('label'=>$v['message'])); 	
 						
 					
 					//$text .= "<input type='checkbox' name='import_block_{$k}' id='import_block_{$k}' value='1' {$defCheck} />&nbsp;".$v['message'];
-					$text .= "<br />";
+					// $text .= "<br />";
 				}
 		  	}
 		  	$text .= "</td></tr>";		
 		}
 	
 	
-		$text .= "<tr><td>".LAN_CONVERT_38."</td>
-		<td><input type='checkbox' name='import_delete_existing_data' value='1'".(varset($_POST['import_delete_existing_data']) ? " checked='checked'" : '')."/>
-		<span class='smallblacktext'>".LAN_CONVERT_39."</span></td>
-		</tr>";
+		$text .= "
+			<tr>
+				<td>".LAN_CONVERT_38."</td>
+				<td>".$frm->checkbox('import_delete_existing_data', 1,$_POST['import_delete_existing_data'], array('label'=>'&nbsp;','title'=>LAN_CONVERT_39))."</td>
+			</tr>";
+		
+		//TODO 
+		/*
+		if(in_array('users',$proObj->supported))
+		{
+			$text .= "<tr>
+				<td>Create Extended User Fields</td>
+				<td>".$frm->checkbox('createUserExtended', 1,'', array('label'=>'&nbsp;','title'=>'Will automatically add missing user-fields when found.'))."
+				</td>
+			</tr>";	
+		}
+		*/
 		
 		if(varset($proObj->defaultClass) !== false)
 		{
@@ -669,7 +687,7 @@ class import_main_ui extends e_admin_ui
 			//	break;
 			}
 					
-			if ($this->deleteExisting)
+			if ($this->deleteExisting == true)
 			{
 				$exporter->emptyTargetDB();		// Clean output DB - reasonably safe now	
 			} 
@@ -709,93 +727,6 @@ class import_main_ui extends e_admin_ui
 		
 		return true;
 		
-		/// - old BELOW ----------------------------------------	
-	
-		/*
-		foreach ($this->importTables as $k => $v)
-		{
-			if (isset($this->selectedTables[$k]))
-			{
-				$loopCounter = 0;
-				$errorCounter = 0;
-				
-				if (is_readable($v['classfile']))
-				{
-					require_once($v['classfile']);
-				}
-				else
-				{
-					$mes->addError(LAN_CONVERT_45.': '.$v['classfile']);   // can't read class file.
-					return false;
-				}
-	
-				if (varset($_POST["import_block_{$k}"],0) == 1)
-				{
-					//if (IMPORT_DEBUG) echo "Importing: {$k}<br />";
-					$mes->addDebug("Importing: ".$k);
-					
-				  	$result = $converter->setupQuery($k,!$this->deleteExisting);
-							
-				  	if ($result !== TRUE)
-				  	{
-						$mes->addError(LAN_CONVERT_44.' '.$k);   // couldn't set query
-						//	$msg .= "Prefix = ".$converter->DBPrefix;
-						break;
-				  	}
-					
-				  	$exporter = new $v['classname'];		// Writes the output data
-				 				 	
-					switch ($k)  // Do any type-specific default setting
-					{
-						case 'users' :
-						  $exporter->overrideDefault('user_class',$checked_class_list);
-						  break;
-					}
-					
-				  	if ($this->deleteExisting)
-					{
-						$exporter->emptyTargetDB();		// Clean output DB - reasonably safe now	
-					} 
-					
-					while ($row = $converter->getNext($exporter->getDefaults(),$mode))
-					{
-						$loopCounter++;
-			   			$result = $exporter->saveData($row);
-						if ($result !== TRUE)
-						{
-							$errorCounter++;
-							$line_error = $exporter->getErrorText($result);
-						//	if ($msg) $msg .= "<br />";
-							$msg = str_replace(array('--ERRNUM--','--DB--'),array($line_error,$k),LAN_CONVERT_46).$loopCounter;
-							$mes->addError($msg);   // couldn't set query
-						}
-					}
-					
-					$converter->endQuery(); 
-					
-					unset($exporter);
-					
-					
-					$msg = str_replace(array('--LINES--','--USERS--', '--ERRORS--','--BLOCK--'),
-					array($loopCounter,$loopCounter-$errorCounter,$errorCounter, $k),LAN_CONVERT_47);
-					$mes->addSuccess($msg);   // couldn't set query
-				}
-				else
-				  {
-				  		$mes->addDebug("Error: _POST['import_block_{$k}'] = ".$_POST['import_block_{$k}']);   // cou
-						
-				  }
-			  }
-			  else
-			  {
-			  		$mes->addDebug("\$this->selectedTables doesn't contain key: ".$k);   // cou
-					
-			  }
-			}
-		 */
-	
-		//	  $msg = LAN_CONVERT_29;
-		return true;
 		// $abandon = FALSE;	
 	}
 
@@ -842,7 +773,7 @@ class import_main_ui extends e_admin_ui
 
 
 
-
+/*
 
 // Source DB types (i.e. CMS types) supported. Key of each element is the 'short code' for the type
 $import_class_names = array();			// Title
@@ -1076,7 +1007,7 @@ if(isset($_POST['do_conversion']))
 		exit;
 	}
 }
-
+*/
 /*
 
 function rssImport()

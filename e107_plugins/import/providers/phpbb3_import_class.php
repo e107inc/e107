@@ -19,12 +19,10 @@ require_once('import_classes.php');
 class phpbb3_import extends base_import_class
 {
 
-	public $title		= 'PHPBB Version 3';
-	public $description	= 'Experimental';
+	public $title		= 'phpBB Version 3';
+	public $description	= 'Import phpBB3 Users and Forums';
 	public $supported	=  array('users','forum','forumthread','forumpost','forumtrack');
 	public $mprefix		= 'phpbb_';
-	
-
 
 	var $catcount = 0;				// Counts forum IDs
 	var $id_map = array();			// Map of PHPBB forum IDs ==> E107 forum IDs
@@ -40,7 +38,7 @@ class phpbb3_import extends base_import_class
 	    switch ($task)
 		{
 		  	case 'users' :
-				$result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}users ");
+				$result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}users ORDER BY user_id ASC ");
 				if ($result === FALSE) return FALSE;
 			break;
 			
@@ -78,68 +76,100 @@ class phpbb3_import extends base_import_class
 		    return FALSE;
 		}
 
-	$this->copyUserInfo = true; // !$blank_user;
-	$this->currentTask = $task;
-	return TRUE;
-  }
-
+		$this->copyUserInfo = true; // !$blank_user;
+		$this->currentTask = $task;
+		return TRUE;
+	}
 
   
+	/**
+	 * Convert salted password to e107 style (they use the same basic coding)
+	 */
+	function convertPassword($password)
+	{
+		if ((substr($password ,0,3) == '$H$') && (strlen($password) == 34)) 
+		{ 
+			return substr_replace($password, '$E$',0,3);
+		}
+		else // Probably an old md5 password
+		{  
+			return $password; 
+		}	
+		
+	}
+	
+	function convertBirthday($date)
+	{
+		$tp = e107::getParser();
+		
+		if(trim($date) == '')
+		{
+			return;	
+		}
+		
+		list($d,$m,$y) = explode("-",$date);
+		return $tp->leadingZeros($y,4)."-".$tp->leadingZeros($m,2)."-".$tp->leadingZeros($d,2);
+	}
+	  
   //------------------------------------
   //	Internal functions below here
   //------------------------------------
   
-  // Copy data read from the DB into the record to be returned.
+
   /**
+   * Copy data read from the DB into the record to be returned.
    * $target - e107_users table
    * $source - phpbb_user table : https://wiki.phpbb.com/Table.phpbb_users
    */
 	function copyUserData(&$target, &$source)
 	{
 	// if ($this->copyUserInfo)
-		$target['user_id'] 			= $source['user_id'];
-		$target['user_name'] 		= $source['username'];
-		$target['user_loginname'] 	= $source['username'];
-		
-		if ((substr($source['user_password'],0,3) == '$H$') && (strlen($source['user_password']) == 34)) // Convert salted password to E107 style (they use the same basic coding)
-		{ 
-			$target['user_password'] = substr_replace($source['user_password'], '$E$',0,3);
-		}
-		else // Probably an old md5 password
-		{  
-			$target['user_password'] = $source['user_password'];
-		}
-		
-		$target['user_email'] 		= $source['user_email'];
-		$target['user_signature'] 	= $this->proc_bb($source['user_sig'],'phpbb,bblower');
-		$target['user_hideemail'] 	= $source['user_allow_viewemail'];
-		$target['user_join'] 		= $source['user_regdate'];
-	//	$target['user_forums'] 		= $source['user_posts'];
-		$target['user_admin'] 		= 0; //  $source['user_level'];
-		$target['user_lastvisit'] 	= $source['user_lastvisit'];
-		$target['user_ban']			= $source['user_type'];
-		
-		switch ($source['user_avatar_type'])
-		{
-		  default: 
-		    $target['user_image'] = $source['user_avatar'];
-		}
-		
-	//	$target['user_plugin_forum_viewed'];
+		$target['user_id'] 				= $source['user_id'];
+		$target['user_name'] 			= $source['username'];
+		$target['user_loginname'] 		= $source['username'];
+		$target['user_password']		= $this->convertPassword($source['user_password']);
+		$target['user_email'] 			= $source['user_email'];
+		$target['user_signature'] 		= $this->proc_bb($source['user_sig'],'phpbb,bblower');
+		$target['user_image'] 			= $source['user_avatar'];
+		$target['user_hideemail'] 		= $source['user_allow_viewemail'];
+		$target['user_join'] 			= $source['user_regdate'];
+		$target['user_lastvisit'] 		= $source['user_lastvisit'];
+		$target['user_currentvisit']	= 0;
+		$target['user_admin'] 			= 0; //  $source['user_level'];
+		$target['user_lastpost']		= $source['user_lastpost_time']; 
+		$target['user_chats']			= '';
+		$target['user_comments']		= '';
+		$target['user_ip']				= $source['user_ip'];
+		$target['user_ban']				= $source['user_type'];
+		$target['user_prefs']			= '';
+		$target['user_visits']			= '';
+		$target['user_admin']			= 0;
+		$target['user_login']			= '';
+		$target['user_class']			= '';
+		$target['user_perms']			= '';
+		$target['user_realm']			= '';
+		$target['user_pwchange']		= $source['user_passchg'];
+		$target['user_xup']				= '';
+	
+		// Extended Fields. 
+				
+		$target['user_plugin_forum_viewed'] = 0;
 		$target['user_plugin_forum_posts']	= $source['user_posts'];
+		$target['user_timezone'] 			= $source['user_timezone'];		// source is decimal(5,2)
+		$target['user_language'] 			= e107::getLanguage()->convert($source['user_lang']);	// convert from 2-letter to full. 
+		$target['user_location'] 			= $source['user_from'];
+		$target['user_icq'] 				= $source['user_icq'];
+		$target['user_aim'] 				= $source['user_aim'];
+		$target['user_yahoo'] 				= $source['user_yim'];
+		$target['user_msn'] 				= $source['user_msnm'];
+		$target['user_homepage'] 			= $source['user_website'];
+		$target['user_birthday']			= $this->convertBirthday($source['user_birthday']);
+		$target['user_occupation']			= $source['user_occ'];
+		$target['user_interests']			= $source['user_interests'];
 		
-		$target['user_timezone'] 	= $source['user_timezone'];		// source is decimal(5,2)
-		$target['user_language'] 	= $source['user_lang'];			// May need conversion
-		$target['user_location'] 	= $source['user_from'];
-		$target['user_icq'] 		= $source['user_icq'];
-		$target['user_aim'] 		= $source['user_aim'];
-		$target['user_yahoo'] 		= $source['user_yim'];
-		$target['user_msn'] 		= $source['user_msnm'];
-		$target['user_homepage'] 	= $source['user_website'];
-	//	$target['user_'] = $source[''];
-	//	$target[] = $source['user_active];		// PHPBB2
-	//	$target['user_lastpost'] = $source['user_lastpost_time'];	// PHPBB3
+
 		return $target;
+
 	}
 
  

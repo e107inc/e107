@@ -35,7 +35,7 @@ require_once('import_classes.php');
 class phpbb2_import extends base_import_class
 {
 
-	public $title		= 'PHPBB Version 2';
+	public $title		= 'phpBB Version 2';
 	public $description	= 'Should do most versions, and Dragonfly';
 	public $supported	=  array('users');
 	public $mprefix		= 'phpbb_';
@@ -55,7 +55,7 @@ class phpbb2_import extends base_import_class
     switch ($task)
 	{
 	  case 'users' :
-	    $result = $this->ourDB->db_Select_gen("SELECT * FROM {$this->DBPrefix}users WHERE `user_active` = 1");
+	    $result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}users WHERE `user_active` = 1");
 		if ($result === FALSE) return FALSE;
 		break;
 	  case 'forumdefs' :
