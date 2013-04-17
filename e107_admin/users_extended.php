@@ -1119,10 +1119,11 @@ class users_ext
 	//	}
 		$val = (!$active) ? EXTLAN_59 : EXTLAN_60;
 		$type = (!$active) ? 'activate' : 'deactivate';
-        ;
+		$style = (!$active) ? 'other' : 'delete';
+     
 		$txt .= "
 		<td class='center last'>";
-        $txt .= $frm->admin_button($type."[".$var['user_extended_struct_name']."]", $val, 'other');
+        $txt .= $frm->admin_button($type."[".$var['user_extended_struct_name']."]", $val, $style );
 		$txt .= "</td>
 		</tr>";
 		return $txt;
