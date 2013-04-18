@@ -45,10 +45,6 @@ function loadJSAddons()
 		return; 
 	}
 	
-	e107::js('core', 	'colorbox/jquery.colorbox-min.js', 'jquery', 2);
-	e107::css('core', 	'colorbox/colorbox.css', 'jquery');
-
-
 // e107::js('core',    'bootstrap/js/bootstrap-modal.js', 'jquery', 2);  // Special Version see: https://github.com/twitter/bootstrap/pull/4224
 
  

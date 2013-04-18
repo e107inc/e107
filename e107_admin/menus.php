@@ -40,8 +40,6 @@ if(e_IFRAME) //<-- Check config and delete buttons if modifying
 if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 {
 	
-	//e107::js('core', 	'colorbox/jquery.colorbox-min.js', 'jquery', 2);
-	//e107::css('core', 	'colorbox/colorbox.css', 'jquery');
 	
 	//e107::js('core', 	'core/jquery.elastic.source.js', 'jquery', 2);
 	

@@ -23,8 +23,6 @@ $sql = e107::getDb();
 
 $sql->db_Mark_Time('(Header Top)');
 
-e107::js('core', 	'colorbox/jquery.colorbox-min.js', 'jquery', 2);
-e107::css('core', 	'colorbox/colorbox.css', 'jquery');
 
 e107::js('core','bootstrap/js/bootstrap-tooltip.js','jquery');
 e107::css('core','bootstrap/css/tooltip.css','jquery');
