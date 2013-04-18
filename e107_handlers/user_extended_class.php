@@ -330,16 +330,16 @@ class e107_user_extended
 	}
 
 	/**
-	 * BC Alias of getCategories();
-	 * @DEPRECATED
+	 * alias of user_extended_get_categories();
+	 * 
 	 */
-	function user_extended_get_categories($byID = TRUE)
+	function getCategories($byID = TRUE)
 	{
-		return $this->getCategories($byID);	
+		return $this->user_extended_get_categories($byID);	
 	}
 
 
-	function getCategories($byID = TRUE)
+	function user_extended_get_categories($byID = TRUE)
 	{
 	   	$ret = array();
 		$sql = e107::getDb('ue');
@@ -363,17 +363,16 @@ class e107_user_extended
 
 	/**
 	 * BC Alias of getFields();
-	 * @DEPRECATED
 	 */
-	function user_extended_get_fields($cat = "")
+	function getFields($cat = "")
 	{
-		return $this->getFields($cat);	
+		return $this->user_extended_get_fieldList($cat);	
 	}
 
 
 	// Get the definition of all fields, or those in a specific category, grouped by category ID
 	// Reads non-system fields only
-	function getFields($cat = "")
+	function user_extended_get_fields($cat = "")
 	{
 		$sql = e107::getDb('ue');
 		$ret = array();
@@ -389,12 +388,12 @@ class e107_user_extended
 	}
 
 	/**
-	 * BC Alias of getFieldList(). 
-	 * @DEPRECATED
+	 * Alias of getFieldList(). 
+	 * 
 	 */
-	function user_extended_get_fieldList($cat = "", $indexField = 'user_extended_struct_id')
+	function getFieldList($cat = "", $indexField = 'user_extended_struct_id')
 	{
-		return $this->getFieldList($cat, $indexField); 	
+		return $this->user_extended_get_fieldList($cat, $indexField); 	
 	}
 		
 
@@ -404,7 +403,7 @@ class e107_user_extended
 	 * @param $indexField;
 	 * @param $system - include system fields. 
 	 */
-	function getFieldList($cat = "", $indexField = 'user_extended_struct_id', $system = false)
+	function user_extended_get_fieldList($cat = "", $indexField = 'user_extended_struct_id', $system = false)
 	{
 		if(!$indexField)
 		{
@@ -855,10 +854,10 @@ class e107_user_extended
 	}
 
 
-	// BC Alias of getStructure();
-	function user_extended_getStruct($orderby="user_extended_struct_order")
+	// Alias of getStructure();
+	function getStructure($orderby="user_extended_struct_order")
 	{
-		return $this->getStructure($orderby);	
+		return $this->user_extended_getStruct($orderby);	
 	}
 
 
@@ -867,7 +866,7 @@ class e107_user_extended
 	/**
 	 * Preferred version of user_extended_getStruct();
 	 */
-	function getStructure($orderby="user_extended_struct_order")
+	function user_extended_getStruct($orderby="user_extended_struct_order")
 	{
 		if($ueStruct = getcachedvars('ue_struct'))
 		{

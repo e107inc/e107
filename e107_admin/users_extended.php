@@ -415,12 +415,13 @@ class users_ext
 
 	function showExtendedList()
 	{
-        global $ue, $curtype, $tp, $mySQLdefaultdb, $action, $sub_action;
+        global  $curtype, $mySQLdefaultdb, $action, $sub_action;
 
 		$ue = e107::getUserExt();
         $frm = e107::getForm();
         $ns = e107::getRender();
 		$sql = e107::getDb();
+		$tp = e107::getParser();
 		
 		$extendedList = $ue->user_extended_get_fields();
 
