@@ -343,7 +343,7 @@ $FORUM_VIEWTOPIC_TEMPLATE['thread'] = "
 											</div>
 											<div class='span9 '>
 												{POLL}
-												{POST}
+												{THREAD_TEXT}
 												{ATTACHMENTS}
 											</div>
 										</div>

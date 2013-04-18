@@ -51,7 +51,15 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		return $this->postInfo['post_id'];
 	}
 
+	/* Preferred - as {POST} may conflict with other shortcodes */
+	function sc_thread_text()
+	{
+		return $this->sc_post();	
+	}
 
+	/**
+	 * @DEPRECATED - use {THREAD_TEXT}
+	 */
 	function sc_post()
 	{
 		$emote = (isset($this->postInfo['post_options']['no_emote']) ? ',emotes_off' : '');
@@ -467,7 +475,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
     	Options
     	<span class="caret"></span>
     	</button>
-    	<ul class="dropdown-menu left">';
+    	<ul class="dropdown-menu pull-right">';
 			
     	
 		$text .= "<li><a href='".e_HTTP."email.php?plugin:forum.".$this->postInfo['post_thread']."'>".FORLAN_101."</a></li>";
