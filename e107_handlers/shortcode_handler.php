@@ -671,6 +671,7 @@ class e_parse_shortcode
 		$saveCodes = $this->addedCodes;
 		$this->eVars = $eVars;
 		$this->addedCodes = NULL;
+		
 
 		//object support
 		if (is_object($extraCodes))
@@ -706,6 +707,7 @@ class e_parse_shortcode
 		$this->parseSCFiles = $saveParseSCFiles; // Restore previous value
 		$this->addedCodes = $saveCodes;
 		$this->eVars = $saveVars; // restore eVars
+		$this->debug_legacy = null;
 		return $ret;
 	}
 
@@ -769,21 +771,22 @@ class e_parse_shortcode
 		
 		if (E107_DBG_BBSC || E107_DBG_SC || E107_DBG_TIMEDETAILS)
 		{
-			global $db_debug;
 			$sql->db_Mark_Time("SC $code");
-			$db_debug->logCode(2, $code, $parm, "");
 		}
 
 		if (E107_DBG_SC)
 		{
-			echo "<strong>";
-			echo '{';
-			echo $code;
-			echo($parm) ? '='.htmlentities($parm) : "";
-			echo '}';
-			echo "</strong>";
+			
+			$dbg = "<strong>";
+			$dbg .= '{';
+			$dbg .= $code;
+			$dbg .=($parm) ? '='.htmlentities($parm) : "";
+			$dbg .= '}';
+			$dbg .= "</strong>";
+		//	echo $dbg;
+			return $dbg;
 			//	trigger_error('starting shortcode {'.$code.'}', E_USER_ERROR);    // no longer useful - use ?[debug=bbsc]
-			}
+		}
 
 		$scCode = '';
 		$scFile = '';
@@ -793,22 +796,31 @@ class e_parse_shortcode
 		{
 			//It is class-based batch shortcode.  Class already loaded; call the method
 			$ret = $this->addedCodes->$_method($parm, $sc_mode);
+			
+			
+			
 		}
 		elseif (is_array($this->addedCodes) && array_key_exists($code, $this->addedCodes))
 		{
 			// Its array-based shortcode. Load the code for evaluation later.
 			$scCode = $this->addedCodes[$code];
+		//	$_path = print_a($this->backTrace,true);
+			//XXX $_path = print_a($this,true);
+			
 		}
 		// Check to see if we've already loaded the .sc file contents
 		elseif (array_key_exists($code, $this->scList))
 		{
+			
 			$scCode = $this->scList[$code];
+			$_path = "(loaded earlier)"; // debug. 
 		}
 		else
 		{
 			//.sc file not yet loaded, or shortcode is new function type
 			if ($this->parseSCFiles == true)
 			{
+				
 				if (array_key_exists($code, $this->registered_codes))
 				{
 					//shortcode is registered, let's proceed.
@@ -824,8 +836,9 @@ class e_parse_shortcode
 					{
 						case 'class':
 							//It is batch shortcode.  Load the class and call the method
-							$_class = $this->registered_codes[$code]['class'];
-							$_method = 'sc_'.strtolower($code);
+							$_class 	= $this->registered_codes[$code]['class'];
+							$_method 	= 'sc_'.strtolower($code);
+
 							if (!$this->isScClass($_class))
 							{
 								if (!class_exists($_class) && $this->registered_codes[$code]['path'])
@@ -848,6 +861,7 @@ class e_parse_shortcode
 							// $this->callScFunc($_class, 'setParserVars', $this->eVars);
 
 							$ret = $this->callScFuncA($_class, $_method, array($parm, $sc_mode));
+							
 							/*if (method_exists($this->scClasses[$_class], $_method))
 							{
 								$ret = $this->scClasses[$_class]->$_method($parm, $sc_mode);
@@ -898,6 +912,7 @@ class e_parse_shortcode
 					{
 						$_function = strtolower($code).'_shortcode';
 						$_class = strtolower($code);
+						$_path = e_CORE.'shortcodes/single/'.strtolower($code).'.php';
 
 						include_once(e_CORE.'shortcodes/single/'.strtolower($code).'.php');
 
@@ -913,12 +928,14 @@ class e_parse_shortcode
 					else
 					{
 						$scFile = e_CORE.'shortcodes/single/'.strtolower($code).'.sc';
+						$_path = $scFile;
 					}
 				}
 				if ($scFile && file_exists($scFile))
 				{
 					$scCode = file_get_contents($scFile);
 					$this->scList[$code] = $scCode;
+					$_path = $scFile;
 				}
 			}
 
@@ -966,6 +983,40 @@ class e_parse_shortcode
 		{
 			$sql->db_Mark_Time("(After SC {$code})");
 		}
+		
+		if (E107_DBG_BBSC || E107_DBG_SC || E107_DBG_TIMEDETAILS)
+		{
+			global $db_debug;
+			
+			$other = array();
+			if($_class)
+			{
+				$other['class'] = $_class;
+			}
+			if($_function)
+			{
+				$other['function'] = $_function;	
+			}
+			if($_path)
+			{
+				$other['path'] = str_replace('../','',$_path);		
+			}
+			
+			if($this->debug_legacy)
+			{
+				$other = $this->debug_legacy;	
+			}
+			
+			$info = (isset($this->registered_codes[$code])) ? print_a($this->registered_codes[$code],true) : print_a($other,true);
+			
+			$db_debug->logCode(2, $code, $parm, $info);
+			
+		}
+		
+		
+		
+		
+		
 		return isset($ret) ? $ret : '';
 	}
 
@@ -992,6 +1043,8 @@ class e_parse_shortcode
 		{
 			$sc_batch = $fname;
 		}
+		
+		$this->debug_legacy = array('type'=>$type, 'path'=> str_replace(e_ROOT,"",$fname));
 
 		if ($sc_batch)
 		{
