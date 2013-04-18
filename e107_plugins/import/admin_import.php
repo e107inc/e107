@@ -184,7 +184,7 @@ class import_main_ui extends e_admin_ui
 			$this->createUserExtended = true; 
 		}
 		
-		if($_POST['selectedTables'])
+		if(vartrue($_POST['selectedTables']))
 		{
 			$this->selectedTables = $_POST['selectedTables'];
 		}

@@ -43,14 +43,7 @@
 			//	 $('div.modal-body').load(url + "/ibrowser.php");
     		//		$('#uiModal').modal('show');
 				
-					$.colorbox({ 
-						href: url + "/ibrowser.php",
-						iframe: true,
-						width:"60%",
-						height:"70%",
-						speed:10,
-						opacity: 0.4
-					 });	
+				
 				},
 			*/
 				image : url + '/images/ibrowser.gif'
