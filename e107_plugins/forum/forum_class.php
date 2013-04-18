@@ -926,7 +926,7 @@ class e107forum
 				$lp_user = 'NULL';
 				if($updateThreads == true)
 				{
-					if ($sql2->select('forum_thread', 'thread_id', "thread_forum_id = $id AND thread_parent = 0"))
+					if ($sql2->select('forum_t', 'thread_id', "thread_forum_id = $id AND thread_parent = 0")) // forum_t used in forum_update
 					{
 						while ($row = $sql2->fetch(MYSQL_ASSOC))
 						{
@@ -1409,7 +1409,7 @@ class e107forum
 
 		$qry = "
 		SELECT ft.*, fp.thread_name as post_subject, fp.thread_total_replies as replies, u.user_id, u.user_name, f.forum_class
-		FROM #forum_thread AS ft
+		FROM #forum_t AS ft
 		LEFT JOIN #forum_thread as fp ON fp.thread_id = ft.thread_parent
 		LEFT JOIN #user as u ON u.user_id = SUBSTRING_INDEX(ft.thread_user,'.',1)
 		LEFT JOIN #forum as f ON f.forum_id = ft.thread_forum_id
