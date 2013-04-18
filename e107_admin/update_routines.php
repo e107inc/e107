@@ -128,7 +128,7 @@ if (!$dont_check_update)
 	}
 	
 	// set 'master' to true to prevent other upgrades from running before it is complete. 
-	$dbupdate['706_to_800'] = array('master'=>true, 'title'=>LAN_UPDATE_8.' 1.x '.LAN_UPDATE_9.' 2.0','message'=>"Depending on your particular configuration, you may need to be run several upgrade processes.");
+	$dbupdate['706_to_800'] = array('master'=>true, 'title'=>LAN_UPDATE_8.' 1.x '.LAN_UPDATE_9.' 2.0','message'=> LAN_UPDATE_29);
 	$dbupdate['core_prefs'] = array('master'=>true, 'title'=>LAN_UPDATE_13);						// Prefs check
 //	$dbupdate['70x_to_706'] = LAN_UPDATE_8.' .70x '.LAN_UPDATE_9.' .706';
 }		// End if (!$dont_check_update)
