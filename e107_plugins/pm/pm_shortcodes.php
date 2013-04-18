@@ -355,11 +355,16 @@ class pm_shortcodes extends e_shortcode
 			$extra = '';
 			// TODO - go with only one route version - view/message ???
 			if (isset($prm[1])) $extra = '.'.$prm[1];
+			
+			/* Moc: commented because the URL was not rendered correctly. Reverted back to v1.x style. 
 			if($extra == 'inbox') $url = $this->url('message', 'id='.$this->var['pm_id']);
 			elseif($extra == 'outbox') $url = $this->url('sent', 'id='.$this->var['pm_id']);
 			else $url = $this->url('show', 'id='.$this->var['pm_id']);
 			
 			$ret = "<a href='".$ret."'>".$ret."</a>";
+			*/
+
+			$ret = "<a href='".e_PLUGIN_ABS."pm/pm.php?show.{$this->var['pm_id']}{$extra}'>".$ret."</a>";
 		}
 		return $ret;
 	}
