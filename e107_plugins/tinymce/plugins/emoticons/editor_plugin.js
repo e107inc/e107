@@ -43,17 +43,7 @@
                 //	 $('div.modal-body').load(url + "/emoticons.php");
     			//	$('#uiModal').modal('show');
                 	
-                	/*
-                	$.colorbox({
-                		href: url + "/emoticons.php",
-                		iframe: true,
-                		width:"200px",
-						height:"200px",
-						speed:2,
-						opacity: 0.3,
-						scrolling: false
-                	});
-                	*/
+                	
               //  },
 				//cmd : 'mceEmotion',
 				image : url + '/images/emoticons.png'
