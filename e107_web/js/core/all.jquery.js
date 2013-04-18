@@ -380,7 +380,8 @@ $(document).ready(function()
 
 		
 		// Dialog
-		$("a.e-dialog").colorbox({
+		/*
+		$("a.e-dialog").colorXXXXbox({
 			
 			iframe:true,
 			width:"60%",
@@ -395,7 +396,7 @@ $(document).ready(function()
 
 
 		});
-		
+		*/
 		
 				
 		$(".e-dialog-close").live("click", function(){
