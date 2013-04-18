@@ -286,7 +286,7 @@ function forumbuttons($thread)
     <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
     <span class="caret"></span>
     </button>
-    <ul class="dropdown-menu">
+    <ul class="dropdown-menu pull-right">
     ';
 	
 	foreach($options as $key => $val)
@@ -344,8 +344,6 @@ foreach ($postList as $postInfo)
 	$e_hide_hidden = FORLAN_HIDDEN;
 	$e_hide_allowed = USER;
 	
-	
-
 	if ($tnum > 1)
 	{
 		$postInfo['thread_start'] = false;

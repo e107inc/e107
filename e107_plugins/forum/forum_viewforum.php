@@ -778,7 +778,7 @@ function newthreadjump($url)
     <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
     <span class="caret"></span>
     </button>
-    <ul class="dropdown-menu">
+    <ul class="dropdown-menu pull-right">
     ';
 	
 	foreach($jumpList as $key => $val)
