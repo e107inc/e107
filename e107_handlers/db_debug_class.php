@@ -439,7 +439,7 @@ class e107_db_debug {
 
 	}
 
-	function logCode($type, $code, $parm, $postID)
+	function logCode($type, $code, $parm, $details)
 	{
 		if (!E107_DBG_BBSC)
 		{
@@ -448,7 +448,7 @@ class e107_db_debug {
 		$this -> scbbcodes[$this -> scbcount]['type'] = $type;
 		$this -> scbbcodes[$this -> scbcount]['code'] = $code;
 		$this -> scbbcodes[$this -> scbcount]['parm'] = htmlentities($parm);
-		$this -> scbbcodes[$this -> scbcount]['postID'] = $postID;
+		$this -> scbbcodes[$this -> scbcount]['details'] = $details;
 		$this -> scbcount ++;
 	}
 
@@ -459,15 +459,14 @@ class e107_db_debug {
 			return FALSE;
 		}
 
-
 		$text = "<table class='fborder table table-striped table-condensed' style='width: 100%'>
 			
 			<thead>
 			<tr>
 				<th class='fcaption' style='width: 10%;'>Type</th>
-				<th class='fcaption' style='width: 10%;'>Code</th>
-				<th class='fcaption' style='width: 10%;'>Parm</th>
-				<th class='fcaption' style='width: 10%;'>Post ID</th>
+				<th class='fcaption' style='width: 30%;'>Code</th>
+				<th class='fcaption' style='width: 20%;'>Parm</th>
+				<th class='fcaption' style='width: 40%;'>Details</th>
 			</tr>
 			</thead>
 			<tbody>\n";
@@ -476,9 +475,9 @@ class e107_db_debug {
 		{
 			$text .= "<tr>
 				<td class='forumheader3' style='width: 10%;'>".($codes['type'] == 1 ? "BBCode" : "Shortcode")."</td>
-				<td class='forumheader3' style='width: 10%;'>".(isset($codes['code']) ? $codes['code'] : "&nbsp;")."</td>
-				<td class='forumheader3' style='width: 10%;'>".($codes['parm'] ? $codes['parm'] : "&nbsp;")."</td>
-				<td class='forumheader3' style='width: 10%;'>".($codes['postID'] ? $codes['postID'] : "&nbsp;")."</td>
+				<td class='forumheader3' style='width: auto;'>".(isset($codes['code']) ? $codes['code'] : "&nbsp;")."</td>
+				<td class='forumheader3' style='width: auto;'>".($codes['parm'] ? $codes['parm'] : "&nbsp;")."</td>
+				<td class='forumheader3' style='width: 40%;'>".($codes['details'] ? $codes['details'] : "&nbsp;")."</td>
 				</tr>\n";
 		}
 		$text .= "</tbody></table>";
