@@ -23,10 +23,33 @@ class phpbb3_import extends base_import_class
 	public $description	= 'Import phpBB3 Users and Forums';
 	public $supported	=  array('users','forum','forumthread','forumpost','forumtrack');
 	public $mprefix		= 'phpbb_';
-
+	public $sourceType 	= 'db';	
+	
 	var $catcount = 0;				// Counts forum IDs
 	var $id_map = array();			// Map of PHPBB forum IDs ==> E107 forum IDs
+	
+	private $forum_attachments = array();
+	private $forum_attachment_path = null;
+	var $helperClass; // forum class. 
+ 
+ 
+	function init()
+	{
+		$this->forum_attachment_path	= vartrue(trim($_POST['forum_attachment_path'],"/" ), false);
+	} 
+ 
+ 
   
+	function config()
+	{
+		$frm = e107::getForm();
+		
+		$var[0]['caption']	= "Path to phpBB3 Attachments folder (optional)";
+		$var[0]['html'] 	= $frm->text('forum_attachment_path',null,40,'size=xxlarge');
+		$var[0]['help'] 	= "Relative to the root folder of your e107 installation";
+
+		return $var;
+	}
   
   // Set up a query for the specified task.
   // Returns TRUE on success. FALSE on error
@@ -49,10 +72,21 @@ class phpbb3_import extends base_import_class
 				
 			case 'forumthread' :
 				$result = $this->ourDB->gen("SELECT * FROM `{$this->DBPrefix}topics`");
+				
 				if ($result === FALSE) return FALSE;	  
 			break;
 				
 			case 'forumpost' :
+								
+				if($this->ourDB->gen("SELECT * FROM `{$this->DBPrefix}attachments`"))
+				{
+					while($row = $this->ourDB->fetch(MYSQL_ASSOC))
+					{
+						$id = $row['post_msg_id'];
+						$key = $row['physical_filename'];
+						$this->forum_attachments[$id][$key] = $row['real_filename'];	
+					}
+				}
 				$result = $this->ourDB->gen("SELECT * FROM `{$this->DBPrefix}posts`");
 				if ($result === FALSE) return FALSE;	  
 			break;				
@@ -226,7 +260,7 @@ class phpbb3_import extends base_import_class
 		$target['forum_moderators']			= "";
 	
 		$target['forum_threads'] 			= $source['forum_topics'];
-		$target['forum_replies']			= "";
+		$target['forum_replies']			= $source['forum_posts'];
 		$target['forum_lastpost_user']		= $source['forum_last_poster_id'];
 		$target['forum_lastpost_user_anon']	= $source['forum_last_poster_name'];
 		$target['forum_lastpost_info']		= $source['forum_last_post_time'];
@@ -274,7 +308,7 @@ class phpbb3_import extends base_import_class
 	function copyForumPostData(&$target, &$source)
 	{
 		$target['post_id'] 					= $source['post_id'];
-		$target['post_entry'] 				= $source['post_text'];
+		$target['post_entry'] 				= $this->convertText($source['post_text']);
 		$target['post_thread'] 				= $source['topic_id'];
 		$target['post_forum'] 				= $source['forum_id'];
 	//	$target['post_status'] 				= $source[''];
@@ -284,7 +318,7 @@ class phpbb3_import extends base_import_class
 		$target['post_edit_user'] 			= $source['post_edit_user'];
 		$target['post_ip'] 					= $source['poster_ip'];
 	//	$target['post_user_anon'] 			= $source[''];
-	//	$target['post_attachments'] 		= $source[''];
+		$target['post_attachments'] 		= $this->convertAttachment($source);
 	//	$target['post_options'] 			= $source[''];
 		
 		
@@ -305,9 +339,106 @@ class phpbb3_import extends base_import_class
 		return $target;
 	}
 
+	
+	
+	function convertAttachment($row)
+	{
+		
+		if($row['post_attachment'] != 1)
+		{
+			return;
+		}
+		
+		$id = $row['post_id'];
+				
+		if(isset($this->forum_attachments[$id]))
+		{
+			$attach = array();
+			
+			$forum = $this->helperClass; // e107_plugins/forum/forum_class.php 
+			
+			if($folder = $forum->getAttachmentPath($row['poster_id'],true)) // get Path and create Folder if needed. 
+			{
+				e107::getMessage()->addDebug("Created Attachment Folder: ".$folder );
+			}
+			else
+			{
+				e107::getMessage()->addError("Couldn't find/create attachment folder for user-id: ".$row['poster_id'] );	
+			}
+			
+			foreach($this->forum_attachments[$id] as $file => $name)
+			{
+				
+				if(preg_match('#.JPG|.jpg|.gif|.png|.PNG|.GIF|.jpeg|.JPEG$#',$name))
+				{
+					$attach['img'][] = $file;	
+				}
+				else 
+				{
+					$attach['file'][] = $file;
+				}	
+				
+				if($this->forum_attachment_path) // if path entered - then move the files. 
+				{
+					$oldpath = e_BASE.$this->forum_attachment_path."/".$file;
+					$newpath = $folder.$file;
+					
+					if(rename($oldpath,$newpath))
+					{
+						e107::getMessage()->addDebug("Renamed file from <b>{$oldpath}</b> to <b>{$newpath}</b>" );	
+					}
+					else
+					{
+						e107::getMessage()->addError("Couldn't rename file from <b>{$oldpath}</b> to <b>{$newpath}</b>" );	
+					}	
+					
+				}
+				
+			}	
+			
+		}
+
+		
+		return e107::serialize($attach); // set attachments 	
+	}
 
 
 
+	function convertText($text)
+	{		
+		$text = preg_replace('#<!-- s(\S*) --><img([^>]*)><!-- s(\S*) -->#','$1',$text);	 					// Smilies to text
+		$text = preg_replace('#\[img:([^\]]*)]([^\[]*)\[/img:([^\]]*)]#', '[img]$2[/img]', $text); 				// Image Bbcodes. 
+		$text = preg_replace('#<!-- m --><a class="postlink" href="([^>]*)">([^<]*)</a><!-- m -->#','[link=$1]$2[/img]',$text);	 	// links
+		
+		$text = preg_replace('#\[attachment([^\]]*)]([^\[]*)\[/attachment:([^\]]*)]#','',$text);
+		$text = html_entity_decode($text,ENT_NOQUOTES,'UTF-8');
+		
+		/*		
+		if(preg_match_all('#\[attachment([^\]]*)]([^\[]*)\[/attachment:([^\]]*)]#',$text,$matches))
+		{	
+			$attach = array();
+			foreach($matches[2] as $val)
+			{
+				$val = strip_tags($val); // remove html comments. 
+				
+				if(preg_match('#.JPG|.jpg|.gif|.png|.PNG|.GIF|.jpeg|.JPEG$#',$val))
+				{
+					$attach['img'][] = $val;	
+				}
+				else 
+				{
+					$attach['file'][] = $val;
+				}
+			}
+			
+			
+			$text = str_replace($matches[0],'',$text); // erase attachment bbcode from text. 
+		}
+		*/
+		
+		
+		return $text;
+	}
 
 
 

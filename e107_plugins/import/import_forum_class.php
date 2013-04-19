@@ -118,6 +118,7 @@ class forum_import
 class forumthread_import
 {
 	var $error;
+	var $forumClass;
 
 	var $defaults = array(
 			'thread_id'					=> '',
@@ -145,6 +146,7 @@ class forumthread_import
 	{
 	 // 	global $sql;
 	 //   $this->pageDB = new db;	// Have our own database object to write to the table	
+	 
 	}
 
 
@@ -241,14 +243,22 @@ class forumpost_import
 	var $mandatory = array(
 		'post_thread', 'post_forum'
 	);
-  
+	
+	var $helperClass;
+
 	// Constructor
 	function __construct()
 	{
 	 // 	global $sql;
 	 //   $this->pageDB = new db;	// Have our own database object to write to the table	
+		if(require_once(e_PLUGIN."forum/forum_class.php"))
+		{
+			e107::getMessage()->addDebug("Include forum_class");
+		}
+		
+		$this->helperClass = new e107forum();		
 	}
-
+	
 
 	// Empty the  DB - not necessary
 	function emptyTargetDB($inc_admin = FALSE)

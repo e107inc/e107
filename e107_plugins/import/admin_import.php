@@ -367,7 +367,10 @@ class import_main_ui extends e_admin_ui
 
 
 
-
+	function renderConfig()
+	{
+		
+	}
 
 
 
@@ -446,26 +449,7 @@ class import_main_ui extends e_admin_ui
 		
 		$importType = $proObj->title;
 		
-		if(method_exists($proObj,"config")) // Config Found in Class - render options from it. 
-		{
-			$ops  = $proObj->config();
-			foreach($ops as $key=>$val)
-			{
-				$text .= "<tr>
-					<td>".$val['caption']."</td>
-					<td>".$val['html'];
-				$text .= (vartrue($val['help'])) ? "<div class='field-help'>".$val['help']."</div>" : "";	
-				$text .= "</td>
-				</tr>\n";		
-			}
-			
-			if($proObj->sourceType)
-			{
-				$text .= "<input type='hidden' name='import_source' value='".$proObj->sourceType."' />\n";	
-			} 			
-					
-		}
-		else // STANDARD db Setup 
+		if($proObj->sourceType == 'db' || !$proObj->sourceType) // STANDARD db Setup 
 		{
 	    	
 	
@@ -497,6 +481,34 @@ class import_main_ui extends e_admin_ui
 			</tr>";
 	
 		}
+	
+	
+		if(method_exists($proObj,"config")) // Config Found in Class - render options from it. 
+		{
+			$ops  = $proObj->config();
+			foreach($ops as $key=>$val)
+			{
+				$text .= "<tr>
+					<td>".$val['caption']."</td>
+					<td>".$val['html'];
+				$text .= (vartrue($val['help'])) ? "<div class='field-help'>".$val['help']."</div>" : "";	
+				$text .= "</td>
+				</tr>\n";		
+			}		
+		}
+	
+	
+		if($proObj->sourceType)
+		{
+			$text .= "<input type='hidden' name='import_source' value='".$proObj->sourceType."' />\n";	
+		} 
+		else
+		{
+			$text .= "<input type='hidden' name='import_source' value='db' />";	
+		}
+			
+	
+	
 	
 	//	if($mode != 'csv')
 		{
@@ -607,7 +619,7 @@ class import_main_ui extends e_admin_ui
 		
 		if (class_exists($this->importClass))
 		{
-			$mes->addDebug("dbImport(): Class Available: ".$this->importClass);   
+			$mes->addDebug("dbImport(): Converter Class Available: ".$this->importClass);   
 			$converter = new $this->importClass;
 			$converter->init();
 		}
@@ -666,6 +678,25 @@ class import_main_ui extends e_admin_ui
 			
 			$mes->addDebug("dbImport(): Importing: ".$k);
 			
+			$exporter = new $v['classname'];		// Writes the output data
+	
+		  	if(is_object($exporter))
+			{
+				$mes->addDebug("dbImport(): Exporter Class Initiated: ".$v['classname']);	
+				
+				if(is_object($exporter->helperClass))
+				{
+					$mes->addDebug("dbImport(): Initiated Helper Class");		
+					$converter->helperClass = $exporter->helperClass;
+				}
+				
+			}
+			else
+			{
+				$mes->addDebug("dbImport(): Couldn't Initiate Class: ".$v['classname']);		
+			}
+			
+			
 		  	$result = $converter->setupQuery($k, !$this->deleteExisting);
 							
 			if ($result !== TRUE)
@@ -674,16 +705,8 @@ class import_main_ui extends e_admin_ui
 				break;
 			}
 					
-		  	$exporter = new $v['classname'];		// Writes the output data
-		  	
-		  	if(is_object($exporter))
-			{
-				$mes->addDebug("dbImport(): Class Initiated: ".$v['classname']);	
-			}
-			else
-			{
-				$mes->addDebug("dbImport(): Couldn't Initiate Class: ".$v['classname']);		
-			}
+		
+		  
 				 				 	
 			if($k == 'users')  // Do any type-specific default setting
 			{
