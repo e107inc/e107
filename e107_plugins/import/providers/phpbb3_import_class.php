@@ -287,7 +287,7 @@ class phpbb3_import extends base_import_class
 		$target['thread_forum_id'] 			= $source['forum_id'];
 		$target['thread_views'] 			= $source['topic_views'];
 	//	$target['thread_active'] 			= $source['topic_status'];
-		$target['thread_lastpost'] 			= $source['topic_last_post_id'];
+		$target['thread_lastpost'] 			= $source['topic_last_post_time'];  	
 		$target['thread_sticky'] 			= $source['topic_time_limit'];
 		$target['thread_datestamp'] 		= $source['topic_time'];
 		$target['thread_user'] 				= $source['topic_poster'];
@@ -408,7 +408,7 @@ class phpbb3_import extends base_import_class
 	{		
 		$text = preg_replace('#<!-- s(\S*) --><img([^>]*)><!-- s(\S*) -->#','$1',$text);	 					// Smilies to text
 		$text = preg_replace('#\[img:([^\]]*)]([^\[]*)\[/img:([^\]]*)]#', '[img]$2[/img]', $text); 				// Image Bbcodes. 
-		$text = preg_replace('#<!-- m --><a class="postlink" href="([^>]*)">([^<]*)</a><!-- m -->#','[link=$1]$2[/img]',$text);	 	// links
+		$text = preg_replace('#<!-- m --><a class="postlink" href="([^>]*)">([^<]*)</a><!-- m -->#','[link=$1]$2[/link]',$text);	 	// links
 		
 		$text = preg_replace('#\[attachment([^\]]*)]([^\[]*)\[/attachment:([^\]]*)]#','',$text);
 		$text = html_entity_decode($text,ENT_NOQUOTES,'UTF-8');
