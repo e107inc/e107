@@ -23,15 +23,18 @@ if (vartrue($pref['statActivate']))
 		return;
 	}
 	// Page to log here
-	require_once(e_PLUGIN.'log/consolidate.php');
-	$err_flag = '';
-	if (defined('ERR_PAGE_ACTIVE'))
-	{	// We've got an error - set a flag to log it
-		$err_flag = "&err_direct=".ERR_PAGE_ACTIVE;
-		if (is_numeric(e_QUERY)) $err_flag .= '/'.substr(e_QUERY,0,10);		// This should pick up the error code - and limit numeric length to upset the malicious
-		$err_flag .= "&err_referer=".$_SERVER['HTTP_REFERER'];
-	}
 	
+	if(USER_AREA)
+	{
+		require_once(e_PLUGIN.'log/consolidate.php');
+		$err_flag = '';
+		if (defined('ERR_PAGE_ACTIVE'))
+		{	// We've got an error - set a flag to log it
+			$err_flag = "&err_direct=".ERR_PAGE_ACTIVE;
+			if (is_numeric(e_QUERY)) $err_flag .= '/'.substr(e_QUERY,0,10);		// This should pick up the error code - and limit numeric length to upset the malicious
+			$err_flag .= "&err_referer=".$_SERVER['HTTP_REFERER'];
+		}
+	}
 	/*
 	$logJS = "
 function rstr2b64(input)
