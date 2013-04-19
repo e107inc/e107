@@ -337,7 +337,7 @@ $FORUM_VIEWTOPIC_TEMPLATE['thread'] = "
 										<div class='row-fluid'  >
 											<div class='span2 center'>
 													{CUSTOMTITLE}
-													{AVATAR}
+													{AVATAR}<br />
 													{USERCOMBO}
 													
 											</div>

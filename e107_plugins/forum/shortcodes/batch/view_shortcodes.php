@@ -158,11 +158,13 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 	function sc_avatar()
 	{
-		
+		$tp = e107::getParser();
 		//return e107::getParser()->parseTemplate("{AVATAR=".$this->postInfo['user_image']."}");
+		$height 	= e107::getPref("im_height");
+		$width 		= e107::getPref("im_width");
 		
 		
-		if ($this->postInfo['post_user'])
+		if ($this->postInfo['post_user'] && $this->postInfo['user_image'])
 		{
 			if(!$avatar = getcachedvars('forum_avatar_'.$this->postInfo['post_user']))
 			{
@@ -173,13 +175,20 @@ class plugin_forum_view_shortcodes extends e_shortcode
 				}
 				else
 				{
-					$avatar = '';
+					$avatar = "<img class='user-avatar' src='".$img."' alt='' />";
 				}
 				cachevars('forum_avatar_'.$this->postInfo['post_user'], $avatar);
 			}
 			return $avatar;
 		}
-		return '';
+
+	//	$img = $tp->thumbUrl(e_IMAGE."generic/blank_avatar.jpg","w=".$width."&h=".$height);
+	//	return print_a($img, true);
+		$img = e_IMAGE."generic/blank_avatar.jpg";
+		
+		return "<img class='user-avatar' src='".$img."' alt='' width='".$width."' />";
+
+		return $text;
 
 	}
 
@@ -489,24 +498,24 @@ class plugin_forum_view_shortcodes extends e_shortcode
     	<ul class="dropdown-menu pull-right">';
 			
     	
-		$text .= "<li><a href='".e_HTTP."email.php?plugin:forum.".$this->postInfo['post_thread']."'>".FORLAN_101."</a></li>";
-		$text .= "<li><a href='".e_HTTP."print.php?plugin:forum.".$this->postInfo['post_thread']."'>Print</a></li>";
+		$text .= "<li><a href='".e_HTTP."email.php?plugin:forum.".$this->postInfo['post_thread']."'>".FORLAN_101." <i class='icon-envelope'></i></a></li>";
+		$text .= "<li><a href='".e_HTTP."print.php?plugin:forum.".$this->postInfo['post_thread']."'>Print <i class='icon-print'></i></a></li>";
 	
 		if (USER) // Report
 		{
-			$text .= "<li><a href='".$this->e107->url->create('forum/thread/report', "id={$this->postInfo['post_thread']}&post={$this->postInfo['post_id']}")."'>Report</a></li>";
+			$text .= "<li><a href='".$this->e107->url->create('forum/thread/report', "id={$this->postInfo['post_thread']}&post={$this->postInfo['post_id']}")."'>Report <i class='icon-flag'></i></a></li>";
 		}
 	
 		// Edit
 		if ( (USER && $this->postInfo['post_user'] == USERID && $this->thread->threadInfo['thread_active']))
 		{
-			$text .= "<li><a href='".e107::getUrl()->create('forum/thread/edit', array('id' => $this->postInfo['post_id']))."'>Edit</a></li>";
+			$text .= "<li><a href='".e107::getUrl()->create('forum/thread/edit', array('id' => $this->postInfo['post_id']))."'>Edit <i class='icon-edit'></i></a></li>";
 			
 		}
 	
 		if($this->forum->checkperm($this->postInfo['post_forum'], 'post'))
 		{
-			$text .= "<li><a href='".e107::getUrl()->create('forum/thread/quote', array('id' => $this->postInfo['post_id']))."'>Quote</a></li>";
+			$text .= "<li><a href='".e107::getUrl()->create('forum/thread/quote', array('id' => $this->postInfo['post_id']))."'>Quote <i class='icon-share-alt'></i></a></li>";
 		}
 	
 	
@@ -517,14 +526,14 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 			if ((USER && $this->postInfo['post_user'] != USERID && $this->thread->threadInfo['thread_active']))
 			{
-				$text .= "<li><a href='".e107::getUrl()->create('forum/thread/edit', array('id' => $this->postInfo['post_id']))."'>Edit</a></li>";
+				$text .= "<li><a href='".e107::getUrl()->create('forum/thread/edit', array('id' => $this->postInfo['post_id']))."'>Edit <i class='icon-edit'></i></a></li>";
 			}
 			
-			$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='deletepost' data-forum-post='".$this->postInfo['post_id']."'>Delete (fixme)</a></li>"; 
+			$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='deletepost' data-forum-post='".$this->postInfo['post_id']."'>Delete (fixme) <i class='icon-trash'></i></a></li>"; 
 
 			if ($type == 'thread')
 			{
-				$text .= "<li><a href='" . e107::getUrl()->create('forum/thread/move', array('id' => $this->postInfo['post_id']))."'>Move</a></li>";
+				$text .= "<li><a href='" . e107::getUrl()->create('forum/thread/move', array('id' => $this->postInfo['post_id']))."'>Move <i class='icon-move'></i></a></a></li>"; 
 			}
 			else
 			{

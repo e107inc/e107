@@ -60,6 +60,14 @@ $fVars->VIEWTITLE = LAN_56;
 
 $forumId = (int)$_REQUEST['id'];
 
+if(!$forumId && e_QUERY) // BC Fix for old links. 
+{
+	list($id,$from) = explode(".",e_QUERY);
+	$forumId = intval($id);		
+	$threadFrom = intval($from);
+	unset($id,$from);		
+}
+
 if (!$forum->checkPerm($forumId, 'view'))
 {
 	header('Location:'.e107::getUrl()->create('forum/forum/main'));
@@ -670,7 +678,7 @@ function fadminoptions($thread_info)
 	$text .= '<div class="btn-group"><button class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
     <span class="caret"></span>
     </button>
-    <ul class="dropdown-menu left">	
+    <ul class="dropdown-menu pull-right">	
    ';
    
 	//FIXME - not fully working. 

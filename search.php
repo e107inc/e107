@@ -553,7 +553,7 @@ if ($perform_search)
 				if ($results > $search_res) 
 				{
 					$nextprev = ($results > $search_res) ? $tp -> parseTemplate("{NEXTPREV={$parms}}") : "";
-					$text .= "<div class='nextprev search'>".$nextprev."</div>";
+					$text .= "<div class='nextprev search form-inline'>".$nextprev."</div>";
 				}
 				if ($results > 0) 
 				{
