@@ -163,6 +163,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		$height 	= e107::getPref("im_height");
 		$width 		= e107::getPref("im_width");
 		
+		$img = e_IMAGE_ABS."generic/blank_avatar.jpg";
 		
 		if ($this->postInfo['post_user'] && $this->postInfo['user_image'])
 		{
@@ -171,7 +172,17 @@ class plugin_forum_view_shortcodes extends e_shortcode
 				if ($this->postInfo['user_image'])
 				{
 				//	require_once(e_HANDLER.'avatar_handler.php');
-					$avatar = "<img src='".e_MEDIA_AVATAR.$this->postInfo['user_image']."' alt=\"".$this->postInfo['user_name']."\"/>";
+				
+					if(file_exists(e_MEDIA_AVATAR."default/".$this->postInfo['user_image']))
+					{
+						$img = e_MEDIA_AVATAR_ABS."default/".$this->postInfo['user_image']; 	
+					}
+					elseif(file_exists(e_MEDIA_AVATAR."uploaded/".$this->postInfo['user_image']))
+					{
+						$img = e_MEDIA_AVATAR_ABS."uploaded/".$this->postInfo['user_image']; 		
+					}
+					
+					$avatar = "<img class='user-avatar' src='".$img."' alt=\"".$this->postInfo['user_name']."\"/>";
 				}
 				else
 				{
@@ -184,7 +195,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 	//	$img = $tp->thumbUrl(e_IMAGE."generic/blank_avatar.jpg","w=".$width."&h=".$height);
 	//	return print_a($img, true);
-		$img = e_IMAGE."generic/blank_avatar.jpg";
+		
 		
 		return "<img class='user-avatar' src='".$img."' alt='' width='".$width."' />";
 

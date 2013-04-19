@@ -397,7 +397,7 @@ class e_form
 		$previnput	= $idinput."-preview";
 		$optioni 	= $idinput."-options";
 		
-		$img = (strpos($curVal,"://")!==false) ? $curVal : $tp->thumbUrl(e_MEDIA."avatars/".$curVal,"aw=".vartrue($width)."&ah=".vartrue($height));
+		$img = (strpos($curVal,"://")!==false) ? $curVal : $tp->thumbUrl(e_MEDIA."avatars/default/".$curVal,"aw=".vartrue($width)."&ah=".vartrue($height));
 		
 		if(!$curVal)
 		{
@@ -416,7 +416,7 @@ class e_form
 			$text .= "<input class='btn button e-expandit' type ='button' style='cursor:pointer' size='30' value=\"Choose Avatar\"  />"; //TODO Common LAN. 
 		}
 						
-		$avFiles = e107::getFile()->get_files(e_MEDIA."avatars/",".jpg|.png|.gif|.jpeg|.JPG|.GIF|.PNG");
+		$avFiles = e107::getFile()->get_files(e_MEDIA."avatars/default/",".jpg|.png|.gif|.jpeg|.JPG|.GIF|.PNG");
 			
 		$text .= "\n<div id='{$optioni}' style='display:none' >\n"; //TODO unique id. 
 		
@@ -433,7 +433,7 @@ class e_form
 				
 		foreach($avFiles as $fi)
 		{
-			$img_path = $tp->thumbUrl(e_MEDIA_ABS."avatars/".$fi['fname'],$attr);	
+			$img_path = $tp->thumbUrl(e_MEDIA_ABS."avatars/default/".$fi['fname'],$attr);	
 			$text .= "\n<a class='e-expandit' title='Choose this avatar' href='#{$optioni}'><img src='".$img_path."' alt=''  onclick=\"insertext('".$fi['fname']."', '".$idinput."');document.getElementById('".$previnput."').src = this.src;\" /></a> ";			
 			//TODO javascript CSS selector 		
 		}

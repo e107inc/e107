@@ -2127,13 +2127,13 @@ function show_avatars()
 	$mes = e107::getMessage();
 
 
-	$avFiles = e107::getFile()->get_files(e_MEDIA."avatars/",".jpg|.png|.gif|.jpeg|.JPG|.GIF|.PNG");
+	$avFiles = e107::getFile()->get_files(e_MEDIA."avatars/",".jpg|.png|.gif|.jpeg|.JPG|.GIF|.PNG",null,2);
 
 	$dirlist = array();
 	
 	foreach($avFiles as $f)
 	{
-		$dirlist[] = $f['fname'];	
+		$dirlist[] = str_replace(e_MEDIA."avatars/","",$f['path']). $f['fname'];	
 	}
 
 	$text = '';
@@ -2179,7 +2179,7 @@ function show_avatars()
 		
 		// : 
 		
-			$users = (in_array($image_name,$imageUsed)) ? "<span class='badge badge-warning'>Image in use</span>" : '<span class="badge">Not in use</span>';
+			$users = (in_array(basename($image_name),$imageUsed)) ? "<span class='badge badge-warning' style='margin-bottom:5px'>Image in use</span>" : '<span class="badge" style="margin-bottom:5px">Not in use</span>';
 			
 			//directory?
 			if(is_dir(e_MEDIA."avatars/".$image_name))
@@ -2205,6 +2205,20 @@ function show_avatars()
 				$attr = "aw=".$pref['im_width']."&ah=".$pref['im_height'];
 				$img_path = $tp->thumbUrl(e_MEDIA_ABS."avatars/".$image_name,$attr);
 				
+				$type = dirname($image_name);
+				
+				if($prevType != $type)
+				{
+					$text .= "<div class='clearfix'></div>
+					<h5 >".$type."</h5>";	
+				}	
+				
+				
+				
+				
+				
+				
+				
 				$for = $frm->name2id('multiaction-'.$image_name);
 				
 				$img_src = "<label for='".$for."' >
@@ -2212,6 +2226,8 @@ function show_avatars()
 				<img  src='".$img_path."' alt='{$image_name}' title='".IMALAN_66.": {$image_name}' />
 				</div>
 				</label>";
+				
+				$prevType = $type;
 
 			}
 
