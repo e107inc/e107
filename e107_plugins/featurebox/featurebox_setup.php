@@ -82,6 +82,36 @@ class featurebox_setup
 		// print_a($var);
 	}
 */	
+
+	function upgrade_required()
+	{	
+		if(!e107::getDb()->db_Table_exists('featurebox_category'))
+		{
+			return true; // true to trigger an upgrade alert, and false to not. 	
+		}
+		
+	}
+	
+
+	function upgrade_pre($var)
+	{
+		e107::getDb()->gen("CREATE TABLE #featurebox_category (
+		  `fb_category_id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+		  `fb_category_title` varchar(200) NOT NULL DEFAULT '',
+		  `fb_category_icon` varchar(255) NOT NULL DEFAULT '',
+		  `fb_category_template` varchar(50) NOT NULL DEFAULT 'default',
+		  `fb_category_random` tinyint(1) unsigned NOT NULL DEFAULT '0',
+		  `fb_category_class` smallint(5) NOT NULL DEFAULT '0',
+		  `fb_category_limit` tinyint(3) unsigned NOT NULL DEFAULT '1',
+		  `fb_category_parms` text NOT NULL,
+		  PRIMARY KEY (`fb_category_id`),
+		  UNIQUE KEY `fb_category_template` (`fb_category_template`)
+		) ENGINE=MyISAM;");
+	}
+
+
+
+
 	function upgrade_post($var)
 	{
 		$sql = e107::getDb();
@@ -96,7 +126,8 @@ class featurebox_setup
 			$query['fb_category_random'] = 0;
 			$query['fb_category_class'] = e_UC_NOBODY;
 			$query['fb_category_limit'] = 0;
-			$inserted = $sql->db_Insert('featurebox_category', $query);
+			
+			$inserted = $sql->insert('featurebox_category', $query);
 			$status = $inserted ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR; 
 			e107::getMessage()->add(FBLAN_INSTALL_01, $status);
 			if($sql->getLastErrorNumber())
