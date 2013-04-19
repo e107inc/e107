@@ -1151,7 +1151,7 @@ function update_706_to_800($type='')
 
 	
 	$root_media = str_replace(basename(e_MEDIA)."/","",e_MEDIA);
-	$user_media_dirs = array("images","avatars","files","temp","videos","icons");
+	$user_media_dirs = array("images","avatars", "avatars/default", "avatars/uploaded", "files","temp","videos","icons");
 	
 	// check for old paths and rename. 
 	if(is_dir($root_media."images") || is_dir($root_media."temp"))
@@ -1163,7 +1163,7 @@ function update_706_to_800($type='')
 	}
 	
 	// create sub-directories if they do not exist. 
-	if(!is_dir(e_MEDIA."images") || !is_dir(e_MEDIA."temp"))
+	if(!is_dir(e_MEDIA."images") || !is_dir(e_MEDIA."temp") || !is_dir(e_MEDIA."avatars/default") )
 	{
 		foreach($user_media_dirs as $md)
 		{
@@ -1185,7 +1185,9 @@ function update_706_to_800($type='')
 		if ($just_check) return update_needed('Avatar paths require updating.');
 		foreach($avatar_images as $av)
 		{
-			@rename($av['path'].$av['fname'],e_MEDIA."avatars/".$av['fname']);			
+			$apath = (strstr($av['path'],'public/')) ? 'uploaded/' : 'default/';
+			
+			@rename($av['path'].$av['fname'],e_MEDIA."avatars/".$apath. $av['fname']);			
 		}	
 	}
 	
