@@ -62,6 +62,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	 */
 	function sc_post()
 	{
+	//	return print_a($this->postInfo['post_entry'],true);
 		$emote = (isset($this->postInfo['post_options']['no_emote']) ? ',emotes_off' : '');
 		return e107::getParser()->toHTML($this->postInfo['post_entry'], true, 'USER_BODY'.$emote, 'class:'.$this->postInfo['user_class']);
 	}
@@ -92,7 +93,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 			$images = array();
 
-			$attachArray = e107::getArrayStorage()->read($this->postInfo['post_attachments']);
+			$attachArray = e107::unserialize($this->postInfo['post_attachments']);
 		
 			foreach($attachArray as $type=>$vals)
 			{
@@ -111,11 +112,21 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 						case 'img': //Always use thumb to hide the hash. 
 						
-							$thumb = $tp->thumbUrl($baseDir.$file,'x=1',true);
-							$full = $tp->thumbUrl($baseDir.$file,'w=1000&x=1', true);
+						//	return $baseDir.$file; 
+							if(file_exists($baseDir.$file))
+							{
+								$thumb = $tp->thumbUrl($baseDir.$file,'x=1',true);
+								$full = $tp->thumbUrl($baseDir.$file,'w=1000&x=1', true);
 							
-							$inc = (vartrue($parm['modal'])) ? "data-toggle='modal' data-target='#".$parm['modal']."' " : "";
-							$images[] = "<a  {$inc} rel='external' href='{$full}'><img class='thumbnail' src='{$thumb}' alt='' /></a>";
+								$inc = (vartrue($parm['modal'])) ? "data-toggle='modal' data-target='#".$parm['modal']."' " : "";
+								$images[] = "<a  {$inc} rel='external' href='{$full}'><img class='thumbnail' src='{$thumb}' alt='' /></a>";	
+							}
+							elseif(ADMIN)
+							{
+								$images[] = "Missing File: ".$baseDir.$file;
+							}
+						
+							
 							
 						break;
 					}	
