@@ -1156,6 +1156,9 @@ function step10_ajax()//TODO
 	AND post_id > {$lastPost} LIMIT 50
 	";
 
+	// file_put_contents(e_LOG."forum_update_step10.log",$qry."\n",FILE_APPEND);
+	
+	
 	if ($sql->gen($qry))
 	{
 		while ($row = $sql->fetch(MYSQL_ASSOC))
@@ -1324,8 +1327,22 @@ function step10_ajax()//TODO
 				
 			}
 
-			echo round(($_SESSION['forumupdate_attachment_count'] / $_SESSION['forumupdate_attachment_total']) * 100);
+		
 		}
+		
+			$totalOutput = round(($_SESSION['forumupdate_attachment_count'] / $_SESSION['forumupdate_attachment_total']) * 100);
+			echo $totalOutput;
+			
+			/*
+			$debugRound = "
+			forumupdate_attachment_count = ".$_SESSION['forumupdate_attachment_count']."
+			forumupdate_attachment_total = ".$_SESSION['forumupdate_attachment_total']."
+			calculated = ".$totalOutput."
+			
+			";
+			
+			file_put_contents(e_LOG."forum_update_step10.log",$debugRound,FILE_APPEND);
+			*/
 	}
 	else
 	{
