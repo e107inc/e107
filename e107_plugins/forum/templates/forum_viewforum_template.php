@@ -283,31 +283,35 @@ $FORUM_CRUMB['forum']['value'] = "{FORUM_TITLE}";
 // <small>{BREADCRUMB}</small>  //FIXME Breadcrumb looks crummy
 
 $FORUM_VIEWFORUM_TEMPLATE['start'] 				= "";
-$FORUM_VIEWFORUM_TEMPLATE['header'] 				= "<div class='row-fluid'><div class='span9 pull-left'><h3>{FORUMTITLE}</h3></div><div class='span3 pull-right right' style='padding-top:10px'>{NEWTHREADBUTTONX}</div></div>
-											<table class='table table-hover table-striped'>
-											<colgroup>
-											<col style='width:3%' />
-											<col />
-											<col style='width:10%' />
-											<col style='width:10%' />
-											<col style='width:20%' />
-											</colgroup>
-										
-											{SUBFORUMS}";
+$FORUM_VIEWFORUM_TEMPLATE['header'] 			= "<div class='row-fluid'><div class='span6 pull-left'>{BACKLINK}</div>	</div>
+													<div class='row-fluid'>
+													<div class='span9 pull-left'><h3>{FORUMTITLE}</h3></div>
+													<div class='span3 pull-right right' style='padding-top:10px'>{NEWTHREADBUTTONX}</div></div>
+													<table class='table table-hover table-striped'>
+													<colgroup>
+													<col style='width:3%' />
+													<col />
+													<col style='width:10%' />
+													<col style='width:10%' />
+													<col style='width:20%' />
+													</colgroup>
+												
+													{SUBFORUMS}";
 
 $FORUM_VIEWFORUM_TEMPLATE['item'] 				= "<tr><td>{ICON}</td><td>{THREADNAME}<div><small class='clearfix'>by {POSTER} {THREADTIMELAPSE}  {PAGESX}</small></div></td><td>{REPLIESX}</td><td>{VIEWSX}</td><td><small>{LASTPOSTUSER} {LASTPOSTDATE} </small><div class='span2 right pull-right'>{ADMINOPTIONS}</div></td></tr>\n";
-$FORUM_VIEWFORUM_TEMPLATE['item-sticky'] 			= $FORUMVIEW['item'] ; // "<tr><td>{THREADNAME}</td></tr>\n";
+$FORUM_VIEWFORUM_TEMPLATE['item-sticky'] 		= $FORUMVIEW['item'] ; // "<tr><td>{THREADNAME}</td></tr>\n";
 $FORUM_VIEWFORUM_TEMPLATE['item-announce'] 		= $FORUMVIEW['item'] ; // "<tr><td>{THREADNAME}</td></tr>\n";
 
 
 $FORUM_VIEWFORUM_TEMPLATE['sub-header']			= "<tr><th colspan='2'>".FORLAN_20."</th><th>".LAN_55."</th><th>".FORLAN_21."</th><th>".FORLAN_22."</th></tr>";
-$FORUM_VIEWFORUM_TEMPLATE['sub-item']				= "<tr><td>{NEWFLAG}</td>
-											<td><div>{SUB_FORUMTITLE}</div><small>{SUB_DESCRIPTION}</small></td>
-											<td>{SUB_REPLIESX}</td>
-											<td>{SUB_THREADSX}</td>
-											<td><small>{SUB_LASTPOSTUSER} {SUB_LASTPOSTDATE}</small></td>
-											</tr>\n";
-									
+$FORUM_VIEWFORUM_TEMPLATE['sub-item']			= "<tr><td>{NEWFLAG}</td>
+												<td><div>{SUB_FORUMTITLE}</div><small>{SUB_DESCRIPTION}</small></td>
+												<td>{SUB_REPLIESX}</td>
+												<td>{SUB_THREADSX}</td>
+												<td><small>{SUB_LASTPOSTUSER} {SUB_LASTPOSTDATE}</small></td>
+												</tr>\n";
+
+
 $FORUM_VIEWFORUM_TEMPLATE['sub-footer']			= "";		
 
 $FORUM_VIEWFORUM_TEMPLATE['divider-important']	= "<tr><th colspan='2'>".LAN_411."</th><th>".LAN_55."</th><th>".LAN_56."</th><th>".LAN_57."</th></tr>";

@@ -148,12 +148,18 @@ class e107forum
 	}
 
 	
-	function getAttachmentPath($user)
+	function getAttachmentPath($user,$create=false)
 	{
 		$user = intval($user);
 		$tp = e107::getParser();
 		$baseDir = e_MEDIA.'plugins/forum/attachments/';
 		$baseDir .= ($user) ? "user_". $tp->leadingZeros($user, 6) : "anon";
+		
+		if($create == true && !is_dir($baseDir))
+		{
+			mkdir($baseDir,0755);	
+		}
+		
 		$baseDir .= "/";
 
 		return $baseDir;
