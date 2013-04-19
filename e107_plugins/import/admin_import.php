@@ -147,6 +147,17 @@ class import_main_ui extends e_admin_ui
 	}	
 	
 	
+	function help()
+	{
+		
+		return "Some help text from admin-ui";	
+		
+	}
+	
+	
+	
+	
+	
 	function getMeta($class_name)
 	{
 		if(class_exists($class_name))

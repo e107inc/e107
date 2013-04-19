@@ -30,12 +30,19 @@ class phpbb3_import extends base_import_class
 	
 	private $forum_attachments = array();
 	private $forum_attachment_path = null;
+	private $forum_moderator_class = false;
 	var $helperClass; // forum class. 
  
  
 	function init()
 	{
 		$this->forum_attachment_path	= vartrue(trim($_POST['forum_attachment_path'],"/" ), false);
+		
+		if($data = e107::getDb('phpbb')->retrieve('userclass_classes','userclass_id',"userclass_name='FORUM_MODERATOR' "))
+		{
+			$this->forum_moderator_class = $data;
+		}
+		
 	} 
  
  
@@ -49,6 +56,13 @@ class phpbb3_import extends base_import_class
 		$var[0]['help'] 	= "Relative to the root folder of your e107 installation";
 
 		return $var;
+	}
+
+
+	function help()
+	{
+		return "some help text";	
+		
 	}
   
   // Set up a query for the specified task.
@@ -155,6 +169,13 @@ class phpbb3_import extends base_import_class
 				
 		$conv = array(1 => e_UC_GUEST, 4 => e_UC_MODS, 6 => e_UC_BOTS, 7 => e_UC_NEWUSER);
 		
+		if($this->forum_moderator_class !== false)
+		{
+			$conv[4] = $this->forum_moderator_class;
+			$conv[5] = $this->forum_moderator_class;	
+		}
+		
+		
 		return vartrue($conv[$perm]) ? $conv[$perm] : "";
 		/*
 		 * 	1		GUESTS
@@ -181,6 +202,7 @@ class phpbb3_import extends base_import_class
 		
 	} 
 	
+	
   //------------------------------------
   //	Internal functions below here
   //------------------------------------
@@ -199,7 +221,7 @@ class phpbb3_import extends base_import_class
 		$target['user_loginname'] 		= $source['username'];
 		$target['user_password']		= $this->convertPassword($source['user_password']);
 		$target['user_email'] 			= $source['user_email'];
-		$target['user_signature'] 		= $this->proc_bb($source['user_sig'],'phpbb,bblower');
+		$target['user_signature'] 		= $this->convertText($source['user_sig']);
 		$target['user_image'] 			= $source['user_avatar'];
 		$target['user_hideemail'] 		= $source['user_allow_viewemail'];
 		$target['user_join'] 			= $source['user_regdate'];
@@ -409,34 +431,21 @@ class phpbb3_import extends base_import_class
 		$text = preg_replace('#<!-- s(\S*) --><img([^>]*)><!-- s(\S*) -->#','$1',$text);	 					// Smilies to text
 		$text = preg_replace('#\[img:([^\]]*)]([^\[]*)\[/img:([^\]]*)]#', '[img]$2[/img]', $text); 				// Image Bbcodes. 
 		$text = preg_replace('#<!-- m --><a class="postlink" href="([^>]*)">([^<]*)</a><!-- m -->#','[link=$1]$2[/link]',$text);	 	// links
+		$text = preg_replace('#<!-- w --><a class="postlink" href="([^>]*)">([^<]*)</a><!-- w -->#','[link=$1]$2[/link]',$text);	 	// links
 		
 		$text = preg_replace('#\[attachment([^\]]*)]([^\[]*)\[/attachment:([^\]]*)]#','',$text);
-		$text = html_entity_decode($text,ENT_NOQUOTES,'UTF-8');
-		
-		/*		
-		if(preg_match_all('#\[attachment([^\]]*)]([^\[]*)\[/attachment:([^\]]*)]#',$text,$matches))
-		{	
-			$attach = array();
-			foreach($matches[2] as $val)
-			{
-				$val = strip_tags($val); // remove html comments. 
-				
-				if(preg_match('#.JPG|.jpg|.gif|.png|.PNG|.GIF|.jpeg|.JPEG$#',$val))
-				{
-					$attach['img'][] = $val;	
-				}
-				else 
-				{
-					$attach['file'][] = $val;
-				}
-			}
-			
-			
-			$text = str_replace($matches[0],'',$text); // erase attachment bbcode from text. 
+
+		if(preg_match('#\[/url:([^\]]*)]#',$text, $match)) // strip bbcode hash. 
+		{
+			$hash = $match[1];
+			$text = str_replace($hash,'',$text);
 		}
-		*/
 		
-		
+		$text 		= html_entity_decode($text,ENT_NOQUOTES,'UTF-8');
+
+		$detected 	= mb_detect_encoding($text); // 'ISO-8859-1'
+		$text 		= iconv($detected,'UTF-8',$text);
+
 		return $text;
 	}
 
