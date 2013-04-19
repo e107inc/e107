@@ -1153,7 +1153,7 @@ function step10_ajax()//TODO
 	$qry = "
 	SELECT post_id, post_thread, post_entry, post_user FROM `#forum_post`
 	WHERE post_entry REGEXP '_[[:digit:]]+_FT'
-	AND post_id > {$lastPost} LIMIT 200
+	AND post_id > {$lastPost} LIMIT 50
 	";
 
 	if ($sql->gen($qry))
