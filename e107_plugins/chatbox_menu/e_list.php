@@ -37,13 +37,13 @@ class list_chatbox_menu
 
 		$bullet = $this->parent->getBullet($this->parent->settings['icon']);
 
-		if(!$chatbox_posts = $this->parent->$sql->gen("SELECT * FROM #chatbox WHERE ".$qry))
+		if(!$chatbox_posts = $this->parent->e107->sql->gen("SELECT * FROM #chatbox WHERE ".$qry))
 		{ 
 			$list_data = LIST_CHATBOX_2;
 		}
 		else
 		{
-			while($row = $this->parent->$sql->fetch())
+			while($row = $this->parent->e107->sql->fetch())
 			{
 				$cb_id = substr($row['cb_nick'] , 0, strpos($row['cb_nick'] , "."));
 				$cb_nick = substr($row['cb_nick'] , (strpos($row['cb_nick'] , ".")+1));
