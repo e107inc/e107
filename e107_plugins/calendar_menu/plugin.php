@@ -149,7 +149,7 @@ $eplug_tables = array(
 	event_rec_m tinyint(2) unsigned NOT NULL default '0',
 	event_rec_y tinyint(2) unsigned NOT NULL default '0',
 	PRIMARY KEY  (event_id)
-	) TYPE=MyISAM;",
+	) ENGINE=MyISAM;",
 	"CREATE TABLE ".MPREFIX."event_cat (
 	event_cat_id smallint(5) unsigned NOT NULL auto_increment,
 	event_cat_name varchar(100) NOT NULL default '',
