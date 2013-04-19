@@ -375,7 +375,9 @@ if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread
 	//XXX Show only on the last page??
 	if (!vartrue($forum_quickreply))
 	{
-		$ajaxInsert = ($thread->pages == $thread->page) ? 1 : 0;
+		$ajaxInsert = ($thread->pages == $thread->page || $thread->pages == 0) ? 1 : 0;
+		
+	//	echo "AJAX-INSERT=".$ajaxInsert ."(".$thread->pages." vs ".$thread->page.")";
 		
 		$tVars->QUICKREPLY = "
 		<form action='" . $e107->url->create('forum/thread/reply', array('id' => $thread->threadId)) . "' method='post'>
@@ -609,6 +611,15 @@ class e107ForumThread
 		$this->perPage = (varset($_GET['perpage']) ? (int)$_GET['perpage'] : $forum->prefs->get('postspage'));
 		$this->page = (varset($_GET['p']) ? (int)$_GET['p'] : 1);
 
+		
+		if(!$this->threadId && e_QUERY) //BC Links fix. 
+		{
+			list($id,$page) = explode(".",e_QUERY);
+			$this->threadId = intval($id);	
+			$this->page 	= intval($page);
+		}
+		
+		
 		//If threadId doesn't exist, or not given, redirect to main forum page
 		if (!$this->threadId || !$this->threadInfo = $forum->threadGet($this->threadId))
 		{
