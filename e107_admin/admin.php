@@ -105,7 +105,7 @@ if (count($allowed_types) == 0)
 
 //echo "Allowed filetypes = ".implode(', ',array_keys($allowed_types)).'<br />';
 // avatar check.
-$public = array(e_UPLOAD, e_UPLOAD.'avatars');
+$public = array(e_UPLOAD, e_AVATAR_UPLOAD);
 $exceptions = array(".","..","/","CVS","avatars","Thumbs.db",".ftpquota",".htaccess","php.ini",".cvsignore",'e107.htaccess');
 
 //TODO use $file-class to grab list and perform this check. 

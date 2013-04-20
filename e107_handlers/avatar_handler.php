@@ -18,10 +18,14 @@ if (!defined('e107_INIT'))
 
 function avatar($avatar)
 {
+	
+	return e107::getParser()->parseTemplate("{USER_AVATAR=".$avatar."}",true);
+	
+	
 	global $tp;
 	if (stristr($avatar, '-upload-') !== false)
 	{
-		return e_UPLOAD.'avatars/'.str_replace('-upload-', '', $avatar);
+		return e_AVATAR_UPLOAD.str_replace('-upload-', '', $avatar);
 	}
 	elseif (stristr($avatar, 'Binary') !== false)
 	{

@@ -1125,7 +1125,7 @@ class validatorClass
 								{
 									if (strpos('-upload-', $value) === 0)
 									{
-										$img = e_UPLOAD.'avatars/'.str_replace('-upload-', '', $value);		// Its a user-uploaded image
+										$img = e_AVATAR_UPLOAD.str_replace('-upload-', '', $value);		// Its a user-uploaded image
 									}
 									elseif (strpos($avName, '/') !== FALSE)
 									{
@@ -1133,7 +1133,7 @@ class validatorClass
 									}
 									else
 									{
-										$img = e_MEDIA.'avatars/'.$value;		// Its a server-stored image
+										$img = e_AVATAR_DEFAULT.$value;		// Its a server-stored image
 									}
 								}
 												// Deliberately fall through into normal image processing
@@ -1143,16 +1143,17 @@ class validatorClass
 									$img = $defs['imagePath'].$value;
 								}
 								$img = varset($img,$value);
+								//XXX There should be no size limits - as image sizes are handled by thumb.php 
 								if ($size = getimagesize($img))
 								{
 									// echo "Image {$img} size: {$size[0]} x {$size[1]}<br />";
 									if (isset($defs['maxWidth']) && $size[0] > $defs['maxWidth'])
 									{		// Image too wide
-										$errNum = ERR_IMAGE_TOO_WIDE;
+									//	$errNum = ERR_IMAGE_TOO_WIDE;
 									}
 									if (isset($defs['maxHeight']) && $size[1] > $defs['maxHeight'])
 									{		// Image too high
-										$errNum = ERR_IMAGE_TOO_HIGH;
+									//	$errNum = ERR_IMAGE_TOO_HIGH;
 									}
 								}
 								else

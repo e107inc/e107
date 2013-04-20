@@ -440,10 +440,11 @@ class e107
 
 		$ret['MEDIA_IMAGES_DIRECTORY'] 		= $ret['MEDIA_DIRECTORY'].'images/';
 		$ret['MEDIA_ICONS_DIRECTORY'] 		= $ret['MEDIA_DIRECTORY'].'icons/';
-		$ret['MEDIA_AVATARS_DIRECTORY'] 	= $ret['MEDIA_DIRECTORY'].'avatars/';
+		
 		$ret['MEDIA_VIDEOS_DIRECTORY'] 		= $ret['MEDIA_DIRECTORY'].'videos/';
 		$ret['MEDIA_FILES_DIRECTORY'] 		= $ret['MEDIA_DIRECTORY'].'files/';
 		$ret['MEDIA_UPLOAD_DIRECTORY'] 		= $ret['SYSTEM_DIRECTORY'].'temp/'; // security measure. Media is public, system is private. 
+		$ret['AVATARS_DIRECTORY'] 			= $ret['MEDIA_DIRECTORY'].'avatars/';
 
 		$ret['WEB_JS_DIRECTORY'] 			= $ret['WEB_DIRECTORY'].'js/';
 	//	$ret['WEB_JS_DIRECTORY'] 			= $ret['FILES_DIRECTORY'].'jslib/';
@@ -461,6 +462,9 @@ class e107
 		$ret['CACHE_IMAGE_DIRECTORY'] 		= $ret['CACHE_DIRECTORY'].'images/';
 		$ret['CACHE_DB_DIRECTORY'] 			= $ret['CACHE_DIRECTORY'].'db/';
 		$ret['CACHE_URL_DIRECTORY'] 		= $ret['CACHE_DIRECTORY'].'url/';
+		
+		$ret['AVATARS_UPLOAD_DIRECTORY'] 	= $ret['AVATARS_DIRECTORY'].'upload/';
+		$ret['AVATARS_DEFAULT_DIRECTORY'] 	= $ret['AVATARS_DIRECTORY'].'default/';
 
 		$ret['LOGS_DIRECTORY'] 				= $ret['SYSTEM_DIRECTORY'].'logs/';
 		$ret['BACKUP_DIRECTORY'] 			= $ret['SYSTEM_DIRECTORY'].'backup/';
@@ -2819,7 +2823,7 @@ class e107
 			define('e_MEDIA_VIDEO', $this->get_override_rel('MEDIA_VIDEOS'));
 			define('e_MEDIA_IMAGE', $this->get_override_rel('MEDIA_IMAGES'));
 			define('e_MEDIA_ICON', $this->get_override_rel('MEDIA_ICONS'));
-			define('e_MEDIA_AVATAR', $this->get_override_rel('MEDIA_AVATARS'));
+		//	define('e_MEDIA_AVATAR', $this->get_override_rel('MEDIA_AVATARS'));
 
 			define('e_DOWNLOAD', $this->get_override_rel('DOWNLOADS'));
 			define('e_UPLOAD', $this->get_override_rel('UPLOADS'));
@@ -2864,10 +2868,15 @@ class e107
 			define('e_MEDIA_VIDEO_ABS', $this->get_override_http('MEDIA_VIDEOS'));
 			define('e_MEDIA_IMAGE_ABS', $this->get_override_http('MEDIA_IMAGES'));
 			define('e_MEDIA_ICON_ABS', $this->get_override_http('MEDIA_ICONS'));
-			define('e_MEDIA_AVATAR_ABS', $this->get_override_http('MEDIA_AVATARS'));
+	//		define('e_MEDIA_AVATAR_ABS', $this->get_override_http('MEDIA_AVATARS'));
+			
+			
+			
 
 			// XXX DISCUSSS - e_JS_ABS, e_CSS_ABS etc is not following the naming standards but they're more usable.
 			// Example: e_JS_ABS vs e_WEB_JS_ABS
+			
+			//XXX Absolute is assumed. 
 			define('e_WEB_ABS', $this->get_override_http('WEB'));
 			define('e_JS_ABS', $this->get_override_http('WEB_JS'));
 			define('e_CSS_ABS', $this->get_override_http('WEB_CSS'));
@@ -2876,6 +2885,15 @@ class e107
 			
 			define('e_JS', $this->get_override_http('WEB_JS')); // ABS Alias 
 			define('e_CSS', $this->get_override_http('WEB_CSS')); // ABS Alias 
+			
+			define('e_AVATAR', $this->get_override_rel('AVATARS'));
+			define('e_AVATAR_UPLOAD', $this->get_override_rel('AVATARS_UPLOAD'));
+			define('e_AVATAR_DEFAULT', $this->get_override_rel('AVATARS_DEFAULT'));
+			
+			define('e_AVATAR_ABS', $this->get_override_http('AVATARS'));
+			define('e_AVATAR_UPLOAD_ABS', $this->get_override_http('AVATARS_UPLOAD'));
+			define('e_AVATAR_DEFAULT_ABS', $this->get_override_http('AVATARS_DEFAULT'));
+			
 
 		}
 		return $this;

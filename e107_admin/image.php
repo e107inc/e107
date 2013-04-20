@@ -2032,10 +2032,11 @@ if (isset($_POST['submit_show_delete_multi']))
  */
 if (isset($_POST['submit_show_deleteall']))
 {
-	$handle = opendir(e_UPLOAD."avatars/");
+	$handle = opendir(e_AVATAR_UPLOAD);
 	$dirlist = array();
-	while ($file = readdir($handle)) {
-		if (!is_dir(e_UPLOAD."avatars/{$file}") && $file != '.' && $file != '..' && $file != "index.html" && $file != "null.txt" && $file != '/' && $file != 'CVS' && $file != 'Thumbs.db') {
+	while ($file = readdir($handle)) 
+	{
+		if (!is_dir(e_AVATAR_UPLOAD.$file) && $file != '.' && $file != '..' && $file != "index.html" && $file != "null.txt" && $file != '/' && $file != 'CVS' && $file != 'Thumbs.db') {
 			$dirlist[] = $file;
 		}
 	}
@@ -2050,7 +2051,7 @@ if (isset($_POST['submit_show_deleteall']))
 			$image_name = basename($image_name);
 			$image_todb = $tp->toDB($image_name);
 			if (!$sql->db_Count('user', '(*)', "WHERE user_image='-upload-{$image_todb}' OR user_sess='{$image_todb}'")) {
-				unlink(e_UPLOAD."avatars/".$image_name);
+				unlink(e_AVATAR_UPLOAD.$image_name);
 				$imgList .= '[!br!]'.$image_name;
 				$count++;
 			}
