@@ -143,5 +143,21 @@ if (!defined('USER_ERR_21')) { define('USER_ERR_21','Image too high');  }
 if (!defined('USER_ERR_22')) { define('USER_ERR_22','Unspecified error');  }
 if (!defined('USER_ERR_23')) { define('USER_ERR_23','Disallowed value (exact match)');  }
 
+// BC for v1.x template
+define("LAN_112", "Email Address");
+define("LAN_138", "Registered members: ");
+define("LAN_139", "Order: ");
+define("LAN_142", "Member");
+define("LAN_145", "Joined");
+define("LAN_146", "Visits to site since registration");
+define("LAN_147", "Chatbox posts");
+define("LAN_148", "Comments posted");
+define("LAN_149", "Forum posts");
+define("LAN_308", "Real Name");
+define("LAN_403", "Site Stats");
+define("LAN_404", "Last visit");
+define("LAN_406", "Rating");
+define("LAN_419", "Show");
+define("LAN_425", "Send Private Message");
 
 ?>
