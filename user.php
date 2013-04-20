@@ -56,10 +56,10 @@ if (isset($_POST['delp']))
 	}
 	if (USERID == $tmp[1] || (ADMIN && getperms("4")))
 	{
-		$sql->db_Select("user", "user_sess", "user_id='". USERID."'");
+		$sql->select("user", "user_sess", "user_id='". USERID."'");
 		$row = $sql->db_Fetch();
-		@unlink(e_UPLOAD."avatars/".$row['user_sess']);
-		$sql->db_Update("user", "user_sess='' WHERE user_id=".intval($tmp[1]));
+		@unlink(e_AVATAR_UPLOAD.$row['user_sess']);
+		$sql->update("user", "user_sess='' WHERE user_id=".intval($tmp[1]));
 		header("location:".e_SELF."?id.".$tmp[1]);
 		exit;
 	}

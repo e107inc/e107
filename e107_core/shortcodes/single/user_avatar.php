@@ -42,16 +42,31 @@ function user_avatar_shortcode($parm='')
 	
 	if (vartrue($image)) 
 	{
-		$img = (strpos($image,"://")!==false) ? $image : $tp->thumbUrl(e_MEDIA."avatars/".$image,"w=".$width."&h=".$height);
-		$text = "<img class='user-avatar e-tip' src='".$img."' alt='' style='width:".$width."px; height:".$height."px' />
-		";
+		
+		if(strpos($image,"://")!==false) // Remove Image
+		{
+			$img = $image;	
+		}
+		elseif(file_exists(e_AVATAR_DEFAULT.$image)) // Local Default Image
+		{
+			$img =	$tp->thumbUrl(e_AVATAR_DEFAULT.$image,"w=".$width."&h=".$height,true);	
+		}
+		elseif(file_exists(e_AVATAR_UPLOAD.$image))  // User-Uplaoded Image
+		{
+			$img =	$tp->thumbUrl(e_AVATAR_UPLOAD.$image,"w=".$width."&h=".$height,true);		
+		}
+		else // Image Missing. 
+		{
+			$img = $tp->thumbUrl(e_IMAGE."generic/blank_avatar.jpg","w=".$width."&h=".$height,true);	
+		}
 	}
-	else
+	else // No image provided - so send generic. 
 	{
-		$img = $tp->thumbUrl(e_IMAGE."generic/blank_avatar.jpg","w=".$width."&h=".$height);
-		$text = "<img class='user-avatar' src='".$img."' alt='' />";
+		$img = $tp->thumbUrl(e_IMAGE."generic/blank_avatar.jpg","w=".$width."&h=".$height,true);
 	}
 	
+	$text = "<img class='user-avatar e-tip' src='".$img."' alt='' style='width:".$width."px; height:".$height."px' />";
+//	return $img;
 	return $text;
 
 }

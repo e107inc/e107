@@ -24,11 +24,5 @@ else
 {
 	$image = USERPHOTO;
 }
-if($image && file_exists(e_MEDIA_AVATAR.$image))
-{
-	 return "<img src='".e_MEDIA_AVATAR_ABS."{$image}' alt='' />";
-}
-else
-{
-	return "";
-}
+
+return e107::getParser()->parseTemplate("{USER_AVATAR=".$image."}",true);

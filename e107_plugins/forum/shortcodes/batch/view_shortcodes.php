@@ -159,48 +159,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	function sc_avatar()
 	{
 		$tp = e107::getParser();
-		//return e107::getParser()->parseTemplate("{AVATAR=".$this->postInfo['user_image']."}");
-		$height 	= e107::getPref("im_height");
-		$width 		= e107::getPref("im_width");
-		
-		$img = e_IMAGE_ABS."generic/blank_avatar.jpg";
-		
-		if ($this->postInfo['post_user'] && $this->postInfo['user_image'])
-		{
-			if(!$avatar = getcachedvars('forum_avatar_'.$this->postInfo['post_user']))
-			{
-				if ($this->postInfo['user_image'])
-				{
-				//	require_once(e_HANDLER.'avatar_handler.php');
-				
-					if(file_exists(e_MEDIA_AVATAR."default/".$this->postInfo['user_image']))
-					{
-						$img = e_MEDIA_AVATAR_ABS."default/".$this->postInfo['user_image']; 	
-					}
-					elseif(file_exists(e_MEDIA_AVATAR."uploaded/".$this->postInfo['user_image']))
-					{
-						$img = e_MEDIA_AVATAR_ABS."uploaded/".$this->postInfo['user_image']; 		
-					}
-					
-					$avatar = "<img class='user-avatar' src='".$img."' alt=\"".$this->postInfo['user_name']."\"/>";
-				}
-				else
-				{
-					$avatar = "<img class='user-avatar' src='".$img."' alt='' />";
-				}
-				cachevars('forum_avatar_'.$this->postInfo['post_user'], $avatar);
-			}
-			return $avatar;
-		}
-
-	//	$img = $tp->thumbUrl(e_IMAGE."generic/blank_avatar.jpg","w=".$width."&h=".$height);
-	//	return print_a($img, true);
-		
-		
-		return "<img class='user-avatar' src='".$img."' alt='' width='".$width."' />";
-
-		return $text;
-
+		return $tp->parseTemplate("{USER_AVATAR=".$this->postInfo['user_image']."}", true);
 	}
 
 	function sc_anon_ip()
