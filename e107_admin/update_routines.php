@@ -1163,7 +1163,7 @@ function update_706_to_800($type='')
 	}
 	
 	// create sub-directories if they do not exist. 
-	if(!is_dir(e_MEDIA."images") || !is_dir(e_MEDIA."temp") || !is_dir(e_MEDIA."avatars/default") )
+	if(!is_dir(e_MEDIA."images") || !is_dir(e_MEDIA."temp") || !is_dir(e_AVATAR_UPLOAD) || !is_dir(e_AVATAR_DEFAULT) )
 	{
 		foreach($user_media_dirs as $md)
 		{
