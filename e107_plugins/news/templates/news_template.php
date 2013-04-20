@@ -50,13 +50,14 @@ $NEWS_TEMPLATE['list']['item'] = '
 
 
 // XXX As displayed by news.php (no query) or news.php?list.1.1 (ie. regular view of a particular category)
+//XXX TODO GEt this looking good in the default Bootstrap theme. 
 $NEWS_TEMPLATE['default']['item'] = '
 	{SETIMAGE: w=400}
 	<div class="view-item">
 		<h2>{NEWSTITLE}</h2>
-		<div class="category">in {NEWSCATEGORY}</div>
-		<div class="date">{NEWSDATE=short}</div>
-		<div class="author">{NEWSAUTHOR}</div>
+		<small class="muted">
+		<span class="date">{NEWSDATE=short} by <span class="author">{NEWSAUTHOR}</span></span>
+		</small>
 
 		<div class="body">
 			{NEWSIMAGE}
@@ -64,7 +65,7 @@ $NEWS_TEMPLATE['default']['item'] = '
 			{EXTENDED}
 		</div>
 		<div class="options">
-			{NEWSCOMMENTS} {EMAILICON} {PRINTICON} {PDFICON} {ADMINOPTIONS}
+			<span class="category">{NEWSCATEGORY}</span> {NEWSTAGS} {NEWSCOMMENTS} {EMAILICON} {PRINTICON} {PDFICON} {ADMINOPTIONS}
 		</div>
 	</div>
 ';
@@ -78,13 +79,15 @@ $NEWS_TEMPLATE['default']['item'] = '
 //$NEWS_MENU_TEMPLATE['view']['end']         = '</ul>';
 
 // As displayed by news.php?extend.1
+
+//XXX TODO GEt this looking good in the default Bootstrap theme. 
 $NEWS_TEMPLATE['view']['item'] = '
 {SETIMAGE: w=800}
 	<div class="view-item">
 		<h2>{NEWSTITLE}</h2>
-		<div class="category">in {NEWSCATEGORY}</div>
-		<div class="date">{NEWSDATE=short}</div>
-		<div class="author">{NEWSAUTHOR}</div>
+		<small class="muted">
+		<span class="date">{NEWSDATE=short} by <span class="author">{NEWSAUTHOR}</span></span>
+		</small>
 
 		<div class="body">
 			{NEWSIMAGE}
@@ -92,14 +95,14 @@ $NEWS_TEMPLATE['view']['item'] = '
 			{EXTENDED}
 		</div>
 		<div class="options">
-			{NEWSCOMMENTS} {EMAILICON} {PRINTICON} {PDFICON} {ADMINOPTIONS}
+			<span class="category">{NEWSCATEGORY}</span> {NEWSTAGS} {NEWSCOMMENTS} {EMAILICON} {PRINTICON} {PDFICON} {ADMINOPTIONS}
 		</div>
 	</div>
 ';
 //$NEWS_MENU_TEMPLATE['view']['separator']   = '<br />';
 
 
-###### news_categories.sc (temporary) - TODO rewrite news, template standards ######
+###### news_categories.sc (temporary) - TODO rewrite news
 $NEWS_TEMPLATE['category']['body'] = '
 	<div style="padding:5px"><div style="border-bottom:1px inset black; padding-bottom:1px;margin-bottom:5px">
 	{NEWSCATICON}&nbsp;{NEWSCATEGORY}
