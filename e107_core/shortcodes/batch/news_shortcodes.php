@@ -457,8 +457,7 @@ class news_shortcodes extends e_shortcode
 		$words = array();
 		foreach($tmp as $val)
 		{
-			$words[] = "<a href='".e_BASE."news.php?tag=".$val."'>".$val."</a>";	
-			
+			$words[] = "<a href='".e_BASE."news.php?tag=".$val."'><span class='label'>".$val."</span></a>";	
 		}
 		return implode(", ",$words);			
 	}
