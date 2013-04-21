@@ -2,24 +2,21 @@ $(document).ready(function()
 {
 	
 	$(".e-dialog-save").live("click", function(){// FIXME TODO missing caret , text selection overwrite etc. 
-		
-		
+					
 		var newval = $('#bbcode_holder').val();
-	//	alert(newval);
 		var target 	= $(this).attr('data-target');
+				
+		if(!target){ return true; }
 		
+		$('#' + target, window.top.document).atCaret('insert', newval); // http://code.google.com/p/jquery-at-caret/wiki/GettingStarted
+		
+		
+		//var cursorIndex = $('#' + target, window.top.document).attr("selectionStart");
+		//var lStr =  $('#' + target, window.top.document).attr('value').substr(0,cursorIndex) + " " + newval + " ";
+		//var rStr = $('#' + target, window.top.document).attr('value').substr(cursorIndex);
 	
-		//alert('hello');
-		if(!target){return true; }
-		
-		//console.log($('#' + target, window.top.document).attr('value'));
-		
-		var cursorIndex = $('#' + target, window.top.document).attr("selectionStart");
-		var lStr =  $('#' + target, window.top.document).attr('value').substr(0,cursorIndex) + " " + newval + " ";
-		var rStr = $('#' + target, window.top.document).attr('value').substr(cursorIndex);
-	
-		$('#' + target, window.top.document).attr('value',lStr+rStr);
-		$('#' + target, window.top.document).attr("selectionStart",lStr.length);  
+		//$('#' + target, window.top.document).attr('value',lStr+rStr);
+		//$('#' + target, window.top.document).attr("selectionStart",lStr.length);  
 				
 		//('#' + target, window.top.document).insertAtCaret(newVal);
 		
@@ -40,6 +37,9 @@ $(document).ready(function()
 		
 		eMediaAttribute();	
 	});
+	
+	
+	
 	
 	function eMediaAttribute(e)
 	{		

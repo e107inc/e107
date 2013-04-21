@@ -65,6 +65,7 @@ function loadJSAddons()
 	
 	
 	e107::js('core', 	'jquery.elastic.js', 'jquery', 2);
+	e107::js('core', 	'jquery.at.caret.min.js', 'jquery', 2);
 	
 	// e107::js('core', 	'jquery-ui-timepicker-addon.js', 'jquery', 2);
 	
