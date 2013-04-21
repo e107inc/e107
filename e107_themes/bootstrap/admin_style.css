@@ -126,8 +126,16 @@ td.options 									{ 	}
 
 legend 										{ display:none }
 
-.btn 										{ vertical-align: top; }
+.bootstrap-select.btn-group, .bootstrap-select.btn-group[class*="span"] {
 
+    margin-bottom: 0px;
+
+}
+
+
+/*
+.btn 										{ vertical-align: top; }
+*/
 
 input::-webkit-input-placeholder 			{ font-style:italic  }
 

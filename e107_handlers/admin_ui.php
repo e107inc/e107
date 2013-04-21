@@ -5296,7 +5296,7 @@ class e_admin_form_ui extends e_form
 				<fieldset class='e-filter'>
 					<legend class='e-hideme'>".LAN_LABEL_LABEL_SELECTED."</legend>
 					".$filter_pre."
-					<div class='left' style='margin-top:10px;margin-bottom:-10px'>
+					<div class='left form-inline' style='margin-top:10px;margin-bottom:-10px'>
 						".$this->text('searchquery', $current_query[0], 50, $input_options)."<i class='icon-search searchquery'></i>
 						".$this->select_open('filter_options', array('class' => 'e-tip tbox select filter', 'id' => false, 'title'=>'Filter the results below'))."
 							".$this->option(LAN_FILTER_LABEL_DISPLAYALL, '')."
