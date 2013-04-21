@@ -1166,6 +1166,8 @@ class e_install
 		$this->finish_form();
 		$this->template->SetTag("stage_content", "<div class='alert alert-block alert-{$alertType}'>".$page."</div>".$e_forms->return_form());
 		$this->logLine('Stage 8 completed');
+
+		e107::getMessage()->reset();
 	}
 
 	/**
