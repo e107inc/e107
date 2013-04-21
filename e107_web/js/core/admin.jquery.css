@@ -19,7 +19,7 @@ a.media-select-icon			{ text-align:center; vertical-align:middle; margin:1px; bo
 a.media-select-icon:hover	{ border:1px solid red; }
 .media-select-container 	{ padding:10px; }
 
-.media-select-active		{ border: 2px solid silver; }
+ .media-select-active		{ border: 1px solid silver; }
 
 .e-moving 					{ background-color: silver; }
 tr.highlight-even			{ background-color: silver; }

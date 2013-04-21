@@ -60,7 +60,7 @@ define("LANHELP_45", "Insert image from directory: ");
 define("LANHELP_46", "* No files found in: ");
 
 define("LANHELP_47", "Insert flash: [flash=width,height]http://www.example.com/file.swf[/flash]");
-define("LANHELP_48", "YouTube video: [youtube=tiny|small|medium|big|huge|width,height]6kYjxJmk0wc[/youtube]");
+define("LANHELP_48", "YouTube video: [youtube=tiny | small | medium | big | huge | width,height]6kYjxJmk0wc[/youtube]");
 define("LANHELP_49", "Paragraph: [p=class name]Paragraph text[/p]");
 define("LANHELP_50", "Heading: for H2 [h]Heading text[/h] or [h=2]Heading text[/h]");
 define("LANHELP_51", "Disable HTML new lines for enclosed text: [nobr]text[/nobr]");

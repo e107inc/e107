@@ -29,8 +29,37 @@ class bbcode_shortcodes extends e_shortcode
 	// The BBcode Buttons. 
 	function bb_format($id)
 	{
-		 
-		$text = "<select class='e-bb bbcode_buttons e-pointer' id='{$id}' title='Format text' onchange=\"addtext(this.value);this.value=''\">
+		$formats = array(
+			0 => array('[p][/p]','Paragraph'),
+			1 => array('[h=2][/h]','Heading'),
+			2 => array('[block][/block]','Block'),
+			3 => array('[blockquote][/blockquote]', 'Quote'),
+			4 => array('[code][/code]', 'Code')
+		); 
+		
+		
+		if(e_BOOTSTRAP)
+		{
+				$text = '<div class="btn-group">';
+				$text .= '<a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#" title="">';
+				$text .= "Format";
+				$text .= ' <span class="caret"></span></a>';
+				$text .= "<ul class='dropdown-menu'>\n";
+	
+				foreach($formats as $fm)
+				{
+					$text .= "<li><a href=\"javascript:addtext('".$fm[0]."')\">".$fm[1]."</a></li>\n";	
+				}
+				
+				$text .= "</ul>";
+				$text .= "</div>";
+				
+				return $text;
+		}
+		
+		
+		// Legacy Version. 
+		$text = "<select class='btn e-bb bbcode_buttons e-pointer' id='{$id}' title='Format text' onchange=\"addtext(this.value);this.value=''\">
 			<option value=''>Format</option>		
 			<option value='[p][/p]'>Paragraph</option>
 			<option value='[h2][/h2]'>Heading</option>
@@ -38,6 +67,7 @@ class bbcode_shortcodes extends e_shortcode
 			<option value='[blockquote][/blockquote]'>Quote</option>
 			<option value='[code][/code]'>Code</option>
 			</select>";
+		
 			
 		return $text;
 		
@@ -107,7 +137,7 @@ class bbcode_shortcodes extends e_shortcode
 		{
 			list($tag,$tmp) = explode("--",$this->var['tagid']); // works with $frm->bbarea to detect textarea from first half of tag. 
 		}
-		$text = "<a class='e-modal' data-target='#uiModal' title='Media Manager : ".$this->var['template']."' id='{$id}' href='".e_ADMIN."image.php?mode=main&action=dialog&for=".$this->var['template']."&tagid=".$tag."&iframe=1&bbcode=img'  >";
+		$text = "<a class='e-modal' data-modal-caption='Media Manager' data-target='#uiModal' title='Media Manager : ".$this->var['template']."' id='{$id}' href='".e_ADMIN."image.php?mode=main&action=dialog&for=".$this->var['template']."&tagid=".$tag."&iframe=1&bbcode=img'  >";
 		$text .= "<img class='btn btn-small  bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/preimage.png' title='".LANHELP_45."' alt='' />";
 		$text .= "</a>\n";
 		return $text;
@@ -123,7 +153,7 @@ class bbcode_shortcodes extends e_shortcode
 		{
 			list($tag,$tmp) = explode("--",$this->var['tagid']); // works with $frm->bbarea to detect textarea from first half of tag. 
 		}
-		$text = "<a class=' e-modal' data-target='#uiModal' id='{$id}' href='".e_ADMIN."image.php?mode=dialog&action=list&for=_common_file&tagid=".$tag."&iframe=1&bbcode=file'  >";
+		$text = "<a class='e-modal' data-modal-caption='Media Manager' data-target='#uiModal' id='{$id}' href='".e_ADMIN."image.php?mode=main&amp;action=dialog&amp;for=_common_file&amp;tagid=".$tag."&amp;iframe=1&amp;bbcode=file'  >";
 		$text .= "<img class='btn btn-small bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/prefile.png' title='".LANHELP_39."' alt='' />";
 		$text .= "</a>\n";
 		return $text;
@@ -131,11 +161,37 @@ class bbcode_shortcodes extends e_shortcode
 	
 	function bb_fontsize($id) // FIXME CSS issues 
 	{
-		
-		 $data = "size";
-		 $formid = $id."_";
 
-		 $event = $this->getEvent('expandit',$formid, LANHELP_22);
+		if(deftrue('e_BOOTSTRAP'))
+		{
+			$tp = e107::getParser();
+
+			$sizes = array(7,8,9,10,11,12,14,15,18,20,22,24,26,28,30,36);
+
+			$text = '<div class="btn-group">';
+			$text .= '<a class="dropdown-toggle" data-toggle="dropdown" href="#" title="">';
+			$text .= "<img class='btn btn-small bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/fontsize.png' alt='' title='".LANHELP_22."' />\n";
+			$text .= '</a>';
+			$text .= "<ul class='dropdown-menu'>\n";
+
+			foreach($sizes as $s)
+			{
+				$text .= "<li><a href=\"javascript:addtext('[size=".$s."][/size]')\">".$tp->toHtml("[size=".$s."]Size ".$s."[/size]",true)."</a></li>\n";	
+			}
+			
+			$text .= "</ul>";
+			$text .= "</div>";
+	  
+	  		return $text;
+		}	
+			
+		// Legacy BC Support
+		
+		
+		$data = "size";
+		$formid = $id."_";
+
+		$event = $this->getEvent('expandit',$formid, LANHELP_22);
 		$text = "<a {$event} class=' e-bb e-expandit'  onclick=\"expandit('{$this->var['tagid']}')\" data-function='show' href='#{$this->var['tagid']}' title='".LANHELP_22."' data-bbcode='{$data}'>
 		<img class='btn btn-small bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/fontsize.png' alt='' title='".LANHELP_22."' /></a>";
 		
@@ -149,10 +205,14 @@ class bbcode_shortcodes extends e_shortcode
 		<option value=''>".LANHELP_41."</option>";
 	
 		$sizes = array(7,8,9,10,11,12,14,15,18,20,22,24,26,28,30,36);
-		foreach($sizes as $s){
+		foreach($sizes as $s)
+		{
 			$text .= "<option value='[size=".$s."][/size]'>".$s."px</option>\n";
 		}
-		$text .="</select></td></tr>	\n </table></div>
+		$text .="</select>
+		
+		
+		</td></tr>	\n </table></div>
 		</div>\n<!-- End of Size selector -->";
 		return $text;	
 	}
