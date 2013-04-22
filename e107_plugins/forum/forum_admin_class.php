@@ -668,7 +668,7 @@ class forumAdmin
 		</tr>
 		</table>
 		<div class='buttons-bar center'>
-			".$frm->admin_button('tools', LAN_EXECUTE, 'submit')."
+			".$frm->admin_button('tools', LAN_GO, 'submit')."
 		</div>
 		</form>
 		";
