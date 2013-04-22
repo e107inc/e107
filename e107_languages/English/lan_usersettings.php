@@ -111,4 +111,38 @@ define('LAN_USET_41', 'Settings updated and saved into database.');	// LAN_150 /
 define('LAN_USET_42', '');
 
 
+// BC for v1.x template
+define("LAN_7", "Display Name: ");
+define("LAN_8", "the name displayed on site");
+define("LAN_9", "Username: ");
+define("LAN_10", "the name you use to login to the site");
+define("LAN_112", "Email Address: ");
+define("LAN_113", "Hide email address?: ");
+define("LAN_114", "This will prevent your email address from being displayed on site");
+define("LAN_120", "Signature: ");
+define("LAN_122", "Timezone:");
+define("LAN_152", "New Password: ");
+define("LAN_153", "Re-type New Password: ");
+define("LAN_154", "Save Settings");
+define("LAN_308", "Real Name: ");
+define("LAN_401", "Leave blank to keep existing password");
+define("LAN_404", "Please note: Any image uploaded to this server that is deemed inappropriate by the administrators will be deleted immediately.");
+define("LAN_414", "Upload Your Photograph");
+define("LAN_415", "Upload your Avatar");
+define("LAN_418", "Registration Information");
+define("LAN_420", "Avatar");
+define("LAN_421", "Choose site-stored avatar");
+define("LAN_422", "Use remote avatar");
+define("LAN_423", "Please type full address to image");
+define("LAN_424", "Click button to see avatars stored on this site");
+define("LAN_425", "Photograph");
+define("LAN_426", "This will be shown on your profile page");
+define("LAN_433", "URL to your XUP file");
+define("LAN_434", "what's this?");
+define("LAN_435", "XML User Protocol file");
+define("LAN_CUSTOMTITLE", "Custom Title");
+define("LAN_USET_5", "Subscribed to");
+define("LAN_USET_6", "Subscribe to our mailing-list(s) and/or sections of this site.");
+define("LAN_USET_8", "Signature / Timezone");
+
 ?>
