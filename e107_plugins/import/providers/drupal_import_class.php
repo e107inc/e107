@@ -30,7 +30,7 @@ require_once('import_classes.php');
 class drupal_import extends base_import_class
 {
 	
-	public $title		= 'Drupal 5.7/6.1';
+	public $title		= 'Drupal 5 - 8';
 	public $description	= 'Basic import';
 	public $supported	= array('users');
 	public $mprefix		= false;
@@ -49,10 +49,7 @@ class drupal_import extends base_import_class
 		    $result = $this->ourDB->db_Select_gen("SELECT * FROM {$this->DBPrefix}users WHERE `status`=1");
 			if ($result === FALSE) return FALSE;
 			break;
-		  case 'forumdefs' :
-		    return FALSE;
-		  case 'forumposts' :
-		    return FALSE;
+		
 		  case 'polls' :
 		    return FALSE;
 		  case 'news' :
@@ -74,7 +71,7 @@ class drupal_import extends base_import_class
   //------------------------------------
   
   // Copy data read from the DB into the record to be returned.
-	function copyUserData(&$target, &$source)
+	function copyUserData(&$target, &$source) // http://drupal.org/files/er_db_schema_drupal_7.png
 	{
 		if ($this->copyUserInfo)
 		{

@@ -30,8 +30,8 @@ require_once('import_classes.php');
 
 class wordpress_import extends base_import_class
 {
-	public $title		= 'Wordpress';
-	public $description	= 'Tested with version 3.4.x (salted passwords)';
+	public $title		= 'Wordpress 3.4+';
+	public $description	= 'Import Users, News, Content and Links';
 	public $supported	= array('users','news','page','links');
 	public $mprefix		= 'wp_';	
 	
