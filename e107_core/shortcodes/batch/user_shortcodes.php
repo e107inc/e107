@@ -421,7 +421,7 @@ class user_shortcodes extends e_shortcode
 		if (USERID == $this->var['user_id']) 
 		{
 			//return "<a href='".$url->create('user/myprofile/edit')."'>".LAN_USER_38."</a>";
-			return "<a href='usersettings.php' alt=''>".LAN_USER_38."</a>"; // TODO: repair dirty fix for usersettings
+			return "<a href='usersettings.php'>".LAN_USER_38."</a>"; // TODO: repair dirty fix for usersettings
 		}
 		else if(ADMIN && getperms("4") && !$this->var['user_admin']) 
 		{
@@ -469,6 +469,9 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_user_picture($parm) 
 	{
+		$tp = e107::getParser();
+		return $tp->parseTemplate("{USER_AVATAR=".$this->var['user_sess']."}",true);
+		
 		if ($this->var['user_sess'] && file_exists(e_MEDIA."avatars/".$this->var['user_sess']))
 		{
 			//return $tp->parseTemplate("{USER_AVATAR=".$this->var['user_image']."}", true); // this one will resize. 
