@@ -64,6 +64,35 @@ if (is_dir(e_ADMIN.'htmlarea') || is_dir(e_HANDLER.'htmlarea'))
 	$mes->addWarning($HANDLERS_DIRECTORY."htmlarea/<br />".$ADMIN_DIRECTORY."htmlarea/");
 }
 
+
+// ------------- Compatibility Check -----------------------------
+
+$installedPlugs = e107::getPref('plug_installed');
+
+$incompat = array(
+	'banhelper'		=> 1.7,
+	'slir_admin'	=> 1.0
+);
+
+
+$inCompatText = "";
+$incompatFolders = array_keys($incompat);
+
+foreach($incompat as $folder => $version)
+{
+	if(vartrue($installedPlugs[$folder]) && $version == $installedPlugs[$folder])
+	{
+		$inCompatText .= "<li>".$folder." v".$installedPlugs[$folder]."</li>";				
+	}	
+}
+
+if($inCompatText)
+{
+	$text = "<ul>".$inCompatText."</ul>";
+	$mes->addWarning("The following plugins are not compatible with this version of e107 and should be <a href='".e_ADMIN."plugin.php'>uninstalled</a>: ".$text);	
+}
+
+
 /* Not used in 0.8
 // check for old modules.
 if(getperms('0') && isset($pref['modules']) && $pref['modules'] && $sql->db_Field("plugin",5) == "plugin_addons")
