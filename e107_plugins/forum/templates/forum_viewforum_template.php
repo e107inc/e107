@@ -283,7 +283,7 @@ $FORUM_CRUMB['forum']['value'] = "{FORUM_TITLE}";
 // <small>{BREADCRUMB}</small>  //FIXME Breadcrumb looks crummy
 
 $FORUM_VIEWFORUM_TEMPLATE['start'] 				= "";
-$FORUM_VIEWFORUM_TEMPLATE['header'] 			= "<div class='row-fluid'><div class='span6 pull-left'>{BACKLINK}</div>	</div>
+$FORUM_VIEWFORUM_TEMPLATE['header'] 			= "<div class='row-fluid'><div>{BACKLINK}</div>	</div>
 													<div class='row-fluid'>
 													<div class='span9 pull-left'><h3>{FORUMTITLE}</h3></div>
 													<div class='span3 pull-right right' style='padding-top:10px'>{NEWTHREADBUTTONX}</div></div>

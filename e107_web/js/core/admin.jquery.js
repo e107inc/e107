@@ -121,6 +121,25 @@ $(document).ready(function()
 		);
 		
 		
+		$('button[data-loading-text],a[data-loading-text]').on('click', function()
+			{
+				var caption  = $(this).attr('data-loading-text');		
+				$(this).attr('disabled', 'disabled').html(caption);
+				return true;
+			}
+		);
+		
+		$('input[data-loading-text]').on('click', function()
+			{
+				var caption  = $(this).attr('data-loading-text');	
+				$(this).val(caption);
+				$(this).removeClass('btn-success');	
+				//$(this).attr('disabled', 'disabled').val(caption);
+				return true;
+			}
+		);
+		
+		
 		/*  Bootstrap Modal window within an iFrame */
 		$('.e-modal').on('click', function(e) 
 		{
@@ -134,7 +153,7 @@ $(document).ready(function()
     		$('.modal').modal('show');
     	});	
 
-
+		
 
 
 

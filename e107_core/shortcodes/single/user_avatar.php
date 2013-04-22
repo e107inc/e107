@@ -5,8 +5,8 @@ function user_avatar_shortcode($parm='')
 	global $loop_uid;
 	
 	
-	$height 	= e107::getPref("im_height");
-	$width 		= e107::getPref("im_width");
+	$height 	= e107::getPref("im_height",100);
+	$width 		= e107::getPref("im_width",100);
 	$tp 		= e107::getParser();
 	
 	if(intval($loop_uid) > 0 && trim($parm) == "")
@@ -65,7 +65,7 @@ function user_avatar_shortcode($parm='')
 		$img = $tp->thumbUrl(e_IMAGE."generic/blank_avatar.jpg","w=".$width."&h=".$height,true);
 	}
 	
-	$text = "<img class='user-avatar e-tip' src='".$img."' alt='' style='width:".$width."px; height:".$height."px' />";
+	$text = "<img class='img-rounded user-avatar e-tip' src='".$img."' alt='' style='width:".$width."px; height:".$height."px' />";
 //	return $img;
 	return $text;
 
