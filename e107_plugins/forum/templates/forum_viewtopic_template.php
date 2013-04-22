@@ -25,6 +25,11 @@ $sc_style['ATTACHMENTS']['post'] = "</div>";
 $sc_style['ANON_IP']['pre'] = "";
 $sc_style['ANON_IP']['post'] = "";
 
+
+$sc_style['CUSTOMTITLE']['pre'] = "<small>";
+$sc_style['CUSTOMTITLE']['post'] = "</small>";
+
+
 $sc_style['USER_EXTENDED']['location.text_value']['mid'] = ": ";
 $sc_style['USER_EXTENDED']['location.text_value']['post'] = "<br />";
 
@@ -308,7 +313,7 @@ $FORUM_CRUMB['forum']['value'] = "<a class='forumlink' href='{FORUM_HREF}'>{FORU
 $FORUM_VIEWTOPIC_TEMPLATE['start'] 	= "
 
 	<div class='row-fluid'>
-		<div class='span6 pull-left'>{BACKLINK}</div>
+		<div>{BACKLINK}</div>
 	</div>
 	
 	<div class='row-fluid'>
@@ -336,10 +341,9 @@ $FORUM_VIEWTOPIC_TEMPLATE['thread'] = "
 										
 										<div class='row-fluid'  >
 											<div class='span2 center'>
-													{CUSTOMTITLE}
 													{AVATAR}<br />
-													{USERCOMBO}
-													
+													{USERCOMBO}<br />
+													{CUSTOMTITLE}
 											</div>
 											<div class='span9 '>
 												{POLL}

@@ -26,18 +26,30 @@ require_once (e_ADMIN . 'auth.php');
 if (e_QUERY == "reset")
 {
 	unset($_SESSION['forumUpgrade']);
-	unset($_SESSION['forumupdate_thread_last']);
-	unset($_SESSION['forumupdate_thread_count']);
+	unset($_SESSION['forumupdate']);
 }
-//unset($_SESSION['forumupdate_thread_last']);
-//	unset($_SESSION['forumupdate_thread_count']);
+
+
+//unset($_SESSION['forumupdate']['thread_last']);
+//	unset($_SESSION['forumupdate']['thread_count']);
 
 $forum = new e107forum(true);
 $timestart = microtime();
 
 $f = new forumUpgrade;
-$e107 = e107::getInstance();
+
 $sql = e107::getDb();
+
+if($_GET['reset'])
+{
+	unset($_SESSION['forumUpgrade']);
+	unset($_SESSION['forumupdate']);
+	$f -> updateInfo['currentStep'] = intval($_GET['reset']);	
+	$f -> setUpdateInfo();
+
+}
+
+
 
 if (e_AJAX_REQUEST)
 {
@@ -109,7 +121,6 @@ function step1()
 	$f -> updateInfo['currentStep'] = 1;
 	$f -> setUpdateInfo();
 
-	$e107 = e107::getInstance();
 	$mes = e107::getMessage();
 	//Check attachment dir permissions
 	if (!isset($f -> updateInfo['skip_attach']))
@@ -149,7 +160,6 @@ function step1()
 
 function step2()
 {
-	$e107 = e107::getInstance();
 	$mes = e107::getMessage();
 	$ns = e107::getRender();
 
@@ -159,7 +169,7 @@ function step2()
 		This step will create the new forum_thread, forum_post, and forum_attach tables.  It will also create a forum_new table that will become the 'real' forum table once the data from the current table is migrated.
 		<br /><br />
 		<form method='post'>
-		<input class='btn button' type='submit' name='create_tables' value='Proceed with table creation' />
+		<input class='btn btn-success' data-loading-text='Please wait...'  type='submit' name='create_tables' value='Proceed with table creation' />
 		</form>
 		";
 		$ns -> tablerender('Step 2: Forum table creation', $text);
@@ -205,7 +215,7 @@ function step2()
 	else
 	{
 		$text = "<form method='post' action='" . e_SELF . "?step=3'>
-			<input class='btn button' type='submit' name='nextStep[3]' value='Proceed to step 3' />
+			<input class='btn' type='submit' name='nextStep[3]' value='Proceed to step 3' />
 			</form>";
 	}
 	$ns -> tablerender('Step 2: Forum table creation', $mes -> render() . $text);
@@ -224,11 +234,13 @@ function step3()
 	{
 		$text = "
 		This step will create the new extended user fields required for the new forum code: <br />
-		* user_plugin_forum_posts (to track number of posts for each user)<br />
-		* user_plugin_forum_viewed (to track threads viewed by each user<br />
+		<ul>
+		<li>user_plugin_forum_posts (to track number of posts for each user)</li>
+		<li>user_plugin_forum_viewed (to track threads viewed by each user</li>
+		</ul>
 		<br /><br />
 		<form method='post'>
-		<input class='btn button' type='submit' name='create_extended' value='Proceed with field creation' />
+		<input class='btn btn-success' data-loading-text='Please wait...' type='submit' name='create_extended' value='Proceed with field creation' />
 		</form>
 		";
 
@@ -270,7 +282,7 @@ function step3()
 	{
 		$text .= "
 			<form method='post' action='" . e_SELF . "?step=4'>
-			<input class='btn button' type='submit' name='nextStep[4]' value='Proceed to step 4' />
+			<input class='btn btn-success' type='submit' name='nextStep[4]' value='Proceed to step 4' />
 			</form>
 			";
 	}
@@ -282,7 +294,7 @@ function step3()
 function step4()
 {
 	global $pref;
-	$e107 = e107::getInstance();
+
 	$mes = e107::getMessage();
 	$ns = e107::getRender();
 
@@ -296,7 +308,7 @@ function step4()
 		Depending on the size of your user table, this step could take a while.
 		<br /><br />
 		<form method='post'>
-		<input class='btn button' type='submit' name='move_user_data' value='Proceed with user data move' />
+		<input class='btn btn-success' data-loading-text='Please wait...' type='submit' name='move_user_data' value='Proceed with user data move' />
 		</form>
 		";
 		$ns -> tablerender($stepCaption, $text);
@@ -363,8 +375,8 @@ function step4()
 			$debug .= 'viewed = ' . $viewed . '<br />';
 			$debug .= 'realm = ' . $realm . '<br />';
 			$debug .= 'tracking = ' . implode(',', $trackList) . '<br />';
-			$debug .= print_a($trackList, true);
-			$mes -> addDebug($debug);
+		//	$debug .= print_a($trackList, true);
+		//	$mes -> addDebug($debug);
 
 			if ($viewed != '')
 			{
@@ -400,7 +412,7 @@ function step4()
 	");
 
 	$text = "<form method='post' action='" . e_SELF . "?step=5'>
-	<input class='btn button' type='submit' name='nextStep[5]' value='Proceed to step 5' />
+	<input class='btn btn-success' type='submit' name='nextStep[5]' value='Proceed to step 5' />
 	</form>";
 
 	$ns -> tablerender($stepCaption, $mes -> render() . $text);
@@ -409,8 +421,6 @@ function step4()
 
 function step5()
 {
-	$e107 = e107::getInstance();
-
 	$sql = e107::getDb();
 	$ns = e107::getRender();
 	$mes = e107::getMessage();
@@ -423,7 +433,7 @@ function step5()
 		<br /><br />";
 		$text .= "
 		<form method='post'>
-		<input class='btn button' type='submit' name='move_forum_data' value='Proceed with forum data move' />
+		<input class='btn btn-success' data-loading-text='Please wait...' type='submit' name='move_forum_data' value='Proceed with forum data move' />
 		</form>
 		";
 		$ns -> tablerender($stepCaption, $mes -> render() . $text);
@@ -487,7 +497,7 @@ function step5()
 
 		$text = "
 		<form method='post' action='" . e_SELF . "?step=6'>
-		<input class='btn button' type='submit' name='nextStep[6]' value='Proceed to step 6' />
+		<input class='btn btn-success' type='submit' name='nextStep[6]' value='Proceed to step 6' />
 		</form>
 		";
 
@@ -496,160 +506,66 @@ function step5()
 	}
 }
 
-function step6x()
-{
-	global $f;
-	$e107 = e107::getInstance();
-	$ns = e107::getRender();
-	$mes = e107::getMessage();
-	$sql = e107::getDb();
 
-	$stepCaption = 'Step 6: Thread and post data';
-	$threadLimit = varset($_POST['threadLimit'], 1000);
-	$lastThread = varset($f -> updateInfo['lastThread'], 0);
-	$maxTime = ini_get('max_execution_time');
-
-	if (!isset($_POST['move_thread_data']))
-	{
-		$count = $sql -> count('forum_t', '(*)', "WHERE thread_parent = 0 AND thread_id > {$lastThread}");
-		$limitDropdown = createThreadLimitDropdown($count);
-
-		$text = "This step will copy all of your existing forum threads and posts into the new `forum_thread` and `forum_post` tables.<br /><br />
-		Depending on your forum size and speed of server, this could take some time.  This routine will attempt to do it in steps in order to
-		reduce the possibility of data loss and server timeouts.<br />
-		<br />
-		Your current timeout appears to be set at {$maxTime} seconds.  This routine will attempt to extend this time in order to process all threads,
-		success will depend on your server configuration.  If you get a timeout while performing this function, return to this page and select fewer threads
-		to process.
-		";
-
-		$text .= "<form method='post'>
-		There are {$count} forum threads to convert, we will be doing it in steps of: {$limitDropdown}
-		<br /><br />
-		<input class='btn button' type='submit' name='move_thread_data' value='Begin thread data move' />
-		</form>";
-		$ns -> tablerender($stepCaption, $mes -> render() . $text);
-		return;
-	}
-
-	$count = $sql -> count('forum_t', '(*)', "WHERE thread_parent=0 AND thread_id>{$lastThread}");
-	if ($count === false)
-	{
-		echo "error: Unable to determine last thread id";
-		exit ;
-	}
-	$done = false;
-
-	$qry = "
-	SELECT thread_id FROM `#forum_t`
-	WHERE thread_parent = 0
-	AND thread_id > {$lastThread}
-	ORDER BY thread_id ASC
-	LIMIT 0, {$threadLimit}
-	";
-	if ($sql -> gen($qry))
-	{
-		$postCount = 0;
-		$threadList = $sql -> db_getList();
-
-		foreach ($threadList as $t)
-		{
-			set_time_limit(30);
-			$id = (int)$t['thread_id'];
-			$result = $f -> migrateThread($id);
-			if ($result === false)
-			{
-				$mes -> addError("ERROR! Failed to migrate thread id: {$id}");
-			}
-			else
-			{
-				$postCount += ($result - 1);
-				$f -> updateInfo['lastThread'] = $id;
-				$f -> setUpdateInfo();
-			}
-		}
-
-		$mes -> addSuccess('Successfully converted ' . count($threadList) . " threads and {$postCount} replies");
-		$mes -> addSuccess("Last thread id = {$t['thread_id']}");
-
-		$count = $sql -> count('forum_t', '(*)', "WHERE thread_parent = 0	AND thread_id > {$f->updateInfo['lastThread']}");
-
-		if ($count)
-		{
-			$limitDropdown = createThreadLimitDropdown($count);
-			$text .= "
-			<form method='post'>
-			We still have {$count} threads remaining to convert, do them in steps of {$limitDropdown}
-			<br /><br />
-			<input class='btn btn-success' type='submit' name='move_thread_data' value='Continue thread data move' />
-			</form>
-			";
-			$ns -> tablerender($stepCaption, $mes -> render() . $text);
-		}
-		else
-		{
-			$done = true;
-		}
-	}
-	else
-	{
-		$done = true;
-	}
-	if ($done)
-	{
-		$mes -> addSuccess("Thread migration is complete!!");
-		$text = "<form method='post' action='" . e_SELF . "?step=7'>
-		<input class='btn button' type='submit' name='nextStep[7]' value='Proceed to step 7' />
-		</form>";
-
-		$ns -> tablerender($stepCaption, $mes -> render() . $text);
-	}
-
-}
 
 function step6()
 {
 	$sql = e107::getDb();
 	$ns = e107::getRender();
 	$mes = e107::getMessage();
+	
 	$stepCaption = 'Step 6: Thread and post data';
 
-	$_SESSION['forumupdate_thread_total'] = $sql -> count('forum_t', '(*)', "WHERE thread_parent = 0");
-	$_SESSION['forumupdate_thread_count'] = 0;
-	$_SESSION['forumupdate_thread_last'] = 0;
+	$_SESSION['forumupdate']['thread_total'] = $sql -> count('forum_t', '(*)', "WHERE thread_parent = 0");
+	$_SESSION['forumupdate']['thread_count'] = 0;
+	$_SESSION['forumupdate']['thread_last'] = 0;
 
 	$text = "This step will copy all of your existing forum threads and posts into the new `forum_thread` and `forum_post` tables.<br />
 		Depending on your forum size and speed of server, this could take some time.<br /><br /> ";
 
-	//		$text .= "<form method='post'>
-	//		There are {$count} forum threads to convert, we will be doing it in steps of:
-	// {$limitDropdown}
-	//		<br /><br />";
+	$text .= renderProgress("Begin thread data move", 6);
+	$ns->tablerender($stepCaption, $mes -> render() . $text);
 
-	$text .= '
+}
+
+
+function renderProgress($caption, $step)
+{
+	
+	if(!$step)
+	{
+		return "No step entered in function";	
+	}
+	
+	$thisStep = 'step'.$step;
+	$nextStep = 'step'.($step + 1);
+	
+	$text = '
 		<div class="row-fluid">
 			<div class="span9 well">
 				<div class="progress progress-success progress-striped active" id="progressouter">
 	   				<div class="bar" id="progress"></div>
 				</div>
 			
-			<a id="step6" data-progress="' . e_SELF . '" data-progress-mode="6" data-progress-show="step7" data-progress-hide="step6" class="btn btn-primary e-progress" >Begin thread data move</a>
+			<a id="'.$thisStep.'" data-loading-text="Please wait..." data-progress="' . e_SELF . '" data-progress-mode="'.$step.'" data-progress-show="'.$nextStep.'" data-progress-hide="'.$thisStep.'" class="btn btn-primary e-progress" >'.$caption.'</a>
 			</div>
 		</div>';
 
-	$text .= "<form method='post' action='" . e_SELF . "?step=7'>
-		<input id='step7' style='display:none' class='btn button' type='submit' name='nextStep[7]' value='Proceed to step 7' />
-		</form>";
-	$ns -> tablerender($stepCaption, $mes -> render() . $text);
-
+	$text .= "<form method='post' action='" . e_SELF . "?step=".($step+1)."'>
+		<input id='".$nextStep."' style='display:none' class='btn btn-success' type='submit' name='nextStep[".($step+1)."]' value='Proceed to step ".($step+1)."' />
+		</form>";	
+	
+	return $text;
 }
+
+
 
 function step6_ajax()
 {
 	global $f;
 	$sql = e107::getDb();
 
-	$lastThread = vartrue($_SESSION['forumupdate_thread_last'], 0);
+	$lastThread = vartrue($_SESSION['forumupdate']['thread_last'], 0);
 
 	$qry = "
 	SELECT thread_id FROM `#forum_t`
@@ -674,20 +590,22 @@ function step6_ajax()
 			}
 			else
 			{
-				$_SESSION['forumupdate_thread_last'] = $id;
-				$_SESSION['forumupdate_thread_count']++;
+				$_SESSION['forumupdate']['thread_last'] = $id;
+				$_SESSION['forumupdate']['thread_count']++;
 			}
 		}
 
 	}
 
-	echo round(($_SESSION['forumupdate_thread_count'] / $_SESSION['forumupdate_thread_total']) * 100);
+	echo round(($_SESSION['forumupdate']['thread_count'] / $_SESSION['forumupdate']['thread_total']) * 100, 1);
 
 }
 
+
+
+
 function step7()
 {
-	$e107 = e107::getInstance();
 	$ns = e107::getRender();
 	$stepCaption = 'Step 7: Calculate user post counts';
 	if (!isset($_POST['calculate_usercounts']))
@@ -696,7 +614,7 @@ function step7()
 		This step will calculate post count information for all users, as well as recount all for thread and reply counts.
 		<br /><br />
 		<form method='post'>
-		<input class='btn button' type='submit' name='calculate_usercounts' value='Proceed with post count calculation' />
+		<input class='btn btn-success' data-loading-text='Please wait...' type='submit' name='calculate_usercounts' value='Proceed with post count calculation' />
 		</form>
 		";
 		$ns -> tablerender($stepCaption, $text);
@@ -720,59 +638,78 @@ function step7()
 	Successfully recalculated forum posts for " . count($counts) . " users.
 	<br /><br />
 	<form method='post' action='" . e_SELF . "?step=8'>
-	<input class='btn button' type='submit' name='nextStep[8]' value='Proceed to step 8' />
+	<input class='btn btn-success' type='submit' name='nextStep[8]' value='Proceed to step 8' />
 	</form>
 	";
 	$ns -> tablerender($stepCaption, $text);
 }
 
-function step7_ajax()//TODO
-{
 
-}
+
+
+
+
+
 
 function step8()
 {
-	$e107 = e107::getInstance();
+	$sql = e107::getDb();
+	$mes = e107::getMessage();
+	
 	$stepCaption = 'Step 8: Calculate last post information';
-	if (!isset($_POST['calculate_lastpost']))
-	{
-		$text = "
-		This step will recalculate all thread and forum lastpost information
-		<br /><br />
-		<form method='post'>
-		<input class='btn button' type='submit' name='calculate_lastpost' value='Proceed with lastpost calculation' />
-		</form>
-		";
-		e107::getRender() -> tablerender($stepCaption, $text);
-		return;
-	}
+	
+	
+	$_SESSION['forumupdate']['lastpost_total'] = $sql -> count('forum', '(*)', "WHERE forum_parent != 0");
+	$_SESSION['forumupdate']['lastpost_count'] = 0;
+	$_SESSION['forumupdate']['lastpost_last'] = 0;
+	
+	$mes->addDebug("Total LastPost: ".$_SESSION['forumupdate']['lastpost_total']);
+	
+	$text = "
+		This step will recalculate all thread and forum lastpost information";
+		
+	$text .= renderProgress('Proceed with lastpost calculation',8);
+	
+	e107::getRender() -> tablerender($stepCaption, $mes->render(). $text);
+	return;
+	
 
+}
+
+function step8_ajax()
+{
+	$sql = e107::getDb();
+	
+	$lastThread = vartrue($_SESSION['forumupdate']['lastpost_last'], 0);
+	
 	global $forum;
 
-	$forum -> forumUpdateLastpost('forum', 'all', true);
+	if ($sql->select('forum', 'forum_id', 'forum_parent != 0 AND forum_id > '.$lastThread.' ORDER BY forum_id LIMIT 2'))
+	{
+		while ($row = $sql->fetch(MYSQL_ASSOC))
+		{
+			$parentList[] = $row['forum_id'];
+		}
 
-	//	$forum->forumUpdateLastpost('thread', 84867);
+		foreach($parentList as $id)
+		{
+			set_time_limit(60);
+			$forum->forumUpdateLastpost('forum', $id, $updateThreads);
+			$_SESSION['forumupdate']['lastpost_last'] = $id;
+			$_SESSION['forumupdate']['lastpost_count']++;
+		}
+	}
 
-	$text .= "
-	Successfully recalculated lastpost information for all forums and threads.
-	<br /><br />
-	<form method='post' action='" . e_SELF . "?step=9'>
-	<input class='btn button' type='submit' name='nextStep[9]' value='Proceed to step 9' />
-	</form>
-	";
-	e107::getRender() -> tablerender($stepCaption, $text);
+	echo round(($_SESSION['forumupdate']['lastpost_count'] / $_SESSION['forumupdate']['lastpost_total']) * 100);
 }
 
-function step8_ajax()//TODO
-{
 
-}
 
 function step9()
 {
-	$e107 = e107::getInstance();
+
 	$sql = e107::getDb();
+	
 	$stepCaption = 'Step 9: Migrate poll information';
 	if (!isset($_POST['migrate_polls']))
 	{
@@ -780,7 +717,7 @@ function step9()
 		This step will recalculate all poll information that has been entered in the forums.
 		<br /><br />
 		<form method='post'>
-		<input class='btn button' type='submit' name='migrate_polls' value='Proceed with poll migration' />
+		<input class='btn btn-success' data-loading-text='Please wait...' type='submit' name='migrate_polls' value='Proceed with poll migration' />
 		</form>
 		";
 		e107::getRender() -> tablerender($stepCaption, $text);
@@ -829,267 +766,17 @@ function step9()
 	Successfully migrated forum poll information for " . count($threadList) . " thread poll(s).
 	<br /><br />
 	<form method='post' action='" . e_SELF . "?step=10'>
-	<input class='btn button' type='submit' name='nextStep[10]' value='Proceed to step 10' />
+	<input class='btn btn-success' type='submit' name='nextStep[10]' value='Proceed to step 10' />
 	</form>
 	";
 	e107::getRender() -> tablerender($stepCaption, $text);
 }
 
-function step9_ajax()//TODO
-{
 
-}
 
-/*
- function step10x()
- {
- $e107 = e107::getInstance();
- $sql = e107::getDb();
- $ns = e107::getRender();
-
- global $f;
- $stepCaption = 'Step 10: Migrate forum attachments';
-
- //FIXME - Files should be moved to e107_media/files/forum/
- if(!isset($_POST['migrate_attachments']))
- {
- $text = "
- This step will migrate all forum attachment information.<br />
- All files will be moved from the e107_files/public directory into the
-".e_MEDIA."plugins/forum/attachment directory and related posts will be updated
-accordingly.
- <br /><br />
- <form method='post'>
- <input class='btn button' type='submit' name='migrate_attachments'
-value='Proceed with attachment migration' />
- </form>
- ";
- $ns->tablerender($stepCaption, $text);
- return;
- }
-
- $qry = "
- SELECT post_id, post_entry FROM `#forum_post`
- WHERE post_entry REGEXP '_[[:digit:]]+_FT'
- ";
-
- if($sql->gen($qry))
- {
- while($row = $sql->fetch(MYSQL_ASSOC))
- {
- $postList[] = $row;
- }
- $i = 0;
- $pcount = 0;
- $f->log("Found ".count($postList). " posts with attachments");
-
- //XXX Run post through $tp->toHtml() and then use $tp->getTag() to find images
-// or files.?
- foreach($postList as $post)
- {
- //			echo htmlentities($post['post_entry'])."<br />";
- $i++;
- //			if($pcount++ > 10) { die('here 10'); }
- $attachments = array();
- $foundFiles = array();
-
- //			echo $post['post_entry']."<br /><br />";
-
- //[link={e_FILE}public/1230091080_1_FT0_julia.jpg][img:width=60&height=45]{e_FILE}public/1230091080_1_FT0_julia_.jpg[/img][/link][br]
- //Check for images with thumbnails linking to full size
- if(preg_match_all('#\[link=(.*?)\]\[img.*?\]({e_FILE}.*?)\[/img\]\[/link\]#ms',
-$post['post_entry'], $matches, PREG_SET_ORDER))
- {
- foreach($matches as $match)
- {
- $att = array();
- $att['thread_id'] = $post['thread_id'];
- $att['type'] = 'img';
- $att['html'] = $match[0];
- $att['name'] = $match[1];
- $att['thumb'] = $match[2];
- $attachments[] = $att;
- $foundFiles[] = $match[1];
- $foundFiles[] = $match[2];
- }
- }
-
- if(preg_match_all('#\[link=(.*?)\]\[img.*?\](\.\./\.\./e107_files/public/.*?)\[/img\]\[/link\]#ms',
-$post['post_entry'], $matches, PREG_SET_ORDER))
- {
- foreach($matches as $match)
- {
- $att = array();
- $att['thread_id'] = $post['thread_id'];
- $att['type'] = 'img';
- $att['html'] = $match[0];
- $att['name'] = $match[1];
- $att['thumb'] = $match[2];
- $attachments[] = $att;
- $foundFiles[] = $match[1];
- $foundFiles[] = $match[2];
- }
- }
-
- //<div
-// class=&#039;spacer&#039;>[img:width=604&height=453]{e_FILE}public/1229562306_1_FT0_julia.jpg[/img]</div>
- //Check for attached full-size images
- if(preg_match_all('#\[img.*?\]({e_FILE}.*?_FT\d+_.*?)\[/img\]#ms',
-$post['post_entry'], $matches, PREG_SET_ORDER))
- {
- foreach($matches as $match)
- {
- //Ensure it hasn't already been handled above
- if(!in_array($match[1], $foundFiles))
- {
- $att = array();
- $att['thread_id'] = $post['thread_id'];
- $att['type'] = 'img';
- $att['html'] = $match[0];
- $att['name'] = $match[1];
- $att['thumb'] = '';
- $attachments[] = $att;
- }
- }
- }
-
- if(preg_match_all('#\[img.*?\](\.\./\.\./e107_files/public/.*?_FT\d+_.*?)\[/img\]#ms',
-$post['post_entry'], $matches, PREG_SET_ORDER))
- {
- foreach($matches as $match)
- {
- //Ensure it hasn't already been handled above
- if(!in_array($match[1], $foundFiles))
- {
- $att = array();
- $att['thread_id'] = $post['thread_id'];
- $att['type'] = 'img';
- $att['html'] = $match[0];
- $att['name'] = $match[1];
- $att['thumb'] = '';
- $attachments[] = $att;
- }
- }
- }
-
- //[file={e_FILE}public/1230090820_1_FT0_julia.zip]julia.zip[/file]
- //Check for attached file (non-images)
- if(preg_match_all('#\[file=({e_FILE}.*?)\](.*?)\[/file\]#ms',
-$post['post_entry'], $matches, PREG_SET_ORDER))
- {
- foreach($matches as $match)
- {
- $att = array();
- $att['thread_id'] = $post['thread_id'];
- $att['type'] = 'file';
- $att['html'] = $match[0];
- $att['name'] = $match[1];
- $att['thumb'] = '';
- $attachments[] = $att;
- }
- }
-
- if(preg_match_all('#\[file=(\.\./\.\./e107_files/public/.*?)\](.*?)\[/file\]#ms',
-$post['post_entry'], $matches, PREG_SET_ORDER))
- {
- foreach($matches as $match)
- {
- $att = array();
- $att['thread_id'] = $post['thread_id'];
- $att['type'] = 'file';
- $att['html'] = $match[0];
- $att['name'] = $match[1];
- $att['thumb'] = '';
- $attachments[] = $att;
- }
- }
-
- if(count($attachments))
- {
- $f->log("found ".count($attachments)." attachments");
- $newValues = array();
- $info = array();
- $info['post_entry'] = $post['post_entry'];
- foreach($attachments as $attachment)
- {
- $error = '';
- $f->log($attachment['name']);
- if($f->moveAttachment($attachment, $post['post_id'], $error))
- {
- $fInfo = pathinfo($attachment['name']);
- //						$_file = split('/', $attachment['name']);
- $newval = $attachment['type'].'*'.$fInfo['basename'];
- switch($attachment['type'])
- {
- //If file, add real name to entry
- case 'file':
- $tmp = explode('_', $fInfo['basename'], 4);
- $newval .= '*'.$tmp[3];
- break;
-
- //If image and it has a thumb, add thumb filename to entry
- case 'img':
- if($attachment['thumb'])
- {
- $fInfo = pathinfo($attachment['thumb']);
- $newval .= '*'.$fInfo['basename'];
- }
- break;
- }
- $newValues[] = $newval;
- //						echo "Newval = $newval <br />";
- //						echo "Removing from post:".htmlentities($attachment['html'])."<br />";
- $info['post_entry'] = str_replace($attachment['html'], '', $info['post_entry']);
- }
- else
- {
- $errorText .= "Failure processing post {$post['post_id']} - file
-{$attachment['name']} - {$error}<br />";
- $f->log("Failure processing post {$post['post_id']} - file {$attachment['name']}
-- {$error}");
- }
- }
- //				echo $errorText."<br />";
-
- // Did we make any changes at all?
- if(count($newValues))
- {
- $info['WHERE'] = 'post_id = '.$post['post_id'];
- $info['post_attachments'] = implode(',', $newValues);
- //					print_a($info);
- $sql->db_Update('forum_post', $info);
- }
- //				echo $post['thread_thread']."<br />";
- //				print_a($newValues);
- //				echo $info['newpost']."<br />--------------------------------------<br
-// />";
- //			Update db values now
- }
- }
- }
- else
- {
- $text = 'No forum attachments found! <br />';
- }
-
- //	$forum->forumUpdateLastpost('thread', 84867);
-
- $text .= "
- Successfully migrated forum attachment information for ".count($postList)."
-post(s).
- <br /><br />
- <form method='post' action='".e_SELF."?step=11'>
- <input class='btn button' type='submit' name='nextStep[11]' value='Proceed to
-step 11' />
- </form>
- ";
- $ns->tablerender($stepCaption, $text);
- }
- */
 
 function step10()
 {
-	$e107 = e107::getInstance();
 	$sql = e107::getDb();
 	$ns = e107::getRender();
 	$mes = e107::getMessage();
@@ -1097,18 +784,18 @@ function step10()
 	global $f;
 
 	$stepCaption = 'Step 10: Migrate forum attachments';
+	
+	$_SESSION['forumupdate']['attachment_total'] = $sql -> count('forum_post', '(*)', "WHERE post_entry LIKE '%public/%' ");
+	$_SESSION['forumupdate']['attachment_count'] = 0;
+	$_SESSION['forumupdate']['attachment_last'] = 0;
 
-	$_SESSION['forumupdate_attachment_total'] = $sql -> count('forum_post', '(*)', "WHERE post_entry REGEXP '_[[:digit:]]+_FT' ");
-	$_SESSION['forumupdate_attachment_count'] = 0;
-	$_SESSION['forumupdate_attachment_last'] = 0;
-
-	if ($_SESSION['forumupdate_attachment_total'] == 0)
+	if ($_SESSION['forumupdate']['attachment_total'] == 0)
 	{
 		$text .= "
 		No forum attachments found. 
 		<br /><br />
 		<form method='post' action='" . e_SELF . "?step=11'>
-		<input class='btn button' type='submit' name='nextStep[11]' value='Proceed to step 11' />
+		<input class='btn' type='submit' name='nextStep[11]' value='Proceed to step 11' />
 		</form>
 		";
 		$ns -> tablerender($stepCaption, $text);
@@ -1116,25 +803,14 @@ function step10()
 	}
 
 	$text = "
-		This step will migrate the forum attachment information that was found in <b>" . $_SESSION['forumupdate_attachment_total'] . "</b> posts.<br />
+		This step will migrate the forum attachment information that was found in <b>" . $_SESSION['forumupdate']['attachment_total'] . "</b> posts.<br />
 		All files will be moved from the e107_files/public directory into the <b>" . e_MEDIA . "plugins/forum/ </b> directory and related posts will be updated accordingly.
 		<br /><br />
 		";
 
-	$text .= '
-		<div class="row-fluid">
-			<div class="span9 well">
-				<div class="progress progress-success progress-striped active" id="progressouter">
-	   				<div class="bar" id="progress"></div>
-				</div>
-			
-				<a id="step10" data-progress="' . e_SELF . '" data-progress-mode="10" data-progress-show="step11" data-progress-hide="step10" class="btn btn-primary e-progress" >Begin attachment migration</a>
-			</div>
-		</div>';
+	$text .= renderProgress("Begin attachment migration",10);
 
-	$text .= "<form method='post' action='" . e_SELF . "?step=11'>
-		<input id='step11' style='display:none' class='btn button' type='submit' name='nextStep[11]' value='Proceed to step 11' />
-		</form>";
+	file_put_contents(e_LOG."forum_upgrade_attachments.log",'');		// clear the log. 
 
 	$ns -> tablerender($stepCaption, $mes -> render() . $text);
 
@@ -1148,12 +824,20 @@ function step10_ajax()//TODO
 	$sql = e107::getDb();
 	global $f;
 
-	$lastPost = vartrue($_SESSION['forumupdate_attachment_last'], 0);
+	$lastPost = vartrue($_SESSION['forumupdate']['attachment_last'], 0);
+
+/*
+	$qry = "
+	SELECT post_id, post_thread, post_entry, post_user FROM `#forum_post`
+	WHERE post_entry REGEXP '_[[:digit:]]'
+	AND post_id > {$lastPost} ORDER BY post_id LIMIT 50
+	";
+*/
 
 	$qry = "
 	SELECT post_id, post_thread, post_entry, post_user FROM `#forum_post`
-	WHERE post_entry REGEXP '_[[:digit:]]+_FT'
-	AND post_id > {$lastPost} LIMIT 50
+	WHERE post_id > {$lastPost} AND post_entry LIKE '%public/%'
+	 ORDER BY post_id LIMIT 50
 	";
 
 	// file_put_contents(e_LOG."forum_update_step10.log",$qry."\n",FILE_APPEND);
@@ -1169,13 +853,11 @@ function step10_ajax()//TODO
 		$pcount = 0;
 		$f -> log("Found " . count($postList) . " posts with attachments");
 
-		//XXX Run post through $tp->toHtml() and then use $tp->getTag() to find images or
-		// files.?
 		foreach ($postList as $post)
 		{
 			//			echo htmlentities($post['post_entry'])."<br />";
-			$_SESSION['forumupdate_attachment_last'] = $post['post_id'];
-			$_SESSION['forumupdate_attachment_count']++;
+			$_SESSION['forumupdate']['attachment_last'] = $post['post_id'];
+			$_SESSION['forumupdate']['attachment_count']++;
 
 			$i++;
 			//			if($pcount++ > 10) { die('here 10'); }
@@ -1186,7 +868,10 @@ function step10_ajax()//TODO
 
 			//[link={e_FILE}public/1230091080_1_FT0_julia.jpg][img:width=60&height=45]{e_FILE}public/1230091080_1_FT0_julia_.jpg[/img][/link][br]
 			//Check for images with thumbnails linking to full size
-			if (preg_match_all('#\[link=(.*?)\]\[img.*?\]({e_FILE}.*?)\[/img\]\[/link\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
+			
+		//	if (preg_match_all('#\[link=(.*?)\]\[img.*?\]({e_FILE}.*?)\[/img\]\[/link\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))	
+			
+			if (preg_match_all('#\[link=([^\]]*?)\]\s*?\[img.*?\](({e_FILE}|e107_files|\.\./\.\./e107_files)[^\]]*)\[/img\]\s*?\[/link\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
 			{
 				foreach ($matches as $match)
 				{
@@ -1194,14 +879,35 @@ function step10_ajax()//TODO
 					$att['thread_id'] = $post['post_thread'];
 					$att['type'] = 'img';
 					$att['html'] = $match[0];
-					$att['name'] = $match[1];
+					$att['name'] = str_replace (array("\r\n", "\n", "\r"), '', $match[1]);
 					$att['thumb'] = $match[2];
 					$attachments[] = $att;
 					$foundFiles[] = $match[1];
 					$foundFiles[] = $match[2];
+					logAttachment($att['thread_id'],'link', $att['name']);
 				}
 			}
+			
+			if (preg_match_all('#\[lightbox=([^\]]*?)\]\s*?\[img.*?\](({e_FILE}|e107_files|\.\./\.\./e107_files)[^\]]*)\[/img\]\s*?\[/lightbox\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
+			{
+				foreach ($matches as $match)
+				{
+					$att = array();
+					$att['thread_id'] = $post['post_thread'];
+					$att['type'] = 'img';
+					$att['html'] = $match[0];
+					$att['name'] = str_replace (array("\r\n", "\n", "\r"), '', $match[1]);
+					$att['thumb'] = $match[2];
+					$attachments[] = $att;
+					$foundFiles[] = $match[1];
+					$foundFiles[] = $match[2];
+					logAttachment($att['thread_id'],'lightbox', $att['name']);
+				}
+			}
+			
+			
 
+/*
 			if (preg_match_all('#\[link=(.*?)\]\[img.*?\](\.\./\.\./e107_files/public/.*?)\[/img\]\[/link\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
 			{
 				foreach ($matches as $match)
@@ -1215,13 +921,18 @@ function step10_ajax()//TODO
 					$attachments[] = $att;
 					$foundFiles[] = $match[1];
 					$foundFiles[] = $match[2];
+					logAttachment($att['thread_id'],'link2', $att['name']);
 				}
 			}
-
+			*/
 			//<div
 			// class=&#039;spacer&#039;>[img:width=604&height=453]{e_FILE}public/1229562306_1_FT0_julia.jpg[/img]</div>
 			//Check for attached full-size images
-			if (preg_match_all('#\[img.*?\]({e_FILE}.*?_FT\d+_.*?)\[/img\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
+			
+			;
+			
+		//	if (preg_match_all('#\[img.*?\]({e_FILE}.*?_FT\d+_.*?)\[/img\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
+			if (preg_match_all('#\[img[^\]]*?\]\s*?(({e_FILE}|e107_files|\.\./\.\./e107_files)[^\[]*)\s*?\[/img\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
 			{
 				foreach ($matches as $match)
 				{
@@ -1232,13 +943,15 @@ function step10_ajax()//TODO
 						$att['thread_id'] = $post['post_thread'];
 						$att['type'] = 'img';
 						$att['html'] = $match[0];
-						$att['name'] = $match[1];
+						$att['name'] = str_replace (array("\r\n", "\n", "\r"), '', $match[1]);
 						$att['thumb'] = '';
 						$attachments[] = $att;
+						logAttachment($att['thread_id'],'img', $att['name']);
 					}
 				}
 			}
 
+			/*
 			if (preg_match_all('#\[img.*?\](\.\./\.\./e107_files/public/.*?_FT\d+_.*?)\[/img\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
 			{
 				foreach ($matches as $match)
@@ -1256,10 +969,16 @@ function step10_ajax()//TODO
 					}
 				}
 			}
-
+			*/
+			
+			
 			//[file={e_FILE}public/1230090820_1_FT0_julia.zip]julia.zip[/file]
 			//Check for attached file (non-images)
-			if (preg_match_all('#\[file=({e_FILE}.*?)\](.*?)\[/file\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
+			
+			
+			
+		//	if (preg_match_all('#\[file=({e_FILE}.*?)\](.*?)\[/file\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
+			if (preg_match_all('#\[file=(({e_FILE}|e107_files|\.\./\.\./e107_files)[^\]]*)#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
 			{
 				foreach ($matches as $match)
 				{
@@ -1270,9 +989,12 @@ function step10_ajax()//TODO
 					$att['name'] = $match[1];
 					$att['thumb'] = '';
 					$attachments[] = $att;
+					
+					logAttachment($att['thread_id'],'file', $att['name']);
 				}
 			}
 
+			/*
 			if (preg_match_all('#\[file=(\.\./\.\./e107_files/public/.*?)\](.*?)\[/file\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
 			{
 				foreach ($matches as $match)
@@ -1286,8 +1008,8 @@ function step10_ajax()//TODO
 					$attachments[] = $att;
 				}
 			}
-
-			file_put_contents(e_LOG."forum_update_attachments.log",print_r($attachments,true),FILE_APPEND);
+			*/
+			
 			
 
 			if (count($attachments))
@@ -1319,7 +1041,7 @@ function step10_ajax()//TODO
 				if (count($newValues))
 				{
 					$info['WHERE'] = 'post_id = ' . $post['post_id'];
-					$info['post_attachments'] = e107::getArrayStorage()->write($newValues);
+					$info['post_attachments'] = e107::serialize($newValues);
 				//	$sql->update('forum_post', $info); // XXX FIXME TODO screwed up due to _FIELD_DEFS 
 					
 					$sql->update('forum_post',"post_entry = \"".$info['post_entry']."\", post_attachments=\"".$info['post_attachments']."\" WHERE post_id = ".$post['post_id']." LIMIT 1");
@@ -1330,13 +1052,15 @@ function step10_ajax()//TODO
 		
 		}
 		
-			$totalOutput = round(($_SESSION['forumupdate_attachment_count'] / $_SESSION['forumupdate_attachment_total']) * 100);
+			$totalOutput = round(($_SESSION['forumupdate']['attachment_count'] / $_SESSION['forumupdate']['attachment_total']) * 100, 1);
 			echo $totalOutput;
 			
+			
+		
 			/*
 			$debugRound = "
-			forumupdate_attachment_count = ".$_SESSION['forumupdate_attachment_count']."
-			forumupdate_attachment_total = ".$_SESSION['forumupdate_attachment_total']."
+			forumupdate_attachment_count = ".$_SESSION['forumupdate']['attachment_count']."
+			forumupdate_attachment_total = ".$_SESSION['forumupdate']['attachment_total']."
 			calculated = ".$totalOutput."
 			
 			";
@@ -1351,9 +1075,19 @@ function step10_ajax()//TODO
 
 }
 
+
+function logAttachment($thread, $type, $attach)
+{
+	$tab = ($type == 'img') ? "\t\t\t" : "\t\t";	
+	
+	$text = $thread."\t\t".$type.$tab.$attach."\n";
+	file_put_contents(e_LOG."forum_upgrade_attachments.log",$text, FILE_APPEND);			
+}
+		
+	
+
 function step11()
 {
-	$e107 = e107::getInstance();
 	$ns = e107::getRender();
 	$stepCaption = 'Step 11: Delete old attachments';
 	if (!isset($_POST['delete_orphans']))
@@ -1365,7 +1099,10 @@ function step11()
 		we will try to identify these files and delete them.
 		<br /><br />
 		<form method='post'>
-		<input class='btn button' type='submit' name='delete_orphans' value='Proceed with attachment deletion' />
+		<input class='btn btn-success' data-loading-text='Please wait...' type='submit' name='delete_orphans' value='Proceed with attachment deletion' />
+		</form>
+		<form method='post' action='" . e_SELF . "?step=12'>
+			<input class='btn btn-primary' type='submit' name='nextStep[12]' value='Skip this step' />
 		</form>
 		";
 		e107::getRender() -> tablerender($stepCaption, $text);
@@ -1408,7 +1145,7 @@ function step11()
 				{$failText}
 				<br /><br />
 				<form method='post' action='" . e_SELF . "?step=12'>
-				<input class='btn button' type='submit' name='nextStep[12]' value='Proceed to step 12' />
+				<input class='btn' type='submit' name='nextStep[12]' value='Proceed to step 12' />
 				</form>
 			";
 			$ns -> tablerender($stepCaption, $text);
@@ -1426,14 +1163,15 @@ function step11()
 		}
 		else
 		{
-			$extra = "<input class='btn button' type='submit' name='delete_orphans' value='Show files' />&nbsp; &nbsp; &nbsp; &nbsp;";
+			$extra = "<input class='btn' type='submit' name='delete_orphans' value='Show files' />&nbsp; &nbsp; &nbsp; &nbsp;";
 		}
 		$text .= "
 			<br /><br />
 			<form method='post'>
 			{$extra}
-			<input class='btn button' type='submit' name='delete_orphans' value='Delete files' />
+			<input class='btn' type='submit' name='delete_orphans' value='Delete files' />
 			</form>
+			
 		";
 		$ns -> tablerender($stepCaption, $text);
 		return;
@@ -1444,7 +1182,7 @@ function step11()
 			There were no orphaned files found <br />
 			<br /><br />
 			<form method='post' action='" . e_SELF . "?step=12'>
-			<input class='btn button' type='submit' name='nextStep[12]' value='Proceed to step 12' />
+			<input class='btn' type='submit' name='nextStep[12]' value='Proceed to step 12' />
 			</form>
 		";
 		$ns -> tablerender($stepCaption, $text);
@@ -1462,35 +1200,36 @@ function step12()
 
 	$stepCaption = 'Step 12: Delete old forum data';
 
-	if (!isset($_POST['delete_old']))
+	if (!isset($_POST['delete_old']) && !isset($_POST['skip_delete_old']))
 	{
 		$text = "
 		The forum upgrade should now be complete.<br />  During the upgrade process the old forum tables were
-		retained, it is now time to remove the tables.<br /><br />
+		retained. You may choose to keep these tables as a backup or delete them. <br /><br />
 		We will also be marking the forum upgrade as completed!
 		<br /><br />
-		<br /><br />
 		<form method='post'>
-		<input class='btn button' type='submit' name='delete_old' value='Remove old forum tables' />
+			<input class='btn btn-danger' data-loading-text='Please wait...' type='submit' name='delete_old' value='Remove old forum tables' />
+			<input class='btn btn-primary' type='submit' name='skip_delete_old' value='Keep old forum tables' />
 		</form>
 		";
 		$ns -> tablerender($stepCaption, $text);
 		return;
 	}
 
-	$qryArray = array(
-		"DROP TABLE `#forum_old`",
-		"DROP TABLE `#forum_t`",
-	);
-
-	// "DELETE FROM `#generic` WHERE gen_type = 'forumUpgrade' "
-	unset($_SESSION['forumUpgrade']);
-
-	foreach ($qryArray as $qry)
+	if (vartrue($_POST['delete_old']))
 	{
-		$sql -> gen($qry);
-	}
+		$qryArray = array(
+			"DROP TABLE `#forum_old`",
+			"DROP TABLE `#forum_t`",
+		);
 
+		foreach ($qryArray as $qry)
+		{
+			$sql -> gen($qry);
+		}
+	}
+	
+	unset($_SESSION['forumUpgrade']);
 	$ret = $f -> setNewVersion();
 
 	$mes -> addSuccess("Congratulations, the forum upgrade is now completed!<br /><br />{$ret}");
@@ -1510,7 +1249,7 @@ class forumUpgrade
 	{
 		$this -> updateInfo['lastThread'] = 0;
 		$this -> attachmentData = array();
-		$this -> logf = e_LOG . 'forum_upgrade.txt';
+		$this -> logf = e_LOG . 'forum_upgrade.log';
 		$this -> getUpdateInfo();
 	}
 
@@ -1562,7 +1301,6 @@ class forumUpgrade
 	function getUpdateInfo()
 	{
 		$sql = e107::getDb();
-		$e107 = e107::getInstance();
 
 		if ($_SESSION['forumUpgrade'])
 		{
@@ -1574,6 +1312,8 @@ class forumUpgrade
 		}
 
 		return;
+		
+		/*
 		if ($sql -> select('generic', '*', "gen_type = 'forumUpgrade'"))
 		{
 			$row = $sql -> fetch(MYSQL_ASSOC);
@@ -1585,23 +1325,18 @@ class forumUpgrade
 			$sql -> gen($qry);
 			$this -> updateInfo = array();
 		}
+		 * */
 	}
 
 	function setUpdateInfo()
 	{
 		$_SESSION['forumUpgrade'] = $this -> updateInfo;
 		return;
-
-		$e107 = e107::getInstance();
-		$info = mysql_real_escape_string(serialize($this -> updateInfo));
-		$qry = "UPDATE `#generic` Set gen_chardata = '{$info}' WHERE gen_type = 'forumUpgrade'";
-		e107::getDb() -> gen($qry);
 	}
 
 	function setNewVersion()
 	{
 		$pref = e107::getPref();
-		$e107 = e107::getInstance();
 		$sql = e107::getDb();
 
 		$sql -> update('plugin', "plugin_version = '{$this->newVersion}' WHERE plugin_name='Forum'");
@@ -1613,11 +1348,11 @@ class forumUpgrade
 	function migrateThread($threadId)
 	{
 		global $forum;
-		$e107 = e107::getInstance();
+
 		$threadId = (int)$threadId;
-		if (e107::getDb() -> select('forum_t', '*', "thread_parent = {$threadId} OR thread_id = {$threadId}", 'default'))
+		if (e107::getDb()->select('forum_t', '*', "thread_parent = {$threadId} OR thread_id = {$threadId}", 'default'))
 		{
-			$threadData = e107::getDb() -> db_getList();
+			$threadData = e107::getDb()->db_getList();
 			foreach ($threadData as $post)
 			{
 				if ($post['thread_parent'] == 0)
@@ -1678,9 +1413,12 @@ class forumUpgrade
 		 * thread_options
 		 */
 
+		$detected 	= mb_detect_encoding($post['thread_name']); // 'ISO-8859-1'
+		$threadName = iconv($detected,'UTF-8', $post['thread_name']); 
+		 
 		$thread = array();
 		$thread['thread_id'] = $post['thread_id'];
-		$thread['thread_name'] = $post['thread_name'];
+		$thread['thread_name'] = $threadName;
 		$thread['thread_forum_id'] = $post['thread_forum_id'];
 		$thread['thread_datestamp'] = $post['thread_datestamp'];
 		$thread['thread_lastpost'] = $post['thread_lastpost'];
@@ -1708,28 +1446,28 @@ class forumUpgrade
 
 		$result = e107::getDb() -> insert('forum_thread', $thread);
 		return $result;
-
-		//		return $e107->sql->db_Insert('forum_thread', $thread);
-		//		print_a($thread);
 	}
 
 	function addPost(&$post)
 	{
 		global $forum;
-		$e107 = e107::getInstance();
+		
+		$detected 						= mb_detect_encoding($post['thread_thread']); // 'ISO-8859-1'
+		$postEntry 						= iconv($detected,'UTF-8', $post['thread_thread']);
+
 		$newPost = array();
-		$newPost['post_id'] = $post['thread_id'];
-		$newPost['post_thread'] = ($post['thread_parent'] == 0 ? $post['thread_id'] : $post['thread_parent']);
-		$newPost['post_entry'] = $post['thread_thread'];
-		$newPost['post_forum'] = $post['thread_forum_id'];
-		$newPost['post_datestamp'] = $post['thread_datestamp'];
+		$newPost['post_id'] 			= $post['thread_id'];
+		$newPost['post_thread'] 		= ($post['thread_parent'] == 0 ? $post['thread_id'] : $post['thread_parent']);
+		$newPost['post_entry'] 			= $postEntry;
+		$newPost['post_forum'] 			= $post['thread_forum_id'];
+		$newPost['post_datestamp'] 		= $post['thread_datestamp'];
 		$newPost['post_edit_datestamp'] = ($post['thread_edit_datestamp'] ? $post['thread_edit_datestamp'] : '_NULL_');
 
 		$userInfo = $this -> getUserInfo($post['thread_user']);
 
-		$newPost['post_user'] = $userInfo['user_id'];
-		$newPost['post_user_anon'] = $userInfo['anon_name'];
-		$newPost['post_ip'] = $userInfo['user_ip'];
+		$newPost['post_user'] 			= $userInfo['user_id'];
+		$newPost['post_user_anon'] 		= $userInfo['anon_name'];
+		$newPost['post_ip'] 			= $userInfo['user_ip'];
 
 		//		$newPost['_FIELD_TYPES'] = $forum->fieldTypes['forum_post'];
 		//		$newPost['_FIELD_TYPES']['post_entry'] = 'escape'; //use escape to prevent
@@ -1745,6 +1483,7 @@ class forumUpgrade
 	function getUserInfo(&$info)
 	{
 		$e107 = e107::getInstance();
+		
 		$tmp = explode('.', $info);
 		$ret = array(
 			'user_id' => 0,
@@ -1972,6 +1711,23 @@ function forum_update_adminmenu()
 
 	$var[12]['text'] = '12 - Delete old forum data';
 	$var[12]['link'] = '#';
+	
+	if(E107_DEBUG_LEVEL)
+	{
+		$var[13]['divider'] = true;
+		
+		$var[14]['text'] = 'Reset';
+		$var[14]['link'] = e_SELF . "?reset";	
+		
+		$var[15]['text'] = 'Reset to 7';
+		$var[15]['link'] = e_SELF . "?step=7&reset=7";	
+		
+		$var[16]['text'] = 'Reset to 10';
+		$var[16]['link'] = e_SELF . "?step=10&reset=10";	
+		
+	}
+	
+	
 
 	if (isset($_GET['step']))
 	{

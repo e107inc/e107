@@ -61,7 +61,7 @@ class forum_setup
 	{
 		//Redirect upgrade to customized upgrade routine
 		
-		e107::getRedirect()->redirect(e_PLUGIN.'forum/forum_update.php');
+		e107::getRedirect()->redirect(e_PLUGIN_ABS.'forum/forum_update.php');
 		
 		//header('Location: '.e_PLUGIN.'forum/forum_update.php');
 	}
