@@ -1301,7 +1301,7 @@ class e_install
 
 		$tm = e107::getSingleton('themeHandler');
 		$tm->noLog = true; // false to enable log
-		$tm->setTheme($this->previous_steps['prefs']['sitetheme']);
+		$tm->setTheme($this->previous_steps['prefs']['sitetheme'], false);
 
 		// Admin log fix - don't allow logs to be called inside pref handler
 		e107::getConfig('core')->setParam('nologs', false); // change to true to enable log
