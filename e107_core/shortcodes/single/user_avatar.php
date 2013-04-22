@@ -5,8 +5,7 @@ function user_avatar_shortcode($parm='')
 	global $loop_uid;
 	
 	
-	//$height 	= e107::getPref("im_height",100); // these prefs are too limiting. 
-	//$width 		= e107::getPref("im_width",100);
+	
 	$tp 		= e107::getParser();
 	
 	if(intval($loop_uid) > 0 && trim($parm) == "")
@@ -48,6 +47,11 @@ function user_avatar_shortcode($parm='')
 		if(strpos($image,"://")!==false) // Remove Image
 		{
 			$img = $image;	
+			$height = $tp->thumbHeight;
+			$width = $tp->thumbWidth;
+			
+			//$height 	= e107::getPref("im_height",100); // these prefs are too limiting for local images.  
+			//$width 		= e107::getPref("im_width",100);
 		}
 		elseif(substr($image,0,8) == "-upload-")
 		{
