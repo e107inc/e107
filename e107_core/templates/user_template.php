@@ -62,6 +62,7 @@ $USER_SHORT_TEMPLATE_START = "
 	</tr>
 	</thead>
 	<tbody>
+	{SETIMAGE: w=40}
 ";
 $USER_SHORT_TEMPLATE_END = "
 </tbody>
@@ -71,7 +72,7 @@ $USER_SHORT_TEMPLATE_END = "
 
 $USER_SHORT_TEMPLATE = "
 <tr>
-	<td class='forumheader3' style='width:2%'>{USER_ICON_LINK}</td>
+	<td class='forumheader3' style='width:2%'>{USER_PICTURE}</td>
 	<td class='forumheader3' style='width:20%'>{USER_ID}: {USER_NAME_LINK}</td>
 	<td class='forumheader3' style='width:20%'>{USER_EMAIL}</td>
 	<td class='forumheader3' style='width:20%'>{USER_JOIN}</td>
@@ -95,6 +96,7 @@ $sc_style['USER_RATING']['post'] = "</div></td></tr>";
 
 $sc_style['USER_LOGINNAME']['pre'] = " : ";
 
+//FIXME TODO - Remove IF statements from template. 
 if(isset($pref['photo_upload']) && $pref['photo_upload'])
 {
 	$user_picture =  "{USER_PICTURE}";
@@ -116,17 +118,21 @@ $span = 4;
 if ($tp->parseTemplate("{USER_SENDPM}", FALSE, $user_shortcodes)) $span++;
 $span = " rowspan='".$span."' ";
 
-$sc_style['USER_PICTURE']['pre']="<td {$span} class='forumheader3 center middle' style='width:20%'>";
-$sc_style['USER_PICTURE']['post']="</td>";
+//$sc_style['USER_PICTURE']['pre']="<td {$span} class='forumheader3 center middle' style='width:20%'>";
+//$sc_style['USER_PICTURE']['post']="</td>";
 
-$USER_FULL_TEMPLATE = "
+
+
+
+
+$USER_FULL_TEMPLATE = "{SETIMAGE: w=250}
 <div class='content user'>
 <table style='".USER_WIDTH."' class='table fborder'>
 <tr>
 	<td colspan='2' class='fcaption center'>".LAN_USER_58." {USER_ID} : {USER_NAME}{USER_LOGINNAME}</td>
 </tr>
 <tr>
-	{$user_picture}
+	<td {$span} class='forumheader3 center middle' style='width:20%'>{USER_PICTURE}</td>
 	<td {$main_colspan} class='forumheader3'>
 		<div class='f-left'>{USER_REALNAME_ICON} ".LAN_USER_63."</div>
 		<div class='f-right right'>{USER_REALNAME}</div>
