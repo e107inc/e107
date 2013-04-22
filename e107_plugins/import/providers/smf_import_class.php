@@ -20,7 +20,11 @@ class smf_import extends base_import_class
 	public $mprefix			= 'smf_';
 	public $sourceType 		= 'db';		
 	
+	function init()
+	{
 	
+		
+	} 	
 	
   // Set up a query for the specified task.
   // Returns TRUE on success. FALSE on error
@@ -31,19 +35,26 @@ class smf_import extends base_import_class
 	    switch ($task)
 		{
 			case 'users' :
+				
+				// Set up Userclasses. 
+				if($this->ourDB && $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}membergroups WHERE group_name = 'Jr. Member' "))
+				{
+					e107::getMessage()->addDebug("Userclasses Found");	
+				}	
+				
 		    	$result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}members WHERE `is_activated`=1");
 				if ($result === FALSE) return FALSE;
 			break;
 				
 				
  			case 'forum' :
-				//$result = $this->ourDB->gen("SELECT * FROM `{$this->DBPrefix}forums`");
-				//if ($result === FALSE) return FALSE;	  
+				$result = $this->ourDB->gen("SELECT * FROM `{$this->DBPrefix}boards`");
+				if ($result === FALSE) return FALSE;	  
 			break;
 				
 			case 'forumthread' :
-				//$result = $this->ourDB->gen("SELECT * FROM `{$this->DBPrefix}topics`");
-				//if ($result === FALSE) return FALSE;	  
+				$result = $this->ourDB->gen("SELECT t.*,m.* FROM `{$this->DBPrefix}topics` AS t LEFT JOIN `{$this->DBPrefix}messages` AS m ON t.id_first_msg = m.id_msg GROUP BY t.id_topic");
+				if ($result === FALSE) return FALSE;	  
 			break;
 				
 			case 'forumpost' :
@@ -60,11 +71,42 @@ class smf_import extends base_import_class
 		    return FALSE;
 		}
 		
-		$this->copyUserInfo = !$blank_user;
+		$this->copyUserInfo = false;
 		$this->currentTask = $task;
 		return TRUE;
 	}
 
+	
+	
+	function convertUserclass($data)
+	{
+		
+		if($data == 1)
+		{
+			
+		}
+		
+		/*
+		1	Administrator		#FF0000	-1	0	5#staradmin.gif	1	0	-2
+		2	Global Moderator		#0000FF	-1	0	5#stargmod.gif	0	0	-2
+		3	Moderator			-1	0	5#starmod.gif	0	0	-2
+		4	Newbie			0	0	1#star.gif	0	0	-2
+		5	Jr. Member			50	0	2#star.gif	0	0	-2
+		6	Full Member			100	0	3#star.gif	0	0	-2
+		7	Sr. Member			250	0	4#star.gif	0	0	-2
+		8	Hero Member			500	0	5#star.gif	0	0	-2	
+		*/
+	}	
+	
+	function convertAdmin($data)
+	{
+		
+		if($data == 1)
+		{
+			return 1;	
+		}	
+		
+	}
 
   //------------------------------------
   //	Internal functions below here
@@ -73,30 +115,39 @@ class smf_import extends base_import_class
   // Copy data read from the DB into the record to be returned.
 	function copyUserData(&$target, &$source)
 	{
-		if ($this->copyUserInfo) $target['user_id'] = $source['ID_MEMBER'];
-		$target['user_name'] = $source['realName'];
-		$target['user_login'] = $source['realName'];
-		$target['user_loginname'] = $source['memberName'];
-		$target['user_password'] = $source['passwd'];				// Check - could be plaintext
-		$target['user_email'] = $source['emailAddress'];
-		$target['user_hideemail'] = $source['hideEmail'];
-	    $target['user_image'] = $source['avatar'];
-		$target['user_signature'] = $source['signature'];
-		$target['user_forums'] = $source['posts'];
-		$target['user_chats'] = $source['instantMessages'];
-		$target['user_join'] = $source['dateRegistered'];
-		$target['user_lastvisit'] = $source['lastLogin'];
-		$target['user_homepage'] = $source['websiteUrl'];
-		$target['user_location'] = $source['location'];
-		$target['user_icq'] = $source['ICQ'];
-		$target['user_aim'] = $source['AIM'];
-		$target['user_yahoo'] = $source['YIM'];
-		$target['user_msn'] = $source['MSN'];
-		$target['user_timezone'] = $source['timeOffset'];			// Probably needs formatting
+		if ($this->copyUserInfo)
+		{
+			 $target['user_id'] = 0; // $source['id_member'];
+		}
+		
+		$target['user_name'] 		= $source['real_name'];
+		$target['user_login'] 		= $source['member_name'];
+		$target['user_loginname'] 	= $source['memberName'];
+		$target['user_password'] 	= $source['passwd'];				// Check - could be plaintext
+		$target['user_email'] 		= $source['email_address'];
+		$target['user_hideemail'] 	= $source['hide_email'];
+	    $target['user_image'] 		= $source['avatar'];
+		$target['user_signature'] 	= $source['signature'];
+
+		$target['user_chats'] 		= $source['instant_messages'];
+		$target['user_join'] 		= $source['date_registered'];
+		$target['user_lastvisit'] 	= $source['last_login'];
+
+		$target['user_location'] 	= $source['location'];
+		$target['user_icq'] 		= $source['icq'];
+		$target['user_aim'] 		= $source['aim'];
+		$target['user_yahoo'] 		= $source['yim'];
+		$target['user_msn'] 		= $source['msn'];
+		$target['user_timezone'] 	= $source['time_offset'];			// Probably needs formatting
 		$target['user_customtitle'] = $source['usertitle'];
-		$target['user_ip'] = $source['memberIP'];
-	//	$target['user_'] = $source[''];
-	//	$target['user_'] = $source[''];
+		$target['user_ip'] 			= $source['member_ip'];
+		$target['user_homepage']	= $source['website_url'];
+		$target['user_birthday']	= $source['birthdate'];
+		$target['user_admin']		= $this->convertadmin($source['id_group']);
+		$target['user_class']		= $this->convertadmin($source['id_group']);
+		
+		$target['user_plugin_forum_viewed'] = 0;
+		$target['user_plugin_forum_posts']	= $source['posts'];
 		
 	//    $target['user_language'] = $source['lngfile'];			// Guess to verify
 		return $target;
@@ -106,26 +157,26 @@ class smf_import extends base_import_class
 
  	/**
 	 * $target - e107_forum table
-	 * $source - smf table //TODO 
+	 * $source - smf table boards  
 	 */
 	function copyForumData(&$target, &$source)
 	{
 		
-		$target['forum_id'] 				= $source['forum_id'];
-		$target['forum_name'] 				= $source['forum_name'];
-		$target['forum_description'] 		= $source['forum_desc'];
-		$target['forum_parent']				= $source['parent_id'];
+		$target['forum_id'] 				= $source['id_board'];
+		$target['forum_name'] 				= $source['name'];
+		$target['forum_description'] 		= $source['description'];
+		$target['forum_parent']				= $source['id_parent'];
 		$target['forum_sub']				= "";
 		$target['forum_datestamp']			= time();
 		$target['forum_moderators']			= "";
 	
-		$target['forum_threads'] 			= $source['forum_topics'];
-		$target['forum_replies']			= "";
-		$target['forum_lastpost_user']		= $source['forum_last_poster_id'];
-		$target['forum_lastpost_user_anon']	= $source['forum_last_poster_name'];
-		$target['forum_lastpost_info']		= $source['forum_last_post_time'];
+		$target['forum_threads'] 			= $source['num_topics'];
+		$target['forum_replies']			= $source['num_posts'];
+		$target['forum_lastpost_user']		= '';
+		$target['forum_lastpost_user_anon']	= '';
+		$target['forum_lastpost_info']		= '';
 		//	$target['forum_class']				= "";
-		// $target['forum_order']	
+		$target['forum_order']				= $source['board_order'];
 		// $target['forum_postclass']	
 		// $target['forum_threadclass']	
 		// $target['forum_options']	
@@ -169,7 +220,7 @@ class smf_import extends base_import_class
 	
 	/**
 	 * $target - e107 forum_threads
-	 * $source - smf //TODO
+	 * $source - smf topics. 
 	 */
 	function copyForumThreadData(&$target, &$source)
 	{
