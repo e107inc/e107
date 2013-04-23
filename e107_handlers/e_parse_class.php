@@ -538,6 +538,7 @@ class e_parse extends e_parser
 	 */
 	function htmlAbuseFilter($data, $tagList = '')
 	{
+		
 		if ($tagList == '')
 		{
 			$checkTags = array('textarea', 'input', 'td', 'tr', 'table');
@@ -587,11 +588,14 @@ class e_parse extends e_parser
 
 
 	/**
+	 * XXX TODO Remove this horrible thing which adds junk to a db. 
 	 *	Checks a string for potentially dangerous HTML tags, including malformed tags
 	 *
 	 */
 	public function dataFilter($data, $mode='bbcode')
 	{
+					
+
 		$ans = '';
 		$vetWords = array('<applet', '<body', '<embed', '<frame', '<script','%3Cscript',
 						 '<frameset', '<html', '<iframe', '<style', '<layer', '<link',
@@ -1925,6 +1929,13 @@ class e_parse extends e_parser
 		}
 		return array();
 	}
+
+
+	function getEmotes()
+	{
+		return $this->e_emote->emotes;		
+	}
+
 
 	/**
 	 * Replace e107 path constants
