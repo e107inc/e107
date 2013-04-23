@@ -187,15 +187,13 @@ class bbcode_shortcodes extends e_shortcode
 			
 		// Legacy BC Support
 		
-		
 		$data = "size";
 		$formid = $id."_";
 
 		$event = $this->getEvent('expandit',$formid, LANHELP_22);
 		$text = "<a {$event} class=' e-bb e-expandit'  onclick=\"expandit('{$this->var['tagid']}')\" data-function='show' href='#{$this->var['tagid']}' title='".LANHELP_22."' data-bbcode='{$data}'>
 		<img class='btn btn-small bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/fontsize.png' alt='' title='".LANHELP_22."' /></a>";
-		
-		
+
 		$text .="<!-- Start of Size selector -->
 		<div id='{$this->var['tagid']}' class='e-hideme col-selection' style='position:relative;top:30px;left:200px' >";
 		$text .="<div style='position:relative;bottom:30px; left:125px; width:100px'>";
@@ -209,15 +207,75 @@ class bbcode_shortcodes extends e_shortcode
 		{
 			$text .= "<option value='[size=".$s."][/size]'>".$s."px</option>\n";
 		}
-		$text .="</select>
-		
-		
-		</td></tr>	\n </table></div>
+		$text .="</select></td></tr></table></div>
 		</div>\n<!-- End of Size selector -->";
 		return $text;	
 	}
 
+	function bb_emotes($id)
+	{
 		
+		$pref = e107::getPref();
+		
+		if ($pref['comments_emoticons'] && $pref['smiley_activate'] && !defsettrue('e_WYSIWYG'))
+		{
+			if(deftrue('e_BOOTSTRAP'))
+			{
+				$text = '<div class="btn-group" style="margin-left:0px">';
+				$text .= '<a class="dropdown-toggle" data-toggle="dropdown" href="#">';
+				$text .= "<img class='btn btn-small bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/emotes.png' alt='' title=\"".LANHELP_44."\" />";
+				$text .= '</a>';
+				$text .= "<div class='dropdown-menu' style='white-space:normal;padding:10px; width:170px'>";
+						
+				$text .= $this->renderEmotes();
+	
+				$text .= "</div>";
+				$text .= "</div>";
+		  
+		  		return $text;
+			}		
+		
+			// Legacy BC version. 
+			$text = '<a class="e-expandit" href="#'.$id.'">';
+			$text .= "<img class='btn btn-small bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/emotes.png' alt='' title=\"".LANHELP_44."\" />";
+			$text .= '</a>';
+			$text .="<!-- Start of Emoticon selector -->
+			<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='{$id}' onclick=\"this.style.display='none'\" >
+				<div style='position:absolute; bottom:30px; right:75px; width:221px; height:133px; overflow:auto;'>
+					<table class='fborder' style='background-color:#fff;'>
+					<tr><td class='forumheader3'>
+					".$this->renderEmotes()."
+					</td></tr></table>
+				</div>
+			</div>\n<!-- End of Emoticon selector -->\n";
+			
+			return $text;
+		}
+	}	
+
+
+	function renderEmotes()
+	{
+		$emotes = e107::getParser()->getEmotes();
+		$pref = e107::getPref();
+		
+		foreach($emotes as $key=>$value)
+		{
+			$key = str_replace("!", ".", $key);					// Usually '.' was replaced by '!' when saving
+			$key = preg_replace("#_(\w{3})$#", ".\\1", $key);	// '_' followed by exactly 3 chars is file extension
+			$key = e_IMAGE_ABS."emotes/" . $pref['emotepack'] . "/" .$key;		// Add in the file path
+						$value2 = substr($value, 0, strpos($value, " "));
+			$value = ($value2 ? $value2 : $value);
+			$value = ($value == '&|') ? ':((' : $value;
+			$text .= "\n<a style='display:inline-block; margin:2px; padding:2px' href=\"javascript:addtext('$value ',true)\"><img src='$key' alt='' /></a>";	
+			
+		}
+		
+		return $text;
+	}
+
+
+
 
 
 	function bb_fontcol($id) // JS in this breaks ajax loading.  
