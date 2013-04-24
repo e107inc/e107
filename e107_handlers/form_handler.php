@@ -1177,7 +1177,8 @@ class e_form
 		//	return implode("&nbsp;&nbsp;", $text);
 		}
 		
-		
+		// support of UI owned 'newline' parameter
+		if(!varset($options['sep']) && vartrue($options['newline']))  $options['sep'] = '<br />'; // TODO div class=separator?
 		$separator = varset($options['sep']," ");
 	//	return print_a($text,true);
 		return implode($separator, $text).$help;
@@ -2971,7 +2972,7 @@ class e_form
 				$eloptions  = vartrue($parms['__options'], array());
 				if(is_string($eloptions)) parse_str($eloptions, $eloptions);
 				unset($parms['__options']);
-				$ret =  vartrue($eloptions['pre']).$this->radio_multi($key, $parms, $value, varset($eloptions['newline']), false).vartrue($eloptions['post']);
+				$ret =  vartrue($eloptions['pre']).$this->radio_multi($key, $parms, $value, $eloptions, false).vartrue($eloptions['post']);
 			break;
 
 			case 'userclass':
