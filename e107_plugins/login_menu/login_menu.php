@@ -196,7 +196,7 @@ else
 	} else {
 		$caption = LOGIN_MENU_L5;
 	}
-	$ns->tablerender($caption, $text, 'loginbox');
+	$ns->tablerender($caption, $text, 'login');
 }
 // END NOT LOGGED CODE
 ?>

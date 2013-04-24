@@ -96,6 +96,6 @@ else
 
 $img = (is_readable(THEME.'images/online_menu.png') ? "<img src='".THEME_ABS."images/online_menu.png' alt='' />" : '');
 $caption = $img.' '.varsettrue($menu_pref['online_caption'],LAN_ONLINE_10);
-$ns->tablerender($caption, $text, 'online');
+$ns->tablerender($caption, $text, 'online_extended');
 
 ?>
