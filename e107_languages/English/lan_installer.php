@@ -180,5 +180,7 @@ define("LANINS_121", "e107_config.php is not an empty file");
 define("LANINS_122", "You might have an existing installation");
 define("LANINS_123", "Optional: Your public name or alias. Leave blank to use the user name");
 define("LANINS_124", "Please choose a password of at least 8 characters");
+define("LANINS_125", "e107 has been installed successfully!");
+define("LANINS_126", "For security reasons you should now set the file permissions on the e107_config.php file back to 644.");
 
 				

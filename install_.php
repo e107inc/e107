@@ -1153,7 +1153,8 @@ class e_install
 				$alertType = 'success';
 				$this->logLine('Tables created successfully');
 				$this->import_configuration();
-				$page = nl2br(LANINS_069)."<br />";
+				$page = nl2br(LANINS_125)."<br />";
+				$page .= (is_writable('e107_config.php')) ? "<br />".str_replace("e107_config.php","<b>e107_config.php</b>",LANINS_126) : "";
 				
 				if($htaccessError)
 				{
@@ -1168,6 +1169,7 @@ class e_install
 		$this->logLine('Stage 8 completed');
 
 		e107::getMessage()->reset();
+		e107::getMessage()->resetSession();
 	}
 
 	/**
@@ -1636,6 +1638,7 @@ class e_install
 			return nl2br(LANINS_070);
 		}
 		@fclose ($fp);
+		@chmod($e107_config,0644); // correct permissions. 
 		return false;
 	}
 
