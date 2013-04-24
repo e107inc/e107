@@ -483,7 +483,7 @@ class e_bbcode
 	
 	
 	// NEW bbcode button rendering function. replacing displayHelp(); 
-	function renderButtons($template,$id='')
+	function renderButtons($template, $id='', $options=array())
 	{
 		
 		$tp = e107::getParser();
@@ -528,9 +528,9 @@ class e_bbcode
 		$data = array(
 				'tagid'			=> $id,
 				'template'		=> $template,
-				'trigger'		=> vartrue($addtextfunc),
-		//		'hint_func'		=> $helpfunc, // unused
-		//		'hint_active'	=> $bbcode_helpactive, // unused
+				'trigger'		=> vartrue($options['trigger']), // For BC
+		//		'hint_func'		=> $helpfunc, // deprecated and unused
+		//		'hint_active'	=> $bbcode_helpactive,  // deprecated and unused
 				'size'			=> vartrue($helpsize)
 		);
 				

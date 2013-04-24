@@ -29,4 +29,6 @@ legend 						{ display: none; }
 .e-autocomplete				{ display: none }
 .e-expandit-container		{ margin-top:10px }
 
+input.helpbox				{ display:none; } /* legacy BBcode helper box - deprecated and hidden if found in v2.x */
+
 .col-selection 				{ padding:5px; text-align:left; background-color: #FCFDFF; border: 1px outset black; width:200px; margin-right:0px;overflow:visible; position:absolute; z-index:101; right:0px;}
