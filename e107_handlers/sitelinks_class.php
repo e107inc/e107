@@ -1069,7 +1069,10 @@ class e_navigation
 			unset($temp);
 		}
 	
-	
+		if(!is_array($e107_vars))
+		{
+			return;	
+		}
 	
 		$kpost = '';
 		$text = '';
