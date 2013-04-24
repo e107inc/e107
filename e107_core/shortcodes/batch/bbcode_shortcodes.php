@@ -102,7 +102,7 @@ class bbcode_shortcodes extends e_shortcode
 
 		$data = "[list][*]Item 1[*]Item 2[/list]";
 	//	$data = "[list]\n[*]Item 1\n[*]Item 2\n[/list]"; // works with jquery, but not onclick. 
-		$event = $this->getEvent('addtext',$data,LANHELP_36);
+		$event = $this->getEvent($this->var['trigger'],$data,LANHELP_36);
 		$text = "<a {$event} class='e-bb' id='{$id}' data-function='insert' href='#{$this->var['tagid']}' data-bbcode='{$data}'>";
 		$text .= "<img class='btn btn-small bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/list.png' alt='' title='".nl2br(LANHELP_36)."' /></a>";
 		return $text;
@@ -401,7 +401,9 @@ class bbcode_shortcodes extends e_shortcode
 
 	//	if(defsettrue('e_WYSIWYG')){ return; }
 
-		$bbcode_func = ($bbcode_func) ? $bbcode_func : "addtext";
+		$bbcode_func = ($this->var['trigger']) ? $this->var['trigger'] : "addtext";
+		
+		
 		$bbcode_help  = ($bbcode_help) ? $bbcode_help : "help";
 		$bbcode_tag  = ($bbcode_helptag != 'helpb') ? ",'$bbcode_helptag'" : "";
 
@@ -422,34 +424,34 @@ class bbcode_shortcodes extends e_shortcode
 
 		// Format: $bbcode['UNIQUE_NAME'] = array(ONCLICK_FUNC, ONCLICK_VAR, HELPTEXT, ICON, INCLUDE_FUNC, INCLUDE_FUNCTION_VAR);
 
-		$bbcode['newpage'] = array($bbcode_func,"[newpage]", LANHELP_34, "newpage.png");
-		$bbcode['link'] = array('addinput',"[link=".LANHELP_35."][/link]", LANHELP_23,"link.png");
-		$bbcode['h'] = array($bbcode_func,"[h][/h]", LANHELP_50,"heading.png"); // FIXME bbcode icon
-		$bbcode['p'] = array($bbcode_func,"[p][/p]", LANHELP_49,"paragraph.png"); // FIXME bbcode icon
-		$bbcode['b'] = array($bbcode_func,"[b][/b]", LANHELP_24,"bold.png");
-		$bbcode['i'] = array($bbcode_func,"[i][/i]", LANHELP_25,"italic.png");
-		$bbcode['u'] = array($bbcode_func,"[u][/u]", LANHELP_26,"underline.png");
-		$bbcode['justify'] = array($bbcode_func,"[justify][/justify]", LANHELP_53,"center.png"); // FIXME bbcode icon
-		$bbcode['center'] = array($bbcode_func,"[center][/center]", LANHELP_28,"center.png");
-		$bbcode['left'] = array($bbcode_func,"[left][/left]", LANHELP_29,"left.png");
-		$bbcode['right'] = array($bbcode_func,"[right][/right]", LANHELP_30,"right.png");
-		$bbcode['bq'] = array($bbcode_func,"[blockquote][/blockquote]", LANHELP_31,"blockquote.png");
-		$bbcode['code'] = array($bbcode_func,"[code][/code]", LANHELP_32,"code.png");
-		$bbcode['list'] = array($bbcode_func,"[list][/list]", LANHELP_36,"list.png");
-		$bbcode['img'] = array($bbcode_func,"[img][/img]", LANHELP_27,"image.png");
-		$bbcode['flash'] = array($bbcode_func,"[flash=width,height][/flash]", LANHELP_47,"flash.png");
-		$bbcode['youtube'] = array($bbcode_func,"[youtube][/youtube]", LANHELP_48,"youtube.png");
-		$bbcode['sanitised'] = array('', '', '');
-		$bbcode['format'] = array('dropdown', '[format]', 'da',"<select><option>hello</option></select>");
+		$bbcode['newpage'] 		= array($bbcode_func,"[newpage]", LANHELP_34, "newpage.png");
+		$bbcode['link'] 		= array('addinput',"[link=".LANHELP_35."][/link]", LANHELP_23,"link.png");
+		$bbcode['h'] 			= array($bbcode_func,"[h][/h]", LANHELP_50,"heading.png"); // FIXME bbcode icon
+		$bbcode['p'] 			= array($bbcode_func,"[p][/p]", LANHELP_49,"paragraph.png"); // FIXME bbcode icon
+		$bbcode['b'] 			= array($bbcode_func,"[b][/b]", LANHELP_24,"bold.png");
+		$bbcode['i'] 			= array($bbcode_func,"[i][/i]", LANHELP_25,"italic.png");
+		$bbcode['u'] 			= array($bbcode_func,"[u][/u]", LANHELP_26,"underline.png");
+		$bbcode['justify'] 		= array($bbcode_func,"[justify][/justify]", LANHELP_53,"center.png"); // FIXME bbcode icon
+		$bbcode['center'] 		= array($bbcode_func,"[center][/center]", LANHELP_28,"center.png");
+		$bbcode['left'] 		= array($bbcode_func,"[left][/left]", LANHELP_29,"left.png");
+		$bbcode['right'] 		= array($bbcode_func,"[right][/right]", LANHELP_30,"right.png");
+		$bbcode['bq'] 			= array($bbcode_func,"[blockquote][/blockquote]", LANHELP_31,"blockquote.png");
+		$bbcode['code'] 		= array($bbcode_func,"[code][/code]", LANHELP_32,"code.png");
+		$bbcode['list'] 		= array($bbcode_func,"[list][/list]", LANHELP_36,"list.png");
+		$bbcode['img'] 			= array($bbcode_func,"[img][/img]", LANHELP_27,"image.png");
+		$bbcode['flash']		= array($bbcode_func,"[flash=width,height][/flash]", LANHELP_47,"flash.png");
+		$bbcode['youtube'] 		= array($bbcode_func,"[youtube][/youtube]", LANHELP_48,"youtube.png");
+		$bbcode['sanitised'] 	= array('', '', '');
+		$bbcode['format'] 		= array('dropdown', '[format]', 'da',"<select><option>hello</option></select>");
 		
-		$bbcode['nobr'] = array($bbcode_func,"[nobr][/nobr]", LANHELP_51, "nobr.png"); // FIXME bbcode icon
-		$bbcode['br'] = array($bbcode_func,"[br]", LANHELP_52, "br.png"); // FIXME bbcode icon
-		$bbcode['block'] = array($bbcode_func,"[block][/block]", LANHELP_54,"block.png"); // FIXME bbcode icon, interactive interface, theme hooks
+		$bbcode['nobr'] 		= array($bbcode_func,"[nobr][/nobr]", LANHELP_51, "nobr.png"); // FIXME bbcode icon
+		$bbcode['br'] 			= array($bbcode_func,"[br]", LANHELP_52, "br.png"); // FIXME bbcode icon
+		$bbcode['block'] 		= array($bbcode_func,"[block][/block]", LANHELP_54,"block.png"); // FIXME bbcode icon, interactive interface, theme hooks
 
-		$bbcode['fontsize'] = array("expandit","size_selector_".$rand, LANHELP_22,"fontsize.png","Size_Select",'size_selector_'.$rand);
-		$bbcode['fontcol'] = array("e-expandit","col_selector_".$rand, LANHELP_21,"fontcol.png","Color_Select",'col_selector_'.$rand);
-		$bbcode['preimage'] = array("e-dialog","preimage_selector_".$rand, LANHELP_45.$imagedir_display,"preimage.png","PreImage_Select","preimage_selector_".$rand);
-		$bbcode['prefile'] = array("expandit","prefile_selector_".$rand, LANHELP_39,"prefile.png","PreFile_Select",'prefile_selector_'.$rand);
+		$bbcode['fontsize'] 	= array("expandit","size_selector_".$rand, LANHELP_22,"fontsize.png","Size_Select",'size_selector_'.$rand);
+		$bbcode['fontcol'] 		= array("e-expandit","col_selector_".$rand, LANHELP_21,"fontcol.png","Color_Select",'col_selector_'.$rand);
+		$bbcode['preimage'] 	= array("e-dialog","preimage_selector_".$rand, LANHELP_45.$imagedir_display,"preimage.png","PreImage_Select","preimage_selector_".$rand);
+		$bbcode['prefile'] 		= array("expandit","prefile_selector_".$rand, LANHELP_39,"prefile.png","PreFile_Select",'prefile_selector_'.$rand);
 
 		if(!isset($iconpath[$parm]))
 		{

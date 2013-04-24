@@ -1024,12 +1024,13 @@ class forumAdmin
 
 		function show_rules()
 		{
-			$pref = e107::getPref();
-			$ns = e107::getRender();
-			$sql = e107::getDB();
-			$tp = e107::getParser();
-			$frm = e107::getForm();
+			$pref 	= e107::getPref();
+			$ns 	= e107::getRender();
+			$sql 	= e107::getDB();
+			$tp 	= e107::getParser();
+			$frm 	= e107::getForm();
 
+			/*
 			$sql->select("wmessage");
 			list($null) = $sql->fetch();
 			list($null) = $sql->fetch();
@@ -1037,7 +1038,9 @@ class forumAdmin
 			list($id, $guestrules, $wm_active4) = $sql->fetch();
 			list($id, $memberrules, $wm_active5) = $sql->fetch();
 			list($id, $adminrules, $wm_active6) = $sql->fetch();
-
+			*/
+			
+			
 			if($sql->select('generic','*',"gen_type='forum_rules_guest'"))
 			{
 				$guest_rules = $sql->fetch();

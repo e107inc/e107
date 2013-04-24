@@ -29,17 +29,21 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help")
 
 
 // DONE - full rewrite, EVERYTHING - bbcode class (php + JS), core callbacks, tooltip help, optimize
+/**
+ * @DEPRECATED use $frm->bbarea() instead. 
+ */
 function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $helpfunc = "help", $helpsize = '')
 {
-	return e107::getBB()->renderButtons($mode,'data'); // guessing the name of the textarea as 'data' no indicator unfortunately. 
+	
+	$options = array('trigger' => $addtextfunc );
+	
+	return e107::getBB()->renderButtons($mode,'data',$options); // guessing the name of the textarea as 'data' no indicator unfortunately. 
 	// may cause pre-image and pre-file selector issues. 
 	
-	
-	
-	
-	
-	
+		
   //  if(defsettrue('e_WYSIWYG')) { return; }
+	
+	/*
 	global $tp, $pref, $eplug_bb, $bbcode_func, $register_bb, $bbcode_help, $bbcode_helpactive, $bbcode_helptag, $bbcode_helpsize;
 	$bbcode_helpsize = $helpsize;
 
@@ -122,7 +126,8 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	{
     	return "ERROR: ".e_CORE."shortcodes/batch/bbcode_shortcodes.php IS NOT READABLE.";
 	}
-
+	*/
+	
 }
 
 
