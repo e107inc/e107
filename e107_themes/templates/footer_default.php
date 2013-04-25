@@ -237,6 +237,7 @@ echo "</body></html>";
 //
 // I Send the buffered page data, along with appropriate headers
 //
+header("X-Powered-By: e107", true); // no less secure than e107-specific html. 
 $page = ob_get_clean();
 
 $etag = md5($page);

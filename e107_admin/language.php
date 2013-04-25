@@ -180,7 +180,7 @@ function share($newfile)
 {
 	global $pref;
 	
-	if(!$newfile)
+	if(!$newfile || E107_DEBUG_LEVEL > 0)
 	{
 		return;
 	}
@@ -698,7 +698,7 @@ function zip_up_lang($language)
 	$ret = array();
 	$ret['file'] = "";
 	
-	if($_SESSION['lancheck'][$language]['total'] > 0)
+	if($_SESSION['lancheck'][$language]['total'] > 0 && !E107_DEBUG_LEVEL)
 	{
 		$ret = array();
 		$ret['error'] = TRUE;
