@@ -20,7 +20,7 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
-if(SAFE_MODE === false)
+if(defined('SAFE_MODE') && SAFE_MODE === false)
 {
 	@set_time_limit(10 * 60);	// throws error in safe-mode. 
 }
