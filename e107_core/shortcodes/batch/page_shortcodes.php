@@ -168,7 +168,7 @@ class cpage_shortcodes extends e_shortcode
 		return '<a class="cpage" href="'.$url.'">'.$this->sc_cpagetitle().'</a>';
 	}
 	
-	function sc_cpagebutton($parm,$options)
+	function sc_cpagebutton($parm)
 	{
 		$url = $this->sc_cpageurl();
 		
@@ -177,7 +177,7 @@ class cpage_shortcodes extends e_shortcode
 			return $url;
 		}
 		
-		parse_str($options,$options);
+		parse_str($parm,$options);
 		
 		$text = vartrue($options['text'], "Read more..");
 		$size = vartrue($options['size'], "");
