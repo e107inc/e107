@@ -125,29 +125,34 @@ class e107_db_debug {
 
 	function Mark_Query($query, $rli, $origQryRes, $aTrace, $mytime, $curtable) 
 	{
-	  global $sql;
+	//  global $sql;
+		$sql = e107::getDb( $rli);
 
-	  // Explain the query, if possible...
-	  list($qtype,$args) = explode(" ", ltrim($query), 2);
+		 // Explain the query, if possible...
+		list($qtype,$args) = explode(" ", ltrim($query), 2); 
 
-	  $nFields=0;
-	  $bExplained = FALSE;
-	  $ExplainText = '';
+		$nFields=0;
+		$bExplained = FALSE;
+		$ExplainText = '';
 	  // Note the subtle bracket in the second comparison! Also, strcasecmp() returns zero on match
-	  if (!strcasecmp($qtype,'SELECT') || !strcasecmp($qtype,'(SELECT'))
-	  {	// It's a SELECT statement - explain it
+		if (!strcasecmp($qtype,'SELECT') || !strcasecmp($qtype,'(SELECT'))
+		{	// It's a SELECT statement - explain it
 		// $rli should always be set by caller
-		$sQryRes = (is_null($rli) ? mysql_query("EXPLAIN {$query}") :  mysql_query("EXPLAIN {$query}", $rli));
-		if ($sQryRes) 
-		{ // There's something to explain
-		  $nFields = mysql_num_fields($sQryRes);
-		  $bExplained = TRUE;
+	//	$sQryRes = (is_null($rli) ? mysql_query("EXPLAIN {$query}") :  mysql_query("EXPLAIN {$query}", $rli));
+	
+		$sQryRes = $sql->gen("EXPLAIN {$query}");
+		
+			if ($sQryRes)  // There's something to explain
+			{ 
+				//$nFields = mysql_num_fields($sQryRes);
+				$nFields = $sql->columnCount($sQryRes); // mysql_num_fields($sQryRes);
+				$bExplained = TRUE;
+			}
+		} 
+		else 
+		{	// Don't run 'EXPLAIN' on other queries
+			$sQryRes = $origQryRes;			// Return from original query could be TRUE or a link resource if success
 		}
-	  } 
-	  else 
-	  {	// Don't run 'EXPLAIN' on other queries
-		$sQryRes = $origQryRes;			// Return from original query could be TRUE or a link resource if success
-	  }
 
 		// Record Basic query info
 		$sCallingFile	= varset($aTrace[1]['file']);
@@ -164,20 +169,21 @@ class e107_db_debug {
 
 		if ($bExplained) 
 		{
-		  $bRowHeaders=FALSE;
-		  while ($row = @mysql_fetch_assoc($sQryRes))
-		  {
-			if (!$bRowHeaders) 
+			$bRowHeaders=FALSE;
+		//  while ($row = @mysql_fetch_assoc($sQryRes))
+			while ($row = $sql->fetch())
 			{
-			  $bRowHeaders=TRUE;
-			  $t['explain']="<tr><td class='forumheader3'><b>".implode("</b></td><td class='forumheader3'><b>", array_keys($row))."</b></td></tr>\n";
+				if (!$bRowHeaders) 
+				{
+				  $bRowHeaders=TRUE;
+				  $t['explain']="<tr><td class='forumheader3'><b>".implode("</b></td><td class='forumheader3'><b>", array_keys($row))."</b></td></tr>\n";
+				}
+				$t['explain'] .= "<tr><td class='forumheader3'>".implode("&nbsp;</td><td class='forumheader3'>", array_values($row))."&nbsp;</td></tr>\n";
 			}
-			$t['explain'] .= "<tr><td class='forumheader3'>".implode("&nbsp;</td><td class='forumheader3'>", array_values($row))."&nbsp;</td></tr>\n";
-		  }
 		} 
 		else 
 		{
-		  $t['explain'] = $ExplainText;
+			$t['explain'] = $ExplainText;
 		}
 
 		$this->aTimeMarks[$this->nTimeMarks]['DB Time'] += $mytime;
@@ -190,13 +196,15 @@ class e107_db_debug {
 		} 
 		else 
 		{
-			$this->aDBbyTable[$curtable]['Table']=$curtable;
-			$this->aDBbyTable[$curtable]['%DB Time']=0;  // placeholder
-			$this->aDBbyTable[$curtable]['%DB Count']=0; // placeholder
-			$this->aDBbyTable[$curtable]['DB Time']=$mytime;
-			$this->aDBbyTable[$curtable]['DB Count']=1;
+			$this->aDBbyTable[$curtable]['Table']		= $curtable;
+			$this->aDBbyTable[$curtable]['%DB Time']	= 0;  // placeholder
+			$this->aDBbyTable[$curtable]['%DB Count']	= 0; // placeholder
+			$this->aDBbyTable[$curtable]['DB Time']		= $mytime;
+			$this->aDBbyTable[$curtable]['DB Count']	= 1;
 		}
 	}
+
+
 
 	function Show_SQL_Details() {
 		global $sql;

@@ -99,6 +99,8 @@ class e_db_mysql
 	public	$mySqlServerInfo = '?';			// Server info - needed for various things
 
 	public $total_results = false;			// Total number of results
+	
+	private $pdo = false; // using PDO or not. 
 
 	/**
 	* Constructor - gets language options from the cookie or session
@@ -108,6 +110,12 @@ class e_db_mysql
 	{
 
 		global $pref, $db_defaultPrefix;
+		
+		if(defined('e_PDO') && e_PDO === true)
+		{
+			$this->pdo = true;	
+		}
+		
 		e107::getSingleton('e107_traffic')->BumpWho('Create db object', 1);
 
 		$this->mySQLPrefix = MPREFIX;				// Set the default prefix - may be overridden
@@ -159,11 +167,28 @@ class e_db_mysql
 
 		$temp = $this->mySQLerror;
 		$this->mySQLerror = FALSE;
-		if(defined("USE_PERSISTANT_DB") && USE_PERSISTANT_DB == TRUE)
+		
+		
+		if($this->pdo)
+		{		
+			try
+			{
+				$this->mySQLaccess = new PDO("mysql:host=".$this->mySQLserver.";dbname=".$this->mySQLdefaultdb, $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));		
+			}
+			catch(PDOException $ex)
+			{
+				$this->mySQLlastErrText = $ex->getMessage();
+				//	echo "<pre>".print_r($ex,true)."</pre>";	// Useful for Debug. 
+				return 'e1';
+			}
+
+		}
+		elseif(defined("USE_PERSISTANT_DB") && USE_PERSISTANT_DB == TRUE)
 		{
 			// No persistent link parameter permitted
 			if ( ! $this->mySQLaccess = @mysql_pconnect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword))
 			{
+				$this->mySQLlastErrText = mysql_error();
 				return 'e1';
 			}
 		}
@@ -171,17 +196,18 @@ class e_db_mysql
 		{
 			if ( ! $this->mySQLaccess = @mysql_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, $newLink))
 			{
+				$this->mySQLlastErrText = mysql_error();
 				return 'e1';
 			}
 		}
 
-		$this->mySqlServerInfo = mysql_get_server_info();		// We always need this for db_Set_Charset() - so make generally available
+		$this->mySqlServerInfo = ($this->pdo) ? $this->mySQLaccess->getAttribute(PDO::ATTR_SERVER_INFO) : mysql_get_server_info();		// We always need this for db_Set_Charset() - so make generally available
 
 		// Set utf8 connection?
 		//@TODO: simplify when yet undiscovered side-effects will be fixed
 		$this->db_Set_Charset();
 
-		if (!@mysql_select_db($this->mySQLdefaultdb, $this->mySQLaccess))
+		if ($this->pdo!== true && !@mysql_select_db($this->mySQLdefaultdb, $this->mySQLaccess))
 		{
 			return 'e2';
 		}
@@ -285,7 +311,16 @@ class e_db_mysql
 		}
 
 		$b = microtime();
-		$sQryRes = is_null($rli) ? @mysql_query($query,$this->mySQLaccess) : @mysql_query($query, $rli);
+		
+		if($this->pdo)
+		{
+			$sQryRes = $this->mySQLaccess->query($query); 	
+		}
+		else 
+		{
+			$sQryRes = is_null($rli) ? @mysql_query($query,$this->mySQLaccess) : @mysql_query($query, $rli);	
+		}
+		
 		$e = microtime();
 
 		e107::getSingleton('e107_traffic')->Bump('db_Query', $b, $e);
@@ -297,8 +332,8 @@ class e_db_mysql
 		if ((strpos($query,'SQL_CALC_FOUND_ROWS') !== FALSE) && (strpos($query,'SELECT') !== FALSE))
 		{	// Need to get the total record count as well. Return code is a resource identifier
 			// Have to do this before any debug action, otherwise this bit gets messed up
-			$fr = mysql_query('SELECT FOUND_ROWS()', $this->mySQLaccess);
-			$rc = mysql_fetch_array($fr);
+			$fr = ($this->pdo) ? $this->mySQLaccess->query('SELECT FOUND_ROWS()') : mysql_query('SELECT FOUND_ROWS()', $this->mySQLaccess);
+			$rc = ($this->pdo) ? $this->mySQLaccess->fetch() : mysql_fetch_array($fr);
 			$this->total_results = (int) $rc['FOUND_ROWS()'];
 		}
 
@@ -638,14 +673,14 @@ class e_db_mysql
 		{
 			if(true === $REPLACE)
 			{
-				$tmp = mysql_affected_rows($this->mySQLaccess);
+				$tmp = ($this->pdo) ? $this->mySQLresult->rowCount() : mysql_affected_rows($this->mySQLaccess);
 				$this->dbError('db_Replace');
 				// $tmp == -1 (error), $tmp == 0 (not modified), $tmp == 1 (added), greater (replaced)
 				if ($tmp == -1) { return false; } // mysql_affected_rows error
 				return $tmp;
 			}
 
-			$tmp = mysql_insert_id($this->mySQLaccess);
+			$tmp = ($this->pdo) ? $this->mySQLaccess->lastInsertId() : mysql_insert_id($this->mySQLaccess);
 			$this->dbError('db_Insert');
 			return ($tmp) ? $tmp : TRUE; // return true even if table doesn't have auto-increment.
 		}
@@ -761,7 +796,7 @@ class e_db_mysql
 		$query = 'UPDATE '.$this->mySQLPrefix.$table.' SET '.$arg;
 		if ($result = $this->mySQLresult = $this->db_Query($query, NULL, 'db_Update', $debug, $log_type, $log_remark))
 		{
-			$result = mysql_affected_rows($this->mySQLaccess);
+			$result = ($this->pdo) ? $this->mySQLresult->rowCount() : mysql_affected_rows($this->mySQLaccess);
 			$this->dbError('db_Update');
 			if ($result == -1) { return false; }	// Error return from mysql_affected_rows
 			return $result;
@@ -901,7 +936,7 @@ class e_db_mysql
 	  }
 	  if ($result = $this->mySQLresult = $this->db_Query('UPDATE '.$this->mySQLPrefix.$table.' SET '.$new_data.$vars.' '.$arg, NULL, 'db_UpdateArray', $debug, $log_type, $log_remark))
 	  {
-		$result = mysql_affected_rows($this->mySQLaccess);
+		$result = ($this->pdo) ? $this->mySQLresult->rowCount() : mysql_affected_rows($this->mySQLaccess);
 		if ($result == -1) return FALSE;	// Error return from mysql_affected_rows
 		return $result;
 	  }
@@ -941,10 +976,30 @@ class e_db_mysql
 		{
 			$type=MYSQL_ASSOC;
 		}
+		
+		if($this->pdo) // convert type to PDO. 
+		{
+			switch ($type) 
+			{
+				case MYSQL_BOTH:
+					$type = PDO::FETCH_BOTH;	
+				break;
+				
+				case MYSQL_NUM: 
+					$type = PDO::FETCH_NUM;	
+				break;
+				
+				case MYSQL_ASSOC:
+				default:
+					$type = PDO::FETCH_ASSOC;
+				break;
+			}
+		}
+		
 		$b = microtime();
 		if($this->mySQLresult)
 		{
-			$row = @mysql_fetch_array($this->mySQLresult,$type);
+			$row = ($this->pdo) ? $this->mySQLresult->fetch($type) :  @mysql_fetch_array($this->mySQLresult,$type);
 			e107::getSingleton('e107_traffic')->Bump('db_Fetch', $b);
 			if ($row)
 			{
@@ -986,7 +1041,7 @@ class e_db_mysql
 			$query=$table;
 			if ($this->mySQLresult = $this->db_Query($query, NULL, 'db_Count', $debug, $log_type, $log_remark))
 			{
-				$rows = $this->mySQLrows = @mysql_fetch_array($this->mySQLresult);
+				$rows = $this->mySQLrows = ($this->pdo) ? $this->mySQLresult->fetch(PDO::FETCH_ASSOC) : @mysql_fetch_array($this->mySQLresult);
 				$this->dbError('db_Count');
 				return $rows['COUNT(*)'];
 			}
@@ -1006,7 +1061,7 @@ class e_db_mysql
 		$query='SELECT COUNT'.$fields.' FROM '.$this->mySQLPrefix.$table.' '.$arg;
 		if ($this->mySQLresult = $this->db_Query($query, NULL, 'db_Count', $debug, $log_type, $log_remark))
 		{
-			$rows = $this->mySQLrows = @mysql_fetch_array($this->mySQLresult);
+			$rows = $this->mySQLrows = ($this->pdo) ? $this->mySQLresult->fetch(PDO::FETCH_NUM) : @mysql_fetch_array($this->mySQLresult);
 			$this->dbError('db_Count');
 			return $rows[0];
 		}
@@ -1088,7 +1143,7 @@ class e_db_mysql
 		{
 			if ($result = $this->mySQLresult = $this->db_Query('DELETE FROM '.$this->mySQLPrefix.$table.' WHERE '.$arg, NULL, 'db_Delete', $debug, $log_type, $log_remark))
 			{
-				$tmp = mysql_affected_rows($this->mySQLaccess);
+				$tmp = ($this->pdo) ? $this->mySQLresult->rowCount() :  mysql_affected_rows($this->mySQLaccess);
 				$this->dbError('db_Delete');
 				return $tmp;
 			}
@@ -1113,7 +1168,7 @@ class e_db_mysql
 	*/
 	function db_Rows()
 	{
-		$rows = $this->mySQLrows = @mysql_num_rows($this->mySQLresult);
+		$rows = $this->mySQLrows = ($this->pdo) ? $this->mySQLresult->rowCount() :  @mysql_num_rows($this->mySQLresult);
 		$this->dbError('db_Rows');
 		return $rows;
 	}
@@ -1172,7 +1227,7 @@ class e_db_mysql
 		{	// Successful query which may return a row count (because it operated on a number of rows without returning a result set)
 			if(preg_match('#^(DELETE|INSERT|REPLACE|UPDATE)#',$query, $matches))
 			{	// Need to check mysql_affected_rows() - to return number of rows actually updated
-				$tmp = mysql_affected_rows($this->mySQLaccess);
+				$tmp = ($this->pdo) ? $this->mySQLresult->rowCount() : mysql_affected_rows($this->mySQLaccess);
 				$this->dbError('db_Select_gen');
 				return $tmp;
 			}
@@ -1475,6 +1530,21 @@ class e_db_mysql
 	{
 		return $this->field($table,$fieldid,$key, $retinfo);		
 	}
+
+
+	function columnCount()
+	{
+		if($this->pdo)
+		{
+			return $this->mySQLresult->columnCount();
+		}
+		else
+		{
+			return mysql_num_fields($this->mySQLresult);	
+		}
+
+	}
+
 
 
 	/**
@@ -1883,7 +1953,7 @@ class e_db_mysql
 	{
 		// Get the default user choice
 		global $mySQLcharset;
-		if (varset($mySQLcharset) != 'utf8')
+		if (isset($mySQLcharset) && $mySQLcharset != 'utf8')
 		{
 			// Only utf8 is accepted
 			$mySQLcharset = '';
@@ -1894,7 +1964,7 @@ class e_db_mysql
 		{
 			if ( ! $debug)
 			{
-			    @mysql_query("SET NAMES `$charset`");
+			   ($this->pdo) ? $this->db_Query("SET NAMES `$charset`") : @mysql_query("SET NAMES `$charset`");
 			}
 			else
 			{
