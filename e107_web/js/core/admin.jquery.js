@@ -245,24 +245,7 @@ $(document).ready(function()
 
 		
 		
-		// run tips on .field-help 
-		$("input,textarea,select,label,.e-tip").each(function(c) {
-						
-			var t = $(this).nextAll(".field-help");
-			t.hide();
-		//	alert('hello');
-			$(this).tooltip({
-				title: function() {
-					var tip = t.html();			
-					return tip; 
-				},
-				fade: true,
-				html: true,
-				placement: 'right',
-				delay: { show: 300, hide: 600 } 
-			});
-		
-		});
+	
 		
 		
 		$('.e-noclick').click(function(e) {
@@ -286,7 +269,24 @@ $(document).ready(function()
 			
 		});
 		
+			// run tips on .field-help 
+		$("div.tbox,input,textarea,select,label,.e-tip").each(function(c) {
+						
+			var t = $(this).nextAll(".field-help");
+			t.hide();
+		//	alert('hello');
+			$(this).tooltip({
+				title: function() {
+					var tip = t.html();			
+					return tip; 
+				},
+				fade: true,
+				html: true,
+				placement: 'right',
+				delay: { show: 300, hide: 600 } 
+			});
 		
+		});
 	
 	//	 $(".e-spinner").spinner(); //FIXME breaks tooltips etc. 
 	
