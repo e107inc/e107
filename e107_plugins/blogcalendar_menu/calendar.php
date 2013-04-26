@@ -17,85 +17,132 @@
 | Based on code by: Thomas Bouve (crahan@gmx.net) and
 | and Based on: PHP Calendar by Keith Devens http://www.keithdevens.com/software/php_calendar/
 */
+
+
+
+
+
+
 	
 if (!defined('e107_INIT')) { exit; }
 
-function calendar($req_day, $req_month, $req_year, $links = NULL, $ws = "sunday") {
-	// get access to the preferences
-	global $pref;
+function calendar($req_day, $req_month, $req_year, $links = NULL, $ws = "sunday") 
+{
+	
+	$pref = e107::getPref();
 	 
 	// prepare the day array
-	$darray = array(BLOGCAL_D1, BLOGCAL_D2, BLOGCAL_D3, BLOGCAL_D4,
-		BLOGCAL_D5, BLOGCAL_D6, BLOGCAL_D7);
+	$darray = array(BLOGCAL_D1, BLOGCAL_D2, BLOGCAL_D3, BLOGCAL_D4,	BLOGCAL_D5, BLOGCAL_D6, BLOGCAL_D7);
+	$marray = array('',BLOGCAL_M1, BLOGCAL_M2, BLOGCAL_M3, BLOGCAL_M4,	BLOGCAL_M5, BLOGCAL_M6, BLOGCAL_M7, BLOGCAL_M8,	BLOGCAL_M9, BLOGCAL_M10, BLOGCAL_M11, BLOGCAL_M12);
 	 
 	// what day does the week start on?
-	switch($ws) {
+	switch($ws) 
+	{
 		case "monday":
-		$ws = "1";
-		 break;
+			$ws = "1";
+		break;
+		 
 		case "sunday":
-		 array_unshift($darray, array_pop($darray));
+			array_unshift($darray, array_pop($darray));
 		$ws = "0";
 	}
 	 
 	// what's the padding we should use for the cells?
-	$padding = (isset($pref['blogcal_padding']) && $pref['blogcal_padding']) ? $pref['blogcal_padding']: "2";
+	$padding 		= (isset($pref['blogcal_padding']) && $pref['blogcal_padding']) ? $pref['blogcal_padding']: "2";
 	 
-	$date = mktime(0, 0, 0, $req_month, 1, $req_year);
-	$last_day = date('t', $date);
-	$date_info = getdate($date);
-	$day_of_week = $date_info['wday'];
-	if ($ws && $day_of_week == 0) $day_of_week = 7;
+	$date 			= mktime(0, 0, 0, $req_month, 1, $req_year);
+	$last_day 		= date('t', $date);
+	$date_info 		= getdate($date);
+	$day_of_week 	= $date_info['wday'];
+	
+	if ($ws && $day_of_week == 0) 
+	{
+		$day_of_week = 7;
+	}
 	 
 	// print the daynames
-	$calendar = "<table class='fborder'>";
-	$calendar .= '<tr>';
-	foreach($darray as $dheader) {
-		$calendar .= "<td class='forumheader' style='padding: ".$padding."px;'><span class='smalltext'>$dheader</span></td>";
+	$calendar = "<table class='table blogcalendar fborder'>";
+	$calendar .= '<thead><tr>';
+	
+	foreach($darray as $dheader) 
+	{
+		$calendar .= "<th class='forumheader blogcalendar-day-name'><span class='smalltext'>$dheader</span></th>";
 	}
-	$calendar .= "</tr>";
+	
+	$calendar .= "</tr>
+					</thead>
+					<tbody>";
 	$calendar .= '<tr>';
 	 
 	$day_of_month = 1;
 	$tablerow = 1;
 	 
 	// take care of the first "empty" days of the month
-	if ($day_of_week-$ws > 0) {
-		$calendar .= "<td colspan='";
+	if ($day_of_week-$ws > 0) 
+	{
+		$calendar .= "<td class='muted blogcalendar-day-empty' colspan='";
 		$calendar .= $day_of_week-$ws;
 		$calendar .= "'>&nbsp;</td>";
 	}
 	 
 	// print the days of the month (take the $ws into account)
-	while ($day_of_month <= $last_day) {
-		if ($day_of_week-$ws == 7) {
+	while ($day_of_month <= $last_day) 
+	{
+		if ($day_of_week-$ws == 7) 
+		{
 			#start a new week
 			$calendar .= "</tr><tr>";
 			$day_of_week = 0+$ws;
 			$tablerow++;
 		}
-		if ($day_of_month == $req_day) {
-			$day_style = isset($links[$day_of_month]) ? "indent" : "forumheader3";
-		} else {
-			$day_style = isset($links[$day_of_month]) ? "indent" : "forumheader3";
+		
+		if ($day_of_month == $req_day) 
+		{
+			$day_style = isset($links[$day_of_month]) ? "indent blogcalendar-day-active" : "forumheader3 blogcalendar-day";
 		}
-		$calendar .= "<td class='$day_style' style='padding: ".$padding."px;'><span class='smalltext'>";
-		$calendar .= isset($links[$day_of_month]) ? "<a href='".$links[$day_of_month]."'>":"";
+		else 
+		{
+			$day_style = isset($links[$day_of_month]) ? "indent blogcalendar-day-active" : "forumheader3 blogcalendar-day";
+		}
+		
+		$calendar .= "<td class='$day_style' ><span class='smalltext blogcalendar-day-link'>";
+		$calendar .= isset($links[$day_of_month]) ? "<a class='blogcalendar-day-link' href='".$links[$day_of_month]."'>":"";
 		$calendar .= $day_of_month;
 		$calendar .= isset($links[$day_of_month]) ? "</a>" : "";
 		$calendar .= "</span></td>";
 		$day_of_month++;
 		$day_of_week++;
 	}
-	if ($day_of_week-$ws != 7) {
-		$calendar .= '<td colspan="' . (7 - $day_of_week+$ws) . '">&nbsp;</td>';
+	
+	if ($day_of_week-$ws != 7) 
+	{
+		$calendar .= '<td class="blogcalendar-day-empty" colspan="' . (7 - $day_of_week+$ws) . '">&nbsp;</td>';
 	}
+	
 	$calendar .= "</tr>";
-	if ($tablerow != 6) {
-		$calendar .= "<tr><td style='padding: ".$padding."px;' colspan='6'>&nbsp;</td></tr>";
+	
+	if ($tablerow != 5) 
+	{
+		$calendar .= "<tr><td class='blogcalendar-day-empty' style='padding: ".$padding."px;' colspan='6'>&nbsp;</td></tr>";
 	}
 	 
-	$calendar .= "</table>";
-	return $calendar;
+	$calendar .= "</tbody></table>";
+	
+//	$calendar .= "tablerow = ".$tablerow;
+
+	if(deftrue('e_BOOTSTRAP'))
+	{
+		$active = date("n") == $req_month ? 'active' : '';
+		$text = "<div class='item {$active}'>";
+		$text .= "<h5>".$marray[$req_month]." ".$req_year."</h5>";
+		$text .= $calendar;
+		$text .= "</div>";
+	}
+	else // BC
+	{
+		$text = $calendar;
+	}	
+	
+	return $text;
 }
 ?>

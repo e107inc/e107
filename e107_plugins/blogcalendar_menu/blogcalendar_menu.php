@@ -19,21 +19,21 @@
 */
 if (!defined('e107_INIT')) { exit; }
 
+
 $cString = 'nq_news_blogacalendar_menu_'.preg_replace('#[^\w]#', '', $parm);
 $cached = e107::getCache()->retrieve($cString);
 
 if(false === $cached)
 {
+
 	require_once(e_PLUGIN."blogcalendar_menu/calendar.php");
 	require_once(e_PLUGIN."blogcalendar_menu/functions.php");
-		
+	
 	// ------------------------------
 	// initialization + fetch options
 	// ------------------------------
-	$prefix = e_PLUGIN."blogcalendar_menu";
-	$marray = array(BLOGCAL_M1, BLOGCAL_M2, BLOGCAL_M3, BLOGCAL_M4,
-		BLOGCAL_M5, BLOGCAL_M6, BLOGCAL_M7, BLOGCAL_M8,
-		BLOGCAL_M9, BLOGCAL_M10, BLOGCAL_M11, BLOGCAL_M12);
+	$prefix	 			= e_PLUGIN."blogcalendar_menu";
+	$marray 			= array(BLOGCAL_M1, BLOGCAL_M2, BLOGCAL_M3, BLOGCAL_M4,	BLOGCAL_M5, BLOGCAL_M6, BLOGCAL_M7, BLOGCAL_M8,	BLOGCAL_M9, BLOGCAL_M10, BLOGCAL_M11, BLOGCAL_M12);
 	$pref['blogcal_ws'] = "monday";
 		
 	// ----------------------------------------------
@@ -98,12 +98,20 @@ if(false === $cached)
 	// -------------------------------------------
 	// get links to all newsitems in current month
 	// -------------------------------------------
-	$month_start = mktime(0, 0, 0, $req_month, 1, $req_year);
-	$lastday = date("t", $month_start);
-	$month_end = mktime(23, 59, 59, $req_month, $lastday, $req_year);
-	$start = mktime(0, 0, 0, 1, 1, $req_year);
-	$end = time();
+	$month_start 	= mktime(0, 0, 0, $req_month, 1, $req_year);
+	$lastday 		= date("t", $month_start);
+	$month_end 		= mktime(23, 59, 59, $req_month, $lastday, $req_year);
+	$start 			= mktime(0, 0, 0, 1, 1, $req_year);
+	$end 			= time();
+	
+	$year_start 	= mktime(0, 0, 0, 1, 1, $req_year);
+	$year_end 		= mktime(23, 59, 59, 12, 31, $req_year);
+	
 	$sql->db_Select("news", "news_id, news_datestamp", "news_class IN (".USERCLASS_LIST.") AND news_datestamp > ".intval($start)." AND news_datestamp < ".intval($end));
+	
+	$links = array();
+	$months = array();
+	
 	while ($news = $sql->db_Fetch())
 	{
 		$xmonth = date("n", $news['news_datestamp']);
@@ -111,14 +119,18 @@ if(false === $cached)
 		{
 			$month_links[$xmonth] = e107::getUrl()->create('news/list/month', 'idv='.formatDate($req_year, $xmonth));//e_BASE."news.php?month.".formatDate($req_year, $xmonth);
 		}
-		if($news['news_datestamp'] >= $month_start AND $news['news_datestamp'] <= $month_end)
+		if(($news['news_datestamp'] >= $month_start && $news['news_datestamp'] <= $month_end) || (deftrue('e_BOOTSTRAP') && $news['news_datestamp'] >= $year_start && $news['news_datestamp'] <= $year_end))
 		{
 			$xday = date("j", $news['news_datestamp']);
 			if (!isset($day_links[$xday]) || !$day_links[$xday])
 			{
+				$links[$xmonth][$xday] = e107::getUrl()->create('news/list/day', 'id='.formatDate($req_year, $xmonth, $xday));//e_BASE."news.php?day.".formatDate($req_year, $req_month, $xday);
+	
 				$day_links[$xday] = e107::getUrl()->create('news/list/day', 'id='.formatDate($req_year, $xmonth, $xday));//e_BASE."news.php?day.".formatDate($req_year, $req_month, $xday);
 			}
 		}
+		
+		$months[$xmonth] = 1;
 	}
 	
 	// if we're listing the current year, add the current month to the list regardless of posts
@@ -138,19 +150,55 @@ if(false === $cached)
 		
 	// close the select item
 	$month_selector .= "</select></div>";
-		
+	
+	
+	
+	
+	if(deftrue('e_BOOTSTRAP'))
+	{
+		$month_selector = '<div class="btn-group pull-right"><a class="btn btn-mini " href="#blogCalendar" data-slide="prev">‹</a>  
+ 		 <a class="btn btn-mini" href="#blogCalendar" data-slide="next">›</a></div>';
+		 $caption = "<div class='inline-text'>".BLOGCAL_L1." ".$req_year.$month_selector."</div>";	
+	}	
+	else
+	{
+		 $caption = "<div class='form-inline'>".BLOGCAL_L1." ".$req_year."</div>";		
+	}
+	
+	
 		
 	// ------------------------
 	// create and show calendar
 	// ------------------------
+	/*
 	$menu = "<div style='text-align: center;'><table border='0' cellspacing='7'>";
 	$menu .= "<tr><td>$month_selector";
 	$menu .= "<div style='text-align:center'>".calendar($req_day, $req_month, $req_year, $day_links, $pref['blogcal_ws'])."</div>";
 	$menu .= "<div class='forumheader' style='text-align: center; margin-top:2px;'><span class='smalltext'><a href='$prefix/archive.php'>".BLOGCAL_L2."</a></span></div></td></tr>";
 	$menu .= "</table></div>";
-	$cached = $ns->tablerender(BLOGCAL_L1." ".$req_year, $menu, 'blog_calendar', true);
+	*/
+	$menu = "<div id='blogCalendar' data-interval='false' class='carousel slide blogcalendar-block' style='text-align: center;'><table class='table blogcalendar-table' border='0' cellspacing='7'>";
+	$menu .= "<tr><td class='blogcalendar-month-selector'>"; // .$month_selector;
+	if(!defset('e_BOOTSTRAP')) // BC
+	{
+		$menu .= $month_selector; 	
+	}
 	
-	$cached = e107::getCache()->set($cString, $menu_text);
+	$menu .= "<div class='blogcalendar-day-selector carousel-inner' style='text-align:center'>";
+	
+	foreach($months as $k=>$v)
+	{
+		$menu .= calendar($req_day, $k, $req_year, $links[$k], $pref['blogcal_ws']);
+	}
+	$menu .= "</div>";
+	$menu .= "<div class='forumheader blogcalendar-archive-link' style='text-align: center; margin-top:2px;'><span class='smalltext'><a class='blogcalendar-archive-link btn btn-small' href='$prefix/archive.php'>".BLOGCAL_L2."</a></span></div>
+	</td></tr>";
+	$menu .= "</table></div>";
+	
+	$cached = $ns->tablerender($caption, $menu, 'blog_calendar', true);
+//	echo "day= ".$req_day. " month=".$req_month." year=".$req_year." links=".print_a($day_links)." ws=".$pref['blogcal_ws'];
+	e107::getCache()->set($cString, $menu);
+	
 }
 
 echo $cached;
