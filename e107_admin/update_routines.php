@@ -315,7 +315,7 @@ function update_706_to_800($type='')
 //	$new_tables = array('audit_log', 'dblog', 'news_rewrite', 'core_media', 'core_media_cat','cron', 'mail_recipients', 'mail_content');
 
 	// List of core prefs that need to be converted from serialized to e107ArrayStorage.
-	$serialized_prefs = array("'emote'", "'menu_pref'", "'search_prefs'", "'emote_default'");
+	$serialized_prefs = array("'emote'", "'menu_pref'", "'search_prefs'", "'emote_default'", "'pm_prefs'");
 
 
 	$create_dir = array(e_MEDIA,e_SYSTEM,e_CACHE,e_CACHE_CONTENT,e_CACHE_IMAGE, e_CACHE_DB, e_LOG, e_BACKUP, e_CACHE_URL, e_TEMP);
@@ -434,15 +434,23 @@ function update_706_to_800($type='')
 	// convert all serialized core prefs to e107 ArrayStorage;
 	$serialz_qry = "SUBSTRING( e107_value,1,5)!='array' AND e107_value !='' ";
     $serialz_qry .= "AND e107_name IN (".implode(",",$serialized_prefs).") ";
-		if(e107::getDb()->db_Select("core", "*", $serialz_qry))
+	if(e107::getDb()->select("core", "*", $serialz_qry))
+	{
+		if ($just_check) return update_needed('Convert serialized core prefs');
+		while ($row = e107::getDb()->fetch(MYSQL_ASSOC))
 		{
-			if ($just_check) return update_needed('Convert serialized core prefs');
-			while ($row = e107::getDb()->db_Fetch(MYSQL_ASSOC))
-			{
-				$status = e107::getDb('sql2')->update('core',"e107_value=\"".convert_serialized($row['e107_value'])."\" WHERE e107_name='".$row['e107_name']."'");				
-				$log->logMessage(LAN_UPDATE_22.$row['e107_name'], $status);
-			}	
+			$status = e107::getDb('sql2')->update('core',"e107_value=\"".convert_serialized($row['e107_value'])."\" WHERE e107_name='".$row['e107_name']."'");				
+			$log->logMessage(LAN_UPDATE_22.$row['e107_name'], $status);
 		}	
+	}	
+	
+	
+	if(e107::getDb()->select("core", "*", "e107_name='pm_prefs' LIMIT 1"))
+	{
+		if ($just_check) return update_needed('Rename the pm prefs');	
+		e107::getDb()->update("core",  "e107_name='plugin_pm' WHERE e107_name = 'pm_prefs' LIMIT 1");
+	}
+	
 	
 	//@TODO de-serialize the user_prefs also. 
 	
