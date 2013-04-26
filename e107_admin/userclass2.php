@@ -540,8 +540,8 @@ if($params == 'edit')
 {
    	$text .= $frm->admin_button('createclass', UCSLAN_14, 'create');
 	$text .= $frm->admin_button('updatecancel', LAN_CANCEL, 'cancel');
- //	$text .= "<input class='button' type='submit' id='createclass' name='createclass' value='".UCSLAN_14."' />";
- //	$text .= "&nbsp;&nbsp;<input class='button' type='submit' id='updatecancel' name='updatecancel' value='".LAN_CANCEL."' />";
+ //	$text .= "<input class='btn' type='submit' id='createclass' name='createclass' value='".UCSLAN_14."' />";
+ //	$text .= "&nbsp;&nbsp;<input class='btn' type='submit' id='updatecancel' name='updatecancel' value='".LAN_CANCEL."' />";
 	$text .= "
 		<input type='hidden' name='userclass_id' value='{$userclass_id}' />
 		";
@@ -550,8 +550,8 @@ else
 {
 	$text .= $frm->admin_button('createclass', UCSLAN_15, 'create');
 	$text .= $frm->admin_button('updatecancel', LAN_CANCEL, 'cancel');
- //	$text .= "<input class='button' type='submit' id='createclass' name='createclass' value='".UCSLAN_15."' />
-  //	&nbsp;&nbsp;<input class='button' type='submit' id='updatecancel' name='updatecancel' value='".LAN_CANCEL."' />";
+ //	$text .= "<input class='btn' type='submit' id='createclass' name='createclass' value='".UCSLAN_15."' />
+  //	&nbsp;&nbsp;<input class='btn' type='submit' id='updatecancel' name='updatecancel' value='".LAN_CANCEL."' />";
 	$text .= "
 	    <input type='hidden' name='userclass_id' value='0' />";
 }

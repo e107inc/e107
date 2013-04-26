@@ -79,7 +79,7 @@ $CALENDAR_TIME_TABLE = "
 
 
 // NAVIGATION BUTTONS
-//$sc_style['NAV_LINKCURRENTMONTH']['pre'] = "<span class='button' style='width:120px; '>";
+//$sc_style['NAV_LINKCURRENTMONTH']['pre'] = "<span class='btn button' style='width:120px; '>";
 //$sc_style['NAV_LINKCURRENTMONTH']['post'] = "</span>";
 $sc_style['EC_NAV_LINKCURRENTMONTH']['pre'] = "";
 $sc_style['EC_NAV_LINKCURRENTMONTH']['post'] = "";

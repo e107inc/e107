@@ -175,7 +175,7 @@ if(!isset($DOWNLOAD_LIST_TABLE_START))
                         ($sort == "DESC" ? "<option value='DESC' selected='selected'>".LAN_dl_26."</option>" : "<option value='DESC'>".LAN_dl_26."</option>")."
                      </select>
                      &nbsp;
-                     <input class='button' type='submit' name='goorder' value='".LAN_dl_27."' />
+                     <input class='btn button' type='submit' name='goorder' value='".LAN_dl_27."' />
                   </td>
                </tr>
                <tr>

@@ -91,13 +91,13 @@ foreach($newsletterArray as $nl)
 	if(preg_match("#".chr(1).USERID."(".chr(1)."|$)#si", $nl['newsletter_subscribers']))
 	{
 		$text .= NLLAN_48."<br /><br />
-		<input class='button' type='submit' name='nlUnsubscribe_".$nl['newsletter_id']."' value='".NLLAN_51."' onclick=\"return jsconfirm('".$tp->toJS(NLLAN_49)."') \" />
+		<input class='btn button' type='submit' name='nlUnsubscribe_".$nl['newsletter_id']."' value='".NLLAN_51."' onclick=\"return jsconfirm('".$tp->toJS(NLLAN_49)."') \" />
 		";
 	}
 	else
 	{
 		$text .= NLLAN_50." <b>".USEREMAIL."</b> )<br /><br />
-		<input class='button' type='submit' name='nlSubscribe_".$nl['newsletter_id']."' value='".NLLAN_52."' onclick=\"return jsconfirm('".$tp->toJS(NLLAN_53)."') \" />
+		<input class='btn button' type='submit' name='nlSubscribe_".$nl['newsletter_id']."' value='".NLLAN_52."' onclick=\"return jsconfirm('".$tp->toJS(NLLAN_53)."') \" />
 		";
 	}
 	$nl_count = $sql -> db_Count('newsletter', "(*)", "WHERE newsletter_parent='".$nl['newsletter_id']."' AND newsletter_flag='1'");

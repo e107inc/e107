@@ -491,7 +491,7 @@ if ($action == "report" && check_class($pref['download_reportbroken']))
 		   	</tr>
 		   	<tr>
 		   	   <td colspan='2' style='text-align:center;'><br />
-	   	   	   <input class='button' type='submit' name='report_download' value=\"".LAN_dl_45."\" />
+	   	   	   <input class='btn button' type='submit' name='report_download' value=\"".LAN_dl_45."\" />
 		   	   </td>
 		   	</tr>
 			</table>

@@ -158,7 +158,7 @@ $textend = preg_replace("/\{(.*?)\}/e", '$\1', $CHAT_TABLE_END);
 $text = $textstart.$textstring.$textend;
 if(CB_MOD)
 {
-	$text = "<form method='post' action='".e_SELF."'>".$text."<input type='submit' class='button' name='moderate' value='".CHATBOX_L13."' /></form>";
+	$text = "<form method='post' action='".e_SELF."'>".$text."<input type='submit' class='btn button' name='moderate' value='".CHATBOX_L13."' /></form>";
 }
 if($message)
 {

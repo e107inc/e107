@@ -520,7 +520,7 @@ if($action == 'cat')
 				<td>".EC_ADLAN_A219."</td>
 				<td>";
 					//<input class='tbox' style='width:150px' id='caticon' type='text' name='ne_new_category_icon' value='".$event_cat_icon."' />
-					//<input class='button' type='button' style='width: 45px; cursor:pointer;' value='".EC_ADLAN_A220."' onclick='expandit(\"cat_icons\")' />
+					//<input class='btn button' type='button' style='width: 45px; cursor:pointer;' value='".EC_ADLAN_A220."' onclick='expandit(\"cat_icons\")' />
 					//<div style='display:none' id='cat_icons'>";
 					/*
 					$fi = new e_file;

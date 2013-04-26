@@ -221,7 +221,7 @@ class user_select
 			<table style='width:100%' class='fborder'>
 			<tr>
 			<td class='forumheader3' style='text-align: center'><input type='text' name='srch' class='tbox' value='".$tp -> post_toForm(varset($_POST['srch'],''))."' size='40'>
-			<input class='button' type='submit' name='dosrch' class='tbox' value='".US_LAN_6."' /></td>
+			<input class='btn button' type='submit' name='dosrch' class='tbox' value='".US_LAN_6."' /></td>
 			</tr>
 			</table>
 			</form>

@@ -663,7 +663,7 @@ if ($action == "uopt")
                </div>
             </fieldset>
             <div class='buttons-bar center'>
-               <input class='button' type='submit' name='generate_filetypes_xml' value='".DOWLAN_77."'/>
+               <input class='btn button' type='submit' name='generate_filetypes_xml' value='".DOWLAN_77."'/>
                </div>
         		</form>
       ";
@@ -716,7 +716,7 @@ if ($action == "uopt")
         	</div>
             </fieldset>
             <div class='buttons-bar center'>
-               <input class='button' type='submit' name='updateuploadoptions' value='".DOWLAN_64."'/>
+               <input class='btn button' type='submit' name='updateuploadoptions' value='".DOWLAN_64."'/>
             </div>
            </form>
       ";

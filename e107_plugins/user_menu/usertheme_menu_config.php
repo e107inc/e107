@@ -111,7 +111,7 @@ $text = "
 
 $text .= "
 	<tr>
-	<td colspan='2' class='forumheader' style='text-align:center'><input class='button' type='submit' name='update_theme' value='".LAN_UMENU_THEME_5."' /></td>
+	<td colspan='2' class='forumheader' style='text-align:center'><input class='btn button' type='submit' name='update_theme' value='".LAN_UMENU_THEME_5."' /></td>
 	</tr>
     	</tbody>
 		</table>
