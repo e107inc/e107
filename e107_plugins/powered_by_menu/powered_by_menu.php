@@ -20,7 +20,7 @@ if (!defined('e107_INIT')) { exit; }
 
 $text = "
 <div style='text-align: center'>
-	<a href='http://e107.org/' rel='external'><img src='".e_PLUGIN_ABS."powered_by_menu/images/powered.png' alt='e107' style='border: 0px;' /></a>
+	<a href='http://e107.org/' rel='external'><img src='".e_PLUGIN_ABS."powered_by_menu/images/powered.png' alt='e107' style='max-width:100%;border: 0px;' /></a>
 </div>
 ";
 $ns -> tablerender(POWEREDBY_L1,  $text, 'powered_by');
