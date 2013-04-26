@@ -128,7 +128,7 @@ if (isset($_POST['usubmit']))
 			<tr>
 			<td>
 			<form method='post' action='".$_SERVER['PHP_SELF']."'>
-			<input type='radio' name='mode' value='2' /> <span class='headertext2'>Reset core to default values</span><br />". ($bu_exist ? "<input type='radio' name='mode' value='3' /> <span class='headertext2'>Restore core backup</span>" : "<br />( There is no backed-up core - unable to offer option to restore backup )")."<br /><br /><input class='button' type='submit' name='reset_core_sub' value='Select method then click here to continue' />
+			<input type='radio' name='mode' value='2' /> <span class='headertext2'>Reset core to default values</span><br />". ($bu_exist ? "<input type='radio' name='mode' value='3' /> <span class='headertext2'>Restore core backup</span>" : "<br />( There is no backed-up core - unable to offer option to restore backup )")."<br /><br /><input class='btn button' type='submit' name='reset_core_sub' value='Select method then click here to continue' />
 				 
 			<input type='hidden' name='a_name' value='".$_POST['a_name']."' />
 			<input type='hidden' name='a_password' value='".$_POST['a_password']."' />
@@ -278,7 +278,7 @@ if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 1)
 	}
 	echo "
 		<tr>
-		<td colspan='2' style='text-align:center'><br /><input class='button' type='submit' name='coreedit_sub' value='Save Core Settings' /></td>
+		<td colspan='2' style='text-align:center'><br /><input class='btn button' type='submit' name='coreedit_sub' value='Save Core Settings' /></td>
 		</tr>
 		</table>
 		<input type='hidden' name='a_name' value='".$_POST['a_name']."' />
@@ -318,7 +318,7 @@ echo "<span class='headertext2'>
 	<tr>
 	<td colspan='2' style='text-align:center'>
 	<br />
-	<input class='button' type='submit' name='usubmit' value='Continue' />
+	<input class='btn button' type='submit' name='usubmit' value='Continue' />
 	</td>
 	</tr>
 	</table>

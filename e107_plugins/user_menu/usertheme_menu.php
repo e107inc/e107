@@ -74,7 +74,7 @@ if ((USER == TRUE) && check_class(varset($pref['allow_theme_select'],FALSE)))
 		}
 		$text .= "</select>
 			<br /><br />
-			<input class='button' type='submit' name='settheme' value='".LAN_UMENU_THEME_1."' />
+			<input class='btn button' type='submit' name='settheme' value='".LAN_UMENU_THEME_1."' />
 			</div></form>";
 
 		$ns->tablerender(LAN_UMENU_THEME_2, $text, 'usertheme');

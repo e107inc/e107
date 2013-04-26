@@ -155,7 +155,7 @@ if (!isset($ec_qs[0]) || !isset($ec_qs[1]))
 	}
 	$cal_text .="</td></tr>";
 	
-	$cal_text .= "<tr><td colspan='2'  style='text-align:center' class='fcaption'><input class='button' type='submit' name='set_dates' value='".EC_LAN_156."' /></td></tr>";
+	$cal_text .= "<tr><td colspan='2'  style='text-align:center' class='fcaption'><input class='btn button' type='submit' name='set_dates' value='".EC_LAN_156."' /></td></tr>";
 
 	$cal_text .= "</table></form></div>";
   $ns->tablerender(EC_LAN_150, $cal_text);

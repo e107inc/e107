@@ -229,8 +229,8 @@ if ($mult_count > 1)
     }
     $text .= "<tr><td class='forumheader3'>".EC_LAN_59."</td><td class='forumheader3'>".$ev_email."</td></tr>
 		<tr><td class='forumheader' colspan='2' style='text-align:center'>
-            <input class='button' type='submit' name='mc_cancel' value='".EC_LAN_177."' />
-            <input class='button' type='submit' name='mc_accept' value='".EC_LAN_178."' />
+            <input class='btn button' type='submit' name='mc_cancel' value='".EC_LAN_177."' />
+            <input class='btn button' type='submit' name='mc_accept' value='".EC_LAN_178."' />
 			<input type='hidden' name='qs' value='".e_QUERY."' />";
 	foreach ($ev_fields as $k => $v)
 	{
@@ -347,8 +347,8 @@ if ($cal_super || check_class($ecal_class->pref['eventpost_admin']))
 	<b>".EC_LAN_48."</b>
 	<br /><br />
 	<form method='post' action='".e_SELF."' id='calformz' >
-	<input class='button' type='submit' name='cancel' value='".EC_LAN_49."' />
-	<input class='button' type='submit' name='confirm' value='".EC_LAN_50."' />
+	<input class='btn button' type='submit' name='cancel' value='".EC_LAN_49."' />
+	<input class='btn button' type='submit' name='confirm' value='".EC_LAN_50."' />
 	<input type='hidden' name='existing' value='".$qs[1]."' />
 	<input type='hidden' name='subbed' value='no' />
 	</form>
@@ -657,12 +657,12 @@ if ($action == 'ne' || $action == 'ed')
 		<td class='forumheader' colspan='2' style='text-align:center'>";
         if ($action == "ed")
 		{
-            $text .= "<input class='button' type='submit' name='ne_update' value='".EC_LAN_60."' onclick='submitted=this.name' />
+            $text .= "<input class='btn button' type='submit' name='ne_update' value='".EC_LAN_60."' onclick='submitted=this.name' />
 			<input type='hidden' name='id' value='".$qs[1]."' />";
         }
 		else
 		{
-            $text .= "<input class='button' type='submit' name='ne_insert' value='".EC_LAN_28."' onclick='submitted=this.name' />";
+            $text .= "<input class='btn button' type='submit' name='ne_insert' value='".EC_LAN_28."' onclick='submitted=this.name' />";
         }
         $text .= "<input type='hidden' name='qs' value='".e_QUERY."' /></td>
 		</tr>

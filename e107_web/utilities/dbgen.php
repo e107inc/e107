@@ -189,7 +189,7 @@ $text .= "
   $text .= "
 	<tr>
 	  <td class='forumheader3' colspan='2' style='text-align:center'>
-		<input class='button' type='submit' name='do_conversion' value='".'Parse Definition'."' />
+		<input class='btn button' type='submit' name='do_conversion' value='".'Parse Definition'."' />
 	  </td>
 	</tr>";
 

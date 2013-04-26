@@ -1058,6 +1058,7 @@ class e107
 	 */
 	public static function getScBatch($className, $pluginName = null, $overrideClass = null)
 	{
+		//FIXME URGENT - Check for WRAPPER in template, and place into class. 
 		if(is_string($overrideClass)) $overrideClass .= '_shortcodes';
 		return self::getScParser()->getScObject($className.'_shortcodes', $pluginName, $overrideClass);
 	}
@@ -2129,6 +2130,11 @@ class e107
 		$var = strtoupper($id).'_TEMPLATE';
 		$regPathInfo = $reg_path.'/info';
 		$var_info = strtoupper($id).'_INFO';
+		
+		$wrapper = strtoupper($id).'_WRAPPER'; // see contact_template.php
+		
+		//FIXME XXX URGENT - Add support for _WRAPPER and $sc_style BC. - save in registry and retrieve in getScBatch()?
+		// Use: list($pre,$post) = explode("{---}",$text,2); 
 
 		if(null === self::getRegistry($regPath))
 		{
@@ -2145,6 +2151,7 @@ class e107
 		{
 			return $ret;
 		}
+			
 		return ($ret && is_array($ret) && isset($ret[$key]) ? $ret[$key] : '');
 	}
 

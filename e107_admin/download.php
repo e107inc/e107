@@ -420,7 +420,7 @@ if ($action == "opt")
 
 		<tr style='vertical-align:top'>
 		<td colspan='2'  style='text-align:center' class='forumheader'>
-		<input class='button' type='submit' name='updateoptions' value='".DOWLAN_64."' />
+		<input class='btn' type='submit' name='updateoptions' value='".DOWLAN_64."' />
 		</td>
 		</tr>
 
@@ -493,7 +493,7 @@ if($action == 'limits')
 	$txt .= "
 	<tr>
 	<td class='forumheader' colspan='4' style='text-align:center'>
-	<input type='submit' class='button' name='updatelimits' value='".DOWLAN_115."' />
+	<input type='submit' class='btn' name='updatelimits' value='".DOWLAN_115."' />
 	</td>
 	</tr>
 	<tr>
@@ -512,7 +512,7 @@ if($action == 'limits')
 	</tr>
 	<tr>
 	<td class='forumheader' colspan='4' style='text-align:center'>
-	<input type='submit' class='button' name='addlimit' value='".DOWLAN_114."' />
+	<input type='submit' class='btn' name='addlimit' value='".DOWLAN_114."' />
 	</td>
 	</tr>
 	";
@@ -679,7 +679,7 @@ class download
 
 
 		// Search  & display options etc.
-		$text .= "<br /><form method='post' action='".e_SELF."'>\n<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n<input class='button' type='submit' name='searchsubmit' value='".DOWLAN_51."' />\n</p>";
+		$text .= "<br /><form method='post' action='".e_SELF."'>\n<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n<input class='btn' type='submit' name='searchsubmit' value='".DOWLAN_51."' />\n</p>";
 
 		$text .= "<div style='cursor:pointer' onclick=\"expandit('sdisp')\">".LAN_DISPLAYOPT."</div>";
 		$text .= "<div id='sdisp' style='padding-top:4px;display:none;text-align:center;margin-left:auto;margin-right:auto'>
@@ -956,7 +956,7 @@ class download
 				$text .= "</span><br />";
 			}
 
-			$text .="</div><input class='button' type='button' name='addoption' value='".DOWLAN_130."' onclick=\"duplicateHTML('mirror','mirrorsection')\" /><br />
+			$text .="</div><input class='btn' type='button' name='addoption' value='".DOWLAN_130."' onclick=\"duplicateHTML('mirror','mirrorsection')\" /><br />
 
 			</td>
 			</tr>
@@ -1160,9 +1160,9 @@ class download
 
 
 		if ($id && $sub_action == "edit") {
-			$text .= "<input class='button' type='submit' name='submit_download' value='".DOWLAN_24."' /> ";
+			$text .= "<input class='btn' type='submit' name='submit_download' value='".DOWLAN_24."' /> ";
 		} else {
-			$text .= "<input class='button' type='submit' name='submit_download' value='".DOWLAN_25."' />";
+			$text .= "<input class='btn' type='submit' name='submit_download' value='".DOWLAN_25."' />";
 		}
 
 		$text .= "</td>
@@ -1529,7 +1529,7 @@ class download
 
 			$text .= "</table></div>";
 			$text .= "<div style='text-align:center'>
-				<input class='button' type='submit' name='update_catorder' value='".LAN_UPDATE."' />
+				<input class='btn' type='submit' name='update_catorder' value='".LAN_UPDATE."' />
 				</div>";
 		}
 		else
@@ -1616,7 +1616,7 @@ class download
 			<input class='tbox' type='text' id='download_category_icon' name='download_category_icon' size='60' value='$download_category_icon' maxlength='100' />
 
 			<br />
-			<input class='button' type ='button' style='cursor:pointer' size='30' value='".DOWLAN_42."' onclick='expandit(this)' />
+			<input class='btn' type ='button' style='cursor:pointer' size='30' value='".DOWLAN_42."' onclick='expandit(this)' />
 			<div id='cat_icn' style='display:none;{head}' >";
 
 		while (list($key, $icon) = each($iconlist)) {
@@ -1635,7 +1635,7 @@ class download
 			<input class='tbox' type='text' id='download_category_icon_empty' name='download_category_icon_empty' size='60' value='$download_category_icon_empty' maxlength='100' />
 
 			<br />
-			<input class='button' type ='button' style='cursor:pointer' size='30' value='".DOWLAN_42."' onclick='expandit(this)' />
+			<input class='btn' type ='button' style='cursor:pointer' size='30' value='".DOWLAN_42."' onclick='expandit(this)' />
 			<div id='cat_icn_empty' style='display:none;{head}' >";
 
 		while (list($key, $icon) = each($iconlist)) {
@@ -1659,9 +1659,9 @@ class download
 			<tr style='vertical-align:top'>
 			<td colspan='2' style='text-align:center' class='forumheader'>";
 		if ($id && $sub_action == "edit" && !isset($_POST['add_category'])) {
-			$text .= "<input class='button' type='submit' name='add_category' value='".DOWLAN_46."' /> ";
+			$text .= "<input class='btn' type='submit' name='add_category' value='".DOWLAN_46."' /> ";
 		} else {
-			$text .= "<input class='button' type='submit' name='add_category' value='".DOWLAN_45."' />";
+			$text .= "<input class='btn' type='submit' name='add_category' value='".DOWLAN_45."' />";
 		}
 		$text .= "</td>
 			</tr>
@@ -1798,7 +1798,7 @@ class download
 		<input class='tbox' type='text' id='mirror_image' name='mirror_image' size='60' value='{$mirror_image}' maxlength='200' />
 
 
-		<br /><input class='button' type ='button' style='cursor:pointer' size='30' value='".DOWLAN_42."' onclick='expandit(this)' />
+		<br /><input class='btn' type ='button' style='cursor:pointer' size='30' value='".DOWLAN_42."' onclick='expandit(this)' />
 		<div id='imagefile' style='display:none;{head}'>";
 
 		$text .= DOWLAN_140."<br /><br />";
@@ -1828,7 +1828,7 @@ class download
 
 		<tr>
 		<td colspan='2' class='forumheader' style='text-align:center;'>
-		".($edit ? "<input class='button' type='submit' name='submit_mirror' value='".DOWLAN_142."' /><input type='hidden' name='id' value='{$mirror_id}' />" : "<input class='button' type='submit' name='submit_mirror' value='".DOWLAN_143."' />")."
+		".($edit ? "<input class='btn' type='submit' name='submit_mirror' value='".DOWLAN_142."' /><input type='hidden' name='id' value='{$mirror_id}' />" : "<input class='btn' type='submit' name='submit_mirror' value='".DOWLAN_143."' />")."
 		</td>
 		</tr>
 

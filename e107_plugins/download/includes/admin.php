@@ -560,7 +560,7 @@ $columnInfo = array(
 			$txt .= "
 			</table>
 			<div class='buttons-bar center'>
-			<input type='submit' class='button' name='updatelimits' value='".DOWLAN_115."'/>
+			<input type='submit' class='btn button' name='updatelimits' value='".DOWLAN_115."'/>
 			</div>
 			
 			<table class='table adminlist'>
@@ -584,7 +584,7 @@ $columnInfo = array(
 		
 			$txt .= "</table>
 			<div class='buttons-bar center'>
-			<input type='submit' class='button' name='addlimit' value='".DOWLAN_114."'/>
+			<input type='submit' class='btn button' name='addlimit' value='".DOWLAN_114."'/>
 			</div></form>";
 			echo $txt;
 		
@@ -1261,7 +1261,7 @@ $columnInfo = array(
 	            $text .= "  </div>";
 	         }
 	         $text .="      </div>
-	                        <input class='button' type='button' name='addoption' value='".DOWLAN_130."' onclick=\"duplicateHTML('mirror','mirrorsection')\"/>
+	                        <input class='btn button' type='button' name='addoption' value='".DOWLAN_130."' onclick=\"duplicateHTML('mirror','mirrorsection')\"/>
 	                     </td>
 	                  </tr>
 	                  <tr>
@@ -1469,10 +1469,10 @@ $columnInfo = array(
 						 
 	      if ($id && $subAction == "edit")
 		  {
-	         $text .= "<input class='button' type='submit' name='submit_download' value='".DOWLAN_24."'/> ";
+	         $text .= "<input class='btn button' type='submit' name='submit_download' value='".DOWLAN_24."'/> ";
 	      } else
 	      {
-	         $text .= "<input class='button' type='submit' name='submit_download' value='".DOWLAN_25."'/>";
+	         $text .= "<input class='btn button' type='submit' name='submit_download' value='".DOWLAN_25."'/>";
 	      }
 	
 	      $text .= "
@@ -1844,7 +1844,7 @@ $columnInfo = array(
 	      <input class='tbox' type='text' id='mirror_image' name='mirror_image' size='60' value='{$mirror_image}' maxlength='200'/>
 	
 	
-	      <br /><input class='button' type ='button' style='cursor:pointer' size='30' value='".DOWLAN_42."' onclick='expandit(this)'/>
+	      <br /><input class='btn button' type ='button' style='cursor:pointer' size='30' value='".DOWLAN_42."' onclick='expandit(this)'/>
 	      <div id='imagefile' style='display:none;{head}'>";
 	
 	      $text .= DOWLAN_140."<br/>";
@@ -1873,7 +1873,7 @@ $columnInfo = array(
 	
 	      <tr>
 	      <td colspan='2' class='forumheader' style='text-align:center;'>
-	      ".($edit ? "<input class='button' type='submit' name='submit_mirror' value='".DOWLAN_142."'/><input type='hidden' name='id' value='{$mirror_id}'/>" : "<input class='button' type='submit' name='submit_mirror' value='".DOWLAN_143."'/>")."
+	      ".($edit ? "<input class='btn button' type='submit' name='submit_mirror' value='".DOWLAN_142."'/><input type='hidden' name='id' value='{$mirror_id}'/>" : "<input class='btn button' type='submit' name='submit_mirror' value='".DOWLAN_143."'/>")."
 	      </td>
 	      </tr>
 	
@@ -2065,7 +2065,7 @@ $columnInfo = array(
 		            		</div>
 				   		</div>
 						   <div class='buttons-bar center'>
-		                  <input class='button' type='submit' name='updatedownlaodoptions' value='".DOWLAN_64."'/>
+		                  <input class='btn button' type='submit' name='updatedownlaodoptions' value='".DOWLAN_64."'/>
 		               </div>
 		              
 		           </div>

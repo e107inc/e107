@@ -984,7 +984,7 @@ class mailoutAdminClass extends e107MailManager
 			$text .= $frm->hidden('mail_source_id',$email_id);
 			$text .= $frm->admin_button('update_email',LAN_UPDATE);
 			//$text .= "<input type='hidden' name='mail_source_id' value='".$email_id."' />";
-			//$text .= "<input class='button' type='submit' name='update_email' value=\"".LAN_UPDATE."\" />";
+			//$text .= "<input class='btn button' type='submit' name='update_email' value=\"".LAN_UPDATE."\" />";
 		}
 		else
 		{
@@ -1386,14 +1386,14 @@ class mailoutAdminClass extends e107MailManager
 		$text .= $frm->admin_button('email_sendnow',"Send Now");
 		$text .= $frm->admin_button('email_send',"Send Later");
 		
-		// $text .= "<input class='button' type='submit' name='email_send' value=\"".LAN_SEND."\" />";
+		// $text .= "<input class='btn button' type='submit' name='email_send' value=\"".LAN_SEND."\" />";
 		
 		if (!$fromHold)
 		{
 			$text .= $frm->admin_button('email_hold',LAN_HOLD);
 			$text .= $frm->admin_button('email_cancel',LAN_CANCEL);
-			// $text .= "&nbsp;<input class='button' type='submit' name='email_hold' value=\"".LAN_HOLD."\" />";
-			// $text .= "&nbsp;<input class='button' type='submit' name='email_cancel' value=\"".LAN_CANCEL."\" />";
+			// $text .= "&nbsp;<input class='btn button' type='submit' name='email_hold' value=\"".LAN_HOLD."\" />";
+			// $text .= "&nbsp;<input class='btn button' type='submit' name='email_cancel' value=\"".LAN_CANCEL."\" />";
 		}
 		$text .= "</div>
 		</form>

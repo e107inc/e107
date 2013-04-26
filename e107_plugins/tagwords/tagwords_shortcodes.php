@@ -59,7 +59,7 @@ class tagwords_shortcodes extends e_shortcode
 				<form id='".$id."' method='get' action='".e_PLUGIN_ABS."tagwords/tagwords.php'>
 				<div>
 				<input class='tbox' style='width:100px;' type='text'  name='q' size='35' value='".$value."' maxlength='50' />
-				<input class='button' type='submit' name='se' value='".LAN_TAG_SEARCH_2."' />
+				<input class='btn button' type='submit' name='se' value='".LAN_TAG_SEARCH_2."' />
 				</div>
 				</form>";
 				break;
@@ -74,7 +74,7 @@ class tagwords_shortcodes extends e_shortcode
 				<form id='".$id."' method='get' action='".e_PLUGIN_ABS."tagwords/tagwords.php'>
 				<div>
 				<input class='tbox' style='width:100px;' type='text'  name='q' size='35' value='".$value."' maxlength='50' />
-				<input class='button' type='submit' name='s' value='".LAN_TAG_SEARCH_2."' />
+				<input class='btn button' type='submit' name='s' value='".LAN_TAG_SEARCH_2."' />
 				</div>
 				</form>";
 				break;
@@ -86,7 +86,7 @@ class tagwords_shortcodes extends e_shortcode
 				}
 				return "
 				<input class='tbox' style='width:100px;' type='text'  name='q' size='35' value='".$value."' maxlength='50' />
-				<input class='button' type='submit' name='s' value='".LAN_TAG_SEARCH_2."' />";
+				<input class='btn button' type='submit' name='s' value='".LAN_TAG_SEARCH_2."' />";
 				break;
 		}
 	}
@@ -262,7 +262,7 @@ class tagwords_shortcodes extends e_shortcode
 	{
 		global $tag;
 		if(varsettrue($tag->pref['tagwords_view_sort']) || varsettrue($tag->pref['tagwords_view_style']) || varsettrue($tag->pref['tagwords_view_area']))
-			return "<input class='button' type='submit' name='so' value='".LAN_TAG_SEARCH_3."' />";
+			return "<input class='btn button' type='submit' name='so' value='".LAN_TAG_SEARCH_3."' />";
 		return '';
 	}
 
@@ -409,7 +409,7 @@ class tagwords_shortcodes extends e_shortcode
 
 	function sc_tag_opt_button()
 	{
-		return "<input class='button' type='submit' name='updatesettings' value='".LAN_UPDATE."' />";
+		return "<input class='btn button' type='submit' name='updatesettings' value='".LAN_UPDATE."' />";
 	}
 
 }

@@ -736,7 +736,7 @@ class adminDownload extends download
             $text .= "  </div>";
          }
          $text .="      </div>
-                        <input class='button' type='button' name='addoption' value='".DOWLAN_130."' onclick=\"duplicateHTML('mirror','mirrorsection')\"/>
+                        <input class='btn button' type='button' name='addoption' value='".DOWLAN_130."' onclick=\"duplicateHTML('mirror','mirrorsection')\"/>
                      </td>
                   </tr>
                   <tr>
@@ -925,9 +925,9 @@ class adminDownload extends download
       $text .= "  <tr style=''>
                      <td colspan='2' style='text-align:center'>";
       if ($id && $subAction == "edit") {
-         $text .= "<input class='button' type='submit' name='submit_download' value='".DOWLAN_24."'/> ";
+         $text .= "<input class='btn button' type='submit' name='submit_download' value='".DOWLAN_24."'/> ";
       } else {
-         $text .= "<input class='button' type='submit' name='submit_download' value='".DOWLAN_25."'/>";
+         $text .= "<input class='btn button' type='submit' name='submit_download' value='".DOWLAN_25."'/>";
       }
 
       $text .= "
@@ -1351,7 +1351,7 @@ class adminDownload extends download
 
          $text .= "</tbody></table></div>";
          $text .= "<div style='text-align:center'>
-            <input class='button' type='submit' name='update_catorder' value='".LAN_UPDATE."'/>
+            <input class='btn button' type='submit' name='update_catorder' value='".LAN_UPDATE."'/>
             </div>";
       }
       else
@@ -1434,9 +1434,9 @@ class adminDownload extends download
          <div class='buttons-bar center'>";
 
 	      if ($id && $subAction == "edit" && !isset($_POST['add_category'])) {
-	         $text .= "<input class='button' type='submit' name='add_category' value='".DOWLAN_46."'/> ";
+	         $text .= "<input class='btn button' type='submit' name='add_category' value='".DOWLAN_46."'/> ";
 	      } else {
-	         $text .= "<input class='button' type='submit' name='add_category' value='".DOWLAN_45."'/>";
+	         $text .= "<input class='btn button' type='submit' name='add_category' value='".DOWLAN_45."'/>";
 	      }
 
       $text .= "</div>
@@ -1589,7 +1589,7 @@ class adminDownload extends download
                        </div>
                       </fieldset>
                       <div class='buttons-bar center'>
-                     <input class='button' type='submit' name='updatedownlaodoptions' value='".DOWLAN_64."'/>
+                     <input class='btn button' type='submit' name='updatedownlaodoptions' value='".DOWLAN_64."'/>
                   </div>
                  </form>
               </div>
@@ -1811,7 +1811,7 @@ class adminDownload extends download
                </div>
             </fieldset>
             <div class='buttons-bar center'>
-               <input class='button' type='submit' name='generate_filetypes_xml' value='".DOWLAN_77."'/>
+               <input class='btn button' type='submit' name='generate_filetypes_xml' value='".DOWLAN_77."'/>
                </div>
         		</form>
       ";
@@ -1864,7 +1864,7 @@ class adminDownload extends download
         	</div>
             </fieldset>
             <div class='buttons-bar center'>
-               <input class='button' type='submit' name='updateuploadoptions' value='".DOWLAN_64."'/>
+               <input class='btn button' type='submit' name='updateuploadoptions' value='".DOWLAN_64."'/>
             </div>
            </form>
       ";
@@ -2001,7 +2001,7 @@ class adminDownload extends download
       <input class='tbox' type='text' id='mirror_image' name='mirror_image' size='60' value='{$mirror_image}' maxlength='200'/>
 
 
-      <br /><input class='button' type ='button' style='cursor:pointer' size='30' value='".DOWLAN_42."' onclick='expandit(this)'/>
+      <br /><input class='btn button' type ='button' style='cursor:pointer' size='30' value='".DOWLAN_42."' onclick='expandit(this)'/>
       <div id='imagefile' style='display:none;{head}'>";
 
       $text .= DOWLAN_140."<br/>";
@@ -2030,7 +2030,7 @@ class adminDownload extends download
 
       <tr>
       <td colspan='2' class='forumheader' style='text-align:center;'>
-      ".($edit ? "<input class='button' type='submit' name='submit_mirror' value='".DOWLAN_142."'/><input type='hidden' name='id' value='{$mirror_id}'/>" : "<input class='button' type='submit' name='submit_mirror' value='".DOWLAN_143."'/>")."
+      ".($edit ? "<input class='btn button' type='submit' name='submit_mirror' value='".DOWLAN_142."'/><input type='hidden' name='id' value='{$mirror_id}'/>" : "<input class='btn button' type='submit' name='submit_mirror' value='".DOWLAN_143."'/>")."
       </td>
       </tr>
 

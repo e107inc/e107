@@ -1165,7 +1165,7 @@ class cron
 		   <tr >
 		   <td colspan='9' class='center'>
 		   <div class='center buttons-bar'>";
-		//  $text .= "<input class='button' type='submit' name='submit' value='".LAN_SAVE."' />";
+		//  $text .= "<input class='btn' type='submit' name='submit' value='".LAN_SAVE."' />";
 		$text .= $frm->admin_button('submit', LAN_SAVE, $action = 'update');
 		$text .= $frm->checkbox_switch('generate_pwd', 1, '', 'Generate new cron command');
 		$text .= "</div></td>

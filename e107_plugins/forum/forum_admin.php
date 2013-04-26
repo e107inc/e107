@@ -672,7 +672,7 @@ class forumAdmin
 		<form method='post' action='".e_SELF.'?'.e_QUERY."'>
 		<div style='text-align:center'>".LAN_CONFDELETE."<br /><br />
 			".$frm->admin_button('confirm', LAN_UI_DELETE_LABEL, 'submit')."
-		<input type='submit' class='button' name='confirm' value='".LAN_DELETE."' />
+		<input type='submit' class='btn btn-warning button' name='confirm' value='".LAN_DELETE."' />
 		</div>
 		</form>
 		";

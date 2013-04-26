@@ -144,7 +144,7 @@ for($a = 0; $a <= ($c-1); $a++) {
 }
 $catidvalues = substr($catidvalues, 0, -1);
 $text .= "</select><br /><br />
-	<input class='button' type='button' value='".BANNER_MENU_L9."' onclick='removeMe();' />
+	<input class='btn button' type='button' value='".BANNER_MENU_L9."' onclick='removeMe();' />
 	<input type='hidden' name='catid' id='catid' value='".$catidvalues."' />
 	</td>
 	</tr>
@@ -178,7 +178,7 @@ $text .= $rs->form_select_close()."
 	</tr>
 
 	<tr>
-	<td colspan='2' class='forumheader' style='text-align:center'><input class='button' type='submit' name='update_menu' value='".BANNER_MENU_L18."' /></td>
+	<td colspan='2' class='forumheader' style='text-align:center'><input class='btn button' type='submit' name='update_menu' value='".BANNER_MENU_L18."' /></td>
 	</tr>
 
 	</table>
