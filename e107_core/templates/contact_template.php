@@ -17,17 +17,6 @@ if(!isset($CONTACT_INFO))
 	</table>";
 }
 
-$sc_style['CONTACT_EMAIL_COPY']['pre'] = "<tr><td>";
-$sc_style['CONTACT_EMAIL_COPY']['post'] = LANCONTACT_07."</td></tr>";
-
-$sc_style['CONTACT_PERSON']['pre'] = "<tr><td>".LANCONTACT_14."<br />   ";
-$sc_style['CONTACT_PERSON']['post'] = "</td></tr>";
-
-$sc_style['CONTACT_IMAGECODE']['pre'] = "<tr><td>".LANCONTACT_16."<br />";
-$sc_style['CONTACT_IMAGECODE']['post'] = "";
-
-$sc_style['CONTACT_IMAGECODE_INPUT']['pre'] = "";
-$sc_style['CONTACT_IMAGECODE_INPUT']['post'] = "</td></tr>";
 
 
 
@@ -50,11 +39,34 @@ $CONTACT_TEMPLATE['menu'] =  '
 	</div>       
  ';
  
+ 
+ ///XXX This..... 
+ 
+	$sc_style['CONTACT_EMAIL_COPY']['pre'] = "<tr><td>";
+	$sc_style['CONTACT_EMAIL_COPY']['post'] = LANCONTACT_07."</td></tr>";
+	
+	$sc_style['CONTACT_PERSON']['pre'] = "<tr><td>".LANCONTACT_14."<br />   ";
+	$sc_style['CONTACT_PERSON']['post'] = "</td></tr>";
+	
+	$sc_style['CONTACT_IMAGECODE']['pre'] = "<tr><td>".LANCONTACT_16."<br />";
+	$sc_style['CONTACT_IMAGECODE']['post'] = "";
+	
+	$sc_style['CONTACT_IMAGECODE_INPUT']['pre'] = "";
+	$sc_style['CONTACT_IMAGECODE_INPUT']['post'] = "</td></tr>";
+ 
+ 	
+//XXX Becomes This.....  ( New Format for v2 - losing the pre/post and using a shortcode 'wildcard' that can be split later)
+
+	$CONTACT_WRAPPER['form']['CONTACT_IMAGECODE'] 			= "<tr><td>".LANCONTACT_16."<br />{---}";
+	$CONTACT_WRAPPER['form']['CONTACT_IMAGECODE_INPUT'] 	= "{---}</td></tr>";
+	
+	$CONTACT_WRAPPER['form']['CONTACT_EMAIL_COPY'] 			= "<tr><td>{---}".LANCONTACT_07."</td></tr>";
+	$CONTACT_WRAPPER['form']['CONTACT_PERSON']				= "<tr><td>".LANCONTACT_14."<br />{---}</td></tr>";
 
 
-  $CONTACT_TEMPLATE['form'] = "
+	$CONTACT_TEMPLATE['form'] = "
 	<form action='".e_SELF."' method='post' id='contactForm' >
-	<table style='".USER_WIDTH."' cellpadding='1' cellspacing='7'>
+	<table class='table' style='".USER_WIDTH."' cellpadding='1' cellspacing='7'>
 	{CONTACT_PERSON}
 	<tr><td>".LANCONTACT_03."<br />
 	{CONTACT_NAME}

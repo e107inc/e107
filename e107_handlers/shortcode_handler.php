@@ -1106,6 +1106,8 @@ class e_shortcode
 	
 	protected $mode = 'view'; // or edit. Used within shortcodes for form elements vs values only.   
 
+	protected $wrapper = array(); // hold values of pre/post styling for each shortcode - see contact_template.php for an example. 	
+	
 	/**
 	 * Storage for shortcode values
 	 * @var e_vars
