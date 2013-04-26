@@ -273,6 +273,13 @@ $(document).ready(function()
 		$("div.tbox,input,textarea,select,label,.e-tip").each(function(c) {
 						
 			var t = $(this).nextAll(".field-help");
+			
+			if($(this).is("textarea"))
+			{
+				var placement = 'top';	
+			}
+			
+			
 			t.hide();
 		//	alert('hello');
 			$(this).tooltip({
@@ -282,7 +289,7 @@ $(document).ready(function()
 				},
 				fade: true,
 				html: true,
-				placement: 'right',
+				placement: placement,
 				delay: { show: 300, hide: 600 } 
 			});
 		
