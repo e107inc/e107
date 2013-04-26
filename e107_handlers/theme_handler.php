@@ -909,7 +909,7 @@ class themeHandler
 			$url = e_SELF."?src=".base64_encode($d);
 			$id = $frm->name2id($theme['name']);
 			$main_icon = "<a data-src='".$url."' href='#' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='e-ajax' title='Download' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";		
-			$info_icon 	= "<a data-toggle='modal' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".$url."&amp;info=1' data-cache='false' data-target='#uiModal'  title='".TPVLAN_7."'>".E_32_CAT_ABOUT."</a>";
+			$info_icon 	= "<a data-toggle='modal' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".$url."&amp;info=1' data-cache='false' data-target='#uiModal'  title='".TPVLAN_7."'>".trim(E_32_CAT_ABOUT)."</a>";
 			
 			//XXX modal-Cache is currently enabled by default. Awaiting inclusion of data-cache feature. 
 			// See here: https://github.com/twitter/bootstrap/pull/4224
@@ -948,7 +948,7 @@ class themeHandler
 		}
 		
 		$thumbnail = "<img src='".$thumbPath."' style='width:200px; height:130px;'  alt='' />";
-		$preview_icon 	= "<a title='Preview : ".$theme['name']."' rel='external' class='e-dialog' href='".$previewPath."'>".E_32_SEARCH."</a>";
+		$preview_icon 	= "<a title='Preview : ".$theme['name']."' rel='external' class='e-modal' href='".$previewPath."'>".E_32_SEARCH."</a>";
 	
 	//	$thumbnail .= "</a>";
 		
