@@ -274,6 +274,8 @@ $(document).ready(function()
 						
 			var t = $(this).nextAll(".field-help");
 			
+			var placement = 'right';	
+			
 			if($(this).is("textarea"))
 			{
 				var placement = 'top';	
