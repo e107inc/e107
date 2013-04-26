@@ -808,15 +808,16 @@ class e_form
 		if(is_string($options)) parse_str($options, $options);
 		
 		$addon = "";
+		$gen = "";
 		
 		if(vartrue($options['generate']))
 		{
-			$addon .= '&nbsp;<a href="#" class="btn btn-small e-tip" id="Spn_PasswordGenerator" title="Generate a password">Generate</a> <a class="btn btn-small e-tip" href="#" id="showPwd" title="Display the password">Show</a><br />';	
+			$gen = '&nbsp;<a href="#" class="btn btn-small e-tip" id="Spn_PasswordGenerator" title="Generate a password">Generate</a> <a class="btn btn-small e-tip" href="#" id="showPwd" title="Display the password">Show</a><br />';	
 		}
 		
 		if(vartrue($options['strength']))
 		{
-			$addon .= "<div><div id='pwdColor' class='progress' style='float:left;display:inline-block;width:215px'><div class='bar' id='pwdMeter' style='width:0%' ></div></div> <div id='pwdStatus' class='smalltext' style='float:left;display:inline-block;width:150px;margin-left:5px'></span></div>";	
+			$addon .= "<div style='margin-top:4px'><div id='pwdColor' class='progress' style='float:left;display:inline-block;width:218px'><div class='bar' id='pwdMeter' style='width:0%' ></div></div> <div id='pwdStatus' class='smalltext' style='float:left;display:inline-block;width:150px;margin-left:5px'></span></div>";	
 		}
 		
 		$options['pattern'] = vartrue($options['pattern'],'[\S]{4,}');
@@ -827,7 +828,7 @@ class e_form
 		//never allow id in format name-value for text fields
 		$text = "<input type='password' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
 
-		return $text.vartrue($addon);
+		return "<span class='form-inline'>".$text.$gen."</span>".vartrue($addon);
 		
 	}
 
