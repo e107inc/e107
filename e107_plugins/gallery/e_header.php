@@ -17,12 +17,12 @@ e107::css('gallery', 'jslib/prettyPhoto/css/prettyPhoto.css','jquery');
 e107::js('gallery', 'jslib/jquery.cycle.all.js','jquery');
 e107::css('gallery', 'gallery_style.css');
 
-//e107::css('inline', "
+// Work-around for indent issue. see: https://github.com/twitter/bootstrap/issues/4890
+e107::css('inline', "
 /* Gallery CSS */
-//a.lb-close			{ width:27px; height:27px; background:url(".SITEURLBASE.e_PLUGIN_ABS."gallery/images/close.png) no-repeat 0 0; }
-//.lb-loader			{ background:url(".SITEURLBASE.e_PLUGIN_ABS."gallery/images/loading.gif) no-repeat 50% 49%; }
-//
-//",'jquery');
+.thumbnails .span2:nth-child(6n+1) {
+margin-left:0;
+}",'jquery');
 
 
 
