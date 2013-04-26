@@ -493,7 +493,7 @@ class pm_shortcodes extends e_shortcode
 		if($pm_outbox['outbox']['filled'] < 100)
 		{
 			$link = $this->url('new');
-			return "<a href='{$link}'>".PM_SEND_LINK."</a>";
+			return "<a class='btn btn-mini' href='{$link}'>".PM_SEND_LINK."</a>";
 		}
 		return '';
 	}

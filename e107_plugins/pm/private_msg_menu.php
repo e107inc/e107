@@ -55,8 +55,8 @@ define('PM_SEND_LINK', LAN_PM_35);
 define('NEWPM_ANIMATION', "<img src='".e_PLUGIN_ABS."pm/images/newpm.gif' alt='' />");
 
 
-$sc_style['PM_SEND_PM_LINK']['pre'] = "<br /><br />[ ";
-$sc_style['PM_SEND_PM_LINK']['post'] = " ]";
+$sc_style['PM_SEND_PM_LINK']['pre'] = "<br /><br />";
+$sc_style['PM_SEND_PM_LINK']['post'] = "";
 
 $sc_style['PM_INBOX_FILLED']['pre'] = "[";
 $sc_style['PM_INBOX_FILLED']['post'] = "%]";
