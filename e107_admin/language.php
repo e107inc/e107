@@ -475,7 +475,7 @@ function multilang_prefs()
 
 						$sellan = preg_replace("/lan_*.php/i", "", $pref['sitelanguage']);
 					
-						$text .= $frm->selectbox('mainsitelanguage',$lanlist,$sellan,"useValues=1");
+						$text .= $frm->select('mainsitelanguage',$lanlist,$sellan,"useValues=1");
 						$text .= "
 						</td>
 					</tr>
@@ -519,7 +519,7 @@ function multilang_prefs()
 					{
 						if($val != $pref['sitelanguage'])
 						{
-							$opt .= "<tr><td class='middle' style='width:5%'>".$val."</td><td class='left'><input type='text' name='multilanguage_domain[".$val."]' value=\"".$pref['multilanguage_domain'][$val]."\" /></td></tr>";	
+							$opt .= "<tr><td class='middle' style='width:5%'>".$val."</td><td class='left inline-text'><input type='text' name='multilanguage_domain[".$val."]' value=\"".$pref['multilanguage_domain'][$val]."\" /></td></tr>";	
 						}		
 					}
 					
@@ -812,7 +812,7 @@ function show_tools()
 									
 								$text .= "
 								</select>".
-								$frm->selectbox('deprecatedLansReverse',$depOptions,$_POST['deprecatedLansReverse']). 
+								$frm->select('deprecatedLansReverse',$depOptions,$_POST['deprecatedLansReverse']). 
 								$frm->admin_button('searchDeprecated',"Check",'other')."
 								<span class='field-help'>".(count($lans) + count($plugs))." files found</span>
 							</td>

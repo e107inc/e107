@@ -1510,11 +1510,11 @@ class adminDownload extends download
                              </tr>
                              <tr>
                                 <td>".DOWLAN_56."</td>
-                                <td>".$frm->selectbox('download_order', $order_options, $pref['download_order'])."</td>
+                                <td>".$frm->select('download_order', $order_options, $pref['download_order'])."</td>
                              </tr>
                              <tr>
                                 <td>".LAN_ORDER."</td>
-                                 <td>".$frm->selectbox('download_sort', $sort_options, $pref['download_sort'])."</td>
+                                 <td>".$frm->select('download_sort', $sort_options, $pref['download_sort'])."</td>
                              </tr>
                              <tr>
                                 <td>".DOWLAN_160."</td>

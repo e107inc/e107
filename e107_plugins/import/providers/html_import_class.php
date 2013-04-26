@@ -229,7 +229,7 @@ class html_import extends base_import_class
 
              $text .= "
 			 	<td>
-			 		".$frm->selectbox('add__'.$key,array('news'=>'News','page'=>'Page','0'=>'Ignore'))."
+			 		".$frm->select('add__'.$key,array('news'=>'News','page'=>'Page','0'=>'Ignore'))."
 			 	</td>
 			 </tr>";
 		}

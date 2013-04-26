@@ -331,7 +331,7 @@ class plugin_blank_admin_form_ui extends e_admin_form_ui
 			return $types;
 		}
 
-		return $frm->selectbox('blank_type', $types, $curVal);
+		return $frm->select('blank_type', $types, $curVal);
 	}
 	
 }

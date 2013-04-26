@@ -97,7 +97,7 @@ $text = "
     	</colgroup>
 	<tr>
 		<td>".CHBLAN_11.":</td>
-		<td>".$frm->selectbox('chatbox_posts', array(5, 10, 15, 20, 25), $pref['chatbox_posts'])."<span class='field-help'>".CHBLAN_12."</span></td>
+		<td>".$frm->select('chatbox_posts', array(5, 10, 15, 20, 25), $pref['chatbox_posts'])."<span class='field-help'>".CHBLAN_12."</span></td>
 	</tr>
 	<tr>
 		<td>".CHBLAN_32.": </td>
@@ -120,7 +120,7 @@ $text = "
 	$text .= "
 	<tr>
 		<td>".LAN_PRUNE.":</td>
-		<td>".CHBLAN_23.$frm->selectbox('chatbox_prune', array(86400 => CHBLAN_24, 604800 => CHBLAN_25, 2592000 => CHBLAN_26, 1 => CHBLAN_27), '', '', true).$frm->admin_button('prune', LAN_PRUNE, 'other')."<span class='field-help'>".CHBLAN_22."</span></td>
+		<td>".CHBLAN_23.$frm->select('chatbox_prune', array(86400 => CHBLAN_24, 604800 => CHBLAN_25, 2592000 => CHBLAN_26, 1 => CHBLAN_27), '', '', true).$frm->admin_button('prune', LAN_PRUNE, 'other')."<span class='field-help'>".CHBLAN_22."</span></td>
 	</tr>
 	<tr>
 		<td>".CHBLAN_34.":</td>

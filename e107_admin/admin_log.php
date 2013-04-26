@@ -412,7 +412,7 @@ if($action == "config")
 				<tbody>
 					<tr>
 						<td>".RL_LAN_044."</td>
-						<td>".$frm->selectbox('sys_log_perpage', array(10, 20, 30, 40, 50), $pref['sys_log_perpage'])."<span class='field-help'>".RL_LAN_064."</span></td>
+						<td>".$frm->select('sys_log_perpage', array(10, 20, 30, 40, 50), $pref['sys_log_perpage'])."<span class='field-help'>".RL_LAN_064."</span></td>
 					</tr>
 	";
 
@@ -757,7 +757,7 @@ if(isset($page_title[$action]))
 			case 'priority':
 				$text .= "
 					<td>".RL_LAN_058."</td>
-					<td>".$frm->selectbox('roll_pri_cond', array('xx' => '&nbsp;', 'gt' => '&gt;=', 'eq' => '==', 'lt' => '&lt;='), $pri_filter_cond)."
+					<td>".$frm->select('roll_pri_cond', array('xx' => '&nbsp;', 'gt' => '&gt;=', 'eq' => '==', 'lt' => '&lt;='), $pri_filter_cond)."
 						<input class='tbox' type='text' name='roll_pri_val' id='roll-pri-val' size='20' value='{$pri_filter_val}' maxlength='10' />
 					</td>
 				";

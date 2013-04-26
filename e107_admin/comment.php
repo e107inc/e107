@@ -159,7 +159,7 @@ class comments_admin_form_ui extends e_admin_form_ui
 		
 		if($mode == 'write')
 		{
-			return $frm->selectbox("comment_blocked", $blocked, $curVal);	
+			return $frm->select("comment_blocked", $blocked, $curVal);	
 		}
 				
 		

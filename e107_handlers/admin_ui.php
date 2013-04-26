@@ -2132,7 +2132,7 @@ class e_admin_controller
 		
 		//prevent cache
 		header('Cache-Control: private, no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
-		header('Pragma: no-cache');
+	//	header('Pragma: no-cache');
 
 		$url = $path.'?'.$request->buildQueryString($merge_query, false, $exclude_query);
 		// Transfer all messages to session

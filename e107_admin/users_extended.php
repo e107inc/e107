@@ -758,7 +758,7 @@ class users_ext
 			<select class='tbox e-select' name='user_required'>
 			";
 			$_r = array('0' => EXTLAN_65, '1' => EXTLAN_66, '2' => EXTLAN_67);
-			foreach($_r as $k => $v) //FIXME change to $frm->selectbox() 
+			foreach($_r as $k => $v) //FIXME change to $frm->select() 
 			{
 				$sel = (varset($current['user_extended_struct_required']) == $k ? " selected='selected' " : "");
 				$text .= "<option value='{$k}' {$sel}>{$v}</option>\n";

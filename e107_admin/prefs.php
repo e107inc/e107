@@ -391,7 +391,7 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 							
 					<tr>
 						<td>".LAN_MAILOUT_110."<br /></td>
-						<td>".$frm->admin_button('testemail', LAN_MAILOUT_112,'other')."&nbsp;
+						<td class='form-inline'>".$frm->admin_button('testemail', LAN_MAILOUT_112,'other')."&nbsp;
 							<input name='testaddress' class='tbox' placeholder='user@yoursite.com' type='text' size='40' maxlength='80' value=\"".(varset($_POST['testaddress']) ? $_POST['testaddress'] : USEREMAIL)."\" />
 						</td>
 					</tr>
@@ -503,7 +503,7 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 					'texthtml' => LAN_MAILOUT_126,
 					'texttheme' => LAN_MAILOUT_127
 				);	
-				$text .= $frm->selectbox('mail_sendstyle', $emFormat, vartrue($pref['mail_sendstyle'])); 
+				$text .= $frm->select('mail_sendstyle', $emFormat, vartrue($pref['mail_sendstyle'])); 
 				$text .= "
 					</td>
 				</tr>
@@ -731,9 +731,9 @@ $text .= "
 					<tr>
 						<td>Date/Time Input-Field format: </td>
 						<td>
-							".$frm->selectbox('inputdate',$inputdate, e107::getPref('inputdate'));
+							".$frm->select('inputdate',$inputdate, e107::getPref('inputdate'));
 							
-					$text .= $frm->selectbox('inputtime',$inputtime, e107::getPref('inputtime'));
+					$text .= $frm->select('inputtime',$inputtime, e107::getPref('inputtime'));
 					
 					$text .= "
 						</td>
@@ -1495,7 +1495,7 @@ $text .= "					<tr>
 	
 					$text .= "
 						<td>".PRFLAN_178."</td>
-						<td>".$frm->selectbox('password_CHAP',$CHAP_list,$pref['password_CHAP'] );
+						<td>".$frm->select('password_CHAP',$CHAP_list,$pref['password_CHAP'] );
 						//."	".$frm->select_open('password_CHAP');
 							
 						//TODO - user tracking session name - visible only if Cookie is enabled (JS)
@@ -1623,7 +1623,7 @@ $text .= "
 							'asc'	=> "Most recent comments last" 
 						);
 					
-					$text .= $frm->selectbox('comments_sort',$comment_sort, $pref['comments_moderate'])."
+					$text .= $frm->select('comments_sort',$comment_sort, $pref['comments_moderate'])."
 						</td>
 					</tr>
 					

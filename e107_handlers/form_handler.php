@@ -844,7 +844,13 @@ class e_form
 	{
 		if(is_string($options)) parse_str($options, $options);
 		// auto-height support
-		if(!vartrue($options['noresize']))
+	
+		if(vartrue($options['size']) && !is_numeric($options['size']))
+		{
+			$options['class'] .= " input-".$options['size'];	
+			unset($options['size']); // don't include in html 'size='. 	
+		}
+		elseif(!vartrue($options['noresize']))
 		{
 			$options['class'] = (isset($options['class']) && $options['class']) ? $options['class'].' e-autoheight' : 'tbox span7 e-autoheight';
 		}
@@ -1211,6 +1217,17 @@ class e_form
 		return "<select name='{$name}'".$this->get_attributes($options, $name).">";
 	}
 
+
+	/**
+	 * @DEPRECATED - use select() instead. 
+	 */
+	function selectbox($name, $option_array, $selected = false, $options = array(), $defaultBlank= false)
+	{	
+		return $this->select($name, $option_array, $selected, $options, $defaultBlank);	
+	}
+
+
+
 	/**
 	 *
 	 * @param string $name
@@ -1220,7 +1237,7 @@ class e_form
 	 * @param boolean|string $defaultBlank [optional] set to TRUE if the first entry should be blank, or to a string to use it for the blank description. 
 	 * @return string HTML text for display
 	 */
-	function selectbox($name, $option_array, $selected = false, $options = array(), $defaultBlank= false)
+	function select($name, $option_array, $selected = false, $options = array(), $defaultBlank= false)
 	{
 		if(!is_array($options)) parse_str($options, $options);
 
