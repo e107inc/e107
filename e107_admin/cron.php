@@ -482,6 +482,11 @@ class cron_admin_form_ui extends e_admin_form_ui
 			$text .= ($month != '*') ? LAN_CRON_53 ." ". strftime("%B", mktime(00, 00, 00, $month, 1, 2000)) : LAN_CRON_41; // Month(s)
 			$text .= "<br />";		 
 			$text .= ($weekday != '*') ? LAN_CRON_54 ." ". strftime("%A", mktime(00, 00, 00, 5, $weekday, 2000)) : LAN_CRON_42; // Weekday(s)
+			
+			
+			return "<a class='e-tip' href=''>".ADMIN_INFO_ICON."</a>
+			<div class='field-help'>".$text."</div>";
+			
 			return $text; 
 		}
 		
