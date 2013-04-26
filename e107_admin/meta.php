@@ -78,11 +78,18 @@ $text = "
 				<tbody>
 					<tr>
 						<td>".LAN_DESCRIPTION."</td>
-						<td><textarea class='tbox textarea e-autoheight' id='meta_description' name='meta_description' cols='70' rows='4'>".$tp->toForm(varset($meta_diz[e_LANGUAGE]))."</textarea>	</td>
+						<td>";
+						$text .= $frm->textarea('meta_description',$tp->toForm(varset($meta_diz[e_LANGUAGE])),3);
+					//	$text .= "<textarea class='tbox textarea e-autoheight' id='meta_description' name='meta_description' cols='70' rows='4'>".$tp->toForm(varset($meta_diz[e_LANGUAGE]))."</textarea>";
+						$text .= "</td>
 					</tr>
 					<tr>
 						<td>".LAN_KEYWORDS."</td>
-						<td><textarea class='tbox textarea e-autoheight' id='meta_keywords' name='meta_keywords' cols='70' rows='4'>".$tp->toForm(varset($meta_keywords[e_LANGUAGE]))."</textarea></td>
+						<td>";
+						$text .= $frm->tags('meta_keywords',$tp->toForm(varset($meta_keywords[e_LANGUAGE])));
+					//	$text .= "<textarea class='tbox textarea e-autoheight' id='meta_keywords' name='meta_keywords' cols='70' rows='4'>".$tp->toForm(varset($meta_keywords[e_LANGUAGE]))."</textarea>";
+						
+						$text .= "</td>
 					</tr>
 					<tr>
 						<td>".LAN_COPYRIGHT."</td>
@@ -96,7 +103,14 @@ $text = "
 
 					<tr>
 						<td>".METLAN_1."</td>
-						<td><textarea class='tbox textarea e-autoheight' id='meta' name='meta' cols='70' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".str_replace("<","&lt;",$tp->toForm(varset($meta[e_LANGUAGE])))."</textarea><span class='field-help'>".METLAN_2."</span></td>
+						<td>";
+						$text .= $frm->textarea('meta',str_replace("<","&lt;",$tp->toForm(varset($meta[e_LANGUAGE]))),5,100,'size=block-level');
+						
+						$text .= "<span class='field-help'>".METLAN_2."</span>";
+						
+				//		$text .= "<textarea class='tbox textarea e-autoheight' id='meta' name='meta' cols='70' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".str_replace("<","&lt;",$tp->toForm(varset($meta[e_LANGUAGE])))."</textarea><span class='field-help'>".METLAN_2."</span>";
+						
+						$text .= "</td>
 					</tr>
 					<tr>
 						<td>".METLAN_3."</td>
@@ -118,24 +132,5 @@ $text = "
 $ns->tablerender(METLAN_00." (".e_LANGUAGE.")", $mes->render().$text);
 
 require_once("footer.php");
-/**
- * Handle page DOM within the page header
- *
- * @return string JS source
- */
-function headerjs()
-{
-	$ret = "
-		<script type='text/javascript'>
-			var e107Admin = {}
-			e107Admin.initRules = {
-				'Helper': true,
-				'AdminMenu': false
-			}
-		</script>
-		<script type='text/javascript' src='".e_JS."core/admin.js'></script>
-	";
 
-	return $ret;
-}
 ?>
