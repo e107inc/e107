@@ -275,7 +275,7 @@ class core_mailout
 			$u_array = array('user_name'=>LAN_MAILOUT_43,'user_login'=>LAN_MAILOUT_44,'user_email'=>LAN_MAILOUT_45);
 	
 			$var[0]['html'] 	= $admin->userClassesTotals('email_to', varset($selectVals['email_to'], ''));								
-			$var[1]['html'] 	= $frm->selectbox('user_search_name', $u_array, varset($selectVals['user_search_name'], ''),'',TRUE)."  ".LAN_MAILOUT_47." ".$frm->text('user_search_value', varset($selectVals['user_search_value'], ''));
+			$var[1]['html'] 	= $frm->select('user_search_name', $u_array, varset($selectVals['user_search_name'], ''),'',TRUE)."  ".LAN_MAILOUT_47." ".$frm->text('user_search_value', varset($selectVals['user_search_value'], ''));
 			//$var[2]['html'] 	= $admin->comparisonSelect('last_visit_match', varset($selectVals['last_visit_match'], ''))."  ".$frm->text('last_visit_date', varset($selectVals['last_visit_date'], 0));
 			$var[2]['html'] 	= $admin->comparisonSelect('last_visit_match', varset($selectVals['last_visit_match'], ''))."  ".$admin->makeCalendar('last_visit_date', varset($selectVals['last_visit_date'], 0));
 			$var[1]['caption'] 	= LAN_MAILOUT_46;   // User Search Field.

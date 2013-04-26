@@ -1255,7 +1255,7 @@ class users_admin_ui extends e_admin_ui
 			<tr>
 				<td>Notification and user status</td>
 				<td>
-					".$frm->selectbox('sendconfemail', array('0' => "Activate, Don't Notify", '1' => 'Activate, Notify (password)', '2' => 'Require Activation, Notify (password and activation link)'), (int) varset($_POST['sendconfemail'], 0))."
+					".$frm->select('sendconfemail', array('0' => "Activate, Don't Notify", '1' => 'Activate, Notify (password)', '2' => 'Require Activation, Notify (password and activation link)'), (int) varset($_POST['sendconfemail'], 0))."
 					<div class='field-help'>".USRLAN_181."</div>
 				</td>
 			</tr>";
@@ -1895,7 +1895,7 @@ class users_admin_form_ui extends e_admin_form_ui
 		if($mode == 'write')
 		{
 			$frm = e107::getForm();
-			return $frm->selectbox('user_ban',$bo,$curval);	
+			return $frm->select('user_ban',$bo,$curval);	
 		}	
 			
 		return vartrue($bo[$curval],' '); // ($curval == 1) ? ADMIN_TRUE_ICON : '';	
@@ -1916,7 +1916,7 @@ class users_admin_form_ui extends e_admin_form_ui
 			
 			if($mode == 'write') //FIXME userclasses are NOT be saved since they are an array. 
 			{		
-				return $frm->selectbox('user_class', $list, $curval, 'description=1&multiple=1');
+				return $frm->select('user_class', $list, $curval, 'description=1&multiple=1');
 				// return $frm->uc_select('user_class[]', $curval, 'admin,classes', 'description=1&multiple=1');// doesn't work correctly. 	
 			}
 			

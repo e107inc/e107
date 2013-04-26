@@ -177,7 +177,7 @@ $text = "
 			</table>
 			<div class='buttons-bar'>
 				<div class='f-right'>".$frm->admin_button('submit_cache', CACLAN_2, 'update')."</div>
-				".$frm->selectbox('option_clear_cache', array(
+				".$frm->select('option_clear_cache', array(
 					'empty_all' => CACLAN_26,
 					'empty_contentcache' => CACLAN_5,
 					'empty_syscache' => CACLAN_16,

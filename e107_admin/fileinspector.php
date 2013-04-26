@@ -204,7 +204,7 @@ class file_inspector {
 		<td style='width: 35%'>
 		".FC_LAN_3." ".FC_LAN_5.":
 		</td>
-		<td colspan='2' style='width: 65%'>".$frm->selectbox('core',$coreOpts,$_POST['core'])."	</td>
+		<td colspan='2' style='width: 65%'>".$frm->select('core',$coreOpts,$_POST['core'])."	</td>
 		</tr>";
 		
 		
@@ -213,7 +213,7 @@ class file_inspector {
 		<td style='width: 35%'>
 		".FC_LAN_14.":
 		</td>
-		<td colspan='2' style='width: 65%'>".$frm->selectbox('type', $dispOpt, $_POST['type'])."	</td>
+		<td colspan='2' style='width: 65%'>".$frm->select('type', $dispOpt, $_POST['type'])."	</td>
 		</td>
 		</tr>";
 		

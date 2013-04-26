@@ -249,7 +249,7 @@ class theme_builder
 						</colgroup>
 				<tr>
 					<td>Select your theme's folder</td>
-					<td>".$frm->selectbox("newtheme",$newDir)."</td>
+					<td>".$frm->select("newtheme",$newDir)."</td>
 				</tr>";
 				
 				/*
@@ -612,7 +612,7 @@ TEMPLATE;
 					
 				sort($allowedCategories);
 				
-					$text = $frm->selectbox($name, $allowedCategories,'','useValues=1&required=1', true);	
+					$text = $frm->select($name, $allowedCategories,'','useValues=1&required=1', true);	
 				break;
 				
 				

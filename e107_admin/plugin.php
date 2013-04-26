@@ -1328,7 +1328,7 @@ class pluginManager{
 
 			if(is_writable(e_PLUGIN.$plug['plugin_path']))
 			{
-				$del_text = $frm->selectbox('delete_files','yesno',0);
+				$del_text = $frm->select('delete_files','yesno',0);
 			}
 			else
 			{
@@ -1430,7 +1430,7 @@ class pluginManager{
 			{
 				$text .= "<tr>\n<td class='top'>".$tp->toHTML($val['label'],FALSE,'TITLE');
 				$text .= varset($val['preview']) ? "<div class='indent'>".$val['preview']."</div>" : "";
-				$text .= "</td>\n<td>".$frm->selectbox($key,$val['itemList'],$val['itemDefault']);
+				$text .= "</td>\n<td>".$frm->select($key,$val['itemList'],$val['itemDefault']);
 				$text .= varset($val['helpText']) ? "<div class='field-help'>".$val['helpText']."</div>" : "";
 				$text .= "</td>\n</tr>\n";
 			}
@@ -1596,7 +1596,7 @@ class pluginBuilder
 						</colgroup>
 				<tr>
 					<td>Select your plugin's folder</td>
-					<td>".$frm->selectbox("newplugin",$newDir)."</td>
+					<td>".$frm->select("newplugin",$newDir)."</td>
 				</tr>";
 				
 				
@@ -1951,7 +1951,7 @@ class pluginBuilder
 					'about'		=> 'about'
 					);
 				
-					$text = $frm->selectbox($name, $options,'','required=1&class=null', true);	
+					$text = $frm->select($name, $options,'','required=1&class=null', true);	
 				break;
 				
 				
@@ -2073,7 +2073,7 @@ TEMPLATE;
 				$text .= "
 					<tr>
 						<td>Mode</td>
-						<td>".$frm->selectbox($this->table."[mode]",$modes, $defaultMode[$table], 'required=1&class=null', true)."</td>
+						<td>".$frm->select($this->table."[mode]",$modes, $defaultMode[$table], 'required=1&class=null', true)."</td>
 					</tr>
 					
 				";
@@ -2225,7 +2225,7 @@ TEMPLATE;
 		//	asort($array);
 			
 			$fname = $this->table."[fields][".$name."][type]";
-			return $frm->selectbox($fname, $array, $this->guess($name, $val),'required=1&class=null', true);
+			return $frm->select($fname, $array, $this->guess($name, $val),'required=1&class=null', true);
 			
 		}
 

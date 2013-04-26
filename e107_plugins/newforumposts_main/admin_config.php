@@ -45,7 +45,7 @@ $text = "
 	</colgroup>
 	<tr>
 		<td>".NFPM_L4."</td>
-		<td>".$frm->selectbox('nfp_display', array(0 => NFPM_L5, 1 => NFPM_L6, 2 => NFPM_L7), $pref['nfp_display'])."</td>
+		<td>".$frm->select('nfp_display', array(0 => NFPM_L5, 1 => NFPM_L6, 2 => NFPM_L7), $pref['nfp_display'])."</td>
 	</tr>
 	<tr>
 		<td>".NFPM_L8.":</td>

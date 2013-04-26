@@ -602,7 +602,7 @@ class admin_shortcodes
 		if(!e107::isInstalled('pm')) return;
         
         $sql = e107::getDb();
-        $count =  $sql->count('private_msg','(*)','WHERE pm_read = 0');
+        $count =  $sql->count('private_msg','(*)','WHERE pm_read = 0 AND pm_to='.USERID);
        
        if ($count >0)
        {

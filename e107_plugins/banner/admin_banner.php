@@ -352,7 +352,7 @@ if ($action == "create")
 
 	if (count($campaigns)) 
 	{
-		$text .= $frm->selectbox('banner_campaign_sel',$campaigns,$_POST['banner_campaign'],'',LAN_SELECT);
+		$text .= $frm->select('banner_campaign_sel',$campaigns,$_POST['banner_campaign'],'',LAN_SELECT);
 		$text .= $frm->text('banner_campaign','','',array('placeholder'=> 'Or enter a new campaign'));	
 	}
 	else
@@ -370,7 +370,7 @@ if ($action == "create")
 
 	if (count($clients)) 
 	{
-		$text .= $frm->selectbox('banner_client_sel',$clients, $_POST['client_name'],'', LAN_SELECT);
+		$text .= $frm->select('banner_client_sel',$clients, $_POST['client_name'],'', LAN_SELECT);
 		$text .= $frm->text('client_name','','',array('placeholder'=> 'Or enter a new client'));	
 		
 		

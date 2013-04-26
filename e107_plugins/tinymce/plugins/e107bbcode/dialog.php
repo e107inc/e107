@@ -439,7 +439,7 @@ class e_bootstrap
 		$sel = array(''=>'Dark Gray','icon-white'=>'White');	
 			
 		$text .= "<div  class='area'>";
-		$text .= "<div class='inline-form'>Color: ".$frm->selectbox('glyph-color',$sel)."     Custom: ".$frm->text('glyph-custom','').$frm->button('glyph-save','Go')."</div>";	
+		$text .= "<div class='inline-form'>Color: ".$frm->select('glyph-color',$sel)."     Custom: ".$frm->text('glyph-custom','').$frm->button('glyph-save','Go')."</div>";	
 					
 		$text .= "<ul class='glyphicons well clearfix'>";
 		

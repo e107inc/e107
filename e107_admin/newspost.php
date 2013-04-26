@@ -2125,14 +2125,14 @@ class admin_newspost
 		}
 		else
 		{
-			// $text .= $frm->selectbox("cat_id",$this->news_category,$_POST['cat_id']);
+			// $text .= $frm->select("cat_id",$this->news_category,$_POST['cat_id']);
 			$catopt = array();
 			foreach ($this->news_categories as $row)
 			{
 				$catopt[$row['category_id']] = $tp->toHTML($row['category_name'], FALSE, "LINKTEXT");
 			}
 			
-			$text .= $frm->selectbox("cat_id", $catopt, $_POST['cat_id']);
+			$text .= $frm->select("cat_id", $catopt, $_POST['cat_id']);
 			/*
 			$text .= $frm->select_open('cat_id');
 
@@ -2174,7 +2174,7 @@ class admin_newspost
 		";
 
 		//XXX multiple -selections at once. (comma separated) - working
-		$text .= $frm->selectbox('news_render_type', $this->news_renderTypes, vartrue($_POST['news_render_type']), "multiple=1")."
+		$text .= $frm->select('news_render_type', $this->news_renderTypes, vartrue($_POST['news_render_type']), "multiple=1")."
 										<div class='field-help'>
 											".NWSLAN_74."
 										</div>
@@ -2916,7 +2916,7 @@ class admin_newspost
 	function ajax_exec_pref_archnum()
 	{
 		$frm = e107::getForm();
-		echo $frm->selectbox('newsposts_archive', $this->_optrange(intval($this->getSubAction()) - 1), intval(e107::getPref('newsposts_archive')), 'class=tbox&tabindex='.intval($this->getId()));
+		echo $frm->select('newsposts_archive', $this->_optrange(intval($this->getSubAction()) - 1), intval(e107::getPref('newsposts_archive')), 'class=tbox&tabindex='.intval($this->getId()));
 	}
 
 /*
@@ -2969,13 +2969,13 @@ class admin_newspost
 							<tr>
 								<td>".NWSLAN_87."</td>
 								<td>
-									".$frm->selectbox('nbr_cols', $this->_optrange(6, false), $pref['nbr_cols'], 'class=tbox')."
+									".$frm->select('nbr_cols', $this->_optrange(6, false), $pref['nbr_cols'], 'class=tbox')."
 								</td>
 							</tr>
 							<tr>
 							<td>".NWSLAN_88."</td>
 							<td>
-								".$frm->selectbox('newsposts', $this->_optrange(50, false), $pref['newsposts'], 'class=tbox')."
+								".$frm->select('newsposts', $this->_optrange(50, false), $pref['newsposts'], 'class=tbox')."
 							</td>
 							</tr>
 		";
@@ -2989,7 +2989,7 @@ class admin_newspost
 							<tr>
 								<td>".NWSLAN_115."</td>
 								<td id='newsposts-archive-cont'>
-									".$frm->selectbox('newsposts_archive', $this->_optrange(intval($pref['newsposts']) - 1), intval($pref['newsposts_archive']), 'class=tbox')."
+									".$frm->select('newsposts_archive', $this->_optrange(intval($pref['newsposts']) - 1), intval($pref['newsposts_archive']), 'class=tbox')."
 									<div class='field-help'>".NWSLAN_116."</div>
 								</td>
 							</tr>

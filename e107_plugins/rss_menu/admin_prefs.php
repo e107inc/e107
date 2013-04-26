@@ -146,7 +146,7 @@ class rss_form_ui extends e_admin_form_ui
 			break;
 			
 			case 'write': // Edit Page
-				return $frm->selectbox('rss_class',$array, $curVal);		
+				return $frm->select('rss_class',$array, $curVal);		
 			break;
 			
 			case 'filter':
