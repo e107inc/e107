@@ -90,20 +90,20 @@ if ($action == 'active')
 		{
 			if ($row['user_name'])
 			{
-				$POSTER = "<a href='".$e107->url->create('user/profile/view', 'main', "name={$row['user_name']}&id={$row['thread_user']}")."'>{$row['user_name']}</a>";
+				$POSTER = "<a href='".e107::getUrl()->create('user/profile/view', "name={$row['user_name']}&id={$row['thread_user']}")."'>{$row['user_name']}</a>";
 			}
 			else
 			{
 				$POSTER = $row['thread_user_anon'];
 			}
 
-			$LINKTOTHREAD = $e107->url->getUrl('forum', 'thread', "func=view&id={$row['thread_id']}");
-			$LINKTOFORUM = $e107->url->getUrl('forum', 'forum', "func=view&id={$row['thread_forum_id']}");
+			$LINKTOTHREAD = e107::getUrl()->create('forum/thread/view', array('id' =>$row['thread_id'])); //$e107->url->getUrl('forum', 'thread', "func=view&id={$row['thread_id']}");
+			$LINKTOFORUM = e107::getUrl()->create('forum/forum/view', array('id' => $row['thread_forum_id'])); //$e107->url->getUrl('forum', 'forum', "func=view&id={$row['thread_forum_id']}");
 
 			$lastpost_datestamp = $gen->convert_date($row['thread_lastpost'], 'forum');
 			if ($row['user_last'])
 			{
-				$LASTPOST = "<a href='".$e107->url->create('user/profile/view', 'main', "name={$row['user_last']}&id={$row['thread_lastuser']}")."'>{$row['user_last']}</a><br />".$lastpost_datestamp;
+				$LASTPOST = "<a href='".$e107->url->create('user/profile/view', "name={$row['user_last']}&id={$row['thread_lastuser']}")."'>{$row['user_last']}</a><br />".$lastpost_datestamp;
 			}
 			else
 			{
