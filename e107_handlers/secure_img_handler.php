@@ -158,7 +158,7 @@ class secure_image
 		}
 			
 		$frm = e107::getForm();	
-		return $frm->hidden("rand_num", $this->random_number).$frm->text("code_verify", "", 20, "","size=20");
+		return $frm->hidden("rand_num", $this->random_number).$frm->text("code_verify", "", 20, array("size"=>20,"title"=> LAN_ENTER_CODE,'required'=>1));
 	}
 	
 	function renderLabel()
@@ -236,18 +236,30 @@ class secure_image
 			$secureimg['color'] = "90,90,90"; // red,green,blue
 
 			*/
-			$bg_file = $secureimg['image'];
+		
 			// var_dump($secureimg);
+			
+			if(isset($secureimg['font']) && !is_readable($path.$secureimg['font']))
+			{
+				echo "Font missing"; // for debug only. translation not necessary.
+				exit;
+			}
+	
+			if(!is_readable($path.$secureimg['image'].$ext))
+			{
+				echo "Missing Background-Image: ".$secureimg['image'].$ext; // for debug only. translation not necessary.
+				exit;
+			}
+			
 		}
 		else
 		{
-			
-			$bg_file = "generic/code_bg";
-			$fontpath 	= $this->BASE_DIR.$this->FONTS_DIRECTORY;
-			$secureimg['angle']	= "0";
-			$secureimg['color'] = "90,90,90"; // red,green,blue
-			$secureimg['x']		= "1";
-			$secureimg['y']		= "21";
+			$fontpath 				= $this->BASE_DIR.$this->FONTS_DIRECTORY;
+			$secureimg['image'] 	= "generic/code_bg";
+			$secureimg['angle']		= "0";
+			$secureimg['color'] 	= "90,90,90"; // red,green,blue
+			$secureimg['x']			= "1";
+			$secureimg['y']			= "21";
 			
 			$num = rand(1,3);
 			
@@ -268,22 +280,24 @@ class secure_image
 					$secureimg['size']	= "19";	
 				break;
 			}
-						
+				
+			
 		}
 
-		if(isset($secureimg['font']) && !is_readable($path.$secureimg['font']))
+		if(isset($secureimg['font']) && !is_readable($fontpath.$secureimg['font']))
 		{
 			echo "Font missing"; // for debug only. translation not necessary.
 			exit;
 		}
-
-		if(isset($secureimg['font']) && !is_readable($path.$secureimg['image'].$ext))
+		
+		
+		if(isset($secureimg['image']) && !is_readable($path.$secureimg['image'].$ext))
 		{
 			echo "Missing Background-Image: ".$secureimg['image'].$ext; // for debug only. translation not necessary.
 			exit;
 		}
 
-		
+		$bg_file = $secureimg['image'];
 		
 		switch($type)
 		{
