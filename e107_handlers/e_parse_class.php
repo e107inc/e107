@@ -1839,6 +1839,11 @@ class e_parse extends e_parser
 		{
 			parse_str($options, $options);
 		}
+		
+		if(strstr($url,e_MEDIA) || strstr($url,e_SYSTEM)) // prevent disclosure of 'hashed' path. 
+		{
+			$raw = true; 	
+		}
 
 		if($raw) $url = $this->createConstants($url, 'mix');
 		
