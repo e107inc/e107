@@ -319,7 +319,7 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 		$cbpost = $sql->db_getList();
 		$text .= "<div id='chatbox-posts-block'>\n";
 		
-		$text .= $tp->parseTemplate($CHATBOX_TEMPLATE['start'], true, $sc);
+		$text .= $tp->parseTemplate($CHATBOX_TEMPLATE['start'], false, $sc);
 		
 		foreach($cbpost as $cb)
 		{
@@ -327,7 +327,7 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 			$text .= $tp->parseTemplate($CHATBOX_TEMPLATE['item'], false, $sc);
 		}
 		
-		$text .= $tp->parseTemplate($CHATBOX_TEMPLATE['end'], true, $sc);
+		$text .= $tp->parseTemplate($CHATBOX_TEMPLATE['end'], false, $sc);
 		
 		$text .= "</div>";
 	}
@@ -344,6 +344,7 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 	}
 	$e107cache->set("nq_chatbox", $text);
 }
+
 
 
 
