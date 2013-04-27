@@ -235,7 +235,7 @@ else
 	{
 		$texta =  (e_QUERY ? "\n<form id='chatbox' method='post' action='".e_SELF."?".e_QUERY."'>" : "\n<form id='chatbox' method='post' action='".e_SELF."'>");
 	}
-	$texta .= "<div id='chatbox-input-block'>";
+	$texta .= "<div class='control-group' id='chatbox-input-block'>";
 
 	if(($pref['anon_post'] == "1" && USER == FALSE))
 	{
@@ -263,8 +263,7 @@ else
 	{
 		$texta .= "
 		<input class='btn button' type='button' style='cursor:pointer' size='30' value='".CHATBOX_L14."' onclick=\"expandit('emote')\" />
-		<div style='display:none' id='emote'>".r_emote()."
-		</div>\n";
+		<div class='well' style='display:none' id='emote'>".r_emote()."</div>\n";
 	}
 
 	$texta .="</div>\n</form>\n";
