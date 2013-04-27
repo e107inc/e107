@@ -4136,6 +4136,12 @@ class e_admin_ui extends e_admin_controller_ui
 
 	protected function _add2featurebox($selected)
 	{
+		// FIX - don't allow if plugin not installed
+		if(!e107::isInstalled('featurebox'))
+		{
+			return false;
+		}
+		
 		if(empty($selected)) return false;// TODO warning message
 		
 		if(!is_array($selected)) $selected = array($selected);
@@ -5436,6 +5442,13 @@ class e_admin_form_ui extends e_form
 			$mes->add("Cannot display Batch drop-down as 'checkboxes' was not found in \$fields array.", E_MESSAGE_DEBUG);
 			return '';
 		}
+		
+		// FIX - don't show FB option if plugin not installed
+		if(!e107::isInstalled('featurebox'))
+		{
+			$allow_featurebox = false;
+		}
+		
 		// TODO - core ui-batch-option class!!! REMOVE INLINE STYLE!
 		// XXX Quick Fix for styling - correct. 
 		$text = "
