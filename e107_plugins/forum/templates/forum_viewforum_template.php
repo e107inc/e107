@@ -281,6 +281,7 @@ $FORUM_CRUMB['forum']['value'] = "{FORUM_TITLE}";
 // New in v2.x - requires a bootstrap theme be loaded.  
 
 // <small>{BREADCRUMB}</small>  //FIXME Breadcrumb looks crummy
+//TODO Find a good place to put a {SEARCH} dropdown. 
 
 $FORUM_VIEWFORUM_TEMPLATE['start'] 				= "";
 $FORUM_VIEWFORUM_TEMPLATE['header'] 			= "<div class='row-fluid'><div>{BACKLINK}</div>	</div>
@@ -318,8 +319,8 @@ $FORUM_VIEWFORUM_TEMPLATE['divider-important']	= "<tr><th colspan='2'>".LAN_411.
 $FORUM_VIEWFORUM_TEMPLATE['divider-normal']		= "<tr><th colspan='2'>".LAN_412."</th><th>".LAN_55."</th><th>".LAN_56."</th><th>".LAN_57."</th></tr>";
 
 $FORUM_VIEWFORUM_TEMPLATE['footer'] 				= "</table>
-												<div class='row'>
-												<div class='span5 pull-left left' style='padding-top:10px'>{SEARCH}</div><div class='span3 pull-right right' style='padding-top:10px'>{NEWTHREADBUTTONX}</div>
+												<div class='row-fluid'>
+												<div class='span5 pull-left left' style='padding-top:10px'>{THREADPAGES}</div><div class='span3 pull-right right' style='padding-top:10px'>{NEWTHREADBUTTONX}</div>
 												
 												</div>";
 $FORUM_VIEWFORUM_TEMPLATE['end'] 					= "<!--- END --> \n";
