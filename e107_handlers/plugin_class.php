@@ -1487,9 +1487,13 @@ class e107plugin
 		{
 			$sql->update('plugin', "plugin_installflag = 0, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['@attributes']['version']}', plugin_category ='".$this->manage_category($plug_vars['category'])."' WHERE plugin_id = ".$id);
 			unset($p_installed[$plug['plugin_path']]);
+			
 			e107::getConfig('core')->setPref('plug_installed', $p_installed);
 
 		}
+		
+		e107::getMessage()->addDebug("updated Installed plugins pref: ".print_a($p_installed,true));
+		
 		
 		$this->rebuildUrlConfig();
 
