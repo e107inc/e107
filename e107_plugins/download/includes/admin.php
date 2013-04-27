@@ -496,8 +496,9 @@ $columnInfo = array(
 			$sql = e107::getDb();
 			$ns = e107::getRender();
 			$tp = e107::getParser();
+			$pref = e107::getPref();
 			
-			global $pref;
+			//global $pref;
 			
 			if ($sql->db_Select('userclass_classes','userclass_id, userclass_name'))
 			{
@@ -518,7 +519,7 @@ $columnInfo = array(
 				";
 				if(vartrue($pref['download_limits']) == 1)
 				{
-					$chk = "checked = 'checked'";
+					$chk = " checked = 'checked'";
 				}
 				else
 				{
@@ -526,7 +527,7 @@ $columnInfo = array(
 				}
 		
 				$txt .= "
-					<input type='checkbox' name='download_limits' {$chk}/> ".DOWLAN_125."
+					<input type='checkbox' name='download_limits' value='on'{$chk}/> ".DOWLAN_125."
 					</td>
 				</tr>
 				<tr>
