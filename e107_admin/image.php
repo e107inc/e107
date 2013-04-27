@@ -169,7 +169,7 @@ class media_cat_ui extends e_admin_ui
          	'media_cat_type' 		=> array('title'=> LAN_TYPE,		'type' => 'radio',	'data'=>false,		'width' => 'auto', 'thclass' => 'left', 'validate' => true, 'nolist'=>true),
          	
 			'media_cat_category' 	=> array('title'=> LAN_CATEGORY,	'type' => 'text',	'data'=>'str',		'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),		
-			'media_cat_title' 		=> array('title'=> LAN_TITLE,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE, 'required' => true),
+			'media_cat_title' 		=> array('title'=> LAN_TITLE,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE, 'validate' => true),
          	'media_cat_sef' 		=> array('title'=> LAN_SEFURL,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),        
          	'media_cat_diz' 		=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=150&bb=1','readonly'=>FALSE), // Display name
 			'media_cat_class' 		=> array('title'=> LAN_VISIBILITY,	'type' => 'userclass',		'width' => 'auto', 'data' => 'int'),
@@ -208,24 +208,34 @@ class media_cat_ui extends e_admin_ui
 		$sql = e107::getDb();
 		
 	
-		$sql->db_Select_gen("SELECT media_cat_owner, count(media_cat_id) as number FROM `#core_media_cat` GROUP BY media_cat_owner");
-		while($row = $sql->db_Fetch())	
+		if($sql->db_Select_gen("SELECT media_cat_owner, count(media_cat_id) as number FROM `#core_media_cat` GROUP BY media_cat_owner"))
 		{
-			$this->ownerCount[$row['media_cat_owner']] = $row['number'];
-			$own = $row['media_cat_owner'];
-			if(!in_array($own,$restricted))
+			while($row = $sql->db_Fetch())	
 			{
-				
-				$this->fields['media_cat_owner']['writeParms'][$own] = $own;	
-				
-			}		
+				$this->ownerCount[$row['media_cat_owner']] = $row['number'];
+				$own = $row['media_cat_owner'];
+				if(!in_array($own,$restricted))
+				{
+					
+					$this->fields['media_cat_owner']['writeParms'][$own] = $own;	
+					
+				}		
+			}
 		}
-		
+		if(!varset($this->fields['media_cat_owner']['writeParms']))
+		{
+			$this->fields['media_cat_owner']['writeParms'] = array('', '');
+		}
 	}
 	
 	public function beforeCreate($new_data)
 	{
-
+		// XXX temporary disable when there is no owners, discuss
+		if(!$new_data['media_cat_owner'])
+		{
+			e107::getMessage()->addError('No media owner found.'); // FIXME lan
+			return false;
+		}
 		//$replace = array("_"," ","'",'"',"."); //FIXME Improve
 		//$new_data['media_cat_category'] = str_replace($replace,"-",$new_data['media_cat_category']);
 		$type = $this->getRequest()->getPosted('media_cat_type', 'image').'_';
