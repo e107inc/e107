@@ -515,8 +515,10 @@ switch ($action)
 			$day = 1;
 			$lastday = date("t", $startdate);
 		}
+		
 		$startdate = mktime(0, 0, 0, $month, $day, $year);
 		$enddate = mktime(23, 59, 59, $month, $lastday, $year);
+
 		$query = "
 		SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef,
 		nc.category_icon, nc.category_meta_keywords, nc.category_meta_description
@@ -525,7 +527,7 @@ switch ($action)
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
-		AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type)) AND n.news_datestamp > {$startdate} AND n.news_datestamp < {$enddate}
+		AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type)) AND n.news_datestamp BETWEEN {$startdate} AND {$enddate}
 		ORDER BY ".$order." DESC LIMIT ".intval($newsfrom).",".ITEMVIEW;
 		break;
 
