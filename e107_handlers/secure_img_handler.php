@@ -20,6 +20,7 @@ class secure_image
 	public $random_number;
 	protected $HANDLERS_DIRECTORY;
 	protected $IMAGES_DIRECTORY;
+	protected $FONTS_DIRECTORY;
 	protected $MYSQL_INFO;
 	protected $THIS_DIR;
 	protected $BASE_DIR;
@@ -54,6 +55,7 @@ class secure_image
 		$this->THIS_DIR 			= $imgp;
 		$this->BASE_DIR 			= realpath($imgp.'..'.DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
 		$this->HANDLERS_DIRECTORY 	= $HANDLERS_DIRECTORY;
+		$this->FONTS_DIRECTORY 		= isset($CORE_DIRECTORY) ? $CORE_DIRECTORY."fonts/" : "e107_core/fonts/";
 	//	$this->IMAGES_DIRECTORY 	= str_replace('/', DIRECTORY_SEPARATOR, $IMAGES_DIRECTORY);
         $this->IMAGES_DIRECTORY     =  $IMAGES_DIRECTORY;
 		$this->MYSQL_INFO = array('db' => $mySQLdefaultdb, 'server' => $mySQLserver, 'user' => $mySQLuser, 'password' => $mySQLpassword, 'prefix' => $mySQLprefix);
@@ -137,7 +139,7 @@ class secure_image
 		}
 
 		$code = $this->create_code();
-		return "<img src='".e_HTTP.$this->IMAGES_DIRECTORY."secimg.php?{$code}' class='icon secure-image' alt='Missing Code' />";
+		return "<img src='".e_HTTP.$this->IMAGES_DIRECTORY."secimg.php?{$code}' class='icon secure-image' alt='Missing Code' style='max-width:100%' />";
 	}
 	
 	
@@ -188,7 +190,7 @@ class secure_image
 		if(!is_numeric($qcode)){ exit; }
 		$recnum = preg_replace('#\D#',"",$qcode);
 
-		$imgtypes = array('jpg'=>"jpeg",'png'=>"png",'gif'=>"gif");
+		$imgtypes = array('png'=>"png",'gif'=>"gif",'jpg'=>"jpeg",);
 
 		@mysql_connect($this->MYSQL_INFO['server'], $this->MYSQL_INFO['user'],  $this->MYSQL_INFO['password']) || die('db connection failed');
 		@mysql_select_db($this->MYSQL_INFO['db']);
@@ -215,8 +217,9 @@ class secure_image
 			}
 		}
 
-		$path = $this->BASE_DIR.$this->IMAGES_DIRECTORY;
-		$secureimg = array();
+		$path 		= $this->BASE_DIR.$this->IMAGES_DIRECTORY;
+		$fontpath 	= $this->BASE_DIR.$this->IMAGES_DIRECTORY;
+		$secureimg 	= array();
 
 		if(is_readable($path."secure_image_custom.php"))
 		{
@@ -234,55 +237,90 @@ class secure_image
 
 			*/
 			$bg_file = $secureimg['image'];
-
-			if(!is_readable($path.$secureimg['font']))
-			{
-				echo "Font missing"; // for debug only. translation not necessary.
-				exit;
-			}
-
-			if(!is_readable($path.$secureimg['image'].$ext))
-			{
-				echo "Missing Background-Image: ".$secureimg['image'].$ext; // for debug only. translation not necessary.
-				exit;
-			}
 			// var_dump($secureimg);
 		}
 		else
 		{
+			
 			$bg_file = "generic/code_bg";
+			$fontpath 	= $this->BASE_DIR.$this->FONTS_DIRECTORY;
+			$secureimg['angle']	= "0";
+			$secureimg['color'] = "90,90,90"; // red,green,blue
+			$secureimg['x']		= "1";
+			$secureimg['y']		= "21";
+			
+			$num = rand(1,3);
+			
+			switch ($num) 
+			{
+				case 1:
+					$secureimg['font'] 	= "chaostimes.ttf";
+					$secureimg['size']	= "19";	
+				break;
+				
+				case 2:
+					$secureimg['font'] 	= "crazy_style.ttf";
+					$secureimg['size']	= "18";
+				break;
+				
+				case 3:
+					$secureimg['font'] 	= "puchakhonmagnifier3.ttf"; 
+					$secureimg['size']	= "19";	
+				break;
+			}
+						
 		}
 
+		if(isset($secureimg['font']) && !is_readable($path.$secureimg['font']))
+		{
+			echo "Font missing"; // for debug only. translation not necessary.
+			exit;
+		}
+
+		if(isset($secureimg['font']) && !is_readable($path.$secureimg['image'].$ext))
+		{
+			echo "Missing Background-Image: ".$secureimg['image'].$ext; // for debug only. translation not necessary.
+			exit;
+		}
+
+		
+		
 		switch($type)
 		{
-			case "jpeg":
-				$image = ImageCreateFromJPEG($path.$bg_file.".jpg");
-				break;
-			case "png":
-				$image = ImageCreateFromPNG($path.$bg_file.".png");
-				break;
+			case "png": // preferred 
+				$image = imagecreatefrompng($path.$bg_file.".png");
+				imagealphablending($image, true);
+			break;
+			
 			case "gif":
-				$image = ImageCreateFromGIF($path.$bg_file.".gif");
-				break;
+				$image = imagecreatefromgif($path.$bg_file.".gif");
+				imagealphablending($image, true);
+			break;
+			
+			case "jpeg":
+				$image = imagecreatefromjpeg($path.$bg_file.".jpg");
+			break;
 		}
 
 
+        // removing the black from the placeholder
+        
 
 		if(isset($secureimg['color']))
 		{
 			$tmp = explode(",",$secureimg['color']);
-			$text_color = ImageColorAllocate($image,$tmp[0],$tmp[1],$tmp[2]);
+			$text_color = imagecolorallocate($image,$tmp[0],$tmp[1],$tmp[2]);
 		}
 		else
 		{
-			$text_color = ImageColorAllocate($image, 90, 90, 90);
+			$text_color = imagecolorallocate($image, 90, 90, 90);
 		}
 
 		header("Content-type: image/{$type}");
 
-		if(isset($secureimg['font']) && is_readable($path.$secureimg['font']))
+		if(isset($secureimg['font']) && is_readable($fontpath.$secureimg['font']))
 		{
-			imagettftext($image, $secureimg['size'],$secureimg['angle'], $secureimg['x'], $secureimg['y'], $text_color,$path.$secureimg['font'], $code);
+			imagettftext($image, $secureimg['size'],$secureimg['angle'], $secureimg['x'], $secureimg['y'], $text_color,$fontpath.$secureimg['font'], $code);
 		}
 		else
 		{
