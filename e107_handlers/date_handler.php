@@ -29,7 +29,7 @@ class convert
 	 * System time offset is considered.
 	 * 
 	 * @param integer $datestamp unix stamp
-	 * @param string $mask [optional] long|short|forum or any strftime() valid string
+	 * @param string $mask [optional] long|short|forum|relative or any strftime() valid string
 	 * 
 	 * @return string parsed date
 	 */
@@ -76,6 +76,10 @@ class convert
 			//	$datestamp += TIMEOFFSET;
 			break;
 			
+			case 'relative':
+				return $this->computeLapse($datestamp, time(), false, false, 'short') ;		
+			break;
+			
 			default:
 				if(strpos($mask, '%') === FALSE)
 				{
@@ -84,7 +88,6 @@ class convert
 			break;
 		}
 		
-		// 
 
 		return strftime($mask, $datestamp);
 	}

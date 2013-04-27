@@ -618,6 +618,12 @@ $(document).ready(function()
 			}					
 		});
 		
+		
+		
+	
+		
+		
+		
 			
 		
 })
@@ -1024,4 +1030,37 @@ function preview_image(src_val,img_path, not_found)
 	}
 	return;
 }
+
+	// BC Ajax function 
+function sendInfo(handler, container, form) 
+{
+	var data 	= $(form).serialize();
+	
+	$.ajax({
+		type: 'post',
+		 url: handler,
+		 data: data,
+		 success: function(data) 
+		 {
+		// 	console.log(data);
+			$("#"+container).html(data).hide().show("slow");;
+		 }
+	});
+	
+	
+			
+	return false;
+
+	
+		//$(container).load(handler,function() {
+  				// alert(src);
+  				//$(this).hide();
+    			// $(this).fadeIn();
+		//	});
+			//if(form)
+			//	$(form).submitForm(container, null, handler);
+			//else
+			//	new e107Ajax.Updater(container, handler);
+}
+
 
