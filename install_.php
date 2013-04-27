@@ -1168,8 +1168,7 @@ class e_install
 		$this->template->SetTag("stage_content", "<div class='alert alert-block alert-{$alertType}'>".$page."</div>".$e_forms->return_form());
 		$this->logLine('Stage 8 completed');
 
-		e107::getMessage()->reset();
-		e107::getMessage()->resetSession();
+		e107::getMessage()->reset(false, false, true);
 	}
 
 	/**
@@ -1306,7 +1305,8 @@ class e_install
 		$tm->setTheme($this->previous_steps['prefs']['sitetheme'], false);
 
 		// Admin log fix - don't allow logs to be called inside pref handler
-		e107::getConfig('core')->setParam('nologs', false); // change to true to enable log
+		// FIX
+		e107::getConfig('core')->setParam('nologs', true); // change to false to enable log
 		$pref = e107::getConfig('core')->getPref();
 
 		// Set Preferences defined during install - overwriting those that may exist in the XML.
@@ -1346,7 +1346,7 @@ class e_install
 
 		// Set prefs, save
 		e107::getConfig('core')->setPref($this->previous_steps['prefs']);
-		e107::getConfig('core')->save(FALSE,TRUE); // save preferences made during install.
+		e107::getConfig('core')->save(FALSE,TRUE, FALSE); // save preferences made during install.
 		$this->logLine('Core prefs set to install choices');
 
 		// Create the admin user - replacing any that may be been included in the XML.
@@ -1356,6 +1356,9 @@ class e_install
 		$this->dbqry("REPLACE INTO {$this->previous_steps['mysql']['prefix']}user VALUES ({$userp})" );
 		$this->logLine('Admin user created');
 		mysql_close($this->dbLink);
+		
+		e107::getMessage()->reset(false, false, true);
+		
 		return false;
 	}
 
@@ -1370,6 +1373,9 @@ class e_install
 		e107::getDb()->db_Select_gen("SELECT * FROM #plugin WHERE plugin_path = '".$plugpath."' LIMIT 1");
 		$row = e107::getDb()->db_Fetch(MYSQL_ASSOC);
 		e107::getSingleton('e107plugin')->install_plugin($row['plugin_id']);
+		
+		e107::getMessage()->reset(false, false, true);
+		
 		return;
 	}
 
