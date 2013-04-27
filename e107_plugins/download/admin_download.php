@@ -44,13 +44,9 @@ require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."file_class.php");
 
 $fl = new e_file;
-
+$pref = e107::getPref(); // legacy, remove all globals
 $download = new download();
 // $adminDownload = new adminDownload();
-
-new plugin_download_admin();
-require_once(e_ADMIN."auth.php");
-
 
 
 /*
@@ -189,12 +185,16 @@ if (isset($_POST['addlimit']))
 
 if (isset($_POST['updatelimits']))
 {
-
-	if ($pref['download_limits'] != $_POST['download_limits'])
+	
+	//if ($pref['download_limits'] != $_POST['download_limits'])
 	{
-		$pref['download_limits'] = ($_POST['download_limits'] == 'on') ? 1 : 0;
-		save_prefs();
-		$message .= DOWLAN_126."<br/>";
+		$tmp = ($_POST['download_limits'] == 'on') ? 1 : 0;
+		if ($pref['download_limits'] != $tmp)
+		{
+			$pref['download_limits'] = $tmp;
+			e107::getConfig()->set('download_limits', $tmp)->save(false);
+			$message .= DOWLAN_126."<br/>";
+		}
 	}
 	foreach(array_keys($_POST['count_num']) as $idLim)
 	{
@@ -228,7 +228,8 @@ if (isset($_POST['updatelimits']))
 	}
 }
 
-
+new plugin_download_admin();
+require_once(e_ADMIN."auth.php");
 //download/includes/admin.php is auto-loaded. 
  e107::getAdminUI()->runPage();
 require_once(e_ADMIN."footer.php");
