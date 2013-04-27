@@ -608,7 +608,7 @@ class media_admin_ui extends e_admin_ui
 		protected $pluginName = 'core';
 		protected $table = "core_media";
 
-		protected $listQry = "SELECT m.*,u.user_id,u.user_name FROM #core_media AS m LEFT JOIN #user AS u ON m.media_author = u.user_id "; // without any Order or Limit.
+		protected $listQry = "SELECT SQL_CALC_FOUND_ROWS m.*,u.user_id,u.user_name FROM #core_media AS m LEFT JOIN #user AS u ON m.media_author = u.user_id "; // without any Order or Limit.
 
 	//	//protected $editQry = "SELECT * FROM #comments WHERE comment_id = {ID}";
 
