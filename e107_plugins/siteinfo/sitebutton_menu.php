@@ -16,4 +16,18 @@
 
 if (!defined('e107_INIT')) { exit; }
 // echo "parm=".$parm; //FIXME - just for testing only.
-$ns->tablerender(SITEBUTTON_MENU_L1, "<div style='text-align:center'>\n<a href='".SITEURL."'><img src='".(strstr(SITEBUTTON, "http:") ? SITEBUTTON : e_IMAGE_ABS.SITEBUTTON)."' alt='".SITEBUTTON_MENU_L1."' style='border: 0px; width: 88px; height: 31px' /></a>\n</div>", 'sitebutton');
+
+if(strstr(SITEBUTTON, "://")) // external url. 
+{
+	$path = SITEBUTTON;
+} 
+elseif(basename(SITEBUTTON) == SITEBUTTON) // v1.x BC Fix. - no path included. 
+{
+	$path = e_IMAGE_ABS.SITEBUTTON;
+}
+else // v2.x format:  {e_IMAGE}whatever.png 
+{
+	$path = SITEBUTTON; 	
+}
+
+$ns->tablerender(SITEBUTTON_MENU_L1, "<div style='text-align:center'>\n<a href='".SITEURL."'><img src='".$path."' alt='".SITEBUTTON_MENU_L1."' style='border: 0px; max-width:100%' /></a>\n</div>", 'sitebutton');
