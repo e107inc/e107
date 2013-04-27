@@ -34,7 +34,7 @@ if (ADMIN == TRUE)
 	// print_a($array_functions);
 
 	// asort($array_functions);
-	ksort($array_functions, 'title'); //FIXME Improve ordering. 
+//	ksort($array_functions, 'title'); //FIXME Improve ordering. 
 
 	//$array_functions = asortbyindex($array_functions, 1);
 

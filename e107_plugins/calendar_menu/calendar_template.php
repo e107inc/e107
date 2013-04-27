@@ -257,12 +257,12 @@ $CALENDAR_MENU_TABLE_START =  "<table cellpadding='0' cellspacing='1' style='wid
 $CALENDAR_MENU_END = "</tr></table></div>";
 
 // Blank cells at beginning and end
-$CALENDAR_MENU_DAY_NON = "<td class='forumheader3' style='width:14.28%; padding:1px; text-align:center; '><br /></td>";
+$CALENDAR_MENU_DAY_NON = "<td class='forumheader3' style='width:14.28%; padding:1px; text-align:center; '>&nbsp;</td>";
 
 //header row
 $CALENDAR_MENU_HEADER_START = "<tr>\n";
-$CALENDAR_MENU_HEADER_FRONT = "<td class='forumheader' style='text-align:center; vertical-align:middle;'><span class='smalltext'>";
-$CALENDAR_MENU_HEADER_BACK = "</span></td>";
+$CALENDAR_MENU_HEADER_FRONT = "<th class='forumheader' style='text-align:center; vertical-align:middle;'><span class='smalltext'>";
+$CALENDAR_MENU_HEADER_BACK = "</span></th>";
 $CALENDAR_MENU_HEADER_END = "</tr>\n<tr>";
 
 
