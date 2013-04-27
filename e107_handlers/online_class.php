@@ -292,6 +292,7 @@ class e_online
 
 				//update most ever online
 				$olCountPrefs = e107::getConfig('history');			// Get historic counts of members on line
+				$olCountPrefs->setParam('nologs', true);
 				if ($total_online > ($olCountPrefs->get('most_members_online') + $olCountPrefs->get('most_guests_online')))
 				{
 					$olCountPrefs->set('most_members_online', MEMBERS_ONLINE);
