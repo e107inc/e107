@@ -101,7 +101,7 @@ if(false === $cached)
 	$month_start 	= mktime(0, 0, 0, $req_month, 1, $req_year);
 	$lastday 		= date("t", $month_start);
 	$month_end 		= mktime(23, 59, 59, $req_month, $lastday, $req_year);
-	$start 			= mktime(0, 0, 0, 1, 1, $req_year);
+	$start 			= mktime(0, 0, 0, 1, 1, 1980);
 	$end 			= time();
 	
 	$year_start 	= mktime(0, 0, 0, 1, 1, $req_year);
@@ -115,22 +115,23 @@ if(false === $cached)
 	while ($news = $sql->db_Fetch())
 	{
 		$xmonth = date("n", $news['news_datestamp']);
+		$xyear = date("Y", $news['news_datestamp']);
 		if (!isset($month_links[$xmonth]) || !$month_links[$xmonth])
 		{
 			$month_links[$xmonth] = e107::getUrl()->create('news/list/month', 'idv='.formatDate($req_year, $xmonth));//e_BASE."news.php?month.".formatDate($req_year, $xmonth);
 		}
-		if(($news['news_datestamp'] >= $month_start && $news['news_datestamp'] <= $month_end) || (deftrue('e_BOOTSTRAP') && $news['news_datestamp'] >= $year_start && $news['news_datestamp'] <= $year_end))
+	//	if(($news['news_datestamp'] >= $month_start && $news['news_datestamp'] <= $month_end) || (deftrue('e_BOOTSTRAP') && $news['news_datestamp'] >= $year_start && $news['news_datestamp'] <= $year_end))
 		{
 			$xday = date("j", $news['news_datestamp']);
 			if (!isset($day_links[$xday]) || !$day_links[$xday])
 			{
-				$links[$xmonth][$xday] = e107::getUrl()->create('news/list/day', 'id='.formatDate($req_year, $xmonth, $xday));//e_BASE."news.php?day.".formatDate($req_year, $req_month, $xday);
+				$links[$xyear][$xmonth][$xday] = e107::getUrl()->create('news/list/day', 'id='.formatDate($req_year, $xmonth, $xday));//e_BASE."news.php?day.".formatDate($req_year, $req_month, $xday);
 	
 				$day_links[$xday] = e107::getUrl()->create('news/list/day', 'id='.formatDate($req_year, $xmonth, $xday));//e_BASE."news.php?day.".formatDate($req_year, $req_month, $xday);
 			}
 		}
 		
-		$months[$xmonth] = 1;
+		$months[$xyear][$xmonth] = 1;
 	}
 	
 	// if we're listing the current year, add the current month to the list regardless of posts
@@ -158,7 +159,7 @@ if(false === $cached)
 	{
 		$month_selector = '<div class="btn-group pull-right"><a class="btn btn-mini " href="#blogCalendar" data-slide="prev">‹</a>  
  		 <a class="btn btn-mini" href="#blogCalendar" data-slide="next">›</a></div>';
-		 $caption = "<div class='inline-text'>".BLOGCAL_L1." ".$req_year.$month_selector."</div>";	
+		 $caption = "<div class='inline-text'>".BLOGCAL_L1." ".$month_selector."</div>";	
 	}	
 	else
 	{
@@ -186,9 +187,13 @@ if(false === $cached)
 	
 	$menu .= "<div class='blogcalendar-day-selector carousel-inner' style='text-align:center'>";
 	
-	foreach($months as $k=>$v)
+	
+	foreach($months as $year=>$val)
 	{
-		$menu .= calendar($req_day, $k, $req_year, $links[$k], $pref['blogcal_ws']);
+		foreach($val as $month=>$v)
+		{
+			$menu .= calendar($req_day, $month, $year, $links[$year][$month], $pref['blogcal_ws']);
+		}
 	}
 	$menu .= "</div>";
 	$menu .= "<div class='forumheader blogcalendar-archive-link' style='text-align: center; margin-top:2px;'><span class='smalltext'><a class='blogcalendar-archive-link btn btn-small' href='$prefix/archive.php'>".BLOGCAL_L2."</a></span></div>

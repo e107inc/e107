@@ -107,7 +107,9 @@ $year_selector .= "</select>\n</div>";
 // create the archive display
 // --------------------------
 $newline = 0;
-$archive = "<div style='text-align:center'><table border='0' cellspacing='7'><tr>";
+$archive = "<div style='text-align:center'>
+		<table class='table' border='0' cellspacing='7'>
+		<tr>";
 $archive .= "<td colspan='{$months_per_row}'>{$year_selector}</td></tr><tr>";
 for($i = 1; $i <= 12; $i++) 
 {
