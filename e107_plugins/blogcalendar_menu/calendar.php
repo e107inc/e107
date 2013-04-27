@@ -102,17 +102,25 @@ function calendar($req_day, $req_month, $req_year, $links = NULL, $ws = "sunday"
 		}
 		else 
 		{
-			$day_style = isset($links[$day_of_month]) ? "indent blogcalendar-day-active" : "forumheader3 blogcalendar-day";
+			$day_style = isset($links[$day_of_month]) ? "indent blogcalendar-day-active " : "forumheader3 blogcalendar-day";
 		}
 		
-		$calendar .= "<td class='$day_style' ><span class='smalltext blogcalendar-day-link'>";
+		$label_style = isset($links[$day_of_month]) ? 'label label-info' : ''; //TODO A pref in admin to choose between info, danger, etc. 
+		
+		$calendar .= "<td class='$day_style' >";
+	
 		$calendar .= isset($links[$day_of_month]) ? "<a class='blogcalendar-day-link' href='".$links[$day_of_month]."'>":"";
+		$calendar .= "<span class='smalltext blogcalendar-day-link {$label_style}'>";
 		$calendar .= $day_of_month;
+		$calendar .= "</span>";
 		$calendar .= isset($links[$day_of_month]) ? "</a>" : "";
-		$calendar .= "</span></td>";
+		
+		$calendar .= "</td>";
 		$day_of_month++;
 		$day_of_week++;
 	}
+		  
+	
 	
 	if ($day_of_week-$ws != 7) 
 	{
@@ -121,9 +129,9 @@ function calendar($req_day, $req_month, $req_year, $links = NULL, $ws = "sunday"
 	
 	$calendar .= "</tr>";
 	
-	if ($tablerow != 5) 
+	if ($tablerow != 6) 
 	{
-		$calendar .= "<tr><td class='blogcalendar-day-empty' style='padding: ".$padding."px;' colspan='6'>&nbsp;</td></tr>";
+		$calendar .= "<tr><td class='blogcalendar-day-empty' colspan='7'>&nbsp;</td></tr>";
 	}
 	 
 	$calendar .= "</tbody></table>";

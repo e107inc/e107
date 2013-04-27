@@ -8,7 +8,7 @@
  *
  */
 
-define("BLOGCAL_L1", "News for ");
+define("BLOGCAL_L1", "News by month");
 define("BLOGCAL_L2", "Archive");
 	
 define("BLOGCAL_D1", "Mo");
