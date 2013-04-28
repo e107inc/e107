@@ -164,8 +164,10 @@ if(SITECONTACTINFO && $CONTACT_INFO)
 
 if(isset($pref['sitecontacts']) && $pref['sitecontacts'] != 255)
 {
-	// require_once(e_CORE."shortcodes/batch/contact_shortcodes.php");
 	$contact_shortcodes = e107::getScBatch('contact');
+	// Wrapper support
+	$contact_shortcodes->wrapper('contact/form');
+	
 	$text = $tp->parseTemplate($CONTACT_FORM, TRUE, $contact_shortcodes);
 
 	if(trim($text) != "")

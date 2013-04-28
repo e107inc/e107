@@ -2022,6 +2022,50 @@ class e107
 
 		return (is_array($ret_plug) ? array_merge($ret_plug, $ret) : $ret);
 	}
+	
+	/**
+	 * Register sc_style registry
+	 * @param string $templateId e.g. 'contact/form' or 'contact' for all contact template wrappers
+	 * @param string $scName [optional] shortcode name - if provided, wrapper (string) for the corresponding code will be returned 
+	 * @return array|string
+	 */
+	public static function templateWrapper($templateId, $scName = null)
+	{
+		if(!$templateId) return array();
+		
+		list($templateId, $templateKey) = explode('/', $templateId, 2);
+		
+		$wrapperRegPath = 'templates/wrapper/'.$templateId;
+		$wrapper = self::getRegistry($wrapperRegPath);
+		if(empty($wrapper) || !is_array($wrapper)) $wrapper = array();
+		
+		if($templateKey) $wrapper = (isset($wrapper[$templateKey])  ? $wrapper[$templateKey] : array());
+		
+		if(null !== $scName) 
+		{
+			$scName = strtoupper($scName);
+			return isset($wrapper[$scName]) ? $wrapper[$scName] : '';
+		}
+		
+		return $wrapper;
+	}
+	
+	/**
+	 * Retrieve/set sc_style array (global shortcode wrapper)
+	 * @param array $set template defined $sc_style, will be merged with current registry content
+	 * @return array
+	 */
+	public static function scStyle($set = null)
+	{
+		$_sc_style = self::getRegistry('shortcodes/sc_style');
+		if(!is_array($_sc_style)) $_sc_style = array();
+		if(is_array($set) && !empty($set))
+		{
+			self::setRegistry('shortcodes/sc_style', array_merge($_sc_style, $set));
+		}
+		
+		return $_sc_style;
+	}
 
 	/**
 	 * Get Template Info array.
@@ -2132,6 +2176,7 @@ class e107
 		$var_info = strtoupper($id).'_INFO';
 		
 		$wrapper = strtoupper($id).'_WRAPPER'; // see contact_template.php
+		$wrapperRegPath = 'templates/wrapper/'.$id;
 		
 		//FIXME XXX URGENT - Add support for _WRAPPER and $sc_style BC. - save in registry and retrieve in getScBatch()?
 		// Use: list($pre,$post) = explode("{---}",$text,2); 
@@ -2140,6 +2185,18 @@ class e107
 		{
 			(deftrue('E107_DEBUG_LEVEL') ? include_once($path) : @include_once($path));
 			self::setRegistry($regPath, (isset($$var) ? $$var : array()));
+			
+			// sc_style not a global anymore and uppercase
+			if(isset($SC_STYLE))
+			{
+				self::scStyle($SC_STYLE);
+			}
+			
+			// ID_WRAPPER support
+			if(isset($$wrapper) && !empty($$wrapper) && is_array($$wrapper))
+			{
+				self::setRegistry($wrapperRegPath, $$wrapper);
+			}
 		}
 		if(null === self::getRegistry($regPathInfo))
 		{

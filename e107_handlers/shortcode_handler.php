@@ -73,6 +73,18 @@ class e_parse_shortcode
 	 * @var e_vars
 	 */
 	protected $eVars = null;
+	
+	/**
+	 * Wrappers array for the current parsing cycle, see contact_template.php and $CONTACT_WRAPPER variable
+	 * @var array
+	 */
+	protected $wrappers = array();
+	
+	/**
+	 * Former $sc_style global variable. Internally used - performance reasons
+	 * @var array
+	 */
+	protected $sc_style = array();
 
 	function __construct()
 	{
@@ -665,6 +677,8 @@ class e_parse_shortcode
 	 */
 	function parseCodes($text, $useSCFiles = true, $extraCodes = null, $eVars = null)
 	{
+		global $sc_style; //legacy, will be removed soon, use the non-global $SC_STYLE instead
+		
 		$saveParseSCFiles = $this->parseSCFiles; // In case of nested call
 		$this->parseSCFiles = $useSCFiles;
 		$saveVars = $this->eVars; // In case of nested call
@@ -672,11 +686,26 @@ class e_parse_shortcode
 		$this->eVars = $eVars;
 		$this->addedCodes = NULL;
 		
+		// former $sc_style - do it once here and not on every doCode loop - performance
+		$this->sc_style = e107::scStyle(); 
+		if(isset($sc_style) && is_array($sc_style))
+		{
+			$this->sc_style = array_merge($sc_style, $this->sc_style);
+		}
 
 		//object support
 		if (is_object($extraCodes))
 		{
 			$this->addedCodes = &$extraCodes;
+			
+			// TEMPLATEID_WRAPPER support - see contact template
+			// must be registered in e_shortcode object (batch) via wrapper() method before parsing
+			// Do it only once per parsing cylcle and not on every doCode() loop - performance
+			if(method_exists($this->addedCodes, 'wrapper'))
+			{
+				$this->wrappers = e107::templateWrapper($this->addedCodes->wrapper()); 
+			}
+			
 			/*
 			$classname = get_class($extraCodes);
 
@@ -717,8 +746,8 @@ class e_parse_shortcode
 	 */
 	function doCode($matches)
 	{
-		
-		global $pref, $e107cache, $menu_pref, $sc_style, $parm, $sql;
+		// XXX remove all globals, $sc_style removed
+		global $pref, $e107cache, $menu_pref, $parm, $sql;
 		
 		$parmArray = false;
 
@@ -859,7 +888,8 @@ class e_parse_shortcode
 							// XXX - removal candidate - I really think it should be done manually (outside the parser)
 							// via e107::getScBatch(name)->setParserVars($eVars);
 							// $this->callScFunc($_class, 'setParserVars', $this->eVars);
-
+							$wrapper = $this->callScFunc($_class, 'wrapper', null);
+							
 							$ret = $this->callScFuncA($_class, $_method, array($parm, $sc_mode));
 							
 							/*if (method_exists($this->scClasses[$_class], $_method))
@@ -962,20 +992,41 @@ class e_parse_shortcode
 
 		if (isset($ret) && ($ret != '' || is_numeric($ret)))
 		{
-			//if $sc_mode exists, we need it to parse $sc_style
-			if ($sc_mode)
+			// Wrapper support - see contact_template.php
+			if(isset($this->wrappers[$code]) && !empty($this->wrappers[$code]))
 			{
-				$code = $code.'|'.$sc_mode;
+				list($pre, $post) = explode("{---}", $this->wrappers[$code], 2); 
+				$ret = $pre.$ret.$post;
 			}
-			if (isset($sc_style) && is_array($sc_style) && array_key_exists($code, $sc_style))
+			else
 			{
-				if (isset($sc_style[$code]['pre']))
+				//if $sc_mode exists, we need it to parse $sc_style
+				if ($sc_mode)
 				{
-					$ret = $sc_style[$code]['pre'].$ret;
+					$code = $code.'|'.$sc_mode;
 				}
-				if (isset($sc_style[$code]['post']))
+				if (is_array($this->sc_style) && array_key_exists($code, $this->sc_style))
 				{
-					$ret = $ret.$sc_style[$code]['post'];
+					$pre = $post = '';
+					// old way - pre/post keys
+					if(is_array($this->sc_style[$code]))
+					{
+						if (isset($this->sc_style[$code]['pre']))
+						{
+							$pre = $this->sc_style[$code]['pre'];
+						}
+						if (isset($this->sc_style[$code]['post']))
+						{
+							$post = $ret.$this->sc_style[$code]['post'];
+						}
+					}
+					// new way - same format as wrapper
+					else
+					{
+						list($pre, $post) = explode("{---}", $this->sc_style[$code], 2); 
+					}
+					
+					$ret = $pre.$ret.$post;
 				}
 			}
 		}
@@ -1106,7 +1157,7 @@ class e_shortcode
 	
 	protected $mode = 'view'; // or edit. Used within shortcodes for form elements vs values only.   
 
-	protected $wrapper = array(); // hold values of pre/post styling for each shortcode - see contact_template.php for an example. 	
+	protected $wrapper = null; // holds template/key value of the currently used wrapper (if any) - see contact_template.php for an example. 	
 	
 	/**
 	 * Storage for shortcode values
@@ -1123,6 +1174,21 @@ class e_shortcode
 	 * Startup code for child class
 	 */
 	public function init() {}
+	
+	/**
+	 * Sets wrapper id (to be retrieved from the registry while parsing)
+	 * Example e107::getScBatch('contact')->wrapper('contact/form');
+	 * which results in using the $CONTACT_WRAPPER['form'] wrapper in the parsing phase
+	 */
+	public function wrapper($id = null)
+	{
+		if(null === $id) return $this->wrapper;
+		
+		if(false === $id) $id = null;
+		$this->wrapper = $id;
+		
+		return $this;
+	}
 
 	/**
 	 * Set external array data to be used in the batch
