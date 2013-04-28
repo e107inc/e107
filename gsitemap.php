@@ -54,6 +54,7 @@ $sql -> db_Select("gsitemap", "*", "gsitemap_active IN (".USERCLASS_LIST.") ORDE
 $smArray = $sql -> db_getList();
 foreach($smArray as $sm)
 {
+	if($sm['gsitemap_url'][0] == '/') $sm['gsitemap_url'] = ltrim($sm['gsitemap_url'], '/');
 	$loc = (substr($sm['gsitemap_url'],0,4)== "http")? $sm['gsitemap_url'] : SITEURL.$tp->replaceConstants($sm['gsitemap_url'],TRUE);
 	$xml .= "
 	<url>
