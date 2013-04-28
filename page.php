@@ -221,6 +221,8 @@ class pageClass
 		if(!e107::getPref('listPages', false))
 		{
 			message_handler("MESSAGE", LAN_PAGE_1);
+			require_once(FOOTERF); // prevent message from showing twice and still listing chapters
+			exit;
 		}
 		else
 		{
