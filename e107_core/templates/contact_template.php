@@ -40,28 +40,24 @@ $CONTACT_TEMPLATE['menu'] =  '
  ';
  
  
- ///XXX This..... 
+	// Option I - new sc style variable and format, global available per shortcode (mode also applied)
+	// sc_style is uppercased now - distinguished from the legacy $sc_style variable and compatible with the new template standards, we deprecate $sc_style soon
  
-	$sc_style['CONTACT_EMAIL_COPY']['pre'] = "<tr><td>";
-	$sc_style['CONTACT_EMAIL_COPY']['post'] = LANCONTACT_07."</td></tr>";
-	
-	$sc_style['CONTACT_PERSON']['pre'] = "<tr><td>".LANCONTACT_14."<br />   ";
-	$sc_style['CONTACT_PERSON']['post'] = "</td></tr>";
-	
-	$sc_style['CONTACT_IMAGECODE']['pre'] = "<tr><td>".LANCONTACT_16."<br />";
-	$sc_style['CONTACT_IMAGECODE']['post'] = "";
-	
-	$sc_style['CONTACT_IMAGECODE_INPUT']['pre'] = "";
-	$sc_style['CONTACT_IMAGECODE_INPUT']['post'] = "</td></tr>";
+	$SC_STYLE['CONTACT_EMAIL_COPY'] 		= "<tr><td>{---}".LANCONTACT_07."</td></tr>";
+	$SC_STYLE['CONTACT_PERSON'] 			= "<tr><td>".LANCONTACT_14."<br />{---}</td></tr>";
+	$SC_STYLE['CONTACT_IMAGECODE'] 			= "<tr><td>".LANCONTACT_16."<br />{---}";
+	$SC_STYLE['CONTACT_IMAGECODE_INPUT'] 	= "{---}</td></tr>";
  
  	
-//XXX Becomes This.....  ( New Format for v2 - losing the pre/post and using a shortcode 'wildcard' that can be split later)
+	// Option II - Wrappers, used ONLY with batch objects, requires explicit wrapper registration
+	// In this case (see contact.php) e107::getScBatch('contact')->wrapper('contact/form')
+	// Only one Option is used - WRAPPER > SC_STYLE
 
-	$CONTACT_WRAPPER['form']['CONTACT_IMAGECODE'] 			= "<tr><td>".LANCONTACT_16."<br />{---}";
-	$CONTACT_WRAPPER['form']['CONTACT_IMAGECODE_INPUT'] 	= "{---}</td></tr>";
-	
-	$CONTACT_WRAPPER['form']['CONTACT_EMAIL_COPY'] 			= "<tr><td>{---}".LANCONTACT_07."</td></tr>";
-	$CONTACT_WRAPPER['form']['CONTACT_PERSON']				= "<tr><td>".LANCONTACT_14."<br />{---}</td></tr>";
+	// $CONTACT_WRAPPER['form']['CONTACT_IMAGECODE'] 			= "<tr><td>".LANCONTACT_16."<br />{---}";
+	// $CONTACT_WRAPPER['form']['CONTACT_IMAGECODE_INPUT'] 	= "{---}</td></tr>";
+// 	
+	// $CONTACT_WRAPPER['form']['CONTACT_EMAIL_COPY'] 			= "<tr><td>{---}".LANCONTACT_07."</td></tr>";
+	// $CONTACT_WRAPPER['form']['CONTACT_PERSON']				= "<tr><td>".LANCONTACT_14."<br />{---}</td></tr>";
 
 
 	$CONTACT_TEMPLATE['form'] = "
