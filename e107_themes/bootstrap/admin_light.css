@@ -21,6 +21,7 @@ body 						{ background-color: #EEEEEE;  }
 .adminlist thead 			{ background-color:#f2f2f2; }
 .adminlist tr.even			{ background-color:#f6f6f6; }
 
+.plupload_header_text 		{ color: black; }
 
 .ui-tabs .ui-tabs-nav li a, .ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-active a
 {
