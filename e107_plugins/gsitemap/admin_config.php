@@ -361,7 +361,7 @@ class gsitemap
 		{
 			if(!$sql -> select("gsitemap", "*", "gsitemap_name='".$row['page_title']."' "))
 			{
-				$importArray[] = array('name' => $row['page_title'], 'url' => "page.php?".$row['page_id'],'type' => "Custom Page");
+				$importArray[] = array('name' => $row['page_title'], 'url' => e107::getUrl()->create('page/view', $row, array('allow' => 'page_sef,page_title,page_id')), 'type' => "Custom Page");
 			}
 		}
 
@@ -376,13 +376,13 @@ class gsitemap
 			{
 				if(!$sql -> select("gsitemap", "*", "gsitemap_name='".$row['forum_name']."' "))
 				{
-					$importArray[] = array('name' => $row['forum_name'], 'url' => $PLUGINS_DIRECTORY."forum/forum_viewforum.php?".$row['forum_id'], 'type' => "Forum");
+					$importArray[] = array('name' => $row['forum_name'], 'url' => e107::getUrl()->create('forum/forum/view', $row['forum_id']), 'type' => "Forum");
 				}
 			}
 		}
 
 
-		/* content pages ... */
+		/* DEPRECATED content pages ...
 		if(plugInstalled('content'))
 		{ 	
 			$sql -> select("pcontent", "content_id, content_heading", "LEFT(content_parent,1) = '0' ORDER BY content_heading");
@@ -400,7 +400,7 @@ class gsitemap
 				}
 			}
 		}
-
+		*/
 
 		$text = "
 		<form action='".e_SELF."' id='form' method='post'>
