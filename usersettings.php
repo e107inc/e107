@@ -348,9 +348,10 @@ if (isset($_POST['updatesettings']))
 	// All key fields validated here
 	// -----------------------------
 	// $inp - UID of user whose data is being changed (may not be the currently logged in user)
+	$inp = intval($inp);
 	if (!$error && count($changedUserData) || count($changedEUFData))
 	{
-		$_POST['user_id'] = intval($inp);
+		$_POST['user_id'] = $inp;
 		$ret = $e_event->trigger('preuserset', $_POST);
 
 		if ($ret == '')
@@ -464,6 +465,7 @@ if ($dataToSave)
 
 if ($dataToSave && !$promptPassword)
 {
+	$inp = intval($inp);
 	$message = LAN_USET_41;
 
 	// We can update the basic user record now - can just update fields from $changedUserData
@@ -471,7 +473,7 @@ if ($dataToSave && !$promptPassword)
 	if (isset($changedUserData) && count($changedUserData))
 	{
 		$changedData['data'] = $changedUserData;
-		$changedData['WHERE'] = 'user_id='.intval($inp);
+		$changedData['WHERE'] = 'user_id='.$inp;
 		validatorClass::addFieldTypes($userMethods->userVettingInfo,$changedData);
 
 		//print_a($changedData);
@@ -494,11 +496,15 @@ if ($dataToSave && !$promptPassword)
 	if (isset($changedEUFData['data']) && count($changedEUFData['data']))
 	{
 		$ue->addFieldTypes($changedEUFData);				// Add in the data types for storage
-		$changedEUFData['WHERE'] = '`user_extended_id` = '.intval($inp);
+		$changedEUFData['WHERE'] = '`user_extended_id` = '.$inp;
 
 		//print_a($changedEUFData);
-		// ***** Next line creates a record which presumably should be there anyway, so could generate an error
-		$sql->db_Select_gen("INSERT INTO #user_extended (user_extended_id, user_hidden_fields) values ('".intval($inp)."', '')");
+		if (false === $sql->retrieve('user_extended', 'user_extended_id', 'user_extended_id='.$inp))
+		{
+			// ***** Next line creates a record which presumably should be there anyway, so could generate an error if no test first
+			$sql->db_Select_gen("INSERT INTO #user_extended (user_extended_id, user_hidden_fields) values ('".$inp."', '')");
+			//print_a('New extended fields added: '.$inp.'<br />');
+		}
 		if (false === $sql->db_Update('user_extended', $changedEUFData))
 		{
 			$message .= '<br />Error updating EUF';
