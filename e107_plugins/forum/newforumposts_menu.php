@@ -16,6 +16,7 @@ $e107 = e107::getInstance();
 $tp = e107::getParser();
 $sql = e107::getDb();
 $gen = new convert;
+$pref = e107::getPref();
 
 include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_newforumposts_menu.php');
 include_once(e_PLUGIN.'forum/forum_class.php');
