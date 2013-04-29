@@ -41,12 +41,12 @@ $CONTACT_TEMPLATE['menu'] =  '
  
  
 	// Option I - new sc style variable and format, global available per shortcode (mode also applied)
-	// sc_style is uppercased now - distinguished from the legacy $sc_style variable and compatible with the new template standards, we deprecate $sc_style soon
+	// sc_style is renamed to sc_wrapper and uppercased now - distinguished from the legacy $sc_style variable and compatible with the new template standards, we deprecate $sc_style soon
  
-	// $SC_STYLE['CONTACT_EMAIL_COPY'] 		= "<tr><td>{---}".LANCONTACT_07."</td></tr>";
-	// $SC_STYLE['CONTACT_PERSON'] 			= "<tr><td>".LANCONTACT_14."<br />{---}</td></tr>";
-	// $SC_STYLE['CONTACT_IMAGECODE'] 			= "<tr><td>".LANCONTACT_16."<br />{---}";
-	// $SC_STYLE['CONTACT_IMAGECODE_INPUT'] 	= "{---}</td></tr>";
+	// $SC_WRAPPER['CONTACT_EMAIL_COPY'] 		= "<tr><td>{---}".LANCONTACT_07."</td></tr>";
+	// $SC_WRAPPER['CONTACT_PERSON'] 			= "<tr><td>".LANCONTACT_14."<br />{---}</td></tr>";
+	// $SC_WRAPPER['CONTACT_IMAGECODE'] 			= "<tr><td>".LANCONTACT_16."<br />{---}";
+	// $SC_WRAPPER['CONTACT_IMAGECODE_INPUT'] 	= "{---}</td></tr>";
  
  	
 	// Option II - Wrappers, used ONLY with batch objects, requires explicit wrapper registration
