@@ -2474,6 +2474,7 @@ class e_parser
 		$doc = $this->domObj;   
 		       
 		$doc->preserveWhiteSpace = true;
+		libxml_use_internal_errors(true);
         $doc->loadHTML($html); 	
 	
 		$tg = explode(",", $taglist);
