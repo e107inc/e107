@@ -306,7 +306,7 @@ class page_admin_ui extends e_admin_ui
 		protected $sortField		= 'page_order';
 		protected $orderStep 		= 10;
 		//protected $url         	= array('profile'=>'page/view', 'name' => 'page_title', 'description' => '', 'link'=>'{e_BASE}page.php?id=[id]'); // 'link' only needed if profile not provided. 
-		protected $url         		= array('route'=>'page/view/index', 'vars' => array('id' => 'page_id', 'sef' => 'page_sef'), 'name' => 'page_title', 'description' => ''); // 'link' only needed if profile not provided. 
+		protected $url         		= array('route'=>'page/view/index', 'vars' => array('id' => 'page_id', 'name' => 'page_sef'), 'name' => 'page_title', 'description' => ''); // 'link' only needed if profile not provided. 
 		protected $tabs		 		= array("Page","Page Options","Menu");
 		protected $featurebox		= array('name'=>'page_title', 'description'=>'page_text', 'image' => 'menu_image', 'visibility' => 'page_class', 'url' => true);
 		
@@ -342,7 +342,7 @@ class page_admin_ui extends e_admin_ui
 			'page_rating_flag' 	=> array('title'=> LAN_RATING, 		'tab' => 1,	'type' => 'boolean', 	'data'=>'int', 'width' => '5%', 'thclass' => 'center', 'class' => 'center' ),
 			'page_comment_flag' => array('title'=> ADLAN_114,		'tab' => 1,	'type' => 'boolean', 	'data'=>'int', 'width' => '5%', 'thclass' => 'center', 'class' => 'center' ),
 		//	'page_password' 	=> array('title'=> LXAN_USER_05, 	'type' => 'text', 'width' => 'auto'),								
-			'page_sef' 			=> array('title'=> LAN_SEFURL, 		'tab' => 1,	'type' => 'text', 'width' => 'auto'),		
+			'page_sef' 			=> array('title'=> LAN_SEFURL, 		'tab' => 1,	'type' => 'text', 'inline'=>true, 'width' => 'auto'),		
 			'page_metakeys' 	=> array('title'=> LAN_KEYWORDS, 		'tab' => 1,	'type' => 'tags', 'width' => 'auto'),								
 			'page_metadscr' 	=> array('title'=> CUSLAN_11, 		'tab' => 1,	'type' => 'text', 'width' => 'auto', 'writeParms'=>'size=xxlarge'),	
 		
