@@ -561,7 +561,29 @@ class e_navigation
 	{
 		if(defined('E_32_MAIN')) // basic check so that it's not loaded on the front-end. 
 		{
-			$this->iconArray = array(
+			$this->setIconArray();	
+		}
+		
+		
+	}
+
+	function getIconArray()
+	{
+		return $this->iconArray;	
+	}
+	
+	
+	
+	
+	function setIconArray()
+	{
+		if(!defined('E_32_MAIN'))
+		{
+			e107::getCoreTemplate('admin_icons');
+		}
+		
+		
+		$this->iconArray = array(
 				'main' 			=> E_32_MAIN,
 				'admin' 		=> E_32_ADMIN,
 				'admin_pass' 	=> E_32_ADPASS,
@@ -603,15 +625,8 @@ class e_navigation
 				'user_extended' => E_32_USER_EXTENDED,
 				'users' 		=> E_32_USER,
 				'wmessage' 		=> E_32_WELCOME 
-			);	
-		}
+			);		
 		
-		
-	}
-
-	function getIconArray()
-	{
-		return $this->iconArray;	
 	}
 
 	
@@ -695,9 +710,13 @@ class e_navigation
         if($mode == 'plugin')
         {
              return $this->pluginLinks(E_16_PLUGMANAGER, "array") ;   
-        }	
-			if($mode=='sub')
-			{
+        }
+		
+		$this->setIconArray();	
+		
+			
+		if($mode=='sub')
+		{
 				
 				//FIXME  array structure suitable for e_admin_menu - see shortcodes/admin_navigation.php
 				/*
@@ -719,7 +738,7 @@ class e_navigation
 				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php?pref', LAN_PREFS, ADLAN_4, 'H', 3, E_16_SETTINGS, E_32_SETTINGS);	
 				
 				return $array_sub_functions;
-			}
+		}
 		
 		
 			//FIXME array structure suitable for e_admin_menu (NOW admin() below) - see shortcodes/admin_navigation.php

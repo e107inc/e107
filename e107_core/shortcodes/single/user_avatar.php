@@ -7,6 +7,8 @@ function user_avatar_shortcode($parm='')
 	
 	
 	$tp 		= e107::getParser();
+	$width 		= $tp->thumbWidth;
+	$height 	= ($tp->thumbHeight !== 0) ? $tp->thumbHeight : "";
 	
 	if(intval($loop_uid) > 0 && trim($parm) == "")
 	{
@@ -47,8 +49,7 @@ function user_avatar_shortcode($parm='')
 		if(strpos($image,"://")!==false) // Remove Image
 		{
 			$img = $image;	
-			$height = $tp->thumbHeight;
-			$width = $tp->thumbWidth;
+
 			
 			//$height 	= e107::getPref("im_height",100); // these prefs are too limiting for local images.  
 			//$width 		= e107::getPref("im_width",100);
@@ -58,7 +59,7 @@ function user_avatar_shortcode($parm='')
 			$image = substr($image,8); // strip the -upload- from the beginning. 
 			if(file_exists(e_AVATAR_UPLOAD.$image)) // Local Default Image
 			{
-				$img =	$tp->thumbUrl(e_AVATAR_UPLOAD.$image,"w=".$width."&h=".$height,true);	
+				$img =	$tp->thumbUrl(e_AVATAR_UPLOAD.$image,"w=".$width."&h=".$height);	
 			}	
 			else 
 			{
@@ -67,7 +68,7 @@ function user_avatar_shortcode($parm='')
 		}
 		elseif(file_exists(e_AVATAR_DEFAULT.$image))  // User-Uplaoded Image
 		{
-			$img =	$tp->thumbUrl(e_AVATAR_DEFAULT.$image,"w=".$width."&h=".$height,true);		
+			$img =	$tp->thumbUrl(e_AVATAR_DEFAULT.$image,"w=".$width."&h=".$height);		
 		}
 		else // Image Missing. 
 		{
