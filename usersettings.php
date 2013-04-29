@@ -875,6 +875,6 @@ function usersettings_adminmenu()
 		$var ['ranks']['perm'] = '4|U3';	
 		//  $var['mailing']['text']= USRLAN_121;
 		//   $var['mailing']['link']="mailout.php";
-		show_admin_menu(USRLAN_76,$action,$var);
+		show_admin_menu(LAN_USER_OPTIONS, $action,$var);
 }
 ?>
