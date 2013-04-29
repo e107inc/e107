@@ -160,6 +160,7 @@ class plugin_forum_rewrite_url extends eUrlConfig
 				'name' => FORUM_LAN_URL_NAME, // Module name
 				'label' => FORUM_LAN_URL_REWRITE_LABEL, // Current profile name
 				'description' => FORUM_LAN_URL_REWRITE_DESCR, //
+				'examples'      => array("{e_PLUGIN_ABS}forum/forum.php")
 			),
 			'form' => array(), // Under construction - additional configuration options
 			'callbacks' => array(), // Under construction - could be used for e.g. URL generator functionallity
