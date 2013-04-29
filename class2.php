@@ -623,7 +623,7 @@ function getip()
 
 // for multi-language these definitions needs to come after the language loaded.
 define('SITENAME', trim($tp->toHTML($pref['sitename'], '', 'USER_TITLE,er_on')));
-define('SITEBUTTON', $tp->replaceConstants($pref['sitebutton']));
+define('SITEBUTTON', $tp->replaceConstants($pref['sitebutton'],'abs'));
 define('SITETAG', $tp->toHTML($pref['sitetag'], false, 'emotes_off,defs'));
 define('SITEDESCRIPTION', $tp->toHTML($pref['sitedescription'], '', 'emotes_off,defs'));
 define('SITEADMIN', $pref['siteadmin']);
