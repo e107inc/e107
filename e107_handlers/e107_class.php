@@ -2187,9 +2187,9 @@ class e107
 			self::setRegistry($regPath, (isset($$var) ? $$var : array()));
 			
 			// sc_style not a global anymore and uppercase
-			if(isset($SC_STYLE))
+			if(isset($SC_WRAPPER))
 			{
-				self::scStyle($SC_STYLE);
+				self::scStyle($SC_WRAPPER);
 			}
 			
 			// ID_WRAPPER support

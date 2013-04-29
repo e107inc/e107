@@ -1017,7 +1017,7 @@ class e_parse_shortcode
 						}
 						if (isset($this->sc_style[$code]['post']))
 						{
-							$post = $ret.$this->sc_style[$code]['post'];
+							$post = $this->sc_style[$code]['post'];
 						}
 					}
 					// new way - same format as wrapper
