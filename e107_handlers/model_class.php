@@ -657,7 +657,7 @@ class e_model extends e_object
 		elseif(!is_array($options)) parse_str($options, $options);
 		
 		$vars = $this->toArray();
-		if(!vartrue($options['allow']))
+		if(!isset($options['allow']) || empty($options['allow']))
 		{
 			if(vartrue($urldata['vars']) && is_array($urldata['vars']))
 			{
