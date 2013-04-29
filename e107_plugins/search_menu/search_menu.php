@@ -56,7 +56,7 @@ if (isset($custom_query[5]) && $custom_query[5]) {
 	$value_text = "value=''";
 }
 
-$text = "<form method='get' action='".e_HTTP."search.php'>
+$text = "<form class='form-inline' method='get' action='".e_HTTP."search.php'>
 	<div>
 	<input class='tbox search' type='text' name='q' size='20' ".$value_text." maxlength='50' />
 	<input type='hidden' name='r' value='0' />";
