@@ -1838,10 +1838,9 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
  		foreach($var as $key=>$link)
 		{
-        	if(strpos(e_SELF,$link['link']))
+        	if(varset($link['link']) && strpos(e_SELF,$link['link']))
 			{
             	$action = $key;
-
 			}
 		}
 

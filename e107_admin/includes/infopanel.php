@@ -35,7 +35,7 @@ class adminstyle_infopanel
 	            join_text: "auto",
 	            avatar_size: 16,
 	 			retweets: false,     
-	            count: 3,
+	            count: 4,
 	            fetch: 5,
 	            template: "{text}<br />- {time} » {retweet_action}",
 	            filter: function(t){ return ! /^@\w+/.test(t.tweet_raw_text); },
