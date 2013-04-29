@@ -1058,7 +1058,6 @@ class e107
 	 */
 	public static function getScBatch($className, $pluginName = null, $overrideClass = null)
 	{
-		//FIXME URGENT - Check for WRAPPER in template, and place into class. 
 		if(is_string($overrideClass)) $overrideClass .= '_shortcodes';
 		return self::getScParser()->getScObject($className.'_shortcodes', $pluginName, $overrideClass);
 	}

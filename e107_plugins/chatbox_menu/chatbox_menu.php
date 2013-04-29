@@ -19,9 +19,8 @@ error_reporting(E_ALL);
 if(isset($_POST['chatbox_ajax']))
 {
 	define('e_MINIMAL',true);
+	if(!defined('e107_INIT')) require_once('../../class2.php');
 }
-
-include_once('../../class2.php');
 
 global $e107cache, $e_event, $e107;
 
@@ -64,10 +63,10 @@ $emessage='';
 
 
 
-
+// FIX - using generic sc names is affecting old installs/templates and global wrappers (e.g. sc_style[USERNAME])
 class chatbox_shortcodes extends e_shortcode
 {
-	function sc_username($parm='')
+	function sc_cb_username($parm='')
 	{
 		list($cb_uid, $cb_nick) = explode(".", $this->var['cb_nick'], 2);
 		if($this->var['user_name'])
@@ -83,13 +82,13 @@ class chatbox_shortcodes extends e_shortcode
 		return $cb_nick;	
 	}	
 	
-	function sc_timedate($parm='')
+	function sc_cb_timedate($parm='')
 	{
 		return  e107::getDate()->convert_date($this->var['cb_datestamp'], "relative");		
 	}
 		
 
-	function sc_message($parm = '')
+	function sc_cb_message($parm = '')
 	{
 		if($this->var['cb_blocked'])
 		{
@@ -110,12 +109,12 @@ class chatbox_shortcodes extends e_shortcode
 		$cb_message = str_replace($search, $replace, $cb_message);	
 	}
 
-	function sc_avatar($parm='')
+	function sc_cb_avatar($parm='')
 	{
 		return e107::getParser()->parseTemplate("{USER_AVATAR=".$this->var['user_image']."}");
 	}
 	
-	function sc_bullet($parm = '')
+	function sc_cb_bullet($parm = '')
 	{
 		$bullet = "";
 		
@@ -301,18 +300,22 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 	else 	// default chatbox style
 	{
 		$tp->parseTemplate("{SETIMAGE: w=40}",true); // set thumbnail size. 
-		
+		// FIXME - move to template
 		$CHATBOX_TEMPLATE['start'] 	= "<ul class='unstyled'>";
 		$CHATBOX_TEMPLATE['item'] 	= "<li>
-										{AVATAR} <b>{USERNAME}</b>&nbsp;
-										<small class='muted smalltext'>{TIMEDATE}</small><br />
-										<p style='margin-left:50px'>{MESSAGE}</p>
+										{CB_AVATAR} <b>{CB_USERNAME}</b>&nbsp;
+										<small class='muted smalltext'>{CB_TIMEDATE}</small><br />
+										<p style='margin-left:50px'>{CB_MESSAGE}</p>
 										</li>\n";
 										
 		$CHATBOX_TEMPLATE['end'] 	= "</ul>";
 	}
 		
-	$sc = e107::getScBatch('chatbox');		
+	// FIX - don't call getScBatch() if don't need to globally register the methods
+	// $sc = e107::getScBatch('chatbox');
+	
+	// the good way in this case - it works with any object having sc_*, models too
+	$sc = new chatbox_shortcodes();		
 			
 	if($sql->gen($qry))
 	{
