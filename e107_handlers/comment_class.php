@@ -1199,40 +1199,43 @@ class comment
 				return $data;
 			}
 
-			$files = e107::getPref('e_comment_list');
-
-			foreach ($files as $file=>$perms)
+			if($files = e107::getPref('e_comment_list'))
 			{
-				unset($e_comment, $key);
-				include (e_PLUGIN.$file."/e_comment.php");
-				if ($e_comment && is_array($e_comment))
+
+				foreach ($files as $file=>$perms)
 				{
-					$key = $e_comment['eplug_comment_ids'];
-					if (isset($key) && $key != '')
+					unset($e_comment, $key);
+					include (e_PLUGIN.$file."/e_comment.php");
+					if ($e_comment && is_array($e_comment))
 					{
-						$data[$key] = $e_comment;
+						$key = $e_comment['eplug_comment_ids'];
+						if (isset($key) && $key != '')
+						{
+							$data[$key] = $e_comment;
+						}
+					}
+					else
+					{
+						//convert old method variables into the same array method
+						$key = $e_plug_table;
+						if (isset($key) && $key != '')
+						{
+							$e_comment['eplug_comment_ids'] = $e_plug_table;
+							$e_comment['plugin_name'] = $plugin_name;
+							$e_comment['plugin_path'] = $plugin_path;
+							$e_comment['reply_location'] = $reply_location;
+							$e_comment['db_title'] = $link_name;
+							$e_comment['db_id'] = $db_id;
+							$e_comment['db_table'] = $db_table;
+							$e_comment['qry'] = '';
+							$data[$key] = $e_comment;
+						}
 					}
 				}
-				else
-				{
-					//convert old method variables into the same array method
-					$key = $e_plug_table;
-					if (isset($key) && $key != '')
-					{
-						$e_comment['eplug_comment_ids'] = $e_plug_table;
-						$e_comment['plugin_name'] = $plugin_name;
-						$e_comment['plugin_path'] = $plugin_path;
-						$e_comment['reply_location'] = $reply_location;
-						$e_comment['db_title'] = $link_name;
-						$e_comment['db_id'] = $db_id;
-						$e_comment['db_table'] = $db_table;
-						$e_comment['qry'] = '';
-						$data[$key] = $e_comment;
-					}
-				}
+				
+				cachevars('e_comment', $data);
+				return $data;
 			}
-			cachevars('e_comment', $data);
-			return $data;
 		}
 		/*
 		 * get number of records from comments db
