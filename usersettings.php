@@ -62,17 +62,14 @@ include_once (e107::coreTemplatePath('usersettings')); //correct way to load a c
 $usersettings_shortcodes = e107::getScBatch('usersettings');
 
 
-e107::js('inline',"
+// include JS, headerjs not called in header anymore
+$js = e107::getJs();
+$js->footerInline("
 		function addtext_us(sc)
 		{
 			document.getElementById('dataform').image.value = sc;
 		}
 ");
-
-
-// include JS, headerjs not called in header anymore
-$js = e107::getJs();
-$js->footerInline(headerjs());
 
 $photo_to_delete = '';
 $avatar_to_delete = '';
@@ -831,21 +828,6 @@ function delete_file($fname, $dir = 'avatars/')
 		return true;
 	}
 	return false;
-}
-
-
-function headerjs()
-{
-
-	$script = "
-		function addtext_us(sc)
-		{
-			document.getElementById('dataform').image.value = sc;
-		}
-	";
-
-
-	return $script;
 }
 
 function usersettings_adminmenu()
