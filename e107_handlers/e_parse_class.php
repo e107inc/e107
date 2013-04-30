@@ -481,23 +481,29 @@ class e_parse extends e_parser
 			$data = stripslashes($data);
 		}
 
-		if ($mod != 'pReFs')
+		if ($mod != 'pReFs') //XXX We're not saving prefs. 
 		{
 			$data = $this->preFilter($data);
-			if (!check_class($core_pref->get('post_html', e_UC_MAINADMIN)) || !check_class($core_pref->get('post_script', e_UC_MAINADMIN)))
+			
+			if (strip_tags($data) != $data) // html tags present. 
 			{
-				$data = $this->dataFilter($data);
+				$data = $this->cleanHtml($data); // sanitize all html. 
+			//	if ($this->htmlAbuseFilter($data)) $no_encode = FALSE; //XXX cleanHtml() is more effective. 
+			}
+
+			if (!check_class($core_pref->get('post_html', e_UC_MAINADMIN)))
+			{
+				$data = strip_tags($data); // remove tags from cleaned html. 
+				$data = str_replace(array('[html]','[/html]'),'',$data); 
+			//	$data = $this->dataFilter($data);
 			}
 		}
 
-		if (/*$core_pref->is('post_html') && */check_class($core_pref->get('post_html')))
+		if (check_class($core_pref->get('post_html'))) /*$core_pref->is('post_html') && */
 		{
 			$no_encode = TRUE;
 		}
-		if ($core_pref->get('html_abuse'))
-		{
-			if ($this->htmlAbuseFilter($data)) $no_encode = FALSE;
-		}
+		
 		if (is_numeric($original_author) && !check_class($core_pref->get('post_html'), '', $original_author))
 		{
 			$no_encode = FALSE;
@@ -515,7 +521,8 @@ class e_parse extends e_parser
 
 			$ret = preg_replace("/&amp;#(\d*?);/", "&#\\1;", $data);
 		}
-		// XXX - php_bbcode pref missing?
+		
+		// XXX - php_bbcode has been deprecated. 
 		if ((strpos($mod, 'no_php') !== FALSE) || !check_class($core_pref->get('php_bbcode')))
 		{
 			$ret = preg_replace("#\[(php)#i", "&#91;\\1", $ret);
@@ -2401,12 +2408,12 @@ class e_parser
                                         'i', 'pre','code', 'strong', 'u', 'em','ul','li','img','h1','h2','h3','h4','h5','h6','p',
                                         'div','pre','section','article', 'blockquote','hgroup','aside','figure','span', 'video', 'br',
                                         'small', 'caption' 
-                                    );
+                                   );
+	private $scriptTags 		= array('script','applet','iframe'); //allowed whem $pref['post_script'] is enabled. 
         
     public function __construct()
     {
-       $this->init();
-    
+		$this->init();
          /*
         $meths = get_class_methods('DomDocument');
         sort($meths);
@@ -2420,7 +2427,6 @@ class e_parser
     function init()
     {
         $this->domObj = new DOMDocument();    
-        
     }
     
     /**
@@ -2625,7 +2631,14 @@ class e_parser
 		{
 			$this->init();	
 		}
-		 
+		
+		$post_scripts = e107::getConfig()->get('post_html', e_UC_MAINADMIN); // Pref to Allow <script> tags 
+		
+		if(check_class($post_scripts)) 
+		{
+			$this->allowedTags = array_merge($this->allowedTags,$this->scriptTags);
+		}
+		
         // Set it up for processing. 
         $doc  = $this->domObj;   
         
