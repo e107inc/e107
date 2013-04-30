@@ -44,6 +44,7 @@ define('CORE_LAN_MB', 'MB');
 define('CORE_LAN_GB', 'GB');
 define('CORE_LAN_TB', 'TB');
 
+define('LAN_MORE', 'More..');
 
 define('LAN_WARNING', 'Warning!');
 define('LAN_ERROR', 'Error');
