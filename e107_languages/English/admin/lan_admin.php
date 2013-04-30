@@ -159,7 +159,7 @@ define("ADLAN_143", "Search Configuration");
 define("ADLAN_144", "You are in simple-view mode, to switch to advanced-view");
 define("ADLAN_145", "click here");
 
-define("ADLAN_146", "Failed login attempts");
+define("ADLAN_146", "Failed logins");
 define("ADLAN_147", "File Inspector");
 define("ADLAN_148", "Scan site files");
 
