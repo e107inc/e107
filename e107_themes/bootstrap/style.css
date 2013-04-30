@@ -69,6 +69,15 @@ legend { font-size: 14px; font-weight: bold; padding: 5px; }
 /******** Horizontal navigation ADMIN_NAV_ALT */
 .navigation { border: 1px solid #DDDDDD;}
 
+
+/******** News item styling */
+.post-meta { margin: -7px 0 10px; }
+.post-meta span { margin-right: 7px; margin-bottom: 0; padding-right: 10px; white-space: nowrap; border-right: 1px solid #dddddd; font-size: 12px; }
+.post-meta span:last-child { margin: 0; padding: 0; border: none; }
+.post-meta span i[class^="icon-"] { margin-right: 7px; }
+
+.news_image { margin-bottom: 10px; }
+
 /******** FEATUREBOX PLUGIN */
 #featurebox-ajax-container { display: block }
 #featurebox-ajax-container img { padding: 1px; margin: 5px; border: 1px solid #DDDDDD }
