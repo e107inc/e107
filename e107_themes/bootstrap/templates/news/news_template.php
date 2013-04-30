@@ -2,11 +2,17 @@
 
 if (!defined('e107_INIT'))  exit;
 
-global $sc_style;
 
+
+
+// {---} is replaced with the shortcode data. 
+$SC_WRAPPER['EMAILICON'] 	= "<small>{---}</small>";
+$SC_WRAPPER['PRINTICON'] 	= "<small>{---}</small>";
+$SC_WRAPPER['PDFICON'] 		= "<small>{---}</small>";
+$SC_WRAPPER['ADMINOPTIONS'] = "<small>{---}</small>";
 
 // XXX As displayed by news.php (no query) or news.php?list.1.1 (ie. regular view of a particular category)
- $NEWS_TEMPLATE['default']['item'] = '
+$NEWS_TEMPLATE['default']['item'] = '
 	{SETIMAGE: w=600}
 	<div class="view-item">
 		<h2>{NEWSTITLE}</h2>
@@ -15,6 +21,10 @@ global $sc_style;
 			<small><i class="icon-user"></i>{NEWSAUTHOR}</small>
 			<small><i class="icon-comment"></i>{NEWSCOMMENTS}</small>
 			<small><i class="icon-tag"></i>{NEWSTAGS}</small>
+			{EMAILICON}
+			{PRINTICON} 
+			{PDFICON}
+			{ADMINOPTIONS}
 		</div>
 
 		<div class="body">
@@ -22,11 +32,11 @@ global $sc_style;
 			{NEWSBODY}
 			<div class="text-right">{EXTENDED}</div>
 		</div>
-		<div class="options">
-			{EMAILICON} {PRINTICON} {PDFICON} {ADMINOPTIONS}
-		</div>
 	</div>
 ';
+
+
+
 
 // XXX The ListStyle template offers a listed summary of items with a minimum of 10 items per page. 
 // As displayed by news.php?cat.1 OR news.php?all 
@@ -63,15 +73,16 @@ $NEWS_TEMPLATE['view']['item'] = '
 			<small><i class="icon-user"></i>{NEWSAUTHOR}</small>
 			<small><i class="icon-comment"></i>{NEWSCOMMENTS}</small>
 			<small><i class="icon-tag"></i>{NEWSTAGS}</small>
+			{EMAILICON}
+			{PRINTICON} 
+			{PDFICON}
+			{ADMINOPTIONS}
 		</div>
 
 		<div class="body">
 			{NEWSIMAGE}
 			{NEWSBODY}
 			{EXTENDED}
-		</div>
-		<div class="options">
-			{EMAILICON} {PRINTICON} {PDFICON} {ADMINOPTIONS}
 		</div>
 	</div>
 ';

@@ -55,18 +55,32 @@ class emailprint
 				}
 			}
 		}
+		
+
+		
+		if(deftrue('e_BOOTSTRAP'))
+		{
+			$genericMail = "<i class='icon-envelope'></i>"; 
+			$genericPrint = "<i class='icon-print'></i>"; 
+		}
+		else // BC
+		{
+			$genericMail = "<img src='".e_IMAGE_ABS."generic/email.png'  alt='".LAN_EMAIL_7."'  />";
+			$genericPrint = "<img src='".e_IMAGE_ABS."generic/printer.png'  alt='".LAN_PRINT_1."'  />";	
+		}
+		
 
 		if ($look == 0 || $look == 1) 
 		{
-			$ico_mail = (defined("ICONMAIL") && file_exists(THEME."images/".ICONMAIL) ? THEME_ABS."images/".ICONMAIL : e_IMAGE_ABS."generic/email.png");
+			$ico_mail = (defined("ICONMAIL") && file_exists(THEME."images/".ICONMAIL) ? "<img src='".THEME_ABS."images/".ICONMAIL."'  alt='".LAN_EMAIL_7."'  />" : $genericMail);
 			//TDOD CSS class
-			$text_emailprint .= "<a href='".e_HTTP."email.php?".$email.".".$id."'><img src='".$ico_mail."'  alt='".LAN_EMAIL_7."' title='".LAN_EMAIL_7."' /></a> ";
+			$text_emailprint .= "<a href='".e_HTTP."email.php?".$email.".".$id."' title='".LAN_EMAIL_7."'>".$ico_mail."</a> ";
 		}
 		if ($look == 0 || $look == 2) 
 		{
-			$ico_print = (defined("ICONPRINT") && file_exists(THEME."images/".ICONPRINT) ? THEME_ABS."images/".ICONPRINT : e_IMAGE_ABS."generic/printer.png");
+			$ico_print = (defined("ICONPRINT") && file_exists(THEME."images/".ICONPRINT) ? "<img src='".THEME_ABS."images/".ICONPRINT."' alt='".LAN_PRINT_1."'  />" : $genericPrint);
 			//TODO CSS class
-			$text_emailprint .= "<a href='".e_HTTP."print.php?".$print.".".$id."'><img src='".$ico_print."' alt='".LAN_PRINT_1."' title='".LAN_PRINT_1."' /></a>";
+			$text_emailprint .= "<a href='".e_HTTP."print.php?".$print.".".$id."' title='".LAN_PRINT_1."'>".$ico_print."</a>";
 		}
 		return $text_emailprint;
 	}
