@@ -31,6 +31,10 @@ min-height:50px;
 
 tr.highlight-odd			{ background-color: #212121; }
 tr.highlight-even			{ background-color: #212121; }
+.datepicker table tr td.day:hover {
+
+    color: black;
+}
 
 
 

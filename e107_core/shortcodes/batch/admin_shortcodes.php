@@ -64,7 +64,7 @@ class admin_shortcodes
 		if(function_exists('e_help')) // new in v2.x for non-admin-ui admin pages. 
 		{
 			$tmp =  e_help();
-			return $ns->tablerender($tmp['caption'],$tmp['text'],'',true);
+			return $ns->tablerender($tmp['caption'],$tmp['text'],'e_help',true);
 		}
 		
 		$helpfile = '';

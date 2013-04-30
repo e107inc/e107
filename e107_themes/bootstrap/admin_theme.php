@@ -54,9 +54,15 @@ function tablestyle($caption, $text, $mode)
 	
 	$class = '';
 	
-	// echo 'mod='.$style;
+
+	
 	
 	if(is_string($mode) && $mode == 'admin_help') $class = ' '.str_replace('_', '-', $mode);
+		
+	if($mode == 'e_help')
+	{
+		$style = 'admin_menu';	
+	}
 	
 	if($mode == 'core-infopanel_latest' || $mode == 'core-infopanel_status')
 	{
