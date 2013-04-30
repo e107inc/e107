@@ -31,7 +31,7 @@ min-height:50px;
 
 tr.highlight-odd			{ background-color: #212121; }
 tr.highlight-even			{ background-color: #212121; }
-.table-striped tbody > tr.highlight-odd td { background-color: transparent }
+
 
 
 /*

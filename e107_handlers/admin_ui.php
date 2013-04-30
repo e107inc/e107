@@ -689,7 +689,8 @@ class e_admin_response
 
 		$glue = deftrue('SEP',' - '); // Defined by admin theme. // admin-ui used only by bootstrap. 
 
-		return $head. implode($glue, $content).$foot;
+		return implode($glue, $content);
+		// return $head. implode($glue, $content).$foot;
 	}
 
 	/**
