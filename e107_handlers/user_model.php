@@ -1104,6 +1104,7 @@ class e_system_user extends e_user_model
 			include(e107::coreTemplatePath('email'));
 		}
 		
+		// FIXME by SecretR - email template mess - there are changes to emails and templates that need to be implemented here
 		$template = '';
 		switch ($type) 
 		{
@@ -1114,7 +1115,7 @@ class e_system_user extends e_user_model
 			break;
 			
 			case 'quickadd':
-				$template = $QUICKADDUSER_TEMPLATE;
+				$template = $QUICKADDUSER_TEMPLATE['email_body']; // XXX quick fix - add the email templating engine
 				$ret['template'] = 'email'; // Don't allow additional headers (mailer)
 			break;
 				
@@ -1136,11 +1137,11 @@ class e_system_user extends e_user_model
 		// signup email only
 		if($type == 'signup')
 		{
-			$ret['mail_recipient_id'] = $userInfo['user_id'];
-			if (vartrue($SIGNUPEMAIL_CC)) { $ret['mail_copy_to'] = $SIGNUPEMAIL_CC; }
-			if (vartrue($SIGNUPEMAIL_BCC)) { $ret['mail_bcopy_to'] = $SIGNUPEMAIL_BCC; }
-			if (vartrue($userInfo['mail_attach'])) { $ret['mail_attach'] = $userInfo['mail_attach']; }
-			elseif (vartrue($SIGNUPEMAIL_ATTACHMENTS)) { $ret['mail_attach'] = $SIGNUPEMAIL_ATTACHMENTS; }
+			$ret['e107_header'] = $userInfo['user_id'];
+			if (vartrue($SIGNUPEMAIL_CC)) { $ret['email_copy_to'] = $SIGNUPEMAIL_CC; }
+			if (vartrue($SIGNUPEMAIL_BCC)) { $ret['email_bcopy_to'] = $SIGNUPEMAIL_BCC; }
+			if (vartrue($userInfo['email_attach'])) { $ret['email_attach'] = $userInfo['mail_attach']; }
+			elseif (vartrue($SIGNUPEMAIL_ATTACHMENTS)) { $ret['email_attach'] = $SIGNUPEMAIL_ATTACHMENTS; }
 			
 			$style = vartrue($SIGNUPEMAIL_LINKSTYLE) ? "style='{$SIGNUPEMAIL_LINKSTYLE}'" : "";
 		
@@ -1172,7 +1173,7 @@ class e_system_user extends e_user_model
 			$replace[8] = $userInfo['user_email'];
 		
 			$subject = str_replace($search, $replace, $SIGNUPEMAIL_SUBJECT);
-			$ret['mail_subject'] =  $subject;
+			$ret['email_subject'] =  $subject;
 			$ret['send_html'] = TRUE;
 		
 			$HEAD = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
@@ -1198,20 +1199,20 @@ class e_system_user extends e_user_model
 			}
 			$FOOT = "\n</body>\n</html>\n";
 		
-			$ret['mail_body'] = e107::getParser()->parseTemplate(str_replace($search,$replace,$HEAD.$template.$FOOT), true);
-			$ret['preview'] = $ret['mail_body'];// Non-standard field
+			$ret['email_body'] = e107::getParser()->parseTemplate(str_replace($search,$replace,$HEAD.$template.$FOOT), true);
+			$ret['preview'] = $ret['email_body'];// Non-standard field
 			return $ret;
 		}
 
 		// all other email types
-		$subject = $userInfo['mail_subject'];
+		$subject = $userInfo['email_subject'];
 		
 		if(!$subject) return array();
 		
-		$ret['mail_recipient_id'] = $userInfo['user_id'];
-		if (vartrue($userInfo['mail_copy_to'])) { $ret['mail_copy_to'] = $userInfo['mail_copy_to']; }
-		if (vartrue($userInfo['mail_bcopy_to'])) { $ret['mail_bcopy_to'] = $userInfo['mail_bcopy_to']; }
-		if (vartrue($userInfo['mail_attach'])) { $ret['mail_attach'] = $userInfo['mail_attach']; }
+		$ret['e107_header'] = $userInfo['user_id'];
+		if (vartrue($userInfo['email_copy_to'])) { $ret['email_copy_to'] = $userInfo['email_copy_to']; }
+		if (vartrue($userInfo['email_bcopy_to'])) { $ret['email_bcopy_to'] = $userInfo['email_bcopy_to']; }
+		if (vartrue($userInfo['email_attach'])) { $ret['email_attach'] = $userInfo['email_attach']; }
 		
 		$search[0] = '{LOGINNAME}';
 		$replace[0] = intval($pref['allowEmailLogin']) === 0 ? $userInfo['user_loginname'] : $userInfo['user_email'];
@@ -1234,7 +1235,7 @@ class e_system_user extends e_user_model
 		$search[6] = '{USERURL}';
 		$replace[6] = vartrue($userInfo['user_website']) ? $userInfo['user_website'] : "";
 	
-		$ret['mail_subject'] =  str_replace($search, $replace, $subject);
+		$ret['email_subject'] =  str_replace($search, $replace, $subject);
 		
 		$search[7] = '{PASSWORD}';
 		$replace[7] = $pass_show ? $pass_show : '******';
@@ -1249,7 +1250,7 @@ class e_system_user extends e_user_model
 		}
 		
 		$ret['send_html'] = TRUE;
-		$ret['mail_body'] = e107::getParser()->parseTemplate(str_replace($search, $replace, $template));
+		$ret['email_body'] = e107::getParser()->parseTemplate(str_replace($search, $replace, $template));
 		$ret['preview'] = $ret['mail_body']; // Non-standard field
 		
 		return $ret;
