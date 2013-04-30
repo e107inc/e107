@@ -564,7 +564,7 @@ class cron_admin_form_ui extends e_admin_form_ui
 		
 
 		$text = "
-		<select class='tbox' style='height:90px' multiple='multiple' name='tab[minute]'>
+		<select style='height:120px' multiple='multiple' name='tab[minute]'>
 		\n";
 
 		foreach ($this->min_options as $key => $val)
@@ -592,7 +592,7 @@ class cron_admin_form_ui extends e_admin_form_ui
 		
 		$text .= "
 		</select>
-		<select class='tbox' style='height:90px' multiple='multiple' name='tab[hour]'>
+		<select style='height:120px' multiple='multiple' name='tab[hour]'>
 		\n";
 
 		foreach ($this->hour_options as $key => $val)
@@ -617,7 +617,7 @@ class cron_admin_form_ui extends e_admin_form_ui
 					}
 					$text .= "</select>
 				
-					<select class='tbox' style='height:90px' multiple='multiple' name='tab[day]'>\n";
+					<select style='height:120px' multiple='multiple' name='tab[day]'>\n";
 
 					$sel_day = ($day[0] == "*") ? "selected='selected'" : "";
 
@@ -629,7 +629,7 @@ class cron_admin_form_ui extends e_admin_form_ui
 					}
 					$text .= "</select>
 				
-					<select class='tbox' style='height:90px' multiple='multiple' name='tab[month]'>\n";
+					<select style='height:120px' multiple='multiple' name='tab[month]'>\n";
 
 					$sel_month = ($month[0] == "*") ? "selected='selected'" : "";
 					$text .= "<option value='*' $sel_month>".LAN_CRON_41."</option>\n"; // Every Month
@@ -642,7 +642,7 @@ class cron_admin_form_ui extends e_admin_form_ui
 					}
 					$text .= "</select>
 				
-					<select class='tbox' style='height:90px' multiple='multiple' name='tab[weekday]'>\n";
+					<select style='height:120px' multiple='multiple' name='tab[weekday]'>\n";
 
 					$sel_weekday = ($weekday[0] == "*") ? "selected='selected'" : "";
 					$text .= "<option value='*' $sel_weekday>".LAN_CRON_42."</option>\n"; // Every Week Day.
