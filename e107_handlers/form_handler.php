@@ -1092,8 +1092,8 @@ class e_form
 			$options_off = array('class' => 'e-expandit-off');			
 		}
 		
-		$options_on['label'] = $label_enabled ? $label_enabled : LAN_ENABLED; 
-		$options_off['label'] = $label_disabled ? $label_disabled : LAN_DISABLED; 
+		$options_on['label'] = $label_enabled ? defset($label_enabled,$label_enabled) : LAN_ENABLED; 
+		$options_off['label'] = $label_disabled ? defset($label_disabled,$label_disabled) : LAN_DISABLED; 
 		
 		if(vartrue($options['reverse'])) // reverse order. 
 		{
@@ -1106,9 +1106,9 @@ class e_form
 		//	$this->radio($name, 1, $checked_enabled, $options_on)."".$this->label($label_enabled ? $label_enabled : LAN_ENABLED, $name, 1);			
 		}
 		
-			$label = defset($label, $label);
+	
 			
-			$helpLabel = (is_array($help)) ? vartrue($help[$value]) : $help;
+	//		$helpLabel = (is_array($help)) ? vartrue($help[$value]) : $help;
 		
 		// Bootstrap Style Code - for use later. 	
 	
