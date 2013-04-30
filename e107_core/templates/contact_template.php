@@ -20,7 +20,7 @@ if(!isset($CONTACT_INFO))
 
 $CONTACT_TEMPLATE['info'] = "
 
-	<div class='contact-info' >
+	<div id='contactInfo' >
 		<address>{SITECONTACTINFO}</address>
 	</div>
 
@@ -28,7 +28,7 @@ $CONTACT_TEMPLATE['info'] = "
 
 
 $CONTACT_TEMPLATE['menu'] =  '
-	<div>
+	<div class="contactMenuForm">
 		<div class="control-group">
 			<label >Name</label>
    			 {CONTACT_NAME}
