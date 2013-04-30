@@ -51,7 +51,7 @@ $NEWS_TEMPLATE['list']['item'] = '
 
 // XXX As displayed by news.php (no query) or news.php?list.1.1 (ie. regular view of a particular category)
 //XXX TODO GEt this looking good in the default Bootstrap theme. 
-/*$NEWS_TEMPLATE['default']['item'] = '
+$NEWS_TEMPLATE['default']['item'] = '
 	{SETIMAGE: w=400}
 	<div class="view-item">
 		<h2>{NEWSTITLE}</h2>
@@ -69,30 +69,8 @@ $NEWS_TEMPLATE['list']['item'] = '
 		</div>
 	</div>
 ';
-*/
-// Attempt at bootstrap style 
-// XXX As displayed by news.php (no query) or news.php?list.1.1 (ie. regular view of a particular category)
-$NEWS_TEMPLATE['default']['item'] = '
-	{SETIMAGE: w=600}
-	<div class="view-item">
-		<h2>{NEWSTITLE}</h2>
-		<div class="post-meta">
-			<span><i class="icon-calendar"></i>{NEWSDATE}</span>
-			<span><i class="icon-user"></i>{NEWSAUTHOR}</span>
-			<span><i class="icon-comment"></i>{NEWSCOMMENTS}</span>
-			<span><i class="icon-tag"></i>{NEWSTAGS}</span>
-		</div>
 
-		<div class="body">
-			{NEWSIMAGE}
-			{NEWSBODY}
-			{EXTENDED}
-		</div>
-		<div class="options">
-			{EMAILICON} {PRINTICON} {PDFICON} {ADMINOPTIONS}
-		</div>
-	</div>
-';
+
 
 
 
@@ -103,16 +81,13 @@ $NEWS_TEMPLATE['default']['item'] = '
 // As displayed by news.php?extend.1
 
 //XXX TODO GEt this looking good in the default Bootstrap theme. 
-/*$NEWS_TEMPLATE['view']['item'] = '
+$NEWS_TEMPLATE['view']['item'] = '
 {SETIMAGE: w=800}
 	<div class="view-item">
 		<h2>{NEWSTITLE}</h2>
-		<div class="post-meta">
-			<span><i class="icon-calendar"></i>{NEWSDATE}</span>
-			<span><i class="icon-user"></i>{NEWSAUTHOR}</span>
-			<span><i class="icon-comment"></i>{NEWSCOMMENTS}</span>
-			<span><i class="icon-tag"></i>{NEWSTAGS}</span>
-		</div>
+		<small class="muted">
+		<span class="date">{NEWSDATE=short} by <span class="author">{NEWSAUTHOR}</span></span>
+		</small>
 
 		<div class="body">
 			{NEWSIMAGE}
@@ -123,31 +98,9 @@ $NEWS_TEMPLATE['default']['item'] = '
 			<span class="category">{NEWSCATEGORY}</span> {NEWSTAGS} {NEWSCOMMENTS} {EMAILICON} {PRINTICON} {PDFICON} {ADMINOPTIONS}
 		</div>
 	</div>
-';*/
+';
 //$NEWS_MENU_TEMPLATE['view']['separator']   = '<br />';
 
-// Attempt at bootstrap style
-$NEWS_TEMPLATE['view']['item'] = '
-{SETIMAGE: w=800}
-	<div class="view-item">
-		<h2>{NEWSTITLE}</h2>
-		<div class="post-meta">
-			<span><i class="icon-calendar"></i>{NEWSDATE}</span>
-			<span><i class="icon-user"></i>{NEWSAUTHOR}</span>
-			<span><i class="icon-comment"></i>{NEWSCOMMENTS}</span>
-			<span><i class="icon-tag"></i>{NEWSTAGS}</span>
-		</div>
-
-		<div class="body">
-			{NEWSIMAGE}
-			{NEWSBODY}
-			{EXTENDED}
-		</div>
-		<div class="options">
-			{EMAILICON} {PRINTICON} {PDFICON} {ADMINOPTIONS}
-		</div>
-	</div>
-';
 
 ###### news_categories.sc (temporary) - TODO rewrite news
 $NEWS_TEMPLATE['category']['body'] = '
