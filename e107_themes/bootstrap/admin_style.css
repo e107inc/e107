@@ -776,6 +776,8 @@ ul#e-latest						{ line-height:17px }
 ul#e-latest li  a  span.badge	{ float:right;font-size:85% }
 ul#e-latest li  a:hover  		{ text-decoration: none; }
 
+#userclass-tree-structure		{ font-size:80% }
+
 .table-striped tbody > tr.highlight-odd td { background-color: transparent }
 .table-striped tbody > tr.highlight-even td { background-color: transparent }
 /* Bootstrap tags input */

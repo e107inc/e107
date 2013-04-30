@@ -1142,6 +1142,8 @@ class user_class_admin extends user_class
 							))
 						);
 
+	protected $top_icon = null;
+
 
 	/**
 	 *	Constructor
@@ -1152,6 +1154,11 @@ class user_class_admin extends user_class
 		if (!(getperms('4') || getperms('0'))) return;
 	
 		$this->isAdmin = TRUE;			// We have full class management rights
+		
+		$pref = e107::getPref();
+	
+		$style = ($pref['admincss'] == 'admin_dark.css') ? ' icon-white' : '';
+		$this->top_icon = "<i class='icon-user{$style}'></i> ";
 	}
 
 
@@ -1310,6 +1317,7 @@ class user_class_admin extends user_class
 	 */
 	protected function show_graphical_subtree($listnum, $indent_images, $is_last = FALSE)
 	{
+			
 		$num_children = count(vartrue($this->class_tree[$listnum]['class_children']));
 		$is_open = TRUE;
 		$tag_name = 'uclass_tree_'.$listnum;
@@ -1356,7 +1364,7 @@ class user_class_admin extends user_class
 			$onc = " onclick=\"alert('".str_replace("'", "\\'", (stripslashes(UCSLAN_90)))."'); return false;\"";
 		}
 
-		$ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' /><a style='text-decoration: none' class='userclass_edit'{$onc} href='{$url}'>".$name_line."</a></div>";
+		$ret .= $this->top_icon."<a style='text-decoration: none' class='userclass_edit'{$onc} href='{$url}'>".$name_line."</a></div>";
 		//$ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' />
 			//<span style='cursor:pointer; vertical-align: bottom' onclick=\"javascript: document.location.href='".e_ADMIN."userclass2.php?config.edit.{$this->class_tree[$listnum]['userclass_id']}'\">".$name_line."</span></div>";
 		// vertical-align: middle doesn't work! Nor does text-top
@@ -1405,7 +1413,7 @@ class user_class_admin extends user_class
 
 		$ret = "
 		<div class='uclass_tree' style='height:16px'>
-			<img src='".UC_ICON_DIR."topicon.png' alt='class icon' style='vertical-align: bottom' />
+			".$this->top_icon."
 			<span style='top:3px'></span>
 		</div>";		// Just a generic icon here to provide a visual anchor
 

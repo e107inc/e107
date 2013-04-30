@@ -409,7 +409,7 @@ switch ($action)
 	$userclass_groupclass = '';
 	if ($params == 'edit' || $forwardVals)
 	{
-		if (!$forwardVals)
+		if (!isset($forwardVals))
 		{	// Get the values from DB (else just recycle data uer was trying to store)
 			checkAllowed($class_num);
 			$sql->db_Select('userclass_classes', '*', "userclass_id='".intval($class_num)."' ");
@@ -558,7 +558,9 @@ else
 
 $text .= "</div>";
 $text .= "</form></div><br /><br />";
-$text .= $e_userclass->show_graphical_tree();
+
+
+// $text .= $e_userclass->show_graphical_tree();
 
 
 $ns->tablerender(ADLAN_38.SEP.LAN_CREATE, $text);
@@ -939,7 +941,17 @@ function userclass2_adminmenu()
 	show_admin_menu(ADLAN_38, $action, $var);
 }
 
-
+function e_help()
+{
+	
+	global $e_userclass;
+	$text = "<div id='userclass-tree-structure'>".$e_userclass->show_graphical_tree()."</div>";
+	return array('caption'=>'Class Structure', 'text' => $text);
+	
+// $text .= $e_userclass->show_graphical_tree();	
+	
+	
+}
 
 class uclass_manager
 {
@@ -1010,7 +1022,7 @@ class uclass_manager
 			$text .= "</tbody></table></fieldset></form>";
 		}
 
-		$text .= $e_userclass->show_graphical_tree();	// Show the tree as well - sometimes more useful
+	//	$text .= $e_userclass->show_graphical_tree();	// Show the tree as well - sometimes more useful
 
 		$ns->tablerender(UCSLAN_21, $mes->render().$text );
 
