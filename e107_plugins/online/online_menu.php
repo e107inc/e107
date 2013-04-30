@@ -42,10 +42,16 @@ if(!defined('e_TRACKING_DISABLED'))
 	{
 		if (MEMBERS_ONLINE) 
 		{
-			global $listuserson;
+		//	global $listuserson;
+			
+			$listuserson = e107::getOnline()->userList();
+			
 			$ret='';
-			foreach($listuserson as $uinfo => $pinfo) 
+			foreach($listuserson as $uinfo => $row) 
 			{
+				
+				$pinfo = $row['user_location'];
+				
 				$online_location_page = str_replace('.php', '', substr(strrchr($pinfo, '/'), 1));
 				if ($pinfo == 'log.php' || $pinfo == 'error.php') 
 				{
@@ -73,20 +79,30 @@ if(!defined('e_TRACKING_DISABLED'))
 					$online_location_page = 'comment';
 				}
 				list($oid, $oname) = explode('.', $uinfo, 2);
-				setScVar('online_shortcodes', 'currentMember', array('oid' => $oid, 'oname' => $oname, 'page' => $online_location_page, 'pinfo' => $pinfo));
-				$ret .= $tp->parseTemplate($TEMPLATE_ONLINE['ONLINE_MEMBERS_LIST_EXTENDED'], TRUE);
+				
+				
+				$data = array(
+					'oid' 	=> $row['user_id'], 
+					'oname' =>$row['user_name'], 
+					'page' 	=> $online_location_page, 
+					'pinfo' => $pinfo,
+					'oimage' => $row['user_image']
+				);
+				
+				setScVar('online_shortcodes', 'currentMember', $data);
+				$ret .= $tp->parseTemplate($ONLINE_TEMPLATE['online_members_list_extended'], TRUE);
 			}
 			setScVar('online_shortcodes', 'onlineMembersList', $ret);
 		}
 	}
 
-	$text = $tp->parseTemplate($TEMPLATE_ONLINE['ENABLED'], TRUE);
+	$text = $tp->parseTemplate($ONLINE_TEMPLATE['enabled'], TRUE);
 }
 else
 {
 	if (ADMIN)
 	{
-		$text = $tp->parseTemplate($TEMPLATE_ONLINE['DISABLED'], TRUE);
+		$text = $tp->parseTemplate($ONLINE_TEMPLATE['disabled'], TRUE);
 	}
 	else
 	{
@@ -95,7 +111,16 @@ else
 }
 
 $img = (is_readable(THEME.'images/online_menu.png') ? "<img src='".THEME_ABS."images/online_menu.png' alt='' />" : '');
+
 $caption = $img.' '.varsettrue($menu_pref['online_caption'],LAN_ONLINE_10);
+
+if (getperms('1')) 
+{
+	$path = e_PLUGIN_ABS."online/config.php";
+	$caption .= "<a class='pull-right' href='".$path."' title='Configure'><i class='icon-cog'></i></a>";
+}
+
+
 $ns->tablerender($caption, $text, 'online_extended');
 
 ?>
