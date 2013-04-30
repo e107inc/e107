@@ -4211,7 +4211,7 @@ class eHelper
 	public static function formatMetaKeys($keywordString)
 	{
 		$keywordString = preg_replace('/[^\w\pL\s\-.,+]/u', '', strip_tags(e107::getParser()->toHTML($keywordString, TRUE)));
-		return trim(preg_replace('/[\s,]+/', ',', str_replace('_', ' ', $keywordString)));
+		return trim(preg_replace('/[\s]+,[\s]+/', ',', str_replace('_', ' ', $keywordString)));
 	}
 	
 	public static function formatMetaDescription($descrString)
