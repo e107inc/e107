@@ -232,21 +232,17 @@ class news_shortcodes extends e_shortcode
 
 		if ($this->news_item['news_extended'] && ($this->param['current_action'] != 'extend' || $parm == 'force'))
 		{
-			if (defined('PRE_EXTENDEDSTRING'))
-			{
-				$es1 = PRE_EXTENDEDSTRING;
-			}
-			if (defined('POST_EXTENDEDSTRING'))
-			{
-				$es2 = POST_EXTENDEDSTRING;
-			}
+			$es = (defined('EXTENDEDSTRING')) ? EXTENDEDSTRING : LAN_MORE;
+			$es1 = (defined('PRE_EXTENDEDSTRING')) ? PRE_EXTENDEDSTRING : '';
+			$es2 = (defined('POST_EXTENDEDSTRING')) ? POST_EXTENDEDSTRING : '';
+			
 			if (deftrue('ADMIN_AREA') && isset($_POST['preview']))
 			{
-				return $es1.EXTENDEDSTRING.$es2."<br />".$this->news_item['news_extended'];
+				return $es1.$es.$es2."<br />".$this->news_item['news_extended'];
 			}
 			else
 			{
-				return $es1."<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".EXTENDEDSTRING."</a>".$es2;
+				return $es1."<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$es."</a>".$es2;
 			}
 		}
 		return '';
