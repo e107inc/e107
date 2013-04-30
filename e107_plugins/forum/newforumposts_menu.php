@@ -37,14 +37,20 @@ LEFT JOIN `#user` AS u ON u.user_id = p.post_user
 WHERE {$maxage} p.post_forum IN ({$forumList})
 ORDER BY p.post_datestamp DESC LIMIT 0, ".$menu_pref['newforumposts_display'];
 
+
+
+
 if($results = $sql->gen($qry))
 {
+	$text = "<ul>";
+	
 	while($row = $sql->fetch(MYSQL_ASSOC))
 	{
-		$datestamp = $gen->convert_date($row['post_datestamp'], 'short');
-		$id = $row['thread_id'];
-		$topic = ($row['thread_datestamp'] == $row['post_datestamp'] ?  '' : 'Re:');
-		$topic .= strip_tags($tp->toHTML($row['thread_name'], true, 'emotes_off, no_make_clickable, parse_bb', '', $pref['menu_wordwrap']));
+		$datestamp 	= $gen->convert_date($row['post_datestamp'], 'relative');
+		$id 		= $row['thread_id'];
+		$topic 		= ($row['thread_datestamp'] == $row['post_datestamp'] ?  '' : 'Re:');
+		$topic 		.= strip_tags($tp->toHTML($row['thread_name'], true, 'emotes_off, no_make_clickable, parse_bb', '', $pref['menu_wordwrap']));
+		
 		if($row['post_user_anon'])
 		{
 			$poster = $row['post_user_anon'];
@@ -65,19 +71,23 @@ if($results = $sql->gen($qry))
 		$post = $tp->text_truncate($post, $menu_pref['newforumposts_characters'], $menu_pref['newforumposts_postfix']);
 
 		$url = e107::getUrl()->create('forum/thread/last', $row);
-		//TODO legacy bullet is not use here anymore
-		//$bullet = "<img src='".THEME_ABS.'images/'.(defined('BULLET') ? BULLET : 'bullet2.gif')."' alt='' />";
-		
+	
+		$text .= "<li>";
 		
 		if ($menu_pref['newforumposts_title'])
 		{
-			$text .= "<a href='{$url}'>{$topic}</a><br />{$post}<br />".NFP_11." {$poster}<br />{$datestamp}<br /><br />";
+			$text .= "<a href='{$url}'>{$topic}</a><br />{$post}<br /><small class='muted'>".NFP_11." {$poster} {$datestamp}</small>";
 		}
 		else
 		{
-			$text .= "<a href='{$url}'>".NFP_11."</a> {$poster}<br />{$post}<br />{$datestamp}<br/><br />";
+			$text .= "<a href='{$url}'>".NFP_11."</a> {$poster} <small class='muted'>{$datestamp}</small><br />{$post}<br />";
 		}
+		
+		$text .= "</li>";
+		
 	}
+	
+	$text .= "</ul>";
 }
 else
 {
