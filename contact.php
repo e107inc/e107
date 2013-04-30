@@ -22,10 +22,6 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 require_once(HEADERF);
 
 
-
-
-
-
 if (!vartrue($CONTACT_FORM))
  {
 	if (file_exists(THEME."contact_template.php")) 
@@ -156,8 +152,13 @@ if(isset($_POST['send-contactus']))
 
 }
 
-if(SITECONTACTINFO && $CONTACT_INFO)
+if(SITECONTACTINFO)
 {
+	if(!isset($CONTACT_INFO))
+	{
+		$CONTACT_INFO = e107::getCoreTemplate('contact','info'); 
+	}
+	
 	$text = $tp->parseTemplate($CONTACT_INFO, TRUE, vartrue($contact_shortcodes));
 	$ns -> tablerender(LANCONTACT_01, $text,"contact");
 }
