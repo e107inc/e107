@@ -315,5 +315,25 @@ $MONTHLYUPDATE_TEMPLATE = array(
 	{BODY}<br />To find out more, simply click on the links!',
 //	'email_footer' => 'footer'
 	);
+	
+
+/*
+ * QUICK ADD USER EMAIL TEMPLATE - BODY. 	
+ * This is the email that is sent when an admin creates a user account in admin. "Quick Add User"
+ 	USRLAN_185 = A user account has been created for you at {SITEURL} with the following login:<br />Login Name: {LOGIN}<br />Password: {PASSWORD}<br/><br />
+	USRLAN_186 = Please go to the site as soon as possible and log in, then change your password using the \'Settings\' option.<br /><br />
+						You can also change other settings at the same time.<br /><br />Note that your password cannot be recovered if you lose it.
+*/
+
+$QUICKADDUSER_TEMPLATE = array(
+	'template_name' => 'Quick-Add-User',
+	'template_type' => 'quickadd',
+	'email_overrides' => '',
+//	'email_header' - any header information (usually loaded from the default)
+	'email_body' => USRLAN_185.USRLAN_186,
+//	'email_footer' => 'footer'
+	);
+	
+	
 
 ?>
