@@ -1113,7 +1113,8 @@ class users_admin_ui extends e_admin_ui
 		$userMethods->addNonDefaulted($user_data);
 		validatorClass::addFieldTypes($userMethods->userVettingInfo, $allData);
 		
-		if (($userid = $sql->db_Insert('user', $allData)))
+		$userid = $sql->db_Insert('user', $allData);
+		if ($userid)
 		{
 			$sysuser = e107::getSystemUser(false, false);
 			$sysuser->setData($allData['data']);
@@ -1144,7 +1145,7 @@ class users_admin_ui extends e_admin_ui
 						// activate and send password
 						$check = $sysuser->email('quickadd', array(
 							'user_password' => $savePassword, 
-							'mail_subject' => USRLAN_187.SITENAME,
+							'email_subject' => USRLAN_187.SITENAME,
 							// TODO lan
 							'activation_url' => 'Your current status is <strong>Active</strong>',
 						));
@@ -1158,13 +1159,12 @@ class users_admin_ui extends e_admin_ui
 							
 						$check = $sysuser->email('quickadd', array(
 							'user_password' => $savePassword, 
-							'mail_subject' => USRLAN_187.SITENAME,
+							'email_subject' => USRLAN_187.SITENAME,
 							'activation_url' => SITEURL."signup.php?activate.".$sysuser->getId().".".$sysuser->getValue('sess'),
 						));
 					break;
 				}
-				
-				
+
 				if($check && $check !== -1)
 				{
 					$mes->addSuccess(USRLAN_188);
