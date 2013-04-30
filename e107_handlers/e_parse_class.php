@@ -2632,7 +2632,7 @@ class e_parser
 			$this->init();	
 		}
 		
-		$post_scripts = e107::getConfig()->get('post_html', e_UC_MAINADMIN); // Pref to Allow <script> tags 
+		$post_scripts = e107::getConfig()->get('post_script', e_UC_MAINADMIN); // Pref to Allow <script> tags 
 		
 		if(check_class($post_scripts)) 
 		{
