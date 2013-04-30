@@ -453,11 +453,12 @@ class e107_db_debug {
 		{
 			return FALSE;
 		}
-		$this -> scbbcodes[$this -> scbcount]['type'] = $type;
-		$this -> scbbcodes[$this -> scbcount]['code'] = $code;
-		$this -> scbbcodes[$this -> scbcount]['parm'] = htmlentities($parm);
-		$this -> scbbcodes[$this -> scbcount]['details'] = $details;
-		$this -> scbcount ++;
+				
+		$this->scbbcodes[$this->scbcount]['type'] = $type;
+		$this->scbbcodes[$this->scbcount]['code'] = $code;
+		$this->scbbcodes[$this->scbcount]['parm'] = (string)$parm;
+		$this->scbbcodes[$this->scbcount]['details'] = $details;
+		$this->scbcount ++;
 	}
 
 	function Show_SC_BB()
