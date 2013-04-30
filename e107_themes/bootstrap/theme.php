@@ -35,6 +35,8 @@ define('OTHERNEWS_LIMIT', 3); // Limit to 3.
 define('OTHERNEWS2_COLS',false); // no tables, only divs. 
 define('OTHERNEWS2_LIMIT', 3); // Limit to 3. 
 
+define('PRE_EXTENDEDSTRING', '<br />');
+
 
 function tablestyle($caption, $text, $mode='') 
 {
