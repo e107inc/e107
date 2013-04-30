@@ -111,7 +111,7 @@ class chatbox_shortcodes extends e_shortcode
 
 	function sc_cb_avatar($parm='')
 	{
-		return e107::getParser()->parseTemplate("{USER_AVATAR=".$this->var['user_image']."}");
+		return e107::getParser()->parseTemplate("{USER_AVATAR=".vartrue($this->var['user_image'])."}");
 	}
 	
 	function sc_cb_bullet($parm = '')
@@ -316,14 +316,14 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 	
 	// the good way in this case - it works with any object having sc_*, models too
 	$sc = new chatbox_shortcodes();		
-			
+
 	if($sql->gen($qry))
 	{
 		$cbpost = $sql->db_getList();
 		$text .= "<div id='chatbox-posts-block'>\n";
-		
+
 		$text .= $tp->parseTemplate($CHATBOX_TEMPLATE['start'], false, $sc);
-		
+
 		foreach($cbpost as $cb)
 		{
 			$sc->setVars($cb);
@@ -331,7 +331,7 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 		}
 		
 		$text .= $tp->parseTemplate($CHATBOX_TEMPLATE['end'], false, $sc);
-		
+
 		$text .= "</div>";
 	}
 	else

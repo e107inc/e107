@@ -203,7 +203,7 @@ class news_shortcodes extends e_shortcode
 	function sc_pdficon()
 	{
 		$pref = e107::getPref();
-		if (!$pref['plug_installed']['pdf']) { return ''; }
+		if (!varset($pref['plug_installed']['pdf'])) { return ''; }
 		return e107::getParser()->parseTemplate('{PDF='.LAN_NEWS_24.'^news.'.$this->news_item['news_id'].'}');
 	}
 
@@ -325,10 +325,11 @@ class news_shortcodes extends e_shortcode
 		{
 			return '';
 		}
+		
 			
 		if($this->news_item['news_thumbnail'][0] == '{' ) // Always resize. Use {SETIMAGE: w=x&y=x&crop=0} PRIOR to calling shortcode to change. 
 		{
-			$src = $tp->thumbUrl($this->news_item['news_thumbnail'],"w={$w}&h={$h}");	
+			$src = $tp->thumbUrl($this->news_item['news_thumbnail']);	
 		}
 		else
 		{
