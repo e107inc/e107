@@ -368,6 +368,19 @@ $FOOTER['marketing-narrow'] = '
 
  */
 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 
 $NEWSLISTSTYLE = "
 \n\n<!-- New List -->\n\n
