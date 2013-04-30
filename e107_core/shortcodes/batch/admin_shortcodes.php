@@ -384,14 +384,14 @@ class admin_shortcodes
 					
 					$allconfigs = multiarray_sort($allconfigs,'title'); //XXX FIXME - not sorting correctly. 
 		
-					$text = "<ul id='e-latest'>";
+					$text = "<ul id='e-latest' class='unstyled'>";
 					foreach($allconfigs as $k=>$v)
 					{
 						foreach($v as $val)
 						{
 							$class = admin_shortcodes::getBadge($val['total']); 
-							$link =  "<a href='".$val['url']."'>".str_replace(":"," ",$val['title'])." <span class='".$class."'>".$val['total']."</span></a>";	
-							$text .= "<li>".$val['icon']." ".$link."</li>\n";	
+							$link =  "<a  href='".$val['url']."'>".str_replace(":"," ",$val['title'])." <span class='".$class."'>".$val['total']."</span></a>";	
+							$text .= "<li class='clearfix'>".$val['icon']." ".$link."</li>\n";	
 						}	
 					}
 					$text .= "</ul>";
@@ -1050,7 +1050,7 @@ class admin_shortcodes
 					
 					$allconfigs = multiarray_sort($allconfigs,'title'); //XXX FIXME - not sorting correctly. 
 		
-					$text = "<ul id='e-status'>";
+					$text = "<ul id='e-status' class='unstyled'>";
 					foreach($allconfigs as $k=>$v)
 					{
 						foreach($v as $val)
