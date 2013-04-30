@@ -1861,12 +1861,14 @@ class e107plugin
 					
 					$prevType = $type;
 									
-					$data['owner'] = $folder;
-					$data['category'] = $folder."_".$type;	
-					$data['title'] = $v['@value'];
-					$data['sef'] = vartrue($v['@attributes']['sef']);
+					$data['owner'] 		= $folder;
+					$data['image']		= vartrue($v['@attributes']['image']);
+					$data['category'] 	= $folder."_".$type;	
+					$data['title'] 		= $v['@value'];
+					$data['sef'] 		= vartrue($v['@attributes']['sef']);
 				//	$data['type'] = $v['@attributes']['type']; //TODO
-					$data['class'] = 253;
+					$data['class'] 		= 253;
+					
 					$status = e107::getMedia()->createCategory($data) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 					$mes->add("Adding Media Category: {$data['category']}", $status);				
 					e107::getMedia()->import($data['category'],e_PLUGIN.$folder, false,'min-size=20000'); 
