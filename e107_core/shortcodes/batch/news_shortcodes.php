@@ -84,13 +84,15 @@ class news_shortcodes extends e_shortcode
 
 	function sc_newscomments($parm)
 	{
+		
 		$pref = e107::getPref();
 		$sql = e107::getDb();
 		
 		if($pref['comments_disabled'] == 1)
 		{
-			return;
+			return "Disabled";
 		}
+		
 		$news_item = $this->news_item;
 		$param = $this->param;
 
@@ -123,7 +125,7 @@ class news_shortcodes extends e_shortcode
 		{
 			$NEWIMAGE = $param['image_nonew_small'];
 		}
-		return (!$news_item['news_allow_comments'] ? ''.($pref['comments_icon'] ? $NEWIMAGE : '')." <a href='".e107::getUrl()->create('news/view/item', $news_item)."'>".$param['commentlink'].$news_item['news_comment_total'].'</a>' : $param['commentoffstring']);
+		return (!$news_item['news_allow_comments'] ? ''.($pref['comments_icon'] ? $NEWIMAGE : '')." <a href='".e107::getUrl()->create('news/view/item', $news_item)."'>".$param['commentlink'].intval($news_item['news_comment_total']).'</a>' : vartrue($param['commentoffstring'],'Disabled') );
 	}
 
 	function sc_trackback($parm)
@@ -452,15 +454,26 @@ class news_shortcodes extends e_shortcode
 		return $info;
 	}
 
-	function sc_newstags($parm=5)
+	function sc_newstags($parm='')
 	{
 		$tmp = explode(",",$this->news_item['news_meta_keywords']);
 		$words = array();
 		foreach($tmp as $val)
 		{
-			$words[] = "<a href='".e_BASE."news.php?tag=".$val."'><span class='label'>".$val."</span></a>";	
+			if(trim($val))
+			{
+				$words[] = "<a href='".e_BASE."news.php?tag=".$val."'><span class='label'>".$val."</span></a>";	
+			}
 		}
-		return implode(", ",$words);			
+		
+		if(count($words))
+		{
+			return implode("",$words);
+		}
+		else 
+		{
+			return "None";
+		}			
 	}
 
 }

@@ -71,12 +71,14 @@ legend { font-size: 14px; font-weight: bold; padding: 5px; }
 
 
 /******** News item styling */
+
 .post-meta { margin: -7px 0 10px; }
 .post-meta span { margin-right: 7px; margin-bottom: 0; padding-right: 10px; white-space: nowrap; border-right: 1px solid #dddddd; font-size: 12px; }
-.post-meta span:last-child { margin: 0; padding: 0; border: none; }
+.post-meta span:last-child {  border: none; }
 .post-meta span i[class^="icon-"] { margin-right: 7px; }
 
 .news_image { margin-bottom: 10px; }
+div.view-item	{ margin-bottom:50px }
 
 /******** FEATUREBOX PLUGIN */
 #featurebox-ajax-container { display: block }

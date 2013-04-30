@@ -71,6 +71,7 @@ $NEWS_TEMPLATE['list']['item'] = '
 ';
 */
 // Attempt at bootstrap style 
+// XXX As displayed by news.php (no query) or news.php?list.1.1 (ie. regular view of a particular category)
 $NEWS_TEMPLATE['default']['item'] = '
 	{SETIMAGE: w=600}
 	<div class="view-item">
