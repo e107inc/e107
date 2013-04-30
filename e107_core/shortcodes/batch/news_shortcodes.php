@@ -468,7 +468,7 @@ class news_shortcodes extends e_shortcode
 		
 		if(count($words))
 		{
-			return implode("",$words);
+			return implode(" ",$words);
 		}
 		else 
 		{
