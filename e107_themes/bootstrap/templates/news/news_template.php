@@ -20,7 +20,7 @@ global $sc_style;
 		<div class="body">
 			{NEWSIMAGE}
 			{NEWSBODY}
-			{EXTENDED}
+			<div class="text-right">{EXTENDED}</div>
 		</div>
 		<div class="options">
 			{EMAILICON} {PRINTICON} {PDFICON} {ADMINOPTIONS}
