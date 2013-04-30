@@ -250,14 +250,14 @@ class rater {
 		
 		$p = ($perc) ? "%" : "";	
 		
-		$upImg = "<img class='e-tip' src='".e_IMAGE."rate/like_16.png' alt='' title='Like' />";
-		$upDown = "<img class='e-tip' src='".e_IMAGE."rate/dislike_16.png' alt='' title='Dislike' />";
+		$upImg = "<img class='e-tip' src='".e_IMAGE_ABS."rate/like_16.png' alt='' title='Like' />";
+		$upDown = "<img class='e-tip' src='".e_IMAGE_ABS."rate/dislike_16.png' alt='' title='Dislike' />";
 			
 		$text = "<span id='{$id}-up'>".intval($curVal['up'])."{$p}</span>
-			<a class='e-rate-thumb e-rate-up'  href='".e_BASE."rate.php?table={$table}&id={$itemid}&type=up#{$id}'>{$upImg}</a> 
+			<a class='e-rate-thumb e-rate-up'  href='".e_HTTP."rate.php?table={$table}&id={$itemid}&type=up#{$id}'>{$upImg}</a> 
 				
 				<span id='{$id}-down'>".intval($curVal['down'])."{$p}</span>
-				<a  class='e-rate-thumb e-rate-down' href='".e_BASE."rate.php?table={$table}&id={$itemid}&type=down#{$id}'>{$upDown}</a>"; 	
+				<a  class='e-rate-thumb e-rate-down' href='".e_HTTP."rate.php?table={$table}&id={$itemid}&type=down#{$id}'>{$upDown}</a>"; 	
 		return $text;	
 	}
 	
