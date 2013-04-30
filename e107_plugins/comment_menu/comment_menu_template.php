@@ -17,19 +17,27 @@
 $sc_style['CM_TYPE']['pre'] = "[";
 $sc_style['CM_TYPE']['post'] = "]";
 
-$sc_style['CM_AUTHOR']['pre'] = CM_L13." <b>";
-$sc_style['CM_AUTHOR']['post'] = "</b>";
+$sc_style['CM_AUTHOR']['pre'] = CM_L13." ";
+$sc_style['CM_AUTHOR']['post'] = "";
 
-$sc_style['CM_DATESTAMP']['pre'] = " ".CM_L11." ";
+$sc_style['CM_DATESTAMP']['pre'] = " ";
 $sc_style['CM_DATESTAMP']['post'] = "";
 
 $sc_style['CM_COMMENT']['pre'] = "";
-$sc_style['CM_COMMENT']['post'] = "<br /><br />";
+$sc_style['CM_COMMENT']['post'] = "";
 
-if (!isset($COMMENT_MENU_TEMPLATE)){
-	$COMMENT_MENU_TEMPLATE = "
-	{CM_ICON} {CM_URL_PRE}{CM_TYPE} {CM_HEADING}{CM_URL_POST}<br />
-	{CM_AUTHOR} {CM_DATESTAMP}<br />
-	{CM_COMMENT}";
+// $SC_WRAPPER['CM_AUTHOR'] = CM_L13."{---}"; //XXX Not working at time of review
+
+if (!isset($COMMENT_MENU_TEMPLATE))
+{
+	$COMMENT_MENU_TEMPLATE['start'] = "<ul class='comment-menu'>";
+	
+	$COMMENT_MENU_TEMPLATE['item'] = "<li>
+	{CM_URL_PRE}{CM_TYPE} {CM_HEADING}{CM_URL_POST}
+	<div>{CM_COMMENT}</div>
+	<small class='muted'>{CM_AUTHOR} {CM_DATESTAMP}</small>
+	</li>";
+	
+	$COMMENT_MENU_TEMPLATE['end'] = "</ul>";
 }
 ?>

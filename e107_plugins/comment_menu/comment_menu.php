@@ -31,7 +31,7 @@ if (file_exists(THEME."comment_menu_template.php"))
 }
 else
 {
-	require_once (e_PLUGIN."comment_menu/comment_menu_template.php");
+	require_once(e_PLUGIN."comment_menu/comment_menu_template.php");
 }
 
 $data = $cobj->getCommentData(intval($menu_pref['comment_display']));
@@ -43,13 +43,34 @@ if (empty($data) || !is_array($data))
 	$text = CM_L1;
 }
 
+if(!is_array($COMMENT_MENU_TEMPLATE)) // Convert to v2.x standard. 
+{
+	$TEMPLATE = array();
+	$TEMPLATE['start'] = "";
+	$TEMPLATE['item'] = $COMMENT_MENU_TEMPLATE;
+	$TEMPLATE['end'] = "";		
+}
+else 
+{
+	$TEMPLATE = $COMMENT_MENU_TEMPLATE;	
+}
+
+$comment_menu_shortcodes = new comment_menu_shortcodes;
+
+$text .= $tp->parseTemplate($TEMPLATE['start'], true, $comment_menu_shortcodes);
+
 foreach ($data as $row)
 {
-	e107::setRegistry('plugin/comment_menu/current', $row);
-	$text .= $tp->parseTemplate($COMMENT_MENU_TEMPLATE, true, $comment_menu_shortcodes);
+	//e107::setRegistry('plugin/comment_menu/current', $row);
+	$comment_menu_shortcodes->setVars($row);
+	$text .= $tp->parseTemplate($TEMPLATE['item'], true, $comment_menu_shortcodes);
 }
-e107::setRegistry('plugin/comment_menu/current', null);
+
+$text .= $tp->parseTemplate($TEMPLATE['end'], true, $comment_menu_shortcodes);
+
+//e107::setRegistry('plugin/comment_menu/current', null);
 
 $title = e107::getConfig('menu')->get('comment_caption');
+
 e107::getRender()->tablerender(defset($title, $title), $text, 'comment_menu');
 ?>
