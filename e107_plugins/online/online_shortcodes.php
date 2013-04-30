@@ -41,6 +41,7 @@ class online_shortcodes
 	function sc_lastseen_date()
 	{
 		$seen_ago = $this->gen->computeLapse($this->currentUser['user_currentvisit'], false, false, true, 'short');
+		return $seen_ago;
 		return ($seen_ago ? $seen_ago : '1 '.LANDT_09).' '.LANDT_AGO;
 	}
 
@@ -136,8 +137,13 @@ class online_shortcodes
 	}
 
 
-	function sc_online_member_image()
+	function sc_online_member_image($parm='')
 	{
+		if($parm == 'avatar')
+		{
+			return e107::getParser()->parseTemplate("{USER_AVATAR=".$this->currentMember['oimage']."}",true);	
+		}
+		
 		return "<img src='".e_IMAGE_ABS."admin_images/users_16.png' alt='' style='vertical-align:middle' />";
 	}
 

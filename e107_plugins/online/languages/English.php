@@ -26,7 +26,7 @@ define("LAN_ONLINE_4", "Online");
 define("LAN_ONLINE_5", "");
 define("LAN_ONLINE_6", "Newest Member: ");
 define("LAN_ONLINE_7", "viewing");
-define("LAN_ONLINE_8", "most ever online: ");
+define("LAN_ONLINE_8", "Most ever online: ");
 define("LAN_ONLINE_9", "on ");
 define("LAN_ONLINE_10", "Online Menu");
 

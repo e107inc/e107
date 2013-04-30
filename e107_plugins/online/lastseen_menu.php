@@ -35,13 +35,13 @@ $num = intval(varsettrue($menu_pref['online_ls_amount'],10));
 $sql -> db_Select('user', 'user_id, user_name, user_currentvisit', 'ORDER BY user_currentvisit DESC LIMIT 0,'.$num, 'nowhere');
 $lslist = $sql -> db_getList();
 
-$text = $tp -> parseTemplate($TEMPLATE_LASTSEEN['START'], TRUE);
+$text = $tp -> parseTemplate($LASTSEEN_TEMPLATE['start'], TRUE);
 foreach($lslist as $row)
 {
 	setScVar('online_shortcodes', 'currentUser', $row);
-	$text .= $tp -> parseTemplate($TEMPLATE_LASTSEEN['ITEM'],TRUE);
+	$text .= $tp -> parseTemplate($LASTSEEN_TEMPLATE['item'],TRUE);
 }
-$text .= $tp -> parseTemplate($TEMPLATE_LASTSEEN['END'], TRUE);
+$text .= $tp -> parseTemplate($LASTSEEN_TEMPLATE['end'], TRUE);
 
 $caption = varsettrue($menu_pref['online_ls_caption'],LAN_LASTSEEN_1);
 $ns->tablerender($caption, $text, 'lastseen');
