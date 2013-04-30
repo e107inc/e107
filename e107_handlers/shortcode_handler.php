@@ -767,6 +767,7 @@ class e_parse_shortcode
 		{
 			$code = $newMatch[1];
 			$parmStr = trim($newMatch[2]);
+			$debugParm = $parmStr;
 			parse_str($parmStr,$parm);
 			$parmArray = true;
 		}
@@ -821,24 +822,27 @@ class e_parse_shortcode
 		$scFile = '';
 		$ret = '';
 		$_method = 'sc_'.strtolower($code);
-		if (is_object($this->addedCodes) && method_exists($this->addedCodes, $_method))
+		if (is_object($this->addedCodes) && method_exists($this->addedCodes, $_method)) //It is class-based batch shortcode.  Class already loaded; call the method
 		{
-			//It is class-based batch shortcode.  Class already loaded; call the method
+			
 			$ret = $this->addedCodes->$_method($parm, $sc_mode);
-			
-			
-			
+			if(E107_DBG_BBSC || E107_DBG_SC || E107_DBG_TIMEDETAILS)
+			{
+				$_class = get_class($this->addedCodes); // "(class loaded)"; // debug. 
+				$_function = $_method;
+				$_path = "(already loaded)";
+			}
 		}
-		elseif (is_array($this->addedCodes) && array_key_exists($code, $this->addedCodes))
+		elseif (is_array($this->addedCodes) && array_key_exists($code, $this->addedCodes)) // Its array-based shortcode. Load the code for evaluation later.
 		{
-			// Its array-based shortcode. Load the code for evaluation later.
+			
 			$scCode = $this->addedCodes[$code];
 		//	$_path = print_a($this->backTrace,true);
 			//XXX $_path = print_a($this,true);
 			
 		}
-		// Check to see if we've already loaded the .sc file contents
-		elseif (array_key_exists($code, $this->scList))
+		
+		elseif (array_key_exists($code, $this->scList)) // Check to see if we've already loaded the .sc file contents
 		{
 			
 			$scCode = $this->scList[$code];
@@ -1040,6 +1044,7 @@ class e_parse_shortcode
 			global $db_debug;
 			
 			$other = array();
+			
 			if($_class)
 			{
 				$other['class'] = $_class;
@@ -1055,12 +1060,14 @@ class e_parse_shortcode
 			
 			if($this->debug_legacy)
 			{
-				$other = $this->debug_legacy;	
+				$other = $this->debug_legacy;
 			}
 			
 			$info = (isset($this->registered_codes[$code])) ? print_a($this->registered_codes[$code],true) : print_a($other,true);
 			
-			$db_debug->logCode(2, $code, $parm, $info);
+			$tmp = isset($debugParm) ? $debugParm : $parm;
+
+			$db_debug->logCode(2, $code, $tmp, $info);
 			
 		}
 		
