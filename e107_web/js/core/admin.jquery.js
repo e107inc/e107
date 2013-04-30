@@ -440,33 +440,16 @@ $(document).ready(function()
 		
 		// highlight checked row
 		$(".adminlist input[type='checkbox']").click(function(evt){
-			
-			var cls = $(this).closest("tr").attr('class');
-		//	alert(cls);
-			
+					
 			if(this.checked)
 			{
-				if(cls == 'odd' || cls == 'highlight-odd')
-				{
-					$(this).closest("tr").switchClass( "odd", "highlight-odd", 0 );	
-				}
-				else
-				{
-					$(this).closest("tr").switchClass( "even", "highlight-even", 0 );	
-				}
-				
-				
+				$(this).closest("tr.odd").switchClass( "odd", "highlight-odd", 50 );	
+				$(this).closest("tr.even").switchClass( "even", "highlight-even", 50 );	
     		}
 			else
 			{
-				if(cls == 'highlight-odd' || cls =='odd')
-				{
-					$(this).closest("tr").switchClass( "highlight-odd", "odd", 300 );	
-				}
-				else
-				{
-					$(this).closest("tr").switchClass( "highlight-even", "even", 300 );	
-				}	
+				$(this).closest("tr.highlight-odd").switchClass( "highlight-odd", "odd", 300 );	
+				$(this).closest("tr.highlight-even").switchClass( "highlight-even", "even", 300 );	
 			}	
 			
 		});
