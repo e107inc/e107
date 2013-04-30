@@ -439,17 +439,34 @@ $(document).ready(function()
 		});
 		
 		// highlight checked row
-		$(".adminlist input[type=\"checkbox\"].checkbox").click(function(evt){
-	
+		$(".adminlist input[type='checkbox']").click(function(evt){
+			
+			var cls = $(this).closest("tr").attr('class');
+		//	alert(cls);
+			
 			if(this.checked)
 			{
-				$(this).closest("tr").switchClass( "odd", "highlight-odd", 0 );
-				$(this).closest("tr").switchClass( "even", "highlight-even", 0 );
+				if(cls == 'odd' || cls == 'highlight-odd')
+				{
+					$(this).closest("tr").switchClass( "odd", "highlight-odd", 0 );	
+				}
+				else
+				{
+					$(this).closest("tr").switchClass( "even", "highlight-even", 0 );	
+				}
+				
+				
     		}
 			else
 			{
-				$(this).closest("tr").switchClass( "highlight-even", "even", 300 );
-				$(this).closest("tr").switchClass( "highlight-odd", "odd", 300 );
+				if(cls == 'highlight-odd' || cls =='odd')
+				{
+					$(this).closest("tr").switchClass( "highlight-odd", "odd", 300 );	
+				}
+				else
+				{
+					$(this).closest("tr").switchClass( "highlight-even", "even", 300 );	
+				}	
 			}	
 			
 		});

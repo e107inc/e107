@@ -22,8 +22,7 @@ a.media-select-icon:hover	{ border:1px solid red; }
  .media-select-active		{ border: 1px solid silver; }
 
 .e-moving 					{ background-color: silver; }
-tr.highlight-even			{ background-color: silver; }
-tr.highlight-odd			{ background-color: silver; }
+
 legend 						{ display: none; }
 .chzn-choices				{ width: 350px; }
 .e-autocomplete				{ display: none }

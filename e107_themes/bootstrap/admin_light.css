@@ -46,4 +46,7 @@ body 						{ background-color: #EEEEEE;  }
 
 .tab-pane table.adminform td 	{ border-top:0px}
 
+tr.highlight-even			{ background-color: silver; }
+tr.highlight-odd			{ background-color: silver; }
+
 th, .fcaption								{  color: rgb(102, 102, 102); background-image: -moz-linear-gradient(center top , rgb(253, 253, 253) 0%, rgb(234, 234, 234) 100%); }
