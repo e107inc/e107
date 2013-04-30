@@ -241,7 +241,7 @@ class e_online
 
 				// FIXME - don't use constants below, save data in class vars, call e_online signleton - e107::getOnline()
 			//	$total_online = $sql->db_Count('online'); // 1 less query! :-)
-				if ($total_online = $sql->gen('SELECT * FROM #online WHERE online_pagecount > 0 ORDER BY online_timestamp DESC'))
+				if ($total_online = $sql->gen('SELECT o.*,u.user_image FROM #online AS o LEFT JOIN #user AS u ON o.online_user_id = u.user_id WHERE o.online_pagecount > 0 ORDER BY o.online_timestamp DESC'))
 				{
 					$member_list = '';
 					$members_online = 0;
@@ -260,6 +260,7 @@ class e_online
 							'user_online'		=> $row['online_flag'],
 							'user_pagecount'	=> $row['online_pagecount'],
 							'user_active'		=> $row['online_active'],
+							'user_image'		=> vartrue($row['user_image'],false),
 							'online_user_id'	=> $row['online_user_id']
 						);	
 		
