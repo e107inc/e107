@@ -2,8 +2,8 @@
 // $Id$
 
 if (!defined('e107_INIT')) { exit; }
-if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:97%"); }
 
+/*
 if(!isset($CONTACT_INFO))
 {
 	$CONTACT_INFO = "
@@ -16,8 +16,15 @@ if(!isset($CONTACT_INFO))
 	</tr>
 	</table>";
 }
+*/
 
+$CONTACT_TEMPLATE['info'] = "
 
+	<div class='contact-info' >
+		<address>{SITECONTACTINFO}</address>
+	</div>
+
+";
 
 
 $CONTACT_TEMPLATE['menu'] =  '
