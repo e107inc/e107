@@ -1,9 +1,5 @@
 ## e107 [Content Management System][1] (CMS) - v2
 
-Important: This is a developer version of e107.  
-For a stable release please see [www.e107.org][2] 
-
-
 ### What is e107?
 e107 is a free (open-source) content management system which allows you to easily manage and publish your content online. Developers can save time in building websites and powerful online applications. Users can avoid programming completely! Blogs, Websites, Intranets - e107 does it all. 
 
@@ -14,8 +10,7 @@ e107 is a free (open-source) content management system which allows you to easil
 
 ### Installation
 
-* Create an empty text file in the root directory and name it *e107_config.php*
-* Point your browser to the *http://localhost/YOUR FOLDER/install_.php* (depending on your webserver setup)
+* Point your browser to the *http://localhost/YOUR FOLDER/install.php* (depending on your webserver setup)
 * Follow the installation wizard
 
 ### Reporting Bugs
@@ -28,6 +23,9 @@ Your may report any bugs or feature requests on Github [here][3]
 * Please submit 1 pull-request for each Github #issue you may work on. 
 * Make sure that only the lines you have changed actually show up in a file-comparison (diff) ie. some text-editors alter every line so this should be avoided. 
 
+### License
+
+* e107 is released under the terms and conditions of the GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 
   [1]: http://e107.org
   [2]: http://www.e107.org
