@@ -43,6 +43,7 @@ body 						{ background-color: #EEEEEE;  }
 
 .modal-header	{ border-bottom:1px solid #DDDDDD;  background-image: -moz-linear-gradient(center top , rgb(253, 253, 253) 0%, rgb(234, 234, 234) 100%); }
 
+.tooltip-inner 				{ box-shadow: 0 2px 5px #808080; -webkit-box-shadow: 0 2px 5px #808080; -moz-box-shadow: 0 2px 5px #808080; }  
 
 .tab-pane table.adminform td 	{ border-top:0px}
 

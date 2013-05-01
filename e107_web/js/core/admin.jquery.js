@@ -291,6 +291,7 @@ $(document).ready(function()
 				},
 				fade: true,
 				html: true,
+				opacity: 1.0,
 				placement: placement,
 				delay: { show: 300, hide: 600 } 
 			});
