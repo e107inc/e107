@@ -1,27 +1,23 @@
-/*
- * e107 website system Copyright (C) 2008-2013 e107 Inc (e107.org)
- * $Id$
-*/
+//<?
+// * e107 website system Copyright (C) 2008-2013 e107 Inc (e107.org)
 /**
  *	e107 pdf generation plugin
  *
- *	@package	e107_plugins
- *	@subpackage	pdf
- *	@version 	$Id$;
  */
 
 if (!plugInstalled('pdf')) 
 {
 	return;
 }
+$parms = explode("^",$parm);
 
 if (defined("ICONPRINTPDF") && file_exists(THEME."images/".ICONPRINTPDF)) 
 {
-	$icon = THEME_ABS."images/".ICONPRINTPDF;
+	$icon = "<img src='".THEME_ABS."images/".ICONPRINTPDF."' style='border:0' alt='{$parms[0]}' title='{$parms[0]}' />";
 }
 else
 {
-	$icon = e_PLUGIN_ABS."pdf/images/pdf_16.png";
+	$icon = deftrue('e_BOOTSTRAP') ? "<i class='icon-book'></i>" : "<img src='".e_PLUGIN_ABS."pdf/images/pdf_16.png' style='border:0' alt='{$parms[0]}' title='{$parms[0]}' />";
 }
-$parms = explode("^",$parm);
-return " <a href='".e_PLUGIN_ABS."pdf/pdf.php?{$parms[1]}'><img src='".$icon."' style='border:0' alt='{$parms[0]}' title='{$parms[0]}' /></a>";
+
+return " <a href='".e_PLUGIN_ABS."pdf/pdf.php?{$parms[1]}'>".$icon."</a>";
