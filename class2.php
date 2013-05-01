@@ -640,6 +640,8 @@ if(is_array($pref['xurl']))
 	define('XURL_GOOGLE', vartrue($pref['xurl']['google'], false));
 	define('XURL_LINKEDIN', vartrue($pref['xurl']['linkedin'], false));
 	define('XURL_GITHUB', vartrue($pref['xurl']['github'], false));
+	define('XURL_FLICKR', vartrue($pref['xurl']['flickr'], false));
+	define('XURL_INSTAGRAM', vartrue($pref['xurl']['instagram'], false));
 }
 else
 {
@@ -647,8 +649,10 @@ else
 	define('XURL_TWITTER', false);
 	define('XURL_YOUTUBE', false);
 	define('XURL_GOOGLE', false);
-	define('XURL_LINKEDIN', false);	
-	define('XURL_GITHUB', false);	
+	define('XURL_LINKEDIN', false);
+	define('XURL_GITHUB', false);
+	define('XURL_FLICKR', false);
+	define('XURL_INSTAGRAM', false);
 }
 
 /* Withdrawn 0.8
