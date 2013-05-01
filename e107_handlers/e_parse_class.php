@@ -487,7 +487,9 @@ class e_parse extends e_parser
 			
 			if (strip_tags($data) != $data) // html tags present. 
 			{
+				
 				$data = $this->cleanHtml($data); // sanitize all html. 
+				$data = urldecode($data); // symptom of cleaning the HTML - urlencodes src attributes containing { and } .eg. {e_BASE} 
 			//	if ($this->htmlAbuseFilter($data)) $no_encode = FALSE; //XXX cleanHtml() is more effective. 
 			}
 
@@ -503,7 +505,7 @@ class e_parse extends e_parser
 		{
 			$no_encode = TRUE;
 		}
-		
+				
 		if (is_numeric($original_author) && !check_class($core_pref->get('post_html'), '', $original_author))
 		{
 			$no_encode = FALSE;
