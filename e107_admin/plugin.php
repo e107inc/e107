@@ -91,7 +91,7 @@ e107::coreLan('plugin', true);
 $e_sub_cat = 'plug_manage';
 
 define('PLUGIN_SHOW_REFRESH', FALSE);
-define('PLUGIN_SCAN_INTERVAL', 900);
+define('PLUGIN_SCAN_INTERVAL', 360);
 
 global $user_pref;
 
@@ -328,6 +328,7 @@ class pluginManager{
 		if($this->action == "uninstall")
 		{
         	$this -> pluginUninstall();
+			$this -> pluginCheck(true); // forced
 		}
 		
 		if($this->action == "refresh")
@@ -918,7 +919,7 @@ class pluginManager{
 			$plugin->update_plugins_table('update');
 		}
 		
-		$_SESSION['nextPluginFolderScan'] = time() + 360;
+		$_SESSION['nextPluginFolderScan'] = time() + PLUGIN_SCAN_INTERVAL;
 		//echo "TIME = ".$_SESSION['nextPluginFolderScan'];
 		
     }
