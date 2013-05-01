@@ -36,6 +36,10 @@ tr.highlight-even			{ background-color: #212121; }
     color: black;
 }
 
+.bootstrap-select.btn-group .dropdown-menu .optgroup-div {
+    color: #363636;
+}
+
 
 
 /*
