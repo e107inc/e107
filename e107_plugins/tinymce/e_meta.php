@@ -15,10 +15,12 @@
 if (!defined('e107_INIT')) { exit; }
 
 e107::css('inline','
-a.e-wysiwyg-toggle { margin-top:5px }
+	a.e-wysiwyg-toggle { margin-top:5px }
 ');
 
-if(e_WYSIWYG || strpos(e_SELF,"tinymce/admin_config.php") )
+$pref = e107::getPref();
+
+if((e_WYSIWYG && check_class($pref['post_html'])) || strpos(e_SELF,"tinymce/admin_config.php") )
 {
 	if(e_PAGE != 'image.php')
 	{
