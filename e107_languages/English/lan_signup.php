@@ -156,4 +156,23 @@ define("LAN_SIGNUP_109", "Is CaSe sensitive and must not contain spaces");//TODO
 define("LAN_SIGNUP_110", "Your full name");
 define("LAN_SIGNUP_111", "Enter a URL to your image or choose an existing avatar.");
 
+// BC for v1.x template
+define("LAN_7", "Display Name: ");
+define("LAN_8", "the name that will be displayed on site");
+define("LAN_9", "Username: ");
+define("LAN_10", "the name that you use to login");
+define("LAN_17", "Password: ");
+define("LAN_109", "This site complies with The Children's Online Privacy Protection Act of 1998 (COPPA) and as such cannot accept registrations from users under the age of 13 without a written permission document from their parent or guardian. For more information you can read the legislation");
+define("LAN_111", "Re-type Password: ");
+define("LAN_112", "Email Address: ");
+define("LAN_113", "Hide email address?: ");
+define('LAN_120', 'Signature: ');
+define('LAN_121', 'Avatar: ');
+define("LAN_122", "Timezone:");
+define('LAN_123', 'Register');	
+define('LAN_308', 'Real Name: ');
+define('LAN_309', 'Please enter your details below.');
+define('LAN_400', 'Usernames and passwords are <b>case-sensitive</b>.');
+define('LAN_410', 'Enter code visible in the image');
+
 ?>
