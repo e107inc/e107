@@ -65,8 +65,8 @@ class comment
 		global $COMMENTSTYLE;
 			
 		if (!$COMMENTSTYLE)
-		{
-			require_once(e107::coreTemplatePath('comment'));	
+		{		
+			require(e107::coreTemplatePath('comment'));	 // using require_once() could cause an empty template if the template is already loaded, for example, by the comment-menu al
 		}
 		elseif(!vartrue($COMMENT_TEMPLATE)) // BC template. 
 		{
