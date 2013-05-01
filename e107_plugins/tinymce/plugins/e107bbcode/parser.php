@@ -89,12 +89,12 @@ if($_POST['mode'] == 'tobbcode')
         
         echo ($content) ? "[html]".$content."[/html]" : ""; // Add the tags before saving to DB. 
     }
-    else  // bbcode Mode. 
+    else  // bbcode Mode. //XXX Disabled at the moment in tinymce/e_meta.php - post_html is required to activate. 
     {
      //   [img width=400]/e107_2.0/thumb.php?src={e_MEDIA_IMAGE}2012-12/e107org_white_stripe.png&w=400&h=0[/img]
        // $content = str_replace("{e_BASE}","", $content); // We want {e_BASE} in the final data going to the DB, but not the editor. 
    
-        echo e107::getBB()->htmltoBBcode($content);     
+        echo e107::getBB()->htmltoBBcode($content);   // not reliable enough yet.   
     }
 		
 }
