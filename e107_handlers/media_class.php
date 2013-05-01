@@ -77,6 +77,11 @@ class e_media
 		foreach($img_array as $f)
 		{
 			
+			if($f['fsize'] === 0) // prevent zero-byte files. 
+			{
+				continue;	
+			}
+			
 			if(vartrue($options['min-width']) && ($f['img-width'] < $options['min-width']))
 			{
 				continue;	
