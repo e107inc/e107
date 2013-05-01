@@ -650,11 +650,14 @@ function update_706_to_800($type='')
 	// }
 
 	// Front page prefs (logic has changed)
-	if (!isset($pref['frontpage_force']))
-	{	// Just set basic options; no real method of converting the existing
+	if (!isset($pref['frontpage_force'])) // Just set basic options; no real method of converting the existing
+	{	
 		if ($just_check) return update_needed('Change front page prefs');
 		$pref['frontpage_force'] = array(e_UC_PUBLIC => '');
-		$pref['frontpage'] = array(e_UC_PUBLIC => 'news.php');
+		
+		$fpdef = vartrue($pref['frontpage']['all']) == 'index.php' ? 'index.php' : 'news.php';
+		
+		$pref['frontpage'] = array(e_UC_PUBLIC => $fpdef);
 		// $_pdateMessages[] = LAN_UPDATE_38; //FIXME
 		$log->logMessage(LAN_UPDATE_20."frontpage",E_MESSAGE_DEBUG);
 		$do_save = TRUE;
