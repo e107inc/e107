@@ -179,38 +179,27 @@ function update_701_to_702($type='') {
 function update_103_to_104($type='')
 {
 	
-	global $pref; // , $e107cache;	
+	global $sql; // , $e107cache;	
 	
-	$stripsan = array('[sanitised]','[/sanitised]','##xss##');
- 	$found = false;
- 	
-	foreach($pref as $k=>$v)
-	{
-		if(strstr($v,'amp;amp;')!==false)
-		{
-			$pref[$k] = str_replace("amp;","",$v);
-		//echo "<br />Correcting pref: ".$k;
-			$found = true;
-		}
-		 
-		if(strstr($v,'[sanitised]')!==false)
-		{
-			$pref[$k] = str_replace($stripsan,'',$v);
-			$found = true;
-			//echo "<br />De-sanitizing pref: ".$k;
-		}
-	}
- 	
-	if($type == 'do')
-	{
-		save_prefs();
-		return;
-	}
+	$stripsan = array('amp;','[sanitised]','[/sanitised]','##xss##');
  
- 	if($found === true)
- 	{
- 		 return update_needed();
+ 	if($sql->db_Select('core','e107_value',"e107_name = 'SitePrefs' AND e107_value LIKE '%amp;amp;%' LIMIT 1"))
+	{
+		if($type == 'do')
+		{
+			$row = $sql->db_Fetch(MYSQL_ASSOC);
+			
+			if(trim($row['e107_value']) != '')
+			{
+				$newValue = str_replace($stripsan,'',$row['e107_value']);
+				$sql->db_Update('core',"e107_value = \"".$newValue."\" WHERE e107_name = 'SitePrefs' LIMIT 1");
+			}
+		}
+		
+		return update_needed('Prefs require cleaning');
 	}
+			
+	return TRUE; // No updates needed	
  		
 }
 
@@ -1797,13 +1786,15 @@ function update_extended_616() {
 	$ns->tablerender("Extended Users", "Updated extended user field data");
 }
 
-function update_needed()
+function update_needed($details='')
 {
 	global $ns;
 	if(E107_DEBUG_LEVEL)
 	{
 		$tmp = debug_backtrace();
-		$ns->tablerender("", "<div style='text-align:center'>Update required in ".basename(__FILE__)." on line ".$tmp[0]['line']."</div>");
+		$text = "Update required in ".basename(__FILE__)." on line ".$tmp[0]['line'];
+		$text .= ($details) ? " (".$details.") " : "";
+		$ns->tablerender("", "<div style='text-align:center'>".$text."</div>");
 	}
 	return FALSE;
 }
