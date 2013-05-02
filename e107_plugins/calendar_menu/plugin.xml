@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <e107Plugin name="Event Calendar" lan="LAN_PLUGIN_CALENDAR_MENU_NAME" version="3.70" date="2012-08-01" compatibility="2.0" installRequired="true" >
 	<author name="e107 Inc. + Barry" url="http://e107.org" />
+	<summary>This plugin is a fully featured event calendar with calendar menu.</summary>
 	<description lan="LAN_PLUGIN_CALENDAR_MENU_DESCRIPTION" >This plugin is a fully featured event calendar with calendar menu.</description>
 	<readMe>readme.pdf</readMe>
 	<category>content</category>
+	<keywords>
+		<word>calendar</word>
+		<word>event</word>
+		<word>day</word>
+		<word>week</word>
+		<word>month</word>
+		<word>year</word>
+	</keywords>
 	<adminLinks>
 		<link url='admin_config.php' description='LAN_PLUGIN_CALENDAR_MENU_CONFIG' icon='images/calendar_32.png' iconSmall='images/calendar_16.png' primary='true' >LAN_PLUGIN_CALENDAR_MENU_CONFIG</link>
 		<link url='admin_config.php?cat' description='EC_ADLAN_A11' icon='images/calendar_32.png' iconSmall='images/calendar_16.png' >EC_ADLAN_A11</link>
