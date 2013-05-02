@@ -380,6 +380,11 @@ elseif ($merror === 'e2')
 /* PHP Compatabilty should *always* be on. */
 e107_require_once(e_HANDLER.'php_compatibility_handler.php');
 
+if(file_exists(e_HANDLER."e107_Compat_handler.php")) // upgraded site, and may still be required for old plugins. 
+{
+	e107_require_once(e_HANDLER."e107_Compat_handler.php");
+}
+
 //
 // L: Extract core prefs from the database
 //
