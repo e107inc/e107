@@ -109,7 +109,7 @@ class xmlClass
 
 	private $stringTags = false;
 
-
+	private $urlPrefix = false;
 
 	/**
 	 * Add root element to the result array
@@ -284,6 +284,19 @@ class xmlClass
 		return $this;
 	}
 	
+
+	/**
+	 * Set urlPrefix
+	 *
+	 * @param array $filter
+	 * @return xmlClass
+	 */
+	public function setUrlPrefix($url)
+	{
+		$this->urlPrefix = $url;
+		return $this;
+	}
+
 	
 	
 	public function setFeedUrl($feed)
@@ -318,6 +331,12 @@ class xmlClass
 			$address = str_replace(array("\r", "\n", "\t"), '', $address); // May be paranoia, but streaky thought it might be a good idea	
 			// ... and there shouldn't be unprintable characters in the URL anyway
 		}		
+		
+		if($this->urlPrefix !== false)
+		{
+			$address = 	$this->urlPrefix.$address;
+		}
+		
 		
 		// ... and there shouldn't be unprintable characters in the URL anyway
 		if (function_exists('file_get_contents') && ini_get('allow_url_fopen'))
