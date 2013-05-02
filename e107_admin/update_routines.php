@@ -101,6 +101,7 @@ if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'pm' AND plugin_in
 }
 
 // $dbupdate["701_to_702"] = LAN_UPDATE_8." .7.1 ".LAN_UPDATE_9." .7.2";
+$dbupdate["103_to_104"] = LAN_UPDATE_8." 1.0.3 ".LAN_UPDATE_9." 1.0.4";
 $dbupdate["10x_to_103"] = LAN_UPDATE_8." 1.0.x ".LAN_UPDATE_9." 1.0.3";
 $dbupdate["70x_to_706"] = LAN_UPDATE_8." .70x ".LAN_UPDATE_9." .706";
 $dbupdate["617_to_700"] = LAN_UPDATE_8." .617 ".LAN_UPDATE_9." .7";
@@ -174,6 +175,48 @@ function update_701_to_702($type='') {
 
 }
 */
+
+function update_103_to_104($type='')
+{
+	
+	global $pref; // , $e107cache;	
+	
+	$stripsan = array('[sanitised]','[/sanitised]','##xss##');
+ 	$found = false;
+ 	
+	foreach($pref as $k=>$v)
+	{
+		if(strstr($v,'amp;amp;')!==false)
+		{
+			$pref[$k] = str_replace("amp;","",$v);
+		//echo "<br />Correcting pref: ".$k;
+			$found = true;
+		}
+		 
+		if(strstr($v,'[sanitised]')!==false)
+		{
+			$pref[$k] = str_replace($stripsan,'',$v);
+			$found = true;
+			//echo "<br />De-sanitizing pref: ".$k;
+		}
+	}
+ 	
+	if($type == 'do')
+	{
+		save_prefs();
+		return;
+	}
+ 
+ 	if($found === true)
+ 	{
+ 		 return update_needed();
+	}
+ 		
+}
+
+
+
+
 
 function update_10x_to_103($type='')
 {
