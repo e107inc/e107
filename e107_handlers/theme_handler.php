@@ -1606,7 +1606,7 @@ class themeHandler
 	function parse_theme_php($path)
 	{
 		$CUSTOMPAGES = "";
-		
+		$tp = e107::getParser();
 		$fp = fopen(e_THEME.$path."/theme.php", "r");
 		$themeContents = fread($fp, filesize(e_THEME.$path."/theme.php"));
 		fclose($fp);
