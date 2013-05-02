@@ -245,7 +245,7 @@ class list_admin
 		for($i=0;$i<count($this->parent->sections);$i++)
 		{
 			$this->row['FIELD_TITLE'] = $this->parent->titles[$i];
-			$this->row['FIELD_ITEM'] = $rs->form_text($this->parent->sections[$i]."_".$type."_caption", 30, e1007::getParser()->toHTML($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_caption"],"","defs"), "50", "tbox");
+			$this->row['FIELD_ITEM'] = $rs->form_text($this->parent->sections[$i]."_".$type."_caption", 30, e107::getParser()->toHTML($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_caption"],"","defs"), "50", "tbox");
 			$this->row['FIELD'] .= $this->parseTemplate('FIELD_TABLE');
 		}
 		$this->row['FIELD'] .= $this->parseTemplate('FIELD_TABLE_END');
