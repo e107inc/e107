@@ -40,13 +40,13 @@ class list_members
 
 		$bullet = $this->parent->getBullet($this->parent->settings['icon']);
 
-		if(!$this->parent->$sql->gen("SELECT user_id,user_name,user_join FROM #user WHERE ".$qry))
+		if(!$this->parent->e107->sql->gen("SELECT user_id,user_name,user_join FROM #user WHERE ".$qry))
 		{ 
 			$list_data = LIST_MEMBER_2;
 		}
 		else
 		{
-			while($row = $this->parent->$sql->fetch())
+			while($row = $this->parent->e107->sql->fetch())
 			{
 				$record = array();
 				$rowheading = $this->parent->parse_heading($row['user_name']);
