@@ -614,14 +614,15 @@ $text .= "
 							".$frm->radio_switch('admin_alerts_uniquemenu', $pref['admin_alerts_uniquemenu'])."
 							<div class='smalltext field-help'>".PRFLAN_98."</div>
 						</td>
-					</tr>
-					<tr>
+					</tr>";
+					/*<tr>
 						<td>".PRFLAN_199."</td>
 						<td>
 							".$frm->radio_switch('admin_slidedown_subs', $pref['admin_slidedown_subs'])."
 							<div class='smalltext field-help'>".PRFLAN_200."</div>
 						</td>
-					</tr>
+					</tr>*/
+					$text .= "
 					<tr>
 						<td>".PRFLAN_204."</td>
 						<td>
