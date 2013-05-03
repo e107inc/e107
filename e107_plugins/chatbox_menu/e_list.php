@@ -21,6 +21,7 @@ class list_chatbox_menu
 	function getListData()
 	{
 		$sql = e107::getDb();
+		$tp = e107::getParser();
 		$list_caption = $this->parent->settings['caption'];
 		$list_display = ($this->parent->settings['open'] ? "" : "none");
 
