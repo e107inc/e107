@@ -28,7 +28,7 @@ if (!function_exists('notify_cboxpost')) {
 	function notify_cboxpost($data) {
 		global $nt;
 		include_lan(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php");
-		$message = NT_LAN_CB_3.': '.USERNAME.' ('.NT_LAN_CB_4.': '.$data['ip'].' )<br />';
+		$message = NT_LAN_CB_3.': '.USERNAME.' ('.NT_LAN_CB_4.': '.e107::getIPHandler()->ipDecode($data['ip']).' )<br />';
 		$message .= NT_LAN_CB_5.':<br />'.$data['cmessage'].'<br /><br />';
 		$nt -> send('cboxpost', NT_LAN_CB_6, $message);
 	}
