@@ -175,7 +175,7 @@ class list_admin
 			$curVal = $this->parent->list_pref[$this->parent->sections[$i]."_".$type."_icon"];
 			
 			$this->row['FIELD_TITLE'] = $this->parent->titles[$i];
-			$this->row['FIELD_ITEM'] = $frm->iconpicker($name,$curVal);
+			$this->row['FIELD_ITEM'] = $frm->iconpicker($name,$curVal, LAN_SELECT);		// TODO: Is this a reasonable label to use? Might not be used
 		//	$this->row['FIELD_ITEM'] = $frm->iconpicker($this->parent->sections[$i]."_".$type."_icon",$this->parent->list_pref[$this->parent->sections[$i]."_".$type."_icon"]).
 		//	$this->row['FIELD_ITEM'] = $rs->form_text($this->parent->sections[$i]."_".$type."_icon", 15, $this->parent->list_pref[$this->parent->sections[$i]."_".$type."_icon"], 100)."
 			
