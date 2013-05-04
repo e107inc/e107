@@ -142,7 +142,7 @@ $USER_FULL_TEMPLATE = "{SETIMAGE: w=250}
 <tr>
 	<td  {$main_colspan} class='forumheader3'>
 		<div class='f-left'>{USER_EMAIL_ICON} ".LAN_USER_60."</div>
-		<div class='f-right right'>{USER_EMAIL_LINK}</div>
+		<div class='f-right right'>{USER_EMAIL}</div>
 	</td>
 </tr>
 
