@@ -108,6 +108,19 @@ class links_admin_ui extends e_admin_ui
 	 * @var array
 	 */
 	protected $_link_array	= null;
+	
+	
+	function afterCreate($newdata,$olddata, $id) //FIXME needs to work after inline editing too. 
+	{
+		e107::getCache()->clearAll('content');	
+	}
+	
+	function afterUpdate($newdata,$olddata, $id) //FIXME needs to work after inline editing too. 
+	{
+		e107::getCache()->clearAll('content');
+	}	
+	
+	
 
 	function init()
 	{
