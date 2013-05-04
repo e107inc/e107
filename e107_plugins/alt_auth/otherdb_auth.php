@@ -81,6 +81,21 @@ class auth_login extends alt_auth_base
 	 */
 	public function login($uname, $pword, &$newvals, $connect_only = FALSE)
 	{
+		/* Begin - Deltik's PDO Workaround (part 1/2) */
+		$dsn = 'mysql:dbname=' . $this->conf['otherdb_database'] . ';host=' . $this->conf['otherdb_server'];
+		
+		try
+		{
+			$dbh = new PDO($dsn, $this->conf['otherdb_username'], $this->conf['otherdb_password']);
+		}
+		catch (PDOException $e)
+		{
+			$this->makeErrorText('Cannot connect to remote DB; PDOException message: ' . $e->getMessage());
+			return AUTH_NOCONNECT;
+		}
+		/* End - Deltik's PDO Workaround (part 1/2) */
+		
+		/** Ancient code that breaks e107's ability to use the original MySQL resource
 		//Attempt to open connection to sql database
 		if(!$res = mysql_connect($this->conf['otherdb_server'], $this->conf['otherdb_username'], $this->conf['otherdb_password']))
 		{
@@ -94,6 +109,8 @@ class auth_login extends alt_auth_base
 			$this->makeErrorText('Cannot connect to remote DB');
 			return AUTH_NOCONNECT;
 		}
+		*/
+		
 		if ($connect_only) return AUTH_SUCCESS;		// Test mode may just want to connect to the DB
 		$sel_fields = array();
 		// Make an array of the fields we want from the source DB
@@ -111,10 +128,24 @@ class auth_login extends alt_auth_base
 			$sel_fields[] = $this->conf['otherdb_salt_field'];
 		}
 
-
 		//Get record containing supplied login name
 		$qry = "SELECT ".implode(',',$sel_fields)." FROM {$this->conf['otherdb_table']} WHERE {$user_field} = '{$uname}'";
 //	  echo "Query: {$qry}<br />";
+		
+		/* Begin - Deltik's PDO Workaround (part 2/2) */
+		if (!$r1 = $dbh->query($qry))
+		{
+			$this->makeErrorText('Lookup query failed');
+			return AUTH_NOCONNECT;
+		}
+		if (!$row = $r1->fetch(PDO::FETCH_BOTH))
+		{
+			$this->makeErrorText('User not found');
+			return AUTH_NOUSER;
+		}
+		/* End - Deltik's PDO Workaround (part 2/2) */
+		
+		/** Ancient code that breaks e107's ability to use the original MySQL resource
 		if(!$r1 = mysql_query($qry))
 		{
 			mysql_close($res);
@@ -128,7 +159,7 @@ class auth_login extends alt_auth_base
 			return AUTH_NOUSER;
 		}
 
-		mysql_close($res);				// Finished with 'foreign' DB now
+		mysql_close($res);*/				// Finished with 'foreign' DB now
 
 		// Got something from the DB - see whether password valid
 		require_once(e_PLUGIN.'alt_auth/extended_password_handler.php');		// This auto-loads the 'standard' password handler as well
