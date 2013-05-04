@@ -861,8 +861,10 @@ class system_tools
 	private function plugin_viewscan($mode = 'update')
 	{
 		$error_messages = array(0 => DBLAN_31, 1 => DBLAN_32, 2 => DBLAN_33, 3 => DBLAN_34);
-		$error_image = array("integrity_pass.png", "integrity_fail.png", "warning.png", "blank.png");
-
+	//	$error_image = array("integrity_pass.png", "integrity_fail.png", "warning.png", "blank.png");
+		$error_glyph = array(ADMIN_TRUE_ICON,ADMIN_FALSE_ICON,"<i class='S16 e-warning-16'></i>","<i style='display:inline-block;width:17px;height:16px;'> </i>");
+		
+		$error_type = array('warning'=>2, 'error'=>1);
 
 
 		global $e107;
@@ -908,12 +910,13 @@ class system_tools
 							<tbody>
 			";
 
-		$sql->db_Select("plugin", "*", "plugin_id !='' order by plugin_path ASC"); // Must order by path to pick up duplicates. (plugin names may change).
+		$sql->select("plugin", "*", "plugin_id !='' order by plugin_path ASC"); // Must order by path to pick up duplicates. (plugin names may change).
 		$previous = '';
-		while($row = $sql->db_Fetch())
+		while($row = $sql->fetch())
 		{
 			e107::loadLanFiles($row['plugin_path'],'admin');
-
+			e107::plugLan($row['plugin_path'],'global',true);	
+			
 			$text .= "
 								<tr>
 									<td>".$tp->toHtml($row['plugin_name'], FALSE, "defs,emotes_off")."</td>
@@ -926,7 +929,7 @@ class system_tools
 				foreach(explode(',', $row['plugin_addons']) as $this_addon)
 				{
 					$ret_code = 3; // Default to 'not checked
-					if((strpos($this_addon, 'e_') === 0) && (substr($this_addon, - 4, 4) != '_sql'))
+					if((strpos($this_addon, 'e_') === 0) || (substr($this_addon, - 4, 4) == '_sql'))
 					{
 						$ret_code = $ep->checkAddon($row['plugin_path'], $this_addon); // See whether spaces before opening tag or after closing tag
 					}
@@ -934,10 +937,23 @@ class system_tools
 					{
 						$this_addon = substr($this_addon, 3). ' (sc)';
 					}
-					$text .= "<div class='clear'>";
-					$text .= "<img class='icon action S16' src='".e_IMAGE_ABS."fileinspector/".$error_image[$ret_code]."' alt='".$error_messages[$ret_code]."' title='".$error_messages[$ret_code]."' />";
+					
+					if(!is_numeric($ret_code)) 
+					{
+						$errorMessage = $ret_code['msg'];	
+						$ret_code = $error_type[$ret_code['type']];	
+					}
+					else 
+					{
+						$errorMessage  = $error_messages[$ret_code];
+					}
+					
+					$text .= "<span class='clear e-tip' style='cursor:pointer' title='".$errorMessage."'>";
+					$text .= $error_glyph[$ret_code]."&nbsp;";
+					
+				//	$text .= "<img class='icon action S16' src='".e_IMAGE_ABS."fileinspector/".$error_image[$ret_code]."' alt='".$error_messages[$ret_code]."' title='".$error_messages[$ret_code]."' />";
 					$text .= trim($this_addon); // $ret_code - 0=OK, 1=content error, 2=access error
-					$text .= "</div>";
+					$text .= "</span><br />";
 				}
 			}
 
@@ -957,7 +973,7 @@ class system_tools
 			}
 			else
 			{
-				$text .= ($row['plugin_installflag'] == 1) ? DBLAN_27 : " "; // "Installed and not installed";
+				$text .= ($row['plugin_installflag'] == 1) ? "<span class='label label-warning'>".DBLAN_27."</span>" : " "; // "Installed and not installed";
 			}
 			$text .= "
 								</td>
