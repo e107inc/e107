@@ -175,6 +175,7 @@ class e107Update
 		
 		if(varset($_POST['update_core']) && is_array($_POST['update_core']))
 		{
+			$func = key($_POST['update_core']);
 			$message = $this->updateCore();
 		}	
 		
@@ -195,12 +196,12 @@ class e107Update
 	
 	
 	
-	function updateCore()
+	function updateCore($func='')
 	{
 		$mes = e107::getMessage();
 		
-		foreach($this->core as $func => $data)
-		{
+	//	foreach($this->core as $func => $data)
+	//	{
 			if(function_exists('update_'.$func)) // Legacy Method. 
 			{
 				$installed = call_user_func("update_".$func);
@@ -225,7 +226,7 @@ class e107Update
 				}	
 			}
 		
-		}
+		//}
 		
 	}
 	
