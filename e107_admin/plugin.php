@@ -27,13 +27,37 @@ if(e_AJAX_REQUEST && isset($_GET['src'])) // Ajax
 	$localfile = md5($remotefile.time()).".zip";
 	$status = "Downloading...";
 	
-	e107::getFile()->getRemoteFile($remotefile,$localfile);
+//	e107::getFile()->getRemoteFile($remotefile,$localfile);
 	
+	e107::getFile()->download($remotefile,'plugin');
+	
+	
+	exit;
+	
+	/*
+	
+	
+	
+	
+		
 	if(!file_exists(e_TEMP.$localfile))
 	{
 		echo 'There was a problem retrieving the file';
 		exit;	
 	}
+	else 
+	{
+		$contents = file_get_contents(e_TEMP.$localfile);
+		if($contents == 'LOGIN')
+		{
+			echo "<div class='e-alert'>Please login to your e107.org account and try again</div>";
+			exit;	
+		}
+	}
+	
+	echo "Disabed";
+	exit;
+	
 //	chmod(e_PLUGIN,0777);
 	chmod(e_TEMP.$localfile,0755);
 	
@@ -45,7 +69,7 @@ if(e_AJAX_REQUEST && isset($_GET['src'])) // Ajax
 //		chmod(e_UPLOAD.$localfile,0666);
 
 
-
+	*/
 	/* Cannot use this yet until 'folder' is included in feed. 
 	if($dir != $p['plugin_folder'])
 	{
@@ -56,7 +80,7 @@ if(e_AJAX_REQUEST && isset($_GET['src'])) // Ajax
 		exit;
 	}	
 	*/
-		
+	/*	
 	if($unarc[0]['folder'] ==1 && is_dir($unarc[0]['filename']))
 	{
 		$status = "Unzipping...";
@@ -84,6 +108,9 @@ if(e_AJAX_REQUEST && isset($_GET['src'])) // Ajax
 
 //	echo "file=".$file;
 	exit;	
+	
+	 */
+	
 }
 
 e107::coreLan('plugin', true);
@@ -227,8 +254,9 @@ class pluginManager{
 	var $id;
 	var $frm;
 	var $fieldpref;
-	var $titlearray = array();
+	var $titlearray 		= array();
 	var $pagetitle;
+		
 	protected $pid = 'plugin_id';
 	
 	protected $fields = array(
@@ -256,7 +284,7 @@ class pluginManager{
 	
 	
 
-	function pluginManager()
+	function __construct()
 	{
         global $user_pref,$admin_log;
 
@@ -292,12 +320,11 @@ class pluginManager{
 			// Complicated, as each uninstall system is different.
 		}*/
 
-
-
-
-
-
     }
+
+
+
+
 
     function pluginObserver()
 	{
@@ -472,9 +499,10 @@ class pluginManager{
 		
 		$text = "
 			<form action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='get'>
-			<div class='e-search'>".$frm->search('srch', $srch, 'go', $filterName, $filterArray, $filterVal).$frm->hidden('mode','online')."</div>
+			<div class='e-search'>".$frm->search('srch', $srch, 'go', $filterName, $filterArray, $filterVal).$frm->hidden('mode','online')."
+			</div>
 			</form>
-		
+			
 			<form action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='post'>
 				<fieldset class='e-filter' id='core-plugin-list'>
 					<legend class='e-hideme'>".$caption."</legend>
@@ -535,10 +563,21 @@ class pluginManager{
 	
 	
 	function options($data)
-	{		
+	{
+			
+	//	print_a($data);
+		
+	
+		if(!e107::getFile()->hasAuthKey())
+		{
+		//	return "<a href='".e_SELF."' class='btn btn-primary e-modal' >Download and Install</a>"; 	
+			
+		}
+	
+				
 		$d = http_build_query($data,false,'&');
 		$url = e_SELF."?src=".base64_encode($d);
-		$id = 'plug_'.$data['plugin_folder'];
+		$id = 'plug_'.$data['plugin_id'];
 		return "<div id='{$id}' style='vertical-align:middle'>
 		<button type='button' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='btn btn-primary e-ajax middle' value='Download and Install' data-src='".$url."' ><span>Download and Install</span></button>
 		</div>";				
@@ -1483,7 +1522,7 @@ class pluginManager{
 			//	$var['upload']['text'] = EPL_ADLAN_38;
 			//	$var['upload']['link'] = e_SELF."?upload";
 				
-				$var['online']['text'] = "Search";
+				$var['online']['text'] = "Find Plugins";
 				$var['online']['link'] = e_SELF."?mode=online";
 				
 				$var['create']['text'] = "Plugin Builder";

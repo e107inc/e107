@@ -314,11 +314,12 @@ class xmlClass
 	 * @param integer $timeout [optional] seconds
 	 * @return string
 	 */
-	function getRemoteFile($address, $timeout = 10)
+	function getRemoteFile($address, $timeout = 10, $postData=null)
 	{
 		// Could do something like: if ($timeout <= 0) $timeout = $pref['get_remote_timeout'];  here
 		$timeout = min($timeout, 120);
 		$timeout = max($timeout, 3);
+		$this->xmlFileContents = '';
 		
 		$mes = e107::getMessage();
 			
@@ -339,6 +340,39 @@ class xmlClass
 		
 		
 		// ... and there shouldn't be unprintable characters in the URL anyway
+		
+		
+		// Keep this in first position. 
+		if (function_exists("curl_init")) // Preferred. 
+		{
+			$cu = curl_init();
+			curl_setopt($cu, CURLOPT_URL, $address);
+			curl_setopt($cu, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($cu, CURLOPT_HEADER, 0);
+			curl_setopt($cu, CURLOPT_TIMEOUT, $timeout);
+			curl_setopt($cu, CURLOPT_SSL_VERIFYPEER, FALSE); 
+			curl_setopt($cu, CURLOPT_REFERER, e_REQUEST_HTTP);
+			curl_setopt($cu, CURLOPT_FOLLOWLOCATION, 0); 
+			curl_setopt($cu, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"); 
+			curl_setopt($cu, CURLOPT_COOKIEFILE, e_SYSTEM.'cookies.txt');
+			curl_setopt($cu, CURLOPT_COOKIEJAR, e_SYSTEM.'cookies.txt');
+	
+			if(!file_exists(e_SYSTEM.'cookies.txt'))
+			{
+				file_put_contents(e_SYSTEM.'cookies.txt','');	
+			}
+			
+			$this->xmlFileContents = curl_exec($cu);
+			if (curl_error($cu))
+			{
+				$this->error = "Curl error: ".curl_errno($cu).", ".curl_error($cu);
+				return FALSE;
+			}
+			curl_close($cu);
+			return $this->xmlFileContents;
+		}
+		
+
 		if (function_exists('file_get_contents') && ini_get('allow_url_fopen'))
 		{
 			$old_timeout = e107_ini_set('default_socket_timeout', $timeout);
@@ -359,22 +393,7 @@ class xmlClass
 			$this->error = "File_get_contents(XML) error";		// Fill in more info later
 			return FALSE;
 		}
-		if (function_exists("curl_init"))
-		{
-			$cu = curl_init();
-			curl_setopt($cu, CURLOPT_URL, $address);
-			curl_setopt($cu, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($cu, CURLOPT_HEADER, 0);
-			curl_setopt($cu, CURLOPT_TIMEOUT, $timeout);
-			$this->xmlFileContents = curl_exec($cu);
-			if (curl_error($cu))
-			{
-				$this->error = "Curl error: ".curl_errno($cu).", ".curl_error($cu);
-				return FALSE;
-			}
-			curl_close($cu);
-			return $this->xmlFileContents;
-		}
+
 		if (ini_get("allow_url_fopen"))
 		{
 			$old_timeout = e107_ini_set('default_socket_timeout', $timeout);
