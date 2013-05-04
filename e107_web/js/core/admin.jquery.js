@@ -301,6 +301,21 @@ $(document).ready(function()
 	//	 $(".e-spinner").spinner(); //FIXME breaks tooltips etc. 
 	
 	
+		$(".e-alert").live("click", function(){
+			
+			var message = $(this).html();
+			alert(message);
+			$("#uiAlert").val(message);
+			$("#uiAlert").alert();
+			$("#uiAlert").fadeIn('slow');
+			window.setTimeout(function() { 	$("#uiAlert").alert('close'); }, 4000);
+				
+		});
+		
+	
+	
+	
+	
 		$(".e-radio-multi").each(function() {
 		//	$(this).nextAll(".field-help").hide();
 		//	$(this).nextAll(":input").tipsy({title: 'hello'});

@@ -96,6 +96,10 @@ class e_file
 	 * @var string default (BC) | image | file | all
 	 */
 	public $finfo = 'default';
+	
+	
+	
+	private $authKey = false; // Used when retrieving files from e107.org. 
 
 	/**
 	 * Constructor
@@ -320,6 +324,7 @@ class e_file
        
         $cp = curl_init($remote_url);
 		curl_setopt($cp, CURLOPT_FILE, $fp);
+		curl_setopt($cp, CURLOPT_REFERER, e_REQUEST_HTTP);
 		curl_setopt($cp, CURLOPT_HEADER, 0);
 		curl_setopt($cp, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"); 
 		curl_setopt($cp, CURLOPT_COOKIEFILE, e_SYSTEM.'cookies.txt');
@@ -679,7 +684,27 @@ class e_file
 		}
 	}	
 	
+
+	// Use e107.org login. 
+	private function setAuthKey($username,$password)
+	{
+		$now 	= gmdate('y-m-d H:i');
+		$this->authKey	= sha1($username.md5($password).$now);	
+		
+		return $this;		
+	}	
 	
+	
+	private function getAuthKey()
+	{
+		return $this->authKey;	
+	}
+	
+	
+	public function hasAuthKey()
+	{
+		return ($this->authKey != false) ? true : false;	
+	}
 	
 	/**
 	 * Download a Plugin or Theme to Temp, then test and move to plugin/theme folder and backup to system backup folder. 
@@ -690,9 +715,14 @@ class e_file
 	{
 		$tp = e107::getParser();
 		
+		list($url,$qry) = explode("?",$remotefile);
+
+		$remotefile = $url."?auth=".$this->getAuthKey()."&".$qry;
+				
 		$localfile = md5($remotefile.time()).".zip";
 		$status 	= "Downloading...";
 		
+	//	echo "<script>alert('".$remotefile."')</script>";
 		$result 	= $this->getRemoteFile($remotefile,$localfile);
 			
 		if(!file_exists(e_TEMP.$localfile))
@@ -708,7 +738,15 @@ class e_file
 			echo $status;
 			exit;	
 		}
-
+		else 
+		{
+			$contents = file_get_contents(e_TEMP.$localfile);
+			if($contents == 'false')
+			{
+				echo "<div class='e-alert'>Authentication Error</div>";
+				exit;	
+			}
+		}
 	
 	//	chmod(e_PLUGIN,0777);
 		chmod(e_TEMP.$localfile,0755);
@@ -719,13 +757,15 @@ class e_file
 		$unarc 		= ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_TEMP, PCLZIP_OPT_SET_CHMOD, 0755)); // Store in TEMP first. 
 		$dir 		= $this->getRootFolder($unarc);	
 		$destpath 	= ($type == 'theme') ? e_THEME : e_PLUGIN;
+		$typeDiz 	= ucfirst($type);
 		
 		@copy(e_TEMP.$localfile,e_BACKUP.$dir.".zip"); // Make a Backup in the system folder. 
 		
 		if($dir && is_dir($destpath.$dir))
 		{
-			$alert = $tp->toJS("Theme Already Installed".$destpath.$dir);
+			$alert = $tp->toJS(ucfirst($type)." Already Installed".$destpath.$dir);
 			echo "<script>alert('".$alert."')</script>";
+			echo "Already Installed";
 			@unlink(e_TEMP.$localfile);
 			exit;	
 		}
@@ -735,7 +775,7 @@ class e_file
 			$status = "Unzipping...";
 			if(!rename(e_TEMP.$dir,$destpath.$dir))
 			{
-				$alert = $tp->toJS("Couldn't Move Theme to Theme Folder");
+				$alert = $tp->toJS("Couldn't Move ".$typeDiz." to ".$typeDiz." Folder");
 				echo "<script>alert('".$alert."')</script>";
 				@unlink(e_TEMP.$localfile);
 				exit;	
@@ -746,7 +786,7 @@ class e_file
 			
 		//	$dir 		= basename($unarc[0]['filename']);
 		//	$plugPath	= preg_replace("/[^a-z0-9-\._]/", "-", strtolower($dir));	
-			$status = ADMIN_TRUE_ICON;			
+			$status = "Done"; // ADMIN_TRUE_ICON;			
 			
 		}
 	// 	elseif(already_a_directory
