@@ -138,7 +138,7 @@ class fb_category_ui extends e_admin_ui
 		if(!varset($new_data['fb_category_template']))
 		{
 			$new_data['fb_category_template'] = 'default';
-		}var_dump($new_data);
+		}
 		return $new_data;
 	}
 	
