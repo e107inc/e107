@@ -1,5 +1,12 @@
 /*  */
-body 						{ padding-top: 75px; padding-bottom: 40px; }
+body 						{ padding-bottom: 40px; }
+
+@media (min-width: 1000px){ 
+	
+body						{ padding-top: 75px;  }
+
+} 
+
 .well 						{ padding:10px; }
 footer						{ padding:60px }
 
