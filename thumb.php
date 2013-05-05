@@ -298,9 +298,9 @@ class e_thumbpage
 
 	public function sendHeaders($thumbnfo)
 	{
-		if(headers_sent())
+		if(headers_sent($filename, $linenum))
 		{
-			echo 'Headers already sent! ';
+			echo 'Headers already sent in '.$filename.' on line '.$linenum;
 			exit;
 		}
 
