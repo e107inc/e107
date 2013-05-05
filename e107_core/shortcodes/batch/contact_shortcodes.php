@@ -90,7 +90,7 @@ class contact_shortcodes extends e_shortcode
 	
 	function sc_contact_name($parm='')
 	{
-		return "<input type='text' id='contactName' title='Your full name' name='author_name' required='required' size='30' class='tbox' value=\"".varset($_POST['author_name'])."\" />";	
+		return "<input type='text' style='max-width:99%'  id='contactName' title='Your full name' name='author_name' required='required' size='30' class='tbox' value=\"".varset($_POST['author_name'])."\" />";	
 		
 	}
 
@@ -98,14 +98,14 @@ class contact_shortcodes extends e_shortcode
 
 	function sc_contact_email($parm='')
 	{
-		return "<input type='email' id='contactEmail' title='a valid email address' name='email_send' required='required' size='30' class='tbox' value='".(vartrue($_POST['email_send']) ? $_POST['email_send'] : USEREMAIL)."' />";
+		return "<input type='email' style='max-width:99%'  id='contactEmail' title='a valid email address' name='email_send' required='required' size='30' class='tbox' value='".(vartrue($_POST['email_send']) ? $_POST['email_send'] : USEREMAIL)."' />";
 	}
 	
 	
 	
 	function sc_contact_subject($parm='')
 	{
-		return "<input type='text' title='the subject of your enquiry' name='subject' required='required' size='30' class='tbox' value=\"".varset($_POST['subject'])."\" />";			
+		return "<input type='text' style='max-width:99%' title='the subject of your enquiry' name='subject' required='required' size='30' class='tbox' value=\"".varset($_POST['subject'])."\" />";			
 	}
 	
 	
@@ -120,7 +120,7 @@ class contact_shortcodes extends e_shortcode
 			$size = 'input-xxlarge';	
 		}
 		
-		return "<textarea cols='{$cols}' id='contactBody' rows='{$rows}' name='body' required='required' class='tbox {$size}'>".stripslashes(varset($_POST['body']))."</textarea>";	
+		return "<textarea cols='{$cols}' style='max-width:99%'  id='contactBody' rows='{$rows}' name='body' required='required' class='tbox {$size}'>".stripslashes(varset($_POST['body']))."</textarea>";	
 	}
 	
 	

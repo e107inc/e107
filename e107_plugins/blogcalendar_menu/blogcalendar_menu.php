@@ -197,9 +197,9 @@ if(false === $cached)
 		}
 		
 		$month_selector .= "</select></div>";		
-			
-		
-		$menu = "<div class='blogcalendar-block' style='text-align: center;'><table class='blogcalendar-table' border='0' cellspacing='7'>";
+			    
+		$menu = "<div class='blogcalendar-block' style='text-align: center; max-width: 100%; overflow: hidden;'>
+		<table class='blogcalendar-table' border='0' cellspacing='7' cellpadding='0'>";
 		$menu .= "<tr><td class='blogcalendar-month-selector'>".$month_selector;
 		$menu .= "<div class='blogcalendar-day-selector' style='text-align:center'>".calendar($req_day, $req_month, $req_year, $day_links, $pref['blogcal_ws'])."</div>";
 		$menu .= "<div class='forumheader blogcalendar-archive-link' style='text-align: center; margin-top:2px;'><span class='smalltext'><a class='blogcalendar-archive-link' href='$prefix/archive.php'>".BLOGCAL_L2."</a></span></div></td></tr>";
