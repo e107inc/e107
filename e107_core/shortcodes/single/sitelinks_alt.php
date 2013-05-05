@@ -21,7 +21,7 @@ class sitelinks_alt
 		
 		$params = explode('+', $parm);
 		
-		if (isset($params[0]) && $params[0] && $params[0] != 'no_icons' && $params[0] != 'default')
+		if (vartrue($params[0]) && ($params[0] != 'no_icons') && ($params[0] != 'default'))
 		{
 			$icon = $params[0];
 		}
@@ -58,6 +58,7 @@ class sitelinks_alt
 		foreach ($linklist['head_menu'] as $lk)
 		{
 			$lk['link_url'] = $tp->replaceConstants($lk['link_url'], TRUE, TRUE);
+			
 			if ($params[0] == 'no_icons')
 			{
 				$link_icon = 'no_icons';
@@ -170,6 +171,8 @@ class sitelinks_alt
 		
 		function render_sub($linklist, $id, $params, $icon)
 		{
+			$tp = e107::getParser();
+			
 			$text = "<div id='l_".$id."' class='menu' onmouseover=\"menuMouseover(event)\">";
 			foreach ($linklist['sub_'.$id] as $sub)
 			{
@@ -193,12 +196,20 @@ class sitelinks_alt
 				}
 				else
 				{
-					$sub_icon = "<img src='";
-					$sub_icon .= ($sub['link_button']) ? e_IMAGE.'icons/'.$sub['link_button'] : $icon;
-					$sub_icon .= "' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />";
+					
+					if(vartrue($sub['link_button']))
+					{
+						$icon_url =  ($sub['link_button'][0] == "{") ? $tp->replaceConstants($sub['link_button'],'abs') : e_IMAGE_ABS.'icons/'.$sub['link_button'];
+						$sub_icon = "<img src='".$icon_url."' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />";
+					}
+					else
+					{
+						$sub_icon = '';
+					}
+				
 				}
-				if (isset($linklist['sub_'.$sub['link_id']]))
-				{ // Has Children.
+				if (isset($linklist['sub_'.$sub['link_id']])) // Has Children.
+				{ 
 					$sub_ids[] = $sub['link_id'];
 					$text .= self::adnav_main($subname, $sub['link_url'], $sub_icon, 'l_'.$sub['link_id'], $params, $sub['link_open']);
 				}
