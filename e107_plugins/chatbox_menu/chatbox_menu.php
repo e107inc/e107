@@ -284,7 +284,7 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 	define("CB_MOD", check_class($pref['cb_mod']));
 
 	$qry = "
-	SELECT c.*, u.user_name FROM #chatbox AS c
+	SELECT c.*, u.user_name, u.user_image FROM #chatbox AS c
 	LEFT JOIN #user AS u ON SUBSTRING_INDEX(c.cb_nick,'.',1) = u.user_id
 	ORDER BY c.cb_datestamp DESC LIMIT 0, ".intval($chatbox_posts);
 
