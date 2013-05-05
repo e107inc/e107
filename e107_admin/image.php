@@ -222,11 +222,23 @@ class media_cat_ui extends e_admin_ui
 				}		
 			}
 		}
-		if(!varset($this->fields['media_cat_owner']['writeParms']))
-		{
-			$this->fields['media_cat_owner']['writeParms'] = array('', '');
-		}
+		
+		
 	}
+
+
+	public function createPage()
+	{
+		if(!count($this->fields['media_cat_owner']['writeParms'])) 
+		{
+			e107::getMessage()->addInfo("Category creation not available.");
+			return;
+		}
+		
+		return $this->getUI()->getCreate();	
+	}
+
+
 	
 	public function beforeCreate($new_data)
 	{

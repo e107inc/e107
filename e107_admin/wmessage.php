@@ -187,7 +187,13 @@ if ($action == "create" || $action == "edit")
 		</tr>
 		<tr>
 			<td>".WMLAN_04."</td>
-			<td><textarea class='e-wysiwyg tbox' id='data' name='data' cols='70' rows='15' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this)'>".$tp->toForm(vartrue($row['gen_chardata']))."</textarea></td>
+			<td>";
+			
+		$text .= $frm->bbarea('data',$row['gen_chardata']);
+		
+	//	$text .= "<textarea class='e-wysiwyg tbox' id='data' name='data' cols='70' rows='15' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this)'>".$tp->toForm(vartrue($row['gen_chardata']))."</textarea>";
+		
+		$text .= "</td>
 		</tr>";
 
 	//	$text .= display_help("helpb", "admin"); //XXX Serves as BC Check 

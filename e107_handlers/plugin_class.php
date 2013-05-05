@@ -2614,18 +2614,61 @@ class e107plugin
 		return implode(",", $p_addons);
 	}
 
-	function checkAddon($plugin_path, $e_xxx)
-	{ // Return 0 = OK, 1 = Fail, 2 = inaccessible
+
+	/**
+	 * Check Plugin Addon for errors. 
+	 * @return array or numeric. 0 = OK, 1 = Fail, 2 = inaccessible
+	 */
+	function checkAddon($plugin_path, $e_xxx) 
+	{ 
+	
 		if (is_readable(e_PLUGIN.$plugin_path."/".$e_xxx.".php"))
 		{
-			$file_text = file_get_contents(e_PLUGIN.$plugin_path."/".$e_xxx.".php");
-			if ((substr($file_text, 0, 5) != '<'.'?php') || ((substr($file_text, -2, 2) != '?'.'>') && (strrpos($file_text, '?'.'>') !== FALSE)))
-			{
-				return 1;
-			}
-			return 0;
+			$content = file_get_contents(e_PLUGIN.$plugin_path."/".$e_xxx.".php");	
 		}
-		return 2;
+		else 
+		{
+			return 2;
+		}
+	
+		if(substr($e_xxx, - 4, 4) == '_sql')
+		{
+			
+			if(strpos($content,'INSERT INTO')!==false)
+			{
+				return array('type'=> 'error', 'msg'=>"INSERT sql commands are not permitted here. Use a ".$plugin_path."_setup.php file instead.");	
+			}
+			else 
+			{
+				return 0;	
+			}
+		}
+
+		// Generic markup check
+		if ((substr($content, 0, 5) != '<'.'?php') || ((substr($content, -2, 2) != '?'.'>') && (strrpos($content, '?'.'>') !== FALSE)))
+		{
+			return 1;
+		}
+
+		
+		if($e_xxx == 'e_meta' && strpos($content,'<script')!==false)
+		{
+			return array('type'=> 'warning', 'msg'=>"Contains script tags. Use e_header.php with the e107::js() function instead.");		
+		}
+		
+				
+		if($e_xxx == 'e_latest' && strpos($content,'<div')!==false)
+		{
+			return array('type'=> 'warning', 'msg'=>"Using deprecated method. See e_latest.php in the forum plugin for an example.");	
+		}
+
+		if($e_xxx == 'e_status' && strpos($content,'<div')!==false)
+		{
+			return array('type'=> 'warning', 'msg'=>"Using deprecated method. See e_status.php in the forum plugin for an example.");	
+		}
+					
+		
+		return 0;
 	}
 
 	// Entry point to read plugin configuration data
