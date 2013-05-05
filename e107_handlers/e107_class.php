@@ -596,16 +596,20 @@ class e107
 	 * Replaces all $mySQL(*) globals
 	 * Example: <code>$e107->getMySQLConfig('prefix');</code>
 	 *
-	 * @param string $for prefix|server|user|password|defaultdb
-	 * @return string
+	 * @param string $for prefix|server|user|password|defaultdb - leave blank for full array. 
+	 * @return string or array
 	 */
-	function getMySQLConfig($for)
+	function getMySQLConfig($for='')
 	{
 		$key = 'mySQL'.$for;
 		$self = self::getInstance();
-		return (isset($self->e107_config_mysql_info[$key]) ? $self->e107_config_mysql_info[$key] : '');
 		
-	//	return (isset($this->e107_config_mysql_info[$key]) ? $this->e107_config_mysql_info[$key] : '');
+		if($for == '')
+		{
+			return 	$self->e107_config_mysql_info;
+		}
+		
+		return (isset($self->e107_config_mysql_info[$key]) ? $self->e107_config_mysql_info[$key] : '');
 	}
 	
 

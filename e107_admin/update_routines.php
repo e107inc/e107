@@ -135,6 +135,199 @@ if (!$dont_check_update)
 
 
 
+// New in v2.x  ------------------------------------------------
+
+class e107Update
+{
+	var $core = array();
+	var $updates = 0;
+	var $disabled = 0;
+	
+	
+	function __construct($core=null)
+	{
+		$mes = e107::getMessage();
+		
+		$this->core = $core;
+
+		if(varset($_POST['update_core']) && is_array($_POST['update_core']))
+		{
+			$func = key($_POST['update_core']);
+			$message = $this->updateCore($func);
+		}	
+		
+		if(varset($_POST['update']) && is_array($_POST['update'])) // Do plugin updates
+		{ 
+			$func = key($_POST['update']);
+			$this->updatePlugin($func);
+		}	
+			
+		if(vartrue($message))
+		{
+			$mes->addSuccess($message);	
+		}
+		
+		$this->renderForm();	
+	}
+	
+	
+	
+	
+	function updateCore($func='')
+	{
+		$mes = e107::getMessage();
+		
+	//	foreach($this->core as $func => $data)
+	//	{
+			if(function_exists('update_'.$func)) // Legacy Method. 
+			{
+				$installed = call_user_func("update_".$func);
+				//?! (LAN_UPDATE == $_POST[$func])
+				if(varsettrue($_POST['update_core'][$func]) && !$installed)
+				{
+					if(function_exists("update_".$func))
+					{
+						$message = LAN_UPDATE_7." ".$data['title'];
+						$error = call_user_func("update_".$func, "do");
+						
+						if($error != '')
+						{
+							$mes->add($message, E_MESSAGE_ERROR);
+							$mes->add($error, E_MESSAGE_ERROR);
+						}
+						else
+						{
+							 $mes->add($message, E_MESSAGE_SUCCESS);
+						}
+					}
+				}	
+			}
+			else 
+			{
+				$mes->addDebug("could run 'update_".$func);
+			}
+		
+		//}
+		
+	}
+	
+	
+	
+	function updatePlugin($path)
+	{
+		 e107::getPlugin()->install_plugin_xml($path, 'upgrade');
+	}
+	
+	
+	
+	function plugins()
+	{
+		if(!$list = e107::getPlugin()->updateRequired())
+		{
+			return;
+		}
+		
+		$frm = e107::getForm();
+		
+		$text = "";
+		foreach($list as $path=>$val)
+		{
+			$text .= "<tr>
+					<td>".$val['@attributes']['name']."</td>
+					<td>".$frm->admin_button('update['.$path.']', LAN_UPDATE, 'warning', '', 'disabled='.$this->disabled)."</td>
+					</tr>";			
+		}
+		
+		return $text;	
+	}
+	
+	
+	
+	
+	function core()
+	{
+		$frm = e107::getForm();
+		$mes = e107::getMessage();
+		
+		$text = "";
+		
+		foreach($this->core as $func => $data)
+		{
+			if(function_exists("update_".$func))
+			{
+				$text .= "<tr><td>".$data['title']."</td>";
+				
+				
+				
+				if(call_user_func("update_".$func))
+				{
+					$text .= "<td>".ADMIN_TRUE_ICON."</td>";
+				}
+				else
+				{
+					if(vartrue($data['message']))
+					{
+						$mes->addInfo($data['message']);	
+					}
+					
+					$this->updates ++;
+					
+					$text .= "<td>".$frm->admin_button('update_core['.$func.']', LAN_UPDATE, 'warning', '', "id=e-{$func}&disabled=".$this->disabled)."</td>";
+					if($data['master'] == true)
+					{
+						$this->disabled = 1;	
+					}
+				}
+				$text .= "</tr>\n";
+			}	
+		}
+		
+		return $text;
+	}
+	
+	
+	
+	function renderForm()
+	{
+		$ns = e107::getRender();
+		$mes = e107::getMessage();
+		
+		$caption = LAN_UPDATE;
+		$text = "
+		<form method='post' action='".e_SELF."'>
+			<fieldset id='core-e107-update'>
+			<legend>{$caption}</legend>
+				<table class='table adminlist'>
+					<colgroup>
+						<col style='width: 60%' />
+						<col style='width: 40%' />
+					</colgroup>
+					<thead>
+						<tr>
+							<th>".LAN_UPDATE_55."</th>
+							<th class='last'>".LAN_UPDATE_2."</th>
+						</tr>
+					</thead>
+					<tbody>
+		";
+	
+		$text .= $this->core();
+		$text .= $this->plugins();
+	
+		$text .= "
+					</tbody>
+				</table>
+			</fieldset>
+		</form>
+			";
+	
+	
+		$ns->tablerender("Updates",$mes->render() . $text);
+	
+	}
+	
+
+}
 
 /**
  *	Master routine to call to check for updates
