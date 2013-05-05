@@ -64,74 +64,77 @@ $emessage='';
 
 
 // FIX - using generic sc names is affecting old installs/templates and global wrappers (e.g. sc_style[USERNAME])
-class chatbox_shortcodes extends e_shortcode
+if(!class_exists('chatbox_shortcodes'))
 {
-	function sc_cb_username($parm='')
+	class chatbox_shortcodes extends e_shortcode
 	{
-		list($cb_uid, $cb_nick) = explode(".", $this->var['cb_nick'], 2);
-		if($this->var['user_name'])
+		
+		function sc_username($parm='')
 		{
-			$cb_nick = "<a href='".e_HTTP."user.php?id.{$cb_uid}'>".$this->var['user_name']."</a>";
-		}
-		else
-		{
-			$cb_nick = $tp -> toHTML($cb_nick,FALSE,'USER_TITLE, emotes_off, no_make_clickable');
-			$cb_nick = str_replace("Anonymous", LAN_ANONYMOUS, $cb_nick);
-		}
-		
-		return $cb_nick;	
-	}	
-	
-	function sc_cb_timedate($parm='')
-	{
-		return  e107::getDate()->convert_date($this->var['cb_datestamp'], "relative");		
-	}
-		
-
-	function sc_cb_message($parm = '')
-	{
-		if($this->var['cb_blocked'])
-		{
-			return CHATBOX_L6;	
-		}
-		
-		$pref 			= e107::getPref();
-		$emotes_active 	= $pref['cb_emote'] ? 'USER_BODY, emotes_on' : 'USER_BODY, emotes_off';
-		
-		list($cb_uid, $cb_nick) = explode(".", $this->var['cb_nick'], 2);
-		
-		$cb_message = e107::getParser()->toHTML($this->var['cb_message'], false, $emotes_active, $cb_uid, $pref['menu_wordwrap']);
-
-		return $cb_message;
-
-		$replace[0] = "["; $replace[1] = "]";
-		$search[0] = "&lsqb;"; $search[1] =  "&rsqb;";
-		$cb_message = str_replace($search, $replace, $cb_message);	
-	}
-
-	function sc_cb_avatar($parm='')
-	{
-		return e107::getParser()->parseTemplate("{USER_AVATAR=".vartrue($this->var['user_image'])."}");
-	}
-	
-	function sc_cb_bullet($parm = '')
-	{
-		$bullet = "";
-		
-		if(defined('BULLET'))
-		{
-			$bullet = '<img src="'.THEME_ABS.'images/'.BULLET.'" alt="" class="icon" />';
-		}
-		elseif(file_exists(THEME.'images/bullet2.gif'))
-		{
-			$bullet = '<img src="'.THEME_ABS.'images/bullet2.gif" alt="" class="icon" />';
+			list($cb_uid, $cb_nick) = explode(".", $this->var['cb_nick'], 2);
+			if($this->var['user_name'])
+			{
+				$cb_nick = "<a href='".e_HTTP."user.php?id.{$cb_uid}'>".$this->var['user_name']."</a>";
+			}
+			else
+			{
+				$cb_nick = $tp -> toHTML($cb_nick,FALSE,'USER_TITLE, emotes_off, no_make_clickable');
+				$cb_nick = str_replace("Anonymous", LAN_ANONYMOUS, $cb_nick);
+			}
+			
+			return $cb_nick;	
 		}	
 		
-		return $bullet;
+		function sc_timedate($parm='')
+		{
+			return  e107::getDate()->convert_date($this->var['cb_datestamp'], "relative");		
+		}
+			
+	
+		function sc_message($parm = '')
+		{
+			if($this->var['cb_blocked'])
+			{
+				return CHATBOX_L6;	
+			}
+			
+			$pref 			= e107::getPref();
+			$emotes_active 	= $pref['cb_emote'] ? 'USER_BODY, emotes_on' : 'USER_BODY, emotes_off';
+			
+			list($cb_uid, $cb_nick) = explode(".", $this->var['cb_nick'], 2);
+			
+			$cb_message = e107::getParser()->toHTML($this->var['cb_message'], false, $emotes_active, $cb_uid, $pref['menu_wordwrap']);
+	
+			return $cb_message;
+	
+			$replace[0] = "["; $replace[1] = "]";
+			$search[0] = "&lsqb;"; $search[1] =  "&rsqb;";
+			$cb_message = str_replace($search, $replace, $cb_message);	
+		}
+	
+		function sc_cb_avatar($parm='')
+		{
+			return e107::getParser()->parseTemplate("{USER_AVATAR=".vartrue($this->var['user_image'])."}");
+		}
+		
+		function sc_cb_bullet($parm = '')
+		{
+			$bullet = "";
+			
+			if(defined('BULLET'))
+			{
+				$bullet = '<img src="'.THEME_ABS.'images/'.BULLET.'" alt="" class="icon" />';
+			}
+			elseif(file_exists(THEME.'images/bullet2.gif'))
+			{
+				$bullet = '<img src="'.THEME_ABS.'images/bullet2.gif" alt="" class="icon" />';
+			}	
+			
+			return $bullet;
+		}
+	
 	}
-
 }
-
 
 
 
@@ -289,7 +292,6 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 	ORDER BY c.cb_datestamp DESC LIMIT 0, ".intval($chatbox_posts);
 
 	global $CHATBOXSTYLE;
-
 	
 	if($CHATBOXSTYLE)
 	{
@@ -303,9 +305,9 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 		// FIXME - move to template
 		$CHATBOX_TEMPLATE['start'] 	= "<ul class='unstyled'>";
 		$CHATBOX_TEMPLATE['item'] 	= "<li>
-										{CB_AVATAR} <b>{CB_USERNAME}</b>&nbsp;
-										<small class='muted smalltext'>{CB_TIMEDATE}</small><br />
-										<p style='margin-left:50px'>{CB_MESSAGE}</p>
+										{CB_AVATAR} <b>{USERNAME}</b>&nbsp;
+										<small class='muted smalltext'>{TIMEDATE}</small><br />
+										<p style='margin-left:50px'>{MESSAGE}</p>
 										</li>\n";
 										
 		$CHATBOX_TEMPLATE['end'] 	= "</ul>";
