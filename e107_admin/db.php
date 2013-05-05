@@ -52,11 +52,7 @@ if(isset($_POST['db_execute']))
 	}
 }
 
-if(isset($_POST['db_update']) || varset($_GET['mode'])=='db_update')
-{
-	header("location: ".e_ADMIN."e107_update.php");
-	exit();
-}
+
 
 
 
@@ -117,11 +113,11 @@ class system_tools
 			'plugin_scan'			=> array('diz'=>DBLAN_28, 'label'=> DBLAN_29),
 			'pref_editor'			=> array('diz'=>DBLAN_19, 'label'=> DBLAN_20),
 		//	'backup_core'			=> array('diz'=>DBLAN_8, 'label'=> DBLAN_9),
-			'verify_sql_record'		=> array('diz'=>DBLAN_35, 'label'=> DBLAN_36),
+		//	'verify_sql_record'		=> array('diz'=>DBLAN_35, 'label'=> DBLAN_36),
 			'importForm'			=> array('diz'=>DBLAN_59, 'label'=> DBLAN_59),
 			'exportForm'			=> array('diz'=>DBLAN_58, 'label'=> DBLAN_58),
 			'sc_override_scan'		=> array('diz'=>DBLAN_55, 'label'=> DBLAN_56),
-			'convert_to_utf8'		=> array('diz'=>'Convert Database to UTF-8','label'=>'Convert DB to UTF-8'),
+			'convert_to_utf8'		=> array('diz'=>'Check Database Charset','label'=>'Check Charset'),
 			'correct_perms'			=> array('diz'=>'Correct File and Directory permissions','label'=>'Correct Perms')
 		);
 
@@ -151,18 +147,25 @@ class system_tools
 			return;
 		}
 		
-		if(isset($_POST['verify_sql_record']) || varset($_GET['mode'])=='verify_sql_record' || isset($_POST['check_verify_sql_record']) || isset($_POST['delete_verify_sql_record']))
-		{
+	//	if(isset($_POST['verify_sql_record']) || varset($_GET['mode'])=='verify_sql_record' || isset($_POST['check_verify_sql_record']) || isset($_POST['delete_verify_sql_record']))
+	//	{
 		
 			 //$this->verify_sql_record(); // - currently performed in db_verify_class.php
-		}
+	//	}
 
 		if(isset($_POST['importForm']) ||  $_GET['mode']=='importForm')
 		{
 			$this->importForm();
 		}
-
-
+		
+		if(isset($_POST['db_update']) || varset($_GET['mode'])=='db_update') // Requires further testing. 
+		{
+		//	header("location: ".e_ADMIN."e107_update.php");
+			require_once(e_ADMIN."update_routines.php");
+			new e107Update($dbupdate);
+			return;
+		}
+		
 		if(isset($_POST['convert_to_utf8']) ||  $_GET['mode']=='convert_to_utf8')
 		{
 			$this->convertUTF8Form();
@@ -243,116 +246,187 @@ class system_tools
 
 	private function convertUTF8Form()
 	{
-		$mes = e107::getMessage();
-		$frm = e107::getForm();
-		//TODO a function to call the e107_config information in e107_class.php.
-		require(e_BASE."e107_config.php");
-		$dbtable = $mySQLdefaultdb;
+		$mes 	= e107::getMessage();
+		$frm 	= e107::getForm();
+		$config = e107::getMySQLConfig();
+		$sql 	= e107::getDb();
+		
+		$sql->gen('SHOW TABLE STATUS WHERE Name LIKE "'.$config['mySQLprefix'].'%" ');
+		
+		
+		$text = "<table class='table adminlist'>
+							<colgroup>
+								<col style='width: auto' />
+								<col style='width: auto' />
+								<col style='width: auto' />
+								<col style='width: auto' />
+							</colgroup>
+							<thead>
+								<tr>
+									
+									<th>Table</th>
+									<th>Engine</th>
+									<th>Collation</th>
+									<th>Status</th>
+								</tr>
+							</thead>
+							<tbody>";
+		
+		
+		
+		$invalidCollations = false;	
+		while($row = $sql->fetch())
+		{
+				$text .= "<tr>
+					<td>".$row['Name']."</td>
+					<td>".$row['Engine']."</td>
+					<td>".$row['Collation']."</td>
+					<td>".(($row['Collation'] == 'utf8_general_ci') ? ADMIN_TRUE_ICON : ADMIN_FALSE_ICON)."</td>
+					</tr>";
+			//	 print_a($row);
+				
+				if($row['Collation'] != 'utf8_general_ci')
+				{
+					$invalidCollations = true;	
+				}
 
-		//TODO LAN
-		$message = '
-			This function will permanently modify all tables in your database. ('.$mySQLdefaultdb.')<br />
-			It is <b>HIGHLY</b> recommended that you backup your database first.<br />
-			If possible use a copy of your database.<br />
-			Do not forget to purge unnecessary input - e.g. old chatbox messages, pm, …<br />
-			as well as to set the maintenance flag to main admins only.<br />
-			<br />
-			Be sure to click the “Convert Database” button only once.<br />
-			The conversion process can take up to one minute or much much more depending on the size of your database.<br />
-			<br />
-			Known problems (list non-exhaustive):
-			<ul>
-			<li>The MySQL user needs privileges to ALTER the database - this is mandatory.</li>
-			<li>The conversion does not work with serialised arrays.<br />
-			<strong>Be sure</strong> you followed all steps of the upgrade process first.</li>
-			<li>It should work without troubles for databases of sites using only UTF-8 charset. Probably not with other charsets.</li>
-			<li>The function uses the information_schema database for now.</li>
-			</ul>
-			';
+		}
+		
+		$text .= "</tbody></table>";
 
-		$mes->add($message, E_MESSAGE_WARNING);
 
-		$text = "
-			<form method='post' action='".e_SELF."' id='linkform'>
-				<fieldset id='core-db-utf8-convert'>
-					<legend class='e-hideme'>"."Convert Database"."</legend>
-					<div class='buttons-bar center'>
-						".$frm->admin_button('perform_utf8_convert', "Convert Database")."
-					</div>
-				</fieldset>
-			</form>";
+		if($invalidCollations == true)
+		{
+			//TODO LAN
+				$message = '
+				This function will permanently modify all tables in your database. ('.$config['mySQLdefaultdb'].')<br />
+				It is <b>HIGHLY</b> recommended that you first backup your database and switch your site into maintenance mode. 
+				<br />
+				<br />
+				Please note:
+				<ul>
+				<li>The conversion process can take up to one minute or much much more depending on the size of your database.</li>
+				<li>The conversion does not work with serialized arrays.</li>
+				<li>Be sure that you have followed all steps of the upgrade process first.</li>
+				</ul>
+				';
+	
+			$mes->add($message, E_MESSAGE_WARNING);
+	
+			$text .= "
+				<form method='post' action='".e_SELF."' id='linkform'>
+					<fieldset id='core-db-utf8-convert'>
+						<legend class='e-hideme'>"."Convert Database"."</legend>
+						<div class='buttons-bar center'>
+							".$frm->admin_button('perform_utf8_convert', "Convert non-UTF8 Tables",false,"Convert non-UTF8 Tables",'class=btn-success&data-loading-text=Please wait...')."
+						</div>
+					</fieldset>
+				</form>";
+			
+		}
+		else 
+		{
+			$mes->addSuccess("Your tables are using the correct character set.");	
+		}
 
-		e107::getRender()->tablerender(DBLAN_10.SEP."Convert Database to UTF-8", $mes->render().$text);
+
+		e107::getRender()->tablerender(DBLAN_10.SEP."Check Charset".SEP.$config['mySQLdefaultdb'], $mes->render().$text);
 
 	}
 
 	private function perform_utf8_convert()
 	{
-		require(e_BASE."e107_config.php");
-
-		$dbtable = $mySQLdefaultdb;
+		$config = e107::getMySQLConfig();
+		$dbtable = $config['mySQLdefaultdb'];
 
 		//TODO Add a check to be sure the database is not already utf-8.
 		// yep, needs more methods - possibly a class in e107_handler
 
-		$sql = e107::getDb();
+		$sql = e107::getDb('utf8-convert');
 		$mes = e107::getMessage();
 
 		$ERROR = FALSE;
 
-		if(!mysql_query("USE information_schema;"))
-		{
-			$mes->add("Couldn't read information_schema", E_MESSAGE_ERROR);
-			return;
-		}
-
+	//	if(!$sql->gen("USE information_schema;"))
+	//	{
+	//		$mes->add("Couldn't read information_schema", E_MESSAGE_ERROR);
+	//		return;
+	//	}
+		
+	
 		$queries = array();
-		$queries[] = $this->getQueries("SELECT CONCAT('ALTER TABLE ', table_name, ' MODIFY ', column_name, ' ', REPLACE(column_type, 'char', 'binary'), ';') FROM columns WHERE table_schema = '".$dbtable."' and data_type LIKE '%char%';");
-		$queries[] = $this->getQueries("SELECT CONCAT('ALTER TABLE ', table_name, ' MODIFY ', column_name, ' ', REPLACE(column_type, 'text', 'blob'), ';') FROM columns WHERE table_schema = '".$dbtable."' and data_type LIKE '%text%';");
+		$queries[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', REPLACE(column_type, 'char', 'binary'), ';') FROM information_schema.columns WHERE TABLE_SCHEMA = '".$dbtable."' AND TABLE_NAME LIKE '".$config['mySQLprefix']."%' AND  COLLATION_NAME != 'utf8_general_ci'  and data_type LIKE '%char%';");
+		$queries[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', REPLACE(column_type, 'text', 'blob'), ';') FROM information_schema.columns WHERE TABLE_SCHEMA = '".$dbtable."' AND TABLE_NAME LIKE '".$config['mySQLprefix']."%' AND  COLLATION_NAME != 'utf8_general_ci' and data_type LIKE '%text%';");
 
 		$queries2 = array();
-		$queries2[] = $this->getQueries("SELECT CONCAT('ALTER TABLE ', table_name, ' MODIFY ', column_name, ' ', column_type, ' CHARACTER SET utf8;') FROM columns WHERE table_schema = '".$dbtable."' and data_type LIKE '%char%';");
-		$queries2[] = $this->getQueries("SELECT CONCAT('ALTER TABLE ', table_name, ' MODIFY ', column_name, ' ', column_type, ' CHARACTER SET utf8;') FROM columns WHERE table_schema = '".$dbtable."' and data_type LIKE '%text%';");
+		$queries2[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', column_type, ' CHARACTER SET utf8;') FROM information_schema.columns WHERE TABLE_SCHEMA ='".$dbtable."' AND TABLE_NAME LIKE '".$config['mySQLprefix']."%'  AND COLLATION_NAME != 'utf8_general_ci' and data_type LIKE '%char%';");
+		$queries2[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', column_type, ' CHARACTER SET utf8;') FROM information_schema.columns WHERE TABLE_SCHEMA = '".$dbtable."' AND TABLE_NAME LIKE '".$config['mySQLprefix']."%' AND  COLLATION_NAME != 'utf8_general_ci' and data_type LIKE '%text%';");
 
 
-		mysql_query("USE ".$dbtable);
+	//	$sql->gen("USE ".$dbtable);
+		
+		
+	//	print_a($queries2);
+	//	echo $mes->render();
+	//	return;
 
+	
+		// Convert Text tables to Binary. 
 		foreach($queries as $qry)
 		{
+					
 			foreach($qry as $q)
 			{
 				if(!$sql->db_Query($q))
 				{
-					$mes->add($q, E_MESSAGE_ERROR);
+					$mes->addError($q);
 					$ERROR = TRUE;
+				}
+				else
+				{
+					$mes->addDebug($q);	
 				}
 			}
 		}
 
 		//------------
 
-		$result = mysql_list_tables($dbtable);
-		while ($row = mysql_fetch_array($result, MYSQL_NUM))
+		// Convert Table Fields to utf8
+		$sql2 = e107::getDb('sql2');
+		
+		$sql->gen('SHOW TABLE STATUS WHERE Collation != "utf8_general_ci" ');
+		while ($row = $sql->fetch())
 		{
-   			$table = $row[0];
-			$tab_query = "ALTER TABLE ".$table." charset=utf8; ";
-			if(!$sql->db_Query($tab_query))
+   			$table = $row['Name'];
+			$tab_query = "ALTER TABLE ".$table."  DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; ";
+
+			//echo "TABQRT= ".$tab_query;
+
+			if(!$sql2->db_Query($tab_query))
 			{
-				$mes->add($tab_query, E_MESSAGE_ERROR);
+				$mes->addError($tab_query);
 				$ERROR = TRUE;
+			}
+			else
+			{
+				$mes->addDebug($tab_query);	
 			}
 		}
 
 		// ---------------
-
+		// Convert Table Fields back to Text/varchar etc. 
 		foreach($queries2 as $qry)
 		{
 			foreach($qry as $q)
 			{
 				if(!$sql->db_Query($q))
 				{
-					$mes->add($q, E_MESSAGE_ERROR);
+					$mes->addError($q);
 					$ERROR = TRUE;
+				}
+				else
+				{
+					$mes->addDebug($q);	
 				}
 			}
 		}
@@ -367,22 +441,40 @@ class system_tools
 		}
 		elseif($ERROR != TRUE)
 		{
-			$message = "Database Converted successfully to UTF-8. <br />
-			Please now add the following line to your e107_config.php file:<br />
-			<b>\$mySQLcharset   = 'utf8';</b>
-			";
+			$message = "Database Converted successfully to UTF-8. ";
+			//$message .= "<br />Please now add the following line to your e107_config.php file:<br /><b>\$mySQLcharset   = 'utf8';</b>";
 
 			$mes->add($message, E_MESSAGE_SUCCESS);
 		}
 
-
+		echo $mes->render();
 	}
 
 	function getQueries($query)
 	{
+		
+		$mes = e107::getMessage();
+		$sql = e107::getDb('utf8-convert');
+		
+		if($sql->gen($query))
+		{
+			while ($row = $sql->fetch(MYSQL_NUM))
+			{
+	   			 $qry[] = $row[0];
+			}
+		}
+		else 
+		{
+			$mes->addError($query);	
+		}
+
+		return $qry;
+		
+		
+		/*
 		if(!$result = mysql_query($query))
 		{
-			$mes->add("Query Failed", E_MESSAGE_ERROR);
+			$mes->addError("Query Failed: ".$query);
 			return;
 		}
 		while ($row = mysql_fetch_array($result, MYSQL_NUM))
@@ -391,6 +483,7 @@ class system_tools
 		}
 
 		return $qry;
+		 * */
 	}
 
 
@@ -485,18 +578,7 @@ class system_tools
 			<a class='btn btn-large pull-left' style='margin-right:10px' href='".e_SELF."?mode=".$key."' title=\"".$val['label']."\">".ADMIN_EXECUTE_ICON."</a>
 			<h4 style='margin-bottom:3px'><a href='".e_SELF."?mode=".$key."' title=\"".$val['label']."\">".$val['label']."</a></h4><small>".$val['diz']."</small>
 			</div>";
-			/*
-			$text .= "<tr>
-						<td>".$val['diz']."</td>
-						<td>
-						<a class='btn btn-large' href='".e_SELF."?mode=".$key."' title=\"".$val['label']."\">".ADMIN_EXECUTE_ICON."</a>
-							".
-					//		$frm->submit_image('db_execute['.$key.']', '1', 'execute', $val['label']).
-						//	$frm->radio('db_execute', $key).$frm->label($val['label'], 'db_execute', $key).
-							"
-						</td>
-					</tr>\n";
-			*/
+		
 		}
 /*
 		$text .= "
@@ -702,7 +784,7 @@ class system_tools
 	 * Optimize SQL
 	 * @return none
 	 */
-	private function optimizesql($mySQLdefaultdb)
+	private function optimizesql($mySQLdefaultdb) //FIXME Use mysql class. 
 	{
 	//	global $mes;
 		$result = mysql_list_tables($mySQLdefaultdb);
@@ -1118,7 +1200,7 @@ function backup_core()
 
 */
 
-
+/*
 function verify_sql_record() // deprecated by db_verify.php ( i think).
 {
 	global  $e107;
@@ -1531,6 +1613,6 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 		$ns->tablerender(DBLAN_10.SEP.DBLAN_50, $mes->render().$text);
 	}
 }
-
+*/
 
 ?>

@@ -924,7 +924,7 @@ class db_verify
 					</colgroup>
 					<thead>
 						<tr>
-							<th class='last'>".$frm->checkbox_toggle('check-all-verify', 'verify_table').LAN_CHECKALL.' | '.LAN_UNCHECKALL."</th>
+							<th class='last'>".$frm->checkbox_toggle('check-all-verify', 'verify_table',false,LAN_CHECKALL.' | '.LAN_UNCHECKALL)."</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -934,7 +934,7 @@ class db_verify
 		{
 			$text .= "
 				<tr>
-					<td>".$frm->checkbox('verify_table[]', $x).$frm->label($x, "verify_table".$x, $x)."</td>
+					<td>".$frm->checkbox('verify_table[]', $x,false,'label='.$x)."</td>
 				</tr>
 			";
 		}

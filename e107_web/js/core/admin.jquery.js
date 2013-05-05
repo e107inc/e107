@@ -123,8 +123,13 @@ $(document).ready(function()
 		
 		$('button[data-loading-text],a[data-loading-text]').on('click', function()
 			{
-				var caption  = $(this).attr('data-loading-text');		
-				$(this).attr('disabled', 'disabled').html(caption);
+				var caption  = $(this).attr('data-loading-text');
+				$(this).removeClass('btn-success');		
+				$(this).html(caption);
+				if($(this).attr('data-disable') == 'true')
+				{	
+					$(this).attr('disabled', 'disabled');
+				}
 				return true;
 			}
 		);

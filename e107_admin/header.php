@@ -468,7 +468,7 @@ echo getAlert();
             
     }
 
-function getAlert($caption)
+function getAlert($caption='')
 {
 	
 	return '<div id="uiAlert" class="alert alert-block alert-success hide fade in" style="box-shadow:0px 15px 8px #000;width:300px;position:absolute;left:40%;right:40%;top:15%;z-index:10000">

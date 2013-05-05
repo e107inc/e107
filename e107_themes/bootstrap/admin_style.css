@@ -397,8 +397,12 @@ i.s-message-debug	{ background-position: -1480px 0; width: 32px; height: 32px;  
 }
 
 tr.e-sort { box-shadow: 0 5px 8px #cccccc; -webkit-box-shadow: 0 5px 8px #cccccc; -moz-box-shadow: 0 5px 8px #cccccc;}
+th label.checkbox { min-height:inherit; } /* Bootstrap Fix but doesn't work */
 
 /* ****************************** ICONS ************************************* */
+
+
+
 
 i.S16 {
     background: url(images/adminicons_16.png) no-repeat top left;
