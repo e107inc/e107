@@ -315,22 +315,6 @@ if($fp_update_prefs)
 $fp = new frontpage($front_page);
 
 
-if(isset($_POST['fp_add_new']))
-{
-	$text = $fp->edit_rule(array('order' => 0, 'class' => e_UC_PUBLIC, 'page' => 'news.php', 'force' => FALSE)); // Display edit form as well
-	$text .= $fp->select_class($fp_settings, FALSE);
-	$ns->tablerender(FRTLAN_PAGE_TITLE." - ".FRTLAN_42, $text);
-}
-elseif(isset($_POST['fp_edit_rule']))
-{
-	$text = $fp->edit_rule($fp_settings[key($_POST['fp_edit_rule'])]); // Display edit form as well
-	$text .= $fp->select_class($fp_settings, FALSE);
-	$ns->tablerender(FRTLAN_PAGE_TITLE." - ".FRTLAN_46, $text);
-}
-else
-{ // Just show existing rules
-	$ns->tablerender(FRTLAN_PAGE_TITLE." - ".FRTLAN_13, $mes->render().$fp->select_class($fp_settings, TRUE));
-}
 
 
 
@@ -343,6 +327,31 @@ class frontpage
 	{
 		$this->frm = e107::getForm();
 		$this->frontPage = $fp;
+		
+		$ns = e107::getRender();
+		$mes = e107::getMessage();
+		
+		global $fp_settings;
+		
+		
+		if(vartrue($_GET['mode']) == 'create')
+		{
+			$text = $this->edit_rule(array('order' => 0, 'class' => e_UC_PUBLIC, 'page' => 'news.php', 'force' => FALSE)); // Display edit form as well
+		//	$text .= $this->select_class($fp_settings, FALSE);
+			$ns->tablerender(FRTLAN_PAGE_TITLE.SEP.FRTLAN_42, $text);
+		}
+		elseif(vartrue($_GET['id']))
+		{
+			$key = intval($_GET['id']);
+			$text = $this->edit_rule($fp_settings[$key]); // Display edit form as well
+		//	$text .= $this->select_class($fp_settings, FALSE);
+			$ns->tablerender(FRTLAN_PAGE_TITLE.SEP.FRTLAN_46, $text);
+		}
+		else
+		{ // Just show existing rules
+			$ns->tablerender(FRTLAN_PAGE_TITLE.SEP.FRTLAN_13, $mes->render().$this->select_class($fp_settings, TRUE));
+		}
+		
 	}
 
 
@@ -356,6 +365,7 @@ class frontpage
 	 */
 	function select_class(&$fp_settings, $show_button = TRUE)
 	{
+		$frm = e107::getForm();
 		// List of current settings
 		$show_legend = $show_button ? " class='e-hideme'" : '';
 		$text = "
@@ -377,7 +387,7 @@ class frontpage
 							<th>".FRTLAN_53."</th>
 							<th>".FRTLAN_49."</th>
 							<th>".FRTLAN_35."</th>
-							<th class='center last'>".LAN_EDIT."</th>
+							<th class='center last'>".LAN_OPTIONS."</th>
 						</tr>
 					</thead>
 					<tbody>";
@@ -391,13 +401,21 @@ class frontpage
 						<td>".$title."</td>
 						<td>".$this->lookup_path($current_value['page'])."</td>
 						<td>".$this->lookup_path($current_value['force'])."</td>
-						<td class='center options'>
-							<input class='btn btn-large image' type='image' src='".ADMIN_UP_ICON_PATH."' title='".FRTLAN_47."' value='".$order."' name='fp_inc".$order."' />
-							<input class='btn btn-large image' type='image' src='".ADMIN_DOWN_ICON_PATH."' title='".FRTLAN_48."' value='".$order."' name='fp_dec".$order."' />
-							<input class='btn btn-large image edit' type='image' title='".LAN_EDIT."' name='fp_edit_rule[".$order."]' src='".ADMIN_EDIT_ICON_PATH."' />
-							<input class='btn btn-large image delete' type='image' title='".LAN_DELETE."' data-confirm='". LAN_CONFDELETE."' name='fp_delete_rule[".$order."]' src='".ADMIN_DELETE_ICON_PATH."' />
+						<td class='center options last'>
+						<div class='btn-group'>
+							".$frm->admin_button('fp_inc',$order,'up',ADMIN_UP_ICON)."
+							".$frm->admin_button('fp_dec',$order,'down',ADMIN_DOWN_ICON)."
+							<a class='btn' title='".LAN_EDIT."' href='".e_SELF."?id=".$order."' >".ADMIN_EDIT_ICON."</a>
+							".$frm->admin_button('fp_delete_rule['.$order.']',$order,'',ADMIN_DELETE_ICON)."					
+						</div>
 						</td>
 					</tr>";
+					
+					/*
+					<input class='btn ' type='image' src='".ADMIN_UP_ICON_PATH."' title='".FRTLAN_47."' value='".$order."' name='fp_inc".$order."' />
+					<input class='btn ' type='image' src='".ADMIN_DOWN_ICON_PATH."' title='".FRTLAN_48."' value='".$order."' name='fp_dec".$order."' />
+					 <input class='btn delete' type='image' title='".LAN_DELETE."' data-confirm='". LAN_CONFDELETE."' name='fp_delete_rule[".$order."]' src='".ADMIN_DELETE_ICON_PATH."' />
+					 */
 		}
 		$text .= "
 		 		</tbody>
@@ -407,7 +425,7 @@ class frontpage
 		{
 			$text .= "
 				<div class='buttons-bar center'>
-					 ".$this->frm->admin_button('fp_add_new', FRTLAN_42, 'create')."
+					 <a href='".e_SELF."?mode=create' class='btn btn-success'>".FRTLAN_42."</a>
 				</div>";
 		}
 
@@ -452,59 +470,57 @@ class frontpage
 
 		}
 
+// <legend class='e-hideme'>".($rule_info['order'] ? FRTLAN_46 : FRTLAN_42)."</legend>
+
 		$text = "
-		<form method='post' action='".e_SELF."'>
-			<fieldset id='core-frontpage-edit'>
-				<legend class='e-hideme'>".($rule_info['order'] ? FRTLAN_46 : FRTLAN_42)."</legend>
-				<div id='core-frontpage-edit-home'>
-					<table class='table adminlist'>
+		<form method='post' action='".e_SELF."'>";
+		
+		$text .= '<ul class="nav nav-tabs" id="myTabs">
+			<li class="active"><a data-toggle="tab" href="#home">'.FRTLAN_49.'</a></li>
+			<li><a data-toggle="tab" href="#postlogin">'.FRTLAN_35.'</a></li>
+			</ul>
+			 ';
+			
+			$text .= "
+			<div class='tab-content'>	
+				<div class='tab-pane active' id='home'>
+					<table class='table adminform'>
 						<colgroup>
-							<col style='width: 40%' />
-							<col style='width: 60%' />
+							<col style='width: 30%' />
+							<col style='width: 70%' />
 						</colgroup>
-						<thead>
-							<tr>
-								<th colspan='2' class='last'>
-									".FRTLAN_49."
-								</th>
-							</tr>
-						</thead>
 						<tbody>
-							{$text_tmp_1}
+							".$text_tmp_1."
 							<tr>
 								".$this->add_other('frontpage', $is_other_home, $rule_info['page'])."
 							</tr>
 						</tbody>
 					</table>
 				</div>
-				<div id='core-frontpage-edit-post-login'>
-					<table class='table adminlist'>
+				
+				<div class='tab-pane' id='postlogin'>
+					<table class='table adminform'>
 						<colgroup>
-							<col style='width: 40%' />
-							<col style='width: 60%' />
+							<col style='width: 30%' />
+							<col style='width: 70%' />
 						</colgroup>
-						<thead>
-							<tr>
-								<th colspan='2' class='last'>
-									".FRTLAN_35." ".FRTLAN_50."
-								</th>
-							</tr>
-						</thead>
 						<tbody>
-							{$text_tmp_2}
+							".$text_tmp_2."
 							<tr>
 								".$this->add_other('fp_force_page', $is_other_force, $rule_info['force'])."
 							</tr>
 						</tbody>
 					</table>
 				</div>
+			</div>
+			
 				<div class='buttons-bar center'>
 					".$this->frm->hidden('fp_order', $rule_info['order'])."
 					".FRTLAN_43.": ".e107::getUserClass()->uc_dropdown('class', $rule_info['class'], 'public,guest,member,admin,main,classes')."
 					".$this->frm->admin_button('fp_save_new', LAN_UPDATE, 'update')."
 					".$this->frm->admin_button('fp_cancel', LAN_CANCEL, 'cancel')."
 				</div>
-			</fieldset>
+			
 		</form>
 		";
 		return $text;
@@ -592,8 +608,7 @@ class frontpage
 		{ // Multiple options for same page name
 			$text .= "
 				<td>
-					".$this->frm->radio($ob_name, $front_key, $type_selected)."&nbsp;
-					".$this->frm->label($front_value['title'], $ob_name, $front_key)."
+					".$this->frm->radio($ob_name, $front_key, $type_selected, array('label'=>$front_value['title']))."
 				</td>
 				<td>
 			";
@@ -609,8 +624,7 @@ class frontpage
 		{ // Single option for URL
 			$text .= "
 				<td>
-					".$this->frm->radio($ob_name, $front_key, $type_selected)."&nbsp;
-					".$this->frm->label($front_value['title'], $ob_name, $front_key)."
+					".$this->frm->radio($ob_name, $front_key, $type_selected, array('label'=>$front_value['title']))."
 
 				</td>
 				<td>&nbsp;</td>";
@@ -632,9 +646,11 @@ class frontpage
 	 */
 	function add_other($ob_name, $cur_val, $cur_page)
 	{
+		$label = ($cur_val) ? "Disabled or Enter Custom URL:" : "Custom URL: ";
+		
 	  	return  "
-			<td>".$this->frm->radio($ob_name, 'other', $cur_val)."&nbsp;".$this->frm->label(FRTLAN_15.":", $ob_name, 'other')."</td>
-			<td>".$this->frm->text($ob_name.'_other', ($cur_val ? $cur_page : ''), 150, "size=50&id={$ob_name}-other-txt")."</td>
+			<td>".$this->frm->radio($ob_name, 'other', $cur_val, array('label'=> $label))."</td>
+			<td>".$this->frm->text($ob_name.'_other', ($cur_val ? $cur_page : ''), 150, "size=xxlarge&id={$ob_name}-other-txt")."</td>
 		";
 	}
 }
@@ -654,23 +670,20 @@ function frontpage_adminlog($msg_num = '00', $woffle = '')
 	e107::getAdminLog()->log_event('FRONTPG_'.$msg_num, $woffle, E_LOG_INFORMATIVE, '');
 }
 
-/**
- * Handle page DOM within the page header
- *
- * @return string JS source
- */
-function headerjs()
-{
-	require_once(e_HANDLER.'js_helper.php');
-	$ret = "
-		<script type='text/javascript'>
-			//add required core lan - delete confirm message
-			(".e_jshelper::toString(LAN_JSCONFIRM).").addModLan('core', 'delete_confirm');
-		</script>
-		<script type='text/javascript' src='".e_JS."core/admin.js'></script>
-	";
 
-	return $ret;
+function frontpage_adminmenu() 
+{
+
+	$action = vartrue($_GET['mode'],'main');
+	
+	$var['main']['text'] = LAN_MANAGE;
+	$var['main']['link'] = e_SELF;
+	$var['create']['text'] = LAN_CREATE;
+	$var['create']['link'] = e_SELF."?mode=create";
+
+
+	show_admin_menu(FRTLAN_PAGE_TITLE, $action, $var);
 }
+
 
 ?>
