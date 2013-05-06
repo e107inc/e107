@@ -353,7 +353,7 @@ class login_menu_class
 			require_once(e_HANDLER.'xml_class.php');
 			$xml = new xmlClass;
 			$xml->filter = array('name' => FALSE,'version'=>FALSE);			// Just want a couple of variables
-			$readFile = $xml->loadXMLfile(e_PLUGIN.$plugin_path.'/plugin.xml', true, true);
+			$readFile = $xml->loadXMLfile(e_PLUGIN.$plugid.'/plugin.xml', true, true);
             $ret['eplug_name'] = defined($readFile['name']) ? constant($readFile['name']) : $readFile['name'];
             $ret['eplug_version'] = $readFile['version'];
 		}

@@ -112,7 +112,9 @@ if (isset($_POST['main_delete']))
 		$mes->addError(LAN_DELETED_FAILED); 
 	}
 }
-$ns->tablerender($caption, $mes->render() . $text);
+
+echo $mes->render();
+
 
 // Show Existing -------
 if ($action == "main" || $action == "") 
@@ -183,7 +185,7 @@ if ($action == "create" || $action == "edit")
 		</colgroup>
 		<tr>
 			<td>".WMLAN_10."</td>
-			<td>".$frm->text(wm_caption, $tp->toForm(vartrue($row['gen_ip'])), 80)."</td>
+			<td>".$frm->text('wm_caption', $tp->toForm(vartrue($row['gen_ip'])), 80)."</td>
 		</tr>
 		<tr>
 			<td>".WMLAN_04."</td>

@@ -15,7 +15,12 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
-if (!defined("USER_WIDTH")){ define("USER_WIDTH", "width:auto"); }
+if (!defined("USER_WIDTH"))
+{
+	$uw = (deftrue('e_BOOTSTRAP')) ? "" : "width:97%";
+	define("USER_WIDTH", $uw); 	
+}
+
 
 // global $usersettings_shortcodes, $pref;
 

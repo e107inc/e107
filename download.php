@@ -20,7 +20,11 @@
 
 require_once("class2.php");
 
-require_once(e_PLUGIN."download/download.php");
+$query = (e_QUERY) ? "?".e_QUERY : "";
+
+e107::getRedirect()->go(e_PLUGIN."download/download.php".$query,true);
+
+//require_once(e_PLUGIN."download/download.php");
 
 exit();
 

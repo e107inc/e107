@@ -1,6 +1,6 @@
 <?php
 // $Id$
-function user_avatar_shortcode($parm='')
+function user_avatar_shortcode($parm=null)
 {
 	global $loop_uid;
 	
@@ -27,7 +27,7 @@ function user_avatar_shortcode($parm='')
 			$image=$row['user_image'];
 		}
 	}
-	elseif($parm)
+	elseif(!is_null($parm))
 	{
 		$image=$parm;
 	}

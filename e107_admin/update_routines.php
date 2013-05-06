@@ -754,7 +754,10 @@ function update_706_to_800($type='')
 		{
 			if(is_dir(e_PLUGIN.$cgpArray['oldpath']))
 			{
-				$chgPath[] = $cgpArray['oldpath'];
+				if(!in_array($cgpArray['oldpath'],$chgPath))
+				{
+					$chgPath[] = $cgpArray['oldpath'];	
+				}
 			}
 		}
 		//TODO LAN
