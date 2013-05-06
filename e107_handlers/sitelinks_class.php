@@ -1371,7 +1371,10 @@ class e_navigation
 		
 		$sc 			= e107::getScBatch('navigation');	
 		$sc->template 	= $template; 
-		$ret 			= $template['start'];
+		$head			= $template['start'];
+		$foot 			= $template['end'];
+		$ret 			= "";
+		
 		foreach ($data as $_data) 
 		{		
 			$sc->setVars($_data);
@@ -1379,10 +1382,8 @@ class e_navigation
 			$itemTmpl 		= count($_data['link_sub']) > 0 ? $template['item_submenu'.$active] : $template['item'.$active];
 			$ret 			.= e107::getParser()->parseTemplate($itemTmpl, TRUE);			
 		}
-		
-		$ret .= $template['end'];
-		
-		return $ret;
+
+		return ($ret != '') ? $head.$ret.$foot : '';
 	}
 
 	

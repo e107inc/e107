@@ -17,9 +17,7 @@ function navigation_shortcode($parm='')
 	$data 			= $nav->initData($category);
 //	$data 			= $nav->collection($category);
 
-	if($data)
-	{
-		return $nav->render($data, $template);
-	}
+	return $nav->render($data, $template);
+
 }
 	
