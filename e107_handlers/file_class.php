@@ -686,9 +686,9 @@ class e_file
 	
 
 	// Use e107.org login. 
-	private function setAuthKey($username,$password)
+	public function setAuthKey($username,$password)
 	{
-		$now 	= gmdate('y-m-d H:i');
+		$now 	= gmdate('y-m-d H');
 		$this->authKey	= sha1($username.md5($password).$now);	
 		
 		return $this;		
@@ -724,7 +724,7 @@ class e_file
 		
 	//	echo "<script>alert('".$remotefile."')</script>";
 		$result 	= $this->getRemoteFile($remotefile,$localfile);
-			
+		
 		if(!file_exists(e_TEMP.$localfile))
 		{
 			$status = ADMIN_FALSE_ICON."<br /><a href='".$remotefile."'>Download Manually</a>";
@@ -741,13 +741,15 @@ class e_file
 		else 
 		{
 			$contents = file_get_contents(e_TEMP.$localfile);
-			if($contents == 'false')
+			if(strlen($contents) < 400)
 			{
-				echo "<div class='e-alert'>Authentication Error</div>";
-				exit;	
+				echo "<script>alert('".$tp->toJS($contents)."')</script>";
+				return;	
 			}
 		}
 	
+		
+		
 	//	chmod(e_PLUGIN,0777);
 		chmod(e_TEMP.$localfile,0755);
 		
