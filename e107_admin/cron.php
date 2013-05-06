@@ -358,7 +358,7 @@ class cron_admin_ui extends e_admin_ui
 				$setpwd_message .= "</pre><small>". LAN_CRON_16."</small>";
 				if(e_DOMAIN && file_exists("/usr/local/cpanel/version"))
 				{
-					$setpwd_message .= "<div style='margin-top:10px'><a rel='external' class='btn btn-primary' href='".e_DOMAIN."/cpanel'>Go to cPanel</a></div>";
+					$setpwd_message .= "<div style='margin-top:10px'><a rel='external' class='btn btn-primary' href='".e_HTTP."cpanel'>Go to cPanel</a></div>";
 					
 				}
 				$setpwd_message .= "<br /><br />".$frm->admin_button('generate_pwd', 1, 'delete', 'Generate new cron password',array('class'=>'btn btn-small'));

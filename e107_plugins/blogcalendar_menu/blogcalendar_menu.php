@@ -91,8 +91,7 @@ if(false === $cached)
 	// -------------------------------
 	// create the month selection item
 	// -------------------------------
-	$month_selector = "<div class='forumheader' style='text-align: center; margin-bottom: 2px;'>";
-	$month_selector .= "<select name='activate' onchange='urljump(this.options[selectedIndex].value)' class='tbox'>";
+
 	
 	// get all newsposts since the beginning of the year till now
 	// -------------------------------------------
@@ -141,30 +140,9 @@ if(false === $cached)
 	}
 		
 	// go over the link array and create the option fields
-	foreach($month_links as $index => $val) 
-	{
-		$month_selector .= "<option value='".$val."'";
-		$month_selector .= ($index == $req_month)?" selected='selected'":
-		"";
-		$month_selector .= ">".$marray[$index-1]."</option>";
-	}
-		
-	// close the select item
-	$month_selector .= "</select></div>";
 	
+
 	
-	
-	
-	if(deftrue('e_BOOTSTRAP'))
-	{
-		$month_selector = '<div class="btn-group pull-right"><a class="btn btn-mini " href="#blogCalendar" data-slide="prev">‹</a>  
- 		 <a class="btn btn-mini" href="#blogCalendar" data-slide="next">›</a></div>';
-		 $caption = "<div class='inline-text'>".BLOGCAL_L1." ".$month_selector."</div>";	
-	}	
-	else
-	{
-		 $caption = "<div class='form-inline'>".BLOGCAL_L1." ".$req_year."</div>";		
-	}
 	
 	
 		
@@ -178,28 +156,58 @@ if(false === $cached)
 	$menu .= "<div class='forumheader' style='text-align: center; margin-top:2px;'><span class='smalltext'><a href='$prefix/archive.php'>".BLOGCAL_L2."</a></span></div></td></tr>";
 	$menu .= "</table></div>";
 	*/
-	$menu = "<div id='blogCalendar' data-interval='false' class='carousel slide blogcalendar-block' style='text-align: center;'><table class='table blogcalendar-table' border='0' cellspacing='7'>";
-	$menu .= "<tr><td class='blogcalendar-month-selector'>"; // .$month_selector;
-	if(!defset('e_BOOTSTRAP')) // BC
+
+	
+	if(deftrue('e_BOOTSTRAP')) // v2.x
 	{
-		$menu .= $month_selector; 	
-	}
-	
-	$menu .= "<div class='blogcalendar-day-selector carousel-inner' style='text-align:center'>";
-	
-	
-	foreach($months as $year=>$val)
-	{
-		foreach($val as $month=>$v)
+		$month_selector = '<div class="btn-group pull-right"><a class="btn btn-mini " href="#blogCalendar" data-slide="prev">‹</a>  
+ 		<a class="btn btn-mini" href="#blogCalendar" data-slide="next">›</a></div>';
+		 
+		$caption = "<div class='inline-text'>".BLOGCAL_L1." ".$month_selector."</div>";	
+		
+		$menu = "<div id='blogCalendar' data-interval='false' class='carousel slide blogcalendar-block text-center'>";
+		$menu .= "<div class='blogcalendar-day-selector carousel-inner'>";
+		
+		foreach($months as $year=>$val)
 		{
-			$menu .= calendar($req_day, $month, $year, $links[$year][$month], $pref['blogcal_ws']);
+			foreach($val as $month=>$v)
+			{
+				$menu .= calendar($req_day, $month, $year, $links[$year][$month], $pref['blogcal_ws']);
+			}
 		}
+		
+		$menu .= "</div>";
+		$menu .= "<div class='blogcalendar-archive-link' >
+		<a class='blogcalendar-archive-link btn btn-small' href='$prefix/archive.php'>".BLOGCAL_L2."</a>
+		</div>
+		</div>";
+		
 	}
-	$menu .= "</div>";
-	$menu .= "<div class='forumheader blogcalendar-archive-link' style='text-align: center; margin-top:2px;'><span class='smalltext'><a class='blogcalendar-archive-link btn btn-small' href='$prefix/archive.php'>".BLOGCAL_L2."</a></span></div>
-	</td></tr>";
-	$menu .= "</table></div>";
-	
+	else // BC 
+	{
+					
+		$month_selector = "<div class='forumheader' style='text-align: center; margin-bottom: 2px;'>";
+		$month_selector .= "<select name='activate' onchange='urljump(this.options[selectedIndex].value)' class='tbox'>";
+		
+		foreach($month_links as $index => $val) 
+		{
+			$month_selector .= "<option value='".$val."'";
+			$month_selector .= ($index == $req_month)?" selected='selected'": "";
+			$month_selector .= ">".$marray[$index-1]."</option>";
+		}
+		
+		$month_selector .= "</select></div>";		
+			    
+		$menu = "<div class='blogcalendar-block' style='text-align: center; max-width: 100%; overflow: hidden;'>
+		<table class='blogcalendar-table' border='0' cellspacing='7' cellpadding='0'>";
+		$menu .= "<tr><td class='blogcalendar-month-selector'>".$month_selector;
+		$menu .= "<div class='blogcalendar-day-selector' style='text-align:center'>".calendar($req_day, $req_month, $req_year, $day_links, $pref['blogcal_ws'])."</div>";
+		$menu .= "<div class='forumheader blogcalendar-archive-link' style='text-align: center; margin-top:2px;'><span class='smalltext'><a class='blogcalendar-archive-link' href='$prefix/archive.php'>".BLOGCAL_L2."</a></span></div></td></tr>";
+		$menu .= "</table></div>";	
+		
+		 $caption = "<div class='form-inline'>".BLOGCAL_L1." ".$req_year."</div>";		
+	}
+				
 	$cached = $ns->tablerender($caption, $menu, 'blog_calendar', true);
 //	echo "day= ".$req_day. " month=".$req_month." year=".$req_year." links=".print_a($day_links)." ws=".$pref['blogcal_ws'];
 	e107::getCache()->set($cString, $menu);

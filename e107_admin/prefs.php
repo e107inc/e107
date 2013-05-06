@@ -424,21 +424,21 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 			<tr>
 				<td>".LAN_MAILOUT_87.":&nbsp;&nbsp;</td>
 				<td>
-				<input class='tbox' type='text' name='smtp_server' size='40' value='".vartrue($pref['smtp_server'])."' maxlength='50' />
+				<input class='tbox' type='text' name='smtp_server' size='40' value='".vartrue($pref['smtp_server'])."' maxlength='50' autocomplete='off' />
 				</td>
 			</tr>
 	
 			<tr>
 				<td>".LAN_MAILOUT_88.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</td>
 				<td style='width:50%;' >
-				<input class='tbox' type='text' name='smtp_username' size='40' value=\"".vartrue($pref['smtp_username'])."\" maxlength='50' />
+				<input class='tbox' type='text' name='smtp_username' size='40' value=\"".vartrue($pref['smtp_username'])."\" maxlength='50' autocomplete='off' />
 				</td>
 			</tr>
 	
 			<tr>
 				<td>".LAN_MAILOUT_89.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</td>
 				<td>
-				<input class='tbox' type='password' name='smtp_password' size='40' value='".vartrue($pref['smtp_password'])."' maxlength='50' />
+				<input class='tbox' type='password' name='smtp_password' size='40' value='".vartrue($pref['smtp_password'])."' maxlength='50' autocomplete='off' />
 				</td>
 			</tr>
 

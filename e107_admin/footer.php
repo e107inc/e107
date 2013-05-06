@@ -405,7 +405,7 @@ if (isset($_SERVER['HTTP_IF_NONE_MATCH']))
 }
 
 
-header("Cache-Control: must-revalidate");	// XXX testing 'always on' state for now. 
+header("Cache-Control: max-age=5,no-cache",true);	// XXX testing 'always on' state for now. 
 if(!defined('e_NOCACHE'))
 {
 	// header("Cache-Control: must-revalidate");	
