@@ -305,6 +305,12 @@ class redirection
 		}
 	}
 
+
+	public function redirect($url, $replace = TRUE, $http_response_code = NULL)
+	{
+		return $this->go($url, $replace, $http_response_code);	
+	}
+
 	
 	/**
 	 * Redirect to the given URI
@@ -314,7 +320,7 @@ class redirection
 	 * @param integer|null $http_response_code - default NULL
 	 * @return void
 	 */
-	public function redirect($url, $replace = TRUE, $http_response_code = NULL)
+	public function go($url, $replace = TRUE, $http_response_code = NULL)
 	{
 		if(session_id())
 		{
