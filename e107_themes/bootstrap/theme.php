@@ -153,6 +153,7 @@ $HEADER['default'] = '
         </div><!--/span-->
 		<div class="span9">
 		 {SETSTYLE=default}
+		 	{WMESSAGE}
 ';
 
 
@@ -176,7 +177,7 @@ $HEADER['default-home'] = $HEADER['default'];
 
 
 $FOOTER['default-home'] = '
-		{WMESSAGE}
+	
 		 {SETSTYLE=span4}
 		 
 		 <div class="row-fluid">
