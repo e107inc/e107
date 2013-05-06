@@ -1233,6 +1233,9 @@ function step12()
 	$ret = $f -> setNewVersion();
 
 	$mes -> addSuccess("Congratulations, the forum upgrade is now completed!<br /><br />{$ret}");
+	
+	$text = "<a class='btn btn-primary' href='".e_ADMIN."e107_update.php'>Return to e107 Update</a>";
+	
 	$ns -> tablerender($stepCaption, $mes -> render() . $text);
 	return;
 }
