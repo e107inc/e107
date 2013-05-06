@@ -24,7 +24,7 @@ define("WMLAN_02","Message");
 define("WMLAN_04","Message Text");
 
 define("WMLAN_05","Enclose");
-define("WMLAN_06","If ticked, the message will be rendered inside box");
+define("WMLAN_06","When enabled, the message will be rendered inside a box");
 define("WMLAN_07","Override standard system to use {WMESSAGE} shortcode:");
 // define("WMLAN_08","Preferences");
 
