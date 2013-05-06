@@ -27,11 +27,10 @@ if(e_AJAX_REQUEST && isset($_GET['src'])) // Ajax
 	$localfile = md5($remotefile.time()).".zip";
 	$status = "Downloading...";
 	
-//	e107::getFile()->getRemoteFile($remotefile,$localfile);
-	
-	e107::getFile()->download($remotefile,'plugin');
-	
-	
+	$fl = e107::getFile();
+	//$fl->setAuthKey('username','password');
+	$fl->download($remotefile,'plugin');
+
 	exit;
 	
 	/*
@@ -265,14 +264,13 @@ class pluginManager{
 				"plugin_icon"			=> array("title" => EPL_ADLAN_82, "type"=>"icon", "width" => "5%", "thclass" => "middle center",'class'=>'center', "url" => ""),
 				"plugin_name"			=> array("title" => EPL_ADLAN_10, 'forced'=>true, "type"=>"text", "width" => "auto", 'class'=>'left', "thclass" => "middle", "url" => ""),
  				"plugin_version"		=> array("title" => EPL_ADLAN_11, "type"=>"numeric", "width" => "5%", "thclass" => "middle", "url" => ""),
-    			"plugin_date"			=> array("title" => "Released ", 	"type"=>"text", "width" => "10%", "thclass" => "middle"),
+    			"plugin_date"			=> array("title" => "Released ", 	"type"=>"text", "width" => "8%", "thclass" => "middle"),
     			
     			"plugin_folder"			=> array("title" => EPL_ADLAN_64, "type"=>"text", "width" => "10%", "thclass" => "middle"),
 				"plugin_category"		=> array("title" => LAN_CATEGORY, "type"=>"text", "width" => "auto", "thclass" => "middle"),
                 "plugin_author"			=> array("title" => EPL_ADLAN_12, "type"=>"text", "width" => "10%", "thclass" => "middle"),
-  	//			"plugin_website"		=> array("title" => EPL_WEBSITE, "type"=>"method", "width" => "5%", "thclass" => "middle center"),
-				"plugin_compatible"		=> array("title" => EPL_ADLAN_13, "type"=>"text", "width" => "5%", "thclass" => "middle"),
-			
+  				"plugin_price"			=> array("title" => "Price", 	 'nolist'=>true,	"forced"=>true, "type"=>"text", "width" => "5%", "thclass" => "left"),	
+  				"plugin_compatible"		=> array("title" => EPL_ADLAN_13, "type"=>"text", "width" => "5%", "thclass" => "middle"),
 				"plugin_description"	=> array("title" => EPL_ADLAN_14, "type"=>"bbarea", "width" => "30%", "thclass" => "middle center",  'readParms' => 'expand=1&truncate=180&bb=1'),
 				"plugin_compliant"		=> array("title" => EPL_ADLAN_81, "type"=>"text", "width" => "5%", "thclass" => "middle center", "url" => ""),
 		//		"plugin_release"		=> array("title" => EPL_ADLAN_81, "type"=>"text", "width" => "5%", "thclass" => "middle center", "url" => ""),
@@ -296,6 +294,11 @@ class pluginManager{
 		if(isset($_GET['mode']))
 		{
 			$this->action = $_GET['mode'];
+		}
+
+		if($this->action == 'online')
+		{
+			$this->fields["plugin_price"]['nolist'] = false; //  = array("title" => "Price", "forced"=>true, "type"=>"text", "width" => "5%", "thclass" => "middle center");		
 		}
 
         $keys = array_keys($this -> titlearray);
@@ -343,9 +346,17 @@ class pluginManager{
 
 		$user_pref['admin_pluginmanager_columns'] = false;
 		
-       $this -> fieldpref = (vartrue($user_pref['admin_pluginmanager_columns'])) ? $user_pref['admin_pluginmanager_columns'] : array("plugin_icon","plugin_name","plugin_version","plugin_date","plugin_description","plugin_category","plugin_compatible","plugin_author","plugin_website","plugin_notes");
+		$this -> fieldpref = (vartrue($user_pref['admin_pluginmanager_columns'])) ? $user_pref['admin_pluginmanager_columns'] : array("plugin_icon","plugin_name","plugin_version","plugin_date","plugin_description","plugin_category","plugin_compatible","plugin_author","plugin_website","plugin_notes");
 
 
+		foreach($this->fields as $key=>$val)
+		{
+			if($val['forced'] == true && substr($key,0,6)=='plugin')
+			{
+				$this->fieldpref[] = $key;	
+			}		
+		}
+	
 
         if($this->action == 'avail' || $this->action == 'installed')   // Plugin Check is done during upgrade_routine.
 		{
@@ -465,13 +476,14 @@ class pluginManager{
 		{
 			$row = $r['@attributes'];
 			
-				$badge = $this->compatibilityLabel($row['compatibility']);;
-				$featured = ($row['featured']== 1) ? " <span class='label label-info'>Featured</span>" : '';
+				$badge 		= $this->compatibilityLabel($row['compatibility']);;
+				$featured 	= ($row['featured']== 1) ? " <span class='label label-info'>Featured</span>" : '';
+				$price 		= ($row['price'] > 0) ? "<span class='label label-success'>".$row['price']." credits</span>" : "<span class='label label-success'>Free</span>";
 			
 				$data[] = array(
 					'plugin_id'				=> $c,
 					'plugin_icon'			=> vartrue($row['icon'],e_IMAGE."admin_images/plugins_32.png"),
-					'plugin_name'			=> $row['name'].$featured,
+					'plugin_name'			=> stripslashes($row['name']).$featured,
 					'plugin_folder'			=> $row['folder'],
 					'plugin_date'			=> vartrue($row['date']),
 					'plugin_category'		=> vartrue($r['category'][0]),
@@ -482,8 +494,10 @@ class pluginManager{
 				
 					'plugin_website'		=> vartrue($row['authorUrl']),
 					'plugin_url'			=> $row['url'],
-					'plugin_notes'			=> ''
-					);	
+					'plugin_notes'			=> '',
+					'plugin_price'			=> $price 
+				);	
+				
 			$c++;
 		}
 	
