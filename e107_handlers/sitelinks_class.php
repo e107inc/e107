@@ -1499,7 +1499,21 @@ class navigation_shortcodes extends e_shortcode
 	
 	function sc_link_name($parm='')
 	{
-		return e107::getParser()->toHtml($this->var['link_name'],false,'defs');		
+		if(!varset($this->var['link_name']))
+		{
+			return;	
+		}
+		
+		if(substr($this->var['link_name'],0,8) == 'submenu.') // BC Fix. 
+		{
+			list($tmp,$tmp2,$link) = explode('.',$this->var['link_name'],3);	
+		}
+		else
+		{
+			$link = $this->var['link_name'];	
+		}
+		
+		return e107::getParser()->toHtml($link, false,'defs');		
 	}
 	
 	function sc_link_parent($parm='')
