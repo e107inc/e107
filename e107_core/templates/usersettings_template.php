@@ -80,11 +80,15 @@ $sc_style['LOGINNAME']['post'] 			= "</td></tr>\n";
 $sc_style['SIGNATURE']['pre']			= "<tr><td style='width:40%;vertical-align:top' class='forumheader3'>".LAN_USER_71.req($pref['signup_option_signature'])."</td>
 											<td style='width:60%' class='forumheader2'>";
 
+$sc_style['SIGNATURE']['post'] 			= "</td></tr>\n";	
+
+
+
 //$sc_style['SIGNATURE']['pre']			= "<tr><td style='width:40%;vertical-align:top' class='forumheader3'></td>
 			//								<td style='width:60%' class='forumheader2'>";
 
 // $sc_style['SIGNATURE_HELP']['pre']		= "</td></tr>";											\
-$sc_style['SIGNATURE_HELP']['post']		= "</td></tr>";
+// $sc_style['SIGNATURE_HELP']['post']		= "</td></tr>";
 
 
 $USER_EXTENDED_CAT 						= "<tr><td colspan='2' class='forumheader'>{CATNAME}</td></tr>";
@@ -165,10 +169,8 @@ $USERSETTINGS_EDIT = "
 
 	{USERCLASSES}
 	{USEREXTENDED_ALL}
-
 	
-	{SIGNATURE=cols=58&rows=4}	
-	{SIGNATURE_HELP}
+	{SIGNATURE}	
 	
 	<tr style='vertical-align:top'>
 	<td colspan='2' style='text-align:center' class='forumheader'><input class='button btn' type='submit' name='updatesettings' value='".LAN_USET_37."' /></td>
