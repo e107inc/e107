@@ -1036,7 +1036,7 @@ function setNewsFrontMeta($news, $type='news')
 			$tmp = explode(",",$news['news_meta_keywords']);
 			foreach($tmp as $t)
 			{
-				e107::meta('article:tag',$t);
+				e107::meta('article:tag', trim($t));
 			}
 
 			//	define('META_KEYWORDS', $news['news_meta_keywords']); // deprecated
