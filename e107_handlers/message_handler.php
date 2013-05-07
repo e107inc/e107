@@ -186,9 +186,9 @@ class eMessage
 		if(empty($msg)) return $this;
 		
 		if(!$session)
-		{
+		{var_dump($this->_unique, $this->_sysmsg[$type][$mstack]);
 			// unique messages only
-			if(in_array($mstack, $this->_unique) && in_array($msg, $this->_sysmsg[$type][$mstack])) return $this;
+			if(in_array($mstack, $this->_unique) && isset($this->_sysmsg[$type][$mstack]) && in_array($msg, $this->_sysmsg[$type][$mstack])) return $this;
 			if($this->isType($type)) $this->_sysmsg[$type][$mstack][] = $msg;
 			return $this;
 		}
