@@ -118,7 +118,7 @@ function tablestyle($caption, $text, $mode='')
 	}
 }
 
-// $SC_WRAPPER['NAVIGATION=side'] = '<div class="well sidebar-nav">{---}</div><!--/.well -->'; //FIXME 
+$SC_WRAPPER['NAVIGATION|s'] = '<div class="well sidebar-nav">{---}</div><!--/.well -->'; 
 
 // TODO Convert to : default-home and default-other layouts. 
 
@@ -145,7 +145,7 @@ $HEADER['default'] = '
 <div class="container-fluid">
 	<div class="row-fluid">
 		 <div class="span3">
-           {NAVIGATION=side}          
+           {NAVIGATION|s=side}          
           {SETSTYLE=menu}
           {MENU=1}
         </div><!--/span-->
