@@ -436,6 +436,7 @@ class themeHandler
 			$ns 	= e107::getRender();
 			$from 	= intval(varset($_GET['frm']));
 			$limit 	= 96;
+			$srch 	= preg_replace('/[^\w]/','', vartrue($_GET['srch'])); 
 			
 			$file = "http://e107.org/feed?type=theme&frm=".$from."&srch=".$srch."&limit=".$limit;
 			
@@ -606,7 +607,7 @@ class themeHandler
 		$ns = e107::getRender();
 		$tp = e107::getParser();
 		$frm = e107::getForm();
-		$srch = preg_replace('/[^\w]/','', vartrue($_GET['srch'])); 
+		
 		
 		echo "<div>";
 		
