@@ -947,7 +947,8 @@ class themeHandler
 		$info_icon 		= "<a data-toggle='modal' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".e_SELF."?id=".$theme['path']."' data-target='#uiModal'  title='".TPVLAN_7."'>".E_32_CAT_ABOUT."</a>";
 //		$preview_icon 	= "<a title='Preview : ".$theme['name']."' rel='external' class='e-dialog' href='".e_BASE."index.php?themepreview.".$theme['id']."'>".E_32_SEARCH."</a>";
 		$admin_icon 	= ($pref['admintheme'] != $theme['path'] ) ? "<input class='top' type='image' src='".e_IMAGE_ABS."e107_icon_32.png'  name='selectadmin[".$theme['id']."]' alt=\"".TPVLAN_32."\" title=\"".TPVLAN_32."\" />\n" : E_32_TRUE;
-
+		$price 			= '';
+		
 		if(substr($theme['thumbnail'],0,4) == 'http')
 		{
 			$thumbPath = $theme['thumbnail'];	
@@ -984,7 +985,8 @@ class themeHandler
 			}
 			//XXX modal-Cache is currently enabled by default. Awaiting inclusion of data-cache feature. 
 			// See here: https://github.com/twitter/bootstrap/pull/4224
-			
+			$price = ($theme['price'] > 0) ? "<span class='label label-info pull-right'><i class='icon-shopping-cart icon-white'></i> ".$theme['price']."</span>" : "<span class='label label-success pull-right'>".Free."</span>";
+	
 		}
 		
 		$preview_icon 	= "<a title='Preview/Live-Demo : ".$theme['name']."' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" rel='external' class='e-modal' href='".$previewPath."'>".E_32_SEARCH."</a>";
@@ -1009,7 +1011,7 @@ class themeHandler
 		
 		// Choose a Theme to Install.
 		
-		$price = ($theme['price'] > 0) ? "<span class='label label-info pull-right'><i class='icon-shopping-cart icon-white'></i> ".$theme['price']."</span>" : "<span class='label label-success pull-right'>".Free."</span>";
+		
 		
 		
 		if(!$mode)
