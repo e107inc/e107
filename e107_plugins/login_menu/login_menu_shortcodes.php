@@ -170,7 +170,7 @@ SC_END
 
 SC_BEGIN LM_ADMIN_CONFIGURE
 if(ADMIN == TRUE) {
-	return $parm == 'href' ? e_PLUGIN.'login_menu/config.php' : '<a class="login_menu_link config" id="login_menu_link_config" href="'.e_PLUGIN.'login_menu/config.php">'.LOGIN_MENU_L48.'</a>';
+	return $parm == 'href' ? e_PLUGIN_ABS.'login_menu/config.php' : '<a class="login_menu_link config" id="login_menu_link_config" href="'.e_PLUGIN_ABS.'login_menu/config.php">'.LOGIN_MENU_L48.'</a>';
 }
 return '';
 SC_END
