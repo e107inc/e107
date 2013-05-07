@@ -426,9 +426,26 @@ class themeHandler
 		}
 	}
 	
+
+	private function search($name, $searchVal, $submitName, $filterName='', $filterArray=false, $filterVal=false)
+	{
+		$frm = e107::getForm();
+		
+		$text = '<span class="input-append e-search"><i class="icon-search"></i>
+    		'.$frm->text($name, $searchVal,20,'class=search-query').'
+   			 <button class="btn btn-primary" name="'.$submitName.'" type="submit">'.LAN_GO.'</button>
+    	</span>';
+		
+	//	$text .= $this->admin_button($submitName,LAN_SEARCH,'search');
+		
+		return $text;
+		
+	}
+
+
 	
 	
-	function renderOnline()
+	function renderOnline($ajax=false)
 	{
 			$xml 	= e107::getXml();
 			$mes 	= e107::getMessage();
@@ -465,19 +482,21 @@ class themeHandler
 	
 			$c = 1;
 		
-			$text .= "<form class='form-search' action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='get'>";
-
+			$text = "<form class='form-search' action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='get'>";
+			$text .= '<div id="myCarousel"  class="carousel slide" data-interval="false">';
+			$text .= "<div class='form-inline clearfix row-fluid'>";
+			$text .= $this->search('srch', $srch, 'go', $filterName, $filterArray, $filterVal).$frm->hidden('mode','online');
+			$text .= '<div class="btn-group" style="margin-left:10px"><a class="btn btn-primary" href="#myCarousel" data-slide="prev">&lsaquo;</a><a class="btn btn-primary" href="#myCarousel" data-slide="next">&rsaquo;</a></div>';
+			$text .= "{CAROUSEL_INDICATORS}";		
+			$text .= "</div>";
+			$text .= '<div id="shop" style="margin-top:10px;min-height:585px" class=" carousel-inner">';
+			
+			
+			
 			if(is_array($xdata['theme'] ))
 			{
 				
-				$text .=  '<div id="myCarousel"  class="carousel slide" data-interval="false">';
-				$text .= "<div class='form-inline clearfix row-fluid'>";
-				$text .= "".$frm->search('srch', $srch, 'go', $filterName, $filterArray, $filterVal).$frm->hidden('mode','online');
-				$text .= '<div class="btn-group" style="margin-left:10px"><a class="btn btn-primary" href="#myCarousel" data-slide="prev">&lsaquo;</a><a class="btn btn-primary" href="#myCarousel" data-slide="next">&rsaquo;</a></div>';
-				$text .= "{CAROUSEL_INDICATORS}";		
-				$text .= "</div>";
-				$text .= '<div style="margin-top:10px;min-height:585px" class=" carousel-inner">
-				<div class="active item">';
+				$text .= '<div  class="active item">';
 				
 				$slides = array();
 				
