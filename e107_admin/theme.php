@@ -42,7 +42,7 @@ e107::css("inline","
 
 .admin-theme-options:hover	{ opacity:0.8; }
 
-.admin-theme-title			{ font-size: 15px; overflow:hidden; padding-left:5px; white-space:no-wrap; width:200px; position:relative; top:-132px; }
+.admin-theme-title			{ line-height: 18px; overflow:hidden; padding-left:5px; white-space:no-wrap; width:200px; position:relative; top:-132px; }
 
 .admin-theme-select			{border:1px dotted silver;background-color:#DDDDDD;float:left }
 
