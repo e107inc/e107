@@ -2410,7 +2410,7 @@ class e_parser
                                     'img'       => array('id', 'src', 'style', 'class', 'alt', 'title', 'width', 'height'),
                                     'a'         => array('id', 'href', 'style', 'class', 'title'),
                                   ); 
-    private $badAttrValues       = array("javascript[\s]*?:","alert\(","vbscript[\s]*?:","data:text/html", "mhtml[\s]*?:", "data:[\s]*?image");
+    private $badAttrValues       = array("javascript[\s]*?:","alert\(","vbscript[\s]*?:","data:text\/html", "mhtml[\s]*?:", "data:[\s]*?image");
     private $allowedTags        = array('html', 'body','div','a','img','table','tr', 'td', 'th', 'tbody', 'thead', 'colgroup', 'b', 
                                         'i', 'pre','code', 'strong', 'u', 'em','ul','li','img','h1','h2','h3','h4','h5','h6','p',
                                         'div','pre','section','article', 'blockquote','hgroup','aside','figure','span', 'video', 'br',
