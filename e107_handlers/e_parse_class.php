@@ -153,7 +153,7 @@ class e_parse extends e_parser
 				// text is user-entered (i.e. untrusted)'body' or 'bulk' text (e.g. custom page body, content body)
 				'USER_BODY' =>
 					array(
-						'constants'=>'full', 'scripts' => FALSE
+						'constants'=>'full', 'scripts' => FALSE, 'nostrip'=>FALSE
 						),
 				// text is 'body' of email or similar - being sent 'off-site' so don't rely on server availability
 				'E_BODY' =>
@@ -538,7 +538,7 @@ class e_parse extends e_parser
 	/**
 	 *	Check for umatched 'dangerous' HTML tags
 	 *		(these can destroy page layout where users are able to post HTML)
-	 *
+	 * @DEPRECATED
 	 *	@param string $data
 	 *	@param string $tagList - if empty, uses default list of input tags. Otherwise a CSV list of tags to check (any type)
 	 *
@@ -597,7 +597,7 @@ class e_parse extends e_parser
 
 
 	/**
-	 * XXX TODO Remove this horrible thing which adds junk to a db. 
+	 * @DEPRECATED XXX TODO Remove this horrible thing which adds junk to a db. 
 	 *	Checks a string for potentially dangerous HTML tags, including malformed tags
 	 *
 	 */
@@ -666,7 +666,7 @@ class e_parse extends e_parser
 	}
 
 
-
+	// XXX REmove ME. 
 	private function modTag($match)
 	{
 		$ans = '';
@@ -1341,6 +1341,11 @@ class e_parse extends e_parser
 		if ($opts['no_tags'])
 		{
 			$text = strip_tags($text);
+		}
+		
+		if (MAGIC_QUOTES_GPC == TRUE) // precaution for badly saved data. 
+		{
+			$text = stripslashes($text);
 		}
 
 
