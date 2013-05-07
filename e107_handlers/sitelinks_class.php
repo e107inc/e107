@@ -1371,7 +1371,10 @@ class e_navigation
 		
 		$sc 			= e107::getScBatch('navigation');	
 		$sc->template 	= $template; 
-		$ret 			= $template['start'];
+		$head			= $template['start'];
+		$foot 			= $template['end'];
+		$ret 			= "";
+		
 		foreach ($data as $_data) 
 		{		
 			$sc->setVars($_data);
@@ -1379,10 +1382,8 @@ class e_navigation
 			$itemTmpl 		= count($_data['link_sub']) > 0 ? $template['item_submenu'.$active] : $template['item'.$active];
 			$ret 			.= e107::getParser()->parseTemplate($itemTmpl, TRUE);			
 		}
-		
-		$ret .= $template['end'];
-		
-		return $ret;
+
+		return ($ret != '') ? $head.$ret.$foot : '';
 	}
 
 	
@@ -1499,7 +1500,21 @@ class navigation_shortcodes extends e_shortcode
 	
 	function sc_link_name($parm='')
 	{
-		return e107::getParser()->toHtml($this->var['link_name'],false,'defs');		
+		if(!varset($this->var['link_name']))
+		{
+			return;	
+		}
+		
+		if(substr($this->var['link_name'],0,8) == 'submenu.') // BC Fix. 
+		{
+			list($tmp,$tmp2,$link) = explode('.',$this->var['link_name'],3);	
+		}
+		else
+		{
+			$link = $this->var['link_name'];	
+		}
+		
+		return e107::getParser()->toHtml($link, false,'defs');		
 	}
 	
 	function sc_link_parent($parm='')

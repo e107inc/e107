@@ -348,19 +348,21 @@ $(document).ready(function()
 				$(this).closest("li").removeClass("active");
 				$(this).switchClass( "link-active", "link", 0 );
 			});
-	   		var id = $(this).attr("href"), hash = id.substr(1), form = $('.admin-menu')[0]; // FIXME - a better way to detect the page form
+	   		var id = $(this).attr("href"), hash = id.split('#')[1], form = $('.admin-menu')[0]; // FIXME - a better way to detect the page form
+	   		
 			$(this).switchClass( "link", "link-active", 30 );
 			$(this).closest("li").addClass("active");
 			$(id).removeClass('e-hideme').show({
 				effect: "slide"
 			});
 			// 'remember' the active navigation pane
-			window.location.hash = 'nav-' + hash;
-		  	if(form) {
-		    	$(form).attr('action', $(form).attr('action').split('#')[0] + '#nav-' + hash);
-		    }
-			    
-			return false; //FIXME See admin/prefs navigation. 
+			if(hash) {
+				window.location.hash = 'nav-' + hash;
+			  	if(form) {
+			    	$(form).attr('action', $(form).attr('action').split('#')[0] + '#nav-' + hash);
+			    }
+			    return false; 
+			}
 		}); 
 		
 		// plugin navigation hash

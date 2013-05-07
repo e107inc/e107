@@ -686,9 +686,9 @@ class e_file
 	
 
 	// Use e107.org login. 
-	private function setAuthKey($username,$password)
+	public function setAuthKey($username,$password)
 	{
-		$now 	= gmdate('y-m-d H:i');
+		$now 	= gmdate('y-m-d H');
 		$this->authKey	= sha1($username.md5($password).$now);	
 		
 		return $this;		
@@ -724,7 +724,7 @@ class e_file
 		
 	//	echo "<script>alert('".$remotefile."')</script>";
 		$result 	= $this->getRemoteFile($remotefile,$localfile);
-			
+		
 		if(!file_exists(e_TEMP.$localfile))
 		{
 			$status = ADMIN_FALSE_ICON."<br /><a href='".$remotefile."'>Download Manually</a>";
@@ -741,13 +741,15 @@ class e_file
 		else 
 		{
 			$contents = file_get_contents(e_TEMP.$localfile);
-			if($contents == 'false')
+			if(strlen($contents) < 400)
 			{
-				echo "<div class='e-alert'>Authentication Error</div>";
-				exit;	
+				echo "<script>alert('".$tp->toJS($contents)."')</script>";
+				return;	
 			}
 		}
 	
+		
+		
 	//	chmod(e_PLUGIN,0777);
 		chmod(e_TEMP.$localfile,0755);
 		
@@ -758,6 +760,8 @@ class e_file
 		$dir 		= $this->getRootFolder($unarc);	
 		$destpath 	= ($type == 'theme') ? e_THEME : e_PLUGIN;
 		$typeDiz 	= ucfirst($type);
+		
+
 		
 		@copy(e_TEMP.$localfile,e_BACKUP.$dir.".zip"); // Make a Backup in the system folder. 
 		
@@ -770,12 +774,19 @@ class e_file
 			exit;	
 		}
 	
+		if($dir == '')
+		{
+			echo "<script>alert('Couldn\'t detect the root folder in the zip.')</script>";
+			@unlink(e_TEMP.$localfile);
+			exit;			
+		}
+	
 		if(is_dir(e_TEMP.$dir)) 
 		{
 			$status = "Unzipping...";
 			if(!rename(e_TEMP.$dir,$destpath.$dir))
 			{
-				$alert = $tp->toJS("Couldn't Move ".$typeDiz." to ".$typeDiz." Folder");
+				$alert = $tp->toJS("Couldn't Move ".e_TEMP.$dir." to ".$destpath.$dir." Folder");
 				echo "<script>alert('".$alert."')</script>";
 				@unlink(e_TEMP.$localfile);
 				exit;	

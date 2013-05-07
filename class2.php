@@ -1087,6 +1087,10 @@ if(e_ADMIN_AREA)
 else
 {
 	require_once (THEME.'theme.php');
+	if(isset($SC_WRAPPER))
+	{
+		e107::scStyle($SC_WRAPPER);
+	}
 }
 
 

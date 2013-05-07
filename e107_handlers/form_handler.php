@@ -1308,10 +1308,10 @@ class e_form
 	{
 		
 		
-		$text = '<div class="input-append e-search"><i class="icon-search"></i>
+		$text = '<span class="input-append e-search"><i class="icon-search"></i>
     		'.$this->text($name, $searchVal,20,'class=search-query').'
    			 <button class="btn btn-primary" name="'.$submitName.'" type="submit">'.LAN_GO.'</button>
-    	</div>';
+    	</span>';
 		
 		
 		
