@@ -18,5 +18,6 @@ function navigation_shortcode($parm='')
 //	$data 			= $nav->collection($category);
 
 	return $nav->render($data, $template);
+
 }
 	

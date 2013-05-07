@@ -492,7 +492,6 @@ class links_model_admin_tree extends e_admin_tree_model
 			{
 				$search[$model->get('link_parent')][$id] = $model;
 			}
-
 			asort($search);
 			$this->_tree_order($this->current_id, $search, $this->$var, 0, $modified);
 		}
@@ -522,11 +521,27 @@ class links_model_admin_tree extends e_admin_tree_model
 			$src[$id] = $model;
 			if($modified)
 			{
-				$model->set('link_name', $level_image.$model->get('link_name'));
+				$model->set('link_name', $level_image.$this->bcClean($model->get('link_name')));
 			}
 			$this->_tree_order($id, $search, $src, $level + 1, $modified);
 		}
 	}
+	
+	
+	function bcClean($link_name)
+	{
+		if(substr($link_name, 0,8) == 'submenu.') // BC Fix. 
+		{
+			list($tmp,$tmp2,$link) = explode('.', $link_name, 3);	
+		}
+		else
+		{
+			$link = $link_name;	
+		}
+		
+		return $link;		
+	}
+	
 }
 
 
