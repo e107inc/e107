@@ -761,6 +761,8 @@ class e_file
 		$destpath 	= ($type == 'theme') ? e_THEME : e_PLUGIN;
 		$typeDiz 	= ucfirst($type);
 		
+
+		
 		@copy(e_TEMP.$localfile,e_BACKUP.$dir.".zip"); // Make a Backup in the system folder. 
 		
 		if($dir && is_dir($destpath.$dir))
@@ -772,12 +774,19 @@ class e_file
 			exit;	
 		}
 	
+		if($dir == '')
+		{
+			echo "<script>alert('Couldn\'t detect the root folder in the zip.')</script>";
+			@unlink(e_TEMP.$localfile);
+			exit;			
+		}
+	
 		if(is_dir(e_TEMP.$dir)) 
 		{
 			$status = "Unzipping...";
 			if(!rename(e_TEMP.$dir,$destpath.$dir))
 			{
-				$alert = $tp->toJS("Couldn't Move ".$typeDiz." to ".$typeDiz." Folder");
+				$alert = $tp->toJS("Couldn't Move ".e_TEMP.$dir." to ".$destpath.$dir." Folder");
 				echo "<script>alert('".$alert."')</script>";
 				@unlink(e_TEMP.$localfile);
 				exit;	
