@@ -92,7 +92,7 @@ class usersettings_shortcodes extends e_shortcode
 		
 		if(!isset($pref['auth_method']) || $pref['auth_method'] == '' || $pref['auth_method'] == 'e107' || $pref['auth_method'] == '>e107')
 		{
-			$options = array('size' => 40,'title'=>LAN_USET_23, 'required'=>0); 
+			$options = array('size' => 40,'title'=>LAN_USET_23, 'required'=>0,'autocomplete'=>'off'); 
 			return e107::getForm()->password('password1', '', 20, $options);		
 		}
 		

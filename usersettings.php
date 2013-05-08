@@ -213,7 +213,7 @@ if (isset($_POST['updatesettings']))
 		require_once (e_HANDLER.'upload_handler.php');
 		require_once (e_HANDLER.'resize_handler.php');
 
-		if ($uploaded = process_uploaded_files(e_AVATAR_UPLOAD, 'prefix+ap_'.$udata['user_id'].'_', array('overwrite' => TRUE, 'file_mask'=>'jpg,png,gif', 'max_file_count' => 2)))
+		if ($uploaded = process_uploaded_files(e_AVATAR_UPLOAD, 'prefix+ap_'.$tp->leadingZeros($udata['user_id'],7).'_', array('overwrite' => TRUE, 'file_mask'=>'jpg,png,gif', 'max_file_count' => 2)))
 		{
 			foreach ($uploaded as $upload)
 			{
@@ -232,8 +232,11 @@ if (isset($_POST['updatesettings']))
 				{
 					$extraErrors[] = $upload['message'];
 				}
+				
 			}
 		}
+		
+		
 	}
 
 
@@ -291,13 +294,12 @@ if (isset($_POST['updatesettings']))
 	}
 
 
+
 	if ($udata['user_image'] && !isset($changedUserData['user_image']))
 	{
-		$changedUserData['user_image'] = '';
+		// $changedUserData['user_image'] = ''; // FIXME Deletes the user's image when no changes made. 
 		$avatar_to_delete = str_replace('-upload-', '', $udata['user_image']);
 	}
-
-
 
     // Validate Extended User Fields.
 	$changedEUFData = array();
@@ -367,6 +369,9 @@ if (isset($_POST['updatesettings']))
 			$error = TRUE;
 		}
 	}
+	
+	
+	
 }  // End - update setttings
 elseif (isset($_POST['SaveValidatedInfo']))
 {	// Next bit only valid if user editing their own data
@@ -632,7 +637,7 @@ if ($dataToSave && !$promptPassword)
 	{
 		$message = str_replace("{MESSAGE}",$message,$USERSETTINGS_MESSAGE);			
 	}
-	else // backwards compatible
+	elseif(!deftrue('e_BOOTSTRAP')) // backwards compatible
 	{
 		$message = "<div style='text-align:center'>".$message.'</div>';
 		
@@ -681,9 +686,17 @@ if ($error)
 // --- User data has been updated here if appropriate ---
 $testSessionMessage = e107::getMessage()->get(E_MESSAGE_SUCCESS, 'default', true); // only success in the session
 if($testSessionMessage) $message = implode('<br />', $testSessionMessage); // we got raw message - array
+
 if (isset($message))
 {
-	$ns->tablerender($caption, $message);
+	if(deftrue('e_BOOTSTRAP'))
+	{
+		echo e107::getMessage()->addInfo($message)->render();	
+	}
+	else 
+	{
+		$ns->tablerender($caption, $message);
+	}	
 }
 
 

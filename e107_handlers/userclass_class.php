@@ -775,29 +775,37 @@ class user_class
 	{
 		$classIndex = abs($classnum);			// Handle negative class values
 		$classSign = (substr($classnum, 0, 1) == '-') ? '-' : '';
+		
 		if ($classIndex == e_UC_BLANK)  return '';
+		
 		$tmp = explode(',',$current_value);
 		$chk = in_array($classnum, $tmp) ? " checked='checked'" : '';
+		
 		if ($nest_level == 0)
 		{
 			$style = " style='font-weight:bold'";
 		}
 		else
 		{
-			$style = " style='text-indent:".(1.2*$nest_level)."em'";
+			$style = " style='text-indent:".(0.3 * $nest_level)."em'";
 		}
 		
 		$id = "{$treename}_{$classnum}";
 		
 		$ucString = $this->class_tree[$classIndex]['userclass_name'];
+		
 		if ($classSign == '-')
 		{
 			$ucString = str_replace('--CLASS--', $ucString, UC_LAN_INVERT);
 		}
-		return "<div {$style}><label>
-			".e107::getForm()->checkbox($treename.'[]', $classnum , $chk, "id=".$id)." ".$ucString.'  ('.$this->class_tree[$classIndex]['userclass_description'].")</label></div>\n";
+	
+		$description = $ucString.'  ('.$this->class_tree[$classIndex]['userclass_description'].")";
+
+		$id ="{$treename}_{$classSign}{$classnum}";
+
+		return "<div class='checkbox' {$style}>".e107::getForm()->checkbox($treename.'[]', $classnum , $chk, array("id"=>$id,'label'=>$description))."</div>\n";
 		
-		return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classSign}{$classnum}' value='{$classSign}{$classnum}'{$chk} />".$this->class_tree[$classIndex]['userclass_name'].'  ('.$this->class_tree[$classIndex]['userclass_description'].")</div>\n";
+	//	return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classSign}{$classnum}' value='{$classSign}{$classnum}'{$chk} />".$this->class_tree[$classIndex]['userclass_name'].'  ('.$this->class_tree[$classIndex]['userclass_description'].")</div>\n";
 	}
 
 
