@@ -28,7 +28,7 @@ if(e_AJAX_REQUEST && isset($_GET['src'])) // Ajax
 	$status = "Downloading...";
 	
 	$fl = e107::getFile();
-	//$fl->setAuthKey('username','password');
+	$fl->setAuthKey($e107SiteUsername,$e107SiteUserpass);
 	$fl->download($remotefile,'plugin');
 
 	exit;
