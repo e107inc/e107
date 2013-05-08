@@ -69,7 +69,7 @@ if(!class_exists('chatbox_shortcodes'))
 	class chatbox_shortcodes extends e_shortcode
 	{
 		
-		function sc_username($parm='')
+		function sc_cb_username($parm='')
 		{
 			list($cb_uid, $cb_nick) = explode(".", $this->var['cb_nick'], 2);
 			if($this->var['user_name'])
@@ -85,13 +85,13 @@ if(!class_exists('chatbox_shortcodes'))
 			return $cb_nick;	
 		}	
 		
-		function sc_timedate($parm='')
+		function sc_cb_timedate($parm='')
 		{
 			return  e107::getDate()->convert_date($this->var['cb_datestamp'], "relative");		
 		}
 			
 	
-		function sc_message($parm = '')
+		function sc_cb_message($parm = '')
 		{
 			if($this->var['cb_blocked'])
 			{
@@ -295,8 +295,12 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 	
 	if($CHATBOXSTYLE)
 	{
+		$legacySrch = array('{USERNAME}','{MESSAGE}','{TIMEDATE}');
+		$legacyRepl = array('{CB_USERNAME}','{CB_MESSAGE}','{CB_TIMEDATE}');	
+		
+		
 		$CHATBOX_TEMPLATE['start'] = "";
-		$CHATBOX_TEMPLATE['item'] = $CHATBOXSTYLE;
+		$CHATBOX_TEMPLATE['item'] = str_replace($legacySrch,$legacyRepl,$CHATBOXSTYLE);
 		$CHATBOX_TEMPLATE['end'] = "";
 	}
 	else 	// default chatbox style
@@ -306,9 +310,9 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 		$CHATBOX_TEMPLATE['start'] 	= "<ul class='media-list unstyled'>";
 		$CHATBOX_TEMPLATE['item'] 	= "<li class='media'>
 										<span class='media-object pull-left'>{CB_AVATAR}</span> 
-										<div class='media-body'><b>{USERNAME|chatbox}</b>&nbsp;
-										<small class='muted smalltext'>{TIMEDATE}</small><br />
-										<p>{MESSAGE}</p>
+										<div class='media-body'><b>{CB_USERNAME}</b>&nbsp;
+										<small class='muted smalltext'>{CB_TIMEDATE}</small><br />
+										<p>{CB_MESSAGE}</p>
 										</div>
 										</li>\n";
 										
