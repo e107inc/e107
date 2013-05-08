@@ -399,8 +399,12 @@ class e_form
 		$previnput	= $idinput."-preview";
 		$optioni 	= $idinput."-options";
 		
-		$img = (strpos($curVal,"://")!==false) ? $curVal : $tp->thumbUrl(e_AVATAR_DEFAULT.$curVal);
 		
+		$path = (substr($curVal,0,8) == '-upload-') ? '{e_AVATAR}upload/' : '{e_AVATAR}default/';
+		$curVal = str_replace('-upload-','',$curVal);
+	
+		$img = (strpos($curVal,"://")!==false) ? $curVal : $tp->thumbUrl($path.$curVal);
+				
 		if(!$curVal)
 		{
 			$img = $blankImg;	
@@ -409,25 +413,25 @@ class e_form
 		if($localonly == true)
 		{
 			$text = "<input class='tbox' style='width:80%' id='{$idinput}' type='hidden' name='image' size='40' value='{$curVal}' maxlength='100' />";			
-			$text .= "<img src='".$img."' id='{$previnput}' class='e-expandit e-tip avatar' style='cursor:pointer; width:".$pref['im_width']."px; height:".$pref['im_height']."px' title='Choose an avatar for yourself'/>"; // TODO LAN
+			$text .= "<img src='".$img."' id='{$previnput}' class='img-rounded e-expandit e-tip avatar' style='cursor:pointer; width:".$pref['im_width']."px; height:".$pref['im_height']."px' title='Choose an avatar for yourself'/>"; // TODO LAN
 		}
 		else
 		{			
 			$text = "<input class='tbox' style='width:80%' id='{$idinput}' type='text' name='image' size='40' value='$curVal' maxlength='100' title=\"".LAN_SIGNUP_111."\" />";
 			$text .= "<img src='".$img."' id='{$previnput}' style='display:none' />";
-			$text .= "<input class='btn button e-expandit' type ='button' style='cursor:pointer' size='30' value=\"Choose Avatar\"  />"; //TODO Common LAN. 
+			$text .= "<input class='img-rounded btn button e-expandit' type ='button' style='cursor:pointer' size='30' value=\"Choose Avatar\"  />"; //TODO Common LAN. 
 		}
 						
 		$avFiles = e107::getFile()->get_files(e_AVATAR_DEFAULT,".jpg|.png|.gif|.jpeg|.JPG|.GIF|.PNG");
 			
-		$text .= "\n<div id='{$optioni}' style='display:none' >\n"; //TODO unique id. 
+		$text .= "\n<div id='{$optioni}' style='display:none;padding:10px' >\n"; //TODO unique id. 
 		
 		if (vartrue($pref['avatar_upload']) && FILE_UPLOADS && vartrue($options['upload']))
 		{
 				$diz = LAN_USET_32.($pref['im_width'] || $pref['im_height'] ? "\n".str_replace(array('--WIDTH--','--HEIGHT--'), array($pref['im_width'], $pref['im_height']), LAN_USER_86) : "");
 	
-				$text .= "<div>".LAN_USET_26."<br />
-				<input class='tbox' name='file_userfile[avatar]' type='file' size='47' title=\"{$diz}\" />
+				$text .= "<div style='margin-bottom:10px'>".LAN_USET_26."
+				<input  class='tbox' name='file_userfile[avatar]' type='file' size='47' title=\"{$diz}\" />
 				</div>
 				<div class='divider'><span>OR</span></div>";
 		}
@@ -1695,6 +1699,11 @@ class e_form
 					if($optval) $ret .= " placeholder='{$optval}'";
 					break;
 					
+					
+				case 'autocomplete':
+					if($optval) $ret .= " autocomplete='{$optval}'";
+					break;
+					
 				case 'pattern':
 					if($optval) $ret .= " pattern='{$optval}'";
 					break;
@@ -1807,7 +1816,8 @@ class e_form
 			'label' 		=> '',
 			'placeholder' 	=> '',
 			'pattern'		=> '',
-			'other' 		=> ''
+			'other' 		=> '',
+			'autocomplete' 	=> ''
 			//	'multiple' => false, - see case 'select'
 		);
 

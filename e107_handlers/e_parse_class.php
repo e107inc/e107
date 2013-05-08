@@ -1935,6 +1935,8 @@ class e_parse extends e_parser
 			'e_MEDIA_IMAGE/' 	=> '{e_MEDIA_IMAGE}',
 			'e_MEDIA_ICON/' 	=> '{e_MEDIA_ICON}',
 			'e_AVATAR/' 		=> '{e_AVATAR}',
+			'e_AVATAR_DEFAULT/' => '{e_AVATAR_DEFAULT}',
+			'e_AVATAR_UPLOAD/' => '{e_AVATAR_UPLOAD}',
 			'e_WEB_JS/' 		=> '{e_WEB_JS}',
 			'e_WEB_CSS/' 		=> '{e_WEB_CSS}',
 			'e_WEB_IMAGE/' 		=> '{e_WEB_IMAGE}',
