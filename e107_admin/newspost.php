@@ -699,6 +699,11 @@ class news_admin_ui extends e_admin_ui
 					$_POST['news_meta_description'] = $row['news_meta_description'];
 				}
 			}
+			else // on submit
+			{
+				if(!empty($_POST['news_meta_keywords'])) $_POST['news_meta_keywords'] = eHelper::formatMetaKeys($_POST['news_meta_keywords']);
+			}
+			
 		}	
 	}
 }
