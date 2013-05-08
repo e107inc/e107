@@ -333,7 +333,7 @@ class e_db_mysql
 		{	// Need to get the total record count as well. Return code is a resource identifier
 			// Have to do this before any debug action, otherwise this bit gets messed up
 			$fr = ($this->pdo) ? $this->mySQLaccess->query('SELECT FOUND_ROWS()') : mysql_query('SELECT FOUND_ROWS()', $this->mySQLaccess);
-			$rc = ($this->pdo) ? $this->mySQLaccess->fetch() : mysql_fetch_array($fr);
+			$rc = ($this->pdo) ? $this->fetch() : mysql_fetch_array($fr);
 			$this->total_results = (int) $rc['FOUND_ROWS()'];
 		}
 
