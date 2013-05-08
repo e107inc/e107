@@ -391,13 +391,15 @@ class e_form
 		$pref 		= e107::getPref();
 		
 		$attr 		= "aw=".$pref['im_width']."&ah=".$pref['im_height'];
+		$tp->setThumbSize($pref['im_width'],$pref['im_height']);
+		
 		$blankImg 	= $tp->thumbUrl(e_IMAGE."generic/blank_avatar.jpg",$attr);
 		$localonly 	= true; //TODO add a pref for allowing external or internal avatars or both. 
 		$idinput 	= $this->name2id($name);
 		$previnput	= $idinput."-preview";
 		$optioni 	= $idinput."-options";
 		
-		$img = (strpos($curVal,"://")!==false) ? $curVal : $tp->thumbUrl(e_AVATAR_DEFAULT.$curVal,"aw=".vartrue($width)."&ah=".vartrue($height),true);
+		$img = (strpos($curVal,"://")!==false) ? $curVal : $tp->thumbUrl(e_AVATAR_DEFAULT.$curVal);
 		
 		if(!$curVal)
 		{
@@ -433,7 +435,7 @@ class e_form
 				
 		foreach($avFiles as $fi)
 		{
-			$img_path = $tp->thumbUrl(e_AVATAR_DEFAULT.$fi['fname'],$attr,true);	
+			$img_path = $tp->thumbUrl(e_AVATAR_DEFAULT.$fi['fname']);	
 			$text .= "\n<a class='e-expandit' title='Choose this avatar' href='#{$optioni}'><img src='".$img_path."' alt=''  onclick=\"insertext('".$fi['fname']."', '".$idinput."');document.getElementById('".$previnput."').src = this.src;\" /></a> ";			
 			//TODO javascript CSS selector 		
 		}

@@ -78,8 +78,9 @@ class usersettings_shortcodes extends e_shortcode
 	
 	
 	function sc_realname($parm)
-	{ 
-		$options = array('title'=> '', 'size' => 40);	
+	{
+		$pref = e107::getPref();
+		$options = array('title'=> '', 'size' => 40,'required'=>$pref['signup_option_realname']);	
 		return e107::getForm()->text('realname',$this->var['user_login'], 100, $options);
 	}
 	
@@ -198,9 +199,12 @@ class usersettings_shortcodes extends e_shortcode
 	}
 	
 	
-	
+	/**
+	 * @DEPRECATED - it is integreated with sc_signature now. 
+	 */
 	function sc_signature_help($parm)
 	{
+		return;
 		$pref = e107::getPref();
 		if(!check_class(varset($pref['signature_access'],0)))
 		{
@@ -396,6 +400,14 @@ class usersettings_shortcodes extends e_shortcode
 		
 		$extended_showed['field'][$parm] = 1;
 		return $ret;
+	}
+
+
+	function sc_updatesettingsbutton($parm='')
+	{
+		
+		return "<input class='button btn btn-primary' type='submit' name='updatesettings' value='".LAN_USET_37."' />";	
+		
 	}
 
 }
