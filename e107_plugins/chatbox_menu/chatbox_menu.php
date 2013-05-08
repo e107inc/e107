@@ -306,7 +306,7 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 		$CHATBOX_TEMPLATE['start'] 	= "<ul class='media-list unstyled'>";
 		$CHATBOX_TEMPLATE['item'] 	= "<li class='media'>
 										<span class='media-object pull-left'>{CB_AVATAR}</span> 
-										<div class='media-body'><b>{USERNAME}</b>&nbsp;
+										<div class='media-body'><b>{USERNAME|chatbox}</b>&nbsp;
 										<small class='muted smalltext'>{TIMEDATE}</small><br />
 										<p>{MESSAGE}</p>
 										</div>
