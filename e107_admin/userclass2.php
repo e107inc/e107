@@ -562,9 +562,9 @@ $text .= "</form></div><br /><br />";
 
 // $text .= $e_userclass->show_graphical_tree();
 
-
-$ns->tablerender(ADLAN_38.SEP.LAN_CREATE, $text);
-
+$title = $params == 'edit' ? LAN_EDIT : LAN_CREATE;
+$ns->tablerender(ADLAN_38.SEP.$title, $text);
+unset($title);
     break;				// End of 'config' option
 
 
@@ -903,7 +903,7 @@ function userclass2_adminmenu()
 		$tmp = explode(".", e_QUERY);
 	}
 	$action = vartrue($tmp[0],'list');
-	if(isset($_GET['action']) && 'edit' == $_GET['action']) $action = 'config';
+	if(isset($_GET['action']) && 'edit' == $_GET['action']) $action = 'list';
 
 	$var['list']['text'] = LAN_MANAGE;
 	$var['list']['link'] = 'userclass2.php';
@@ -1024,7 +1024,7 @@ class uclass_manager
 
 	//	$text .= $e_userclass->show_graphical_tree();	// Show the tree as well - sometimes more useful
 
-		$ns->tablerender(UCSLAN_21, $mes->render().$text );
+		$ns->tablerender(ADLAN_38, $mes->render().$text );
 
 	}
 }
