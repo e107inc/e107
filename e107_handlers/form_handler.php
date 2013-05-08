@@ -188,7 +188,7 @@ class e_form
 	 *  - typeahead: 'users' 
 	 * 
 	 */
-	function text($name, $value, $maxlength = 80, $options= array())
+	function text($name, $value = '', $maxlength = 80, $options= array())
 	{
 		if(is_string($options))
 		{
