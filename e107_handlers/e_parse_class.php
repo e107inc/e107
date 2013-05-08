@@ -1834,6 +1834,28 @@ class e_parse extends e_parser
 		return $text;
 	}
 
+
+	public function setThumbSize($w=null,$h=null,$crop=null)
+	{
+		if($w)
+		{
+			$this->thumbWidth = intval($w);	
+		}
+		
+		if($h)
+		{
+			$this->thumbHeight = intval($h);	
+		}	
+		
+		if($crop)
+		{
+			$this->thumbCrop = intval($crop);	
+		}				
+		
+	}
+
+
+
 	/**
 	 * @param $url
 	 * @param $options ??
