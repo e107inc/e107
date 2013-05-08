@@ -687,15 +687,37 @@ class e_parse_shortcode
 		$this->addedCodes = NULL;
 		
 		// former $sc_style - do it once here and not on every doCode loop - performance
-		$this->sc_style = e107::scStyle(); 
+		
+		$this->sc_style = e107::scStyle(); 	//FIXME - BC Problems and conflicts. - XXX Commenting this out will fix #3 below. 
+	
+		/* --------- BUG TEST Scenario -------------- 
+		 * Front-end Theme: Bootstrap
+		 * MENU-1 contains '{NAVIGATION=side}' on top and chatbox_menu below
+		 * URL to use: /usersettings.php - 'Signature' input should be enabled. 
+		 * Expected Result: 
+		 * 		1) {NAVIGATION=side} wrapped with $SC_WRAPPER ie. enclosed in box. 
+		 * 		2) Internal styling of chatbox_class not to be damaged by what happens globally ie. the text 'Display name' should not appear in the chatbox
+		 * 		3) Usersettings Signature box to appear wrapped in BC $sc_style pre/post - ie. should appear at the bottom of the html table.(not at the top) 
+		 * 		4) Existing Chatbox Styling (v1.x) not broken (ie. test with v1 theme). 		
+		 *  	- All of the above to occur without changes to usersetting_template.php - since its logic is that of v1.x templates. 
+		 * 
+		 * Things that may help: 
+		 * Modify e107::getScBatch() so that it never registers shortcodes globally;  ie. no overriding of existing shortcodes with it, as it is a replacement for non-global shortcode declaration in v1 
+		 * ONLY globally register shortcodes when they are declared in e_shortcode.php - this is consistent with the logic of e_xxxx which affect e107 Outside of the plugin/sript. (gallery plugin follows this logic)
+		 * 
+		 */
+		
+	
 		if(isset($sc_style) && is_array($sc_style))
 		{
-			$this->sc_style = array_merge($sc_style, $this->sc_style);
+			$this->sc_style = array_merge($sc_style, $this->sc_style); // XXX Commenting this out will fix #2 above. 
 		}
 
 		//object support
+		
 		if (is_object($extraCodes))
 		{
+	
 			$this->addedCodes = &$extraCodes;
 			
 			// TEMPLATEID_WRAPPER support - see contact template
@@ -737,6 +759,11 @@ class e_parse_shortcode
 		$this->addedCodes = $saveCodes;
 		$this->eVars = $saveVars; // restore eVars
 		$this->debug_legacy = null;
+		
+		
+	//	$this->sc_style = array();	 //XXX Adding this will also fix #2 above. 
+
+		
 		return $ret;
 	}
 
