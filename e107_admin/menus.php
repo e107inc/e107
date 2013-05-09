@@ -396,6 +396,39 @@ class e_layout
 		
 		if(vartrue($_GET['configure'])) //ie Inside the IFRAME. 
 		{
+				
+			e107::js('url',"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js");
+			e107::js('url',	"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css");
+			
+		 	
+			e107::js('inline','
+			 $(function() 
+			 {
+					
+				 	$( "#sortable" ).sortable({
+					revert: true
+				});
+				
+			 });
+		 ');
+		 	
+			
+		 
+		
+			e107::js('inline', "
+			
+			win = document.getElementById('menu_iframe').contentWindow;
+			win.jQuery(dragelement,parent.document).draggable({
+				connectToSortable : $('#sortable')
+			});
+			
+			",'jquery');	
+		
+			
+		
+			
+			
+			
 			$this->curLayout = varsettrue($_GET['configure'], $pref['sitetheme_deflayout']);
 			$this->renderLayout($this->curLayout);	
 		}
@@ -404,17 +437,19 @@ class e_layout
 			
 				// XXX HELP _ i don't work with iFrames. 
 			
-				e107::js('inline','
-		 $(function() {
+		e107::js('inline','
+		 $(function() 
+		 {
 			$( "#sortable" ).sortable({
 				revert: true
 			});
+			
 			$( ".draggable" ).draggable({
-				connectToSortable: "#sortable",
+				connectToSortable: $("#sortable"),
 				helper: "clone",
 				revert: "invalid",
 				cursor: "move",
-			//	iframeFix: true,
+				iframeFix: true,
 		        
 		        start: function(ev,ui)
 		        {
@@ -429,23 +464,12 @@ class e_layout
 		        }
 			});
 			
-			$( "ul, li" ).disableSelection();
+				$( "ul, li" ).disableSelection();
 			
-			// Not Working. 
-			$("#menu_iframe").load(function(){
-			    $("#menu_iframe").contents().find("#sortable").droppable({
-			        accept: ".drag",
-			        drop: function( event, ui ) {
-			            var html = "<div class=\'droptrue\'>"+ ui.draggable.html() + "</div>";
-			            //alert(html);
-			            $(this).append(html);   
-			        }
-			    });
+		
 			
-			});		
-			
-			});
-		');
+		});
+		','jquery');
 			
 			$this->scanForNew();
 			
@@ -472,6 +496,7 @@ class e_layout
 		
 		$this->menuData = ($data);
 		
+	//	print_a($this->menuData);
 		
 	}
 
@@ -540,7 +565,7 @@ class e_layout
 	private function renderMenu($row)
 	{
 	//	return print_a($row,true);
-		$TEMPLATE = '<li class="regularMenu" id="block-1-1"> '.$row['name'].' </li>'; // TODO perhaps a simple counter for the id 
+		$TEMPLATE = '<li class="regularMenu" id="block-'.$row['name'].'"> '.$row['name'].' </li>'; // TODO perhaps a simple counter for the id 
 	
 		return $TEMPLATE;	
 		
