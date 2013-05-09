@@ -23,19 +23,13 @@ if (!getperms("2"))
 	exit;
 }
 
-//include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+
+
+
 e107::coreLan('menus', true);
 e107::coreLan('admin', true);
 
-// FIXME - quick temporarry fix for missing icons on menu administration. We need different core style to be included (forced) here - e.g. e107_web/css/admin/sprite.css
-if(e_IFRAME) //<-- Check config and delete buttons if modifying
-{
 
-//e107::js('core','bootstrap/js/bootstrap.min.js');
-//e107::css('core','bootstrap/css/bootstrap.min.css');
-	e107::css('url','{e_THEME}/bootstrap/admin_style.css');
-
-}
 
 if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 {
@@ -316,6 +310,391 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 
 
 
+if($_SERVER['E_ENV_MENUS'] == 'developer')
+{
+	if(isset($_GET['configure']) || isset($_GET['iframe']))
+	{
+		//No layout parse when in iframe mod
+		define('e_IFRAME', true);
+	}
+	$mn = new e_layout;
+	//e107::js('core','jquery.scoped.js','jquery');
+//	e107::css('url',e_THEME.'jayya/style.css');
+	require_once("auth.php");
+	require_once("footer.php");
+	exit;
+}
+
+if($_SERVER['E_ENV_MENUS'] == 'developer')	
+{
+	function e_help()
+	{
+		$p = e107::getPref('e_menu_list');	// new storage for xxxxx_menu.php list. 
+		$sql = e107::getDb();
+
+		$text = '
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#plugins" data-toggle="tab">Plugins</a></li>	
+				<li><a href="#custom" data-toggle="tab">Custom</a></li>	
+			</ul>
+			<div class="tab-content">';	
+		
+				$text .= "
+				<div class='active tab-pane' id='plugins'>
+				<ul>";
+				
+				foreach($p as $menu => $folder)
+				{
+					$text .= "<li id='{$folder}' class='draggable' style='cursor:move'>".str_replace("_menu","",$menu)."</li>";	
+				}
+				
+				$text .= "</ul>
+				</div>
+				
+				<div class='tab-pane' id='custom'>";
+	
+				if($sql->select('page','*',"menu_name !='' ORDER BY menu_name"))
+				{
+					$text .= "<ul>";
+					while($row = $sql->fetch())
+					{
+						$text .= "<li id='".$row['page_id']."' class='draggable' style='cursor:move'>".$row['menu_name']."</li>";	
+					}
+						
+					$text .= "</ul>";			
+				}
+					
+				$text .= "</div>
+				
+			</div>";
+
+		return array('caption'=>'Menu Items','text'=>$text);
+	}
+}
+
+
+// XXX Menu Manager Re-Write with drag and drop and multi-dimensional array as storage. ($pref)
+// TODO Get Drag & Drop Working with the iFrame
+// TODO Sorting, visibility, parameters and delete. 
+
+class e_layout
+{
+	private $menuData = array();
+	
+	function __construct()
+	{
+		$pref = e107::getPref();
+		$ns = e107::getRender();
+		$this->convertMenuTable();
+		
+		
+		if(vartrue($_GET['configure'])) //ie Inside the IFRAME. 
+		{
+			$this->curLayout = varsettrue($_GET['configure'], $pref['sitetheme_deflayout']);
+			$this->renderLayout($this->curLayout);	
+		}
+		else // Parent - ie. main admin page. 
+		{
+			
+				// XXX HELP _ i don't work with iFrames. 
+			
+				e107::js('inline','
+		 $(function() {
+			$( "#sortable" ).sortable({
+				revert: true
+			});
+			$( ".draggable" ).draggable({
+				connectToSortable: "#sortable",
+				helper: "clone",
+				revert: "invalid",
+				cursor: "move",
+			//	iframeFix: true,
+		        
+		        start: function(ev,ui)
+		        {
+		        },
+		        drag: function(ev,ui)
+		        {
+		
+		        },
+		        stop: function(ev, ui)
+		        {
+		
+		        }
+			});
+			
+			$( "ul, li" ).disableSelection();
+			
+			// Not Working. 
+			$("#menu_iframe").load(function(){
+			    $("#menu_iframe").contents().find("#sortable").droppable({
+			        accept: ".drag",
+			        drop: function( event, ui ) {
+			            var html = "<div class=\'droptrue\'>"+ ui.draggable.html() + "</div>";
+			            //alert(html);
+			            $(this).append(html);   
+			        }
+			    });
+			
+			});		
+			
+			});
+		');
+			
+			$this->scanForNew();
+			
+			$this->renderInterface();	
+		}	
+	}
+	
+
+	/** 
+	 * Convert from e107_menu table to $pref format. 
+	 */
+	function convertMenuTable()
+	{
+		$sql = e107::getDb();
+		$sql->select('menus','*','menu_location !=0 ORDER BY menu_location,menu_order');
+		$data = array();
+
+		while($row = $sql->fetch())
+		{
+			$layout 	= vartrue($row['menu_layout'],'default');	
+			$location 	= $row['menu_location'];
+			$data[$layout][$location][] = array('name'=>$row['menu_name'],'class'=>$row['menu_class'],'path'=>$row['menu_path'],'pages'=>$row['menu_pages'],'parms'=>$row['menu_parms']);	
+		}
+		
+		$this->menuData = ($data);
+		
+		
+	}
+
+
+
+
+	
+	/**
+	 * Substitute all {MENU=X} and Render output. 
+	 */
+	private function renderLayout($layout='')
+	{
+
+		global $HEADER,$FOOTER,$style; // included by theme file in class2. 
+		
+		$tp = e107::getParser();
+		
+		$head = preg_replace_callback("/\{MENU=([\d]{1,3})(:[\w\d]*)?\}/", array($this, 'renderMenuArea'), $HEADER[THEME_LAYOUT]);
+		$foot = preg_replace_callback("/\{MENU=([\d]{1,3})(:[\w\d]*)?\}/", array($this, 'renderMenuArea'), $FOOTER[THEME_LAYOUT]);
+	
+		echo $tp->parsetemplate($head);
+	//	echo "<div>MAIN CONTENT</div>";
+		echo $tp->parsetemplate($foot);
+
+	}
+
+	
+	
+	
+
+
+	/**
+	 * Render {MENU=X} 
+	 */
+	private function renderMenuArea($matches)
+	{
+		
+		$area = $matches[1];
+		
+		// return print_a($this->menuData,true);
+		$text = "<div class='menu-panel'>";
+		$text .= "<div class='menu-panel-header' title=\"".MENLAN_34."\">Area ".$area."</div>";
+		
+		
+		if(vartrue($this->menuData[THEME_LAYOUT]) && is_array($this->menuData[THEME_LAYOUT][$area]))
+		{
+			$text .= "<ul id='sortable' class='unstyled'>";
+			
+			foreach($this->menuData[THEME_LAYOUT][$area] as $val)
+			{
+				$text .= $this->renderMenu($val);	
+				
+			}	
+			
+			$text .= "</ul>";
+		}
+		
+		$text .= "</div>";
+		
+		return $text;
+	}
+	
+	
+	
+	
+	private function renderMenu($row)
+	{
+	//	return print_a($row,true);
+		$TEMPLATE = '<li class="regularMenu" id="block-1-1"> '.$row['name'].' </li>'; // TODO perhaps a simple counter for the id 
+	
+		return $TEMPLATE;	
+		
+	}
+	
+	
+	/**
+	 * Scan Plugin folders for new _menu files. 
+	 */
+	private function scanForNew()
+	{
+		$fl 			= e107::getFile();
+		$fl->dirFilter 	= array('/', 'CVS', '.svn', 'languages');
+		$files 			= $fl->get_files(e_PLUGIN,"_menu\.php$",'standard',2);	
+		
+		$data = array();
+		
+		foreach($files as $file)
+		{
+			$path = trim(str_replace(e_PLUGIN,"",$file['path']),"/");
+			
+			if(e107::isInstalled($path))
+			{
+				$fname = str_replace(".php","",$file['fname']);
+				$data[$fname] = $path;
+			}
+		}
+		
+		$config = e107::getConfig('core');
+		$config->set('e_menu_list',$data);
+		$config->save();
+		
+	}	
+	
+
+
+
+	/**
+	 * Render the main area with TABS and iframes. 
+	 */
+	private function renderInterface()
+	{
+		$ns = e107::getRender();
+		$tp = e107::getParser();
+		
+		$TEMPL = $this->getHeadFoot();	
+			
+		$layouts = array_keys($TEMPL['HEADER']);
+		
+		$text = '<ul class="nav nav-tabs">';
+	
+		$active = ' class="active" ';
+		
+		foreach($layouts as $title)
+		{
+			$text .= '<li '.$active.'><a href="#'.$title.'" data-toggle="tab">'.$title.'</a></li>';	
+			$active = '';
+		}
+				
+		$text .= '</ul>';
+		$active = 'active';
+	
+		$text .= '		
+		<div class="tab-content">';	
+		
+			foreach($layouts as $title)
+			{
+				$text .= '
+					<div class="tab-pane '.$active.'" id="'.$title.'">
+					<iframe id="menu_iframe" class="well" width="100%" scrolling="no" style="width: 100%; height: 6933px; border: 0px none;" src="'.e_ADMIN_ABS.'menus.php?configure='.$title.'"></iframe>
+					</div>';	
+					
+				$active = '';
+			}
+		
+		$text .= '</div>';
+		
+	//	$ns->frontend = false;
+		
+		$ns->tablerender("Menu Layout",$text);		
+	}
+	
+	
+	
+	
+	
+	
+	private function getHeadFoot($_MLAYOUT=null)
+	{
+		$theme = e107::getPref('sitetheme');		
+		
+		$H = array();
+		$F = array();
+		
+		require(e_THEME.$theme."/theme.php");
+		
+		
+		if(is_string($HEADER))
+		{			
+			$H['default'] = $HEADER;
+			$F['default'] = $FOOTER;	
+		}
+		else
+		{
+			$H = $HEADER;
+			$F = $FOOTER;	
+		}
+		
+		
+	      //   0.6 / 0.7-1.x
+	    if(isset($CUSTOMHEADER) && isset($CUSTOMHEADER))
+		{
+	         if(!is_array($CUSTOMHEADER))
+			 {
+					$H['legacyCustom'] = $CUSTOMHEADER;
+	            	$F['legacyCustom'] = $CUSTOMFOOTER;
+			 }
+			 else 
+			 {
+					foreach($CUSTOMHEADER as $k=>$v)
+					{
+						$H[$k] = $v;
+						$F[$k] = $v;			
+					}		 
+			 }
+		}
+		
+		if($_MLAYOUT)
+		{
+	//		return array('HEADER'=>$H[$_MLAYOUT], 'FOOTER'=>$F[$_MLAYOUT]);	
+		}
+		
+		
+		return array('HEADER'=>$H, 'FOOTER'=>$F);
+	}
+	
+	//$ns = e107::getRender();
+	
+}
+
+
+
+
+//include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+
+
+// FIXME - quick temporarry fix for missing icons on menu administration. We need different core style to be included (forced) here - e.g. e107_web/css/admin/sprite.css
+if(e_IFRAME) //<-- Check config and delete buttons if modifying
+{
+
+//e107::js('core','bootstrap/js/bootstrap.min.js');
+//e107::css('core','bootstrap/css/bootstrap.min.css');
+	e107::css('url','{e_THEME}/bootstrap/admin_style.css');
+
+}
+
+
+
+
+
 
 $e_sub_cat = 'menus';
 
@@ -380,6 +759,18 @@ if($_POST)
 
 
 		//FIXME still used in e_HANDLER.menumanager_class.php
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		if (vartrue($message) != "")
 		{
 			echo $ns -> tablerender('Updated', "<div style='text-align:center'><b>".$message."</b></div><br /><br />");
@@ -402,11 +793,52 @@ if($_POST)
 
 		}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 // -----------------------------------------------------------------------------
 
 require_once("footer.php");
 
  // -----------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 function menus_adminmenu()

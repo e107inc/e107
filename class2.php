@@ -786,6 +786,7 @@ if (!class_exists('e107table', false))
 		public 	$eSetStyle;
 		private $themeClass = '';
 		private $adminThemeClass = '';
+		public  $frontend = null;
 		
 		
 		function __construct()
@@ -844,6 +845,8 @@ if (!class_exists('e107table', false))
 		}
 
 
+
+
 		/**
 		 * Output the styled template. 
 		 * @param $caption
@@ -853,7 +856,7 @@ if (!class_exists('e107table', false))
 		private function tablestyle($caption, $text, $mode)
 		{	
 		
-			if(class_exists($this->adminThemeClass))
+			if(class_exists($this->adminThemeClass) && ($this->frontend == false))
 			{
 				$thm = new $this->adminThemeClass();	
 			}
