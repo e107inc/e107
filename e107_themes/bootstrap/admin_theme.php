@@ -48,159 +48,164 @@ else
 $no_core_css = TRUE;
 
 
-function tablestyle($caption, $text, $mode) 
+class bootstrap_admintheme
 {
-	global $style;
-	
-	$class = '';
-	
 
-	
-	
-	if(is_string($mode) && $mode == 'admin_help') $class = ' '.str_replace('_', '-', $mode);
+	function tablestyle($caption, $text, $mode) 
+	{
+		global $style;
 		
-	if($mode == 'e_help')
-	{
-		$style = 'admin_menu';	
-	}
+		$class = '';
+		
 	
-	if($mode == 'core-infopanel_latest' || $mode == 'core-infopanel_status')
-	{
-		//return;
-		echo '	
-	<!-- Start Mode: '.$mode.' -->
-	<li class="span6 '.$mode.'" >
-				
-				<div class="well" style="padding:10px;min-height:220px;" >  
-				<div class="nav-header">'.$caption.'</div>
-				<!-- Content Start -->
-				'.$text.'
-				<!-- Content End -->
-				</div>
-				
-	</li>
-	<!-- End Mode: '.$mode.' -->
-		';
-		return;
-	}	
-
-	if($mode == 'personalize')
-	{
-		echo '
-	<!-- Mode: '.$mode.' -->
-	<div class="well" style="padding:10px">  
-				<div class="nav-header">'.$caption.'</div>
-				<!-- Content Start -->
-				'.$text.'
-				<!-- Content End -->
-			</div>
-	<!-- End Mode: '.$mode.' -->
-	';
+		
+		
+		if(is_string($mode) && $mode == 'admin_help') $class = ' '.str_replace('_', '-', $mode);
 			
-		return;
-	}
-	
-
-
-	
-	if($style == 'core-infopanel')
-	{
-		echo '	
-	<!-- Start Style: '.$style.' -->
+		if($mode == 'e_help')
+		{
+			$style = 'admin_menu';	
+		}
 		
-	<li class="span12">
-		
-			<div class="well" >  
-				<div class="nav-header">'.$caption.'</div>
-				<!-- Content Start -->
-				'.$text.'
-				<!-- Content End -->
-			</div>
-			
-	</li>
-	<!-- End Style: '.$style.' -->
-		';
-		return;
-	}
-	
-
-	if(deftrue('e_IFRAME'))
-	{
-		echo '
-			<div class="block">
-				<div class="block-text">
+		if($mode == 'core-infopanel_latest' || $mode == 'core-infopanel_status')
+		{
+			//return;
+			echo '	
+		<!-- Start Mode: '.$mode.' -->
+		<li class="span6 '.$mode.'" >
+					
+					<div class="well" style="padding:10px;min-height:220px;" >  
+					<div class="nav-header">'.$caption.'</div>
+					<!-- Content Start -->
 					'.$text.'
-				</div>
-			</div>
-		';
-		
-		return;
-	}
+					<!-- Content End -->
+					</div>
+					
+		</li>
+		<!-- End Mode: '.$mode.' -->
+			';
+			return;
+		}	
 	
-	if(trim($caption) == '')
-	{
-		$style = 'no_caption';	
-	}
-	
-	
-	switch(varset($style, 'admin_content'))
-	{
-
-		case 'admin_menu' :
+		if($mode == 'personalize')
+		{
 			echo '
+		<!-- Mode: '.$mode.' -->
+		<div class="well" style="padding:10px">  
+					<div class="nav-header">'.$caption.'</div>
+					<!-- Content Start -->
+					'.$text.'
+					<!-- Content End -->
+				</div>
+		<!-- End Mode: '.$mode.' -->
+		';
+				
+			return;
+		}
+		
+	
+	
+		
+		if($style == 'core-infopanel')
+		{
+			echo '	
+		<!-- Start Style: '.$style.' -->
+			
+		<li class="span12">
+			
+				<div class="well" >  
+					<div class="nav-header">'.$caption.'</div>
+					<!-- Content Start -->
+					'.$text.'
+					<!-- Content End -->
+				</div>
+				
+		</li>
+		<!-- End Style: '.$style.' -->
+			';
+			return;
+		}
+		
+	
+		if(deftrue('e_IFRAME'))
+		{
+			echo '
+				<div class="block">
+					<div class="block-text">
+						'.$text.'
+					</div>
+				</div>
+			';
+			
+			return;
+		}
+		
+		if(trim($caption) == '')
+		{
+			$style = 'no_caption';	
+		}
+		
+		
+		switch(varset($style, 'admin_content'))
+		{
+	
+			case 'admin_menu' :
+				echo '
+						<div class="well sidebar-nav" >  
+						<div class="nav-header">'.$caption.'</div>
+						'.$text.'
+					</div>
+				';
+			break;
+		
+			case 'site_info' :
+				echo '
 					<div class="well sidebar-nav" >  
-					<div class="nav-header">'.$caption.'</div>
-					'.$text.'
-				</div>
-			';
-		break;
-	
-		case 'site_info' :
-			echo '
-				<div class="well sidebar-nav" >  
-					<div class="nav-header">'.$caption.'</div>
-					<p style="padding:10px">
-						'.$text.'
-					</p>
-				</div>
-			';
-		break;
-	/*
-		case 'admin_content':
-			echo '
-				<div class="block">
-					<h2 class="caption">'.$caption.'</h2>
-					<div class="block-text">
-						'.$text.'
+						<div class="nav-header">'.$caption.'</div>
+						<p style="padding:10px">
+							'.$text.'
+						</p>
 					</div>
-				</div>
-			';
-		break;
-	*/
-	
-		case 'no_caption' :
-			echo '
-				<div class="block">
-					<div class="block-text">
-						'.$text.'
+				';
+			break;
+		/*
+			case 'admin_content':
+				echo '
+					<div class="block">
+						<h2 class="caption">'.$caption.'</h2>
+						<div class="block-text">
+							'.$text.'
+						</div>
 					</div>
-				</div>
-			';
-		break;
-	
-	
-		default:
-			echo '
-				<div class="block">
-					<h4 class="caption">'.$caption.'</h4>
-					<div class="block-text">
-						'.$text.'
+				';
+			break;
+		*/
+		
+			case 'no_caption' :
+				echo '
+					<div class="block">
+						<div class="block-text">
+							'.$text.'
+						</div>
 					</div>
-				</div>
-			';
-		break;
+				';
+			break;
+		
+		
+			default:
+				echo '
+					<div class="block">
+						<h4 class="caption">'.$caption.'</h4>
+						<div class="block-text">
+							'.$text.'
+						</div>
+					</div>
+				';
+			break;
+		}
 	}
 }
+
 
 $HEADER = '';
 $FOOTER = '';

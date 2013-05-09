@@ -780,27 +780,29 @@ if (!class_exists('e107table', false))
 	class e107table
 	{
 
-    	public $eMenuCount = 0;
-		public $eMenuArea;
-		public $eMenuTotal = array();
-		public $eSetStyle;
+    	public 	$eMenuCount = 0;
+		public 	$eMenuArea;
+		public 	$eMenuTotal = array();
+		public 	$eSetStyle;
+		private $themeClass = '';
+		private $adminThemeClass = '';
+		
+		
+		function __construct()
+		{
+		//	$this->themeClass 		= e107::getPref('sitetheme')."_theme"; // disabled at the moment. 
+			$this->adminThemeClass 	= e107::getPref('admintheme')."_admintheme";	// Check for a class. 
+		}
 		
 		/**
-		 * @param $caption
-		 * @param $text
-		 * @param $mode
+		 * @param $caption string caption text
+		 * @param $text body text
+		 * @param $mode unique identifier
 		 * @param $return boolean : return the html instead of echo it. 
+		 * @return null
 		 */
-		function tablerender($caption, $text, $mode = 'default', $return = false)
+		public function tablerender($caption, $text, $mode = 'default', $return = false)
 		{
-		
-			/*
-			# Render style table
-			# - parameter #1:                string $caption, caption text
-			# - parameter #2:                string $text, body text
-			# - return                       null
-			# - scope                        public
-			*/
 			$override_tablerender = e107::getSingleton('override', e_HANDLER.'override_class.php')->override_check('tablerender');
 
 			if ($override_tablerender)
@@ -820,8 +822,9 @@ if (!class_exists('e107table', false))
 				{
 					$this->eMenuCount++;
 				}
+				
 				ob_start();
-				tablestyle($caption, $text, $mode, array('menuArea'=>$this->eMenuArea, 'menuCount'=>$this->eMenuCount,	'menuTotal'=>varset($this->eMenuTotal[$this->eMenuArea]), 'setStyle'=>$this->eSetStyle));
+				$this->tablestyle($caption, $text, $mode);	
 				$ret=ob_get_contents();
 				ob_end_clean();
 
@@ -834,11 +837,48 @@ if (!class_exists('e107table', false))
 		 		{
 	         		$this->eMenuCount++;
 			   	}
-				tablestyle($caption, $text, $mode, array('menuArea'=>$this->eMenuArea,'menuCount'=>$this->eMenuCount,'menuTotal'=>varset($this->eMenuTotal[$this->eMenuArea]),'setStyle'=>$this->eSetStyle));
+				
+				$this->tablestyle($caption, $text, $mode);
 				return '';
 			}
 		}
+
+
+		/**
+		 * Output the styled template. 
+		 * @param $caption
+		 * @param $text
+		 * @param $mode
+		 */
+		private function tablestyle($caption, $text, $mode)
+		{	
+		
+			if(class_exists($this->adminThemeClass))
+			{
+				$thm = new $this->adminThemeClass();	
+			}
+			elseif(class_exists($this->themeClass)) // disabled at the moment. 
+			{
+				$thm = new $this->themeClass();
+			}
+			
+			if(is_object($thm))
+			{
+				$thm->tablestyle($caption, $text, $mode, array('menuArea'=>$this->eMenuArea, 'menuCount'=>$this->eMenuCount,	'menuTotal'=>varset($this->eMenuTotal[$this->eMenuArea]), 'setStyle'=>$this->eSetStyle));
+			}
+			else 
+			{
+				tablestyle($caption, $text, $mode, array('menuArea'=>$this->eMenuArea,'menuCount'=>$this->eMenuCount,'menuTotal'=>varset($this->eMenuTotal[$this->eMenuArea]),'setStyle'=>$this->eSetStyle));	
+			}
+
+		}
+
+
 	}
+
+	
+
+
 }
 //#############################################################
 
