@@ -453,7 +453,7 @@ function multilang_prefs()
 	
 	//XXX Remove later. 
 	// Enable only for developers - SetEnv E_ENVIRONMENT develop
-	if(!isset($_SERVER['E_ENVIRONMENT']) || $_SERVER['E_ENVIRONMENT'] !== 'develop') 
+	if(!isset($_SERVER['E_DEV_LANGUAGE']) || $_SERVER['E_DEV_LANGUAGE'] !== 'true') 
 	{
 		$lanlist = array('English'); 
 		$mes->addInfo("Alpha version currently supports only the English language. After most features are stable and English terms are optimized - translation will be possible.");
