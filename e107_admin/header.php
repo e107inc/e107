@@ -21,8 +21,10 @@ if (!defined('ADMIN_AREA'))
 	//avoid PHP warning
 	define("ADMIN_AREA", TRUE);
 }
-define("USER_AREA", FALSE);
-
+if(!defined('USER_AREA'))
+{
+	define("USER_AREA", FALSE);
+}
 e107::getDb()->db_Mark_Time('(Header Top)');
 
 // Admin template
@@ -154,13 +156,14 @@ if (isset($pref['del_unv']) && $pref['del_unv'] && $pref['user_reg_veri'] != 2)
 //
 
 // HTML 5 default. 
-if(!defined('XHTML4'))
+//if(!defined('XHTML4'))
 {
 	echo "<!doctype html>\n";
 	echo "<html".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " lang=\"".CORE_LC."\"" : "").">\n";	
 	echo "<head>\n";
 	echo "<meta charset='utf-8' />\n";
 }
+/*
 else // XHTML
 {
 	echo(defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='utf-8' "."?".">\n")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";	
@@ -171,6 +174,9 @@ else // XHTML
 	echo(defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
 	echo "<meta http-equiv='content-type' content='text/html; charset=utf-8' />\n";
 }
+ * 
+*/
+
 echo "<meta name=\"viewport\" content=\"width=device-width; initial-scale=1; maximum-scale=1\" />\n"; // Works better for iOS but still has some issues. 
 // echo (defined("VIEWPORT")) ? "<meta name=\"viewport\" content=\"".VIEWPORT."\" />\n" : "";
 
@@ -207,14 +213,14 @@ if (isset($eplug_css) && $eplug_css)
 
 
 
-	if(e107::getPref('admincss') == "admin_dark.css")
+	if(e107::getPref('admincss') == "admin_dark.css" && !vartrue($_GET['configure']))
 	{
 		$e_js->coreCSS('bootstrap/css/darkstrap.css');	
 		
 	} 
 
 //NEW - Iframe mod
-if (!defsettrue('e_IFRAME') && isset($pref['admincss']) && $pref['admincss'])
+if (!defsettrue('e_IFRAME') && isset($pref['admincss']) && $pref['admincss'] && !vartrue($_GET['configure']))
 {
 	$css_file = file_exists(THEME.'admin_'.$pref['admincss']) ? 'admin_'.$pref['admincss'] : $pref['admincss'];
 	//echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
@@ -223,13 +229,13 @@ if (!defsettrue('e_IFRAME') && isset($pref['admincss']) && $pref['admincss'])
 }
 elseif (isset($pref['themecss']) && $pref['themecss'])
 {
-	$css_file = file_exists(THEME.'admin_'.$pref['themecss']) ? 'admin_'.$pref['themecss'] : $pref['themecss'];
+	$css_file = (file_exists(THEME.'admin_'.$pref['themecss']) && !vartrue($_GET['configure'])) ? 'admin_'.$pref['themecss'] : $pref['themecss'];
 	//echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
 	$e_js->themeCSS($css_file);
 }
 else
 {
-	$css_file = file_exists(THEME.'admin_style.css') ? 'admin_style.css' : 'style.css';
+	$css_file = (file_exists(THEME.'admin_style.css') && !vartrue($_GET['configure'])) ? 'admin_style.css' : 'style.css';
 	//echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
 	$e_js->themeCSS($css_file);
 }
@@ -436,7 +442,7 @@ echo "</head>
 <body".$body_onload.">\n";
 
 echo getModal();
-echo getAlert();
+// echo getAlert();
 
   function getModal($caption = '', $type='')
     {
@@ -529,7 +535,7 @@ if ($e107_popup != 1)
 		//removed  check strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE
 		parse_admin($ADMIN_HEADER);
 	}
-	else 
+	elseif(!vartrue($_GET['configure'])) 
 	{
 		e107::css("inline","body { padding:0px } "); // default padding for iFrame-only. 
 	}
