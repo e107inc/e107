@@ -1,12 +1,9 @@
 <?php
 if ( ! defined('e107_INIT')) { exit(); }
 
-define('STANDARDS_MODE', TRUE);
-// define("VIEWPORT","width=device-width, initial-scale=1.0");
-define("VIEWPORT","width=1080");
 define("SEP"," <i class='icon-play e-breadcrumb'></i> ");
 
-e107::lan('theme');
+// e107::lan('theme');
 e107::js('core','bootstrap/js/bootstrap.min.js');
 e107::css('core','bootstrap/css/bootstrap.min.css');
 e107::css('core','bootstrap/css/bootstrap-responsive.min.css');
@@ -211,16 +208,7 @@ $HEADER = '';
 $FOOTER = '';
 
 
-define('ICONMAIL', 'email_16.png');
-define('ICONPRINT', 'print_16.png');
-define('ICONSTYLE', 'border: 0px');
-define('COMMENTLINK', LAN_THEME_2);
-define('COMMENTOFFSTRING', LAN_THEME_1);
-define('PRE_EXTENDEDSTRING', '<br /><br />');
-define('EXTENDEDSTRING', LAN_THEME_3);
-define('POST_EXTENDEDSTRING', '<br />');
-define('TRACKBACKSTRING', LAN_THEME_4);
-define('TRACKBACKBEFORESTRING', '&nbsp;|&nbsp;');
+/*
 
 $sc_style['NEWSIMAGE']['pre'] = '<div style="float: left; margin-right: 15px">';
 $sc_style['NEWSIMAGE']['post'] = '</div>';
@@ -250,4 +238,6 @@ $NEWSSTYLE = '
 	</table>
 </div>
 ';
+
+ */
 ?>
