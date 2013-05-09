@@ -61,9 +61,8 @@ class admin_shortcodes
 		$ns = e107::getRender();
 		$pref = e107::getPref();
 	
-		if(function_exists('e_help')) // new in v2.x for non-admin-ui admin pages. 
+		if(function_exists('e_help') && ($tmp =  e_help())) // new in v2.x for non-admin-ui admin pages. 
 		{
-			$tmp =  e_help();
 			return $ns->tablerender($tmp['caption'],$tmp['text'],'e_help',true);
 		}
 		

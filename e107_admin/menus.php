@@ -310,7 +310,7 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 
 
 
-if($_SERVER['E_ENV_MENUS'] == 'developer')
+if($_SERVER['E_DEV_MENU'] == 'true')
 {
 	if(isset($_GET['configure']) || isset($_GET['iframe']))
 	{
@@ -325,10 +325,16 @@ if($_SERVER['E_ENV_MENUS'] == 'developer')
 	exit;
 }
 
-if($_SERVER['E_ENV_MENUS'] == 'developer')	
-{
+// if($_SERVER['E_DEV_MENU'] == 'true')	
+//{
 	function e_help()
 	{
+		if($_SERVER['E_DEV_MENU'] != 'true')	
+		{
+			return false;		
+		}		
+			
+		
 		$p = e107::getPref('e_menu_list');	// new storage for xxxxx_menu.php list. 
 		$sql = e107::getDb();
 
@@ -370,7 +376,7 @@ if($_SERVER['E_ENV_MENUS'] == 'developer')
 
 		return array('caption'=>'Menu Items','text'=>$text);
 	}
-}
+//}
 
 
 // XXX Menu Manager Re-Write with drag and drop and multi-dimensional array as storage. ($pref)
