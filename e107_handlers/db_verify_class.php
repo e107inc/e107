@@ -868,15 +868,19 @@ class db_verify
 			$prefix .= "lan_".$language."_";
 			// $mes->addDebug("<h2>Retrieving Language Table Data: ".$prefix . $tbl."</h2>"); 				
 		}
-			
-		mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
+		
+		$sql = e107::getDb();
+		$sql->gen('SET SQL_QUOTE_SHOW_CREATE = 1');	
+	//	mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
 		$qry = 'SHOW CREATE TABLE `' . $prefix . $tbl . "`";
 		
 		
-		$z = mysql_query($qry);
+	//	$z = mysql_query($qry);
+		$z = $sql->gen($qry);
 		if($z)
 		{
-			$row = mysql_fetch_row($z);
+		//	$row = mysql_fetch_row($z);
+			$row = $sql->fetch(MYSQL_NUM);
 			//return $row[1];
 			return stripslashes($row[1]).';'; // backticks needed. 
 			// return str_replace("`", "", stripslashes($row[1])).';';
