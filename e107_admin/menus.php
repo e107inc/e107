@@ -139,7 +139,6 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 	e107::css('inline',"	.column { width:100%;  padding-bottom: 100px; }
 	
 
-	.regularMenu { cursor:move; border-bottom:1px dotted silver; margin-bottom:6px; padding-left:3px; padding-right:3px; padding-bottom:20px }
 	#core-menumanager-main th {color: silver; font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;  font-size:14px; font-weight: bold; line-height:24px; background-color:#2F2F2F }
 	.portlet { margin: 0 1em 1em 0; }
 	.portlet-header { margin: 0.3em; padding-bottom: 4px; padding-left: 0.2em; cursor:move }
@@ -324,11 +323,19 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 	.pull-right { float: right }
 	.pull-left { float: left }
 	
-	.menuOption { display: none }	 
+	.menuOption { opacity:0.2 }	 
+	.menuOption:hover { opacity:1 }
+	
+	.sortable li {  border-radius: 4px }
+	.sortable li:hover { background-color: silver; box-shadow:3px 3px 3px silver }
+	
+	.regularMenu { cursor:move; border-bottom:1px dotted silver; margin-bottom:6px; padding-left:3px; padding-right:3px; padding-top:10px; padding-bottom:10px }
 	
 	.ui-draggable	{  background-color: rgb(245, 245, 245); min-width:100px;}
 	
 	",'jquery');
+	
+	
 	
 	
 }
@@ -818,9 +825,9 @@ class e_layout
 		$visibilityLink = e_SELF."?enc=".base64_encode('lay='.$layout.'&vis='.$c.'&iframe=1');
 		
 		
-		$text .= "<a href='#'  class=' menu-btn menu-btn-mini menu-btn-danger deleteMenu pull-right' data-area='area-".$area."' data-delete='".$uniqueId."'>&times;</a>"; // $('.hello').remove();
+		$text .= "<a href='#'  class='menuOption menu-btn menu-btn-mini menu-btn-danger deleteMenu pull-right' data-area='area-".$area."' data-delete='".$uniqueId."'>&times;</a>"; // $('.hello').remove();
 		
-		$text .= '<a class="e-menumanager-option menu-btn pull-right" data-modal-caption="'.MENLAN_20.'" href="'.$visibilityLink.'" title="'.MENLAN_20.'"><i class="icon-search"></i></a>';
+		$text .= '<a class="menuOption e-menumanager-option menu-btn pull-right" data-modal-caption="'.MENLAN_20.'" href="'.$visibilityLink.'" title="'.MENLAN_20.'"><i class="icon-search"></i></a>';
 		
 		/*
 				
