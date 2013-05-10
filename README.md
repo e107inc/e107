@@ -16,7 +16,7 @@ e107 is a free (open-source) content management system which allows you to easil
 ### Reporting Bugs
 
 Be sure you are using the most recent version prior to reporting an issue. 
-Your may report any bugs or feature requests on Github (https://github.com/e107inc/e107/issues)
+You may report any bugs or feature requests on GitHub (https://github.com/e107inc/e107/issues)
 
 ### Pull-Requests
 
