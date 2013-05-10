@@ -628,8 +628,8 @@ class e_layout
 		print_r($save);
 		// return;
 		
-			
-		e107::getConfig('core')->set('menu_layouts', $save)->save(); //TODO Save directly into multi-dimensional array. ie. $layout / $area / array. 
+		e107::getConfig('core')->setPref('menu_layouts/'.$layout, $save)->save(); 	
+	//	e107::getConfig('core')->set('menu_layouts', $save)->save(); //TODO Save directly into multi-dimensional array. ie. $layout / $area / array. 
 		
 	}
 
