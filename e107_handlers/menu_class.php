@@ -65,22 +65,23 @@ class e_menu
 		
 	
 		
-	//	print_a($eMenuArea);
-	if($_SERVER['E_DEV_MENU'] == 'true')
-	{
-		$layouts = e107::getPref('menu_layouts');
-		if(!is_array($layouts))
+		//	print_a($eMenuArea);
+		if($_SERVER['E_DEV_MENU'] == 'true') // New in v2.x
 		{
-			$converted = $this->convertMenuTable();
-			e107::getConfig('core')->set('menu_layouts', $converted)->save();
+			$layouts = e107::getPref('menu_layouts');
+			if(!is_array($layouts))
+			{
+				$converted = $this->convertMenuTable();
+				e107::getConfig('core')->set('menu_layouts', $converted)->save();
+			}
+			
+			$eMenuArea = $this->getData(THEME_LAYOUT);
 		}
-		
-		$eMenuArea = $this->getData(THEME_LAYOUT);
-	}
-	//print_a($eMenuArea);
-		//$eMenuArea = $this->getDataLegacy();
-		
-	//	print_a($eMenuArea);
+		else // the old v1.x way. 
+		{
+			$eMenuArea = $this->getDataLegacy();
+		}
+	
 		
 		$total = array();
 		foreach($eMenuArea as $area => $val)
