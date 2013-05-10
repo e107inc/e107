@@ -301,11 +301,27 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 		color: white;
 	
 	}
+	 
+	ul.unstyled, ol.unstyled {
+   		 margin-left: 0px;
+    	list-style: none outside none;
+	}
+	
+	.pull-right { float: right }
+	.pull-left { float: left }
+	
+	.menuOption { display: none }	 
+	
+	.ui-draggable	{  background-color: rgb(245, 245, 245); min-width:100px;}
 	
 	",'jquery');
 	
 	
 }
+
+
+		
+	
 
 
 
@@ -422,17 +438,11 @@ class e_layout
 		$ns = e107::getRender();
 	//	$this->convertMenuTable();
 	
-		
-			
-		
 		$this->menuData = e107::getPref('menu_layouts');
-		
 		
 		if(e_AJAX_REQUEST)
 		{
-				
-				
-			
+
 			if(varset($_POST['data']))
 			{
 				$this->processPost();	
@@ -442,14 +452,25 @@ class e_layout
 			
 		}
 
-		
+
 		if(vartrue($_GET['configure'])) //ie Inside the IFRAME. 
 		{
-				
+									
+			global $HEADER,$FOOTER,$CUSTOMHEADER,$CUSTOMFOOTER,$style;
+			
+			$this->HEADER 		= $HEADER;
+			$this->FOOTER 		= $FOOTER;
+			$this->CUSTOMHEADER = $CUSTOMHEADER;
+			$this->CUSTOMFOOTER = $CUSTOMFOOTER;
+			$this->style		= $style;
+
+
+			unset($HEADER,$FOOTER,$CUSTOMHEADER,$CUSTOMFOOTER,$style);
+
+
 			e107::js('url',"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js");
 			e107::js('url',	"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css");
-			
-		 	
+
 			e107::js('inline','
 			 $(function() 
 			 {
@@ -467,7 +488,8 @@ class e_layout
 						  data: data
 						}).done(function( msg ) 
 						{
-							// alert("POSTED: "+ msg );
+							$(".menuOption").show();
+							 alert("POSTED: "+ msg );
 						});			
 			 			
 			 		}
@@ -477,11 +499,11 @@ class e_layout
 			 	
 					
 				 	$(".sortable").sortable({
-				 		
+				 		connectWith: $("#area-1,#area-2,#area-3,#area-4,#area-5"),
 						revert: true,
 						cursor: "move",
 						distance: 20,
-						containment: "parent",
+					//	containment: $(".sortable"),
 						update: function(ev,ui)
 				        {
 				        	var areaid = $(this).attr("id");
@@ -503,8 +525,8 @@ class e_layout
 					$( ".draggable", window.top.document).draggable({
 						connectToSortable: ".sortable",
 						helper: "clone",
-						appendTo: ".sortable", // "#area-1", //FIXME Needs to be a specific area. 
-						revert: true,
+						appendTo: $(this), // ".sortable", // "#area-1", //FIXME Needs to be a specific area. 
+						revert: "invalid",
 						containment: "parent",
 						delay: 0,
 						revertDuration: 100,
@@ -514,7 +536,7 @@ class e_layout
 						stop: function(e, ui) {  //TODO Rename layout and area in the hidden fields to that of the where the menu was dropped. 
                         	// Figure out positioning magic to determine if e.ui.position is in the iframe
                       	//	var what = $(this).parent().attr("id");
-							
+						//	$(".sortable").draggable( "disable" );
                         //	alert(what);
                     	}
 			       
@@ -559,14 +581,30 @@ class e_layout
 		
 			
 		*/
-			
-			
-			
+						
 			$this->curLayout = varsettrue($_GET['configure'], $pref['sitetheme_deflayout']);
 			$this->renderLayout($this->curLayout);	
+			
+		
+			
+			
 		}
 		else // Parent - ie. main admin page. 
 		{
+			e107::css('inline',"
+				.menuOption { display: none }
+			
+			");
+			
+			
+			$theme = e107::getPref('sitetheme');		
+			require_once(e_THEME.$theme."/theme.php");
+			
+			$this->HEADER 		= $HEADER;
+			$this->FOOTER 		= $FOOTER;
+			$this->CUSTOMHEADER = $CUSTOMHEADER;
+			$this->CUSTOMFOOTER = $CUSTOMFOOTER;
+			$this->style		= $style;
 			
 				// XXX HELP _ i don't work with iFrames. 
 		//	$("#sortable")
@@ -606,9 +644,7 @@ class e_layout
 		
 		','jquery');
 		*/
-		
 			
-	
 		 
 			$this->scanForNew();
 			
@@ -617,34 +653,32 @@ class e_layout
 	}
 	
 
-
+	/**
+	 * Save Menu Pref 
+	 */
 	protected function processPost()
 	{
-		$cnf = e107::getConfig('core');
-		$existing = $cnf->get('menu_layouts');
+		$cnf 		= e107::getConfig('core');
+		$existing 	= $cnf->get('menu_layouts');
 		
-			//	print_r($existing);
-			//	$data = array_merge($existing,$_POST['data']);
-			
-		$data = $_POST['data'];
-		
+		$data 	= $_POST['data'];
 		$layout = $_POST['layout'];
 		$area	= $_POST['area'];
 		
 		$save = array();
+		
+		
 		foreach($_POST['data']['layout']['area'] as $v) // reset key values. 
 		{
-			$save[$area][] = $v;	
+			$save[] = $v;	
 		}
 		
 	//	$save[$layout][$area] = $_POST['data']['layout']['area'];		
 		
 		print_r($save);
-		// return;
 		
-		e107::getConfig('core')->setPref('menu_layouts/'.$layout, $save)->save(); 	
-	//	e107::getConfig('core')->set('menu_layouts', $save)->save(); //TODO Save directly into multi-dimensional array. ie. $layout / $area / array. 
-		
+		e107::getConfig('core')->setPref('menu_layouts/'.$layout."/".$area, $save)->save(); 	
+			
 	}
 
 
@@ -654,14 +688,20 @@ class e_layout
 	 * Substitute all {MENU=X} and Render output. 
 	 */
 	private function renderLayout($layout='')
-	{
-
-		global $HEADER,$FOOTER,$style; // included by theme file in class2. 
+	{		
+		$ALL = $this->getHeadFoot();
+		
+		$HEADER = $ALL['HEADER'];
+		$FOOTER = $ALL['FOOTER'];
 		
 		$tp = e107::getParser();
-		
+			
 		$head = preg_replace_callback("/\{MENU=([\d]{1,3})(:[\w\d]*)?\}/", array($this, 'renderMenuArea'), $HEADER[THEME_LAYOUT]);
 		$foot = preg_replace_callback("/\{MENU=([\d]{1,3})(:[\w\d]*)?\}/", array($this, 'renderMenuArea'), $FOOTER[THEME_LAYOUT]);
+	
+		global $style;
+		
+		$style = $this->style;
 	
 		echo $tp->parsetemplate($head);
 	//	echo "<div>MAIN CONTENT</div>";
@@ -685,7 +725,7 @@ class e_layout
 		// return print_a($this->menuData,true);
 		$text = "<div class='menu-panel'>";
 		$text .= "<div class='menu-panel-header' title=\"".MENLAN_34."\">Area ".$area."</div>\n";
-		$text .= $frm->open('form-area-'.$area,'post',e_SELF);
+		
 		
 		$count = 0;
 		if(vartrue($this->menuData[THEME_LAYOUT]) && is_array($this->menuData[THEME_LAYOUT][$area]))
@@ -764,13 +804,8 @@ class e_layout
 		$text .= $frm->hidden('data[layout][area]['.$c.'][parms]',$row['parms'] );	
 
 
-		if(vartrue($_GET['configure'])) // Iframe Mode. 
-		{
-			$text .= "<a href='#' class='menu-btn btn-mini menu-btn-danger deleteMenu pull-right' data-area='area-".$area."' data-delete='".$uniqueId."'>&times;</a>"; // $('.hello').remove();
-		}
-
+		$text .= "<a href='#' class='menuOption menu-btn btn-mini menu-btn-danger deleteMenu pull-right' data-area='area-".$area."' data-delete='".$uniqueId."'>&times;</a>"; // $('.hello').remove();
 		
-			
 		return $text;
 		
 	}
@@ -829,9 +864,10 @@ class e_layout
 	{
 		$ns = e107::getRender();
 		$tp = e107::getParser();
-		$frm = e107::getForm();
+		$frm = e107::getForm();	
 		
 		$TEMPL = $this->getHeadFoot();	
+		
 			
 		$layouts = array_keys($TEMPL['HEADER']);
 		
@@ -891,50 +927,46 @@ class e_layout
 	
 	
 	
-	private function getHeadFoot($_MLAYOUT=null)
+	private function getHeadFoot()
 	{
-		$theme = e107::getPref('sitetheme');		
-		
+	
 		$H = array();
 		$F = array();
 		
-		require(e_THEME.$theme."/theme.php");
-		
-		
-		if(is_string($HEADER))
+		if(is_string($this->HEADER))
 		{			
-			$H['default'] = $HEADER;
-			$F['default'] = $FOOTER;	
+			$H['default'] = $this->HEADER;
+			$F['default'] = $this->FOOTER;	
 		}
 		else
 		{
-			$H = $HEADER;
-			$F = $FOOTER;	
+			$H = $this->HEADER;
+			$F = $this->FOOTER;	
 		}
 		
+
 		
 	      //   0.6 / 0.7-1.x
-	    if(isset($CUSTOMHEADER) && isset($CUSTOMHEADER))
+	    if(isset($this->CUSTOMHEADER) && isset($this->CUSTOMHEADER))
 		{
-	         if(!is_array($CUSTOMHEADER))
+	         if(!is_array($this->CUSTOMHEADER))
 			 {
-					$H['legacyCustom'] = $CUSTOMHEADER;
-	            	$F['legacyCustom'] = $CUSTOMFOOTER;
+					$H['legacyCustom'] = $this->CUSTOMHEADER;
+	            	$F['legacyCustom'] = $this->CUSTOMFOOTER;
 			 }
 			 else 
 			 {
-					foreach($CUSTOMHEADER as $k=>$v)
+					foreach($this->CUSTOMHEADER as $k=>$v)
 					{
-						$H[$k] = $v;
-						$F[$k] = $v;			
-					}		 
+						$H[$k] = $v;	
+					}
+					foreach($this->CUSTOMFOOTER as $k=>$v)
+					{
+						$F[$k] = $v;	
+					}				 
 			 }
 		}
-		
-		if($_MLAYOUT)
-		{
-	//		return array('HEADER'=>$H[$_MLAYOUT], 'FOOTER'=>$F[$_MLAYOUT]);	
-		}
+
 		
 		
 		return array('HEADER'=>$H, 'FOOTER'=>$F);

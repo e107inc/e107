@@ -138,6 +138,12 @@ class e_menu
 	protected function getData($layout)
 	{
 		$pref = e107::getPref('menu_layouts');
+		
+		if(!varset($pref[$layout]))
+		{
+			return array();	
+		}
+		
 			
 		foreach($pref[$layout] as $area=>$v);
 		{
