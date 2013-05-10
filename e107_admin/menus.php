@@ -383,7 +383,13 @@ if($_SERVER['E_DEV_MENU'] == 'true')
 						$text .= "<li id='".$row['page_id']."' class='draggable regularMenu' style='cursor:move'>";
 					//	$text .= $row['menu_name'];
 						
-						$text .= e_layout::renderMenuOptions($row);
+						$defaults = array(
+							'name'	=> $row['menu_name'],
+							'path'	=> $row['page_id'],
+							'class'	=> '0'
+						);
+						
+						$text .= e_layout::renderMenuOptions($defaults,'layout','area',$c);
 						
 						$text .= "</li>";	
 					}
@@ -784,9 +790,23 @@ class e_layout
 		
 		foreach($files as $file)
 		{
-			$path = trim(str_replace(e_PLUGIN,"",$file['path']),"/");
+			$valid_menu = false;
 			
-		//	 if(e107::isInstalled($path) )
+			if (file_exists($file['path'].'/plugin.xml') || file_exists($file['path'].'/plugin.php'))
+			{
+				if (e107::isInstalled($parent_dir))
+				{  
+					$valid_menu = TRUE;		// Whether new or existing, include in list
+				}
+			}
+			else  // Just add the menu anyway
+			{
+				$valid_menu = TRUE;
+			}
+			
+			$path = trim(str_replace(e_PLUGIN,"",$file['path']),"/");
+
+			if($valid_menu)
 			{
 				$fname = str_replace(".php","",$file['fname']);
 				$data[$fname] = $path;
