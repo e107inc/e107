@@ -311,7 +311,7 @@ class private_message
 				{
 					$ret .= str_replace(array('--GOOD--', '--FAIL--'), $aCount, LAN_PM_71).'<br />';
 				}
-				$sq->delete('private_msg', 'pm_id = '.$pmid);
+				$sql->delete('private_msg', 'pm_id = '.$pmid);
 			}
 			else
 			{
