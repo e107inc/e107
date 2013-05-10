@@ -521,9 +521,15 @@ class e_layout
 					{
 						var deleteId = $(this).attr("data-delete");
 						var area 	= $(this).attr("data-area");
-						$("#"+deleteId).hide("slow");
-						$("#"+deleteId).remove();
+						$("#"+deleteId).hide("slow", function(){
+							 $("#"+deleteId).remove();
+						});
+						
+						
+					//	$("#"+deleteId).remove();
 					//	alert(deleteId + " " + area);
+					
+					
 						saveData(area);
 					});
 					
@@ -713,7 +719,8 @@ class e_layout
 	private function renderMenu($row, $layout, $area, $count)
 	{
 	//	return print_a($row,true);
-		$uniqueId = "menu_".$row['path'].'_'.$count;
+		$frm = e107::getForm();
+		$uniqueId = "menu_".$frm->name2id($row['path']).'_'.$count;
 	
 		$TEMPLATE = '<li class="regularMenu" id="'.$uniqueId.'"> '.$this->renderMenuOptions($row, $layout, $area,$count,$uniqueId).' </li>
 		'; // TODO perhaps a simple counter for the id 
