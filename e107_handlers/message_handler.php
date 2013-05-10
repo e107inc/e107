@@ -18,6 +18,10 @@ if (!defined('e107_INIT')) { exit; }
 /*
  * Type defines
  * XXX - convert to eMessage class constants
+ * @note 07 May 2013: These have been converted to eMessage class constants!
+ *       Example: eMessage::E_MESSAGE_SUCCESS is 'success'
+ *             -- Deltik
+ *       P.S. Now somebody needs to get rid of these universal constants...
  */
 define('E_MESSAGE_INFO', 		'info');
 define('E_MESSAGE_SUCCESS', 	'success');
@@ -39,6 +43,17 @@ define('E_MESSAGE_NODISPLAY',	'nodisplay'); // Appears to be needed by update_ro
  */
 class eMessage
 {
+	/**
+	 * Type defines
+	 */
+	 const E_INFO       = 'info';
+	 const E_SUCCESS    = 'success';
+	 const E_WARNING    = 'warning';
+	 const E_ERROR      = 'error';
+	 const E_DEBUG      = 'debug';
+	 const E_NODISPLAY  = 'nodisplay';
+	
+	
 	/**
 	 * System Message Array
 	 * in format [type][message_stack] = array(message[, ...])
@@ -172,7 +187,7 @@ class eMessage
 	 * @param boolean $session
 	 * @return eMessage
 	 */
-	public function add($message, $type = E_MESSAGE_INFO, $session = false)
+	public function add($message, $type = eMessage::E_INFO, $session = false)
 	{
 		if(empty($message)) return $this;
 		
