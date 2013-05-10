@@ -382,6 +382,7 @@ if($_SERVER['E_DEV_MENU'] == 'true')
 // XXX Menu Manager Re-Write with drag and drop and multi-dimensional array as storage. ($pref)
 // TODO Get Drag & Drop Working with the iFrame
 // TODO Sorting, visibility, parameters and delete. 
+// TODO Get THIS http://jsbin.com/odiqi3  working with iFrames!! XXX XXX 
 
 class e_layout
 {
@@ -392,6 +393,34 @@ class e_layout
 		$pref = e107::getPref();
 		$ns = e107::getRender();
 		$this->convertMenuTable();
+		
+		
+		
+		
+		if(e_AJAX_REQUEST)
+		{
+			if(varset($_POST['data']))
+			{
+				$_SESSION['menuData'] = $_POST['data'];	
+				
+				$cnf = e107::getConfig('core');
+				$existing = $cnf->get('menu_layouts');
+			//	print_r($existing);
+			//	$data = array_merge($existing,$_POST['data']);
+				$data = $_POST['data'];
+				print_r($data);
+			
+				e107::getConfig('core')->set('menu_layouts', $data)->save();
+			
+			}
+			
+			exit;
+			
+		}
+				
+			
+			
+			
 		
 		
 		if(vartrue($_GET['configure'])) //ie Inside the IFRAME. 
@@ -405,15 +434,36 @@ class e_layout
 			 $(function() 
 			 {
 					
-				 	$( "#sortable" ).sortable({
-					revert: true
-				});
+				 	$( ".sortable" ).sortable({
+				 		
+						revert: true,
+						cursor: "move",
+						distance: 20,
+						containment: "parent",
+						update: function(ev,ui)
+				        {
+				        	var areaid = $(this).attr("id");
+							var formid = "#form-" + areaid;
+							var form = $(formid);
+							var data = form.serialize();
+							
+							$.ajax({
+							  type: "POST",
+							  url: "menus.php",
+							  data: data
+					
+							}).done(function( msg ) 
+							{
+								alert(" Updated in DB "+ msg );
+							});
+				        }
+					});
 				
 			 });
 		 ');
 		 	
 			
-		 
+		 /*
 		
 			e107::js('inline', "
 			
@@ -425,7 +475,7 @@ class e_layout
 			",'jquery');	
 		
 			
-		
+		*/
 			
 			
 			
@@ -436,41 +486,55 @@ class e_layout
 		{
 			
 				// XXX HELP _ i don't work with iFrames. 
-			
+		//	$("#sortable")
+		//$("iframe").contents().find(".sortable")	
+		
+		/*	
 		e107::js('inline','
 		 $(function() 
 		 {
-			$( "#sortable" ).sortable({
+			$( ".sortable" ).sortable({
 				revert: true
 			});
 			
 			$( ".draggable" ).draggable({
-				connectToSortable: $("#sortable"),
+				connectToSortable: $(".sortable"),
 				helper: "clone",
 				revert: "invalid",
 				cursor: "move",
-				iframeFix: true,
+				iframeFix: true
 		        
-		        start: function(ev,ui)
-		        {
-		        },
-		        drag: function(ev,ui)
-		        {
-		
-		        },
-		        stop: function(ev, ui)
-		        {
-		
-		        }
+		       
 			});
 			
 				$( "ul, li" ).disableSelection();
 			
-		
+			
+			
+			$("#menu_frame").load(function(){
+			    $("#menu_frame").contents().find("#sortable").droppable({
+			        accept: ".drag",
+			        drop: function( event, ui ) {
+			            var html = "<div class=\"droptrue\">"+ ui.draggable.html() + "</div>";
+			            //alert(html);
+			            $(this).append(html);   
+			        }
+			    });
+			
+			});
+			
+			
+				
 			
 		});
+		
+		
+		
+		
 		','jquery');
 			
+		 */
+		 
 			$this->scanForNew();
 			
 			$this->renderInterface();	
@@ -483,6 +547,14 @@ class e_layout
 	 */
 	function convertMenuTable()
 	{
+		if(isset($_SESSION['menuData']))
+		{
+			$this->menuData = $_SESSION['menuData'];	
+			return;
+		}
+		
+		
+		
 		$sql = e107::getDb();
 		$sql->select('menus','*','menu_location !=0 ORDER BY menu_location,menu_order');
 		$data = array();
@@ -533,22 +605,23 @@ class e_layout
 	 */
 	private function renderMenuArea($matches)
 	{
-		
+		$frm = e107::getForm();
 		$area = $matches[1];
 		
 		// return print_a($this->menuData,true);
 		$text = "<div class='menu-panel'>";
-		$text .= "<div class='menu-panel-header' title=\"".MENLAN_34."\">Area ".$area."</div>";
+		$text .= "<div class='menu-panel-header' title=\"".MENLAN_34."\">Area ".$area."</div>\n";
+		$text .= $frm->open('form-area-'.$area,'post',e_SELF);
 		
-		
+		$count = 0;
 		if(vartrue($this->menuData[THEME_LAYOUT]) && is_array($this->menuData[THEME_LAYOUT][$area]))
 		{
-			$text .= "<ul id='sortable' class='unstyled'>";
+			$text .= "<ul id='area-".$area."' class='sortable unstyled'>";
 			
 			foreach($this->menuData[THEME_LAYOUT][$area] as $val)
 			{
-				$text .= $this->renderMenu($val);	
-				
+				$text .= $this->renderMenu($val,$area,$count);	
+				$count++;
 			}	
 			
 			$text .= "</ul>";
@@ -556,20 +629,51 @@ class e_layout
 		
 		$text .= "</div>";
 		
+	//	$text .= $frm->button('submit','submit','submit','submit');
+		
+		$text .= $frm->close();
+		
 		return $text;
 	}
 	
 	
 	
 	
-	private function renderMenu($row)
+	private function renderMenu($row, $area, $count)
 	{
 	//	return print_a($row,true);
-		$TEMPLATE = '<li class="regularMenu" id="block-'.$row['name'].'"> '.$row['name'].' </li>'; // TODO perhaps a simple counter for the id 
+		$TEMPLATE = '<li class="regularMenu" id="'.$row['name'].'"> '.$this->renderMenuOptions($row, $area,$count).' </li>
+		'; // TODO perhaps a simple counter for the id 
 	
 		return $TEMPLATE;	
 		
 	}
+	
+
+
+
+	
+	private function renderMenuOptions($row,$area,$c)
+	{
+		$frm = e107::getForm();
+		
+		$text = $row['name'];
+		
+		//TODO Delete, Config etc. 
+		
+		//$data[$layout][$location][] = array('name'=>$row['menu_name'],'class'=>$row['menu_class'],'path'=>$row['menu_path'],'pages'=>$row['menu_pages'],'parms'=>$row['menu_parms']);	
+	//	$area = 'area_'.$area;
+		
+		$text .= $frm->hidden('data['.THEME_LAYOUT.']['.$area.']['.$c.'][name]',$row['name'] );
+		$text .= $frm->hidden('data['.THEME_LAYOUT.']['.$area.']['.$c.'][class]',$row['class'] );				
+		$text .= $frm->hidden('data['.THEME_LAYOUT.']['.$area.']['.$c.'][path]',$row['path'] );
+		$text .= $frm->hidden('data['.THEME_LAYOUT.']['.$area.']['.$c.'][pages]',$row['pages'] );		
+		$text .= $frm->hidden('data['.THEME_LAYOUT.']['.$area.']['.$c.'][parms]',$row['parms'] );		
+				
+		return $text;
+		
+	}
+	
 	
 	
 	/**
@@ -610,10 +714,29 @@ class e_layout
 	{
 		$ns = e107::getRender();
 		$tp = e107::getParser();
+		$frm = e107::getForm();
 		
 		$TEMPL = $this->getHeadFoot();	
 			
 		$layouts = array_keys($TEMPL['HEADER']);
+		
+		e107::js('inline','
+		 $(function() 
+		 {
+			$(".draggable").draggable({
+					connectToSortable: $(".sortable"),
+					helper: "clone",
+					revert: "invalid",
+					cursor: "move",
+					iframeFix: true,
+			        refreshPositions: true
+			       
+				});
+		 })'
+		 );
+		
+
+		
 		
 		$text = '<ul class="nav nav-tabs">';
 	
@@ -635,7 +758,7 @@ class e_layout
 			{
 				$text .= '
 					<div class="tab-pane '.$active.'" id="'.$title.'">
-					<iframe id="menu_iframe" class="well" width="100%" scrolling="no" style="width: 100%; height: 6933px; border: 0px none;" src="'.e_ADMIN_ABS.'menus.php?configure='.$title.'"></iframe>
+					<iframe id="iframe-'.$frm->name2id($title).'" class="well" width="100%" scrolling="no" style="width: 100%; height: 6933px; border: 0px none;" src="'.e_ADMIN_ABS.'menus.php?configure='.$title.'"></iframe>
 					</div>';	
 					
 				$active = '';
