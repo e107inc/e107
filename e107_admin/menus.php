@@ -499,7 +499,9 @@ class e_layout
 						helper: "clone",
 						appendTo: ".sortable", // "#area-1", //FIXME Needs to be a specific area. 
 						revert: true,
-						
+						containment: "parent",
+						delay: 0,
+						revertDuration: 100,
 						cursor: "move",
 						iframeFix: true,
 						containment: false,
@@ -620,7 +622,7 @@ class e_layout
 		$save = array();
 		foreach($_POST['data']['layout']['area'] as $v) // reset key values. 
 		{
-			$save[$layout][$area][] = $v;	
+			$save[$area][] = $v;	
 		}
 		
 	//	$save[$layout][$area] = $_POST['data']['layout']['area'];		
@@ -711,7 +713,9 @@ class e_layout
 	private function renderMenu($row, $layout, $area, $count)
 	{
 	//	return print_a($row,true);
-		$TEMPLATE = '<li class="regularMenu" id="'.$row['name'].'_'.$count.'"> '.$this->renderMenuOptions($row, $layout, $area,$count).' </li>
+		$uniqueId = "menu_".$row['path'].'_'.$count;
+	
+		$TEMPLATE = '<li class="regularMenu" id="'.$uniqueId.'"> '.$this->renderMenuOptions($row, $layout, $area,$count,$uniqueId).' </li>
 		'; // TODO perhaps a simple counter for the id 
 	
 		return $TEMPLATE;	
@@ -727,7 +731,7 @@ class e_layout
 	 * @param number $area as in {MENU=x}
 	 * @param incrementor number. 
 	 */
-	public function renderMenuOptions($row, $layout, $area, $c)
+	public function renderMenuOptions($row, $layout, $area, $c, $uniqueId)
 	{
 		$frm = e107::getForm();
 		
@@ -749,7 +753,7 @@ class e_layout
 
 		if(vartrue($_GET['configure'])) // Iframe Mode. 
 		{
-			$text .= "<a href='#' class='menu-btn btn-mini menu-btn-danger deleteMenu pull-right' data-area='area-".$area."' data-delete='".$row['name']."_".$c."'>&times;</a>"; // $('.hello').remove();
+			$text .= "<a href='#' class='menu-btn btn-mini menu-btn-danger deleteMenu pull-right' data-area='area-".$area."' data-delete='".$uniqueId."'>&times;</a>"; // $('.hello').remove();
 		}
 
 		

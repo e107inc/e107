@@ -121,7 +121,7 @@ class e_menu
 		{
 			$layout 	= vartrue($row['menu_layout'],'default');	
 			$location 	= $row['menu_location'];
-			$data[$layout][$location][] = array('name'=>$row['menu_name'],'class'=>$row['menu_class'],'path'=>$row['menu_path'],'pages'=>$row['menu_pages'],'parms'=>$row['menu_parms']);	
+			$data[$layout][$location][] = array('name'=>$row['menu_name'],'class'=> intval($row['menu_class']),'path'=>$row['menu_path'],'pages'=>$row['menu_pages'],'parms'=>$row['menu_parms']);	
 		}
 		
 		return $data;		
