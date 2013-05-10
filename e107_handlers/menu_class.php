@@ -63,45 +63,24 @@ class e_menu
 			return;
 		}
 		
-		$menu_layout_field = THEME_LAYOUT!=e107::getPref('sitetheme_deflayout') ? THEME_LAYOUT : "";
-		
-	//	e107::getCache()->CachePageMD5 = md5(e_LANGUAGE.$menu_layout_field); // Disabled by line 93 of Cache class. 
-		//FIXME add a function to the cache class for this. 
-		
-		 $menu_data = e107::getCache()->retrieve_sys("menus_".USERCLASS_LIST."_".md5(e_LANGUAGE.$menu_layout_field));
-	//	$menu_data = e107::getCache()->retrieve_sys("menus_".USERCLASS_LIST);
-		$menu_data = e107::getArrayStorage()->ReadArray($menu_data);
-		
 	
 		
-		
-		
-		$eMenuArea = array();
-		// $eMenuList = array();
-		//	$eMenuActive	= array();  // DEPRECATED
-		if(!is_array($menu_data))
+	//	print_a($eMenuArea);
+	if($_SERVER['E_DEV_MENU'] == 'true')
+	{
+		$layouts = e107::getPref('menu_layouts');
+		if(!is_array($layouts))
 		{
-			$menu_qry = 'SELECT * FROM #menus WHERE menu_location > 0 AND menu_class IN ('.USERCLASS_LIST.') AND menu_layout = "'.$menu_layout_field.'" ORDER BY menu_location,menu_order';
-			if(e107::getDb()->db_Select_gen($menu_qry))
-			{
-				while($row = e107::getDb()->db_Fetch())
-				{
-					$eMenuArea[$row['menu_location']][] = $row;
-				}
-			}
-			$menu_data['menu_area'] = $eMenuArea;
-			$menuData = e107::getArrayStorage()->WriteArray($menu_data, false);
-		//	e107::getCache()->set_sys('menus_'.USERCLASS_LIST, $menuData);
-			e107::getCache()->set_sys('menus_'.USERCLASS_LIST.'_'.md5(e_LANGUAGE.$menu_layout_field), $menuData);
+			$converted = $this->convertMenuTable();
+			e107::getConfig('core')->set('menu_layouts', $converted)->save();
 		}
-		else
-		{
-			$eMenuArea = $menu_data['menu_area'];
-		}
+		
+		$eMenuArea = $this->getData(THEME_LAYOUT);
+	}
+	//print_a($eMenuArea);
+		//$eMenuArea = $this->getDataLegacy();
 		
 	//	print_a($eMenuArea);
-	//	$eMenuArea = $this->getData(THEME_LAYOUT);
-		
 		
 		$total = array();
 		foreach($eMenuArea as $area => $val)
@@ -128,7 +107,25 @@ class e_menu
 		e107::getRender()->eMenuTotal = $total;
 	}
 
-	
+	/** 
+	 * Convert from v1.x e107_menu table to v2.x $pref format. 
+	 */
+	function convertMenuTable()
+	{
+		$sql = e107::getDb();
+		
+		$sql->select('menus','*','menu_location !=0 ORDER BY menu_location,menu_order');
+		$data = array();
+
+		while($row = $sql->fetch())
+		{
+			$layout 	= vartrue($row['menu_layout'],'default');	
+			$location 	= $row['menu_location'];
+			$data[$layout][$location][] = array('name'=>$row['menu_name'],'class'=>$row['menu_class'],'path'=>$row['menu_path'],'pages'=>$row['menu_pages'],'parms'=>$row['menu_parms']);	
+		}
+		
+		return $data;		
+	}	
 	
 	
 	
@@ -143,7 +140,7 @@ class e_menu
 			
 		foreach($pref[$layout] as $area=>$v);
 		{
-			$c = 0;
+			$c = 1;
 			
 			foreach($v as $val)
 			{
@@ -155,7 +152,7 @@ class e_menu
 				}
 				
 				$ret[$area][] = array(
-				
+					'menu_id'		=> $c,
 					'menu_name'		=> $val['name'],
 					'menu_location'	=> $area,
 					'menu_class'	=> $class,
@@ -179,6 +176,57 @@ class e_menu
 
 
 
+	
+	/** 
+	 * @DEPRECATED 
+	 * Legacy Function to retrieve Menu data from tables. - ie. the old v1.x method. 
+	 */
+	private function getDataLegacy()
+	{
+		$sql = e107::getDb();
+		$menu_layout_field = THEME_LAYOUT!=e107::getPref('sitetheme_deflayout') ? THEME_LAYOUT : "";
+		
+	//	e107::getCache()->CachePageMD5 = md5(e_LANGUAGE.$menu_layout_field); // Disabled by line 93 of Cache class. 
+		//FIXME add a function to the cache class for this. 
+		
+		$menu_data = e107::getCache()->retrieve_sys("menus_".USERCLASS_LIST."_".md5(e_LANGUAGE.$menu_layout_field));
+	//	$menu_data = e107::getCache()->retrieve_sys("menus_".USERCLASS_LIST);
+		$menu_data = e107::getArrayStorage()->ReadArray($menu_data);
+		
+		$eMenuArea = array();
+		// $eMenuList = array();
+		//	$eMenuActive	= array();  // DEPRECATED
+		
+		
+		if(!is_array($menu_data))
+		{
+			$menu_qry = 'SELECT * FROM #menus WHERE menu_location > 0 AND menu_class IN ('.USERCLASS_LIST.') AND menu_layout = "'.$menu_layout_field.'" ORDER BY menu_location,menu_order';
+			
+			if($sql->gen($menu_qry))
+			{
+				while($row = $sql->fetch())
+				{
+					$eMenuArea[$row['menu_location']][] = $row;
+				}
+			}
+			
+			$menu_data['menu_area'] = $eMenuArea;
+			
+			$menuData = e107::getArrayStorage()->WriteArray($menu_data, false);
+			
+		//	e107::getCache()->set_sys('menus_'.USERCLASS_LIST, $menuData);
+			e107::getCache()->set_sys('menus_'.USERCLASS_LIST.'_'.md5(e_LANGUAGE.$menu_layout_field), $menuData);
+			
+		}
+		else
+		{
+			$eMenuArea = $menu_data['menu_area'];
+		}	
+		
+		
+		
+		return $eMenuArea;
+	}
 
 
 
