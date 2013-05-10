@@ -349,9 +349,24 @@ if($_SERVER['E_DEV_MENU'] == 'true')
 				<div class='active tab-pane' id='plugins'>
 				<ul>";
 				
+				$c = 500; // start high to prevent overwriting of keys after we drag and drop. 
+				
 				foreach($p as $menu => $folder)
 				{
-					$text .= "<li id='{$folder}' class='draggable' style='cursor:move'>".str_replace("_menu","",$menu)."</li>";	
+					$text .= "<li id='{$menu}' class='draggable regularMenu' style='cursor:move'>";
+				//	$text .= str_replace("_menu","",$menu);
+				
+					$defaults = array(
+						'name'	=> $menu,
+						'path'	=> $folder,
+						'class'	=> 0
+					);
+					
+					$text .= e_layout::renderMenuOptions($defaults,'layout','area',$c);
+					
+					$text .= "</li>";
+					$c++;
+					
 				}
 				
 				$text .= "</ul>
@@ -364,7 +379,12 @@ if($_SERVER['E_DEV_MENU'] == 'true')
 					$text .= "<ul>";
 					while($row = $sql->fetch())
 					{
-						$text .= "<li id='".$row['page_id']."' class='draggable' style='cursor:move'>".$row['menu_name']."</li>";	
+						$text .= "<li id='".$row['page_id']."' class='draggable regularMenu' style='cursor:move'>";
+					//	$text .= $row['menu_name'];
+						
+						$text .= e_layout::renderMenuOptions($row);
+						
+						$text .= "</li>";	
 					}
 						
 					$text .= "</ul>";			
@@ -374,7 +394,7 @@ if($_SERVER['E_DEV_MENU'] == 'true')
 				
 			</div>";
 
-		return array('caption'=>'Menu Items','text'=>$text);
+		return array('caption'=>'Menu Items','text'=>$text); 
 	}
 //}
 
@@ -434,7 +454,7 @@ class e_layout
 			 $(function() 
 			 {
 					
-				 	$( ".sortable" ).sortable({
+				 	$(".sortable").sortable({
 				 		
 						revert: true,
 						cursor: "move",
@@ -454,10 +474,42 @@ class e_layout
 					
 							}).done(function( msg ) 
 							{
-								alert(" Updated in DB "+ msg );
+								alert("POSTED: "+ msg );
 							});
 				        }
 					});
+					
+					
+					
+					
+			//		$( ".draggable", window.top.document).click(function()
+			//		{
+			//			alert("hi there");	
+			//		});
+				
+				// http://jsfiddle.net/DT764/2/	
+					
+			
+					$( ".draggable", window.top.document).draggable({
+						connectToSortable: ".sortable",
+						helper: "clone",
+						appendTo: ".sortable", // "#area-1",
+						revert: true,
+						
+						cursor: "move",
+						iframeFix: true,
+						containment: false,
+						stop: function(e, ui) {  //TODO Rename layout and area in the hidden fields to that of the where the menu was dropped. 
+                        	// Figure out positioning magic to determine if e.ui.position is in the iframe
+                      		var what = $(this).parent().attr("id");
+							
+                        	alert(what);
+                    	}
+			       
+					});
+				
+				//	$( "ul, li", window.top.document ).disableSelection();
+					
 				
 			 });
 		 ');
@@ -489,7 +541,7 @@ class e_layout
 		//	$("#sortable")
 		//$("iframe").contents().find(".sortable")	
 		
-		/*	
+		/*
 		e107::js('inline','
 		 $(function() 
 		 {
@@ -497,43 +549,35 @@ class e_layout
 				revert: true
 			});
 			
-			$( ".draggable" ).draggable({
-				connectToSortable: $(".sortable"),
-				helper: "clone",
-				revert: "invalid",
-				cursor: "move",
-				iframeFix: true
-		        
-		       
-			});
 			
-				$( "ul, li" ).disableSelection();
-			
-			
-			
-			$("#menu_frame").load(function(){
-			    $("#menu_frame").contents().find("#sortable").droppable({
-			        accept: ".drag",
-			        drop: function( event, ui ) {
-			            var html = "<div class=\"droptrue\">"+ ui.draggable.html() + "</div>";
-			            //alert(html);
-			            $(this).append(html);   
-			        }
-			    });
-			
-			});
-			
-			
+		
+			$("iframe").load(function(){
 				
+				var frameid = $("#iframe-default").contents().find(".sortable").attr("id")
+				
+				$( ".draggable" ).draggable({
+					connectToSortable: "#" + frameid,
+					helper: "clone",
+					revert: "invalid",
+					cursor: "move",
+					iframeFix: true
+			        
+			       
+				});
+				
+			});
+			
+		 	//	$( "ul, li" ).disableSelection();
+
 			
 		});
 		
 		
-		
-		
 		','jquery');
+		*/
+		
 			
-		 */
+	
 		 
 			$this->scanForNew();
 			
@@ -620,7 +664,7 @@ class e_layout
 			
 			foreach($this->menuData[THEME_LAYOUT][$area] as $val)
 			{
-				$text .= $this->renderMenu($val,$area,$count);	
+				$text .= $this->renderMenu($val, THEME_LAYOUT, $area,$count);	
 				$count++;
 			}	
 			
@@ -639,10 +683,10 @@ class e_layout
 	
 	
 	
-	private function renderMenu($row, $area, $count)
+	private function renderMenu($row, $layout, $area, $count)
 	{
 	//	return print_a($row,true);
-		$TEMPLATE = '<li class="regularMenu" id="'.$row['name'].'"> '.$this->renderMenuOptions($row, $area,$count).' </li>
+		$TEMPLATE = '<li class="regularMenu" id="'.$row['name'].'"> '.$this->renderMenuOptions($row, $layout, $area,$count).' </li>
 		'; // TODO perhaps a simple counter for the id 
 	
 		return $TEMPLATE;	
@@ -652,23 +696,30 @@ class e_layout
 
 
 
-	
-	private function renderMenuOptions($row,$area,$c)
+	/**
+	 * @param $row (array of data from $pref['menu_layouts'] 
+	 * @param $layout . eg. 'default' or 'home'
+	 * @param number $area as in {MENU=x}
+	 * @param incrementor number. 
+	 */
+	public function renderMenuOptions($row, $layout, $area, $c)
 	{
 		$frm = e107::getForm();
 		
-		$text = $row['name'];
+		$text = str_replace("_menu","",$row['name']);
+		
+		
 		
 		//TODO Delete, Config etc. 
 		
 		//$data[$layout][$location][] = array('name'=>$row['menu_name'],'class'=>$row['menu_class'],'path'=>$row['menu_path'],'pages'=>$row['menu_pages'],'parms'=>$row['menu_parms']);	
 	//	$area = 'area_'.$area;
 		
-		$text .= $frm->hidden('data['.THEME_LAYOUT.']['.$area.']['.$c.'][name]',$row['name'] );
-		$text .= $frm->hidden('data['.THEME_LAYOUT.']['.$area.']['.$c.'][class]',$row['class'] );				
-		$text .= $frm->hidden('data['.THEME_LAYOUT.']['.$area.']['.$c.'][path]',$row['path'] );
-		$text .= $frm->hidden('data['.THEME_LAYOUT.']['.$area.']['.$c.'][pages]',$row['pages'] );		
-		$text .= $frm->hidden('data['.THEME_LAYOUT.']['.$area.']['.$c.'][parms]',$row['parms'] );		
+		$text .= $frm->hidden('data['.$layout.']['.$area.']['.$c.'][name]',$row['name'] );
+		$text .= $frm->hidden('data['.$layout.']['.$area.']['.$c.'][class]',$row['class'] );				
+		$text .= $frm->hidden('data['.$layout.']['.$area.']['.$c.'][path]',$row['path'] );
+		$text .= $frm->hidden('data['.$layout.']['.$area.']['.$c.'][pages]',$row['pages'] );		
+		$text .= $frm->hidden('data['.$layout.']['.$area.']['.$c.'][parms]',$row['parms'] );		
 				
 		return $text;
 		
