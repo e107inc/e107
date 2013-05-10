@@ -56,6 +56,11 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 //	e107::js('core', 	'core/admin.jquery.js', 'jquery', 4);
  e107::js('core','bootstrap/js/bootstrap-tooltip.js');
 //	e107::css('core','bootstrap/css/bootstrap.min.css');
+
+
+
+
+
 	e107::js('inline', "
 		$(function() {
 						
@@ -134,7 +139,7 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 	e107::css('inline',"	.column { width:100%;  padding-bottom: 100px; }
 	
 
-	.regularMenu { border-bottom:1px dotted silver; margin-bottom:6px; padding-left:3px; padding-right:3px; padding-bottom:20px }
+	.regularMenu { cursor:move; border-bottom:1px dotted silver; margin-bottom:6px; padding-left:3px; padding-right:3px; padding-bottom:20px }
 	#core-menumanager-main th {color: silver; font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;  font-size:14px; font-weight: bold; line-height:24px; background-color:#2F2F2F }
 	.portlet { margin: 0 1em 1em 0; }
 	.portlet-header { margin: 0.3em; padding-bottom: 4px; padding-left: 0.2em; cursor:move }
@@ -158,7 +163,9 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 	.icon-search {
 	  background-position: -48px 0;
 	}
-	
+	.icon-align-justify {
+	  background-position: -336px -48px;
+	}
 	
 	
 	/* A little bit of bootstrap styling - loading /bootstrap.css could break some themes */
@@ -213,6 +220,13 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
     background-repeat: repeat-x;
     border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
 	}
+	
+	.btn-mini {
+    padding: 0px 2px;
+    font-size: 10.5px;
+    border-radius: 3px 3px 3px 3px;
+	}
+	
 	
 	.tbox { text-align:left }
 	
@@ -431,6 +445,7 @@ class e_layout
 {
 	private $menuData = array();
 	private	$iframe = false;
+	private $cnt = 0;
 	
 	function __construct()
 	{
@@ -466,7 +481,8 @@ class e_layout
 
 
 			unset($HEADER,$FOOTER,$CUSTOMHEADER,$CUSTOMFOOTER,$style);
-
+			
+			require_once(e_CORE."templates/admin_icons_template.php");
 
 			e107::js('url',"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js");
 			e107::js('url',	"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css");
@@ -489,7 +505,7 @@ class e_layout
 						}).done(function( msg ) 
 						{
 							$(".menuOption").show();
-							 alert("POSTED: "+ msg );
+						//	 alert("POSTED: "+ msg );
 						});			
 			 			
 			 		}
@@ -674,7 +690,8 @@ class e_layout
 		}
 		
 	//	$save[$layout][$area] = $_POST['data']['layout']['area'];		
-		
+		echo "\nLAYOUT=".$layout."\n";
+		echo "AREA=".$area."\n";
 		print_r($save);
 		
 		e107::getConfig('core')->setPref('menu_layouts/'.$layout."/".$area, $save)->save(); 	
@@ -725,29 +742,22 @@ class e_layout
 		// return print_a($this->menuData,true);
 		$text = "<div class='menu-panel'>";
 		$text .= "<div class='menu-panel-header' title=\"".MENLAN_34."\">Area ".$area."</div>\n";
+		$text .= $frm->open('form-area-'.$area,'post',e_SELF);
+		$text .= "<ul id='area-".$area."' class='sortable unstyled'>
+			<li>&nbsp;</li>";
 		
-		
-		$count = 0;
 		if(vartrue($this->menuData[THEME_LAYOUT]) && is_array($this->menuData[THEME_LAYOUT][$area]))
 		{
-			$text .= "<ul id='area-".$area."' class='sortable unstyled'>";
 			
 			foreach($this->menuData[THEME_LAYOUT][$area] as $val)
 			{
 				$text .= $this->renderMenu($val, THEME_LAYOUT, $area,$count);	
-				$count++;
+				$this->cnt++;
 			}	
-			
-			$text .= "</ul>";
-		}
-		else // Empty Menu. 
-		{
-			$text .= "<ul id='area-".$area."' class='sortable unstyled'>
-			<li>&nbsp;</li>
-			</ul>";	
-			
+
 		}
 		
+		$text .= "</ul>";
 		$text .= "</div>";
 		
 	//	$text .= $frm->button('submit','submit','submit','submit');
@@ -766,9 +776,9 @@ class e_layout
 	{
 	//	return print_a($row,true);
 		$frm = e107::getForm();
-		$uniqueId = "menu_".$frm->name2id($row['path']).'_'.$count;
+		$uniqueId = "menu_".$frm->name2id($row['path']).'_'.$this->cnt;
 	
-		$TEMPLATE = '<li class="regularMenu" id="'.$uniqueId.'"> '.$this->renderMenuOptions($row, $layout, $area,$count,$uniqueId).' </li>
+		$TEMPLATE = '<li class="regularMenu" id="'.$uniqueId.'"> '.$this->renderMenuOptions($row, $layout, $area, $this->cnt, $uniqueId).' </li>
 		'; // TODO perhaps a simple counter for the id 
 	
 		return $TEMPLATE;	
@@ -784,11 +794,13 @@ class e_layout
 	 * @param number $area as in {MENU=x}
 	 * @param incrementor number. 
 	 */
-	public function renderMenuOptions($row, $layout, $area, $c, $uniqueId)
+	public function renderMenuOptions($row, $layout, $area, $c , $uniqueId='xxx')
 	{
 		$frm = e107::getForm();
 		
-		$text = str_replace("_menu","",$row['name']);
+	//	$text = "<i class='icon-align-justify'></i> ";
+		$text .= str_replace("_menu","",$row['name']);
+	
 	//	$layout = 'layout';
 	//	$area = 'area';
 		//TODO Delete, Config etc. 
@@ -803,8 +815,42 @@ class e_layout
 		$text .= $frm->hidden('data[layout][area]['.$c.'][pages]',$row['pages'] );		
 		$text .= $frm->hidden('data[layout][area]['.$c.'][parms]',$row['parms'] );	
 
+		$visibilityLink = e_SELF."?enc=".base64_encode('lay='.$layout.'&vis='.$c.'&iframe=1');
+		
+		
+		$text .= "<a href='#'  class=' menu-btn menu-btn-mini menu-btn-danger deleteMenu pull-right' data-area='area-".$area."' data-delete='".$uniqueId."'>&times;</a>"; // $('.hello').remove();
+		
+		$text .= '<a class="e-menumanager-option menu-btn pull-right" data-modal-caption="'.MENLAN_20.'" href="'.$visibilityLink.'" title="'.MENLAN_20.'"><i class="icon-search"></i></a>';
+		
+		/*
+				
+				
+		$text .= '<span class="menu-options-buttons">
+		<a class="e-menumanager-option menu-btn" data-modal-caption="'.MENLAN_20.'" href="'.$visibilityLink.'" title="'.MENLAN_20.'"><i class="S16 e-search-16"></i></a>';
 
-		$text .= "<a href='#' class='menuOption menu-btn btn-mini menu-btn-danger deleteMenu pull-right' data-area='area-".$area."' data-delete='".$uniqueId."'>&times;</a>"; // $('.hello').remove();
+		if($conf)
+		{
+			$text .= '<a class="menu-btn" target="_top" href="'.e_SELF.'?lay='.$layout.'&amp;mode=conf&amp;path='.urlencode($conf).'&amp;id='.$menu_id.'" 
+			title="Configure menu"><i class="S16 e-configure-16"></i></a>';
+		}
+		
+		$editLink = e_SELF."?enc=".base64_encode('lay='.$layout.'&parmsId='.$menu_id.'&iframe=1');
+		$text .= '<a data-modal-caption="Configure parameters" class="e-menumanager-option menu-btn e-tip" target="_top" href="'.$editLink.'" title="Configure parameters"><i class="S16 e-edit-16" ></i></a>';
+
+		$text .= '<a title="'.LAN_DELETE.'" id="remove-'.$menu_id.'-'.$menu_location.'" class="e-tip delete e-menumanager-delete menu-btn" href="'.e_SELF.'?configure='.$layout.'&amp;mode=deac&amp;id='.$menu_id.'"><i class="S16 e-delete-16"></i></a>
+		
+		</span>';
+		*/
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		return $text;
 		
