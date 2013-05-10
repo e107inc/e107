@@ -332,8 +332,9 @@ if($_SERVER['E_DEV_MENU'] == 'true')
 		if($_SERVER['E_DEV_MENU'] != 'true')	
 		{
 			return false;		
-		}		
+		}	
 			
+	
 		
 		$p = e107::getPref('e_menu_list');	// new storage for xxxxx_menu.php list. 
 		$sql = e107::getDb();
@@ -359,7 +360,7 @@ if($_SERVER['E_DEV_MENU'] == 'true')
 					$defaults = array(
 						'name'	=> $menu,
 						'path'	=> $folder,
-						'class'	=> 0
+						'class'	=> '0'
 					);
 					
 					$text .= e_layout::renderMenuOptions($defaults,'layout','area',$c);
@@ -407,41 +408,34 @@ if($_SERVER['E_DEV_MENU'] == 'true')
 class e_layout
 {
 	private $menuData = array();
+	private	$iframe = false;
 	
 	function __construct()
 	{
 		$pref = e107::getPref();
 		$ns = e107::getRender();
-		$this->convertMenuTable();
+	//	$this->convertMenuTable();
+	
 		
+			
 		
+		$this->menuData = e107::getPref('menu_layouts');
 		
 		
 		if(e_AJAX_REQUEST)
 		{
+				
+				
+			
 			if(varset($_POST['data']))
 			{
-				$_SESSION['menuData'] = $_POST['data'];	
-				
-				$cnf = e107::getConfig('core');
-				$existing = $cnf->get('menu_layouts');
-			//	print_r($existing);
-			//	$data = array_merge($existing,$_POST['data']);
-				$data = $_POST['data'];
-				print_r($data);
-			
-				e107::getConfig('core')->set('menu_layouts', $data)->save();
-			
+				$this->processPost();	
 			}
 			
 			exit;
 			
 		}
-				
-			
-			
-			
-		
+
 		
 		if(vartrue($_GET['configure'])) //ie Inside the IFRAME. 
 		{
@@ -453,6 +447,28 @@ class e_layout
 			e107::js('inline','
 			 $(function() 
 			 {
+			 		// post the form back to this script. 		
+			 		var saveData = function(areaid)
+			 		{
+			 						
+			 			var formid 	= "#form-" + areaid;
+						var form 	= $(formid);
+						var data 	= form.serialize();
+							
+						$.ajax({
+						  type: "POST",
+						  url: "menus.php",
+						  data: data
+						}).done(function( msg ) 
+						{
+							// alert("POSTED: "+ msg );
+						});			
+			 			
+			 		}
+			 				
+			 				
+			 		
+			 	
 					
 				 	$(".sortable").sortable({
 				 		
@@ -463,19 +479,7 @@ class e_layout
 						update: function(ev,ui)
 				        {
 				        	var areaid = $(this).attr("id");
-							var formid = "#form-" + areaid;
-							var form = $(formid);
-							var data = form.serialize();
-							
-							$.ajax({
-							  type: "POST",
-							  url: "menus.php",
-							  data: data
-					
-							}).done(function( msg ) 
-							{
-								alert("POSTED: "+ msg );
-							});
+							saveData(areaid);
 				        }
 					});
 					
@@ -493,7 +497,7 @@ class e_layout
 					$( ".draggable", window.top.document).draggable({
 						connectToSortable: ".sortable",
 						helper: "clone",
-						appendTo: ".sortable", // "#area-1",
+						appendTo: ".sortable", // "#area-1", //FIXME Needs to be a specific area. 
 						revert: true,
 						
 						cursor: "move",
@@ -501,14 +505,27 @@ class e_layout
 						containment: false,
 						stop: function(e, ui) {  //TODO Rename layout and area in the hidden fields to that of the where the menu was dropped. 
                         	// Figure out positioning magic to determine if e.ui.position is in the iframe
-                      		var what = $(this).parent().attr("id");
+                      	//	var what = $(this).parent().attr("id");
 							
-                        	alert(what);
+                        //	alert(what);
                     	}
 			       
 					});
 				
 				//	$( "ul, li", window.top.document ).disableSelection();
+				
+				
+					$( ".deleteMenu").on("click", function()
+					{
+						var deleteId = $(this).attr("data-delete");
+						var area 	= $(this).attr("data-area");
+						$("#"+deleteId).hide("slow");
+						$("#"+deleteId).remove();
+					//	alert(deleteId + " " + area);
+						saveData(area);
+					});
+					
+				
 					
 				
 			 });
@@ -586,36 +603,35 @@ class e_layout
 	}
 	
 
-	/** 
-	 * Convert from e107_menu table to $pref format. 
-	 */
-	function convertMenuTable()
-	{
-		if(isset($_SESSION['menuData']))
-		{
-			$this->menuData = $_SESSION['menuData'];	
-			return;
-		}
-		
-		
-		
-		$sql = e107::getDb();
-		$sql->select('menus','*','menu_location !=0 ORDER BY menu_location,menu_order');
-		$data = array();
 
-		while($row = $sql->fetch())
+	protected function processPost()
+	{
+		$cnf = e107::getConfig('core');
+		$existing = $cnf->get('menu_layouts');
+		
+			//	print_r($existing);
+			//	$data = array_merge($existing,$_POST['data']);
+			
+		$data = $_POST['data'];
+		
+		$layout = $_POST['layout'];
+		$area	= $_POST['area'];
+		
+		$save = array();
+		foreach($_POST['data']['layout']['area'] as $v) // reset key values. 
 		{
-			$layout 	= vartrue($row['menu_layout'],'default');	
-			$location 	= $row['menu_location'];
-			$data[$layout][$location][] = array('name'=>$row['menu_name'],'class'=>$row['menu_class'],'path'=>$row['menu_path'],'pages'=>$row['menu_pages'],'parms'=>$row['menu_parms']);	
+			$save[$layout][$area][] = $v;	
 		}
 		
-		$this->menuData = ($data);
+	//	$save[$layout][$area] = $_POST['data']['layout']['area'];		
 		
-	//	print_a($this->menuData);
+		print_r($save);
+		// return;
+		
+			
+		e107::getConfig('core')->set('menu_layouts', $save)->save(); //TODO Save directly into multi-dimensional array. ie. $layout / $area / array. 
 		
 	}
-
 
 
 
@@ -670,11 +686,20 @@ class e_layout
 			
 			$text .= "</ul>";
 		}
+		else // Empty Menu. 
+		{
+			$text .= "<ul id='area-".$area."' class='sortable unstyled'>
+			<li>&nbsp;</li>
+			</ul>";	
+			
+		}
 		
 		$text .= "</div>";
 		
 	//	$text .= $frm->button('submit','submit','submit','submit');
-		
+					
+		$text .= $frm->hidden('layout',THEME_LAYOUT);
+		$text .= $frm->hidden('area',$area);	
 		$text .= $frm->close();
 		
 		return $text;
@@ -686,7 +711,7 @@ class e_layout
 	private function renderMenu($row, $layout, $area, $count)
 	{
 	//	return print_a($row,true);
-		$TEMPLATE = '<li class="regularMenu" id="'.$row['name'].'"> '.$this->renderMenuOptions($row, $layout, $area,$count).' </li>
+		$TEMPLATE = '<li class="regularMenu" id="'.$row['name'].'_'.$count.'"> '.$this->renderMenuOptions($row, $layout, $area,$count).' </li>
 		'; // TODO perhaps a simple counter for the id 
 	
 		return $TEMPLATE;	
@@ -707,20 +732,28 @@ class e_layout
 		$frm = e107::getForm();
 		
 		$text = str_replace("_menu","",$row['name']);
-		
-		
-		
+	//	$layout = 'layout';
+	//	$area = 'area';
 		//TODO Delete, Config etc. 
 		
 		//$data[$layout][$location][] = array('name'=>$row['menu_name'],'class'=>$row['menu_class'],'path'=>$row['menu_path'],'pages'=>$row['menu_pages'],'parms'=>$row['menu_parms']);	
 	//	$area = 'area_'.$area;
 		
-		$text .= $frm->hidden('data['.$layout.']['.$area.']['.$c.'][name]',$row['name'] );
-		$text .= $frm->hidden('data['.$layout.']['.$area.']['.$c.'][class]',$row['class'] );				
-		$text .= $frm->hidden('data['.$layout.']['.$area.']['.$c.'][path]',$row['path'] );
-		$text .= $frm->hidden('data['.$layout.']['.$area.']['.$c.'][pages]',$row['pages'] );		
-		$text .= $frm->hidden('data['.$layout.']['.$area.']['.$c.'][parms]',$row['parms'] );		
-				
+		// 'layout' and 'area' will later be substituted. 
+		$text .= $frm->hidden('data[layout][area]['.$c.'][name]',$row['name'] );
+		$text .= $frm->hidden('data[layout][area]['.$c.'][class]',$row['class'] );	
+		$text .= $frm->hidden('data[layout][area]['.$c.'][path]',$row['path'] );
+		$text .= $frm->hidden('data[layout][area]['.$c.'][pages]',$row['pages'] );		
+		$text .= $frm->hidden('data[layout][area]['.$c.'][parms]',$row['parms'] );	
+
+
+		if(vartrue($_GET['configure'])) // Iframe Mode. 
+		{
+			$text .= "<a href='#' class='menu-btn btn-mini menu-btn-danger deleteMenu pull-right' data-area='area-".$area."' data-delete='".$row['name']."_".$c."'>&times;</a>"; // $('.hello').remove();
+		}
+
+		
+			
 		return $text;
 		
 	}
@@ -742,7 +775,7 @@ class e_layout
 		{
 			$path = trim(str_replace(e_PLUGIN,"",$file['path']),"/");
 			
-			if(e107::isInstalled($path))
+		//	 if(e107::isInstalled($path) )
 			{
 				$fname = str_replace(".php","",$file['fname']);
 				$data[$fname] = $path;
