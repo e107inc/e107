@@ -71,6 +71,11 @@ class e_menu
 		 $menu_data = e107::getCache()->retrieve_sys("menus_".USERCLASS_LIST."_".md5(e_LANGUAGE.$menu_layout_field));
 	//	$menu_data = e107::getCache()->retrieve_sys("menus_".USERCLASS_LIST);
 		$menu_data = e107::getArrayStorage()->ReadArray($menu_data);
+		
+	
+		
+		
+		
 		$eMenuArea = array();
 		// $eMenuList = array();
 		//	$eMenuActive	= array();  // DEPRECATED
@@ -93,6 +98,11 @@ class e_menu
 		{
 			$eMenuArea = $menu_data['menu_area'];
 		}
+		
+	//	print_a($eMenuArea);
+	//	$eMenuArea = $this->getData(THEME_LAYOUT);
+		
+		
 		$total = array();
 		foreach($eMenuArea as $area => $val)
 		{
@@ -110,8 +120,70 @@ class e_menu
 				}
 			}
 		}
+
+	
+		
+
+
 		e107::getRender()->eMenuTotal = $total;
 	}
+
+	
+	
+	
+	
+
+
+	/**
+	 * V2 Menu Re-Write - retrieve Menu data from $pref['menu_layouts']
+	 */
+	protected function getData($layout)
+	{
+		$pref = e107::getPref('menu_layouts');
+			
+		foreach($pref[$layout] as $area=>$v);
+		{
+			$c = 0;
+			
+			foreach($v as $val)
+			{
+				$class = intval($val['class']);
+				
+				if(!check_class($class))
+				{
+					continue;	
+				}
+				
+				$ret[$area][] = array(
+				
+					'menu_name'		=> $val['name'],
+					'menu_location'	=> $area,
+					'menu_class'	=> $class,
+					'menu_order'	=> $c,
+					'menu_pages'	=> $val['pages'],
+					'menu_path'		=> $val['path'],
+					'menu_layout'	=>  '',
+					'menu_parms'	=> $val['parms']
+
+				);
+				
+				$c++;
+			}
+				
+			
+		}
+				
+		return $ret;	
+		
+	}
+
+
+
+
+
+
+
+
 
 	/**
 	 * Check visibility of a menu against URL
