@@ -446,7 +446,7 @@ class user_shortcodes extends e_shortcode
 		if (USERID == $this->var['user_id']) 
 		{
 			//return "<a href='".$url->create('user/myprofile/edit')."'>".LAN_USER_38."</a>";
-			return "<a href='usersettings.php'>".LAN_USER_38."</a>"; // TODO: repair dirty fix for usersettings
+			return "<a href='".e_HTTP."usersettings.php'>".LAN_USER_38."</a>"; // TODO: repair dirty fix for usersettings
 		}
 		else if(ADMIN && getperms("4") && !$this->var['user_admin']) 
 		{
