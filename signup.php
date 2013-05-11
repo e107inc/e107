@@ -778,7 +778,7 @@ function render_email($userInfo, $preview = FALSE)
 	}
 	else
 	{
-		require_once(e_THEME.'templates/email_template.php');
+		require_once(e_CORE.'templates/email_template.php');
 	}
 
 	/*	Inline images now handled automatically - just include in email template with an absolute link
