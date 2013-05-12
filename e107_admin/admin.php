@@ -185,8 +185,8 @@ if (isset($potential))
 
 
 // ---------------------------------------------------------
-
-
+e107::getScBatch('admin');
+echo $tp->parseTemplate('{ADMIN_COREUPDATE=alert}',true);
 
 // auto db update
 if ('0' == ADMINPERMS)
@@ -194,6 +194,9 @@ if ('0' == ADMINPERMS)
 	require_once(e_ADMIN.'update_routines.php');
 	update_check();
 }
+
+
+
 // end auto db update
 
 /*

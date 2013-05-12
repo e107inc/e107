@@ -215,7 +215,7 @@ $ADMIN_HEADER .= '<div class="container-fluid">
 			
          </div>
         <div class="span10" id="right-panel" >
-        {ADMIN_COREUPDATE=alert}
+        
         ';
 
 
