@@ -226,7 +226,9 @@ class user_shortcodes extends e_shortcode
 	function sc_user_email_link($parm) 
 	{
 		$tp = e107::getParser();
-		return ($this->var['user_hideemail'] && !ADMIN) ? "<i>".LAN_USER_35."</i>" : $tp->parseTemplate("{email={$this->var['user_email']}-link}");
+		return /* Condition             */ ($this->var['user_hideemail'] && !ADMIN) ?
+		       /*  Hidden and Not Admin */ "<i>".LAN_USER_35."</i>" :
+		       /*  Not Hidden or Admin  */ $tp->parseTemplate("{email={$this->var['user_email']}-link}");
 	}
 
 
@@ -234,7 +236,30 @@ class user_shortcodes extends e_shortcode
 	function sc_user_email($parm) 
 	{
 		$tp = e107::getParser();
-		return ($this->var['user_hideemail'] && !ADMIN) ? "<i>".LAN_USER_35."</i>" : $tp->toHTML($this->var['user_email'],"no_replace");
+		return /* Condition             */ ($this->var['user_hideemail'] && !ADMIN) ?
+		       /*  Hidden and Not Admin */ "<i>".LAN_USER_35."</i>" :
+		       /*  Not Hidden or Admin  */ "<span style='unicode-bidi:bidi-override; direction: rtl;'>" . strrev($tp->toHTML($this->var['user_email'],"no_replace")) . "</span>";
+		       ########################################################
+		       # Security Note - 04 May 2013                          #
+		       ########################################################
+		       #                                                      #
+		       # The CSS code direction rtl is an effective way to    #
+		       # prevent spam bots from scraping emails that are      #
+		       # not hidden.                                          #
+		       #                                                      #
+		       # You can find empirical support for this method at    #
+		       # <http://superuser.com/a/235965>.                     #
+		       #                                                      #
+		       # {e_CORE}templates/user_template.php was modified to  #
+		       # support this code.  In $USER_FULL_TEMPLATE, the      #
+		       # LAN_USER_60 value {USER_EMAIL_LINK} was changed to   #
+		       # {USER_EMAIL}.  I couldn't figure out how the two     #
+		       # shortcodes were different, so I took precautions in  #
+		       # hopes that the CSS direction won't break actual HTML #
+		       # tags.                                                #
+		       #                                                      #
+		       #       -- Deltik                                      #
+		       ########################################################
 	}
 
 
@@ -421,7 +446,7 @@ class user_shortcodes extends e_shortcode
 		if (USERID == $this->var['user_id']) 
 		{
 			//return "<a href='".$url->create('user/myprofile/edit')."'>".LAN_USER_38."</a>";
-			return "<a href='usersettings.php'>".LAN_USER_38."</a>"; // TODO: repair dirty fix for usersettings
+			return "<a href='".e_HTTP."usersettings.php'>".LAN_USER_38."</a>"; // TODO: repair dirty fix for usersettings
 		}
 		else if(ADMIN && getperms("4") && !$this->var['user_admin']) 
 		{

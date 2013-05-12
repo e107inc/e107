@@ -3485,7 +3485,7 @@ class e_admin_tree_model extends e_front_tree_model
 		$idstr = implode(', ', $ids);
 
 		$sql = e107::getDb();
-		$res = $sql->db_Delete($this->getModelTable(), $this->getFieldIdName().' IN ('.$idstr.')');
+		$res = $sql->db_Delete($this->getModelTable(), $this->getFieldIdName().' IN (\''.$idstr.'\')');
 		$this->_db_errno = $sql->getLastErrorNumber();
 		$this->_db_errmsg = $sql->getLastErrorText();
 		$modelCacheCheck = $this->getParam('clearModelCache');
@@ -3493,7 +3493,7 @@ class e_admin_tree_model extends e_front_tree_model
 		{
 			if($sql->getLastErrorNumber())
 			{
-				$this->addMessageError('SQL Delete Error', $session_messages); //TODO - Lan
+				$this->addMessageError('SQL Delete Error: ' . $sql->getLastQuery(), $session_messages); //TODO - Lan
 				$this->addMessageDebug('SQL Error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
 			}
 		}
