@@ -38,8 +38,9 @@ if(file_exists(THEME.'banner_template.php'))
 }
 else
 {
-	require_once (e_THEME.'templates/banner_template.php');
+	require_once (e_PLUGIN.'banner/banner_template.php');
 }
+
 $menu_pref = e107::getConfig('menu')->getPref('');
 
 if(isset($campaign))
