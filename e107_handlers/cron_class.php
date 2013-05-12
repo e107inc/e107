@@ -30,6 +30,15 @@ class _system_cron
 	    // Whatever code you wish.
 	}
 	
+	/**
+	 * Burnsy - This is just a test
+	 * 
+	 */
+	function checkForUpate ()
+	{
+	  // Do something
+	}
+	
 		
 	function sendEmail() // Test Email. 
 	{
