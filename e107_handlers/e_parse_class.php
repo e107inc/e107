@@ -2432,7 +2432,7 @@ class e_parser
     private $allowedAttributes  = array(
                                     'default'   => array('id', 'style', 'class'),
                                     'img'       => array('id', 'src', 'style', 'class', 'alt', 'title', 'width', 'height'),
-                                    'a'         => array('id', 'href', 'style', 'class', 'title'),
+                                    'a'         => array('id', 'href', 'style', 'class', 'title', 'target'),
                                     'script'	=> array('type', 'src', 'language')
                                   ); 
     private $badAttrValues       = array("javascript[\s]*?:","alert\(","vbscript[\s]*?:","data:text\/html", "mhtml[\s]*?:", "data:[\s]*?image");
