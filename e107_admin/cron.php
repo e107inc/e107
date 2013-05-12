@@ -155,6 +155,20 @@ class cron_admin_ui extends e_admin_ui
 					'description' 	=> LAN_CRON_05_2 .' '.e_SYSTEM.'backups/'
 				//	'available' 	=> e107::getPref('ban_retrigger')
 				),
+				5 => array(
+					'name' 			=> LAN_CRON_06_1,
+					'category'		=> 'user',
+					'function' 		=> 'procBanRetrigger',
+					'description' 	=> LAN_CRON_06_2 ."<br />". LAN_CRON_06_3,
+				//	'available' 	=> e107::getPref('ban_retrigger')
+				),
+				6 => array(
+					'name' 			=> LAN_CRON_20_1,
+					'category'		=> '',
+					'function' 		=> 'checkCoreUpdate',
+					'description' 	=> LAN_CRON_20_2 ."<br />". LAN_CRON_20_3,
+				//	'available' 	=> e107::getPref('ban_retrigger')
+				),
 			);
 	
 			if(!vartrue($_GET['action']) || $_GET['action'] == 'refresh')
