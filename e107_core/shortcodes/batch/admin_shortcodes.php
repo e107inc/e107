@@ -15,6 +15,81 @@ if (!defined('e107_INIT')) { exit; }
 
 class admin_shortcodes
 {
+	
+	function cronUpdateRender($parm,$cacheData)
+	{
+		$mes = e107::getMessage();
+		
+            if($cacheData == 'up-to-date')
+            {
+                return '';
+            }
+    	
+			$installUrl = "#"; // TODO 
+		
+		
+            if($parm=='alert')
+            {
+            	$text = 'A new update is ready to install! Click to unzip and install  v'.$cacheData.'</a>.
+            	<a class="btn btn-success" href="'.$installUrl.'">Install</a>'; 
+				
+                 $mes->addInfo($text);
+				return $mes->render(); 
+			}
+            
+            if($parm=='icon')
+            {
+				
+				return '<ul class="nav pill">
+        			<li class="dropdown">
+            		<a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" href="#">
+                	'.E_16_E107.' <b class="caret"></b>
+            	</a> 
+            	<ul class="dropdown-menu" role="menu">
+                	<li class="nav-header">Update Available</li>
+                    <li><a href="'.$installUrl.'">e107 v'.$cacheData.'</a></li>
+	          	 </ul>
+	        	</li>
+	        	</ul>
+	        ';
+				
+				
+			} 
+			  
+    }
+   
+    // {ADMIN_COREUPDATE}
+    function sc_admin_coreupdate($parm='')
+	{
+        $che = e107::getCache();
+        $mes = e107::getMessage();
+        
+        $che->setMD5(e_LANGUAGE);
+    
+        $cacheData = $che->retrieve("releasecheck",3600, TRUE); // 2.0.1 | 'up-to-date' | false ; 
+    	
+  		$cacheData = 2.1; // XXX Remove to test for real. 
+    	
+        if($cacheData)
+        {
+            return $this->cronUpdateRender($parm, $cacheData); 
+        }
+       
+
+        require_once(e_HANDLER."cron_class.php");
+        $cron = new _system_cron();
+        
+        if($result = $cron->checkCoreUpdate())
+        {
+           return $this->cronUpdateRender($parm, $cacheData); 
+        }
+    
+        
+	}
+	
+	
+
+	
 	function sc_admin_credits()
 	{
 		if (!ADMIN) { return ''; }
