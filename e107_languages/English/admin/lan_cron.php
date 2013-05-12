@@ -56,6 +56,11 @@ define("LAN_CRON_16", "Using your server control panel (eg. cPanel, DirectAdmin,
 
 // leave some room for additions/changes
 
+// Info for checkCoreUpdate cron
+define("LAN_CRON_20_1", "Check for e107 Update");
+define("LAN_CRON_20_2", "Check e107.org for Core updates"); // [eml] is automatically replaced by head admin e-mail address.
+define("LAN_CRON_20_3", "Recommended to keep system up to date.");
+
 define("LAN_CRON_30", "Every Minute");
 define("LAN_CRON_31", "Every Other Minute");
 define("LAN_CRON_32", "Every 5 Minutes");
