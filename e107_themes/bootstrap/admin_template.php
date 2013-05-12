@@ -174,6 +174,7 @@ $ADMIN_HEADER = '<div class="navbar '.$inverse.' navbar-fixed-top">
 			{ADMIN_NAVIGATION=no-main}        	 
    			 </div>
    			 <div class="dropdown nav pull-right navbar-text ">
+   			 <li>{ADMIN_COREUPDATE=icon}</li>
             {ADMIN_PM}
             {ADMIN_NAVIGATION=home}
 			{ADMIN_NAVIGATION=language}
@@ -213,7 +214,9 @@ $ADMIN_HEADER .= '<div class="container-fluid">
 			{SETSTYLE=none}
 			
          </div>
-        <div class="span10" id="right-panel" >';
+        <div class="span10" id="right-panel" >
+        {ADMIN_COREUPDATE=alert}
+        ';
 
 
 $ADMIN_FOOTER = '
