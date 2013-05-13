@@ -315,9 +315,23 @@ class e_file
 		return $finfo;
 	}
 
-	// Grab a remote file and save it in the /temp directory. requires CURL
+
+	/**
+	 *	 Grab a remote file and save it in the /temp directory. requires CURL
+	 *
+	 *	@return boolean TRUE on success, FALSE on failure (which includes absence of CURL functions)
+	 */
 	function getRemoteFile($remote_url, $local_file, $type='temp')
 	{
+		if (!function_exists('curl_init')) 
+		{
+			if(E107_DEBUG_LEVEL > 0)
+			{ 
+				$log->addDebug('getRemoteFile() requires CURL to be installed in file_class.php');
+			}
+			return FALSE;			// May not be installed
+		}
+
 		$path = ($type == 'media') ? e_MEDIA : e_TEMP; 
 		
         $fp = fopen($path.$local_file, 'w'); // media-directory is the root. 
