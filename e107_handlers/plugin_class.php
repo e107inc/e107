@@ -231,12 +231,15 @@ class e107plugin
 	function update_plugins_table($mode = 'upgrade')
 	{
 		
-		$sql = e107::getDb();
-		$sql2 = e107::getDb('sql2');
-		$tp = e107::getParser();
-		$fl = e107::getFile();
-		$mes = e107::getMessage();
+		$sql 	= e107::getDb();
+		$sql2 	= e107::getDb('sql2');
+		$tp 	= e107::getParser();
+		$fl 	= e107::getFile();
+		$mes 	= e107::getMessage();
+		
 		$mes->addDebug("Updating plugins Table");
+		
+		$log = e107::getAdminLog();
 
 		global $mySQLprefix, $menu_pref;
 		$pref = e107::getPref();
@@ -380,12 +383,14 @@ class e107plugin
 					//		if (e107::getDb()->db_Insert("plugin", "0, '".$tp->toDB($pName, true)."', '".$tp->toDB($plug_info['@attributes']['version'], true)."', '".$tp->toDB($plugin_path, true)."',{$_installed}, '{$eplug_addons}', '".$this->manage_category($plug_info['category'])."' "))
 							if (e107::getDb()->insert("plugin", $pInsert))
 							{
-								$mes->addDebug("Added <b>".$tp->toHTML($pName,false,"defs")."</b> to the plugin table.");
+								$log->addDebug("Added <b>".$tp->toHTML($pName,false,"defs")."</b> to the plugin table.");
 							}
 							else
 							{
-								$mes->addDebug("Failed to add ".$tp->toHTML($pName,false,"defs")." to the plugin table.");
+								$log->addDebug("Failed to add ".$tp->toHTML($pName,false,"defs")." to the plugin table.");
 							}
+							
+							$log->flushMessages("Updated Plugins table");
 						}
 					}
 			}

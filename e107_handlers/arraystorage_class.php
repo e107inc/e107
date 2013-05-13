@@ -20,20 +20,25 @@ class ArrayData {
     function __construct()
     {
         // DO Not translate - debug info only. 
+        
+        $log = e107::getAdminLog();
    
        if(E107_DEBUG_LEVEL > 0)
        { 
            $dep = debug_backtrace();
            foreach($dep as $d)
            {
-             e107::getMessage()->addDebug("Deprecated ArrayStorage Class called by ".str_replace(e_ROOT,"",$d['file'])." on line ".$d['line']);
+             $log->addDebug("Deprecated ArrayStorage Class called by ".str_replace(e_ROOT,"",$d['file'])." on line ".$d['line']);
            }
+		   
+		   $log->flushMessages('Deprecated ArrayStorage Class used.');
+		   
            e107::getMessage()->addDebug("Please remove references to <b>arraystorage_class.php</b> and use e107::getArrayStorage(); instead."); 
        }
     }
 	/**
 	* Return a string containg exported array data.
-	*
+	* @DEPRECATED use e107::serialize() instead. 
 	* @param array $ArrayData array to be stored
 	* @param bool $AddSlashes default true, add slashes for db storage, else false
 	* @return string
@@ -51,7 +56,7 @@ class ArrayData {
 
 	/**
 	* Returns an array from stored array data.
-	*
+	* @DEPRECATED use e107::unserialize() instead. 
 	* @param string $ArrayData
 	* @return array stored data
 	*/

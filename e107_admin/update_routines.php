@@ -484,11 +484,11 @@ function update_706_to_800($type='')
 
 	//$mes = new messageLog;		// Combined logging and message displaying handler
 	//$mes = e107::getMessage();
-	$log = e107::getAdminLog();		// Used for combined logging and message displaying
-	$sql = e107::getDb();
-	$sql2 = e107::getDb('sql2');
-	$tp = e107::getParser();
-	$ns = e107::getRender();
+	$log 	= e107::getAdminLog();		// Used for combined logging and message displaying
+	$sql 	= e107::getDb();
+	$sql2 	= e107::getDb('sql2');
+	$tp 	= e107::getParser();
+	$ns 	= e107::getRender();
 	
 	e107::getCache()->clearAll('db');
 	e107::getCache()->clearAll('system');
@@ -612,12 +612,11 @@ function update_706_to_800($type='')
 
 
 
-
 	$statusTexts = array(E_MESSAGE_SUCCESS => 'Success', E_MESSAGE_ERROR => 'Fail', E_MESSAGE_INFO => 'Info');
 
 	if (isset($pref['forum_user_customtitle']) && !isset($pref['signup_option_customtitle']))
 	{
-		if ($just_check) return update_needed('Rename a core pref');
+		if ($just_check) return update_needed('pref: forum_user_customtitle needs to be renamed');
 		$pref['signup_option_customtitle'] = $pref['forum_user_customtitle'];
 		unset($pref['forum_user_customtitle']);
 		$log->logMessage(LAN_UPDATE_20.'customtitle', E_MESSAGE_SUCCESS);		
@@ -632,8 +631,9 @@ function update_706_to_800($type='')
 		if ($just_check) return update_needed('Convert serialized core prefs');
 		while ($row = e107::getDb()->fetch(MYSQL_ASSOC))
 		{
-			$status = e107::getDb('sql2')->update('core',"e107_value=\"".convert_serialized($row['e107_value'])."\" WHERE e107_name='".$row['e107_name']."'");				
-			$log->logMessage(LAN_UPDATE_22.$row['e107_name'], $status);
+			$status = e107::getDb('sql2')->update('core',"e107_value=\"".convert_serialized($row['e107_value'])."\" WHERE e107_name='".$row['e107_name']."'") ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;				
+			
+			$log->addDebug(LAN_UPDATE_22.$row['e107_name'].": ". $status);
 		}	
 	}	
 	
@@ -694,7 +694,7 @@ function update_706_to_800($type='')
 		$log->logMessage($resultMessage,$status);									// User message
 	}
 
-
+	 
 
 	// ++++++++ Modify Menu Paths +++++++. 
 	if(varset($changeMenuPaths))
@@ -764,12 +764,12 @@ function update_706_to_800($type='')
 		
 		if(count($chgPath))
 		{
-			e107::getMessage()->addWarning('Before continuing, please manually delete the following outdated folders from your system: ');
+			$log->addWarning('Before continuing, please manually delete the following outdated folders from your system: ');
 			array_unique($chgPath);
 			asort($chgPath);
 			foreach($chgPath as $cgp)
 			{
-				e107::getMessage()->addWarning(e_PLUGIN_ABS."<b>".$cgp."</b>");			
+				$log->addWarning(e_PLUGIN_ABS."<b>".$cgp."</b>");			
 			}	
 		}
 		
@@ -813,7 +813,7 @@ function update_706_to_800($type='')
 		$log->logMessage(LAN_UPDATE_21.'comments', E_MESSAGE_DEBUG);
 	}
 
-
+	 
 
 	//	Add index to download history
 	// Deprecated by db-verify-class
@@ -945,7 +945,6 @@ function update_706_to_800($type='')
 		$log->logMessage(LAN_UPDATE_44, E_MESSAGE_DEBUG);
 		catch_error($sql);
 	}	
-	
 	
 	
 	
@@ -1120,7 +1119,7 @@ function update_706_to_800($type='')
 		}
 	}
 
-
+	
 	// Tables where IP address field needs updating to accommodate IPV6
 	// Set to varchar(45) - just in case something uses the IPV4 subnet (see http://en.wikipedia.org/wiki/IPV6#Notation)
 	foreach ($ip_upgrade as $t => $f)
@@ -1160,7 +1159,8 @@ function update_706_to_800($type='')
 	    if ($just_check) return update_needed('Remove obsolete prefs');
 		unset($pref[$p]);
 		$do_save = TRUE;
-		$accum[] = $p;
+		$log->addDebug('Removed obsolete pref: '.$p);
+	//	$accum[] = $p;
 	  }
 	}
 
@@ -1188,7 +1188,7 @@ function update_706_to_800($type='')
 		if ($just_check)
 		{
 			$mes = e107::getMessage();
-			$mes->addDebug(print_a($dbv->errors,true));
+			$log->addDebug(print_a($dbv->errors,true));
 			return update_needed("Database Tables require updating.");
 		}
 		
@@ -1214,7 +1214,7 @@ function update_706_to_800($type='')
 		{
 			$sql->gen("ALTER TABLE `#page` DROP `page_theme`");
 			$mes = e107::getMessage();
-			$mes->addDebug("Successfully updated pages/menus table to new format. ");
+			$log->addDebug("Successfully updated pages/menus table to new format. ");
 		}
 	
 	}
@@ -1224,17 +1224,19 @@ function update_706_to_800($type='')
 		if ($just_check) return update_needed('plugin_releaseUrl is deprecated and needs to be removed. ');
 		if($sql->gen("ALTER TABLE `#plugin` DROP `plugin_releaseUrl`"))
 		{
-			e107::getMessage()->addDebug("Successfully removed plugin_releaseUrl. ");
+			$log->addDebug("Successfully removed plugin_releaseUrl. ");
 		}
 		
 	}
 	
-	
+
 	// --- Notify Prefs
 	
 //	$notify_prefs = $sysprefs -> get('notify_prefs');
 //	$notify_prefs = $eArrayStorage -> ReadArray($notify_prefs);
 	e107::getCache()->clearAll('system');
+
+
 
 	$notify_prefs = e107::getConfig('notify',true,true)->getPref();
 
@@ -1279,7 +1281,7 @@ function update_706_to_800($type='')
 
 	
 	
-	
+		 	
 	
 		
 	// ---------------  Saved emails - copy across
@@ -1310,10 +1312,9 @@ function update_706_to_800($type='')
 	}
 	
 	
-	
+	 	
 
 	// -------------------  Populate Plugin Table With Changes ------------------ 
-	
 	
 	if (!isset($pref['shortcode_legacy_list']))
 	{
@@ -1321,20 +1322,22 @@ function update_706_to_800($type='')
 	 	// Reset, legacy and new shortcode list will be generated in plugin update routine
 	  	$pref['shortcode_legacy_list'] = array();
 	 	$pref['shortcode_list'] = array();
-	  	save_prefs();
+	 	save_prefs();
 	  
 	  	$ep = e107::getPlugin();
 		$ep->update_plugins_table($mode); // scan for e_xxx changes and save to plugin table.
 		$ep->save_addon_prefs($mode); // generate global e_xxx_list prefs from plugin table.
 	}
 	
+	 	
+	
 	// This has to be done after the table is upgraded
-	if($sql->db_Select('plugin', 'plugin_category', "plugin_category = ''"))
+	if($sql->select('plugin', 'plugin_category', "plugin_category = ''"))
 	{
 		if ($just_check) return update_needed('Update plugin table');
 		require_once(e_HANDLER.'plugin_class.php');
 		$ep = new e107plugin;
-		$ep -> update_plugins_table('update');
+		$ep->update_plugins_table('update');
 	//	$_pdateMessages[] = LAN_UPDATE_XX24; 
 	 //	catch_error($sql);
 	}
@@ -1342,7 +1345,7 @@ function update_706_to_800($type='')
 
 	//-- Media-manger import --------------------------------------------------
 	
-
+	 
 	
 	// Autogenerate filetypes.xml if not found. 
 	if(!is_readable(e_SYSTEM."filetypes.xml"))
@@ -1416,10 +1419,10 @@ function update_706_to_800($type='')
 			$sql->update('core_media_cat', "media_cat_owner = 'download', media_cat_category='download_image' WHERE media_cat_nick = 'download' ");
 			$sql->update('core_media_cat', "media_cat_owner = 'download', media_cat_category='download_thumb' WHERE media_cat_nick = 'downloadthumb' ");
 			$sql->update('core_media_cat', "media_cat_owner = 'news', media_cat_category='news_thumb' WHERE media_cat_nick = 'newsthumb' ");
-			e107::getMessage()->addDebug("core-media-cat Categories and Ownership updated");
+			$log->addDebug("core-media-cat Categories and Ownership updated");
 			if($sql->gen("ALTER TABLE `".MPREFIX."core_media_cat` DROP `media_cat_nick`"))
 			{
-				e107::getMessage()->addDebug("core-media-cat `media_cat_nick` field removed.");	
+				$log->addDebug("core-media-cat `media_cat_nick` field removed.");	
 			}
 			
 	//		$query = "INSERT INTO `".MPREFIX."core_media_cat` (`media_cat_id`, `media_cat_owner`, `media_cat_category`, `media_cat_title`, `media_cat_diz`, `media_cat_class`, `media_cat_image`, `media_cat_order`) VALUES
@@ -1428,11 +1431,11 @@ function update_706_to_800($type='')
 	//		
 	//		if(mysql_query($query))
 	//		{
-	//			e107::getMessage()->addDebug("Added core-media-cat Gallery.");	
+	//			$log->addDebug("Added core-media-cat Gallery.");	
 	//		}
 		}
 	}
-	
+	 	
 	
 	// Media Update
 	$count = $sql->gen("SELECT * FROM `#core_media` WHERE media_category = 'newsthumb' OR media_category = 'downloadthumb'  LIMIT 1 ");
@@ -1442,7 +1445,7 @@ function update_706_to_800($type='')
 		$sql->update('core_media', "media_category='download_image' WHERE media_category = 'download' ");
 		$sql->update('core_media', "media_category='download_thumb' WHERE media_category = 'downloadthumb' ");
 		$sql->update('core_media', "media_category='news_thumb' WHERE media_category = 'newsthumb' ");		
-		e107::getMessage()->addDebug("core-media Category names updated");
+		$log->addDebug("core-media Category names updated");
 	}
 
 
@@ -1452,7 +1455,7 @@ function update_706_to_800($type='')
 	{
 		if ($just_check) return update_needed('Media-Manager Category Data needs to be updated.');
 		$sql->update('core_media', "media_category='_common_image' WHERE media_category = '_common' ");
-		e107::getMessage()->addDebug("core-media _common Category updated");
+		$log->addDebug("core-media _common Category updated");
 	}
 	
 	
@@ -1465,7 +1468,7 @@ function update_706_to_800($type='')
 		$sql->update('core_media_cat', "media_cat_category='_common_image' WHERE media_cat_category = '_common' ");
 		$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_file', '(Common Area)', 'Media in this category will be available in all areas of admin. ', 253, '', 0);");
 		$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_file', 'Download Files', '', 253, '', 0);");		
-		e107::getMessage()->addDebug("core-media-cat _common Category updated");
+		$log->addDebug("core-media-cat _common Category updated");
 	}
 			
 	$count = $sql->gen("SELECT * FROM `#core_media_cat` WHERE `media_cat_owner` = '_common' LIMIT 1 ");
@@ -1515,7 +1518,7 @@ function update_706_to_800($type='')
 	}
 	else 
 	{
-//		e107::getMessage()->addDebug("Media COUNT was ".$count. " LINE: ".__LINE__);
+//		$log->addDebug("Media COUNT was ".$count. " LINE: ".__LINE__);
 	}
 	
 	// Check for Legacy Download Images. 
@@ -1563,7 +1566,7 @@ function update_706_to_800($type='')
 	}
 
 
-
+	 
 			
 	$count = $sql->gen("SELECT * FROM `#core_media_cat` WHERE media_cat_owner='_icon'  ");
 	
@@ -1587,7 +1590,7 @@ function update_706_to_800($type='')
 		$med->importIcons(e_PLUGIN);
 		$med->importIcons(e_IMAGE."icons/");
 		$med->importIcons(e_THEME.$pref['sitetheme']."/images/");
-		e107::getMessage()->addDebug("Icon category added");
+		$log->addDebug("Icon category added");
 	}
 	
 
@@ -1597,38 +1600,54 @@ function update_706_to_800($type='')
 
 	// Check that custompages have been imported from current theme.php file
 
-	if (!$just_check) 
+	
+	
+	if (!$just_check)  // Running the Upgrade Process. 
 	{
 		$th = e107::getSingleton('themeHandler');
 		$tmp = $th->getThemeInfo($pref['sitetheme']);
 		if($th->setTheme($pref['sitetheme'], false))
 		{
-			e107::getMessage()->addDebug("Updated SiteTheme prefs");
+			$log->addDebug("Updated SiteTheme prefs");
 		}
 		else
 		{
-			e107::getMessage()->addDebug("Couldn't update SiteTheme prefs");	
+			$log->addDebug("Couldn't update SiteTheme prefs");	
 		}
+		
+		$log->toFile('upgrade_v1_to_v2'); 
+		
+		
+		if ($do_save)
+		{
+			save_prefs();
+			$log->logMessage(LAN_UPDATE_50);
+		//	$log->logMessage(implode(', ', $accum), E_MESSAGE_NODISPLAY);
+			
+			
+			//$updateMessages[] = LAN_UPDATE_50.implode(', ',$accum); 	// Note for admin log
+		}
+		
+	}
+	else 
+	{
+		$log->toFile('upgrade_v1_to_v2_check'); 	
 	}	
 	
-	
-	
-	
-	
-		
 
-	if ($do_save)
-	{
-		save_prefs();
-		$log->logMessage(LAN_UPDATE_50);
-		$log->logMessage(implode(', ', $accum), E_MESSAGE_NODISPLAY);
-		//$updateMessages[] = LAN_UPDATE_50.implode(', ',$accum); 	// Note for admin log
-	}
+	
+
+
+	
 	
 	//FIXME grab message-stack from $log for the log. 
 
 	//if ($just_check) return TRUE;
+
 	$log->flushMessages('UPDATE_01');		// Write admin log entry, update message handler
+	
+	
+	
 	//$admin_log->log_event('UPDATE_01',LAN_UPDATE_14.$e107info['e107_version'].'[!br!]'.implode('[!br!]',$updateMessages),E_LOG_INFORMATIVE,'');	// Log result of actual update
 	return $just_check;
 }
@@ -1888,7 +1907,7 @@ function get_default_prefs()
 function convert_serialized($serializedData)
 {
 	$arrayData = unserialize($serializedData);
-	return e107::getArrayStorage()->WriteArray($arrayData,FALSE);
+	return e107::serialize($arrayData,FALSE);
 }
 
 
