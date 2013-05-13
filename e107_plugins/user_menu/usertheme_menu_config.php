@@ -2,16 +2,10 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/user_menu/usertheme_menu_config.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 $eplug_admin = TRUE;
@@ -29,6 +23,8 @@ if (!getperms("2")) 		// Same permissions as menu configuration
 }
 
 require_once(e_ADMIN."auth.php");
+
+$frm = e107::getForm();
 	
 // Get the list of available themes
 $handle = opendir(e_THEME);
@@ -36,7 +32,7 @@ while ($file = readdir($handle))
 {
 	if ($file != "." && $file != ".." && $file != "templates" && $file != "" && $file != "CVS") 
 	{
-		if (is_readable(e_THEME.$file."/theme.php") && is_readable(e_THEME.$file."/style.css")) 
+		if (is_readable(e_THEME.$file."/theme.php") /*&& is_readable(e_THEME.$file."/style.css")*/) 
 		{
 			$themeOptions[] = $file;
 			$themeCount[$file] = 0;
@@ -80,41 +76,39 @@ $text = "
 	<form method='post' action='".e_SELF."' id='menu_conf_form'>
 	<fieldset id='core-user_menu-usertheme'>
 	<legend class='e-hideme'>".LAN_UMENU_THEME_6."</legend>
-	<table cellpadding='0' cellspacing='0' class='adminlist'>
-
-	<colgroup span='2'>
-	<col style='width: 50%' />
-	<col style='width: 50%' />
+	<table class='table adminlist'>
+		<colgroup span='2'>
+		<col style='width: 50%' />
+		<col style='width: 50%' />
 	</colgroup>
     <thead>
 	<tr>
-	<th colspan='2' class='forumheader2'>".LAN_UMENU_THEME_4."</th>
+		<th colspan='2'>".LAN_UMENU_THEME_4."</th>
 	</tr>
 	</thead>
-	<tbody>";
+		<tbody>";
 
-	foreach ($themeOptions as $th)
-	{
-		$ch = (in_array($th, $themeList) ? " checked='checked'" : '');
+		foreach ($themeOptions as $th) 
+		{
+			$ch = (in_array($th, $themeList) ? " checked='checked'" : '');
+			$text .= "
+				<tr>
+					<td>{$th}</td>
+					<td><input class='tbox' type='checkbox' name='theme_{$th}' value='{$th}' {$ch} /></td>
+				</tr>";
+		}
 		$text .= "
-			<tr>
-			<td class='forumheader3'>{$th}</td>
-			<td class='forumheader3'><input class='tbox' type='checkbox' name='theme_{$th}' value='{$th}' {$ch} /></td>
-			</tr>";
-	}
+				<tr>
+					<td>".LAN_UMENU_THEME_7."</td>
+					<td>".$e_userclass->uc_dropdown("themeeditclass", $themeeditclass, "main,member,admin,classes,matchclass,nobody")."</td>
+				</tr>";
+
 	$text .= "
-			<tr>
-			<td class='forumheader3'>".LAN_UMENU_THEME_7."</td>
-			<td class='forumheader3'>".$e_userclass->uc_dropdown("themeeditclass", $themeeditclass, "main,member,admin,classes,matchclass,nobody")."</td>
-			</tr>";
-
-
-$text .= "
-	<tr>
-	<td colspan='2' class='forumheader' style='text-align:center'><input class='btn button' type='submit' name='update_theme' value='".LAN_UMENU_THEME_5."' /></td>
-	</tr>
     	</tbody>
-		</table>
+	</table>
+	<div class='buttons-bar center'>
+		".$frm->admin_button('update_theme', LAN_UPDATE, 'update')."
+	</div>
 	</fieldset>
 	</form>
 	";
@@ -124,11 +118,12 @@ $ns->tablerender(LAN_UMENU_THEME_6,$mes->render().$text);
 	
 require_once(e_ADMIN."footer.php");
 
+/*
 function headerjs()
 {
 	return "<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>";
 
 
 }
-
+*/
 ?>
