@@ -619,6 +619,7 @@ class db_verify
 	function runFix($fixArray='')
 	{
 		$mes  = e107::getMessage();
+		$log = e107::getAdminLog();
 		
 		if(!is_array($fixArray))
 		{
@@ -686,14 +687,14 @@ class db_verify
 						 
 						if(mysql_query($query))
 						{
-							$mes->add(LAN_UPDATED.' [&nbsp;'.$query.'&nbsp;]', E_MESSAGE_DEBUG);	
+							$log->addDebug(LAN_UPDATED.'  ['.$query.']');	
 						} 
 						else 
 						{
-							$mes->add(LAN_UPDATED_FAILED.' [&nbsp;'.$query.'&nbsp;]', E_MESSAGE_WARNING);
+							$log->addWarning(LAN_UPDATED_FAILED.'  ['.$query.']');
 							if(mysql_errno())
 							{
-								$mes->add('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SQL #'.mysql_errno().': '.mysql_error(), E_MESSAGE_WARNING);
+								$log->addWarning('SQL #'.mysql_errno().': '.mysql_error());
 							}
 						}
 					}	
@@ -701,6 +702,8 @@ class db_verify
 		
 			}	// 
 		}
+
+		$log->flushMessages();
 				
 	}	
 	
