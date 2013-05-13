@@ -554,10 +554,10 @@ CREATE TABLE userclass_classes (
   userclass_id smallint(5) unsigned NOT NULL default '0',
   userclass_name varchar(100) NOT NULL default '',
   userclass_description varchar(250) NOT NULL default '',
-  userclass_editclass tinyint(3) unsigned NOT NULL default '0',
-  userclass_parent tinyint(3) unsigned NOT NULL default '0',
+  userclass_editclass smallint(5) unsigned NOT NULL default '0',
+  userclass_parent smallint(5) unsigned NOT NULL default '0',
   userclass_accum varchar(250) NOT NULL default '',
-  userclass_visibility tinyint(3) unsigned NOT NULL default '0',
+  userclass_visibility smallint(5) signed NOT NULL default '0',
   userclass_type tinyint(1) unsigned NOT NULL default '0',
   userclass_icon varchar(250) NOT NULL default '',
   PRIMARY KEY  (userclass_id)
