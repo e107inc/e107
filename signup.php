@@ -284,7 +284,7 @@ if(getperms('0')) // allow main admin to view signup page for design/testing.
 {
 	//$mes = e107::getMessage();
 	//$mes->debug("You are currently logged in.");
-	 $SIGNUP_BEGIN = "<div class='alert alert-block alert-error'> You are currently logged in.</div>". $SIGNUP_BEGIN;		
+	 $SIGNUP_BEGIN = "<div class='alert alert-block alert-error text-center'>".LAN_SIGNUP_112."</div>". $SIGNUP_BEGIN;		
 }
 
 
