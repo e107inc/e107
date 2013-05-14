@@ -323,11 +323,12 @@ class e_file
 	 */
 	function getRemoteFile($remote_url, $local_file, $type='temp')
 	{
+		// check for cURL
 		if (!function_exists('curl_init')) 
 		{
 			if(E107_DEBUG_LEVEL > 0)
 			{ 
-				e107::getAdminLog()->addDebug('getRemoteFile() requires CURL to be installed in file_class.php');
+				e107::getAdminLog()->addDebug('getRemoteFile() requires cURL to be installed in file_class.php')
 			}
 			return FALSE;			// May not be installed
 		}

@@ -456,6 +456,11 @@ class pluginManager{
 		$mes = e107::getMessage();
 		
 	//	$mes->addWarning("Some older plugins may produce unpredictable results.");
+		// check for cURL
+		if(!function_exists(curl_init))
+		{
+			$mes->addWarning("cURL is currently required to use this feature. Contact your webhosting provider to enable cURL"); // TODO LAN?
+		}
 
 		$from = intval(varset($_GET['frm']));
 		$srch = preg_replace('/[^\w]/','', vartrue($_GET['srch'])); 
