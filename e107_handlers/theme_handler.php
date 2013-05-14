@@ -455,6 +455,12 @@ class themeHandler
 			$limit 	= 96;
 			$srch 	= preg_replace('/[^\w]/','', vartrue($_GET['srch'])); 
 			
+			// check for cURL
+			if(!function_exists(curl_init))
+			{
+				$mes->addWarning("cURL is currently required to use this feature. Contact your webhosting provider to enable cURL"); // TODO LAN?
+			}
+		
 			$file = "http://e107.org/feed?type=theme&frm=".$from."&srch=".$srch."&limit=".$limit;
 			
 			$mes->addDebug("File = ".$file);
@@ -603,7 +609,7 @@ class themeHandler
 
 			$text .= "</form>";
 
-			$ns->tablerender(TPVLAN_26.SEP."Available for Download", $text. $mes->render());
+			$ns->tablerender(TPVLAN_26.SEP."Available for Download", $mes->render().$text);
 
 	}
 	
@@ -956,7 +962,6 @@ class themeHandler
 		$ns = e107::getRender();
 		$pref = e107::getPref();
 		$frm = e107::getForm();
-		
 		
 		$author 		= ($theme['email'] ? "<a href='mailto:".$theme['email']."' title='".$theme['email']."'>".$theme['author']."</a>" : $theme['author']);
 		$website 		= ($theme['website'] ? "<a href='".$theme['website']."' rel='external'>".$theme['website']."</a>" : "");
