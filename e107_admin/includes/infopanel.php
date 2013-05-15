@@ -223,7 +223,6 @@ EOF;
 		//require_once (e_CORE."shortcodes/batch/admin_shortcodes.php");
 		e107::getScBatch('admin');
 		
-	
 
 
 		
@@ -309,6 +308,47 @@ EOF;
 
 	function renderChart()
 	{
+		$data = array();
+		
+		$data['labels'] 	= array("Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Monday"); // change to this week.. ie. days of the week.
+		
+		//TODO Stats for site visitors - members only. 
+		$data['datasets'][]	= array(
+							'fillColor' 		=> "rgba(220,220,220,0.5)",
+							'strokeColor'  		=>  "rgba(220,220,220,1)",
+							'pointColor '  		=>  "rgba(220,220,220,1)",
+							'pointStrokeColor'  =>  "#fff",
+							'data'				=> array(65,59,90,81,56,55,40)	
+			
+		);
+		
+		
+		//TODO Stats for site visitors - all
+		$data['datasets'][]	= array(
+							'fillColor' 		=> "rgba(151,187,205,0.5)",
+							'strokeColor'  		=>  "rgba(151,187,205,1)",
+							'pointColor '  		=>  "rgba(151,187,205,1)",
+							'pointStrokeColor'  =>  "#fff",
+							'data'				=> array(28,48,40,19,96,27,100)		
+		);
+
+		
+		$cht = e107::getChart();
+		$cht->setType('line');
+		$cht->setData($data,'canvas');
+		$text = $cht->render('canvas');
+	
+	
+		$text .= "<div class='center'><small>Please note: these are demo stats - upgrade work in progress.</small></div>";
+		
+		return $text;
+		
+		
+		
+		
+		
+		
+		
 		// REQUIRES Log Plugin to be installed. 		
 		if (e107::isInstalled('log')) 
 		{
