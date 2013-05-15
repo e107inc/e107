@@ -144,6 +144,7 @@ class e107
 		'e107_traffic'					 => '{e_HANDLER}traffic_class.php',
 		'e107_user_extended'			 => '{e_HANDLER}user_extended_class.php',
 		'e107plugin'					 => '{e_HANDLER}plugin_class.php',
+		'e_chart'				 		 => '{e_HANDLER}chart_class.php',
 		'e_core_session'				 => '{e_HANDLER}session_handler.php',
 		'e_admin_controller'			 => '{e_HANDLER}admin_ui.php',
 		'e_admin_controller_ui'			 => '{e_HANDLER}admin_ui.php',
@@ -1515,6 +1516,17 @@ class e107
 	{
 		return self::getSingleton('e_online', true);
 	}
+
+
+	/**
+	 * Retrieve chart handler singleton object
+	 * @return e_chart
+	 */
+	public static function getChart()
+	{
+		return self::getSingleton('e_chart', true);
+	}
+
 
 	/**
 	 * Retrieve comments handler singleton object
