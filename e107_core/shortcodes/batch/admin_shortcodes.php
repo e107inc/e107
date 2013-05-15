@@ -34,7 +34,7 @@ class admin_shortcodes
             	<a class="btn btn-success" href="'.$installUrl.'">Install</a>'; 
 				
                  $mes->addInfo($text);
-				return $mes->render(); 
+				return; //  $mes->render(); 
 			}
             
             if($parm=='icon')
