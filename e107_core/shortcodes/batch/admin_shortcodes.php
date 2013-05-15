@@ -70,6 +70,8 @@ class admin_shortcodes
     	
   		$cacheData = 2.1; // XXX Remove to test for real. 
     	
+    	return false;  // XXX Remove to test for real. 
+    	
         if($cacheData)
         {
             return $this->cronUpdateRender($parm, $cacheData); 
