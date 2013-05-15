@@ -912,7 +912,7 @@ class eIPHandler
 	 * @param integer $ban_user
 	 * @param string $ban_notes
 	 *
-	 * @return boolean check result - FALSE if ban rejected. TRUE if ban added.
+	 * @return boolean|integer check result - FALSE if ban rejected. TRUE if ban added. 1 if IP address already banned
 	 */
 	public function add_ban($bantype, $ban_message = '', $ban_ip = '', $ban_user = 0, $ban_notes = '')
 	{
@@ -938,12 +938,25 @@ class eIPHandler
 		{
 			return FALSE;
 		}
+		// See if address already in the banlist
+		if ($sql->db_Select('banlist', '`banlist_bantype`', "`banlist_ip`='{$ban_ip}'"))
+		{
+			list($banType) = $sql->fetch(MYSQL_ASSOC);
+			
+			if ($banType >= eIPHandler::BAN_TYPE_WHITELIST)
+			{ // Got a whitelist entry for this
+				//$admin_log->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, "BANLIST_11", 'LAN_AL_BANLIST_11', $ban_ip, FALSE, LOG_TO_ROLLING);
+				return FALSE;
+			}
+			return 1;		// Already in ban list
+		}
+		/*
 		// See if the address is in the whitelist
 		if ($sql->db_Select('banlist', '*', "`banlist_ip`='{$ban_ip}' AND `banlist_bantype` >= ".eIPHandler::BAN_TYPE_WHITELIST))
 		{ // Got a whitelist entry for this
 			//$admin_log->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, "BANLIST_11", 'LAN_AL_BANLIST_11', $ban_ip, FALSE, LOG_TO_ROLLING);
 			return FALSE;
-		}
+		} */
 		if(varsettrue($pref['enable_rdns_on_ban']))
 		{
 			$ban_message .= 'Host: '.$this->get_host_name($ban_ip);
