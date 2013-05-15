@@ -173,6 +173,7 @@ class e107plugin
 		$xml 			= e107::getXml();
 		$mes 			= e107::getMessage();	
 		$needed 		= array();
+		$log 			= e107::getAdminLog();
 		
 		if(!$plugVersions = e107::getConfig('core')->get('plug_installed'))
 		{
@@ -195,6 +196,7 @@ class e107plugin
 						$mes->addDebug("Plugin Update(s) Required");
 						return TRUE;	
 					}
+				
 					$needed[$path] = $data;		
 				} 
 				
@@ -207,11 +209,19 @@ class e107plugin
 						return TRUE;	
 					}
 					
-					$mes->addDebug("Plugin: <strong>{$path}</strong> requires an update.");
+				//	$mes->addDebug("Plugin: <strong>{$path}</strong> requires an update.");
+					
+				//	$log->flushMessages();
 					$needed[$path] = $data;
 				}	
 			}
 
+		}
+
+		// Display debug and log to file. 
+		foreach($needed as $path=>$tmp)
+		{
+			$log->addDebug("Plugin: <strong>{$path}</strong> requires an update.");	
 		}	
 	
 		return count($needed) ? $needed : FALSE;		

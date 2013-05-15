@@ -653,6 +653,10 @@ class e_admin_log
 		{
 			$text .= "  e107 CMS Log file : ".$logTitle."   ".date('Y-m-d_H-i-s')."\n";
 			$text .= "-------------------------------------------------------------------------------------------\n\n";		
+		}
+		else 
+		{
+			return; 	
 		}		
 		
 		foreach($this->_allMessages as $m)
@@ -660,8 +664,10 @@ class e_admin_log
 			$text .= date('Y-m-d H:i:s',$m['time'])."  \t".str_pad($m['dislevel'],10," ",STR_PAD_RIGHT)."\t".strip_tags($m['message'])."\n";
 		}
 		
+		$date = date('Y-m-d_H-i-s');
+		$fileName = e_LOG.$date."_".$this->logFile.".log";
 		
-		if(file_put_contents($this->logFile,$text))
+		if(file_put_contents($fileName,$text))
 		{
 			$this->_allMessages = array();
 			return $this->logFile;
@@ -681,9 +687,9 @@ class e_admin_log
 	public function toFile($name,$logTitle='')
 	{
 		
-		$date = date('Y-m-d_H-i-s');
 		
-		$this->logFile	= e_LOG.$date."_".$name.".log";
+		
+		$this->logFile	= $name;
 		$this->saveToFile($logTitle);
 		$this->logFile = null;
 	}
