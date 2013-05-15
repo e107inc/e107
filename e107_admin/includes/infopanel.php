@@ -51,7 +51,7 @@ class adminstyle_infopanel
 EOF;
 	
 		
-	  	$this->getStats();
+	 
 		
 		global $user_pref; // quick fix. 
 		$pref = e107::getPref();  
@@ -306,64 +306,22 @@ EOF;
 
 	}
 
-	function renderChart()
+	private function renderChart()
 	{
-		$data = array();
-		
-		$data['labels'] 	= array("Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Monday"); // change to this week.. ie. days of the week.
-		
-		//TODO Stats for site visitors - members only. 
-		$data['datasets'][]	= array(
-							'fillColor' 		=> "rgba(220,220,220,0.5)",
-							'strokeColor'  		=>  "rgba(220,220,220,1)",
-							'pointColor '  		=>  "rgba(220,220,220,1)",
-							'pointStrokeColor'  =>  "#fff",
-							'data'				=> array(65,59,90,81,56,55,40)	
-			
-		);
-		
-		
-		//TODO Stats for site visitors - all
-		$data['datasets'][]	= array(
-							'fillColor' 		=> "rgba(151,187,205,0.5)",
-							'strokeColor'  		=>  "rgba(151,187,205,1)",
-							'pointColor '  		=>  "rgba(151,187,205,1)",
-							'pointStrokeColor'  =>  "#fff",
-							'data'				=> array(28,48,40,19,96,27,100)		
-		);
+	
 
-		
-		$cht = e107::getChart();
-		$cht->setType('line');
-		$cht->setData($data,'canvas');
-		$text = $cht->render('canvas');
-	
-	
-		$text .= "<div class='center'><small>Please note: these are demo stats - upgrade work in progress.</small></div>";
-		
-		return $text;
-		
-		
-		
-		
-		
-		
-		
 		// REQUIRES Log Plugin to be installed. 		
 		if (e107::isInstalled('log')) 
 		{
-			return $this->renderStats();
-		 	//	$text2 .= $ns->tablerender("Visitors Last 10 Days", $this->renderStats(),"core-infopanel_stats",true);
+			return $this->renderStats('log');
 		}
 		elseif(e107::isInstalled('awstats')) 
 		{
-			return $this->renderStats();
-		 	// 	$text2 .= $ns->tablerender("Visitors this Month", $this->renderStats(),"core-infopanel_stats",true);
+			return $this->renderStats('awstats');
 		}
 		else
 		{
-			return "<div class='center' style='padding:20px'><a class='btn btn-small' href='".e_ADMIN."plugin.php?avail'>Install Site Stats Plugin</a></div>";
-			// $text2 .= $ns->tablerender("Visitors This Week", "Log Statistics Plugin Not Installed","core-infopanel_stats",true);	
+			return $this->renderStats('demo');
 		}
 		
 	}
@@ -707,20 +665,45 @@ EOF;
 	}
 	
 	
-	function getStats() 
+	private function getStats($type) 
 	{
-		if(file_exists(e_PLUGIN."awstats/awstats.graph.php")) //FIXME Cam: Find a generic solution. 
+		
+		
+		if(file_exists(e_PLUGIN."awstats/awstats.graph.php"))  
 		{
 			require_once(e_PLUGIN."awstats/awstats.graph.php");
-			return;	
+			return $data;
+		//	return;	
 		}
 
-
-		if(!e107::isInstalled("log"))
+		if($type == 'demo')
 		{
-			return;	
-		}
+			$data = array();
 		
+			$data['labels'] 	= array("January","February","March","April","May","June","July");
+			
+			
+			$data['datasets'][]	= array(
+								'fillColor' 		=> "rgba(220,220,220,0.5)",
+								'strokeColor'  		=>  "rgba(220,220,220,1)",
+								'pointColor '  		=>  "rgba(220,220,220,1)",
+								'pointStrokeColor'  =>  "#fff",
+								'data'				=> array(65,59,90,81,56,55,40)	
+				
+			);
+			
+			$data['datasets'][]	= array(
+								'fillColor' 		=> "rgba(151,187,205,0.5)",
+								'strokeColor'  		=>  "rgba(151,187,205,1)",
+								'pointColor '  		=>  "rgba(151,187,205,1)",
+								'pointStrokeColor'  =>  "#fff",
+								'data'				=> array(28,48,40,19,96,27,100)		
+			);	
+			
+			return $data;
+		}
+
+	
 				
 		$sql = e107::getDB();
 
@@ -812,58 +795,81 @@ EOF;
 		}
 
 	
+		$visitors = array();
+		$unique = array();
+		
+	
 		ksort($dayarray);
 		foreach($dayarray as $k=>$v)
 		{
 			$unix = strtotime($k);
 			
-			$day[] = intval(vartrue($v['daytotal']));
+			$visitors[] = intval(vartrue($v['daytotal']));
+			$unique[] = intval(vartrue($v['dayunique']));
 			$label[] = "'".date("D",$unix)."'";				
 		}
 		
-		e107::js('log','js/awesomechart.js');
-		e107::js('inline',"
-		 function drawMyChart()
-		 {
-	        if(!!document.createElement('canvas').getContext) //check that the canvas element is supported
-	        { 
-	            var mychart = new AwesomeChart('canvas1');
-	  
-	          	mychart.chartType = 'pareto';
-	
-	       
-				mychart.data = [".implode(", ",$day)."];
-				mychart.labels = [".implode(", ",$label)."];
-	            mychart.colors = ['#0088CC', '#FF6600','#0088CC', '#FF6600','#0088CC', '#FF6600','#0088CC', '#FF6600','#0088CC'];
-	            mychart.animate = true;
-            	mychart.animationFrames = 30;
-            //	mychart.randomColors = true;
-           // 	mychart.dataValueFontHeight = 20;
-           mychart.yAxisLabelFontHeight = 15;
-            	mychart.chartMarkerSize = 20;
-            	 mychart.chartHorizontalLineStrokeStyle = '#999';
-    			mychart.chartHorizontalLineWidth = 1;
-	            mychart.draw();
-	        }
-	      }
-	      
-		window.onload = drawMyChart;
-	  
-      ");
+		$data = array();
 		
-	//	print_a($dayarray);;
+		$data['labels'] 	= $label; 
+		
+		//TODO Stats for site visitors - members only. 
+		$data['datasets'][]	= array(
+							'fillColor' 		=> "rgba(220,220,220,0.5)",
+							'strokeColor'  		=>  "rgba(220,220,220,1)",
+							'pointColor '  		=>  "rgba(220,220,220,1)",
+							'pointStrokeColor'  =>  "#fff",
+							'data'				=> $visitors	
+			
+		);
+		
+		
+		//TODO Stats for site visitors - all
+		$data['datasets'][]	= array(
+							'fillColor' 		=> "rgba(151,187,205,0.5)",
+							'strokeColor'  		=>  "rgba(151,187,205,1)",
+							'pointColor '  		=>  "rgba(151,187,205,1)",
+							'pointStrokeColor'  =>  "#fff",
+							'data'				=> $unique		
+		);
+		
+		
+		
+		return $data;
+		
 	
 	}
 	
 	
-	function renderStats()
+
+	
+	private function renderStats($type)
 	{
+
+		$data = $this->getStats($type);
+
 		
-		return '<canvas id="canvas1" class="center" width="710" height="300" style="width:100%; height:100%">
-        	Your web-browser does not support the HTML 5 canvas element.
-   		 </canvas>';	
+		$cht = e107::getChart();
+		$cht->setType('line');
+		$cht->setData($data,'canvas');
+		$text = $cht->render('canvas');
+	
+			
+		if($type == 'demo')
+		{
+			$text .= "<div class='center'><small>These stats are for demonstration purposes only. <a class='btn btn-mini' href='".e_ADMIN."plugin.php?avail'>Install Site Stats Plugin</a></small></div>";
+		}
+		else
+		{
+			$text .= "<div class='center'><small>
+			<span style='color:rgba(220,220,220,0.5)'>&diams;</span> Visitors  &nbsp;&nbsp;  
+			<span style='color:rgba(151,187,205,1)'>&diams;</span> Unique Visitors
+			</small></div>";
+		}
 		
 		
+		return $text;									
+
 		
 	}
 	

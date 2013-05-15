@@ -71,7 +71,6 @@ class e_chart
 	 */
 	public function setType($type)
 	{
-		
 		$this->type = $type;
 		return $this;	
 	}
@@ -101,7 +100,7 @@ class e_chart
 		
 		if($this->data == null)
 		{
-			return "No chart data provided";	
+			return "<div class='alert alert-info alert-block'>No chart data provided</div>";	
 		}
 		
 		
