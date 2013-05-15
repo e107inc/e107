@@ -1133,7 +1133,7 @@ if($_POST)
 		//BC - configure and dot delimiter deprecated
 		if (!isset($_GET['configure']))
 		{
-			$men->menuScanMenus();
+//			$men->menuScanMenus();   // - Runs 2x - Is already called by menuModify() in menumanager_class.php
             $text = $men->menuRenderMessage();
             $text .= $men->menuSelectLayout();
 			$text .= $men->menuVisibilityOptions();
