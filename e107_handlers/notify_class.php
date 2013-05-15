@@ -6,9 +6,6 @@
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
-* Forum plugin notify configuration
-*
-*
 */
 
 /**
@@ -204,7 +201,7 @@ function notify_logout()
 function notify_flood($data)
 {
 	global $nt;
-	$nt->send('flood', NT_LAN_FL_1, NT_LAN_FL_2.': '.$data);
+	$nt->send('flood', NT_LAN_FL_1, NT_LAN_FL_2.': '.e107::getIPHandler()->ipDecode($data));
 }
 
 function notify_subnews($data)
