@@ -328,7 +328,7 @@ class e_file
 		{
 			if(E107_DEBUG_LEVEL > 0)
 			{ 
-				e107::getAdminLog()->addDebug('getRemoteFile() requires cURL to be installed in file_class.php')
+				e107::getAdminLog()->addDebug('getRemoteFile() requires cURL to be installed in file_class.php');
 			}
 			return FALSE;			// May not be installed
 		}
