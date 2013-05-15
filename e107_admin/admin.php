@@ -89,7 +89,7 @@ foreach($incompat as $folder => $version)
 if($inCompatText)
 {
 	$text = "<ul>".$inCompatText."</ul>";
-	$mes->addWarning("The following plugins are not compatible with this version of e107 and should be <a href='".e_ADMIN."plugin.php'>uninstalled</a>: ".$text);	
+	$mes->addWarning("The following plugins are not compatible with this version of e107 and should be uninstalled: ".$text."<a class='btn' href='".e_ADMIN."plugin.php'>uninstall</a>");	
 }
 
 
