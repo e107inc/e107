@@ -310,9 +310,9 @@ EOF;
 	{
 		$data = array();
 		
-		$data['labels'] 	= array("January","February","March","April","May","June","July");
+		$data['labels'] 	= array("Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Monday"); // change to this week.. ie. days of the week.
 		
-		
+		//TODO Stats for site visitors - members only. 
 		$data['datasets'][]	= array(
 							'fillColor' 		=> "rgba(220,220,220,0.5)",
 							'strokeColor'  		=>  "rgba(220,220,220,1)",
@@ -322,6 +322,8 @@ EOF;
 			
 		);
 		
+		
+		//TODO Stats for site visitors - all
 		$data['datasets'][]	= array(
 							'fillColor' 		=> "rgba(151,187,205,0.5)",
 							'strokeColor'  		=>  "rgba(151,187,205,1)",
@@ -337,7 +339,7 @@ EOF;
 		$text = $cht->render('canvas');
 	
 	
-		$text .= "<div class='center'><small>Please note: this are demo stats - upgrade work in progress.</small></div>";
+		$text .= "<div class='center'><small>Please note: these are demo stats - upgrade work in progress.</small></div>";
 		
 		return $text;
 		
