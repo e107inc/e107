@@ -367,7 +367,7 @@ class e_array {
 
 
     /**
-     * DEPRECATED - Backwards Compatible. Use write() instead; 
+     * @DEPRECATED - Backwards Compatible. Use e107::serialize() instead; 
     * @param array $ArrayData array to be stored
     * @param bool $AddSlashes default true, add slashes for db storage, else false
     * @returnReturn a string containg exported array data.
@@ -385,7 +385,7 @@ class e_array {
     }
 
     /**
-    * DEPRECATED: Use read(); instead. 
+    * @DEPRECATED: Use e107::unserialize(); instead. 
     * Returns an array from stored array data.
     *
     * @param string $ArrayData

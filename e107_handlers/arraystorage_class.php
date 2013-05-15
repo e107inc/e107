@@ -11,7 +11,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 /**
-* DEPRECATED: Allows Storage of arrays without use of serialize functions
+* @DEPRECATED: Allows Storage of arrays without use of serialize functions
 *
 */
 class ArrayData {
