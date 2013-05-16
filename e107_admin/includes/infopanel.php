@@ -717,9 +717,9 @@ EOF;
 		DESC LIMIT 0,9
 		";
 
-		if($amount = $sql -> db_Select_gen($qry)) 
+		if($amount = $sql->gen($qry)) 
 		{
-			$array = $sql -> db_getList();
+			$array = $sql->db_getList();
 
 			$ttotal = 0;
 			$utotal = 0;
@@ -813,7 +813,7 @@ EOF;
 		
 		$data['labels'] 	= $label; 
 		
-		//TODO Stats for site visitors - members only. 
+		//visitors
 		$data['datasets'][]	= array(
 							'fillColor' 		=> "rgba(220,220,220,0.5)",
 							'strokeColor'  		=>  "rgba(220,220,220,1)",
@@ -824,7 +824,7 @@ EOF;
 		);
 		
 		
-		//TODO Stats for site visitors - all
+		//Unique Visitors
 		$data['datasets'][]	= array(
 							'fillColor' 		=> "rgba(151,187,205,0.5)",
 							'strokeColor'  		=>  "rgba(151,187,205,1)",
