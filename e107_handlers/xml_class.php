@@ -232,7 +232,7 @@ class xmlClass
 
 	public function setOptStringTags($string)
 	{
-		$this->stringTags = (array) explode(",", $string);
+		$this->stringTags = (array) explode(",", $string); 
 		return $this;
 	}
 
@@ -658,7 +658,7 @@ class xmlClass
 
 		foreach($this->stringTags as $vl)
 		{
-			if(isset($vars[$vl]) && isset($vars[$vl][0]))
+			if(isset($vars[$vl]) && is_array($vars[$vl]) && isset($vars[$vl][0]))
 			{
 				$vars[$vl] = $vars[$vl][0];
 			}
