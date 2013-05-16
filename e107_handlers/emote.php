@@ -36,6 +36,7 @@ function r_emote()
 		$value2 = substr($value, 0, strpos($value, " "));
 		$value = ($value2 ? $value2 : $value);
 		$value = ($value == '&|') ? ':((' : $value;
+		$value = " ".$value." ";
 		//TODO CSS class
 		$str .= "\n<a href=\"javascript:addtext('$value',true)\"><img src='$key' alt='' /></a> ";
 	}
