@@ -271,7 +271,7 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 	 * e107.org WSDL URL
 	 * @var string
 	 */
-	protected $wsdl = 'http://e107.org/e107_plugins/addons/service.php?wsdl';
+	protected $wsdl = 'http://e107.org/service?wsdl';
 	
 	/**
 	 * Soap client instance
@@ -296,7 +296,7 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 
 		if(function_exists('xdebug_disable'))
 		{
-			//xdebug_disable();
+			xdebug_disable();
 		}
 	}
 	
@@ -404,7 +404,9 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 	 * e107.org XML-rpc service
 	 * @var xmlClass
 	 */
-	protected $url = 'http://e107.org/e107_plugins/addons/xservice.php';
+	protected $url = 'http://e107.org/xservice';
+	
+	protected $_forceArray = array();
 	
 	public function __construct()
 	{
@@ -420,7 +422,7 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 		$client = $this->client();
 		
 		// settings based on current method
-		$this->prepareClient($client);
+		$this->prepareClient($method, $client);
 		
 		// authorization data
 		$data['auth'] = $this->getAuthKey();
@@ -430,27 +432,149 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 		$qry = str_replace(array('s%5B', '%5D'), array('[', ']'), http_build_query($data, null, '&'));
 		$url = $this->url.'?'.$qry;
 		
+		
 		// call it
-		$result = $client->loadXMLfile($url,'advanced');
-		//var_dump($url, $result);
-		return $result;
+		$xmlString = $client->loadXMLfile($url,false);
+		$result = new SimpleXMLIterator($xmlString);
+		//$result = $client->loadXMLfile($url, 'advanced');
+		
+		return $this->fetch($method, $result);
 	}
 	
 	public function fetch($method, &$result)
 	{
+		$ret = $this->parse($result);
+		$this->fetchParams($ret);
+		return $ret;
+	}
+
+	/**
+	 * New experimental XML parser, will be moved to XML handlers soon
+	 * XXX replace xmlClass::xml2array() after this one passes all tests
+	 * @param SimpleXmlIterator $xml
+	 * @param string $parentName parent node name - used currently for debug only
+	 */
+	public function parse($xml, $parentName = null)
+	{
+		$ret = array();
+		$tags = array_keys(get_object_vars($xml));
+		$count = $xml->count();
+		$tcount = count($tags);
 		
+		if($count === 0)
+		{
+			$attr = (array) $xml->attributes();
+			if(!empty($attr))
+			{
+				$ret['@attributes'] = $attr['@attributes'];
+				$ret['@value'] = (string) $xml;
+				$ret['@value'] = trim($ret['@value']);
+			}
+			else
+			{
+				$ret = (string) $xml;
+				$ret = trim($ret);
+			}
+			return $ret;
+		}
+		
+		/**
+		 * <key>
+		 * 	<value />
+		 * 	<value />
+		 * </key>
+		 */
+		if($tcount === 1 && $count > 1)
+		{
+			foreach ($xml as $name => $node) 
+			{
+				$_res = $this->parse($node, $name);
+				if(is_string($_res)) $_res = trim($res);
+				
+				$ret[$name][] = $this->parse($node, $name);
+			}
+		}
+		// default
+		else
+		{
+			foreach ($xml as $name => $node) 
+			{
+				if(in_array($name, $this->_forceArray))
+				{
+					$_res = $this->parse($node, $name);
+					if(is_string($_res)) $_res = trim($res);
+					
+					if(empty($_res)) $ret[$name] = array();
+					elseif(is_string($_res)) $ret[$name][] = $_res;
+					else $ret[$name] = $_res; //array
+				}
+				else $ret[$name] = $this->parse($node, $name);
+			}
+		}
+		
+
+		$attr = (array) $xml->attributes();
+		if(!empty($attr))
+		{
+			$ret['@attributes'] = $attr['@attributes'];
+		}
+
+		return $ret;
 	}
 	
+	/**
+	 * Normalize parameters/attributes
+	 * @param array $result parsed to array XML response data
+	 */
+	public function fetchParams(&$result)
+	{
+		foreach ($result as $tag => $data) 
+		{
+			if($tag === 'params')
+			{
+				foreach ($data['param'] as $param) 
+				{
+					$result[$tag][$param['@attributes']['name']] = $param['@value'];
+					unset($result[$tag]['param'][$i]);
+				}
+				unset($result[$tag]['param']);
+			}
+			elseif($tag === 'exception')
+			{
+				$result['exception'] = array('code' => (int) $result['exception']['@attributes']['code'], 'message' => $result['exception']['@value']);
+				//unset($result['exception']);
+			}
+			elseif($tag === '@attributes')
+			{
+				$result['params'] = $result['@attributes'];
+				unset($result['@attributes']);
+			}
+			elseif(is_array($result[$tag]))
+			{
+				$this->fetchParams($result[$tag]);
+			}
+		}
+	}
+	
+	/**
+	 * @param string $method
+	 * @param xmlClass $client
+	 */
 	public function prepareClient($method, &$client)
 	{
 		switch ($method) 
 		{
 			case 'getList':
-				$client->setOptArrayTags('plugin');
+				$this->_forceArray = array('item', 'screenshots', 'image');
+				//$client->setOptArrayTags('item,screenshots,image')
+				//	->setOptStringTags('icon,folder,version,author,authorURL,date,compatibility,url,thumbnail,featured,livedemo,price,name,description,category,image');
 			break;
 		}
 	}
 	
+	/**
+	 * @return xmlClass
+	 */
 	public function client()
 	{
 		return e107::getXml(false);
