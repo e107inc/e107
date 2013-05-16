@@ -560,7 +560,16 @@ class xmlClass
 
 					//more cases?
 					default:
-					
+						// fix - empty SimpleXMLElement
+						if(empty($xml->{$tag}))
+						{
+							if($this->arrayTags && in_array($tag, $this->arrayTags))
+							{
+								$ret[$tag] = array();
+							}
+							else $ret[$tag] = '';
+							break;
+						}
 						$count = count($xml->{$tag});
 						if($count >= 1) //array of elements - loop
 						{
@@ -703,8 +712,7 @@ class xmlClass
 				
 				continue;	
 			}
-			
-			
+
 			if(isset($vars[$vl]) && is_array($vars[$vl]) && !varset($vars[$vl][0]))
 			{
 				
