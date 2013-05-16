@@ -102,7 +102,8 @@ class bbcode_shortcodes extends e_shortcode
 
 		$data = "[list][*]Item 1[*]Item 2[/list]";
 	//	$data = "[list]\n[*]Item 1\n[*]Item 2\n[/list]"; // works with jquery, but not onclick. 
-		$event = $this->getEvent($this->var['trigger'],$data,LANHELP_36);
+	//	$event = $this->getEvent($this->var['trigger'],$data,LANHELP_36);
+		$event = $this->getEvent('addtext',$data,LANHELP_36);
 		$text = "<a {$event} class='e-bb' id='{$id}' data-function='insert' href='#{$this->var['tagid']}' data-bbcode='{$data}'>";
 		$text .= "<img class='btn btn-small bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/list.png' alt='' title='".nl2br(LANHELP_36)."' /></a>";
 		return $text;
