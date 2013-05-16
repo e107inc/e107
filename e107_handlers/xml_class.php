@@ -473,7 +473,8 @@ class xmlClass
 	 * Advanced XML parser - handles tags with attributes and values
 	 * properly.
 	 * TODO - filter (see xml_convert_to_array)
-	 *
+	 * FIXME can't handle multi-dimensional associative arrays (e.g. <screnshots><image>...</image><image>...</image></screenshots> to screenshots[image] = array(...))
+	 * XXX New parser in testing phase - see e_marketplace::parse()
 	 * @param SimpleXMLElement $xml
 	 * @param string $rec_parent used for recursive calls only
 	 * @return array
@@ -570,7 +571,8 @@ class xmlClass
 							else $ret[$tag] = '';
 							break;
 						}
-						$count = count($xml->{$tag});
+						
+						$count = $xml->{$tag}->count(); 
 						if($count >= 1) //array of elements - loop
 						{
 							for ($i = 0; $i < $count; $i++)
