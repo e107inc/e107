@@ -315,7 +315,7 @@ class pluginManager{
 		// it'll be moved to e107::getMarketplace() soon
 		if($this->action == 'online')
 		{
-			// force xmlrpc temporary
+			// XXX force xmlrpc temporary
 			require_once(e_HANDLER.'e_marketplace.php');
 			$this->mp = new e_marketplace('xmlrpc');
 		}

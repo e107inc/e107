@@ -423,6 +423,7 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 	protected $url = 'http://e107.org/xservice';
 	
 	protected $_forceArray = array();
+	protected $_forceNumericalArray = array();
 	
 	public function __construct()
 	{
@@ -541,11 +542,15 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 				if(in_array($name, $this->_forceArray))
 				{
 					$_res = $this->parse($node, $name);
-					if(is_string($_res)) $_res = trim($res);
+					if(is_string($_res)) $_res = trim($_res);
 					
 					if(empty($_res)) $ret[$name] = array(); // empty
 					elseif(is_string($_res)) $ret[$name][] = $_res; // string
-					else $ret[$name][] = $_res; //array - test case, we wanna always force numerical array for now
+					else 
+					{
+						if(in_array($name, $this->_forceNumericalArray)) $ret[$name][] = $_res; //array - controlled force numerical array
+						else $ret[$name] = $_res; //array, no force
+					}
 				}
 				else $ret[$name] = $this->parse($node, $name);
 			}
@@ -605,6 +610,7 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 		{
 			case 'getList':
 				$this->_forceArray = array('item', 'screenshots', 'image');
+				$this->_forceNumericalArray = array('item', 'image');
 				//$client->setOptArrayTags('item,screenshots,image')
 				//	->setOptStringTags('icon,folder,version,author,authorURL,date,compatibility,url,thumbnail,featured,livedemo,price,name,description,category,image');
 			break;

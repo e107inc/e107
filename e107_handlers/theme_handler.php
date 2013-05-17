@@ -54,10 +54,16 @@ class themeHandler
 		 'social',
 		 'video',
 		 'multimedia');
+		 
+	/**
+	 * Marketplace handler instance
+	 * @var e_marketplace
+	 */
+	protected $mp;
 	
 	/* constructor */
 	
-	function themeHandler()
+	function __construct()
 	{
 		
 		global $e107cache,$pref;
@@ -442,17 +448,31 @@ class themeHandler
 		
 	}
 
-
+	/**
+	 * Temporary, e107::getMarketplace() coming soon
+	 * @return e_marketplace
+	 */
+	public function getMarketplace()
+	{
+		if(null === $this->mp)
+		{
+			require_once(e_HANDLER.'e_marketplace.php');
+			$this->mp = new e_marketplace('xmlrpc'); // XXX temporary force xmplrpc
+		}
+		return $this->mp;
+	}
 	
 	
 	function renderOnline($ajax=false)
 	{
+		global $e107SiteUsername, $e107SiteUserpass;
 			$xml 	= e107::getXml();
 			$mes 	= e107::getMessage();
 			$frm 	= e107::getForm();
 			$ns 	= e107::getRender();
+			$mp 	= $this->getMarketplace();
 			$from 	= intval(varset($_GET['frm']));
-			$limit 	= 96;
+			$limit 	= 96; // FIXME - ajax pages load
 			$srch 	= preg_replace('/[^\w]/','', vartrue($_GET['srch'])); 
 			
 			// check for cURL
@@ -460,15 +480,27 @@ class themeHandler
 			{
 				$mes->addWarning("cURL is currently required to use this feature. Contact your webhosting provider to enable cURL"); // TODO LAN?
 			}
-		
-			$file = "http://e107.org/feed?type=theme&frm=".$from."&srch=".$srch."&limit=".$limit;
+			
+			// auth
+			$mp->generateAuthKey($e107SiteUsername, $e107SiteUserpass);
+			
+			// do the request, retrieve and parse data
+			$xdata = $mp->call('getList', array(
+				'type' => 'theme', 
+				'params' => array('limit' => $limit, 'search' => $srch, 'from' => $from)
+			));
+			$total = $xdata['params']['count'];
+			
+			// OLD BIT OF CODE ------------------------------->
+			/*$file = "http://e107.org/feed?type=theme&frm=".$from."&srch=".$srch."&limit=".$limit;
 			
 			$mes->addDebug("File = ".$file);
 			
 			$xml->setOptArrayTags('theme,screenshots/image'); // make sure 'theme' tag always returns an array
 		//	$xdata = $xml->loadXMLfile($file,'advanced',true);
 			$xdata = $xml->loadXMLfile($file,true,false);
-			$total = $xdata['@attributes']['total'];
+			$total = $xdata['@attributes']['total'];*/
+			// OLD BIT OF CODE ------------------------------->
 			
 			$amount =$limit;
 			
@@ -498,15 +530,15 @@ class themeHandler
 			$text .= '<div id="shop" style="margin-top:10px;min-height:585px" class=" carousel-inner">';
 			
 			
-			
-			if(is_array($xdata['theme'] ))
+			//var_dump($xdata);
+			if(is_array($xdata['data'] ))
 			{
 				
 				$text .= '<div  class="active item">';
 				
 				$slides = array();
 				
-				foreach($xdata['theme'] as $r)
+				foreach($xdata['data'] as $r)
 				{
 					if(E107_DBG_PATH)
 					{
@@ -514,19 +546,19 @@ class themeHandler
 					}
 					
 					$theme = array(
-						'name'			=> stripslashes($r['@attributes']['name']),
+						'name'			=> stripslashes($r['name']),
 						'category'		=> $r['category'],
-						'preview' 		=> $r['screenshots']['image'],
-						'date'			=> $r['@attributes']['date'],
-						'version'		=> $r['@attributes']['version'],
-						'thumbnail'		=> $r['@attributes']['thumbnail'],
-						'url'			=> $r['@attributes']['url'],
-						'author'		=> $r['@attributes']['author'],
-						'website'		=> $r['@attributes']['authorUrl'],
-						'compatibility'	=> $r['@attributes']['compatibility'],
-						'description'	=> varset($r['description']),
-						'price'			=> $r['@attributes']['price'],
-						'livedemo'		=> $r['@attributes']['livedemo'],
+						'preview' 		=> varset($r['screenshots']['image'][0]),
+						'date'			=> $r['date'],
+						'version'		=> $r['version'],
+						'thumbnail'		=> $r['thumbnail'],
+						'url'			=> $r['url'],
+						'author'		=> $r['author'],
+						'website'		=> $r['authorUrl'],
+						'compatibility'	=> $r['compatibility'],
+						'description'	=> $r['description'],
+						'price'			=> $r['price'],
+						'livedemo'		=> $r['livedemo'],
 					);
 					
 								
