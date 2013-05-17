@@ -245,6 +245,11 @@ abstract class e_marketplace_adapter_abstract
 	// Grab a remote file and save it in the /temp directory. requires CURL
 	function getRemoteFile($remote_url, $local_file, $type='temp')
 	{
+		// FIXME - different methods (see xml handler getRemoteFile()), error handling, appropriate error messages, 
+		if (function_exists("curl_init")) 
+		{
+			return false;
+		}
 		$path = ($type == 'media') ? e_MEDIA : e_TEMP; 
 		
         $fp = fopen($path.$local_file, 'w'); // media-directory is the root. 
@@ -289,7 +294,7 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 			'exception' 			=> true,
 		    "uri" 					=> "http://server.soap.e107.inc.com/",
 		    'cache_wsdl'			=> WSDL_CACHE_NONE,
-		    'connection_timeout' 	=> 10,
+		    'connection_timeout' 	=> 60,
 		);
 
 		$this->client = new SoapClient($this->wsdl, $options);
@@ -339,27 +344,38 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 			}
 			else $ret = $this->client->$method($args);
 			
+			$result = $ret;
 			if(isset($ret['exception']))
 			{
-				$result['error']['message'] = "API Exception [call::{$method}]: (#".$ret['exception']['code'].") ".$ret['exception']['message'];
-				$result['error']['code'] 	= $ret['exception']['code'];
-				unset($ret['exception']);
+				$result['exception'] = array();
+				$result['exception']['message'] = "API Exception [call::{$method}]: (#".$ret['exception']['code'].") ".$ret['exception']['message'];
+				$result['exception']['code'] 	= 'API_'.$ret['exception']['code'];
 			}
-			$result['data'] = $ret['data'];
+			unset($ret);
 		}
 		catch(SoapFault $e)
 		{
-			$result['error']['message'] = "SoapFault Exception [call::{$method}]: (#".$e->getCode().") ".$e->getMessage();
-			$result['error']['code'] 	= 'SOAP_'.$e->getCode();
+			$result['exception']['message'] = "SoapFault Exception [call::{$method}]: (#".$e->faultcode.") ".$e->faultstring;
+			$result['exception']['code'] 	= 'SOAP_'.$e->faultcode;
+			if(E107_DEBUG_LEVEL)
+			{
+				$result['exception']['trace'] = $e->getTraceAsString(); 
+				$result['exception']['message'] .= ". Header fault: ".($e->headerfault ? $e->headerfault : 'n/a');
+			}
 		}
 		catch(Exception $e)
 		{
-			$result['error']['message'] = "Generic Exception [call::{$method}]: (#".$e->getCode().") ".$e->getMessage();
-			$result['error']['code'] 	= 'GEN_'.$e->getCode();
+			$result['exception']['message'] = "Generic Exception [call::{$method}]: (#".$e->getCode().") ".$e->getMessage();
+			$result['exception']['code'] 	= 'GEN_'.$e->getCode();
+			if(E107_DEBUG_LEVEL)
+			{
+				$result['exception']['trace'] = $e->getTraceAsString(); 
+			}
 		}
 		if(E107_DEBUG_LEVEL)
 		{
-			print_a($this->client->__getLastRequest());
+			$result['exception']['response'] = $this->client->__getLastResponse(); 
+			$result['exception']['request'] = $this->client->__getLastRequest(); 
 		}
 		return $result;
 	}
@@ -431,20 +447,43 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 		// build the request query
 		$qry = str_replace(array('s%5B', '%5D'), array('[', ']'), http_build_query($data, null, '&'));
 		$url = $this->url.'?'.$qry;
-		
+		$result = array();
 		
 		// call it
-		$xmlString = $client->loadXMLfile($url,false);
-		$result = new SimpleXMLIterator($xmlString);
-		//$result = $client->loadXMLfile($url, 'advanced');
-		
-		return $this->fetch($method, $result);
+		try
+		{
+			$xmlString = $client->loadXMLfile($url,false);
+			$xml = new SimpleXMLIterator($xmlString);
+			//$result = $client->loadXMLfile($url, 'advanced');
+			$result = $this->fetch($method, $xml);
+			if(isset($result['exception']))
+			{
+				$exception = $result['exception'];
+				$result['exception'] = array();
+				$result['exception']['message'] = "API Exception [call::{$method}]: (#".$exception['code'].") ".$exception['message'];
+				$result['exception']['code'] 	= 'API_'.$exception['code'];
+			}
+		}
+		catch(Exception $e)
+		{
+			$result['exception']['message'] = "Generic Exception [call::{$method}]: (#".$e->getCode().") ".$e->getMessage();
+			$result['exception']['code'] 	= 'GEN_'.$e->getCode();
+		}
+		return $result;
 	}
 	
 	public function fetch($method, &$result)
 	{
 		$ret = $this->parse($result);
 		$this->fetchParams($ret);
+		
+		switch ($method) 
+		{
+			// normalize
+			case 'getList':
+				$ret['data'] = $ret['data']['item'];
+			break;
+		}
 		return $ret;
 	}
 
@@ -504,9 +543,9 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 					$_res = $this->parse($node, $name);
 					if(is_string($_res)) $_res = trim($res);
 					
-					if(empty($_res)) $ret[$name] = array();
-					elseif(is_string($_res)) $ret[$name][] = $_res;
-					else $ret[$name] = $_res; //array
+					if(empty($_res)) $ret[$name] = array(); // empty
+					elseif(is_string($_res)) $ret[$name][] = $_res; // string
+					else $ret[$name][] = $_res; //array - test case, we wanna always force numerical array for now
 				}
 				else $ret[$name] = $this->parse($node, $name);
 			}
