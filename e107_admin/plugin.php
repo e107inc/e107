@@ -255,6 +255,12 @@ class pluginManager{
 	var $fieldpref;
 	var $titlearray 		= array();
 	var $pagetitle;
+	
+	/**
+	 * Marketplace handler instance
+	 * @var e_marketplace
+	 */
+	var $mp;
 		
 	protected $pid = 'plugin_id';
 	
@@ -305,7 +311,14 @@ class pluginManager{
 		$this->pagetitle = (in_array($this->action,$keys)) ? $this -> titlearray[$this->action] : $this -> titlearray['installed'];
 
 
-	
+		// temporary - create e_marketpalce instnace
+		// it'll be moved to e107::getMarketplace() soon
+		if($this->action == 'online')
+		{
+			// force xmlrpc temporary
+			require_once(e_HANDLER.'e_marketplace.php');
+			$this->mp = new e_marketplace('xmlrpc');
+		}
 
 
 
@@ -445,7 +458,7 @@ class pluginManager{
 	
 	function pluginOnline()
 	{
-		global $plugin;
+		global $plugin, $e107SiteUsername, $e107SiteUserpass;
 		$tp = e107::getParser();
 		$frm = e107::getForm();
 		
@@ -461,25 +474,37 @@ class pluginManager{
 		{
 			$mes->addWarning("cURL is currently required to use this feature. Contact your webhosting provider to enable cURL"); // TODO LAN?
 		}
-
-		$from = intval(varset($_GET['frm']));
+		
+		//TODO use admin_ui including filter capabilities by sending search queries back to the xml script. 
+		$from = isset($_GET['frm']) ? intval($_GET['frm']) : 0;
 		$srch = preg_replace('/[^\w]/','', vartrue($_GET['srch'])); 
-	
+		
+		// auth
+		$this->mp->generateAuthKey($e107SiteUsername, $e107SiteUserpass);
+		
+		// do the request, retrieve and parse data
+		$xdata = $this->mp->call('getList', array(
+			'type' => 'plugin', 
+			'params' => array('limit' => 10, 'search' => $srch, 'from' => $from)
+		));
+		$total = $xdata['params']['count'];
+		
+		// OLD BIT OF CODE ------------------------------->
+		/*	
 	//	$file = SITEURLBASE.e_PLUGIN_ABS."release/release.php";  // temporary testing
 		$file = "http://e107.org/feed?type=plugin&frm=".$from."&srch=".$srch."&limit=10";
 		
 		$xml->setOptArrayTags('plugin'); // make sure 'plugin' tag always returns an array
 		$xdata = $xml->loadXMLfile($file,'advanced');
 
-		$total = $xdata['@attributes']['total'];
+		$total = $xdata['@attributes']['total'];*/
+		// OLD BIT OF CODE END ------------------------------->
 
-		//TODO use admin_ui including filter capabilities by sending search queries back to the xml script. 
-
-		// XML data array. 
+		 
 		$c = 1;
-		foreach($xdata['plugin'] as $r)
+		foreach($xdata['data'] as $row)
 		{
-			$row = $r['@attributes'];
+			//$row = $r['@attributes'];
 			
 				$badge 		= $this->compatibilityLabel($row['compatibility']);;
 				$featured 	= ($row['featured']== 1) ? " <span class='label label-info'>Featured</span>" : '';
@@ -491,10 +516,10 @@ class pluginManager{
 					'plugin_name'			=> stripslashes($row['name']).$featured,
 					'plugin_folder'			=> $row['folder'],
 					'plugin_date'			=> vartrue($row['date']),
-					'plugin_category'		=> vartrue($r['category'][0]),
+					'plugin_category'		=> vartrue($row['category'], 'n/a'),
 					'plugin_author'			=> vartrue($row['author']),
 					'plugin_version'		=> $row['version'],
-					'plugin_description'	=> nl2br(vartrue($r['description'][0])),
+					'plugin_description'	=> nl2br(vartrue($row['description'])),
 					'plugin_compatible'		=> $badge,
 				
 					'plugin_website'		=> vartrue($row['authorUrl']),
@@ -505,17 +530,10 @@ class pluginManager{
 				
 			$c++;
 		}
-	
-//	print_a($data);
+
 		$fieldList = $this->fields;
 		unset($fieldList['checkboxes']);
-		
-		
-		
-		
-		
-		
-		
+
 		$text = "
 			<form class='form-search' action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='get'>
 			<div class='e-search'>".$frm->search('srch', $srch, 'go', $filterName, $filterArray, $filterVal).$frm->hidden('mode','online')."
