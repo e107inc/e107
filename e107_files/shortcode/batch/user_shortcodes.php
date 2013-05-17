@@ -229,6 +229,15 @@ global $user;
 return $user['user_id'];
 SC_END
 
+SC_BEGIN USER_IP
+global $user;
+if(ADMIN)
+{
+	return $user['user_ip'];
+}
+SC_END 
+
+
 SC_BEGIN USER_NAME
 global $user;
 return $user['user_name'];
