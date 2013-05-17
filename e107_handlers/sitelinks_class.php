@@ -1472,6 +1472,17 @@ class e_navigation
 			return true;	
 		}
 		
+		// XXX Temporary Fix - TBD. 
+		// Set the URL matching in the page itself. see: forum_viewforum.php and forum_viewtopic.php 
+		if(defined("NAVIGATION_ACTIVE") && !$data['link_sub']) 
+		{
+			if(strpos($data['link_url'], NAVIGATION_ACTIVE)!==false)
+			{
+				return true;
+			}
+		}
+		
+		
 		return false;
 	}
 	

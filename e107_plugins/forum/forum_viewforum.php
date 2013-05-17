@@ -21,7 +21,7 @@ if (!$e107->isInstalled('forum'))
 	exit;
 }
 include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_viewforum.php');
-
+define('NAVIGATION_ACTIVE','forum');
 
 
 

@@ -11,7 +11,7 @@
 */
 
 require_once('../../class2.php');
-
+define('NAVIGATION_ACTIVE','forum');
 $e107 = e107::getInstance();
 $tp = e107::getParser();
 $ns = e107::getRender();
