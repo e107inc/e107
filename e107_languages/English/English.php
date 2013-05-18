@@ -44,6 +44,12 @@ define('CORE_LAN_MB', 'MB');
 define('CORE_LAN_GB', 'GB');
 define('CORE_LAN_TB', 'TB');
 
+define("EMESSLAN_TITLE_INFO", "System Information");
+define("EMESSLAN_TITLE_ERROR", "Error");
+define("EMESSLAN_TITLE_SUCCESS", "Success");
+define("EMESSLAN_TITLE_WARNING", "Warning");
+define("EMESSLAN_TITLE_DEBUG", "System Debug");
+
 define('LAN_MORE', 'More..');
 
 define('LAN_WARNING', 'Warning!');

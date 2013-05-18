@@ -134,8 +134,8 @@ class db_verify
 		}
 		else
 		{
-			$mes->add("Tables appear to be okay!",E_MESSAGE_SUCCESS); //TODO LAN
-			$mes->add("<a href='".$this->backUrl."'>".LAN_BACK."</a>", E_MESSAGE_SUCCESS);
+			$mes->addSuccess("Tables appear to be okay!"); //TODO LAN
+			$mes->addSuccess("<a class='btn btn-primary' href='".$this->backUrl."'>".LAN_BACK."</a>");
 			//$debug = "<pre>".print_r($this->results,TRUE)."</pre>";
 			//$mes->add($debug,E_MESSAGE_DEBUG);	
 			//$text .= "<div class='buttons-bar center'>".$frm->admin_button('back', DBVLAN_17, 'back')."</div>";
