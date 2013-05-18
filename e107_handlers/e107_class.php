@@ -3077,6 +3077,7 @@ class e107
 		{
 			$requestUri = str_replace('['.e_MENU.']', '', $requestUri);
 			$requestUrl = str_replace('['.e_MENU.']', '', $requestUrl);
+			parse_str(e_QUERY,$_GET);
 		}
 
 		// the last anti-XSS measure, XHTML compliant URL to be used in forms instead e_SELF
