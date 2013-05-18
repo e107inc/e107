@@ -27,7 +27,7 @@ header("Pragma: no-cache");
 
 // Settings
 // $targetDir = ini_get("upload_tmp_dir") . DIRECTORY_SEPARATOR . "plupload";
-$targetDir = e_UPLOAD;
+$targetDir = e_IMPORT;
 //$targetDir = 'uploads';
 
 $cleanupTargetDir = true; // Remove old files
