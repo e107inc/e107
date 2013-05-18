@@ -574,6 +574,25 @@ echo "</head>\n";
 
 echo "<body".$body_onload.">\n";
 
+// Bootstrap Modal Window - too important to template. 
+echo '<div id="uiModal" style="display:none" class="modal hide fade" tabindex="-1" role="dialog"  aria-hidden="true">
+            <div class="modal-header">
+            	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+             	<h4 class="modal-caption">&nbsp;</h4>
+             </div>
+             <div class="modal-body">
+             <p>Loading…</p>
+             </div>
+             <div class="modal-footer">
+                <a href="#" data-dismiss="modal" class="btn btn-primary">Close</a>
+            </div>
+        </div>
+';
+
+
+
+
+
 // Header included notification, from this point header includes are not possible
 define('HEADER_INIT', TRUE);
 
