@@ -511,7 +511,7 @@ function update_706_to_800($type='')
 	$serialized_prefs = array("'emote'", "'menu_pref'", "'search_prefs'", "'emote_default'", "'pm_prefs'");
 
 
-	$create_dir = array(e_MEDIA,e_SYSTEM,e_CACHE,e_CACHE_CONTENT,e_CACHE_IMAGE, e_CACHE_DB, e_LOG, e_BACKUP, e_CACHE_URL, e_TEMP);
+	$create_dir = array(e_MEDIA,e_SYSTEM,e_CACHE,e_CACHE_CONTENT,e_CACHE_IMAGE, e_CACHE_DB, e_LOG, e_BACKUP, e_CACHE_URL, e_TEMP, e_IMPORT);
 	
 	foreach($create_dir as $dr)
 	{
