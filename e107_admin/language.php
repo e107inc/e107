@@ -852,7 +852,7 @@ function show_tools()
 										$text .= "</optgroup><optgroup label='".$type."'>\n";	
 									}
 									
-									$text .= "<option value='".$val."'>".$label."</option>\n";
+									$text .= "<option value='".$val."' ".$selected.">".$label."</option>\n";
 									$prev = $type;
 									
 								}
