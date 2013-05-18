@@ -474,60 +474,58 @@ EOF;
 	
 	function renderLatestComments()
 	{
-		return;
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+
+		if(!check_class('B')) // XXX problems?
+		{
+	//		return;
+		}		
+				
+		if(!$rows = $sql->retrieve('comments','*','comment_blocked=2 ORDER BY comment_id DESC LIMIT 5',true) )
+		{
+			return;
+		}
+		
+
+		
+		
+		$sc = e107::getScBatch('comment');
+		
+	
 		
 		$text = '
-		  <ul class="recent-comments">
+		  <ul class="media-list unstyled">';
+		// <button class='btn btn-mini'><i class='icon-pencil'></i> Edit</button> 
+		foreach($rows as $row)
+		{
+		
+			$TEMPLATE = "{SETIMAGE: w=40}
+			<li class='media'>
+				<span class='media-object pull-left'>{USER_AVATAR=".$row['comment_author_id']."}</span> 
+				<div class='btn-group pull-right'>
+	            	
+	            	<button class='btn btn-mini btn-danger'><i class='icon-remove'></i> Delete</button>
+	            	<button class='btn btn-mini btn-success'><i class='icon-ok'></i> Approve</button>
+	            </div>
+				<div class='media-body'><small class='muted smalltext'>Posted by {USERNAME} {TIMEDATE=relative}</small><br />
+					<p>{COMMENT}</p> 
+				</div>
+				</li>";
+			
+			
+			$sc->setVars($row);  
+		 	$text .= $tp->parseTemplate($TEMPLATE,true,$sc);
+		}
+        
 
-        <li class="separator">
-          <div class="avatar pull-left">
-            <img src="'.e_IMAGE.'generic/blank_avatar.jpg" style="width:48px;height:48px" />
-          </div>
-
-          <div class="article-post">
-            <div class="user-info"> Posted by jordan, 3 days ago </div>
-            <div class="user-content">
-              Vivamus sed auctor nibh congue, ligula vitae tempus pharetra...
-              Vivamus sed auctor nibh congue, ligula vitae tempus pharetra...
-              Vivamus sed auctor nibh congue, ligula vitae tempus pharetra...
-            </div>
-
-            <div class="btn-group">
-              <button class="btn btn-mini"><i class="icon-pencil"></i> Edit</button>
-              <button class="btn btn-mini"><i class="icon-remove"></i> Delete</button>
-              <button class="btn btn-mini"><i class="icon-ok"></i> Approve</button>
-            </div>
-          </div>
-        </li>
-
+    	$text .= '
     
-
-        <li class="separator">
-          <div class="avatar pull-left">
-            <img src="'.e_IMAGE.'generic/blank_avatar.jpg" style="width:48px;height:48px" />
-          </div>
-
-          <div class="article-post">
-            <div class="user-info"> Posted by jordan, 3 days ago </div>
-            <div class="user-content">
-              Vivamus sed auctor nibh congue, ligula vitae tempus pharetra...
-              Vivamus sed auctor nibh congue, ligula vitae tempus pharetra...
-              Vivamus sed auctor nibh congue, ligula vitae tempus pharetra...
-            </div>
-
-            <div class="btn-group">
-              <button class="btn btn-mini"><i class="icon-pencil"></i> Edit</button>
-              <button class="btn btn-mini"><i class="icon-remove"></i> Delete</button>
-              <button class="btn btn-mini"><i class="icon-ok"></i> Approve</button>
-            </div>
-          </div>
-        </li>
-
-    
-    <li class="separator" style="text-align: center">
-      <a class="btn" href="'.e_ADMIN.'comment.php?searchquery=&filter_options=comment_blocked__2">View all</a>
-    </li>
-  </ul>';		
+		    <li class="separator" style="text-align: center">
+		      <a class="btn btn-mini btn-primary pull-right" href="'.e_ADMIN.'comment.php?searchquery=&filter_options=comment_blocked__2">View all</a>
+		    </li>
+		  </ul>';		
+		$text .= "<small class='text-center text-warning'>Note: Not fully functional at the moment.</small>";
 		
 		$ns = e107::getRender();
 		return $ns->tablerender("Latest Comments",$text,'core-infopanel_online',true);		
@@ -672,7 +670,12 @@ EOF;
 		if(file_exists(e_PLUGIN."awstats/awstats.graph.php"))  
 		{
 			require_once(e_PLUGIN."awstats/awstats.graph.php");
-			return $data;
+			
+			if($data)
+			{
+				return $data;
+			}
+			
 		//	return;	
 		}
 
