@@ -984,15 +984,17 @@ function mozSwap(txtarea, newtext){
 
 var e107_dupCounter = 1;
 function duplicateHTML(copy,paste,baseid){
+	
 		if(document.getElementById(copy)){
 
 			e107_dupCounter++;
 			var type = document.getElementById(copy).nodeName; // get the tag name of the source copy.
 
-			var but = document.createElement('input');
+			var but = document.createElement('button');
 			var br = document.createElement('br');
 
 			but.type = 'button';
+			but.innerHTML = 'x';
 			but.value = 'x';
 			but.className = 'btn button';
 			but.onclick = function(){ this.parentNode.parentNode.removeChild(this.parentNode); };
@@ -1004,6 +1006,7 @@ function duplicateHTML(copy,paste,baseid){
 
 			newentry.appendChild(source);
 			newentry.value='';
+			newentry.className = 'form-inline';
 			newentry.appendChild(but);
 			newentry.appendChild(br);
 			if(baseid)
