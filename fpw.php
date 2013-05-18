@@ -186,7 +186,7 @@ if (isset($_POST['pwsubmit']))
 		$rcode = md5($_SERVER['HTTP_USER_AGENT'] . serialize($pref). $rand_num . $datekey);
 
 		$link = SITEURL.'fpw.php?'.$rcode;
-		$message = LAN_FPW5.' '.SITENAME.' '.LAN_FPW14.' : ['.e107::getIPHandler()->getIP(FALSE).'] '.e107::getIPHandler()->getIP(TRUE).".\n\n".LAN_FPW15."\n\n".LAN_FPW16."\n\n".LAN_FPW17."\n\n{$link}";
+		$message = LAN_FPW5.' '.SITENAME.' '.LAN_FPW14.': '.e107::getIPHandler()->getIP(TRUE).".\n\n".LAN_FPW15."\n\n".LAN_FPW16."\n\n".LAN_FPW17."\n\n{$link}";
 
 		$deltime = time()+86400 * 2;			//Set timestamp two days ahead so it doesn't get auto-deleted
 		$sql->db_Insert('tmp', "'pwreset',{$deltime},'".$row['user_loginname'].FPW_SEPARATOR.$rcode."'");
