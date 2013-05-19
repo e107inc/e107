@@ -75,11 +75,11 @@ if(e_AJAX_REQUEST)
 	{
 		case 'download':
 			$string =  base64_decode($_GET['src']);	
-			parse_str($string,$p);
+			parse_str($string, $p);
 			$mp = $themec->getMarketplace();
 			$mp->generateAuthKey($e107SiteUsername, $e107SiteUserpass);
 			// Server flush useless. It's ajax ready state 4, we can't flush (sadly) before that (at least not for all browsers) 
-			echo "<pre>Connecting...<br />"; flush(); // FIXME change the modal default label, default is Loading...
+			echo "<pre>Connecting...\n"; flush(); // FIXME change the modal default label, default is Loading...
 			// download and flush
 			$mp->download($p['id'], $p['mode'], $p['type']);
 			echo "</pre>"; flush();

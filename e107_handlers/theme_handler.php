@@ -555,7 +555,7 @@ class themeHandler
 						'date'			=> $r['date'],
 						'version'		=> $r['version'],
 						'thumbnail'		=> $r['thumbnail'],
-						'url'			=> $r['url'],
+						//'url'			=> $r['url'],
 						'author'		=> $r['author'],
 						'website'		=> $r['authorUrl'],
 						'compatibility'	=> $r['compatibility'],
@@ -1034,7 +1034,7 @@ class themeHandler
 			$id = $frm->name2id($theme['name']);
 			$LAN_DOWNLOAD = ($theme['price'] > 0) ? "Buy/Download" : "Download";
 			
-			$downloadUrl = e_SELF.'?'.(e_QUERY ? e_QUERY.'&amp;' : '').'&action=download&amp;src='.base64_encode($d);//$url.'&amp;action=download';
+			$downloadUrl = e_SELF.'?action=download&amp;src='.base64_encode($d);//$url.'&amp;action=download';
 			$infoUrl = $url.'&amp;action=info';
 			
 			//$main_icon = "<a data-src='".$downloadUrl."' href='{$downloadUrl}' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='-e-ajax' title='".$LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";		

@@ -17,101 +17,6 @@ if (!getperms("Z"))
 	exit;
 }
 
-// Only tested Locally so far. 
-if(e_AJAX_REQUEST && isset($_GET['src'])) // Ajax 
-{
-	$string =  base64_decode($_GET['src']);	
-	parse_str($string,$p);
-	$remotefile = $p['plugin_url'];
-	
-	$localfile = md5($remotefile.time()).".zip";
-	$status = "Downloading...";
-	
-	$fl = e107::getFile();
-	$fl->setAuthKey($e107SiteUsername,$e107SiteUserpass);
-	$fl->download($remotefile,'plugin');
-
-	exit;
-	
-	/*
-	
-	
-	
-	
-		
-	if(!file_exists(e_TEMP.$localfile))
-	{
-		echo 'There was a problem retrieving the file';
-		exit;	
-	}
-	else 
-	{
-		$contents = file_get_contents(e_TEMP.$localfile);
-		if($contents == 'LOGIN')
-		{
-			echo "<div class='e-alert'>Please login to your e107.org account and try again</div>";
-			exit;	
-		}
-	}
-	
-	echo "Disabed";
-	exit;
-	
-//	chmod(e_PLUGIN,0777);
-	chmod(e_TEMP.$localfile,0755);
-	
-	require_once(e_HANDLER."pclzip.lib.php");
-	$archive = new PclZip(e_TEMP.$localfile);
-	$unarc = ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_PLUGIN, PCLZIP_OPT_SET_CHMOD, 0755));
-//	chmod(e_PLUGIN,0755);
-	$dir 		= basename($unarc[0]['filename']);
-//		chmod(e_UPLOAD.$localfile,0666);
-
-
-	*/
-	/* Cannot use this yet until 'folder' is included in feed. 
-	if($dir != $p['plugin_folder'])
-	{
-		
-		echo "<br />There is a problem with the data submitted by the author of the plugin.";
-		echo "dir=".$dir;
-		echo "<br />pfolder=".$p['plugin_folder'];
-		exit;
-	}	
-	*/
-	/*	
-	if($unarc[0]['folder'] ==1 && is_dir($unarc[0]['filename']))
-	{
-		$status = "Unzipping...";
-		$dir 		= basename($unarc[0]['filename']);
-		$plugPath	= preg_replace("/[^a-z0-9-\._]/", "-", strtolower($dir));	
-		
-		e107::getSingleton('e107plugin')->update_plugins_table('update');
-		e107::getDb()->gen("SELECT plugin_id FROM #plugin WHERE plugin_path = '".$plugPath."' LIMIT 1");
-		$row = e107::getDb()->db_Fetch(MYSQL_ASSOC);
-		$status = e107::getSingleton('e107plugin')->install_plugin($row['plugin_id']);
-		//unlink(e_UPLOAD.$localfile);
-		
-	}
-	else 
-	{
-		// print_a($fileList);
-		$status = "Error: <br /><a href='".$remotefile."'>Download Manually</a>";
-		//echo $archive->errorInfo(true);
-		// $status = "There was a problem";	
-		//unlink(e_UPLOAD.$localfile);
-	}
-	
-	echo $status;
-//	@unlink(e_TEMP.$localfile);
-
-//	echo "file=".$file;
-	exit;	
-	
-	 */
-	
-}
-
 e107::coreLan('plugin', true);
 
 $e_sub_cat = 'plug_manage';
@@ -123,7 +28,38 @@ global $user_pref;
 
 require_once(e_HANDLER.'plugin_class.php');
 require_once(e_HANDLER.'file_class.php');
+$plugin = new e107plugin;
+$pman = new pluginManager;
+define("e_PAGETITLE",ADLAN_98." - ".$pman->pagetitle);
 
+if(e_AJAX_REQUEST && isset($_GET['action'])) // Ajax 
+{
+	if($_GET['action'] == 'download')
+	{
+		$string =  base64_decode($_GET['src']);	
+		parse_str($string, $p);
+		
+		$mp = $pman->getMarketplace();
+		$mp->generateAuthKey($e107SiteUsername, $e107SiteUserpass);
+		// Server flush useless. It's ajax ready state 4, we can't flush (sadly) before that (at least not for all browsers) 
+		echo "<pre>Connecting...\n"; flush(); // FIXME change the modal default label, default is Loading...
+		// download and flush
+		$mp->download($p['plugin_id'], $p['plugin_mode'], 'plugin');
+		
+		echo "</pre>"; flush();
+	}
+	/*$string =  base64_decode($_GET['src']);	
+	parse_str($string,$p);
+	$remotefile = $p['plugin_url'];
+	
+	$localfile = md5($remotefile.time()).".zip";
+	$status = "Downloading...";
+	
+	$fl = e107::getFile();
+	$fl->setAuthKey($e107SiteUsername,$e107SiteUserpass);
+	$fl->download($remotefile,'plugin');*/
+	exit;
+}
 
 if(isset($_POST['uninstall_cancel']))
 {
@@ -222,11 +158,6 @@ class pluginmanager_form extends e_form
 }
 
 
-
-
-$plugin = new e107plugin;
-$pman = new pluginManager;
-define("e_PAGETITLE",ADLAN_98." - ".$pman->pagetitle);
 require_once("auth.php");
 $pman->pluginObserver();
 $mes = e107::getMessage();
@@ -310,18 +241,6 @@ class pluginManager{
         $keys = array_keys($this -> titlearray);
 		$this->pagetitle = (in_array($this->action,$keys)) ? $this -> titlearray[$this->action] : $this -> titlearray['installed'];
 
-
-		// temporary - create e_marketpalce instnace
-		// it'll be moved to e107::getMarketplace() soon
-		if($this->action == 'online')
-		{
-			// XXX force xmlrpc temporary
-			require_once(e_HANDLER.'e_marketplace.php');
-			$this->mp = new e_marketplace('xmlrpc');
-		}
-
-
-
 /*		if(isset($_POST['uninstall-selected']))
 		{
         	foreach($_POST['checkboxes'] as $val)
@@ -338,7 +257,19 @@ class pluginManager{
 
     }
 
-
+	/**
+	 * Temporary, e107::getMarketplace() coming soon
+	 * @return e_marketplace
+	 */
+	public function getMarketplace()
+	{
+		if(null === $this->mp)
+		{
+			require_once(e_HANDLER.'e_marketplace.php');
+			$this->mp = new e_marketplace('xmlrpc'); // XXX temporary force xmplrpc
+		}
+		return $this->mp;
+	}
 
 
 
@@ -479,11 +410,12 @@ class pluginManager{
 		$from = isset($_GET['frm']) ? intval($_GET['frm']) : 0;
 		$srch = preg_replace('/[^\w]/','', vartrue($_GET['srch'])); 
 		
+		$mp = $this->getMarketplace();
 		// auth
-		$this->mp->generateAuthKey($e107SiteUsername, $e107SiteUserpass);
+		$mp->generateAuthKey($e107SiteUsername, $e107SiteUserpass);
 		
 		// do the request, retrieve and parse data
-		$xdata = $this->mp->call('getList', array(
+		$xdata = $mp->call('getList', array(
 			'type' => 'plugin', 
 			'params' => array('limit' => 10, 'search' => $srch, 'from' => $from)
 		));
@@ -511,9 +443,11 @@ class pluginManager{
 				$price 		= ($row['price'] > 0) ? "<span class='label label-success'>".$row['price']." credits</span>" : "<span class='label label-success'>Free</span>";
 			
 				$data[] = array(
-					'plugin_id'				=> $c,
+					'plugin_id'				=> $row['params']['id'],
+					'plugin_mode'			=> $row['params']['mode'],
 					'plugin_icon'			=> vartrue($row['icon'],e_IMAGE."admin_images/plugins_32.png"),
-					'plugin_name'			=> stripslashes($row['name']).$featured,
+					'plugin_name'			=> stripslashes($row['name']),
+					'plugin_featured'		=> $featured,
 					'plugin_folder'			=> $row['folder'],
 					'plugin_date'			=> vartrue($row['date']),
 					'plugin_category'		=> vartrue($row['category'], 'n/a'),
@@ -523,7 +457,7 @@ class pluginManager{
 					'plugin_compatible'		=> $badge,
 				
 					'plugin_website'		=> vartrue($row['authorUrl']),
-					'plugin_url'			=> $row['url'],
+					//'plugin_url'			=> $row['url'],
 					'plugin_notes'			=> '',
 					'plugin_price'			=> $price 
 				);	
@@ -568,8 +502,11 @@ class pluginManager{
 				{
 					continue;	
 				}
+				
+				$_value = $val[$v];
+				if($v == 'plugin_name') $_value .= $val['plugin_featured'];
 				// echo '<br />v='.$v;
-				$text .= "<td style='height: 40px' class='".vartrue($this->fields[$v]['class'],'left')."'>".$frm->renderValue($v, $val[$v], $this->fields[$v], $key)."</td>\n";
+				$text .= "<td style='height: 40px' class='".vartrue($this->fields[$v]['class'],'left')."'>".$frm->renderValue($v, $_value, $this->fields[$v], $key)."</td>\n";
 			}
 			$text .= "<td class='center'>".$this->options($val)."</td>";
 			$text .= "</tr>";		
@@ -613,10 +550,13 @@ class pluginManager{
 	
 				
 		$d = http_build_query($data,false,'&');
-		$url = e_SELF."?src=".base64_encode($d);
+		//$url = e_SELF."?src=".base64_encode($d);
+		$url = e_SELF.'?action=download&amp;src='.base64_encode($d);//$url.'&amp;action=download';
 		$id = 'plug_'.$data['plugin_id'];
+		//<button type='button' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='btn btn-primary e-ajax middle' value='Download and Install' data-src='".$url."' ><span>Download and Install</span></button>
+		$dicon = "<a data-toggle='modal' data-modal-caption=\"Downloading ".$data['plugin_name']." ".$data['plugin_version']."\" href='{$url}' data-cache='false' data-target='#uiModal' title='".$LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";
 		return "<div id='{$id}' style='vertical-align:middle'>
-		<button type='button' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='btn btn-primary e-ajax middle' value='Download and Install' data-src='".$url."' ><span>Download and Install</span></button>
+		{$dicon}
 		</div>";				
 	}
 	

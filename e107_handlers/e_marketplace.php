@@ -223,7 +223,7 @@ abstract class e_marketplace_adapter_abstract
 		
 		if($dir && is_dir($destpath.$dir))
 		{
-			echo "(".ucfirst($type).") Already Installed".$destpath.$dir; flush(); 
+			echo "(".ucfirst($type).") Already Downloaded - ".basename($destpath).'/'.$dir; flush(); 
 			@unlink(e_TEMP.$localfile);
 			return;
 		}
