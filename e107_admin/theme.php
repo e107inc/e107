@@ -68,10 +68,46 @@ if(e_AJAX_REQUEST)
 {
 	define('e_IFRAME',true);
 }
+
+// XXX message till we have better way to do the things
+if(isset($_GET['action']) && $_GET['action'] == 'download') // Process Theme Download. 
+{
+	$string =  base64_decode($_GET['src']);	
+	parse_str($string,$p);
+	$mp = $themec->getMarketplace();
+	$mp->generateAuthKey($e107SiteUsername, $e107SiteUserpass);
+	$status = $mp->download($p['id'], $p['mode'], $p['type']);
 	
+	if($status)
+	{
+		e107::getMessage()->addInfo($status, 'default', true);
+	}
+	unset($_GET['src'], $_GET['action']);
+	$qry = '';
+	if($_GET) $qry = '?'.http_build_query($_GET, false, '&');
+	e107::getRedirect()->redirect(e_REQUEST_SELF.$qry);
+}	
 
 if(e_AJAX_REQUEST)
 {
+	switch ($_GET['action']) 
+	{
+		case 'info':
+			$string =  base64_decode($_GET['src']);	
+			parse_str($string,$p);
+			echo $themec->renderThemeInfo($p);
+			exit;
+		break;
+		case 'preview':
+			// Theme Info Ajax 
+			$tm = (string) $_GET['id'];	
+			$data = $themec->getThemeInfo($tm);
+			echo $themec->renderThemeInfo($data);
+			exit;	
+		break;
+
+	}
+/*	
 	if(vartrue($_GET['src'])) // Process Theme Download. 
 	{					
 		$string =  base64_decode($_GET['src']);	
@@ -90,13 +126,15 @@ if(e_AJAX_REQUEST)
 		exit;
 			
 	}		
-		
+*/
 	// Theme Info Ajax 
+	// FIXME  addd action=preview to the url, remove this block
 	$tm = (string) $_GET['id'];	
 	$data = $themec->getThemeInfo($tm);
 	echo $themec->renderThemeInfo($data);
 	
 	exit;	
+
 }
 else 
 {

@@ -546,6 +546,9 @@ class themeHandler
 					}
 					
 					$theme = array(
+						'id'			=> $r['params']['id'],
+						'type'			=> 'theme',
+						'mode'			=> $r['params']['mode'],
 						'name'			=> stripslashes($r['name']),
 						'category'		=> $r['category'],
 						'preview' 		=> varset($r['screenshots']['image']),
@@ -561,7 +564,6 @@ class themeHandler
 						'livedemo'		=> $r['livedemo'],
 					);
 					
-								
 					$text .= $this->renderTheme(FALSE, $theme);
 					
 					$c++;
@@ -1032,8 +1034,11 @@ class themeHandler
 			$id = $frm->name2id($theme['name']);
 			$LAN_DOWNLOAD = ($theme['price'] > 0) ? "Buy/Download" : "Download";
 			
-			$main_icon = "<a data-src='".$url."' href='#' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='e-ajax' title='".$LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";		
-			$info_icon 	= "<a data-toggle='modal' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".$url."&amp;info=1' data-cache='false' data-target='#uiModal'  title='".TPVLAN_7."'>".trim(E_32_CAT_ABOUT)."</a>";
+			$downloadUrl = e_SELF.'?'.(e_QUERY ? e_QUERY.'&amp;' : '').'&action=download&amp;src='.base64_encode($d);//$url.'&amp;action=download';
+			$infoUrl = $url.'&amp;action=info';
+			
+			$main_icon = "<a data-src='".$downloadUrl."' href='{$downloadUrl}' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='-e-ajax' title='".$LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";		
+			$info_icon 	= "<a data-toggle='modal' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".$infoUrl."' data-cache='false' data-target='#uiModal'  title='".TPVLAN_7."'>".trim(E_32_CAT_ABOUT)."</a>";
 			
 			if($theme['livedemo'])
 			{
