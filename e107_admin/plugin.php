@@ -1806,8 +1806,29 @@ class pluginBuilder
 
 		function prefs()
 		{
-			//TODO Preferences 
-			return "Coming Soon";				
+			$frm = e107::getForm();
+
+			$text = '';
+			
+				$options = array(
+					'text'		=> "Text Box",
+					'bbarea'	=> "Rich-Text Area",
+					'boolean'	=> "Text Area",
+					"method"	=> "Custom Function",
+					"image"		=> "Image",
+				);
+						
+			
+			for ($i=0; $i < 10; $i++) 
+			{ 		
+				$text .= "<div>".
+				$frm->text("pluginPrefs[".$i."][index]", '',40,'placeholder=Preference Name')." ".
+				$frm->text("pluginPrefs[".$i."][value]", '',40,'placeholder=Default Value')." ".
+				$frm->select("pluginPrefs[".$i."][type]", $options, '', 'class=null', 'Field Type...').
+				"</div>";		
+			}
+			
+			return $text;
 		}
 
 
@@ -2045,7 +2066,7 @@ class pluginBuilder
 
 		function createXml($data)
 		{
-			//print_a($_POST);
+		//	print_a($_POST);
 			$ns = e107::getRender();
 			$mes = e107::getMessage();
 			$tp = e107::getParser();
@@ -2058,6 +2079,30 @@ class pluginBuilder
 			}
 			
 			$newArray['DESCRIPTION_DESCRIPTION'] = strip_tags($tp->toHtml($newArray['DESCRIPTION_DESCRIPTION'],true));
+			
+			foreach($_POST['pluginPrefs'] as $val)
+			{
+				if(vartrue($val['index']))
+				{
+					$id = $val['index'];
+					$plugPref[$id] = $val['value'];		
+				}	
+			}
+			
+		//	print_a($_POST['pluginPrefs']);
+			
+			if(count($plugPref))
+			{
+				$xmlPref = "<pluginPrefs>\n";
+				foreach($plugPref as $k=>$v)
+				{
+					$xmlPref .= "		<pref name='".$k."'>".$v."</pref>\n";	
+				}	
+				
+				$xmlPref .= "	</pluginPrefs>";
+				$newArray['PLUGINPREFS'] = $xmlPref;
+			}
+			
 			//	print_a($newArray);
 			// print_a($this);
 			
@@ -2076,8 +2121,16 @@ $template = <<<TEMPLATE
 	<adminLinks>
 		<link url="admin_config.php" description="{ADMINLINKS_DESCRIPTION}" icon="images/icon_32.png" iconSmall="images/icon_16.png" primary="true" >LAN_CONFIGURE</link>
 	</adminLinks>
+	{PLUGINPREFS}
 </e107Plugin>
 TEMPLATE;
+
+
+// pluginPrefs
+
+
+
+
 // TODO
 /*
 	<siteLinks>
@@ -2507,7 +2560,7 @@ TEMPLATE;
 			
 			
 			unset($_POST['step'],$_POST['xml']);
-	
+		$thePlugin = $_POST['newplugin'];
 
 $text = "\n
 // Generated e107 Plugin Admin Area 
@@ -2521,17 +2574,19 @@ if (!getperms('P'))
 
 
 
-class ".$_POST['newplugin']."_admin extends e_admin_dispatcher
+class ".$thePlugin."_admin extends e_admin_dispatcher
 {
 
 	protected \$modes = array(	
 	";
 	
-	$thePlugin = $_POST['newplugin'];
+
 	unset($_POST['newplugin']);
 	
 			foreach($_POST as $table => $vars) // LOOP Through Tables. 
 			{
+				if(vartrue($vars['mode']))
+				{
 	$text .= "
 		'".$vars['mode']."'	=> array(
 			'controller' 	=> '".$vars['table']."_ui',
@@ -2539,7 +2594,9 @@ class ".$_POST['newplugin']."_admin extends e_admin_dispatcher
 			'ui' 			=> '".$vars['table']."_form_ui',
 			'uipath' 		=> null
 		),
+		
 ";
+				}
 			} // END LOOP
 /*
 		'cat'		=> array(
@@ -2559,17 +2616,25 @@ $text .= "
 ";
 			foreach($_POST as $table => $vars) // LOOP Through Tables. 
 			{
+				if(vartrue($vars['mode']))
+				{
 $text .= "
 		'".$vars['mode']."/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
 		'".$vars['mode']."/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
 ";
+}
 			}
+			
+if($_POST['pluginPrefs'][0]['index'])
+{
+				
 $text .= "			
-	/*
-		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),
-		'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
-	*/	
-
+	
+		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),	
+";
+}
+$text .= "
+		// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
 	);
 
 	protected \$adminMenuAliases = array(
@@ -2616,11 +2681,15 @@ $text .= "
 	
 			
 			 
-			
+			$tableCount = 1;
 			foreach($_POST as $table => $vars) // LOOP Through Tables. 
 			{
-				
+				if($table == 'pluginPrefs')
+				{
+					continue;
+				}
 				$FIELDS = str_replace($srch,$repl,var_export($vars['fields'],true));
+				$FIELDS = preg_replace("#('([A-Z0-9_]*?LAN[_A-Z0-9]*)')#","$2",$FIELDS); // remove quotations from LANs. 
 				$FIELDPREF = array();
 				
 				foreach($vars['fields'] as $k=>$v)
@@ -2647,16 +2716,45 @@ class ".$table." extends e_admin_ui
 		
 		protected \$fieldpref = array(".implode(", ",$FIELDPREF).");
 		
-		
-		
-	/*
-		protected \$prefs = array(
-			'pref_type'	   				=> array('title'=> 'type', 'type'=>'text', 'data' => 'string', 'validate' => true),
-			'pref_folder' 				=> array('title'=> 'folder', 'type' => 'boolean', 'data' => 'integer'),
-			'pref_name' 				=> array('title'=> 'name', 'type' => 'text', 'data' => 'string', 'validate' => 'regex', 'rule' => '#^[\w]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')
-		);
+";
 
+
+if($_POST['pluginPrefs'] && $tableCount == 1)
+{
+	$text .= "		
 		
+	
+		protected \$prefs = array(	\n";
+		
+		foreach($_POST['pluginPrefs'] as $k=>$val)
+		{
+			if(vartrue($val['index']))
+			{
+				$index = $val['index'];
+				$type = vartrue($val['type'],'text');
+				
+				$text .= "\t\t\t'".$index."'\t\t=> array('title'=> '".ucfirst($index)."', 'type'=>'".$type."', 'data' => 'string','help'=>'Help Text goes here'),\n";	
+			}	
+	
+		}
+		
+		
+		$text .= "\t\t); \n\n";
+				
+}
+				
+			
+		
+	
+
+
+
+
+
+
+
+$text .= "	
+	/*	
 		// optional
 		public function init()
 		{
@@ -2719,12 +2817,12 @@ $text .= "
 		
 ";			
 						
-	 			
+	 		$tableCount++;	
 					
 			} // End LOOP. 
 	
 $text .= '		
-new '.$vars['pluginName'].'_admin();
+new '.$thePlugin.'_admin();
 
 require_once(e_ADMIN."auth.php");
 e107::getAdminUI()->runPage();
