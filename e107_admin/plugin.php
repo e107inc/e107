@@ -266,7 +266,7 @@ class pluginManager{
 		if(null === $this->mp)
 		{
 			require_once(e_HANDLER.'e_marketplace.php');
-			$this->mp = new e_marketplace('xmlrpc'); // XXX temporary force xmplrpc
+			$this->mp = new e_marketplace(); // autodetect the best method
 		}
 		return $this->mp;
 	}
