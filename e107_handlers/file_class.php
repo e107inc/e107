@@ -723,9 +723,11 @@ class e_file
 	
 	/**
 	 * Download a Plugin or Theme to Temp, then test and move to plugin/theme folder and backup to system backup folder. 
+	 * DEPRECATED - moved to e_marketplace
 	 * @param $remotefile URL
 	 * @param $type plugin or theme
 	 */
+/* 
 	public function download($remotefile, $type='theme')
 	{
 		$tp = e107::getParser();
@@ -835,13 +837,14 @@ class e_file
 	
 	//	echo "file=".$file;
 		exit;				
-	}		
+	}	*/
+	
 		
 		
 	/**
 	 * Runs through the zip archive array and finds the root directory. 
 	 */
-	private function getRootFolder($unarc)
+	public function getRootFolder($unarc)
 	{
 		foreach($unarc as $d)
 		{

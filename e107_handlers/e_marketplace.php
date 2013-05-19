@@ -85,6 +85,14 @@ class e_marketplace
 	}
 	
 	/**
+	 * Adapter proxy
+	 */
+	public function download($id, $mode, $type)
+	{
+		return $this->adapter()->download($id, $mode, $type);
+	}
+	
+	/**
 	 * Direct adapter()->call() execution - experimental stage
 	 */
 	public function __call($method, $arguments)
@@ -145,49 +153,69 @@ abstract class e_marketplace_adapter_abstract
 	
 	/**
 	 * Download a Plugin or Theme to Temp, then test and move to plugin/theme folder and backup to system backup folder. 
+	 * XXX better way to return status (e.g. getError(), getStatus() service call before download)
+	 * XXX temp is not well cleaned
+	 * XXX themes/plugins not well tested after unzip (example - Headline 1.0, non-default structure, same applies to most FS net free themes)
+	 * 
 	 * @param string $remotefile URL
 	 * @param string $type plugin or theme
 	 */
-	public function download($id, $type='theme')
+	public function download($id, $mode, $type)
 	{
 		$tp = e107::getParser();
 		$id = intval($id);
-		$qry = 'id='.$id;
+		$qry = 'id='.$id.'&type='.$type.'&mode='.$mode;
 		$remotefile = $this->downloadUrl."?auth=".$this->getAuthKey()."&".$qry;
-				
+
 		$localfile = md5($remotefile.time()).".zip";
 		$status 	= "Downloading...";
 		
+		// FIXME call the service, check status first, then download (if status OK), else retireve the error break and show it
+		
 		$result 	= $this->getRemoteFile($remotefile, $localfile);
 		
+		if(!$result)
+		{
+			$status = "Download Error.";
+			if(filesize(e_TEMP.$localfile))
+			{
+				$contents = file_get_contents(e_TEMP.$localfile);
+				$contents = explode('REQ_', $contents);
+				$status .= '<br />[#'.trim($contents[1]).'] '.trim($contents[0]);
+			}
+			@unlink(e_TEMP.$localfile);
+			return $status;
+		}
 		if(!file_exists(e_TEMP.$localfile))
 		{
-			$status = ADMIN_FALSE_ICON."<br /><a href='".$remotefile."'>Download Manually</a>";
+			//ADMIN_FALSE_ICON
+			$status = "<a href='".$remotefile."'>Download Manually</a>";
 			
 			if(E107_DEBUG_LEVEL > 0)
 			{
-				$status .= 'local='.$localfile;
+				$status .= '<br />local='.$localfile;
 			}
 
-			echo $status;
-			exit;	
+			return $status;
 		}
+		/*
 		else 
-		{
-			$contents = file_get_contents(e_TEMP.$localfile);
-			if(strlen($contents) < 400)
-			{
-				echo "<script>alert('".$tp->toJS($contents)."')</script>";
-				return;	
-			}
-		}
+				{
+					$contents = file_get_contents(e_TEMP.$localfile);
+					if(strlen($contents) < 400)
+					{
+						echo "<script>alert('".$tp->toJS($contents)."')</script>";
+						return;	
+					}
+		}*/
+		
 		
 		chmod(e_TEMP.$localfile, 0755);
 		require_once(e_HANDLER."pclzip.lib.php");
 		
 		$archive 	= new PclZip(e_TEMP.$localfile);
 		$unarc 		= ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_TEMP, PCLZIP_OPT_SET_CHMOD, 0755)); // Store in TEMP first. 
-		$dir 		= $this->getRootFolder($unarc);	
+		$dir 		= e107::getFile(true)->getRootFolder($unarc);	
 		$destpath 	= ($type == 'theme') ? e_THEME : e_PLUGIN;
 		$typeDiz 	= ucfirst($type);
 		
@@ -199,14 +227,14 @@ abstract class e_marketplace_adapter_abstract
 			echo "<script>alert('".$alert."')</script>";
 			echo "Already Installed";
 			@unlink(e_TEMP.$localfile);
-			exit;	
+			return;
 		}
 	
 		if($dir == '')
 		{
 			echo "<script>alert('Couldn\'t detect the root folder in the zip.')</script>";
 			@unlink(e_TEMP.$localfile);
-			exit;			
+			return;		
 		}
 	
 		if(is_dir(e_TEMP.$dir)) 
@@ -217,7 +245,7 @@ abstract class e_marketplace_adapter_abstract
 				$alert = $tp->toJS("Couldn't Move ".e_TEMP.$dir." to ".$destpath.$dir." Folder");
 				echo "<script>alert('".$alert."')</script>";
 				@unlink(e_TEMP.$localfile);
-				exit;	
+				return;
 			}	
 			
 			$alert = $tp->toJS("Download Complete!");
@@ -226,46 +254,58 @@ abstract class e_marketplace_adapter_abstract
 		//	$dir 		= basename($unarc[0]['filename']);
 		//	$plugPath	= preg_replace("/[^a-z0-9-\._]/", "-", strtolower($dir));	
 			$status = "Done"; // ADMIN_TRUE_ICON;			
-			
+			return $status;
 		}
 		else 
 		{
-			$status = ADMIN_FALSE_ICON."<br /><a href='".$remotefile."'>Download Manually</a>";
+			//ADMIN_FALSE_ICON.
+			$status = "<a href='".$remotefile."'>Download Manually</a>";
 			if(E107_DEBUG_LEVEL > 0)
 			{
 				$status .= print_a($unarc, true);
 			}
 		}
 		
-		echo $status;
+		return $status;
 		@unlink(e_TEMP.$localfile);
-		exit;				
 	}
 
 	// Grab a remote file and save it in the /temp directory. requires CURL
 	function getRemoteFile($remote_url, $local_file, $type='temp')
 	{
 		// FIXME - different methods (see xml handler getRemoteFile()), error handling, appropriate error messages, 
-		if (function_exists("curl_init")) 
+		if (!function_exists("curl_init")) 
 		{
 			return false;
 		}
 		$path = ($type == 'media') ? e_MEDIA : e_TEMP; 
 		
         $fp = fopen($path.$local_file, 'w'); // media-directory is the root. 
+        //$fp1 = fopen(e_TEMP.'/curllog.txt', 'w'); 
        
         $cp = curl_init($remote_url);
 		curl_setopt($cp, CURLOPT_FILE, $fp);
+		
+		//curl_setopt($ch, CURLOPT_VERBOSE, 1);
+		//curl_setopt($ch, CURLOPT_STDERR, $fp1);
+		
 		curl_setopt($cp, CURLOPT_REFERER, e_REQUEST_HTTP);
 		curl_setopt($cp, CURLOPT_HEADER, 0);
 		curl_setopt($cp, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"); 
 		curl_setopt($cp, CURLOPT_COOKIEFILE, e_SYSTEM.'cookies.txt');
 
         $buffer = curl_exec($cp);
-       
+       	
         curl_close($cp);
         fclose($fp);
-       
+		//fclose($fp1);
+		
+		if($buffer)
+		{
+			$size = filesize($path.$local_file);
+			if($size < 400) $buffer = false;
+		}
+		
         return ($buffer) ? true : false;
     }
 }
