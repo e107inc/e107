@@ -73,6 +73,12 @@ if(e_AJAX_REQUEST)
 {
 	switch ($_GET['action']) 
 	{
+		case 'login':	
+			$mp = $themec->getMarketplace();	
+			echo $mp->renderLoginForm();
+			exit;	
+		break;
+		
 		case 'download':
 			$string =  base64_decode($_GET['src']);	
 			parse_str($string, $p);
