@@ -1037,7 +1037,8 @@ class themeHandler
 			$downloadUrl = e_SELF.'?'.(e_QUERY ? e_QUERY.'&amp;' : '').'&action=download&amp;src='.base64_encode($d);//$url.'&amp;action=download';
 			$infoUrl = $url.'&amp;action=info';
 			
-			$main_icon = "<a data-src='".$downloadUrl."' href='{$downloadUrl}' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='-e-ajax' title='".$LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";		
+			//$main_icon = "<a data-src='".$downloadUrl."' href='{$downloadUrl}' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='-e-ajax' title='".$LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";		
+			$main_icon = "<a data-toggle='modal' data-modal-caption=\"Downloading ".$theme['name']." ".$theme['version']."\" href='{$downloadUrl}' data-cache='false' data-target='#uiModal' title='".$LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";
 			$info_icon 	= "<a data-toggle='modal' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".$infoUrl."' data-cache='false' data-target='#uiModal'  title='".TPVLAN_7."'>".trim(E_32_CAT_ABOUT)."</a>";
 			
 			if($theme['livedemo'])
