@@ -38,6 +38,10 @@ class e_marketplace
 	 */
 	public function generateAuthKey($username, $password)
 	{
+		if(trim($username) == '' || trim($password) == '')
+		{
+			return false;	
+		}
 		$this->setAuthKey($this->makeAuthKey($username, $password, true));	
 		return $this;
 	}
@@ -64,6 +68,92 @@ class e_marketplace
 		$now 	= gmdate('y-m-d H');
 		if($plain && !empty($password)) $password = md5($password);
 		return sha1($username.$password.$now);
+	}
+
+
+
+	/**
+	 * Have the admin enter their e107.org login details in order to create the authorization key. 
+	 */	
+	public function renderLoginForm()
+	{
+		
+	$text =	'
+          <div class="" id="loginModal">
+		    <div class="well">
+		    <img src="'.e_IMAGE_ABS.'admin_images/credits_logo.png" alt="" style="margin-bottom:15px" />
+		    <ul class="nav nav-tabs">
+			    <li class="active"><a href="#login" data-toggle="tab">Login</a></li>
+			    <li><a href="#create" data-toggle="tab">Create Account</a></li>
+		    </ul>
+		    <div id="myTabContent" class="tab-content">
+		    <div class="tab-pane active in" id="login">
+		    <form class="form-horizontal" action="" method="POST">
+			    <fieldset>
+				    <div id="legend">
+				    	<legend class="">Login</legend>
+				    </div>
+				    
+					<div class="control-group">
+					    <label class="control-label" for="username">Username</label>
+						<div class="controls">
+						   	<input type="text" id="username" name="username" placeholder="" class="input-xlarge">
+						</div>
+					</div>
+					
+				    <div class="control-group">
+					    <label class="control-label" for="password">Password</label>
+					    <div class="controls">
+					    	<input type="password" id="password" name="password" placeholder="" class="input-xlarge">
+					    </div>
+				    </div>
+				    
+				    <div class="control-group">
+					    <div class="controls">
+					    	<button class="btn btn-success">Login</button>
+					    </div>
+				    </div>
+				    
+			    </fieldset>
+		    </form>
+		    </div>';
+	
+	//TODO Use Form handler for INPUT tags. 
+	//XXX TBD OR do we just redirect to the signup page on the website, in an iframe? 
+			
+	$text .=	'
+		    <div class="tab-pane fade" id="create">
+		    <form class="form-horizontal" id="tab">
+		     <div class="control-group">
+		    	<label class="control-label">Username</label>
+		     	<div class="controls">
+		    		<input type="text" value="" class="input-xlarge">
+		    	</div>
+		    </div>
+		     <div class="control-group">
+		    	<label class="control-label">Password</label>
+		    	 <div class="controls">
+		   		 <input type="password" value="" class="input-xlarge">
+		    	</div>
+		    </div>
+		     <div class="control-group">
+		    	<label class="control-label">Email</label>
+		    	 <div class="controls">
+		    	<input type="text" value="" class="input-xlarge">
+		    	</div>
+		    </div>
+		    <div class="control-group">
+			    <div class="controls">
+			   	 <button class="btn btn-primary">Create Account</button>
+			    </div>
+		    </div>
+		    </form>
+		    </div>
+		    </div>
+		    </div>
+		  ';	
+		
+		return $text;
 	}
 	
 	/**
