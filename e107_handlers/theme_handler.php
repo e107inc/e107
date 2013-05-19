@@ -457,7 +457,7 @@ class themeHandler
 		if(null === $this->mp)
 		{
 			require_once(e_HANDLER.'e_marketplace.php');
-			$this->mp = new e_marketplace('xmlrpc'); // XXX temporary force xmplrpc
+			$this->mp = new e_marketplace(); // autodetect the best method
 		}
 		return $this->mp;
 	}
@@ -528,9 +528,7 @@ class themeHandler
 			$text .= "{CAROUSEL_INDICATORS}";		
 			$text .= "</div>";
 			$text .= '<div id="shop" style="margin-top:10px;min-height:585px" class=" carousel-inner">';
-			
-			
-			//var_dump($xdata);
+
 			if(is_array($xdata['data'] ))
 			{
 				
