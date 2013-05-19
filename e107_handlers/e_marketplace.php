@@ -156,7 +156,7 @@ abstract class e_marketplace_adapter_abstract
 	 * XXX better way to return status (e.g. getError(), getStatus() service call before download)
 	 * XXX temp is not well cleaned
 	 * XXX themes/plugins not well tested after unzip (example - Headline 1.0, non-default structure, same applies to most FS net free themes)
-	 * 
+	 * This method is direct outputting the status. If not needed - use buffer
 	 * @param string $remotefile URL
 	 * @param string $type plugin or theme
 	 */
@@ -168,35 +168,35 @@ abstract class e_marketplace_adapter_abstract
 		$remotefile = $this->downloadUrl."?auth=".$this->getAuthKey()."&".$qry;
 
 		$localfile = md5($remotefile.time()).".zip";
-		$status 	= "Downloading...";
-		
+		echo "Downloading...<br />"; 
+		flush(); 
 		// FIXME call the service, check status first, then download (if status OK), else retireve the error break and show it
 		
 		$result 	= $this->getRemoteFile($remotefile, $localfile);
 		
 		if(!$result)
 		{
-			$status = "Download Error.";
+			echo "Download Error.<br />"; flush(); 
 			if(filesize(e_TEMP.$localfile))
 			{
 				$contents = file_get_contents(e_TEMP.$localfile);
 				$contents = explode('REQ_', $contents);
-				$status .= '<br />[#'.trim($contents[1]).'] '.trim($contents[0]);
+				echo '[#'.trim($contents[1]).'] '.trim($contents[0]); flush(); 
 			}
 			@unlink(e_TEMP.$localfile);
-			return $status;
+			return;
 		}
 		if(!file_exists(e_TEMP.$localfile))
 		{
 			//ADMIN_FALSE_ICON
-			$status = "<a href='".$remotefile."'>Download Manually</a>";
+			echo "Automated download not possible. Please <a href='".$remotefile."'>Download Manually</a>"; flush();
 			
 			if(E107_DEBUG_LEVEL > 0)
 			{
-				$status .= '<br />local='.$localfile;
+				echo '<br />local='.$localfile; flush(); 
 			}
 
-			return $status;
+			return;
 		}
 		/*
 		else 
@@ -223,50 +223,46 @@ abstract class e_marketplace_adapter_abstract
 		
 		if($dir && is_dir($destpath.$dir))
 		{
-			$alert = $tp->toJS(ucfirst($type)." Already Installed".$destpath.$dir);
-			echo "<script>alert('".$alert."')</script>";
-			echo "Already Installed";
+			echo "(".ucfirst($type).") Already Installed".$destpath.$dir; flush(); 
 			@unlink(e_TEMP.$localfile);
 			return;
 		}
 	
 		if($dir == '')
 		{
-			echo "<script>alert('Couldn\'t detect the root folder in the zip.')</script>";
+			echo "Couldn't detect the root folder in the zip."; flush();
 			@unlink(e_TEMP.$localfile);
 			return;		
 		}
 	
 		if(is_dir(e_TEMP.$dir)) 
 		{
-			$status = "Unzipping...";
+			echo "Unzipping...<br />";
 			if(!rename(e_TEMP.$dir,$destpath.$dir))
 			{
-				$alert = $tp->toJS("Couldn't Move ".e_TEMP.$dir." to ".$destpath.$dir." Folder");
-				echo "<script>alert('".$alert."')</script>";
+				echo "Couldn't Move ".e_TEMP.$dir." to ".$destpath.$dir." Folder"; flush(); usleep(50000);
 				@unlink(e_TEMP.$localfile);
 				return;
 			}	
 			
-			$alert = $tp->toJS("Download Complete!");
-			echo "<script>alert('".$alert."')</script>";
+			echo "Download Complete!<br />"; flush();
 			
 		//	$dir 		= basename($unarc[0]['filename']);
 		//	$plugPath	= preg_replace("/[^a-z0-9-\._]/", "-", strtolower($dir));	
-			$status = "Done"; // ADMIN_TRUE_ICON;			
-			return $status;
+			//$status = "Done"; // ADMIN_TRUE_ICON;		
+			@unlink(e_TEMP.$localfile);	
+			return;
 		}
 		else 
 		{
 			//ADMIN_FALSE_ICON.
-			$status = "<a href='".$remotefile."'>Download Manually</a>";
+			echo "<a href='".$remotefile."'>Download Manually</a>"; flush(); usleep(50000);
 			if(E107_DEBUG_LEVEL > 0)
 			{
-				$status .= print_a($unarc, true);
+				echo print_a($unarc, true); flush();
 			}
 		}
 		
-		return $status;
 		@unlink(e_TEMP.$localfile);
 	}
 
