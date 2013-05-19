@@ -119,7 +119,7 @@ abstract class e_marketplace_adapter_abstract
 	 * e107.org download URL
 	 * @var string
 	 */
-	protected $downloadUrl = 'http://e107.org/e107_plugins/addons/request.php';	
+	protected $downloadUrl = 'http://e107.org/request';	
 	
 	/**
 	 * e107.org authorization key
