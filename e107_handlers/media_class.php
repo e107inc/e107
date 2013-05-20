@@ -841,7 +841,7 @@ class e_media
 		$tp = e107::getParser();
 		$sql = e107::getDb();
 				
-		$oldpath = e_UPLOAD.$file;
+		$oldpath = e_IMPORT.$file;
 		
 		if(!file_exists($oldpath))
 		{
