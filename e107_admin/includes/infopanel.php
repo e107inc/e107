@@ -482,31 +482,30 @@ EOF;
 	//		return;
 		}		
 				
-		if(!$rows = $sql->retrieve('comments','*','comment_blocked=2 ORDER BY comment_id DESC LIMIT 5',true) )
+		if(!$rows = $sql->retrieve('comments','*','comment_blocked=2 ORDER BY comment_id DESC LIMIT 25',true) )
 		{
 			return;
 		}
 		
 
-		
-		
 		$sc = e107::getScBatch('comment');
-		
-	
-		
+				
 		$text = '
 		  <ul class="media-list unstyled">';
 		// <button class='btn btn-mini'><i class='icon-pencil'></i> Edit</button> 
-		foreach($rows as $row)
-		{
 		
+		//XXX Always keep template hardcoded here - heavy use of ajax and ids. 
+		$count = 1;
+		foreach($rows as $row) 
+		{
+			$hide = ($count > 3) ? ' hide' : '';
+
 			$TEMPLATE = "{SETIMAGE: w=40}
-			<li class='media'>
+			<li id='comment-".$row['comment_id']."' class='media".$hide."'>
 				<span class='media-object pull-left'>{USER_AVATAR=".$row['comment_author_id']."}</span> 
 				<div class='btn-group pull-right'>
-	            	
-	            	<button class='btn btn-mini btn-danger'><i class='icon-remove'></i> Delete</button>
-	            	<button class='btn btn-mini btn-success'><i class='icon-ok'></i> Approve</button>
+	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='delete' class='btn btn-mini btn-danger'><i class='icon-remove'></i> Delete</button>
+	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='approve' class='btn btn-mini btn-success'><i class='icon-ok'></i> Approve</button>
 	            </div>
 				<div class='media-body'><small class='muted smalltext'>Posted by {USERNAME} {TIMEDATE=relative}</small><br />
 					<p>{COMMENT}</p> 
@@ -516,16 +515,17 @@ EOF;
 			
 			$sc->setVars($row);  
 		 	$text .= $tp->parseTemplate($TEMPLATE,true,$sc);
+			$count++;
 		}
         
 
     	$text .= '
-    
-		    <li class="separator" style="text-align: center">
-		      <a class="btn btn-mini btn-primary pull-right" href="'.e_ADMIN.'comment.php?searchquery=&filter_options=comment_blocked__2">View all</a>
-		    </li>
-		  </ul>';		
-		$text .= "<small class='text-center text-warning'>Note: Not fully functional at the moment.</small>";
+     		</ul>
+		    <div class="right">
+		      <a class="btn btn-mini btn-primary text-right" href="'.e_ADMIN.'comment.php?searchquery=&filter_options=comment_blocked__2">View all</a>
+		    </div>
+		 ';		
+		// $text .= "<small class='text-center text-warning'>Note: Not fully functional at the moment.</small>";
 		
 		$ns = e107::getRender();
 		return $ns->tablerender("Latest Comments",$text,'core-infopanel_online',true);		
