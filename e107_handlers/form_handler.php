@@ -3194,10 +3194,10 @@ class e_form
 			if(!$tree)
 			{
 				$text .= "
-								<tr>
-									<td colspan='".count($current_fields)."' class='center middle'>".LAN_NO_RECORDS."</td>
-								</tr>
-				";
+							</tbody>
+						</table>";
+				
+				$text .= "<div class='alert alert-block alert-info center middle'>".LAN_NO_RECORDS."</div>"; // not prone to column-count issues. 
 			}
 			else
 			{
@@ -3208,13 +3208,13 @@ class e_form
 					$text .= $this->renderTableRow($fields, $current_fields, $model->getData(), $options['pid']);
 				}
 				e107::setRegistry('core/adminUI/currentListModel', null);
+				
+				$text .= "</tbody>
+						</table>";
 			}
 
-			$text .= "
-							</tbody>
-						</table>
-						".vartrue($options['table_post'])."
-			";
+			
+			$text .= vartrue($options['table_post']); 
 
 
 			if($tree && $amount)
