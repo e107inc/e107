@@ -67,7 +67,7 @@ class faqs_shortcodes extends e_shortcode
 	
 	function sc_faq_answer()
 	{
-		return e107::getParser()->toHTML($this->var['faq_answer'],true); 
+		return e107::getParser()->toHTML($this->var['faq_answer'],true,'BODY'); 
 	}
 	
 	
@@ -76,7 +76,7 @@ class faqs_shortcodes extends e_shortcode
 		$tags = $this->var['faq_tags'];
 		if(!$tags) return '';
 		
-		if(!$parm) $parm = '&nbsp;|&nbsp;';
+		if(!$parm) $parm = ' ';
 		
 		$ret = $urlparms = array();
 		if($this->category) $urlparms['category'] = $this->category;
@@ -86,7 +86,7 @@ class faqs_shortcodes extends e_shortcode
 			$urlparms['tag'] = $tag;
 			$url = e107::getUrl()->create('faqs/list/all', $urlparms);
 			$tag = htmlspecialchars($tag, ENT_QUOTES, 'utf-8');
-			$ret[] = '<a href="'.$url.'" title="'.$tag.'">'.$tag.'</a>';
+			$ret[] = '<a href="'.$url.'" title="'.$tag.'"><span class="label label-info">'.$tag.'</span></a>';
 		}
 		
 		return implode($parm, $ret);
