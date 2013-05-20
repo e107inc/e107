@@ -938,12 +938,12 @@ class e_form
 	}
 
 	/**
-	* checkbox
-	* parm $name
-	* parm $value
-	* parm $checked
+	* Render a checkbox 
+	* @param string $name
+	* @param mixed $value
+	* @param boolean $checked
+	* @param array $options 
 	* @return void
-	* @author
 	*/
 	function checkbox($name, $value, $checked = false, $options = array())
 	{
