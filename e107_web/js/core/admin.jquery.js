@@ -143,6 +143,49 @@ $(document).ready(function()
 				return true;
 			}
 		);
+
+
+		/* InfoPanel Comment approval and deletion */
+		$("button[data-comment-action]").live("click", function(){
+				
+				var url 	= $(this).attr("data-target");
+				var action 	= $(this).attr('data-comment-action');	
+				var id 		= $(this).attr("data-comment-id");
+				var next	= $('#comment-'+ id).nextAll('.hide').attr("id");	
+				
+				$.ajax({
+				  type: 'POST',
+				  url: url + '?ajax_used=1&mode='+action,
+				  data: { itemid: id },
+				  success: function(data) {
+				  	var a = $.parseJSON(data);
+				 // 	alert(data);
+					if(!a.error)
+					{
+						$('#comment-'+ id).hide(800, function () {
+							$('#'+next).show('slow');
+							$('#'+next).removeClass('hide');
+						});
+
+					}
+	
+				  }
+				});
+				
+				return false;
+	
+		});
+
+
+
+
+
+
+
+
+
+
+
 		
 		
 		/*  Bootstrap Modal window within an iFrame */
