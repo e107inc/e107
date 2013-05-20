@@ -2937,6 +2937,7 @@ class e107
 			define("e_FILE_ABS", $this->get_override_http('FILES')); // Deprecated!
 			define("e_DOCS_ABS", $this->get_override_http('DOCS'));
 			define("e_HELP_ABS", $this->get_override_http('HELP'));
+			define("e_IMPORT_ABS", false);
 
 			// DEPRECATED - not a legal http query now!
 			//define("e_HANDLER_ABS", $this->get_override_http('HANDLERS'));
