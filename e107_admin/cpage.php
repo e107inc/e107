@@ -115,22 +115,25 @@ class page_chapters_ui extends e_admin_ui
 		protected $pluginName	= 'core';
 		protected $table 		= "page_chapters";
 		protected $pid			= "chapter_id";
-		protected $perPage = 0; //no limit
-		protected $batchDelete = false;
-		protected $listOrder 	= 'chapter_parent,chapter_order asc'; 
+		protected $perPage 		= 0; //no limit
+		protected $batchDelete 	= false;
+        protected $batchLink   	= true;
+		protected $listOrder 	= ' COALESCE(NULLIF(chapter_parent,0), chapter_id), chapter_parent > 0, chapter_order '; //FIXME works with parent/child but doesn't respect parent order. 
+	//	protected $sortField	= 'chapter_order';
+	//	protected $orderStep 	= 10;
 		
 		protected $fields = array(
 			'checkboxes'				=> array('title'=> '',						'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'chapter_id'				=> array('title'=> LAN_ID,					'type' => 'number',			'width' =>'5%', 'forced'=> TRUE, 'readonly'=>TRUE),
          	'chapter_icon' 				=> array('title'=> LAN_ICON,				'type' => 'icon', 			'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>FALSE,	'batch' => FALSE, 'filter'=>FALSE),			       		
          	'chapter_parent' 			=> array('title'=> "Book",					'type' => 'dropdown',		'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE, 'filter'=>true),                   	
-         	'chapter_name' 				=> array('title'=> "Book or Chapter Title",	'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),       
+         	'chapter_name' 				=> array('title'=> "Book or Chapter Title",	'type' => 'method',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),       
          	'chapter_meta_description'	=> array('title'=> LAN_DESCRIPTION,			'type' => 'textarea',		'width' => 'auto', 'thclass' => 'left','readParms' => 'expand=...&truncate=150&bb=1', 'readonly'=>FALSE),
 			'chapter_meta_keywords' 	=> array('title'=> "Meta Keywords",			'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),		
 			'chapter_sef' 				=> array('title'=> "SEF Url String",		'type' => 'text',			'width' => 'auto', 'readonly'=>FALSE), // Display name
 			'chapter_manager' 			=> array('title'=> "Can be edited by",		'type' => 'userclass',		'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
 			'chapter_order' 			=> array('title'=> LAN_ORDER,				'type' => 'text',			'width' => 'auto', 'thclass' => 'right', 'class'=> 'right' ),										
-			'options' 					=> array('title'=> LAN_OPTIONS,				'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center')
+			'options' 					=> array('title'=> LAN_OPTIONS,				'type' => 'method',			'width' => '10%', 'forced'=>TRUE, 'thclass' => 'left last', 'class' => 'left', 'readParms'=>'sort=1')
 		
 		);
 
@@ -143,11 +146,13 @@ class page_chapters_ui extends e_admin_ui
 			$sql = e107::getDb();
 			$sql->gen("SELECT chapter_id,chapter_name FROM #page_chapters WHERE chapter_parent =0");
 			$this->books[0] = "(New Book)";
+			
 			while($row = $sql->fetch())
 			{
 				$bk = $row['chapter_id'];
 				$this->books[$bk] = $row['chapter_name'];
 			}
+			
 			asort($this->books);			
 			
 			$this->fields['chapter_parent']['writeParms'] = $this->books;	
@@ -170,7 +175,65 @@ class page_chapters_ui extends e_admin_ui
 
 class page_chapters_form_ui extends e_admin_form_ui
 {
+	
+	function chapter_name($curVal,$mode,$parm)
+	{
+	
+		if($mode == 'read') 
+		{
+			$parent 	= $this->getController()->getListModel()->get('chapter_parent');
+			$id			= $this->getController()->getListModel()->get('chapter_id');
 
+			$linkQ = e_SELF."?searchquery=&filter_options=page_chapter__".$id."&mode=page&action=list";	
+			$level_image = $parent ? '<img src="'.e_IMAGE_ABS.'generic/branchbottom.gif" class="icon" alt="" style="margin-left: '.($level * 20).'px" />&nbsp;' : '';
+
+			return ($parent) ?  $level_image."<a href='".$linkQ."' >".$curVal."</a>" : $curVal;
+		}
+			
+		if($mode == 'write')
+		{
+			return;	
+		}
+			
+		if($mode == 'filter')
+		{
+			return;	
+		}
+		if($mode == 'batch')
+		{
+			return;
+		}		
+	}
+	
+	
+	
+	
+	
+	
+		// Override the default Options field. 
+	function options($parms, $value, $id, $attributes)
+	{
+		//$id = $this->getController()->getListModel()->get('page_id');
+		//	return "<a href='".e_BASE."page.php?".$id."' >".$curVal."</a>";
+		$parent = $this->getController()->getListModel()->get('chapter_parent');
+	//	$id = $this->getController()->getListModel()->get('chapter_id');
+	//	$att['readParms'] = 'sort=1';
+		$text = "";
+		
+		if($attributes['mode'] == 'read')
+		{
+
+			$text .= $this->renderValue('options',$value,$att,$id);
+			
+			if($parent != 0)
+			{
+				$link = e_SELF."?searchquery=&filter_options=page_chapter__".$id."&mode=page&action=list";	
+				$text .= "<a href='".$link."' class='btn' title='View Pages in this chapter'>".E_32_CUST."</a>";
+			}
+			
+			return $text;
+		}
+	}
 }
 
 
