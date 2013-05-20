@@ -130,6 +130,12 @@ if((e_WYSIWYG && check_class($pref['post_html'])) || strpos(e_SELF,"tinymce/admi
 			$('.e-dialog-save').click(function(){
 				
 				var html = $('#html_holder').val();	
+				
+				if(html === undefined)
+				{
+					return;
+				}
+				
 			//	tinyMCE.execCommand('mceInsertContent',false,html);
 				tinyMCE.execCommand('mceInsertRawHTML',false,html);
 				tinyMCEPopup.close();
