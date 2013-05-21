@@ -1,24 +1,21 @@
 <?php
-/*
+/**
  * e107 website system
  *
  * Copyright (C) 2008-2009 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/ren_help.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * @DEPRECATED FILE
  */
 
 if (!defined('e107_INIT')) { exit; }
 
 // IMPORTANT : Entire file is deprecated. see: bbcode_shortcodes.php and bbcode_hanlder.php 
 // Left in place only for BC. 
-
+/**
+ *  @DEPRECATED use $frm->bbarea() instead. 
+ */
 function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help")
 {
     // ren_help() is deprecated - use display_help().
