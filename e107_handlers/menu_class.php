@@ -76,12 +76,14 @@ class e_menu
 			}
 			
 			$eMenuArea = $this->getData(THEME_LAYOUT);
+			//print_a($eMenuArea);
 		}
 		else // the old v1.x way. 
 		{
 			$eMenuArea = $this->getDataLegacy();
 		}
-	
+
+		
 		
 		$total = array();
 		foreach($eMenuArea as $area => $val)
@@ -137,18 +139,17 @@ class e_menu
 	 */
 	protected function getData($layout)
 	{
-		$pref = e107::getPref('menu_layouts');
+		$mpref = e107::getPref('menu_layouts');
 		
-		if(!varset($pref[$layout]))
+		if(!varset($mpref[$layout]))
 		{
 			return array();	
 		}
 		
-			
-		foreach($pref[$layout] as $area=>$v);
+		foreach($mpref[$layout] as $area=>$v)
 		{
 			$c = 1;
-			
+					
 			foreach($v as $val)
 			{
 				$class = intval($val['class']);
@@ -170,12 +171,15 @@ class e_menu
 					'menu_parms'	=> $val['parms']
 
 				);
-				
+
 				$c++;
 			}
 				
 			
 		}
+		
+		
+			// print_a($ret);
 				
 		return $ret;	
 		
