@@ -417,7 +417,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 								
 		$text = '<div class="btn-group">
 
-    <a class="btn btn-small" href="'.e_BASE.'user.php?'.$this->postInfo['post_user'].'">'.$username.'</a>
+    <a class="btn btn-small" href="'.e_BASE.'user.php?id.'.$this->postInfo['post_user'].'">'.$username.'</a>
     <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
     <span class="caret"></span>
     </button>
