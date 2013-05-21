@@ -314,7 +314,7 @@ function PreFile_Select($formid='prefile_selector')
 }
 
 function Emoticon_Select($formid='emoticon_selector') {
-	require_once(e_HANDLER."emote.php");
+	// require_once(e_HANDLER."emote.php");
 	$text ="<!-- Start of Emoticon selector -->
 	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='{$formid}' onclick=\"this.style.display='none'\" >
 		<div style='position:absolute; bottom:30px; right:75px; width:221px; height:133px; overflow:auto;'>

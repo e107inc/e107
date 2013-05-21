@@ -1,20 +1,17 @@
 <?php
-/*
+/**
  * e107 website system
  *
  * Copyright (C) 2008-2011 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- *  $URL$
- *	$Revision$
- *  $Id$
+ * @DEPRECATED FILE
  */
 
 if (!defined('e107_INIT')) { exit; }
 
+/*
 class e_profanityFilter 
 {
 	var $profanityList;
@@ -61,18 +58,21 @@ class e_profanityFilter
 			return preg_replace_callback("#\b".$this->profanityList."\b#is", array($this, 'replaceProfanities'), $text);
 		}
 	}
-
-	function replaceProfanities($matches) 
-	{
-		/*!
-		@function replaceProfanities callback
+ * 
+ * 
+	// @function replaceProfanities callback
 		@abstract replaces vowels in profanity words with stars
 		@param text string - text string to be filtered
 		@result filtered text
-		*/
+	
+	function replaceProfanities($matches) 
+	{
+
 
 		return preg_replace("#a|e|i|o|u#i", "*" , $matches[0]);
 	}
 }
+*/
+
 
 ?>
