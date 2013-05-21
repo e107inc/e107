@@ -571,7 +571,7 @@ class listclass
 					$tp = e107::getParser();
 					if (!is_object($parser->e_pf))
 					{
-						require_once(e_HANDLER.'profanity_filter.php');
+					//	require_once(e_HANDLER.'profanity_filter.php');
 						$parser->e_pf = new e_profanityFilter;
 					}
 					foreach ($listArray as $k => $v)

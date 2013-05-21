@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * e107 website system
  *
  * Copyright (C) 2008-2009 e107 Inc (e107.org)
@@ -9,19 +9,23 @@
  *
  * $URL$
  * $Id$
+ * @DEPRECATED FILE
  */
 
 if (!defined('e107_INIT'))
 {
 	exit;
 }
-
+/**
+ * @DEPRECATED 
+ * Use e107::getParser()->parseTemplate("{USER_AVATAR=".$avatar."}",true); instead. 
+ */
 function avatar($avatar)
 {
 	
 	return e107::getParser()->parseTemplate("{USER_AVATAR=".$avatar."}",true);
 	
-	
+	/*
 	global $tp;
 	if (stristr($avatar, '-upload-') !== false)
 	{
@@ -43,6 +47,7 @@ function avatar($avatar)
 	{
 		return $avatar;
 	}
+ */
 }
 
 ?>

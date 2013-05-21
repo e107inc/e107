@@ -3,13 +3,15 @@ $class = e107::getBB()->getClass('code');
 
 
 
-global $pref, $e107cache, $tp;
+global $pref, $e107cache;
+
+$tp = e107::getParser();
 
 if($pref['smiley_activate']) 
 {
 	if (!is_object($tp->e_emote))
 	{
-		require_once(e_HANDLER.'emote_filter.php');
+	//	require_once(e_HANDLER.'emote_filter.php');
 		$tp->e_emote = new e_emoteFilter;
 	}
 	$code_text = $tp->e_emote->filterEmotesRev($code_text);

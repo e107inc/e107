@@ -174,7 +174,7 @@ class pm_shortcodes extends e_shortcode
 
 	public function sc_pm_emotes()
 	{
-		require_once(e_HANDLER.'emote.php');
+		// require_once(e_HANDLER.'emote.php');
 		return r_emote();
 	}
 

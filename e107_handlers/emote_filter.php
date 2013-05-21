@@ -1,27 +1,23 @@
 <?php
-/*
+/**
  * e107 website system
  *
  * Copyright (C) 2008-2009 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/emote_filter.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * @DEPRECATED FILE
  */
 
 if (!defined('e107_INIT')) { exit; }
+/*
 
 class e_emotefilter {
 	var $search;
 	var $replace;
 	var $emotes;
 	 
-	function e_emotefilter() /* constructor */
+	function e_emotefilter() 
 	{		
 		$pref = e107::getPref();
 		
@@ -100,6 +96,9 @@ class e_emotefilter {
 		return $text;
 	}
 }
+
+*/
+
 	
 	
 	
