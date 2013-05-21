@@ -44,7 +44,7 @@ class e_bbcode
 		'b', 'justify', 'file', 'stream',
 		'textarea', 'list', 'php', 'time',
 		'spoiler', 'hide', 'youtube', 'sanitised', 
-		'p', 'h', 'nobr', 'block','table','tr','tbody','td'
+		'p', 'h', 'nobr', 'block','table','tr','tbody','td','markdown'
 		);
 
 		foreach($this->core_bb as $c)
