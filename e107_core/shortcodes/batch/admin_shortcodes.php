@@ -1561,7 +1561,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				$tmp['sub_class'] = '';
 				$tmp['sort'] = false;
 
-				if($pref['admin_slidedown_subs'] && vartrue($array_sub_functions[$key]))
+				if(vartrue($pref['admin_slidedown_subs']) && vartrue($array_sub_functions[$key]))
 				{
 					$tmp['sub_class'] = 'sub';
 					foreach ($array_sub_functions[$key] as $subkey => $subsubitem)
