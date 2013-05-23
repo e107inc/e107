@@ -50,5 +50,5 @@ define("NT_LAN_CB_5", "Message");
 define("NT_LAN_CB_6", "Chatbox Message Posted");
 
 
-define("LAN_CHATBOX_100", "Type in your message");
+define("LAN_CHATBOX_100", "Type your message here.");
 ?>
