@@ -1076,11 +1076,11 @@ class e_parse_shortcode
 			{
 				$other['class'] = $_class;
 			}
-			if($_function)
+			if(vartrue($_function))
 			{
 				$other['function'] = $_function;	
 			}
-			if($_path)
+			if(vartrue($_path))
 			{
 				$other['path'] = str_replace('../','',$_path);		
 			}
