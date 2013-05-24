@@ -536,7 +536,7 @@ class system_tools
 		$sql = e107::getDb();
 
 		$del = array_keys($_POST['delplug']);
-		if($sql->db_Delete("plugin", "plugin_id='".intval($del[0])."' LIMIT 1"))
+		if($sql->db_Delete("plugin", "plugin_id='".intval($del[0])."'"))
 		{
 			$mes->add(LAN_DELETED, E_MESSAGE_SUCCESS);
 		}

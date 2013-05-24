@@ -1044,7 +1044,7 @@ function step10_ajax()//TODO
 					$info['post_attachments'] = e107::serialize($newValues);
 				//	$sql->update('forum_post', $info); // XXX FIXME TODO screwed up due to _FIELD_DEFS 
 					
-					$sql->update('forum_post',"post_entry = \"".$info['post_entry']."\", post_attachments=\"".$info['post_attachments']."\" WHERE post_id = ".$post['post_id']." LIMIT 1");
+					$sql->update('forum_post',"post_entry = \"".$info['post_entry']."\", post_attachments=\"".$info['post_attachments']."\" WHERE post_id = ".$post['post_id']."");
 				}
 				
 			}

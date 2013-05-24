@@ -480,7 +480,7 @@ class media_form_ui extends e_admin_form_ui
 					$mes->addSuccess(LAN_IMA_004.": ".basename($path));
 					$mes->addSuccess(print_a($info,true));
 					$dim = intval($info['img-width'])." x ".intval($info['img-height']);
-					$sql2->db_Update("core_media","media_dimensions = '".$dim."', media_size = '".intval($info['fsize'])."' WHERE media_id = ".intval($row['media_id'])." LIMIT 1");
+					$sql2->db_Update("core_media","media_dimensions = '".$dim."', media_size = '".intval($info['fsize'])."' WHERE media_id = ".intval($row['media_id'])."");
 				}
 				else 
 				{

@@ -723,7 +723,7 @@ class e_menuManager {
 		$sql = e107::getDb();
 		$parms = $sql->escape(strip_tags($_POST['menu_parms']));
 		
-		$check = $sql->db_Update("menus", "menu_parms='".$parms."' WHERE menu_id=".intval($_POST['menu_id'])." LIMIT 1");
+		$check = $sql->db_Update("menus", "menu_parms='".$parms."' WHERE menu_id=".intval($_POST['menu_id'])."");
 		
 		
 		if($check)
@@ -1508,7 +1508,7 @@ class e_menuManager {
 		}
 		elseif($_POST['mode'] == 'update')
 		{
-			$sql->db_Update("menus","menu_location = ".intval($area)." WHERE menu_id = ".intval($insertID)." LIMIT 1",$this->debug);	
+			$sql->db_Update("menus","menu_location = ".intval($area)." WHERE menu_id = ".intval($insertID)."",$this->debug);	
 		}
 		
 		$c = 0;
@@ -1523,7 +1523,7 @@ class e_menuManager {
 		{
 			list($b,$id) = explode("-",$val);
 			$order[] = $id;
-			$sql->db_Update("menus","menu_order = ".$c." WHERE menu_id = ".intval($id)." LIMIT 1",$this->debug);
+			$sql->db_Update("menus","menu_order = ".$c." WHERE menu_id = ".intval($id)."",$this->debug);
        		$c++;
 		}
 

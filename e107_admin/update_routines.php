@@ -641,7 +641,7 @@ function update_706_to_800($type='')
 	if(e107::getDb()->select("core", "*", "e107_name='pm_prefs' LIMIT 1"))
 	{
 		if ($just_check) return update_needed('Rename the pm prefs');	
-		e107::getDb()->update("core",  "e107_name='plugin_pm' WHERE e107_name = 'pm_prefs' LIMIT 1");
+		e107::getDb()->update("core",  "e107_name='plugin_pm' WHERE e107_name = 'pm_prefs'");
 	}
 	
 	
