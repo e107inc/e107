@@ -254,7 +254,7 @@ else
 		$oc = "";
 	}
 	$texta .= "
-	<textarea placeholder=\"".LAN_CHATBOX_100."\" required class='tbox chatbox input-xlarge' id='cmessage' name='cmessage' cols='20' rows='5' style='".($cb_width ? "width:".$cb_width.";" : '')." overflow: auto' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
+	<textarea placeholder=\"".LAN_CHATBOX_100."\" required class='tbox chatbox input-xlarge' id='cmessage' name='cmessage' cols='20' rows='5' style='max-width:97%; ".($cb_width ? "width:".$cb_width.";" : '')." overflow: auto' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
 	<br />
 	<input class='btn button' type='submit' id='chat_submit' name='chat_submit' value='".CHATBOX_L4."' {$oc}/>
 	";
