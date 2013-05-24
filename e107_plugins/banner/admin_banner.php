@@ -191,6 +191,7 @@ if ($sql->select("banner"))
 	}
 }
 
+$text = '';
 
 if (!$action) 
 {	
@@ -294,7 +295,7 @@ if (!$action)
 		</script>
 	";
 
-	$ns->tablerender(LAN_PLUGIN_BANNER_NAME.SEP.LAN_MANAGE, $mes->render() . $text);
+	$ns->tablerender(LAN_PLUGIN_BANNER_NAME.SEP.LAN_MANAGE, $mes->render().$text);
 }
 
 if ($action == "create") 
