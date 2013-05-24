@@ -307,7 +307,7 @@ class rater {
 					
 			$qry = ($type == 'up') ? "rate_up = {$totalUp} " : "rate_down = {$totalDown}";
 			$qry .= ", rate_voters = '{$newvoters}', rate_votes = {$totalVotes} ";
-			$qry .= " WHERE rate_table = '{$table}' AND rate_itemid = '{$itemid}' LIMIT 1";
+			$qry .= " WHERE rate_table = '{$table}' AND rate_itemid = '{$itemid}'";
 			
 			if($sql->db_Update("rate",$qry))
 			{
