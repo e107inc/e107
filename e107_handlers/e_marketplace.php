@@ -212,6 +212,18 @@ abstract class e_marketplace_adapter_abstract
 	protected $downloadUrl = 'http://e107.org/request';	
 	
 	/**
+	 * e107.org service URL [adapter implementation required]
+	 * @var string
+	 */
+	protected $serviceUrl = null;	
+	
+	/**
+	 * Request method POST || GET  [adapter implementation required]
+	 * @var string
+	 */
+	protected $requestMethod = null;	
+	
+	/**
 	 * e107.org authorization key
 	 * @var string
 	 */
@@ -394,6 +406,119 @@ abstract class e_marketplace_adapter_abstract
 		
         return ($buffer) ? true : false;
     }
+
+	public function testAuthData($method, $args, $toObject = true)
+	{
+		$clientKey = 'dpf43f3p2l4k3l03'; // (Client Identifier) Application key
+		$clientSecretKey = 'kd94hf93k423kf44'; // (Client) application secret key
+		
+		// The client has previously registered with the server and obtained the client identifier dpf43f3p2l4k3l03 and client secret kd94hf93k423kf44. 
+		// It has executed the eAuth workflow and obtained an access token nnch734d00sl2jdk and token secret pfkkdhi9sl3r4s00
+		$accessTokenKey = 'nnch734d00sl2jdk'; // Access Token 
+		$accessTokenSecretKey = 'pfkkdhi9sl3r4s00'; // Access Token secret key
+		
+		$date = gmdate('Y-m-d H:i:s');
+		$timestamp = $this->gmtTime($date);
+		$nonce = $this->crypt($this->random().$timestamp, $accessTokenSecretKey.$clientSecretKey); // create nonce
+		
+		$cryptMethod = $this->cryptMethod();
+		$authData = array(
+			'eauth_consumer_key' 	=> $clientKey, // Client Identifier
+			'eauth_token' 			=> $accessTokenKey, // Access Token 
+			'eauth_nonce' 			=> $nonce,//'kllo9940pd9333jh' 'nonce' (number used once) string  
+			'eauth_timestamp' 		=> $timestamp, // timestamp
+			'eauth_signature_method'=> $cryptMethod, // encryption method
+			'eauth_version'			=> '1.0', // signature method
+		);
+		
+		// current request parameters
+		$args['action'] = $method;
+		
+		// signature data for building the signature
+		$signatureData = $authData;
+		
+		// add request parameters to the signature array
+		$signatureData['eauth_request_params'] = $args;
+		
+		// sort all
+		$this->array_kmultisort($signatureData);
+		
+		// signature base string
+		$signatureBaseString = $this->requestMethod.'&'.rawurlencode($this->serviceUrl).'&'.http_build_query($signatureData, false, '&');
+		$secretKey = rawurlencode($clientSecretKey).'&'.rawurlencode($accessTokenSecretKey);
+		
+		// crypt it
+		$signature = $this->crypt($signatureBaseString, $secretKey);
+		
+		//encode it
+		$authData['eauth_signature'] = base64_encode($signature);
+		if($toObject) return $this->toObject($authData);
+		
+		return $authData;
+	}
+
+	public function cryptMethod()
+	{
+		return function_exists('hash_hmac') ? 'HMAC-SHA1' : 'SHA1';
+	}
+	
+	function random($bits = 256) 
+	{
+	    $bytes = ceil($bits / 8);
+	    $ret = '';
+	    for ($i = 0; $i < $bytes; $i++) 
+	    {
+	        $ret .= chr(mt_rand(0, 255));
+	    }
+	    return $ret;
+	}
+	
+	public function crypt($string, $secretKey)
+	{
+		$cMethod = $this->cryptMethod();
+		// Append secret if it's sha1
+		if($cMethod == 'SHA1')
+		{
+			return sha1($string.$secretKey);
+		}
+		// use secret key if HMAC-SHA1
+		return hash_hmac('sha1', $string, $secretKey);
+	}
+
+	public function gmtTime($string)
+	{
+		$ret = false;
+		// mask - Y-m-d H:i:s
+		if(preg_match('#(.*?)-(.*?)-(.*?) (.*?):(.*?):(.*?)$#', $string, $matches))
+		{
+			$ret = gmmktime($matches[4], $matches[5], $matches[6], $matches[2], $matches[3], $matches[1]);
+		}
+		return $ret;
+	}
+
+	public function array_kmultisort(&$array, $order = 'asc')
+	{
+		$func = $order == 'asc' ? 'ksort' : 'krsort';
+		$func($array);
+		foreach ($array as $key => $value) 
+		{
+			if(is_array($value))
+			{
+				$this->array_kmultisort($value, $order);
+				$array[$key] = $value;
+			}
+		}
+	}
+
+	public function toObject($array)
+	{
+		$obj = new stdClass;
+		foreach ($array as $key => $value) 
+		{
+			$obj->$key = $value;
+		}
+		return $obj;
+	}
 }
 
 class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
@@ -402,7 +527,13 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 	 * e107.org WSDL URL
 	 * @var string
 	 */
-	protected $wsdl = 'http://e107.org/service?wsdl';
+	protected $serviceUrl = 'http://e107.org/service?wsdl';
+	
+	/**
+	 * Request method POST || GET
+	 * @var string
+	 */
+	protected $requestMethod = 'POST';	
 	
 	/**
 	 * Soap client instance
@@ -423,7 +554,7 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 		    'connection_timeout' 	=> 60,
 		);
 
-		$this->client = new SoapClient($this->wsdl, $options);
+		$this->client = new SoapClient($this->serviceUrl, $options);
 
 		if(function_exists('xdebug_disable'))
 		{
@@ -495,13 +626,14 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 			$result['exception']['code'] 	= 'GEN_'.$e->getCode();
 			if(E107_DEBUG_LEVEL)
 			{
-				$result['exception']['trace'] = $e->getTraceAsString(); 
+				$result['debug']['trace'] = $e->getTraceAsString(); 
 			}
 		}
 		if(E107_DEBUG_LEVEL)
 		{
-			$result['exception']['response'] = $this->client->__getLastResponse(); 
-			$result['exception']['request'] = $this->client->__getLastRequest(); 
+			$result['debug']['response'] = $this->client->__getLastResponse(); 
+			$result['debug']['request'] = $this->client->__getLastRequest(); 
+			$result['debug']['request_header'] = $this->client->__getLastRequestHeaders(); 
 		}
 		return $result;
 	}
@@ -546,7 +678,13 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 	 * e107.org XML-rpc service
 	 * @var xmlClass
 	 */
-	protected $url = 'http://e107.org/xservice';
+	protected $serviceUrl = 'http://e107.org/xservice';
+	
+	/**
+	 * Request method POST || GET
+	 * @var string
+	 */
+	protected $requestMethod = 'GET';
 	
 	protected $_forceArray = array();
 	protected $_forceNumericalArray = array();
@@ -573,7 +711,7 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 		
 		// build the request query
 		$qry = str_replace(array('s%5B', '%5D'), array('[', ']'), http_build_query($data, null, '&'));
-		$url = $this->url.'?'.$qry;
+		$url = $this->serviceUrl.'?'.$qry;
 		$result = array();
 		
 		// call it
