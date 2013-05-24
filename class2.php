@@ -865,7 +865,7 @@ if (!class_exists('e107table', false))
 				$thm = new $this->themeClass();
 			}
 			
-			if(is_object($thm))
+			if(is_object(vartrue($thm)))
 			{
 				$thm->tablestyle($caption, $text, $mode, array('menuArea'=>$this->eMenuArea, 'menuCount'=>$this->eMenuCount,	'menuTotal'=>varset($this->eMenuTotal[$this->eMenuArea]), 'setStyle'=>$this->eSetStyle));
 			}
