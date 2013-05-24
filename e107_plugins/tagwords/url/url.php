@@ -17,6 +17,7 @@ class plugin_tagwords_url extends eUrlConfig
 			'config' => array(
 				'legacy' 		=> '{e_PLUGIN}tagwords/tagwords.php', // this config won't work in single entry point mod (legacy not used at all), so just set this to default plugin file to notify router it's legacy module
 				'format'		=> 'path', 	// get|path - notify core for the current URL format, if set to 'get' rules will be ignored
+				'selfCreate' 	=> true,	// [optional] default false; use only this->create() method, no core routine URL creating
 				'defaultRoute'	=> 'search/index', // [optional] default empty; route (no leading module) used when module is found with no additional controller/action information e.g. /news/
 			),
 			
@@ -55,5 +56,21 @@ class plugin_tagwords_url extends eUrlConfig
 		);
 		
 		return $admin;
+	}
+
+	public function create($route, $params = array(), $options = array())
+	{
+		if(is_string($route)) $route = explode('/', $route, 2);
+		if(!varset($route[0]) || 'index' == $route[0]) $route[0] = 'tagwords';
+		if(!varset($route[1])) $route[1] = 'tagwords';
+		$base = e107::getInstance()->getFolder('plugins').'tagwords/';
+
+		if(($route[0] == 'tagwords') || ($route[0] == "search"))
+		{
+			if(isset($params['q']))
+				return $base.'tagwords.php?q='.$params['q'];
+			else
+				return $base.'tagwords.php';
+		}
 	}
 }
