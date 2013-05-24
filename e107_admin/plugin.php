@@ -2244,7 +2244,7 @@ TEMPLATE;
 				case 'tinyint':
 				case 'smallint':
 					$array = array(
-					"boolean"	=> "True/Flase",
+					"boolean"	=> "True/False",
 					"number"	=> "Text Box",
 					"dropdown"	=> "DropDown",
 					"userclass"	=> "DropDown (userclasses)",
