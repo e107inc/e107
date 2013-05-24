@@ -611,14 +611,29 @@ if (isset($_POST['register']) && $pref['user_reg'] == 1)
 			if (($pref['user_reg_veri'] != 2) && $allData['data']['user_email'])		// Don't send if email address blank - means that its not compulsory
 			{
 				$allData['data']['user_id'] = $nid;					// User ID
-				$allData['data']['user_password'] = $savePassword;	// Might need to send plaintext password in the email
+				// FIXME build while rendering - user::renderEmail()
+				$allData['data']['activation_url'] = SITEURL."signup.php?activate.".$allData['data']['user_id'].".".$allData['data']['user_sess'];
+				// FIX missing user_name
+				if(!vartrue($allData['data']['user_name'])) $allData['data']['user_name'] = $allData['data']['user_login'];
+				
+				// prefered way to send user emails
+				$sysuser = e107::getSystemUser(false, false);
+				$sysuser->setData($allData['data']);
+				$sysuser->setId($userid);
+				$check = $sysuser->email('signup', array(
+					'user_password' => $savePassword, // for security reasons - password passed ONLY through options
+				));
+				
+				/*
                 $eml = render_email($allData['data']);
 				$eml['e107_header'] = $eml['userid'];
 				require_once(e_HANDLER.'mail.php');
 				$mailer = new e107Email();
 				
 				// FIX - sendEmail returns TRUE or error message...
-				if(true !== $mailer->sendEmail($allData['data']['user_email'], $allData['data']['user_name'], $eml,FALSE))
+				$check = $mailer->sendEmail($allData['data']['user_email'], $allData['data']['user_name'], $eml,FALSE);*/
+				
+				if(true !== $check)
 				{
 					$error_message = LAN_SIGNUP_42; // There was a problem, the registration mail was not sent, please contact the website administrator.
 				}
@@ -746,12 +761,12 @@ function headerjs()
 
 /**
  * Create email to send to user who just registered.
- *
+ * DEPRECATED use $user->email()
  * @param array $userInfo is the array of user-related DB variables
  *
  * @return array of data for mailer - field names directly compatible
  */
-function render_email($userInfo, $preview = FALSE)
+/*function render_email($userInfo, $preview = FALSE)
 {
 	// 1 = Body
 	// 2 = Subject
@@ -781,16 +796,6 @@ function render_email($userInfo, $preview = FALSE)
 		require_once(e_CORE.'templates/email_template.php');
 	}
 
-	/*	Inline images now handled automatically - just include in email template with an absolute link
-	$inlineImages = array();
-	$inlineImages = explode(",",$SIGNUPEMAIL_IMAGES);
-	if (vartrue($SIGNUPEMAIL_BACKGROUNDIMAGE))
-	{
-		$inlineImages[] = $SIGNUPEMAIL_BACKGROUNDIMAGE;
-	}
-	if (count($inlineImages)) { $ret['mail_inline_images'] = implode(",",$inlineImages); }
-	*/
-
 	$ret['mail_recipient_id'] = $userInfo['user_id'];
 	if (vartrue($SIGNUPEMAIL_CC)) { $ret['mail_copy_to'] = $SIGNUPEMAIL_CC; }
 	if (vartrue($SIGNUPEMAIL_BCC)) { $ret['mail_bcopy_to'] = $SIGNUPEMAIL_BCC; }
@@ -819,20 +824,7 @@ function render_email($userInfo, $preview = FALSE)
 	$search[6] = '{USERURL}';
 	$replace[6] = varsettrue($userInfo['user_website']) ? $userInfo['user_website'] : "";
 
-	/*	Inline images now handled automatically - just include in email template with an absolute link
-	$cnt=1;
-	foreach($inlineImages as $img)
-	{
-		if(is_readable($inlineImages[$cnt-1]))
-		{
-			$cid_search[] = "{IMAGE".$cnt."}";
-			$cid_replace[] = "<img alt=\"".SITENAME."\" src='cid:".md5($inlineImages[$cnt-1])."' />\n";
-			$path_search[] = "{IMAGE".$cnt."}";
-			$path_replace[] = "<img alt=\"".SITENAME."\" src=\"".$inlineImages[$cnt-1]."\" />\n";
-		}
-		$cnt++;
-	}
-	*/
+
 
 	$subject = str_replace($search,$replace,$SIGNUPEMAIL_SUBJECT);
 	$ret['mail_subject'] =  $subject;
@@ -865,7 +857,7 @@ function render_email($userInfo, $preview = FALSE)
 
 	return $ret;
 }
-
+*/
 
 
 function render_after_signup($error_message)
