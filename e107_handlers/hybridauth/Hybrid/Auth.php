@@ -14,7 +14,7 @@
  */
 class Hybrid_Auth 
 {
-	public static $version = "2.1.0";
+	public static $version = "2.1.2";
 
 	public static $config  = array();
 
@@ -111,13 +111,7 @@ class Hybrid_Auth
 		if ( ! function_exists('json_decode') ) {
 			Hybrid_Logger::error('Hybridauth Library needs the JSON PHP extension.');
 			throw new Exception('Hybridauth Library needs the JSON PHP extension.');
-		}
-
-		// OAuth PECL extension is not compatible with this library
-		if( extension_loaded('oauth') ) {
-			Hybrid_Logger::error('Hybridauth Library not compatible with installed PECL OAuth extension. Please disable it.');
-			throw new Exception('Hybridauth Library not compatible with installed PECL OAuth extension. Please disable it.');
-		}
+		} 
 
 		// session.name
 		if( session_name() != "PHPSESSID" ){
@@ -389,14 +383,15 @@ class Hybrid_Auth
 			$protocol = 'http://';
 		}
 
-		$url = $protocol . $_SERVER['SERVER_NAME'];
+		$url = $protocol . $_SERVER['HTTP_HOST'];
 
 		// use port if non default
-		$url .= 
-			isset( $_SERVER['SERVER_PORT'] ) 
-			&&( ($protocol === 'http://' && $_SERVER['SERVER_PORT'] != 80) || ($protocol === 'https://' && $_SERVER['SERVER_PORT'] != 443) )
-			? ':' . $_SERVER['SERVER_PORT'] 
-			: '';
+		if( isset( $_SERVER['SERVER_PORT'] ) && strpos( $url, ':'.$_SERVER['SERVER_PORT'] ) === FALSE ) {
+			$url .= ($protocol === 'http://' && $_SERVER['SERVER_PORT'] != 80 && !isset( $_SERVER['HTTP_X_FORWARDED_PROTO']))
+				|| ($protocol === 'https://' && $_SERVER['SERVER_PORT'] != 443 && !isset( $_SERVER['HTTP_X_FORWARDED_PROTO']))
+				? ':' . $_SERVER['SERVER_PORT'] 
+				: '';
+		}
 
 		if( $request_uri ){
 			$url .= $_SERVER['REQUEST_URI'];
