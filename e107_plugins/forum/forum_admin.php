@@ -996,7 +996,7 @@ class forumAdmin
 			$text .= "<select name='forum_parent' class='tbox'>\n";
 			while (list($fid, $fname) = $sql->fetch(MYSQL_NUM))
 			{
-				$sel = ($fid == vartrue($fInfor['forum_parent']) ? "selected='selected'" : '');
+				$sel = ($fid == vartrue($fInfo['forum_parent']) ? "selected='selected'" : '');
 				$text .= "<option value='{$fid}' {$sel}>{$fname}</option>\n";
 			}
 			$text .= "</select>
