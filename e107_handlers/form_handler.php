@@ -612,57 +612,40 @@ class e_form
 	 * @example $frm->datepicker('my_field',time(),'type=date');
 	 * @example $frm->datepicker('my_field',time(),'type=datetime&inline=1');
 	 * @example $frm->datepicker('my_field',time(),'type=date&format=yyyy-mm-dd');
+	 * @example $frm->datepicker('my_field',time(),'type=datetime&format=MM, dd, yyyy hh:ii');
 	 * 
 	 * @url http://trentrichardson.com/examples/timepicker/
 	 */
 	function datepicker($name, $datestamp = false, $options = null)
 	{
+		
 		if(vartrue($options) && is_string($options))
 		{
 			parse_str($options,$options);	
 		} 
 		
-		$type		= varset($options['type']) ? trim($options['type']) : "date"; // 'datetime'
+		$type		= varset($options['type']) ? trim($options['type']) : "date"; // OR  'datetime'
 		$dateFormat = varset($options['format']) ? trim($options['format']) :e107::getPref('inputdate', '%Y-%m-%d');
-	//	$timeFormat = varset($options['timeformat']) ? trim($options['timeformat']) :e107::getPref('inputtime', '%H:%M:%S'); 
-		
-	
-		
+		$ampm		= (preg_match("/%l|%I|%p|%P/",$dateFormat)) ? 'true' : 'false';	
+				
 		if($type == 'datetime' && !varset($options['format']))
 		{
 			$dateFormat .= " ".e107::getPref('inputtime', '%H:%M:%S');		
 		}
-		
-	//	echo "TYPE=".$type;
-			
-		$ampm		= (preg_match("/%l|%I|%p|%P/",$dateFormat)) ? 'true' : 'false';					
 
 		$dformat = e107::getDate()->toMask($dateFormat);
-	//	$tformat = e107::getDate()->toMask($timeFormat);
 
 		$id = $this->name2id($name);
 
-		$classes = array(
-			'date'		=> 'e-date',
-		//	'time'		=> 'e-time',
-			'datetime'	=> 'e-datetime'
-		);
-
-		$def = array(
-			'date'		=> $dateFormat,
-		//	'time'		=> $timeFormat,
-			'datetime'	=> $dateFormat // ." ".$timeFormat
-		);
-
-		$defdisp = (isset($def[$type])) ? $def[$type] : $def['date'];
+		$classes = array('date'	=> 'e-date', 'datetime'	=> 'e-datetime');
 		
 		if ($datestamp)
 		{
-		   $value = is_numeric($datestamp) ? e107::getDate()->convert_date($datestamp, $defdisp) : $datestamp; //date("d/m/Y H:i:s", $datestamp);
+		   $value = is_numeric($datestamp) ? e107::getDate()->convert_date($datestamp, $dateFormat) : $datestamp; //date("d/m/Y H:i:s", $datestamp);
 		}
 
 		$text = "";
-	//	$text .= 'dformat='.$dformat.'  defdisp='.$defdisp;
+	//	$text .= 'dformat='.$dformat.'  defdisp='.$dateFormat;
 		
 		$class 		= (isset($classes[$type])) ? $classes[$type] : "tbox e-date";
 		$size 		= vartrue($options['size']) ? intval($options['size']) : 40;
@@ -676,25 +659,12 @@ class e_form
 			";
 		}
 		else
-		{
-			// http://tarruda.github.com/bootstrap-datetimepicker/ 
-			//XXX Problem -doesn't support non-numerical date formats. eg. 2 February, 2013
-			/*
-			$text .= "	
-			<div class='{$class} input-append date'>
-		    <input data-format='{$dformat}' type='text' id='{$id}' value='{$value}' />
-		    <span class='add-on'>
-		      <i data-time-icon='icon-time' data-date-icon='icon-calendar'></i>
-		    </span>
-		  </div>";
-			*/
-			
-			
+		{			
 			$text .= "<input class='{$class} input-xlarge' type='text' size='{$size}' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}' {$required} />";		
 		}
 
-	//	$text .= "ValueFormat: ".$defdisp."  Value: ".$value;
-	//	$text .= " ({$dformat}) type:".$defdisp." ".$value;
+	//	$text .= "ValueFormat: ".$dateFormat."  Value: ".$value;
+	//	$text .= " ({$dformat}) type:".$dateFormat." ".$value;
 			
 		return $text;
 

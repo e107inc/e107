@@ -23,9 +23,11 @@ $sql = e107::getDb();
 
 $sql->db_Mark_Time('(Header Top)');
 
+e107::css('core', 	'bootstrap-datetimepicker/css/datetimepicker.css', 'jquery');
+e107::js('core', 	'bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js', 'jquery', 2);	
 
-e107::js('core','bootstrap/js/bootstrap-tooltip.js','jquery');
-e107::css('core','bootstrap/css/tooltip.css','jquery');
+e107::js('core',	'bootstrap/js/bootstrap-tooltip.js','jquery');
+e107::css('core',	'bootstrap/css/tooltip.css','jquery');
 
 // ------------------
 
