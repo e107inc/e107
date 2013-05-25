@@ -429,7 +429,7 @@ class poll
 		
 		
 		$VOTE_TOTAL 	= POLLAN_31.": ".$voteTotal;
-		$COMMENTS 		= ($pollArray['poll_comment'] ? " <a href='".e_BASE."comment.php?comment.poll.".$pollArray['poll_id']."'>".POLLAN_27.": ".$comment_total."</a>" : "");
+		$COMMENTS 		= ($pollArray['poll_comment'] ? " <a href='".e_HTTP."comment.php?comment.poll.".$pollArray['poll_id']."'>".POLLAN_27.": ".$comment_total."</a>" : "");
 		
 		
 		$poll_count 	= $sql->count("polls", "(*)", "WHERE poll_id <= '".$pollArray['poll_id']."'");
@@ -440,7 +440,7 @@ class poll
 			$OLDPOLLS = ($type == 'menu' ? "<a href='".e_PLUGIN_ABS."poll/oldpolls.php'>".POLLAN_28."</a>" : "");
 		}
 		
-		$AUTHOR 		= POLLAN_35." ".($type == 'preview' || $type == 'forum' ? USERNAME : "<a href='".e_BASE."user.php?id.".$pollArray['poll_admin_id']."'>".$pollArray['user_name']."</a>");
+		$AUTHOR 		= POLLAN_35." ".($type == 'preview' || $type == 'forum' ? USERNAME : "<a href='".e_HTTP."user.php?id.".$pollArray['poll_admin_id']."'>".$pollArray['user_name']."</a>");
 
 	
 		
@@ -488,7 +488,7 @@ class poll
 			case 'results' :
 				if ($pollArray['poll_result_type'] && !strstr(e_SELF, "comment.php"))
 				{
-					$text = "<div style='text-align: center;'><br /><br />".POLLAN_39."<br /><br /><a href='".e_BASE."comment.php?comment.poll.".$pollArray['poll_id']."'>".POLLAN_40."</a></div><br /><br />";
+					$text = "<div style='text-align: center;'><br /><br />".POLLAN_39."<br /><br /><a href='".e_HTTP."comment.php?comment.poll.".$pollArray['poll_id']."'>".POLLAN_40."</a></div><br /><br />";
 				}
 				else
 				{
