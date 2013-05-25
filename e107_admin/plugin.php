@@ -1969,7 +1969,7 @@ class pluginBuilder
 			switch ($type) 
 			{
 				case 'date':
-					$text = $frm->datepicker($name, time(), 'dateformat=yyyy-mm-dd'.$req);		
+					$text = $frm->datepicker($name, time(), 'format=yyyy-mm-dd'.$req);		
 				break;
 				
 				case 'description':

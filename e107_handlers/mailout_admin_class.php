@@ -1458,8 +1458,8 @@ class mailoutAdminClass extends e107MailManager
 
 		$options = array(
 			'type' => 'datetime',
-			'dateformat' => $dFormat,
-			'timeformat' => $tFormat,
+			'format' => $dFormat." ".$tFormat,
+		//	'timeformat' => $tFormat,
 			'firstDay' => 1,		// 0 = Sunday.
 			'size' => 12
 			);
