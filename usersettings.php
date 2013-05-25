@@ -70,8 +70,9 @@ function addtext_us(sc)
 			document.getElementById('dataform').image.value = sc;
 		}
 ");
-e107::css('core', 'bootstrap-datetimepicker/css/datetimepicker.css', 'jquery');
-e107::js('core', 'bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js', 'jquery', 2);
+
+
+
 
 $photo_to_delete = '';
 $avatar_to_delete = '';
