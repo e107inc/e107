@@ -1546,6 +1546,9 @@ class e_form
 				$options['class'] .= 'btn-success';
 			break;
 			
+			case 'checkall':
+				$options['class'] .= 'btn-mini';
+			break;
 	
 			case 'cancel':
 				// use this for neutral colors. 

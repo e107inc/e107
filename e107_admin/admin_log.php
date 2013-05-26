@@ -422,23 +422,23 @@ if($action == "config")
 			<td>".RL_LAN_123."</td>
 			<td>
 				<select class='tbox' name='user_audit_class'>
-					".$e_userclass->vetted_tree('user_audit_class', array($e_userclass, 'select'), varset($pref['user_audit_class'], ''), 'nobody,admin,member,new,mods,main,classes, no-excludes')."
+					".$e_userclass->vetted_tree('user_audit_class', array($e_userclass, 'select'), varset($pref['user_audit_class'], e_UC_MEMBER), 'nobody,admin,member,new,mods,main,classes, no-excludes')."
 				</select>
 				<span class='field-help'>".RL_LAN_026."</span>
 			</td>
 		</tr>
 		<tr>
-			<td>".RL_LAN_124."</td>
-			<td>".RL_LAN_031."
-	";
-	foreach($audit_checkboxes as $k => $t)
-	{
-		$text .= "
-		<div class='field-spacer'><input class='checkbox' type='checkbox' id='user-audit-opts-{$k}' name='user_audit_opts[]' value='{$k}' ".(isset($user_signup_opts[$k]) ? " checked='checked' " : "")." /><label for='user-audit-opts-{$k}'>{$t}</label></div>
-		";
-		//$text .= $frm->checkbox('user_audit_opts[]', $k, $user_signup_opts[$k], array('label' => $t)); //FIXME buggy/non-functional
-	}
-		$text .= $frm->admin_button('check_all', 'jstarget:user_audit_opts', 'action', LAN_CHECKALL).$frm->admin_button('uncheck_all', 'jstarget:user_audit_opts', 'action', LAN_UNCHECKALL)."
+			<td>".RL_LAN_031."</td>
+			<td>";
+			
+			foreach($audit_checkboxes as $k => $t)
+			{
+				$checked = isset($user_signup_opts[$k]) ? true : false;
+				$text .= $frm->checkbox('user_audit_opts[]',$k, $checked, array('label'=>$t));	
+			}
+
+
+		$text .= $frm->admin_button('check_all', 'jstarget:user_audit_opts', 'checkall', LAN_CHECKALL).$frm->admin_button('uncheck_all', 'jstarget:user_audit_opts', 'checkall', LAN_UNCHECKALL)."
 			</td>
 		</tr>
 	";
