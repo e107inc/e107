@@ -54,7 +54,6 @@ function tablestyle($caption, $text, $mode='')
 		echo '<div class="hero-unit">
             <h1>'.$caption.'</h1>
             <p>'.$text.'</p>
-            <p><a href="'.e_ADMIN.'admin.php" class="btn btn-primary btn-large">Go to Admin area &raquo;</a></p>
           </div>';	
 		
 		return;
