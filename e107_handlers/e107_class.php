@@ -2320,12 +2320,12 @@ class e107
 		elseif($fname === true) // admin file. 
 		{
 			//$fname = "admin/".e_LANGUAGE;
-			 $fname = ($flat === true) ? e_LANGUAGE."_admin" : "admin/".e_LANGUAGE;	
+			 $fname = e_LANGUAGE."_admin";
 		}
 		else
 		{
 			// $fname = e_LANGUAGE;
-			$fname = ($flat === true) ? e_LANGUAGE."_front" : e_LANGUAGE;
+			$fname = e_LANGUAGE."_front";
 		}
 
 		if($flat === true && is_dir(e_PLUGIN.$plugin."/languages/".e_LANGUAGE)) // support for alt_auth/languages/English/English_log.php etc.
@@ -2337,7 +2337,6 @@ class e107
 			$path = e_PLUGIN.$plugin.'/languages/'.$fname.'.php';	
 		}
 		
-		echo "<br />".$path;
 		if(E107_DBG_INCLUDES)
 		{
 			e107::getMessage()->addDebug("Attempting to Load: ".$path);	
