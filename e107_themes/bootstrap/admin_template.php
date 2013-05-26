@@ -52,10 +52,11 @@ $E_ADMIN_NAVIGATION['button_active'] = '
 // Leave Admin Area. 
 $E_ADMIN_NAVIGATION['button_home'] = '
 	<li class="dropdown">
-		<a class="dropdown-toggle" title="'.ADLAN_53.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
+		<a class="dropdown-toggle" style="display:inline-block; padding-right:0px;margin-right:0px;" title="'.ADLAN_53.'" href="'.e_HTTP.'" >
 		 {LINK_IMAGE} {LINK_TEXT} 
-		<b class="caret"></b>
-		</a> 
+		 </a><a style="display:inline-block;margin-left:0px;padding-left:4px;padding-right:8px;margin-right:8px" class="dropdown-toggle" title="'.ADLAN_53.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
+		 <b class="caret"></b>
+		</a>
 		{SUB_MENU}
 	</li>
 ';
