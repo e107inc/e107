@@ -128,7 +128,7 @@ td.options 									{ 	}
 legend 										{ display:none }
 
 /* Datepicker */
-fieldset.hour legend {
+fieldset.hour legend, fieldset.minute legend {
 	display: inline-block
 }
 
