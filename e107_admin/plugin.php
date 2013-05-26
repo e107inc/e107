@@ -2659,7 +2659,7 @@ class ".$table." extends e_admin_ui
 ";
 
 
-if($_POST['pluginPrefs'] && $tableCount == 1)
+if($_POST['pluginPrefs'] && ($vars['mode']=='main'))
 {
 	$text .= "		
 		
