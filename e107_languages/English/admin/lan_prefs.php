@@ -133,7 +133,7 @@ define("PRFLAN_135", "for example, if your site URL above is set to http://foo.c
 define("PRFLAN_136", "Maximum Signups permitted from the same IP address.");
 define("PRFLAN_137", "Display Memory Usage");
 define("PRFLAN_138", "Display CAPTCHA on forgotten password page.");
-define("PRFLAN_139", "Display warning when main administrator password has't changed for at least 30 days");
+define("PRFLAN_139", "Display warning when main administrator password hasn't changed for at least 30 days");
 define("PRFLAN_140", "Text to display after signup form has been submitted.");
 //define("PRFLAN_141", "Allow registration using XML User Profiles");
 define("PRFLAN_142", "Flood Only");
