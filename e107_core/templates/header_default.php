@@ -644,9 +644,9 @@ if ($e107_popup != 1) {
 // N: Send other top-of-body HTML
 //
 
-	if(ADMIN)
+	if(ADMIN && !vartrue($_SERVER['E_DEV']) && file_exists(e_BASE.'install.php'))
 	{
-		if(file_exists(e_BASE.'install.php') || file_exists(e_BASE.'install_.php')){ echo "<div class='installer alert alert-danger alert-block text-center'><b>*** ".CORE_LAN4." ***</b><br />".CORE_LAN5."</div>"; }
+		 echo "<div class='installer alert alert-danger alert-block text-center'><b>*** ".CORE_LAN4." ***</b><br />".CORE_LAN5."</div>"; 
 	}
 
 	// Display Welcome Message when old method activated.
