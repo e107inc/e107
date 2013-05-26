@@ -2732,24 +2732,33 @@ class e107
 		define('CHARSET', 'utf-8'); // set CHARSET for backward compatibility
 
 		// Define the domain name and subdomain name.
-		if($_SERVER['HTTP_HOST'] && is_numeric(str_replace(".","",$_SERVER['HTTP_HOST'])))
+		if(is_numeric(str_replace(".","",$_SERVER['HTTP_HOST'])))
 		{
-			$srvtmp = '';  // Host is an IP address.
+			$domain = FALSE;
+			$subdomain = FALSE;
 		}
 		else
-		{
-			$srvtmp = explode('.',str_replace('www.', '', $_SERVER['HTTP_HOST']));
+		{	
+			if(preg_match("/\.?([a-z0-9-]+)(\.(com|net|org|co|me|ltd|plc|gov)\.[a-z]{2})$/i", $_SERVER['HTTP_HOST'], $m)) //eg. mysite.co.uk
+			{
+		        $domain = $m[1].$m[2];
+		    }
+			elseif(preg_match("/\.?([a-z0-9-]+)(\.[a-z]{2,})$/i", $_SERVER['HTTP_HOST'], $m))//  eg. .com/net/org/ws/biz/info
+			{       
+		        $domain = $m[1].$m[2];		
+		    }
+			else
+			{
+				$domain = FALSE; //invalid domain
+			}
+			
+			$replace = array(".".$domain,"www.","www",$domain);
+			$subdomain = str_replace($replace,'',$_SERVER['HTTP_HOST']);
 		}
 
-		define('e_SUBDOMAIN', (count($srvtmp)>2 && $srvtmp[2] ? $srvtmp[0] : false)); // needs to be available to e107_config.
-
-		if(e_SUBDOMAIN)
-		{
-		   	unset($srvtmp[0]);
-		}
-
-		define('e_DOMAIN',(count($srvtmp) > 1 ? (implode('.', $srvtmp)) : false)); // if it's an IP it must be set to false.
-
+		define("e_DOMAIN", $domain);
+		define("e_SUBDOMAIN",($subdomain) ? $subdomain : FALSE);
+		
 		define('e_UC_PUBLIC', 0);
 		define('e_UC_MAINADMIN', 250);
 		define('e_UC_READONLY', 251);
