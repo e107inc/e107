@@ -1912,6 +1912,11 @@ if(!isset($_E107['no_online']) && varset($pref['track_online']))
  */
 function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure = 0)
 {
+	if(!e_SUBDOMAIN || (defined('MULTILANG_SUBDOMAIN') && MULTILANG_SUBDOMAIN === TRUE))
+	{
+		$domain = (e_DOMAIN != FALSE) ? ".".e_DOMAIN : "";
+	}	
+	
 	setcookie($name, $value, $expire, $path, $domain, $secure);
 }
 
