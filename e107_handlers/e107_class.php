@@ -2319,11 +2319,13 @@ class e107
 		}
 		elseif($fname === true) // admin file. 
 		{
-			$fname = "admin/".e_LANGUAGE;	
+			//$fname = "admin/".e_LANGUAGE;
+			 $fname = ($flat === true) ? e_LANGUAGE."_admin" : "admin/".e_LANGUAGE;	
 		}
 		else
 		{
-			 $fname = e_LANGUAGE;
+			// $fname = e_LANGUAGE;
+			$fname = ($flat === true) ? e_LANGUAGE."_front" : e_LANGUAGE;
 		}
 
 		if($flat === true && is_dir(e_PLUGIN.$plugin."/languages/".e_LANGUAGE)) // support for alt_auth/languages/English/English_log.php etc.
@@ -2335,6 +2337,7 @@ class e107
 			$path = e_PLUGIN.$plugin.'/languages/'.$fname.'.php';	
 		}
 		
+		echo "<br />".$path;
 		if(E107_DBG_INCLUDES)
 		{
 			e107::getMessage()->addDebug("Attempting to Load: ".$path);	
@@ -2405,6 +2408,9 @@ class e107
 	 * @param $options : Set to True for admin. 
 	 * @example e107::lan('theme'); // Loads THEME."languages/English.php (if English is the current language)
 	 * @example e107::lan('gallery'); // Loads e_PLUGIN."gallery/languages/English.php (if English is the current language)
+	 * @example e107::lan('gallery', true); // Loads e_PLUGIN."gallery/languages/admin/English.php (if English is the current language)
+	 * @example e107::lan('gallery', false, true); // Loads e_PLUGIN."gallery/languages/English/English_front.php (if English is the current language)
+	 * @example e107::lan('gallery', true, true); // Loads e_PLUGIN."gallery/languages/English/English_admin.php (if English is the current language)
 	 * @example e107::lan('gallery',e_LANGUAGE."_something.php"); // Loads e_PLUGIN."gallery/languages/English_something.php (if English is the current language)
 	 */
 	public static function lan($type, $fname = null, $options = null)
@@ -2420,7 +2426,6 @@ class e107
 				self::themeLan($fname, null,  $options);
 				break;
 			default :
-				
 				self::plugLan($type, $fname, $options);
 				break;
 		}	
