@@ -63,3 +63,6 @@
 	RewriteRule .* index.php [L]
 
 </IfModule>
+
+### Enable when developing locally. 
+### SetEnv E_DEV true
