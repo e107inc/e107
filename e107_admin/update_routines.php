@@ -1604,15 +1604,19 @@ function update_706_to_800($type='')
 	
 	if (!$just_check)  // Running the Upgrade Process. 
 	{
-		$th = e107::getSingleton('themeHandler');
-		$tmp = $th->getThemeInfo($pref['sitetheme']);
-		if($th->setTheme($pref['sitetheme'], false))
+			
+		if(!is_array($pref['sitetheme_layouts']) || !vartrue($pref['sitetheme_deflayout']))
 		{
-			$log->addDebug("Updated SiteTheme prefs");
-		}
-		else
-		{
-			$log->addDebug("Couldn't update SiteTheme prefs");	
+			$th = e107::getSingleton('themeHandler');
+			$tmp = $th->getThemeInfo($pref['sitetheme']);
+			if($th->setTheme($pref['sitetheme'], false))
+			{
+				$log->addDebug("Updated SiteTheme prefs");
+			}
+			else
+			{
+				$log->addDebug("Couldn't update SiteTheme prefs");	
+			}
 		}
 		
 		$log->toFile('upgrade_v1_to_v2'); 
