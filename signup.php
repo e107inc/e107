@@ -396,7 +396,7 @@ if (isset($_POST['register']) && $pref['user_reg'] == 1)
 
 	if (!$error)
 	{
-		if (varsettrue($pref['predefinedLoginName']))
+		if (vartrue($pref['predefinedLoginName']))
 		{
 		  $_POST['loginname'] = $userMethods->generateUserLogin($pref['predefinedLoginName']);
 		}
@@ -497,7 +497,7 @@ if (isset($_POST['register']) && $pref['user_reg'] == 1)
 			{
 				$temp[] = validatorClass::makeErrorList($allData,'USER_ERR_','%n - %x - %t: %v', '<br />', $userMethods->userVettingInfo);
 			}
-			if (varsettrue($eufVals['errors']))
+			if (vartrue($eufVals['errors']))
 			{
 				$temp[] = validatorClass::makeErrorList($eufVals,'USER_ERR_','%n - %t: %v', '<br />');
 			}
@@ -554,14 +554,23 @@ if (isset($_POST['register']) && $pref['user_reg'] == 1)
 			$signup_data[$f] = $allData['data'][$f];		// Just copy across selected fields
 		}
 
+
+
 		$allData['data']['user_password'] = $userMethods->HashPassword($savePassword,$allData['data']['user_loginname']);
-		if (varsettrue($pref['allowEmailLogin']))
+		
+		if (vartrue($pref['allowEmailLogin']))
 		{  // Need to create separate password for email login
 			$allData['data']['user_prefs'] = serialize(array('email_password' => $userMethods->HashPassword($savePassword, $allData['data']['user_email'])));
 		}
 
 		$allData['data']['user_join'] = time();
 		$allData['data']['user_ip'] = e107::getIPHandler()->getIP(FALSE);
+		
+		if(!vartrue($allData['data']['user_name']))
+		{
+			$allData['data']['user_name'] = $allData['data']['user_loginname'];	
+			$signup_data['user_name'] = $allData['data']['user_loginname'];
+		} 
 		
 		// The user_class, user_perms, user_prefs, user_realm fields don't have default value,
 		//   so we put apropriate ones, otherwise - broken DB Insert
@@ -571,22 +580,28 @@ if (isset($_POST['register']) && $pref['user_reg'] == 1)
 		$allData['data']['user_realm'] = '';
 
 		// Actually write data to DB
-		validatorClass::addFieldTypes($userMethods->userVettingInfo,$allData);
-		$nid = $sql->db_Insert('user', $allData);
+		validatorClass::addFieldTypes($userMethods->userVettingInfo, $allData);
+		
+		$nid = $sql->insert('user', $allData);
+		
 		if (isset($eufVals['data']) && count($eufVals['data']))
 		{
 			$usere->addFieldTypes($eufVals);		// Add in the data types for storage
 			$eufVals['WHERE'] = '`user_extended_id` = '.intval($nid);
 			//$usere->addDefaultFields($eufVals);		// Add in defaults for anything not explicitly set (commented out for now - will slightly modify behaviour)
-			$sql->db_Select_gen("INSERT INTO `#user_extended` (user_extended_id) values ('{$nid}')");
-			$sql->db_Update('user_extended', $eufVals);
+			$sql->gen("INSERT INTO `#user_extended` (user_extended_id) values ('{$nid}')");
+			$sql->update('user_extended', $eufVals);
 		}
-		if (SIGNUP_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Signup new user",array_merge($allData['data'],$eufVals) ,FALSE,LOG_TO_ROLLING);
+		
+		if (SIGNUP_DEBUG)
+		{
+			 $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Signup new user",array_merge($allData['data'],$eufVals) ,FALSE,LOG_TO_ROLLING);
+		}
 
 		// Log to user audit log if enabled
 		$signup_data['user_id'] = $nid;
 		$signup_data['signup_key'] = $u_key;
-		$signup_data['user_realname'] = $tp -> toDB($_POST['realname']);
+		$signup_data['user_realname'] = $tp->toDB($_POST['realname']);
 
 		$admin_log->user_audit(USER_AUDIT_SIGNUP,$signup_data);
 
@@ -598,7 +613,7 @@ if (isset($_POST['register']) && $pref['user_reg'] == 1)
 		}
 
 		$adviseLoginName = '';
-		if (varsettrue($pref['predefinedLoginName']) && (integer) $pref['allowEmailLogin'] === 0)
+		if (vartrue($pref['predefinedLoginName']) && (integer) $pref['allowEmailLogin'] === 0)
 		{
 			$adviseLoginName = LAN_SIGNUP_65.': '.$allData['data']['user_loginname'].'<br />'.LAN_SIGNUP_66.'<br />';
 		}
@@ -639,6 +654,7 @@ if (isset($_POST['register']) && $pref['user_reg'] == 1)
 				}
 				unset($allData['data']['user_password']);
 			}
+
 			$e_event->trigger('usersup', $_POST);  // Old trigger - send everything in the template, including extended fields.
 			// FIXME - undocummented feature - userpartial trigger (better trigger name?)
 			$e_event->trigger('userpartial', array_merge($allData['data'],$eufVals['data']));  // New trigger - send everything in the template, including extended fields.
@@ -673,6 +689,7 @@ if (isset($_POST['register']) && $pref['user_reg'] == 1)
 			{
 				$text = LAN_SIGNUP_76."&nbsp;".SITENAME.", ".LAN_SIGNUP_12."<br /><br />".LAN_SIGNUP_13;
 			}
+			
 			$ns->tablerender(LAN_SIGNUP_8,$text);
 			require_once(FOOTERF);
 			exit;
@@ -704,7 +721,7 @@ if ($qs == 'stage1' && $pref['use_coppa'] == 1)
 {
 	if(isset($_POST['newver']))
 	{
-		if(!varsettrue($_POST['coppa']))
+		if(!vartrue($_POST['coppa']))
 		{
 			$text = $tp->parseTemplate($COPPA_FAIL);
 			$ns->tablerender(LAN_SIGNUP_78, $text);
@@ -822,7 +839,7 @@ function headerjs()
 	$replace[5] = $userInfo['user_name'];
 
 	$search[6] = '{USERURL}';
-	$replace[6] = varsettrue($userInfo['user_website']) ? $userInfo['user_website'] : "";
+	$replace[6] = vartrue($userInfo['user_website']) ? $userInfo['user_website'] : "";
 
 
 
