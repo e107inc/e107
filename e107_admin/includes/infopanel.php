@@ -670,8 +670,9 @@ EOF;
 		if(file_exists(e_PLUGIN."awstats/awstats.graph.php"))  
 		{
 			require_once(e_PLUGIN."awstats/awstats.graph.php");
+			$stat = new awstats;
 			
-			if($data)
+			if($data = $stat->getData())
 			{
 				return $data;
 			}
