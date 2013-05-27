@@ -324,6 +324,9 @@ echo "<div style='text-align:center; display:".$show."; position: absolute; widt
 unset($show);
 echo "\n</body>\n</html>";
 
+// Shutdown
+$e107->destruct();
+
 //
 // I Send the buffered page data, along with appropriate headers
 //

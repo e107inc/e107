@@ -238,6 +238,9 @@ class e107
 	 */
 	protected function __construct()
 	{
+		// FIXME registered shutdown functions not executed after the $page output in footer - investigate
+		// Currently manually called in front-end/admin footer
+		//register_shutdown_function(array($this, 'destruct'));
 	}
 
 	/**
@@ -3605,5 +3608,43 @@ class e107
 
 		$this->{$name} = $ret;
 		return $ret;
+	}
+
+	public function destruct()
+	{
+		if(null === self::$_instance) return;
+		
+		$print = defined('E107_DBG_TIMEDETAILS') && E107_DBG_TIMEDETAILS;
+		!$print || print('Destructing $e107: <br />');
+		$vars = get_object_vars($this);
+		foreach ($vars as $name => $value) 
+		{
+			if(is_object($value)) 
+			{
+				if(method_exists($value, '__destruct'))
+				{
+					!$print || print('object [property] using __destruct(): '.$path.' - '.get_class($value).'<br />');
+					$value->__destruct();
+				}
+				else !$print || print('object [property]: '.$name.' - '.get_class($value).'<br />');
+				$this->$name = null;
+			}
+		}
+		foreach (self::$_registry as $path => $reg) 
+		{
+			if(is_object($reg)) 
+			{
+				if(method_exists($reg, '__destruct'))
+				{
+					!$print || print('object [registry] using __destruct(): '.$path.' - '.get_class($reg).'<br />');
+					$reg->__destruct();
+				}
+				else !$print || print('object [registry]: '.$path.' - '.get_class($reg).'<br />');
+				unset(self::$_registry[$path]);
+			}
+			
+		}
+		self::$_registry = null;
+		self::$_instance = null;
 	}
 }
