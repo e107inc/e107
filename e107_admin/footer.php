@@ -373,6 +373,10 @@ if($tmp1)
 	$tmp['replace'][] = $tmp1;
 }
 
+
+// Shutdown
+$e107->destruct();
+
 if($tmp)
 {
 	$page = str_replace($tmp['search'], $tmp['replace'], ob_get_clean());
