@@ -179,6 +179,8 @@ class page_chapters_form_ui extends e_admin_form_ui
 	function chapter_name($curVal,$mode,$parm)
 	{
 	
+		$frm = e107::getForm();
+	
 		if($mode == 'read') 
 		{
 			$parent 	= $this->getController()->getListModel()->get('chapter_parent');
@@ -192,7 +194,7 @@ class page_chapters_form_ui extends e_admin_form_ui
 			
 		if($mode == 'write')
 		{
-			return;	
+			return $frm->text('chapter_name',$curVal);	
 		}
 			
 		if($mode == 'filter')
