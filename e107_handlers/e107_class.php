@@ -2276,7 +2276,7 @@ class e107
 		$cstring  = 'corelan/'.e_LANGUAGE.'_'.$fname.($admin ? '_admin' : '_front');
 		if(e107::getRegistry($cstring)) return;
 
-		$fname = ($admin ? 'admin/' : '').'lan_'.preg_replace('/[^\w]/', '', $fname).'.php';
+		$fname = ($admin ? 'admin/' : '').'lan_'.preg_replace('/[^\w]/', '', trim($fname, '/')).'.php';
 		$path = e_LANGUAGEDIR.e_LANGUAGE.'/'.$fname;
 
 		e107::setRegistry($cstring, true);
@@ -2296,8 +2296,11 @@ class e107
 	 *  // OR /e107_plugins/featurebox/languages/[CurrentLanguage]/[CurrentLanguage]_admin_featurebox.php (auto-detected)
 	 * 	e107::plugLan('featurebox', 'admin_featurebox', true);
 	 *
-	 * 	// import defeinitions from /e107_plugins/myplug/languages/[CurrentLanguage].php
+	 * 	// import defeinitions from /e107_plugins/myplug/languages/[CurrentLanguage]_front.php
 	 * 	e107::plugLan('myplug');
+	 * 
+	 * 	// import defeinitions from /e107_plugins/myplug/languages/[CurrentLanguage]_admin.php
+	 * 	e107::plugLan('myplug', true);
 	 *
 	 * 	// import defeinitions from /e107_plugins/myplug/languages/[CurrentLanguage]/admin/common.php
 	 * 	e107::plugLan('myplug', 'admin/common');
@@ -2318,7 +2321,7 @@ class e107
 
 		if($fname && is_string($fname))
 		{
-			 $fname = e_LANGUAGE.($flat ? '_' : '/').preg_replace('#[^\w/]#', '', $fname);
+			 $fname = e_LANGUAGE.($flat ? '_' : '/').preg_replace('#[^\w/]#', '', trim($fname, '/'));
 		}
 		elseif($fname === true) // admin file. 
 		{
@@ -2385,7 +2388,7 @@ class e107
 		$cstring  = 'themelan/'.$theme.$fname.($flat ? '_1' : '_0');
 		if(e107::getRegistry($cstring)) return;
 
-		if($fname) $fname = e_LANGUAGE.($flat ? '_' : '/').preg_replace('#[^\w/]#', '', $fname);
+		if($fname) $fname = e_LANGUAGE.($flat ? '_' : '/').preg_replace('#[^\w/]#', '', trim($fname, '/'));
 		else $fname = e_LANGUAGE;
 
 		$path = $theme.$fname.'.php';
@@ -2404,16 +2407,18 @@ class e107
 	/**
 	 * PREFERRED Generic Language File Loading Function for use by theme and plugin developers. 
 	 * Language-file equivalent to e107::js, e107::meta and e107::css
+	 * FIXME disallow themes and plugins named 'core' and 'theme'
 	 * @param string $type : 'theme' or plugin name
 	 * @param $string $fname (optional): relative path to the theme or plugin language folder. (same as in the other functions)
-	 * when missing, [e_LANGUAGE].php will be used. 
+	 * when missing, [e_LANGUAGE]_front.php will be used, when true [e_LANGUAGE]_admin.php will be used
 	 * @param $options : Set to True for admin. 
 	 * @example e107::lan('theme'); // Loads THEME."languages/English.php (if English is the current language)
-	 * @example e107::lan('gallery'); // Loads e_PLUGIN."gallery/languages/English.php (if English is the current language)
-	 * @example e107::lan('gallery', true); // Loads e_PLUGIN."gallery/languages/admin/English.php (if English is the current language)
-	 * @example e107::lan('gallery', false, true); // Loads e_PLUGIN."gallery/languages/English/English_front.php (if English is the current language)
-	 * @example e107::lan('gallery', true, true); // Loads e_PLUGIN."gallery/languages/English/English_admin.php (if English is the current language)
-	 * @example e107::lan('gallery',e_LANGUAGE."_something.php"); // Loads e_PLUGIN."gallery/languages/English_something.php (if English is the current language)
+	 * @example e107::lan('gallery'); // Loads e_PLUGIN."gallery/languages/English_front.php (if English is the current language)
+	 * @example e107::lan('gallery', 'admin'); // Loads e_PLUGIN."gallery/languages/English/admin.php (if English is the current language)
+	 * @example e107::lan('gallery', 'admin', true); // Loads e_PLUGIN."gallery/languages/English_admin.php (if English is the current language)
+	 * @example e107::lan('gallery', 'admin/example'); // Loads e_PLUGIN."gallery/languages/English/admin/example.php (if English is the current language)
+	 * @example e107::lan('gallery', true); // Loads e_PLUGIN."gallery/languages/English_admin.php (if English is the current language)
+	 * @example e107::lan('gallery', "something", true); // Loads e_PLUGIN."gallery/languages/English_something.php (if English is the current language)
 	 */
 	public static function lan($type, $fname = null, $options = null)
 	{
