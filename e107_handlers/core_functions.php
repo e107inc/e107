@@ -408,7 +408,7 @@ class e_array {
      * @DEPRECATED - Backwards Compatible. Use e107::serialize() instead; 
     * @param array $ArrayData array to be stored
     * @param bool $AddSlashes default true, add slashes for db storage, else false
-    * @returnReturn a string containg exported array data.
+    * @return string a string containg exported array data.
      */
     function WriteArray($ArrayData, $AddSlashes = true) {
         
@@ -438,7 +438,51 @@ class e_array {
     {
         return $this->unserialize($ArrayData);
     }
+	
+	/**
+	 * Load and unserialize stored data from a local file inside SYSTEM folder
+	 * @example e107::getArrayStorage()->load('import/somefile'); // -> e_SYSTEM/import/somefile.php
+	 * @example e107::getArrayStorage()->load('somefile', 'weird'); // -> e_SYSTEM/somefile.weird
+	 * 
+	 * @param string $systemLocationFile relative to e_SYSTEM file path (without the extension)
+	 * @param string $extension [optional] file extension, default is 'php'
+	 * @return array or false when file not found (or on error)
+	 */
+	public function load($systemLocationFile, $extension = 'php')
+	{
+		if($extension) $extension = '.'.$extension;
+		$_f = e_SYSTEM.preg_replace('#[^\w/]#', '', trim($systemLocationFile, '/')).$extension;
+		if(!file_exists($_f))
+		{
+			return false;
+		}
+		$content = file_get_contents($_f);
+
+		return $this->read($content);
+	}
+	
+	/**
+	 * Serialize and store data to a local file inside SYSTEM folder
+	 * @example e107::getArrayStorage()->store($arrayData, 'import/somefile'); // -> e_SYSTEM/import/somefile.php
+	 * @example e107::getArrayStorage()->store($arrayData, 'somefile', 'weird'); // -> e_SYSTEM/somefile.weird
+	 * 
+	 * @param string $systemLocationFile relative to e_SYSTEM file path (without the extension)
+	 * @param string $extension [optional] file extension, default is 'php'
+	 * @return array or false when file not found (or on error)
+	 */
+	public function store($array, $systemLocationFile, $extension = 'php')
+	{
+		if($extension) $extension = '.'.$extension;
+		$_f = e_SYSTEM.preg_replace('#[^\w/]#', '', trim($systemLocationFile, '/')).$extension;
+
+		$content = $this->write($array, false);
+		
+		if(false !== $content)
+		{
+			return file_put_contents($_f, $content) ? true : false;
+		}
+
+		return false;
+	}
 }
 
-
-?>
