@@ -1195,7 +1195,7 @@ class e107
 	/**
 	 * Retrieve array storage singleton object
 	 *
-	 * @return ArrayData
+	 * @return e_array
 	 */
 	public static function getArrayStorage()
 	{
