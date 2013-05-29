@@ -416,8 +416,8 @@ $HEADER['docs'] = <<<TMPL
 ================================================== -->
 <header class="jumbotron subhead" id="overview">
   <div class="container">
-    <h1>{e_PAGETITLE}</h1>
-    <p class="lead">How to get started..</p>
+    <h1>{PAGE_CHAPTER_NAME}</h1>
+    <p class="lead">{PAGE_CHAPTER_DESCRIPTION}</p>
   </div>
 </header>
 
@@ -430,7 +430,7 @@ $HEADER['docs'] = <<<TMPL
     
       <div class="span3 bs-docs-sidebar">
       {SETSTYLE=navdoc}
-	{PLUGIN=page/page_navigation_menu|template=navdoc&auto=1}
+	  {PAGE_NAVIGATION: template=navdoc&auto=1}
       </div>
 		{SETSTYLE=doc}
 	  

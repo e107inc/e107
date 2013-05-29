@@ -11,6 +11,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 
+//FIXME XXX - This menu should call the {PAGE_NAVIGATION} shortcode instead of duplicating its code and automatically display all links.  
 
 $parm = eHelper::scParams($parm);
 
