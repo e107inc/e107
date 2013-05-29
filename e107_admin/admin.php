@@ -70,7 +70,8 @@ class admin_start
 			'lightwindow'	=> '1.0b',
 			'aa_jquery'		=> 1.2,
 			'who'			=> 1.0,
-			'ratings'		=> 4.2
+			'ratings'		=> 4.2,
+			'e107slider'	=> 0.1
 	);
 
 
