@@ -200,7 +200,7 @@ if ($type == "file")
 					e107::getFile()->send($DOWNLOADS_DIRECTORY.$download_url);
 					exit();
 				} 
-				elseif(file_exists(ee_UPLOAD.$download_url)) 
+				elseif(file_exists(e_UPLOAD.$download_url)) 
 				{
 					e107::getFile()->send(e_UPLOAD.$download_url);
 					exit();
