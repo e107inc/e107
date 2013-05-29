@@ -416,7 +416,7 @@ $HEADER['docs'] = <<<TMPL
 ================================================== -->
 <header class="jumbotron subhead" id="overview">
   <div class="container">
-    <h1>Documentation</h1>
+    <h1>{e_PAGETITLE}</h1>
     <p class="lead">How to get started..</p>
   </div>
 </header>

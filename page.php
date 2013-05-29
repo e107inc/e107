@@ -48,8 +48,6 @@ elseif(vartrue($_GET['ch'])) // List Pages within a specific Chapter
 {
 	$e107CorePage->setRequest('listPages');
 	
-	require_once(HEADERF);
-	
 	if($_GET['action']=='all') // See bootstrap 'docs' layout for an example. 
 	{
 		$template = array(); 
@@ -63,6 +61,7 @@ elseif(vartrue($_GET['ch'])) // List Pages within a specific Chapter
           </section>
          ';
 		$template['end'] = '';
+		define('e_PAGETITLE', 'Documentation'); //FIXME - grab from selected chapter. 
 	}
 	else
 	{
@@ -71,7 +70,7 @@ elseif(vartrue($_GET['ch'])) // List Pages within a specific Chapter
 		$template['item'] 		= "<li><a href='{CPAGEURL}'>{CPAGETITLE}</a></li>";
 		$template['end'] 		= "</ul>";	
 	}
-		
+	require_once(HEADERF);	
 
 	$text = $e107CorePage->listPages($_GET['ch'],$template);
 	$ns->tablerender('', $text, 'cpage'); // TODO FIXME Caption eg. "book title"
