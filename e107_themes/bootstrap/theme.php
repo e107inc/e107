@@ -4,13 +4,26 @@ if ( ! defined('e107_INIT')) { exit(); }
  * This is a 100% Pure Bootstrap Theme for e107 v2 
  */
  
-define("VIEWPORT","width=device-width, initial-scale=1.0");
+define("VIEWPORT", "width=device-width, initial-scale=1.0");
+define("BODYTAG", '<body data-spy="scroll" data-target=".bs-docs-sidebar" >');
 
 e107::lan('theme');
 e107::js('core','bootstrap/js/bootstrap.min.js');
 e107::css('core','bootstrap/css/bootstrap.min.css');
 e107::css('core','bootstrap/css/bootstrap-responsive.min.css');
 e107::css('core','bootstrap/css/jquery-ui.custom.css');
+
+e107::css('theme', 'js/google-code-prettify/prettify.css');
+ e107::js('theme', "js/google-code-prettify/prettify.js");
+
+if(THEME_LAYOUT == 'docs')
+{
+	e107::css('inline','body { padding-top: 40px }');
+	e107::css('theme','css/docs.css');	
+	e107::js('theme', "js/holder/holder.js");
+    e107::js('theme', "js/application.js");
+}
+
 
 //$no_core_css = TRUE;
 
@@ -47,6 +60,14 @@ function tablestyle($caption, $text, $mode='')
 	{
 		$type = 'box';
 	}
+	
+	if($style == 'navdoc')
+	{
+		echo $text;
+		return;
+	}
+		
+		
 	
 	if($mode == 'wm') // Welcome Message Style. 
 	{
@@ -370,11 +391,83 @@ $FOOTER['marketing-narrow'] = '
 
  
  
+$HEADER['docs'] = <<<TMPL
 
+  <!-- Navbar
+    ================================================== -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="./index.html">Bootstrap</a>
+          <div class="nav-collapse collapse">
+             {NAVIGATION=main}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<!-- Subhead
+================================================== -->
+<header class="jumbotron subhead" id="overview">
+  <div class="container">
+    <h1>Documentation</h1>
+    <p class="lead">How to get started..</p>
+  </div>
+</header>
+
+
+  <div class="container">
+
+    <!-- Docs nav
+    ================================================== -->
+    <div class="row">
+    
+      <div class="span3 bs-docs-sidebar">
+      {SETSTYLE=navdoc}
+	{PLUGIN=page/page_navigation_menu|template=navdoc&auto=1}
+      </div>
+		{SETSTYLE=doc}
+	  
+      <div class="span9">
+
+
+
+
+
+TMPL;
+
+
+$FOOTER['docs'] = <<<TMPL
+ 	</div>
+	  </div>
+ </div>
+
+    <!-- Footer
+    ================================================== -->
+    <footer class="footer">
+      <div class="container">
+        <p>{SITEDISCLAIMER}</p>
+        <!--
+        <ul class="footer-links">
+          <li><a href="http://blog.getbootstrap.com">Blog</a></li>
+          <li class="muted">&middot;</li>
+          <li><a href="https://github.com/twitter/bootstrap/issues?state=open">Issues</a></li>
+          <li class="muted">&middot;</li>
+          <li><a href="https://github.com/twitter/bootstrap/blob/master/CHANGELOG.md">Changelog</a></li>
+        </ul>
+        -->
+      </div>
+    </footer> 
  
  
  
- 
+TMPL;
  
  
  

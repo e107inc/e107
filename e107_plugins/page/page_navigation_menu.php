@@ -10,9 +10,12 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-$template = e107::getCoreTemplate('page','nav');
+
 
 $parm = eHelper::scParams($parm);
+
+$template = e107::getCoreTemplate('page',vartrue($parm['template'],'nav'), true, true); // always merge
+
 $request = e107::getRegistry('core/pages/request');
 if($request && is_array($request))
 {

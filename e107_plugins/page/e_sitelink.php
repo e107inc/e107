@@ -30,6 +30,7 @@ class page_sitelink // include plugin-folder in the name.
 
 	function pageNav($parm='') 
 	{
+		$frm = e107::getForm();
 		$options = array();
 		if(vartrue($parm))
 		{
@@ -70,9 +71,10 @@ class page_sitelink // include plugin-folder in the name.
 
 		$query		= "SELECT * FROM #page WHERE ";
 		$q = array();
+		
 		if(vartrue($options['chapter']))
 		{
-			$q[] = "page_chapter = ".intval($options['chapter']);	 		
+			$q[] = "page_title !='' AND page_chapter = ".intval($options['chapter']);	 		
 		}
 		elseif(vartrue($options['book']))
 		{
@@ -100,7 +102,7 @@ class page_sitelink // include plugin-folder in the name.
 				'link_parent'		=> $row['page_chapter'],
 				'link_open'			=> '',
 				'link_class'		=> intval($row['page_class']),
-				'link_active'		=> ($options['cpage'] && $row['page_id'] == $options['cpage']),
+				'link_active'		=> ($options['cpage'] && $row['page_id'] == $options['cpage'])
 			);
 		}
 

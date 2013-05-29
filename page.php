@@ -49,8 +49,31 @@ elseif(vartrue($_GET['ch'])) // List Pages within a specific Chapter
 	$e107CorePage->setRequest('listPages');
 	
 	require_once(HEADERF);
+	
+	if($_GET['action']=='all') // See bootstrap 'docs' layout for an example. 
+	{
+		$template = array(); 
+		$template['start'] = '';
+		$template['item']	= '
+		<section id="{CPAGEANCHOR}">
+          <div class="page-header">
+            <h1>{CPAGETITLE}</h1>
+          </div>
+          {CPAGEBODY}
+          </section>
+         ';
+		$template['end'] = '';
+	}
+	else
+	{
+		$template = array();
+		$template['start'] 	= "<ul class='page-pages-list'>";
+		$template['item'] 		= "<li><a href='{CPAGEURL}'>{CPAGETITLE}</a></li>";
+		$template['end'] 		= "</ul>";	
+	}
+		
 
-	$text = $e107CorePage->listPages($_GET['ch']);
+	$text = $e107CorePage->listPages($_GET['ch'],$template);
 	$ns->tablerender('', $text, 'cpage'); // TODO FIXME Caption eg. "book title"
 	require_once(FOOTERF);
 	exit;		
@@ -213,10 +236,13 @@ class pageClass
 
 
 	// TODO template for page list
-	function listPages($chapt=0)
+	function listPages($chapt=0,$template='')
 	{
-		$sql = e107::getDb('pg');
-		$tp = e107::getParser();
+		$sql 			= e107::getDb('pg');
+		$tp 			= e107::getParser();
+		$this->batch 	= e107::getScBatch('page',null,'cpage');
+
+			
 		
 		if(!e107::getPref('listPages', false))
 		{
@@ -226,20 +252,37 @@ class pageClass
 		}
 		else
 		{
-			if(!$sql->db_Select("page", "*", "menu_name='' AND page_chapter=".intval($chapt)." AND page_class IN (".USERCLASS_LIST.") ORDER BY page_order ASC "))
+			if(!$count = $sql->db_Select("page", "*", "page_title !='' AND page_chapter=".intval($chapt)." AND page_class IN (".USERCLASS_LIST.") ORDER BY page_order ASC "))
 			{
+				
 				$text = "<ul class='page-pages-list page-pages-none'><li>".LAN_PAGE_2."</li></ul>";
 			}
 			else
 			{
-				$text .= "<ul class='page-pages-list'>";
+
+			//	$text .= "<ul class='page-pages-list'>";
+				$text .= $template['start'];
+				
 				$pageArray = $sql->db_getList();
+				
 				foreach($pageArray as $page)
 				{
+					$data = array(
+						'title' => $page['page_title'],
+						'text'	=> $tp->toHtml($page['page_text'],true)
+					);
+					
+					$this->page = $page;
+					$this->batch->setVars(new e_vars($data))->setScVar('page', $this->page);
+
 					$url = e107::getUrl()->create('page/view', $page, 'allow=page_id,page_sef');
-					$text .= "<li><a href='".$url."'>".$tp->toHtml($page['page_title'])."</a></li>"; 
+					// $text .= "<li><a href='".$url."'>".$tp->toHtml($page['page_title'])."</a></li>"; 
+					$text .= e107::getParser()->parseTemplate($template['item'], true, $this->batch);
 				}
-				$text .= "</ul>";
+				
+				$text .= $template['end'];
+				
+			//	$text .= "</ul>";
 			//	$caption = ($title !='')? $title: LAN_PAGE_11;
 			//	e107::getRender()->tablerender($caption, $text,"cpage_list");
 			}

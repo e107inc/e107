@@ -51,7 +51,7 @@ else
 	$highlighted_text = highlight_string($code_text, TRUE);
 	$highlighted_text = str_replace(array("<code>","</code>"),"",$highlighted_text);
 	$divClass = ($parm) ? $parm : 'code_highlight';
-	$ret = "<code class='".$tp -> toAttribute($divClass)." code-box {$class}' style='unicode-bidi: embed; direction: ltr'>{$highlighted_text}</code>";
+	$ret = "<pre class='prettyprint linenums ".$tp -> toAttribute($divClass)." code-box {$class}' style='unicode-bidi: embed; direction: ltr'>{$highlighted_text}</pre>";
 }
 $ret = str_replace("[", "&#091;", $ret);
 return $ret;

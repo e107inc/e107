@@ -20,7 +20,7 @@ class cpage_shortcodes extends e_shortcode
 	// var $var; // parsed DB values
 
 	function sc_cpagetitle($parm='')
-	{	
+	{
 		return e107::getParser()->toHTML($this->getParserVars()->title, true, 'TITLE');
 	}
 	
@@ -79,6 +79,12 @@ class cpage_shortcodes extends e_shortcode
 	function sc_cpageid()
 	{
 		return $this->page['page_id'];
+	}
+
+	function sc_cpageanchor()
+	{
+		$frm = e107::getForm();
+		return $frm->name2id($this->page['page_title']);
 	}
 
 	// Not a shortcode really, as it shouldn't be cached at all :/
