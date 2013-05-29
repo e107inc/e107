@@ -12,29 +12,93 @@ if (!defined('e107_INIT')) { exit; }
 
 class page_shortcodes extends e_shortcode
 {
-		function sc_page_navigation($parm) // TODO when No $parm provided, auto-detect based on URL which book/chapters to display. 
+		protected $request;
+		
+		function __construct()
 		{
-			// FIXME sitelink class should be page_sitelink
-			$links = e107::getAddon('page', 'e_sitelink');
 			
-			$data = $links->pageNav($parm);
+			$this->request = e107::getRegistry('core/pages/request');
+			
+			if(varset($this->request['action']) == 'listPages' && vartrue($this->request['id']))
+			{
+				$this->var = e107::getDb()->retrieve('page_chapters','chapter_name, chapter_meta_description','chapter_id = '.intval($this->request['id']).' LIMIT 1');	
+			}		
+			
+		}
+			
+		/**
+		 * Page Navigation
+		 * @example {PAGE_NAVIGATION: template=navdoc&auto=1} in your Theme template. 
+		 */	
+		function sc_page_navigation($parm='') // TODO when No $parm provided, auto-detect based on URL which book/chapters to display. 
+		{
+		//	$parm = eHelper::scParams($parm);
 
-			$template = e107::getCoreTemplate('page','nav');
+			$template = e107::getCoreTemplate('page',vartrue($parm['template'],'nav'), true, true); // always merge
+			
+			$request = $this->request;
+			
+			if($request && is_array($request))
+			{
+				switch ($request['action']) 
+				{
+					case 'listChapters':
+						$parm['cbook'] = $request['id'];
+					break;
+					
+					case 'listPages':
+						$parm['cchapter'] = $request['id'];
+					break;
+					
+					case 'showPage':
+						$parm['cpage'] = $request['id'];
+					break;
+				}
+			}
+			
+			if($parm)
+			{
+				 $parm = http_build_query($parm, null, '&');
+			}
+			else
+			{
+				$parm = '';
+			}
+			
+
+			$links = e107::getAddon('page', 'e_sitelink');
+			$data = $links->pageNav($parm);
+			
+		
 			if(isset($data['title']) && !vartrue($template['noAutoTitle']))
 			{
+				// use chapter title
+				$template['caption'] = $data['title'];
 				$data = $data['body'];
-			}	
-					
+			}
+			
+			if(empty($data)){ return; }
+			
 			return e107::getNav()->render($data, $template) ;
-					
+			
 		}
 		
 		
+		function sc_page_chapter_name($parm='')
+		{
+			return e107::getParser()->toHtml($this->var['chapter_name']);	
+		}		
+		
+		
+		function sc_page_chapter_description($parm='')
+		{
+			return e107::getParser()->toHtml($this->var['chapter_meta_description'],true);		
+		}
 		
 		/**
 		 *  New in v2.x. eg. {CMENU=feature-1} Renders a menu called 'feature-1' as found in the e107_page table  See admin Pages/Menus . 
 		 */
-		function sc_cmenu($parm='',$mode='')
+		function sc_cmenu($parm='')
 		{
 			return e107::getMenu()->renderMenu($parm, false);									
 		}

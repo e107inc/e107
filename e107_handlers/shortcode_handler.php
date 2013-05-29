@@ -790,7 +790,7 @@ class e_parse_shortcode
 			return $matches[0];
 		}
 
-		if(preg_match('/^([A-Z]*):(.*)/', $matches[1], $newMatch))
+		if(preg_match('/^([A-Z_]*):(.*)/', $matches[1], $newMatch))
 		{
 			$code = $newMatch[1];
 			$parmStr = trim($newMatch[2]);
