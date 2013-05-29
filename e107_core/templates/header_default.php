@@ -571,7 +571,8 @@ echo "</head>\n";
         $body_onload = " style='padding:15px;margin:0px'";   //TODO e-iframe css class.       
     }
 
-
+	$HEADER = str_replace("{e_PAGETITLE}",deftrue('e_PAGETITLE',''),$HEADER);
+	
 
 if(!deftrue('BODYTAG')) //TODO Discuss a better way?
 {
