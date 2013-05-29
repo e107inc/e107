@@ -1584,4 +1584,9 @@ class navigation_shortcodes extends e_shortcode
 		
 		return $text;
 	}
+	
+	function sc_link_anchor($parm='')
+	{
+		return $this->var['link_name'] ? '#'.e107::getForm()->name2id($this->var['link_name']) : '';	
+	}
 }

@@ -573,10 +573,17 @@ echo "</head>\n";
 
 
 
-
-echo "<body".$body_onload.">\n";
+if(!deftrue('BODYTAG')) //TODO Discuss a better way?
+{
+	echo "<body".$body_onload.">\n";
+}
+else
+{
+	echo BODYTAG."\n";	
+}
 
 // Bootstrap Modal Window - too important to template. 
+/*
 echo '<div id="uiModal" style="display:none" class="modal hide fade" tabindex="-1" role="dialog"  aria-hidden="true">
             <div class="modal-header">
             	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -590,7 +597,7 @@ echo '<div id="uiModal" style="display:none" class="modal hide fade" tabindex="-
             </div>
         </div>
 ';
-
+*/
 
 
 
