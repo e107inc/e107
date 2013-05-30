@@ -78,7 +78,7 @@ class page_sitelink // include plugin-folder in the name.
 		}
 		elseif(vartrue($options['book']))
 		{
-			$q[] = "page_chapter IN (SELECT chapter_id FROM #page_chapters WHERE chapter_parent=".intval($options['book']).")";	 		
+			$q[] = "page_title !='' && page_chapter IN (SELECT chapter_id FROM #page_chapters WHERE chapter_parent=".intval($options['book']).")";	 		
 		}
 		// XXX discuss FIXED remove DB check, use default title - AND page_title !=''
 		$q[] 		= "page_class IN (".USERCLASS_LIST.")";

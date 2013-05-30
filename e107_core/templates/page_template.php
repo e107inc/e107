@@ -175,3 +175,29 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 													';
 	
 	$PAGE_TEMPLATE['nav']['submenu_end'] 			= '</ul>';	
+	
+	
+	
+	$PAGE_TEMPLATE['listPages']['start'] 				= "<ul class='page-pages-list'>";
+	$PAGE_TEMPLATE['listPages']['item'] 					= "<li><a href='{CPAGEURL}'>{CPAGETITLE}</a></li>";
+	$PAGE_TEMPLATE['listPages']['end'] 					= "</ul>";	
+	
+	
+	$PAGE_TEMPLATE['listChapters']['start']				= "<ul class='page-chapters-list'>";
+	$PAGE_TEMPLATE['listChapters']['item']				= "<li><h4>{CHAPTER_NAME}</h4>{PAGES}";
+	$PAGE_TEMPLATE['listChapters']['end']				= "</ul>";
+	
+	
+	
+	
+
+
+
+
+
+
+
+	
+	
+	
+?>

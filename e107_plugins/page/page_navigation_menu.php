@@ -15,7 +15,7 @@ if (!defined('e107_INIT')) { exit; }
 
 $parm = eHelper::scParams($parm);
 
-$template = e107::getCoreTemplate('page',vartrue($parm['template'],'nav'), true, true); // always merge
+$template = e107::getCoreTemplate('page','nav',false,true); // always merge
 
 $request = e107::getRegistry('core/pages/request');
 if($request && is_array($request))
