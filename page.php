@@ -171,9 +171,9 @@ class pageClass
 		$sql = e107::getDb('sql2');
 		$tp = e107::getParser();
 		
-		if($sql->db_Select("page_chapters", "*", "chapter_parent ='0' ORDER BY chapter_order ASC "))
+		if($sql->select("page_chapters", "*", "chapter_parent ='0' ORDER BY chapter_order ASC "))
 		{
-			while($row = $sql->db_Fetch())
+			while($row = $sql->fetch())
 			{
 				$text .= "<h3 class='page-book-list'>".$tp->toHtml($row['chapter_name'])."</h3>"; // Book Title. 			
 				$text .= $this->listChapters($row['chapter_id']);
@@ -186,20 +186,31 @@ class pageClass
 	}
 
 
-
-
-	//XXX - May be better to compile into assoc 'tree' array first. ie. books/chapters/pages. 
+	/**
+	 * Parse the Book/Chapter "listChapters' template 
+	 */
 	function listChapters($book=1)
 	{
 		$sql = e107::getDb('chap');
 		$tp = e107::getParser();
 		
-		$template = e107::getCoreTemplate('page','listChapters', true, true); // always merge	
-		
-		if($sql->db_Select("page_chapters", "*", "chapter_parent = ".intval($book)."  ORDER BY chapter_order ASC "))
+		// retrieve the template to use for this book 
+		if(!$layout = $sql->retrieve('page_chapters','chapter_template','chapter_id = '.intval($book).' LIMIT 1'))
 		{
-			$text .= $template['start']; // "<ul class='page-chapters-list'>";
-			while($row = $sql->db_Fetch())
+			$layout = 'default';
+		}
+		
+		
+		$tml = e107::getCoreTemplate('chapter','', true, true); // always merge	
+		$tmpl = varset($tml[$layout]);
+		
+		$template = $tmpl['listChapters'];
+		
+		if($sql->select("page_chapters", "*", "chapter_parent = ".intval($book)."  ORDER BY chapter_order ASC "))
+		{
+			$text .= $template['start']; 
+			
+			while($row = $sql->fetch())
 			{
 				$var = array(
 					'CHAPTER_NAME' 			=> $tp->toHtml($row['chapter_name']),
@@ -209,27 +220,43 @@ class pageClass
 				);
 				
 				$text .= $tp->simpleParse($template['item'],$var);
-			//	$text .= "<li>";
-			//	$text .= "<h4>".$tp->toHtml($row['chapter_name'])."</h4>"; // Chapter Title. 
-			//	$text .= $this->listPages(intval($row['chapter_id']));	
-			//	$text .= "</li>";
+
 			}
-			$text .= $template['end'];	
-			// $text .= "</ul>";		
+			
+			$text .= $template['end'];		
+			
+		}
+		else
+		{
+			$text = e107::getMessage()->addInfo("There are no chapters in this book")->render();	
 		}	
 		
 		return $text;		
 	}
 
 
-
+	
 	function listPages($chapt=0)
 	{
 		$sql 			= e107::getDb('pg');
 		$tp 			= e107::getParser();
 		$this->batch 	= e107::getScBatch('page',null,'cpage');
 
-		$template = e107::getCoreTemplate('page','listPages',true,true); // always merge	
+
+		// retrieve the template to use for this chapter. 
+		if(!$layout = $sql->retrieve('page_chapters','chapter_template','chapter_id = '.intval($chapt).' LIMIT 1'))
+		{
+			$layout = 'default';
+		}
+		
+		$tml = e107::getCoreTemplate('chapter','', true, true); // always merge	
+		$tmpl = varset($tml[$layout]);
+	
+		
+	//	$tmpl = e107::getCoreTemplate('chapter','docs', true, true); // always merge	
+		$template = $tmpl['listPages'];
+		
+		
 		
 		if(!e107::getPref('listPages', false))
 		{
@@ -239,10 +266,10 @@ class pageClass
 		}
 		else
 		{
-			if(!$count = $sql->db_Select("page", "*", "page_title !='' AND page_chapter=".intval($chapt)." AND page_class IN (".USERCLASS_LIST.") ORDER BY page_order ASC "))
+			if(!$count = $sql->select("page", "*", "page_title !='' AND page_chapter=".intval($chapt)." AND page_class IN (".USERCLASS_LIST.") ORDER BY page_order ASC "))
 			{
-				
-				$text = "<ul class='page-pages-list page-pages-none'><li>".LAN_PAGE_2."</li></ul>";
+				return e107::getMessage()->addInfo(LAN_PAGE_2)->render();
+			//	$text = "<ul class='page-pages-list page-pages-none'><li>".LAN_PAGE_2."</li></ul>";
 			}
 			else
 			{

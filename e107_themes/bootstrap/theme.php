@@ -430,7 +430,7 @@ $HEADER['docs'] = <<<TMPL
     
       <div class="span3 bs-docs-sidebar">
       {SETSTYLE=navdoc}
-	  {PAGE_NAVIGATION: template=navdoc&auto=1}
+	  {PAGE_NAVIGATION: template=navdocs&auto=1}
       </div>
 		{SETSTYLE=doc}
 	  
