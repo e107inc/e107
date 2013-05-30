@@ -15,7 +15,9 @@ if (!defined('e107_INIT')) { exit; }
 
 $parm = eHelper::scParams($parm);
 
-$template = e107::getCoreTemplate('page','nav',false,true); // always merge
+$tmpl = e107::getCoreTemplate('chapter','nav',false,true); // always merge
+
+$template = $tmpl['showPage'];
 
 $request = e107::getRegistry('core/pages/request');
 if($request && is_array($request))
@@ -24,10 +26,12 @@ if($request && is_array($request))
 	{
 		case 'listChapters':
 			$parm['cbook'] = $request['id'];
+			$template = $tmpl['listChapters'];
 		break;
 		
 		case 'listPages':
 			$parm['cchapter'] = $request['id'];
+			$template = $tmpl['listPages'];
 		break;
 		
 		case 'showPage':

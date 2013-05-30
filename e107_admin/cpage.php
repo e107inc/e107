@@ -128,11 +128,14 @@ class page_chapters_ui extends e_admin_ui
          	'chapter_icon' 				=> array('title'=> LAN_ICON,				'type' => 'icon', 			'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>FALSE,	'batch' => FALSE, 'filter'=>FALSE),			       		
          	'chapter_parent' 			=> array('title'=> "Book",					'type' => 'dropdown',		'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE, 'filter'=>true),                   	
          	'chapter_name' 				=> array('title'=> "Book or Chapter Title",	'type' => 'method',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),       
+         	'chapter_template' 			=> array('title'=> LAN_TEMPLATE, 			'type' => 'dropdown', 		'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
+        
          	'chapter_meta_description'	=> array('title'=> LAN_DESCRIPTION,			'type' => 'textarea',		'width' => 'auto', 'thclass' => 'left','readParms' => 'expand=...&truncate=150&bb=1', 'readonly'=>FALSE),
 			'chapter_meta_keywords' 	=> array('title'=> "Meta Keywords",			'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),		
 			'chapter_sef' 				=> array('title'=> "SEF Url String",		'type' => 'text',			'width' => 'auto', 'readonly'=>FALSE), // Display name
 			'chapter_manager' 			=> array('title'=> "Can be edited by",		'type' => 'userclass',		'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
 			'chapter_order' 			=> array('title'=> LAN_ORDER,				'type' => 'text',			'width' => 'auto', 'thclass' => 'right', 'class'=> 'right' ),										
+			
 			'options' 					=> array('title'=> LAN_OPTIONS,				'type' => 'method',			'width' => '10%', 'forced'=>TRUE, 'thclass' => 'left last', 'class' => 'left', 'readParms'=>'sort=1')
 		
 		);
@@ -153,9 +156,23 @@ class page_chapters_ui extends e_admin_ui
 				$this->books[$bk] = $row['chapter_name'];
 			}
 			
-			asort($this->books);			
+			asort($this->books);
 			
 			$this->fields['chapter_parent']['writeParms'] = $this->books;	
+			
+			
+			$tmp = e107::getLayouts('', 'chapter', 'front', '', true, false);
+			$tmpl = array();
+			foreach($tmp as $key=>$val)
+			{
+				if(substr($key,0,3) != 'nav')
+				{
+					$tmpl[$key] = $val;	
+				}	
+			}
+			
+			$this->fields['chapter_template']['writeParms'] = $tmpl; // e107::getLayouts('', 'chapter', 'front', '', true, false); // e107::getLayouts('', 'page', 'books', 'front', true, false); 
+			
 		}
 		
 		

@@ -33,8 +33,10 @@ class page_shortcodes extends e_shortcode
 		function sc_page_navigation($parm='') // TODO when No $parm provided, auto-detect based on URL which book/chapters to display. 
 		{
 		//	$parm = eHelper::scParams($parm);
-
-			$template = e107::getCoreTemplate('page',vartrue($parm['template'],'nav'), true, true); // always merge
+			
+			$tmpl = e107::getCoreTemplate('chapter', vartrue($parm['template'],'nav'), true, true); // always merge
+			
+			$template = $tmpl['showPage'];
 			
 			$request = $this->request;
 			
@@ -44,10 +46,12 @@ class page_shortcodes extends e_shortcode
 				{
 					case 'listChapters':
 						$parm['cbook'] = $request['id'];
+						$template = $tmpl['listChapters'];
 					break;
 					
 					case 'listPages':
 						$parm['cchapter'] = $request['id'];
+						$template = $tmpl['listPages'];
 					break;
 					
 					case 'showPage':
@@ -67,8 +71,8 @@ class page_shortcodes extends e_shortcode
 			
 
 			$links = e107::getAddon('page', 'e_sitelink');
-			$data = $links->pageNav($parm);
 			
+			$data = $links->pageNav($parm);
 		
 			if(isset($data['title']) && !vartrue($template['noAutoTitle']))
 			{
