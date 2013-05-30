@@ -950,7 +950,7 @@ class e_layout
 			
 			if (file_exists($file['path'].'/plugin.xml') || file_exists($file['path'].'/plugin.php'))
 			{
-				if (e107::isInstalled($parent_dir))
+			//	if (e107::isInstalled($file['path'])) //FIXME need a check that doesn't exlude page, news and others that don't require installation.
 				{  
 					$valid_menu = TRUE;		// Whether new or existing, include in list
 				}
