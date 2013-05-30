@@ -414,7 +414,7 @@ class page_admin_ui extends e_admin_ui
 		     'page_chapter' 		=> array('title'=> 'Book/Chapter', 	'tab' => 0,	'type' => 'dropdown', 	'width' => '20%', 'filter' => true, 'batch'=>true, 'inline'=>true),
        
 			'page_template' 	=> array('title'=> LAN_TEMPLATE, 		'tab' => 0,	'type' => 'dropdown', 	'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
-        
+
 		 	'page_author' 		=> array('title'=> LAN_AUTHOR, 		'tab' => 0,	'type' => 'user', 		'data'=>'int','width' => 'auto', 'thclass' => 'left'),
 			'page_text' 		=> array('title'=> CUSLAN_9,		'tab' => 0,	'type' => 'bbarea',		'data'=>'str',	'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1', 'writeParms'=>'media=page'), 
 		
@@ -449,8 +449,10 @@ class page_admin_ui extends e_admin_ui
 		protected $fieldpref = array("page_id","page_title","page_chapter","page_template","page_author","page_class");
 
 		protected $prefs = array( 
-			'listPages'	   		=> array('title'=> CUSLAN_29, 'type'=>'boolean'),
-			'pageCookieExpire'	=> array('title'=> CUSLAN_30, 'type'=>'number') //TODO Set default value to  84600
+			'listPages'	   			=> array('title'=> CUSLAN_29, 'type'=>'boolean'),
+			'listBooks'	   			=> array('title'=> 'List Books/Chapters', 'type'=>'boolean'),
+			'listBooksTemplate'   	=> array('title'=> 'List Books/Chapters Template', 'type'=>'dropdown'),
+			'pageCookieExpire'		=> array('title'=> CUSLAN_30, 'type'=>'number') //TODO Set default value to  84600
 		);
 
 		protected $books = array();
@@ -496,10 +498,24 @@ class page_admin_ui extends e_admin_ui
 			$this->fields['page_template']['writeParms'] = $this->templates;			
 			$this->fields['menu_template']['writeParms'] = e107::getLayouts('', 'menu', 'front', '', true, false); 
 			
+			
+			$tmp = e107::getLayouts('', 'chapter', 'front', '', true, false);
+			$tmpl = array();
+			foreach($tmp as $key=>$val)
+			{
+				if(substr($key,0,3) != 'nav')
+				{
+					$tmpl[$key] = $val;	
+				}	
+			}
+			
+			
+			$this->prefs['listBooksTemplate']['writeParms'] = $tmpl; 
+			
 			$sql = e107::getDb();
+			
+			
 			$sql->gen("SELECT chapter_id,chapter_name,chapter_parent FROM #page_chapters ORDER BY chapter_parent asc, chapter_order");
-			
-			
 			while($row = $sql->fetch())
 			{
 				$cat = $row['chapter_id'];

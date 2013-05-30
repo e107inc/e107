@@ -19,7 +19,9 @@ class page_shortcodes extends e_shortcode
 			
 			$this->request = e107::getRegistry('core/pages/request');
 			
-			if((varset($this->request['action']) == 'listPages' || varset($this->request['action']) == 'listChapters') && vartrue($this->request['id']))
+			$action = varset($this->request['action']);
+			
+			if(($action == 'listPages' || $action == 'listChapters') && vartrue($this->request['id']))
 			{
 				$this->var = e107::getDb()->retrieve('page_chapters','chapter_name, chapter_meta_description','chapter_id = '.intval($this->request['id']).' LIMIT 1');	
 			}		
@@ -33,7 +35,7 @@ class page_shortcodes extends e_shortcode
 		function sc_page_navigation($parm='') // TODO when No $parm provided, auto-detect based on URL which book/chapters to display. 
 		{
 		//	$parm = eHelper::scParams($parm);
-			
+				
 			$tmpl = e107::getCoreTemplate('chapter', vartrue($parm['template'],'nav'), true, true); // always merge
 			
 			$template = $tmpl['showPage'];
@@ -44,6 +46,15 @@ class page_shortcodes extends e_shortcode
 			{
 				switch ($request['action']) 
 				{
+					case 'listBooks':
+						$parm['cbook'] = 'all';
+						$template = $tmpl['listBooks'];
+						if(e107::getPref('listBooks',false) == false) // List Books has been disabled. 
+						{
+							return false;
+						}
+					break;
+					
 					case 'listChapters':
 						$parm['cbook'] = $request['id'];
 						$template = $tmpl['listChapters'];
@@ -52,6 +63,7 @@ class page_shortcodes extends e_shortcode
 					case 'listPages':
 						$parm['cchapter'] = $request['id'];
 						$template = $tmpl['listPages'];
+						
 					break;
 					
 					case 'showPage':
@@ -69,7 +81,7 @@ class page_shortcodes extends e_shortcode
 				$parm = '';
 			}
 			
-
+		
 			$links = e107::getAddon('page', 'e_sitelink');
 			
 			$data = $links->pageNav($parm);
