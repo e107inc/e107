@@ -18,9 +18,9 @@ if (!is_numeric(e_QUERY))
 		header("location: ".e_QUERY);
 		exit();
 	} 
-	elseif(file_exists($DOWNLOADS_DIRECTORY.e_QUERY)) 		// 1 - should we allow this?
+	elseif(file_exists(e_DOWNLOAD.e_QUERY)) 		// 1 - should we allow this?
 	{
-		e107::getFile()->send($DOWNLOADS_DIRECTORY.e_QUERY);
+		e107::getFile()->send(e_DOWNLOAD.e_QUERY);
 		exit();
 	}
 }
@@ -96,9 +96,9 @@ if (preg_match("#.*\.[a-z,A-Z]{3,4}#", e_QUERY))
 			exit();
 		}
 	}
-	if (file_exists($DOWNLOADS_DIRECTORY.e_QUERY)) 
+	if (file_exists(e_DOWNLOAD.e_QUERY)) 
 	{
-		e107::getFile()->send($DOWNLOADS_DIRECTORY.e_QUERY);
+		e107::getFile()->send(e_DOWNLOAD.e_QUERY);
 		exit();
 	}
 	require_once(HEADERF);
@@ -195,9 +195,9 @@ if ($type == "file")
 			} 
 			else 
 			{
-				if (file_exists($DOWNLOADS_DIRECTORY.$download_url)) 
+				if (file_exists(e_DOWNLOAD.$download_url)) 
 				{
-					e107::getFile()->send($DOWNLOADS_DIRECTORY.$download_url);
+					e107::getFile()->send(e_DOWNLOAD.$download_url);
 					exit();
 				} 
 				elseif(file_exists(e_UPLOAD.$download_url)) 
