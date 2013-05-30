@@ -472,7 +472,7 @@ class page_admin_ui extends e_admin_ui
 				
 							
 			
-			$this->templates = e107::getLayouts('', 'page', 'front', '', false, false); 
+			$this->templates = e107::getLayouts('', 'page', 'front', '', true, false); 
 			unset($this->templates['panel'], $this->templates['nav']);
 			
 			$this->fields['page_template']['writeParms'] = $this->templates;			
