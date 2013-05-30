@@ -48,10 +48,11 @@ else
 {
 		
 	$code_text = html_entity_decode($code_text, ENT_QUOTES, 'utf-8');	
-	$highlighted_text = highlight_string($code_text, TRUE);
-	$highlighted_text = str_replace(array("<code>","</code>"),"",$highlighted_text);
+	$code_text = trim($code_text);
+//	$highlighted_text = highlight_string($code_text, TRUE);
+// highlighted_text = str_replace(array("<code>","</code>"),"",$highlighted_text);
 	$divClass = ($parm) ? $parm : 'code_highlight';
-	$ret = "<pre class='prettyprint linenums ".$tp -> toAttribute($divClass)." code-box {$class}' style='unicode-bidi: embed; direction: ltr'>{$highlighted_text}</pre>";
+	$ret = "<pre class='prettyprint linenums ".$tp -> toAttribute($divClass)." code-box {$class}' style='unicode-bidi: embed; direction: ltr'>".$code_text."</pre>";
 }
 $ret = str_replace("[", "&#091;", $ret);
 return $ret;
