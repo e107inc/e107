@@ -1375,12 +1375,16 @@ class e_navigation
 		$foot 			= $template['end'];
 		$ret 			= "";
 		
+		$sc->counter	= 1;
+		
 		foreach ($data as $_data) 
 		{		
 			$sc->setVars($_data);
 			$active			= ($this->isActive($_data)) ? "_active" : ""; 
 			$itemTmpl 		= count($_data['link_sub']) > 0 ? $template['item_submenu'.$active] : $template['item'.$active];
-			$ret 			.= e107::getParser()->parseTemplate($itemTmpl, TRUE);			
+			$ret 			.= e107::getParser()->parseTemplate($itemTmpl, TRUE);	
+			$sc->active		= ($active) ? true : false;
+			$sc->counter++;		
 		}
 
 		return ($ret != '') ? $head.$ret.$foot : '';
@@ -1498,17 +1502,50 @@ class e_navigation
 
 
 
-// TODO SEF etc. 
+/**
+ * Navigation Shortcodes
+ * @todo SEF 
+ */
 class navigation_shortcodes extends e_shortcode
 {
 	
-	var $template;
+	public $template;
+	public $counter;
+	public $active;
+
 	
+	/**
+	 * 
+	 * @return string 'active' on the active link.
+	 * @example {LINK_ACTIVE}
+	 */
+	function sc_link_active($parm='')
+	{
+		if($this->active == true)
+		{
+			return 'active';	
+		}
+		
+		// check if it's the first link.. (eg. anchor mode) and nothing activated. 
+		return ($this->counter ==1) ? 'active' : '';	
+		
+	}
+	
+	/**
+	 * Return the primary_id number for the current link
+	 * @return integer
+	 */
 	function sc_link_id($parm='')
 	{
 		return intval($this->var['link_id']);		
 	}
+
 	
+	/**
+	 * Return the name of the current link
+	 * @return string 
+	 * @example {LINK_NAME}
+	 */
 	function sc_link_name($parm='')
 	{
 		if(!varset($this->var['link_name']))
@@ -1527,12 +1564,22 @@ class navigation_shortcodes extends e_shortcode
 		
 		return e107::getParser()->toHtml($link, false,'defs');		
 	}
+
 	
+	/**
+	 * Return the parent of the current link
+	 * @return integer
+	 */
 	function sc_link_parent($parm='')
 	{
 		return intval($this->var['link_parent']);		
 	}
 
+
+	/**
+	 * Return the URL of the current link
+	 * @return string
+	 */
 	function sc_link_url($parm='')
 	{
 		if(strpos($this->var['link_url'], e_HTTP) === 0)
@@ -1550,19 +1597,33 @@ class navigation_shortcodes extends e_shortcode
 		
 		return e107::getParser()->replaceConstants($url, 'full', TRUE);
 	}
+
 	
+	/**
+	 * Return the link image of the current link
+	 * @return string
+	 */
 	function sc_link_image($parm='')
 	{
 		if (!vartrue($this->var['link_image'])) return '';
 		return e107::getParser()->replaceConstants($this->var['link_image'], 'full', TRUE);	
 	}
+
 		
-	
+	/**
+	 * Return the link description of the current link
+	 * @return string
+	 */
 	function sc_link_description($parm='')
 	{
 		return e107::getParser()->toAttribute($this->var['link_description']);	
 	}
-		
+
+	
+	/**
+	 * Return the parsed sublinks of the current link
+	 * @return string
+	 */	
 	function sc_link_sub($parm='')
 	{
 		if(!varset($this->var['link_sub']))
@@ -1585,6 +1646,12 @@ class navigation_shortcodes extends e_shortcode
 		return $text;
 	}
 	
+	/**
+	 * Return a generated anchor for the current link. 
+	 * @param unused
+	 * @return	string - a generated anchor for the current link. 
+	 * @example {LINK_ANCHOR} 
+	 */
 	function sc_link_anchor($parm='')
 	{
 		return $this->var['link_name'] ? '#'.e107::getForm()->name2id($this->var['link_name']) : '';	
