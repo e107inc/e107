@@ -122,12 +122,14 @@ class page_sitelink // include plugin-folder in the name.
 		$title = false;
 		if(vartrue($options['book']))
 		{
-
+			
 			// XXX discuss the idea here
 			//$filter = "chapter_id > ".intval($options['book']);
 			$filter = "chapter_parent = ".intval($options['book']);
 			$parent = intval($options['book']);
 			$title = $sql->retrieve('page_chapters', 'chapter_name', 'chapter_id='.intval($options['book']));
+			
+		//	print_a('parent='.$parent);
 		}
 
 
@@ -154,11 +156,11 @@ class page_sitelink // include plugin-folder in the name.
 			);	
 		}
 		
-	
-		$outArray 	= array();
-		$parent = vartrue($options['book']) ? $options['book'] : 0;
-		$ret =  e107::getNav()->compile($arr, $outArray, $parent);		
 		
+		$outArray 	= array();
+		$parent = vartrue($options['book']) ? intval($options['book']) : 0;
+		$ret =  e107::getNav()->compile($arr, $outArray, $parent);		
+
 		if(!$title) return $ret;
 		return array('title' => $title, 'body' => $ret);
 	}

@@ -20,7 +20,9 @@ $CHAPTER_TEMPLATE['default']['listChapters']['start']				= "<ul class='page-chap
 $CHAPTER_TEMPLATE['default']['listChapters']['item']				= "<li><h4>{CHAPTER_NAME}</h4>{PAGES}";
 $CHAPTER_TEMPLATE['default']['listChapters']['end']					= "</ul>";
 
-
+$CHAPTER_TEMPLATE['default']['listBooks']['start']					= "<ul class='page-chapters-list'>";
+$CHAPTER_TEMPLATE['default']['listBooks']['item']					= "<li><h3>{BOOK_NAME}</h3>{CHAPTERS}";
+$CHAPTER_TEMPLATE['default']['listBooks']['end']					= "</ul>";
 
 
 
@@ -99,6 +101,7 @@ $CHAPTER_TEMPLATE['nav']['listChapters']['submenu_item_active'] 	= '
 $CHAPTER_TEMPLATE['nav']['listChapters']['submenu_end'] 			= '</ul>';	
 
 
+$CHAPTER_TEMPLATE['nav']['listBooks'] = $CHAPTER_TEMPLATE['nav']['listChapters'];
 $CHAPTER_TEMPLATE['nav']['listPages'] = $CHAPTER_TEMPLATE['nav']['listChapters'];
 $CHAPTER_TEMPLATE['nav']['showPage'] = $CHAPTER_TEMPLATE['nav']['listChapters'];
 

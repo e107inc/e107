@@ -165,24 +165,63 @@ class pageClass
 
 	
 
-	//XXX - May be better to compile into assoc 'tree' array first. ie. books/chapters/pages. 
+	/**
+	 * @todo Check userclasses 
+	 * @todo sef urls
+	 */
 	function listBooks()
 	{
 		$sql = e107::getDb('sql2');
 		$tp = e107::getParser();
+		$frm = e107::getForm();
 		
-		if($sql->select("page_chapters", "*", "chapter_parent ='0' ORDER BY chapter_order ASC "))
+		$text = "";
+		
+		
+		if(e107::getPref('listBooks',false) && $sql->select("page_chapters", "*", "chapter_parent ='0' ORDER BY chapter_order ASC "))
 		{
+			$layout 	= e107::getPref('listBooksTemplate','default'); 		
+			$tml 		= e107::getCoreTemplate('chapter','', true, true); // always merge	
+			$tmpl 		= varset($tml[$layout]);
+			$template 	= $tmpl['listBooks'];
+			
+			$text = $template['start'];
+			
 			while($row = $sql->fetch())
 			{
-				$text .= "<h3 class='page-book-list'>".$tp->toHtml($row['chapter_name'])."</h3>"; // Book Title. 			
-				$text .= $this->listChapters($row['chapter_id']);
+				$var = array(
+					'BOOK_NAME' 		=> $tp->toHtml($row['chapter_name']),
+					'BOOK_ANCHOR'		=> $frm->name2id($row['chapter_name']),
+					'BOOK_DESCRIPTION'	=> $tp->toHtml($row['chapter_meta_description'],true,'BODY'),
+					'CHAPTERS'			=> $this->listChapters(intval($row['chapter_id'])),
+					'BOOK_URL'			=> e_BASE."page.php?bk=".intval($row['chapter_id']) // FIXME SEF-URL
+				);
+			
+				$text .= $tp->simpleParse($template['item'],$var);
 			}			
 		}	
 		
-		$text .= "<h3>Other Articles</h3>"; // Book Title. 		
-		$text .= $this->listPages(0);	// Pages unassigned to Book/Chapters. 
-		e107::getRender()->tablerender("Articles", $text,"cpage_list");
+		if(e107::getPref('listPages',false))
+		{
+			$text .= "<h3>Other Articles</h3>"; // Book Title. 		
+			$text .= $this->listPages(0);	// Pages unassigned to Book/Chapters. 
+		} //
+		
+		if($text)
+		{
+			$caption = varset($template['caption'],"Articles"); 
+			e107::getRender()->tablerender($caption, $text, "cpage_list");
+		}
+		else
+		{
+			message_handler("MESSAGE", LAN_PAGE_1);
+			require_once(FOOTERF); // prevent message from showing twice and still listing chapters
+			exit;
+		}
+		
+		
+		
+		
 	}
 
 
@@ -193,6 +232,7 @@ class pageClass
 	{
 		$sql = e107::getDb('chap');
 		$tp = e107::getParser();
+		$frm = e107::getForm();
 		
 		// retrieve the template to use for this book 
 		if(!$layout = $sql->retrieve('page_chapters','chapter_template','chapter_id = '.intval($book).' LIMIT 1'))
@@ -214,6 +254,7 @@ class pageClass
 			{
 				$var = array(
 					'CHAPTER_NAME' 			=> $tp->toHtml($row['chapter_name']),
+					'CHAPTER_ANCHOR'		=> $frm->name2id($row['chapter_name']),
 					'CHAPTER_DESCRIPTION'	=> $tp->toHtml($row['chapter_meta_description'],true,'BODY'),
 					'PAGES'					=> $this->listPages(intval($row['chapter_id'])),
 					'CHAPTER_URL'			=> e_BASE."page.php?ch=".intval($row['chapter_id']) // FIXME SEF-URL
@@ -256,16 +297,6 @@ class pageClass
 	//	$tmpl = e107::getCoreTemplate('chapter','docs', true, true); // always merge	
 		$template = $tmpl['listPages'];
 		
-		
-		
-		if(!e107::getPref('listPages', false))
-		{
-			message_handler("MESSAGE", LAN_PAGE_1);
-			require_once(FOOTERF); // prevent message from showing twice and still listing chapters
-			exit;
-		}
-		else
-		{
 			if(!$count = $sql->select("page", "*", "page_title !='' AND page_chapter=".intval($chapt)." AND page_class IN (".USERCLASS_LIST.") ORDER BY page_order ASC "))
 			{
 				return e107::getMessage()->addInfo(LAN_PAGE_2)->render();
@@ -299,7 +330,7 @@ class pageClass
 			//	$caption = ($title !='')? $title: LAN_PAGE_11;
 			//	e107::getRender()->tablerender($caption, $text,"cpage_list");
 			}
-		}
+
 		
 		return $text;
 	}
