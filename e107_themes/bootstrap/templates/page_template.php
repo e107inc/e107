@@ -52,37 +52,33 @@
 	$PAGE_TEMPLATE['navdoc']['end'] 					= '</ul>';		
 	
 	
-	$PAGE_TEMPLATE['navdoc']['submenu_start'] 			= '<ul class="page-navdoc" id="page-navdoc-{LINK_PARENT}" role="menu" >';
+	$PAGE_TEMPLATE['navdoc']['submenu_start'] 				= ''; 
+	$PAGE_TEMPLATE['navdoc']['submenu_item'] 				= ''; 
+	$PAGE_TEMPLATE['navdoc']['submenu_loweritem'] 			= ''; 
+	$PAGE_TEMPLATE['navdoc']['submenu_loweritem_active'] 	= ''; 
+	$PAGE_TEMPLATE['navdoc']['submenu_item_active']  		= '';
+	$PAGE_TEMPLATE['navdoc']['submenu_end'] 				= ''; 
 	
 	
-	$PAGE_TEMPLATE['navdoc']['submenu_item'] 			= '
-														<li role="menuitem" >
-															<a href="{LINK_URL}">{LINK_IMAGE}{LINK_NAME}</a>
-															{LINK_SUB}
-														</li>
-													';
 	
-	$PAGE_TEMPLATE['navdoc']['submenu_loweritem'] 		= '
-														<li role="menuitem" >
-															<a href="{LINK_URL}">{LINK_IMAGE}{LINK_NAME}</a>
-															{LINK_SUB}
-														</li>
-													';
-	$PAGE_TEMPLATE['navdoc']['submenu_loweritem_active'] 		= '
-														<li role="menuitem" class="active">
-															<a href="{LINK_URL}">{LINK_IMAGE}{LINK_NAME}</a>
-															{LINK_SUB}
-														</li>
-													';
+	$PAGE_TEMPLATE['listPages']['start'] = '';
+	$PAGE_TEMPLATE['listPages']['item']	= 			'
+														<section id="{CPAGEANCHOR}">
+												          <div class="page-header">
+												            <h1>{CPAGETITLE}</h1>
+												          </div>
+												          {CPAGEBODY}
+												          </section>
+												     ';
+	$PAGE_TEMPLATE['listPages']['end'] = '';
 	
-	$PAGE_TEMPLATE['navdoc']['submenu_item_active'] 	= '
-														<li role="menuitem" class="active">
-															<a href="{LINK_URL}">{LINK_IMAGE}{LINK_NAME}</a>
-															{LINK_SUB}
-														</li>
-													';
 	
-	$PAGE_TEMPLATE['navdoc']['submenu_end'] 			= '</ul>';	
+	$PAGE_TEMPLATE['listChapters']['start']				= '<section id="{CPAGEANCHOR}">';
+	$PAGE_TEMPLATE['listChapters']['item']				= "<a href='{CHAPTER_URL}'><h1>{CHAPTER_NAME}</h1></a>
+															{CHAPTER_DESCRIPTION}
+														";
+	$PAGE_TEMPLATE['listChapters']['end']				= "</section>";
+	
 
 
 ?>

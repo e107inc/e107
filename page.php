@@ -47,29 +47,7 @@ elseif(vartrue($_GET['bk'])) //  List Chapters within a specific Book
 elseif(vartrue($_GET['ch'])) // List Pages within a specific Chapter
 {
 	$e107CorePage->setRequest('listPages');
-	
-	if($_GET['action']=='all') // See bootstrap 'docs' layout for an example. 
-	{
-		$template = array(); 
-		$template['start'] = '';
-		$template['item']	= '
-		<section id="{CPAGEANCHOR}">
-          <div class="page-header">
-            <h1>{CPAGETITLE}</h1>
-          </div>
-          {CPAGEBODY}
-          </section>
-         ';
-		$template['end'] = '';
-		define('e_PAGETITLE', 'Documentation'); //FIXME - grab from selected chapter. 
-	}
-	else
-	{
-		$template = array();
-		$template['start'] 	= "<ul class='page-pages-list'>";
-		$template['item'] 		= "<li><a href='{CPAGEURL}'>{CPAGETITLE}</a></li>";
-		$template['end'] 		= "</ul>";	
-	}
+
 	require_once(HEADERF);	
 
 	$text = $e107CorePage->listPages($_GET['ch'],$template);
@@ -216,17 +194,28 @@ class pageClass
 		$sql = e107::getDb('chap');
 		$tp = e107::getParser();
 		
+		$template = e107::getCoreTemplate('page','listChapters', true, true); // always merge	
+		
 		if($sql->db_Select("page_chapters", "*", "chapter_parent = ".intval($book)."  ORDER BY chapter_order ASC "))
 		{
-			$text .= "<ul class='page-chapters-list'>";
+			$text .= $template['start']; // "<ul class='page-chapters-list'>";
 			while($row = $sql->db_Fetch())
 			{
-				$text .= "<li>";
-				$text .= "<h4>".$tp->toHtml($row['chapter_name'])."</h4>"; // Chapter Title. 
-				$text .= $this->listPages(intval($row['chapter_id']));	
-				$text .= "</li>";
-			}	
-			$text .= "</ul>";		
+				$var = array(
+					'CHAPTER_NAME' 			=> $tp->toHtml($row['chapter_name']),
+					'CHAPTER_DESCRIPTION'	=> $tp->toHtml($row['chapter_meta_description'],true,'BODY'),
+					'PAGES'					=> $this->listPages(intval($row['chapter_id'])),
+					'CHAPTER_URL'			=> e_BASE."page.php?ch=".intval($row['chapter_id']) // FIXME SEF-URL
+				);
+				
+				$text .= $tp->simpleParse($template['item'],$var);
+			//	$text .= "<li>";
+			//	$text .= "<h4>".$tp->toHtml($row['chapter_name'])."</h4>"; // Chapter Title. 
+			//	$text .= $this->listPages(intval($row['chapter_id']));	
+			//	$text .= "</li>";
+			}
+			$text .= $template['end'];	
+			// $text .= "</ul>";		
 		}	
 		
 		return $text;		
@@ -234,14 +223,13 @@ class pageClass
 
 
 
-	// TODO template for page list
-	function listPages($chapt=0,$template='')
+	function listPages($chapt=0)
 	{
 		$sql 			= e107::getDb('pg');
 		$tp 			= e107::getParser();
 		$this->batch 	= e107::getScBatch('page',null,'cpage');
 
-			
+		$template = e107::getCoreTemplate('page','listPages',true,true); // always merge	
 		
 		if(!e107::getPref('listPages', false))
 		{
@@ -258,11 +246,10 @@ class pageClass
 			}
 			else
 			{
-
-			//	$text .= "<ul class='page-pages-list'>";
-				$text .= $template['start'];
 				
 				$pageArray = $sql->db_getList();
+
+				$text .= $template['start'];
 				
 				foreach($pageArray as $page)
 				{
@@ -281,7 +268,7 @@ class pageClass
 				
 				$text .= $template['end'];
 				
-			//	$text .= "</ul>";
+		
 			//	$caption = ($title !='')? $title: LAN_PAGE_11;
 			//	e107::getRender()->tablerender($caption, $text,"cpage_list");
 			}
