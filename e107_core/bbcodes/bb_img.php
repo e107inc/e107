@@ -227,7 +227,6 @@ class bb_img extends e_bb_base
 		}
 		else
 		{
-			print_a($parmStr);
 			return "<img src='".$code_text."' {$parmStr} />";
 		}
 	}
