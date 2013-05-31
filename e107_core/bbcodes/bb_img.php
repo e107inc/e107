@@ -67,7 +67,7 @@ class bb_img extends e_bb_base
     /**
      * Process the [img] bbcode parm. ie. [img parms]something[/img]
      */
-    private function processParm($code_text, $parm)
+    private function processParm($code_text, $parm, $mode='')
     {      
         $tp = e107::getParser(); 
         
@@ -92,7 +92,19 @@ class bb_img extends e_bb_base
            $imgParms['alt']        = ucwords(str_replace("_"," ",$match[1])); 
         }
         
-        $imgParms['class']      = "bbcode ".e107::getBB()->getClass('img');;  //  This will be overridden if a new class is specified        
+        $imgParms['class']      = "img-rounded bbcode ".e107::getBB()->getClass('img');;  //  This will be overridden if a new class is specified        
+        
+        if($mode == 'string')
+		{
+			$text = '';
+			foreach($imgParms as $key => $val)
+			{
+				$text .= $key."=\"".$val."\" ";	
+			}	
+			return $text;
+		}
+        
+        
         
         return $imgParms;       
     }  
@@ -141,7 +153,7 @@ class bb_img extends e_bb_base
         
 		$img_file = pathinfo($code_text);		// 'External' file name. N.B. - might still contain a constant such as e_IMAGE
 		
-        $parmStr = $this->processParm($code_text, $parm);
+        $parmStr = $this->processParm($code_text, $parm, 'string');
 		
 
 		
@@ -215,6 +227,7 @@ class bb_img extends e_bb_base
 		}
 		else
 		{
+			print_a($parmStr);
 			return "<img src='".$code_text."' {$parmStr} />";
 		}
 	}
