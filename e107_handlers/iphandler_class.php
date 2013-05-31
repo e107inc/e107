@@ -252,7 +252,7 @@ class eIPHandler
 	public function isAddressRoutable($ip)
 	{
 		$ignore = array(
-						'0\..*#' , '#^127\..*' , 			// Local loopbacks
+						'0\..*' , '^127\..*' , 			// Local loopbacks
 						'192\.168\..*' , 					// RFC1918 - Private Network
 						'172\.(?:1[6789]|2\d|3[01])\..*' ,	// RFC1918 - Private network
 						'10\..*' , 							// RFC1918 - Private Network
