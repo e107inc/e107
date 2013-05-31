@@ -251,6 +251,26 @@ class eIPHandler
 	 */
 	public function isAddressRoutable($ip)
 	{
+		$ignore = array(
+						'0\..*#' , '#^127\..*' , 			// Local loopbacks
+						'192\.168\..*' , 					// RFC1918 - Private Network
+						'172\.(?:1[6789]|2\d|3[01])\..*' ,	// RFC1918 - Private network
+						'10\..*' , 							// RFC1918 - Private Network
+						'169\.254\..*' , 					// RFC3330 - Link-local, auto-DHCP
+						'2(?:2[456789]|[345][0-9])\..*'		// Single check for Class D and Class E
+					);
+	
+		
+		
+		$pattern = '#^('.implode('|',$ignore).')#';
+				
+		if(preg_match($pattern,$ip))
+		{
+			return false;	
+		}
+		
+		
+		/* XXX preg_match doesn't accept arrays. 
 		if (preg_match(array(
 						'#^0\..*#' , '#^127\..*#' , 			// Local loopbacks
 						'#^192\.168\..*#' , 					// RFC1918 - Private Network
@@ -262,6 +282,8 @@ class eIPHandler
 		{
 			return FALSE;
 		} 
+		*/
+		
 		if (strpos(':', $ip) === FALSE) return TRUE;
 		// Must be an IPV6 address here
 		// @todo need to handle IPV4 addresses in IPV6 format
