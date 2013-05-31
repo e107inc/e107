@@ -6,9 +6,9 @@ $(document).ready(function()
 		var newval 	= $('#bbcode_holder').val();
 		var target 	= $(this).attr('data-target');
 		var bbcode	= $(this).attr('data-bbcode'); // TinyMce/Textarea insert mode
-				
+			
 		if(!target || !bbcode){ return true; }
-		
+
 		$('#' + target, window.top.document).atCaret('insert', newval); // http://code.google.com/p/jquery-at-caret/wiki/GettingStarted
 		
 		
