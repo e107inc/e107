@@ -935,6 +935,7 @@ class media_admin_ui extends e_admin_ui
 		$file		= (substr($cat,-5) == "_file") ? TRUE : FALSE;
 		$mes = e107::getMessage();
 		$mes->addDebug("For:".$cat);
+		$mes->addDebug("Bbcode: ".$this->getQuery('bbcode'));
 
 		
 		if($file)
@@ -1128,7 +1129,7 @@ class media_admin_ui extends e_admin_ui
 						
 			$text .= "<div style='text-align:right;padding:5px'>
 			
-			<button type='submit' class='btn btn-success submit e-dialog-save e-dialog-close' data-target='".$this->getQuery('tagid')."' name='save_image' value='Save it'  >
+			<button type='submit' class='btn btn-success submit e-dialog-save e-dialog-close' data-bbcode='".$options['bbcode']."' data-target='".$this->getQuery('tagid')."' name='save_image' value='Save it'  >
 			<span>Save</span>
 			</button>
 			<button type='submit' class='btn submit e-dialog-close' name='cancel_image' value='Cancel' >
