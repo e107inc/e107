@@ -1977,13 +1977,13 @@ class e107
 		
 		
 	//	if(!$merge || !$override || !is_array($ret)) // problems merging when template doesn't exist in core. 
-		//XXX This appears to have less problems, but requires more testing. 
-		if(!$merge && !$override)
+		
+		if((!$merge && !$override) || is_string($ret)) //XXX This appears to have less problems, but requires more testing. 
 		{
 			 return $ret;
 		}
 		
-		if(!is_array($ret))
+		if(!is_array($ret)) // for the merge below. 
 		{
 			$ret = array();	
 		}
