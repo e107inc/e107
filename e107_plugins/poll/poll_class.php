@@ -468,7 +468,7 @@ class poll
 					
 			//		$OPTION = $tp->parseTemplate("{ANSWER}",true);
 						
-					$text .= $tp->parseTemplate($template, true);	
+					$text .= $tp->parseTemplate($template, true, $sc);	
 						
 					$count ++;
 					$sc->answerCount++;

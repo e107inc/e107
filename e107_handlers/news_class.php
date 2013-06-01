@@ -415,11 +415,11 @@ class news {
 		setScVar('news_shortcodes', 'param', $param);
 		*/
 		// Retrieve batch sc object, set required vars
-		e107::getScBatch('news')
+		$sc = e107::getScBatch('news')
 			->setScVar('news_item', $news)
 			->setScVar('param', $param);
 			
-		$text = e107::getParser()->parseTemplate($NEWS_PARSE, true);
+		$text = e107::getParser()->parseTemplate($NEWS_PARSE, true, $sc);
 
 		if ($mode == 'return')
 		{
