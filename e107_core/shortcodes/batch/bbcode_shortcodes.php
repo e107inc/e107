@@ -39,7 +39,8 @@ class bbcode_shortcodes extends e_shortcode
 			6 => array('[h=5][/h]','Heading 6'),
 			7 => array('[block][/block]','Block'),
 			8 => array('[blockquote][/blockquote]', 'Quote'),
-			9 => array('[code][/code]', 'Code')
+			9 => array('[code][/code]', 'Code Block'),
+			10 => array('[code=inline][/code]', 'Code Inline')
 		); 
 		
 		
