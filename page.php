@@ -344,12 +344,12 @@ class pageClass
 		}
 		
 		$sql = e107::getDb();
-
+		
 		$query = "SELECT p.*, u.user_id, u.user_name, user_login FROM #page AS p
 		LEFT JOIN #user AS u ON p.page_author = u.user_id
 		WHERE p.page_id=".intval($this->pageID); // REMOVED AND p.page_class IN (".USERCLASS_LIST.") - permission check is done later 
 
-		if(!$sql->db_Select_gen($query))
+		if(!$sql->gen($query))
 		{
 			$ret['title'] = LAN_PAGE_12;			// ***** CHANGED
 			$ret['sub_title'] = '';
@@ -364,13 +364,19 @@ class pageClass
 			$this->batch = e107::getScBatch('page',null,'cpage')->setVars(new e_vars($ret))->setScVar('page', array());
 			
 			define("e_PAGETITLE", $ret['title']);
+			
 			return;
 		}
 
-		$this->page = $sql->db_Fetch();
+		$this->page = $sql->fetch();
 
-		$this->template = e107::getCoreTemplate('page', vartrue($this->page['page_template'], 'default'));
-		if(empty($this->template)) $this->template = e107::getCoreTemplate('page', 'default');
+		$this->template = e107::getCoreTemplate('page', vartrue($this->page['page_template'], 'default'), true, true);
+	//	$this->template = e107::getCoreTemplate('page', 'default',true,true);
+	//	print_a($this->template);
+		if(empty($this->template))
+		{
+			 $this->template = e107::getCoreTemplate('page', 'default');
+		}
 		
 		$this->batch = e107::getScBatch('page',null,'cpage');
 
@@ -454,17 +460,21 @@ class pageClass
 
 	public function showPage()
 	{
+		
+		
 		if(null !== $this->cacheData)
 		{
+			
 			return $this->renderCache();
 		}
 		if(true === $this->authorized)
 		{
+			
 			$vars = $this->batch->getParserVars();
 			
 			$template = str_replace('{PAGECOMMENTS}', '[[PAGECOMMENTS]]', $this->template['start'].$this->template['body'].$this->template['end']);
 			$ret = $this->renderPage($template);
-			
+
 			if(!empty($this->template['page']))
 			{
 				$ret = str_replace(array('{PAGE}', '{PAGECOMMENTS}'), array($ret, '[[PAGECOMMENTS]]'), $this->template['page']);
