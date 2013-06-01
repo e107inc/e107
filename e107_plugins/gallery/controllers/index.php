@@ -142,12 +142,12 @@ class plugin_gallery_index_controller extends eControllerFront
 			$sc->setVars($row)
 				->addVars($cat);	
 
-			$inner .= $tp->parseTemplate($template['LIST_ITEM'],TRUE);
+			$inner .= $tp->parseTemplate($template['LIST_ITEM'],TRUE, $sc);
 		}
 					
-		$text = $tp->parseTemplate($template['LIST_START'],TRUE);
+		$text = $tp->parseTemplate($template['LIST_START'],TRUE, $sc);
 		$text .= $inner; 	
-		$text .= $tp->parseTemplate($template['LIST_END'],TRUE);
+		$text .= $tp->parseTemplate($template['LIST_END'],TRUE, $sc);
 		
 		$this->addTitle($catname)
 			->addTitle(LAN_PLUGIN_GALLERY_TITLE)

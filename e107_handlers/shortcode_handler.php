@@ -376,7 +376,8 @@ class e_parse_shortcode
 		// If it already exists - don't include it again. 
 		if (class_exists($className, false)) // don't allow __autoload()
 		{
-			$this->registerClassMethods($className, $path);
+			// $this->registerClassMethods($className, $path); // XXX Global registration should happen separately - here we want only the object. 
+			 $this->scClasses[$className] = new $className(); // located inside registerClassMethods()
 			return $this->scClasses[$className];
 		}
 		
@@ -386,8 +387,8 @@ class e_parse_shortcode
 			if (class_exists($className, false)) // don't allow __autoload()
 			{
 				// register instance directly to allow override
-				// $this->scClasses[$className] = new $className(); // located inside registerClassMethods()
-				$this->registerClassMethods($className, $path);
+				 $this->scClasses[$className] = new $className(); // located inside registerClassMethods()
+				// $this->registerClassMethods($className, $path);
 				return $this->scClasses[$className];
 			}
 			elseif(E107_DBG_BBSC || E107_DBG_SC)

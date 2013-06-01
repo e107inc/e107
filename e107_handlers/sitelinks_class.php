@@ -1382,7 +1382,7 @@ class e_navigation
 			$sc->setVars($_data);
 			$active			= ($this->isActive($_data)) ? "_active" : ""; 
 			$itemTmpl 		= count($_data['link_sub']) > 0 ? $template['item_submenu'.$active] : $template['item'.$active];
-			$ret 			.= e107::getParser()->parseTemplate($itemTmpl, TRUE);	
+			$ret 			.= e107::getParser()->parseTemplate($itemTmpl, TRUE, $sc);	
 			$sc->active		= ($active) ? true : false;
 			$sc->counter++;		
 		}
@@ -1638,7 +1638,7 @@ class navigation_shortcodes extends e_shortcode
 			$this->setVars($val);		
 			$active	= (e107::getNav()->isActive($val)) ? "_active" : "";
 			$tmpl = vartrue($val['link_sub']) ? varset($this->template['submenu_loweritem'.$active]) : varset($this->template['submenu_item'.$active]);	
-			$text .= e107::getParser()->parseTemplate($tmpl, TRUE);		
+			$text .= e107::getParser()->parseTemplate($tmpl, TRUE, $this);		
 		}
 
 		$text .= e107::getParser()->parseTemplate(str_replace('{LINK_SUB}', '', $this->template['submenu_end']), true, $this);
