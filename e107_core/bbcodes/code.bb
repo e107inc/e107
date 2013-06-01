@@ -49,6 +49,7 @@ else
 		
 	$code_text = html_entity_decode($code_text, ENT_QUOTES, 'utf-8');	
 	$code_text = trim($code_text);
+	$code_text = htmlspecialchars($code_text, ENT_QUOTES, 'utf-8').'</pre>';
 //	$highlighted_text = highlight_string($code_text, TRUE);
 // highlighted_text = str_replace(array("<code>","</code>"),"",$highlighted_text);
 	$divClass = ($parm) ? $parm : 'code_highlight';
