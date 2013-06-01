@@ -841,13 +841,15 @@ class e_core_session extends e_session
 				if(defsettrue('e_DEBUG'))
 				{		
 					$details = "HOST: ".$_SERVER['HTTP_HOST']."\n";
-					$details .= "REQUEST_URI: ".$_SERVER['REQUEST_URI']."\n";		
+					$details .= "REQUEST_URI: ".$_SERVER['REQUEST_URI']."\n";
+					$details .= "e-token (POST): ".$_POST['e-token']."\n";
+					$details .= "e-token (GET): ".$_GET['e-token']."\n";						
 					$details .= "_SESSION:\n";
 					$details .= print_r($_SESSION,true);
-					$details .= "\n_POST:\n";
-					$details .= print_r($_POST,true);
-					$details .= "\n_GET:\n";
-					$details .= print_r($_GET,true);
+				//	$details .= "\n_POST:\n";
+				//	$details .= print_r($_POST,true);
+				//	$details .= "\n_GET:\n";
+				//	$details .= print_r($_GET,true);
 					$details .= "\nPlugins:\n";
 					$details .= print_r($pref['plug_installed'],true);
 						
