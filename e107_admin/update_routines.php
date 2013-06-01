@@ -1631,16 +1631,19 @@ function update_706_to_800($type='')
 			
 			//$updateMessages[] = LAN_UPDATE_50.implode(', ',$accum); 	// Note for admin log
 		}
+
+		$log->flushMessages('UPDATE_01');		// Write admin log entry, update message handler
 		
 	}
 	else 
 	{
-		$log->toFile('upgrade_v1_to_v2_check'); 	
-	}	
+		$log->toFile('upgrade_v1_to_v2_check'); 
+		
+	}
 	
 
 	
-
+	
 
 	
 	
@@ -1648,7 +1651,7 @@ function update_706_to_800($type='')
 
 	//if ($just_check) return TRUE;
 
-	$log->flushMessages('UPDATE_01');		// Write admin log entry, update message handler
+	
 	
 	
 	
