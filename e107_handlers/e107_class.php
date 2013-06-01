@@ -1974,17 +1974,28 @@ class e107
 		$path = self::coreTemplatePath($id, $override);
 		$id = str_replace('/', '_', $id);
 		$ret = self::_getTemplate($id, $key, $reg_path, $path, $info);
-		if(!$merge || !$override || !is_array($ret))
+		
+		
+	//	if(!$merge || !$override || !is_array($ret)) // problems merging when template doesn't exist in core. 
+		//XXX This appears to have less problems, but requires more testing. 
+		if(!$merge && !$override)
 		{
-			return $ret;
+			 return $ret;
 		}
-
+		
+		if(!is_array($ret))
+		{
+			$ret = array();	
+		}
+		
+		// print_a($id ." ". $key ." ". $reg_path." ". $path." ".$info);
+		
 		// merge
 		$reg_path = 'core/e107/templates/'.$id;
 		$path = self::coreTemplatePath($id, false);
 		$id = str_replace('/', '_', $id);
 		$ret_core = self::_getTemplate($id, $key, $reg_path, $path, $info);
-
+		
 		return (is_array($ret_core) ? array_merge($ret_core, $ret) : $ret);
 	}
 
@@ -3542,7 +3553,7 @@ class e107
 			break;
 		}
 	
-		if($filename)
+		if($filename && is_file($filename)) // Test with chatbox_menu 
 		{
 			// autoload doesn't REQUIRE files, because this will break things like call_user_func()
 			include($filename);
