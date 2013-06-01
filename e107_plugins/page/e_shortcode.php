@@ -24,7 +24,15 @@ class page_shortcodes extends e_shortcode
 			if(($action == 'listPages' || $action == 'listChapters') && vartrue($this->request['id']))
 			{
 				$this->var = e107::getDb()->retrieve('page_chapters','chapter_name, chapter_meta_description','chapter_id = '.intval($this->request['id']).' LIMIT 1');	
-			}		
+			}
+			
+			if($action == 'showPage' && vartrue($this->request['id'])) // get chapter and description from current. 
+			{
+				$query = "SELECT p.page_id,c.chapter_name,c.chapter_meta_description FROM #page AS p LEFT JOIN #page_chapters AS c ON p.page_chapter = c.chapter_id WHERE p.page_id = ".intval($this->request['id'])." LIMIT 1 "; 
+				$rows = e107::getDb()->retrieve($query,true);
+				$this->var = $rows[0];	
+			}
+					
 			
 		}
 			
@@ -101,7 +109,7 @@ class page_shortcodes extends e_shortcode
 		
 		
 		function sc_page_chapter_name($parm='')
-		{
+		{			
 			return e107::getParser()->toHtml($this->var['chapter_name']);	
 		}		
 		
