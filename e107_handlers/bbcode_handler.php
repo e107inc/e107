@@ -536,7 +536,7 @@ class e_bbcode
 				
 		$bbcode_shortcodes->setVars($data);	
 		
-  		return "<div id='bbcode-panel-".$id."' class='mceToolbar bbcode-panel' {$visible}>".$tp->parseTemplate($BBCODE_TEMPLATE,TRUE)."</div>";		
+  		return "<div id='bbcode-panel-".$id."' class='mceToolbar bbcode-panel' {$visible}>".$tp->parseTemplate($BBCODE_TEMPLATE,TRUE, $bbcode_shortcodes)."</div>";		
 	}
 	
     

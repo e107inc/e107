@@ -101,7 +101,7 @@ if (!USER || getperms('0'))
 	}
 	
 	
-	$text = $tp->parseTemplate($LOGIN_TABLE,true);
+	$text = $tp->parseTemplate($LOGIN_TABLE,true, $sc);
 	
 	
 	
@@ -115,9 +115,9 @@ if (!USER || getperms('0'))
 //	echo preg_replace("/\{(.*?)\}/e", 'varset($\1,"\1")', $LOGIN_TABLE_HEADER);
 	$login_message = SITENAME; //	$login_message = LAN_LOGIN_3." | ".SITENAME;
 	echo LOGINMESSAGE;
-	echo $tp->parseTemplate($LOGIN_TABLE_HEADER);
+	echo $tp->parseTemplate($LOGIN_TABLE_HEADER, $sc);
 	$ns->tablerender($login_message, $text, 'login_page');
-	echo $tp->parseTemplate($LOGIN_TABLE_FOOTER);
+	echo $tp->parseTemplate($LOGIN_TABLE_FOOTER, $sc);
 	
 	
 	// echo preg_replace("/\{([^ ]*?)\}/e", 'varset($\1,"\1")', $LOGIN_TABLE_FOOTER);

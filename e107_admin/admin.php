@@ -232,8 +232,8 @@ class admin_start
 // auto db update
 if ('0' == ADMINPERMS)
 {
-	e107::getScBatch('admin');
-	echo $tp->parseTemplate('{ADMIN_COREUPDATE=alert}',true);
+	$sc = e107::getScBatch('admin');
+	echo $tp->parseTemplate('{ADMIN_COREUPDATE=alert}',true, $sc);
 	
 	require_once(e_ADMIN.'update_routines.php');
 	update_check();
