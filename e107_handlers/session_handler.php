@@ -839,7 +839,8 @@ class e_core_session extends e_session
 			|| (isset($_GET['e-token']) && !$this->checkFormToken($_GET['e-token'])))
 			{
 				if(defsettrue('e_DEBUG'))
-				{		
+				{
+					$details = "USER: ".USERNAME."\n";		
 					$details = "HOST: ".$_SERVER['HTTP_HOST']."\n";
 					$details .= "REQUEST_URI: ".$_SERVER['REQUEST_URI']."\n";
 					$details .= "e-token (POST): ".$_POST['e-token']."\n";
@@ -852,8 +853,12 @@ class e_core_session extends e_session
 				//	$details .= print_r($_GET,true);
 					$details .= "\nPlugins:\n";
 					$details .= print_r($pref['plug_installed'],true);
-						
-					e107::getAdminLog()->log_event('Unauthorized access!', $details, E_LOG_FATAL);				
+					
+					$log = e107::getAdminLog();		
+					$log->addDebug($details);			
+					$log->toFile('Unauthorized_access','Unauthorized access Log', true);
+					$log->add('Unauthorized access!', $details, E_LOG_FATAL);	
+					// e107::getAdminLog()->log_event('Unauthorized access!', $details, E_LOG_FATAL);				
 				}	
 				// do not redirect, prevent dead loop, save server resources
 				if($die) die('Unauthorized access!');
