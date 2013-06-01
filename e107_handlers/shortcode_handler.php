@@ -388,7 +388,7 @@ class e_parse_shortcode
 			{
 				// register instance directly to allow override
 				 $this->scClasses[$className] = new $className(); // located inside registerClassMethods()
-				// $this->registerClassMethods($className, $path);
+				// $this->registerClassMethods($className, $path);  // XXX Global registration should happen separately - here we want only the object. 
 				return $this->scClasses[$className];
 			}
 			elseif(E107_DBG_BBSC || E107_DBG_SC)
