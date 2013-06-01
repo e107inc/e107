@@ -640,7 +640,7 @@ class e_admin_log
 	/**
 	 * Save Message stack to File. 
 	 */
-	private function saveToFile($logTitle='')
+	private function saveToFile($logTitle='', $append=false)
 	{
 		if($this->logFile == null)
 		{
@@ -664,10 +664,20 @@ class e_admin_log
 			$text .= date('Y-m-d H:i:s',$m['time'])."  \t".str_pad($m['dislevel'],10," ",STR_PAD_RIGHT)."\t".strip_tags($m['message'])."\n";
 		}
 		
-		$date = date('Y-m-d_H-i-s');
+		$date = ($append == true) ? date('Y-m-d') : date('Y-m-d_H-i-s').'_'.crc32($text);
+		
 		$fileName = e_LOG.$date."_".$this->logFile.".log";
 		
-		if(file_put_contents($fileName,$text))
+		if($append == true)
+		{
+			$app = FILE_APPEND;
+		}
+		else 
+		{
+			$app = null;
+		}
+		
+		if(file_put_contents($fileName, $text, $app))
 		{
 			$this->_allMessages = array();
 			return $this->logFile;
@@ -680,17 +690,17 @@ class e_admin_log
 
 
 	/**
-	 * Set and enable logging to a file. 
-	 * Must be set PRIOR to flushMessages(). (which saves the results)
-	 * @param name without the extension. (ie. data prefix and .log suffix will be added automatically)
+	 * Set and save accumulated log to a file. 
+	 * Use addDebug(), addError() or addSuccess() prior to executing.  
+	 * @param string name without the extension. (ie. date prefix and .log suffix will be added automatically)
+	 * @param string Title for use inside the Log file
+	 * @param boolean true = append to file, false = new file each save. 
 	 */
-	public function toFile($name,$logTitle='')
+	public function toFile($name,$logTitle='',$append=false)
 	{
-		
-		
-		
+
 		$this->logFile	= $name;
-		$this->saveToFile($logTitle);
+		$this->saveToFile($logTitle,$append);
 		$this->logFile = null;
 	}
 
