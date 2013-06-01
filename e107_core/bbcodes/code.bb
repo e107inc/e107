@@ -46,10 +46,19 @@ if(isset($pref['useGeshi']) && $pref['useGeshi'] && file_exists(e_PLUGIN."geshi/
 }
 else
 {
+
+	
+	
 		
 	$code_text = html_entity_decode($code_text, ENT_QUOTES, 'utf-8');	
 	$code_text = trim($code_text);
 	$code_text = htmlspecialchars($code_text, ENT_QUOTES, 'utf-8').'</pre>';
+	
+	if($parm == 'inline')
+	{
+		return "<code style='unicode-bidi: embed; direction: ltr'>".$code_text."</code>";	
+	}
+	
 //	$highlighted_text = highlight_string($code_text, TRUE);
 // highlighted_text = str_replace(array("<code>","</code>"),"",$highlighted_text);
 	$divClass = ($parm) ? $parm : 'code_highlight';
