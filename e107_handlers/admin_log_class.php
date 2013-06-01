@@ -223,12 +223,12 @@ class e_admin_log
 		//---------------------------------------
 		// Calculations common to all logs
 		//---------------------------------------
-		$userid = (USER === TRUE) ? USERID : 0;
-		$userstring = (USER === true ? USERNAME : 'LAN_ANONYMOUS');
-		$userIP = e107::getIPHandler()->getIP(FALSE);
+		$userid 		= deftrue('USER') ? USERID : 0;
+		$userstring 	= deftrue('USER') ? USERNAME : 'LAN_ANONYMOUS';
+		$userIP 		= e107::getIPHandler()->getIP(FALSE);
 
-		$importance = $tp->toDB($importance, true, false, 'no_html');
-		$eventcode = $tp->toDB($eventcode, true, false, 'no_html');
+		$importance 	= $tp->toDB($importance, true, false, 'no_html');
+		$eventcode 		= $tp->toDB($eventcode, true, false, 'no_html');
 
 		if (is_array($explain))
 		{
