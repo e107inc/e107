@@ -646,13 +646,11 @@ class e_admin_log
 		{
 			 return;
 		}
-		
-		$text = "";
-		
+				
 		if(count($this->_allMessages))
 		{
-			$text .= "  e107 CMS Log file : ".$logTitle."   ".date('Y-m-d_H-i-s')."\n";
-			$text .= "-------------------------------------------------------------------------------------------\n\n";		
+			$head = "  e107 CMS Log file : ".$logTitle."   ".date('Y-m-d_H-i-s')."\n";
+			$head .= "-------------------------------------------------------------------------------------------\n\n";		
 		}
 		else 
 		{
@@ -661,7 +659,7 @@ class e_admin_log
 		
 		foreach($this->_allMessages as $m)
 		{
-			$text .= date('Y-m-d H:i:s',$m['time'])."  \t".str_pad($m['dislevel'],10," ",STR_PAD_RIGHT)."\t".strip_tags($m['message'])."\n";
+			$text .= date('Y-m-d H:i:s', $m['time'])."  \t".str_pad($m['dislevel'],10," ",STR_PAD_RIGHT)."\t".strip_tags($m['message'])."\n";
 		}
 		
 		$date = ($append == true) ? date('Y-m-d') : date('Y-m-d_H-i-s').'_'.crc32($text);
@@ -671,10 +669,15 @@ class e_admin_log
 		if($append == true)
 		{
 			$app = FILE_APPEND;
+			if(!file_exists($fileName))
+			{
+				$text = $head . $text;	
+			}
 		}
 		else 
 		{
 			$app = null;
+			$text = $head . $text;	
 		}
 		
 		if(file_put_contents($fileName, $text, $app))
