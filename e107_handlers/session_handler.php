@@ -838,7 +838,7 @@ class e_core_session extends e_session
 			if((isset($_POST['e-token']) && !$this->checkFormToken($_POST['e-token']))
 			|| (isset($_GET['e-token']) && !$this->checkFormToken($_GET['e-token'])))
 			{
-				if(defsettrue('e_DEBUG'))
+			//	if(defsettrue('e_DEBUG'))
 				{
 					$details = "USER: ".USERNAME."\n";		
 					$details = "HOST: ".$_SERVER['HTTP_HOST']."\n";
