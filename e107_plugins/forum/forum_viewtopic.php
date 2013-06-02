@@ -358,13 +358,13 @@ foreach ($postList as $postInfo)
 			$_style = (isset($FORUMREPLYSTYLE_ALT) && $alt ? $FORUMREPLYSTYLE_ALT : $FORUMREPLYSTYLE);
 		}
 
-		e107::getScBatch('view', 'forum')->setScVar('postInfo', $postInfo);
+		$forum_shortcodes = e107::getScBatch('view', 'forum')->setScVar('postInfo', $postInfo);
 		$forrep .= $tp->parseTemplate($_style, true, $forum_shortcodes) . "\n";
 	}
 	else
 	{
 		$postInfo['thread_start'] = true;
-		e107::getScBatch('view', 'forum')->setScVar('postInfo', $postInfo);
+		$forum_shortcodes = e107::getScBatch('view', 'forum')->setScVar('postInfo', $postInfo);
 		$forthr = $tp->parseTemplate($FORUMTHREADSTYLE, true, vartrue($forum_shortcodes)) . "\n";
 	}
 }
