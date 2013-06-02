@@ -2850,14 +2850,26 @@ class e107plugin
 		$this->plug_vars['category'] = (isset($this->plug_vars['category'])) ? $this->manage_category($this->plug_vars['category']) : "misc";
 		$this->plug_vars['folder'] = $plugName; // remove the need for <folder> tag in plugin.xml.
 
-		if(varset($this->plug_vars['description']) && !is_array($this->plug_vars['description']))
+		if(varset($this->plug_vars['description']))
 		{
-			$diz = $this->plug_vars['description'];
-			unset($this->plug_vars['description']);
-			
-			$this->plug_vars['description']['@value'] = $diz;		
+			if (is_array($this->plug_vars['description']))
+			{
+				if (isset($this->plug_vars['description']['@attributes']['lan']) && defined($this->plug_vars['description']['@attributes']['lan']))
+				{
+					// Pick up the language-specific description if it exists.
+					$this->plug_vars['description']['@value'] = constant($this->plug_vars['description']['@attributes']['lan']);
+				}
+			}
+			else
+			{
+				$diz = $this->plug_vars['description'];
+				unset($this->plug_vars['description']);
+				
+				$this->plug_vars['description']['@value'] = $diz;		
+			}
 		}
 		
+	
 		 // Very useful debug code.to compare plugin.php vs plugin.xml
 		/*
 		 $testplug = 'forum';
