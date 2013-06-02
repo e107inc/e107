@@ -2,7 +2,7 @@
 require_once("../../class2.php");
 
 include_lan(e_PLUGIN."download/languages/".e_LANGUAGE."/download.php");
-
+$log = e107::getAdminLog(); // temporary debug
 $id = FALSE;
 
 if (!is_numeric(e_QUERY)) 
@@ -205,6 +205,9 @@ if ($type == "file")
 					e107::getFile()->send(e_UPLOAD.$download_url);
 					exit();
 				}
+				$log->addError("Couldn't find ".e_UPLOAD.$download_url." or ".e_DOWNLOAD.$download_url);
+				$log->toFile('download_requests','Download Requests', true); // temporary debug
+
 			}
 		} 
 		else 
@@ -317,7 +320,7 @@ else
 	}
 }
 
-
+$log->toFile('download_requests','Download Requests', true); // temporary debug
 
 function check_download_limits() 
 {
