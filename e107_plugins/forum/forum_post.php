@@ -81,7 +81,7 @@ define('MODERATOR', USER && $forum->isModerator(USERID));
 require_once(e_HANDLER.'ren_help.php');
 
 //e107::getScBatch('view', 'forum'); //XXX FIXME Conflicting shortcode names. Find a solution without renaming them. 
-e107::getScBatch('post', 'forum')->setScVar('forum', $forum)->setScVar('threadInfo', vartrue($threadInfo));
+$sc = e107::getScBatch('post', 'forum')->setScVar('forum', $forum)->setScVar('threadInfo', vartrue($threadInfo));
 
 $gen = new convert;
 $fp = new floodprotect;
@@ -520,7 +520,7 @@ if($action == 'rp')
 	$FORUMPOST = $FORUMPOST_REPLY;
 }
 e107::lan('forum','English_front');
-$text = $tp->parseTemplate($FORUMPOST, true);
+$text = $tp->parseTemplate($FORUMPOST, true, $sc);
 
 
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
