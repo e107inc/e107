@@ -2,7 +2,7 @@
 require_once("../../class2.php");
 
 include_lan(e_PLUGIN."download/languages/".e_LANGUAGE."/download.php");
-$log = e107::getAdminLog(); // temporary debug
+$log = e107::getAdminLog(); 
 $id = FALSE;
 
 if (!is_numeric(e_QUERY)) 
@@ -95,12 +95,14 @@ if (preg_match("#.*\.[a-z,A-Z]{3,4}#", e_QUERY))
 			e107::getFile()->send(e_UPLOAD.$bid);
 			exit();
 		}
+		$log->addError("Line".__LINE__.": Couldn't find ".e_UPLOAD.$bid."");
 	}
 	if (file_exists(e_DOWNLOAD.e_QUERY)) 
 	{
 		e107::getFile()->send(e_DOWNLOAD.e_QUERY);
 		exit();
 	}
+	$log->addError("Line".__LINE__.": Couldn't find ".e_DOWNLOAD.e_QUERY);
 	require_once(HEADERF);
 	$ns->tablerender(LAN_dl_61, "<div style='text-align:center'>".LAN_dl_65."\n<br /><br />\n<a href='javascript:history.back(1)'>".LAN_dl_64."</a></div>");
 	require_once(FOOTERF);
@@ -206,8 +208,6 @@ if ($type == "file")
 					exit();
 				}
 				$log->addError("Couldn't find ".e_UPLOAD.$download_url." or ".e_DOWNLOAD.$download_url);
-				$log->toFile('download_requests','Download Requests', true); // temporary debug
-
 			}
 		} 
 		else 
@@ -320,7 +320,7 @@ else
 	}
 }
 
-$log->toFile('download_requests','Download Requests', true); // temporary debug
+$log->toFile('download_requests','Download Requests', true);
 
 function check_download_limits() 
 {
