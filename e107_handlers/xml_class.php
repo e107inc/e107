@@ -561,6 +561,10 @@ class xmlClass
 
 					//more cases?
 					default:
+						
+//FIXME - commented code breaks parsing of plugin.xml extended and userclass tags and possibly other xml files. 
+						
+	/*
 						// fix - empty SimpleXMLElement
 						if(empty($xml->{$tag}))
 						{
@@ -571,7 +575,7 @@ class xmlClass
 							else $ret[$tag] = '';
 							break;
 						}
-						
+	*/					
 						$count = $xml->{$tag}->count(); 
 						if($count >= 1) //array of elements - loop
 						{
