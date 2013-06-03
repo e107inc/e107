@@ -815,6 +815,30 @@ class e_form
 		
 	}
 
+
+
+	/**
+	 * Render a bootStrap ProgressBar. 
+	 * @param string $name
+	 * @param number $value
+	 * @param array $options
+	 */
+	public function progressBar($name,$value,$options=array())
+	{
+		if(!deftrue('e_BOOTSTRAP'))
+		{
+			return;
+		}		
+			
+		$class = vartrue($options['class'],'');	
+		
+		return	"<div class='progress ".$class."' id='".$this->name2id($name)."'>
+   		 	<div class='bar' style='width: ".number_format($value,1)."%'></div>
+    	</div>";
+
+	}
+
+
 	/**
 	 * Textarea Element 
 	 * @param $name
@@ -1506,20 +1530,49 @@ class e_form
 	 * Generic Button Element. 
 	 * @param string $name
 	 * @param string $value
-	 * @param string $action [optional] default is submit
+	 * @param string $action [optional] default is submit - use 'dropdown' for a bootstrap dropdown button. 
 	 * @param string $label [optional]
 	 * @param string|array $options [optional]
 	 * @return string
 	 */
 	public function button($name, $value, $action = 'submit', $label = '', $options = array())
 	{
+		if(deftrue('e_BOOTSTRAP') && $action == 'dropdown' && is_array($value))
+		{
+		//	$options = $this->format_options('admin_button', $name, $options);
+			$options['class'] = vartrue($options['class']);
+			
+			$align = vartrue($options['align'],'left');
+					
+			$text = '<div class="btn-group pull-'.$align.'">
+			    <a class="btn dropdown-toggle '.$options['class'].'" data-toggle="dropdown" href="#">
+			    '.($label ? $label : 'No Label Provided').'
+			    <span class="caret"></span>
+			    </a>
+			    <ul class="dropdown-menu">
+			    ';
+			
+			foreach($value as $k=>$v)
+			{
+				$text .= '<li>'.$v.'</li>';	
+			}
+			
+			$text .= '
+			    </ul>
+			    </div>';
+			
+			return $text;	
+		}			
+				
+			
+		
 		return $this->admin_button($name, $value, $action, $label, $options);
 		
 	}
 
 	
 	/**
-	 *
+	 * Admin Button - for front-end, use button(); 
 	 * @param string $name
 	 * @param string $value
 	 * @param string $action [optional] default is submit

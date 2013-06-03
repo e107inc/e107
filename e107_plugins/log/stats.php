@@ -74,261 +74,6 @@ if($stat -> error)
 	exit;
 }
 
-/*
-$country["arpa"] = "ARPANet";
-$country["com"] = "Commercial Users";
-$country["edu"] = "Education";
-$country["gov"] = "Government";
-$country["int"] = "Organisation established by an International Treaty";
-$country["mil"] = "Military";
-$country["net"] = "Network";
-$country["org"] = "Organisation";
-$country["ad"] = "Andorra";
-$country["ae"] = "United Arab Emirates";
-$country["af"] = "Afghanistan";
-$country["ag"] = "Antigua & Barbuda";
-$country["ai"] = "Anguilla";
-$country["al"] = "Albania";
-$country["am"] = "Armenia";
-$country["an"] = "Netherland Antilles";
-$country["ao"] = "Angola";
-$country["aq"] = "Antarctica";
-$country["ar"] = "Argentina";
-$country["as"] = "American Samoa";
-$country["at"] = "Austria";
-$country["au"] = "Australia";
-$country["aw"] = "Aruba";
-$country["az"] = "Azerbaijan";
-$country["ba"] = "Bosnia-Herzegovina";
-$country["bb"] = "Barbados";
-$country["bd"] = "Bangladesh";
-$country["be"] = "Belgium";
-$country["bf"] = "Burkina Faso";
-$country["bg"] = "Bulgaria";
-$country["bh"] = "Bahrain";
-$country["bi"] = "Burundi";
-$country["bj"] = "Benin";
-$country["bm"] = "Bermuda";
-$country["bn"] = "Brunei Darussalam";
-$country["bo"] = "Bolivia";
-$country["br"] = "Brasil";
-$country["bs"] = "Bahamas";
-$country["bt"] = "Bhutan";
-$country["bv"] = "Bouvet Island";
-$country["bw"] = "Botswana";
-$country["by"] = "Belarus";
-$country["bz"] = "Belize";
-$country["ca"] = "Canada";
-$country["cc"] = "Cocos (Keeling) Islands";
-$country["cf"] = "Central African Republic";
-$country["cg"] = "Congo";
-$country["ch"] = "Switzerland";
-$country["ci"] = "Ivory Coast";
-$country["ck"] = "Cook Islands";
-$country["cl"] = "Chile";
-$country["cm"] = "Cameroon";
-$country["cn"] = "China";
-$country["co"] = "Colombia";
-$country["cr"] = "Costa Rica";
-$country["cs"] = "Czechoslovakia";
-$country["cu"] = "Cuba";
-$country["cv"] = "Cape Verde";
-$country["cx"] = "Christmas Island";
-$country["cy"] = "Cyprus";
-$country["cz"] = "Czech Republic";
-$country["de"] = "Germany";
-$country["dj"] = "Djibouti";
-$country["dk"] = "Denmark";
-$country["dm"] = "Dominica";
-$country["do"] = "Dominican Republic";
-$country["dz"] = "Algeria";
-$country["ec"] = "Ecuador";
-$country["ee"] = "Estonia";
-$country["eg"] = "Egypt";
-$country["eh"] = "Western Sahara";
-$country["er"] = "Eritrea";
-$country["es"] = "Spain";
-$country["et"] = "Ethiopia";
-$country["fi"] = "Finland";
-$country["fj"] = "Fiji";
-$country["fk"] = "Falkland Islands (Malvibas)";
-$country["fm"] = "Micronesia";
-$country["fo"] = "Faroe Islands";
-$country["fr"] = "France";
-$country["fx"] = "France (European Territory)";
-$country["ga"] = "Gabon";
-$country["gb"] = "Great Britain";
-$country["gd"] = "Grenada";
-$country["ge"] = "Georgia";
-$country["gf"] = "Guyana (French)";
-$country["gh"] = "Ghana";
-$country["gi"] = "Gibralta";
-$country["gl"] = "Greenland";
-$country["gm"] = "Gambia";
-$country["gn"] = "Guinea";
-$country["gp"] = "Guadeloupe (French)";
-$country["gq"] = "Equatorial Guinea";
-$country["gr"] = "Greece";
-$country["gs"] = "South Georgia & South Sandwich Islands";
-$country["gt"] = "Guatemala";
-$country["gu"] = "Guam (US)";
-$country["gw"] = "Guinea Bissau";
-$country["gy"] = "Guyana";
-$country["hk"] = "Hong Kong";
-$country["hm"] = "Heard & McDonald Islands";
-$country["hn"] = "Honduras";
-$country["hr"] = "Croatia";
-$country["ht"] = "Haiti";
-$country["hu"] = "Hungary";
-$country["id"] = "Indonesia";
-$country["ie"] = "Ireland";
-$country["il"] = "Israel";
-$country["in"] = "India";
-$country["io"] = "British Indian Ocean Territories";
-$country["iq"] = "Iraq";
-$country["ir"] = "Iran";
-$country["is"] = "Iceland";
-$country["it"] = "Italy";
-$country["jm"] = "Jamaica";
-$country["jo"] = "Jordan";
-$country["jp"] = "Japan";
-$country["ke"] = "Kenya";
-$country["kg"] = "Kyrgyz Republic";
-$country["kh"] = "Cambodia";
-$country["ki"] = "Kiribati";
-$country["km"] = "Comoros";
-$country["kn"] = "Saint Kitts Nevis Anguilla";
-$country["kp"] = "Korea (North)";
-$country["kr"] = "Korea (South)";
-$country["kw"] = "Kuwait";
-$country["ky"] = "Cayman Islands";
-$country["kz"] = "Kazachstan";
-$country["la"] = "Laos";
-$country["lb"] = "Lebanon";
-$country["lc"] = "Saint Lucia";
-$country["li"] = "Liechtenstein";
-$country["lk"] = "Sri Lanka";
-$country["lr"] = "Liberia";
-$country["ls"] = "Lesotho";
-$country["lt"] = "Lithuania";
-$country["lu"] = "Luxembourg";
-$country["lv"] = "Latvia";
-$country["ly"] = "Libya";
-$country["ma"] = "Morocco";
-$country["mc"] = "Monaco";
-$country["md"] = "Moldova";
-$country["mg"] = "Madagascar";
-$country["mh"] = "Marshall Islands";
-$country["mk"] = "Macedonia";
-$country["ml"] = "Mali";
-$country["mm"] = "Myanmar";
-$country["mn"] = "Mongolia";
-$country["mo"] = "Macau";
-$country["mp"] = "Northern Mariana Islands";
-$country["mq"] = "Martinique (French)";
-$country["mr"] = "Mauretania";
-$country["ms"] = "Montserrat";
-$country["mt"] = "Malta";
-$country["mu"] = "Mauritius";
-$country["mv"] = "Maldives";
-$country["mw"] = "Malawi";
-$country["mx"] = "Mexico";
-$country["my"] = "Malaysia";
-$country["mz"] = "Mozambique";
-$country["na"] = "Namibia";
-$country["nc"] = "New Caledonia (French)";
-$country["ne"] = "Niger";
-$country["nf"] = "Norfolk Island";
-$country["ng"] = "Nigeria";
-$country["ni"] = "Nicaragua";
-$country["nl"] = "Netherlands";
-$country["no"] = "Norway";
-$country["np"] = "Nepal";
-$country["nr"] = "Nauru";
-$country["nt"] = "Saudiarab. Irak)";
-$country["nu"] = "Niue";
-$country["nz"] = "New Zealand";
-$country["om"] = "Oman";
-$country["pa"] = "Panama";
-$country["pe"] = "Peru";
-$country["pf"] = "Polynesia (French)";
-$country["pg"] = "Papua New Guinea";
-$country["ph"] = "Philippines";
-$country["pk"] = "Pakistan";
-$country["pl"] = "Poland";
-$country["pm"] = "Saint Pierre & Miquelon";
-$country["pn"] = "Pitcairn";
-$country["pr"] = "Puerto Rico (US)";
-$country["pt"] = "Portugal";
-$country["pw"] = "Palau";
-$country["py"] = "Paraguay";
-$country["qa"] = "Qatar";
-$country["re"] = "Reunion (French)";
-$country["ro"] = "Romania";
-$country["ru"] = "Russian Federation";
-$country["rw"] = "Rwanda";
-$country["sa"] = "Saudi Arabia";
-$country["sb"] = "Salomon Islands";
-$country["sc"] = "Seychelles";
-$country["sd"] = "Sudan";
-$country["se"] = "Sweden";
-$country["sg"] = "Singapore";
-$country["sh"] = "Saint Helena";
-$country["si"] = "Slovenia";
-$country["sj"] = "Svalbard & Jan Mayen";
-$country["sk"] = "Slovakia";
-$country["sl"] = "Sierra Leone";
-$country["sm"] = "San Marino";
-$country["sn"] = "Senegal";
-$country["so"] = "Somalia";
-$country["sr"] = "Suriname";
-$country["st"] = "Sao Tome & Principe";
-$country["su"] = "Soviet Union";
-$country["sv"] = "El Salvador";
-$country["sy"] = "Syria";
-$country["sz"] = "Swaziland";
-$country["tc"] = "Turks & Caicos Islands";
-$country["td"] = "Chad";
-$country["tf"] = "French Southern Territories";
-$country["tg"] = "Togo";
-$country["th"] = "Thailand";
-$country["tj"] = "Tadjikistan";
-$country["tk"] = "Tokelau";
-$country["tm"] = "Turkmenistan";
-$country["tn"] = "Tunisia";
-$country["to"] = "Tonga";
-$country["tp"] = "East Timor";
-$country["tr"] = "Turkey";
-$country["tt"] = "Trinidad & Tobago";
-$country["tv"] = "Tuvalu";
-$country["tw"] = "Taiwan";
-$country["tz"] = "Tanzania";
-$country["ua"] = "Ukraine";
-$country["ug"] = "Uganda";
-$country["uk"] = "United Kingdom";
-$country["um"] = "US Minor outlying Islands";
-$country["us"] = "United States";
-$country["uy"] = "Uruguay";
-$country["uz"] = "Uzbekistan";
-$country["va"] = "Vatican City State";
-$country["vc"] = "St Vincent & Grenadines";
-$country["ve"] = "Venezuela";
-$country["vg"] = "Virgin Islands (British)";
-$country["vi"] = "Virgin Islands (US)";
-$country["vn"] = "Vietnam";
-$country["vu"] = "Vanuatu";
-$country["wf"] = "Wallis & Futuna Islands";
-$country["ws"] = "Samoa";
-$country["ye"] = "Yemen";
-$country["yt"] = "Mayotte";
-$country["yu"] = "Yugoslavia";
-$country["za"] = "South Africa";
-$country["zm"] = "Zambia";
-$country["zr"] = "Zaire";
-$country["zw"] = "Zimbabwe";
-*/
-
-
 /* stats displayed will depend on the query string. For example, ?1.2.4 will render today's stats, all time stats and browser stats */
 /*
 1: today's stats
@@ -500,6 +245,13 @@ switch($action)
 */
 
 $path = e_PLUGIN_ABS.'log/stats.php';
+
+
+
+
+
+
+
 $links = "
 <div style='text-align: center;'>".
 ($action != 1 ? "<a href='{$path}?1'>".ADSTAT_L8."</a>" : "<b>".ADSTAT_L8."</b>")." | ".
@@ -523,7 +275,13 @@ $links .= "</div><br /><br />";
 
 
 
-$ns->tablerender(ADSTAT_L6, $links.$text);
+
+
+// $links = statNav($action)."<br /><br />";
+
+$nav = $stat->renderNav($action)."<br /><br />";
+
+$ns->tablerender(ADSTAT_L6, $nav.$text);
 require_once(FOOTERF);
 
 
@@ -989,7 +747,48 @@ class siteStats
 		/* end constructor */
 	}
 
-
+	function renderNav($action)
+	{
+		$path = e_PLUGIN_ABS.'log/stats.php';
+		
+		$links = array(
+			1	=> array('label' 	=> ADSTAT_L8, 	'pref' 	=> null),
+			2	=> array('label'	=> ADSTAT_L9,	'pref'	=> null),
+			10	=> array('label'	=> ADSTAT_L10,	'pref'	=> null),
+			11	=> array('label'	=> ADSTAT_L11,	'pref'	=> null),
+			3	=> array('label'	=> ADSTAT_L12,	'pref'	=> 'statBrowser'),
+			4	=> array('label'	=> ADSTAT_L13,	'pref'	=> 'statOs'),
+			5	=> array('label'	=> ADSTAT_L14,	'pref'	=> 'statDomain'),
+			6	=> array('label'	=> ADSTAT_L15,	'pref'	=> 'statScreen'),
+			7	=> array('label'	=> ADSTAT_L16,	'pref'	=> 'statRefer'),
+			8	=> array('label'	=> ADSTAT_L17,	'pref'	=> 'statQuery'),
+			9	=> array('label'	=> ADSTAT_L18,	'pref'	=> 'statRecent'),
+		);	
+		
+		if(ADMIN == true)
+		{
+			$links[12]	= array('label'	=> ADSTAT_L43, 'pref' => null);	
+			$links[13]	= array('label'	=> ADSTAT_L44, 'pref' => null);	
+		}
+		
+		$lk = array();
+		
+		foreach($links as $id => $val)
+		{
+			if($val['pref'] == null || e107::getPref($val['pref']))
+			{
+				$selected = ($id === $action) ? "class='active'" : "";
+				$lk[] = "<a {$selected} href='".$path."?".$id."'>".$val['label']."</a>";	
+			} 		
+		}
+	
+		if(deftrue('e_BOOTSTRAP'))
+		{
+			return "<div class='text-right'>".e107::getForm()->button('statNav',$lk,'dropdown',$links[$action]['label'], array('align'=>'right','class'=>'btn-primary'))."</div>";
+		}
+	
+		return "<div style='text-align: center;'>".implode(" | ", $lk)."</div>";
+	}
 
 	/**
 	 *	sorts multi-dimentional array based on which field is passed 
@@ -1046,7 +845,13 @@ class siteStats
 			$totalu += $info['unq'];
 		}
 
-		$text = "<table class='table fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+		$text = "<table class='table table-striped fborder' style='width: 100%;'>
+		<tr>
+			<th class='fcaption' style='width: 20%;'>".ADSTAT_L19."</th>
+			<th class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</th>
+			<th class='fcaption' style='width: 10%; text-align: center;'>%</th>
+		</tr>\n";
+		
 		foreach($totalArray as $key => $info) 
 		{
 			if($info['ttl'])
@@ -1105,7 +910,7 @@ class siteStats
 
 		$totalArray = $this -> arraySort($totalArray, "ttlv");
 
-		$text .= "<table class='table fborder' style='width: 100%;'>\n
+		$text .= "<table class='table table-striped fborder' style='width: 100%;'>\n
 			<colgroup>
 			  <col style='width: 20%;' />
 			  <col style='width: 60%;' />
@@ -1148,7 +953,7 @@ class siteStats
 		$uniqueArray = $this -> arraySort($uniqueArray, "unqv");
 
 		$text .= "<br />
-		<table class='table fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>Page</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L24."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+		<table class='table table-striped fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>Page</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L24."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
 		foreach($uniqueArray as $key => $info) 
 		{
 			if ($info['ttlv'])
@@ -1193,9 +998,9 @@ class siteStats
 			$pars = make_bits('statBrowser',$act);		// Get the query, plus maybe date for heading
 			if (!is_array($pars)) return $pars;			// Return error if necessary
 
-			if ($entries = $sql -> db_Select('logstats', 'log_data', $pars['query'])) 
+			if ($entries = $sql->select('logstats', 'log_data', $pars['query'])) 
 			{
-				$row = $sql -> db_Fetch();
+				$row = $sql->fetch();
 				$statBrowser = unserialize($row['log_data']);
 			}
 			else
@@ -1256,12 +1061,17 @@ class siteStats
 			$total = array_sum($browserArray);
 			
 			$text .= "
-				<table class='table fborder' style='width: 100%;'>\n
-					 <tr><td class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</td></tr>\n
-					 <tr><td class='fcaption' style='width: 20%;'>
-					 <a title='".($this -> order ? ADSTAT_L48 : ADSTAT_L49)."' href='".e_SELF."?".($show_version ? "3" : "14").($this -> order ? "" : ".1" )."'>".ADSTAT_L26."</a>
-					 </td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L21."</td>\n
-					 <td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+				<table class='table table-striped fborder' style='width: 100%;'>\n
+					 <tr>
+					 	<th class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</th>
+					 </tr>\n
+					 <tr>
+					 <th class='fcaption' style='width: 20%;'>
+					 	<a title='".($this -> order ? ADSTAT_L48 : ADSTAT_L49)."' href='".e_SELF."?".($show_version ? "3" : "14").($this -> order ? "" : ".1" )."'>".ADSTAT_L26."</a>
+					 </th>
+					<th class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L21."</th>\n
+					 <th class='fcaption' style='width: 10%; text-align: center;'>%</th>
+					</tr>\n";
 
 			if (count($browserArray))
 			{
@@ -1388,11 +1198,16 @@ class siteStats
 
 			$total = array_sum($osArray);
 			$text .= "	
-				<table class='table fborder' style='width: 100%;'>\n
-				<tr><td class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</td></tr>\n
-			  <tr>\n<td class='fcaption' style='width: 20%;'>
-			  <a title='".($this -> order ? "sort by total" : "sort alphabetically")."' href='".e_SELF."?".($show_version ? "4" : "15").($this -> order ? "" : ".1" )."'>".ADSTAT_L27."</a></td>\n
-			  <td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L21."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+				<table class='table table-striped fborder' style='width: 100%;'>\n
+				<tr>
+					<th class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</th>
+				</tr>\n
+			  <tr>
+				<th class='fcaption' style='width: 20%;'>
+			  	<a title='".($this -> order ? "sort by total" : "sort alphabetically")."' href='".e_SELF."?".($show_version ? "4" : "15").($this -> order ? "" : ".1" )."'>".ADSTAT_L27."</a></th>\n
+			  	<th class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L21."</th>
+				<th class='fcaption' style='width: 10%; text-align: center;'>%</th>
+			</tr>\n";
 			  
 			if (count($osArray))
 			{
@@ -1483,7 +1298,7 @@ class siteStats
 			}
 
 			$total = array_sum($domArray);
-			$text .= "		<table class='table fborder' style='width: 100%;'>\n
+			$text .= "		<table class='table table-striped fborder' style='width: 100%;'>\n
 				<tr><td class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</td></tr>\n
 				<tr>\n<td class='fcaption' style='width: 20%;'>
 				<a title='".($this -> order ? "sort by total" : "sort alphabetically")."' href='".e_SELF."?5".($this -> order ? "" : ".1" )."'>".ADSTAT_L28."</a></td>\n
@@ -1583,9 +1398,15 @@ class siteStats
 
 			$total = array_sum($screenArray);
 			$text .= "		
-			<table class='table fborder' style='width: 100%;'>\n
-				<tr><td class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</td></tr>\n
-					<tr>\n<td class='fcaption' style='width: 20%;'><a title='".($this -> order ? "sort by total" : "sort alphabetically")."' href='".e_SELF."?6".($this -> order ? "" : ".1" )."'>".ADSTAT_L29."</a></td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L21."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+			<table class='table table-striped fborder' style='width: 100%;'>\n
+			<tr>
+				<th class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</th>
+			</tr>
+			<tr>
+				<th class='fcaption' style='width: 20%;'><a title='".($this -> order ? "sort by total" : "sort alphabetically")."' href='".e_SELF."?6".($this -> order ? "" : ".1" )."'>".ADSTAT_L29."</a></th>
+				<th class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L21."</th>
+				<th class='fcaption' style='width: 10%; text-align: center;'>%</th>
+			</tr>\n";
 
 			if (count($screenArray))
 			{
@@ -1663,9 +1484,15 @@ class siteStats
 			}
 
 			$text .= "
-				<table class='table fborder' style='width: 100%;'>\n
-				<tr><td class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</td></tr>\n
-				<tr>\n<td class='fcaption' style='width: 40%;'><a title='".($this -> order ? "show cropped url" : "show full url")."' href='".e_SELF."?7".($this -> order ? "" : ".1" )."'>".ADSTAT_L30."</a></td>\n<td class='fcaption' style='width: 50%;' colspan='2'>".ADSTAT_L21."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+				<table class='table table-striped fborder' style='width: 100%;'>\n
+				<tr>
+					<th class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</th>
+				</tr>
+				<tr>
+					<th class='fcaption' style='width: 40%;'><a title='".($this -> order ? "show cropped url" : "show full url")."' href='".e_SELF."?7".($this -> order ? "" : ".1" )."'>".ADSTAT_L30."</a></th>
+					<th class='fcaption' style='width: 50%;' colspan='2'>".ADSTAT_L21."</th>
+					<th class='fcaption' style='width: 10%; text-align: center;'>%</th>
+				</tr>\n";
 			$count = 0;
 			if (count($statArray))
 			{
@@ -1746,9 +1573,16 @@ class siteStats
 			$queryArray = $this -> arraySort($statQuery, 0);
 			$total = array_sum($queryArray);
 			$text .= "		
-				<table class='table fborder' style='width: 100%;'>\n
-				<tr><td class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</td></tr>\n
-				<tr>\n<td class='fcaption' style='width: 60%;'>".ADSTAT_L31."</td>\n<td class='fcaption' style='width: 30%;' colspan='2'>".ADSTAT_L21."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+				<table class='table table-striped fborder' style='width: 100%;'>\n
+				<tr>
+					<th class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</th>
+				</tr>
+				<tr>
+					<th class='fcaption' style='width: 60%;'>".ADSTAT_L31."</th>
+					<th class='fcaption' style='width: 30%;' colspan='2'>".ADSTAT_L21."</th>
+					<th class='fcaption' style='width: 10%; text-align: center;'>%</th>
+				</tr>\n";
+				
 			$count = 1;
 			if (count($queryArray))
 			{
@@ -1795,7 +1629,11 @@ class siteStats
 		$gen = new convert;
 		$recentArray = array_reverse($this -> fileRecent, TRUE);
 		$text = "
-			<table class='table fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L18."</td>\n<td class='fcaption' style='width: 70%;'>Information</td>\n</tr>\n";
+			<table class='table table-striped fborder' style='width: 100%;'>
+			<tr>
+				<td class='fcaption' style='width: 30%;'>".ADSTAT_L18."</td>
+				<td class='fcaption' style='width: 70%;'>Information</td>
+			</tr>\n";
 
 		foreach($recentArray as $key => $info) 
 		{
@@ -1914,7 +1752,11 @@ class siteStats
 	//	print_a($dayarray);;
 
 		$text = "
-			<table class='table fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L33." ".($amount+1)." ".ADSTAT_L40."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
+			<table class='table table-striped fborder' style='width: 100%;'>
+			<tr>
+				<th class='fcaption' style='width: 30%;'>".ADSTAT_L33." ".($amount+1)." ".ADSTAT_L40."</th>
+				<th class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</th>
+			</tr>\n";
 
 		foreach($dayarray as $date => $total) 
 		{
@@ -1930,7 +1772,11 @@ class siteStats
 
 		$text .= "</table>";
 		$text .= "<br />
-		<table class='table fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L35." ".($amount+1)." ".ADSTAT_L40."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
+		<table class='table table-striped fborder' style='width: 100%;'>
+		<tr>
+			<th class='fcaption' style='width: 30%;'>".ADSTAT_L35." ".($amount+1)." ".ADSTAT_L40."</th>
+			<th class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</th>
+		</tr>\n";
 
 
 		if (!isset($total['dayunique'])) $total['dayunique'] = 0;
@@ -1950,7 +1796,11 @@ class siteStats
 		$text .= "</table>";
 
 		$text .= "<br />
-			<table class='table fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L33." ".($amount+1)." ".ADSTAT_L36."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
+			<table class='table table-striped fborder' style='width: 100%;'>
+			<tr>
+				<th class='fcaption' style='width: 30%;'>".ADSTAT_L33." ".($amount+1)." ".ADSTAT_L36."</th>
+				<th class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</th>
+			</tr>\n";
 
 		$newArray = $this -> arraySort($pagearray, "total");
 		foreach($newArray as $key => $total) 
@@ -1964,7 +1814,13 @@ class siteStats
 		}
 		$text .= "</table>";
 		$text .= "<br />
-			<table class='table fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L35." ".($amount+1)." ".ADSTAT_L36."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
+		
+			<table class='table table-striped fborder' style='width: 100%;'>
+			<tr>
+				<th class='fcaption' style='width: 30%;'>".ADSTAT_L35." ".($amount+1)." ".ADSTAT_L36."</th>
+				<th class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</th>
+			</tr>\n";
+			
 		$newArray = $this -> arraySort($pagearray, "unique");
 
 		foreach($newArray as $key => $total) {
@@ -2029,7 +1885,11 @@ class siteStats
 		$tmpArray = $this -> arraySort($monthTotal, "totalv");
 
 		$text .= "
-			<table class='table fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L37."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
+			<table class='table table-striped fborder' style='width: 100%;'>
+		<tr>
+			<th class='fcaption' style='width: 30%;'>".ADSTAT_L37."</th>
+			<th class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</th>
+		</tr>\n";
 
 		foreach($monthTotal as $date => $total) {
 
@@ -2044,7 +1904,11 @@ class siteStats
 		$text .= "</table>";
 
 		$text .= "<br />
-			<table class='table fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L38."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
+			<table class='table table-striped fborder' style='width: 100%;'>
+			<tr>
+				<th class='fcaption' style='width: 30%;'>".ADSTAT_L38."</th>
+				<th class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</th>
+			</tr>\n";
 
 		foreach($monthTotal as $date => $total) {
 			$barWidth = round(($total['uniquev']/$utotal) * 100, 2);
@@ -2101,11 +1965,24 @@ class siteStats
 	 *
 	 *	@return string text to be displayed
 	 */
-	function bar($percen, $val)
+	function bar($percen, $val,$name)
 	{
-		return "<div class='b' style='width: ".intval($percen)."%'></div>
+		if(deftrue('e_BOOTSTRAP'))
+		{
+			$text = e107::getForm()->progressBar($name,$percen);
+		}
+		else
+		{
+			$text = "<div class='b' style='width: ".intval($percen)."%'></div>"; 
+		}
+		
+		
+		
+		$text .= "
 		</td>
 		<td style='width:10%; text-align:center' class='forumheader3'>".$val;
+		
+		return $text;
 	}
 
 
