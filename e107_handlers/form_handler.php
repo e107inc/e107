@@ -2531,11 +2531,12 @@ class e_form
 					$ttl = vartrue($parms['expand']);
 					if($ttl == 1)
 					{
-						$ttl = "<button class='btn btn-mini pull-right'>More..</button>";
-						// $expand = "";
+						$ttl = $expand."<button class='btn btn-mini pull-right'>More..</button>";
+						$ttl1 = "<button class='btn btn-mini pull-right'>..Less</button>";
 					}
 					
 					$expands = '<a href="#'.$elid.'-expand" class="e-show-if-js e-expandit">'.defset($ttl, $ttl)."</a>";
+					$contracts = '<a href="#'.$elid.'-expand" class="e-show-if-js e-expandit">'.defset($ttl1, $ttl1)."</a>";
 					
 				}
 
@@ -2543,20 +2544,20 @@ class e_form
 				if(vartrue($parms['truncate']))
 				{
 					$value = $oldval = strip_tags($value);
-					$value = $tp->text_truncate($value, $parms['truncate'], $expand);
-					$truncated = str_replace($expand,'',$value);
+					$value = $tp->text_truncate($value, $parms['truncate'], '');
 					$toexpand = $value != $oldval;
 				}
 				elseif(vartrue($parms['htmltruncate']))
 				{
-					$value = $tp->html_truncate($value, $parms['htmltruncate'], $expand);
+					$value = $tp->html_truncate($value, $parms['htmltruncate'], '');
 					$toexpand = $value != $oldval;
 				}
 				if($toexpand)
 				{
 					// force hide! TODO - core style .expand-c (expand container)
-					$value .= '<span class="expand-c" style="display: none" id="'.$elid.'-expand"><span>'.str_replace($truncated,' ',$oldval).'</span></span>';
-					$value .= $expands; // Keep it at the bottom so it does't cut the sentence. 
+					// TODO: Hide 'More..' button when text fully displayed.
+					$value .= '<span class="expand-c" style="display: none" id="'.$elid.'-expand"><span>'.str_replace($value,'',$oldval).$contracts.'</span></span>';
+					$value .= $expands; 	// 'More..' button. Keep it at the bottom so it does't cut the sentence. 
 				}
 				
 				
