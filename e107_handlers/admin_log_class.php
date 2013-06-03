@@ -664,7 +664,19 @@ class e_admin_log
 		
 		$date = ($append == true) ? date('Y-m-d') : date('Y-m-d_H-i-s').'_'.crc32($text);
 		
-		$fileName = e_LOG.$date."_".$this->logFile.".log";
+		$dir = e_LOG;
+		
+		if(e_CURRENT_PLUGIN) // If it's a plugin, create a subfolder. 
+		{
+			$dir = e_LOG.e_CURRENT_PLUGIN."/";
+			
+			if(!is_dir($dir))
+			{
+				mkdir($dir,0755);	
+			}	
+		}
+		
+		$fileName = $dir.$date."_".$this->logFile.".log";
 		
 		if($append == true)
 		{
@@ -679,11 +691,15 @@ class e_admin_log
 			$app = null;
 			$text = $head . $text;	
 		}
-		
+				
 		if(file_put_contents($fileName, $text, $app))
 		{
 			$this->_allMessages = array();
 			return $this->logFile;
+		}
+		elseif(getperms('0') && E107_DEBUG_LEVEL > 0)
+		{
+			echo "Could Save to Log File: ".$fileName;	
 		}	
 
 		return false;
@@ -701,7 +717,7 @@ class e_admin_log
 	 */
 	public function toFile($name,$logTitle='',$append=false)
 	{
-
+		
 		$this->logFile	= $name;
 		$this->saveToFile($logTitle,$append);
 		$this->logFile = null;

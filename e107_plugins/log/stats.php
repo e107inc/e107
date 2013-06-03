@@ -713,7 +713,7 @@ class siteStats
 		$this -> fileRecent = vartrue($visitInfo);
 
 		/* get main stat info from database */
-		if($sql -> db_Select('logstats', 'log_data', "log_id='pageTotal'"))
+		if($sql->select('logstats', 'log_data', "log_id='pageTotal'"))
 		{
 			$row = $sql -> db_Fetch();
 			$this -> dbPageInfo = unserialize($row['log_data']);
@@ -881,7 +881,7 @@ class siteStats
 		$sql = e107::getDB();
 
 		$text = '';
-		$sql -> db_Select("logstats", "*", "log_id='pageTotal' ");
+		$sql->select("logstats", "*", "log_id='pageTotal' ");
 		$row = $sql -> db_Fetch();
 		$pageTotal = unserialize($row['log_data']);
 		$total = 0;
@@ -917,8 +917,12 @@ class siteStats
 			  <col style='width: 10%;' />
 			  <col style='width: 10%;' />
 			</colgroup>
-			<tr>\n<td class='fcaption' >".ADSTAT_L19."</td>\n
-			<td class='fcaption' colspan='2'>".ADSTAT_L23."</td>\n<td class='fcaption' style='text-align: center;'>%</td>\n</tr>\n";
+			<tr>
+				<th class='fcaption' >".ADSTAT_L19."</th>\n
+				<th class='fcaption' colspan='2'>".ADSTAT_L23."</th>
+				<th class='fcaption' style='text-align: center;'>%</th>
+			</tr>\n";
+			
 		foreach($totalArray as $key => $info) 
 		{
 			if($info['ttlv'])
@@ -1134,7 +1138,7 @@ class siteStats
 			$pars = make_bits('statOs',$act);		// Get the query, plus maybe date for heading
 			if (!is_array($pars)) return $pars;			// Return error if necessary
 
-			if ($entries = $sql -> db_Select("logstats", "*", $pars['query'])) 
+			if ($entries = $sql->select("logstats", "*", $pars['query'])) 
 			{
 				$row = $sql -> db_Fetch();
 				$statOs = unserialize($row['log_data']);
@@ -1267,7 +1271,7 @@ class siteStats
 			$pars = make_bits('statDomain',$act);		// Get the query, plus maybe date for heading
 			if (!is_array($pars)) return $pars;			// Return error if necessary
 
-			if ($entries = $sql -> db_Select('logstats', 'log_data', $pars['query'])) 
+			if ($entries = $sql->select('logstats', 'log_data', $pars['query'])) 
 			{
 				$row = $sql -> db_Fetch();
 				$statDom = unserialize($row['log_data']);
@@ -1456,7 +1460,7 @@ class siteStats
 			$pars = make_bits('statReferer',$act);		// Get the query, plus maybe date for heading
 			if (!is_array($pars)) return $pars;			// Return error if necessary
 
-			if ($entries = $sql -> db_Select('logstats', 'log_data', $pars['query'])) 
+			if ($entries = $sql->select('logstats', 'log_data', $pars['query'])) 
 			{
 				$row = $sql -> db_Fetch();
 				$statRefer = unserialize($row['log_data']);
@@ -1550,7 +1554,7 @@ class siteStats
 			$pars = make_bits('statQuery',$act);		// Get the query, plus maybe date for heading
 			if (!is_array($pars)) return $pars;			// Return error if necessary
 
-			if ($entries = $sql -> db_Select("logstats", "*", $pars['query'])) 
+			if ($entries = $sql->select("logstats", "*", $pars['query'])) 
 			{
 				$row = $sql -> db_Fetch();
 				$statQuery = unserialize($row['log_data']);
@@ -1631,8 +1635,8 @@ class siteStats
 		$text = "
 			<table class='table table-striped fborder' style='width: 100%;'>
 			<tr>
-				<td class='fcaption' style='width: 30%;'>".ADSTAT_L18."</td>
-				<td class='fcaption' style='width: 70%;'>Information</td>
+				<th class='fcaption' style='width: 30%;'>".ADSTAT_L18."</th>
+				<th class='fcaption' style='width: 70%;'>Information</th>
 			</tr>\n";
 
 		foreach($recentArray as $key => $info) 
@@ -1683,7 +1687,7 @@ class siteStats
 		DESC LIMIT 0,14
 		";
 
-		if($amount = $sql -> db_Select_gen($qry)) 
+		if($amount = $sql->gen($qry)) 
 		{
 			$array = $sql -> db_getList();
 
@@ -1847,7 +1851,7 @@ class siteStats
 		$sql = e107::getDB();
 
 		// Month format entries have log_id = yyyy-mm
-		if(!$entries = $sql -> db_Select("logstats", "*", "log_id REGEXP('^[[:digit:]]+\-[[:digit:]]+$') ORDER BY CONCAT(LEFT(log_id,4), RIGHT(log_id,2)) DESC")) 
+		if(!$entries = $sql->select("logstats", "*", "log_id REGEXP('^[[:digit:]]+\-[[:digit:]]+$') ORDER BY CONCAT(LEFT(log_id,4), RIGHT(log_id,2)) DESC")) 
 		{
 			return ADSTAT_L42;
 		}
@@ -1858,6 +1862,7 @@ class siteStats
 		$monthTotal = array();		// Array of totals, one per month, with 'totalv', 'uniquev' sub-indices
 		$mtotal = 0;
 		$utotal = 0;
+				
 		foreach($array as $info) 
 		{
 			$date = $info['log_id'];
@@ -1891,8 +1896,8 @@ class siteStats
 			<th class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</th>
 		</tr>\n";
 
-		foreach($monthTotal as $date => $total) {
-
+		foreach($monthTotal as $date => $total) 
+		{
 			list($year, $month) = explode("-", $date);
 			$date = strftime ("%B %Y", mktime (0,0,0,$month,1,$year));
 			$barWidth = round(($total['totalv']/$mtotal) * 100, 2);
@@ -1910,7 +1915,8 @@ class siteStats
 				<th class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</th>
 			</tr>\n";
 
-		foreach($monthTotal as $date => $total) {
+		foreach($monthTotal as $date => $total) 
+		{
 			$barWidth = round(($total['uniquev']/$utotal) * 100, 2);
 			list($year, $month) = explode("-", $date);
 			$date = strftime ("%B %Y", mktime (0,0,0,$month,1,$year));
@@ -1997,7 +2003,7 @@ class siteStats
 	function remove_entry($toremove) 
 	{	// Note - only removes info from the database - not from the current page file
 		$sql = e107::getDB();
-		if ($sql -> db_Select("logstats", "*", "log_id='pageTotal'"))
+		if ($sql->select("logstats", "*", "log_id='pageTotal'"))
 		{
 			$row = $sql -> db_Fetch();
 			$dbPageInfo = unserialize($row[2]);
