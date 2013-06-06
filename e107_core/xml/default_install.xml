@@ -230,6 +230,12 @@ City, State, Country
 		<core name="sitetheme_pref"></core>
 		<core name="siteurl">/</core>
 		<core name="smiley_activate">1</core>
+		<core name="smtp_server"></core>
+		<core name="smtp_username"></core>
+		<core name="smtp_password"></core>
+		<core name="smtp_keepalive"></core>
+		<core name="smtp_options"></core>
+		<core name="smtp_useVERP"></core>
 		<core name="social_login_active">0</core>
 		<core name="social_login"><![CDATA[array()]]></core>
 		<core name="ssl_enabled">0</core>
