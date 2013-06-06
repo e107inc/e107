@@ -541,13 +541,13 @@ class pluginManager{
 			
 	//	print_a($data);
 		
-	
+		/*
 		if(!e107::getFile()->hasAuthKey())
 		{
 		//	return "<a href='".e_SELF."' class='btn btn-primary e-modal' >Download and Install</a>"; 	
 			
 		}
-	
+		*/
 				
 		$d = http_build_query($data,false,'&');
 		//$url = e_SELF."?src=".base64_encode($d);
