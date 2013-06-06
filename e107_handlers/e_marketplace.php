@@ -225,7 +225,7 @@ abstract class e_marketplace_adapter_abstract
 	 * e107.org download URL
 	 * @var string
 	 */
-	protected $downloadUrl = 'http://172.16.0.2/aptana3/e107_07/request';	
+	protected $downloadUrl = 'http://e107.org/request';	
 	
 	/**
 	 * e107.org service URL [adapter implementation required]
@@ -458,7 +458,7 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 	 * e107.org WSDL URL
 	 * @var string
 	 */
-	protected $serviceUrl = 'http://172.16.0.2/aptana3/e107_07/service?wsdl';
+	protected $serviceUrl = 'http://e107.org/service?wsdl';
 	
 	/**
 	 * Request method POST || GET
@@ -609,7 +609,7 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 	 * e107.org XML-rpc service
 	 * @var xmlClass
 	 */
-	protected $serviceUrl = 'http://172.16.0.2/aptana3/e107_07/xservice';
+	protected $serviceUrl = 'http://e107.org/xservice';
 	
 	/**
 	 * Request method POST || GET
@@ -828,25 +828,25 @@ class eAuth
 	 * e107.org manage client credentials (Consumer Key and Secret) URL 
 	 * @var string
 	 */
-	protected $eauthConsumerUrl = 'http://172.16.0.2/aptana3/e107_07/eauth/client';
+	protected $eauthConsumerUrl = 'http://e107.org/eauth/client';
 	
 	/**
 	 * URL used to make temporary credential request (Request Token and Secret) to e107.org before the authorization phase
 	 * @var string
 	 */
-	protected $eauthRequestUrl = 'http://172.16.0.2/aptana3/e107_07/eauth/initialize';
+	protected $eauthRequestUrl = 'http://e107.org/eauth/initialize';
 	
 	/**
 	 * URL used to redirect and authorize the resource owner (user) on e107.org using temporary (request) token
 	 * @var string
 	 */
-	protected $eauthAuthorizeUrl = 'http://172.16.0.2/aptana3/e107_07/eauth/authorize';
+	protected $eauthAuthorizeUrl = 'http://e107.org/eauth/authorize';
 	
 	/**
 	 * URL used to obtain token credentials (Access Token and Secret) from e107.org using temporary (request) token
 	 * @var string
 	 */
-	protected $eauthAccessUrl = 'http://172.16.0.2/aptana3/e107_07/eauth/token';
+	protected $eauthAccessUrl = 'http://e107.org/eauth/token';
 	
 	/**
 	 * Public client key (generated and obtained from e107.org)
