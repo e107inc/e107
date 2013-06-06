@@ -308,14 +308,23 @@ class xmlClass
 	}
 
 	/**
+	 * DEPRECATED
 	 * Get Remote file contents
 	 * use setOptArrayTags above if you require a consistent array result by in 1 item or many. 
+	 * @deprecated use e_file::getRemoteContent() instead
 	 * @param string $address
 	 * @param integer $timeout [optional] seconds
 	 * @return string
 	 */
 	function getRemoteFile($address, $timeout = 10, $postData=null)
 	{
+		$_file = e107::getFile();
+		$this->xmlFileContents = $_file->getRemoteContent($address, array('timeout' => $timeout, 'post' => $postData));
+		$this->error = $_file->error;
+		
+		return $this->xmlFileContents;
+		
+		// ------ MOVED TO FILE HANDLER ------ //
 		// Could do something like: if ($timeout <= 0) $timeout = $pref['get_remote_timeout'];  here
 		$timeout = min($timeout, 120);
 		$timeout = max($timeout, 3);
