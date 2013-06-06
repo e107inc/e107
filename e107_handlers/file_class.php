@@ -351,6 +351,142 @@ class e_file
        
         return ($buffer) ? true : false;
     }
+	
+	/**
+	 * FIXME add POST support
+	 * Get Remote contents
+	 * $options array:
+	 * - 'timeout' (integer): timeout in seconds
+	 * - 'post' (array|urlencoded string): POST data
+	 * - 'header' (array) headers, example: array('Content-Type: text/xml', 'X-Custom-Header: SomeValue');
+	 * @param string $address
+	 * @param array $options [optional] 
+	 * @return string
+	 */
+	function getRemoteContent($address, $options = array())
+	{
+		// Could do something like: if ($timeout <= 0) $timeout = $pref['get_remote_timeout'];  here
+		$postData = varset($options['post'], null);
+		$timeout = (integer) vartrue($options['timeout'], 10);
+		$timeout = min($timeout, 120);
+		$timeout = max($timeout, 3);
+		$fileContents = '';
+		$this->error = '';
+		$this->errornum = null;
+		
+		$mes = e107::getMessage();
+			
+		$address = str_replace(array("\r", "\n", "\t"), '', $address); // May be paranoia, but streaky thought it might be a good idea	
+		// ... and there shouldn't be unprintable characters in the URL anyway		
+		$requireCurl = false;
+		
+		if(vartrue($options['decode'], false)) $address = urldecode($address);
+
+		// Keep this in first position. 
+		if (function_exists("curl_init")) // Preferred. 
+		{
+			$cu = curl_init();
+			curl_setopt($cu, CURLOPT_URL, $address);
+			curl_setopt($cu, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($cu, CURLOPT_HEADER, 0);
+			curl_setopt($cu, CURLOPT_TIMEOUT, $timeout);
+			curl_setopt($cu, CURLOPT_SSL_VERIFYPEER, FALSE); 
+			curl_setopt($cu, CURLOPT_REFERER, e_REQUEST_HTTP);
+			curl_setopt($cu, CURLOPT_FOLLOWLOCATION, 0); 
+			curl_setopt($cu, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"); 
+			curl_setopt($cu, CURLOPT_COOKIEFILE, e_SYSTEM.'cookies.txt');
+			curl_setopt($cu, CURLOPT_COOKIEJAR, e_SYSTEM.'cookies.txt');
+			if($postData !== null)
+			{
+				curl_setopt($cu, CURLOPT_POST, true);
+				// if array -> will encode the data as multipart/form-data, if URL-encoded string - application/x-www-form-urlencoded
+				curl_setopt($cu, CURLOPT_POSTFIELDS, $postData);
+				$requireCurl = true;
+			}
+			if(isset($options['header']) && is_array($options['header']))
+			{
+				curl_setopt($cu, CURLOPT_HTTPHEADER, $options['header']);
+				$requireCurl = true;
+			}
+	
+			if(!file_exists(e_SYSTEM.'cookies.txt'))
+			{
+				file_put_contents(e_SYSTEM.'cookies.txt','');	
+			}
+			
+			$fileContents = curl_exec($cu);
+			if (curl_error($cu))
+			{
+				$this->errornum = curl_errno($cu);
+				$this->error = "Curl error: ".$this->errornum.", ".curl_error($cu);
+				return FALSE;
+			}
+			curl_close($cu);
+			return $fileContents;
+		}
+		
+		// CURL is required, abort...
+		if($requireCurl == true) return false;
+
+		if (function_exists('file_get_contents') && ini_get('allow_url_fopen'))
+		{
+			$old_timeout = e107_ini_set('default_socket_timeout', $timeout);
+			$data = file_get_contents($address);
+
+			//		  $data = file_get_contents(htmlspecialchars($address));	// buggy - sometimes fails.
+			if ($old_timeout !== FALSE)
+			{
+				e107_ini_set('default_socket_timeout', $old_timeout);
+			}
+			if ($data !== FALSE)
+			{
+				$fileContents = $data;
+				return $data;
+			}
+			$this->error = "File_get_contents(XML) error";		// Fill in more info later
+			return FALSE;
+		}
+
+		if (ini_get("allow_url_fopen"))
+		{
+			$old_timeout = e107_ini_set('default_socket_timeout', $timeout);
+			$remote = @fopen($address, "r");
+			if (!$remote)
+			{
+				$this->error = "fopen: Unable to open remote XML file: ".$address;
+				return FALSE;
+			}
+		}
+		else
+		{
+			$old_timeout = $timeout;
+			$tmp = parse_url($address);
+			if (!$remote = fsockopen($tmp['host'], 80, $errno, $errstr, $timeout))
+			{
+				$this->error = "Sockets: Unable to open remote XML file: ".$address;
+				return FALSE;
+			}
+			else
+			{
+				socket_set_timeout($remote, $timeout);
+				fputs($remote, "GET ".urlencode($address)." HTTP/1.0\r\n\r\n");
+			}
+		}
+		$fileContents = "";
+		while (!feof($remote))
+		{
+			$fileContents .= fgets($remote, 4096);
+		}
+		fclose($remote);
+		if ($old_timeout != $timeout)
+		{
+			if ($old_timeout !== FALSE)
+			{
+				e107_ini_set('default_socket_timeout', $old_timeout);
+			}
+		}
+		return $fileContents;
+	}
 
 
 	/**
@@ -698,147 +834,8 @@ class e_file
 			}
 		}
 	}	
-	
 
-	// Use e107.org login. 
-	public function setAuthKey($username,$password)
-	{
-		$now 	= gmdate('y-m-d H');
-		$this->authKey	= sha1($username.md5($password).$now);	
-		
-		return $this;		
-	}	
-	
-	
-	private function getAuthKey()
-	{
-		return $this->authKey;	
-	}
-	
-	
-	public function hasAuthKey()
-	{
-		return ($this->authKey != false) ? true : false;	
-	}
-	
-	/**
-	 * Download a Plugin or Theme to Temp, then test and move to plugin/theme folder and backup to system backup folder. 
-	 * DEPRECATED - moved to e_marketplace
-	 * @param $remotefile URL
-	 * @param $type plugin or theme
-	 */
-/* 
-	public function download($remotefile, $type='theme')
-	{
-		$tp = e107::getParser();
-		
-		list($url,$qry) = explode("?",$remotefile);
 
-		$remotefile = $url."?auth=".$this->getAuthKey()."&".$qry;
-				
-		$localfile = md5($remotefile.time()).".zip";
-		$status 	= "Downloading...";
-		
-	//	echo "<script>alert('".$remotefile."')</script>";
-		$result 	= $this->getRemoteFile($remotefile,$localfile);
-		
-		if(!file_exists(e_TEMP.$localfile))
-		{
-			$status = ADMIN_FALSE_ICON."<br /><a href='".$remotefile."'>Download Manually</a>";
-			
-			if(E107_DEBUG_LEVEL > 0)
-			{
-				$status .= 'local='.$localfile;
-				//$status .= ($result) ? "Downloaded" : "Couldn't get Remote";
-			}
-
-			echo $status;
-			exit;	
-		}
-		else 
-		{
-			$contents = file_get_contents(e_TEMP.$localfile);
-			if(strlen($contents) < 400)
-			{
-				echo "<script>alert('".$tp->toJS($contents)."')</script>";
-				return;	
-			}
-		}
-	
-		
-		
-	//	chmod(e_PLUGIN,0777);
-		chmod(e_TEMP.$localfile,0755);
-		
-		require_once(e_HANDLER."pclzip.lib.php");
-		
-		$archive 	= new PclZip(e_TEMP.$localfile);
-		$unarc 		= ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_TEMP, PCLZIP_OPT_SET_CHMOD, 0755)); // Store in TEMP first. 
-		$dir 		= $this->getRootFolder($unarc);	
-		$destpath 	= ($type == 'theme') ? e_THEME : e_PLUGIN;
-		$typeDiz 	= ucfirst($type);
-		
-
-		
-		@copy(e_TEMP.$localfile,e_BACKUP.$dir.".zip"); // Make a Backup in the system folder. 
-		
-		if($dir && is_dir($destpath.$dir))
-		{
-			$alert = $tp->toJS(ucfirst($type)." Already Installed".$destpath.$dir);
-			echo "<script>alert('".$alert."')</script>";
-			echo "Already Installed";
-			@unlink(e_TEMP.$localfile);
-			exit;	
-		}
-	
-		if($dir == '')
-		{
-			echo "<script>alert('Couldn\'t detect the root folder in the zip.')</script>";
-			@unlink(e_TEMP.$localfile);
-			exit;			
-		}
-	
-		if(is_dir(e_TEMP.$dir)) 
-		{
-			$status = "Unzipping...";
-			if(!rename(e_TEMP.$dir,$destpath.$dir))
-			{
-				$alert = $tp->toJS("Couldn't Move ".e_TEMP.$dir." to ".$destpath.$dir." Folder");
-				echo "<script>alert('".$alert."')</script>";
-				@unlink(e_TEMP.$localfile);
-				exit;	
-			}	
-			
-			$alert = $tp->toJS("Download Complete!");
-			echo "<script>alert('".$alert."')</script>";
-			
-		//	$dir 		= basename($unarc[0]['filename']);
-		//	$plugPath	= preg_replace("/[^a-z0-9-\._]/", "-", strtolower($dir));	
-			$status = "Done"; // ADMIN_TRUE_ICON;			
-			
-		}
-	// 	elseif(already_a_directory
-		else 
-		{
-			// print_a($fileList);
-			$status = ADMIN_FALSE_ICON."<br /><a href='".$remotefile."'>Download Manually</a>";
-			if(E107_DEBUG_LEVEL > 0)
-			{
-				$status .= print_a($unarc, true);
-			}
-			//
-		//	 $status = "There was a problem";	
-			//unlink(e_UPLOAD.$localfile);
-		}
-		
-	//	echo "<script>alert('".$tp->toJS($status)."')</script>";
-		echo $status;
-		@unlink(e_TEMP.$localfile);
-	
-	//	echo "file=".$file;
-		exit;				
-	}	*/
-	
 		
 		
 	/**

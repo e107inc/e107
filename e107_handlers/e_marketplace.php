@@ -17,24 +17,33 @@ class e_marketplace
 	 * @var e_marketplace_adapter_abstract
 	 */
 	protected $adapter = null;
-
 	
+	/**
+	 * Adapter identifier
+	 * @var string wsdl|xmlrpc
+	 */
+	protected $_adapter_name = null;
+
+	/**
+	 * Constructor
+	 * @param string $force force adapter wsdl|xmlrpc, omit to switch to auto-detection
+	 */
 	public function __construct($force = null)
 	{
 		if(null !== $force)
 		{
-			$className = 'e_marketplace_adapter_'.$force;
-			$this->adapter = new $className();
+			$this->_adapter_name = $force === 'wsdl' ? 'wsdl' : 'xmlrpc';
 		}
-		elseif(!class_exists('SoapClient')) $this->adapter = new e_marketplace_adapter_xmlrpc();
+		elseif(!class_exists('SoapClient')) $this->_adapter_name = 'xmlrpc';
 		else
 		{
-			$this->adapter = new e_marketplace_adapter_wsdl();
+			$this->_adapter_name = 'wsdl';
 		}
 	}
 	
 	/**
 	 * Set authorization key
+	 * @deprecated subject of removal
 	 */
 	public function generateAuthKey($username, $password)
 	{
@@ -48,6 +57,7 @@ class e_marketplace
 	
 	/**
 	 * Set authorization key
+	 * @deprecated subject of removal
 	 */
 	public function setAuthKey($authkey)
 	{
@@ -62,6 +72,7 @@ class e_marketplace
 	
 	/**
 	 * Make authorization key from user credentials
+	 * @deprecated subject of removal
 	 */
 	public function makeAuthKey($username, $password = '', $plain = false)
 	{
@@ -74,6 +85,7 @@ class e_marketplace
 
 	/**
 	 * Have the admin enter their e107.org login details in order to create the authorization key. 
+	 * @deprecated subject of removal
 	 */	
 	public function renderLoginForm()
 	{
@@ -162,6 +174,11 @@ class e_marketplace
 	 */
 	public function adapter()
 	{
+		if(null === $this->adapter)
+		{
+			$className = 'e_marketplace_adapter_'.$this->_adapter_name; 
+			$this->adapter = new $className();
+		}
 		return $this->adapter;
 	}
 	
@@ -200,7 +217,6 @@ class e_marketplace
 		$this->adapter = null;
 		//echo "Adapter destroyed", PHP_EOL;
 	}
-
 }
 
 abstract class e_marketplace_adapter_abstract
@@ -209,22 +225,28 @@ abstract class e_marketplace_adapter_abstract
 	 * e107.org download URL
 	 * @var string
 	 */
-	protected $downloadUrl = 'http://e107.org/request';	
+	protected $downloadUrl = 'http://172.16.0.2/aptana3/e107_07/request';	
 	
 	/**
 	 * e107.org service URL [adapter implementation required]
 	 * @var string
 	 */
-	protected $serviceUrl = null;	
+	protected $serviceUrl = null;
 	
 	/**
 	 * Request method POST || GET  [adapter implementation required]
 	 * @var string
 	 */
-	protected $requestMethod = null;	
+	public $requestMethod = null;
+	
+	/**
+	 * @var eAuth
+	 */
+	protected $_auth = null;
 	
 	/**
 	 * e107.org authorization key
+	 * @deprecated subject of removal
 	 * @var string
 	 */
 	protected $authKey = null;
@@ -234,19 +256,41 @@ abstract class e_marketplace_adapter_abstract
 	abstract public function fetch($method, &$result);
 	
 	/**
+	 * Authorization object
+	 * @return eAuth
+	 */
+	public function auth()
+	{
+		if(null === $this->_auth)
+		{
+			$this->_auth = new eAuth;
+			$this->_auth->loadSysCredentials();
+			$this->_auth->requestMethod = $this->requestMethod;
+		}
+		return $this->_auth;
+	}
+	
+	/**
 	 * Set authorization key
+	 * @deprecated subject of removal
 	 */
 	public function setAuthKey($authkey)
 	{
-		$this->authKey	= $authkey;
+		$this->authKey = $authkey;
 		return $this;
 	}
 	
-	
+	/**
+	 * @deprecated subject of removal
+	 */
 	public function hasAuthKey()
 	{
 		return ($this->authKey !== null) ? true : false;	
 	}
+	
+	/**
+	 * @deprecated subject of removal
+	 */
 	public function getAuthKey()
 	{
 		return $this->authKey;	
@@ -406,119 +450,6 @@ abstract class e_marketplace_adapter_abstract
 		
         return ($buffer) ? true : false;
     }
-
-	public function testAuthData($method, $args, $toObject = true)
-	{
-		$clientKey = 'dpf43f3p2l4k3l03'; // (Client Identifier) Application key
-		$clientSecretKey = 'kd94hf93k423kf44'; // (Client) application secret key
-		
-		// The client has previously registered with the server and obtained the client identifier dpf43f3p2l4k3l03 and client secret kd94hf93k423kf44. 
-		// It has executed the eAuth workflow and obtained an access token nnch734d00sl2jdk and token secret pfkkdhi9sl3r4s00
-		$accessTokenKey = 'nnch734d00sl2jdk'; // Access Token 
-		$accessTokenSecretKey = 'pfkkdhi9sl3r4s00'; // Access Token secret key
-		
-		$date = gmdate('Y-m-d H:i:s');
-		$timestamp = $this->gmtTime($date);
-		$nonce = $this->crypt($this->random().$timestamp, $accessTokenSecretKey.$clientSecretKey); // create nonce
-		
-		$cryptMethod = $this->cryptMethod();
-		$authData = array(
-			'eauth_consumer_key' 	=> $clientKey, // Client Identifier
-			'eauth_token' 			=> $accessTokenKey, // Access Token 
-			'eauth_nonce' 			=> $nonce,//'kllo9940pd9333jh' 'nonce' (number used once) string  
-			'eauth_timestamp' 		=> $timestamp, // timestamp
-			'eauth_signature_method'=> $cryptMethod, // encryption method
-			'eauth_version'			=> '1.0', // signature method
-		);
-		
-		// current request parameters
-		$args['action'] = $method;
-		
-		// signature data for building the signature
-		$signatureData = $authData;
-		
-		// add request parameters to the signature array
-		$signatureData['eauth_request_params'] = $args;
-		
-		// sort all
-		$this->array_kmultisort($signatureData);
-		
-		// signature base string
-		$signatureBaseString = $this->requestMethod.'&'.rawurlencode($this->serviceUrl).'&'.http_build_query($signatureData, false, '&');
-		$secretKey = rawurlencode($clientSecretKey).'&'.rawurlencode($accessTokenSecretKey);
-		
-		// crypt it
-		$signature = $this->crypt($signatureBaseString, $secretKey);
-		
-		//encode it
-		$authData['eauth_signature'] = base64_encode($signature);
-		if($toObject) return $this->toObject($authData);
-		
-		return $authData;
-	}
-
-	public function cryptMethod()
-	{
-		return function_exists('hash_hmac') ? 'HMAC-SHA1' : 'SHA1';
-	}
-	
-	function random($bits = 256) 
-	{
-	    $bytes = ceil($bits / 8);
-	    $ret = '';
-	    for ($i = 0; $i < $bytes; $i++) 
-	    {
-	        $ret .= chr(mt_rand(0, 255));
-	    }
-	    return $ret;
-	}
-	
-	public function crypt($string, $secretKey)
-	{
-		$cMethod = $this->cryptMethod();
-		// Append secret if it's sha1
-		if($cMethod == 'SHA1')
-		{
-			return sha1($string.$secretKey);
-		}
-		// use secret key if HMAC-SHA1
-		return hash_hmac('sha1', $string, $secretKey);
-	}
-
-	public function gmtTime($string)
-	{
-		$ret = false;
-		// mask - Y-m-d H:i:s
-		if(preg_match('#(.*?)-(.*?)-(.*?) (.*?):(.*?):(.*?)$#', $string, $matches))
-		{
-			$ret = gmmktime($matches[4], $matches[5], $matches[6], $matches[2], $matches[3], $matches[1]);
-		}
-		return $ret;
-	}
-
-	public function array_kmultisort(&$array, $order = 'asc')
-	{
-		$func = $order == 'asc' ? 'ksort' : 'krsort';
-		$func($array);
-		foreach ($array as $key => $value) 
-		{
-			if(is_array($value))
-			{
-				$this->array_kmultisort($value, $order);
-				$array[$key] = $value;
-			}
-		}
-	}
-
-	public function toObject($array)
-	{
-		$obj = new stdClass;
-		foreach ($array as $key => $value) 
-		{
-			$obj->$key = $value;
-		}
-		return $obj;
-	}
 }
 
 class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
@@ -527,13 +458,13 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 	 * e107.org WSDL URL
 	 * @var string
 	 */
-	protected $serviceUrl = 'http://e107.org/service?wsdl';
+	protected $serviceUrl = 'http://172.16.0.2/aptana3/e107_07/service?wsdl';
 	
 	/**
 	 * Request method POST || GET
 	 * @var string
 	 */
-	protected $requestMethod = 'POST';	
+	public $requestMethod = 'POST';	
 	
 	/**
 	 * Soap client instance
@@ -678,13 +609,13 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 	 * e107.org XML-rpc service
 	 * @var xmlClass
 	 */
-	protected $serviceUrl = 'http://e107.org/xservice';
+	protected $serviceUrl = 'http://172.16.0.2/aptana3/e107_07/xservice';
 	
 	/**
 	 * Request method POST || GET
 	 * @var string
 	 */
-	protected $requestMethod = 'GET';
+	public $requestMethod = 'GET';
 	
 	protected $_forceArray = array();
 	protected $_forceNumericalArray = array();
@@ -887,5 +818,306 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 	public function client()
 	{
 		return e107::getXml(false);
+	}
+}
+
+class eAuth
+{
+	
+	/**
+	 * e107.org manage client credentials (Consumer Key and Secret) URL 
+	 * @var string
+	 */
+	protected $eauthConsumerUrl = 'http://172.16.0.2/aptana3/e107_07/eauth/client';
+	
+	/**
+	 * URL used to make temporary credential request (Request Token and Secret) to e107.org before the authorization phase
+	 * @var string
+	 */
+	protected $eauthRequestUrl = 'http://172.16.0.2/aptana3/e107_07/eauth/initialize';
+	
+	/**
+	 * URL used to redirect and authorize the resource owner (user) on e107.org using temporary (request) token
+	 * @var string
+	 */
+	protected $eauthAuthorizeUrl = 'http://172.16.0.2/aptana3/e107_07/eauth/authorize';
+	
+	/**
+	 * URL used to obtain token credentials (Access Token and Secret) from e107.org using temporary (request) token
+	 * @var string
+	 */
+	protected $eauthAccessUrl = 'http://172.16.0.2/aptana3/e107_07/eauth/token';
+	
+	/**
+	 * Public client key (generated and obtained from e107.org)
+	 * @var string
+	 */
+	public $eauthConsumerKey = null;
+	
+	/**
+	 * Client shared secret (generated and obtained from e107.org)
+	 * @var string
+	 */
+	public $eauthConsumerSecret = null;
+	
+	/**
+	 * Public temporary request token (generated and obtained from e107.org)
+	 * @var string
+	 */
+	public $eauthRequestKey = null;
+	
+	/**
+	 * Temporary request shared secret (generated and obtained from e107.org)
+	 * @var string
+	 */
+	public $eauthRequestSecret = null;
+	
+	/**
+	 * Public access token (generated and obtained from e107.org)
+	 * @var string
+	 */
+	public $eauthAccessToken = null;
+	
+	/**
+	 * Access shared secret (generated and obtained from e107.org)
+	 * @var string
+	 */
+	public $eauthAccessSecret = null;
+	
+	/**
+	 * Request method POST || GET
+	 * @var string
+	 */
+	public $requestMethod = null;
+	
+	public function isClient()
+	{
+		$this->loadSysCredentials();
+		return (!empty($this->eauthConsumerKey) && !empty($this->eauthConsumerSecret));
+	}
+	
+	public function isInitialized()
+	{
+		$this->loadSysCredentials();
+		return ($this->isClient() && !empty($this->eauthRequestKey) && !empty($this->eauthRequestSecret));
+	}
+	
+	public function hasAccess()
+	{
+		$this->loadSysCredentials();
+		return ($this->isClient() && !empty($this->eauthAccessToken) && !empty($this->eauthAccessSecret));
+	}
+
+	public function serviceAuthData($method, $args, $toObject = true)
+	{
+		// The client has previously registered with the server and obtained the client identifier dpf43f3p2l4k3l03 and client secret kd94hf93k423kf44. 
+		// It has executed the eAuth workflow and obtained an access token nnch734d00sl2jdk and token secret pfkkdhi9sl3r4s00
+		
+		$date = gmdate('Y-m-d H:i:s');
+		$timestamp = $this->gmtTime($date);
+		$nonce = $this->nonce($timestamp); // create nonce
+		
+		$cryptMethod = $this->cryptMethod();
+		$authData = array(
+			'eauth_consumer_key' 	=> $this->eauthConsumerKey, // (Client Identifier) Application key
+			'eauth_token' 			=> $this->eauthAccessToken, // Access Token 
+			'eauth_nonce' 			=> $nonce,//'kllo9940pd9333jh' 'nonce' (number used once) string  
+			'eauth_timestamp' 		=> $timestamp, // timestamp
+			'eauth_signature_method'=> $cryptMethod, // encryption method
+			'eauth_version'			=> '1.0', // signature method
+		);
+		
+		// current request parameters
+		$args['action'] = $method;
+		
+		// signature data for building the signature
+		$signatureData = $authData;
+		
+		// add request parameters to the signature array
+		$signatureData['eauth_request_params'] = $args;
+		
+		// sort all
+		self::array_kmultisort($signatureData);
+		
+		// signature base string
+		$signatureBaseString = $this->requestMethod.'&'.rawurlencode($this->serviceUrl).'&'.http_build_query($signatureData, false, '&');
+		$secretKey = rawurlencode($this->eauthConsumerSecret).'&'.rawurlencode($this->eauthAccessSecret);
+		
+		// crypt it
+		$signature = $this->crypt($signatureBaseString, $secretKey);
+		
+		//encode it
+		$authData['eauth_signature'] = base64_encode($signature);
+		if($toObject) return self::toObject($authData);
+		
+		return $authData;
+	}
+
+
+	public static function toObject($array)
+	{
+		$obj = new stdClass;
+		foreach ($array as $key => $value) 
+		{
+			$obj->$key = $value;
+		}
+		return $obj;
+	}
+	
+	/**
+	 * Load credentials stored in a system file
+	 * @param boolean $force
+	 * @return e_marketplace_adapter_abstract adapter instance
+	 */
+	public function loadSysCredentials($force = false)
+	{
+		if($force || null === $this->eauthConsumerKey)
+		{
+			$data = e107::getArrayStorage()->load('eauth');
+			if(empty($data)) $data = array();
+			$this->eauthConsumerKey = varset($data['consumer_key'], '');
+			$this->eauthConsumerSecret = varset($data['consumer_secret'], '');
+			$this->eauthAccessToken = varset($data['access_token'], '');
+			$this->eauthAccessSecret = varset($data['access_secret'], '');
+		}
+		return $this;
+	}
+	
+	public function storeSysCredentials($credentials = null)
+	{
+		if(null === $credentials)
+		{
+			$credentials = array(
+				'consumer_key'		=> $this->eauthConsumerKey,
+				'consumer_secret'	=> $this->eauthConsumerSecret,
+				'access_token'		=> $this->eauthAccessToken,
+				'access_secret'		=> $this->eauthAccessSecret,
+			);
+		}
+		if(!is_array($credentials)) return false;
+		
+		foreach ($credentials as $key => $value) 
+		{
+			switch ($key) 
+			{
+				case 'consumer_key':
+				case 'consumer_secret':
+				case 'access_token':
+				case 'access_secret':
+					// OK
+				break;
+				
+				default:
+					unset($credentials[$key]);
+				break;
+			}
+		}
+		
+		return e107::getArrayStorage()->store($credentials, 'eauth');
+	}
+	
+	/**
+	 * Retrieve available system credentials or credential value
+	 * @param string $key [optional]
+	 * return mixed array of all credentials or string credential value
+	 */
+	public function getCredentials($key = null)
+	{
+		$this->loadSysCredentials();
+		
+		$credentials = array(
+			'consumer_key'		=> $this->eauthConsumerKey,
+			'consumer_secret'	=> $this->eauthConsumerSecret,
+			'access_token'		=> $this->eauthAccessToken,
+			'access_secret'		=> $this->eauthAccessSecret,
+		);
+		if(null !== $key) return varset($credentials[$key], null);
+		return $credentials;
+	}
+	
+	public function toAuthHeader($params)
+	{
+		$first = true;
+		$realm = isset($params['realm']) ? $params['realm'] : null;
+		if($realm)
+		{
+			$out = 'Authorization: eAuth realm="'.rawurlencode($realm).'"';
+			$first = false;
+		}
+		else
+			$out = 'Authorization: eAuth';
+
+		$total = array();
+		foreach($params as $k => $v)
+		{
+			if(substr($k, 0, 5) != "eauth") continue;
+			if(is_array($v))
+			{
+				throw new Exception('Arrays not supported in headers', 200);
+			}
+			$out .= ($first) ? ' ' : ',';
+			$out .= rawurlencode($k).'="'.rawurlencode($v).'"';
+			$first = false;
+		}
+		return $out;
+	}
+	
+
+	public function cryptMethod()
+	{
+		return function_exists('hash_hmac') ? 'HMAC-SHA1' : 'SHA1';
+	}
+	
+	function random($bits = 256) 
+	{
+	    $bytes = ceil($bits / 8);
+	    $ret = '';
+	    for ($i = 0; $i < $bytes; $i++) 
+	    {
+	        $ret .= chr(mt_rand(0, 255));
+	    }
+	    return $ret;
+	}
+	
+	public function crypt($string, $secretKey)
+	{
+		$cMethod = $this->cryptMethod();
+		// Append secret if it's sha1
+		if($cMethod == 'SHA1')
+		{
+			return sha1($string.$secretKey);
+		}
+		// use secret key if HMAC-SHA1
+		return hash_hmac('sha1', $string, $secretKey);
+	}
+	
+	public function nonce($timestamp)
+	{
+		return $this->crypt($this->random().$timestamp, $this->eauthAccessSecret.$this->eauthConsumerSecret);
+	}
+
+	public function gmtTime($string)
+	{
+		$ret = false;
+		// mask - Y-m-d H:i:s
+		if(preg_match('#(.*?)-(.*?)-(.*?) (.*?):(.*?):(.*?)$#', $string, $matches))
+		{
+			$ret = gmmktime($matches[4], $matches[5], $matches[6], $matches[2], $matches[3], $matches[1]);
+		}
+		return $ret;
+	}
+
+	public static function array_kmultisort(&$array, $order = 'asc')
+	{
+		$func = $order == 'asc' ? 'ksort' : 'krsort';
+		$func($array);
+		foreach ($array as $key => $value) 
+		{
+			if(is_array($value))
+			{
+				self::array_kmultisort($value, $order);
+				$array[$key] = $value;
+			}
+		}
 	}
 }
