@@ -2337,6 +2337,13 @@ class e_admin_controller_ui extends e_admin_controller
 	protected $tabs = array();
 	
 	/**
+	 * Example: array('0' => 'Tab label', '1' => 'Another label');
+	 * Referenced from $prefs property per field - 'tab => xxx' where xxx is the tab key (identifier)
+	 * @var array edit/create form tabs
+	 */
+	protected $preftabs = array();
+	
+	/**
 	 * TODO Example: 
 	 * Contains required data for auto-assembling URL from every record
 	 * For greater control - override url() method
@@ -2465,7 +2472,6 @@ class e_admin_controller_ui extends e_admin_controller
 		return deftrue($this->pluginTitle, $this->pluginTitle);
 	}
 	
-	
 	/**
 	 * Get Tab data
 	 * @return array
@@ -2474,9 +2480,17 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		return $this->tabs;
 	}
+	
+	/**
+	 * Get Tab data
+	 * @return array
+	 */
+	public function getPrefTabs()
+	{
+		return $this->preftabs;
+	}
 
-
-        /**
+    /**
      * Get URL profile
      * @return array
      */
@@ -5153,7 +5167,7 @@ class e_admin_form_ui extends e_form
 				'tabs' => false, // TODO - NOT IMPLEMENTED YET - enable tabs (only if fieldset count is > 1)
 				'fieldsets' => array(
 					'settings' => array(
-						'tabs'	=> $controller->getTabs(), //used within a single form. 
+						'tabs'	=> $controller->getPrefTabs(), //used within a single form. 
 						'legend' => $legend,
 						'fields' => $controller->getPrefs(), //see e_admin_ui::$prefs
 						'after_submit_options' => false,
