@@ -90,10 +90,23 @@ $LOGIN_TEMPLATE['page']['header'] = "
 
 $LOGIN_TEMPLATE['page']['body'] = '
 
-        <h2 class="form-signin-heading">'.LAN_LOGIN_4.'</h2>
+        <h2 class="form-signin-heading">'.LAN_LOGIN_4.'</h2>';
+	if ($pref['password_CHAP'] == 2)
+	{
+		$LOGIN_TEMPLATE['page']['body'] .= "
+    	<div style='text-align: center' id='nologinmenuchap'>"."Javascript must be enabled in your browser if you wish to log into this site"."
+		</div>
+    	<span style='display:none' id='loginmenuchap'>";
+	}
+	else
+	{
+	  $LOGIN_TEMPLATE['page']['body'] .= "<span>";
+	}
+$LOGIN_TEMPLATE['page']['body'] .= '
        {LOGIN_TABLE_USERNAME}
         {LOGIN_TABLE_PASSWORD}
-         {LOGIN_TABLE_SECIMG_SECIMG} {LOGIN_TABLE_SECIMG_TEXTBOC}
+		{LOGIN_TABLE_SECIMG_SECIMG} {LOGIN_TABLE_SECIMG_TEXTBOC}
+		</span>
         <label class="checkbox">
          {LOGIN_TABLE_AUTOLOGIN} {LOGIN_TABLE_AUTOLOGIN_LAN}
         </label>
