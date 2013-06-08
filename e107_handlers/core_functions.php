@@ -56,7 +56,7 @@ function defset($str, $default='')
 
 /**
  * Variant of {@link varset()}, but only return the value if both set AND 'true'
- * 
+ * @deprecated - use vartrue();
  * @param mixed $val
  * @param mixed $default [optional]
  * @return mixed
@@ -81,7 +81,7 @@ function vartrue(&$val, $default='')
 
 /**
  * Variant of {@link defset()}, but only return the value if both defined AND 'true'
- * 
+ * @deprecated  - use deftrue()
  * @param string $str
  * @param mixed $default [optional]
  * @return mixed
@@ -108,7 +108,7 @@ function deftrue($str, $default='')
 function e107_include($fname)
 {
 	global $e107_debug, $_E107;
-	$ret = (($e107_debug || isset($_E107['debug'])) ? include($fname) : @include($fname));
+	$ret = (($e107_debug || isset($_E107['debug']) || deftrue('e_DEBUG')) ? include($fname) : @include($fname));
 	return $ret;
 }
 
@@ -117,7 +117,7 @@ function e107_include_once($fname)
 	global $e107_debug, $_E107;
 	if(is_readable($fname))
 	{
-		$ret = ($e107_debug || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
+		$ret = ($e107_debug || isset($_E107['debug']) || deftrue('e_DEBUG')) ? include_once($fname) : @include_once($fname);
 	}
 	return (isset($ret)) ? $ret : '';
 }
@@ -126,7 +126,7 @@ function e107_require_once($fname)
 {
 	global $e107_debug, $_E107;
 	
-	$ret = (($e107_debug || isset($_E107['debug'])) ? require_once($fname) : @require_once($fname));
+	$ret = (($e107_debug || isset($_E107['debug']) || deftrue('e_DEBUG')) ? require_once($fname) : @require_once($fname));
 	
 	return $ret;
 }
@@ -134,7 +134,7 @@ function e107_require_once($fname)
 function e107_require($fname)
 {
 	global $e107_debug, $_E107;
-	$ret = (($e107_debug || isset($_E107['debug'])) ? require($fname) : @require($fname));
+	$ret = (($e107_debug || isset($_E107['debug']) || deftrue('e_DEBUG')) ? require($fname) : @require($fname));
 	return $ret;
 }
 
