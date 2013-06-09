@@ -252,8 +252,9 @@ class auth
 	 */
 	public function authform()  // NOTE: this should NOT be a template of the admin-template, however themes may style it using css. 
 	{
-		global $use_imagecode,$sec_img,$pref;
+		global $use_imagecode,$sec_img;
 
+		$pref = e107::getPref();
 		$frm = e107::getForm();
 
 		$incChap = (vartrue($pref['password_CHAP'], 0)) ? " onsubmit='hashLoginPassword(this)'" : "";
@@ -319,18 +320,16 @@ class auth
 	 */
 	public function authcheck($authname, $authpass, $authresponse = '')
 	{
-
-		global $pref;
-
+		$pref 		= e107::getPref();
 		$tp 		= e107::getParser();
 		$sql_auth 	= e107::getDb('sql_auth');
 		$user_info 	= e107::getUserSession();
-		$reason = '';
+		$reason 	= '';
 
 		$authname = $tp->toDB(preg_replace("/\sOR\s|\=|\#/", "", trim($authname)));
 		$authpass = trim($authpass);
 
-		if (($authpass == '') || ($authname == ''))
+		if ((($authpass == '') && ($authresponse == '')) || ($authname == ''))
 			$reason = 'np';
 		if (strlen($authname) > varset($pref['loginname_maxlength'], 30))
 			$reason = 'lu';
@@ -351,18 +350,41 @@ class auth
 				$reason = 'iu';
 			}
 		}
+
 		if (!$reason && ($row['user_id'])) // Can validate password
 		{
 			$session = e107::getSession();
-			if (($authresponse && $session->is('challenge')) && ($authresponse != $session->get('challenge')))
+			if (($authresponse && $session->is('prevchallenge')) && ($authresponse != $session->get('prevchallenge')))
 			{ // Verify using CHAP (can't handle login by email address - only loginname - although with this code it does still work if the password is stored unsalted)
-				if (($pass_result = $user_info->CheckCHAP($session->get('challenge'), $authresponse, $authname, $row['user_password'])) !== PASSWORD_INVALID)
+				/*
+				$title = 'Login via admin';
+				$extra_text = 'C: '.$session->get('challenge').' PC: '.$session->get('prevchallenge').' PPC: '.$session->get('prevprevchallenge').' R:'.$authresponse.' P:'.$row['user_password'];
+				$text = 'CHAP: '.$username.' ('.$extra_text.')';
+				$title = e107::getParser()->toDB($title);
+				$text  = e107::getParser()->toDB($text);
+				e107::getAdminLog()->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", $title, $text, FALSE, LOG_TO_ROLLING);
+
+				$logfp = fopen(e_LOG.'authlog.txt', 'a+'); fwrite($logfp, $title.': '.$text."\n"); fclose($logfp);
+				*/
+				
+				if (($pass_result = $user_info->CheckCHAP($session->get('prevchallenge'), $authresponse, $authname, $row['user_password'])) !== PASSWORD_INVALID)
 				{
-					return $$row;
+					return $row;
 				}
 			}
 			else
 			{ // Plaintext password
+				/*
+				$title = 'Login via admin';
+				$extra_text = 'C: '.$session->get('challenge').' PC: '.$session->get('prevchallenge').' PPC: '.$session->get('prevprevchallenge').' R:'.$authresponse.' P:'.$row['user_password'];
+				$text = 'STD: '.$username.' ('.$extra_text.')';
+				$title = e107::getParser()->toDB($title);
+				$text  = e107::getParser()->toDB($text);
+				e107::getAdminLog()->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", $title, $text, FALSE, LOG_TO_ROLLING);
+
+//				$logfp = fopen(e_LOG.'authlog.txt', 'a+'); fwrite($logfp, $title.': '.$text."\n"); fclose($logfp);
+				*/
+
 				if (($pass_result = $user_info->CheckPassword($authpass, $authname, $row['user_password'])) !== PASSWORD_INVALID)
 				{
 					return $row;
