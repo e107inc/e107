@@ -578,16 +578,13 @@ if(isset($pref['lan_global_list']))
 
 
 
-$sql->db_Mark_Time('Start: CHAPT challenge');
+$sql->db_Mark_Time('Start: CHAP challenge');
 
 
 e107::getSession()
-	->challenge() // Create a unique challenge string for CHAP login
+	->challenge() // Make sure there is a unique challenge string for CHAP login
 	->check(); // Token protection
 
-	
-	
-	
 	
 //
 // N: misc setups: online user tracking, cache
@@ -613,7 +610,9 @@ if(isset($pref['notify']) && $pref['notify'] == true)
 // O: Start user session
 //
 $sql -> db_Mark_Time('Start: Init session');
-init_session();
+init_session();			// Set up a lot of the user-related constants
+
+
 
 //DEPRECATED but necessary. BC Fix.
 function getip()
@@ -929,6 +928,8 @@ if (isset($_POST['userlogin']) || isset($_POST['userlogin_x']))
 //	$usr = new userlogin($_POST['username'], $_POST['userpass'], $_POST['autologin'], varset($_POST['hashchallenge'],''));
 }
 
+
+
 // $_SESSION['ubrowser'] check not needed anymore - see session handler
 // e_QUERY not defined in single entry mod
 if (($_SERVER['QUERY_STRING'] == 'logout')/* || (($pref['user_tracking'] == 'session') && isset($_SESSION['ubrowser']) && ($_SESSION['ubrowser'] != $ubrowser))*/)
@@ -961,6 +962,7 @@ if (($_SERVER['QUERY_STRING'] == 'logout')/* || (($pref['user_tracking'] == 'ses
 	{
 		session_destroy();
 		$_SESSION[e_COOKIE]='';
+		// @TODO: Need to destroy the session cookie as well (not done by session_destroy()
 	}
 	cookie(e_COOKIE, '', (time() - 2592000));
 	

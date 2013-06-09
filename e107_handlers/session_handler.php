@@ -64,7 +64,7 @@ if (!defined('e107_INIT'))
 class e_session
 {
 	/**
-	 * No protection, label 'Looking for troubles'
+	 * No protection, label 'Looking for trouble'
 	 * @var integer
 	 */
 	const SECURITY_LEVEL_NONE = 0;
@@ -887,18 +887,34 @@ class e_core_session extends e_session
 	}
 	
 	/**
-	 * Creates (once per session) unique challenge string for CHAP login
+	 * Make sure there is unique challenge string for CHAP login
 	 * @see class2.php
 	 * @return e_core_session
+	 
+	 @TODO: Remove debug code
 	 */
 	public function challenge()
 	{
-		if (!$this->is('challenge'))
-		{	
-			// Create a unique challenge string for CHAP login
-			// FIXME - session id will be regenerated if e_SECURITY_LEVEL is 'paranoid|insane' 
-			$this->set('challenge', sha1(time().$this->getSessionId()));
+		if (!$this->is('challenge'))		// TODO: Eliminate need for this
+		{
+			$this->set('challenge', sha1(time().rand().$this->getSessionId()));		// New challenge for next time
 		}
+		if ($this->is('challenge'))
+		{	
+			$this->set('prevprevchallenge', $this->get('prevchallenge'));		// Purely for debug
+			$this->set('prevchallenge', $this->get('challenge'));				// Need to check user login against this
+		}
+		else
+		{
+			$this->set('prevchallenge', '');									// Dummy value
+			$this->set('prevprevchallenge', '');								// Dummy value
+		}
+		//$this->set('challenge', sha1(time().rand().$this->getSessionId()));		// Temporarily disabled
+		// FIXME - session id will be regenerated if e_SECURITY_LEVEL is 'paranoid|insane' - generate  (might be OK as long as values retained)
+		
+		//$extra_text = 'C: '.$this->get('challenge').' PC: '.$this->get('prevchallenge').' PPC: '.$this->get('prevprevchallenge');
+		//$logfp = fopen(e_LOG.'authlog.txt', 'a+'); fwrite($logfp, strftime('%H:%M:%S').' CHAP start: '.$extra_text."\n"); fclose($logfp);
+
 		// could go, see _validate()
 		$ubrowser = md5('E107'.$_SERVER['HTTP_USER_AGENT']);
 		if (!$this->is('ubrowser'))

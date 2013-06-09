@@ -352,6 +352,18 @@ if (vartrue($pref['e_header_list']) && is_array($pref['e_header_list']))
 }
 unset($e_headers);
 
+if (!USER && ($pref['user_tracking'] == "session") && varset($pref['password_CHAP'],0))
+{
+	if ($pref['password_CHAP'] == 2)
+  	{
+		// *** Add in the code to swap the display tags
+//		$js_body_onload[] = "expandit('loginmenuchap','nologinmenuchap');";
+		$js_body_onload[] = "expandit('loginmenuchap');";
+		$js_body_onload[] = "expandit('nologinmenuchap');";
+  	}
+  	echo "<script type='text/javascript' src='".e_JS."chap_script.js'></script>\n";
+  	$js_body_onload[] = "getChallenge();";
+}
 
 
 //XXX - do we still need it? Now we have better way of doing this - admin tools (see below)
@@ -401,7 +413,10 @@ echo "\n<!-- *PRELOAD* -->\n";
 //
 // I: Calculate JS onload() functions for the BODY tag [user mode only]
 //
-$body_onload = "";
+// XXX DEPRECATED $body_onload and related functionality
+if (defined('THEME_ONLOAD')) $js_body_onload[] = THEME_ONLOAD;
+$body_onload='';
+if (count($js_body_onload)) $body_onload = " onload=\"".implode(" ",$js_body_onload)."\"";
 
 //
 // J: Send end of <head> and start of <body>
