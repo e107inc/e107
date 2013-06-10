@@ -2262,6 +2262,8 @@ class e_form
 	
 		if(vartrue($attributes['inline'])) $parms['editable'] = true; // attribute alias
 		if(vartrue($attributes['sort'])) $parms['sort'] = true; // attribute alias
+		
+		$this->renderValueTrigger($field, $value, $parms, $id);
 
 		$tp = e107::getParser();
 		switch($field) // special fields
@@ -2831,7 +2833,7 @@ class e_form
 	 * #param array (under construction) $required_data required array as defined in e_model/validator
 	 * @return string
 	 */
-	function renderElement($key, $value, $attributes, $required_data = array())
+	function renderElement($key, $value, $attributes, $required_data = array(), $id = 0)
 	{
 
 		$parms = vartrue($attributes['writeParms'], array());
@@ -2880,7 +2882,9 @@ class e_form
 				$parms['pattern'] = vartrue($attributes['pattern'], $required_data[3]);	
 			}
 		}
-
+		
+		$this->renderElementTrigger($key, $value, $parms, $required_data, $id);
+		
 		switch($attributes['type'])
 		{
 			case 'number':
@@ -3512,7 +3516,7 @@ class e_form
 							".$required."<span{$required_class}>".defset(vartrue($att['title']), vartrue($att['title']))."</span>".$label."
 						</td>
 						<td>
-							".$this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()))."
+							".$this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()), $model->getId())."
 							{$help}
 						</td>
 					</tr>
@@ -3684,7 +3688,7 @@ class e_form
 				
 				if(!vartrue($tmp['show']))
 				{
-					$hidden_fields[] = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()));
+					$hidden_fields[] = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()), $model->getId());
 					unset($tmp);
 					continue;
 				}
@@ -3964,106 +3968,31 @@ class e_form
 		";
 		return $text;
 	}
- 
-	// The 2 functions below are for demonstration purposes only, and may be moved/modified before release.
-	/*
-	function filterType($fieldarray)
-	{
-		return " frm-> filterType() is Deprecated &nbsp;&nbsp;  ";
-	}
-
-	function filterValue($type = '', $fields = '')
-	{
-		return " frm-> filterValue() is Deprecated.&nbsp;&nbsp;   ";
-	}
-    */
+	
 	/**
-	 * DEPRECATED!!! Use e_admin_form_ui::renderBatch()   
-     * Generates a batch options select component
-	 * This component is generally associated with a table of items where one or more rows in the table can be selected (using checkboxes).
-	 * The list options determine some processing that wil lbe applied to all checked rows when the form is submitted.
-	 *
-	 * @param array $options associative array of option elements, keyed on the option value
-	 * @param array ucOptions [optional] associative array of userclass option groups to display, keyed on the option value prefix
-	 * @return string the HTML for the form component
+	 * Render Value Trigger - override to modify field/value/parameters
+	 * @param string $field field name
+	 * @param mixed $value field value
+	 * @param array $params 'writeParams' key (see $controller->fields array)
+	 * @param int $id record ID
 	 */
-	/*
-	function batchoptions($options, $ucOptions = null)
+	public function renderValueTrigger(&$field, &$value, &$params, $id)
 	{
-
-		$text = "
-         <div class='f-left btn-group'>
-         <img src='".e_IMAGE_ABS."generic/branchbottom.gif' alt='' class='icon action' />
-			".$this->select_open('execute_batch', array('class' => 'tbox select batch e-autosubmit', 'id' => false))."
-				".$this->option('With selected...', '', true, 'hellodisabled')."
-		";
-
-
-		//used for getperms() check
-		$permissions = vartrue($options['__permissions'], array());
-		//used for check_classs() check
-		$classes = vartrue($options['__check_class'], array());
-		unset($options['__permissions'], $options['__check_class']);
-
-		foreach ($options as $key => $val)
-		{
-			if(isset($permissions[$key]) && !getperms($permissions[$key]))
-			{
-				continue;
-			}
-			$disabled = false;
-			if(isset($classes[$key]) && !is_array($classes[$key]) && !check_class($classes[$key]))
-			{
-				$disabled = true;
-			}
-			if(!is_array($val))
-			{
-				if($disabled) $val = $val.' ('.LAN_NOPERMISSION.')';
-				$text .= "\t".$this->option('&nbsp;&nbsp;&nbsp;&nbsp;'.$val, $key, false, array('disabled' => $disabled))."\n";
-			}
-			else
-			{
-				if($disabled) $val[0] = $val[0].' ('.LAN_NOPERMISSION.')';
-
-				$text .= "\t".$this->optgroup_open($val[0], $disabled)."\n";
-		      	foreach ($val[1] as $k => $v)
-		      	{
-		      		$disabled = false;
-					if(isset($classes[$key][$k]) && !check_class($classes[$key][$k]))
-					{
-						$disabled = true;
-						$v = $v.' ('.LAN_NOPERMISSION.')';
-					}
-					$text .= "\t\t".$this->option($v, $key.'_selected_'.$k, false, array('disabled' => $disabled))."\n";
-		      	}
-		      	$text .= $this->optgroup_close()."\n";
-
-			}
-		}
-
-
-		if ($ucOptions) // Userclass List.
-		{
-	   		foreach ($ucOptions as $ucKey => $ucVal)
-			{
-				$text .= "\t".$this->optgroup_open($ucVal[0])."\n";
-	      		foreach ($ucVal[1] as $key => $val)
-	      		{
-	      			$text .= "\t\t".$this->option($val['userclass_name']['userclass_name'], $ucKey.'_selected_'.$val['userclass_name']['userclass_id'])."\n";
-	      		}
-	      		$text .= $this->optgroup_close()."\n";
-			}
-		}
-
-
-		$text .= "
-				".$this->select_close().$this->admin_button('trigger_execute_batch', 'trigger_execute_batch', 'submit multi e-hide-if-js', 'Go')."
-			</div><div class='clear'></div>
-		";
-
-		return $text;
+		
 	}
-     */
+	
+	/**
+	 * Render Element Trigger - override to modify field/value/parameters/validation data
+	 * @param string $field field name
+	 * @param mixed $value field value
+	 * @param array $params 'writeParams' key (see $controller->fields array)
+	 * @param array $required_data validation data
+	 * @param int $id record ID
+	 */
+	public function renderElementTrigger(&$field, &$value, &$params, &$required_data, $id)
+	{
+		
+	}
 }
 
 class form 
