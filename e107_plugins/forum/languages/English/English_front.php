@@ -255,6 +255,16 @@ define("LAN_FORUM_3040", "Announcement"); // LAN_3
 define("LAN_FORUM_3041", "Deactivate emoticons for this post"); // LAN_FORUMPOST_EMOTES
 define("LAN_FORUM_3042", "Enable email tracking (email sent when reply is posted)"); // LAN_380
 
+// forum_posted_template
+define("LAN_FORUM_3043", "Thank you"); // LAN_133 (p)
+define("LAN_FORUM_3044", "Click here to return to the forum"); // LAN_326
+
+define("LAN_FORUM_3045", "Your poll has been successfully posted."); // LAN_413
+define("LAN_FORUM_3046", "Click here to view your poll"); // LAN_414
+define("LAN_FORUM_3047", "Your message has been successfully posted."); // LAN_324
+define("LAN_FORUM_3048", "Click here to view your message"); // LAN_325
+define("LAN_FORUM_3049", "Your reply has been successfully posted."); // LAN_415
+
 
 /*  THIS WILL BE DELETED ONCE THE REWRITE IS DONE
 ==================================================
