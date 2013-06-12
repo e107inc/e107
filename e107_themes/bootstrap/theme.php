@@ -154,10 +154,10 @@ $HEADER['default'] = '
           </a>
           <a class="brand" href="'.SITEURL.'">{SITENAME}</a>
           <div class="nav-collapse collapse">
-            <p class="navbar-text pull-right">
-             '.(!USERID ? '<a class="navbar-link" href="'.e_LOGIN.'">Sign in</a>': 'Logged in as <a href="#" class="navbar-link">'.USERNAME.'</a>').'
-            </p>
            {NAVIGATION=main}
+            <ul class="nav nav-pills pull-right">
+                <li class="dropdown">'.(!USERID ? '<a class="dropdown-toggle" role="button" href="'.e_LOGIN.'">Sign in</a>': '<span class="navbar-text">Logged in as</span> <a class="dropdown-toggle no-block" role="button" href="user.php?id.'.USERID.'">'.USERNAME.'</a>').'</li>
+            </ul>
           </div><!--/.nav-collapse -->
         </div>
       </div>
