@@ -37,14 +37,14 @@ $total_topics = $sql->count('forum_thread');
 $total_replies = $total_posts - $total_topics;
 $total_views = 0;
 $query = 'SELECT sum(thread_views) AS total FROM `#forum_thread` ';
-if ($sql -> db_Select_gen($query))
+if ($sql->gen($query))
 {
-  $row = $sql->db_Fetch();
+  $row = $sql->fetch();
   $total_views = $row['total'];
 }
 
-$firstpost = $sql -> db_Select('forum_post', 'post_datestamp', 'post_datestamp > 0 ORDER BY post_datestamp ASC LIMIT 0,1', 'default');
-$fp = $sql->db_Fetch();
+$firstpost = $sql->select('forum_post', 'post_datestamp', 'post_datestamp > 0 ORDER BY post_datestamp ASC LIMIT 0,1', 'default');
+$fp = $sql->fetch();
 
 $open_ds = $fp['post_datestamp'];
 $open_date = $gen->convert_date($open_ds, 'long');
@@ -74,7 +74,7 @@ WHERE ft.thread_active > 0
 AND f.forum_class IN (".USERCLASS_LIST.")
 ORDER BY ft.thread_total_replies DESC LIMIT 0,10";
 $sql->gen($query);
-$most_activeArray = $sql -> db_getList();
+$most_activeArray = $sql->db_getList();
 
 $query = "
 SELECT ft.*, f.forum_class, u.user_name, u.user_id FROM #forum_thread as ft
@@ -84,7 +84,7 @@ WHERE f.forum_class IN (".USERCLASS_LIST.")
 ORDER BY ft.thread_views DESC LIMIT 0,10";
 
 $sql->gen($query);
-$most_viewedArray = $sql -> db_getList();
+$most_viewedArray = $sql->db_getList();
 
 /*$sql->db_Select("user", "user_id, user_name, user_forums", "ORDER BY user_forums DESC LIMIT 0, 10", "no_where");
 $posters = $sql -> db_getList();
@@ -102,7 +102,7 @@ LEFT JOIN #user AS u ON fp.post_user = u.user_id
 GROUP BY fp.post_user
 ORDER BY post_count DESC LIMIT 0,10";
 $sql->gen($query);
-$top_repliers_data = $sql -> db_getList('ALL', false, false, 'user_id');
+$top_repliers_data = $sql->db_getList('ALL', false, false, 'user_id');
 
 // build top posters meanwhile
 $top_posters = array();
@@ -122,7 +122,7 @@ LEFT JOIN #user AS u ON ft.thread_user = u.user_id
 WHERE u.user_id IN ({$ids})
 GROUP BY ft.thread_user";
 $sql->gen($query);
-$top_repliers_data_c = $sql -> db_getList('ALL', false, false, 'user_id');
+$top_repliers_data_c = $sql->db_getList('ALL', false, false, 'user_id');
 
 $top_repliers = array();
 foreach($top_repliers_data as $uid => $poster)
@@ -150,7 +150,7 @@ LEFT JOIN #user AS u ON ft.thread_user = u.user_id
 GROUP BY ft.thread_user
 ORDER BY thread_count DESC LIMIT 0,10";
 $sql->gen($query);
-$top_topic_starters_data = $sql -> db_getList();
+$top_topic_starters_data = $sql->db_getList();
 $top_topic_starters = array();
 foreach($top_topic_starters_data as $poster)
 {
@@ -410,9 +410,7 @@ $text .= '</table>
 </div>
 ';
 
-
 $ns -> tablerender(FSLAN_23, $text);
 
 require_once(FOOTERF);
-
 ?>

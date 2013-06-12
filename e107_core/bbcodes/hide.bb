@@ -1,6 +1,6 @@
 global $sql, $e_hide_query, $e_hide_hidden, $e_hide_allowed;
 
-if(!$e_hide_allowed || !isset($e_hide_query) || !$sql->db_Select_gen($e_hide_query))
+if(!$e_hide_allowed || !isset($e_hide_query) || !$sql->gen($e_hide_query))
 {
 	if(defined('HIDE_TEXT_HIDDEN'))
 	{

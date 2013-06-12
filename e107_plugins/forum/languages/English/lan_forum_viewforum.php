@@ -9,8 +9,9 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
+// DEPRECATED, MOVED TO ENGLISH_FRONT.PHP - THIS WILL BE REMOVED SOON!
+/*
 define("PAGE_NAME", "Forum");
-
 
 // define("LAN_79", "New posts");
 //define("LAN_80", " No new posts");
@@ -58,6 +59,7 @@ define("LAN_396", "Announcement");
 //define("LAN_435", "Delete thread");
 
 //v.617
+
 define("FORLAN_CLOSE", "Thread closed.");
 define("FORLAN_OPEN", "Thread reopened.");
 define("FORLAN_STICK", "Thread made sticky.");
@@ -81,5 +83,5 @@ define('FORLAN_20', 'Sub-forum');
 define('FORLAN_21', 'Threads');
 define('FORLAN_22', 'Last Post');
 define('FORLAN_23', 'Poll');
-
+*/
 ?>

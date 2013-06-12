@@ -7,7 +7,7 @@ class forum_status // include plugin-folder in the name.
 	function config()
 	{
 		$sql = e107::getDb();
-		$forum_posts = $sql->db_Count('forum_post');
+		$forum_posts = $sql->count('forum_post');
 		
 		$var[0]['icon'] 	= E_16_FORUM;
 		$var[0]['title'] 	= ADLAN_113;
