@@ -585,7 +585,7 @@ class xmlClass
 							break;
 						}
 	*/					
-						$count = $xml->{$tag}->count(); 
+						$count = count($xml->{$tag}); 
 						if($count >= 1) //array of elements - loop
 						{
 							for ($i = 0; $i < $count; $i++)
