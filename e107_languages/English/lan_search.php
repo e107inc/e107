@@ -1,13 +1,9 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_search.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
+ * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Language file - Search
+ *
 */
 
 define("PAGE_NAME", "Search");
@@ -38,7 +34,7 @@ define("LAN_SEARCH_6", "Match found in extended news text");
 define("LAN_SEARCH_7", "Posted by ");
 define("LAN_SEARCH_8", " on ");
 define("LAN_SEARCH_9", "Untitled");
-define("LAN_SEARCH_10", "Go to page:");
+//define("LAN_SEARCH_10", "Go to page:"); // Generic
 define("LAN_SEARCH_11", "Results");
 define("LAN_SEARCH_12", " of ");
 define("LAN_SEARCH_13", " in ");

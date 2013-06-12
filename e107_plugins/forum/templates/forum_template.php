@@ -2,13 +2,10 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- * $URL$
- * $Id$
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -102,9 +99,9 @@ $FORUM_TEMPLATE['main-start']			= "<div class='row'>
 
 $FORUM_TEMPLATE['main-parent']			= 	"<tr>
 											<th colspan='2'>{PARENTNAME} {PARENTSTATUS}</th>
-											<th>".LAN_55."</th>
-											<th>".FORLAN_21."</th>
-											<th>".FORLAN_22."</th>											
+											<th>".LAN_FORUM_0003."</th>
+											<th>".LAN_FORUM_0002."</th>
+											<th>".LAN_FORUM_0004."</th>											
 											</tr>";											
 											
 																						

@@ -596,18 +596,19 @@ class poll
 	//	echo "MODE=".$mode;
 		
 		//XXX New v2.x default for front-end. Currently used by forum-post in bootstrap mode. 
+		// TODO Moc - Needs a more generic LAN rewrite when used on another area than forum
 		if ($mode == 'front')
 		{				
 			
 			$text = "
 			
 			<div class='alert alert-info'>
-				<small >".LAN_386."</small>
+				<small >".LAN_FORUM_3029."</small>
 			</div>
 			
 			<div class='control-group'>
 				<div>
-					<input class='tbox input-xxlarge' placeholder=\"Poll Question\" type='text' name='poll_title' size='70' value='".$tp->post_toForm(vartrue($_POST['poll_title']))."' maxlength='200' />
+					<input class='tbox input-xxlarge' placeholder='".LAN_FORUM_3030."' type='text' name='poll_title' size='70' value='".$tp->post_toForm(vartrue($_POST['poll_title']))."' maxlength='200' />
 				</div>";
 
 			$option_count = vartrue($_POST['poll_option']) ? count($_POST['poll_option']) : 2;
@@ -621,25 +622,25 @@ class poll
 					//	break;
 					}
 					$opt = ($count==1) ? "id='pollopt' class='btn-group input-append' " : "";
-					$text .="<span {$opt}><input placeholder=\"Poll Answer\" class='tbox' type='text' name='poll_option[]' size='40' value=\"".$_POST['poll_option'][($count-1)]."\" maxlength='200' />";
+					$text .="<span {$opt}><input placeholder='".LAN_FORUM_3031."' class='tbox' type='text' name='poll_option[]' size='40' value=\"".$_POST['poll_option'][($count-1)]."\" maxlength='200' />";
 					$text .= "</span><br />";
 				}
 	
 				$text .="</div>
 				<div class='control-group'>
-				<input class='btn' type='button' name='addoption' value='".LAN_6."' onclick=\"duplicateHTML('pollopt','pollsection')\" /><br />
+				<input class='btn' type='button' name='addoption' value='".LAN_FORUM_3032."' onclick=\"duplicateHTML('pollopt','pollsection')\" /><br />
 				</div>
 			</div>";
 			
 			//FIXME - get this looking good with Bootstrap CSS only. 
 			
-			$opts = array(1=> "yes", 0=> "no");
+			$opts = array(1 => LAN_YES, 0=> LAN_NO);
 				
 			// Set to IP address.. Can add a pref to Poll admin for 'default front-end storage method' if demand is there for it. 
 		
 		$text .= "
 			 <div class='form-horizontal control-group'>
-			<label class='control-label'>".POLL_506."</label>
+			<label class='control-label'>".LAN_FORUM_3033."</label>
 			<div class='controls'>
 			". $frm->radio('multipleChoice',$opts, vartrue($_POST['multipleChoice'], 0) ).$frm->hidden('storageMethod',1)."
 			</div>
@@ -681,52 +682,54 @@ class poll
 		//TODO Hardcoded FORUM code needs to be moved somewhere. 
 		if ($mode == 'forum')
 		{
-			$text = "<tr>
-			<td colspan='2' class='nforumcaption2'>".LAN_4."</td>
+			$text = "
+			<tr>
+				<td colspan='2'><span class='smalltext'>".LAN_FORUM_3029."</span></td>
 			</tr>
 			<tr>
-			<td colspan='2'>
-			<span class='smalltext'>".LAN_386."</span>
-			</td>
-			</tr>
-			<tr><td style='width:20%'><div class='normaltext'>".LAN_5."</div></td><td style='width:80%'class='forumheader3'><input class='tbox' type='text' name='poll_title' size='70' value='".$tp->post_toForm(vartrue($_POST['poll_title']))."' maxlength='200' /></td></tr>";
+				<td style='width:20%'><div class='normaltext'>".LAN_FORUM_3030.": </div></td>
+				<td style='width:80%'class='forumheader3'><input class='tbox' type='text' name='poll_title' size='70' value='".$tp->post_toForm(vartrue($_POST['poll_title']))."' maxlength='200' /></td>
+			</tr>";
 
 			$option_count = (count(vartrue($_POST['poll_option'])) ? count($_POST['poll_option']) : 1);
-			$text .= "<tr>
-			<td style='width:20%'>".LAN_391."</td>
-			<td style='width:80%'>
-			<div id='pollsection'>";
-
-			for($count = 1; $count <= $option_count; $count++)
-			{
-				if ($count != 1 && $_POST['poll_option'][($count-1)] =="")
-				{
-					break;
-				}
-				$opt = ($count==1) ? "id='pollopt'" : "";
-				$text .="<span {$opt}><input  class='tbox' type='text' name='poll_option[]' size='40' value=\"".$_POST['poll_option'][($count-1)]."\" maxlength='200' />";
-				$text .= "</span><br />";
-			}
-
-			$text .="</div><input class='btn' type='button' name='addoption' value='".LAN_6."' onclick=\"duplicateHTML('pollopt','pollsection')\" /><br />
-			</td></tr>
-
-
+			$text .= "
 			<tr>
-			<td style='width:20%'>".POLL_506."</td>
-			<td style='width:80%'>
-			<input type='radio' name='multipleChoice' value='1'".(vartrue($_POST['multipleChoice']) ? " checked='checked'" : "")." /> ".POLL_507."&nbsp;&nbsp;
-			<input type='radio' name='multipleChoice' value='0'".(!$_POST['multipleChoice'] ? " checked='checked'" : "")." /> ".POLL_508."
+				<td style='width:20%'>".LAN_FORUM_3031."</td>
+				<td style='width:80%'>
+				<div id='pollsection'>";
+
+				for($count = 1; $count <= $option_count; $count++)
+				{
+					if ($count != 1 && $_POST['poll_option'][($count-1)] =="")
+					{
+						break;
+					}
+
+					$opt = ($count==1) ? "id='pollopt'" : "";
+					$text .="<span {$opt}><input  class='tbox' type='text' name='poll_option[]' size='40' value=\"".$_POST['poll_option'][($count-1)]."\" maxlength='200' />";
+					$text .= "</span><br />";
+				}
+
+				$text .="
+				</div>
+				<input class='btn button' type='button' name='addoption' value='".LAN_FORUM_3032."' onclick=\"duplicateHTML('pollopt','pollsection')\" /><br />
+				</td>
+			</tr>
+			<tr>
+				<td style='width:20%'>".LAN_FORUM_3033."</td>
+				<td style='width:80%'>
+				<input type='radio' name='multipleChoice' value='1'".(vartrue($_POST['multipleChoice']) ? " checked='checked'" : "")." /> ".LAN_YES."&nbsp;&nbsp;
+				<input type='radio' name='multipleChoice' value='0'".(!$_POST['multipleChoice'] ? " checked='checked'" : "")." /> ".LAN_NO."
 			</td>
 			</tr>
-
 			<tr>
-			<td style='width:30%'>".POLLAN_16."</td>
-			<td>
-			<input type='radio' name='storageMethod' value='0'".(!vartrue($_POST['storageMethod']) ? " checked='checked'" : "")." /> ".POLLAN_17."<br />
-			<input type='radio' name='storageMethod' value='1'".($_POST['storageMethod'] == 1 ? " checked='checked'" : "")." /> ".POLLAN_18."<br />
-			<input type='radio' name='storageMethod' value='2'".($_POST['storageMethod'] ==2 ? " checked='checked'" : "")." /> ".POLLAN_19."
-			</td></tr>
+				<td style='width:30%'>".LAN_FORUM_3034."</td>
+				<td>
+					<input type='radio' name='storageMethod' value='0'".(!vartrue($_POST['storageMethod']) ? " checked='checked'" : "")." /> ".LAN_FORUM_3035."<br />
+					<input type='radio' name='storageMethod' value='1'".($_POST['storageMethod'] == 1 ? " checked='checked'" : "")." /> ".LAN_FORUM_3036."<br />
+					<input type='radio' name='storageMethod' value='2'".($_POST['storageMethod'] ==2 ? " checked='checked'" : "")." /> ".LAN_FORUM_3037."
+				</td>
+			</tr>
 			";
 
 

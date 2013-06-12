@@ -10,6 +10,8 @@
 *
 */
 
+// TODO LAN
+
 /* Forum Header File */
 if (!defined('e107_INIT')) { exit; }
 
@@ -1556,7 +1558,7 @@ class e107forum
 			$FORUM_CRUMB['sitename']['value'] = str_replace($search, $replace, $FORUM_CRUMB['sitename']['value']);
 
 			$search 	= array('{FORUMS_TITLE}', '{FORUMS_HREF}');
-			$replace 	= array(LAN_01, e107::getUrl()->create('forum/forum/main'));
+			$replace 	= array(LAN_FORUM_0001, e107::getUrl()->create('forum/forum/main'));
 			$FORUM_CRUMB['forums']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forums']['value']);
 
 			$search 	= '{PARENT_TITLE}';
@@ -1591,7 +1593,7 @@ class e107forum
 		else
 		{
 			$dfltsep = ' :: ';
-			$BREADCRUMB = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a>".$dfltsep."<a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_01."</a>".$dfltsep;
+			$BREADCRUMB = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a>".$dfltsep."<a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_FORUM_0001."</a>".$dfltsep;
 			if($forumInfo['sub_parent'])
 			{
 				$forum_sub_parent = (substr($forumInfo['sub_parent'], 0, 1) == '*' ? substr($forumInfo['sub_parent'], 1) : $forumInfo['sub_parent']);

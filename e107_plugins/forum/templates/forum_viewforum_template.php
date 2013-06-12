@@ -2,13 +2,10 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2011 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- * $URL$
- * $Id$
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -219,10 +216,10 @@ if (!$FORUM_VIEW_SUB_START)
 		<table style='width:100%'>
 		<tr>
 			<td class='fcaption' style='width: 5%'>&nbsp;</td>
-			<td class='fcaption' style='width: 45%'>".FORLAN_20."</td>
-			<td class='fcaption' style='width: 10%'>".FORLAN_21."</td>
-			<td class='fcaption' style='width: 10%'>".LAN_55."</td>
-			<td class='fcaption' style='width: 30%'>".FORLAN_22."</td>
+			<td class='fcaption' style='width: 45%'>".LAN_FORUM_1002."</td>
+			<td class='fcaption' style='width: 10%'>".LAN_FORUM_0002."</td>
+			<td class='fcaption' style='width: 10%'>".LAN_FORUM_0003."</td>
+			<td class='fcaption' style='width: 30%'>".LAN_FORUM_0004."</td>
 		</tr>
 	";
 }
@@ -249,11 +246,12 @@ if (!$FORUM_VIEW_SUB_END) {
 }
 
 if (!$FORUM_IMPORTANT_ROW) {
-	$FORUM_IMPORTANT_ROW = "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>".LAN_411."</b></span></td></tr>";
+	$FORUM_IMPORTANT_ROW = "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>".LAN_FORUM_1006."</b></span></td></tr>";
 }
 
+
 if (!$FORUM_NORMAL_ROW) {
-	$FORUM_NORMAL_ROW = "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>".LAN_412."</b></span></td></tr>";
+	$FORUM_NORMAL_ROW = "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>".LAN_FORUM_1007."</b></span></td></tr>";
 }
 
 
@@ -304,7 +302,7 @@ $FORUM_VIEWFORUM_TEMPLATE['item-sticky'] 		= $FORUMVIEW['item'] ; // "<tr><td>{T
 $FORUM_VIEWFORUM_TEMPLATE['item-announce'] 		= $FORUMVIEW['item'] ; // "<tr><td>{THREADNAME}</td></tr>\n";
 
 
-$FORUM_VIEWFORUM_TEMPLATE['sub-header']			= "<tr><th colspan='2'>".FORLAN_20."</th><th>".LAN_55."</th><th>".FORLAN_21."</th><th>".FORLAN_22."</th></tr>";
+$FORUM_VIEWFORUM_TEMPLATE['sub-header']			= "<tr><th colspan='2'>".LAN_FORUM_1002."</th><th>".LAN_FORUM_0003."</th><th>".LAN_FORUM_0002."</th><th>".LAN_FORUM_0004."</th></tr>";
 $FORUM_VIEWFORUM_TEMPLATE['sub-item']			= "<tr><td>{NEWFLAG}</td>
 												<td><div>{SUB_FORUMTITLE}</div><small>{SUB_DESCRIPTION}</small></td>
 												<td>{SUB_REPLIESX}</td>
@@ -315,8 +313,8 @@ $FORUM_VIEWFORUM_TEMPLATE['sub-item']			= "<tr><td>{NEWFLAG}</td>
 
 $FORUM_VIEWFORUM_TEMPLATE['sub-footer']			= "";		
 
-$FORUM_VIEWFORUM_TEMPLATE['divider-important']	= "<tr><th colspan='2'>".LAN_411."</th><th>".LAN_55."</th><th>".LAN_56."</th><th>".LAN_57."</th></tr>";
-$FORUM_VIEWFORUM_TEMPLATE['divider-normal']		= "<tr><th colspan='2'>".LAN_412."</th><th>".LAN_55."</th><th>".LAN_56."</th><th>".LAN_57."</th></tr>";
+$FORUM_VIEWFORUM_TEMPLATE['divider-important']	= "<tr><th colspan='2'>".LAN_FORUM_1006."</th><th>".LAN_FORUM_0003."</th><th>".LAN_FORUM_1005."</th><th>".LAN_FORUM_0004."</th></tr>";
+$FORUM_VIEWFORUM_TEMPLATE['divider-normal']		= "<tr><th colspan='2'>".LAN_FORUM_1007."</th><th>".LAN_FORUM_0003."</th><th>".LAN_FORUM_1005."</th><th>".LAN_FORUM_0004."</th></tr>";
 
 $FORUM_VIEWFORUM_TEMPLATE['footer'] 				= "</table>
 												<div class='row-fluid'>
