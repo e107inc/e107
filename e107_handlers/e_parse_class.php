@@ -465,6 +465,7 @@ class e_parse extends e_parser
 	 */
 	public function toDB($data, $nostrip = FALSE, $no_encode = FALSE, $mod = FALSE, $original_author = FALSE)
 	{
+		
 		$core_pref = e107::getConfig();
 		if (is_array($data))
 		{
@@ -476,6 +477,8 @@ class e_parse extends e_parser
 			return $ret;
 		}
 
+	
+
 		if (MAGIC_QUOTES_GPC == TRUE && $nostrip == FALSE)
 		{
 			$data = stripslashes($data);
@@ -484,23 +487,26 @@ class e_parse extends e_parser
 		if ($mod != 'pReFs') //XXX We're not saving prefs. 
 		{
 			$data = $this->preFilter($data);
+			$data = str_replace('<?','&lt;?',$data); // replace <? so that it can still be used in [code][/code] bbcode. 
 			
 			if (strip_tags($data) != $data) // html tags present. 
 			{
-				
+			//	return $data;
 				$data = $this->cleanHtml($data); // sanitize all html. 
+				
 				$data = urldecode($data); // symptom of cleaning the HTML - urlencodes src attributes containing { and } .eg. {e_BASE} 
 			//	if ($this->htmlAbuseFilter($data)) $no_encode = FALSE; //XXX cleanHtml() is more effective. 
 			}
-
+			
 			if (!check_class($core_pref->get('post_html', e_UC_MAINADMIN)))
 			{
 				$data = strip_tags($data); // remove tags from cleaned html. 
 				$data = str_replace(array('[html]','[/html]'),'',$data); 
 			//	$data = $this->dataFilter($data);
 			}
+			$data = str_replace('&lt;?','<?',$data); // replace <? so that it can still be used in [code][/code] bbcode. 
 		}
-
+	
 		if (check_class($core_pref->get('post_html'))) /*$core_pref->is('post_html') && */
 		{
 			$no_encode = TRUE;
