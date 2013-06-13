@@ -202,12 +202,16 @@ if ($type == "file")
 					e107::getFile()->send(e_DOWNLOAD.$download_url);
 					exit();
 				} 
+				elseif(file_exists($download_url)) 
+				{
+					e107::getFile()->send($download_url);
+					exit();
+				}
 				elseif(file_exists(e_UPLOAD.$download_url)) 
 				{
 					e107::getFile()->send(e_UPLOAD.$download_url);
 					exit();
 				}
-				$log->addError("Couldn't find ".e_UPLOAD.$download_url." or ".e_DOWNLOAD.$download_url);
 			}
 		} 
 		else 
@@ -246,7 +250,6 @@ if ($type == "file")
 			exit();
 		}
 	}
-
 	require_once(HEADERF);
 	$ns -> tablerender(LAN_dl_61, "<div style='text-align:center'>".LAN_dl_65."<br /><br /><a href='javascript:history.back(1)'>".LAN_dl_64."</a></div>");
 	require_once(FOOTERF);
