@@ -36,7 +36,7 @@ $FORUMTHREADPOSTED = "
 	<td style='vertical-align:middle; width:80%' class='forumheader2'>
 		<br />".LAN_FORUM_3047."<br />
 		".(defined('F_MESSAGE') ? F_MESSAGE.'<br />' : '')."
-		<span class='defaulttext'><a href='{$threadLink}'>".LAN_FORUM_3047."</a><br />
+		<span class='defaulttext'><a href='{$threadLink}'>".LAN_FORUM_3048."</a><br />
 		<a href='{$forumLink}'>".LAN_FORUM_3044."</a></span><br /><br />
 	</td>
 </tr>
