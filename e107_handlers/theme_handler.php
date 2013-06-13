@@ -2,16 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * e107 Admin Theme Handler
  *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 if(!defined('e107_INIT'))
@@ -19,15 +15,7 @@ if(!defined('e107_INIT'))
 	exit;
 }
 
-/**
- * Base e107 Admin Theme Handler
- *
- * @package e107
- * @category e107_handlers
- * @version 1.0
- * @author Cameron
- * @copyright Copyright (c) 2009, e107 Inc.
- */
+
 class themeHandler
 {
 	
@@ -343,16 +331,16 @@ class themeHandler
 		extract($_FILES);
 		if(!is_writable(e_THEME))
 		{
-			//	$ns->tablerender(TPVLAN_16, TPVLAN_20);
-			$mes->add(TPVLAN_20, E_MESSAGE_INFO);
+			$mes->addInfo(TPVLAN_20);
 			return FALSE;
 		}
 		else
 		{
+			// FIXME - upload seems to unfunctional - needs further testing and fixing
 			require_once (e_HANDLER."upload_handler.php");
-			$fileName = $file_userfile['name'][0];
+			$fileName = $file_userfile['name'][0]; // $_FILES['file_userfile']['name'][0] ?
 			$fileSize = $file_userfile['size'][0];
-			$fileType = $file_userfile['type'][0];
+			$fileType = $file_userfile['type'][0]; // type is returned as mime type (application/octet-stream) not as zip/rar
 			
 			if(strstr($file_userfile['type'][0], "gzip"))
 			{
@@ -365,9 +353,8 @@ class themeHandler
 			}
 			else
 			{
-				$mes->add(TPVLAN_17, E_MESSAGE_ERROR);
-				//	$ns->tablerender(TPVLAN_16, TPVLAN_17);
-				//	require_once("footer.php");
+
+				$mes->addError(TPVLAN_17);;
 				return FALSE;
 			}
 			
@@ -734,11 +721,12 @@ class themeHandler
 
 
 	
-	function renderUploadForm()
+	function renderUploadForm() 
 	{
 		$mes = e107::getMessage();
 		$ns = e107::getRender();
 		$sql = e107::getDb();
+		$frm = e107::getForm();
 		
 		if(!is_writable(e_THEME))
 		{
@@ -747,37 +735,33 @@ class themeHandler
 		}
 		else
 		{
-			require_once (e_HANDLER.'upload_handler.php');
+			require_once(e_HANDLER.'upload_handler.php');
 			$max_file_size = get_user_max_upload();
 			
 			$text = "
+			<form enctype='multipart/form-data' action='".e_SELF."' method='post'>
 				<table class='table adminform'>
 					<colgroup>
 						<col class='col-label' />
 						<col class='col-control' />
 					</colgroup>
 				<tr>
-				<td>".TPVLAN_13."</td>
-				<td>
-				<input type='hidden' name='MAX_FILE_SIZE' value='{$max_file_size}' />
-				<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
-				<input class='tbox' type='file' name='file_userfile[]' size='50' />
-				</td>
+					<td>".TPVLAN_13."</td>
+					<td>
+						<input type='hidden' name='MAX_FILE_SIZE' value='{$max_file_size}' />
+						<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
+						<input class='tbox' type='file' name='file_userfile[]' size='50' />
+					</td>
 				</tr>
                 <tr>
-				<td>".TPVLAN_10."</td>
-				<td>
-                <input type='checkbox' name='setUploadTheme' value='1' />
-				</td>
+					<td>".TPVLAN_10."</td>
+					<td><input type='checkbox' name='setUploadTheme' value='1' /></td>
 				</tr>
 				</table>
-				<div class='buttons-bar center'>";
 			
-			$text .= $this->frm->admin_button('upload', TPVLAN_14, 'submit');
-			
-			$text .= "
-				</div>
-				\n";
+			<div class='buttons-bar center'>".$frm->admin_button('upload', TPVLAN_14, 'submit')."</div>
+			</form>
+			";
 		}
 		
 		$ns->tablerender(TPVLAN_26.SEP.TPVLAN_38, $mes->render().$text);
