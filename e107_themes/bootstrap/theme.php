@@ -406,7 +406,6 @@ $HEADER['docs'] = <<<TMPL
           <a class="brand" href="./index.html">Bootstrap</a>
           <div class="nav-collapse collapse">
              {NAVIGATION=main}
-            </ul>
           </div>
         </div>
       </div>
