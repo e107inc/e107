@@ -52,7 +52,7 @@ else
 		
 	$code_text = html_entity_decode($code_text, ENT_QUOTES, 'utf-8');	
 	$code_text = trim($code_text);
-	$code_text = htmlspecialchars($code_text, ENT_QUOTES, 'utf-8').'</pre>';
+	$code_text = htmlspecialchars($code_text, ENT_QUOTES, 'utf-8');
 	
 	if($parm == 'inline')
 	{
