@@ -1460,9 +1460,9 @@ class e_parse extends e_parser
 							$full_text = $this->parseBBTags($full_text); // strip <bbcode> tags. 
 							$opts['nobreak'] = true;
 							break;
-							
-						case 'table' : // strip <br /> from end of <table>		
-							
+						
+						case 'table' : // strip <br /> from inside of <table>		
+						
 							$convertNL = FALSE;
 						//	break;
 
@@ -1735,7 +1735,10 @@ class e_parse extends e_parser
 							}
 						}
 
-						if ($convertNL)
+						
+						
+
+						if($convertNL == true)
 						{
 							// Default replaces all \n with <br /> for HTML display
 							$nl_replace = '<br />';
@@ -1747,9 +1750,9 @@ class e_parse extends e_parser
 							{
 								$nl_replace = "\n";
 							}
+							
 							$sub_blk = str_replace(E_NL, $nl_replace, $sub_blk);
 						}
-
 
 						$ret_parser .= $sub_blk;
 					}	// End of 'normal' processing for a block of text
@@ -1763,6 +1766,19 @@ class e_parse extends e_parser
 				$ret_parser .= $full_text;
 			}
 		}
+
+		// Quick Fix - Remove trailing <br /> on block-level elements (eg. div, pre, table, etc. )
+		$srch = array();
+		$repl = array();
+		
+		foreach($this->blockTags as $val)
+		{
+			$srch[] = "</".$val."><br />";	
+			$repl[]	= "</".$val.">";
+		}
+		
+		$ret_parser = str_replace($srch, $repl, $ret_parser);
+
 		return trim($ret_parser);
 	}
 
@@ -2481,6 +2497,8 @@ class e_parser
                                         'small', 'caption', 'noscript'
                                    );
 	private $scriptTags 		= array('script','applet','iframe'); //allowed whem $pref['post_script'] is enabled. 
+	
+	protected $blockTags		= array('pre','div','h1','h2','h3','h4','h5','h6','blockquote'); // element includes its own line-break. 
         
     public function __construct()
     {
