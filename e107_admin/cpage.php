@@ -117,6 +117,7 @@ class page_chapters_ui extends e_admin_ui
 		protected $pid			= "chapter_id";
 		protected $perPage 		= 0; //no limit
 		protected $batchDelete 	= false;
+		protected $batchCopy	= true;	
         protected $batchLink   	= true;
 		protected $listOrder 	= ' COALESCE(NULLIF(chapter_parent,0), chapter_id), chapter_parent > 0, chapter_order '; //FIXME works with parent/child but doesn't respect parent order. 
 	//	protected $sortField	= 'chapter_order';
