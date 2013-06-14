@@ -115,7 +115,6 @@ define("LAN_FORUM_0073", "Tracked topics"); // LAN_397
 define("LAN_FORUM_0074", "Posted by");  // LAN_423
 define("LAN_FORUM_0075", "New topics"); // LAN_424
 
-
 // starting at LAN_FORUM_1xxx => forum_viewforum.php
 define("LAN_FORUM_1001", "Forums"); // LAN_01
 
@@ -130,15 +129,14 @@ define("LAN_FORUM_1008", "There are no topics in this forum yet."); // LAN_58
 define("LAN_FORUM_1009", "This forum is moderated by"); // LAN_404
 define("LAN_FORUM_1010", "[popular]"); // LAN_395 (vf)
 define("LAN_FORUM_1011", "Sticky"); // LAN_202
-define("LAN_FORUM_1012", "Sticky/Closed"); // LAN_203
-define("LAN_FORUM_1013", "Announcement"); // LAN_396
-define("LAN_FORUM_1014", "Closed thread"); // LAN_81
+define("LAN_FORUM_1012", "Sticky/Closed"); // LAN_203 / 
+define("LAN_FORUM_1013", "Announcement"); // LAN_396 // FORLAN_17
+define("LAN_FORUM_1014", "Closed topic"); // LAN_81 / FORLAN_18
 define("LAN_FORUM_1015", "[user deleted]"); // FORLAN_19 (vf)
 define("LAN_FORUM_1016", "Poll"); // FORLAN_23
 
 define("LAN_FORUM_1017", "Go to"); // LAN_401 (p?)
 define("LAN_FORUM_1018", "New topic");
-
 define("LAN_FORUM_1019", "Are you sure?"); // new
 
 // starting at LAN_FORUM_2xxx => forum_viewtopic.php
@@ -152,7 +150,6 @@ define("LAN_FORUM_2006", "Post a reply"); // new
 define("LAN_FORUM_2007", "Post a quick reply"); // new
 
 define("LAN_FORUM_2008", "HIDDEN - LOGIN AND REPLY TO REVEAL"); // FORLAN_HIDDEN - used in [hide] bbcode?
-
 define("LAN_FORUM_2009", "Are you sure you want to delete this topic and any replies?"); // LAN_409
 define("LAN_FORUM_2010", "Are you sure you want to delete this reply?"); // LAN_410
 //define("LAN_FORUM_2011", "posted by"); // LAN_410 // LAN_FORUM_0074
@@ -202,7 +199,6 @@ define("LAN_FORUM_2044", "Email"); // FORLAN_101
 define("LAN_FORUM_2045", "Print"); // FORLAN_102
 define("LAN_FORUM_2046", "Report"); // LAN_413
 
-
 // starting at LAN_FORUM_3xxx => forum_post.php 
 define("LAN_FORUM_3001", "You are not authorized to post to this forum."); // LAN_399 (p)
 define("LAN_FORUM_3002", "This topic is locked."); // LAN_397
@@ -234,7 +230,7 @@ define("LAN_FORUM_3023", "Update topic"); // LAN_77
 define("LAN_FORUM_3024", "Update reply"); // LAN_78
 define("LAN_FORUM_3025", "Type"); // new
 define("LAN_FORUM_3026", "Post topic as"); // LAN_400 (p)
-//define("LAN_FORUM_3027", "Type"); // new
+//define("LAN_FORUM_3027", "Type"); // new -
 
 // poll - partly in e107_plugins/poll/poll_class.php
 define("LAN_FORUM_3028", "Add Poll"); // new
@@ -249,11 +245,9 @@ define("LAN_FORUM_3036", "IP address"); // POLLAN_18
 define("LAN_FORUM_3037", "User ID (only members can vote)"); // POLLAN_19
 
 define("LAN_FORUM_3038", "Normal"); // LAN_1
-define("LAN_FORUM_3039", "Sticky"); // LAN_2
-define("LAN_FORUM_3040", "Announcement"); // LAN_3
-
-define("LAN_FORUM_3041", "Deactivate emoticons for this post"); // LAN_FORUMPOST_EMOTES
-define("LAN_FORUM_3042", "Enable email tracking (email sent when reply is posted)"); // LAN_380
+define("LAN_FORUM_3039", "Deactivate emoticons for this post"); // LAN_FORUMPOST_EMOTES
+define("LAN_FORUM_3040", "Enable email tracking (email sent when reply is posted)"); // LAN_380
+// missing 41-21
 
 // forum_posted_template
 define("LAN_FORUM_3043", "Thank you"); // LAN_133 (p)
@@ -264,6 +258,26 @@ define("LAN_FORUM_3046", "Click here to view your poll"); // LAN_414
 define("LAN_FORUM_3047", "Your message has been successfully posted."); // LAN_324
 define("LAN_FORUM_3048", "Click here to view your message"); // LAN_325
 define("LAN_FORUM_3049", "Your reply has been successfully posted."); // LAN_415
+
+// forum_icons_template
+define("LAN_FORUM_4001", "Unread post exists"); // LAN_199 (vf)
+define("LAN_FORUM_4002", "No unread posts"); // new
+define("LAN_FORUM_4003", "New posts on popular topic"); // FORLAN_13
+define("LAN_FORUM_4004", "No new posts on popular topic"); // FORLAN_14
+
+define("LAN_FORUM_4005", "Website"); // LAN_396
+define("LAN_FORUM_4006", "Email"); // LAN_397
+define("LAN_FORUM_4007", "Profile"); // LAN_398
+define("LAN_FORUM_4008", "Private Message"); // LAN_399
+
+define("LAN_FORUM_4009", "Track topic"); // LAN_391 (vt) 
+define("LAN_FORUM_4010", "Untrack topic"); // LAN_392 (vt) / new
+define("LAN_FORUM_4011", "Stick thread"); // LAN_401
+define("LAN_FORUM_4012", "Unstick thread"); // LAN_398
+define("LAN_FORUM_4013", "Lock thread"); // LAN_399
+define("LAN_FORUM_4014", "Unlock thread"); // LAN_400
+
+
 
 
 /*  THIS WILL BE DELETED ONCE THE REWRITE IS DONE
@@ -280,7 +294,6 @@ define("LAN_09", "Visits to site since registration");
 define("LAN_10", "Back to top");
 define("LAN_65", "Jump");
 
-
 define("LAN_53", "Thread");
 define("LAN_54", "Starter");
 define("LAN_55", "Replies");
@@ -290,8 +303,6 @@ define("LAN_58", "There are no topics in this forum yet.");
 define("LAN_59", "You must be a registered member and logged in to post on this forum. Click on signup or login from the login menu.");
 define("LAN_202", "Sticky");
 define("LAN_203", "Sticky/Closed");
-
-
 
 define("LAN_66", "This thread is now closed");
 define("LAN_67", "Posts");

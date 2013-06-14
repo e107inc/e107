@@ -257,7 +257,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		{
 			$thread_sticky = (isset($_POST['threadtype']) ? $_POST['threadtype'] : vartrue($threadInfo['thread_sticky'],0)); // no reference of 'head' $threadInfo['head']['thread_sticky']
 				
-			$opts = array(0 => LAN_FORUM_3038, 1 => LAN_FORUM_3039, 2 => LAN_FORUM_3038); 
+			$opts = array(0 => LAN_FORUM_3038, 1 => LAN_FORUM_1011, 2 => LAN_FORUM_1013); 
 				
 			return e107::getForm()->radio('threadtype',$opts, $thread_sticky);
 			
@@ -279,7 +279,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 	function sc_noemotes()
 	{
 		if(vartrue($eaction) == true) { return ; }
-		return "<input type='checkbox' name='no_emote' value='1' />&nbsp;<span class='defaulttext'>".LAN_FORUM_3041.'</span>';
+		return "<input type='checkbox' name='no_emote' value='1' />&nbsp;<span class='defaulttext'>".LAN_FORUM_3039.'</span>';
 	}
 
 	function sc_emailnotify()
@@ -309,7 +309,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 					$chk = ($pref['notify_on'] ? "checked='checked'" : '');
 				}
 			}
-			return "<br /><input type='checkbox' name='notify' value='1' {$chk} />&nbsp;<span class='defaulttext'>".LAN_FORUM_3042."</span>";
+			return "<br /><input type='checkbox' name='notify' value='1' {$chk} />&nbsp;<span class='defaulttext'>".LAN_FORUM_3040."</span>";
 		}
 		return '';
 	}
