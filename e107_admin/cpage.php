@@ -120,6 +120,8 @@ class page_chapters_ui extends e_admin_ui
 		protected $batchCopy	= true;	
         protected $batchLink   	= true;
 		protected $listOrder 	= ' COALESCE(NULLIF(chapter_parent,0), chapter_id), chapter_parent > 0, chapter_order '; //FIXME works with parent/child but doesn't respect parent order. 
+		protected $url         	= array('route'=>'page/chapter/index', 'vars' => array('id' => 'chapter_id', 'name' => 'chapter_sef'), 'name' => 'chapter_name', 'description' => ''); // 'link' only needed if profile not provided. 
+	
 	//	protected $sortField	= 'chapter_order';
 	//	protected $orderStep 	= 10;
 		
