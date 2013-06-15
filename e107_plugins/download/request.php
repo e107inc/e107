@@ -103,6 +103,7 @@ if (preg_match("#.*\.[a-z,A-Z]{3,4}#", e_QUERY))
 		exit();
 	}
 	$log->addError("Line".__LINE__.": Couldn't find ".e_DOWNLOAD.e_QUERY);
+	$log->toFile('download_requests','Download Requests', true); // Create a log file and add the log messages
 	require_once(HEADERF);
 	$ns->tablerender(LAN_dl_61, "<div style='text-align:center'>".LAN_dl_65."\n<br /><br />\n<a href='javascript:history.back(1)'>".LAN_dl_64."</a></div>");
 	require_once(FOOTERF);
@@ -212,6 +213,8 @@ if ($type == "file")
 					e107::getFile()->send(e_UPLOAD.$download_url);
 					exit();
 				}
+				$log->addError("Couldn't find ".e_DOWNLOAD.$download_url." or ".$download_url." or ".e_UPLOAD.$download_ur);
+				$log->toFile('download_requests','Download Requests', true); // Create a log file and add the log messages
 			}
 		} 
 		else 
@@ -323,7 +326,7 @@ else
 	}
 }
 
-$log->toFile('download_requests','Download Requests', true);
+
 
 function check_download_limits() 
 {
