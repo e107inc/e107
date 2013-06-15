@@ -329,6 +329,8 @@ class themeHandler
 		$ns = e107::getRender();
 		
 		extract($_FILES);
+		//print_a($_FILES);
+
 		if(!is_writable(e_THEME))
 		{
 			$mes->addInfo(TPVLAN_20);
@@ -336,46 +338,48 @@ class themeHandler
 		}
 		else
 		{
-			// FIXME - upload seems to unfunctional - needs further testing and fixing
+			// FIXME - temporary fixes to upload process, check required. 
 			require_once (e_HANDLER."upload_handler.php");
-			$fileName = $file_userfile['name'][0]; // $_FILES['file_userfile']['name'][0] ?
-			$fileSize = $file_userfile['size'][0];
-			$fileType = $file_userfile['type'][0]; // type is returned as mime type (application/octet-stream) not as zip/rar
+			$fileName = $_FILES['file_userfile']['name'][0]; 
+			$fileSize = $_FILES['file_userfile']['size'][0];
+			$fileType = $_FILES['file_userfile']['type'][0]; // type is returned as mime type (application/octet-stream) not as zip/rar
+
+			// There may be a better way to do this.. MIME may not be secure enough
+			// XXX - is there an e107 function for this?
+			$mime_zip 	= array("application/octet-stream", "application/zip", "multipart/x-zip");
+			$mime_gzip 	= array("application/x-gzip", "multipart/x-gzip");
+			// rar?
 			
-			if(strstr($file_userfile['type'][0], "gzip"))
-			{
-				$fileType = "tar";
-			}
-			else
-			if(strstr($file_userfile['type'][0], "zip"))
+			if(in_array($fileType, $mime_zip))
 			{
 				$fileType = "zip";
 			}
+			elseif(in_array($fileType, $mime_gzip))
+			{
+				$fileType = "gzip";
+			}
 			else
 			{
-
-				$mes->addError(TPVLAN_17);;
+				$mes->addError(TPVLAN_17);
 				return FALSE;
 			}
 			
 			if($fileSize)
 			{
 				
-				$uploaded = file_upload(e_THEME);
-				
+				$uploaded = file_upload(e_THEME);				
 				$archiveName = $uploaded[0]['name'];
-
 				
 				if($fileType == "zip")
 				{
 					require_once (e_HANDLER."pclzip.lib.php");
 					$archive = new PclZip(e_THEME.$archiveName);
-					$unarc = ($fileList = $archive->extract(PCLZIP_OPT_PATH, e_THEME, PCLZIP_OPT_SET_CHMOD, 0666));
+					$unarc = ($fileList = $archive->extract(PCLZIP_OPT_PATH, e_THEME, PCLZIP_OPT_SET_CHMOD, 0666)); // FIXME - detect folder structure similar to 'Find themes'
 				}
 				else
 				{
 					require_once (e_HANDLER."pcltar.lib.php");
-					$unarc = ($fileList = PclTarExtract($archiveName, e_THEME));
+					$unarc = ($fileList = PclTarExtract($archiveName, e_THEME)); // FIXME - detect folder structure similar to 'Find themes'
 				}
 				
 				if(!$unarc)
@@ -389,13 +393,13 @@ class themeHandler
 						$error = TPVLAN_47.PclErrorString().", ".TPVLAN_48.intval(PclErrorCode());
 					}
 					
-					$mes->add(TPVLAN_18." ".$archiveName." ".$error, E_MESSAGE_ERROR);
+					$mes->addError(TPVLAN_18." ".$archiveName." ".$error);
 					//	$ns->tablerender(TPVLAN_16, TPVLAN_18." ".$archiveName." ".$error);
 					return FALSE;
 				}
 				
 				$folderName = substr($fileList[0]['stored_filename'], 0, (strpos($fileList[0]['stored_filename'], "/")));
-				$mes->add(TPVLAN_19, E_MESSAGE_SUCCESS);
+				$mes->addSuccess(TPVLAN_19);
 				
 				if(varset($_POST['setUploadTheme']))
 				{
@@ -407,7 +411,7 @@ class themeHandler
 					}
 					else
 					{
-						$mes->addError(TPVLAN_3);
+						$mes->addError("Could not change site theme."); // TODO LAN
 					}
 				
 				}
