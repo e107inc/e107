@@ -486,8 +486,7 @@ class e_parse extends e_parser
 
 		if ($mod != 'pReFs') //XXX We're not saving prefs. 
 		{
-			$data = $this->preFilter($data);
-		
+			$data = $this->preFilter($data); // used by bb_xxx.php toDB() functions. bb_code.php toDB() allows us to properly bypass HTML cleaning below. 
 			
 			if (strip_tags($data) != $data) // html tags present. 
 			{
@@ -495,7 +494,6 @@ class e_parse extends e_parser
 				$data = $this->cleanHtml($data); // sanitize all html. 
 				
 				$data = urldecode($data); // symptom of cleaning the HTML - urlencodes src attributes containing { and } .eg. {e_BASE} 
-			//	if ($this->htmlAbuseFilter($data)) $no_encode = FALSE; //XXX cleanHtml() is more effective. 
 			}
 			
 			if (!check_class($core_pref->get('post_html', e_UC_MAINADMIN)))
@@ -504,7 +502,8 @@ class e_parse extends e_parser
 				$data = str_replace(array('[html]','[/html]'),'',$data); 
 			//	$data = $this->dataFilter($data);
 			}
-			
+
+			$data = html_entity_decode($data, ENT_QUOTES, 'utf-8');	// Prevent double-entities. Fix for [code]  - see bb_code.php toDB(); 
 		}
 	
 		if (check_class($core_pref->get('post_html'))) /*$core_pref->is('post_html') && */

@@ -16,7 +16,9 @@ class bb_code extends e_bb_base
 	function toDB($code_text, $parm)
 	{
 		$paramet 	= ($parm == 'inline') ? 'inline' : '';
-		$code_text 	= htmlspecialchars($code_text, ENT_QUOTES, 'UTF-8');
+	//	$code_text 	= htmlspecialchars($code_text, ENT_QUOTES, 'UTF-8');
+	//	$code_text = str_replace('<','&ltr;',$code_text);
+		$code_text = htmlentities($code_text, ENT_QUOTES, 'utf-8');	
 
 		return $paramet ? '[code='.$paramet.']'.$code_text.'[/code]' : '[code]'.$code_text.'[/code]';
 	}
@@ -77,7 +79,7 @@ class bb_code extends e_bb_base
 
 				$code_text = html_entity_decode($code_text, ENT_QUOTES, 'utf-8');	
 				$code_text = trim($code_text);
-		//		$code_text = htmlspecialchars($code_text, ENT_QUOTES, 'utf-8');
+				$code_text = htmlspecialchars($code_text, ENT_QUOTES, 'utf-8');
 				
 				if($parm == 'inline')
 				{
