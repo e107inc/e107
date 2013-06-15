@@ -339,13 +339,14 @@ class themeHandler
 		else
 		{
 			// FIXME - temporary fixes to upload process, check required. 
+			// Probably in need of a rewrite to use process_uploaded_files();
 			require_once (e_HANDLER."upload_handler.php");
 			$fileName = $_FILES['file_userfile']['name'][0]; 
 			$fileSize = $_FILES['file_userfile']['size'][0];
 			$fileType = $_FILES['file_userfile']['type'][0]; // type is returned as mime type (application/octet-stream) not as zip/rar
 
 			// There may be a better way to do this.. MIME may not be secure enough
-			// XXX - is there an e107 function for this?
+			// process_uploaded_files() ?
 			$mime_zip 	= array("application/octet-stream", "application/zip", "multipart/x-zip");
 			$mime_gzip 	= array("application/x-gzip", "multipart/x-gzip");
 			// rar?
@@ -394,7 +395,6 @@ class themeHandler
 					}
 					
 					$mes->addError(TPVLAN_18." ".$archiveName." ".$error);
-					//	$ns->tablerender(TPVLAN_16, TPVLAN_18." ".$archiveName." ".$error);
 					return FALSE;
 				}
 				
@@ -415,8 +415,6 @@ class themeHandler
 					}
 				
 				}
-				
-				//		$ns->tablerender(TPVLAN_16, "<div class='center'>".TPVLAN_19."</div>");
 				
 				@unlink(e_THEME.$archiveName);
 			}
