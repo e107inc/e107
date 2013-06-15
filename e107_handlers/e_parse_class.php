@@ -487,7 +487,7 @@ class e_parse extends e_parser
 		if ($mod != 'pReFs') //XXX We're not saving prefs. 
 		{
 			$data = $this->preFilter($data);
-			$data = str_replace('<?','&lt;?',$data); // replace <? so that it can still be used in [code][/code] bbcode. 
+		
 			
 			if (strip_tags($data) != $data) // html tags present. 
 			{
@@ -504,7 +504,7 @@ class e_parse extends e_parser
 				$data = str_replace(array('[html]','[/html]'),'',$data); 
 			//	$data = $this->dataFilter($data);
 			}
-			$data = str_replace('&lt;?','<?',$data); // replace <? so that it can still be used in [code][/code] bbcode. 
+			
 		}
 	
 		if (check_class($core_pref->get('post_html'))) /*$core_pref->is('post_html') && */
@@ -1417,15 +1417,16 @@ class e_parse extends e_parser
 					// $matches[4] - bit between the tags (i.e. text to process)
 					// $matches[5] - closing tag
 					// In case we decide to load a file
-					$bbPath = e_CORE.'bbcodes/';
-					$bbFile = strtolower(str_replace('_', '', $matches[2]));
-					$bbcode = '';
-					$className = '';
-					$full_text = '';
-					$code_text = $matches[4];
+					
+					$bbPath 		= e_CORE.'bbcodes/';
+					$bbFile 		= strtolower(str_replace('_', '', $matches[2]));
+					$bbcode 		= '';
+					$className 		= '';
+					$full_text 		= '';
+					$code_text 		= $matches[4];
+					$parm 			= $matches[3] ? substr($matches[3],1) : '';
+					$last_bbcode 	= $matches[2];
 	
-					$parm = $matches[3] ? substr($matches[3],1) : '';
-					$last_bbcode = $matches[2];
 					switch ($matches[2])
 					{
 						case 'php' :
@@ -1474,11 +1475,10 @@ class e_parse extends e_parser
 							if (file_exists($bbPath.'bb_'.$bbFile.'.php'))
 							{	// Its a bbcode class file
 								require_once($bbPath.'bb_'.$bbFile.'.php');
-								//echo "Load: {$bbFile}.php<br />";
-								$className = 'bb_'.$code;
-								$this->bbList[$code] = new $className();
+								$className = 'bb_'.$last_bbcode;
+								$this->bbList[$last_bbcode] = new $className();
 							}
-							elseif (file_exists($bbPath.$bbFile.'.bb'))
+							elseif(file_exists($bbPath.$bbFile.'.bb'))
 							{
 								$bbcode = file_get_contents($bbPath.$bbFile.'.bb');
 							}
