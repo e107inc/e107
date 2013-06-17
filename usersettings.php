@@ -640,7 +640,7 @@ if ($dataToSave && !$promptPassword)
 	{
 		$message = str_replace("{MESSAGE}",$message,$USERSETTINGS_MESSAGE);			
 	}
-	elseif(!deftrue('e_BOOTSTRAP')) // backwards compatible
+	elseif(!deftrue('BOOTSTRAP')) // backwards compatible
 	{
 		$message = "<div style='text-align:center'>".$message.'</div>';
 		
@@ -692,7 +692,7 @@ if($testSessionMessage) $message = implode('<br />', $testSessionMessage); // we
 
 if (isset($message))
 {
-	if(deftrue('e_BOOTSTRAP'))
+	if(deftrue('BOOTSTRAP'))
 	{
 		echo e107::getMessage()->addInfo($message)->render();	
 	}

@@ -782,7 +782,7 @@ class siteStats
 			} 		
 		}
 	
-		if(deftrue('e_BOOTSTRAP'))
+		if(deftrue('BOOTSTRAP'))
 		{
 			return "<div class='text-right'>".e107::getForm()->button('statNav',$lk,'dropdown',$links[$action]['label'], array('align'=>'right','class'=>'btn-primary'))."</div>";
 		}
@@ -1973,7 +1973,7 @@ class siteStats
 	 */
 	function bar($percen, $val,$name)
 	{
-		if(deftrue('e_BOOTSTRAP'))
+		if(deftrue('BOOTSTRAP'))
 		{
 			$text = e107::getForm()->progressBar($name,$percen);
 		}

@@ -1663,9 +1663,9 @@ class e107
 	 */
 	public static function css($type, $data, $dep = null, $media = 'all', $preComment = '', $postComment = '', $dependence = null)
 	{
-		if((strstr($data,'bootstrap.css') || strstr($data,'bootstrap.min.css')) && !defined("e_BOOTSTRAP")) // detect bootstrap is enabled. - used in nextprev.sc and forum currently. 
+		if((strstr($data,'bootstrap.css') || strstr($data,'bootstrap.min.css')) && !defined("BOOTSTRAP")) // detect bootstrap is enabled. - used in nextprev.sc and forum currently. 
 		{
-			define("e_BOOTSTRAP", true);	
+			define("BOOTSTRAP", true);	
 		}
 		
 		$jshandler = e107::getJs();
@@ -3006,6 +3006,10 @@ class e107
 			define('e_AVATAR_ABS', $this->get_override_http('AVATARS'));
 			define('e_AVATAR_UPLOAD_ABS', $this->get_override_http('AVATARS_UPLOAD'));
 			define('e_AVATAR_DEFAULT_ABS', $this->get_override_http('AVATARS_DEFAULT'));
+			
+			// Special
+			
+			define('e_BOOTSTRAP', e_WEB."bootstrap/");
 			
 
 		}

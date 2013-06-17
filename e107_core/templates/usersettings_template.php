@@ -17,7 +17,7 @@
 if (!defined('e107_INIT')) { exit; }
 if (!defined("USER_WIDTH"))
 {
-	$uw = (deftrue('e_BOOTSTRAP')) ? "" : "width:97%";
+	$uw = (deftrue('BOOTSTRAP')) ? "" : "width:97%";
 	define("USER_WIDTH", $uw); 	
 }
 

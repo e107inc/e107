@@ -3,7 +3,7 @@ if ( ! defined('e107_INIT')) { exit(); }
 /*
  * This is a 100% Pure Bootstrap Theme for e107 v2 
  */
- 
+define('BOOTSTRAP',true); 
 define("VIEWPORT", "width=device-width, initial-scale=1.0");
 define("BODYTAG", '<body data-spy="scroll" data-target=".bs-docs-sidebar" >');
 

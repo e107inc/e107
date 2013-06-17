@@ -75,7 +75,7 @@ function nextprev_shortcode($parm = '')
 		$total_items = intval($parm['total']);
 		$check_render = true;
 
-		if(vartrue($parm['glyphs']) && (e_BOOTSTRAP === true))
+		if(vartrue($parm['glyphs']) && (BOOTSTRAP === true))
 		{
 			$LAN_NP_FIRST 		= "<i class='icon-fast-backward'></i>";
 			$LAN_NP_PREVIOUS 	= "<i class='icon-backward'></i>";

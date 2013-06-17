@@ -44,7 +44,7 @@ class bbcode_shortcodes extends e_shortcode
 		); 
 		
 		
-		if(e_BOOTSTRAP)
+		if(BOOTSTRAP)
 		{
 				$text = '<div class="btn-group">';
 				$text .= '<a class="btn btn-small bbcode dropdown-toggle" data-toggle="dropdown" href="#" title="">';
@@ -169,7 +169,7 @@ class bbcode_shortcodes extends e_shortcode
 	function bb_fontsize($id) // FIXME CSS issues 
 	{
 
-		if(deftrue('e_BOOTSTRAP'))
+		if(deftrue('BOOTSTRAP'))
 		{
 			$tp = e107::getParser();
 
@@ -226,7 +226,7 @@ class bbcode_shortcodes extends e_shortcode
 		
 		if ($pref['comments_emoticons'] && $pref['smiley_activate'] && !defsettrue('e_WYSIWYG'))
 		{
-			if(deftrue('e_BOOTSTRAP'))
+			if(deftrue('BOOTSTRAP'))
 			{
 				$text = '<div class="btn-group" style="margin-left:0px">';
 				$text .= '<a class="dropdown-toggle" data-toggle="dropdown" href="#">';

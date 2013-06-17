@@ -138,7 +138,7 @@ function calendar($req_day, $req_month, $req_year, $links = NULL, $ws = "sunday"
 	
 //	$calendar .= "tablerow = ".$tablerow;
 
-	if(deftrue('e_BOOTSTRAP'))
+	if(deftrue('BOOTSTRAP'))
 	{
 		$active = date("n") == $req_month ? 'active' : '';
 		$text = "<div class='item {$active}'>";

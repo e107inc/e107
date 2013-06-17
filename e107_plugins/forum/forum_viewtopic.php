@@ -180,7 +180,7 @@ if (!vartrue($FORUMSTART))
 
 
 // New in v2.x
-if(is_array($FORUM_VIEWTOPIC_TEMPLATE) && (e_BOOTSTRAP === true))
+if(is_array($FORUM_VIEWTOPIC_TEMPLATE) && (BOOTSTRAP === true))
 {
 	$FORUMSTART 			= $FORUM_VIEWTOPIC_TEMPLATE['start'];
 	$FORUMTHREADSTYLE		= $FORUM_VIEWTOPIC_TEMPLATE['thread'];
