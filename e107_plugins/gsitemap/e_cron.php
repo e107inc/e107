@@ -60,10 +60,14 @@ class gsitemap_cron // include plugin-folder in the name.
 	
 	function sendEmail()
 	{
-		global $pref;
+
+		$adminEmail = e107::getPref('siteadminemail');
+		$adminName = e107::getPref('siteadmin');
+		
 	    require_once(e_HANDLER."mail.php");
+		
 		$message = "Your Cron Job worked correctly. Sent at ".date("r").".";
-	    sendemail($pref['siteadminemail'], "e107 - TEST Email Sent by cron.".date("r"), $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);
+	    sendemail($adminEmail, "e107 - Crong Test Email", $message, $adminName, $adminEmail, $adminName);
 	}
 }
 
