@@ -1092,6 +1092,15 @@ if(!defined("THEME_LAYOUT"))
 	}
 	*/
 
+	if(varset($pref['themecss']) && file_exists(THEME.$pref['themecss']))
+	{
+		define("THEME_STYLE", $pref['themecss']);
+	}
+	else
+	{
+		define("THEME_STYLE", 'style.css');
+	}	
+
     if($def) // custom-page layout.
 	{
     	define("THEME_LAYOUT",$def);

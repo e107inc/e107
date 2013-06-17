@@ -9,12 +9,23 @@ define("BODYTAG", '<body data-spy="scroll" data-target=".bs-docs-sidebar" >');
 
 e107::lan('theme');
 e107::js('core','bootstrap/js/bootstrap.min.js');
-e107::css('core','bootstrap/css/bootstrap.min.css');
+
+if(THEME_STYLE != 'style.css') // allow for drop-in bootstrap replacement. See http://bootswatch.com
+{
+	define("CSSORDER", "theme,core,other,plugin,inline");
+}
+else
+{
+	e107::css('core','bootstrap/css/bootstrap.min.css');	
+}
+
 e107::css('core','bootstrap/css/bootstrap-responsive.min.css');
 e107::css('core','bootstrap/css/jquery-ui.custom.css');
 
 e107::css('theme', 'js/google-code-prettify/prettify.css');
- e107::js('theme', "js/google-code-prettify/prettify.js");
+e107::js('theme', "js/google-code-prettify/prettify.js");
+
+e107::css('inline','@media (min-width: 1000px){ body	{ padding-top: 75px;  }  } ');
 
 if(THEME_LAYOUT == 'docs')
 {
@@ -23,6 +34,7 @@ if(THEME_LAYOUT == 'docs')
 	e107::js('theme', "js/holder/holder.js");
     e107::js('theme', "js/application.js");
 }
+
 
 
 //$no_core_css = TRUE;

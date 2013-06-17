@@ -222,7 +222,7 @@ class themeHandler
 
 		$reject = array('e_.*');
 
-		$handle2 = e107::getFile()->get_files(e_THEME.$file."/", ".php|.css|.xml|preview.jpg|preview.png", $reject, 1);
+		$handle2 = e107::getFile()->get_files(e_THEME.$file."/", ".php|.css|.xml|preview.jpg|preview.png", $reject, 0);
 
 
 		foreach ($handle2 as $fln)
@@ -1337,7 +1337,7 @@ class themeHandler
 							
 							if($mode == 1) // SITE-THEME Mode
 							{
-								if(substr($css['name'], 0, 6) == "admin_" || !strstr($css['name'],'style'))
+								if(substr($css['name'], 0, 6) == "admin_")
 								{
 									continue;
 								}
