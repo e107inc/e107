@@ -274,7 +274,7 @@ class user_shortcodes extends e_shortcode
 	 */
 	function sc_user_icon($parm='') 
 	{
-		$boot = deftrue('e_BOOTSTRAP');
+		$boot = deftrue('BOOTSTRAP');
 		
 		switch ($parm) 
 		{

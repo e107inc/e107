@@ -93,7 +93,7 @@ if (!USER || getperms('0'))
 	
 	$sc = e107::getScBatch('login');
 	
-	if((e_BOOTSTRAP === true) && isset($LOGIN_TEMPLATE['page']))
+	if((BOOTSTRAP === true) && isset($LOGIN_TEMPLATE['page']))
 	{
 		$LOGIN_TABLE_HEADER = $LOGIN_TEMPLATE['page']['header'];
 		$LOGIN_TABLE 		= "<form class='form-signin' method='post' action='".e_SELF."' onsubmit='hashLoginPassword(this)' >".$LOGIN_TEMPLATE['page']['body']."</form>";

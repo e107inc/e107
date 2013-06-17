@@ -88,7 +88,7 @@ if (!vartrue($FORUM_VIEW_START))
 }
 
 
-if(is_array($FORUM_VIEWFORUM_TEMPLATE) && (e_BOOTSTRAP === true)) // New v2.x bootstrap Template. 
+if(is_array($FORUM_VIEWFORUM_TEMPLATE) && (BOOTSTRAP === true)) // New v2.x bootstrap Template. 
 {
 	
 	$FORUM_VIEW_START_CONTAINER		= $FORUM_VIEWFORUM_TEMPLATE['start'];
@@ -187,7 +187,7 @@ if($forum->checkPerm($forumId, 'post'))
 	$fVars->NEWTHREADBUTTONX = newthreadjump(e107::getUrl()->create('forum/thread/new', array('id' => $forumId))); // "<a class='btn btn-primary' href='".."'>New Thread</a>";
 }
 
-if(e_BOOTSTRAP !== true)
+if(BOOTSTRAP !== true)
 {
 	$fVars->NEWTHREADBUTTONX = $fVars->NEWTHREADBUTTON;
 }
@@ -578,7 +578,7 @@ function parse_thread($thread_info)
 		$_TEMPLATE = "<tr id='thread-{$threadId}'>".substr($_TEMPLATE,4);	
 	}
 	
-	if(e_BOOTSTRAP !== true)
+	if(BOOTSTRAP !== true)
 	{
 		$tVars->REPLIESX = 	$tVars->REPLIES;
 		$tVars->VIEWSX	 = $tVars->VIEWS;

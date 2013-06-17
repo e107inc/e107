@@ -825,7 +825,7 @@ class e_form
 	 */
 	public function progressBar($name,$value,$options=array())
 	{
-		if(!deftrue('e_BOOTSTRAP'))
+		if(!deftrue('BOOTSTRAP'))
 		{
 			return;
 		}		
@@ -1537,7 +1537,7 @@ class e_form
 	 */
 	public function button($name, $value, $action = 'submit', $label = '', $options = array())
 	{
-		if(deftrue('e_BOOTSTRAP') && $action == 'dropdown' && is_array($value))
+		if(deftrue('BOOTSTRAP') && $action == 'dropdown' && is_array($value))
 		{
 		//	$options = $this->format_options('admin_button', $name, $options);
 			$options['class'] = vartrue($options['class']);

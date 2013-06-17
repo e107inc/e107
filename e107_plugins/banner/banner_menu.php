@@ -77,16 +77,19 @@ else
 		{
 			$parms[] = $menu_pref['banner_campaign'];
 		}
+		
+		$txt = $BANNER_MENU_START;
+		
+		foreach ($parms as $parm)
+		{
+			$bannersccode = file_get_contents(e_CORE.'shortcodes/banner.sc');
+			$BANNER = eval($bannersccode);
+			$txt .= preg_replace("/\{(.*?)\}/e", '$\1', $BANNER_MENU);
+		}
+		$txt .= $BANNER_MENU_END;
 	}
 
-	$txt = $BANNER_MENU_START;
-	foreach ($parms as $parm)
-	{
-		$bannersccode = file_get_contents(e_CORE.'shortcodes/banner.sc');
-		$BANNER = eval($bannersccode);
-		$txt .= preg_replace("/\{(.*?)\}/e", '$\1', $BANNER_MENU);
-	}
-	$txt .= $BANNER_MENU_END;
+
 }
 
 if(isset($menu_pref['banner_rendertype']) && $menu_pref['banner_rendertype'] == 2)

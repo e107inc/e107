@@ -58,7 +58,7 @@ class emailprint
 		
 
 		
-		if(deftrue('e_BOOTSTRAP'))
+		if(deftrue('BOOTSTRAP'))
 		{
 			$genericMail = "<i class='icon-envelope'></i>"; 
 			$genericPrint = "<i class='icon-print'></i>"; 

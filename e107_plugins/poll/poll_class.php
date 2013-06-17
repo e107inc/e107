@@ -376,7 +376,7 @@ class poll
 		
 	
 		
-		if(deftrue('e_BOOTSTRAP'))
+		if(deftrue('BOOTSTRAP'))
 		{
 	
 			if($type == 'forum')
@@ -561,7 +561,7 @@ class poll
 	
 	function generateBar($perc)
 	{
-		if(e_BOOTSTRAP === true)
+		if(BOOTSTRAP === true)
 		{
 			return	"<div class='progress'>
 		    <div class='bar' style='width: ".intval($perc)."%;'></div>

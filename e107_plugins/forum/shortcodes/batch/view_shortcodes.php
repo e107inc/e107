@@ -144,7 +144,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 			
 			if(count($images) )
 			{
-				return (deftrue('e_BOOTSTRAP')) ? "<ul class='thumbnails'><li>".implode("</li><li>",$images)."</li></ul>" : implode("<br />",$images);	
+				return (deftrue('BOOTSTRAP')) ? "<ul class='thumbnails'><li>".implode("</li><li>",$images)."</li></ul>" : implode("<br />",$images);	
 			}
 			
 			

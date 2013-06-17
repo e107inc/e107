@@ -3,7 +3,7 @@
 
 
 if (!defined('e107_INIT')) { exit; }
-if (!defined("USER_WIDTH") && deftrue('e_BOOTSTRAP')!==true){ define("USER_WIDTH","width:70%"); }
+if (!defined("USER_WIDTH") && deftrue('BOOTSTRAP')!==true){ define("USER_WIDTH","width:70%"); }
 
 // ##### FPW TABLE -----------------------------------------------------------------------------
 if(!isset($FPW_TABLE))

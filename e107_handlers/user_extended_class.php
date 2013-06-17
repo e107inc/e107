@@ -713,7 +713,7 @@ class e107_user_extended
 					
 					$label = deftrue($label, $label);
 					
-					if(deftrue('e_BOOTSTRAP'))
+					if(deftrue('BOOTSTRAP'))
 					{
 						$ret .= $frm->radio($fname,$val,($curval == $val),array('label'=>$label));	
 					}
@@ -749,7 +749,7 @@ class e107_user_extended
 				}
 				$label = deftrue($label, $label);
 				
-				if(deftrue('e_BOOTSTRAP'))
+				if(deftrue('BOOTSTRAP'))
 				{
 					$ret .= $frm->checkbox($fname,$val,($curval == $val),array('label'=>$label));	
 				}

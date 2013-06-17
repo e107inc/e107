@@ -514,7 +514,7 @@ if (!vartrue($FORUMPOST))
   }
 }
 
-if(isset($FORUMPOST_TEMPLATE) && (e_BOOTSTRAP === true))
+if(isset($FORUMPOST_TEMPLATE) && (BOOTSTRAP === true))
 {
 	$FORUMPOST 			= $FORUMPOST_TEMPLATE['form'];	
 	$FORUMPOST_REPLY	 = $FORUMPOST_TEMPLATE['form'];	

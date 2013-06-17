@@ -119,7 +119,7 @@ if(false === $cached)
 		{
 			$month_links[$xmonth] = e107::getUrl()->create('news/list/month', 'idv='.formatDate($req_year, $xmonth));//e_BASE."news.php?month.".formatDate($req_year, $xmonth);
 		}
-	//	if(($news['news_datestamp'] >= $month_start && $news['news_datestamp'] <= $month_end) || (deftrue('e_BOOTSTRAP') && $news['news_datestamp'] >= $year_start && $news['news_datestamp'] <= $year_end))
+	//	if(($news['news_datestamp'] >= $month_start && $news['news_datestamp'] <= $month_end) || (deftrue('BOOTSTRAP') && $news['news_datestamp'] >= $year_start && $news['news_datestamp'] <= $year_end))
 		{
 			$xday = date("j", $news['news_datestamp']);
 			if (!isset($day_links[$xday]) || !$day_links[$xday])
@@ -158,7 +158,7 @@ if(false === $cached)
 	*/
 
 	
-	if(deftrue('e_BOOTSTRAP')) // v2.x
+	if(deftrue('BOOTSTRAP')) // v2.x
 	{
 		$month_selector = '<div class="btn-group pull-right"><a class="btn btn-mini " href="#blogCalendar" data-slide="prev">‹</a>  
  		<a class="btn btn-mini" href="#blogCalendar" data-slide="next">›</a></div>';

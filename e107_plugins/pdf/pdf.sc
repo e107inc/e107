@@ -17,7 +17,7 @@ if (defined("ICONPRINTPDF") && file_exists(THEME."images/".ICONPRINTPDF))
 }
 else
 {
-	$icon = deftrue('e_BOOTSTRAP') ? "<i class='icon-book'></i>" : "<img src='".e_PLUGIN_ABS."pdf/images/pdf_16.png' style='border:0' alt='{$parms[0]}' title='{$parms[0]}' />";
+	$icon = deftrue('BOOTSTRAP') ? "<i class='icon-book'></i>" : "<img src='".e_PLUGIN_ABS."pdf/images/pdf_16.png' style='border:0' alt='{$parms[0]}' title='{$parms[0]}' />";
 }
 
 return " <a href='".e_PLUGIN_ABS."pdf/pdf.php?{$parms[1]}'>".$icon."</a>";
