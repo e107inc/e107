@@ -1214,12 +1214,11 @@ class themeHandler
 								}
 								$itext .= "<td class='center'>\n";
 								
-								$itext .= "
-												<input type='radio' name='layout_default' value='{$key}' ".($pref['sitetheme_deflayout'] == $key ? " checked='checked'" : "")." />
+								$itext .= "<input id='".$frm->name2id($key)."' type='radio' name='layout_default' value='{$key}' ".($pref['sitetheme_deflayout'] == $key ? " checked='checked'" : "")." />
 											</td>";
 							}
 							
-							$itext .= "<td style='vertical-align:top'>";
+							$itext .= "<td style='vertical-align:top'><label for='".$frm->name2id($key)."'>";
 						//	$itext .= ($val['@attributes']['previewFull']) ? "<a href='".e_THEME_ABS.$theme['path']."/".$val['@attributes']['previewFull']."' >" : "";
 							$itext .= $val['@attributes']['title'];
 						//	$itext .= ($val['@attributes']['previewFull']) ? "</a>" : "";
@@ -1246,7 +1245,7 @@ class themeHandler
 							}
 			
 							
-							$itext .= "</td>
+							$itext .= "</label></td>
 											<td style='vertical-align:top'>";
 							// Default
 							$itext .= ($pref['sitetheme_deflayout'] != $key) ? $custompage_diz."<div class='e-hideme' id='element-to-be-shown-{$key}'><textarea style='width:97%' rows='6' placeholder='usersettings.php' cols='20' name='custompages[".$key."]' >".(isset($pref['sitetheme_custompages'][$key]) ? implode("\n", $pref['sitetheme_custompages'][$key]) : "")."</textarea></div>\n" : TPVLAN_55;
@@ -1344,10 +1343,9 @@ class themeHandler
 								
 								$text2 = "
 									<td class='center'>
-									<input type='radio' name='themecss' value='".$css['name']."' ".($pref['themecss'] == $css['name'] || (!$pref['themecss'] && $css['name'] == "style.css") ? " checked='checked'" : "")." />
+									<input id='".$frm->name2id($css['name'])."' type='radio' name='themecss' value='".$css['name']."' ".($pref['themecss'] == $css['name'] || (!$pref['themecss'] && $css['name'] == "style.css") ? " checked='checked'" : "")." />
 									</td>
-									<td>".$css['name']."
-									</td>
+									<td><label for='".$frm->name2id($css['name'])."' >".$css['name']."</lable></td>
 									<td>".($css['info'] ? $css['info'] : ($css['name'] == "style.css" ? TPVLAN_23 : TPVLAN_24))."</td>\n";
 							}
 							
