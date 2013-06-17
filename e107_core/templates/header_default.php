@@ -251,6 +251,10 @@ else
 	else 
 	{
 		// Theme default
+		
+		$e_js->themeCSS(THEME_STYLE, $css_default);
+		
+		/* Moved to class2 and defined as THEME_STYLE
 		if($e_pref->get('themecss') && file_exists(THEME.$e_pref->get('themecss')))
 		{
 			//echo "<link rel='stylesheet' href='".THEME_ABS."{$pref['themecss']}' type='text/css' media='{$css_default}' />\n";
@@ -258,10 +262,10 @@ else
 		}
 		else
 		{
-			echo "<link rel='stylesheet' href='".THEME_ABS."style.css' type='text/css' media='{$css_default}' />\n";
+		//	echo "<link rel='stylesheet' href='".THEME_ABS."style.css' type='text/css' media='{$css_default}' />\n";
 			$e_js->themeCSS('style.css', $css_default);
 		}
-		
+		*/
 		// Support for print and handheld media - override theme default CSS
 		if(file_exists(THEME."style_mobile.css"))
 		{
@@ -297,6 +301,20 @@ else
 //
 
 // Other CSS - from unknown location, different from core/theme/plugin location or backward compatibility; NOTE - could be removed in the future!!!
+
+//TODO Additional options for 'bootstrap' and 'style' (ie. THEME_STYLE loaded above). Requires changes to js_manager.php 
+
+$CSSORDER = deftrue('CSSORDER') ? explode(",",CSSORDER) : array('other','core','plugin','theme','inline');
+
+foreach($CSSORDER as $val)
+{
+	$cssId = $val."_css";
+	$e_js->renderJs($cssId, false, 'css', false);		
+}
+
+unset($CSSORDER);
+
+/*
 $e_js->renderJs('other_css', false, 'css', false);
 echo "\n<!-- footer_other_css -->\n";
 
@@ -313,9 +331,12 @@ echo "\n<!-- footer_plugin_css -->\n";
 $e_js->renderJs('theme_css', false, 'css', false);
 echo "\n<!-- footer_theme_css -->\n";
 
+
 // Inline CSS - not sure if this should stay at all!
 $e_js->renderJs('inline_css', false, 'css', false);
 echo "\n<!-- footer_inline_css -->\n";
+*/
+
 
 //
 // Style for unobtrusive JS, prevent 3rd party code overload
