@@ -8,7 +8,7 @@ define("VIEWPORT", "width=device-width, initial-scale=1.0");
 define("BODYTAG", '<body data-spy="scroll" data-target=".bs-docs-sidebar" >');
 
 e107::lan('theme');
-e107::js('core','bootstrap/js/bootstrap.min.js');
+e107::js('bootstrap','bootstrap.min.js');
 
 if(THEME_STYLE != 'style.css') // allow for drop-in bootstrap replacement. See http://bootswatch.com
 {
@@ -16,11 +16,11 @@ if(THEME_STYLE != 'style.css') // allow for drop-in bootstrap replacement. See h
 }
 else
 {
-	e107::css('core','bootstrap/css/bootstrap.min.css');	
+	e107::css('bootstrap','bootstrap.min.css');	
 }
 
-e107::css('core','bootstrap/css/bootstrap-responsive.min.css');
-e107::css('core','bootstrap/css/jquery-ui.custom.css');
+e107::css('bootstrap','bootstrap-responsive.min.css');
+e107::css('bootstrap','jquery-ui.custom.css');
 
 e107::css('theme', 'js/google-code-prettify/prettify.css');
 e107::js('theme', "js/google-code-prettify/prettify.js");

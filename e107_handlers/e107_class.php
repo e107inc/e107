@@ -1610,6 +1610,11 @@ class e107
 				if(null !== $zone) $jshandler->requireCoreLib($data, $zone);
 				else $jshandler->requireCoreLib($data);
 			break;
+
+			case 'bootstrap': //TODO Eventually add own method and render for bootstrap. 
+				if(null !== $zone) $jshandler->requireCoreLib('bootstrap/js/'.$data, $zone);
+				else $jshandler->requireCoreLib('bootstrap/js/'.$data);
+			break;
 				
 			case 'theme':
 				// data is e.g. 'jslib/mytheme.js'
@@ -1677,6 +1682,11 @@ class e107
 				// data is path relative to e_FILE/jslib/
 				$jshandler->coreCSS($data, $media, $preComment, $postComment);
 			break;
+			
+			case 'bootstrap':
+				// data is path relative to e_FILE/jslib/
+				$jshandler->coreCSS('bootstrap/css/'.$data, $media, $preComment, $postComment);
+			break;			
 				
 			case 'theme':
 				// data is path relative to current theme
