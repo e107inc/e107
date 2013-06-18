@@ -50,6 +50,7 @@
 																		</a> 
 																	</li>
 																	';
+	$CHAPTER_TEMPLATE['navdocs']['listChapters']['end'] = 			'</ul>';
 	
 	// These templates are the same as above, so we just give them the same value. 
 	$CHAPTER_TEMPLATE['navdocs']['listBooks']  	= $CHAPTER_TEMPLATE['navdocs']['listChapters'];
