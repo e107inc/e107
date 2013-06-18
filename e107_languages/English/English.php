@@ -59,7 +59,6 @@ define("LAN_NO", "No");
 define("LAN_OK", "OK");
 define("LAN_CONTINUE", "Continue");
 define("LAN_ENTER", "Enter");
-define("LAN_HOOKS", "Hooks");
 define("LAN_ENTER_CODE", "Enter code");
 define("LAN_INVALID_CODE", "Incorrect code entered.");
 define("LAN_SEARCH", "Search");
