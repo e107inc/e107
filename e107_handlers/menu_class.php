@@ -63,10 +63,8 @@ class e_menu
 			return;
 		}
 		
-	
-		
 		//	print_a($eMenuArea);
-		if($_SERVER['E_DEV_MENU'] == 'true') // New in v2.x
+		if(varset($_SERVER['E_DEV_MENU']) == 'true') // New in v2.x
 		{
 			$layouts = e107::getPref('menu_layouts');
 			if(!is_array($layouts))
