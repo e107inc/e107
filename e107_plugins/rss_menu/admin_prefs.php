@@ -74,7 +74,7 @@ class rss_admin extends e_admin_dispatcher
 
 
 
-				
+//TODO - Use this .. .				
 class rss_ui extends e_admin_ui
 {
 			
@@ -391,7 +391,7 @@ if(!isset($RSS_ADMIN_IMPORT_HEADER))
 	<tr>
 		<th>".RSS_LAN_ADMIN_16."</td>
 		<th>".RSS_LAN_ADMIN_3."</td>
-		<th>".RSS_LAN_ADMIN_4."</td>
+		<th>".LAN_NAME."</td>
 		<th>".RSS_LAN_ADMIN_5."</td>
 		<th>".RSS_LAN_ADMIN_12."</td>
 	</tr>";
@@ -636,14 +636,30 @@ class rss
 		$plugin_feedlist = array();
 		foreach($pref['e_rss_list'] as $val)
 		{
+			$eplug_rss_feed = array();
 			if (is_readable(e_PLUGIN.$val."/e_rss.php")) 
 			{
 				require_once(e_PLUGIN.$val."/e_rss.php");
-				$plugin_feedlist = $eplug_rss_feed;
+				
+				$className = $val."_rss";
+				$data = false;
+				
+				if(!$data = e107::callMethod($className,'config'))
+				{
+					$data = $eplug_rss_feed;	
+				}
+				
+				foreach($data as $v)
+				{
+					array_push($plugin_feedlist,$v);
+				}
+				
 			}
 		}
 
 		$feedlist = array_merge($feedlist, $plugin_feedlist);
+		
+	//	print_a($feedlist);
 
 		$render=FALSE;
 		$i=0;
@@ -654,7 +670,7 @@ class rss
 			$feed['url']			= $tp -> toDB($feed['url']);
 
 			// Check if feed is not yet present
-			if(!$sql -> db_Select("rss", "*", "rss_path='".$feed['path']."' AND rss_url='".$feed['url']."' AND rss_topicid='".$feed['topic_id']."' "))
+			if(!$sql->select("rss", "*", "rss_path='".$feed['path']."' AND rss_url='".$feed['url']."' AND rss_topicid='".$feed['topic_id']."' "))
 			{
 				$render=TRUE;
 				$text .= $tp -> parseTemplate($RSS_ADMIN_IMPORT_TABLE, FALSE, $rss_shortcodes);
