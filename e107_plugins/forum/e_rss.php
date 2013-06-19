@@ -17,7 +17,7 @@ function get_forum_rss(){
 	$feed['name']			= "Forum / threads";
 	$feed['url']			= '6';
 	$feed['topic_id']		= '';
-	$feed['path']			= 'forum|threads';
+	$feed['path']			= 'forum|threads'; //FIXME
 	$feed['text']			= 'this is the rss feed for the forum_threads entries';
 	$feed['class']			= '1';
 	$feed['limit']			= '9';
@@ -27,7 +27,7 @@ function get_forum_rss(){
 	$feed['name']			= "Forum / threads";
 	$feed['url']			= 'forumthreads';
 	$feed['topic_id']		= '';
-	$feed['path']			= 'forum|threads';
+	$feed['path']			= 'forum|threads';//FIXME
 	$feed['text']			= 'this is the rss feed for the forum_threads entries';
 	$feed['class']			= '0';
 	$feed['limit']			= '9';
@@ -37,7 +37,7 @@ function get_forum_rss(){
 	$feed['name']			= "Forum / posts";
 	$feed['url']			= '7';
 	$feed['topic_id']		= '';
-	$feed['path']			= 'forum|posts';
+	$feed['path']			= 'forum|posts';//FIXME
 	$feed['text']			= 'this is the rss feed for the forum_posts entries';
 	$feed['class']			= '1';
 	$feed['limit']			= '9';
@@ -47,7 +47,7 @@ function get_forum_rss(){
 	$feed['name']			= "Forum / posts";
 	$feed['url']			= 'forumposts';
 	$feed['topic_id']		= '';
-	$feed['path']			= 'forum|posts';
+	$feed['path']			= 'forum|posts';//FIXME
 	$feed['text']			= 'this is the rss feed for the forum_posts entries';
 	$feed['class']			= '0';
 	$feed['limit']			= '9';
@@ -57,7 +57,7 @@ function get_forum_rss(){
 	$feed['name']			= "Forum / topic";
 	$feed['url']			= '8';
 	$feed['topic_id']		= '*';
-	$feed['path']			= 'forum|topic';
+	$feed['path']			= 'forum|topic';//FIXME
 	$feed['text']			= 'this is the rss feed for the forum_topic entries';
 	$feed['class']			= '1';
 	$feed['limit']			= '9';
@@ -67,7 +67,7 @@ function get_forum_rss(){
 	$feed['name']			= "Forum / topic";
 	$feed['url']			= 'forumtopic';
 	$feed['topic_id']		= '*';
-	$feed['path']			= 'forum|topic';
+	$feed['path']			= 'forum|topic'; //FIXME
 	$feed['text']			= 'this is the rss feed for the forum_topic entries';
 	$feed['class']			= '0';
 	$feed['limit']			= '9';
@@ -77,7 +77,7 @@ function get_forum_rss(){
 	$feed['name']			= "Forum / name";
 	$feed['url']			= '11';
 	$feed['topic_id']		= '*';
-	$feed['path']			= 'forum|name';
+	$feed['path']			= 'forum|name'; //FIXME
 	$feed['text']			= 'this is the rss feed for the forum_name entries';
 	$feed['class']			= '1';
 	$feed['limit']			= '9';
@@ -87,7 +87,7 @@ function get_forum_rss(){
 	$feed['name']			= "Forum / name";
 	$feed['url']			= 'forumname';
 	$feed['topic_id']		= '*';
-	$feed['path']			= 'forum|name';
+	$feed['path']			= 'forum|name'; //FIXME
 	$feed['text']			= 'this is the rss feed for the forum_name entries';
 	$feed['class']			= '0';
 	$feed['limit']			= '9';
@@ -101,7 +101,7 @@ function get_forum_rss(){
 //##### create rss data, return as array $eplug_rss_data -----------------------------------
 $sqlrss = new db;
 
-switch($this->parm){
+switch($this->parm){ //FIXME use v2.x standard and replace this with $parm['url'] check. 
 
 	case threads:
 	case 6:

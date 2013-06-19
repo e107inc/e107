@@ -187,7 +187,7 @@ SC_END
 
 SC_BEGIN RSS_ADMIN_IMPORT_TEXT
 global $feed;
-return $feed['text'];
+return ($feed['description'])  ? $feed['description'] : $feed['text'];
 SC_END
 
 SC_BEGIN RSS_ADMIN_IMPORT_URL

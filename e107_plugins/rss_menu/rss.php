@@ -135,7 +135,7 @@ else
 if($rss = new rssCreate($content_type, $rss_type, $topic_id, $row))
 {
 	$rss_title = ($rss->contentType ? $rss->contentType : ucfirst($content_type));
-	$rss->buildRss ($rss_title);
+	$rss->buildRss($rss_title);
 }
 else
 {
@@ -181,11 +181,11 @@ class rssCreate
 		{
 			$path = e_PLUGIN.$row['rss_path'].'/e_rss.php';
 		}
-		if(strpos($row['rss_path'],'|')!==FALSE)
+		if(strpos($row['rss_path'],'|')!==FALSE) //FIXME remove this check completely. 
 		{
 			$tmp = explode("|", $row['rss_path']);
 			$path = e_PLUGIN.$tmp[0]."/e_rss.php";
-			$this -> parm = $tmp[1];	// Parm is used in e_rss.php to define which feed you need to prepare
+			$this->parm = $tmp[1];	// FIXME @Deprecated - use $parm['url'] instead in data() method within e_rss.php.  Parm is used in e_rss.php to define which feed you need to prepare
 		}
 
 		switch ($content_type)
@@ -324,6 +324,16 @@ class rssCreate
 			if (is_readable($path))
 			{
 				require_once($path);
+				
+				$className = basename(dirname($path)).'_rss';
+				
+				// v2.x standard 
+				if($data = e107::callMethod($className,'data', array('url' => $content_type, 'id' => $this->topicid, 'limit' => $this->limit)))
+				{			
+					$eplug_rss_data = array(0 => $data);
+					unset($data);			
+				}
+								
 				foreach($eplug_rss_data as $key=>$rs)
 				{
 					foreach($rs as $k=>$row)
@@ -498,9 +508,8 @@ class rssCreate
 					$link 		= (e_LANQRY) ? str_replace("?","?".e_LANQRY,$value['link']) : $value['link'];
                     $catlink	= (e_LANQRY) ? str_replace("?","?".e_LANQRY,$value['category_link']) : $value['category_link'];
 
-					echo "
-						<item>
-						<title>".$tp->toRss($value['title'])."</title>\n";
+					echo "<item>\n";
+					echo "<title>".$tp->toRss($value['title'])."</title>\n";
 
 					if($link)
 					{
