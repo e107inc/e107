@@ -39,6 +39,17 @@ class e107_event
 		}
 	}
 
+
+
+	function debug()
+	{
+		
+		print_a($this->functions);
+		print_a($this->includes);	
+		
+	}
+
+
 	/**
 	 * Trigger event
 	 * TODO - admin log for failed callback attempts?
@@ -109,6 +120,11 @@ class e107_event
 		return (isset($ret) ? $ret : false);
 	}
 
+
+
+
+
+
 	function triggerAdminEvent($type, $parms=array())
 	{
 		global $pref;
@@ -164,6 +180,7 @@ class e107_event
 	{
 		$text = ''; 
 		$e_event_list = e107::getPref('e_event_list');
+		
 		if(is_array($e_event_list))
 		{
 			foreach($e_event_list as $hook)
