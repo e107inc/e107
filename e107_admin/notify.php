@@ -30,7 +30,9 @@ require_once('auth.php');
 require_once(e_HANDLER.'userclass_class.php');
 
 $frm = e107::getForm();
+
 $nc = new notify_config;
+
 $uc = new user_class;
 $mes = e107::getMessage();
 
@@ -55,6 +57,7 @@ if (isset($_POST['update']))
 
  //	$ns -> tablerender($message,"<div style='text-align:center'>".$message."</div>");
 }
+
 $nc -> config();
 
 
@@ -62,8 +65,9 @@ class notify_config
 {
 	var $notify_prefs;
 	var $changeList = array();
+	var $pluginConfig = array();
 
-	function notify_config() 
+	function __construct() 
 	{
 		global $sysprefs, $eArrayStorage;
 		$ns = e107::getRender();
@@ -79,32 +83,61 @@ class notify_config
 		// load every e_notify.php file.
 		if($pref['e_notify_list'])
 		{
-	        foreach($pref['e_notify_list'] as $val)
+	        foreach($pref['e_notify_list'] as $val) // List of available e_notify.php files. 
 			{
-					if (!isset($this -> notify_prefs['plugins'][$val]))
+				//	if (!isset($this->notify_prefs['plugins'][$val]))
 					{
+
 						$this -> notify_prefs['plugins'][$val] = TRUE;
+						
 						if (is_readable(e_PLUGIN.$val."/e_notify.php"))
 						{
 							require_once(e_PLUGIN.$val.'/e_notify.php');
-							foreach ($config_events as $event_id => $event_text)
-					   		{
-								$this -> notify_prefs['event'][$event_id] = array('class' => '255', 'email' => '');
+							
+							if(class_exists($val."_notify")) // new v2.x 
+							{
+								$legacy = 0; // Newe. 
+								$config_events = array();
+								
+								$data = e107::callMethod($val."_notify", 'config');
+								
+								$config_category = str_replace("_menu","",ucfirst($val))." Events";
+								
+								foreach($data as $v)
+								{
+									$func = $v['function'];
+									$config_events[$func] = $v['name'];	
+								}
+								
 							}
+							else
+							{
+								$legacy = 1;	// Legacy Mode. 
+							}
+							
+					//		foreach ($config_events as $event_id => $event_text)
+					//   		{
+							//	$this -> notify_prefs['event'][$event_id] = array('class' => '255', 'email' => '', 'plugin'=> $val);
+								
+					//		}
+							$this->pluginConfig[$val] = array('category' => $config_category, 'events' => $config_events, 'legacy'=> $legacy);
 							$recalibrate = true;
 						}
 					}
 			}
 		}
-
-
+		
+	//	print_a($this->pluginConfig);
+		
 		if ($recalibrate) 
 		{
 			$s_prefs = $tp -> toDB($this -> notify_prefs);
 			$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
-			$sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'");
+		//	$sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'");
 		}
 	}
+
+
 
 	function config()
 	{
@@ -212,14 +245,15 @@ class notify_config
 		</fieldset>
 		</div>";
 
-
-
-		foreach ($this -> notify_prefs['plugins'] as $plugin_id => $plugin_settings)
+		foreach ($this->notify_prefs['plugins'] as $plugin_id => $plugin_settings)
 		{
             if(is_readable(e_PLUGIN.$plugin_id.'/e_notify.php'))
 			{
-				require(e_PLUGIN.$plugin_id.'/e_notify.php');
-				//$text .= "</fieldset>
+				$config_category = $this->pluginConfig[$plugin_id]['category'];
+				$legacy = $this->pluginConfig[$plugin_id]['legacy'];
+				
+			//	require(e_PLUGIN.$plugin_id.'/e_notify.php');
+
 				$text .= "<div class='tab-pane' id='notify-".$plugin_id."'>
 				<fieldset id='core-notify-".str_replace(" ","_",$config_category)."'>
 		        <legend>".$config_category."</legend>
@@ -228,10 +262,13 @@ class notify_config
 		        		<col class='col-label' />
 		        		<col class='col-control' />
 		        	</colgroup>";
-				foreach ($config_events as $event_id => $event_text)
+				;
+
+				foreach ($this->pluginConfig[$plugin_id]['events'] as $event_id => $event_text)
 				{
-					$text .= $this -> render_event($event_id, $event_text);
+					$text .= $this->render_event($event_id, $event_text, $plugin_id, $legacy);
 				}
+				
 				$text .= "</table>
 				</div>";
 			}
@@ -251,16 +288,17 @@ class notify_config
 	}
 
 
-	function render_event($id, $description) 
+	function render_event($id, $description, $include='', $legacy = 0) 
 	{
 		global $uc; // $rs
 		$tp = e107::getParser();
+		$frm = e107::getForm();
 
 		$text = "
 			<tr>
 				<td >".$description.":	</td>
 				<td  class='nowrap'>
-				".$uc->uc_dropdown('event['.$id.'][class]', $this -> notify_prefs['event'][$id]['class'],"nobody,main,admin,member,classes,email","onchange=\"mail_field(this.value,'event_".$id."');\" ");
+				".$uc->uc_dropdown('event['.$id.'][class]', varset($this->notify_prefs['event'][$id]['class'],255), "nobody,main,admin,member,classes,email","onchange=\"mail_field(this.value,'event_".$id."');\" ");
 
 			if($this -> notify_prefs['event'][$id]['class'] == 'email')
 			{
@@ -274,6 +312,9 @@ class notify_config
 			}
 
 			$text .= "<input type='text' style='width:180px;$disp' class='tbox' id='event_".$id."' name='event[".$id."][email]' value=\"".$value."\" />\n";
+
+		$text .= $frm->hidden("event[".$id."][include]", $include);
+		$text .= $frm->hidden("event[".$id."][legacy]", $legacy); // function or method 
 
 		$text .= "</td>
 		</tr>";
@@ -301,6 +342,8 @@ class notify_config
 		 	$pref['notify'] = FALSE;
 		}
 	  	save_prefs();
+		
+	//	print_a($this->notify_prefs);
 		/*
 		$s_prefs = $tp -> toDB($this -> notify_prefs);
 		$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
@@ -333,6 +376,13 @@ class notify_config
 			$this -> notify_prefs['event'][$id]['email'] = $_POST['event'][$id]['email'];
 			$changed = TRUE;
 		}
+		
+		$this -> notify_prefs['event'][$id]['include'] 	= $_POST['event'][$id]['include'];
+		$this -> notify_prefs['event'][$id]['legacy'] 	= $_POST['event'][$id]['legacy'];
+		
+		unset($this -> notify_prefs['event'][$id]['plugin']);
+		unset($this -> notify_prefs['event'][$id]['type']);
+		
 		if ($changed)
 		{
 			$this->changeList[$id] = $this->notify_prefs['event'][$id]['class'].', '.$this->notify_prefs['event'][$id]['email'];

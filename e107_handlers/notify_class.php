@@ -33,7 +33,27 @@ class notify
 			{
 				if ($status['class'] != 255)
 				{
-					$e_event->register($id, 'notify_'.$id);
+					if($status['include']) // Plugin 
+					{
+						$include 	= e_PLUGIN.$status['include']."/e_notify.php";
+						
+						if($status['legacy'] != 1)
+						{
+							$class 		= $status['include']."_notify";
+							$method 	= $id;
+							$e_event->register($id, array($class, $method), $include);	
+						}
+						else
+						{
+							$e_event->register($id, 'notify_'.$id, $include);			
+						}
+					}
+					else // core   
+					{
+						$e_event->register($id, 'notify_'.$id);			
+					}
+					
+				
 				}
 			}
 		}
@@ -253,7 +273,7 @@ function notify_fileupload($data)
 }
 
 
-if (isset($nt->notify_prefs['plugins']))
+if (isset($nt->notify_prefs['plugins']) && e_PAGE != 'notify.php')
 {
 	foreach ($nt->notify_prefs['plugins'] as $plugin_id => $plugin_settings)
 	{

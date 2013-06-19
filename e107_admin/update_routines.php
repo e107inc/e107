@@ -1263,6 +1263,7 @@ function update_706_to_800($type='')
 						$notify_prefs['event'][$e]['class'] = e_UC_NOBODY;		// Just disable if we don't know what else to do
 				}
 				$nt_changed++;
+				$notify_prefs['event'][$e]['legacy'] = 1;
 				unset($notify_prefs['event'][$e]['type']);
 			}
 		}
