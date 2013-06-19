@@ -164,6 +164,11 @@ SC_END
 
 SC_BEGIN RSS_ADMIN_IMPORT_CHECK
 global $feed, $rs, $tp, $i;
+if($feed['description'])
+{
+	$feed['text'] = $feed['description'];
+} 
+
 $text  = "<input type='checkbox' name='importid[$i]' value='1' />";
 $text .= "<input type='hidden' name='name[$i]' value='".$tp->toForm($feed['name'])."' />";
 $text .= "<input type='hidden' name='url[$i]' value='".$tp->toForm($feed['url'])."' />";

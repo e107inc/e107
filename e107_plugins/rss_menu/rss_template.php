@@ -5,9 +5,9 @@ if(!defined("USER_WIDTH")){ define("USER_WIDTH","width:100%"); }
 // Rss listing
 if(!isset($RSS_LIST_HEADER))
 {
-	$RSS_LIST_HEADER = "<table class='fborder' style='".USER_WIDTH."'>
+	$RSS_LIST_HEADER = "<table class='table table-striped fborder' style='".USER_WIDTH."'>
 		<tr>
-			<td class='fcaption' style='width:55%'>".RSS_LAN_ADMIN_4."</td>
+			<td class='fcaption' style='width:55%'> </td>
 			<td class='fcaption' style='text-align:right'>".RSS_PLUGIN_LAN_6."</td>
 		</tr>";
 }

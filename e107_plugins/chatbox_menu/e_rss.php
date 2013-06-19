@@ -17,7 +17,7 @@ class chatbox_menu_rss // plugin-folder + '_rss'
 	/**
 	 * Admin RSS Configuration 
 	 */		
-	function config() // XXX TODO  // Have admin read this. 
+	function config() 
 	{
 		$config = array();
 	
@@ -25,11 +25,10 @@ class chatbox_menu_rss // plugin-folder + '_rss'
 			'name'			=> 'Chatbox Posts',
 			'url'			=> 'chatbox',
 			'topic_id'		=> '',
-			'path'			=> 'chatbox_menu', // known
 			'description'	=> 'this is the rss feed for the chatbox entries', // that's 'description' not 'text' 
 			'class'			=> '0',
 			'limit'			=> '9'
-		);	
+		);
 		
 		return $config;
 	}

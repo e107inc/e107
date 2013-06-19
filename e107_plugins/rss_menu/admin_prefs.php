@@ -651,6 +651,7 @@ class rss
 				
 				foreach($data as $v)
 				{
+					$v['path'] = $val;
 					array_push($plugin_feedlist,$v);
 				}
 				
@@ -659,7 +660,7 @@ class rss
 
 		$feedlist = array_merge($feedlist, $plugin_feedlist);
 		
-	//	print_a($feedlist);
+//		print_a($feedlist);
 
 		$render=FALSE;
 		$i=0;
