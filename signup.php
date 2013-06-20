@@ -770,8 +770,8 @@ function headerjs()
 	}
 	</script>\n";
 
-	global $cal;
-	$script_txt .= $cal->load_files();
+	//global $cal; // XXX - can this be removed completely?
+	//$script_txt .= $cal->load_files();
 	return $script_txt;
 }
 
