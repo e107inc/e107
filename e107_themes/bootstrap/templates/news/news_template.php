@@ -15,7 +15,7 @@ $SC_WRAPPER['ADMINOPTIONS'] = "<small>{---}</small>";
 $NEWS_TEMPLATE['default']['item'] = '
 	{SETIMAGE: w=600}
 	<div class="view-item">
-		<h2>{NEWSTITLE}</h2>
+		<h2>{NEWSTITLELINK}</h2>
 		<div class="post-meta">
 			<small><i class="icon-calendar"></i>{NEWSDATE}</small>
 			<small><i class="icon-user"></i>{NEWSAUTHOR}</small>
