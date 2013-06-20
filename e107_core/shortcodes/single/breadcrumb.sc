@@ -4,12 +4,16 @@ global $$parm;
 $bc = $$parm;
 $flist = explode(",", $bc['fieldlist']);
 $ret = "";
+
+$opt = array();
+
 foreach($flist as $f)
 {
 	if($bc[$f]['value'])
 	{
 		$ret .= $bc[$f]['value'];
-		$opt[] = $bc[$f]['value'];
+	//	$opt[] = $bc[$f]['value'];
+		
 		
 		
 		if($bc[$f]['sep'])
@@ -20,14 +24,26 @@ foreach($flist as $f)
 }
 
 
-if($bc['style']=='bootstrap')
+if(deftrue('BOOTSTRAP'))
 {
-	return '<ul class="breadcrumb">
+	$text = '<ul class="breadcrumb">
+	<li>';
 	
-    <li><a href="#">Home</a> <span class="divider">/</span></li>
-    <li><a href="#">Library</a> <span class="divider">/</span></li>
-    <li class="active">Data</li>
-    </ul>';		
+	foreach($flist as $f)
+	{
+		if($bc[$f]['value'])
+		{
+			$opt[] = $bc[$f]['value'];
+		}	
+		
+	}
+	
+	$text .= implode("<span class='divider'>/</span></li><li>",$opt); 
+	
+	$text .= "</li></ul>";
+	
+	return $text;
+	
 }
 
 
