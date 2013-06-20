@@ -12,8 +12,22 @@ e107::js('bootstrap','bootstrap.min.js');
 
 if(THEME_STYLE != 'style.css') // allow for drop-in bootstrap replacement. See http://bootswatch.com
 {
-	define("CSSORDER", "theme,core,other,plugin,inline");
-	e107::css('inline','@media (min-width: 1000px){ body	{ padding-top: 100px;  }  } ');
+	//define("CSSORDER", "theme,core,other,plugin,inline");
+	
+	switch (THEME_STYLE) 
+	{
+		case 'superhero.css':
+			e107::css('inline','@media (min-width: 1000px){ body	{ padding-top: 100px;  }  } ');	
+		break;
+
+		case 'amelia.css':
+			e107::css('inline','@media (min-width: 1000px){ body	{ padding-top: 70px;  }  } ');	
+		break;
+		
+		default:
+			e107::css('inline','@media (min-width: 1000px){ body	{ padding-top: 65px;  }  } ');	
+		break;
+	}	
 }
 else
 {
@@ -202,7 +216,7 @@ $FOOTER['default'] = '
 <hr>
 
 <footer class="center"> 
-	Copyright &copy; 2008-2013 e107 Inc (e107.org)<br />
+	{SITEDISCLAIMER}
 </footer>
 
 </div><!--/.fluid-container-->';
@@ -228,7 +242,7 @@ $FOOTER['default-home'] = '
 <hr>
 
 <footer class="center"> 
-	Copyright &copy; 2008-2013 e107 Inc (e107.org)<br />
+		{SITEDISCLAIMER} 
 </footer>
 
 </div><!--/.fluid-container-->';
