@@ -15,6 +15,7 @@ $SC_WRAPPER['ADMINOPTIONS'] = "<small>{---}</small>";
 $NEWS_TEMPLATE['default']['item'] = '
 	{SETIMAGE: w=600}
 	<div class="view-item">
+	<div class="page-header">
 		<h2>{NEWSTITLELINK}</h2>
 		<div class="post-meta">
 			<small><i class="icon-calendar"></i>{NEWSDATE}</small>
@@ -26,7 +27,7 @@ $NEWS_TEMPLATE['default']['item'] = '
 			{PDFICON}
 			{ADMINOPTIONS}
 		</div>
-
+	</div>
 		<div class="body">
 			{NEWSIMAGE}
 			{NEWSBODY}
@@ -67,6 +68,7 @@ $NEWS_TEMPLATE['list']['item'] = '
 $NEWS_TEMPLATE['view']['item'] = '
 {SETIMAGE: w=800}
 	<div class="view-item">
+	<div class="page-header">
 		<h2>{NEWSTITLE}</h2>
 		<div class="post-meta">
 			<small><i class="icon-calendar"></i>{NEWSDATE}</small>
@@ -78,7 +80,7 @@ $NEWS_TEMPLATE['view']['item'] = '
 			{PDFICON}
 			{ADMINOPTIONS}
 		</div>
-
+	</div>
 		<div class="body">
 			{NEWSIMAGE}
 			{NEWSBODY}
