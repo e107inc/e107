@@ -715,12 +715,14 @@ class e_admin_log
 	 * @param string Title for use inside the Log file
 	 * @param boolean true = append to file, false = new file each save. 
 	 */
-	public function toFile($name,$logTitle='',$append=false)
+	public function toFile($name, $logTitle='',$append=false)
 	{
-		
+
 		$this->logFile	= $name;
-		$this->saveToFile($logTitle,$append);
+		$file = $this->saveToFile($logTitle,$append);
+
 		$this->logFile = null;
+		return $file;
 	}
 
 

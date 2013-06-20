@@ -820,6 +820,7 @@ class e_core_session extends e_session
 		$this->end();
 	}
 
+
 	/**
 	 * Core CSF protection, see class2.php
 	 * Could be adopted by plugins for their own (different) protection logic
@@ -837,32 +838,45 @@ class e_core_session extends e_session
 		if($this->getSessionId())
 		{
 			if((isset($_POST['e-token']) && !$this->checkFormToken($_POST['e-token']))
-			|| (isset($_GET['e-token']) && !$this->checkFormToken($_GET['e-token'])))
+			|| (isset($_GET['e-token']) && !$this->checkFormToken($_GET['e-token']))
+			|| (isset($_POST['e_token']) && !$this->checkFormToken($_POST['e_token']))) // '-' is not allowed in jquery. b
 			{
 			//	if(defsettrue('e_DEBUG'))
 				{
 					$details = "USER: ".USERNAME."\n";		
 					$details = "HOST: ".$_SERVER['HTTP_HOST']."\n";
 					$details .= "REQUEST_URI: ".$_SERVER['REQUEST_URI']."\n";
-					$details .= "e-token (POST): ".$_POST['e-token']."\n";
-					$details .= "e-token (GET): ".$_GET['e-token']."\n";						
+					$details .= ($_POST['e-token']) ? "e-token (POST): ".$_POST['e-token']."\n" : "";
+					$details .= ($_GET['e-token']) ? "e-token (GET): ".$_GET['e-token']."\n" : "";	
+					$details .= ($_POST['e_token']) ? "AJAX e_token (POST): ".$_POST['e_token']."\n" : "";
+				
 					$details .= "_SESSION:\n";
 					$details .= print_r($_SESSION,true);
 				//	$details .= "\n_POST:\n";
 				//	$details .= print_r($_POST,true);
 				//	$details .= "\n_GET:\n";
 				//	$details .= print_r($_GET,true);
-					$details .= "\nPlugins:\n";
-					$details .= print_r($pref['plug_installed'],true);
+					if($pref['plug_installed'])
+					{
+						$details .= "\nPlugins:\n";
+						$details .= print_r($pref['plug_installed'],true);
+					}
 					
+					$details .= "die = ".($die == true ? 'true' : 'false')."\n\n---------------------------------\n\n";
+				
 					$log = e107::getAdminLog();		
 					$log->addDebug($details);			
 					$log->toFile('Unauthorized_access','Unauthorized access Log', true);
 					$log->add('Unauthorized access!', $details, E_LOG_FATAL);	
 					// e107::getAdminLog()->log_event('Unauthorized access!', $details, E_LOG_FATAL);				
 				}	
+
 				// do not redirect, prevent dead loop, save server resources
-				if($die) die('Unauthorized access!');
+				if($die == true)
+				{
+					 die('Unauthorized access!');
+				}
+				
 				return false;
 			}
 		}
@@ -883,8 +897,21 @@ class e_core_session extends e_session
 			}
 			define('e_TOKEN', $this->getFormToken());
 		}
+		
 		return true;
 	}
+
+
+	
+	/**
+	 * Manually Reset the Token. 
+	 * @see e107forum::ajaxQuickReply();
+	 */
+	public function reset()
+	{
+		$this->_regenerateFormToken()->clear('__form_token_regenerate');
+	}
+	
 	
 	/**
 	 * Make sure there is unique challenge string for CHAP login

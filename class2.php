@@ -580,11 +580,11 @@ if(isset($pref['lan_global_list']))
 
 $sql->db_Mark_Time('Start: CHAP challenge');
 
-
+$die = (e_AJAX_REQUEST == true) ? false : true; // prevent json breakage. 
 e107::getSession()
 	->challenge() // Make sure there is a unique challenge string for CHAP login
-	->check(); // Token protection
-
+	->check($die); // Token protection
+unset($die);
 	
 //
 // N: misc setups: online user tracking, cache
