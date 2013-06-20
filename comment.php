@@ -107,7 +107,7 @@ if(e_AJAX_REQUEST) // TODO improve security
 	{
 		$pid 				= intval(varset($_POST['pid'], 0)); // ID of the specific comment being edited (nested comments - replies)
 		$row 				= array();
-		$clean_authorname 	= $_POST['author_name'];
+		$clean_authorname 	= vartrue($_POST['author_name'],USERNAME);
 		$clean_comment 		= $_POST['comment'];
 		$clean_subject 		= $_POST['subject'];
 		
@@ -122,6 +122,7 @@ if(e_AJAX_REQUEST) // TODO improve security
 		$row['user_id']				= (USERID) ? USERID : 0;
 		$row['user_name'] 			= USERNAME;
 		$row['comment_author_name'] = $tp->toDB($clean_authorname);
+		$row['comment_author_id'] 	= (USERID) ? USERID : 0;
 		$row['comment_datestamp'] 	= time();
 		$row['comment_blocked']		= (check_class($pref['comments_moderate']) ? 2 : 0);
 		$row['comment_share']		= ($_POST['comment_share']);

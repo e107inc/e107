@@ -292,9 +292,10 @@ class comment
 	
 			$text .= "
 			<input type='hidden' name='subject' value='".$tp->toForm($subject)."'  />
-			<input type='hidden' name='e-token' value='".e_TOKEN."' />\n
-			<input type='hidden' name='table' value='".$table."' />\n
-			<input type='hidden' name='itemid' value='".$itemid."' />\n
+			<input type='hidden' name='e-token' value='".e_TOKEN."' />
+			<input type='hidden' name='table' value='".$table."' />
+			<input type='hidden' name='itemid' value='".$itemid."' />
+			
 			</div>
 			</form>\n";
 			
