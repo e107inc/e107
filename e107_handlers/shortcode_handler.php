@@ -335,7 +335,13 @@ class e_parse_shortcode
 			}
 		}
 		
-		if(!$pluginName)
+		
+		if($className == '_theme__shortcodes') // Check for theme shortcode batch.  - @see header_default.php //XXX Discuss. 
+		{
+			$className = 'theme_shortcodes';
+			$path = THEME.'theme_shortcodes.php';			
+		}
+		elseif(!$pluginName)
 		{
 			if(!$globalOverride)
 			{
@@ -366,6 +372,10 @@ class e_parse_shortcode
 				$className = 'override_'.$className;
 			}
 		}
+
+		
+
+
 		
 		// Includes global Shortcode Classes (e_shortcode.php) or already loaded batch 
 		if ($this->isScClass($className)) 
@@ -377,7 +387,7 @@ class e_parse_shortcode
 		if (class_exists($className, false)) // don't allow __autoload()
 		{
 			// $this->registerClassMethods($className, $path); // XXX Global registration should happen separately - here we want only the object. 
-			 $this->scClasses[$className] = new $className(); // located inside registerClassMethods()
+			 $this->scClasses[$className] = new $className(); 
 			return $this->scClasses[$className];
 		}
 		
@@ -387,7 +397,7 @@ class e_parse_shortcode
 			if (class_exists($className, false)) // don't allow __autoload()
 			{
 				// register instance directly to allow override
-				 $this->scClasses[$className] = new $className(); // located inside registerClassMethods()
+				 $this->scClasses[$className] = new $className(); 
 				// $this->registerClassMethods($className, $path);  // XXX Global registration should happen separately - here we want only the object. 
 				return $this->scClasses[$className];
 			}
@@ -444,10 +454,18 @@ class e_parse_shortcode
 	 *
 	 * @return e_parse_shortcode
 	 */
-	public function loadThemeShortcodes()
+	protected function loadThemeShortcodes()
 	{
 		global $register_sc;
-
+		
+	//		$this->registered_codes[$code]['type'] = 'plugin';
+	//					$this->registered_codes[$code]['function'] = strtolower($code).'_shortcode';
+	//					$this->registered_codes[$code]['path'] = e_PLUGIN.$path.'/shortcodes/single/';
+	//					$this->registered_codes[$code]['perms'] = $uclass; 
+		
+	
+	
+	
 		if (isset($register_sc) && is_array($register_sc))
 		{
 			foreach ($register_sc as $code)
@@ -459,6 +477,7 @@ class e_parse_shortcode
 				}
 			}
 		}
+		
 		return $this;
 	}
 

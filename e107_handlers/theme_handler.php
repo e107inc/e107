@@ -910,9 +910,27 @@ class themeHandler
 	function loadThemeConfig()
 	{
 		$mes = e107::getMessage();
-		$confile = e_THEME.$this->id."/".$this->id."_config.php";
 		
-		if(($this->themeConfigObj === null) && is_readable($confile))
+		$newConfile = e_THEME.$this->id."/theme_config.php";
+		
+		$legacyConfile = e_THEME.$this->id."/".$this->id."_config.php"; // @Deprecated 
+		
+		if(is_readable($newConfile))
+		{
+			$confile = $newConfile;	
+		}
+		elseif(is_readable($legacyConfile))// TODO Eventually remove it. 
+		{
+			// NOTE:  this is debug info.. do not translate. 
+			e107::getMessage()->addDebug("Deprecated Theme Config File found! Rename <b>".$this->id."_config.php.</b> to <b>theme_config.php</b> to correct this issue. .");
+			$confile = $legacyConfile;		
+		}
+		else
+		{
+			return;
+		}
+				
+		if(($this->themeConfigObj === null) )
 		{
 			$mes->addDebug("Loading : ".$confile);
 			include ($confile);

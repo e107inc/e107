@@ -81,12 +81,14 @@ if (!function_exists("parseheader"))
 	{
 		$tp 	= e107::getParser();
 		$tmp 	= explode("\n", $LAYOUT);
+
+		$sc = e107::getScBatch('_theme_');
 		
 		foreach ($tmp as $line) 
 		{
 			if (preg_match("/{.+?}/", $line))
 			{
-				echo $tp->parseTemplate($line)."\n";  // retain line-breaks. 
+				echo $tp->parseTemplate($line, true, $sc)."\n";  // retain line-breaks. 
 			} 
 			else 
 			{
