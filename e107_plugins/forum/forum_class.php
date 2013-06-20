@@ -27,7 +27,7 @@ $(document).ready(function()
 		var post 	= $(this).attr('data-forum-post');		
 		var text 	= $('#forum-quickreply-text').val();
 		var insert	= $(this).attr('data-forum-insert');
-		
+		var token	= $(this).attr('data-token');
 		
 		
 		if(action != 'stick' && action !='unstick')
@@ -40,8 +40,9 @@ $(document).ready(function()
 		$.ajax({
 			type: "POST",
 			url: script,
-			data: { thread: thread, action: action, post: post, text: text, insert:insert },
+			data: { thread: thread, action: action, post: post, text: text, insert:insert, e_token: token },
 			success: function(data) {
+			  		
 			  	//	 alert(data); 	
 			  	
 				var d = $.parseJSON(data);
@@ -189,6 +190,16 @@ class e107forum
 	function ajaxQuickReply()
 	{
 		$tp = e107::getParser();
+				
+		if(!e107::getSession()->check(false))
+		{
+			//$ret['status'] = 'ok';
+		//	$ret['msg'] = "Token Error";
+
+		//	echo json_encode($ret);  
+			
+			exit;
+		}
 
 		if(varset($_POST['action']) == 'quickreply' && vartrue($_POST['text']))
 		{		
@@ -223,7 +234,7 @@ class e107forum
 					$tmpl = e107::getTemplate('forum','forum_viewtopic','replies');
 					$sc  = e107::getScBatch('view', 'forum');
 					$sc->setScVar('postInfo', $postInfo);
-					$ret['html'] = $tp->parseTemplate($tmpl, true, vartrue($forum_shortcodes)) . "\n";
+					$ret['html'] = $tp->parseTemplate($tmpl, true, $sc) . "\n";
 				}
 				else 
 				{
@@ -237,6 +248,7 @@ class e107forum
 			 echo json_encode($ret);  
 		}	
 
+		e107::getSession()->reset();
 		exit;
 
 	}
@@ -246,6 +258,12 @@ class e107forum
 	
 	function ajaxModerate()
 	{
+		
+		if(!ADMIN) //FIXME check permissions per forum. 
+		{
+			exit; 	
+		}
+		
 			if(!vartrue($_POST['thread']) && !vartrue($_POST['post']))
 			{
 				exit;	
