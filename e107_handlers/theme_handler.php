@@ -222,7 +222,7 @@ class themeHandler
 
 		$reject = array('e_.*');
 
-		$handle2 = e107::getFile()->get_files(e_THEME.$file."/", ".php|.css|.xml|preview.jpg|preview.png", $reject, 0);
+		$handle2 = e107::getFile()->get_files(e_THEME.$file."/", ".php|.css|.xml|preview.jpg|preview.png", $reject, 1);
 
 
 		foreach ($handle2 as $fln)

@@ -12,11 +12,11 @@ e107::js('bootstrap','bootstrap.min.js');
 
 if(THEME_STYLE != 'style.css') // allow for drop-in bootstrap replacement. See http://bootswatch.com
 {
-	//define("CSSORDER", "theme,core,other,plugin,inline");
-	
+	define("CSSORDER", "theme,core,other,plugin,inline");
+
 	switch (THEME_STYLE) 
 	{
-		case 'superhero.css':
+		case 'css/superhero.css':
 			e107::css('inline','@media (min-width: 1000px){ body	{ padding-top: 100px;  }  } ');	
 		break;
 
