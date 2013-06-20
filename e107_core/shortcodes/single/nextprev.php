@@ -115,6 +115,13 @@ function nextprev_shortcode($parm = '')
 			$tprefix = 'dropdown';
 			//$parm['amount'] = 'all';
 		}
+		
+		if($tprefix == 'default' && deftrue('BOOTSTRAP'))
+		{
+			$tprefix = 'bootstrap';	
+		}
+		
+		
 		$tprefix .= '_';
 
 		if($parm['amount'] === 'all')

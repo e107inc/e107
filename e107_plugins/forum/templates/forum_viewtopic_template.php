@@ -370,7 +370,7 @@ $FORUM_VIEWTOPIC_TEMPLATE['thread'] = "
 									<li class='divider'></li>";
 
 $FORUM_VIEWTOPIC_TEMPLATE['end'] = "</ul>
-<div class='row clearfix'>
+<div class='row-fluid clearfix'>
 		<div class='span3 pull-left'>{GOTOPAGES}</div>
 		<div class='span6 center'>{QUICKREPLY}</div>
 		<div class='span3 pull-right right '>{BUTTONSX}</div>

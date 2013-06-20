@@ -167,7 +167,7 @@ $sc_style['SIGNUP_EMAIL_CONFIRM']['post'] = "
 </tr>";
 
 $sc_style['SIGNUP_XUP']['pre'] = "<div class='center' style='display:block;padding:10px'>";
-$sc_style['SIGNUP_XUP']['post'] = "<h2 class='divider'><span>OR</span></h2></div>";
+$sc_style['SIGNUP_XUP']['post'] = "<h2 class='signup-divider'><span>OR</span></h2></div>";
 
 if(!defined($COPPA_TEMPLATE))
 {
