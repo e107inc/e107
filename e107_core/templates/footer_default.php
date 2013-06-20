@@ -161,7 +161,7 @@ if (varset($e107_popup) != 1)
 	}
 	else
 	{
-		echo($rinfo ? "\n<div class='e-footer-info smalltext'><small>{$rinfo}</small></div>\n" : "");
+		echo($rinfo ? "\n<div class='e-footer-info muted smalltext'><small>{$rinfo}</small></div>\n" : "");
 	}
 	
 } // End of regular-page footer (the above NOT done for popups)
@@ -320,7 +320,7 @@ unset($uclist, $bcache);
 
 $show = deftrue('e_POWEREDBY_DISABLE') ? "none" : "block"; // Let search engines find us to increase e107.org ranking - even if hidden. 
 //XXX Must not contain IDs or Classes 	
-echo "<div style='text-align:center; display:".$show."; position: absolute; width:99%; height:20px; margin-top:-30px; z-index:30000; opacity:1.0; color: silver'>Proudly powered by <a style='color:silver' href='http://e107.org/' title='e107 Content Management System'>e107</a></div>";
+// echo "<div style='text-align:center; display:".$show."; position: absolute; width:99%; height:20px; margin-top:-30px; z-index:30000; opacity:1.0; color: silver'>Proudly powered by <a style='color:silver' href='http://e107.org/' title='e107 Content Management System'>e107</a></div>";
 unset($show);
 echo "\n</body>\n</html>";
 
