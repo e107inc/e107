@@ -7,10 +7,7 @@ body						{ padding-top: 75px;  }
 
 }
 
-.navbar-inverse .brand, .navbar-inverse .nav > li > a.no-block {
-    display: inline;
-    padding: 10px 0px;
-}
+
 
 .well 						{ padding:10px; }
 footer						{ padding:60px }

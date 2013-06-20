@@ -155,6 +155,11 @@ $SC_WRAPPER['NAVIGATION|s'] = '<div class="well sidebar-nav">{---}</div><!--/.we
 // TODO Convert to : default-home and default-other layouts. 
 
 
+//// <ul class="nav nav-pills pull-right">
+//                <li class="dropdown">'.(!USERID ? '<a class="dropdown-toggle" role="button" href="'.e_LOGIN.'">Sign in</a>': '<span class="navbar-text">Logged in as</span> <a class="dropdown-toggle no-block" role="button" href="user.php?id.'.USERID.'">'.USERNAME.'</a>').'</li>
+//            </ul>
+
+
 $HEADER['default'] = '
 <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
@@ -167,9 +172,7 @@ $HEADER['default'] = '
           <a class="brand" href="'.SITEURL.'">{SITENAME}</a>
           <div class="nav-collapse collapse">
            {NAVIGATION=main}
-            <ul class="nav nav-pills pull-right">
-                <li class="dropdown">'.(!USERID ? '<a class="dropdown-toggle" role="button" href="'.e_LOGIN.'">Sign in</a>': '<span class="navbar-text">Logged in as</span> <a class="dropdown-toggle no-block" role="button" href="user.php?id.'.USERID.'">'.USERNAME.'</a>').'</li>
-            </ul>
+           <div class="pull-right">{BOOTSTRAP_USERNAV}</div>
           </div><!--/.nav-collapse -->
         </div>
       </div>

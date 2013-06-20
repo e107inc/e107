@@ -35,7 +35,7 @@ $login_menu_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 /*
 SC_BEGIN LM_USERNAME_INPUT
 	global $pref;
-	return "<input class='tbox login user' type='text' name='username' required='required' id='username' size='15' value='' maxlength='".varset($pref['loginname_maxlength'],30)."' />\n";
+	return "<input class='tbox login user' type='text' name='username' placeholder='Username' required='required' id='username' size='15' value='' maxlength='".varset($pref['loginname_maxlength'],30)."' />\n";
 SC_END
 
 SC_BEGIN LM_USERNAME_LABEL
@@ -54,7 +54,7 @@ SC_END
 
 SC_BEGIN LM_PASSWORD_INPUT
 global $pref;
-$t_password = "<input class='tbox login pass' type='password' required='required' name='userpass' id='userpass' size='15' value='' maxlength='30' />\n";
+$t_password = "<input class='tbox login pass' type='password' placeholder='Password' required='required' name='userpass' id='userpass' size='15' value='' maxlength='30' />\n";
 if (!USER && e107::getSession()->is('challenge') && varset($pref['password_CHAP'],0)) $t_password .= "<input type='hidden' name='hashchallenge' id='hashchallenge' value='".e107::getSession()->get('challenge')."' />\n\n";
 return $t_password;
 SC_END
