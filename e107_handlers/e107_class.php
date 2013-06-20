@@ -3219,9 +3219,11 @@ class e107
 		if ($no_cbrace)	$e_QUERY = str_replace(array('{', '}', '%7B', '%7b', '%7D', '%7d'), '', rawurldecode($e_QUERY));
 		$e_QUERY = htmlentities(self::getParser()->post_toForm($e_QUERY));
 		
+		define('e_QUERY', $e_QUERY);	
+		
 		if(!deftrue("e_SINGLE_ENTRY"))
 		{
-			define('e_QUERY', $e_QUERY);	
+			
 			$_SERVER['QUERY_STRING'] = e_QUERY;	
 		}
 		
