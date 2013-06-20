@@ -20,6 +20,8 @@
 .clear-l { clear: right }
 .clear-r { clear: left }
 
+.e-footer-info	{ margin-top:10px; padding:20px; text-align: center }
+
 td.text-center { text-align:center; }
 
 /* Core Icons */
