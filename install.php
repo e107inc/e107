@@ -1320,7 +1320,7 @@ class e_install
 		$this->previous_steps['prefs']['siteurl']			= e_HTTP;
 
 		$this->previous_steps['prefs']['sitetag']			= LAN_PREF_2;
-		$this->previous_steps['prefs']['sitedisclaimer']	= LAN_PREF_3;
+		$this->previous_steps['prefs']['sitedisclaimer']	= '';
 
 		$this->previous_steps['prefs']['replyto_name']		= $this->previous_steps['admin']['display'];
 		$this->previous_steps['prefs']['replyto_email']		= $this->previous_steps['admin']['email'];
