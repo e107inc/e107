@@ -13,10 +13,12 @@ e107::js('bootstrap','bootstrap.min.js');
 if(THEME_STYLE != 'style.css') // allow for drop-in bootstrap replacement. See http://bootswatch.com
 {
 	define("CSSORDER", "theme,core,other,plugin,inline");
+	e107::css('inline','@media (min-width: 1000px){ body	{ padding-top: 100px;  }  } ');
 }
 else
 {
 	e107::css('bootstrap','bootstrap.min.css');	
+	e107::css('inline','@media (min-width: 1000px){ body	{ padding-top: 75px;  }  } ');
 }
 
 e107::css('bootstrap','bootstrap-responsive.min.css');
@@ -25,7 +27,7 @@ e107::css('bootstrap','jquery-ui.custom.css');
 e107::css('theme', 'js/google-code-prettify/prettify.css');
 e107::js('theme', "js/google-code-prettify/prettify.js");
 
-e107::css('inline','@media (min-width: 1000px){ body	{ padding-top: 75px;  }  } ');
+
 
 if(THEME_LAYOUT == 'docs')
 {
