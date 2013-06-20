@@ -17,7 +17,11 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 
 	function sc_sitedisclaimer()
 	{
-		return e107::getParser()->toHtml(SITEDISCLAIMER, true, 'constants defs');
+		$default = "Proudly powered by <a href='http://e107.org'>e107</a> which is released under the terms of the GNU GPL License.";
+
+		$text = deftrue('SITEDISCLAIMER',$default);
+
+		return e107::getParser()->toHtml($text, true, 'constants defs');
 	}
 
 	function sc_sitename($parm)
