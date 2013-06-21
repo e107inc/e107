@@ -506,7 +506,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 				$text .= "<li><a href='".e107::getUrl()->create('forum/thread/edit', array('id' => $this->postInfo['post_id']))."'>".LAN_FORUM_2039." <i class='icon-edit'></i></a></li>";
 			}
 			
-			$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='deletepost' data-forum-post='".$this->postInfo['post_id']."'>".LAN_FORUM_2040." (fixme) <i class='icon-trash'></i></a></li>"; // FIXME
+			$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='deletepost' data-forum-post='".$this->postInfo['post_id']."'>".LAN_FORUM_2040." <i class='icon-trash'></i></a></li>"; 
 
 			if ($type == 'thread')
 			{
