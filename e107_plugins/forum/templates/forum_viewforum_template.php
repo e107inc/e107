@@ -266,7 +266,7 @@ $FORUM_CRUMB['sitename']['sep'] = " :: ";
 $FORUM_CRUMB['forums']['value'] = "<a class='forumlink' href='{FORUMS_HREF}'>{FORUMS_TITLE}</a>";
 $FORUM_CRUMB['forums']['sep'] = " :: ";
 
-$FORUM_CRUMB['parent']['value'] = "{PARENT_TITLE}";
+$FORUM_CRUMB['parent']['value'] = "<a class='forumlink' href='{PARENT_HREF}'>{PARENT_TITLE}</a>"; 
 $FORUM_CRUMB['parent']['sep'] = " :: ";
 
 $FORUM_CRUMB['subparent']['value'] = "<a class='forumlink' href='{SUBPARENT_HREF}'>{SUBPARENT_TITLE}</a>";
@@ -297,7 +297,7 @@ $FORUM_VIEWFORUM_TEMPLATE['header'] 			= "<div class='row-fluid'><div>{BACKLINK}
 												
 													{SUBFORUMS}";
 
-$FORUM_VIEWFORUM_TEMPLATE['item'] 				= "<tr><td>{ICON}</td><td>{THREADNAME}<div><small class='clearfix'>by {POSTER} {THREADTIMELAPSE}  {PAGESX}</small></div></td><td>{REPLIESX}</td><td>{VIEWSX}</td><td><small>{LASTPOSTUSER} {LASTPOSTDATE} </small><div class='span2 right pull-right'>{ADMINOPTIONS}</div></td></tr>\n";
+$FORUM_VIEWFORUM_TEMPLATE['item'] 				= "<tr><td>{ICON}</td><td><div>{THREADNAME}</div><div class='pull-left'><small>by {POSTER} {THREADTIMELAPSE} &nbsp;</small></div><div class='pull-left'> {PAGESX}</div></td><td>{REPLIESX}</td><td>{VIEWSX}</td><td><small>{LASTPOSTUSER} {LASTPOSTDATE} </small><div class='span2 right pull-right'>{ADMINOPTIONS}</div></td></tr>\n";
 $FORUM_VIEWFORUM_TEMPLATE['item-sticky'] 		= $FORUMVIEW['item'] ; // "<tr><td>{THREADNAME}</td></tr>\n";
 $FORUM_VIEWFORUM_TEMPLATE['item-announce'] 		= $FORUMVIEW['item'] ; // "<tr><td>{THREADNAME}</td></tr>\n";
 

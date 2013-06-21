@@ -726,7 +726,7 @@ function fpages($thread_info, $replies)
 				$text .= $text ? ' ' : '';
 				$urlparms['page'] = $aa;
 				$url = e107::getUrl()->create('forum/thread/view', $urlparms);
-				$opts[] = "<a class='btn btn-mini' data-toggle='tooltip' title=\"Go to Page $aa\" href='{$url}'>{$aa}</a>"; //FIXME LAN_GOPAGE syntax?
+				$opts[] = "<a data-toggle='tooltip' title=\"Go to Page $aa\" href='{$url}'>{$aa}</a>"; //FIXME LAN_GOPAGE syntax?
 			}
 			$text .= ' ... ';
 			for($a = $pages-3; $a <= $pages-1; $a++)
@@ -735,7 +735,7 @@ function fpages($thread_info, $replies)
 				$text .= $text ? ' ' : '';
 				$urlparms['page'] = $aa;
 				$url = e107::getUrl()->create('forum/thread/view', $urlparms);
-				$opts[] = "<a class='btn btn-mini' data-toggle='tooltip' title=\"Go to Page $aa\" href='{$url}'>{$aa}</a>"; //FIXME LAN_GOPAGE syntax?
+				$opts[] = "<a data-toggle='tooltip' title=\"Go to Page $aa\" href='{$url}'>{$aa}</a>"; //FIXME LAN_GOPAGE syntax?
 			}
 		}
 		else
@@ -746,12 +746,26 @@ function fpages($thread_info, $replies)
 				$text .= $text ? ' ' : '';
 				$urlparms['page'] = $aa;
 				$url = e107::getUrl()->create('forum/thread/view', $urlparms);
-				$opts[] =  "<a class='btn btn-mini' data-toggle='tooltip' title=\"Go to Page $aa\" href='{$url}'>{$aa}</a>"; //FIXME LAN_GOPAGE syntax?
+				$opts[] =  "<a data-toggle='tooltip' title=\"Go to Page $aa\" href='{$url}'>{$aa}</a>"; //FIXME LAN_GOPAGE syntax?
 			}
 		}
 	
+		if(deftrue('BOOTSTRAP'))
+		{
+			$text = "<div class='pagination pagination-mini' style='margin:0px'>
+					<ul>
+						<li>";
+			
+			$text .= implode("</li><li>",$opts); // ."</div>";	
+			$text .= "</li></ul></div>";				
+		}
+		else 
+		{
+			$text = implode("",$opts); // ."</div>";
+		}
+	
 		
-		$text = implode("",$opts); // ."</div>";
+		
 		
 	}
 	else

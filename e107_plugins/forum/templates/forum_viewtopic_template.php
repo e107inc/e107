@@ -297,7 +297,7 @@ $FORUM_CRUMB['sitename']['sep'] = " :: ";
 $FORUM_CRUMB['forums']['value'] = "<a class='forumlink' href='{FORUMS_HREF}'>{FORUMS_TITLE}</a>";
 $FORUM_CRUMB['forums']['sep'] = " :: ";
 
-$FORUM_CRUMB['parent']['value'] = "{PARENT_TITLE}";
+$FORUM_CRUMB['parent']['value'] = "<a class='forumlink' href='{PARENT_HREF}'>{PARENT_TITLE}</a>"; 
 $FORUM_CRUMB['parent']['sep'] = " :: ";
 
 $FORUM_CRUMB['subparent']['value'] = "<a class='forumlink' href='{SUBPARENT_HREF}'>{SUBPARENT_TITLE}</a>";

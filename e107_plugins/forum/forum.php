@@ -250,12 +250,13 @@ if (!$forumList)
 
 $forum_string = '';
 $pVars = new e_vars;
+$frm = e107::getForm();
 foreach ($forumList['parents'] as $parent)
 {
 	$status = parse_parent($parent);
 	$pVars->PARENTSTATUS = $status;
 
-	$pVars->PARENTNAME = $parent['forum_name'];
+	$pVars->PARENTNAME = "<a id='".$frm->name2id($parent['forum_name'])."'>".$parent['forum_name']."</a>";
 	$forum_string .= $tp->simpleParse($FORUM_MAIN_PARENT, $pVars);
 	if (!count($forumList['forums'][$parent['forum_id']]))
 	{

@@ -1564,6 +1564,8 @@ class e107forum
 	{
 		$e107 = e107::getInstance();
 		$tp = e107::getParser();
+		$frm = e107::getForm();
+		
 		global $FORUM_CRUMB, $forumInfo, $threadInfo, $thread;
 		global $BREADCRUMB,$BACKLINK;  // Eventually we should deprecate BACKLINK
 
@@ -1579,8 +1581,8 @@ class e107forum
 			$replace 	= array(LAN_FORUM_0001, e107::getUrl()->create('forum/forum/main'));
 			$FORUM_CRUMB['forums']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forums']['value']);
 
-			$search 	= '{PARENT_TITLE}';
-			$replace 	= $tp->toHTML($forumInfo['parent_name']);
+			$search 	= array('{PARENT_TITLE}', '{PARENT_HREF}');
+			$replace 	= array($tp->toHTML($forumInfo['parent_name']), e107::getUrl()->create('forum/forum/main')."#".$frm->name2id($forumInfo['parent_name']));
 			$FORUM_CRUMB['parent']['value'] = str_replace($search, $replace, $FORUM_CRUMB['parent']['value']);
 
 			if($forumInfo['forum_sub'])
@@ -1794,22 +1796,22 @@ function img_path($filename)
 			{
 				if($ML)
 				{
-                	$image = (is_readable(e_PLUGIN.'forum/images/'.IMODE.'/'.e_LANGUAGE.'_'.$filename)) ? e_PLUGIN.'forum/images/'.IMODE.'/'.e_LANGUAGE.'_'.$filename : e_PLUGIN.'forum/images/'.IMODE.'/English_'.$filename;
+                	$image = (is_readable(e_PLUGIN.'forum/images/icons/'.e_LANGUAGE.'_'.$filename)) ? e_PLUGIN.'forum/images/icons/'.e_LANGUAGE.'_'.$filename : e_PLUGIN.'forum/images/icons/English_'.$filename;
 				}
 				else
 				{
-                	$image = e_PLUGIN.'forum/images/'.IMODE.'/'.$filename;
+                	$image = e_PLUGIN.'forum/images/icons/'.$filename;
 				}
 			}
 			else
 			{
 				if($ML)
 				{
-					$image = (is_readable(e_PLUGIN."forum/images/lite/".e_LANGUAGE.'_'.$filename)) ? e_PLUGIN.'forum/images/lite/'.e_LANGUAGE.'_'.$filename : e_PLUGIN.'forum/images/lite/English_'.$filename;
+					$image = (is_readable(e_PLUGIN."forum/images/lite/".e_LANGUAGE.'_'.$filename)) ? e_PLUGIN.'forum/images/icons/'.e_LANGUAGE.'_'.$filename : e_PLUGIN.'forum/images/icons/English_'.$filename;
 				}
 				else
                 {
-           			$image = e_PLUGIN.'forum/images/lite/'.$filename;
+           			$image = e_PLUGIN.'forum/images/icons/'.$filename;
 				}
 
 			}
