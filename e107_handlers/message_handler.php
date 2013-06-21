@@ -528,7 +528,7 @@ class eMessage
 		}
 		
 		return "
-			<div class='s-message alert alert-block {$type} {$bclass}'>
+			<div class='s-message alert alert-block fade in {$type} {$bclass}'>
 			<a class='close' data-dismiss='alert'>×</a>
 				<i class='s-message-icon s-message-".$type."'></i>
 				<h4 class='s-message-title'>".self::getTitle($type, $mstack)."</h4>

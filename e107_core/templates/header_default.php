@@ -29,6 +29,9 @@ e107::js('core', 	'bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js',
 e107::js('core',	'bootstrap/js/bootstrap-tooltip.js','jquery');
 e107::css('core',	'bootstrap/css/tooltip.css','jquery');
 
+e107::js('core',	'bootstrap-notify/js/bootstrap-notify.js','jquery');
+e107::css('core',	'bootstrap-notify/css/bootstrap-notify.css','jquery');
+
 // ------------------
 
 // e107::js('core', 	'jquery.elastic.js', 'jquery', 2);
@@ -689,6 +692,11 @@ if ($e107_popup != 1) {
 	if(ADMIN && !vartrue($_SERVER['E_DEV']) && file_exists(e_BASE.'install.php'))
 	{
 		 echo "<div class='installer alert alert-danger alert-block text-center'><b>*** ".CORE_LAN4." ***</b><br />".CORE_LAN5."</div>"; 
+	}
+
+	if(deftrue('BOOTSTRAP'))
+	{
+		echo "<div id='uiAlert' class='notifications center'></div>"; // Popup Alert Message holder. @see http://nijikokun.github.io/bootstrap-notify/
 	}
 
 	// Display Welcome Message when old method activated.
