@@ -318,9 +318,11 @@ $FORUM_VIEWFORUM_TEMPLATE['divider-normal']		= "<tr><th colspan='2'>".LAN_FORUM_
 
 $FORUM_VIEWFORUM_TEMPLATE['footer'] 				= "</table>
 												<div class='row-fluid'>
+												{ICONKEY}
 												<div class='span5 pull-left left' style='padding-top:10px'>{THREADPAGES}</div><div class='span3 pull-right right' style='padding-top:10px'>{NEWTHREADBUTTONX}</div>
 												
-												</div>";
+												</div>
+												";
 $FORUM_VIEWFORUM_TEMPLATE['end'] 					= "<!--- END --> \n";
 
 
