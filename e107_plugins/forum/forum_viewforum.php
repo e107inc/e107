@@ -688,13 +688,14 @@ function fadminoptions($thread_info)
 	$id = intval($thread_info['thread_id']);
 	
 	$lan = array('stick'=>'Stick','unstick'=>'Unstick','lock'=>"Lock", 'unlock'=>"Unlock");
-
-
-	$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='delete' data-forum-thread='".$id."'>Delete</a></li>";
-	$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='".$stickUnstick."' data-forum-thread='".$id."'>".$lan[$stickUnstick]."</a></li>";
-	$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='".$lockUnlock."' data-forum-thread='".$id."'><i class='icon_lock'></i> ".$lan[$lockUnlock]."</a></li>";
 	
-	$text .= "<li><a href='{$moveUrl}'>Move</a></li>";
+
+
+	$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='delete' data-forum-thread='".$id."'>Delete <i class='icon-trash'></i></a></li>";
+	$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='".$stickUnstick."' data-forum-thread='".$id."'>".$lan[$stickUnstick]."</a></li>";
+	$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='".$lockUnlock."' data-forum-thread='".$id."'>".$lan[$lockUnlock]." <i class='icon-lock'></i></a></li>";
+	
+	$text .= "<li><a href='{$moveUrl}'>Move <i class='icon-move'></i></a></li>";
 
 /*
 	$text .= "<li><input type='image' ".IMAGE_admin_delete." name='deleteThread_{$threadId}' value='thread_action' onclick=\"return confirm_({$threadId})\" /> Delete</li>";
