@@ -29,11 +29,7 @@ $(document).ready(function()
 		var insert	= $(this).attr('data-forum-insert');
 		var token	= $(this).attr('data-token');
 		
-		
-		if(action != 'stick' && action !='unstick')
-		{
-			e.preventDefault();
-		}
+		e.preventDefault();
 					
 		var script = $(this).attr("src"); 
 
@@ -43,16 +39,39 @@ $(document).ready(function()
 			data: { thread: thread, action: action, post: post, text: text, insert:insert, e_token: token },
 			success: function(data) {
 			  		
-			  	//	 alert(data); 	
+			 //		 alert(data); 	
 			  	
 				var d = $.parseJSON(data);
 				
 				if(d)
 				{
+		
+									
 					if(d.msg)
 					{
-						alert(d.msg);
+						if(d.status == 'ok')
+						{
+							var alertType = 'success';
+						}
+						else {
+							var alertType = 'info';
+						}			
+							
+						// http://nijikokun.github.io/bootstrap-notify/
+						$('#uiAlert').notify({
+							type: alertType,
+   							message: { text: d.msg },
+   							fadeOut: { enabled: true, delay: 3000 }
+  						}).show(); 
+						
+						// alert(d.msg);
 					}
+					
+					if(action == 'stick' || action == 'unstick' || action == 'lock' || action == 'unlock')
+					{
+						location.reload();
+						return;
+					}		
 					
 					if(action == 'quickreply' && d.status == 'ok' )
 					{
@@ -75,6 +94,9 @@ $(document).ready(function()
 						$(t).hide('slow');
 						$(p).hide('slow').slideUp(800);
 					}
+					
+					
+					
 				}					
 			}
 		  
@@ -256,10 +278,10 @@ class e107forum
 	
 	
 	
-	function ajaxModerate()
+	public function ajaxModerate()
 	{
 		
-		if(!ADMIN) //FIXME check permissions per forum. 
+		if(!$this->isModerator(USERID)) //FIXME check permissions per forum. 
 		{
 			exit; 	
 		}

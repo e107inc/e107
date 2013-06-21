@@ -139,6 +139,11 @@ if (MODERATOR)
 	}
 }
 
+if(e_AJAX_REQUEST && MODERATOR) // see javascript above. 
+{
+	$forum->ajaxModerate();
+}
+
 if(varset($pref['track_online']))
 {
 	$member_users = $sql->db_Count('online', '(*)', "WHERE online_location REGEXP('viewforum.php.id=$forumId\$') AND online_user_id != 0");
