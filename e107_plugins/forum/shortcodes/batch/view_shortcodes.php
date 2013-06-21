@@ -514,7 +514,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 			}
 			else
 			{
-				$text .= "<li><a href='" . e107::getUrl()->create('forum/thread/split', array('id' => $this->postInfo['post_id']))."'>".LAN_FORUM_2043."</a></li>";
+				$text .= "<li><a href='" . e107::getUrl()->create('forum/thread/split', array('id' => $this->postInfo['post_id']))."'>".LAN_FORUM_2043." <i class='icon-cut'></i></a></li>";
 		
 			}
 		}
