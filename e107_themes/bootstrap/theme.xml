@@ -12,6 +12,12 @@
 		<image>preview.jpg</image>
 		<image>fullpreview.jpg</image>
 	</screenshots>
+	<stylesheets>
+		<css file="style.css" name="Default"  />
+		<css file="css/superhero.css" name="Superhero" />
+		<css file="admin_light.css" name="Light" admin="true" />
+		<css file="admin_dark.css" name="Dark" admin="true" />
+	</stylesheets>
 	<layouts>
 		<layout name='default' title='Default' default='true' />
 		<layout name='default-home' title='Default Home'>

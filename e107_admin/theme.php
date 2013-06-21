@@ -317,6 +317,9 @@ class theme_builder
 			$mes = e107::getMessage();
 			$frm = e107::getForm();
 			
+		
+	
+			
 			$data = array(
 				'main' 			=> array('name','lang','version','date', 'compatibility'),
 				'author' 		=> array('name','url'),
@@ -324,7 +327,8 @@ class theme_builder
 				'description' 	=> array('description'),
 				'keywords' 		=> array('one','two'),
 				'category'		=> array('category'),
-				'copyright'		=> array('copyright')
+				'copyright'		=> array('copyright'),
+				'stylesheets' 	=> array('stylesheets')
 		//		'adminLinks'	=> array('url','description','icon','iconSmall','primary'),
 		//		'sitelinks'		=> array('url','description','icon','iconSmall')
 			);			
@@ -473,7 +477,7 @@ class theme_builder
 			if(vartrue($newArray['CUSTOMPAGES']))
 			{
 				$newArray['CUSTOMPAGES'] = trim($newArray['CUSTOMPAGES']);			
-				$LAYOUTS = "<layout name='custom' title='Custom'>\n";
+				$LAYOUTS = "\n<layout name='custom' title='Custom'>\n";
 				$LAYOUTS .= "			<custompages>{CUSTOMPAGES}</custompages>\n";
 				$LAYOUTS .= "		</layout>";
 			}
@@ -481,6 +485,26 @@ class theme_builder
 			{		
 				$LAYOUTS = "";
 			}
+			
+			if(vartrue($newArray['STYLESHEETS_STYLESHEETS']))
+			{
+				$STYLESHEETS = "\n\t<stylesheets>\n";
+				foreach($newArray['STYLESHEETS_STYLESHEETS'] as $val)
+				{
+					$STYLESHEETS .= "\t\t<css file=\"".$val['file']."\" name=\"".$val['name']."\" />\n";	
+				}
+				$STYLESHEETS .= "\t</stylesheets>";
+				
+				unset($newArray['STYLESHEETS_STYLESHEETS']);
+			}
+			else 
+			{
+				$STYLESHEETS = "";
+			}
+			
+			$newArray['STYLESHEETS'] = $STYLESHEETS; 
+			
+		//	print_a($newArray);
 			
 
 $template = <<<TEMPLATE
@@ -498,10 +522,9 @@ $template = <<<TEMPLATE
 	<screenshots>
 		<image>preview.jpg</image>
 		<image>fullpreview.jpg</image>
-	</screenshots>
+	</screenshots>{STYLESHEETS}
 	<layouts>
-		<layout name='default' title='Default' default='true' />
-		{LAYOUTS}
+		<layout name='default' title='Default' default='true' />{LAYOUTS}	
 	</layouts>
 </e107Theme>
 TEMPLATE;
@@ -511,6 +534,15 @@ TEMPLATE;
 			
 			$result = e107::getParser()->simpleParse($template, $newArray);
 			$path = e_THEME.$this->themeName."/theme.xml";
+			
+			
+			if(E107_DEBUG_LEVEL > 0)
+			{
+				$mes->addDebug("Debug Mode active - no file saved. ");
+				return  htmlentities($result);	
+			}
+			
+			
 			
 			if(file_put_contents($path,$result))
 			{
@@ -530,7 +562,7 @@ TEMPLATE;
 				
 	
 	
-			function xmlInput($name, $info, $default='')
+		function xmlInput($name, $info, $default='')
 		{
 			$frm = e107::getForm();	
 			list($cat,$type) = explode("-",$info);
@@ -633,6 +665,32 @@ TEMPLATE;
 			
 			switch ($type) 
 			{
+				
+				case 'stylesheets':
+					$fl = e107::getFile();
+			
+					$fl->setMode('full');
+					$stylesheets = $fl->get_files(e_THEME.$this->themeName."/", "\.css", $reject, 1);
+					foreach($stylesheets as $key=>$path)
+					{
+						$file = str_replace(e_THEME.$this->themeName."/",'',$path);
+						$text .= "<div class='row-fluid'>";
+						$text .= "<div class='controls'>";
+						$text .= "<div class='span3'>".$frm->checkbox($name.'['.$key.'][file]',$file, false, array('label'=>$file))."
+						<div class='field-help'>Enable this stylesheet as a selectable option in the Theme Manager.</div></div>";
+						$text .= "<div class='span3'>".$frm->text($name.'['.$key.'][name]', $default, $size, 'placeholder='.$file . $req. $pat)."
+						<div class='field-help'>Give this stylesheet a name</div></div>";
+					//	$text .= "<div class='span2'>".$frm->checkbox('css['.$key.'][file]',$file, false, array('label'=>$file))."</div>";
+					//	$text .= "<div class='span2'>".$frm->text('css['.$key.'][name]', $default, $size, 'placeholder='.$placeholder . $req. $pat)."</div>";	
+						$text .= "</div>";
+						$text .= "</div>";
+					}
+						
+					
+					return $text;
+				break;
+				
+				
 				case 'date':
 					$text = $frm->datepicker($name, time(), 'format=yyyy-mm-dd'.$req);		
 				break;
