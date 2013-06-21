@@ -217,59 +217,45 @@ class themeHandler
 	
 	function getThemeInfo($file)
 	{
-		$STYLESHEET = FALSE;
+
 		$mes = e107::getMessage();
-
 		$reject = array('e_.*');
-
-		$handle2 = e107::getFile()->get_files(e_THEME.$file."/", ".php|.css|.xml|preview.jpg|preview.png", $reject, 1);
-
+		$handle2 = e107::getFile()->get_files(e_THEME.$file."/", "\.php|\.css|\.xml|preview\.jpg|preview\.png", $reject, 1);
 
 		foreach ($handle2 as $fln)
 		{
 			$file2 = str_replace(e_THEME.$file."/", "", $fln['path']).$fln['fname'];
 			
 			$themeArray[$file]['files'][] = $file2;
+			
 			if(strstr($file2, "preview."))
 			{
 				$themeArray[$file]['preview'] = e_THEME.$file."/".$file2;
 			}
 
-			// ----------------  get information string for css file
+			// ----------------  get information string for css file - Legacy mode (no theme.xml) 
 
-			if(strstr($file2, "css") && !strstr($file2, "menu.css") && strpos($file2, "e_") !== 0)
+			if(strstr($file2, ".css") && !strstr($file2, "menu.css") && strpos($file2, "e_") !== 0)
 			{
 				if($cssContents = file_get_contents(e_THEME.$file."/".$file2))
 				{
 					$nonadmin = preg_match('/\* Non-Admin(.*?)\*\//', $cssContents) ? true : false;
 					preg_match('/\* info:(.*?)\*\//', $cssContents, $match);
 					$match[1] = varset($match[1], '');
-					$themeArray[$file]['css'][] = array("name"=>$file2,
-						 "info"=>$match[1],
-						 "nonadmin"=>$nonadmin);
-					if($STYLESHEET)
-					{
-						$themeArray[$file]['multipleStylesheets'] = TRUE;
-					}
-					else
-					{
-						$STYLESHEET = TRUE;
-					}
+					$themeArray[$file]['css'][] = array("name"=>$file2,	 "info"=>$match[1], "nonadmin"=>$nonadmin);
+					
 				}
 				else
 				{
-				//	$mes->addDebug("Couldn't read file: ".e_THEME.$file."/".$file2);	
+ 				//	$mes->addDebug("Couldn't read file: ".e_THEME.$file."/".$file2);	
 				}
 			}
 
 		
 		} // end while..
-
 		
-		//   echo "<hr />";
-		//	  	closedir($handle2);
+		// Load Theme information and merge with existing array. theme.xml (v2.x theme) is given priority over theme.php (v1.x).
 		
-		// Load Theme information and merge with existing array. theme.xml (0.8 themes) is given priority over theme.php (0.7).
 		if(in_array("theme.xml", $themeArray[$file]['files']))
 		{
 			$themeArray[$file] = array_merge($themeArray[$file], $this->parse_theme_xml($file));
@@ -279,7 +265,11 @@ class themeHandler
 			$themeArray[$file] = array_merge($themeArray[$file], $this->parse_theme_php($file));
 		}
 
-		
+		if(count($themeArray[$file]['css']) > 1)
+		{
+			$themeArray[$file]['multipleStylesheets'] = TRUE;	
+		}
+
 		return $themeArray[$file];
 
 	
@@ -1937,6 +1927,22 @@ class themeHandler
 		$vars['layouts'] 		= $lays;
 		$vars['path'] 			= $path;
 		$vars['custompages'] 	= $custom;
+		
+		if(vartrue($vars['stylesheets']['css']))
+		{
+			$vars['css'] = array();
+			
+			foreach($vars['stylesheets']['css'] as $val)
+			{
+				$notadmin = vartrue($val['@attributes']['admin']) ? false : true;
+				
+				$vars['css'][] = array("name" => $val['@attributes']['file'], "info"=> $val['@attributes']['name'], "nonadmin"=>$notadmin);
+			}
+
+			unset($vars['stylesheets']);
+		}
+		
+		//
 
 		$mes = e107::getMessage(); // DEBUG
 	
