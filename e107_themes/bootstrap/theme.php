@@ -37,6 +37,7 @@ else
 
 e107::css('bootstrap','bootstrap-responsive.min.css');
 e107::css('bootstrap','jquery-ui.custom.css');
+e107::css('url', "//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css");
 
 e107::css('theme', 'js/google-code-prettify/prettify.css');
 e107::js('theme', "js/google-code-prettify/prettify.js");
