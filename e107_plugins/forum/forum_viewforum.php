@@ -220,7 +220,7 @@ if(varset($pref['track_online']))
 
 
 $fVars->ICONKEY = "
-	<table style='width:100%'>
+	<table class='table' style='width:100%'>
 	<tr>
 	<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_new_small."</td>
 	<td style='width:10%' class='smallblacktext'>".LAN_FORUM_0039."</td>
