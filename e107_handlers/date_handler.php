@@ -87,8 +87,7 @@ class convert
 				}				
 			break;
 		}
-		
-
+	
 		return strftime($mask, $datestamp);
 	}
 
@@ -102,7 +101,7 @@ class convert
 	function convert($string=null, $mask = 'inputdate')
 	{
 		if($string == null) return false;
-		return is_integer($string) ? $this->convert_date($string, $mask) : $this->toTime($string, $mask);	
+		return is_numeric($string) ? $this->convert_date($string, $mask) : $this->toTime($string, $mask);	
 	}
 	
 	
