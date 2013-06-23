@@ -28,5 +28,6 @@
 		<pref name="agree_flag"></pref> <!-- needs download prefix? -->
 		<pref name="agree_text"></pref>
 		<pref name="download_denied"></pref>
+		<pref name="download_reportbroken">254</pref>
 	</mainPrefs>
 </e107Plugin>

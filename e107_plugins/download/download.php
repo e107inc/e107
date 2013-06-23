@@ -68,8 +68,17 @@ else
 {	// Get parameters from the query
    $maincatval = '';			// Show all main categories
    $tmp = explode(".", e_QUERY);
-   if (is_numeric($tmp[0]))			// $tmp[0] at least must be valid
-   {
+   
+   $dl->init();
+   
+	if(isset($_GET['action'])) // v2.x
+	{
+   		$dl->init();
+   		$action = $_GET['action'];
+   		$id = intval($_GET['id']);
+   	}
+	elseif (is_numeric($tmp[0]))	//legacy		// $tmp[0] at least must be valid
+	{
 	   $dl_from = intval($tmp[0]);
 	   $action = varset(preg_replace("#\W#", "", $tp->toDB($tmp[1])),'list');
 	   $id = intval($tmp[2]);
@@ -84,15 +93,25 @@ else
 	   $errnum = intval(varset($tmp[2],0));
    }
 
+
+
    switch ($action)
    {
       case 'list' :	// Category-based listing
-	      if (isset($_POST['view']))
+      	  
+      
+	      if (isset($_GET['view']))
 	      {
-	   	   $view = intval($_POST['view']);
-	   	   $sort = varset($_POST['sort'],'DESC');
-	   	   $order = varset($_POST['order'],'download_datestamp');
+		//	$view = intval($_GET['view']);
+		//	$sort = varset($_GET['sort'],'DESC');
+	 	//	$order = varset($_POST['order']) ? 'download_'.$_POST['order'] : 'download_datestamp';
+			
+		//	$order = preg_replace("#\W#", "", $order);
+	   	//	$sort = preg_replace("#\W#", "", $sort);
+	   	
+			
 	      }
+		  
 	      if (!isset($dl_from)) $dl_from = 0;
 
 	      // Get category type, page title
@@ -159,55 +178,51 @@ if (!isset($view))	$view =  vartrue($pref['download_view'], '10');
 switch ($action)
 {	// Displaying main category or categories
    case 'maincats' :
-      require_once(HEADERF);
+    //  require_once(HEADERF);
+	/*
 	   if ($cacheData = $e107cache->retrieve("download_cat".$maincatval,720)) // expires every 12 hours. //TODO make this an option
-	   {
-	     echo $cacheData;
-	     require_once(FOOTERF);
-	     exit;
-	   }
-
-	   // Load the theme
-	   $load_template = 'download_template';
-	   if (!isset($DOWNLOAD_CAT_PARENT_TABLE)) eval($template_load_core);
-
-      if(!defined("DL_IMAGESTYLE")){ define("DL_IMAGESTYLE","border:1px solid blue");}
-
-	   // Read in tree of categories which this user is allowed to see
-      $dlcat = new downloadCategory(varset($pref['download_subsub'],1),USERCLASS_LIST,$maincatval,varset($pref['download_incinfo'],FALSE));
-
-	   if ($dlcat->down_count == 0)
-	   {
-	      $ns->tablerender(LAN_dl_18, "<div style='text-align:center'>".LAN_dl_2."</div>");
-	      require_once(FOOTERF);
-	      exit;
-	   }
-
-	   $download_cat_table_string = "";
-	   foreach($dlcat->cat_tree as $dlrow)
-	   {  // Display main category headings, then sub-categories, optionally with sub-sub categories expanded
-         $download_cat_table_string .= $tp->parseTemplate($DOWNLOAD_CAT_PARENT_TABLE, TRUE, vartrue($download_shortcodes));
-	      foreach($dlrow['subcats'] as $dlsubrow)
-	      {
-            $download_cat_table_string .= $tp->parseTemplate($DOWNLOAD_CAT_CHILD_TABLE, TRUE, $download_shortcodes);
-	         foreach($dlsubrow['subsubcats'] as $dlsubsubrow)
-	         {
-               $download_cat_table_string .= $tp->parseTemplate($DOWNLOAD_CAT_SUBSUB_TABLE, TRUE, $download_shortcodes);
-	         }
-	      }
-	   }
-	   $dl_text  = $tp->parseTemplate($DOWNLOAD_CAT_TABLE_START, TRUE, $download_shortcodes);
-	   $dl_text .= $download_cat_table_string;
-	   $dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_END, TRUE, $download_shortcodes);
-      $dlbreadcrumb = $dl->getBreadcrumb(array(LAN_dl_18));
-	   $dl_title = $tp->parseTemplate("{BREADCRUMB=dlbreadcrumb}", TRUE, $download_shortcodes);
-
-	   ob_start();
-      $ns->tablerender($dl_title, $dl_text);
-	   $cache_data = ob_get_flush();
-	   $e107cache->set("download_cat".$maincatval, $cache_data);
-	   require_once(FOOTERF);
-	   exit;
+		   {
+			 echo $cacheData;
+			 require_once(FOOTERF);
+			 exit;
+		   }
+				 // Load the theme
+		   $load_template = 'download_template';
+		   if (!isset($DOWNLOAD_CAT_PARENT_TABLE)) eval($template_load_core);
+				if(!defined("DL_IMAGESTYLE")){ define("DL_IMAGESTYLE","border:1px solid blue");}
+				 // Read in tree of categories which this user is allowed to see
+		  $dlcat = new downloadCategory(varset($pref['download_subsub'],1),USERCLASS_LIST,$maincatval,varset($pref['download_incinfo'],FALSE));
+				 if ($dlcat->down_count == 0)
+		   {
+			  $ns->tablerender(LAN_dl_18, "<div style='text-align:center'>".LAN_dl_2."</div>");
+			  require_once(FOOTERF);
+			  exit;
+		   }
+				 $download_cat_table_string = "";
+		   foreach($dlcat->cat_tree as $dlrow)
+		   {  // Display main category headings, then sub-categories, optionally with sub-sub categories expanded
+			 $download_cat_table_string .= $tp->parseTemplate($DOWNLOAD_CAT_PARENT_TABLE, TRUE, vartrue($download_shortcodes));
+			  foreach($dlrow['subcats'] as $dlsubrow)
+			  {
+				$download_cat_table_string .= $tp->parseTemplate($DOWNLOAD_CAT_CHILD_TABLE, TRUE, $download_shortcodes);
+				 foreach($dlsubrow['subsubcats'] as $dlsubsubrow)
+				 {
+				   $download_cat_table_string .= $tp->parseTemplate($DOWNLOAD_CAT_SUBSUB_TABLE, TRUE, $download_shortcodes);
+				 }
+			  }
+		   }
+		   $dl_text  = $tp->parseTemplate($DOWNLOAD_CAT_TABLE_START, TRUE, $download_shortcodes);
+		   $dl_text .= $download_cat_table_string;
+		   $dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_END, TRUE, $download_shortcodes);
+		  $dlbreadcrumb = $dl->getBreadcrumb(array(LAN_dl_18));
+		   $dl_title = $tp->parseTemplate("{BREADCRUMB=dlbreadcrumb}", TRUE, $download_shortcodes);
+				 ob_start();
+		  $ns->tablerender($dl_title, $dl_text);
+		   $cache_data = ob_get_flush();
+		   $e107cache->set("download_cat".$maincatval, $cache_data);*/
+	
+	//   require_once(FOOTERF);
+	//   exit;
       // Add other 'cases' here
 }  // End switch ($action)
 
@@ -235,119 +250,196 @@ if (isset($_POST['commentsubmit']))
 	}
 }
 
-//====================================================
-//				LIST
-//====================================================
-if ($action == "list")
-{
-   $total_downloads = $sql->db_Count("download", "(*)", "WHERE download_category = '{$id}' AND download_active > 0 AND download_visible REGEXP '".e_CLASS_REGEXP."'");
 
-   require_once(HEADERF);
 
-	/* SHOW SUBCATS ... */
-	if($sql->db_Select("download_category", "download_category_id", "download_category_parent='{$id}' "))
+require_once (HEADERF);
+
+
+	if($action == 'maincats')
 	{
-		/* there are subcats - display them ... */
-		$qry = "
-		   SELECT dc.*, dc2.download_category_name AS parent_name, dc2.download_category_icon as parent_icon, SUM(d.download_filesize) AS d_size,
-		   COUNT(d.download_id) AS d_count,
-		   MAX(d.download_datestamp) as d_last,
-		   SUM(d.download_requested) as d_requests
-		   FROM #download_category AS dc
-		   LEFT JOIN #download AS d ON dc.download_category_id = d.download_category AND d.download_active > 0 AND d.download_visible IN (".USERCLASS_LIST.")
-		   LEFT JOIN #download_category as dc2 ON dc2.download_category_id='{$id}'
-		   WHERE dc.download_category_class IN (".USERCLASS_LIST.") AND dc.download_category_parent='{$id}'
-		   GROUP by dc.download_category_id ORDER by dc.download_category_order
-		";
-		$sql->db_Select_gen($qry);
-		$scArray = $sql->db_getList();
+		$dl->renderCategories();
+	}
+
+	if($action == 'list')
+	{
+		$dl->renderList();
+	}
+	
+	if($action == 'view')
+	{
+		$dl->renderView();	
+	}
+	
+	if ($action == "report" && check_class($pref['download_reportbroken']))
+	{
+		$dl->renderReport();		
+	}
+
+require_once (FOOTERF);
+exit ;
+
+
+
+
+
+
+
+//====================================================
+ //LIST//====================================================
+	if($action == "list")
+	{
+		$total_downloads = $sql->db_Count("download", "(*)", "WHERE download_category = '{$id}' AND download_active > 0 AND download_visible REGEXP '" . e_CLASS_REGEXP . "'");
+
+		require_once (HEADERF);
+		echo "WOWO";
+		$dl->list();
+
+		/* SHOW SUBCATS ... */
+	/*
+		if($sql->db_Select("download_category", "download_category_id", "download_category_parent='{$id}' "))
+		{
+			//  there are subcats - display them ... 
+			$qry = "
+			SELECT dc.*, dc2.download_category_name AS parent_name, dc2.download_category_icon as parent_icon, SUM(d.download_filesize) AS d_size,
+			COUNT(d.download_id) AS d_count,
+			MAX(d.download_datestamp) as d_last,
+			SUM(d.download_requested) as d_requests
+			FROM #download_category AS dc
+			LEFT JOIN #download AS d ON dc.download_category_id = d.download_category AND d.download_active > 0 AND d.download_visible IN (" . USERCLASS_LIST . ")
+			LEFT JOIN #download_category as dc2 ON dc2.download_category_id='{$id}'
+			WHERE dc.download_category_class IN (" . USERCLASS_LIST . ") AND dc.download_category_parent='{$id}'
+			GROUP by dc.download_category_id ORDER by dc.download_category_order
+			";
+			
+			$sql->db_Select_gen($qry);
+			$scArray = $sql->db_getList();
+			$load_template = 'download_template';
+			
+			if(!isset($DOWNLOAD_CAT_PARENT_TABLE))
+			{
+				eval($template_load_core);
+			}
+			
+			if(!defined("DL_IMAGESTYLE"))
+			{
+				define("DL_IMAGESTYLE", "border:1px solid blue");
+			}
+
+			$download_cat_table_string = "";
+			$dl_text = $tp->parseTemplate($DOWNLOAD_CAT_TABLE_PRE, TRUE, $download_shortcodes);
+			$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_START, TRUE, $download_shortcodes);
+			
+			foreach($scArray as $dlsubsubrow)
+			{
+				$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_SUBSUB_TABLE, TRUE, $download_shortcodes);
+			}
+			
+			$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_END, TRUE, $download_shortcodes);
+			
+			$dlbreadcrumb = $dl->getBreadcrumb(array(LAN_dl_18 => e_SELF,$type));
+			$dl_title = $tp->parseTemplate("{BREADCRUMB=dlbreadcrumb}", TRUE, $download_shortcodes);
+			
+			$ns->tablerender($dl_title, $dl_text);
+			$text = "";
+			// If other files, show in a separate block
+			$dl_title = "";
+			// Cancel title once displayed
+		}// End of subcategory display
+
+		// Now display individual downloads
+		if(!check_class($download_category_class))
+		{
+			$ns->tablerender(LAN_dl_18, "
+			<div style='text-align:center'>
+				" . LAN_dl_3 . "
+			</div>");
+			require_once (FOOTERF);
+			exit ;
+		}
+		if($total_downloads < $view)
+		{
+			$dl_from = 0;
+		}
+
 		$load_template = 'download_template';
-		if (!isset($DOWNLOAD_CAT_PARENT_TABLE)) eval($template_load_core);
-		if(!defined("DL_IMAGESTYLE")){ define("DL_IMAGESTYLE","border:1px solid blue");}
+		if(!isset($DOWNLOAD_LIST_TABLE))
+			eval($template_load_core);
+		if(!defined("DL_IMAGESTYLE"))
+		{
+			define("DL_IMAGESTYLE", "border:1px solid blue");
+		}
 
-	   $download_cat_table_string = "";
-	   $dl_text  = $tp->parseTemplate($DOWNLOAD_CAT_TABLE_PRE, TRUE, $download_shortcodes);
-	   $dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_START, TRUE, $download_shortcodes);
-      foreach($scArray as $dlsubsubrow)
-	   {
-         $dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_SUBSUB_TABLE, TRUE, $download_shortcodes);
-	   }
-	   $dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_END, TRUE, $download_shortcodes);
-      $dlbreadcrumb = $dl->getBreadcrumb(array(LAN_dl_18=>e_SELF, $type));
-	   $dl_title = $tp->parseTemplate("{BREADCRUMB=dlbreadcrumb}", TRUE, $download_shortcodes);
-		$ns->tablerender($dl_title, $dl_text);
-		$text = "";		   // If other files, show in a separate block
-		$dl_title = "";   // Cancel title once displayed
-	}  // End of subcategory display
+		require_once (e_HANDLER . "rate_class.php");
+		$dltdownloads = 0;
 
-   // Now display individual downloads
-	if (!check_class($download_category_class))
-	{
-		$ns->tablerender(LAN_dl_18, "<div style='text-align:center'>".LAN_dl_3."</div>");
-		require_once(FOOTERF);
-		exit;
-	}
+		// $dl_from - first entry to show  (note - can get reset due to reuse of query,
+		// even if values overridden this time)
+		// $view - number of entries per page
+		// $total_downloads - total number of entries matching search criteria
+		$filetotal = $sql->select("download", "*", "download_category='{$id}' AND download_active > 0 AND download_visible IN (" . USERCLASS_LIST . ") ORDER BY {$order} {$sort} LIMIT {$dl_from}, {$view}");
+		
+		if($filetotal)
+		{
+			// Only show list if some files in it
+			$dl_text = $tp->parseTemplate($DOWNLOAD_LIST_TABLE_START, TRUE, $download_shortcodes);
+			
+			$dlft = ($filetotal < $view? $filetotal: $view);
+			while($dlrow = $sql->db_Fetch())
+			{
+				$agreetext = $tp->toHTML($pref['agree_text'], TRUE, 'DESCRIPTION');
+				$current_row = ($current_row)? 0: 1;
+				// Alternating CSS for each row.(backwards compatible)
+				$template = ($current_row == 1)? $DOWNLOAD_LIST_TABLE: str_replace("forumheader3", "forumheader3 forumheader3_alt", $DOWNLOAD_LIST_TABLE);
+				$dl_text .= $tp->parseTemplate($template, TRUE, $download_shortcodes);
+				;
+				$dltdownloads += $dlrow['download_requested'];
+			}
 
-	if ($total_downloads < $view) { $dl_from = 0; }
+			$dl_text .= $tp->parseTemplate($DOWNLOAD_LIST_TABLE_END, TRUE, $download_shortcodes);
 
-	$load_template = 'download_template';
-	if (!isset($DOWNLOAD_LIST_TABLE)) eval($template_load_core);
-   if (!defined("DL_IMAGESTYLE")){ define("DL_IMAGESTYLE","border:1px solid blue");}
+			if($sql->db_Select("download_category", "*", "download_category_id='{$download_category_parent}' "))
+			{
+				$parent = $sql->db_Fetch();
+			}
+			$dlbreadcrumb = $dl->getBreadcrumb(array(
+				LAN_dl_18 => e_SELF,
+				$parent['download_category_name'] => e_SELF . "?list." . $parent['download_category_id'],
+				$type
+			));
+			$dl_title .= $tp->parseTemplate("{BREADCRUMB=dlbreadcrumb}", TRUE, $download_shortcodes);
+			$ns->tablerender($dl_title, $dl_text);
+		}
 
-	require_once(e_HANDLER."rate_class.php");
-	$dltdownloads = 0;
-
-	// $dl_from - first entry to show  (note - can get reset due to reuse of query, even if values overridden this time)
-	// $view - number of entries per page
-	// $total_downloads - total number of entries matching search criteria
-	$filetotal = $sql->db_Select("download", "*", "download_category='{$id}' AND download_active > 0 AND download_visible IN (".USERCLASS_LIST.") ORDER BY {$order} {$sort} LIMIT {$dl_from}, {$view}");
-	if ($filetotal)
-	{  // Only show list if some files in it
-      $dl_text = $tp->parseTemplate($DOWNLOAD_LIST_TABLE_START, TRUE, $download_shortcodes);
-   	$dlft = ($filetotal < $view ? $filetotal : $view);
-   	while ($dlrow = $sql->db_Fetch())
-   	{
-	      $agreetext = $tp->toHTML($pref['agree_text'],TRUE,'DESCRIPTION');
-	      $current_row = ($current_row) ? 0 : 1;  // Alternating CSS for each row.(backwards compatible)
-	      $template = ($current_row == 1) ? $DOWNLOAD_LIST_TABLE : str_replace("forumheader3","forumheader3 forumheader3_alt",$DOWNLOAD_LIST_TABLE);
-   		$dl_text .= $tp->parseTemplate($template,TRUE,$download_shortcodes);;
-   		$dltdownloads += $dlrow['download_requested'];
-   	}
-
-      $dl_text .= $tp->parseTemplate($DOWNLOAD_LIST_TABLE_END, TRUE, $download_shortcodes);
-
-	   if($sql->db_Select("download_category", "*", "download_category_id='{$download_category_parent}' "))
-	   {
-	      $parent = $sql->db_Fetch();
-	   }
-      $dlbreadcrumb = $dl->getBreadcrumb(array(LAN_dl_18=>e_SELF, $parent['download_category_name']=>e_SELF."?list.".$parent['download_category_id'], $type));
-      $dl_title .= $tp->parseTemplate("{BREADCRUMB=dlbreadcrumb}", TRUE, $download_shortcodes);
-		$ns->tablerender($dl_title, $dl_text);
-	}
-
-	if(!isset($DOWNLOAD_LIST_NEXTPREV))
-	{
-      $sc_style['DOWNLOAD_LIST_NEXTPREV']['pre'] = "<div class='nextprev'>";
-		$sc_style['DOWNLOAD_LIST_NEXTPREV']['post'] = "</div>";
-
-    	$DOWNLOAD_LIST_NEXTPREV = "
-			<div style='text-align:center;margin-left:auto;margin-right:auto'>{DOWNLOAD_BACK_TO_CATEGORY_LIST}<br /><br />
-            {DOWNLOAD_LIST_NEXTPREV}
+		if(!isset($DOWNLOAD_LIST_NEXTPREV))
+		{
+			$sc_style['DOWNLOAD_LIST_NEXTPREV']['pre'] = "
+			<div class='nextprev'>
+				";
+						$sc_style['DOWNLOAD_LIST_NEXTPREV']['post'] = "
 			</div>";
-    }
+			
+						$DOWNLOAD_LIST_NEXTPREV = "
+			<div style='text-align:center;margin-left:auto;margin-right:auto'>
+				{DOWNLOAD_BACK_TO_CATEGORY_LIST}
+				<br />
+				<br />
+				{DOWNLOAD_LIST_NEXTPREV}
+			</div>";
+		}
 
-	$nextprev_parms = $total_downloads.",".$view.",".$dl_from.",".e_SELF."?[FROM].list.{$id}.{$view}.{$order}.{$sort}.";
-   echo $tp->parseTemplate($DOWNLOAD_LIST_NEXTPREV, TRUE, $download_shortcodes);
-
-	require_once(FOOTERF);
-	exit;
-} // end of action=="list"
+		$nextprev_parms = $total_downloads . "," . $view . "," . $dl_from . "," . e_SELF . "?[FROM].list.{$id}.{$view}.{$order}.{$sort}.";
+		echo $tp->parseTemplate($DOWNLOAD_LIST_NEXTPREV, TRUE, $download_shortcodes);
+	*/
+		require_once (FOOTERF);
+		exit ;
+	} // end of action=="list"
 
 //====================================================
 //				VIEW
 //====================================================
 if ($action == "view")
 {
+	/*
 	$gen = new convert;
 
 	$highlight_search = FALSE;
@@ -419,7 +511,7 @@ if ($action == "view")
 
 	require_once(FOOTERF);
 	exit;
-
+	*/
 }
 
 //====================================================
@@ -427,6 +519,7 @@ if ($action == "view")
 //====================================================
 if ($action == "report" && check_class($pref['download_reportbroken']))
 {
+/*
     $query = "
 		SELECT d.*, dc.* FROM #download AS d
 		LEFT JOIN #download_category AS dc ON d.download_category = dc.download_category_id
@@ -499,7 +592,8 @@ if ($action == "report" && check_class($pref['download_reportbroken']))
       $dlbreadcrumb = $dl->getBreadcrumb(array(LAN_dl_18=>e_SELF, $dlrow['download_category_name']=>e_SELF."?list.".$dlrow['download_category_id'], $dlrow['download_name']=>e_SELF."?view.".$dlrow['download_id'], LAN_dl_50));
       $dl_title .= $tp->parseTemplate("{BREADCRUMB=dlbreadcrumb}", TRUE, $download_shortcodes);
 		$ns->tablerender($dl_title, $text);
-	}
+	}*/
+
 	require_once(FOOTERF);
 	exit;
 }

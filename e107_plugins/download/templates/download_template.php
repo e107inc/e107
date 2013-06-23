@@ -150,42 +150,13 @@ if(!isset($DOWNLOAD_LIST_TABLE_START))
                   <col style='width:5%;'/>
                </colgroup>
                <tr>
-                  <td colspan='7' style='text-align:center' class='forumheader'>
-                     <span class='defaulttext'>".LAN_dl_37."</span>
-                     <select name='view' class='tbox'>".
-                        ($view == 5 ? "<option selected='selected'>5</option>" : "<option>5</option>").
-                        ($view == 10 ? "<option selected='selected'>10</option>" : "<option>10</option>").
-                        ($view == 15 ? "<option selected='selected'>15</option>" : "<option>15</option>").
-                        ($view == 20 ? "<option selected='selected'>20</option>" : "<option>20</option>").
-                        ($view == 50 ? "<option selected='selected'>50</option>" : "<option>50</option>")."
-                        </select>
-                        &nbsp;
-                        <span class='defaulttext'>".LAN_dl_38."</span>
-                        <select name='order' class='tbox'>".
-                        ($order == "download_datestamp" ? "<option value='download_datestamp' selected='selected'>".LAN_dl_22."</option>" : "<option value='download_datestamp'>".LAN_dl_22."</option>").
-                        ($order == "download_requested" ? "<option value='download_requested' selected='selected'>".LAN_dl_18."</option>" : "<option value='download_requested'>".LAN_dl_77."</option>").
-                        ($order == "download_name" ? "<option value='download_name' selected='selected'>".LAN_dl_23."</option>" : "<option value='download_name'>".LAN_dl_23."</option>").
-                        ($order == "download_author" ? "<option value='download_author' selected='selected'>".LAN_dl_24."</option>" : "<option value='download_author'>".LAN_dl_24."</option>").
-                        ($order == "download_requested" ? "<option value='download_requested' selected='selected'>".LAN_dl_24."</option>" : "<option value='download_requested'>".LAN_dl_12."</option>")."
-                     </select>
-                     &nbsp;
-                     <span class='defaulttext'>".LAN_dl_39."</span>
-                     <select name='sort' class='tbox'>".
-                        ($sort == "ASC" ? "<option value='ASC' selected='selected'>".LAN_dl_25."</option>" : "<option value='ASC'>".LAN_dl_25."</option>").
-                        ($sort == "DESC" ? "<option value='DESC' selected='selected'>".LAN_dl_26."</option>" : "<option value='DESC'>".LAN_dl_26."</option>")."
-                     </select>
-                     &nbsp;
-                     <input class='btn button' type='submit' name='goorder' value='".LAN_dl_27."' />
-                  </td>
-               </tr>
-               <tr>
-                  <th class='fcaption'>".LAN_dl_28."</th>
-                  <th class='fcaption'>".LAN_dl_22."</th>
-                  <th class='fcaption'>".LAN_dl_24."</th>
-                  <th class='fcaption'>".LAN_dl_21."</th>
-                  <th class='fcaption'>".LAN_dl_29."</th>
-                  <th class='fcaption'>".LAN_dl_12."</th>
-                  <th class='fcaption'>".LAN_dl_8."</th>
+                  <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=name}</th>
+                  <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=date}</th>
+                  <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=author}</th>
+                  <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=size}</th>
+                  <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=downloads}</th>
+                  <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=rating}</th>
+                  <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=get}</th>
                </tr>";
 }
 if(!isset($DOWNLOAD_LIST_TABLE))
@@ -261,6 +232,9 @@ $sc_style['DOWNLOAD_VIEW_AUTHORWEBSITE']['post'] = "</td></tr>";
 
 $sc_style['DOWNLOAD_REPORT_LINK']['pre'] = "<tr><td style='width:20%' class='forumheader3' colspan='2'>";
 $sc_style['DOWNLOAD_REPORT_LINK']['post'] = "</td></tr>";
+
+
+
 
 if(!isset($DOWNLOAD_VIEW_TABLE))
 {
@@ -370,6 +344,270 @@ if(!isset($DOWNLOAD_MIRROR_END))
 	</div>
 	";
 }
+
+
+
+
+// v2.x Bootstrap Template.  - Overrides the above templates. 
+
+
+$DOWNLOAD_TEMPLATE['categories']['start'] = "
+         <table class='table table-striped fborder'>
+		      <colgroup>
+		         <col style='width:3%'/>
+		         <col style='width:60%'/>
+		         <col style='width:10%'/>
+		         <col style='width:17%'/>
+		         <col style='width:10%'/>
+		      </colgroup>
+		      <thead>
+               <tr>
+                  <th colspan='2'>".LAN_dl_19."</th>
+                  <th>".LAN_dl_20."</th>
+                  <th>".LAN_dl_21."</th>
+                  <th>".LAN_dl_77."</th>
+               </tr>
+            </thead>
+            <tfoot>
+               <tr>
+                  <td colspan='5'>{DOWNLOAD_CAT_NEWDOWNLOAD_TEXT}</td>
+               </tr>
+               <tr>
+                  <td colspan='5'>{DOWNLOAD_CAT_SEARCH}</td>
+               </tr>
+            </tfoot>
+            <tbody>";
+
+
+$DOWNLOAD_TEMPLATE['categories']['parent'] = "
+               <tr>
+                  <td class='forumheader'>
+                     {DOWNLOAD_CAT_MAIN_ICON}
+                  </td>
+                  <td colspan='4' class='forumheader'>
+                     {DOWNLOAD_CAT_MAIN_NAME}<br/>
+                     <span class='smalltext'>{DOWNLOAD_CAT_MAIN_DESCRIPTION}</span>
+                  </td>
+               </tr>";
+
+$DOWNLOAD_TEMPLATE['categories']['child'] = "
+               <tr>
+                  <td>{DOWNLOAD_CAT_SUB_ICON} </td>
+                  <td>
+                     {DOWNLOAD_CAT_SUB_NEW_ICON} {DOWNLOAD_CAT_SUB_NAME}<br/>
+                     <small>{DOWNLOAD_CAT_SUB_DESCRIPTION}</small>
+                  </td>
+                  <td>{DOWNLOAD_CAT_SUB_COUNT} </td>
+                  <td>{DOWNLOAD_CAT_SUB_SIZE} </td>
+                  <td>{DOWNLOAD_CAT_SUB_DOWNLOADED} </td>
+               </tr>
+               {DOWNLOAD_CAT_SUBSUB}";
+
+
+$DOWNLOAD_TEMPLATE['categories']['subchild'] = "
+	            <tr>
+	               <td>
+	            	   &nbsp;
+	            	</td>
+	            	<td>
+	            		<table class='table'>
+	            		   <tr>
+	            		   	<td>
+	            		   	   {DOWNLOAD_CAT_SUBSUB_ICON}
+	            		   	</td>
+	            		   	<td>
+	            		   		{DOWNLOAD_CAT_SUBSUB_NEW_ICON} {DOWNLOAD_CAT_SUBSUB_NAME}<br/>
+	            		   		<small>
+	            		   		{DOWNLOAD_CAT_SUBSUB_DESCRIPTION}
+	            		   		</small>
+	            		   	</td>
+	            		   </tr>
+	            		</table>
+	            	</td>
+	               <td>{DOWNLOAD_CAT_SUBSUB_COUNT} </td>
+	               <td>{DOWNLOAD_CAT_SUBSUB_SIZE} </td>
+	               <td>{DOWNLOAD_CAT_SUBSUB_DOWNLOADED} </td>
+	            </tr>";
+
+
+$DOWNLOAD_TEMPLATE['categories']['end'] = "
+            </tbody>
+         </table>\n";
+
+
+
+
+
+$DOWNLOAD_WRAPPER['view']['DOWNLOAD_VIEW_AUTHOR_LAN'] 			= "<tr><td style='width:20%' class='forumheader3'>{---}</td>";
+$DOWNLOAD_WRAPPER['view']['DOWNLOAD_VIEW_AUTHOR'] 				= "<td style='width:80%' class='forumheader3'>{---}</td>";
+$DOWNLOAD_WRAPPER['view']['DOWNLOAD_VIEW_AUTHOREMAIL_LAN'] 		= "<tr><td style='width:20%' class='forumheader3'>{---}</td>";
+$DOWNLOAD_WRAPPER['view']['DOWNLOAD_VIEW_AUTHOREMAIL'] 			= "<td style='width:80%' class='forumheader3'>{---}</td>";
+$DOWNLOAD_WRAPPER['view']['DOWNLOAD_VIEW_AUTHORWEBSITE_LAN'] 	= "<tr><td style='width:20%' class='forumheader3'>{---}</td>";
+$DOWNLOAD_WRAPPER['view']['DOWNLOAD_VIEW_AUTHORWEBSITE'] 		= "<td style='width:80%' class='forumheader3'>{---}</td>";
+$DOWNLOAD_WRAPPER['view']['DOWNLOAD_REPORT_LINK'] 				= "<tr><td style='width:20%' class='forumheader3' colspan='2'>{---}</td></tr>";
+
+
+$DOWNLOAD_TEMPLATE['view']['caption'] = LAN_dl_18;
+$DOWNLOAD_TEMPLATE['view']['start'] = "{DOWNLOAD_BREADCRUMB} ";
+
+$DOWNLOAD_TEMPLATE['view']['item'] = "
+      <div style='text-align:center'>
+		   <table class='table table-striped fborder' style='".USER_WIDTH."'>
+		      <colgroup>
+		         <col style='width:30%;'>
+		         <col style='width:70%;'>
+		      </colgroup>
+		      <tr>
+		         <td colspan='2' class='fcaption' style='text-align:left;'>
+		            {DOWNLOAD_VIEW_NAME} {DOWNLOAD_ADMIN_EDIT}
+		         </td>
+		      </tr>
+		      {DOWNLOAD_VIEW_AUTHOR_LAN}
+		      {DOWNLOAD_VIEW_AUTHOR}
+		      {DOWNLOAD_VIEW_AUTHOREMAIL_LAN}
+		      {DOWNLOAD_VIEW_AUTHOREMAIL}
+		      {DOWNLOAD_VIEW_AUTHORWEBSITE_LAN}
+		      {DOWNLOAD_VIEW_AUTHORWEBSITE}
+		      <tr>
+   		      <td class='forumheader3'>{DOWNLOAD_VIEW_DESCRIPTION_LAN}</td>
+	   	      <td class='forumheader3'>{DOWNLOAD_VIEW_DESCRIPTION}</td>
+		      </tr>
+		      <tr>
+		         <td class='forumheader3'>{DOWNLOAD_VIEW_IMAGE_LAN}</td>
+		         <td class='forumheader3'>{DOWNLOAD_VIEW_IMAGE}</td>
+		      </tr>
+		      <tr>
+		         <td class='forumheader3'>{DOWNLOAD_VIEW_FILESIZE_LAN}</td>
+		         <td class='forumheader3'>{DOWNLOAD_VIEW_FILESIZE}</td>
+		      </tr>
+		      <tr>
+	   	      <td class='forumheader3'>{DOWNLOAD_VIEW_DATE_LAN}</td>
+		         <td class='forumheader3'>{DOWNLOAD_VIEW_DATE=long}</td>
+		      </tr>
+		      <tr>
+		         <td class='forumheader3'>{DOWNLOAD_VIEW_REQUESTED_LAN}</td>
+		         <td class='forumheader3'>{DOWNLOAD_VIEW_REQUESTED}</td>
+		      </tr>
+		      <tr>
+   		      <td class='forumheader3'>{DOWNLOAD_VIEW_LINK_LAN}</td>
+	   	      <td class='forumheader3'>{DOWNLOAD_VIEW_LINK}</td>
+		      </tr>
+		      <tr>
+		         <td class='forumheader3'>{DOWNLOAD_VIEW_RATING_LAN}</td>
+		         <td class='forumheader3'>{DOWNLOAD_VIEW_RATING}</td>
+		      </tr>
+			{DOWNLOAD_REPORT_LINK}
+		   </table>
+		   
+		</div>\n";
+
+$DOWNLOAD_TEMPLATE['view']['end'] = "";
+
+
+$DOWNLOAD_TEMPLATE['view']['nextprev'] = "
+<div style='text-align:center'>
+	<table style='".USER_WIDTH."'>
+	<tr>
+	<td style='width:40%;'>{DOWNLOAD_VIEW_PREV}</td>
+	<td style='width:20%; text-align: center;'>{DOWNLOAD_BACK_TO_LIST}</td>
+	<td style='width:40%; text-align: right;'>{DOWNLOAD_VIEW_NEXT}</td>
+	</tr>
+	</table>
+</div>\n";
+
+$DOWNLOAD_TEMPLATE['view']['nextprev'] = '
+    <ul class="pager">
+    <li class="previous">
+    {DOWNLOAD_VIEW_PREV}
+    </li>
+    <li class="next">
+    {DOWNLOAD_VIEW_NEXT}
+    </li>
+    </ul>
+    <div class="text-center">{DOWNLOAD_BACK_TO_LIST}</div>
+';
+
+
+
+
+
+
+
+$DOWNLOAD_TEMPLATE['list']['start'] = "{DOWNLOAD_BREADCRUMB}
+      <div style='text-align:center'>
+         <form method='post' action='".e_SELF."?".e_QUERY."'>
+            <table class='table table-striped fborder' style='".USER_WIDTH."'>\n
+               <colgroup>
+                  <col style='width:35%;'/>
+                  <col style='width:15%;'/>
+                  <col style='width:20%;'/>
+                  <col style='width:10%;'/>
+                  <col style='width:5%;'/>
+                  <col style='width:10%;'/>
+                  <col style='width:5%;'/>
+               </colgroup>
+               <tr>
+                  <th>{DOWNLOAD_LIST_CAPTION=name}</th>
+                  <th>{DOWNLOAD_LIST_CAPTION=datestamp}</th>
+                  <th>{DOWNLOAD_LIST_CAPTION=author}</th>
+                  <th>{DOWNLOAD_LIST_CAPTION=filesize}</th>
+                  <th>{DOWNLOAD_LIST_CAPTION=requested}</th>
+                  <th>{DOWNLOAD_LIST_CAPTION=rating}</th>
+                  <th>{DOWNLOAD_LIST_CAPTION=link}</th>
+               </tr>";
+
+$DOWNLOAD_TEMPLATE['list']['item'] = "
+		         <tr>
+		            <td>
+		               {DOWNLOAD_LIST_NEWICON} {DOWNLOAD_LIST_NAME}
+		            </td>
+		            <td>
+		               {DOWNLOAD_LIST_DATESTAMP}
+		            </td>
+		            <td>
+		               {DOWNLOAD_LIST_AUTHOR}
+		            </td>
+		            <td>
+		               {DOWNLOAD_LIST_FILESIZE}
+		            </td>
+		            <td>
+		               {DOWNLOAD_LIST_REQUESTED}
+		            </td>
+		            <td>
+		               {DOWNLOAD_LIST_RATING}
+		            </td>
+		            <td>
+		               {DOWNLOAD_LIST_LINK}
+		            </td>
+		         </tr>";
+
+$DOWNLOAD_TEMPLATE['list']['end'] = "
+		         <tr>
+		            <td class='forumheader3' colspan='7' style='text-align:right;'>{DOWNLOAD_LIST_TOTAL_AMOUNT} {DOWNLOAD_LIST_TOTAL_FILES}</td>
+		         </tr>
+		      </table>
+		   </form>
+		</div>\n";
+
+		
+$DOWNLOAD_TEMPLATE['list']['nextprev'] = "		
+			<div class='text-center'>
+				{DOWNLOAD_BACK_TO_CATEGORY_LIST}
+				<br />
+				<br />
+				{DOWNLOAD_LIST_NEXTPREV}
+			</div>";
+
+		
+$sc_style['DOWNLOAD_LIST_NEXTPREV']['pre'] = "<div class='nextprev'>";
+$sc_style['DOWNLOAD_LIST_NEXTPREV']['post'] = "	</div>";
+$DOWNLOAD_LIST_NEXTPREV = "
+			<div style='text-align:center;margin-left:auto;margin-right:auto'>
+				{DOWNLOAD_BACK_TO_CATEGORY_LIST}
+				<br />
+				<br />
+				{DOWNLOAD_LIST_NEXTPREV}
+			</div>";
 
 // ##### ------------------------------------------------------------------------------------------
 ?>
