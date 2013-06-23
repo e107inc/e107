@@ -169,7 +169,7 @@ for($cal_c = 1; $cal_c <= $numberdays; $cal_c++)
 				$cal_ins = " title='";
 				foreach ($cal_titles[$cal_c] as $cur_title)
 				{  // New line would be better, but doesn't get displayed
-					$title .= $cal_ins.$cur_title;
+					$title .= $cal_ins.trim($cur_title);
 					$cal_ins = ", ";
 				}
 				$title .= "'";

@@ -647,7 +647,12 @@ class event_calendar_shortcodes
 		}
 		if($this->event['startofevent'])
 		{
-		  return "<b><a title='{$this->event['event_title']}' href='".e_PLUGIN_ABS.'calendar_menu/event.php?'.$linkut.'.event.'.$this->event['event_id']."'><span class='mediumtext'>".$show_title."</span></a></b>";
+			$eTitle = $this->event['event_title'];
+			if ($this->event['event_allday'] == 0)
+			{
+				$eTitle .= ' ('.$this->ecalClass->time_string($this->event['event_start']).')';
+			}
+			return "<b><a title='{$eTitle}' href='".e_PLUGIN_ABS.'calendar_menu/event.php?'.$linkut.'.event.'.$this->event['event_id']."'><span class='mediumtext'>".$show_title."</span></a></b>";
 		}
 		else
 		{

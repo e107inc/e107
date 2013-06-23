@@ -35,25 +35,25 @@ if (!$e107->isInstalled('calendar_menu'))
 
 if (isset($_POST['viewallevents']))
 {  // Triggered from NAV_BUT_ALLEVENTS
-    Header('Location: '.e_PLUGIN.'calendar_menu/calendar.php?'.$_POST['enter_new_val']);
+    Header('Location: '.e_PLUGIN_ABS.'calendar_menu/calendar.php?'.$_POST['enter_new_val']);
 	exit();
 }
 
 if (isset($_POST['doit']))
 {  // Triggered from NAV_BUT_ENTEREVENT
-    Header('Location: '.e_PLUGIN.'calendar_menu/event.php?ne.'.$_POST['enter_new_val']);
+    Header('Location: '.e_PLUGIN_ABS.'calendar_menu/event.php?ne.'.$_POST['enter_new_val']);
 	exit();
 }
 
 if (isset($_POST['subs']))
 {
-    Header('Location: '.e_PLUGIN.'calendar_menu/subscribe.php');
+    Header('Location: '.e_PLUGIN_ABS.'calendar_menu/subscribe.php');
 	exit();
 }
 
 if (isset($_POST['printlists']))
 {
-    Header("Location: " . e_PLUGIN . 'calendar_menu/ec_pf_page.php');
+    Header('Location: '.e_PLUGIN_ABS.'calendar_menu/ec_pf_page.php');
 	exit();
 } 
 
