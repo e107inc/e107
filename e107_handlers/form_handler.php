@@ -1570,6 +1570,43 @@ class e_form
 		
 	}
 
+	/**
+	 * Render a Breadcrumb in Bootstrap format. 
+	 * @param $array 
+	 */
+	function breadcrumb($array)
+	{
+		if(!is_array($array)){ return; }
+		
+		$text = '<ul class="breadcrumb">
+			<li>';
+	
+		foreach($array as $val)
+		{
+			$ret = "";
+			$ret .= vartrue($val['url']) ? "<a href='".$val['url']."'>" : "";			
+			$ret .= vartrue($val['text'],'');
+			$ret .= vartrue($val['url']) ? "</a>" : "";
+			
+			if($ret != '')
+			{
+				$opt[] = $ret;
+			}	
+		}
+	
+		$text .= implode("<span class='divider'>/</span></li><li>",$opt); 
+	
+		$text .= "</li></ul>";
+	
+		return $text;	
+
+	}
+	
+	
+	
+	
+	
+	
 	
 	/**
 	 * Admin Button - for front-end, use button(); 
