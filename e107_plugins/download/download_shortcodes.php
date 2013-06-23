@@ -41,15 +41,26 @@ class download_shortcodes extends e_shortcode
 	{
 		$tp = e107::getParser();
 		$frm = e107::getForm();
-		
-		$frm->select();
-		
+				
 		global $dlrow;
-			  	
+					  	
 		$breadcrumb 	= array();
-		$breadcrumb[]	= array('text' => LAN_dl_18,						'url' => e_SELF);
-		$breadcrumb[]	= array('text' => $dlrow['download_category_name'],	'url' => e_SELF."?action=list&id=".$dlrow['download_category_id']);
-		$breadcrumb[]	= array('text' => $dlrow['download_name'],			'url' => null);
+
+		switch ($this->qry['action']) 
+		{
+			case 'mirror':
+				$breadcrumb[]	= array('text' => LAN_dl_18,						'url' => e_SELF);
+				$breadcrumb[]	= array('text' => $dlrow['download_category_name'],	'url' => e_SELF."?action=list&id=".$dlrow['download_category_id']);
+				$breadcrumb[]	= array('text' => $dlrow['download_name'],			'url' => e_SELF."?action=view&id=".$dlrow['download_id']);
+				$breadcrumb[]	= array('text' => LAN_dl_67,						'url' => null);
+			break;
+			
+			default:
+				$breadcrumb[]	= array('text' => LAN_dl_18,						'url' => e_SELF);
+				$breadcrumb[]	= array('text' => $dlrow['download_category_name'],	'url' => e_SELF."?action=list&id=".$dlrow['download_category_id']);
+				$breadcrumb[]	= array('text' => $dlrow['download_name'],			'url' => null);
+			break;
+		}
 	
 		return $frm->breadcrumb($breadcrumb);
 		
