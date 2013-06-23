@@ -76,7 +76,7 @@ $ev_fields = array(
 //--------------------------------------
 // Event to add or update
 //--------------------------------------
-if ((isset($_POST['ne_insert']) || isset($_POST['ne_update'])) && ($cal_super  || check_class($ecal_class->pref['eventpost_admin'])))
+if ((isset($_POST['ne_insert']) || isset($_POST['ne_update'])) && ($cal_super  || check_class($pref['eventpost_admin'])))
 {  
 	$ev_start = $ecal_class->make_date($_POST['ne_hour'], $_POST['ne_minute'],$_POST['start_date']);
 	if (($_POST['ne_event'] == '') || !isset($_POST['qs']))
