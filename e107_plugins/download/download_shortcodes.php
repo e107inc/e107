@@ -16,25 +16,46 @@
 
 if (!defined('e107_INIT')) { exit; }
 require_once(e_HANDLER.'shortcode_handler.php');
-register_shortcode('download_shortcodes', true);
-initShortcodeClass('download_shortcodes');
+//register_shortcode('download_shortcodes', true);
+//initShortcodeClass('download_shortcodes');
 
 /**
  * download_shortcodes
  */
-class download_shortcodes
+class download_shortcodes extends e_shortcode
 {
 	var $e107;
 	var $postInfo;
+	var $qry;
 
    /**
     * download_shortcodes constructor
     */
-	function download_shortcodes()
+	function __construct()
 	{
 		$this->e107 = e107::getInstance();
 		$this->postInfo = array();
 	}
+	
+	function sc_download_breadcrumb($parm='')
+	{
+		$tp = e107::getParser();
+		$frm = e107::getForm();
+		
+		$frm->select();
+		
+		global $dlrow;
+			  	
+		$breadcrumb 	= array();
+		$breadcrumb[]	= array('text' => LAN_dl_18,						'url' => e_SELF);
+		$breadcrumb[]	= array('text' => $dlrow['download_category_name'],	'url' => e_SELF."?action=list&id=".$dlrow['download_category_id']);
+		$breadcrumb[]	= array('text' => $dlrow['download_name'],			'url' => null);
+	
+		return $frm->breadcrumb($breadcrumb);
+		
+	}
+		
+	
 	// Category ************************************************************************************
    function sc_download_cat_main_name() {
       global $tp, $dlrow;
@@ -54,7 +75,7 @@ class download_shortcodes
       global $tp, $dlsubrow;
       if ($dlsubrow['d_count'])
       {
-         return "<a href='".e_PLUGIN."download/download.php?list.".$dlsubrow['download_category_id']."'>".$tp->toHTML($dlsubrow['download_category_name'], FALSE, 'TITLE')."</a>";
+         return "<a href='".e_PLUGIN."download/download.php?action=list&id=".$dlsubrow['download_category_id']."'>".$tp->toHTML($dlsubrow['download_category_name'], FALSE, 'TITLE')."</a>";
       }
       else
       {
@@ -85,39 +106,105 @@ class download_shortcodes
       global $dlsubrow;
       return intval($dlsubrow['d_requests']);
    }
+   
+   
 	// Sub-Sub-Category ****************************************************************************
+	
+	
    function sc_download_cat_subsub_name() {
       global $tp, $dlsubsubrow;
       if ($dlsubsubrow['d_count'])
       {
-         return "<a href='".e_PLUGIN."download/download.php?list.".$dlsubsubrow['download_category_id']."'>".$tp->toHTML($dlsubsubrow['download_category_name'], FALSE, 'TITLE')."</a>";
+         return "<a href='".e_PLUGIN."download/download.php?action=list&id=".$dlsubsubrow['download_category_id']."'>".$tp->toHTML($dlsubsubrow['download_category_name'], FALSE, 'TITLE')."</a>";
       }
       else
       {
          return $tp->toHTML($dlsubsubrow['download_category_name'], FALSE, 'TITLE');
       }
    }
+   
    function sc_download_cat_subsub_description() {
       global $tp, $dlsubsubrow;
       return $tp->toHTML($dlsubsubrow['download_category_description'], TRUE, 'DESCRIPTION');
    }
+   
    function sc_download_cat_subsub_icon() {
       global $dlsubsubrow;
       return $this->_sc_cat_icons($dlsubsubrow['download_category_icon'], $dlsubsubrow['d_count'], $dlsubsubrow['download_category_name']);
    }
+   
    function sc_download_cat_subsub_count() {
       global $dlsubsubrow;
       return $dlsubsubrow['d_count'];
    }
+   
    function sc_download_cat_subsub_size() {
       global $e107, $dlsubsubrow;
       return $this->e107->parseMemorySize($dlsubsubrow['d_size']);
    }
+   
    function sc_download_cat_subsub_downloaded() {
       global $dlsubsubrow;
       return intval($dlsubsubrow['d_requests']);
    }
+
+
 	// List ****************************************************************************************
+
+	
+	function sc_download_list_caption($parm='')
+	{
+	
+		$qry = $this->qry;
+		
+		$qry['sort'] = ($qry['sort'] == 'asc') ? 'desc' : 'asc'; // reverse. 
+
+		switch ($parm) 
+		{
+			case 'name':
+				$qry['order'] = 'name';
+				$text = LAN_dl_28;
+			break;
+
+			case 'datestamp':
+				$qry['order'] = 'datestamp';
+				$text = LAN_dl_22;
+			break;
+			
+			case 'author':
+				$qry['order'] = 'author';
+				$text = LAN_dl_24;
+			break;
+				
+			case 'filesize':
+				$qry['order'] = 'filesize';
+				$text = LAN_dl_21;
+			break;
+
+			case 'requested':
+				$qry['order'] = 'requested';
+				$text = LAN_dl_29;
+			break;
+
+			case 'rating':
+				$text = LAN_dl_12;
+			break;
+				
+			case 'link':
+				$text = LAN_dl_8;
+			break;
+							
+			default:
+				$text = "Missing LAN Column"; // debug. 
+			break;
+		}
+
+
+		return "<a href='".e_REQUEST_SELF."?".http_build_query($qry)."'>".$text."</a>" ;
+	}	
+	
+		
+	
    function sc_download_list_name()
    {
       global $dlrow,$tp,$pref,$parm;
@@ -134,23 +221,27 @@ class download_shortcodes
       	$text .= $tp->toHTML($dlrow['download_name'], FALSE, 'TITLE')."</a>";
       	return $text;
       }
-      return  "<a href='".e_PLUGIN."download/download.php?view.".$dlrow['download_id']."'>".$tp->toHTML($dlrow['download_name'],TRUE,'LINKTEXT')."</a>";
+      return  "<a href='".e_PLUGIN."download/download.php?action=view&id=".$dlrow['download_id']."'>".$tp->toHTML($dlrow['download_name'],TRUE,'LINKTEXT')."</a>";
    }
+
    function sc_download_list_author()
    {
       global $dlrow;
       return $dlrow['download_author'];
    }
+   
    function sc_download_list_requested()
    {
       global $dlrow;
       return $dlrow['download_requested'];
    }
+   
    function sc_download_list_newicon()
    {
       global $dlrow;
       return (USER && $dlrow['download_datestamp'] > USERLV ? "<img src='".IMAGE_NEW."' alt='*' style='vertical-align:middle' />" : "");
    }
+   
    function sc_download_list_recenticon()
    {
       global $dlrow, $pref;
@@ -167,8 +258,8 @@ class download_shortcodes
    function sc_download_list_datestamp()
    {
       global $dlrow;
-      $gen = new convert;
-      return $gen->convert_date($dlrow['download_datestamp'], "short");
+      $tp = e107::getParser();
+      return $tp->toDate($dlrow['download_datestamp'], "short");
    }
    
    function sc_download_list_thumb()
@@ -178,7 +269,7 @@ class download_shortcodes
 	  
       $img = ($dlrow['download_thumb']) ? "<img src='".$tp->replaceConstants($dlrow['download_thumb'])."' alt='*' style='".DL_IMAGESTYLE."' />" : "";
       if ($parm == "link" && $dlrow['download_thumb']){
-      	return "<a href='".e_PLUGIN."download/download.php?view.".$dlrow['download_id']."'>".$img."</a>";
+      	return "<a href='".e_PLUGIN."download/download.php?action=view&id=".$dlrow['download_id']."'>".$img."</a>";
       }
       else
       {
@@ -209,6 +300,7 @@ class download_shortcodes
      		return ($ratearray[2] ? "{$ratearray[1]}.{$ratearray[2]}/{$ratearray[0]}" : "{$ratearray[1]}/{$ratearray[0]}");
      	}
    }
+   
    function sc_download_list_link()
    {
       global $tp, $dlrow, $pref, $parm;
@@ -230,7 +322,7 @@ class download_shortcodes
    {
       global $dlrow,$parm;
       if ($parm == "link"){
-      	return "<a href='".e_PLUGIN."download/download.php?view.".$dlrow['download_id']."' >".$img."</a>";
+      	return "<a href='".e_PLUGIN."download/download.php?action=view&id=".$dlrow['download_id']."' >".$img."</a>";
       }
       else
       {
@@ -248,7 +340,7 @@ class download_shortcodes
 		
 		if($parm == "link" && $dlrow['download_image'])
 		{
-			return "<a href='".e_BASE."download.php?view.".$dlrow['download_id']."'>".$img."</a>";
+			return "<a href='".e_BASE."download.php?action=view&id=".$dlrow['download_id']."'>".$img."</a>";
 		}
 		else
 		{
@@ -262,21 +354,23 @@ class download_shortcodes
      	global $nextprev_parms,$tp;
      	return $tp->parseTemplate("{NEXTPREV={$nextprev_parms}}");
    }
+
    function sc_download_list_total_amount() {
       global $dltdownloads;
-      return $dltdownloads." ".LAN_dl_16;
+      return intval($dltdownloads)." ".LAN_dl_16;
    }
+   
    function sc_download_list_total_files() {
       global $dlft;
-      return $dlft." ".LAN_dl_17;
+      return intval($dlft)." ".LAN_dl_17;
    }
    
    
-   
-   
-   
+  
    
 	// View ****************************************************************************************
+	
+	
    function sc_download_view_id()
    {
       global $dlrow;
@@ -305,7 +399,7 @@ class download_shortcodes
    function sc_download_view_name()
    {
       global $dlrow,$parm;
-      $link['view'] = "<a href='".e_PLUGIN."download/download.php?view.".$dlrow['download_id']."'>".$dlrow['download_name']."</a>";
+      $link['view'] = "<a href='".e_PLUGIN."download/download.php?action=view&id=".$dlrow['download_id']."'>".$dlrow['download_name']."</a>";
       $link['request'] = "<a href='".e_BASE."request.php?".$dlrow['download_id']."' title='".LAN_dl_46."'>".$dlrow['download_name']."</a>";
       if ($parm){
       	return $link[$parm];
@@ -351,7 +445,8 @@ class download_shortcodes
    function sc_download_view_date()
    {
       global $gen,$dlrow,$parm;
-      return ($dlrow['download_datestamp']) ? $gen->convert_date($dlrow['download_datestamp'], $parm) : "";
+	  $tp = e107::getParser();
+      return ($dlrow['download_datestamp']) ? $tp->toDate($dlrow['download_datestamp'], $parm) : "";
    }
    function sc_download_view_date_short()
    {
@@ -460,8 +555,9 @@ class download_shortcodes
    function sc_download_report_link()
    {
       global $dlrow,$pref;
-      return (check_class($pref['download_reportbroken'])) ? "<a href='".e_PLUGIN."download/download.php?report.".$dlrow['download_id']."'>".LAN_dl_45."</a>" : "";
+      return (check_class($pref['download_reportbroken'])) ? "<a href='".e_PLUGIN."download/download.php?action=report&id=".$dlrow['download_id']."'>".LAN_dl_45."</a>" : "";
    }
+   
    function sc_download_view_caption()
    {
       global $dlrow;
@@ -469,113 +565,151 @@ class download_shortcodes
      	$text .= ($dlrow['download_category_description']) ? " [ ".$dlrow['download_category_description']." ]" : "";
       return $text;
    }
+   
+   
 	// Mirror **************************************************************************************
-	function sc_download_mirror_request() {
+	
+	function sc_download_mirror_request() 
+	{
 	   global $dlrow;
 	   return $dlrow['download_name'];
 	}
-	function sc_download_mirror_request_icon() {
+	
+	function sc_download_mirror_request_icon() 
+	{
 	   global $dlrow;
 	   $tp = e107::getParser();
       return ($dlrow['download_thumb'] ? "<img src='".$tp->replaceConstants($dlrow['download_thumb'])."' alt='*'/>" : "");
 	}
-	function sc_download_mirror_name() {
+	
+	function sc_download_mirror_name() 
+	{
 	   global $dlmirror;
       return "<a href='{$dlmirror['mirror_url']}' rel='external'>".$dlmirror['mirror_name']."</a>";
 	}
-	function sc_download_mirror_image() {
+	
+	function sc_download_mirror_image() 
+	{
 	   global $dlrow, $dlmirror;
 	   $tp = e107::getParser();
       return ($dlmirror['mirror_image'] ? "<a href='{$dlmirror['mirror_url']}' rel='external'><img src='".$tp->replaceConstants($dlmirror['mirror_image'])."' alt='*'/></a>" : "");
 	}
+	
 	function sc_download_mirror_location() {
 	   global $dlmirror;
       return ($dlmirror['mirror_location'] ? $dlmirror['mirror_location'] : "");
 	}
-	function sc_download_mirror_description() {
+	
+	function sc_download_mirror_description() 
+	{
 	   global $dlmirror,$tp;
       return ($dlmirror['mirror_description'] ? $tp->toHTML($dlmirror['mirror_description'], TRUE) : "");
 	}
-	function sc_download_mirror_filesize() {
+	
+	function sc_download_mirror_filesize() 
+	{
 	   global $e107, $dlmirrorfile;
       return $e107->parseMemorySize($dlmirrorfile[3]);
 	}
-	function sc_download_mirror_link() {
+	
+	function sc_download_mirror_link() 
+	{
 	   global $dlrow, $dlmirrorfile, $tp, $pref;
     	$click = " onclick='return confirm(\"".$tp->toJS($tp->toHTML($pref['agree_text'],FALSE,'DESCRIPTION'))."\")'";
       return "<a href='".e_PLUGIN."download/download.php?mirror.{$dlrow['download_id']}.{$dlmirrorfile[0]}' title='".LAN_dl_32."'{$click}>
               <img src='".IMAGE_DOWNLOAD."' alt='*' title='".LAN_dl_32."' /></a>";
 	}
-	function sc_download_mirror_requests() {
+	
+	function sc_download_mirror_requests() 
+	{
 	   global $dlmirrorfile;
       return (ADMIN ? LAN_dl_73.$dlmirrorfile[2] : "");
 	}
-	function sc_download_total_mirror_requests() {
+	
+	function sc_download_total_mirror_requests() 
+	{
 	   global $dlmirror;
 	   return (ADMIN ? LAN_dl_74.$dlmirror['mirror_count'] : "");
 	}
+	
+	
    // --------- Download View Lans -----------------------------
+   
    function sc_download_view_author_lan()
    {
       global $dlrow;
       return ($dlrow['download_author']) ? LAN_dl_24 : "";
    }
+   
    function sc_download_view_authoremail_lan()
    {
       global $dlrow;
       return ($dlrow['download_author_email']) ? LAN_dl_30 : "";
    }
+   
    function sc_download_view_authorwebsite_lan()
    {
       global $dlrow;
       return ($dlrow['download_author_website']) ? LAN_dl_31 : "";
    }
+   
    function sc_download_view_date_lan()
    {
       global $dlrow;
       return ($dlrow['download_datestamp']) ? LAN_dl_22 : "";
    }
+   
    function sc_download_view_image_lan()
    {
       return LAN_dl_11;
    }
+   
    function sc_download_view_requested()
    {
       global $dlrow;
       return $dlrow['download_requested'];
    }
+   
    function sc_download_view_rating_lan()
    {
       return LAN_dl_12;
    }
+   
    function sc_download_view_filesize_lan()
    {
       return LAN_dl_10;
    }
+   
    function sc_download_view_description_lan()
    {
       return LAN_dl_7;
    }
+   
    function sc_download_view_requested_lan()
    {
       return LAN_dl_77;
    }
+   
    function sc_download_view_link_lan()
    {
       return LAN_dl_32;
    }
+   
+   
       //  -----------  Download View : Previous and Next  ---------------
+      
    function sc_download_view_prev()
    {
       global $dlrow,$sql;
       	$dlrow_id = intval($dlrow['download_id']);
       	if ($sql->db_Select("download", "*", "download_category='".intval($dlrow['download_category_id'])."' AND download_id < {$dlrow_id} AND download_active > 0 && download_visible IN (".USERCLASS_LIST.") ORDER BY download_datestamp DESC LIMIT 1")) {
       		$dlrowrow = $sql->db_Fetch();
-      		return "<a href='".e_PLUGIN."download/download.php?view.".$dlrowrow['download_id']."'>&lt;&lt; ".LAN_dl_33." [".$dlrowrow['download_name']."]</a>\n";
+      		return "<a href='".e_PLUGIN."download/download.php?action=view&id=".$dlrowrow['download_id']."'>&lt;&lt; ".LAN_dl_33." [".$dlrowrow['download_name']."]</a>\n";
       	} else {
       		return "&nbsp;";
       	}
    }
+   
    function sc_download_view_next()
    {
       global $dlrow,$sql;
@@ -583,25 +717,30 @@ class download_shortcodes
       	if ($sql->db_Select("download", "*", "download_category='".intval($dlrow['download_category_id'])."' AND download_id > {$dlrow_id} AND download_active > 0 && download_visible IN (".USERCLASS_LIST.") ORDER BY download_datestamp ASC LIMIT 1")) {
       		$dlrowrow = $sql->db_Fetch();
       		 extract($dlrowrow);
-      		return "<a href='".e_PLUGIN."download/download.php?view.".$dlrowrow['download_id']."'>[".$dlrowrow['download_name']."] ".LAN_dl_34." &gt;&gt;</a>\n";
+      		return "<a href='".e_PLUGIN."download/download.php?action=view&id=".$dlrowrow['download_id']."'>[".$dlrowrow['download_name']."] ".LAN_dl_34." &gt;&gt;</a>\n";
       	} else {
       		return "&nbsp;";
       	}
    }
+   
    function sc_download_back_to_list()
    {
       global $dlrow;
-      return "<a href='".e_PLUGIN."download/download.php?list.".$dlrow['download_category']."'>".LAN_dl_35."</a>";
+      return "<a class='btn' href='".e_PLUGIN."download/download.php?action=list&id=".$dlrow['download_category']."'>".LAN_dl_35."</a>";
    }
+   
    function sc_download_back_to_category_list()
    {
-      	return "<a href='".e_SELF."'>".LAN_dl_9."</a>";
+      	return "<a class='btn btn-default' href='".e_SELF."'>".LAN_dl_9."</a>";
    }
+   
+   
    // Misc stuff ---------------------------------------------------------------------------------
    function sc_download_cat_newdownload_text()
    {
       return "<img src='".IMAGE_NEW."' alt='*' style='vertical-align:middle' /> ".LAN_dl_36;
    }
+   
    function sc_download_cat_search()
    {
       return "<form class='form-search' method='get' action='".e_BASE."search.php'>
@@ -612,6 +751,9 @@ class download_shortcodes
       		  </p>
       		  </form>";
    }
+   
+   
+   
 	/**
 	 * @private
 	 */
@@ -622,6 +764,8 @@ class download_shortcodes
 	   if (!$ret[FALSE]) $ret[FALSE] = $ret[TRUE];
 		return "<img src='".e_IMAGE."icons/{$ret[($count!=0)]}' alt='*'/>";
 	}
+	
+	
    function _check_new_download($last_val)
 	{
 		if (USER && ($last_val > USERLV))

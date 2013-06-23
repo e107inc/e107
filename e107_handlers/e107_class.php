@@ -2047,6 +2047,12 @@ class e107
 		}
 		$reg_path = 'plugin/'.$plug_name.'/templates/'.$id.($override ? '/ext' : '');
 		$path = self::templatePath($plug_name, $id, $override);
+		
+		if(ADMIN && E107_DBG_INCLUDES)
+		{
+			e107::getMessage()->addDebug( "template path=".$path );	
+		}
+		
 		$id = str_replace('/', '_', $id);
 		$ret = self::_getTemplate($id, $key, $reg_path, $path, $info);
 		if(!$merge || !$override || !is_array($ret))
@@ -2057,6 +2063,10 @@ class e107
 		// merge
 		$reg_path = 'plugin/'.$plug_name.'/templates/'.$id;
 		$path = self::templatePath($plug_name, $id, false);
+		
+	
+		
+		
 		$id = str_replace('/', '_', $id);
 		$ret_plug = self::_getTemplate($id, $key, $reg_path, $path, $info);
 
