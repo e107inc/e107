@@ -29,7 +29,7 @@ class theme_shortcodes extends e_shortcode
 			<li class="dropdown">
 				<a class="dropdown-toggle" href="#" data-toggle="dropdown">Sign In <strong class="caret"></strong></a>
 				<div class="dropdown-menu" style="padding: 15px; padding-bottom: 0px;">
-				<form method="post" action="'.e_REQUEST_HTTP.'" accept-charset="UTF-8">
+				<form method="post" onsubmit="hashLoginPassword(this)" action="'.e_REQUEST_HTTP.'" accept-charset="UTF-8">
 				{LM_USERNAME_INPUT}
 				{LM_PASSWORD_INPUT}
 				<input style="float: left; margin-right: 10px;" type="checkbox" name="autologin" id="autologin" value="1">
