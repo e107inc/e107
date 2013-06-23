@@ -590,16 +590,112 @@ class download
 	}
 				
 			
-	//TODO 
+
 	function renderMirror()
 	{
 		
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+		$ns = e107::getRender();
+		
+		if(deftrue('BOOTSTRAP')) // v2.x 
+		{
+			$template = e107::getTemplate('download','download','mirror');
+			
+			$DOWNLOAD_MIRROR_START 		= $template['start'];	
+			$DOWNLOAD_MIRROR	 		= $template['item'];
+			$DOWNLOAD_MIRROR_END 		= $template['end'];		
+
+		}
+		else // Legacy v1.x 
+		{
+			$template_name = 'download_template.php';	
+			
+			if (is_readable(THEME."templates/".$template_name))
+			{
+				require_once(THEME."templates/".$template_name);
+			}
+			elseif (is_readable(THEME.$template_name))
+			{
+				require_once(THEME.$template_name);
+			}
+			else
+			{
+				require_once(e_PLUGIN."download/templates/".$template_name);
+			}	
+		
+		}
+		$download_shortcodes 		= new download_shortcodes;
+		$download_shortcodes->qry 	= $this->qry;
+		
+	//	$load_template = 'download_template';
+	//	if (!isset($DOWNLOAD_MIRROR_START)) eval($template_load_core);
+	
+		$sql->select("download_mirror");
+		$mirrorList = $sql->db_getList("ALL", 0, 200, "mirror_id");
+	
+	    $query = "
+			SELECT d.*, dc.* FROM #download AS d
+			LEFT JOIN #download_category AS dc ON d.download_category = dc.download_category_id
+			WHERE d.download_id = ".$this->qry['id']."
+			LIMIT 1";
+	
+		global $dlmirrorfile, $dlrow, $dlmirror;	
+	
+	
+		if($sql->gen($query))
+		{
+			$dlrow = $sql->fetch();
+			
+			$array = explode(chr(1), $dlrow['download_mirror']);
+			
+			if (2 == varset($pref['mirror_order']))
+			{
+	         // Order by name, sort array manually
+				usort($array, "sort_download_mirror_order");
+			}
+	      //elseif (1 == varset($pref['mirror_order']))
+	      //{
+	      //   // Order by ID  - do nothing order is as stored in DB
+	      //}
+			elseif (0 == varset($pref['mirror_order'], 0))
+			{
+				   // Shuffle the mirror list into a random order
+				   $c = count($array);
+				   for ($i=1; $i<$c; $i++)
+				   {
+				     $d = mt_rand(0, $i);
+				     $tmp = $array[$i];
+				     $array[$i] = $array[$d];
+				     $array[$d] = $tmp;
+				   }
+			}
+	
+		   	$dl_text = $tp->parseTemplate($DOWNLOAD_MIRROR_START, TRUE, $download_shortcodes);
+			$download_mirror = 1;
+				
+		
+				
+			foreach($array as $mirrorstring)
+			{
+				if($mirrorstring)
+				{
+					$dlmirrorfile = explode(",", $mirrorstring);
+					$dlmirror = $mirrorList[$dlmirrorfile[0]];
+					
+					$dl_text .= $tp->parseTemplate($DOWNLOAD_MIRROR, TRUE, $download_shortcodes);
+				}
+			}
+			   
+			$dl_text .= $tp->parseTemplate($DOWNLOAD_MIRROR_END, TRUE, $download_shortcodes);
+			
+		   	$ns->tablerender(LAN_dl_18, $dl_text);	
 		
 		
+		}
+
+
 	}
-
-
-
 
 
 

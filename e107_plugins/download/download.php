@@ -166,11 +166,13 @@ else
    }
 }
 
+/*
 if (isset($order) && !in_array($order,$order_options)) unset($order);
 if (isset($sort)  && !in_array($sort,$sort_options)) unset($sort);
 if (!isset($order))	$order = vartrue($pref['download_order'],'download_datestamp');
 if (!isset($sort))	$sort =  vartrue($pref['download_sort'], 'DESC');
 if (!isset($view))	$view =  vartrue($pref['download_view'], '10');
+*/
 
 //--------------------------------------------------
 //			GENERATE DISPLAY TEXT
@@ -254,7 +256,6 @@ if (isset($_POST['commentsubmit']))
 
 require_once (HEADERF);
 
-
 	if($action == 'maincats')
 	{
 		$dl->renderCategories();
@@ -274,6 +275,11 @@ require_once (HEADERF);
 	{
 		$dl->renderReport();		
 	}
+	
+	if($action == 'mirror')
+	{
+		$dl->renderMirror();	
+	}
 
 require_once (FOOTERF);
 exit ;
@@ -288,14 +294,16 @@ exit ;
  //LIST//====================================================
 	if($action == "list")
 	{
-		$total_downloads = $sql->db_Count("download", "(*)", "WHERE download_category = '{$id}' AND download_active > 0 AND download_visible REGEXP '" . e_CLASS_REGEXP . "'");
-
-		require_once (HEADERF);
-		echo "WOWO";
-		$dl->list();
+	
 
 		/* SHOW SUBCATS ... */
 	/*
+	 * 
+	 * 
+	  	$total_downloads = $sql->db_Count("download", "(*)", "WHERE download_category = '{$id}' AND download_active > 0 AND download_visible REGEXP '" . e_CLASS_REGEXP . "'");
+
+		require_once (HEADERF);
+	 
 		if($sql->db_Select("download_category", "download_category_id", "download_category_parent='{$id}' "))
 		{
 			//  there are subcats - display them ... 
@@ -601,10 +609,14 @@ if ($action == "report" && check_class($pref['download_reportbroken']))
 //====================================================
 //				MIRRORS
 //====================================================
+
+//TODO Move into download_class.php 
+
 if($action == "mirror")
 {
-	require_once(HEADERF);
+	//require_once(HEADERF);
 
+/*
 	$load_template = 'download_template';
 	if (!isset($DOWNLOAD_MIRROR_START)) eval($template_load_core);
 
@@ -657,9 +669,10 @@ if($action == "mirror")
 	   $dl_text .= $tp->parseTemplate($DOWNLOAD_MIRROR_END, TRUE, $download_shortcodes);
       $dlbreadcrumb = $dl->getBreadcrumb(array(LAN_dl_18=>e_SELF, $dlrow['download_category_name']=>e_SELF."?list.".$dlrow['download_category_id'], $dlrow['download_name']=>e_SELF."?view.".$dlrow['download_id'], LAN_dl_67));
       $dl_title .= $tp->parseTemplate("{BREADCRUMB=dlbreadcrumb}", TRUE, $download_shortcodes);
-   	$ns->tablerender($dl_title, $dl_text);
-		require_once(FOOTERF);
-	}
+   	$ns->tablerender($dl_title, $dl_text);*/
+
+	//	require_once(FOOTERF);
+	//}
 }
 
 function sort_download_mirror_order($a, $b)
