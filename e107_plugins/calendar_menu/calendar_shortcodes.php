@@ -153,8 +153,8 @@ SC_BEGIN EC_SHOWEVENT_INDICAT
 SC_END
 
 SC_BEGIN EC_SHOWEVENT_HEADING
-	global $ev, $datearray, $c, $tp;
-	$linkut = mktime(0 , 0 , 0 , $datearray['mon'], $c, $datearray['year']);
+	global $ev, $datearray, $c, $tp, $ecal_class;
+	$linkut = gmmktime(0 , 0 , 0 , $datearray['mon'], $c, $datearray['year']);
 	$show_title = $tp->toHTML($ev['event_title'],FALSE,'TITLE');	// Remove entities in case need to truncate
 	if(isset($ev['fulltopic']) && !$ev['fulltopic'])
 	{
@@ -162,7 +162,12 @@ SC_BEGIN EC_SHOWEVENT_HEADING
 	}
 	if($ev['startofevent'])
 	{
-	  return "<b><a title='{$ev['event_title']}' href='".e_PLUGIN."calendar_menu/event.php?".$linkut.".event.".$ev['event_id']."'><span class='mediumtext'>".$show_title."</span></a></b>";
+		$eTitle = $ev['event_title'];
+		if ($ev['event_allday'] == 0)
+		{
+			$eTitle .= ' ('.$ecal_class->time_string($ev['event_start']).')';
+		}
+	  return "<b><a title='{$eTitle}' href='".e_PLUGIN."calendar_menu/event.php?".$linkut.".event.".$ev['event_id']."'><span class='mediumtext'>".$show_title."</span></a></b>";
 	}
 	else
 	{

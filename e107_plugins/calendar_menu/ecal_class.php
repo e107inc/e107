@@ -399,10 +399,12 @@ class ecal_class
 	/**
 	 *	Implements a version of getdate that expects a GMT date and doesn't do TZ/DST adjustments
 	 *	time() -date('Z') gives the correction to 'null out' the TZ and DST adjustments that getdate() does
+	 *	(The difference needs to reflect DST for the specified date, not today)
 	 */
 	function gmgetdate($date)
 	{
-		$value = getdate($date-date('Z') + (date('I') ? 3600 : 0));
+//		$value = getdate($date-date('Z') + (date('I') ? 3600 : 0));
+		$value = getdate($date-date('Z', $date));
 		
 		$value['month'] = $this->months[$value['mon'] - 1];		// Looks like getdate doesn't use the specified site language
 		return $value;
@@ -417,6 +419,17 @@ class ecal_class
 		$temp = getdate($val);
 		$temp['month'] = $this->months[$temp['mon'] - 1];		// Looks like getdate doesn't use the specified site language
 		return gmmktime($temp['hours'], $temp['minutes'], $temp['seconds'], $temp['mon'], $temp['mday'], $temp['year']);
+	}
+
+
+	/**
+	 *	Turn an absolute time into local time
+	 */
+	function absToClock($val)
+	{
+		$temp = $this->gmgetdate($val);
+		$temp['month'] = $this->months[$temp['mon'] - 1];		// Looks like getdate doesn't use the specified site language
+		return mktime($temp['hours'], $temp['minutes'], $temp['seconds'], $temp['mon'], $temp['mday'], $temp['year']);
 	}
 
 
