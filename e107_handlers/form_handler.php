@@ -1578,6 +1578,10 @@ class e_form
 	{
 		if(!is_array($array)){ return; }
 		
+		$opt = array();
+		
+		$opt[] = "<a href='".e_HTTP."'><i class='icon-home'></i></a>"; // Add Site-Pref to disable?
+		
 		$text = '<ul class="breadcrumb">
 			<li>';
 	
