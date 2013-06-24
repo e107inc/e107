@@ -351,7 +351,7 @@ if(!isset($DOWNLOAD_MIRROR_END))
 // v2.x Bootstrap Template.  - Overrides the above templates. 
 
 
-$DOWNLOAD_TEMPLATE['categories']['start'] = "
+$DOWNLOAD_TEMPLATE['categories']['start'] = "{DOWNLOAD_BREADCRUMB}
          <table class='table table-striped fborder'>
 		      <colgroup>
 		         <col style='width:3%'/>
@@ -460,7 +460,7 @@ $DOWNLOAD_TEMPLATE['view']['item'] = "
 		      </colgroup>
 		      <tr>
 		         <td colspan='2' class='fcaption' style='text-align:left;'>
-		            {DOWNLOAD_VIEW_NAME} {DOWNLOAD_ADMIN_EDIT}
+		            <h4>{DOWNLOAD_VIEW_NAME} {DOWNLOAD_ADMIN_EDIT}</h4>
 		         </td>
 		      </tr>
 		      {DOWNLOAD_VIEW_AUTHOR_LAN}
@@ -550,7 +550,7 @@ $DOWNLOAD_TEMPLATE['list']['start'] = "{DOWNLOAD_BREADCRUMB}
                   <th>{DOWNLOAD_LIST_CAPTION=filesize}</th>
                   <th>{DOWNLOAD_LIST_CAPTION=requested}</th>
                   <th>{DOWNLOAD_LIST_CAPTION=rating}</th>
-                  <th>{DOWNLOAD_LIST_CAPTION=link}</th>
+                  <th class='text-center'>{DOWNLOAD_LIST_CAPTION=link}</th>
                </tr>";
 
                
@@ -575,7 +575,7 @@ $DOWNLOAD_TEMPLATE['list']['item'] = "
 		            <td>
 		               {DOWNLOAD_LIST_RATING}
 		            </td>
-		            <td>
+		            <td class='text-center'>
 		               {DOWNLOAD_LIST_LINK}
 		            </td>
 		         </tr>";
@@ -584,7 +584,7 @@ $DOWNLOAD_TEMPLATE['list']['item'] = "
 		         
 $DOWNLOAD_TEMPLATE['list']['end'] = "
 		         <tr>
-		            <td class='forumheader3' colspan='7' style='text-align:right;'>{DOWNLOAD_LIST_TOTAL_AMOUNT} {DOWNLOAD_LIST_TOTAL_FILES}</td>
+		            <td class='forumheader3' colspan='7' style='text-align:right;'><small class='muted text-muted'>{DOWNLOAD_LIST_TOTAL_AMOUNT} {DOWNLOAD_LIST_TOTAL_FILES}</small></td>
 		         </tr>
 		      </table>
 		   </form>
@@ -619,7 +619,7 @@ $DOWNLOAD_TEMPLATE['mirror']['start'] = "{DOWNLOAD_BREADCRUMB}
 	      </colgroup>
 	      <tr>
 	         <th class='fcaption'>{DOWNLOAD_MIRROR_REQUEST_ICON}</th>
-	         <th class='fcaption' colspan='5'>".LAN_dl_72."{DOWNLOAD_MIRROR_REQUEST}</th>
+	         <th class='fcaption' colspan='5'><h4>{DOWNLOAD_MIRROR_REQUEST}</h4></th>
 	      </tr>
 	      <tr>
 	         <th class='forumheader' colspan='2'>".LAN_dl_68."</th>
@@ -644,7 +644,7 @@ $DOWNLOAD_TEMPLATE['mirror']['item']  = "
 	         <td>{DOWNLOAD_MIRROR_DESCRIPTION}</td>
 	         <td>{DOWNLOAD_MIRROR_LOCATION}</td>
 	         <td>{DOWNLOAD_MIRROR_FILESIZE}</td>
-	         <td>{DOWNLOAD_MIRROR_LINK}</td>
+	         <td class='center text-center'>{DOWNLOAD_MIRROR_LINK}</td>
 	      </tr>
 	";
 
