@@ -104,11 +104,9 @@ class comment_shortcodes extends e_shortcode
 	
 	function sc_comment_avatar($parm='')
 	{
-
-		$tp 		= e107::getParser();
-	
-		// 
-		$text = $tp->parseTemplate("{USER_AVATAR=".vartrue($this->var['user_image'])."}");
+		$tp 	= e107::getParser();
+		$text = $tp->parseTemplate("{USER_AVATAR=".vartrue($this->var['user_image'],USERIMAGE)."}");		
+		
 		$text .= "<div class='field-help' style='display:none;'>
 		<div class='left'>";
 		$text .= "<h2>".$this->sc_username()."</h2>";
