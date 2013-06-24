@@ -79,7 +79,8 @@ $FORUM_TRACK_END	= "<br />TRACK-END";
 // New in v2.x - requires a bootstrap theme be loaded.  
 
 
-$FORUM_TEMPLATE['main-start']			= "<div class='row'>
+$FORUM_TEMPLATE['main-start']			= "<div class='row-fluid'>
+											{FORUM_BREADCRUMB}
 											<div class='right'>
 												{SEARCH}
 											</div>

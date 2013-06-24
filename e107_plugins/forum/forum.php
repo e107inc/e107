@@ -335,6 +335,9 @@ function parse_forum($f, $restricted_string = '')
 	$fVars->FORUMSUBFORUMS = '';
 	
 	
+	
+	
+	
 	$badgeReplies = ($f['forum_replies']) ? "badge-info" : "";
 	$badgeThreads = ($f['forum_threads']) ? "badge-info" : "";
 	
@@ -493,6 +496,14 @@ if (e_QUERY == 'new')
 		echo $forum_new_start.$forum_newstring.$forum_new_end;
 	}
 }
+
+$frm = e107::getForm();
+
+$breadarray = array(
+					array('text'=> $forum->prefs->get('title'), 'url' => e_REQUEST_URL )
+);
+
+$fVars->FORUM_BREADCRUMB = $frm->breadcrumb($breadarray);
 
 $forum_main_start = $tp->simpleParse($FORUM_MAIN_START, $fVars);
 $forum_main_end = $tp->simpleParse($FORUM_MAIN_END, $fVars);
