@@ -44,6 +44,20 @@ class gallery_shortcodes extends e_shortcode
 		return $tp->toHTML($this->var['media_description'], true, 'BODY');
 	}
 	
+	function sc_gallery_breadcrumb($parm='')
+	{
+		$breadcrumb = array();
+		
+		$breadcrumb[] = array('text'=> LAN_PLUGIN_GALLERY_TITLE, 'url'=> e107::getUrl()->create('gallery', $this->var));
+		
+		if(vartrue($this->curCat))
+		{
+			$breadcrumb[] = array('text'=> $this->sc_gallery_cat_title('title'), 'url'=> e107::getUrl()->create('gallery/index/list', $this->var));
+		}
+		
+		return e107::getForm()->breadcrumb($breadcrumb);
+	}
+	
 	/**
 	 * All possible parameters
 	 * {GALLERY_THUMB=w=200&h=200&thumburl&thumbsrc&imageurl&orig}

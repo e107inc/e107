@@ -8,7 +8,8 @@
 
   
 $GALLERY_TEMPLATE['LIST_START'] = 
-	'<ul class="thumbnails gallery">';
+	'{GALLERY_BREADCRUMB}
+	<ul class="thumbnails gallery">';
 
 		
 $GALLERY_TEMPLATE['LIST_ITEM'] =  '
@@ -29,7 +30,8 @@ $GALLERY_TEMPLATE['LIST_END'] =
 	
 	
 $GALLERY_TEMPLATE['CAT_START'] = 
-	'<ul class="thumbnails gallery-cat">';
+	'{GALLERY_BREADCRUMB}
+	<ul class="thumbnails gallery-cat">';
 	
 	    
 $GALLERY_TEMPLATE['CAT_ITEM'] = '
