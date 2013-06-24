@@ -472,8 +472,21 @@ $(document).ready(function()
 			var t	 		= tmp.split('-');
 			var table 		= t[0];
 			var id 			= t[1];
+			var label 		= '#e-rate-'+ table + '-' + id;
+			var styles		= { 0: ' ', 0.5: 'label-important', 1: 'label-important', 1.5: 'label-warning', 2: 'label-warning', 2.5: 'label-default', 3: 'label-default' , 3.5: 'label-info', 4: 'label-info', 4.5: 'label-success', 5: 'label-success'};
+			
+			if($('#e-rate-'+tmp).length == 0)
+			{
+				var target = undefined;	
+			}
+			else
+			{
+				var target 		= '#e-rate-'+tmp;	
+			}
+			
+			
 		
-    		$('.e-rate').raty({
+    		$('#'+tmp).raty({
     			path		: path,
     			half  		: true,
     			score    	: score,
@@ -485,11 +498,42 @@ $(document).ready(function()
   			//	cancelOff 	: 'cancel-off-big.png',
   			//	cancelOn  	: 'cancel-on-big.png',			
   			//	size      	: 16,
-  				target     	: '#e-rate-'+tmp,	
+  				target     	: target,	
+  				targetFormat: '{score}',
+  			//	targetKeep: true,
   			//	targetType : 'number',
   				targetText : $('#e-rate-'+tmp).text(),			
     		//	cancel		: true,
     		//	css			: 'e-rate-star',
+    		
+    			mouseover: function(score, evt) 
+    			{
+    		
+    			//	alert(score + ' : '+ styles[score]);
+    			
+    				$(label).removeClass('label-success');	
+					$(label).removeClass('label-info');
+					$(label).removeClass('label-warning');
+					$(label).removeClass('label-important');
+					$(label).removeClass('label-default');
+    			
+    				$(label).show();
+    				$(label).addClass('label');
+    				
+    				$(label).addClass(styles[score]);		
+			    //	alert('ID: ' + $(this).attr('id') + "\nscore: " + score + "\nevent: " + evt);
+			    	
+			  	},
+				mouseout: function(score, evt) 
+				{
+					$(label).removeClass('label-success');	
+					$(label).removeClass('label-info');
+					$(label).removeClass('label-warning');
+					$(label).removeClass('label-important');
+					$(label).removeClass('label-default');
+					$(label).hide();
+				},
+			
     			click: function(score, evt) {
         				$(this).find('img').unbind('click');
 						$(this).find('img').unbind();
@@ -500,6 +544,7 @@ $(document).ready(function()
 					}).done(function( msg ) {
 						alert(msg);
 						bla = msg.split('|');
+						$(label).addClass(styles[score]);	
 											
 						$('#e-rate-'+tmp).text(bla[0]);
 						if(bla[1])

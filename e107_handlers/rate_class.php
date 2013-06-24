@@ -19,7 +19,11 @@ class rater {
 	
 	function render($table,$id,$options=array())
 	{
+			
 		list($votes,$score,$uvoted) = $this->getrating($table, $id);
+		
+	//	return "Table=".$table." itmeId=".$id." Votes=".$votes." score=".$score;
+		
 		parse_str($options,$options);
 	//	
 		$label = varset($options['label'],RATELAN_5);
@@ -33,6 +37,7 @@ class rater {
 		
 		$score = ($score / 2);
 	//	var_dump($readonly);
+	
 	
 		if(!$votes)
 		{
@@ -54,11 +59,11 @@ class rater {
 			$readonly = '1';	
 		}
 		
-		$template = vartrue($options['template'], "STATUS|RATE|VOTES");
+		$template = vartrue($options['template'], " STATUS |RATE|VOTES");
 		
-		$TEMPLATE['STATUS'] 	= "<div class='e-rate-status e-rate-status-{$table}' id='e-rate-{$table}-{$id}'>".$label."</div>";
+		$TEMPLATE['STATUS'] 	= "&nbsp;<span class='e-rate-status e-rate-status-{$table}' id='e-rate-{$table}-{$id}'>".$label."</span>";
 		$TEMPLATE['RATE'] = "<div class='e-rate e-rate-{$table}' id='{$table}-{$id}'  data-hint=\"{$datahint}\" data-readonly='{$readonly}' data-score='{$score}' data-url='".e_BASE."rate.php' data-path='{$path}'></div>";
-		$TEMPLATE['VOTES'] 	= "<div class='e-rate-votes e-rate-votes-{$table}' id='e-rate-votes-{$table}-{$id}'>".$this->renderVotes($votes,$score)."</div>";
+		$TEMPLATE['VOTES'] 	= "<div class='muted e-rate-votes e-rate-votes-{$table}' id='e-rate-votes-{$table}-{$id}'><smalll>".$this->renderVotes($votes,$score)."</small></div>";
 
 		$tmp = explode("|",$template);
 		
@@ -185,11 +190,16 @@ class rater {
 		$sep = chr(1);
 
 		$sql = new db;
-		if (!$sql->db_Select("rate", "*", "rate_table = '{$table}' AND rate_itemid = '{$id}' ")) {
+		if (!$sql->select("rate", "*", "rate_table = '{$table}' AND rate_itemid = '{$id}' ")) 
+		{
 			return FALSE;
-		} else {
-			$rowgr = $sql->db_Fetch();
-			if($userid==TRUE){
+		}
+		 else 
+		 {
+			$rowgr = $sql->fetch();
+					
+			if($userid==TRUE)
+			{
 				$rating = "";
 				$rateusers = explode(".", $rowgr['rate_voters']);
 				for($i=0;$i<count($rateusers);$i++){
@@ -207,14 +217,19 @@ class rater {
 						$rating[2] = 0;		//no remainder is present, because we have a single users rating
 					}
 				}
-			}else{
+			}
+			else
+			{
 				$rating[0] = $rowgr['rate_votes']; // $rating[0] == number of votes
 				$tmp = $rowgr['rate_rating'] / $rowgr['rate_votes'];
 				$tmp = (strpos($tmp,",")) ? explode(",", $tmp) : explode(".", $tmp);
 				$rating[1] = $tmp[0];
-				if(isset($tmp[1])){
+				if(isset($tmp[1]))
+				{
 					$rating[2] = substr($tmp[1], 0, 1);
-				}else{
+				}
+				else
+				{
 					$rating[2] = "0";
 				}
 			}
