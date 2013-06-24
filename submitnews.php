@@ -183,8 +183,16 @@ $text .= "
 	<td style='width:80%' class='forumheader3'>
     <input class='tbox' type='text' id='submitnews_title' name='submitnews_title' size='60' value='".$tp->toHTML(vartrue($_POST['submitnews_title']),TRUE,'USER_TITLE')."' maxlength='200' style='width:90%' />
 	</td>
-</tr>";
+</tr>
+<tr>
+  	<td style='width:20%' class='forumheader3'>".LAN_135."</td>
+	<td style='width:80%' class='forumheader3'>
+		".e107::getForm()->bbarea('submitnews_item', $tp->toForm(vartrue($_POST['submitnews_item'])))."
+	</td>
+</tr>
+";
 
+/*
 if (e_WYSIWYG)
 {
   $insertjs = "rows='25'";
@@ -210,6 +218,7 @@ if (!e_WYSIWYG)
 $text .= "
   </td>
 </tr>";
+*/
 
 if ($pref['subnews_attach'] && $pref['upload_enabled'] && check_class($pref['upload_class']) && FILE_UPLOADS)
 {
