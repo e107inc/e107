@@ -267,6 +267,12 @@ class rater {
 		
 		$upImg = "<img class='e-tip' src='".e_IMAGE_ABS."rate/like_16.png' alt='' title='Like' />";
 		$upDown = "<img class='e-tip' src='".e_IMAGE_ABS."rate/dislike_16.png' alt='' title='Dislike' />";
+		
+		if(deftrue('BOOTSTRAP'))
+		{
+			$upImg = "<i class='icon-thumbs-up'></i>";
+			$upDown = "<i class='icon-thumbs-down'></i>";
+		}
 			
 		$text = "<span id='{$id}-up'>".intval($curVal['up'])."{$p}</span>
 			<a class='e-rate-thumb e-rate-up'  href='".e_HTTP."rate.php?table={$table}&id={$itemid}&type=up#{$id}'>{$upImg}</a> 
