@@ -84,12 +84,19 @@ class plugin_gallery_index_controller extends eControllerFront
 		$sc 		= e107::getScBatch('gallery',TRUE);
 		
 		$text = "";		
+		
+		$text = e107::getParser()->parseTemplate($template['CAT_START'],TRUE, $sc);
+		
 		foreach($this->catList as $val)
 		{
 			$sc->setVars($val);	
 			$text .= e107::getParser()->parseTemplate($template['CAT_ITEM'],TRUE);
 		}	
-		$text = $template['CAT_START'].$text.$template['CAT_END'];
+		
+		$text .= e107::getParser()->parseTemplate($template['CAT_END'],TRUE, $sc);
+		
+		
+	//	$text = $template['CAT_START'].$text.$template['CAT_END'];
 		$this->addTitle(LAN_PLUGIN_GALLERY_TITLE)
 			->addBody($text);
 	}
