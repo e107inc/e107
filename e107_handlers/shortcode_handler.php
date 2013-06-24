@@ -1247,11 +1247,11 @@ class e_shortcode
 	/**
 	 * Set external array data to be used in the batch
 	 * Use setVars() - preferred. 
-	 *
+	 *  //XXX will soon become private. Use setVars() instead. 
 	 * @param array $eVars
 	 * @return e_shortcode
 	 */
-	public function setParserVars($eVars) //XXX will soon become private. Use setVars() instead. 
+	public function setParserVars($eVars)
 	{
 		$this->var = $eVars;
 		return $this;
