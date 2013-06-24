@@ -313,7 +313,7 @@ class tagwords
 		$insert_diff = array_diff($new, $existing);
 		$count = 0;
 	//	print_a($insert_diff);
-		return ("Tagword Insert: ".print_a($new,true));
+		return ("Tagword Insert: ".print_a($new,true)); // FIXME
 		
 		foreach($insert_diff as $word)
 		{
@@ -328,7 +328,7 @@ class tagwords
 			return "a Diff was made";
 		}
 		
-		return "<br />".LAN_TAG_3.": ".$count." words.";
+		return "<br />".LAN_TAG_3.": ".$count." words."; // FIXME
 	}
 
 	/*
