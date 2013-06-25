@@ -15,10 +15,7 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
-if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
 
-/* set style of download image and thumbnail */
-define("DL_IMAGESTYLE","border:0px");
 
 // ##### CAT TABLE --------------------------------------------------------------------------------
 if(!isset($DOWNLOAD_CAT_TABLE_PRE))
@@ -351,8 +348,8 @@ if(!isset($DOWNLOAD_MIRROR_END))
 // v2.x Bootstrap Template.  - Overrides the above templates. 
 
 
-$DOWNLOAD_TEMPLATE['categories']['start'] = "{DOWNLOAD_BREADCRUMB}
-         <table class='table table-striped fborder'>
+$DOWNLOAD_TEMPLATE['categories']['start'] = "
+         <table id='download' class='table table-striped fborder'>
 		      <colgroup>
 		         <col style='width:3%'/>
 		         <col style='width:60%'/>
@@ -368,23 +365,15 @@ $DOWNLOAD_TEMPLATE['categories']['start'] = "{DOWNLOAD_BREADCRUMB}
                   <th>".LAN_dl_77."</th>
                </tr>
             </thead>
-            <tfoot>
-               <tr>
-                  <td colspan='5'>{DOWNLOAD_CAT_NEWDOWNLOAD_TEXT}</td>
-               </tr>
-               <tr>
-                  <td colspan='5'>{DOWNLOAD_CAT_SEARCH}</td>
-               </tr>
-            </tfoot>
             <tbody>";
 
 
 $DOWNLOAD_TEMPLATE['categories']['parent'] = "
                <tr>
-                  <td class='forumheader'>
+                  <td>
                      {DOWNLOAD_CAT_MAIN_ICON}
                   </td>
-                  <td colspan='4' class='forumheader'>
+                  <td colspan='4'>
                      {DOWNLOAD_CAT_MAIN_NAME}<br/>
                      <span class='smalltext'>{DOWNLOAD_CAT_MAIN_DESCRIPTION}</span>
                   </td>
@@ -407,23 +396,15 @@ $DOWNLOAD_TEMPLATE['categories']['child'] = "
 $DOWNLOAD_TEMPLATE['categories']['subchild'] = "
 	            <tr>
 	               <td>
-	            	   &nbsp;
+	            	  {DOWNLOAD_CAT_SUBSUB_ICON}
 	            	</td>
-	            	<td>
-	            		<table class='table'>
-	            		   <tr>
-	            		   	<td>
-	            		   	   {DOWNLOAD_CAT_SUBSUB_ICON}
-	            		   	</td>
-	            		   	<td>
-	            		   		{DOWNLOAD_CAT_SUBSUB_NEW_ICON} {DOWNLOAD_CAT_SUBSUB_NAME}<br/>
-	            		   		<small>
-	            		   		{DOWNLOAD_CAT_SUBSUB_DESCRIPTION}
-	            		   		</small>
-	            		   	</td>
-	            		   </tr>
-	            		</table>
-	            	</td>
+	            	<td style='padding-left:30px'>
+	            	{DOWNLOAD_CAT_SUBSUB_NEW_ICON} {DOWNLOAD_CAT_SUBSUB_NAME}<br/>
+	            		<small>
+	            	 		{DOWNLOAD_CAT_SUBSUB_DESCRIPTION}
+	            		</small>
+	          		</td>
+	            	
 	               <td>{DOWNLOAD_CAT_SUBSUB_COUNT} </td>
 	               <td>{DOWNLOAD_CAT_SUBSUB_SIZE} </td>
 	               <td>{DOWNLOAD_CAT_SUBSUB_DOWNLOADED} </td>
@@ -432,28 +413,32 @@ $DOWNLOAD_TEMPLATE['categories']['subchild'] = "
 
 $DOWNLOAD_TEMPLATE['categories']['end'] = "
             </tbody>
-         </table>\n";
+         </table>
+         <div>
+         <div class='pull-left'><small>{DOWNLOAD_CAT_NEWDOWNLOAD_TEXT}</small></div>
+		<div class='pull-right'>{DOWNLOAD_CAT_SEARCH}</div>
+		</div>";
 
 // ##### ------------------------------------------------------------------------------------------
 
 
 //FIXME - not being utilized at the moment. 
 
-$DOWNLOAD_WRAPPER['view']['DOWNLOAD_VIEW_AUTHOR_LAN'] 			= "<tr><td style='width:20%' class='forumheader3'>{---}</td>";
-$DOWNLOAD_WRAPPER['view']['DOWNLOAD_VIEW_AUTHOR'] 				= "<td style='width:80%' class='forumheader3'>{---}</td>";
-$DOWNLOAD_WRAPPER['view']['DOWNLOAD_VIEW_AUTHOREMAIL_LAN'] 		= "<tr><td style='width:20%' class='forumheader3'>{---}</td>";
-$DOWNLOAD_WRAPPER['view']['DOWNLOAD_VIEW_AUTHOREMAIL'] 			= "<td style='width:80%' class='forumheader3'>{---}</td>";
-$DOWNLOAD_WRAPPER['view']['DOWNLOAD_VIEW_AUTHORWEBSITE_LAN'] 	= "<tr><td style='width:20%' class='forumheader3'>{---}</td>";
-$DOWNLOAD_WRAPPER['view']['DOWNLOAD_VIEW_AUTHORWEBSITE'] 		= "<td style='width:80%' class='forumheader3'>{---}</td>";
-$DOWNLOAD_WRAPPER['view']['DOWNLOAD_REPORT_LINK'] 				= "<tr><td style='width:20%' class='forumheader3' colspan='2'>{---}</td></tr>";
+$DOWNLOAD_WRAPPER['view']['DOWNLOAD_VIEW_AUTHOR_LAN'] 			= "<tr><td style='width:20%'>{---}</td>";
+$DOWNLOAD_WRAPPER['view']['DOWNLOAD_VIEW_AUTHOR'] 				= "<td style='width:80%'>{---}</td>";
+$DOWNLOAD_WRAPPER['view']['DOWNLOAD_VIEW_AUTHOREMAIL_LAN'] 		= "<tr><td style='width:20%'>{---}</td>";
+$DOWNLOAD_WRAPPER['view']['DOWNLOAD_VIEW_AUTHOREMAIL'] 			= "<td style='width:80%'>{---}</td>";
+$DOWNLOAD_WRAPPER['view']['DOWNLOAD_VIEW_AUTHORWEBSITE_LAN'] 	= "<tr><td style='width:20%'>{---}</td>";
+$DOWNLOAD_WRAPPER['view']['DOWNLOAD_VIEW_AUTHORWEBSITE'] 		= "<td style='width:80%'>{---}</td>";
+$DOWNLOAD_WRAPPER['view']['DOWNLOAD_REPORT_LINK'] 				= "<tr><td style='width:20%' colspan='2'>{---}</td></tr>";
 
 
 $DOWNLOAD_TEMPLATE['view']['caption'] = LAN_dl_18;
-$DOWNLOAD_TEMPLATE['view']['start'] = "{DOWNLOAD_BREADCRUMB} ";
+$DOWNLOAD_TEMPLATE['view']['start'] = " ";
 
 $DOWNLOAD_TEMPLATE['view']['item'] = "
-      <div style='text-align:center'>
-		   <table class='table table-striped fborder' style='".USER_WIDTH."'>
+      <div id='download' style='text-align:center'>
+		   <table class='table table-striped'>
 		      <colgroup>
 		         <col style='width:30%;'>
 		         <col style='width:70%;'>
@@ -470,32 +455,32 @@ $DOWNLOAD_TEMPLATE['view']['item'] = "
 		      {DOWNLOAD_VIEW_AUTHORWEBSITE_LAN}
 		      {DOWNLOAD_VIEW_AUTHORWEBSITE}
 		      <tr>
-   		      <td class='forumheader3'>{DOWNLOAD_VIEW_DESCRIPTION_LAN}</td>
-	   	      <td class='forumheader3'>{DOWNLOAD_VIEW_DESCRIPTION}</td>
+   		      <td>{DOWNLOAD_VIEW_DESCRIPTION_LAN}</td>
+	   	      <td>{DOWNLOAD_VIEW_DESCRIPTION}</td>
 		      </tr>
 		      <tr>
-		         <td class='forumheader3'>{DOWNLOAD_VIEW_IMAGE_LAN}</td>
-		         <td class='forumheader3'>{DOWNLOAD_VIEW_IMAGE}</td>
+		         <td>{DOWNLOAD_VIEW_IMAGE_LAN}</td>
+		         <td>{DOWNLOAD_VIEW_IMAGE}</td>
 		      </tr>
 		      <tr>
-		         <td class='forumheader3'>{DOWNLOAD_VIEW_FILESIZE_LAN}</td>
-		         <td class='forumheader3'>{DOWNLOAD_VIEW_FILESIZE}</td>
+		         <td>{DOWNLOAD_VIEW_FILESIZE_LAN}</td>
+		         <td>{DOWNLOAD_VIEW_FILESIZE}</td>
 		      </tr>
 		      <tr>
-	   	      <td class='forumheader3'>{DOWNLOAD_VIEW_DATE_LAN}</td>
-		         <td class='forumheader3'>{DOWNLOAD_VIEW_DATE=long}</td>
+	   	      <td>{DOWNLOAD_VIEW_DATE_LAN}</td>
+		         <td>{DOWNLOAD_VIEW_DATE=long}</td>
 		      </tr>
 		      <tr>
-		         <td class='forumheader3'>{DOWNLOAD_VIEW_REQUESTED_LAN}</td>
-		         <td class='forumheader3'>{DOWNLOAD_VIEW_REQUESTED}</td>
+		         <td>{DOWNLOAD_VIEW_REQUESTED_LAN}</td>
+		         <td>{DOWNLOAD_VIEW_REQUESTED}</td>
 		      </tr>
 		      <tr>
-   		      <td class='forumheader3'>{DOWNLOAD_VIEW_LINK_LAN}</td>
-	   	      <td class='forumheader3'>{DOWNLOAD_VIEW_LINK}</td>
+   		      <td>{DOWNLOAD_VIEW_LINK_LAN}</td>
+	   	      <td>{DOWNLOAD_VIEW_LINK}</td>
 		      </tr>
 		      <tr>
-		         <td class='forumheader3'>{DOWNLOAD_VIEW_RATING_LAN}</td>
-		         <td class='forumheader3'>{DOWNLOAD_VIEW_RATING}</td>
+		         <td>{DOWNLOAD_VIEW_RATING_LAN}</td>
+		         <td>{DOWNLOAD_VIEW_RATING}</td>
 		      </tr>
 			{DOWNLOAD_REPORT_LINK}
 		   </table>
@@ -530,10 +515,9 @@ $DOWNLOAD_TEMPLATE['view']['nextprev'] = '
 
 // ##### ------------------------------------------------------------------------------------------
 
-$DOWNLOAD_TEMPLATE['list']['start'] = "{DOWNLOAD_BREADCRUMB}
-      <div style='text-align:center'>
+$DOWNLOAD_TEMPLATE['list']['start'] = "
          <form method='post' action='".e_SELF."?".e_QUERY."'>
-            <table class='table table-striped fborder' style='".USER_WIDTH."'>\n
+            <table id='download' class='table table-striped fborder' style='".USER_WIDTH."'>\n
                <colgroup>
                   <col style='width:35%;'/>
                   <col style='width:15%;'/>
@@ -584,11 +568,11 @@ $DOWNLOAD_TEMPLATE['list']['item'] = "
 		         
 $DOWNLOAD_TEMPLATE['list']['end'] = "
 		         <tr>
-		            <td class='forumheader3' colspan='7' style='text-align:right;'><small class='muted text-muted'>{DOWNLOAD_LIST_TOTAL_AMOUNT} {DOWNLOAD_LIST_TOTAL_FILES}</small></td>
+		            <td colspan='7' style='text-align:right;'><small class='muted text-muted'>{DOWNLOAD_LIST_TOTAL_AMOUNT} {DOWNLOAD_LIST_TOTAL_FILES}</small></td>
 		         </tr>
 		      </table>
 		   </form>
-		</div>\n";
+		\n";
 
 
 
@@ -608,8 +592,8 @@ $sc_style['DOWNLOAD_LIST_NEXTPREV']['post'] = "	</div>";
 // ##### ------------------------------------------------------------------------------------------			
 			
 			
-$DOWNLOAD_TEMPLATE['mirror']['start'] = "{DOWNLOAD_BREADCRUMB}
-	   <table class='table table-striped'>
+$DOWNLOAD_TEMPLATE['mirror']['start'] = "
+	   <table id='download' class='table table-striped'>
 	      <colgroup>
 	         <col style='width:1%'/>
 	         <col style='width:29%'/>
@@ -622,11 +606,11 @@ $DOWNLOAD_TEMPLATE['mirror']['start'] = "{DOWNLOAD_BREADCRUMB}
 	         <th class='fcaption' colspan='5'><h4>{DOWNLOAD_MIRROR_REQUEST}</h4></th>
 	      </tr>
 	      <tr>
-	         <th class='forumheader' colspan='2'>".LAN_dl_68."</th>
-	         <th class='forumheader'>".LAN_dl_71."</th>
-	         <th class='forumheader'>".LAN_dl_70."</th>
-	         <th class='forumheader'>".LAN_dl_21."</th>
-	         <th class='forumheader'>".LAN_dl_32."</th>
+	         <th colspan='2'>".LAN_dl_68."</th>
+	         <th>".LAN_dl_71."</th>
+	         <th>".LAN_dl_70."</th>
+	         <th>".LAN_dl_21."</th>
+	         <th>".LAN_dl_32."</th>
 	      </tr>
 	";			
 			
@@ -651,6 +635,13 @@ $DOWNLOAD_TEMPLATE['mirror']['item']  = "
 $DOWNLOAD_TEMPLATE['mirror']['end'] = "
 	   </table>
 	";			
+
+	
+// All Download Pgaes.. 	
+	
+$DOWNLOAD_TEMPLATE['header'] = '{DOWNLOAD_BREADCRUMB}';
+$DOWNLOAD_TEMPLATE['footer'] = '';
+
 
 
 ?>

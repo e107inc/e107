@@ -17,10 +17,17 @@ class download
 	
 	private $orderOptions = array('download_id','download_datestamp','download_filesize','download_name','download_author','download_requested');
 	
+	private $templateHeader = '';
+	private $templateFooter = '';
+	
 	function __construct()
 	{
 				
 		require_once(e_PLUGIN."download/download_shortcodes.php");
+		
+		$this->templateHeader = e107::getTemplate('download','download','header');
+		$this->templateFooter = e107::getTemplate('download','download','footer');
+		
 	}
 	
 	public function init()
@@ -213,13 +220,16 @@ class download
 			}
 	   }
 	  
-		$dl_text  = $tp->parseTemplate($DOWNLOAD_CAT_TABLE_START, TRUE, $download_shortcodes);
+		$dl_text .= $tp->parseTemplate($this->templateHeader, TRUE, $download_shortcodes);
+		$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_START, TRUE, $download_shortcodes);
 		$dl_text .= $download_cat_table_string;
 		$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_END, TRUE, $download_shortcodes);
 	   
 		$caption = varset($DOWNLOAD_CAT_CAPTION) ? $tp->parseTemplate($DOWNLOAD_CAT_CAPTION, TRUE, $download_shortcodes) : LAN_dl_18;
 		
 		//ob_start();
+		
+		$dl_text .= $tp->parseTemplate($this->templateFooter, TRUE, $download_shortcodes);
 	   
 		return $ns->tablerender($caption, $dl_text, 'download-categories',true);
 
@@ -323,7 +333,10 @@ class download
 	
 		$DL_TEMPLATE = $DOWNLOAD_VIEW_TABLE_START.$DOWNLOAD_VIEW_TABLE.$DOWNLOAD_VIEW_TABLE_END;
 		
-		$text = $tp->parseTemplate($DL_TEMPLATE, TRUE, $download_shortcodes);
+		
+		$text = $tp->parseTemplate($this->templateHeader, TRUE, $download_shortcodes);
+		
+		$text .= $tp->parseTemplate($DL_TEMPLATE, TRUE, $download_shortcodes);
 	
 		if(!isset($DL_VIEW_NEXTPREV))
 		{
@@ -346,6 +359,8 @@ class download
 	   	$text .= $tp->parseTemplate($DL_VIEW_NEXTPREV,TRUE, $download_shortcodes);
 	
 		$caption = $tp->parseTemplate($DL_VIEW_CAPTION, TRUE, $download_shortcodes);
+		
+		$text .= $tp->parseTemplate($this->templateFooter, TRUE, $download_shortcodes);
 		
 		$ret = $ns->tablerender($caption, $text, 'download-view', true);
 	
@@ -384,12 +399,18 @@ class download
 		
 		if(deftrue('BOOTSTRAP')) // v2.x 
 		{
-			$template = e107::getTemplate('download','download','list');
+			$template = e107::getTemplate('download','download');
 			
-			$DOWNLOAD_LIST_TABLE_START 	= $template['start'];	
-			$DOWNLOAD_LIST_TABLE 		= $template['item'];
-			$DOWNLOAD_LIST_TABLE_END 	= $template['end'];		
-			$DOWNLOAD_LIST_NEXTPREV		= $template['nextprev'];
+			$DOWNLOAD_LIST_TABLE_START 	= $template['list']['start'];	
+			$DOWNLOAD_LIST_TABLE 		= $template['list']['item'];
+			$DOWNLOAD_LIST_TABLE_END 	= $template['list']['end'];		
+			$DOWNLOAD_LIST_NEXTPREV		= $template['list']['nextprev'];
+			
+			$DOWNLOAD_CAT_TABLE_START 	= varset($template['categories']['start']);
+			$DOWNLOAD_CAT_PARENT_TABLE	= $template['categories']['parent'];
+			$DOWNLOAD_CAT_CHILD_TABLE	= $template['categories']['child'];
+			$DOWNLOAD_CAT_SUBSUB_TABLE	= $template['categories']['subchild'];
+			$DOWNLOAD_CAT_TABLE_END		= varset($template['categories']['end']);
 		}
 		else // Legacy v1.x 
 		{
@@ -443,6 +464,7 @@ class download
 	   	  	 $maincatval = $id;
 		}
 		
+		$dl_text = $tp->parseTemplate($this->templateHeader, TRUE, $download_shortcodes);
 						
 		$total_downloads = $sql->count("download", "(*)", "WHERE download_category = '{$this->qry['id']}' AND download_active > 0 AND download_visible REGEXP '" . e_CLASS_REGEXP . "'");
 		
@@ -451,7 +473,9 @@ class download
 		$qry = "SELECT download_category_id,download_category_class FROM #download_category WHERE download_category_parent=".intval($this->qry['id']);
 		
 		if($sql->gen($qry))
-		{			
+		{
+			
+				
 			/* there are subcats - display them ... */
 			$qry = "
 			SELECT dc.*, dc2.download_category_name AS parent_name, dc2.download_category_icon as parent_icon, SUM(d.download_filesize) AS d_size,
@@ -465,36 +489,32 @@ class download
 			GROUP by dc.download_category_id ORDER by dc.download_category_order
 			";
 			
-			$sql->gen($qry);
-			
-			$scArray = $sql->db_getList();
-			$load_template = 'download_template';
-			
-			if(!isset($DOWNLOAD_CAT_PARENT_TABLE))
+			if($sql->gen($qry))
 			{
-				eval($template_load_core);
+				
+				$scArray = $sql->db_getList();
+								
+				/** @DEPRECATED **/
+			//	if(!defined("DL_IMAGESTYLE"))
+			//	{
+			//		define("DL_IMAGESTYLE", "border:1px solid blue");
+			//	}
+	
+				$download_cat_table_string = "";
+				
+				$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_PRE, TRUE, $download_shortcodes);
+				$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_START, TRUE, $download_shortcodes);
+				
+				foreach($scArray as $dlsubsubrow)
+				{
+					$download_shortcodes->dlsubsubrow = $dlsubsubrow;
+					$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_SUBSUB_TABLE, TRUE, $download_shortcodes);
+				}
+				
+				$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_END, TRUE, $download_shortcodes);
+				
+			//	$text = $ns->tablerender($dl_title, $dl_text, 'download-list', true);
 			}
-			
-			/** @DEPRECATED **/
-		//	if(!defined("DL_IMAGESTYLE"))
-		//	{
-		//		define("DL_IMAGESTYLE", "border:1px solid blue");
-		//	}
-
-			$download_cat_table_string = "";
-			
-			$dl_text = $tp->parseTemplate($DOWNLOAD_CAT_TABLE_PRE, TRUE, $download_shortcodes);
-			$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_START, TRUE, $download_shortcodes);
-			
-			foreach($scArray as $dlsubsubrow)
-			{
-				$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_SUBSUB_TABLE, TRUE, $download_shortcodes);
-			}
-			
-			$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_END, TRUE, $download_shortcodes);
-			
-			$text = $ns->tablerender($dl_title, $dl_text, 'download-list', true);
-			
 			
 		}// End of subcategory display
 
@@ -537,7 +557,7 @@ class download
 		if($filetotal)
 		{
 			// Only show list if some files in it
-			$dl_text = $tp->parseTemplate($DOWNLOAD_LIST_TABLE_START, TRUE, $download_shortcodes);
+			$dl_text .= $tp->parseTemplate($DOWNLOAD_LIST_TABLE_START, TRUE, $download_shortcodes);
 			
 			global $dlft, $dltdownloads;
 			
@@ -566,8 +586,9 @@ class download
 				$parent = $sql->fetch();
 			}
 
+			$dl_text .= $tp->parseTemplate($this->templateFooter, TRUE, $download_shortcodes);
 			
-			$text = $ns->tablerender(LAN_dl_18, $dl_text, 'download-list', true);
+			$text .= $ns->tablerender(LAN_dl_18, $dl_text, 'download-list', true);
 		}
 
 		if(!isset($DOWNLOAD_LIST_NEXTPREV))
@@ -768,6 +789,8 @@ class download
 				   }
 			}
 	
+			$dl_text = $tp->parseTemplate($this->templateHeader, TRUE, $download_shortcodes);
+	
 		   	$dl_text = $tp->parseTemplate($DOWNLOAD_MIRROR_START, TRUE, $download_shortcodes);
 			$download_mirror = 1;
 				
@@ -788,6 +811,8 @@ class download
 			}
 			   
 			$dl_text .= $tp->parseTemplate($DOWNLOAD_MIRROR_END, TRUE, $download_shortcodes);
+			
+			$dl_text .= $tp->parseTemplate($this->templateFooter, TRUE, $download_shortcodes);
 			
 		   	return $ns->tablerender(LAN_dl_18, $dl_text, 'download-mirror', true);	
 		
