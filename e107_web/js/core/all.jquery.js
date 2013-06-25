@@ -500,7 +500,7 @@ $(document).ready(function()
   			//	size      	: 16,
   				target     	: target,	
   				targetFormat: '{score}',
-  			//	targetKeep: true,
+  				targetKeep: true,
   			//	targetType : 'number',
   				targetText : $('#e-rate-'+tmp).text(),			
     		//	cancel		: true,

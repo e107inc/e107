@@ -61,7 +61,7 @@ class rater {
 		
 		$template = vartrue($options['template'], " STATUS |RATE|VOTES");
 		
-		$TEMPLATE['STATUS'] 	= "&nbsp;<span class='e-rate-status e-rate-status-{$table}' id='e-rate-{$table}-{$id}'>".$label."</span>";
+		$TEMPLATE['STATUS'] 	= "&nbsp;<span class='e-rate-status e-rate-status-{$table}' id='e-rate-{$table}-{$id}' style='display:none'>".$label."</span>";
 		$TEMPLATE['RATE'] = "<div class='e-rate e-rate-{$table}' id='{$table}-{$id}'  data-hint=\"{$datahint}\" data-readonly='{$readonly}' data-score='{$score}' data-url='".e_BASE."rate.php' data-path='{$path}'></div>";
 		$TEMPLATE['VOTES'] 	= "<div class='muted e-rate-votes e-rate-votes-{$table}' id='e-rate-votes-{$table}-{$id}'><smalll>".$this->renderVotes($votes,$score)."</small></div>";
 
