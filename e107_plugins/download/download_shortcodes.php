@@ -56,11 +56,11 @@ class download_shortcodes extends e_shortcode
 			
 			default:
 				$breadcrumb[]	= array('text' => LAN_dl_18,							'url' => e_SELF);
-				$breadcrumb[]	= array('text' => $this->var['download_category_name'],	'url' => e_SELF."?action=list&id=".$this->var['download_category_id']);
+				$breadcrumb[]	= array('text' => $this->var['download_category_name'],	'url' => ($this->var['download_category_id']) ? e_SELF."?action=list&id=".$this->var['download_category_id'] : null);
 				$breadcrumb[]	= array('text' => $this->var['download_name'],			'url' => null);
 			break;
 		}
-	
+			
 		return $frm->breadcrumb($breadcrumb);
 		
 	}
@@ -89,9 +89,13 @@ class download_shortcodes extends e_shortcode
    function sc_download_cat_sub_name() 
    {
 	  $tp = e107::getParser();
+
+	  $class = 'category-name';
+	  $class .= $this->isNewDownload($this->dlsubrow['d_last']) ? ' new' : '';
+	  
       if ($this->dlsubrow['d_count'])
       {
-         return "<a href='".e_PLUGIN_ABS."download/download.php?action=list&id=".$this->dlsubrow['download_category_id']."'>".$tp->toHTML($this->dlsubrow['download_category_name'], FALSE, 'TITLE')."</a>";
+         return "<a class='".$class."' href='".e_PLUGIN_ABS."download/download.php?action=list&id=".$this->dlsubrow['download_category_id']."'>".$tp->toHTML($this->dlsubrow['download_category_name'], FALSE, 'TITLE')."</a>";
       }
       else
       {
@@ -112,7 +116,7 @@ class download_shortcodes extends e_shortcode
 
    function sc_download_cat_sub_new_icon()
    {
-      return $this->_check_new_download($this->dlsubrow['d_last_subs']);
+      return ($this->isNewDownload($this->dlsubrow['d_last_subs'])) ? $this->renderNewIcon() : "";
    }
    
    function sc_download_cat_sub_count() 
@@ -136,10 +140,15 @@ class download_shortcodes extends e_shortcode
 	
    function sc_download_cat_subsub_name() 
    {
+   	
+	// isNewDownload
+		$class = 'category-name';
+		$class .= $this->isNewDownload($this->dlsubsubrow['d_last']) ? ' new' : '';
+	
 	  $tp = e107::getParser();
       if ($this->dlsubsubrow['d_count'])
       {
-         return "<a href='".e_PLUGIN_ABS."download/download.php?action=list&id=".$this->dlsubsubrow['download_category_id']."'>".$tp->toHTML($this->dlsubsubrow['download_category_name'], FALSE, 'TITLE')."</a>";
+         return "<a class='".$class."' href='".e_PLUGIN_ABS."download/download.php?action=list&id=".$this->dlsubsubrow['download_category_id']."'>".$tp->toHTML($this->dlsubsubrow['download_category_name'], FALSE, 'TITLE')."</a>";
       }
       else
       {
@@ -271,14 +280,14 @@ class download_shortcodes extends e_shortcode
    
    function sc_download_list_newicon()
    {
-      return (USER && $this->var['download_datestamp'] > USERLV ? "<img src='".IMAGE_NEW."' alt='*' style='vertical-align:middle' />" : "");
+      return $this->isNewDownload($this->var['download_datestamp']) ? $this->renderNewIcon() : "";
    }
    
    function sc_download_list_recenticon()
    {
       $pref = e107::getPref();
       // convert "recent_download_days" to seconds
-      return ($this->var['download_datestamp'] > time()-($pref['recent_download_days']*86400) ? '<img src="'.IMAGE_NEW.'" alt="" style="vertical-align:middle" />' : '');
+      return ($this->var['download_datestamp'] > time()-($pref['recent_download_days']*86400) ? $this->renderNewIcon() : '');
    }
    
    function sc_download_list_filesize()
@@ -812,15 +821,15 @@ class download_shortcodes extends e_shortcode
    // Misc stuff ---------------------------------------------------------------------------------
    function sc_download_cat_newdownload_text()
    {
-      return "<img src='".IMAGE_NEW."' alt='*' style='vertical-align:middle' /> ".LAN_dl_36;
+      return $this->renderNewIcon()." ".LAN_dl_36;
    }
    
    function sc_download_cat_search()
    {
       return "<form class='form-search' method='get' action='".e_BASE."search.php'>
       		  <p>
-      		  <input class='tbox search-query' type='text' name='q' size='30' value='' maxlength='50' />
-      		  <input class='btn button' type='submit' name='s' value='".LAN_dl_41."' />
+      		  <input class='tbox search-query' type='text' name='q' size='30' value='' placeholder=\"".LAN_dl_41."\" maxlength='50' />
+      		  <input class='btn button' type='submit' name='s'  value='".LAN_GO."' />
       		  <input type='hidden' name='r' value='0' />
       		  </p>
       		  </form>";
@@ -840,16 +849,26 @@ class download_shortcodes extends e_shortcode
 	}
 	
 	
-   function _check_new_download($last_val)
+   private function isNewDownload($last_val)
 	{
 		if (USER && ($last_val > USERLV))
 		{
-		   return "<img src='".IMAGE_NEW."' alt='*' style='vertical-align:middle' />";
+			return true;
 		}
 		else
 		{
-		   return "";
+			return false; 
 		}
+	}
+	
+	private function renderNewIcon()
+	{
+		if(strstr(IMAGE_NEW,'<i '))
+		{
+			return IMAGE_NEW;	
+		}
+		
+		return "<img src='".IMAGE_NEW."' alt='*' style='vertical-align:middle' />";	
 	}
 }
 ?>
