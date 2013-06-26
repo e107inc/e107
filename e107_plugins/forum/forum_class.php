@@ -213,7 +213,7 @@ class e107forum
 	{
 		$tp = e107::getParser();
 				
-		if(!e107::getSession()->check(false))
+		if(!e107::getSession()->check(false) || !$this->checkPerm($_POST['post'], 'post'))
 		{
 			//$ret['status'] = 'ok';
 		//	$ret['msg'] = "Token Error";
@@ -1629,7 +1629,7 @@ class e107forum
 			$FORUM_CRUMB['thread']['value'] = str_replace($search, $replace, $FORUM_CRUMB['thread']['value']);
 
 			$FORUM_CRUMB['fieldlist'] = 'sitename,forums,parent,subparent,forum,thread';
-		//	$FORUM_CRUMB['style'] = 'bootstrap';
+
 			$BREADCRUMB = $tp->parseTemplate('{BREADCRUMB=FORUM_CRUMB}', true);
 		}
 		else
@@ -1657,8 +1657,46 @@ class e107forum
 				$BREADCRUMB .= $dfltsep.$thread_title;
 			}
 		}
+
+
+
+		// New v2.x Bootstrap Standardized Breadcrumb. 
+
+		$breadcrumb = array();
+		
+		$breadcrumb[]	= array('text'=> LAN_FORUM_0001		, 'url'=> e107::getUrl()->create('forum/forum/main'));
+		
+		if($forumInfo['sub_parent'])
+		{
+				$forum_sub_parent = (substr($forumInfo['sub_parent'], 0, 1) == '*' ? substr($forumInfo['sub_parent'], 1) : $forumInfo['sub_parent']);
+		}
+		
+		$breadcrumb[]	= array('text'=>$tp->toHTML($forumInfo['parent_name'])		, 'url'=> e107::getUrl()->create('forum/forum/main')."#".$frm->name2id($forumInfo['parent_name']));
+	
+		if($forumInfo['forum_sub'])
+		{
+			$breadcrumb[]	= array('text'=> ltrim($forumInfo['sub_parent'], '*')		, 'url'=> e107::getUrl()->create('forum/forum/view', "id={$forumInfo['forum_sub']}"));
+		}
+	
+		$breadcrumb[]	= array('text'=>ltrim($forumInfo['forum_name'], '*')		, 'url'=> (e_PAGE !='forum_viewforum.php') ? e107::getUrl()->create('forum/forum/view', $forumInfo) : null);
+		
+		if(vartrue($forumInfo['thread_name']))
+		{
+			$breadcrumb[]	= array('text'=> $forumInfo['thread_name'] , 'url'=>null);
+		}
+		
+		
+		if(deftrue('BOOTSTRAP'))
+		{
+			$BREADCRUMB =  $frm->breadcrumb($breadcrumb);
+		}
+		
+		
+		
 		$BACKLINK = $BREADCRUMB;
 		$templateVar->BREADCRUMB = $BREADCRUMB;
+	
+	
 		$templateVar->BACKLINK = $BACKLINK;
 		$templateVar->FORUM_CRUMB = $FORUM_CRUMB;
 	}
