@@ -829,7 +829,7 @@ class download_shortcodes extends e_shortcode
       return "<form class='form-search' method='get' action='".e_BASE."search.php'>
       		  <p>
       		  <input class='tbox search-query' type='text' name='q' size='30' value='' placeholder=\"".LAN_dl_41."\" maxlength='50' />
-      		  <input class='btn button' type='submit' name='s'  value='".LAN_GO."' />
+      		  <input class='btn btn-primary button' type='submit' name='s'  value='".LAN_GO."' />
       		  <input type='hidden' name='r' value='0' />
       		  </p>
       		  </form>";

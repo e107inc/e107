@@ -183,9 +183,9 @@ class download
 			}	
 		}
 		
-		$download_shortcodes = e107::getScBatch('download',true);
-		$download_shortcodes->wrapper('download/categories');
-		$download_shortcodes->qry 	= $this->qry;	
+		$sc = e107::getScBatch('download',true);
+		$sc->wrapper('download/categories');
+		$sc->qry 	= $this->qry;	
 		
 	
 		
@@ -202,34 +202,34 @@ class download
 		$download_cat_table_string = "";
 		foreach($dlcat->cat_tree as $dlrow)  // Display main category headings, then sub-categories, optionally with sub-sub categories expanded
 		{
-			$download_shortcodes->setVars($dlrow); 
-			$download_cat_table_string .= $tp->parseTemplate($DOWNLOAD_CAT_PARENT_TABLE, TRUE, vartrue($download_shortcodes));
+			$sc->setVars($dlrow); 
+			$download_cat_table_string .= $tp->parseTemplate($DOWNLOAD_CAT_PARENT_TABLE, TRUE, vartrue($sc));
 			
 			foreach($dlrow['subcats'] as $dlsubrow)
 			{
-				$download_shortcodes->dlsubrow = $dlsubrow;
+				$sc->dlsubrow = $dlsubrow;
 				
 				
-				$download_cat_table_string .= $tp->parseTemplate($DOWNLOAD_CAT_CHILD_TABLE, TRUE, $download_shortcodes);
+				$download_cat_table_string .= $tp->parseTemplate($DOWNLOAD_CAT_CHILD_TABLE, TRUE, $sc);
 				
 				foreach($dlsubrow['subsubcats'] as $dlsubsubrow)
 				{
-					$download_shortcodes->dlsubsubrow = $dlsubsubrow;
-					$download_cat_table_string .= $tp->parseTemplate($DOWNLOAD_CAT_SUBSUB_TABLE, TRUE, $download_shortcodes);
+					$sc->dlsubsubrow = $dlsubsubrow;
+					$download_cat_table_string .= $tp->parseTemplate($DOWNLOAD_CAT_SUBSUB_TABLE, TRUE, $sc);
 				}
 			}
 	   }
 	  
-		$dl_text .= $tp->parseTemplate($this->templateHeader, TRUE, $download_shortcodes);
-		$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_START, TRUE, $download_shortcodes);
+		$dl_text .= $tp->parseTemplate($this->templateHeader, TRUE, $sc);
+		$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_START, TRUE, $sc);
 		$dl_text .= $download_cat_table_string;
-		$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_END, TRUE, $download_shortcodes);
+		$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_END, TRUE, $sc);
 	   
-		$caption = varset($DOWNLOAD_CAT_CAPTION) ? $tp->parseTemplate($DOWNLOAD_CAT_CAPTION, TRUE, $download_shortcodes) : LAN_dl_18;
+		$caption = varset($DOWNLOAD_CAT_CAPTION) ? $tp->parseTemplate($DOWNLOAD_CAT_CAPTION, TRUE, $sc) : LAN_dl_18;
 		
 		//ob_start();
 		
-		$dl_text .= $tp->parseTemplate($this->templateFooter, TRUE, $download_shortcodes);
+		$dl_text .= $tp->parseTemplate($this->templateFooter, TRUE, $sc);
 	   
 		return $ns->tablerender($caption, $dl_text, 'download-categories',true);
 
@@ -288,9 +288,9 @@ class download
 		
 		$gen = new convert;
 	
-		$download_shortcodes = e107::getScBatch('download',true);
-		$download_shortcodes->wrapper('download/view');
-		$download_shortcodes->qry 	= $this->qry;
+		$sc = e107::getScBatch('download',true);
+		$sc->wrapper('download/view');
+		$sc->qry 	= $this->qry;
 		
 		$highlight_search = FALSE;
 		if (isset($_POST['highlight_search'])) 
@@ -316,7 +316,7 @@ class download
 	
 	
 		$dlrow = $sql->fetch();
-		$download_shortcodes->setVars($dlrow);
+		$sc->setVars($dlrow);
 	
 		$comment_edit_query = 'comment.download.'.$id;
 		
@@ -327,16 +327,16 @@ class download
 	    	$DL_VIEW_PAGETITLE = PAGE_NAME." / {DOWNLOAD_CATEGORY} / {DOWNLOAD_VIEW_NAME}";
 		}
 	
-	    $DL_TITLE = $tp->parseTemplate($DL_VIEW_PAGETITLE, TRUE, $download_shortcodes);
+	    $DL_TITLE = $tp->parseTemplate($DL_VIEW_PAGETITLE, TRUE, $sc);
 	
 		define("e_PAGETITLE", $DL_TITLE);
 	
 		$DL_TEMPLATE = $DOWNLOAD_VIEW_TABLE_START.$DOWNLOAD_VIEW_TABLE.$DOWNLOAD_VIEW_TABLE_END;
 		
 		
-		$text = $tp->parseTemplate($this->templateHeader, TRUE, $download_shortcodes);
+		$text = $tp->parseTemplate($this->templateHeader, TRUE, $sc);
 		
-		$text .= $tp->parseTemplate($DL_TEMPLATE, TRUE, $download_shortcodes);
+		$text .= $tp->parseTemplate($DL_TEMPLATE, TRUE, $sc);
 	
 		if(!isset($DL_VIEW_NEXTPREV))
 		{
@@ -356,11 +356,11 @@ class download
 		
 		
 			// ------- Next/Prev -----------
-	   	$text .= $tp->parseTemplate($DL_VIEW_NEXTPREV,TRUE, $download_shortcodes);
+	   	$text .= $tp->parseTemplate($DL_VIEW_NEXTPREV,TRUE, $sc);
 	
-		$caption = $tp->parseTemplate($DL_VIEW_CAPTION, TRUE, $download_shortcodes);
+		$caption = $tp->parseTemplate($DL_VIEW_CAPTION, TRUE, $sc);
 		
-		$text .= $tp->parseTemplate($this->templateFooter, TRUE, $download_shortcodes);
+		$text .= $tp->parseTemplate($this->templateFooter, TRUE, $sc);
 		
 		$ret = $ns->tablerender($caption, $text, 'download-view', true);
 	
@@ -435,10 +435,10 @@ class download
 		$tp = e107::getParser();
 		$ns = e107::getRender();
 		
-	//	$download_shortcodes 		= new download_shortcodes;
-		$download_shortcodes = e107::getScBatch('download',true);
-		$download_shortcodes->wrapper('download/list');
-		$download_shortcodes->qry 	= $this->qry;
+	//	$sc 		= new download_shortcodes;
+		$sc = e107::getScBatch('download',true);
+		$sc->wrapper('download/list');
+		$sc->qry 	= $this->qry;
 		
 		
 		
@@ -448,7 +448,7 @@ class download
 		if ($sql->select("download_category", "download_category_name,download_category_description,download_category_parent,download_category_class", "(download_category_id='{$this->qry['id']}') AND (download_category_class IN (".USERCLASS_LIST."))") )
 		{
 	   	   $dlrow = $sql->fetch();
-	   	   $download_shortcodes->setVars($dlrow);	// Used below for header / breadcrumb. 
+	   	   $sc->setVars($dlrow);	// Used below for header / breadcrumb. 
 	   	   $type = $dlrow['download_category_name'];
 	   	   define("e_PAGETITLE", PAGE_NAME." / ".$dlrow['download_category_name']);
 		}
@@ -464,7 +464,7 @@ class download
 	   	  	 $maincatval = $id;
 		}
 		
-		$dl_text = $tp->parseTemplate($this->templateHeader, TRUE, $download_shortcodes);
+		$dl_text = $tp->parseTemplate($this->templateHeader, TRUE, $sc);
 						
 		$total_downloads = $sql->count("download", "(*)", "WHERE download_category = '{$this->qry['id']}' AND download_active > 0 AND download_visible REGEXP '" . e_CLASS_REGEXP . "'");
 		
@@ -502,16 +502,16 @@ class download
 	
 				$download_cat_table_string = "";
 				
-				$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_PRE, TRUE, $download_shortcodes);
-				$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_START, TRUE, $download_shortcodes);
+				$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_PRE, TRUE, $sc);
+				$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_START, TRUE, $sc);
 				
 				foreach($scArray as $dlsubsubrow)
 				{
-					$download_shortcodes->dlsubsubrow = $dlsubsubrow;
-					$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_SUBSUB_TABLE, TRUE, $download_shortcodes);
+					$sc->dlsubsubrow = $dlsubsubrow;
+					$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_SUBSUB_TABLE, TRUE, $sc);
 				}
 				
-				$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_END, TRUE, $download_shortcodes);
+				$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_END, TRUE, $sc);
 				
 			//	$text = $ns->tablerender($dl_title, $dl_text, 'download-list', true);
 			}
@@ -557,7 +557,7 @@ class download
 		if($filetotal)
 		{
 			// Only show list if some files in it
-			$dl_text .= $tp->parseTemplate($DOWNLOAD_LIST_TABLE_START, TRUE, $download_shortcodes);
+			$dl_text .= $tp->parseTemplate($DOWNLOAD_LIST_TABLE_START, TRUE, $sc);
 			
 			global $dlft, $dltdownloads;
 			
@@ -565,7 +565,7 @@ class download
 
 			while($dlrow = $sql->fetch())
 			{
-				$download_shortcodes->setVars($dlrow);	
+				$sc->setVars($dlrow);	
 				
 				$agreetext = $tp->toHTML($pref['agree_text'], TRUE, 'DESCRIPTION');
 				$current_row = ($current_row)? 0: 1;
@@ -574,19 +574,19 @@ class download
 				
 				$dltdownloads += $dlrow['download_requested'];
 				
-				$dl_text .= $tp->parseTemplate($template, TRUE, $download_shortcodes);
+				$dl_text .= $tp->parseTemplate($template, TRUE, $sc);
 			
 				
 			}
 
-			$dl_text .= $tp->parseTemplate($DOWNLOAD_LIST_TABLE_END, TRUE, $download_shortcodes);
+			$dl_text .= $tp->parseTemplate($DOWNLOAD_LIST_TABLE_END, TRUE, $sc);
 
 			if($sql->select("download_category", "*", "download_category_id='{$download_category_parent}' "))
 			{
 				$parent = $sql->fetch();
 			}
 
-			$dl_text .= $tp->parseTemplate($this->templateFooter, TRUE, $download_shortcodes);
+			$dl_text .= $tp->parseTemplate($this->templateFooter, TRUE, $sc);
 			
 			$text .= $ns->tablerender(LAN_dl_18, $dl_text, 'download-list', true);
 		}
@@ -612,7 +612,7 @@ class download
 
 		$nextprev_parms = $total_downloads . "," . $this->qry['view'] . "," . $this->qry['from'] . "," . e_SELF . "?[FROM].list.{$this->qry['id']}.{$this->qry['view']}.{$this->qry['order']}.{$this->qry['sort']}.";
 		
-		$text .= $tp->parseTemplate($DOWNLOAD_LIST_NEXTPREV, TRUE, $download_shortcodes);	
+		$text .= $tp->parseTemplate($DOWNLOAD_LIST_NEXTPREV, TRUE, $sc);	
 		
 		return $text;
 		
@@ -739,9 +739,9 @@ class download
 		
 		}
 		
-		$download_shortcodes = e107::getScBatch('download',true);
-		$download_shortcodes->wrapper('download/mirror');
-		$download_shortcodes->qry 	= $this->qry;
+		$sc = e107::getScBatch('download',true);
+		$sc->wrapper('download/mirror');
+		$sc->qry 	= $this->qry;
 		
 	//	$load_template = 'download_template';
 	//	if (!isset($DOWNLOAD_MIRROR_START)) eval($template_load_core);
@@ -762,7 +762,7 @@ class download
 		{
 			$dlrow = $sql->fetch();
 		//	$dlrow['mirrorlist'] = $mirrorList;
-			$download_shortcodes->setVars($dlrow);
+			$sc->setVars($dlrow);
 
 			
 			$array = explode(chr(1), $dlrow['download_mirror']);
@@ -789,9 +789,9 @@ class download
 				   }
 			}
 	
-			$dl_text = $tp->parseTemplate($this->templateHeader, TRUE, $download_shortcodes);
+			$dl_text = $tp->parseTemplate($this->templateHeader, TRUE, $sc);
 	
-		   	$dl_text = $tp->parseTemplate($DOWNLOAD_MIRROR_START, TRUE, $download_shortcodes);
+		   	$dl_text .= $tp->parseTemplate($DOWNLOAD_MIRROR_START, TRUE, $sc);
 			$download_mirror = 1;
 				
 		
@@ -803,16 +803,16 @@ class download
 					$dlmirrorfile = explode(",", $mirrorstring);
 				//	$dlmirror = $mirrorList[$dlmirrorfile[0]];
 					
-					$download_shortcodes->mirror['dlmirrorfile'] = $dlmirrorfile;
-					$download_shortcodes->mirror['dlmirror'] = $mirrorList[$dlmirrorfile[0]];
+					$sc->mirror['dlmirrorfile'] = $dlmirrorfile;
+					$sc->mirror['dlmirror'] = $mirrorList[$dlmirrorfile[0]];
 					
-					$dl_text .= $tp->parseTemplate($DOWNLOAD_MIRROR, TRUE, $download_shortcodes);
+					$dl_text .= $tp->parseTemplate($DOWNLOAD_MIRROR, TRUE, $sc);
 				}
 			}
 			   
-			$dl_text .= $tp->parseTemplate($DOWNLOAD_MIRROR_END, TRUE, $download_shortcodes);
+			$dl_text .= $tp->parseTemplate($DOWNLOAD_MIRROR_END, TRUE, $sc);
 			
-			$dl_text .= $tp->parseTemplate($this->templateFooter, TRUE, $download_shortcodes);
+			$dl_text .= $tp->parseTemplate($this->templateFooter, TRUE, $sc);
 			
 		   	return $ns->tablerender(LAN_dl_18, $dl_text, 'download-mirror', true);	
 		
@@ -830,6 +830,12 @@ class download
 	{
 		$ns = e107::getRender();
 		$pref = e107::getPref();
+		$tp = e107::getParser();
+		
+		$sc = e107::getScBatch('download',true);
+		
+		$header = $tp->parseTemplate($this->templateHeader,true, $sc);
+		$footer = $tp->parseTemplate($this->templateFooter,true, $sc);
 		
 		switch ($this->qry['error'])
 		{
@@ -852,7 +858,7 @@ class download
 	   	     $errmsg = LAN_dl_61." ".$this->qry['error'];		
 		}
 		
-		$ns->tablerender(LAN_dl_61, "<div class='alert alert-error alert-block' style='text-align:center'>".$errmsg."</div>");
+		return $ns->tablerender(LAN_dl_61, $header. "<div class='alert alert-error alert-block' style='text-align:center'>".$errmsg."</div>". $footer, 'download-error', true);
 		
 	}
    
