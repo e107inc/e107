@@ -398,11 +398,13 @@ $DOWNLOAD_TEMPLATE['categories']['subchild'] = "
 	               <td>
 	            	  {DOWNLOAD_CAT_SUBSUB_ICON}
 	            	</td>
-	            	<td style='padding-left:30px'>
+	            	<td >
+	            	<div class='offset1'>
 	            	{DOWNLOAD_CAT_SUBSUB_NEW_ICON} {DOWNLOAD_CAT_SUBSUB_NAME}<br/>
-	            		<small>
+	            		<small class='muted text-muted'>
 	            	 		{DOWNLOAD_CAT_SUBSUB_DESCRIPTION}
 	            		</small>
+	            		</div>
 	          		</td>
 	            	
 	               <td>{DOWNLOAD_CAT_SUBSUB_COUNT} </td>
@@ -414,7 +416,7 @@ $DOWNLOAD_TEMPLATE['categories']['subchild'] = "
 $DOWNLOAD_TEMPLATE['categories']['end'] = "
             </tbody>
          </table>
-         <div>
+         <div class='clearfix'>
          <div class='pull-left'><small>{DOWNLOAD_CAT_NEWDOWNLOAD_TEXT}</small></div>
 		<div class='pull-right'>{DOWNLOAD_CAT_SEARCH}</div>
 		</div>";
@@ -517,7 +519,7 @@ $DOWNLOAD_TEMPLATE['view']['nextprev'] = '
 
 $DOWNLOAD_TEMPLATE['list']['start'] = "
          <form method='post' action='".e_SELF."?".e_QUERY."'>
-            <table id='download' class='table table-striped fborder' style='".USER_WIDTH."'>\n
+            <table id='download' class='table table-striped'>\n
                <colgroup>
                   <col style='width:35%;'/>
                   <col style='width:15%;'/>
