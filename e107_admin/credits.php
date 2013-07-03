@@ -47,7 +47,7 @@ require_once(e_ADMIN."auth.php");
 	                     <h4 class="text-info">3rd Party</h4>
 	                    <p>
 	                        Twitter Bootstrap, MagpieRSS, PCLZip, PCLTar, TinyMCE,<br />
-	                        Nuvolo Icons, PHPMailer, FPDF, UFPDF, PHP UTF8
+	                        Nuvolo Icons, PHPMailer, TCPDF, PHP UTF8
 	                    </p>
                    
                     	<div class="copyright">Copyright <a href="http://e107.org/content/About-Us:The-Team" title="e107 Team">e107 Inc.</a> 2008-2013</div>
