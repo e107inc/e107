@@ -3920,7 +3920,7 @@ class eResponse
 		
 		$attr = array();
 				
-		if(null !== $name) $attr['property'] = $name;
+		if(null !== $name) $attr['name'] = $name;
 		if(null !== $content) $attr['content'] = $content;
 		if(!empty($extended)) 
 		{
