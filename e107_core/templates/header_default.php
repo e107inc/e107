@@ -139,7 +139,7 @@ else
 if(vartrue($pref['meta_copyright'][e_LANGUAGE])) e107::meta('copyright',$pref['meta_copyright'][e_LANGUAGE]);
 if(vartrue($pref['meta_author'][e_LANGUAGE])) e107::meta('author',$pref['meta_author'][e_LANGUAGE]);
 if($pref['sitebutton']) e107::meta('og:image',$tp->replaceConstants($pref['sitelogo'],'full'));
-if(defined("VIEWPORT")) e107::meta('viewport',VIEWPORT); //BC ONLY 
+if(defined("VIEWPORT")) echo '<meta name="viewport" content="'.VIEWPORT.'" />'; //BC ONLY 
 
 echo e107::getUrl()->response()->renderMeta()."\n";
 
