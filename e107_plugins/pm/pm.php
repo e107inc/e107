@@ -133,7 +133,7 @@ class pm_extended extends private_message
 		
 		$text = "<form {$enc} method='post' action='".e_SELF."' id='dataform'>
 		<div><input type='hidden' name='numsent' value='{$pm_outbox['outbox']['total']}' />".
-		e107::getParser()->parseTemplate($PM_SEND_PM, TRUE).
+		e107::getParser()->parseTemplate($PM_SEND_PM, TRUE, $sc).
 		'</div></form>';
 		return $text;
 	}
@@ -162,7 +162,7 @@ class pm_extended extends private_message
 		$sc->pmNextPrev = array('start' => $start, 'total' => $pmlist['total_messages']);
 		
 		$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
-		$txt .= $tp->parseTemplate($PM_INBOX_HEADER, true);
+		$txt .= $tp->parseTemplate($PM_INBOX_HEADER, true, $sc);
 		
 		if($pmlist['total_messages'])
 		{
