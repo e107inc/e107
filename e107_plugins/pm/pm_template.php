@@ -159,7 +159,7 @@ $PM_OUTBOX_TABLE = "
 	<td class='forumheader3'>{PM_READ_ICON}</td>
 	<td class='forumheader3'>{PM_SUBJECT=link,outbox}{PM_ATTACHMENT_ICON}</td>
 		<td class='forumheader3'>{PM_TO=link}</td>
-	<td class='forumheader3'>{PM_DATE}</td>
+	<td class='forumheader3'>{PM_DATE=lapse}</td>
 	<td class='forumheader3' style='text-align: center'>{PM_DELETE=outbox}</td>
 </tr>
 ";

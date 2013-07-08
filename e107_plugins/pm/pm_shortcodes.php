@@ -291,14 +291,15 @@ class pm_shortcodes extends e_shortcode
 
 	public function sc_pm_date($parm = '')
 	{
-		require_once(e_HANDLER.'date_handler.php');
-		if('lapse' != $parm)
+		$tp = e107::getParser();
+				
+		if($parm)
 		{
-			return convert::convert_date($this->var['pm_sent'], $parm);
+			return $tp->toDate($this->var['pm_sent'], $parm);
 		}
 		else
 		{
-			return convert::computeLapse($this->var['pm_sent']);
+			return $tp->toDate($this->var['pm_sent'], 'relative');
 		}
 	}
 
