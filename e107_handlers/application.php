@@ -43,7 +43,7 @@ class eFront
 	/**
 	 * @var eRequest
 	 */
-	protected $_request;
+	protected $_request; 
 	
 	/**
 	 * @var eRouter
@@ -3920,7 +3920,11 @@ class eResponse
 		
 		$attr = array();
 				
-		if(null !== $name) $attr['property'] = $name;
+		if(null !== $name)
+		{
+			$key = (substr($name,0,3) == 'og:') ? 'property' : 'name';			
+			$attr[$key] = $name;
+		}
 		if(null !== $content) $attr['content'] = $content;
 		if(!empty($extended)) 
 		{

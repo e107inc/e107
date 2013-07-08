@@ -133,7 +133,7 @@ class pm_extended extends private_message
 		
 		$text = "<form {$enc} method='post' action='".e_SELF."' id='dataform'>
 		<div><input type='hidden' name='numsent' value='{$pm_outbox['outbox']['total']}' />".
-		e107::getParser()->parseTemplate($PM_SEND_PM, TRUE).
+		e107::getParser()->parseTemplate($PM_SEND_PM, TRUE, $sc).
 		'</div></form>';
 		return $text;
 	}
@@ -162,7 +162,7 @@ class pm_extended extends private_message
 		$sc->pmNextPrev = array('start' => $start, 'total' => $pmlist['total_messages']);
 		
 		$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
-		$txt .= $tp->parseTemplate($PM_INBOX_HEADER, true);
+		$txt .= $tp->parseTemplate($PM_INBOX_HEADER, true, $sc);
 		
 		if($pmlist['total_messages'])
 		{
@@ -170,15 +170,15 @@ class pm_extended extends private_message
 			{
 				if(trim($rec['pm_subject']) == '') { $rec['pm_subject'] = '['.LAN_PM_61.']'; }
 				$sc->setVars($rec);	
-				$txt .= $tp->parseTemplate($PM_INBOX_TABLE, true);
+				$txt .= $tp->parseTemplate($PM_INBOX_TABLE, true, $sc);
 			}
 		}
 		else
 		{
-			$txt .= $tp->parseTemplate($PM_INBOX_EMPTY, true);
+			$txt .= $tp->parseTemplate($PM_INBOX_EMPTY, true, $sc);
 		}
 		
-		$txt .= $tp->parseTemplate($PM_INBOX_FOOTER, true);
+		$txt .= $tp->parseTemplate($PM_INBOX_FOOTER, true, $sc);
 		$txt .= "</form>";
 		
 		return $txt;
@@ -205,7 +205,7 @@ class pm_extended extends private_message
 		
 		
 		$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
-		$txt .= $tp->parseTemplate($PM_OUTBOX_HEADER, true);
+		$txt .= $tp->parseTemplate($PM_OUTBOX_HEADER, true, $sc);
 		if($pmlist['total_messages'])
 		{
 			foreach($pmlist['messages'] as $rec)
@@ -213,14 +213,14 @@ class pm_extended extends private_message
 				if(trim($rec['pm_subject']) == '') { $rec['pm_subject'] = '['.LAN_PM_61.']'; }
 			//	setScVar('pm_handler_shortcodes','pmInfo', $rec);
 				$sc->setVars($rec);	
-				$txt .= $tp->parseTemplate($PM_OUTBOX_TABLE, true);
+				$txt .= $tp->parseTemplate($PM_OUTBOX_TABLE, true, $sc);
 			}
 		}
 		else
 		{
-			$txt .= $tp->parseTemplate($PM_OUTBOX_EMPTY, true);
+			$txt .= $tp->parseTemplate($PM_OUTBOX_EMPTY, true, $sc);
 		}
-		$txt .= $tp->parseTemplate($PM_OUTBOX_FOOTER, true);
+		$txt .= $tp->parseTemplate($PM_OUTBOX_FOOTER, true, $sc);
 		$txt .= '</form>';
 		return $txt;
 	}
@@ -259,7 +259,7 @@ class pm_extended extends private_message
 			$this->pm_mark_read($pmid, $pm_info);
 		}
 
-		$txt = e107::getParser()->parseTemplate($PM_SHOW, true);
+		$txt = e107::getParser()->parseTemplate($PM_SHOW, true, $sc);
 		$ns->tablerender(LAN_PM, $txt);
 
 		if (!$comeFrom)
@@ -296,21 +296,21 @@ class pm_extended extends private_message
 		$sc->pmBlocks = $pmBlocks; 
 	
 		$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
-		$txt .= $tp->parseTemplate($PM_BLOCKED_HEADER, true);
+		$txt .= $tp->parseTemplate($PM_BLOCKED_HEADER, true, $sc);
 		if($pmTotalBlocked = count($pmBlocks))
 		{
 			foreach($pmBlocks as $pmBlocked)
 			{
 				$sc->pmBlocked = $pmBlocked; 
 			//	setScVar('pm_handler_shortcodes','pmBlocked', $pmBlocked);
-				$txt .= $tp->parseTemplate($PM_BLOCKED_TABLE, true);
+				$txt .= $tp->parseTemplate($PM_BLOCKED_TABLE, true, $sc);
 			}
 		}
 		else
 		{
-			$txt .= $tp->parseTemplate($PM_BLOCKED_EMPTY, true);
+			$txt .= $tp->parseTemplate($PM_BLOCKED_EMPTY, true, $sc);
 		}
-		$txt .= $tp->parseTemplate($PM_BLOCKED_FOOTER, true);
+		$txt .= $tp->parseTemplate($PM_BLOCKED_FOOTER, true, $sc);
 		$txt .= '</form>';
 		return $txt;
 	}
