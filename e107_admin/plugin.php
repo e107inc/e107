@@ -1879,7 +1879,7 @@ class pluginBuilder
 				case 'main-name':
 					$help 		= "The name of your plugin. (Must be written in English)";
 					$required 	= true;
-					$pattern 	= "[A-Za-z ]*";
+					$pattern 	= "[A-Za-z0-9 ]*";
 				break;
 		
 				case 'main-lang':
