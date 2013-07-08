@@ -395,7 +395,7 @@ function nextprev_shortcode($parm = '')
 		$caption = trim($p[4]);
 		$pagetitle = explode('|',trim($p[5]));
 
-		$caption = (!$caption || $caption == 'off') ? NP_3.'&nbsp;' : $caption;
+		$caption = (!$caption || $caption == 'off') ? LAN_GOPAGE.'&nbsp;' : $caption;
 
 		while(substr($url, -1) == '.')
 		{
