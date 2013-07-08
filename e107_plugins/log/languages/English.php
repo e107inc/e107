@@ -56,7 +56,7 @@ define("ADSTAT_L37", "Visits by month");
 define("ADSTAT_L38", "Unique visits by month");
 define("ADSTAT_L39", "remove this entry");
 define("ADSTAT_L40", "days");
-define("ADSTAT_L41", "Error");
+//define("ADSTAT_L41", "Error"); // FIXME GENERIC
 define("ADSTAT_L42", "No monthly stats yet.");
 
 define("ADSTAT_L43", "Today's page errors");

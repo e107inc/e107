@@ -2,22 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Id$
  */
 
-/**
- *	e107 Stats logging plugin
- *
- *	@package	e107_plugins
- *	@subpackage	log
- *	@version 	$Id$;
- */
 
 require_once('../../class2.php');
 if (!e107::isInstalled('log')) 
@@ -29,20 +19,19 @@ if (!e107::isInstalled('log'))
 include_lan(e_PLUGIN.'log/languages/'.e_LANGUAGE.'.php');
 
 $bar = (file_exists(THEME.'images/bar.png') ? THEME_ABS.'images/bar.png' : e_IMAGE_ABS.'generic/bar.png');
+$mes = e107::getMessage();
 
 e107::css('inline', "
 /* Site Stats */
 .b { background-image: url('".$bar."'); border: 1px solid #999; height: 10px; font-size: 0px }
 ");
 
-
-
 require_once(HEADERF);
 
 if(!check_class(e107::getPref('statUserclass'))) 
 {
-	$text = "<div style='text-align: center;'>".ADSTAT_L4."</div>";
-	$ns->tablerender(ADSTAT_L6, $text);
+	$mes->addError(ADSTAT_L4); 
+	$ns->tablerender(ADSTAT_L6, $mes->render());
 	require_once(FOOTERF);
 	exit;
 }
@@ -67,9 +56,9 @@ $order = intval($order);
 
 $stat = new siteStats($order);
 
-if($stat -> error) 
+if($stat->error) 
 {
-	$ns->tablerender(ADSTAT_L6, $stat -> error);
+	$ns->tablerender(ADSTAT_L6, $stat->error);
 	require_once(FOOTERF);
 	exit;
 }
