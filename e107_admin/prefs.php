@@ -264,20 +264,20 @@ $text = "
 				</colgroup>
 				<tbody>
 					<tr>
-						<td>".PRFLAN_2."</td>
+						<td><label for='sitename'>".PRFLAN_2."</label></td>
 						<td>
 							".$frm->text('sitename', $pref['sitename'], 100, 'required=1')."
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_3."</td>
+						<td><label for='siteurl'>".PRFLAN_3."</label></td>
 						<td>
 							".$frm->text('siteurl', $pref['siteurl'], 150)."
 							".($pref['siteurl'] == SITEURL ? "" : "<div class='field-help'>".PRFLAN_159.": <strong>".SITEURL."</strong></div>")."
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_134."</td>
+						<td><label for='redirectsiteurl'>".PRFLAN_134."</label></td>
 						<td>";
 						/*
 							".$frm->radio('redirectsiteurl', 1, $pref['redirectsiteurl'], array('label'=>LAN_ENABLED))." 
@@ -287,7 +287,7 @@ $text = "
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_4."</td>
+						<td><label for='sitebutton'>".PRFLAN_4."</label></td>
 						<td>
 ";
 /*
@@ -319,18 +319,18 @@ $text .= "
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_214."</td>
+						<td><label for='sitelogo'>".PRFLAN_214."</label></td>
 						<td>".$frm->imagepicker('sitelogo',$pref['sitelogo'],'_common','help=Used by some themes as the header image on some pages.')."</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_5."</td>
+						<td><label for='sitetag'>".PRFLAN_5."</label></td>
 						<td>
 							".$frm->textarea('sitetag', $pref['sitetag'], 3, 59)."
 							<div class='field-help'>Used by some themes. Place 'SITETAG' in your theme to use this value.</div>
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_6."</td>
+						<td><label for='sitedescription'>".PRFLAN_6."</label></td>
 						<td>
 							".$frm->textarea('sitedescription', $pref['sitedescription'], 3, 80)."
 							<div class='field-help'>Used by some themes. Place 'SITEDESCRIPTION' in your theme to use this value.</div>
@@ -338,7 +338,7 @@ $text .= "
 					</tr>
 					
 					<tr>
-						<td>".PRFLAN_9."</td>
+						<td><label for='sitedisclaimer'>".PRFLAN_9."</label></td>
 						<td>
 							".$frm->textarea('sitedisclaimer', str_replace(array('<', '>', '"'), array('&lt;', '&gt;', '&quot;'), $pref['sitedisclaimer']), 3, 80)."
 							<div class='field-help'>Used by some themes. Place 'SITEDISCLAIMER' in your theme to use this value.</div>
@@ -362,26 +362,26 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 				</colgroup>
 				<tbody>
 				<tr>
-					<td>".PRFLAN_7."</td>
+					<td><label for='siteadmin'>".PRFLAN_7."</label></td>
 					<td>
 						".$frm->text('siteadmin', SITEADMIN, 100)."
 					</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_8."</td>
+						<td><label for='siteadminemail'>".PRFLAN_8."</label></td>
 						<td>
 							".$frm->text('siteadminemail', SITEADMINEMAIL, 100)."
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_174."</td>
+						<td><label for='replyto-name'>".PRFLAN_174."</label></td>
 						<td>
 							".$frm->text('replyto_name', $pref['replyto_name'], 100)."
 							<div class='smalltext field-help'>".PRFLAN_175."</div>
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_176."</td>
+						<td><label for='replyto-email'>".PRFLAN_176."</label></td>
 						<td>
 							".$frm->text('replyto_email', $pref['replyto_email'], 100)."
 							<div class='smalltext field-help'>".PRFLAN_177."</div>
@@ -390,16 +390,16 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 							
 							
 					<tr>
-						<td>".LAN_MAILOUT_110."<br /></td>
+						<td><label for='testaddress'>".LAN_MAILOUT_110."</label><br /></td>
 						<td class='form-inline'>".$frm->admin_button('testemail', LAN_MAILOUT_112,'other')."&nbsp;
-							<input name='testaddress' class='tbox' placeholder='user@yoursite.com' type='text' size='40' maxlength='80' value=\"".(varset($_POST['testaddress']) ? $_POST['testaddress'] : USEREMAIL)."\" />
+							<input name='testaddress' id='testaddress' class='tbox' placeholder='user@yoursite.com' type='text' size='40' maxlength='80' value=\"".(varset($_POST['testaddress']) ? $_POST['testaddress'] : USEREMAIL)."\" />
 						</td>
 					</tr>
 		
 					<tr>
-						<td style='vertical-align:top'>".LAN_MAILOUT_115."<br /></td>
+						<td style='vertical-align:top'><label for='mailer'>".LAN_MAILOUT_115."</label><br /></td>
 						<td>
-						<select class='tbox' name='mailer' onchange='disp(this.value)'>\n";
+						<select class='tbox' name='mailer' id='mailer' onchange='disp(this.value)'>\n";
 						$mailers = array('php','smtp','sendmail');
 						foreach($mailers as $opt)
 						{
@@ -422,29 +422,29 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 			";
 			$text .= "
 			<tr>
-				<td>".LAN_MAILOUT_87.":&nbsp;&nbsp;</td>
+				<td><label for='smtp_server'>".LAN_MAILOUT_87.":&nbsp;&nbsp;</label></td>
 				<td>
-				<input class='tbox' type='text' name='smtp_server' size='40' value='".vartrue($pref['smtp_server'])."' maxlength='50' autocomplete='off' />
+				<input class='tbox' type='text' name='smtp_server' id='smtp_server'  size='40' value='".vartrue($pref['smtp_server'])."' maxlength='50' autocomplete='off' />
 				</td>
 			</tr>
 	
 			<tr>
-				<td>".LAN_MAILOUT_88.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</td>
+				<td><label for='smtp_username'>".LAN_MAILOUT_88.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</label></td>
 				<td style='width:50%;' >
-				<input class='tbox' type='text' name='smtp_username' size='40' value=\"".vartrue($pref['smtp_username'])."\" maxlength='50' autocomplete='off' />
+				<input class='tbox' type='text' name='smtp_username' id='smtp_username' size='40' value=\"".vartrue($pref['smtp_username'])."\" maxlength='50' autocomplete='off' />
 				</td>
 			</tr>
 	
 			<tr>
-				<td>".LAN_MAILOUT_89.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</td>
+				<td><label for='smtp_password'>".LAN_MAILOUT_89.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</label></td>
 				<td>
-				<input class='tbox' type='password' name='smtp_password' size='40' value='".vartrue($pref['smtp_password'])."' maxlength='50' autocomplete='off' />
+				<input class='tbox' type='password' name='smtp_password' id='smtp_password' size='40' value='".vartrue($pref['smtp_password'])."' maxlength='50' autocomplete='off' />
 				</td>
 			</tr>
 
 			<tr>
-				<td>".LAN_MAILOUT_90."</td><td>
-				<select class='tbox' name='smtp_options'>\n
+				<td><label for='smtp_options'>".LAN_MAILOUT_90."</label></td><td>
+				<select class='tbox' name='smtp_options' id='smtp_options'>\n
 				<option value=''>".LAN_MAILOUT_96."</option>\n";
 			$selected = (in_array('secure=SSL',$smtp_opts) ? " selected='selected'" : '');
 			$text .= "<option value='smtp_ssl'{$selected}>".LAN_MAILOUT_92."</option>\n";
@@ -455,17 +455,17 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 			$text .= "</select><span class='field-help'>".LAN_MAILOUT_94."</span></td></tr>";
 		
 			$text .= "<tr>
-				<td>".LAN_MAILOUT_57."</td><td>
+				<td><label for='smtp_keepalive'>".LAN_MAILOUT_57."</label></td><td>
 				";
 			$checked = (varsettrue($pref['smtp_keepalive']) ) ? "checked='checked'" : '';
-			$text .= "<input type='checkbox' name='smtp_keepalive' value='1' {$checked} />
+			$text .= "<input type='checkbox' name='smtp_keepalive' id='smtp_keepalive' value='1' {$checked} />
 				</td>
 				</tr>";
 		
 			$checked = (in_array('useVERP',$smtp_opts) ? "checked='checked'" : "");
 			$text .= "<tr>
-				<td>".LAN_MAILOUT_95."</td><td>
-				<input type='checkbox' name='smtp_useVERP' value='1' {$checked} />
+				<td><label for='smtp_useVERP'>".LAN_MAILOUT_95."</label></td><td>
+				<input type='checkbox' name='smtp_useVERP' id='smtp_useVERP' value='1' {$checked} />
 				</td>
 				</tr>
 				</table></div>";
@@ -495,7 +495,7 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 			
 			
 				<tr>
-					<td>".LAN_MAILOUT_222."</td>
+					<td><label for='mail-sendstyle'>".LAN_MAILOUT_222."</label></td>
 					<td>";
 					
 				$emFormat = array(
@@ -510,21 +510,21 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 					
 
 					<tr>
-						<td>".PRFLAN_162."</td>
+						<td><label for='sitecontactinfo'>".PRFLAN_162."</label></td>
 						<td>
 							".$frm->textarea('sitecontactinfo', $pref['sitecontactinfo'], 6, 59)."
 							<div class='smalltext field-help'>".PRFLAN_163."</div>
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_168."</td>
+						<td><label for='sitecontacts'>".PRFLAN_168."</label></td>
 						<td>
 							".$e_userclass->uc_dropdown('sitecontacts', $pref['sitecontacts'], 'nobody,main,admin,classes', "tabindex='".$frm->getNext()."'")."
 							<div class='smalltext field-help'>".PRFLAN_169."</div>
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_164."</td>
+						<td><label for='contact-emailcopy'>".PRFLAN_164."</label></td>
 						<td>";
 						/*
 							".$frm->radio('contact_emailcopy', 1, $pref['contact_emailcopy'])."
@@ -555,7 +555,7 @@ $text .= "
 				</colgroup>
 				<tbody>
 					<tr>
-						<td>".PRFLAN_14." </td>
+						<td><label for='displaythemeinfo'>".PRFLAN_14."</label></td>
 						<td>
 							".$frm->radio_switch('displaythemeinfo', $pref['displaythemeinfo'])."
 						</td>
@@ -1925,7 +1925,7 @@ function pref_submit($post_id = '')
 function prefs_adminmenu()
 {
 	$var['core-prefs-main']['text'] = PRFLAN_1;
-	$var['core-prefs-email']['text'] = "Email &amp; Contact Info.";
+	$var['core-prefs-email']['text'] = "Email &amp; Contact Info";
 	$var['core-prefs-registration']['text'] = PRFLAN_28;
 	$var['core-prefs-signup']['text'] = PRFLAN_19;
 	$var['core-prefs-sociallogin']['text'] = "Social Options";
