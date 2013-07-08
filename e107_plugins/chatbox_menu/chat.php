@@ -6,12 +6,6 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/chat.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 require_once('../../class2.php');
@@ -24,13 +18,14 @@ if (!plugInstalled('chatbox_menu'))
 include_lan(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php");
 
 require_once(HEADERF);
-
-$sql->db_Select("menus", "*", "menu_name='chatbox_menu'");
-$row = $sql->db_Fetch();
+$mes = e107::getMessage();
+$sql->select("menus", "*", "menu_name='chatbox_menu'");
+$row = $sql->fetch();
 
 if (!check_class($row['menu_class'])) 
 {
-	$ns->tablerender(CHATBOX_L23, "<div style='text-align:center'>".CHATBOX_L24."</div>");
+	$mes->addError(CHATBOX_L24); 
+	$ns->tablerender(CHATBOX_L23, $mes->render());
 	require_once(FOOTERF);
 	exit;
 }
@@ -47,14 +42,14 @@ if($_POST['moderate'] && CB_MOD)
 	{
 		foreach(array_keys($_POST['block']) as $k){ $kk[] = intval($k); }
 		$blocklist = implode(",", $kk);
-		$sql->db_Select_gen("UPDATE #chatbox SET cb_blocked=1 WHERE cb_id IN ({$blocklist})");
+		$sql->gen("UPDATE #chatbox SET cb_blocked=1 WHERE cb_id IN ({$blocklist})");
 	}
 
 	if(isset($_POST['unblock']))
 	{
 		foreach(array_keys($_POST['unblock']) as $k){ $kk[] = intval($k); }
 		$unblocklist = implode(",", $kk);
-		$sql->db_Select_gen("UPDATE #chatbox SET cb_blocked=0 WHERE cb_id IN ({$unblocklist})");
+		$sql->gen("UPDATE #chatbox SET cb_blocked=0 WHERE cb_id IN ({$unblocklist})");
 	}
 
 	if(isset($_POST['delete']))
@@ -65,12 +60,12 @@ if($_POST['moderate'] && CB_MOD)
 		WHERE c.cb_id IN (".$deletelist.")");
 		$rowlist = $sql -> db_getList();
 		foreach ($rowlist as $row) {
-			$sql -> db_Select_gen("UPDATE #user SET user_chats=user_chats-1 where user_id = ".intval($row['user_id']));
+			$sql->gen("UPDATE #user SET user_chats=user_chats-1 where user_id = ".intval($row['user_id']));
 		}
-		$sql -> db_Select_gen("DELETE FROM #chatbox WHERE cb_id IN ({$deletelist})");
+		$sql->gen("DELETE FROM #chatbox WHERE cb_id IN ({$deletelist})");
 	}
 	$e107cache->clear("nq_chatbox");
-	$message = CHATBOX_L18;
+	$mes->addSuccess(CHATBOX_L18);
 }
 
 // when coming from search.php
@@ -83,7 +78,7 @@ if (strstr(e_QUERY, "fs"))
 
 if (e_QUERY ? $from = intval(e_QUERY) : $from = 0);
 
-$chat_total = $sql->db_Count('chatbox');
+$chat_total = $sql->count('chatbox');
 
 $qry_where = (CB_MOD ? "1" : "cb_blocked=0");
 
@@ -93,7 +88,7 @@ if ($fs)
 	$page_count = 0;
 	$row_count = 0;
 	$sql->db_Select("chatbox", "*", "{$qry_where} ORDER BY cb_datestamp DESC");
-	while ($row = $sql -> db_Fetch()) 
+	while ($row = $sql->fetch()) 
 	{
 		if ($row['cb_id'] == $cgtm) 
 		{
@@ -110,7 +105,7 @@ if ($fs)
 }
 // end search
 
-$sql->db_Select("chatbox", "*", "{$qry_where} ORDER BY cb_datestamp DESC LIMIT ".intval($from).", 30");
+$sql->select("chatbox", "*", "{$qry_where} ORDER BY cb_datestamp DESC LIMIT ".intval($from).", 30");
 $obj2 = new convert;
 
 $chatList = $sql->db_getList();
@@ -156,19 +151,17 @@ foreach ($chatList as $row)
 $textstart = preg_replace("/\{(.*?)\}/e", '$\1', $CHAT_TABLE_START);
 $textend = preg_replace("/\{(.*?)\}/e", '$\1', $CHAT_TABLE_END);
 $text = $textstart.$textstring.$textend;
+
 if(CB_MOD)
 {
 	$text = "<form method='post' action='".e_SELF."'>".$text."<input type='submit' class='btn button' name='moderate' value='".CHATBOX_L13."' /></form>";
-}
-if($message)
-{
-	$ns->tablerender("", $message);
 }
 
 $parms = "{$chat_total},30,{$from},".e_SELF.'?[FROM]';
 $text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}").'</div>';
 
-$ns->tablerender(CHATBOX_L20, $text);
+
+$ns->tablerender(CHATBOX_L20, $mes->render().$text);
 
 
 //require_once(e_HANDLER."np_class.php");
