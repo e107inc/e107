@@ -128,8 +128,14 @@ class core_news_url extends eUrlConfig
 				break;
 				
 				case 'category':
-					if(!vartrue($params['id'])) $url .= 'default.0.'.$page;
-					else $url .= 'list.'.$params['id'].'.'.$page;
+					if(!vartrue($params['id']))
+					{
+						 $url .= 'default.0.'.$page;
+					}
+					else 
+					{
+						$url .= 'list.'.$params['category_id'].'.'.$page;	
+					}
 				break;
 					
 				case 'all':
