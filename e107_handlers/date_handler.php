@@ -498,8 +498,9 @@ class convert
 		  {  // Only show non-zero values, except always show minutes/seconds
 		    $outputArray[] = $result[$i]." ".($result[$i] == 1 ? $params[$i][2] : $params[$i][3]) ;
 			
-			if($format == 'short' && $i == 1) { break; }
+			
 		  }
+		  if($format == 'short' && count($outputArray) == 1) { break; }
 		}
 		return ($mode ? $outputArray : implode(", ", $outputArray) . " ago"); //XXX LAN
 	}
