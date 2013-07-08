@@ -231,7 +231,7 @@ elseif (isset($pref['themecss']) && $pref['themecss'])
 {
 	$css_file = (file_exists(THEME.'admin_'.$pref['themecss']) && !vartrue($_GET['configure'])) ? 'admin_'.$pref['themecss'] : $pref['themecss'];
 	//echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
-	// $e_js->themeCSS($css_file); // Test with superhero.css for frontend bootstrap and 'dark' for backend bootstrap. 
+	$e_js->themeCSS($css_file); // Test with superhero.css for frontend bootstrap and 'dark' for backend bootstrap. 
 }
 else
 {
@@ -239,6 +239,16 @@ else
 	//echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
 	$e_js->themeCSS($css_file);
 }
+
+if(e_PAGE == 'menus.php' && vartrue($_GET['configure'])) // Quick fix for Menu Manager inactive drop-down problem. 
+{
+	$css_file = $pref['themecss'];
+	$e_js->themeCSS($css_file); // Test with superhero.css for frontend bootstrap and 'dark' for backend bootstrap. 
+//	return; 
+}
+
+
+
 
 // FIXME: TEXTDIRECTION compatibility CSS (marj?)
 // TODO: probably better to externalise along with some other things above
