@@ -113,7 +113,7 @@ if(check_class($pm_prefs['pm_class']))
 	
 	$pm_inbox = $pmManager->pm_getInfo('inbox');
 
-	$txt = "\n".$tp->parseTemplate($pm_menu_template, TRUE);
+	$txt = "\n".$tp->parseTemplate($pm_menu_template, TRUE, $sc);
 	
 	if($pm_inbox['inbox']['new'] > 0 && $pm_prefs['popup'] && strpos(e_SELF, 'pm.php') === FALSE && $_COOKIE['pm-alert'] != 'ON')
 	{

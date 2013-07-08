@@ -328,18 +328,19 @@ class pm_shortcodes extends e_shortcode
 	public function sc_pm_from_to()
 	{
 		$tp = e107::getParser();
+		$sc = e107::getScBatch('pm',TRUE);
 		
 		if($this->var['pm_from'] == USERID)
 		{
 			$ret = LAN_PM_2.': <br />';
 			$this->var['user_name'] = $this->var['sent_name'];
-			$ret .= $tp->parseTemplate("{PM_TO=link}");
+			$ret .= $tp->parseTemplate("{PM_TO=link}", false, $sc);
 		}
 		else
 		{
 			$ret = LAN_PM_31.': <br />';
 			$this->var['user_name'] = $this->var['from_name'];
-			$ret .= $tp->parseTemplate("{PM_FROM=link}");
+			$ret .= $tp->parseTemplate("{PM_FROM=link}", false, $sc);
 		}
 		return $ret;
 	}
