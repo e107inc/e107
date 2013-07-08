@@ -488,7 +488,7 @@ function pm_user_lookup()
 
 
 //$pm =& new private_message;
-$pm = new pm_extended($pm_prefs, &$pmManager);
+$pm = new pm_extended($pm_prefs, $pmManager);
 
 $message = '';
 $pmSource = '';
