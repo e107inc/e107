@@ -212,6 +212,11 @@ class e107forum
 	function ajaxQuickReply()
 	{
 		$tp = e107::getParser();
+		
+		if(!isset($_POST['e_token'])) // Set the token if not included 
+		{
+			$_POST['e_token'] = '';	
+		}
 				
 		if(!e107::getSession()->check(false) || !$this->checkPerm($_POST['post'], 'post'))
 		{
