@@ -231,7 +231,7 @@ elseif (isset($pref['themecss']) && $pref['themecss'])
 {
 	$css_file = (file_exists(THEME.'admin_'.$pref['themecss']) && !vartrue($_GET['configure'])) ? 'admin_'.$pref['themecss'] : $pref['themecss'];
 	//echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
-	$e_js->themeCSS($css_file); // Test with superhero.css for frontend bootstrap and 'dark' for backend bootstrap. 
+	// $e_js->themeCSS($css_file); // Test with superhero.css for frontend bootstrap and 'dark' for backend bootstrap. 
 }
 else
 {
