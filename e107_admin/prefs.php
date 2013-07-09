@@ -561,13 +561,13 @@ $text .= "
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_15." </td>
+						<td><label for='displayrendertime'>".PRFLAN_15."</label></td>
 						<td>
 							".$frm->radio_switch('displayrendertime', $pref['displayrendertime'])."
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_16." </td>
+						<td><label for='displaysql'>".PRFLAN_16."</label></td>
 						<td>
 							".$frm->radio_switch('displaysql', $pref['displaysql'])."
 						</td>
@@ -577,7 +577,7 @@ if(function_exists("memory_get_usage"))
 {
 	$text .= "
 					<tr>
-						<td>".PRFLAN_137." </td>
+						<td><label for='display-memory-usage'>".PRFLAN_137."</label></td>
 						<td>
 							".$frm->radio_switch('display_memory_usage', $pref['display_memory_usage'])."
 						</td>
@@ -602,32 +602,32 @@ $text .= "
 				</colgroup>
 				<tbody>
 					<tr>
-						<td>".PRFLAN_95."</td>
+						<td><label for='admin-alerts-ok'>".PRFLAN_95."</label></td>
 						<td>
 							".$frm->radio_switch('admin_alerts_ok', $pref['admin_alerts_ok'])."
-							<div class='smalltext field-help'>".PRFLAN_96."</div>
+							<div class='field-help'>".PRFLAN_96."</div>
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_97."</td>
+						<td><label for='admin-alerts-uniquemenu'>".PRFLAN_97."</label></td>
 						<td>
 							".$frm->radio_switch('admin_alerts_uniquemenu', $pref['admin_alerts_uniquemenu'])."
-							<div class='smalltext field-help'>".PRFLAN_98."</div>
+							<div class='field-help'>".PRFLAN_98."</div>
 						</td>
 					</tr>";
 					/*<tr>
 						<td>".PRFLAN_199."</td>
 						<td>
 							".$frm->radio_switch('admin_slidedown_subs', $pref['admin_slidedown_subs'])."
-							<div class='smalltext field-help'>".PRFLAN_200."</div>
+							<div class='field-help'>".PRFLAN_200."</div>
 						</td>
 					</tr>*/
 					$text .= "
 					<tr>
-						<td>".PRFLAN_204."</td>
+						<td><label for='admin-separate-plugins'>".PRFLAN_204."</label></td>
 						<td>
 							".$frm->radio_switch('admin_separate_plugins', $pref['admin_separate_plugins'])."
-							<div class='smalltext field-help'>".PRFLAN_205."</div>
+							<div class='field-help'>".PRFLAN_205."</div>
 						</td>
 					</tr>
 				</tbody>
@@ -654,21 +654,21 @@ $text .= "
 				</colgroup>
 				<tbody>
 					<tr>
-						<td>".PRFLAN_22.": </td>
+						<td><label for='shortdate'>".PRFLAN_22."</label></td>
 						<td>
 							".$frm->text('shortdate', $pref['shortdate'], 50)."
 							<div class='field-help'>".PRFLAN_83.": {$date1}</div>
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_23.": </td>
+						<td><label for='longdate'>".PRFLAN_23."</label></td>
 						<td>
 							".$frm->text('longdate', $pref['longdate'], 50)."
 							<div class='field-help'>".PRFLAN_83.": {$date2}</div>
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_24."</td>
+						<td><label for='forumdate'>".PRFLAN_24."</label></td>
 						<td>
 							".$frm->text('forumdate', $pref['forumdate'], 50)."
 							<div class='field-help'>".PRFLAN_83.": {$date3}</div>
@@ -727,10 +727,10 @@ $text .= "
 			
 			
 					
-					
+					// TODO LAN
 					$text .= "
 					<tr>
-						<td>Date/Time Input-Field format: </td>
+						<td><label for='inputdate'>Date/Time Input-Field format</label></td>
 						<td>
 							".$frm->select('inputdate',$inputdate, e107::getPref('inputdate'));
 							
@@ -740,7 +740,7 @@ $text .= "
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_26."</td>
+						<td><label for='time-offset'>".PRFLAN_26."</label></td>
 						<td>
 							".$frm->select_open('time_offset', 'class=tbox select time-offset');//use form handler because of the tabindex
 $toffset = array("-12", "-11", "-10", "-9", "-8", "-7", "-6", "-5", "-4", "-3", "-2", "-1", "0", "+1", "+2", "+3", "+4", "+5", "+6", "+7", "+8", "+9", "+10", "+11", "+12", "+13", "+14", "+15", "+16");
@@ -760,7 +760,7 @@ $text .= "
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_56.": </td>
+						<td><label for='timezone'>".PRFLAN_56."</label></td>
 						<td>
 							".$frm->text('timezone', $pref['timezone'], 50)."
 						</td>
@@ -782,7 +782,7 @@ $text .= "
 				</colgroup>
 				<tbody>
 					<tr>
-						<td>".PRFLAN_29."</td>
+						<td><label for='user-reg'>".PRFLAN_29."</label></td>
 						<td>
 							".$frm->radio_switch('user_reg', $pref['user_reg'])."
 							<div class='smalltext field-help'>".PRFLAN_30."</div>
@@ -791,7 +791,7 @@ $text .= "
 
 
 					<tr>
-						<td>".PRFLAN_154."</td>
+						<td><label for='user-reg-veri'>".PRFLAN_154."</label></td>
 						<td>
 							".$frm->select_open('user_reg_veri');
                             $veri_list = array(PRFLAN_152,PRFLAN_31,PRFLAN_153);
@@ -807,7 +807,7 @@ $text .= "
 						</td>
 					</tr>
                     <tr>
-						<td>".PRFLAN_184."</td>
+						<td><label for='allowemaillogin'>".PRFLAN_184."</label></td>
 						<td>".$frm->select_open('allowEmailLogin');
                      //   $login_list = array(PRFLAN_201,PRFLAN_202,PRFLAN_203);
                         $login_list = array(
@@ -824,27 +824,27 @@ $text .= "
 							</select></td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_160."</td>
+						<td><label for='signup-remote-emailcheck'>".PRFLAN_160."</label></td>
 						<td>
 							".$frm->radio_switch('signup_remote_emailcheck', $pref['signup_remote_emailcheck'])."
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_167."</td>
+						<td><label for='disable-emailcheck'>".PRFLAN_167."</label></td>
 						<td>
 							".$frm->radio_switch('disable_emailcheck', $pref['disable_emailcheck'])."
 						</td>
 					</tr>
 
 					<tr>
-						<td>".PRFLAN_45."</td>
+						<td><label for='use-coppa'>".PRFLAN_45."</label></td>
 						<td>
 							".$frm->radio_switch('use_coppa', $pref['use_coppa'])."
 							<div class='field-help'>".PRFLAN_46." <a href='http://www.ftc.gov/privacy/coppafaqs.shtm'>".PRFLAN_94."</a></div>
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_58."</td>
+						<td><label for='membersonly-enabled'>".PRFLAN_58."</label></td>
 						<td>";
 					
 					$memDisp = !vartrue($pref['membersonly_enabled']) ? "e-hideme" : "";
@@ -859,7 +859,7 @@ $text .= "
 					</tr>
               
                		<tr>
-						<td>".PRFLAN_197.": </td>
+						<td><label for='autologinpostsignup'>".PRFLAN_197."</label></td>
 						<td>
 							".$frm->radio_switch('autologinpostsignup', $pref['autologinpostsignup'])."
 							<div class='smalltext field-help'>".PRFLAN_198."</div>
@@ -868,7 +868,7 @@ $text .= "
 
 
 					<tr>
-						<td>".PRFLAN_136."</td>
+						<td><label for='signup-maxip'>".PRFLAN_136."</label></td>
 						<td>
 							".$frm->number('signup_maxip', $pref['signup_maxip'], 3)."
 							<div class='field-help'>".PRFLAN_78."</div>
@@ -946,6 +946,7 @@ $social_logins = array (
  
  
 // Key registration 
+// TODO LAN
 $social_external = array(
 			"Facebook" 		=> "https://developers.facebook.com/apps",
 			"Twitter"		=> "https://dev.twitter.com/apps/new",
@@ -971,7 +972,6 @@ $text .= "
 					</tr>";
 					
 //XXX XURL Definitions. 
-
 $xurls = array(
 	'facebook'		=> 	array('label'=>"Facebook", "placeholder"=>"eg. https://www.facebook.com/e107CMS"),
 	'twitter'		=>	array('label'=>"Twitter",	"placeholder"=>"eg. https://twitter.com/e107"),
@@ -986,13 +986,14 @@ $xurls = array(
 	foreach($xurls as $k=>$var)
 	{
 		$keypref = "xurl[".$k."]";
+		$text_label = "xurl-".$k."";
 		$def = "XURL_". strtoupper($k);
 		
 		$opts = array('size'=>'xxlarge','placeholder'=> $var['placeholder']);	
 						
 		$text .= "
 					<tr>
-						<td>Your ".$var['label']." page</td>
+						<td><label for='".$text_label."'>Your ".$var['label']." page</label></td>
 						<td>
 							".$frm->text($keypref, $pref['xurl'][$k], false, $opts)."
 							<div class='field-help'>Used by some themes to provide a link to your ".$var['label']." page. (".$def.")</div>
@@ -1006,7 +1007,7 @@ $xurls = array(
 						<th colspan='2'>Social Logins</th>
 					</tr>
 					<tr>
-						<td>Enable Social Logins</td>
+						<td><label for='social-login-active'>Enable Social Logins</label></td>
 						<td>
 							".$frm->radio_switch('social_login_active', $pref['social_login_active'])."
 						</td>
@@ -1021,10 +1022,10 @@ $xurls = array(
 			{
 					
 					$label = varset($social_external[$prov]) ? "<a class='e-tip' rel='external' title='Get a key from the provider' href='".$social_external[$prov]."'>".$prov."</a>" : $prov;
-									
+					$radio_label = strtolower($prov); 				
 					$text .= "
 					<tr>
-						<td>".$label."</td>
+						<td><label for='social-login-".$radio_label."-enabled'>".$label."</label></td>
 						<td>
 						";
 					foreach($val as $k=>$v)
