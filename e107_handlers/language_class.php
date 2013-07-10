@@ -8,8 +8,6 @@
  *
  * Language handler
  *
- * $URL$
- * $Id$
  */
 
 /**
@@ -148,7 +146,7 @@ class language{
             "ru" => "Russian",
             "sg" => "Sango",
             "sa" => "Sanskrit",
-            "si" => "Sinhalese",
+            "si" => "Sinhala",
             "sk" => "Slovak",
             "sl" => "Slovenian",
 
@@ -196,32 +194,40 @@ class language{
 
 		protected $names = array(
 			"Arabic" 		=> "العربية",
+			"Bengali"		=> "বাংলা",
 			"Bosnian"		=> "Bosanski",
 			"Bulgarian"		=> "Български",
 			"Croatian"		=> "Hrvatski",
 			"ChineseTrad"  	=> "繁体中文",
 			"ChineseSimp"  	=> "简体中文",
+			"Czech"			=> "Čeština",
 			"Dutch"			=> "Nederlands",
 			"English"		=> "English",
 			"Estonian"		=> "Eesti",
 			"French"		=> "Français",
+			"Finnish"		=> "Suomi",
 			"German"		=> "Deutsch",
 			"Greek"			=> "Ελληνικά",
 			"Hebrew"		=> "עִבְרִית",
+			"Hindi"			=> "हिन्दी",
 			"Hungarian"		=> "Magyar",
+			"Icelandic"		=> "íslenska",
 			"Indonesian"	=> "Bahasa Indonesia",
 			"Italian"		=> "Italiano",
 			"Japanese"		=> "日本語",
+			"Khmer"			=> "ខ្មែរ",
 			"Korean"		=> "한국어",
 			"Lithuanian"	=> "Lietuvių",
-			"Mongolian"		=> "монгол",
+			"Mongolian"		=> "Монгол",
 			"Nepali"		=> "नेपाली",
+			"Norwegian"		=> "Norsk",
 			"Persian"	   	=> "فارسي",
 		    "Portuguese"	=> "Português",
 			"Polish"		=> "Polski",
-			"Romanian"		=> "Romanesc",
+			"Romanian"		=> "Română",
 			"Russian"		=> "Pусский",
-			"Serbian"		=> "Srpski",
+			"Serbian"		=> "Српски",
+			"Sinhala"		=> "සිංහල",
 			"Spanish"		=> "Español",
 			"Slovenian"		=> "Slovensko",
 			"Slovakian"		=> "Slovensky",
