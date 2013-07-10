@@ -19,11 +19,13 @@ class theme__blank implements e_theme_config
 
 	function config()
 	{
+		$tp = e107::getParser();
+		
 		$var[0]['caption'] = "Sample configuration field";
-		$var[0]['html'] = "<input type='text' name='_blank_example' value='".e107::getThemePref('example', 'default')."' />";
+		$var[0]['html'] = $tp->text('_blank_example', e107::getThemePref('example', 'default'));
 
 		$var[1]['caption'] = "Sample configuration field";
-		$var[1]['html'] = "<input type='text' name='_blank_example2' value='".e107::getThemePref('example2', 1)."' />";
+		$var[1]['html'] = $tp->text('_blank_example2', e107::getThemePref('example2', 'default'));
 		
 		return $var;
 	}
