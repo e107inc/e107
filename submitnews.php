@@ -127,7 +127,7 @@ if (!defined("USER_WIDTH")) { define("USER_WIDTH","width:95%"); }
 $text = "
 <div style='text-align:center'>
   <form id='dataform' method='post' action='".e_SELF."' enctype='multipart/form-data' onsubmit='return frmVerify()'>
-    <table style='".USER_WIDTH."' class='table fborder'>";
+    <table class='table fborder'>";
 
 if (!empty($pref['news_subheader']))
 {
@@ -143,13 +143,13 @@ if (!USER)
   <tr>
     <td style='width:20%' class='forumheader3'>".LAN_7."</td>
     <td style='width:80%' class='forumheader3'>
-      <input class='tbox' type='text' name='submitnews_name' size='60' value='".$tp->toHTML($submitnews_user,FALSE,'USER_TITLE')."' maxlength='100' />
+      <input class='tbox' type='text' name='submitnews_name' size='60' value='".$tp->toHTML($submitnews_user,FALSE,'USER_TITLE')."' maxlength='100' required />
     </td>
   </tr>
   <tr>
     <td style='width:20%' class='forumheader3'>".LAN_112."</td>
     <td style='width:80%' class='forumheader3'>
-      <input class='tbox' type='text' name='submitnews_email' size='60' value='".$tp->toHTML($submitnews_email, FALSE, 'LINKTEXT')."' maxlength='100' />
+      <input class='tbox' type='text' name='submitnews_email' size='60' value='".$tp->toHTML($submitnews_email, FALSE, 'LINKTEXT')."' maxlength='100' required />
     </td>
   </tr>";
 }
@@ -181,7 +181,7 @@ $text .= "
 <tr>
   <td style='width:20%' class='forumheader3'>".LAN_62."</td>
 	<td style='width:80%' class='forumheader3'>
-    <input class='tbox' type='text' id='submitnews_title' name='submitnews_title' size='60' value='".$tp->toHTML(vartrue($_POST['submitnews_title']),TRUE,'USER_TITLE')."' maxlength='200' style='width:90%' />
+    <input class='tbox' type='text' id='submitnews_title' name='submitnews_title' size='60' value='".$tp->toHTML(vartrue($_POST['submitnews_title']),TRUE,'USER_TITLE')."' maxlength='200' style='width:90%' required />
 	</td>
 </tr>
 <tr>
