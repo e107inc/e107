@@ -993,6 +993,11 @@ class media_admin_ui extends e_admin_ui
 		
 		$options = array();
 		$options['bbcode'] = ($this->getQuery('bbcode')=='img') ? 'img' : FALSE;
+		
+		if($this->getQuery('for') == '_icon')
+		{
+		//	$options['glyphs'] = true;	
+		}
 						
 		$text = "
 			
@@ -1004,6 +1009,17 @@ class media_admin_ui extends e_admin_ui
 		{
 			$text .= "<li><a data-toggle='tab' href='#core-media-style'>Appearance</a></li>\n";	
 		}
+		
+		if(varset($options['glyphs']))
+		{
+			$text .= "<li><a data-toggle='tab' href='#core-media-glyphs'>Glyphs</a></li>\n";	
+		}
+		
+	
+		if(varset($options['bbcode']))
+		{
+			$text .= "<li><a data-toggle='tab' href='#core-media-style'>Appearance</a></li>\n";	
+		}	
 		
 		if(varset($_GET['from']))
 		{
@@ -1120,6 +1136,20 @@ class media_admin_ui extends e_admin_ui
 			</div>
 			</div>";
 		}	
+		
+		if(varset($options['glyphs']))
+		{
+			//TODO 
+			$text .= "<div class='tab-pane' id='core-media-glyphs'>
+			
+			
+			
+			</div>
+			";
+		
+		
+		}
+		
 		$text .= "</div>";
 		
 		// For BBCODE mode. //TODO image-float. 

@@ -11,6 +11,8 @@
 if(isset($_GET['configure']))
 {
 	//Switch to Front-end
+	$_GET['configure'] = preg_replace('[^a-z0-9_-]','',$_GET['configure']);
+	
 	define("USER_AREA", true);
 	//Switch to desired layout
 	define('THEME_LAYOUT', $_GET['configure']);
