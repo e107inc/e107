@@ -994,10 +994,6 @@ class media_admin_ui extends e_admin_ui
 		$options = array();
 		$options['bbcode'] = ($this->getQuery('bbcode')=='img') ? 'img' : FALSE;
 		
-		if($this->getQuery('for') == '_icon')
-		{
-		//	$options['glyphs'] = true;	
-		}
 						
 		$text = "
 			
@@ -1010,7 +1006,7 @@ class media_admin_ui extends e_admin_ui
 			$text .= "<li><a data-toggle='tab' href='#core-media-style'>Appearance</a></li>\n";	
 		}
 		
-		if(varset($options['glyphs']))
+		if($this->getQuery('glyphs') == 1)
 		{
 			$text .= "<li><a data-toggle='tab' href='#core-media-glyphs'>Glyphs</a></li>\n";	
 		}
@@ -1137,14 +1133,21 @@ class media_admin_ui extends e_admin_ui
 			</div>";
 		}	
 		
-		if(varset($options['glyphs']))
+		if($this->getQuery('glyphs') == 1)
 		{
 			//TODO 
-			$text .= "<div class='tab-pane' id='core-media-glyphs'>
+			$text .= "<div class='tab-pane clearfix' id='core-media-glyphs' style='font-size:24px'>";
+			$glyphs = e107::getMedia()->getGlyphs();
+		
+			foreach($glyphs as $val)
+			{
+				$text .= "<a data-toggle='context' class='e-media-select e-dialog-close e-tip' data-id='{$im['media_id']}' data-width='32' data-height='32' data-src='{$val}' data-type='glyph' data-bbcode='{$data_bb}' data-target='".$this->getQuery('tagid')."' data-path='{$val}.glyph' data-preview='{$val}.glyph' title='".$val."' style='float:left' href='#' >";
+				$text .= "<span style='margin:7px;display:inline-block'><i class='".$val."' style='color:white' ></i></span>";
+				$text .= "</a>\n\n";
+			}
 			
 			
-			
-			</div>
+			$text .= "</div>
 			";
 		
 		
@@ -1153,7 +1156,8 @@ class media_admin_ui extends e_admin_ui
 		$text .= "</div>";
 		
 		// For BBCODE mode. //TODO image-float. 
-		if($options['bbcode'])
+				
+		if($options['bbcode'] || E107_DEBUG_LEVEL > 0)
 		{
 			
 						
@@ -1184,9 +1188,7 @@ class media_admin_ui extends e_admin_ui
 		return $text;
 	}
 
-
-
-
+	
 
 
 	function importPage()

@@ -1549,7 +1549,6 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		{
 				$catid = $admin_cat['id'][$subitem[4]];
 				$tmp = array();
-
 				$tmp['text'] = $subitem[1];
 				$tmp['description'] = $subitem[2];
 				$tmp['link'] = $subitem[0];
@@ -1749,7 +1748,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				$tmp[$c]['link'] = $tp->replaceConstants($link,'full');
 				$tmp[$c]['image'] = vartrue($lk['link_button']) ? "<img class='icon S16' src='".$tp->replaceConstants($lk['link_button'])."' alt='".$tp->toAttribute($lk['link_description'],'','defs')."' />": "" ;
 				$tmp[$c]['image_large'] = '';
-				$tmp[$c]['image_src'] = '';
+				$tmp[$c]['image_src'] = vartrue($lk['link_button']);
 				$tmp[$c]['image_large_src'] = '';
 				$tmp[$c]['perm'] = '';
 				$c++;

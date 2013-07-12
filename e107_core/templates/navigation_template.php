@@ -23,7 +23,7 @@ $NAVIGATION_TEMPLATE['main']['item'] = '
 $NAVIGATION_TEMPLATE['main']['item_submenu'] = '
 	<li class="dropdown">
 		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
-		 {LINK_NAME} 
+		 {LINK_IMAGE}{LINK_NAME} 
 		<b class="caret"></b>
 		</a> 
 		{LINK_SUB}
@@ -33,7 +33,7 @@ $NAVIGATION_TEMPLATE['main']['item_submenu'] = '
 $NAVIGATION_TEMPLATE['main']['item_submenu_active'] = '
 	<li class="dropdown active">
 		<a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}">
-		 {LINK_IMAGE} {LINK_NAME}
+		 {LINK_IMAGE}{LINK_NAME}
 		<b class="caret"></b>
 		</a>
 		{LINK_SUB}

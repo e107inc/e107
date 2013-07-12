@@ -2430,6 +2430,10 @@ class e_parse extends e_parser
 	}
 
 
+
+
+
+
 	/**
 	 * Given an email address, returns a link including js-based obfuscation
 	 */
@@ -2609,11 +2613,30 @@ class e_parser
 	
 	
 	
-	// Parse i_xxxx to bootstrap glyph format. 
+	
+
+	
+	/**
+	 * Parse xxxxx.glyph file to bootstrap glyph format. 
+	 * @return FALSE if not a glyph file or if bootstrap is not found. 
+	 */ 
 	public function glyph($text)
 	{
-		$text = preg_replace('/\[(i_[\w]*)\]/',"<i class='$1'></i>", $text); 		
-		return $text;	
+		if(!deftrue('BOOTSTRAP'))
+		{
+			return false;	
+		}
+		
+		if(substr($text,-6) == '.glyph') // Bootstrap or Font-Awesome. 
+		{
+			list($cls,$tmp) = explode('.glyph',$text);
+			return "<i class='".$cls."'></i> ";	// retain space. 
+		}
+		
+		return false;
+		
+		//$text = preg_replace('/\[(i_[\w]*)\]/',"<i class='$1'></i>", $text); 		
+		// return $text;	
 	}
 	
 	/** 

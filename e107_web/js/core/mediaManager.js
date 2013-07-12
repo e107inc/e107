@@ -140,8 +140,9 @@ $(document).ready(function()
 				var name		= $(this).attr('data-name');
 				var width		= $(this).attr('data-width');
 				var height		= ''; // disable for now - will be updated by bb parser. // $(this).attr('data-height');		
-				
-				
+				var type		= $(this).attr('data-type');
+			
+			//	return;
 			//	alert(width);			
 						
 				$(this).addClass("media-select-active");
@@ -181,8 +182,26 @@ $(document).ready(function()
 				$('#width').val(width);	
 				$('#height').val(height);		
 				
+			
+			
+				
 				
 				$('img#' + target + "_prev", window.top.document).attr('src',preview); // set new value
+					
+					
+				if(type == 'glyph')
+				{
+					preview = "<i class='" + src + "'></i>";
+					$('#html_holder').val(preview);
+					$('#path').attr('value',path);		
+				}	
+				else
+				{
+					eMediaAttribute(this);	
+					preview = $('#html_holder').val();
+				}
+				
+				
 				$('div#' + target + "_prev", window.top.document).html(preview); // set new value
 				$('span#' + target + "_prev", window.top.document).html(preview); // set new value
 							
@@ -192,7 +211,7 @@ $(document).ready(function()
 					$('input#' + target , window.top.document).attr('value',path); // set new value	
 				}
 				
-				eMediaAttribute(this);	
+			
 			
 			
 			//	$(this).parent('#src').attr('value',preview); // set new value

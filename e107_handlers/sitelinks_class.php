@@ -1058,6 +1058,8 @@ class e_navigation
 	{
 			
 		global $E_ADMIN_MENU; //TODO remove me?
+		$tp = e107::getParser();
+		
 		if (!$tmpl)
 			$tmpl = $E_ADMIN_MENU;
 	
@@ -1213,7 +1215,16 @@ class e_navigation
 		
 			$replace[7] = varset($e107_vars[$act]['link_class']);
 			$replace[8] = '';
-			$replace[9] = varset($e107_vars[$act]['image']);
+			
+			if(vartrue($e107_vars[$act]['image_src']) && strstr($e107_vars[$act]['image_src'],'.glyph'))
+			{
+				$replace[9] = $tp->glyph($e107_vars[$act]['image_src']);
+			}
+			else
+			{
+				$replace[9] = varset($e107_vars[$act]['image']);	
+			}
+		
 			
 			if($rid == 'logout' || $rid == 'home' || $rid == 'language')
 			{
@@ -1605,8 +1616,22 @@ class navigation_shortcodes extends e_shortcode
 	 */
 	function sc_link_image($parm='')
 	{
-		if (!vartrue($this->var['link_image'])) return '';
-		return e107::getParser()->replaceConstants($this->var['link_image'], 'full', TRUE);	
+		$tp = e107::getParser();
+		
+		if (!vartrue($this->var['link_button'])) return '';
+		
+		if($icon = $tp->glyph($this->var['link_button']))
+		{
+			return $icon;	
+		}
+		else 
+		{
+			$path = e107::getParser()->replaceConstants($this->var['link_button'], 'full', TRUE);	
+			return "<img src='".$path."' alt=''  />";	
+		}
+				
+		
+		
 	}
 
 		
