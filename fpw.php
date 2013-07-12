@@ -142,7 +142,7 @@ if (isset($_POST['pwsubmit']))
 	$clean_username = 	$temp_name = str_replace('--', '', trim(preg_replace("/[\^\*\|\/;:#=\$'\"!#`\s\(\)%\?<>\\{}]/", '', $_POST['username'])));
 
 
- 	$query = "`user_email`='{$clean_email}' ";
+ 	$query = "`user_ban` !=1 AND `user_email`='{$clean_email}' ";
 	// Allow admins to remove 'username' from fpw_template.php if they wish.
 	$query .= (isset($_POST['username'])) ? " AND `user_loginname`='{$clean_username}'" : "";
 
