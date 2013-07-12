@@ -522,13 +522,13 @@ class e_form
 			$thpath = isset($sc_parameters['nothumb']) || vartrue($hide) ? $default : $default_thumb;
 			$label = "<div id='{$name_id}_prev' class='text-center well well-small image-selector' >";
 			
-			if($glyph = $tp->glyph($default_url))
+			if($glyph = $tp->toGlyph($default_url))
 			{
 				$label .= $glyph;	
 			}
 			else 
 			{
-				$label .= "<img  src='{$default_url}' alt='{$default_url}'  />";	
+				$label .= $tp->toIcon($default_url);	
 			}
 			
 			$label .= "				
@@ -2611,7 +2611,7 @@ class e_form
 
 			case 'icon':
 	
-				if($glyph = $tp->glyph($value))
+				if($glyph = $tp->toGlyph($value))
 				{
 					$value = $glyph;	
 				}

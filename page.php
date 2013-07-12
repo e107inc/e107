@@ -290,15 +290,13 @@ class pageClass
 			return;	
 		}
 					
-		if($glyph = $tp->glyph($icon))
+		if($glyph = $tp->toGlyph($icon))
 		{
 			return $glyph;
 		}
 		else
 		{
-			$path = $tp->replaceConstants($icon,'full');
-			
-			return "<img class='icon' src='".$path."' alt=\"icon\" />";
+			return $tp->toIcon($icon);
 		}	
 	}
 

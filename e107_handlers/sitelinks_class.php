@@ -1218,7 +1218,7 @@ class e_navigation
 			
 			if(vartrue($e107_vars[$act]['image_src']) && strstr($e107_vars[$act]['image_src'],'.glyph'))
 			{
-				$replace[9] = $tp->glyph($e107_vars[$act]['image_src']);
+				$replace[9] = $tp->toGlyph($e107_vars[$act]['image_src']);
 			}
 			else
 			{
@@ -1629,14 +1629,15 @@ class navigation_shortcodes extends e_shortcode
 		
 		if (!vartrue($this->var['link_button'])) return '';
 		
-		if($icon = $tp->glyph($this->var['link_button']))
+		if($icon = $tp->toGlyph($this->var['link_button']))
 		{
 			return $icon;	
 		}
 		else 
 		{
 			$path = e107::getParser()->replaceConstants($this->var['link_button'], 'full', TRUE);	
-			return "<img class='icon' src='".$path."' alt=''  />";	
+			return $tp->toIcon($path);
+			// return "<img class='icon' src='".$path."' alt=''  />";	
 		}
 
 	}
