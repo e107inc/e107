@@ -666,7 +666,7 @@ City, State, Country
 				<field name="link_name">Members</field>
 				<field name="link_url">user.php</field>
 				<field name="link_description"></field>
-				<field name="link_button"></field>
+				<field name="link_button">icon-user.glyph</field>
 				<field name="link_category">2</field>
 				<field name="link_order">3</field>
 				<field name="link_parent">0</field>
@@ -680,12 +680,12 @@ City, State, Country
 				<field name="link_name">Submit News</field>
 				<field name="link_url">submitnews.php</field>
 				<field name="link_description"></field>
-				<field name="link_button"></field>
+				<field name="link_button">icon-upload.glyph</field>
 				<field name="link_category">2</field>
 				<field name="link_order">4</field>
 				<field name="link_parent">0</field>
 				<field name="link_open">0</field>
-				<field name="link_class">0</field>
+				<field name="link_class">253</field>
 				<field name="link_function"></field>
 				<field name="link_sefurl"></field>
 			</item>
