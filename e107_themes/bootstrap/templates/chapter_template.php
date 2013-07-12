@@ -21,7 +21,7 @@
 	
 	
 	$CHAPTER_TEMPLATE['docs']['listChapters']['start'] = 			'';
-	$CHAPTER_TEMPLATE['docs']['listChapters']['item'] = 			"<section id='{CHAPTER_ANCHOR}'><a href='{CHAPTER_URL}'><h1>{CHAPTER_NAME}</h1></a>
+	$CHAPTER_TEMPLATE['docs']['listChapters']['item'] = 			"<section id='{CHAPTER_ANCHOR}'><a href='{CHAPTER_URL}'><h1>{CHAPTER_ICON}{CHAPTER_NAME}</h1></a>
 																		{CHAPTER_DESCRIPTION}
 																	</section>
 																	";
@@ -30,7 +30,7 @@
 
 	$CHAPTER_TEMPLATE['docs']['listBooks']['caption'] = 			'';
 	$CHAPTER_TEMPLATE['docs']['listBooks']['start'] = 				'';
-	$CHAPTER_TEMPLATE['docs']['listBooks']['item'] = 				"<section id='{BOOK_ANCHOR}'><a href='{BOOK_URL}'><h1>{BOOK_NAME}</h1></a>
+	$CHAPTER_TEMPLATE['docs']['listBooks']['item'] = 				"<section id='{BOOK_ANCHOR}'><a href='{BOOK_URL}'><h1>{BOOK_ICON}{BOOK_NAME}</h1></a>
 																		{BOOK_DESCRIPTION}
 																	</section>
 																	";

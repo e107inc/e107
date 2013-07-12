@@ -192,6 +192,7 @@ class pageClass
 				$var = array(
 					'BOOK_NAME' 		=> $tp->toHtml($row['chapter_name']),
 					'BOOK_ANCHOR'		=> $frm->name2id($row['chapter_name']),
+					'BOOK_ICON'			=> $this->chapterIcon($row['chapter_icon']),
 					'BOOK_DESCRIPTION'	=> $tp->toHtml($row['chapter_meta_description'],true,'BODY'),
 					'CHAPTERS'			=> $this->listChapters(intval($row['chapter_id'])),
 					'BOOK_URL'			=> e_BASE."page.php?bk=".intval($row['chapter_id']) // FIXME SEF-URL
@@ -255,6 +256,7 @@ class pageClass
 				$var = array(
 					'CHAPTER_NAME' 			=> $tp->toHtml($row['chapter_name']),
 					'CHAPTER_ANCHOR'		=> $frm->name2id($row['chapter_name']),
+					'CHAPTER_ICON'			=> $this->chapterIcon($row['chapter_icon']),
 					'CHAPTER_DESCRIPTION'	=> $tp->toHtml($row['chapter_meta_description'],true,'BODY'),
 					'PAGES'					=> $this->listPages(intval($row['chapter_id'])),
 					'CHAPTER_URL'			=> e_BASE."page.php?ch=".intval($row['chapter_id']) // FIXME SEF-URL
@@ -273,6 +275,31 @@ class pageClass
 		}	
 		
 		return $text;		
+	}
+
+
+	/**
+	 * Handle Chapter Icon Glyphs. 
+	 */
+	private function chapterIcon($icon)
+	{
+		$tp = e107::getParser();
+			
+		if(!vartrue($icon))
+		{
+			return;	
+		}
+					
+		if($glyph = $tp->glyph($icon))
+		{
+			return $glyph;
+		}
+		else
+		{
+			$path = $tp->replaceConstants($icon,'full');
+			
+			return "<img class='icon' src='".$path."' alt=\"icon\" />";
+		}	
 	}
 
 
