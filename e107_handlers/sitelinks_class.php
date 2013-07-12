@@ -1609,12 +1609,21 @@ class navigation_shortcodes extends e_shortcode
 		return e107::getParser()->replaceConstants($url, 'full', TRUE);
 	}
 
-	
 	/**
-	 * Return the link image of the current link
-	 * @return string
+	 * @Deprecated - Use {LINK_ICON} instead. 
 	 */
 	function sc_link_image($parm='')
+	{
+		e107::getMessage()->addDebug("Using deprecated shortcode: {LINK_IMAGE} - use {LINK_ICON} instead.");
+		return $this->sc_link_icon($parm);	
+	}
+	
+	
+	/**
+	 * Return the link icon of the current link
+	 * @return string
+	 */
+	function sc_link_icon($parm='')
 	{
 		$tp = e107::getParser();
 		
@@ -1627,11 +1636,9 @@ class navigation_shortcodes extends e_shortcode
 		else 
 		{
 			$path = e107::getParser()->replaceConstants($this->var['link_button'], 'full', TRUE);	
-			return "<img src='".$path."' alt=''  />";	
+			return "<img class='icon' src='".$path."' alt=''  />";	
 		}
-				
-		
-		
+
 	}
 
 		

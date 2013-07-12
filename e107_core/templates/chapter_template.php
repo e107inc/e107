@@ -51,7 +51,7 @@ $CHAPTER_TEMPLATE['nav']['listChapters']['item_submenu']	 		= '
 $CHAPTER_TEMPLATE['nav']['listChapters']['item_submenu_active']		= '
 																	<li class="active">
 																		<a role="button"  href="{LINK_URL}">
-																		 {LINK_IMAGE} {LINK_NAME}
+																		 {LINK_ICON}{LINK_NAME}
 																		</a>
 																		{LINK_SUB}
 																	</li>
@@ -60,7 +60,7 @@ $CHAPTER_TEMPLATE['nav']['listChapters']['item_submenu_active']		= '
 $CHAPTER_TEMPLATE['nav']['listChapters']['item_active'] 			= '
 																	<li class="active">
 																		<a crole="button" href="{LINK_URL}">
-																		 {LINK_IMAGE} {LINK_NAME}
+																		 {LINK_ICON}{LINK_NAME}
 																		</a>
 																	</li>
 																	';	
@@ -73,27 +73,27 @@ $CHAPTER_TEMPLATE['nav']['listChapters']['submenu_start'] 			= '<ul class="page-
 	
 $CHAPTER_TEMPLATE['nav']['listChapters']['submenu_item'] 			= '
 																	<li role="menuitem" >
-																		<a href="{LINK_URL}">{LINK_IMAGE}{LINK_NAME}</a>
+																		<a href="{LINK_URL}">{LINK_ICON}{LINK_NAME}</a>
 																		{LINK_SUB}
 																	</li>
 																	';
 	
 $CHAPTER_TEMPLATE['nav']['listChapters']['submenu_loweritem']		= '
 																		<li role="menuitem" >
-																			<a href="{LINK_URL}">{LINK_IMAGE}{LINK_NAME}</a>
+																			<a href="{LINK_URL}">{LINK_ICON}{LINK_NAME}</a>
 																			{LINK_SUB}
 																		</li>
 																	';
 $CHAPTER_TEMPLATE['nav']['listChapters']['submenu_loweritem_active'] = '
 																			<li role="menuitem" class="active">
-																				<a href="{LINK_URL}">{LINK_IMAGE}{LINK_NAME}</a>
+																				<a href="{LINK_URL}">{LINK_ICON}{LINK_NAME}</a>
 																				{LINK_SUB}
 																			</li>
 																		';
 
 $CHAPTER_TEMPLATE['nav']['listChapters']['submenu_item_active'] 	= '
 																			<li role="menuitem" class="active">
-																				<a href="{LINK_URL}">{LINK_IMAGE}{LINK_NAME}</a>
+																				<a href="{LINK_URL}">{LINK_ICON}{LINK_NAME}</a>
 																				{LINK_SUB}
 																			</li>
 																		';
