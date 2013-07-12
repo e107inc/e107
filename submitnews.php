@@ -8,6 +8,12 @@
  *
  */
 
+ 
+if(!empty($_POST) && !isset($_POST['e-token']))
+{
+	// set e-token so it can be processed by class2
+	$_POST['e-token'] = '';
+} 
 require_once("class2.php");
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
@@ -109,10 +115,16 @@ if (isset($_POST['submitnews_submit']) && $_POST['submitnews_title'] && $_POST['
 
 	if ($submitnews_error === FALSE)
 	{
-		$sql->db_Insert("submitnews", "0, '$submitnews_user', '$submitnews_email', '$submitnews_title', '".intval($_POST['cat_id'])."', '$submitnews_item', '".time()."', '$ip', '0', '".implode(',',$submitnews_filearray)."' ");
+		$sql->insert("submitnews", "0, '$submitnews_user', '$submitnews_email', '$submitnews_title', '".intval($_POST['cat_id'])."', '$submitnews_item', '".time()."', '$ip', '0', '".implode(',',$submitnews_filearray)."' ");
+		
 		$edata_sn = array("user" => $submitnews_user, "email" => $submitnews_email, "itemtitle" => $submitnews_title, "catid" => intval($_POST['cat_id']), "item" => $submitnews_item, "image" => $submitnews_file, "ip" => $ip);
 		$e_event->trigger("subnews", $edata_sn);
-		$ns->tablerender(LAN_133, "<div style='text-align:center'>".LAN_134."</div>");
+		
+		$mes = e107::getMessage();
+		$mes->addSuccess(LAN_134);
+		echo $mes->render();
+		
+		// $ns->tablerender(LAN_133, "<div style='text-align:center'>".LAN_134."</div>");
 		require_once(FOOTERF);
 		exit;
 	}
@@ -131,27 +143,27 @@ $text = "
 
 if (!empty($pref['news_subheader']))
 {
-  $text .= "
-  <tr>
-    <td colspan='2' class='forumheader3'>".$tp->toHTML($pref['news_subheader'], TRUE, "TITLE")."<br /></td>
-  </tr>";
+	  $text .= "
+	  <tr>
+	    <td colspan='2' class='forumheader3'>".$tp->toHTML($pref['news_subheader'], TRUE, "TITLE")."<br /></td>
+	  </tr>";
 }
 
 if (!USER)
 {
-  $text .= "
-  <tr>
-    <td style='width:20%' class='forumheader3'>".LAN_7."</td>
-    <td style='width:80%' class='forumheader3'>
-      <input class='tbox' type='text' name='submitnews_name' size='60' value='".$tp->toHTML($submitnews_user,FALSE,'USER_TITLE')."' maxlength='100' required />
-    </td>
-  </tr>
-  <tr>
-    <td style='width:20%' class='forumheader3'>".LAN_112."</td>
-    <td style='width:80%' class='forumheader3'>
-      <input class='tbox' type='text' name='submitnews_email' size='60' value='".$tp->toHTML($submitnews_email, FALSE, 'LINKTEXT')."' maxlength='100' required />
-    </td>
-  </tr>";
+	  $text .= "
+	  <tr>
+	    <td style='width:20%' class='forumheader3'>".LAN_7."</td>
+	    <td style='width:80%' class='forumheader3'>
+	      <input class='tbox' type='text' name='submitnews_name' size='60' value='".$tp->toHTML($submitnews_user,FALSE,'USER_TITLE')."' maxlength='100' required />
+	    </td>
+	  </tr>
+	  <tr>
+	    <td style='width:20%' class='forumheader3'>".LAN_112."</td>
+	    <td style='width:80%' class='forumheader3'>
+	      <input class='tbox' type='text' name='submitnews_email' size='60' value='".$tp->toHTML($submitnews_email, FALSE, 'LINKTEXT')."' maxlength='100' required />
+	    </td>
+	  </tr>";
 }
 
 $text .= "
@@ -187,38 +199,10 @@ $text .= "
 <tr>
   	<td style='width:20%' class='forumheader3'>".LAN_135."</td>
 	<td style='width:80%' class='forumheader3'>
-		".e107::getForm()->bbarea('submitnews_item', $tp->toForm(vartrue($_POST['submitnews_item'])))."
+		".e107::getForm()->bbarea('submitnews_item', $tp->toForm(vartrue($_POST['submitnews_item'])),null, null, 'large', 'required=1')."
 	</td>
 </tr>
 ";
-
-/*
-if (e_WYSIWYG)
-{
-  $insertjs = "rows='25'";
-}
-else
-{
-  require_once(e_HANDLER."ren_help.php");
-  $insertjs = "rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'";
-}
-
-$text .= "
-<tr>
-  <td style='width:20%' class='forumheader3'>".LAN_135."</td>
-	<td style='width:80%' class='forumheader3'>
-    <textarea class='e-wysiwyg tbox' id='submitnews_item' name='submitnews_item' cols='80' style='max-width:95%' {$insertjs}>".$tp->toForm(vartrue($_POST['submitnews_item']),TRUE,'USER_BODY')."</textarea><br />"; 
-    // toHTML is dangerous. 
-
-if (!e_WYSIWYG)
-{
-  $text .= display_help("helpb","submitnews");
-}
-
-$text .= "
-  </td>
-</tr>";
-*/
 
 if ($pref['subnews_attach'] && $pref['upload_enabled'] && check_class($pref['upload_class']) && FILE_UPLOADS)
 {
@@ -235,6 +219,7 @@ $text .= "
       <tr>
         <td colspan='2' style='text-align:center' class='forumheader'>
           <input class='btn btn-success button' type='submit' name='submitnews_submit' value='".LAN_136."' />
+           <input type='hidden' name='e-token' value='".e_TOKEN."' />
         </td>
       </tr>
     </table>
@@ -242,31 +227,9 @@ $text .= "
 </div>";
 
 $ns->tablerender(LAN_136, $text);
+
 require_once(FOOTERF);
 
-function headerjs()
-{
-  $adder = "";
-  if (e_WYSIWYG) $adder = 'tinyMCE.triggerSave();';
-  $script = "
-  <script type=\"text/javascript\">
-  function frmVerify()
-  {
-    {$adder}
-    if(document.getElementById('submitnews_title').value == \"\")
-    {
-    alert('".SUBNEWSLAN_1."');
-    return false;
-    }
 
-    if(document.getElementById('submitnews_item').value == \"\")
-    {
-    alert('".SUBNEWSLAN_2."');
-    return false;
-    }
-  }
-  </script>";
-  return $script;
-}
 
 ?>

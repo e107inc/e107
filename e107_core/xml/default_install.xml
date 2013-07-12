@@ -239,8 +239,8 @@ City, State, Country
 		<core name="social_login_active">0</core>
 		<core name="social_login"><![CDATA[array()]]></core>
 		<core name="ssl_enabled">0</core>
-		<core name="subnews_attach"></core>
-		<core name="subnews_class">0</core>
+		<core name="subnews_attach">253</core>
+		<core name="subnews_class">253</core>
 		<core name="subnews_htmlarea">0</core>
 		<core name="subnews_resize"></core>
 		<core name="themecss">canvas.css</core>

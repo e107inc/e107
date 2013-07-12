@@ -240,7 +240,7 @@ class e_form
 		}
 			
 		$mlength = vartrue($maxlength) ? "maxlength=".$maxlength : "";
-		
+				
 		$options = $this->format_options('text', $name, $options);
 		//never allow id in format name-value for text fields
 		return "<input type='text' name='{$name}' value='{$value}' {$mlength} ".$this->get_attributes($options, $name)." />";
@@ -873,7 +873,8 @@ class e_form
 	 * IMPORTANT: $$mediaCat is also used is the media-manager category identifier
 	 */
 	function bbarea($name, $value, $template = '', $mediaCat='_common', $size = 'large', $options = array())
-	{		
+	{
+		if(is_string($options)) parse_str($options, $options);		
 		//size - large|medium|small
 		//width should be explicit set by current admin theme
 		$size = 'input-large';
