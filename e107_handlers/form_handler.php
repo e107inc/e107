@@ -520,8 +520,7 @@ class e_form
 		{
 			$ret = "<div class='imgselector-container'  style='display:block;width:64px;min-height:64px'>";
 			$thpath = isset($sc_parameters['nothumb']) || vartrue($hide) ? $default : $default_thumb;
-			$style = ($blank) ? "width:64px;height:64px;font-size:32px;" : "font-size:32px;";
-			$label = "<div id='{$name_id}_prev' class='text-center well well-small image-selector' style='{$style}'>";
+			$label = "<div id='{$name_id}_prev' class='text-center well well-small image-selector' >";
 			
 			if($glyph = $tp->glyph($default_url))
 			{
@@ -532,9 +531,7 @@ class e_form
 				$label .= "<img  src='{$default_url}' alt='{$default_url}'  />";	
 			}
 			
-			
-			$label .= "
-				
+			$label .= "				
 			</div>";
 			
 		//	$label = "<img id='{$name_id}_prev' src='{$default_url}' alt='{$default_url}' class='well well-small image-selector' style='{$style}' />";
