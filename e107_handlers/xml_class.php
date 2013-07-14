@@ -984,8 +984,13 @@ class xmlClass
 	 * @param boolean $debug [optional]
 	 * @return array with keys 'success' and 'failed' - DB table entry status.
 	 */
-	public function e107Import($file, $mode='replace', $noLogs = false, $debug=FALSE)
+	public function e107Import($file, $mode='replace', $noLogs = false, $debug=FALSE, $sql = null)
 	{
+
+		if($sql == null)
+		{
+			$sql = e107::getDB();	
+		}
 
 		$xmlArray = $this->loadXMLfile($file, 'advanced');
 
@@ -1047,11 +1052,11 @@ class xmlClass
 
 						$insert_array[$fieldkey] = $fieldval;
 					}
-					if(($mode == "replace") && e107::getDB()->db_Replace($table, $insert_array)!==FALSE)
+					if(($mode == "replace") && $sql->replace($table, $insert_array)!==FALSE)
 					{
 						$ret['success'][] = $table;
 					}
-					elseif(($mode == "add") && e107::getDB()->db_Insert($table, $insert_array)!==FALSE)
+					elseif(($mode == "add") && $sql->insert($table, $insert_array)!==FALSE)
 					{
 						$ret['success'][] = $table;
 					}
