@@ -167,7 +167,7 @@ if(false === $cached)
 		$month_selector = '<div class="btn-group pull-right"><a class="btn btn-mini " href="#blogCalendar" data-slide="prev">‹</a>  
  		<a class="btn btn-mini" href="#blogCalendar" data-slide="next">›</a></div>';
 		 
-		$caption = "<div class='inline-text'>".BLOGCAL_L1." ".$month_selector."</div>";	
+		$caption = "<span class='inline-text'>".BLOGCAL_L1." ".$month_selector."</span>";	
 		
 		$menu = "<div id='blogCalendar' data-interval='false' class='carousel slide blogcalendar-block text-center'>";
 		$menu .= "<div class='blogcalendar-day-selector carousel-inner'>";
@@ -209,7 +209,7 @@ if(false === $cached)
 		$menu .= "<div class='forumheader blogcalendar-archive-link' style='text-align: center; margin-top:2px;'><span class='smalltext'><a class='blogcalendar-archive-link' href='$prefix/archive.php'>".BLOGCAL_L2."</a></span></div></td></tr>";
 		$menu .= "</table></div>";	
 		
-		 $caption = "<div class='form-inline'>".BLOGCAL_L1." ".$req_year."</div>";		
+		 $caption = "<span class='form-inline'>".BLOGCAL_L1." ".$req_year."</span>";		
 	}
 				
 	$cached = $ns->tablerender($caption, $menu, 'blog_calendar', true);
