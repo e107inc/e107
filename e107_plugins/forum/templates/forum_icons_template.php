@@ -15,7 +15,7 @@ if (!defined('e107_INIT')) { exit(); }
 // Thread info
 define('IMAGE_e', 					'<img src="'.img_path('e.png').'" alt="" title="" />');
 define('IMAGE_new', 				'<img src="'.img_path('new.png').'" alt="'.LAN_FORUM_4001.'" title="'.LAN_FORUM_4001.'" />');
-define('IMAGE_nonew', 				'<img src="'.img_path('nonew.png').'" alt="'.LAN_FORUM_4002.' title="'.LAN_FORUM_4002.'" />');
+define('IMAGE_nonew', 				'<img src="'.img_path('nonew.png').'" alt="'.LAN_FORUM_4002.'" title="'.LAN_FORUM_4002.'" />');
 define('IMAGE_new_small', 			'<img src="'.img_path('new_small.png').'" alt="'.LAN_FORUM_4001.'" title="'.LAN_FORUM_4001.'" />');
 define('IMAGE_nonew_small', 		'<img src="'.img_path('nonew_small.png').'" alt="'.LAN_FORUM_4002.'" title="'.LAN_FORUM_4002.'" />');
 define('IMAGE_new_popular', 		'<img src="'.img_path('new_popular.png').'" alt="'.LAN_FORUM_4003.'" title="'.LAN_FORUM_4003.'" />');
