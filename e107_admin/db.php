@@ -118,8 +118,13 @@ class system_tools
 			'exportForm'			=> array('diz'=>DBLAN_58, 'label'=> DBLAN_58),
 			'sc_override_scan'		=> array('diz'=>DBLAN_55, 'label'=> DBLAN_56),
 			'convert_to_utf8'		=> array('diz'=>'Check Database Charset','label'=>'Check Charset'),
-			'correct_perms'			=> array('diz'=>'Correct File and Directory permissions','label'=>'Correct Perms')
+			'correct_perms'			=> array('diz'=>'Correct File and Directory permissions','label'=>'Correct Perms')							
 		);
+		
+		if(vartrue($_SERVER['E_DEV']))
+		{
+			$this->_options['multisite'] = array('diz'=>'', 'label'=> 'Multi-Site');	
+		}
 
 		$this->_options = multiarray_sort($this->_options, 'label');
 				
@@ -196,6 +201,11 @@ class system_tools
 		{
 			$this->plugin_viewscan('refresh');
 		}
+		
+		if(isset($_POST['create_multisite']))
+		{
+			$this->multiSiteProcess();	
+		}	
 
 		if(vartrue($_POST['perform_utf8_convert']))
 		{
@@ -206,6 +216,12 @@ class system_tools
 		if(varset($_GET['mode'])=='correct_perms')
 		{
 			$this->correct_perms();	
+			return;
+		}
+		
+		if(varset($_GET['mode'])=='multisite')
+		{
+			$this->multiSite();	
 			return;
 		}
 
@@ -240,6 +256,231 @@ class system_tools
 		}
 		
 		e107::getRender()->tablerender(DBLAN_10.SEP."Correcting File and Directory Permissions", $mes->render());	
+		
+	}
+	
+	private function multiSiteProcess()
+	{	
+		$sql 		= e107::getDb('new');
+		$mes 		= e107::getMessage();
+		
+		$user 		= $_POST['name'];
+		$pass 		= $_POST['password'];
+		$server 	= e107::getMySQLConfig('server'); // $_POST['server'];
+		$database 	= $_POST['db'];
+		$prefix		= $_POST['prefix'];
+			
+		if($connect = $sql->connect($server,$user, $pass, true))
+		{
+			$mes->addSuccess("Connecting to server");
+			
+			if($sql->gen("CREATE DATABASE ".$database." CHARACTER SET `utf8`"))
+			{
+				$mes->addSuccess("Creating Database");
+				
+			//	$sql->gen("CREATE USER ".$user."@'".$server."' IDENTIFIED BY '".$pass."';");
+				$sql->gen("GRANT ALL ON `".$database."`.* TO ".$user."@'".$server."';");
+				$sql->gen("FLUSH PRIVILEGES;");		
+				
+				if(!$sql->database($database))
+				{
+					$mes->addError("Selecting database");
+				}
+				
+				$mes->addSuccess("Selecting database");
+				
+				if($this->multiSiteCreateTables($sql, $prefix))
+				{
+					$coreConfig = e_CORE. "xml/default_install.xml";		
+					$ret = e107::getXml()->e107Import($coreConfig, 'add', true, false, $sql); // Add core pref values
+					$mes->addInfo(print_a($ret,true));
+				}	
+			}
+			else
+			{
+				$mes->addError("Creating Database");
+			}
+				
+		}
+		else
+		{
+			$mes->addSuccess("Connecting to server");
+		}
+		
+		if($error = $sql->getLastErrorText())
+		{
+			$mes->addError($error);
+		}
+			
+		//	print_a($_POST);
+
+		
+	}
+	
+	private function multiSiteCreateTables($sql, $prefix)
+	{
+		$mes = e107::getMessage();
+		
+		$sql_data = file_get_contents(e_CORE."sql/core_sql.php");
+		$sql_data = preg_replace("#\/\*.*?\*\/#mis", '', $sql_data);		// Strip comments
+
+		if (!$sql_data)
+		{
+			$mes->addError("Couldn't read core sql file");
+		}
+
+		preg_match_all("/create(.*?)(?:myisam|innodb);/si", $sql_data, $result );
+		
+		$sql->gen('SET NAMES `utf8`');
+
+		foreach ($result[0] as $sql_table)
+		{
+			$sql_table = preg_replace("/create table\s/si", "CREATE TABLE ".$prefix, $sql_table);
+
+			if (!$sql->gen($sql_table))
+			{
+				$mes->addError($sql->getLastErrorText());
+				return false;
+			}
+			else
+			{
+				// $mes->addDebug($sql_table);
+			}
+		}	
+		
+		return true;
+	}
+	
+	
+	private function multiSite()
+	{
+		$mes = e107::getMessage();
+		$frm = e107::getForm();
+		
+		e107::lan('core','installer');
+		
+		e107::getMySQLConfig('user'); // prefix|server|user|password|
+		
+		if(!isset($POST['create_multisite']))
+		{
+			$mes->addInfo("This will create a fresh installation of e107 at the domain you specify. Using your server administration software (eg. cPanel) - park your other domain on top of ".e_DOMAIN);
+		}
+		
+		$text = $frm->open('multisite')."
+			<table class='table table-striped' >
+			<tr>
+					<td><label for='server'>Parked Domain</label></td>
+					<td>
+						<input class='tbox' type='text' placeholder='mydomain.com' id='domain' name='domain' autofocus size='40' value='' maxlength='100' required='required' />
+						<span class='field-help'>The parked domain which will become a new e107 website.</span>
+					</td>
+				</tr>
+				";
+			/*		
+				$text .= "
+				<tr>
+					<td><label for='server'>".LANINS_024."</label></td>
+					<td>
+						<input class='tbox' type='text' id='server' name='server' autofocus size='40' value='localhost' maxlength='100' required='required' />
+						<span class='field-help'>".LANINS_030."</span>
+					</td>
+				</tr>";
+			*/
+				$text .= "
+				
+				<tr>
+					<td><label for='name'>".LANINS_025."</label></td>
+					<td>
+						<input class='tbox' type='text' name='name' id='name' size='40' value='".e107::getMySQLConfig('user')."' maxlength='100' required='required' />
+						<span class='field-help'>".LANINS_031."</span>
+					</td>
+				</tr>
+				
+				<tr>
+					<td><label for='password'>".LANINS_026."</label></td>
+					<td>
+						<input class='tbox' type='password' name='password' size='40' id='password' value='".e107::getMySQLConfig('password')."' maxlength='100'  />
+						<span class='field-help'>".LANINS_032."</span>
+					</td>
+				</tr>
+				";
+			
+				$text .= "
+				<tr>
+					<td><label for='db'>".LANINS_027."</label></td>
+					<td class='input-inline'>
+						<input type='text' name='db' size='20' id='db' value='' maxlength='100' required='required' />
+						<label class='checkbox inline'><input type='checkbox' name='createdb' value='1' />".LANINS_028."</label>
+						<span class='field-help'>".LANINS_033."</span>
+					</td>
+				</tr>";
+
+			
+				
+				$text .= "
+				
+				<tr>
+					<td><label for='prefix'>".LANINS_029."</label></td>
+					<td>
+						<input type='text' name='prefix' size='20' id='prefix' value='e107_'  pattern='[a-z0-9]*_$' maxlength='100' required='required' />
+						<span class='field-help'>".LANINS_034."</span>
+					</td>
+				</tr>
+	
+	
+			\n";	
+		
+		$text .= "
+			
+				<tr>
+					<td><label for='u_name'>".LANINS_072."</label></td>
+					<td>
+						<input class='tbox' type='text' autofocus name='u_name' id='u_name' placeholder='admin' size='30' required='required' value='".USERNAME."' maxlength='60' />
+						<span class='field-help'>".LANINS_073."</span>
+					</td>
+				</tr>
+				
+				<tr>
+					<td><label for='d_name'>".LANINS_074."</label></td>
+					<td>
+						<input class='tbox' type='text' name='d_name' id='d_name' size='30' placeholder='Administrator'  value='".USERNAME."' maxlength='60' />
+						<span class='field-help'>".LANINS_123."</span>
+					</td>
+				</tr>
+				
+				<tr>
+					<td><label for='pass1'>".LANINS_076."</label></td>
+					<td>
+						<input type='password' name='pass1' size='30' id='pass1' value='' maxlength='60' required='required' />
+						<span class='field-help'>".LANINS_124."</span>
+					</td>
+				</tr>
+				
+				<tr>
+					<td><label for='pass2'>".LANINS_078."</label></td>
+					<td>
+						<input type='password' name='pass2' size='30' id='pass2' value='' maxlength='60' required='required' />
+						<span class='field-help'>".LANINS_079."</span>
+					</td>
+				</tr>
+				
+				<tr>
+					<td><label for='email'>".LANINS_080."</label></td>
+					<td>
+						<input type='text' name='email' size='30' id='email' required='required' placeholder='admin@mysite.com' value='".USEREMAIL."' maxlength='100' />
+					<span class='field-help'>".LANINS_081."</span>
+					</td>
+				</tr>
+			</table>
+			<div class='buttons-bar text-center'>
+			".$frm->admin_button('create_multisite',1,'submit','Create New Site')."
+			</div>
+			\n";
+		
+		$text .= $frm->close();
+		
+			
+		e107::getRender()->tablerender(DBLAN_10.SEP."Multi-Site".SEP.$config['mySQLdefaultdb'], $mes->render().$text);
 		
 	}
 
