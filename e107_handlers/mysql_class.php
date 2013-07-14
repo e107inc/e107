@@ -173,7 +173,7 @@ class e_db_mysql
 		{		
 			try
 			{
-				$this->mySQLaccess = new PDO("mysql:host=".$this->mySQLserver.";dbname=".$this->mySQLdefaultdb, $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));		
+				$this->mySQLaccess = new PDO("mysql:host=".$this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));		
 			}
 			catch(PDOException $ex)
 			{
@@ -207,7 +207,9 @@ class e_db_mysql
 		//@TODO: simplify when yet undiscovered side-effects will be fixed
 		$this->db_Set_Charset();
 
-		if ($this->pdo!== true && !@mysql_select_db($this->mySQLdefaultdb, $this->mySQLaccess))
+
+	//	if ($this->pdo!== true && !@mysql_select_db($this->mySQLdefaultdb, $this->mySQLaccess))
+		if (!$this->database($this->mySQLdefaultdb))
 		{
 			return 'e2';
 		}
@@ -219,6 +221,104 @@ class e_db_mysql
 			$db_ConnectionID = $this->mySQLaccess;
 		return TRUE;
 	}
+
+
+
+
+
+
+	/**
+	 * Connect ONLY  - used in v2.x
+	 * @param string $mySQLserver IP Or hostname of the MySQL server
+	 * @param string $mySQLuser MySQL username
+	 * @param string $mySQLpassword MySQL Password
+	 * @param string $mySQLdefaultdb The database schema to connect to
+	 * @param string $newLink force a new link connection if TRUE. Default FALSE
+	 * @param string $mySQLPrefix Tables prefix. Default to $mySQLPrefix from e107_config.php
+	 * @return boolean true on success, false on error. 
+	 */
+	public function connect($mySQLserver, $mySQLuser, $mySQLpassword, $newLink = false)
+	{
+		global $db_ConnectionID, $db_defaultPrefix;
+		
+		e107::getSingleton('e107_traffic')->BumpWho('db Connect', 1);
+
+		$this->mySQLserver 		= $mySQLserver;
+		$this->mySQLuser 		= $mySQLuser;
+		$this->mySQLpassword 	= $mySQLpassword;
+		$this->mySQLerror 		= false;
+		
+		if($this->pdo) // PDO 
+		{		
+			try
+			{
+				$this->mySQLaccess = new PDO("mysql:host=".$this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));		
+			}
+			catch(PDOException $ex)
+			{
+				$this->mySQLlastErrText = $ex->getMessage();
+				//	echo "<pre>".print_r($ex,true)."</pre>";	// Useful for Debug. 
+				return false;
+			}
+			
+			$this->mySqlServerInfo = $this->mySQLaccess->getAttribute(PDO::ATTR_SERVER_INFO);
+
+		}
+		else // Legacy. 
+		{
+			if (!$this->mySQLaccess = @mysql_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, $newLink))
+			{
+				$this->mySQLlastErrText = mysql_error();
+				return false;
+			}
+			
+			$this->mySqlServerInfo = mysql_get_server_info();
+		}
+
+		$this->db_Set_Charset();
+		
+		if ($db_ConnectionID == NULL){ 	$db_ConnectionID = $this->mySQLaccess; }
+		
+		return true;
+	}
+
+
+
+	/**
+	 * Select the database to use. 
+	 * @param string database name
+	 * @param string table prefix . eg. e107_
+	 * @return boolean true when database selection was successful otherwise false. 
+	 */
+	public function database($database, $prefix = MPREFIX)
+	{
+		$this->mySQLdefaultdb 	= $database;
+		$this->mySQLPrefix 		= $prefix;
+		
+		if($this->pdo)
+		{
+			try 
+			{
+        		$this->mySQLaccess->select_db($database);
+		    }
+			catch (PDOException $e) 
+			{
+				$this->mySQLlastErrText = $e->getMessage();
+				return false;
+		    }
+		    
+			return true;
+		}
+		
+		
+		if (!@mysql_select_db($database, $this->mySQLaccess))
+		{
+			return false;
+		}
+		
+		return true;		
+	}
+
 
 	/**
 	 * Get system config
