@@ -272,16 +272,18 @@ class poll
 				}
 				$votep = implode(chr(1), $votes);
 				$pollArray['poll_votes'] = $votep;
-				$sql->db_Update("polls", "poll_votes = '$votep'".($pollArray['poll_storage_method'] != POLL_MODE_COOKIE ? ", poll_ip='".$poll_ip.$userid."^'" : '')." WHERE poll_id=".$poll_id);
-				echo "
+				$sql->update("polls", "poll_votes = '$votep'".($pollArray['poll_storage_method'] != POLL_MODE_COOKIE ? ", poll_ip='".$poll_ip.$userid."^'" : '')." WHERE poll_id=".$poll_id);
+				/*echo "
 				<script type='text/javascript'>
 				<!--
 				setcook({$poll_id});
 				//-->
 				</script>
 				";
+				*/
+				$poll_cookie_expire = time() + (3600 * 24 * 356 * 15); // FIXME cannot be used after 2023 (this year is the maxium unixstamp on 32 bit system)
+			 	cookie('poll_'.$poll_id.'', $poll_id, $poll_cookie_expire);
 				$POLLMODE = 'voted';
-
 			}
 		}
 		$this->pollRow = $pollArray;
@@ -884,9 +886,7 @@ class poll_shortcodes extends e_shortcode
 
 
 
-
-
-
+/*
 e107::js('inline', '
 
 	function setcook(pollid){
@@ -897,7 +897,7 @@ e107::js('inline', '
 		var expires = "; expires="+date.toGMTString();
 		document.cookie = name+"="+value+expires+"; path=/";
 	}
-		');
+		');*/
 
 
 ?>
