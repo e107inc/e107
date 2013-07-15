@@ -23,6 +23,7 @@ if (!defined('e107_INIT')) { exit; }
 $cString = 'nq_news_blogacalendar_menu_'.preg_replace('#[^\w]#', '', $parm);
 $cached = e107::getCache()->retrieve($cString);
 
+
 if(false === $cached)
 {
 
@@ -106,12 +107,12 @@ if(false === $cached)
 	$year_start 	= mktime(0, 0, 0, 1, 1, $req_year);
 	$year_end 		= mktime(23, 59, 59, 12, 31, $req_year);
 	
-	$sql->db_Select("news", "news_id, news_datestamp", "news_class IN (".USERCLASS_LIST.") AND news_datestamp > ".intval($start)." AND news_datestamp < ".intval($end));
+	$sql->select("news", "news_id, news_datestamp", "news_class IN (".USERCLASS_LIST.") AND news_datestamp > ".intval($start)." AND news_datestamp < ".intval($end));
 	
 	$links = array();
 	$months = array();
 	
-	while ($news = $sql->db_Fetch())
+	while ($news = $sql->fetch())
 	{
 		$xmonth = date("n", $news['news_datestamp']);
 		$xyear = date("Y", $news['news_datestamp']);
@@ -141,8 +142,11 @@ if(false === $cached)
 		
 	// go over the link array and create the option fields
 	
+	if(!isset($months[$cur_year][$cur_month])) // display current month even if no links available. 
+	{
+		$months[$cur_year][$cur_month] = 1;	
+	}
 
-	
 	
 	
 		
@@ -163,7 +167,7 @@ if(false === $cached)
 		$month_selector = '<div class="btn-group pull-right"><a class="btn btn-mini " href="#blogCalendar" data-slide="prev">‹</a>  
  		<a class="btn btn-mini" href="#blogCalendar" data-slide="next">›</a></div>';
 		 
-		$caption = "<div class='inline-text'>".BLOGCAL_L1." ".$month_selector."</div>";	
+		$caption = "<span class='inline-text'>".BLOGCAL_L1." ".$month_selector."</span>";	
 		
 		$menu = "<div id='blogCalendar' data-interval='false' class='carousel slide blogcalendar-block text-center'>";
 		$menu .= "<div class='blogcalendar-day-selector carousel-inner'>";
@@ -205,7 +209,7 @@ if(false === $cached)
 		$menu .= "<div class='forumheader blogcalendar-archive-link' style='text-align: center; margin-top:2px;'><span class='smalltext'><a class='blogcalendar-archive-link' href='$prefix/archive.php'>".BLOGCAL_L2."</a></span></div></td></tr>";
 		$menu .= "</table></div>";	
 		
-		 $caption = "<div class='form-inline'>".BLOGCAL_L1." ".$req_year."</div>";		
+		 $caption = "<span class='form-inline'>".BLOGCAL_L1." ".$req_year."</span>";		
 	}
 				
 	$cached = $ns->tablerender($caption, $menu, 'blog_calendar', true);

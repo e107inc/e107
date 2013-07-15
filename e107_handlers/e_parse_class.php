@@ -2407,6 +2407,10 @@ class e_parse extends e_parser
 	}
 	
 
+	
+	
+	
+
 	/**
 	 * Convert Text to a suitable format for use in emails. eg. relative links will be replaced with full links etc. 
 	 * @param string $text
@@ -2428,6 +2432,10 @@ class e_parse extends e_parser
 		$text = $this->toHTML($text, TRUE, $mods);
 		return $text;
 	}
+
+
+
+
 
 
 	/**
@@ -2609,12 +2617,46 @@ class e_parser
 	
 	
 	
-	// Parse i_xxxx to bootstrap glyph format. 
-	public function glyph($text)
+	/**
+	 * Parse xxxxx.glyph file to bootstrap glyph format. 
+	 * @return FALSE if not a glyph file or if bootstrap is not found. 
+	 */ 
+	public function toGlyph($text)
 	{
-		$text = preg_replace('/\[(i_[\w]*)\]/',"<i class='$1'></i>", $text); 		
-		return $text;	
+		if(!deftrue('BOOTSTRAP'))
+		{
+			return false;	
+		}
+		
+		if(substr($text,-6) == '.glyph') // Bootstrap or Font-Awesome. 
+		{
+			list($cls,$tmp) = explode('.glyph',$text);
+			return "<i class='".$cls."'></i> ";	// retain space. 
+		}
+		
+		return false;
+		
+		//$text = preg_replace('/\[(i_[\w]*)\]/',"<i class='$1'></i>", $text); 		
+		// return $text;	
 	}
+	
+	
+	/**
+	 * Display an icon. 
+	 * @param string $icon 
+	 * @example $tp->toIcon("{e_IMAGES}icons/something.png"); 
+	 */
+	public function toIcon($icon='')
+	{
+		if(!vartrue($icon))
+		{
+			return;
+		}
+		
+		$path = $this->replaceConstants($icon,'full');
+		return "<img class='icon' src='".$path."' alt='".basename($path)."'  />";	
+	}	
+	
 	
 	/** 
 	 * Parse new <bbcode> tags into bbcode output. 

@@ -696,7 +696,7 @@ class admin_shortcodes
        $text = '<ul class="nav nav-pills">
         <li class="dropdown">
             <a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" href="#" >
-                <i class="icon-envelope icon-white active"></i>'.$countDisp.'<b class="caret"></b>
+                <i class="icon-envelope  active"></i>'.$countDisp.'<b class="caret"></b>
             </a> 
             <ul class="dropdown-menu" role="menu" >
                 <li class="nav-header">Private Messages</li>
@@ -1549,7 +1549,6 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		{
 				$catid = $admin_cat['id'][$subitem[4]];
 				$tmp = array();
-
 				$tmp['text'] = $subitem[1];
 				$tmp['description'] = $subitem[2];
 				$tmp['link'] = $subitem[0];
@@ -1726,7 +1725,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		
 			$menu_vars['home']['text'] =  ""; // ADLAN_53;
 			$menu_vars['home']['link'] = e_HTTP.'index.php';
-			$menu_vars['home']['image'] = "<i class='icon-home icon-white'></i>" ; // "<img src='".E_16_NAV_LEAV."' alt='".ADLAN_151."' class='icon S16' />";
+			$menu_vars['home']['image'] = "<i class='icon-home'></i>" ; // "<img src='".E_16_NAV_LEAV."' alt='".ADLAN_151."' class='icon S16' />";
 			$menu_vars['home']['image_src'] = ADLAN_151;
 			$menu_vars['home']['perm'] = '';
 			$menu_vars['home']['sort'] = 1;
@@ -1749,7 +1748,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				$tmp[$c]['link'] = $tp->replaceConstants($link,'full');
 				$tmp[$c]['image'] = vartrue($lk['link_button']) ? "<img class='icon S16' src='".$tp->replaceConstants($lk['link_button'])."' alt='".$tp->toAttribute($lk['link_description'],'','defs')."' />": "" ;
 				$tmp[$c]['image_large'] = '';
-				$tmp[$c]['image_src'] = '';
+				$tmp[$c]['image_src'] = vartrue($lk['link_button']);
 				$tmp[$c]['image_large_src'] = '';
 				$tmp[$c]['perm'] = '';
 				$c++;
@@ -1849,7 +1848,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				
 			$menu_vars['logout']['text'] = ""; // ADMINNAME;
 			$menu_vars['logout']['link'] = '#';
-			$menu_vars['logout']['image'] = "<i class='icon-user icon-white'></i>"; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
+			$menu_vars['logout']['image'] = "<i class='icon-user'></i>"; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
 			$menu_vars['logout']['image_src'] = ADLAN_46;
 			$menu_vars['logout']['perm'] = '';	
 			$menu_vars['logout']['sub'] = $tmp;	
@@ -1864,7 +1863,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				$c = 0;
 				foreach($languages as $lng)
 				{			
-					$checked = ($lng == e_LANGUAGE) ? "<i class='icon-ok icon-white'></i> " : "<i >&nbsp;</i>&nbsp;";
+					$checked = ($lng == e_LANGUAGE) ? "<i class='icon-ok'></i> " : "<i >&nbsp;</i>&nbsp;";
 					
 					$tmp[$c]['text'] = $lng;
 					$tmp[$c]['description'] = '';
@@ -1879,7 +1878,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				
 				$menu_vars['language']['text'] = ""; // e_LANGUAGE;
 				$menu_vars['language']['link'] = '#';
-				$menu_vars['language']['image'] = "<i class='icon-globe icon-white'></i>" ;
+				$menu_vars['language']['image'] = "<i class='icon-globe'></i>" ;
 				$menu_vars['language']['image_src'] = ADLAN_46;
 				$menu_vars['language']['perm'] = '';	
 				$menu_vars['language']['sub'] = $tmp;	

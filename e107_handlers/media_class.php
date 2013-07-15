@@ -659,10 +659,10 @@ class e_media
 			$repl 			= array($im['media_url'],$media_path);
 			
 			if($bbcode == null) // e107 Media Manager
-			{
+			{			
 				$onclicki = "parent.document.getElementById('{$tagid}').value = '{$im['media_url']}';
-		 		parent.document.getElementById('".$prevId."').src = '{$realPath}';
-		 		return false;";	
+				parent.document.getElementById('".$prevId."').src = '{$realPath}';
+				return false;";	
 		 		//$onclicki = "";
 				$class .= " e-media-select e-dialog-close";
 			}
@@ -753,6 +753,32 @@ class e_media
 
 		return $newpath;	
 	}
+
+
+	/**
+	 * Get all Glyphs
+	 * @todo Cache 
+	 */
+	function getGlyphs()
+	{
+		
+		$pattern = '/\.(icon-(?:\w+(?:-)?)+):before\s+{\s*content:\s*"(.+)";\s+}/';
+		$subject = file_get_contents(e_WEB_JS.'font-awesome/css/font-awesome.css');
+		
+		preg_match_all($pattern, $subject, $matches, PREG_SET_ORDER);
+		
+		$icons = array();
+		
+		foreach($matches as $match)
+		{
+		    $icons[] = $match[1];
+		}
+				
+		return $icons; 
+	
+	}
+
+
 	
 	
 	function getPath($mime)

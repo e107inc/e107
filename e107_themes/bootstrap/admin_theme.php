@@ -7,6 +7,7 @@ define("SEP"," <i class='icon-play e-breadcrumb'></i> ");
 e107::js('core','bootstrap/js/bootstrap.min.js');
 e107::css('core','bootstrap/css/bootstrap.min.css');
 e107::css('core','bootstrap/css/bootstrap-responsive.min.css');
+
 // e107::css('core','bootstrap/css/jquery-ui.custom.css');
 e107::css('theme','admin_style.css');
 

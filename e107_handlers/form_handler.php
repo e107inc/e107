@@ -240,7 +240,7 @@ class e_form
 		}
 			
 		$mlength = vartrue($maxlength) ? "maxlength=".$maxlength : "";
-		
+				
 		$options = $this->format_options('text', $name, $options);
 		//never allow id in format name-value for text fields
 		return "<input type='text' name='{$name}' value='{$value}' {$mlength} ".$this->get_attributes($options, $name)." />";
@@ -283,33 +283,18 @@ class e_form
 	 * @param $name
 	 * @param $default value
 	 * @param $label
-	 * @param $sc_parms
+	 * @param $options - gylphs=1 
 	 * @param $ajax
 	 */
-	function iconpicker($name, $default, $label, $sc_parameters = '', $ajax = true)
+	function iconpicker($name, $default, $label, $options = array(), $ajax = true)
 	{
-    	// TODO - Hide the <input type='text'> element, and display the icon itself after it has been chosen.
-		// eg. <img id='iconview' src='".$img."' style='border:0; ".$blank_display."' alt='' />
-		// The button itself could be replaced with an icon just for this purpose.
-		return $this->imagepicker($name, $default, $label, 'media=_icon');
-		/*
-		$e107 = e107::getInstance();
-		$id = $this->name2id($name);
-		$sc_parameters .= '&id='.$id;
-		$jsfunc = $ajax ? "e107Ajax.toggleUpdate('{$id}-iconpicker', '{$id}-iconpicker-cn', 'sc:iconpicker=".urlencode($sc_parameters)."', '{$id}-iconpicker-ajax', { overlayElement: '{$id}-iconpicker-button' })" : "e107Helper.toggle('{$id}-iconpicker')";
-		$ret = $this->text($name, $default);
-	//	$ret .= $this->iconpreview($id,$default); //FIXME
-		$ret .= $this->admin_button($name.'-iconpicker-button', $label, 'action', '', array('other' => "onclick=\"{$jsfunc}\""));
-		$ret .= "
-			<div id='{$id}-iconpicker' class='e-hideme'>
-				<div class='expand-container' id='{$id}-iconpicker-cn'>
-					".(!$ajax ? $tp->parseTemplate('{ICONPICKER='.$sc_parameters.'}') : '')."
-				</div>
-			</div>
-		";
 
-		return $ret;
-		*/
+
+		$options['media'] = '_icon';
+		
+		return $this->imagepicker($name, $default, $label, $options);
+		
+
 	}
 
 	/**
@@ -341,7 +326,11 @@ class e_form
 		{
 			$url .= "&amp;w=".$extras['w'];	
 		}
-		
+
+		if(vartrue($extras['glyphs']))
+		{
+			$url .= "&amp;glyphs=1";	
+		}		
 		
 		$title = "Media Manager : ".$category;
 
@@ -531,8 +520,21 @@ class e_form
 		{
 			$ret = "<div class='imgselector-container'  style='display:block;width:64px;min-height:64px'>";
 			$thpath = isset($sc_parameters['nothumb']) || vartrue($hide) ? $default : $default_thumb;
-			$style = ($blank) ? "width:64px;height:64px" : "";
-			$label = "<img id='{$name_id}_prev' src='{$default_url}' alt='{$default_url}' class='well well-small image-selector' style='{$style}' />";
+			$label = "<div id='{$name_id}_prev' class='text-center well well-small image-selector' >";
+			
+			if($glyph = $tp->toGlyph($default_url))
+			{
+				$label .= $glyph;	
+			}
+			else 
+			{
+				$label .= $tp->toIcon($default_url);	
+			}
+			
+			$label .= "				
+			</div>";
+			
+		//	$label = "<img id='{$name_id}_prev' src='{$default_url}' alt='{$default_url}' class='well well-small image-selector' style='{$style}' />";
 				
 		}
 		else // Images 
@@ -873,7 +875,8 @@ class e_form
 	 * IMPORTANT: $$mediaCat is also used is the media-manager category identifier
 	 */
 	function bbarea($name, $value, $template = '', $mediaCat='_common', $size = 'large', $options = array())
-	{		
+	{
+		if(is_string($options)) parse_str($options, $options);		
 		//size - large|medium|small
 		//width should be explicit set by current admin theme
 		$size = 'input-large';
@@ -2607,7 +2610,15 @@ class e_form
 			break;
 
 			case 'icon':
-				$value = '<img src="'.$tp->replaceConstants(vartrue($parms['pre']).$value, 'abs').'" alt="'.basename($value).'" class="icon'.(vartrue($parms['class']) ? ' '.$parms['class'] : '').'" />';
+	
+				if($glyph = $tp->toGlyph($value))
+				{
+					$value = $glyph;	
+				}
+				else
+				{
+					$value = '<img src="'.$tp->replaceConstants(vartrue($parms['pre']).$value, 'abs').'" alt="'.basename($value).'" class="icon'.(vartrue($parms['class']) ? ' '.$parms['class'] : '').'" />';
+				}
 			break;
 			
 			case 'file':

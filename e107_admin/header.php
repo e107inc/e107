@@ -79,15 +79,17 @@ function loadJSAddons()
 	
 	// e107::css('core', 	'bootstrap-tag/bootstrap-tag.css', 'jquery');
 	e107::js('core', 	'bootstrap-tag/bootstrap-tag.js', 'jquery', 2);
+	
 		
 //	e107::js("core",	"tags/jquery.tagit.js","jquery",3);
 //	e107::css('core', 	'tags/jquery.tagit.css', 'jquery');
-	
+
 	e107::css('core', 	'core/admin.jquery.css', 'jquery');
 	e107::js("core",	"core/admin.jquery.js","jquery",4); // Load all default functions.
 	e107::css('core', 	'core/all.jquery.css', 'jquery');
 
 	e107::js("core",	"core/all.jquery.js","jquery",4); // Load all default functions.
+	
 }
 
 loadJSAddons();
@@ -215,6 +217,7 @@ if (isset($eplug_css) && $eplug_css)
 
 	if(e107::getPref('admincss') == "admin_dark.css" && !vartrue($_GET['configure']))
 	{
+	
 		$e_js->coreCSS('bootstrap/css/darkstrap.css');	
 		
 	} 
@@ -231,7 +234,7 @@ elseif (isset($pref['themecss']) && $pref['themecss'])
 {
 	$css_file = (file_exists(THEME.'admin_'.$pref['themecss']) && !vartrue($_GET['configure'])) ? 'admin_'.$pref['themecss'] : $pref['themecss'];
 	//echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
-	$e_js->themeCSS($css_file); // Test with superhero.css for frontend bootstrap and 'dark' for backend bootstrap. 
+	// $e_js->themeCSS($css_file); // Test with superhero.css for frontend bootstrap and 'dark' for backend bootstrap. 
 }
 else
 {
@@ -245,6 +248,10 @@ if(e_PAGE == 'menus.php' && vartrue($_GET['configure'])) // Quick fix for Menu M
 	$css_file = $pref['themecss'];
 	$e_js->themeCSS($css_file); // Test with superhero.css for frontend bootstrap and 'dark' for backend bootstrap. 
 //	return; 
+}
+else
+{
+	$e_js->coreCSS('font-awesome/css/font-awesome.min.css');	
 }
 
 
