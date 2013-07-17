@@ -6,6 +6,7 @@
 		<core name="admin_separate_plugins">0</core>
 		<core name="admincode">0</core>		
 		<core name="admincss">admin_dark.css</core>
+		<core name="adminlanguage"></core>
 		<core name="adminpwordchange">0</core>
 		<core name="adminstyle">infopanel</core>
 		<core name="admintheme">bootstrap</core>

@@ -50,4 +50,6 @@ define("LANG_LAN_34", "Available Language Packs");
 define("LANG_LAN_35", "The following language packs are available for this version of e107.");
 define("LANG_LAN_36", "Language-Pack errors found! Please first verify your language files are without errors, before creating a language-pack.");
 
+define("LANG_LAN_50", "Admin-Area Interface Language");
+
 ?>

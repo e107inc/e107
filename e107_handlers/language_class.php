@@ -268,7 +268,7 @@ class language{
 				
 		if(!$lang)
 		{
-			return $pref['sitelanguage'];
+			return (ADMIN_AREA &&  vartrue($pref['adminlanguage'])) ? $pref['adminlanguage'] : $pref['sitelanguage'];
 		}
 		
 		if(strpos($lang,"debug")!==FALSE)
@@ -531,8 +531,8 @@ class language{
 				$session->set('e_language', $user_language);	 		
 			}
 			else
-			{	
-				$user_language = $pref['sitelanguage'];	
+			{
+				$user_language = (e_ADMIN_AREA && vartrue($pref['adminlanguage'])) ? $pref['adminlanguage'] : $pref['sitelanguage'];	
 				
 				if($session->is('e_language'))
 				{
