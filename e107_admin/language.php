@@ -45,6 +45,7 @@ if (isset($_POST['submit_prefs']) && isset($_POST['mainsitelanguage']))
 	$temp['multilanguage_subdomain'] = $_POST['multilanguage_subdomain'];
 	$temp['multilanguage_domain'] = $_POST['multilanguage_domain'];
 	$temp['sitelanguage'] = $_POST['mainsitelanguage'];
+	$temp['adminlanguage'] = $_POST['mainadminlanguage'];
 	$temp['noLanguageSubs'] = $_POST['noLanguageSubs'];
 	if ($admin_log->logArrayDiffs($temp, $pref, 'LANG_01'))
 	{
@@ -481,7 +482,29 @@ function multilang_prefs()
 						$text .= $frm->select('mainsitelanguage',$lanlist,$sellan,"useValues=1");
 						$text .= "
 						</td>
-					</tr>
+					</tr>";
+					
+					
+					if(isset($_SERVER['E_DEV_LANGUAGE']) &&  $_SERVER['E_DEV_LANGUAGE'] === 'true') 
+					{
+					
+						$text .= "	
+						<tr>
+							<td>".LANG_LAN_50.": </td>
+							<td>";
+	
+							$sellan = preg_replace("/lan_*.php/i", "", $pref['adminlanguage']);
+						
+							$text .= $frm->select('mainadminlanguage',$lanlist,$sellan,array("useValues"=>1,"default" => LANG_LAN_14));
+							$text .= "
+							</td>
+						</tr>";
+					
+					}
+
+
+
+					$text .= "
 					<tr>
 						<td>".LANG_LAN_12.": </td>
 						<td>
