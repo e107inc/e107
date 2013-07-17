@@ -236,6 +236,15 @@ class e_jsmanager
 				"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js",
 				"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css",
 			);
+			
+			
+		}
+		
+		if(isset($_SERVER['E_DEV_LOCALJS']) &&  $_SERVER['E_DEV_LOCALJS'] === 'true') // Test with Local JS Framework files. 
+		{
+			$this->_libraries['jquery'] = array(
+				"jquery/jquery.min.js"
+			);
 		}
 		
 		$customJqueryUrls = e107::getPref('library-jquery-urls');
