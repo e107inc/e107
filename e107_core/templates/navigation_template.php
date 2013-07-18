@@ -14,7 +14,7 @@ $NAVIGATION_TEMPLATE['main']['start'] = '<ul class="nav nav-pills">';
 $NAVIGATION_TEMPLATE['main']['item'] = '
 	<li class="dropdown">
 		<a class="dropdown-toggle"  role="button" href="{LINK_URL}" >
-		 {LINK_NAME} 
+		 {LINK_ICON}{LINK_NAME} 
 		</a> 
 	</li>
 ';
@@ -106,7 +106,7 @@ $NAVIGATION_TEMPLATE['side']['end'] 				= '</ul>
 
 $NAVIGATION_TEMPLATE['side']['submenu_start'] 		= '';
 
-$NAVIGATION_TEMPLATE['side']['submenu_item']		= '<li><a href="{LINK_URL}">{LINK_NAME}</a></li>';
+$NAVIGATION_TEMPLATE['side']['submenu_item']		= '<li><a href="{LINK_URL}">{LINK_ICON}{LINK_NAME}</a></li>';
 
 $NAVIGATION_TEMPLATE['side']['submenu_loweritem'] = '
 			<li role="menuitem" class="dropdown-submenu">
@@ -115,7 +115,7 @@ $NAVIGATION_TEMPLATE['side']['submenu_loweritem'] = '
 			</li>
 ';
 
-$NAVIGATION_TEMPLATE['side']['submenu_item_active'] = '<li class="active"><a href="{LINK_URL}">{LINK_NAME}</a></li>';
+$NAVIGATION_TEMPLATE['side']['submenu_item_active'] = '<li class="active"><a href="{LINK_URL}">{LINK_ICON}{LINK_NAME}</a></li>';
 
 $NAVIGATION_TEMPLATE['side']['submenu_end'] 		= '';
 
