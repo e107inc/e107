@@ -23,8 +23,16 @@ class theme_shortcodes extends e_shortcode
 		if(!USERID) // Logged Out. 
 		{		
 			$text = '
-			<ul class="nav pull-right">
-			<li><a href="'.e_SIGNUP.'">Sign Up</a></li>
+			<ul class="nav pull-right">';
+			
+			if(deftrue('USER_REGISTRATION'))
+			{
+				$text .= '
+				<li><a href="'.e_SIGNUP.'">Sign Up</a></li>
+				';
+			}
+			
+			$text .= '
 			<li class="divider-vertical"></li>
 			<li class="dropdown">
 				<a class="dropdown-toggle" href="#" data-toggle="dropdown">Sign In <strong class="caret"></strong></a>
