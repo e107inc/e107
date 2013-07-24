@@ -274,32 +274,37 @@ class system_tools
 		{
 			$mes->addSuccess("Connecting to server");
 			
-			if($sql->gen("CREATE DATABASE ".$database." CHARACTER SET `utf8`"))
+			if(vartrue($_POST['createdb']))
 			{
-				$mes->addSuccess("Creating Database");
-				
-			//	$sql->gen("CREATE USER ".$user."@'".$server."' IDENTIFIED BY '".$pass."';");
-				$sql->gen("GRANT ALL ON `".$database."`.* TO ".$user."@'".$server."';");
-				$sql->gen("FLUSH PRIVILEGES;");		
-				
-				if(!$sql->database($database))
+			
+				if($sql->gen("CREATE DATABASE ".$database." CHARACTER SET `utf8`"))
 				{
-					$mes->addError("Selecting database");
+					$mes->addSuccess("Creating Database");
+					
+				//	$sql->gen("CREATE USER ".$user."@'".$server."' IDENTIFIED BY '".$pass."';");
+					$sql->gen("GRANT ALL ON `".$database."`.* TO ".$user."@'".$server."';");
+					$sql->gen("FLUSH PRIVILEGES;");		
 				}
-				
-				$mes->addSuccess("Selecting database");
-				
-				if($this->multiSiteCreateTables($sql, $prefix))
+				else
 				{
-					$coreConfig = e_CORE. "xml/default_install.xml";		
-					$ret = e107::getXml()->e107Import($coreConfig, 'add', true, false, $sql); // Add core pref values
-					$mes->addInfo(print_a($ret,true));
-				}	
+					$mes->addError("Creating Database");
+					return;
+				}
 			}
-			else
+			
+			if(!$sql->database($database))
 			{
-				$mes->addError("Creating Database");
+				$mes->addError("Selecting database");
 			}
+					
+			$mes->addSuccess("Selecting database");
+					
+			if($this->multiSiteCreateTables($sql, $prefix))
+			{
+				$coreConfig = e_CORE. "xml/default_install.xml";		
+				$ret = e107::getXml()->e107Import($coreConfig, 'add', true, false, $sql); // Add core pref values
+				$mes->addInfo(print_a($ret,true));
+			}	
 				
 		}
 		else
