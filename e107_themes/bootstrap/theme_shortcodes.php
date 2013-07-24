@@ -87,9 +87,9 @@ class theme_shortcodes extends e_shortcode
 		<li><a class="dropdown-toggle no-block" role="button" href="'.e_HTTP.'user.php?id.'.USERID.'"><i class="icon-user"></i> Profile</a></li>
 		<li class="divider"></li>';
 		
-		if(ADMIN) //TODO Find Icon. 
+		if(ADMIN) 
 		{
-			$text .= '<li><a href="'.e_ADMIN_ABS.'"><i class="icon-off"></i> Admin Area</a></li>';	
+			$text .= '<li><a href="'.e_ADMIN_ABS.'"><i class="icon-cogs"></i> Admin Area</a></li>';	
 		}
 		
 		$text .= '
