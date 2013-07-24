@@ -18,10 +18,10 @@ $NEWS_TEMPLATE['default']['item'] = '
 	<div class="page-header">
 		<h2>{NEWSTITLELINK}</h2>
 		<div class="post-meta">
-			<small><i class="icon-calendar"></i>{NEWSDATE}</small>
-			<small><i class="icon-user"></i>{NEWSAUTHOR}</small>
-			<small><i class="icon-comment"></i>{NEWSCOMMENTS}</small>
-			<small><i class="icon-tag"></i>{NEWSTAGS}</small>
+			<small><i class="icon-calendar"></i> {NEWSDATE}</small>
+			<small><i class="icon-user"></i> {NEWSAUTHOR}</small>
+			<small><i class="icon-comment"></i> {NEWSCOMMENTS}</small>
+			<small><i class="icon-tag"></i> {NEWSTAGS}</small>
 			{EMAILICON}
 			{PRINTICON} 
 			{PDFICON}
@@ -71,10 +71,10 @@ $NEWS_TEMPLATE['view']['item'] = '
 	<div class="page-header">
 		<h2>{NEWSTITLE}</h2>
 		<div class="post-meta">
-			<small><i class="icon-calendar"></i>{NEWSDATE}</small>
-			<small><i class="icon-user"></i>{NEWSAUTHOR}</small>
-			<small><i class="icon-comment"></i>{NEWSCOMMENTS}</small>
-			<small><i class="icon-tag"></i>{NEWSTAGS}</small>
+			<small><i class="icon-calendar"></i> {NEWSDATE}</small>
+			<small><i class="icon-user"></i> {NEWSAUTHOR}</small>
+			<small><i class="icon-comment"></i> {NEWSCOMMENTS}</small>
+			<small><i class="icon-tag"></i> {NEWSTAGS}</small>
 			{EMAILICON}
 			{PRINTICON} 
 			{PDFICON}
