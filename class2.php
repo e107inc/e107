@@ -1942,6 +1942,11 @@ function session_set($name, $value, $expire='', $path = e_HTTP, $domain = '', $s
 	}
 	else
 	{
+		if(($domain == '' && !e_SUBDOMAIN) || (defined('MULTILANG_SUBDOMAIN') && MULTILANG_SUBDOMAIN === TRUE))
+		{
+			$domain = (e_DOMAIN != FALSE) ? ".".e_DOMAIN : "";
+		}	
+		
 		setcookie($name, $value, $expire, $path, $domain, $secure);
 		$_COOKIE[$name] = $value;
 	}
