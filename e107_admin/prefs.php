@@ -1101,9 +1101,10 @@ $text .= "
 
 	foreach($signup_option_names as $value => $key)
 	{
+		$label_value = str_replace('_', '-', $value);
 		$text .= "
 						<tr>
-							<td>".$key."</td>
+							<td><label for='".$label_value."'>".$key."</label></td>
 							<td>
 								".$frm->radio($value, 0, !$pref[$value], array('label' => CUSTSIG_12))."&nbsp;&nbsp;
 								".$frm->radio($value, 1, ($pref[$value] == 1), array('label' => CUSTSIG_14))."&nbsp;&nbsp;
@@ -1116,14 +1117,14 @@ $text .= "
 				
 				$text .= "
 					<tr>
-						<td>".PRFLAN_126."</td>
+						<td><label for='signup-text'>".PRFLAN_126."</label></td>
 						<td>
 							".$frm->textarea('signup_text', $pref['signup_text'], 2, 1)."
 						</td>
 					</tr>
 
 					<tr>
-						<td>".PRFLAN_140."</td>
+						<td><label for='signup-text-after'>".PRFLAN_140."</label></td>
 						<td>
 							".$frm->textarea('signup_text_after', $pref['signup_text_after'], 2, 1)."
 						</td>
@@ -1131,20 +1132,20 @@ $text .= "
 					
 				
 					<tr>
-						<td>".PRFLAN_192.":</td>
+						<td><label for='predefinedloginname'>".PRFLAN_192.":</label></td>
 						<td>
 							".$frm->text('predefinedLoginName', $pref['predefinedLoginName'], 50)."
 							<div class='field-help'><div style='text-align:left'>".PRFLAN_193."<br />".str_replace("[br]","<br /> ",PRFLAN_194)."</div></div>
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_158.":</td>
+						<td><label for='displayname-maxlength'>".PRFLAN_158.":</label></td>
 						<td>
 							".$frm->number('displayname_maxlength', $pref['displayname_maxlength'], 3)."
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_172.":</td>
+						<td><label for='loginname-maxlength'>".PRFLAN_172.":</label></td>
 						<td>
 							".$frm->number('loginname_maxlength', $pref['loginname_maxlength'], 3)."
 						</td>
@@ -1190,7 +1191,7 @@ $text .= "
 				</colgroup>
 				<tbody>
 					<tr>
-						<td>".PRFLAN_127.":</td>
+						<td><label for='make-clickable'>".PRFLAN_127.":</label></td>
 						<td>
 							".$frm->radio_switch('make_clickable', $pref['make_clickable'])."
 							<div class='smalltext field-help'>".PRFLAN_128."</div>
@@ -1201,7 +1202,7 @@ $text .= "
 				
 				$text .= "
 					<tr>
-						<td>".PRFLAN_102."?:</td>
+						<td><label for='link-replace'>".PRFLAN_102."?:</label></td>
 						<td>
 							".$frm->radio_switch('link_replace', $pref['link_replace'],'', '', 'expandit=1')."
 							<div class='smalltext field-help'>".PRFLAN_103."</div>
@@ -1216,7 +1217,7 @@ $text .= "
 					</tr>
 			
 					<tr >
-						<td>".PRFLAN_145."?:</td>
+						<td><label for='links-new-window'>".PRFLAN_145."?:</label></td>
 						<td>
 							".$frm->radio_switch('links_new_window', $pref['links_new_window'])."
 							<div class='smalltext field-help'>".PRFLAN_146."</div>
@@ -1225,7 +1226,7 @@ $text .= "
 					
 					
 					<tr>
-						<td>".PRFLAN_40."</td>
+						<td><label for='profanity-filter'>".PRFLAN_40."</label></td>
 						<td>
 							".$frm->radio_switch('profanity_filter', $pref['profanity_filter'])."
 							<div class='smalltext field-help'>".PRFLAN_41."</div>
@@ -1233,13 +1234,13 @@ $text .= "
 					</tr>
 
 					<tr>
-						<td>".PRFLAN_42.":</td>
+						<td><label for='profanity-replace'>".PRFLAN_42.":</label></td>
 						<td>
 							".$frm->text('profanity_replace', $pref['profanity_replace'], 20)."
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_43.":</td>
+						<td><label for='profanity-words'>".PRFLAN_43.":</label></td>
 						<td>
 							".$frm->tags('profanity_words', $pref['profanity_words'])."
 							<div class='field-help'>".PRFLAN_44."</div>
@@ -1248,14 +1249,14 @@ $text .= "
 					
 				
 					<tr>
-						<td>".PRFLAN_109.":</td>
+						<td><label for='main-wordwrap'>".PRFLAN_109.":</label></td>
 						<td>
 							".$frm->number('main_wordwrap', $pref['main_wordwrap'], 3)."
 							<div class='smalltext field-help'>".PRFLAN_110."</div>
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_111.":</td>
+						<td><label for='menu-wordwrap'>".PRFLAN_111.":</label></td>
 						<td>
 							".$frm->number('menu_wordwrap', $pref['menu_wordwrap'], 3)."
 							<div class='smalltext field-help'>".PRFLAN_110."</div>
@@ -1263,7 +1264,7 @@ $text .= "
 					</tr>
 
 					<tr>
-						<td>".PRFLAN_116.":</td>
+						<td><label for='post-html'>".PRFLAN_116.":</label></td>
 						<td>
 							".$e_userclass->uc_dropdown('post_html', $pref['post_html'], 'nobody,public,member,admin,main,classes', "tabindex='".$frm->getNext()."'")."
 							<div class='smalltext field-help'>".PRFLAN_117."</div>
@@ -1271,35 +1272,35 @@ $text .= "
 					</tr>
 
 					<tr>
-						<td>".PRFLAN_215.":</td>
+						<td><label for='post-script'>".PRFLAN_215.":</label></td>
 						<td>
 							".r_userclass('post_script',$pref['post_script'],'off','nobody,member,admin,main,classes')."
 							<div class='smalltext field-help'>".PRFLAN_216."</div>
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_217.":</td>
+						<td><label for='filter-script'>".PRFLAN_217.":</label></td>
 						<td>
 							".$frm->radio_switch('filter_script', varset($pref['filter_script'], 1))."
 							<div class='smalltext field-help'>".PRFLAN_218."</div>
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_220.":</td>
+						<td><label for='html-abuse'>".PRFLAN_220.":</label></td>
 						<td>
 							".$frm->radio_switch('html_abuse', varset($pref['html_abuse'], 1))."
 							<div class='smalltext field-help'>".PRFLAN_221."</div>
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_122.":</td>
+						<td><label for='wysiwyg'>".PRFLAN_122.":</label></td>
 						<td>
 							".$frm->radio_switch('wysiwyg', $pref['wysiwyg'])."
 							<div class='smalltext field-help'>".PRFLAN_123."</div>
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_124.":</td>
+						<td><label for='old_np'>".PRFLAN_124.":</label></td>
 						<td>
 							".$frm->radio_switch('old_np', $pref['old_np'])."
 							<div class='smalltext field-help'>".PRFLAN_125."</div>
@@ -1312,14 +1313,14 @@ if(file_exists(e_PLUGIN."geshi/geshi.php"))
 {
 	$text .= "
 					<tr>
-						<td>".PRFLAN_118."?:</div></td>
+						<td><label for='usegeshi'>".PRFLAN_118."?:</label></td>
 						<td>
 							".$frm->radio_switch('useGeshi', $pref['useGeshi'])."
 							<div class='smalltext field-help'>".str_replace("[link]", "http://qbnz.com/highlighter/", PRFLAN_119)."</div>
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_120."?:</td>
+						<td><label for='defaultlangeshi'>".PRFLAN_120."?:</label></td>
 						<td>
 							".$frm->text('defaultLanGeshi', ($pref['defaultLanGeshi'] ? $pref['defaultLanGeshi'] : "php"), 20)."
 							<div class='smalltext field-help'>".PRFLAN_121."</div>
@@ -1360,7 +1361,7 @@ $text .= "
 				</colgroup>
 				<tbody>
 					<tr>
-						<td>".PRFLAN_60."</td>
+						<td><label for='ssl-enabled'>".PRFLAN_60."</label></td>
 
 						<td>
 							".$frm->radio_switch('ssl_enabled', $pref['ssl_enabled'])."
@@ -1378,7 +1379,7 @@ $text .= "
 		
 		$label = str_replace($srch,$repl,$label);
 		
-		$text .= "<tr><td>".$label."</td><td>";	
+		$text .= "<tr><td><label for='".$key."'>".$label."</label></td><td>";	
 		if($hasGD)
 		{
 			$text .= $frm->radio_switch($key, $pref[$key]);
@@ -1436,14 +1437,14 @@ $text .= "
  
  */
 $text .= "					<tr>
-						<td>".PRFLAN_92.": </td>
+						<td><label for='user-reg-secureveri'>".PRFLAN_92.":</label></td>
 						<td>
 							".$frm->radio_switch('user_reg_secureveri', $pref['user_reg_secureveri'])."
 						</td>
 					</tr>
 
 					<tr>
-						<td>".PRFLAN_129.":</td>
+						<td><label for='disallowmultilogin'>".PRFLAN_129.":</label></td>
 						<td>
 							".$frm->radio_switch('disallowMultiLogin', $pref['disallowMultiLogin'], LAN_YES, LAN_NO)."
 							<div class='smalltext field-help'>".PRFLAN_130."</div>
@@ -1451,7 +1452,7 @@ $text .= "					<tr>
 					</tr>
 
 					<tr>
-						<td>".PRFLAN_48.":</td>
+						<td><label for='user-tracking-cookie'>".PRFLAN_48.":</label></td>
 						<td class='form-inline'>
 							".$frm->radio('user_tracking', array('cookie' => PRFLAN_49, 'session' => PRFLAN_50), $pref['user_tracking'])." ".PRFLAN_55.": ".$frm->text('cookie_name', $pref['cookie_name'], 20)."
 						</td>
@@ -1460,7 +1461,7 @@ $text .= "					<tr>
 				
 		
 					<tr>
-						<td>".CUSTSIG_18."</td>
+						<td><label for='signup-disallow-text'>".CUSTSIG_18."</label></td>
 						<td>
 							".$frm->textarea('signup_disallow_text', $pref['signup_disallow_text'], 2, 1)."
 							<div class='field-help'>".CUSTSIG_19."</div>
@@ -1468,7 +1469,7 @@ $text .= "					<tr>
 					</tr>
 					
 						<tr>
-						<td>".PRFLAN_155.":</td>
+						<td><label for='displayname_class'>".PRFLAN_155.":</label></td>
 						<td>
 							<div class='field-spacer'>".$e_userclass->uc_dropdown('displayname_class', $pref['displayname_class'], 'nobody,member,admin,classes', "tabindex='".$frm->getNext()."'")."</div>
 							".$frm->admin_button('submit_resetdisplaynames', PRFLAN_156)."
@@ -1478,7 +1479,7 @@ $text .= "					<tr>
 					
 					
 					<tr>
-						<td>".CUSTSIG_16."</td>
+						<td><label for='signup-pass-len'>".CUSTSIG_16."</label></td>
 						<td>
 							".$frm->number('signup_pass_len', $pref['signup_pass_len'], 2)."
 						</td>
@@ -1487,7 +1488,7 @@ $text .= "					<tr>
 					
 					
 					<tr>
-						<td>".PRFLAN_188.":</td>
+						<td><label for='passwordencoding'>".PRFLAN_188.":</label></td>
 						<td>
 							".$frm->radio_switch('passwordEncoding', varset($pref['passwordEncoding'], 0), PRFLAN_190, PRFLAN_189)."
 							<div class='smalltext field-help'>".PRFLAN_191."</div>
@@ -1498,7 +1499,7 @@ $text .= "					<tr>
 					$CHAP_list = array(PRFLAN_180, PRFLAN_181, PRFLAN_182);
 	
 					$text .= "
-						<td>".PRFLAN_178."</td>
+						<td><label for='password-chap'>".PRFLAN_178."</label></td>
 						<td>".$frm->select('password_CHAP',$CHAP_list,$pref['password_CHAP'] );
 						//."	".$frm->select_open('password_CHAP');
 							
@@ -1510,20 +1511,20 @@ $text .= "					<tr>
 					</tr>
 					
 					<tr>
-						<td>".PRFLAN_35.":</td>
+						<td><label for='antiflood1'>".PRFLAN_35.":</label></td>
 						<td>
 							".$frm->radio_switch('antiflood1', $pref['antiflood1'])."
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_36.":</td>
+						<td><label for='antiflood-timeout'>".PRFLAN_36.":</label></td>
 						<td>
 							".$frm->number('antiflood_timeout', $pref['antiflood_timeout'], 3)."
 							<div class='smalltext field-help'>".PRFLAN_38."</div>
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_37."</td>
+						<td><label for='autoban'>".PRFLAN_37."</label></td>
 						<td>
 							".$frm->select_open('autoban');
 
@@ -1548,7 +1549,7 @@ $text .= "
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_139.":</td>
+						<td><label for='adminpwordchange'>".PRFLAN_139.":</label></td>
 						<td>
 							".$frm->radio_switch('adminpwordchange', $pref['adminpwordchange'])."
 						</td>
