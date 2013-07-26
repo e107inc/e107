@@ -23,8 +23,16 @@ class theme_shortcodes extends e_shortcode
 		if(!USERID) // Logged Out. 
 		{		
 			$text = '
-			<ul class="nav pull-right">
-			<li><a href="'.e_SIGNUP.'">Sign Up</a></li>
+			<ul class="nav pull-right">';
+			
+			if(deftrue('USER_REGISTRATION'))
+			{
+				$text .= '
+				<li><a href="'.e_SIGNUP.'">Sign Up</a></li>
+				';
+			}
+			
+			$text .= '
 			<li class="divider-vertical"></li>
 			<li class="dropdown">
 				<a class="dropdown-toggle" href="#" data-toggle="dropdown">Sign In <strong class="caret"></strong></a>
@@ -77,7 +85,14 @@ class theme_shortcodes extends e_shortcode
 		<ul class="dropdown-menu">
 		<li><a href="'.e_HTTP.'usersettings.php"><i class="icon-cog"></i> Settings</a></li>
 		<li><a class="dropdown-toggle no-block" role="button" href="'.e_HTTP.'user.php?id.'.USERID.'"><i class="icon-user"></i> Profile</a></li>
-		<li class="divider"></li>
+		<li class="divider"></li>';
+		
+		if(ADMIN) 
+		{
+			$text .= '<li><a href="'.e_ADMIN_ABS.'"><i class="icon-cogs"></i> Admin Area</a></li>';	
+		}
+		
+		$text .= '
 		<li><a href="'.e_HTTP.'index.php?logout"><i class="icon-off"></i> Logout</a></li>
 		</ul>
 		</li>

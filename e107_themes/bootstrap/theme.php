@@ -10,9 +10,11 @@ define("BODYTAG", '<body data-spy="scroll" data-target=".bs-docs-sidebar" >');
 e107::lan('theme');
 e107::js('bootstrap','bootstrap.min.js');
 
+define("CSSORDER", "theme,core,other,plugin,inline"); // TODO try to avoid needing this. - corrects font-awesome overlap issue. 
+
 if(THEME_STYLE != 'style.css') // allow for drop-in bootstrap replacement. See http://bootswatch.com
 {
-	define("CSSORDER", "theme,core,other,plugin,inline");
+	
 
 	switch (THEME_STYLE) 
 	{
@@ -32,7 +34,11 @@ if(THEME_STYLE != 'style.css') // allow for drop-in bootstrap replacement. See h
 else
 {
 	e107::css('bootstrap','bootstrap.min.css');	
-	e107::css('inline','@media (min-width: 1000px){ body	{ padding-top: 75px;  }  } ');
+	e107::css('inline','@media (min-width: 1000px){ body	{ padding-top: 75px;  } 
+	
+	 }
+	
+	 ');
 }
 
 e107::css('bootstrap','bootstrap-responsive.min.css');

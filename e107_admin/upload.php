@@ -2,25 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  *	File Upload facility - administration
  *
- * $Source: /cvs_backup/e107_0.8/e107_admin/upload.php,v $
- * $Revision$
- * $Date$
- * $Author$
- */
-
-
-/**
- *	e107 Upload handling - Admin
- *
- *	@package	e107
- *	@subpackage	admin
- *	@version 	$Id$;
  */
 
 require_once('../class2.php');
@@ -68,7 +55,7 @@ class upload_admin extends e_admin_dispatcher
 		'main/edit'	=> 'main/list'				
 	);	
 	
-	protected $menuTitle = 'myplugin';
+	protected $menuTitle = 'Upload';
 }
 
 
@@ -78,7 +65,7 @@ class upload_admin extends e_admin_dispatcher
 class upload_ui extends e_admin_ui
 {
 			
-		protected $pluginTitle		= 'upload';
+		protected $pluginTitle		= 'Upload';
 		protected $pluginName		= 'myplugin';
 		protected $table			= 'upload';
 		protected $pid				= 'upload_id';

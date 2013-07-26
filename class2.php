@@ -630,6 +630,7 @@ define('SITEADMINEMAIL', $pref['siteadminemail']);
 define('SITEDISCLAIMER', $tp->toHTML($pref['sitedisclaimer'], '', 'emotes_off,defs'));
 define('SITECONTACTINFO', $tp->toHTML($pref['sitecontactinfo'], true, 'emotes_off,defs'));
 define('SITEEMAIL', vartrue($pref['replyto_email'],$pref['siteadminemail']));
+define('USER_REGISTRATION', vartrue($pref['user_reg'],false)); // User Registration System Active or Not. 
 
 if(is_array($pref['xurl']))
 {
@@ -1941,6 +1942,11 @@ function session_set($name, $value, $expire='', $path = e_HTTP, $domain = '', $s
 	}
 	else
 	{
+		if(($domain == '' && !e_SUBDOMAIN) || (defined('MULTILANG_SUBDOMAIN') && MULTILANG_SUBDOMAIN === TRUE))
+		{
+			$domain = (e_DOMAIN != FALSE) ? ".".e_DOMAIN : "";
+		}	
+		
 		setcookie($name, $value, $expire, $path, $domain, $secure);
 		$_COOKIE[$name] = $value;
 	}

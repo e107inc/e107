@@ -275,7 +275,7 @@ if($signup_imagecode)
 }
 
 
-if ((USER || ($pref['user_reg'] === 0) || (vartrue($pref['auth_method'],'e107') != 'e107')) && !getperms('0'))
+if ((USER || ($pref['user_reg'] != 1) || (vartrue($pref['auth_method'],'e107') != 'e107')) && !getperms('0'))
 {
 	 header('location: '.e_HTTP.'index.php');
 }
