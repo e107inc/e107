@@ -145,7 +145,7 @@ if($action == "edit")
 {
 	if($sql->select("newsfeed", "*", "newsfeed_id=$id"))
 	{
-		$row = $sql->db_Fetch();
+		$row = $sql->fetch();
 		extract($row); // FIX
 		list($newsfeed_image, $newsfeed_showmenu, $newsfeed_showmain) = explode("::", $newsfeed_image);
 	}
@@ -155,57 +155,57 @@ else
 	unset($newsfeed_showmenu, $newsfeed_showmain, $newsfeed_name, $newsfeed_url, $newsfeed_image, $newsfeed_description, $newsfeed_updateint, $newsfeed_active);
 }
 
-$text = "
-<form method='post' action='".e_SELF."'>\n
-<table class='table adminform'>
-<colgroup>
-	<col class='col-label' />
-	<col style='col-control' />
-</colgroup>
-<tr>
-	<td>".LAN_NAME."</td>
-	<td>".$frm->text('newsfeed_name', $newsfeed_name, '200')."</td>
-</tr>
-
-<tr>
-	<td>".LAN_URL."</td>
-	<td>".$frm->text('newsfeed_url', $newsfeed_url, '250')."<span class='field-help'>".NFLAN_10."</span></td>
-</tr>
-<tr>
-	<td>".NFLAN_11."</td>
-	<td>".$frm->text('newsfeed_image', $newsfeed_image, '200') /* TODO imagepicker? */."<span class='field-help'>".NFLAN_17."</span></td>
-</tr>
-<tr>
-	<td>".LAN_DESCRIPTION."</td>
-	<td>".$frm->text('newsfeed_description', $newsfeed_description, '200')."<span class='field-help'>".NFLAN_37."</span></td>
-</tr>
-<tr>
-	<td>".NFLAN_18."</td>
-	<td>".$frm->number('newsfeed_updateint',($newsfeed_updateint ? $newsfeed_updateint : 3600),5)."<span class='field-help'>".NFLAN_19."</span></td>
-</tr>
-<tr>
-	<td>".NFLAN_12."</td>
-	<td>"; 
-	$array = array(NFLAN_13,NFLAN_14,NFLAN_20,NFLAN_21);
-	$text .= 
-	$frm->radio('newsfeed_active', $array, ($newsfeeed_active ? $newsfeeed_active : 0), true, NFLAN_22)."
-	</td>
-</tr>
-<tr>
-	<td>".NFLAN_45."</td>
-	<td>".$frm->number('newsfeed_showmenu', $newsfeed_showmenu ,5)."<span class='field-help'>".NFLAN_47."</span></td>
-</tr>
-<tr>
-	<td>".NFLAN_46."</td>
-	<td>".$frm->number('newsfeed_showmain', $newsfeed_showmain ,5)."<span class='field-help'>".NFLAN_47."</span></td>
-</tr>
-</table>
-<div class='buttons-bar center'>
-	".$frm->admin_button(($action == "edit" ? "updateFeed" : "createFeed"),($action == "edit" ? LAN_UPDATE : LAN_CREATE),'update')."
-</div>
-	".($action == "edit" ? "<input type='hidden' name='newsfeed_id' value='$newsfeed_id' />" : "")."
-</form>
-";
+	$text = "
+	<form method='post' action='".e_SELF."'>\n
+	<table class='table adminform'>
+	<colgroup>
+		<col class='col-label' />
+		<col style='col-control' />
+	</colgroup>
+	<tr>
+		<td>".LAN_NAME."</td>
+		<td>".$frm->text('newsfeed_name', $newsfeed_name, '200')."</td>
+	</tr>
+	
+	<tr>
+		<td>".LAN_URL."</td>
+		<td>".$frm->text('newsfeed_url', $newsfeed_url, '250')."<span class='field-help'>".NFLAN_10."</span></td>
+	</tr>
+	<tr>
+		<td>".NFLAN_11."</td>
+		<td>".$frm->text('newsfeed_image', $newsfeed_image, '200') /* TODO imagepicker? */."<span class='field-help'>".NFLAN_17."</span></td>
+	</tr>
+	<tr>
+		<td>".LAN_DESCRIPTION."</td>
+		<td>".$frm->text('newsfeed_description', $newsfeed_description, '200')."<span class='field-help'>".NFLAN_37."</span></td>
+	</tr>
+	<tr>
+		<td>".NFLAN_18."</td>
+		<td>".$frm->number('newsfeed_updateint',($newsfeed_updateint ? $newsfeed_updateint : 3600),5)."<span class='field-help'>".NFLAN_19."</span></td>
+	</tr>
+	<tr>
+		<td>".NFLAN_12."</td>
+		<td>"; 
+		$array = array(NFLAN_13,NFLAN_14,NFLAN_20,NFLAN_21);
+		$text .= 
+		$frm->radio('newsfeed_active', $array, ($newsfeed_active ? $newsfeed_active : 0), true, NFLAN_22)."
+		</td>
+	</tr>
+	<tr>
+		<td>".NFLAN_45."</td>
+		<td>".$frm->number('newsfeed_showmenu', $newsfeed_showmenu ,5)."<span class='field-help'>".NFLAN_47."</span></td>
+	</tr>
+	<tr>
+		<td>".NFLAN_46."</td>
+		<td>".$frm->number('newsfeed_showmain', $newsfeed_showmain ,5)."<span class='field-help'>".NFLAN_47."</span></td>
+	</tr>
+	</table>
+	<div class='buttons-bar center'>
+		".$frm->admin_button(($action == "edit" ? "updateFeed" : "createFeed"),($action == "edit" ? LAN_UPDATE : LAN_CREATE),'update')."
+	</div>
+		".($action == "edit" ? "<input type='hidden' name='newsfeed_id' value='$newsfeed_id' />" : "")."
+	</form>
+	";
 
 $ns->tablerender(NFLAN_09, $mes->render() . $text);
 
