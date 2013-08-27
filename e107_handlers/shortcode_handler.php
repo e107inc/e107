@@ -999,7 +999,8 @@ class e_parse_shortcode
 
 						if (class_exists($_class, false)) // prevent __autoload - performance
 						{
-							$ret = call_user_func(array($_class, $_function), array($parm, $sc_mode));
+							// SecretR - fix array(parm, sc_mode) causing parm to become an array, see issue 424
+							$ret = call_user_func(array($_class, $_function), $parm, $sc_mode);
 						}
 						elseif (function_exists($_function))
 						{
