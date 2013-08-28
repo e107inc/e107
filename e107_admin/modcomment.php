@@ -300,18 +300,24 @@ function statusIcon($val)
 function delete_children($row, $cid) 
 {
 	
-	global $sql, $sql2, $table;
-
+	global $sql, $sql2, $cobj, $table;
+	
+	// Update the user_comments count 
 	$tmp = explode(".", $row['comment_author']);
 	$u_id = intval($tmp[0]);
 	if ($u_id >= 1) 
 	{
 		$sql->db_Update("user", "user_comments=user_comments-1 WHERE user_id=".$u_id);
 	}
+
+	// Check if the item is a news item, and if so, deduct the comment from the news_comment_total count. 
+	$table = $cobj->getTable($row['comment_type']);
 	if (($table == "news") || ($table == '0'))
 	{
 		$sql->db_Update("news", "news_comment_total=news_comment_total-1 WHERE news_id='".$row['comment_item_id']."'");
 	}
+
+	// Check for nested (child) comments and delete those as well if applicable
 	if ($sql2->db_Select("comments", "*", "comment_pid='".$row['comment_id']."'")) 
 	{
 		while ($row2 = $sql2->db_Fetch()) 
@@ -319,6 +325,7 @@ function delete_children($row, $cid)
 			delete_children($row2, $row2['comment_id']);
 		}
 	}
+	
 	$c_del[] = $cid;
 	while (list ($key, $cid) = each ($c_del)) 
 	{
