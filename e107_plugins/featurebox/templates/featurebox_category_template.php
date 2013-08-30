@@ -291,8 +291,8 @@ $FEATUREBOX_CATEGORY_TEMPLATE['camera']['js_type'] = 'jquery';
 $FEATUREBOX_CATEGORY_INFO = array(
 	'bootstrap_carousel' 	=> array('title' => 'Bootstrap Carousel', 		'description' => "Bootstrap's Hero slider"),
 	'bootstrap_tabs'		=> array('title' => 'Bootstrap Tabs'	,	 	'description' => 'Tabbed Feature box items'),
-	'camera' 				=> array('title' => 'Image-Slider (jquery)'	, 	'description' => 'Image transitions using the "Camera" jquery plugin'),
-	'accordion' 			=> array('title' => 'Accordion (jquery)'	, 	'description' => 'Accordion utilizing jQuery UI'),
+//	'camera' 				=> array('title' => 'Image-Slider (jquery)'	, 	'description' => 'Image transitions using the "Camera" jquery plugin'),
+//	'accordion' 			=> array('title' => 'Accordion (jquery)'	, 	'description' => 'Accordion utilizing jQuery UI'),
 	'default' 				=> array('title' => 'Default', 					'description' => 'Flat - show by category limit'),
 //  DEPRECATED	'dynamic' 				=> array('title' => 'Dynamic (prototype.js)', 	'description' => 'Load items on click (AJAX)'),
 // DEPRECATED	'tabs-proto' 			=> array('title' => 'Tabs (prototype.js)'	, 	'description' => 'Tabbed Feature box items')

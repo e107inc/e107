@@ -288,6 +288,7 @@ class tagwords
 	{
 		$tp = e107::getParser();
 		$sql = e107::getDb();
+		$mes = e107::getMessage();
 		//prepare data
 		$tag_type = $tp->toDB($tag_type);
 		$tag_itemid = intval($tag_itemid);
@@ -310,6 +311,10 @@ class tagwords
 
 		//insert the differences (insert what has been added)
 		$insert_diff = array_diff($new, $existing);
+		$count = 0;
+	//	print_a($insert_diff);
+		return ("Tagword Insert: ".print_a($new,true));
+		
 		foreach($insert_diff as $word)
 		{
 			$word = trim($word);
@@ -319,9 +324,11 @@ class tagwords
 			$args['tag_type'] = $tag_type;
 			$args['tag_itemid'] = $tag_itemid;
 			$args['tag_word'] = $word;
-			$sql->insert($this->table, $args);
+			$count += $sql->insert($this->table, $args) ? 1 : 0;
+			return "a Diff was made";
 		}
-		return "<br />".LAN_TAG_3;
+		
+		return "<br />".LAN_TAG_3.": ".$count." words.";
 	}
 
 	/*

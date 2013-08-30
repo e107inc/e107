@@ -284,7 +284,7 @@ if(getperms('0')) // allow main admin to view signup page for design/testing.
 {
 	//$mes = e107::getMessage();
 	//$mes->debug("You are currently logged in.");
-	 $SIGNUP_BEGIN = "<div class='alert alert-block alert-error'> You are currently logged in.</div>". $SIGNUP_BEGIN;		
+	 $SIGNUP_BEGIN = "<div class='alert alert-block alert-error text-center'>".LAN_SIGNUP_112."</div>". $SIGNUP_BEGIN;		
 }
 
 
@@ -396,7 +396,7 @@ if (isset($_POST['register']) && $pref['user_reg'] == 1)
 
 	if (!$error)
 	{
-		if (varsettrue($pref['predefinedLoginName']))
+		if (vartrue($pref['predefinedLoginName']))
 		{
 		  $_POST['loginname'] = $userMethods->generateUserLogin($pref['predefinedLoginName']);
 		}
@@ -497,7 +497,7 @@ if (isset($_POST['register']) && $pref['user_reg'] == 1)
 			{
 				$temp[] = validatorClass::makeErrorList($allData,'USER_ERR_','%n - %x - %t: %v', '<br />', $userMethods->userVettingInfo);
 			}
-			if (varsettrue($eufVals['errors']))
+			if (vartrue($eufVals['errors']))
 			{
 				$temp[] = validatorClass::makeErrorList($eufVals,'USER_ERR_','%n - %t: %v', '<br />');
 			}
@@ -554,14 +554,23 @@ if (isset($_POST['register']) && $pref['user_reg'] == 1)
 			$signup_data[$f] = $allData['data'][$f];		// Just copy across selected fields
 		}
 
+
+
 		$allData['data']['user_password'] = $userMethods->HashPassword($savePassword,$allData['data']['user_loginname']);
-		if (varsettrue($pref['allowEmailLogin']))
+		
+		if (vartrue($pref['allowEmailLogin']))
 		{  // Need to create separate password for email login
 			$allData['data']['user_prefs'] = serialize(array('email_password' => $userMethods->HashPassword($savePassword, $allData['data']['user_email'])));
 		}
 
 		$allData['data']['user_join'] = time();
 		$allData['data']['user_ip'] = e107::getIPHandler()->getIP(FALSE);
+		
+		if(!vartrue($allData['data']['user_name']))
+		{
+			$allData['data']['user_name'] = $allData['data']['user_loginname'];	
+			$signup_data['user_name'] = $allData['data']['user_loginname'];
+		} 
 		
 		// The user_class, user_perms, user_prefs, user_realm fields don't have default value,
 		//   so we put apropriate ones, otherwise - broken DB Insert
@@ -571,22 +580,28 @@ if (isset($_POST['register']) && $pref['user_reg'] == 1)
 		$allData['data']['user_realm'] = '';
 
 		// Actually write data to DB
-		validatorClass::addFieldTypes($userMethods->userVettingInfo,$allData);
-		$nid = $sql->db_Insert('user', $allData);
+		validatorClass::addFieldTypes($userMethods->userVettingInfo, $allData);
+		
+		$nid = $sql->insert('user', $allData);
+		
 		if (isset($eufVals['data']) && count($eufVals['data']))
 		{
 			$usere->addFieldTypes($eufVals);		// Add in the data types for storage
 			$eufVals['WHERE'] = '`user_extended_id` = '.intval($nid);
 			//$usere->addDefaultFields($eufVals);		// Add in defaults for anything not explicitly set (commented out for now - will slightly modify behaviour)
-			$sql->db_Select_gen("INSERT INTO `#user_extended` (user_extended_id) values ('{$nid}')");
-			$sql->db_Update('user_extended', $eufVals);
+			$sql->gen("INSERT INTO `#user_extended` (user_extended_id) values ('{$nid}')");
+			$sql->update('user_extended', $eufVals);
 		}
-		if (SIGNUP_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Signup new user",array_merge($allData['data'],$eufVals) ,FALSE,LOG_TO_ROLLING);
+		
+		if (SIGNUP_DEBUG)
+		{
+			 $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Signup new user",array_merge($allData['data'],$eufVals) ,FALSE,LOG_TO_ROLLING);
+		}
 
 		// Log to user audit log if enabled
 		$signup_data['user_id'] = $nid;
 		$signup_data['signup_key'] = $u_key;
-		$signup_data['user_realname'] = $tp -> toDB($_POST['realname']);
+		$signup_data['user_realname'] = $tp->toDB($_POST['realname']);
 
 		$admin_log->user_audit(USER_AUDIT_SIGNUP,$signup_data);
 
@@ -598,7 +613,7 @@ if (isset($_POST['register']) && $pref['user_reg'] == 1)
 		}
 
 		$adviseLoginName = '';
-		if (varsettrue($pref['predefinedLoginName']) && (integer) $pref['allowEmailLogin'] === 0)
+		if (vartrue($pref['predefinedLoginName']) && (integer) $pref['allowEmailLogin'] === 0)
 		{
 			$adviseLoginName = LAN_SIGNUP_65.': '.$allData['data']['user_loginname'].'<br />'.LAN_SIGNUP_66.'<br />';
 		}
@@ -611,19 +626,35 @@ if (isset($_POST['register']) && $pref['user_reg'] == 1)
 			if (($pref['user_reg_veri'] != 2) && $allData['data']['user_email'])		// Don't send if email address blank - means that its not compulsory
 			{
 				$allData['data']['user_id'] = $nid;					// User ID
-				$allData['data']['user_password'] = $savePassword;	// Might need to send plaintext password in the email
+				// FIXME build while rendering - user::renderEmail()
+				$allData['data']['activation_url'] = SITEURL."signup.php?activate.".$allData['data']['user_id'].".".$allData['data']['user_sess'];
+				// FIX missing user_name
+				if(!vartrue($allData['data']['user_name'])) $allData['data']['user_name'] = $allData['data']['user_login'];
+				
+				// prefered way to send user emails
+				$sysuser = e107::getSystemUser(false, false);
+				$sysuser->setData($allData['data']);
+				$sysuser->setId($userid);
+				$check = $sysuser->email('signup', array(
+					'user_password' => $savePassword, // for security reasons - password passed ONLY through options
+				));
+				
+				/*
                 $eml = render_email($allData['data']);
 				$eml['e107_header'] = $eml['userid'];
 				require_once(e_HANDLER.'mail.php');
 				$mailer = new e107Email();
 				
 				// FIX - sendEmail returns TRUE or error message...
-				if(true !== $mailer->sendEmail($allData['data']['user_email'], $allData['data']['user_name'], $eml,FALSE))
+				$check = $mailer->sendEmail($allData['data']['user_email'], $allData['data']['user_name'], $eml,FALSE);*/
+				
+				if(true !== $check)
 				{
 					$error_message = LAN_SIGNUP_42; // There was a problem, the registration mail was not sent, please contact the website administrator.
 				}
 				unset($allData['data']['user_password']);
 			}
+
 			$e_event->trigger('usersup', $_POST);  // Old trigger - send everything in the template, including extended fields.
 			// FIXME - undocummented feature - userpartial trigger (better trigger name?)
 			$e_event->trigger('userpartial', array_merge($allData['data'],$eufVals['data']));  // New trigger - send everything in the template, including extended fields.
@@ -658,6 +689,7 @@ if (isset($_POST['register']) && $pref['user_reg'] == 1)
 			{
 				$text = LAN_SIGNUP_76."&nbsp;".SITENAME.", ".LAN_SIGNUP_12."<br /><br />".LAN_SIGNUP_13;
 			}
+			
 			$ns->tablerender(LAN_SIGNUP_8,$text);
 			require_once(FOOTERF);
 			exit;
@@ -689,7 +721,7 @@ if ($qs == 'stage1' && $pref['use_coppa'] == 1)
 {
 	if(isset($_POST['newver']))
 	{
-		if(!varsettrue($_POST['coppa']))
+		if(!vartrue($_POST['coppa']))
 		{
 			$text = $tp->parseTemplate($COPPA_FAIL);
 			$ns->tablerender(LAN_SIGNUP_78, $text);
@@ -746,12 +778,12 @@ function headerjs()
 
 /**
  * Create email to send to user who just registered.
- *
+ * DEPRECATED use $user->email()
  * @param array $userInfo is the array of user-related DB variables
  *
  * @return array of data for mailer - field names directly compatible
  */
-function render_email($userInfo, $preview = FALSE)
+/*function render_email($userInfo, $preview = FALSE)
 {
 	// 1 = Body
 	// 2 = Subject
@@ -781,16 +813,6 @@ function render_email($userInfo, $preview = FALSE)
 		require_once(e_CORE.'templates/email_template.php');
 	}
 
-	/*	Inline images now handled automatically - just include in email template with an absolute link
-	$inlineImages = array();
-	$inlineImages = explode(",",$SIGNUPEMAIL_IMAGES);
-	if (vartrue($SIGNUPEMAIL_BACKGROUNDIMAGE))
-	{
-		$inlineImages[] = $SIGNUPEMAIL_BACKGROUNDIMAGE;
-	}
-	if (count($inlineImages)) { $ret['mail_inline_images'] = implode(",",$inlineImages); }
-	*/
-
 	$ret['mail_recipient_id'] = $userInfo['user_id'];
 	if (vartrue($SIGNUPEMAIL_CC)) { $ret['mail_copy_to'] = $SIGNUPEMAIL_CC; }
 	if (vartrue($SIGNUPEMAIL_BCC)) { $ret['mail_bcopy_to'] = $SIGNUPEMAIL_BCC; }
@@ -817,22 +839,9 @@ function render_email($userInfo, $preview = FALSE)
 	$replace[5] = $userInfo['user_name'];
 
 	$search[6] = '{USERURL}';
-	$replace[6] = varsettrue($userInfo['user_website']) ? $userInfo['user_website'] : "";
+	$replace[6] = vartrue($userInfo['user_website']) ? $userInfo['user_website'] : "";
 
-	/*	Inline images now handled automatically - just include in email template with an absolute link
-	$cnt=1;
-	foreach($inlineImages as $img)
-	{
-		if(is_readable($inlineImages[$cnt-1]))
-		{
-			$cid_search[] = "{IMAGE".$cnt."}";
-			$cid_replace[] = "<img alt=\"".SITENAME."\" src='cid:".md5($inlineImages[$cnt-1])."' />\n";
-			$path_search[] = "{IMAGE".$cnt."}";
-			$path_replace[] = "<img alt=\"".SITENAME."\" src=\"".$inlineImages[$cnt-1]."\" />\n";
-		}
-		$cnt++;
-	}
-	*/
+
 
 	$subject = str_replace($search,$replace,$SIGNUPEMAIL_SUBJECT);
 	$ret['mail_subject'] =  $subject;
@@ -865,7 +874,7 @@ function render_email($userInfo, $preview = FALSE)
 
 	return $ret;
 }
-
+*/
 
 
 function render_after_signup($error_message)

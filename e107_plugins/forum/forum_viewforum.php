@@ -2,14 +2,11 @@
 /*
 * e107 website system
 *
-* Copyright (C) 2008-2011 e107 Inc (e107.org)
+* Copyright (C) 2008-2013 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
 * View specific forums
-*
-* $URL$
-* $Id$
 *
 */
 
@@ -20,11 +17,8 @@ if (!$e107->isInstalled('forum'))
 	header('Location: '.SITEURL);
 	exit;
 }
-include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_viewforum.php');
-
-
-
-
+//include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_viewforum.php'); // now uses English_front.php
+define('NAVIGATION_ACTIVE','forum');
 
 
 if (isset($_POST['fjsubmit']))
@@ -52,11 +46,11 @@ $threadFrom = ($page - 1) * $view;
 global $forum_info, $FORUM_CRUMB;
 $fVars = new e_vars;
 
-$fVars->STARTERTITLE = LAN_54;
-$fVars->THREADTITLE = LAN_53;
-$fVars->REPLYTITLE = LAN_55;
-$fVars->LASTPOSTITLE = LAN_57;
-$fVars->VIEWTITLE = LAN_56;
+$fVars->STARTERTITLE = LAN_FORUM_1004;
+$fVars->THREADTITLE = LAN_FORUM_1003;
+$fVars->REPLYTITLE = LAN_FORUM_0003;
+$fVars->LASTPOSTITLE = LAN_FORUM_0004;
+$fVars->VIEWTITLE = LAN_FORUM_1005;
 
 $forumId = (int)$_REQUEST['id'];
 
@@ -118,7 +112,7 @@ $forumInfo['forum_name'] = $tp->toHTML($forumInfo['forum_name'], true, 'no_hook,
 $forumInfo['forum_description'] = $tp->toHTML($forumInfo['forum_description'], true, 'no_hook');
 
 $_forum_name = (substr($forumInfo['forum_name'], 0, 1) == '*' ? substr($forumInfo['forum_name'], 1) : $forumInfo['forum_name']);
-define('e_PAGETITLE', $_forum_name.' / '.LAN_01);
+define('e_PAGETITLE', $_forum_name.' / '.LAN_FORUM_1001);
 
 // SEO - meta description (auto)
 if(!empty($forumInfo['forum_description']))
@@ -217,11 +211,11 @@ if(substr($forum_info['sub_parent'], 0, 1) == '*')
 $forum->set_crumb(true, '', $fVars); // set $BREADCRUMB (and $BACKLINK)
 
 $fVars->FORUMTITLE = $forumInfo['forum_name'];
-$fVars->MODERATORS = LAN_404.': '.implode(', ', $modArray);
+$fVars->MODERATORS = LAN_FORUM_1009.': '.implode(', ', $modArray);
 $fVars->BROWSERS = '';
 if(varset($pref['track_online']))
 {
-	$fVars->BROWSERS = $users.' '.($users == 1 ? LAN_405 : LAN_406).' ('.$member_users.' '.($member_users == 1 ? LAN_407 : LAN_409).", ".$guest_users." ".($guest_users == 1 ? LAN_408 : LAN_410).')';
+	$fVars->BROWSERS = $users.' '.($users == 1 ? LAN_FORUM_0059 : LAN_FORUM_0060).' ('.$member_users.' '.($member_users == 1 ? LAN_FORUM_0061 : LAN_FORUM_0062).", ".$guest_users." ".($guest_users == 1 ? LAN_FORUM_0063 : LAN_FORUM_0064).')';
 }
 
 
@@ -229,23 +223,23 @@ $fVars->ICONKEY = "
 	<table style='width:100%'>
 	<tr>
 	<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_new_small."</td>
-	<td style='width:10%' class='smallblacktext'>".LAN_79."</td>
+	<td style='width:10%' class='smallblacktext'>".LAN_FORUM_0039."</td>
 	<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_nonew_small."</td>
-	<td style='width:10%' class='smallblacktext'>".LAN_80."</td>
+	<td style='width:10%' class='smallblacktext'>".LAN_FORUM_0040."</td>
 	<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_sticky_small."</td>
-	<td style='width:10%' class='smallblacktext'>".LAN_202."</td>
+	<td style='width:10%' class='smallblacktext'>".LAN_FORUM_1011."</td>
 	<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_announce_small."</td>
-	<td style='width:10%' class='smallblacktext'>".LAN_396."</td>
+	<td style='width:10%' class='smallblacktext'>".LAN_FORUM_1013."</td>
 	</tr>
 	<tr>
 	<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_new_popular_small."</td>
-	<td style='width:2%' class='smallblacktext'>".LAN_79." ".LAN_395."</td>
+	<td style='width:2%' class='smallblacktext'>".LAN_FORUM_0039." ".LAN_FORUM_1010."</td>
 	<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_nonew_popular_small."</td>
-	<td style='width:10%' class='smallblacktext'>".LAN_80." ".LAN_395."</td>
+	<td style='width:10%' class='smallblacktext'>".LAN_FORUM_0040." ".LAN_FORUM_1010."</td>
 	<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_stickyclosed_small."</td>
-	<td style='width:10%' class='smallblacktext'>".LAN_203."</td>
+	<td style='width:10%' class='smallblacktext'>".LAN_FORUM_1012."</td>
 	<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_closed_small."</td>
-	<td style='width:10%' class='smallblacktext'>".LAN_81."</td>
+	<td style='width:10%' class='smallblacktext'>".LAN_FORUM_1014."</td>
 	</tr>
 	</table>";
 
@@ -253,7 +247,7 @@ $fVars->SEARCH = "
 	<form method='get' class='form-inline input-append' action='".e_BASE."search.php'>
 	<p>
 	<input class='tbox' type='text' name='q' size='20' value='' maxlength='50' />
-	<button class='btn button' type='submit' name='s' >".LAN_180."</button>
+	<button class='btn button' type='submit' name='s' >".LAN_SEARCH."</button>
 	<input type='hidden' name='r' value='0' />
 	<input type='hidden' name='ref' value='forum' />	
 	</p>
@@ -261,11 +255,11 @@ $fVars->SEARCH = "
 
 if($forum->checkPerm($forumId, 'post'))
 {
-	$fVars->PERMS = LAN_204.' - '.LAN_206.' - '.LAN_208;
+	$fVars->PERMS = LAN_FORUM_0043.' - '.LAN_FORUM_0045.' - '.LAN_FORUM_0047;
 }
 else
 {
-	$fVars->PERMS = LAN_205.' - '.LAN_207.' - '.LAN_209;
+	$fVars->PERMS = LAN_FORUM_0044.' - '.LAN_FORUM_0046.' - '.LAN_FORUM_0048;
 }
 
 $sticky_threads = 0;
@@ -313,7 +307,7 @@ if (count($threadList) )
 			}
 			else
 			{
-				$forum_view_forum .= "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>".LAN_411."</b></span></td></tr>";
+				$forum_view_forum .= "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>".LAN_FORUM_1006."</b></span></td></tr>";
 			}
 			$stuck = true;
 		}
@@ -329,7 +323,7 @@ if (count($threadList) )
 			}
 			else
 			{
-				$forum_view_forum .= "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>".LAN_412."</b></span></td></tr>";
+				$forum_view_forum .= "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>".LAN_FORUM_1007."</b></span></td></tr>"; 
 			}
 			$unstuck = true;
 		}
@@ -338,11 +332,11 @@ if (count($threadList) )
 }
 else
 {
-	$forum_view_forum .= "<tr><td class='forumheader' colspan='6'>".LAN_58."</td></tr>";
+	$forum_view_forum .= "<tr><td class='forumheader' colspan='6'>".LAN_FORUM_1008."</td></tr>";
 }
 
 $fVars->FORUMJUMP = forumjump();
-$fVars->TOPLINK = "<a href='".e_SELF.'?'.e_QUERY."#top' onclick=\"window.scrollTo(0,0);\">".LAN_02.'</a>';
+$fVars->TOPLINK = "<a href='".e_SELF.'?'.e_QUERY."#top' onclick=\"window.scrollTo(0,0);\">".LAN_GOTO.'</a>'; // FIXME - TOPLINK not used anymore?
 
 if($container_only)
 {
@@ -366,7 +360,7 @@ else
 echo "<script type=\"text/javascript\">
 	function confirm_(thread_id)
 	{
-		return confirm(\"".$tp->toJS(LAN_434)."\");
+		return confirm(\"".$tp->toJS(LAN_FORUM_1019)."\");
 	}
 	</script>";
 
@@ -411,8 +405,8 @@ function parse_thread($thread_info)
 			}
 			else
 			{
-				$tVars->LASTPOST = FORLAN_19;
-				$tVars->LASTPOSTUSER = FORLAN_19;
+				$tVars->LASTPOST = LAN_FORUM_1015;
+				$tVars->LASTPOSTUSER = LAN_FORUM_1015;
 			}
 		}
 		$tVars->LASTPOST .= '<br />'.$lastpost_datestamp;
@@ -435,12 +429,12 @@ function parse_thread($thread_info)
 	if ($thread_info['thread_sticky'] == 1)
 	{
 		$tVars->ICON = ($thread_info['thread_active'] ? IMAGE_sticky : IMAGE_stickyclosed);
-		$tVars->THREADTYPE = '['.LAN_202.']<br />';
+		$tVars->THREADTYPE = '['.LAN_FORUM_1011.']<br />';
 	}
 	elseif($thread_info['thread_sticky'] == 2)
 	{
 		$tVars->ICON = IMAGE_announce;
-		$tVars->THREADTYPE = '['.LAN_396.']<br />';
+		$tVars->THREADTYPE = '['.LAN_FORUM_1013.']<br />';
 	}
 	elseif(!$thread_info['thread_active'])
 	{
@@ -450,7 +444,7 @@ function parse_thread($thread_info)
 	$thread_name = strip_tags($tp->toHTML($thread_info['thread_name'], false, 'no_hook, emotes_off'));
 	if(isset($thread_info['thread_options']['poll']))
 	{
-		$thread_name = '['.FORLAN_23.'] ' . $thread_name;
+		$thread_name = '['.LAN_FORUM_1016.'] ' . $thread_name;
 	}
 //	if (strtoupper($THREADTYPE) == strtoupper(substr($thread_name, 0, strlen($THREADTYPE))))
 //	{
@@ -509,7 +503,7 @@ function parse_thread($thread_info)
 				$tVars->PAGES .= "<a href='{$url}'>{$aa}</a>";
 			}
 		}
-		$tVars->PAGES = LAN_316.' [&nbsp;'.$tVars->PAGES.'&nbsp;]';
+		$tVars->PAGES = LAN_GOTO.' [&nbsp;'.$tVars->PAGES.'&nbsp;]';
 	}
 	else
 	{
@@ -551,13 +545,13 @@ function parse_thread($thread_info)
 		}
 		else
 		{
-			$tVars->POSTER = FORLAN_19;
+			$tVars->POSTER = LAN_FORUM_1015;
 		}
 	}
 
 	if (!$tVars->REPLIES)
 	{
-		$tVars->REPLIES = LAN_317;		// 'None'
+		$tVars->REPLIES = '0';
 		$tVars->REPLIESX = "<span class='badge'>0</span>";
 		$tVars->LASTPOST = ' - ';
 		$tVars->LASTPOSTDATE = ' - ';
@@ -659,12 +653,12 @@ function forumjump()
 {
 	global $forum;
 	$jumpList = $forum->forumGetAllowed('view');
-	$text = "<form method='post' action='".e_SELF."'><p>".LAN_403.": <select name='forumjump' class='tbox'>";
+	$text = "<form method='post' action='".e_SELF."'><p>".LAN_FORUM_1017.": <select name='forumjump' class='tbox'>";
 	foreach($jumpList as $key => $val)
 	{
 		$text .= "\n<option value='".$key."'>".$val."</option>";
 	}
-	$text .= "</select> <input class='btn button' type='submit' name='fjsubmit' value='".LAN_03."' /></form>";
+	$text .= "</select> <input class='btn button' type='submit' name='fjsubmit' value='".LAN_GO."' /></form>";
 	return $text;
 }
 
@@ -732,7 +726,7 @@ function fpages($thread_info, $replies)
 				$text .= $text ? ' ' : '';
 				$urlparms['page'] = $aa;
 				$url = e107::getUrl()->create('forum/thread/view', $urlparms);
-				$opts[] = "<a class='btn btn-mini' data-toggle='tooltip' title=\"Go to Page $aa\" href='{$url}'>{$aa}</a>";
+				$opts[] = "<a class='btn btn-mini' data-toggle='tooltip' title=\"Go to Page $aa\" href='{$url}'>{$aa}</a>"; //FIXME LAN_GOPAGE syntax?
 			}
 			$text .= ' ... ';
 			for($a = $pages-3; $a <= $pages-1; $a++)
@@ -741,7 +735,7 @@ function fpages($thread_info, $replies)
 				$text .= $text ? ' ' : '';
 				$urlparms['page'] = $aa;
 				$url = e107::getUrl()->create('forum/thread/view', $urlparms);
-				$opts[] = "<a class='btn btn-mini' data-toggle='tooltip' title=\"Go to Page $aa\" href='{$url}'>{$aa}</a>";
+				$opts[] = "<a class='btn btn-mini' data-toggle='tooltip' title=\"Go to Page $aa\" href='{$url}'>{$aa}</a>"; //FIXME LAN_GOPAGE syntax?
 			}
 		}
 		else
@@ -752,7 +746,7 @@ function fpages($thread_info, $replies)
 				$text .= $text ? ' ' : '';
 				$urlparms['page'] = $aa;
 				$url = e107::getUrl()->create('forum/thread/view', $urlparms);
-				$opts[] =  "<a class='btn btn-mini' data-toggle='tooltip' title=\"Go to Page $aa\" href='{$url}'>{$aa}</a>";
+				$opts[] =  "<a class='btn btn-mini' data-toggle='tooltip' title=\"Go to Page $aa\" href='{$url}'>{$aa}</a>"; //FIXME LAN_GOPAGE syntax?
 			}
 		}
 	
@@ -782,7 +776,7 @@ function newthreadjump($url)
 	global $forum;
 	$jumpList = $forum->forumGetAllowed('view');	
 	$text = '<div class="btn-group">
-    <a href="'.$url.'" class="btn btn-primary">New Thread</a>
+    <a href="'.$url.'" class="btn btn-primary">'.LAN_FORUM_1018.'</a>
     <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
     <span class="caret"></span>
     </button>
@@ -791,7 +785,7 @@ function newthreadjump($url)
 	
 	foreach($jumpList as $key => $val)
 	{
-		$text .= '<li><a href="'.$key.'">Go to: '.$val.'</a></li>';
+		$text .= '<li><a href="'.$key.'">'.LAN_FORUM_1017.': '.$val.'</a></li>';
 	}
 	
 	$text .= '

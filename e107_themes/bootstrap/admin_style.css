@@ -127,6 +127,12 @@ td.options 									{ 	}
 
 legend 										{ display:none }
 
+/* Datepicker */
+fieldset.hour legend, fieldset.minute legend {
+	display: inline-block
+}
+
+
 .bootstrap-select.btn-group, .bootstrap-select.btn-group[class*="span"] {
 
     margin-bottom: 0px;

@@ -1150,9 +1150,9 @@ class e_system_user extends e_user_model
 		
 			$search[1] = '{PASSWORD}';
 			$replace[1] = $pass_show ? $pass_show : '******';
-		
+
 			$search[2] = '{ACTIVATION_LINK}';
-			$replace[2] = '';
+			$replace[2] = strpos($userInfo['activation_url'], 'http') === 0 ? '<a href="'.$userInfo['activation_url'].'">'.$userInfo['activation_url'].'</a>' : $userInfo['activation_url'];
 		
 			$search[3] = '{SITENAME}';
 			$replace[3] = SITENAME;
@@ -1171,6 +1171,9 @@ class e_system_user extends e_user_model
 			
 			$search[8] = '{EMAIL}';
 			$replace[8] = $userInfo['user_email'];
+			
+			$search[9] = '{ACTIVATION_URL}';
+			$replace[9] = $userInfo['activation_url'];
 		
 			$subject = str_replace($search, $replace, $SIGNUPEMAIL_SUBJECT);
 			$ret['email_subject'] =  $subject;
@@ -1199,6 +1202,7 @@ class e_system_user extends e_user_model
 			}
 			$FOOT = "\n</body>\n</html>\n";
 		
+			$ret['send_html'] = TRUE;
 			$ret['email_body'] = e107::getParser()->parseTemplate(str_replace($search,$replace,$HEAD.$template.$FOOT), true);
 			$ret['preview'] = $ret['email_body'];// Non-standard field
 			return $ret;
@@ -1246,7 +1250,7 @@ class e_system_user extends e_user_model
 			$replace[8] = $userInfo['activation_url'];
 			
 			$search[9] = '{ACTIVATION_LINK}';
-			$replace[9] = strpos($userInfo['activation_url'], 'http') === 0 ? '<a href="'.$userInfo['url_activate'].'">'.$userInfo['activation_url'].'</a>' : $userInfo['activation_url'];
+			$replace[9] = strpos($userInfo['activation_url'], 'http') === 0 ? '<a href="'.$userInfo['activation_url'].'">'.$userInfo['activation_url'].'</a>' : $userInfo['activation_url'];
 		}
 		
 		$ret['send_html'] = TRUE;

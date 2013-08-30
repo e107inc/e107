@@ -56,7 +56,7 @@ define("LANHELP_41", "Font Size...");
 define("LANHELP_42", "Select Image...");
 define("LANHELP_43", "Select Download File...");
 define("LANHELP_44", "Click to open/close emoticon dialog ...");
-define("LANHELP_45", "Insert image from directory: ");
+define("LANHELP_45", "Insert image from Media-Manager");
 define("LANHELP_46", "* No files found in: ");
 
 define("LANHELP_47", "Insert flash: [flash=width,height]http://www.example.com/file.swf[/flash]");

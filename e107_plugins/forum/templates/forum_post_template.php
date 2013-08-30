@@ -2,13 +2,10 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- * $URL$
- * $Id$
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -19,7 +16,7 @@ if(!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
 if(!vartrue($userbox))
 {
 $userbox = "<tr>
-<td class='forumheader2' style='width:20%'>".LAN_61."</td>
+<td class='forumheader2' style='width:20%'>".LAN_FORUM_3010."</td>
 <td class='forumheader2' style='width:80%'>
 <input class='tbox' type='text' name='anonname' size='71' value='".vartrue($anonname)."' maxlength='20' style='width:95%' />
 </td>
@@ -29,7 +26,7 @@ $userbox = "<tr>
 if(!vartrue($subjectbox))
 {
 $subjectbox = "<tr>
-<td class='forumheader2' style='width:20%'>".LAN_62."</td>
+<td class='forumheader2' style='width:20%'>".LAN_FORUM_3011."</td>
 <td class='forumheader2' style='width:80%'>
 <input class='tbox' type='text' name='subject' size='71' value='".vartrue($subject)."' maxlength='100' style='width:95%' />
 </td>
@@ -51,18 +48,18 @@ if(!vartrue($fileattach))
 {
 $fileattach = "
 <tr>
-	<td colspan='2' class='nforumcaption2'>".($pref['image_post'] ? LAN_390 : LAN_416)."</td>
+	<td colspan='2' class='nforumcaption2'>".($pref['image_post'] ? LAN_FORUM_3012 : LAN_FORUM_3013)."</td>
 </tr>
 <tr>
-	<td style='width:20%' class='forumheader3'>".LAN_392."</td>
-	<td style='width:80%' class='forumheader3'>".LAN_393." | ".vartrue($allowed_filetypes)." |<br />".LAN_394."<br />".LAN_395.": ".(vartrue($max_upload_size) ? $max_upload_size.LAN_396 : ini_get('upload_max_filesize'))."
+	<td style='width:20%' class='forumheader3'>".LAN_FORUM_3014."</td>
+	<td style='width:80%' class='forumheader3'>".str_replace(array('[', ']'), array('<b>', '</b>'), LAN_FORUM_3015)."<br>".LAN_FORUM_3016.": ".vartrue($allowed_filetypes)." <br />".LAN_FORUM_3017."<br />".LAN_FORUM_3018.": ".(vartrue($max_upload_size) ? $max_upload_size." ".LAN_FORUM_3019 : ini_get('upload_max_filesize'))."
 		<br />
 		<div id='fiupsection'>
 		<span id='fiupopt'>
 			<input class='tbox' name='file_userfile[]' type='file' size='47' />
 		</span>
 		</div>
-		<input class='btn button' type='button' name='addoption' value='".LAN_417."' onclick=\"duplicateHTML('fiupopt','fiupsection')\" />
+		<input class='btn button' type='button' name='addoption' value='".LAN_FORUM_3020."' onclick=\"duplicateHTML('fiupopt','fiupsection')\" />
 	</td>
 </tr>
 ";
@@ -74,10 +71,10 @@ if(!vartrue($fileattach_alert))
 {
 	$fileattach_alert = "
 	<tr>
-		<td colspan='2' class='nforumcaption2'>".($pref['image_post'] ? LAN_390 : LAN_416)."</td>
+		<td colspan='2' class='nforumcaption2'>".($pref['image_post'] ? LAN_FORUM_3012 : LAN_FORUM_3013)."</td>
 	</tr>
 	<tr>
-		<td colspan='2' class='forumheader3'>".LAN_FORUM_1."</td>
+		<td colspan='2' class='forumheader3'>".str_replace('[x]', e_FILE."public", LAN_FORUM_3021)."</td>
 	</tr>\n";
 }
 // ------------
@@ -181,9 +178,7 @@ if(!vartrue($LATESTPOSTS_START))
 $LATESTPOSTS_START = "
 <table style='".USER_WIDTH."' class='fborder table'>
 <tr>
-<td colspan='2' class='fcaption' style='vertical-align:top'>".
-LAN_101."{LATESTPOSTSCOUNT}".LAN_102."
-</td>
+<td colspan='2' class='fcaption' style='vertical-align:top'>".str_replace('[y]', "{LATESTPOSTSCOUNT}", LAN_FORUM_3022)."</td>
 </tr>";
 }
 
@@ -193,7 +188,7 @@ $LATESTPOSTS_POST = "
 <tr>
 <td class='forumheader3' style='width:20%;vertical-align:top'><b>{POSTER}</b></td>
 <td class='forumheader3' style='width:80%'>
-	<div class='smallblacktext' style='text-align:right'>".IMAGE_post2." ".LAN_322."{THREADDATESTAMP}</div>
+	<div class='smallblacktext' style='text-align:right'>".IMAGE_post2." {THREADDATESTAMP}</div>
 	{POST}
 </td>
 </tr>
@@ -212,12 +207,13 @@ if(!vartrue($THREADTOPIC_REPLY))
 $THREADTOPIC_REPLY = "
 <table style='".USER_WIDTH."' class='fborder table'>
 <tr>
-	<td colspan='2' class='fcaption' style='vertical-align:top'>".LAN_100."</td>
+	<td colspan='2' class='fcaption' style='vertical-align:top'>".LAN_FORUM_1003."</td>
 </tr>
 <tr>
 	<td class='forumheader3' style='width:20%;vertical-align:top'><b>{POSTER}</b></td>
 	<td class='forumheader3' style='width:80%'>
-		<div class='smallblacktext' style='text-align:right'>".IMAGE_post2." ".LAN_322."{THREADDATESTAMP}</div>{POST}
+		<div class='smallblacktext' style='text-align:right'>".IMAGE_post2." {THREADDATESTAMP}</div>
+		{POST}
 	</td>
 </tr>
 </table>

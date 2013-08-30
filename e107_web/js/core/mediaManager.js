@@ -3,11 +3,12 @@ $(document).ready(function()
 	
 	$(".e-dialog-save").live("click", function(){// FIXME TODO missing caret , text selection overwrite etc. 
 					
-		var newval = $('#bbcode_holder').val();
+		var newval 	= $('#bbcode_holder').val();
 		var target 	= $(this).attr('data-target');
-				
-		if(!target){ return true; }
-		
+		var bbcode	= $(this).attr('data-bbcode'); // TinyMce/Textarea insert mode
+			
+		if(!target || !bbcode){ return true; }
+
 		$('#' + target, window.top.document).atCaret('insert', newval); // http://code.google.com/p/jquery-at-caret/wiki/GettingStarted
 		
 		
@@ -169,6 +170,8 @@ $(document).ready(function()
 				}
 				
 				
+
+
 				$('#src').attr('value',src); // working old
 				$('#preview').attr('src',preview);	// working old
 				

@@ -31,17 +31,23 @@ class bbcode_shortcodes extends e_shortcode
 	{
 		$formats = array(
 			0 => array('[p][/p]','Paragraph'),
-			1 => array('[h=2][/h]','Heading'),
-			2 => array('[block][/block]','Block'),
-			3 => array('[blockquote][/blockquote]', 'Quote'),
-			4 => array('[code][/code]', 'Code')
+			1 => array('[h=2][/h]','Heading 1'),
+			2 => array('[h=2][/h]','Heading 2'),
+			3 => array('[h=3][/h]','Heading 3'),
+			4 => array('[h=4][/h]','Heading 4'),
+			5 => array('[h=5][/h]','Heading 5'),
+			6 => array('[h=5][/h]','Heading 6'),
+			7 => array('[block][/block]','Block'),
+			8 => array('[blockquote][/blockquote]', 'Quote'),
+			9 => array('[code][/code]', 'Code Block'),
+			10 => array('[code=inline][/code]', 'Code Inline')
 		); 
 		
 		
 		if(e_BOOTSTRAP)
 		{
 				$text = '<div class="btn-group">';
-				$text .= '<a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#" title="">';
+				$text .= '<a class="btn btn-small bbcode dropdown-toggle" data-toggle="dropdown" href="#" title="">';
 				$text .= "Format";
 				$text .= ' <span class="caret"></span></a>';
 				$text .= "<ul class='dropdown-menu'>\n";
@@ -80,7 +86,7 @@ class bbcode_shortcodes extends e_shortcode
 		$data = "[table][tr][td]Cell 1[/td][td]Cell 2[/td][/tr][/table]";
 		$event = $this->getEvent('addtext',$data,'Insert a table',1);
 		$text = "<a {$event} class='e-bb' id='{$id}' data-function='insert' href='#{$this->var['tagid']}'  data-bbcode='{$data}'>";
-		$text .= "<img class='btn btn-small bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/table.png' alt='' title='Insert a table' /></a>";
+		$text .= "<img class='btn btn-small bbcode bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/table.png' alt='' title='Insert a table' /></a>";
 		return $text;
 	}
 	
@@ -102,7 +108,8 @@ class bbcode_shortcodes extends e_shortcode
 
 		$data = "[list][*]Item 1[*]Item 2[/list]";
 	//	$data = "[list]\n[*]Item 1\n[*]Item 2\n[/list]"; // works with jquery, but not onclick. 
-		$event = $this->getEvent($this->var['trigger'],$data,LANHELP_36);
+	//	$event = $this->getEvent($this->var['trigger'],$data,LANHELP_36);
+		$event = $this->getEvent('addtext',$data,LANHELP_36);
 		$text = "<a {$event} class='e-bb' id='{$id}' data-function='insert' href='#{$this->var['tagid']}' data-bbcode='{$data}'>";
 		$text .= "<img class='btn btn-small bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/list.png' alt='' title='".nl2br(LANHELP_36)."' /></a>";
 		return $text;
@@ -113,7 +120,7 @@ class bbcode_shortcodes extends e_shortcode
 		$data = "[youtube]*[/youtube]";
 		$event = $this->getEvent('addinput',$data,LANHELP_48);
 		$text = "<a {$event} class='e-bb' id='{$id}' data-function='input' href='#{$this->var['tagid']}'  data-bbcode='{$data}'>";
-		$text .="<img class='btn btn-small bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/youtube.png' alt='' title='".nl2br(LANHELP_48)."' /></a>";
+		$text .="<img class='btn btn-small bbcode bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/youtube.png' alt='' title='".nl2br(LANHELP_48)."' /></a>";
 		return $text;
 	}
 	
@@ -138,7 +145,7 @@ class bbcode_shortcodes extends e_shortcode
 			list($tag,$tmp) = explode("--",$this->var['tagid']); // works with $frm->bbarea to detect textarea from first half of tag. 
 		}
 		$text = "<a class='e-modal' data-modal-caption='Media Manager' data-target='#uiModal' title='Media Manager : ".$this->var['template']."' id='{$id}' href='".e_ADMIN."image.php?mode=main&action=dialog&for=".$this->var['template']."&tagid=".$tag."&iframe=1&bbcode=img'  >";
-		$text .= "<img class='btn btn-small  bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/preimage.png' title='".LANHELP_45."' alt='' />";
+		$text .= "<img class='btn btn-small bbcode bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/preimage.png' title='".LANHELP_45."' alt='' />";
 		$text .= "</a>\n";
 		return $text;
 	}
@@ -154,7 +161,7 @@ class bbcode_shortcodes extends e_shortcode
 			list($tag,$tmp) = explode("--",$this->var['tagid']); // works with $frm->bbarea to detect textarea from first half of tag. 
 		}
 		$text = "<a class='e-modal' data-modal-caption='Media Manager' data-target='#uiModal' id='{$id}' href='".e_ADMIN."image.php?mode=main&amp;action=dialog&amp;for=_common_file&amp;tagid=".$tag."&amp;iframe=1&amp;bbcode=file'  >";
-		$text .= "<img class='btn btn-small bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/prefile.png' title='".LANHELP_39."' alt='' />";
+		$text .= "<img class='btn btn-small bbcode bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/prefile.png' title='".LANHELP_39."' alt='' />";
 		$text .= "</a>\n";
 		return $text;
 	}	
@@ -424,14 +431,14 @@ class bbcode_shortcodes extends e_shortcode
 
 		// Format: $bbcode['UNIQUE_NAME'] = array(ONCLICK_FUNC, ONCLICK_VAR, HELPTEXT, ICON, INCLUDE_FUNC, INCLUDE_FUNCTION_VAR);
 
-		$bbcode['newpage'] 		= array($bbcode_func,"[newpage]", LANHELP_34, "newpage.png");
+	//	$bbcode['newpage'] 		= array($bbcode_func,"[newpage]", LANHELP_34, "newpage.png");
 		$bbcode['link'] 		= array('addinput',"[link=".LANHELP_35."][/link]", LANHELP_23,"link.png");
-		$bbcode['h'] 			= array($bbcode_func,"[h][/h]", LANHELP_50,"heading.png"); // FIXME bbcode icon
-		$bbcode['p'] 			= array($bbcode_func,"[p][/p]", LANHELP_49,"paragraph.png"); // FIXME bbcode icon
+	//	$bbcode['h'] 			= array($bbcode_func,"[h][/h]", LANHELP_50,"heading.png"); // FIXME bbcode icon
+	//	$bbcode['p'] 			= array($bbcode_func,"[p][/p]", LANHELP_49,"paragraph.png"); // FIXME bbcode icon
 		$bbcode['b'] 			= array($bbcode_func,"[b][/b]", LANHELP_24,"bold.png");
 		$bbcode['i'] 			= array($bbcode_func,"[i][/i]", LANHELP_25,"italic.png");
 		$bbcode['u'] 			= array($bbcode_func,"[u][/u]", LANHELP_26,"underline.png");
-		$bbcode['justify'] 		= array($bbcode_func,"[justify][/justify]", LANHELP_53,"center.png"); // FIXME bbcode icon
+		$bbcode['justify'] 		= array($bbcode_func,"[justify][/justify]", LANHELP_53,"justify.png"); // FIXME bbcode icon
 		$bbcode['center'] 		= array($bbcode_func,"[center][/center]", LANHELP_28,"center.png");
 		$bbcode['left'] 		= array($bbcode_func,"[left][/left]", LANHELP_29,"left.png");
 		$bbcode['right'] 		= array($bbcode_func,"[right][/right]", LANHELP_30,"right.png");

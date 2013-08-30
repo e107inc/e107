@@ -2,16 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * e107 Admin Theme Handler
  *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 if(!defined('e107_INIT'))
@@ -19,15 +15,7 @@ if(!defined('e107_INIT'))
 	exit;
 }
 
-/**
- * Base e107 Admin Theme Handler
- *
- * @package e107
- * @category e107_handlers
- * @version 1.0
- * @author Cameron
- * @copyright Copyright (c) 2009, e107 Inc.
- */
+
 class themeHandler
 {
 	
@@ -54,10 +42,16 @@ class themeHandler
 		 'social',
 		 'video',
 		 'multimedia');
+		 
+	/**
+	 * Marketplace handler instance
+	 * @var e_marketplace
+	 */
+	protected $mp;
 	
 	/* constructor */
 	
-	function themeHandler()
+	function __construct()
 	{
 		
 		global $e107cache,$pref;
@@ -335,54 +329,58 @@ class themeHandler
 		$ns = e107::getRender();
 		
 		extract($_FILES);
+		//print_a($_FILES);
+
 		if(!is_writable(e_THEME))
 		{
-			//	$ns->tablerender(TPVLAN_16, TPVLAN_20);
-			$mes->add(TPVLAN_20, E_MESSAGE_INFO);
+			$mes->addInfo(TPVLAN_20);
 			return FALSE;
 		}
 		else
 		{
+			// FIXME - temporary fixes to upload process, check required. 
+			// Probably in need of a rewrite to use process_uploaded_files();
 			require_once (e_HANDLER."upload_handler.php");
-			$fileName = $file_userfile['name'][0];
-			$fileSize = $file_userfile['size'][0];
-			$fileType = $file_userfile['type'][0];
+			$fileName = $_FILES['file_userfile']['name'][0]; 
+			$fileSize = $_FILES['file_userfile']['size'][0];
+			$fileType = $_FILES['file_userfile']['type'][0]; // type is returned as mime type (application/octet-stream) not as zip/rar
+
+			// There may be a better way to do this.. MIME may not be secure enough
+			// process_uploaded_files() ?
+			$mime_zip 	= array("application/octet-stream", "application/zip", "multipart/x-zip");
+			$mime_gzip 	= array("application/x-gzip", "multipart/x-gzip");
+			// rar?
 			
-			if(strstr($file_userfile['type'][0], "gzip"))
-			{
-				$fileType = "tar";
-			}
-			else
-			if(strstr($file_userfile['type'][0], "zip"))
+			if(in_array($fileType, $mime_zip))
 			{
 				$fileType = "zip";
 			}
+			elseif(in_array($fileType, $mime_gzip))
+			{
+				$fileType = "gzip";
+			}
 			else
 			{
-				$mes->add(TPVLAN_17, E_MESSAGE_ERROR);
-				//	$ns->tablerender(TPVLAN_16, TPVLAN_17);
-				//	require_once("footer.php");
+				$mes->addError(TPVLAN_17);
 				return FALSE;
 			}
 			
 			if($fileSize)
 			{
 				
-				$uploaded = file_upload(e_THEME);
-				
+				$uploaded = file_upload(e_THEME);				
 				$archiveName = $uploaded[0]['name'];
-
 				
 				if($fileType == "zip")
 				{
 					require_once (e_HANDLER."pclzip.lib.php");
 					$archive = new PclZip(e_THEME.$archiveName);
-					$unarc = ($fileList = $archive->extract(PCLZIP_OPT_PATH, e_THEME, PCLZIP_OPT_SET_CHMOD, 0666));
+					$unarc = ($fileList = $archive->extract(PCLZIP_OPT_PATH, e_THEME, PCLZIP_OPT_SET_CHMOD, 0666)); // FIXME - detect folder structure similar to 'Find themes'
 				}
 				else
 				{
 					require_once (e_HANDLER."pcltar.lib.php");
-					$unarc = ($fileList = PclTarExtract($archiveName, e_THEME));
+					$unarc = ($fileList = PclTarExtract($archiveName, e_THEME)); // FIXME - detect folder structure similar to 'Find themes'
 				}
 				
 				if(!$unarc)
@@ -396,13 +394,12 @@ class themeHandler
 						$error = TPVLAN_47.PclErrorString().", ".TPVLAN_48.intval(PclErrorCode());
 					}
 					
-					$mes->add(TPVLAN_18." ".$archiveName." ".$error, E_MESSAGE_ERROR);
-					//	$ns->tablerender(TPVLAN_16, TPVLAN_18." ".$archiveName." ".$error);
+					$mes->addError(TPVLAN_18." ".$archiveName." ".$error);
 					return FALSE;
 				}
 				
 				$folderName = substr($fileList[0]['stored_filename'], 0, (strpos($fileList[0]['stored_filename'], "/")));
-				$mes->add(TPVLAN_19, E_MESSAGE_SUCCESS);
+				$mes->addSuccess(TPVLAN_19);
 				
 				if(varset($_POST['setUploadTheme']))
 				{
@@ -414,12 +411,10 @@ class themeHandler
 					}
 					else
 					{
-						$mes->addError(TPVLAN_3);
+						$mes->addError("Could not change site theme."); // TODO LAN
 					}
 				
 				}
-				
-				//		$ns->tablerender(TPVLAN_16, "<div class='center'>".TPVLAN_19."</div>");
 				
 				@unlink(e_THEME.$archiveName);
 			}
@@ -442,27 +437,59 @@ class themeHandler
 		
 	}
 
-
+	/**
+	 * Temporary, e107::getMarketplace() coming soon
+	 * @return e_marketplace
+	 */
+	public function getMarketplace()
+	{
+		if(null === $this->mp)
+		{
+			require_once(e_HANDLER.'e_marketplace.php');
+			$this->mp = new e_marketplace(); // autodetect the best method
+		}
+		return $this->mp;
+	}
 	
 	
 	function renderOnline($ajax=false)
 	{
+		global $e107SiteUsername, $e107SiteUserpass;
 			$xml 	= e107::getXml();
 			$mes 	= e107::getMessage();
 			$frm 	= e107::getForm();
 			$ns 	= e107::getRender();
+			$mp 	= $this->getMarketplace();
 			$from 	= intval(varset($_GET['frm']));
-			$limit 	= 96;
+			$limit 	= 96; // FIXME - ajax pages load
 			$srch 	= preg_replace('/[^\w]/','', vartrue($_GET['srch'])); 
 			
-			$file = "http://e107.org/feed?type=theme&frm=".$from."&srch=".$srch."&limit=".$limit;
+			// check for cURL
+			if(!function_exists(curl_init))
+			{
+				$mes->addWarning("cURL is currently required to use this feature. Contact your webhosting provider to enable cURL"); // TODO LAN?
+			}
+			
+			// auth
+			$mp->generateAuthKey($e107SiteUsername, $e107SiteUserpass);
+			
+			// do the request, retrieve and parse data
+			$xdata = $mp->call('getList', array(
+				'type' => 'theme', 
+				'params' => array('limit' => $limit, 'search' => $srch, 'from' => $from)
+			));
+			$total = $xdata['params']['count'];
+			
+			// OLD BIT OF CODE ------------------------------->
+			/*$file = "http://e107.org/feed?type=theme&frm=".$from."&srch=".$srch."&limit=".$limit;
 			
 			$mes->addDebug("File = ".$file);
 			
 			$xml->setOptArrayTags('theme,screenshots/image'); // make sure 'theme' tag always returns an array
 		//	$xdata = $xml->loadXMLfile($file,'advanced',true);
 			$xdata = $xml->loadXMLfile($file,true,false);
-			$total = $xdata['@attributes']['total'];
+			$total = $xdata['@attributes']['total'];*/
+			// OLD BIT OF CODE ------------------------------->
 			
 			$amount =$limit;
 			
@@ -490,17 +517,15 @@ class themeHandler
 			$text .= "{CAROUSEL_INDICATORS}";		
 			$text .= "</div>";
 			$text .= '<div id="shop" style="margin-top:10px;min-height:585px" class=" carousel-inner">';
-			
-			
-			
-			if(is_array($xdata['theme'] ))
+
+			if(is_array($xdata['data'] ))
 			{
 				
 				$text .= '<div  class="active item">';
 				
 				$slides = array();
 				
-				foreach($xdata['theme'] as $r)
+				foreach($xdata['data'] as $r)
 				{
 					if(E107_DBG_PATH)
 					{
@@ -508,22 +533,24 @@ class themeHandler
 					}
 					
 					$theme = array(
-						'name'			=> stripslashes($r['@attributes']['name']),
+						'id'			=> $r['params']['id'],
+						'type'			=> 'theme',
+						'mode'			=> $r['params']['mode'],
+						'name'			=> stripslashes($r['name']),
 						'category'		=> $r['category'],
-						'preview' 		=> $r['screenshots']['image'],
-						'date'			=> $r['@attributes']['date'],
-						'version'		=> $r['@attributes']['version'],
-						'thumbnail'		=> $r['@attributes']['thumbnail'],
-						'url'			=> $r['@attributes']['url'],
-						'author'		=> $r['@attributes']['author'],
-						'website'		=> $r['@attributes']['authorUrl'],
-						'compatibility'	=> $r['@attributes']['compatibility'],
-						'description'	=> varset($r['description']),
-						'price'			=> $r['@attributes']['price'],
-						'livedemo'		=> $r['@attributes']['livedemo'],
+						'preview' 		=> varset($r['screenshots']['image']),
+						'date'			=> $r['date'],
+						'version'		=> $r['version'],
+						'thumbnail'		=> $r['thumbnail'],
+						//'url'			=> $r['url'],
+						'author'		=> $r['author'],
+						'website'		=> $r['authorUrl'],
+						'compatibility'	=> $r['compatibility'],
+						'description'	=> $r['description'],
+						'price'			=> $r['price'],
+						'livedemo'		=> $r['livedemo'],
 					);
 					
-								
 					$text .= $this->renderTheme(FALSE, $theme);
 					
 					$c++;
@@ -603,7 +630,7 @@ class themeHandler
 
 			$text .= "</form>";
 
-			$ns->tablerender(TPVLAN_26.SEP."Available for Download", $text. $mes->render());
+			$ns->tablerender(TPVLAN_26.SEP."Available for Download", $mes->render().$text);
 
 	}
 	
@@ -696,11 +723,12 @@ class themeHandler
 
 
 	
-	function renderUploadForm()
+	function renderUploadForm() 
 	{
 		$mes = e107::getMessage();
 		$ns = e107::getRender();
 		$sql = e107::getDb();
+		$frm = e107::getForm();
 		
 		if(!is_writable(e_THEME))
 		{
@@ -709,37 +737,33 @@ class themeHandler
 		}
 		else
 		{
-			require_once (e_HANDLER.'upload_handler.php');
+			require_once(e_HANDLER.'upload_handler.php');
 			$max_file_size = get_user_max_upload();
 			
 			$text = "
+			<form enctype='multipart/form-data' action='".e_SELF."' method='post'>
 				<table class='table adminform'>
 					<colgroup>
 						<col class='col-label' />
 						<col class='col-control' />
 					</colgroup>
 				<tr>
-				<td>".TPVLAN_13."</td>
-				<td>
-				<input type='hidden' name='MAX_FILE_SIZE' value='{$max_file_size}' />
-				<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
-				<input class='tbox' type='file' name='file_userfile[]' size='50' />
-				</td>
+					<td>".TPVLAN_13."</td>
+					<td>
+						<input type='hidden' name='MAX_FILE_SIZE' value='{$max_file_size}' />
+						<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
+						<input class='tbox' type='file' name='file_userfile[]' size='50' />
+					</td>
 				</tr>
                 <tr>
-				<td>".TPVLAN_10."</td>
-				<td>
-                <input type='checkbox' name='setUploadTheme' value='1' />
-				</td>
+					<td>".TPVLAN_10."</td>
+					<td><input type='checkbox' name='setUploadTheme' value='1' /></td>
 				</tr>
 				</table>
-				<div class='buttons-bar center'>";
 			
-			$text .= $this->frm->admin_button('upload', TPVLAN_14, 'submit');
-			
-			$text .= "
-				</div>
-				\n";
+			<div class='buttons-bar center'>".$frm->admin_button('upload', TPVLAN_14, 'submit')."</div>
+			</form>
+			";
 		}
 		
 		$ns->tablerender(TPVLAN_26.SEP.TPVLAN_38, $mes->render().$text);
@@ -752,7 +776,7 @@ class themeHandler
 		global $pref;
 		$author 		= ($theme['email'] ? "<a href='mailto:".$theme['email']."' title='".$theme['email']."'>".$theme['author']."</a>" : $theme['author']);
 		$website 		= ($theme['website'] ? "<a href='".$theme['website']."' rel='external'>".$theme['website']."</a>" : "");
-		$preview 		= "<a href='".e_BASE."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;width:200px' alt='' />" : "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' title='".TPVLAN_12."' alt='' />")."</a>";
+		$preview 		= "<a href='".SITEURL."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;width:200px' alt='' />" : "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' title='".TPVLAN_12."' alt='' />")."</a>";
 		$description 	= vartrue($theme['description'],'');
 		$compat			= (intval($theme['compatibility']) == 2) ? "<span class='label label-warning'>".number_format($theme['compatibility'], 1, '.','')."</span><span class='text-warning'> Recommended!</span>": vartrue(number_format($theme['compatibility'], 1, '.',''),'1.0');
 		$price 			= ($theme['price'] > 0) ? "<span class='label label-info'><i class='icon-shopping-cart icon-white'></i> ".$theme['price']."</span>" : "<span class='label label-success'>".Free."</span>";
@@ -957,7 +981,6 @@ class themeHandler
 		$pref = e107::getPref();
 		$frm = e107::getForm();
 		
-		
 		$author 		= ($theme['email'] ? "<a href='mailto:".$theme['email']."' title='".$theme['email']."'>".$theme['author']."</a>" : $theme['author']);
 		$website 		= ($theme['website'] ? "<a href='".$theme['website']."' rel='external'>".$theme['website']."</a>" : "");
 	//	$preview 		= "<a href='".e_BASE."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;width:200px' alt='' />" : "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' title='".TPVLAN_12."' alt='' />")."</a>";
@@ -995,8 +1018,24 @@ class themeHandler
 			$id = $frm->name2id($theme['name']);
 			$LAN_DOWNLOAD = ($theme['price'] > 0) ? "Buy/Download" : "Download";
 			
-			$main_icon = "<a data-src='".$url."' href='#' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='e-ajax' title='".$LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";		
-			$info_icon 	= "<a data-toggle='modal' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".$url."&amp;info=1' data-cache='false' data-target='#uiModal'  title='".TPVLAN_7."'>".trim(E_32_CAT_ABOUT)."</a>";
+			if($this->mp->hasAuthKey())
+			{
+				$action = 'download';	
+				$caption = "Downloading ".$theme['name']." ".$theme['version'];
+			}
+			else
+			{
+				$action = 'login';
+				$caption = "Please login to your e107.org account to proceed..";
+			}
+			
+			
+			$downloadUrl = e_SELF.'?action='.$action.'&amp;src='.base64_encode($d);//$url.'&amp;action=download';
+			$infoUrl = $url.'&amp;action=info';
+			
+			//$main_icon = "<a data-src='".$downloadUrl."' href='{$downloadUrl}' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='-e-ajax' title='".$LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";		
+			$main_icon = "<a data-toggle='modal' data-modal-caption=\"".$caption."\" href='{$downloadUrl}' data-cache='false' data-target='#uiModal' title='".$LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";
+			$info_icon 	= "<a data-toggle='modal' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".$infoUrl."' data-cache='false' data-target='#uiModal'  title='".TPVLAN_7."'>".trim(E_32_CAT_ABOUT)."</a>";
 			
 			if($theme['livedemo'])
 			{

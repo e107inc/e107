@@ -10,9 +10,15 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-$template = e107::getCoreTemplate('page','nav');
+
+//FIXME XXX - This menu should call the {PAGE_NAVIGATION} shortcode instead of duplicating its code and automatically display all links.  
 
 $parm = eHelper::scParams($parm);
+
+$tmpl = e107::getCoreTemplate('chapter','nav',false,true); // always merge
+
+$template = $tmpl['showPage'];
+
 $request = e107::getRegistry('core/pages/request');
 if($request && is_array($request))
 {
@@ -20,10 +26,12 @@ if($request && is_array($request))
 	{
 		case 'listChapters':
 			$parm['cbook'] = $request['id'];
+			$template = $tmpl['listChapters'];
 		break;
 		
 		case 'listPages':
 			$parm['cchapter'] = $request['id'];
+			$template = $tmpl['listPages'];
 		break;
 		
 		case 'showPage':

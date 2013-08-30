@@ -1,5 +1,5 @@
 <?php
-/*
+/* 
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
@@ -9,6 +9,7 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Forum");
+// DEPRECATED, UP FOR REMOVAL AFTER REWRITE
+//define("PAGE_NAME", "Forum");
 
 ?>

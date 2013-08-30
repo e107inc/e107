@@ -34,7 +34,7 @@ class admin_shortcodes
             	<a class="btn btn-success" href="'.$installUrl.'">Install</a>'; 
 				
                  $mes->addInfo($text);
-				return $mes->render(); 
+				return; //  $mes->render(); 
 			}
             
             if($parm=='icon')
@@ -69,6 +69,8 @@ class admin_shortcodes
         $cacheData = $che->retrieve("releasecheck",3600, TRUE); // 2.0.1 | 'up-to-date' | false ; 
     	
   		$cacheData = 2.1; // XXX Remove to test for real. 
+    	
+    	return false;  // XXX Remove to test for real. 
     	
         if($cacheData)
         {
@@ -1559,7 +1561,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				$tmp['sub_class'] = '';
 				$tmp['sort'] = false;
 
-				if($pref['admin_slidedown_subs'] && vartrue($array_sub_functions[$key]))
+				if(vartrue($pref['admin_slidedown_subs']) && vartrue($array_sub_functions[$key]))
 				{
 					$tmp['sub_class'] = 'sub';
 					foreach ($array_sub_functions[$key] as $subkey => $subsubitem)

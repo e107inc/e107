@@ -123,17 +123,17 @@ class convert
 			'%a'	=> 'D', 	// An abbreviated textual representation of the day
 			'%b'	=> 'M', 	// Abbreviated month name, based on the locale
 			'%h'	=> 'M', 	// Abbreviated month name, based on the locale (an alias of %b)
+			'%I'	=> 'HH',	// Two digit representation of the hour in 12-hour format 
+			'%l'	=> 'H',		// 12 hour format - no leading zero
 			
-			'%l'	=> 'h',		// 12 hour format - no leading zero
-			'%I'	=> 'hh',	// 12 hour format - leading zero
 			'%H'	=> 'hh',	// 24 hour format - leading zero
-			'%M'	=> 'mm',
-			'%S'	=> 'ss',
-			'%p'	=> 'TT',	//	%p	UPPER-CASE 'AM' or 'PM' based on the given time
-			'%P'	=> 'tt',		// %P	lower-case 'am' or 'pm' based on the given time
+			'%M'	=> 'ii',	// Two digit representation of the minute 
+			'%S'	=> 'ss',	// Two digit representation of the second 
+			'%P'	=> 'p',		// %P	lower-case 'am' or 'pm' based on the given time
+			'%p'	=> 'P',	//	%p	UPPER-CASE 'AM' or 'PM' based on the given time
+		
 			'%T' 	=> 'hh:mm:ss',
 			'%r' 	=> "hh:mmm:ss TT" // 12 hour format
-		
 		);
 			
 		$s = array_keys($convert);

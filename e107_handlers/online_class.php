@@ -140,7 +140,7 @@ class e_online
 						{
 							//It has been at least 'online_timeout' seconds since this user's info last logged
 							//Update user record with timestamp, current IP, current page and set pagecount to 1
-							$query = "online_timestamp='".time()."', online_ip='{$ip}'{$update_page}, online_pagecount=1 WHERE online_user_id='{$row['online_user_id']}' LIMIT 1";
+							$query = "online_timestamp='".time()."', online_ip='{$ip}'{$update_page}, online_pagecount=1 WHERE online_user_id='{$row['online_user_id']}'";
 						}
 						else
 						{
@@ -149,7 +149,7 @@ class e_online
 								$row['online_pagecount'] ++;
 							}
 							// Update user record with current IP, current page and increment pagecount
-							$query = "online_ip='{$ip}'{$update_page}, `online_pagecount` = '".intval($row['online_pagecount'])."' WHERE `online_user_id` = '{$row['online_user_id']}' LIMIT 1";
+							$query = "online_ip='{$ip}'{$update_page}, `online_pagecount` = '".intval($row['online_pagecount'])."' WHERE `online_user_id` = '{$row['online_user_id']}'";
 						}
 					}
 					else
@@ -159,7 +159,7 @@ class e_online
 						{
 							// It has been at least 'timeout' seconds since this user has connected
 							// Update record with timestamp, current IP, current page and set pagecount to 1
-							$query = "`online_timestamp` = '".time()."', `online_user_id` = '{$udata}'{$update_page}, `online_pagecount` = 1 WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0' LIMIT 1";
+							$query = "`online_timestamp` = '".time()."', `online_user_id` = '{$udata}'{$update_page}, `online_pagecount` = 1 WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0'";
 						}
 						else
 						{	// Another visit within the timeout period
@@ -168,7 +168,7 @@ class e_online
 								$row['online_pagecount'] ++;
 							}
 							//Update record with current IP, current page and increment pagecount
-							$query = "`online_user_id` = '{$udata}'{$update_page}, `online_pagecount` = ".intval($row['online_pagecount'])." WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0' LIMIT 1";
+							$query = "`online_user_id` = '{$udata}'{$update_page}, `online_pagecount` = ".intval($row['online_pagecount'])." WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0'";
 						}
 					}
 					$sql->update('online', $query);
@@ -189,14 +189,14 @@ class e_online
 					if ($row['online_timestamp'] < (time() - $online_timeout)) //It has been at least 'timeout' seconds since this ip has connected
 					{
 						//Update record with timestamp, current page, and set pagecount to 1
-						$query = "`online_timestamp` = '".time()."'{$update_page}, `online_pagecount` = 1 WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0' LIMIT 1";
+						$query = "`online_timestamp` = '".time()."'{$update_page}, `online_pagecount` = 1 WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0'";
 					}
 					else
 					{
 						//Update record with current page and increment pagecount
 						$row['online_pagecount'] ++;
 						//   echo "here {$online_pagecount}";
-						$query="`online_pagecount` = {$row['online_pagecount']}{$update_page} WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0' LIMIT 1";
+						$query="`online_pagecount` = {$row['online_pagecount']}{$update_page} WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0'";
 					}
 					$sql->update('online', $query);
 				}
@@ -218,7 +218,7 @@ class e_online
 				if ($row['online_pagecount'] > $online_bancount)
 				{
 					include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_banlist.php');
-					if (e107::getIPHandler()->add_ban(2,str_replace('--HITS--',$row['online_pagecount'],BANLAN_78),$ip,0))
+					if (TRUE === e107::getIPHandler()->add_ban(2,str_replace('--HITS--',$row['online_pagecount'],BANLAN_78),$ip,0))
 					{
 						e107::getEvent()->trigger('flood', $ip);
 						exit;

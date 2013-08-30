@@ -77,9 +77,12 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 					
 						var target 	= window.parent.$('#e-save-form').attr('action');
 						var data 	= window.parent.$('#e-save-form').serialize();
+						
+						alert(data);
 					
 						$.post(target, data ,function(ret)
 						{
+							alert('Posted: '+ret);
 						  	var a = $.parseJSON(ret);
 					
 							if(a.error)
@@ -94,7 +97,7 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 					
 					
 				window.parent.$('#uiModal').modal('show');
-						
+				
     			return false;
     			
 			}) ;	
@@ -118,6 +121,7 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 		
 				}).done(function( data ) {
 					
+			
 					var a = $.parseJSON(data);
 					
 					if(a.error)
@@ -470,6 +474,39 @@ class e_layout
 				$this->processPost();	
 			}
 			
+			
+			if(vartrue($_GET['enc']))
+			{
+				$string = base64_decode($_GET['enc']);
+				parse_str($string,$_GET);	
+			}
+			
+			if(vartrue($_GET['vis']))
+			{
+				$text = $this->renderVisibilityOptions();
+			}
+			
+			// print_a($_GET);
+			
+			if(vartrue($_GET['parmsId']))
+			{
+				$text = $this->renderInstanceParameters();
+			}
+				
+			if(vartrue($_POST['mode']))
+			{
+				print_r($_POST);
+			//	$men->setMenuId($this->menuId);
+				$text = $this->menuSaveAjax($_POST['mode']);
+			}
+		
+	
+		
+			echo $text;
+			
+			
+			
+			
 			exit;
 			
 		}
@@ -816,13 +853,16 @@ class e_layout
 	//	$area = 'area_'.$area;
 		
 		// 'layout' and 'area' will later be substituted. 
-		$text .= $frm->hidden('data[layout][area]['.$c.'][name]',$row['name'] );
-		$text .= $frm->hidden('data[layout][area]['.$c.'][class]',$row['class'] );	
-		$text .= $frm->hidden('data[layout][area]['.$c.'][path]',$row['path'] );
-		$text .= $frm->hidden('data[layout][area]['.$c.'][pages]',$row['pages'] );		
-		$text .= $frm->hidden('data[layout][area]['.$c.'][parms]',$row['parms'] );	
+		
+		
+		
+		$text .= $frm->hidden('data[layout][area]['.$c.'][name]',$row['name'],array('id'=>'name-'.$area.'-'.$c) );
+		$text .= $frm->hidden('data[layout][area]['.$c.'][class]',$row['class'], array('id'=>'class-'.$area.'-'.$c)  );	
+		$text .= $frm->hidden('data[layout][area]['.$c.'][path]',$row['path'], array('id'=>'path-'.$area.'-'.$c)  );
+		$text .= $frm->hidden('data[layout][area]['.$c.'][pages]',$row['pages'], array('id'=>'pages-'.$area.'-'.$c)  );		
+		$text .= $frm->hidden('data[layout][area]['.$c.'][parms]',$row['parms'], array('id'=>'parms-'.$area.'-'.$c)  );	
 
-		$visibilityLink = e_SELF."?enc=".base64_encode('lay='.$layout.'&vis='.$c.'&iframe=1');
+		$visibilityLink = e_SELF."?enc=".base64_encode('lay='.$layout.'&vis='.$area.'-'.$c.'&iframe=1&class='.$row['class'].'&pages='.$row['pages']);
 		
 		
 		$text .= "<a href='#'  class='menuOption menu-btn menu-btn-mini menu-btn-danger deleteMenu pull-right' data-area='area-".$area."' data-delete='".$uniqueId."'>&times;</a>"; // $('.hello').remove();
@@ -863,7 +903,35 @@ class e_layout
 		
 	}
 	
+
+	function menuSaveAjax($mode = null)
+	{
+		print_r($_POST);
+		return;
+		
+		if($mode == 'visibility')
+		{
+		
+			$ret = $this->menuSaveVisibility();	
+			echo json_encode($ret);
+			return;		
+		}		
+			
+		
+		if($mode == 'parms') 
+		{
+			$ret = $this->menuSaveParameters();	
+			echo json_encode($ret);
+			return;
+		}
+		
+		
+		
+     	print_r($_POST);
+		return;
 	
+
+	}	
 	
 	/**
 	 * Scan Plugin folders for new _menu files. 
@@ -882,7 +950,7 @@ class e_layout
 			
 			if (file_exists($file['path'].'/plugin.xml') || file_exists($file['path'].'/plugin.php'))
 			{
-				if (e107::isInstalled($parent_dir))
+			//	if (e107::isInstalled($file['path'])) //FIXME need a check that doesn't exlude page, news and others that don't require installation.
 				{  
 					$valid_menu = TRUE;		// Whether new or existing, include in list
 				}
@@ -907,8 +975,147 @@ class e_layout
 		
 	}	
 	
+	private function renderVisibilityOptions()
+	{
+		if(!vartrue($_GET['vis'])) return;
+		
+	//	print_a($_GET);
+		
+
+		$sql = e107::getDb();
+		$ns = e107::getRender();
+		$frm = e107::getForm();
+		
+		require_once(e_HANDLER."userclass_class.php");
+		
+	/*
+		if(!$sql->select("menus", "*", "menu_id=".intval($_GET['vis'])))
+		{
+        	$this->menuAddMessage("Couldn't Load Menu",E_MESSAGE_ERROR);
+            return;
+		}
+		
+		$row = $sql->fetch();
+	*/
+		
+		
+		$listtype 	= substr($_GET['pages'], 0, 1);
+		$menu_pages = substr($_GET['pages'], 2);
+		$menu_pages = str_replace("|", "\n", $menu_pages);
+
+		$text = "<div>
+			<form class='form-horizontal' id='e-save-form' method='post' action='".e_SELF."?lay=".$this->curLayout."&amp;iframe=1'>
+	        <fieldset>
+			<legend>". MENLAN_7." ".$row['menu_name']."</legend>
+	        <table class='table adminform'>
+			<tr>
+			<td>
+			".MENLAN_4." ".
+			r_userclass('menu_class', intval($_GET['class']), "off", "public,member,guest,admin,main,classes,nobody")."
+			</td>
+			</tr>
+			<tr><td><div class='radio'>
+		";
+		
+		$checked = ($listtype == 1) ? " checked='checked' " : "";
+		
+		$text .= $frm->radio('listtype', 1, $checked, array('label'=>MENLAN_26, 'class'=> 'e-save'));
+		$text .= "<br />";
+	//	$text .= "<input type='radio' class='e-save' {$checked} name='listtype' value='1' /> ".MENLAN_26."<br />";
+		$checked = ($listtype == 2) ? " checked='checked' " : "";
+		
+		$text .= $frm->radio('listtype', 2, $checked, array('label'=>MENLAN_27, 'class'=> 'e-save'));
+		
+		
+		// $text .= "<input type='radio' class='e-save' {$checked} name='listtype' value='2' /> ".MENLAN_27."<br />";
+		
+		$text .= "</div>
+		<div class='row' style='padding:10px'>
+			
+			<div class='pull-left span3' >
+		
+				<textarea name='pagelist' class='e-save span3' cols='60' rows='8' class='tbox'>".$menu_pages."</textarea>
+			</div>
+			<div class='  span4'><small>".MENLAN_28."</small></div>
+		</div></td></tr>
+		</table>";
+		
+		$text .= $frm->hidden('mode','visibility'); 
+		$text .= $frm->hidden('menu_id',$_GET['vis']); // is NOT an integer
+		
+		/*
+		$text .= "
+		<div class='buttons-bar center'>";
+        $text .= $frm->admin_button('class_submit', MENLAN_6, 'update');
+
+		
+		</div>";
+		 */ 
+		$text .= "
+		</fieldset>
+		</form>
+		</div>";
+	
+		
+		return $text;
+		//$caption = MENLAN_7." ".$row['menu_name'];
+		//$ns->tablerender($caption, $text);
+		//echo $text;
+	}
 
 
+
+
+	/**
+	 * This one will be greatly extended, allowing menus to offer UI and us 
+	 * settings per instance later ($parm variable available for menus - same as shortcode's $parm)
+	 */
+	private function renderInstanceParameters()
+	{
+		if(!vartrue($_GET['parmsId'])) return;
+		$id = intval($_GET['parmsId']);
+		$frm = e107::getForm();
+		$sql = e107::getDb();
+		
+		if(!$sql->select("menus", "*", "menu_id=".$id))
+		{
+        	$this->menuAddMessage("Couldn't Load Menu",E_MESSAGE_ERROR);
+            return;
+		};
+		$row = $sql->fetch();
+		
+		// TODO lan
+		$text = "<div style='text-align:center;'>
+		<form  id='e-save-form' method='post' action='".e_SELF."?lay=".$this->curLayout."'>
+        <fieldset id='core-menus-parametersform'>
+		<legend>Menu parameters ".$row['menu_name']."</legend>
+        <table class='table adminform'>
+		<tr>
+		<td>
+		Parameters (query string format):
+		".$frm->text('menu_parms', $row['menu_parms'], 900, 'class=e-save span7')."
+		</td>
+		</tr>
+		</table>";
+	/*
+		
+			$text .= "
+			<div class='buttons-bar center'>";
+			$text .= $frm->admin_button('parms_submit', LAN_SAVE, 'update');
+			$text .= "<input type='hidden' name='menu_id' value='".$id."' />
+			</div>";
+			
+		*/
+		$text .= $frm->hidden('mode','parms');
+		$text .= $frm->hidden('menu_id',$id);
+		$text .= "
+		</fieldset>
+		</form>
+		</div>";
+		
+		return $text;
+	
+	}
 
 	/**
 	 * Render the main area with TABS and iframes. 
@@ -1133,7 +1340,7 @@ if($_POST)
 		//BC - configure and dot delimiter deprecated
 		if (!isset($_GET['configure']))
 		{
-			$men->menuScanMenus();
+//			$men->menuScanMenus();   // - Runs 2x - Is already called by menuModify() in menumanager_class.php
             $text = $men->menuRenderMessage();
             $text .= $men->menuSelectLayout();
 			$text .= $men->menuVisibilityOptions();

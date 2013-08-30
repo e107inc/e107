@@ -202,6 +202,7 @@ $MAILOUT_FOOTER = "
 
 */
 
+// FIXME clean up the whole email template/render tempalte mess
 
 //-------------------------------------------------------------
 //		'SIGNUP' TEMPLATE

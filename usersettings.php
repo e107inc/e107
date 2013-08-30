@@ -46,7 +46,9 @@ if ((!ADMIN || !getperms("4")) && e_QUERY && e_QUERY != "update" )
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');		// Generic user-related language defines
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_usersettings.php');
+	
 
+	
 require_once (e_HANDLER.'ren_help.php');
 require_once (e_HANDLER.'user_extended_class.php');
 // require_once (e_HANDLER.'user_handler.php');
@@ -62,14 +64,15 @@ e107::scStyle($sc_style);
 $usersettings_shortcodes = e107::getScBatch('usersettings');
 
 
-// include JS, headerjs not called in header anymore
-$js = e107::getJs();
-$js->footerInline("
-		function addtext_us(sc)
+e107::js('footer-inline',"
+function addtext_us(sc)
 		{
 			document.getElementById('dataform').image.value = sc;
 		}
 ");
+
+
+
 
 $photo_to_delete = '';
 $avatar_to_delete = '';

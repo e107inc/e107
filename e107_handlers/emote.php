@@ -1,21 +1,16 @@
 <?php
-/*
+/**
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/emote.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * @DEPRECATED FILE
  */
 
 if (!defined('e107_INIT')) { exit; }
-
+/*
 function r_emote()
 {
 	global $sysprefs, $pref, $tp;
@@ -36,11 +31,12 @@ function r_emote()
 		$value2 = substr($value, 0, strpos($value, " "));
 		$value = ($value2 ? $value2 : $value);
 		$value = ($value == '&|') ? ':((' : $value;
+		$value = " ".$value." ";
 		//TODO CSS class
 		$str .= "\n<a href=\"javascript:addtext('$value',true)\"><img src='$key' alt='' /></a> ";
 	}
 
 	return "<div class='spacer'>".$str."</div>";
 }
-
+*/
 ?>

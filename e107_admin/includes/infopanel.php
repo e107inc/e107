@@ -51,7 +51,7 @@ class adminstyle_infopanel
 EOF;
 	
 		
-	  	$this->getStats();
+	 
 		
 		global $user_pref; // quick fix. 
 		$pref = e107::getPref();  
@@ -223,7 +223,6 @@ EOF;
 		//require_once (e_CORE."shortcodes/batch/admin_shortcodes.php");
 		e107::getScBatch('admin');
 		
-	
 
 
 		
@@ -307,23 +306,22 @@ EOF;
 
 	}
 
-	function renderChart()
+	private function renderChart()
 	{
+	
+
 		// REQUIRES Log Plugin to be installed. 		
 		if (e107::isInstalled('log')) 
 		{
-			return $this->renderStats();
-		 	//	$text2 .= $ns->tablerender("Visitors Last 10 Days", $this->renderStats(),"core-infopanel_stats",true);
+			return $this->renderStats('log');
 		}
 		elseif(e107::isInstalled('awstats')) 
 		{
-			return $this->renderStats();
-		 	// 	$text2 .= $ns->tablerender("Visitors this Month", $this->renderStats(),"core-infopanel_stats",true);
+			return $this->renderStats('awstats');
 		}
 		else
 		{
-			return "<div class='center' style='padding:20px'><a class='btn btn-small' href='".e_ADMIN."plugin.php?avail'>Install Site Stats Plugin</a></div>";
-			// $text2 .= $ns->tablerender("Visitors This Week", "Log Statistics Plugin Not Installed","core-infopanel_stats",true);	
+			return $this->renderStats('demo');
 		}
 		
 	}
@@ -476,60 +474,58 @@ EOF;
 	
 	function renderLatestComments()
 	{
-		return;
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+
+		if(!check_class('B')) // XXX problems?
+		{
+	//		return;
+		}		
+				
+		if(!$rows = $sql->retrieve('comments','*','comment_blocked=2 ORDER BY comment_id DESC LIMIT 25',true) )
+		{
+			return;
+		}
 		
+
+		$sc = e107::getScBatch('comment');
+				
 		$text = '
-		  <ul class="recent-comments">
+		  <ul class="media-list unstyled">';
+		// <button class='btn btn-mini'><i class='icon-pencil'></i> Edit</button> 
+		
+		//XXX Always keep template hardcoded here - heavy use of ajax and ids. 
+		$count = 1;
+		foreach($rows as $row) 
+		{
+			$hide = ($count > 3) ? ' hide' : '';
 
-        <li class="separator">
-          <div class="avatar pull-left">
-            <img src="'.e_IMAGE.'generic/blank_avatar.jpg" style="width:48px;height:48px" />
-          </div>
+			$TEMPLATE = "{SETIMAGE: w=40}
+			<li id='comment-".$row['comment_id']."' class='media".$hide."'>
+				<span class='media-object pull-left'>{USER_AVATAR=".$row['comment_author_id']."}</span> 
+				<div class='btn-group pull-right'>
+	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='delete' class='btn btn-mini btn-danger'><i class='icon-remove'></i> Delete</button>
+	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='approve' class='btn btn-mini btn-success'><i class='icon-ok'></i> Approve</button>
+	            </div>
+				<div class='media-body'><small class='muted smalltext'>Posted by {USERNAME} {TIMEDATE=relative}</small><br />
+					<p>{COMMENT}</p> 
+				</div>
+				</li>";
+			
+			
+			$sc->setVars($row);  
+		 	$text .= $tp->parseTemplate($TEMPLATE,true,$sc);
+			$count++;
+		}
+        
 
-          <div class="article-post">
-            <div class="user-info"> Posted by jordan, 3 days ago </div>
-            <div class="user-content">
-              Vivamus sed auctor nibh congue, ligula vitae tempus pharetra...
-              Vivamus sed auctor nibh congue, ligula vitae tempus pharetra...
-              Vivamus sed auctor nibh congue, ligula vitae tempus pharetra...
-            </div>
-
-            <div class="btn-group">
-              <button class="btn btn-mini"><i class="icon-pencil"></i> Edit</button>
-              <button class="btn btn-mini"><i class="icon-remove"></i> Delete</button>
-              <button class="btn btn-mini"><i class="icon-ok"></i> Approve</button>
-            </div>
-          </div>
-        </li>
-
-    
-
-        <li class="separator">
-          <div class="avatar pull-left">
-            <img src="'.e_IMAGE.'generic/blank_avatar.jpg" style="width:48px;height:48px" />
-          </div>
-
-          <div class="article-post">
-            <div class="user-info"> Posted by jordan, 3 days ago </div>
-            <div class="user-content">
-              Vivamus sed auctor nibh congue, ligula vitae tempus pharetra...
-              Vivamus sed auctor nibh congue, ligula vitae tempus pharetra...
-              Vivamus sed auctor nibh congue, ligula vitae tempus pharetra...
-            </div>
-
-            <div class="btn-group">
-              <button class="btn btn-mini"><i class="icon-pencil"></i> Edit</button>
-              <button class="btn btn-mini"><i class="icon-remove"></i> Delete</button>
-              <button class="btn btn-mini"><i class="icon-ok"></i> Approve</button>
-            </div>
-          </div>
-        </li>
-
-    
-    <li class="separator" style="text-align: center">
-      <a class="btn" href="'.e_ADMIN.'comment.php?searchquery=&filter_options=comment_blocked__2">View all</a>
-    </li>
-  </ul>';		
+    	$text .= '
+     		</ul>
+		    <div class="right">
+		      <a class="btn btn-mini btn-primary text-right" href="'.e_ADMIN.'comment.php?searchquery=&filter_options=comment_blocked__2">View all</a>
+		    </div>
+		 ';		
+		// $text .= "<small class='text-center text-warning'>Note: Not fully functional at the moment.</small>";
 		
 		$ns = e107::getRender();
 		return $ns->tablerender("Latest Comments",$text,'core-infopanel_online',true);		
@@ -667,20 +663,51 @@ EOF;
 	}
 	
 	
-	function getStats() 
+	private function getStats($type) 
 	{
-		if(file_exists(e_PLUGIN."awstats/awstats.graph.php")) //FIXME Cam: Find a generic solution. 
+		
+		
+		if(file_exists(e_PLUGIN."awstats/awstats.graph.php"))  
 		{
 			require_once(e_PLUGIN."awstats/awstats.graph.php");
-			return;	
+			$stat = new awstats;
+			
+			if($data = $stat->getData())
+			{
+				return $data;
+			}
+			
+		//	return;	
 		}
 
-
-		if(!e107::isInstalled("log"))
+		if($type == 'demo')
 		{
-			return;	
-		}
+			$data = array();
 		
+			$data['labels'] 	= array("January","February","March","April","May","June","July");
+			
+			
+			$data['datasets'][]	= array(
+								'fillColor' 		=> "rgba(220,220,220,0.5)",
+								'strokeColor'  		=>  "rgba(220,220,220,1)",
+								'pointColor '  		=>  "rgba(220,220,220,1)",
+								'pointStrokeColor'  =>  "#fff",
+								'data'				=> array(65,59,90,81,56,55,40)	
+				
+			);
+			
+			$data['datasets'][]	= array(
+								'fillColor' 		=> "rgba(151,187,205,0.5)",
+								'strokeColor'  		=>  "rgba(151,187,205,1)",
+								'pointColor '  		=>  "rgba(151,187,205,1)",
+								'pointStrokeColor'  =>  "#fff",
+								'data'				=> array(28,48,40,19,96,27,100)		
+			);	
+			
+			return $data;
+		}
+
+	
 				
 		$sql = e107::getDB();
 
@@ -694,9 +721,9 @@ EOF;
 		DESC LIMIT 0,9
 		";
 
-		if($amount = $sql -> db_Select_gen($qry)) 
+		if($amount = $sql->gen($qry)) 
 		{
-			$array = $sql -> db_getList();
+			$array = $sql->db_getList();
 
 			$ttotal = 0;
 			$utotal = 0;
@@ -772,58 +799,81 @@ EOF;
 		}
 
 	
+		$visitors = array();
+		$unique = array();
+		
+	
 		ksort($dayarray);
 		foreach($dayarray as $k=>$v)
 		{
 			$unix = strtotime($k);
 			
-			$day[] = intval(vartrue($v['daytotal']));
+			$visitors[] = intval(vartrue($v['daytotal']));
+			$unique[] = intval(vartrue($v['dayunique']));
 			$label[] = "'".date("D",$unix)."'";				
 		}
 		
-		e107::js('log','js/awesomechart.js');
-		e107::js('inline',"
-		 function drawMyChart()
-		 {
-	        if(!!document.createElement('canvas').getContext) //check that the canvas element is supported
-	        { 
-	            var mychart = new AwesomeChart('canvas1');
-	  
-	          	mychart.chartType = 'pareto';
-	
-	       
-				mychart.data = [".implode(", ",$day)."];
-				mychart.labels = [".implode(", ",$label)."];
-	            mychart.colors = ['#0088CC', '#FF6600','#0088CC', '#FF6600','#0088CC', '#FF6600','#0088CC', '#FF6600','#0088CC'];
-	            mychart.animate = true;
-            	mychart.animationFrames = 30;
-            //	mychart.randomColors = true;
-           // 	mychart.dataValueFontHeight = 20;
-           mychart.yAxisLabelFontHeight = 15;
-            	mychart.chartMarkerSize = 20;
-            	 mychart.chartHorizontalLineStrokeStyle = '#999';
-    			mychart.chartHorizontalLineWidth = 1;
-	            mychart.draw();
-	        }
-	      }
-	      
-		window.onload = drawMyChart;
-	  
-      ");
+		$data = array();
 		
-	//	print_a($dayarray);;
+		$data['labels'] 	= $label; 
+		
+		//visitors
+		$data['datasets'][]	= array(
+							'fillColor' 		=> "rgba(220,220,220,0.5)",
+							'strokeColor'  		=>  "rgba(220,220,220,1)",
+							'pointColor '  		=>  "rgba(220,220,220,1)",
+							'pointStrokeColor'  =>  "#fff",
+							'data'				=> $visitors	
+			
+		);
+		
+		
+		//Unique Visitors
+		$data['datasets'][]	= array(
+							'fillColor' 		=> "rgba(151,187,205,0.5)",
+							'strokeColor'  		=>  "rgba(151,187,205,1)",
+							'pointColor '  		=>  "rgba(151,187,205,1)",
+							'pointStrokeColor'  =>  "#fff",
+							'data'				=> $unique		
+		);
+		
+		
+		
+		return $data;
+		
 	
 	}
 	
 	
-	function renderStats()
+
+	
+	private function renderStats($type)
 	{
+
+		$data = $this->getStats($type);
+
 		
-		return '<canvas id="canvas1" class="center" width="710" height="300" style="width:100%; height:100%">
-        	Your web-browser does not support the HTML 5 canvas element.
-   		 </canvas>';	
+		$cht = e107::getChart();
+		$cht->setType('line');
+		$cht->setData($data,'canvas');
+		$text = $cht->render('canvas');
+	
+			
+		if($type == 'demo')
+		{
+			$text .= "<div class='center'><small>These stats are for demonstration purposes only. <a class='btn btn-mini' href='".e_ADMIN."plugin.php?avail'>Install Site Stats Plugin</a></small></div>";
+		}
+		else
+		{
+			$text .= "<div class='center'><small>
+			<span style='color:rgba(220,220,220,0.5)'>&diams;</span> Visitors  &nbsp;&nbsp;  
+			<span style='color:rgba(151,187,205,1)'>&diams;</span> Unique Visitors
+			</small></div>";
+		}
 		
 		
+		return $text;									
+
 		
 	}
 	

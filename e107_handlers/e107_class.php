@@ -144,6 +144,7 @@ class e107
 		'e107_traffic'					 => '{e_HANDLER}traffic_class.php',
 		'e107_user_extended'			 => '{e_HANDLER}user_extended_class.php',
 		'e107plugin'					 => '{e_HANDLER}plugin_class.php',
+		'e_chart'				 		 => '{e_HANDLER}chart_class.php',
 		'e_core_session'				 => '{e_HANDLER}session_handler.php',
 		'e_admin_controller'			 => '{e_HANDLER}admin_ui.php',
 		'e_admin_controller_ui'			 => '{e_HANDLER}admin_ui.php',
@@ -237,6 +238,9 @@ class e107
 	 */
 	protected function __construct()
 	{
+		// FIXME registered shutdown functions not executed after the $page output in footer - investigate
+		// Currently manually called in front-end/admin footer
+		//register_shutdown_function(array($this, 'destruct'));
 	}
 
 	/**
@@ -469,6 +473,7 @@ class e107
 		$ret['LOGS_DIRECTORY'] 				= $ret['SYSTEM_DIRECTORY'].'logs/';
 		$ret['BACKUP_DIRECTORY'] 			= $ret['SYSTEM_DIRECTORY'].'backup/';
 		$ret['TEMP_DIRECTORY'] 				= $ret['SYSTEM_DIRECTORY'].'temp/';
+		$ret['IMPORT_DIRECTORY'] 			= $ret['SYSTEM_DIRECTORY'].'import/';
 		//TODO create directories which don't exist. 
 
 		return $ret;
@@ -1190,7 +1195,7 @@ class e107
 	/**
 	 * Retrieve array storage singleton object
 	 *
-	 * @return ArrayData
+	 * @return e_array
 	 */
 	public static function getArrayStorage()
 	{
@@ -1515,6 +1520,17 @@ class e107
 	{
 		return self::getSingleton('e_online', true);
 	}
+
+
+	/**
+	 * Retrieve chart handler singleton object
+	 * @return e_chart
+	 */
+	public static function getChart()
+	{
+		return self::getSingleton('e_chart', true);
+	}
+
 
 	/**
 	 * Retrieve comments handler singleton object
@@ -1958,17 +1974,28 @@ class e107
 		$path = self::coreTemplatePath($id, $override);
 		$id = str_replace('/', '_', $id);
 		$ret = self::_getTemplate($id, $key, $reg_path, $path, $info);
-		if(!$merge || !$override || !is_array($ret))
+		
+		
+	//	if(!$merge || !$override || !is_array($ret)) // problems merging when template doesn't exist in core. 
+		
+		if((!$merge && !$override) || is_string($ret)) //XXX This appears to have less problems, but requires more testing. 
 		{
-			return $ret;
+			 return $ret;
 		}
-
+		
+		if(!is_array($ret)) // for the merge below. 
+		{
+			$ret = array();	
+		}
+		
+		// print_a($id ." ". $key ." ". $reg_path." ". $path." ".$info);
+		
 		// merge
 		$reg_path = 'core/e107/templates/'.$id;
 		$path = self::coreTemplatePath($id, false);
 		$id = str_replace('/', '_', $id);
 		$ret_core = self::_getTemplate($id, $key, $reg_path, $path, $info);
-
+		
 		return (is_array($ret_core) ? array_merge($ret_core, $ret) : $ret);
 	}
 
@@ -2260,7 +2287,7 @@ class e107
 		$cstring  = 'corelan/'.e_LANGUAGE.'_'.$fname.($admin ? '_admin' : '_front');
 		if(e107::getRegistry($cstring)) return;
 
-		$fname = ($admin ? 'admin/' : '').'lan_'.preg_replace('/[^\w]/', '', $fname).'.php';
+		$fname = ($admin ? 'admin/' : '').'lan_'.preg_replace('/[^\w]/', '', trim($fname, '/')).'.php';
 		$path = e_LANGUAGEDIR.e_LANGUAGE.'/'.$fname;
 
 		e107::setRegistry($cstring, true);
@@ -2280,8 +2307,11 @@ class e107
 	 *  // OR /e107_plugins/featurebox/languages/[CurrentLanguage]/[CurrentLanguage]_admin_featurebox.php (auto-detected)
 	 * 	e107::plugLan('featurebox', 'admin_featurebox', true);
 	 *
-	 * 	// import defeinitions from /e107_plugins/myplug/languages/[CurrentLanguage].php
+	 * 	// import defeinitions from /e107_plugins/myplug/languages/[CurrentLanguage]_front.php
 	 * 	e107::plugLan('myplug');
+	 * 
+	 * 	// import defeinitions from /e107_plugins/myplug/languages/[CurrentLanguage]_admin.php
+	 * 	e107::plugLan('myplug', true);
 	 *
 	 * 	// import defeinitions from /e107_plugins/myplug/languages/[CurrentLanguage]/admin/common.php
 	 * 	e107::plugLan('myplug', 'admin/common');
@@ -2302,15 +2332,17 @@ class e107
 
 		if($fname && is_string($fname))
 		{
-			 $fname = e_LANGUAGE.($flat ? '_' : '/').preg_replace('#[^\w/]#', '', $fname);
+			 $fname = e_LANGUAGE.($flat ? '_' : '/').preg_replace('#[^\w/]#', '', trim($fname, '/'));
 		}
 		elseif($fname === true) // admin file. 
 		{
-			$fname = "admin/".e_LANGUAGE;	
+			//$fname = "admin/".e_LANGUAGE;
+			 $fname = e_LANGUAGE."_admin";
 		}
 		else
 		{
-			 $fname = e_LANGUAGE;
+			// $fname = e_LANGUAGE;
+			$fname = e_LANGUAGE."_front";
 		}
 
 		if($flat === true && is_dir(e_PLUGIN.$plugin."/languages/".e_LANGUAGE)) // support for alt_auth/languages/English/English_log.php etc.
@@ -2367,7 +2399,7 @@ class e107
 		$cstring  = 'themelan/'.$theme.$fname.($flat ? '_1' : '_0');
 		if(e107::getRegistry($cstring)) return;
 
-		if($fname) $fname = e_LANGUAGE.($flat ? '_' : '/').preg_replace('#[^\w/]#', '', $fname);
+		if($fname) $fname = e_LANGUAGE.($flat ? '_' : '/').preg_replace('#[^\w/]#', '', trim($fname, '/'));
 		else $fname = e_LANGUAGE;
 
 		$path = $theme.$fname.'.php';
@@ -2386,13 +2418,18 @@ class e107
 	/**
 	 * PREFERRED Generic Language File Loading Function for use by theme and plugin developers. 
 	 * Language-file equivalent to e107::js, e107::meta and e107::css
+	 * FIXME disallow themes and plugins named 'core' and 'theme'
 	 * @param string $type : 'theme' or plugin name
 	 * @param $string $fname (optional): relative path to the theme or plugin language folder. (same as in the other functions)
-	 * when missing, [e_LANGUAGE].php will be used. 
+	 * when missing, [e_LANGUAGE]_front.php will be used, when true [e_LANGUAGE]_admin.php will be used
 	 * @param $options : Set to True for admin. 
 	 * @example e107::lan('theme'); // Loads THEME."languages/English.php (if English is the current language)
-	 * @example e107::lan('gallery'); // Loads e_PLUGIN."gallery/languages/English.php (if English is the current language)
-	 * @example e107::lan('gallery',e_LANGUAGE."_something.php"); // Loads e_PLUGIN."gallery/languages/English_something.php (if English is the current language)
+	 * @example e107::lan('gallery'); // Loads e_PLUGIN."gallery/languages/English_front.php (if English is the current language)
+	 * @example e107::lan('gallery', 'admin'); // Loads e_PLUGIN."gallery/languages/English/admin.php (if English is the current language)
+	 * @example e107::lan('gallery', 'admin', true); // Loads e_PLUGIN."gallery/languages/English_admin.php (if English is the current language)
+	 * @example e107::lan('gallery', 'admin/example'); // Loads e_PLUGIN."gallery/languages/English/admin/example.php (if English is the current language)
+	 * @example e107::lan('gallery', true); // Loads e_PLUGIN."gallery/languages/English_admin.php (if English is the current language)
+	 * @example e107::lan('gallery', "something", true); // Loads e_PLUGIN."gallery/languages/English_something.php (if English is the current language)
 	 */
 	public static function lan($type, $fname = null, $options = null)
 	{
@@ -2407,7 +2444,6 @@ class e107
 				self::themeLan($fname, null,  $options);
 				break;
 			default :
-				
 				self::plugLan($type, $fname, $options);
 				break;
 		}	
@@ -2552,7 +2588,7 @@ class e107
 		if(isset($GLOBALS['_E107']['minimal']) || e_AJAX_REQUEST || deftrue('e_MINIMAL'))
 		{
 			$_e107vars = array('forceuserupdate', 'online', 'theme', 'menus', 'prunetmp');
-
+			$GLOBALS['_E107']['minimal'] = true;
 			// lame but quick - allow online when ajax request only, additonal checks are made in e_online class
 			if(e_AJAX_REQUEST && !isset($GLOBALS['_E107']['online']) && !isset($GLOBALS['_E107']['minimal'])) unset($_e107vars[1]);
 
@@ -2719,24 +2755,33 @@ class e107
 		define('CHARSET', 'utf-8'); // set CHARSET for backward compatibility
 
 		// Define the domain name and subdomain name.
-		if($_SERVER['HTTP_HOST'] && is_numeric(str_replace(".","",$_SERVER['HTTP_HOST'])))
+		if(is_numeric(str_replace(".","",$_SERVER['HTTP_HOST'])))
 		{
-			$srvtmp = '';  // Host is an IP address.
+			$domain = FALSE;
+			$subdomain = FALSE;
 		}
 		else
-		{
-			$srvtmp = explode('.',str_replace('www.', '', $_SERVER['HTTP_HOST']));
+		{	
+			if(preg_match("/\.?([a-z0-9-]+)(\.(com|net|org|co|me|ltd|plc|gov)\.[a-z]{2})$/i", $_SERVER['HTTP_HOST'], $m)) //eg. mysite.co.uk
+			{
+		        $domain = $m[1].$m[2];
+		    }
+			elseif(preg_match("/\.?([a-z0-9-]+)(\.[a-z]{2,})$/i", $_SERVER['HTTP_HOST'], $m))//  eg. .com/net/org/ws/biz/info
+			{       
+		        $domain = $m[1].$m[2];		
+		    }
+			else
+			{
+				$domain = FALSE; //invalid domain
+			}
+			
+			$replace = array(".".$domain,"www.","www",$domain);
+			$subdomain = str_replace($replace,'',$_SERVER['HTTP_HOST']);
 		}
 
-		define('e_SUBDOMAIN', (count($srvtmp)>2 && $srvtmp[2] ? $srvtmp[0] : false)); // needs to be available to e107_config.
-
-		if(e_SUBDOMAIN)
-		{
-		   	unset($srvtmp[0]);
-		}
-
-		define('e_DOMAIN',(count($srvtmp) > 1 ? (implode('.', $srvtmp)) : false)); // if it's an IP it must be set to false.
-
+		define("e_DOMAIN", $domain);
+		define("e_SUBDOMAIN",($subdomain) ? $subdomain : FALSE);
+		
 		define('e_UC_PUBLIC', 0);
 		define('e_UC_MAINADMIN', 250);
 		define('e_UC_READONLY', 251);
@@ -2913,7 +2958,7 @@ class e107
 			define('e_LOG', $this->get_override_rel('LOGS'));
 			define('e_BACKUP', $this->get_override_rel('BACKUP'));
 			define('e_TEMP', $this->get_override_rel('TEMP'));
-
+			define('e_IMPORT', $this->get_override_rel('IMPORT'));
 			//
 			// HTTP absolute paths
 			//
@@ -2924,6 +2969,7 @@ class e107
 			define("e_FILE_ABS", $this->get_override_http('FILES')); // Deprecated!
 			define("e_DOCS_ABS", $this->get_override_http('DOCS'));
 			define("e_HELP_ABS", $this->get_override_http('HELP'));
+			define("e_IMPORT_ABS", false);
 
 			// DEPRECATED - not a legal http query now!
 			//define("e_HANDLER_ABS", $this->get_override_http('HANDLERS'));
@@ -3064,6 +3110,7 @@ class e107
 		{
 			$requestUri = str_replace('['.e_MENU.']', '', $requestUri);
 			$requestUrl = str_replace('['.e_MENU.']', '', $requestUrl);
+			parse_str(e_QUERY,$_GET);
 		}
 
 		// the last anti-XSS measure, XHTML compliant URL to be used in forms instead e_SELF
@@ -3506,7 +3553,7 @@ class e107
 			break;
 		}
 	
-		if($filename)
+		if($filename && is_file($filename)) // Test with chatbox_menu 
 		{
 			// autoload doesn't REQUIRE files, because this will break things like call_user_func()
 			include($filename);
@@ -3577,5 +3624,43 @@ class e107
 
 		$this->{$name} = $ret;
 		return $ret;
+	}
+
+	public function destruct()
+	{
+		if(null === self::$_instance) return;
+		
+		$print = defined('E107_DBG_TIMEDETAILS') && E107_DBG_TIMEDETAILS;
+		!$print || print('Destructing $e107: <br />');
+		$vars = get_object_vars($this);
+		foreach ($vars as $name => $value) 
+		{
+			if(is_object($value)) 
+			{
+				if(method_exists($value, '__destruct'))
+				{
+					!$print || print('object [property] using __destruct(): '.$path.' - '.get_class($value).'<br />');
+					$value->__destruct();
+				}
+				else !$print || print('object [property]: '.$name.' - '.get_class($value).'<br />');
+				$this->$name = null;
+			}
+		}
+		foreach (self::$_registry as $path => $reg) 
+		{
+			if(is_object($reg)) 
+			{
+				if(method_exists($reg, '__destruct'))
+				{
+					!$print || print('object [registry] using __destruct(): '.$path.' - '.get_class($reg).'<br />');
+					$reg->__destruct();
+				}
+				else !$print || print('object [registry]: '.$path.' - '.get_class($reg).'<br />');
+				unset(self::$_registry[$path]);
+			}
+			
+		}
+		self::$_registry = null;
+		self::$_instance = null;
 	}
 }

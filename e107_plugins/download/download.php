@@ -186,7 +186,7 @@ switch ($action)
 	   $download_cat_table_string = "";
 	   foreach($dlcat->cat_tree as $dlrow)
 	   {  // Display main category headings, then sub-categories, optionally with sub-sub categories expanded
-         $download_cat_table_string .= $tp->parseTemplate($DOWNLOAD_CAT_PARENT_TABLE, TRUE, $download_shortcodes);
+         $download_cat_table_string .= $tp->parseTemplate($DOWNLOAD_CAT_PARENT_TABLE, TRUE, vartrue($download_shortcodes));
 	      foreach($dlrow['subcats'] as $dlsubrow)
 	      {
             $download_cat_table_string .= $tp->parseTemplate($DOWNLOAD_CAT_CHILD_TABLE, TRUE, $download_shortcodes);
@@ -200,7 +200,7 @@ switch ($action)
 	   $dl_text .= $download_cat_table_string;
 	   $dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_END, TRUE, $download_shortcodes);
       $dlbreadcrumb = $dl->getBreadcrumb(array(LAN_dl_18));
-	   $dl_title .= $tp->parseTemplate("{BREADCRUMB=dlbreadcrumb}", TRUE, $download_shortcodes);
+	   $dl_title = $tp->parseTemplate("{BREADCRUMB=dlbreadcrumb}", TRUE, $download_shortcodes);
 
 	   ob_start();
       $ns->tablerender($dl_title, $dl_text);

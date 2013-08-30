@@ -51,6 +51,11 @@ class secure_image
 			}
 			exit;
 		}
+		// FIX - new prefered configuration format - $E107_CONFIG
+		if(isset($E107_CONFIG))
+		{
+			extract($E107_CONFIG);
+		}
 
 		$this->THIS_DIR 			= $imgp;
 		$this->BASE_DIR 			= realpath($imgp.'..'.DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;

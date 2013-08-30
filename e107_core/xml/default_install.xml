@@ -161,6 +161,7 @@
 		<core name="post_script">250</core>
 		<core name="filter_script">1</core>
 		<core name="html_abuse">1</core>
+		<core name="pageCookieExpire">84600</core>	
 		<core name="predefinedLoginName"></core>
 		<core name="profanity_filter">0</core>
 		<core name="profanity_replace">[censored]</core>
@@ -229,6 +230,12 @@ City, State, Country
 		<core name="sitetheme_pref"></core>
 		<core name="siteurl">/</core>
 		<core name="smiley_activate">1</core>
+		<core name="smtp_server"></core>
+		<core name="smtp_username"></core>
+		<core name="smtp_password"></core>
+		<core name="smtp_keepalive"></core>
+		<core name="smtp_options"></core>
+		<core name="smtp_useVERP"></core>
 		<core name="social_login_active">0</core>
 		<core name="social_login"><![CDATA[array()]]></core>
 		<core name="ssl_enabled">0</core>
@@ -872,8 +879,8 @@ City, State, Country
 			<item>
 				<field name="menu_id">14</field>
 				<field name="menu_name">news_months_menu</field>
-				<field name="menu_location">0</field>
-				<field name="menu_order">0</field>
+				<field name="menu_location">1</field>
+				<field name="menu_order">2</field>
 				<field name="menu_class">0</field>
 				<field name="menu_pages"></field>
 				<field name="menu_path">news/</field>
@@ -943,17 +950,6 @@ City, State, Country
 				<field name="menu_class">0</field>
 				<field name="menu_pages"></field>
 				<field name="menu_path">siteinfo/</field>
-				<field name="menu_layout"></field>
-				<field name="menu_parms"></field>
-			</item>
-			<item>
-				<field name="menu_id">21</field>
-				<field name="menu_name">news_months_menu</field>
-				<field name="menu_location">1</field>
-				<field name="menu_order">1</field>
-				<field name="menu_class">0</field>
-				<field name="menu_pages"></field>
-				<field name="menu_path">news/</field>
 				<field name="menu_layout"></field>
 				<field name="menu_parms"></field>
 			</item>

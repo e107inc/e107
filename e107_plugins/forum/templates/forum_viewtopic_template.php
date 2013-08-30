@@ -11,9 +11,9 @@
 if (!defined('e107_INIT')) { exit; }
 if(!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%;margin-left:auto;margin-right:auto"); }
 
-$sc_style['LASTEDIT']['pre'] = LAN_29.' ';
+$sc_style['LASTEDIT']['pre'] = LAN_FORUM_2016.' ';
 
-$sc_style['LASTEDITBY']['pre'] = ' '.FORLAN_BY.' ';
+$sc_style['LASTEDITBY']['pre'] = ' '.LAN_FORUM_2017.' ';
 $sc_style['LASTEDITBY']['post'] = '';
 
 $sc_style['LEVEL']['pre'] = "";
@@ -89,10 +89,10 @@ $FORUMSTART = "<a id='top'></a><div style='text-align:center'>
 	<table style='".USER_WIDTH."' class='fborder table'>
 	<tr>
 	<td style='width:20%; text-align:center' class='fcaption'>
-	".LAN_402."
+	".LAN_FORUM_2014."
 	</td>
 	<td style='width:80%; text-align:center' class='fcaption'>
-	".LAN_403."
+	".LAN_FORUM_2015."
 	</td>
 	</tr>";
 

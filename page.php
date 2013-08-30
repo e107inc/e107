@@ -47,10 +47,10 @@ elseif(vartrue($_GET['bk'])) //  List Chapters within a specific Book
 elseif(vartrue($_GET['ch'])) // List Pages within a specific Chapter
 {
 	$e107CorePage->setRequest('listPages');
-	
-	require_once(HEADERF);
 
-	$text = $e107CorePage->listPages($_GET['ch']);
+	require_once(HEADERF);	
+
+	$text = $e107CorePage->listPages($_GET['ch'],$template);
 	$ns->tablerender('', $text, 'cpage'); // TODO FIXME Caption eg. "book title"
 	require_once(FOOTERF);
 	exit;		
@@ -165,85 +165,172 @@ class pageClass
 
 	
 
-	//XXX - May be better to compile into assoc 'tree' array first. ie. books/chapters/pages. 
+	/**
+	 * @todo Check userclasses 
+	 * @todo sef urls
+	 */
 	function listBooks()
 	{
 		$sql = e107::getDb('sql2');
 		$tp = e107::getParser();
+		$frm = e107::getForm();
 		
-		if($sql->db_Select("page_chapters", "*", "chapter_parent ='0' ORDER BY chapter_order ASC "))
+		$text = "";
+		
+		
+		if(e107::getPref('listBooks',false) && $sql->select("page_chapters", "*", "chapter_parent ='0' ORDER BY chapter_order ASC "))
 		{
-			while($row = $sql->db_Fetch())
+			$layout 	= e107::getPref('listBooksTemplate','default'); 		
+			$tml 		= e107::getCoreTemplate('chapter','', true, true); // always merge	
+			$tmpl 		= varset($tml[$layout]);
+			$template 	= $tmpl['listBooks'];
+			
+			$text = $template['start'];
+			
+			while($row = $sql->fetch())
 			{
-				$text .= "<h3 class='page-book-list'>".$tp->toHtml($row['chapter_name'])."</h3>"; // Book Title. 			
-				$text .= $this->listChapters($row['chapter_id']);
+				$var = array(
+					'BOOK_NAME' 		=> $tp->toHtml($row['chapter_name']),
+					'BOOK_ANCHOR'		=> $frm->name2id($row['chapter_name']),
+					'BOOK_DESCRIPTION'	=> $tp->toHtml($row['chapter_meta_description'],true,'BODY'),
+					'CHAPTERS'			=> $this->listChapters(intval($row['chapter_id'])),
+					'BOOK_URL'			=> e_BASE."page.php?bk=".intval($row['chapter_id']) // FIXME SEF-URL
+				);
+			
+				$text .= $tp->simpleParse($template['item'],$var);
 			}			
 		}	
 		
-		$text .= "<h3>Other Articles</h3>"; // Book Title. 		
-		$text .= $this->listPages(0);	// Pages unassigned to Book/Chapters. 
-		e107::getRender()->tablerender("Articles", $text,"cpage_list");
+		if(e107::getPref('listPages',false))
+		{
+			$text .= "<h3>Other Articles</h3>"; // Book Title. 		
+			$text .= $this->listPages(0);	// Pages unassigned to Book/Chapters. 
+		} //
+		
+		if($text)
+		{
+			$caption = varset($template['caption'],"Articles"); 
+			e107::getRender()->tablerender($caption, $text, "cpage_list");
+		}
+		else
+		{
+			message_handler("MESSAGE", LAN_PAGE_1);
+			require_once(FOOTERF); // prevent message from showing twice and still listing chapters
+			exit;
+		}
+		
+		
+		
+		
 	}
 
 
-
-
-	//XXX - May be better to compile into assoc 'tree' array first. ie. books/chapters/pages. 
+	/**
+	 * Parse the Book/Chapter "listChapters' template 
+	 */
 	function listChapters($book=1)
 	{
 		$sql = e107::getDb('chap');
 		$tp = e107::getParser();
+		$frm = e107::getForm();
 		
-		if($sql->db_Select("page_chapters", "*", "chapter_parent = ".intval($book)."  ORDER BY chapter_order ASC "))
+		// retrieve the template to use for this book 
+		if(!$layout = $sql->retrieve('page_chapters','chapter_template','chapter_id = '.intval($book).' LIMIT 1'))
 		{
-			$text .= "<ul class='page-chapters-list'>";
-			while($row = $sql->db_Fetch())
+			$layout = 'default';
+		}
+		
+		
+		$tml = e107::getCoreTemplate('chapter','', true, true); // always merge	
+		$tmpl = varset($tml[$layout]);
+		
+		$template = $tmpl['listChapters'];
+		
+		if($sql->select("page_chapters", "*", "chapter_parent = ".intval($book)."  ORDER BY chapter_order ASC "))
+		{
+			$text .= $template['start']; 
+			
+			while($row = $sql->fetch())
 			{
-				$text .= "<li>";
-				$text .= "<h4>".$tp->toHtml($row['chapter_name'])."</h4>"; // Chapter Title. 
-				$text .= $this->listPages(intval($row['chapter_id']));	
-				$text .= "</li>";
-			}	
-			$text .= "</ul>";		
+				$var = array(
+					'CHAPTER_NAME' 			=> $tp->toHtml($row['chapter_name']),
+					'CHAPTER_ANCHOR'		=> $frm->name2id($row['chapter_name']),
+					'CHAPTER_DESCRIPTION'	=> $tp->toHtml($row['chapter_meta_description'],true,'BODY'),
+					'PAGES'					=> $this->listPages(intval($row['chapter_id'])),
+					'CHAPTER_URL'			=> e_BASE."page.php?ch=".intval($row['chapter_id']) // FIXME SEF-URL
+				);
+				
+				$text .= $tp->simpleParse($template['item'],$var);
+
+			}
+			
+			$text .= $template['end'];		
+			
+		}
+		else
+		{
+			$text = e107::getMessage()->addInfo("There are no chapters in this book")->render();	
 		}	
 		
 		return $text;		
 	}
 
 
-
-	// TODO template for page list
+	
 	function listPages($chapt=0)
 	{
-		$sql = e107::getDb('pg');
-		$tp = e107::getParser();
-		
-		if(!e107::getPref('listPages', false))
+		$sql 			= e107::getDb('pg');
+		$tp 			= e107::getParser();
+		$this->batch 	= e107::getScBatch('page',null,'cpage');
+
+
+		// retrieve the template to use for this chapter. 
+		if(!$layout = $sql->retrieve('page_chapters','chapter_template','chapter_id = '.intval($chapt).' LIMIT 1'))
 		{
-			message_handler("MESSAGE", LAN_PAGE_1);
-			require_once(FOOTERF); // prevent message from showing twice and still listing chapters
-			exit;
+			$layout = 'default';
 		}
-		else
-		{
-			if(!$sql->db_Select("page", "*", "menu_name='' AND page_chapter=".intval($chapt)." AND page_class IN (".USERCLASS_LIST.") ORDER BY page_order ASC "))
+		
+		$tml = e107::getCoreTemplate('chapter','', true, true); // always merge	
+		$tmpl = varset($tml[$layout]);
+	
+		
+	//	$tmpl = e107::getCoreTemplate('chapter','docs', true, true); // always merge	
+		$template = $tmpl['listPages'];
+		
+			if(!$count = $sql->select("page", "*", "page_title !='' AND page_chapter=".intval($chapt)." AND page_class IN (".USERCLASS_LIST.") ORDER BY page_order ASC "))
 			{
-				$text = "<ul class='page-pages-list page-pages-none'><li>".LAN_PAGE_2."</li></ul>";
+				return e107::getMessage()->addInfo(LAN_PAGE_2)->render();
+			//	$text = "<ul class='page-pages-list page-pages-none'><li>".LAN_PAGE_2."</li></ul>";
 			}
 			else
 			{
-				$text .= "<ul class='page-pages-list'>";
+				
 				$pageArray = $sql->db_getList();
+
+				$text .= $template['start'];
+				
 				foreach($pageArray as $page)
 				{
+					$data = array(
+						'title' => $page['page_title'],
+						'text'	=> $tp->toHtml($page['page_text'],true)
+					);
+					
+					$this->page = $page;
+					$this->batch->setVars(new e_vars($data))->setScVar('page', $this->page);
+
 					$url = e107::getUrl()->create('page/view', $page, 'allow=page_id,page_sef');
-					$text .= "<li><a href='".$url."'>".$tp->toHtml($page['page_title'])."</a></li>"; 
+					// $text .= "<li><a href='".$url."'>".$tp->toHtml($page['page_title'])."</a></li>"; 
+					$text .= e107::getParser()->parseTemplate($template['item'], true, $this->batch);
 				}
-				$text .= "</ul>";
+				
+				$text .= $template['end'];
+				
+		
 			//	$caption = ($title !='')? $title: LAN_PAGE_11;
 			//	e107::getRender()->tablerender($caption, $text,"cpage_list");
 			}
-		}
+
 		
 		return $text;
 	}
@@ -257,12 +344,12 @@ class pageClass
 		}
 		
 		$sql = e107::getDb();
-
+		
 		$query = "SELECT p.*, u.user_id, u.user_name, user_login FROM #page AS p
 		LEFT JOIN #user AS u ON p.page_author = u.user_id
 		WHERE p.page_id=".intval($this->pageID); // REMOVED AND p.page_class IN (".USERCLASS_LIST.") - permission check is done later 
 
-		if(!$sql->db_Select_gen($query))
+		if(!$sql->gen($query))
 		{
 			$ret['title'] = LAN_PAGE_12;			// ***** CHANGED
 			$ret['sub_title'] = '';
@@ -277,13 +364,19 @@ class pageClass
 			$this->batch = e107::getScBatch('page',null,'cpage')->setVars(new e_vars($ret))->setScVar('page', array());
 			
 			define("e_PAGETITLE", $ret['title']);
+			
 			return;
 		}
 
-		$this->page = $sql->db_Fetch();
+		$this->page = $sql->fetch();
 
-		$this->template = e107::getCoreTemplate('page', vartrue($this->page['page_template'], 'default'));
-		if(empty($this->template)) $this->template = e107::getCoreTemplate('page', 'default');
+		$this->template = e107::getCoreTemplate('page', vartrue($this->page['page_template'], 'default'), false, true); // setting override to true breaks default. 
+	//	$this->template = e107::getCoreTemplate('page', 'default',true,true);
+	//	print_a($this->template);
+		if(empty($this->template))
+		{
+			 $this->template = e107::getCoreTemplate('page', 'default');
+		}
 		
 		$this->batch = e107::getScBatch('page',null,'cpage');
 
@@ -367,17 +460,21 @@ class pageClass
 
 	public function showPage()
 	{
+		
+		
 		if(null !== $this->cacheData)
 		{
+			
 			return $this->renderCache();
 		}
 		if(true === $this->authorized)
 		{
+			
 			$vars = $this->batch->getParserVars();
 			
 			$template = str_replace('{PAGECOMMENTS}', '[[PAGECOMMENTS]]', $this->template['start'].$this->template['body'].$this->template['end']);
 			$ret = $this->renderPage($template);
-			
+
 			if(!empty($this->template['page']))
 			{
 				$ret = str_replace(array('{PAGE}', '{PAGECOMMENTS}'), array($ret, '[[PAGECOMMENTS]]'), $this->template['page']);

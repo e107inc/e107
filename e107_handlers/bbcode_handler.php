@@ -44,7 +44,7 @@ class e_bbcode
 		'b', 'justify', 'file', 'stream',
 		'textarea', 'list', 'php', 'time',
 		'spoiler', 'hide', 'youtube', 'sanitised', 
-		'p', 'h', 'nobr', 'block','table','tr','tbody','td'
+		'p', 'h', 'nobr', 'block','table','th', 'tr','tbody','td','markdown'
 		);
 
 		foreach($this->core_bb as $c)
@@ -536,7 +536,7 @@ class e_bbcode
 				
 		$bbcode_shortcodes->setVars($data);	
 		
-  		return "<div id='bbcode-panel-".$id."' class='mceToolbar bbcode-panel' {$visible}>".$tp->parseTemplate($BBCODE_TEMPLATE,TRUE)."</div>";		
+  		return "<div id='bbcode-panel-".$id."' class='mceToolbar bbcode-panel' {$visible}>".$tp->parseTemplate($BBCODE_TEMPLATE,TRUE, $bbcode_shortcodes)."</div>";		
 	}
 	
     

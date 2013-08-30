@@ -349,7 +349,7 @@ if (!function_exists("parse_admin"))
 {
 	function parse_admin($ADMINLAYOUT)
 	{
-		e107::getScBatch('admin');
+		$sc = e107::getScBatch('admin');
 		$tp = e107::getParser();
 		$adtmp = explode("\n", $ADMINLAYOUT);
 		
@@ -357,7 +357,7 @@ if (!function_exists("parse_admin"))
 		{
 			if (preg_match("/{.+?}/", $adtmp[$a]))
 			{
-				echo $tp->parseTemplate($adtmp[$a]);
+				echo $tp->parseTemplate($adtmp[$a], true, $sc);
 			}
 			else
 			{

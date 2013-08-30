@@ -480,7 +480,7 @@ class media_form_ui extends e_admin_form_ui
 					$mes->addSuccess(LAN_IMA_004.": ".basename($path));
 					$mes->addSuccess(print_a($info,true));
 					$dim = intval($info['img-width'])." x ".intval($info['img-height']);
-					$sql2->db_Update("core_media","media_dimensions = '".$dim."', media_size = '".intval($info['fsize'])."' WHERE media_id = ".intval($row['media_id'])." LIMIT 1");
+					$sql2->db_Update("core_media","media_dimensions = '".$dim."', media_size = '".intval($info['fsize'])."' WHERE media_id = ".intval($row['media_id'])."");
 				}
 				else 
 				{
@@ -935,6 +935,7 @@ class media_admin_ui extends e_admin_ui
 		$file		= (substr($cat,-5) == "_file") ? TRUE : FALSE;
 		$mes = e107::getMessage();
 		$mes->addDebug("For:".$cat);
+		$mes->addDebug("Bbcode: ".$this->getQuery('bbcode'));
 
 		
 		if($file)
@@ -1128,7 +1129,7 @@ class media_admin_ui extends e_admin_ui
 						
 			$text .= "<div style='text-align:right;padding:5px'>
 			
-			<button type='submit' class='btn btn-success submit e-dialog-save e-dialog-close' data-target='".$this->getQuery('tagid')."' name='save_image' value='Save it'  >
+			<button type='submit' class='btn btn-success submit e-dialog-save e-dialog-close' data-bbcode='".$options['bbcode']."' data-target='".$this->getQuery('tagid')."' name='save_image' value='Save it'  >
 			<span>Save</span>
 			</button>
 			<button type='submit' class='btn submit e-dialog-close' name='cancel_image' value='Cancel' >
@@ -1408,7 +1409,7 @@ class media_admin_ui extends e_admin_ui
 			$pref['upload_storagetype'] = "1";
 			require_once(e_HANDLER."upload_handler.php"); //TODO - still not a class!
 		//	$uploaded = process_uploaded_files(e_MEDIA.'temp/'); //FIXME doesn't handle xxx.JPG (uppercase)
-			$uploaded = process_uploaded_files(e_TEMP); //FIXME doesn't handle xxx.JPG (uppercase)
+			$uploaded = process_uploaded_files(e_IMPORT); //FIXME doesn't handle xxx.JPG (uppercase)
 			$upload = array_shift($uploaded);
 			if(vartrue($upload['error']))
 			{
@@ -1424,7 +1425,7 @@ class media_admin_ui extends e_admin_ui
 				$mes->addDebug(print_a($upload,TRUE));
 
 			//	$oldpath = e_MEDIA."temp/".$upload['name'];
-				$oldpath = e_TEMP.$upload['name'];
+				$oldpath = e_IMPORT.$upload['name'];
 				$newpath = $this->checkDupe($oldpath,$typePath.'/'.$upload['name']);
 
 				if(!rename($oldpath, e_MEDIA.$newpath))
@@ -1467,7 +1468,7 @@ class media_admin_ui extends e_admin_ui
 			
 			$fname = basename($new_data['media_url']);
 			// move to the required place
-			if(strpos($new_data['media_url'], '{e_TEMP}') !== FALSE)
+			if(strpos($new_data['media_url'], '{e_IMPORT}') !== FALSE)
 		//	if(strpos($new_data['media_url'], '{e_MEDIA}temp/') !== FALSE)
 			{
 				$tp = e107::getParser();
@@ -1560,7 +1561,7 @@ class media_admin_ui extends e_admin_ui
 		$rejectArray = array('^\.ftpquota$','^index\.html$','^null\.txt$','\.bak$','^.tmp','.*\.xml$','^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$','^\.htaccess$','index\.html','null\.txt');
 		$fl->setFileFilter($rejectArray);
 	//	$files = $fl->get_files(e_MEDIA."temp/");
-		$files = $fl->get_files(e_TEMP);
+		$files = $fl->get_files(e_IMPORT);
 		
 	//	e107::js('core','core/admin.js','prototype');
 
@@ -1569,7 +1570,7 @@ class media_admin_ui extends e_admin_ui
 
 		if(!vartrue($_POST['batch_import_selected']))
 		{
-			$mes->add("Scanning for new media (images, videos, files) in folder: <b> ".e_UPLOAD."</b>", E_MESSAGE_INFO);
+			$mes->add("Scanning for new media (images, videos, files) in folder: <b> ".e_IMPORT."</b>", E_MESSAGE_INFO);
 		}
 
 		if(!count($files))
@@ -1689,7 +1690,7 @@ class media_admin_ui extends e_admin_ui
 	{
 		list($file,$ext) = explode(".",$imgFile);
 		
-		$xmlFile = e_UPLOAD.$file.".xml";
+		$xmlFile = e_IMPORT.$file.".xml";
 		
 		if(is_readable($xmlFile))
 		{
@@ -1707,7 +1708,10 @@ class media_admin_ui extends e_admin_ui
 			);				
 		}
 			
-		return array('title'=>basename($file),'description'=>'','authorName'=>'','authorEmail'=>'');
+		$srch = array("_","-");	
+		$description = str_replace($srch," ",$file);	
+			
+		return array('title'=>basename($file),'description'=>$description,'authorName'=>USERNAME,'authorEmail'=>'');
 		
 		/*
 		Example: matchingfilename.xml (ie. same name as jpg|.gif|.png etc)
@@ -1732,7 +1736,7 @@ class media_admin_ui extends e_admin_ui
 	{
 		list($file,$ext) = explode(".",$imgFile);
 		
-		$xmlFile = e_UPLOAD.$file.".xml";
+		$xmlFile = e_IMPORT.$file.".xml";
 		
 		if(file_exists($xmlFile))
 		{
@@ -1751,7 +1755,7 @@ class media_admin_ui extends e_admin_ui
 			}	
 			
 		//	$oldpath = e_MEDIA."temp/".$file;
-			$oldpath = e_TEMP.$file;
+			$oldpath = e_IMPORT.$file;
 			if(file_exists($oldpath))
 			{
 				unlink($oldpath);
@@ -1800,7 +1804,7 @@ class media_admin_ui extends e_admin_ui
 		{
 						
 		//	$oldpath = e_MEDIA."temp/".$file;
-			$oldpath = e_TEMP.$file;
+			$oldpath = e_IMPORT.$file;
 			
 			// Resize on Import Routine ------------------------
 			if(vartrue($img_import_w) && vartrue($img_import_h))

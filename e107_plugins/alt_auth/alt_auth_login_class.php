@@ -211,7 +211,9 @@ class alt_login
 				$newUser['data'] = $db_vals;
 				$userMethods->addNonDefaulted($newUser);
 				validatorClass::addFieldTypes($userMethods->userVettingInfo,$newUser);
-				$newID = $aa_sql->db_Insert('user',$newUser);
+				
+				$newID = $aa_sql->insert('user',$newUser);
+				
 				if ($newID !== FALSE)
 				{
 					if (count($xFields))

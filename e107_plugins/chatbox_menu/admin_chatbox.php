@@ -81,7 +81,6 @@ if (isset($_POST['recalculate']))
 	$mes->addSuccess(CHBLAN_33);
 }
 
-$ns->tablerender($caption, $mes->render() . $text);
 
 if(!isset($pref['cb_mod']))
 {
@@ -133,7 +132,7 @@ $text = "
 	</div>
 	</form>";
 
-$ns->tablerender(CHBLAN_20, $text);
+$ns->tablerender(CHBLAN_20, $mes->render().$text);
 
 require_once(e_ADMIN."footer.php");
 ?>

@@ -47,9 +47,9 @@ class faqs_sitelink // include plugin-folder in the name.
 		$tp = e107::getParser();
 		$sublinks = array();
 		
-		$sql->db_Select("faqs_info","*","faq_info_id != '' ORDER BY faq_info_order");
+		$sql->select("faqs_info","*","faq_info_id != '' ORDER BY faq_info_order");
 		
-		while($row = $sql->db_Fetch())
+		while($row = $sql->fetch())
 		{
 			$sublinks[] = array(
 				'link_name'			=> $tp->toHtml($row['faq_info_title'],'','TITLE'),

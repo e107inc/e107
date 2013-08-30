@@ -473,7 +473,7 @@ class e_pref extends e_front_model
 			}
 			else
 			{
-				$data = e107::getArrayStorage()->ReadArray($row['e107_value']);
+				$data = e107::unserialize($row['e107_value']);
 			}
 
 			$this->pref_cache = $row['e107_value']; //runtime cache
@@ -541,7 +541,7 @@ class e_pref extends e_front_model
 
 				if($this->set_backup === true && !empty($this->pref_cache))
 				{
-					$old = e107::getArrayStorage()->ReadArray($this->pref_cache);
+					$old = e107::unserialize($this->pref_cache);
 					if($this->serial_bc)
 					{
 						$dbdata = serialize($old);
@@ -620,7 +620,7 @@ class e_pref extends e_front_model
 			$this->pref_cache = e107::getCache()->retrieve_sys('Config_'.$this->alias, 24 * 60, true);
 		}
 
-		return ($toArray && $this->pref_cache ? e107::getArrayStorage()->ReadArray($this->pref_cache) : $this->pref_cache);
+		return ($toArray && $this->pref_cache ? e107::unserialize($this->pref_cache) : $this->pref_cache);
 	}
 
 	/**
@@ -996,7 +996,7 @@ class prefs
 	// retrieve prefs as an array of values
 	function getArray($name)
 	{
-		return e107::getArrayStorage()->ReadArray($this->get($name));
+		return e107::unserialize($this->get($name));
 		// return unserialize($this->get($name));
 	}
 

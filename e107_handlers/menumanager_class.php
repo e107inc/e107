@@ -406,9 +406,12 @@ class e_menuManager {
 
 			//Reorder all menus into 1...x order
 			if (!is_object($sql2)) $sql2 = new db;		// Shouldn't be needed
-			foreach ($this->menu_areas as $menu_act)
+			if (!is_object($sql3)) $sql3 = new db;
+
+			$location_count = $sql3->select("menus", "menu_location", "menu_location>0 GROUP BY menu_location");
+			while ($location_count)
 			{
-				if ($sql->select("menus", "menu_id", "menu_location={$menu_act} ORDER BY menu_order ASC"))
+				if ($sql->select("menus", "menu_id", "menu_location={$location_count} ORDER BY menu_order ASC"))
 				{
 					$c = 1;
 					while ($row = $sql->fetch())
@@ -417,8 +420,8 @@ class e_menuManager {
 						$c++;
 					}
 				}
+				$location_count--;
 			}
-
 			$sql->select("menus", "*", "menu_path NOT REGEXP('[0-9]+') ");
 			while (list($menu_id, $menu_name, $menu_location, $menu_order) = $sql->fetch(MYSQL_NUM))
 			{
@@ -598,6 +601,7 @@ class e_menuManager {
 		$location = $this->menuActivateLoc;
 
 		$menu_count = $sql->count("menus", "(*)", " WHERE menu_location=".$location." AND menu_layout = '".$this->dbLayout."' ");
+		$menu_count++; // Need to add 1 to create NEW order number.
 		
 		foreach($this->menuActivateIds as $sel_mens)
 		{
@@ -719,7 +723,7 @@ class e_menuManager {
 		$sql = e107::getDb();
 		$parms = $sql->escape(strip_tags($_POST['menu_parms']));
 		
-		$check = $sql->db_Update("menus", "menu_parms='".$parms."' WHERE menu_id=".intval($_POST['menu_id'])." LIMIT 1");
+		$check = $sql->db_Update("menus", "menu_parms='".$parms."' WHERE menu_id=".intval($_POST['menu_id'])."");
 		
 		
 		if($check)
@@ -784,19 +788,20 @@ class e_menuManager {
 	{	// Get current menu name
 		global $admin_log;
 		$sql = e107::getDb();
+		$sql2 = e107::getDb();
 		
 		//echo "FOUND= ".$this->menuId;
 		$error = false;
 
-		if($sql->gen('SELECT menu_name FROM #menus WHERE menu_id = '.$this->menuId.' LIMIT 1'))
+		if($sql->gen('SELECT menu_name, menu_location, menu_order FROM #menus WHERE menu_id = '.$this->menuId.' LIMIT 1'))
 		{
-			
 			$row = $sql->fetch();
+
 			//Check to see if there is already a menu with location = 0 (to maintain BC)
-			if($sql->select('menus', 'menu_id', "menu_name='{$row['menu_name']}' AND menu_location = 0 AND menu_layout ='".$this->dbLayout."' LIMIT 1"))
+			if($sql2->select('menus', 'menu_id', "menu_name='{$row['menu_name']}' AND menu_location = 0 AND menu_layout ='".$this->dbLayout."' LIMIT 1"))
 			{
 				//menu_location=0 already exists, we can just delete this record
-				if(!$sql->db_Delete('menus', 'menu_id='.$this->menuId))
+				if(!$sql2->db_Delete('menus', 'menu_id='.$this->menuId))
 				{
 					$message = "Deletion Failed";
 					$error = true;
@@ -805,15 +810,15 @@ class e_menuManager {
 			else
 			{
 				//menu_location=0 does NOT exist, let's just convert this to it
-				if(!$sql->db_Update("menus", "menu_location=0, menu_order=0, menu_class=0, menu_pages='' WHERE menu_id=".$this->menuId))
+				if(!$sql2->db_Update("menus", "menu_location=0, menu_order=0, menu_class=0, menu_pages='' WHERE menu_id=".$this->menuId))
 				{
 	            	$message = "FAILED";
 					$error = true;
 				}
 			}
-			//Move all other menus up
-			$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_location={$location} AND menu_order > {$position} AND menu_layout = '".$this->dbLayout."' ");
-			$admin_log->log_event('MENU_04',$row['menu_name'].'[!br!]'.$location.'[!br!]'.$position.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
+			//Move all menus up (reduces order number) that have a higher menu order number than one deactivated, in the selected location. 
+			$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_location={$row['menu_location']} AND menu_order > {$row['menu_order']} AND menu_layout = '".$this->dbLayout."' ");
+			$admin_log->log_event('MENU_04',$row['menu_name'].'[!br!]'.$row['menu_location'].'[!br!]'.$row['menu_order'].'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
 		}
 		else
 		{
@@ -1503,7 +1508,7 @@ class e_menuManager {
 		}
 		elseif($_POST['mode'] == 'update')
 		{
-			$sql->db_Update("menus","menu_location = ".intval($area)." WHERE menu_id = ".intval($insertID)." LIMIT 1",$this->debug);	
+			$sql->db_Update("menus","menu_location = ".intval($area)." WHERE menu_id = ".intval($insertID)."",$this->debug);	
 		}
 		
 		$c = 0;
@@ -1518,7 +1523,7 @@ class e_menuManager {
 		{
 			list($b,$id) = explode("-",$val);
 			$order[] = $id;
-			$sql->db_Update("menus","menu_order = ".$c." WHERE menu_id = ".intval($id)." LIMIT 1",$this->debug);
+			$sql->db_Update("menus","menu_order = ".$c." WHERE menu_id = ".intval($id)."",$this->debug);
        		$c++;
 		}
 

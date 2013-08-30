@@ -23,9 +23,11 @@ $sql = e107::getDb();
 
 $sql->db_Mark_Time('(Header Top)');
 
+e107::css('core', 	'bootstrap-datetimepicker/css/datetimepicker.css', 'jquery');
+e107::js('core', 	'bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js', 'jquery', 2);	
 
-e107::js('core','bootstrap/js/bootstrap-tooltip.js','jquery');
-e107::css('core','bootstrap/css/tooltip.css','jquery');
+e107::js('core',	'bootstrap/js/bootstrap-tooltip.js','jquery');
+e107::css('core',	'bootstrap/css/tooltip.css','jquery');
 
 // ------------------
 
@@ -36,6 +38,7 @@ e107::css('core', 	'core/all.jquery.css', 'jquery');
 e107::js("core",	"core/front.jquery.js","jquery",5); // Load all default functions.
 e107::js("core",	"core/all.jquery.js","jquery",5); // Load all default functions.
 
+$js_body_onload = array();		// Legacy array of code to load with page.
 
 //
 // *** Code sequence for headers ***
@@ -378,7 +381,9 @@ if (!USER && ($pref['user_tracking'] == "session") && varset($pref['password_CHA
 	if ($pref['password_CHAP'] == 2)
   	{
 		// *** Add in the code to swap the display tags
-		$js_body_onload[] = "expandit('loginmenuchap','nologinmenuchap');";
+//		$js_body_onload[] = "expandit('loginmenuchap','nologinmenuchap');";
+		$js_body_onload[] = "expandit('loginmenuchap');";
+		$js_body_onload[] = "expandit('nologinmenuchap');";
   	}
   	echo "<script type='text/javascript' src='".e_JS."chap_script.js'></script>\n";
   	$js_body_onload[] = "getChallenge();";
@@ -504,7 +509,7 @@ if (isset($script_text) && $script_text)
 //if(in_array('fader_menu', $eMenuActive)) $js_body_onload[] = 'changecontent(); ';
 
 // External links handling
-$js_body_onload = array();//'externalLinks();'; - already registered to e107:loaded Event by the new JS API
+//$js_body_onload = array();//'externalLinks();'; - already registered to e107:loaded Event by the new JS API
 
 // Theme JS
 // XXX DEPRECATED $body_onload and related functionality
@@ -566,13 +571,48 @@ echo "</head>\n";
     {
         $HEADER = "";
         $FOOTER = ""; 
-        $body_onload = " style='padding:15px;margin:0px'";   //TODO e-iframe css class.       
+        $body_onload .= " style='padding:15px;margin:0px'";   //TODO e-iframe css class.       
     }
 
+	$HEADER = str_replace("{e_PAGETITLE}",deftrue('e_PAGETITLE',''),$HEADER);
+	
+
+if(!deftrue('BODYTAG')) //TODO Discuss a better way?
+{
+	echo "<body".$body_onload.">\n";
+}
+else
+{
+	if ($body_onload)
+	{
+		// Kludge to get the CHAP code included
+		echo substr(trim(BODYTAG), 0, -1).' '.$body_onload.">\n";			// FIXME - must be a better way!
+	}
+	else
+	{
+		echo BODYTAG."\n";	
+	}
+}
+
+// Bootstrap Modal Window - too important to template. 
+/*
+echo '<div id="uiModal" style="display:none" class="modal hide fade" tabindex="-1" role="dialog"  aria-hidden="true">
+            <div class="modal-header">
+            	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+             	<h4 class="modal-caption">&nbsp;</h4>
+             </div>
+             <div class="modal-body">
+             <p>Loading…</p>
+             </div>
+             <div class="modal-footer">
+                <a href="#" data-dismiss="modal" class="btn btn-primary">Close</a>
+            </div>
+        </div>
+';
+*/
 
 
 
-echo "<body".$body_onload.">\n";
 
 // Header included notification, from this point header includes are not possible
 define('HEADER_INIT', TRUE);
@@ -623,9 +663,9 @@ if ($e107_popup != 1) {
 // N: Send other top-of-body HTML
 //
 
-	if(ADMIN)
+	if(ADMIN && !vartrue($_SERVER['E_DEV']) && file_exists(e_BASE.'install.php'))
 	{
-		if(file_exists(e_BASE.'install.php') || file_exists(e_BASE.'install_.php')){ echo "<div class='installer alert alert-danger alert-block text-center'><b>*** ".CORE_LAN4." ***</b><br />".CORE_LAN5."</div>"; }
+		 echo "<div class='installer alert alert-danger alert-block text-center'><b>*** ".CORE_LAN4." ***</b><br />".CORE_LAN5."</div>"; 
 	}
 
 	// Display Welcome Message when old method activated.

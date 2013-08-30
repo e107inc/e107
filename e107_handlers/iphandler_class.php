@@ -251,6 +251,26 @@ class eIPHandler
 	 */
 	public function isAddressRoutable($ip)
 	{
+		$ignore = array(
+						'0\..*' , '^127\..*' , 			// Local loopbacks
+						'192\.168\..*' , 					// RFC1918 - Private Network
+						'172\.(?:1[6789]|2\d|3[01])\..*' ,	// RFC1918 - Private network
+						'10\..*' , 							// RFC1918 - Private Network
+						'169\.254\..*' , 					// RFC3330 - Link-local, auto-DHCP
+						'2(?:2[456789]|[345][0-9])\..*'		// Single check for Class D and Class E
+					);
+	
+		
+		
+		$pattern = '#^('.implode('|',$ignore).')#';
+				
+		if(preg_match($pattern,$ip))
+		{
+			return false;	
+		}
+		
+		
+		/* XXX preg_match doesn't accept arrays. 
 		if (preg_match(array(
 						'#^0\..*#' , '#^127\..*#' , 			// Local loopbacks
 						'#^192\.168\..*#' , 					// RFC1918 - Private Network
@@ -262,6 +282,8 @@ class eIPHandler
 		{
 			return FALSE;
 		} 
+		*/
+		
 		if (strpos(':', $ip) === FALSE) return TRUE;
 		// Must be an IPV6 address here
 		// @todo need to handle IPV4 addresses in IPV6 format
@@ -912,7 +934,7 @@ class eIPHandler
 	 * @param integer $ban_user
 	 * @param string $ban_notes
 	 *
-	 * @return boolean check result - FALSE if ban rejected. TRUE if ban added.
+	 * @return boolean|integer check result - FALSE if ban rejected. TRUE if ban added. 1 if IP address already banned
 	 */
 	public function add_ban($bantype, $ban_message = '', $ban_ip = '', $ban_user = 0, $ban_notes = '')
 	{
@@ -938,12 +960,25 @@ class eIPHandler
 		{
 			return FALSE;
 		}
+		// See if address already in the banlist
+		if ($sql->db_Select('banlist', '`banlist_bantype`', "`banlist_ip`='{$ban_ip}'"))
+		{
+			list($banType) = $sql->fetch(MYSQL_ASSOC);
+			
+			if ($banType >= eIPHandler::BAN_TYPE_WHITELIST)
+			{ // Got a whitelist entry for this
+				//$admin_log->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, "BANLIST_11", 'LAN_AL_BANLIST_11', $ban_ip, FALSE, LOG_TO_ROLLING);
+				return FALSE;
+			}
+			return 1;		// Already in ban list
+		}
+		/*
 		// See if the address is in the whitelist
 		if ($sql->db_Select('banlist', '*', "`banlist_ip`='{$ban_ip}' AND `banlist_bantype` >= ".eIPHandler::BAN_TYPE_WHITELIST))
 		{ // Got a whitelist entry for this
 			//$admin_log->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, "BANLIST_11", 'LAN_AL_BANLIST_11', $ban_ip, FALSE, LOG_TO_ROLLING);
 			return FALSE;
-		}
+		} */
 		if(varsettrue($pref['enable_rdns_on_ban']))
 		{
 			$ban_message .= 'Host: '.$this->get_host_name($ban_ip);

@@ -244,11 +244,12 @@ $ns->tablerender($caption, $mes->render() . $text);
 
 function gen_select($prompt,$name,$value)
 {
-  $ret = "<div style='padding-bottom: 4px'>".$prompt."&nbsp;&nbsp;"."<select name='{$name}' class='tbox'>\n
+  $ret = "<div class='control-group clearfix' >
+  		<span class='pull-left'>".$prompt."</span><span class='pull-right'><select name='{$name}' class='tbox'>\n
 		<option value='0' ".($value == 0 ? " selected='selected'" : "").">".ADSTAT_L50."</option>\n
 		<option value='1' ".($value == 1 ? " selected='selected'" : "").">".ADSTAT_L49."</option>\n
 		<option value='2' ".($value == 2 ? " selected='selected'" : "").">".ADSTAT_L48."</option>\n
-		</select>\n</div>";
+		</select></span></div>";
   return $ret;
 }
 
@@ -274,8 +275,8 @@ switch ($action)
 	<form method='post' action='".e_SELF."'>
 	<table class='table adminform'>
 	<colgroup>
-		<col style='width:50%' />
-		<col style='width:50%' />
+		<col style='width:40%' />
+		<col style='width:60%' />
 	</colgroup>
 
 	<tr>
@@ -303,8 +304,8 @@ switch ($action)
 		 .gen_select(ADSTAT_L9, 'statDomain',$pref['statDomain'])
 		 .gen_select(ADSTAT_L10, 'statRefer',$pref['statRefer'])
 		 .gen_select(ADSTAT_L11, 'statQuery',$pref['statQuery'])
-		 .ADSTAT_L19."&nbsp;&nbsp;
-		 ".$frm->radio_switch('statRecent', $pref['statRecent'])."
+		 ."<div class='clearfix' style='padding-bottom: 4px'><span class='pull-left'>".ADSTAT_L19."</span><span class='pull-right'>
+		 ".$frm->radio_switch('statRecent', $pref['statRecent'])."</span></div>
 		</td>
 	</tr>
 
@@ -315,13 +316,13 @@ switch ($action)
 	<tr>
 		<td>".ADSTAT_L12."</td>
 		<td>
-			".$frm->checkbox('wipe[statWipePage]', 1)." ".ADSTAT_L14."<br />
-			".$frm->checkbox('wipe[statWipeBrowser]', 1)." ".ADSTAT_L6."<br />
-			".$frm->checkbox('wipe[statWipeOs]', 1)." ".ADSTAT_L7."<br />
-			".$frm->checkbox('wipe[statWipeScreen]', 1)." ".ADSTAT_L8."<br />
-			".$frm->checkbox('wipe[statWipeDomain]', 1)." ".ADSTAT_L9."<br />
-			".$frm->checkbox('wipe[statWipeRefer]', 1)." ".ADSTAT_L10."<br />
-			".$frm->checkbox('wipe[statWipeQuery]', 1)." ".ADSTAT_L11."<br />
+			".$frm->checkbox('wipe[statWipePage]', 1, false, array('label'=> ADSTAT_L14 ))."
+			".$frm->checkbox('wipe[statWipeBrowser]', 1, false, array('label'=>ADSTAT_L6))."
+			".$frm->checkbox('wipe[statWipeOs]', 1, false, array('label'=> ADSTAT_L7 ))."
+			".$frm->checkbox('wipe[statWipeScreen]', 1, false, array('label'=> ADSTAT_L8 ))."
+			".$frm->checkbox('wipe[statWipeDomain]', 1, false, array('label'=> ADSTAT_L9 ))."
+			".$frm->checkbox('wipe[statWipeRefer]', 1, false, array('label'=> ADSTAT_L10 ))."
+			".$frm->checkbox('wipe[statWipeQuery]', 1, false, array('label'=> ADSTAT_L11 ))."
 			<br />
 			".$frm->admin_button('wipeSubmit', LAN_RESET, 'delete')."<span class='field-help'>".ADSTAT_L13."</span>
 		</td>
