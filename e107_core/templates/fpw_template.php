@@ -3,7 +3,7 @@
 
 
 if (!defined('e107_INIT')) { exit; }
-if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:70%"); }
+if (!defined("USER_WIDTH") && deftrue('e_BOOTSTRAP')!==true){ define("USER_WIDTH","width:70%"); }
 
 // ##### FPW TABLE -----------------------------------------------------------------------------
 if(!isset($FPW_TABLE))
@@ -23,7 +23,7 @@ if(!isset($FPW_TABLE))
 			<tr>
 			<td class='forumheader3' style='width:70%'>".LAN_FPW1.":</td>
 			<td class='forumheader3' style='width:30%;text-align:center'>
-			<input class='tbox' type='text' name='username' size='40' value='' maxlength='100' />
+			{FPW_USERNAME}
 			</td>
 			</tr>";
 		}
@@ -32,8 +32,8 @@ if(!isset($FPW_TABLE))
 		$FPW_TABLE .="
 		<tr>
 		<td class='forumheader3' style='width:70%'>".LAN_112.":</td>
-		<td class='forumheader3' style='width:30%; text-align:center'>
-		<input class='tbox' type='text' name='email' size='40' value='' maxlength='100' />
+		<td class='forumheader3 text-left' style='width:30%'>
+		{FPW_USEREMAIL}
 		</td>
 		</tr>";
 
@@ -41,8 +41,8 @@ if(!isset($FPW_TABLE))
 		{
 				$FPW_TABLE .= "
 				<tr>
-					<td class='forumheader3' style='width:25%'>{FPW_TABLE_SECIMG_LAN}</td>
-					<td class='forumheader3' style='width:75%;text-align:left'>{FPW_TABLE_SECIMG_HIDDEN} {FPW_TABLE_SECIMG_SECIMG}<br />
+					<td class='forumheader3' style='width:70%'>{FPW_TABLE_SECIMG_LAN}</td>
+					<td class='forumheader3 text-left' style='width:30%;'>{FPW_TABLE_SECIMG_HIDDEN} {FPW_TABLE_SECIMG_SECIMG}<br />
 					{FPW_TABLE_SECIMG_TEXTBOC}<br />
 					</td>
 				</tr>";
@@ -51,7 +51,7 @@ if(!isset($FPW_TABLE))
 		$FPW_TABLE .="
 		<tr style='vertical-align:top'>
 		<td class='forumheader' colspan='2' style='text-align:center'>
-		<input class='button btn btn-primary' type='submit' name='pwsubmit' value='".LAN_156."' />
+		{FPW_SUBMIT}	
 		</td>
 		</tr>
 		</table>
@@ -65,7 +65,7 @@ if(!isset($FPW_TABLE_HEADER))
 {
 		$FPW_TABLE_HEADER = "
 		<div style='width:100%;text-align:center;margin-left:auto;margin-right:auto'>
-			<div style='width:70%;margin-left:auto;margin-right:auto;text-align:center;'><br />
+			<div><br />
 			{FPW_LOGIN_LOGO}
 			<br />";
 }

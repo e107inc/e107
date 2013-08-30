@@ -111,6 +111,7 @@ class alt_auth_admin extends alt_auth_base
 	 *	'default' may be a single value to set the same for all connect methods, or an array to set different defaults.
 	 */
 	private $alt_auth_user_fields = array(
+	  'user_id' 		=> array('prompt' => "User Id", 'help'=>'Use with caution', 'default' => false, 'optional' =>  TRUE, 'otherdb' =>  FALSE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => FALSE),
 	  'user_email' 		=> array('prompt' => LAN_ALT_12, 'default' => 'user_email', 'optional' =>  TRUE, 'otherdb' =>  TRUE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => TRUE, 'ldap_field' => 'mail'),
 	  'user_hideemail' 	=> array('prompt' => LAN_ALT_13, 'default' => 'user_hideemail', 'optional' =>  TRUE, 'otherdb' => TRUE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => TRUE, 'ldap_field' => '', method => 'bool1'),
 	  'user_name' 		=> array('prompt' => LAN_ALT_14, 'default' => 'user_name', 'optional' => TRUE, 'otherdb' =>  TRUE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => TRUE, 'ldap_field' => ''),
@@ -143,10 +144,7 @@ class alt_auth_admin extends alt_auth_base
 				$ret .= "<tr><td$log>";
 				if ($v['optional'] == FALSE) $ret .= '*&nbsp;';
 				$ret .= $v['prompt'].':';
-				if (isset($v['help']))
-				{
-					$ret .= "<br /><span class='smalltext'>".$v['help']."</span>";
-				}
+			
 				$ret .= "</td><td$log>";
 	//			$fieldname = $tableType.'_'.$v['optname'];
 				$fieldname = $tableType.'_xf_'.$f;			// Name of the input box
@@ -172,6 +170,12 @@ class alt_auth_admin extends alt_auth_base
 						$ret .= '&nbsp;&nbsp;'.$this->alt_auth_processing($fieldMethod,$v['method'], $method);
 					}
 				}
+				if (isset($v['help']))
+				{
+					$ret .= "<span class='field-help smalltext'>".$v['help']."</span>";
+				}
+
+
 				$ret .= "</td></tr>\n";
 			}
 		}

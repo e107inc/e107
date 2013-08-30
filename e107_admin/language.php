@@ -190,6 +190,7 @@ if (varset($action) == "tools")
 
 	function findIncludedFiles($script,$reverse=false)
 	{
+		$mes = e107::getMessage();
 		
 		$data = file_get_contents($script);
 		
@@ -306,9 +307,6 @@ if(varset($_POST['searchDeprecated']) && varset($_POST['deprecatedLans']))
 	// $lanfile = $_POST['deprecatedLans'];
 	$script = $_POST['deprecatedLans'];
 
-				
-	
-	
 	if(strpos($script,e_ADMIN)!==false) // CORE
 	{
 		$mes->addDebug("Mode: Core Admin Calculated");
@@ -335,6 +333,11 @@ if(varset($_POST['searchDeprecated']) && varset($_POST['deprecatedLans']))
 	if($lanfile == e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_e107_update.php")
 	{
 		$script = e_ADMIN."update_routines.php,".e_ADMIN."e107_update.php";
+	}
+	
+	if(vartrue($_POST['deprecatedLanFile'])) //override. 
+	{
+		$lanfile = $_POST['deprecatedLanFile'];	
 	}
 
 	if($res = unused($lanfile, $script, vartrue($_POST['deprecatedLansReverse'])))
@@ -703,8 +706,8 @@ function show_tools()
 					<tbody>
 						<tr>
 							<td>".LAN_CHECK_1."</td>
-							<td>
-								<select name='language' class='tbox'>
+							<td class='form-inline'>
+								<select name='language'>
 									<option value=''>".LAN_SELECT."</option>";
 								$languages = explode(",", e_LANLIST);
 								sort($languages);
@@ -738,8 +741,8 @@ function show_tools()
 					<tbody>
 						<tr>
 							<td>".LANG_LAN_23."</td>
-							<td>
-								<select name='language' class='tbox'>
+							<td class='form-inline'>
+								<select name='language'>
 									<option value=''>".LAN_SELECT."</option>";
 								$languages = explode(",", e_LANLIST);
 								sort($languages);
@@ -759,17 +762,25 @@ function show_tools()
 							</td>
 						</tr>";
 						
+						$fl = e107::getFile();
+						$fl->mode = 'full';
+							
+						if(!$_SESSION['languageTools_lanFileList'])
+						{
+							
+							$_SESSION['languageTools_lanFileList'] = $fl->get_files(e_BASE,'.*?(English|lan_).*?\.php$','standard',5);
+						}
+						
 								
 						$text .= "						
 						<tr>
 							<td>Search for Deprecated Lans</td>
-							<td>
-								<select name='deprecatedLans' class='tbox'>
-									<option value=''>".LAN_SELECT."</option>";
+							<td class='form-inline'>
+								<select name='deprecatedLans'>
+									<option value=''>Select Script...</option>";
 									
-									$fl = e107::getFile();
-									$fl->mode = 'full';
-									$omit = array('languages','\.png','\.gif','templates','handlers');
+									
+									$omit = array('languages','\.png','\.gif','handlers');
 									$lans = $fl->get_files(e_ADMIN,'.php','standard',0);
 									$fl->setFileFilter(array("^e_"));
 									$plugs = $fl->get_files(e_PLUGIN,'.*?/?.*?\.php',$omit,2);
@@ -806,15 +817,52 @@ function show_tools()
 									
 								
 								$depOptions = array(
-									0 => "Lan File > Script",
-									1 => "Script > Lan File"
+									1 => "Script > Lan File",
+									0 => "Script < Lan File"
+									
 								);
 									
 								$text .= "
-								</select>".
-								$frm->select('deprecatedLansReverse',$depOptions,$_POST['deprecatedLansReverse']). 
-								$frm->admin_button('searchDeprecated',"Check",'other')."
-								<span class='field-help'>".(count($lans) + count($plugs))." files found</span>
+								</select> ".
+								$frm->select('deprecatedLansReverse',$depOptions,$_POST['deprecatedLansReverse'],'class=select')." ";
+								
+								$search = array(e_PLUGIN,e_ADMIN,e_LANGUAGEDIR,e_THEME);
+								$replace = array("Plugins ","Admin ","Core ","Themes ");
+								
+								
+								$prev = 'Core';
+								$text .= "<select name='deprecatedLanFile'>
+								<option value=''>Auto-Detect</option>
+								<optgroup label='CORE'>\n";
+								
+								foreach($_SESSION['languageTools_lanFileList'] as $val)
+								{
+									if(strstr($val,e_SYSTEM))
+									{
+										continue;	
+									}
+									
+									
+								 	$selected = ($val === $_POST['deprecatedLanFile']) ? "selected='selected'" : "";
+									$diz 		= str_replace($search,$replace,$val);
+									list($type,$label) = explode(" ",$diz);
+									
+									if($type !== $prev)
+									{
+										$text .= "</optgroup><optgroup label='".$type."'>\n";	
+									}
+									
+									$text .= "<option value='".$val."' ".$selected.">".$label."</option>\n";
+									$prev = $type;
+									
+								}
+											
+								$text .= "</optgroup></select>";		
+									
+								// $frm->select('deprecatedLanFile',$_SESSION['languageTools_lanFileList'], $_POST['deprecatedLanFile'],'class=select&useValues=1','Select Language File (optional)'). 
+								$text .= $frm->admin_button('searchDeprecated',"Check",'other');
+						//		$text .= "<span class='field-help'>".(count($lans) + count($plugs))." files found</span>";
+								$text .= "
 							</td>
 						</tr>";
 						
@@ -1035,9 +1083,7 @@ function unused($lanfile,$script,$reverse=false)
 	
 	$mes = e107::getMessage();
 	$frm = e107::getForm();
-	
 
-	
 	unset($_SESSION['language-tools-unused']);
 //	$mes->addInfo("LAN=".$lanfile."<br />Script = ".$script);
 
@@ -1137,6 +1183,12 @@ function unused($lanfile,$script,$reverse=false)
 			{
 				$text .= "<th>".$k."</th>";	
 			}
+			
+			if($reverse == true)
+			{
+				$text .= "<th>Definition</th>";	
+			}
+			
 			$text .= "
 			</tr>
 			</thead>
@@ -1175,9 +1227,11 @@ function unused($lanfile,$script,$reverse=false)
 		
 		$text .= $frm->close();
 		
+		if($reverse != true)
+		{
+			$mes->addInfo("<b>Pink items are likely to be unused LANs.<br />Comment out and test thoroughly.</b>");
+		}
 		
-		$mes->addInfo("<b>Pink items are likely to be unused LANs.<br />Comment out and test thoroughly.</b>");
-
 		$ret['text'] = $mes->render().$text;
 		$ret['caption'] = "Deprecated LAN Check (experimental!)";
 
@@ -1262,11 +1316,12 @@ function compareit($needle,$haystack,$value='',$disabled=FALSE, $reverse=false){
 		$lines = explode("\n",$script);
 		
 		$text .= "<td>";
+		$text2 .= ($reverse == true) ? "<td>" : "";
 		
 		$count = 1;
 		foreach($lines as $ln)
 		{	
-			if(preg_match("/\b".$needle."\b/i",$ln))
+			if(preg_match("/\b".$needle."\b/i",$ln, $mtch))
 			{
 				if($disabled)
 				{
@@ -1277,7 +1332,11 @@ function compareit($needle,$haystack,$value='',$disabled=FALSE, $reverse=false){
 					$text .= ADMIN_TRUE_ICON;
 				}	
 				$text .= " Line:<b>".$count."</b>  "; // "' Found";
-
+				
+				if($reverse == true)
+				{
+					$text2 .= print_a($ln,true);
+				}
 				$found = TRUE;
 			}
 
@@ -1315,7 +1374,7 @@ function compareit($needle,$haystack,$value='',$disabled=FALSE, $reverse=false){
 			} 	
 		}
 		$text .= "</td>";
-		
+		$text2 .= ($reverse == true) ? "</td>" : "";
 	}
 
 //	$color = $found ? "" : "background-color:pink";
@@ -1346,7 +1405,7 @@ function compareit($needle,$haystack,$value='',$disabled=FALSE, $reverse=false){
 		$needle = "<a class='e-tip' href='#' title=\"".$value."\">".$needle."</a>";	
 	}
 	
-	return "<tr><td style='width:25%;$color'>".$needle .$disabled. "</td>".$text."</tr>";
+	return "<tr><td style='width:25%;$color'>".$needle .$disabled. "</td>".$text.$text2."</tr>";
 }
 
 

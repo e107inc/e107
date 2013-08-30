@@ -376,7 +376,8 @@ class e_parse_shortcode
 		// If it already exists - don't include it again. 
 		if (class_exists($className, false)) // don't allow __autoload()
 		{
-			$this->registerClassMethods($className, $path);
+			// $this->registerClassMethods($className, $path); // XXX Global registration should happen separately - here we want only the object. 
+			 $this->scClasses[$className] = new $className(); // located inside registerClassMethods()
 			return $this->scClasses[$className];
 		}
 		
@@ -386,8 +387,8 @@ class e_parse_shortcode
 			if (class_exists($className, false)) // don't allow __autoload()
 			{
 				// register instance directly to allow override
-				// $this->scClasses[$className] = new $className(); // located inside registerClassMethods()
-				$this->registerClassMethods($className, $path);
+				 $this->scClasses[$className] = new $className(); // located inside registerClassMethods()
+				// $this->registerClassMethods($className, $path);  // XXX Global registration should happen separately - here we want only the object. 
 				return $this->scClasses[$className];
 			}
 			elseif(E107_DBG_BBSC || E107_DBG_SC)
@@ -790,7 +791,7 @@ class e_parse_shortcode
 			return $matches[0];
 		}
 
-		if(preg_match('/^([A-Z]*):(.*)/', $matches[1], $newMatch))
+		if(preg_match('/^([A-Z_]*):(.*)/', $matches[1], $newMatch))
 		{
 			$code = $newMatch[1];
 			$parmStr = trim($newMatch[2]);
@@ -1076,11 +1077,11 @@ class e_parse_shortcode
 			{
 				$other['class'] = $_class;
 			}
-			if($_function)
+			if(vartrue($_function))
 			{
 				$other['function'] = $_function;	
 			}
-			if($_path)
+			if(vartrue($_path))
 			{
 				$other['path'] = str_replace('../','',$_path);		
 			}

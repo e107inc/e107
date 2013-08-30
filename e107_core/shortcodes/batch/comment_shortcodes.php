@@ -59,9 +59,9 @@ class comment_shortcodes extends e_shortcode
 	function sc_username($parm='')
 	{	
 		global $USERNAME;
-		if (isset($this->var['user_id']) && $this->var['user_id']) 
+		if (isset($this->var['comment_author_id']) && $this->var['comment_author_id']) 
 		{
-		  $USERNAME = $parm == 'raw' ? $this->var['user_name'] : "<a href='".e107::getUrl()->create('user/profile/view', array('id' => $this->var['user_id'], 'name' => $this->var['user_name']))."'>".$this->var['user_name']."</a>\n";
+		  $USERNAME = $parm == 'raw' ? $this->var['comment_author_name'] : "<a href='".e107::getUrl()->create('user/profile/view', array('id' => $this->var['comment_author_id'], 'name' => $this->var['comment_author_name']))."'>".$this->var['comment_author_name']."</a>\n";
 		}
 		else
 		{

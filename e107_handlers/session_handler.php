@@ -64,7 +64,7 @@ if (!defined('e107_INIT'))
 class e_session
 {
 	/**
-	 * No protection, label 'Looking for troubles'
+	 * No protection, label 'Looking for trouble'
 	 * @var integer
 	 */
 	const SECURITY_LEVEL_NONE = 0;
@@ -441,7 +441,8 @@ class e_session
 		if (empty($this->_options['domain']))
 		{
 			// MULTILANG_SUBDOMAIN set during initial language detection in language handler
-			$this->_options['domain'] = deftrue('MULTILANG_SUBDOMAIN') ? '.'.e_DOMAIN : '';
+			$doma = ((!e_SUBDOMAIN || defsettrue('MULTILANG_SUBDOMAIN')) && e_DOMAIN != FALSE) ? ".".e_DOMAIN : FALSE; // from v1.x
+			$this->_options['domain'] = $doma;
 		}
 
 		if (empty($this->_options['path']))
@@ -838,20 +839,27 @@ class e_core_session extends e_session
 			if((isset($_POST['e-token']) && !$this->checkFormToken($_POST['e-token']))
 			|| (isset($_GET['e-token']) && !$this->checkFormToken($_GET['e-token'])))
 			{
-				if(defsettrue('e_DEBUG'))
-				{		
+			//	if(defsettrue('e_DEBUG'))
+				{
+					$details = "USER: ".USERNAME."\n";		
 					$details = "HOST: ".$_SERVER['HTTP_HOST']."\n";
-					$details .= "REQUEST_URI: ".$_SERVER['REQUEST_URI']."\n";		
+					$details .= "REQUEST_URI: ".$_SERVER['REQUEST_URI']."\n";
+					$details .= "e-token (POST): ".$_POST['e-token']."\n";
+					$details .= "e-token (GET): ".$_GET['e-token']."\n";						
 					$details .= "_SESSION:\n";
 					$details .= print_r($_SESSION,true);
-					$details .= "\n_POST:\n";
-					$details .= print_r($_POST,true);
-					$details .= "\n_GET:\n";
-					$details .= print_r($_GET,true);
+				//	$details .= "\n_POST:\n";
+				//	$details .= print_r($_POST,true);
+				//	$details .= "\n_GET:\n";
+				//	$details .= print_r($_GET,true);
 					$details .= "\nPlugins:\n";
 					$details .= print_r($pref['plug_installed'],true);
-						
-					e107::getAdminLog()->log_event('Unauthorized access!', $details, E_LOG_FATAL);				
+					
+					$log = e107::getAdminLog();		
+					$log->addDebug($details);			
+					$log->toFile('Unauthorized_access','Unauthorized access Log', true);
+					$log->add('Unauthorized access!', $details, E_LOG_FATAL);	
+					// e107::getAdminLog()->log_event('Unauthorized access!', $details, E_LOG_FATAL);				
 				}	
 				// do not redirect, prevent dead loop, save server resources
 				if($die) die('Unauthorized access!');
@@ -879,18 +887,34 @@ class e_core_session extends e_session
 	}
 	
 	/**
-	 * Creates (once per session) unique challenge string for CHAP login
+	 * Make sure there is unique challenge string for CHAP login
 	 * @see class2.php
 	 * @return e_core_session
+	 
+	 @TODO: Remove debug code
 	 */
 	public function challenge()
 	{
-		if (!$this->is('challenge'))
-		{	
-			// Create a unique challenge string for CHAP login
-			// FIXME - session id will be regenerated if e_SECURITY_LEVEL is 'paranoid|insane' 
-			$this->set('challenge', sha1(time().$this->getSessionId()));
+		if (!$this->is('challenge'))		// TODO: Eliminate need for this
+		{
+			$this->set('challenge', sha1(time().rand().$this->getSessionId()));		// New challenge for next time
 		}
+		if ($this->is('challenge'))
+		{	
+			$this->set('prevprevchallenge', $this->get('prevchallenge'));		// Purely for debug
+			$this->set('prevchallenge', $this->get('challenge'));				// Need to check user login against this
+		}
+		else
+		{
+			$this->set('prevchallenge', '');									// Dummy value
+			$this->set('prevprevchallenge', '');								// Dummy value
+		}
+		//$this->set('challenge', sha1(time().rand().$this->getSessionId()));		// Temporarily disabled
+		// FIXME - session id will be regenerated if e_SECURITY_LEVEL is 'paranoid|insane' - generate  (might be OK as long as values retained)
+		
+		//$extra_text = 'C: '.$this->get('challenge').' PC: '.$this->get('prevchallenge').' PPC: '.$this->get('prevprevchallenge');
+		//$logfp = fopen(e_LOG.'authlog.txt', 'a+'); fwrite($logfp, strftime('%H:%M:%S').' CHAP start: '.$extra_text."\n"); fclose($logfp);
+
 		// could go, see _validate()
 		$ubrowser = md5('E107'.$_SERVER['HTTP_USER_AGENT']);
 		if (!$this->is('ubrowser'))

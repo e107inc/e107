@@ -134,8 +134,8 @@ class db_verify
 		}
 		else
 		{
-			$mes->add("Tables appear to be okay!",E_MESSAGE_SUCCESS); //TODO LAN
-			$mes->add("<a href='".$this->backUrl."'>".LAN_BACK."</a>", E_MESSAGE_SUCCESS);
+			$mes->addSuccess("Tables appear to be okay!"); //TODO LAN
+			$mes->addSuccess("<a class='btn btn-primary' href='".$this->backUrl."'>".LAN_BACK."</a>");
 			//$debug = "<pre>".print_r($this->results,TRUE)."</pre>";
 			//$mes->add($debug,E_MESSAGE_DEBUG);	
 			//$text .= "<div class='buttons-bar center'>".$frm->admin_button('back', DBVLAN_17, 'back')."</div>";
@@ -619,6 +619,7 @@ class db_verify
 	function runFix($fixArray='')
 	{
 		$mes  = e107::getMessage();
+		$log = e107::getAdminLog();
 		
 		if(!is_array($fixArray))
 		{
@@ -686,14 +687,14 @@ class db_verify
 						 
 						if(mysql_query($query))
 						{
-							$mes->add(LAN_UPDATED.' [&nbsp;'.$query.'&nbsp;]', E_MESSAGE_DEBUG);	
+							$log->addDebug(LAN_UPDATED.'  ['.$query.']');	
 						} 
 						else 
 						{
-							$mes->add(LAN_UPDATED_FAILED.' [&nbsp;'.$query.'&nbsp;]', E_MESSAGE_WARNING);
+							$log->addWarning(LAN_UPDATED_FAILED.'  ['.$query.']');
 							if(mysql_errno())
 							{
-								$mes->add('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SQL #'.mysql_errno().': '.mysql_error(), E_MESSAGE_WARNING);
+								$log->addWarning('SQL #'.mysql_errno().': '.mysql_error());
 							}
 						}
 					}	
@@ -701,6 +702,8 @@ class db_verify
 		
 			}	// 
 		}
+
+		$log->flushMessages();
 				
 	}	
 	

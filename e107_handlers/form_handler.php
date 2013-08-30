@@ -611,52 +611,41 @@ class e_form
 	 * @param array or str 
 	 * @example $frm->datepicker('my_field',time(),'type=date');
 	 * @example $frm->datepicker('my_field',time(),'type=datetime&inline=1');
-	 * @example $frm->datepicker('my_field',time(),'type=date&dateformat=yyyy-mm-dd');
+	 * @example $frm->datepicker('my_field',time(),'type=date&format=yyyy-mm-dd');
+	 * @example $frm->datepicker('my_field',time(),'type=datetime&format=MM, dd, yyyy hh:ii');
 	 * 
 	 * @url http://trentrichardson.com/examples/timepicker/
 	 */
 	function datepicker($name, $datestamp = false, $options = null)
 	{
+		
 		if(vartrue($options) && is_string($options))
 		{
 			parse_str($options,$options);	
 		} 
 		
-		$dateFormat = varset($options['dateformat']) ? trim($options['dateformat']) :e107::getPref('inputdate', '%Y-%m-%d');
-		$timeFormat = varset($options['timeformat']) ? trim($options['timeformat']) :e107::getPref('inputtime', '%H:%M:%S'); 
-		
-		$type		= varset($options['type']) ? trim($options['type']) : "date"; // 'datetime'
-		
-	//	echo "TYPE=".$type;
-			
-		$ampm		= (preg_match("/%l|%I|%p|%P/",$timeFormat)) ? 'true' : 'false';					
+		$type		= varset($options['type']) ? trim($options['type']) : "date"; // OR  'datetime'
+		$dateFormat = varset($options['format']) ? trim($options['format']) :e107::getPref('inputdate', '%Y-%m-%d');
+		$ampm		= (preg_match("/%l|%I|%p|%P/",$dateFormat)) ? 'true' : 'false';	
+				
+		if($type == 'datetime' && !varset($options['format']))
+		{
+			$dateFormat .= " ".e107::getPref('inputtime', '%H:%M:%S');		
+		}
 
 		$dformat = e107::getDate()->toMask($dateFormat);
-		$tformat = e107::getDate()->toMask($timeFormat);
 
 		$id = $this->name2id($name);
 
-		$classes = array(
-			'date'		=> 'e-date',
-		//	'time'		=> 'e-time',
-			'datetime'	=> 'e-datetime'
-		);
-
-		$def = array(
-			'date'		=> $dateFormat,
-		//	'time'		=> $timeFormat,
-			'datetime'	=> $dateFormat." ".$timeFormat
-		);
-
-		$defdisp = (isset($def[$type])) ? $def[$type] : $def['date'];
+		$classes = array('date'	=> 'e-date', 'datetime'	=> 'e-datetime');
 		
 		if ($datestamp)
 		{
-		   $value = is_numeric($datestamp) ? e107::getDate()->convert_date($datestamp, $defdisp) : $datestamp; //date("d/m/Y H:i:s", $datestamp);
+		   $value = is_numeric($datestamp) ? e107::getDate()->convert_date($datestamp, $dateFormat) : $datestamp; //date("d/m/Y H:i:s", $datestamp);
 		}
 
 		$text = "";
-	//	$text .= 'dformat='.$dformat.'  defdisp='.$defdisp;
+	//	$text .= 'dformat='.$dformat.'  defdisp='.$dateFormat;
 		
 		$class 		= (isset($classes[$type])) ? $classes[$type] : "tbox e-date";
 		$size 		= vartrue($options['size']) ? intval($options['size']) : 40;
@@ -665,29 +654,17 @@ class e_form
 		
 		if(vartrue($options['inline']))
 		{
-			$text .= "<div class='{$class}' id='inline-{$id}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}' ></div>
+			$text .= "<div class='{$class}' id='inline-{$id}' data-date-format='{$dformat}'  data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}' ></div>
 				<input  type='hidden' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}' />
 			";
 		}
 		else
-		{
-			// http://tarruda.github.com/bootstrap-datetimepicker/ 
-			//XXX Problem -doesn't support non-numerical date formats. eg. 2 February, 2013
-			/*
-			$text .= "	
-			<div class='{$class} input-append date'>
-		    <input data-format='{$dformat}' type='text' id='{$id}' value='{$value}' />
-		    <span class='add-on'>
-		      <i data-time-icon='icon-time' data-date-icon='icon-calendar'></i>
-		    </span>
-		  </div>";
-			*/
-			
-			
-			$text .= "<input class='{$class}' type='text' size='{$size}' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}' {$required} />";		
+		{			
+			$text .= "<input class='{$class} input-xlarge' type='text' size='{$size}' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}' {$required} />";		
 		}
 
-	//	$text .= " ({$dformat}) ".$value;
+	//	$text .= "ValueFormat: ".$dateFormat."  Value: ".$value;
+	//	$text .= " ({$dformat}) type:".$dateFormat." ".$value;
 			
 		return $text;
 
@@ -838,6 +815,30 @@ class e_form
 		
 	}
 
+
+
+	/**
+	 * Render a bootStrap ProgressBar. 
+	 * @param string $name
+	 * @param number $value
+	 * @param array $options
+	 */
+	public function progressBar($name,$value,$options=array())
+	{
+		if(!deftrue('e_BOOTSTRAP'))
+		{
+			return;
+		}		
+			
+		$class = vartrue($options['class'],'');	
+		
+		return	"<div class='progress ".$class."' id='".$this->name2id($name)."'>
+   		 	<div class='bar' style='width: ".number_format($value,1)."%'></div>
+    	</div>";
+
+	}
+
+
 	/**
 	 * Textarea Element 
 	 * @param $name
@@ -938,12 +939,12 @@ class e_form
 	}
 
 	/**
-	* checkbox
-	* parm $name
-	* parm $value
-	* parm $checked
+	* Render a checkbox 
+	* @param string $name
+	* @param mixed $value
+	* @param boolean $checked
+	* @param array $options 
 	* @return void
-	* @author
 	*/
 	function checkbox($name, $value, $checked = false, $options = array())
 	{
@@ -1529,20 +1530,49 @@ class e_form
 	 * Generic Button Element. 
 	 * @param string $name
 	 * @param string $value
-	 * @param string $action [optional] default is submit
+	 * @param string $action [optional] default is submit - use 'dropdown' for a bootstrap dropdown button. 
 	 * @param string $label [optional]
 	 * @param string|array $options [optional]
 	 * @return string
 	 */
 	public function button($name, $value, $action = 'submit', $label = '', $options = array())
 	{
+		if(deftrue('e_BOOTSTRAP') && $action == 'dropdown' && is_array($value))
+		{
+		//	$options = $this->format_options('admin_button', $name, $options);
+			$options['class'] = vartrue($options['class']);
+			
+			$align = vartrue($options['align'],'left');
+					
+			$text = '<div class="btn-group pull-'.$align.'">
+			    <a class="btn dropdown-toggle '.$options['class'].'" data-toggle="dropdown" href="#">
+			    '.($label ? $label : 'No Label Provided').'
+			    <span class="caret"></span>
+			    </a>
+			    <ul class="dropdown-menu">
+			    ';
+			
+			foreach($value as $k=>$v)
+			{
+				$text .= '<li>'.$v.'</li>';	
+			}
+			
+			$text .= '
+			    </ul>
+			    </div>';
+			
+			return $text;	
+		}			
+				
+			
+		
 		return $this->admin_button($name, $value, $action, $label, $options);
 		
 	}
 
 	
 	/**
-	 *
+	 * Admin Button - for front-end, use button(); 
 	 * @param string $name
 	 * @param string $value
 	 * @param string $action [optional] default is submit
@@ -1569,6 +1599,9 @@ class e_form
 				$options['class'] .= 'btn-success';
 			break;
 			
+			case 'checkall':
+				$options['class'] .= 'btn-mini';
+			break;
 	
 			case 'cancel':
 				// use this for neutral colors. 
@@ -1752,6 +1785,7 @@ class e_form
 
 	function name2id($name)
 	{
+		$name = strtolower($name);
 		return rtrim(str_replace(array('[]', '[', ']', '_', '/', ' ','.'), array('-', '-', '', '-', '-', '-', '-'), $name), '-');
 	}
 
@@ -2228,6 +2262,8 @@ class e_form
 	
 		if(vartrue($attributes['inline'])) $parms['editable'] = true; // attribute alias
 		if(vartrue($attributes['sort'])) $parms['sort'] = true; // attribute alias
+		
+		$this->renderValueTrigger($field, $value, $parms, $id);
 
 		$tp = e107::getParser();
 		switch($field) // special fields
@@ -2497,11 +2533,12 @@ class e_form
 					$ttl = vartrue($parms['expand']);
 					if($ttl == 1)
 					{
-						$ttl = "<button class='btn btn-mini pull-right'>More..</button>";
-						// $expand = "";
+						$ttl = $expand."<button class='btn btn-mini pull-right'>More..</button>";
+						$ttl1 = "<button class='btn btn-mini pull-right'>..Less</button>";
 					}
 					
 					$expands = '<a href="#'.$elid.'-expand" class="e-show-if-js e-expandit">'.defset($ttl, $ttl)."</a>";
+					$contracts = '<a href="#'.$elid.'-expand" class="e-show-if-js e-expandit">'.defset($ttl1, $ttl1)."</a>";
 					
 				}
 
@@ -2509,20 +2546,20 @@ class e_form
 				if(vartrue($parms['truncate']))
 				{
 					$value = $oldval = strip_tags($value);
-					$value = $tp->text_truncate($value, $parms['truncate'], $expand);
-					$truncated = str_replace($expand,'',$value);
+					$value = $tp->text_truncate($value, $parms['truncate'], '');
 					$toexpand = $value != $oldval;
 				}
 				elseif(vartrue($parms['htmltruncate']))
 				{
-					$value = $tp->html_truncate($value, $parms['htmltruncate'], $expand);
+					$value = $tp->html_truncate($value, $parms['htmltruncate'], '');
 					$toexpand = $value != $oldval;
 				}
 				if($toexpand)
 				{
 					// force hide! TODO - core style .expand-c (expand container)
-					$value .= '<span class="expand-c" style="display: none" id="'.$elid.'-expand"><span>'.str_replace($truncated,' ',$oldval).'</span></span>';
-					$value .= $expands; // Keep it at the bottom so it does't cut the sentence. 
+					// TODO: Hide 'More..' button when text fully displayed.
+					$value .= '<span class="expand-c" style="display: none" id="'.$elid.'-expand"><span>'.str_replace($value,'',$oldval).$contracts.'</span></span>';
+					$value .= $expands; 	// 'More..' button. Keep it at the bottom so it does't cut the sentence. 
 				}
 				
 				
@@ -2796,7 +2833,7 @@ class e_form
 	 * #param array (under construction) $required_data required array as defined in e_model/validator
 	 * @return string
 	 */
-	function renderElement($key, $value, $attributes, $required_data = array())
+	function renderElement($key, $value, $attributes, $required_data = array(), $id = 0)
 	{
 
 		$parms = vartrue($attributes['writeParms'], array());
@@ -2845,7 +2882,9 @@ class e_form
 				$parms['pattern'] = vartrue($attributes['pattern'], $required_data[3]);	
 			}
 		}
-
+		
+		$this->renderElementTrigger($key, $value, $parms, $required_data, $id);
+		
 		switch($attributes['type'])
 		{
 			case 'number':
@@ -3194,10 +3233,10 @@ class e_form
 			if(!$tree)
 			{
 				$text .= "
-								<tr>
-									<td colspan='".count($current_fields)."' class='center middle'>".LAN_NO_RECORDS."</td>
-								</tr>
-				";
+							</tbody>
+						</table>";
+				
+				$text .= "<div class='alert alert-block alert-info center middle'>".LAN_NO_RECORDS."</div>"; // not prone to column-count issues. 
 			}
 			else
 			{
@@ -3208,13 +3247,13 @@ class e_form
 					$text .= $this->renderTableRow($fields, $current_fields, $model->getData(), $options['pid']);
 				}
 				e107::setRegistry('core/adminUI/currentListModel', null);
+				
+				$text .= "</tbody>
+						</table>";
 			}
 
-			$text .= "
-							</tbody>
-						</table>
-						".vartrue($options['table_post'])."
-			";
+			
+			$text .= vartrue($options['table_post']); 
 
 
 			if($tree && $amount)
@@ -3477,7 +3516,7 @@ class e_form
 							".$required."<span{$required_class}>".defset(vartrue($att['title']), vartrue($att['title']))."</span>".$label."
 						</td>
 						<td>
-							".$this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()))."
+							".$this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()), $model->getId())."
 							{$help}
 						</td>
 					</tr>
@@ -3649,7 +3688,7 @@ class e_form
 				
 				if(!vartrue($tmp['show']))
 				{
-					$hidden_fields[] = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()));
+					$hidden_fields[] = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()), $model->getId());
 					unset($tmp);
 					continue;
 				}
@@ -3929,106 +3968,31 @@ class e_form
 		";
 		return $text;
 	}
- 
-	// The 2 functions below are for demonstration purposes only, and may be moved/modified before release.
-	/*
-	function filterType($fieldarray)
-	{
-		return " frm-> filterType() is Deprecated &nbsp;&nbsp;  ";
-	}
-
-	function filterValue($type = '', $fields = '')
-	{
-		return " frm-> filterValue() is Deprecated.&nbsp;&nbsp;   ";
-	}
-    */
+	
 	/**
-	 * DEPRECATED!!! Use e_admin_form_ui::renderBatch()   
-     * Generates a batch options select component
-	 * This component is generally associated with a table of items where one or more rows in the table can be selected (using checkboxes).
-	 * The list options determine some processing that wil lbe applied to all checked rows when the form is submitted.
-	 *
-	 * @param array $options associative array of option elements, keyed on the option value
-	 * @param array ucOptions [optional] associative array of userclass option groups to display, keyed on the option value prefix
-	 * @return string the HTML for the form component
+	 * Render Value Trigger - override to modify field/value/parameters
+	 * @param string $field field name
+	 * @param mixed $value field value
+	 * @param array $params 'writeParams' key (see $controller->fields array)
+	 * @param int $id record ID
 	 */
-	/*
-	function batchoptions($options, $ucOptions = null)
+	public function renderValueTrigger(&$field, &$value, &$params, $id)
 	{
-
-		$text = "
-         <div class='f-left btn-group'>
-         <img src='".e_IMAGE_ABS."generic/branchbottom.gif' alt='' class='icon action' />
-			".$this->select_open('execute_batch', array('class' => 'tbox select batch e-autosubmit', 'id' => false))."
-				".$this->option('With selected...', '', true, 'hellodisabled')."
-		";
-
-
-		//used for getperms() check
-		$permissions = vartrue($options['__permissions'], array());
-		//used for check_classs() check
-		$classes = vartrue($options['__check_class'], array());
-		unset($options['__permissions'], $options['__check_class']);
-
-		foreach ($options as $key => $val)
-		{
-			if(isset($permissions[$key]) && !getperms($permissions[$key]))
-			{
-				continue;
-			}
-			$disabled = false;
-			if(isset($classes[$key]) && !is_array($classes[$key]) && !check_class($classes[$key]))
-			{
-				$disabled = true;
-			}
-			if(!is_array($val))
-			{
-				if($disabled) $val = $val.' ('.LAN_NOPERMISSION.')';
-				$text .= "\t".$this->option('&nbsp;&nbsp;&nbsp;&nbsp;'.$val, $key, false, array('disabled' => $disabled))."\n";
-			}
-			else
-			{
-				if($disabled) $val[0] = $val[0].' ('.LAN_NOPERMISSION.')';
-
-				$text .= "\t".$this->optgroup_open($val[0], $disabled)."\n";
-		      	foreach ($val[1] as $k => $v)
-		      	{
-		      		$disabled = false;
-					if(isset($classes[$key][$k]) && !check_class($classes[$key][$k]))
-					{
-						$disabled = true;
-						$v = $v.' ('.LAN_NOPERMISSION.')';
-					}
-					$text .= "\t\t".$this->option($v, $key.'_selected_'.$k, false, array('disabled' => $disabled))."\n";
-		      	}
-		      	$text .= $this->optgroup_close()."\n";
-
-			}
-		}
-
-
-		if ($ucOptions) // Userclass List.
-		{
-	   		foreach ($ucOptions as $ucKey => $ucVal)
-			{
-				$text .= "\t".$this->optgroup_open($ucVal[0])."\n";
-	      		foreach ($ucVal[1] as $key => $val)
-	      		{
-	      			$text .= "\t\t".$this->option($val['userclass_name']['userclass_name'], $ucKey.'_selected_'.$val['userclass_name']['userclass_id'])."\n";
-	      		}
-	      		$text .= $this->optgroup_close()."\n";
-			}
-		}
-
-
-		$text .= "
-				".$this->select_close().$this->admin_button('trigger_execute_batch', 'trigger_execute_batch', 'submit multi e-hide-if-js', 'Go')."
-			</div><div class='clear'></div>
-		";
-
-		return $text;
+		
 	}
-     */
+	
+	/**
+	 * Render Element Trigger - override to modify field/value/parameters/validation data
+	 * @param string $field field name
+	 * @param mixed $value field value
+	 * @param array $params 'writeParams' key (see $controller->fields array)
+	 * @param array $required_data validation data
+	 * @param int $id record ID
+	 */
+	public function renderElementTrigger(&$field, &$value, &$params, &$required_data, $id)
+	{
+		
+	}
 }
 
 class form 

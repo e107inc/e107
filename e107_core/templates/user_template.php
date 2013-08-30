@@ -134,28 +134,28 @@ $USER_FULL_TEMPLATE = "{SETIMAGE: w=250}
 <tr>
 	<td {$span} class='forumheader3 center middle' style='width:20%'>{USER_PICTURE}</td>
 	<td {$main_colspan} class='forumheader3'>
-		<div class='f-left'>{USER_REALNAME_ICON} ".LAN_USER_63."</div>
+		<div class='f-left'>{USER_ICON=realname} ".LAN_USER_63."</div>
 		<div class='f-right right'>{USER_REALNAME}</div>
 	</td>
 </tr>
 
 <tr>
 	<td  {$main_colspan} class='forumheader3'>
-		<div class='f-left'>{USER_EMAIL_ICON} ".LAN_USER_60."</div>
+		<div class='f-left'>{USER_ICON=email} ".LAN_USER_60."</div>
 		<div class='f-right right'>{USER_EMAIL}</div>
 	</td>
 </tr>
 
 <tr>
 	<td  {$main_colspan} class='forumheader3'>
-		<div class='f-left'>".LAN_USER_54.":</div>
+		<div class='f-left'>{USER_ICON=level} ".LAN_USER_54.":</div>
 		<div class='f-right right'>{USER_LEVEL}</div>
 	</td>
 </tr>
 
 <tr>
 	<td  {$main_colspan} class='forumheader3'>
-		<div class='f-left'>".LAN_USER_65.":&nbsp;&nbsp;</div>
+		<div class='f-left'>{USER_ICON=lastvisit} ".LAN_USER_65.":&nbsp;&nbsp;</div>
 		<div class='f-right right'>{USER_LASTVISIT}<br />{USER_LASTVISIT_LAPSE}</div>
 	</td>
 </tr>

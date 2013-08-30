@@ -37,18 +37,55 @@ class core_page_url extends eUrlConfig
 	{
 		if(!$params) return 'page.php';
 		
-		if(is_string($route)) $route = explode('/', $route, 2);
+		if(is_string($route))
+		{
+			 $route = explode('/', $route, 2);
+			
+		}
+			
 		if(!varset($route[1])) $route[1] = 'index';
 		
-		## aliases as retrieved from the DB, map vars to proper values
-		if(isset($params['page_title']) && !empty($params['page_title'])) $params['name'] = $params['page_title'];
-		if(isset($params['page_id']) && !empty($params['page_id'])) $params['id'] = $params['page_id'];
-		
 		$url = 'page.php?';
-		if('--FROM--' != vartrue($params['page'])) $page = varset($params['page']) ? intval($params['page']) : '0';
-		else $page = '--FROM--';
 		
-		$url .= "id=".intval($params['id']).($page ? '.'.$page : '');
+		switch ($route[0]) 
+		{
+			case 'book':
+				$url .= "bk=".intval($params['id']);	
+			break;
+
+			case 'chapter':
+				$url .= "ch=".intval($params['id']);	
+			break;
+			
+			case 'view':
+			default: 
+				## aliases as retrieved from the DB, map vars to proper values
+				if(isset($params['page_title']) && !empty($params['page_title']))
+				{
+					 $params['name'] = $params['page_title'];
+				}
+				
+				if(isset($params['page_id']) && !empty($params['page_id']))
+				{
+					 $params['id'] = $params['page_id'];
+				}
+				
+				if('--FROM--' != vartrue($params['page']))
+				{
+					 $page = varset($params['page']) ? intval($params['page']) : '0';
+				}
+				else
+				{
+					 $page = '--FROM--';
+				}
+				
+				$url .= "id=".intval($params['id']).($page ? '.'.$page : '');	
+			break;
+			
+			
+		}
+		
+		
 		return $url;
 	}
 

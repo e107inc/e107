@@ -96,82 +96,19 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 	
 	
 
+
+	
+	
 	
 	
 
-/* Used by {PAGE_NAVIGATION} shortcode  - uses Sitelink/Navigation Shortcodes eg. {LINK_NAME}  */
 
-	$PAGE_TEMPLATE['nav']['caption']				= "Articles";
-	
-	$PAGE_TEMPLATE['nav']['start'] 					= '<ul class="page-nav">';
-	
-// Main Link
-	$PAGE_TEMPLATE['nav']['item']				 	= '
-														<li>
-															<a role="button" href="{LINK_URL}" >
-															 {LINK_NAME} 
-															</a> 
-														</li>
-													';
-	
-// Main Link which has a sub menu. 
-	$PAGE_TEMPLATE['nav']['item_submenu']	 		= '
-														<li>
-															<a role="button" href="{LINK_URL}" >
-															 {LINK_NAME} 
-															</a> 
-															{LINK_SUB}
-														</li>
-													';
-	
-	$PAGE_TEMPLATE['nav']['item_submenu_active'] 	= '
-														<li class="active">
-															<a role="button"  href="{LINK_URL}">
-															 {LINK_IMAGE} {LINK_NAME}
-															</a>
-															{LINK_SUB}
-														</li>
-													';	
-	
-	$PAGE_TEMPLATE['nav']['item_active'] 			= '
-														<li class="active">
-															<a crole="button" href="{LINK_URL}">
-															 {LINK_IMAGE} {LINK_NAME}
-															</a>
-														</li>
-													';	
-	
-	$PAGE_TEMPLATE['nav']['end'] 					= '</ul>';		
+
+
+
+
+
 	
 	
-	$PAGE_TEMPLATE['nav']['submenu_start'] 			= '<ul class="page-nav" id="page-nav-{LINK_PARENT}" role="menu" >';
 	
-	
-	$PAGE_TEMPLATE['nav']['submenu_item'] 			= '
-														<li role="menuitem" >
-															<a href="{LINK_URL}">{LINK_IMAGE}{LINK_NAME}</a>
-															{LINK_SUB}
-														</li>
-													';
-	
-	$PAGE_TEMPLATE['nav']['submenu_loweritem'] 		= '
-														<li role="menuitem" >
-															<a href="{LINK_URL}">{LINK_IMAGE}{LINK_NAME}</a>
-															{LINK_SUB}
-														</li>
-													';
-	$PAGE_TEMPLATE['nav']['submenu_loweritem_active'] 		= '
-														<li role="menuitem" class="active">
-															<a href="{LINK_URL}">{LINK_IMAGE}{LINK_NAME}</a>
-															{LINK_SUB}
-														</li>
-													';
-	
-	$PAGE_TEMPLATE['nav']['submenu_item_active'] 	= '
-														<li role="menuitem" class="active">
-															<a href="{LINK_URL}">{LINK_IMAGE}{LINK_NAME}</a>
-															{LINK_SUB}
-														</li>
-													';
-	
-	$PAGE_TEMPLATE['nav']['submenu_end'] 			= '</ul>';	
+?>

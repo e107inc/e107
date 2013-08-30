@@ -1,4 +1,3 @@
 //<?php
 
-$class = e107::getBB()->getClass('td');
-return "<td class='{$class}'>".$code_text."</td>";
+return "<td>".$code_text."</td>";

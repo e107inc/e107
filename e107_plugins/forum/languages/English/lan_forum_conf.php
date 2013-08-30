@@ -9,6 +9,9 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
+// DEPRECATED, SUBJECT TO REMOVAL
+
+
 define("FORCONF_5", "Poll deleted.");
 define("FORCONF_6", "Thread deleted");
 define("FORCONF_7", "replies deleted");
@@ -39,6 +42,7 @@ define("FORCONF_29", "Add");
 define("FORCONF_30", "to title");
 define("FORCONF_31", "Rename to:");
 define("FORCONF_32", "Rename thread options:");
+
 
 
 ?>

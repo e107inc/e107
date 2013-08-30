@@ -204,19 +204,19 @@ class faq
 			{
 				if($prevcat !='')
 				{
-					$text .= $tp->parseTemplate($FAQ_LISTALL_END, true);
+					$text .= $tp->parseTemplate($FAQ_LISTALL_END, true, $sc);
 				}
 				$text .= "\n\n<!-- FAQ Start ".$rw['faq_info_order']."-->\n\n";
-				$text .= $tp->parseTemplate($FAQ_LISTALL_START, true);
+				$text .= $tp->parseTemplate($FAQ_LISTALL_START, true, $sc);
 				$start = TRUE;
 			}
 
-			$text .= $tp->parseTemplate($FAQ_LISTALL_LOOP, true);
+			$text .= $tp->parseTemplate($FAQ_LISTALL_LOOP, true, $sc);
 			$prevcat = $rw['faq_info_order'];
 
 		}
-		$text .= $tp->parseTemplate($FAQ_LISTALL_END, true);
-		$text .= $tp->parseTemplate($FAQ_END, true);
+		$text .= $tp->parseTemplate($FAQ_LISTALL_END, true, $sc);
+		$text .= $tp->parseTemplate($FAQ_END, true, $sc);
 
 		$ret['title'] = FAQLAN_FAQ;
 		$ret['text'] = $text;

@@ -465,6 +465,7 @@ class e_parse extends e_parser
 	 */
 	public function toDB($data, $nostrip = FALSE, $no_encode = FALSE, $mod = FALSE, $original_author = FALSE)
 	{
+		
 		$core_pref = e107::getConfig();
 		if (is_array($data))
 		{
@@ -476,6 +477,8 @@ class e_parse extends e_parser
 			return $ret;
 		}
 
+	
+
 		if (MAGIC_QUOTES_GPC == TRUE && $nostrip == FALSE)
 		{
 			$data = stripslashes($data);
@@ -483,24 +486,26 @@ class e_parse extends e_parser
 
 		if ($mod != 'pReFs') //XXX We're not saving prefs. 
 		{
-			$data = $this->preFilter($data);
+			$data = $this->preFilter($data); // used by bb_xxx.php toDB() functions. bb_code.php toDB() allows us to properly bypass HTML cleaning below. 
 			
 			if (strip_tags($data) != $data) // html tags present. 
 			{
-				
+			//	return $data;
 				$data = $this->cleanHtml($data); // sanitize all html. 
+				
 				$data = urldecode($data); // symptom of cleaning the HTML - urlencodes src attributes containing { and } .eg. {e_BASE} 
-			//	if ($this->htmlAbuseFilter($data)) $no_encode = FALSE; //XXX cleanHtml() is more effective. 
 			}
-
+			
 			if (!check_class($core_pref->get('post_html', e_UC_MAINADMIN)))
 			{
 				$data = strip_tags($data); // remove tags from cleaned html. 
 				$data = str_replace(array('[html]','[/html]'),'',$data); 
 			//	$data = $this->dataFilter($data);
 			}
-		}
 
+			$data = html_entity_decode($data, ENT_QUOTES, 'utf-8');	// Prevent double-entities. Fix for [code]  - see bb_code.php toDB(); 
+		}
+	
 		if (check_class($core_pref->get('post_html'))) /*$core_pref->is('post_html') && */
 		{
 			$no_encode = TRUE;
@@ -1272,8 +1277,10 @@ class e_parse extends e_parser
 		{
 			return $text;
 		}
+		
+		$pref = e107::getPref();
 
-		global $pref, $fromadmin;
+		global $fromadmin;
 
 		// Set default modifiers to start
 		$opts = $this->e_optDefault;
@@ -1409,15 +1416,16 @@ class e_parse extends e_parser
 					// $matches[4] - bit between the tags (i.e. text to process)
 					// $matches[5] - closing tag
 					// In case we decide to load a file
-					$bbPath = e_CORE.'bbcodes/';
-					$bbFile = strtolower(str_replace('_', '', $matches[2]));
-					$bbcode = '';
-					$className = '';
-					$full_text = '';
-					$code_text = $matches[4];
+					
+					$bbPath 		= e_CORE.'bbcodes/';
+					$bbFile 		= strtolower(str_replace('_', '', $matches[2]));
+					$bbcode 		= '';
+					$className 		= '';
+					$full_text 		= '';
+					$code_text 		= $matches[4];
+					$parm 			= $matches[3] ? substr($matches[3],1) : '';
+					$last_bbcode 	= $matches[2];
 	
-					$parm = $matches[3] ? substr($matches[3],1) : '';
-					$last_bbcode = $matches[2];
 					switch ($matches[2])
 					{
 						case 'php' :
@@ -1452,9 +1460,9 @@ class e_parse extends e_parser
 							$full_text = $this->parseBBTags($full_text); // strip <bbcode> tags. 
 							$opts['nobreak'] = true;
 							break;
-							
-						case 'table' : // strip <br /> from end of <table>		
-							
+						
+						case 'table' : // strip <br /> from inside of <table>		
+						
 							$convertNL = FALSE;
 						//	break;
 
@@ -1466,11 +1474,10 @@ class e_parse extends e_parser
 							if (file_exists($bbPath.'bb_'.$bbFile.'.php'))
 							{	// Its a bbcode class file
 								require_once($bbPath.'bb_'.$bbFile.'.php');
-								//echo "Load: {$bbFile}.php<br />";
-								$className = 'bb_'.$code;
-								$this->bbList[$code] = new $className();
+								$className = 'bb_'.$last_bbcode;
+								$this->bbList[$last_bbcode] = new $className();
 							}
-							elseif (file_exists($bbPath.$bbFile.'.bb'))
+							elseif(file_exists($bbPath.$bbFile.'.bb'))
 							{
 								$bbcode = file_get_contents($bbPath.$bbFile.'.bb');
 							}
@@ -1570,7 +1577,7 @@ class e_parse extends e_parser
 						{
 							if (!is_object($this->e_emote))
 							{
-								require_once(e_HANDLER.'emote_filter.php');
+							//	require_once(e_HANDLER.'emote_filter.php');
 								$this->e_emote = new e_emoteFilter;
 							}
 							$sub_blk = $this->e_emote->filterEmotes($sub_blk);
@@ -1655,7 +1662,7 @@ class e_parse extends e_parser
 						{
 							if (!is_object($this->e_pf))
 							{
-								require_once(e_HANDLER."profanity_filter.php");
+							//	require_once(e_HANDLER."profanity_filter.php");
 								$this->e_pf = new e_profanityFilter;
 							}
 							$sub_blk = $this->e_pf->filterProfanities($sub_blk);
@@ -1727,7 +1734,10 @@ class e_parse extends e_parser
 							}
 						}
 
-						if ($convertNL)
+						
+						
+
+						if($convertNL == true)
 						{
 							// Default replaces all \n with <br /> for HTML display
 							$nl_replace = '<br />';
@@ -1739,9 +1749,9 @@ class e_parse extends e_parser
 							{
 								$nl_replace = "\n";
 							}
+							
 							$sub_blk = str_replace(E_NL, $nl_replace, $sub_blk);
 						}
-
 
 						$ret_parser .= $sub_blk;
 					}	// End of 'normal' processing for a block of text
@@ -1755,8 +1765,23 @@ class e_parse extends e_parser
 				$ret_parser .= $full_text;
 			}
 		}
+
+		// Quick Fix - Remove trailing <br /> on block-level elements (eg. div, pre, table, etc. )
+		$srch = array();
+		$repl = array();
+		
+		foreach($this->blockTags as $val)
+		{
+			$srch[] = "</".$val."><br />";	
+			$repl[]	= "</".$val.">";
+		}
+		
+		$ret_parser = str_replace($srch, $repl, $ret_parser);
+
 		return trim($ret_parser);
 	}
+
+
 
 
 	function toAttribute($text)
@@ -1835,6 +1860,9 @@ class e_parse extends e_parser
 	}
 
 
+	/**
+	 * Set the dimensions of a thumbNail (generated by thumbUrl)
+	 */
 	public function setThumbSize($w=null,$h=null,$crop=null)
 	{
 		if($w)
@@ -1940,6 +1968,7 @@ class e_parse extends e_parser
 			'e_WEB_JS/' 		=> '{e_WEB_JS}',
 			'e_WEB_CSS/' 		=> '{e_WEB_CSS}',
 			'e_WEB_IMAGE/' 		=> '{e_WEB_IMAGE}',
+			'e_IMPORT/' 		=> '{e_IMPORT}',
 		//	'e_WEB_PACK/' 		=> '{e_WEB_PACK}',
 
 			'e_BASE/' 			=> '{e_BASE}',
@@ -2249,6 +2278,7 @@ class e_parse extends e_parser
 					'{e_MEDIA_IMAGE}'	=> e_MEDIA_IMAGE,
 					'{e_MEDIA_ICON}'	=> e_MEDIA_ICON,
 					'{e_AVATAR}'		=> e_AVATAR,
+					'{e_IMPORT}'		=> e_IMPORT,
 					'{e_WEB_JS}'		=> e_WEB_JS,
 					'{e_WEB_CSS}'		=> e_WEB_CSS,
 					'{e_WEB_IMAGE}'		=> e_WEB_IMAGE,
@@ -2361,8 +2391,28 @@ class e_parse extends e_parser
 		}
 		return $text;
 	}
+	
+	/**
+	 * Display a Date in the browser. 
+	 * Includes support for 'livestamp' (http://mattbradley.github.io/livestampjs/)
+	 * @param integer $datestamp - unix timestamp
+	 * @param string $format - short | long | relative 
+	 * @return HTML with converted date. 
+	 */
+	public function toDate($datestamp = null, $format='short')
+	{
+		if(!is_numeric($datestamp)){ return; }
 
+		return '<span data-livestamp="'.$datestamp.'">'.e107::getDate()->convert($datestamp, $format).'</span>';	
+	}
+	
 
+	/**
+	 * Convert Text to a suitable format for use in emails. eg. relative links will be replaced with full links etc. 
+	 * @param string $text
+	 * @param boolean $posted - if the text has been posted. (uses stripslashes etc)
+	 * @param string $mods - flags for text transformation. 
+	 */
 	public function toEmail($text, $posted = "", $mods = "parse_sc, no_make_clickable")
 	{
 		if ($posted === TRUE)
@@ -2380,7 +2430,9 @@ class e_parse extends e_parser
 	}
 
 
-	// Given an email address, returns a link including js-based obfuscation
+	/**
+	 * Given an email address, returns a link including js-based obfuscation
+	 */
 	function emailObfuscate($email, $words = '', $subject = '')
 	{
 		if(strpos($email, '@') === FALSE)
@@ -2396,6 +2448,8 @@ class e_parse extends e_parser
 		return "<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+".$reassembled.$subject.";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+".$reassembled."; return true;' onmouseout='window.status=\"\";return true;'>".$words.'</a>';
 	}
 
+	
+	
 	public function __get($name)
 	{
 		switch($name)
@@ -2442,6 +2496,8 @@ class e_parser
                                         'small', 'caption', 'noscript'
                                    );
 	private $scriptTags 		= array('script','applet','iframe'); //allowed whem $pref['post_script'] is enabled. 
+	
+	protected $blockTags		= array('pre','div','h1','h2','h3','h4','h5','h6','blockquote'); // element includes its own line-break. 
         
     public function __construct()
     {
@@ -2898,4 +2954,152 @@ return $html;
     
     
     
+}
+
+
+
+class e_emotefilter {
+	var $search;
+	var $replace;
+	var $emotes;
+	 
+	function e_emotefilter() /* constructor */
+	{		
+		$pref = e107::getPref();
+		
+		if(!$pref['emotepack'])	
+		{	
+			$pref['emotepack'] = "default";
+			save_prefs();
+		}
+			
+		$this->emotes = e107::getConfig("emote")->getPref();
+		
+		if(!vartrue($this->emotes))
+		{
+			return;
+		}
+
+		foreach($this->emotes as $key => $value)
+		{
+		  $value = trim($value);
+
+		  if ($value)
+		  {	// Only 'activate' emote if there's a substitution string set
+			$key = preg_replace("#!(\w{3,}?)$#si", ".\\1", $key);
+			// Next two probably to sort out legacy issues - may not be required any more
+			$key = preg_replace("#_(\w{3})$#", ".\\1", $key);
+			$key = str_replace("!", "_", $key);
+
+			  $filename = e_IMAGE."emotes/" . $pref['emotepack'] . "/" . $key;
+			  
+			  $fileloc = SITEURLBASE.e_IMAGE_ABS."emotes/" . $pref['emotepack'] . "/" . $key;
+
+			  if(file_exists($filename))
+			  {
+				if(strstr($value, " "))
+				{
+					$tmp = explode(" ", $value);
+					foreach($tmp as $code)
+					{
+						$this->search[] = " ".$code;
+						$this->search[] = "\n".$code;
+						//TODO CSS class?
+						$this->replace[] = " <img src='".$fileloc."' alt='' style='vertical-align:middle; border:0' /> ";
+						$this->replace[] = "\n <img src='".$fileloc."' alt='' style='vertical-align:middle; border:0' /> ";
+					}
+					unset($tmp);
+				}
+				else
+				{
+					if($value)
+					{
+						$this->search[] = " ".$value;
+						$this->search[] = "\n".$value;
+						//TODO CSS class?
+						$this->replace[] = " <img src='".$filename."' alt='' style='vertical-align:middle; border:0' /> ";
+						$this->replace[] = "\n <img src='".$filename."' alt='' style='vertical-align:middle; border:0' /> ";
+					}
+				}
+			  }
+		  }
+		  else
+		  {
+			unset($this->emotes[$key]);
+		  }
+		}
+	}
+	 
+	function filterEmotes($text)
+	{	 
+		$text = str_replace($this->search, $this->replace, $text);
+		return $text;
+	}
+	 
+	function filterEmotesRev($text)
+	{
+		$text = str_replace($this->replace, $this->search, $text);
+		return $text;
+	}
+}
+
+
+class e_profanityFilter 
+{
+	var $profanityList;
+
+	function e_profanityFilter() 
+	{
+		global $pref;
+
+		$words = explode(",", $pref['profanity_words']);
+        $word_array = array();
+		foreach($words as $word) 
+		{
+			$word = trim($word);
+			if($word != "")
+			{
+				$word_array[] = $word;
+				if (strpos($word, '&#036;') !== FALSE)
+				{
+					$word_array[] = str_replace('&#036;', '\$', $word);		// Special case - '$' may be 'in clear' or as entity
+				}
+			}
+		}
+		if(count($word_array))
+		{
+			$this->profanityList = str_replace('#','\#',implode("\b|\b", $word_array));		// We can get entities in the string - confuse the regex delimiters
+		}
+		unset($words);
+		return TRUE;
+	}
+
+	function filterProfanities($text) 
+	{
+		global $pref;
+		if (!$this->profanityList) 
+		{
+			return $text;
+		}
+		if ($pref['profanity_replace']) 
+		{
+			return preg_replace("#\b".$this->profanityList."\b#is", $pref['profanity_replace'], $text);
+		} 
+		else 
+		{
+			return preg_replace_callback("#\b".$this->profanityList."\b#is", array($this, 'replaceProfanities'), $text);
+		}
+	}
+
+	function replaceProfanities($matches) 
+	{
+		/*!
+		@function replaceProfanities callback
+		@abstract replaces vowels in profanity words with stars
+		@param text string - text string to be filtered
+		@result filtered text
+		*/
+
+		return preg_replace("#a|e|i|o|u#i", "*" , $matches[0]);
+	}
 }

@@ -56,7 +56,7 @@ function defset($str, $default='')
 
 /**
  * Variant of {@link varset()}, but only return the value if both set AND 'true'
- * 
+ * @deprecated - use vartrue();
  * @param mixed $val
  * @param mixed $default [optional]
  * @return mixed
@@ -81,7 +81,7 @@ function vartrue(&$val, $default='')
 
 /**
  * Variant of {@link defset()}, but only return the value if both defined AND 'true'
- * 
+ * @deprecated  - use deftrue()
  * @param string $str
  * @param mixed $default [optional]
  * @return mixed
@@ -108,7 +108,7 @@ function deftrue($str, $default='')
 function e107_include($fname)
 {
 	global $e107_debug, $_E107;
-	$ret = (($e107_debug || isset($_E107['debug'])) ? include($fname) : @include($fname));
+	$ret = (($e107_debug || isset($_E107['debug']) || deftrue('e_DEBUG')) ? include($fname) : @include($fname));
 	return $ret;
 }
 
@@ -117,7 +117,7 @@ function e107_include_once($fname)
 	global $e107_debug, $_E107;
 	if(is_readable($fname))
 	{
-		$ret = ($e107_debug || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
+		$ret = ($e107_debug || isset($_E107['debug']) || deftrue('e_DEBUG')) ? include_once($fname) : @include_once($fname);
 	}
 	return (isset($ret)) ? $ret : '';
 }
@@ -126,7 +126,7 @@ function e107_require_once($fname)
 {
 	global $e107_debug, $_E107;
 	
-	$ret = (($e107_debug || isset($_E107['debug'])) ? require_once($fname) : @require_once($fname));
+	$ret = (($e107_debug || isset($_E107['debug']) || deftrue('e_DEBUG')) ? require_once($fname) : @require_once($fname));
 	
 	return $ret;
 }
@@ -134,7 +134,7 @@ function e107_require_once($fname)
 function e107_require($fname)
 {
 	global $e107_debug, $_E107;
-	$ret = (($e107_debug || isset($_E107['debug'])) ? require($fname) : @require($fname));
+	$ret = (($e107_debug || isset($_E107['debug']) || deftrue('e_DEBUG')) ? require($fname) : @require($fname));
 	return $ret;
 }
 
@@ -260,6 +260,44 @@ if (!function_exists('asortbyindex'))
     }
 }
 
+if (!function_exists('r_emote')) 
+{
+	/**
+	 * @DEPRECATED
+	 */
+	function r_emote()
+	{
+		global $sysprefs, $pref;
+		$tp = e107::getParser();
+	
+		if (!is_object($tp->e_emote))
+		{
+		//	require_once(e_HANDLER.'emote_filter.php');
+			$tp->e_emote = new e_emoteFilter;
+		}
+		
+		$str = '';
+		foreach($tp->e_emote->emotes as $key => $value)		// filename => text code
+		{
+			$key = str_replace("!", ".", $key);					// Usually '.' was replaced by '!' when saving
+			$key = preg_replace("#_(\w{3})$#", ".\\1", $key);	// '_' followed by exactly 3 chars is file extension
+			$key = e_IMAGE."emotes/" . $pref['emotepack'] . "/" .$key;		// Add in the file path
+	
+			$value2 = substr($value, 0, strpos($value, " "));
+			$value = ($value2 ? $value2 : $value);
+			$value = ($value == '&|') ? ':((' : $value;
+			$value = " ".$value." ";
+			//TODO CSS class
+			$str .= "\n<a href=\"javascript:addtext('$value',true)\"><img src='$key' alt='' /></a> ";
+		}
+	
+		return "<div class='spacer'>".$str."</div>";
+	}
+}
+
+
+
+
 if (!function_exists('multiarray_sort')) 
 {
 	
@@ -367,10 +405,10 @@ class e_array {
 
 
     /**
-     * DEPRECATED - Backwards Compatible. Use write() instead; 
+     * @DEPRECATED - Backwards Compatible. Use e107::serialize() instead; 
     * @param array $ArrayData array to be stored
     * @param bool $AddSlashes default true, add slashes for db storage, else false
-    * @returnReturn a string containg exported array data.
+    * @return string a string containg exported array data.
      */
     function WriteArray($ArrayData, $AddSlashes = true) {
         
@@ -385,7 +423,7 @@ class e_array {
     }
 
     /**
-    * DEPRECATED: Use read(); instead. 
+    * @DEPRECATED: Use e107::unserialize(); instead. 
     * Returns an array from stored array data.
     *
     * @param string $ArrayData
@@ -400,7 +438,51 @@ class e_array {
     {
         return $this->unserialize($ArrayData);
     }
+	
+	/**
+	 * Load and unserialize stored data from a local file inside SYSTEM folder
+	 * @example e107::getArrayStorage()->load('import/somefile'); // -> e_SYSTEM/import/somefile.php
+	 * @example e107::getArrayStorage()->load('somefile', 'weird'); // -> e_SYSTEM/somefile.weird
+	 * 
+	 * @param string $systemLocationFile relative to e_SYSTEM file path (without the extension)
+	 * @param string $extension [optional] file extension, default is 'php'
+	 * @return array or false when file not found (or on error)
+	 */
+	public function load($systemLocationFile, $extension = 'php')
+	{
+		if($extension) $extension = '.'.$extension;
+		$_f = e_SYSTEM.preg_replace('#[^\w/]#', '', trim($systemLocationFile, '/')).$extension;
+		if(!file_exists($_f))
+		{
+			return false;
+		}
+		$content = file_get_contents($_f);
+
+		return $this->read($content);
+	}
+	
+	/**
+	 * Serialize and store data to a local file inside SYSTEM folder
+	 * @example e107::getArrayStorage()->store($arrayData, 'import/somefile'); // -> e_SYSTEM/import/somefile.php
+	 * @example e107::getArrayStorage()->store($arrayData, 'somefile', 'weird'); // -> e_SYSTEM/somefile.weird
+	 * 
+	 * @param string $systemLocationFile relative to e_SYSTEM file path (without the extension)
+	 * @param string $extension [optional] file extension, default is 'php'
+	 * @return array or false when file not found (or on error)
+	 */
+	public function store($array, $systemLocationFile, $extension = 'php')
+	{
+		if($extension) $extension = '.'.$extension;
+		$_f = e_SYSTEM.preg_replace('#[^\w/]#', '', trim($systemLocationFile, '/')).$extension;
+
+		$content = $this->write($array, false);
+		
+		if(false !== $content)
+		{
+			return file_put_contents($_f, $content) ? true : false;
+		}
+
+		return false;
+	}
 }
 
-
-?>

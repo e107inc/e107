@@ -196,6 +196,7 @@ class user_shortcodes extends e_shortcode
 		{
 			return "<img src='".THEME_ABS."images/user_realname.png' alt='' style='vertical-align:middle;' /> ";
 		}
+		
 		return "<img src='".e_IMAGE_ABS."user_icons/user_realname.png' alt='' style='vertical-align:middle;' /> ";
 	}
 
@@ -218,6 +219,7 @@ class user_shortcodes extends e_shortcode
 		{
 			return "<img src='".THEME_ABS."images/email.png' alt='' style='vertical-align:middle;' /> ";
 		}
+		
 		return "<img src='".e_IMAGE_ABS."generic/email.png' alt='' style='vertical-align:middle;' /> ";
 	}
 
@@ -263,9 +265,60 @@ class user_shortcodes extends e_shortcode
 	}
 
 
-	
-	function sc_user_icon($parm) 
+	/**
+	 * USER_ICON Shortcode
+	 * v2.x usage - always provide $parm to determine type. 
+	 * @param string $parm 
+	 * @example {USER_ICON=email}
+	 * 
+	 */
+	function sc_user_icon($parm='') 
 	{
+		$boot = deftrue('e_BOOTSTRAP');
+		
+		switch ($parm) 
+		{
+			case 'email':
+				return ($boot) ? "<i class='icon-envelope'></i>" : $this->sc_user_email_icon();	
+			break;
+			
+			case 'lastvisit':
+				return ($boot) ? "<i class='icon-time'></i>" : '';		 	
+			break;
+			
+			case 'birthday':
+				return ($boot) ? "<i class='icon-calendar'></i>" : $this->sc_user_birthday_icon();		
+			break;
+
+			case 'level':
+				return ($boot) ? "<i class='icon-signal'></i>" : '';	
+			break;
+			
+			case 'website':
+				return ($boot) ? "<i class='icon-home'></i>" : '';		
+			break;
+			
+			case 'location':
+				return ($boot) ? "<i class='icon-map-marker'></i>" : '';		
+			break;
+			
+			case 'icq':
+				return ($boot) ? "<i class='icon-comment'></i>" : '';		
+			break;	
+				
+			case 'msn':
+				return ($boot) ? "<i class='icon-comment'></i>" : '';		
+			break;		
+
+			default:
+			case 'realname':
+			case 'user':
+				return ($boot) ? "<i class='icon-user'></i>" : $this->sc_user_icon();		
+			break;
+		}
+
+	
+		
 		if(defined("USER_ICON"))
 		{
 			return USER_ICON;
@@ -274,6 +327,7 @@ class user_shortcodes extends e_shortcode
 		{
 			return "<img src='".THEME_ABS."images/user.png' alt='' style='vertical-align:middle;' /> ";
 		}
+		
 		return "<img src='".e_IMAGE_ABS."user_icons/user.png' alt='' style='vertical-align:middle;' /> ";
 	}
 
@@ -342,6 +396,7 @@ class user_shortcodes extends e_shortcode
 		{
 			return "<img src='".THEME_ABS."images/user_birthday.png' alt='' style='vertical-align:middle;' /> ";
 		}
+		
 		return "<img src='".e_IMAGE_ABS."user_icons/user_birthday.png' alt='' style='vertical-align:middle;' /> ";
 	}
 

@@ -17,101 +17,6 @@ if (!getperms("Z"))
 	exit;
 }
 
-// Only tested Locally so far. 
-if(e_AJAX_REQUEST && isset($_GET['src'])) // Ajax 
-{
-	$string =  base64_decode($_GET['src']);	
-	parse_str($string,$p);
-	$remotefile = $p['plugin_url'];
-	
-	$localfile = md5($remotefile.time()).".zip";
-	$status = "Downloading...";
-	
-	$fl = e107::getFile();
-	$fl->setAuthKey($e107SiteUsername,$e107SiteUserpass);
-	$fl->download($remotefile,'plugin');
-
-	exit;
-	
-	/*
-	
-	
-	
-	
-		
-	if(!file_exists(e_TEMP.$localfile))
-	{
-		echo 'There was a problem retrieving the file';
-		exit;	
-	}
-	else 
-	{
-		$contents = file_get_contents(e_TEMP.$localfile);
-		if($contents == 'LOGIN')
-		{
-			echo "<div class='e-alert'>Please login to your e107.org account and try again</div>";
-			exit;	
-		}
-	}
-	
-	echo "Disabed";
-	exit;
-	
-//	chmod(e_PLUGIN,0777);
-	chmod(e_TEMP.$localfile,0755);
-	
-	require_once(e_HANDLER."pclzip.lib.php");
-	$archive = new PclZip(e_TEMP.$localfile);
-	$unarc = ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_PLUGIN, PCLZIP_OPT_SET_CHMOD, 0755));
-//	chmod(e_PLUGIN,0755);
-	$dir 		= basename($unarc[0]['filename']);
-//		chmod(e_UPLOAD.$localfile,0666);
-
-
-	*/
-	/* Cannot use this yet until 'folder' is included in feed. 
-	if($dir != $p['plugin_folder'])
-	{
-		
-		echo "<br />There is a problem with the data submitted by the author of the plugin.";
-		echo "dir=".$dir;
-		echo "<br />pfolder=".$p['plugin_folder'];
-		exit;
-	}	
-	*/
-	/*	
-	if($unarc[0]['folder'] ==1 && is_dir($unarc[0]['filename']))
-	{
-		$status = "Unzipping...";
-		$dir 		= basename($unarc[0]['filename']);
-		$plugPath	= preg_replace("/[^a-z0-9-\._]/", "-", strtolower($dir));	
-		
-		e107::getSingleton('e107plugin')->update_plugins_table('update');
-		e107::getDb()->gen("SELECT plugin_id FROM #plugin WHERE plugin_path = '".$plugPath."' LIMIT 1");
-		$row = e107::getDb()->db_Fetch(MYSQL_ASSOC);
-		$status = e107::getSingleton('e107plugin')->install_plugin($row['plugin_id']);
-		//unlink(e_UPLOAD.$localfile);
-		
-	}
-	else 
-	{
-		// print_a($fileList);
-		$status = "Error: <br /><a href='".$remotefile."'>Download Manually</a>";
-		//echo $archive->errorInfo(true);
-		// $status = "There was a problem";	
-		//unlink(e_UPLOAD.$localfile);
-	}
-	
-	echo $status;
-//	@unlink(e_TEMP.$localfile);
-
-//	echo "file=".$file;
-	exit;	
-	
-	 */
-	
-}
-
 e107::coreLan('plugin', true);
 
 $e_sub_cat = 'plug_manage';
@@ -123,7 +28,38 @@ global $user_pref;
 
 require_once(e_HANDLER.'plugin_class.php');
 require_once(e_HANDLER.'file_class.php');
+$plugin = new e107plugin;
+$pman = new pluginManager;
+define("e_PAGETITLE",ADLAN_98." - ".$pman->pagetitle);
 
+if(e_AJAX_REQUEST && isset($_GET['action'])) // Ajax 
+{
+	if($_GET['action'] == 'download')
+	{
+		$string =  base64_decode($_GET['src']);	
+		parse_str($string, $p);
+		
+		$mp = $pman->getMarketplace();
+		$mp->generateAuthKey($e107SiteUsername, $e107SiteUserpass);
+		// Server flush useless. It's ajax ready state 4, we can't flush (sadly) before that (at least not for all browsers) 
+		echo "<pre>Connecting...\n"; flush(); // FIXME change the modal default label, default is Loading...
+		// download and flush
+		$mp->download($p['plugin_id'], $p['plugin_mode'], 'plugin');
+		
+		echo "</pre>"; flush();
+	}
+	/*$string =  base64_decode($_GET['src']);	
+	parse_str($string,$p);
+	$remotefile = $p['plugin_url'];
+	
+	$localfile = md5($remotefile.time()).".zip";
+	$status = "Downloading...";
+	
+	$fl = e107::getFile();
+	$fl->setAuthKey($e107SiteUsername,$e107SiteUserpass);
+	$fl->download($remotefile,'plugin');*/
+	exit;
+}
 
 if(isset($_POST['uninstall_cancel']))
 {
@@ -222,11 +158,6 @@ class pluginmanager_form extends e_form
 }
 
 
-
-
-$plugin = new e107plugin;
-$pman = new pluginManager;
-define("e_PAGETITLE",ADLAN_98." - ".$pman->pagetitle);
 require_once("auth.php");
 $pman->pluginObserver();
 $mes = e107::getMessage();
@@ -255,6 +186,12 @@ class pluginManager{
 	var $fieldpref;
 	var $titlearray 		= array();
 	var $pagetitle;
+	
+	/**
+	 * Marketplace handler instance
+	 * @var e_marketplace
+	 */
+	var $mp;
 		
 	protected $pid = 'plugin_id';
 	
@@ -304,11 +241,6 @@ class pluginManager{
         $keys = array_keys($this -> titlearray);
 		$this->pagetitle = (in_array($this->action,$keys)) ? $this -> titlearray[$this->action] : $this -> titlearray['installed'];
 
-
-	
-
-
-
 /*		if(isset($_POST['uninstall-selected']))
 		{
         	foreach($_POST['checkboxes'] as $val)
@@ -325,7 +257,19 @@ class pluginManager{
 
     }
 
-
+	/**
+	 * Temporary, e107::getMarketplace() coming soon
+	 * @return e_marketplace
+	 */
+	public function getMarketplace()
+	{
+		if(null === $this->mp)
+		{
+			require_once(e_HANDLER.'e_marketplace.php');
+			$this->mp = new e_marketplace(); // autodetect the best method
+		}
+		return $this->mp;
+	}
 
 
 
@@ -445,7 +389,7 @@ class pluginManager{
 	
 	function pluginOnline()
 	{
-		global $plugin;
+		global $plugin, $e107SiteUsername, $e107SiteUserpass;
 		$tp = e107::getParser();
 		$frm = e107::getForm();
 		
@@ -456,61 +400,74 @@ class pluginManager{
 		$mes = e107::getMessage();
 		
 	//	$mes->addWarning("Some older plugins may produce unpredictable results.");
-
-		$from = intval(varset($_GET['frm']));
+		// check for cURL
+		if(!function_exists(curl_init))
+		{
+			$mes->addWarning("cURL is currently required to use this feature. Contact your webhosting provider to enable cURL"); // TODO LAN?
+		}
+		
+		//TODO use admin_ui including filter capabilities by sending search queries back to the xml script. 
+		$from = isset($_GET['frm']) ? intval($_GET['frm']) : 0;
 		$srch = preg_replace('/[^\w]/','', vartrue($_GET['srch'])); 
-	
+		
+		$mp = $this->getMarketplace();
+		// auth
+		$mp->generateAuthKey($e107SiteUsername, $e107SiteUserpass);
+		
+		// do the request, retrieve and parse data
+		$xdata = $mp->call('getList', array(
+			'type' => 'plugin', 
+			'params' => array('limit' => 10, 'search' => $srch, 'from' => $from)
+		));
+		$total = $xdata['params']['count'];
+		
+		// OLD BIT OF CODE ------------------------------->
+		/*	
 	//	$file = SITEURLBASE.e_PLUGIN_ABS."release/release.php";  // temporary testing
 		$file = "http://e107.org/feed?type=plugin&frm=".$from."&srch=".$srch."&limit=10";
 		
 		$xml->setOptArrayTags('plugin'); // make sure 'plugin' tag always returns an array
 		$xdata = $xml->loadXMLfile($file,'advanced');
 
-		$total = $xdata['@attributes']['total'];
+		$total = $xdata['@attributes']['total'];*/
+		// OLD BIT OF CODE END ------------------------------->
 
-		//TODO use admin_ui including filter capabilities by sending search queries back to the xml script. 
-
-		// XML data array. 
+		 
 		$c = 1;
-		foreach($xdata['plugin'] as $r)
+		foreach($xdata['data'] as $row)
 		{
-			$row = $r['@attributes'];
+			//$row = $r['@attributes'];
 			
 				$badge 		= $this->compatibilityLabel($row['compatibility']);;
 				$featured 	= ($row['featured']== 1) ? " <span class='label label-info'>Featured</span>" : '';
 				$price 		= ($row['price'] > 0) ? "<span class='label label-success'>".$row['price']." credits</span>" : "<span class='label label-success'>Free</span>";
 			
 				$data[] = array(
-					'plugin_id'				=> $c,
+					'plugin_id'				=> $row['params']['id'],
+					'plugin_mode'			=> $row['params']['mode'],
 					'plugin_icon'			=> vartrue($row['icon'],e_IMAGE."admin_images/plugins_32.png"),
-					'plugin_name'			=> stripslashes($row['name']).$featured,
+					'plugin_name'			=> stripslashes($row['name']),
+					'plugin_featured'		=> $featured,
 					'plugin_folder'			=> $row['folder'],
 					'plugin_date'			=> vartrue($row['date']),
-					'plugin_category'		=> vartrue($r['category'][0]),
+					'plugin_category'		=> vartrue($row['category'], 'n/a'),
 					'plugin_author'			=> vartrue($row['author']),
 					'plugin_version'		=> $row['version'],
-					'plugin_description'	=> nl2br(vartrue($r['description'][0])),
+					'plugin_description'	=> nl2br(vartrue($row['description'])),
 					'plugin_compatible'		=> $badge,
 				
 					'plugin_website'		=> vartrue($row['authorUrl']),
-					'plugin_url'			=> $row['url'],
+					//'plugin_url'			=> $row['url'],
 					'plugin_notes'			=> '',
 					'plugin_price'			=> $price 
 				);	
 				
 			$c++;
 		}
-	
-//	print_a($data);
+
 		$fieldList = $this->fields;
 		unset($fieldList['checkboxes']);
-		
-		
-		
-		
-		
-		
-		
+
 		$text = "
 			<form class='form-search' action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='get'>
 			<div class='e-search'>".$frm->search('srch', $srch, 'go', $filterName, $filterArray, $filterVal).$frm->hidden('mode','online')."
@@ -545,8 +502,11 @@ class pluginManager{
 				{
 					continue;	
 				}
+				
+				$_value = $val[$v];
+				if($v == 'plugin_name') $_value .= $val['plugin_featured'];
 				// echo '<br />v='.$v;
-				$text .= "<td style='height: 40px' class='".vartrue($this->fields[$v]['class'],'left')."'>".$frm->renderValue($v, $val[$v], $this->fields[$v], $key)."</td>\n";
+				$text .= "<td style='height: 40px' class='".vartrue($this->fields[$v]['class'],'left')."'>".$frm->renderValue($v, $_value, $this->fields[$v], $key)."</td>\n";
 			}
 			$text .= "<td class='center'>".$this->options($val)."</td>";
 			$text .= "</tr>";		
@@ -581,19 +541,22 @@ class pluginManager{
 			
 	//	print_a($data);
 		
-	
+		/*
 		if(!e107::getFile()->hasAuthKey())
 		{
 		//	return "<a href='".e_SELF."' class='btn btn-primary e-modal' >Download and Install</a>"; 	
 			
 		}
-	
+		*/
 				
 		$d = http_build_query($data,false,'&');
-		$url = e_SELF."?src=".base64_encode($d);
+		//$url = e_SELF."?src=".base64_encode($d);
+		$url = e_SELF.'?action=download&amp;src='.base64_encode($d);//$url.'&amp;action=download';
 		$id = 'plug_'.$data['plugin_id'];
+		//<button type='button' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='btn btn-primary e-ajax middle' value='Download and Install' data-src='".$url."' ><span>Download and Install</span></button>
+		$dicon = "<a data-toggle='modal' data-modal-caption=\"Downloading ".$data['plugin_name']." ".$data['plugin_version']."\" href='{$url}' data-cache='false' data-target='#uiModal' title='".$LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";
 		return "<div id='{$id}' style='vertical-align:middle'>
-		<button type='button' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='btn btn-primary e-ajax middle' value='Download and Install' data-src='".$url."' ><span>Download and Install</span></button>
+		{$dicon}
 		</div>";				
 	}
 	
@@ -1783,8 +1746,29 @@ class pluginBuilder
 
 		function prefs()
 		{
-			//TODO Preferences 
-			return "Coming Soon";				
+			$frm = e107::getForm();
+
+			$text = '';
+			
+				$options = array(
+					'text'		=> "Text Box",
+					'bbarea'	=> "Rich-Text Area",
+					'boolean'	=> "Text Area",
+					"method"	=> "Custom Function",
+					"image"		=> "Image",
+				);
+						
+			
+			for ($i=0; $i < 10; $i++) 
+			{ 		
+				$text .= "<div>".
+				$frm->text("pluginPrefs[".$i."][index]", '',40,'placeholder=Preference Name')." ".
+				$frm->text("pluginPrefs[".$i."][value]", '',40,'placeholder=Default Value')." ".
+				$frm->select("pluginPrefs[".$i."][type]", $options, '', 'class=null', 'Field Type...').
+				"</div>";		
+			}
+			
+			return $text;
 		}
 
 
@@ -1985,7 +1969,7 @@ class pluginBuilder
 			switch ($type) 
 			{
 				case 'date':
-					$text = $frm->datepicker($name, time(), 'dateformat=yyyy-mm-dd'.$req);		
+					$text = $frm->datepicker($name, time(), 'format=yyyy-mm-dd'.$req);		
 				break;
 				
 				case 'description':
@@ -2022,7 +2006,7 @@ class pluginBuilder
 
 		function createXml($data)
 		{
-			//print_a($_POST);
+		//	print_a($_POST);
 			$ns = e107::getRender();
 			$mes = e107::getMessage();
 			$tp = e107::getParser();
@@ -2035,6 +2019,30 @@ class pluginBuilder
 			}
 			
 			$newArray['DESCRIPTION_DESCRIPTION'] = strip_tags($tp->toHtml($newArray['DESCRIPTION_DESCRIPTION'],true));
+			
+			foreach($_POST['pluginPrefs'] as $val)
+			{
+				if(vartrue($val['index']))
+				{
+					$id = $val['index'];
+					$plugPref[$id] = $val['value'];		
+				}	
+			}
+			
+		//	print_a($_POST['pluginPrefs']);
+			
+			if(count($plugPref))
+			{
+				$xmlPref = "<pluginPrefs>\n";
+				foreach($plugPref as $k=>$v)
+				{
+					$xmlPref .= "		<pref name='".$k."'>".$v."</pref>\n";	
+				}	
+				
+				$xmlPref .= "	</pluginPrefs>";
+				$newArray['PLUGINPREFS'] = $xmlPref;
+			}
+			
 			//	print_a($newArray);
 			// print_a($this);
 			
@@ -2053,8 +2061,16 @@ $template = <<<TEMPLATE
 	<adminLinks>
 		<link url="admin_config.php" description="{ADMINLINKS_DESCRIPTION}" icon="images/icon_32.png" iconSmall="images/icon_16.png" primary="true" >LAN_CONFIGURE</link>
 	</adminLinks>
+	{PLUGINPREFS}
 </e107Plugin>
 TEMPLATE;
+
+
+// pluginPrefs
+
+
+
+
 // TODO
 /*
 	<siteLinks>
@@ -2228,7 +2244,7 @@ TEMPLATE;
 				case 'tinyint':
 				case 'smallint':
 					$array = array(
-					"boolean"	=> "True/Flase",
+					"boolean"	=> "True/False",
 					"number"	=> "Text Box",
 					"dropdown"	=> "DropDown",
 					"userclass"	=> "DropDown (userclasses)",
@@ -2484,7 +2500,7 @@ TEMPLATE;
 			
 			
 			unset($_POST['step'],$_POST['xml']);
-	
+		$thePlugin = $_POST['newplugin'];
 
 $text = "\n
 // Generated e107 Plugin Admin Area 
@@ -2498,17 +2514,19 @@ if (!getperms('P'))
 
 
 
-class ".$_POST['newplugin']."_admin extends e_admin_dispatcher
+class ".$thePlugin."_admin extends e_admin_dispatcher
 {
 
 	protected \$modes = array(	
 	";
 	
-	$thePlugin = $_POST['newplugin'];
+
 	unset($_POST['newplugin']);
 	
 			foreach($_POST as $table => $vars) // LOOP Through Tables. 
 			{
+				if(vartrue($vars['mode']))
+				{
 	$text .= "
 		'".$vars['mode']."'	=> array(
 			'controller' 	=> '".$vars['table']."_ui',
@@ -2516,7 +2534,9 @@ class ".$_POST['newplugin']."_admin extends e_admin_dispatcher
 			'ui' 			=> '".$vars['table']."_form_ui',
 			'uipath' 		=> null
 		),
+		
 ";
+				}
 			} // END LOOP
 /*
 		'cat'		=> array(
@@ -2536,17 +2556,25 @@ $text .= "
 ";
 			foreach($_POST as $table => $vars) // LOOP Through Tables. 
 			{
+				if(vartrue($vars['mode']))
+				{
 $text .= "
 		'".$vars['mode']."/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
 		'".$vars['mode']."/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
 ";
+}
 			}
+			
+if($_POST['pluginPrefs'][0]['index'])
+{
+				
 $text .= "			
-	/*
-		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),
-		'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
-	*/	
-
+	
+		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),	
+";
+}
+$text .= "
+		// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
 	);
 
 	protected \$adminMenuAliases = array(
@@ -2593,11 +2621,15 @@ $text .= "
 	
 			
 			 
-			
+			$tableCount = 1;
 			foreach($_POST as $table => $vars) // LOOP Through Tables. 
 			{
-				
+				if($table == 'pluginPrefs')
+				{
+					continue;
+				}
 				$FIELDS = str_replace($srch,$repl,var_export($vars['fields'],true));
+				$FIELDS = preg_replace("#('([A-Z0-9_]*?LAN[_A-Z0-9]*)')#","$2",$FIELDS); // remove quotations from LANs. 
 				$FIELDPREF = array();
 				
 				foreach($vars['fields'] as $k=>$v)
@@ -2624,16 +2656,45 @@ class ".$table." extends e_admin_ui
 		
 		protected \$fieldpref = array(".implode(", ",$FIELDPREF).");
 		
-		
-		
-	/*
-		protected \$prefs = array(
-			'pref_type'	   				=> array('title'=> 'type', 'type'=>'text', 'data' => 'string', 'validate' => true),
-			'pref_folder' 				=> array('title'=> 'folder', 'type' => 'boolean', 'data' => 'integer'),
-			'pref_name' 				=> array('title'=> 'name', 'type' => 'text', 'data' => 'string', 'validate' => 'regex', 'rule' => '#^[\w]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')
-		);
+";
 
+
+if($_POST['pluginPrefs'] && ($vars['mode']=='main'))
+{
+	$text .= "		
 		
+	
+		protected \$prefs = array(	\n";
+		
+		foreach($_POST['pluginPrefs'] as $k=>$val)
+		{
+			if(vartrue($val['index']))
+			{
+				$index = $val['index'];
+				$type = vartrue($val['type'],'text');
+				
+				$text .= "\t\t\t'".$index."'\t\t=> array('title'=> '".ucfirst($index)."', 'type'=>'".$type."', 'data' => 'string','help'=>'Help Text goes here'),\n";	
+			}	
+	
+		}
+		
+		
+		$text .= "\t\t); \n\n";
+				
+}
+				
+			
+		
+	
+
+
+
+
+
+
+
+$text .= "	
+	/*	
 		// optional
 		public function init()
 		{
@@ -2696,12 +2757,12 @@ $text .= "
 		
 ";			
 						
-	 			
+	 		$tableCount++;	
 					
 			} // End LOOP. 
 	
 $text .= '		
-new '.$vars['pluginName'].'_admin();
+new '.$thePlugin.'_admin();
 
 require_once(e_ADMIN."auth.php");
 e107::getAdminUI()->runPage();

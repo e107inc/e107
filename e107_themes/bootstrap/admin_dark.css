@@ -16,11 +16,11 @@ thead tr {
 min-height:50px;
 }
 
-.datepicker {
+.datetimepicker {
 	background-color: #191919;
 }
 
-.datepicker thead tr:first-child th:hover, .datepicker tfoot tr:first-child th:hover {
+.datetimepicker thead tr:first-child th:hover, .datetimepicker tfoot tr:first-child th:hover {
    
     background-color: #191919;
 }
@@ -31,10 +31,18 @@ min-height:50px;
 
 tr.highlight-odd			{ background-color: #212121; }
 tr.highlight-even			{ background-color: #212121; }
-.datepicker table tr td.day:hover {
+
+.datetimepicker table tr td.day:hover {
 
     color: black;
 }
+
+.datetimepicker table tr td span:hover {
+    color: black;
+}
+
+
+
 
 .bootstrap-select.btn-group .dropdown-menu .optgroup-div {
     color: #363636;

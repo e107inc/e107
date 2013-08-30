@@ -1,13 +1,9 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/download/languages/English/download.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
+ * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Language file - download plugin
+ *
 */
 define("PAGE_NAME", "Downloads"); //FIXME use term from English_global.php
 
@@ -95,7 +91,7 @@ define("LAN_dl_73", "Downloads from this mirror: ");
 define("LAN_dl_74", "Total downloads from this mirror: ");
 
 define("LAN_dl_75", "no image available ");
-define("LAN_dl_76", "Go to page"); //FIXME Use Generic
+//define("LAN_dl_76", "Go to page"); //FIXME Use Generic
 define("LAN_dl_77", "Downloads");		// Intentional duplicate - some languages need it to be different. This is for number of downloads
 
 define('LAN_dl_78', 'That download has been disabled or discontinued. Please check in the --LINK--downloads</a> area for a more recent version.');

@@ -1306,7 +1306,7 @@ class admin_newspost
 		
 		$ix = new news;
 		// jQuery UI temporary date-time fix - inputdatetime -> inputdate
-		$_POST['news_start'] = vartrue(e107::getDate()->convert($_POST['news_start'],'inputdate'), 0);
+		$_POST['news_start'] = vartrue(e107::getDate()->convert($_POST['news_start'],'inputdatetime'), 0);
 
 		if($_POST['news_start'])
 		{
@@ -1319,7 +1319,7 @@ class admin_newspost
 
 		if($_POST['news_end'])
 		{
-			$_POST['news_end'] = e107::getDate()->convert($_POST['news_end'],'inputdate');
+			$_POST['news_end'] = e107::getDate()->convert($_POST['news_end'],'inputdatetime');
 		}
 		else
 		{
@@ -1328,7 +1328,7 @@ class admin_newspost
 		
 		if($_POST['news_datestamp'])
 		{
-			$_POST['news_datestamp'] = e107::getDate()->convert($_POST['news_datestamp'],'inputdate');
+			$_POST['news_datestamp'] = e107::getDate()->convert($_POST['news_datestamp'],'inputdatetime');
 		}
 		else
 		{
@@ -2427,7 +2427,7 @@ class admin_newspost
 										<div class='field-spacer'>
 		";
 
-		$text .= $frm->datepicker("news_datestamp",vartrue($_POST['news_datestamp']),"type=date"); //XXX should be 'datetime' when working correctly. 
+		$text .= $frm->datepicker("news_datestamp",vartrue($_POST['news_datestamp']),"type=datetime"); //XXX should be 'datetime' when working correctly. 
 
 		$text .= "</div>";
 		/*

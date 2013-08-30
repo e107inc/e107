@@ -94,7 +94,7 @@ class plugin_faqs_list_controller extends eControllerFront
 		$sc->tag = htmlspecialchars($tag, ENT_QUOTES, 'utf-8');
 		$sc->category = $category;
 
-		$text = $tp->parseTemplate($FAQ_START, true);
+		$text = $tp->parseTemplate($FAQ_START, true, $sc);
 		
 		while ($rw = $sql->db_Fetch())
 		{
@@ -104,20 +104,20 @@ class plugin_faqs_list_controller extends eControllerFront
 			{
 				if($prevcat !='')
 				{
-					$text .= $tp->parseTemplate($FAQ_LISTALL['end'], true);
+					$text .= $tp->parseTemplate($FAQ_LISTALL['end'], true, $sc);
 				}
 				$text .= "\n\n<!-- FAQ Start ".$rw['faq_info_order']."-->\n\n";
-				$text .= $tp->parseTemplate($FAQ_LISTALL['start'], true);
+				$text .= $tp->parseTemplate($FAQ_LISTALL['start'], true, $sc);
 				$start = TRUE;
 			}
 
-			$text .= $tp->parseTemplate($FAQ_LISTALL['item'], true);
+			$text .= $tp->parseTemplate($FAQ_LISTALL['item'], true, $sc);
 			$prevcat = $rw['faq_info_order'];
 			$sc->counter++;
 			if($category) $meta = $rw;
 		}
-		$text .= $tp->parseTemplate($FAQ_LISTALL['end'], true);
-		$text .= $tp->parseTemplate($FAQ_END, true);
+		$text .= $tp->parseTemplate($FAQ_LISTALL['end'], true, $sc);
+		$text .= $tp->parseTemplate($FAQ_END, true, $sc);
 		
 		// add meta data if there is parent category
 		if(!empty($meta))

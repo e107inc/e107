@@ -578,16 +578,13 @@ if(isset($pref['lan_global_list']))
 
 
 
-$sql->db_Mark_Time('Start: CHAPT challenge');
+$sql->db_Mark_Time('Start: CHAP challenge');
 
 
 e107::getSession()
-	->challenge() // Create a unique challenge string for CHAP login
+	->challenge() // Make sure there is a unique challenge string for CHAP login
 	->check(); // Token protection
 
-	
-	
-	
 	
 //
 // N: misc setups: online user tracking, cache
@@ -613,7 +610,9 @@ if(isset($pref['notify']) && $pref['notify'] == true)
 // O: Start user session
 //
 $sql -> db_Mark_Time('Start: Init session');
-init_session();
+init_session();			// Set up a lot of the user-related constants
+
+
 
 //DEPRECATED but necessary. BC Fix.
 function getip()
@@ -865,7 +864,7 @@ if (!class_exists('e107table', false))
 				$thm = new $this->themeClass();
 			}
 			
-			if(is_object($thm))
+			if(is_object(vartrue($thm)))
 			{
 				$thm->tablestyle($caption, $text, $mode, array('menuArea'=>$this->eMenuArea, 'menuCount'=>$this->eMenuCount,	'menuTotal'=>varset($this->eMenuTotal[$this->eMenuArea]), 'setStyle'=>$this->eSetStyle));
 			}
@@ -929,6 +928,8 @@ if (isset($_POST['userlogin']) || isset($_POST['userlogin_x']))
 //	$usr = new userlogin($_POST['username'], $_POST['userpass'], $_POST['autologin'], varset($_POST['hashchallenge'],''));
 }
 
+
+
 // $_SESSION['ubrowser'] check not needed anymore - see session handler
 // e_QUERY not defined in single entry mod
 if (($_SERVER['QUERY_STRING'] == 'logout')/* || (($pref['user_tracking'] == 'session') && isset($_SESSION['ubrowser']) && ($_SESSION['ubrowser'] != $ubrowser))*/)
@@ -947,7 +948,7 @@ if (($_SERVER['QUERY_STRING'] == 'logout')/* || (($pref['user_tracking'] == 'ses
 	// TODO - should be done inside online handler, more core areas need it (session handler for example)
 	if (isset($pref['track_online']) && $pref['track_online'])
 	{
-		$sql->db_Update('online', "online_user_id = 0, online_pagecount=online_pagecount+1 WHERE online_user_id = '{$udata}' LIMIT 1");
+		$sql->db_Update('online', "online_user_id = 0, online_pagecount=online_pagecount+1 WHERE online_user_id = '{$udata}'");
 	}
 	
 	// earlier event trigger with user data still available 
@@ -961,6 +962,7 @@ if (($_SERVER['QUERY_STRING'] == 'logout')/* || (($pref['user_tracking'] == 'ses
 	{
 		session_destroy();
 		$_SESSION[e_COOKIE]='';
+		// @TODO: Need to destroy the session cookie as well (not done by session_destroy()
 	}
 	cookie(e_COOKIE, '', (time() - 2592000));
 	
@@ -1912,6 +1914,11 @@ if(!isset($_E107['no_online']) && varset($pref['track_online']))
  */
 function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure = 0)
 {
+	if(!e_SUBDOMAIN || (defined('MULTILANG_SUBDOMAIN') && MULTILANG_SUBDOMAIN === TRUE))
+	{
+		$domain = (e_DOMAIN != FALSE) ? ".".e_DOMAIN : "";
+	}	
+	
 	setcookie($name, $value, $expire, $path, $domain, $secure);
 }
 

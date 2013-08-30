@@ -529,7 +529,7 @@ class comment
 		{
 			return;	
 		}
-		return e107::getDb()->db_Delete("comments","comment_id = ".intval($id)." LIMIT 1");	
+		return e107::getDb()->update("comments","comment_blocked=1 WHERE comment_id = ".intval($id)."");	
 	}
 	
 	function approveComment($id) // appropve a single comment by comment id.  
@@ -539,7 +539,7 @@ class comment
 			return;	
 		}
 		
-		return e107::getDb()->db_Update("comments","comment_blocked=0 WHERE comment_id = ".intval($id)." LIMIT 1");
+		return e107::getDb()->update("comments","comment_blocked=0 WHERE comment_id = ".intval($id)."");
 	}
 
 	
@@ -547,7 +547,7 @@ class comment
 	{
 		$tp = e107::getParser();
 		
-		if(!e107::getDb()->db_Update("comments","comment_comment=\"".$tp->toDB($comment)."\" WHERE comment_id = ".intval($id)." LIMIT 1"))
+		if(!e107::getDb()->update("comments","comment_comment=\"".$tp->toDB($comment)."\" WHERE comment_id = ".intval($id).""))
 		{
 			return "Update Failed"; // trigger ajax error message. 
 		}		

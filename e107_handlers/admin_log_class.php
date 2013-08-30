@@ -39,11 +39,19 @@ class e_admin_log
 	protected	$_options = array('log_level'=>2, 'backtrace'=>false, );
 
 	protected	$rldb = NULL; // Database used by logging routine
+	
+	
+	
+	protected 	$logFile = null;
 	/**
 	 * Log messages
 	 * @var array
 	 */
 	protected $_messages;
+	
+	
+	protected $_allMessages; // similar to $_messages except it is never flushed. 
+	
 
 	/**
 	 * Constructor. Sets up constants and overwrites default options where set.
@@ -92,9 +100,12 @@ class e_admin_log
 		// it breaks stuff (see class2 - language detection and comments)
 		require_once(e_HANDLER.'message_handler.php');
 		$this->_messages = array();
+		$this->_allMessages = array();
+	
 	}
 
 	/**
+	 * @DEPRECATED
 	 * BC Alias of add(); 
 	 */
 	public function log_event($event_title, $event_detail, $event_type = E_LOG_INFORMATIVE , $event_code = '')
@@ -212,12 +223,12 @@ class e_admin_log
 		//---------------------------------------
 		// Calculations common to all logs
 		//---------------------------------------
-		$userid = (USER === TRUE) ? USERID : 0;
-		$userstring = (USER === true ? USERNAME : 'LAN_ANONYMOUS');
-		$userIP = e107::getIPHandler()->getIP(FALSE);
+		$userid 		= deftrue('USER') ? USERID : 0;
+		$userstring 	= deftrue('USER') ? USERNAME : 'LAN_ANONYMOUS';
+		$userIP 		= e107::getIPHandler()->getIP(FALSE);
 
-		$importance = $tp->toDB($importance, true, false, 'no_html');
-		$eventcode = $tp->toDB($eventcode, true, false, 'no_html');
+		$importance 	= $tp->toDB($importance, true, false, 'no_html');
+		$eventcode 		= $tp->toDB($eventcode, true, false, 'no_html');
 
 		if (is_array($explain))
 		{
@@ -231,16 +242,31 @@ class e_admin_log
 			$explain = $line;
 			unset($line);
 		}
+		
+		
 		$explain = mysql_real_escape_string($tp->toDB($explain, true, false, 'no_html'));
 		$event_title = $tp->toDB($event_title, true, false, 'no_html');
 
 		//---------------------------------------
 		// 			Admin Log
 		//---------------------------------------
-		if ($target_logs & LOG_TO_ADMIN)
-		{ // Admin log - assume all fields valid
-			$qry = " null, ".intval($time_sec).','.intval($time_usec).", '{$importance}', '{$eventcode}', {$userid}, '{$userIP}', '{$event_title}', '{$explain}' ";
-			$this->rldb->db_Insert("admin_log", $qry);
+		if ($target_logs & LOG_TO_ADMIN) // Admin log - assume all fields valid
+		{ 
+		//	$qry = " null, ".intval($time_sec).','.intval($time_usec).", '{$importance}', '{$eventcode}', {$userid}, '{$userIP}', '{$event_title}', '{$explain}' ";
+			
+			$adminLogInsert = array(
+				'dblog_id'			=> null,
+				'dblog_type'		=> $importance,
+				'dblog_eventcode'	=> $eventcode,
+				'dblog_datestamp'	=> time(),
+				'dblog_microtime'	=> intval($time_usec),
+				'dblog_user_id'		=> $userid,
+				'dblog_ip'			=> $userIP,
+				'dblog_title'		=> $event_title,
+				'dblog_remarks'		=> $explain
+			);
+			
+			$this->rldb->db_Insert("admin_log", $adminLogInsert);
 		}
 
 		//---------------------------------------
@@ -413,7 +439,7 @@ class e_admin_log
 		}
 		if (count($changes))
 		{
-			if($logNow) $this->log_event($event, implode('[!br!]', $changes), E_LOG_INFORMATIVE, '');
+			if($logNow) $this->add($event, implode('[!br!]', $changes), E_LOG_INFORMATIVE, '');
 			else $this->logMessage(implode('[!br!]', $changes), LOG_MESSAGE_NODISPLAY, E_MESSAGE_INFO);
 			return TRUE;
 		}
@@ -453,7 +479,7 @@ class e_admin_log
 			}
 			$spacer = '[!br!]';
 		}
-		$this->log_event($event, $logString, E_LOG_INFORMATIVE, '');
+		$this->add($event, $logString, E_LOG_INFORMATIVE, '');
 	}
 
 	/**
@@ -477,9 +503,37 @@ class e_admin_log
 		if(empty($text)) return;
 		if(!$type) $type = E_MESSAGE_INFO;
 		if($logLevel === TRUE) $logLevel = $type;
-		$this->_messages[] = array('message' => $text, 'dislevel' => $type, 'loglevel' => $logLevel, 'session' => $session);
+		
+		$logArray = array('message' => $text, 'dislevel' => $type, 'loglevel' => $logLevel, 'session' => $session, 'time'=>time());
+		
+		$this->_messages[] = $logArray;
+		$this->_allMessages[] = $logArray;
 		return $this;
 	}
+
+
+
+
+	/**
+	 * @DEPRECATED
+	 * BC Alias for addSuccess(); 
+	 */
+	public function logSuccess($text, $message = true, $session = false)
+	{
+		return $this->addSuccess($text,$message,$session);	
+	}
+
+
+
+	/**
+	 * @DEPRECATED
+	 * BC Alias for addError(); 
+	 */
+	public function logError($text, $message = true, $session = false)
+	{
+		return $this->addError($text,$message,$session);	
+	}
+
 
 	/**
 	 * Log success
@@ -489,10 +543,11 @@ class e_admin_log
 	 * @param boolean $session add session message
 	 * @return e_admin_log
 	 */
-	public function logSuccess($text, $message = true, $session = false)
+	public function addSuccess($text, $message = true, $session = false)
 	{
 		return $this->logMessage($text, ($message ? E_MESSAGE_SUCCESS : LOG_MESSAGE_NODISPLAY), E_MESSAGE_SUCCESS, $session);
 	}
+
 
 	/**
 	 * Log error
@@ -502,9 +557,37 @@ class e_admin_log
 	 * @param boolean $session add session message
 	 * @return e_admin_log
 	 */
-	public function logError($text, $message = true, $session = false)
+	public function addError($text, $message = true, $session = false)
 	{
 		return $this->logMessage($text, ($message ? E_MESSAGE_ERROR : LOG_MESSAGE_NODISPLAY), E_MESSAGE_ERROR, $session);
+	}
+
+
+	/**
+	 * Log Debug
+	 *
+	 * @param string $text
+	 * @param boolean $message if true - register with eMessage handler
+	 * @param boolean $session add session message
+	 * @return e_admin_log
+	 */
+	public function addDebug($text, $message = true, $session = false)
+	{
+		return $this->logMessage($text, ($message ? E_MESSAGE_DEBUG : LOG_MESSAGE_NODISPLAY), E_MESSAGE_NOTICE, $session);
+	}
+
+
+	/**
+	 * Log Warning
+	 *
+	 * @param string $text
+	 * @param boolean $message if true - register with eMessage handler
+	 * @param boolean $session add session message
+	 * @return e_admin_log
+	 */
+	public function addWarning($text, $message = true, $session = false)
+	{
+		return $this->logMessage($text, ($message ? E_MESSAGE_WARNING : LOG_MESSAGE_NODISPLAY), E_MESSAGE_WARNING, $session);
 	}
 
 	/**
@@ -519,7 +602,7 @@ class e_admin_log
 	public function flushMessages($logTitle, $logImportance = E_LOG_INFORMATIVE, $logEventCode = '', $mstack = false)
 	{
 		$mes = e107::getMessage();
-
+				
 		$resultTypes = array(E_MESSAGE_SUCCESS - 'Success', E_MESSAGE_ERROR => 'Fail');	// Add LANS here. Could add other codes
 		$separator = '';
 		$logString = '';
@@ -547,8 +630,98 @@ class e_admin_log
 				else $mes->add($m['message'], $m['dislevel'], $m['session']);
 			}
 		}
-		e107::getAdminLog()->log_event($logTitle, $logString, $logImportance, $logEventCode);
+		e107::getAdminLog()->add($logTitle, $logString, $logImportance, $logEventCode);
 		$this->_messages = array();		// Clear the memory for reuse
+
 		return $this;
 	}
+
+	
+	/**
+	 * Save Message stack to File. 
+	 */
+	private function saveToFile($logTitle='', $append=false)
+	{
+		if($this->logFile == null)
+		{
+			 return;
+		}
+				
+		if(count($this->_allMessages))
+		{
+			$head = "  e107 CMS Log file : ".$logTitle."   ".date('Y-m-d_H-i-s')."\n";
+			$head .= "-------------------------------------------------------------------------------------------\n\n";		
+		}
+		else 
+		{
+			return; 	
+		}		
+		
+		foreach($this->_allMessages as $m)
+		{
+			$text .= date('Y-m-d H:i:s', $m['time'])."  \t".str_pad($m['dislevel'],10," ",STR_PAD_RIGHT)."\t".strip_tags($m['message'])."\n";
+		}
+		
+		$date = ($append == true) ? date('Y-m-d') : date('Y-m-d_H-i-s').'_'.crc32($text);
+		
+		$dir = e_LOG;
+		
+		if(e_CURRENT_PLUGIN) // If it's a plugin, create a subfolder. 
+		{
+			$dir = e_LOG.e_CURRENT_PLUGIN."/";
+			
+			if(!is_dir($dir))
+			{
+				mkdir($dir,0755);	
+			}	
+		}
+		
+		$fileName = $dir.$date."_".$this->logFile.".log";
+		
+		if($append == true)
+		{
+			$app = FILE_APPEND;
+			if(!file_exists($fileName))
+			{
+				$text = $head . $text;	
+			}
+		}
+		else 
+		{
+			$app = null;
+			$text = $head . $text;	
+		}
+				
+		if(file_put_contents($fileName, $text, $app))
+		{
+			$this->_allMessages = array();
+			return $this->logFile;
+		}
+		elseif(getperms('0') && E107_DEBUG_LEVEL > 0)
+		{
+			echo "Could Save to Log File: ".$fileName;	
+		}	
+
+		return false;
+	}	
+	
+
+
+
+	/**
+	 * Set and save accumulated log to a file. 
+	 * Use addDebug(), addError() or addSuccess() prior to executing.  
+	 * @param string name without the extension. (ie. date prefix and .log suffix will be added automatically)
+	 * @param string Title for use inside the Log file
+	 * @param boolean true = append to file, false = new file each save. 
+	 */
+	public function toFile($name,$logTitle='',$append=false)
+	{
+		
+		$this->logFile	= $name;
+		$this->saveToFile($logTitle,$append);
+		$this->logFile = null;
+	}
+
+
 }

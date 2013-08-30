@@ -34,6 +34,68 @@ else
 }
 
 
+class fpw_shortcodes extends e_shortcode
+{
+	
+	private $secImg;
+	
+	function __construct()
+	{
+		global $sec_img; 
+		$this->secImg = $sec_img;	
+	}
+
+	function sc_fpw_username($parm='') //TODO Use $frm
+	{
+		return "<input class='tbox' type='text' name='username' size='40' value='' maxlength='100' />";	
+	}
+
+	function sc_fpw_useremail($parm='') //TODO Use $frm
+	{
+		return "<input class='tbox' type='text' name='email' size='40' value='' maxlength='100' />";	
+	}
+
+	function sc_fpw_submit($parm='') //TODO Use $frm
+	{
+		return "<input class='button btn btn-primary' type='submit' name='pwsubmit' value='".LAN_156."' />";	
+	}
+
+	function sc_fpw_captcha_lan($parm='')
+	{
+		return LAN_FPW2;	
+	}
+	
+	function sc_fpw_captcha_hidden($parm='')
+	{
+		return; // no longer required - included in renderInput();	
+	}	
+	
+	function sc_fpw_captcha_img($parm='')
+	{
+		return $this->secImg->renderImage();
+	}
+	
+	function sc_fpw_captcha_input($parm='')
+	{
+		return $this->secImg->renderInput();		
+	}
+
+	function sc_fpw_logo($parm='')
+	{
+		// Unused at the moment. 	
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
 
 if ($pref['membersonly_enabled'])
 {
@@ -186,7 +248,7 @@ if (isset($_POST['pwsubmit']))
 		$rcode = md5($_SERVER['HTTP_USER_AGENT'] . serialize($pref). $rand_num . $datekey);
 
 		$link = SITEURL.'fpw.php?'.$rcode;
-		$message = LAN_FPW5.' '.SITENAME.' '.LAN_FPW14.' : ['.e107::getIPHandler()->getIP(FALSE).'] '.e107::getIPHandler()->getIP(TRUE).".\n\n".LAN_FPW15."\n\n".LAN_FPW16."\n\n".LAN_FPW17."\n\n{$link}";
+		$message = LAN_FPW5.' '.SITENAME.' '.LAN_FPW14.': '.e107::getIPHandler()->getIP(TRUE).".\n\n".LAN_FPW15."\n\n".LAN_FPW16."\n\n".LAN_FPW17."\n\n{$link}";
 
 		$deltime = time()+86400 * 2;			//Set timestamp two days ahead so it doesn't get auto-deleted
 		$sql->db_Insert('tmp', "'pwreset',{$deltime},'".$row['user_loginname'].FPW_SEPARATOR.$rcode."'");
@@ -222,6 +284,11 @@ if (isset($_POST['pwsubmit']))
 
 
 $sc = array();
+
+
+
+
+/*
 if (USE_IMAGECODE)
 {
 	$sc = array (
@@ -231,14 +298,29 @@ if (USE_IMAGECODE)
 		'FPW_TABLE_SECIMG_TEXTBOC' => "<input class='tbox' type='text' name='code_verify' size='15' maxlength='20' />"
 	);
 }
+*/
 
 if (!$FPW_TABLE)
 {
 	require_once (e107::coreTemplatePath('fpw')); //correct way to load a core template.
 }
-$text = $tp->simpleParse($FPW_TABLE, $sc);
+
+$sc = new fpw_shortcodes;
+
+// New Shortcode names in v2. BC Fix. 
+$bcShortcodes 	= array('{FPW_TABLE_SECIMG_LAN}', '{FPW_TABLE_SECIMG_HIDDEN}', '{FPW_TABLE_SECIMG_SECIMG}', '{FPW_TABLE_SECIMG_TEXTBOC}');
+$nwShortcodes 	= array('{FPW_CAPTCHA_LAN}', '{FPW_CAPTCHA_HIDDEN}', '{FPW_CAPTCHA_IMG}', '{FPW_CAPTCHA_INPUT}');
+$FPW_TABLE 		= str_replace($bcShortcodes,$nwShortcodes,$FPW_TABLE);
+
+$text = $tp->parseTemplate($FPW_TABLE, true, $sc);
+// $text = $tp->simpleParse($FPW_TABLE, $sc);
 
 $ns->tablerender(LAN_03, $text);
 require_once(FOOTERF);
+
+
+
+
+
 
 ?>

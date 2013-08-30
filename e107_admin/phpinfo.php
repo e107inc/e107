@@ -56,6 +56,14 @@ $security_risks = array(
             $mes->addWarning("<b>".$risk."</b>: ".$diz);
         }   
     }
+	
+	if($sessionSavePath = ini_get('session.save_path'))
+	{
+		if(!is_writable($sessionSavePath))
+		{
+			$mes->addError("<b>session.save_path</b> is not writable! That can cause major issues with your site.");	
+		}
+	}
 
 
 // $phpinfo = preg_replace("#^.*<body>#is", "", $phpinfo);

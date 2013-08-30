@@ -26,15 +26,21 @@ class Hybrid_Providers_Facebook extends Hybrid_Provider_Model
 			throw new Exception( "Your application id and secret are required in order to connect to {$this->providerId}.", 4 );
 		}
 
-		if ( ! class_exists('FacebookApiException') ) {
+		if ( ! class_exists('FacebookApiException', false) ) {
 			require_once Hybrid_Auth::$config["path_libraries"] . "Facebook/base_facebook.php";
 			require_once Hybrid_Auth::$config["path_libraries"] . "Facebook/facebook.php";
+		}
+		
+		if ( isset ( Hybrid_Auth::$config["proxy"] ) ) {
+			BaseFacebook::$CURL_OPTS[CURLOPT_PROXY] = Hybrid_Auth::$config["proxy"];
 		}
 
 		$this->api = new Facebook( ARRAY( 'appId' => $this->config["keys"]["id"], 'secret' => $this->config["keys"]["secret"] ) ); 
 
-		if ( $this->token("access_token") ) { 
-			$access_token = $this->api->extendedAccessToken( $this->token("access_token") );
+		if ( $this->token("access_token") ) {
+			$this->api->setAccessToken( $this->token("access_token") );
+			$this->api->setExtendedAccessToken();
+			$access_token = $this->api->getAccessToken();
 
 			if( $access_token ){
 				$this->token("access_token", $access_token );
@@ -77,12 +83,12 @@ class Hybrid_Providers_Facebook extends Hybrid_Provider_Model
 	{ 
 		// in case we get error_reason=user_denied&error=access_denied
 		if ( isset( $_REQUEST['error'] ) && $_REQUEST['error'] == "access_denied" ){ 
-			throw new Exception( "Authentification failed! The user denied your request.", 5 );
+			throw new Exception( "Authentication failed! The user denied your request.", 5 );
 		}
 
 		// try to get the UID of the connected user from fb, should be > 0 
 		if ( ! $this->api->getUser() ){
-			throw new Exception( "Authentification failed! {$this->providerId} returned an invalide user id.", 5 );
+			throw new Exception( "Authentication failed! {$this->providerId} returned an invalid user id.", 5 );
 		}
 
 		// set user as logged in
@@ -125,7 +131,7 @@ class Hybrid_Providers_Facebook extends Hybrid_Provider_Model
 		$this->user->profile->displayName   = (array_key_exists('name',$data))?$data['name']:"";
 		$this->user->profile->firstName     = (array_key_exists('first_name',$data))?$data['first_name']:"";
 		$this->user->profile->lastName      = (array_key_exists('last_name',$data))?$data['last_name']:"";
-		$this->user->profile->photoURL      = "https://graph.facebook.com/" . $this->user->profile->identifier . "/picture?type=square";
+		$this->user->profile->photoURL      = "https://graph.facebook.com/" . $this->user->profile->identifier . "/picture?width=150&height=150";
 		$this->user->profile->profileURL    = (array_key_exists('link',$data))?$data['link']:""; 
 		$this->user->profile->webSiteURL    = (array_key_exists('website',$data))?$data['website']:""; 
 		$this->user->profile->gender        = (array_key_exists('gender',$data))?$data['gender']:"";
@@ -169,7 +175,7 @@ class Hybrid_Providers_Facebook extends Hybrid_Provider_Model
 			$uc->identifier  = (array_key_exists("id",$item))?$item["id"]:"";
 			$uc->displayName = (array_key_exists("name",$item))?$item["name"]:"";
 			$uc->profileURL  = "https://www.facebook.com/profile.php?id=" . $uc->identifier;
-			$uc->photoURL    = "https://graph.facebook.com/" . $uc->identifier . "/picture?type=square"; 
+			$uc->photoURL    = "https://graph.facebook.com/" . $uc->identifier . "/picture?width=150&height=150";
 
 			$contacts[] = $uc;
 		}

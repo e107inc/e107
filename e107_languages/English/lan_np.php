@@ -1,14 +1,13 @@
 <?php
 /*
- * Copyright 2008-2010 e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id$
+ * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
  *
  * Nexptrev Shortcode Language File
 */
 
 define('NP_1', 'Previous page');
 define('NP_2', 'Next page');
-define('NP_3', 'Go to page');
+//define('NP_3', 'Go to page'); // Generic
 
 // 0.8
 define('LAN_NP_FIRST', 'first');

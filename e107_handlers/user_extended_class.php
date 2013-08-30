@@ -829,7 +829,13 @@ class e107_user_extended
 				break;
 
 			case EUF_DATE : //date
-				return e107::getForm()->datepicker($fname,$curval,'dateformat=yyyy-mm-dd');	
+			
+				if($curval == '0000-00-00') // Quick datepicker fix. 
+				{
+					$curval = '';
+				}
+			
+				return e107::getForm()->datepicker($fname,$curval,'format=yyyy-mm-dd');	
 				break;
 
 			case EUF_LANGUAGE : // language

@@ -2,15 +2,12 @@
 /*
 * e107 website system
 *
-* Copyright 2001-2010 e107 Inc (e107.org)
+* Copyright 2001-2013 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
 * Site access logging - 'receiver'
-*
-* $URL$
-* $Id$
-*
+
 */
 
 /* File to log page accesses - called with
@@ -26,13 +23,22 @@
 // Normally the file is 'silent' - if any errors occur, any error message appears in the page header.
 */
 //error_reporting(0);
-error_reporting(E_ALL);
+// error_reporting(E_ALL);
+define('e_MINIMAL',true);
+require_once("../../class2.php"); // More secure to include it. 
+header('Cache-Control: no-cache, must-revalidate');		// See if this discourages browser caching
+header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');		// Date in the past
 
+if (!vartrue($pref['statActivate']))
+{
+	exit();
+}
 
 /**
  *	Set up path to log files.
  *	The log file directory contains a flag file which defines whether logging is enabled.
  */
+ /*
 function setLogPath()
 {
 	$siteRoot = realpath(dirname(__FILE__).'./../../').'/';
@@ -47,10 +53,10 @@ function setLogPath()
 	define('e_LOG', $logDir);
 	return $logEnable;
 }
+*/
 
-
-if (!setLogPath()) exit();				// Could be logging disabled, missing files, all sorts of things. Just do nothing.
-
+// if (!setLogPath()) exit();				// Could be logging disabled, missing files, all sorts of things. Just do nothing.
+//print_r(base64_decode($_GET['lv']));
 define('log_INIT', TRUE);
 
 
@@ -64,35 +70,31 @@ $pageUnique = array('page' => 1, 'content' => array('content'));
 //$logVals = urldecode(base64_decode($_SERVER['QUERY_STRING']));
 $logVals = urldecode(base64_decode($_GET['lv']));
 
-
-//file_put_contents(e_LOG."test.log",print_r($logVals,true)); // , FILE_APPEND | LOCK_EX
+$lg = e107::getAdminLog();
+$lg->addDebug(print_r($logVals, true));
+$lg->toFile('SiteStats','Statistics Log', true);
 
 parse_str($logVals, $vals);
 
 // We MUST have a timezone set in PHP >= 5.3. This should work for PHP >= 5.1:
 // @todo may be able to remove this check once minimum PHP version finalised
-if (function_exists('date_default_timezone_get'))
+if (function_exists('date_default_timezone_get')) 
 {
-	// Just set a default - it should default to UTC if no timezone set
-	date_default_timezone_set(@date_default_timezone_get());
+	date_default_timezone_set(@date_default_timezone_get()); // Just set a default - it should default to UTC if no timezone set
 }
 
 
 
-header('Cache-Control: no-cache, must-revalidate');		// See if this discourages browser caching
-header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');		// Date in the past
-
 //$logfp = fopen(e_LOG.'rcvstring.txt', 'a+'); fwrite($logfp, $logVals."\n"); fclose($logfp);
 //$logfp = fopen(e_LOG.'rcvstring.txt', 'a+'); fwrite($logfp, print_r($vals, TRUE)."\n"); fclose($logfp);
 
-$colour = strip_tags((isset($vals['colour']) ? $vals['colour'] : ''));
-$res = strip_tags((isset($vals['res']) ? $vals['res'] : ''));
-$self = strip_tags((isset($vals['eself']) ? $vals['eself'] : ''));
-$ref = addslashes(strip_tags((isset($vals['referer']) ? $vals['referer'] : '')));
-$logQry = isset($vals['qry']) && $vals['qry'];
-
-$date = date('z.Y', time());
-$logPfile = e_LOG.'logp_'.$date.'.php';
+$colour 		= strip_tags((isset($vals['colour']) ? $vals['colour'] : ''));
+$res 			= strip_tags((isset($vals['res']) ? $vals['res'] : ''));
+$self 			= strip_tags((isset($vals['eself']) ? $vals['eself'] : ''));
+$ref 			= addslashes(strip_tags((isset($vals['referer']) ? $vals['referer'] : '')));
+$logQry 		= isset($vals['qry']) && $vals['qry'];
+$date			 = date('z.Y', time());
+$logPfile 		= e_LOG.'logp_'.$date.'.php';
 
 //$logString = "Colour: {$colour}  Res: {$res}  Self: {$self} Referrer: {$ref} ErrCode: {$vals['err_direct']}\n";
 //$logfp = fopen(e_LOG.'rcvstring.txt', 'a+'); fwrite($logfp, $logString); fclose($logfp);
@@ -171,16 +173,19 @@ $p_handle = fopen($logPfile, 'r+');
 if($p_handle && flock( $p_handle, LOCK_EX ) ) 
 {
 	$log_file_contents = '';
-	while (!feof($p_handle))
-	{  // Assemble a string of data
+	while (!feof($p_handle)) // Assemble a string of data
+	{  
 		$log_file_contents.= fgets($p_handle,1000);
 	}
 	$log_file_contents = str_replace(array('<'.'?php','?'.'>'),'',$log_file_contents);
-	if (eval($log_file_contents) === FALSE) echo "error in log file contents<br /><br /><br /><br />";
+	if (eval($log_file_contents) === FALSE && getperms('0'))
+	{
+		 echo "Error in log file contents: ".$logPfile;
+	}
 }
-else
+elseif(getperms('0'))
 {
-	echo "Couldn't log data<br /><br /><br /><br />";
+	echo "Couldn't log data to: ".$logPfile; // returned to js popup. 
 	exit;
 }
 
@@ -236,6 +241,7 @@ if ($p_handle)
 
 
 // Get current IP address - return as a hex-encoded string
+/*
 function getip() 
 {
 	$ip = $_SERVER['REMOTE_ADDR'];
@@ -293,6 +299,6 @@ function getip()
 		return $ret;
 	}
 }
-
+*/
 
 ?>

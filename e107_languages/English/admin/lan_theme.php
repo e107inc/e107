@@ -9,14 +9,14 @@
 
 define("TPVLAN_1", "You are looking at a preview of the <b>'".PREVIEWTHEMENAME."'</b> theme. It has not been set as the main theme for your site, it has been activated to provide a preview of how the theme looks.<br />To set this theme as your site theme, <a href='".e_ADMIN."theme.php?choose'>return to your theme manager</a> and select 'Set As Site Theme'.<br />To preview more themes please <a href='".e_ADMIN."theme.php'>click here</a>");
 define("TPVLAN_2", "Theme Preview");
-define("TPVLAN_3", "Main site theme set to");
+define("TPVLAN_3", "Site theme changed.");
 define("TPVLAN_4", "Author");
 define("TPVLAN_5", "Website");
 define("TPVLAN_6", "Release date");
 define("TPVLAN_7", "Information");
 define("TPVLAN_8", "Options");
 define("TPVLAN_9", "Preview Theme");
-define("TPVLAN_10", "Set As Site Theme");
+define("TPVLAN_10", "Set as Site Theme");
 define("TPVLAN_11", "Version");
 define("TPVLAN_12", "No preview available");
 
@@ -26,7 +26,7 @@ define("TPVLAN_15", "The file could not be uploaded as the ".e_THEME." folder do
 define("TPVLAN_16", "Admin Message");
 define("TPVLAN_17", "That file does not appear to be a valid .zip or .tar archive.");
 define("TPVLAN_18", "An error has occurred, unable to un-archive the file");
-define("TPVLAN_19", "Your theme has been uploaded and unzipped, please scroll down to see your theme in the list.");
+define("TPVLAN_19", "Your theme has been uploaded and unzipped.");
 define("TPVLAN_20", "Auto theme upload and extraction is disabled as your themes folder does not have the correct permissions - please CHMOD your e107_themes folder to 777.");
 
 define("TPVLAN_21", "This is the currently selected site theme");

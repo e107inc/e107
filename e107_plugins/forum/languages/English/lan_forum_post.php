@@ -9,6 +9,10 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
+
+// DEPRECATED, SUBJECT TO REMOVAL 
+
+/*
 define("PAGE_NAME", "Forum");
 
 define("LAN_01", "Forums");
@@ -112,5 +116,5 @@ define("LAN_FORUM_1", "Uploads disabled: ".e_FILE."public directory is not writa
 define("LAN_FORUM_2", "Duplicate post");
 
 define('LAN_FORUMPOST_EMOTES', 'Deactivate emoticons for this post');
-
+*/
 ?>

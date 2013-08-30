@@ -30,6 +30,7 @@ class page_sitelink // include plugin-folder in the name.
 
 	function pageNav($parm='') 
 	{
+		$frm = e107::getForm();
 		$options = array();
 		if(vartrue($parm))
 		{
@@ -70,13 +71,14 @@ class page_sitelink // include plugin-folder in the name.
 
 		$query		= "SELECT * FROM #page WHERE ";
 		$q = array();
+		
 		if(vartrue($options['chapter']))
 		{
-			$q[] = "page_chapter = ".intval($options['chapter']);	 		
+			$q[] = "page_title !='' AND page_chapter = ".intval($options['chapter']);	 		
 		}
 		elseif(vartrue($options['book']))
 		{
-			$q[] = "page_chapter IN (SELECT chapter_id FROM #page_chapters WHERE chapter_parent=".intval($options['book']).")";	 		
+			$q[] = "page_title !='' && page_chapter IN (SELECT chapter_id FROM #page_chapters WHERE chapter_parent=".intval($options['book']).")";	 		
 		}
 		// XXX discuss FIXED remove DB check, use default title - AND page_title !=''
 		$q[] 		= "page_class IN (".USERCLASS_LIST.")";
@@ -100,7 +102,7 @@ class page_sitelink // include plugin-folder in the name.
 				'link_parent'		=> $row['page_chapter'],
 				'link_open'			=> '',
 				'link_class'		=> intval($row['page_class']),
-				'link_active'		=> ($options['cpage'] && $row['page_id'] == $options['cpage']),
+				'link_active'		=> ($options['cpage'] && $row['page_id'] == $options['cpage'])
 			);
 		}
 
@@ -109,6 +111,7 @@ class page_sitelink // include plugin-folder in the name.
 		if(vartrue($options['chapter']))
 		{
 			//$filter = "chapter_id > ".intval($options['chapter']);
+			
 			$title = $sql->retrieve('page_chapters', 'chapter_name', 'chapter_id='.intval($options['chapter']));
 			$outArray 	= array();
 			if(!$title) return e107::getNav()->compile($_pdata, $outArray, $options['chapter']);	
@@ -119,17 +122,21 @@ class page_sitelink // include plugin-folder in the name.
 		$title = false;
 		if(vartrue($options['book']))
 		{
+			
 			// XXX discuss the idea here
 			//$filter = "chapter_id > ".intval($options['book']);
 			$filter = "chapter_parent = ".intval($options['book']);
 			$parent = intval($options['book']);
 			$title = $sql->retrieve('page_chapters', 'chapter_name', 'chapter_id='.intval($options['book']));
+			
+		//	print_a('parent='.$parent);
 		}
 
 
 		$books = $sql->retrieve("SELECT * FROM #page_chapters WHERE ".$filter." ORDER BY chapter_order ASC" , true);
 		foreach($books as $row)
 		{
+			
 			$arr[] = array(
 				'link_id'			=> $row['chapter_id'],
 				'link_name'			=> $row['chapter_name'],
@@ -144,15 +151,16 @@ class page_sitelink // include plugin-folder in the name.
 				'link_parent'		=> $row['chapter_parent'],
 				'link_open'			=> '',
 				'link_class'		=> 0, 
-				'link_sub'			=> varset($sublinks[$row['chapter_id']]),
+				'link_sub'			=> (!vartrue($options['book']) && !vartrue($options['auto'])) ? varset($sublinks[$row['chapter_id']]) : '', //XXX always test with docs template in bootstrap before changing. 
 				'link_active'		=> $row['chapter_parent'] == 0 ? $options['cbook'] && $options['cbook'] == $row['chapter_id'] : $options['cchapter'] && $options['cchapter'] == $row['chapter_id'],
 			);	
 		}
 		
-		$outArray 	= array();
-		$parent = vartrue($options['book']) ? $options['book'] : 0;
-		$ret =  e107::getNav()->compile($arr, $outArray, $parent);		
 		
+		$outArray 	= array();
+		$parent = vartrue($options['book']) ? intval($options['book']) : 0;
+		$ret =  e107::getNav()->compile($arr, $outArray, $parent);		
+
 		if(!$title) return $ret;
 		return array('title' => $title, 'body' => $ret);
 	}

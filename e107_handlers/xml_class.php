@@ -232,7 +232,7 @@ class xmlClass
 
 	public function setOptStringTags($string)
 	{
-		$this->stringTags = (array) explode(",", $string);
+		$this->stringTags = (array) explode(",", $string); 
 		return $this;
 	}
 
@@ -308,14 +308,23 @@ class xmlClass
 	}
 
 	/**
+	 * DEPRECATED
 	 * Get Remote file contents
 	 * use setOptArrayTags above if you require a consistent array result by in 1 item or many. 
+	 * @deprecated use e_file::getRemoteContent() instead
 	 * @param string $address
 	 * @param integer $timeout [optional] seconds
 	 * @return string
 	 */
 	function getRemoteFile($address, $timeout = 10, $postData=null)
 	{
+		$_file = e107::getFile();
+		$this->xmlFileContents = $_file->getRemoteContent($address, array('timeout' => $timeout, 'post' => $postData));
+		$this->error = $_file->error;
+		
+		return $this->xmlFileContents;
+		
+		// ------ MOVED TO FILE HANDLER ------ //
 		// Could do something like: if ($timeout <= 0) $timeout = $pref['get_remote_timeout'];  here
 		$timeout = min($timeout, 120);
 		$timeout = max($timeout, 3);
@@ -473,7 +482,8 @@ class xmlClass
 	 * Advanced XML parser - handles tags with attributes and values
 	 * properly.
 	 * TODO - filter (see xml_convert_to_array)
-	 *
+	 * FIXME can't handle multi-dimensional associative arrays (e.g. <screnshots><image>...</image><image>...</image></screenshots> to screenshots[image] = array(...))
+	 * XXX New parser in testing phase - see e_marketplace::parse()
 	 * @param SimpleXMLElement $xml
 	 * @param string $rec_parent used for recursive calls only
 	 * @return array
@@ -560,8 +570,22 @@ class xmlClass
 
 					//more cases?
 					default:
-					
-						$count = count($xml->{$tag});
+						
+//FIXME - commented code breaks parsing of plugin.xml extended and userclass tags and possibly other xml files. 
+						
+	/*
+						// fix - empty SimpleXMLElement
+						if(empty($xml->{$tag}))
+						{
+							if($this->arrayTags && in_array($tag, $this->arrayTags))
+							{
+								$ret[$tag] = array();
+							}
+							else $ret[$tag] = '';
+							break;
+						}
+	*/					
+						$count = count($xml->{$tag}); 
 						if($count >= 1) //array of elements - loop
 						{
 							for ($i = 0; $i < $count; $i++)
@@ -658,7 +682,7 @@ class xmlClass
 
 		foreach($this->stringTags as $vl)
 		{
-			if(isset($vars[$vl]) && isset($vars[$vl][0]))
+			if(isset($vars[$vl]) && is_array($vars[$vl]) && isset($vars[$vl][0]))
 			{
 				$vars[$vl] = $vars[$vl][0];
 			}
@@ -703,8 +727,7 @@ class xmlClass
 				
 				continue;	
 			}
-			
-			
+
 			if(isset($vars[$vl]) && is_array($vars[$vl]) && !varset($vars[$vl][0]))
 			{
 				

@@ -11,10 +11,11 @@
 */
 
 require_once('../../class2.php');
-
+define('NAVIGATION_ACTIVE','forum');
 $e107 = e107::getInstance();
 $tp = e107::getParser();
 $ns = e107::getRender();
+$mes = e107::getMessage();
 
 if (!$e107->isInstalled('forum'))
 {
@@ -73,15 +74,16 @@ switch($action)
 if (!$forum->checkPerm($forumId, 'post'))
 {
 	require_once(HEADERF);
-	$ns->tablerender(LAN_20, "<div style='text-align:center'>".LAN_399.'</div>');
+	$mes->addError(LAN_FORUM_3001);
+	$ns->tablerender(LAN_FORUM_1001, $mes->render());
 	require_once(FOOTERF);
 	exit;
 }
 define('MODERATOR', USER && $forum->isModerator(USERID));
-require_once(e_HANDLER.'ren_help.php');
+require_once(e_HANDLER.'ren_help.php'); // FIXME deprecated
 
 //e107::getScBatch('view', 'forum'); //XXX FIXME Conflicting shortcode names. Find a solution without renaming them. 
-e107::getScBatch('post', 'forum')->setScVar('forum', $forum)->setScVar('threadInfo', vartrue($threadInfo));
+$sc = e107::getScBatch('post', 'forum')->setScVar('forum', $forum)->setScVar('threadInfo', vartrue($threadInfo));
 
 $gen = new convert;
 $fp = new floodprotect;
@@ -91,13 +93,14 @@ $e107 = e107::getInstance();
 if ($action != 'nt' && !$threadInfo['thread_active'] && !MODERATOR)
 {
 	require_once(HEADERF);
-	$ns->tablerender(LAN_20, "<div style='text-align:center'>".LAN_397.'</div>');
+	$mes->addError(LAN_FORUM_3002);
+	$ns->tablerender(LAN_FORUM_1001, $mes->render());
 	require_once(FOOTERF);
 	exit;
 }
 
 $forumInfo['forum_name'] = $tp->toHTML($forumInfo['forum_name'], true);
-define('e_PAGETITLE', ($action == 'rp' ? LAN_02.$threadInfo['thread_name'] : LAN_03).' / '.$forumInfo['forum_name'].' / '.LAN_01);
+define('e_PAGETITLE', ($action == 'rp' ? LAN_FORUM_3003.": ".$threadInfo['thread_name'] : LAN_FORUM_1018).' / '.$forumInfo['forum_name'].' / '.LAN_FORUM_1001);
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -110,7 +113,7 @@ if($forum->prefs->get('attach'))
 	$max_upload_size = set_max_size($a_filetypes, $max_upload_size);
 	$max_upload_size = $e107->parseMemorySize($max_upload_size, 0);
 	$a_filetypes = array_keys($a_filetypes);
-	$allowed_filetypes = implode(' | ', $a_filetypes);
+	$allowed_filetypes = implode(', ', $a_filetypes);
 }
 
 if (isset($_POST['submitpoll']))
@@ -145,7 +148,7 @@ if (isset($_POST['fpreview']))
 	}
 	else
 	{
-		$poster = ($_POST['anonname']) ? $_POST['anonname'] : LAN_311;
+		$poster = ($_POST['anonname']) ? $_POST['anonname'] : LAN_FORUM_3004;
 	}
 	$postdate = $gen->convert_date(time(), "forum");
 	$tsubject = $tp->post_toHTML($_POST['subject'], true);
@@ -176,7 +179,7 @@ if (isset($_POST['fpreview']))
 	{
 		$ns->tablerender($_POST['poll_title'], $poll_text);
 	}
-	$ns->tablerender(LAN_323, $text);
+	$ns->tablerender(LAN_FORUM_3005, $text);
 	$anonname = $tp->post_toHTML($_POST['anonname'], FALSE);
 
   	$post = $tp->post_toForm($_POST['post']);
@@ -313,7 +316,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 		if($postResult === -1) //Duplicate post
 		{
 			require_once(HEADERF);
-			$ns->tablerender('', LAN_FORUM_2);
+			$ns->tablerender('', LAN_FORUM_3007);
 			require_once(FOOTERF);
 			exit;
 		}
@@ -374,14 +377,15 @@ if (isset($_POST['update_thread']))
 //	 exit;
 	if (!$_POST['subject'] || !$_POST['post'])
 	{
-		$error = "<div style='text-align:center'>".LAN_27."</div>";
+		$error = "<div style='text-align:center'>".LAN_FORUM_3007."</div>"; // TODO $mes
 	}
 	else
 	{
 		if (!isAuthor())
 		{
 			require_once(HEADERF);
-			$ns->tablerender(LAN_95, "<div style='text-align:center'>".LAN_96.'</div>');
+			$mes->addError(LAN_FORUM_3009);
+			$ns->tablerender(LAN_FORUM_3008, $mes->render());
 			require_once(FOOTERF);
 			exit;
 		}
@@ -418,14 +422,15 @@ if (isset($_POST['update_reply']))
 {
 	if (!$_POST['post'])
 	{
-		$error = "<div style='text-align:center'>".LAN_27.'</div>';
+		$error = "<div style='text-align:center'>".LAN_FORUM_3007.'</div>'; // TODO $mes		
 	}
 	else
 	{
 		if (!isAuthor())
 		{
 			require_once(HEADERF);
-			$ns->tablerender(LAN_95, "<div style='text-align:center'>".LAN_96.'</div>');
+			$mes->addError(LAN_FORUM_3009);
+			$ns->tablerender(LAN_FORUM_3008, $mes->render());
 			require_once(FOOTERF);
 			exit;
 		}
@@ -445,9 +450,8 @@ require_once(HEADERF);
 
 if (vartrue($error))
 {
-	$ns->tablerender(LAN_20, $error);
+	$ns->tablerender(EMESSLAN_TITLE_ERROR, $error); // LAN?
 }
-
 
 if ($action == 'edit' || $action == 'quote')
 {
@@ -455,7 +459,8 @@ if ($action == 'edit' || $action == 'quote')
 	{
 		if (!isAuthor())
 		{
-			$ns->tablerender(LAN_95, "<div style='text-align:center'>".LAN_96.'</div>');
+			$mes->addError(LAN_FORUM_3009);
+			$ns->tablerender(LAN_FORUM_3008, $mes->render());
 			require_once(FOOTERF);
 			exit;
 		}
@@ -520,7 +525,7 @@ if($action == 'rp')
 	$FORUMPOST = $FORUMPOST_REPLY;
 }
 e107::lan('forum','English_front');
-$text = $tp->parseTemplate($FORUMPOST, true);
+$text = $tp->parseTemplate($FORUMPOST, true, $sc);
 
 
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -544,12 +549,12 @@ function forumjump()
 {
 	global $forum;
 	$jumpList = $forum->forumGetAllowed('view');
-	$text = "<form method='post' action='".e_SELF."'><p>".LAN_401.": <select name='forumjump' class='tbox'>";
+	$text = "<form method='post' action='".e_SELF."'><p>".LAN_FORUM_1017.": <select name='forumjump' class='tbox'>";
 	foreach($jumpList as $key => $val)
 	{
 		$text .= "\n<option value='".$key."'>".$val."</option>";
 	}
-	$text .= "</select> <input class='btn button' type='submit' name='fjsubmit' value='".LAN_387."' /></p></form>";
+	$text .= "</select> <input class='btn button' type='submit' name='fjsubmit' value='".LAN_GO."' /></p></form>";
 	return $text;
 }
 
@@ -568,7 +573,7 @@ function process_upload()
 
 		if(!is_dir($attachmentDir))
 		{
-			mkdir($attachmentDir,0755);	
+			mkdir($attachmentDir, 0755);	
 		}
 	//	$thumbDir = e_PLUGIN.'forum/attachments/thumb/';
 

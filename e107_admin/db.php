@@ -536,7 +536,7 @@ class system_tools
 		$sql = e107::getDb();
 
 		$del = array_keys($_POST['delplug']);
-		if($sql->db_Delete("plugin", "plugin_id='".intval($del[0])."' LIMIT 1"))
+		if($sql->db_Delete("plugin", "plugin_id='".intval($del[0])."'"))
 		{
 			$mes->add(LAN_DELETED, E_MESSAGE_SUCCESS);
 		}
@@ -677,7 +677,7 @@ class system_tools
 				";
 
 					$pref_types  = e107::getConfig()->aliases;
-					unset($pref_types['core_old'],$pref_types['core_backup']);
+					unset($pref_types['core_old'], $pref_types['core_backup']);
 			//		$exclusions = array('core_old'=>1,'core_backup'=>1);
 				//	$filteredprefs = array_diff($pref_types,$exclusions);
 
@@ -687,8 +687,8 @@ class system_tools
 
 						$text .= "<tr>
 							<td>
-								".$frm->checkbox("xml_prefs[".$key."]", $key, $checked)."
-							".LAN_PREFS.": ".$key."</td>
+								".$frm->checkbox("xml_prefs[".$key."]", $key, $checked, array('label'=>LAN_PREFS.": ".$key))."
+							</td>
 							<td>&nbsp;</td>
 
 							</tr>";
@@ -717,8 +717,8 @@ class system_tools
 						$checked = (vartrue($_POST['xml_tables'][$name]) == $name) ? 1: 0;
 						$text .= "<tr>
 							<td>
-								".$frm->checkbox("xml_tables[".$name."]", $name, $checked)." Table Data: ".$name."
-							</td>
+								".$frm->checkbox("xml_tables[".$name."]", $name, $checked, array('label'=>"Table Data: ".$name)).
+							"</td>
 							<td class='right'>$count</td>
 						</tr>";
 					}

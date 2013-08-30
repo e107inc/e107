@@ -173,6 +173,7 @@ class e107plugin
 		$xml 			= e107::getXml();
 		$mes 			= e107::getMessage();	
 		$needed 		= array();
+		$log 			= e107::getAdminLog();
 		
 		if(!$plugVersions = e107::getConfig('core')->get('plug_installed'))
 		{
@@ -195,6 +196,7 @@ class e107plugin
 						$mes->addDebug("Plugin Update(s) Required");
 						return TRUE;	
 					}
+				
 					$needed[$path] = $data;		
 				} 
 				
@@ -207,11 +209,19 @@ class e107plugin
 						return TRUE;	
 					}
 					
-					$mes->addDebug("Plugin: <strong>{$path}</strong> requires an update.");
+				//	$mes->addDebug("Plugin: <strong>{$path}</strong> requires an update.");
+					
+				//	$log->flushMessages();
 					$needed[$path] = $data;
 				}	
 			}
 
+		}
+
+		// Display debug and log to file. 
+		foreach($needed as $path=>$tmp)
+		{
+			$log->addDebug("Plugin: <strong>{$path}</strong> requires an update.");	
 		}	
 	
 		return count($needed) ? $needed : FALSE;		
@@ -231,12 +241,15 @@ class e107plugin
 	function update_plugins_table($mode = 'upgrade')
 	{
 		
-		$sql = e107::getDb();
-		$sql2 = e107::getDb('sql2');
-		$tp = e107::getParser();
-		$fl = e107::getFile();
-		$mes = e107::getMessage();
+		$sql 	= e107::getDb();
+		$sql2 	= e107::getDb('sql2');
+		$tp 	= e107::getParser();
+		$fl 	= e107::getFile();
+		$mes 	= e107::getMessage();
+		
 		$mes->addDebug("Updating plugins Table");
+		
+		$log = e107::getAdminLog();
 
 		global $mySQLprefix, $menu_pref;
 		$pref = e107::getPref();
@@ -380,12 +393,14 @@ class e107plugin
 					//		if (e107::getDb()->db_Insert("plugin", "0, '".$tp->toDB($pName, true)."', '".$tp->toDB($plug_info['@attributes']['version'], true)."', '".$tp->toDB($plugin_path, true)."',{$_installed}, '{$eplug_addons}', '".$this->manage_category($plug_info['category'])."' "))
 							if (e107::getDb()->insert("plugin", $pInsert))
 							{
-								$mes->addDebug("Added <b>".$tp->toHTML($pName,false,"defs")."</b> to the plugin table.");
+								$log->addDebug("Added <b>".$tp->toHTML($pName,false,"defs")."</b> to the plugin table.");
 							}
 							else
 							{
-								$mes->addDebug("Failed to add ".$tp->toHTML($pName,false,"defs")." to the plugin table.");
+								$log->addDebug("Failed to add ".$tp->toHTML($pName,false,"defs")." to the plugin table.");
 							}
+							
+							$log->flushMessages("Updated Plugins table");
 						}
 					}
 			}
@@ -2835,14 +2850,26 @@ class e107plugin
 		$this->plug_vars['category'] = (isset($this->plug_vars['category'])) ? $this->manage_category($this->plug_vars['category']) : "misc";
 		$this->plug_vars['folder'] = $plugName; // remove the need for <folder> tag in plugin.xml.
 
-		if(varset($this->plug_vars['description']) && !is_array($this->plug_vars['description']))
+		if(varset($this->plug_vars['description']))
 		{
-			$diz = $this->plug_vars['description'];
-			unset($this->plug_vars['description']);
-			
-			$this->plug_vars['description']['@value'] = $diz;		
+			if (is_array($this->plug_vars['description']))
+			{
+				if (isset($this->plug_vars['description']['@attributes']['lan']) && defined($this->plug_vars['description']['@attributes']['lan']))
+				{
+					// Pick up the language-specific description if it exists.
+					$this->plug_vars['description']['@value'] = constant($this->plug_vars['description']['@attributes']['lan']);
+				}
+			}
+			else
+			{
+				$diz = $this->plug_vars['description'];
+				unset($this->plug_vars['description']);
+				
+				$this->plug_vars['description']['@value'] = $diz;		
+			}
 		}
 		
+	
 		 // Very useful debug code.to compare plugin.php vs plugin.xml
 		/*
 		 $testplug = 'forum';

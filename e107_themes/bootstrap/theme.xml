@@ -19,5 +19,6 @@
 		</layout>
 		<layout name='hero' title='Hero' />
 		<layout name='marketing-narrow' title='Marketing Narrow' />
+		<layout name='docs' title='Documentation' />
 	</layouts>
 </e107Theme>

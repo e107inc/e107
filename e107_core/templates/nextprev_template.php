@@ -1,7 +1,6 @@
 <?php
 /*
- * Copyright (c) e107 Inc 2009 - e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id$
+ * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
  *
  * NEXTPREV shortcode template
 */
@@ -107,7 +106,7 @@ $NEXTPREV_TEMPLATE['dropdown_end'] = '
 ';
 
 //$NEXTPREV_TEMPLATE['default_nav_caption'] = '<span class="nexprev-caption center">{caption}</span>&nbsp;'; XXX - awaiting the new front-end themes & templates
-$NEXTPREV_TEMPLATE['default_nav_caption'] = NP_3.'&nbsp;';
+$NEXTPREV_TEMPLATE['default_nav_caption'] = LAN_GOPAGE.'&nbsp;';
 
 $NEXTPREV_TEMPLATE['dropdown_nav_first'] = '';
 $NEXTPREV_TEMPLATE['dropdown_nav_last'] = '';

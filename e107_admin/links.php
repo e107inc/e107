@@ -81,7 +81,7 @@ class links_admin_ui extends e_admin_ui
 		'link_button'		=> array('title'=> LAN_ICON, 		'type'=>'icon',			'width'=>'5%', 'thclass' => 'center', 'class'=>'center'),
 		'link_id'			=> array('title'=> LAN_ID, 			'type'=>'text','readParms'=>'link=link_url&target=dialog','noedit'=>TRUE),
 		'link_name'	   		=> array('title'=> LCLAN_15,		'width'=>'auto','type'=>'text', 'inline'=>true, 'required' => true, 'validate' => true),
-	   'link_category'     => array('title'=> LAN_TEMPLATE,    'type' => 'dropdown', 'inline'=>true, 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
+	    'link_category'     => array('title'=> LAN_TEMPLATE,    'type' => 'dropdown', 'inline'=>true, 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
     
     	'link_parent' 		=> array('title'=> 'Sublink of', 	'type' => 'method', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
 		'link_url'	   		=> array('title'=> LAN_URL, 		'width'=>'auto', 'type'=>'text', 'inline'=>true, 'required'=>true,'validate' => true),
@@ -521,7 +521,8 @@ class links_model_admin_tree extends e_admin_tree_model
 			$src[$id] = $model;
 			if($modified)
 			{
-				$model->set('link_name', $level_image.$this->bcClean($model->get('link_name')));
+				$model->set('link_name', $this->bcClean($model->get('link_name')))
+					->set('link_indent', $level_image);
 			}
 			$this->_tree_order($id, $search, $src, $level + 1, $modified);
 		}
@@ -675,6 +676,27 @@ class links_admin_form_ui extends e_admin_form_ui
 		$this->_parents($link_id, $cats, $path, false);
 		return in_array($parent_id, $path);
 	}
+	
+	/**
+	 * New core feature - triggered before values are rendered
+	 */
+	function renderValueTrigger(&$field, &$value, &$params, $id)
+	{
+		if($field !== 'link_name') return;
+		$tree = $this->getController()->getTreeModel();
+		// notify we need modified tree
+		$tree->modify = true;
+		
+		//retrieve array of data models
+		$data = $tree->getTree();
+		// retrieve the propper model by id
+		$model = varset($data[$id]);
+		
+		if(!$model) return;
+		
+		// Add indent as 'pre' parameter
+		$params['pre'] = $model->get('link_indent');
+	}
 
 	/**
 	 * Override Create list view
@@ -691,7 +713,7 @@ class links_admin_form_ui extends e_admin_form_ui
 		$tree = $options = array();
 		$tree[$id] = clone $controller->getTreeModel();
 		$tree[$id]->modify = true;
-
+		
 		// if going through confirm screen - no JS confirm
 		$controller->setFieldAttr('options', 'noConfirm', $controller->deleteConfirmScreen);
 

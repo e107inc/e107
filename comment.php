@@ -62,16 +62,16 @@ if(e_AJAX_REQUEST) // TODO improve security
 	}
 	
 	
-	if(varset($_GET['mode']) == 'delete' && vartrue($_POST['itemid']))
+	if(varset($_GET['mode']) == 'delete' && vartrue($_POST['itemid']) && ADMIN)
 	{
 		$status 		= e107::getComment()->deleteComment($_POST['itemid']);		
-		$ret['msg'] 	= COMLAN_332; 
+		$ret['msg'] 	= ($status) ? 'Ok' : COMLAN_332; 
 		$ret['error'] 	= ($status) ? false : true;
 		echo json_encode($ret);
 		exit; 	
 	}
 	
-	if(varset($_GET['mode']) == 'approve' && vartrue($_POST['itemid']))
+	if(varset($_GET['mode']) == 'approve' && vartrue($_POST['itemid']) && ADMIN)
 	{
 		$status 		= e107::getComment()->approveComment($_POST['itemid']);		
 		$ret['msg'] 	= ($status) ? COMLAN_333 : COMLAN_334; 

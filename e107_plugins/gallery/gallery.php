@@ -59,7 +59,7 @@ class gallery
 		foreach($this->catList as $val)
 		{
 			$sc->setVars($val);	
-			$text .= e107::getParser()->parseTemplate($template['CAT_ITEM'],TRUE);
+			$text .= e107::getParser()->parseTemplate($template['CAT_ITEM'],TRUE, $sc);
 		}	
 		$text = $template['CAT_START'].$text.$template['CAT_END'];
 		e107::getRender()->tablerender("Gallery",$text);
@@ -86,12 +86,12 @@ class gallery
 		foreach($list as $row)
 		{
 			$sc->setVars($row);	
-			$inner .= $tp->parseTemplate($template['LIST_ITEM'],TRUE);
+			$inner .= $tp->parseTemplate($template['LIST_ITEM'],TRUE, $sc);
 		}
 					
-		$text = $tp->parseTemplate($template['LIST_START'],TRUE);
+		$text = $tp->parseTemplate($template['LIST_START'],TRUE, $sc);
 		$text .= $inner; 	
-		$text .= $tp->parseTemplate($template['LIST_END'],TRUE);
+		$text .= $tp->parseTemplate($template['LIST_END'],TRUE, $sc);
 		
 		e107::getRender()->tablerender("Gallery :: ".$catname,$mes->render().$text);
 		

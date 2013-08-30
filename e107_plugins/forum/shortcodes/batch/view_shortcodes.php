@@ -1,4 +1,11 @@
 <?php
+/*
+ * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Forum plugin - view shortcodess
+ *
+*/
+
 if (!defined('e107_INIT')) { exit; }
 
 class plugin_forum_view_shortcodes extends e_shortcode
@@ -14,7 +21,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 	function sc_top($parm='')
 	{
-		$text = ($parm == 'caret') ?  "<span class='caret'></span>" : LAN_10;
+		$text = ($parm == 'caret') ?  "<span class='caret'></span>" : LAN_FORUM_2030;
 		
 		return "<a href='".e_SELF.'?'.e_QUERY."#top' onclick=\"window.scrollTo(0,0);\">".$text.'</a>';
 	}
@@ -25,7 +32,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		$gen = e107::getDate();
 		if ($this->postInfo['post_user'])
 		{
-			return LAN_06.': '.$gen->convert_date($this->postInfo['user_join'], 'forum').'<br />';
+			return LAN_FORUM_2031.': '.$gen->convert_date($this->postInfo['user_join'], 'forum').'<br />';
 		}
 	}
 
@@ -73,8 +80,8 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		{
 			$info = unserialize($this->postInfo['post_options']);
 			return  "
-			Post delete on: {$info['deldate']}<br />
-			reason: {$info['delreason']}
+			".LAN_FORUM_2037.": {$info['deldate']}<br />
+			".LAN_FORUM_2038.": {$info['delreason']}
 			";
 			$ret = '<pre>'.print_r($info, true).'</pre>';
 		}
@@ -206,7 +213,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	{
 		if($this->postInfo['thread_start'])
 		{
-			return e107::getParser()->parseTemplate("{EMAIL_ITEM=".FORLAN_101."^plugin:forum.{$this->postInfo['post_thread']}}");
+			return e107::getParser()->parseTemplate("{EMAIL_ITEM=".LAN_FORUM_2044."^plugin:forum.{$this->postInfo['post_thread']}}");
 		}
 	}
 
@@ -214,7 +221,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	{
 		if($this->postInfo['thread_start'])
 		{
-			return e107::getParser()->parseTemplate("{PRINT_ITEM=".FORLAN_102."^plugin:forum.{$this->postInfo['post_thread']}}");
+			return e107::getParser()->parseTemplate("{PRINT_ITEM=".LAN_FORUM_2045."^plugin:forum.{$this->postInfo['post_thread']}}");
 		}
 	}
 
@@ -252,7 +259,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	{
 		if ($this->postInfo['post_user'])
 		{
-			return LAN_67.': '.(int)$this->postInfo['user_plugin_forum_posts'].'<br />';
+			return LAN_FORUM_2032.': '.(int)$this->postInfo['user_plugin_forum_posts'].'<br />';
 		}
 	}
 
@@ -260,7 +267,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	{
 		if ($this->postInfo['user_name'])
 		{
-			return LAN_09.': '.$this->postInfo['user_visits'].'<br />';
+			return LAN_FORUM_2033.': '.$this->postInfo['user_visits'].'<br />';
 		}
 	}
 
@@ -275,7 +282,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	function sc_website()
 	{
 		if ($this->postInfo['user_homepage']) {
-			return LAN_08.': '.$this->postInfo['user_homepage'].'<br />';
+			return LAN_FORUM_2034.': '.$this->postInfo['user_homepage'].'<br />';
 		}
 	}
 
@@ -319,7 +326,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	function sc_memberid()
 	{
 		if (!$this->postInfo['post_user']) { return FALSE; }
-		return "<span class='smalltext'>".LAN_195.' #'.$this->postInfo['post_user'].'</span>';
+		return "<span class='smalltext'>".LAN_FORUM_2035.' #'.$this->postInfo['post_user'].'</span>';
 	}
 
 	function sc_level($parm)
@@ -417,7 +424,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 								
 		$text = '<div class="btn-group">
 
-    <a class="btn btn-small" href="'.e_BASE.'user.php?'.$this->postInfo['post_user'].'">'.$username.'</a>
+    <a class="btn btn-small" href="'.e_BASE.'user.php?id.'.$this->postInfo['post_user'].'">'.$username.'</a>
     <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
     <span class="caret"></span>
     </button>
@@ -436,7 +443,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	
 	if(plugInstalled('pm') && ($this->postInfo['post_user'] > 0))
 	{
-		$text .= "<li><a href='".e_PLUGIN_ABS."pm/pm.php?send.{$this->postInfo['post_user']}'>Send Private Message</a></li>";
+		$text .= "<li><a href='".e_PLUGIN_ABS."pm/pm.php?send.{$this->postInfo['post_user']}'>".LAN_FORUM_2036."</a></li>";
 	}
 	
 	if($website = $this->sc_website())
@@ -468,24 +475,24 @@ class plugin_forum_view_shortcodes extends e_shortcode
     	<ul class="dropdown-menu pull-right">';
 			
     	
-		$text .= "<li><a href='".e_HTTP."email.php?plugin:forum.".$this->postInfo['post_thread']."'>".FORLAN_101." <i class='icon-envelope'></i></a></li>";
-		$text .= "<li><a href='".e_HTTP."print.php?plugin:forum.".$this->postInfo['post_thread']."'>Print <i class='icon-print'></i></a></li>";
+		$text .= "<li><a href='".e_HTTP."email.php?plugin:forum.".$this->postInfo['post_thread']."'>".LAN_FORUM_2044." <i class='icon-envelope'></i></a></li>"; 
+		$text .= "<li><a href='".e_HTTP."print.php?plugin:forum.".$this->postInfo['post_thread']."'>".LAN_FORUM_2045." <i class='icon-print'></i></a></li>"; // FIXME
 	
 		if (USER) // Report
 		{
-			$text .= "<li><a href='".$this->e107->url->create('forum/thread/report', "id={$this->postInfo['post_thread']}&post={$this->postInfo['post_id']}")."'>Report <i class='icon-flag'></i></a></li>";
+			$text .= "<li><a href='".$this->e107->url->create('forum/thread/report', "id={$this->postInfo['post_thread']}&post={$this->postInfo['post_id']}")."'>".LAN_FORUM_2046." <i class='icon-flag'></i></a></li>";
 		}
 	
 		// Edit
 		if ( (USER && $this->postInfo['post_user'] == USERID && $this->thread->threadInfo['thread_active']))
 		{
-			$text .= "<li><a href='".e107::getUrl()->create('forum/thread/edit', array('id' => $this->postInfo['post_id']))."'>Edit <i class='icon-edit'></i></a></li>";
+			$text .= "<li><a href='".e107::getUrl()->create('forum/thread/edit', array('id' => $this->postInfo['post_id']))."'>".LAN_FORUM_2039." <i class='icon-edit'></i></a></li>";
 			
 		}
 	
 		if($this->forum->checkperm($this->postInfo['post_forum'], 'post'))
 		{
-			$text .= "<li><a href='".e107::getUrl()->create('forum/thread/quote', array('id' => $this->postInfo['post_id']))."'>Quote <i class='icon-share-alt'></i></a></li>";
+			$text .= "<li><a href='".e107::getUrl()->create('forum/thread/quote', array('id' => $this->postInfo['post_id']))."'>".LAN_FORUM_2041." <i class='icon-share-alt'></i></a></li>";
 		}
 	
 	
@@ -496,18 +503,18 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 			if ((USER && $this->postInfo['post_user'] != USERID && $this->thread->threadInfo['thread_active']))
 			{
-				$text .= "<li><a href='".e107::getUrl()->create('forum/thread/edit', array('id' => $this->postInfo['post_id']))."'>Edit <i class='icon-edit'></i></a></li>";
+				$text .= "<li><a href='".e107::getUrl()->create('forum/thread/edit', array('id' => $this->postInfo['post_id']))."'>".LAN_FORUM_2039." <i class='icon-edit'></i></a></li>";
 			}
 			
-			$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='deletepost' data-forum-post='".$this->postInfo['post_id']."'>Delete (fixme) <i class='icon-trash'></i></a></li>"; 
+			$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='deletepost' data-forum-post='".$this->postInfo['post_id']."'>".LAN_FORUM_2040." (fixme) <i class='icon-trash'></i></a></li>"; // FIXME
 
 			if ($type == 'thread')
 			{
-				$text .= "<li><a href='" . e107::getUrl()->create('forum/thread/move', array('id' => $this->postInfo['post_id']))."'>Move <i class='icon-move'></i></a></a></li>"; 
+				$text .= "<li><a href='" . e107::getUrl()->create('forum/thread/move', array('id' => $this->postInfo['post_id']))."'>".LAN_FORUM_2042." <i class='icon-move'></i></a></a></li>"; 
 			}
 			else
 			{
-				$text .= "<li><a href='" . e107::getUrl()->create('forum/thread/split', array('id' => $this->postInfo['post_id']))."'>Split</a></li>";
+				$text .= "<li><a href='" . e107::getUrl()->create('forum/thread/split', array('id' => $this->postInfo['post_id']))."'>".LAN_FORUM_2043."</a></li>";
 		
 			}
 		}

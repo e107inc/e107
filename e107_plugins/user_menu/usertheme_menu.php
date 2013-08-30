@@ -2,16 +2,10 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/user_menu/usertheme_menu.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -31,7 +25,7 @@ if ((USER == TRUE) && check_class(varset($pref['allow_theme_select'],FALSE)))
 	{
 		if ($file != "." && $file != ".." && $file != "templates" && $file != "" && $file != "CVS") 
 		{
-			if (is_readable(e_THEME.$file."/theme.php") && is_readable(e_THEME.$file."/style.css") && ($allThemes || in_Array($file, $themeList))) 
+			if (is_readable(e_THEME.$file."/theme.php") /*&& is_readable(e_THEME.$file."/style.css")*/ && ($allThemes || in_Array($file, $themeList))) 
 			{
 				$themelist[] = $file;
 				$themecount[$file] = 0;
@@ -45,16 +39,16 @@ if ((USER == TRUE) && check_class(varset($pref['allow_theme_select'],FALSE)))
 		$defaulttheme = $pref['sitetheme'];
 		$count = 0;
 
-		$totalct = $sql->db_Select("user", "user_prefs", "user_prefs REGEXP('sitetheme') ");
+		$totalct = $sql->select("user", "user_prefs", "user_prefs REGEXP('sitetheme') ");
  
-		while ($row = $sql->db_Fetch()) 
+		while ($row = $sql->fetch()) 
 		{
             $up = (substr($row['user_prefs'],0,5) == "array") ? $eArrayStorage->ReadArray($row['user_prefs']) : unserialize($row['user_prefs']);
 
 			if (isset($themecount[$up['sitetheme']])) { $themecount[$up['sitetheme']]++; }
 		}
  
-		$defaultusers = $sql->db_Count("user") - $totalct;
+		$defaultusers = $sql->count("user") - $totalct;
 		$themecount[$defaulttheme] += $defaultusers;
 	 
 		$text = "<form method='post' action='".e_SELF."'>
