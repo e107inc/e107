@@ -75,7 +75,7 @@ class comments_admin_ui extends e_admin_ui
     	protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'comment_id'			=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 'forced'=> TRUE),
-            'comment_blocked' 		=> array('title'=> LAN_STATUS,		'type' => 'method',		'inline'=>true, 'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),	 	// Photo
+            'comment_blocked' 		=> array('title'=> LAN_STATUS,		'type' => 'method',		'inline'=>true, /*'writeParms' => array("approved","blocked","pending"), */'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),	 	// Photo
 	
 	   		'comment_type' 			=> array('title'=> LAN_TYPE,			'type' => 'method',			'width' => '10%',  'filter'=>TRUE),	
 			
@@ -144,7 +144,7 @@ class comments_admin_form_ui extends e_admin_form_ui
 	{
 		$frm = e107::getForm();
 		
-		$blocked = array("approved","blocked", "pending");
+		$blocked = array("approved", "blocked", "pending");
 
 		if($mode == 'filter' || $mode == 'batch' || $mode == 'inline') // Custom Filter List for release_type
 		{			

@@ -2470,7 +2470,8 @@ class e_form
 
 				$opts = $wparms['__options'];
 				unset($wparms['__options']);
-
+				$_value = $value;
+				
 				if(vartrue($opts['multiple']) || vartrue($attributes['type']) == 'comma')
 				{
 					$ret = array();
@@ -2494,8 +2495,9 @@ class e_form
 				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
 				{
 					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
-					$source = str_replace('"',"'",json_encode($wparms));
-					$value = "<a class='e-tip e-editable editable-click' data-name='".$field."' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='select' data-pk='".$id."' data-url='".e_SELF."?mode=&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$value."</a>";
+					// SecretR - force object, fix number of bugs
+					$source = str_replace('"',"'",json_encode($wparms, JSON_FORCE_OBJECT));
+					$value = "<a class='e-tip e-editable editable-click' data-name='".$field."' data-value='{$_value}' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='select' data-pk='".$id."' data-url='".e_SELF."?mode=&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$value."</a>";
 				}
 								
 				// return ;
@@ -2686,10 +2688,10 @@ class e_form
 					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 
 					$array = e107::getUserClass()->uc_required_class_list(); //XXX Ugly looking (non-standard) function naming - TODO discuss name change. 
-					$source = str_replace('"',"'",json_encode($array));
+					$source = str_replace('"',"'",json_encode($array, JSON_FORCE_OBJECT));
 					
 					//NOTE Leading ',' required on $value; so it picks up existing value.
-					$value = "<a class='e-tip e-editable editable-click' data-placement='left' data-value=',".$value."' data-name='".$field."' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='select' data-pk='".$id."' data-url='".e_SELF."?mode={$mode}&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$dispvalue."</a>";
+					$value = "<a class='e-tip e-editable editable-click' data-placement='left' data-value='".$value."' data-name='".$field."' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='select' data-pk='".$id."' data-url='".e_SELF."?mode={$mode}&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$dispvalue."</a>";
 					
 				}
 				else 
@@ -2714,7 +2716,7 @@ class e_form
 					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 
 					$array = e107::getUserClass()->uc_required_class_list('classes'); //XXX Ugly looking (non-standard) function naming - TODO discuss name change. 
-					$source = str_replace('"',"'",json_encode($array));
+					$source = str_replace('"',"'",json_encode($array, JSON_FORCE_OBJECT));
 					
 					//NOTE Leading ',' required on $value; so it picks up existing value.
 					$value = "<a class='e-tip e-editable editable-click' data-placement='left' data-value=',".$value."' data-name='".$field."' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='checklist' data-pk='".$id."' data-url='".e_SELF."?mode={$mode}&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$dispvalue."</a>";
@@ -2817,6 +2819,7 @@ class e_form
 
 			case 'method': // Custom Function			
 				$method = $attributes['field']; // prevents table alias in method names. ie. u.my_method. 
+				$_value = $value;
 				$value = call_user_func_array(array($this, $method), array($value, 'read', $parms));
 				
 					// Inline Editing.  
@@ -2824,8 +2827,8 @@ class e_form
 				{
 					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 					$methodParms = call_user_func_array(array($this, $method), array($value, 'inline', $parms));
-					$source = str_replace('"',"'",json_encode($methodParms));
-					$value = "<a class='e-tip e-editable editable-click' data-type='select' data-name='".$field."' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\"  data-pk='".$id."' data-url='".e_SELF."?mode=&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$value."</a>";
+					$source = str_replace('"',"'",json_encode($methodParms, JSON_FORCE_OBJECT));
+					$value = "<a class='e-tip e-editable editable-click' data-type='select' data-value='".$_value."' data-name='".$field."' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\"  data-pk='".$id."' data-url='".e_SELF."?mode=&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$value."</a>";
 				}
 							
 			break;
