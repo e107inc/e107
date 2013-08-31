@@ -621,10 +621,10 @@ function doMaint($opts, $pmPrefs)
 	if (isset($opts['sent']))		// Want pm_from = deleted user and pm_read_del = 1
 	{
 		$cnt = 0;
-		if ($res = $db2->db_Select_gen("SELECT pm.pm_id FROM `#private_msg` AS pm LEFT JOIN `#user` AS u ON pm.`pm_from` = `#user`.`user_id`
+		if ($res = $db2->gen("SELECT pm.pm_id FROM `#private_msg` AS pm LEFT JOIN `#user` AS u ON pm.`pm_from` = `#user`.`user_id`
 					WHERE (pm.`pm_read_del = 1) AND `#user`.`user_id` IS NULL"))
 		{
-			while ($row = $db2->db_Fetch(MYSQL_ASSOC))
+			while ($row = $db2->fetch(MYSQL_ASSOC))
 			{
 				if ($pmHandler->del($row['pm_id']) !== FALSE)
 				{
@@ -638,10 +638,10 @@ function doMaint($opts, $pmPrefs)
 	if (isset($opts['rec']))		// Want pm_to = deleted user and pm_sent_del = 1
 	{
 		$cnt = 0;
-		if ($res = $db2->db_Select_gen("SELECT pm.pm_id FROM `#private_msg` AS pm LEFT JOIN `#user` AS u ON pm.`pm_to` = `#user`.`user_id`
+		if ($res = $db2->gen("SELECT pm.pm_id FROM `#private_msg` AS pm LEFT JOIN `#user` AS u ON pm.`pm_to` = `#user`.`user_id`
 					WHERE (pm.`pm_sent_del = 1) AND `#user`.`user_id` IS NULL"))
 		{
-			while ($row = $db2->db_Fetch(MYSQL_ASSOC))
+			while ($row = $db2->fetch(MYSQL_ASSOC))
 			{
 				if ($pmHandler->del($row['pm_id']) !== FALSE)
 				{
@@ -656,7 +656,7 @@ function doMaint($opts, $pmPrefs)
 
 	if (isset($opts['blocked']))
 	{
-		if ($res = $sql->db_Select_gen("DELETE `#private_msg_block` FROM `#private_msg_block` LEFT JOIN `#user` ON `#private_msg_block`.`pm_block_from` = `#user`.`user_id`
+		if ($res = $db2->gen("DELETE `#private_msg_block` FROM `#private_msg_block` LEFT JOIN `#user` ON `#private_msg_block`.`pm_block_from` = `#user`.`user_id`
 					WHERE `#user`.`user_id` IS NULL"))
 		{
 			$start = max($start + 1, time());
@@ -667,7 +667,7 @@ function doMaint($opts, $pmPrefs)
 			$start = max($start + 1, time());
 			$results[E_MESSAGE_SUCCESS][$start] = str_replace('--COUNT--', $res, ADLAN_PM_69);
 		}
-		if ($res = $sql->db_Select_gen("DELETE `#private_msg_block` FROM `#private_msg_block` LEFT JOIN `#user` ON `#private_msg_block`.`pm_block_to` = `#user`.`user_id`
+		if ($res = $db2->gen("DELETE `#private_msg_block` FROM `#private_msg_block` LEFT JOIN `#user` ON `#private_msg_block`.`pm_block_to` = `#user`.`user_id`
 					WHERE `#user`.`user_id` IS NULL"))
 		{
 			$start = max($start + 1, time());
@@ -728,9 +728,9 @@ function doMaint($opts, $pmPrefs)
 		$missing = array();
 		$orphans = array();
 		$fileArray = $fl->get_files(e_PLUGIN.'pm/attachments');
-		if ($db2->db_Select('private_msg', 'pm_id, pm_attachments', "pm_attachments != ''"))
+		if ($db2->select('private_msg', 'pm_id, pm_attachments', "pm_attachments != ''"))
 		{
-			while ($row = $db2->db_Fetch(MYSQL_ASSOC))
+			while ($row = $db2->fetch(MYSQL_ASSOC))
 			{
 				$attachList = explode(chr(0), $row['pm_attachments']);
 				foreach ($attachList as $a)
