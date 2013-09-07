@@ -175,7 +175,7 @@ class faq_main_ui extends e_admin_ui
 		protected $batchCopy	= true;
 		protected $listOrder	= 'faq_order ASC';
 		protected $sortField	= 'faq_order';
-		protected $preftabs			= array('FAQs',"Details"); // Simpler method than 'fieldsets'. Allows for easy moving of fields between tabs and works as required by 'news' and 'custom pages'. 
+		protected $tabs			= array('FAQs',"Details"); // Simpler method than 'fieldsets'. Allows for easy moving of fields between tabs and works as required by 'news' and 'custom pages'. 
 		
 		//TODO - finish 'user' type, set 'data' to all editable fields, set 'noedit' for all non-editable fields
     	protected $fields = array(
