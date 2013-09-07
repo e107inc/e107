@@ -704,7 +704,6 @@ class e_form
 				\$('#{$fldid}-id').html(\$('#{$hidden_fldid}').val());
 			});
 			\$('#{$fldid}-reset').click(function () {
-				console.log(\$('#{$fldid}-id'));
 				\$('#{$fldid}-id').html('0');
 				\$('#{$hidden_fldid}').val(0);
 				\$('#{$fldid}').val('');
