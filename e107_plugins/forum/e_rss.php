@@ -2,7 +2,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-
+//FIXME TODO - Use v2 method. See chatbox_menu/e_rss.php
 
 //##### create feed for admin, return array $eplug_rss_feed --------------------------------
 $feed = get_forum_rss();
