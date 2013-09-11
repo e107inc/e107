@@ -17,6 +17,8 @@ if (!defined('e107_INIT'))
 	exit;
 }
 
+define('ADMINFEED', 'http://e107.org/adminfeed');
+define('ADMINFEEDMORE', 'http://e107.org/blog');
 
 class adminstyle_infopanel
 {
@@ -25,33 +27,19 @@ class adminstyle_infopanel
 	
 	function __construct()
 	{
-		e107::js('core','tweet/jquery.tweet.js');
-	//	e107::css('core','tweet/jquery.tweet.css');
+		e107::js('core','zrssfeed/jquery.zrssfeed.min.js'); // http://www.zazar.net/developers/jquery/zrssfeed/
 		
-		$code = <<<EOF
+		$code = "
+		
+		
 		jQuery(function($){
-	        $("#e-tweet").tweet({
-	            username: "e107",
-	            join_text: "auto",
-	            avatar_size: 16,
-	 			retweets: false,     
-	            count: 4,
-	            fetch: 5,
-	            template: "{text}<br />- {time} » {retweet_action}",
-	            filter: function(t){ return ! /^@\w+/.test(t.tweet_raw_text); },
-                auto_join_text_default: "",
-	            auto_join_text_ed: "",
-	            auto_join_text_ing: "",
-	            auto_join_text_reply: "",
-	            auto_join_text_url: "",
-	            loading_text: " Loading news...",
-	            refresh_interval: 60
-	        });
-    	});
-EOF;
-	
-		
-	 
+		 $('#e-adminfeed').rssfeed('".ADMINFEED."', {
+    		limit: 3,
+    		header: false,
+    		linktarget: '_blank'
+  			});
+		});
+";
 		
 		global $user_pref; // quick fix. 
 		$pref = e107::getPref();  
@@ -89,8 +77,9 @@ EOF;
 		$pref = e107::getPref();
 		$frm = e107::getForm();
 		
-		/*
-		XXX Check Bootstrap bug is fixed. 
+		
+	//	XXX Check Bootstrap bug is fixed. 
+	/*
 		echo '
           <ul class="thumbnails">
             <li class="span4">
@@ -126,8 +115,7 @@ EOF;
           </ul>
 
 		';
-		*/
-	
+	*/	
 		//TODO LANs throughout.
 		
 		global $style, $user_pref;
@@ -213,7 +201,7 @@ EOF;
 	
 	//  ------------------------------- e107 News --------------------------------
 		
-		$text2 = $ns->tablerender("e107 News","<div id='e-tweet'></div>","core-infopanel_news",true); 
+		$text2 = $ns->tablerender("e107 News","<div id='e-adminfeed'></div><div class='right'><a rel='external' href='".ADMINFEEDMORE."'>".LAN_MORE."</a></div>","core-infopanel_news",true); 
 	
 	
 	
@@ -354,7 +342,7 @@ EOF;
 		$dashboard = '
 		  <ul class="nav nav-tabs">
 		    <li class="active"><a href="#tab1" data-toggle="tab"><i class="icon-signal"></i> Stats</a></li>
-		    <li ><a href="#tab2" data-toggle="tab"><i class="icon-user"></i> Online</a></li>
+		    <li ><a href="#tab2" data-toggle="tab"><i class="icon-user"></i> Online ('.$this->renderOnlineUsers('count').')</a></li>
 		  </ul>
 		  
 		  <div class="tab-content" style="min-height:300px">
@@ -380,7 +368,7 @@ EOF;
 
 
 
-	function renderOnlineUsers()
+	function renderOnlineUsers($data=false)
 	{
 		
 		$ol = e107::getOnline();
@@ -408,6 +396,11 @@ EOF;
 				<tbody>";	
 
 		$online = $ol->userList() + $ol->guestList();
+		
+		if($data == 'count')
+		{
+			return count($online);	
+		}
 				
 		//	echo "Users: ".print_a($online);
 		
