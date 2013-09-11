@@ -25,6 +25,9 @@ if (!e107::isInstalled('calendar_menu')) return;
 include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'_admin_calendar_menu.php');		// RSS messages are in admin language file
 
 
+//FIXME TODO - Use v2 method. See chatbox_menu/e_rss.php
+
+
 //##### create feed for admin, return array $eplug_rss_feed --------------------------------
 $feed['name']		= EC_ADLAN_A12;
 $feed['url']		= 'calendar';			//the identifier for the rss feed url
