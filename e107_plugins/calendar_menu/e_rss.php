@@ -6,80 +6,89 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *	RSS news feed shim
+ *	RSS calendar feed
  */
 
-/**
- *	e107 Event calendar plugin
- *
- *	RSS news feed shim
- *
- *	@package	e107_plugins
- *	@subpackage	event_calendar
- */
+// TODO LAN
 
 if (!defined('e107_INIT')) { exit; }
 
-if (!e107::isInstalled('calendar_menu')) return;
-
-include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'_admin_calendar_menu.php');		// RSS messages are in admin language file
-
-
-//FIXME TODO - Use v2 method. See chatbox_menu/e_rss.php
-
-
-//##### create feed for admin, return array $eplug_rss_feed --------------------------------
-$feed['name']		= EC_ADLAN_A12;
-$feed['url']		= 'calendar';			//the identifier for the rss feed url
-$feed['topic_id']	= '';					//the topic_id, empty on default (to select a certain category)
-$feed['path']		= 'calendar_menu';		//this is the plugin path location
-$feed['text']		= EC_ADLAN_A157;
-$feed['class']		= '0';
-$feed['limit']		= '9';
-//##### ------------------------------------------------------------------------------------
-
-require_once('ecal_class.php');
-$ecal_class = new ecal_class;
-
-//##### create rss data, return as array $eplug_rss_data -----------------------------------
-$current_day	= $ecal_class->cal_date['mday'];
-$current_month	= $ecal_class->cal_date['mon'];
-$current_year	= $ecal_class->cal_date['year'];
-$current		= mktime(0,0,0,$current_month, $current_day, $current_year);
-
-$qry = "
-SELECT e.*, c.event_cat_name
-FROM `#event` AS e
-LEFT JOIN `#event_cat` AS c ON c.event_cat_id = e.event_category
-WHERE e.event_start>='{$current}' AND c.event_cat_class REGEXP '".e_CLASS_REGEXP."'
-ORDER BY e.event_start ASC LIMIT 0,".$this->limit;
-
-$rss = array();
-$sqlrss = new db;
-if($items = $sqlrss->db_Select_gen($qry))
+// v2.x Standard 
+class calendar_menu_rss
 {
-	$i=0;
-	while($rowrss = $sqlrss -> db_Fetch())
+	/**
+	 * Admin RSS Configuration 
+	 */		
+	function config() 
 	{
-		$tmp						= explode(".", $rowrss['event_author']);
-		$rss[$i]['author']			= $tmp[1];
-		$rss[$i]['author_email']	= '';
-		$rss[$i]['link']			= $e107->base_path.$PLUGINS_DIRECTORY."calendar_menu/event.php?".$rowrss['event_start'].".event.".$rowrss['event_id'];
-		$rss[$i]['linkid']			= $rowrss['event_id'];
-		$rss[$i]['title']			= $rowrss['event_title'];
-		$rss[$i]['description']		= '';
-		$rss[$i]['category_name']	= $rowrss['event_cat_name'];
-		$rss[$i]['category_link']	= '';
-		$rss[$i]['datestamp']		= $rowrss['event_start'];
-		$rss[$i]['enc_url']			= "";
-		$rss[$i]['enc_leng']		= "";
-		$rss[$i]['enc_type']		= "";
-		$i++;
+		$config = array();
+	
+		$config[] = array(
+			'name'			=> 'Calendar',
+			'url'			=> 'calendar',
+			'topic_id'		=> '',
+			'description'	=> 'This is the rss feed for the calendar entries', // that's 'description' not 'text' 
+			'class'			=> '0',
+			'limit'			=> '9'
+		);
+		
+		return $config;
 	}
-}
-//##### ------------------------------------------------------------------------------------
+	
+	/**
+	 * Compile RSS Data
+	 * @param $parms array	url, limit, id 
+	 * @return array
+	 */
+	function data($parms='')
+	{
+		$sql = e107::getDb();
+		
+		require_once('ecal_class.php');
+		$ecal_class = new ecal_class;
 
-$eplug_rss_feed[] = $feed;
-$eplug_rss_data[] = $rss;
+		$current_day	= $ecal_class->cal_date['mday'];
+		$current_month	= $ecal_class->cal_date['mon'];
+		$current_year	= $ecal_class->cal_date['year'];
+		$current		= mktime(0,0,0,$current_month, $current_day, $current_year);
+		
+		$rss = array();
+		$i=0;
+
+		$query = "
+		SELECT e.*, c.event_cat_name
+		FROM `#event` AS e
+		LEFT JOIN `#event_cat` AS c ON c.event_cat_id = e.event_category
+		WHERE e.event_start>='{$current}' AND c.event_cat_class REGEXP '".e_CLASS_REGEXP."'
+		ORDER BY e.event_start ASC LIMIT 0,".$parms['limit'];
+
+		if($items = $sql->gen($query))
+		{
+
+			while($row = $sql->fetch())
+			{
+				$tmp						= explode(".", $row['event_author']);
+				$rss[$i]['author']			= $tmp[1];
+				$rss[$i]['author_email']	= ''; 
+				$rss[$i]['link']			= "calendar_menu/event.php?".$row['event_start'].".event.".$row['event_id'];
+				$rss[$i]['linkid']			= $row['event_id'];
+				$rss[$i]['title']			= $row['event_title'];
+				$rss[$i]['description']		= '';
+				$rss[$i]['category_name']	= $row['event_cat_name'];
+				$rss[$i]['category_link']	= '';
+				$rss[$i]['datestamp']		= $row['event_start'];
+				$rss[$i]['enc_url']			= "";
+				$rss[$i]['enc_leng']		= "";
+				$rss[$i]['enc_type']		= "";
+				$i++;
+			}
+
+		}				
+					
+		return $rss;
+	}
+		
+	
+}
 
 ?>
