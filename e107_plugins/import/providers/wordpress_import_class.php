@@ -35,7 +35,47 @@ class wordpress_import extends base_import_class
 	public $supported	= array('users','news','page','links');
 	public $mprefix		= 'wp_';	
 	
+	function init()
+	{
+		
+		
+		$this->newsAuthor	= intval($_POST['news_author']);
+		
+	//	if($data = e107::getDb('phpbb')->retrieve('userclass_classes','userclass_id',"userclass_name='FORUM_MODERATOR' "))
+	//	{
+	//		$this->forum_moderator_class = $data;
+	//	}
+		
+	} 	
 	
+	function config()
+	{
+		$sql = e107::getDb();
+		
+		$sql->select('user','user_id, user_name','user_admin = 1');
+		
+		$adminList = array();
+		
+		$adminList[0] = "Default";
+		
+		while($row = $sql->fetch())
+		{
+			$id = $row['user_id'];
+			$adminList[$id] = $row['user_name'];	
+		}
+		$frm = e107::getForm();
+		
+		$var[0]['caption']	= "News Author Override (optional)";
+		$var[0]['html'] 	= $frm->select('news_author',$adminList);
+		$var[0]['help'] 	= "Change the author of the news items";
+		
+	//	$var[1]['caption']	= "Include revisions";
+	//	$var[1]['html'] 	= $frm->checkbox('news_revisions',1);
+	//	$var[1]['help'] 	= "Change the author of the news items";
+
+		return $var;
+	}	
+			
 
 	
   // Set up a query for the specified task.
@@ -59,9 +99,9 @@ class wordpress_import extends base_import_class
 					LEFT JOIN {$this->DBPrefix}usermeta AS l ON (u.ID = l.user_id AND l.meta_key = 'last_name')
 					GROUP BY u.ID";
 
-			//	$this->ourDB -> db_Select_gen($query);
+			//	$this->ourDB -> gen($query);
 
-				$result = $this->ourDB->db_Select_gen($query);
+				$result = $this->ourDB->gen($query);
 
 				if ($result === FALSE) return FALSE;
 			
@@ -79,26 +119,26 @@ class wordpress_import extends base_import_class
 			break;
 		
 			case 'news' :
-				$query =  "SELECT * FROM {$this->DBPrefix}posts WHERE post_type = 'post' AND post_status !='trash' ORDER BY ID";
-				$result = $this->ourDB->db_Select_gen($query);
+				$query =  "SELECT * FROM {$this->DBPrefix}posts WHERE (post_type = 'post') AND post_status !='trash' AND post_status != 'auto-draft' ORDER BY ID";
+				$result = $this->ourDB->gen($query);
 				if ($result === FALSE) return FALSE;
 			break;
 			
 			case 'page' :
 				$query =  "SELECT * FROM {$this->DBPrefix}posts WHERE post_type = 'page' AND post_status !='trash' ORDER BY ID";
-				$result = $this->ourDB->db_Select_gen($query);
+				$result = $this->ourDB->gen($query);
 				if ($result === FALSE) return FALSE;
 			break;
 			
 			case 'media' :
 				$query =  "SELECT * FROM {$this->DBPrefix}posts WHERE post_type = 'attachment' AND post_status !='trash' ORDER BY ID";
-				$result = $this->ourDB->db_Select_gen($query);
+				$result = $this->ourDB->gen($query);
 				if ($result === FALSE) return FALSE;
 			break;
 				
 			case 'links':
 			 	$query =  "SELECT * FROM {$this->DBPrefix}links WHERE link_id !='' ORDER BY link_id";
-				$result = $this->ourDB->db_Select_gen($query);
+				$result = $this->ourDB->gen($query);
 				if ($result === FALSE) return FALSE;
 			break;
 
@@ -205,22 +245,22 @@ class wordpress_import extends base_import_class
 		 */	
 	
 	//		$target['news_id']					= $source['ID'];
-			$target['news_title']				= $source['post_title'];
+			$target['news_title']				= $this->convertText($source['post_title']);
 			$target['news_sef']					= $source['post_name'];
-			$target['news_body']				= (vartrue($source['post_content'])) ? "[html]".$source['post_content']."[/html]" : ""; 
+			$target['news_body']				= (vartrue($source['post_content'])) ? "[html]".$this->convertText($source['post_content'])."[/html]" : ""; 
 		//	$target['news_extended']			= '';
 		//	$target['news_meta_keywords']		= '';
 		//	$target['news_meta_description']	= '';
 			$target['news_datestamp']			= strtotime($source['post_date']);
-			$target['news_author']				= $source['post_author'];
+			$target['news_author']				= ($this->newsAuthor !=0) ? $this->newsAuthor : $source['post_author'];
 		//	$target['news_category']			= '';
 			$target['news_allow_comments']		= ($source['comment_status']=='open') ? 1 : 0;
 			$target['news_start']				= '';
 			$target['news_end']					= '';
-			$target['news_class']				= '';
-			$target['news_render_type']			= '';
+			$target['news_class']				= $this->newsClass($source['post_status']);
+		//	$target['news_render_type']			= '0';
 			$target['news_comment_total']		= $source['comment_count'];
-			$target['news_summary']				= $source['post_excerpt'];
+			$target['news_summary']				= $this->convertText($source['post_excerpt']);
 			$target['news_thumbnail']			= '';
 			$target['news_sticky']				= '';
 
@@ -232,6 +272,14 @@ class wordpress_import extends base_import_class
 
 
 
+	// Convert Wordpress Status to e107 News visibility class. 
+	function newsClass($status)
+	{
+		$convert = array('publish'=> e_UC_PUBLIC, 'inherit' => e_UC_NOBODY, 'draft' => e_UC_NOBODY);
+		
+		return intval($convert[$status]);
+	
+	}
 
 	/**
 	 * Align source data to e107 Page Table 
@@ -257,9 +305,9 @@ class wordpress_import extends base_import_class
 		}
 		
 	// 	$target['page_id']				= $source['ID']; //  auto increment
-		$target['page_title']			= $source['post_title'];
+		$target['page_title']			= $this->convertText($source['post_title']);
 		$target['page_sef']				= $source['post_name'];
-		$target['page_text']			= (vartrue($source['post_content'])) ? "[html]".$source['post_content']."[/html]" : ""; 
+		$target['page_text']			= (vartrue($source['post_content'])) ? "[html]".$this->convertText($source['post_content'])."[/html]" : ""; 
 		$target['page_metakeys']		= '';
 		$target['page_metadscr']		= '';
 		$target['page_datestamp']		= strtotime($source['post_date']);
@@ -321,9 +369,9 @@ class wordpress_import extends base_import_class
 		*/
 		
 			 
-		$target['link_name']			= $source['link_name'];
+		$target['link_name']			= $this->convertText($source['link_name']);
 		$target['link_url']				= $source['link_url'];
-		$target['link_description']		= (vartrue($source['link_description'])) ? "[html]".$source['link_description']."[/html]" : "";
+		$target['link_description']		= (vartrue($source['link_description'])) ? "[html]".$this->convertText($source['link_description'])."[/html]" : "";
 	//	$target['link_button']			= '';
 	//	$target['link_category']		= '';
 	//	$target['link_order']			= '';
@@ -341,7 +389,20 @@ class wordpress_import extends base_import_class
 	
 
 
-	
+	function convertText($text)
+	{
+		//$text = e107::getParser()->toDb($text);
+		return $text;
+					
+		$text 		= html_entity_decode($text,ENT_QUOTES,'UTF-8');
+
+		$detected 	= mb_detect_encoding($text); // 'ISO-8859-1'
+		$text 		= iconv($detected,'UTF-8',$text);
+
+		
+
+		return $text;
+	}
 
 	
 	

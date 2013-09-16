@@ -150,7 +150,7 @@ class import_main_ui extends e_admin_ui
 	function help()
 	{
 		
-		return "Some help text from admin-ui";	
+		return "Some help text for admin-ui";	
 		
 	}
 	
