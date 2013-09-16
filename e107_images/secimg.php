@@ -40,7 +40,18 @@ require_once(realpath(e_BASE.$HANDLERS_DIRECTORY.DIRECTORY_SEPARATOR."secure_img
 
 $sim = new secure_image();
 
-$sim->render($_SERVER['QUERY_STRING']);
+$code = $_GET['id'];
+
+if(preg_match('/^[a-f0-9]{6}$/i', $_GET['clr'])) //hex color is valid
+{
+	$color = $_GET['clr'];
+} 
+else
+{
+	$color = "cccccc";		
+}
+
+$sim->render($code,$color);
 
 exit;
 

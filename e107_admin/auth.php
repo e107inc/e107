@@ -18,6 +18,10 @@ if (!defined('e107_INIT'))
 {
 	exit;
 }
+
+define('e_CAPTCHA_FONTCOLOR','#F9A533');
+
+
 // Required for a clean v1.x -> v2 upgrade. 
 $core = e107::getConfig('core'); 		
 if($core->get('admintheme') != 'bootstrap')
