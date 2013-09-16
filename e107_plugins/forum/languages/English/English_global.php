@@ -1,23 +1,10 @@
 <?php
-/*
- * e107 website system
- *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
- * Released under the terms and conditions of the
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
- *
- * Forum plugin notify language file
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/languages/English/lan_forum_notify.php,v $
- * $Revision$
- * $Date$
- * $Author$
- *
-*/
 
-// DEPRECATED FILE - NOTIFY LAN ARE NOW IN GLOBAL
+define("LAN_PLUGIN_FORUM_NAME", "Forum");
+define("LAN_PLUGIN_FORUM_DESC", "This plugin is a fully featured forum system.");
 
-/*define('FORUM_NT_1', 'Forum Events');
+// Notify
+define('FORUM_NT_1', 'Forum Events');
 define('FORUM_NT_2', 'Thread');
 define('FORUM_NT_3', 'Post');
 define('FORUM_NT_4', 'added by');
@@ -34,4 +21,6 @@ define('FORUM_NT_NEWTHREAD_PROB', 'New thread created by probationary member');
 define('FORUM_NT_THREAD_DELETED', 'Thread deleted');
 define('FORUM_NT_THREAD_SPLIT', 'Thread split');
 define('FORUM_NT_POST_DELETED', 'Post deleted');
-define('FORUM_NT_POST_REPORTED', 'Post reported');*/
+define('FORUM_NT_POST_REPORTED', 'Post reported');
+
+?>
