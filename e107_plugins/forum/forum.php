@@ -243,7 +243,7 @@ $newflag_list = $forum->forumGetUnreadForums();
 
 if (!$forumList)
 {
-	$ns->tablerender(PAGE_NAME, "<div style='text-align:center'>".LAN_FORUM_0067.'</div>', array('forum', '51'));
+	$ns->tablerender(LAN_FORUM_0001, "<div style='text-align:center'>".LAN_FORUM_0067.'</div>', array('forum', '51'));
 	require_once(FOOTERF);
 	exit;
 }
