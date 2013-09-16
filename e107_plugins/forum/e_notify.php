@@ -10,75 +10,94 @@
  *
 */
 
+// TODO - create notify messages + LAN
+
 if (!defined('e107_INIT')) { exit; }
 
-if(defined('ADMIN_PAGE') && ADMIN_PAGE === true)
-{
-	include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_notify.php'); // FIXME needs changing after forum lan rewrite
-	$config_category = FORUM_NT_1;
-	$config_events = array(
-		'forum_nt' => FORUM_NT_NEWTHREAD,
-		'forum_ntp' => FORUM_NT_NEWTHREAD_PROB,
-		'forum_thread_del' => FORUM_NT_THREAD_DELETED,
-		'forum_thread_split' => FORUM_NT_THREAD_SPLIT,
-		'forum_post_del' => FORUM_NT_POST_DELETED,
-		'forum_post_rep' => FORUM_NT_POST_REPORTED
-	);
+// v2.x Standard 
+class forum_notify extends notify
+{		
+	function config()
+	{
+			
+		$config = array();
+	
+		$config[] = array(
+			'name'			=> FORUM_NT_NEWTOPIC,
+			'function'		=> "forum_nt",
+			'category'		=> ''
+		);	
+
+		$config[] = array(
+			'name'			=> FORUM_NT_NEWTOPIC_PROB,
+			'function'		=> "forum_ntp",
+			'category'		=> ''
+		);
+
+		$config[] = array(
+			'name'			=> FORUM_NT_TOPIC_DELETED,
+			'function'		=> "forum_topic_del",
+			'category'		=> ''
+		);	
+
+		$config[] = array(
+			'name'			=> FORUM_NT_TOPIC_SPLIT,
+			'function'		=> "forum_topic_split",
+			'category'		=> ''
+		);	
+
+		$config[] = array(
+			'name'			=> FORUM_NT_POST_DELETED,
+			'function'		=> "forum_post_del",
+			'category'		=> ''
+		);	
+
+		$config[] = array(
+			'name'			=> FORUM_NT_POST_REPORTED,
+			'function'		=> "forum_post_rep",
+			'category'		=> ''
+		);		
+		
+		return $config;
+	}
+	
+	function forum_nt($data) 
+	{
+		$message = 'todo';
+		$this->send('forum_nt', FORUM_NT_6, $message);
+	}
+
+	function forum_ntp($data)
+	{
+		$message = 'todo';
+		$this->send('forum_nt', FORUM_NT_7, $message);
+	}
+
+	function forum_topic_del($data) 
+	{
+		$message = 'todo';
+		$this->send('forum_topic_del', FORUM_NT_8, $message);
+	}
+
+	function forum_topic_split($data) 
+	{
+		$message = 'todo';
+		$this->send('forum_topic_split', FORUM_NT_9, $message);
+	}
+
+	function forum_post_del($data) 
+	{
+		$message = 'todo';
+		$this->send('forum_post_del', FORUM_NT_10, $message);
+	}
+
+	function forum_post_rep($data) 
+	{
+		$message = 'todo';
+		$this->send('forum_post_rep', FORUM_NT_11, $message);
+	}
+	
 }
 
-if (!function_exists('notify_forum_nt'))
-{
-	function notify_forum_nt($data)
-	{
-		$e107 = e107::getInstance();
-		include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_notify.php');
-		$message = 'todo';
-		$e107->notify->send('forum_nt', FORUM_NT_6, $message);
-	}
-}
-
-if (!function_exists('notify_forum_ntp'))
-{
-	function notify_forum_ntp($data)
-	{
-		$e107 = e107::getInstance();
-		include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_notify.php');
-		$message = 'todo';
-		$e107->notify->send('forum_ntp', FORUM_NT_7, $message);
-	}
-}
-
-if (!function_exists('forum_thread_del'))
-{
-	function forum_thread_del($data)
-	{
-		$e107 = e107::getInstance();
-		include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_notify.php');
-		$message = 'todo';
-		$e107->notify->send('forum_thread_del', FORUM_NT_8, $message);
-	}
-}
-
-if (!function_exists('forum_thread_split'))
-{
-	function forum_thread_split($data)
-	{
-		$e107 = e107::getInstance();
-		include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_notify.php');
-		$message = 'todo';
-		$e107->notify->send('forum_thread_split', FORUM_NT_8, $message);
-	}
-}
-
-if (!function_exists('forum_post_rep'))
-{
-	function forum_post_rep($data)
-	{
-		$e107 = e107::getInstance();
-		include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_notify.php');
-		$message = 'todo';
-		$e107->notify->send('forum_post_rep', FORUM_NT_9, $message);
-	}
-}
 
 ?>
