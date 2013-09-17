@@ -199,7 +199,7 @@ class secure_image
 		}
 			
 		$frm = e107::getForm();	
-		return $frm->hidden("rand_num", $this->random_number).$frm->text("code_verify", "", 20, array("size"=>20,"title"=> LAN_ENTER_CODE,'required'=>1));
+		return $frm->hidden("rand_num", $this->random_number).$frm->text("code_verify", "", 20, array("size"=>20,"title"=> LAN_ENTER_CODE,'required'=>1, 'placeholder'=>LAN_ENTER_CODE));
 	}
 	
 	function renderLabel()

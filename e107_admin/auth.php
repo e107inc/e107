@@ -219,7 +219,7 @@ else
 			.submit				{  }
 			
 		
-			.placeholder 		{	color: #bbb; font-style:italic	}
+			.placeholder 		{ color: #646667; font-style:italic	}
 	
 			::-webkit-input-placeholder { font-style:italic;	color: #bbb; 	}
 		
@@ -230,6 +230,8 @@ else
 			#username			{background: url(".e_IMAGE."admin_images/admins_16.png) no-repeat scroll 7px 9px; padding:7px; padding-left:30px; width:218px; }
 				 
 			#userpass			{background: url(".e_IMAGE."admin_images/lock_16.png) no-repeat scroll 7px 9px; padding:7px;padding-left:30px; width:218px; }
+			
+			#code-verify		{ padding: 7px; width: 140px }
 			
 			input[disabled] 	{	color: silver;	}
 			button[disabled] span	{	color: silver;	}
