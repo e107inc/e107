@@ -400,8 +400,7 @@ class news_shortcodes extends e_shortcode
 			$src =  (is_readable(e_IMAGE_ABS."newspost_images/".$category_icon)) ? e_IMAGE_ABS."newspost_images/".$category_icon : e_IMAGE_ABS."icons/".$category_icon;
 		}
 		
-		
-
+		$alt_text = e107::getParser()->toHTML($this->news_item['category_name'], FALSE ,'defs');
 		//TODO - remove inline styles
 		if($this->param['caticon'] == ''){$this->param['caticon'] = 'border:0px';}
 
@@ -412,12 +411,12 @@ class news_shortcodes extends e_shortcode
 			break;
 
 			case 'tag':
-				return "<img class='news_image' src='{$src}' alt='' style='".$this->param['caticon']."' />";
+				return "<img class='news_image' src='{$src}' alt='$alt_text' style='".$this->param['caticon']."' />";
 			break;
 
 			case 'url':
 			default:
-				return "<a href='".e107::getUrl()->create('news/list/category', $this->news_item)."'><img class='img-rounded' style='".$this->param['caticon']."' src='".$src."' alt='' /></a>";
+				return "<a href='".e107::getUrl()->create('news/list/category', $this->news_item)."'><img class='img-rounded' style='".$this->param['caticon']."' src='".$src."' alt='$alt_text' /></a>";
 			break;
 		}
 	}
