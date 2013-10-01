@@ -181,6 +181,12 @@ class news_shortcodes extends e_shortcode
 		}
 	}
 
+
+	function sc_newsavatar()
+	{
+		return vartrue($this->news_item['user_id']) ? e107::getParser()->parseTemplate("{USER_AVATAR=".$this->news_item['user_id']."}",true) : '';
+	} 
+
 	function sc_newscommentlink($parm)
 	{
 		return ($this->news_item['news_allow_comments'] ? $this->param['commentoffstring'] : " <a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$this->param['commentlink'].'</a>');
