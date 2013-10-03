@@ -1856,18 +1856,34 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		if($type == 'language')
 		{
-			
-			$languages = e107::getLanguage()->installed();//array('English','French');
+			$slng = e107::getLanguage();
+			$languages = $slng->installed();//array('English','French');
 			if(count($languages) > 1)
 			{
 				$c = 0;
 				foreach($languages as $lng)
 				{			
-					$checked = ($lng == e_LANGUAGE) ? "<i class='icon-ok'></i> " : "<i >&nbsp;</i>&nbsp;";
+					$checked = "<i >&nbsp;</i>&nbsp;";
+					$code = $slng->convert($lng);
+					
+					if($lng == e_LANGUAGE)
+					{
+						$checked = "<i class='icon-ok'></i> ";
+						$link = '#';
+					}
+					elseif(e107::getPref('multilanguage_subdomain'))
+					{
+						$code = ($lng == e107::getPref('sitelanguage')) ? 'www' : $code;
+						$link = str_replace($_SERVER['HTTP_HOST'], $code.'.'.e_DOMAIN, e_REQUEST_URL); // includes query string
+					}
+					else
+					{
+						$link = e_REQUEST_URL.(e_QUERY ? '&elan='.$lng : '?elan='.$lng);
+					}
 					
 					$tmp[$c]['text'] = $lng;
 					$tmp[$c]['description'] = '';
-					$tmp[$c]['link'] = $lng == e_LANGUAGE ? '#' : e_SELF.'?elan='.$lng;
+					$tmp[$c]['link'] = $link;
 					$tmp[$c]['image'] = $checked; 
 					$tmp[$c]['image_large'] = '';
 					$tmp[$c]['image_src'] = '';
