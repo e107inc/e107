@@ -167,7 +167,7 @@ $ADMIN_HEADER = '<div class="navbar '.$inverse.' navbar-fixed-top">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a> 
-          <a class="brand " href="'.e_ADMIN_ABS.'admin.php" title="Return to Front Panel"><img class="admin-logo" src="'.e_THEME.'bootstrap/images/e107_adminlogo.png" alt="e107" /></a>
+          <a class="brand " href="'.e_ADMIN_ABS.'admin.php" title="Return to Front Panel"><img class="admin-logo" src="'.e_THEME_ABS.'bootstrap/images/e107_adminlogo.png" alt="e107" /></a>
           <div class="nav-collapse collapse">
             
             
