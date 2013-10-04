@@ -2495,7 +2495,8 @@ class e_parser
                                     'default'   => array('id', 'style', 'class'),
                                     'img'       => array('id', 'src', 'style', 'class', 'alt', 'title', 'width', 'height'),
                                     'a'         => array('id', 'href', 'style', 'class', 'title', 'target'),
-                                    'script'	=> array('type', 'src', 'language')
+                                    'script'	=> array('type', 'src', 'language'),
+                                    'iframe'	=> array('id', 'src', 'frameborder', 'class', 'width', 'height', 'style')
                                   ); 
     private $badAttrValues       = array("javascript[\s]*?:","alert\(","vbscript[\s]*?:","data:text\/html", "mhtml[\s]*?:", "data:[\s]*?image");
     private $allowedTags        = array('html', 'body','div','a','img','table','tr', 'td', 'th', 'tbody', 'thead', 'colgroup', 'b', 
