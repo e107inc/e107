@@ -1453,10 +1453,11 @@ class e_model extends e_object
 
     /**
      * Generic load data from DB
+	 * @param mixed $id
      * @param boolean $force
      * @return e_model
      */
-	public function load($id, $force = false)
+	public function load($id = null, $force = false)
 	{
 		if(!$force && $this->getId())
 		{
@@ -1468,8 +1469,8 @@ class e_model extends e_object
 			$this->setData(array())
 				->_clearCacheData();
 		}
-		$id = e107::getParser()->toDB($id);
-		if(!$id)
+		if($id) $id = e107::getParser()->toDB($id);
+		if(!$id && !$this->getParam('db_query'))
 		{
 			return $this;
 		}
