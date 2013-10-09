@@ -1207,10 +1207,10 @@ class e_parse extends e_parser
 		// it should work for any characters encoding
 		
 		// FIXME - INVESTIGATE this one, switch to utf8 aware methods
-		$leftAmp = strrpos(substr($ret, -8), '&');
+		$leftAmp = $this->ustrrpos($this->usubstr($ret, -8), '&');
 		if($leftAmp)
 		{
-			$ret = substr($ret, 0, strlen($ret) - 8 + $leftAmp);
+			$ret = $this->usubstr($ret, 0, $this->ustrlen($ret) - 8 + $leftAmp);
 		}
 
 		return $ret.$more;
