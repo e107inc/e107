@@ -3949,7 +3949,7 @@ class eResponse
 			$attrData .= '<meta';
 			foreach ($attr as $p => $v) 
 			{
-				$attrData .= ' '.preg_replace('/[^\w\-]/', '', $p).'="'.str_replace(array('"', '<'), '', $v).'"';
+				$attrData .= ' '.preg_replace('/[^\w\pL\-]/u', '', $p).'="'.str_replace(array('"', '<'), '', $v).'"';
 			}
 			$attrData .= ' />'."\n";
 		}
