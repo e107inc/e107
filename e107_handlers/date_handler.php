@@ -251,7 +251,7 @@ class convert
 			$tdata['tm_hour'], 
 			$tdata['tm_min'], 
 			$tdata['tm_sec'], 
-			$tdata['tm_mon'] + 1, 
+			$tdata['tm_mon'], 
 			$tdata['tm_mday'], 
 			($tdata['tm_year'] + 1900) 
 		); 
