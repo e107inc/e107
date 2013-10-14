@@ -3625,7 +3625,7 @@ class e_admin_controller_ui extends e_admin_controller
 					{
 						$tableSJoinArr[] = "{$tparams['__tablePath']}*";
 					}
-					elseif($fields)
+					else
 					{
 						$tableSJoinArr[] = $fields;
 						/*$fields = explode(',', $fields);
