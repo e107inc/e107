@@ -181,6 +181,12 @@ class news_shortcodes extends e_shortcode
 		}
 	}
 
+
+	function sc_newsavatar()
+	{
+		return vartrue($this->news_item['user_id']) ? e107::getParser()->parseTemplate("{USER_AVATAR=".$this->news_item['user_id']."}",true) : '';
+	} 
+
 	function sc_newscommentlink($parm)
 	{
 		return ($this->news_item['news_allow_comments'] ? $this->param['commentoffstring'] : " <a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$this->param['commentlink'].'</a>');
@@ -400,8 +406,7 @@ class news_shortcodes extends e_shortcode
 			$src =  (is_readable(e_IMAGE_ABS."newspost_images/".$category_icon)) ? e_IMAGE_ABS."newspost_images/".$category_icon : e_IMAGE_ABS."icons/".$category_icon;
 		}
 		
-		
-
+		$alt_text = e107::getParser()->toHTML($this->news_item['category_name'], FALSE ,'defs');
 		//TODO - remove inline styles
 		if($this->param['caticon'] == ''){$this->param['caticon'] = 'border:0px';}
 
@@ -412,12 +417,12 @@ class news_shortcodes extends e_shortcode
 			break;
 
 			case 'tag':
-				return "<img class='news_image' src='{$src}' alt='' style='".$this->param['caticon']."' />";
+				return "<img class='news_image' src='{$src}' alt='$alt_text' style='".$this->param['caticon']."' />";
 			break;
 
 			case 'url':
 			default:
-				return "<a href='".e107::getUrl()->create('news/list/category', $this->news_item)."'><img class='img-rounded' style='".$this->param['caticon']."' src='".$src."' alt='' /></a>";
+				return "<a href='".e107::getUrl()->create('news/list/category', $this->news_item)."'><img class='img-rounded' style='".$this->param['caticon']."' src='".$src."' alt='$alt_text' /></a>";
 			break;
 		}
 	}

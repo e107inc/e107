@@ -36,7 +36,7 @@ class chatbox_menu_notify extends notify // plugin-folder + '_notify'
 {		
 	function config()
 	{
-	//	include_lan(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php"); Use English_global.php instead. 
+		//include_lan(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php"); Use English_global.php instead. 
 		
 		$config = array();
 	
@@ -51,7 +51,7 @@ class chatbox_menu_notify extends notify // plugin-folder + '_notify'
 	
 	function cboxpost($data) 
 	{
-		include_lan(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php"); // Use English_global.php instead. 
+		//include_lan(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php"); // Use English_global.php instead. 
 	
 		$message = NT_LAN_CB_3.': '.USERNAME.' ('.NT_LAN_CB_4.': '.e107::getIPHandler()->ipDecode($data['ip']).' )<br />';
 		$message .= NT_LAN_CB_5.':<br />'.$data['cmessage'].'<br /><br />';

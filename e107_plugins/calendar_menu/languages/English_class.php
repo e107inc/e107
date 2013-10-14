@@ -48,7 +48,8 @@ define('EC_LAN_RECUR_1300', 'Third');
 define('EC_LAN_RECUR_1400', 'Fourth');
 
 
-// Notify
+/*
+// Notify - moved to Global
 define('NT_LAN_EC_1', 'Event Calendar Events');
 define('NT_LAN_EC_2', 'Event Updated');
 define('NT_LAN_EC_3', 'Update by');
@@ -56,7 +57,7 @@ define('NT_LAN_EC_4', 'IP Address');
 define('NT_LAN_EC_5', 'Message');
 define('NT_LAN_EC_6', 'Event Calendar - Event added');
 define('NT_LAN_EC_7', 'New event posted');
-define('NT_LAN_EC_8', 'Event Calendar - Event modified');
+define('NT_LAN_EC_8', 'Event Calendar - Event modified');*/
 
 
 ?>

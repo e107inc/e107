@@ -378,7 +378,14 @@ class e_media
 		}
 		if($cat)
 		{
-			$catArray[] = $cat; 
+			if(strpos($cat, "|") && !strpos($cat,"+") )
+			{
+				$catArray = explode("|",$cat);	
+			}
+			else
+			{
+				$catArray[] = $cat; 
+			}
 	//		$inc[] = "media_category LIKE '%".$cat."%' "; // for multiple category field. 
 		//	$inc[] = "media_category REGEXP '(^|,)(".$cat.")(,|$)' "; // for multiple category field. 
 		}

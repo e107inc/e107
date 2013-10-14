@@ -898,7 +898,10 @@ li.plupload_delete a {
 	background-position: -525px 0; width: 16px; height: 16px; 	
 }
 
-
+li.rssRow > div {
+	font-size: 80%;
+	color: rgb(153, 153, 153);
+}
 
 
 
