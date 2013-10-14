@@ -41,14 +41,5 @@ define("CHATBOX_L23", "Error!");
 define("CHATBOX_L24", "You do not have the correct permissions to view this page.");
 define("CHATBOX_L25", "[ this post has been blocked by admin ]");
 
-// Notify
-define("NT_LAN_CB_1", "Chatbox Events");
-define("NT_LAN_CB_2", "Message posted");
-define("NT_LAN_CB_3", "Posted by");
-define("NT_LAN_CB_4", "IP Address");
-define("NT_LAN_CB_5", "Message");
-define("NT_LAN_CB_6", "Chatbox Message Posted");
-
-
 define("LAN_CHATBOX_100", "Type your message here.");
 ?>

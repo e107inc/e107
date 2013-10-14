@@ -15,7 +15,9 @@
  *
 */
 
-define('FORUM_NT_1', 'Forum Events');
+// DEPRECATED FILE - NOTIFY LAN ARE NOW IN GLOBAL
+
+/*define('FORUM_NT_1', 'Forum Events');
 define('FORUM_NT_2', 'Thread');
 define('FORUM_NT_3', 'Post');
 define('FORUM_NT_4', 'added by');
@@ -32,4 +34,4 @@ define('FORUM_NT_NEWTHREAD_PROB', 'New thread created by probationary member');
 define('FORUM_NT_THREAD_DELETED', 'Thread deleted');
 define('FORUM_NT_THREAD_SPLIT', 'Thread split');
 define('FORUM_NT_POST_DELETED', 'Post deleted');
-define('FORUM_NT_POST_REPORTED', 'Post reported');
+define('FORUM_NT_POST_REPORTED', 'Post reported');*/

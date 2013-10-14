@@ -24,6 +24,7 @@ class secure_image
 	protected $MYSQL_INFO;
 	protected $THIS_DIR;
 	protected $BASE_DIR;
+	public $FONT_COLOR = "90,90,90";
 
 	function secure_image()
 	{
@@ -135,17 +136,28 @@ class secure_image
 	}
 	
 	
-
+	//XXX Discuss - Add more posibilities for themers? e_CAPTCHA_BGIMAGE, e_CAPTCH_WIDTH, e_CAPTCHA_HEIGHT?
 	function r_image()
 	{
 		if ($user_func = e107::getOverride()->check($this,'r_image'))
 		{
 	 		return call_user_func($user_func);
 		}
-
+		
+		if(defined('e_CAPTCHA_FONTCOLOR'))
+		{
+			$color = str_replace("#","", e_CAPTCHA_FONTCOLOR);	
+		}
+		else
+		{
+			$color = 'cccccc';		
+		}
+		
 		$code = $this->create_code();
-		return "<img src='".e_HTTP.$this->IMAGES_DIRECTORY."secimg.php?{$code}' class='icon secure-image' alt='Missing Code' style='max-width:100%' />";
+		return "<img src='".e_HTTP.$this->IMAGES_DIRECTORY."secimg.php?id={$code}&clr={$color}' class='icon secure-image' alt='Missing Code' style='max-width:100%' />";
 	}
+	
+	
 	
 	
 	function renderImage() // Alias of r_image
@@ -154,6 +166,30 @@ class secure_image
 	}
 
 
+	function hex2rgb($hex) 
+	{
+		$hex = str_replace("#", "", $hex);
+
+		if(strlen($hex) == 3) 
+		{
+			$r = hexdec(substr($hex,0,1).substr($hex,0,1));
+			$g = hexdec(substr($hex,1,1).substr($hex,1,1));
+			$b = hexdec(substr($hex,2,1).substr($hex,2,1));
+		} 
+		else 
+		{
+			$r = hexdec(substr($hex,0,2));
+			$g = hexdec(substr($hex,2,2));
+			$b = hexdec(substr($hex,4,2));
+		}
+	   
+		$rgb = array($r, $g, $b);
+
+		return implode(",", $rgb); 
+	}
+	
+	
+	
 
 	function renderInput()
 	{
@@ -163,7 +199,7 @@ class secure_image
 		}
 			
 		$frm = e107::getForm();	
-		return $frm->hidden("rand_num", $this->random_number).$frm->text("code_verify", "", 20, array("size"=>20,"title"=> LAN_ENTER_CODE,'required'=>1));
+		return $frm->hidden("rand_num", $this->random_number).$frm->text("code_verify", "", 20, array("size"=>20,"title"=> LAN_ENTER_CODE,'required'=>1, 'placeholder'=>LAN_ENTER_CODE));
 	}
 	
 	function renderLabel()
@@ -180,8 +216,14 @@ class secure_image
 	/**
 	 * Render the generated Image. Called without class2 environment (standalone).
 	 */
-	function render($qcode)
+	function render($qcode, $color='')
 	{
+		if($color)
+		{
+			$this->FONT_COLOR = $this->hex2rgb($color);
+		}
+		
+	//	echo "COLOR: ".$this->FONT_COLOR;
 		
 		require_once($this->BASE_DIR.$this->HANDLERS_DIRECTORY."override_class.php");
 		$over = new override;
@@ -262,7 +304,7 @@ class secure_image
 			$fontpath 				= $this->BASE_DIR.$this->FONTS_DIRECTORY;
 			$secureimg['image'] 	= "generic/code_bg";
 			$secureimg['angle']		= "0";
-			$secureimg['color'] 	= "90,90,90"; // red,green,blue
+			$secureimg['color'] 	= $this->FONT_COLOR; // red,green,blue
 			$secureimg['x']			= "1";
 			$secureimg['y']			= "21";
 			
@@ -323,18 +365,21 @@ class secure_image
 
 
         // removing the black from the placeholder
-        
+      	 $image  = $this->imageCreateTransparent(100,35); //imagecreatetruecolor(100, 35);
+	
+		
 
 		if(isset($secureimg['color']))
 		{
 			$tmp = explode(",",$secureimg['color']);
 			$text_color = imagecolorallocate($image,$tmp[0],$tmp[1],$tmp[2]);
+						
 		}
 		else
 		{
 			$text_color = imagecolorallocate($image, 90, 90, 90);
 		}
-
+		
 		header("Content-type: image/{$type}");
 
 		if(isset($secureimg['font']) && is_readable($fontpath.$secureimg['font']))
@@ -345,6 +390,8 @@ class secure_image
 		{
 			imagestring ($image, 5, 12, 2, $code, $text_color);
 		}
+
+		imagesavealpha($image, true);
 
 		switch($type)
 		{
@@ -363,7 +410,14 @@ class secure_image
 	}
 
 
-
+	function imageCreateTransparent($x, $y) 
+	{
+    	$imageOut = imagecreatetruecolor($x, $y);
+    	$backgroundColor = imagecolorallocatealpha($imageOut, 0, 0, 0, 127);
+    	imagefill($imageOut, 0, 0, $backgroundColor);
+    	return $imageOut;
+	}
+	
 
 
 
