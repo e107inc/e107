@@ -119,7 +119,7 @@ class login_menu_class
         if(($tmp = getcachedvars('loginbox_elist')) !== FALSE) return $tmp;
         
         $ret = array();
-        //$lbox_admin = varsettrue($eplug_admin, false);
+        $lbox_admin = varsettrue($eplug_admin, false);
         $coreplugs = $this->get_coreplugs(); 
         
         $lprefs = varsettrue($this->loginPrefs['external_links']) ? explode(',', $this->loginPrefs['external_links']) : array();

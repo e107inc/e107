@@ -306,9 +306,9 @@ class redirection
 	}
 
 
-	public function redirect($url, $replace = TRUE, $http_response_code = NULL, $preventCache)
+	public function redirect($url, $replace = TRUE, $http_response_code = NULL)
 	{
-		return $this->go($url, $replace, $http_response_code, $preventCache);	
+		return $this->go($url, $replace, $http_response_code);	
 	}
 
 	
@@ -318,19 +318,13 @@ class redirection
 	 * @param string $url
 	 * @param boolean $replace - default TRUE
 	 * @param integer|null $http_response_code - default NULL
-	 * @param boolean $preventCache
 	 * @return void
 	 */
-	public function go($url, $replace = TRUE, $http_response_code = NULL, $preventCache = true)
+	public function go($url, $replace = TRUE, $http_response_code = NULL)
 	{
 		if(session_id())
 		{
 			e107::getSession()->end();
-		}
-		if($preventCache)
-		{
-			header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0', true);
-			header('Expires: Sat, 26 Jul 1997 05:00:00 GMT', true); 
 		}
 		if(null === $http_response_code)
 		{
