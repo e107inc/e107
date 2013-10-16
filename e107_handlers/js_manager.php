@@ -498,9 +498,9 @@ class e_jsmanager
 	 * @param integer $zone 1-5 (see header.php)
 	 * @return e_jsmanager
 	 */
-	public function headerFile($file_path, $zone = 5)
+	public function headerFile($file_path, $zone = 5, $pre = '', $post = '')
 	{
-		$this->addJs('header', $file_path, $zone);
+		$this->addJs('header', $file_path, $zone, $pre, $post);
 		return $this;
 	}
 
@@ -524,9 +524,9 @@ class e_jsmanager
 	 * @param integer $zone 1-5 (see header.php)
 	 * @return e_jsmanager
 	 */
-	public function headerTheme($file_path, $zone = 5)
+	public function headerTheme($file_path, $zone = 5, $pre = '', $post = '')
 	{
-		$this->headerFile(THEME.trim($file_path, '/'), $zone);
+		$this->headerFile(THEME.trim($file_path, '/'), $zone, $pre, $post);
 		return $this;
 	}
 
@@ -850,13 +850,13 @@ class e_jsmanager
 
 			case 'plugin':
 				$file_path = explode(':', $file_path);
-				$file_path = '{e_PLUGIN}'.$file_path[0].'/'.trim($file_path[1], '/');
+				$file_path = '{e_PLUGIN}'.$file_path[0].'/'.trim($file_path[1], '/')."|{$pre}|{$post}";
 				$registry = &$this->_e_jslib_plugin;
 			break;
 
 			case 'theme':
-				$file_path = '{e_THEME}'.$this->getCurrentTheme().'/'.trim($file_path, '/');
-				echo "file-Path = ".$file_path;
+				$file_path = '{e_THEME}'.$this->getCurrentTheme().'/'.trim($file_path, '/')."|{$pre}|{$post}";
+				//echo "file-Path = ".$file_path;
 				$registry = &$this->_e_jslib_theme;
 			break;
 
@@ -884,7 +884,7 @@ class e_jsmanager
 			break;
 
 			case 'other_css':
-				$file_path = $runtime_location.'|'.$tp->createConstants($file_path, 'mix');
+				$file_path = $runtime_location.'|'.$tp->createConstants($file_path, 'mix')."|{$pre}|{$post}";
 				if(!isset($this->_e_css['other'])) $this->_e_css['other'] = array();
 				$registry = &$this->_e_css['other'];
 				$runtime = true;
@@ -898,7 +898,7 @@ class e_jsmanager
 
 
 			case 'header':
-				$file_path = $tp->createConstants($file_path, 'mix');
+				$file_path = $tp->createConstants($file_path, 'mix')."|{$pre}|{$post}";
 				$zone = intval($runtime_location);
 				if($zone > 5 || $zone < 1)
 				{
@@ -913,7 +913,7 @@ class e_jsmanager
 			break;
 
 			case 'footer':
-				$file_path = $tp->createConstants($file_path, 'mix');
+				$file_path = $tp->createConstants($file_path, 'mix')."|{$pre}|{$post}";
 				$zone = intval($runtime_location);
 				if($zone > 5 || $zone < 1)
 				{
@@ -1139,10 +1139,17 @@ class e_jsmanager
 				}
 				elseif($external) //true or 'js'
 				{
-
 					if(strpos($path, 'http') === 0) continue; // not allowed
+					
+					$path = explode('|', $path, 3);
+					$pre = varset($path[1], '');
+					if($pre) $pre .= "\n";
+					$post = varset($path[2], '');
+					if($post) $post = "\n".$post;
+					$path = $path[0];
+					
 					$path = $tp->replaceConstants($path, 'abs').'?external=1&amp;'.$this->getCacheId();
-					echo '<script type="text/javascript" src="'.$path.'"></script>';
+					echo $pre.'<script type="text/javascript" src="'.$path.'"></script>'.$post;
 					echo "\n";
 					continue;
 				}
@@ -1176,6 +1183,14 @@ class e_jsmanager
 					echo "\n";
 					continue;
 				}
+				
+				$path = explode('|', $path, 3);
+				$pre = varset($path[1], '');
+				if($pre) $pre .= "\n";
+				$post = varset($path[2], '');
+				if($post) $post = "\n".$post;
+				$path = $path[0];
+				
             	if($external)
 				{
 					// Never use CacheID on a CDN script, always render if it's CDN
@@ -1188,7 +1203,7 @@ class e_jsmanager
 						}
 						$path = $tp->replaceConstants($path, 'abs').'?'.$this->getCacheId();
 					}
-					echo '<script type="text/javascript" src="'.$path.'"></script>';
+					echo $pre.'<script type="text/javascript" src="'.$path.'"></script>'.$post;
 					echo "\n";
 					continue;
 				}
