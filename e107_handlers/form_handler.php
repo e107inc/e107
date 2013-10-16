@@ -687,14 +687,30 @@ class e_form
 	{
 		if(!is_array($options)) parse_str($options, $options);
 		
-		$default_name = vartrue($default_name,USERNAME);
-		$default_id = vartrue($default_id,USERID);
+		$default_name = vartrue($default_name, '');
+		$default_id = vartrue($default_id, 0);
 		
 		//TODO Auto-calculate $name_fld from $id_fld ie. append "_usersearch" here ?
 		
-		return $this->text($name_fld,$default_name,20, "class=e-tip&title=Type name of user&typeahead=users&readonly=".vartrue($options['readonly']))
-		.$this->hidden($id_fld,$default_id, array('id' => $this->name2id($id_fld)))." id# ".$default_id;
+		$fldid = $this->name2id($name_fld);
+		$hidden_fldid = $this->name2id($id_fld);
+		
+		$ret = $this->text($name_fld,$default_name,20, "class=e-tip&title=Type name of user&typeahead=users&readonly=".vartrue($options['readonly']))
+		.$this->hidden($id_fld,$default_id, array('id' => $this->name2id($id_fld)))." id# <span id='{$fldid}-id'>".$default_id.'</span>';
+		$ret .= " <a href='#' id='{$fldid}-reset'>reset</a>";
 
+		e107::getJs()->footerInline("
+			\$('#{$fldid}').blur(function () {
+				\$('#{$fldid}-id').html(\$('#{$hidden_fldid}').val());
+			});
+			\$('#{$fldid}-reset').click(function () {
+				\$('#{$fldid}-id').html('0');
+				\$('#{$hidden_fldid}').val(0);
+				\$('#{$fldid}').val('');
+			});
+		");
+
+		return $ret;
 		/*
 		$label_fld = str_replace('_', '-', $name_fld).'-upicker-lable';
 
