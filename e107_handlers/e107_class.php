@@ -1598,7 +1598,7 @@ class e107
 	 * @param integer $zone [optional] leave it null for default zone
 	 * @param string $dep dependence :  null | prototype | jquery 
 	 */
-	public static function js($type, $data, $dep = null, $zone = null)
+	public static function js($type, $data, $dep = null, $zone = null, $pre = '', $post = '')
 	{
 		$jshandler = e107::getJs();
 		$jshandler->setDependency($dep);
@@ -1618,8 +1618,8 @@ class e107
 				
 			case 'theme':
 				// data is e.g. 'jslib/mytheme.js'
-				if(null !== $zone) $jshandler->headerTheme($data, $zone);
-				else $jshandler->headerTheme($data);
+				if(null !== $zone) $jshandler->headerTheme($data, $zone, $pre, $post);
+				else $jshandler->headerTheme($data, 5, $pre, $post);
 			break;
 				
 			case 'inline':
@@ -1636,8 +1636,8 @@ class e107
 				
 			case 'url':
 				// data is e.g. 'http://cdn.somesite.com/some.js'
-				if(null !== $zone) $jshandler->headerFile($data, $zone);
-				else $jshandler->headerFile($data);
+				if(null !== $zone) $jshandler->headerFile($data, $zone, $pre, $post);
+				else $jshandler->headerFile($data, 5, $pre, $post);
 			break;
 			
 			case 'footer':
