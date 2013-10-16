@@ -1453,10 +1453,11 @@ class e_model extends e_object
 
     /**
      * Generic load data from DB
+	 * @param mixed $id
      * @param boolean $force
      * @return e_model
      */
-	public function load($id, $force = false)
+	public function load($id = null, $force = false)
 	{
 		if(!$force && $this->getId())
 		{
@@ -1468,8 +1469,8 @@ class e_model extends e_object
 			$this->setData(array())
 				->_clearCacheData();
 		}
-		$id = e107::getParser()->toDB($id);
-		if(!$id)
+		if($id) $id = e107::getParser()->toDB($id);
+		if(!$id && !$this->getParam('db_query'))
 		{
 			return $this;
 		}
@@ -2658,7 +2659,7 @@ class e_front_model extends e_model
 			return 0;
 		}
 		$sql = e107::getDb();
-		$res = $sql->db_Update($this->getModelTable(), $this->toSqlQuery('update'));
+		$res = $sql->db_Update($this->getModelTable(), $this->toSqlQuery('update'), $this->getParam('db_debug', false));
 		if(!$res)
 		{
 			$this->_db_errno = $sql->getLastErrorNumber();
@@ -2845,7 +2846,7 @@ class e_admin_model extends e_front_model
 			return false;
 		}
 		$sql = e107::getDb();
-		$res = $sql->db_Insert($this->getModelTable(), $this->toSqlQuery('create'));
+		$res = $sql->db_Insert($this->getModelTable(), $this->toSqlQuery('create'), $this->getParam('db_debug', false));
 		if(!$res)
 		{
 			$this->_db_errno = $sql->getLastErrorNumber();
@@ -3421,7 +3422,7 @@ class e_front_tree_model extends e_tree_model
 		}
 		$idstr = implode(', ', $ids);
 
-		$res = $sql->db_Update($this->getModelTable(), "{$field}={$value} WHERE ".$this->getFieldIdName().' IN ('.$idstr.')');
+		$res = $sql->db_Update($this->getModelTable(), "{$field}={$value} WHERE ".$this->getFieldIdName().' IN ('.$idstr.')', $this->getParam('db_debug', false));
 		$this->_db_errno = $sql->getLastErrorNumber();
 		$this->_db_errmsg = $sql->getLastErrorText();
 		if(!$res)

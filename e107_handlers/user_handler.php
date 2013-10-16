@@ -338,7 +338,7 @@ class UserHandler
 	 */
 	public function generateRandomString($pattern, $seed = '')
 	{
-		if (strlen($pattern) < 6)
+		if (empty($pattern))
 			$pattern = '##....';
 
 		$newname = '';

@@ -393,7 +393,7 @@ class e_db_mysql
 
 		if ($debug == 'now')
 		{
-			echo "** $query<br />\n";
+			echo "<pre>** $query</pre><br />\n";
 		}
 		if ($debug !== FALSE || strstr($_SERVER['QUERY_STRING'], 'showsql'))
 		{
