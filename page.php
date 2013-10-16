@@ -395,9 +395,14 @@ class pageClass
 
 		$this->page = $sql->fetch();
 
-		$this->template = e107::getCoreTemplate('page', vartrue($this->page['page_template'], 'default'), false, true); // setting override to true breaks default. 
-	//	$this->template = e107::getCoreTemplate('page', 'default',true,true);
-	//	print_a($this->template);
+		// setting override to true breaks default. 
+		$this->template = e107::getCoreTemplate('page', vartrue($this->page['page_template'], 'default'), true, true); 
+		if(!$this->template)
+		{
+			// switch to default
+			$this->template = e107::getCoreTemplate('page', 'default', false, false);
+		}
+
 		if(empty($this->template))
 		{
 			 $this->template = e107::getCoreTemplate('page', 'default');
