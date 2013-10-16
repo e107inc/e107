@@ -1985,20 +1985,17 @@ class e107
 		$id = str_replace('/', '_', $id);
 		$ret = self::_getTemplate($id, $key, $reg_path, $path, $info);
 		
+		### Attempt to fix merge issues; in case we override - template array not found in theme, 
+		### so we need to continue and merge with core templates
+		if($merge && $override && empty($ret))
+		{
+			$ret = array();
+		}
 		
-	//	if(!$merge || !$override || !is_array($ret)) // problems merging when template doesn't exist in core. 
-		
-		if((!$merge && !$override) || is_string($ret)) //XXX This appears to have less problems, but requires more testing. 
+		if((!$merge && !$override) || is_string($ret)) 
 		{
 			 return $ret;
 		}
-		
-		if(!is_array($ret)) // for the merge below. 
-		{
-			$ret = array();	
-		}
-		
-		// print_a($id ." ". $key ." ". $reg_path." ". $path." ".$info);
 		
 		// merge
 		$reg_path = 'core/e107/templates/'.$id;
