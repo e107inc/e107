@@ -174,12 +174,16 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 			e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Start individual files: ".count($files['name'])." Max upload: ".$max_upload_size, FALSE, FALSE);
 
 	$c = 0;
+	$tp = e107::getParser();
 	foreach ($files['name'] as $key=>$name)
 	{
 		$first_error = FALSE; // Clear error flag
 		if (($name != '') || $files['size'][$key]) // Need this check for things like file manager which allow multiple possible uploads
 		{
-			$name = preg_replace("/[^a-z0-9._-]/", '', str_replace(' ', '_', str_replace('%20', '_', strtolower($name))));
+			$origname = $name; 
+			//$name = preg_replace("/[^a-z0-9._-]/", '', str_replace(' ', '_', str_replace('%20', '_', strtolower($name))));
+			// FIX handle non-latin file names
+			$name = preg_replace("/[^\w\pL.-]/u", '', str_replace(' ', '_', str_replace('%20', '_', $tp->ustrtolower($name))));
 			$raw_name = $name; // Save 'proper' file name - useful for display
 			$file_ext = trim(strtolower(substr(strrchr($name, "."), 1))); 	// File extension - forced to lower case internally
 
@@ -275,6 +279,7 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 			{ // All tests passed - can store it somewhere
 				$uploaded[$c]['name'] = $name;
 				$uploaded[$c]['rawname'] = $raw_name;
+				$uploaded[$c]['origname'] = $origname;
 				$uploaded[$c]['type'] = $files['type'][$key];
 				$uploaded[$c]['size'] = 0;
 				$uploaded[$c]['index'] = $key; // Store the actual index from the file_userfile array
