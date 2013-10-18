@@ -47,6 +47,7 @@ define("EMESSLAN_TITLE_WARNING", "Warning");
 define("EMESSLAN_TITLE_DEBUG", "System Debug");
 
 define("LAN_MORE", "More..");
+define("LAN_READ_MORE", "Read more..");
 define("LAN_GOPAGE", "Go to page");
 define("LAN_GO", "Go");
 define("LAN_NONE", "None");

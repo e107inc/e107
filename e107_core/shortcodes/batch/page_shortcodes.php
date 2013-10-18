@@ -185,7 +185,7 @@ class cpage_shortcodes extends e_shortcode
 		
 		parse_str($parm,$options);
 		
-		$text = vartrue($options['text'], "Read more..");
+		$text = vartrue($options['text'], LAN_READ_MORE);
 		$size = vartrue($options['size'], "");
 		$inc = ($size) ? " btn-".$size : "";
 		
