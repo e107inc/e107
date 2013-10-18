@@ -411,7 +411,7 @@ class e_menu
 				$page_shortcodes->page = $page;
 				  
 			// 	print_a($template['body']);           
-				$text = $tp->parseTemplate($template['body'], true, $page_shortcodes);
+				$text = $template['start'].$tp->parseTemplate($template['body'], true, $page_shortcodes).$template['end'];
 			// 	echo "TEMPLATE= ($mpath)".$page['menu_template'];
 				
 			//	if($template['noTableRender'] !==true) // XXX Deprecated - causes confusion while themeing. 
