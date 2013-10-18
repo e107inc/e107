@@ -597,7 +597,7 @@ echo "</head>\n";
     {
         $HEADER = "";
         $FOOTER = ""; 
-        $body_onload .= " style='padding:15px;margin:0px'";   //TODO e-iframe css class.       
+        $body_onload .= " class='e-iframe'";
     }
 
 	$HEADER = str_replace("{e_PAGETITLE}",deftrue('e_PAGETITLE',''),$HEADER);
