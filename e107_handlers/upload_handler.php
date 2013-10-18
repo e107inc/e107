@@ -194,7 +194,7 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 				$admin_log->
 					e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Process file {$name}, size ".$files['size'][$key], FALSE, FALSE);
 
-			if ($max_file_count && ($c > $max_file_count))
+			if ($max_file_count && ($c >= $max_file_count))
 			{
 				$first_error = 249; // 'Too many files uploaded' error
 			}
