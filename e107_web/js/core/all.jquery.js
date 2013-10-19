@@ -36,10 +36,10 @@ $(document).ready(function()
 		 		{
 				    $(selector).each( function() {
 						$(this).children(":checkbox").attr("checked",true);
-					 })
+					 });
 		 		}
 
-		 })
+		 });
 		 
 		 $("#uncheck-all").click(function(event) {
 		 		var val = $(this).val(), selector = '.field-spacer';
@@ -50,7 +50,7 @@ $(document).ready(function()
 		 			selector = 'input:checkbox[name^=' + val.split(':')[1] + ']';
 				    $(selector).each( function() {
 						$(this).attr("checked",false);
-					 })
+					 });
 		 		}
 		 		// checkboxes children of .field-spacer
 		 		else 
@@ -59,7 +59,7 @@ $(document).ready(function()
 						$(this).children(":checkbox").attr("checked",false);
 					});
 				}
-		 })
+		 });
 		     		
     		
     	// default 'toggle'. 	
@@ -388,7 +388,7 @@ $(document).ready(function()
 			var max = 100;
 			var el = "#" + $(this).attr("name") + "-remainingCharacters";
     		var valLen=$(this).val().length;
-    		$(el).text( valLen + " characters")
+    		$(el).text( valLen + " characters");
 		});
 		
 
@@ -468,7 +468,7 @@ $(document).ready(function()
 			var readonly	= parseInt($(this).attr("data-readonly"));
 			var tmp 		= $(this).attr('id');
 			var hint		= $(this).attr("data-hint");
-			var hintArray	= hint.split(',')
+			var hintArray	= hint.split(',');
 			var t	 		= tmp.split('-');
 			var table 		= t[0];
 			var id 			= t[1];
@@ -685,7 +685,7 @@ $(document).ready(function()
 		
 			
 		
-})
+});
 
 
 	/**
@@ -780,7 +780,7 @@ $(document).ready(function()
 		emote = '';
 	    addtext(newtext, emote);
 	     return;
-	}
+	};
 
 		
 		
