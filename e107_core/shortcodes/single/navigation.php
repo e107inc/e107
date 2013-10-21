@@ -6,7 +6,9 @@ function navigation_shortcode($parm='')
 		'main'		=> 1,
 		'side'		=> 2,
 		'footer'	=> 3,
-		'alt'		=> 4
+		'alt'		=> 4,
+		'alt5'		=> 5,
+		'alt6'		=> 6,
 	);
 	
 	$category 		= varset($types[$parm], 1);

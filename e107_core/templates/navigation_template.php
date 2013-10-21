@@ -122,5 +122,7 @@ $NAVIGATION_TEMPLATE['side']['submenu_end'] 		= '';
 
 $NAVIGATION_TEMPLATE['footer'] 						= $NAVIGATION_TEMPLATE['side'];
 $NAVIGATION_TEMPLATE['alt'] 						= $NAVIGATION_TEMPLATE['side'];
+$NAVIGATION_TEMPLATE['alt5'] 						= $NAVIGATION_TEMPLATE['side'];
+$NAVIGATION_TEMPLATE['alt6'] 						= $NAVIGATION_TEMPLATE['side'];
 
 ?>
