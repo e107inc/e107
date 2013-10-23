@@ -407,6 +407,7 @@ class bbcode_shortcodes extends e_shortcode
 		global $pref, $eplug_bb, $bbcode_func, $bbcode_help, $bbcode_filedir, $bbcode_imagedir, $bbcode_helpactive, $bbcode_helptag, $register_bb;
 
 	//	if(defsettrue('e_WYSIWYG')){ return; }
+		$eplug_bb = $this->var['eplug_bb'] ? $this->var['eplug_bb'] : array();
 
 		$bbcode_func = ($this->var['trigger']) ? $this->var['trigger'] : "addtext";
 		
@@ -481,7 +482,7 @@ class bbcode_shortcodes extends e_shortcode
 			}
 		}
 
-
+		
 		if (!empty($eplug_bb))
 		{
 			foreach($eplug_bb as $val)  // allow plugins to plug into it.

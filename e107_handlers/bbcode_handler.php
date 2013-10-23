@@ -531,7 +531,8 @@ class e_bbcode
 				'trigger'		=> vartrue($options['trigger']), // For BC
 		//		'hint_func'		=> $helpfunc, // deprecated and unused
 		//		'hint_active'	=> $bbcode_helpactive,  // deprecated and unused
-				'size'			=> vartrue($helpsize)
+				'size'			=> vartrue($helpsize),
+				'eplug_bb'			=> $eplug_bb,
 		);
 				
 		$bbcode_shortcodes->setVars($data);	
