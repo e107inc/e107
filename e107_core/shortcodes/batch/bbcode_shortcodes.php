@@ -488,6 +488,8 @@ class bbcode_shortcodes extends e_shortcode
 			foreach($eplug_bb as $val)  // allow plugins to plug into it.
 			{
 				if(!$val) continue;
+				unset($onclick,$onclick_var,$helptext,$icon,$function,$function_var);
+				
 				extract($val); 
 				//	echo "$onclick $onclick_var $helptext $icon <br />";
 				$bbcode[$name] = array($onclick,$onclick_var,$helptext,$icon,$function,$function_var);
@@ -495,6 +497,8 @@ class bbcode_shortcodes extends e_shortcode
 				else unset($iconpath[$name]);
 			}
 		}
+		
+		if(!$iconpath[$parm]) return '';
 
 		$pre = "\n";
 		$post = "\n";
@@ -511,8 +515,6 @@ class bbcode_shortcodes extends e_shortcode
 			$post = "</a>\n";	
 		}
 		
-		if(!$iconpath[$parm]) return '';
-
 		if($bbcode[$parm])  // default - insert text.
 		{
 			$text = $pre;
