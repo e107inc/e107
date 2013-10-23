@@ -491,7 +491,8 @@ class bbcode_shortcodes extends e_shortcode
 				extract($val); 
 				//	echo "$onclick $onclick_var $helptext $icon <br />";
 				$bbcode[$name] = array($onclick,$onclick_var,$helptext,$icon,$function,$function_var);
-				$iconpath[$name] = $icon;
+				if($val['icon']) $iconpath[$name] = $icon;
+				else unset($iconpath[$name]);
 			}
 		}
 
@@ -510,8 +511,7 @@ class bbcode_shortcodes extends e_shortcode
 			$post = "</a>\n";	
 		}
 		
-
-		
+		if(!$iconpath[$parm]) return '';
 
 		if($bbcode[$parm])  // default - insert text.
 		{
