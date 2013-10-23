@@ -157,6 +157,7 @@ class e107
 		'e_admin_ui'					 => '{e_HANDLER}admin_ui.php',
         'e_array'                        => '{e_HANDLER}core_functions.php', // Old ArrayStorage. 
 		'e_bbcode'						 => '{e_HANDLER}bbcode_handler.php',
+		'e_bb_base'						 => '{e_HANDLER}bbcode_handler.php',
 		'e_file'						 => '{e_HANDLER}file_class.php',
 		'e_form'						 => '{e_HANDLER}form_handler.php',
 		'e_jshelper'					 => '{e_HANDLER}js_helper.php',
