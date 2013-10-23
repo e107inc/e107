@@ -808,7 +808,7 @@ class eRouter
 	 * TODO - user friendly URL ('/system/404') when system config is ready ('/system/404')
 	 * @var string
 	 */
-	public $notFoundUrl = 'system/error/notfound?type=routeError';
+	public $notFoundUrl = 'system/error/404?type=routeError';
 	
 	public function __construct()
 	{
@@ -1723,7 +1723,7 @@ class eRouter
 				{
 					$redirect = $this->assemble($this->notFoundUrl, '', 'encode=0&full=1');
 					//echo $redirect; exit;
-					e107::getRedirect()->redirect($redirect);
+					e107::getRedirect()->redirect($redirect, true, 404);
 				}
 			}
 		}
@@ -2972,6 +2972,9 @@ class eControllerFront extends eController
 		
 		// _GET input validation
 		$this->validateInput();
+		
+		// Set Render mode to module-controller-action, override possible within the action
+		$this->getResponse()->setRenderMod(str_replace('/', '-', $this->getRequest()->getRoute()));
 	}
 	
 	/**
@@ -3706,6 +3709,9 @@ class eResponse
 		$this->_content_type = $typeName;
 	}
 	
+	/**
+	 * @return eResponse
+	 */
 	public function sendContentType()
 	{
 		$ctypeStr = $this->getContentMediaType($this->getContentType());
@@ -3713,6 +3719,15 @@ class eResponse
 		{
 			header('Content-type: '.$this->getContentMediaType($this->getContentType()).'; charset=utf-8', TRUE);
 		}
+		return $this;
+	}
+	
+	/**
+	 * @return eResponse
+	 */
+	public function addHeader($header, $override = false, $responseCode = null)
+	{
+		header($header, $override, $responseCode);
 		return $this;
 	}
 	
