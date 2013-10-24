@@ -1387,7 +1387,7 @@ class e_navigation
 		$ret 			= "";
 		
 		$sc->counter	= 1;
-		
+
 		foreach ($data as $_data) 
 		{		
 			$sc->setVars($_data);
@@ -1607,6 +1607,29 @@ class navigation_shortcodes extends e_shortcode
 		}	
 		
 		return e107::getParser()->replaceConstants($url, 'full', TRUE);
+	}
+	
+	function sc_link_open($parm = '')
+	{
+		$type = $this->var['link_open'] ? (int) $this->var['link_open'] : 0;
+		
+		### 0 - same window, 1 - target blank, 4 - 600x400 popup, 5 - 800x600 popup
+		### TODO - JS popups (i.e. bootstrap)
+		switch($type)
+		{
+			case 1:
+				return ' target="_blank"';
+			break;
+			
+			case 4:
+				return " onclick=\"open_window('".$this->var['link_url']."',600,400); return false;\"";
+			break;
+			
+			case 5:
+				return " onclick=\"open_window('".$this->var['link_url']."',800,600); return false;\"";
+			break;
+		}
+		return '';
 	}
 
 	/**
