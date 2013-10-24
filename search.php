@@ -539,7 +539,7 @@ if ($perform_search)
 				$text .= '<div class="search-block">';
 				@require_once($search_info[$key]['sfile']);
 				$text .= '</div>';
-				$parms = $results.",".$search_res.",".$_GET['r'].",".e_SELF."?q=".$_GET['q']."&t=".$key."&r=[FROM]";
+				$parms = $results.",".$search_res.",".$_GET['r'].",".e_REQUEST_SELF."?q=".$_GET['q']."&t=".$key."&r=[FROM]";
 				$core_parms = array('r' => '', 'q' => '', 't' => '', 's' => '');
 				foreach ($_GET as $pparm_key => $pparm_value) 
 				{
@@ -572,15 +572,17 @@ if ($perform_search)
 }
 
 // old 6xx search parser for reverse compatability
-function parsesearch($text, $match) {
+function parsesearch($text, $match) 
+{
+	$tp = e107::getParser();
 	$text = strip_tags($text);
-	$temp = stristr($text, $match);
-	$pos = strlen($text) - strlen($temp);
-	$matchedText = substr($text,$pos,strlen($match));
+	$temp = $tp->ustristr($text, $match);
+	$pos = $tp->ustrlen($text) - $tp->ustrlen($temp);
+	$matchedText = $tp->usubstr($text,$pos,$tp->ustrlen($match));
 	if ($pos < 70) {
-		$text = "...".substr($text, 0, 100)."...";
+		$text = "...".$tp->usubstr($text, 0, 100)."...";
 	} else {
-		$text = "...".substr($text, ($pos-50), $pos+30)."...";
+		$text = "...".$tp->usubstr($text, ($pos-50), $pos+30)."...";
 	}
 	$text = preg_replace("/".$match."/i", "<span class='searchhighlight'>".$matchedText."</span>", $text);
 	return($text);
