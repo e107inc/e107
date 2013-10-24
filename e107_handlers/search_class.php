@@ -28,24 +28,30 @@ class e_search {
 	
 	function e_search()
 	{
+		$tp = e107::getParser();
 		$this->query = $query;
 		$this->bullet = '';
-		if(defined('BULLET'))
+		
+		if(defined('GLYPH'))
 		{
-			$this->bullet = '<img src="'.THEME.'images/'.BULLET.'" alt="" class="icon" />';
+			$this->bullet = '<i class="'.GLYPH.'"></i>';
+		}
+		elseif(defined('BULLET'))
+		{
+			$this->bullet = '<img src="'.THEME_ABS.'images/'.BULLET.'" alt="" class="icon" />';
 		}
 		elseif(file_exists(THEME.'images/bullet2.gif'))
 		{
-			$this->bullet = '<img src="'.THEME.'images/bullet2.gif" alt="bullet" class="icon" />';
+			$this->bullet = '<img src="'.THEME_ABS.'images/bullet2.gif" alt="bullet" class="icon" />';
 		}
 
 		preg_match_all('/(\W?".*?")|(.*?)(\s|$)/', $this -> query, $boolean_keys);
 		sort($this -> keywords['split'] = array_unique(array_filter(str_replace('"', '', array_merge($boolean_keys[1], $boolean_keys[2])))));
 		foreach ($this -> keywords['split'] as $k_key => $key) {
 			if (!$this -> stopword($key)) {
-				if ($key{(strlen($key) - 1)} == '*') {
+				if ($key{($tp->ustrlen($key) - 1)} == '*') {
 					$this -> keywords['wildcard'][$k_key] = TRUE;
-					$key = substr($key, 0, -1);
+					$key = $tp->usubstr($key, 0, -1);
 				} else {
 					$this -> keywords['wildcard'][$k_key] = FALSE;
 				}
@@ -59,7 +65,7 @@ class e_search {
 					$this -> keywords['boolean'][$k_key] = FALSE;
 					$this -> keywords['match'][$k_key] = $key;
 				}
-				$this -> keywords['exact'][$k_key] = (strpos($key, ' ') !== FALSE) ? TRUE : FALSE;
+				$this -> keywords['exact'][$k_key] = ($tp->ustrpos($key, ' ') !== FALSE) ? TRUE : FALSE;
 				$this -> keywords['match'][$k_key] = $tp -> toDB($this -> keywords['match'][$k_key]);
 			} else {
 				unset ($this -> keywords['split'][$k_key]);
@@ -69,6 +75,7 @@ class e_search {
 
 	function parsesearch($table, $return_fields, $search_fields, $weights, $handler, $no_results, $where, $order) {
 		global $sql, $query, $tp, $search_prefs, $pre_title, $search_chars, $search_res, $result_flag;
+		$tp = e107::getParser();
 		$this -> query = $tp -> toDB($query);
 		if (!$search_prefs['mysql_sort']) {
 			$field_operator = 'AND ';
@@ -219,13 +226,13 @@ class e_search {
 							} else {
 								$regex_append = $boundary.")";	
 							}
-							if (($match_start = stristr($this -> text, $this -> query)) !== FALSE) {
-								$this -> pos = strlen($this -> text) - strlen($match_start);
+							if (($match_start = $tp->ustristr($this -> text, $this -> query)) !== FALSE) {
+								$this -> pos = $tp->ustrlen($this -> text) - $tp->ustrlen($match_start);
 								if (!$endcrop && !$title) {
 									$this -> parsesearch_crop();
 									$endcrop = TRUE;
 								}
-								$key = substr($this -> text, $this -> pos, strlen($this -> query));
+								$key = $tp->usubstr($this -> text, $this->pos, $tp->ustrlen($this -> query));
 								$this -> text = preg_replace("#(".$boundary.$this -> query.$regex_append."#i", "<span class='searchhighlight'>\\1</span>", $this -> text);
 							}
 						}
@@ -268,32 +275,34 @@ class e_search {
 	
 	function parsesearch_crop() {
 		global $search_chars;
+		$tp = e107::getParser();
 		if (strlen($this -> text) > $search_chars) {
-			if ($this -> pos < ($search_chars - strlen($this -> query))) {
-				$this -> text = substr($this -> text, 0, $search_chars)."...";
-			} else if ($this -> pos > (strlen($this -> text) - ($search_chars - strlen($this -> query)))) {
-				$this -> text = "...".substr($this -> text, (strlen($this -> text) - ($search_chars - strlen($this -> query))));
+			if ($this -> pos < ($search_chars - $tp->ustrlen($this -> query))) {
+				$this -> text = $tp->usubstr($this -> text, 0, $search_chars)."...";
+			} else if ($this -> pos > ($tp->ustrlen($this -> text) - ($search_chars - $tp->ustrlen($this -> query)))) {
+				$this -> text = "...".$tp->usubstr($this -> text, ($tp->ustrlen($this -> text) - ($search_chars - $tp->ustrlen($this -> query))));
 			} else {
-				$this -> text = "...".substr($this -> text, ($this -> pos - round(($search_chars / 3))), $search_chars)."...";
+				$this -> text = "...".$tp->usubstr($this -> text, ($this -> pos - round(($search_chars / 3))), $search_chars)."...";
 			}
-			$match_start = stristr($this -> text, $this -> query);
-			$this -> pos = strlen($this -> text) - strlen($match_start);
+			$match_start = $tp->ustristr($this -> text, $this -> query);
+			$this -> pos = $tp->ustrlen($this -> text) - $tp->ustrlen($match_start);
 		}
 	}
 	
 	function stopword($key) {
 		global $search_prefs;
+		$tp = e107::getParser();
 		if ($search_prefs['mysql_sort'] && ($key{0} == '+')) {
-			$key = substr($key, 1);
+			$key = $tp->usubstr($key, 1);
 		}
-		if (($key{(strlen($key) - 1)} != '*') && ($key{0} != '+')) {
-			if (strlen($key) > 2) {
+		if (($key{($tp->ustrlen($key) - 1)} != '*') && ($key{0} != '+')) {
+			if ($tp->ustrlen($key) > 2) {
 				if ($search_prefs['mysql_sort']) {
 					$stopword_list = $this -> stopwords_mysql;
 				} else {
 					$stopword_list = $this -> stopwords_php;
 				}
-				if (strpos($stopword_list, '|'.$key.'|') !== FALSE) {
+				if ($tp->ustrpos($stopword_list, '|'.$key.'|') !== FALSE) {
 					$this -> stop_keys[] = $key;
 					return TRUE;
 				} else {
@@ -308,5 +317,3 @@ class e_search {
 		}
 	}
 }
-
-?>

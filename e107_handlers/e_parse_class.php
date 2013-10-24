@@ -417,6 +417,28 @@ class e_parse extends e_parser
 
 
 	/**
+	 * Unicode (UTF-8) analogue of standard @link http://php.net/stristr stristr PHP function.
+	 * Returns all of haystack starting from and including the first occurrence of needle to the end.
+	 *
+	 * @param string $haystack The UTF-8 encoded string to search in.
+	 * @param mixed $needle If needle is not a string, it is converted to an integer and applied as the ordinal value of a character.
+	 * @param integer $length [optional] (PHP 5.3+) If TRUE, returns the part of the haystack before the first occurrence of the needle (excluding needle).
+	 * @return string Returns the matched substring. If needle is not found, returns FALSE.
+	 */
+	public function ustristr($haystack, $needle, $before_needle = false)
+	{
+		switch($this->utfAction)
+		{
+			case 0:
+				return stristr($haystack, $needle, $before_needle);
+			case 1:
+				return mb_substr($haystack, $needle, $before_needle);
+		}
+		// No utf8 pack backup
+		return stristr($str, $start, $length);
+	}
+	
+	/**
 	 * Unicode (UTF-8) analogue of standard @link http://php.net/substr substr PHP function.
 	 * Returns the portion of string specified by the start and length parameters.
 	 *
