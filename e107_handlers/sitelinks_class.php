@@ -554,6 +554,16 @@ class e_navigation
 	 */
 	var $admin_cat = array();
 	
+	/**
+	 * @var boolean active check main
+	 */
+	public $activeSubFound = false;
+	
+	/**
+	 * @var boolean active check sub
+	 */
+	public $activeMainFound = false;
+	
 	
 	var $iconArray = array();
 
@@ -1387,17 +1397,22 @@ class e_navigation
 		$ret 			= "";
 		
 		$sc->counter	= 1;
+		$this->activeMainFound = false;
 
 		foreach ($data as $_data) 
 		{		
-			$sc->setVars($_data);
-			$active			= ($this->isActive($_data)) ? "_active" : ""; 
+			$active			= ($this->isActive($_data, $this->activeMainFound)) ? "_active" : ""; 
+			$sc->setVars($_data); // isActive is allowed to alter data
 			$itemTmpl 		= count($_data['link_sub']) > 0 ? $template['item_submenu'.$active] : $template['item'.$active];
 			$ret 			.= e107::getParser()->parseTemplate($itemTmpl, TRUE, $sc);	
 			$sc->active		= ($active) ? true : false;
+			if($sc->active)
+			{
+				$this->activeMainFound = true;
+			}
 			$sc->counter++;		
 		}
-
+		
 		return ($ret != '') ? $head.$ret.$foot : '';
 	}
 
@@ -1470,8 +1485,35 @@ class e_navigation
 	* TODO Extensive Active Link Detection; 
 	* 
 	*/
-	public function isActive($data='')
+	public function isActive(&$data='', $removeOnly = false)
 	{
+		if(empty($data)) return;
+		
+		### experimental active match added to the URL (and removed after parsing)
+		### Example of main link: {e_BASE}some/url/#?match/string1^match/string2
+		### It would match http://your.domain/match/string/ or http://your.domain/match/string2?some=vars
+		### '#?' is the alternate active check trigger
+		if(strpos($data['link_url'], '#?') !== false)
+		{
+			if($removeOnly)
+			{
+				$data['link_url'] = array_shift(explode('#?', $data['link_url'], 2));
+				return;
+			}
+			
+			$matches = explode('^', array_pop(explode('#?', $data['link_url'], 2)));
+			foreach ($matches as $match) 
+			{
+				if(strpos(e_REQUEST_URL, $match) !== false)
+				{
+					return true;
+				}
+			}
+		}
+		
+		// No need of further checks
+		if($removeOnly) return; 
+		
 		// already checked by compile() or external source
 		if(isset($data['link_active'])) return $data['link_active'];
 		
@@ -1500,7 +1542,6 @@ class e_navigation
 		
 		return false;
 	}
-	
 }
 
 
@@ -1691,10 +1732,11 @@ class navigation_shortcodes extends e_shortcode
 			
 		foreach($this->var['link_sub'] as $val)
 		{
-			$this->setVars($val);		
-			$active	= (e107::getNav()->isActive($val)) ? "_active" : "";
+			$active	= (e107::getNav()->isActive($val, $this->activeSubFound)) ? "_active" : "";
+			$this->setVars($val);	// isActive is allowed to alter data
 			$tmpl = vartrue($val['link_sub']) ? varset($this->template['submenu_loweritem'.$active]) : varset($this->template['submenu_item'.$active]);	
-			$text .= e107::getParser()->parseTemplate($tmpl, TRUE, $this);		
+			$text .= e107::getParser()->parseTemplate($tmpl, TRUE, $this);
+			if($active) $this->activeSubFound = true;		
 		}
 
 		$text .= e107::getParser()->parseTemplate(str_replace('{LINK_SUB}', '', $this->template['submenu_end']), true, $this);
