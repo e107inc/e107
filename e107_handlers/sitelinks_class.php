@@ -1402,6 +1402,7 @@ class e_navigation
 		foreach ($data as $_data) 
 		{		
 			$active			= ($this->isActive($_data, $this->activeMainFound)) ? "_active" : ""; 
+			
 			$sc->setVars($_data); // isActive is allowed to alter data
 			$itemTmpl 		= count($_data['link_sub']) > 0 ? $template['item_submenu'.$active] : $template['item'.$active];
 			$ret 			.= e107::getParser()->parseTemplate($itemTmpl, TRUE, $sc);	
@@ -1485,7 +1486,7 @@ class e_navigation
 	* TODO Extensive Active Link Detection; 
 	* 
 	*/
-	public function isActive(&$data='', $removeOnly = false)
+	public function isActive(&$data='', $removeOnly = false, $exactMatch = false)
 	{
 		if(empty($data)) return;
 		
@@ -1501,7 +1502,9 @@ class e_navigation
 				return;
 			}
 			
-			$matches = explode('^', array_pop(explode('#?', $data['link_url'], 2)));
+			$_temp = explode('#?', $data['link_url'], 2);
+			$data['link_url'] = $_temp[0] ? $_temp[0] : '#';
+			$matches = explode('^', $_temp[1]);
 			foreach ($matches as $match) 
 			{
 				if(strpos(e_REQUEST_URL, $match) !== false)
@@ -1524,7 +1527,12 @@ class e_navigation
 			e107::getMessage()->addDebug("db=".$dbLink);
 		}
 	
-		if(e_REQUEST_HTTP == $dbLink)
+		if($exactMatch)
+		{
+			if(e_REQUEST_URI == $dbLink) return true;	
+		}
+		// XXX this one should go soon - no cotroll at all
+		elseif(e_REQUEST_HTTP == $dbLink)
 		{
 			return true;	
 		}
@@ -1732,7 +1740,7 @@ class navigation_shortcodes extends e_shortcode
 			
 		foreach($this->var['link_sub'] as $val)
 		{
-			$active	= (e107::getNav()->isActive($val, $this->activeSubFound)) ? "_active" : "";
+			$active	= (e107::getNav()->isActive($val, $this->activeSubFound, true)) ? "_active" : "";
 			$this->setVars($val);	// isActive is allowed to alter data
 			$tmpl = vartrue($val['link_sub']) ? varset($this->template['submenu_loweritem'.$active]) : varset($this->template['submenu_item'.$active]);	
 			$text .= e107::getParser()->parseTemplate($tmpl, TRUE, $this);
