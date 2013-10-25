@@ -512,7 +512,7 @@ class eMessage
 	 */
 	public static function formatMessage($mstack, $type, $message)
 	{
-		$bstrap = array('info'=>'alert-info','error'=>'alert-error','success'=>'alert-success');
+		$bstrap = array('info'=>'alert-info','error'=>'alert-error','warning'=>'alert-warning','success'=>'alert-success');
 		$bclass = vartrue($bstrap[$type]) ? " ".$bstrap[$type] : "";
 		
 		if (empty($message))
