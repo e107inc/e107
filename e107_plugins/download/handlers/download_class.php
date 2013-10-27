@@ -25,8 +25,16 @@ class download
 				
 		require_once(e_PLUGIN."download/download_shortcodes.php");
 		
-		$this->templateHeader = e107::getTemplate('download','download','header');
-		$this->templateFooter = e107::getTemplate('download','download','footer');
+		if(deftrue('BOOTSTRAP')) // v2.x 
+		{
+			$this->templateHeader = e107::getTemplate('download','download','header');
+			$this->templateFooter = e107::getTemplate('download','download','footer');
+		}
+		else 
+		{
+			$this->templateHeader = '';
+			$this->templateFooter = '';
+		}
 		
 	}
 	
