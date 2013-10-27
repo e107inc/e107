@@ -37,10 +37,12 @@ class download
 		$pref = e107::getPref();
 	
 		$tmp = explode('.', e_QUERY);
+		
+		$order = str_replace("download_","",$pref['download_order']);
 						
 		// Set Defaults
 		$this->qry['action']		= 'maincats';
-		$this->qry['order'] 		= vartrue($pref['download_order'],'download_datestamp');
+		$this->qry['order'] 		= vartrue($order, 'datestamp');
 		$this->qry['sort']			= vartrue($pref['download_sort'], 'desc');
 		$this->qry['view'] 			= vartrue($pref['download_view'], 10);
 		$this->qry['from']			= 0;
