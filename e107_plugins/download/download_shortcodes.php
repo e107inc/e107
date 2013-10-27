@@ -373,7 +373,7 @@ class download_shortcodes extends e_shortcode
 		
 		if($parm == "link" && $this->var['download_image'])
 		{
-			return "<a href='".e_BASE."download.php?action=view&id=".$this->var['download_id']."'>".$img."</a>";
+			return "<a href='".e_PLUGIN_ABS."download/download.php?action=view&id=".$this->var['download_id']."'>".$img."</a>";
 		}
 		else
 		{

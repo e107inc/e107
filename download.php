@@ -20,7 +20,7 @@
 
 require_once("class2.php");
 
-$query = (e_QUERY) ? "?".e_QUERY : "";
+$query = (e_QUERY) ? "?".str_replace("&amp;","&",e_QUERY) : "";
 
 e107::getRedirect()->go(e_PLUGIN."download/download.php".$query,true);
 
