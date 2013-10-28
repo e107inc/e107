@@ -34,6 +34,24 @@ if($core->get('admintheme') != 'bootstrap')
 	e107::getRedirect()->redirect(e_SELF);		
 }
 
+// Check Admin-Perms for current language and redirect if necessary. 
+if(MULTILANG_SUBDOMAIN && !getperms('0') && !getperms(e_LANGUAGE))
+{
+	$lng = e107::getLanguage();	
+	$tmp = explode(".",ADMINPERMS);
+	foreach($tmp as $ln)
+	{
+		if($lng->isValid($ln))
+		{
+			$redirect = $lng->subdomainUrl($ln);
+				//	echo "redirect to: ".$redirect;	
+			e107::getRedirect()->redirect($redirect);	
+	
+		}	
+	}
+}
+
+
 /* done in class2
  @include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php");
  @include_once(e_LANGUAGEDIR."English/admin/lan_admin.php");

@@ -1727,7 +1727,6 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$menu_vars['home']['link'] = e_HTTP.'index.php';
 			$menu_vars['home']['image'] = "<i class='icon-home'></i>" ; // "<img src='".E_16_NAV_LEAV."' alt='".ADLAN_151."' class='icon S16' />";
 			$menu_vars['home']['image_src'] = ADLAN_151;
-			$menu_vars['home']['perm'] = '';
 			$menu_vars['home']['sort'] = 1;
 			$menu_vars['home']['sub_class'] = 'sub';
 			
@@ -1750,7 +1749,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				$tmp[$c]['image_large'] = '';
 				$tmp[$c]['image_src'] = vartrue($lk['link_button']);
 				$tmp[$c]['image_large_src'] = '';
-				$tmp[$c]['perm'] = '';
+			//	$tmp[$c]['perm'] = '';
 				$c++;
 			}
 
@@ -1768,7 +1767,6 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[1]['image_large'] = '';
 			$tmp[1]['image_src'] = '';
 			$tmp[1]['image_large_src'] = '';
-			$tmp[1]['perm'] = '';	
 			
 						
 			$tmp[2]['text'] = "Personalize"; // TODO - generic LAN in lan_admin.php 
@@ -1778,7 +1776,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[2]['image_large'] = '';
 			$tmp[2]['image_src'] = '';
 			$tmp[2]['image_large_src'] = '';
-			$tmp[2]['perm'] = '';	
+		//	$tmp[2]['perm'] = '';	
 			
 			
 			$tmp[3]['text'] = ADLAN_46;
@@ -1788,7 +1786,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[3]['image_large'] = '';
 			$tmp[3]['image_src'] = '';
 			$tmp[3]['image_large_src'] = '';
-			$tmp[3]['perm'] = '';
+
 				
 				
 					
@@ -1799,7 +1797,6 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[4]['image_large'] = '';
 			$tmp[4]['image_src'] = '';
 			$tmp[4]['image_large_src'] = '';
-			$tmp[4]['perm'] = '';
 			$tmp[4]['link_class']	= 'divider';
 			
 							
@@ -1810,7 +1807,6 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[5]['image_large'] 		= '';
 			$tmp[5]['image_src'] 		= '';
 			$tmp[5]['image_large_src'] 	= '';
-			$tmp[5]['perm'] 			= '';
 			$tmp[5]['link_class']		= '';
 
 										
@@ -1821,7 +1817,6 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[6]['image_large'] 		= '';
 			$tmp[6]['image_src'] 		= '';
 			$tmp[6]['image_large_src'] 	= '';
-			$tmp[6]['perm'] 			= '';
 			$tmp[6]['link_class']		= '';
 								
 							
@@ -1832,7 +1827,6 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[7]['image_large'] 		= '';
 			$tmp[7]['image_src'] 		= '';
 			$tmp[7]['image_large_src'] 	= '';
-			$tmp[7]['perm'] 			= '';
 			$tmp[7]['link_class']		= '';	
 	
 			
@@ -1843,14 +1837,12 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[8]['image_large'] 		= '';
 			$tmp[8]['image_src'] 		= '';
 			$tmp[8]['image_large_src'] 	= '';
-			$tmp[8]['perm'] 			= '';
 			$tmp[8]['link_class']		= '';					
 				
 			$menu_vars['logout']['text'] = ""; // ADMINNAME;
 			$menu_vars['logout']['link'] = '#';
 			$menu_vars['logout']['image'] = "<i class='icon-user'></i>"; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
 			$menu_vars['logout']['image_src'] = ADLAN_46;
-			$menu_vars['logout']['perm'] = '';	
 			$menu_vars['logout']['sub'] = $tmp;	
 		}
 
@@ -1888,7 +1880,6 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 					$tmp[$c]['image_large'] = '';
 					$tmp[$c]['image_src'] = '';
 					$tmp[$c]['image_large_src'] = '';
-					$tmp[$c]['perm'] = '';
 					$c++;		
 				}
 				
@@ -1896,7 +1887,6 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				$menu_vars['language']['link'] = '#';
 				$menu_vars['language']['image'] = "<i class='icon-globe'></i>" ;
 				$menu_vars['language']['image_src'] = ADLAN_46;
-				$menu_vars['language']['perm'] = '';	
 				$menu_vars['language']['sub'] = $tmp;	
 			}	
 			
