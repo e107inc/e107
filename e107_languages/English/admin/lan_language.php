@@ -38,18 +38,33 @@ define("LANG_LAN_27", "If checked, and a required language cannot be found, ther
 //FIXME - LAN conflict & HTML IN LAN
 //0.8 - in conflict with 0.7. 
 define("LANG_LAN_PAGE_TITLE", "Languages");
-define("LANG_LAN_28", "%s deleted.");
-define("LANG_LAN_29", "%s could not be deleted.");
-define("LANG_LAN_30", "%s created.");
-// define("LANG_LAN_31", "%s couldn\"t be deleted.");
-define("LANG_LAN_32", "%s was disabled but left intact.");
-define("LANG_LAN_33", "Delete all tables in %s?");
+
+define("LANG_LAN_AGR", "Note: By using these tools you agree to share your language pack(s) with the e107 community.");
+define("LANG_LAN_EML", "Please email your language pack to:");
+
+
+define("LANG_LAN_29", "You should correct the remaining errors before contributing your language pack.");
+define("LANG_LAN_30", "Release Date");
+define("LANG_LAN_31", "Compatibility");
+define("LANG_LAN_32", "Installed Languages");
+define("LANG_LAN_33", "Display only errors during verification");
+define("LANG_LAN_34", "Please verify and correct the remaining [x] error(s) before attempting to create a language-pack.");
+
 
 // define("LANG_LAN_09", "Are you sure?");
-define("LANG_LAN_34", "Available Language Packs");
-define("LANG_LAN_35", "The following language packs are available for this version of e107.");
-define("LANG_LAN_36", "Language-Pack errors found! Please first verify your language files are without errors, before creating a language-pack.");
+//define("LANG_LAN_34", "Available Language Packs");
+//define("LANG_LAN_35", "The following language packs are available for this version of e107.");
+//define("LANG_LAN_36", "Language-Pack errors found! Please first verify your language files are without errors, before creating a language-pack.");
 
 define("LANG_LAN_50", "Admin-Area Interface Language");
+
+// e107 v2
+//FIXME Remove use of sprintf() and replace with [x]
+define("LANG_LAN_100", "%s deleted.");
+define("LANG_LAN_101", "%s could not be deleted.");
+define("LANG_LAN_103", "%s created.");
+// define("LANG_LAN_31", "%s couldn\"t be deleted.");
+define("LANG_LAN_104", "%s was disabled but left intact.");
+define("LANG_LAN_105", "Delete all tables in %s?");
 
 ?>
