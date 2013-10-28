@@ -176,9 +176,9 @@ define('USRLAN_168', 'Re-send --COUNT-- validation emails');
 define('USRLAN_169', 'Total --COUNT-- bounced emails deleted');
 define('USRLAN_170', 'Random user name');
 define('USRLAN_171', 'Random password');
-define('USRLAN_172', 'Password set');
-define('USRLAN_173', 'Login name set');
-define('USRLAN_174', 'User name --NAME-- created');
+define('USRLAN_172', 'User account has been created with the following:');
+// define('USRLAN_173', 'Login name set');
+// define('USRLAN_174', 'User name --NAME-- created');
 define('USRLAN_175', '');
 
 define('USRLAN_179', 'User banned: ');
@@ -261,7 +261,7 @@ define("USFLAN_6", "User ID");
 define("USFLAN_7", "User Information");
 
 
-define('USRLAN_AS_1', 'Login as %s');
+define('USRLAN_AS_1', 'Login as %s'); //FIXME use [x]
 define('USRLAN_AS_2', 'Logout from %s account');
 define('USRLAN_AS_3', 'You are already logged in as another user account. Please logout first.');
 
