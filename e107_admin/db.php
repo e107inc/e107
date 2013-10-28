@@ -100,11 +100,17 @@ class system_tools
 {
 
 	public $_options = array();
+	
+	private $_utf8_exclude = array();
 
 
 	function __construct()
 	{
 		global $mySQLdefaultdb;
+		
+		$this->_utf8_exclude = array(MPREFIX."core");
+
+		
 
 		$this->_options = array(
 			"db_update"				=> array('diz'=>DBLAN_15, 'label'=>DBLAN_16),
@@ -523,6 +529,12 @@ class system_tools
 		$invalidCollations = false;	
 		while($row = $sql->fetch())
 		{
+				if(in_array($row['Name'],$this->_utf8_exclude))
+				{
+					continue;
+				}
+					
+			
 				$text .= "<tr>
 					<td>".$row['Name']."</td>
 					<td>".$row['Engine']."</td>
@@ -554,6 +566,7 @@ class system_tools
 				<li>The conversion process can take up to one minute or much much more depending on the size of your database.</li>
 				<li>The conversion does not work with serialized arrays.</li>
 				<li>Be sure that you have followed all steps of the upgrade process first.</li>
+				<li>Core prefs are ignored during the conversion process due to possibility of corruption. </li>
 				</ul>
 				';
 	
@@ -644,6 +657,13 @@ class system_tools
 		while ($row = $sql->fetch())
 		{
    			$table = $row['Name'];
+   			
+			if(in_array($row['Name'], $this->_utf8_exclude))
+			{
+				continue;
+			}
+			
+			
 			$tab_query = "ALTER TABLE ".$table."  DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; ";
 
 			//echo "TABQRT= ".$tab_query;
