@@ -1175,19 +1175,19 @@ class users_admin_ui extends e_admin_ui
 				}
 			}
 			
-			$message = str_replace('--NAME--', htmlspecialchars($user_data['user_name'], ENT_QUOTES, CHARSET), USRLAN_174);
+		//	$message = str_replace('--NAME--', htmlspecialchars($user_data['user_name'], ENT_QUOTES, CHARSET), USRLAN_174);
+			$message = USRLAN_172; // "User account has been created with the following:" ie. keep it simple so it can easily be copied and pasted. 
 			
 			// Always show Login name and password
 			//if (isset($_POST['generateloginname']))
 			{
 				$mes->addSuccess($message)
-					->addSuccess(USRLAN_173.': <strong>'.htmlspecialchars($user_data['user_loginname'], ENT_QUOTES, CHARSET).'</strong>');	
+					->addSuccess(USRLAN_128.': <strong>'.htmlspecialchars($user_data['user_loginname'], ENT_QUOTES, CHARSET).'</strong>');	
 			}
 				
 			//if (isset($_POST['generatepassword']))
 			{
-				$mes->addSuccess($message)
-					->addSuccess(USRLAN_172.': <strong>'.htmlspecialchars($savePassword, ENT_QUOTES, CHARSET).'</strong>');	
+				$mes->addSuccess(USRLAN_62.': <strong>'.htmlspecialchars($savePassword, ENT_QUOTES, CHARSET).'</strong>');	
 			}
 			return;
 		}
