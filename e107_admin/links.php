@@ -557,13 +557,17 @@ class links_admin_form_ui extends e_admin_form_ui
 		
 		$tp = e107::getParser();
 		$tmp = e107::getAddonConfig('e_sitelink','sitelink');
-			
+					
 		foreach($tmp as $cat=> $array)
 		{
 			$func = array();
 			foreach($array as $val)
 			{
 				$newkey = $cat.'::'.$val['function'];
+				if(vartrue($val['parm']))
+				{
+					$newkey .= "(".$val['parm'].")";	
+				}
 				$func[$newkey] = $tp->toHtml($val['name'],'','TITLE');
 			}
 			$this->linkFunctions[$cat] = $func;

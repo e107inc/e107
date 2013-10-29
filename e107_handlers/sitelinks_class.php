@@ -48,11 +48,19 @@ class sitelinks
 					$this->eLinkList['head_menu'][] = $row;
 					if(vartrue($row['link_function']))
 					{
+						$parm = false;
 						list($path,$method) = explode("::",$row['link_function']);
+						
+						if(strpos($method,"("))
+						{
+							list($method,$prm) = explode("(",$method);
+							$parm = rtrim($prm,")");	
+						}
+						
 						if(file_exists(e_PLUGIN.$path."/e_sitelink.php") && include_once(e_PLUGIN.$path."/e_sitelink.php"))
 						{
 							$class = $path."_sitelink";
-							$sublinkArray = e107::callMethod($class,$method); //TODO Cache it.
+							$sublinkArray = e107::callMethod($class,$method,$parm); //TODO Cache it.
 							if(vartrue($sublinkArray))
 							{
 								$this->eLinkList['sub_'.$row['link_id']] = $sublinkArray;
@@ -1458,6 +1466,7 @@ class e_navigation
 
 	/**
 	 * Check for Dynamic Function
+	 * @example class:method($parm)
 	 */
 	protected function isDynamic($row)
 	{
@@ -1467,12 +1476,21 @@ class e_navigation
 		}
 		
 		if(vartrue($row['link_function']))
-		{
+		{	
+			$parm = false;	
+			
 			list($path,$method) = explode("::",$row['link_function']);
+			
+			if(strpos($method,"("))
+			{
+				list($method,$prm) = explode("(",$method);
+				$parm = rtrim($prm,")");	
+			}
+			
 			if(include_once(e_PLUGIN.$path."/e_sitelink.php"))
 			{
 				$class = $path."_sitelink";
-				if($sublinkArray = e107::callMethod($class,$method)) //TODO Cache it.
+				if($sublinkArray = e107::callMethod($class,$method,$parm)) //TODO Cache it.
 				{
 					return $sublinkArray;
 				} 

@@ -16,17 +16,76 @@ class page_sitelink // include plugin-folder in the name.
 	function config()
 	{	
 		$links = array();
+		$sql = e107::getDb();
+		
+		$links[] = array(
+			'name'			=> "All Books",
+			'function'		=> "bookNav",
+			'description' 	=> "A list of all books"
+		);
+		
+		$books = $sql->retrieve("SELECT * FROM #page_chapters WHERE chapter_parent =0 ORDER BY chapter_order ASC" , true);
+				
+		foreach($books as $row)
+		{
+			$links[] = array(
+				'name'			=> "All Chapters from ".$row['chapter_name'],
+				'function'		=> "chapterNav",
+				'parm'			=> $row['chapter_id'],
+				'description' 	=> "A list of all chapters from the book ".$row['chapter_name']
+			);
+		}
 			
 		$links[] = array(
 			'name'			=> "All Pages",
 			'function'		=> "pageNav",
-			'description' 	=> ""
+			'parm'			=> "",
+			'description' 	=> "A list of all pages"
 		);	
 		
 		return $links;
 	}
 	
+	/**
+	 * Return a tree of all books and their chapters. 
+	 */
+	public function bookNav($book)
+	{
+		return $this->pageNav('book=0');
+	}
 	
+	/**
+	 * Return a list of all chapters from a sepcific book. 
+	 */
+	public function chapterNav($book)
+	{
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+		
+		if($sql->select("page_chapters", "*", "chapter_parent = ".intval($book)."  ORDER BY chapter_order ASC "))
+		{
+			$sublinks = array();
+			
+			while($row = $sql->fetch())
+			{
+				$sublinks[] = array(
+					'link_name'			=> $tp->toHtml($row['chapter_name'],'','TITLE'),
+					'link_url'			=> 'page.php?ch='.$row['chapter_id'], //TODO FIXME chapter_sef support
+					'link_description'	=> '',
+					'link_button'		=> '',
+					'link_category'		=> '',
+					'link_order'		=> '',
+					'link_parent'		=> $row['chapter_parent'],
+					'link_open'			=> '',
+					'link_class'		=> 0
+				);
+
+			}
+			
+			return $sublinks;
+			
+		}
+	}
 
 	function pageNav($parm='') 
 	{
