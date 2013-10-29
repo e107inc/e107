@@ -2580,7 +2580,20 @@ class e_parser
 		return sprintf("%0".$numDigits."d",$num);
 	}
 
-
+/**
+	 * Generic variable translator for LAN definitions. 
+	 * @example $tp->lanVars("My name is [x] and I own a [y]", array('x'=>"John", 'y'=>"Cat")); 
+	 */
+	function lanVars($lan, $array= array(), $bold=false)
+	{
+		foreach($array as $k=>$v)
+		{
+			$search[] = "[".$k."]";
+			$replace[] = ($bold===true) ? "<strong>".$v."</strong>" : $v;
+		}
+		
+		return str_replace($search, $replace, $lan);
+	}
     
 	/**
 	 * Return an Array of all specific tags found in an HTML document and their attributes.  

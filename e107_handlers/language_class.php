@@ -335,6 +335,7 @@ class language{
 	/**
 	 * Generic variable translator for LAN definitions. 
 	 * @example $lng->translate("My name is [x] and I own a [y]", array('x'=>"John", 'y'=>"Cat")); 
+	 * @deprecated Use $tp->lanVars() instead. 
 	 */
 	function translate($lan, $array= array())
 	{

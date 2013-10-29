@@ -18,11 +18,11 @@ define('LAN_NP_NEXT', 'next');
 define('LAN_NP_URLNEXT', 'Go to the next page');
 define('LAN_NP_LAST', 'last');
 define('LAN_NP_URLLAST', 'Go to the last page');
-define('LAN_NP_GOTO', 'Go to page %s');
+define('LAN_NP_GOTO', 'Go to page [x]');
 define('LAN_NP_URLCURRENT', 'Currently viewed');
 
 // WARNING - USE SINGLE QUOTES!!!
 // Replacement: '%1$d' - current page; '%2$d' - total pages
-define('NP_CAPTION', 'Page %1$d of %2$d');
+define('NP_CAPTION', 'Page [x] of [y]');
 
 ?>

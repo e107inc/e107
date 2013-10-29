@@ -1920,7 +1920,8 @@ class e_admin_controller
 		if(!method_exists($this, $method))
 		{
 			$this->getRequest()->setAction('e404');
-			e107::getMessage()->add(sprintf(LAN_UI_404_METHOD_ERROR, $method), E_MESSAGE_ERROR);
+			$message = e107::getParser()->lanVars(LAN_UI_404_METHOD_ERROR, array('x'=>$method), true);
+			e107::getMessage()->add($message, E_MESSAGE_ERROR);
 		}
 	}
 
@@ -4252,7 +4253,8 @@ class e_admin_ui extends e_admin_controller_ui
 		$cnt = $this->getTreeModel()->update($field, $value, $selected, $value, false);
 		if($cnt)
 		{
-			$this->getTreeModel()->addMessageSuccess(sprintf(LAN_UI_BATCH_BOOL_SUCCESS, $cnt));
+			$caption = e107::getParser()->lanVars(LAN_UI_BATCH_BOOL_SUCCESS, array('x'=>$cnt), true);
+			$this->getTreeModel()->addMessageSuccess($caption);
 		}
 		$this->getTreeModel()->setMessages();
 	}
@@ -4268,7 +4270,8 @@ class e_admin_ui extends e_admin_controller_ui
 		$cnt = $tree->update($field, "1-{$field}", $selected, null, false);
 		if($cnt)
 		{
-			$tree->addMessageSuccess(sprintf(LAN_UI_BATCH_REVERSED_SUCCESS, $cnt));
+			$caption = e107::getParser()->lanVars(LAN_UI_BATCH_REVERSED_SUCCESS, array('x'=>$cnt), true);
+			$tree->addMessageSuccess($caption);
 			//sync models
 			$tree->load(true);
 		}
@@ -4391,12 +4394,14 @@ class e_admin_ui extends e_admin_controller_ui
 		if($cnt)
 		{
 			$vttl = $this->getUI()->renderValue($field, $value, $this->getFieldAttr($field));
-			$this->getTreeModel()->addMessageSuccess(sprintf(LAN_UI_BATCH_UPDATE_SUCCESS, $vttl, $cnt));
+			$caption = e107::getParser()->lanVars(LAN_UI_BATCH_UPDATE_SUCCESS, array('x'=>$vttl, 'y'=>$cnt), true);
+			$this->getTreeModel()->addMessageSuccess($caption);
 		}
 		elseif($rcnt)
 		{
 			$vttl = $this->getUI()->renderValue($field, $value, $this->getFieldAttr($field));
-			$this->getTreeModel()->addMessageSuccess(sprintf(LAN_UI_BATCH_DEATTACH_SUCCESS, $vttl, $rcnt));
+			$caption = e107::getParser()->lanVars(LAN_UI_BATCH_DEATTACH_SUCCESS, array('x'=>$vttl, 'y'=>$cnt), true);
+			$this->getTreeModel()->addMessageSuccess($caption);
 		}
 		$this->getTreeModel()->setMessages();
 	}
@@ -4869,7 +4874,8 @@ class e_admin_ui extends e_admin_controller_ui
 		// Option for working with tables having no PID
 		if(!varset($this->pid) && vartrue($this->fields) && false !== $this->pid)
 		{
-			e107::getMessage()->add(LAN_UI_NOPID_ERROR, E_MESSAGE_WARNING);
+			$message = e107::getParser()->toHtml(LAN_UI_NOPID_ERROR,true);
+			e107::getMessage()->add($message, E_MESSAGE_WARNING);
 		}
 
 		return $this->pid;
@@ -5081,7 +5087,8 @@ class e_admin_form_ui extends e_form
 			// check form custom methods
 			if(vartrue($foptions['type']) === 'method' && method_exists('e_form', $field)) // check even if type is not method. - just in case of an upgrade later by 3rd-party.
 			{
-				e107::getMessage()->addError(sprintf(LAN_UI_FORM_METHOD_ERROR, $field));
+				$message = e107::getParser()->lanVars(LAN_UI_FORM_METHOD_ERROR, array('x'=>$field), true);
+				e107::getMessage()->addError($message);
 				$err = true;
 			}
 		}
@@ -5113,7 +5120,7 @@ class e_admin_form_ui extends e_form
 		$request = $controller->getRequest();
 		if($controller->getId())
 		{
-			$legend = sprintf(LAN_UI_EDIT_LABEL, $controller->getId());
+			$legend = e107::getParser()->lanVars(LAN_UI_EDIT_LABEL, array('x'=>$controller->getId())); // sprintf(LAN_UI_EDIT_LABEL, $controller->getId());
 			$form_start = vartrue($controller->headerUpdateMarkup);
 			$form_end = vartrue($controller->footerUpdateMarkup);
 		}
