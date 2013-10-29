@@ -15,4 +15,7 @@
 	<mainPrefs>
 		<pref name="fb_active">1</pref>
 	</mainPrefs>
+	<mediaCategories>
+		<category type="image">Featurebox</category>
+	</mediaCategories>
 </e107Plugin>
