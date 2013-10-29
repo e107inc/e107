@@ -59,6 +59,7 @@ function nextprev_shortcode($parm = '')
 {
 	$e107 = e107::getInstance();
 	$pref = e107::getPref();
+	$tp = e107::getParser();
 
 	e107::coreLan('np');
 
@@ -196,8 +197,10 @@ function nextprev_shortcode($parm = '')
 		{
 			$e_vars->caption = 'LAN_NP_CAPTION';
 		}
-		// Advanced multilingual support: 'Page %1$d of %2$d' -> match the exact argument, result would be 'Page 1 of 20'
-		$e_vars->caption = sprintf(defset($e_vars->caption, $e_vars->caption), $current_page, $total_pages);
+		
+		// Advanced multilingual support: 'Page [x] of [y]' -> match the exact argument, result would be 'Page 1 of 20'		
+		$e_vars->caption = $tp->lanVars(defset($e_vars->caption, $e_vars->caption),array('x'=>$current_page, 'y'=>$total_pages));
+		// sprintf(defset($e_vars->caption, $e_vars->caption), $current_page, $total_pages);
 
 		// urldecoded by parse_str()
 		$pagetitle = explode('|', vartrue($parm['pagetitle']));
@@ -321,7 +324,7 @@ function nextprev_shortcode($parm = '')
 			else
 			{
 				$e_vars_loop->url_label = $label ? $tp->toAttribute($label) : LAN_NP_GOTO;
-				$e_vars_loop->url_label = sprintf($e_vars_loop->url_label, ($c + 1));
+				$e_vars_loop->url_label = str_replace("[x]", ($c + 1), $e_vars_loop->url_label);
 				$ret_items[] = $tp->simpleParse($tmpl[$tprefix.'item'], $e_vars_loop);
 			}
 		}
