@@ -204,7 +204,7 @@ class page_chapters_ui extends e_admin_ui
 		
 		public function beforeUpdate($new_data, $old_data, $id)
 		{	
-			return $this->beforeCreate($new_data);	
+			// return $this->beforeCreate($new_data);	
 		}
 
 }
