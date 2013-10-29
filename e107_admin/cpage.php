@@ -135,7 +135,7 @@ class page_chapters_ui extends e_admin_ui
         
          	'chapter_meta_description'	=> array('title'=> LAN_DESCRIPTION,			'type' => 'textarea',		'width' => 'auto', 'thclass' => 'left','readParms' => 'expand=...&truncate=150&bb=1', 'readonly'=>FALSE),
 			'chapter_meta_keywords' 	=> array('title'=> "Meta Keywords",			'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),		
-			'chapter_sef' 				=> array('title'=> "SEF Url String",		'type' => 'text',			'width' => 'auto', 'readonly'=>FALSE), // Display name
+			'chapter_sef' 				=> array('title'=> "SEF Url String",		'type' => 'text',			'width' => 'auto', 'readonly'=>FALSE, 'inline'=>true), // Display name
 			'chapter_manager' 			=> array('title'=> "Can be edited by",		'type' => 'userclass',		'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
 			'chapter_order' 			=> array('title'=> LAN_ORDER,				'type' => 'text',			'width' => 'auto', 'thclass' => 'right', 'class'=> 'right' ),										
 			
@@ -181,13 +181,30 @@ class page_chapters_ui extends e_admin_ui
 		
 		public function beforeCreate($new_data)
 		{
-	
+			if(empty($new_data['chapter_sef']))
+			{
+				$new_data['chapter_sef'] = eHelper::title2sef($new_data['chapter_name']);
+			}
+			else 
+			{
+				$new_data['chapter_sef'] = eHelper::secureSef($new_data['chapter_sef']);
+			}
+			
+			$sef = e107::getParser()->toDB($new_data['chapter_sef']);
+			
+			if(e107::getDb()->count('page_chapters', '(*)', "chapter_sef='{$sef}'"))
+			{
+				e107::getMessage()->addError('Please choose unique SEF URL string for this entry.');
+				return false;
+			}
+			
+			return $new_data;	
 		}
 		
 		
 		public function beforeUpdate($new_data, $old_data, $id)
-		{
-	
+		{	
+			return $this->beforeCreate($new_data);	
 		}
 
 }
@@ -571,6 +588,24 @@ class page_admin_ui extends e_admin_ui
 		{
 			$newdata['menu_name'] = preg_replace('/[^\w-*]/','',$newdata['menu_name']);
 
+			if(empty($new_data['page_sef']))
+			{
+				$new_data['page_sef'] = eHelper::title2sef($new_data['page_title']);
+			}
+			else 
+			{
+				$new_data['page_sef'] = eHelper::secureSef($new_data['page_sef']);
+			}
+			
+			$sef = e107::getParser()->toDB($new_data['page_sef']);
+			
+			if(e107::getDb()->count('page', '(*)', "page_sef='{$sef}'"))
+			{
+				e107::getMessage()->addError('Please choose unique SEF URL string for this entry.');
+				return false;
+			}
+
+
 			return $newdata;	
 		}
 		
@@ -587,7 +622,7 @@ class page_admin_ui extends e_admin_ui
 			$tp = e107::getParser();
 			$sql = e107::getDb();
 			$mes = e107::getMessage();
-			
+					
 			$menu_name = $tp->toDB($newdata['menu_title']); // not to be confused with menu-caption.
 				
 			if ($sql->select('menus', 'menu_name', "`menu_path` = ".$id." LIMIT 1")) 	
