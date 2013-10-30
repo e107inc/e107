@@ -771,6 +771,12 @@ class e_validator
 	 */
 	function addValidateMessage($field_title, $err_code = 0, $err_message = '', $custom = '')
 	{
+		$lanVars = array(
+			'x' => $field_title,
+			'y' => $err_code,
+			'z' => $this->getErrorByCode($err_code)
+		);
+		
 		if($custom)
 		{
 			e107::getMessage()->addStack(sprintf($err_message, $err_code, $field_title), $this->_message_stack, (true === $custom ? E_MESSAGE_ERROR : $custom));
@@ -782,26 +788,36 @@ class e_validator
 		$dbgmsg = false;
 		if($err_message)
 		{
-			$lan = (!$field_title || strpos($err_message, '%1$s') !== false ? '' : '<strong>&quot;%1$s&quot;</strong> - ').$err_message; // custom, e.g. // default '<strong>&quot;%1$s&quot;</strong> field error: Custom error message. '
+			$lan = (!$field_title || strpos($err_message, '[x]') !== false ? '' : '[x] - ').$err_message; // custom, e.g. // default '<strong>&quot;%1$s&quot;</strong> field error: Custom error message. '
 			$dbgmsg = LAN_VALIDATE_FAILMSG;
 		}
 		
 		//Core message
+		/*
 		$msg = sprintf(
 			$lan, // default '<strong>&quot;%1$s&quot;</strong> validation error: [#%2$d] %3$s. '
 			$field_title,
 			$err_code,
 			$this->getErrorByCode($err_code)
 		);
+		 */
+		
+		//NEW - removes need for using sprintf() 
+		$msg = $tp->lanVars($lan,$lanVars,true); // '[x] validation error: [y] [z].'
 
 		if($dbgmsg && defset('e107_DEBUG_LEVEL'))
 		{
+			
+			e107::getMessage()->addDebug($tp->lanVars($dbgmsg,$lanVars));
+			
+			/*
 			e107::getMessage()->addDebug(sprintf(
 				$dbgmsg, 
 				$field_title,
 				$err_code,
 				$this->getErrorByCode($err_code)
 			));
+			 */
 		}
 
 		e107::getMessage()->addStack($msg, $this->_message_stack, E_MESSAGE_ERROR);

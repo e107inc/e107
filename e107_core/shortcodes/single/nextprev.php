@@ -199,8 +199,8 @@ function nextprev_shortcode($parm = '')
 		}
 		
 		// Advanced multilingual support: 'Page [x] of [y]' -> match the exact argument, result would be 'Page 1 of 20'		
-		$e_vars->caption = $tp->lanVars(defset($e_vars->caption, $e_vars->caption),array('x'=>$current_page, 'y'=>$total_pages));
-		// sprintf(defset($e_vars->caption, $e_vars->caption), $current_page, $total_pages);
+		$e_vars->caption = $tp->lanVars(defset($e_vars->caption, $e_vars->caption), array('x'=>$current_page, 'y'=>$total_pages));
+		// sprintXX(defset($e_vars->caption, $e_vars->caption), $current_page, $total_pages);
 
 		// urldecoded by parse_str()
 		$pagetitle = explode('|', vartrue($parm['pagetitle']));

@@ -1852,7 +1852,7 @@ class admin_newspost
 			$tmp = NWSLAN_43;
 			if(vartrue($_GET['srch']))
 			{
-				$tmp = sprintf(NWSLAN_121, '<em>&quot;'.$_GET['srch'])."&quot;</em> <a href='".e_SELF."'>&laquo; ".LAN_BACK."</a>";
+				$tmp = sprintXXXf(NWSLAN_121, '<em>&quot;'.$_GET['srch'])."&quot;</em> <a href='".e_SELF."'>&laquo; ".LAN_BACK."</a>";
 			}
 			$text = "<div class='center warning'>{$tmp}</div>";
 		}

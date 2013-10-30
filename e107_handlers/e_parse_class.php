@@ -2580,12 +2580,17 @@ class e_parser
 		return sprintf("%0".$numDigits."d",$num);
 	}
 
-/**
+	/**
 	 * Generic variable translator for LAN definitions. 
+	 * @param $lan - string LAN
+	 * @param $vals - either a single value, which will replace '[x]' or an array with key=>value pairs. 
 	 * @example $tp->lanVars("My name is [x] and I own a [y]", array('x'=>"John", 'y'=>"Cat")); 
 	 */
-	function lanVars($lan, $array= array(), $bold=false)
+	function lanVars($lan, $vals, $bold=false)
 	{
+		
+		$array = (!is_array($vals)) ? array('x'=>$vals) : $vals;
+		
 		foreach($array as $k=>$v)
 		{
 			$search[] = "[".$k."]";

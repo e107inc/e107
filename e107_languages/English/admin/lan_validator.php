@@ -41,4 +41,8 @@ define('LAN_VALIDATE_204', 'File size lower than allowed minimal file size');
  * %2$d - validation error code (number)
  * %3$s - validation error message (string)
  */
-define('LAN_VALIDATE_FAILMSG', '<strong>&quot;%1$s&quot;</strong> validation error: [#%2$d] %3$s.');
+
+// define('LAN_VALIDATE_FAILMSG', '<strong>&quot;%1$s&quot;</strong> validation error: [#%2$d] %3$s.');
+
+ //FIXME - use this instead: 
+define('LAN_VALIDATE_FAILMSG', '[x] validation error: [y] [z].');
