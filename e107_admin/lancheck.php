@@ -134,7 +134,7 @@ if(isset($_POST['submit']))
 	else
 	{
 		$caption = LAN_CHECK_PAGE_TITLE.' - '.LAN_CHECK_24;
-		$mes->addSuccess(sprintf(str_replace("[x]", "%s", LAN_CHECK_23), basename($writeit)));
+		$mes->addSuccess(sprintXXX(str_replace("[x]", "%s", LAN_CHECK_23), basename($writeit)));
 	}
 	fclose($writeit);
 
@@ -1667,7 +1667,7 @@ class lancheck_old
 			//FIXME  place of LAN_SAVE
 			$text .="
 					<div class='buttons-bar center'>
-						<button class='update btn btn-success' type='submit' name='submit' value='sprintf'><span>".LAN_SAVE." ".str_replace($dir2, "", $root_file)."</span></button>
+						<button class='update btn btn-success' type='submit' name='submit' value='sprintXXf'><span>".LAN_SAVE." ".str_replace($dir2, "", $root_file)."</span></button>
 						".(($root_file) ? "<input type='hidden' name='root' value='".$root_file."' />" : "")."
 					</div>
 			";

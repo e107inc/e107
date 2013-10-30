@@ -1159,7 +1159,7 @@ class e_userperms
 		"C"	=> array(ADMSLAN_64,E_16_CACHE, E_32_CACHE),		// Clear the system cache
 		"F"	=> array(ADMSLAN_31,E_16_EMOTE, E_32_EMOTE),		// Emoticons
 		"G"	=> array(ADMSLAN_32,E_16_FRONT, E_32_FRONT),		// Front-Page Configuration
-		"L"	=> array(ADMSLAN_76,E_16_LANGUAGE, E_32_LANGUAGE),			// Meta tags
+		"L"	=> array(ADMSLAN_76,E_16_LANGUAGE, E_32_LANGUAGE),	// Language Packs
 		"T"	=> array(ADMSLAN_34,E_16_META, E_32_META),			// Meta tags
 		
 		"1"	=> array(ADMSLAN_19,E_16_PREFS, E_32_PREFS),		// Alter Site Preferences
