@@ -790,14 +790,14 @@ class e_navigation
 			23 => array(e_ADMIN.'upload.php', 		ADLAN_72,	ADLAN_73,	'V', 3, E_16_UPLOADS, E_32_UPLOADS),
 			24 => array(e_ADMIN.'users.php', 		ADLAN_36,	ADLAN_37,	'4|U0|U1|U2|U3', 2, E_16_USER, E_32_USER),
 			25 => array(e_ADMIN.'userclass2.php', 	ADLAN_38,	ADLAN_39,	'4', 2, E_16_USERCLASS, E_32_USERCLASS),
-			26 => array(e_ADMIN.'language.php', 	ADLAN_132,	ADLAN_133,	'0', 1, E_16_LANGUAGE, E_32_LANGUAGE),
+			26 => array(e_ADMIN.'language.php', 	ADLAN_132,	ADLAN_133,	'L', 1, E_16_LANGUAGE, E_32_LANGUAGE),
 			27 => array(e_ADMIN.'mailout.php', 		ADLAN_136,	ADLAN_137,	'W', 2, E_16_MAIL, E_32_MAIL),
 			28 => array(e_ADMIN.'users_extended.php', ADLAN_78, ADLAN_79,	'4', 2, E_16_USER_EXTENDED, E_32_USER_EXTENDED),
 			29 => array(e_ADMIN.'fileinspector.php', ADLAN_147, ADLAN_148,	'Y', 4, E_16_INSPECT, E_32_INSPECT),
 			30 => array(e_ADMIN.'notify.php', 		ADLAN_149,	ADLAN_150,	'O', 4, E_16_NOTIFY, E_32_NOTIFY),
 			31 => array(e_ADMIN.'cron.php', 		ADLAN_157,	ADLAN_158,	'U', 4, E_16_CRON, E_32_CRON),
 		
-			32 => array(e_ADMIN.'eurl.php', 		ADLAN_159,	ADLAN_160,	'L', 1, E_16_EURL, E_32_EURL),
+			32 => array(e_ADMIN.'eurl.php', 		ADLAN_159,	ADLAN_160,	'K', 1, E_16_EURL, E_32_EURL),
 			33 => array(e_ADMIN.'plugin.php', 		ADLAN_98,	ADLAN_99,	'Z', 5 , E_16_PLUGMANAGER, E_32_PLUGMANAGER),
 			34 => array(e_ADMIN.'docs.php', 		ADLAN_12,	ADLAN_13,	'',	20, E_16_DOCS, E_32_DOCS),
 		// TODO System Info.
