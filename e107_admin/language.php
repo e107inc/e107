@@ -75,21 +75,23 @@ if (isset($_POST['del_existing']) && $_POST['lang_choices'])
 	{
 		if ($sql->db_Table_exists($lang."_".$del_table,TRUE))
 		{
-				echo $del_table." exists<br />";
+			//	echo $del_table." exists<br />";
 			$qry = "DROP TABLE ".$mySQLprefix."lan_".$lang."_".$del_table;
 			if (mysql_query($qry))
 			{
-				$message .= sprintf(LANG_LAN_100, $_POST['lang_choices'].' '.$del_table).'[!br!]'; // can be removed?
-				$mes->addSuccess(sprintf(LANG_LAN_100, $_POST['lang_choices'].' '.$del_table));
+				$msg = $tp->lanVars(LANG_LAN_100, $_POST['lang_choices'].' '.$del_table);
+				$message .= $msg.'[!br!]'; 
+				$mes->addSuccess($msg);
 			}
 			else
 			{
-				$message .= sprintf(LANG_LAN_101, $_POST['lang_choices'].' '.$del_table).'[!br!]'; // can be removed?
-				$mes->addWarning(sprintf(LANG_LAN_101, $_POST['lang_choices'].' '.$del_table));
+				$msg = $tp->lanVars(LANG_LAN_101, $_POST['lang_choices'].' '.$del_table);
+				$message .= $msg.'[!br!]';  
+				$mes->addWarning($msg);
 			}
 		}
 	}
-	$admin_log->log_event('LANG_02', $message, E_LOG_INFORMATIVE, '');
+	$admin_log->log_event('LANG_02', $message.'[!br!]', E_LOG_INFORMATIVE, '');
 	$sql->db_ResetTableList();
 
 	if ($action == 'modify')
@@ -108,20 +110,23 @@ if (isset($_POST['create_tables']) && $_POST['language'])
 			$copdata = ($_POST['copydata_'.$value]) ? 1 : 0;
 			if ($sql->db_CopyTable($value, "lan_".$lang."_".$value, $_POST['drop'], $copdata))
 			{
-				$message .= sprintf(LANG_LAN_103, $_POST['language'].' '.$value).'[!br!]'; // can be removed?
-				$mes->addSuccess(sprintf(LANG_LAN_103, $_POST['language'].' '.$value));
+				$msg = $tp->lanVars(LANG_LAN_103,  $_POST['language'].' '.$value); 
+				$message .= $msg . '[!br!]'; // Used in admin log. 
+				$mes->addSuccess($msg);
 			}
 			else
 			{
 				if (!$_POST['drop'])
 				{
-					$message .= sprintf(LANG_LAN_00, $_POST['language'].' '.$value).'[!br!]'; // can be removed?
-					$mes->addWarning(sprintf(LANG_LAN_00, $_POST['language'].' '.$value));
+					$msg = $tp->lanVars(LANG_LAN_00, $_POST['language'].' '.$value);
+					$message .= $msg . '[!br!]';
+					$mes->addWarning($msg);
 				}
 				else
 				{
-					$message .= sprintf(LANG_LAN_01, $_POST['language'].' '.$value).'[!br!]'; // can be removed?
-					$mes->addWarning(sprintf(LANG_LAN_01, $_POST['language'].' '.$value));
+					$msg = $tp->lanVars(LANG_LAN_01, $_POST['language'].' '.$value);
+					$message .= $msg . '[!br!]';
+					$mes->addWarning($msg);
 				}
 			}
 		}
@@ -137,15 +142,18 @@ if (isset($_POST['create_tables']) && $_POST['language'])
 				}
 				else
 				{
-					$message .= sprintf(LANG_LAN_02, $_POST['language'].' '.$value).'[!br!]'; // can be removed?
-					$mes->addWarning(sprintf(LANG_LAN_02, $_POST['language'].' '.$value));
+					$msg = $tp->lanVars(LANG_LAN_02, $_POST['language'].' '.$value);
+					$message .= $msg . '[!br!]';
+					$mes->addWarning($msg);
 				}
 			}
 			else
 			{
 				// leave table. LANG_LAN_104
-				$message .= sprintf(LANG_LAN_104, $_POST['language'].' '.$value).'[!br!]'; // can be removed?
-				$mes->addInfo(sprintf(LANG_LAN_104, $_POST['language'].' '.$value));
+			
+				$msg = $tp->lanVars(LANG_LAN_104, $_POST['language'].' '.$value);
+				$message .= $msg . '[!br!]';
+				$mes->addInfo($msg);
 			}
 		}
 	}
@@ -583,12 +591,12 @@ if (isset($_POST['edit_existing']))
 	// Drop tables ? isset()
 	if (varset($_POST['create_edit_existing']))
 	{
-		$baction = 'btn create';
+		$baction = 'create';
 		$bcaption = LANG_LAN_06;
 	}
 	else
 	{
-		$baction = 'btn update';
+		$baction = 'update';
 		$bcaption = LAN_UPDATE;
 	}
 	$text .= "
@@ -611,7 +619,6 @@ if (isset($_POST['edit_existing']))
 			<div class='buttons-bar center'>
 				<input type='hidden' name='language' value='{$_POST['lang_choices']}' />
 				".$frm->admin_button('create_tables','no-value',$baction,$bcaption)."
-				<button class='{$baction}' type='submit' name='create_tables' value='no-value'><span>{$bcaption}</span></button>
 			</div>
 		</fieldset>
 	</form>
@@ -857,9 +864,9 @@ function multilang_db()
 			";
 			if (count($installed))
 			{
-				//FIXME sprintf
+			
 				$text .= "<button class='btn btn-primary edit' type='submit' name='edit_existing' value='no-value'><span>".LAN_EDIT."</span></button>
-						<button class='btn btn-danger delete' type='submit' name='del_existing' value='no-value' title='".sprintf(LANG_LAN_105, $e_language).' '.LAN_JSCONFIRM."'><span>".LAN_DELETE."</span></button>";
+						<button class='btn btn-danger delete' type='submit' name='del_existing' value='no-value' title='".$tp->lanVars(LANG_LAN_105, $e_language).' '.LAN_JSCONFIRM."'><span>".LAN_DELETE."</span></button>";
 			}
 			elseif ($e_language != $pref['sitelanguage'])
 			{

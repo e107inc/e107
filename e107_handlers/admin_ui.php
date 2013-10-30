@@ -1920,7 +1920,7 @@ class e_admin_controller
 		if(!method_exists($this, $method))
 		{
 			$this->getRequest()->setAction('e404');
-			$message = e107::getParser()->lanVars(LAN_UI_404_METHOD_ERROR, array('x'=>$method), true);
+			$message = e107::getParser()->lanVars(LAN_UI_404_METHOD_ERROR, $method, true);
 			e107::getMessage()->add($message, E_MESSAGE_ERROR);
 		}
 	}
@@ -3036,8 +3036,9 @@ class e_admin_controller_ui extends e_admin_controller
 					if (!isset($e_userclass->class_tree[$id]) || !$user->checkClass($e_userclass->class_tree[$id]))
 					{
 						// TODO lan
-						$this->getTreeModel()->addMessageWarning(sprintf('You don\'t have management permissions on <strong> %1$s </strong>', $label));
-						unset($classes[$id]);
+						$msg = $tp->lanVars("You don't have management permissions on [x]",$label);
+						$this->getTreeModel()->addMessageWarning($msg);
+						unset($classes[$id],$msg);
 					}
 				}
 				$this->handleCommaBatch($selected, $field, array_keys($classes), $trigger[0] === 'ucdelall' ? 'clearAll' : 'addAll');
@@ -3970,6 +3971,9 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	protected function handleListDeleteBatch($selected)
 	{
+		
+		$tp = e107::getParser();
+		
 		if(!$this->getBatchDelete())
 		{
 			e107::getMessage()->add(LAN_UI_BATCHDEL_ERROR, E_MESSAGE_WARNING);
@@ -4028,8 +4032,8 @@ class e_admin_ui extends e_admin_controller_ui
 		{
 			$this->getTreeModel()->setMessages();
 			// FIXME lan
-			if($delcount) e107::getMessage()->addSuccess(sprintf('<strong>%1$d records</strong> successfully deleted.', $delcount));
-			if($nfcount) e107::getMessage()->addError(sprintf('<strong>%1$d records</strong> not found and not deleted.', $nfcount));
+			if($delcount) e107::getMessage()->addSuccess($tp->lanVars('[x] record(s) successfully deleted.', $delcount, true));
+			if($nfcount) e107::getMessage()->addError($tp->lanVars('[x] records not found and not deleted.', $nfcount,true));
 		}
 
 		//$this->redirect();
@@ -4253,7 +4257,7 @@ class e_admin_ui extends e_admin_controller_ui
 		$cnt = $this->getTreeModel()->update($field, $value, $selected, $value, false);
 		if($cnt)
 		{
-			$caption = e107::getParser()->lanVars(LAN_UI_BATCH_BOOL_SUCCESS, array('x'=>$cnt), true);
+			$caption = e107::getParser()->lanVars(LAN_UI_BATCH_BOOL_SUCCESS, $cnt, true);
 			$this->getTreeModel()->addMessageSuccess($caption);
 		}
 		$this->getTreeModel()->setMessages();
@@ -4270,7 +4274,7 @@ class e_admin_ui extends e_admin_controller_ui
 		$cnt = $tree->update($field, "1-{$field}", $selected, null, false);
 		if($cnt)
 		{
-			$caption = e107::getParser()->lanVars(LAN_UI_BATCH_REVERSED_SUCCESS, array('x'=>$cnt), true);
+			$caption = e107::getParser()->lanVars(LAN_UI_BATCH_REVERSED_SUCCESS, $cnt, true);
 			$tree->addMessageSuccess($caption);
 			//sync models
 			$tree->load(true);
@@ -4439,7 +4443,8 @@ class e_admin_ui extends e_admin_controller_ui
 		if($cnt)
 		{
 			$vttl = $this->getUI()->renderValue($field, $value, $this->getFieldAttr($field));
-			$this->getTreeModel()->addMessageSuccess(sprintf(LAN_UI_BATCH_UPDATE_SUCCESS, $vttl, $cnt));
+			$msg = e107::getParser()->lanVars(LAN_UI_BATCH_UPDATE_SUCCESS, array('x' => $vttl, 'y' => $cnt), true);
+			$this->getTreeModel()->addMessageSuccess($msg);
 			// force reload the collection from DB, fix some issues as 'observer' is executed before the batch handler
 			$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->load(true);
 		}
@@ -5120,7 +5125,7 @@ class e_admin_form_ui extends e_form
 		$request = $controller->getRequest();
 		if($controller->getId())
 		{
-			$legend = e107::getParser()->lanVars(LAN_UI_EDIT_LABEL, array('x'=>$controller->getId())); // sprintf(LAN_UI_EDIT_LABEL, $controller->getId());
+			$legend = e107::getParser()->lanVars(LAN_UI_EDIT_LABEL, $controller->getId()); // sprintXXX(LAN_UI_EDIT_LABEL, $controller->getId());
 			$form_start = vartrue($controller->headerUpdateMarkup);
 			$form_end = vartrue($controller->footerUpdateMarkup);
 		}

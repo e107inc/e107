@@ -6,9 +6,9 @@
  *
 */
 
-define("LANG_LAN_00", "%s could not be created (already exists)."); // FIXME HTML in LAN
-define("LANG_LAN_01", "%s was deleted (if existing) and created."); // FIXME HTML in LAN
-define("LANG_LAN_02", "%s couldn't be deleted."); // FIXME HTML in LAN
+define("LANG_LAN_00", "[x] could not be created (already exists)."); 
+define("LANG_LAN_01", "[x] was deleted (if existing) and created."); 
+define("LANG_LAN_02", "[x] couldn't be deleted."); 
 define("LANG_LAN_03", "Tables");
 
 define("LANG_LAN_05", "Not Installed");
@@ -35,8 +35,6 @@ define("LANG_LAN_25", "Language-Pack Creation Status");
 define("LANG_LAN_26", "Load language files only for current language");
 define("LANG_LAN_27", "If checked, and a required language cannot be found, there will be an error");
 
-//FIXME - LAN conflict & HTML IN LAN
-//0.8 - in conflict with 0.7. 
 define("LANG_LAN_PAGE_TITLE", "Languages");
 
 define("LANG_LAN_AGR", "Note: By using these tools you agree to share your language pack(s) with the e107 community.");
@@ -59,12 +57,12 @@ define("LANG_LAN_34", "Please verify and correct the remaining [x] error(s) befo
 define("LANG_LAN_50", "Admin-Area Interface Language");
 
 // e107 v2
-//FIXME Remove use of sprintf() and replace with [x]
-define("LANG_LAN_100", "%s deleted.");
-define("LANG_LAN_101", "%s could not be deleted.");
-define("LANG_LAN_103", "%s created.");
+
+define("LANG_LAN_100", "[x] deleted.");
+define("LANG_LAN_101", "[x] could not be deleted.");
+define("LANG_LAN_103", "[x] created.");
 // define("LANG_LAN_31", "%s couldn\"t be deleted.");
-define("LANG_LAN_104", "%s was disabled but left intact.");
-define("LANG_LAN_105", "Delete all tables in %s?");
+define("LANG_LAN_104", "[x] was disabled but left intact.");
+define("LANG_LAN_105", "Delete all tables in [x]?");
 
 ?>

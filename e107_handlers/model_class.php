@@ -2342,7 +2342,7 @@ class e_front_model extends e_model
 
 	/**
 	 * Add custom validation message.
-	 * $field_type and $error_code will be inserted via sprintf()
+	 * $field_type and $error_code will be inserted via $tp->lanVars()
 	 * in the $message string
 	 * Example:
 	 * <code>
