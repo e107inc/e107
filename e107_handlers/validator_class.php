@@ -771,6 +771,7 @@ class e_validator
 	 */
 	function addValidateMessage($field_title, $err_code = 0, $err_message = '', $custom = '')
 	{
+		$tp = e107::getParser();
 		$lanVars = array(
 			'x' => $field_title,
 			'y' => $err_code,
