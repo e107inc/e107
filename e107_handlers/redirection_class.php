@@ -306,7 +306,7 @@ class redirection
 	}
 
 
-	public function redirect($url, $replace = TRUE, $http_response_code = NULL, $preventCache)
+	public function redirect($url, $replace = TRUE, $http_response_code = NULL, $preventCache = true)
 	{
 		return $this->go($url, $replace, $http_response_code, $preventCache);	
 	}
