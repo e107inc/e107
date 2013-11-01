@@ -1675,12 +1675,14 @@ class navigation_shortcodes extends e_shortcode
 			$url = $this->var['link_url'];	
 		}	
 		
+		$url = $tp->replaceConstants($url, 'full', TRUE);
+		
 		if(strpos($url,"{") !== false)
 		{
            $url = $tp->parseTemplate($url, TRUE); // BC Fix shortcode in URL support - dynamic urls for multilanguage.
         }
 		
-		return $tp->replaceConstants($url, 'full', TRUE);
+		return $url;
 	}
 	
 	function sc_link_open($parm = '')
