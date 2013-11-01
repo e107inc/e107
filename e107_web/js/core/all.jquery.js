@@ -742,17 +742,18 @@ $(document).ready(function()
 
 	
 	function expandit(e) {
-				
+					
 		//	var href = ($(e).is("a")) ? $(e).attr("href") : '';
 			if($(e).is("a"))
 			{
 				var href = $(e).attr("href");	
+						
 			}
 				
-			if(href === "#" || e === null) 
+			if(href === "#" || e === null || href === undefined) 
 			{
 				idt = $(e).next("div");	
-				
+								
 				$(idt).toggle("slow");
 				return false;;			
 			}
