@@ -1675,9 +1675,9 @@ class navigation_shortcodes extends e_shortcode
 			$url = $this->var['link_url'];	
 		}	
 		
-		if(strpos($this->var['link_url'],"{") !== false)
+		if(strpos($url,"{") !== false)
 		{
-           $this->var['link_url'] = $tp->parseTemplate($this->var['link_url'], TRUE); // BC Fix shortcode in URL support - dynamic urls for multilanguage.
+           $url = $tp->parseTemplate($url, TRUE); // BC Fix shortcode in URL support - dynamic urls for multilanguage.
         }
 		
 		return $tp->replaceConstants($url, 'full', TRUE);
