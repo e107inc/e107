@@ -95,12 +95,12 @@ class admin_start
 	{
 		$mes = e107::getMessage();
 		
-		if(deftrue('e_MEDIA') && !is_writable(e_MEDIA))
+		if(deftrue('e_MEDIA') && is_dir(e_MEDIA) && !is_writable(e_MEDIA))
 		{
 			$mes->addWarning("The folder ".e_MEDIA." is not writable. Please correct before proceeding.");			
 		}	
 		
-		if(deftrue('e_SYSTEM') && !is_writable(e_SYSTEM))
+		if(deftrue('e_SYSTEM') && is_dir(e_SYSTEM) && !is_writable(e_SYSTEM))
 		{
 			$mes->addWarning("The folder ".e_SYSTEM." is not writable. Please correct before proceeding.");			
 		}			
