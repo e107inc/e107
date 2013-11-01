@@ -1660,6 +1660,8 @@ class navigation_shortcodes extends e_shortcode
 	 */
 	function sc_link_url($parm='')
 	{
+		$tp = e107::getParser();
+		
 		if(strpos($this->var['link_url'], e_HTTP) === 0)
 		{
 			$url = "{e_BASE}".substr($this->var['link_url'], strlen(e_HTTP));
@@ -1673,7 +1675,12 @@ class navigation_shortcodes extends e_shortcode
 			$url = $this->var['link_url'];	
 		}	
 		
-		return e107::getParser()->replaceConstants($url, 'full', TRUE);
+		if(strpos($this->var['link_url'],"{") !== false)
+		{
+           $this->var['link_url'] = $tp->parseTemplate($this->var['link_url'], TRUE); // BC Fix shortcode in URL support - dynamic urls for multilanguage.
+        }
+		
+		return $tp->replaceConstants($url, 'full', TRUE);
 	}
 	
 	function sc_link_open($parm = '')
