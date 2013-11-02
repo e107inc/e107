@@ -47,6 +47,7 @@ if (isset($_POST['createFeed']) || isset($_POST['updateFeed']))
 		$feed['newsfeed_updateint'] 	= intval($_POST['newsfeed_updateint']);
 		$feed['newsfeed_data'] 			= ''; 	// Start with blank data feed
 		$feed['newsfeed_timestamp'] 	= 0;	// This should force an immediate update
+		
 		if (isset($_POST['createFeed']))
 		{
 			if ($sql->insert('newsfeed',$feed))
@@ -61,7 +62,9 @@ if (isset($_POST['createFeed']) || isset($_POST['updateFeed']))
 		}
 		elseif (isset($_POST['updateFeed']))
 		{
-			if ($sql->insert('newsfeed',$feed, " WHERE newsfeed_id=".intval($_POST['newsfeed_id'])))
+			$feed['WHERE'] = "newsfeed_id=".intval($_POST['newsfeed_id']);
+			
+			if($sql->update('newsfeed',$feed))
 			{
 				$admin_log->logArrayAll('NEWSFD_02', $feed);
 				$mes->addSuccess(LAN_UPDATED);
@@ -96,7 +99,7 @@ if($headline_total = $sql->db_Select("newsfeed"))
 	$nfArray = $sql->rows();
 
 	$text = "
-	<table class='table adminlist'>
+	<table class='table table-striped'>
 	<colgroup>
 		<col style='width: 5%; text-align: center;' />
 		<col style='width: 40%;' />
@@ -104,14 +107,15 @@ if($headline_total = $sql->db_Select("newsfeed"))
 		<col style='width: 25%; text-align: center;' />
 		<col style='width: 10%; text-align: center;' />
 	</colgroup>
-	
+	<thead>
 	<tr>
-		<td>".LAN_ID."</td>
-		<td>".LAN_NAME."</td>
-		<td>".NFLAN_26."</td>
-		<td>".NFLAN_12."</td>
-		<td class='center options'>".LAN_OPTIONS."</td>
-	</tr>\n";
+		<th>".LAN_ID."</th>
+		<th>".LAN_NAME."</th>
+		<th>".NFLAN_26."</th>
+		<th>".NFLAN_12."</th>
+		<th class='center options'>".LAN_OPTIONS."</th>
+	</tr>
+	</thead>\n";
 
 	$active = array(NFLAN_13,NFLAN_14,NFLAN_20,NFLAN_21);
 
@@ -157,7 +161,7 @@ else
 
 	$text = "
 	<form method='post' action='".e_SELF."'>\n
-	<table class='table adminform'>
+	<table class='table'>
 	<colgroup>
 		<col class='col-label' />
 		<col style='col-control' />
@@ -169,7 +173,7 @@ else
 	
 	<tr>
 		<td>".LAN_URL."</td>
-		<td>".$frm->text('newsfeed_url', $newsfeed_url, '250')."<span class='field-help'>".NFLAN_10."</span></td>
+		<td>".$frm->text('newsfeed_url', $newsfeed_url, '250', 'size=xxlarge')."<span class='field-help'>".NFLAN_10."</span></td>
 	</tr>
 	<tr>
 		<td>".NFLAN_11."</td>
