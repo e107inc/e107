@@ -63,14 +63,20 @@ class newsfeedClass
 	// Ensures the feed list is loaded - uses cache if available
 	function readFeedList($force=FALSE)
 	{
-		global $sql;
+		$sql = e107::getDb();
+		
 		if ($this->validFeedList && !$force)
 		{
 			return;		// Already got list
 		}
-		if ($this->useCache)
-		{	// Cache enabled - try to read from that first
-			global $e107, $eArrayStorage;
+		if($this->useCache) // Cache enabled - try to read from that first
+		{	
+		
+			$eArrayStorage = e107::getArrayStorage();
+			
+			global $e107;
+			
+			
 			if (!$force && $temp = $e107->ecache->retrieve(NEWSFEED_LIST_CACHE_TAG))
 			{
 				$this->feedList = $eArrayStorage->ReadArray($temp);
@@ -79,25 +85,31 @@ class newsfeedClass
 		}
 
 		$fieldList = '*';
+		
 		if ($this->useCache)
 		{	// Get all fields except the actual news
 			$fieldList = 'newsfeed_id, newsfeed_name, newsfeed_url, newsfeed_timestamp, newsfeed_description, newsfeed_image, newsfeed_active, newsfeed_updateint';
 		}
+		
 		if ($sql -> db_Select("newsfeed", $fieldList, '`newsfeed_active` > 0'))		// Read in all the newsfeed info on the first go
 		{
 			while ($row = $sql->db_Fetch(MYSQL_ASSOC))
 			{
 				$nfID = $row['newsfeed_id'];
+				
 				if (isset($row['newsfeed_data']))
 				{
 					$this->newsList[$nfID]['newsfeed_data'] = $row['newsfeed_data'];		// Pull out the actual news - might as well since we're here
 					$this->newsList[$nfID]['newsfeed_timestamp'] = $row['newsfeed_timestamp'];	
+					
 					unset($row['newsfeed_data']);			// Don't keep this in memory twice!
 				}
+				
 				$this->feedList[$nfID] = $row;						// Put the rest into the feed data
 			}
 			$this->validFeedList = TRUE;
 		}
+		
 		if ($this->useCache)
 		{	// Cache enabled - we need to save some updated info
 			$temp = $eArrayStorage->WriteArray($this->feedList, FALSE);
@@ -109,7 +121,11 @@ class newsfeedClass
 	// Returns the info for a single feed - from cache or memory as appropriate. If time expired, updates the feed.
 	function getFeed($feedID, $force = FALSE)
 	{
-		global $tp, $e107, $sql, $eArrayStorage, $admin_log;
+		global $e107, $admin_log;
+		
+		$tp = e107::getParser();
+		$sql = e107::getDb();
+		$eArrayStorage = e107::getArrayStorage();
 
 		$this->readFeedList();				// Make sure we've got the feed data.
 
@@ -118,21 +134,35 @@ class newsfeedClass
 			if (NEWSFEED_DEBUG) echo "Invalid feed number: {$feedID}<br />";
 			return FALSE;
 		}
-
+		
+		if(strpos($this->newsList[$feedID]['newsfeed_data'],'MagpieRSS')) //BC Fix to update newsfeed_data from v1 to v2 spec. 
+		{
+			$force = true;
+		}
+		
 		if ($force || !isset($this->newsList[$feedID]['newsfeed_data']) || !$this->newsList[$feedID]['newsfeed_data'])
 		{	// No data already in memory
 			if ($force || !($this->newsList[$feedID]['newsfeed_data'] = $e107->ecache->retrieve(NEWSFEED_NEWS_CACHE_TAG.$feedID, $this->feedList[$feedID]['newsfeed_updateint']/60)))
 			{	// Need to re-read from source - either no cached data yet, or cache expired
-				if (NEWSFEED_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Newsfeed update","Refresh item: ".$feedID,FALSE,LOG_TO_ROLLING);
+			
+				if (NEWSFEED_DEBUG)
+				{
+					 $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Newsfeed update","Refresh item: ".$feedID,FALSE,LOG_TO_ROLLING);
+				}
+				
 				require_once(e_HANDLER.'xml_class.php');
 				$xml = new xmlClass;
 				require_once(e_HANDLER.'magpie_rss.php');
+				
 				$dbData = array();		// In case we need to update DB
-				if($rawData = $xml->getRemoteFile($this->feedList[$feedID]['newsfeed_url']))
-				{	// Need to update feed
+				
+				if($rawData = $xml->getRemoteFile($this->feedList[$feedID]['newsfeed_url'])) // Need to update feed
+				{	
 					$rss = new MagpieRSS( $rawData );
 					list($newsfeed_image, $newsfeed_showmenu, $newsfeed_showmain) = explode("::", $this->feedList[$feedID]['newsfeed_image']);
+					
 					$temp['channel'] = $rss->channel;
+					
 					if (($newsfeed_showmenu == 0) || ($newsfeed_showmain == 0))
 					{
 						$temp['items'] = $rss->items;		// Unlimited items
@@ -143,15 +173,17 @@ class newsfeedClass
 					}
 
 					$newsfeed_des = FALSE;
+					
 					if($this->feedList[$feedID]['newsfeed_description'] == 'default')
 					{
 						$temp['newsfeed_description'] = 'default';		// This prevents db writes if no better data found
+						
 						if($rss->channel['description'])
 						{
 							$newsfeed_des = $tp -> toDB($rss->channel['description']);
 							$temp['newsfeed_description'] = $newsfeed_des;
 						}
-						else if($rss->channel['tagline'])
+						elseif($rss->channel['tagline'])
 						{
 							$newsfeed_des = $tp -> toDB($rss -> channel['tagline']);
 							$temp['newsfeed_description'] = $newsfeed_des;
@@ -167,6 +199,7 @@ class newsfeedClass
 							}
 						}
 					}
+
 					if ($newsfeed_image == 'default')
 					{
 						$temp['newsfeed_image_link'] =  "<a href='".$rss->image['link']."' rel='external'><img src='".$rss->image['url']."' alt='".$rss->image['title']."' style='vertical-align: middle;' /></a>";
@@ -175,6 +208,7 @@ class newsfeedClass
 					{
 						$temp['newsfeed_image_link'] = "<img src='".$this->feedList[$feedID]['newsfeed_image']."' alt='' />";
 					}
+					
 					$serializedArray = $eArrayStorage->WriteArray($temp, FALSE);
 
 					$now = time();
@@ -190,8 +224,9 @@ class newsfeedClass
 						$dbData['newsfeed_data'] =addslashes($serializedArray);
 						$dbData['newsfeed_timestamp'] = $now;
 					}
-					if (count($dbData))
-					{	// Only write the feed data to DB if not using cache. Write description if changed
+					
+					if (count($dbData)) // Only write the feed data to DB if not using cache. Write description if changed
+					{	
 						if(FALSE === $sql->db_UpdateArray('newsfeed', $dbData, " WHERE newsfeed_id=".$feedID))
 						{
 							if (NEWSFEED_DEBUG) echo NFLAN_48."<br /><br />".var_dump($dbData);
@@ -206,15 +241,21 @@ class newsfeedClass
 				}
 			}
 		}
+
 		return  $eArrayStorage->ReadArray($this->newsList[$feedID]['newsfeed_data']);
 	}
+
+
 
 
 	// Return text for the required news feeds (loads info as necessary)
 	// Uses different templates for main and menu areas
 	function newsfeedInfo($which, $where = 'main')
 	{
-		global $tp, $sql;
+
+		$tp = e107::getParser();
+		$sql = e107::getDb();
+		
 		global $NEWSFEED_MAIN_START, $NEWSFEED_MAIN, $NEWSFEED_MAIN_END;
 		global $NEWSFEED_MENU_START, $NEWSFEED_MENU, $NEWSFEED_MENU_END;
 
@@ -247,6 +288,7 @@ class newsfeedClass
 				if (($rss = $this->getFeed($nfID)))	// Call ensures that feed is updated if necessary
 				{
 					list($newsfeed_image, $newsfeed_showmenu, $newsfeed_showmain) = explode("::", $feed['newsfeed_image']);
+					
 					$numtoshow = intval($where == 'main' ? $newsfeed_showmain : $newsfeed_showmenu);
 					$numtoshow = ($numtoshow > 0 ? $numtoshow : 999);
 
@@ -269,12 +311,13 @@ class newsfeedClass
 					}
 	
 					$FEEDLASTBUILDDATE = NFLAN_33.$pubbed;
-					$FEEDCOPYRIGHT = $tp -> toHTML($rss['channel']['copyright'], FALSE);
-					$FEEDTITLE = "<a href='".$rss['channel']['link']."' rel='external'>".$rss['channel']['title']."</a>";
+					$FEEDCOPYRIGHT = $tp -> toHTML(vartrue($rss['channel']['copyright']), FALSE);
+					$FEEDTITLE = "<a href='".$rss['channel']['link']."' rel='external'>".vartrue($rss['channel']['title'])."</a>";
 					$FEEDLINK = $rss['channel']['link'];
-					if($newsfeed_active == 2 or $newsfeed_active == 3)
+					
+					if($feed['newsfeed_active'] == 2 or $feed['newsfeed_active'] == 3)
 					{
-						$LINKTOMAIN = "<a href='".e_PLUGIN."newsfeed/newsfeed.php?show.{$newsfeed_id}'>".NFLAN_39."</a>";
+						$LINKTOMAIN = "<a href='".e_PLUGIN."newsfeed/newsfeed.php?show.".$feed['newsfeed_id']."'>".NFLAN_39."</a>";
 					}
 					else
 					{
@@ -288,10 +331,12 @@ class newsfeedClass
 					while($i < $numtoshow)
 					{
 						$item = $rss['items'][$i];
+						
 						$FEEDITEMLINK = "<a href='".$item['link']."' rel='external'>".$tp -> toHTML($item['title'], FALSE)."</a>\n";
 						$FEEDITEMLINK = str_replace('&', '&amp;', $FEEDITEMLINK);
 						$feeditemtext = preg_replace("#\[[a-z0-9=]+\]|\[\/[a-z]+\]|\{[A-Z_]+\}#si", "", strip_tags($item['description']));
-						$FEEDITEMCREATOR = $tp -> toHTML($item['author'], FALSE);
+						$FEEDITEMCREATOR = $tp -> toHTML(vartrue($item['author']), FALSE);
+						
 						if ($where == 'main')
 						{
 							if($NEWSFEED_COLLAPSE)
@@ -346,7 +391,7 @@ class newsfeedClass
 		}
 		else
 		{
-			$ret['title'] = $newsfeed_name." ".$NEWSFEED_MAIN_CAPTION;
+			$ret['title'] = $feed['newsfeed_name']." ".$NEWSFEED_MAIN_CAPTION;
 		}
 		$ret['text'] = $text;
 
