@@ -12,7 +12,7 @@
  * $Id$
  */
 require_once ("../class2.php");
-if (!getperms('0'))
+if (!getperms('L'))
 {
 	header("location:".e_BASE."index.php");
 	exit;
@@ -39,6 +39,7 @@ $lck = new lancheck;
 $tabs = table_list(); // array("news","content","links");
 $lanlist = e107::getLanguage()->installed();// Bugfix - don't use e_LANLIST as it's cached (SESSION)
 $message = '';
+
 if (e_QUERY)
 {
 	$tmp = explode('.', e_QUERY);
@@ -47,7 +48,13 @@ if (e_QUERY)
 	$id = varset($tmp[2]);
 	unset($tmp);
 }
-if (isset($_POST['submit_prefs']) && isset($_POST['mainsitelanguage']))
+elseif(!getperms('0'))
+{
+	$action = 'tools';
+}
+
+
+if (isset($_POST['submit_prefs']) && isset($_POST['mainsitelanguage']) && getperms('0'))
 {
 	unset($temp);
 	$changes = array();
@@ -68,7 +75,7 @@ if (isset($_POST['submit_prefs']) && isset($_POST['mainsitelanguage']))
 	}
 }
 // ----------------- delete tables ---------------------------------------------
-if (isset($_POST['del_existing']) && $_POST['lang_choices'])
+if (isset($_POST['del_existing']) && $_POST['lang_choices'] && getperms('0'))
 {
 	$lang = strtolower($_POST['lang_choices']);
 	foreach ($tabs as $del_table)
@@ -631,6 +638,11 @@ require_once (e_ADMIN."footer.php");
 
 function multilang_prefs()
 {
+	if(!getperms('0'))
+	{
+		return;
+	}
+	
 	global $lanlist;
 	$pref = e107::getPref();
 	$mes = e107::getMessage();
@@ -796,6 +808,12 @@ function table_list()
 
 function multilang_db()
 {
+	if(!getperms('0'))
+	{
+		return "Access Denied";
+	}
+	
+	
 	global $lanlist, $tabs;
 	
 	$sql = e107::getDb();
@@ -1342,21 +1360,25 @@ function language_adminmenu()
 	
 	if ($action == "")
 	{
-		$action = "main";
+		$action = getperms('0') ? "main" : "tools";
 	}
 	if ($action == "modify")
 	{
 		$action = "db";
 	}
 	
-	$var['main']['text'] = LAN_PREFS;
-	$var['main']['link'] = e_SELF;
-	
-	if (isset($pref['multilanguage']) && $pref['multilanguage'])
+	if(getperms('0'))
 	{
-		$var['db']['text'] = LANG_LAN_03;
-		$var['db']['link'] = e_SELF."?db";
+		$var['main']['text'] = LAN_PREFS;
+		$var['main']['link'] = e_SELF;
+		
+		if (isset($pref['multilanguage']) && $pref['multilanguage'])
+		{
+			$var['db']['text'] = LANG_LAN_03;
+			$var['db']['link'] = e_SELF."?db";
+		}
 	}
+	
 //	$lcnt = explode(",", e_LANLIST);
 //	if (count($lcnt) > 1)
 //	{
