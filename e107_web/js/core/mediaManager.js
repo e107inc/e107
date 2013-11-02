@@ -130,6 +130,8 @@ $(document).ready(function()
 		$(".e-media-select").live("click", function(){
   	 		
     		//	console.log(this);
+    		
+    		// alert('hi');
 
 				var id			= $(this).attr('data-id');
 				var target 		= $(this).attr('data-target');
@@ -170,7 +172,7 @@ $(document).ready(function()
 					//alert(bbpath);		
 				}
 				
-				
+
 
 
 				$('#src').attr('value',src); // working old
@@ -195,7 +197,11 @@ $(document).ready(function()
 					$('#html_holder').val(preview);
 					$('#path').attr('value',path);		
 				}	
-				else
+				else if(type == 'file')
+				{
+					preview = name;	
+				}
+				else // image
 				{
 					eMediaAttribute(this);	
 					preview = $('#html_holder').val();
