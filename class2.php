@@ -559,13 +559,22 @@ if(varset($pref['multilanguage']) && (e_LANGUAGE != $pref['sitelanguage']))
 //do it only once and with the proper function
 // e107_include_once(e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'.php');
 // e107_include_once(e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'_custom.php');
+// v1 Custom language File Path. 
 include(e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'.php'); // FASTEST - ALWAYS load
 $customLan = e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'_custom.php';
 if(is_readable($customLan)) // FASTER - if exist, should be done 'once' by the core
 {
 	include($customLan);
 }
-unset($customLan);
+
+// v2 Custom language File Path. 
+$customLan2 = e_SYSTEM.'/lans/'.e_LANGUAGE.'_custom.php';
+if(is_readable($customLan2)) // FASTER - if exist, should be done 'once' by the core
+{
+	include($customLan2);
+}
+unset($customLan, $customLan2);
+
 
 $sql->db_Mark_Time('Start: Global Language Files');
 if(isset($pref['lan_global_list']))
