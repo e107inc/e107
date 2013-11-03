@@ -123,7 +123,7 @@ if(false === $cached)
 	//	if(($news['news_datestamp'] >= $month_start && $news['news_datestamp'] <= $month_end) || (deftrue('BOOTSTRAP') && $news['news_datestamp'] >= $year_start && $news['news_datestamp'] <= $year_end))
 		{
 			$xday = date("j", $news['news_datestamp']);
-			if (!isset($day_links[$xday]) || !$day_links[$xday])
+			if (!$links[$xyear][$xmonth][$xday])
 			{
 				$links[$xyear][$xmonth][$xday] = e107::getUrl()->create('news/list/day', 'id='.formatDate($req_year, $xmonth, $xday));//e_BASE."news.php?day.".formatDate($req_year, $req_month, $xday);
 	
