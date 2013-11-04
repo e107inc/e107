@@ -40,9 +40,10 @@ $NEWS_TEMPLATE['default']['item'] = '
 
 
 // XXX The ListStyle template offers a listed summary of items with a minimum of 10 items per page. 
-// As displayed by news.php?cat.1 OR news.php?all 
-$NEWS_TEMPLATE['list']['item'] = '
-	{SETIMAGE: w=400&h=300&crop=1}
+// As displayed by news.php?cat.1 OR news.php?all OR news.php?tag=xxx
+$NEWS_TEMPLATE['list']['start']	= '{SETIMAGE: w=400&h=300&crop=1}';
+$NEWS_TEMPLATE['list']['end']	= '';
+$NEWS_TEMPLATE['list']['item']	= '
 	<div class="thumbnail">
 		<div class="row-fluid">
 				<div class="span3">
@@ -56,7 +57,7 @@ $NEWS_TEMPLATE['list']['item'] = '
                        	{NEWSSUMMARY}
 					</p>
                     <p>
-                       <a href="{NEWSURL}" class="btn btn-info">Read More</a>
+                       <a href="{NEWSURL}" class="btn btn-info">'.LAN_READ_MORE.'</a>
                    </p>
  				</div>
 		</div>
