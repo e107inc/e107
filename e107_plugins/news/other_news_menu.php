@@ -36,7 +36,7 @@ if(!$OTHERNEWS_STYLE)
 {
 	if(deftrue('BOOTSTRAP')) // v2.x
 	{
-		
+		define("OTHERNEWS_COLS",false);
 		$template = e107::getTemplate('news', 'news_menu', 'other');
 		
 		$item_selector = '<div class="btn-group pull-right"><a class="btn btn-mini " href="#otherNews" data-slide="prev">‹</a>  
@@ -114,7 +114,7 @@ LEFT JOIN #user AS u ON n.news_author = u.user_id
 LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".$_t." AND (n.news_end=0 || n.news_end>".$_t.") AND FIND_IN_SET(2, n.news_render_type)  ORDER BY n.news_datestamp DESC LIMIT 0,".OTHERNEWS_LIMIT;
 
-if ($sql->db_Select_gen($query))
+if ($sql->gen($query))
 {
 	$text = $tp->parseTemplate($template['start'],true);
 		
@@ -124,7 +124,7 @@ if ($sql->db_Select_gen($query))
 		$t = 0;		
 		
 		$wid = floor(100/$nbr_cols);
-		while ($row = $sql->db_Fetch()) 
+		while ($row = $sql->fetch()) 
 		{
 			$text .= ($t % $nbr_cols == 0) ? "<tr>" : "";
 			$text .= "\n<td style='$style ; width:$wid%;'>\n";
