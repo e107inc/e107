@@ -768,6 +768,7 @@ class xmlClass
 		if (strpos($fname, '://') !== false)
 		{
 			$this->getRemoteFile($fname);
+			$this->_feedUrl = false; // clear it to avoid conflicts. 
 		}
 		else
 		{
@@ -778,6 +779,8 @@ class xmlClass
 		}
 		if ($this->xmlFileContents)
 		{
+	
+			
 			if ($replace_constants == true)
 			{
 				$this->xmlFileContents = $tp->replaceConstants($this->xmlFileContents, '', true);
