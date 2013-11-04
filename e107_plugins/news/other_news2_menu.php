@@ -35,6 +35,7 @@ if(!$OTHERNEWS2_STYLE)
 {
 	if(deftrue('BOOTSTRAP')) // v2.x
 	{
+		define("OTHERNEWS_COLS",false);
 		$template = e107::getTemplate('news', 'news_menu', 'other2');
 		$OTHERNEWS2_STYLE = $template['item']; 
 	}
@@ -107,7 +108,7 @@ LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") 
 AND FIND_IN_SET(3, n.news_render_type)  ORDER BY n.news_datestamp DESC LIMIT 0,". defset('OTHERNEWS2_LIMIT',5);
 
-if ($sql->db_Select_gen($query)) 
+if ($sql->gen($query)) 
 {
 	$text = $tp->parseTemplate($template['start'],true);
 	
@@ -116,7 +117,8 @@ if ($sql->db_Select_gen($query))
 		$text = "<table style='width:100%' cellpadding='0' cellspacing='".defset('OTHERNEWS2_SPACING',0)."'>";
 		$t = 0;
 		$wid = floor(100/$nbr_cols);
-		while ($row = $sql->db_Fetch()) 
+		
+		while ($row = $sql->fetch()) 
 		{
 			$text .= ($t % $nbr_cols == 0) ? "<tr>" : "";
 			$text .= "\n<td style='$style ; width:$wid%;'>\n";
@@ -144,7 +146,7 @@ if ($sql->db_Select_gen($query))
 	}
 	else // perfect for divs. 
 	{
-		while ($row = $sql->db_Fetch()) 
+		while ($row = $sql->fetch()) 
 		{
 			$text .= $ix->render_newsitem($row, 'return', '', $OTHERNEWS2_STYLE, $param);
 		}
