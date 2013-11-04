@@ -283,7 +283,22 @@ class news_shortcodes extends e_shortcode
 
 	function sc_newssummary()
 	{
-		return ($this->news_item['news_summary']) ? $this->news_item['news_summary'].'<br />' : '';
+		if($this->news_item['news_summary'])
+		{
+			return $this->news_item['news_summary'].'<br />';
+		}
+		
+		if($this->news_item['news_body']) // Auto-generate from first 2 sentences of news-body. //TODO Add Pref?
+		{
+			$tp = e107::getParser();
+			$text = strip_tags($tp->toHtml($this->news_item['news_body'],true));	
+			$tmp = preg_split('/\.\s/i', trim($text));	
+			
+			if($tmp[0] && $tmp[1])
+			{
+				return trim($tmp[0]).". ".trim($tmp[1]).'.<br />';	
+			}
+		}
 	}
 
 	/**
