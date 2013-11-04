@@ -45,10 +45,13 @@ if (!defined('ITEMVIEW'))
 {
 	define('ITEMVIEW', varset($pref['newsposts'],15));
 }
-// XXX remove ITEMVIEW?
-if(!defined("NEWSALL_LIMIT")) 
+
+// ?all and ?cat.x and ?tag are the same listing functions - just filtered differently. 
+// NEWSLIST_LIMIT is suitable for all
+
+if(!defined("NEWSLIST_LIMIT")) 
 {
-	define("NEWSALL_LIMIT",varset($pref['newsposts'],15)); 
+	 define("NEWSLIST_LIMIT", varset($pref['news_list_limit'],15)); 
 }
 
 if (e_QUERY) //TODO add support for $_GET['cat'] and $_GET['mode'] and phase-out the x.x.x format. 
@@ -148,14 +151,17 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 	if ($action == 'cat' && $category != 0)
 	{
 		$gen = new convert;
-		$sql->db_Select("news_category", "*", "category_id='{$category}'");
-		$row = $sql->db_Fetch();
+		$sql->select("news_category", "*", "category_id='{$category}'");
+		$row = $sql->fetch();
 		extract($row);  // still required for the table-render.  :(
 	}
-	if ($action == 'all')
+	
+	//XXX These are all correctly using LIST templates. 
+	
+	if ($action == 'all') // show archive of all news items using list-style template.
 	{
-		// show archive of all news items using list-style template.
-		$news_total = $sql->db_Count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().")");
+		
+		$news_total = $sql->count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().")");
 		$query = "
 		SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
 		nc.category_meta_keywords, nc.category_meta_description
@@ -165,14 +171,14 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.") AND n.news_start < ".time()."
 		AND (n.news_end=0 || n.news_end>".time().")
 		ORDER BY n.news_sticky DESC, n.news_datestamp DESC
-		LIMIT ".intval($newsfrom).",".NEWSALL_LIMIT;
+		LIMIT ".intval($newsfrom).",".deftrue('NEWSALL_LIMIT', NEWSLIST_LIMIT); // NEWSALL_LIMIT just for BC. NEWSLIST_LIMIT is sufficient. 
 		$category_name = "All";
 	}
-	elseif ($action == 'cat')
+	elseif ($action == 'cat') // show archive of all news items in a particular category using list-style template.
 	{
-		// show archive of all news items in a particular category using list-style template.
-		$news_total = $sql->db_Count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().") AND news_category=".intval($sub_action));
-		if(!defined("NEWSLIST_LIMIT")) { define("NEWSLIST_LIMIT",10); }
+		
+		$news_total = $sql->count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().") AND news_category=".intval($sub_action));
+		
 		$query = "
 		SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
 		nc.category_meta_description
@@ -188,7 +194,7 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 	elseif(vartrue($_GET['tag']))
 	{
 		$tagsearch = preg_replace('#[^a-zA-Z0-9\-]#','', $_GET['tag']);
-		if(!defined("NEWSLIST_LIMIT")) { define("NEWSLIST_LIMIT",10); }
+
 		$query = "
 		SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
 		nc.category_meta_description
@@ -204,7 +210,7 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 	}
 
 	$newsList = array();
-	if($sql->db_Select_gen($query))
+	if($sql->gen($query))
 	{
 		$newsList = $sql->db_getList();
 	}
