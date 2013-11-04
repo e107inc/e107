@@ -291,7 +291,9 @@ class news_shortcodes extends e_shortcode
 		if($this->news_item['news_body']) // Auto-generate from first 2 sentences of news-body. //TODO Add Pref?
 		{
 			$tp = e107::getParser();
-			$text = strip_tags($tp->toHtml($this->news_item['news_body'],true));	
+			$text = $tp->toHtml($this->news_item['news_body'],true);
+			$text = str_replace("<br />"," ",$text);
+			$text = strip_tags($text);	
 			$tmp = preg_split('/\.\s/i', trim($text));	
 			
 			if($tmp[0] && $tmp[1])
