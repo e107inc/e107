@@ -587,17 +587,17 @@ class page_admin_ui extends e_admin_ui
 		function beforeCreate($newdata,$olddata)
 		{
 			$newdata['menu_name'] = preg_replace('/[^\w-*]/','',$newdata['menu_name']);
-
-			if(empty($new_data['page_sef']))
+			
+			if(empty($newdata['page_sef']))
 			{
-				$new_data['page_sef'] = eHelper::title2sef($new_data['page_title']);
+				$newdata['page_sef'] = eHelper::title2sef($newdata['page_title']);
 			}
 			else 
 			{
-				$new_data['page_sef'] = eHelper::secureSef($new_data['page_sef']);
+				$newdata['page_sef'] = eHelper::secureSef($newdata['page_sef']);
 			}
 			
-			$sef = e107::getParser()->toDB($new_data['page_sef']);
+			$sef = e107::getParser()->toDB($newdata['page_sef']);
 			
 			if(e107::getDb()->count('page', '(*)', "page_sef='{$sef}'"))
 			{
