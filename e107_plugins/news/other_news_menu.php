@@ -29,18 +29,44 @@ unset($text);
 global $OTHERNEWS_STYLE;
 $ix = new news;
 
+
+$caption = TD_MENU_L1;
+
 if(!$OTHERNEWS_STYLE)
 {
-	$OTHERNEWS_STYLE = "
-	<div style='padding:3px;width:100%'>
-	<table style='border-bottom:1px solid black;width:100%' cellpadding='0' cellspacing='0'>
-	<tr>
-	<td style='vertical-align:top;padding:3px;width:20px'>
-	{NEWSCATICON}
-	</td><td style='text-align:left;padding:3px;vertical-align:top'>
-	{NEWSTITLELINK}
-	</td></tr></table>
-	</div>\n";
+	if(deftrue('BOOTSTRAP')) // v2.x
+	{
+		
+		$template = e107::getTemplate('news', 'news_menu', 'other');
+		
+		$item_selector = '<div class="btn-group pull-right"><a class="btn btn-mini " href="#otherNews" data-slide="prev">‹</a>  
+ 		<a class="btn btn-mini" href="#otherNews" data-slide="next">›</a></div>';
+		 
+		$caption = "<span class='inline-text'>".$template['caption']." ".$item_selector."</span>";		
+				
+		$OTHERNEWS_STYLE = $template['item']; 
+	}
+	else //v1.x
+	{
+			
+		$template['start'] = '';
+		$template['end'] = '';	
+			
+		$OTHERNEWS_STYLE = "
+		<div style='padding:3px;width:100%'>
+		<table style='border-bottom:1px solid black;width:100%' cellpadding='0' cellspacing='0'>
+		<tr>
+		<td style='vertical-align:top;padding:3px;width:20px'>
+		{NEWSCATICON}
+		</td><td style='text-align:left;padding:3px;vertical-align:top'>
+		{NEWSTITLELINK}
+		</td></tr></table>
+		</div>\n";
+	 
+	}
+	
+	
+
 }
 
 
@@ -90,7 +116,7 @@ WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".$_t." AND (n.new
 
 if ($sql->db_Select_gen($query))
 {
-	$text = "";
+	$text = $tp->parseTemplate($template['start'],true);
 		
 	if(OTHERNEWS_COLS !== false)
 	{
@@ -127,18 +153,24 @@ if ($sql->db_Select_gen($query))
 	}
 	else // perfect for divs. 
 	{
-		while ($row = $sql->db_Fetch()) 
+		$loop = 0;
+		while ($row = $sql->fetch()) 
 		{
-			$text .= $ix->render_newsitem($row, 'return', '', $OTHERNEWS_STYLE, $param);
+			$active = ($loop == 0) ? 'active' : '';		
+			
+			$TMPL = str_replace("{ACTIVE}", $active, $OTHERNEWS_STYLE);	
+			
+			$text .= $ix->render_newsitem($row, 'return', '', $TMPL, $param);
+			$loop++;
 		}				
 	}
 
-
+	$text .= $tp->parseTemplate($template['end'], true);
 
 	// Save Data
 	ob_start();
 
-	$ns->tablerender(TD_MENU_L1, $text, 'other_news');
+	$ns->tablerender($caption, $text, 'other_news');
 
 	$cache_data = ob_get_flush();
 	e107::getCache()->set("nq_othernews", $cache_data);

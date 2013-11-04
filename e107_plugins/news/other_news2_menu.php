@@ -31,24 +31,37 @@ unset($text);
 global $OTHERNEWS2_STYLE;
 $ix = new news;
 
-if(!$OTHERNEWS2_STYLE) {
-	$OTHERNEWS2_STYLE = "
-	<table class='forumheader3' cellpadding='0' cellspacing='0' style='width:100%'>
-	<tr><td class='caption2' colspan='2' style='padding:3px;text-decoration:none;'>
-	{NEWSCATICON}
-	{NEWSCATEGORY}
-	</td></tr>
-	<tr><td  style='padding:3px;vertical-align:top'>
-	{NEWSTITLELINK}
-	<br />
-	{NEWSSUMMARY}
-	</td>
-	<td style='padding:3px'>
-	{NEWSTHUMBNAIL}
-	</td>
-	</tr>
-	</table>
-	";
+if(!$OTHERNEWS2_STYLE) 
+{
+	if(deftrue('BOOTSTRAP')) // v2.x
+	{
+		$template = e107::getTemplate('news', 'news_menu', 'other2');
+		$OTHERNEWS2_STYLE = $template['item']; 
+	}
+	else //v1.x
+	{
+		$template['start'] = '';
+		$template['end'] = '';	
+		$template['caption'] = TD_MENU_L2;
+		
+		$OTHERNEWS2_STYLE = "
+		<table class='forumheader3' cellpadding='0' cellspacing='0' style='width:100%'>
+		<tr><td class='caption2' colspan='2' style='padding:3px;text-decoration:none;'>
+		{NEWSCATICON}
+		{NEWSCATEGORY}
+		</td></tr>
+		<tr><td  style='padding:3px;vertical-align:top'>
+		{NEWSTITLELINK}
+		<br />
+		{NEWSSUMMARY}
+		</td>
+		<td style='padding:3px'>
+		{NEWSTHUMBNAIL}
+		</td>
+		</tr>
+		</table>
+		";
+	}
 }
 
 if(!defined("OTHERNEWS2_LIMIT")){
@@ -96,7 +109,7 @@ AND FIND_IN_SET(3, n.news_render_type)  ORDER BY n.news_datestamp DESC LIMIT 0,"
 
 if ($sql->db_Select_gen($query)) 
 {
-	$text = "";	
+	$text = $tp->parseTemplate($template['start'],true);
 	
 	if(OTHERNEWS2_COLS !== false)
 	{			
@@ -137,12 +150,12 @@ if ($sql->db_Select_gen($query))
 		}
 	}
 		
-	
+	$text .= $tp->parseTemplate($template['end'], true);
 
 	// Save Data
 	ob_start();
 
-	$ns->tablerender(TD_MENU_L2, $text, 'other_news2');
+	$ns->tablerender($template['caption'], $text, 'other_news2');
 
 	$cache_data = ob_get_flush();
 	$e107cache->set("nq_othernews2", $cache_data);

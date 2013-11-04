@@ -65,18 +65,20 @@ if(THEME_LAYOUT == 'docs')
 //define("STANDARDS_MODE",TRUE);
 
 
-
+/*
 $OTHERNEWS_STYLE = '<div class="span4">
               		<h2>{NEWSTITLE}</h2>
               		<p>{NEWSSUMMARY}</p>
               		<p><a class="btn" href="{NEWSURL}">View details &raquo;</a></p>
             		</div><!--/span-->';
 
+
 $OTHERNEWS2_STYLE = '<div class="span4">
               		<h2>{NEWSTITLE}</h2>
               		<p>{NEWSSUMMARY}</p>
               		<p><a class="btn" href="{NEWSURL}">View details &raquo;</a></p>
             		</div><!--/span-->';
+*/
 					
 define('OTHERNEWS_COLS',false); // no tables, only divs. 
 define('OTHERNEWS_LIMIT', 3); // Limit to 3. 
