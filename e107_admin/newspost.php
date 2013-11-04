@@ -1646,6 +1646,7 @@ class admin_newspost
 	
 		$temp = array();
 		$temp['newsposts'] 				= intval($_POST['newsposts']);
+		
 	   	$temp['newsposts_archive'] 		= intval($_POST['newsposts_archive']);
 		$temp['newsposts_archive_title'] = e107::getParser()->toDB($_POST['newsposts_archive_title']);
 		$temp['news_cats'] 				= intval($_POST['news_cats']);
@@ -1660,6 +1661,8 @@ class admin_newspost
 		$temp['news_editauthor']		= intval($_POST['news_editauthor']);
 		$temp['news_ping_services']		= explode("\n",$_POST['news_ping_services']);
 		$temp['news_sefbase']			= preg_replace('#[^\w\pL\-]#u', '', $_POST['news_sefbase']);
+		$temp['news_list_limit']		= intval($_POST['news_list_limit']);
+
 
 		e107::getConfig()->updatePref($temp);
 
@@ -2981,6 +2984,14 @@ class admin_newspost
 							<td>".NWSLAN_88."</td>
 							<td>
 								".$frm->select('newsposts', $this->_optrange(50, false), $pref['newsposts'], 'class=tbox')."
+							</td>
+							</tr>
+							
+							<tr>
+							<td>Limit for News-Listing Pages</td>
+							<td>
+								".$frm->select('news_list_limit', $this->_optrange(50, false), $pref['news_list_limit'], 'class=tbox')."
+								<div class='field-help'>eg. news.php?all or news.php?cat.1 or news.php?tag=xxx</div>
 							</td>
 							</tr>
 		";
