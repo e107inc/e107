@@ -511,32 +511,6 @@ TMPL;
  
  
  
-
-$NEWSLISTSTYLE = "
-\n\n<!-- New List -->\n\n
-
-	<table class='newsboxes' cellpadding='0' cellspacing='0' style='border-top:1px solid black;width:100%'>
-
-	<tr><td style='padding:4px;width:20px;vertical-align:top'>
-	{NEWSCATICON}
-	</td><td style='padding:4px;vertical-align:top'>
-
-	{NEWSTITLELINK}
-	<br />
-	{NEWSSUMMARY}
-	</td>
-	<td style='padding:4px;text-align:right'>
-	{NEWSTHUMBNAIL}
-	</td>
-	</tr>
-	</table>
-
-\n\n<!-- End News List -->\n\n
-"
-
-;
-
-
 $NEWSCAT = "\n\n\n\n<!-- News Category -->\n\n\n\n
 	<div style='padding:2px;padding-bottom:12px'>
 	<div class='newscat_caption'>

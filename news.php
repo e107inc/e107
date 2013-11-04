@@ -225,39 +225,13 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 	require_once(HEADERF);
 	$action = $currentNewsAction;
 
-	/*
-	if(!$NEWSLISTSTYLE)
-		{
-			$NEWSLISTSTYLE = "
-			<div style='padding:3px;width:100%'>
-			<table style='border-bottom:1px solid black;width:100%' cellpadding='0' cellspacing='0'>
-			<tr>
-			<td style='vertical-align:top;padding:3px;width:20px'>
-			{NEWSCATICON}
-			</td><td style='text-align:left;padding:3px'>
-			{NEWSTITLELINK=extend}
-			<br />
-			{NEWSSUMMARY}
-			<span class='smalltext'>
-			{NEWSDATE}
-			{NEWSCOMMENTS}
-			</span>
-			</td><td style='width:55px'>
-			{NEWSTHUMBNAIL}
-			</td></tr></table>
-			</div>\n";
-	
-		}*/
-
-	if(vartrue($NEWSLISTSTYLE))
+	if(vartrue($NEWSLISTSTYLE)) // Legacy v1.x
 	{
 		 $template =  $NEWSLISTSTYLE;
 	}
-	else 
+	else  // v2.x
 	{
-		$tmp = e107::getTemplate('news', 'news', 'list');
-		$template = $tmp['item'];
-		unset($tmp);
+		$template = e107::getTemplate('news', 'news', 'list');
 	}
 
 	$param = array();
@@ -270,10 +244,21 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 	// NEW - allow news batch shortcode override (e.g. e107::getScBatch('news', 'myplugin', true); )
 	e107::getEvent()->trigger('news_list_parse', $newsList);
 
+	if(vartrue($template['start']))
+	{
+		$text .= $tp->parseTemplate($template['start'], true);		
+	}
+
 	foreach($newsList as $row)
 	{
-		$text .= $ix->render_newsitem($row, 'return', '', $template, $param);
+		$text .= $ix->render_newsitem($row, 'return', '', $template['item'], $param);
 	}
+
+	if(vartrue($template['end']))
+	{
+		$text .= $tp->parseTemplate($template['end'], true);				
+	}
+	
 
 	$icon = ($row['category_icon']) ? "<img src='".e_IMAGE."icons/".$row['category_icon']."' alt='' />" : "";
 
@@ -283,11 +268,12 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 	//
 	//	$text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
 
-	$amount = NEWSLIST_LIMIT;
-	$nitems = defined('NEWS_NEXTPREV_NAVCOUNT') ? '&navcount='.NEWS_NEXTPREV_NAVCOUNT : '' ;
-	$url = rawurlencode(e107::getUrl()->create($newsRoute, $newsUrlparms));
-	$parms  = 'tmpl_prefix='.deftrue('NEWS_NEXTPREV_TMPL', 'default').'&total='.$news_total.'&amount='.$amount.'&current='.$newsfrom.$nitems.'&url='.$url;
-	$text  .= $tp->parseTemplate("{NEXTPREV={$parms}}");
+	$amount 	= NEWSLIST_LIMIT;
+	$nitems 	= defined('NEWS_NEXTPREV_NAVCOUNT') ? '&navcount='.NEWS_NEXTPREV_NAVCOUNT : '' ;
+	$url 		= rawurlencode(e107::getUrl()->create($newsRoute, $newsUrlparms));
+	$parms  	= 'tmpl_prefix='.deftrue('NEWS_NEXTPREV_TMPL', 'default').'&total='.$news_total.'&amount='.$amount.'&current='.$newsfrom.$nitems.'&url='.$url;
+	
+	$text  		.= $tp->parseTemplate("{NEXTPREV={$parms}}");
 
 	if(!$NEWSLISTTITLE)
 	{
@@ -297,7 +283,7 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 	{
 		$NEWSLISTTITLE = str_replace("{NEWSCATEGORY}",$tp->toHTML($category_name,FALSE,'TITLE'),$NEWSLISTTITLE);
 	}
-	$text .= "<div style='text-align:center;'><a href='".e_SELF."'>".LAN_NEWS_84."</a></div>";
+	$text .= "<div class='center'><a class='btn' href='".e_SELF."'>".LAN_NEWS_84."</a></div>";
 	ob_start();
 	$ns->tablerender($NEWSLISTTITLE, $text, 'news');
 	$cache_data = ob_get_flush();

@@ -10,7 +10,7 @@ if (!defined('e107_INIT'))  exit;
 
 global $sc_style;
 
-###### Default list item (temporary) - TODO rewrite news, template standards ######
+###### Default list item (temporary) - TODO rewrite news ######
 //$NEWS_MENU_TEMPLATE['list']['start']       = '<ul class="nav nav-list news-menu-months">';
 //$NEWS_MENU_TEMPLATE['list']['end']         = '</ul>';
 
@@ -23,8 +23,9 @@ $NEWS_MENU_TEMPLATE['list']['end']         = '</div>';
 // {NEWSBODY} should not appear in the LISTSTYLE as it is NOT the same as what would appear on news.php (no query) 
 
 // Template/CSS to be reviewed for best bootstrap implementation 
-$NEWS_TEMPLATE['list']['item'] = '
-	{SETIMAGE: w=400&h=300&crop=1}
+$NEWS_TEMPLATE['list']['start']	= '{SETIMAGE: w=400&h=300&crop=1}';
+$NEWS_TEMPLATE['list']['end']	= '';
+$NEWS_TEMPLATE['list']['item']	= '
 	<div class="thumbnail">
 		<div class="row-fluid">
 				<div class="span3">
@@ -38,7 +39,7 @@ $NEWS_TEMPLATE['list']['item'] = '
                        	{NEWSSUMMARY}
 					</p>
                     <p>
-                       <a href="{NEWSURL}" class="btn btn-info">Read More</a>
+                       <a href="{NEWSURL}" class="btn btn-info">'.LAN_READ_MORE.'</a>
                    </p>
  				</div>
 		</div>
