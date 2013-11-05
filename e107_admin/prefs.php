@@ -981,6 +981,8 @@ $xurls = array(
 	'github'		=>	array('label'=>"Github",	"placeholder"=>"eg. https://github.com/e107inc"),
 	'flickr'		=>	array('label'=>"Flickr",	"placeholder"=>""),
 	'instagram'		=>	array('label'=>"Instagram",	"placeholder"=>""),
+	'pinterest'		=>	array('label'=>"Pinterest",	"placeholder"=>""),
+	'vimeo'			=>	array('label'=>"Vimeo",		"placeholder"=>""),
 );	
 	
 	foreach($xurls as $k=>$var)
