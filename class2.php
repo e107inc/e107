@@ -651,6 +651,8 @@ if(is_array($pref['xurl']))
 	define('XURL_GITHUB', vartrue($pref['xurl']['github'], false));
 	define('XURL_FLICKR', vartrue($pref['xurl']['flickr'], false));
 	define('XURL_INSTAGRAM', vartrue($pref['xurl']['instagram'], false));
+	define('XURL_PINTEREST', vartrue($pref['xurl']['pinterest'], false));
+	define('XURL_VIMEO', vartrue($pref['xurl']['vimeo'], false));
 }
 else
 {
@@ -662,6 +664,8 @@ else
 	define('XURL_GITHUB', false);
 	define('XURL_FLICKR', false);
 	define('XURL_INSTAGRAM', false);
+	define('XURL_PINTEREST', false);
+	define('XURL_VIMEO', false);
 }
 
 /* Withdrawn 0.8
