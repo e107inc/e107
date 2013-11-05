@@ -118,6 +118,7 @@ class e_session
 	
 	protected $_namespace;
 	protected $_name;
+	protected $_sessionStarted = false; // Fixes lost $_SESSION value problem. 
 
 	/**
 	 * Validation options
@@ -415,7 +416,8 @@ class e_session
 	 */
 	public function start($sessionName = null)
 	{
-		if (isset($_SESSION))
+	
+		if (isset($_SESSION) && ($this->_sessionStarted == true)) 
 		{
 			return $this;
 		}
@@ -424,7 +426,7 @@ class e_session
 		{
 			session_save_path($this->_sessionSavePath);
 		}
-
+	
 		switch ($this->_sessionSaveMethod)
 		{
 			case 'db': // TODO session db handling, more methods (e.g. memcache)
@@ -471,9 +473,9 @@ class e_session
 		{
 			session_cache_limiter('private'); 
 		}
-		
+	
 		session_start();
-
+		$this->_sessionStarted = true;
 		return $this;
 	}
 
