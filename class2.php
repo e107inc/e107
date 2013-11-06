@@ -1188,7 +1188,7 @@ if ($pref['anon_post'] ? define('ANON', true) : define('ANON', false));
 
 if (empty($pref['newsposts']) ? define('ITEMVIEW', 15) : define('ITEMVIEW', $pref['newsposts']));
 
-if ($pref['antiflood1'] == 1)
+if ($pref['antiflood1'] == 1 && !defined('FLOODPROTECT'))
 {
 	define('FLOODPROTECT', TRUE);
 	define('FLOODTIMEOUT', max(varset($pref['antiflood_timeout'], 10), 3));

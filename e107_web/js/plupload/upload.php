@@ -11,7 +11,9 @@
 
 // HTTP headers for no cache etc
 
-
+$_E107['no_online'] = true;
+define('e_MINIMAL', true);
+define('FLOODPROTECT', false);
 require_once("../../../class2.php");
 
 if(!ADMIN)
@@ -43,6 +45,8 @@ $maxFileAge = 5 * 3600; // Temp file age in seconds
 $chunk = isset($_REQUEST["chunk"]) ? intval($_REQUEST["chunk"]) : 0;
 $chunks = isset($_REQUEST["chunks"]) ? intval($_REQUEST["chunks"]) : 0;
 $fileName = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
+
+
 
 // Clean the fileName for security reasons
 $fileName = preg_replace('/[^\w\._]+/', '_', $fileName);
