@@ -7,9 +7,7 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Administration Area - Languages
- *
- * $URL$
- * $Id$
+
  */
 require_once ("../class2.php");
 if (!getperms('L'))
