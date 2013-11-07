@@ -937,6 +937,8 @@ class media_admin_ui extends e_admin_ui
 		$mes->addDebug("For:".$cat);
 		$mes->addDebug("Bbcode: ".$this->getQuery('bbcode'));
 
+
+
 		
 		if($file)
 		{
@@ -976,12 +978,26 @@ class media_admin_ui extends e_admin_ui
 	function uploadPage()
 	{
 		if(!ADMIN){ exit; } //TODO check for upload-access in perms. 
+		
+
+		
 
 		// if 'for' has no value, files are placed in /temp and not added to the db. 
 		$text = '<div id="uploader" rel="'.e_JS.'plupload/upload.php?for='.$this->getQuery('for').'">
 	        <p>No HTML5 support.</p>
 		</div>';
 	    
+	    $frm = e107::getForm();
+	    
+	    $text .= $frm->open('upload-url-form','post');
+		$text .= '<div class="plupload_header_content">';
+		$text .= "<div class='plupload_header_text form-inline' style='padding:20px'>Or upload a remote image or file ";
+		$text .= "<input type='text' name='upload_url' size='255' style='width:70%' placeholder='eg. http://website.com/some-image.jpg' />";
+		$text .= $frm->admin_button('upload_remote_url',1,'create','Start Upload');
+	    $text .= "</div>";
+		
+		$text .= "</div>";
+	   
 		return $text;
 	}
 
@@ -1588,7 +1604,16 @@ class media_admin_ui extends e_admin_ui
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
 		$fl = e107::getFile();
-
+		
+		if(vartrue($_POST['upload_remote_url']))
+		{
+			if(!$fl->getRemoteFile($_POST['upload_url'], basename($_POST['upload_url']), 'import'))
+			{
+				$mes->addError("There was a problem grabbing the file");
+			}
+		}
+		
+		
 		$fl->setFileInfo('all');
 		$rejectArray = array('^\.ftpquota$','^index\.html$','^null\.txt$','\.bak$','^.tmp','.*\.xml$','^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$','^\.htaccess$','index\.html','null\.txt');
 		$fl->setFileFilter($rejectArray);
