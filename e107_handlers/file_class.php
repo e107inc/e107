@@ -318,7 +318,9 @@ class e_file
 
 	/**
 	 *	 Grab a remote file and save it in the /temp directory. requires CURL
-	 *
+	 *	@param $remote_url
+	 *	@param $local_file
+	 *	@param $type  media, temp, or import
 	 *	@return boolean TRUE on success, FALSE on failure (which includes absence of CURL functions)
 	 */
 	function getRemoteFile($remote_url, $local_file, $type='temp')
@@ -334,6 +336,11 @@ class e_file
 		}
 
 		$path = ($type == 'media') ? e_MEDIA : e_TEMP; 
+		
+		if($type == 'import')
+		{
+			$path = e_IMPORT;
+		}
 		
         $fp = fopen($path.$local_file, 'w'); // media-directory is the root. 
        
