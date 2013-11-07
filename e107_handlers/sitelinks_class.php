@@ -1555,6 +1555,12 @@ class e_navigation
 			return true;	
 		}
 		
+		if($data['link_active'] == true) // Can be used by e_sitelink.php
+		{
+			return true;		
+		}
+		
+		
 		// XXX Temporary Fix - TBD. 
 		// Set the URL matching in the page itself. see: forum_viewforum.php and forum_viewtopic.php 
 		if(defined("NAVIGATION_ACTIVE") && !$data['link_sub']) 
