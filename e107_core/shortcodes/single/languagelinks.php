@@ -96,23 +96,38 @@ function languagelinks_shortcode($parm = '')
 		{
 			$code = ($languageFolder == e107::getPref('sitelanguage')) ? 'www' : $code;
 			if(LANGLINKS_HOME)
+			{
 				$link = str_replace($_SERVER['HTTP_HOST'], $code.'.'.e_DOMAIN, SITEURL);
+			}
 			else
+			{
 				$link = (!LANGLINKS_NOQUERY)
 			        ? str_replace($_SERVER['HTTP_HOST'], $code.'.'.e_DOMAIN, e_REQUEST_URL) // includes query string
 			        : str_replace($_SERVER['HTTP_HOST'], $code.'.'.e_DOMAIN, e_REQUEST_SELF); // excludes query string
+			}
 		}
 		else
 		{
 			// TODO - switch to elan=Language query when possible (now it'll break the old DOT query string format)
 			if(LANGLINKS_HOME)
+			{
 				$link = SITEURL.'?elan='.$languageFolder;
+			}
 			else
-				$link = (!LANGLINKS_NOQUERY) ? e_REQUEST_SELF.'?['.$code.']'.e_QUERY : e_REQUEST_SELF.'?elan='.$languageFolder;
+			{
+				$e_QUERY = str_replace('['.e_MENU.']',"",e_QUERY);
+				$link = (!LANGLINKS_NOQUERY) ? e_REQUEST_SELF.'?['.$code.']'.$e_QUERY : e_REQUEST_SELF.'?elan='.$languageFolder;
+			}
 		}
+		
 		$class = ($languageFolder == e_LANGUAGE) ? 'languagelink_active' : 'languagelink';
+		
 		$ret[] =  "\n<a class='{$class}' href='{$link}'>{$name}</a>";
 	}
 
 	return implode(LANGLINKS_SEPARATOR, $ret);
 }
+
+
+
+
