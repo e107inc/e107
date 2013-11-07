@@ -938,7 +938,7 @@ class media_admin_ui extends e_admin_ui
 		$mes->addDebug("Bbcode: ".$this->getQuery('bbcode'));
 
 
-
+		$this->processUploadUrl(true, $cat);
 		
 		if($file)
 		{
@@ -1209,8 +1209,34 @@ class media_admin_ui extends e_admin_ui
 
 	function importPage()
 	{
+		$this->processUploadUrl();
 		$this->batchImportForm();
 	}
+	
+	function processUploadUrl($import = false, $cat='_common')
+	{
+		$fl = e107::getFile();
+		$mes = e107::getMessage();
+			
+		
+		if(vartrue($_POST['upload_remote_url']))
+		{
+			$fileName = basename($_POST['upload_url']);
+			if(!$fl->getRemoteFile($_POST['upload_url'], $fileName, 'import'))
+			{
+				$mes->addError("There was a problem grabbing the file");
+			}
+			elseif($import == true)
+ 			{
+				$result = e107::getMedia()->importFile($fileName,$cat);
+			}
+		}
+	}
+			
+		
+	
+	
+	
 
 	function settingsPage()
 	{
@@ -1605,13 +1631,7 @@ class media_admin_ui extends e_admin_ui
 		$mes = e107::getMessage();
 		$fl = e107::getFile();
 		
-		if(vartrue($_POST['upload_remote_url']))
-		{
-			if(!$fl->getRemoteFile($_POST['upload_url'], basename($_POST['upload_url']), 'import'))
-			{
-				$mes->addError("There was a problem grabbing the file");
-			}
-		}
+
 		
 		
 		$fl->setFileInfo('all');
