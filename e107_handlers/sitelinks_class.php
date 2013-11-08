@@ -1555,7 +1555,7 @@ class e_navigation
 			return true;	
 		}
 		
-		if($data['link_active'] == true) // Can be used by e_sitelink.php
+		if(vartrue($data['link_active'])) // Can be used by e_sitelink.php
 		{
 			return true;		
 		}
