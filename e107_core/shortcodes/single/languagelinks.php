@@ -111,12 +111,12 @@ function languagelinks_shortcode($parm = '')
 			// TODO - switch to elan=Language query when possible (now it'll break the old DOT query string format)
 			if(LANGLINKS_HOME)
 			{
-				$link = SITEURL.'?elan='.$languageFolder;
+				$link = SITEURL.'?elan='.$code;
 			}
 			else
 			{
 				$e_QUERY = str_replace('['.e_MENU.']',"",e_QUERY);
-				$link = (!LANGLINKS_NOQUERY) ? e_REQUEST_SELF.'?['.$code.']'.$e_QUERY : e_REQUEST_SELF.'?elan='.$languageFolder;
+				$link = (!LANGLINKS_NOQUERY) ? e_REQUEST_SELF.'?['.$code.']'.$e_QUERY : e_REQUEST_SELF.'?elan='.$code;
 			}
 		}
 		
