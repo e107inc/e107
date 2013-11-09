@@ -3168,7 +3168,13 @@ class e_tree_model extends e_front_model
 				if(false === $this->_total && $this->getModelTable() && !$this->getParam('nocount'))
 				{
 					//SQL_CALC_FOUND_ROWS not found in the query, do one more query
-					$this->_total = e107::getDb()->db_Count($this->getModelTable());
+				//	$this->_total = e107::getDb()->db_Count($this->getModelTable()); // fails with specific listQry
+					
+					// Calculates correct total when using filters and search. //XXX Optimize. 	
+					$countQry = preg_replace('/(LIMIT ([\d,\s])*)$/', "", $this->getParam('db_query'));
+					
+					$this->_total = e107::getDb()->gen($countQry);
+	
 				}
 
 				unset($tmp);
