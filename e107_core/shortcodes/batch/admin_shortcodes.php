@@ -1870,7 +1870,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 					}
 					else
 					{
-						$link = e_REQUEST_URL.(e_QUERY ? '&elan='.$lng : '?elan='.$lng);
+						$link = e_REQUEST_URL.(e_QUERY ? '&elan='.$code : '?elan='.$code);
 					}
 					
 					$tmp[$c]['text'] = $lng;
