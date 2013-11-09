@@ -2581,7 +2581,7 @@ $text .= "
 		'main/edit'	=> 'main/list'				
 	);	
 	
-	protected \$menuTitle = '".$vars['pluginName']."';
+	protected \$menuTitle = '".vartrue($vars['pluginName'],'Nav')."';
 }
 
 
