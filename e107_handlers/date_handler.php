@@ -247,11 +247,12 @@ class convert
 		{
 			return null;
 		}
+		
 		$unxTimestamp = mktime( 
 			$tdata['tm_hour'], 
 			$tdata['tm_min'], 
 			$tdata['tm_sec'], 
-			$tdata['tm_mon'] + 1, 
+			$tdata['tm_mon'] , // Not sure why there was a +1 here, it was increasing the dates by one month. 
 			$tdata['tm_mday'], 
 			($tdata['tm_year'] + 1900) 
 		); 
