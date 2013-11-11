@@ -693,6 +693,9 @@ if ($e107_popup != 1) {
 	{
 		 echo "<div class='installer alert alert-danger alert-block text-center'><b>*** ".CORE_LAN4." ***</b><br />".CORE_LAN5."</div>"; 
 	}
+	
+	//XXX TODO LAN in English.php 
+	echo "<noscript><div class='alert alert-block alert-error'><strong>This web site requires that javascript be enabled. <a rel='external' href='http://activatejavascript.org'>Click here for instructions.</a>.</strong></div></noscript>";
 
 	if(deftrue('BOOTSTRAP'))
 	{
