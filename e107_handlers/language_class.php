@@ -496,7 +496,8 @@ class language{
 		{
 			// new - e_language moved to e107 namespace - $_SESSION['e107']['e_language']
 			$oldlan = $session->get('e_language');
-			if(!$session->has('e_language') || (($session->get('e_language') != $this->detect) && $this->isValid($session->get('e_language'))))
+			
+			if(!$session->has('e_language') || (($session->get('e_language') != $this->detect) && $this->isValid($this->detect)))
 			{
 				$session->set('e_language', $this->detect);	
 			}
@@ -522,7 +523,8 @@ class language{
 			}
 		}
 		else // No Language-change Trigger Detected. 
-		{	
+		{
+							
 			if($session->has('e_language'))
 			{
 				$user_language = $session->get('e_language');
