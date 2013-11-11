@@ -127,8 +127,10 @@ class plugin_featurebox_item extends e_model
 		parse_str($parm, $parm);
 		$tp = e107::getParser();
 
-		$src = $tp->replaceConstants($this->get('fb_image'), 'full');
-
+	//	$src = $tp->replaceConstants($this->get('fb_image'), 'full');
+		// Use {SETIMAGE} inside theme.php to configure. 
+		$src = $tp->thumbUrl($this->get('fb_image')); //XXX TODO TBD Add a pref to use without resizing? Or, detect {SETIMAGE} in template to enable?
+		
 		if(isset($parm['src']))
 		{
 			return $src;
