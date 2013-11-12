@@ -126,10 +126,15 @@ class plugin_featurebox_item extends e_model
 		}
 		parse_str($parm, $parm);
 		$tp = e107::getParser();
-
-	//	$src = $tp->replaceConstants($this->get('fb_image'), 'full');
-		// Use {SETIMAGE} inside theme.php to configure. 
-		$src = $tp->thumbUrl($this->get('fb_image')); //XXX TODO TBD Add a pref to use without resizing? Or, detect {SETIMAGE} in template to enable?
+		
+		if($tp->thumbWidth > 600 && $tp->thumbHeight > 300) //Guessing it's a featurebox image.  Use {SETIMAGE} inside theme.php to configure. 
+		{
+			$src = $tp->thumbUrl($this->get('fb_image')); //XXX TODO TBD Add a pref to use without resizing? Or, detect {SETIMAGE} in template to enable?
+		}
+		else 
+		{
+			$src = $tp->replaceConstants($this->get('fb_image'), 'full');
+		}
 		
 		if(isset($parm['src']))
 		{
