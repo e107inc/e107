@@ -703,9 +703,7 @@ footer 		{ padding-top:150px; padding-bottom:20px; color: rgb(153, 153, 153); }
 i.searchquery	{
 	z-index:100;
     position:relative;
-    left:-215px;
-    top:-4px;
- 
+    left:-215px; 
 }
 
 
