@@ -257,13 +257,15 @@ class e_thumbpage
 		{
 			$thumb->resize((integer) vartrue($this->_request['w'], 0), (integer) vartrue($this->_request['h'], 0));
 		}
-		else
+		elseif(vartrue($this->_request['ah']))
 		{
 			//Typically gives a better result with images of people than adaptiveResize().
 			//TODO TBD Add Pref for Top, Bottom, Left, Right, Center? 
-			$thumb->adaptiveResizeQuadrant((integer) vartrue($this->_request['aw'], 0), (integer) vartrue($this->_request['ah'], 0), 'T');
-			
-			// $thumb->adaptiveResize((integer) vartrue($this->_request['aw'], 0), (integer) vartrue($this->_request['ah'], 0));
+			$thumb->adaptiveResizeQuadrant((integer) vartrue($this->_request['aw'], 0), (integer) vartrue($this->_request['ah'], 0), 'T');	
+		}
+		else 
+		{
+			$thumb->adaptiveResize((integer) vartrue($this->_request['aw'], 0), (integer) vartrue($this->_request['ah'], 0));	
 		}
 	
 		// Watermark Option - See admin->MediaManager->prefs for details. 
