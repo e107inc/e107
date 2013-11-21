@@ -47,6 +47,7 @@ e107::css('url', "//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.
 
 e107::css('theme', 'js/google-code-prettify/prettify.css');
 e107::js('theme', "js/google-code-prettify/prettify.js");
+e107::css('page', 'css/page.navigation.css', 'jquery');
 
 
 
