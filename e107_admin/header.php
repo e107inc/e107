@@ -64,12 +64,9 @@ function loadJSAddons()
 	e107::css('core', 	'bootstrap-datetimepicker/css/datetimepicker.css', 'jquery');
 	e107::js('core', 	'bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js', 'jquery', 2);
 	
-	$bs_date_link = "bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.".e_LAN.".js";
-	
-	if(e_LAN != 'en' && file_exists(e_WEB_JS.$bs_date_link)) // load datetime picker language file. 
-	{
-		// e107::getMessage()->addDebug("Loading ".$bs_date_link);
-		e107::js('core', $bs_date_link, 'jquery', 2);
+	if(e_LAN != 'en')
+	{ 
+		e107::js('inline', buildDateLocale(),'jquery', 2);
 	}
 		
 	e107::js('core', 	'jquery.elastic.js', 'jquery', 2);
@@ -100,7 +97,54 @@ function loadJSAddons()
 
 loadJSAddons();
 
-
+/** Build the datetimepicker() locale, since it must match strftime() values for accurate conversion. 
+ * 
+ */
+function buildDateLocale()
+{	
+	$text = ';(function($){
+$.fn.datetimepicker.dates["'.e_LAN.'"] = {';
+	
+	$dates = array();
+	
+	for ($i=1; $i < 8; $i++) 
+	{
+		$day = strftime('%A', mktime(1,1,1, 1, $i, 2012)); 
+		$dates['days'][] = 	$day;
+		$dates['daysShort'][] = strftime('%a', mktime(1,1,1, 1, $i, 2012));	
+		$dates['daysMin'][] = substr($day,0,2);	
+	}
+	
+	
+	for ($i=1; $i < 13; $i++) 
+	{ 
+		$dates['months'][] 		= strftime('%B', mktime(1,1,1, $i, 2, 2013));	
+		$dates['monthsShort'][] = strftime('%h', mktime(1,1,1, $i, 2, 2013));	
+	}
+	
+	
+	foreach($dates as $key=>$type)
+	{
+		$d = array();
+		
+		$text .= "\n".$key.": [";
+		foreach($type as $val)
+		{
+			$d[] = '"'.$val.'"';	
+			
+		}	
+		$text .= implode(",",$d);
+		$text .= "],";
+	}
+	
+	
+	$text .= '
+meridiem: ["am", "pm"]
+};
+}(jQuery));';
+	
+	return $text;
+}
 
 
 
