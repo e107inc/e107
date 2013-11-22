@@ -662,7 +662,7 @@ class e_form
 		}
 		else
 		{			
-			$text .= "<input class='{$class} input-xlarge' type='text' size='{$size}' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}' {$required} />";		
+			$text .= "<input class='{$class} input-xlarge' type='text' size='{$size}' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-date-ampm='{$ampm}'  data-date-language='".e_LAN."' data-date-firstday='{$firstDay}' {$required} />";		
 		}
 
 	//	$text .= "ValueFormat: ".$dateFormat."  Value: ".$value;
