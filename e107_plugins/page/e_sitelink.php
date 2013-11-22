@@ -161,7 +161,7 @@ class page_sitelink // include plugin-folder in the name.
 				'link_parent'		=> $row['page_chapter'],
 				'link_open'			=> '',
 				'link_class'		=> intval($row['page_class']),
-				'link_active'		=> ($options['cpage'] && $row['page_id'] == $options['cpage'])
+				'link_active'		=> (isset($options['cpage']) && $row['page_id'] == $options['cpage'])
 			);
 		}
 
@@ -211,7 +211,7 @@ class page_sitelink // include plugin-folder in the name.
 				'link_open'			=> '',
 				'link_class'		=> 0, 
 				'link_sub'			=> (!vartrue($options['book']) && !vartrue($options['auto'])) ? varset($sublinks[$row['chapter_id']]) : '', //XXX always test with docs template in bootstrap before changing. 
-				'link_active'		=> $row['chapter_parent'] == 0 ? $options['cbook'] && $options['cbook'] == $row['chapter_id'] : $options['cchapter'] && $options['cchapter'] == $row['chapter_id'],
+				'link_active'		=> $row['chapter_parent'] == 0 ? isset($options['cbook']) && $options['cbook'] == $row['chapter_id'] : isset($options['cchapter']) && $options['cchapter'] == $row['chapter_id'],
 			);	
 		}
 		
