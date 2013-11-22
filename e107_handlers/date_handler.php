@@ -240,11 +240,13 @@ class convert
 		// also in php compat handler for plugins that might use it. 
 		$tdata = $this->strptime($date_string, $mask);
 		
-
-	//	print_a($tdata);
 		
 		if(empty($tdata))
 		{
+			if(!empty($date_string) && ADMIN)
+			{
+				e107::getMessage()->addDebug( "PROBLEM WITH CONVERSION from ".$date_string." to unix timestamp");	
+			}
 			return null;
 		}
 		
@@ -252,7 +254,7 @@ class convert
 			$tdata['tm_hour'], 
 			$tdata['tm_min'], 
 			$tdata['tm_sec'], 
-			$tdata['tm_mon'] , // Not sure why there was a +1 here, it was increasing the dates by one month. 
+			$tdata['tm_mon'] + 1, // returns months from 0 - 11 so we need to +1 
 			$tdata['tm_mday'], 
 			($tdata['tm_year'] + 1900) 
 		); 
@@ -529,6 +531,15 @@ class convert
 	 */
 	public function strptime($str, $format)
 	{
+		if(STRPTIME_COMPAT !== TRUE && function_exists('strptime'))
+		{
+			$vals = strptime($str,$format); // PHP5 is more accurate than below. 
+			$vals['tm_amon'] = 	strftime('%b', mktime(0,0,0, $vals['mon']) );
+			$vals['tm_fmon'] = 	strftime('%B', mktime(0,0,0, $vals['mon']) );
+			return $vals;
+		}	
+			
+		// Below is for Windows machines. (XXX TODO - Currently not as accurate as Linux PHP5 strptime() function above. ) 
 		
 		static $expand = array('%D'=>'%m/%d/%y', '%T'=>'%H:%M:%S', );
 		
