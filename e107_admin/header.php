@@ -64,8 +64,14 @@ function loadJSAddons()
 	e107::css('core', 	'bootstrap-datetimepicker/css/datetimepicker.css', 'jquery');
 	e107::js('core', 	'bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js', 'jquery', 2);
 	
+	$bs_date_link = "bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.".e_LAN.".js";
 	
-	
+	if(e_LAN != 'en' && file_exists(e_WEB_JS.$bs_date_link)) // load datetime picker language file. 
+	{
+		// e107::getMessage()->addDebug("Loading ".$bs_date_link);
+		e107::js('core', $bs_date_link, 'jquery', 2);
+	}
+		
 	e107::js('core', 	'jquery.elastic.js', 'jquery', 2);
 	e107::js('core', 	'jquery.at.caret.min.js', 'jquery', 2);
 	
