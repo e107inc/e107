@@ -80,11 +80,11 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 						var target 	= window.parent.$('#e-save-form').attr('action');
 						var data 	= window.parent.$('#e-save-form').serialize();
 						
-						alert(data);
+					//	alert(data);
 					
 						$.post(target, data ,function(ret)
 						{
-							alert('Posted: '+ret);
+						//	alert('Posted: '+ret);
 						  	var a = $.parseJSON(ret);
 					
 							if(a.error)
@@ -497,7 +497,7 @@ class e_layout
 				
 			if(vartrue($_POST['mode']))
 			{
-				print_r($_POST);
+			//	print_r($_POST);
 			//	$men->setMenuId($this->menuId);
 				$text = $this->menuSaveAjax($_POST['mode']);
 			}
@@ -738,7 +738,7 @@ class e_layout
 	//	$save[$layout][$area] = $_POST['data']['layout']['area'];		
 		echo "\nLAYOUT=".$layout."\n";
 		echo "AREA=".$area."\n";
-		print_r($save);
+		//print_r($save);
 		
 		e107::getConfig('core')->setPref('menu_layouts/'.$layout."/".$area, $save)->save(); 	
 			
@@ -908,14 +908,14 @@ class e_layout
 
 	function menuSaveAjax($mode = null)
 	{
-		print_r($_POST);
-		return;
+		//print_r($_POST);
+	//	return;
 		
 		if($mode == 'visibility')
 		{
 		
 			$ret = $this->menuSaveVisibility();	
-			echo json_encode($ret);
+		//	echo json_encode($ret);
 			return;		
 		}		
 			
@@ -923,13 +923,13 @@ class e_layout
 		if($mode == 'parms') 
 		{
 			$ret = $this->menuSaveParameters();	
-			echo json_encode($ret);
+		//	echo json_encode($ret);
 			return;
 		}
 		
 		
 		
-     	print_r($_POST);
+     //	print_r($_POST);
 		return;
 	
 

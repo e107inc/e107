@@ -1447,7 +1447,7 @@ class e_menuManager {
 		{
 		
 			$ret = $this->menuSaveVisibility();	
-			echo json_encode($ret);
+		//	echo json_encode($ret);
 			return;		
 		}		
 		
@@ -1461,7 +1461,7 @@ class e_menuManager {
 				$this->menuId = $deleteID;
 
 				$ret = $this->menuDeactivate();	
-				echo json_encode($ret);
+			//	echo json_encode($ret);
 				
 				return;
 			}	
@@ -1472,13 +1472,13 @@ class e_menuManager {
 		if($mode == 'parms') 
 		{
 			$ret = $this->menuSaveParameters();	
-			echo json_encode($ret);
+		//	echo json_encode($ret);
 			return;
 		}
 		
 		
 		
-     	print_r($_POST);
+    // 	print_r($_POST);
 		return;
 	 
 	 
