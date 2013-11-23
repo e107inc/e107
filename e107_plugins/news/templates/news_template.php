@@ -23,6 +23,7 @@ $NEWS_MENU_TEMPLATE['list']['end']         = '</div>';
 // {NEWSBODY} should not appear in the LISTSTYLE as it is NOT the same as what would appear on news.php (no query) 
 
 // Template/CSS to be reviewed for best bootstrap implementation 
+$NEWS_TEMPLATE['list']['caption']	= '{NEWSCATEGORY}';
 $NEWS_TEMPLATE['list']['start']	= '{SETIMAGE: w=400&h=300&crop=1}';
 $NEWS_TEMPLATE['list']['end']	= '';
 $NEWS_TEMPLATE['list']['item']	= '
