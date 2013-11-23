@@ -54,6 +54,7 @@ class core_page_sef_url extends eUrlConfig
 				'description' => LAN_EURL_PAGE_SEF_DESCR, //
 				'examples'  => array("{SITEURL}page/1/page-name")
 			),
+			'generate' => array('table'=> 'page', 'primary'=>'page_id', 'input'=>'page_title', 'output'=>'page_sef'),
 			'form' => array(), // Under construction - additional configuration options
 			'callbacks' => array(), // Under construction - could be used for e.g. URL generator functionallity
 		);

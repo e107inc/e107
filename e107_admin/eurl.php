@@ -62,13 +62,79 @@ class eurl_admin_ui extends e_admin_controller_ui
 	
 	public function init()
 	{
+	
+		if(is_array($_POST['rebuild']))
+		{
+			$table = key($_POST['rebuild']);
+			list($primary, $input, $output) = explode("::",$_POST['rebuild'][$table]);
+			$this->rebuild($table, $primary, $input, $output);	
+		}
+		
+		
 		$this->api = e107::getInstance();
 		$this->addTitle(LAN_EURL_NAME);
 		
 		if($this->getAction() != 'settings') return;
 		
+	
+		
 
 	}
+	
+	/**
+	 * Rebuild SEF Urls for a particular table
+	 * @param $table
+	 * @param primary field id. 
+	 * @param input field (title)
+	 * @param output field (sef)
+	 */
+	private function rebuild($table, $primary, $input,$output)
+	{
+		if(empty($table) || empty($input) || empty($output) || empty($primary))
+		{
+			e107::getMessage()->addError("Missing Generator data");	
+			return;
+		}
+		
+		$sql = e107::getDb();
+		
+		$data = $sql->retrieve($table, $primary.",".$input, $input ." != '' ", true);
+		
+		$success = 0;
+		$failed = 0;
+		
+		foreach($data as $row)
+		{
+			$sef = eHelper::title2sef($row[$input]);
+			
+			if($sql->update($table, $output ." = '".$sef."' WHERE ".$primary. " = ".intval($row[$primary]). " LIMIT 1")!==false)
+			{
+				$success++;
+			}
+			else
+			{
+				$failed++;
+			}
+			
+			// echo $row[$input]." => ".$output ." = '".$sef."'  WHERE ".$primary. " = ".intval($row[$primary]). " LIMIT 1 <br />";
+
+		}
+			
+		if($success)
+		{
+			e107::getMessage()->addSuccess($success." SEF URLs were updated.");
+		}
+		
+		if($failed)
+		{
+			e107::getMessage()->addError($failed." SEF URLs were NOT updated.");	
+		}
+		
+		
+	}
+	
+	
+	
 	
 	public function HelpObserver()
 	{
@@ -231,15 +297,15 @@ class eurl_admin_ui extends e_admin_controller_ui
 					<legend>".LAN_EURL_LEGEND_CONFIG."</legend>
 					<table class='table adminlist'>
 						<colgroup>
-							<col class='col-label' />
-							<col class='col-control' />
-							
+							<col class='col-label' style='width:20%' />
+							<col class='col-control' style='width:60%' />
+							<col style='width:20%' />
 						</colgroup>
 						<thead>
 						  <tr>
 						      <th>".LAN_TYPE."</th>
 						      <th>".LAN_URL."</th>
-						     
+						      <th>".LAN_OPTIONS."</th>
 						  </tr>
 						</thead>
 						
@@ -429,6 +495,8 @@ class eurl_admin_form_ui extends e_admin_form_ui
 	{
 		$text = '';
 		$tp = e107::getParser();
+		$frm = e107::getForm();
+		
 		if(empty($data))
 		{
 			return "
@@ -444,10 +512,11 @@ class eurl_admin_form_ui extends e_admin_form_ui
         
 		foreach ($data as $obj) 
 		{
-			$admin = $obj->config->admin();
-			$section = vartrue($admin['labels'], array());
-            $rowspan = count($obj->locations)+1;
-            $module = $obj->module;
+			$admin 		= $obj->config->admin();
+			$section 	= vartrue($admin['labels'], array());
+            $rowspan 	= count($obj->locations)+1;
+            $module 	= $obj->module;
+			$generate 	= vartrue($admin['generate'], array());
            
           /*
 			$info .= "
@@ -505,24 +574,41 @@ class eurl_admin_form_ui extends e_admin_form_ui
                 }
                 
                 $selected = varset($obj->current[$module]) == $location ? "selected='selected'" : '';
-                $opt .= "<option value='{$location}' {$selected} >".$diz.": ".$exampleUrl[0]."</option>";
-               
+				$opt .= "<option value='{$location}' {$selected} >".$diz.": ".$exampleUrl[0]."</option>";
+
 				$info .= "<tr><td>".$label."
 					
 					</td>
 					<td><strong>".LAN_EURL_LOCATION."</strong>: ".$path."
-                    <p>".vartrue($section['description'], LAN_EURL_PROFILE_INFO)."</p><small>".implode("<br />", $exampleUrl)."</small></td></tr>
-					
+                    <p>".vartrue($section['description'], LAN_EURL_PROFILE_INFO)."</p><small>".implode("<br />", $exampleUrl)."</small></td>
+                    
+                    
+                    
+                    </tr>
 				";
 
 			}
+
 			$info .= "</table>";
+
+			$title = vartrue($section['name'], eHelper::labelize($obj->module));
 			
-            $title = vartrue($section['name'], eHelper::labelize($obj->module));
-             $text .= "
+			$text .= "
                 <tr>
                     <td>".$this->moreInfo($title, $info)."</td>
-                    <td><select name='eurl_config[$module]' class='span6 tbox'>".$opt."</select></td>
+                    <td><select name='eurl_config[$module]' class='input-block-level'>".$opt."</select></td>
+                    <td>";
+		
+			$bTable = ($admin['generate']['table']);
+			$bInput = $admin['generate']['input'];
+			$bOutput = $admin['generate']['output'];
+			$bPrimary = $admin['generate']['primary'];
+			
+		
+			$text .= (is_array($admin['generate'])) ? $frm->admin_button('rebuild['.$bTable.']', $bPrimary."::".$bInput."::".$bOutput,'delete',"Rebuild") : "";	  
+				  
+
+			$text .= "</td>
                </tr>";
 		}
 
