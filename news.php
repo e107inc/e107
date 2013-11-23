@@ -275,11 +275,15 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 	
 	$text  		.= $tp->parseTemplate("{NEXTPREV={$parms}}");
 
-	if(!$NEWSLISTTITLE)
+	if(varset($template['caption'])) // v2.x
+	{
+		$NEWSLISTTITLE = str_replace("{NEWSCATEGORY}",$tp->toHTML($category_name,FALSE,'TITLE'), $template['caption']);  	
+	}
+	elseif(!$NEWSLISTTITLE) // default 
 	{
 		$NEWSLISTTITLE = LAN_NEWS_82." '".$tp->toHTML($category_name,FALSE,'TITLE')."'";
 	}
-	else
+	else // v1.x
 	{
 		$NEWSLISTTITLE = str_replace("{NEWSCATEGORY}",$tp->toHTML($category_name,FALSE,'TITLE'),$NEWSLISTTITLE);
 	}
