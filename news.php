@@ -133,7 +133,7 @@ $nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 	$newsRoute = 'news/'.$newsRoute;
 
 //------------------------------------------------------
-//		DISPLAY NEWS IN 'CATEGORY' FORMAT HERE
+//		DISPLAY NEWS IN 'CATEGORY' LIST FORMAT HERE
 //------------------------------------------------------
 // Just title and a few other details
 
@@ -193,7 +193,7 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 	}
 	elseif(vartrue($_GET['tag']))
 	{
-		$tagsearch = preg_replace('#[^a-zA-Z0-9\-]#','', $_GET['tag']);
+		$tagsearch = preg_replace('#[^a-zA-Z0-9 \-]#','', $_GET['tag']);
 
 		$query = "
 		SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
@@ -210,12 +210,16 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 	}
 
 	$newsList = array();
+	
 	if($sql->gen($query))
 	{
 		$newsList = $sql->db_getList();
 	}
 
-	if($action == 'cat') setNewsFrontMeta($newsList[1], 'category');
+	if($action == 'cat')
+	{
+		setNewsFrontMeta($newsList[1], 'category');
+	}
 	elseif($category_name)
 	{
 		define('e_PAGETITLE', $tp->toHTML($category_name,FALSE,'TITLE'));
@@ -234,6 +238,7 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 		$template = e107::getTemplate('news', 'news', 'list');
 	}
 
+	// Legacy Styling.. 
 	$param = array();
 	$param['itemlink'] = (defined("NEWSLIST_ITEMLINK")) ? NEWSLIST_ITEMLINK : "";
 	$param['thumbnail'] =(defined("NEWSLIST_THUMB")) ? NEWSLIST_THUMB : "border:0px";
@@ -259,7 +264,6 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 		$text .= $tp->parseTemplate($template['end'], true);				
 	}
 	
-
 	$icon = ($row['category_icon']) ? "<img src='".e_IMAGE."icons/".$row['category_icon']."' alt='' />" : "";
 
 	// Deprecated.
@@ -287,7 +291,9 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 	{
 		$NEWSLISTTITLE = str_replace("{NEWSCATEGORY}",$tp->toHTML($category_name,FALSE,'TITLE'),$NEWSLISTTITLE);
 	}
-	$text .= "<div class='center'><a class='btn' href='".e_SELF."'>".LAN_NEWS_84."</a></div>";
+	
+	$text .= "<div class='center news-list-footer'><a class='btn' href='".e_REQUEST_SELF."'>".LAN_NEWS_84."</a></div>";
+	
 	ob_start();
 	$ns->tablerender($NEWSLISTTITLE, $text, 'news');
 	$cache_data = ob_get_flush();
