@@ -2357,7 +2357,7 @@ class admin_newspost
 							<tr>
 								<td>Friendly URL string: </td>
 								<td>
-									".$frm->text('news_sef', $tp->post_toForm(vartrue($_POST['news_sef'])), 255)."
+									".$frm->text('news_sef', $tp->post_toForm(vartrue($_POST['news_sef'])), 255, 'size=xxlarge')."
 									<div class='field-help'>If left empty will be automatically created from current News Title based on your current <a href='".e_ADMIN_ABS."eurl.php?mode=main&amp;action=settings' title='To URL settings area' rel='external'>URL settings</a></div>
 								</td>
 							</tr>
