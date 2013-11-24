@@ -417,9 +417,9 @@ class e_install
 				
 				<tr>
 					<td><label for='db'>".LANINS_027."</label></td>
-					<td>
-						<input type='text' name='db' size='20' id='db' value='' maxlength='100' required='required' />
-						<label class='checkbox inline'><input type='checkbox' name='createdb' value='1' />".LANINS_028."</label>
+					<td class='form-inline'>
+						<input type='text' name='db' size='20' id='db' value='' maxlength='100' required='required' pattern='^[a-z][a-z0-9_-]*' />
+						<label class='checkbox inline'><input type='checkbox' name='createdb' value='1' /><small>".LANINS_028."</small></label>
 						<span class='field-help'>".LANINS_033."</span>
 					</td>
 				</tr>
@@ -580,11 +580,11 @@ class e_install
 
 				if($this->previous_steps['mysql']['createdb'] == 1 || !$DB_ALREADY_EXISTS)
 				{
-				    $query = 'CREATE DATABASE '.$this->previous_steps['mysql']['db'].' CHARACTER SET `utf8` ';
+				    $query = 'CREATE DATABASE `'.$this->previous_steps['mysql']['db'].'` CHARACTER SET `utf8` ';
 				}
 				elseif($DB_ALREADY_EXISTS)
 				{
-				    $query = 'ALTER DATABASE '.$this->previous_steps['mysql']['db'].' CHARACTER SET `utf8` ';
+				    $query = 'ALTER DATABASE `'.$this->previous_steps['mysql']['db'].'` CHARACTER SET `utf8` ';
 				}
 
 				if (!$this->dbqry($query))
