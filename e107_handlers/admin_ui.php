@@ -5329,19 +5329,48 @@ class e_admin_form_ui extends e_form
 				<fieldset class='e-filter'>
 					<legend class='e-hideme'>".LAN_LABEL_LABEL_SELECTED."</legend>
 					".$filter_pre."
-					<div class='left form-inline' style='margin-top:10px;margin-bottom:-10px'>
-						".$this->text('searchquery', $current_query[0], 50, $input_options)."<i class='icon-search searchquery'></i>
-						".$this->select_open('filter_options', array('class' => 'e-tip tbox select filter', 'id' => false, 'title'=>'Filter the results below'))."
-							".$this->option(LAN_FILTER_LABEL_DISPLAYALL, '')."
-							".$this->option(LAN_FILTER_LABEL_CLEAR, '___reset___')."
-							".$this->renderBatchFilter('filter', $current_query[1])."
-						".$this->select_close()."
-						<div class='e-autocomplete'></div>
-						".implode("\n", $filter_preserve_var)."
-						".$this->admin_button('etrigger_filter', 'etrigger_filter', 'filter e-hide-if-js', LAN_FILTER, array('id' => false))."
-						<span class='indicator' style='display: none;'>
-							<img src='".e_IMAGE_ABS."generic/loading_16.gif' class='icon action S16' alt='".LAN_LOADING."' />
-						</span>
+					<div class='row-fluid'>
+						<div class='left form-inline span8' style='margin-top:10px;margin-bottom:-10px;'>
+							".$this->text('searchquery', $current_query[0], 50, $input_options)."<i class='icon-search searchquery'></i>
+							".$this->select_open('filter_options', array('class' => 'e-tip tbox select filter', 'id' => false, 'title'=>'Filter the results below'))."
+								".$this->option(LAN_FILTER_LABEL_DISPLAYALL, '')."
+								".$this->option(LAN_FILTER_LABEL_CLEAR, '___reset___')."
+								".$this->renderBatchFilter('filter', $current_query[1])."
+							".$this->select_close()."
+							<div class='e-autocomplete'></div>
+							".implode("\n", $filter_preserve_var)."
+							".$this->admin_button('etrigger_filter', 'etrigger_filter', 'filter e-hide-if-js', LAN_FILTER, array('id' => false))."
+							<span class='indicator' style='display: none;'>
+								<img src='".e_IMAGE_ABS."generic/loading_16.gif' class='icon action S16' alt='".LAN_LOADING."' />
+							</span>
+						</div>
+						<div class='span4 text-right' style='margin-top:10px;margin-bottom:-10px;padding-top:15px;padding-right:5px'>";
+
+						
+						// Let Admin know which language table is being saved to. (avoid default table overwrites) 
+						if(e107::getConfig()->get('multilanguage'))
+						{ 
+							$curTable = $controller->getTableName();
+
+							if($curTable != e107::getDb()->db_IsLang($curTable))
+							{
+								$lang = e107::getDb()->mySQLlanguage;
+							}
+							else 
+							{
+								$lang = e107::getConfig()->get('sitelanguage');
+							}
+							
+							$def = deftrue('LAN_UI_USING_DATABASE_TABLE','Using [x] database table');
+							$diz  = e107::getParser()->lanVars($def, $lang); // "Using ".$lang." database table";
+							$text .= "<span class='e-tip' title=\"".$diz."\">";
+							$text .= '<i class="icon-hdd"></i> ';	
+							$text .= e107::getLanguage()->toNative($lang)."</span>";	
+
+						}
+						
+						$text .= "
+						</div>
 					</div>
 					".$filter_post."
 				</fieldset>
