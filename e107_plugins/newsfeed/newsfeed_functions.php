@@ -292,7 +292,7 @@ class newsfeedClass
 					$numtoshow = intval($where == 'main' ? $newsfeed_showmain : $newsfeed_showmenu);
 					$numtoshow = ($numtoshow > 0 ? $numtoshow : 999);
 
-					$FEEDNAME = "<a href='".e_SELF."?show.{$feed['newsfeed_id']}'>{$feed['newsfeed_name']}</a>";
+					$FEEDNAME = "<a href='".e_SELF."?show.{$feed['newsfeed_id']}'>".$tp->toHtml($feed['newsfeed_name'],false,'TITLE')."</a>";
 					$FEEDDESCRIPTION = $feed['newsfeed_description'];
 					$FEEDIMAGE = $rss['newsfeed_image_link'];
 					$FEEDLANGUAGE = $rss['channel']['language'];
