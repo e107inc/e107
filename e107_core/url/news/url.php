@@ -134,7 +134,7 @@ class core_news_url extends eUrlConfig
 					}
 					else 
 					{
-						$url .= 'list.'.$params['category_id'].'.'.$page;	
+						$url .= 'list.'.$params['id'].'.'.$page;	// 'category_id' would break news_categories_menu. 
 					}
 				break;
 					
