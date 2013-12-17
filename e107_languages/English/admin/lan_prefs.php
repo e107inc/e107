@@ -9,7 +9,7 @@
 define("PRFLAN_1", "Site Information");
 define("PRFLAN_2", "Site Name");
 define("PRFLAN_3", "Site URL");
-define("PRFLAN_4", "Site Link Button");
+define("PRFLAN_4", "Site Link Icon/Button");
 define("PRFLAN_5", "Site Tagline");
 define("PRFLAN_6", "Site Description");
 define("PRFLAN_7", "Main site admin");

@@ -2662,7 +2662,7 @@ class e_parser
 	 * Parse xxxxx.glyph file to bootstrap glyph format. 
 	 * @return FALSE if not a glyph file or if bootstrap is not found. 
 	 */ 
-	public function toGlyph($text)
+	public function toGlyph($text, $space=" ")
 	{
 		if(!deftrue('BOOTSTRAP'))
 		{
@@ -2672,7 +2672,16 @@ class e_parser
 		if(substr($text,-6) == '.glyph') // Bootstrap or Font-Awesome. 
 		{
 			list($cls,$tmp) = explode('.glyph',$text);
-			return "<i class='".$cls."'></i> ";	// retain space. 
+			
+			if(deftrue('FONTAWESOME') == 4) // Convert FontAwesome 3 to 4. 
+			{
+				$cls = str_replace('icon-', 'fa fa-', $cls);
+			}
+
+			$text = (deftrue('BOOTSTRAP') == 3) ? "<span class='".$cls."'></span>"  : "<i class='".$cls."'></i>";	// retain space. 
+			$text .= ($space !== false) ? $space : "";
+			
+			return $text;
 		}
 		
 		return false;

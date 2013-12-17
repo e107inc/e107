@@ -349,6 +349,7 @@ if(!isset($DOWNLOAD_MIRROR_END))
 
 
 $DOWNLOAD_TEMPLATE['categories']['start'] = "
+	<div class='table-responsive'>
          <table id='download' class='table table-striped fborder'>
 		      <colgroup>
 		         <col style='width:3%'/>
@@ -416,10 +417,11 @@ $DOWNLOAD_TEMPLATE['categories']['subchild'] = "
 $DOWNLOAD_TEMPLATE['categories']['end'] = "
             </tbody>
          </table>
-         <div class='clearfix'>
-         <div class='pull-left'><small>{DOWNLOAD_CAT_NEWDOWNLOAD_TEXT}</small></div>
+	</div>
+	<div class='clearfix'>
+		<div class='pull-left'><small>{DOWNLOAD_CAT_NEWDOWNLOAD_TEXT}</small></div>
 		<div class='pull-right'>{DOWNLOAD_CAT_SEARCH}</div>
-		</div>";
+	</div>";
 
 // ##### ------------------------------------------------------------------------------------------
 
@@ -518,7 +520,8 @@ $DOWNLOAD_TEMPLATE['view']['nextprev'] = '
 // ##### ------------------------------------------------------------------------------------------
 
 $DOWNLOAD_TEMPLATE['list']['start'] = "
-         <form method='post' action='".e_SELF."?".e_QUERY."'>
+	<form method='post' action='".e_SELF."?".e_QUERY."'>
+		<div class='table-responsive'>
             <table id='download' class='table table-striped'>\n
                <colgroup>
                   <col style='width:35%;'/>
@@ -573,7 +576,8 @@ $DOWNLOAD_TEMPLATE['list']['end'] = "
 		            <td colspan='7' style='text-align:right;'><small class='muted text-muted'>{DOWNLOAD_LIST_TOTAL_AMOUNT} {DOWNLOAD_LIST_TOTAL_FILES}</small></td>
 		         </tr>
 		      </table>
-		   </form>
+		</div>
+	</form>
 		\n";
 
 
@@ -595,6 +599,7 @@ $sc_style['DOWNLOAD_LIST_NEXTPREV']['post'] = "	</div>";
 			
 			
 $DOWNLOAD_TEMPLATE['mirror']['start'] = "
+	<div class='table-responsive'>
 	   <table id='download' class='table table-striped'>
 	      <colgroup>
 	         <col style='width:1%'/>
@@ -636,6 +641,7 @@ $DOWNLOAD_TEMPLATE['mirror']['item']  = "
 
 $DOWNLOAD_TEMPLATE['mirror']['end'] = "
 	   </table>
+	</div>
 	";			
 
 	

@@ -217,6 +217,15 @@ if (is_array($pref['e_meta_list']))
 	unset($ret);
 }
 
+// --------  Generate Apple Touch Icon ---------
+
+if(isset($pref['sitebutton']))
+{
+	$appleIcon = $tp->thumbUrl($pref['sitebutton'],'w=144&h=144&crop=1',true);
+	echo "<link rel='apple-touch-icon' href='".$appleIcon."' />\n";	
+	unset($appleIcon);
+}
+
 
 
 // Register Plugin specific CSS 

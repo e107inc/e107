@@ -1599,7 +1599,10 @@ class e_form
 		
 		$opt = array();
 		
-		$opt[] = "<a href='".e_HTTP."'><i class='icon-home'></i></a>"; // Add Site-Pref to disable?
+		$homeIcon = e107::getParser()->toGlyph('icon-home.glyph',false);
+		
+		
+		$opt[] = "<a href='".e_HTTP."'>".$homeIcon."</a>"; // Add Site-Pref to disable?
 		
 		$text = '<ul class="breadcrumb">
 			<li>';
@@ -1617,9 +1620,13 @@ class e_form
 			}	
 		}
 	
-		$text .= implode("<span class='divider'>/</span></li><li>",$opt); 
+		$sep = (deftrue('BOOTSTRAP') == 3) ? "" : "<span class='divider'>/</span>";
+	
+		$text .= implode($sep."</li><li>",$opt); 
 	
 		$text .= "</li></ul>";
+		
+	//	return print_a($opt,true);
 	
 		return $text;	
 
