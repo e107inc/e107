@@ -375,12 +375,12 @@ class news_shortcodes extends e_shortcode
 			break;
 
 			case 'tag':
-				return "<img class='news_image' src='".$src."' alt='' style='".$this->param['thumbnail']."' />";
+				return "<img class='news_image news-image' src='".$src."' alt='' style='".$this->param['thumbnail']."' />";
 			break;
 
 			case 'url':
 			default:
-				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='news_image img-rounded' src='".$src."' alt='' style='".$this->param['thumbnail']."' /></a>";
+				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='news_image news-image img-rounded' src='".$src."' alt='' style='".$this->param['thumbnail']."' /></a>";
 			break;
 		}
 	}
