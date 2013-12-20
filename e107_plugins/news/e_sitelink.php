@@ -42,9 +42,9 @@ class news_sitelink // include plugin-folder in the name.
 		$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 		$query = "SELECT * FROM #news WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") ORDER BY news_datestamp DESC LIMIT 10";
 		
-		if($sql->db_Select_gen($query))
+		if($sql->gen($query))
 		{		
-			while($row = $sql->db_Fetch())
+			while($row = $sql->fetch())
 			{
 				$sublinks[] = array(
 					'link_name'			=> $row['news_title'],
@@ -60,8 +60,8 @@ class news_sitelink // include plugin-folder in the name.
 			}
 			
 			$sublinks[] = array(
-					'link_name'			=> "More...",
-					'link_url'			=> 'news.php?all', // e107::getUrl()->create('news/list/all'), // XXX TODO FIXME Not behaving the same as legacy url. 
+					'link_name'			=> LAN_MORE,
+					'link_url'			=> e107::getUrl()->create('news/list/all'),  
 					'link_description'	=> '',
 					'link_button'		=> '',
 					'link_category'		=> '',

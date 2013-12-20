@@ -35,14 +35,16 @@ class core_news_sef_full_url extends eUrlConfig
 				'Category/<name:{sefsecure}>' 				=> array('list/category', 'allowVars' => array('page'), 'mapVars' => array('category_sef' => 'name'), 'legacyQuery' => 'list.{name}.{page}', 'parseCallback' => 'categoryIdByTitle'),
 				'All' 										=> array('list/all', 'allowVars' => array('page'), 'legacyQuery' => 'all.0.{page}'),
 				
-				'Short/<name:{sefsecure}>' 					=> array('list/short', 'allowVars' => array('page'), 'mapVars' => array('category_sef' => 'name'), 'legacyQuery' => 'cat.{name}.{page}', 'parseCallback' => 'categoryIdByTitle'),
-				'Short/<id:{number}>' 						=> array('list/short', 'allowVars' => array('page'), 'mapVars' => array('category_id' => 'id'), 'legacyQuery' => 'cat.{id}.{page}'),				
-				'Day/<id:{number}>' 						=> array('list/day', 'allowVars' => array('page'), 'legacyQuery' => 'day.{id}.{page}'),
-				'Month/<id:{number}>' 						=> array('list/month', 'allowVars' => array('page'), 'legacyQuery' => 'month.{id}.{page}'),
+				'Short/<name:{sefsecure}>' 					=> array('list/short', 	'allowVars' => array('page'), 'mapVars' => array('category_sef' => 'name'), 'legacyQuery' => 'cat.{name}.{page}', 'parseCallback' => 'categoryIdByTitle'),
+				'Short/<id:{number}>' 						=> array('list/short', 	'allowVars' => array('page'), 'mapVars' => array('category_id' => 'id'), 'legacyQuery' => 'cat.{id}.{page}'),				
+				'Day/<id:{number}>' 						=> array('list/day', 	'allowVars' => array('page'), 'legacyQuery' => 'day.{id}.{page}'),
+				'Month/<id:{number}>' 						=> array('list/month', 	'allowVars' => array('page'), 'legacyQuery' => 'month.{id}.{page}'),
+				'Tag/<tag:{secure}>' 						=> array('list/tag', 	'allowVars' => array('page'), 'legacyQuery' => 'tag={tag}'),
 				
 				'<category:{sefsecure}>/<name:{sefsecure}>' => array('view/item', 'mapVars' => array('category_sef' => 'category', 'news_sef' => 'name'), 'legacyQuery' => 'extend.{name}', 'parseCallback' => 'itemIdByTitle'),
 				'<name:{sefsecure}>' 						=> array('view/item', 'mapVars' => array('news_id' => 'id', 'news_sef' => 'name'), 'legacyQuery' => 'extend.{name}', 'parseCallback' => 'itemIdByTitle'),
 				'<id:{number}>' 							=> array('view/item', 'mapVars' => array('news_id' => 'id'), 'legacyQuery' => 'extend.{id}'),
+				
 			) 
 		);
 		

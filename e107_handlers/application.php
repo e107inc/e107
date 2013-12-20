@@ -1810,6 +1810,7 @@ class eRouter
 
 		$anc = '';
 		
+		
 		if(is_string($params)) parse_str($params, $params);
 		if(isset($params['#']))
 		{
@@ -1897,8 +1898,6 @@ class eRouter
 			break;
 		}
 		
-		
-		
 		# aliases
 		$module = $route[0];
 		$config = $this->getConfig($module);
@@ -1974,7 +1973,10 @@ class eRouter
 		{
 			foreach ($rules as $k => $rule)
 			{
-				if (($url = $rule->createUrl($this, array($route[1], $route[2]), $params, $options)) !== false) return $base.rtrim(($this->isMainModule($module) ? '' : $alias.'/').$url, '/').$anc;
+				if (($url = $rule->createUrl($this, array($route[1], $route[2]), $params, $options)) !== false)
+				{
+					 return $base.rtrim(($this->isMainModule($module) ? '' : $alias.'/').$url, '/').$anc;
+				}
 			}
 		}
 
@@ -2037,6 +2039,8 @@ class eRouter
 		}
 		$route = implode('/', $route);
 		if(!$route || $route == $alias) $urlSuffix = '';
+		
+		
 		return $format === self::FORMAT_GET ? $base.'?'.$this->routeVar.'='.$route.$anc : $base.$route.$urlSuffix.$anc;
 	}
 	
@@ -2392,6 +2396,8 @@ class eUrlRule
 		
 		if(is_array($route)) $route = implode('/', $route);
 		
+		
+		
 		$tr = array();
 		if ($route !== $this->route)
 		{
@@ -2411,7 +2417,7 @@ class eUrlRule
 				unset($params[$srcKey]);
 			}
 		}	
-		
+			
 		// false means - no vars are allowed, preserve only route vars
 		if($this->allowVars === false) $this->allowVars = array_keys($this->params);
 		// empty array (default) - everything is allowed
@@ -2460,7 +2466,7 @@ class eUrlRule
 				}
 			}
 		}
-		
+	
 		foreach ($this->params as $key => $value)
 		{
 			// FIX - non-latin URLs proper encoded
@@ -2470,9 +2476,19 @@ class eUrlRule
 		
 		$suffix = $this->urlSuffix === null ? $manager->urlSuffix : $this->urlSuffix;
 		
+		$urlFormat = e107::getConfig()->get('url_sef_translate');
+		
+		if($urlFormat == 'dashl' || $urlFormat == 'underscorel' || $urlFormat == 'plusl') // convert template to lowercase when using lowercase SEF URL format.  
+		{
+			$this->template = strtolower($this->template);	
+		}
+		
 		$url = strtr($this->template, $tr);
 		
-		if (empty($params)) return $url !== '' ? $url.$suffix : $url;
+		if(empty($params))
+		{
+			 return $url !== '' ? $url.$suffix : $url;
+		}
 
 		// apppend not supported, maybe in the future...?
 		if ($this->append) $url .= '/'.$manager->createPathInfo($params, '/', '/').$suffix;
@@ -2483,6 +2499,7 @@ class eUrlRule
 			$options['equal'] = '=';
 			$url .= '?'.$manager->createPathInfo($params, $options);
 		}
+	
 
 		return rtrim($url, '/');
 	}
@@ -3540,6 +3557,7 @@ class eRequest
 	public function populateRequestParams()
 	{
 		$rp = $this->getRequestParams();
+		
 		foreach ($rp as $key => $value) 
 		{
 			$_GET[$key] = $value;

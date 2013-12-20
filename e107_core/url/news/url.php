@@ -95,6 +95,7 @@ class core_news_url extends eUrlConfig
 			$route[1] = 'items';
 		}
 		
+	//	return print_a($route,true);
 		## news are passing array as it is retrieved from the DB, map vars to proper values
 		if(isset($params['news_id']) && !empty($params['news_id'])) $params['id'] = $params['news_id'];
 		//if(isset($params['news_sef']) && !empty($params['news_sef'])) $params['id'] = $params['news_sef'];
@@ -142,6 +143,10 @@ class core_news_url extends eUrlConfig
 					$url .= 'all.'.$params['id'].'.'.$page;
 				break;
 				
+				case 'tag':
+					$url .= 'tag='.$params['id'].'&page='.$page;
+				break;
+				
 				case 'short':
 					$url .= 'cat.'.$params['id'].'.'.$page;
 				break;
@@ -158,7 +163,10 @@ class core_news_url extends eUrlConfig
 				break;
 			}
 		}
-		else $url = 'news.php';
+		else 
+		{
+			$url = 'news.php';
+		}
 		
 		return $url;
 	}
