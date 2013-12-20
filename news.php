@@ -318,7 +318,7 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 		$NEWSLISTTITLE = str_replace("{NEWSCATEGORY}",$tp->toHTML($category_name,FALSE,'TITLE'),$NEWSLISTTITLE);
 	}
 	
-	$text .= "<div class='center news-list-footer'><a class='btn btn-default' href='".e107::getUrl()->create('news/all')."'>".LAN_NEWS_84."</a></div>";
+	$text .= "<div class='center news-list-footer'><a class='btn btn-default' href='".e107::getUrl()->create('news/list/all')."'>".LAN_NEWS_84."</a></div>";
 	
 	ob_start();
 	$ns->tablerender($NEWSLISTTITLE, $text, 'news');
