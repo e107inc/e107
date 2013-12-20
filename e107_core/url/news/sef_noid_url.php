@@ -154,7 +154,7 @@ class core_news_sef_noid_url extends eUrlConfig
 		}
 		
 		## no controller/action pair - news item view - map to extend.xxx
-		if(strpos($pathInfo, '/') === false)
+		if(strpos($pathInfo, '/') === false && $pathInfo != 'All')
 		{
 			$route = 'view/item';
 			$id = is_numeric($pathInfo) ? intval($pathInfo) : $this->itemIdByTitle($pathInfo);
@@ -221,6 +221,11 @@ class core_news_sef_noid_url extends eUrlConfig
 				
 				$this->legacyQueryString = 'year.'.$id.'.'.$page;
 				//return 'list/year';
+			break;
+			
+			case 'all':
+				$this->legacyQueryString = 'all.0.'.$page;
+				return 'list/all';
 			break;
 			
 			# force not found
