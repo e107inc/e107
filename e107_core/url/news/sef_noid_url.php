@@ -246,6 +246,7 @@ class core_news_sef_noid_url extends eUrlConfig
 				'description' => LAN_EURL_NEWS_REWRITE_DESCR, //
 				'examples'  => array("{SITEURL}news/news-title")
 			),
+			'generate' => array('table'=> 'news', 'primary'=>'news_id', 'input'=>'news_title', 'output'=>'news_sef'),
 			'form' => array(), // Under construction - additional configuration options
 			'callbacks' => array(), // Under construction - could be used for e.g. URL generator functionallity
 		);

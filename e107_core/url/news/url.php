@@ -185,6 +185,7 @@ class core_news_url extends eUrlConfig
 				'description' => LAN_EURL_LEGACY, //
 				'examples'  => array("{SITEURL}news.php?extend.1")
 			),
+		//	'generate' => array('table'=> 'news', 'primary'=>'news_id', 'input'=>'news_title', 'output'=>'news_sef'),
 			'form' => array(), // Under construction - additional configuration options
 			'callbacks' => array(), // Under construction - could be used for e.g. URL generator functionallity
 		);
