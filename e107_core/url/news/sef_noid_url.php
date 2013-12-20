@@ -97,6 +97,11 @@ class core_news_sef_noid_url extends eUrlConfig
 						if($page) $parm = array('page' => $page); // news/All?page=xxx
 				break;
 				
+				case 'tag':				// news/tag/xxxx
+					$r[0] = 'tag';
+					$r[1] = $params['tag']; 
+				break;
+				
 				case 'category':
 				case 'short':
 					if(!vartrue($params['id']))
@@ -154,8 +159,9 @@ class core_news_sef_noid_url extends eUrlConfig
 		}
 		
 		## no controller/action pair - news item view - map to extend.xxx
-		if(strpos($pathInfo, '/') === false && $pathInfo != 'All')
+		if(strpos($pathInfo, '/') === false && strtolower($pathInfo) != 'all')
 		{
+			
 			$route = 'view/item';
 			$id = is_numeric($pathInfo) ? intval($pathInfo) : $this->itemIdByTitle($pathInfo);
 			if(!$id) 
@@ -226,6 +232,11 @@ class core_news_sef_noid_url extends eUrlConfig
 			case 'all':
 				$this->legacyQueryString = 'all.0.'.$page;
 				return 'list/all';
+			break;
+			
+			case 'tag':
+				$this->legacyQueryString = 'tag='.$parts[1];
+				return 'list/tag';
 			break;
 			
 			# force not found

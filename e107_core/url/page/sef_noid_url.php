@@ -72,12 +72,20 @@ class core_page_sef_noid_url extends eUrlConfig
 	public function itemIdByTitle(eRequest $request)
 	{
 		$name = $request->getRequestParam('name');
+		
+		e107::getMessage()->addDebug('name = '.$name);
+		e107::getMessage()->addDebug(print_r($request,true));
+		e107::getAdminLog()->toFile('page_sef_noid_url');
+		
 		if(($id = $request->getRequestParam('id'))) 
 		{
 			$request->setRequestParam('name', $id);
 			return;
 		}
 		elseif(!$name || is_numeric($name)) return;
+		
+		
+		
 		
 		$sql = e107::getDb('url');
 		$name = e107::getParser()->toDB($name);

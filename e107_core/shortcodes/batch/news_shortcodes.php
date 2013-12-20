@@ -490,7 +490,8 @@ class news_shortcodes extends e_shortcode
 		{
 			if(trim($val))
 			{
-				$words[] = "<a href='".e_BASE."news.php?tag=".$val."'><span class='label label-default'>".$val."</span></a>";	
+				$url = e107::getUrl()->create('news/list/tag',array('tag'=>$val)); // e_BASE."news.php?tag=".$val
+				$words[] = "<a href='".$url."'><span class='label label-default'>".$val."</span></a>";	
 			}
 		}
 		

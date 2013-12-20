@@ -84,6 +84,10 @@ if ($action == 'all' || $action == 'cat')
 	$sub_action = intval(varset($tmp[1],0));
 }
 
+
+
+
+
 /*
 Variables Used:
 $action - the basic display format/filter
@@ -129,9 +133,30 @@ $nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 		$newsRoute = 'list/all';
 		$newsUrlparms['id'] = $sub_action;
 	}
+
 	else $newsRoute = 'list/items';
 	$newsRoute = 'news/'.$newsRoute;
 
+
+if(vartrue($_GET['tag']) || substr($action,0,4) == 'tag=')
+{
+	
+	$newsRoute = 'news/list/tag';	
+	if(!vartrue($_GET['tag']))
+	{
+		list($action,$word) = explode("=",$action,2);	
+		$_GET['tag'] = $word;
+		unset($word,$tmp);
+	}
+
+	$newsfrom = intval(varset($_GET['page'],0));
+}
+
+/*
+echo "route= ".$newsRoute."  ";
+echo "<br />action= ".$action."  ";
+echo "<br />_GET= ".print_a($_GET,true);
+*/
 //------------------------------------------------------
 //		DISPLAY NEWS IN 'CATEGORY' LIST FORMAT HERE
 //------------------------------------------------------
@@ -207,6 +232,7 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 		ORDER BY n.news_datestamp DESC
 		LIMIT ".intval($newsfrom).",".NEWSLIST_LIMIT;	
 		$category_name = 'Tag: "'.$tagsearch.'"';
+		
 	}
 
 	$newsList = array();
@@ -292,7 +318,7 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 		$NEWSLISTTITLE = str_replace("{NEWSCATEGORY}",$tp->toHTML($category_name,FALSE,'TITLE'),$NEWSLISTTITLE);
 	}
 	
-	$text .= "<div class='center news-list-footer'><a class='btn btn-default' href='".e_REQUEST_SELF."'>".LAN_NEWS_84."</a></div>";
+	$text .= "<div class='center news-list-footer'><a class='btn btn-default' href='".e107::getUrl()->create('news/all')."'>".LAN_NEWS_84."</a></div>";
 	
 	ob_start();
 	$ns->tablerender($NEWSLISTTITLE, $text, 'news');
