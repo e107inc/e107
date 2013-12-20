@@ -2476,6 +2476,7 @@ class eUrlRule
 		
 		$suffix = $this->urlSuffix === null ? $manager->urlSuffix : $this->urlSuffix;
 		
+		// XXX TODO Find better place for this check which will affect all types of SEF URL configurations. (@see news/sef_noid_url.php for duplicate)
 		$urlFormat = e107::getConfig()->get('url_sef_translate');
 		
 		if($urlFormat == 'dashl' || $urlFormat == 'underscorel' || $urlFormat == 'plusl') // convert template to lowercase when using lowercase SEF URL format.  

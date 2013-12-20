@@ -10,6 +10,7 @@ if (!defined('e107_INIT')){ exit; }
  
 class core_news_sef_noid_url extends eUrlConfig
 {
+		
 	public function config()
 	{
 		return array(
@@ -133,6 +134,15 @@ class core_news_sef_noid_url extends eUrlConfig
 		}
 		
 		if(empty($r)) return false;
+			
+			
+		//XXX TODO Find a better place to put this check. 	
+		$urlFormat = e107::getConfig()->get('url_sef_translate');
+		if($urlFormat == 'dashl' || $urlFormat == 'underscorel' || $urlFormat == 'plusl') // convert template to lowercase when using lowercase SEF URL format.  
+		{
+		//	$r[0] = strtolower($r[0]);	
+		}	
+			
 			
 		return array($r, $parm);
 	}
