@@ -40,6 +40,8 @@ class core_news_sef_noid_url extends eUrlConfig
 	 * - list/month?id=xxx -> news/Month-id
 	 * - list/year?id=xxx -> news/Year-id
 	 * - list/nextprev?route=xxx -> PARSED_ROUTE?page=[FROM] (recursive parse() call)
+	 * - list/all
+	 * - list/tag
 	 */
 	public function create($route, $params = array(), $options = array())
 	{
@@ -140,7 +142,7 @@ class core_news_sef_noid_url extends eUrlConfig
 		$urlFormat = e107::getConfig()->get('url_sef_translate');
 		if($urlFormat == 'dashl' || $urlFormat == 'underscorel' || $urlFormat == 'plusl') // convert template to lowercase when using lowercase SEF URL format.  
 		{
-		//	$r[0] = strtolower($r[0]);	
+			$r[0] = strtolower($r[0]);	
 		}	
 			
 			
@@ -244,7 +246,7 @@ class core_news_sef_noid_url extends eUrlConfig
 				return 'list/all';
 			break;
 			
-			case 'tag':
+			case 'tag': // url: news/tag/xxxxx
 				$this->legacyQueryString = 'tag='.$parts[1];
 				return 'list/tag';
 			break;
