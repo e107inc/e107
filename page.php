@@ -50,8 +50,9 @@ elseif(vartrue($_GET['ch'])) // List Pages within a specific Chapter
 
 	require_once(HEADERF);	
 
-	$text = $e107CorePage->listPages($_GET['ch'],$template);
-	$ns->tablerender('', $text, 'cpage'); // TODO FIXME Caption eg. "book title"
+	$data = $e107CorePage->listPages($_GET['ch']);
+	$ns->tablerender($data['caption'], $data['text'], 'cpage'); 
+	
 	require_once(FOOTERF);
 	exit;		
 }
@@ -307,16 +308,21 @@ class pageClass
 		$sql 			= e107::getDb('pg');
 		$tp 			= e107::getParser();
 		$this->batch 	= e107::getScBatch('page',null,'cpage');
-
+		$frm 			= e107::getForm();
 
 		// retrieve the template to use for this chapter. 
-		if(!$layout = $sql->retrieve('page_chapters','chapter_template','chapter_id = '.intval($chapt).' LIMIT 1'))
-		{
-			$layout = 'default';
-		}
+		$row = $sql->retrieve('page_chapters','chapter_id,chapter_icon,chapter_name,chapter_meta_description,chapter_template','chapter_id = '.intval($chapt).' LIMIT 1');
+		$layout = vartrue($row['chapter_template'],'default');
 		
 		$tml = e107::getCoreTemplate('chapter','', true, true); // always merge	
 		$tmpl = varset($tml[$layout]);
+	
+		$var = array(
+					'CHAPTER_NAME' 			=> $tp->toHtml($row['chapter_name']),
+					'CHAPTER_ANCHOR'		=> $frm->name2id($row['chapter_name']),
+					'CHAPTER_ICON'			=> $this->chapterIcon($row['chapter_icon']),
+					'CHAPTER_DESCRIPTION'	=> $tp->toHtml($row['chapter_meta_description'], true,'BODY')
+		);		
 	
 		
 	//	$tmpl = e107::getCoreTemplate('chapter','docs', true, true); // always merge	
@@ -332,7 +338,8 @@ class pageClass
 				
 				$pageArray = $sql->db_getList();
 
-				$text .= $template['start'];
+				$header = $tp->simpleParse($template['start'],$var);
+				$text .= $tp->parseTemplate($header,true); // for parsing {SETIMAGE} etc. 
 				
 				foreach($pageArray as $page)
 				{
@@ -349,15 +356,16 @@ class pageClass
 					$text .= e107::getParser()->parseTemplate($template['item'], true, $this->batch);
 				}
 				
-				$text .= $template['end'];
+				$text .= $tp->simpleParse($template['end'],$var);
 				
 		
 			//	$caption = ($title !='')? $title: LAN_PAGE_11;
 			//	e107::getRender()->tablerender($caption, $text,"cpage_list");
 			}
 
+			$caption = $tp->simpleParse($template['caption'],$var);
 		
-		return $text;
+		return array('caption'=>$caption, 'text'=> $text);
 	}
 
 	
