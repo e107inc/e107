@@ -8,6 +8,51 @@
 // TODO - list of all available shortcodes & schortcode parameters
 $FEATUREBOX_CATEGORY_TEMPLATE = array();
 
+// Bootstrap 3
+
+
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap3_carousel']['list_start'] = '
+<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">  
+{FEATUREBOX_NAVIGATION|bootstrap3_carousel=loop&uselimit=1}
+  <!-- Wrapper for slides -->
+  <div class="carousel-inner">
+    
+';
+
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap3_carousel']['list_end'] = '
+	  </div>
+
+	<!-- Controls -->
+  <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
+    <span class="glyphicon glyphicon-chevron-left"></span>
+  </a>
+  <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
+    <span class="glyphicon glyphicon-chevron-right"></span>
+  </a>
+                    
+
+	</div><!-- end row -->
+
+<!-- end carousel -->
+';
+
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap3_carousel']['nav_start'] = '<!-- Indicators --><ol class="carousel-indicators">';
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap3_carousel']['nav_item'] = '<li data-target="#carousel-example-generic" data-slide-to="{FEATUREBOX_COUNTER=0}" class="{FEATUREBOX_ACTIVE}"></li>';
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap3_carousel']['nav_end'] = '</ol>';
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap3_carousel']['nav_separator'] = '';
+
+
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap3_carousel']['col_start'] = '';
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap3_carousel']['col_end'] = '';
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap3_carousel']['item_start'] = '';
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap3_carousel']['item_end'] = '';
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap3_carousel']['item_separator'] = '';
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap3_carousel']['item_empty'] = '';
+
+
+
+
+
 
 // v2.x Default - Bootstrap. 
 
@@ -289,7 +334,8 @@ $FEATUREBOX_CATEGORY_TEMPLATE['camera']['js_type'] = 'jquery';
  * @var array
  */
 $FEATUREBOX_CATEGORY_INFO = array(
-	'bootstrap_carousel' 	=> array('title' => 'Bootstrap Carousel', 		'description' => "Bootstrap's Hero slider"),
+	'bootstrap_carousel' 	=> array('title' => 'Bootstrap v2 Carousel', 		'description' => "Bootstrap's Hero slider"),
+	'bootstrap3_carousel' 	=> array('title' => 'Bootstrap v3 Carousel', 		'description' => "Bootstrap's Hero slider"),
 	'bootstrap_tabs'		=> array('title' => 'Bootstrap Tabs'	,	 	'description' => 'Tabbed Feature box items'),
 //	'camera' 				=> array('title' => 'Image-Slider (jquery)'	, 	'description' => 'Image transitions using the "Camera" jquery plugin'),
 //	'accordion' 			=> array('title' => 'Accordion (jquery)'	, 	'description' => 'Accordion utilizing jQuery UI'),
