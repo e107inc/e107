@@ -48,7 +48,7 @@ class news_sitelink // include plugin-folder in the name.
 			{
 				$sublinks[] = array(
 					'link_name'			=> $row['news_title'],
-					'link_url'			=> 'news.php?extend.'.$row['news_id'],
+					'link_url'			=> e107::getUrl()->create('news/view/item', $row, array('allow' => 'news_sef,news_title,news_id')), // 'news.php?extend.'.$row['news_id'],
 					'link_description'	=> $row['news_summary'],
 					'link_button'		=> '',
 					'link_category'		=> '',
@@ -61,7 +61,7 @@ class news_sitelink // include plugin-folder in the name.
 			
 			$sublinks[] = array(
 					'link_name'			=> "More...",
-					'link_url'			=> 'news.php?all',
+					'link_url'			=> 'news.php?all', // e107::getUrl()->create('news/list/all'), // XXX TODO FIXME Not behaving the same as legacy url. 
 					'link_description'	=> '',
 					'link_button'		=> '',
 					'link_category'		=> '',
