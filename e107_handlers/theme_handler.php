@@ -126,6 +126,7 @@ class themeHandler
 		{
 			$this->id = $_POST['curTheme'];
 			
+			$this->setLayouts(); // Update the layouts in case they have been manually changed. 
 			$this->SetCustomPages($_POST['custompages']);
 			$this->setStyle();
 			
@@ -1718,6 +1719,20 @@ class themeHandler
 		//setPosted couldn't be used here - sitetheme_custompages structure is not defined
 		e107::getConfig()->set('sitetheme_custompages', e107::getParser()->toDB($newprefs));
 	}
+
+	/**
+	 * Set the Theme layouts, as found in theme.xml
+	 */
+	function setLayouts($name='')
+	{
+		$name = $this->id;
+		$layout = is_array($this->themeArray[$name]['layouts']) ? $this->themeArray[$name]['layouts'] : array();	
+		
+		e107::getConfig()->set('sitetheme_layouts', $layout);
+		
+	}
+
+
 
 	
 	// Log event to admin log
