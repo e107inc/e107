@@ -158,6 +158,8 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 		$base = vartrue($parm['base'], 'nav').'_';
 		$tree_ids = array_keys($tree->getTree()); //all available item ids
 		
+		
+		
 		$ret = $category->toHTML(varset($tmpl[$base.'start']), true); 
 		$cols = $category->getParam('cols', 1);
 		
@@ -168,6 +170,7 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 			{
 				$total = $tree->getTotal();
 			}
+		
 			// loop for limit number
 			elseif(isset($parm['uselimit'])) 
 			{
@@ -186,14 +189,19 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 			{
 				$total = ceil($total / $cols);
 			}
+				
+
 			$model = clone $category;
 			$item = new plugin_featurebox_item();
 			$tmp = array();
+			
 			for ($index = 1; $index <= $total; $index++)
 			{
+				
 				$nodeid = varset($tree_ids[($index - 1) * $cols], 0); 
 				if($nodeid && $tree->hasNode($nodeid))
 				{
+					
 					$model->setParam('counter', $index)
 						->setParam('total', $total)
 						->setParam('active', $index == varset($parm['from'], 1));

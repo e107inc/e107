@@ -228,10 +228,11 @@ class news_shortcodes extends e_shortcode
 
 	function sc_adminoptions()
 	{
+		$tp = e107::getParser();
 		if (ADMIN && getperms('H'))
 		{
 			//TODO - discuss - a pref for 'new browser window' loading, or a parm or leave 'new browser window' as default?
-			$default = (deftrue('BOOTSTRAP')) ? "<i class='icon-edit'></i>" :  "<img src='".e_IMAGE_ABS."admin_images/edit_16.png' alt='".LAN_NEWS_25."' class='icon' />";
+			$default = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('icon-edit.glyph',false) :  "<img src='".e_IMAGE_ABS."admin_images/edit_16.png' alt='".LAN_NEWS_25."' class='icon' />";
 			
 			$adop_icon = (file_exists(THEME."images/newsedit.png") ? "<img src='".THEME_ABS."images/newsedit.png' alt='".LAN_NEWS_25."' class='icon' />" : $default);
 			return " <a rel='external' href='".e_ADMIN_ABS."newspost.php?action=create&amp;sub=edit&amp;id=".$this->news_item['news_id']."' title=\"".LAN_NEWS_25."\">".$adop_icon."</a>\n";
@@ -489,7 +490,7 @@ class news_shortcodes extends e_shortcode
 		{
 			if(trim($val))
 			{
-				$words[] = "<a href='".e_BASE."news.php?tag=".$val."'><span class='label'>".$val."</span></a>";	
+				$words[] = "<a href='".e_BASE."news.php?tag=".$val."'><span class='label label-default'>".$val."</span></a>";	
 			}
 		}
 		

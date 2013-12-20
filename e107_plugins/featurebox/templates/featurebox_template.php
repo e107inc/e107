@@ -15,10 +15,10 @@ $FEATUREBOX_TEMPLATE['bootstrap_carousel_left'] = '
    <!-- slide -->
                             <div class="{FEATUREBOX_ACTIVE} item slide{FEATUREBOX_COUNTER}">
                                 <div class="row">
-                                    <div class="span6">
+                                    <div class="featurebox-item-image pull-left span6">
                                     	{FEATUREBOX_IMAGE}
                                      </div>
-                                    <div class="span4">
+                                    <div class="featurebox-item-text span4">
                                         <h1>
                                             {FEATUREBOX_TITLE}
                                         </h1>
@@ -33,11 +33,11 @@ $FEATUREBOX_TEMPLATE['bootstrap_carousel_left'] = '
 $FEATUREBOX_TEMPLATE['bootstrap_carousel_right'] = '
  							<div class="{FEATUREBOX_ACTIVE} item slide{FEATUREBOX_COUNTER}">
                                 <div class="row">
-                                    <div class="span4 animated fadeInUpBig">
+                                    <div class="featurebox-item-text col-md-4 span4 animated fadeInUpBig">
                                         <h1>{FEATUREBOX_TITLE}</h1>
                                         {FEATUREBOX_TEXT}
                                     </div>
-                                    <div class="span6 animated fadeInDownBig">
+                                    <div class="featurebox-item-image col-md-6 span6 animated fadeInDownBig">
                                          {FEATUREBOX_IMAGE}
                                     </div>
                                 </div>

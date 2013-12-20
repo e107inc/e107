@@ -112,6 +112,7 @@ class ecache {
 	* @return string
 	* @param string $query
 	* @param int $MaximumAge the time in minutes before the cache file 'expires'
+	* @param Forced check if cache is disabled. 
 	* @desc Returns the data from the cache file associated with $query, else it returns false if there is no cache for $query.
 	* @scope public
 	*/

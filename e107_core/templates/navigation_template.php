@@ -8,7 +8,7 @@
 
  
 // TEMPLATE FOR {NAVIGATION=main}
-$NAVIGATION_TEMPLATE['main']['start'] = '<ul class="nav nav-pills">';
+$NAVIGATION_TEMPLATE['main']['start'] = '<ul class="nav navbar-nav">';
 
 // Main Link
 $NAVIGATION_TEMPLATE['main']['item'] = '

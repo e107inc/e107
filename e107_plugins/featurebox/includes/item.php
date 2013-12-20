@@ -186,10 +186,12 @@ class plugin_featurebox_item extends e_model
 
 	/**
 	 * Item counter number (starting from 1)
+	 * @param optional - to strat from 0 if needed. (bootstrap 3)
 	 */
-	public function sc_featurebox_counter()
-	{
-		return $this->getParam('counter', 1);
+	public function sc_featurebox_counter($parm=1)
+	{	
+		$count = $this->getParam('counter', 1);
+		return ($oarm == 0) ? $count - 1 : $count;
 	}
 
 	/**
