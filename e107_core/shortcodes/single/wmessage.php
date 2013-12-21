@@ -36,7 +36,6 @@ function wmessage_shortcode($parm)
 
 	if (strpos($front_url, 'http') === FALSE) $front_url = SITEURL.$front_url;
 
-
 	if (deftrue('e_FRONTPAGE') || ($parm == 'force') || ((e_SELF == $front_url) && (($parm == 'ignore_query') || (e_QUERY == $front_qry))))
 	{
 		// Actually want to display a welcome message here

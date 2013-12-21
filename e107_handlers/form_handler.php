@@ -1702,6 +1702,10 @@ class e_form
 			case 'filter e-hide-if-js': // FIXME hide-js shouldn't be here. 
 				$options['class'] .= 'btn-primary';
 			break;
+			
+			default:
+				$options['class'] .= 'btn-default';
+			break;
 		}	
 		
 		return "
