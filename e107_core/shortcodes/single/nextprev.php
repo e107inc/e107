@@ -76,12 +76,12 @@ function nextprev_shortcode($parm = '')
 		$total_items = intval($parm['total']);
 		$check_render = true;
 
-		if(vartrue($parm['glyphs']) && (BOOTSTRAP === true))
+		if(vartrue($parm['glyphs']) && (deftrue('BOOTSTRAP')))
 		{
-			$LAN_NP_FIRST 		= "<i class='icon-fast-backward'></i>";
-			$LAN_NP_PREVIOUS 	= "<i class='icon-backward'></i>";
-			$LAN_NP_NEXT 		= "<i class='icon-forward'></i>";
-			$LAN_NP_LAST 		= "<i class='icon-fast-forward'></i>";
+			$LAN_NP_FIRST 		= $tp->toGlyph("icon-fast-backward.glyph",false);
+			$LAN_NP_PREVIOUS 	= $tp->toGlyph("icon-backward.glyph",false);
+			$LAN_NP_NEXT 		= $tp->toGlyph("icon-forward.glyph",false);
+			$LAN_NP_LAST 		= $tp->toGlyph("icon-fast-forward.glyph",false);
 		}
 		else
 		{

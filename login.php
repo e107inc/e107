@@ -93,7 +93,7 @@ if (!USER || getperms('0'))
 	
 	$sc = e107::getScBatch('login');
 	
-	if((BOOTSTRAP === true) && isset($LOGIN_TEMPLATE['page']))
+	if((deftrue('BOOTSTRAP')) && isset($LOGIN_TEMPLATE['page']))
 	{
 		$LOGIN_TABLE_HEADER = $LOGIN_TEMPLATE['page']['header'];
 		$LOGIN_TABLE 		= "<form class='form-signin' method='post' action='".e_SELF."' onsubmit='hashLoginPassword(this)' >".$LOGIN_TEMPLATE['page']['body']."</form>";
@@ -109,7 +109,7 @@ if (!USER || getperms('0'))
 	
 	if(getperms('0'))
 	{
-		echo "<div class='alert alert-block alert-error center'> You are currently logged in.</div>";	
+		echo "<div class='alert alert-block alert-error alert-danger center'> You are currently logged in.</div>";	
 	}
 	
 //	echo preg_replace("/\{(.*?)\}/e", 'varset($\1,"\1")', $LOGIN_TABLE_HEADER);

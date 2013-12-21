@@ -157,6 +157,8 @@ $LAYOUT['jumbotron'] = '
 	{WMESSAGE}
 	 {SETSTYLE=default}
 	 <div class="container">
+	 {ALERTS}
+	 
 	{...}
 	</div>
     <div class="container">
@@ -171,7 +173,7 @@ $LAYOUT['jumbotron'] = '
       <hr>
 
       <footer>
-        <p>&copy; Company 2013</p>
+       {SITEDISCLAIMER}
       </footer>
     </div> <!-- /container -->
 

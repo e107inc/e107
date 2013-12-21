@@ -531,6 +531,8 @@ class userlogin
 			  $this->logNote('LAN_ROLL_LOG_10', $username);
 		}
 
+		e107::getMessage()->addError(LOGINMESSAGE);	
+
 		if ($doCheck)
 		{		// See if ban required (formerly the checkibr() function)
 			if($pref['autoban'] == 1 || $pref['autoban'] == 3)

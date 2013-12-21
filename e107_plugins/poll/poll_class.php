@@ -563,7 +563,7 @@ class poll
 	
 	function generateBar($perc)
 	{
-		if(BOOTSTRAP === true)
+		if(deftrue('BOOTSTRAP',false))
 		{
 			return	"<div class='progress'>
 		    <div class='bar' style='width: ".intval($perc)."%;'></div>

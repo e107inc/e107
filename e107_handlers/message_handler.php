@@ -512,7 +512,7 @@ class eMessage
 	 */
 	public static function formatMessage($mstack, $type, $message)
 	{
-		$bstrap = array('info'=>'alert-info','error'=>'alert-error','warning'=>'alert-warning','success'=>'alert-success');
+		$bstrap = array('info'=>'alert-info','error'=>'alert-error alert-danger','warning'=>'alert-warning','success'=>'alert-success','debug'=>'alert-warning');
 		$bclass = vartrue($bstrap[$type]) ? " ".$bstrap[$type] : "";
 		
 		if (empty($message))
@@ -972,7 +972,7 @@ function show_emessage($mode, $message, $line = 0, $file = "") {
 		  require_once(e_THEME.'index.html');
 		  exit;
 		}
-		echo "<div class='alert alert-block alert-error' style='text-align:center; font: 11px verdana, tahoma, arial, helvetica, sans-serif;'><b>CRITICAL_ERROR: </b><br />Line $line $file<br /><br />Error reported as: ".$message."</div>";
+		echo "<div class='alert alert-block alert-error alert-danger' style='text-align:center; font: 11px verdana, tahoma, arial, helvetica, sans-serif;'><b>CRITICAL_ERROR: </b><br />Line $line $file<br /><br />Error reported as: ".$message."</div>";
 		break;
 
 	  case "MESSAGE":

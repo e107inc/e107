@@ -13,13 +13,17 @@
 
 class theme_shortcodes extends e_shortcode
 {
+	function __construct()
+	{
+		
+	}
 	
 	function sc_bootstrap_usernav()
 	{
 		include_lan(e_PLUGIN."login_menu/languages/".e_LANGUAGE.".php");
 		
 		$tp = e107::getParser();		   
-		   
+				   
 		if(!USERID) // Logged Out. 
 		{		
 			$text = '
@@ -40,6 +44,9 @@ class theme_shortcodes extends e_shortcode
 				<form method="post" onsubmit="hashLoginPassword(this);return true" action="'.e_REQUEST_HTTP.'" accept-charset="UTF-8">
 				{LM_USERNAME_INPUT}
 				{LM_PASSWORD_INPUT}
+				{LM_IMAGECODE_NUMBER}
+				{LM_IMAGECODE_BOX}
+				
 				<div class="checkbox">
 				<input style="float: left; margin-right: 10px;" type="checkbox" name="autologin" id="autologin" value="1">
 				<label class="string optional" for="autologin"> Remember me</label>
@@ -78,10 +85,7 @@ class theme_shortcodes extends e_shortcode
 
 		
 		// Logged in. 
-		//TODO Generic LANS. (not theme LANs) 
-		
-		$avatar = $tp->parseTemplate('{USER_AVATAR}',true);
-		
+		//TODO Generic LANS. (not theme LANs) 	
 		
 		$text = '
 		
