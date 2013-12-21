@@ -576,6 +576,18 @@ echo "</head>\n";
 
 // ---------- New in 2.0 -------------------------------------------------------
 
+	if(isset($LAYOUT) && is_array($LAYOUT)) // $LAYOUT is a combined $HEADER,$FOOTER. 
+	{
+		foreach($LAYOUT as $key=>$template)
+		{
+			list($hd,$ft) = explode("{...}",$template);
+			$HEADER[$key] = $hd;
+			$FOOTER[$key] = $ft;	
+		}	
+		unset($hd,$ft);
+	}
+
+
     $def = THEME_LAYOUT;  // The active layout based on custompage matches.
 
   //  echo "DEF = ".$def."<br />";
