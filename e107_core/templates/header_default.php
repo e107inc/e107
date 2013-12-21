@@ -716,7 +716,7 @@ if ($e107_popup != 1) {
 	}
 	
 	//XXX TODO LAN in English.php 
-	echo "<noscript><div class='alert alert-block alert-error'><strong>This web site requires that javascript be enabled. <a rel='external' href='http://activatejavascript.org'>Click here for instructions.</a>.</strong></div></noscript>";
+	echo "<noscript><div class='alert alert-block alert-error alert-danger'><strong>This web site requires that javascript be enabled. <a rel='external' href='http://activatejavascript.org'>Click here for instructions.</a>.</strong></div></noscript>";
 
 	if(deftrue('BOOTSTRAP'))
 	{

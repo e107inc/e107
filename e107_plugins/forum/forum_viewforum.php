@@ -88,7 +88,7 @@ if (!vartrue($FORUM_VIEW_START))
 }
 
 
-if(is_array($FORUM_VIEWFORUM_TEMPLATE) && (BOOTSTRAP === true)) // New v2.x bootstrap Template. 
+if(is_array($FORUM_VIEWFORUM_TEMPLATE) && deftrue('BOOTSTRAP',false)) // New v2.x bootstrap Template. 
 {
 	
 	$FORUM_VIEW_START_CONTAINER		= $FORUM_VIEWFORUM_TEMPLATE['start'];

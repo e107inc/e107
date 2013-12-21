@@ -292,7 +292,7 @@ if(getperms('0')) // allow main admin to view signup page for design/testing.
 		$adminMsg .= "<br />User registration is currently disabled";	
 	}
 	
-	$SIGNUP_BEGIN = "<div class='alert alert-block alert-error text-center'>".$adminMsg."</div>". $SIGNUP_BEGIN;	
+	$SIGNUP_BEGIN = "<div class='alert alert-block alert-error alert-danger text-center'>".$adminMsg."</div>". $SIGNUP_BEGIN;	
 	unset($adminMsg); 	
 }
 

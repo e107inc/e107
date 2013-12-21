@@ -868,7 +868,7 @@ class download
 	   	     $errmsg = LAN_dl_61." ".$this->qry['error'];		
 		}
 		
-		return $ns->tablerender(LAN_dl_61, $header. "<div class='alert alert-error alert-block' style='text-align:center'>".$errmsg."</div>". $footer, 'download-error', true);
+		return $ns->tablerender(LAN_dl_61, $header. "<div class='alert alert-error alert-danger alert-block' style='text-align:center'>".$errmsg."</div>". $footer, 'download-error', true);
 		
 	}
    
