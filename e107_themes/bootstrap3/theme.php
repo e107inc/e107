@@ -159,7 +159,9 @@ $LAYOUT['jumbotron'] = '
 	 <div class="container">
 	 {ALERTS}
 	 
-	{...}
+	{---}
+	
+	
 	</div>
     <div class="container">
       <!-- Example row of columns -->
