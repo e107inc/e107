@@ -200,6 +200,11 @@ class e_form
 			$options['class'] = "tbox";		
 		}
 
+		if(deftrue('BOOTSTRAP') == 3)
+		{
+			$options['class'] = 'form-control';
+		}
+
 		/*
 		if(!vartrue($options['class']))
 		{
@@ -824,6 +829,12 @@ class e_form
 		$options['pattern'] = vartrue($options['pattern'],'[\S]{4,}');
 		$options['required'] = varset($options['required'], 1);
 		$options['class'] = vartrue($options['class'],'e-password');
+		
+		if(deftrue('BOOTSTRAP') == 3)
+		{
+			$options['class'] .= ' form-control';
+		}
+		
 		$options = $this->format_options('text', $name, $options);
 
 		//never allow id in format name-value for text fields
@@ -1926,13 +1937,15 @@ class e_form
 			//	'multiple' => false, - see case 'select'
 		);
 
+		$form_control = (deftrue('BOOTSTRAP') == 3) ? ' form-control' : '';
+
 		switch ($type) {
 			case 'hidden':
 				$def_options = array('id' => false, 'disabled' => false, 'other' => '');
 				break;
 
 			case 'text':
-				$def_options['class'] = 'tbox input-text';
+				$def_options['class'] = 'tbox input-text'.$form_control;
 				unset($def_options['selected'], $def_options['checked']);
 				break;
 
@@ -1942,12 +1955,12 @@ class e_form
 				break;
 
 			case 'textarea':
-				$def_options['class'] = 'tbox textarea';
+				$def_options['class'] = 'tbox textarea'.$form_control;
 				unset($def_options['selected'], $def_options['checked'], $def_options['size']);
 				break;
 
 			case 'select':
-				$def_options['class'] = 'tbox select';
+				$def_options['class'] = 'tbox select'.$form_control;
 				$def_options['multiple'] = false;
 				unset($def_options['checked']);
 				break;
