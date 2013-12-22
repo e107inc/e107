@@ -901,7 +901,10 @@ li.rssRow > div {
 	color: rgb(153, 153, 153);
 }
 
-
+/* FIX for iOS navigation sublinks */
+.dropdown-backdrop {
+    position: static;
+}
 
 /*
 

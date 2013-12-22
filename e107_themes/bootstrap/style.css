@@ -98,7 +98,10 @@ div.featurebox-nav a.featurebox-nav-prev:hover { text-decoration: none; font-siz
    padding: 7px 9px;
 }
 
-    
+/* FIX for iOS navigation sublinks */
+.dropdown-backdrop {
+    position: static;
+}    
 
 
 
