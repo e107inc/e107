@@ -58,10 +58,30 @@ $ue = new e107_user_extended;
 $userMethods = e107::getUserSession();
 
 require_once (e_HANDLER.'ren_help.php');
-include_once (e107::coreTemplatePath('usersettings')); //correct way to load a core template.
-// include_once (e_CORE.'shortcodes/batch/usersettings_shortcodes.php');
-e107::scStyle($sc_style);
-$usersettings_shortcodes = e107::getScBatch('usersettings');
+
+
+if(deftrue('BOOTSTRAP')==3)
+{
+	$template = e107::getCoreTemplate('usersettings','', true, true); // always merge	
+	
+	$USERSETTINGS_MESSAGE 				= "{MESSAGE}";
+	$USERSETTINGS_MESSAGE_CAPTION 		= LAN_OK;
+	$USERSETTINGS_EDIT_CAPTION 			= LAN_USET_39; 	// 'Update User Settings'	
+	$USERSETTINGS_EDIT					= $template['edit'];
+	$usersettings_shortcodes 			= e107::getScBatch('usersettings');
+	
+	$usersettings_shortcodes->wrapper('usersettings/edit');
+}
+else
+{
+	include_once (e107::coreTemplatePath('usersettings')); //correct way to load a core template.	
+	e107::scStyle($sc_style);
+	$usersettings_shortcodes = e107::getScBatch('usersettings');
+}
+
+
+
+
 
 
 e107::js('footer-inline',"
@@ -781,7 +801,7 @@ if (vartrue($_POST))
 require_once (e_HANDLER."form_handler.php");
 $rs = new form;
 
-$text = (e_QUERY ? $rs->form_open("post", e_SELF."?".e_QUERY, "dataform", "", " enctype='multipart/form-data'") : $rs->form_open("post", e_SELF, "dataform", "", " enctype='multipart/form-data'"));
+$text = (e_QUERY ? $rs->form_open("post", e_SELF."?".e_QUERY, "dataform", "", " class='form-horizontal' role='form' enctype='multipart/form-data'") : $rs->form_open("post", e_SELF, "dataform", "", " class='form-horizontal' role='form' enctype='multipart/form-data'"));
 
 if (e_QUERY == "update")
 {

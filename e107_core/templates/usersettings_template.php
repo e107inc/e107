@@ -177,5 +177,144 @@ $USERSETTINGS_EDIT = "
 	</div>
 	";
 
+	
+	
+	
+	
+// e107 v2. bootstrap3 compatible. 
+
+$USERSETTINGS_WRAPPER['edit']['USERNAME'] =				"<div class='form-group'>
+															<label for='username' class='col-sm-3 control-label'>".LAN_USER_01."</label>
+														    <div class='col-sm-9'>{---}</div>
+														   </div>
+														";
+
+
+$USERSETTINGS_WRAPPER['edit']['LOGINNAME'] = 			"<div class='form-group'>
+															<label for='loginname' class='col-sm-3 control-label'>".LAN_USER_81."</label>
+														       	<div class='col-sm-9'>{---}</div>
+														   </div>
+														";
+
+$USERSETTINGS_WRAPPER['edit']['PASSWORD1'] = 			"<div class='form-group'>
+															<label for='password1' class='col-sm-3 control-label'>".LAN_USET_24."</label>
+														       	<div class='col-sm-9'>{---}</div>
+														   </div>
+														";
+$USERSETTINGS_WRAPPER['edit']['PASSWORD2'] =			"<div class='form-group'>
+															<label for='password2' class='col-sm-3 control-label'>".LAN_USET_25."</label>
+														       	<div class='col-sm-9'>{---}</div>
+														   </div>
+														";
+
+$USERSETTINGS_WRAPPER['edit']['CUSTOMTITLE'] =			"<div class='form-group'>
+															<label for='customtitle' class='col-sm-3 control-label'>".LAN_USER_04."</label>
+														       	<div class='col-sm-9'>{---}</div>
+														   </div>
+														";
+
+$USERSETTINGS_WRAPPER['edit']['USERCLASSES'] = 			"<div class='form-group'>
+															<label for='userclasses' class='col-sm-3 control-label'>".LAN_USER_76.":".req($pref['signup_option_class'])."</label>
+														       	<div class='col-sm-9'>{---}
+														       	<br /><span class='smalltext'>".LAN_USER_73."</span>
+														       	</div>
+														   </div>
+														";
+
+$USERSETTINGS_WRAPPER['edit']['AVATAR_UPLOAD'] = 		"<div class='form-group'>
+														<label for='customtitle' class='col-sm-3 control-label'>".LAN_USET_26."</label>
+												       	<div class='col-sm-9'>{---}</div>
+													   	</div>
+														";
+$USERSETTINGS_WRAPPER['edit']['PHOTO_UPLOAD'] = 		"<div class='form-group'>
+														<label for='customtitle' class='col-sm-3 control-label'>".LAN_USER_06."</label>
+												       	<div class='col-sm-9'>{---}</div>
+													   	</div>
+														";
+														
+														
+
+$USERSETTINGS_WRAPPER['edit']['SIGNATURE']			= "<div class='form-group'>
+														<label for='signature' class='col-sm-3 control-label'>".LAN_USER_71.req($pref['signup_option_signature'])."</label>
+												       	<div class='col-sm-9'>{---}</div>
+													   	</div>
+													 ";
+
+
+
+
+
+
+
+
+
+$USERSETTINGS_TEMPLATE['edit'] = "
+
+<div>
+	
+	{USERNAME}
+	{LOGINNAME}
+
+	<h4>".LAN_USET_31."</h4>
+	
+	<div class='form-group'>
+	<label for='loginname' class='col-sm-3 control-label'>".LAN_USER_60.req(!$pref['disable_emailcheck'])."</label>
+	<div class='col-sm-9'>
+		{EMAIL}
+	</div>
+	</div>
+
+	<div class='form-group'>
+	<label for='loginname' class='col-sm-3 control-label'>".LAN_USER_63.req($pref['signup_option_realname'])."</label>
+	<div class='col-sm-9'>
+		{REALNAME}
+	</div>
+	</div>
+
+	{CUSTOMTITLE}
+
+	{PASSWORD1}
+	{PASSWORD_LEN}
+	{PASSWORD2}
+
+
+	<div class='form-group'>
+	<label for='loginname' class='col-sm-3 control-label'>".LAN_USER_83."</label>
+	<div class='col-sm-9'>
+	{HIDEEMAIL=radio}
+	</div>
+	</div>
+	
+	<div class='form-group'>
+	<label for='loginname' class='col-sm-3 control-label'>".LAN_USER_07.req($pref['signup_option_image'])."</label>
+	<div class='col-sm-9'>
+	{AVATAR_REMOTE}
+	</div>
+	</div>
+
+	{AVATAR_UPLOAD}
+	{PHOTO_UPLOAD}
+
+	{USERCLASSES}
+	{USEREXTENDED_ALL}
+
+	
+	{SIGNATURE=cols=58&rows=4}	
+	{SIGNATURE_HELP}
+
+	 <div class='form-group'>
+      <div class='col-sm-offset-3 col-sm-9'>
+		{UPDATESETTINGSBUTTON}
+	</div>
+	</div>
+
+
+
+
+";
+
+
+
+
 
 ?>
