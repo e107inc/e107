@@ -206,7 +206,8 @@ class pageClass
 		if(e107::getPref('listPages',false))
 		{
 			$text .= "<h3>Other Articles</h3>"; // Book Title. 		
-			$text .= $this->listPages(0);	// Pages unassigned to Book/Chapters. 
+			$tmp = $this->listPages(0);
+			$text .= $tmp['text'];	// Pages unassigned to Book/Chapters. 
 		} //
 		
 		if($text)
@@ -254,12 +255,13 @@ class pageClass
 			
 			while($row = $sql->fetch())
 			{
+				$tmp = $this->listPages(intval($row['chapter_id']));
 				$var = array(
 					'CHAPTER_NAME' 			=> $tp->toHtml($row['chapter_name']),
 					'CHAPTER_ANCHOR'		=> $frm->name2id($row['chapter_name']),
 					'CHAPTER_ICON'			=> $this->chapterIcon($row['chapter_icon']),
 					'CHAPTER_DESCRIPTION'	=> $tp->toHtml($row['chapter_meta_description'],true,'BODY'),
-					'PAGES'					=> $this->listPages(intval($row['chapter_id'])),
+					'PAGES'					=> $tmp['text'],
 					'CHAPTER_URL'			=> e_BASE."page.php?ch=".intval($row['chapter_id']) // FIXME SEF-URL
 				);
 				
