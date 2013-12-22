@@ -580,7 +580,7 @@ echo "</head>\n";
 	{
 		foreach($LAYOUT as $key=>$template)
 		{
-			list($hd,$ft) = explode("{...}",$template);
+			list($hd,$ft) = explode("{---}",$template);
 			$HEADER[$key] = $hd;
 			$FOOTER[$key] = $ft;	
 		}	
