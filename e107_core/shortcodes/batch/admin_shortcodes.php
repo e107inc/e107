@@ -1839,7 +1839,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[8]['image_large_src'] 	= '';
 			$tmp[8]['link_class']		= '';					
 				
-			$menu_vars['logout']['text'] = ""; // ADMINNAME;
+			$menu_vars['logout']['text'] = ADMINNAME; // ""; // ADMINNAME;
 			$menu_vars['logout']['link'] = '#';
 			$menu_vars['logout']['image'] = "<i class='icon-user'></i>"; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
 			$menu_vars['logout']['image_src'] = ADLAN_46;
@@ -1887,7 +1887,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 					$c++;		
 				}
 				
-				$menu_vars['language']['text'] = ""; // e_LANGUAGE;
+				$menu_vars['language']['text'] = strtoupper(e_LAN); // e_LANGUAGE;
 				$menu_vars['language']['link'] = '#';
 				$menu_vars['language']['image'] = "<i class='icon-globe'></i>" ;
 				$menu_vars['language']['image_src'] = ADLAN_46;
