@@ -574,7 +574,6 @@ class page_admin_ui extends e_admin_ui
 			
 				if($sql->insert('menus', $insert) !== false)
 				{
-					
 					$mes->addDebug("Menu Created");
 					return true;
 				}
@@ -623,7 +622,7 @@ class page_admin_ui extends e_admin_ui
 			$sql = e107::getDb();
 			$mes = e107::getMessage();
 					
-			$menu_name = $tp->toDB($newdata['menu_title']); // not to be confused with menu-caption.
+			$menu_name = $tp->toDB($newdata['menu_name']); // not to be confused with menu-caption.
 				
 			if ($sql->select('menus', 'menu_name', "`menu_path` = ".$id." LIMIT 1")) 	
 			{		
@@ -632,6 +631,12 @@ class page_admin_ui extends e_admin_ui
 					$mes->addDebug("Menu Updated");
 					return true;
 				}
+			}
+			else // missing menu record so create it.  
+			{
+				$mes->addDebug("Missing Menu-id detected: ".$id);
+				return $this->afterCreate($newdata,$olddata,$id);	
+				
 			}				
 		}
 
