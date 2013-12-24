@@ -229,24 +229,28 @@ class login_menu_shortcodes extends e_shortcode
 	
 	function sc_lm_usersettings($parm='')
 	{
-	$text = ($parm) ? $parm : LOGIN_MENU_L12;
-	return '<a class="login_menu_link usersettings" id="login_menu_link_usersettings" href="'.e_HTTP.'usersettings.php">'.$text.'</a>';
+		$text = ($parm) ? $parm : LOGIN_MENU_L12;
+		$url = $this->sc_lm_usersettings_href();
+		return '<a class="login_menu_link usersettings" id="login_menu_link_usersettings" href="'.$url.'">'.$text.'</a>';
 	}
 	
 	function sc_lm_usersettings_href($parm='')
 	{
-	return e_HTTP.'usersettings.php';
+		return e107::getUrl()->create('user/myprofile/edit');
+	// return e_HTTP.'usersettings.php';
 	}
 	
 	function sc_lm_profile($parm='')
 	{
-	$text = ($parm) ? $parm : LOGIN_MENU_L13;
-	return '<a class="login_menu_link profile" id="login_menu_link_profile" href="'.e_HTTP.'user.php?id.'.USERID.'">'.$text.'</a>';
+		$text = ($parm) ? $parm : LOGIN_MENU_L13;
+		$url = $this->sc_lm_profile_href();
+		return '<a class="login_menu_link profile" id="login_menu_link_profile" href="'.$url.'">'.$text.'</a>';
 	}
 	
 	function sc_lm_profile_href($parm='')
 	{
-	return e_HTTP.'user.php?id.'.USERID;
+		return e107::getUrl()->create('user/profile/view',array('user_id'=>USERID, 'user_name'=>USERNAME));
+		// return e_HTTP.'user.php?id.'.USERID;
 	}
 	
 	function sc_lm_logout($parm='')
