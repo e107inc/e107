@@ -23,6 +23,7 @@ class theme_shortcodes extends e_shortcode
 		include_lan(e_PLUGIN."login_menu/languages/".e_LANGUAGE.".php");
 		
 		$tp = e107::getParser();		   
+		require_once(e_PLUGIN."login_menu/login_menu_shortcodes.php");
 				   
 		if(!USERID) // Logged Out. 
 		{		
@@ -79,7 +80,7 @@ class theme_shortcodes extends e_shortcode
 			</ul>";	
 			
 			
-			require_once(e_PLUGIN."login_menu/login_menu_shortcodes.php");
+			
 			return $tp->parseTemplate($text, false, $login_menu_shortcodes);
 		}  
 
@@ -92,8 +93,12 @@ class theme_shortcodes extends e_shortcode
 		<ul class="nav navbar-nav pull-right">
 		<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">{SETIMAGE: w=20}{USER_AVATAR} '. USERNAME.' <b class="caret"></b></a>
 		<ul class="dropdown-menu">
-		<li><a href="'.e_HTTP.'usersettings.php"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
-		<li><a class="dropdown-toggle no-block" role="button" href="'.e_HTTP.'user.php?id.'.USERID.'"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+		<li>
+			<a href="{LM_USERSETTINGS_HREF}"><span class="glyphicon glyphicon-cog"></span> Settings</a>
+		</li>
+		<li>
+			<a class="dropdown-toggle no-block" role="button" href="{LM_PROFILE_HREF}"><span class="glyphicon glyphicon-user"></span> Profile</a>
+		</li>
 		<li class="divider"></li>';
 		
 		if(ADMIN) 
@@ -109,7 +114,7 @@ class theme_shortcodes extends e_shortcode
 		
 		';
 
-		return $tp->parseTemplate($text,true);
+		return $tp->parseTemplate($text,true,$login_menu_shortcodes);
 	}	
 	
 	
