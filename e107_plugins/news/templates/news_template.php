@@ -27,14 +27,14 @@ $NEWS_TEMPLATE['list']['caption']	= '{NEWSCATEGORY}';
 $NEWS_TEMPLATE['list']['start']	= '{SETIMAGE: w=400&h=300&crop=1}';
 $NEWS_TEMPLATE['list']['end']	= '';
 $NEWS_TEMPLATE['list']['item']	= '
-	<div class="thumbnail">
-		<div class="row-fluid">
-				<div class="span3">
+
+		<div class="row row-fluid">
+				<div class="span3 col-md-3">
                    <div class="thumbnail">
                         {NEWSIMAGE}
                     </div>
 				</div>
-				<div class="span9">
+				<div class="span9 col-md-9">
                    <h3>{NEWSTITLELINK}</h3>
                       <p>
                        	{NEWSSUMMARY}
@@ -44,7 +44,7 @@ $NEWS_TEMPLATE['list']['item']	= '
                    </p>
  				</div>
 		</div>
-	</div>
+
 ';
 
 //$NEWS_MENU_TEMPLATE['list']['separator']   = '<br />';
