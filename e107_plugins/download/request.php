@@ -1,5 +1,8 @@
 <?php
-require_once("../../class2.php");
+if (!defined('e107_INIT'))
+{
+	require_once("../../class2.php");
+}
 
 include_lan(e_PLUGIN."download/languages/".e_LANGUAGE."/download.php");
 $log = e107::getAdminLog(); 
