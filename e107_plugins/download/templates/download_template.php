@@ -441,7 +441,7 @@ $DOWNLOAD_TEMPLATE['view']['caption'] = LAN_dl_18;
 $DOWNLOAD_TEMPLATE['view']['start'] = " ";
 
 $DOWNLOAD_TEMPLATE['view']['item'] = "
-      <div id='download' style='text-align:center'>
+      <div id='download'>
 		   <table class='table table-striped'>
 		      <colgroup>
 		         <col style='width:30%;'>

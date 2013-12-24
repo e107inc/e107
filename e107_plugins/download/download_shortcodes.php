@@ -849,7 +849,7 @@ class download_shortcodes extends e_shortcode
    
    function sc_download_back_to_list()
    {
-      return "<a class='btn' href='".e_PLUGIN_ABS."download/download.php?action=list&id=".$this->var['download_category']."'>".LAN_dl_35."</a>";
+      return "<a class='btn btn-default' href='".e_PLUGIN_ABS."download/download.php?action=list&id=".$this->var['download_category']."'>".LAN_dl_35."</a>";
    }
    
    function sc_download_back_to_category_list()
