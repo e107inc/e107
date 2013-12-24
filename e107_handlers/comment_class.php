@@ -406,7 +406,7 @@ class comment
 	//	$COMMENT_TEMPLATE['ITEM_END']		= "\n</div><div class='clear_b'><!-- --></div>\n";
 		
 		//XXX Do NOT add to template - too important to allow for modification. 
-		$COMMENT_TEMPLATE['ITEM_START'] 	= "\n\n<li id='{COMMENT_ITEMID}' class='comment-box clearfix'>\n";
+		$COMMENT_TEMPLATE['ITEM_START'] 	= "\n\n<li id='{COMMENT_ITEMID}' class='media comment-box clearfix'>\n";
 		$COMMENT_TEMPLATE['ITEM_END']		= "\n</li>\n";
 			
 		if (vartrue($pref['nested_comments']))
@@ -961,7 +961,7 @@ class comment
 			{
 					
 				//	$modcomment .= "<a href='".e_ADMIN_ABS."modcomment.php?$table.$id'>".COMLAN_314."</a>";
-					$modcomment .= "<a class='btn btn-mini' href='".e_ADMIN_ABS."comment.php?searchquery={$id}&filter_options=comment_type__".$this->getCommentType($table)."'>".COMLAN_314."</a>";		
+					$modcomment .= "<a class='btn btn-default btn-mini' href='".e_ADMIN_ABS."comment.php?searchquery={$id}&filter_options=comment_type__".$this->getCommentType($table)."'>".COMLAN_314."</a>";		
 					
 					
 			}
@@ -983,11 +983,11 @@ class comment
 		if($text)
 		{
 			//XXX Do NOT add to template - too important to allow for modification. 
-			$text = "<ul id='comments-container'>\n".$text."\n</ul>";
+			$text = "<ul class='media-list' id='comments-container'>\n".$text."\n</ul>";
 		}
 		else
 		{
-			$text = "<ul id='comments-container'><li><!-- --></li></ul>";	
+			$text = "<ul class='media-list' id='comments-container'><li><!-- --></li></ul>";	
 		}
 		
 		$search = array("{MODERATE}","{COMMENTS}","{COMMENTFORM}","{COMMENTNAV}");
@@ -1112,9 +1112,9 @@ class comment
 		
 		// from calculations are done by eNav() js. 
 		return "
-		<a class='e-ajax btn btn-mini' href='#' data-nav-total='{$this->totalComments}' data-nav-dir='down' data-nav-inc='{$this->commentsPerPage}' data-target='comments-container' data-src='".e_BASE."comment.php?mode=list&amp;type=".$table."&amp;id=".$id."&amp;from=0'>Previous</a>
+		<a class='e-ajax btn btn-default btn-mini' href='#' data-nav-total='{$this->totalComments}' data-nav-dir='down' data-nav-inc='{$this->commentsPerPage}' data-target='comments-container' data-src='".e_BASE."comment.php?mode=list&amp;type=".$table."&amp;id=".$id."&amp;from=0'>Previous</a>
 		
-		<a class='e-ajax btn btn-mini' href='#' data-nav-total='{$this->totalComments}' data-nav-dir='up' data-nav-inc='{$this->commentsPerPage}' data-target='comments-container' data-src='".e_BASE."comment.php?mode=list&amp;type=".$table."&amp;id=".$id."&amp;from=0'>Next</a>
+		<a class='e-ajax btn btn-default btn-mini' href='#' data-nav-total='{$this->totalComments}' data-nav-dir='up' data-nav-inc='{$this->commentsPerPage}' data-target='comments-container' data-src='".e_BASE."comment.php?mode=list&amp;type=".$table."&amp;id=".$id."&amp;from=0'>Next</a>
 		
 		";	
 		
