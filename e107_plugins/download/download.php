@@ -70,9 +70,12 @@ if (!e107::isInstalled('download'))
 		}
 	}
 
+
 	$texts = $dl->render(); // Load before header. 
 
 	require_once (HEADERF);
+	
+	
 	
 	echo $texts;
 	
