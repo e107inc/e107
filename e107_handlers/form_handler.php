@@ -200,7 +200,7 @@ class e_form
 			$options['class'] = "tbox";		
 		}
 
-		if(deftrue('BOOTSTRAP') == 3)
+		if(deftrue('BOOTSTRAP') === 3)
 		{
 			$options['class'] = 'form-control';
 		}
@@ -1631,7 +1631,7 @@ class e_form
 			}	
 		}
 	
-		$sep = (deftrue('BOOTSTRAP') == 3) ? "" : "<span class='divider'>/</span>";
+		$sep = (deftrue('BOOTSTRAP') === 3) ? "" : "<span class='divider'>/</span>";
 	
 		$text .= implode($sep."</li><li>",$opt); 
 	
@@ -1937,7 +1937,7 @@ class e_form
 			//	'multiple' => false, - see case 'select'
 		);
 
-		$form_control = (deftrue('BOOTSTRAP') == 3) ? ' form-control' : '';
+		$form_control = (deftrue('BOOTSTRAP') === 3) ? ' form-control' : '';
 
 		switch ($type) {
 			case 'hidden':

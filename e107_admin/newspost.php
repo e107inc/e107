@@ -101,7 +101,7 @@ class news_cat_ui extends e_admin_ui
          
          	'category_meta_description' => array('title'=> LAN_DESCRIPTION,		'type' => 'textarea',			'width' => 'auto', 'thclass' => 'left','readParms' => 'expand=...&truncate=150&bb=1', 'readonly'=>FALSE),
 			'category_meta_keywords' 	=> array('title'=> LAN_KEYWORDS,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),		
-			'category_sef' 				=> array('title'=> LAN_SEFURL,	'type' => 'text',			'width' => 'auto', 'readonly'=>FALSE), // Display name
+			'category_sef' 				=> array('title'=> LAN_SEFURL,	'type' => 'text',	'inline'=>true,		'width' => 'auto', 'readonly'=>FALSE), // Display name
 			'category_manager' 			=> array('title'=> "Manage Permissions",'type' => 'userclass',		'inline'=>true, 'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
 			'category_order' 			=> array('title'=> LAN_ORDER,			'type' => 'text',			'width' => 'auto', 'thclass' => 'right', 'class'=> 'right' ),										
 			'options' 					=> array('title'=> LAN_OPTIONS,			'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center', 'sort' => true)

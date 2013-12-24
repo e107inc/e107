@@ -2678,7 +2678,7 @@ class e_parser
 				$cls = str_replace('icon-', 'fa fa-', $cls);
 			}
 
-			$text = (deftrue('BOOTSTRAP') == 3) ? "<span class='".$cls."'></span>"  : "<i class='".$cls."'></i>";	// retain space. 
+			$text = (deftrue('BOOTSTRAP') === 3) ? "<span class='".$cls."'></span>"  : "<i class='".$cls."'></i>";	// retain space. 
 			$text .= ($space !== false) ? $space : "";
 			
 			return $text;

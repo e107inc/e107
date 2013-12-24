@@ -60,7 +60,7 @@ $userMethods = e107::getUserSession();
 require_once (e_HANDLER.'ren_help.php');
 
 
-if(deftrue('BOOTSTRAP')==3)
+if(deftrue('BOOTSTRAP')===3)
 {
 	$template = e107::getCoreTemplate('usersettings','', true, true); // always merge	
 	
