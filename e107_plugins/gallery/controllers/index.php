@@ -81,24 +81,38 @@ class plugin_gallery_index_controller extends eControllerFront
 	public function actionCategory()
 	{
 		$template 	= e107::getTemplate('gallery');	
+		$template	= array_change_key_case($template);
 		$sc 		= e107::getScBatch('gallery',TRUE);
 		
 		$text = "";		
 		
-		$text = e107::getParser()->parseTemplate($template['CAT_START'],TRUE, $sc);
+		if(defset('BOOTSTRAP') === true || defset('BOOTSTRAP') === 2) // Convert bootsrap3 to bootstrap2 compat. 
+		{
+			$template['cat_start'] = str_replace('row', 'row-fluid', $template['cat_start']); 
+		}
+		
+		$text = e107::getParser()->parseTemplate($template['cat_start'],TRUE, $sc);
 		
 		foreach($this->catList as $val)
 		{
 			$sc->setVars($val);	
-			$text .= e107::getParser()->parseTemplate($template['CAT_ITEM'],TRUE);
+			$text .= e107::getParser()->parseTemplate($template['cat_item'],TRUE);
 		}	
 		
-		$text .= e107::getParser()->parseTemplate($template['CAT_END'],TRUE, $sc);
+		$text .= e107::getParser()->parseTemplate($template['cat_end'],TRUE, $sc);
 		
+		if(isset($template['cat_caption']))
+		{
+			$title = e107::getParser()->parseTemplate($template['cat_caption'],TRUE, $sc);
+			
+			$this->addTitle($title)->addBody($text);
+		}
+		else 
+		{
+			$this->addTitle(LAN_PLUGIN_GALLERY_TITLE)->addBody($text);
+		}
+
 		
-	//	$text = $template['CAT_START'].$text.$template['CAT_END'];
-		$this->addTitle(LAN_PLUGIN_GALLERY_TITLE)
-			->addBody($text);
 	}
 	
 	public function actionList()
@@ -131,7 +145,13 @@ class plugin_gallery_index_controller extends eControllerFront
 		
 		$tp			= e107::getParser();			
 		$template 	= e107::getTemplate('gallery');
+		$template	= array_change_key_case($template);
 		$sc 		= e107::getScBatch('gallery',TRUE);
+		
+		if(defset('BOOTSTRAP') === true || defset('BOOTSTRAP') === 2) // Convert bootsrap3 to bootstrap2 compat. 
+		{
+			$template['list_start'] = str_replace('row', 'row-fluid', $template['list_start']); 
+		}
 					
 		$sc->total 	= e107::getMedia()->countImages($cid);
 		$sc->amount = e107::getPlugPref('gallery','perpage', 12); // TODO Add Pref. amount per page. 
@@ -149,16 +169,26 @@ class plugin_gallery_index_controller extends eControllerFront
 			$sc->setVars($row)
 				->addVars($cat);	
 
-			$inner .= $tp->parseTemplate($template['LIST_ITEM'],TRUE, $sc);
+			$inner .= $tp->parseTemplate($template['list_item'],TRUE, $sc);
 		}
 					
-		$text = $tp->parseTemplate($template['LIST_START'],TRUE, $sc);
+		$text = $tp->parseTemplate($template['list_start'],TRUE, $sc);
 		$text .= $inner; 	
-		$text .= $tp->parseTemplate($template['LIST_END'],TRUE, $sc);
+		$text .= $tp->parseTemplate($template['list_end'],TRUE, $sc);
 		
-		$this->addTitle($catname)
+		if(isset($template['list_caption']))
+		{
+			$title = $tp->parseTemplate($template['list_caption'],TRUE, $sc);
+			$this->addTitle($title)->addBody($text);
+		}
+		else
+		{
+			$this->addTitle($catname)
 			->addTitle(LAN_PLUGIN_GALLERY_TITLE)
-			->addBody($text);
+			->addBody($text);	
+		}
+		
+		
 	}
 }
  

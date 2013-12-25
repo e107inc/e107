@@ -140,10 +140,10 @@ class gallery_shortcodes extends e_shortcode
 		
 		$url = e107::getUrl()->create('gallery/index/list', $this->var);
 		
-		if(isset($parms['thumbsrc'])) return e107::getParser()->thumbUrl($this->var['media_cat_image'],$att);
+		if(isset($parms['thumbsrc'])) return e107::getParser()->thumbUrl($this->var['media_cat_image'],$att);		
 		
 		$text = "<a class='thumbnail' href='".$url."'>";
-		$text .= "<img src='".e107::getParser()->thumbUrl($this->var['media_cat_image'],$att)."' alt='' />";
+		$text .= "<img data-src='holder.js/".$w."x".$h."' src='".e107::getParser()->thumbUrl($this->var['media_cat_image'],$att)."' alt='' />";
 		$text .= "</a>";
 		return $text;		
 	}
@@ -161,8 +161,10 @@ class gallery_shortcodes extends e_shortcode
 	{
 		$this->sliderCat = ($parm) ? $parm : vartrue(e107::getPlugPref('gallery','slideshow_category'),1);
 
-		$template 	= e107::getTemplate('gallery','gallery','SLIDESHOW_WRAPPER');		
-		return e107::getParser()->parseTemplate($template);
+		$tmpl 	= e107::getTemplate('gallery','gallery');	
+		$template = array_change_key_case($tmpl);
+			
+		return e107::getParser()->parseTemplate($template['slideshow_wrapper']);
 	}
 	
 	/**
@@ -182,7 +184,10 @@ class gallery_shortcodes extends e_shortcode
 		$parms 				= $parms[2];
 		$limit 				= (integer) vartrue($parms['limit'], 16);
 		$list 				= e107::getMedia()->getImages('gallery_'.$this->sliderCat.'|gallery_image_'.$this->sliderCat,0,$limit);
-		$item_template 		= e107::getTemplate('gallery','gallery', vartrue($parms['template'], 'SLIDESHOW_SLIDE_ITEM'));
+		$tmpl 				= e107::getTemplate('gallery','gallery');
+		$tmpl				= array_change_key_case($tmpl); // change template key to lowercase (BC fix)
+		$tmpl_key			= vartrue($parms['template'],'slideshow_slide_item');
+		$item_template 		= $tmpl[$tmpl_key]; // e107::getTemplate('gallery','gallery', vartrue($parms['template'], 'SLIDESHOW_SLIDE_ITEM'));
 		$catList 			= e107::getMedia()->getCategories('gallery');		
 		$cat 				= $catList['gallery_'.$this->sliderCat];
 
