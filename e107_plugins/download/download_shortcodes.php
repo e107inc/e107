@@ -351,7 +351,8 @@ class download_shortcodes extends e_shortcode
       
 		if(deftrue('BOOTSTRAP'))
 		{
-			$img = '<i class="icon-download"></i>'; 
+			$img = e107::getParser()->toGlyph('icon-download.glyph',false); 
+		//	$img = '<i class="icon-download"></i>'; 
 		}
 	  	
      	if ($this->var['download_mirror_type'])
@@ -582,7 +583,7 @@ class download_shortcodes extends e_shortcode
       
 		if(deftrue('BOOTSTRAP'))
 		{
-			$img = '<i class="icon-download"></i>'; 
+			$img = e107::getParser()->toGlyph('icon-download.glyph',false); // '<i class="icon-download"></i>'; 
 		}	
 		
 		if ($pref['agree_flag'] == 1) 
