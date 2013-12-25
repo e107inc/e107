@@ -38,7 +38,13 @@ ul.gallery-cat > li > div > h3 		{ text-align: center }
 .gallery-slide-jumper-selected 		{ font-weight:bold }
 
 
+/* Fix for Bootstrap2 margin-left issue when wrapping */
+.row-fluid .gallery div.span6:nth-child(2n + 3) { margin-left : 0px; }
+.row-fluid .gallery div.span4:nth-child(3n + 4) { margin-left : 0px; }
+.row-fluid .gallery div.span3:nth-child(4n + 5) { margin-left : 0px; }
+.row-fluid .gallery div.span2:nth-child(6n + 7) { margin-left : 0px; }
 
-
-
-
+.row-fluid .gallery-cat div.span6:nth-child(2n + 3) { margin-left : 0px; }
+.row-fluid .gallery-cat div.span4:nth-child(3n + 4) { margin-left : 0px; }
+.row-fluid .gallery-cat div.span3:nth-child(4n + 5) { margin-left : 0px; }
+.row-fluid .gallery-cat div.span2:nth-child(6n + 7) { margin-left : 0px; }

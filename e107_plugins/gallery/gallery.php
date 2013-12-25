@@ -53,20 +53,26 @@ class gallery
 	function listCategories()
 	{
 		$template 	= e107::getTemplate('gallery');	
+		$template	= array_change_key_case($template);
 		$sc 		= e107::getScBatch('gallery',TRUE);
 		
 		$text = "";		
 		
+		if(defset('BOOTSTRAP') === true || defset('BOOTSTRAP') === 2) // Convert bootsrap3 to bootstrap2 compat. 
+		{
+			$template['cat_start'] = str_replace('row', 'row-fluid', $template['cat_start']); 
+		}
 		
-		$text = e107::getParser()->parseTemplate($template['CAT_START'],TRUE, $sc);
+		
+		$text = e107::getParser()->parseTemplate($template['cat_start'],TRUE, $sc);
 		
 		foreach($this->catList as $val)
 		{
 			$sc->setVars($val);	
-			$text .= e107::getParser()->parseTemplate($template['CAT_ITEM'],TRUE, $sc);
+			$text .= e107::getParser()->parseTemplate($template['cat_item'],TRUE, $sc);
 		}	
 		
-		$text .= e107::getParser()->parseTemplate($template['CAT_END'],TRUE, $sc);
+		$text .= e107::getParser()->parseTemplate($template['cat_end'],TRUE, $sc);
 		
 		e107::getRender()->tablerender(LAN_PLUGIN_GALLERY_TITLE, $text);
 	}
@@ -77,7 +83,13 @@ class gallery
 		$mes 		= e107::getMessage();	
 		$tp			= e107::getParser();			
 		$template 	= e107::getTemplate('gallery');
+		$template	= array_change_key_case($template);
 		$sc 		= e107::getScBatch('gallery',TRUE);
+		
+		if(defset('BOOTSTRAP') === true || defset('BOOTSTRAP') === 2) // Convert bootsrap3 to bootstrap2 compat. 
+		{
+			$template['list_start'] = str_replace('row', 'row-fluid', $template['list_start']); 
+		}
 					
 		$sc->total 	= e107::getMedia()->countImages($cat);
 		$sc->amount = 12; // TODO Add Pref. amount per page. 
@@ -92,12 +104,12 @@ class gallery
 		foreach($list as $row)
 		{
 			$sc->setVars($row);	
-			$inner .= $tp->parseTemplate($template['LIST_ITEM'],TRUE, $sc);
+			$inner .= $tp->parseTemplate($template['list_item'],TRUE, $sc);
 		}
 					
-		$text = $tp->parseTemplate($template['LIST_START'],TRUE, $sc);
+		$text = $tp->parseTemplate($template['list_start'],TRUE, $sc);
 		$text .= $inner; 	
-		$text .= $tp->parseTemplate($template['LIST_END'],TRUE, $sc);
+		$text .= $tp->parseTemplate($template['list_end'],TRUE, $sc);
 		
 		e107::getRender()->tablerender(LAN_PLUGIN_GALLERY_TITLE, $mes->render().$text);
 		
