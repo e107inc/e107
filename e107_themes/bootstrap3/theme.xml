@@ -15,8 +15,9 @@
 		<css file="style.css" name="Default"  />
 	</stylesheets>
 	<layouts>
-		<layout name='jumbotron' title='Jumbotron' default='true'>
+		<layout name='jumbotron_home' title='Jumbotron (home)' default='false'>
 			<custompages>FRONTPAGE</custompages>	
 		</layout>
+		<layout name='jumbotron_full' title='Jumbotron (full-width)' default='true' />
 	</layouts>
 </e107Theme>

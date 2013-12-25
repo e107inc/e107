@@ -117,11 +117,8 @@ function tablestyle($caption, $text, $mode='')
 	}
 }
 
-
-
-// $LAYOUT is a combined $HEADER and $FOOTER, automatically split at the point of "{...}"
-$LAYOUT['jumbotron'] = '
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+$commonHead = '
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -130,24 +127,11 @@ $LAYOUT['jumbotron'] = '
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">{SITENAME}</a>
+          <a class="navbar-brand" href="{SITEURL}">{SITENAME}</a>
         </div>
         <div class="navbar-collapse collapse">
         	{NAVIGATION=main}
-         	{BOOTSTRAP_USERNAV}
-           
-		   <!-- 
-		    <form class="navbar-form navbar-right" role="form">
-		    <div class="form-group">
-              <input type="text" placeholder="Email" class="form-control">
-            </div>
-            <div class="form-group">
-              <input type="password" placeholder="Password" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-success">Sign in</button>
-          </form>
-         -->
-         
+         	{BOOTSTRAP_USERNAV}         
         </div><!--/.navbar-collapse -->
       </div>
     </div>
@@ -155,12 +139,31 @@ $LAYOUT['jumbotron'] = '
     <!-- Main jumbotron for a primary marketing message or call to action -->
     {SETSTYLE=jumbotron}
 	{WMESSAGE}
-	 {SETSTYLE=default}
-	 <div class="container">
-	 {ALERTS}
-	 
-	{---}
 	
+';
+
+$commonFoot = '  <hr>
+
+      <footer>
+       {SITEDISCLAIMER}
+      </footer>
+    </div> <!-- /container -->
+';
+
+
+// $LAYOUT is a combined $HEADER and $FOOTER, automatically split at the point of "{---}"
+
+//TODO make $LAYOUT['_header_'] && $LAYOUT['_footer_']; and auto attach to main layout. 
+
+$LAYOUT['jumbotron_home'] = 
+
+	$commonHead . '
+   
+	{SETSTYLE=default}
+	<div class="container">	
+	{ALERTS}
+   
+	{---}
 	
 	</div>
     <div class="container">
@@ -172,14 +175,26 @@ $LAYOUT['jumbotron'] = '
 	  {CMENU=jumbotron-menu-3}
       </div>
 
-      <hr>
+	'.$commonFoot;
 
-      <footer>
-       {SITEDISCLAIMER}
-      </footer>
-    </div> <!-- /container -->
 
-';
+
+$LAYOUT['jumbotron_full'] = 
+
+	$commonHead . '
+   
+	{SETSTYLE=default}
+	<div class="container">	
+	{ALERTS}
+   
+	{---}
+	
+	</div>
+    <div class="container">
+   
+     
+
+	'.$commonFoot;
 
 
 
