@@ -23,8 +23,14 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 
 		return e107::getParser()->toHtml($text, true, 'constants defs');
 	}
+	
+	function sc_siteurl($parm='')
+	{
+		return SITEURL;	
+	}
+	
 
-	function sc_sitename($parm)
+	function sc_sitename($parm='')
 	{
 		return ($parm == 'link') ? "<a href='".SITEURL."' title=\"".SITENAME."\">".SITENAME."</a>" : SITENAME;
 	}
