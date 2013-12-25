@@ -170,32 +170,41 @@ class e_menuManager {
 
     function menuGrabLayout()
 	{
-			global $HEADER,$FOOTER,$CUSTOMHEADER,$CUSTOMFOOTER;
+		global $HEADER,$FOOTER,$CUSTOMHEADER,$CUSTOMFOOTER,$LAYOUT;
+			
+		if(isset($LAYOUT) && is_array($LAYOUT)) // $LAYOUT is a combined $HEADER,$FOOTER. 
+		{
+			foreach($LAYOUT as $key=>$template)
+			{
+				list($hd,$ft) = explode("{---}",$template);
+				$HEADER[$key] = $hd;
+				$FOOTER[$key] = $ft;	
+			}	
+			unset($hd,$ft);
+		}
+			
+      	if(($this->curLayout == 'legacyCustom' || $this->curLayout=='legacyDefault') && (isset($CUSTOMHEADER) || isset($CUSTOMFOOTER)) )  // 0.6 themes.
+		{
+		 	if($this->curLayout == 'legacyCustom')
+			{
+				$HEADER = ($CUSTOMHEADER) ? $CUSTOMHEADER : $HEADER;
+				$FOOTER = ($CUSTOMFOOTER) ? $CUSTOMFOOTER : $FOOTER;
+			}
+		}
+		elseif($this->curLayout && $this->curLayout != "legacyCustom" && (isset($CUSTOMHEADER[$this->curLayout]) || isset($CUSTOMFOOTER[$this->curLayout]))) // 0.7 themes
+		{
+		 // 	echo " MODE 0.7 ".$this->curLayout;
+			$HEADER = ($CUSTOMHEADER[$this->curLayout]) ? $CUSTOMHEADER[$this->curLayout] : $HEADER;
+			$FOOTER = ($CUSTOMFOOTER[$this->curLayout]) ? $CUSTOMFOOTER[$this->curLayout] : $FOOTER;
+		}
+	    elseif($this->curLayout && is_array($HEADER) && isset($HEADER[$this->curLayout]) && isset($FOOTER[$this->curLayout])) // 0.8 themes - we use only $HEADER and $FOOTER arrays.
+		{
+		//  echo " MODE 0.8 ".$this->curLayout;
+			$HEADER = $HEADER[$this->curLayout];
+			$FOOTER = $FOOTER[$this->curLayout];
+		}
 
-            	if(($this->curLayout == 'legacyCustom' || $this->curLayout=='legacyDefault') && (isset($CUSTOMHEADER) || isset($CUSTOMFOOTER)) )  // 0.6 themes.
-				{
-				 	if($this->curLayout == 'legacyCustom')
-					{
-						$HEADER = ($CUSTOMHEADER) ? $CUSTOMHEADER : $HEADER;
-						$FOOTER = ($CUSTOMFOOTER) ? $CUSTOMFOOTER : $FOOTER;
-					}
-				}
-				elseif($this->curLayout && $this->curLayout != "legacyCustom" && (isset($CUSTOMHEADER[$this->curLayout]) || isset($CUSTOMFOOTER[$this->curLayout]))) // 0.7 themes
-				{
-				 // 	echo " MODE 0.7 ".$this->curLayout;
-					$HEADER = ($CUSTOMHEADER[$this->curLayout]) ? $CUSTOMHEADER[$this->curLayout] : $HEADER;
-					$FOOTER = ($CUSTOMFOOTER[$this->curLayout]) ? $CUSTOMFOOTER[$this->curLayout] : $FOOTER;
-				}
-			    elseif($this->curLayout && is_array($HEADER) && isset($HEADER[$this->curLayout]) && isset($FOOTER[$this->curLayout])) // 0.8 themes - we use only $HEADER and $FOOTER arrays.
-				{
-				//  echo " MODE 0.8 ".$this->curLayout;
-
-					$HEADER = $HEADER[$this->curLayout];
-					$FOOTER = $FOOTER[$this->curLayout];
-
-				}
-
-            // Almost the same code as found in templates/header_default.php  ---------
+       // Almost the same code as found in templates/header_default.php  ---------
 
 	}
 
