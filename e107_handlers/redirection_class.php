@@ -50,8 +50,8 @@ class redirection
 	 */
 	function __construct()
 	{
-		$this->self_exceptions = array(SITEURL.e_SIGNUP, SITEURL, SITEURL.'index.php', SITEURL.'fpw.php', SITEURL.e_LOGIN, SITEURL.'membersonly.php');
-		$this->page_exceptions = array('e_ajax.php', 'e_js.php', 'e_jslib.php', 'sitedown.php');
+		$this->self_exceptions = array(e_SIGNUP, SITEURL, SITEURL.'index.php', SITEURL.'fpw.php', e_LOGIN, SITEURL.'membersonly.php');
+		$this->page_exceptions = array('e_ajax.php', 'e_js.php', 'e_jslib.php', 'sitedown.php',e_LOGIN);
 		$this->query_exceptions = array('logout');
 	}
 	
@@ -261,6 +261,13 @@ class redirection
 				return;
 			}
 		}
+		
+		/*
+		echo "e_SELF=".e_SELF;
+		echo "<br />e_PAGE=".e_PAGE;
+		print_a( $this->self_exceptions);
+		print_a($this->page_exceptions);
+		*/
 		
 		$this->saveMembersOnlyUrl();
 		$this->redirect(e_HTTP.'membersonly.php');
