@@ -83,7 +83,7 @@ if(!isset($LOGIN_TABLE_FOOTER))
 
 // Starter for v2. - Bootstrap 
 $LOGIN_TEMPLATE['page']['header'] = "
-	<div>
+	<div id='login-template'>
 		<div class='center' style='padding:50px; margin-left:auto; margin-right: auto'>
 			{LOGO=login}
 		</div>";
