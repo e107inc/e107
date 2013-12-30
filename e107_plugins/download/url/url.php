@@ -61,8 +61,15 @@ class plugin_download_url extends eUrlConfig
 				break;
 						
 				case 'category':
-					$this->legacyQueryString = 'action=list&id='.$params['id'];
-					return $base.'download.php?action=list&id='.$params['id'];
+					$url = 'action=list&id='.$params['id'];
+					
+					if(isset($params['from']))
+					{
+						$url .= "&from=".$params['from']."&view=".$params['view']."&order=".$params['order']."&sort=".$params['sort'];		
+					}
+					
+					$this->legacyQueryString = $url;
+					return $base.'download.php?'.$url;
 				break;
 					
 			}

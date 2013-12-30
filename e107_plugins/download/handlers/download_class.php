@@ -59,9 +59,9 @@ class download
 		if(varset($_GET['action']))
 		{
 			$this->qry['action'] 	= (string) $_GET['action'];
-			$this->qry['view'] 		= varset($_GET['view']) ? intval($_GET['view']) : 10;
+			$this->qry['view'] 		= varset($_GET['view']) ? intval($_GET['view']) : $this->qry['view'];
 			$this->qry['id']		= intval($_GET['id']);
-			$this->qry['order'] 	= vartrue($_GET['order']) && in_array("download_".$_GET['order'],$this->orderOptions) ? $_GET['order'] : 'datestamp';
+			$this->qry['order'] 	= vartrue($_GET['order']) && in_array("download_".$_GET['order'],$this->orderOptions) ? $_GET['order'] : $this->qry['order'];
 			$this->qry['sort'] 		= (varset($_GET['sort']) == 'asc') ? "asc" : 'desc';	
 			$this->qry['from']		= vartrue($_GET['from'],0);
 		}
@@ -84,6 +84,8 @@ class download
 			
 		}	
 		
+		
+		
 		// v1.x 
 		if(varset($_POST['view'])) 
 		{
@@ -92,7 +94,7 @@ class download
 			$this->qry['sort'] 		= (strtolower($_POST['sort']) == 'asc') ? "asc" : 'desc';	
 		}	
 		
-			
+		
 	}  
 
 
@@ -455,11 +457,14 @@ class download
 		//if (!isset($this->qry['from'])) $this->qry['from'] = 0;
 
 	      // Get category type, page title
-		if ($sql->select("download_category", "download_category_name,download_category_description,download_category_parent,download_category_class", "(download_category_id='{$this->qry['id']}') AND (download_category_class IN (".USERCLASS_LIST."))") )
+		if ($sql->select("download_category", "download_category_name,download_category_sef,download_category_description,download_category_parent,download_category_class", "(download_category_id='{$this->qry['id']}') AND (download_category_class IN (".USERCLASS_LIST."))") )
 		{
 	   	   $dlrow = $sql->fetch();
 	   	   $sc->setVars($dlrow);	// Used below for header / breadcrumb. 
 	   	   $type = $dlrow['download_category_name'];
+		   
+		   $this->qry['name'] = $dlrow['download_category_sef'];
+		   
 	   	   define("e_PAGETITLE", PAGE_NAME." / ".$dlrow['download_category_name']);
 		}
 		else
@@ -519,6 +524,7 @@ class download
 				{
 					$sc->dlsubsubrow = $dlsubsubrow;
 					$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_SUBSUB_TABLE, TRUE, $sc);
+					
 				}
 				
 				$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_END, TRUE, $sc);
@@ -585,6 +591,7 @@ class download
 				$dltdownloads += $dlrow['download_requested'];
 				
 				$dl_text .= $tp->parseTemplate($template, TRUE, $sc);
+				
 			
 				
 			}
@@ -619,8 +626,15 @@ class download
 		}
 
 		global $nextprev_parms;
-
-		$nextprev_parms = $total_downloads . "," . $this->qry['view'] . "," . $this->qry['from'] . "," . e_SELF . "?[FROM].list.{$this->qry['id']}.{$this->qry['view']}.{$this->qry['order']}.{$this->qry['sort']}.";
+	
+	//	$newUrl = e_SELF . "?action=list&id={$this->qry['id']}&from=[FROM]&view={$this->qry['view']}&order={$this->qry['order']}&sort={$this->qry['sort']}.";
+			
+		$nextprevQry = $this->qry;
+		$nextprevQry['from'] = '[FROM]';
+		
+		$newUrl = e107::getUrl()->create('download/list/category',$nextprevQry);
+				
+		$nextprev_parms = $total_downloads . "," . $this->qry['view'] . "," . $this->qry['from'] . "," . $newUrl;
 		
 		$text .= $tp->parseTemplate($DOWNLOAD_LIST_NEXTPREV, TRUE, $sc);	
 		

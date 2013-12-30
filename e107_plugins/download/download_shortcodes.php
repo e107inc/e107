@@ -855,7 +855,7 @@ class download_shortcodes extends e_shortcode
    
    function sc_download_back_to_category_list()
    {
-      	return "<a class='btn btn-default' href='".e_SELF."'>".LAN_dl_9."</a>";
+      	return "<a class='btn btn-default btn-xs btn-mini' href='".e_SELF."'>".LAN_dl_9."</a>";
    }
    
    

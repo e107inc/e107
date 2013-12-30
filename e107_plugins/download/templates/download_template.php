@@ -573,7 +573,8 @@ $DOWNLOAD_TEMPLATE['list']['item'] = "
 		         
 $DOWNLOAD_TEMPLATE['list']['end'] = "
 		         <tr>
-		            <td colspan='7' style='text-align:right;'><small class='muted text-muted'>{DOWNLOAD_LIST_TOTAL_AMOUNT} {DOWNLOAD_LIST_TOTAL_FILES}</small></td>
+		         	<td colspan='3'>{DOWNLOAD_BACK_TO_CATEGORY_LIST}</td>
+		            <td colspan='4' style='text-align:right;'><small class='muted text-muted'>{DOWNLOAD_LIST_TOTAL_AMOUNT} {DOWNLOAD_LIST_TOTAL_FILES}</small></td>
 		         </tr>
 		      </table>
 		</div>
@@ -584,10 +585,7 @@ $DOWNLOAD_TEMPLATE['list']['end'] = "
 
 $DOWNLOAD_TEMPLATE['list']['nextprev'] = "		
 			<div class='text-center'>
-				{DOWNLOAD_BACK_TO_CATEGORY_LIST}
-				<br />
-				<br />
-				{DOWNLOAD_LIST_NEXTPREV}
+			{DOWNLOAD_LIST_NEXTPREV}					
 			</div>";
 
 /*	
