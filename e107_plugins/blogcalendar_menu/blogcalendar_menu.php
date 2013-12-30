@@ -162,8 +162,8 @@ if(false === $cached)
 	
 	if(deftrue('BOOTSTRAP')) // v2.x
 	{
-		$month_selector = '<div class="btn-group pull-right"><a class="btn btn-mini " href="#blogCalendar" data-slide="prev">‹</a>  
- 		<a class="btn btn-mini" href="#blogCalendar" data-slide="next">›</a></div>';
+		$month_selector = '<div class="btn-group pull-right"><a class="btn btn-mini btn-default btn-xs " href="#blogCalendar" data-slide="prev">‹</a>  
+ 		<a class="btn btn-mini btn-default btn-xs" href="#blogCalendar" data-slide="next">›</a></div>';
 		 
 		$caption = "<span class='inline-text'>".BLOGCAL_L1." ".$month_selector."</span>";	
 		
@@ -180,7 +180,7 @@ if(false === $cached)
 		
 		$menu .= "</div>";
 		$menu .= "<div class='blogcalendar-archive-link' >
-		<a class='blogcalendar-archive-link btn btn-small' href='$prefix/archive.php'>".BLOGCAL_L2."</a>
+		<a class='blogcalendar-archive-link btn btn-small btn-s btn-default' href='$prefix/archive.php'>".BLOGCAL_L2."</a>
 		</div>
 		</div>";
 		

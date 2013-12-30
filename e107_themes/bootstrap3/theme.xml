@@ -19,5 +19,16 @@
 			<custompages>FRONTPAGE</custompages>	
 		</layout>
 		<layout name='jumbotron_full' title='Jumbotron (full-width)' default='true' />
+		<layout name='jumbotron_sidebar_right' title='Jumbotron (sidebar-right)' >
+			<custompages>/news</custompages>
+			<menuPresets>
+				<area id='1'>
+					<menu name='other_news' />
+					<menu name='other_news2' />
+					<menu name='news_categories' />
+					<menu name='blogcalendar' />
+				</area>
+			</menuPresets>	
+		</layout>
 	</layouts>
 </e107Theme>

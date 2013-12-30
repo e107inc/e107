@@ -39,8 +39,8 @@ if(!$OTHERNEWS_STYLE)
 		define("OTHERNEWS_COLS",false);
 		$template = e107::getTemplate('news', 'news_menu', 'other');
 		
-		$item_selector = '<div class="btn-group pull-right"><a class="btn btn-mini " href="#otherNews" data-slide="prev">‹</a>  
- 		<a class="btn btn-mini" href="#otherNews" data-slide="next">›</a></div>';
+		$item_selector = '<div class="btn-group pull-right"><a class="btn btn-mini btn-xs btn-default" href="#otherNews" data-slide="prev">‹</a>  
+ 		<a class="btn btn-mini btn-xs btn-default" href="#otherNews" data-slide="next">›</a></div>';
 		 
 		$caption = "<span class='inline-text'>".$template['caption']." ".$item_selector."</span>";		
 				

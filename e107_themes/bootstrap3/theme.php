@@ -50,7 +50,7 @@ function tablestyle($caption, $text, $mode='')
 	
 	if($style == 'col-md-4')
 	{
-		echo ' <div class="col-md-4">
+		echo ' <div class="col-xs-12 col-md-4">
           <h2>'.$caption.'</h2>
           '.$text.'
         </div>';
@@ -58,66 +58,31 @@ function tablestyle($caption, $text, $mode='')
 		
 	}
 		
-	
-	if($mode == 'loginbox') // Login Box Style. 
+	if($style == 'menu')
 	{
-		 echo '<div class="well sidebar-nav">
-		 <ul class="nav nav-list"><li class="nav-header">'.$caption.'</li></ul>
-		 
-           '.$text.'
-			
-        </div><!--/.well -->';
-          return;
-	}
-			
-	if($mode == 'login_page')
-	{
-		$type = 'no_caption';	
-	}
+		echo '<div class="panel panel-default">
+	  <div class="panel-heading">'.$caption.'</div>
+	  <div class="panel-body">
+	   '.$text.'
+	  </div>
+	</div>';
+		return;
+		
+	}	
 	
-	switch($type) 
-	{
-		// Default Menu/Side-Panel Style
-		case 'menu' :
-			echo '<div class="well sidebar-nav">
-		 <ul class="nav nav-list"><li class="nav-header">'.$caption.'</li></ul>
-		 
-           '.$text.'
-			
-        </div><!--/.well -->';
-		break;
-		
-		case 'span4' :
-			echo $text; 
-		break;
-		
-		case 'box':
-			echo '
-				<div class="block">
-					<div class="block-text">
-						'.$text.'
-					</div>
-				</div>
-			';
-		break;
-		
-		case 'no_caption':
-			echo $text;
-		break;
+	echo '<h2>'.$caption.'</h2>
+			<p>
+			'.$text.'
+			</p>';
+					
+	return;
 	
-		default: // Main Content Style. 
-			echo '
-				<h2>'.$caption.'</h2>
-					<p>
-						'.$text.'
-					</p>
-				
-			';
-		break;
-	}
+	
+	
 }
 
-$commonHead = '
+// applied before every layout.
+$LAYOUT['_header_'] = '
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container">
         <div class="navbar-header">
@@ -142,7 +107,8 @@ $commonHead = '
 	
 ';
 
-$commonFoot = '  <hr>
+// applied after every layout. 
+$LAYOUT['_footer_'] = '  <hr>
 
       <footer>
        {SITEDISCLAIMER}
@@ -151,13 +117,10 @@ $commonFoot = '  <hr>
 ';
 
 
+
 // $LAYOUT is a combined $HEADER and $FOOTER, automatically split at the point of "{---}"
 
-//TODO make $LAYOUT['_header_'] && $LAYOUT['_footer_']; and auto attach to main layout. 
-
-$LAYOUT['jumbotron_home'] = 
-
-	$commonHead . '
+$LAYOUT['jumbotron_home'] =  '
    
 	{SETSTYLE=default}
 	<div class="container">	
@@ -175,13 +138,11 @@ $LAYOUT['jumbotron_home'] =
 	  {CMENU=jumbotron-menu-3}
       </div>
 
-	'.$commonFoot;
+	';
 
 
 
-$LAYOUT['jumbotron_full'] = 
-
-	$commonHead . '
+$LAYOUT['jumbotron_full'] = '
    
 	{SETSTYLE=default}
 	<div class="container">	
@@ -194,22 +155,38 @@ $LAYOUT['jumbotron_full'] =
    
      
 
-	'.$commonFoot;
+	';
+
+
+
+$LAYOUT['jumbotron_sidebar_right'] =  '
+   
+	{SETSTYLE=default}
+	<div class="container">	
+	{ALERTS}
+		<div class="row">
+   			<div class="col-xs-12 col-md-8">	
+   		
+				{---}
+	
+ 			</div>
+        	<div id="sidebar" class="col-xs-12 col-md-4">
+        	{SETSTYLE=menu}
+        		{MENU=1}
+        	</div>
+      </div>
+	
+	</div>
+    <div class="container">
+      
+
+	';
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
+/* XXX EVERYTHING BELOW THIS POINT IS UNUSED FOR NOW */
 
 
 
