@@ -2696,14 +2696,35 @@ class e_parser
 	 * @param string $icon 
 	 * @example $tp->toIcon("{e_IMAGES}icons/something.png"); 
 	 */
-	public function toIcon($icon='')
+	public function toIcon($icon='',$legacyPath ='')
 	{
 		if(!vartrue($icon))
 		{
 			return;
 		}
 		
-		$path = $this->replaceConstants($icon,'full');
+		if(substr($icon,-6) == '.glyph') // Bootstrap or Font-Awesome. 
+		{
+			return $this->toGlyph($icon);
+		}
+		
+		if($icon[0] == '{')
+		{
+			$path = $this->replaceConstants($icon,'full');	
+		}
+		elseif($legacyPath)
+		{
+			if(is_readable($legacyPath.$icon))
+			{
+				$path = $legacyPath.$icon;		
+			}
+			elseif(ADMIN)
+			{
+				return "Broken Image Path: ".$icon;	
+			}
+			
+		}
+		
 		return "<img class='icon' src='".$path."' alt='".basename($path)."'  />";	
 	}	
 	

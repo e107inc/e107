@@ -884,9 +884,11 @@ class download_shortcodes extends e_shortcode
 	function _sc_cat_icons($source, $count, $alt)
 	{
 	   if (!$source) return "&nbsp;";
-	   list($ret[TRUE],$ret[FALSE]) = explode(chr(1), $source.chr(1));
-	   if (!$ret[FALSE]) $ret[FALSE] = $ret[TRUE];
-		return "<img src='".e_IMAGE."icons/{$ret[($count!=0)]}' alt='*'/>";
+	 //  list($ret[TRUE],$ret[FALSE]) = explode(chr(1), $source.chr(1)); //XXX ???
+	//   if (!$ret[FALSE]) $ret[FALSE] = $ret[TRUE]; //XXX ???
+	    
+	   return e107::getParser()->toIcon($source, e_IMAGE."icons/");
+		//return "<img src='".e_IMAGE."icons/{$ret[($count!=0)]}' alt='*'/>";
 	}
 	
 	
