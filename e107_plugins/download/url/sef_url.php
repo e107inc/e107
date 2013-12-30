@@ -32,7 +32,7 @@ class plugin_download_sef_url extends eUrlConfig
 
 			'rules' => array(
 				'/' 										=> array('list/index', 'legacyQuery' => '', ),
-				'Category/<id:{number}>/<name:{sefsecure}>' => array('list/category', 'legacyQuery' => 'list.{id}.{page}', ),
+				'Category/<id:{number}>/<name:{sefsecure}>' => array('list/category', 'allowVars'=> array('order','view','sort'), 'legacyQuery' => 'list.{id}.{view}.{order}.{sort}', ),
 				'<id:{number}>/<name:{sefsecure}>' 			=> array('view/item', 'legacyQuery' => 'view.{id}' ),
 				'Get/<id:{number}>/<name:{sefsecure}>' 		=> array('request/item', 'legacy'=> '{e_PLUGIN}download/request.php', 'legacyQuery' => 'view.{id}' ),
 			) // rule set array
