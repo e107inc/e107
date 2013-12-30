@@ -38,9 +38,9 @@ class banner_shortcodes
 		AND banner_active IN (".USERCLASS_LIST.")
 		ORDER BY RAND($seed) LIMIT 1";
 	
-		if($sql->db_Select('banner', 'banner_id, banner_image, banner_clickurl', $query))
+		if($sql->select('banner', 'banner_id, banner_image, banner_clickurl', $query))
 		{
-			$row = $sql->db_Fetch();
+			$row = $sql->fetch();
 	
 			if(!$row['banner_image'])
 			{
@@ -48,7 +48,8 @@ class banner_shortcodes
 			}
 	
 			$fileext1 = substr(strrchr($row['banner_image'], '.'), 1);
-			$sql->db_Update('banner', 'banner_impressions=banner_impressions+1 WHERE banner_id='.(int)$row['banner_id']);
+			$sql->update('banner', 'banner_impressions=banner_impressions+1 WHERE banner_id='.(int)$row['banner_id']);
+			
 			switch ($fileext1)
 			{
 				case 'swf':
@@ -68,7 +69,10 @@ class banner_shortcodes
 					return $file_data;
 					break;
 				default:
-					$ban_ret = "<img src='".e_IMAGE_ABS.'banners/'.$row['banner_image']."' alt='".$row['banner_clickurl']."' style='border:0' />";
+					
+					$src = ($row['banner_image'][0] == '{') ? $tp->replaceConstants($row['banner_image'],'full') : e_IMAGE_ABS.'banners/'.$row['banner_image'];
+					
+					$ban_ret = "<img class='e-banner' src='".$src."' alt='".$row['banner_clickurl']."' style='border:0' />";
 					break;
 			}
 			return "<a href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external'>".$ban_ret.'</a>';
