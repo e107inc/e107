@@ -1263,7 +1263,13 @@ class themeHandler
 							
 							$itext .= "<td>";
 							
-							$itext .= (varset($val['menuPresets'])) ? $this->frm->admin_button("setMenuPreset[".$key."]", "Use Preset") : "";
+							if(varset($val['menuPresets'])) 
+							{
+								$itext .= $this->frm->admin_button("setMenuPreset[".$key."]", "Use Preset");
+							//	$itext .= print_a($val['menuPresets'],true);
+							}
+							
+							
 							$itext .= "</td>
 			
 										</tr>";
