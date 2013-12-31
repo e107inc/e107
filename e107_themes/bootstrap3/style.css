@@ -1,10 +1,15 @@
 /* Move down content because we have a fixed navbar that is 50px tall */
 body {
-  padding-top: 70px;
+  padding-top: 50px;
   padding-bottom: 20px;
 }
 
 
+#sidebar {
+	padding-top:20px;	
+}
+
+.alert { margin-top:20px }
 /* Sign in Page */
 
 
