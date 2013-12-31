@@ -26,7 +26,7 @@ class emailprint
 		// $look = 0  --->display all icons
 		// $look = 1  --->display email icon only
 		// $look = 2  --->display print icon only
-		
+		$tp = e107::getParser();
 
 		$text_emailprint = "";
 
@@ -60,8 +60,8 @@ class emailprint
 		
 		if(deftrue('BOOTSTRAP'))
 		{
-			$genericMail = "<i class='icon-envelope'></i>"; 
-			$genericPrint = "<i class='icon-print'></i>"; 
+			$genericMail = $tp->toGlyph('icon-envelope',false); // "<i class='icon-envelope'></i>"; 
+			$genericPrint = $tp->toGlyph('icon-print',false); // "<i class='icon-print'></i>"; 
 		}
 		else // BC
 		{

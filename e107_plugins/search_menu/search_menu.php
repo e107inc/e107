@@ -41,12 +41,15 @@ if (strstr(e_PAGE, "news.php")) {
 	 $page = 99;
 }
 
-if (isset($custom_query[1]) && $custom_query[1] != '') {
-	$image_file = ($custom_query[1] != 'default') ? $custom_query[1] : e_PLUGIN_ABS.'search_menu/images/search.png';
-	$width = (isset($custom_query[2]) && $custom_query[2]) ? $custom_query[2] : '16';
-	$height = (isset($custom_query[3]) && $custom_query[3]) ? $custom_query[3] : '16';
-		$search_button = "<input type='image' src='".$image_file."' value='".LAN_180."' style='width: ".$width."px; height: ".$height."px; border: 0px; vertical-align: middle' name='s' />";
-} else {
+if (isset($custom_query[1]) && $custom_query[1] != '') 
+{
+	$image_file 	= ($custom_query[1] != 'default') ? $custom_query[1] : e_PLUGIN_ABS.'search_menu/images/search.png';
+	$width 			= (isset($custom_query[2]) && $custom_query[2]) ? $custom_query[2] : '16';
+	$height 		= (isset($custom_query[3]) && $custom_query[3]) ? $custom_query[3] : '16';
+	$search_button 	= "<input type='image' src='".$image_file."' value='".LAN_180."' style='width: ".$width."px; height: ".$height."px; border: 0px; vertical-align: middle' name='s' />";
+} 
+else 
+{
 	$search_button = "<input class='btn button search' type='submit' name='s' value='".LAN_180."' />";
 }
 
@@ -56,19 +59,53 @@ if (isset($custom_query[5]) && $custom_query[5]) {
 	$value_text = "value=''";
 }
 
-$text = "<form class='form-inline' method='get' action='".e_HTTP."search.php'>
+
+	
+if(deftrue('BOOTSTRAP'))
+{
+	$text = '
+	<form class="form-inline" method="get" action="'.e_HTTP.'search.php">
+	<div class="input-group">
+		<input class="form-control search" type="text" name="q" size="20" maxlength="50" '.$value_text.'>
+		<input type="hidden" name="r" value="0" />';
+	
+	if (isset($custom_query[4]) && $custom_query[4] != '') 
+	{
+		$text .= "<input type='hidden' name='ref' value='".$custom_query[4]."' />";
+	}	
+		
+	$text .= '
+         <span class="input-group-btn">
+         <button class="btn btn-default" type="submit" name="s"><span class="glyphicon glyphicon-search"></span></button>
+         </span>
+    </div>
+    </form>';
+}	
+else // Legacy v1 code. 
+{
+	$text = "<form class='form-inline' method='get' action='".e_HTTP."search.php'>";
+
+	$text .= "
 	<div>
 	<input class='tbox search' type='text' name='q' size='20' ".$value_text." maxlength='50' />
 	<input type='hidden' name='r' value='0' />";
 	
-	if (isset($custom_query[4]) && $custom_query[4] != '') {
+	
+	
+	if (isset($custom_query[4]) && $custom_query[4] != '') 
+	{
 		$text .= "<input type='hidden' name='ref' value='".$custom_query[4]."' />";
 	}
 	
 	$text .= $search_button."
 	</div>
-	</form>";
-if (isset($searchflat) && $searchflat) {
+	</form>";		
+}
+	
+	
+	
+if (isset($searchflat) && $searchflat)
+{
 	echo $text;
 } else {
 	$ns->tablerender(LAN_180." ".SITENAME, "<div style='text-align:center'>".$text."</div>", 'search');

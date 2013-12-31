@@ -352,13 +352,19 @@ class news_shortcodes extends e_shortcode
 	function sc_newsimage($parm = '')
 	{
 		$tp = e107::getParser();
+	
 		if(!$this->news_item['news_thumbnail'])
 		{
-			return '';
+			if($parm == 'placeholder')
+			{
+				$src = 	$tp->thumbUrl(); // placeholder; 
+			}
+			else
+			{
+				return;
+			}
 		}
-		
-			
-		if($this->news_item['news_thumbnail'][0] == '{' ) // Always resize. Use {SETIMAGE: w=x&y=x&crop=0} PRIOR to calling shortcode to change. 
+		elseif($this->news_item['news_thumbnail'][0] == '{' ) // Always resize. Use {SETIMAGE: w=x&y=x&crop=0} PRIOR to calling shortcode to change. 
 		{
 			$src = $tp->thumbUrl($this->news_item['news_thumbnail']);	
 		}
@@ -368,6 +374,8 @@ class news_shortcodes extends e_shortcode
 			$src = $this->news_item['news_thumbnail'][0] == '{' ? $tp->replaceConstants($this->news_item['news_thumbnail'], 'abs') : e_IMAGE_ABS."newspost_images/".$this->news_item['news_thumbnail'];			
 		}
 		
+		
+		;
 		
 		switch($parm)
 		{
@@ -381,7 +389,7 @@ class news_shortcodes extends e_shortcode
 
 			case 'url':
 			default:
-				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='news_image news-image img-rounded' src='".$src."' alt='' style='".$this->param['thumbnail']."' /></a>";
+				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='news_image news-image img-responsive img-rounded' src='".$src."' alt='' style='".$this->param['thumbnail']."' /></a>";
 			break;
 		}
 	}
