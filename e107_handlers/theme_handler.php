@@ -1265,8 +1265,7 @@ class themeHandler
 							
 							if(varset($val['menuPresets'])) 
 							{
-								$itext .= $this->frm->admin_button("setMenuPreset[".$key."]", "Use Preset");
-							//	$itext .= print_a($val['menuPresets'],true);
+								$itext .= $this->renderPresets($key);
 							}
 							
 							
@@ -1407,6 +1406,48 @@ class themeHandler
 		
 		return $text;
 	}
+
+
+
+
+	function renderPresets($key)
+	{
+		require_once (e_HANDLER."menumanager_class.php");
+		$frm = e107::getForm();
+		
+		
+		$men = new e_menuManager();
+		$men->curLayout = $key;
+		$preset = $men->getMenuPreset();
+		
+		$text .= "<div class='btn-group'>".$frm->admin_button("setMenuPreset[".$key."]", "Activate Menus",'other');
+		$text .= '<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+		<span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu col-selection">
+		<!-- dropdown menu links -->
+		<li><strong>Activate the following:</strong></li>
+		';
+										
+		foreach($preset as $val)
+		{
+			$text .= "<li><a title='".$val['menu_name']."'>".str_replace("_menu","",$val['menu_name'])."</a></li>";	
+			
+		}					
+				//				$itext .= "<div class='field-help'>".print_a($preset ,true)."</div>";	
+		
+		$text .= "</ul></div>";
+		return $text;
+		
+	}
+
+
+
+
+
+
+
+
 	
 	function renderPlugins($pluginOpts)
 	{
