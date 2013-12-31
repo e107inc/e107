@@ -189,7 +189,7 @@ class cpage_shortcodes extends e_shortcode
 		$size = vartrue($options['size'], "");
 		$inc = ($size) ? " btn-".$size : "";
 		
-		return '<a class="cpage btn btn-default'.$inc.'" href="'.$url.'">'.$text.'</a>';
+		return '<a class="cpage btn btn-primary'.$inc.'" href="'.$url.'">'.$text.'</a>';
 	}	
 	
 	

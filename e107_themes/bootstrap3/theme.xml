@@ -23,9 +23,10 @@
 			<custompages>/news</custompages>
 			<menuPresets>
 				<area id='1'>
+					<menu name='search' />
+					<menu name='news_categories' />
 					<menu name='other_news' />
 					<menu name='other_news2' />
-					<menu name='news_categories' />
 					<menu name='blogcalendar' />
 				</area>
 			</menuPresets>	

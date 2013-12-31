@@ -1907,12 +1907,13 @@ class e_parse extends e_parser
 
 
 	/**
-	 * @param $url
-	 * @param $options ??
+	 * Generate an auto-sized Image URL. 
+	 * @param $url - path to image or leave blank for a placeholder. 
+	 * @param $options  - width and height, but leaving this empty and using $this->thumbWidth() and $this->thumbHeight() is preferred. ie. {SETWIDTH: w=x&y=x}
 	 * @param $raw ??
 	 * @param $full
 	 */
-	public function thumbUrl($url, $options = array(), $raw = false, $full = false)
+	public function thumbUrl($url=null, $options = array(), $raw = false, $full = false)
 	{
 		if(substr($url,0,3)=="{e_") // Fix for broken links that use {e_MEDIA} etc.
 		{
@@ -2669,13 +2670,35 @@ class e_parser
 			return false;	
 		}
 		
-		if(substr($text,-6) == '.glyph') // Bootstrap or Font-Awesome. 
+		// Bootstrap 3 Glyph names. 
+		$bs3 = array(
+			'adjust','align-center','align-justify','align-left','align-right','arrow-down','arrow-left','arrow-right','arrow-up','asterisk','backward','ban-circle','barcode','bell','bold','book
+			','bookmark','briefcase','bullhorn','calendar','camera','certificate','check','chevron-down','chevron-left','chevron-right','chevron-up','circle-arrow-down','circle-arrow-left','circle-arrow-right
+			','circle-arrow-up','cloud','cloud-download','cloud-upload','cog','collapse-down','collapse-up','comment','compressed','copyright-mark','credit-card','cutlery','dashboard','download','download-alt
+			','earphone','edit','eject','envelope','euro','exclamation-sign','expand','export','eye-close','eye-open','facetime-video','fast-backward','fast-forward','file','film','filter','fire','flag
+			','flash','floppy-disk','floppy-open','floppy-remove','floppy-save','floppy-saved','folder-close','folder-open','font','forward','fullscreen','gbp','gift
+			','glass','globe','hand-down','hand-left','hand-right','hand-up','hd-video','hdd','header','headphones','heart','heart-empty','home','import','inbox','indent-left','indent-right','info-sign','italic','leaf','link','list
+			','list-alt','lock','log-in','log-out','magnet','map-marker','minus','minus-sign','move','music','new-window','off','ok','ok-circle','ok-sign','open','paperclip','pause','pencil','phone','phone-alt','picture
+			','plane','play','play-circle','plus','plus-sign','print','pushpin','qrcode','question-sign','random','record','refresh','registration-mark','remove','remove-circle','remove-sign','repeat','resize-full','resize-horizontal
+			','resize-small','resize-vertical','retweet','road','save','saved','screenshot','sd-video','search','send','share','share-alt','shopping-cart','signal','sort','sort-by-alphabet','sort-by-alphabet-alt
+			','sort-by-attributes','sort-by-attributes-alt','sort-by-order','sort-by-order-alt','sound-5-1','sound-6-1','sound-7-1','sound-dolby','sound-stereo','star','stats','step-backward','step-forward','stop
+			','subtitles','tag','tags','tasks','text-height','text-width','th','th-large','th-list','thumbs-down','thumbs-up','time','tint','tower','transfer','trash','tree-conifer','tree-deciduous','unchecked','upload
+			','usd','user','volume-down','volume-off','volume-up','warning-sign','wrench','zoom-in','zoom-out'
+		);
+		
+		
+		if(substr($text,-6) == '.glyph' || strpos($text,".")==false) // Bootstrap or Font-Awesome. 
 		{
 			list($cls,$tmp) = explode('.glyph',$text);
+			$id = str_replace("icon-","",$cls);
 			
-			if(deftrue('FONTAWESOME') == 4) // Convert FontAwesome 3 to 4. 
+			if(deftrue('FONTAWESOME') == 4 && !in_array($id ,$bs3)) // Convert FontAwesome 3 to 4. 
 			{
 				$cls = str_replace('icon-', 'fa fa-', $cls);
+			}
+			elseif(defset("BOOTSTRAP")===3) 
+			{
+				$cls = str_replace('icon-', 'glyphicon glyphicon-', $cls);	
 			}
 
 			$text = (deftrue('BOOTSTRAP') === 3) ? "<span class='".$cls."'></span>"  : "<i class='".$cls."'></i>";	// retain space. 

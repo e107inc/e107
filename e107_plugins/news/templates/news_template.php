@@ -31,7 +31,7 @@ $NEWS_TEMPLATE['list']['item']	= '
 		<div class="row row-fluid">
 				<div class="span3 col-md-3">
                    <div class="thumbnail">
-                        {NEWSIMAGE}
+                        {NEWSIMAGE=placeholder}
                     </div>
 				</div>
 				<div class="span9 col-md-9">
@@ -53,6 +53,7 @@ $NEWS_TEMPLATE['list']['item']	= '
 
 // XXX As displayed by news.php (no query) or news.php?list.1.1 (ie. regular view of a particular category)
 //XXX TODO GEt this looking good in the default Bootstrap theme. 
+/*
 $NEWS_TEMPLATE['default']['item'] = '
 	{SETIMAGE: w=400}
 	<div class="view-item">
@@ -71,8 +72,29 @@ $NEWS_TEMPLATE['default']['item'] = '
 		</div>
 	</div>
 ';
+*/
 
+$NEWS_TEMPLATE['default']['item'] = '
+		{SETIMAGE: w=900&h=300}
+		<h2>{NEWSTITLE}</h2>
+          <p class="lead">by {NEWSAUTHOR}</p>
+          <hr>
+           <div class="row">
+        	<div class="col-md-6">{GLYPH=time} Posted on {NEWSDATE=short}</div>
+        	<div class="col-md-6 text-right options">{GLYPH=tags} {NEWSTAGS} &nbsp; {GLYPH=comments} {NEWSCOMMENTCOUNT} &nbsp; {EMAILICON} &nbsp; {PRINTICON} &nbsp; {PDFICON} &nbsp; {ADMINOPTIONS}</div>
+        	</div>
+          <hr>
+          {NEWSIMAGE=placeholder}
+         
+          <hr>
+          <p class="lead">{NEWSSUMMARY}</p>
+          {NEWSBODY}
+		  <hr>
+			<div class="options">
+			<span class="category">Category: {NEWSCATEGORY}</span> 
+			</div>
 
+';
 
 
 
@@ -87,17 +109,25 @@ $NEWS_TEMPLATE['view']['item'] = '
 {SETIMAGE: w=800}
 	<div class="view-item">
 		<h2>{NEWSTITLE}</h2>
-		<small class="muted">
-		<span class="date">{NEWSDATE=short} by <span class="author">{NEWSAUTHOR}</span></span>
-		</small>
+		<p class="lead">by {NEWSAUTHOR}</p>
+         <hr>
+         <div class="row">
+        	<div class="col-md-6">{GLYPH=time} Posted on {NEWSDATE=short}</div>
+        	<div class="col-md-6 text-right">{GLYPH=tags} {NEWSTAGS} &nbsp; {GLYPH=comments} {NEWSCOMMENTCOUNT} &nbsp; {EMAILICON} &nbsp; {PRINTICON} &nbsp; {PDFICON} &nbsp; {ADMINOPTIONS}</div>
+        </div>
+        <hr>
+        {NEWSIMAGE=placeholder}
+         <hr>
+        <p class="lead">{NEWSSUMMARY}</p>  
+        <hr>
 
 		<div class="body">
-			{NEWSIMAGE}
 			{NEWSBODY}
 			{EXTENDED}
 		</div>
+		<hr>
 		<div class="options">
-			<span class="category">{NEWSCATEGORY}</span> {NEWSTAGS} {NEWSCOMMENTS} {EMAILICON} {PRINTICON} {PDFICON} {ADMINOPTIONS}
+			<span class="category">Category: {NEWSCATEGORY}</span> 
 		</div>
 	</div>
 ';
