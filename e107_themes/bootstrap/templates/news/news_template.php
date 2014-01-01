@@ -21,7 +21,7 @@ $NEWS_TEMPLATE['default']['item'] = '
 			<small><i class="icon-calendar"></i> {NEWSDATE}</small>
 			<small><i class="icon-user"></i> {NEWSAUTHOR}</small>
 			<small><i class="icon-comment"></i> {NEWSCOMMENTS}</small>
-			<small><i class="icon-tag"></i> {NEWSTAGS}</small>
+			<small><i class="icon-tag"></i> {NEWSTAGS=label}</small>
 			{EMAILICON}
 			{PRINTICON} 
 			{PDFICON}
@@ -75,7 +75,7 @@ $NEWS_TEMPLATE['view']['item'] = '
 			<small><i class="icon-calendar"></i> {NEWSDATE}</small>
 			<small><i class="icon-user"></i> {NEWSAUTHOR}</small>
 			<small><i class="icon-comment"></i> {NEWSCOMMENTS}</small>
-			<small><i class="icon-tag"></i> {NEWSTAGS}</small>
+			<small><i class="icon-tag"></i> {NEWSTAGS=label}</small>
 			{EMAILICON}
 			{PRINTICON} 
 			{PDFICON}

@@ -40,7 +40,7 @@ $NEWS_TEMPLATE['list']['item']	= '
                        	{NEWSSUMMARY}
 					</p>
                     <p>
-                       <a href="{NEWSURL}" class="btn btn-info">'.LAN_READ_MORE.'</a>
+                       <a href="{NEWSURL}" class="btn btn-primary">'.LAN_READ_MORE.'</a>
                    </p>
  				</div>
 		</div>
@@ -80,8 +80,8 @@ $NEWS_TEMPLATE['default']['item'] = '
           <p class="lead">by {NEWSAUTHOR}</p>
           <hr>
            <div class="row">
-        	<div class="col-md-6">{GLYPH=time} Posted on {NEWSDATE=short}</div>
-        	<div class="col-md-6 text-right options">{GLYPH=tags} {NEWSTAGS} &nbsp; {GLYPH=comments} {NEWSCOMMENTCOUNT} &nbsp; {EMAILICON} &nbsp; {PRINTICON} &nbsp; {PDFICON} &nbsp; {ADMINOPTIONS}</div>
+        	<div class="col-md-4">{GLYPH=time} {NEWSDATE=short} </div>
+        	<div class="col-md-8 text-right options">{GLYPH=tags} &nbsp;{NEWSTAGS} &nbsp; {GLYPH=folder-open} &nbsp;{NEWSCATEGORY} </div>
         	</div>
           <hr>
           {NEWSIMAGE=placeholder}
@@ -91,7 +91,7 @@ $NEWS_TEMPLATE['default']['item'] = '
           {NEWSBODY}
 		  <hr>
 			<div class="options">
-			<span class="category">Category: {NEWSCATEGORY}</span> 
+			<span class="category ">{GLYPH=comments} {NEWSCOMMENTCOUNT} &nbsp; {EMAILICON} &nbsp; {PRINTICON} &nbsp; {PDFICON} &nbsp; {ADMINOPTIONS}</span> 
 			</div>
 
 ';
@@ -106,15 +106,15 @@ $NEWS_TEMPLATE['default']['item'] = '
 
 //XXX TODO GEt this looking good in the default Bootstrap theme. 
 $NEWS_TEMPLATE['view']['item'] = '
-{SETIMAGE: w=800}
+{SETIMAGE: w=900&h=300}
 	<div class="view-item">
 		<h2>{NEWSTITLE}</h2>
 		<p class="lead">by {NEWSAUTHOR}</p>
          <hr>
-         <div class="row">
-        	<div class="col-md-6">{GLYPH=time} Posted on {NEWSDATE=short}</div>
-        	<div class="col-md-6 text-right">{GLYPH=tags} {NEWSTAGS} &nbsp; {GLYPH=comments} {NEWSCOMMENTCOUNT} &nbsp; {EMAILICON} &nbsp; {PRINTICON} &nbsp; {PDFICON} &nbsp; {ADMINOPTIONS}</div>
-        </div>
+         	<div class="row">
+        		<div class="col-md-4">{GLYPH=time} {NEWSDATE=short} </div>
+        		<div class="col-md-8 text-right options">{GLYPH=tags} &nbsp;{NEWSTAGS} &nbsp; {GLYPH=folder-open} &nbsp;{NEWSCATEGORY} </div>
+        	</div>
         <hr>
         {NEWSIMAGE=placeholder}
          <hr>
@@ -127,8 +127,8 @@ $NEWS_TEMPLATE['view']['item'] = '
 		</div>
 		<hr>
 		<div class="options">
-			<span class="category">Category: {NEWSCATEGORY}</span> 
-		</div>
+			<span class="category ">{GLYPH=comments} {NEWSCOMMENTCOUNT} &nbsp; {EMAILICON} &nbsp; {PRINTICON} &nbsp; {PDFICON} &nbsp; {ADMINOPTIONS}</span> 
+			</div>
 	</div>
 ';
 //$NEWS_MENU_TEMPLATE['view']['separator']   = '<br />';
