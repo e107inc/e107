@@ -154,7 +154,7 @@ $(document).ready(function()
 			}
 					
 			$(id).attr('contentEditable',true);
-			$(id).after("<div class='e-comment-edit-save'><input data-target='"+url+"' id='e-comment-edit-save-"+sp[3]+"' class='button e-comment-edit-save' type='button' value='Save' /></div>");
+			$(id).after("<div class='e-comment-edit-save'><input data-target='"+url+"' id='e-comment-edit-save-"+sp[3]+"' class='button btn btn-success e-comment-edit-save' type='button' value='Save' /></div>");
 			$('div.e-comment-edit-save').hide().fadeIn(800);
 			$(id).addClass("e-comment-edit-active");
 			$(id).focus();

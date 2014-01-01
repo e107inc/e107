@@ -138,9 +138,9 @@ if(e_AJAX_REQUEST) // TODO improve security
 			$row['comment_id']			= $newid; 		
 			$width = ($pid) ? 1 : 0;
 			
-			$ret['html'] = "\n<!-- Appended -->\n";
+			$ret['html'] = "\n<!-- Appended -->\n<li>";
 			$ret['html'] .= e107::getComment()->render_comment($row,'comments','comment',intval($_POST['itemid']),$width);
-			$ret['html'] .= "\n<!-- end Appended -->\n";
+			$ret['html'] .= "</li>\n<!-- end Appended -->\n";
 			
 			$ret['error'] = false;	
 			

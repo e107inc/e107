@@ -124,7 +124,7 @@ class comment
 					
 		}	
 		
-		$this->template = $COMMENT_TEMPLATE;
+		$this->template = array_change_key_case($COMMENT_TEMPLATE);
 		
 		
 	}
@@ -258,7 +258,7 @@ class comment
 			
 			// -------------------------------------------------------------
 			
-			$indent = ($action == 'reply') ? " class='offset1' " : "";
+			$indent = ($action == 'reply') ? " class='media offset1' " : "";
 			$formid = ($action == 'reply') ? "e-comment-form-reply" : "e-comment-form";
 			
 			$text = "\n<div{$indent}>\n".e107::getMessage()->render('postcomment', true, false, false);//temporary here
@@ -281,7 +281,7 @@ class comment
 			
 			e107::getScBatch('comment')->setMode('edit');
 	
-			$text .= $tp->parseTemplate($this->template['FORM'], TRUE, e107::getScBatch('comment'));
+			$text .= $tp->parseTemplate($this->template['form'], TRUE, e107::getScBatch('comment'));
 			
 			$text .= "\n<div>\n"; // All Hidden Elements. 
 			
@@ -406,8 +406,14 @@ class comment
 	//	$COMMENT_TEMPLATE['ITEM_END']		= "\n</div><div class='clear_b'><!-- --></div>\n";
 		
 		//XXX Do NOT add to template - too important to allow for modification. 
-		$COMMENT_TEMPLATE['ITEM_START'] 	= "\n\n<li id='{COMMENT_ITEMID}' class='media comment-box clearfix'>\n";
-		$COMMENT_TEMPLATE['ITEM_END']		= "\n</li>\n";
+		$COMMENT_TEMPLATE['item_start'] 	= "\n\n<li id='{COMMENT_ITEMID}' class='media comment-box clearfix'>\n";
+		$COMMENT_TEMPLATE['item_end']		= "\n</li>\n";
+		
+		if(defset('BOOTSTRAP') === 2 || defset('BOOTSTRAP') === true) // Convert Bootstrap3 to Bootstrap 2 when detected. 
+		{
+			$COMMENT_TEMPLATE['item'] = str_replace("row", "row-fluid", $COMMENT_TEMPLATE['item']);
+		}
+			
 			
 		if (vartrue($pref['nested_comments']))
 		{
@@ -415,14 +421,14 @@ class comment
 		//	$total_width = "95%";
 			if ($width)
 			{		
-				$renderstyle = $COMMENT_TEMPLATE['ITEM_START'];
-				$renderstyle .= "<div class='offset".$width."' >".$COMMENT_TEMPLATE['ITEM']."</div>";	
-				$renderstyle .= $COMMENT_TEMPLATE['ITEM_END'];					
+				$renderstyle = $COMMENT_TEMPLATE['item_start'];
+				$renderstyle .= "<div class='media offset".$width." col-md-offset-".$width."' >".$COMMENT_TEMPLATE['item']."</div>";	
+				$renderstyle .= $COMMENT_TEMPLATE['item_end'];					
 			}
 			else
 			{
 					
-				$renderstyle = $COMMENT_TEMPLATE['ITEM_START'].$COMMENT_TEMPLATE['ITEM'].$COMMENT_TEMPLATE['ITEM_END'];
+				$renderstyle = $COMMENT_TEMPLATE['item_start'].$COMMENT_TEMPLATE['item'].$COMMENT_TEMPLATE['item_end'];
 
 			}
 			if ($pref['comments_icon'])
@@ -443,7 +449,7 @@ class comment
 		}
 		else
 		{
-			$renderstyle = $COMMENT_TEMPLATE['ITEM'];
+			$renderstyle = $COMMENT_TEMPLATE['item'];
 		}
 		$highlight_search = FALSE;
 		
@@ -547,6 +553,8 @@ class comment
 	function updateComment($id,$comment)
 	{
 		$tp = e107::getParser();
+		
+		$comment = trim($comment);
 		
 		if(!e107::getDb()->update("comments","comment_comment=\"".$tp->toDB($comment)."\" WHERE comment_id = ".intval($id).""))
 		{
@@ -992,7 +1000,7 @@ class comment
 		
 		$search = array("{MODERATE}","{COMMENTS}","{COMMENTFORM}","{COMMENTNAV}");
 		$replace = array($modcomment,$text,$comment,$pagination);
-		$TEMPL = str_replace($search,$replace,$this->template['LAYOUT']);		
+		$TEMPL = str_replace($search,$replace,$this->template['layout']);		
 			
 		if(!$return)
 		{		

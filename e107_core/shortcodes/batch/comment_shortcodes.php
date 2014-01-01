@@ -94,7 +94,7 @@ class comment_shortcodes extends e_shortcode
 		{
 			if ($thisaction == "comment" && $pref['nested_comments']) 
 			{
-				$REPLY = "<a id='e-comment-reply-".$this->var['comment_id']."' class='e-comment-reply btn btn-default btn-mini btn-xs' data-type='".$this->var['comment_type']."' data-target='/comment.php' href='".SITEURL."comment.php?reply.".$thistable.".".$this->var['comment_id'].".".$thisid."'>".COMLAN_326."</a>";
+				$REPLY = "<a id='e-comment-reply-".$this->var['comment_id']."' class='e-comment-reply btn btn-default btn-mini btn-xs' data-type='".$this->var['comment_type']."' data-target='".e_HTTP."comment.php' href='".e_HTTP."comment.php?reply.".$thistable.".".$this->var['comment_id'].".".$thisid."'>".COMLAN_326."</a>";
 			}
 		}
 		return $REPLY;
@@ -210,7 +210,7 @@ class comment_shortcodes extends e_shortcode
 			$value 	= (varset($this->var['eaction']) == "edit" ? COMLAN_320 : COMLAN_9);
 			$pid	= ($this->var['action'] == 'reply') ? $this->var['pid'] : 0;
 			
-			return "<input data-pid='{$pid}' data-sort='{$pref}' data-target='".e_HTTP."comment.php' class='button btn btn-default e-comment-submit' type='submit' name='".$this->var['action']."submit' value='".$value."' />";		
+			return "<input data-pid='{$pid}' data-sort='{$pref}' data-target='".e_HTTP."comment.php' class='button btn btn-primary e-comment-submit' type='submit' name='".$this->var['action']."submit' value='".$value."' />";		
 		}	
 		
 	}
