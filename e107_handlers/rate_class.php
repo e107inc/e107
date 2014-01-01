@@ -255,7 +255,9 @@ class rater {
 	 * @param $perc: optional percentage mode. Displays percentages instead of totals. 
 	 */
 	function renderLike($table,$itemid,$curVal=false,$perc=false)
-	{	
+	{
+		$tp = e107::getParser();
+			
 		$id = "rate-".$table."-".$itemid;	 // "-up or -down is appended to the ID by jquery as both value will need updating. 
 		
 		if($curVal == false)
@@ -270,8 +272,8 @@ class rater {
 		
 		if(deftrue('BOOTSTRAP'))
 		{
-			$upImg = "<i class='icon-thumbs-up'></i>";
-			$upDown = "<i class='icon-thumbs-down'></i>";
+			$upImg = $tp->toGlyph('icon-thumbs-up',false); // "<i class='icon-thumbs-up'></i>";
+			$upDown = $tp->toGlyph('icon-thumbs-down',false); // "<i class='icon-thumbs-down'></i>";
 		}
 			
 		$text = "<span id='{$id}-up'>".intval($curVal['up'])."{$p}</span>

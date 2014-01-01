@@ -494,18 +494,32 @@ class news_shortcodes extends e_shortcode
 	{
 		$tmp = explode(",",$this->news_item['news_meta_keywords']);
 		$words = array();
+		
+		if($parm == 'label')
+		{
+			$start = "<span class='label label-default'>";
+			$end	= "</span>";	
+			$sep = " ";
+		}
+		else
+		{
+			$start = "";
+			$end = "";
+			$sep = ", ";
+		}
+		
 		foreach($tmp as $val)
 		{
 			if(trim($val))
 			{
 				$url = e107::getUrl()->create('news/list/tag',array('tag'=>$val)); // e_BASE."news.php?tag=".$val
-				$words[] = "<a href='".$url."'><span class='label label-default'>".$val."</span></a>";	
+				$words[] = "<a class='news-tag' href='".$url."'>".$start.$val.$end."</a>";	
 			}
 		}
 		
 		if(count($words))
 		{
-			return implode(" ",$words);
+			return implode($sep,$words);
 		}
 		else 
 		{
