@@ -83,26 +83,26 @@ $sc_style['COMMENT_BUTTON']['post']		= "";
 $sc_style['COMMENT_SHARE']['pre']		= "";
 $sc_style['COMMENT_SHARE']['post']		= "";
 
-$sc_style['COMMENT_RATE']['pre']  		= '<div class="comment-rate span2">';
-$sc_style['COMMENT_RATE']['post'] 		= '</div>';
+$sc_style['COMMENT_RATE']['pre']  		= '';
+$sc_style['COMMENT_RATE']['post'] 		= '';
 
 //$sc_style['USER_AVATAR']['pre']  		= '<div class="comment-avatar center">';
 //$sc_style['USER_AVATAR']['post'] 		= '</div>';
 
-$sc_style['COMMENT_MODERATE']['pre']	= '<div class="comment-moderate btn-group span2">';
-$sc_style['COMMENT_MODERATE']['post']	= '</div>';
+$sc_style['COMMENT_MODERATE']['pre']	= '<span class="comment-moderate">';
+$sc_style['COMMENT_MODERATE']['post']	= '</span>';
 
 $sc_style['MODERATE']['pre']	= '<div class="span12" style="padding:10px">';
 $sc_style['MODERATE']['post']	= '</div>';
 
 
-$COMMENT_TEMPLATE['FORM']			= "
+$COMMENT_TEMPLATE['form']			= "
 	{SETIMAGE: w=100}
 	<div class='media comment-box comment-box-form clearfix'>
-		<div class='comment-box-left pull-left span1' >
+		<div class='comment-box-left media-object pull-left' >
 		{COMMENT_AVATAR}
 		</div>
-		<div class='comment-box-right pull-left span11' style='text-align:left'>
+		<div class='media-body comment-box-right text-left' >
 			<div class='P10'>
 				{AUTHOR_INPUT}
 				{COMMENT_INPUT}
@@ -113,26 +113,23 @@ $COMMENT_TEMPLATE['FORM']			= "
 			</div>
 		</div>
 	</div>
-	<div class='clear_b'><!-- --></div>"; 
+	<div class='clear_b'><!-- --></div>
+	<hr>"; 
 
 
-$COMMENT_TEMPLATE['ITEM_START'] = "<ul class='comments'>";
 
-$COMMENT_TEMPLATE['ITEM_END'] 	= "</ul>";
-
-
-$COMMENT_TEMPLATE['ITEM'] = '
+$COMMENT_TEMPLATE['item'] = '
 		{SETIMAGE: w=100}
-		<div class="comment-box-left pull-left span1">
+		<div class="media-object comment-box-left pull-left span1">
 			{COMMENT_AVATAR}
 		</div>	
-		<div class="comment-box-right pull-left span11">
-			<div class="row-fluid">
+		<div class="media-body comment-box-right ">
+			<div class="row">
 				
-					<div class="comment-box-username span1">{USERNAME}</div>
-					<div class="comment-box-date span2">{TIMEDATE=relative}</div>
-					<div class="comment-status span3">{COMMENT_STATUS}</div>
-					<div class="comment-moderate span6">{COMMENT_RATE} {REPLY} {COMMENTEDIT} {COMMENT_MODERATE}</div>
+					<div class="comment-box-username span2 col-md-2">{USERNAME}</div>
+					<div class="comment-box-date span2 col-md-2">{TIMEDATE=relative}</div>
+					<div class="comment-status span2 col-md-3">{COMMENT_STATUS}</div>
+					<div class="comment-moderate span6 col-md-5 text-right">{COMMENT_RATE} {REPLY} {COMMENTEDIT} {COMMENT_MODERATE}</div>
 				
 			</div>
 			
@@ -144,13 +141,17 @@ $COMMENT_TEMPLATE['ITEM'] = '
 				</div>
 			</div>	
 			
+			
+				
+			
+			
 		</div>
 	';
 	
 
 
 
-$COMMENT_TEMPLATE['LAYOUT'] 		= '{COMMENTFORM}{COMMENTS} <div style="padding:10px 0px">{MODERATE}</div>';
+$COMMENT_TEMPLATE['layout'] 		= '{COMMENTFORM}{COMMENTS} <div style="padding:10px 0px">{MODERATE}</div>';
 										
 
 ?>
