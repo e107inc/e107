@@ -1828,6 +1828,7 @@ class e_admin_controller
 			}
 			$title = $res['caption'];
 		}
+	//	print_a($title);
 		$this->getResponse()->appendTitle($title);
 		if($meta) $this->addMetaTitle($title);
 		return $this;
@@ -3580,6 +3581,12 @@ class e_admin_controller_ui extends e_admin_controller
 
 			// filter for WHERE and FROM clauses
 			$searchable_types = array('text', 'textarea', 'bbarea', 'email', 'int', 'integer', 'str', 'string'); //method? 'user', 
+			
+			if($var['type'] == 'method' && ($var['data'] == 'string' || $var['data'] == 'str'))
+			{
+				$searchable_types[] = 'method';
+			}
+			
 			if(trim($searchQuery) !== '' && in_array($var['type'], $searchable_types) && $var['__tableField'])
 			{
 				if($var['type'] == 'int' || $var['type'] == 'integer')
@@ -3765,7 +3772,7 @@ class e_admin_controller_ui extends e_admin_controller
 		// Debug Filter Query.
 		
 	//	 echo $qry.'<br />';		
-		// print_a($_GET);
+	//	 print_a($_GET);
 
 		return $qry;
 	}
@@ -5533,6 +5540,7 @@ class e_admin_form_ui extends e_form
 		$table = $this->getController()->getTableName();
 		$text = '';
 		$textsingle = '';
+				
 
 		foreach($this->getController()->getFields() as $key=>$val)
 		{
@@ -5755,7 +5763,17 @@ class e_admin_form_ui extends e_form
 					break;
 
 					case 'user': // TODO - User Filter
-						//$option[$key.'__'.$k] = $name;
+					
+						$sql = e107::getDb();
+						$field = $val['field'];
+						
+						$query = "SELECT d.".$field.", u.user_name FROM #".$val['table']." AS d LEFT JOIN #user AS u ON d.".$field." = u.user_id WHERE u.user_name != '' GROUP BY d.".$field." ORDER BY u.user_name";
+						$row = $sql->retrieve($query,true);
+						foreach($row as $data)
+						{
+							$k = $data[$field];
+							$option[$key.'__'.$k] = $data['user_name'];	
+						}
 					break;
 			}
 

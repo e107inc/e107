@@ -2776,6 +2776,7 @@ class e_form
 			case 'user_customtitle':
 			case 'user_email':*/
 			case 'user':
+				
 				/*if(is_numeric($value))
 				{
 					$value = get_user_data($value);
@@ -2790,7 +2791,7 @@ class e_form
 				}*/
 				// Dirty, but the only way for now
 				$id = 0;
-				$ttl = '';
+				$ttl = LAN_ANONYMOUS;
 
 				//Defaults to user_id and user_name (when present) and when idField and nameField are not present.
 
@@ -2817,6 +2818,7 @@ class e_form
 				{
 					$value = $ttl;
 				}
+				
 			break;
 
 			case 'bool':
