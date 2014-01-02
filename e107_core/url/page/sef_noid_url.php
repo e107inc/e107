@@ -84,16 +84,17 @@ class core_page_sef_noid_url extends eUrlConfig
 		}
 		elseif(!$name || is_numeric($name)) return;
 		
-		
-		
-		
 		$sql = e107::getDb('url');
 		$name = e107::getParser()->toDB($name);
-		if($sql->db_Select('page', 'page_id', "menu_name='' AND page_sef='{$name}'")) 
+		
+		if($sql->select('page', 'page_id', "page_sef='{$name}'")) 
 		{
-			$name = $sql->db_Fetch();
+			$name = $sql->fetch();
 			$request->setRequestParam('name', $name['page_id']);
 		}
-		else $request->setRequestParam('name', 0);
+		else 
+		{
+			$request->setRequestParam('name', 0);
+		}
 	}
 }
