@@ -5767,12 +5767,21 @@ class e_admin_form_ui extends e_form
 						$sql = e107::getDb();
 						$field = $val['field'];
 						
-						$query = "SELECT d.".$field.", u.user_name FROM #".$val['table']." AS d LEFT JOIN #user AS u ON d.".$field." = u.user_id WHERE u.user_name != '' GROUP BY d.".$field." ORDER BY u.user_name";
+						$query = "SELECT d.".$field.", u.user_name FROM #".$val['table']." AS d LEFT JOIN #user AS u ON d.".$field." = u.user_id  GROUP BY d.".$field." ORDER BY u.user_name";
 						$row = $sql->retrieve($query,true);
 						foreach($row as $data)
 						{
 							$k = $data[$field];
-							$option[$key.'__'.$k] = $data['user_name'];	
+							if($k == 0)
+							{
+								$option[$key.'__'.$k] = "(".LAN_ANONYMOUS.")";	
+							}
+							else 
+							{
+								$option[$key.'__'.$k] = vartrue($data['user_name'],'Unknown');		
+							}
+							
+							
 						}
 					break;
 			}

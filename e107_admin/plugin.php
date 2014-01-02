@@ -668,7 +668,8 @@ class pluginManager{
 					e107::getConfig('core')->save();
 				}
 
-				$admin_log->log_event('PLUGMAN_03', $plug['plugin_path'], E_LOG_INFORMATIVE, '');
+				$logInfo = deftrue($plug['plugin_name'],$plug['plugin_name']). " v".$plug['plugin_version']." ({e_PLUGIN}".$plug['plugin_path'].")";
+				$admin_log->log_event('PLUGMAN_03', $logInfo, E_LOG_INFORMATIVE, '');
 			}
 
 			if($_POST['delete_files'])
@@ -801,14 +802,24 @@ class pluginManager{
    {
         global $plugin,$admin_log,$eplug_folder;
 			$text = $plugin->install_plugin($this->id);
+		
+		$log = e107::getAdminLog();
+			
+			
+			
 			if ($text === FALSE)
 			{ // Tidy this up
 				$this->show_message("Error messages above this line", E_MESSAGE_ERROR);
 			}
 			else
 			{
-				 $plugin ->save_addon_prefs('update');
-				$admin_log->log_event('PLUGMAN_01', $this->id.':'.$eplug_folder, E_LOG_INFORMATIVE, '');
+				 $plugin->save_addon_prefs('update');
+				 $info = $plugin->getinfo($this->id);
+				 
+				 $name = deftrue($info['plugin_name'],$info['plugin_name']). " v".$info['plugin_version']. "({e_PLUGIN}".$info['plugin_path'].")";
+				 
+				$log->log_event('PLUGMAN_01', $name, E_LOG_INFORMATIVE, '');
+			
 				$this->show_message($text, E_MESSAGE_SUCCESS);
 			}
 
@@ -889,7 +900,11 @@ class pluginManager{
 
 			$eplug_addons = $plugin -> getAddons($eplug_folder);
 
-			$admin_log->log_event('PLUGMAN_02', $eplug_folder, E_LOG_INFORMATIVE, '');
+			$info = $plugin->getinfo($this->id);
+				 
+			$name = deftrue($info['plugin_name'],$info['plugin_name']). " v".$eplug_version. "({e_PLUGIN}".$info['plugin_path'].")";
+
+			$admin_log->log_event('PLUGMAN_02', $name, E_LOG_INFORMATIVE, '');
 			$text .= (isset($eplug_upgrade_done)) ? '<br />'.$eplug_upgrade_done : "<br />".LAN_UPGRADE_SUCCESSFUL;
 			$sql->update('plugin', "plugin_version ='{$eplug_version}', plugin_addons='{$eplug_addons}' WHERE plugin_id='$this->id' ");
 			$pref['plug_installed'][$plug['plugin_path']] = $eplug_version; 			// Update the version
