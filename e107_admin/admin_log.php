@@ -179,10 +179,8 @@ class admin_log_ui extends e_admin_ui
 
 
 
-		var $eventTypes = array();
+		public $eventTypes = array();
 		
-		var $eventUsers = array();
-
 		// optional
 		public function init()
 		{
@@ -198,15 +196,6 @@ class admin_log_ui extends e_admin_ui
 			}
 
 			asort($this->eventTypes);
-			
-			$row = $sql->retrieve("SELECT  f.dblog_user_id, u.user_name FROM #admin_log AS f LEFT JOIN #user AS u ON f.dblog_user_id = u.user_id WHERE f.dblog_user_id != 0 GROUP BY dblog_user_id ORDER BY u.user_name",true);
-			foreach($row as $val)
-			{
-				$id = $val['dblog_user_id'];
-				$this->eventUsers[$id] = $val['user_name'];
-			}
-			
-	
 		}
 		
 		
