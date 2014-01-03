@@ -52,12 +52,16 @@ class fpw_shortcodes extends e_shortcode
 
 	function sc_fpw_useremail($parm='') //TODO Use $frm
 	{
-		return "<input class='tbox' type='text' name='email' size='40' value='' maxlength='100' />";	
+		return '<input class="tbox form-control" type="text" name="email" size="40" value="" maxlength="100" placeholder="Email" required="required" type="email">';
+	//	return "<input class='tbox' type='text' name='email' size='40' value='' maxlength='100' />";	
 	}
 
 	function sc_fpw_submit($parm='') //TODO Use $frm
 	{
-		return "<input class='button btn btn-primary' type='submit' name='pwsubmit' value='".LAN_156."' />";	
+		$label = deftrue('LAN_FPW_102', LAN_156);
+		return '<button type="submit" name="pwsubmit" class="button btn btn-primary btn-block reset">'.$label.'</button>';
+		
+		// return "<input class='button btn btn-primary btn-block' type='submit' name='pwsubmit' value='".$label."' />";	
 	}
 
 	function sc_fpw_captcha_lan($parm='')
@@ -84,6 +88,12 @@ class fpw_shortcodes extends e_shortcode
 	{
 		// Unused at the moment. 	
 	}
+	
+	function sc_fpw_text($parm='')
+	{
+		return deftrue('LAN_FPW_101',"Not to worry. Just enter your email address below and we'll send you an instruction email for recovery.");	
+	}
+
 
 }
 
@@ -102,10 +112,18 @@ if ($pref['membersonly_enabled'])
 	$sc = array (
 		'FPW_LOGIN_LOGO' => file_exists(THEME."images/login_logo.png") ? "<img src='".THEME_ABS."images/login_logo.png' alt='' />\n" : "<img src='".e_IMAGE_ABS."logo.png' alt='' />\n"
 	);
-	//if (!$FPW_TABLE_HEADER)
+	
+	
+	if(deftrue('BOOTSTRAP'))
+	{
+		$FPW_TABLE_HEADER = e107::getCoreTemplate('fpw','header');	
+		$FPW_TABLE_FOOTER = e107::getCoreTemplate('fpw','footer');	
+	}
+	else
 	{
 		require_once (e107::coreTemplatePath('fpw')); //correct way to load a core template.
 	}
+	
 	$HEADER = $tp->simpleParse($FPW_TABLE_HEADER, $sc);
 	$FOOTER = $tp->simpleParse($FPW_TABLE_FOOTER, $sc);
 }
@@ -300,9 +318,15 @@ if (USE_IMAGECODE)
 }
 */
 
-if (!$FPW_TABLE)
+if(deftrue('BOOTSTRAP'))
+{
+	$FPW_TABLE = e107::getCoreTemplate('fpw','form');	
+	$caption = deftrue('LAN_FPW_100',"Forgot your password?");	
+}	
+elseif (!$FPW_TABLE)
 {
 	require_once (e107::coreTemplatePath('fpw')); //correct way to load a core template.
+	$caption = LAN_03;
 }
 
 $sc = new fpw_shortcodes;
@@ -313,9 +337,10 @@ $nwShortcodes 	= array('{FPW_CAPTCHA_LAN}', '{FPW_CAPTCHA_HIDDEN}', '{FPW_CAPTCH
 $FPW_TABLE 		= str_replace($bcShortcodes,$nwShortcodes,$FPW_TABLE);
 
 $text = $tp->parseTemplate($FPW_TABLE, true, $sc);
+
 // $text = $tp->simpleParse($FPW_TABLE, $sc);
 
-$ns->tablerender(LAN_03, $text);
+$ns->tablerender($caption, $text);
 require_once(FOOTERF);
 
 
