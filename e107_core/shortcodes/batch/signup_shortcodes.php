@@ -208,7 +208,7 @@ class signup_shortcodes extends e_shortcode
 	
 	function sc_signup_email()
 	{	
-		$options = array('size'=>30,'required'=>1,'class'=>'tbox input-text e-email');
+		$options = array('size'=>30,'required'=>1,'class'=>'tbox form-control input-text e-email');
 		$options['title'] = LAN_SIGNUP_108; // Must be a valid email address. 
 		$text = e107::getForm()->email('email',($_POST['email'] ? $_POST['email'] : $email),100,$options);
 		$text .= "<div class='e-email-hint' style='display:none' data-hint='Did you mean <b>[x]</b>?'><!-- --></div>";
