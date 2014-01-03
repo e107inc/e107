@@ -3,7 +3,7 @@
 
 
 if (!defined('e107_INIT')) { exit; }
-if (!defined("USER_WIDTH") && deftrue('BOOTSTRAP')!==true){ define("USER_WIDTH","width:70%"); }
+if (!defined("USER_WIDTH") && !deftrue('BOOTSTRAP')){ define("USER_WIDTH","width:70%"); }
 
 // ##### FPW TABLE -----------------------------------------------------------------------------
 if(!isset($FPW_TABLE))
@@ -77,5 +77,27 @@ if(!isset($FPW_TABLE_FOOTER))
 		$FPW_TABLE_FOOTER = "</div></div>";
 }
 // ##### ------------------------------------------------------------------------------------------
+
+
+$FPW_TEMPLATE['form'] = '
+					<div class="row">
+					<div class="col-sm-12 col-md-8">
+					<p>{FPW_TEXT}</p>
+					<div class="form-group">{FPW_USEREMAIL}</div>
+					<div class="row">
+						<div class="col-xs-12 col-sm-4 col-sm-offset-8">
+						{FPW_SUBMIT}
+						</div>
+					</div>
+					</div>
+					</div>
+					';
+$FPW_TEMPLATE['header'] = '';
+$FPW_TEMPLATE['footer'] = '';
+
+
+
+
+
 
 ?>

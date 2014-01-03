@@ -50,5 +50,8 @@ define('LAN_FPW20','Email send succeeded');
 define('LAN_FPW21','User clicked on password reset link');
 define('LAN_FPW22','');
 
+define("LAN_FPW_100", "Forgot your password?");
+define("LAN_FPW_101", "Not to worry. Just enter your email address below and we'll send you an instruction email for recovery.");
+define("LAN_FPW_102", "Reset Password");
 
 ?>
