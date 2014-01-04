@@ -31,10 +31,11 @@ class plugin_download_sef_url extends eUrlConfig
 			),
 
 			'rules' => array(
-				'/' 										=> array('list/index', 'legacyQuery' => '', ),
-				'Category/<id:{number}>/<name:{sefsecure}>' => array('list/category', 'allowVars'=> array('order','view','sort'), 'legacyQuery' => 'list.{id}.{view}.{order}.{sort}', ),
+				'Category/<id:{number}>/<name:{sefsecure}>' => array('list/category', 'allowVars'=> array('order','from','view','sort'), 'legacyQuery' => 'action=list&id={id}2&from={from}&view={view}&order={order}&sort={sort}'), // list.{id}.{view}.{order}.{sort}', ),
 				'<id:{number}>/<name:{sefsecure}>' 			=> array('view/item', 'legacyQuery' => 'view.{id}' ),
 				'Get/<id:{number}>/<name:{sefsecure}>' 		=> array('request/item', 'legacy'=> '{e_PLUGIN}download/request.php', 'legacyQuery' => 'view.{id}' ),
+				'/' 										=> array('list/index', 'legacyQuery' => '', ),
+				
 			) // rule set array
 		);
 	}
