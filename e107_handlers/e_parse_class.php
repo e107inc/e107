@@ -2732,12 +2732,14 @@ class e_parser
 		{
 			return $this->toGlyph($icon);
 		}
-
-		if($icon[0] == '{')
+		
+		if(strpos($icon,'e_MEDIA')!==FALSE)
 		{
-		//	$path = $this->replaceConstants($icon,'full');	
 			$path = $this->thumbUrl($icon);
-			
+		}
+		elseif($icon[0] == '{')
+		{
+			$path = $this->replaceConstants($icon,'full');		
 		}
 		elseif($legacyPath)
 		{

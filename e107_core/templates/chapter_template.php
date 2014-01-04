@@ -17,11 +17,11 @@ $CHAPTER_TEMPLATE['default']['listPages']['item'] 					= "<li><a href='{CPAGEURL
 $CHAPTER_TEMPLATE['default']['listPages']['end'] 					= "</ul>";	
 	
 $CHAPTER_TEMPLATE['default']['listChapters']['start']				= "<ul class='page-chapters-list'>";
-$CHAPTER_TEMPLATE['default']['listChapters']['item']				= "<li><h4>{CHAPTER_NAME}</h4>{PAGES}";
+$CHAPTER_TEMPLATE['default']['listChapters']['item']				= "<li><h4><a href='{CHAPTER_URL}'>{CHAPTER_NAME}</a></h4>{PAGES}";
 $CHAPTER_TEMPLATE['default']['listChapters']['end']					= "</ul>";
 
 $CHAPTER_TEMPLATE['default']['listBooks']['start']					= "<ul class='page-chapters-list'>";
-$CHAPTER_TEMPLATE['default']['listBooks']['item']					= "<li><h3>{BOOK_NAME}</h3>{CHAPTERS}";
+$CHAPTER_TEMPLATE['default']['listBooks']['item']					= "<li><h3><a href='{BOOK_URL}'>{BOOK_NAME}</a></h3>{CHAPTERS}";
 $CHAPTER_TEMPLATE['default']['listBooks']['end']					= "</ul>";
 
 

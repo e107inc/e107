@@ -32,8 +32,10 @@ class core_page_sef_url extends eUrlConfig
 
 			'rules' => array(
 				### using only title for pages is risky enough (non-unique title, possible bad characters)
-				'<id:{number}>/<name:{sefsecureOptional}>' => array('view/index', 'legacyQuery' => '{id}.{page}', ),
-				
+				'<id:{number}>/<name:{sefsecureOptional}>'			=> array('view/index', 		'legacyQuery' => '{id}.{page}', ),
+				'chapter/<id:{number}>/<name:{sefsecureOptional}>' 	=> array('chapter/index', 	'mapVars' => array('chapter_id'=>'id','chapter_sef'=>'name'), 'legacyQuery' => 'ch={id}' ),
+				'book/<id:{number}>/<name:{sefsecureOptional}>' 	=> array('book/index', 		'mapVars' => array('chapter_id'=>'id','chapter_sef'=>'name'), 'legacyQuery' => 'bk={id}' ),
+			
 				### page list
 				'/' => array('list/index', 'legacyQuery' => '', ),
 			) // rule set array
