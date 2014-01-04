@@ -30,14 +30,13 @@ class core_page_sef_noid_url extends eUrlConfig
 				),
 			),
 
-			'rules' => array(
-			
-				### using only title for pages is risky enough (empty sef for old DB's)
-				'<name:{secure}>' => array('view/index', 'allowVars' => false, 'legacyQuery' => '{name}.{page}', 'parseCallback' => 'itemIdByTitle'),
-
-				### page list
-				'/' => array('list/index', 'legacyQuery' => '', ),
-			) // rule set array
+			### using only title for pages is risky enough (empty sef for old DB's)
+			'rules' => array( 
+				'chapter/<name:{sefsecureOptional}>' 	=> array('chapter/index',  	'allowVars' => false, 'mapVars' => array('chapter_id'=>'id', 'chapter_sef'=>'name'), 'legacyQuery' => 'ch={id}', 'parseCallback' => 'chapterIdByTitle'),
+				'book/<name:{sefsecureOptional}>' 		=> array('book/index',  	'allowVars' => false, 'mapVars' => array('chapter_id'=>'id', 'chapter_sef'=>'name'), 'legacyQuery' => 'bk={id}', 'parseCallback' => 'chapterIdByTitle'),
+				'<name:{secure}>' 						=> array('view/index', 		'allowVars' => false, 'legacyQuery' => '{name}.{page}', 'parseCallback' => 'itemIdByTitle'),
+				'/'										=> array('list/index', 		'legacyQuery' => '', ), // page list
+			) 
 		);
 	}
 
@@ -73,16 +72,23 @@ class core_page_sef_noid_url extends eUrlConfig
 	{
 		$name = $request->getRequestParam('name');
 		
-		e107::getMessage()->addDebug('name = '.$name);
-		e107::getMessage()->addDebug(print_r($request,true));
-		e107::getAdminLog()->toFile('page_sef_noid_url');
+	//	e107::getMessage()->addDebug('name = '.$name);
+	//	e107::getMessage()->addDebug(print_r($request,true));
+	//	e107::getAdminLog()->toFile('page_sef_noid_url');
 		
 		if(($id = $request->getRequestParam('id'))) 
 		{
 			$request->setRequestParam('name', $id);
 			return;
 		}
-		elseif(!$name || is_numeric($name)) return;
+		elseif(!$name || is_numeric($name)) 
+		{
+			if(ADMIN)
+			{
+				e107::getMessage()->addError("One of your pages is missing a SEF URL value");
+			}
+			return;
+		}
 		
 		$sql = e107::getDb('url');
 		$name = e107::getParser()->toDB($name);
@@ -94,7 +100,52 @@ class core_page_sef_noid_url extends eUrlConfig
 		}
 		else 
 		{
+			if(ADMIN)
+			{
+				e107::getMessage()->addError("Couldn't find a page with a SEF URL value of '".$name."'");
+			}
 			$request->setRequestParam('name', 0);
 		}
 	}
+	
+	/**
+	 * chapter/index and book/index by name callback
+	 * @param eRequest $request
+	 */
+	public function chapterIdByTitle(eRequest $request)
+	{	
+		$name = $request->getRequestParam('name');
+		
+		if(($id = $request->getRequestParam('id'))) 
+		{
+			$request->setRequestParam('name', $id);
+			return;
+		}
+		elseif(!$name || is_numeric($name))
+		{
+			if(ADMIN)
+			{
+				e107::getMessage()->addError("One of your page-chapters is missing a SEF URL value");
+			}
+			return;
+		} 
+			
+		$sql = e107::getDb('url');
+		$name = e107::getParser()->toDB($name);
+		
+		if($sql->select('page_chapters', 'chapter_id', "chapter_sef='{$name}'")) 
+		{
+			$name = $sql->fetch();
+			$request->setRequestParam('id', $name['chapter_id']);
+		}
+		else 
+		{
+			if(ADMIN)
+			{
+				e107::getMessage()->addError("Couldn't find a book or chapter with a SEF URL value of '".$name."'");
+			}
+			$request->setRequestParam('id', 0);
+		}
+	}
+	
 }

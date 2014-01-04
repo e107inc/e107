@@ -17,6 +17,7 @@ e107::coreLan('page');
 
 $e107CorePage = new pageClass(false);
 
+
 // Important - save request BEFORE any output (header footer) - used in navigation menu
 if(!e_QUERY)
 {
@@ -196,7 +197,7 @@ class pageClass
 					'BOOK_ICON'			=> $this->chapterIcon($row['chapter_icon']),
 					'BOOK_DESCRIPTION'	=> $tp->toHtml($row['chapter_meta_description'],true,'BODY'),
 					'CHAPTERS'			=> $this->listChapters(intval($row['chapter_id'])),
-					'BOOK_URL'			=> e_BASE."page.php?bk=".intval($row['chapter_id']) // FIXME SEF-URL
+					'BOOK_URL'			=> e107::getUrl()->create('page/book/index', $row,'allow=chapter_id,chapter_sef') // e_BASE."page.php?bk=".intval($row['chapter_id']) // FIXME SEF-URL
 				);
 			
 				$text .= $tp->simpleParse($template['item'],$var);
@@ -262,7 +263,7 @@ class pageClass
 					'CHAPTER_ICON'			=> $this->chapterIcon($row['chapter_icon']),
 					'CHAPTER_DESCRIPTION'	=> $tp->toHtml($row['chapter_meta_description'],true,'BODY'),
 					'PAGES'					=> $tmp['text'],
-					'CHAPTER_URL'			=> e_BASE."page.php?ch=".intval($row['chapter_id']) // FIXME SEF-URL
+					'CHAPTER_URL'			=> e107::getUrl()->create('page/chapter/index', $row,'allow=chapter_id,chapter_sef') // e_BASE."page.php?ch=".intval($row['chapter_id']) // FIXME SEF-URL
 				);
 				
 				$text .= $tp->simpleParse($template['item'],$var);
