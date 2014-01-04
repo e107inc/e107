@@ -2721,6 +2721,8 @@ class e_parser
 	 */
 	public function toIcon($icon='',$legacyPath ='')
 	{
+		
+		
 		if(!vartrue($icon))
 		{
 			return;
@@ -2730,10 +2732,12 @@ class e_parser
 		{
 			return $this->toGlyph($icon);
 		}
-		
+
 		if($icon[0] == '{')
 		{
-			$path = $this->replaceConstants($icon,'full');	
+		//	$path = $this->replaceConstants($icon,'full');	
+			$path = $this->thumbUrl($icon);
+			
 		}
 		elseif($legacyPath)
 		{

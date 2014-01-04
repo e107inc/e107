@@ -1400,8 +1400,8 @@ class e_navigation
 		
 		$sc 			= e107::getScBatch('navigation');	
 		$sc->template 	= $template; 
-		$head			= $template['start'];
-		$foot 			= $template['end'];
+		$head			= e107::getParser()->parseTemplate($template['start'],true);
+		$foot 			= e107::getParser()->parseTemplate($template['end'],true);
 		$ret 			= "";
 		
 		$sc->counter	= 1;
@@ -1731,17 +1731,17 @@ class navigation_shortcodes extends e_shortcode
 	function sc_link_icon($parm='')
 	{
 		$tp = e107::getParser();
-		
+				
 		if (!vartrue($this->var['link_button'])) return '';
 		
-		if($icon = $tp->toGlyph($this->var['link_button']))
+	//	if($icon = $tp->toGlyph($this->var['link_button']))
+	//	{
+	//		return $icon;	
+	//	}
+	//	else 
 		{
-			return $icon;	
-		}
-		else 
-		{
-			$path = e107::getParser()->replaceConstants($this->var['link_button'], 'full', TRUE);	
-			return $tp->toIcon($path);
+			//$path = e107::getParser()->replaceConstants($this->var['link_button'], 'full', TRUE);	
+			return $tp->toIcon($this->var['link_button']);
 			// return "<img class='icon' src='".$path."' alt=''  />";	
 		}
 

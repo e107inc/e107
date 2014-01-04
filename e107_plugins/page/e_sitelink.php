@@ -72,7 +72,7 @@ class page_sitelink // include plugin-folder in the name.
 					'link_name'			=> $tp->toHtml($row['chapter_name'],'','TITLE'),
 					'link_url'			=> 'page.php?ch='.$row['chapter_id'], //TODO FIXME chapter_sef support
 					'link_description'	=> '',
-					'link_button'		=> '',
+					'link_button'		=> $row['chapter_icon'],
 					'link_category'		=> '',
 					'link_order'		=> '',
 					'link_parent'		=> $row['chapter_parent'],
@@ -155,7 +155,7 @@ class page_sitelink // include plugin-folder in the name.
 				'link_name'			=> $row['page_title'] ? $row['page_title'] : 'No title', // FIXME lan
 				'link_url'			=> e107::getUrl()->create('page/view', $row, array('allow' => 'page_sef,page_title,page_id')),
 				'link_description'	=> '',
-				'link_button'		=> '',
+				'link_button'		=> $row['menu_image'],
 				'link_category'		=> '',
 				'link_order'		=> $row['page_order'],
 				'link_parent'		=> $row['page_chapter'],
@@ -204,7 +204,7 @@ class page_sitelink // include plugin-folder in the name.
 			//	'link_url'			=> vartrue($row['chapter_sef'],'#'),
 				
 				'link_description'	=> '',
-				'link_button'		=> '',
+				'link_button'		=> $row['chapter_icon'],
 				'link_category'		=> '',
 				'link_order'		=> $row['chapter_order'],
 				'link_parent'		=> $row['chapter_parent'],
