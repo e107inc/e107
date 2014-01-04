@@ -625,19 +625,28 @@ class download
 			</div>";
 		}
 
-		global $nextprev_parms;
-	
+		
 	//	$newUrl = e_SELF . "?action=list&id={$this->qry['id']}&from=[FROM]&view={$this->qry['view']}&order={$this->qry['order']}&sort={$this->qry['sort']}.";
 			
 		$nextprevQry = $this->qry;
 		$nextprevQry['from'] = '[FROM]';
 		
 		$newUrl = e107::getUrl()->create('download/list/category',$nextprevQry);
-				
-		$nextprev_parms = $total_downloads . "," . $this->qry['view'] . "," . $this->qry['from'] . "," . $newUrl;
-		
+
+		$nextprev = array(
+				'tmpl_prefix'	=>'default',
+				'total'			=> $total_downloads,
+				'amount'		=> intval($this->qry['view']),
+				'current'		=> $this->qry['from'],
+				'url'			=> urldecode($newUrl)
+		);
+
+		global $nextprev_parms;
+	
+		$nextprev_parms  = http_build_query($nextprev,false,'&'); // 'tmpl_prefix='.deftrue('NEWS_NEXTPREV_TMPL', 'default').'&total='. $total_downloads.'&amount='.$amount.'&current='.$newsfrom.$nitems.'&url='.$url;
+
 		$text .= $tp->parseTemplate($DOWNLOAD_LIST_NEXTPREV, TRUE, $sc);	
-		
+
 		return $text;
 		
 	}

@@ -3583,6 +3583,16 @@ class eRequest
 		define("e_SELF", e_REQUEST_SELF);
 		define("e_QUERY", $qstring);
 		$_SERVER['QUERY_STRING'] = e_QUERY;	
+		
+		if(strpos(e_QUERY,"=")!==false ) // Fix for legacyQuery using $_GET ie. ?x=y&z=1 etc. 
+		{
+			parse_str(e_QUERY,$tmp);	
+			foreach($tmp as $key=>$value)
+			{
+				$_GET[$key] = $value;	
+			}
+		}
+		
 		return $this;
 	}
 	
