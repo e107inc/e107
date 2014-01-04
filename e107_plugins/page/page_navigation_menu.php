@@ -17,7 +17,7 @@ if (!defined('e107_INIT')) { exit; }
 
 $parm = eHelper::scParams($parm);
 
-$tmpl = e107::getCoreTemplate('chapter','nav',false,true); // always merge
+$tmpl = e107::getCoreTemplate('chapter','nav',true,true); // always merge and allow override
 
 $template = $tmpl['showPage'];
 
