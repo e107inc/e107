@@ -16,7 +16,10 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-class e_search {
+class e_search 
+{
+	
+	
 	
 	var $query;
 	var $text;
@@ -26,7 +29,7 @@ class e_search {
 	var $stopwords_php = "|a|about|an|and|are|as|at|be|by|com|edu|for|from|how|i|in|is|it|of|on|or|that|the|this|to|was|what|when|where|who|will|with|the|www|";
 	var $stopwords_mysql = "|a|a's|able|about|above|according|accordingly|across|actually|after|afterwards|again|against|ain't|all|allow|allows|almost|alone|along|already|also|although|always|am|among|amongst|an|and|another|any|anybody|anyhow|anyone|anything|anyway|anyways|anywhere|apart|appear|appreciate|appropriate|are|aren't|around|as|aside|ask|asking|associated|at|available|away|awfully|be|became|because|become|becomes|becoming|been|before|beforehand|behind|being|believe|below|beside|besides|best|better|between|beyond|both|brief|but|by|c'mon|c's|came|can|can't|cannot|cant|cause|causes|certain|certainly|changes|clearly|co|com|come|comes|concerning|consequently|consider|considering|contain|containing|contains|corresponding|could|couldn't|course|currently|definitely|described|despite|did|didn't|different|do|does|doesn't|doing|don't|done|down|downwards|during|each|edu|eg|eight|either|else|elsewhere|enough|entirely|especially|et|etc|even|ever|every|everybody|everyone|everything|everywhere|ex|exactly|example|except|far|few|fifth|first|five|followed|following|follows|for|former|formerly|forth|four|from|further|furthermore|get|gets|getting|given|gives|go|goes|going|gone|got|gotten|greetings|had|hadn't|happens|hardly|has|hasn't|have|haven't|having|he|he's|hello|help|hence|her|here|here's|hereafter|hereby|herein|hereupon|hers|herself|hi|him|himself|his|hither|hopefully|how|howbeit|however|i|i'd|i'll|i'm|i've|ie|if|ignored|immediate|in|inasmuch|inc|indeed|indicate|indicated|indicates|inner|insofar|instead|into|inward|is|isn't|it|it'd|it'll|it's|its|itself|just|keep|keeps|kept|know|knows|known|last|lately|later|latter|latterly|least|less|lest|let|let's|like|liked|likely|little|look|looking|looks|ltd|mainly|many|may|maybe|me|mean|meanwhile|merely|might|more|moreover|most|mostly|much|must|my|myself|name|namely|nd|near|nearly|necessary|need|needs|neither|never|nevertheless|new|next|nine|no|nobody|non|none|noone|nor|normally|not|nothing|novel|now|nowhere|obviously|of|off|often|oh|ok|okay|old|on|once|one|ones|only|onto|or|other|others|otherwise|ought|our|ours|ourselves|out|outside|over|overall|own|particular|particularly|per|perhaps|php|placed|please|plus|possible|presumably|probably|provides|que|quite|qv|rather|rd|re|really|reasonably|regarding|regardless|regards|relatively|respectively|right|said|same|saw|say|saying|says|second|secondly|see|seeing|seem|seemed|seeming|seems|seen|self|selves|sensible|sent|serious|seriously|seven|several|shall|she|should|shouldn't|since|six|so|some|somebody|somehow|someone|something|sometime|sometimes|somewhat|somewhere|soon|sorry|specified|specify|specifying|still|sub|such|sup|sure|t's|take|taken|tell|tends|th|than|thank|thanks|thanx|that|that's|thats|the|their|theirs|them|themselves|then|thence|there|there's|thereafter|thereby|therefore|therein|theres|thereupon|these|they|they'd|they'll|they're|they've|think|third|this|thorough|thoroughly|those|though|three|through|throughout|thru|thus|to|together|too|took|toward|towards|tried|tries|truly|try|trying|twice|two|un|under|unfortunately|unless|unlikely|until|unto|up|upon|us|use|used|useful|uses|using|usually|value|various|very|via|viz|vs|want|wants|was|wasn't|way|we|we'd|we'll|we're|we've|welcome|well|went|were|weren't|what|what's|whatever|when|whence|whenever|where|where's|whereafter|whereas|whereby|wherein|whereupon|wherever|whether|which|while|whither|who|who's|whoever|whole|whom|whose|why|will|willing|wish|with|within|without|won't|wonder|would|would|wouldn't|yes|yet|you|you'd|you'll|you're|you've|your|yours|yourself|yourselves|zero|";
 	
-	function e_search()
+	function __construct()
 	{
 		$tp = e107::getParser();
 		$this->query = $query;
@@ -73,32 +76,68 @@ class e_search {
 		}
 	}
 
-	function parsesearch($table, $return_fields, $search_fields, $weights, $handler, $no_results, $where, $order) {
-		global $sql, $query, $tp, $search_prefs, $pre_title, $search_chars, $search_res, $result_flag;
+
+
+
+
+
+
+
+
+
+
+	function parsesearch($table, $return_fields, $search_fields, $weights, $handler, $no_results, $where, $order) 
+	{
+		global $query, $search_prefs, $pre_title, $search_chars, $search_res, $result_flag;
+		
+		
+		$sql = e107::getDb('search');
 		$tp = e107::getParser();
+		
+		if($handler == 'self')
+		{
+			$handler = array($this,'compile');	
+		}
+		
+		if(is_array($return_fields))
+		{
+			$return_fields = implode(",",$return_fields);	
+		}
+		
 		$this -> query = $tp -> toDB($query);
-		if (!$search_prefs['mysql_sort']) {
+		
+		if (!$search_prefs['mysql_sort']) 
+		{
 			$field_operator = 'AND ';
-			foreach ($this -> keywords['match'] as $k_key => $key) {
+			foreach ($this -> keywords['match'] as $k_key => $key) 
+			{
 				$boolean_regex = '';
-				if ($this -> keywords['boolean'][$k_key] == '+') {
+				if ($this -> keywords['boolean'][$k_key] == '+') 
+				{
 					$key_operator = 'OR ';
 					$break = TRUE;
 					$no_exact = TRUE;
-				} else if ($this -> keywords['boolean'][$k_key] == '-') {
-					foreach ($this -> keywords as $unset_key => $unset_value) {
+				} else if ($this -> keywords['boolean'][$k_key] == '-') 
+				{
+					foreach ($this -> keywords as $unset_key => $unset_value) 
+					{
 						unset($this -> keywords[$unset_key][$k_key]);
 					}
 					$key_operator = 'AND ';
 					$boolean_regex = 'NOT';
 					$no_exact = TRUE;
-				} else if (!isset($break)) {
+				} 
+				else if (!isset($break)) 
+				{
 					$key_operator = 'OR ';
-					if (isset($switch)) {
+					if (isset($switch)) 
+					{
 						$field_operator = 'OR ';
 					}
 					$switch = TRUE;
-				} else {
+				} 
+				else 
+				{
 					break;
 				}
 				$match_query .= isset($uninitial_field) ? " ".$field_operator." (" : "(";
@@ -139,7 +178,9 @@ class e_search {
 				$exact_query[] = $query;
 				$this -> keywords['split'] = array_merge($exact_query, $this -> keywords['split']);
 			}
-		} else {
+		}
+		else 
+		{
 			$this -> query = str_replace('&quot;', '"', $this -> query);
 			$field_query = implode(',', $search_fields);
 			foreach ($search_fields as $field_key => $field) {
@@ -154,22 +195,31 @@ class e_search {
 			$sql_query = "SELECT SQL_CALC_FOUND_ROWS ".$return_fields.", (".$match_query.") AS relevance FROM #".$table." WHERE ".$where." ( MATCH(".$field_query.") AGAINST ('".$this -> query."' IN BOOLEAN MODE) ) HAVING relevance > 0 ORDER BY relevance DESC ".$sql_order.$limit.";";
 		}
 
-		if ($ps['results'] = $sql -> db_Select_gen($sql_query)) {
-			if (!$search_prefs['mysql_sort']) {
+		if ($ps['results'] = $sql->gen($sql_query)) 
+		{
+			if (!$search_prefs['mysql_sort'])
+			 {
 				$x = 0;
 				foreach ($search_fields as $field_key => $field) {
 					$crop_fields[] = preg_replace('/(.*?)\./', '', $field);
 				}
-				while ($row = $sql -> db_Fetch()) {
+				while ($row = $sql -> db_Fetch()) 
+				{
 					$weight = 0;
-					foreach ($crop_fields as $field_key => $field) {
+					foreach ($crop_fields as $field_key => $field) 
+					{
 						$this -> text = $row[$field];
-						foreach ($this -> keywords['match'] as $k_key => $this -> query) {
-							if (stristr($this -> text, $this -> query) !== FALSE) {
-								if ($this -> keywords['exact'][$k_key] || $this -> keywords['boolean'][$k_key]) {
+						foreach ($this -> keywords['match'] as $k_key => $this -> query) 
+						{
+							if (stristr($this -> text, $this -> query) !== FALSE) 
+							{
+								if ($this -> keywords['exact'][$k_key] || $this -> keywords['boolean'][$k_key]) 
+								{
 									$weight += (($weights[$field_key] * 2) * ($keycount));
 									$endweight = TRUE;
-								} else if (!$endweight) {
+								} 
+								else if (!$endweight)
+								 {
 									$weight += $weights[$field_key];
 								}
 							}
@@ -177,7 +227,8 @@ class e_search {
 						$endweight = FALSE;
 						
 					}
-					foreach ($row as $r_key => $r_value) {
+					foreach ($row as $r_key => $r_value) 
+					{
 						$qrow[$x][$r_key] = $r_value;
 						$qrow[$x]['relevance'] = $weight;
 						$qrow[$x]['search_id'] = $x;
@@ -185,7 +236,8 @@ class e_search {
 					$x++;
 				}
 	
-				foreach($qrow as $info) {
+				foreach($qrow as $info) 
+				{
 					$sortarr[] = $info['relevance'];
 				}
 				array_multisort($sortarr, SORT_DESC, $qrow, SORT_DESC);
@@ -197,15 +249,19 @@ class e_search {
 
 			} else {
 				$x = 0;
-				while ($row = $sql -> db_Fetch()) {
+				while ($row = $sql -> db_Fetch()) 
+				{
 					$display_row[] = $row;
 					$x++;
 				}
 			}
 
-			foreach ($display_row as $row) {
+			foreach ($display_row as $row) 
+			{
 				$res = call_user_func($handler, $row);
-				if (!$res['omit_result']) {
+				
+				if (!$res['omit_result']) 
+				{
 					$matches = array($res['title'], $res['summary']);
 					$endcrop = FALSE;
 					$output = '';
@@ -263,7 +319,9 @@ class e_search {
 			for ($i = 0; $i < $result_number; $i++) {
 				$ps['text'] .= $ps_limit[$i];
 			}
-		} else {
+		} 
+		else 
+		{
 			$ps['text'] = $no_results;
 		}
 		if ($search_prefs['mysql_sort']) 
@@ -273,7 +331,10 @@ class e_search {
 		return $ps;
 	}
 	
-	function parsesearch_crop() {
+	
+	
+	function parsesearch_crop() 
+	{
 		global $search_chars;
 		$tp = e107::getParser();
 		if (strlen($this -> text) > $search_chars) {
@@ -288,8 +349,11 @@ class e_search {
 			$this -> pos = $tp->ustrlen($this -> text) - $tp->ustrlen($match_start);
 		}
 	}
+
+
 	
-	function stopword($key) {
+	function stopword($key) 
+	{
 		global $search_prefs;
 		$tp = e107::getParser();
 		if ($search_prefs['mysql_sort'] && ($key{0} == '+')) {
@@ -316,4 +380,7 @@ class e_search {
 			return FALSE;
 		}
 	}
+	
+	
+	
 }

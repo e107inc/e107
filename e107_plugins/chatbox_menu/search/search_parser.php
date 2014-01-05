@@ -40,6 +40,8 @@ $ps = $sch -> parsesearch('chatbox', $return_fields, $search_fields, $weights, '
 $text .= $ps['text'];
 $results = $ps['results'];
 
+echo "result = ".$ps['results'];
+
 function search_chatbox($row) {
 	global $con, $cb_count;
 	preg_match("/([0-9]+)\.(.*)/", $row['cb_nick'], $user);

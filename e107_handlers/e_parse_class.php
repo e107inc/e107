@@ -2721,8 +2721,7 @@ class e_parser
 	 */
 	public function toIcon($icon='',$legacyPath ='')
 	{
-		
-		
+	
 		if(!vartrue($icon))
 		{
 			return;
