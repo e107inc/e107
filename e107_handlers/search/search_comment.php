@@ -27,11 +27,11 @@ if (isset($_GET['time']) && is_numeric($_GET['time'])) {
 }
 
 if (isset($_GET['author']) && $_GET['author'] != '') {
-	$advanced_where .= " c.comment_author LIKE '%".$tp -> toDB($_GET['author'])."%' AND";
+	$advanced_where .= " c.comment_author_name LIKE '%".$tp -> toDB($_GET['author'])."%' AND";
 }
 
 //basic
-$return_fields = 'c.comment_item_id, c.comment_author, c.comment_datestamp, c.comment_comment, c.comment_type';
+$return_fields = 'c.comment_item_id, c.comment_author_id, comment_author_name, c.comment_datestamp, c.comment_comment, c.comment_type';
 
 foreach ($search_prefs['comments_handlers'] as $h_key => $value) {
 	if (check_class($value['class'])) {
@@ -46,7 +46,7 @@ foreach ($search_prefs['comments_handlers'] as $h_key => $value) {
 	}
 }
 
-$search_fields = array('c.comment_comment', 'c.comment_author');
+$search_fields = array('c.comment_comment', 'c.comment_author_name');
 $weights = array('1.2', '0.6');
 $no_results = LAN_198;
 $where = "comment_type IN (".implode(',', $in).") AND".$advanced_where;

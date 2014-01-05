@@ -1750,8 +1750,7 @@ class e107
 	}
 
 	/**
-	 * Retrieves config() from addons such as e_url.php, e_cron.php, e_sitelink.php
-	 * FIXME ASAP extremely bad standard e.g. e_sitelink.php -> plugin_sitelinks. Should be e_sitelinks.php -> plugin_sitelinks or e_sitelink.php -> plugin_sitelink
+	 * Retrieves config() from a specific plugin for addons such as e_url.php, e_cron.php, e_sitelink.php
 	 * FIXME override from e.g. core/override/addons/
 	 * 
 	 * @param string $pluginName e.g. faq, page
@@ -1787,7 +1786,7 @@ class e107
 	}
 
 	/**
-	 * Retrieves config() from addons such as e_url.php, e_cron.php, e_sitelink.php
+	 * Retrieves config() from all plugins for addons such as e_url.php, e_cron.php, e_sitelink.php
 	 * @param string $addonName eg. e_cron, e_url
 	 * @param string $className [optional] (if different from addonName)
 	 * @return none
@@ -1804,6 +1803,7 @@ class e107
 		}
 
 		$elist = self::getPref($filename.'_list');
+		
 		if($elist)
 		{
 			foreach(array_keys($elist) as $key)
