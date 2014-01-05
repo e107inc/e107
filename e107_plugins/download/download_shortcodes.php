@@ -867,12 +867,30 @@ class download_shortcodes extends e_shortcode
    
    function sc_download_cat_search()
    {
-      return "<form class='form-search' method='get' action='".e_BASE."search.php'>
-      		  <p>
-      		  <input class='tbox search-query' type='text' name='q' size='30' value='' placeholder=\"".LAN_dl_41."\" maxlength='50' />
-      		  <input class='btn btn-primary button' type='submit' name='s'  value='".LAN_GO."' />
+   		$text = "<form class='form-search form-inline' method='get' action='".e_BASE."search.php'>";
+   		$text .= '<div><div class="input-group">';
+		$text .= "<input class='tbox form-control search-query' type='text' name='q' size='30' value='' placeholder=\"".LAN_dl_41."\" maxlength='50' />
+		 			<input type='hidden' name='r' value='0' />
+		 			<input type='hidden' name='t' value='downloads' />
+		 			";
+			
+		$text .= '
+              <span class="input-group-btn">
+              <button class="btn btn-default" type="submit" name="s"  value="1">
+              <span class="glyphicon glyphicon-search"></span>
+             </button>
+             </span>
+             </div><!-- /input-group -->
+        </div></form>';
+	
+	return $text;
+	
+      return "<form class='form-search form-inline' method='get' action='".e_BASE."search.php'>
+      		  <div class='input-group'>
+      		  <input class='tbox form-control search-query' type='text' name='q' size='30' value='' placeholder=\"".LAN_dl_41."\" maxlength='50' />
+      		  <button class='btn btn-primary button' type='submit' name='s'  value='1' />".LAN_GO."</button>
       		  <input type='hidden' name='r' value='0' />
-      		  </p>
+      		  </div>
       		  </form>";
    }
    
@@ -906,12 +924,14 @@ class download_shortcodes extends e_shortcode
 	
 	private function renderNewIcon()
 	{
-		if(strstr(IMAGE_NEW,'<i '))
+		if(strstr(IMAGE_NEW,'<i ') || strstr(IMAGE_NEW,'<span'))
 		{
 			return IMAGE_NEW;	
 		}
+			
+		 return e107::getParser()->toIcon(IMAGE_NEW);
 		
-		return "<img src='".IMAGE_NEW."' alt='*' style='vertical-align:middle' />";	
+	//	return "<img src='".IMAGE_NEW."' alt='*' style='vertical-align:middle' />";	
 	}
 }
 ?>
