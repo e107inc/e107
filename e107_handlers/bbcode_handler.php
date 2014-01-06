@@ -517,6 +517,11 @@ class e_bbcode
 		{
 	        $BBCODE_TEMPLATE = $temp[$template];
 		}
+		elseif(strpos($template,"{")!==false) // custom template provided manually. eg. $template = "<div class='btn-group inline-text'>{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=format}</div>"
+		{
+			$BBCODE_TEMPLATE = $template;	
+			$template = 'comment';	
+		}
 		else
 		{
 			$BBCODE_TEMPLATE = $BBCODE_TEMPLATE;	
