@@ -42,10 +42,16 @@ class core_page_url extends eUrlConfig
 			 $route = explode('/', $route, 2);
 			
 		}
+		
 			
 		if(!varset($route[1])) $route[1] = 'index';
 		
 		$url = 'page.php?';
+		
+		if(isset($params['chapter_id']) && !empty($params['chapter_id']))
+		{
+			 $params['id'] = $params['chapter_id'];
+		}
 		
 		switch ($route[0]) 
 		{
