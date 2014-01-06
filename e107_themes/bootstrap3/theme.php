@@ -30,7 +30,7 @@ function tablestyle($caption, $text, $mode='')
 		$type = 'box';
 	}
 	
-	if($style == 'navdoc')
+	if($style == 'navdoc' || $mode == 'featurebox')
 	{
 		echo $text;
 		return;
@@ -101,9 +101,7 @@ $LAYOUT['_header_'] = '
       </div>
     </div>
 
-    <!-- Main jumbotron for a primary marketing message or call to action -->
-    {SETSTYLE=jumbotron}
-	{WMESSAGE}
+  
 	
 ';
 
@@ -121,7 +119,11 @@ $LAYOUT['_footer_'] = '  <hr>
 // $LAYOUT is a combined $HEADER and $FOOTER, automatically split at the point of "{---}"
 
 $LAYOUT['jumbotron_home'] =  '
+  <!-- Main jumbotron for a primary marketing message or call to action -->
+    {SETSTYLE=jumbotron}
    
+	{WMESSAGE=force}   
+
 	{SETSTYLE=default}
 	<div class="container">	
 	{ALERTS}
@@ -141,6 +143,31 @@ $LAYOUT['jumbotron_home'] =  '
 	';
 
 
+$LAYOUT['jumbotron_carousel'] =  '
+  <!-- Main jumbotron for a primary marketing message or call to action -->
+    {SETSTYLE=jumbotron}
+   
+   	{WMESSAGE=hide}   
+	
+	{FEATUREBOX}   
+
+	{SETSTYLE=default}
+	<div class="container">	
+	{ALERTS}
+   
+	{---}
+	
+	</div>
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+      {SETSTYLE=col-md-4}
+	  {CMENU=jumbotron-menu-1}
+	  {CMENU=jumbotron-menu-2}
+	  {CMENU=jumbotron-menu-3}
+      </div>
+
+	';
 
 $LAYOUT['jumbotron_full'] = '
    

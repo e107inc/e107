@@ -11,12 +11,24 @@ global $sc_style;
 
 // e107 v2.x Defaults. 
 
+$FEATUREBOX_TEMPLATE['bootstrap_carousel_default'] = '{SETIMAGE: w=1900&h=500&crop=1}
+		<div class="{FEATUREBOX_ACTIVE} item slide{FEATUREBOX_COUNTER}">
+			{FEATUREBOX_IMAGE=placeholder}		
+           <div class="container">
+            <div class="carousel-caption">
+              <h1>{FEATUREBOX_TITLE}</h1>
+              <p>{FEATUREBOX_TEXT}</p>
+            </div>
+          </div>
+        </div>';
+
+
 $FEATUREBOX_TEMPLATE['bootstrap_carousel_left'] = '
-   <!-- slide -->
+   <!-- slide -->			 {SETIMAGE: w=600&h=500&crop=1}
                             <div class="{FEATUREBOX_ACTIVE} item slide{FEATUREBOX_COUNTER}">
-                                <div class="media">
+                                <div class="media container">
                                     <div class="media-object featurebox-item-image pull-left ">
-                                    	{FEATUREBOX_IMAGE}
+                                    	{FEATUREBOX_IMAGE=placeholder}
                                      </div>
                                     <div class="media-body featurebox-item-text span4">
                                         <h1>
@@ -31,25 +43,30 @@ $FEATUREBOX_TEMPLATE['bootstrap_carousel_left'] = '
 ';
 
 $FEATUREBOX_TEMPLATE['bootstrap_carousel_right'] = '
+							{SETIMAGE: w=600&h=500&crop=1}
  							<div class="{FEATUREBOX_ACTIVE} item slide{FEATUREBOX_COUNTER}">
-                                <div class="media">
-                                    <div class="featurebox-item-text media-body animated fadeInUpBig">
+                                <div class="media container">
+                                 <div class="featurebox-item-image media-object pull-right span6 animated fadeInDownBig">
+                                         {FEATUREBOX_IMAGE=placeholder}
+                                    </div>
+                                    <div class="featurebox-item-text media-body  animated fadeInUpBig">
                                         <h1>{FEATUREBOX_TITLE}</h1>
                                         {FEATUREBOX_TEXT}
-                                    </div>
-                                    <div class="featurebox-item-image media-object span6 animated fadeInDownBig">
-                                         {FEATUREBOX_IMAGE}
                                     </div>
                                 </div>
                             </div>
 ';
 
 
-$FEATUREBOX_TEMPLATE['bootstrap_carousel_image'] = '
- 							<div class="item slide3 animated fadeInUpBig">
-                               {FEATUREBOX_IMAGE}
-                            </div>
+$FEATUREBOX_TEMPLATE['bootstrap_carousel_image'] = '{SETIMAGE: w=1900&h=500&crop=1}
+
+									<div class="item">			
+									{FEATUREBOX_IMAGE=placeholder}		
+									</div>
 ';
+
+
+
 
 
 // ----------------------------
