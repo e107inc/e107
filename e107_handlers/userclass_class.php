@@ -557,6 +557,7 @@ class user_class
 	public function uc_checkboxes($fieldname, $curval='', $optlist = '', $showdescription = FALSE, $asArray = FALSE)
 	{
 		$show_classes = $this->uc_required_class_list($optlist);
+		$frm = e107::getForm();
 
 		$curArray = explode(',', $curval);				// Array of current values
 		$ret = array();
@@ -565,9 +566,14 @@ class user_class
 		{
 			if ($k != e_UC_BLANK)
 			{
-				$c = (in_array($k,$curArray)) ?  " checked='checked'" : '';
+				// $c = (in_array($k,$curArray)) ?  " checked='checked'" : '';
+				$c = (in_array($k,$curArray)) ?  true : false;
 				if ($showdescription) $v .= ' ('.$this->uc_get_classdescription($k).')';
-				$ret[] = "<div class='field-spacer'><input type='checkbox' class='checkbox' name='{$fieldname}[{$k}]' id='{$fieldname}-{$k}' value='{$k}'{$c} /><label for='{$fieldname}-{$k}'>".$v."</label></div>\n";
+				//$ret[] = "<div class='field-spacer'><input type='checkbox' class='checkbox' name='{$fieldname}[{$k}]' id='{$fieldname}-{$k}' value='{$k}'{$c} /><label for='{$fieldname}-{$k}'>".$v."</label></div>\n";
+				
+				$ret[] = $frm->checkbox($fieldname[$k],$k,$c,$v);
+				//$ret[] = "<div class='field-spacer'><input type='checkbox' class='checkbox' name='{$fieldname}[{$k}]' id='{$fieldname}-{$k}' value='{$k}'{$c} /><label for='{$fieldname}-{$k}'>".$v."</label></div>\n";
+		
 			}
 		}
 		if ($asArray) return $ret;
