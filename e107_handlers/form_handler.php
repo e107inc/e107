@@ -973,12 +973,23 @@ class e_form
 	* @param string $name
 	* @param mixed $value
 	* @param boolean $checked
-	* @param array $options 
+	* @param mixed $options query-string or array or string for a label. eg. label=Hello&foo=bar or array('label'=>Hello') or 'Hello'
 	* @return void
 	*/
 	function checkbox($name, $value, $checked = false, $options = array())
 	{
-		if(!is_array($options)) parse_str($options, $options);
+		if(!is_array($options))
+		{
+			if(strpos($options,"=")!==false)
+			{
+			 	parse_str($options, $options);
+			}
+			else // Assume it's a label. 
+			{
+				$options = array('label'=>$options);
+			}
+	
+		}
 		$options = $this->format_options('checkbox', $name, $options);
 		
 		$options['checked'] = $checked; //comes as separate argument just for convenience
