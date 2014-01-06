@@ -40,35 +40,36 @@ class featurebox_setup
 		$count = 0;
 		foreach($e107_featurebox_category as $insert)
 		{
-			$count = e107::getDb()->db_Insert('featurebox_category', $insert) ?  $count + 1 : $count;	
+			$count = e107::getDb()->insert('featurebox_category', $insert) ?  $count + 1 : $count;	
 		}
 		
 	
 		$status = ($count == 3) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR; 
+		
 		$mes->add(FBLAN_INSTALL_01, $status);
 		
 		if($status)
 		{
-			$query = array();
-			$query['fb_id'] = 0;
-			$query['fb_category'] = $inserted;
-			$query['fb_title'] = 'Default Title';
-			$query['fb_text'] = 'Default Message';
-			$query['fb_mode'] = 0;
-			$query['fb_class'] = e_UC_PUBLIC;
-			$query['fb_rendertype'] = 0;
-			$query['fb_template'] = 'bootstrap_carousel';
-			$query['fb_order'] = 0;
-			$query['fb_image'] = '';
-			$query['fb_imageurl'] = '';
+			$e107_featurebox = array(
+			  array('fb_id'=>'4','fb_title'=>'Slide 1','fb_text'=>'Default Message - this is the default','fb_mode'=>'0','fb_class'=>'0','fb_rendertype'=>'0','fb_template'=>'bootstrap_carousel_default','fb_order'=>'3','fb_image'=>'','fb_imageurl'=>'','fb_category'=>'1'),
+			  array('fb_id'=>'6','fb_title'=>'Slide 2','fb_text'=>'Suspendisse ac dui purus. Cras eleifend, velit sed dapibus pharetra, elit dolor mattis tellus, ac luctus nisi massa at ligula. Ut sagittis, neque consequat elementum convallis, lorem nulla molestie arcu, eu rutrum velit quam at metus! Nullam eu eleifend magna. Praesent eget leo felis, vel euismod nibh. Morbi sem eros, pellentesque eu scelerisque id, pretium id enim. Mauris aliquet molestie dui vel ultricies. Etiam consequat quam sed tellus facilisis sollicitudin. Vivamus malesuada iaculis metus.
+			','fb_mode'=>'0','fb_class'=>'0','fb_rendertype'=>'0','fb_template'=>'bootstrap_carousel_left','fb_order'=>'4','fb_image'=>'','fb_imageurl'=>'','fb_category'=>'1'),
+			  array('fb_id'=>'10','fb_title'=>'Slide 3','fb_text'=>'Suspendisse ac dui purus. Cras eleifend, velit sed dapibus pharetra, elit dolor mattis tellus, ac luctus nisi massa at ligula. Ut sagittis, neque consequat elementum convallis, lorem nulla molestie arcu, eu rutrum velit quam at metus! Nullam eu eleifend magna. Praesent eget leo felis, vel euismod nibh. Morbi sem eros, pellentesque eu scelerisque id, pretium id enim. Mauris aliquet molestie dui vel ultricies. Etiam consequat quam sed tellus facilisis sollicitudin. Vivamus malesuada iaculis metus.
+			','fb_mode'=>'0','fb_class'=>'0','fb_rendertype'=>'0','fb_template'=>'bootstrap_carousel_right','fb_order'=>'4','fb_image'=>'','fb_imageurl'=>'','fb_category'=>'1')
+			);
 			
-			$status = e107::getDb('sql2')->db_Insert('featurebox', $query) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR; 
+			foreach($e107_featurebox as $qry)
+			{
+				$status = e107::getDb('sql2')->insert('featurebox', $qry) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR; 	
+			}
+			$mes->add(FBLAN_INSTALL_02, $status);
 		}
 		else 
 		{
 			$status = E_MESSAGE_ERROR;
+			$mes->add(FBLAN_INSTALL_02, $status);
 		}
-		$mes->add(FBLAN_INSTALL_02, $status);
+		
 	}
 /*	
 	function uninstall_options()

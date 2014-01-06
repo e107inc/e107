@@ -18,8 +18,9 @@
 		<layout name='jumbotron_home' title='Jumbotron (home)' default='false'>
 			<custompages>FRONTPAGE</custompages>	
 		</layout>
-		<layout name='jumbotron_full' title='Jumbotron (full-width)' default='true' />
-		<layout name='jumbotron_sidebar_right' title='Jumbotron (sidebar-right)' >
+		<layout name='jumbotron_carousel' title='Jumbotron (home with carousel)' />
+		<layout name='jumbotron_full' title='Jumbotron (full-width)'  />
+		<layout name='jumbotron_sidebar_right' title='Jumbotron (sidebar-right)' default='true' >
 			<custompages>/news</custompages>
 			<menuPresets>
 				<area id='1'>

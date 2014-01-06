@@ -2,6 +2,11 @@
 
 function wmessage_shortcode($parm)
 {
+	if($parm == 'hide')
+	{
+		return;
+	}
+	
 	$e107 = e107::getInstance();
 	$e107cache = e107::getCache();
 	$pref = e107::getPref();

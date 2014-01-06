@@ -120,27 +120,29 @@ class plugin_featurebox_item extends e_model
 	 */
 	public function sc_featurebox_image($parm = '')
 	{
-		if(!$this->get('fb_image'))
+		if(!$this->get('fb_image') && $parm != 'placeholder')
 		{
 			return '';
 		}
 		parse_str($parm, $parm);
 		$tp = e107::getParser();
 		
+		$imageSrc = ($parm != 'placeholder') ? $this->get('fb_image') : "";
+		
 		if($tp->thumbWidth > 100 || $tp->thumbHeight > 100) //Guessing it's a featurebox image.  Use {SETIMAGE} inside theme.php to configure. 
 		{
-			$src = $tp->thumbUrl($this->get('fb_image')); //XXX TODO TBD Add a pref to use without resizing? Or, detect {SETIMAGE} in template to enable?
+			$src = $tp->thumbUrl($imageSrc); //XXX TODO TBD Add a pref to use without resizing? Or, detect {SETIMAGE} in template to enable?
 		}
 		else 
 		{
-			$src = $tp->replaceConstants($this->get('fb_image'), 'full');
+			$src = $tp->replaceConstants($imageSrc, 'full');
 		}
 		
 		if(isset($parm['src']))
 		{
 			return $src;
 		}
-		$tag = '<img id="featurebox-image-'.$this->getId().'" src="'.$src.'" alt="'.$tp->toAttribute($this->get('fb_title')).'" class="featurebox" />';
+		$tag = '<img id="featurebox-image-'.$this->getId().'" src="'.$src.'" alt="'.$tp->toAttribute($this->get('fb_title')).'" class="featurebox img-responsive" />';
 		if(isset($parm['nourl']) || !$this->get('fb_imageurl'))
 		{
 			return $tag;

@@ -28,8 +28,15 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 	 * @param string $mod category template
 	 * @example {FEATUREBOX=cols=2|tabs}
 	 */
-	function sc_featurebox($parm, $mod = '')
+	function sc_featurebox($parm=null, $mod = '')
 	{
+		
+		if($parm == null && $mod == '') // ie {FEATUREBOX}
+		{
+			$type 	= vartrue(e107::getPlugPref('featurebox','menu_category'),'bootstrap_carousel');
+			$text = e107::getParser()->parseTemplate("{FEATUREBOX|".$type."}");
+			return $text;
+		}
 		
 		// TODO cache
 		if(!e107::isInstalled('featurebox')) //just in case
