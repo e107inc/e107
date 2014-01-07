@@ -4,6 +4,10 @@
 	<summary>Bootstrap3 e107 theme</summary>
 	<description>a bootstrap 3 theme for the frontend</description>
 	<category>generic</category>
+	<plugins>
+		<plugin name='featurebox' url='core' />
+		<plugin name='gallery' url='core' />
+	</plugins>
 	<keywords>
 		<word>bootstrap</word>
 		<word>clean</word>
@@ -18,7 +22,7 @@
 		<layout name='jumbotron_home' title='Jumbotron (home)' default='false'>
 			<custompages>FRONTPAGE</custompages>	
 		</layout>
-		<layout name='jumbotron_carousel' title='Jumbotron (home with carousel)' />
+		<layout name='modern_business_home' title='Modern Business: Home page carousel with fixed custom-menus' />
 		<layout name='jumbotron_full' title='Jumbotron (full-width)'  />
 		<layout name='jumbotron_sidebar_right' title='Jumbotron (sidebar-right)' default='true' >
 			<custompages>/news</custompages>

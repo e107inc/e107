@@ -410,11 +410,16 @@ class e_menu
 				$page_shortcodes = e107::getScBatch('page',null,'cpage');  
 				$page_shortcodes->page = $page;
 				  
+				$head = $tp->parseTemplate($template['start'], true);
+				$foot = $tp->parseTemplate($template['end'], true);
+				  
 			// 	print_a($template['body']);           
-				$text = $template['start'].$tp->parseTemplate($template['body'], true, $page_shortcodes).$template['end'];
+				$text = $head.$tp->parseTemplate($template['body'], true, $page_shortcodes).$template['end'];
 			// 	echo "TEMPLATE= ($mpath)".$page['menu_template'];
 				
-			//	if($template['noTableRender'] !==true) // XXX Deprecated - causes confusion while themeing. 
+				
+				
+			//	if($template['noTableRender'] !==true) // XXX Deprecated - causes confusion while themeing. use {SETSTYLE=none} instead. 
 			//	{
 					$ns->tablerender($caption, $text, 'cmenu-'.$page['menu_template']);
 			//	}
