@@ -83,9 +83,6 @@ class e_search
 
 
 
-
-
-
 	function parsesearch($table, $return_fields, $search_fields, $weights, $handler, $no_results, $where, $order) 
 	{
 		global $query, $search_prefs, $pre_title, $search_chars, $search_res, $result_flag;
@@ -264,7 +261,7 @@ class e_search
 				{
 					$matches = array($res['title'], $res['summary']);
 					$endcrop = FALSE;
-					$output = '';
+					$output = '<!-- Start Search Results -->';
 					$title = TRUE;
 					foreach ($matches as $this -> text) {
 						$this -> text = nl2br($this -> text);
@@ -274,8 +271,11 @@ class e_search
 						$s_replace = array(' ', '<', '>');
 						$search = array_merge($t_search, $s_search);
 						$replace = array_merge($t_replace, $s_replace);
+						
 						$this -> text = strip_tags(str_replace($search, $replace, $this -> text));
-						foreach ($this -> keywords['match'] as $match_id => $this -> query) {
+						
+						foreach ($this -> keywords['match'] as $match_id => $this -> query) 
+						{
 							$boundary = $search_prefs['boundary'] ? '\b' : '';
 							if ($this -> keywords['wildcard'][$match_id]) {
 								$regex_append = ".*?".$boundary.")";
@@ -292,31 +292,47 @@ class e_search
 								$this -> text = preg_replace("#(".$boundary.$this -> query.$regex_append."#i", "<span class='searchhighlight'>\\1</span>", $this -> text);
 							}
 						}
-						if ($title) {
-							if ($pre_title == 0) {
+						if ($title) 
+						{
+							if ($pre_title == 0) 
+							{
 								$pre_title_output = "";
-							} else if ($pre_title == 1) {
+							} 
+							else if ($pre_title == 1) 
+							{
 								$pre_title_output = $res['pre_title'];
-							} else if ($pre_title == 2) {
+							} 
+							else if ($pre_title == 2) 
+							{
 								$pre_title_output = $pre_title;
 							}
+							
 							$this -> text = $this -> bullet." <b><a class='visit' href='".$res['link']."'>".$pre_title_output.$this -> text."</a></b><br />".$res['pre_summary'];
-						} else if (!$endcrop) {
+						} 
+						else if (!$endcrop) 
+						{
 							$this -> parsesearch_crop();
 						}
+						
 						$output .= $this -> text;
 						$title = FALSE;
 					}
+
 					$display_rel = $search_prefs['relevance'] ? " | ".LAN_SEARCH_69.": ".round($row['relevance'], 1) : "";
-					$output_array['text'][] = $output.$res['post_summary']."<br /><span class='smalltext'>".$res['detail'].$display_rel."</span><br /><br />";
-				} else {
+					$output_array['text'][] = $output.$res['post_summary']."<br /><small>".$res['detail'].$display_rel."</small><br /><br />";
+				} 
+				else 
+				{
 					$ps['results']--;
 					$res['omit_result'] = FALSE;
 				}
 			}
+
 			$ps_limit = $output_array['text'];
 			$result_number = ($x < $search_res) ? $x : $search_res;
-			for ($i = 0; $i < $result_number; $i++) {
+			
+			for ($i = 0; $i < $result_number; $i++)
+			 {
 				$ps['text'] .= $ps_limit[$i];
 			}
 		} 
