@@ -45,6 +45,11 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 	{
 		return SITETAG;
 	}
+	
+	function sc_sitelogo($parm='')
+	{
+		return $this->sc_logo($parm);	
+	}
 
 	function sc_logo($parm = '')
 	{
@@ -101,10 +106,22 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 		}
 		
 		//TODO Parm for resizing the logo image with thumb.php 
+		
+		if((isset($parm['w']) || isset($parm['h'])))
+		{
+			// $logo = $tp->thumbUrl($logopref,"w=".$parm['h']);
+			$dimensions[0] = $parm['w'];
+			$dimensions[1] = $parm['h'];	
+		}
+		else
+		{
+			$dimensions = getimagesize($path);
+		}
+		
+		$image = "<img class='logo img-responsive' src='".$logo."' style='width: ".$dimensions[0]."px; height: ".$dimensions[1]."px' alt='".SITENAME."' />\n";
+	
 
-		$dimensions = getimagesize($path);
-
-		$image = "<img class='logo' src='".$logo."' style='width: ".$dimensions[0]."px; height: ".$dimensions[1]."px' alt='".SITENAME."' />\n";
+		
 
 		if (isset($link) && $link)
 		{
