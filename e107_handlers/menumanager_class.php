@@ -951,6 +951,8 @@ class e_menuManager {
 		$ns     = e107::getRender(); 
 		$frm 	= e107::getForm();
 		
+	
+		
 		//FIXME - XHTML cleanup, front-end standards (elist, forms etc)
 		echo "<div id='portal'>";
 		$this->parseheader($HEADER);  // $layouts_str;
@@ -1041,7 +1043,19 @@ class e_menuManager {
 
 		$text .= "</tr></table>";
 		
-	
+		if(!count($this->menu_areas))
+		{
+			$text = "<div class='alert alert-block alert-warning text-left'>";
+			$text .= "This layout does NOT contain any dynamic {MENU} areas.<br />";
+			
+			if(count($this->customMenu))
+			{
+				$text .= "<p>It DOES contain the following custom menus: <ul ><li>".implode("</li><li>",$this->customMenu)."</li></ul></p>";	
+				$text .= "<p><a href='".e_ADMIN."cpage.php?mode=menu&action=list&tab=2' class='button btn btn-primary'>Go to Custom-Menu area</a></p>";
+			}
+			
+			$text .= "</div>";
+		}
 	//	$ns -> tablerender(MENLAN_22.'blabla', $text);
 		echo $this->renderPanel(MENLAN_22, $text);
         echo $rs->form_close();
@@ -1165,7 +1179,7 @@ class e_menuManager {
 
 	function checklayout($str)
 	{ // Displays a basic representation of the theme
-		global $PLUGINS_DIRECTORY, $rs, $sc_style, $menu_order;
+		global $PLUGINS_DIRECTORY, $rs, $sc_style, $menu_order, $style; // global $style required. 
 		$PLUGINS_DIRECTORY = e107::getFolder('PLUGINS');
 		$pref   = e107::getPref();  
 		$tp     = e107::getParser(); 
@@ -1190,6 +1204,10 @@ class e_menuManager {
 		{
 			echo "[SiteLinks]";
 		}
+		elseif(strstr($str, "NAVIGATION"))
+		{
+			echo "[Navigation Area]";
+		}
 		elseif(strstr($str, "LANGUAGELINKS"))
 		{
 			echo "<div class=text style='padding: 2px; text-align: center'>[Language]</div>";
@@ -1202,6 +1220,7 @@ class e_menuManager {
 		elseif(strstr($str, "CMENU"))
 		{
 			$cust = preg_replace("/\W*\{CMENU=(.*?)(\+.*)?\}\W*/si", "\\1", $str);
+			$this->customMenu[] = $cust;
 			echo $tp->parseTemplate("{CMENU=".$cust."}",true);
 		//	echo $this->renderPanel('Embedded Custom Menu',$cust);
 		}
@@ -1211,7 +1230,16 @@ class e_menuManager {
 			echo $tp->parseTemplate("{SETIMAGE".$cust."}",true);
 		//	echo $this->renderPanel('Embedded Custom Menu',$cust);
 		}
-		
+		elseif(strstr($str, "{WMESSAGE"))
+		{
+			echo "<div class=text style='padding: 30px; text-align: center'>[Welcome Message Area]</div>";
+		//	echo $this->renderPanel('Embedded Custom Menu',$cust);
+		}
+			elseif(strstr($str, "{FEATUREBOX"))
+		{
+			echo "<div class=text style='padding: 80px; text-align: center'>[Featurebox Area]</div>";
+		//	echo $this->renderPanel('Embedded Custom Menu',$cust);
+		}
 		// Display embedded Plugin information.
 		else if(strstr($str, "PLUGIN"))
 		{
@@ -1316,6 +1344,7 @@ class e_menuManager {
 		{
 			$tmp = explode("=", $str);
 			$style = preg_replace("/\{SETSTYLE=(.*?)\}/si", "\\1", $str);
+			
 			$this->style = $style;
 			
 		}
