@@ -12,7 +12,8 @@ require_once('class2.php');
 e107::coreLan('search');
 e107_require(e_HANDLER.'search_class.php');
 
-if (!check_class($pref['search_restrict'])) {
+if (!check_class($pref['search_restrict'])) 
+{
 	require_once(HEADERF);
 	$ns->tablerender(LAN_SEARCH_20, "<div style='text-align: center'>".LAN_SEARCH_21."</div>");
 	require_once(FOOTERF);
@@ -42,8 +43,35 @@ if (isset($_GET['t']) && is_numeric($_GET['t']))
 }
 
 
-class search_shortcodes extends e_shortcode
+
+class search extends e_shortcode
 {
+	
+	private $search_prefs = array();
+	private $auto_order = 1000;
+	private $enhanced = false;
+	private $query = null;
+	private $result_flag = 0;
+	private $message = '';
+	
+	function __construct()
+	{
+		$this->search_prefs = e107::getConfig('search')->getPref();	
+		
+		
+		if (!e_QUERY) 
+		{
+			$this->enhanced = true;
+		}
+
+	}
+
+
+
+	
+	// Shortcodes  -----------------------
+	
+
 	function sc_search_main_searchfield($parm='')
 	{
 		$tp = e107::getParser();
@@ -62,150 +90,581 @@ class search_shortcodes extends e_shortcode
 		return  "<img src='".e_IMAGE_ABS."generic/search_basic.png' style='width: 16px; height: 16px; vertical-align: top' alt='".LAN_SEARCH_23."' title='".LAN_SEARCH_23."' onclick=\"expandit('en_in'); expandit('en_ex'); expandit('en_ep'); expandit('en_be')\"/>";
 	}
 	
-}
-
-
-
-
-
-$search_prefs = $sysprefs -> getArray('search_prefs');
-
-// load search routines
-$search_info = array();
-$auto_order = 1000;
-
-
-function search_info($id, $type, $plug_require, $info='') 
-{
-	$tp = e107::getParser();
-	
-	global $search_prefs, $auto_order;
-	
-	
-	if (check_class($search_prefs[$type.'_handlers'][$id]['class'])) 
+	function sc_search_main_checkall($parm='')
 	{
-		
-		if ($plug_require) 
+		 if($this->search_prefs['selector'] == 1) 
+		 {
+		 	return "<input class='btn button' type='button' name='CheckAll' value='".LAN_SEARCH_1."' onclick='checkAll(this);' />";	
+		 }
+	}
+
+	function sc_search_main_uncheckall($parm='')
+	{
+		 if($this->search_prefs['selector'] == 1) 
+		 {
+		 	return "<input class='btn button' type='button' name='UnCheckAll' value='".LAN_SEARCH_2."' onclick='uncheckAll(this); uncheckG();' />";
+		 }	
+	}
+	
+	function sc_search_type_sel($parm='')
+	{
+		return "<input type='radio' name='adv' value='0' ".(varsettrue($_GET['adv']) ? "" : "checked='checked'")." /> ".LAN_SEARCH_29."&nbsp;
+		<input type='radio' name='adv' value='1' ".(varsettrue($_GET['adv']) ? "checked='checked'" : "" )." /> ".LAN_SEARCH_30;	
+	}
+	
+	function sc_search_dropdown($parm = '')
+	{
+		return $this->selectElement('dropdown');
+	}
+	
+	function sc_search_main_checkboxes($parm = '')
+	{
+		return $this->selectElement('checkboxes');
+	}
+	
+	function sc_search_message($parm = '')
+	{
+		return $this->message;	
+	}
+
+	private function selectElement($parm)
+	{
+		// standard search config
+		if ($this->search_prefs['selector'] == 2) 
 		{
-			require_once($plug_require);
-			$ret = $search_info[0];
+			$dropdown = "<select name='t' id='t' class='tbox' onchange=\"ab()\">";
+			
+			if ($this->search_prefs['multisearch']) 
+			{
+				$dropdown .= "<option value='all'>".LAN_SEARCH_22."</option>";
+			}
 		} 
 		else 
 		{
-			$ret = $info;
+		  $checkboxes = '';
 		}
 		
-		if($obj = e107::getAddon($id,'e_search'))
+		foreach($this->search_info as $key => $value) 
 		{
-			$ret = $obj->config();	
-			
-			$ret['qtype'] = $ret['name'];
-			
-			if(!isset($ret['id']))
+			if ($this->search_prefs['selector'] == 2) 
 			{
-				$ret['id'] = $ret['name'];	
+				$sel = (isset($this->searchtype[$key]) && $this->searchtype[$key]) ? " selected='selected'" : "";
+			} 
+			else 
+			{
+				$sel = (isset($this->searchtype[$key]) && $this->searchtype[$key]) ? " checked='checked'" : "";
+			}
+			
+			$google_js = check_class($this->search_prefs['google']) ? "onclick=\"uncheckG();\" " : "";
+			
+			if ($this->search_prefs['selector'] == 2) 
+			{
+				$dropdown .= "<option value='".$key."' ".$sel.">".$value['qtype']."</option>";
+			} 
+			else if ($this->search_prefs['selector'] == 1) 
+			{
+				$checkboxes .= $PRE_CHECKBOXES."<input ".$google_js." type='checkbox' name='t[".$key."]' ".$sel." />".$value['qtype'].$POST_CHECKBOXES;
+			} 
+			else 
+			{
+				$checkboxes .= $PRE_CHECKBOXES."<input type='radio' name='t' value='".$key."' ".$sel." />".$value['qtype'].$POST_CHECKBOXES;
+			}
+		}
+		
+		if (check_class($this->search_prefs['google'])) 
+		{
+			if ($this->search_prefs['selector'] == 2) 
+			{
+				$dropdown .= "<option value='".$google_id."'>Google</option>"; //FIXME googleid
+			} 
+			else if 
+			($this->search_prefs['selector'] == 1)  //FIXME PRE_CHECKBOXES and POST_CHECKBOXES
+			{
+				$checkboxes .= $PRE_CHECKBOXES."<input id='google' type='checkbox' name='t[".$google_id."]' onclick='uncheckAll(this)' />Google".$POST_CHECKBOXES;
+			} 
+			else 
+			{
+				$checkboxes .= $PRE_CHECKBOXES."<input id='google' type='radio' name='t' value='".$google_id."' />Google".$POST_CHECKBOXES;
+			}
+		}
+		
+		if ($this->search_prefs['selector'] == 2) 
+		{
+			$dropdown .= "</select>";
+		}
+		
+		if($parm == 'dropdown')
+		{
+			return $dropdown;	
+		}
+		else 
+		{
+			return $checkboxes;
+		}
+	
+		
+	}
+
+
+
+	// -------------
+	
+	
+	
+	function searchPrefs()
+	{
+		return $this->search_prefs;	
+	}
+
+
+	
+	function search_info($id, $type, $plug_require=null, $info='') 
+	{
+		$tp = e107::getParser();
+		
+		if (check_class($this->search_prefs[$type.'_handlers'][$id]['class'])) 
+		{
+			if ($plug_require) 
+			{
+				require_once($plug_require);
+				$ret = $search_info[0];
+			} 
+			else 
+			{
+				$ret = $info;
+			}
+			
+			if($obj = e107::getAddon($id,'e_search'))
+			{
+				$ret = $obj->config();	
+				
+				$ret['qtype'] = $ret['name'];
+				
+				if(!isset($ret['id']))
+				{
+					$ret['id'] = $ret['name'];	
+				}
+	
+			}	
+			
+			
+			$ret['chars'] 			= $this->search_prefs[$type.'_handlers'][$id]['chars'];
+			$ret['results'] 		= $this->search_prefs[$type.'_handlers'][$id]['results'];
+			$ret['pre_title'] 		= $this->search_prefs[$type.'_handlers'][$id]['pre_title'];
+			$ret['pre_title_alt'] 	= $tp -> toHtml($this->search_prefs[$type.'_handlers'][$id]['pre_title_alt']);
+			$ret['order'] 			= (isset($this->search_prefs[$type.'_handlers'][$id]['order']) && $this->search_prefs[$type.'_handlers'][$id]['order']) ? $this->search_prefs[$type.'_handlers'][$id]['order'] : $this->auto_order;
+			
+			$this->auto_order++;
+			
+			return $ret;
+		} 
+		else 
+		{
+			return false;
+		}
+	}
+	
+
+
+	
+	// Get Core and Plugin search configurations
+	function searchConfig()
+	{
+		
+		//core search routines
+		
+		$search_info = array();
+		
+		if ($search_info['news'] = $this->search_info('news', 'core', false, array('sfile' => e_HANDLER.'search/search_news.php', 'qtype' => LAN_SEARCH_98, 'refpage' => 'news.php', 'advanced' => e_HANDLER.'search/advanced_news.php', 'id' => 'news'))) {
+		   //	$search_id++;
+		} else {
+			unset($search_info['news']);
+		}
+		
+		if(e107::getConfig('core')->get('comments_disabled')!=1)  // Only when comments are enabled.
+		{
+			if ($search_info['comments'] = $this->search_info('comments', 'core', false, array('sfile' => e_HANDLER.'search/search_comment.php', 'qtype' => LAN_SEARCH_99, 'refpage' => 'comment.php', 'advanced' => e_HANDLER.'search/advanced_comment.php', 'id' => 'comment'))) {
+			   //	$search_id++;
+			} else {
+				unset($search_info['comments']);
+			}
+		}
+		
+		
+		if(e107::getConfig('core')->get('user_reg')==1) // Only when user-registration is enabled.
+		{
+			if ($search_info['users'] = $this->search_info('users', 'core', false, array('sfile' => e_HANDLER.'search/search_user.php', 'qtype' => LAN_140, 'refpage' => 'user.php', 'advanced' => e_HANDLER.'search/advanced_user.php', 'id' => 'user'))) {
+				//	$search_id++;
+			} else {
+				unset($search_info['users']);
+			}
+		}
+		
+		
+		if ($search_info['pages'] = $this->search_info('pages', 'core', false, array('sfile' => e_HANDLER.'search/search_pages.php', 'qtype' => LAN_418, 'refpage' => 'page.php', 'advanced' => e_HANDLER.'search/advanced_pages.php', 'id' => 'pages'))) {
+		   //	$search_id++;
+		} else {
+			unset($search_info['pages']);
+		}
+		
+		 $e_searchList = e107::getConfig('core')->get('e_search_list');
+		
+		
+		//plugin search routines    // plugin folder is used as the search key. ie. $_GET['t'] = 'chatbox';
+		foreach ($this->search_prefs['plug_handlers'] as $plug_dir => $active) 
+		{
+			if(isset($search_info[$plug_dir]))
+			{
+				continue;
+			}
+			
+			if (in_array($plug_dir,$e_searchList) && is_readable(e_PLUGIN.$plug_dir."/e_search.php"))
+			{
+				if ($search_info[$plug_dir] = $this->search_info($plug_dir, 'plug', e_PLUGIN.$plug_dir."/e_search.php"))
+				{
+				  //	$search_id++;
+				}
+				else
+				{
+					unset($search_info[$plug_dir]);
+				}
+			}
+			
+			
+		}
+		
+		// order search routines
+		
+		 $search_info = $this->array_sort($search_info, 'order', SORT_ASC);	
+		 
+		 $this->search_info = $search_info;
+		 
+		 return $search_info;
+	}	
+
+
+
+
+	// determine areas being searched
+	public function searchType()
+	{
+		$searchtype = array();	
+			
+		if (!$this->search_prefs['user_select'] && $_GET['r'] < 1) 
+		{
+			foreach($this->search_info as $key => $value) 
+			{
+				$searchtype[$key] = true;
+			}
+		}
+		 else 
+		 {
+			if (isset($_GET['t'])) 
+			{
+				if (is_array($_GET['t'])) 
+				{
+					$searchtype = $_GET['t'];
+				} 
+				else 
+				{
+					$searchtype[$_GET['t']] = true;
+				}
+			} 
+			else 
+			{
+				if (isset($_GET['ref'])) 
+				{
+					foreach($this->search_info as $key => $value) 
+					{
+						if ($value['id'] == $_GET['ref']) 
+						{
+							$searchtype[$key] = true;
+							$_GET['t'] = $key;
+						}
+					}
+				} 
+				else if (e_QUERY) 
+				{
+					if (isset($_SERVER['HTTP_REFERER'])) 
+					{
+						if (!$refpage = substr($_SERVER['HTTP_REFERER'], (strrpos($_SERVER['HTTP_REFERER'], "/")+1))) 
+						{
+							$refpage = "index.php";
+						}
+					} 
+					else 
+					{
+						$refpage = "";
+					}
+		
+					foreach($this->search_info as $key=>$value) 
+					{
+						if ($value['refpage']) 
+						{
+							if (strpos($refpage, $value['refpage']) !== FALSE) 
+							{
+								$searchtype[$key] = true;
+								$_GET['t'] = $key;
+							}
+						}
+					}
+				}
+		
+				if (!isset($this->searchtype) && isset($this->query)) 
+				{
+					if ($this->search_prefs['multisearch']) 
+					{
+						$searchtype['all'] = true;
+					} 
+					else 
+					{
+						$searchtype[0] = true;
+					}
+				}
+			}
+		}	
+		
+		$this->searchtype = $searchtype;
+		
+		return $searchtype;
+	}
+
+
+
+
+
+	function array_sort($array, $column, $order = SORT_DESC) 
+	{
+		$i = 0;
+		foreach($array as $info) {
+			$sortarr[] = $info[$column];
+			$i++;
+		}
+	 	array_multisort($sortarr, $order, $array, $order);
+		return($array);
+	}	
+	
+	
+	
+	
+	function renderResults()
+	{
+		global $query, $search_prefs, $pre_title, $search_chars, $search_res, $result_flag;
+		
+		$ns = e107::getRender();
+		$sch = new e_search;
+		 
+		
+		$query = $this->query;
+		
+		$_GET['q'] = rawurlencode($_GET['q']);
+		$_GET['t'] = preg_replace('/[^\w\-]/i', '', $_GET['t']);
+		
+		$search_prefs	= $this->search_prefs;
+		$result_flag	= $this->result_flag;
+		
+		
+		foreach ($this->search_info as $key => $a) 
+		{
+			if (isset($this->searchtype[$key]) || isset($this->searchtype['all'])) 
+			{
+				
+				
+				
+				unset($text);
+				//if (file_exists($this->search_info[$key]['sfile'])) 
+				{
+					$pre_title 		= ($this->search_info[$key]['pre_title'] == 2) ? $this->search_info[$key]['pre_title_alt'] : $this->search_info[$key]['pre_title'];
+					$search_chars 	= $this->search_info[$key]['chars'];
+					$search_res 	= $this->search_info[$key]['results'];
+
+					
+					if(vartrue($this->search_info[$key]['sfile']) && file_exists($this->search_info[$key]['sfile'])) // Legacy
+					{
+						$text .= '<div class="search-block">';
+						require_once($this->search_info[$key]['sfile']);
+						$text .= '</div>';
+					}
+					else// New v2 standard. @see chatbox_menu/e_search.php
+					{
+						
+						$className = $key."_search";
+						
+						$obj = new $className;
+	
+						$where = (method_exists($obj,'where')) ? $obj->where($_GET) : "";
+						
+						$ps = $obj->parsesearch($this->search_info[$key]['table'], $this->search_info[$key]['return_fields'], $this->search_info[$key]['search_fields'], $this->search_info[$key]['weights'], 'self', varset($this->search_info[$key]['no_results'],LAN_198), $where , $this->search_info[$key]['order']);
+						
+						$text .= '<div class="search-block">';
+						$text .= $ps['text'];
+						$text .= '</div>';
+						$results = $ps['results'];	
+						
+					}
+					
+					
+					$parms = $results.",".$search_res.",".$_GET['r'].",".e_REQUEST_SELF."?q=".$_GET['q']."&t=".$key."&r=[FROM]";
+					
+					$core_parms = array('r' => '', 'q' => '', 't' => '', 's' => '');
+					foreach ($_GET as $pparm_key => $pparm_value) 
+					{
+						$temp = preg_replace('/[^\w_]/i','',$pparm_key);
+						$temp1 = preg_replace('/[^\w_ +]/i','',$pparm_value);		// Filter 'non-word' charcters in search term
+						if (($temp == $pparm_key) && !isset($core_parms[$pparm_key])) 
+						{
+							$parms .= "&".$pparm_key."=".$temp1;
+						}
+					}
+					if ($results > $search_res) 
+					{
+						$nextprev = ($results > $search_res) ? $tp -> parseTemplate("{NEXTPREV={$parms}}") : "";
+						$text .= "<div class='nextprev search form-inline'>".$nextprev."</div>";
+					}
+					if ($results > 0) 
+					{
+						$res_from = $_GET['r'] + 1;
+						$res_to = ($_GET['r'] + $search_res) > $results ? $results : ($_GET['r'] + $search_res);
+						$res_display = $res_from." - ".$res_to." ".LAN_SEARCH_12." ".$results;
+					} 
+					else 
+					{
+						$res_display = "";
+					}
+					
+					$ns->tablerender(LAN_SEARCH_11." ".$res_display." ".LAN_SEARCH_13." ".(isset($_GET[$advanced_caption['id']]) ? $advanced_caption['title'][$_GET[$advanced_caption['id']]] : $this->search_info[$key]['qtype']), $text, 'search_result');
+				}
+			}
+		}
+
+	}
+		
+		
+		
+	function magic_search($data) 
+	{
+		foreach ($data as $key => $value) {
+			if (is_array($value)) {
+				$data[$key] = $this->magic_search($value);
+			} else {
+				$data[$key] = stripslashes($value);
+			}
+		}
+		return $data;
+	}
+	
+		
+	function searchQuery()
+	{
+		global $perform_search;
+		
+		if (isset($_GET['q']) || isset($_GET['in']) || isset($_GET['ex']) || isset($_GET['ep']) || isset($_GET['beg'])) 
+		{
+			if (MAGIC_QUOTES_GPC == true) 
+			{
+				$_GET = $this->magic_search($_GET);
+			}
+			
+			$full_query = $_GET['q'];
+			
+			if ($_GET['in']) 
+			{
+				$en_in = explode(' ', $_GET['in']);
+				foreach ($en_in as $en_in_key) 
+				{
+					$full_query .= " +".$en_in_key;
+				}
+				$this->enhanced = true;
+			}
+			if ($_GET['ex']) 
+			{
+				$en_ex = explode(' ', $_GET['ex']);
+				foreach ($en_ex as $en_ex_key) 
+				{
+					$full_query .= " -".$en_ex_key;
+				}
+				$this->enhanced = true;
+			}
+			if ($_GET['ep']) 
+			{
+				$full_query .= " \"".$_GET['ep']."\"";
+				$this->enhanced = true;
+			}
+			if ($_GET['be']) 
+			{
+				$en_be = explode(' ', $_GET['be']);
+				foreach ($en_be as $en_be_key) 
+				{
+					$full_query .= " ".$en_be_key."*";
+				}
+				$this->enhanced = true;
+			}
+		
+			if (isset($_GET['r']) && !is_numeric($_GET['r'])) 
+			{
+				$perform_search = false;
+				$this->message = LAN_SEARCH_201;
+				$this->result_flag = 0;
+			} 
+			else if (strlen($full_query) == 0) 
+			{
+				$perform_search = false;
+				$this->message = LAN_SEARCH_201;
+			} 
+			elseif (strlen($full_query) < ($char_count = ($search_prefs['mysql_sort'] ? 4 : 3))) 
+			{
+				$perform_search = false;
+				$this->message = str_replace('--CHARS--', $char_count, LAN_417);
+			} 
+			elseif ($search_prefs['time_restrict']) 
+			{
+				$time = time() - $search_prefs['time_secs'];
+				$query_check = $tp -> toDB($full_query);
+				$ip = e107::getIPHandler()->getIP(FALSE);
+				
+				if ($sql->select("tmp", "tmp_ip, tmp_time, tmp_info", "tmp_info LIKE 'type_search%' AND tmp_ip='".$ip."'")) 
+				{
+					$row = $sql->fetch();
+					if (($row['tmp_time'] > $time) && ($row['tmp_info'] != 'type_search '.$query_check)) 
+					{
+						$perform_search = false;
+						$this->message = LAN_SEARCH_17.$search_prefs['time_secs'].LAN_SEARCH_18;
+					} 
+					else 
+					{
+						$sql->update("tmp", "tmp_time='".time()."', tmp_info='type_search ".$query_check."' WHERE tmp_info LIKE 'type_search%' AND tmp_ip='".$ip."'");
+					}
+				} 
+				else 
+				{
+					$sql->insert("tmp", "'".$ip."', '".time()."', 'type_search ".$query_check."'");
+				}
+			}
+			
+			if ($perform_search) 
+			{
+				$this->result_flag = $_GET['r'];
 			}
 
+			$query = trim($full_query);
+			
+			$this->query = $query;
+			
+			return $query;
 		}	
 		
 		
-		$ret['chars'] 			= $search_prefs[$type.'_handlers'][$id]['chars'];
-		$ret['results'] 		= $search_prefs[$type.'_handlers'][$id]['results'];
-		$ret['pre_title'] 		= $search_prefs[$type.'_handlers'][$id]['pre_title'];
-		$ret['pre_title_alt'] 	= $tp -> toHtml($search_prefs[$type.'_handlers'][$id]['pre_title_alt']);
-		$ret['order'] 			= (isset($search_prefs[$type.'_handlers'][$id]['order']) && $search_prefs[$type.'_handlers'][$id]['order']) ? $search_prefs[$type.'_handlers'][$id]['order'] : $auto_order;
-		$auto_order++;
 		
-		return $ret;
-	} 
-	else 
-	{
-		return false;
-	}
-}
-
-
-
-//core search routines
-
-if ($search_info['news'] = search_info('news', 'core', false, array('sfile' => e_HANDLER.'search/search_news.php', 'qtype' => LAN_SEARCH_98, 'refpage' => 'news.php', 'advanced' => e_HANDLER.'search/advanced_news.php', 'id' => 'news'))) {
-   //	$search_id++;
-} else {
-	unset($search_info['news']);
-}
-
-if(e107::getConfig('core')->get('comments_disabled')!=1)  // Only when comments are enabled.
-{
-	if ($search_info['comments'] = search_info('comments', 'core', false, array('sfile' => e_HANDLER.'search/search_comment.php', 'qtype' => LAN_SEARCH_99, 'refpage' => 'comment.php', 'advanced' => e_HANDLER.'search/advanced_comment.php', 'id' => 'comment'))) {
-	   //	$search_id++;
-	} else {
-		unset($search_info['comments']);
-	}
-}
-
-
-if(e107::getConfig('core')->get('user_reg')==1) // Only when user-registration is enabled.
-{
-	if ($search_info['users'] = search_info('users', 'core', false, array('sfile' => e_HANDLER.'search/search_user.php', 'qtype' => LAN_140, 'refpage' => 'user.php', 'advanced' => e_HANDLER.'search/advanced_user.php', 'id' => 'user'))) {
-		//	$search_id++;
-	} else {
-		unset($search_info['users']);
-	}
-}
-
-
-if ($search_info['pages'] = search_info('pages', 'core', false, array('sfile' => e_HANDLER.'search/search_pages.php', 'qtype' => LAN_418, 'refpage' => 'page.php', 'advanced' => e_HANDLER.'search/advanced_pages.php', 'id' => 'pages'))) {
-   //	$search_id++;
-} else {
-	unset($search_info['pages']);
-}
-
- $e_searchList = e107::getConfig('core')->get('e_search_list');
-
-//
+	}	
 	
-// print_a($search_info);
-
-
-
-//plugin search routines    // plugin folder is used as the search key. ie. $_GET['t'] = 'chatbox';
-foreach ($search_prefs['plug_handlers'] as $plug_dir => $active) 
-{
-	
-	if(isset($search_info[$plug_dir]))
-	{
-		continue;
-	}
-	
-	if (in_array($plug_dir,$e_searchList) && is_readable(e_PLUGIN.$plug_dir."/e_search.php"))
-	{
-		if ($search_info[$plug_dir] = search_info($plug_dir, 'plug', e_PLUGIN.$plug_dir."/e_search.php"))
-		{
-		  //	$search_id++;
-		}
-		else
-		{
-			unset($search_info[$plug_dir]);
-		}
-	}
 	
 	
 }
 
-// print_a($search_info);
 
-// order search routines
-function array_sort($array, $column, $order = SORT_DESC) {
-	$i = 0;
-	foreach($array as $info) {
-		$sortarr[] = $info[$column];
-		$i++;
-	}
- 	array_multisort($sortarr, $order, $array, $order);
-	return($array);
-}
-
- $search_info = array_sort($search_info, 'order', SORT_ASC);
+$srchObj 		= new search;
+$search_info 	= $srchObj->searchConfig();
+$search_prefs	= $srchObj->searchPrefs();
 
 // validate search query
 $perform_search = true;
@@ -213,6 +672,7 @@ $perform_search = true;
 // simple parse object
 $SEARCH_VARS = new e_vars();
 
+/*
 function magic_search($data) {
 	foreach ($data as $key => $value) {
 		if (is_array($value)) {
@@ -227,6 +687,9 @@ function magic_search($data) {
 if (!e_QUERY) {
 	$enhanced = true;
 }
+*/
+
+/*
 
 if (isset($_GET['q']) || isset($_GET['in']) || isset($_GET['ex']) || isset($_GET['ep']) || isset($_GET['beg'])) {
 	if (MAGIC_QUOTES_GPC == true) {
@@ -292,11 +755,19 @@ if (isset($_GET['q']) || isset($_GET['in']) || isset($_GET['ex']) || isset($_GET
 		$result_flag = $_GET['r'];
 	}
 	$query = trim($full_query);
-}
+}*/
+
+
+$query =  $srchObj->searchQuery();
+
 
 // forward user if searching in google
 $search_count = count($search_info);
 $google_id = $search_count + 1;
+
+
+
+
 if ($perform_search)
 {
   if ($search_prefs['selector'] == 1) 
@@ -318,7 +789,13 @@ if ($perform_search)
   }
 }
 
+$searchtype = $srchObj->searchType();
+
+
+
+
 // determine areas being searched
+/*
 if (!$search_prefs['user_select'] && $_GET['r'] < 1) {
 	foreach($search_info as $key => $value) {
 		$searchtype[$key] = true;
@@ -366,17 +843,20 @@ if (!$search_prefs['user_select'] && $_GET['r'] < 1) {
 		}
 	}
 }
+*/
 
-$value = isset($_GET['q']) ? $tp -> post_toForm($_GET['q']) : "";
+
+//$value = isset($_GET['q']) ? $tp -> post_toForm($_GET['q']) : "";
 //$SEARCH_VARS->SEARCH_MAIN_SEARCHFIELD = "<input class='tbox m_search' type='text' id='q' name='q' size='35' value='".$value."' maxlength='50' />";
 
 
+/*
 if ($search_prefs['selector'] == 1) 
 {
   $SEARCH_VARS->SEARCH_MAIN_CHECKALL = "<input class='btn button' type='button' name='CheckAll' value='".LAN_SEARCH_1."' onclick='checkAll(this);' />";
   $SEARCH_VARS->SEARCH_MAIN_UNCHECKALL = "<input class='btn button' type='button' name='UnCheckAll' value='".LAN_SEARCH_2."' onclick='uncheckAll(this); uncheckG();' />";
 }
-
+*/
 //$SEARCH_VARS->SEARCH_MAIN_SUBMIT = "<input type='hidden' name='r' value='0' /><input class='btn button' type='submit' name='s' value='".LAN_180."' />";
 
 //$SEARCH_VARS->ENHANCED_ICON = "<img src='".e_IMAGE_ABS."generic/search_basic.png' style='width: 16px; height: 16px; vertical-align: top'
@@ -401,8 +881,8 @@ if (!varsettrue($_GET['adv']) || $_GET['t'] == 'all')
   }
 }
 
-$SEARCH_VARS->SEARCH_TYPE_SEL = "<input type='radio' name='adv' value='0' ".(varsettrue($_GET['adv']) ? "" : "checked='checked'")." /> ".LAN_SEARCH_29."&nbsp;
-<input type='radio' name='adv' value='1' ".(varsettrue($_GET['adv']) ? "checked='checked'" : "" )." /> ".LAN_SEARCH_30;
+//$SEARCH_VARS->SEARCH_TYPE_SEL = "<input type='radio' name='adv' value='0' ".(varsettrue($_GET['adv']) ? "" : "checked='checked'")." /> ".LAN_SEARCH_29."&nbsp;
+//<input type='radio' name='adv' value='1' ".(varsettrue($_GET['adv']) ? "checked='checked'" : "" )." /> ".LAN_SEARCH_30;
 
 $js_adv = '';
 foreach ($search_info as $key => $value) 
@@ -435,6 +915,7 @@ if ($perform_search)
 
   // omitted words message
   $stop_count = count($sch -> stop_keys);
+  
   if ($stop_count) 
   {
 	if ($stop_count > 1) 
@@ -445,6 +926,7 @@ if ($perform_search)
 	{
 	  $SEARCH_VARS->SEARCH_MESSAGE = LAN_SEARCH_33.": ";
 	}
+	
 	$i = 1;
 	foreach ($sch -> stop_keys as $stop_key) 
 	{
@@ -481,7 +963,7 @@ if(deftrue('BOOTSTRAP'))
 }
 */
 
-$search_shortcodes = new search_shortcodes;
+
 
 if (!isset($SEARCH_TOP_TABLE)) 
 {
@@ -495,10 +977,12 @@ if (!isset($SEARCH_TOP_TABLE))
 	}
 }
 
-$SEARCH_TOP_TABLE =  $tp->parseTemplate($SEARCH_TOP_TABLE,true,$search_shortcodes);
+//$SEARCH_TOP_TABLE =  $tp->parseTemplate($SEARCH_TOP_TABLE,true,$srchObj);
+//$SEARCH_TYPE =  $tp->parseTemplate($SEARCH_TYPE,true, $srchObj);
 			
 		
 	
+/*
 
 // standard search config
 if ($search_prefs['selector'] == 2) 
@@ -547,15 +1031,17 @@ if ($search_prefs['selector'] == 2)
 }
 // end of standard search config
 
+*/
 
 //$text = preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_TOP_TABLE);
 $tp = e107::getParser();
 
 
+// $text = $tp->simpleParse($SEARCH_TOP_TABLE, $SEARCH_VARS);
+
+$text =  $tp->parseTemplate($SEARCH_TOP_TABLE,true,$srchObj);
 
 
-
-$text = $tp->simpleParse($SEARCH_TOP_TABLE, $SEARCH_VARS);
 foreach ($enhanced_types as $en_id => $ENHANCED_TEXT) 
 {
 	$SEARCH_VARS->ENHANCED_TEXT = $ENHANCED_TEXT;
@@ -566,13 +1052,16 @@ foreach ($enhanced_types as $en_id => $ENHANCED_TEXT)
 }
 $SEARCH_VARS->ENHANCED_TEXT = $SEARCH_VARS->ENHANCED_DISPLAY_ID = $SEARCH_VARS->ENHANCED_FIELD = null;
 
-if ($search_prefs['user_select']) {
+if ($search_prefs['user_select']) 
+{
 	//$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_CATS);
-	$text .= $tp->simpleParse($SEARCH_CATS, $SEARCH_VARS);
+//	$text .= $tp->simpleParse($SEARCH_CATS, $SEARCH_VARS);
+	$text .= $tp->parseTemplate($SEARCH_CATS,true, $srchObj);
 }
 
 //$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_TYPE);
-$text .= $tp->simpleParse($SEARCH_TYPE, $SEARCH_VARS);
+// $text .= $tp->simpleParse($SEARCH_TYPE, $SEARCH_VARS);
+$text .= $tp->parseTemplate($SEARCH_TYPE,true, $srchObj);
 
 if ($_GET['adv']) 
 {
@@ -640,7 +1129,8 @@ if ($_GET['adv'])
 			}
 		}
 	} 
-	else {
+	else 
+	{
 		$_GET['adv'] = 0;
 	}
 }
@@ -661,78 +1151,84 @@ $SEARCH_VARS = new e_vars();
 
 if ($perform_search) 
 {
+	
+	$srchObj->renderResults();
+	
+	
+	/*
 	$_GET['q'] = rawurlencode($_GET['q']);
-	$_GET['t'] = preg_replace('/[^\w\-]/i', '', $_GET['t']);
-	foreach ($search_info as $key => $a) 
-	{
-		if (isset($searchtype[$key]) || isset($searchtype['all'])) 
+		$_GET['t'] = preg_replace('/[^\w\-]/i', '', $_GET['t']);
+		foreach ($search_info as $key => $a) 
 		{
-			unset($text);
-			//if (file_exists($search_info[$key]['sfile'])) 
+			if (isset($searchtype[$key]) || isset($searchtype['all'])) 
 			{
-				$pre_title 		= ($search_info[$key]['pre_title'] == 2) ? $search_info[$key]['pre_title_alt'] : $search_info[$key]['pre_title'];
-				$search_chars 	= $search_info[$key]['chars'];
-				$search_res 	= $search_info[$key]['results'];
-				
-				
-				e107::getAddon();
-				
-				if(vartrue($search_info[$key]['sfile']) && file_exists($search_info[$key]['sfile'])) // Legacy
+				unset($text);
+				//if (file_exists($search_info[$key]['sfile'])) 
 				{
-					$text .= '<div class="search-block">';
-					@require_once($search_info[$key]['sfile']);
-					$text .= '</div>';
-				}
-				else// New v2 standard. @see chatbox_menu/e_search.php
-				{
+					$pre_title 		= ($search_info[$key]['pre_title'] == 2) ? $search_info[$key]['pre_title_alt'] : $search_info[$key]['pre_title'];
+					$search_chars 	= $search_info[$key]['chars'];
+					$search_res 	= $search_info[$key]['results'];
 					
-					$className = $key."_search";
 					
-					$obj = new $className;
-
-					$where = (method_exists($obj,'where')) ? $obj->where($_GET) : "";
+					e107::getAddon();
 					
-					$ps = $obj->parsesearch($search_info[$key]['table'], $search_info[$key]['return_fields'], $search_info[$key]['search_fields'], $search_info[$key]['weights'], 'self', varset($search_info[$key]['no_results'],LAN_198), $where , $search_info[$key]['order']);
-					
-					$text .= '<div class="search-block">';
-					$text .= $ps['text'];
-					$text .= '</div>';
-					$results = $ps['results'];	
-					
-				}
-				
-				
-				$parms = $results.",".$search_res.",".$_GET['r'].",".e_REQUEST_SELF."?q=".$_GET['q']."&t=".$key."&r=[FROM]";
-				
-				$core_parms = array('r' => '', 'q' => '', 't' => '', 's' => '');
-				foreach ($_GET as $pparm_key => $pparm_value) 
-				{
-					$temp = preg_replace('/[^\w_]/i','',$pparm_key);
-					$temp1 = preg_replace('/[^\w_ +]/i','',$pparm_value);		// Filter 'non-word' charcters in search term
-					if (($temp == $pparm_key) && !isset($core_parms[$pparm_key])) 
+					if(vartrue($search_info[$key]['sfile']) && file_exists($search_info[$key]['sfile'])) // Legacy
 					{
-						$parms .= "&".$pparm_key."=".$temp1;
+						$text .= '<div class="search-block">';
+						@require_once($search_info[$key]['sfile']);
+						$text .= '</div>';
 					}
+					else// New v2 standard. @see chatbox_menu/e_search.php
+					{
+						
+						$className = $key."_search";
+						
+						$obj = new $className;
+	
+						$where = (method_exists($obj,'where')) ? $obj->where($_GET) : "";
+						
+						$ps = $obj->parsesearch($search_info[$key]['table'], $search_info[$key]['return_fields'], $search_info[$key]['search_fields'], $search_info[$key]['weights'], 'self', varset($search_info[$key]['no_results'],LAN_198), $where , $search_info[$key]['order']);
+						
+						$text .= '<div class="search-block">';
+						$text .= $ps['text'];
+						$text .= '</div>';
+						$results = $ps['results'];	
+						
+					}
+					
+					
+					$parms = $results.",".$search_res.",".$_GET['r'].",".e_REQUEST_SELF."?q=".$_GET['q']."&t=".$key."&r=[FROM]";
+					
+					$core_parms = array('r' => '', 'q' => '', 't' => '', 's' => '');
+					foreach ($_GET as $pparm_key => $pparm_value) 
+					{
+						$temp = preg_replace('/[^\w_]/i','',$pparm_key);
+						$temp1 = preg_replace('/[^\w_ +]/i','',$pparm_value);		// Filter 'non-word' charcters in search term
+						if (($temp == $pparm_key) && !isset($core_parms[$pparm_key])) 
+						{
+							$parms .= "&".$pparm_key."=".$temp1;
+						}
+					}
+					if ($results > $search_res) 
+					{
+						$nextprev = ($results > $search_res) ? $tp -> parseTemplate("{NEXTPREV={$parms}}") : "";
+						$text .= "<div class='nextprev search form-inline'>".$nextprev."</div>";
+					}
+					if ($results > 0) 
+					{
+						$res_from = $_GET['r'] + 1;
+						$res_to = ($_GET['r'] + $search_res) > $results ? $results : ($_GET['r'] + $search_res);
+						$res_display = $res_from." - ".$res_to." ".LAN_SEARCH_12." ".$results;
+					} 
+					else 
+					{
+						$res_display = "";
+					}
+					$ns->tablerender(LAN_SEARCH_11." ".$res_display." ".LAN_SEARCH_13." ".(isset($_GET[$advanced_caption['id']]) ? $advanced_caption['title'][$_GET[$advanced_caption['id']]] : $search_info[$key]['qtype']), $text, 'search_result');
 				}
-				if ($results > $search_res) 
-				{
-					$nextprev = ($results > $search_res) ? $tp -> parseTemplate("{NEXTPREV={$parms}}") : "";
-					$text .= "<div class='nextprev search form-inline'>".$nextprev."</div>";
-				}
-				if ($results > 0) 
-				{
-					$res_from = $_GET['r'] + 1;
-					$res_to = ($_GET['r'] + $search_res) > $results ? $results : ($_GET['r'] + $search_res);
-					$res_display = $res_from." - ".$res_to." ".LAN_SEARCH_12." ".$results;
-				} 
-				else 
-				{
-					$res_display = "";
-				}
-				$ns->tablerender(LAN_SEARCH_11." ".$res_display." ".LAN_SEARCH_13." ".(isset($_GET[$advanced_caption['id']]) ? $advanced_caption['title'][$_GET[$advanced_caption['id']]] : $search_info[$key]['qtype']), $text, 'search_result');
 			}
-		}
-	}
+		}*/
+	
 }
 
 
