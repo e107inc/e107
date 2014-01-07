@@ -196,15 +196,8 @@ class cpage_shortcodes extends e_shortcode
 	function sc_cmenutitle($parm='')
 	{
 		$tp 	= e107::getParser(); 
-		$title 	= $tp->toGlyph($this->page['menu_title']); // (preg_replace('/i_([\w]*)/',"<i class='i_$1'></i>",$this->page['menu_title']); 
-		
-		// make it work without glyph
-		if(!$title)
-		{
-			$title = $this->page['menu_title'];
-		}
-		
-		return $tp->toHTML($title, true, 'TITLE');
+	//
+		return $tp->toHTML($this->page['menu_title'], true, 'TITLE');
 	}	
 
 
@@ -224,7 +217,7 @@ class cpage_shortcodes extends e_shortcode
 			return $img;	
 		}
 		
-		return "<img src='".$img."' alt='' />";
+		return "<img class='img-responsive' src='".$img."' alt='' />";
 	}	
 
 

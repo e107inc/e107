@@ -24,13 +24,14 @@ function tablestyle($caption, $text, $mode='')
 {
 	global $style;
 	
+	
 	$type = $style;
 	if(empty($caption))
 	{
 		$type = 'box';
 	}
 	
-	if($style == 'navdoc' || $mode == 'featurebox')
+	if($style == 'navdoc' || $style == 'none')
 	{
 		echo $text;
 		return;
@@ -118,7 +119,7 @@ $LAYOUT['_footer_'] = '  <hr>
 
 // $LAYOUT is a combined $HEADER and $FOOTER, automatically split at the point of "{---}"
 
-$LAYOUT['jumbotron_home'] =  '
+$LAYOUT['jumbotron_home'] =  <<<TMPL
   <!-- Main jumbotron for a primary marketing message or call to action -->
     {SETSTYLE=jumbotron}
    
@@ -140,34 +141,144 @@ $LAYOUT['jumbotron_home'] =  '
 	  {CMENU=jumbotron-menu-3}
       </div>
 
-	';
+TMPL;
 
 
-$LAYOUT['jumbotron_carousel'] =  '
-  <!-- Main jumbotron for a primary marketing message or call to action -->
-    {SETSTYLE=jumbotron}
-   
-   	{WMESSAGE=hide}   
-	
+$LAYOUT['modern_business_home'] =  <<<TMPL
+
+
+<!-- Main jumbotron for a primary marketing message or call to action -->
+    {SETSTYLE=none}
+
 	{FEATUREBOX}   
-
-	{SETSTYLE=default}
+	
 	<div class="container">	
 	{ALERTS}
-   
-	{---}
-	
 	</div>
-    <div class="container">
-      <!-- Example row of columns -->
-      <div class="row">
-      {SETSTYLE=col-md-4}
-	  {CMENU=jumbotron-menu-1}
-	  {CMENU=jumbotron-menu-2}
-	  {CMENU=jumbotron-menu-3}
-      </div>
+	
+	<div class="section">
+	    <div class="container">
+	      <!-- Example row of columns -->
+	      <div class="row">
+	      {SETSTYLE=col-md-4}
+		  {CMENU=jumbotron-menu-1}
+		  {CMENU=jumbotron-menu-2}
+		  {CMENU=jumbotron-menu-3}
+	      </div>
+		</div>
+	</div>
+		
+{SETSTYLE=default}
 
-	';
+	<div class="section-colored text-center">
+      <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+            	{WMESSAGE}   
+            <hr>
+          </div>
+        </div><!-- /.row -->
+      </div><!-- /.container -->
+
+  	</div><!-- /.section-colored -->
+
+	
+	
+	<div class="section">
+
+      <div class="container">
+
+        <div class="row">
+          <div class="col-lg-12 text-center">
+            <h2>Display Some Work on the Home Page Portfolio (TO-DO)</h2>
+            <hr>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-6">
+            <a href="portfolio-item.html"><img class="img-responsive img-home-portfolio" src="http://placehold.it/700x450"></a>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-6">
+            <a href="portfolio-item.html"><img class="img-responsive img-home-portfolio" src="http://placehold.it/700x450"></a>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-6">
+            <a href="portfolio-item.html"><img class="img-responsive img-home-portfolio" src="http://placehold.it/700x450"></a>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-6">
+            <a href="portfolio-item.html"><img class="img-responsive img-home-portfolio" src="http://placehold.it/700x450"></a>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-6">
+            <a href="portfolio-item.html"><img class="img-responsive img-home-portfolio" src="http://placehold.it/700x450"></a>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-6">
+            <a href="portfolio-item.html"><img class="img-responsive img-home-portfolio" src="http://placehold.it/700x450"></a>
+          </div>
+        </div><!-- /.row -->
+
+      </div><!-- /.container -->
+
+    </div><!-- /.section -->
+
+
+
+{SETSTYLE=none}
+
+	<div class="section-colored">
+
+		<div class="container">
+
+			<div class="row">
+			
+        		{CMENU=feature-menu-1}
+				
+			</div>
+			
+		</div><!-- /.container -->
+
+	</div><!-- /.section-colored -->
+
+
+	
+	 <div class="section">
+	
+		<div class="container">
+		
+			<div class="row">
+			
+				{CMENU=feature-menu-2}
+				
+			</div>
+			
+		</div><!-- /.container -->
+	
+	</div><!-- /.section -->
+
+
+
+	<div class="container">
+
+		<div class="row well">
+      
+        	{CMENU=feature-menu-3}
+		
+		</div><!-- /.row -->
+
+	</div><!-- /.container -->
+
+
+
+
+
+
+	 <div class="container">
+	{---}
+
+
+
+TMPL;
+
+
+
+
+
 
 $LAYOUT['jumbotron_full'] = '
    
