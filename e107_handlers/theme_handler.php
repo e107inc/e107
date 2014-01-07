@@ -1197,16 +1197,16 @@ class themeHandler
 			                    <table class='table adminlist'>
 			                      	<colgroup>
 			                      		<col class='col-tm-layout-default' style='width:10%' />
-			                      		<col class='col-tm-layout-name' style='width:20%' />
-										<col class='col-tm-layout-visibility' style='width:35%' />
-										<col class='col-tm-layout-preset' style='width:35%' />
+			                      		<col class='col-tm-layout-name' style='width:40%' />
+										<col class='col-tm-layout-visibility' style='width:30%' />
+										<col class='col-tm-layout-preset' style='width:20%' />
 			                      	</colgroup>
 									<tr>";
-						$itext .= ($mode == 1) ? "<td class='center top'>".TPVLAN_55."</td>" : "";
+						$itext .= ($mode == 1) ? "<th class='center top'>".TPVLAN_55."</th>" : "";
 						$itext .= "
-										<td>".TPVLAN_52."</td>
-										<td>".TPVLAN_56."</td>
-										<td>".TPVLAN_54."</td>
+										<th>".TPVLAN_52."</th>
+										<th>".TPVLAN_56."</th>
+										<th class='text-right' style='text-align:right'>".TPVLAN_54."</th>
 			
 									</tr>\n";
 			
@@ -1420,7 +1420,7 @@ class themeHandler
 		$men->curLayout = $key;
 		$preset = $men->getMenuPreset();
 		
-		$text .= "<div class='btn-group'>".$frm->admin_button("setMenuPreset[".$key."]", "Activate Menus",'other');
+		$text .= "<div class='btn-group pull-right'>".$frm->admin_button("setMenuPreset[".$key."]", "Activate Menus",'other');
 		$text .= '<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
 		<span class="caret"></span>
 		</button>
