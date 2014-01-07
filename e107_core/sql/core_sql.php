@@ -386,7 +386,7 @@ CREATE TABLE page (
   page_template varchar(50) NOT NULL default '',
   page_order int(4) unsigned NOT NULL default '9999',
   menu_name varchar(50) NOT NULL default '',  
-  menu_title varchar(50) NOT NULL default '',  
+  menu_title varchar(250) NOT NULL default '',  
   menu_text mediumtext NOT NULL,
   menu_image varchar(250) NOT NULL default '',
   menu_template varchar(50) NOT NULL default '',
