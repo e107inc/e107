@@ -65,6 +65,10 @@ body {
   background-color: #e1e1e1; /* change this to change the background color of a colored section */
 }
 
+.img-home-portfolio, .img-customer, .portfolio-item {
+    margin-bottom: 30px;
+}
+
 /* CUSTOMIZE THE CAROUSEL
 -------------------------------------------------- */
 
