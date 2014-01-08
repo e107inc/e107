@@ -268,7 +268,7 @@ class e_thumbpage
 		try
 		{
 		    $thumb = PhpThumbFactory::create($this->_src_path);
-		    $thumb->setOptions(array('correctPermissions' => true));
+		    $thumb->setOptions(array('correctPermissions' => true, 'resizeUp'=>true));
 		}
 		catch (Exception $e)
 		{
@@ -293,11 +293,11 @@ class e_thumbpage
 
 		// Watermark Option - See admin->MediaManager->prefs for details. 
 		
-		if($this->_watermark['activate'] < $options['w'] 
+		if(($this->_watermark['activate'] < $options['w'] 
 		|| $this->_watermark['activate'] < $options['aw']
 		|| $this->_watermark['activate'] < $options['h']
 		|| $this->_watermark['activate'] < $options['ah']
-		)
+		) && $this->_watermark['activate'] > 0 && $this->_watermark['font'] !='')
 		{
 			$tp = e107::getParser();
 			$this->_watermark['font'] = $tp->createConstants($this->_watermark['font'], 'mix');
