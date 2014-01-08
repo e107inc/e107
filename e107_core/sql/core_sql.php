@@ -389,6 +389,7 @@ CREATE TABLE page (
   menu_title varchar(250) NOT NULL default '',  
   menu_text mediumtext NOT NULL,
   menu_image varchar(250) NOT NULL default '',
+  menu_icon varchar(250) NOT NULL default '',
   menu_template varchar(50) NOT NULL default '',
   
   PRIMARY KEY  (page_id)

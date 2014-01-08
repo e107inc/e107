@@ -218,7 +218,12 @@ class cpage_shortcodes extends e_shortcode
 		}
 		
 		return "<img class='img-responsive' src='".$img."' alt='' />";
-	}	
+	}
+	
+	function sc_cmenuicon($parm='')
+	{
+		return e107::getParser()->toIcon($this->page['menu_icon']);
+	}		
 
 
 	function sc_cpageurl()

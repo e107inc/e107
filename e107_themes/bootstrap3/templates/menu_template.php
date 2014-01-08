@@ -21,7 +21,7 @@
 
 	$MENU_TEMPLATE['2-column_1:1_text-left']['start'] 	= '{SETIMAGE: w=700&h=450}'; 
 	$MENU_TEMPLATE['2-column_1:1_text-left']['body'] 	= '			
-													       <div class="col-lg-6 col-md-6 col-sm-6"><h2>{CMENUTITLE}</h2>{CMENUBODY}<br />{CPAGEBUTTON}</div>
+													       <div class="col-lg-6 col-md-6 col-sm-6"><h2>{CMENUICON}{CMENUTITLE}</h2>{CMENUBODY}<br />{CPAGEBUTTON}</div>
 													       <div class="col-lg-6 col-md-6 col-sm-6">{CMENUIMAGE}</div>
 													       '; 
 	$MENU_TEMPLATE['2-column_1:1_text-left']['end'] 	= ''; 
@@ -30,14 +30,14 @@
 	$MENU_TEMPLATE['2-column_1:1_text-right']['start'] = '{SETIMAGE: w=700&h=450}'; 
 	$MENU_TEMPLATE['2-column_1:1_text-right']['body'] 	= '
 															<div class="col-lg-6 col-md-6 col-sm-6">{CMENUIMAGE}</div>
-															<div class="col-lg-6 col-md-6 col-sm-6"><h2>{CMENUTITLE}</h2>{CMENUBODY}<br />{CPAGEBUTTON}</div>
+															<div class="col-lg-6 col-md-6 col-sm-6"><h2>{CMENUICON}{CMENUTITLE}</h2>{CMENUBODY}<br />{CPAGEBUTTON}</div>
 														'; 		
 	$MENU_TEMPLATE['2-column_1:1_text-right']['end'] 	= ''; 
           
  
 	$MENU_TEMPLATE['2-column_2:1_text-left']['start'] 	= ''; 
 	$MENU_TEMPLATE['2-column_2:1_text-left']['body'] 	= '			
-													       <div class="col-lg-8 col-md-8"><h4>{CMENUTITLE}</h4>{CMENUBODY}</div>
+													       <div class="col-lg-8 col-md-8"><h4>{CMENUICON}{CMENUTITLE}</h4>{CMENUBODY}</div>
 													       <div class="col-lg-4 col-md-4">
 													       <a class="btn btn-lg btn-primary pull-right" href="{CPAGEBUTTON=href}">'.LAN_READ_MORE.'</a>
 													       </div>
