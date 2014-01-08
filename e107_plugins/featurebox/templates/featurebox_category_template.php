@@ -12,7 +12,7 @@ $FEATUREBOX_CATEGORY_TEMPLATE = array();
 
 
 $FEATUREBOX_CATEGORY_TEMPLATE['bootstrap3_carousel']['list_start'] = '
-<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">  
+<div id="carousel-example-generic" class="featurebox carousel slide" data-ride="carousel">  
 {FEATUREBOX_NAVIGATION|bootstrap3_carousel=loop&uselimit=1}
   <!-- Wrapper for slides -->
   <div class="carousel-inner">

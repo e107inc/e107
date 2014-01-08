@@ -73,7 +73,7 @@ body {
 -------------------------------------------------- */
 
 /* Carousel base class */
-.carousel {
+.featurebox.carousel {
   height: 500px;
 }
 /* Since positioning the image, we need to help out the caption */
@@ -82,7 +82,7 @@ body {
 }
 
 /* Declare heights because of positioning of img element */
-.carousel .item {
+.featurebox.carousel .item {
   height: 500px;
   background-color: #CCCCCC;
 }
