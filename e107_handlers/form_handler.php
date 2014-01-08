@@ -335,7 +335,12 @@ class e_form
 		if(vartrue($extras['glyphs']))
 		{
 			$url .= "&amp;glyphs=1";	
-		}		
+		}	
+		
+		if(vartrue($extras['video']))
+		{
+			$url .= "&amp;video=1";	
+		}			
 		
 		$title = "Media Manager : ".$category;
 
@@ -498,6 +503,7 @@ class e_form
 			parse_str($sc_parameters, $sc_parameters);
 		}
 		
+	//	print_a($sc_parameters);
 	
 		$default_thumb = $default;
 		if($default)
@@ -510,6 +516,11 @@ class e_form
 			}
 			$default_url = $tp->replaceConstants($default, 'abs');
 			$blank = FALSE;
+			
+			if($video = $tp->toVideo($default_url, array('thumb'=>'src')))
+			{
+				$default_url = $video;	
+			}
 		}
 		else
 		{
@@ -552,6 +563,8 @@ class e_form
 			$ret = "<div class='imgselector-container e-tip' {$title} style='display:block;width:".$width."px;min-height:".$height."px;'>";
 			$att = 'aw='.$width."'&ah=".$height."'";
 			$thpath = isset($sc_parameters['nothumb']) || vartrue($hide) ? $default : $tp->thumbUrl($default_thumb, $att, true);
+			
+			
 			$label = "<img id='{$name_id}_prev' src='{$default_url}' alt='{$default_url}' class='well well-small image-selector' style='display:block;' />";
 			
 			if($cat != 'news' && $cat !='page' && $cat !='') 
@@ -2687,7 +2700,13 @@ class e_form
 			case 'image': //TODO - thumb, js tooltip...
 				if($value)
 				{
-				
+					$vparm = array('thumb'=>'tag','w'=> vartrue($parms['thumb_aw'],'80'));
+					
+					if($video = e107::getParser()->toVideo($value,$vparm))
+					{
+						return $video;
+					}
+					
 					if(!preg_match("/[a-zA-z0-9_-\s\(\)]+\.(png|jpg|jpeg|gif|PNG|JPG|JPEG|GIF)$/",$value))
 					{
 						$icon = "{e_IMAGE}filemanager/zip_32.png";	

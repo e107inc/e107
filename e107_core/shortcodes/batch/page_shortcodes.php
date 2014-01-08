@@ -210,8 +210,14 @@ class cpage_shortcodes extends e_shortcode
 	
 	function sc_cmenuimage($parm='')
 	{
-		// print_a($this);
-		$img = e107::getParser()->thumbUrl($this->page['menu_image']);
+		$tp = e107::getParser();
+		
+		if($video = $tp->toVideo($this->page['menu_image']))
+		{
+			return $video;	
+		}
+		
+		$img = $tp->thumbUrl($this->page['menu_image']);
 		if($parm == 'url')
 		{
 			return $img;	
