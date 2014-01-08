@@ -2756,6 +2756,46 @@ class e_parser
 		return "<img class='icon' src='".$path."' alt='".basename($path)."'  />";	
 	}	
 	
+	/**
+	 * @param string $file - format: id.type eg. x123dkax.youtube 
+	 * @param boolean $thumbnail  - set to 'tag' to return an image thumbnail and 'src' to return the src url or 'video' for a small video thumbnail. 
+	 */
+	function toVideo($file, $parm=array())
+	{
+		list($id,$type) = explode(".",$file,2);
+		
+		$thumb = vartrue($parm['thumb']);
+		
+		if($type == 'youtube')
+		{
+			$video =  '<iframe width="560" height="315" src="//www.youtube.com/embed/'.$id.'" frameborder="0" allowfullscreen></iframe>';
+			$thumbSrc = "https://i1.ytimg.com/vi/".$id."/0.jpg";
+		
+			if($thumb == 'tag')
+			{
+				return "<img class='img-responsive' src='".$thumbSrc."' alt='' style='max-width:".vartrue($parm['w'],'80')."px'/>";	
+			}
+			
+			if($thumb == 'src')
+			{
+				return $thumbSrc;
+			}
+			
+			if($thumb == 'video')
+			{
+				return '<div class="video-responsive video-thumbnail thumbnail">'.$video.'</div>';	
+			}
+			
+			return '<div class="video-responsive">'.$video.'</div>';
+		}
+		
+		return false;
+	}
+	
+	
+	
+	
+	
 	
 	/** 
 	 * Parse new <bbcode> tags into bbcode output. 

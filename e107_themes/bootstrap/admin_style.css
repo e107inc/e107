@@ -907,6 +907,27 @@ li.rssRow > div {
     position: static;
 }
 
+.video-responsive {
+    position: relative;
+    padding-bottom: 56.25%;
+    padding-top: 30px; height: 0; overflow: hidden;
+}
+
+.video-responsive iframe,
+.video-responsive object,
+.video-responsive embed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+
+.video-thumbnail iframe {
+	width:142px;
+	
+}
 /*
 
 body { background-color: rgb(68, 68, 68); }

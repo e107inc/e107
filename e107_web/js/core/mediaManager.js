@@ -61,22 +61,22 @@ $(document).ready(function()
 		var _float 			= $('#float').val();	
 
 									
-		if(margin_right !='')
+		if(margin_right !='' && margin_right !== undefined)
 		{				
 			style  = style + 'margin-right:' + margin_right + 'px;';	
 		}
 		
-		if(margin_left !='')
+		if(margin_left !='' && margin_left !== undefined)
 		{				
 			style  = style + 'margin-left:' + margin_left + 'px;';	
 		}
 		
-		if(margin_top !='')
+		if(margin_top !='' && margin_top !== undefined)
 		{				
 			style  = style + 'margin-top:' + margin_top + 'px;';	
 		}
 		
-		if(margin_bottom !='')
+		if(margin_bottom !='' && margin_bottom !== undefined)
 		{				
 			style  = style + 'margin-bottom:' + margin_bottom + 'px;';	
 		}
@@ -86,7 +86,15 @@ $(document).ready(function()
 			style  = style + 'float:' + _float + ';';	
 		}
 		
+		if(width === undefined)
+		{
+			width = '';	
+		}
 		
+		if(height === undefined)
+		{
+			height = '';	
+		}
 		
 		// Set the Html / Wysiwyg Value.
 		var html = '<img class="img-rounded" style=\"' + style + '\" src=\"'+ src +'\" alt=\"\" width=\"' + width + '\" height=\"' + height + '\" />'; 
@@ -94,12 +102,12 @@ $(document).ready(function()
 		
 		
 		// Only Do width/height styling on bbcodes --
-		if(width !='')
+		if(width !='' && width !== undefined)
 		{				
 			style  = style + 'width:' + width + 'px;';	
 		}
 
-		if(height !='')
+		if(height !='' && height !== undefined)
 		{				
 			style  = style + 'height:' + height + 'px;';	
 		}	
@@ -279,6 +287,49 @@ $(document).ready(function()
 			mediaNav(this,null);
 				
 		});
+		
+		
+		// Ajax keyup search. Used by media-browser. 
+		
+		var delay = (function(){
+		  var timer = 0;
+		  return function(callback, ms){
+		    clearTimeout (timer);
+		    timer = setTimeout(callback, ms);
+		  };
+		})();
+		
+		
+		$(".e-ajax-keyup").keyup(function(){
+			
+			var id 		= $(this).attr("data-target");
+			var src 	= $(this).attr("data-src");
+			var search 	= $(this).val();
+			
+			if(search !== null)
+  			{
+  				src = src + '&search=' + encodeURIComponent(search);	
+  			}
+
+  		//	alert(src);
+  		
+  			  $('#'+id).fadeOut('fast');
+  		
+  			 delay(function(){
+     					  
+				if((search.length) >= 3) {
+					$('#'+id).load(src,function() {
+		  				// alert(src);
+		  				
+		    			 $('#'+id).fadeIn('fast'); // .slideLeft();
+					});
+				}
+
+   			 }, 300 );
+  		
+  			
+		});
+		
 	
 	
 		function mediaNav(e,navid)

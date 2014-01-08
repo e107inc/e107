@@ -45,6 +45,14 @@ if(isset($_POST['submit_cancel_show']))
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
+
+if(vartrue($_GET['action']) == 'youtube' && e_AJAX_REQUEST) //XXX Doesn't work correctly inside the class for some reason 
+{
+	//echo "it works";
+	//exit;		
+	
+}
+
 if(vartrue($_GET['action']) == 'nav' && e_AJAX_REQUEST) //XXX Doesn't work correctly inside the class for some reason 
 {
 	define("e_IFRAME",true);
@@ -835,6 +843,14 @@ class media_admin_ui extends e_admin_ui
 		
 	//	print_a($_GET);
 		
+		if($this->getAction() == 'youtube')
+		{
+			$parm = array('search'=>$_GET['search']);	
+			echo $this->videotab($parm);
+			exit;
+		}
+		
+		
 		if($_GET['action'] == 'nav' )
 		{
 			//echo $this->navPage();\
@@ -1027,6 +1043,12 @@ class media_admin_ui extends e_admin_ui
 			$text .= "<li><a data-toggle='tab' href='#core-media-glyphs'>Glyphs</a></li>\n";	
 		}
 		
+		if($this->getQuery('video') == 1)
+		{
+			$text .= "<li><a data-toggle='tab' href='#core-media-video'>Youtube</a></li>\n";	
+		}
+		
+	
 	
 		if(varset($options['bbcode']))
 		{
@@ -1169,6 +1191,20 @@ class media_admin_ui extends e_admin_ui
 		
 		}
 		
+		if($this->getQuery('video'))
+		{
+			$text .= "<div class='tab-pane clearfix' id='core-media-video' >";
+			$text .= "<div style='padding:20px'>";
+			$text .= $this->videoTab();
+			$text .= "</div>";	
+			$text .= "</div>";	
+		}
+			
+		
+		
+		
+		
+		
 		$text .= "</div>";
 		
 		// For BBCODE mode. //TODO image-float. 
@@ -1204,7 +1240,52 @@ class media_admin_ui extends e_admin_ui
 		return $text;
 	}
 
-	
+	function videoTab($parm='')
+	{
+		
+		//	$feed = "https://gdata.youtube.com/feeds/base/users/e107inc/uploads";
+			
+			if($search = vartrue($this->getQuery('search')))
+			{
+				$feed = "http://gdata.youtube.com/feeds/api/videos?orderby=relevance&vq=".urlencode($search)."&max-results=50"; // maximum is 50. 
+			}
+			else
+			{
+				$feed = "https://gdata.youtube.com/feeds/api/users/e107inc/uploads";	
+			}	
+					
+			$data = e107::getXml()->loadXMLfile($feed,true);
+			
+		//	$text .= "<h2>".$data['title']."</h2>";
+		//	$text .= print_a($data,true);
+			
+			$items = array();
+			
+			foreach($data['entry'] as $value)
+			{
+				$id = str_replace('http://gdata.youtube.com/feeds/api/videos/','',$value['id']); // http://gdata.youtube.com/feeds/api/videos/_j0b9syAuIk
+				$thumbnail = "https://i1.ytimg.com/vi/".$id."/0.jpg";
+				
+				$items[] = array( 
+					'previewUrl'	=> $thumbnail,
+					'saveValue'		=> $id.".youtube",
+					'thumbUrl'		=> $thumbnail,
+					'title'			=> $value['title']
+				); 	
+			}
+			
+			$parms = array('width' => 200, 'height'=>113, 'type'=>'image', 'tagid'=> $this->getQuery('tagid'), 'action'=>'youtube');
+			
+				
+			$text = e107::getMedia()->browserCarousel($items, $parms);
+		
+		
+		return $text;
+		
+	}	
+
+
+
 
 
 	function importPage()
@@ -1212,6 +1293,10 @@ class media_admin_ui extends e_admin_ui
 		$this->processUploadUrl();
 		$this->batchImportForm();
 	}
+
+
+
+
 	
 	function processUploadUrl($import = false, $cat='_common')
 	{

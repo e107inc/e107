@@ -528,8 +528,10 @@ class e_media
 		$cat .= varset($option['limit']) 	? "&amp;limit=".$option['limit'] : "";
 		$cat .= varset($option['frm']) 		? "&amp;frm=".$option['frm'] : "";
 		$cat .= varset($option['w']) 		? "&amp;w=".$option['w'] : "";
+		
+		$action = varset($option['action'],'nav');
 					
-		$url = e_ADMIN_ABS."image.php?mode=main&amp;action=nav&amp;iframe=1".$cat."&amp;from=0";
+		$url = e_ADMIN_ABS."image.php?mode=main&amp;action=".$action."&amp;iframe=1".$cat."&amp;from=0";
 		
 		return $url;	
 	}
@@ -930,6 +932,164 @@ class e_media
 	}
 	
 	
+	function browserCarouselItem($row = array())
+	{
+		$tp = e107::getParser();
+		
+			$defaultThumb = $tp->thumbUrl('','w=400&h=240');	
+	
+			$default = array(
+				'width'			=> 200,
+				'height'		=> 113,
+				'id'			=> '',
+				'type'			=> 'image',
+				'tagid'			=> '',
+				'saveValue'		=> '',
+				'previewUrl'	=> $defaultThumb ,
+				'thumbUrl'		=> $defaultThumb,
+				'title'			=> '' 
+				
+			);
+			
+			$data = array();
+			
+			foreach($default as $k=>$v)
+			{
+				$data[$k] = isset($row[$k]) ? $row[$k] : $default[$k];	
+			}
+			
+			
+			$close = (E107_DEBUG_LEVEL > 0) ? "" : "e-dialog-close";	
+				
+				
+			$text .= "<div class='browserItem span2'>";
+			$text .= '<div class="well clearfix">';
+			$text .= "<a data-toggle='context' class='e-media-select ".$close." e-tip' data-id='".$data['id']."' data-width='".$data['width']."' data-height='".$data['height']."' data-src='".$data['previewUrl']."' data-type='".$data['type']."' data-bbcode='{$bbcode}' data-target='".$data['tagid']."' data-path='".$data['saveValue']."' data-preview='".$data['previewUrl']."' title=\"".$data['title']."\" style='float:left' href='#' >";
+			//	$text .= "<span style='margin:7px;display:inline-block'></span>";
+			$text .= '<img class="img-responsive" alt="" src="'.$data['thumbUrl'].'" style="width:100%;display:inline-block" />';		
+			$text .= "</a>\n\n";
+			$text .= "<div><small style='padding-top:8px;white-space:nowrap;display:inline-block;width:100%;overflow:hidden'>".$data['title']."</small></div>";
+			$text .= "</div>";
+			$text .= "</div>";
+		
+		return $text;
+
+	}
+	
+	function browserIndicators($slides=array())
+	{
+	
+		if(count($slides)<1)
+		{
+			return;	
+		}
+		
+		 $indicators = '<ol class="carousel-indicators span2" style="top:-40px">
+			<li data-target="#myCarousel" data-slide-to="0" class="active"></li>';
+				
+		foreach($slides as $key=>$v)
+		{
+			$id = $key + 1;	
+			$indicators .= '<li data-target="#myCarousel" data-slide-to="'.$id.'"></li>';
+		}
+		
+		$indicators .=	'</ol>';		
+						
+		return $indicators;
+		
+	}
+	
+	
+	function browserCarousel($data,$parm=null)
+	{
+			/* Fix for Bootstrap2 margin-left issue when wrapping */
+		e107::css('inline','
+				
+		.browserItem { margin-bottom:15px }
+		
+		.row-fluid .browserItem.span6:nth-child(2n + 3) { margin-left : 0px; }
+		.row-fluid .browserItem.span4:nth-child(3n + 4) { margin-left : 0px; }
+		.row-fluid .browserItem.span3:nth-child(4n + 5) { margin-left : 0px; }
+		.row-fluid .browserItem.span2:nth-child(6n + 7) { margin-left : 0px; }
+		');
+	
+		$frm 		= varset($option['from']) ? $option['from'] : 0;
+		$limit 		= varset($option['limit']) ? $option['limit'] : 20;
+		$bbcode		= varset($option['bbcode']) ? $option['bbcode'] : null;
+		$navMode	= varset($option['nav']) ? TRUE : FALSE;
+		$search		= varset($option['search']) ? $option['search'] : null;
+		
+		$frm = e107::getForm();
+		
+	//	$text .= print_a($_GET,true);
+	
+			$data_src = $this->mediaSelectNav($category,$parm['tagid'], $parm);
+		
+			//$text = "<form class='form-search' action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='get'>";
+						
+			if(!e_AJAX_REQUEST)
+			{
+				$text = '<div class="btn-group"><span class="input-append">';
+				$text .= "<input type='text'class='e-ajax-keyup e-tip' placeholder= 'Search...' title='Enter some text to filter results' name='search' value=''  data-target='media-browser-container' data-src='".$data_src."' />";	
+			//	$text .= '<button class="btn btn-primary" name="'.$submitName.'" type="submit">'.LAN_GO.'</button>';
+				$text .= '<a class="btn btn-primary" href="#myCarousel" data-slide="prev">&lsaquo;</a><a class="btn btn-primary" href="#myCarousel" data-slide="next">&rsaquo;</a>';
+				$text .= "</span>";		
+				$text .= "</div>";
+				$text .= "<div id='media-browser-container' class='form-inline clearfix row-fluid'>";
+			}
+		
+		//	$text .= $this->search('srch', $srch, 'go', $filterName, $filterArray, $filterVal).$frm->hidden('mode','online');
+			
+			
+				$text .= '<div id="myCarousel"  class="carousel slide" data-interval="false">';
+					$text .= '{INDICATORS}';
+				$text .= '<div id="shop" style="margin-top:10px;min-height:585px" class="carousel-inner">';	
+			
+			
+				$text .= "<div class='item active row-fluid'>";
+				
+				$perPage = vartrue($parm['perPage'],12);
+				
+				$c=0;
+				
+				$slides = array();
+				
+			
+				foreach($data as $key=>$val)
+				{
+					$val['width']	= $parm['width'];
+					$val['height']	= $parm['height'];
+					$val['id']		= $parm['id'];
+					$val['tagid']	= $parm['tagid'];
+					$val['type']	= $parm['type'];
+							
+				
+					$text .= $this->browserCarouselItem($val);
+				
+					$c++;
+						
+						if($c == $perPage)
+						{
+							$text .= '</div><div class="item">';
+							$slides[] = 1;
+							$c = 0;
+						}
+				}
+		
+				$text .= "</div><div class='clearfix'>&nbsp;</div>\n\n";
+				
+				$text .= "</div>";
+				
+			if(!e_AJAX_REQUEST)
+			{	
+				$text .= "</div>";
+			}	
+			
+			$ret = str_replace('{INDICATORS}', $this->browserIndicators($slides), $text);
+			
+			return $ret;
+				
+	}
 
 	
 }
