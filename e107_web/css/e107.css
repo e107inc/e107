@@ -13,33 +13,33 @@
 .justify { text-align: justify }
 .f-left { float: left }
 .f-right { float: right }
-.top { vertical-align: top }
-.middle { vertical-align: middle }
-.bottom { vertical-align: bottom }
-.clear { clear: both }
-.clear-l { clear: right }
-.clear-r { clear: left }
+.top 			{ vertical-align: top }
+.middle 		{ vertical-align: middle }
+.bottom 		{ vertical-align: bottom }
+.clear 			{ clear: both }
+.clear-l 		{ clear: right }
+.clear-r 		{ clear: left }
 
 i.icon-download	{ font-size:200%;  }
 
 
 .e-footer-info	{ margin-top:10px; padding:20px; text-align: center }
 
-td.text-center { text-align:center; }
+td.text-center	{ text-align:center; }
 
 /* Core Icons */
-.icon { border: 0 }
-.icon.action { vertical-align: middle }
-.S16 { width: 16px; height: 16px }
-.S32 { width: 32px; height: 32px }
-.S64 { width: 64px; height: 64px }
-.S128 { width: 128px; height: 128px }
+.icon 			{ border: 0px; display: inline-block; margin-right: .3em;}
+.icon.action 	{ vertical-align: middle }
+.S16 			{ width: 16px; height: 16px }
+.S32 			{ width: 32px; height: 32px }
+.S64 			{ width: 64px; height: 64px }
+.S128 			{ width: 128px; height: 128px }
 
 /* Decorate JS - see core/decorate.js */
-.odd {  }
-.even { background-color: #F5F5F5 }
-.first, .last {  }
-.e-list { /* core selector - can be used per theme (JS) to decorate list blocks */ }
+.odd 			{  }
+.even 			{ background-color: #F5F5F5 }
+.first, .last 	{  }
+.e-list 		{ /* core selector - can be used per theme (JS) to decorate list blocks */ }
 
 /* e107 Tabs - see core/tabs.js */
 ul.e-tabs { list-style-type: none; }

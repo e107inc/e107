@@ -49,6 +49,7 @@ e-tabs fieldset 			{ padding:0px ; padding-left:3px; border-top:0px;}
 
 
 td.center, th.center 		{ text-align:center }
+td.right, th.right 			{ text-align:right }
 
 .col-label 					{ width:25%; }
 

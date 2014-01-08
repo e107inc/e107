@@ -401,8 +401,8 @@ class e_menu
 			
 			$sql->select("page", "*", $query);
 			$page = $sql->fetch();
-			
-			$caption = $tp->toHTML($page['menu_title'], true, 'parse_sc, constants');
+			$caption = (vartrue($page['menu_icon'])) ? $tp->toIcon($page['menu_icon']) : '';
+			$caption .= $tp->toHTML($page['menu_title'], true, 'parse_sc, constants');
 			
 			if(vartrue($page['menu_template'])) // New v2.x templates. see core/menu_template.php 
 			{
