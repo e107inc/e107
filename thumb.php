@@ -268,7 +268,9 @@ class e_thumbpage
 		try
 		{
 		    $thumb = PhpThumbFactory::create($this->_src_path);
-		    $thumb->setOptions(array('correctPermissions' => true, 'resizeUp'=>true));
+			$sizeUp = ($this->_request['w'] > 110) ? true : false; // don't resizeUp the icon images. 
+		   	$thumb->setOptions(array('correctPermissions' => true, 'resizeUp'=>$sizeUp));
+			
 		}
 		catch (Exception $e)
 		{
