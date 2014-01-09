@@ -70,7 +70,7 @@ class page_sitelink // include plugin-folder in the name.
 			{
 				$sublinks[] = array(
 					'link_name'			=> $tp->toHtml($row['chapter_name'],'','TITLE'),
-					'link_url'			=> 'page.php?ch='.$row['chapter_id'], //TODO FIXME chapter_sef support
+					'link_url'			=> e107::getUrl()->create('page/chapter/index', $row), // 'page.php?ch='.$row['chapter_id'],
 					'link_description'	=> '',
 					'link_button'		=> $row['chapter_icon'],
 					'link_category'		=> '',
@@ -199,8 +199,7 @@ class page_sitelink // include plugin-folder in the name.
 			$arr[] = array(
 				'link_id'			=> $row['chapter_id'],
 				'link_name'			=> $row['chapter_name'],
-				//TODO SEFURLS using chapter_sef. 
-				'link_url'			=> ($row['chapter_parent'] == 0) ? 'page.php?bk='.$row['chapter_id'] : 'page.php?ch='.$row['chapter_id'], 
+				'link_url'			=> ($row['chapter_parent'] == 0) ? e107::getUrl()->create('page/book/index', $row) : e107::getUrl()->create('page/chapter/index', $row), // ,'page.php?bk='.$row['chapter_id'] : 'page.php?ch='.$row['chapter_id'], 
 			//	'link_url'			=> vartrue($row['chapter_sef'],'#'),
 				
 				'link_description'	=> '',
