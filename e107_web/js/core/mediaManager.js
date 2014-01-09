@@ -317,13 +317,13 @@ $(document).ready(function()
   		
   			 delay(function(){
      					  
-				if((search.length) >= 3) {
+			//	if((search.length) >= 3) {
 					$('#'+id).load(src,function() {
 		  				// alert(src);
 		  				
 		    			 $('#'+id).fadeIn('fast'); // .slideLeft();
 					});
-				}
+			//	}
 
    			 }, 300 );
   		
@@ -370,12 +370,12 @@ $(document).ready(function()
   				src = src + '&search='+search;	
   			}
   			
-  		
+  			 $(id).fadeOut('fast');
   			
   			//TODO Animate. 
   			$(id).load(src,function() {
   				// alert(src);
-  				// $(this).hide();
+  				 $(id).fadeIn('fast');
     			// $(this).show('slow'); // .slideLeft();
 			});
 				

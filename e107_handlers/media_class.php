@@ -596,16 +596,17 @@ class e_media
 			$data_src = $this->mediaSelectNav($category,$tagid, $option); // ."&amp;from=0";
 		
 			// Inline style to override jquery-ui stuff. 
-			$text .= "<div class='input-append' style='margin-top:10px;font-size:12px'>
-			<input type='text' style='padding-left:24px;margin-right:-20px' id='media-search' title='Enter some text to filter results' name='search' value='' class='e-tip' data-target='media-select-container' data-src='".$data_src."' />
-			<i class='icon-search searchquery' style='top:4px;left:-212px'></i>";
+			$text .= "<div class='btn-group'>
+			<div class='input-append' style='margin-top:10px;font-size:12px'>
+			<input type='text' id='media-search' placeholder='Search...' name='search' value='' class='e-tip' data-target='media-select-container' data-src='".$data_src."' />
+			";
 		//	$text .= "<input type='button' value='Go' class='btn btn-primary e-media-nav' data-target='media-select-container' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' /> "; // Manual filter, if onkeyup ajax fails for some reason. 
-			$text .= "<button type='button' value='Go' class='btn btn-primary e-media-nav' data-target='media-select-container' data-src='".$data_src."' >Go</button>"; // Manual filter, if onkeyup ajax fails for some reason. 
+			$text .= "<button type='button'  class='btn btn-primary e-media-nav' data-target='media-select-container' data-src='".$data_src."' >Go</button>"; // Manual filter, if onkeyup ajax fails for some reason. 
 	
-			$text .= "&nbsp;<button type='button' title='previous page' class='btn e-nav e-media-nav e-tip'  data-target='media-select-container' data-nav-total='".$total."' data-nav-dir='down' data-nav-inc='".$limit."' data-src='".$data_src."' >&laquo;</button>"; // see next page of images. 
+			$text .= "<button type='button' title='previous page' class='btn e-nav e-media-nav e-tip'  data-target='media-select-container' data-nav-total='".$total."' data-nav-dir='down' data-nav-inc='".$limit."' data-src='".$data_src."' >&laquo;</button>"; // see next page of images. 
 		
 			$text .= "<button type='button' title='next page' class='btn e-nav e-media-nav e-tip' style='text-align:center'  data-target='media-select-container' data-nav-total='".$total."' data-nav-dir='up' data-nav-inc='".$limit."' data-src='".$data_src."' >&raquo;</button>"; // see next page of images. 
-			$text .= "</div>";
+			$text .= "</div></div>";
 		
 			$text .= "
 			<div id='media-select-container'>";	
@@ -768,21 +769,94 @@ class e_media
 	 * Get all Glyphs
 	 * @todo Cache 
 	 */
-	function getGlyphs()
+	function getGlyphs($type='fa4',$prefix = '')
 	{
+		$icons = array();
 		
-		$pattern = '/\.(icon-(?:\w+(?:-)?)+):before\s+{\s*content:\s*"(.+)";\s+}/';
-		$subject = file_get_contents(e_WEB_JS.'font-awesome/css/font-awesome.css');
+		if($type == 'bs2')
+		{
+			$matches = array(
+				'glass','music','search','envelope','heart','star','star-empty','user','film','th-large','th','th-list','ok',
+				'remove','zoom-in','zoom-out','off','signal','cog','trash','home','file','time','road','download-alt','download',
+				'upload','inbox','play-circle','repeat','refresh','list-alt','lock','flag','headphones','volume-off','volume-down',
+				'volume-up','qrcode','barcode','tag','tags','book','bookmark','print','camera','font','bold','italic','text-height',
+				'text-width','align-left','align-center','align-right','align-justify','list','indent-left','indent-right',
+				'facetime-video','picture','pencil','map-marker','adjust','tint','edit','share','check','move','step-backward',
+				'fast-backward','backward','play','pause','stop','forward','fast-forward','step-forward','eject','chevron-left',
+				'chevron-right','plus-sign','minus-sign','remove-sign','ok-sign','question-sign','info-sign','screenshot',
+				'remove-circle','ok-circle','ban-circle','arrow-left','arrow-right','arrow-up','arrow-down','share-alt',
+				'resize-full','resize-small','plus','minus','asterisk','exclamation-sign','gift','leaf','fire','eye-open',
+				'eye-close','warning-sign','plane','calendar','random','comment','magnet','chevron-up','chevron-down',
+				'retweet','shopping-cart','folder-close','folder-open','resize-vertical','resize-horizontal','hdd',
+				'bullhorn','bell','certificate','thumbs-up','thumbs-down','hand-right','hand-left','hand-up','hand-down',
+				'circle-arrow-right','circle-arrow-left','circle-arrow-up','circle-arrow-down','globe','wrench','tasks',
+				'filter','briefcase','fullscreen'
+			);
+				
+			foreach($matches as $match)
+			{
+			    $icons[] = $prefix.$match;
+			}
+			
+			return $icons;
+		}
+					
+		if($type == 'bs3')
+		{
+			$matches = array(
+			'adjust','align-center','align-justify','align-left','align-right','arrow-down','arrow-left','arrow-right','arrow-up','asterisk','backward','ban-circle','barcode','bell','bold','book
+			','bookmark','briefcase','bullhorn','calendar','camera','certificate','check','chevron-down','chevron-left','chevron-right','chevron-up','circle-arrow-down','circle-arrow-left','circle-arrow-right
+			','circle-arrow-up','cloud','cloud-download','cloud-upload','cog','collapse-down','collapse-up','comment','compressed','copyright-mark','credit-card','cutlery','dashboard','download','download-alt
+			','earphone','edit','eject','envelope','euro','exclamation-sign','expand','export','eye-close','eye-open','facetime-video','fast-backward','fast-forward','file','film','filter','fire','flag
+			','flash','floppy-disk','floppy-open','floppy-remove','floppy-save','floppy-saved','folder-close','folder-open','font','forward','fullscreen','gbp','gift
+			','glass','globe','hand-down','hand-left','hand-right','hand-up','hd-video','hdd','header','headphones','heart','heart-empty','home','import','inbox','indent-left','indent-right','info-sign','italic','leaf','link','list
+			','list-alt','lock','log-in','log-out','magnet','map-marker','minus','minus-sign','move','music','new-window','off','ok','ok-circle','ok-sign','open','paperclip','pause','pencil','phone','phone-alt','picture
+			','plane','play','play-circle','plus','plus-sign','print','pushpin','qrcode','question-sign','random','record','refresh','registration-mark','remove','remove-circle','remove-sign','repeat','resize-full','resize-horizontal
+			','resize-small','resize-vertical','retweet','road','save','saved','screenshot','sd-video','search','send','share','share-alt','shopping-cart','signal','sort','sort-by-alphabet','sort-by-alphabet-alt
+			','sort-by-attributes','sort-by-attributes-alt','sort-by-order','sort-by-order-alt','sound-5-1','sound-6-1','sound-7-1','sound-dolby','sound-stereo','star','stats','step-backward','step-forward','stop
+			','subtitles','tag','tags','tasks','text-height','text-width','th','th-large','th-list','thumbs-down','thumbs-up','time','tint','tower','transfer','trash','tree-conifer','tree-deciduous','unchecked','upload
+			','usd','user','volume-down','volume-off','volume-up','warning-sign','wrench','zoom-in','zoom-out'
+			);	
+			
+			foreach($matches as $match)
+			{
+			    $icons[] = $prefix.$match;
+			}
+			
+			return $icons;
+		}
 		
+		$cache = e107::getCache();
+		$cache->setMD5('_');
+		
+		if($data = $cache->retrieve($type,360,true))
+		{
+			return e107::unserialize($data);
+		}
+		
+		
+		if($type == 'fa4')
+		{
+			$pattern = '/\.(fa-(?:\w+(?:-)?)+):before\s+{\s*content:\s*"(.+)";\s+}/';
+			$subject = e107::getFile()->getRemoteContent('http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css');
+		}
+		elseif($type == 'fa3')
+		{
+			$pattern = '/\.(icon-(?:\w+(?:-)?)+):before\s+{\s*content:\s*"(.+)";\s+}/';
+			$subject = file_get_contents(e_WEB_JS.'font-awesome/css/font-awesome.css');
+		}
+				
 		preg_match_all($pattern, $subject, $matches, PREG_SET_ORDER);
 		
-		$icons = array();
+		
 		
 		foreach($matches as $match)
 		{
 		    $icons[] = $match[1];
 		}
-				
+			
+		$data = e107::serialize($icons);
+		$cache->set($type,$data,true);		
 		return $icons; 
 	
 	}
@@ -936,47 +1010,63 @@ class e_media
 	{
 		$tp = e107::getParser();
 		
-			$defaultThumb = $tp->thumbUrl('','w=400&h=240');	
+		$defaultThumb = $tp->thumbUrl('','w=400&h=240');	
 	
-			$default = array(
-				'width'			=> 200,
-				'height'		=> 113,
-				'id'			=> '',
-				'type'			=> 'image',
-				'tagid'			=> '',
-				'saveValue'		=> '',
-				'previewUrl'	=> $defaultThumb ,
-				'thumbUrl'		=> $defaultThumb,
-				'title'			=> '' 
+		$default = array(
+			'width'			=> 200,
+			'height'		=> 113,
+			'id'			=> '',
+			'type'			=> 'image',
+			'tagid'			=> '',
+			'saveValue'		=> '',
+			'previewUrl'	=> $defaultThumb ,
+			'thumbUrl'		=> $defaultThumb,
+			'title'			=> '',
+			'gridClass'		=> 'span2'
+			
+		);
+		
+		$data = array();
+		
+		foreach($default as $k=>$v)
+		{
+			$data[$k] = isset($row[$k]) ? $row[$k] : $default[$k];	
+		}
+			
+			
+		$close = (E107_DEBUG_LEVEL > 0) ? "" : "e-dialog-close";	
 				
-			);
-			
-			$data = array();
-			
-			foreach($default as $k=>$v)
-			{
-				$data[$k] = isset($row[$k]) ? $row[$k] : $default[$k];	
-			}
-			
-			
-			$close = (E107_DEBUG_LEVEL > 0) ? "" : "e-dialog-close";	
 				
+		$text .= "\n\n<!-- Start Item -->\n<div class='media-carousel ".$data['gridClass']."'>
+		
+			<div class='well clearfix'>
+
+				<a data-toggle='context' class='e-media-select ".$close." e-tip' data-id='".$data['id']."' data-width='".$data['width']."' data-height='".$data['height']."' data-src='".$data['previewUrl']."' data-type='".$data['type']."' data-bbcode='{$bbcode}' data-target='".$data['tagid']."' data-path='".$data['saveValue']."' data-preview='".$data['previewUrl']."' title=\"".$data['title']."\" style='float:left' href='#' >";
+		
+				if($data['type'] == 'image')
+				{
+					$text .= '<img class="img-responsive" alt="" src="'.$data['thumbUrl'].'" style="width:100%;display:inline-block" />';
+				}
+				elseif($data['type'] == 'glyph')
+				{
+					$text .= "\n<span style='margin:7px;display:inline-block; color:white'>".$tp->toGlyph($data['thumbUrl'],false)."</span>";	
+				}		
+				$text .= "\n</a>\n\n";
 				
-			$text .= "<div class='browserItem span2'>";
-			$text .= '<div class="well clearfix">';
-			$text .= "<a data-toggle='context' class='e-media-select ".$close." e-tip' data-id='".$data['id']."' data-width='".$data['width']."' data-height='".$data['height']."' data-src='".$data['previewUrl']."' data-type='".$data['type']."' data-bbcode='{$bbcode}' data-target='".$data['tagid']."' data-path='".$data['saveValue']."' data-preview='".$data['previewUrl']."' title=\"".$data['title']."\" style='float:left' href='#' >";
-			//	$text .= "<span style='margin:7px;display:inline-block'></span>";
-			$text .= '<img class="img-responsive" alt="" src="'.$data['thumbUrl'].'" style="width:100%;display:inline-block" />';		
-			$text .= "</a>\n\n";
-			$text .= "<div><small style='padding-top:8px;white-space:nowrap;display:inline-block;width:100%;overflow:hidden'>".$data['title']."</small></div>";
-			$text .= "</div>";
-			$text .= "</div>";
+				if($data['type'] == 'image')
+				{
+					$text .= "\n<div><small class='media-carousel-item-caption'>".$data['title']."</small></div>";
+				}
+			
+			$text .= "</div>
+			
+			</div>\n<!-- End Item -->\n\n";
 		
 		return $text;
 
 	}
 	
-	function browserIndicators($slides=array())
+	function browserIndicators($slides=array(),$uniqueID)
 	{
 	
 		if(count($slides)<1)
@@ -985,12 +1075,12 @@ class e_media
 		}
 		
 		 $indicators = '<ol class="carousel-indicators span2" style="top:-40px">
-			<li data-target="#myCarousel" data-slide-to="0" class="active"></li>';
+			<li data-target="#'.$uniqueID.'" data-slide-to="0" class="active"></li>';
 				
 		foreach($slides as $key=>$v)
 		{
 			$id = $key + 1;	
-			$indicators .= '<li data-target="#myCarousel" data-slide-to="'.$id.'"></li>';
+			$indicators .= '<li data-target="#'.$uniqueID.'" data-slide-to="'.$id.'"></li>';
 		}
 		
 		$indicators .=	'</ol>';		
@@ -1005,48 +1095,50 @@ class e_media
 			/* Fix for Bootstrap2 margin-left issue when wrapping */
 		e107::css('inline','
 				
-		.browserItem { margin-bottom:15px }
+		.media-carousel { margin-bottom:15px }
 		
-		.row-fluid .browserItem.span6:nth-child(2n + 3) { margin-left : 0px; }
-		.row-fluid .browserItem.span4:nth-child(3n + 4) { margin-left : 0px; }
-		.row-fluid .browserItem.span3:nth-child(4n + 5) { margin-left : 0px; }
-		.row-fluid .browserItem.span2:nth-child(6n + 7) { margin-left : 0px; }
+		.row-fluid .media-carousel.span6:nth-child(2n + 3) { margin-left : 0px; }
+		.row-fluid .media-carousel.span4:nth-child(3n + 4) { margin-left : 0px; }
+		.row-fluid .media-carousel.span3:nth-child(4n + 5) { margin-left : 0px; }
+		.row-fluid .media-carousel.span2:nth-child(6n + 7) { margin-left : 0px; }
 		');
-	
-		$frm 		= varset($option['from']) ? $option['from'] : 0;
-		$limit 		= varset($option['limit']) ? $option['limit'] : 20;
-		$bbcode		= varset($option['bbcode']) ? $option['bbcode'] : null;
-		$navMode	= varset($option['nav']) ? TRUE : FALSE;
-		$search		= varset($option['search']) ? $option['search'] : null;
-		
+			
 		$frm = e107::getForm();
 		
 	//	$text .= print_a($_GET,true);
 	
 			$data_src = $this->mediaSelectNav($category,$parm['tagid'], $parm);
+			$carouselID = 'myCarousel-'.$parm['action'];
 		
 			//$text = "<form class='form-search' action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='get'>";
 						
 			if(!e_AJAX_REQUEST)
 			{
 				$text = '<div class="btn-group"><span class="input-append">';
-				$text .= "<input type='text'class='e-ajax-keyup e-tip' placeholder= 'Search...' title='Enter some text to filter results' name='search' value=''  data-target='media-browser-container' data-src='".$data_src."' />";	
+				$text .= "<input type='text' class='e-ajax-keyup e-tip' placeholder= 'Search...' title='Enter some text to filter results' name='search' value=''  data-target='media-browser-container-".$parm['action']."' data-src='".$data_src."' />";	
 			//	$text .= '<button class="btn btn-primary" name="'.$submitName.'" type="submit">'.LAN_GO.'</button>';
-				$text .= '<a class="btn btn-primary" href="#myCarousel" data-slide="prev">&lsaquo;</a><a class="btn btn-primary" href="#myCarousel" data-slide="next">&rsaquo;</a>';
+				$text .= '<a class="btn btn-primary" href="#'.$carouselID.'" data-slide="prev">&lsaquo;</a><a class="btn btn-primary" href="#'.$carouselID.'" data-slide="next">&rsaquo;</a>';
 				$text .= "</span>";		
 				$text .= "</div>";
-				$text .= "<div id='media-browser-container' class='form-inline clearfix row-fluid'>";
+				$text .= "<div id='media-browser-container-".$parm['action']."' class='form-inline clearfix row-fluid'>";
 			}
+		
+			if(count($data) < 1)
+			{
+				return "<div class='alert alert-info alert-block text-center'>No Results Found.</div>";	
+			}
+			
+			
 		
 		//	$text .= $this->search('srch', $srch, 'go', $filterName, $filterArray, $filterVal).$frm->hidden('mode','online');
 			
 			
-				$text .= '<div id="myCarousel"  class="carousel slide" data-interval="false">';
-					$text .= '{INDICATORS}';
-				$text .= '<div id="shop" style="margin-top:10px;min-height:585px" class="carousel-inner">';	
+				$text .= '<div id="'.$carouselID.'"  class="carousel slide" data-interval="false">';
+				$text .= '{INDICATORS}';
+				$text .= '<div style="margin-top:10px" class="carousel-inner">';	
 			
 			
-				$text .= "<div class='item active row-fluid'>";
+			//	$text .= "<div class='item active'>";
 				
 				$perPage = vartrue($parm['perPage'],12);
 				
@@ -1054,38 +1146,71 @@ class e_media
 				
 				$slides = array();
 				
-			
 				foreach($data as $key=>$val)
 				{
+					if($c == 0)
+					{
+						$active = (count($slides) <1) ? ' active' : '';
+						$text .= '
+						
+						<!-- Start Slide -->
+						<div class="item'.$active.'">';	
+						
+						if(vartrue($val['slideCaption']))
+						{
+							$text .= "<h4>".$val['slideCaption']."</h4>";	
+						}
+					}
+					
+					
 					$val['width']	= $parm['width'];
 					$val['height']	= $parm['height'];
 					$val['id']		= $parm['id'];
 					$val['tagid']	= $parm['tagid'];
 					$val['type']	= $parm['type'];
-							
+					$val['gridClass'] = $parm['gridClass'];		
 				
 					$text .= $this->browserCarouselItem($val);
 				
 					$c++;
-						
-						if($c == $perPage)
+					
+					if(varset($val['slideCategory']) && isset($prevCat))
+					{
+						if($val['slideCategory'] !== $prevCat)
 						{
-							$text .= '</div><div class="item">';
-							$slides[] = 1;
-							$c = 0;
+							$c = $perPage;
 						}
+							
+						$prevCat = 	$val['slideCategory'];
+						
+					}
+						
+					if($c == $perPage)
+					{
+						$text .= '
+						</div>
+						<!-- End Slide -->
+						
+						';
+						$slides[] = 1;
+						$c = 0;
+					}
 				}
-		
-				$text .= "</div><div class='clearfix'>&nbsp;</div>\n\n";
+				
+			
+				
+				$text .= ($c != 0) ? "</div>\n<!-- End Slide -->\n" : "";
+			
+				$text .= "\n<!-- End Carousel -->\n<div class='clearfix'>&nbsp;</div>\n\n";
 				
 				$text .= "</div>";
 				
 			if(!e_AJAX_REQUEST)
 			{	
-				$text .= "</div>";
+				$text .= "</div></div>";
 			}	
 			
-			$ret = str_replace('{INDICATORS}', $this->browserIndicators($slides), $text);
+			$ret = str_replace('{INDICATORS}', $this->browserIndicators($slides,$carouselID), $text);
 			
 			return $ret;
 				

@@ -1936,7 +1936,7 @@ class e_parse extends e_parser
 		
 		$baseurl = ($full ? SITEURL : e_HTTP).'thumb.php?';
         
-		$thurl = 'src='.$url.'&amp;';
+		$thurl = 'src='.urlencode($url).'&amp;';
 				
 		if(vartrue($options['aw']) || vartrue($options['ah']) || $this->thumbCrop == 1)
 		{
@@ -2671,25 +2671,14 @@ class e_parser
 		}
 		
 		// Bootstrap 3 Glyph names. 
-		$bs3 = array(
-			'adjust','align-center','align-justify','align-left','align-right','arrow-down','arrow-left','arrow-right','arrow-up','asterisk','backward','ban-circle','barcode','bell','bold','book
-			','bookmark','briefcase','bullhorn','calendar','camera','certificate','check','chevron-down','chevron-left','chevron-right','chevron-up','circle-arrow-down','circle-arrow-left','circle-arrow-right
-			','circle-arrow-up','cloud','cloud-download','cloud-upload','cog','collapse-down','collapse-up','comment','compressed','copyright-mark','credit-card','cutlery','dashboard','download','download-alt
-			','earphone','edit','eject','envelope','euro','exclamation-sign','expand','export','eye-close','eye-open','facetime-video','fast-backward','fast-forward','file','film','filter','fire','flag
-			','flash','floppy-disk','floppy-open','floppy-remove','floppy-save','floppy-saved','folder-close','folder-open','font','forward','fullscreen','gbp','gift
-			','glass','globe','hand-down','hand-left','hand-right','hand-up','hd-video','hdd','header','headphones','heart','heart-empty','home','import','inbox','indent-left','indent-right','info-sign','italic','leaf','link','list
-			','list-alt','lock','log-in','log-out','magnet','map-marker','minus','minus-sign','move','music','new-window','off','ok','ok-circle','ok-sign','open','paperclip','pause','pencil','phone','phone-alt','picture
-			','plane','play','play-circle','plus','plus-sign','print','pushpin','qrcode','question-sign','random','record','refresh','registration-mark','remove','remove-circle','remove-sign','repeat','resize-full','resize-horizontal
-			','resize-small','resize-vertical','retweet','road','save','saved','screenshot','sd-video','search','send','share','share-alt','shopping-cart','signal','sort','sort-by-alphabet','sort-by-alphabet-alt
-			','sort-by-attributes','sort-by-attributes-alt','sort-by-order','sort-by-order-alt','sound-5-1','sound-6-1','sound-7-1','sound-dolby','sound-stereo','star','stats','step-backward','step-forward','stop
-			','subtitles','tag','tags','tasks','text-height','text-width','th','th-large','th-list','thumbs-down','thumbs-up','time','tint','tower','transfer','trash','tree-conifer','tree-deciduous','unchecked','upload
-			','usd','user','volume-down','volume-off','volume-up','warning-sign','wrench','zoom-in','zoom-out'
-		);
+		$bs3 = e107::getMedia()->getGlyphs('bs3','');
 		
 		
 		if(substr($text,-6) == '.glyph' || strpos($text,".")==false) // Bootstrap or Font-Awesome. 
 		{
 			list($cls,$tmp) = explode('.glyph',$text);
+			list($type, $tmp2) = explode("-",$text,2);
+			
 			$id = str_replace("icon-","",$cls);
 			
 			if(deftrue('FONTAWESOME') == 4 && !in_array($id ,$bs3)) // Convert FontAwesome 3 to 4. 
@@ -2700,6 +2689,12 @@ class e_parser
 			{
 				$cls = str_replace('icon-', 'glyphicon glyphicon-', $cls);	
 			}
+
+			if($type == 'fa')
+			{
+				$cls = str_replace('fa-', 'fa fa-', $cls);			
+			}
+
 
 			$text = (deftrue('BOOTSTRAP') === 3) ? "<span class='".$cls."'></span>"  : "<i class='".$cls."'></i>";	// retain space. 
 			$text .= ($space !== false) ? $space : "";
@@ -2768,7 +2763,7 @@ class e_parser
 		
 		if($type == 'youtube')
 		{
-			$video =  '<iframe width="560" height="315" src="//www.youtube.com/embed/'.$id.'" frameborder="0" allowfullscreen></iframe>';
+			$video =  '<iframe width="560" height="315" src="//www.youtube.com/embed/'.$id.'" style="border:0px" allowfullscreen></iframe>';
 			$thumbSrc = "https://i1.ytimg.com/vi/".$id."/0.jpg";
 		
 			if($thumb == 'tag')

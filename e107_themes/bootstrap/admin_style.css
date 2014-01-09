@@ -928,6 +928,13 @@ li.rssRow > div {
 	width:142px;
 	
 }
+
+.media-carousel-item-caption {
+	padding-top:8px; white-space:nowrap; display:inline-block; width:100%; overflow:hidden;
+}
+
+.media-carousel-item-glyph { width: 64px; height:64px; overflow:hidden; margin-right:5px; margin-bottom:0px }
+
 /*
 
 body { background-color: rgb(68, 68, 68); }

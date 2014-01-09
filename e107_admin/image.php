@@ -46,12 +46,6 @@ if(isset($_POST['submit_cancel_show']))
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 
-if(vartrue($_GET['action']) == 'youtube' && e_AJAX_REQUEST) //XXX Doesn't work correctly inside the class for some reason 
-{
-	//echo "it works";
-	//exit;		
-	
-}
 
 if(vartrue($_GET['action']) == 'nav' && e_AJAX_REQUEST) //XXX Doesn't work correctly inside the class for some reason 
 {
@@ -196,7 +190,7 @@ class media_cat_ui extends e_admin_ui
 			"download"	=> "download"					
 		);
 		
-		// FIXME lan
+		// FIXME LAN
 		$this->fields['media_cat_type']['writeParms'] = array('image' => 'Image', 'file' => 'File', 'video' => 'Video');
 		
 		if($this->getAction() == 'list')
@@ -253,7 +247,7 @@ class media_cat_ui extends e_admin_ui
 		// XXX temporary disable when there is no owners, discuss
 		if(!$new_data['media_cat_owner'])
 		{
-			e107::getMessage()->addError('No media owner found.'); // FIXME lan
+			e107::getMessage()->addError('No media owner found.'); // FIXME LAN
 			return false;
 		}
 		//$replace = array("_"," ","'",'"',"."); //FIXME Improve
@@ -837,21 +831,26 @@ class media_admin_ui extends e_admin_ui
 		
 		$this->prefs['watermark_pos']['writeParms'] 		= $wm_pos;	
 		$this->prefs['watermark_pos']['readParms'] 			= $wm_pos;	
-		
-		//FIXME TODO - clear thumbnail cache when prefs are saved/updated. 
-		// e107::getCache()->clearAll('image');
+	
+		e107::getCache()->clearAll('image');
 		
 	//	print_a($_GET);
 		
 		if($this->getAction() == 'youtube')
 		{
 			$parm = array('search'=>$_GET['search']);	
-			echo $this->videotab($parm);
+			echo $this->videoTab($parm);
 			exit;
 		}
 		
+		if($this->getAction() == 'glyph')
+		{
+			$parm = array('search'=>$_GET['search']);	
+			echo $this->glyphTab($parm);
+			exit;
+		}
 		
-		if($_GET['action'] == 'nav' )
+		if($this->getAction() == 'nav' )
 		{
 			//echo $this->navPage();\
 		//	$this->getResponse()->setIframeMod(); // disable header/footer menus etc. 
@@ -908,17 +907,7 @@ class media_admin_ui extends e_admin_ui
 			
 		
 		}
-// 
-		// if($this->getQuery('for') && $this->getMediaCategory($this->getQuery('for')))
-		// {
-// 			
-			// $this->setPosted('media_category', $this->getQuery('for'));
-			// if(!$this->getId())
-			// {
-				// $this->getModel()->set('media_category', $this->getQuery('for'));
-			// }
-		// }
-// 		
+	
 	}
 
 
@@ -953,7 +942,8 @@ class media_admin_ui extends e_admin_ui
 		$mes->addDebug("For:".$cat);
 		$mes->addDebug("Bbcode: ".$this->getQuery('bbcode'));
 
-
+	
+		
 		$this->processUploadUrl(true, $cat);
 		
 		if($file)
@@ -991,11 +981,9 @@ class media_admin_ui extends e_admin_ui
 	
 	
 	
-	function uploadPage()
+	function uploadTab()
 	{
 		if(!ADMIN){ exit; } //TODO check for upload-access in perms. 
-		
-
 		
 
 		// if 'for' has no value, files are placed in /temp and not added to the db. 
@@ -1011,8 +999,9 @@ class media_admin_ui extends e_admin_ui
 		$text .= "<input type='text' name='upload_url' size='255' style='width:70%' placeholder='eg. http://website.com/some-image.jpg' />";
 		$text .= $frm->admin_button('upload_remote_url',1,'create','Start Upload');
 	    $text .= "</div>";
+		$text .= "</div>\n\n";
 		
-		$text .= "</div>";
+		$text .= $frm->close();
 	   
 		return $text;
 	}
@@ -1067,7 +1056,7 @@ class media_admin_ui extends e_admin_ui
 			</ul>
 			<div class='tab-content'>
 			<div class='tab-pane active' id='core-media-select'>
-			<legend>Library</legend>
+			
 			<div class='table' style='display:block'>
 		
 			";
@@ -1095,13 +1084,13 @@ class media_admin_ui extends e_admin_ui
 			</div>
 			
 			<div class='tab-pane' id='core-media-upload'>
-			<legend>Upload</legend>";
+			";
 			
 		$this->fields['media_category']['readonly']	= TRUE;
 		$this->fields['media_url']['noedit'] 		= TRUE;
 		$this->fields['media_userclass']['noedit']	= TRUE;
 		
-		$text .=  $this->uploadPage(); // To test upload script with plupload
+		$text .=  $this->uploadTab(); // To test upload script with plupload
 	//	$text .=  $this->CreatePage(); // comment me out to test plupload
 				
 		$text .= "	
@@ -1116,7 +1105,7 @@ class media_admin_ui extends e_admin_ui
 		if($options['bbcode'])
 		{
 			$text .= "<div class='tab-pane' id='core-media-style'>
-				<legend>Appearance</legend>
+				
 				<div class='row'>
 				<div class='span6'>
 				<table class='table'>
@@ -1175,15 +1164,8 @@ class media_admin_ui extends e_admin_ui
 		{
 			//TODO 
 			$text .= "<div class='tab-pane clearfix' id='core-media-glyphs' style='font-size:24px'>";
-			$glyphs = e107::getMedia()->getGlyphs();
-		
-			foreach($glyphs as $val)
-			{
-				$text .= "<a data-toggle='context' class='e-media-select e-dialog-close e-tip' data-id='{$im['media_id']}' data-width='32' data-height='32' data-src='{$val}' data-type='glyph' data-bbcode='{$data_bb}' data-target='".$this->getQuery('tagid')."' data-path='{$val}.glyph' data-preview='{$val}.glyph' title='".$val."' style='float:left' href='#' >";
-				$text .= "<span style='margin:7px;display:inline-block'><i class='".$val."' style='color:white' ></i></span>";
-				$text .= "</a>\n\n";
-			}
-			
+	
+			$text .= $this->glyphTab();
 			
 			$text .= "</div>
 			";
@@ -1194,10 +1176,10 @@ class media_admin_ui extends e_admin_ui
 		if($this->getQuery('video'))
 		{
 			$text .= "<div class='tab-pane clearfix' id='core-media-video' >";
-			$text .= "<div style='padding:20px'>";
+		//	$text .= "<div class='row-fluid'>";
 			$text .= $this->videoTab();
 			$text .= "</div>";	
-			$text .= "</div>";	
+		//	$text .= "</div>";	
 		}
 			
 		
@@ -1222,29 +1204,104 @@ class media_admin_ui extends e_admin_ui
 			<span>Cancel</span>
 			</button>
 			</div>";
-			
-			// TODO to eventually be hidden. 
-			
+						
 			$type = (E107_DEBUG_LEVEL > 0) ?  "text" : "hidden";
 			$br = (E107_DEBUG_LEVEL > 0) ?  "<br />" : "";   
 			
 			$text .= "
 			".$br."<input title='bbcode' type='{$type}' readonly='readonly' class='span11' id='bbcode_holder' name='bbcode_holder' value='' />
 			".$br."<input title='html' type='{$type}' class='span11' readonly='readonly' id='html_holder' name='html_holder' value='' />
-			".$br."<input title='src' type='{$type}' class='span11' readonly='readonly' id='src' name='src' value='' />
-			".$br."<input title='path' type='{$type}' class='span11' readonly='readonly' id='path' name='path' value='' />				
+			".$br."<input title='(preview) src' type='{$type}' class='span11' readonly='readonly' id='src' name='src' value='' />
+			".$br."<input title='path (saved to db)' type='{$type}' class='span11' readonly='readonly' id='path' name='path' value='' />				
 			";		
 						
 		}
 		
 		return $text;
 	}
+	
+	
+	function glyphTab($parm='')
+	{
+
+		$parms = array(
+			'width'	 	=> 32, 
+			'height'	=> 32, 
+			'type'		=>'glyph', 
+			'tagid'		=> $this->getQuery('tagid'), 
+			'action'	=>'glyph', 								// Used by AJAX to identify correct function. 
+			'perPage'	=> 90,
+			'gridClass'	=> 'media-carousel-item-glyph pull-left',
+			
+		
+		);
+		
+		//TODO FIXME Upgrade to bs3 when Bootstrap3 Admin is ready. 
+		$bs2 = e107::getMedia()->getGlyphs('bs2','icon-');
+		
+		foreach($bs2 as $val)
+		{
+			$items[] = array( 
+					'previewUrl'	=> $val,
+					'saveValue'		=> $val.'.glyph',
+					'thumbUrl'		=> $val,
+					'title'			=> $val,
+					'slideCaption'	=> 'Bootstrap',
+					'slideCategory'	=> 'bootstrap'
+			); 		
+				
+			
+			
+			$text .= "<a data-toggle='context' class='e-media-select e-dialog-close e-tip' data-id='{$im['media_id']}' data-width='32' data-height='32' data-src='{$val}' data-type='glyph' data-bbcode='{$data_bb}' data-target='".$this->getQuery('tagid')."' data-path='{$val}.glyph' data-preview='{$val}.glyph' title='".$val."' style='float:left' href='#' >";
+			$text .= "<span style='margin:7px;display:inline-block'><i class='".$val."' style='color:white' ></i></span>";
+			$text .= "</a>\n\n";
+		}
+	
+		$fa4 = e107::getMedia()->getGlyphs('fa4');
+		e107::css('url', "//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css");
+
+		foreach($fa4 as $val)
+		{
+			$items[] = array( 
+					'previewUrl'	=> $val,
+					'saveValue'		=> $val.'.glyph',
+					'thumbUrl'		=> $val,
+					'title'			=> $val,
+					'slideCaption'	=> 'Font-Awesome 4',
+					'slideCategory'	=> 'font-awesome'
+			); 		
+
+		}
+		
+		if(vartrue($parm['search']))
+		{
+			$filtered = array();
+			foreach($items as $v)
+			{
+				if(strpos($v['title'], $parm['search'])!==false)
+				{
+					$v['slideCaption'] = '';
+					$filtered[] = $v;	
+					
+				}	
+			}	
+			
+			$items = $filtered;
+		}
+		
+		return e107::getMedia()->browserCarousel($items, $parms);
+	}
+			
+		
+	
 
 	function videoTab($parm='')
 	{
 		
 		//	$feed = "https://gdata.youtube.com/feeds/base/users/e107inc/uploads";
-			
+		
+			// @see https://developers.google.com/youtube/2.0/developers_guide_protocol_api_query_parameters
+		
 			if($search = vartrue($this->getQuery('search')))
 			{
 				$feed = "http://gdata.youtube.com/feeds/api/videos?orderby=relevance&vq=".urlencode($search)."&max-results=50"; // maximum is 50. 
@@ -1742,7 +1799,7 @@ class media_admin_ui extends e_admin_ui
 				$mes->add("No media Found! Please upload some files.", E_MESSAGE_INFO);
 			}
 			
-			$text = $this->uploadPage();
+			$text = $this->uploadTab();
 			echo $mes->render().$text;
 			return;
 		}
