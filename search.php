@@ -453,6 +453,7 @@ class search extends e_shortcode
 		
 		$ns = e107::getRender();
 		$sch = new e_search;
+		$tp = e107::getParser();
 		 
 		
 		$query = $this->query;
@@ -468,8 +469,6 @@ class search extends e_shortcode
 		{
 			if (isset($this->searchtype[$key]) || isset($this->searchtype['all'])) 
 			{
-				
-				
 				
 				unset($text);
 				//if (file_exists($this->search_info[$key]['sfile'])) 
