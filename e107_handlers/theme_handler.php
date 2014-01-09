@@ -1543,7 +1543,7 @@ class themeHandler
 			$sql->db_Delete("menus", "menu_layout !='' ");
 		}
 		
-		e107::getCache()->clear_sys();
+		e107::getCache()->clear();
 		
 		if($core->save())
 		{
