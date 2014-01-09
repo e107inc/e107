@@ -236,7 +236,7 @@ class login_menu_shortcodes extends e_shortcode
 	
 	function sc_lm_usersettings_href($parm='')
 	{
-		return e107::getUrl()->create('user/myprofile/edit');
+		return e107::getUrl()->create('user/myprofile/edit',array('id'=>USERID));
 	// return e_HTTP.'usersettings.php';
 	}
 	

@@ -308,7 +308,7 @@ $USERSETTINGS_TEMPLATE['edit'] = "
 	</div>
 	</div>
 
-
+</div>
 
 
 ";
