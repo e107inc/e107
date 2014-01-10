@@ -23,17 +23,18 @@ class ArrayData {
         
         $log = e107::getAdminLog();
    
-       if(E107_DEBUG_LEVEL > 0)
+       if(E107_DEBUG_LEVEL > 0 || e107::getPref('developer'))
        { 
-           $dep = debug_backtrace();
+           $dep = debug_backtrace(false);
+		   
            foreach($dep as $d)
            {
              $log->addDebug("Deprecated ArrayStorage Class called by ".str_replace(e_ROOT,"",$d['file'])." on line ".$d['line']);
            }
 		   
-		   $log->flushMessages('Deprecated ArrayStorage Class used.');
+		   $log->save('DEPRECATED');
 		   
-           e107::getMessage()->addDebug("Please remove references to <b>arraystorage_class.php</b> and use e107::getArrayStorage(); instead."); 
+           e107::getMessage()->addDebug("Please remove references to <b>arraystorage_class.php</b> and use e107::serialize() and e107::unserialize() instead."); 
        }
     }
 	/**
@@ -60,7 +61,8 @@ class ArrayData {
 	* @param string $ArrayData
 	* @return array stored data
 	*/
-	function ReadArray($ArrayData) {
+	function ReadArray($ArrayData) 
+	{
 		if ($ArrayData == ""){
 			return false;
 		}
