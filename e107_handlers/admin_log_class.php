@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * e107 website system
  *
  * Copyright (C) 2008-2010 e107 Inc (e107.org)
@@ -7,9 +7,13 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Admin Log Handler
- *
- * $URL$
- * $Id$
+ * 
+ * USAGE: 
+ * 
+ * @example Log and Add to Message Handler: e107::getAdminLog()->addSuccess("Successfully executed")->save('PREF_01');
+ * @example Log Only: e107::getAdminLog()->addSuccess("Successfully executed",false)->save('PREF_01');
+ * @example Log Array Diff: e107::getAdminLog()->addArray($array1, $array2)->save('PREF_01');
+ * @example Log Array Diff and Add to Message Handler: e107::getAdminLog()->addArray($array1, $array2, E_MESSAGE_ERROR )->save('PREF_01');
  *
 */
 
@@ -114,6 +118,23 @@ class e_admin_log
 	}
 
 
+
+	/**
+	 * Save all logs in the queue to the database and render any unhidden messages with the message handler.   
+	 * @see alias flushMessages() method below. 
+	 * @param string $logTitle - title for log entry eg. 'PREF_01'
+	 * @param int $logImportance [optional] default E_LOG_INFORMATIVE - passed directly to admin log
+	 * @param string $logEventCode [optional] - passed directly to admin log
+	 * @param string $mstack [optional] message stack passed to message handler
+	 */ 
+	public function save($logTitle, $logImportance = E_LOG_INFORMATIVE, $logEventCode = '', $mstack = false)
+	{
+		return $this->flushMessages($logTitle, $logImportance, $logEventCode, $mstack);
+	}
+	
+	
+	
+
 	/**
 	 * Alternative admin log entry point - compatible with legacy calls, and a bit simpler to use than the generic entry point.
 	 * ($eventcode has been added - give it a reference to identify the source module, such as 'NEWS_12' or 'ECAL_03')
@@ -148,17 +169,22 @@ class e_admin_log
 		//SecretR - now supports DB array as event_detail (see e.g. db::db_Insert())
 		if (is_array($event_detail))
 		{
+			// handled inside e_log_event(); 
+			
+			/*
 			$tmp = array();
-			if (isset($event_detail['data']))
-			{
-				$event_detail = $event_detail['data'];
-			}
-			foreach ($event_detail as $k => $v)
-			{
-				$tmp[] = $k.'=>'.$v;
-			}
-			$event_detail = implode("[!br!]\n", $tmp);
-			unset($tmp);
+				if (isset($event_detail['data']))
+				{
+					$event_detail = $event_detail['data'];
+				}
+				foreach ($event_detail as $k => $v)
+				{
+					$tmp[] = $k.'=>'.$v;
+				}
+				$event_detail = implode("[!br!]\n", $tmp);
+				unset($tmp);
+			*/
+			
 		}
 		else
 		{
@@ -170,6 +196,8 @@ class e_admin_log
 		{
 			$event_detail .= "\n\n".debug_backtrace();
 		}
+		
+		
 		$this->e_log_event($event_type, -1, $event_code, $event_title, $event_detail, FALSE, LOG_TO_ADMIN);
 
 		return $this;
@@ -232,6 +260,7 @@ class e_admin_log
 
 		if (is_array($explain))
 		{
+			/*
 			$line = '';
 			$spacer = '';
 			foreach ($explain as $k=>$v)
@@ -241,6 +270,9 @@ class e_admin_log
 			}
 			$explain = $line;
 			unset($line);
+			*/
+			$explain = str_replace("\n",'[!br!]',print_r($explain,true));
+			
 		}
 		
 		
@@ -425,31 +457,33 @@ class e_admin_log
 	 *
 	 *	@return bool true if changes found and logged, false otherwise.
 	 */
-	function logArrayDiffs(&$new, &$old, $event, $logNow = true)
+	function logArrayDiffs($new, $old, $event, $logNow = true)
 	{
-		$changes = array();
-		foreach ($new as $k=>$v)
-		{
-			// FIXME - what about '' == '0'?
-			if ($v != varset($old[$k], ''))
-			{
-				$old[$k] = $v;
-				$changes[] = $k.'=>'.$v;
-			}
-		}
+		// $changes = array();
+				
+		$changes = array_diff_recursive($new,$old);
+		
 		if (count($changes))
 		{
-			if($logNow) $this->add($event, implode('[!br!]', $changes), E_LOG_INFORMATIVE, '');
-			else $this->logMessage(implode('[!br!]', $changes), LOG_MESSAGE_NODISPLAY, E_MESSAGE_INFO);
+			if($logNow) 
+			{
+				$this->add($event, print_r($changes,true), E_LOG_INFORMATIVE, '');
+			}
+			else
+			{
+				$this->logMessage($changes, LOG_MESSAGE_NODISPLAY, E_MESSAGE_INFO);
+			}
+
 			return TRUE;
 		}
+		
 		return FALSE;
 	}
 
 
 	/**
 	 *	Logs an entry with all the data from an array, one field per line.
-	 *
+	 *  @deprecated 
 	 *	@param string $event - LAN define or string used as title in log
 	 *	@param array $target - data to be logged
 	 *	@param string $extra - if non-empty, it goes on the first line.
@@ -460,6 +494,14 @@ class e_admin_log
 	 */
 	public function logArrayAll($event, $target, $extra = '', $niceNames = NULL)
 	{
+		
+		if($extra == '' && $niceNames == null)
+		{
+			return $this->add($event, $target, E_LOG_INFORMATIVE, '');	// supports arrays
+			
+		}
+		
+		
 		$logString = '';
 		if ($extra)
 		{
@@ -504,13 +546,17 @@ class e_admin_log
 		if(!$type) $type = E_MESSAGE_INFO;
 		if($logLevel === TRUE) $logLevel = $type;
 		
+		if(is_array($text))
+		{
+			$text = print_r($text,true);	
+		}
+		
 		$logArray = array('message' => $text, 'dislevel' => $type, 'loglevel' => $logLevel, 'session' => $session, 'time'=>time());
 		
 		$this->_messages[] = $logArray;
 		$this->_allMessages[] = $logArray;
 		return $this;
 	}
-
 
 
 
@@ -536,7 +582,7 @@ class e_admin_log
 
 
 	/**
-	 * Log success
+	 * Add a success message to the log queue
 	 *
 	 * @param string $text
 	 * @param boolean $message if true - register with eMessage handler
@@ -550,10 +596,10 @@ class e_admin_log
 
 
 	/**
-	 * Log error
+	 * Add an error message to the log queue
 	 *
 	 * @param string $text
-	 * @param boolean $message if true - register with eMessage handler
+	 * @param boolean $message if true (default) - register with eMessage handler, set to false to hide. 
 	 * @param boolean $session add session message
 	 * @return e_admin_log
 	 */
@@ -564,10 +610,10 @@ class e_admin_log
 
 
 	/**
-	 * Log Debug
+	 * Add an Debug message to the log queue
 	 *
 	 * @param string $text
-	 * @param boolean $message if true - register with eMessage handler
+	 * @param boolean $message if true (default) - register with eMessage handler, set to false to hide . 
 	 * @param boolean $session add session message
 	 * @return e_admin_log
 	 */
@@ -578,16 +624,33 @@ class e_admin_log
 
 
 	/**
-	 * Log Warning
+	 * Add an Warning message to the log queue
 	 *
 	 * @param string $text
-	 * @param boolean $message if true - register with eMessage handler
+	 * @param boolean $message if true (default) - register with eMessage handler, set to false to hide. 
 	 * @param boolean $session add session message
 	 * @return e_admin_log
 	 */
 	public function addWarning($text, $message = true, $session = false)
 	{
 		return $this->logMessage($text, ($message ? E_MESSAGE_WARNING : LOG_MESSAGE_NODISPLAY), E_MESSAGE_WARNING, $session);
+	}
+	
+	
+	/**
+	 * Add an array to the log queue
+	 * @param $array
+	 * @param $oldArray (optional) - when included, only the changes between the arrays is saved. 
+	 * @param $type (optional) default: LOG_MESSAGE_NODISPLAY. or E_MESSAGE_WARNING, E_MESSAGE_NOTICE, E_MESSAGE_SUCCESS
+	 */
+	public function addArray($array, $oldArray= null, $type = LOG_MESSAGE_NODISPLAY )
+	{
+		if(is_array($oldArray)) 
+		{
+			$text = array_diff_recursive($array,$oldArray); // Located in core_functions.php 
+		}
+		
+		return $this->logMessage($text, $type, $type, $session);	
 	}
 
 	/**

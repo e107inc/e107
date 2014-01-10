@@ -352,7 +352,7 @@ class notify_config
 		e107::getConfig('notify')->updatePref($this->notify_prefs);
 		if (e107::getConfig('notify')->save(FALSE))
 		{
-			e107::getAdminLog()->logArrayAll('NOTIFY_01',$this->changeList);
+			// e107::getAdminLog()->logArrayAll('NOTIFY_01',$this->changeList);
 			return TRUE;
 		}
 		else

@@ -502,6 +502,7 @@ class e_pref extends e_front_model
 		{
 			return false;
 		}
+		
 		e107::getMessage()->setUnique($this->prefid); // attempt to fix 
 		
 		if($from_post)
@@ -520,7 +521,7 @@ class e_pref extends e_front_model
 			return 0;
 		}
 
-		$admin_log = e107::getAdminLog();
+		$log = e107::getAdminLog();
 		$disallow_logs = $this->getParam('nologs', false);
 
 		//Save to DB
@@ -535,11 +536,11 @@ class e_pref extends e_front_model
 				$dbdata = $this->toString(false);
 			}
 
-			if(e107::getDb()->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('{$this->prefid}', '".addslashes($dbdata)."') "))
+			if(e107::getDb()->gen("REPLACE INTO `#core` (e107_name,e107_value) values ('{$this->prefid}', '".addslashes($dbdata)."') "))
 			{
 				$this->data_has_changed = false; //reset status
 
-				if($this->set_backup === true && !empty($this->pref_cache))
+				if(!empty($this->pref_cache))
 				{
 					$old = e107::unserialize($this->pref_cache);
 					if($this->serial_bc)
@@ -555,18 +556,42 @@ class e_pref extends e_front_model
 					if(is_array($old) && !$disallow_logs) // fix install problems - no old prefs available
 					{
 						$new = $this->getPref();
-						$admin_log->logArrayDiffs($new, $old, 'PREFS_02', false);
+					//	$log->logArrayDiffs($new, $old, 'PREFS_02', false);
+						$log->addArray($new,$old);
 						unset($new, $old);
+						
 					}
-					if(e107::getDb()->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('".$this->prefid."_Backup', '".addslashes($dbdata)."') "))
+					
+					// Backup 
+					if($this->set_backup === true && e107::getDb()->gen("REPLACE INTO `#core` (e107_name,e107_value) values ('".$this->prefid."_Backup', '".addslashes($dbdata)."') "))
 					{
-						if(!$disallow_logs) $admin_log->logMessage('Backup of <strong>'.$this->alias.' ('.$this->prefid.')</strong> successfully created.', E_MESSAGE_DEBUG, E_MESSAGE_SUCCESS, $session_messages);
+						if(!$disallow_logs) $log->logMessage('Backup of <strong>'.$this->alias.' ('.$this->prefid.')</strong> successfully created.', E_MESSAGE_DEBUG, E_MESSAGE_SUCCESS, $session_messages);
 						e107::getCache()->clear_sys('Config_'.$this->alias.'_backup');
 					}
+					
 				}
+				
 				$this->setPrefCache($this->toString(false), true); //reset pref cache - runtime & file
+				
+				if($this->alias == 'search') // Quick Fix TODO Improve. 
+				{
+					$logId = 'SEARCH_04';	
+				}
+				elseif($this->alias == 'notify')
+				{
+					$logId = 'NOTIFY_01';	
+				}
+				else
+				{
+					$logId = 'PREFS_01';	
+				}
+				
+				$log->addSuccess('Settings successfully saved.',true);
+				$log->save($logId);
 
-				if(!$disallow_logs) $admin_log->logSuccess('Settings successfully saved.', true, $session_messages)->flushMessages('PREFS_01', E_LOG_INFORMATIVE, '', $this->prefid);
+			//	if(!$disallow_logs) $log->logSuccess('Settings successfully saved.', true, $session_messages)->flushMessages($logId, E_LOG_INFORMATIVE, '', $this->prefid);
+				
+				
 				//BC
 				if($this->alias === 'core')
 				{
@@ -578,7 +603,7 @@ class e_pref extends e_front_model
 			elseif(e107::getDb()->getLastErrorNumber())
 			{
 				if(!$disallow_logs)
-					$admin_log->logError('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), true, $session_messages)
+					$log->logError('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), true, $session_messages)
 					->logError('Settings not saved.', true, $session_messages)
 					->flushMessages('PREFS_03', E_LOG_INFORMATIVE, '', $this->prefid);
 					
@@ -592,7 +617,7 @@ class e_pref extends e_front_model
 			//add errors to the eMessage stack
 			//$this->setErrors(true, $session_messages); old - doesn't needed anymore
 			if(!$disallow_logs)
-				$admin_log->logError('Settings not saved.', true, $session_messages)
+				$log->logError('Settings not saved.', true, $session_messages)
 				->flushMessages('LAN_FIXME', E_LOG_INFORMATIVE, '', $this->prefid);
 				
 			e107::getMessage()->moveStack($this->prefid);
@@ -601,7 +626,7 @@ class e_pref extends e_front_model
 		else
 		{
 			e107::getMessage()->addInfo('Settings not saved as no changes were made.', $this->prefid, $session_messages);
-			if(!$disallow_logs) $admin_log->flushMessages('LAN_FIXME', E_LOG_INFORMATIVE, '', $this->prefid);
+			if(!$disallow_logs) $log->flushMessages('LAN_FIXME', E_LOG_INFORMATIVE, '', $this->prefid);
 			e107::getMessage()->moveStack($this->prefid);
 			return 0;
 		}

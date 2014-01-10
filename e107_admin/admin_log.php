@@ -539,11 +539,29 @@ class admin_log_form_ui extends e_admin_form_ui
 	function dblog_remarks($curVal,$mode)
 	{
 		$frm = e107::getForm();		
-		 		
+		$tp = e107::getParser();
+				 		
 		switch($mode)
 		{
 			case 'read': // List Page
-				return preg_replace_callback("#\[!(\w+?)(=.+?){0,1}!]#", 'log_process', $curVal);
+			
+				$text = preg_replace_callback("#\[!(\w+?)(=.+?){0,1}!]#", 'log_process', $curVal);
+				$text = $tp->toHtml($text);
+				
+				if(strpos($text,'Array')!==false)
+				{
+					$id = $this->getController()->getListModel()->get('dblog_id');
+					$ret ="<a class='e-expandit' href='#".$id."'>Details</a>";
+					$ret .= "<div class='hide' id='".$id."'>";
+					$text = str_replace("<br />","\n",$text);
+					$text = str_replace("&#092;","/",$text);
+					$text = print_a($text,true);	
+					$ret .= $text;
+					$ret .= "</div>";
+					return $ret;
+				}		
+		 	
+				return $text;
 			break;
 
 			
