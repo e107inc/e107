@@ -58,7 +58,6 @@ class search extends e_shortcode
 	{
 		$this->search_prefs = e107::getConfig('search')->getPref();	
 		
-		
 		if (!e_QUERY) 
 		{
 			$this->enhanced = true;
@@ -224,6 +223,10 @@ class search extends e_shortcode
 		
 		if (check_class($this->search_prefs[$type.'_handlers'][$id]['class'])) 
 		{
+			echo "<br />type = ".$this->search_prefs[$type.'_handlers'][$id]['class'];
+			
+			print_a($this->search_prefs);
+			
 			if ($plug_require) 
 			{
 				require_once($plug_require);

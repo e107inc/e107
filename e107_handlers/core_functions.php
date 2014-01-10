@@ -191,6 +191,49 @@ function strip_if_magic($data)
 }
 
 /**
+ * Return an array with changes between 2 arrays. 
+ */
+function array_diff_recursive($array1, $array2) 
+{
+	$ret = array();
+
+	foreach($array1 as $key => $val) 
+	{
+    	if(array_key_exists($key, $array2)) 
+    	{
+      		if(is_array($val)) 
+      		{
+        		$diff = array_diff_recursive($val, $array2[$key]);
+
+				if(count($diff)) 
+	        	{
+	        	 	$ret[$key] = $diff; 
+				}
+			} 
+			else 
+			{
+				if($val != $array2[$key]) 
+	        	{
+					$ret[$key] = $val;
+				}
+			}
+		} 
+    	else 
+    	{
+    	  $ret[$key] = $val;
+		}
+	}
+	
+  return $ret;
+} 
+
+
+
+
+
+
+
+/**
  * Strips slashes from a string or an array
  *
  * @param mixed $value
