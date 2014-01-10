@@ -22,6 +22,9 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 $e_sub_cat = 'search';
 require_once('auth.php');
 require_once(e_HANDLER.'userclass_class.php');
+require_once(e_HANDLER.'search_class.php');
+
+
 
 $frm = e107::getForm();
 $mes = e107::getMessage();
@@ -52,6 +55,8 @@ foreach($pref['e_search_list'] as $file)
 		unset($comments_type_id);
 		$save_search = TRUE;
 	}
+	
+	
 
 }
 
@@ -67,8 +72,10 @@ if (vartrue($save_search))
 {
 	
 	// $serialpref = addslashes(serialize($search_prefs));
-	$serialpref = e107::getArrayStorage()->writeArray($search_prefs, true);
-	$sql -> db_Update("core", "e107_value='".$serialpref."' WHERE e107_name='search_prefs'");
+//	$serialpref = e107::getArrayStorage()->writeArray($search_prefs, true);
+//	$sql -> db_Update("core", "e107_value='".$serialpref."' WHERE e107_name='search_prefs'");
+	e107::getConfig('search')->setPref($search_prefs)->save(false,true);
+	
 	$admin_log->log_event('SEARCH_03','',E_LOG_INFORMATIVE,'');
 }
 
@@ -96,8 +103,12 @@ if (isset($_POST['update_main']))
 	}
 
 //	$tmp = addslashes(serialize($search_prefs));
-	$tmp = e107::getArrayStorage()->writeArray($search_prefs, true);
-
+//	$tmp = e107::getArrayStorage()->writeArray($search_prefs, true);
+	
+//	e107::getAdminLog()->logM
+//	e107::getMessage()->addAto
+	e107::getConfig('search')->setPref($search_prefs)->save(true,true);
+/*
 	$check = $sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'");
 	if($check)
 	{
@@ -110,6 +121,8 @@ if (isset($_POST['update_main']))
 		$mes->addError(LAN_UPDATED_FAILED);
 		$mes->addError(LAN_ERROR." ".$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
 	}
+ 
+ */
 }
 
 
@@ -369,6 +382,8 @@ else
 					</thead>
 					<tbody>
 	";
+	
+	
 	foreach($search_handlers as $key => $value)
 	{
 		$text .= "
@@ -397,9 +412,18 @@ else
 		{
 			require_once(e_PLUGIN.$plug_dir."/e_search.php");
 		}
+		
+		if($obj = e107::getAddon($plug_dir,'e_search'))
+		{
+			$search_handlers[] = $obj->config();	
+			$ret = $obj->config();	
+			$search_info[0]['qtype'] = $ret['name'];
+		}	
+		
+		
 		$text .= "
 						<tr>
-							<td>".$search_info[0]['qtype']."</td>
+							<td>".$search_info[0]['qtype'] . "</td>
 							<td class='center'>".r_userclass("plug_handlers[".$plug_dir."][class]", $search_prefs['plug_handlers'][$plug_dir]['class'], "off", "public,guest,nobody,member,admin,classes")."</td>
 							<td class='center'>
 								<select name='plug_handlers[".$plug_dir."][order]' class='tbox order'>
