@@ -96,7 +96,7 @@ class user_shortcodes extends e_shortcode
 	  		}
 	  		e107::setRegistry('total_chatposts', $chatposts);
 		}
-		return ($chatposts!=0) ? round(($this->var['user_chats']/$chatposts) * 100, 2): 0;
+		return ($chatposts != 0) ? round(($this->var['user_chats']/$chatposts) * 100, 2) : 0;
 	}
 	
 	
@@ -109,7 +109,7 @@ class user_shortcodes extends e_shortcode
 			$commentposts = $sql->count("comments");
 			e107::setRegistry('total_commentposts', $commentposts);
 		}
-		return ($commentposts!=0) ? round(($this->var['user_comments']/$commentposts) * 100, 2): 0;
+		return ($commentposts != 0) ? round(($this->var['user_comments']/$commentposts) * 100, 2) : 0;
 	}
 	
 	
@@ -119,11 +119,11 @@ class user_shortcodes extends e_shortcode
 		$sql = e107::getDb();
 		if(!$forumposts = e107::getRegistry('total_forumposts'))
 		{
-			$forumposts = (e107::isInstalled("forum")) ? $sql->count("forum_thread"): 0;
+			$forumposts = (e107::isInstalled("forum")) ? $sql->count("forum_thread") : 0;
 			e107::setRegistry('total_forumposts', $forumposts);
 			$user_forumposts = $sql->count("forum_thread","(*)","where thread_user=".$this->var['user_id']);
 		}
-		return ($forumposts!==0) ? round(($user_forumposts/$forumposts) * 100, 2): 0;
+		return ($forumposts != 0) ? round(($user_forumposts/$forumposts) * 100, 2) : 0;
 	}
 	
 
