@@ -136,6 +136,8 @@ class e_admin_log
 	
 
 	/**
+	 * Add a Save an event into the admin log. 
+	 * 
 	 * Alternative admin log entry point - compatible with legacy calls, and a bit simpler to use than the generic entry point.
 	 * ($eventcode has been added - give it a reference to identify the source module, such as 'NEWS_12' or 'ECAL_03')
 	 * We also log everything (unlike 0.7, where admin log and debug stuff were all mixed up together)
@@ -156,7 +158,7 @@ class e_admin_log
 	{
 		if ($event_code == '')
 		{
-			if (strlen($event_title) <= 10)
+			if (strlen($event_title) <= 12)
 			{ // Assume the title is actually a reference to the event
 				$event_code = $event_title;
 				$event_title = 'LAN_AL_'.$event_title;
@@ -194,7 +196,7 @@ class e_admin_log
 
 		if ($this->_options['backtrace'] == true)
 		{
-			$event_detail .= "\n\n".debug_backtrace();
+			$event_detail .= "\n\n".debug_backtrace(false);
 		}
 		
 		

@@ -1505,13 +1505,12 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 	{
 		$backtrace = debug_backtrace(false);
 		
-		e107::getAdminLog()->log_event(
+		e107::getAdminLog()->add(
 			'Deprecated call - save_prefs()',
 			"Call to deprecated function save_prefs() (class2.php). Backtrace:\n".print_r($backtrace, true),
 			E_LOG_INFORMATIVE,
 			'DEPRECATED'
 		);
-		// TODO - debug screen Deprecated Functions (e107)
 
 		e107::getMessage()->addDebug('Deprecated save_prefs() backtrace:<pre>'."\n".print_r($backtrace, true).'</pre>');
 	}
