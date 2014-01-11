@@ -1049,7 +1049,7 @@ class e_media
 				}
 				elseif($data['type'] == 'glyph')
 				{
-					$text .= "\n<span style='margin:7px;display:inline-block; color:white'>".$tp->toGlyph($data['thumbUrl'],false)."</span>";	
+					$text .= "\n<span style='margin:7px;display:inline-block;color: inherit'>".$tp->toGlyph($data['thumbUrl'],false)."</span>";	
 				}		
 				$text .= "\n</a>\n\n";
 				
@@ -1111,11 +1111,15 @@ class e_media
 			$carouselID = 'myCarousel-'.$parm['action'];
 		
 			//$text = "<form class='form-search' action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='get'>";
+					
+					
 						
 			if(!e_AJAX_REQUEST)
 			{
+				$searchPlaceholder = varset($parm['searchPlaceholder'], LAN_SEARCH);
+				
 				$text = '<div class="btn-group"><span class="input-append">';
-				$text .= "<input type='text' class='e-ajax-keyup e-tip' placeholder= 'Search...' title='Enter some text to filter results' name='search' value=''  data-target='media-browser-container-".$parm['action']."' data-src='".$data_src."' />";	
+				$text .= "<input type='text' class='e-ajax-keyup e-tip' placeholder= '".$searchPlaceholder."...' title='Enter some text to filter results' name='search' value=''  data-target='media-browser-container-".$parm['action']."' data-src='".$data_src."' />";	
 			//	$text .= '<button class="btn btn-primary" name="'.$submitName.'" type="submit">'.LAN_GO.'</button>';
 				$text .= '<a class="btn btn-primary" href="#'.$carouselID.'" data-slide="prev">&lsaquo;</a><a class="btn btn-primary" href="#'.$carouselID.'" data-slide="next">&rsaquo;</a>';
 				$text .= "</span>";		
