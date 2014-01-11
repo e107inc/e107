@@ -183,6 +183,11 @@ class cpage_shortcodes extends e_shortcode
 			return $url;
 		}
 		
+		if(trim($this->page['page_text']) == '') // Hide the button when there is no page content. (avoids templates with and without buttons)
+		{
+			return "<!-- Button Removed: No page text exists! -->";	
+		}
+		
 		parse_str($parm,$options);
 		
 		$text = vartrue($options['text'], LAN_READ_MORE);
@@ -234,6 +239,8 @@ class cpage_shortcodes extends e_shortcode
 
 	function sc_cpageurl()
 	{
-		return e107::getUrl()->create('page/view', $this->page, array('allow' => 'page_sef,page_title,page_id'));
+		$route = ($this->page['page_chapter'] == 0) ? 'page/view/other' : 'page/view';
+		
+		return e107::getUrl()->create($route, $this->page, array('allow' => 'page_sef,page_title,page_id,chapter_sef,book_sef'));
 	}
 }
