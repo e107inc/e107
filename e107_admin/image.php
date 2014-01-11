@@ -1331,9 +1331,8 @@ class media_admin_ui extends e_admin_ui
 				); 	
 			}
 			
-			$parms = array('width' => 200, 'height'=>113, 'type'=>'image', 'tagid'=> $this->getQuery('tagid'), 'action'=>'youtube');
-			
-				
+			$parms = array('width' => 200, 'height'=>113, 'type'=>'image', 'tagid'=> $this->getQuery('tagid'), 'action'=>'youtube','searchPlaceholder'=>'Search Youtube');
+		
 			$text = e107::getMedia()->browserCarousel($items, $parms);
 		
 		
