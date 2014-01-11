@@ -2784,6 +2784,20 @@ class e_parser
 			return '<div class="video-responsive">'.$video.'</div>';
 		}
 		
+		if($type == 'mp4') //TODO FIXME 
+		{
+			return '
+			<div class="video-responsive">
+			<video width="320" height="240" controls>
+			  <source src="movie.mp4" type="video/mp4">
+		
+			  Your browser does not support the video tag.
+			</video>
+			</div>';	
+		}
+		
+		
+		
 		return false;
 	}
 	

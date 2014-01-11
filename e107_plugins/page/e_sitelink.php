@@ -13,6 +13,29 @@ if (!defined('e107_INIT')) { exit; }
 
 class page_sitelink // include plugin-folder in the name.
 {
+	private $chapterSef = array();
+	
+	function __construct()
+	{
+		$sql = e107::getDb();
+		
+		$books = $sql->retrieve("SELECT chapter_id,chapter_sef FROM #page_chapters ORDER BY chapter_id ASC" , true);
+				
+		foreach($books as $row)
+		{
+			$id = $row['chapter_id'];
+			$this->chapterSef[$id] = $row['chapter_sef'];
+		}	
+		
+		
+	}
+	
+	function getSef($chapter)
+	{
+		return varset($this->chapterSef[$chapter],'--sef-not-assigned--');		
+	}
+	
+	
 	function config()
 	{	
 		$links = array();
@@ -68,9 +91,13 @@ class page_sitelink // include plugin-folder in the name.
 			
 			while($row = $sql->fetch())
 			{
+				$sef = $row;
+				$sef['chapter_sef'] = $this->getSef($row['chapter_id']);	
+				$sef['book_sef']	= $this->getSef($row['chapter_parent']);
+				
 				$sublinks[] = array(
 					'link_name'			=> $tp->toHtml($row['chapter_name'],'','TITLE'),
-					'link_url'			=> e107::getUrl()->create('page/chapter/index', $row), // 'page.php?ch='.$row['chapter_id'],
+					'link_url'			=> e107::getUrl()->create('page/chapter/index', $sef), // 'page.php?ch='.$row['chapter_id'],
 					'link_description'	=> '',
 					'link_button'		=> $row['chapter_icon'],
 					'link_category'		=> '',
@@ -146,14 +173,18 @@ class page_sitelink // include plugin-folder in the name.
 		
 		$data 		= $sql->retrieve($query, true);
 		$_pdata 	= array();
-		
+				
 		foreach($data as $row)
 		{
 			$pid = $row['page_chapter'];
+			
+			$row['chapter_sef'] = $this->getSef($row['page_chapter']);
+			$row['book_sef']	= $this->getSef(); //XXX FIXME - needs to contain the chapter_parent (ie. the 'book')
+			
 			$sublinks[$pid][] = $_pdata[] = array(
 				'link_id'			=> $row['page_id'],
 				'link_name'			=> $row['page_title'] ? $row['page_title'] : 'No title', // FIXME lan
-				'link_url'			=> e107::getUrl()->create('page/view', $row, array('allow' => 'page_sef,page_title,page_id')),
+				'link_url'			=> e107::getUrl()->create('page/view', $row, array('allow' => 'page_sef,page_title,page_id,chapter_sef,book_sef')),
 				'link_description'	=> '',
 				'link_button'		=> $row['menu_image'],
 				'link_category'		=> '',
@@ -195,6 +226,7 @@ class page_sitelink // include plugin-folder in the name.
 		$books = $sql->retrieve("SELECT * FROM #page_chapters WHERE ".$filter." ORDER BY chapter_order ASC" , true);
 		foreach($books as $row)
 		{
+			$row['book_sef'] = $this->getSef($row['chapter_parent']);
 			
 			$arr[] = array(
 				'link_id'			=> $row['chapter_id'],
