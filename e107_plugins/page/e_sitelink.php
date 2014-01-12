@@ -34,7 +34,7 @@ class page_sitelink // include plugin-folder in the name.
 	
 	private function getSef($chapter)
 	{
-		return varset($this->chapterSef[$chapter],'--sef-not-assigned--');		
+		return vartrue($this->chapterSef[$chapter],'--sef-not-assigned--');		
 	}
 	
 	private function getParent($chapter)
@@ -189,6 +189,11 @@ class page_sitelink // include plugin-folder in the name.
 			$book 				= $this->getParent($row['page_chapter']);
 			$row['book_sef']	= $this->getSef($book); 
 			
+			if(!vartrue($row['page_sef']))
+			{
+				$row['page_sef'] = '--sef-not-assigned--';	
+			}
+			
 			$sublinks[$pid][] = $_pdata[] = array(
 				'link_id'			=> $row['page_id'],
 				'link_name'			=> $row['page_title'] ? $row['page_title'] : 'No title', // FIXME lan
@@ -235,6 +240,11 @@ class page_sitelink // include plugin-folder in the name.
 		foreach($books as $row)
 		{
 			$row['book_sef'] = $this->getSef($row['chapter_parent']);
+			
+			if(!vartrue($row['chapter_sef']))
+			{
+				$row['chapter_sef'] = '--sef-not-assigned--';		
+			}
 			
 			$arr[] = array(
 				'link_id'			=> $row['chapter_id'],
