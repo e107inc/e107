@@ -223,9 +223,9 @@ class search extends e_shortcode
 		
 		if (check_class($this->search_prefs[$type.'_handlers'][$id]['class'])) 
 		{
-			echo "<br />type = ".$this->search_prefs[$type.'_handlers'][$id]['class'];
+	//		echo "<br />type = ".$this->search_prefs[$type.'_handlers'][$id]['class'];
 			
-			print_a($this->search_prefs);
+	//		print_a($this->search_prefs);
 			
 			if ($plug_require) 
 			{
@@ -467,7 +467,6 @@ class search extends e_shortcode
 		$search_prefs	= $this->search_prefs;
 		$result_flag	= $this->result_flag;
 		
-		
 		foreach ($this->search_info as $key => $a) 
 		{
 			if (isset($this->searchtype[$key]) || isset($this->searchtype['all'])) 
@@ -506,7 +505,18 @@ class search extends e_shortcode
 					}
 					
 					
-					$parms = $results.",".$search_res.",".$_GET['r'].",".e_REQUEST_SELF."?q=".$_GET['q']."&t=".$key."&r=[FROM]";
+				//	$parms = $results.",".$search_res.",".$_GET['r'].",".e_REQUEST_SELF."?q=".$_GET['q']."&t=".$key."&r=[FROM]";
+					
+					$nextprev = array(
+								'total'			=> $results,
+								'amount'		=> intval($search_res),
+								'current'		=> intval($_GET['r']),
+								'url'			=> urldecode(e_REQUEST_SELF."?q=".$_GET['q']."&t=".$key."&r=[FROM]"),
+							//	'caption'		=> false,
+								'tmpl_prefix'	=>'default'
+					);
+					
+					$npParms = http_build_query($nextprev,false,'&');
 					
 					$core_parms = array('r' => '', 'q' => '', 't' => '', 's' => '');
 					foreach ($_GET as $pparm_key => $pparm_value) 
@@ -520,7 +530,7 @@ class search extends e_shortcode
 					}
 					if ($results > $search_res) 
 					{
-						$nextprev = ($results > $search_res) ? $tp -> parseTemplate("{NEXTPREV={$parms}}") : "";
+						$nextprev = ($results > $search_res) ? $tp -> parseTemplate("{NEXTPREV={$npParms}}") : "";
 						$text .= "<div class='nextprev search form-inline'>".$nextprev."</div>";
 					}
 					if ($results > 0) 
@@ -645,7 +655,7 @@ class search extends e_shortcode
 			
 			if ($perform_search) 
 			{
-				$this->result_flag = $_GET['r'];
+				$this->result_flag = intval($_GET['r']);
 			}
 
 			$query = trim($full_query);
