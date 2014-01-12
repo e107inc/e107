@@ -3260,8 +3260,8 @@ class e_form
 				$ret =  vartrue($eloptions['pre']).$this->selectbox($key, $options, $value, $eloptions).vartrue($eloptions['post']);
 			break;
 
-			default:
-				$ret =  $value;
+			default:// No LAN necessary, debug only. 
+				$ret =  (ADMIN) ? "<span class='alert alert-error'>".LAN_ERROR." Unknown 'type' : ".$attributes['type'] ."</span>" : $value;
 			break;
 		}
 
