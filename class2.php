@@ -680,6 +680,8 @@ if (isset($pref['modules']) && $pref['modules']) {
 }
 */
 
+$sql->db_Mark_Time('Start: Load Plugin Modules');
+
 $js_body_onload = array();			// Initialise this array in case a module wants to add to it
 
 // Load e_modules after all the constants, but before the themes, so they can be put to use.
