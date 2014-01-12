@@ -377,4 +377,8 @@ define("LAN_AL_MISC_06", "Blog calendar menu settings updated");
 define("LAN_AL_MISC_07", "");
 
 
+define("LAN_AL_PING_01", "Ping to service");
+
+
+
 ?>

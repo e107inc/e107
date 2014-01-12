@@ -97,11 +97,11 @@ class news_cat_ui extends e_admin_ui
 			'checkboxes'				=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'category_id'				=> array('title'=> LAN_ID,				'type' => 'number',			'width' =>'5%', 'forced'=> TRUE, 'readonly'=>TRUE),
          	'category_icon' 			=> array('title'=> LAN_ICON,			'type' => 'icon', 			'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>FALSE,	'batch' => FALSE, 'filter'=>FALSE),			       	
-         	'category_name' 			=> array('title'=> LAN_TITLE,			'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE, 'validate' => true, 'inline' => true),
+         	'category_name' 			=> array('title'=> LAN_TITLE,			'type' => 'text',			'inline'=>true, 'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE, 'validate' => true, 'inline' => true),
          
-         	'category_meta_description' => array('title'=> LAN_DESCRIPTION,		'type' => 'textarea',			'width' => 'auto', 'thclass' => 'left','readParms' => 'expand=...&truncate=150&bb=1', 'readonly'=>FALSE),
-			'category_meta_keywords' 	=> array('title'=> LAN_KEYWORDS,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),		
-			'category_sef' 				=> array('title'=> LAN_SEFURL,	'type' => 'text',	'inline'=>true,		'width' => 'auto', 'readonly'=>FALSE), // Display name
+         	'category_meta_description' => array('title'=> LAN_DESCRIPTION,		'type' => 'textarea',		'width' => 'auto', 'thclass' => 'left','readParms' => 'expand=...&truncate=150&bb=1', 'readonly'=>FALSE),
+			'category_meta_keywords' 	=> array('title'=> LAN_KEYWORDS,		'type' => 'tags',			'inline'=>true, 'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),		
+			'category_sef' 				=> array('title'=> LAN_SEFURL,	'type' => 'text',	'inline'=>true,	'width' => 'auto', 'readonly'=>FALSE), // Display name
 			'category_manager' 			=> array('title'=> "Manage Permissions",'type' => 'userclass',		'inline'=>true, 'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
 			'category_order' 			=> array('title'=> LAN_ORDER,			'type' => 'text',			'width' => 'auto', 'thclass' => 'right', 'class'=> 'right' ),										
 			'options' 					=> array('title'=> LAN_OPTIONS,			'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center', 'sort' => true)
@@ -412,9 +412,13 @@ class news_admin_ui extends e_admin_ui
 		// Ping Changes to Services. 
 		$pingServices = e107::getPref('news_ping_services');
 		//TODO Use Ajax with progress-bar. 
-		
-		if(vartrue($_POST['news_ping'],false) && (count($pingServices)>0) && ($_POST['news_userclass'] == e_UC_PUBLIC))
-		{			
+	
+		$mes = e107::getMessage();
+			
+		if(vartrue($_POST['news_ping'],false) && (count($pingServices)>0) && in_array(e_UC_PUBLIC, $_POST['news_userclass'])) 
+		{
+			$mes->addDebug("Initiating ping",'default',true);		
+			
 			include (e_HANDLER.'xmlrpc/xmlrpc.inc.php');
 			include (e_HANDLER.'xmlrpc/xmlrpcs.inc.php');
 			include (e_HANDLER.'xmlrpc/xmlrpc_wrappers.inc.php');
@@ -430,14 +434,17 @@ class news_admin_ui extends e_admin_ui
 
 				$path 			= "/".$path;
 
-				$weblog_name	= SITENAME;
+				$weblog_name	= SITENAME; 
 				$weblog_url		= $_SERVER['HTTP_HOST'].e_HTTP;
-				$changes_url	= $_SERVER['HTTP_HOST'].e_HTTP."news.php?extend.".$_POST['news_id'];
+				$changes_url	= $_SERVER['HTTP_HOST'].e107::getUrl()->create('news/view/item', $_POST); //  $_SERVER['HTTP_HOST'].e_HTTP."news.php?extend.".$_POST['news_id'];
 				$cat_or_rss		= $_SERVER['HTTP_HOST'].e_PLUGIN_ABS."rss_menu/rss.php?1.2";
 				$extended		= (in_array($server, $extendedServices)) ? true : false;
 
-				$this->ping($server, $port, $path, $weblog_name, $weblog_url, $changes_url, $cat_or_rss, $extended);
-
+			//	if($this->ping($server, $port, $path, $weblog_name, $weblog_url, $changes_url, $cat_or_rss, $extended))
+				{
+					e107::getMessage()->addDebug("Successfully Pinged: ".$server .' with '.$changes_url , 'default', true);	
+				}
+				
 			}
 		
 		}
@@ -464,7 +471,12 @@ class news_admin_ui extends e_admin_ui
 	   /* Multi-purpose ping for any XML-RPC server that supports the Weblogs.Com interface. */
     function ping($xml_rpc_server, $xml_rpc_port, $xml_rpc_path, $weblog_name, $weblog_url, $changes_url, $cat_or_rss='', $extended = false)
 	{
+		$mes = e107::getMessage();
+		$log = e107::getAdminLog();
+		
+		$mes->addDebug("Attempting to ping: ".$xml_rpc_server, 'default', true);
 
+		
         $name_param 		= new xmlrpcval($weblog_name, 'string');
         $url_param 			= new xmlrpcval($weblog_url, 'string');
         $changes_param 		= new xmlrpcval($changes_url, 'string');
@@ -503,6 +515,8 @@ class news_admin_ui extends e_admin_ui
             $error_text = "Error: " . $xml_rpc_server . ": " . $client->errno . " " . $client->errstring;
             $this->report_error($error_text);
             $this->log_ping($error_text);
+			$log->addArray(array('status'=>LAN_ERROR, 'service'=>$xml_rpc_server, 'url'=> $weblog_url, 'response'=>$client->errstring))->save('PING_01');
+	
             return false;
         }
 		
@@ -510,6 +524,8 @@ class news_admin_ui extends e_admin_ui
         {
             $error_text = "Error: " . $xml_rpc_server . ": " . $response->faultCode() . " " . $response->faultString();
             $this->report_error($error_text);
+			$log->addArray(array('status'=>LAN_ERROR, 'service'=>$xml_rpc_server, 'url'=> $weblog_url, 'response'=>$response->faultString()))->save('PING_01');
+	
             return false;
         }
 		
@@ -529,10 +545,14 @@ class news_admin_ui extends e_admin_ui
         {
             $error_text = "Error: " . $xml_rpc_server . ": " . $message->scalarval();
 			$this->report_error($error_text);
-			$this->log_ping($error_text);
+			$log->addArray(array('status'=>LAN_ERROR, 'service'=>$xml_rpc_server, 'url'=> $weblog_url, 'response'=>$message->scalarval()))->save('PING_01');
+	
+		//	$this->log_ping($error_text);
 			return false;
 		}
 
+		$log->addArray(array('status'=>LAN_OK, 'service'=>$xml_rpc_server, 'url'=> $weblog_url, 'response'=>$message->scalarval()))->save('PING_01');
+		
         return true;
 	}
 
@@ -548,7 +568,7 @@ class news_admin_ui extends e_admin_ui
 	  // sDisplay Ping errors. 
 	function report_error($message)
 	{
-		e107::getMessage()->addError($message);	
+		e107::getMessage()->addError($message, 'default', true);	
 	}
 
 
