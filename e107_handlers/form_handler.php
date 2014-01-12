@@ -2773,6 +2773,7 @@ class e_form
 			case 'userclasses':
 			
 				$classes = explode(',', $value);
+				
 				$uv = array();
 				foreach ($classes as $cid)
 				{
@@ -2784,8 +2785,8 @@ class e_form
 				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
 				{
 					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
-
-					$array = e107::getUserClass()->uc_required_class_list('classes'); //XXX Ugly looking (non-standard) function naming - TODO discuss name change. 
+					$optlist = $parm['xxxxx']; // XXX TODO - add param for choice of class list options below. 
+					$array = e107::getUserClass()->uc_required_class_list('nobody,admin,main,public,classes'); //XXX Ugly looking (non-standard) function naming - TODO discuss name change. 
 					$source = str_replace('"',"'",json_encode($array, JSON_FORCE_OBJECT));
 					
 					//NOTE Leading ',' required on $value; so it picks up existing value.
