@@ -544,7 +544,11 @@ class e_admin_log
 	 */
 	public function logMessage($text, $type = '', $logLevel = TRUE, $session = FALSE)
 	{
-		if(empty($text)) return;
+		if(empty($text))
+		{
+			e107::getMessage()->addDebug("Log Message was empty: ".print_a(debug_backtrace(true)),true);
+			return $this;	// changing to text will break chained methods. 
+		} 
 		if(!$type) $type = E_MESSAGE_INFO;
 		if($logLevel === TRUE) $logLevel = $type;
 		
@@ -557,6 +561,7 @@ class e_admin_log
 		
 		$this->_messages[] = $logArray;
 		$this->_allMessages[] = $logArray;
+		
 		return $this;
 	}
 
@@ -645,11 +650,15 @@ class e_admin_log
 	 * @param $oldArray (optional) - when included, only the changes between the arrays is saved. 
 	 * @param $type (optional) default: LOG_MESSAGE_NODISPLAY. or E_MESSAGE_WARNING, E_MESSAGE_NOTICE, E_MESSAGE_SUCCESS
 	 */
-	public function addArray($array, $oldArray= null, $type = LOG_MESSAGE_NODISPLAY )
+	public function addArray($array, $oldArray= null, $type = LOG_MESSAGE_NODISPLAY , $session = false)
 	{
 		if(is_array($oldArray)) 
 		{
 			$text = array_diff_recursive($array,$oldArray); // Located in core_functions.php 
+		}
+		else
+		{
+			$text = $array;	
 		}
 		
 		return $this->logMessage($text, $type, $type, $session);	
