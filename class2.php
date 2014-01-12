@@ -1266,9 +1266,12 @@ function check_email($email)
 }
 
 //---------------------------------------------------------------------------------------------------------------------------------------------
-// $var is a single class number or name, or a comma-separated list of the same.
-// If a class is prefixed with '-' this means 'exclude' - returns FALSE if the user is in this class (overrides 'includes').
-// Otherwise returns TRUE if the user is in any of the classes listed in $var.
+/**
+ * @param $var is a single class number or name, or a comma-separated list of the same.
+ * @param $userclass a custom list of userclasses or leave blank for the current user's permissions. 
+* If a class is prefixed with '-' this means 'exclude' - returns FALSE if the user is in this class (overrides 'includes').
+* Otherwise returns TRUE if the user is in any of the classes listed in $var.
+ */
 function check_class($var, $userclass = USERCLASS_LIST, $uid = 0)
 {
 	$e107 = e107::getInstance();
