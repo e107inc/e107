@@ -440,7 +440,7 @@ class news_admin_ui extends e_admin_ui
 				$cat_or_rss		= $_SERVER['HTTP_HOST'].e_PLUGIN_ABS."rss_menu/rss.php?1.2";
 				$extended		= (in_array($server, $extendedServices)) ? true : false;
 
-			//	if($this->ping($server, $port, $path, $weblog_name, $weblog_url, $changes_url, $cat_or_rss, $extended))
+				if($this->ping($server, $port, $path, $weblog_name, $weblog_url, $changes_url, $cat_or_rss, $extended))
 				{
 					e107::getMessage()->addDebug("Successfully Pinged: ".$server .' with '.$changes_url , 'default', true);	
 				}
