@@ -14,25 +14,32 @@ if (!defined('e107_INIT')) { exit; }
 class page_sitelink // include plugin-folder in the name.
 {
 	private $chapterSef = array();
+	private $chapterParent = array();
 	
 	function __construct()
 	{
 		$sql = e107::getDb();
 		
-		$books = $sql->retrieve("SELECT chapter_id,chapter_sef FROM #page_chapters ORDER BY chapter_id ASC" , true);
+		$books = $sql->retrieve("SELECT chapter_id,chapter_sef,chapter_parent FROM #page_chapters ORDER BY chapter_id ASC" , true);
 				
 		foreach($books as $row)
 		{
 			$id = $row['chapter_id'];
 			$this->chapterSef[$id] = $row['chapter_sef'];
+			$this->chapterParent[$id] = $row['chapter_parent'];
 		}	
 		
 		
 	}
 	
-	function getSef($chapter)
+	private function getSef($chapter)
 	{
 		return varset($this->chapterSef[$chapter],'--sef-not-assigned--');		
+	}
+	
+	private function getParent($chapter)
+	{
+		return varset($this->chapterParent[$chapter], false);			
 	}
 	
 	
@@ -179,7 +186,8 @@ class page_sitelink // include plugin-folder in the name.
 			$pid = $row['page_chapter'];
 			
 			$row['chapter_sef'] = $this->getSef($row['page_chapter']);
-			$row['book_sef']	= $this->getSef(); //XXX FIXME - needs to contain the chapter_parent (ie. the 'book')
+			$book 				= $this->getParent($row['page_chapter']);
+			$row['book_sef']	= $this->getSef($book); 
 			
 			$sublinks[$pid][] = $_pdata[] = array(
 				'link_id'			=> $row['page_id'],
