@@ -91,7 +91,7 @@ class e_search
 		$sql = e107::getDb('search');
 		$tp = e107::getParser();
 		
-		if($handler == 'self')
+		if($handler == 'self') //v2 use 'compile' function inside e_search.php; 
 		{
 			$handler = array($this,'compile');	
 		}
