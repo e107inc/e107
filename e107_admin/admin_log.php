@@ -548,13 +548,24 @@ class admin_log_form_ui extends e_admin_form_ui
 				$text = preg_replace_callback("#\[!(\w+?)(=.+?){0,1}!]#", 'log_process', $curVal);
 				$text = $tp->toHtml($text);
 				
-				if(strpos($text,'Array')!==false)
+				if(strpos($text,'Array')!==false || strlen($text)>300)
 				{
 					$id = $this->getController()->getListModel()->get('dblog_id');
 					$ret ="<a class='e-expandit' href='#".$id."'>Details</a>";
 					$ret .= "<div class='hide' id='".$id."'>";
 					$text = str_replace("<br />","\n",$text);
 					$text = str_replace("&#092;","/",$text);
+					
+					if(substr($text,0,2) == '\n') // cleanup (not sure of the cause)
+					{
+						$text = substr($text,2);	
+					}
+					
+					if(substr($text,-2) == '\n') // cleanup (not sure of the cause)
+					{
+						$text = substr($text,0,-2);	
+					}
+					
 					$text = print_a($text,true);	
 					$ret .= $text;
 					$ret .= "</div>";
