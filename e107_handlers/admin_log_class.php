@@ -546,7 +546,8 @@ class e_admin_log
 	{
 		if(empty($text))
 		{
-			e107::getMessage()->addDebug("Log Message was empty: ".print_a(debug_backtrace(true)),true);
+			$bt = debug_backtrace(true);
+			e107::getMessage()->addDebug("Log Message was empty: ".print_a($bt[1],true));
 			return $this;	// changing to text will break chained methods. 
 		} 
 		if(!$type) $type = E_MESSAGE_INFO;
@@ -660,7 +661,7 @@ class e_admin_log
 		{
 			$text = $array;	
 		}
-		
+			
 		return $this->logMessage($text, $type, $type, $session);	
 	}
 

@@ -98,7 +98,7 @@ class e_search
 		
 		if(is_array($return_fields))
 		{
-			$return_fields = implode(",",$return_fields);	
+			$return_fields = implode(", ",$return_fields);	
 		}
 		
 		$this -> query = $tp -> toDB($query);
@@ -171,7 +171,8 @@ class e_search
 			}
 			$limit = $search_prefs['php_limit'] ? ' LIMIT 0,'.$search_prefs['php_limit'] : '';
 			$sql_query = "SELECT ".$return_fields." FROM #".$table." WHERE ".$where." (".$match_query.") ".$sql_order.$limit.";";
-			if ((($keycount = count($this -> keywords['split'])) > 1) && (strpos($query, '"') === FALSE) && (!isset($no_exact))) {
+			if ((($keycount = count($this -> keywords['split'])) > 1) && (strpos($query, '"') === FALSE) && (!isset($no_exact))) 
+			{
 				$exact_query[] = $query;
 				$this -> keywords['split'] = array_merge($exact_query, $this -> keywords['split']);
 			}
@@ -180,15 +181,22 @@ class e_search
 		{
 			$this -> query = str_replace('&quot;', '"', $this -> query);
 			$field_query = implode(',', $search_fields);
-			foreach ($search_fields as $field_key => $field) {
-				$search_query[] = "(".$weights[$field_key]." * (MATCH(".$field.") AGAINST ('".$this -> query."' IN BOOLEAN MODE)))";
+			
+			foreach ($search_fields as $field_key => $field) 
+			{
+				$search_query[] = "(". varset($weights[$field_key],0.6)." * (MATCH(".$field.") AGAINST ('".$this -> query."' IN BOOLEAN MODE)))";
 			}
+			
 			$match_query = implode(' + ', $search_query);
 			$sql_order = '';
-			foreach ($order as $sort_key => $sort_value) {
+			
+			foreach ($order as $sort_key => $sort_value) 
+			{
 				$sql_order .= ', '.$sort_key.' '.$sort_value;
 			}
+			
 			$limit = " LIMIT ".$result_flag.",".$search_res;
+			
 			$sql_query = "SELECT SQL_CALC_FOUND_ROWS ".$return_fields.", (".$match_query.") AS relevance FROM #".$table." WHERE ".$where." ( MATCH(".$field_query.") AGAINST ('".$this -> query."' IN BOOLEAN MODE) ) HAVING relevance > 0 ORDER BY relevance DESC ".$sql_order.$limit.";";
 		}
 
