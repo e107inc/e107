@@ -239,7 +239,10 @@ class search extends e_shortcode
 			
 			if($obj = e107::getAddon($id,'e_search'))
 			{
-				$ret = $obj->config();	
+				if(!$ret = $obj->config())
+				{
+					return false;
+				}	
 				
 				$ret['qtype'] = $ret['name'];
 				
@@ -247,6 +250,9 @@ class search extends e_shortcode
 				{
 					$ret['id'] = $ret['name'];	
 				}
+				
+				$ret['weights'] = array_values($ret['search_fields']);
+				$ret['search_fields'] = array_keys($ret['search_fields']);
 	
 			}	
 			
@@ -273,6 +279,7 @@ class search extends e_shortcode
 	// Get Core and Plugin search configurations
 	function searchConfig()
 	{
+		
 		
 		//core search routines
 		
@@ -341,6 +348,9 @@ class search extends e_shortcode
 		 $search_info = $this->array_sort($search_info, 'order', SORT_ASC);	
 		 
 		 $this->search_info = $search_info;
+		 
+		// print_a($this->search_prefs);
+		 print_a($this->search_info);
 		 
 		 return $search_info;
 	}	
@@ -478,8 +488,7 @@ class search extends e_shortcode
 					$pre_title 		= ($this->search_info[$key]['pre_title'] == 2) ? $this->search_info[$key]['pre_title_alt'] : $this->search_info[$key]['pre_title'];
 					$search_chars 	= $this->search_info[$key]['chars'];
 					$search_res 	= $this->search_info[$key]['results'];
-
-					
+			
 					if(vartrue($this->search_info[$key]['sfile']) && file_exists($this->search_info[$key]['sfile'])) // Legacy
 					{
 						$text .= '<div class="search-block">';
@@ -623,14 +632,14 @@ class search extends e_shortcode
 				$perform_search = false;
 				$this->message = LAN_SEARCH_201;
 			} 
-			elseif (strlen($full_query) < ($char_count = ($search_prefs['mysql_sort'] ? 4 : 3))) 
+			elseif (strlen($full_query) < ($char_count = ($this->search_prefs['mysql_sort'] ? 4 : 3))) 
 			{
 				$perform_search = false;
 				$this->message = str_replace('--CHARS--', $char_count, LAN_417);
 			} 
-			elseif ($search_prefs['time_restrict']) 
+			elseif ($this->search_prefs['time_restrict']) 
 			{
-				$time = time() - $search_prefs['time_secs'];
+				$time = time() - $this->search_prefs['time_secs'];
 				$query_check = $tp -> toDB($full_query);
 				$ip = e107::getIPHandler()->getIP(FALSE);
 				
