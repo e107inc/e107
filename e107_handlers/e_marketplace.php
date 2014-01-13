@@ -252,7 +252,8 @@ abstract class e_marketplace_adapter_abstract
 	protected $authKey = null;
 	
 	abstract public function test($input);
-	abstract public function call($method, $data, $apply);
+	//abstract public function call($method, $data, $apply);
+	abstract public function call($method, $data, $apply = true); // Fix issue #490
 	abstract public function fetch($method, &$result);
 	
 	/**
