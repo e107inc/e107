@@ -2673,8 +2673,12 @@ class e_parser
 		// Bootstrap 3 Glyph names. 
 		$bs3 = e107::getMedia()->getGlyphs('bs3','');
 		
+		if(substr($text,0,5) != 'icon-' && substr($text,0,3) != 'fa-')
+		{
+			$text = 'icon-'.$text.'.glyph';	
+		}
 		
-		if(substr($text,-6) == '.glyph' || strpos($text,".")==false) // Bootstrap or Font-Awesome. 
+//		if(substr($text,-6) == '.glyph' || strpos($text,".")==false) // Bootstrap or Font-Awesome. 
 		{
 			list($cls,$tmp) = explode('.glyph',$text);
 			list($type, $tmp2) = explode("-",$text,2);
