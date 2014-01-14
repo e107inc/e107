@@ -138,24 +138,28 @@ $SEARCH_TEMPLATE['form']['start'] = '
 <form class="form-horizontal" role="form" id="searchform" method="get" action="'.e_SELF.'">
 	<div class="form-group">
     	<label for="inputEmail3" class="col-sm-3 control-label">'.LAN_199.'</label>
-	    <div class="col-sm-9">{SEARCH_MAIN_SEARCHFIELD}{SEARCH_MAIN_SUBMIT}&nbsp;{ENHANCED_ICON}
+	    <div class="col-sm-9">{SEARCH_MAIN}
 	    </div>
   	</div>
-  
+  	<div id="search-enhanced" {ENHANCED_DISPLAY}>
+  	{SEARCH_ENHANCED}
+  	</div>
   ';
 
 $SEARCH_TEMPLATE['form']['advanced'] = '
 	<div class="form-group">
 	    <label for="inputPassword3" class="col-sm-3 control-label">{SEARCH_ADV_A}</label>
-	    <div class="col-sm-9">
+	    <div class="col-sm-9">	
+	    	
 	      {SEARCH_ADV_B}
+	      
 	    </div>
   	</div>';
   
 
 
 $SEARCH_TEMPLATE['form']['enhanced'] = '
-	<div class="form-group">
+	<div id="{ENHANCED_DISPLAY_ID}" class="form-group">
 	    <label for="inputPassword3" class="col-sm-3 control-label">{ENHANCED_TEXT}</label>
 	    <div class="col-sm-9">
 	      {ENHANCED_FIELD}
@@ -163,7 +167,7 @@ $SEARCH_TEMPLATE['form']['enhanced'] = '
   	</div>';
 
 
-
+/*
 $SEARCH_TEMPLATE['form']['type'] = '
 	<div class="form-group">
 	    <label for="inputPassword3" class="col-sm-3 control-label">'.LAN_SEARCH_75.'</label>
@@ -171,7 +175,7 @@ $SEARCH_TEMPLATE['form']['type'] = '
 	    {SEARCH_TYPE_SEL}
 	    </div>
 	</div>';
-
+*/
 
 $SEARCH_TEMPLATE['form']['category'] = '
 	<div class="form-group">

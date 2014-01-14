@@ -72,9 +72,9 @@ function tablestyle($caption, $text, $mode='')
 	}	
 	
 	echo '<h2>'.$caption.'</h2>
-			<p>
+			
 			'.$text.'
-			</p>';
+			';
 					
 	return;
 	

@@ -43,39 +43,133 @@ if (isset($_GET['t']) && is_numeric($_GET['t']))
 }
 
 
-
 class search extends e_shortcode
 {
 	
 	private $search_prefs = array();
+	private $search_info = array();
 	private $auto_order = 1000;
 	private $enhanced = false;
 	private $query = null;
 	private $result_flag = 0;
 	private $message = '';
+	public 	$template = array();
+	private $enhancedTypes = array(
+								'in' => LAN_SEARCH_24,
+								'ex' => LAN_SEARCH_25,
+								'ep' => LAN_SEARCH_26,
+								'be' => LAN_SEARCH_27
+							);
 	
 	function __construct()
 	{
-		$this->search_prefs = e107::getConfig('search')->getPref();	
+		$this->search_prefs = e107::getConfig('search')->getPref();		
+		$this->search_info 	= $this->searchConfig();
 		
-		if (!e_QUERY) 
+		
+		if(deftrue('BOOTSTRAP'))
 		{
-			$this->enhanced = true;
+			$tmp 				= e107::getCoreTemplate('search','form');
+			$SEARCH_TOP_TABLE 	= $tmp['start'];
+			$SEARCH_BOT_TABLE 	= $tmp['end'];
+			$SEARCH_CATS		= $tmp['category'];
+			$SEARCH_TYPE		= $tmp['type'];
+			$SEARCH_ADV			= $tmp['advanced'];
+			$SEARCH_ENHANCED	= $tmp['enhanced'];
+			$SEARCH_ADV_COMBO	= $tmp['advanced-combo'];
+			
+			$this->template = $tmp;
+		
+			
+			
+			unset($tmp);
+		}
+		else
+		{
+			if (file_exists(THEME."search_template.php")) 
+			{
+				require(THEME."search_template.php");
+			} 
+			else 
+			{
+				require(e_CORE."templates/search_template.php");
+			}
+			
+			$SEARCH_TOP_TABLE .= "{SEARCH_ENHANCED}";
+			
+			$tmp = array();
+			
+			$tmp['start']  			= $SEARCH_TOP_TABLE ;
+			$tmp['end'] 			= $SEARCH_BOT_TABLE ;
+			$tmp['category'] 		= $SEARCH_CATS;
+			$tmp['type'] 			= $SEARCH_TYPE;
+			$tmp['advanced'] 		= $SEARCH_ADV;
+			$tmp['enhanced'] 		= $SEARCH_ENHANCED;
+			$tmp['advanced-combo'] 	= $SEARCH_ADV_COMBO;
+			
+			$this->template = $tmp;
+		}
+
+	
+
+
+
+		if(e_AJAX_REQUEST)
+		{
+			if(vartrue($_POST['t']))
+			{
+				echo $this->sc_search_advanced_block($_POST['t']);
+			}
+			
+			exit;
 		}
 
 	}
 
+	function getPrefs()
+	{
+		return $this->search_prefs;	
+	}
 
 
+	function getConfig()
+	{
+		return $this->search_info;	
+	}
 	
 	// Shortcodes  -----------------------
 	
+	function sc_search_main($parm = '')
+	{
+		$tp = e107::getParser();
+		$value = isset($_GET['q']) ? $tp->post_toForm($_GET['q']) : "";
+		
+		$text = "<div class='input-group'>
+		<input class='tbox form-control m_search' type='text' id='q' name='q' size='35' value='".$value."' maxlength='50' />
+		<div class='input-group-btn'>
+		<button class='btn btn-primary' type='submit' name='s' value='1' >".$tp->toGlyph('search',false)."</button>
+		<button class='btn btn-primary dropdown-toggle' tabindex='-1' data-toggle='dropdown' type='button'><span class='caret'></span></button>
+		";
+		
+		$text .= '<ul class="dropdown-menu pull-right">
+          <li><a class="e-expandit" href="#" data-target="search-advanced,search-enhanced"><small>Toggle Advanced Mode</small></a></li>
+        </ul>';
+		
+		$text .= "
+		</div>
+		
+		</div>
+		<input type='hidden' name='r' value='0' />";
+		
+		return $text;		
+		
+	}
 
 	function sc_search_main_searchfield($parm='')
 	{
 		$tp = e107::getParser();
 		$value = isset($_GET['q']) ? $tp->post_toForm($_GET['q']) : "";
-		return "<input class='tbox m_search' type='text' id='q' name='q' size='35' value='".$value."' maxlength='50' />";	
+		return "<input class='tbox form-control m_search' type='text' id='q' name='q' size='35' value='".$value."' maxlength='50' />";	
 	}	
 	
 	function sc_search_main_submit($parm='')
@@ -107,6 +201,10 @@ class search extends e_shortcode
 	
 	function sc_search_type_sel($parm='')
 	{
+		return e107::getForm()->radio_switch('adv', vartrue($_GET['adv']), LAN_SEARCH_30, LAN_SEARCH_29, array('class'=>'e-expandit','reverse'=>1, 'data-target'=>'search-advanced'));
+		
+		
+		
 		return "<input type='radio' name='adv' value='0' ".(varsettrue($_GET['adv']) ? "" : "checked='checked'")." /> ".LAN_SEARCH_29."&nbsp;
 		<input type='radio' name='adv' value='1' ".(varsettrue($_GET['adv']) ? "checked='checked'" : "" )." /> ".LAN_SEARCH_30;	
 	}
@@ -131,7 +229,7 @@ class search extends e_shortcode
 		// standard search config
 		if ($this->search_prefs['selector'] == 2) 
 		{
-			$dropdown = "<select name='t' id='t' class='tbox' onchange=\"ab()\">";
+			$dropdown = "<select name='t' id='t' class='tbox form-control e-ajax' data-src='".e_SELF."' data-target='search-advanced' >";
 			
 			if ($this->search_prefs['multisearch']) 
 			{
@@ -204,7 +302,141 @@ class search extends e_shortcode
 		
 	}
 
+	function sc_search_enhanced()
+	{
+		
+		$tp = e107::getParser();
+		
+		$text = '';
+		$var = array();
+		
+		foreach ($this->enhancedTypes as $en_id => $ENHANCED_TEXT) 
+		{
+			$var['ENHANCED_TEXT'] 		= $ENHANCED_TEXT;
+			$var['ENHANCED_DISPLAY_ID'] = "en_".$en_id;
+			$var['ENHANCED_FIELD'] 		= "<input class='tbox form-control' type='text' id='".$en_id."' name='".$en_id."' size='35' value='".$tp->post_toForm($_GET[$en_id])."' maxlength='50' />";
+		
+			$text .= $tp->simpleParse($this->template['enhanced'], $var);
+		}
+		
+		return $text;
+	}
 
+
+	function sc_enhanced_display()
+	{
+		return ($this->enhanced !== true) ?  "style='display: none'" : "" ;
+	}
+		
+	function sc_search_advanced_block($parm='')
+	{
+		$tp = e107::getParser();
+		$sql = e107::getDb();
+		$sql2 = e107::getDb('search');
+		
+			
+		if(!$parm)
+		{
+		//	return;	
+		}	
+			
+		
+		if (isset($this->search_info[$parm]['advanced'])) 
+		{
+			
+			if(is_array($this->search_info[$parm]['advanced']))
+			{
+				$advanced  = ($this->search_info[$parm]['advanced']);
+			}
+			elseif(isset($this->search_info[$parm]['advanced']))
+			{
+				require($this->search_info[$parm]['advanced']); 
+				
+			}
+			
+			$vars = array();
+			
+			
+			
+			foreach ($advanced as $adv_key => $adv_value) 
+			{
+				if ($adv_value['type'] == 'single') 
+				{
+					$vars['SEARCH_ADV_TEXT'] = $adv_value['text'];
+					$text .= $tp->simpleParse($this->template['advanced-combo'], $vars);
+				} 
+				else 
+				{
+					if ($adv_value['type'] == 'dropdown') 
+					{
+						$vars['SEARCH_ADV_A'] = $adv_value['text'];
+						$vars['SEARCH_ADV_B'] = "<select name='".$adv_key."' class='tbox form-control'>";
+						
+						foreach ($adv_value['list'] as $list_item) 
+						{
+							$vars['SEARCH_ADV_B'] .= "<option value='".$list_item['id']."' ".($_GET[$adv_key] == $list_item['id'] ? "selected='selected'" : "").">".$list_item['title']."</option>";
+						}
+						$vars['SEARCH_ADV_B'] .= "</select>";
+					} 
+					else if ($adv_value['type'] == 'date') 
+					{
+						$vars['SEARCH_ADV_A'] = $adv_value['text'];
+						$vars['SEARCH_ADV_B'] = "
+						
+						<div class='form-inline'>
+						<select id='on' name='on' class='tbox form-control '>
+						<option value='new' ".($_GET['on'] == 'new' ? "selected='selected'" : "").">".LAN_SEARCH_34."</option>
+						<option value='old' ".($_GET['on'] == 'old' ? "selected='selected'" : "").">".LAN_SEARCH_35."</option>
+						</select>&nbsp;
+					
+						<select id='time' name='time' class='tbox form-control '>";
+						
+						$time = array(LAN_SEARCH_36 => 'any', LAN_SEARCH_37 => 86400, LAN_SEARCH_38 => 172800, LAN_SEARCH_39 => 259200, LAN_SEARCH_40 => 604800, LAN_SEARCH_41 => 1209600, LAN_SEARCH_42 => 1814400, LAN_SEARCH_43 => 2628000, LAN_SEARCH_44 => 5256000, LAN_SEARCH_45 => 7884000, LAN_SEARCH_46 => 15768000, LAN_SEARCH_47 => 31536000, LAN_SEARCH_48 => 63072000, LAN_SEARCH_49 => 94608000);
+						
+						foreach ($time as $time_title => $time_secs) 
+						{
+							$vars['SEARCH_ADV_B'] .= "<option value='".$time_secs."' ".($_GET['time'] == $time_secs ? "selected='selected'" : "").">".$time_title."</option>";
+						}
+						
+						$vars['SEARCH_ADV_B'] .= "</select>
+						</div>";
+					} 
+					else if ($adv_value['type'] == 'author') 
+					{
+					//	require_once(e_HANDLER.'user_select_class.php');
+						
+					//	$us = new user_select;
+						$vars['SEARCH_ADV_A'] = $adv_value['text'];
+						$vars['SEARCH_ADV_B'] = e107::getForm()->userpicker($adv_key."_name",$adv_key,$_GET[$adv_key]); // $us -> select_form('popup', $adv_key, $_GET[$adv_key]);
+						
+						
+						
+					} 
+					else if ($adv_value['type'] == 'dual') 
+					{
+						$vars['SEARCH_ADV_A'] = $adv_value['adv_a'];
+						$vars['SEARCH_ADV_B'] = $adv_value['adv_b'];
+					}
+			
+					$text .= $tp->simpleParse($this->template['advanced'], $vars);
+				}
+			}
+	
+			
+		} 
+		else 
+		{
+			$_GET['adv'] = 0;
+		}
+		
+		
+		return $text;
+	}
+				
+				
+			
+			
+		
 
 	// -------------
 	
@@ -285,12 +517,13 @@ class search extends e_shortcode
 		
 		$search_info = array();
 		
+		/*
 		if ($search_info['news'] = $this->search_info('news', 'core', false, array('sfile' => e_HANDLER.'search/search_news.php', 'qtype' => LAN_SEARCH_98, 'refpage' => 'news.php', 'advanced' => e_HANDLER.'search/advanced_news.php', 'id' => 'news'))) {
 		   //	$search_id++;
 		} else {
 			unset($search_info['news']);
 		}
-		
+		*/
 		if(e107::getConfig('core')->get('comments_disabled')!=1)  // Only when comments are enabled.
 		{
 			if ($search_info['comments'] = $this->search_info('comments', 'core', false, array('sfile' => e_HANDLER.'search/search_comment.php', 'qtype' => LAN_SEARCH_99, 'refpage' => 'comment.php', 'advanced' => e_HANDLER.'search/advanced_comment.php', 'id' => 'comment'))) {
@@ -350,7 +583,7 @@ class search extends e_shortcode
 		 $this->search_info = $search_info;
 		 
 		// print_a($this->search_prefs);
-		 print_a($this->search_info);
+		// print_a($this->search_info);
 		 
 		 return $search_info;
 	}	
@@ -500,6 +733,10 @@ class search extends e_shortcode
 						
 						$className = $key."_search";
 						
+						if(!class_exists($className))
+						{
+							continue;
+						}
 						$obj = new $className;
 	
 						$where = (method_exists($obj,'where')) ? $obj->where($_GET) : "";
@@ -684,8 +921,8 @@ class search extends e_shortcode
 
 
 $srchObj 		= new search;
-$search_info 	= $srchObj->searchConfig();
-$search_prefs	= $srchObj->searchPrefs();
+$search_info 	= $srchObj->getConfig();
+$search_prefs	= $srchObj->getPrefs();
 
 // validate search query
 $perform_search = true;
@@ -964,7 +1201,7 @@ if ($perform_search)
 require_once(HEADERF);
 
 // render search config
-/*
+
 if(deftrue('BOOTSTRAP'))
 {
 	$tmp 				= e107::getCoreTemplate('search','form');
@@ -976,13 +1213,12 @@ if(deftrue('BOOTSTRAP'))
 	$SEARCH_ENHANCED	= $tmp['enhanced'];
 	$SEARCH_ADV_COMBO	= $tmp['advanced-combo'];
 	
-	
+	$srchObj->template = $tmp;
 
 	
 	
 	unset($tmp);
 }
-*/
 
 
 
@@ -996,7 +1232,14 @@ if (!isset($SEARCH_TOP_TABLE))
 	{
 		require(e_CORE."templates/search_template.php");
 	}
+	
+	$SEARCH_TOP_TABLE .= "{SEARCH_ENHANCED}";
 }
+
+
+
+
+
 
 //$SEARCH_TOP_TABLE =  $tp->parseTemplate($SEARCH_TOP_TABLE,true,$srchObj);
 //$SEARCH_TYPE =  $tp->parseTemplate($SEARCH_TYPE,true, $srchObj);
@@ -1062,7 +1305,7 @@ $tp = e107::getParser();
 
 $text =  $tp->parseTemplate($SEARCH_TOP_TABLE,true,$srchObj);
 
-
+/*
 foreach ($enhanced_types as $en_id => $ENHANCED_TEXT) 
 {
 	$SEARCH_VARS->ENHANCED_TEXT = $ENHANCED_TEXT;
@@ -1072,6 +1315,8 @@ foreach ($enhanced_types as $en_id => $ENHANCED_TEXT)
 	$text .= $tp->simpleParse($SEARCH_ENHANCED, $SEARCH_VARS);
 }
 $SEARCH_VARS->ENHANCED_TEXT = $SEARCH_VARS->ENHANCED_DISPLAY_ID = $SEARCH_VARS->ENHANCED_FIELD = null;
+*/
+
 
 if ($search_prefs['user_select']) 
 {
@@ -1084,77 +1329,11 @@ if ($search_prefs['user_select'])
 // $text .= $tp->simpleParse($SEARCH_TYPE, $SEARCH_VARS);
 $text .= $tp->parseTemplate($SEARCH_TYPE,true, $srchObj);
 
-if ($_GET['adv']) 
-{
-	
-	if (isset($search_info[$_GET['t']]['advanced'])) 
-	{
-		
-		if(is_array($search_info[$_GET['t']]['advanced']))
-		{
-			$advanced  = ($search_info[$_GET['t']]['advanced']);
-		}
-		elseif(isset($search_info[$_GET['t']]['advanced']))
-		{
-			require_once($search_info[$_GET['t']]['advanced']);
-			
-		}
-		
-		foreach ($advanced as $adv_key => $adv_value) 
-		{
-			if ($adv_value['type'] == 'single') 
-			{
-				$SEARCH_VARS->SEARCH_ADV_TEXT = $adv_value['text'];
-				//$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_ADV_COMBO);
-				$text .= $tp->simpleParse($SEARCH_ADV_COMBO, $SEARCH_VARS);
-			} 
-			else 
-			{
-				if ($adv_value['type'] == 'dropdown') 
-				{
-					$SEARCH_VARS->SEARCH_ADV_A = $adv_value['text'];
-					$SEARCH_VARS->SEARCH_ADV_B = "<select name='".$adv_key."' class='tbox'>";
-					foreach ($adv_value['list'] as $list_item) {
-						$SEARCH_VARS->SEARCH_ADV_B .= "<option value='".$list_item['id']."' ".($_GET[$adv_key] == $list_item['id'] ? "selected='selected'" : "").">".$list_item['title']."</option>";
-					}
-					$SEARCH_VARS->SEARCH_ADV_B .= "</select>";
-				} 
-				else if ($adv_value['type'] == 'date') 
-				{
-					$SEARCH_VARS->SEARCH_ADV_A = $adv_value['text'];
-					$SEARCH_VARS->SEARCH_ADV_B = "<select id='on' name='on' class='tbox'>
-					<option value='new' ".($_GET['on'] == 'new' ? "selected='selected'" : "").">".LAN_SEARCH_34."</option>
-					<option value='old' ".($_GET['on'] == 'old' ? "selected='selected'" : "").">".LAN_SEARCH_35."</option>
-					</select>&nbsp;<select id='time' name='time' class='tbox'>";
-					$time = array(LAN_SEARCH_36 => 'any', LAN_SEARCH_37 => 86400, LAN_SEARCH_38 => 172800, LAN_SEARCH_39 => 259200, LAN_SEARCH_40 => 604800, LAN_SEARCH_41 => 1209600, LAN_SEARCH_42 => 1814400, LAN_SEARCH_43 => 2628000, LAN_SEARCH_44 => 5256000, LAN_SEARCH_45 => 7884000, LAN_SEARCH_46 => 15768000, LAN_SEARCH_47 => 31536000, LAN_SEARCH_48 => 63072000, LAN_SEARCH_49 => 94608000);
-					foreach ($time as $time_title => $time_secs) 
-					{
-						$SEARCH_VARS->SEARCH_ADV_B .= "<option value='".$time_secs."' ".($_GET['time'] == $time_secs ? "selected='selected'" : "").">".$time_title."</option>";
-					}
-					$SEARCH_VARS->SEARCH_ADV_B .= "</select>";
-				} 
-				else if ($adv_value['type'] == 'author') 
-				{
-					require_once(e_HANDLER.'user_select_class.php');
-					$us = new user_select;
-					$SEARCH_VARS->SEARCH_ADV_A = $adv_value['text'];
-					$SEARCH_VARS->SEARCH_ADV_B = $us -> select_form('popup', $adv_key, $_GET[$adv_key]);
-				} 
-				else if ($adv_value['type'] == 'dual') 
-				{
-					$SEARCH_VARS->SEARCH_ADV_A = $adv_value['adv_a'];
-					$SEARCH_VARS->SEARCH_ADV_B = $adv_value['adv_b'];
-				}
-				//$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_ADV);
-				$text .= $tp->simpleParse($SEARCH_ADV, $SEARCH_VARS);
-			}
-		}
-	} 
-	else 
-	{
-		$_GET['adv'] = 0;
-	}
-}
+
+	$text .= "<div class='e-hideme' id='search-advanced' >";
+	$text .= $tp->parseTemplate("{SEARCH_ADVANCED_BLOCK=".vartrue($_GET['t'])."}",true, $srchObj);
+	$text .= "</div>";
+
 
 //$
 
@@ -1308,18 +1487,7 @@ function headerjs() {
 
 	}
 
-	$script .= "<script type='text/javascript'>
-	<!--
-	function ab() {
-		abid = document.getElementById('t').value;
-		if (abid != 'all'".$js_adv.") {
-			document.getElementById('advanced_type').style.display = '';
-		} else {
-			document.getElementById('advanced_type').style.display = 'none';
-		}
-	}
-	//-->
-	</script>";
+
 
 	return $script;
 }

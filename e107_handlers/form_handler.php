@@ -1104,13 +1104,13 @@ class e_form
 		
 		$labelFound = vartrue($options['label']);
 		unset($options['label']); // label attribute not valid in html5
-		
+				
 		$options = $this->format_options('radio', $name, $options);
 		$options['checked'] = $checked; //comes as separate argument just for convenience
 		// $options['class'] = 'inline';	
 		$text = "";
 		
-	
+
 		
 	//	return print_a($options,true);
 		if($labelFound) // Bootstrap compatible markup
@@ -1118,6 +1118,9 @@ class e_form
 			$text .= "<label class='radio inline'>";	
 			
 		}
+		
+	
+		
 		
 		$text .= "<input type='radio' name='{$name}' value='".$value."'".$this->get_attributes($options, $name, $value)." />";
 		
@@ -1150,8 +1153,8 @@ class e_form
 		
 		if(vartrue($options['class']) == 'e-expandit' || vartrue($options['expandit'])) // See admin->prefs 'Single Login' for an example. 
 		{
-			$options_on = array('class' => 'e-expandit-on');
-			$options_off = array('class' => 'e-expandit-off');			
+			$options_on = array_merge($options, array('class' => 'e-expandit-on'));
+			$options_off = array_merge($options, array('class' => 'e-expandit-off'));	
 		}
 		
 		$options_on['label'] = $label_enabled ? defset($label_enabled,$label_enabled) : LAN_ENABLED; 
