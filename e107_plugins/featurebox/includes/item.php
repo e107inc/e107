@@ -77,18 +77,22 @@ class plugin_featurebox_item extends e_model
 	{
 		$tp = e107::getParser();
 		$url = $tp->replaceConstants($this->get('fb_imageurl'), 'full');
+		
 		if(empty($url)) return '';
 
 		parse_str($parm, $parm);
-		if(!vartrue($parm['href']))
+				
+		if(vartrue($parm['href']))
 		{
 			return $tp->replaceConstants($url);
 		}
 
-		$title = vartrue($parm['text']) ? defset($parm['text']) : FBLAN_02;
+		$title = vartrue($parm['text']) ? defset($parm['text']) : LAN_MORE;
 		$alt = $tp->toAttribute($this->get('fb_title'), false, 'TITLE');
 		
-		$buttonCls = vartrue($parm['button']) ? "class='btn' " : "";
+		$buttonCls = vartrue($parm['button']) ? 'class="btn btn-primary" ' : "";
+		
+		
 		
 		return '<a '.$buttonCls.'id="featurebox-url-'.$this->getId().'" href="'.$url.'" title="'.$alt.'" rel="'.$tp->toAttribute(vartrue($parm['rel'], '')).'">'.$title.'</a>';
 	}
@@ -124,6 +128,12 @@ class plugin_featurebox_item extends e_model
 		{
 			return '';
 		}
+		
+		if($video = e107::getParser()->toVideo($this->get('fb_image')))
+		{
+			return $video;	
+		}
+		
 		parse_str($parm, $parm);
 		$tp = e107::getParser();
 		
