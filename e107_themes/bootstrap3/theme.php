@@ -70,6 +70,15 @@ function tablestyle($caption, $text, $mode='')
 		return;
 		
 	}	
+
+	if($style == 'portfolio')
+	{
+		 echo '
+		 <div class="col-lg-4 col-md-4 col-sm-6">
+            '.$text.'
+		</div>';	
+		return;
+	}
 	
 	echo '<h2>'.$caption.'</h2>
 			
@@ -143,7 +152,7 @@ $LAYOUT['jumbotron_home'] =  <<<TMPL
 
 TMPL;
 
-
+//TODO Add {GALLERY_PORTFOLIO}  to portfolio_menu.php 
 $LAYOUT['modern_business_home'] =  <<<TMPL
 
 
@@ -190,27 +199,14 @@ $LAYOUT['modern_business_home'] =  <<<TMPL
 
         <div class="row">
           <div class="col-lg-12 text-center">
-            <h2>Display Some Work on the Home Page Portfolio (TO-DO)</h2>
+            <h2>Display Some Work on the Home Page Portfolio</h2>
             <hr>
           </div>
-          <div class="col-lg-4 col-md-4 col-sm-6">
-            <a href="portfolio-item.html"><img class="img-responsive img-home-portfolio" src="http://placehold.it/700x450"></a>
-          </div>
-          <div class="col-lg-4 col-md-4 col-sm-6">
-            <a href="portfolio-item.html"><img class="img-responsive img-home-portfolio" src="http://placehold.it/700x450"></a>
-          </div>
-          <div class="col-lg-4 col-md-4 col-sm-6">
-            <a href="portfolio-item.html"><img class="img-responsive img-home-portfolio" src="http://placehold.it/700x450"></a>
-          </div>
-          <div class="col-lg-4 col-md-4 col-sm-6">
-            <a href="portfolio-item.html"><img class="img-responsive img-home-portfolio" src="http://placehold.it/700x450"></a>
-          </div>
-          <div class="col-lg-4 col-md-4 col-sm-6">
-            <a href="portfolio-item.html"><img class="img-responsive img-home-portfolio" src="http://placehold.it/700x450"></a>
-          </div>
-          <div class="col-lg-4 col-md-4 col-sm-6">
-            <a href="portfolio-item.html"><img class="img-responsive img-home-portfolio" src="http://placehold.it/700x450"></a>
-          </div>
+          
+		  {SETSTYLE=portfolio}
+		  {SETIMAGE: w=700&h=500&crop=1}
+		  {GALLERY_PORTFOLIO: placeholder=1&limit=6}   
+		  
         </div><!-- /.row -->
 
       </div><!-- /.container -->

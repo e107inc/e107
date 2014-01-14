@@ -1906,6 +1906,43 @@ class e_parse extends e_parser
 
 
 
+
+
+	/**
+	 * Set or Get the value of the thumbNail Width. 
+	 * @param $width (optional)
+	 */
+	public function thumbWidth($width=null)
+	{
+		if($val !== null)
+		{
+			$this->thumbWidth = intval($width);
+		}
+		
+		return $this->thumbWidth;		
+	}
+
+
+
+
+
+	/**
+	 * Set or Get the value of the thumbNail height. 
+	 * @param $height (optional)
+	 */
+	public function thumbHeight($height= null)
+	{
+		if($val !== null)
+		{
+			$this->thumbHeight = intval($height);
+		}
+		
+		return $this->thumbHeight;	
+		
+	}
+	
+	
+	
 	/**
 	 * Generate an auto-sized Image URL. 
 	 * @param $url - path to image or leave blank for a placeholder. 

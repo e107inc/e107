@@ -362,6 +362,9 @@ class e_media
 	/**
 	 * Return an array of Images in a particular category
 	 * @param string $cat : category name. use + to include _common eg. 'news+'
+	 * @param $from
+	 * @param $amount
+	 * @param $search
 	 */
 	public function getImages($cat='', $from=0, $amount=null,$search=null)
 	{

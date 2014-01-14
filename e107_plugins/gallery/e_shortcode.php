@@ -72,10 +72,10 @@ class gallery_shortcodes extends e_shortcode
 		$tp 		= e107::getParser();	
 		$parms 		= eHelper::scParams($parm);
 		
-		$w 			= vartrue($parms['w']) ? $parms['w'] : 190; // 160;
-		$h 			= vartrue($parms['h']) ? $parms['h'] : 130;	
+		$w 			= vartrue($parms['w']) ? $parms['w'] : $tp->thumbWidth(); // 190; // 160;
+		$h 			= vartrue($parms['h']) ? $parms['h'] : $tp->thumbHeight(); // 130;	
 		
-		$class 		= ($this->slideMode == TRUE) ? 'gallery-slideshow-thumb' : 'gallery-thumb';
+		$class 		= ($this->slideMode == TRUE) ? 'gallery-slideshow-thumb img-responsive' : varset($parms['class'],'gallery-thumb img-responsive');
 	//	$rel 		= ($this->slideMode == TRUE) ? 'lightbox.SlideGallery' : 'lightbox.Gallery';
 			$rel 		= ($this->slideMode == TRUE) ? 'prettyPhoto[slide]' : 'prettyPhoto[gal]';
 		$att 		= 'aw='.$w.'&ah='.$h.'&x=1'; // 'aw=190&ah=150';
@@ -143,7 +143,7 @@ class gallery_shortcodes extends e_shortcode
 		if(isset($parms['thumbsrc'])) return e107::getParser()->thumbUrl($this->var['media_cat_image'],$att);		
 		
 		$text = "<a class='thumbnail' href='".$url."'>";
-		$text .= "<img data-src='holder.js/".$w."x".$h."' src='".e107::getParser()->thumbUrl($this->var['media_cat_image'],$att)."' alt='' />";
+		$text .= "<img class='img-responsive' data-src='holder.js/".$w."x".$h."' src='".e107::getParser()->thumbUrl($this->var['media_cat_image'],$att)."' alt='' />";
 		$text .= "</a>";
 		return $text;		
 	}
@@ -166,6 +166,45 @@ class gallery_shortcodes extends e_shortcode
 			
 		return e107::getParser()->parseTemplate($template['slideshow_wrapper']);
 	}
+	
+	/**
+	 * Display a Grid of thumbnails - useful for home pages. 
+	 * Amount per row differs according to device, so they are not set here, only the amount.  
+	 * @example {GALLERY_PORTFOLIO: placeholder=1&category=2}
+	 */
+	function sc_gallery_portfolio($parms='')
+	{
+		$ns 	= e107::getRender();		
+		$parm 	= eHelper::scParams($parms);
+		$cat 	= ($parm['category']) ? $parm['category'] : vartrue(e107::getPlugPref('gallery','slideshow_category'), 1); //TODO Separate pref?
+
+		$tmpl 	= e107::getTemplate('gallery','gallery');		
+		$limit 	= vartrue($parm['limit'], 6);
+		
+		$list = e107::getMedia()->getImages('gallery_'.$cat.'|gallery_image_'.$cat, 0, $limit);
+	
+		if(count($list) < 1 && vartrue($parm['placeholder']))
+		{
+			$list = array();
+
+			for ($i=0; $i < $limit; $i++) 
+			{
+				$list[] = array('media_url'=>'');	
+			}	
+		}
+		
+		//NOTE: Using tablerender() allows the theme developer to set the number of columns etc using col-xx-xx 
+		foreach($list as $val)
+		{
+			$this->var = $val;
+			$text .= $ns->tablerender('', $this->sc_gallery_thumb('class=gallery_thumb img-responsive img-home-portfolio'),'gallery_portfolio',true);	
+		}
+		
+		return $text;
+
+	}
+	
+	
 	
 	/**
 	 * All possible parameters
