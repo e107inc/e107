@@ -2822,7 +2822,7 @@ class e_parser
 				return '<div class="video-responsive video-thumbnail thumbnail">'.$video.'</div>';	
 			}
 			
-			return '<div class="video-responsive">'.$video.'</div>';
+			return '<div class="'.vartrue($parm['class'],'video-responsive').'">'.$video.'</div>';
 		}
 		
 		if($type == 'mp4') //TODO FIXME 

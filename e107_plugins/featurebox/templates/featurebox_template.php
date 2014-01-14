@@ -27,7 +27,7 @@ $FEATUREBOX_TEMPLATE['bootstrap_carousel_left'] = '
    <!-- slide -->			 {SETIMAGE: w=600&h=500&crop=1}
                             <div class="{FEATUREBOX_ACTIVE} item slide{FEATUREBOX_COUNTER}">
                                 <div class="media container">
-                                    <div class="media-object featurebox-item-image pull-left ">
+                                    <div class="media-object featurebox-item-image col-lg-6 pull-left ">
                                     	{FEATUREBOX_IMAGE=placeholder}
                                      </div>
                                     <div class="media-body featurebox-item-text span4">
@@ -35,6 +35,9 @@ $FEATUREBOX_TEMPLATE['bootstrap_carousel_left'] = '
                                             {FEATUREBOX_TITLE}
                                         </h1>
                                         {FEATUREBOX_TEXT}
+										
+										 <p>{FEATUREBOX_BUTTON}</p>
+										
                                     </div>
                                 </div>
                             </div>
@@ -46,12 +49,15 @@ $FEATUREBOX_TEMPLATE['bootstrap_carousel_right'] = '
 							{SETIMAGE: w=600&h=500&crop=1}
  							<div class="{FEATUREBOX_ACTIVE} item slide{FEATUREBOX_COUNTER}">
                                 <div class="media container">
-                                 <div class="featurebox-item-image media-object pull-right span6 animated fadeInDownBig">
+                                 <div class="featurebox-item-image media-object pull-right span6 col-lg-6">
                                          {FEATUREBOX_IMAGE=placeholder}
                                     </div>
                                     <div class="featurebox-item-text media-body  animated fadeInUpBig">
                                         <h1>{FEATUREBOX_TITLE}</h1>
                                         {FEATUREBOX_TEXT}
+										
+                                        <p>{FEATUREBOX_BUTTON}</p>
+										
                                     </div>
                                 </div>
                             </div>
