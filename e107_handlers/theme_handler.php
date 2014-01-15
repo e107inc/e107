@@ -27,7 +27,7 @@ class themeHandler
 	var $themeConfigObj = null;
 	var $noLog = FALSE;
 	
-	private $approvedAdminThemes = array('bootstrap');
+	private $approvedAdminThemes = array('bootstrap','bootstrap3');
 	
 	public $allowedCategories = array('generic',
 		 'adult',
@@ -1686,6 +1686,7 @@ class themeHandler
 		$pref['admintheme'] = $themeArray[$this->id];
 		$pref['admincss'] = file_exists(e_THEME.$pref['admintheme'].'/admin_dark.css') ? 'admin_dark.css' : 'admin_light.css';
 		$e107cache->clear_sys();
+		
 		if(save_prefs())
 		{
 			// Default Message

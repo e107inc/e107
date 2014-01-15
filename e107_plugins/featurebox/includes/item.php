@@ -90,7 +90,7 @@ class plugin_featurebox_item extends e_model
 		$title = vartrue($parm['text']) ? defset($parm['text']) : LAN_MORE;
 		$alt = $tp->toAttribute($this->get('fb_title'), false, 'TITLE');
 		
-		$buttonCls = vartrue($parm['button']) ? 'class="btn btn-primary" ' : "";
+		$buttonCls = vartrue($parm['button']) ? 'class="btn btn-primary btn-featurebox" ' : "";
 		
 		
 		

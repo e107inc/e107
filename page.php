@@ -274,16 +274,17 @@ class pageClass
 			
 			while($row = $sql->fetch())
 			{
-				$tmp = $this->listPages(intval($row['chapter_id']),$book_sef, $row['chapter_sef']);
+				$tmp = $this->listPages(intval($row['chapter_id']));
 				
 				$row['book_sef'] = $this->getSef($row['chapter_parent']); 
+				$pages			= ($tmp['text']);
 				
 				$var = array(
 					'CHAPTER_NAME' 			=> $tp->toHtml($row['chapter_name']),
 					'CHAPTER_ANCHOR'		=> $frm->name2id($row['chapter_name']),
 					'CHAPTER_ICON'			=> $this->chapterIcon($row['chapter_icon']),
 					'CHAPTER_DESCRIPTION'	=> $tp->toHtml($row['chapter_meta_description'],true,'BODY'),
-					'PAGES'					=> $tmp['text'],
+					'PAGES'					=> $pages,
 					'CHAPTER_URL'			=> e107::getUrl()->create('page/chapter/index', $row,'allow=chapter_id,chapter_sef,book_sef') // e_BASE."page.php?ch=".intval($row['chapter_id']) // FIXME SEF-URL
 				);
 				
@@ -356,7 +357,7 @@ class pageClass
 		
 			if(!$count = $sql->select("page", "*", "page_title !='' AND page_chapter=".intval($chapt)." AND page_class IN (".USERCLASS_LIST.") ORDER BY page_order ASC "))
 			{
-				return e107::getMessage()->addInfo(LAN_PAGE_2)->render();
+				return array('text' => "<em>".(LAN_PAGE_2)."</em>");
 			//	$text = "<ul class='page-pages-list page-pages-none'><li>".LAN_PAGE_2."</li></ul>";
 			}
 			else
