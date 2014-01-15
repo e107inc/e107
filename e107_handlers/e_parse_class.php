@@ -2771,9 +2771,10 @@ class e_parser
 			{
 				$path = $parm['legacy'].$icon;		
 			}
-			elseif(ADMIN)
+			else
 			{
-				return "Broken Image Path: ".$icon;	
+				$log = e107::getAdminLog();
+				$log->addDebug('Broken Icon Path: '.$icon, false)->save('IMALAN_00');
 			}
 			
 		}
