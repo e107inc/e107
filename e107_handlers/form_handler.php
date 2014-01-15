@@ -2682,12 +2682,15 @@ class e_form
 	
 				if($glyph = $tp->toGlyph($value))
 				{
-					$value = $glyph;	
+				//	$value = $glyph;	
 				}
 				else
 				{
-					$value = '<img src="'.$tp->replaceConstants(vartrue($parms['pre']).$value, 'abs').'" alt="'.basename($value).'" class="icon'.(vartrue($parms['class']) ? ' '.$parms['class'] : '').'" />';
+			//		$value = '<img src="'.$tp->replaceConstants(vartrue($parms['pre']).$value, 'abs').'" alt="'.basename($value).'" class="icon'.(vartrue($parms['class']) ? ' '.$parms['class'] : '').'" />';
 				}
+				
+				$value = $tp->toIcon($value);
+				
 			break;
 			
 			case 'file':

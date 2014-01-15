@@ -2451,23 +2451,7 @@ class e_parse extends e_parser
 		}
 		return $text;
 	}
-	
-	/**
-	 * Display a Date in the browser. 
-	 * Includes support for 'livestamp' (http://mattbradley.github.io/livestampjs/)
-	 * @param integer $datestamp - unix timestamp
-	 * @param string $format - short | long | relative 
-	 * @return HTML with converted date. 
-	 */
-	public function toDate($datestamp = null, $format='short')
-	{
-		if(!is_numeric($datestamp)){ return; }
 
-		return '<span data-livestamp="'.$datestamp.'">'.e107::getDate()->convert($datestamp, $format).'</span>';	
-	}
-	
-
-	
 	
 	
 
@@ -2541,6 +2525,7 @@ class e_parse extends e_parser
 
 
 /**
+ * New v2 Parser 
  * Start Fresh and Build on it over time to become eventual replacement to e_parse. 
  * Cameron's DOM-based parser. 
  */
@@ -2749,15 +2734,19 @@ class e_parser
 		// return $text;	
 	}
 	
+
+
+
 	
 	/**
 	 * Display an icon. 
 	 * @param string $icon 
 	 * @example $tp->toIcon("{e_IMAGES}icons/something.png"); 
 	 */
-	public function toIcon($icon='',$legacyPath ='')
+	public function toIcon($icon='',$parm = array())
 	{
 	
+		
 		if(!vartrue($icon))
 		{
 			return;
@@ -2776,11 +2765,11 @@ class e_parser
 		{
 			$path = $this->replaceConstants($icon,'full');		
 		}
-		elseif($legacyPath)
+		elseif(vartrue($parm['legacy']))
 		{
-			if(is_readable($legacyPath.$icon))
+			if(is_readable($parm['legacy'].$icon))
 			{
-				$path = $legacyPath.$icon;		
+				$path = $parm['legacy'].$icon;		
 			}
 			elseif(ADMIN)
 			{
@@ -2788,11 +2777,19 @@ class e_parser
 			}
 			
 		}
+		else 
+		{
+			$path = $icon;
+		}
 		
 		return "<img class='icon' src='".$path."' alt='".basename($path)."'  />";	
 	}	
+
+
+
 	
 	/**
+	 * Display a Video file. 
 	 * @param string $file - format: id.type eg. x123dkax.youtube 
 	 * @param boolean $thumbnail  - set to 'tag' to return an image thumbnail and 'src' to return the src url or 'video' for a small video thumbnail. 
 	 */
@@ -2844,6 +2841,22 @@ class e_parser
 	
 	
 	
+	/**
+	 * Display a Date in the browser. 
+	 * Includes support for 'livestamp' (http://mattbradley.github.io/livestampjs/)
+	 * @param integer $datestamp - unix timestamp
+	 * @param string $format - short | long | relative 
+	 * @return HTML with converted date. 
+	 */
+	public function toDate($datestamp = null, $format='short')
+	{
+		if(!is_numeric($datestamp)){ return; }
+
+		return '<span data-livestamp="'.$datestamp.'">'.e107::getDate()->convert($datestamp, $format).'</span>';	
+	}
+	
+
+		
 	
 	
 	
