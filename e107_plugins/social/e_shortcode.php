@@ -26,7 +26,10 @@ class social_shortcodes extends e_shortcode
 			'vimeo'			=> array('href'=> deftrue('XURL_VIMEO'),		'title'=>'Vimeo')
 		);
  
+		parse_str($parms,$parm);
 		
+		$class = (vartrue($parms['size'])) ?  'fa-'.$parms['size'] : '';
+
 
 		$text = '';
 
@@ -36,7 +39,7 @@ class social_shortcodes extends e_shortcode
 			if($data['href'] != '')
 			{
 
-				 $text .= '<a rel="external" href="'.$data['href'].'" class="social-icon social-'.$id.'">
+				 $text .= '<a rel="external" href="'.$data['href'].'" class="social-icon social-'.$id.' '.$class.'">
 				 	<span class="fa fa-'.$id.'"></span>
 				 </a>';
 				 
