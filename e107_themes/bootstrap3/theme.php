@@ -123,7 +123,7 @@ $LAYOUT['_footer_'] = '  <hr>
 			{SITEDISCLAIMER} 
 		</div>
 		<div class="col-lg-6 text-right">
-			{XURL_ICONS}
+			{XURL_ICONS: size=2x}
 		</div>
 	</footer>
 	
