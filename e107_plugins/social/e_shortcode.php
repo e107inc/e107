@@ -28,7 +28,7 @@ class social_shortcodes extends e_shortcode
  
 		parse_str($parms,$parm);
 		
-		$class = (vartrue($parms['size'])) ?  'fa-'.$parms['size'] : '';
+		$class = (vartrue($parms['size'])) ?  'fa-'.$parm['size'] : '';
 
 
 		$text = '';
