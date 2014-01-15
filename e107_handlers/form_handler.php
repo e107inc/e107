@@ -418,7 +418,7 @@ class e_form
 		{			
 			$text = "<input class='tbox' style='width:80%' id='{$idinput}' type='text' name='image' size='40' value='$curVal' maxlength='100' title=\"".LAN_SIGNUP_111."\" />";
 			$text .= "<img src='".$img."' id='{$previnput}' style='display:none' />";
-			$text .= "<input class='img-rounded btn button e-expandit' type ='button' style='cursor:pointer' size='30' value=\"Choose Avatar\"  />"; //TODO Common LAN. 
+			$text .= "<input class='img-rounded btn btn-default button e-expandit' type ='button' style='cursor:pointer' size='30' value=\"Choose Avatar\"  />"; //TODO Common LAN. 
 		}
 						
 		$avFiles = e107::getFile()->get_files(e_AVATAR_DEFAULT,".jpg|.png|.gif|.jpeg|.JPG|.GIF|.PNG");
@@ -605,7 +605,7 @@ class e_form
 		$cat 		= vartrue($sc_parameters['media']) ? $tp->toDB($sc_parameters['media']) : "_common_file";	
 		
 		$default_label 	= ($default) ? $default : "Choose a file";
-		$label 		= "<span id='{$name_id}_prev' class='btn btn-small'>".basename($default_label)."</span>";
+		$label 		= "<span id='{$name_id}_prev' class='btn btn-default btn-small'>".basename($default_label)."</span>";
 			
 		$sc_parameters['mode'] = 'main';
 		$sc_parameters['action'] = 'dialog';	
@@ -831,7 +831,7 @@ class e_form
 		
 		if(vartrue($options['generate']))
 		{
-			$gen = '&nbsp;<a href="#" class="btn btn-small e-tip" id="Spn_PasswordGenerator" title="Generate a password">Generate</a> <a class="btn btn-small e-tip" href="#" id="showPwd" title="Display the password">Show</a><br />';	
+			$gen = '&nbsp;<a href="#" class="btn btn-default btn-small e-tip" id="Spn_PasswordGenerator" title="Generate a password">Generate</a> <a class="btn btn-default btn-small e-tip" href="#" id="showPwd" title="Display the password">Show</a><br />';	
 		}
 		
 		if(vartrue($options['strength']))
@@ -1544,26 +1544,26 @@ class e_form
 			case 'edit':
 				$image = ADMIN_EDIT_ICON_PATH;
 				$icon = "e-edit-32";
-				$options['class'] = $options['class'] == 'action' ? 'btn action edit' : $options['class'];
+				$options['class'] = $options['class'] == 'action' ? 'btn btn-default action edit' : $options['class'];
 			break;
 
 			case 'delete':
 				$image = ADMIN_DELETE_ICON_PATH;
 				$icon = "e-delete-32";
-				$options['class'] = $options['class'] == 'action' ? 'btn action delete' : $options['class'];
+				$options['class'] = $options['class'] == 'action' ? 'btn btn-default action delete' : $options['class'];
 				$options['other'] = 'data-confirm="'.LAN_JSCONFIRM.'"';
 			break;
 
 			case 'execute':
 				$image = ADMIN_EXECUTE_ICON_PATH;
 				$icon = "e-execute-32";
-				$options['class'] = $options['class'] == 'action' ? 'btn action execute' : $options['class'];
+				$options['class'] = $options['class'] == 'action' ? 'btn btn-default action execute' : $options['class'];
 			break;
 
 			case 'view':
 				$image = ADMIN_VIEW_ICON_PATH;
 				$icon = "e-view-32";
-				$options['class'] = $options['class'] == 'action' ? 'btn action view' : $options['class'];
+				$options['class'] = $options['class'] == 'action' ? 'btn btn-default action view' : $options['class'];
 			break;
 		}
 		$options['title'] = $title;//shorthand
@@ -2414,7 +2414,7 @@ class e_form
 					{
 						$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 						$from = intval(vartrue($_GET['from'],0));
-						$value .= "<a class='e-sort sort-trigger btn ' style='cursor:move' data-target='".e_SELF."?mode={$mode}&action=sort&ajax_used=1&from={$from}' title='Re-order'>".ADMIN_SORT_ICON."</a> ";	
+						$value .= "<a class='e-sort sort-trigger btn btn-default' style='cursor:move' data-target='".e_SELF."?mode={$mode}&action=sort&ajax_used=1&from={$from}' title='Re-order'>".ADMIN_SORT_ICON."</a> ";	
 					}	
 					
 					$cls = false;
@@ -2430,7 +2430,7 @@ class e_form
 												<img class='icon action edit list' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' /></a>";
 												*/
 						
-						$value .= "<a href='".e_SELF."?{$query}' class='btn' title='".LAN_EDIT."' data-toggle='tooltip' data-placement='left'>
+						$value .= "<a href='".e_SELF."?{$query}' class='btn btn-default' title='".LAN_EDIT."' data-toggle='tooltip' data-placement='left'>
 						".ADMIN_EDIT_ICON."</a>";
 					}
 
@@ -2440,12 +2440,12 @@ class e_form
 						$cls = (deftrue($parms['deleteClass'])) ? constant($parms['deleteClass']) : $parms['deleteClass'];
 						if(check_class($cls))
 						{
-							$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn'.$delcls));
+							$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn btn-default'.$delcls));
 						}
 					}
 					else
 					{
-						$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn'.$delcls));
+						$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn btn-default'.$delcls));
 					}
 				}
 				//$attributes['type'] = 'text';
@@ -2646,8 +2646,8 @@ class e_form
 					$ttl = vartrue($parms['expand']);
 					if($ttl == 1)
 					{
-						$ttl = $expand."<button class='btn btn-mini pull-right'>More..</button>";
-						$ttl1 = "<button class='btn btn-mini pull-right'>..Less</button>";
+						$ttl = $expand."<button class='btn btn-default btn-mini pull-right'>More..</button>";
+						$ttl1 = "<button class='btn btn-default btn-mini pull-right'>..Less</button>";
 					}
 					
 					$expands = '<a href="#'.$elid.'-expand" class="e-show-if-js e-expandit">'.defset($ttl, $ttl)."</a>";
@@ -4160,7 +4160,7 @@ class form
 		$name = ($form_name ? " id='".$form_name."' name='".$form_name."'" : "");
 		$image = ($form_image ? " src='".$form_image."' " : "");
 		$tooltip = ($form_tooltip ? " title='".$form_tooltip."' " : "");
-		return "\n<input class='btn button' type='".$form_type."' ".$form_js." value='".$form_value."'".$name.$image.$tooltip." />";
+		return "\n<input class='btn btn-default button' type='".$form_type."' ".$form_js." value='".$form_value."'".$name.$image.$tooltip." />";
 	}
 
 	function form_textarea($form_name, $form_columns, $form_rows, $form_value, $form_js = "", $form_style = "", $form_wrap = "", $form_readonly = "", $form_tooltip = "") {

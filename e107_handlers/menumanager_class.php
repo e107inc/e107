@@ -1626,6 +1626,8 @@ class e_menuManager {
 			}
 
            $pref['menuconfig_list'] = vartrue($tmp);
-		   save_prefs();
+		   
+		   e107::getConfig()->setPref($pref)->save(false,true,false);
+		 //  save_prefs();
 	}
 }  // end of Class.

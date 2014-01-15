@@ -64,7 +64,7 @@ $NEWS_MENU_TEMPLATE['other']['item']		= '<div class="item {ACTIVE}">
 												{NEWSIMAGE=placeholder}
               									<h3>{NEWSTITLE}</h3>
               									<p>{NEWSSUMMARY}</p>
-              									<p class="text-right"><a class="btn btn-primary" href="{NEWSURL}">'.LAN_READ_MORE.' &raquo;</a></p>
+              									<p class="text-right"><a class="btn btn-primary btn-othernews" href="{NEWSURL}">'.LAN_READ_MORE.' &raquo;</a></p>
             									</div>';									
 $NEWS_MENU_TEMPLATE['other']['end']			= "</div></div>";
 
@@ -82,7 +82,7 @@ $NEWS_MENU_TEMPLATE['other2']['start'] 	= "<ul class='media-list unstyled othern
 $NEWS_MENU_TEMPLATE['other2']['item'] 	= "<li class='media'>
 										<span class='media-object pull-left'>{NEWSIMAGE=placeholder}</span> 
 										<div class='media-body'><h4>{NEWSTITLELINK}</h4>
-										<p class='text-right'><a class='btn btn-primary' href='{NEWSURL}'>".LAN_READ_MORE." &raquo;</a></p>
+										<p class='text-right'><a class='btn btn-primary btn-othernews2' href='{NEWSURL}'>".LAN_READ_MORE." &raquo;</a></p>
 										</div>
 										</li>\n";
 										
