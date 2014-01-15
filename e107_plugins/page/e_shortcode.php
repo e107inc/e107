@@ -124,6 +124,6 @@ class page_shortcodes extends e_shortcode
 		 */
 		function sc_cmenu($parm='')
 		{
-			return e107::getMenu()->renderMenu($parm, false);									
+			return e107::getMenu()->renderMenu($parm,  false, false, true);									
 		}
 }
