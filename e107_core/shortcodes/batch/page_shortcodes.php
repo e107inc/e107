@@ -243,4 +243,11 @@ class cpage_shortcodes extends e_shortcode
 		
 		return e107::getUrl()->create($route, $this->page, array('allow' => 'page_sef,page_title,page_id,chapter_sef,book_sef'));
 	}
+	
+	function sc_cpagemetadiz()
+	{
+  		return $this->page['page_metadscr'];
+	}
+	
+	
 }
