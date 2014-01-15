@@ -92,6 +92,9 @@ class pageClass
 	public $cacheTitleString;			/* current page title and comment flag cache string */
 	public $cacheData = null;			/* cache data */
 	protected $chapterSef;				/* authorized status */
+	protected $chapterParent;
+
+	protected $chapterData = array();
 	
 	function __construct($debug=FALSE)
 	{
@@ -142,8 +145,10 @@ class pageClass
 				
 		foreach($books as $row)
 		{
-			$id = $row['chapter_id'];
-			$this->chapterSef[$id] = $row['chapter_sef'];
+			$id 							= $row['chapter_id'];
+		//	$this->chapterSef[$id] 			= $row['chapter_sef'];
+		//	$this->chapterParent[$id] 		= $row['chapter_parent'];
+			$this->chapterData[$id]			= $row;
 		}	
 		
 	}
@@ -177,7 +182,27 @@ class pageClass
 	
 	private function getSef($chapter)
 	{
-		return varset($this->chapterSef[$chapter],'--sef-not-assigned--');		
+		return vartrue($this->chapterData[$chapter]['chapter_sef'],'--sef-not-assigned--');		
+	}
+	
+	private function getParent($chapter)
+	{
+		return varset($this->chapterData[$chapter]['chapter_parent'], false);			
+	}
+	
+	private function getName($chapter)
+	{
+		return varset($this->chapterData[$chapter]['chapter_name'], false);			
+	}
+
+	private function getDescription($chapter)
+	{
+		return varset($this->chapterData[$chapter]['chapter_meta_description'], false);			
+	}
+	
+	private function getIcon($chapter)
+	{
+		return varset($this->chapterData[$chapter]['chapter_icon'], false);			
 	}
 
 	/**
@@ -276,15 +301,22 @@ class pageClass
 			{
 				$tmp = $this->listPages(intval($row['chapter_id']));
 				
-				$row['book_sef'] = $this->getSef($row['chapter_parent']); 
-				$pages			= ($tmp['text']);
-				
+				$row['book_sef'] 			= $this->getSef($row['chapter_parent']); 
+				$row['book_name'] 			= $this->getName($row['chapter_parent']);
+				$row['book_icon']			= $this->getIcon($row['chapter_parent']);
+				$row['book_description']	= $this->getDescription($row['chapter_parent']);
+							
 				$var = array(
+					'BOOK_NAME' 		=> $tp->toHtml($row['book_name']),
+					'BOOK_ANCHOR'		=> $frm->name2id($row['book_name']),
+					'BOOK_ICON'			=> $this->chapterIcon($row['book_icon']),
+					'BOOK_DESCRIPTION'	=> $tp->toHtml($row['book_description'],true,'BODY'),
+					
 					'CHAPTER_NAME' 			=> $tp->toHtml($row['chapter_name']),
 					'CHAPTER_ANCHOR'		=> $frm->name2id($row['chapter_name']),
 					'CHAPTER_ICON'			=> $this->chapterIcon($row['chapter_icon']),
 					'CHAPTER_DESCRIPTION'	=> $tp->toHtml($row['chapter_meta_description'],true,'BODY'),
-					'PAGES'					=> $pages,
+					'PAGES'					=> $tmp['text'],
 					'CHAPTER_URL'			=> e107::getUrl()->create('page/chapter/index', $row,'allow=chapter_id,chapter_sef,book_sef') // e_BASE."page.php?ch=".intval($row['chapter_id']) // FIXME SEF-URL
 				);
 				

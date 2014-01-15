@@ -18,6 +18,54 @@ if (!defined('e107_INIT')) { exit; }
 class cpage_shortcodes extends e_shortcode
 {
 	// var $var; // parsed DB values
+	private $chapterData = array();
+	// Grab all book/chapter data. 
+	function __construct()
+	{
+		
+		$books = e107::getDb()->retrieve("SELECT * FROM #page_chapters ORDER BY chapter_id ASC" , true);
+				
+		foreach($books as $row)
+		{
+			$id 							= $row['chapter_id'];
+			$this->chapterData[$id]			= $row;
+		}	
+	
+	}
+	
+	// Return data for a specific chapter-id
+	function getChapter()
+	{
+		$id = $this->page['page_chapter'];
+		
+		if(vartrue($this->chapterData[$id]['chapter_id']) && $this->chapterData[$id]['chapter_parent'] > 0)
+		{
+			return $this->chapterData[$id];	
+		}
+		return false;
+	}
+	
+	
+	// Return data for a specific book-id
+	function getBook()
+	{
+		$pid = $this->page['page_chapter'];
+		$cid = $this->chapterData[$pid]['chapter_parent'];
+		
+		$row = $this->chapterData[$cid];
+		
+		if(vartrue($row['chapter_id']) && $row['chapter_parent'] < 1)
+		{
+			return $row;	
+		}
+		
+		return false; // not a book. 
+		
+	}
+	
+	
+	
+	// ----------------- Shortcodes ---------------------------------------
 
 	function sc_cpagetitle($parm='')
 	{
@@ -248,6 +296,86 @@ class cpage_shortcodes extends e_shortcode
 	{
   		return $this->page['page_metadscr'];
 	}
+	
+	
+	
+	// -------------------- Book - specific to the current page. -------------------------
+	
+	function sc_book_name()
+	{
+		$tp = e107::getParser();
+		$row = $this->getBook();
+
+		return $tp->toHtml($row['chapter_name'], false, 'TITLE');		
+	}
+	
+	function sc_book_anchor()
+	{
+		$frm = e107::getForm();
+		$row = $this->getBook();
+		
+		return $frm->name2id($row['chapter_name']);
+	}
+	
+	function sc_book_icon()
+	{
+		$tp = e107::getParser();
+		$row = $this->getBook();
+		
+		return $tp->toIcon($row['chapter_icon']);
+	}
+	
+	function sc_book_description()
+	{
+		$tp = e107::getParser();
+		$row = $this->getBook();
+		
+		return $tp->toHtml($row['chapter_meta_description'], true, 'BODY');
+	}
+	
+	
+	
+	// -------------------- Chapter - specific to the current page. -------------------------
+	
+	
+	function sc_chapter_name()
+	{
+		$tp = e107::getParser();
+		$row = $this->getChapter();
+
+		return $tp->toHtml($row['chapter_name'], false, 'TITLE');		
+	}
+	
+	function sc_chapter_anchor()
+	{
+		$frm = e107::getForm();
+		$row = $this->getChapter();
+		
+		return $frm->name2id($row['chapter_name']);
+	}
+	
+	function sc_chapter_icon()
+	{
+		$tp = e107::getParser();
+		$row = $this->getChapter();
+		
+		return $tp->toIcon($row['chapter_icon']);
+	}
+	
+	function sc_chapter_description()
+	{
+		$tp = e107::getParser();
+		$row = $this->getChapter();
+		
+		return $tp->toHtml($row['chapter_meta_description'], true, 'BODY');
+	}
+	
+		
+	
+	
+	
+	
+	
 	
 	
 }
