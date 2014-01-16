@@ -732,6 +732,11 @@ i.searchquery	{
 	padding:10px;
 }
 
+a.e-media-select 
+{ 
+	color: inherit
+}
+
 #cboxOverlay{ background-color:#000000;}
 
 #colorbox{ 
