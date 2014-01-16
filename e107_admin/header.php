@@ -304,7 +304,7 @@ if(e_PAGE == 'menus.php' && vartrue($_GET['configure'])) // Quick fix for Menu M
 }
 else
 {
-	$e_js->coreCSS('font-awesome/css/font-awesome.min.css');	
+	// $e_js->coreCSS('font-awesome/css/font-awesome.min.css');	
 }
 
 

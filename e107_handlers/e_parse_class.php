@@ -2722,7 +2722,9 @@ class e_parser
 			}
 
 
-			$text = (deftrue('BOOTSTRAP') === 3) ? "<span class='".$cls."'></span>"  : "<i class='".$cls."'></i>";	// retain space. 
+	//		$text = (deftrue('BOOTSTRAP') === 3) ? "<span class='".$cls."'></span>"  : "<i class='".$cls."'></i>";	// retain space. 
+			
+			$text = "<span class='".$cls."'></span>" ;
 			$text .= ($space !== false) ? $space : "";
 			
 			return $text;
