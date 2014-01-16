@@ -1237,6 +1237,7 @@ class media_admin_ui extends e_admin_ui
 		);
 		
 		//TODO FIXME Upgrade to bs3 when Bootstrap3 Admin is ready. 
+		/*
 		$bs2 = e107::getMedia()->getGlyphs('bs2','icon-');
 		
 		foreach($bs2 as $val)
@@ -1250,20 +1251,15 @@ class media_admin_ui extends e_admin_ui
 					'slideCategory'	=> 'bootstrap'
 			); 		
 				
-			
-			
-			$text .= "<a data-toggle='context' class='e-media-select e-dialog-close e-tip' data-id='{$im['media_id']}' data-width='32' data-height='32' data-src='{$val}' data-type='glyph' data-bbcode='{$data_bb}' data-target='".$this->getQuery('tagid')."' data-path='{$val}.glyph' data-preview='{$val}.glyph' title='".$val."' style='float:left' href='#' >";
-			$text .= "<span style='margin:7px;display:inline-block'><i class='".$val."' style='color:white' ></i></span>";
-			$text .= "</a>\n\n";
 		}
-	
+		*/
+		
 		$fa4 = e107::getMedia()->getGlyphs('fa4');
-		e107::css('url', "//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css");
 
 		foreach($fa4 as $val)
 		{
 			$items[] = array( 
-					'previewUrl'	=> $val,
+					'previewUrl'	=> 'fa '.$val,
 					'saveValue'		=> $val.'.glyph',
 					'thumbUrl'		=> $val,
 					'title'			=> $val,
