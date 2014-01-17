@@ -1016,33 +1016,33 @@ class media_admin_ui extends e_admin_ui
 		$options['bbcode'] = ($this->getQuery('bbcode')=='img') ? 'img' : FALSE;
 		
 						
-		$text = "
-			
-			<ul class='nav nav-tabs'>
-				<li class='active'><a data-toggle='tab' href='#core-media-select'>Choose from Library</a></li>
-				<li><a data-toggle='tab' href='#core-media-upload'>Upload a File</a></li>";
+		$text = "<ul class='nav nav-tabs'>\n";
 		
-		if(varset($options['bbcode']))
+		$text .= "<li class='active'><a data-toggle='tab' href='#core-media-select'>Choose from Library</a></li>\n";
+		
+		if($this->getQuery('bbcode') != 'video' && $this->getQuery('bbcode') !='glyph')
+		{
+		
+			
+		
+			$text .= "<li><a data-toggle='tab' href='#core-media-upload'>Upload a File</a></li>";
+		}
+		
+		if(varset($options['bbcode']) == 'img')
 		{
 			$text .= "<li><a data-toggle='tab' href='#core-media-style'>Appearance</a></li>\n";	
 		}
 		
-		if($this->getQuery('glyphs') == 1)
+		if($this->getQuery('glyphs') == 1 || $this->getQuery('bbcode') == 'glyph')
 		{
 			$text .= "<li><a data-toggle='tab' href='#core-media-glyphs'>Glyphs</a></li>\n";	
 		}
 		
-		if($this->getQuery('video') == 1)
+		if($this->getQuery('video') == 1 || $this->getQuery('bbcode') == 'video')
 		{
 			$text .= "<li><a data-toggle='tab' href='#core-media-video'>Youtube</a></li>\n";	
 		}
 		
-	
-	
-		if(varset($options['bbcode']))
-		{
-			$text .= "<li><a data-toggle='tab' href='#core-media-style'>Appearance</a></li>\n";	
-		}	
 		
 		if(varset($_GET['from']))
 		{
@@ -1160,7 +1160,7 @@ class media_admin_ui extends e_admin_ui
 			</div>";
 		}	
 		
-		if($this->getQuery('glyphs') == 1)
+		if($this->getQuery('glyphs') == 1 || $this->getQuery('bbcode') == 'glyph')
 		{
 			//TODO 
 			$text .= "<div class='tab-pane clearfix' id='core-media-glyphs' style='font-size:24px'>";
@@ -1173,7 +1173,7 @@ class media_admin_ui extends e_admin_ui
 		
 		}
 		
-		if($this->getQuery('video'))
+		if($this->getQuery('video') || $this->getQuery('bbcode') == 'video')
 		{
 			$text .= "<div class='tab-pane clearfix' id='core-media-video' >";
 		//	$text .= "<div class='row-fluid'>";
@@ -1210,7 +1210,7 @@ class media_admin_ui extends e_admin_ui
 			
 			$text .= "
 			".$br."<input title='bbcode' type='{$type}' readonly='readonly' class='span11' id='bbcode_holder' name='bbcode_holder' value='' />
-			".$br."<input title='html' type='{$type}' class='span11' readonly='readonly' id='html_holder' name='html_holder' value='' />
+			".$br."<input title='html/wysiwyg' type='{$type}' class='span11' readonly='readonly' id='html_holder' name='html_holder' value='' />
 			".$br."<input title='(preview) src' type='{$type}' class='span11' readonly='readonly' id='src' name='src' value='' />
 			".$br."<input title='path (saved to db)' type='{$type}' class='span11' readonly='readonly' id='path' name='path' value='' />				
 			";		

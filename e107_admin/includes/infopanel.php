@@ -317,6 +317,7 @@ class adminstyle_infopanel
 
 	function renderWebsiteStatus()
 	{
+		$tp = e107::getParser();
 		/* 
 		 // Settings button if needed. 
 		<div class="tab-header">
@@ -341,8 +342,8 @@ class adminstyle_infopanel
 		
 		$dashboard = '
 		  <ul class="nav nav-tabs">
-		    <li class="active"><a href="#tab1" data-toggle="tab"><i class="icon-signal"></i> Stats</a></li>
-		    <li ><a href="#tab2" data-toggle="tab"><i class="icon-user"></i> Online ('.$this->renderOnlineUsers('count').')</a></li>
+		    <li class="active"><a href="#tab1" data-toggle="tab">'.$tp->toGlyph('fa-signal').' Stats</a></li>
+		    <li ><a href="#tab2" data-toggle="tab">'.$tp->toGlyph('fa-user').' Online ('.$this->renderOnlineUsers('count').')</a></li>
 		  </ul>
 		  
 		  <div class="tab-content" style="min-height:300px">
