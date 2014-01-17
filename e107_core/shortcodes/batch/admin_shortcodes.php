@@ -678,6 +678,8 @@ class admin_shortcodes
 		if(!e107::isInstalled('pm')) return;
         
         $sql = e107::getDb();
+		$tp = e107::getParser();
+		
         $count =  $sql->count('private_msg','(*)','WHERE pm_read = 0 AND pm_to='.USERID);
        
        if ($count >0)
@@ -696,7 +698,7 @@ class admin_shortcodes
        $text = '<ul class="nav nav-pills">
         <li class="dropdown">
             <a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" href="#" >
-                <i class="icon-envelope  active"></i>'.$countDisp.'<b class="caret"></b>
+                '.$tp->toGlyph('fa-envelope').$countDisp.'<b class="caret"></b>
             </a> 
             <ul class="dropdown-menu" role="menu" >
                 <li class="nav-header">Private Messages</li>
@@ -1725,7 +1727,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		
 			$menu_vars['home']['text'] =  ""; // ADLAN_53;
 			$menu_vars['home']['link'] = e_HTTP.'index.php';
-			$menu_vars['home']['image'] = "<i class='icon-home'></i>" ; // "<img src='".E_16_NAV_LEAV."' alt='".ADLAN_151."' class='icon S16' />";
+			$menu_vars['home']['image'] = $tp->toGlyph('fa-home'); // "<i class='fa fa-home'></i>" ; // "<img src='".E_16_NAV_LEAV."' alt='".ADLAN_151."' class='icon S16' />";
 			$menu_vars['home']['image_src'] = ADLAN_151;
 			$menu_vars['home']['sort'] = 1;
 			$menu_vars['home']['sub_class'] = 'sub';
@@ -1841,7 +1843,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				
 			$menu_vars['logout']['text'] = ADMINNAME; // ""; // ADMINNAME;
 			$menu_vars['logout']['link'] = '#';
-			$menu_vars['logout']['image'] = "<i class='icon-user'></i>"; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
+			$menu_vars['logout']['image'] = $tp->toGlyph('fa-user'); // "<i class='icon-user'></i>"; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
 			$menu_vars['logout']['image_src'] = ADLAN_46;
 			$menu_vars['logout']['sub'] = $tmp;	
 		}
@@ -1889,7 +1891,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				
 				$menu_vars['language']['text'] = strtoupper(e_LAN); // e_LANGUAGE;
 				$menu_vars['language']['link'] = '#';
-				$menu_vars['language']['image'] = "<i class='icon-globe'></i>" ;
+				$menu_vars['language']['image'] = $tp->toGlyph('fa-globe'); //  "<i class='icon-globe'></i>" ;
 				$menu_vars['language']['image_src'] = ADLAN_46;
 				$menu_vars['language']['sub'] = $tmp;	
 			}	

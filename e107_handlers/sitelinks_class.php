@@ -1236,7 +1236,7 @@ class e_navigation
 			
 			if(vartrue($e107_vars[$act]['image_src']) && strstr($e107_vars[$act]['image_src'],'.glyph'))
 			{
-				$replace[9] = $tp->toGlyph($e107_vars[$act]['image_src']);
+				$replace[9] = $tp->toGlyph($e107_vars[$act]['image_src'], array('space'=>'&nbsp;'));
 			}
 			else
 			{
@@ -1741,7 +1741,7 @@ class navigation_shortcodes extends e_shortcode
 	//	else 
 		{
 			//$path = e107::getParser()->replaceConstants($this->var['link_button'], 'full', TRUE);	
-			return $tp->toIcon($this->var['link_button']);
+			return $tp->toIcon($this->var['link_button'],array('space'=>' '));
 			// return "<img class='icon' src='".$path."' alt=''  />";	
 		}
 

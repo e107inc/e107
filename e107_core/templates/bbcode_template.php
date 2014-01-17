@@ -53,7 +53,7 @@ $BBCODE_TEMPLATE_SUBMITNEWS = "
 // --------   Admin Templates ----------------------
 
 $BBCODE_TEMPLATE_ADMIN = "
-	<div class='btn-group inline-text'>
+	<div class='btn-toolbar'>
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=format}{BB=left}{BB=center}{BB=right}{BB=justify}
 	{BB=bq}{BB=list}{BB=table}{BB=fontcol}{BB=fontsize}{BB=emotes}
 	{BB_PREIMAGEDIR}
@@ -62,7 +62,7 @@ $BBCODE_TEMPLATE_ADMIN = "
 ";
 
 $BBCODE_TEMPLATE_MAILOUT = "
-	<div class='btn-group inline-text'>
+	<div class='btn-toolbar'>
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=left}{BB=center}{BB=right}{BB=justify}{BB=bq}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
 	{BB_PREIMAGEDIR}
 	{BB=preimage}{BB=prefile}{BB=flash}{BB=shortcode}
@@ -72,7 +72,7 @@ $BBCODE_TEMPLATE_MAILOUT = "
 // $BBCODE_TEMPLATE_ADMIN .= "{BB=blank}";
 
 $BBCODE_TEMPLATE_NEWSPOST = "
-	<div class='btn-group inline-text'>
+	<div class='btn-toolbar'>
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=format}{BB=left}{BB=center}{BB=right}{BB=justify}
 	{BB=bq}{BB=list}{BB=table}{BB=fontcol}{BB=fontsize}{BB=emotes}
 	{BB_PREIMAGEDIR=news}
@@ -81,7 +81,7 @@ $BBCODE_TEMPLATE_NEWSPOST = "
 ";
 
 $BBCODE_TEMPLATE_CPAGE = "
-	<div class='btn-group inline-text'>
+	<div class='btn-toolbar'>
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=format}{BB=left}{BB=center}{BB=right}{BB=justify}
 	{BB=bq}{BB=list}{BB=table}{BB=fontcol}{BB=fontsize}{BB=emotes}
 	{BB_PREIMAGEDIR=page}

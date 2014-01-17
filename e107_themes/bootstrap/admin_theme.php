@@ -4,6 +4,9 @@ if ( ! defined('e107_INIT')) { exit(); }
 define("SEP"," <span class='icon-play e-breadcrumb'></span> ");
 
 // e107::lan('theme');
+
+define('FONTAWESOME',4);
+
 e107::js('core','bootstrap/js/bootstrap.min.js');
 e107::css('core','bootstrap/css/bootstrap.min.css');
 e107::css('core','bootstrap/css/bootstrap-responsive.min.css');

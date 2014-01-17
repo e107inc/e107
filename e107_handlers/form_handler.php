@@ -1363,9 +1363,9 @@ class e_form
 	 */
 	function search($name, $searchVal, $submitName, $filterName='', $filterArray=false, $filterVal=false)
 	{
+		$tp = e107::getParser();
 		
-		
-		$text = '<span class="input-append e-search"><i class="icon-search"></i>
+		$text = '<span class="input-append e-search">'.$tp->toGlyph('fa-search').'
     		'.$this->text($name, $searchVal,20,'class=search-query').'
    			 <button class="btn btn-primary" name="'.$submitName.'" type="submit">'.LAN_GO.'</button>
     	</span>';
@@ -2682,7 +2682,7 @@ class e_form
 			//		$value = '<img src="'.$tp->replaceConstants(vartrue($parms['pre']).$value, 'abs').'" alt="'.basename($value).'" class="icon'.(vartrue($parms['class']) ? ' '.$parms['class'] : '').'" />';
 				}
 				
-				$value = $tp->toIcon($value);
+				$value = $tp->toIcon($value,array('size'=>'2x'));
 				
 			break;
 			

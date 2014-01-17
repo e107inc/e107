@@ -281,7 +281,7 @@ class cpage_shortcodes extends e_shortcode
 	
 	function sc_cmenuicon($parm='')
 	{
-		return e107::getParser()->toIcon($this->page['menu_icon']);
+		return e107::getParser()->toIcon($this->page['menu_icon'], array('space'=>' '));
 	}		
 
 
@@ -322,7 +322,7 @@ class cpage_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		$row = $this->getBook();
 		
-		return $tp->toIcon($row['chapter_icon']);
+		return $tp->toIcon($row['chapter_icon'], array('space'=>' '));
 	}
 	
 	function sc_book_description()

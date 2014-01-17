@@ -2692,6 +2692,17 @@ class e_parser
 			return false;	
 		}
 		
+		if(is_array($space)) 
+		{
+			$parm = $space;
+			$space = varset($parm['space'],'');
+		}
+		else 
+		{
+			$parm = array();
+		}
+
+		
 		// Bootstrap 3 Glyph names. 
 		$bs3 = e107::getMedia()->getGlyphs('bs3','');
 		
@@ -2718,9 +2729,9 @@ class e_parser
 
 			if($type == 'fa')
 			{
-				$cls = str_replace('fa-', 'fa fa-', $cls);			
+				$cls = str_replace('fa-', 'fa fa-', $cls);	
+				$cls .= (vartrue($parm['size'])) ?  ' fa-'.$parm['size'] : '';		
 			}
-
 
 	//		$text = (deftrue('BOOTSTRAP') === 3) ? "<span class='".$cls."'></span>"  : "<i class='".$cls."'></i>";	// retain space. 
 			
@@ -2756,7 +2767,7 @@ class e_parser
 		
 		if(substr($icon,-6) == '.glyph') // Bootstrap or Font-Awesome. 
 		{
-			return $this->toGlyph($icon);
+			return $this->toGlyph($icon,$parm);
 		}
 		
 		if(strpos($icon,'e_MEDIA')!==FALSE)

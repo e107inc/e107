@@ -201,8 +201,8 @@ $(document).ready(function()
 					
 				if(type == 'glyph')
 				{
-					preview = "<span class='" + src + "'></span>";
-					$('#html_holder').val(preview);
+					preview = "<span class='" + src + "'>&nbsp;</span>";
+					$('#html_holder').val(preview) + '&nbsp;';
 					$('#path').attr('value',path);		
 				}	
 				else if(type == 'file')

@@ -48,6 +48,30 @@ e-tabs fieldset 			{ padding:0px ; padding-left:3px; border-top:0px;}
 .core-mainpanel-link-text 	{ text-decoration: none; display:block;  }
 
 
+div.bbcode-panel {
+	
+	background-color: rgb(245, 245, 245);
+background-image: linear-gradient(to bottom, rgb(255, 255, 255), rgb(230, 230, 230));
+background-repeat: repeat-x;
+border-width: 1px;
+border-style: solid;
+-moz-border-top-colors: none;
+-moz-border-right-colors: none;
+-moz-border-bottom-colors: none;
+-moz-border-left-colors: none;
+border-image: none;
+border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgb(179, 179, 179);
+border-top-left-radius: 4px;
+border-top-right-radius: 4px;
+box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.2) inset, 0px 1px 2px rgba(0, 0, 0, 0.05);
+padding:5px;	
+}
+
+ .bbcode-panel .btn-toolbar {
+ 	margin:0px 0px 5px 0px;	
+ }
+
+
 td.center, th.center 		{ text-align:center }
 td.right, th.right 			{ text-align:right }
 

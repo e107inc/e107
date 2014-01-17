@@ -5338,7 +5338,7 @@ class e_admin_form_ui extends e_form
 					".$filter_pre."
 					<div class='row-fluid'>
 						<div class='left form-inline span8' style='margin-top:10px;margin-bottom:-10px;'>
-							".$this->text('searchquery', $current_query[0], 50, $input_options)."<i class='icon-search searchquery'></i>
+							".$this->text('searchquery', $current_query[0], 50, $input_options)."<i class='fa fa-search searchquery'></i>
 							".$this->select_open('filter_options', array('class' => 'e-tip tbox select filter', 'id' => false, 'title'=>'Filter the results below'))."
 								".$this->option(LAN_FILTER_LABEL_DISPLAYALL, '')."
 								".$this->option(LAN_FILTER_LABEL_CLEAR, '___reset___')."
@@ -5371,7 +5371,7 @@ class e_admin_form_ui extends e_form
 							$def = deftrue('LAN_UI_USING_DATABASE_TABLE','Using [x] database table');
 							$diz  = e107::getParser()->lanVars($def, $lang); // "Using ".$lang." database table";
 							$text .= "<span class='e-tip' title=\"".$diz."\">";
-							$text .= '<i class="icon-hdd"></i> ';	
+							$text .= e107::getParser()->toGlyph('fa-hdd-o'); // '<i class="icon-hdd"></i> ';	
 							$text .= e107::getLanguage()->toNative($lang)."</span>";	
 
 						}
