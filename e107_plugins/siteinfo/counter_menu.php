@@ -2,21 +2,19 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2014 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
- *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/siteinfo/counter_menu.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * 
+ * https://github.com/e107inc/e107
  */
 
 if (!defined('e107_INIT')) { exit; }
 
 $text = "";
+
+$pref = e107::getPref();
+
 if (isset($pref['statActivate']) && $pref['statActivate'] == true) 
 {
 	$pageName = preg_replace("/(\?.*)|(\_.*)|(\.php)/", "", basename (e_SELF));
@@ -38,9 +36,10 @@ if (isset($pref['statActivate']) && $pref['statActivate'] == true)
 	{
 		$text = "";
 		require($logfile);
-		if($sql -> db_Select("logstats", "*", "log_id='statTotal' OR log_id='statUnique' OR log_id='pageTotal'"))
+		
+		if($sql->select("logstats", "*", "log_id='statTotal' OR log_id='statUnique' OR log_id='pageTotal'"))
 		{
-			while($row = $sql -> db_Fetch())
+			while($row = $sql->fetch())
 			{
 				if($row['log_id'] == "statTotal")
 				{
@@ -58,6 +57,7 @@ if (isset($pref['statActivate']) && $pref['statActivate'] == true)
 				}
 			}
 		}
+		
 		$total = ($pageInfo[$pageName]['ttl'] ? $pageInfo[$pageName]['ttl'] : 0);
 		$unique = ($pageInfo[$pageName]['unq'] ? $pageInfo[$pageName]['unq'] : 0);
 		$totalever = ($pageInfo[$pageName]['ttlv'] ? $pageInfo[$pageName]['ttlv'] : 0) + $totalPageEver + $total;
