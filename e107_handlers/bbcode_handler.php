@@ -522,7 +522,11 @@ class e_bbcode
 			$BBCODE_TEMPLATE = $template;	
 			$template = 'comment';	
 		}
-		else
+		elseif(ADMIN_AREA)
+		{
+			$BBCODE_TEMPLATE = $BBCODE_TEMPLATE_ADMIN;	
+		}
+		else // Front-end
 		{
 			$BBCODE_TEMPLATE = $BBCODE_TEMPLATE;	
 		}
