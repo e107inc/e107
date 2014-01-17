@@ -1000,6 +1000,13 @@ if (($_SERVER['QUERY_STRING'] == 'logout')/* || (($pref['user_tracking'] == 'ses
 *
 */
 
+$tz = vartrue($pref['timezone'],'GMT'); //TODO Adjust on the front-end based on user timezone value. 
+
+date_default_timezone_set($tz); // Must be set or PHP Warning thrown. 
+
+unset($tz);
+
+
 $e_deltaTime=0;
 
 if (isset($_COOKIE['e107_tdOffset']))
@@ -1015,6 +1022,8 @@ if (isset($_COOKIE['e107_tzOffset']))
 }
 
 define('TIMEOFFSET', $e_deltaTime);
+
+
 
 // ----------------------------------------------------------------------------
 $sql->db_Mark_Time('(Start: Find/Load Theme)');
