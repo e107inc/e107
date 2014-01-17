@@ -489,28 +489,24 @@ class bbcode_shortcodes extends e_shortcode
 		
 	//	$bbcode['newpage'] 		= array($bbcode_func,"[newpage]", LANHELP_34, "newpage.png");
 		$bbcode['link'] 		= array('addinput',		"[link=".LANHELP_35."][/link]",		LANHELP_23,		"link.png",		'link');
-	//	$bbcode['h'] 			= array($bbcode_func,"[h][/h]", LANHELP_50,"heading.png"); // FIXME bbcode icon
-	//	$bbcode['p'] 			= array($bbcode_func,"[p][/p]", LANHELP_49,"paragraph.png"); // FIXME bbcode icon
 		
-		$bbcode['b'] 			= array($bbcode_func,	"[b][/b]", 							LANHELP_24,		"bold.png",			'bold');
-		$bbcode['i'] 			= array($bbcode_func,	"[i][/i]", 							LANHELP_25,		"italic.png",		'italic');
-		$bbcode['u'] 			= array($bbcode_func,	"[u][/u]", 							LANHELP_26,		"underline.png",	'underline');
-		$bbcode['justify'] 		= array($bbcode_func,	"[justify][/justify]", 				LANHELP_53,		"justify.png",		'align-justify'); 			// FIXME bbcode icon
-		$bbcode['center'] 		= array($bbcode_func,	"[center][/center]", 				LANHELP_28,		"center.png",		'align-center');
-		$bbcode['left'] 		= array($bbcode_func,	"[left][/left]", 					LANHELP_29,		"left.png",			'align-left');
-		$bbcode['right'] 		= array($bbcode_func,	"[right][/right]", 					LANHELP_30,		"right.png",		'align-right');
-//		$bbcode['bq'] 			= array($bbcode_func,	"[blockquote][/blockquote]", 		LANHELP_31,		"blockquote.png",	'');
-	//	$bbcode['code'] 		= array($bbcode_func,	"[code][/code]", 					LANHELP_32,		"code.png",			'');
-		$bbcode['list'] 		= array($bbcode_func,	"[list][/list]", 					LANHELP_36,		"list.png",			'list');
-		$bbcode['img'] 			= array($bbcode_func,	"[img][/img]", 						LANHELP_27,		"image.png"	,		'picture-o');
-		$bbcode['flash']		= array($bbcode_func,	"[flash=width,height][/flash]", 	LANHELP_47,		"flash.png",		'flash');
-		$bbcode['youtube'] 		= array($bbcode_func,	"[youtube][/youtube]", 				LANHELP_48,		"youtube.png",		'youtube');
+		$bbcode['b'] 			= array($bbcode_func,	"[b][/b]", 							LANHELP_24,		"bold.png",				'',	'',	'bold');
+		$bbcode['i'] 			= array($bbcode_func,	"[i][/i]", 							LANHELP_25,		"italic.png",			'',	'',	'italic');
+		$bbcode['u'] 			= array($bbcode_func,	"[u][/u]", 							LANHELP_26,		"underline.png",		'',	'',	'underline');
+		$bbcode['justify'] 		= array($bbcode_func,	"[justify][/justify]", 				LANHELP_53,		"justify.png",			'',	'',	'align-justify'); 			// FIXME bbcode icon
+		$bbcode['center'] 		= array($bbcode_func,	"[center][/center]", 				LANHELP_28,		"center.png",			'',	'',	'align-center');
+		$bbcode['left'] 		= array($bbcode_func,	"[left][/left]", 					LANHELP_29,		"left.png",				'',	'',	'align-left');
+		$bbcode['right'] 		= array($bbcode_func,	"[right][/right]", 					LANHELP_30,		"right.png",			'',	'',	'align-right');
+
+		$bbcode['list'] 		= array($bbcode_func,	"[list][/list]", 					LANHELP_36,		"list.png",				'',	'',	'list');
+		$bbcode['img'] 			= array($bbcode_func,	"[img][/img]", 						LANHELP_27,		"image.png"	,			'',	'',	'picture-o');
+		$bbcode['flash']		= array($bbcode_func,	"[flash=width,height][/flash]", 	LANHELP_47,		"flash.png",			'',	'',	'flash');
+		$bbcode['youtube'] 		= array($bbcode_func,	"[youtube][/youtube]", 				LANHELP_48,		"youtube.png",			'',	'',	'youtube');
 		$bbcode['sanitised'] 	= array('', '', '');
-	//	$bbcode['format'] 		= array('dropdown', 	'[format]', 'da',"<select><option>hello</option></select>");
-		
+			
 		$bbcode['nobr'] 		= array($bbcode_func,	"[nobr][/nobr]", LANHELP_51, "nobr.png"); // FIXME bbcode icon
 		$bbcode['br'] 			= array($bbcode_func,	"[br]", LANHELP_52, "br.png"); // FIXME bbcode icon
-		$bbcode['block'] 		= array($bbcode_func,	"[block][/block]", LANHELP_54,"block.png"); // FIXME bbcode icon, interactive interface, theme hooks
+
 
 		$bbcode['fontsize'] 	= array("expandit",		"size_selector_".$rand, LANHELP_22,"fontsize.png","Size_Select",'size_selector_'.$rand);
 		$bbcode['fontcol'] 		= array("e-expandit",	"col_selector_".$rand, LANHELP_21,"fontcol.png","Color_Select",'col_selector_'.$rand);
@@ -580,7 +576,7 @@ class bbcode_shortcodes extends e_shortcode
 		{
 			$text = $pre;
 			
-			$text .= $this->button($iconpath[$parm], vartrue($bbcode[$parm][4]));
+			$text .= $this->button($iconpath[$parm], vartrue($bbcode[$parm][6]));
 			
 			$text .= $post;
 		}
