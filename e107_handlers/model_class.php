@@ -1361,6 +1361,7 @@ class e_model extends e_object
 	public function addMessageError($message, $session = false)
 	{
 		e107::getMessage()->addStack($message, $this->_message_stack, E_MESSAGE_ERROR, $session);
+		e107::getAdminLog()->addError($message,false)->save('ADMINUI_04');
 		return $this;
 	}
 
@@ -2205,7 +2206,13 @@ class e_front_model extends e_model
     		return $this;
     	}
 
+
+		$oldData = $this->getData();
+//		$this->addMessageDebug("OLDD".print_a($oldData,true));
+	
+
 		$data = $this->getPostedData();
+
 		$valid_data = $validate ? $this->getValidator()->getValidData() : array();
 
 		if($sanitize)
@@ -2221,6 +2228,10 @@ class e_front_model extends e_model
 			}
 		}
 
+	//	$newData = $this->getPostedData();
+		e107::getAdminLog()->addArray($data,$oldData);
+	//	$this->addMessageDebug("NEWD".print_a($data,true));
+
 		$tp = e107::getParser();
     	foreach ($data as $field => $dt)
     	{
@@ -2232,6 +2243,10 @@ class e_front_model extends e_model
     		$this->setData($field, $dt, $strict)
     			->removePostedData($field);
     	}
+		
+	
+		
+		
     	return $this;
     }
 
@@ -2275,10 +2290,14 @@ class e_front_model extends e_model
 			}
 		}
 
+
+
 		foreach ($src_data as $key => $value)
 		{
 			$this->setData($key, $value, $strict);
 		}
+		
+		
 
     	return $this;
     }
@@ -2652,6 +2671,11 @@ class e_front_model extends e_model
     {
     	$this->_db_errno = 0;
 		$this->_db_errmsg = '';
+		
+	//	 $this->getData();
+	//	 $this->getPostedData();
+		
+	
 		if($this->hasError()) return false;
 		if(!$this->data_has_changed && !$force)
 		{
@@ -2675,6 +2699,10 @@ class e_front_model extends e_model
 			return 0;
 		}
 		$this->clearCache()->addMessageSuccess(LAN_UPDATED);
+		
+		e107::getAdminLog()->save('ADMINUI_02');
+		
+		
 		return $res;
     }
 
@@ -2693,7 +2721,7 @@ class e_front_model extends e_model
 
 		if($from_post)
 		{
-			//no strict copy, validate & sanitize
+			//no strict copy, validate & sanitize		
 			$this->mergePostedData(false, true, true);
 		}
 
@@ -2846,16 +2874,23 @@ class e_admin_model extends e_front_model
 			return false;
 		}
 		$sql = e107::getDb();
-		$res = $sql->db_Insert($this->getModelTable(), $this->toSqlQuery('create'), $this->getParam('db_debug', false));
+		$sqlQry = $this->toSqlQuery('create');
+		$table = $this->getModelTable();
+		
+		$res = $sql->db_Insert($table, $sqlQry, $this->getParam('db_debug', false));
 		if(!$res)
 		{
 			$this->_db_errno = $sql->getLastErrorNumber();
 			$this->_db_errmsg = $sql->getLastErrorText();
 			$this->addMessageError('SQL Insert Error', $session_messages); //TODO - Lan
 			$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
+			
 			return false;
 		}
 
+		e107::getAdminLog()->save('ADMINUI_01');
+	//	e107::getAdminLog()->clear()->addSuccess($table,false)->addArray($sqlQry)->save('ADMINUI_01');
+	
 		// Set the reutrned ID
 		$this->setId($res);
 		$this->clearCache()->addMessageSuccess(LAN_CREATED);
@@ -2872,7 +2907,8 @@ class e_admin_model extends e_front_model
     protected function dbReplace($force = false, $session_messages = false)
     {
     	$this->_db_errno = 0;
-    	$this->_db_errmsg = '';
+    	$this->_db_errmsg = '';	
+		
 		if($this->hasError()) return false;
 		if(!$this->data_has_changed && !$force)
 		{
@@ -2921,7 +2957,8 @@ class e_admin_model extends e_front_model
 		$id = $this->getId();
 		if(is_numeric($id)) $id = intval($id);
 		else  $id = "'".e107::getParser()->toDB($id)."'";
-		$res = $sql->db_Delete($this->getModelTable(), $this->getFieldIdName().'='.$id);
+		$table  = $this->getModelTable();
+		$res = $sql->db_Delete($table, $this->getFieldIdName().'='.$id);
 		if(!$res)
 		{
 			$this->_db_errno = $sql->getLastErrorNumber();
@@ -2934,6 +2971,8 @@ class e_admin_model extends e_front_model
 		}
     	else
 		{
+			e107::getAdminLog()->addSuccess($table,false);
+			e107::getAdminLog()->addArray($sqlQry)->save('ADMINUI_03');
 			$this->clearCache();
 		}
 		return $res;
@@ -3492,10 +3531,15 @@ class e_admin_tree_model extends e_front_tree_model
 		$idstr = implode(', ', $ids);
 
 		$sql = e107::getDb();
-		$res = $sql->db_Delete($this->getModelTable(), $this->getFieldIdName().' IN (\''.$idstr.'\')');
+		$table = $this->getModelTable();
+		$sqlQry = $this->getFieldIdName().' IN (\''.$idstr.'\')';
+		
+		$res = $sql->db_Delete($table, $sqlQry);
+		
 		$this->_db_errno = $sql->getLastErrorNumber();
 		$this->_db_errmsg = $sql->getLastErrorText();
 		$modelCacheCheck = $this->getParam('clearModelCache');
+		
 		if(!$res)
 		{
 			if($sql->getLastErrorNumber())
@@ -3519,6 +3563,9 @@ class e_admin_tree_model extends e_front_tree_model
 				}
 			}
 		}
+
+		$logData = array('table'=>$table,'where'=>$sqlQry);
+		e107::getAdminLog()->addArray($logData)->save('ADMINUI_03');
 
 		return $res;
 	}
