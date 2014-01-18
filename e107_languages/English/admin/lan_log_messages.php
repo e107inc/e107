@@ -379,6 +379,10 @@ define("LAN_AL_MISC_07", "");
 
 define("LAN_AL_PING_01", "Ping to service");
 
+define("LAN_AL_ADMINUI_01", "Admin-UI DB Table Insert");
+define("LAN_AL_ADMINUI_02", "Admin-UI DB Table Update");
+define("LAN_AL_ADMINUI_03", "Admin-UI DB Table Delete");
+define("LAN_AL_ADMINUI_04", "Admin-UI DB Error");
 
 
 ?>

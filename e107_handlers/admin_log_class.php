@@ -544,19 +544,20 @@ class e_admin_log
 	 */
 	public function logMessage($text, $type = '', $logLevel = TRUE, $session = FALSE)
 	{
-		if(empty($text))
-		{
-			$bt = debug_backtrace(true);
-			e107::getMessage()->addDebug("Log Message was empty: ".print_a($bt[1],true));
-			return $this;	// changing to text will break chained methods. 
-		} 
-		if(!$type) $type = E_MESSAGE_INFO;
-		if($logLevel === TRUE) $logLevel = $type;
 		
 		if(is_array($text))
 		{
 			$text = print_r($text,true);	
 		}
+		elseif(empty($text))
+		{
+			$bt = debug_backtrace(true);
+			e107::getMessage()->addDebug("Log Message was empty: ".print_a($bt[1],true));
+			return $this;	// changing to text will break chained methods. 
+		} 
+		
+		if(!$type) $type = E_MESSAGE_INFO;
+		if($logLevel === TRUE) $logLevel = $type;
 		
 		$logArray = array('message' => $text, 'dislevel' => $type, 'loglevel' => $logLevel, 'session' => $session, 'time'=>time());
 		
@@ -656,6 +657,11 @@ class e_admin_log
 		if(is_array($oldArray)) 
 		{
 			$text = array_diff_recursive($array,$oldArray); // Located in core_functions.php 
+			if(count($text) < 1)
+			{
+				$text = "No differences found";	
+			}
+			
 		}
 		else
 		{
@@ -709,6 +715,20 @@ class e_admin_log
 		$this->_messages = array();		// Clear the memory for reuse
 
 		return $this;
+	}
+
+
+
+
+
+	/**
+	 * Clear all messages in 'memory'. 
+	 */
+	public function clear()
+	{
+		$this->_messages = array();	
+		
+		return $this;		
 	}
 
 	
