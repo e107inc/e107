@@ -136,9 +136,9 @@ class admin_log_ui extends e_admin_ui
 		protected $fields 		= array (  
 	//	'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'nolist'=>true, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
 		  'dblog_id' 			=>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'dblog_datestamp' 	=>   array ( 'title' => LAN_DATESTAMP, 'type' => 'datestamp', 'data' => 'int', 'width' => '15%', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'dblog_datestamp' 	=>   array ( 'title' => LAN_DATESTAMP, 'type' => 'datestamp', 'data' => 'int', 'width' => '12%', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		//  'dblog_microtime'		=>   array ( 'title' => 'Microtime', 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'dblog_type' 			=>   array ( 'title' => RL_LAN_032, 'type' => 'method', 'data' => 'int', 'width' => '1%', 'filter' => true,  'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'dblog_type' 			=>   array ( 'title' => RL_LAN_032, 'type' => 'method', 'data' => 'int', 'width' => '5%', 'filter' => true,  'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		  'dblog_ip' 			=>   array ( 'title' => LAN_IP, 'type' => 'ip', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		
 		  'dblog_user_id' 		=>   array ( 'title' => LAN_USER, 'type' => 'user', 'data' => 'int', 'width' => 'auto', 'filter' => true,  'help' => '', 'readParms'=>'link=1', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
@@ -478,10 +478,21 @@ class admin_log_form_ui extends e_admin_form_ui
 	function dblog_type($curVal,$mode)
 	{
 		
+		$array = array(
+			' ',  // Minimal Log Level, including really minor stuff
+			'<i class="S16 e-info-16 e-tip" title="Notice"></i>', //FIXME - should be the blue icon.  // More important than informative, but less important than notice
+			'<i class="S16 e-false-16 e-tip" title="Important"></i>', // Not anything serious, but important information
+		 	'<i class="S16 e-warning-16 e-tip" title="Warning"></i>', //  An event so bad your site ceased execution.
+			' '  // Plugin information - Deprecated - Leave empty. 
+		 );
+		
+		
+		
+		
 		switch($mode)
 		{
 			case 'read': // List Page
-				return $curVal;
+				return varset($array[$curVal], $curval);
 			break;
 			
 			case 'filter':
