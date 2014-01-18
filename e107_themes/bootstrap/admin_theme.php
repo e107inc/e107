@@ -1,7 +1,7 @@
 <?php
 if ( ! defined('e107_INIT')) { exit(); }
 
-define("SEP"," <span class='icon-play e-breadcrumb'></span> ");
+define("SEP"," <span class='fa fa-play e-breadcrumb'></span> ");
 
 // e107::lan('theme');
 
