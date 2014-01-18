@@ -2683,7 +2683,10 @@ class e_front_model extends e_model
 			return 0;
 		}
 		$sql = e107::getDb();
-		$res = $sql->db_Update($this->getModelTable(), $this->toSqlQuery('update'), $this->getParam('db_debug', false));
+		$qry = $this->toSqlQuery('update');
+		$table = $this->getModelTable();
+		
+		$res = $sql->db_Update($table, $qry, $this->getParam('db_debug', false));
 		if(!$res)
 		{
 			$this->_db_errno = $sql->getLastErrorNumber();
@@ -2700,6 +2703,8 @@ class e_front_model extends e_model
 		}
 		$this->clearCache()->addMessageSuccess(LAN_UPDATED);
 		
+		e107::getAdminLog()->addSuccess('TABLE: '.$table, false);
+		e107::getAdminLog()->addSuccess('WHERE: '.$qry['WHERE'], false);
 		e107::getAdminLog()->save('ADMINUI_02');
 		
 		
@@ -3564,7 +3569,7 @@ class e_admin_tree_model extends e_front_tree_model
 			}
 		}
 
-		$logData = array('table'=>$table,'where'=>$sqlQry);
+		$logData = array('TABLE'=>$table, 'WHERE'=>$sqlQry);
 		e107::getAdminLog()->addArray($logData)->save('ADMINUI_03');
 
 		return $res;
