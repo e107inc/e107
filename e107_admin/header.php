@@ -190,7 +190,7 @@ meridiem: ["am", "pm"]
 //
 // A: Admin Defines and Links
 //
-//require_once (e_ADMIN.'ad_links.php'); Moved to boot.php
+
 // FIXME - remove ASAP
 if (isset($pref['del_unv']) && $pref['del_unv'] && $pref['user_reg_veri'] != 2)
 {
