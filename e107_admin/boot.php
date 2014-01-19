@@ -62,7 +62,6 @@ if(!defset('e_ADMIN_UI') && !defset('e_PAGETITLE'))
 	}
 }
 
-require_once (e_ADMIN.'ad_links.php'); //FIXME - remove??
 
 if (!defined('ADMIN_WIDTH')) //BC Only 
 {
