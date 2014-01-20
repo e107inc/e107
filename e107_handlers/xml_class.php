@@ -17,6 +17,9 @@ if (!defined('e107_INIT')) { exit; }
 
 class parseXml extends xmlClass // BC with v1.x
 {
+	private $xmlData = array();
+	private $counterArray = array();
+	
 	function __construct()
 	{
 		$data = debug_backtrace(true);
