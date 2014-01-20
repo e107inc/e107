@@ -2,19 +2,32 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2014 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
- *
+ * Exists only for BC. 
  */
-
-// Moc: up for removal? Replaced by /e107_admin/comment.php
 
 require_once("../class2.php");
 if (!getperms("B")) {
 	header("location:".e_BASE."index.php");
 	exit;
 }
+
+
+
+$tmp	= explode(".", e_QUERY);
+$table	= $tmp[0];
+$id		= intval($tmp[1]);
+$editid	= intval($tmp[2]);
+
+$url = e_ADMIN_ABS."comment.php?searchquery=".$id."&filter_options=comment_type__".e107::getComment()->getCommentType($table);
+
+e107::getRedirect()->go($url);
+exit;
+
+
+/*
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
@@ -195,5 +208,7 @@ function delete_children($row, $cid)
 		$sql->db_Delete("comments", "comment_id='$cid'");
 	}
 }
+*/
+
 
 ?>

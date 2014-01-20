@@ -17,6 +17,16 @@ if (!defined('e107_INIT')) { exit; }
 
 class parseXml extends xmlClass // BC with v1.x
 {
+	function __construct()
+	{
+		$data = debug_backtrace(true);
+		$log = e107::getAdminLog();
+		$log->addDebug('Deprecated XML Parser Used');
+		
+		$log->addArray($data);
+		$log->save('DEPRECATED',E_LOG_NOTICE);	
+		
+	}
 	
 	function setUrl($feed)
 	{
@@ -25,8 +35,109 @@ class parseXml extends xmlClass // BC with v1.x
 	
 	function getRemoteXmlFile($address, $timeout = 10)
 	{	
-		return $this->getRemoteFile($address, $timeout);		
+	//	$data = $this->getRemoteFile($address, $timeout);	
+		$fl = e107::getFile();
+		$data = $fl->getRemoteContent($address);
+
+		$this->xmlLegacyContents = $data;
+
+		return $data;	
 	}
+	
+	function parseXmlContents ()
+	{
+		$log = e107::getAdminLog();
+		
+		foreach($this -> xmlData as $key => $value)
+		{
+			unset($this -> xmlData[$key]);
+		}
+		foreach($this -> counterArray as $key => $value)
+		{
+			unset($this -> counterArray[$key]);
+		}
+
+		if(!function_exists('xml_parser_create'))
+		{
+			$log->addDebug("No XML source specified")->save('XML',E_LOG_WARNING);
+			return FALSE;
+		}
+
+		if(!$this -> xmlLegacyContents)
+        {
+            
+			$log->addDebug("No XML source specified")->save('XML');
+            return FALSE;
+        }
+
+		$this->parser = xml_parser_create('');
+
+		xml_set_object($this->parser, $this);
+		xml_set_element_handler($this->parser, 'startElement', 'endElement');
+		xml_set_character_data_handler( $this->parser, 'characterData' );
+
+		$array = explode("\n", $this -> xmlLegacyContents);
+
+
+		foreach($array as $data)
+		{
+
+			if(strlen($data == 4096))
+			{
+				$log->addDebug("The XML cannot be parsed as it is badly formed.")->save('XML');
+				return FALSE;
+			}
+
+            if (!xml_parse($this->parser, $data))
+            {
+				$error = sprintf('XML error: %s at line %d, column %d', xml_error_string(xml_get_error_code($this->parser)), xml_get_current_line_number($this->parser),xml_get_current_column_number($this->parser));
+				$log->addDebug($error)->save('XML');
+				return FALSE;
+            }
+        }
+		xml_parser_free( $this->parser );
+		return $this -> xmlData;
+	}
+	
+	
+	
+	function startElement ($p, $element, &$attrs)
+	{
+		$this -> start_tag = $element;
+		$this -> current_tag = strtolower($element);
+		if(!array_key_exists($this -> current_tag, $this -> counterArray))
+		{
+			$this -> counterArray[$this -> current_tag] = 0;
+			$this -> xmlData[$this -> current_tag][$this -> counterArray[$this -> current_tag]] = "";
+		}
+	}
+
+	function endElement ($p, $element)
+	{
+		if($this -> start_tag == $element)
+		{
+			$this -> counterArray[$this -> current_tag] ++;
+		}
+	}
+
+	function characterData ($p, $data)
+	{
+		$data = trim ( chop ( $data ));
+		$data = preg_replace('/&(?!amp;)/', '&amp;', $data);
+		if(!array_key_exists($this -> current_tag, $this -> xmlData))
+		{
+			$this -> xmlData [$this -> current_tag] = array();
+		}
+		if(array_key_exists($this -> counterArray[$this -> current_tag], $this -> xmlData [$this -> current_tag]))
+		{
+			$this -> xmlData [$this -> current_tag] [$this -> counterArray[$this -> current_tag]] .= $data;
+		}
+		else
+		{
+			$this -> xmlData [$this -> current_tag] [$this -> counterArray[$this -> current_tag]] = $data;
+		}
+	}
+	
 	
 }
 
@@ -304,7 +415,8 @@ class xmlClass
 		if($feed)
 		{
 			$this->_feedUrl = $feed;
-		}	
+		}
+		return $this;	
 	}
 
 	/**
@@ -318,6 +430,10 @@ class xmlClass
 	 */
 	function getRemoteFile($address, $timeout = 10, $postData=null)
 	{
+		$debug = debug_backtrace(true);
+		e107::getAdminLog()->addDebug("Deprecated getRemoteFile() method used. Use e_file::getRemoteContent() instead.")->addArray($debug)->save('DEPRECATED',E_LOG_NOTICE);
+		
+		
 		$_file = e107::getFile();
 		$this->xmlFileContents = $_file->getRemoteContent($address, array('timeout' => $timeout, 'post' => $postData));
 		$this->error = $_file->error;
