@@ -34,15 +34,20 @@ $query = explode('.', e_QUERY);
 
 $search_prefs = $sysprefs -> getArray('search_prefs');
 
-$search_handlers['news'] = ADLAN_0;
+//$search_handlers['news'] = ADLAN_0;
 $search_handlers['comments'] = ADLAN_114;
 $search_handlers['users'] = SEALAN_7;
-$search_handlers['downloads'] = ADLAN_24;
+//$search_handlers['downloads'] = ADLAN_24;
 $search_handlers['pages'] = SEALAN_39;
 
 
 foreach($pref['e_search_list'] as $file)
 {
+	if(!e107::isInstalled($file))
+	{
+		continue;	
+	}
+	
 	if (is_readable(e_PLUGIN.$file."/e_search.php") && !isset($search_prefs['plug_handlers'][$file]))
 	{
 		$search_prefs['plug_handlers'][$file] = array('class' => 0, 'pre_title' => 1, 'pre_title_alt' => '', 'chars' => 150, 'results' => 10);
@@ -80,16 +85,17 @@ if (vartrue($save_search))
 }
 
 
-if (isset($_POST['update_main']))
-{	// Update all the basic handler info
+if (isset($_POST['update_main'])) // Update all the basic handler info
+{	
 
-	foreach($search_handlers as $s_key => $s_value)
+
+	foreach($_POST['core_handlers'] as $s_key => $s_value)
 	{
 		$search_prefs['core_handlers'][$s_key]['class'] = $_POST['core_handlers'][$s_key]['class'];
 		$search_prefs['core_handlers'][$s_key]['order'] = $_POST['core_handlers'][$s_key]['order'];
 	}
 
-	foreach ($search_prefs['plug_handlers'] as $plug_dir => $active)
+	foreach ($_POST['plug_handlers'] as $plug_dir => $active)
 	{
 		$search_prefs['plug_handlers'][$plug_dir]['class'] = $_POST['plug_handlers'][$plug_dir]['class'];
 		$search_prefs['plug_handlers'][$plug_dir]['order'] = $_POST['plug_handlers'][$plug_dir]['order'];
@@ -97,32 +103,14 @@ if (isset($_POST['update_main']))
 
 	$search_prefs['google'] = $_POST['google'];
 
-	foreach ($search_prefs['comments_handlers'] as $key => $value)
+	foreach ($_POST['comments_handlers'] as $key => $value)
 	{
 		$search_prefs['comments_handlers'][$key]['class'] = $_POST['comments_handlers'][$key]['class'];
 	}
 
-//	$tmp = addslashes(serialize($search_prefs));
-//	$tmp = e107::getArrayStorage()->writeArray($search_prefs, true);
-	
-//	e107::getAdminLog()->logM
-//	e107::getMessage()->addAto
+	e107::getConfig('search')->removePref('plug_handlers')->save(false,true,false);
 	e107::getConfig('search')->setPref($search_prefs)->save(true,true);
-/*
-	$check = $sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'");
-	if($check)
-	{
-		$mes->addSuccess(LAN_UPDATED);
-		$admin_log->log_event('SEARCH_04','',E_LOG_INFORMATIVE,'');
-	}
-	elseif(0 === $check) $mes->addInfo(LAN_NO_CHANGE);
-	else
-	{
-		$mes->addError(LAN_UPDATED_FAILED);
-		$mes->addError(LAN_ERROR." ".$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
-	}
- 
- */
+
 }
 
 
@@ -149,6 +137,7 @@ if (isset($_POST['update_handler']))
 
 //	$tmp = addslashes(serialize($search_prefs));
 	$tmp = e107::getArrayStorage()->writeArray($search_prefs, true);
+
 	$check = $sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'");
 	if($check)
 	{
@@ -406,20 +395,38 @@ else
 		";
 	}
 
+	
+	$searchConfigs = e107::getAddonConfig('e_search');
+
 	foreach ($search_prefs['plug_handlers'] as $plug_dir => $active)
 	{
-		if(is_readable(e_PLUGIN.$plug_dir."/e_search.php"))
+				
+		if(varset($searchConfigs[$plug_dir]))
 		{
-			require_once(e_PLUGIN.$plug_dir."/e_search.php");
+			$search_handlers[] = $searchConfigs[$plug_dir];	
+			$search_info[0]['qtype'] = $searchConfigs[$plug_dir]['name'];
+		}	
+		elseif(e107::isInstalled($plug_dir) && is_readable(e_PLUGIN.$plug_dir."/e_search.php"))
+		{
+			e107::getMessage()->addDebug("Including: ".$plug_dir."/e_search.php");
+			require(e_PLUGIN.$plug_dir."/e_search.php");
+		}
+		else   // workaround for a messy pref data.  Missing a plugin or file. 
+		{
+			continue;	
 		}
 		
+
+			
+		/*
 		if($obj = e107::getAddon($plug_dir,'e_search'))
 		{
 			$search_handlers[] = $obj->config();	
 			$ret = $obj->config();	
+			
 			$search_info[0]['qtype'] = $ret['name'];
 		}	
-		
+		*/
 		
 		$text .= "
 						<tr>
@@ -428,7 +435,8 @@ else
 							<td class='center'>
 								<select name='plug_handlers[".$plug_dir."][order]' class='tbox order'>
 		";
-		for($a = 1; $a <= $handlers_total; $a++) {
+		for($a = 1; $a <= $handlers_total; $a++)
+		 {
 			$text .= (vartrue($search_prefs['plug_handlers'][$plug_dir]['order']) == $a) ? "<option value='".$a."' selected='selected'>".$a."</option>" : "<option value='".$a."'>".$a."</option>";
 		}
 		$text .= "

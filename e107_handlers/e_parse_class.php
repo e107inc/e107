@@ -121,6 +121,10 @@ class e_parse extends e_parser
 					array(
 						'nobreak'=>TRUE, 'retain_nl'=>TRUE, 'link_click' => FALSE, 'emotes'=>FALSE, 'defs'=>TRUE, 'parse_sc'=>TRUE
 						),
+				'TITLE_PLAIN' =>
+					array(
+						'nobreak'=>TRUE, 'retain_nl'=>TRUE, 'link_click' => FALSE, 'emotes'=>FALSE, 'defs'=>TRUE, 'parse_sc'=>TRUE, 'no_tags' => TRUE
+						),
 				//text is user-entered (i.e. untrusted) and part of a title (e.g. forum title)
 				'USER_TITLE' =>
 					array(
@@ -1361,7 +1365,7 @@ class e_parse extends e_parser
 		// Convert defines(constants) within text. eg. Lan_XXXX - must be the entire text string (i.e. not embedded)
 		// The check for '::' is a workaround for a bug in the Zend Optimiser 3.3.0 and PHP 5.2.4 combination
 		// - causes crashes if '::' in site name
-		//TODO - marj - find a way to use language method here XOR remove the limit of 24 characters.
+
 		if($opts['defs'] && (strlen($text) < 35) && ((strpos($text, '::') === FALSE) && defined(trim($text))))
 		{
 			return constant(trim($text));
