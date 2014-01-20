@@ -24,8 +24,11 @@ class rater {
 		
 	//	return "Table=".$table." itmeId=".$id." Votes=".$votes." score=".$score;
 		
-		parse_str($options,$options);
-	//	
+		if(is_string($options))
+		{
+			parse_str($options,$options);
+		}
+		
 		$label = varset($options['label'],RATELAN_5);
 			
 		$readonly = $this->checkrated($table, $id) ? '1' : '0';

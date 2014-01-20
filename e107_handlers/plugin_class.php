@@ -108,15 +108,16 @@ class e107plugin
 
 	var $plug_vars;
 	var $current_plug;
-	var $parsed_plugin;
+	var $parsed_plugin  = array();
 	var $plugFolder;
 	var $plugConfigFile;
 	var $unInstallOpts;
 	var $module = array();
+	private $options = array();
 
-	function e107plugin()
+	function __construct()
 	{
-		$parsed_plugin = array();
+		//$parsed_plugin = array();
 	}
 
 	/**
@@ -497,10 +498,15 @@ class e107plugin
 			$getinfo_results = array();
 		}
 
+		$path = (!is_numeric($id)) ?  $id : false;
 		$id = (int) $id;
+		
+		$qry = "plugin_id = ".$id;
+		$qry .= ($path != false) ? " OR plugin_path = '".$path."' " : "";
+		
 		if (!isset($getinfo_results[$id]) || $force == true)
 		{
-			if ($sql->select('plugin', '*', "plugin_id = ".$id))
+			if ($sql->select('plugin', '*', $qry))
 			{
 				$getinfo_results[$id] = $sql->fetch();
 			}
@@ -1296,11 +1302,7 @@ class e107plugin
 	 */
 	function install_plugin_xml($id, $function = '', $options = FALSE)
 	{	
-		if(!is_numeric($id))
-		{
-			$id = $this->getId($id);	// use path instead. 
-		}
-				
+			
 		$pref = e107::getPref();
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
@@ -1308,9 +1310,20 @@ class e107plugin
 		$error = array(); // Array of error messages
 		$canContinue = TRUE; // Clear flag if must abort part way through
 
-		$id = (int) $id;
-		$plug = $this->getinfo($id); // Get plugin info from DB
+		
+		if(is_array($id))
+		{
+			$plug = $id;	
+			$id = $plug['plugin_id'];
+		}
+		else 
+		{
+			$id = (int) $id;
+			$plug = $this->getinfo($id); // Get plugin info from DB	
+		}
+		
 		$this->current_plug = $plug;
+		
 		$txt = '';
 		$path = e_PLUGIN.$plug['plugin_path'].'/';
 
@@ -1779,6 +1792,12 @@ class e107plugin
 	function XmlSiteLinks($function, $array)
 	{
 		$mes = e107::getMessage();
+		
+		if(vartrue($this->options['nolinks']))
+		{
+			return;	
+		}
+		
 
 		foreach ($array['link'] as $link)
 		{
@@ -2268,7 +2287,16 @@ class e107plugin
 		$mes = e107::getMessage();
 		$mySQLprefix = MPREFIX; // Fix for some plugin.php files.
 
-		$plug = $this->getinfo($id);
+		if(is_array($id))
+		{
+			$plug = $id;	
+			$id = $plug['plugin_id'];
+		}
+		else
+		{	
+			$plug = $this->getinfo($id);
+		}
+		
 		$_path = e_PLUGIN.$plug['plugin_path'].'/';
 
 		$plug['plug_action'] = 'install';
@@ -2357,40 +2385,64 @@ class e107plugin
 	}
 
 	/**
-	 * Installs a plugin by ID
+	 * BC Alias for install();
+	 */
+	public function install_plugin($id)
+	{
+		global $sysprefs, $mySQLprefix;
+		return $this->install($id);	
+		
+	}
+
+
+
+	/**
+	 * Installs a plugin by ID or folder name
 	 *
 	 * @param int $id
+	 * @param array $options (currently only 'nolinks' - set to true to prevent sitelink creation during install)
 	 */
-	function install_plugin($id)
+	function install($id, $options = array())
 	{
 		global $sysprefs, $mySQLprefix;
 		$ns = e107::getRender();
 		$sql = e107::getDb();
 		$tp = e107::getParser();
+		
+		$this->options = $options;
+		
 
 		$text = '';
 
 		// install plugin ...
-		$id = (int) $id;
 		$plug = $this->getinfo($id);
-
+		
+		if(!is_array($plug))
+		{
+			return "'{$id}' is missing from the plugin db table";	
+		}
+		
 		$plug['plug_action'] = 'install';
 
 		if (!vartrue($plug['plugin_installflag']))
 		{
 			$_path = e_PLUGIN.$plug['plugin_path'].'/';
+			
+			
 			if (file_exists($_path.'plugin.xml'))
 			{
-				$text = $this->install_plugin_xml($id, 'install');
+				
+				$text = $this->install_plugin_xml($plug, 'install');
 			}
 			elseif (file_exists($_path.'plugin.php'))
 			{
-				$text = $this->install_plugin_php($id);
+				$text = $this->install_plugin_php($plug);
 			}
 		}
 		else
 		{
 			$text = EPL_ADLAN_21;
+			
 		}
 		return $text;
 	}

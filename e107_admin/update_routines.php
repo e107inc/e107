@@ -593,13 +593,13 @@ function update_706_to_800($type='')
 
 	$just_check = $type == 'do' ? FALSE : TRUE;		// TRUE if we're just seeing whether an update is needed
 
-	if (!$just_check)
-	{
-		foreach(vartrue($setCorePrefs) as $k=>$v)
-		{
-			$pref[$k] = $v;
-		}
-	}
+//	if (!$just_check)
+//	{
+	//	foreach(vartrue($setCorePrefs) as $k=>$v)
+	//	{
+	//		$pref[$k] = $v;
+	//	}
+//	}
 
 	if (!$just_check)
 	{
@@ -859,62 +859,6 @@ function update_706_to_800($type='')
 		$do_save = TRUE;
 	}
 
-
-/*
- * Deprecated by db-verify-class
- * 
- 
-	if ($sql->db_Table_exists('newsfeed'))
-	{	// Need to extend field newsfeed_url varchar(250) NOT NULL default ''
-		if ($sql->db_Query("SHOW FIELDS FROM ".MPREFIX."newsfeed LIKE 'newsfeed_url'"))
-		{
-			$row = $sql -> db_Fetch();
-			if (str_replace('varchar', 'char', strtolower($row['Type'])) != 'char(250)')
-			{
-				if ($just_check) return update_needed('Update newsfeed field definition');
-				$status = $sql->gen("ALTER TABLE `".MPREFIX."newsfeed` MODIFY `newsfeed_url` VARCHAR(250) NOT NULL DEFAULT '' ") ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-				//$updateMessages[] = LAN_UPDATE_40;
-				$log->logMessage(LAN_UPDATE_21."newsfeed",$status);
-			//	catch_error($sql);
-			}
-		}
-	}
-
-	//TODO use generic function for this update. 
-	if ($sql->db_Table_exists('download'))
-	{	// Need to extend field download_url varchar(255) NOT NULL default ''
-		if ($sql->db_Query("SHOW FIELDS FROM ".MPREFIX."download LIKE 'download_url'"))
-		{
-			$row = $sql -> db_Fetch();
-			if (str_replace('varchar', 'char', strtolower($row['Type'])) != 'char(255)')
-			{
-				if ($just_check) return update_needed('Update download table field definition');
-				$sql->gen("ALTER TABLE `#download` MODIFY `download_url` VARCHAR(255) NOT NULL DEFAULT '' ");
-				//$updateMessages[] = LAN_UPDATE_52;  //FIXME
-				$log->logMessage(LAN_UPDATE_52, E_MESSAGE_SUCCESS);
-				catch_error($sql);
-			}
-		}
-	}
-
-	//TODO use generic function for this update. 
-	if ($sql->db_Table_exists('download_mirror'))
-	{	// Need to extend field download_url varchar(255) NOT NULL default ''
-		if ($sql->gen("SHOW FIELDS FROM ".MPREFIX."download_mirror LIKE 'mirror_url'"))
-		{
-			$row = $sql -> db_Fetch();
-			if (str_replace('varchar', 'char', strtolower($row['Type'])) != 'char(255)')
-			{
-				if ($just_check) return update_needed('Update download mirror table field definition');
-				$sql->gen("ALTER TABLE `".MPREFIX."download_mirror` MODIFY `mirror_url` VARCHAR(255) NOT NULL DEFAULT '' ");
-				$log->logMessage(LAN_UPDATE_53, E_MESSAGE_SUCCESS);
-				
-				catch_error($sql);
-			}
-		}
-	}
-
-*/
 	// Check need for user timezone before we delete the field
 	if (varsettrue($pref['signup_option_timezone']))
 	{
@@ -1404,8 +1348,19 @@ function update_706_to_800($type='')
 	
 	// -------------------------------
 
+	if (!e107::isInstalled('download') && $sql->gen("SELECT * FROM #links WHERE link_url LIKE 'download.php%' AND link_class != '".e_UC_NOBODY."' LIMIT 1"))
+	{
+		if ($just_check) return update_needed('Download Plugin needs to be installed.');	
+		e107::getSingleton('e107plugin')->install('download',array('nolinks'=>true));
+	}
+	
+
 	
 	
+	
+	// ---------------------------------
+	
+		
 	$med = e107::getMedia();
 	
 	// Media Category Update

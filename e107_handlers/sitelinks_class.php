@@ -280,6 +280,14 @@ class sitelinks
 			$linkInfo['link_url'] = $tp->parseTemplate($linkInfo['link_url'], TRUE); // shortcode in URL support - dynamic urls for multilanguage.
 		}
 		// By default links are not highlighted.
+		
+		if (isset($linkInfo['link_expand']) && $linkInfo['link_expand'])
+		{
+			// $href = " href=\"javascript:expandit('sub_".$linkInfo['link_id']."')\"";
+			$css_class .= " e-expandit";
+		}
+		
+		
 		$linkstart = $style['linkstart'];
 		$linkadd = ($style['linkclass']) ? " class='".$style['linkclass']."'" : "";
 		$linkadd = ($css_class) ? " class='".$css_class."'" : $linkadd;
@@ -293,7 +301,8 @@ class sitelinks
 		// Check if its expandable first. It should override its URL.
 		if (isset($linkInfo['link_expand']) && $linkInfo['link_expand'])
 		{
-			$href = " href=\"javascript:expandit('sub_".$linkInfo['link_id']."')\"";
+			// $href = " href=\"javascript:expandit('sub_".$linkInfo['link_id']."')\"";
+			$href = "href='#sub_".$linkInfo['link_id']."'";
 		}
 		elseif ($linkInfo['link_url'])
 		{

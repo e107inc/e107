@@ -136,8 +136,8 @@ class bb_img extends e_bb_base
 		$w = e107::getBB()->resizeWidth(); // varies depending on the class set by external script. see admin->media-manager->prefs
 		$h = e107::getBB()->resizeHeight();
 		
-		
-		if(strpos($code_text,"://")==false && ($w || $h)) // local file. 
+		// No resizing on v1.x legacy images. 
+		if(strpos($code_text,"://")==false && ($w || $h) && strpos($code_text,"{e_IMAGE}custom")===false && strpos($code_text,"{e_IMAGE}newpost_images")===false) // local file. 
 		{
 			$code_text = $tp->thumbUrl($code_text,'w='.$w.'&h='.$h);
 		}
