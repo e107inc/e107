@@ -1000,8 +1000,12 @@ function renderCache($cache, $nfp = FALSE){
 }
 
 function render_newscats(){  // --  CNN Style Categories. ----
-	global $pref,$ns,$tp;
-	if (isset($pref['news_cats']) && $pref['news_cats'] == '1') {
+	$tp = e107::getParser();
+	$ns = e107::getRender();
+	$pref = e107::getPref();
+	
+	if (isset($pref['news_cats']) && $pref['news_cats'] == '1') 
+	{
 		$text3 = $tp->toHTML("{NEWS_CATEGORIES}", TRUE, 'TITLE');
 		$ns->tablerender(LAN_NEWS_23, $text3, 'news_cat');
 	}
@@ -1083,7 +1087,7 @@ function setNewsFrontMeta($news, $type='news')
 
 	if($news['category_name'] && !defined('e_PAGETITLE'))
 	{
-		define('e_PAGETITLE', $news['category_name']);
+		define('e_PAGETITLE', $tp->toHtml($news['category_name'],false,'TITLE_PLAIN'));
 	}
 
 	if($news['category_meta_keywords'] && !defined('META_KEYWORDS'))
