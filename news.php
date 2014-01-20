@@ -257,7 +257,7 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 
 	if(vartrue($NEWSLISTSTYLE)) // Legacy v1.x
 	{
-		 $template =  $NEWSLISTSTYLE;
+		 $template =  array('start'=>'', 'item'=>$NEWSLISTSTYLE, 'end'=>'');
 	}
 	else  // v2.x
 	{
