@@ -143,7 +143,8 @@ $LAYOUT['jumbotron_home'] =  <<<TMPL
 	{SETSTYLE=default}
 	<div class="container">	
 	{ALERTS}
-   
+	{MENU=1}
+	
 	{---}
 	
 	</div>
@@ -156,6 +157,12 @@ $LAYOUT['jumbotron_home'] =  <<<TMPL
 	  {CMENU=jumbotron-menu-3}
       </div>
 
+       <div class="row">
+      {SETSTYLE=col-md-4}
+	  {MENU=2}
+	  {MENU=3}
+	  {MENU=4}
+      </div>
 TMPL;
 
 //TODO Add {GALLERY_PORTFOLIO}  to portfolio_menu.php 
@@ -169,6 +176,8 @@ $LAYOUT['modern_business_home'] =  <<<TMPL
 	
 	<div class="container">	
 	{ALERTS}
+	{MENU=1}
+	
 	</div>
 	
 	<div class="section">
@@ -287,7 +296,7 @@ $LAYOUT['jumbotron_full'] = '
 	{SETSTYLE=default}
 	<div class="container">	
 	{ALERTS}
-   
+   	 {MENU=1}
 	{---}
 	
 	</div>
