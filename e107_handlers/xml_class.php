@@ -423,20 +423,14 @@ class xmlClass
 	}
 
 	/**
-	 * DEPRECATED
-	 * Get Remote file contents
+	 * Get Remote XML file contents
 	 * use setOptArrayTags above if you require a consistent array result by in 1 item or many. 
-	 * @deprecated use e_file::getRemoteContent() instead
 	 * @param string $address
 	 * @param integer $timeout [optional] seconds
 	 * @return string
 	 */
 	function getRemoteFile($address, $timeout = 10, $postData=null)
-	{
-		$debug = debug_backtrace(true);
-		e107::getAdminLog()->addDebug("Deprecated getRemoteFile() method used. Use e_file::getRemoteContent() instead.")->addArray($debug)->save('DEPRECATED',E_LOG_NOTICE);
-		
-		
+	{		
 		$_file = e107::getFile();
 		$this->xmlFileContents = $_file->getRemoteContent($address, array('timeout' => $timeout, 'post' => $postData));
 		$this->error = $_file->error;

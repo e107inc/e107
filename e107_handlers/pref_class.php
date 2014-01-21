@@ -492,7 +492,7 @@ class e_pref extends e_front_model
 	 *
 	 * @param boolean $from_post merge post data
 	 * @param boolean $force
-	 * @param boolean $session_messages use session messages //FIXME Appears to be ignored on "Settings successfully saved. 
+	 * @param boolean $session_messages use session messages 
 	 * @return boolean|integer 0 - no change, true - saved, false - error
 	 */
 	public function save($from_post = true, $force = false, $session_messages = false)
@@ -586,7 +586,7 @@ class e_pref extends e_front_model
 					$logId = 'PREFS_01';	
 				}
 				
-				$log->addSuccess('Settings successfully saved.',true);
+				$log->addSuccess('Settings successfully saved.', $session_messages);
 				$log->save($logId);
 
 			//	if(!$disallow_logs) $log->logSuccess('Settings successfully saved.', true, $session_messages)->flushMessages($logId, E_LOG_INFORMATIVE, '', $this->prefid);
