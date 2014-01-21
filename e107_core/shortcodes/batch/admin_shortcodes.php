@@ -1572,7 +1572,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[1]['text'] = ADLAN_CL_1;
 			$tmp[1]['description'] = ADLAN_151;
 			$tmp[1]['link'] = e_BASE.'usersettings.php';
-			$tmp[1]['image'] = "<img src='".E_16_CAT_SETT."' alt='".ADLAN_151."' class='icon S16' />";
+			$tmp[1]['image'] =  "<i class='S16 e-settings-16'></i>"; // "<img src='".E_16_CAT_SETT."' alt='".ADLAN_151."' class='icon S16' />";
 			$tmp[1]['image_large'] = '';
 			$tmp[1]['image_src'] = '';
 			$tmp[1]['image_large_src'] = '';
@@ -1581,7 +1581,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[2]['text'] = "Personalize"; // TODO - generic LAN in lan_admin.php 
 			$tmp[2]['description'] = "Customize administration panels";
 			$tmp[2]['link'] = e_ADMIN.'admin.php?mode=customize';
-			$tmp[2]['image'] = E_16_ADMIN; // "<img src='".E_16_NAV_ADMIN."' alt='".ADLAN_151."' class='icon S16' />";
+			$tmp[2]['image'] =  "<i class='S16 e-admins-16'></i>"; //E_16_ADMIN; // "<img src='".E_16_NAV_ADMIN."' alt='".ADLAN_151."' class='icon S16' />";
 			$tmp[2]['image_large'] = '';
 			$tmp[2]['image_src'] = '';
 			$tmp[2]['image_large_src'] = '';
@@ -1591,7 +1591,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[3]['text'] = ADLAN_46;
 			$tmp[3]['description'] = ADLAN_151;
 			$tmp[3]['link'] = e_ADMIN_ABS.'admin.php?logout';
-			$tmp[3]['image'] = "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
+			$tmp[3]['image'] = "<i class='S16 e-logout-16'></i>"; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
 			$tmp[3]['image_large'] = '';
 			$tmp[3]['image_src'] = '';
 			$tmp[3]['image_large_src'] = '';
@@ -1602,7 +1602,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[4]['text'] = ADLAN_46;
 			$tmp[4]['description'] = ADLAN_151;
 			$tmp[4]['link'] = e_ADMIN_ABS.'admin.php?logout';
-			$tmp[4]['image'] = "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
+			$tmp[4]['image'] = "";
 			$tmp[4]['image_large'] = '';
 			$tmp[4]['image_src'] = '';
 			$tmp[4]['image_large_src'] = '';
