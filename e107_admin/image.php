@@ -2435,7 +2435,7 @@ function show_avatars()
 			else
 			{
 				//File info
-			//	$users = "<a class='e-tip' href='#' title='".IMALAN_66.": {$image_name}'><img src='".e_IMAGE_ABS."admin_images/info_16.png' alt='".IMALAN_66.": {$image_name}' /></a> ".$users;
+			//	$users = "<a class='e-tip' href='#' title='".IMALAN_66.": {$image_name}'><img src='".e_IMAGE_ABS."admin_imaXXXges/info_16.png' alt='".IMALAN_66.": {$image_name}' /></a> ".$users;
 
 				// Control over the image size (design)
 			//	$image_size = getimagesize(e_MEDIA."avatars/".$image_name);

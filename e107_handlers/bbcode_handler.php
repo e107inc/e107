@@ -541,12 +541,12 @@ class e_bbcode
 		//		'hint_func'		=> $helpfunc, // deprecated and unused
 		//		'hint_active'	=> $bbcode_helpactive,  // deprecated and unused
 				'size'			=> vartrue($helpsize),
-				'eplug_bb'			=> $eplug_bb,
+				'eplug_bb'		=> varset($eplug_bb), //?XXX ?
 		);
 				
 		$bbcode_shortcodes->setVars($data);	
 		
-  		return "<div id='bbcode-panel-".$id."' class='mceToolbar bbcode-panel' {$visible}>".$tp->parseTemplate($BBCODE_TEMPLATE,TRUE, $bbcode_shortcodes)."</div>";		
+  		return "<div id='bbcode-panel-".$id."' class='mceToolbar bbcode-panel'>".$tp->parseTemplate($BBCODE_TEMPLATE,TRUE, $bbcode_shortcodes)."</div>";		
 	}
 	
     

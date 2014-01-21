@@ -925,7 +925,7 @@ switch ($action)
 		/* FORM NOTE EXAMPLE - not needed here as this note is added as label-note (see below)
 		$text .= "
 			<div class='form-note'>
-				".BANLAN_13."<a href='".e_ADMIN_ABS."users.php'><img src='".e_IMAGE_ABS.'admin_images/'."users_16.png' alt='' /></a>
+				".BANLAN_13."<a href='".e_ADMIN_ABS."users.php'><img src='".e_IMAGE_ABS.'admin_imaXXXges/'."users_16.png' alt='' /></a>
 			</div>
 
 		";

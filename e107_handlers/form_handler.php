@@ -2022,17 +2022,7 @@ class e_form
 	{
 		$columnsArray = array_filter($columnsArray);
 		
-		/*
-        $text = "
-		<div class='col-selection-cont e-tip' data-placement='left' title='Select columns to display'>
-			<a href='#".$id."' class='e-show-if-js e-expandit' >"
-				."<img class='icon' src='".e_IMAGE_ABS."admin_images/select_columns_16.png' alt='select columns' />"
-			."</a>
-			<div id='".$id."' class='e-show-if-js e-hideme col-selection'>
-			<div class='col-selection-body dropdown'>
-			<ul class='dropdown-menu' role='menu' aria-labelledby='dLabel'>
-		";
-		*/
+	
 		$text = '<div class="dropdown e-tip pull-right" data-placement="left">
     <a class="dropdown-toggle" title="Select columns to display" data-toggle="dropdown" href="#"><b class="caret"></b></a>
     <ul class="dropdown-menu col-selection e-noclick" role="menu" aria-labelledby="dLabel">

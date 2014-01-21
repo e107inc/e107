@@ -142,7 +142,7 @@ class bbcode_shortcodes extends e_shortcode
 		$text = "<a {$event} class='btn e-bb ' id='{$id}' data-function='input' href='#{$this->var['tagid']}' title='".$this->br2nl(LANHELP_23)."' data-bbcode='{$data}'>\n";
 	//	$text .="<img class='btn btn-small bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/link.png' alt='' title='".nl2br(LANHELP_23)."' />";
 		
-		$text .= $this->button(e_IMAGE_ABS.'bbcode/link.png', 'link', LANHELP_23, $link);
+		$text .= $this->button(e_IMAGE_ABS.'bbcode/link.png', 'link');
 		
 		$text .= "</a>";
 		return $text;
@@ -158,11 +158,11 @@ class bbcode_shortcodes extends e_shortcode
 		
 		if(deftrue('BOOTSTRAP') && $glyph && deftrue('FONTAWESOME'))
 		{
-			$text .= "<span class='fa fa-".$glyph."'></span>";
+			$text = "<span class='fa fa-".$glyph."'></span>";
 		}
 		else 
 		{
-			$text .="<img src='".$image."' alt='' style='max-height:18px' />";	
+			$text ="<img src='".$image."' alt='' style='max-height:18px' />";	
 		}		
 		
 	//	$text .= ($link) ? "</a>" : "";
@@ -315,6 +315,7 @@ class bbcode_shortcodes extends e_shortcode
 	{
 		$emotes = e107::getParser()->getEmotes();
 		$pref = e107::getPref();
+		$text = "";
 		
 		foreach($emotes as $key=>$value)
 		{
@@ -516,7 +517,7 @@ class bbcode_shortcodes extends e_shortcode
 		if(!isset($iconpath[$parm]))
 		{
 			$iconpath[$parm] =  (file_exists(THEME."bbcode/bold.png") ? THEME_ABS."bbcode/" : e_IMAGE_ABS."bbcode/");
-			$iconpath[$parm] .= $bbcode[$parm][3];
+			$iconpath[$parm] .= varset($bbcode[$parm][3]);
 		}
 
 

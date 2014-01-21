@@ -180,6 +180,9 @@ if (!defined('E_32_SYSINFO')) {
 
 
 // Small Category Images
+/**
+ * 
+// @DEPRECATED 
 if (!defined('E_16_CAT_SETT')) {
 	define('E_16_CAT_SETT', e_IMAGE.'admin_images/cat_settings_16.png');
 }
@@ -207,7 +210,7 @@ if (!defined('E_16_CAT_MISC')) {
 if (!defined('E_16_CAT_ABOUT')) {
 	define('E_16_CAT_ABOUT', e_IMAGE.'admin_images/info_16.png');
 }
-
+*/
 // Large Category Images
 if (!defined('E_32_CAT_SETT')) {
 	define('E_32_CAT_SETT', "<i class='S32 e-cat_settings-32'></i> ");
@@ -238,6 +241,9 @@ if (!defined('E_32_CAT_ABOUT')) {
 }
 
 // Small Nav Images
+/**
+ * @DEPRECATED 
+
 if (!defined('E_16_NAV_MAIN')) {
 	define('E_16_NAV_MAIN', e_IMAGE.'admin_images/main_16.png');
 }
@@ -257,6 +263,8 @@ if (!defined('E_16_NAV_ARROW')) {
 if (!defined('E_16_NAV_ARROW_OVER')) {
 	define('E_16_NAV_ARROW_OVER', e_IMAGE.'admin_images/arrow_over_16.png');
 }
+*/
+
 
 // Large Nav Images
 if (!defined('E_32_NAV_MAIN')) {
@@ -467,18 +475,18 @@ define("E_32_TRUE", "<i class='S32 e-true-32'></i>");
 	define("ADMIN_EDIT_ICON_PATH", e_IMAGE_ABS."admin_images/edit_32.png");
 	define("ADMIN_DELETE_ICON_PATH", e_IMAGE_ABS."admin_images/delete_32.png");
 	define("ADMIN_WARNING_ICON_PATH", e_IMAGE_ABS."admin_images/warning_32.png");
-	define("ADMIN_ADD_ICON_PATH", e_IMAGE_ABS."admin_images/add_32.png");
-	define("ADMIN_INFO_ICON_PATH", e_IMAGE_ABS."admin_images/info_32.png");
-	define("ADMIN_CONFIGURE_ICON_PATH", e_IMAGE_ABS."admin_images/configure_32.png");
-	define("ADMIN_VIEW_ICON_PATH", e_IMAGE_ABS."admin_images/admin_images/search_32.png");
-	define("ADMIN_URL_ICON_PATH", e_IMAGE_ABS."admin_images/forums_32.png");
-	define("ADMIN_INSTALLPLUGIN_ICON_PATH", e_IMAGE_ABS."admin_images/plugin_install_32.png");
-	define("ADMIN_UNINSTALLPLUGIN_ICON_PATH", e_IMAGE_ABS."admin_images/plugin_unstall_32.png");
-	define("ADMIN_UPGRADEPLUGIN_ICON_PATH", e_IMAGE_ABS."admin_images/up_32.png");
-	define("ADMIN_UP_ICON_PATH", e_IMAGE_ABS."admin_images/up_32.png");
-	define("ADMIN_DOWN_ICON_PATH", e_IMAGE_ABS."admin_images/down_32.png");
-	define("ADMIN_EXECUTE_ICON_PATH", e_IMAGE_ABS."admin_images/execute_32.png");
-	define("ADMIN_SORT_ICON_PATH", e_IMAGE_ABS."admin_images/sort_32.png");
+//	define("ADMIN_ADD_ICON_PATH", e_IMAGE_ABS."admin_images/add_32.png");
+//	define("ADMIN_INFO_ICON_PATH", e_IMAGE_ABS."admin_images/info_32.png");
+//	define("ADMIN_CONFIGURE_ICON_PATH", e_IMAGE_ABS."admin_images/configure_32.png");
+//	define("ADMIN_VIEW_ICON_PATH", e_IMAGE_ABS."admin_images/admin_images/search_32.png");
+//	define("ADMIN_URL_ICON_PATH", e_IMAGE_ABS."admin_images/forums_32.png");
+//	define("ADMIN_INSTALLPLUGIN_ICON_PATH", e_IMAGE_ABS."admin_images/plugin_install_32.png");
+//	define("ADMIN_UNINSTALLPLUGIN_ICON_PATH", e_IMAGE_ABS."admin_images/plugin_unstall_32.png");
+//	define("ADMIN_UPGRADEPLUGIN_ICON_PATH", e_IMAGE_ABS."admin_images/up_32.png");
+//	define("ADMIN_UP_ICON_PATH", e_IMAGE_ABS."admin_images/up_32.png");
+//	define("ADMIN_DOWN_ICON_PATH", e_IMAGE_ABS."admin_images/down_32.png");
+//	define("ADMIN_EXECUTE_ICON_PATH", e_IMAGE_ABS."admin_images/execute_32.png");
+//	define("ADMIN_SORT_ICON_PATH", e_IMAGE_ABS."admin_images/sort_32.png");
 	
 	
 
