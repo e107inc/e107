@@ -24,7 +24,7 @@ $NEWS_MENU_TEMPLATE['list']['end']         = '</div>';
 
 // Template/CSS to be reviewed for best bootstrap implementation 
 $NEWS_TEMPLATE['list']['caption']	= '{NEWSCATEGORY}';
-$NEWS_TEMPLATE['list']['start']	= '{SETIMAGE: w=400&h=300&crop=1}';
+$NEWS_TEMPLATE['list']['start']	= '{SETIMAGE: w=400&h=350&crop=1}';
 $NEWS_TEMPLATE['list']['end']	= '';
 $NEWS_TEMPLATE['list']['item']	= '
 
@@ -35,17 +35,22 @@ $NEWS_TEMPLATE['list']['item']	= '
                     </div>
 				</div>
 				<div class="span9 col-md-9">
-                   <h3>{NEWSTITLELINK}</h3>
+                   <h3 class="media-heading">{NEWSTITLELINK}</h3>
                       <p>
                        	{NEWSSUMMARY}
 					</p>
                     <p>
-                       <a href="{NEWSURL}" class="btn btn-primary">'.LAN_READ_MORE.'</a>
+                       <a href="{NEWSURL}" class="btn btn-small btn-primary">'.LAN_READ_MORE.'</a>
                    </p>
  				</div>
 		</div>
 
 ';
+
+
+
+
+
 
 //$NEWS_MENU_TEMPLATE['list']['separator']   = '<br />';
 
