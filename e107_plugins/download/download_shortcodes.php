@@ -98,7 +98,7 @@ class download_shortcodes extends e_shortcode
       if ($this->dlsubrow['d_count'])
       {
 
-		$url = e107::getUrl()->create('download/list/category',array('id'=>$this->dlsubrow['download_category_id'], 'name'=>$this->dlsubrow['download_category_sef']));	    
+		$url = e107::getUrl()->create('download/list/category',array('id'=>$this->dlsubrow['download_category_id'], 'name'=> vartrue($this->dlsubrow['download_category_sef'],'--sef-not-set--')));	    
 	    return "<a class='".$class."' href='".$url."'>".$tp->toHTML($this->dlsubrow['download_category_name'], FALSE, 'TITLE')."</a>";
   
   //       return "<a class='".$class."' href='".e_PLUGIN_ABS."download/download.php?action=list&id=".$this->dlsubrow['download_category_id']."'>".$tp->toHTML($this->dlsubrow['download_category_name'], FALSE, 'TITLE')."</a>";

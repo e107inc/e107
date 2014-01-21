@@ -55,7 +55,7 @@ $BBCODE_TEMPLATE_SUBMITNEWS = "
 $BBCODE_TEMPLATE_ADMIN = "
 	<div class='btn-toolbar'>
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=format}{BB=left}{BB=center}{BB=right}{BB=justify}
-	{BB=bq}{BB=list}{BB=table}{BB=fontcol}{BB=fontsize}{BB=emotes}
+	{BB=list}{BB=table}{BB=fontcol}{BB=fontsize}{BB=emotes}
 	{BB_PREIMAGEDIR}
 	{BB=preimage}{BB=prefile}{BB=flash}{BB=youtube}
 	</div>
@@ -63,7 +63,7 @@ $BBCODE_TEMPLATE_ADMIN = "
 
 $BBCODE_TEMPLATE_MAILOUT = "
 	<div class='btn-toolbar'>
-	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=left}{BB=center}{BB=right}{BB=justify}{BB=bq}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
+	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=left}{BB=center}{BB=right}{BB=justify}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
 	{BB_PREIMAGEDIR}
 	{BB=preimage}{BB=prefile}{BB=flash}{BB=shortcode}
 	</div>
@@ -74,7 +74,7 @@ $BBCODE_TEMPLATE_MAILOUT = "
 $BBCODE_TEMPLATE_NEWSPOST = "
 	<div class='btn-toolbar'>
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=format}{BB=left}{BB=center}{BB=right}{BB=justify}
-	{BB=bq}{BB=list}{BB=table}{BB=fontcol}{BB=fontsize}{BB=emotes}
+	{BB=list}{BB=table}{BB=fontcol}{BB=fontsize}{BB=emotes}
 	{BB_PREIMAGEDIR=news}
 	{BB=preimage}{BB=prefile}{BB=flash}{BB=youtube}
 	</div>
