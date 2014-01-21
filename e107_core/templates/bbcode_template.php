@@ -30,7 +30,7 @@ $BBCODE_TEMPLATE_COMMENT = ""; // no buttons on comments by default.
 
 $BBCODE_TEMPLATE_SIGNATURE = "
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=left}{BB=center}{BB=right}{BB=justify}
-	{BB=bq}{BB=list}
+	{BB=list}
 	<div class='field-spacer'><!-- --></div>
 ";
 
@@ -45,7 +45,7 @@ $BBCODE_TEMPLATE_SUBMITNEWS = "
 	{BB_HELP}
 	<div class='field-spacer'><!-- --></div>
     {BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=left}{BB=center}{BB=right}{BB=justify}
-	{BB=bq}{BB=list}{BB=nobr}{BB=br}{BB=fontcol}{BB=fontsize}{BB=emotes}{BB=flash}{BB=youtube}
+	{BB=list}{BB=nobr}{BB=br}{BB=fontcol}{BB=fontsize}{BB=emotes}{BB=flash}{BB=youtube}
 	<div class='field-spacer'><!-- --></div>
 ";
 
@@ -83,7 +83,7 @@ $BBCODE_TEMPLATE_NEWSPOST = "
 $BBCODE_TEMPLATE_CPAGE = "
 	<div class='btn-toolbar'>
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=format}{BB=left}{BB=center}{BB=right}{BB=justify}
-	{BB=bq}{BB=list}{BB=table}{BB=fontcol}{BB=fontsize}{BB=emotes}
+	{BB=list}{BB=table}{BB=fontcol}{BB=fontsize}{BB=emotes}
 	{BB_PREIMAGEDIR=page}
 	{BB=preimage}{BB=prefile}{BB=flash}{BB=youtube}
 	</div>
