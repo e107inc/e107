@@ -671,41 +671,41 @@ class e_navigation
 		
 		$this->admin_cat['title'][1] = ADLAN_CL_1;
 		$this->admin_cat['id'][1] = 'setMenu';
-		$this->admin_cat['img'][1] = E_16_CAT_SETT;
-		$this->admin_cat['lrg_img'][1] = E_32_CAT_SETT;
+		$this->admin_cat['img'][1] = ''; // E_16_CAT_SETT;
+		$this->admin_cat['lrg_img'][1] = ''; // E_32_CAT_SETT;
 		$this->admin_cat['sort'][1] = true;
 		
 		$this->admin_cat['title'][2] = ADLAN_CL_2;
 		$this->admin_cat['id'][2] = 'userMenu';
-		$this->admin_cat['img'][2] = E_16_CAT_USER;
-		$this->admin_cat['lrg_img'][2] = E_32_CAT_USER;
+		$this->admin_cat['img'][2] = ''; // E_16_CAT_USER;
+		$this->admin_cat['lrg_img'][2] = ''; // E_32_CAT_USER;
 		$this->admin_cat['sort'][2] = true;
 		
 		$this->admin_cat['title'][3] = ADLAN_CL_3;
 		$this->admin_cat['id'][3] = 'contMenu';
-		$this->admin_cat['img'][3] = E_16_CAT_CONT;
-		$this->admin_cat['lrg_img'][3] = E_32_CAT_CONT;
+		$this->admin_cat['img'][3] = ''; // E_16_CAT_CONT;
+		$this->admin_cat['lrg_img'][3] = ''; // E_32_CAT_CONT;
 		$this->admin_cat['sort'][3] = true;
 		
 		$this->admin_cat['title'][4] = ADLAN_CL_6;
 		$this->admin_cat['id'][4] = 'toolMenu';
-		$this->admin_cat['img'][4] = E_16_CAT_TOOL;
-		$this->admin_cat['lrg_img'][4] = E_32_CAT_TOOL;
+		$this->admin_cat['img'][4] = ''; // E_16_CAT_TOOL;
+		$this->admin_cat['lrg_img'][4] = ''; // E_32_CAT_TOOL;
 		$this->admin_cat['sort'][4] = true;
 		
 		// Manage
 		$this->admin_cat['title'][5] = LAN_MANAGE;
 		$this->admin_cat['id'][5] = 'managMenu';
-		$this->admin_cat['img'][5] = E_16_CAT_MANAGE;
-		$this->admin_cat['lrg_img'][5] = E_32_CAT_MANAGE;
+		$this->admin_cat['img'][5] = ''; // E_16_CAT_MANAGE;
+		$this->admin_cat['lrg_img'][5] = ''; // E_32_CAT_MANAGE;
 		$this->admin_cat['sort'][5] = TRUE;
 		
 		if(vartrue($pref['admin_separate_plugins']))
 		{
 			$this->admin_cat['title'][6] = ADLAN_CL_7;
 			$this->admin_cat['id'][6] = 'plugMenu';
-			$this->admin_cat['img'][6] = E_16_CAT_PLUG;
-			$this->admin_cat['lrg_img'][6] = E_32_CAT_PLUG;
+			$this->admin_cat['img'][6] = ''; // E_16_CAT_PLUG;
+			$this->admin_cat['lrg_img'][6] = ''; // E_32_CAT_PLUG;
 			$this->admin_cat['sort'][6] = false;	
 		}
 		else
@@ -713,16 +713,16 @@ class e_navigation
 			// Misc.
 			$this->admin_cat['title'][6] = ADLAN_CL_8;
 			$this->admin_cat['id'][6] = 'miscMenu';
-			$this->admin_cat['img'][6] = E_16_CAT_MISC;
-			$this->admin_cat['lrg_img'][6] = E_32_CAT_MISC;
+			$this->admin_cat['img'][6] = ''; // E_16_CAT_MISC;
+			$this->admin_cat['lrg_img'][6] = ''; // E_32_CAT_MISC;
 			$this->admin_cat['sort'][6] = TRUE;
 		}
 		
 		//About menu    - No 20 -  leave space for user-categories.
 		$this->admin_cat['title'][20] = ADLAN_CL_20;
 		$this->admin_cat['id'][20] = 'aboutMenu';
-		$this->admin_cat['img'][20] = E_16_CAT_ABOUT;//E_16_NAV_DOCS
-		$this->admin_cat['lrg_img'][20] = E_32_CAT_ABOUT;
+		$this->admin_cat['img'][20] = ''; // E_16_CAT_ABOUT;//E_16_NAV_DOCS
+		$this->admin_cat['lrg_img'][20] = ''; // E_32_CAT_ABOUT;
 		$this->admin_cat['sort'][20] = false;	
 				
 		
