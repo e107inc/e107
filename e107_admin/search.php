@@ -79,7 +79,7 @@ if (vartrue($save_search))
 	// $serialpref = addslashes(serialize($search_prefs));
 //	$serialpref = e107::getArrayStorage()->writeArray($search_prefs, true);
 //	$sql -> db_Update("core", "e107_value='".$serialpref."' WHERE e107_name='search_prefs'");
-	e107::getConfig('search')->setPref($search_prefs)->save(false,true);
+	e107::getConfig('search')->setPref($search_prefs)->save(false,true,false);
 	
 	$admin_log->log_event('SEARCH_03','',E_LOG_INFORMATIVE,'');
 }
