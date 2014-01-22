@@ -526,6 +526,18 @@ class news_shortcodes extends e_shortcode
 			return "None";
 		}			
 	}
+	
+	
+	
+	function sc_newsrelated($array=array())
+	{
+		if(!varset($array['types']))
+		{
+			$array['types'] = 'news,page';
+		}
+		
+		return e107::getForm()->renderRelated($array['types'], $this->news_item['news_meta_keywords'], array('news'=>$this->news_item['news_id']));	
+	}
 
 }
 ?>
