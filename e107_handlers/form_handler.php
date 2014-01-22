@@ -2241,6 +2241,8 @@ class e_form
 		$tp = e107::getParser();
 			
 		$types = explode(',',$type);
+		$list = array();
+		
 		
 		foreach($types as $plug)
 		{
