@@ -19,18 +19,20 @@ class page_related // replace 'e_' with 'plugin-folder_'
 {
 	private $chapterSef = array();
 	private $chapterParent = array();
+	private $chapterName = array();
 	
 	function __construct()
 	{
 		$sql = e107::getDb();
 		
-		$books = $sql->retrieve("SELECT chapter_id,chapter_sef,chapter_parent FROM #page_chapters ORDER BY chapter_id ASC" , true);
+		$books = $sql->retrieve("SELECT chapter_id,chapter_sef,chapter_parent,chapter_name FROM #page_chapters ORDER BY chapter_id ASC" , true);
 				
 		foreach($books as $row)
 		{
 			$id = $row['chapter_id'];
 			$this->chapterSef[$id] = $row['chapter_sef'];
 			$this->chapterParent[$id] = $row['chapter_parent'];
+			$this->chapterName[$id] = $row['chapter_name'];
 		}	
 
 	}
@@ -64,9 +66,11 @@ class page_related // replace 'e_' with 'plugin-folder_'
 				$book 				= $this->getParent($row['page_chapter']);
 				$row['book_sef']	= $this->getSef($book); 
 				
+				$id = $row['page_chapter'];
+				$title = (vartrue($this->chapterName[$id])) ? $this->chapterName[$id]." | ".$row['page_title'] : $row['page_title'];
 				
 				$items[] = array(
-					'title'			=> $row['page_title'],
+					'title'			=> $title,
 					'url'			=> e107::getUrl()->create('page/view/index',$row), // '{e_BASE}news.php?extend.'.$row['news_id'],
 					'body'			=> $row['news_summary'],
 					'image'			=> $row['news_image']

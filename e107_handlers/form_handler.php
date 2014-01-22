@@ -2235,12 +2235,22 @@ class e_form
 	 * @param string $tags : comma separated list of keywords to return related items of.
 	 * @param array $curVal. eg. array('page'=> current-page-id-value); 
 	 */
-	function renderRelated($type='news',$tags, $curVal) //XXX TODO Cache!
+	function renderRelated($parm,$tags, $curVal) //XXX TODO Cache!
 	{
-		$parm = array('limit' => 5);
+		if(!varset($parm['limit']))
+		{
+			$parm = array('limit' => 5);
+		}
+		
+		if(!varset($parm['types']))
+		{
+			$parm['types'] = 'news';	
+		}
+		
+			
 		$tp = e107::getParser();
 			
-		$types = explode(',',$type);
+		$types = explode(',',$parm['types']);
 		$list = array();
 		
 		
