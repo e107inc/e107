@@ -2237,6 +2237,12 @@ class e_form
 	 */
 	function renderRelated($parm,$tags, $curVal) //XXX TODO Cache!
 	{
+		
+		if(empty($tags))
+		{
+			return;	
+		}
+		
 		if(!varset($parm['limit']))
 		{
 			$parm = array('limit' => 5);
