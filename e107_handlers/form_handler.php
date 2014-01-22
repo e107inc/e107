@@ -2225,8 +2225,51 @@ class e_form
 		
 		return $text;			
 	}
+
+
+
 			
+	/**
+	 * Render Related Items for the current page/news-item etc. 
+	 * @param string $type : comma separated list. ie. plugin folder names. 
+	 * @param string $tags : comma separated list of keywords to return related items of.
+	 * @param array $curVal. eg. array('page'=> current-page-id-value); 
+	 */
+	function renderRelated($type='news',$tags, $curVal) //XXX TODO Cache!
+	{
+		$parm = array('limit' => 5);
+		$tp = e107::getParser();
+			
+		$types = explode(',',$type);
 		
+		foreach($types as $plug)
+		{
+		
+			if(!$obj = e107::getAddon($plug,'e_related'))
+			{
+				continue;
+			}
+			
+			$parm['current'] = intval(varset($curVal[$plug])); 
+		
+			$tmp = $obj->compile($tags,$parm);	
+		
+			if(count($tmp))
+			{
+				foreach($tmp as $val)
+				{
+					$list[] = "<li><a href='".$tp->replaceConstants($val['url'],'full')."'>".$val['title']."</a></li>";	
+					
+				}
+			}		
+		}
+		
+		if(count($list))
+		{
+			return "<div class='e-related'><hr><h4>Related</h4><ul class='e-related'>".implode("\n",$list)."</ul></div>"; //XXX Tablerender?
+		}
+		
+	}		
 
 
 

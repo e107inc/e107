@@ -44,7 +44,7 @@ $NEWS_TEMPLATE['list']['item']	= '
                    </p>
  				</div>
 		</div>
-
+		
 ';
 
 
@@ -135,6 +135,7 @@ $NEWS_TEMPLATE['view']['item'] = '
 			<span class="category ">{GLYPH=comments} {NEWSCOMMENTCOUNT} &nbsp; {EMAILICON} &nbsp; {PRINTICON} &nbsp; {PDFICON} &nbsp; {ADMINOPTIONS}</span> 
 			</div>
 	</div>
+	{NEWSRELATED}
 ';
 //$NEWS_MENU_TEMPLATE['view']['separator']   = '<br />';
 

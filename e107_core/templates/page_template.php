@@ -27,6 +27,8 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 #### default template - BC ####
 	// used only for parsing comment outside of the page tablerender-ed content
 	// leave empty if you integrate page comments inside the main page template
+	
+	
 	$PAGE_TEMPLATE['default']['page'] = '
 		{PAGE}
 		{PAGECOMMENTS}
@@ -39,7 +41,6 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 	$PAGE_TEMPLATE['default']['body'] = '
 		{CPAGEMESSAGE|default}
 		
-		<div class="f-right">{CPAGEAUTHOR|default}{CPAGEDATE|default}</div>
 		{CPAGESUBTITLE|default}
 		<div class="clear"><!-- --></div>
 		
@@ -72,7 +73,7 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 	';
 	
 	// always used
-	$PAGE_TEMPLATE['default']['end'] = '</div>'; 
+	$PAGE_TEMPLATE['default']['end'] = '{CPAGERELATED: types=page,news}</div>'; 
 	
 	// options per template - disable table render
 //	$PAGE_TEMPLATE['default']['noTableRender'] = false; //XXX Deprecated
@@ -91,7 +92,6 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 	';
 	
 	$PAGE_TEMPLATE['custom']['end'] 			= '</div>'; 
-//	$PAGE_TEMPLATE['custom']['noTableRender'] 	= true;  //XXX Deprecated
 	$PAGE_TEMPLATE['custom']['tableRender'] 	= '';
 	
 	
