@@ -180,6 +180,8 @@ class admin_shortcodes
 
 	function sc_admin_icon()
 	{
+		$tp = e107::getParser();
+		
 		if (ADMIN)
 		{
 			global $e_sub_cat, $e_icon_array, $PLUGINS_DIRECTORY;
@@ -221,7 +223,7 @@ class admin_shortcodes
 				}
 				else
 				{
-					$icon = E_32_CAT_PLUG;
+					$icon = $tp->toGlyph('e-cat_plugins-32');
 					return $icon;
 				}
 				

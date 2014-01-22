@@ -989,15 +989,16 @@ class themeHandler
 		$ns = e107::getRender();
 		$pref = e107::getPref();
 		$frm = e107::getForm();
+		$tp = e107::getParser();
 		
 		$author 		= ($theme['email'] ? "<a href='mailto:".$theme['email']."' title='".$theme['email']."'>".$theme['author']."</a>" : $theme['author']);
 		$website 		= ($theme['website'] ? "<a href='".$theme['website']."' rel='external'>".$theme['website']."</a>" : "");
 	//	$preview 		= "<a href='".e_BASE."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;width:200px' alt='' />" : "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' title='".TPVLAN_12."' alt='' />")."</a>";
-		$main_icon 		= ($pref['sitetheme'] != $theme['path']) ? "<input class='top' type='image' src='".e_IMAGE_ABS."admin_images/main_32.png'  name='selectmain[".$theme['id']."]' alt=\"".TPVLAN_10."\" title=\"".TPVLAN_10."\" />" : E_32_TRUE;
+		$main_icon 		= ($pref['sitetheme'] != $theme['path']) ? "<button class='top' type='submit'   name='selectmain[".$theme['id']."]' alt=\"".TPVLAN_10."\" title=\"".TPVLAN_10."\" >".$tp->toGlyph('fa-home',array('size'=>'2x'))."</button>" : $tp->toGlyph('fa-check',array('size'=>'2x'));
 	//	$info_icon 		= "<a data-toggle='modal' data-target='".e_SELF."' href='#themeInfo_".$theme['id']."' class='e-tip' title='".TPVLAN_7."'><img src='".e_IMAGE_ABS."admin_images/info_32.png' alt='' class='icon S32' /></a>";
-		$info_icon 		= "<a data-toggle='modal' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".e_SELF."?id=".$theme['path']."' data-target='#uiModal'  title='".TPVLAN_7."'>".E_32_CAT_ABOUT."</a>";
+		$info_icon 		= "<a data-toggle='modal' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".e_SELF."?id=".$theme['path']."' data-target='#uiModal'  title='".TPVLAN_7."'>".$tp->toGlyph('fa-info-circle',array('size'=>'2x'))."</a>";
 //		$preview_icon 	= "<a title='Preview : ".$theme['name']."' rel='external' class='e-dialog' href='".e_BASE."index.php?themepreview.".$theme['id']."'>".E_32_SEARCH."</a>";
-		$admin_icon 	= ($pref['admintheme'] != $theme['path'] ) ? "<input class='top' type='image' src='".e_IMAGE_ABS."e107_icon_32.png'  name='selectadmin[".$theme['id']."]' alt=\"".TPVLAN_32."\" title=\"".TPVLAN_32."\" />\n" : E_32_TRUE;
+		$admin_icon 	= ($pref['admintheme'] != $theme['path'] ) ? "<button class='top' type='submit'   name='selectadmin[".$theme['id']."]' alt=\"".TPVLAN_32."\" title=\"".TPVLAN_32."\" >".$tp->toGlyph('fa-gears',array('size'=>'2x'))."</button>\n" : $tp->toGlyph('fa-check',array('size'=>'2x'));
 		$price 			= '';
 		
 		if(substr($theme['thumbnail'],0,4) == 'http')
@@ -1056,7 +1057,7 @@ class themeHandler
 	
 		}
 		
-		$preview_icon 	= "<a title='Preview/Live-Demo : ".$theme['name']."' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" rel='external' class='e-modal' href='".$previewPath."'>".E_32_SEARCH."</a>";
+		$preview_icon 	= "<a class='e-modal' title='Preview/Live-Demo : ".$theme['name']."' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" rel='external'  href='".$previewPath."'>".$tp->toGlyph('fa-search',array('size'=>'2x'))."</a>";
 		
 		
 		if(!in_array($theme['path'], $this->approvedAdminThemes))

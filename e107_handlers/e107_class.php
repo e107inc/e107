@@ -1750,7 +1750,7 @@ class e107
 	}
 
 	/**
-	 * Retrieves config() from a specific plugin for addons such as e_url.php, e_cron.php, e_sitelink.php
+	 * Retrieves class Object for specific plugin's addon such as e_url.php, e_cron.php, e_sitelink.php
 	 * FIXME override from e.g. core/override/addons/
 	 * 
 	 * @param string $pluginName e.g. faq, page

@@ -27,11 +27,12 @@ class e107plugin
 {
 	// Reserved Addon names.
 	var $plugin_addons = array(
-		'e_rss',
+		'e_bb',
+		'e_cron',
 		'e_notify',
 		'e_linkgen',
 		'e_list',
-		'e_bb',
+		
 		'e_meta',
 		'e_emailprint',
 		'e_frontpage',
@@ -48,11 +49,13 @@ class e107plugin
 		'e_userinfo',
 		'e_tagwords',
 		'e_url',
-		'e_cron',
+		
 		'e_mailout',
 		'e_sitelink',
 		'e_tohtml',
-		'e_featurebox'
+		'e_featurebox',
+		'e_related',
+		'e_rss',
 	);
 
 
@@ -2770,6 +2773,8 @@ class e107plugin
 	{
 		if(!$plugName) return;
 		
+		$tp = e107::getParser();
+		
 		if(!isset($this->parsed_plugin[$plugName]))
 		{
 			$plug_vars = $this->parse_plugin($plugName);	
@@ -2782,7 +2787,7 @@ class e107plugin
 		//return print_r($plug_vars,TRUE);	
 			
 		$sizeArray = array(32=>'icon', 16=>'iconSmall');
-		$default = ($size == 32) ? E_32_CAT_PLUG : "<img class='icon S16' src='".E_16_CAT_PLUG."' alt='' />"; 
+		$default = ($size == 32) ? $tp->toGlyph('e-cat_plugins-32') : "<img class='icon S16' src='".E_16_CAT_PLUG."' alt='' />"; 
 		$sz = $sizeArray[$size];
 		
 		$icon_src = e_PLUGIN.$plugName."/".$plug_vars['administration'][$sz];
