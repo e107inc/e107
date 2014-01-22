@@ -571,11 +571,13 @@ function update_706_to_800($type='')
 		array('oldpath'	=> 'powered_by_menu',	'newpath' => 'siteinfo',	'menu' => 'powered_by_menu'),
 		array('oldpath'	=> 'sitebutton_menu',	'newpath' => 'siteinfo',	'menu' => 'sitebutton_menu'),
 		array('oldpath'	=> 'counter_menu',		'newpath' => 'siteinfo',	'menu' => 'counter_menu'),
-		array('oldpath'	=> 'usertheme_menu',	'newpath' => 'user_menu',	'menu' => 'usertheme_menu'),
-		array('oldpath'	=> 'userlanguage_menu',	'newpath' => 'user_menu',	'menu' => 'userlanguage_menu'),
+		array('oldpath'	=> 'usertheme_menu',	'newpath' => 'user',		'menu' => 'usertheme_menu'),
+		array('oldpath'	=> 'userlanguage_menu',	'newpath' => 'user',		'menu' => 'userlanguage_menu'),
 		array('oldpath'	=> 'lastseen_menu',		'newpath' => 'online',		'menu' => 'lastseen_menu'),
 		array('oldpath'	=> 'other_news_menu',	'newpath' => 'news',		'menu' => 'other_news_menu'),
-		array('oldpath'	=> 'other_news_menu',	'newpath' => 'news',		'menu' => 'other_news2_menu')
+		array('oldpath'	=> 'other_news_menu',	'newpath' => 'news',		'menu' => 'other_news2_menu'),
+		array('oldpath'	=> 'user_menu',			'newpath' => 'user',		'menu' => 'usertheme_menu'),
+		array('oldpath'	=> 'user_menu',			'newpath' => 'user',		'menu' => 'userlanguage_menu'),
 		
 	);
 
