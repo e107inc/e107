@@ -2688,7 +2688,7 @@ class e_parser
 	/**
 	 * Parse xxxxx.glyph file to bootstrap glyph format. 
 	 * @param string $text 
-	 * @param array 
+	 * @param array of $parms
 	 */ 
 	public function toGlyph($text, $space=" ")
 	{
@@ -2771,7 +2771,7 @@ class e_parser
 		
 		$ext = pathinfo($icon, PATHINFO_EXTENSION);
 						
-		if(!$ext || $ext == '.glyph') // Bootstrap or Font-Awesome. 
+		if(!$ext || $ext == 'glyph') // Bootstrap or Font-Awesome. 
 		{
 			return $this->toGlyph($icon,$parm);
 		}
