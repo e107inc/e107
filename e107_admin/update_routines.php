@@ -578,7 +578,9 @@ function update_706_to_800($type='')
 		array('oldpath'	=> 'other_news_menu',	'newpath' => 'news',		'menu' => 'other_news2_menu'),
 		array('oldpath'	=> 'user_menu',			'newpath' => 'user',		'menu' => 'usertheme_menu'),
 		array('oldpath'	=> 'user_menu',			'newpath' => 'user',		'menu' => 'userlanguage_menu'),
-		
+		array('oldpath'	=> 'poll_menu',			'newpath' => 'poll',		'menu' => 'poll_menu'),
+		array('oldpath'	=> 'banner_menu',		'newpath' => 'banner',		'menu' => 'banner_menu'),
+		array('oldpath'	=> 'online_menu',		'newpath' => 'online',		'menu' => 'online_menu'),
 	);
 
 
