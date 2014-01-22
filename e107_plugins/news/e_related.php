@@ -44,7 +44,7 @@ class news_related // include plugin-folder in the name.
 	    }
 		elseif(ADMIN)
 		{
-			return array(array('title'=>$query,'url'=>''));	
+		//	return array(array('title'=>$query,'url'=>''));	
 		}
 	}
 	
