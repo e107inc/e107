@@ -445,7 +445,7 @@ class pluginManager{
 				$data[] = array(
 					'plugin_id'				=> $row['params']['id'],
 					'plugin_mode'			=> $row['params']['mode'],
-					'plugin_icon'			=> vartrue($row['icon'],e_IMAGE."admin_images/plugins_32.png"),
+					'plugin_icon'			=> vartrue($row['icon'],'e-plugins-32'),
 					'plugin_name'			=> stripslashes($row['name']),
 					'plugin_featured'		=> $featured,
 					'plugin_folder'			=> $row['folder'],
@@ -1164,7 +1164,7 @@ class pluginManager{
 
 					if(!file_exists($plugin_icon))
 					{
-						$plugin_icon = e_IMAGE."admin_images/cat_plugins_32.png";
+						$plugin_icon = 'e-cat_plugins-32'; // e_IMAGE."admin_images/cat_plugins_32.png";
 					}
 
 						

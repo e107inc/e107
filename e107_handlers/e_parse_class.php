@@ -2687,7 +2687,8 @@ class e_parser
 	
 	/**
 	 * Parse xxxxx.glyph file to bootstrap glyph format. 
-	 * @return FALSE if not a glyph file or if bootstrap is not found. 
+	 * @param string $text 
+	 * @param array 
 	 */ 
 	public function toGlyph($text, $space=" ")
 	{
@@ -2706,7 +2707,12 @@ class e_parser
 			$parm = array();
 		}
 
-		
+		if(substr($text,0,2) == 'e-') 	// e107 admin icon. 
+		{
+			$size = (substr($text,-3) == '-32') ? 'S32' : 'S16';	
+			return "<i class='".$size." ".$text."'></i>";		
+		}
+
 		// Bootstrap 3 Glyph names. 
 		$bs3 = e107::getMedia()->getGlyphs('bs3','');
 		
@@ -2715,37 +2721,32 @@ class e_parser
 			$text = 'icon-'.$text.'.glyph';	
 		}
 		
-//		if(substr($text,-6) == '.glyph' || strpos($text,".")==false) // Bootstrap or Font-Awesome. 
-		{
-			list($cls,$tmp) = explode('.glyph',$text);
-			list($type, $tmp2) = explode("-",$text,2);
-			
-			$id = str_replace("icon-","",$cls);
-			
-			if(deftrue('FONTAWESOME') == 4 && !in_array($id ,$bs3)) // Convert FontAwesome 3 to 4. 
-			{
-				$cls = str_replace('icon-', 'fa fa-', $cls);
-			}
-			elseif(defset("BOOTSTRAP")===3) 
-			{
-				$cls = str_replace('icon-', 'glyphicon glyphicon-', $cls);	
-			}
-
-			if($type == 'fa')
-			{
-				$cls = str_replace('fa-', 'fa fa-', $cls);	
-				$cls .= (vartrue($parm['size'])) ?  ' fa-'.$parm['size'] : '';		
-			}
-
-	//		$text = (deftrue('BOOTSTRAP') === 3) ? "<span class='".$cls."'></span>"  : "<i class='".$cls."'></i>";	// retain space. 
-			
-			$text = "<span class='".$cls."'></span>" ;
-			$text .= ($space !== false) ? $space : "";
-			
-			return $text;
-		}
+		list($cls,$tmp) = explode('.glyph',$text);
+		list($type, $tmp2) = explode("-",$text,2);
 		
-		return false;
+		$id = str_replace("icon-","",$cls);
+		
+		if(deftrue('FONTAWESOME') == 4 && !in_array($id ,$bs3)) // Convert FontAwesome 3 to 4. 
+		{
+			$cls = str_replace('icon-', 'fa fa-', $cls);
+		}
+		elseif(defset("BOOTSTRAP")===3) 
+		{
+			$cls = str_replace('icon-', 'glyphicon glyphicon-', $cls);	
+		}
+			
+			if($type == 'fa')
+		{
+			$cls = str_replace('fa-', 'fa fa-', $cls);	
+			$cls .= (vartrue($parm['size'])) ?  ' fa-'.$parm['size'] : '';		
+		}
+	//		$text = (deftrue('BOOTSTRAP') === 3) ? "<span class='".$cls."'></span>"  : "<i class='".$cls."'></i>";	// retain space. 
+		
+		$text = "<span class='".$cls."'></span>" ;
+		$text .= ($space !== false) ? $space : "";
+		
+		return $text;
+
 		
 		//$text = preg_replace('/\[(i_[\w]*)\]/',"<i class='$1'></i>", $text); 		
 		// return $text;	
@@ -2762,14 +2763,15 @@ class e_parser
 	 */
 	public function toIcon($icon='',$parm = array())
 	{
-	
 		
 		if(!vartrue($icon))
 		{
 			return;
 		}
 		
-		if(substr($icon,-6) == '.glyph') // Bootstrap or Font-Awesome. 
+		$ext = pathinfo($icon, PATHINFO_EXTENSION);
+						
+		if(!$ext || $ext == '.glyph') // Bootstrap or Font-Awesome. 
 		{
 			return $this->toGlyph($icon,$parm);
 		}

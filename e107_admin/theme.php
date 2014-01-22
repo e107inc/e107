@@ -41,7 +41,10 @@ e107::css("inline","
 							 display:block;position:relative; text-align:center; vertical-align:middle; top:-141px;}
 
 .admin-theme-options:hover	{ opacity:0.8; }
-
+.admin-theme-options button	{ background: none; color: white; border: none; padding:0px;  margin:3px; }
+.admin-theme-options a {color: inherit; display:inline-block }
+.admin-theme-options a span		{ color: inherit; padding-right: 5px; padding-left:0px; padding-top: 3px; margin-left:3px }
+.admin-theme-options .fa-check	{ color: #FAA732 }
 .admin-theme-title			{ line-height: 18px; overflow:hidden; padding-left:5px; white-space:no-wrap; width:200px; position:relative; top:-132px; }
 
 .admin-theme-select			{border:1px dotted silver;background-color:#DDDDDD;float:left }

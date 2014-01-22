@@ -666,46 +666,64 @@ class e_navigation
 	//FIXME array structure - see $this->admin();
 	function adminCats()
 	{
-		if(count($this->admin_cat)) return $this->admin_cat;
+		$tp = e107::getParser();
+		
+		if(count($this->admin_cat))
+		{
+			 return $this->admin_cat;
+		}
+		
 		$pref = e107::getPref();
 		
 		$this->admin_cat['title'][1] = ADLAN_CL_1;
 		$this->admin_cat['id'][1] = 'setMenu';
-		$this->admin_cat['img'][1] = ''; // E_16_CAT_SETT;
-		$this->admin_cat['lrg_img'][1] = ''; // E_32_CAT_SETT;
+		$this->admin_cat['img'][1] = $tp->toGlyph('e-settings-16');
+		$this->admin_cat['lrg_img'][1] = $tp->toGlyph('e-settings-32'); 
 		$this->admin_cat['sort'][1] = true;
+
+/*
+ * i.e-cat_content-32{ background-position: -370px 0; width: 32px; height: 32px; } 
+i.e-cat_files-32{ background-position: -407px 0; width: 32px; height: 32px; } 
+i.e-cat_plugins-32{ background-position: -444px 0; width: 32px; height: 32px; } 
+i.e-cat_settings-32{ background-position: -481px 0; width: 32px; height: 32px; } 
+i.e-cat_tools-32{ background-position: -518px 0; width: 32px; height: 32px; } 
+i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; } 
+ * e-manage-32
+ */
+
+
 		
 		$this->admin_cat['title'][2] = ADLAN_CL_2;
 		$this->admin_cat['id'][2] = 'userMenu';
-		$this->admin_cat['img'][2] = ''; // E_16_CAT_USER;
-		$this->admin_cat['lrg_img'][2] = ''; // E_32_CAT_USER;
+		$this->admin_cat['img'][2] = $tp->toGlyph('e-cat_users-16');  
+		$this->admin_cat['lrg_img'][2] = $tp->toGlyph('e-cat_users-32'); 
 		$this->admin_cat['sort'][2] = true;
 		
 		$this->admin_cat['title'][3] = ADLAN_CL_3;
 		$this->admin_cat['id'][3] = 'contMenu';
-		$this->admin_cat['img'][3] = ''; // E_16_CAT_CONT;
-		$this->admin_cat['lrg_img'][3] = ''; // E_32_CAT_CONT;
+		$this->admin_cat['img'][3] = $tp->toGlyph('e-cat_content-16'); 
+		$this->admin_cat['lrg_img'][3] = $tp->toGlyph('e-cat_content-32'); 
 		$this->admin_cat['sort'][3] = true;
 		
 		$this->admin_cat['title'][4] = ADLAN_CL_6;
 		$this->admin_cat['id'][4] = 'toolMenu';
-		$this->admin_cat['img'][4] = ''; // E_16_CAT_TOOL;
-		$this->admin_cat['lrg_img'][4] = ''; // E_32_CAT_TOOL;
+		$this->admin_cat['img'][4] = $tp->toGlyph('e-cat_tools-16'); 
+		$this->admin_cat['lrg_img'][4] = $tp->toGlyph('e-cat_tools-32'); 
 		$this->admin_cat['sort'][4] = true;
 		
 		// Manage
 		$this->admin_cat['title'][5] = LAN_MANAGE;
 		$this->admin_cat['id'][5] = 'managMenu';
-		$this->admin_cat['img'][5] = ''; // E_16_CAT_MANAGE;
-		$this->admin_cat['lrg_img'][5] = ''; // E_32_CAT_MANAGE;
+		$this->admin_cat['img'][5] = $tp->toGlyph('e-manage-16'); 
+		$this->admin_cat['lrg_img'][5] = $tp->toGlyph('e-manage-32'); 
 		$this->admin_cat['sort'][5] = TRUE;
 		
 		if(vartrue($pref['admin_separate_plugins']))
 		{
 			$this->admin_cat['title'][6] = ADLAN_CL_7;
-			$this->admin_cat['id'][6] = 'plugMenu';
-			$this->admin_cat['img'][6] = ''; // E_16_CAT_PLUG;
-			$this->admin_cat['lrg_img'][6] = ''; // E_32_CAT_PLUG;
+			$this->admin_cat['id'][6] = 'plugMenu'; 
+			$this->admin_cat['img'][6] = $tp->toGlyph('e-cat_plugins-16'); 
+			$this->admin_cat['lrg_img'][6] = $tp->toGlyph('e-cat_plugins-32'); 
 			$this->admin_cat['sort'][6] = false;	
 		}
 		else
