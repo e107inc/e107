@@ -103,13 +103,12 @@ $NEWS_TEMPLATE['default']['item'] = '
 
 
 
-###### Default view item (temporary) - TODO rewrite news, template standards ######
+###### Default view item (temporary)  ######
 //$NEWS_MENU_TEMPLATE['view']['start']       = '<ul class="nav nav-list news-menu-months">';
 //$NEWS_MENU_TEMPLATE['view']['end']         = '</ul>';
 
 // As displayed by news.php?extend.1
 
-//XXX TODO GEt this looking good in the default Bootstrap theme. 
 $NEWS_TEMPLATE['view']['item'] = '
 {SETIMAGE: w=900&h=300}
 	<div class="view-item">
@@ -131,16 +130,19 @@ $NEWS_TEMPLATE['view']['item'] = '
 			{EXTENDED}
 		</div>
 		<hr>
-		<div class="options">
-			<span class="category ">{GLYPH=comments} {NEWSCOMMENTCOUNT} &nbsp; {EMAILICON} &nbsp; {PRINTICON} &nbsp; {PDFICON} &nbsp; {ADMINOPTIONS}</span> 
-			</div>
+		
+		<div class="options ">
+			<div class="btn-group">{NEWSCOMMENTLINK: glyph=comments&class=btn btn-default} &nbsp; {PRINTICON: class=btn btn-default} {PDFICON} {ADMINOPTIONS: class=btn btn-default} {SOCIALSHARE: dropdown=1}</div> 
+		</div>
+			
 	</div>
 	{NEWSRELATED}
+	<hr>
 ';
 //$NEWS_MENU_TEMPLATE['view']['separator']   = '<br />';
 
 
-###### news_categories.sc (temporary) - TODO rewrite news
+###### news_categories.sc 
 $NEWS_TEMPLATE['category']['body'] = '
 	<div style="padding:5px"><div style="border-bottom:1px inset black; padding-bottom:1px;margin-bottom:5px">
 	{NEWSCATICON}&nbsp;{NEWSCATEGORY}

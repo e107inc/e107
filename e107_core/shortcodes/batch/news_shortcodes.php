@@ -187,17 +187,31 @@ class news_shortcodes extends e_shortcode
 		return vartrue($this->news_item['user_id']) ? e107::getParser()->parseTemplate("{USER_AVATAR=".$this->news_item['user_id']."}",true) : '';
 	} 
 
+	/**
+	 * {NEWSCOMMENTLINK: glyph=comments&class=btn btn-default btn-sm}
+	 */
 	function sc_newscommentlink($parm)
 	{
-		return ($this->news_item['news_allow_comments'] ? $this->param['commentoffstring'] : " <a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$this->param['commentlink'].'</a>');
+		
+		$class = varset($parm['class']) ? " ".$parm['class'] : "";
+		$text = ($this->news_item['news_allow_comments'] ? $this->param['commentoffstring'] : "<a title='".$this->sc_newscommentcount()." comments' class='e-tip".$class."' href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$this->param['commentlink'].'</a>');
+		return $text;
 	}
 
+	/**
+	 * {NEWSCOMMENTCOUNT: glyph=x}
+	 */
 	function sc_newscommentcount($parm)
 	{
-		return $this->news_item['news_comment_total'];
+		$text = varset($parm['glyph']) ? e107::getParser()->toGlyph($parm['glyph']) : "";
+		$text .=  $this->news_item['news_comment_total'];
+		return $text;
 	}
 
-	function sc_emailicon($parm)
+	/**
+	 * {EMAILICON: class=x}
+	 */
+	function sc_emailicon($parm=array())
 	{
 		$pref = e107::getPref();
 		if (!check_class(varset($pref['email_item_class'],e_UC_MEMBER)))
@@ -205,13 +219,16 @@ class news_shortcodes extends e_shortcode
 			return '';
 		}
 		require_once(e_HANDLER.'emailprint_class.php');
-		return emailprint::render_emailprint('news', $this->news_item['news_id'], 1);
+		return emailprint::render_emailprint('news', $this->news_item['news_id'], 1, $parm);
 	}
 
-	function sc_printicon()
+	/**
+	 * {PRINTICON: class=x}
+	 */
+	function sc_printicon($parm=array())
 	{
 		require_once(e_HANDLER.'emailprint_class.php');
-		return emailprint::render_emailprint('news', $this->news_item['news_id'], 2);
+		return emailprint::render_emailprint('news', $this->news_item['news_id'], 2, $parm);
 	}
 
 	function sc_pdficon()
@@ -226,16 +243,22 @@ class news_shortcodes extends e_shortcode
 		return $this->news_item['news_id'];
 	}
 
-	function sc_adminoptions()
+	/**
+	 * {ADMINOPTIONS: class=x}
+	 */
+	function sc_adminoptions($parm=array())
 	{
 		$tp = e107::getParser();
 		if (ADMIN && getperms('H'))
 		{
 			//TODO - discuss - a pref for 'new browser window' loading, or a parm or leave 'new browser window' as default?
-			$default = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('icon-edit.glyph',false) :  "<img src='".e_IMAGE_ABS."admin_images/edit_16.png' alt='".LAN_NEWS_25."' class='icon' />";
+			$default = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('icon-edit',false) :  "<img src='".e_IMAGE_ABS."admin_images/edit_16.png' alt='".LAN_NEWS_25."' class='icon' />";
 			
 			$adop_icon = (file_exists(THEME."images/newsedit.png") ? "<img src='".THEME_ABS."images/newsedit.png' alt='".LAN_NEWS_25."' class='icon' />" : $default);
-			return " <a rel='external' href='".e_ADMIN_ABS."newspost.php?action=create&amp;sub=edit&amp;id=".$this->news_item['news_id']."' title=\"".LAN_NEWS_25."\">".$adop_icon."</a>\n";
+			
+			$class = varset($parm['class']);
+			
+			return "<a class='e-tip ".$class."' rel='external' href='".e_ADMIN_ABS."newspost.php?action=create&amp;sub=edit&amp;id=".$this->news_item['news_id']."' title=\"".LAN_NEWS_25."\">".$adop_icon."</a>\n";
 		}
 		else
 		{
