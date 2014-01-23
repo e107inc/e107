@@ -411,11 +411,7 @@ class frontpage
 						</td>
 					</tr>";
 					
-					/*
-					<input class='btn ' type='image' src='".ADMIN_UP_ICON_PATH."' title='".FRTLAN_47."' value='".$order."' name='fp_inc".$order."' />
-					<input class='btn ' type='image' src='".ADMIN_DOWN_ICON_PATH."' title='".FRTLAN_48."' value='".$order."' name='fp_dec".$order."' />
-					 <input class='btn delete' type='image' title='".LAN_DELETE."' data-confirm='". LAN_CONFDELETE."' name='fp_delete_rule[".$order."]' src='".ADMIN_DELETE_ICON_PATH."' />
-					 */
+					
 		}
 		$text .= "
 		 		</tbody>
