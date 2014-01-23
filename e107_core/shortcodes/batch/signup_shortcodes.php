@@ -139,7 +139,8 @@ class signup_shortcodes extends e_shortcode
 		if (check_class($pref['displayname_class']))
 		{
 		  $dis_name_len = varset($pref['displayname_maxlength'],15);
-		  return $rs->form_text('username', 30, ($_POST['username'] ? $_POST['username'] : $username), $dis_name_len);
+		  return e107::getForm()->text('username', ($_POST['username'] ? $_POST['username'] : $username),  $dis_name_len);
+		//  return $rs->form_text('username', 30, , $dis_name_len);
 		}
 	}
 	
