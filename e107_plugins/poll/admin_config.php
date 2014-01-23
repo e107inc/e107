@@ -202,8 +202,8 @@ function poll_list()
 				
 				$text .= "
 				<td class='center' style='white-space:nowrap'>
-					<input class='btn btn-large' type='image' name='edit[{$poll_id}]' value='edit' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' />
-					<input class='btn btn-large' type='image' name='delete[$poll_id]' value='del' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$poll_id."]")."') \" src='".ADMIN_DELETE_ICON_PATH."' alt='".LAN_DELETE."' title='".LAN_DELETE."' style='border:0px' />
+					<button class='btn btn-large' type='submit' name='edit[{$poll_id}]' value='edit' alt='".LAN_EDIT."' title='".LAN_EDIT."' >".ADMIN_EDIT_ICON."</button>
+					<button class='btn btn-large action delete' type='submit' name='delete[$poll_id]' value='del' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$poll_id."]")."') \" title='".LAN_DELETE."' >".ADMIN_DELETE_ICON."</button>
 				</td>
 			</tr>";
 		}

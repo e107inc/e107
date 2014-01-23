@@ -164,8 +164,8 @@ class gsitemap
 
 				<td class='center' style='white-space:nowrap'>
 				<div>
-				<input type='image' name='edit[{$row2['gsitemap_id']}]' value='edit' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' />
-				<input type='image' name='delete[{$row2['gsitemap_id']}]' value='del' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$row2['gsitemap_name']."]")."') \" src='".ADMIN_DELETE_ICON_PATH."' alt='".LAN_DELETE."' title='".LAN_DELETE."' style='border:0px' />
+				<button class='btn btn-default' type='submit' name='edit[{$row2['gsitemap_id']}]' value='edit' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' />
+				<button class='btn btn-default action delete' type='submit' name='delete[{$row2['gsitemap_id']}]' value='del' data-confirm='".$tp->toJS(LAN_CONFIRMDEL." [".$row2['gsitemap_name']."]")."' title='".LAN_DELETE."' >".ADMIN_DELETE_ICON."</button>
 				</div>
 				</td>
 				</tr>

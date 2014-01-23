@@ -150,7 +150,7 @@ if ($action == "main" || $action == "")
 				<td>".r_userclass_name($row['gen_intdata'])."</td>
             	<td class='center nowrap'>
             		<a class='btn btn-large' href='".e_SELF."?create.edit.{$row['gen_id']}'>".ADMIN_EDIT_ICON."</a>
-            		<input class='btn btn-large' type='image' title='".LAN_DELETE."' name='main_delete[".$row['gen_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".LAN_CONFIRMDEL." [ID: {$row['gen_id']} ]')\"/>
+            		<button class='btn btn-large action delete' type='submit' title='".LAN_DELETE."' name='main_delete[".$row['gen_id']."]' data-confirm=\"".LAN_CONFIRMDEL." [ID: {$row['gen_id']} ]\" >".ADMIN_DELETE_ICON."</button>
 				</td>
 			</tr>";
 		}

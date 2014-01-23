@@ -1531,39 +1531,36 @@ class e_form
 
 	function submit_image($name, $value, $image, $title='', $options = array())
 	{
+		$tp = e107::getParser();
 		$options = $this->format_options('submit_image', $name, $options);
 		switch ($image)
 		{
 			case 'edit':
-				$image = ADMIN_EDIT_ICON_PATH;
 				$icon = "e-edit-32";
 				$options['class'] = $options['class'] == 'action' ? 'btn btn-default action edit' : $options['class'];
 			break;
 
 			case 'delete':
-				$image = ADMIN_DELETE_ICON_PATH;
 				$icon = "e-delete-32";
 				$options['class'] = $options['class'] == 'action' ? 'btn btn-default action delete' : $options['class'];
 				$options['other'] = 'data-confirm="'.LAN_JSCONFIRM.'"';
 			break;
 
 			case 'execute':
-				$image = ADMIN_EXECUTE_ICON_PATH;
 				$icon = "e-execute-32";
 				$options['class'] = $options['class'] == 'action' ? 'btn btn-default action execute' : $options['class'];
 			break;
 
 			case 'view':
-				$image = ADMIN_VIEW_ICON_PATH;
 				$icon = "e-view-32";
 				$options['class'] = $options['class'] == 'action' ? 'btn btn-default action view' : $options['class'];
 			break;
 		}
 		$options['title'] = $title;//shorthand
 		
-		return  "<button type='submit' name='{$name}' data-placement='left' value='{$value}'".$this->get_attributes($options, $name, $value)."  ><i class='S32 {$icon}'></i></button>";
+		return  "<button type='submit' name='{$name}' data-placement='left' value='{$value}'".$this->get_attributes($options, $name, $value)."  >".$tp->toIcon($icon)."</button>";
 
-	//	return "<input class='e-tip S16 {$icon} btn btn-large' data-placement='left' type='image' src='{$image}' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
+	
 	}
 
 	/**
