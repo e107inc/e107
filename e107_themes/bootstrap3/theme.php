@@ -8,14 +8,18 @@ define("BOOTSTRAP", 	3);
 define("FONTAWESOME", 	4);
 define('VIEWPORT', 		"width=device-width, initial-scale=1.0");
 
-e107::js("url", 		"//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js");
-e107::css('url', 		'//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css');
-e107::css('url', 		"//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css");
+e107::js("url", 			"//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js");
+e107::css('url', 			'//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css');
+e107::css('url', 			"//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css");
+
+e107::js("footer-inline", 	"$('.e-tip').tooltip({container: 'body'})"); // activate bootstrap tooltips. 
 					
 define('OTHERNEWS_COLS',false); // no tables, only divs. 
 define('OTHERNEWS_LIMIT', 3); // Limit to 3. 
 define('OTHERNEWS2_COLS',false); // no tables, only divs. 
 define('OTHERNEWS2_LIMIT', 3); // Limit to 3. 
+define('COMMENTLINK', 	$tp->toGlyph('fa-comment'));
+define('COMMENTOFFSTRING', '');
 
 define('PRE_EXTENDEDSTRING', '<br />');
 

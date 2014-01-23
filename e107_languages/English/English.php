@@ -63,5 +63,7 @@ define("LAN_ENTER", "Enter");
 define("LAN_ENTER_CODE", "Enter code");
 define("LAN_INVALID_CODE", "Incorrect code entered.");
 define("LAN_SEARCH", "Search");
+define("LAN_SHARE", "Share");
+
 
 ?>

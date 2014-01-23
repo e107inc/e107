@@ -10,6 +10,11 @@ if (!defined('e107_INIT')) { exit; }
 
 class social_shortcodes extends e_shortcode
 {
+		
+		
+	/**
+	 * {XURL_ICONS: size=2x}
+	 */	
 	function sc_xurl_icons($parm='')
 	{
 							
@@ -38,7 +43,7 @@ class social_shortcodes extends e_shortcode
 			if($data['href'] != '')
 			{
 
-				 $text .= '<a rel="external" href="'.$data['href'].'" class="social-icon social-'.$id.'">
+				 $text .= '<a rel="external" href="'.$data['href'].'" class="e-tip social-icon social-'.$id.'">
 				 	<span class="fa fa-'.$id.' '.$class.'"></span>
 				 </a>';
 				 
@@ -52,6 +57,97 @@ class social_shortcodes extends e_shortcode
 		}
 
 	}	
+
+
+
+
+
+
+
+	/**
+	 * {SOCIALSHARE: url=x&title=y}
+	 */
+	function sc_socialshare($parm='') // Designed so that no additional JS required. 
+	{
+					
+		$tp 			= e107::getParser();
+		$url 			= varset($parm['url'], e_REQUEST_URL);
+		$title 			= varset($parm['title'], deftrue('e_PAGETITLE'));
+		$description 	= varset($parm['title'], e107::getUrl()->response()->getMetaDescription());
+		$media 			= "";
+		$label 			= varset($parm['label'], defset('LAN_SHARE',"Share"));
+		
+		$size			= varset($parm['size'],'md');
+		
+		//TODO LANS ie. "Share on [x]" 
+		
+		$providers = array(
+			'email'				=> array('icon'	=>	'fa-envelope-o',	'title'=>"Email to someone",	'url' => "mailto:EMAIL_RECIPIENT?subject=[t]&body=[u]"),
+			'facebook-like'		=> array('icon' => 'fa-thumbs-o-up',	'title'=>"Like on Facebook",	'url' => "http://www.facebook.com/plugins/like.php?href=[u]"),
+			'facebook-share'	=> array('icon' => 'fa-facebook',		'title'=>"Share on Facebook",	'url' => "http://www.facebook.com/sharer.php?u=[u]&t=[t]"),
+			'twitter'			=> array('icon' => 'fa-twitter',		'title'=>"Share on Twitter",	'url' => "http://twitter.com/share?url=[u]&text=[t]"),
+			'google-plus1'		=> array('icon' => 'fa-google-plus',	'title'=>"+1 on Google",		'url' => "https://apis.google.com/_/+1/fastbutton?usegapi=1&size=large&hl=en&url=[u]"),
+		
+		//	'google-plus'		=> array('icon' => 'fa-google-plus',	'title'=>"On Google Plus",		'url' => "https://plusone.google.com/_/+1/confirm?hl=en&url=[u]"),
+			'linkedin'			=> array('icon' => 'fa-linkedin',		'title'=>"Share on LinkedIn",	'url' => "http://www.linkedin.com/shareArticle?mini=true&url=[u]"),
+			'pinterest'			=> array('icon'	=> 'fa-pinterest',		'title'=>"Share on Pinterest",	'url' => "http://www.pinterest.com/pin/create/button/?url=[u]&description=[t]&media=[m]"),
+		//	'thumblr'			=> array('icon'	=>	'fa-tumblr',		'title'=>"On Tumblr",			'url' => "http://www.tumblr.com/share/link?url=[u]&name=[t]&description=[d]"),
+		//	'stumbleupon'		=> array('icon'	=>	'fa-stumbleupon',	'title'=>"On Tumblr",			'url' => "http://www.stumbleupon.com/submit?url=[u]&title=[t]"), // no fa icon available. 
+			
+			//http://reddit.com/submit?url=http%3A%2F%2Fwebsite.com&title=Website%20Title  // no fa icon available
+			//http://www.digg.com/submit?url=http%3A%2F%2Fwebsite.com	  // no fa icon available		
+		);
+	
+	
+	
+		$data = array('u'=> rawurlencode($url), 't'=> rawurlencode($title), 'd'	=> rawurlencode($description), 'm' => rawurlencode($media));
+		
+		if(!vartrue($parm['dropdown']))
+		{
+			$butSize 	= ($size == 'lg' || $size == 'sm' || $size == 'xs') ? 'btn-'.$size : '';
+		}
+		else 
+		{
+			$butSize = 'btn-lg';
+		}
+		
+
+		$opt = array();
+		
+		foreach($providers as $val)
+		{
+			$shareUrl = $tp->lanVars($val['url'],$data);
+			
+			$opt[] = "<a class='e-tip btn ".$butSize." btn-default social-share'  target='_blank' title='".$val["title"]."' href='".$shareUrl."'>".$tp->toIcon($val["icon"])."</a>";	
+		}
+		
+		
+		if(vartrue($parm['dropdown']))
+		{
+			$dir = ($parm['dropdown'] == 'right') ? 'pull-right' : '';
+	
+			$text = '<div class="btn-group '.$dir.'">
+				  <a class="e-tip btn btn-dropdown btn-default btn-'.$size.'" data-toggle="dropdown" href="#" title="Share">'.$label.' <b class="caret"></b></a>
+				 
+				  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel"  style="min-width:355px">
+				  
+				    <li><div class="btn-group" style="padding-left: 7px;">'.implode("\n",$opt).'</div></li>
+				  </ul>
+				</div>';
+		
+			return $text;
+		}
+		else
+		{
+			
+			return '<div class="btn-group text-center"><button class="btn btn-sm btn-default disabled">'.$label.'</button>'.implode("\n",$opt)."</div>";
+		
+		}	
+		
+	}
+
+
+
 
 
 }

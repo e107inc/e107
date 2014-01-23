@@ -1734,6 +1734,16 @@ class e107
 	 */
 	public static function meta($name = null, $content = null, $extended = array())
 	{
+		if($name == 'description')
+		{
+			e107::getUrl()->response()->addMetaDescription($content);	//Cam: TBD 
+		}
+		
+		if($name == 'keywords')
+		{
+			e107::getUrl()->response()->addMetaKeywords($content);	//Cam: TBD 
+		}
+		
 		return e107::getUrl()->response()->addMeta($name, $content, $extended);
 	}
 
