@@ -696,6 +696,7 @@ class e_form
 	 */
 	function userpicker($name_fld, $id_fld, $default_name, $default_id, $options = array())
 	{
+		$tp = e107::getParser();
 		if(!is_array($options)) parse_str($options, $options);
 		
 		$default_name = vartrue($default_name, '');
@@ -706,11 +707,13 @@ class e_form
 		$fldid = $this->name2id($name_fld);
 		$hidden_fldid = $this->name2id($id_fld);
 		
-		$ret = $this->text($name_fld,$default_name,20, "class=e-tip&title=Type name of user&typeahead=users&readonly=".vartrue($options['readonly']))
-		.$this->hidden($id_fld,$default_id, array('id' => $this->name2id($id_fld)))." id# <span id='{$fldid}-id'>".$default_id.'</span>';
-		$ret .= " <a href='#' id='{$fldid}-reset'>reset</a>";
+		$ret = '<div class="input-append">';
+		$ret .= $this->text($name_fld,$default_name,20, "class=e-tip&title=Type name of user&typeahead=users&readonly=".vartrue($options['readonly']))
+		.$this->hidden($id_fld,$default_id, array('id' => $this->name2id($id_fld)))."<span class='add-on'>".$tp->toGlyph('fa-user')." <span  id='{$fldid}-id'>".$default_id.'</span></span>';
+		$ret .= "<a class='btn btn-inverse' href='#' id='{$fldid}-reset'>reset</a>
+		</div>";
 
-		e107::getJs()->footerInline("
+		e107::js('footer-inline', "
 			\$('#{$fldid}').blur(function () {
 				\$('#{$fldid}-id').html(\$('#{$hidden_fldid}').val());
 			});
@@ -718,6 +721,7 @@ class e_form
 				\$('#{$fldid}-id').html('0');
 				\$('#{$hidden_fldid}').val(0);
 				\$('#{$fldid}').val('');
+				return false;
 			});
 		");
 
@@ -3240,7 +3244,7 @@ class e_form
 				if(!isset($parms['__options'])) $parms['__options'] = array();
 				if(!is_array($parms['__options'])) parse_str($parms['__options'], $parms['__options']);
 
-				if((empty($value) && vartrue($parms['currentInit'])) || vartrue($parms['current']))
+				if((empty($value) && varset($parms['currentInit'],USERID)!==0) || vartrue($parms['current'])) // include current user by default.
 				{
 					$value = USERID;
 					if(vartrue($parms['current']))

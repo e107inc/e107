@@ -124,11 +124,22 @@ class bbcode_shortcodes extends e_shortcode
 	
 	function bb_youtube($id)
 	{
+		if($this->var['tagid'] == 'data_') // BC work-around for duplicate IDs. 
+		{
+			$tag =  "data";
+		}
+		else
+		{
+			list($tag,$tmp) = explode("--",$this->var['tagid']); // works with $frm->bbarea to detect textarea from first half of tag. 
+		}			
+				
+			
+		
 		$data = "[youtube]*[/youtube]";
 		$event = $this->getEvent('addinput',$data,LANHELP_48);
-		$text = "<a {$event} class='btn ' id='{$id}' data-function='input' href='#{$this->var['tagid']}' title='".$this->br2nl(LANHELP_48)."'  data-bbcode='{$data}'>";
+	//	$text = "<a {$event} class='btn ' id='{$id}' data-function='input' href='#{$this->var['tagid']}' title='".$this->br2nl(LANHELP_48)."'  data-bbcode='{$data}'>";
 	//	$text .="<img class='btn btn-small bbcode bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/youtube.png' alt='' title='".nl2br(LANHELP_48)."' />";
-		
+		$text = "<a class='e-modal btn' data-modal-caption='Media Manager' data-target='#uiModal' title='Media Manager : ".$this->var['template']."' id='{$id}' href='".e_ADMIN."image.php?mode=main&action=dialog&for=".$this->var['template']."&tagid=".$tag."&iframe=1&bbcode=video'  >";
 		$text .= $this->button(e_IMAGE_ABS."bbcode/youtube.png", 'youtube', LANHELP_48);
 		
 		$text .= "</a>";
