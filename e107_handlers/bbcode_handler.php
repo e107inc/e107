@@ -42,9 +42,9 @@ class e_bbcode
 		'html', 'flash', 'link', 'email',
 		'url', 'quote', 'left', 'right',
 		'b', 'justify', 'file', 'stream',
-		'textarea', 'list', 'php', 'time',
+		'textarea', 'list', 'time',
 		'spoiler', 'hide', 'youtube', 'sanitised', 
-		'p', 'h', 'nobr', 'block','table','th', 'tr','tbody','td','markdown'
+		'p', 'h', 'nobr', 'block','table','th', 'tr','tbody','td','markdown','video'
 		);
 
 		foreach($this->core_bb as $c)

@@ -29,10 +29,17 @@ class news_shortcodes extends e_shortcode
 	protected $e107;
 	//protected $param;  - shouldn't be set - see __set/__get methods of e_shortcode & news::render_newsitem()
 
+	protected $commentsDisabled;
+	
+	
 	function __construct($eVars = null)
 	{
 		parent::__construct($eVars);
 		$this->e107 = e107::getInstance();
+		
+		$pref = e107::getPref();
+		
+		$this->commentsDisabled = vartrue($pref['comments_disabled']);
 	}
 
 	function sc_newstitle()
@@ -88,11 +95,11 @@ class news_shortcodes extends e_shortcode
 		$pref = e107::getPref();
 		$sql = e107::getDb();
 		
-		if($pref['comments_disabled'] == 1)
+		if($this->commentsDisabled)
 		{
-			return "Disabled";
+			return;	
 		}
-		
+				
 		$news_item = $this->news_item;
 		$param = $this->param;
 
@@ -192,6 +199,10 @@ class news_shortcodes extends e_shortcode
 	 */
 	function sc_newscommentlink($parm)
 	{
+		if($this->commentsDisabled)
+		{
+			return;	
+		}
 		
 		$class = varset($parm['class']) ? " ".$parm['class'] : "";
 		$text = ($this->news_item['news_allow_comments'] ? $this->param['commentoffstring'] : "<a title='".$this->sc_newscommentcount()." comments' class='e-tip".$class."' href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$this->param['commentlink'].'</a>');
@@ -203,6 +214,11 @@ class news_shortcodes extends e_shortcode
 	 */
 	function sc_newscommentcount($parm)
 	{
+		if($this->commentsDisabled)
+		{
+			return;	
+		}
+		
 		$text = varset($parm['glyph']) ? e107::getParser()->toGlyph($parm['glyph']) : "";
 		$text .=  $this->news_item['news_comment_total'];
 		return $text;

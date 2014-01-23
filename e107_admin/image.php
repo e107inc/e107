@@ -1010,7 +1010,7 @@ class media_admin_ui extends e_admin_ui
 	function mediaSelectUpload($type='image') 
 	{
 		$frm = e107::getForm();
-		
+		$videoActive = 'inactive';
 		
 		$options = array();
 		$options['bbcode'] = ($this->getQuery('bbcode')=='img') ? 'img' : FALSE;
@@ -1018,13 +1018,17 @@ class media_admin_ui extends e_admin_ui
 						
 		$text = "<ul class='nav nav-tabs'>\n";
 		
-		$text .= "<li class='active'><a data-toggle='tab' href='#core-media-select'>Choose from Library</a></li>\n";
+		if($this->getQuery('bbcode') != 'video')
+		{
+			$text .= "<li class='active'><a data-toggle='tab' href='#core-media-select'>Choose from Library</a></li>\n";	
+		}
+		else
+		{
+			$videoActive = 'active';		
+		}
 		
 		if($this->getQuery('bbcode') != 'video' && $this->getQuery('bbcode') !='glyph')
 		{
-		
-			
-		
 			$text .= "<li><a data-toggle='tab' href='#core-media-upload'>Upload a File</a></li>";
 		}
 		
@@ -1040,7 +1044,7 @@ class media_admin_ui extends e_admin_ui
 		
 		if($this->getQuery('video') == 1 || $this->getQuery('bbcode') == 'video')
 		{
-			$text .= "<li><a data-toggle='tab' href='#core-media-video'>Youtube</a></li>\n";	
+			$text .= "<li class='{$videoActive}'><a data-toggle='tab' href='#core-media-video'>Youtube</a></li>\n";	
 		}
 		
 		
@@ -1054,36 +1058,20 @@ class media_admin_ui extends e_admin_ui
 				
 		$text .= "
 			</ul>
-			<div class='tab-content'>
-			<div class='tab-pane active' id='core-media-select'>
+			<div class='tab-content'>";
 			
-			<div class='table' style='display:block'>
-		
-			";
+		if($this->getQuery('bbcode') != 'video')
+		{	
+			$text .= "<div class='tab-pane active' id='core-media-select'>			
+					<div class='table' style='display:block'>";
+				
+			$text .= $this->imageTab($type,$options);
+				
+			$text .= "</div></div>";
+		}	
+
 			
-		$tag = ($options['bbcode']) ? "" : $this->getQuery('tagid');
-		
-		if(varset($_GET['w']))
-		{
-			$options['w'] = intval($_GET['w']);
-		}
-		
-		if($type == 'file')
-		{
-			$this->perPage = 0;
-			$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->load();
-			$text .= $this->getUI()->getList();	
-		}
-		else 
-		{
-			$text .= e107::getMedia()->mediaSelect($this->getQuery('for'),$this->getQuery('tagid'), $options); // eg. news, news-thumbnail				
-		}
-			
-		$text .= "
-			</div>
-			</div>
-			
-			<div class='tab-pane' id='core-media-upload'>
+		$text .= "<div class='tab-pane' id='core-media-upload'>
 			";
 			
 		$this->fields['media_category']['readonly']	= TRUE;
@@ -1175,7 +1163,7 @@ class media_admin_ui extends e_admin_ui
 		
 		if($this->getQuery('video') || $this->getQuery('bbcode') == 'video')
 		{
-			$text .= "<div class='tab-pane clearfix' id='core-media-video' >";
+			$text .= "<div class='tab-pane clearfix {$videoActive}' id='core-media-video' >";
 		//	$text .= "<div class='row-fluid'>";
 			$text .= $this->videoTab();
 			$text .= "</div>";	
@@ -1219,6 +1207,36 @@ class media_admin_ui extends e_admin_ui
 		
 		return $text;
 	}
+
+
+
+	function imageTab($type,$options)
+	{
+		$tag = ($options['bbcode']) ? "" : $this->getQuery('tagid');
+		
+		if(varset($_GET['w']))
+		{
+			$options['w'] = intval($_GET['w']);
+		}
+		
+		if($type == 'file')
+		{
+			$this->perPage = 0;
+			$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->load();
+			$text = $this->getUI()->getList();	
+		}
+		else 
+		{
+			$text = e107::getMedia()->mediaSelect($this->getQuery('for'),$this->getQuery('tagid'), $options); // eg. news, news-thumbnail				
+		}
+		
+		return $text;
+	}
+		
+		
+		
+		
+
 	
 	
 	function glyphTab($parm='')
@@ -1327,7 +1345,7 @@ class media_admin_ui extends e_admin_ui
 				); 	
 			}
 			
-			$parms = array('width' => 200, 'height'=>113, 'type'=>'image', 'tagid'=> $this->getQuery('tagid'), 'action'=>'youtube','searchPlaceholder'=>'Search Youtube');
+			$parms = array('width' => 200, 'height'=>113, 'type'=>'image', 'bbcode'=>'video', 'tagid'=> $this->getQuery('tagid'), 'action'=>'youtube','searchPlaceholder'=>'Search Youtube');
 		
 			$text = e107::getMedia()->browserCarousel($items, $parms);
 		

@@ -6,11 +6,14 @@ $(document).ready(function()
 		var newval 	= $('#bbcode_holder').val();
 		var target 	= $(this).attr('data-target');
 		var bbcode	= $(this).attr('data-bbcode'); // TinyMce/Textarea insert mode
-			
-		if(!target || !bbcode){ return true; }
-
-		$('#' + target, window.top.document).atCaret('insert', newval); // http://code.google.com/p/jquery-at-caret/wiki/GettingStarted
+					
+	//	if(!target || !bbcode){ return true; }
 		
+		
+		if(target && newval)
+		{
+			$('#' + target, window.top.document).atCaret('insert', newval); // http://code.google.com/p/jquery-at-caret/wiki/GettingStarted
+		}
 		
 		//var cursorIndex = $('#' + target, window.top.document).attr("selectionStart");
 		//var lStr =  $('#' + target, window.top.document).attr('value').substr(0,cursorIndex) + " " + newval + " ";
@@ -34,6 +37,7 @@ $(document).ready(function()
 		
 		eMediaAttribute();	
 	});
+	
 	$("#float").change(function () {  
 		
 		eMediaAttribute();	
@@ -42,7 +46,7 @@ $(document).ready(function()
 	
 	
 	
-	function eMediaAttribute(e)
+	function eMediaAttribute(e, bbcode)
 	{		
 		var style 			= '';
 		var bb 				= '';
@@ -112,19 +116,23 @@ $(document).ready(function()
 			style  = style + 'height:' + height + 'px;';	
 		}	
 		
-
-		bb = '[img';
-		
-		if(style !='')
+		if(bbcode !== 'video')
 		{
-			bb = bb + ' style='+style;			
-		}
+			bb = '[img';
+			
+			if(style !='')
+			{
+				bb = bb + ' style='+style;			
+			}
+			
+			bb = bb + ']';
+			bb = bb + path;
+			bb = bb + '[/img]';
+			
+			$('#bbcode_holder').val(bb); // Set the BBcode Value. 
+		}		
 		
-		bb = bb + ']';
-		bb = bb + path;
-		bb = bb + '[/img]';
-				
-		$('#bbcode_holder').val(bb); // Set the BBcode Value. 
+		
 				
 			//	var html = '<img style=\"' + style + '\" src=\"'+ src +'\" />'; 
 
@@ -162,7 +170,7 @@ $(document).ready(function()
 				{						
 					bbpath = '[file='+ id +']'+ name + '[/file]';	
 					$('#bbcode_holder').val(bbpath);		
-					alert(bbpath);	//FIXME bbcode -  Insert into correct caret in text-area. 
+				//	alert(bbpath);	//FIXME bbcode -  Insert into correct caret in text-area. 
 					return;	
 			//		$('input#' + target, window.top.document).attr('value',path);	// set new value	
 			//		$('textarea#' + target, window.top.document).attr('value',bbpath);	
@@ -173,11 +181,12 @@ $(document).ready(function()
 					//alert('hello');
 				}
 				
-				if(bbcode == "img")
+				if(bbcode == "video")
 				{
 
-					// bbpath = '['+bbcode+']'+ path + '[/' + bbcode + ']';
-					//alert(bbpath);		
+					bbpath = '['+bbcode+']'+ path + '[/' + bbcode + ']';
+					$('#bbcode_holder').val(bbpath);	
+						
 				}
 				
 
@@ -209,9 +218,9 @@ $(document).ready(function()
 				{
 					preview = name;	
 				}
-				else // image
+				else // image and video
 				{
-					eMediaAttribute(this);	
+					eMediaAttribute(this,bbcode);	
 					preview = $('#html_holder').val();
 				}
 				

@@ -1025,7 +1025,8 @@ class e_media
 			'previewUrl'	=> $defaultThumb ,
 			'thumbUrl'		=> $defaultThumb,
 			'title'			=> '',
-			'gridClass'		=> 'span2'
+			'gridClass'		=> 'span2',
+			'bbcode'		=> ''
 			
 		);
 		
@@ -1044,7 +1045,7 @@ class e_media
 		
 			<div class='well clearfix'>
 
-				<a data-toggle='context' class='e-media-select ".$close." e-tip' data-id='".$data['id']."' data-width='".$data['width']."' data-height='".$data['height']."' data-src='".$data['previewUrl']."' data-type='".$data['type']."' data-bbcode='{$bbcode}' data-target='".$data['tagid']."' data-path='".$data['saveValue']."' data-preview='".$data['previewUrl']."' title=\"".$data['title']."\" style='float:left' href='#' >";
+				<a data-toggle='context' class='e-media-select ".$close." e-tip' data-id='".$data['id']."' data-width='".$data['width']."' data-height='".$data['height']."' data-src='".$data['previewUrl']."' data-type='".$data['type']."' data-bbcode='".$data['bbcode']."' data-target='".$data['tagid']."' data-path='".$data['saveValue']."' data-preview='".$data['previewUrl']."' title=\"".$data['title']."\" style='float:left' href='#' >";
 		
 				if($data['type'] == 'image')
 				{
@@ -1175,6 +1176,7 @@ class e_media
 					$val['id']		= $parm['id'];
 					$val['tagid']	= $parm['tagid'];
 					$val['type']	= $parm['type'];
+					$val['bbcode']	= $parm['bbcode'];
 					$val['gridClass'] = $parm['gridClass'];		
 				
 					$text .= $this->browserCarouselItem($val);
@@ -1208,9 +1210,11 @@ class e_media
 				
 				$text .= ($c != 0) ? "</div>\n<!-- End Slide -->\n" : "";
 			
-				$text .= "\n<!-- End Carousel -->\n<div class='clearfix'>&nbsp;</div>\n\n";
+			
 				
 				$text .= "</div>";
+				
+				$text .= "\n<!-- End Carousel -->\n<div class='clearfix'>&nbsp;</div>\n\n";
 				
 			if(!e_AJAX_REQUEST)
 			{	
