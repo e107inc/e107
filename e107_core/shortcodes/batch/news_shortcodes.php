@@ -577,6 +577,11 @@ class news_shortcodes extends e_shortcode
 		
 		return e107::getForm()->renderRelated($array, $this->news_item['news_meta_keywords'], array('news'=>$this->news_item['news_id']));	
 	}
+	
+	function sc_newsmetadiz()
+	{
+  		return e107::getParser()->toHtml($this->news_item['news_meta_description'],true);
+	}
 
 }
 ?>
