@@ -73,8 +73,9 @@ body {
 -------------------------------------------------- */
 
 /* Carousel base class */
+
 .featurebox.carousel {
-  height: 500px;
+ 	min-height:460px;
 }
 /* Since positioning the image, we need to help out the caption */
 .carousel-caption {
@@ -83,21 +84,16 @@ body {
 
 /* Declare heights because of positioning of img element */
 .featurebox.carousel .item {
-  height: 500px;
+  min-height:460px;
   background-color: #CCCCCC;
 }
-.carousel-inner > .item > img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  min-width: 100%;
-  height: 500px;
+
+.featurebox-item-image.pull-left, .featurebox-item-image.pull-right {
+
+  margin-top: 25px;
 }
 
-.media-object.featurebox-item-image {
-	margin: 25px 0px;
-}
-
+img.featurebox { border-radius: 5px }
 
 .xurl-social-icons a {
     color: inherit;
