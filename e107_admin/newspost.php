@@ -515,7 +515,7 @@ class news_admin_ui extends e_admin_ui
             $error_text = "Error: " . $xml_rpc_server . ": " . $client->errno . " " . $client->errstring;
             $this->report_error($error_text);
             $this->log_ping($error_text);
-			$log->addArray(array('status'=>LAN_ERROR, 'service'=>$xml_rpc_server, 'url'=> $weblog_url, 'response'=>$client->errstring))->save('PING_01');
+			$log->addArray(array('status'=>LAN_ERROR, 'service'=>$xml_rpc_server, 'url'=> $changes_url, 'response'=>$client->errstring))->save('PING_01');
 	
             return false;
         }
@@ -524,7 +524,7 @@ class news_admin_ui extends e_admin_ui
         {
             $error_text = "Error: " . $xml_rpc_server . ": " . $response->faultCode() . " " . $response->faultString();
             $this->report_error($error_text);
-			$log->addArray(array('status'=>LAN_ERROR, 'service'=>$xml_rpc_server, 'url'=> $weblog_url, 'response'=>$response->faultString()))->save('PING_01');
+			$log->addArray(array('status'=>LAN_ERROR, 'service'=>$xml_rpc_server, 'url'=> $changes_url, 'response'=>$response->faultString()))->save('PING_01');
 	
             return false;
         }
@@ -545,13 +545,13 @@ class news_admin_ui extends e_admin_ui
         {
             $error_text = "Error: " . $xml_rpc_server . ": " . $message->scalarval();
 			$this->report_error($error_text);
-			$log->addArray(array('status'=>LAN_ERROR, 'service'=>$xml_rpc_server, 'url'=> $weblog_url, 'response'=>$message->scalarval()))->save('PING_01');
+			$log->addArray(array('status'=>LAN_ERROR, 'service'=>$xml_rpc_server, 'url'=> $changes_url, 'response'=>$message->scalarval()))->save('PING_01');
 	
 		//	$this->log_ping($error_text);
 			return false;
 		}
 
-		$log->addArray(array('status'=>LAN_OK, 'service'=>$xml_rpc_server, 'url'=> $weblog_url, 'response'=>$message->scalarval()))->save('PING_01');
+		$log->addArray(array('status'=>LAN_OK, 'service'=>$xml_rpc_server, 'url'=> $changes_url, 'response'=>$message->scalarval()))->save('PING_01');
 		
         return true;
 	}
