@@ -116,7 +116,9 @@ class social_shortcodes extends e_shortcode
 		
 		foreach($providers as $val)
 		{
-			$shareUrl = $tp->lanVars($val['url'],$data);
+			$pUrl = str_replace("&","&amp;",$val['url']);
+			
+			$shareUrl = $tp->lanVars($pUrl,$data);
 			
 			$opt[] = "<a class='e-tip btn ".$butSize." btn-default social-share'  target='_blank' title='".$val["title"]."' href='".$shareUrl."'>".$tp->toIcon($val["icon"])."</a>";	
 		}
