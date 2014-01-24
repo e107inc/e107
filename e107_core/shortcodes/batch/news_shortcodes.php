@@ -31,6 +31,8 @@ class news_shortcodes extends e_shortcode
 
 	protected $commentsDisabled;
 	
+	private $imageItem;
+	
 	
 	function __construct($eVars = null)
 	{
@@ -40,6 +42,8 @@ class news_shortcodes extends e_shortcode
 		$pref = e107::getPref();
 		
 		$this->commentsDisabled = vartrue($pref['comments_disabled']);
+		
+		
 	}
 
 	function sc_newstitle()
@@ -388,11 +392,53 @@ class news_shortcodes extends e_shortcode
 		}
 	}
 
+
+
+	/**
+	 * XXX  Experimental Images/Video - supports multiple items
+	 * {NEWSMEDIA: item=1}
+	 */
+	function sc_newsmedia($parm=array())
+	{
+		
+		$media = explode(",", $this->news_item['news_thumbnail']);
+
+		if(!vartrue($parm['item']))
+		{
+			$parm['item'] = 0;	
+		}
+		else 
+		{
+			$parm['item'] = ($parm['item'] -1);
+		}
+			
+		$this->imageItem = varset($media[$parm['item']]); // Set the current Image for other image shortcodes. 
+		
+		if(vartrue($parm['placeholder']))
+		{
+			return $this->sc_newsimage('placeholder');	
+		}
+		else
+		{
+			return $this->sc_newsimage();	
+		}
+			
+		
+	}
+
+
+
+
+
+
 	function sc_newsimage($parm = '')
 	{
 		$tp = e107::getParser();
+		
+		
+		$srcPath = ($this->imageItem) ? $this->imageItem : $this->news_item['news_thumbnail'];
 	
-		if(!$this->news_item['news_thumbnail'])
+		if(!$srcPath)
 		{
 			if($parm == 'placeholder')
 			{
@@ -403,14 +449,14 @@ class news_shortcodes extends e_shortcode
 				return;
 			}
 		}
-		elseif($this->news_item['news_thumbnail'][0] == '{' ) // Always resize. Use {SETIMAGE: w=x&y=x&crop=0} PRIOR to calling shortcode to change. 
+		elseif($srcPath[0] == '{' ) // Always resize. Use {SETIMAGE: w=x&y=x&crop=0} PRIOR to calling shortcode to change. 
 		{
-			$src = $tp->thumbUrl($this->news_item['news_thumbnail']);	
+			$src = $tp->thumbUrl($srcPath);	
 		}
 		else
 		{
 			// We store SC path in DB now + BC
-			$src = $this->news_item['news_thumbnail'][0] == '{' ? $tp->replaceConstants($this->news_item['news_thumbnail'], 'abs') : e_IMAGE_ABS."newspost_images/".$this->news_item['news_thumbnail'];			
+			$src = $srcPath[0] == '{' ? $tp->replaceConstants($srcPath, 'abs') : e_IMAGE_ABS."newspost_images/".$srcPath;			
 		}
 		
 		
