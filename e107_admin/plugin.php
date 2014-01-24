@@ -90,7 +90,7 @@ class pluginmanager_form extends e_form
 		$_path = e_PLUGIN.$this->plug['plugin_path'].'/';
 		
 		$icon_src = (isset($this->plug_vars['plugin_php']) ? e_PLUGIN : $_path).$this->plug_vars['administration']['icon'];
-		$plugin_icon = $this->plug_vars['administration']['icon'] ? "<img src='{$icon_src}' alt='' class='icon S32' />" : E_32_CAT_PLUG;
+		$plugin_icon = $this->plug_vars['administration']['icon'] ? "<img src='{$icon_src}' alt='' class='icon S32' />" : $tp->toGlyph('e-cat_plugins-32');
    		$conf_file = "#";
 		$conf_title = "";
 		
@@ -1121,8 +1121,8 @@ class pluginManager{
 				{
 
 					$icon_src = (isset($plug_vars['plugin_php']) ? e_PLUGIN : $_path).$plug_vars['administration']['icon'];
-				//	$plugin_icon = $plug_vars['administration']['icon'] ? "<img src='{$icon_src}' alt='' class='icon S32' />" : E_32_CAT_PLUG;
-                   		$plugin_icon = $plug_vars['administration']['icon'] ? $icon_src : ' HELLO ' ;E_32_CAT_PLUG;
+			
+                   	$plugin_icon = $plug_vars['administration']['icon'] ? $icon_src : $tp->toGlyph('e-cat_plugins-32');
               
                     
                     $conf_file = "#";
