@@ -48,7 +48,7 @@ class faqs_shortcodes extends e_shortcode
 			}
 			$id = "faq_".$this->var['faq_id'];
 			$text = "<a class='e-expandit faq-question' href='#{$id}'>".$tp->toHTML($this->var['faq_question'],true)."</a>
-			<div id='{$id}' class='e-hideme faq-answer faq_answer'>".$tp->toHTML($this->var['faq_answer'],TRUE).$tags."</div>
+			<div id='{$id}' class='e-hideme faq-answer faq_answer clearfix'>".$tp->toHTML($this->var['faq_answer'],TRUE).$tags."</div>
 			";	
 
 		}
