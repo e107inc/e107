@@ -1,36 +1,7 @@
 $(document).ready(function()
 {
 	
-	$(".e-dialog-save").live("click", function(){// FIXME TODO missing caret , text selection overwrite etc. 
-					
-		var newval 	= $('#bbcode_holder').val();
-		var target 	= $(this).attr('data-target');
-		var bbcode	= $(this).attr('data-bbcode'); // TinyMce/Textarea insert mode
-					
-	//	if(!target || !bbcode){ return true; }
-		
-		
-		if(target && newval)
-		{
-			$('#' + target, window.top.document).atCaret('insert', newval); // http://code.google.com/p/jquery-at-caret/wiki/GettingStarted
-		}
-		
-		//var cursorIndex = $('#' + target, window.top.document).attr("selectionStart");
-		//var lStr =  $('#' + target, window.top.document).attr('value').substr(0,cursorIndex) + " " + newval + " ";
-		//var rStr = $('#' + target, window.top.document).attr('value').substr(cursorIndex);
 	
-		//$('#' + target, window.top.document).attr('value',lStr+rStr);
-		//$('#' + target, window.top.document).attr("selectionStart",lStr.length);  
-				
-		//('#' + target, window.top.document).insertAtCaret(newVal);
-		
-	//	$('#' + target, window.parent.document).append(newval);	//FIXME caret!!
-	//	var t = $('#' + target, window.parent.document).text();
-		
-		//$('#' + target, window.top.document).attr('value',newval);	// set new value
-		// inserttext(newval,target);
-		// alert(newval);
-	});
 	
 	
 	$(".e-media-attribute").keyup(function () {  
@@ -116,7 +87,7 @@ $(document).ready(function()
 			style  = style + 'height:' + height + 'px;';	
 		}	
 		
-		if(bbcode !== 'video')
+		if(bbcode != 'video')
 		{
 			bb = '[img';
 			
@@ -128,7 +99,6 @@ $(document).ready(function()
 			bb = bb + ']';
 			bb = bb + path;
 			bb = bb + '[/img]';
-			
 			$('#bbcode_holder').val(bb); // Set the BBcode Value. 
 		}		
 		
@@ -145,9 +115,9 @@ $(document).ready(function()
 				// $(".e-media-select").click(function () {  
 		$(".e-media-select").live("click", function(){
   	 		
+  	 	
     		//	console.log(this);
-    		
-    		// alert('hi');
+    	
 
 				var id			= $(this).attr('data-id');
 				var target 		= $(this).attr('data-target');
@@ -160,6 +130,7 @@ $(document).ready(function()
 				var height		= ''; // disable for now - will be updated by bb parser. // $(this).attr('data-height');		
 				var type		= $(this).attr('data-type');
 			
+		
 			//	return;
 			//	alert(width);			
 						
@@ -181,12 +152,11 @@ $(document).ready(function()
 					//alert('hello');
 				}
 				
-				if(bbcode == "video")
+				if(bbcode == "video" || bbcode == 'glyph')
 				{
-
+					
 					bbpath = '['+bbcode+']'+ path + '[/' + bbcode + ']';
 					$('#bbcode_holder').val(bbpath);	
-						
 				}
 				
 
@@ -245,7 +215,41 @@ $(document).ready(function()
 	}); 	
 	
 	
-
+	// Must be defined  after e-media-select
+	$(".e-dialog-save").live("click", function(){// FIXME TODO missing caret , text selection overwrite etc. 
+					
+		var newval 	= $('#bbcode_holder').val();
+		var target 	= $(this).attr('data-target');
+		var bbcode	= $(this).attr('data-bbcode'); // TinyMce/Textarea insert mode
+		var close 	= $(this).attr('data-close');
+					
+		if(!target || !bbcode){ return true; }
+		
+		$('#' + target, window.top.document).atCaret('insert', newval); // http://code.google.com/p/jquery-at-caret/wiki/GettingStarted
+		
+		if(close == 'true')
+		{
+			parent.$('.modal').modal('hide');	
+		}
+		
+		//var cursorIndex = $('#' + target, window.top.document).attr("selectionStart");
+		//var lStr =  $('#' + target, window.top.document).attr('value').substr(0,cursorIndex) + " " + newval + " ";
+		//var rStr = $('#' + target, window.top.document).attr('value').substr(cursorIndex);
+	
+		//$('#' + target, window.top.document).attr('value',lStr+rStr);
+		//$('#' + target, window.top.document).attr("selectionStart",lStr.length);  
+				
+		//('#' + target, window.top.document).insertAtCaret(newVal);
+		
+	//	$('#' + target, window.parent.document).append(newval);	//FIXME caret!!
+	//	var t = $('#' + target, window.parent.document).text();
+		
+		//$('#' + target, window.top.document).attr('value',newval);	// set new value
+		// inserttext(newval,target);
+		// alert(newval);
+	});	
+	
+	
 	
 	
 	

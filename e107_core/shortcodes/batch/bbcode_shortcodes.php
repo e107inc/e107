@@ -133,18 +133,34 @@ class bbcode_shortcodes extends e_shortcode
 			list($tag,$tmp) = explode("--",$this->var['tagid']); // works with $frm->bbarea to detect textarea from first half of tag. 
 		}			
 				
-			
-		
-		$data = "[youtube]*[/youtube]";
-		$event = $this->getEvent('addinput',$data,LANHELP_48);
-	//	$text = "<a {$event} class='btn ' id='{$id}' data-function='input' href='#{$this->var['tagid']}' title='".$this->br2nl(LANHELP_48)."'  data-bbcode='{$data}'>";
-	//	$text .="<img class='btn btn-small bbcode bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/youtube.png' alt='' title='".nl2br(LANHELP_48)."' />";
-		$text = "<a class='e-modal btn' data-modal-caption='Media Manager' data-target='#uiModal' title='Media Manager : ".$this->var['template']."' id='{$id}' href='".e_ADMIN."image.php?mode=main&action=dialog&for=".$this->var['template']."&tagid=".$tag."&iframe=1&bbcode=video'  >";
+		$text = "<a class='e-modal btn btn-primary' data-modal-caption='Media Manager' data-target='#uiModal' title='Insert a Youtube video via Media Manager : ".$this->var['template']."' id='{$id}' href='".e_ADMIN."image.php?mode=main&action=dialog&for=".$this->var['template']."&tagid=".$tag."&iframe=1&bbcode=video'  >";
 		$text .= $this->button(e_IMAGE_ABS."bbcode/youtube.png", 'youtube', LANHELP_48);
 		
 		$text .= "</a>";
 		return $text;
 	}
+
+
+	function bb_glyph($id)
+	{
+		if($this->var['tagid'] == 'data_') // BC work-around for duplicate IDs. 
+		{
+			$tag =  "data";
+		}
+		else
+		{
+			list($tag,$tmp) = explode("--",$this->var['tagid']); // works with $frm->bbarea to detect textarea from first half of tag. 
+		}			
+				
+			
+		$text = "<a class='e-modal btn btn-primary' data-modal-caption='Media Manager' data-target='#uiModal' title='Insert a Glyphicon via Media Manager : ".$this->var['template']."' id='{$id}' href='".e_ADMIN."image.php?mode=main&action=dialog&for=".$this->var['template']."&tagid=".$tag."&iframe=1&bbcode=glyph'  >";
+		$text .= $this->button(e_IMAGE_ABS."bbcode/youtube.png", 'youtube', LANHELP_48);
+		
+		$text .= "</a>";
+		return $text;
+	}
+
+
 	
 	function bb_link($id)
 	{
@@ -196,7 +212,7 @@ class bbcode_shortcodes extends e_shortcode
 		{
 			list($tag,$tmp) = explode("--",$this->var['tagid']); // works with $frm->bbarea to detect textarea from first half of tag. 
 		}
-		$text = "<a class='e-modal btn' data-modal-caption='Media Manager' data-target='#uiModal' title='Media Manager : ".$this->var['template']."' id='{$id}' href='".e_ADMIN."image.php?mode=main&action=dialog&for=".$this->var['template']."&tagid=".$tag."&iframe=1&bbcode=img'  >";
+		$text = "<a class='e-modal btn btn-primary' data-modal-caption='Media Manager' data-target='#uiModal' title='Insert an Image from the Media Manager : ".$this->var['template']."' id='{$id}' href='".e_ADMIN."image.php?mode=main&action=dialog&for=".$this->var['template']."&tagid=".$tag."&iframe=1&bbcode=img'  >";
 		
 		$text .= $this->button(e_IMAGE_ABS."bbcode/preimage.png",'picture-o');
 	//	$text .= "<img class='btn btn-small bbcode bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/preimage.png' title='".LANHELP_45."' alt='' />";
@@ -214,7 +230,7 @@ class bbcode_shortcodes extends e_shortcode
 		{
 			list($tag,$tmp) = explode("--",$this->var['tagid']); // works with $frm->bbarea to detect textarea from first half of tag. 
 		}
-		$text = "<a class='e-modal btn' data-modal-caption='Media Manager' data-target='#uiModal' id='{$id}' title='".LANHELP_39."' href='".e_ADMIN."image.php?mode=main&amp;action=dialog&amp;for=_common_file&amp;tagid=".$tag."&amp;iframe=1&amp;bbcode=file'  >";
+		$text = "<a class='e-modal btn btn-primary' data-modal-caption='Media Manager' data-target='#uiModal' id='{$id}' title='Insert a file from the Media-Manager' href='".e_ADMIN."image.php?mode=main&amp;action=dialog&amp;for=_common_file&amp;tagid=".$tag."&amp;iframe=1&amp;bbcode=file'  >";
 		
 		$text .= $this->button(e_IMAGE_ABS."bbcode/prefile.png", 'file');
 	//	$text .= "<img class='btn btn-small bbcode bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/prefile.png' title='".LANHELP_39."' alt='' />";
@@ -457,20 +473,31 @@ class bbcode_shortcodes extends e_shortcode
 	
 	function sc_bb($parm)
 	{
+		
+		
+		
 		if(method_exists($this,"bb_".$parm)) // start of the big cleanup. 
 		{
 			$meth = "bb_".$parm;
-			$mes = e107::getMessage();
-		//	$mes->debug("Loaded BB: ".$parm);
+	
+		//	e107::getMessage()->debug("Loaded BB: ".$parm);
+		
 			$unique = $this->var['template']."--".$parm; // works in conjunction with media-manager category
 			return "\n\n<!-- {$parm} -->\n".$this->$meth($unique);
 		}
 		
-		// NOTE: everything below here could be replaced with separate 'bb_xxxx' methods if need be. (see above)
+		//XXX NOTE: everything below here could be replaced with separate 'bb_xxxx' methods if need be. (see above)
 	
 		
+		
+		
+		
+		
+		
+		
+		
 		//FIXME - cachevars/getcachedvars!
-		global $pref, $eplug_bb, $bbcode_func, $bbcode_help, $bbcode_filedir, $bbcode_imagedir, $bbcode_helpactive, $bbcode_helptag, $register_bb;
+		global $pref, $eplug_bb, $bbcode_func, $bbcode_help, $bbcode_helpactive, $bbcode_helptag, $register_bb;
 
 	//	if(defsettrue('e_WYSIWYG')){ return; }
 		$eplug_bb = $this->var['eplug_bb'] ? $this->var['eplug_bb'] : array();
@@ -482,8 +509,8 @@ class bbcode_shortcodes extends e_shortcode
 		$bbcode_tag  = ($bbcode_helptag != 'helpb') ? ",'$bbcode_helptag'" : "";
 
 		$rand = rand(1000,9999);
-		$imagedir_display = str_replace('../','',$bbcode_imagedir);
-
+	//	$imagedir_display = str_replace('../','',$bbcode_imagedir);
+/*
 		if($parm == 'emotes')
 		{
 			if ($pref['comments_emoticons'] && $pref['smiley_activate'] && !defsettrue('e_WYSIWYG'))
@@ -495,12 +522,12 @@ class bbcode_shortcodes extends e_shortcode
 				return '';
 			}
 		}
-
+*/
 		// Format: $bbcode['UNIQUE_NAME'] = array(ONCLICK_FUNC, ONCLICK_VAR, HELPTEXT, ICON, INCLUDE_FUNC, INCLUDE_FUNCTION_VAR);
 
 		
 	//	$bbcode['newpage'] 		= array($bbcode_func,"[newpage]", LANHELP_34, "newpage.png");
-		$bbcode['link'] 		= array('addinput',		"[link=".LANHELP_35."][/link]",		LANHELP_23,		"link.png",		'link');
+	//	$bbcode['link'] 		= array('addinput',		"[link=".LANHELP_35."][/link]",		LANHELP_23,		"link.png",		'link');
 		
 		$bbcode['b'] 			= array($bbcode_func,	"[b][/b]", 							LANHELP_24,		"bold.png",				'',	'',	'bold');
 		$bbcode['i'] 			= array($bbcode_func,	"[i][/i]", 							LANHELP_25,		"italic.png",			'',	'',	'italic');
@@ -513,17 +540,18 @@ class bbcode_shortcodes extends e_shortcode
 		$bbcode['list'] 		= array($bbcode_func,	"[list][/list]", 					LANHELP_36,		"list.png",				'',	'',	'list');
 		$bbcode['img'] 			= array($bbcode_func,	"[img][/img]", 						LANHELP_27,		"image.png"	,			'',	'',	'picture-o');
 		$bbcode['flash']		= array($bbcode_func,	"[flash=width,height][/flash]", 	LANHELP_47,		"flash.png",			'',	'',	'flash');
-		$bbcode['youtube'] 		= array($bbcode_func,	"[youtube][/youtube]", 				LANHELP_48,		"youtube.png",			'',	'',	'youtube');
+//		$bbcode['youtube'] 		= array($bbcode_func,	"[youtube][/youtube]", 				LANHELP_48,		"youtube.png",			'',	'',	'youtube');
 		$bbcode['sanitised'] 	= array('', '', '');
 			
 		$bbcode['nobr'] 		= array($bbcode_func,	"[nobr][/nobr]", LANHELP_51, "nobr.png"); // FIXME bbcode icon
 		$bbcode['br'] 			= array($bbcode_func,	"[br]", LANHELP_52, "br.png"); // FIXME bbcode icon
 
 
-		$bbcode['fontsize'] 	= array("expandit",		"size_selector_".$rand, LANHELP_22,"fontsize.png","Size_Select",'size_selector_'.$rand);
-		$bbcode['fontcol'] 		= array("e-expandit",	"col_selector_".$rand, LANHELP_21,"fontcol.png","Color_Select",'col_selector_'.$rand);
-		$bbcode['preimage'] 	= array("e-dialog",		"preimage_selector_".$rand, LANHELP_45.$imagedir_display,"preimage.png","PreImage_Select","preimage_selector_".$rand);
-		$bbcode['prefile'] 		= array("expandit",		"prefile_selector_".$rand, LANHELP_39,"prefile.png","PreFile_Select",'prefile_selector_'.$rand);
+	//	$bbcode['fontsize'] 	= array("expandit",		"size_selector_".$rand, LANHELP_22,"fontsize.png","Size_Select",'size_selector_'.$rand);
+	//	$bbcode['fontcol'] 		= array("e-expandit",	"col_selector_".$rand, LANHELP_21,"fontcol.png","Color_Select",'col_selector_'.$rand);
+	
+	//	$bbcode['preimage'] 	= array("e-dialog",		"preimage_selector_".$rand, LANHELP_45.$imagedir_display,"preimage.png","PreImage_Select","preimage_selector_".$rand);
+	//	$bbcode['prefile'] 		= array("expandit",		"prefile_selector_".$rand, LANHELP_39,"prefile.png","PreFile_Select",'prefile_selector_'.$rand);
 
 		if(!isset($iconpath[$parm]))
 		{
@@ -627,10 +655,10 @@ class bbcode_shortcodes extends e_shortcode
 
 	function sc_bb_preimagedir($parm)
 	{
-		if(defsettrue('e_WYSIWYG')) { return; }
-		global $bbcode_imagedir;
-		$bbcode_imagedir = $parm;
-		return;
+	//	if(defsettrue('e_WYSIWYG')) { return; }
+	//	global $bbcode_imagedir;
+	//	$bbcode_imagedir = $parm;
+	//	return;
 	}
 }
 ?>
