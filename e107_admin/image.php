@@ -1181,7 +1181,6 @@ class media_admin_ui extends e_admin_ui
 				
 		if($options['bbcode'] || E107_DEBUG_LEVEL > 0)
 		{
-			
 						
 			$text .= "<div style='text-align:right;padding:5px'>
 			
@@ -1192,18 +1191,18 @@ class media_admin_ui extends e_admin_ui
 			<span>Cancel</span>
 			</button>
 			</div>";
-						
-			$type = (E107_DEBUG_LEVEL > 0) ?  "text" : "hidden";
-			$br = (E107_DEBUG_LEVEL > 0) ?  "<br />" : "";   
-			
-			$text .= "
-			".$br."<input title='bbcode' type='{$type}' readonly='readonly' class='span11' id='bbcode_holder' name='bbcode_holder' value='' />
-			".$br."<input title='html/wysiwyg' type='{$type}' class='span11' readonly='readonly' id='html_holder' name='html_holder' value='' />
-			".$br."<input title='(preview) src' type='{$type}' class='span11' readonly='readonly' id='src' name='src' value='' />
-			".$br."<input title='path (saved to db)' type='{$type}' class='span11' readonly='readonly' id='path' name='path' value='' />				
-			";		
-						
+
 		}
+		
+		$type = (E107_DEBUG_LEVEL > 0) ?  "text" : "hidden";
+		$br = (E107_DEBUG_LEVEL > 0) ?  "<br />" : "";   
+		
+		$text .= "
+		".$br."<input title='bbcode' type='{$type}' readonly='readonly' class='span11' id='bbcode_holder' name='bbcode_holder' value='' />
+		".$br."<input title='html/wysiwyg' type='{$type}' class='span11' readonly='readonly' id='html_holder' name='html_holder' value='' />
+		".$br."<input title='(preview) src' type='{$type}' class='span11' readonly='readonly' id='src' name='src' value='' />
+		".$br."<input title='path (saved to db)' type='{$type}' class='span11' readonly='readonly' id='path' name='path' value='' />				
+		";		
 		
 		return $text;
 	}
@@ -1250,7 +1249,8 @@ class media_admin_ui extends e_admin_ui
 			'action'	=>'glyph', 								// Used by AJAX to identify correct function. 
 			'perPage'	=> 90,
 			'gridClass'	=> 'media-carousel-item-glyph pull-left',
-			
+			'bbcode'	=>'glyph',
+			'close'		=> 'true'		
 		
 		);
 		

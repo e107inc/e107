@@ -56,16 +56,16 @@ $BBCODE_TEMPLATE_ADMIN = "
 	<div class='btn-toolbar'>
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=format}{BB=left}{BB=center}{BB=right}{BB=justify}
 	{BB=list}{BB=table}{BB=fontcol}{BB=fontsize}{BB=emotes}
-	{BB_PREIMAGEDIR}
-	{BB=preimage}{BB=prefile}{BB=flash}{BB=youtube}
+	{BB_PREIMAGEDIR}{BB=flash}
+	<div class='btn-group'>{BB=preimage}{BB=prefile}{BB=youtube}</div>
 	</div>
 ";
 
 $BBCODE_TEMPLATE_MAILOUT = "
 	<div class='btn-toolbar'>
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=left}{BB=center}{BB=right}{BB=justify}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
-	{BB_PREIMAGEDIR}
-	{BB=preimage}{BB=prefile}{BB=flash}{BB=shortcode}
+	{BB_PREIMAGEDIR}{BB=flash}
+	<div class='btn-group'>{BB=preimage}{BB=prefile}{BB=shortcode}</div>
 	</div>
 ";
 
@@ -74,18 +74,18 @@ $BBCODE_TEMPLATE_MAILOUT = "
 $BBCODE_TEMPLATE_NEWSPOST = "
 	<div class='btn-toolbar'>
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=format}{BB=left}{BB=center}{BB=right}{BB=justify}
-	{BB=list}{BB=table}{BB=fontcol}{BB=fontsize}{BB=emotes}
+	{BB=list}{BB=table}{BB=fontcol}{BB=fontsize}{BB=emotes}{BB=flash}
 	{BB_PREIMAGEDIR=news}
-	{BB=preimage}{BB=prefile}{BB=flash}{BB=youtube}
+	<div class='btn-group'>{BB=preimage}{BB=prefile}{BB=youtube}</div>
 	</div>
 ";
 
 $BBCODE_TEMPLATE_CPAGE = "
 	<div class='btn-toolbar'>
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=format}{BB=left}{BB=center}{BB=right}{BB=justify}
-	{BB=list}{BB=table}{BB=fontcol}{BB=fontsize}{BB=emotes}
+	{BB=list}{BB=table}{BB=fontcol}{BB=fontsize}{BB=emotes}{BB=flash}
 	{BB_PREIMAGEDIR=page}
-	{BB=preimage}{BB=prefile}{BB=flash}{BB=youtube}
+	<div class='btn-group'>{BB=preimage}{BB=prefile}{BB=youtube}</div>
 	</div>
 ";
 ?>
