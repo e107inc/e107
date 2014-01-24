@@ -1319,6 +1319,32 @@ class admin_newspost
 		return true;
 	}
 
+
+
+
+
+	/**
+	 * For future use: multiple-images. 
+	 */
+	private function processThumbs($postedImage)
+	{
+		if(is_array($postedImage))
+		{	
+			return implode(",",array_filter($postedImage));
+		}
+		else 
+		{
+			return $postedImage;
+		}
+		
+	}
+
+
+
+
+
+
+
 // In USE. 
 	function _observe_submit_item($sub_action, $id)
 	{
@@ -1354,6 +1380,12 @@ class admin_newspost
 		{
 			$_POST['news_datestamp'] = time();	
 		}
+		
+		
+		$_POST['news_thumbnail'] = $this->processThumbs($_POST['news_thumbnail']); 
+		
+		
+		
 		
 				
 		/*
@@ -2342,7 +2374,7 @@ class admin_newspost
 		 $text .= "
 	
 									<tr>
-										<td>".NWSLAN_67.":<br />
+										<td>".NWSLAN_67."s:<br />
 										".$frm->help(LAN_NEWS_23)."</td>
 										<td>
 				";
@@ -2351,9 +2383,17 @@ class admin_newspost
 			$_POST['news_thumbnail'] = "{e_IMAGE}newspost_images/".$_POST['news_thumbnail'];	
 		}
 		
-		
-		
-		$text .= $frm->imagepicker('news_thumbnail', $_POST['news_thumbnail'],'','news');
+		$text .= $frm->imagepicker('news_thumbnail[0]', $_POST['news_thumbnail'] ,'','news');
+	
+	/*	
+	 * XXX Experimental
+		$thumbTmp = explode(",",$_POST['news_thumbnail']);
+		$text .= $frm->imagepicker('news_thumbnail[0]', varset($thumbTmp[0]),'','news');
+		$text .= $frm->imagepicker('news_thumbnail[1]', varset($thumbTmp[1]),'','news');
+		$text .= $frm->imagepicker('news_thumbnail[2]', varset($thumbTmp[2]),'','news');
+		$text .= $frm->imagepicker('news_thumbnail[3]', varset($thumbTmp[3]),'','news');
+		$text .= $frm->imagepicker('news_thumbnail[4]', varset($thumbTmp[4]),'','news');
+	*/
 
 		$text .= "
 								</td>

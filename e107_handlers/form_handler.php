@@ -496,6 +496,7 @@ class e_form
 	{
 		$tp = e107::getParser();
 		$name_id = $this->name2id($name);
+		$meta_id = $name_id."-meta";
 		
 		if(is_string($sc_parameters))
 		{
@@ -553,7 +554,7 @@ class e_form
 			$width = vartrue($sc_parameters['w'], 120);
 			$height = vartrue($sc_parameters['h'], 100);
 
-			$ret = "<div class='imgselector-container e-tip' {$title} style='display:block;width:".$width."px;min-height:".$height."px;'>";
+			$ret = "<div class='imgselector-container e-tip' {$title} style='margin-right:25px; display:inline-block; width:".$width."px;min-height:".$height."px;'>";
 			$att = 'aw='.$width."'&ah=".$height."'";
 			$thpath = isset($sc_parameters['nothumb']) || vartrue($hide) ? $default : $tp->thumbUrl($default_thumb, $att, true);
 			
@@ -570,6 +571,7 @@ class e_form
 		$ret .= $this->mediaUrl($cat, $label,$name_id,$sc_parameters);
 		$ret .= "</div>\n";
 		$ret .=	"<input type='hidden' name='{$name}' id='{$name_id}' value='{$default}' />"; 
+		$ret .=	"<input type='hidden' name='mediameta_{$name}' id='{$meta_id}' value='' />"; 
 	//	$ret .=	$this->text($name,$default); // to be hidden eventually. 
 		return $ret;
 		
