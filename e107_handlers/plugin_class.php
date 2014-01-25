@@ -64,6 +64,19 @@ class e107plugin
 		'core'
 	);
 
+
+	protected $core_plugins = array(
+		"_blank","admin_menu","alt_auth","banner","blogcalendar_menu",
+		"calendar_menu","chatbox_menu",	"clock_menu","comment_menu",
+		"contact", "download","faqs", "featurebox", "forum","gallery", 
+		"gsitemap","import", "linkwords", "list_new", "log", "login_menu",
+		"metaweblog", "newforumposts_main", "news", "newsfeed",
+		"newsletter","online", "page", "pdf", "pm", "pm","poll",
+		"rss_menu","search_menu","siteinfo", "social", "tagwords", "tinymce",
+		"trackback","tree_menu","user"
+	);
+
+
 	// List of all plugin variables which need to be checked - install required if one or more set and non-empty
 	// Deprecated in 0.8 (used in plugin.php only). Probably delete in 0.9
 	var $all_eplug_install_variables = array(
@@ -148,8 +161,27 @@ class e107plugin
 		}
 		return false;
 	}
+
+	/**
+	* Return a list of core plugins. 
+	*/
+	public function getCorePlugins()
+	{
+		return $this->core_plugins;	
+	}
+
+	/**
+	* Return a list of non-core plugins
+	*/
+	public function getOtherPlugins()
+	{
+		$allplugs = e107::getFile()->get_dirs(e_PLUGIN);
+		
+		return array_diff($allplugs,$this->core_plugins);		
+	}
+
 	
-		/**
+	/**
 	 * Returns an array containing details of all plugins in the plugin table - should normally use e107plugin::update_plugins_table() first to
 	 * make sure the table is up to date. (Primarily called from plugin manager to get lists of installed and uninstalled plugins.
 	 * @return array plugin details
