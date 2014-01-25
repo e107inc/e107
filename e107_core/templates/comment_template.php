@@ -97,7 +97,7 @@ $sc_style['MODERATE']['post']	= '</div>';
 
 
 $COMMENT_TEMPLATE['form']			= "
-	{SETIMAGE: w=100}
+	{SETIMAGE: w=60}
 	<div class='media comment-box comment-box-form clearfix'>
 		<div class='comment-box-left media-object pull-left' >
 		{COMMENT_AVATAR}
