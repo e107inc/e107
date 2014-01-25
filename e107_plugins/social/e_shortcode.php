@@ -75,7 +75,7 @@ class social_shortcodes extends e_shortcode
 		$title 			= varset($parm['title'], deftrue('e_PAGETITLE'). " | ". SITENAME ) ;
 		$description 	= varset($parm['title'], e107::getUrl()->response()->getMetaDescription());
 		$media 			= "";
-		$label 			= varset($parm['label'], $tp->toGlyph('e-social-spread')." ".defset('LAN_SHARE',"Share"));
+		$label 			= varset($parm['label'], $tp->toGlyph('e-social-spread'));
 		
 		$size			= varset($parm['size'],'md');
 		
@@ -131,7 +131,7 @@ class social_shortcodes extends e_shortcode
 			$dir = ($parm['dropdown'] == 'right') ? 'pull-right' : '';
 	
 			$text = '<div class="btn-group '.$dir.'">
-				  <a class="e-tip btn btn-dropdown btn-default btn-'.$size.' dropdown-toggle" data-toggle="dropdown" href="#" title="Share">'.$label.' <b class="caret"></b></a>
+				  <a class="e-tip btn btn-dropdown btn-default btn-'.$size.' dropdown-toggle" data-toggle="dropdown" href="#" title="Share">'.$label.'</a>
 				 
 				  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel"  style="min-width:465px">
 				  
