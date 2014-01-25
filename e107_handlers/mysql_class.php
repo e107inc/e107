@@ -1826,6 +1826,22 @@ class e_db_mysql
 			$this->mySQLtableList = $this->db_mySQLtableList();
 
 		}
+		
+		if($mode == 'nologs')
+		{
+			$ret = array();
+			foreach($this->mySQLtableList as $table)
+			{
+				if(substr($table,-4) != '_log' && $table != 'download_requests')
+				{
+					$ret[] = $table;	
+				}	
+				
+			}
+			
+			return $ret;
+		}
+		
 
 		if($mode == 'all')
 		{
@@ -1928,20 +1944,38 @@ class e_db_mysql
 	 * @param $table string - name without the prefix or '*' for all
 	 * @param $file string - optional file name. or leave blank to generate. 
 	 * @param $options - additional preferences. 
+	 * @return backup file path. 
 	 */
 	function backup($table='*', $file='', $options=null)
 	{
 		$dbtable 		= $this->mySQLdefaultdb; 
-		$fileName		= ($table =='*') ? SITENAME : $table; 
+		$fileName		= ($table =='*') ? str_replace(" ","_",SITENAME) : $table; 
 		$fileName	 	= preg_replace('/[^\w]/i',"",$fileName);
-		$backupFile 	= ($file) ? e_BACKUP.$file : e_BACKUP.$this->mySQLPrefix.$fileName."_".date("Y-m-d-H-i-s").".sql";
-		$tableList 		= ($table=='*') ? $this->db_TableList() : array($table); 
+		
+		$backupFile 	= ($file) ? e_BACKUP.$file  :  e_BACKUP.$fileName."_".$this->mySQLPrefix.date("Y-m-d-H-i-s").".sql";
+		
+		if($table=='*') 
+		{
+			$nolog 		= vartrue($options['nologs']) ? 'nologs' : '';
+			$tableList 	= $this->db_TableList($nolog);
+		}
+		else
+		{
+			$tableList 		= explode(",",$table); 
+		}
 			
+		$header = "-- e107 Database Backup File \n";	
+		$header .= "-- Host: ".$_SERVER['SERVER_NAME']."\n";
+		$header .= "-- Generation Time: ".date('r')."\n";
+		$header .= "-- Encoding: ANSI\n\n\n";
+		
+		file_put_contents($backupFile,$header, FILE_APPEND);	
+		
 		foreach ($tableList as $table)
 		{
 			unset($text);
 			$text = "";
-			
+			$text .= vartrue($options['droptable']) ? "DROP TABLE IF EXISTS `".$this->mySQLPrefix.$table."`;\n" : "";
 			$this->gen("SHOW CREATE TABLE `".$this->mySQLPrefix.$table."`");
 			$row2 = $this->fetch();
 			$text .= $row2['Create Table'];
@@ -1977,7 +2011,8 @@ class e_db_mysql
 			unset($fields);	
 
 		}
-				
+		
+		return $backupFile;		
 		// file_put_contents('memory.log', 'memory used in line ' . __LINE__ . ' is: ' . memory_get_usage() . PHP_EOL, FILE_APPEND);
 		
 	}

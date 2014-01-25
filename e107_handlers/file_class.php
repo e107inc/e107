@@ -734,7 +734,7 @@ class e_file
 
 	/**
 	 * File retrieval function. by Cam.
-	 * @param $file actual path or {e_} path to file. 
+	 * @param $file actual path or {e_xxxx} path to file. 
 	 * 
 	 */
 	function send($file) 
@@ -874,8 +874,39 @@ class e_file
 						
 	}		
 		
+	
+	/**
+	 * Zip up folders and files 
+	 * @param array $filePaths
+	 * @param string $newFile
+
+	 */	
+	public function zip($filePaths=null, $newFile='')
+	{
+		if(empty($newFile))
+		{
+			$newFile = e_BACKUP.eHelper::title2sef(SITENAME)."_".date("Y-m-d-H-i-s").".zip";	
+		}		
 		
+		if(is_null($filePaths))
+		{
+			return "No file-paths set!";	
+		}
+			
+		require_once(e_HANDLER.'pclzip.lib.php');	
+		$archive = new PclZip($newFile);
 		
+		if ($archive->create($filePaths, PCLZIP_OPT_REMOVE_PATH,e_BASE) == 0)
+		{		
+			$error = $archive->errorInfo(true);
+			e107::getAdminLog()->addError($error)->save('FILE',E_LOG_NOTICE);
+			return false;
+		}
+		else
+		{
+			return $newFile;		
+		}
+	}		
 
 	
 

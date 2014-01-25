@@ -66,7 +66,49 @@ if(isset($_POST['exportXmlFile']))
 
 }
 
+if(e_AJAX_REQUEST )
+{
 
+	session_write_close();
+	while (@ob_end_clean()); 
+
+	if(varset($_GET['mode']) == 'backup') //FIXME - not displaying progress until complete. Use e-progress?
+	{
+		echo "Starting file backup...<br />";
+		
+		$data = array();
+		$data[] = e_MEDIA;
+		$data[] = e_LOG;
+		$data[] = e_IMPORT;
+		$data[] = e_TEMP;
+		$data[] = e_SYSTEM."filetypes.xml";
+		$data[] = e_THEME.e107::getPref('sitetheme');
+		
+		$plugins = e107::getPlugin()->getOtherPlugins();
+		foreach($plugins as $dir)
+		{
+			$data[] = e_PLUGIN.$dir;
+		}
+		
+		$newFile = eHelper::title2sef(SITENAME)."_".date("Y-m-d-H-i-s");
+			
+		$zip = e107::getFile()->zip($data, e_BACKUP.$newFile.".zip");	
+			
+		echo "File backup complete! <small>(".$zip.")</small><br />";
+		
+		echo "Starting database backup...<br />";
+
+		$dbfile = e107::getDb()->backup('*', $newFile.".sql", array('nologs'=>1, 'droptable'=>1));
+		
+		echo "Database backup complete! <small>(".$dbfile.")</small>";
+
+		e107::getAdminLog()->addSuccess($zip." ".$dbfile, false)->save('Full site backup completed.');
+		
+	}
+	
+	exit;
+	
+}
 
 require_once ("auth.php");
 
@@ -124,7 +166,8 @@ class system_tools
 			'exportForm'			=> array('diz'=>DBLAN_58, 'label'=> DBLAN_58),
 			'sc_override_scan'		=> array('diz'=>DBLAN_55, 'label'=> DBLAN_56),
 			'convert_to_utf8'		=> array('diz'=>'Check Database Charset','label'=>'Check Charset'),
-			'correct_perms'			=> array('diz'=>'Correct File and Directory permissions','label'=>'Correct Perms')							
+			'correct_perms'			=> array('diz'=>'Correct File and Directory permissions','label'=>'Correct Perms'),
+			'backup'				=> array('diz'=>'Backup Database, Files and Folders','label'=>'Backup Site')									
 		);
 		
 		if(vartrue($_SERVER['E_DEV']))
@@ -157,6 +200,8 @@ class system_tools
 			$dbv->verify();
 			return;
 		}
+		
+	
 		
 	//	if(isset($_POST['verify_sql_record']) || varset($_GET['mode'])=='verify_sql_record' || isset($_POST['check_verify_sql_record']) || isset($_POST['delete_verify_sql_record']))
 	//	{
@@ -230,6 +275,12 @@ class system_tools
 			$this->multiSite();	
 			return;
 		}
+		
+		if(varset($_GET['mode']) == 'backup')
+		{
+			$this->backup();
+			return;
+		}
 
 		if(!vartrue($_GET['mode']) && !isset($_POST['db_execute']))
 		{
@@ -239,6 +290,26 @@ class system_tools
 
 
 	}
+
+
+	private function backup()
+	{
+			
+		$mes = e107::getMessage();
+		
+		$message = "This will create a database dump and a zipped backup of all non-core plugins, your site theme, your media files and system logs";
+		$message .= "<br /><a class='e-ajax btn btn-success' data-loading-text='Please wait...' href='#backupstatus' data-src='".e_SELF."?mode=backup' >".LAN_CREATE."</a>";
+		
+		
+		$mes->addInfo($message);
+		
+		$text = "<div id='backupstatus' style='margin-top:20px'></div>";
+		
+		
+		e107::getRender()->tablerender(DBLAN_10.SEP."Backup", $mes->render().$text);		
+	}
+
+
 
 	/**
 	 * Correct Folder and File permissions. 
