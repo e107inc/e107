@@ -81,7 +81,7 @@ $NEWS_TEMPLATE['default']['item'] = '
 
 $NEWS_TEMPLATE['default']['item'] = '
 		{SETIMAGE: w=900&h=300}
-		<h2>{NEWSTITLE}</h2>
+		<h2>{NEWSTITLELINK}</h2>
           <p class="lead">by {NEWSAUTHOR}</p>
           <hr>
            <div class="row">
@@ -112,7 +112,7 @@ $NEWS_TEMPLATE['default']['item'] = '
 $NEWS_TEMPLATE['view']['item'] = '
 {SETIMAGE: w=900&h=300}
 	<div class="view-item">
-		<h2>{NEWSTITLE}</h2>
+		<h2>{NEWSTITLELINK}</h2>
 		<p class="lead">by {NEWSAUTHOR}</p>
          <hr>
          	<div class="row">
