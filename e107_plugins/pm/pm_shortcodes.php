@@ -578,11 +578,9 @@ class pm_shortcodes extends e_shortcode
 	 */
 	public function url($action, $params = array(), $options = array())
 	{
-		if($action == "new"){ $action = 'send'; }
-		return e_PLUGIN."pm/pm.php?".$action; //FIXME 
 		if(strpos($action, '/') === false) $action = 'view/'.$action;
 		
-		e107::getUrl()->create('pm/'.$action, $params, $options);
+		return e107::getUrl()->create('pm/'.$action, $params, $options);
 	}
 }
 
