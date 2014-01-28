@@ -2713,36 +2713,41 @@ class e_parser
 			return "<i class='".$size." ".$text."'></i>";		
 		}
 
-		// Bootstrap 3 Glyph names. 
+		// Get Glyph names. 
 		$bs3 = e107::getMedia()->getGlyphs('bs3','');
-		
-		if(substr($text,0,5) != 'icon-' && substr($text,0,3) != 'fa-')
-		{
-			$text = 'icon-'.$text.'.glyph';	
-		}
-		
-		list($cls,$tmp) = explode('.glyph',$text);
-		list($type, $tmp2) = explode("-",$text,2);
-		
-		$id = str_replace("icon-","",$cls);
-		
-		if(deftrue('FONTAWESOME') == 4 && !in_array($id ,$bs3)) // Convert FontAwesome 3 to 4. 
-		{
-			$cls = str_replace('icon-', 'fa fa-', $cls);
-		}
-		elseif(defset("BOOTSTRAP")===3) 
-		{
-			$cls = str_replace('icon-', 'glyphicon glyphicon-', $cls);	
-		}
+		$fa4 = e107::getMedia()->getGlyphs('fa4','');
 			
-			if($type == 'fa')
-		{
-			$cls = str_replace('fa-', 'fa fa-', $cls);	
-			$cls .= (vartrue($parm['size'])) ?  ' fa-'.$parm['size'] : '';		
-		}
-	//		$text = (deftrue('BOOTSTRAP') === 3) ? "<span class='".$cls."'></span>"  : "<i class='".$cls."'></i>";	// retain space. 
+		list($cls,$tmp) = explode('.glyph',$text);
+	//	list($type, $tmp2) = explode("-",$text,2);
 		
-		$text = "<span class='".$cls."'></span>" ;
+		$removePrefix = array('glyphicon-','icon-','fa-');
+		
+		$id = str_replace($removePrefix, "", $cls);
+		
+	//	return print_r($fa4,true);
+		
+		if(deftrue('FONTAWESOME') &&  in_array($id ,$fa4)) // Contains FontAwesome 3 set also. 
+		{
+			$prefix = 'fa fa-';
+			$prefix .= (vartrue($parm['size'])) ?  ' fa-'.$parm['size'] : '';	
+			$tag 	= 'span';
+		}
+		elseif(deftrue("BOOTSTRAP")) 
+		{
+			if(BOOTSTRAP === 3 && in_array($id ,$bs3))
+			{
+				$prefix = 'glyphicon glyphicon-';
+				$tag = 'span';
+			}
+			else
+			{
+				$prefix = 'icon-';	
+				$tag = 'i';
+			}
+			
+		}
+		
+		$text = "<".$tag." class='".$prefix.$id."'></".$tag.">" ;
 		$text .= ($space !== false) ? $space : "";
 		
 		return $text;
