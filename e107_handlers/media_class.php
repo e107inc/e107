@@ -830,7 +830,7 @@ class e_media
 		}
 		
 		$cache = e107::getCache();
-		$cache->setMD5('_');
+		$cache->setMD5('_'.$prefix.$type);
 		
 		if($data = $cache->retrieve($type,360,true))
 		{
@@ -840,12 +840,13 @@ class e_media
 		
 		if($type == 'fa4')
 		{
-			$pattern = '/\.(fa-(?:\w+(?:-)?)+):before\s+{\s*content:\s*"(.+)";\s+}/';
+			$pattern = '/\.(fa-(?:\w+(?:-)?)+):before/';
 			$subject = e107::getFile()->getRemoteContent('http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css');
+		//	print_a($subject);
 		}
 		elseif($type == 'fa3')
 		{
-			$pattern = '/\.(icon-(?:\w+(?:-)?)+):before\s+{\s*content:\s*"(.+)";\s+}/';
+			$pattern = '/\.(icon-(?:\w+(?:-)?)+):before/';
 			$subject = file_get_contents(e_WEB_JS.'font-awesome/css/font-awesome.css');
 		}
 				
@@ -855,7 +856,7 @@ class e_media
 		
 		foreach($matches as $match)
 		{
-		    $icons[] = $match[1];
+		    $icons[] = $prefix.substr($match[1],3);
 		}
 			
 		$data = e107::serialize($icons);
