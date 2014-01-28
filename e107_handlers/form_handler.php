@@ -2287,7 +2287,7 @@ class e_form
 		
 		if(count($list))
 		{
-			return "<div class='e-related'><hr><h4>Related</h4><ul class='e-related'>".implode("\n",$list)."</ul></div>"; //XXX Tablerender?
+			return "<div class='e-related clearfix'><hr><h4>Related</h4><ul class='e-related'>".implode("\n",$list)."</ul></div>"; //XXX Tablerender?
 		}
 		
 	}		
