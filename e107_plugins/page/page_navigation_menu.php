@@ -68,7 +68,7 @@ $text = e107::getNav()->render($data, $template) ;
 if($expandable) 
 {
 	e107::js('page','js/jquery.page.navigation.js','jquery');
-	$template['caption'] .= "<span class='btn-group pull-right'><a class='btn btn-mini' id='page-nav-expand'>+</a><a class='btn btn-mini' id='page-nav-collapse'>-</a></span>";
+	$template['caption'] .= "<span class='btn-group pull-right'><a class='btn btn-default btn-xs btn-mini' id='page-nav-expand'>+</a><a class='btn btn-default btn-xs btn-mini' id='page-nav-collapse'>-</a></span>";
 }
 
 
