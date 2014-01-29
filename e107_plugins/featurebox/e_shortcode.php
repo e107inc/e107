@@ -35,6 +35,7 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 		{
 			$type 	= vartrue(e107::getPlugPref('featurebox','menu_category'),'bootstrap_carousel');
 			$text = e107::getParser()->parseTemplate("{FEATUREBOX|".$type."}");
+			
 			return $text;
 		}
 		
@@ -71,11 +72,12 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 
 		if(!$category->hasData())
 		{
+			
 			return '';
 		}
 		
 		$tmpl = $this->getFboxTemplate($ctemplate);
-	
+		
 		
 		$type = vartrue($tmpl['js_type'],''); // Legacy support (prototype.js)
 		
@@ -102,8 +104,12 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 		
 		// Fix - don't use tablerender if no result (category could contain hidden items)
 		$ret = $this->render($category, $ctemplate, $parm);
-		if(empty($ret)) return '';
-
+		if(empty($ret))
+		{
+			e107::getMessage()->addDebug('Featurebox returned nothing.')->addDebug('Category: '.print_a($category,true))->addDebug('Template: '.$ctemplate)->addDebug('Param: '.print_a($parm,true));
+			return '';
+		}
+		
 		$ret = $tp->parseTemplate($tmpl['list_start'], true, $category).$ret.$tp->parseTemplate($tmpl['list_end'], true, $category);
 		if(isset($parm['notablestyle']))
 		{
