@@ -286,8 +286,10 @@ class news_shortcodes extends e_shortcode
 		}
 	}
 
-	function sc_extended($parm)
+	function sc_extended($parm='')
 	{
+
+		$class = vartrue($parm['class']) ? "class='".$parm['class']."'" : '';
 
 		if ($this->news_item['news_extended'] && ($this->param['current_action'] != 'extend' || $parm == 'force'))
 		{
@@ -301,7 +303,7 @@ class news_shortcodes extends e_shortcode
 			}
 			else
 			{
-				return $es1."<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$es."</a>".$es2;
+				return $es1."<a {$class} href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$es."</a>".$es2;
 			}
 		}
 		return '';

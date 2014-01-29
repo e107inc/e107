@@ -69,6 +69,8 @@ class e_parse extends e_parser
 	public $thumbWidth = 100;
 	
 	public $thumbHeight = 0;
+	
+	public $thumbCrop = 0;
 
 	// Set up the defaults
 	var $e_optDefault = array(

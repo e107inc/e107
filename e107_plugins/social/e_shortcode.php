@@ -23,7 +23,7 @@ class social_shortcodes extends e_shortcode
 			'rss'			=> array('href'=> (e107::isInstalled('rss_menu') ? e_PLUGIN_ABS."rss_menu/rss.php?news.2" : ''), 'title'=>'Feed'),
 			'facebook'		=> array('href'=> deftrue('XURL_FACEBOOK'), 	'title'=>'Facebook'),
 			'twitter'		=> array('href'=> deftrue('XURL_TWITTER'),		'title'=>'Twitter'),
-			'googleplus'	=> array('href'=> deftrue('XURL_GOOGLE'),		'title'=>'Google Plus'),
+			'google-plus'	=> array('href'=> deftrue('XURL_GOOGLE'),		'title'=>'Google Plus'),
 			'linkedin'		=> array('href'=> deftrue('XURL_LINKEDIN'),		'title'=>'LinkedIn'),
 			'pinterest'		=> array('href'=> deftrue('XURL_PINTEREST'),	'title'=>'Pinterest'),
 			'instagram'		=> array('href'=> deftrue('XURL_INSTAGRAM'),	'title'=>'Instagram'),
