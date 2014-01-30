@@ -395,14 +395,14 @@ class news_admin_ui extends e_admin_ui
 	protected $cats = array();
 	protected $newspost;
 	
-	protected $news_renderTypes = array(
+	protected $news_renderTypes = array( // TODO Placement location and template should be separate. 
 	
-		'0' =>	"Default",
-		'1' =>	"Default - Title",
-		'4' =>	"Default - Title/Summary",
+		'0' =>	"Default Area",
+		'1' =>	"Default Area - Title",
+		'4' =>	"Default Area - Title/Summary",
 		'2' =>	"Sidebar - Othernews",
 		'3' =>	"Sidebar - Othernews 2",
-		
+		'5' =>	"Carousel",
 		//'5' =>	"Featurebox"
 	);
 		
@@ -2438,7 +2438,7 @@ class admin_newspost
 							
 							<tr>
 								<td>Notify Ping Services: </td>
-								<td>".$frm->checkbox('news_ping',1, 1)."</td>
+								<td>".$frm->checkbox('news_ping',1, false)."</td>
 							</tr>
 							
 						</tbody>

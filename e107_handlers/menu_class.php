@@ -237,8 +237,32 @@ class e_menu
 		return $eMenuArea;
 	}
 
-
-
+	/**
+	 * Returns true if a menu is currently active. 
+	 * @param string $menuname (without the '_menu.php' )
+	 */
+	function isLoaded($menuname)
+	{
+		if(empty($menuname))
+		{
+			return false;	
+		}
+		
+		foreach($this->eMenuActive as $area)
+		{
+			foreach($area as $menu)
+			{
+				if($menu['menu_name'] == $menuname."_menu")
+				{
+					return true;	
+				}
+				
+			}
+		
+		}	
+		
+		return false;
+	}
 
 
 
