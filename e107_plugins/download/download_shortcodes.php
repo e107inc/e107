@@ -387,7 +387,7 @@ class download_shortcodes extends e_shortcode
    function sc_download_list_imagefull($parm='')
    {
 	
-		$img = ($this->var['download_image']) ? "<img class='download-image dl_image' src='".e107::getParser()->replaceConstants($this->var['download_image'])."' alt=''  />" : "";
+		$img = ($this->var['download_image']) ? "<img class='download-image dl_image img-responsive' src='".e107::getParser()->replaceConstants($this->var['download_image'])."' alt=''  />" : "";
 		
 		if($parm == "link" && $this->var['download_image'])
 		{
@@ -554,7 +554,7 @@ class download_shortcodes extends e_shortcode
 	  
       if ($this->var['download_thumb']) 
       {
-      	return ($this->var['download_image'] ? "<a href='".e_PLUGIN_ABS."download/request.php?download.".$this->var['download_id']."'><img class='download-image dl_image' src='".$tp->replaceConstants($this->var['download_thumb'])."' alt='*'  /></a>" : "<img class='download-image dl_image' src='".$tp->replaceConstants($this->var['download_thumb'])."' alt='*'  />");
+      	return ($this->var['download_image'] ? "<a href='".e_PLUGIN_ABS."download/request.php?download.".$this->var['download_id']."'><img class='download-image dl_image img-responsive' src='".$tp->replaceConstants($this->var['download_thumb'])."' alt='*'  /></a>" : "<img class='download-image dl_image' src='".$tp->replaceConstants($this->var['download_thumb'])."' alt='*'  />");
       }
       elseif ($this->var['download_image'])
 	  {
@@ -569,7 +569,7 @@ class download_shortcodes extends e_shortcode
    function sc_download_view_imagefull()
    {
 	  $tp = e107::getParser();
-      return ($this->var['download_image']) ? "<img class='download-image dl_image' src='".$tp->replaceConstants($this->var['download_image'])."' alt='*'  />" : "";
+      return ($this->var['download_image']) ? "<img class='download-image dl_image img-responsive' src='".$tp->replaceConstants($this->var['download_image'])."' alt='*'  />" : "";
    }
    
 	function sc_download_view_link()
