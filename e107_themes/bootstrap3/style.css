@@ -99,6 +99,11 @@ img.featurebox { border-radius: 5px }
     color: inherit;
     text-decoration: none;
     opacity: .7;
+    padding-left:15px;
+    transition: opacity .5s ease-out;
+    -moz-transition: opacity .5s ease-out;
+    -webkit-transition: opacity .5s ease-out;
+    -o-transition: opacity .5s ease-out;
 }
 
 .xurl-social-icons a:hover {
