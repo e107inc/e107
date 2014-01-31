@@ -297,7 +297,10 @@ class cpage_shortcodes extends e_shortcode
   		return $this->page['page_metadscr'];
 	}
 	
-	
+	function sc_cpagesef()
+	{
+  		return vartrue($this->page['page_sef'],'page-no-sef');
+	}	
 	
 	// -------------------- Book - specific to the current page. -------------------------
 	
