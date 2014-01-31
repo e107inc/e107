@@ -2726,12 +2726,13 @@ class e_parser
 		
 		$id = str_replace($removePrefix, "", $cls);
 		
+		
 	//	return print_r($fa4,true);
 		
 		if(deftrue('FONTAWESOME') &&  in_array($id ,$fa4)) // Contains FontAwesome 3 set also. 
 		{
 			$prefix = 'fa fa-';
-			$prefix .= (vartrue($parm['size'])) ?  ' fa-'.$parm['size'] : '';	
+			$size 	= (vartrue($parm['size'])) ?  ' fa-'.$parm['size'] : '';	
 			$tag 	= 'span';
 		}
 		elseif(deftrue("BOOTSTRAP")) 
@@ -2749,7 +2750,7 @@ class e_parser
 			
 		}
 		
-		$text = "<".$tag." class='".$prefix.$id."'></".$tag.">" ;
+		$text = "<".$tag." class='".$prefix.$id.$size."'></".$tag.">" ;
 		$text .= ($space !== false) ? $space : "";
 		
 		return $text;
