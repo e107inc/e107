@@ -366,12 +366,23 @@ class news_shortcodes extends e_shortcode
 	 */
 	function sc_newsthumbnail($parm = '') //TODO Add support {NEWSTHUMBNAIL: x=y} format 
 	{
-		if(!$this->news_item['news_thumbnail'] && $parm != 'placeholder')
+		$newsThumb = $this->news_item['news_thumbnail'];
+		
+		if(!$newsThumb && $parm != 'placeholder')
 		{
 			return '';
 		}
 		
-		if($vThumb = e107::getParser()->toVideo($this->news_item['news_thumbnail'], array('thumb'=>'src')))
+		
+		if(empty($parm)) // get {SETIMAGE} values when no parm provided. 
+		{
+			
+			$parm = '|aw='.e107::getParser()->thumbWidth().'&ah='.e107::getParser()->thumbHeight();
+		}
+				
+			
+		
+		if($vThumb = e107::getParser()->toVideo($newsThumb, array('thumb'=>'src')))
 		{
 			$src = $vThumb;
 			$_src = '#';
@@ -380,12 +391,32 @@ class news_shortcodes extends e_shortcode
 		{
 			$parms = eHelper::scDualParams($parm);
 			
+			if(vartrue($parms[2]['legacy'])); // Legacy mode - swap out thumbnails for actual images and update paths.  
+			{
+				if($newsThumb[0] != '{') // Fix old paths. 
+				{
+					$newsThumb = '{e_IMAGE}newspost_images/'.$newsThumb;	
+				}
+				
+				$tmp = str_replace('newspost_images/thumb_', 'newspost_images/', $newsThumb); // swap out thumb for image. 
+				
+				if(is_readable(e_IMAGE.$tmp))
+				{
+					$newsThumb = $tmp;	
+				}
+				
+				unset($parms[2]);
+			}
+			
 			// We store SC path in DB now + BC
-			$_src = $src = ($this->news_item['news_thumbnail'][0] == '{' || $parms[1] == 'placeholder') ? e107::getParser()->replaceConstants($this->news_item['news_thumbnail'], 'abs') : e_IMAGE_ABS."newspost_images/".$this->news_item['news_thumbnail'];
+			$_src = $src = ($newsThumb[0] == '{' || $parms[1] == 'placeholder') ? e107::getParser()->replaceConstants($newsThumb, 'abs') : e_IMAGE_ABS."newspost_images/".$newsThumb;
 		
 		
 			if($parms[2] || $parms[1] == 'placeholder')  $src = e107::getParser()->thumbUrl($src, $parms[2]);	
 		}
+		
+		
+		
 				
 		switch($parms[1])
 		{
