@@ -201,7 +201,7 @@ class news_shortcodes extends e_shortcode
 	/**
 	 * {NEWSCOMMENTLINK: glyph=comments&class=btn btn-default btn-sm}
 	 */
-	function sc_newscommentlink($parm)
+	function sc_newscommentlink($parm='')
 	{
 		if($this->commentsDisabled)
 		{
@@ -216,7 +216,7 @@ class news_shortcodes extends e_shortcode
 	/**
 	 * {NEWSCOMMENTCOUNT: glyph=x}
 	 */
-	function sc_newscommentcount($parm)
+	function sc_newscommentcount($parm='')
 	{
 		if($this->commentsDisabled)
 		{
@@ -362,18 +362,31 @@ class news_shortcodes extends e_shortcode
 	 * 
 	 * @see eHelper::scDualParams()
 	 * @see eHelper::scParams()
+	 * XXX Also returns Video thumbnails. 
 	 */
-	function sc_newsthumbnail($parm = '')
+	function sc_newsthumbnail($parm = '') //TODO Add support {NEWSTHUMBNAIL: x=y} format 
 	{
-		if(!$this->news_item['news_thumbnail'])
+		if(!$this->news_item['news_thumbnail'] && $parm != 'placeholder')
 		{
 			return '';
 		}
 		
-		$parms = eHelper::scDualParams($parm);
-		// We store SC path in DB now + BC
-		$_src = $src = $this->news_item['news_thumbnail'][0] == '{' ? e107::getParser()->replaceConstants($this->news_item['news_thumbnail'], 'abs') : e_IMAGE_ABS."newspost_images/".$this->news_item['news_thumbnail'];
-		if($parms[2])  $src = e107::getParser()->thumbUrl($src, $parms[2]);
+		if($vThumb = e107::getParser()->toVideo($this->news_item['news_thumbnail'], array('thumb'=>'src')))
+		{
+			$src = $vThumb;
+			$_src = '#';
+		}
+		else
+		{
+			$parms = eHelper::scDualParams($parm);
+			
+			// We store SC path in DB now + BC
+			$_src = $src = ($this->news_item['news_thumbnail'][0] == '{' || $parms[1] == 'placeholder') ? e107::getParser()->replaceConstants($this->news_item['news_thumbnail'], 'abs') : e_IMAGE_ABS."newspost_images/".$this->news_item['news_thumbnail'];
+		
+		
+			if($parms[2] || $parms[1] == 'placeholder')  $src = e107::getParser()->thumbUrl($src, $parms[2]);	
+		}
+				
 		switch($parms[1])
 		{
 			case 'src':
@@ -389,7 +402,7 @@ class news_shortcodes extends e_shortcode
 			break;
 
 			default:
-				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='news_image img-rounded' src='".$src."' alt='' style='".$this->param['thumbnail']."' /></a>";
+				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='news_image img-responsive img-rounded' src='".$src."' alt='' style='".$this->param['thumbnail']."' /></a>";
 			break;
 		}
 	}
@@ -429,40 +442,58 @@ class news_shortcodes extends e_shortcode
 	}
 
 
+	function sc_newsvideo($parm='')
+	{
+		if($video = e107::getParser()->toVideo($this->news_item['news_thumbnail']))
+		{
+			return $video;
+		}
+				
+	}
+		
 
-
-
-
+	/**
+	 * Display News Images (but not video thumbnails )
+	 */
 	function sc_newsimage($parm = '')
 	{
 		$tp = e107::getParser();
 		
 		
 		$srcPath = ($this->imageItem) ? $this->imageItem : $this->news_item['news_thumbnail'];
-	
-		if(!$srcPath)
+		
+		
+		if($video = e107::getParser()->toVideo($this->news_item['news_thumbnail']))
 		{
-			if($parm == 'placeholder')
+			return; 
+			
+		}
+		else 
+		{
+		
+			if(!$srcPath)
 			{
-				$src = 	$tp->thumbUrl(); // placeholder; 
+				if($parm == 'placeholder')
+				{
+					$src = 	$tp->thumbUrl(); // placeholder; 
+				}
+				else
+				{
+					return;
+				}
+			}
+			elseif($srcPath[0] == '{' ) // Always resize. Use {SETIMAGE: w=x&y=x&crop=0} PRIOR to calling shortcode to change. 
+			{
+				$src = $tp->thumbUrl($srcPath);	
 			}
 			else
 			{
-				return;
+				// We store SC path in DB now + BC
+				$src = $srcPath[0] == '{' ? $tp->replaceConstants($srcPath, 'abs') : e_IMAGE_ABS."newspost_images/".$srcPath;			
 			}
 		}
-		elseif($srcPath[0] == '{' ) // Always resize. Use {SETIMAGE: w=x&y=x&crop=0} PRIOR to calling shortcode to change. 
-		{
-			$src = $tp->thumbUrl($srcPath);	
-		}
-		else
-		{
-			// We store SC path in DB now + BC
-			$src = $srcPath[0] == '{' ? $tp->replaceConstants($srcPath, 'abs') : e_IMAGE_ABS."newspost_images/".$srcPath;			
-		}
 		
-		
-		;
+	//	return $src;
 		
 		switch($parm)
 		{
@@ -480,6 +511,8 @@ class news_shortcodes extends e_shortcode
 			break;
 		}
 	}
+
+
 
 	function sc_sticky_icon()
 	{

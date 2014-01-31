@@ -223,6 +223,7 @@ div.e-comment-edit-save								{ margin-top:8px; padding: 5px }
     position: relative;
     padding-bottom: 56.25%;
     padding-top: 30px; height: 0; overflow: hidden;
+    margin-bottom:20px;
 }
 
 .video-responsive iframe,
