@@ -485,9 +485,11 @@ class e_form
 	 * @param string $label custom label
 	 * @param string $sc_parameters shortcode parameters
 	 *  --- SC Parameter list --- 
-	 * - media: if present - load from media table
+	 * - media: if present - load from media category table
 	 * - w: preview width in pixels
 	 * - h: preview height in pixels
+	 * - help: tooltip
+	 * - video: when set to true, will enable the Youtube  (video) tab. 
 	 * @example $frm->imagepicker('banner_image', $_POST['banner_image'], '', 'banner'); // all images from category 'banner_image' + common images. 
 	 * @example $frm->imagepicker('banner_image', $_POST['banner_image'], '', 'media=banner&w=600');
 	 * @return string html output
@@ -509,19 +511,23 @@ class e_form
 		$default_thumb = $default;
 		if($default)
 		{
-			if('{' != $default[0])
-			{
-				// convert to sc path
-				$default_thumb = $tp->createConstants($default, 'nice');
-				$default = $tp->createConstants($default, 'mix');
-			}
-			$default_url = $tp->replaceConstants($default, 'abs');
-			$blank = FALSE;
-			
-			if($video = $tp->toVideo($default_url, array('thumb'=>'src')))
+			if($video = $tp->toVideo($default, array('thumb'=>'src')))
 			{
 				$default_url = $video;	
 			}
+			else 
+			{
+				if('{' != $default[0])
+				{
+					// convert to sc path
+					$default_thumb = $tp->createConstants($default, 'nice');
+					$default = $tp->createConstants($default, 'mix');
+				}
+				$default_url = $tp->replaceConstants($default, 'abs');
+			}
+			$blank = FALSE;
+			
+			
 		}
 		else
 		{
@@ -529,6 +535,8 @@ class e_form
 			$default_url = e_IMAGE_ABS."generic/nomedia.png";
 			$blank = TRUE;
 		}
+		
+		
 		
 		//$width = intval(vartrue($sc_parameters['width'], 150));
 		$cat = $tp->toDB(vartrue($sc_parameters['media']));	

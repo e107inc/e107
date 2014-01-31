@@ -28,6 +28,7 @@ function tablestyle($caption, $text, $mode='')
 {
 	global $style;
 	
+	echo "<!-- tablestyle: style=".$style." mode=".$mode." -->\n\n";
 	
 	$type = $style;
 	if(empty($caption))
@@ -180,8 +181,9 @@ $LAYOUT['modern_business_home'] =  <<<TMPL
 	
 	<div class="container">	
 	{ALERTS}
+<!-- Start Menu 1 --> 
 	{MENU=1}
-	
+<!-- End Menu 1 --> 
 	</div>
 	
 	<div class="section">

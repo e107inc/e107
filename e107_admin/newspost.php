@@ -735,6 +735,14 @@ class news_form_ui extends e_admin_form_ui
 	{
 		if(!vartrue($curval)) return;
 		
+		$vparm = array('thumb'=>'tag','w'=> 80);
+				
+		if($thumb = e107::getParser()->toVideo($curval,$vparm))
+		{
+			return $thumb;
+		}
+		
+		
 		if($curval[0] != "{")
 		{
 			$curval = "{e_IMAGE}newspost_images/".$curval;	
@@ -2378,12 +2386,12 @@ class admin_newspost
 										".$frm->help(LAN_NEWS_23)."</td>
 										<td>
 				";
-		if(vartrue($_POST['news_thumbnail']) && $_POST['news_thumbnail'][0] != "{")//BC compat
+		if(vartrue($_POST['news_thumbnail']) && $_POST['news_thumbnail'][0] != "{" && substr($_POST['news_thumbnail'],-8) !== '.youtube')//BC compat
 		{
 			$_POST['news_thumbnail'] = "{e_IMAGE}newspost_images/".$_POST['news_thumbnail'];	
 		}
 		
-		$text .= $frm->imagepicker('news_thumbnail[0]', $_POST['news_thumbnail'] ,'','news');
+		$text .= $frm->imagepicker('news_thumbnail[0]', $_POST['news_thumbnail'] ,'','media=news&video=1');
 	
 	/*	
 	 * XXX Experimental

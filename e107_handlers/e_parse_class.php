@@ -2833,7 +2833,7 @@ class e_parser
 		
 			if($thumb == 'tag')
 			{
-				return "<img class='img-responsive' src='".$thumbSrc."' alt='' style='max-width:".vartrue($parm['w'],'80')."px'/>";	
+				return "<img class='img-responsive' src='".$thumbSrc."' alt='Youtube Video' style='max-width:".vartrue($parm['w'],'80')."px'/>";	
 			}
 			
 			if($thumb == 'src')

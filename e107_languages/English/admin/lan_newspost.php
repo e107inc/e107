@@ -72,7 +72,7 @@ define("NWSLAN_59", "No submitted news");
 define("NWSLAN_63", "Search newsposts");
 
 define("NWSLAN_66", "Upload");
-define("NWSLAN_67", "Image");
+define("NWSLAN_67", "Image/Video");
 // define("NWSLAN_68", "File");
 define("NWSLAN_69", "Upload an image or file for use in the news item");
 // define("NWSLAN_70", "The ".e_FILE."downloads folder is not writable, you need to CHMOD 777 the folder before uploading and files.");  // deprecated see lan_admin.php
@@ -146,7 +146,7 @@ define("NWSLAN_128", "Set a string to be used in news pages URL. This will only 
 // define("LAN_NEWS_21", "News updated in database.");
 
 // define("LAN_NEWS_22", "Thumbnail");
-define("LAN_NEWS_23", "Choose an image for this news item");
+define("LAN_NEWS_23", "Choose an image or video for this news item");
 // define("LAN_NEWS_24", "Image + Auto-Thumbnail");
 // define("LAN_NEWS_25", "Auto-Thumbnail size");
 // define("LAN_NEWS_26", "add new upload field");

@@ -31,7 +31,7 @@ $NEWS_TEMPLATE['list']['item']	= '
 		<div class="row row-fluid">
 				<div class="span3 col-md-3">
                    <div class="thumbnail">
-                        {NEWSIMAGE=placeholder}
+                        {NEWSTHUMBNAIL=placeholder}
                     </div>
 				</div>
 				<div class="span9 col-md-9">
@@ -93,6 +93,7 @@ $NEWS_TEMPLATE['default']['item'] = '
          
           <hr>
           <p class="lead">{NEWSSUMMARY}</p>
+          {NEWSVIDEO}
           {NEWSBODY}
 		  <hr>
 			<div class="options">
@@ -126,6 +127,7 @@ $NEWS_TEMPLATE['view']['item'] = '
         <hr>
 
 		<div class="body">
+		 	{NEWSVIDEO}
 			{NEWSBODY}
 			{EXTENDED}
 		</div>
