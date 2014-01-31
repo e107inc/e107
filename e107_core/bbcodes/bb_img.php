@@ -124,7 +124,7 @@ class bb_img extends e_bb_base
             return $this->mediaImage($code_text, $parm);          
         }
         
-        
+     
     
         
 		if (preg_match("#\.php\?.*#",$code_text)){return "";} //XXX Breaks MediaManager Images, so do it after mediaManager check. 
@@ -137,10 +137,11 @@ class bb_img extends e_bb_base
 		$h = e107::getBB()->resizeHeight();
 		
 		// No resizing on v1.x legacy images. 
-		if(strpos($code_text,"://")==false && ($w || $h) && strpos($code_text,"{e_IMAGE}custom")===false && strpos($code_text,"{e_IMAGE}newpost_images")===false) // local file. 
+		if(strpos($code_text,"://")==false && ($w || $h) && strpos($code_text,"{e_IMAGE}custom")===false && strpos($code_text,"newspost_images/")===false) // local file. 
 		{
 			$code_text = $tp->thumbUrl($code_text,'w='.$w.'&h='.$h);
 		}
+		
 		// ------------------------
 		
 		$search = array('"', '{E_IMAGE}', '{E_FILE}', '{e_IMAGE}', '{e_FILE}');
