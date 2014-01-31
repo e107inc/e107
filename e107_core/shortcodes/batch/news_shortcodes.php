@@ -366,7 +366,7 @@ class news_shortcodes extends e_shortcode
 	 */
 	function sc_newsthumbnail($parm = '') //TODO Add support {NEWSTHUMBNAIL: x=y} format 
 	{
-		$newsThumb = $this->news_item['news_thumbnail'];
+		$newsThumb = $this->handleMultiple($parm);
 		
 		if(!$newsThumb && $parm != 'placeholder')
 		{
@@ -475,25 +475,61 @@ class news_shortcodes extends e_shortcode
 
 	function sc_newsvideo($parm='')
 	{
-		if($video = e107::getParser()->toVideo($this->news_item['news_thumbnail']))
+		$item = $this->handleMultiple($parm);		
+			
+		if($video = e107::getParser()->toVideo($item))
 		{
 			return $video;
 		}
 				
 	}
+
+
+	function handleMultiple($parm)
+	{
+		if(!vartrue($this->news_item['news_thumbnail']) )
+		{
+			return;	
+		}			
+	
+		$media = explode(",", $this->news_item['news_thumbnail']);
+
+		if(is_string($parm) || !vartrue($parm['item']))
+		{
+			$item = 0;	
+		}
+		else 
+		{
+			$item = ($parm['item'] -1);
+		}			
+				
+			
+		return varset($media[$item]);		
+		
+	}
+	
+	
+				
+			
+		
 		
 
 	/**
 	 * Display News Images (but not video thumbnails )
+	 * @param $parm array
+	 * @example {NEWSIMAGE: type=src&placeholder=true}
 	 */
-	function sc_newsimage($parm = '')
+	function sc_newsimage($parm = null)
 	{
 		$tp = e107::getParser();
 		
-		
-		$srcPath = ($this->imageItem) ? $this->imageItem : $this->news_item['news_thumbnail'];
-		
-		
+		if(is_string($parm))
+		{
+			$parm = array('type'=> $parm);
+		}
+			
+		$srcPath = $this->handleMultiple($parm);
+			
 		if($video = e107::getParser()->toVideo($this->news_item['news_thumbnail']))
 		{
 			return; 
@@ -504,7 +540,7 @@ class news_shortcodes extends e_shortcode
 		
 			if(!$srcPath)
 			{
-				if($parm == 'placeholder')
+				if(varset($parm['type']) == 'placeholder' || vartrue($parm['placeholder']))
 				{
 					$src = 	$tp->thumbUrl(); // placeholder; 
 				}
@@ -524,24 +560,31 @@ class news_shortcodes extends e_shortcode
 			}
 		}
 		
-	//	return $src;
+		if(vartrue($parm['nolegacy']) && strpos($src,'newspost_images')!==false)
+		{
+			return;
+		}
 		
-		switch($parm)
+		$class = "news_image news-image img-responsive img-rounded";
+		
+		switch(vartrue($parm['type']))
 		{
 			case 'src':
 				return $src;
 			break;
 
 			case 'tag':
-				return "<img class='news_image news-image' src='".$src."' alt='' style='".$this->param['thumbnail']."' />";
+				return "<img class='{$class}' src='".$src."' alt='' style='".$this->param['thumbnail']."' />";
 			break;
 
 			case 'url':
 			default:
-				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='news_image news-image img-responsive img-rounded' src='".$src."' alt='' style='".$this->param['thumbnail']."' /></a>";
+				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='{$class}' src='".$src."' alt='' style='".$this->param['thumbnail']."' /></a>";
 			break;
 		}
 	}
+
+
 
 
 
@@ -549,6 +592,8 @@ class news_shortcodes extends e_shortcode
 	{
 		return $this->news_item['news_sticky'] ? $this->param['image_sticky'] : '';
 	}
+
+
 
 	function sc_newstitlelink($parm = '')
 	{

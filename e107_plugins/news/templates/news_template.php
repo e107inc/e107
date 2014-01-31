@@ -121,15 +121,30 @@ $NEWS_TEMPLATE['view']['item'] = '
         		<div class="col-md-8 text-right options">{GLYPH=tags} &nbsp;{NEWSTAGS} &nbsp; {GLYPH=folder-open} &nbsp;{NEWSCATEGORY} </div>
         	</div>
         <hr>
-        {NEWSIMAGE=placeholder}
+        {NEWSIMAGE: item=1&placeholder=1}
          <hr>
         <p class="lead">{NEWSSUMMARY}</p>  
         <hr>
 
 		<div class="body">
-		 	{NEWSVIDEO}
+		 	{NEWSVIDEO: item=1} <!-- if it exists in position 1 -->
 			{NEWSBODY}
+			<br />
+			<div class="row">
+        		<div class="col-md-3">{NEWSIMAGE: item=2}</div>
+        		<div class="col-md-3">{NEWSIMAGE: item=3}</div>
+        		<div class="col-md-3">{NEWSIMAGE: item=4}</div>
+        		<div class="col-md-3">{NEWSIMAGE: item=5}</div>
+            </div>
+           
+			{NEWSVIDEO: item=2} <!-- if it exists in position 2 -->
+
 			{EXTENDED}
+			
+			{NEWSVIDEO: item=3}
+			{NEWSVIDEO: item=4}
+			{NEWSVIDEO: item=5}
+			
 		</div>
 		<hr>
 		
