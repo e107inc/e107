@@ -1,7 +1,12 @@
 
 #news-carousel.carousel .item									{ height:350px }
-#news-carousel-titles 											{ padding-left:0px; height:350px }
-#news-carousel-images 											{ padding-right:0px; height:350px }
+
+@media all and (min-width: 768px) 
+{
+	#news-carousel-titles 											{ margin-top:20px; padding-left:0px; height:350px }
+	#news-carousel-images 											{ margin-top:20px; padding-right:0px; height:350px }
+}
+
 #news-carousel-images .carousel-caption 						{ left:15px; right:15px: margin:0px; padding:0px; bottom:10px; text-align:left }
 #news-carousel-images .carousel-caption h1 						{ margin:0px }
 #news-carousel-images .carousel-caption small 					{ font-size: 11px; margin: 0px; text-transform: uppercase; }

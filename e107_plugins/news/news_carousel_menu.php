@@ -90,7 +90,7 @@ if(count($data) < 1)
 
 $count = 0;
 
-$tp->setThumbSize(800,400);
+ $tp->setThumbSize(800,0);
 
 foreach($data as $row)
 {
