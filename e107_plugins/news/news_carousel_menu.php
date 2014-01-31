@@ -94,7 +94,17 @@ $count = 0;
 
 foreach($data as $row)
 {
-	$img = $tp->thumbUrl($row['news_thumbnail']);
+	$tmp = explode(",",$row['news_thumbnail']); // fix for multiple
+	
+	if($video = $tp->toVideo($tmp[0],array('thumb'=>'tag', 'w'=>800)))
+	{
+		$imgTag = $video;	
+	}
+	else 
+	{
+		$img = $tp->thumbUrl($tmp[0]);
+		$imgTag = '<img class="img-responsive" src="'.$img.'">';
+	}
 	
 	$vars = array(
 		'NEWSTITLE'		=> $tp->toHtml($row['news_title'],false, 'TITLE'),
@@ -102,15 +112,14 @@ foreach($data as $row)
 		'NEWSDATE'		=> $tp->toDate($row['news_datestamp'],'dd MM, yyyy'),
 		'ACTIVE'		=> ($count == 0) ? 'active' : '',
 		'COUNT'			=> $count,
-		'NEWSIMAGE'		=> '<img class="img-responsive" src="'.$img.'">'
+		'NEWSIMAGE'		=> '<a href="'.e107::getUrl()->create('news/view/item',$row).'">'.$imgTag.'</a>'
 	);
 	
 	
 	$text .= $tp->simpleParse($NEWS_MENU_TEMPLATE['carousel']['item'], $vars);
 	
-	
 	$nav[] = $tp->simpleParse($navTemplate, $vars);
-	          	
+
 	$count++;
 }
 		
