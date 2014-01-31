@@ -735,6 +735,16 @@ class news_form_ui extends e_admin_form_ui
 	{
 		if(!vartrue($curval)) return;
 		
+		
+		if(strpos($curval, ",")!==false)
+		{
+			$tmp = explode(",",$curval);
+			$curval = $tmp[0];	
+		}
+		
+
+		
+		
 		$vparm = array('thumb'=>'tag','w'=> 80);
 				
 		if($thumb = e107::getParser()->toVideo($curval,$vparm))
@@ -2391,17 +2401,17 @@ class admin_newspost
 			$_POST['news_thumbnail'] = "{e_IMAGE}newspost_images/".$_POST['news_thumbnail'];	
 		}
 		
-		$text .= $frm->imagepicker('news_thumbnail[0]', $_POST['news_thumbnail'] ,'','media=news&video=1');
+	//	$text .= $frm->imagepicker('news_thumbnail[0]', $_POST['news_thumbnail'] ,'','media=news&video=1');
 	
-	/*	
-	 * XXX Experimental
+	
+	// * XXX Experimental
 		$thumbTmp = explode(",",$_POST['news_thumbnail']);
-		$text .= $frm->imagepicker('news_thumbnail[0]', varset($thumbTmp[0]),'','news');
-		$text .= $frm->imagepicker('news_thumbnail[1]', varset($thumbTmp[1]),'','news');
-		$text .= $frm->imagepicker('news_thumbnail[2]', varset($thumbTmp[2]),'','news');
-		$text .= $frm->imagepicker('news_thumbnail[3]', varset($thumbTmp[3]),'','news');
-		$text .= $frm->imagepicker('news_thumbnail[4]', varset($thumbTmp[4]),'','news');
-	*/
+		$text .= $frm->imagepicker('news_thumbnail[0]', varset($thumbTmp[0]),'','media=news&video=1');
+		$text .= $frm->imagepicker('news_thumbnail[1]', varset($thumbTmp[1]),'','media=news&video=1');
+		$text .= $frm->imagepicker('news_thumbnail[2]', varset($thumbTmp[2]),'','media=news&video=1');
+		$text .= $frm->imagepicker('news_thumbnail[3]', varset($thumbTmp[3]),'','media=news&video=1');
+		$text .= $frm->imagepicker('news_thumbnail[4]', varset($thumbTmp[4]),'','media=news&video=1');
+	
 
 		$text .= "
 								</td>

@@ -2761,6 +2761,15 @@ class e_form
 			case 'image': //TODO - thumb, js tooltip...
 				if($value)
 				{
+				
+					if(strpos($value,",")!==false)
+					{
+						$tmp = explode(",",$value);
+						$value = $tmp[0];
+						unset($tmp);	
+					}		
+						
+					
 					$vparm = array('thumb'=>'tag','w'=> vartrue($parms['thumb_aw'],'80'));
 					
 					if($video = e107::getParser()->toVideo($value,$vparm))
