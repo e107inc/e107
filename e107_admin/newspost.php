@@ -99,7 +99,7 @@ class news_cat_ui extends e_admin_ui
          	'category_icon' 			=> array('title'=> LAN_ICON,			'type' => 'icon', 			'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>FALSE,	'batch' => FALSE, 'filter'=>FALSE),			       	
          	'category_name' 			=> array('title'=> LAN_TITLE,			'type' => 'text',			'inline'=>true, 'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE, 'validate' => true, 'inline' => true),
          
-         	'category_meta_description' => array('title'=> LAN_DESCRIPTION,		'type' => 'textarea',		'width' => 'auto', 'thclass' => 'left','readParms' => 'expand=...&truncate=150&bb=1', 'readonly'=>FALSE),
+         	'category_meta_description' => array('title'=> LAN_DESCRIPTION,		'type' => 'textarea',		'inline'=>true, 'width' => 'auto', 'thclass' => 'left','readParms' => 'expand=...&truncate=150&bb=1', 'readonly'=>FALSE),
 			'category_meta_keywords' 	=> array('title'=> LAN_KEYWORDS,		'type' => 'tags',			'inline'=>true, 'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),		
 			'category_sef' 				=> array('title'=> LAN_SEFURL,	'type' => 'text',	'inline'=>true,	'width' => 'auto', 'readonly'=>FALSE), // Display name
 			'category_manager' 			=> array('title'=> "Manage Permissions",'type' => 'userclass',		'inline'=>true, 'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
@@ -372,7 +372,7 @@ class news_admin_ui extends e_admin_ui
 				
 				'news_meta_keywords'	=> array('title' => LAN_KEYWORDS, 	'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 				'news_meta_description'	=> array('title' => LAN_DESCRIPTION,'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
-				'news_sef'				=> array('title' => LAN_SEFURL, 		'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
+				'news_sef'				=> array('title' => LAN_SEFURL, 		'type' => 'text', 	'inline'=>true, 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
     			'user_name'				=> array('title' => LAN_AUTHOR, 	'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'noedit' => true),
 				'news_datestamp'		=> array('title' => LAN_NEWS_32, 	'type' => 'datestamp', 	'data' => 'int',   'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y', 'filter'=>true),
                 'news_category'			=> array('title' => NWSLAN_6, 		'type' => 'dropdown', 	'data' => 'int', 'inline'=>true,	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'batch'=>true, 'filter'=>true),
@@ -380,8 +380,8 @@ class news_admin_ui extends e_admin_ui
   				'news_start'			=> array('title' => "Start", 		'type' => 'datestamp', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),
        			'news_end'				=> array('title' => "End", 			'type' => 'datestamp', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),
                        				
-  				'news_class'			=> array('title' => LAN_VISIBILITY, 		'type' => 'userclasses', 'inline'=>true,	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'batch'=>true, 'filter'=>true),
-				'news_render_type'		=> array('title' => LAN_TEMPLATE, 	'type' => 'comma', 	'width' => 'auto', 	'thclass' => 'center', 			'class' => null, 		'nosort' => false, 'batch'=>true, 'filter'=>true),
+  				'news_class'			=> array('title' => LAN_VISIBILITY, 'type' => 'userclasses', 'inline'=>true,	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'batch'=>true, 'filter'=>true),
+				'news_render_type'		=> array('title' => LAN_TEMPLATE, 	'type' => 'comma', 		'inline'=>false, 'width' => 'auto', 	'thclass' => 'center', 			'class' => null, 		'nosort' => false, 'batch'=>true, 'filter'=>true),
 			   	'news_sticky'			=> array('title' => LAN_NEWS_28, 	'type' => 'boolean', 	'data' => 'int' , 'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false, 'batch'=>true, 'filter'=>true),
                 'news_allow_comments' 	=> array('title' => NWSLAN_15, 		'type' => 'boolean', 	'data' => 'int', 'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false,'batch'=>true, 'filter'=>true,'readParms'=>'reverse=1','writeParms'=>'reverse=1'),
                 'news_comment_total' 	=> array('title' => LAN_NEWS_60, 	'type' => 'number', 	'width' => '10%', 	'thclass' => '', 				'class' => null, 		'nosort' => false),

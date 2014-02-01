@@ -2411,6 +2411,30 @@ class e_form
 	}
 
 	/**
+	 * Create an Inline Edit link. 
+	 * @param $dbField : field being edited //TODO allow for an array of all data here. 
+	 * @param $pid : primary ID of the row being edited. 
+	 * @param $fieldName - Description of the field name (caption)
+	 * @param $curVal : existing value of in the field
+	 * @param $linkText : existing value displayed
+	 * @param $type text|textarea|select|date|checklist
+	 * @param $array : array data used in dropdowns etc. 
+	 */
+	private function renderInline($dbField, $pid, $fieldName, $curVal, $linkText, $type='text', $array=null)
+	{
+		$source = str_replace('"',"'",json_encode($array, JSON_FORCE_OBJECT)); // SecretR - force object, fix number of bugs
+		$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
+		
+		$text = "<a class='e-tip e-editable editable-click' data-name='".$dbField."' ";
+		$text .= (is_array($array)) ? "data-source=\"".$source."\"  " : "";
+		$text .= " title=\"".LAN_EDIT." ".$fieldName."\" data-type='".$type."' data-value=\"{$curVal}\" data-pk='".$pid."' data-url='".e_SELF."?mode={$mode}&amp;action=inline&amp;id={$pid}&amp;ajax_used=1' href='#'>".$linkText."</a>";	
+		
+		return $text;	
+	}
+
+
+
+	/**
 	 * Render Field Value
 	 * @param string $field field name
 	 * @param mixed $value field value
@@ -2558,7 +2582,7 @@ class e_form
 				$attributes['writeParms']['raw'] = true;
 				$tmp = $this->renderElement($field, '', $attributes);
 				
-				// Inline Editing.  //FIXME! 
+				// Inline Editing.  //@SecretR - please FIXME! 
 				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
 				{
 					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
@@ -2614,12 +2638,15 @@ class e_form
 				$value = ($value ? vartrue($parms['pre']).defset($value, $value).vartrue($parms['post']) : '');
 				
 				// Inline Editing.  
+				// Inline Editing with 'comma' @SecretR - please FIXME - empty values added. @see news 'render type' or 'media-manager' category for test examples. 
 				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
-				{
-					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
-					// SecretR - force object, fix number of bugs
-					$source = str_replace('"',"'",json_encode($wparms, JSON_FORCE_OBJECT));
-					$value = "<a class='e-tip e-editable editable-click' data-name='".$field."' data-value='{$_value}' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='select' data-pk='".$id."' data-url='".e_SELF."?mode=&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$value."</a>";
+				{				
+					$xtype = ($attributes['type'] == 'dropdown') ? 'select' : 'checklist';
+					
+				//	$value = "<a class='e-tip e-editable editable-click' data-name='".$field."' data-value='{$_value}' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='".$xtype."' data-pk='".$id."' data-url='".e_SELF."?mode=&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$value."</a>";
+					
+			
+					$value = $this->renderInline($field, $id, $title, $_value, $value, $xtype, $wparms);
 				}
 								
 				// return ;
@@ -2691,6 +2718,14 @@ class e_form
 
 			case 'bbarea':
 			case 'textarea':
+				
+				
+				if($attributes['type'] == 'textarea' && !vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
+				{
+					return $this->renderInline($field,$id,$attributes['title'],$value,substr($value,0,50)."...",'textarea'); //FIXME.
+				}
+				
+				
 				$expand = '...';
 				$toexpand = false;
 				if($attributes['type'] == 'bbarea' && !isset($parms['bb'])) $parms['bb'] = true; //force bb parsing for bbareas
@@ -2729,6 +2764,7 @@ class e_form
 					$value .= '<span class="expand-c" style="display: none" id="'.$elid.'-expand"><span>'.str_replace($value,'',$oldval).$contracts.'</span></span>';
 					$value .= $expands; 	// 'More..' button. Keep it at the bottom so it does't cut the sentence. 
 				}
+				
 				
 				
 			break;
