@@ -1880,6 +1880,11 @@ class e_front_model extends e_model
 	 */
 	protected $_db_errmsg = '';
 
+	/**
+	 * @var string Last SQL query
+	 */
+	protected $_db_qry = '';
+
     /**
      * Validator object
      *
@@ -2477,6 +2482,14 @@ class e_front_model extends e_model
     }
 
     /**
+     * @return string last mysql error message
+     */
+    public function getSqlQuery()
+    {
+    	return $this->_db_qry;
+    }
+
+    /**
      * @return boolean
      */
     public function hasError()
@@ -2496,6 +2509,7 @@ class e_front_model extends e_model
 		$sql = e107::getDb();
 		$this->_db_errno = $sql->getLastErrorNumber();
 		$this->_db_errmsg = $sql->getLastErrorText();
+		$this->_db_qry = $sql->getLastQuery();
 		if($this->_db_errno)
 		{
 			$this->addMessageError('SQL Select Error', $session_messages); //TODO - Lan
@@ -2669,8 +2683,9 @@ class e_front_model extends e_model
      */
     protected function dbUpdate($force = false, $session_messages = false)
     {
-    	$this->_db_errno = 0;
+    		$this->_db_errno = 0;
 		$this->_db_errmsg = '';
+		$this->_db_qry = '';
 		
 	//	 $this->getData();
 	//	 $this->getPostedData();
@@ -2872,8 +2887,9 @@ class e_admin_model extends e_front_model
      */
     protected function dbInsert($session_messages = false)
     {
-    	$this->_db_errno = 0;
-    	$this->_db_errmsg = '';
+    		$this->_db_errno = 0;
+    		$this->_db_errmsg = '';
+		$this->_db_qry = '';
 		if($this->hasError()/* || (!$this->data_has_changed && !$force)*/) // not appropriate here!
 		{
 			return false;
@@ -2887,6 +2903,7 @@ class e_admin_model extends e_front_model
 		{
 			$this->_db_errno = $sql->getLastErrorNumber();
 			$this->_db_errmsg = $sql->getLastErrorText();
+			$this->_db_qry = $sql->getLastQuery();
 			$this->addMessageError('SQL Insert Error', $session_messages); //TODO - Lan
 			$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
 			
@@ -2911,8 +2928,9 @@ class e_admin_model extends e_front_model
      */
     protected function dbReplace($force = false, $session_messages = false)
     {
-    	$this->_db_errno = 0;
-    	$this->_db_errmsg = '';	
+    		$this->_db_errno = 0;
+    		$this->_db_errmsg = '';	
+		$this->_db_qry = '';
 		
 		if($this->hasError()) return false;
 		if(!$this->data_has_changed && !$force)
@@ -2925,6 +2943,7 @@ class e_admin_model extends e_front_model
 		{
 			$this->_db_errno = $sql->getLastErrorNumber();
 			$this->_db_errmsg = $sql->getLastErrorText();
+			$this->_db_qry = $sql->getLastQuery();
 			if($this->_db_errno)
 			{
 				$this->addMessageError('SQL Replace Error', $session_messages); //TODO - Lan
@@ -2946,8 +2965,10 @@ class e_admin_model extends e_front_model
      */
     protected function dbDelete($session_messages = false)
     {
-    	$this->_db_errno = 0;
+    		$this->_db_errno = 0;
 		$this->_db_errmsg = '';
+		$this->_db_qry = '';
+		
 		if($this->hasError())
 		{
 			return false;
@@ -2968,6 +2989,7 @@ class e_admin_model extends e_front_model
 		{
 			$this->_db_errno = $sql->getLastErrorNumber();
 			$this->_db_errmsg = $sql->getLastErrorText();
+			$this->_db_qry = $sql->getLastQuery();
 			if($this->_db_errno)
 			{
 				$this->addMessageError('SQL Delete Error', $session_messages); //TODO - Lan
@@ -3404,6 +3426,11 @@ class e_front_tree_model extends e_tree_model
 	 */
 	protected $_db_errmsg = '';
 
+	/**
+	 * @var string Last SQL query
+	 */
+	protected $_db_qry = '';
+
     /**
      * @return boolean
      */
@@ -3426,6 +3453,14 @@ class e_front_tree_model extends e_tree_model
     public function getSqlError()
     {
     	return $this->_db_errmsg;
+    }
+
+    /**
+     * @return string last mysql error message
+     */
+    public function getSqlQuery()
+    {
+    	return $this->_db_qry;
     }
 
     /**
@@ -3475,6 +3510,8 @@ class e_front_tree_model extends e_tree_model
 		$res = $sql->db_Update($this->getModelTable(), "{$field}={$value} WHERE ".$this->getFieldIdName().' IN ('.$idstr.')', $this->getParam('db_debug', false));
 		$this->_db_errno = $sql->getLastErrorNumber();
 		$this->_db_errmsg = $sql->getLastErrorText();
+		$this->_db_qry = $sql->getLastQuery();
+		
 		if(!$res)
 		{
 			if($sql->getLastErrorNumber())
@@ -3543,6 +3580,8 @@ class e_admin_tree_model extends e_front_tree_model
 		
 		$this->_db_errno = $sql->getLastErrorNumber();
 		$this->_db_errmsg = $sql->getLastErrorText();
+		$this->_db_qry = $sql->getLastQuery();
+		
 		$modelCacheCheck = $this->getParam('clearModelCache');
 		
 		if(!$res)
@@ -3600,6 +3639,7 @@ class e_admin_tree_model extends e_front_tree_model
 		}
 		$this->_db_errno = $sql->getLastErrorNumber();
 		$this->_db_errmsg = $sql->getLastErrorText();
+		$this->_db_qry = $sql->getLastQuery();
 		return $res;	
 	}
     
