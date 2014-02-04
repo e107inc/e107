@@ -497,7 +497,7 @@ class news_shortcodes extends e_shortcode
 		
 		$media = explode(",", $this->news_item['news_thumbnail']);
 
-		if(!vartrue($parm['item']))
+		if(empty($parm['item']))
 		{
 			$parm['item'] = 0;	
 		}
@@ -536,7 +536,7 @@ class news_shortcodes extends e_shortcode
 
 	function handleMultiple($parm,$type='image')
 	{
-		if(!vartrue($this->news_item['news_thumbnail']) )
+		if(empty($this->news_item['news_thumbnail']))
 		{
 			return;	
 		}			
@@ -561,7 +561,7 @@ class news_shortcodes extends e_shortcode
 		}
 		
 
-		if(is_string($parm) || !vartrue($parm['item']))
+		if(is_string($parm) || empty($parm['item']))
 		{
 			$item = 0;	
 			$parm = array('item' => 1);
