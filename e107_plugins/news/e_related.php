@@ -33,10 +33,10 @@ class news_related // include plugin-folder in the name.
 			while($row = $sql->fetch())
 			{
 				$items[] = array(
-					'title'			=> $row['news_title'],
+					'title'			=> varset($row['news_title']),
 					'url'			=> e107::getUrl()->create('news/view/item',$row), // '{e_BASE}news.php?extend.'.$row['news_id'],
-					'body'			=> $row['news_summary'],
-					'image'			=> $row['news_image']
+					'body'			=> varset($row['news_summary']),
+					'image'			=> varset($row['news_image'])
 				);
 			}
 			
