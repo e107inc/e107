@@ -374,13 +374,14 @@ class news_shortcodes extends e_shortcode
 		}
 		
 		
+		
 		if(empty($parm)) // get {SETIMAGE} values when no parm provided. 
 		{
 			
 			$parm = '|aw='.e107::getParser()->thumbWidth().'&ah='.e107::getParser()->thumbHeight();
 		}
 				
-			
+		
 		
 		if($vThumb = e107::getParser()->toVideo($newsThumb, array('thumb'=>'src')))
 		{
@@ -391,7 +392,8 @@ class news_shortcodes extends e_shortcode
 		{
 			$parms = eHelper::scDualParams($parm);
 			
-			if(vartrue($parms[2]['legacy'])); // Legacy mode - swap out thumbnails for actual images and update paths.  
+			
+			if(isset($parms[2]['legacy']) && $parms[2]['legacy']==true) // Legacy mode - swap out thumbnails for actual images and update paths.  
 			{
 				if($newsThumb[0] != '{') // Fix old paths. 
 				{
