@@ -290,7 +290,7 @@ define("LAN_BOOL_REVERSE", "Invert");
 define("LAN_PRESET_CONFIRMSAVE","Save current form values as the default for this page?");
 define("LAN_CONFIGURE", "Configure");
 
-define("LAN_BACK", "Back");
+// define("LAN_BACK", "Back"); @see e107_languages/English.php
 
 define("LAN_NOPERMISSION", "no permissions");
 
