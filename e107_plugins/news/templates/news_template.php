@@ -135,7 +135,7 @@ $NEWS_TEMPLATE['view']['item'] = '
 			
 			{NEWSBODY=body}
 			<br />
-			{SETIMAGE: w=600&h=600}
+			{SETIMAGE: w=400&h=400}
 			
 			<div class="row news-images-1">
         		<div class="col-md-6">{NEWSIMAGE: item=2}</div>

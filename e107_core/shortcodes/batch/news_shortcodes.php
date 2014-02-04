@@ -414,7 +414,7 @@ class news_shortcodes extends e_shortcode
 	 */
 	function sc_newsthumbnail($parm = '') //TODO Add support {NEWSTHUMBNAIL: x=y} format 
 	{
-		$tmp = $this->handleMultiple($parm);
+		$tmp = $this->handleMultiple($parm,'all');
 		$newsThumb = $tmp['file'];
 		
 		$class = 'news-thumbnail-'.$tmp['count'];
@@ -557,12 +557,14 @@ class news_shortcodes extends e_shortcode
 				$list['image'][] = $file;		
 			}	
 			
+			$list['all'][] = $file;	
 		}
 		
 
 		if(is_string($parm) || !vartrue($parm['item']))
 		{
 			$item = 0;	
+			$parm = array('item' => 1);
 		}
 		else 
 		{
@@ -571,9 +573,9 @@ class news_shortcodes extends e_shortcode
 				
 			
 		$file = varset($list[$type][$item]);
-		$count = $item;
+		$count = varset($parm['item'],1);
 		
-		return array('file'=>$file, 'count'=>varset($parm['item'],1));		
+		return array('file'=>$file, 'count'=> $count);		
 		
 	}
 	
