@@ -155,6 +155,50 @@ class news_shortcodes extends e_shortcode
 		return ($this->param['trackbackbeforestring'] ? $this->param['trackbackbeforestring'] : '')."<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$this->param['trackbackstring'].$this->news_item['tb_count'].'</a>'.($this->param['trackbackafterstring'] ? $this->param['trackbackafterstring'] : '');
 	}
 
+
+
+	/**
+	 * Render a news navigation link
+	 * @param $parm array
+	 * @example {NEWSNAVLINK: list=all}
+	 */
+	function sc_newsnavlink($parm='') //TODO add more options. 
+	{
+		
+		if(varset($parm['list']) == 'all') // A list of all items - usually headings and thumbnails
+		{
+			$url = e107::getUrl()->create('news/list/all');
+		}
+		elseif(varset($parm['items']) == 'all') // default page of  news items, one after the other. (depending on news prefs)
+		{
+			$url = e107::getUrl()->create('news/list/items'); 
+		}
+		elseif(varset($parm['items']) == 'category') // news items for current category. 
+		{
+			$url = e107::getUrl()->create('news/list/category', $this->news_item); 		
+		}
+		elseif(varset($parm['list']) == 'category') // A list of all items - usually headings and thumbnails from the current category. 
+		{
+			$url = e107::getUrl()->create('news/list/short', $this->news_item);  //default for now.
+		}
+		else
+		{
+			$url = e107::getUrl()->create('news/list/items'); // default for now. 	
+		}
+			
+			
+		$caption = vartrue($parm['text'],LAN_BACK);
+		
+		$text = '<ul class="pager">
+  			<li><a href="'.$url.'">'.e107::getParser()->toHtml($caption,false,'defs').'</a></li>
+		</ul>';
+		
+		return $text;
+	}
+
+
+
+
 	function sc_newsheader($parm)
 	{
 		return $this->sc_newscaticon('src');

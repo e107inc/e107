@@ -155,6 +155,7 @@ $NEWS_TEMPLATE['view']['item'] = '
 	</div>
 	{NEWSRELATED}
 	<hr>
+	{NEWSNAVLINK}
 ';
 //$NEWS_MENU_TEMPLATE['view']['separator']   = '<br />';
 
