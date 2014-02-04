@@ -10,6 +10,7 @@ CREATE TABLE download (
   download_author_email varchar(200) NOT NULL default '',
   download_author_website varchar(200) NOT NULL default '',
   download_description text NOT NULL,
+  download_keywords text NOT NULL,
   download_filesize varchar(20) NOT NULL default '',
   download_requested int(10) unsigned NOT NULL default '0',
   download_category int(10) unsigned NOT NULL default '0',

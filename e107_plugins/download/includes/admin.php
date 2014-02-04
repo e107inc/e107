@@ -218,6 +218,7 @@ class download_main_admin_ui extends e_admin_ui
             'download_name' 			=> array('title'=> LAN_TITLE, 			'type' => 'text', 		'data' => 'str',		'inline'=>true, 'width' => 'auto',	'thclass' => ''),		
             'download_url'	   			=> array('title'=> DOWLAN_13, 			'type' => 'url', 	'data' => 'str',		'width'=>'auto',	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE),
 		    'download_sef'	   			=> array('title'=> LAN_SEFURL, 			'type' => 'text', 	'inline'=>true, 'data' => 'str',		'width'=>'auto',	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE),
+		  	'download_keywords'	   	=> array('title'=> LAN_KEYWORDS, 		'type' => 'tags', 	'inline'=>true, 'data' => 'str',		'width'=>'auto',	'thclass' => ''),
 		
 			'download_author' 			=> array('title'=> LAN_AUTHOR,			'type' => 'user', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
          	'download_author_email' 	=> array('title'=> DOWLAN_16, 			'type' => 'email', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),  
@@ -1328,14 +1329,7 @@ $columnInfo = array(
 		  
 	      $text .= "     </td>
 	                  </tr>
-	                  <tr>
-	                     <td>
-	                        Activation between
-	                     </td>
-	                     <td>
-	                         // TODO
-	                     </td>
-	                  </tr>
+	                 
 	                  <tr>
 	                     <td style='width:20%'>".DOWLAN_19."</td>
 	                     <td style='width:80%'>";
@@ -1359,28 +1353,40 @@ $columnInfo = array(
 	         <input type='hidden' name='move_image' value='1'/>\n";
 	      }
 	      $text .= "     </td>
-	                  </tr>
-	                  <tr>
-	                     <td style='width:20%'>".DOWLAN_20."</td>
-	                     <td style='width:80%'>";
-	     /*
-										   $text .= "
-									 <select name='download_thumb' class='tbox'>
-										<option value=''>&nbsp;</option>";
-				   foreach($thumb_array as $thm){
-					  $tpath = str_replace(e_FILE."downloadthumbs/","",$thm['path'].$thm['fname']);
-					  $sel = ($download_thumb == $tpath) ? " selected='selected'" : "";
-					  $text .= "<option value='".$tpath."' $sel>".$tpath."</option>\n";
-				   }
-								 $text .= "        </select>";
-				   */
-		 
-		 $text .= $frm->imagepicker('download_thumb', $download_thumb,'','download_thumb'); 
-		 
-		 
-	      $text .= "
-	                     </td>
-	                  </tr>
+	                  </tr>";
+	                  
+	                  
+	                  
+	      if(is_dir(e_FILE."downloadthumbs")) // Legacy 
+	      {            
+	                  
+	           $text .= "
+	                 <tr>
+			            <td style='width:20%'>".DOWLAN_20."</td>
+			           <td style='width:80%'>";
+			     /*
+												   $text .= "
+											 <select name='download_thumb' class='tbox'>
+												<option value=''>&nbsp;</option>";
+						   foreach($thumb_array as $thm){
+							  $tpath = str_replace(e_FILE."downloadthumbs/","",$thm['path'].$thm['fname']);
+							  $sel = ($download_thumb == $tpath) ? " selected='selected'" : "";
+							  $text .= "<option value='".$tpath."' $sel>".$tpath."</option>\n";
+						   }
+										 $text .= "        </select>";
+						   */
+				 
+				 $text .= $frm->imagepicker('download_thumb', $download_thumb,'','download_thumb'); 
+				 
+				 
+			    $text .= "
+			                </td>
+			              </tr>";
+	      }   
+	      
+		  
+		           
+			$text .= "
 	                  <tr>
 	                     <td style='width:20%'>".LAN_DATESTAMP."</td>
 	                     <td style='width:80%'>";
@@ -1397,12 +1403,22 @@ $columnInfo = array(
 	                     </td>
 	                  </tr>
 	                  
-	      <tr>
+	     			 <tr>
 	                     <td >".LAN_SEFURL."</td>
 	                     <td style='width:80%'>
 	                        <input class='tbox input-xxlarge' type='text' name='download_sef' size='60' value=\"".$tp->toForm($download_sef)."\" maxlength='250'/>
 	                     </td>
-	                  </tr>             
+	                  </tr> 
+	                  
+	                  
+	                 <tr>
+	                     <td >".LAN_KEYWORDS."</td>
+	                     <td style='width:80%'>".$frm->tags('download_keywords',$download_keywords)."
+	                    
+	                     </td>
+	                  </tr>  
+	                  
+					                
 	                  
 	                  <tr>
 	                     <td style='width:20%'>".DOWLAN_21."</td>
@@ -1608,6 +1624,7 @@ $columnInfo = array(
 			$dlInfo['download_description'] 		= $tp->toDB($_POST['download_description']);
 			$dlInfo['download_name'] 				= $tp->toDB($_POST['download_name']);
 			$dlInfo['download_sef'] 				= vartrue($_POST['download_sef']) ? eHelper::secureSef($_POST['download_sef']) : eHelper::title2sef($_POST['download_name']);
+			$dlInfo['download_keywords']				= $tp->toDB($_POST['download_keywords']);
 			$dlInfo['download_author'] 				= $tp->toDB($_POST['download_author']);
 			$dlInfo['download_author_email'] 		= $tp->toDB($_POST['download_author_email']);
 			$dlInfo['download_author_website'] 		= $tp->toDB($_POST['download_author_website']);
