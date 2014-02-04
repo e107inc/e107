@@ -33,11 +33,11 @@ class notify
 			{
 				if ($status['class'] != 255)
 				{
-					if($status['include']) // Plugin 
+					if(varset($status['include'])) // Plugin 
 					{
 						$include 	= e_PLUGIN.$status['include']."/e_notify.php";
 						
-						if($status['legacy'] != 1)
+						if(varset($status['legacy']) != 1)
 						{
 							$class 		= $status['include']."_notify";
 							$method 	= $id;
