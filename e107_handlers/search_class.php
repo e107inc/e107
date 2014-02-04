@@ -271,61 +271,72 @@ class e_search
 					$endcrop = FALSE;
 					$output = '<!-- Start Search Results -->';
 					$title = TRUE;
-					foreach ($matches as $this -> text) {
-						$this -> text = nl2br($this -> text);
-						$t_search = $tp -> search;
-						$t_replace = $tp -> replace;
-						$s_search = array('<br />', '[', ']');
-						$s_replace = array(' ', '<', '>');
-						$search = array_merge($t_search, $s_search);
-						$replace = array_merge($t_replace, $s_replace);
-						
-						$this -> text = strip_tags(str_replace($search, $replace, $this -> text));
-						
-						foreach ($this -> keywords['match'] as $match_id => $this -> query) 
+					
+					if(!empty($matches))
+					{
+						foreach ($matches as $this -> text) 
 						{
-							$boundary = $search_prefs['boundary'] ? '\b' : '';
-							if ($this -> keywords['wildcard'][$match_id]) {
-								$regex_append = ".*?".$boundary.")";
-							} else {
-								$regex_append = $boundary.")";	
-							}
-							if (($match_start = $tp->ustristr($this -> text, $this -> query)) !== FALSE) {
-								$this -> pos = $tp->ustrlen($this -> text) - $tp->ustrlen($match_start);
-								if (!$endcrop && !$title) {
-									$this -> parsesearch_crop();
-									$endcrop = TRUE;
+							$this -> text = nl2br($this -> text);
+							$t_search = $tp -> search;
+							$t_replace = $tp -> replace;
+							$s_search = array('<br />', '[', ']');
+							$s_replace = array(' ', '<', '>');
+							$search = array_merge($t_search, $s_search);
+							$replace = array_merge($t_replace, $s_replace);
+							
+							$this -> text = strip_tags(str_replace($search, $replace, $this -> text));
+							
+							
+							if(!empty($this->keywords['match']))
+							{
+								foreach ($this -> keywords['match'] as $match_id => $this -> query) 
+								{
+									$boundary = $search_prefs['boundary'] ? '\b' : '';
+									if ($this -> keywords['wildcard'][$match_id]) {
+										$regex_append = ".*?".$boundary.")";
+									} else {
+										$regex_append = $boundary.")";	
+									}
+									if (($match_start = $tp->ustristr($this -> text, $this -> query)) !== FALSE) 
+									{
+										$this -> pos = $tp->ustrlen($this -> text) - $tp->ustrlen($match_start);
+										if (!$endcrop && !$title) {
+											$this -> parsesearch_crop();
+											$endcrop = TRUE;
+										}
+										$key = $tp->usubstr($this -> text, $this->pos, $tp->ustrlen($this -> query));
+										$this -> text = preg_replace("#(".$boundary.$this -> query.$regex_append."#i", "<span class='searchhighlight'>\\1</span>", $this -> text);
+									}
 								}
-								$key = $tp->usubstr($this -> text, $this->pos, $tp->ustrlen($this -> query));
-								$this -> text = preg_replace("#(".$boundary.$this -> query.$regex_append."#i", "<span class='searchhighlight'>\\1</span>", $this -> text);
-							}
-						}
-						if ($title) 
-						{
-							if ($pre_title == 0) 
-							{
-								$pre_title_output = "";
-							} 
-							else if ($pre_title == 1) 
-							{
-								$pre_title_output = $res['pre_title'];
-							} 
-							else if ($pre_title == 2) 
-							{
-								$pre_title_output = $pre_title;
 							}
 							
-							$this -> text = $this -> bullet." <b><a class='visit' href='".$res['link']."'>".$pre_title_output.$this -> text."</a></b><br />".$res['pre_summary'];
-						} 
-						else if (!$endcrop) 
-						{
-							$this -> parsesearch_crop();
+							
+							if($title) 
+							{
+								if ($pre_title == 0) 
+								{
+									$pre_title_output = "";
+								} 
+								else if ($pre_title == 1) 
+								{
+									$pre_title_output = $res['pre_title'];
+								} 
+								else if ($pre_title == 2) 
+								{
+									$pre_title_output = $pre_title;
+								}
+								
+								$this -> text = $this -> bullet." <b><a class='visit' href='".$res['link']."'>".$pre_title_output.$this -> text."</a></b><br />".$res['pre_summary'];
+							} 
+							elseif (!$endcrop) 
+							{
+								$this -> parsesearch_crop();
+							}
+							
+							$output .= $this -> text;
+							$title = FALSE;
 						}
-						
-						$output .= $this -> text;
-						$title = FALSE;
 					}
-
 					$display_rel = $search_prefs['relevance'] ? " | ".LAN_SEARCH_69.": ".round($row['relevance'], 1) : "";
 					$output_array['text'][] = $output.$res['post_summary']."<br /><small>".$res['detail'].$display_rel."</small><br /><br />";
 				} 
