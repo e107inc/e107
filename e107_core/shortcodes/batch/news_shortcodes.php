@@ -61,9 +61,14 @@ class news_shortcodes extends e_shortcode
 	function sc_newsbody($parm)
 	{
 		$tp = e107::getParser();
-		e107::getBB()->setClass("news");
-		$news_body = $tp->toHTML($this->news_item['news_body'], true, 'BODY, fromadmin', $this->news_item['news_author']);
-		if($this->news_item['news_extended'] && (isset($_POST['preview']) || $this->param['current_action'] == 'extend') && $parm != 'noextend')
+		e107::getBB()->setClass("news"); // For automatic bbcode image resizing. 
+		
+		if($parm != 'extended')
+		{
+			$news_body = $tp->toHTML($this->news_item['news_body'], true, 'BODY, fromadmin', $this->news_item['news_author']);
+		}
+		
+		if($this->news_item['news_extended'] && (isset($_POST['preview']) || $this->param['current_action'] == 'extend') && ($parm != 'noextend' || $parm != 'body'))
 		{
 			$news_body .= $tp->toHTML($this->news_item['news_extended'], true, 'BODY, fromadmin', $this->news_item['news_author']);
 		}
@@ -160,7 +165,10 @@ class news_shortcodes extends e_shortcode
 	/**
 	 * Render a news navigation link
 	 * @param $parm array
-	 * @example {NEWSNAVLINK: list=all}
+	 * @example {NEWSNAVLINK: list=all} // A list of all items - usually headings and thumbnails
+	 * @example {NEWSNAVLINK: list=category} // A list of all items - usually headings and thumbnails from the current category. 
+	 * @example {NEWSNAVLINK: items=category}  // News items for current category. 
+	 * @example {NEWSNAVLINK: text=myCaption}  // Default News item view. ie. news.php
 	 */
 	function sc_newsnavlink($parm='') //TODO add more options. 
 	{
@@ -169,17 +177,13 @@ class news_shortcodes extends e_shortcode
 		{
 			$url = e107::getUrl()->create('news/list/all');
 		}
-		elseif(varset($parm['items']) == 'all') // default page of  news items, one after the other. (depending on news prefs)
-		{
-			$url = e107::getUrl()->create('news/list/items'); 
-		}
-		elseif(varset($parm['items']) == 'category') // news items for current category. 
-		{
-			$url = e107::getUrl()->create('news/list/category', $this->news_item); 		
-		}
-		elseif(varset($parm['list']) == 'category') // A list of all items - usually headings and thumbnails from the current category. 
+		elseif(varset($parm['list']) == 'category') 
 		{
 			$url = e107::getUrl()->create('news/list/short', $this->news_item);  //default for now.
+		}
+		elseif(varset($parm['items']) == 'category') 
+		{
+			$url = e107::getUrl()->create('news/list/category', $this->news_item); 		
 		}
 		else
 		{
@@ -410,22 +414,15 @@ class news_shortcodes extends e_shortcode
 	 */
 	function sc_newsthumbnail($parm = '') //TODO Add support {NEWSTHUMBNAIL: x=y} format 
 	{
-		$newsThumb = $this->handleMultiple($parm);
+		$tmp = $this->handleMultiple($parm);
+		$newsThumb = $tmp['file'];
+		
+		$class = 'news-thumbnail-'.$tmp['count'];
 		
 		if(!$newsThumb && $parm != 'placeholder')
 		{
 			return '';
 		}
-		
-		
-		
-		if(empty($parm)) // get {SETIMAGE} values when no parm provided. 
-		{
-			
-			$parm = '|aw='.e107::getParser()->thumbWidth().'&ah='.e107::getParser()->thumbHeight();
-		}
-				
-		
 		
 		if($vThumb = e107::getParser()->toVideo($newsThumb, array('thumb'=>'src')))
 		{
@@ -435,6 +432,11 @@ class news_shortcodes extends e_shortcode
 		else
 		{
 			$parms = eHelper::scDualParams($parm);
+			
+			if(empty($parms[2])) // get {SETIMAGE} values when no parm provided. 
+			{
+				$parms[2] = array('aw' => e107::getParser()->thumbWidth(), 'ah'=> e107::getParser()->thumbHeight());
+			}
 			
 			
 			if(isset($parms[2]['legacy']) && $parms[2]['legacy']==true) // Legacy mode - swap out thumbnails for actual images and update paths.  
@@ -471,15 +473,15 @@ class news_shortcodes extends e_shortcode
 			break;
 
 			case 'tag':
-				return "<img class='news_image' src='".$src."' alt='' style='".$this->param['thumbnail']."' />";
+				return "<img class='news_image ".$class."' src='".$src."' alt='' style='".$this->param['thumbnail']."' />";
 			break;
 
 			case 'img':
-				return "<a href='".$_src."' rel='external image'><img class='news_image' src='".$src."' alt='' style='".$this->param['thumbnail']."' /></a>";
+				return "<a href='".$_src."' rel='external image'><img class='news_image ".$class."' src='".$src."' alt='' style='".$this->param['thumbnail']."' /></a>";
 			break;
 
 			default:
-				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='news_image img-responsive img-rounded' src='".$src."' alt='' style='".$this->param['thumbnail']."' /></a>";
+				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='news_image img-responsive img-rounded ".$class."' src='".$src."' alt='' style='".$this->param['thumbnail']."' /></a>";
 			break;
 		}
 	}
@@ -521,9 +523,10 @@ class news_shortcodes extends e_shortcode
 
 	function sc_newsvideo($parm='')
 	{
-		$item = $this->handleMultiple($parm);		
+		$tmp = $this->handleMultiple($parm,'video');	
+		$file = $tmp['file'];	
 			
-		if($video = e107::getParser()->toVideo($item))
+		if($video = e107::getParser()->toVideo($file, array('class'=> 'news-video-'.$tmp['count'])))
 		{
 			return $video;
 		}
@@ -531,14 +534,31 @@ class news_shortcodes extends e_shortcode
 	}
 
 
-	function handleMultiple($parm)
+	function handleMultiple($parm,$type='image')
 	{
 		if(!vartrue($this->news_item['news_thumbnail']) )
 		{
 			return;	
 		}			
+		
+		$tp = e107::getParser();
 	
 		$media = explode(",", $this->news_item['news_thumbnail']);
+		$list = array();
+		
+		foreach($media as $file)
+		{
+			if($tp->isVideo($file))
+			{
+				$list['video'][] = $file;	
+			}
+			else
+			{
+				$list['image'][] = $file;		
+			}	
+			
+		}
+		
 
 		if(is_string($parm) || !vartrue($parm['item']))
 		{
@@ -550,7 +570,10 @@ class news_shortcodes extends e_shortcode
 		}			
 				
 			
-		return varset($media[$item]);		
+		$file = varset($list[$type][$item]);
+		$count = $item;
+		
+		return array('file'=>$file, 'count'=>varset($parm['item'],1));		
 		
 	}
 	
@@ -574,12 +597,16 @@ class news_shortcodes extends e_shortcode
 			$parm = array('type'=> $parm);
 		}
 			
-		$srcPath = $this->handleMultiple($parm);
+		$tmp = $this->handleMultiple($parm);
+		$srcPath = $tmp['file'];
+		
+		$class = "news_image news-image img-responsive img-rounded";
+		$class .= ' news-image-'.$tmp['count'];
+		
 			
-		if($video = e107::getParser()->toVideo($this->news_item['news_thumbnail']))
+		if($tp->isVideo($this->news_item['news_thumbnail']))
 		{
 			return; 
-			
 		}
 		else 
 		{
@@ -611,7 +638,7 @@ class news_shortcodes extends e_shortcode
 			return;
 		}
 		
-		$class = "news_image news-image img-responsive img-rounded";
+
 		
 		switch(vartrue($parm['type']))
 		{

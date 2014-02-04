@@ -44,7 +44,7 @@ $NEWS_TEMPLATE['list']['item']	= '
                    </p>
  				</div>
 		</div>
-		
+
 ';
 
 
@@ -121,29 +121,38 @@ $NEWS_TEMPLATE['view']['item'] = '
         		<div class="col-md-8 text-right options">{GLYPH=tags} &nbsp;{NEWSTAGS} &nbsp; {GLYPH=folder-open} &nbsp;{NEWSCATEGORY} </div>
         	</div>
         <hr>
-        {NEWSIMAGE: item=1&placeholder=1}
+        {NEWSIMAGE: item=1}
+		{NEWSVIDEO: item=1} 
          <hr>
         <p class="lead">{NEWSSUMMARY}</p>  
         <hr>
 
 		<div class="body">
-		 	{NEWSVIDEO: item=1} <!-- if it exists in position 1 -->
-			{NEWSBODY}
-			<br />
-			<div class="row">
-        		<div class="col-md-3">{NEWSIMAGE: item=2}</div>
-        		<div class="col-md-3">{NEWSIMAGE: item=3}</div>
-        		<div class="col-md-3">{NEWSIMAGE: item=4}</div>
-        		<div class="col-md-3">{NEWSIMAGE: item=5}</div>
-            </div>
-           
-			{NEWSVIDEO: item=2} <!-- if it exists in position 2 -->
-
-			{EXTENDED}
+		 	
+		 	{NEWSVIDEO: item=2} 
+		 	{NEWSVIDEO: item=3}
 			
-			{NEWSVIDEO: item=3}
-			{NEWSVIDEO: item=4}
+			
+			{NEWSBODY=body}
+			<br />
+			{SETIMAGE: w=600&h=600}
+			
+			<div class="row news-images-1">
+        		<div class="col-md-6">{NEWSIMAGE: item=2}</div>
+        		<div class="col-md-6">{NEWSIMAGE: item=3}</div>
+        	</div>
+        	<div class="row news-images-2">
+        		<div class="col-md-6">{NEWSIMAGE: item=4}</div>
+        		<div class="col-md-6">{NEWSIMAGE: item=5}</div>
+            </div>
+            
+            {NEWSVIDEO: item=4}
 			{NEWSVIDEO: item=5}
+			
+           <div class="body-extended">
+				{NEWSBODY=extended}
+			</div>
+			
 			
 		</div>
 		<hr>

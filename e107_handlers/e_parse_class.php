@@ -2815,6 +2815,19 @@ class e_parser
 
 
 
+	/**
+	 * Check if a file is an video or not. 
+	 * @param $file string
+	 * @return boolean
+	 */
+	function isVideo($file)
+	{
+		$ext = pathinfo($file,PATHINFO_EXTENSION);
+			
+		return ($ext == 'youtube') ? true : false;
+		
+	}
+
 	
 	/**
 	 * Display a Video file. 
@@ -2828,7 +2841,8 @@ class e_parser
 		$thumb = vartrue($parm['thumb']);
 		
 		if($type == 'youtube')
-		{
+		{		
+			
 			$video =  '<iframe width="560" height="315" src="//www.youtube.com/embed/'.$id.'" style="border:0px" allowfullscreen></iframe>';
 			$thumbSrc = "https://i1.ytimg.com/vi/".$id."/0.jpg";
 		
@@ -2847,9 +2861,9 @@ class e_parser
 				return '<div class="video-responsive video-thumbnail thumbnail">'.$video.'</div>';	
 			}
 			
-			return '<div class="'.vartrue($parm['class'],'video-responsive').'">'.$video.'</div>';
+			return '<div class="video-responsive '.vartrue($parm['class']).'">'.$video.'</div>';
 		}
-		
+				
 		if($type == 'mp4') //TODO FIXME 
 		{
 			return '

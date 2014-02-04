@@ -319,7 +319,8 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 	}
 	
 	$text .= "<div class='center news-list-footer'><a class='btn btn-default' href='".e107::getUrl()->create('news/list/all')."'>".LAN_NEWS_84."</a></div>";
-	
+
+
 	ob_start();
 	$ns->tablerender($NEWSLISTTITLE, $text, 'news');
 	$cache_data = ob_get_flush();
