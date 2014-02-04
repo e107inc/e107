@@ -376,7 +376,7 @@ $DOWNLOAD_TEMPLATE['categories']['parent'] = "
                   </td>
                   <td colspan='4'>
                      {DOWNLOAD_CAT_MAIN_NAME}<br/>
-                     <span class='smalltext'>{DOWNLOAD_CAT_MAIN_DESCRIPTION}</span>
+                     <small class='muted text-muted'>{DOWNLOAD_CAT_MAIN_DESCRIPTION}</small>
                   </td>
                </tr>";
 
