@@ -744,7 +744,8 @@ class e_file
 		$pref 					= e107::getPref();
 		$tp 					= e107::getParser();
 		
-		$DOWNLOADS_DIRECTORY 	= e_BASE.e107::getFolder('DOWNLOADS');
+		$DOWNLOADS_DIR 			= e107::getFolder('DOWNLOADS');		
+		$DOWNLOADS_DIRECTORY 	= ($DOWNLOADS_DIR[0] == DIRECTORY_SEPARATOR) ? $DOWNLOADS_DIR : e_BASE.$DOWNLOADS_DIR; // support for full path eg. /home/account/folder. 
 		$FILES_DIRECTORY 		= e_BASE.e107::getFolder('FILES');
 		$MEDIA_DIRECTORY		= realpath(e_MEDIA); //  could be image, file or other type. 
 		
