@@ -245,6 +245,7 @@ City, State, Country
 		<core name="subnews_htmlarea">0</core>
 		<core name="subnews_resize"></core>
 		<core name="themecss">canvas.css</core>
+		<core name="thumbnail_quality">75</core>
 		<core name="time_offset">0</core>
 		<core name="timezone">GMT</core>
 		<core name="track_online">1</core>
