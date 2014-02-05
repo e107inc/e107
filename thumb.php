@@ -70,6 +70,8 @@ class e_thumbpage
 	protected $_watermark = array();
 	
 	private $_placeholder = false;
+	
+	protected $_thumbQuality = null;
 
 	/**
 	 * Constructor - init paths
@@ -142,6 +144,9 @@ class e_thumbpage
 			'shadowcolor'	=> vartrue($pref['watermark_shadowcolor'], '000000'),		
 			'opacity'		=> vartrue($pref['watermark_opacity'], 20)		
 		);	
+		
+		$this->_thumbQuality = vartrue($pref['thumbnail_quality'],65);
+		
 				
 		// parse request
 		$this->parseRequest();
@@ -231,7 +236,7 @@ class e_thumbpage
 		$thumbnfo = pathinfo($this->_src_path);
 		$options = $this->getRequestOptions();
 
-		$cache_str = md5(serialize($options).$this->_src_path);
+		$cache_str = md5(serialize($options). $this->_src_path. $this->_thumbQuality);
 		$fname = strtolower('Thumb_'.$thumbnfo['filename'].'_'.$cache_str.'.'.$thumbnfo['extension']).'.cache.bin';
 
 	
@@ -269,7 +274,7 @@ class e_thumbpage
 		{
 		    $thumb = PhpThumbFactory::create($this->_src_path);
 			$sizeUp = ($this->_request['w'] > 110) ? true : false; // don't resizeUp the icon images. 
-		   	$thumb->setOptions(array('correctPermissions' => true, 'resizeUp'=>$sizeUp));
+		   	$thumb->setOptions(array('correctPermissions' => true, 'resizeUp' => $sizeUp, 'jpegQuality' => $this->_thumbQuality));
 			
 		}
 		catch (Exception $e)

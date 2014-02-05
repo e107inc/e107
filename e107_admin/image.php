@@ -696,6 +696,8 @@ class media_admin_ui extends e_admin_ui
 		'image_post_class' 				=> array('title'=> IMALAN_10, 'type' => 'userclass', 'data'=>'int', 'writeParms'=>'help=IMALAN_11&classlist=public,guest,nobody,member,admin,main,classes' ),
 		'image_post_disabled_method'	=> array('title'=> IMALAN_12, 'type' => 'boolean','writeParms'=>'enabled=IMALAN_15&disabled=IMALAN_14'),
 		'resize_method'					=> array('title'=> IMALAN_3, 'type'=>'method', 'data'=>'str'),
+		'thumbnail_quality'				=> array('title'=> "Thumbnail Quality", 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=Set this as low as possible before quality loss is apparent. Max. 100'), //TODO LAN
+	
 		'im_width'						=> array('title'=> "Avatar Width", 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=Avatar images will be constrained to these dimensions (in pixels)'), //TODO LAN
 		'im_height'						=> array('title'=> "Avatar Height", 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=Avatar images will be constrained to these dimensions (in pixels)'),
 		'resize_dimensions'				=> array('title'=> "Resize-Image Dimensions", 'type'=>'method', 'data'=>'str'),
