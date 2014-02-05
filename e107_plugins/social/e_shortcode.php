@@ -150,8 +150,23 @@ class social_shortcodes extends e_shortcode
 		
 	}
 
+	/**
+	 * @example {TWITTER_TIMELINE: id=xxxxxxx&theme=light}
+	 */
+	function sc_twitter_timeline($parm)
+	{
+		$ns = e107::getRender();
+		
+		$account = dirname(XURL_TWITTER);
+		//data-related="twitterapi,twitter"
+		$text = '<a class="twitter-timeline" href="'.XURL_TWITTER.'" data-widget-id="'.varset($parm['id']).'" data-theme="'.varset($parm['theme'],'light').'" data-link-color="#cc0000"   data-aria-polite="assertive" width="100%" height="'.varset($parm['height'],300).'" lang="'.e_LAN.'">Tweets by @'.$account.'</a>';
 
-
+		$text .= <<<TMPL
+		
+		<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+TMPL;
+		return (vartrue($parm['render'])) ? $ns->tablerender('',$text,'twitter-timeline',true) : $text;
+	}
 
 
 }
