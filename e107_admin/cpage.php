@@ -587,11 +587,19 @@ class page_admin_ui extends e_admin_ui
 		
 		function beforeCreate($newdata,$olddata)
 		{
-			$newdata['menu_name'] = preg_replace('/[^\w-*]/','',$newdata['menu_name']);
+			$newdata['menu_name'] = preg_replace('/[^\w-*]/','-',$newdata['menu_name']);
 			
 			if(empty($newdata['page_sef']))
 			{
-				$newdata['page_sef'] = eHelper::title2sef($newdata['page_title']);
+				if(!empty($newdata['page_title']))
+				{
+					$newdata['page_sef'] = eHelper::title2sef($newdata['page_title']);
+				}
+				elseif(!empty($newdata['menu_name']))
+				{
+					$newdata['page_sef'] = eHelper::title2sef($newdata['menu_name']);
+				}
+		
 			}
 			else 
 			{
