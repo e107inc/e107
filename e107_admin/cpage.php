@@ -489,6 +489,8 @@ class page_admin_ui extends e_admin_ui
 			
 				$this->listQry = "SELECT p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE p.menu_name != '' "; // without any Order or Limit.
 			
+				$this->listOrder 		= 'p.page_id desc';
+			
 				$this->batchDelete 	= false;
 				$this->fields = array(
 					'checkboxes'		=> array('title'=> '',				'type' => null, 		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
