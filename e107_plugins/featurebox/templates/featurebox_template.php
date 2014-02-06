@@ -13,7 +13,7 @@ global $sc_style;
 
 $FEATUREBOX_TEMPLATE['bootstrap_carousel_default'] = '{SETIMAGE: w=1900&h=450&crop=1}
 		<div class="{FEATUREBOX_ACTIVE} item slide{FEATUREBOX_COUNTER}">
-			{FEATUREBOX_IMAGE=placeholder}		
+			{FEATUREBOX_IMAGE}		
            <div class="container">
             <div class="carousel-caption">
               <h1>{FEATUREBOX_TITLE}</h1>
