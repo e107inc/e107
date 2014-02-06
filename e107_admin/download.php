@@ -1302,8 +1302,8 @@ class download
 		$_POST['download_author_website'] = str_replace("'", '', $_POST['download_author_website']);
 		$_POST['download_image'] = str_replace("'", '', $_POST['download_image']);
 		$_POST['download_thumb'] = str_replace("'", '', $_POST['download_thumb']);
-		$_POST['download_visible'] = $_POST['download_visible'] ? intval($_POST['download_visible']) : '';
-		$_POST['download_class'] = $_POST['download_class'] ? intval($_POST['download_class']) : '';
+		$_POST['download_visible'] = $_POST['download_visible'] ? intval($_POST['download_visible']) : '0';
+		$_POST['download_class'] = $_POST['download_class'] ? intval($_POST['download_class']) : '0';
 		
 		if($_POST['download_author_email'] && !check_email($_POST['download_author_email']))
 		{
