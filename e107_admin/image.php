@@ -1279,7 +1279,7 @@ class media_admin_ui extends e_admin_ui
 		foreach($fa4 as $val)
 		{
 			$items[] = array( 
-					'previewUrl'	=> 'fa '.$val,
+					'previewUrl'	=> 'fa fa-'.$val,
 					'saveValue'		=> $val.'.glyph',
 					'thumbUrl'		=> $val,
 					'title'			=> $val,
