@@ -295,7 +295,7 @@ class pluginManager{
 
 		foreach($this->fields as $key=>$val)
 		{
-			if($val['forced'] == true && substr($key,0,6)=='plugin')
+			if(vartrue($val['forced']) && substr($key,0,6)=='plugin')
 			{
 				$this->fieldpref[] = $key;	
 			}		

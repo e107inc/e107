@@ -2694,7 +2694,7 @@ class e_parser
 	 */ 
 	public function toGlyph($text, $space=" ")
 	{
-		if(!deftrue('BOOTSTRAP'))
+		if(!deftrue('BOOTSTRAP') || empty($text))
 		{
 			return false;	
 		}
@@ -2718,9 +2718,13 @@ class e_parser
 		// Get Glyph names. 
 		$bs3 = e107::getMedia()->getGlyphs('bs3','');
 		$fa4 = e107::getMedia()->getGlyphs('fa4','');
+		
+		
 			
-		list($cls,$tmp) = explode('.glyph',$text);
+		list($cls) = explode('.glyph',$text,2);
 	//	list($type, $tmp2) = explode("-",$text,2);
+		
+	//	return $cls;
 		
 		$removePrefix = array('glyphicon-','icon-','fa-');
 		
@@ -2747,6 +2751,8 @@ class e_parser
 				$prefix = 'icon-';	
 				$tag = 'i';
 			}
+			
+			$size = '';
 			
 		}
 		
