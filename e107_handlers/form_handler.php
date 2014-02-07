@@ -2646,7 +2646,7 @@ class e_form
 				//	$value = "<a class='e-tip e-editable editable-click' data-name='".$field."' data-value='{$_value}' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='".$xtype."' data-pk='".$id."' data-url='".e_SELF."?mode=&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$value."</a>";
 					
 			
-					$value = $this->renderInline($field, $id, $title, $_value, $value, $xtype, $wparms);
+					$value = $this->renderInline($field, $id, $attributes['title'], $_value, $value, $xtype, $wparms);
 				}
 								
 				// return ;
@@ -2770,15 +2770,6 @@ class e_form
 			break;
 
 			case 'icon':
-	
-				if($glyph = $tp->toGlyph($value))
-				{
-				//	$value = $glyph;	
-				}
-				else
-				{
-			//		$value = '<img src="'.$tp->replaceConstants(vartrue($parms['pre']).$value, 'abs').'" alt="'.basename($value).'" class="icon'.(vartrue($parms['class']) ? ' '.$parms['class'] : '').'" />';
-				}
 				
 				$value = $tp->toIcon($value,array('size'=>'2x'));
 				
