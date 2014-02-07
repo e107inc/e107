@@ -4,7 +4,10 @@ if (!defined('e107_INIT'))
 	require_once("../../class2.php");
 }
 
-include_lan(e_PLUGIN."download/languages/".e_LANGUAGE."/download.php");
+
+e107::lan('download','download');
+
+
 $log = e107::getAdminLog(); 
 $id = FALSE;
 
@@ -256,6 +259,10 @@ if ($type == "file")
 			exit();
 		}
 	}
+	
+	
+	$log->addError("Line".__LINE__.": Couldn't find ".e_DOWNLOAD.e_QUERY);
+	$log->toFile('download_requests','Download Requests', true); // Create a log file and add the log messages
 	require_once(HEADERF);
 	$ns -> tablerender(LAN_dl_61, "<div style='text-align:center'>".LAN_dl_65."<br /><br /><a href='javascript:history.back(1)'>".LAN_dl_64."</a></div>");
 	require_once(FOOTERF);

@@ -24,8 +24,11 @@ if (!getperms("P") || !plugInstalled('download'))
 	exit() ;
 }
 
-include_lan(e_PLUGIN.'download/languages/'.e_LANGUAGE.'/download.php');
-include_lan(e_PLUGIN.'download/languages/'.e_LANGUAGE.'/admin_download.php');
+
+e107::lan('download','download'); // e_PLUGIN.'download/languages/'.e_LANGUAGE.'/download.php'
+e107::lan('download','admin_download'); // e_PLUGIN.'download/languages/'.e_LANGUAGE.'/admin_download.php'
+
+
 // require_once(e_PLUGIN.'download/handlers/adminDownload_class.php');
 require_once(e_PLUGIN.'download/handlers/download_class.php');
 require_once(e_HANDLER.'upload_handler.php');

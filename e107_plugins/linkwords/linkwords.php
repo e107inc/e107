@@ -32,7 +32,9 @@ class e_linkwords
 		global $pref, $admin_log;
 		/* constructor */
 		// Do an auto-update on the variable used to hook parsers - so we should only be called once
-		include_lan(e_PLUGIN."linkwords/languages/".e_LANGUAGE.".php");
+		
+		e107::lan('linkwords',e_LANGUAGE); // e_PLUGIN."linkwords/languages/".e_LANGUAGE.".php"
+		
 		$hooks = explode(",",$pref['tohtml_hook']);
 		if (($key=array_search('linkwords',$hooks)) !== FALSE)
 		{

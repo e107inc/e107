@@ -18,7 +18,10 @@ if (!plugInstalled('chatbox_menu') || !getperms("P"))
 	exit;
 }
 
-include_lan( e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/admin_chatbox_menu.php");
+// include_lXXXan( e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/admin_chatbox_menu.php");
+
+e107::lan('chatbox_menu','admin_chatbox_menu');
+
 
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."userclass_class.php");

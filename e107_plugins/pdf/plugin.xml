@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<e107Plugin name="PDF" lan="LAN_PLUGIN_PDF_NAME" version="2.0" date="2012-08-01" compatibility="2.0" installRequired="true">
+<e107Plugin name="PDF" lan="LAN_PLUGIN_PDF_NAME" version="2.0" date="2012-08-01" compatibility="1.0" installRequired="true">
 	<author name="e107Inc" />
 	<description lan="LAN_PLUGIN_PDF_DESCRIPTION">PDF creation support using TCPDF.</description>
 	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright>

@@ -40,7 +40,8 @@ $frm = e107::getForm();
 $mes = e107::getMessage();
 $tp = e107::getParser();
 
-include_lan(e_PLUGIN.'banner/languages/'.e_LANGUAGE.'_admin_banner.php');
+
+e107::lan('banner',e_LANGUAGE.'_admin_banner.php',true); // e_PLUGIN.'banner/languages/'.e_LANGUAGE.'_admin_banner.php'
 
 
 if(e_QUERY)
@@ -250,8 +251,8 @@ if (!$action)
 						<tr>
 							<td class='center'>".$banner_row['banner_id']."</td>
 							<td class='e-pointer' onclick=\"e107Helper.toggle('banner-infocell-{$banner_row['banner_id']}')\">
-								<a href='#banner-infocell-{$banner_row['banner_id']}' class='action e-expandit f-right' title='".BNRLAN_7."'><img class='action info S16' src='".E_16_CAT_ABOUT."' alt='' /></a>
-								".($banner_row['banner_clientname'] ? $banner_row['banner_clientname'] : BNRLAN_8)."
+								<a href='#banner-infocell-{$banner_row['banner_id']}' class='action e-expandit' title='".BNRLAN_7."'>
+								".($banner_row['banner_clientname'] ? $banner_row['banner_clientname'] : BNRLAN_8)."</a>
 								<div class='e-hideme clear' id='banner-infocell-{$banner_row['banner_id']}'>
 									<div class='indent'>
 										<div class='field-spacer'><strong>".BNRLAN_11.": </strong>".$banner_row['banner_campaign']."</div>

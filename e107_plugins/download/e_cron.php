@@ -22,8 +22,6 @@ class download_cron // include plugin-folder in the name.
 {
 	function config()
 	{
-		include_lan(e_PLUGIN."download/languages/".e_LANGUAGE."/admin_download.php");
-		
 		$cron = array();
 	
 		$cron[] = array(
@@ -41,7 +39,7 @@ class download_cron // include plugin-folder in the name.
 	function pruneLog() 
 	{
 	    // Whatever code you wish.
-	    e107::getMessage()->add("Executed dummy function within gsitemap/e_cron.php");
+	    e107::getMessage()->add("Executed dummy function within download/e_cron.php");
 	    return ;
 	}
 	
