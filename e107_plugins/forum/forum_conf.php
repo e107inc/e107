@@ -124,8 +124,8 @@ if ($action == "delete_poll")
 		".FORCONF_13."
 		<br /><br />
 		<form method='post' action='".e_SELF."?".e_QUERY."'>
-		<input class='btn button' type='submit' name='deletecancel' value='".FORCONF_14."' />
-		<input class='btn button' type='submit' name='deletepollconfirm' value='".FORCONF_15."' />
+		<input class='btn btn-default button' type='submit' name='deletecancel' value='".FORCONF_14."' />
+		<input class='btn btn-default button' type='submit' name='deletepollconfirm' value='".FORCONF_15."' />
 		</form>
 		</div>";
 	$ns->tablerender(FORCONF_16, $text);
@@ -199,7 +199,7 @@ if ($action == 'move')
 		</table>
 		<div class='center'>
 		<input class='btn btn-primary button' type='submit' name='move' value='".FORCONF_25."' />
-		<input class='btn button' type='submit' name='movecancel' value='".FORCONF_14."' />
+		<input class='btn btn-default button' type='submit' name='movecancel' value='".FORCONF_14."' />
 		</div>
 		
 		</div>

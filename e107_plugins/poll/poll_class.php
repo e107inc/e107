@@ -714,7 +714,7 @@ class poll
 
 				$text .="
 				</div>
-				<input class='btn button' type='button' name='addoption' value='".LAN_FORUM_3032."' onclick=\"duplicateHTML('pollopt','pollsection')\" /><br />
+				<input class='btn btn-default button' type='button' name='addoption' value='".LAN_FORUM_3032."' onclick=\"duplicateHTML('pollopt','pollsection')\" /><br />
 				</td>
 			</tr>
 			<tr>
@@ -814,7 +814,7 @@ class poll
 
 		if (isset($_POST['preview']) || varset($_POST['edit']))
 		{
-			// $text .= "<input class='btn button' type='submit' name='preview' value='".POLLAN_24."' /> ";
+			// $text .= "<input  type='submit' name='preview' value='".POLLAN_24."' /> ";
 			$text .= $frm->admin_button('preview',POLLAN_24,'other');
 			
 			if (POLLACTION == 'edit')
@@ -826,19 +826,19 @@ class poll
 			else
 			{
 				$text .= $frm->admin_button('submit','no-value','submit', LAN_CREATE);
-			//	$text .= "<input class='btn button' type='submit' name='submit' value='".POLLAN_23."' /> ";
+			//	$text .= "<input type='submit' name='submit' value='".POLLAN_23."' /> ";
 			}
 		} 
 		else 
 		{
 			$text .= $frm->admin_button('preview','no-value','other',POLLAN_24);
-		//	$text .= "<input class='btn button' type='submit' name='preview' value='".POLLAN_24."' /> ";
+		//	$text .= "<input  type='submit' name='preview' value='".POLLAN_24."' /> ";
 		}
 		
 		if (defset('POLLID')) 
 		{
 			$text .= $frm->admin_button('reset','no-value','reset',POLLAN_25);
-		//	$text .= "<input class='btn button' type='submit' name='reset' value='".POLLAN_25."' /> ";
+		//	$text .= "<input  type='submit' name='reset' value='".POLLAN_25."' /> ";
 		}
 
 		$text .= "</div>

@@ -229,7 +229,7 @@ $text .= "
 <tr style='vertical-align:top'>
 <td style='width:25%'></td>
 <td style='width:75%'>
-<input class='btn button' type='submit' name='emailsubmit' value='".LAN_EMAIL_4."' />
+<input class='btn btn-default button' type='submit' name='emailsubmit' value='".LAN_EMAIL_4."' />
 <input type='hidden' name='referer' value='".$referrer."' />
 </td>
 </tr>

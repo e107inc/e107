@@ -242,15 +242,15 @@ else
 	$texta .= "
 	<textarea placeholder=\"".LAN_CHATBOX_100."\" required class='tbox chatbox input-xlarge' id='cmessage' name='cmessage' cols='20' rows='5' style='max-width:97%; ".($cb_width ? "width:".$cb_width.";" : '')." overflow: auto' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
 	<br />
-	<input class='btn button' type='submit' id='chat_submit' name='chat_submit' value='".CHATBOX_L4."' {$oc}/>
+	<input class='btn btn-default button' type='submit' id='chat_submit' name='chat_submit' value='".CHATBOX_L4."' {$oc}/>
 	";
 	
-	// $texta .= "<input class='btn button' type='reset' name='reset' value='".CHATBOX_L5."' />"; // How often do we see these lately? ;-)
+	// $texta .= "<input type='reset' name='reset' value='".CHATBOX_L5."' />"; // How often do we see these lately? ;-)
 
 	if($pref['cb_emote'] && $pref['smiley_activate'])
 	{
 		$texta .= "
-		<input class='btn button' type='button' style='cursor:pointer' size='30' value='".CHATBOX_L14."' onclick=\"expandit('emote')\" />
+		<input class='btn btn-default button' type='button' style='cursor:pointer' size='30' value='".CHATBOX_L14."' onclick=\"expandit('emote')\" />
 		<div class='well' style='display:none' id='emote'>".r_emote()."</div>\n";
 	}
 

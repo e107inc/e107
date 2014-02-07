@@ -127,7 +127,7 @@ $fVars->SEARCH = "
 <form method='get' class='form-inline input-append' action='".e_BASE."search.php'>
 
 <input class='tbox' type='text' name='q' size='20' value='' maxlength='50' />
-<input class='btn button' type='submit' name='s' value='".LAN_SEARCH."' />
+<input class='btn btn-default button' type='submit' name='s' value='".LAN_SEARCH."' />
 <input type='hidden' name='r' value='0' />
 <input type='hidden' name='ref' value='forum' />
 

@@ -1122,7 +1122,7 @@ function duplicateHTML(copy,paste,baseid){
 			but.type = 'button';
 			but.innerHTML = 'x';
 			but.value = 'x';
-			but.className = 'btn button';
+			but.className = 'btn btn-default button';
 			but.onclick = function(){ this.parentNode.parentNode.removeChild(this.parentNode); };
 
 			var destination = document.getElementById(paste);

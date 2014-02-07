@@ -59,7 +59,7 @@ $fileattach = "
 			<input class='tbox' name='file_userfile[]' type='file' size='47' />
 		</span>
 		</div>
-		<input class='btn button' type='button' name='addoption' value='".LAN_FORUM_3020."' onclick=\"duplicateHTML('fiupopt','fiupsection')\" />
+		<input class='btn btn-default button' type='button' name='addoption' value='".LAN_FORUM_3020."' onclick=\"duplicateHTML('fiupopt','fiupsection')\" />
 	</td>
 </tr>
 ";

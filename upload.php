@@ -256,7 +256,7 @@ $text .= "
 	</tr>
 
 	<tr>
-	<td style='text-align:center' colspan='2' class='forumheader'><input class='btn button' type='submit' name='upload' value='".LAN_416."' /></td>
+	<td style='text-align:center' colspan='2' class='forumheader'><input class='btn btn-default button' type='submit' name='upload' value='".LAN_416."' /></td>
 	</tr>
 	</table>
 	</form>

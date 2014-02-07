@@ -466,7 +466,7 @@ if ($action == "create")
 	/*					
 						$text .= "
 							<div class='field-spacer'>
-								<button class='btn button action' type='button' value='no-value' onclick='e107Helper.toggle(\"banner-repo\")'><span>".BNRLAN_32."</span></button> 
+								<button class=' button action' type='button' value='no-value' onclick='e107Helper.toggle(\"banner-repo\")'><span>".BNRLAN_32."</span></button> 
 							</div>
 							<div class='e-hideme' id='banner-repo'>
 	";
