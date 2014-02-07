@@ -252,7 +252,7 @@ $fVars->SEARCH = "
 	<form method='get' class='form-inline input-append' action='".e_BASE."search.php'>
 	<p>
 	<input class='tbox' type='text' name='q' size='20' value='' maxlength='50' />
-	<button class='btn button' type='submit' name='s' >".LAN_SEARCH."</button>
+	<button class='btn btn-default button' type='submit' name='s' >".LAN_SEARCH."</button>
 	<input type='hidden' name='r' value='0' />
 	<input type='hidden' name='ref' value='forum' />	
 	</p>
@@ -663,7 +663,7 @@ function forumjump()
 	{
 		$text .= "\n<option value='".$key."'>".$val."</option>";
 	}
-	$text .= "</select> <input class='btn button' type='submit' name='fjsubmit' value='".LAN_GO."' /></form>";
+	$text .= "</select> <input class='btn btn-default button' type='submit' name='fjsubmit' value='".LAN_GO."' /></form>";
 	return $text;
 }
 

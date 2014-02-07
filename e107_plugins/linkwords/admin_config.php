@@ -297,8 +297,8 @@ if (($action == 'words') || ($action == 'edit'))
 			<td>
 				<form action='".e_SELF."' method='post' id='myform_{$row['linkword_id']}'  onsubmit=\"return jsconfirm('".LWLAN_18." [ID: {$row['linkword_id']} ]')\">
 				<div>
-					<input class='btn button' type='button' onclick=\"document.location='".e_SELF."?edit.{$row['linkword_id']}'\" value='".LAN_EDIT."' id='edit_{$row['linkword_id']}' name='edit_linkword_id' />
-					<input class='btn button' type='submit' value='".LAN_DELETE."' id='delete_{$row['linkword_id']}' name='delete_{$row['linkword_id']}' />
+					<input class='btn btn-default button' type='button' onclick=\"document.location='".e_SELF."?edit.{$row['linkword_id']}'\" value='".LAN_EDIT."' id='edit_{$row['linkword_id']}' name='edit_linkword_id' />
+					<input class='btn btn-default button' type='submit' value='".LAN_DELETE."' id='delete_{$row['linkword_id']}' name='delete_{$row['linkword_id']}' />
 				</div>
 				</form>\n
 			</td>

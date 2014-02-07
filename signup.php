@@ -174,7 +174,7 @@ if((e_QUERY == 'resend') && !USER && ($pref['user_reg_veri'] == 1))
 
 		$text .="<tr style='vertical-align:top'>
 		<td colspan='2' style='text-align:center' class='forumheader'>";
-		$text .= "<input class='btn button' type='submit' name='submit_resend' value=\"".LAN_SIGNUP_47."\" />";  // resend activation email.
+		$text .= "<input class='btn btn-default button' type='submit' name='submit_resend' value=\"".LAN_SIGNUP_47."\" />";  // resend activation email.
 		$text .= "</td>
 		</tr>
 		</table>

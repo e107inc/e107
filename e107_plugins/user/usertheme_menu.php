@@ -43,7 +43,7 @@ if ((USER == TRUE) && check_class(varset($pref['allow_theme_select'],FALSE)))
  
 		while ($row = $sql->fetch()) 
 		{
-            $up = (substr($row['user_prefs'],0,5) == "array") ? $eArrayStorage->ReadArray($row['user_prefs']) : unserialize($row['user_prefs']);
+            $up = (substr($row['user_prefs'],0,5) == "array") ? e107::unserialize($row['user_prefs']) : unserialize($row['user_prefs']);
 
 			if (isset($themecount[$up['sitetheme']])) { $themecount[$up['sitetheme']]++; }
 		}
@@ -68,7 +68,7 @@ if ((USER == TRUE) && check_class(varset($pref['allow_theme_select'],FALSE)))
 		}
 		$text .= "</select>
 			<br /><br />
-			<input class='btn button' type='submit' name='settheme' value='".LAN_UMENU_THEME_1."' />
+			<input class='btn btn-default button' type='submit' name='settheme' value='".LAN_UMENU_THEME_1."' />
 			</div></form>";
 
 		$ns->tablerender(LAN_UMENU_THEME_2, $text, 'usertheme');

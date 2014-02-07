@@ -50,7 +50,7 @@ if (isset($custom_query[1]) && $custom_query[1] != '')
 } 
 else 
 {
-	$search_button = "<input class='btn button search' type='submit' name='s' value='".LAN_180."' />";
+	$search_button = "<input class='btn btn-default button search' type='submit' name='s' value='".LAN_180."' />";
 }
 
 if (isset($custom_query[5]) && $custom_query[5]) {

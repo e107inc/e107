@@ -201,7 +201,7 @@ class pm_shortcodes extends e_shortcode
 			<input class='tbox' type='file' name='file_userfile[]' size='40' />
 			</span>
 			</div>
-			<input type='button' class='btn button' value='".LAN_PM_11."' onclick=\"duplicateHTML('upline','up_container');\"  />
+			<input type='button' class='btn btn-default button' value='".LAN_PM_11."' onclick=\"duplicateHTML('upline','up_container');\"  />
 			";
 			return $ret;
 		}
@@ -481,7 +481,7 @@ class pm_shortcodes extends e_shortcode
 			// pm_id is mapped insisde the config to id key
 			$ret = "
 			<form method='post' action='".$this->url('reply', $this->var)."'>
-			<input type='checkbox' name='quote' /> ".LAN_PM_54." &nbsp;&nbsp;&nbsp<input class='btn button' type='submit' name='reply' value='".LAN_PM_55."' />
+			<input type='checkbox' name='quote' /> ".LAN_PM_54." &nbsp;&nbsp;&nbsp<input class='btn btn-default button' type='submit' name='reply' value='".LAN_PM_55."' />
 			</form>
 			";
 			return $ret;
@@ -570,7 +570,7 @@ class pm_shortcodes extends e_shortcode
 
 	public function sc_pm_delete_blocked_selected()
 	{
-		return "<input type='submit' name='pm_delete_blocked_selected' class='btn button' value='".LAN_PM_53."' />";
+		return "<input type='submit' name='pm_delete_blocked_selected' class='btn btn-default button' value='".LAN_PM_53."' />";
 	}
 	
 	/**

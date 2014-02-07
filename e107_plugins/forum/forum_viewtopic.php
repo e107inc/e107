@@ -388,7 +388,7 @@ if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread
 		</div>
 		</form>";
 				
-		// Preview should be reserved for the full 'Post reply' page. <input type='submit' name='fpreview' value='" . Preview . "' class='btn button' /> &nbsp;
+		// Preview should be reserved for the full 'Post reply' page. <input type='submit' name='fpreview' value='" . Preview . "' /> &nbsp;
 	}
 	else
 	{
@@ -484,7 +484,7 @@ function forumjump()
 	{
 		$text .= "\n<option value='" . $key . "'>" . $val . "</option>";
 	}
-	$text .= "</select> <input class='btn button' type='submit' name='fjsubmit' value='" . LAN_GO . "' /></p></form>";
+	$text .= "</select> <input class='btn btn-default button' type='submit' name='fjsubmit' value='" . LAN_GO . "' /></p></form>";
 	return $text;
 }
 
@@ -757,7 +757,7 @@ class e107ForumThread
 						<td style='text-align:center;'><textarea cols='40' rows='10' class='tbox' name='report_add'></textarea></td>
 					</tr>
 					<tr>
-						<td colspan='2' style='text-align:center;'><br /><input class='btn button' type='submit' name='report_thread' value='".LAN_FORUM_2029."' /></td>
+						<td colspan='2' style='text-align:center;'><br /><input class='btn btn-default button' type='submit' name='report_thread' value='".LAN_FORUM_2029."' /></td>
 					</tr>
 					</table>";
 					return e107::getRender()->tablerender(LAN_FORUM_2023, $text, array('forum_viewtopic', 'report2'), true);

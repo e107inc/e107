@@ -97,7 +97,7 @@ class admin_shortcodes
 		if (!ADMIN) { return ''; }
 		return "
 		<div style='text-align: center'>
-		<input class='btn button' type='button' onclick=\"javascript: window.open('".e_ADMIN_ABS."credits.php', 'myWindow', 'status = 1, height = 400, width = 300, resizable = 0')\" value='".LAN_CREDITS."' />
+		<input class='btn btn-default button' type='button' onclick=\"javascript: window.open('".e_ADMIN_ABS."credits.php', 'myWindow', 'status = 1, height = 400, width = 300, resizable = 0')\" value='".LAN_CREDITS."' />
 		</div>";
 	}
 
@@ -310,7 +310,7 @@ class admin_shortcodes
 		{
 			$text .= $sql->mySQLlanguage;
 			$text .= " (".$slng->convert($sql->mySQLlanguage).")
-			: <span class='btn button' style='cursor: pointer;' onclick='expandit(\"lan_tables\");'><a style='text-decoration:none' title='' href=\"javascript:void(0);\" >&nbsp;&nbsp;".count($aff)." ".UTHEME_MENU_L3."&nbsp;&nbsp;</a></span><br />
+			: <span class='btn btn-default button' style='cursor: pointer;' onclick='expandit(\"lan_tables\");'><a style='text-decoration:none' title='' href=\"javascript:void(0);\" >&nbsp;&nbsp;".count($aff)." ".UTHEME_MENU_L3."&nbsp;&nbsp;</a></span><br />
 			<span style='display:none' id='lan_tables'>
 			";
 			$text .= implode('<br />', $aff);

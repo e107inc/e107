@@ -99,14 +99,14 @@ class plugin_forum_post_shortcodes extends e_shortcode
 	function sc_buttons()
 	{
 		global $action, $eaction;
-		$ret = "<input class='btn button' type='submit' name='fpreview' value='".LAN_FORUM_3005."' /> ";
+		$ret = "<input class='btn btn-default button' type='submit' name='fpreview' value='".LAN_FORUM_3005."' /> ";
 		if ($action != 'nt')
 		{
 			$ret .= ($eaction ? "<input class='btn btn-primary button' type='submit' name='update_reply' value='".LAN_FORUM_3024."' />" : "<input class='btn btn-primary button' type='submit' name='reply' value='".LAN_FORUM_2006."' />");
 		}
 		else
 		{
-			$ret .= ($eaction ? "<input class='btn button btn-primary' type='submit' name='update_thread' value='".LAN_FORUM_3023."' />" : "<input class='btn btn-primary button' type='submit' name='newthread' value='".LAN_FORUM_2005."' />");
+			$ret .= ($eaction ? "<input class='btn btn-primary button' type='submit' name='update_thread' value='".LAN_FORUM_3023."' />" : "<input class='btn btn-primary button' type='submit' name='newthread' value='".LAN_FORUM_2005."' />");
 		}
 		return $ret;
 	}
@@ -154,7 +154,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 					<input class='tbox e-tip' title=\"".$tooltip."\" name='file_userfile[]' type='file' size='47' />
 				</span>
 				</div>
-				<input class='btn button' type='button' name='addoption' value=".LAN_FORUM_3020." onclick=\"duplicateHTML('fiupopt','fiupsection')\" />
+				<input class='btn btn-default button' type='button' name='addoption' value=".LAN_FORUM_3020." onclick=\"duplicateHTML('fiupopt','fiupsection')\" />
 			</div>
 		
 		";	
