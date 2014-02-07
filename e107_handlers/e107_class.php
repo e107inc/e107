@@ -2288,6 +2288,11 @@ class e107
 			
 			self::getMessage()->addDebug("Couldn't load language file: ".$path);
 			$path = str_replace(e_LANGUAGE, 'English', $path);
+			
+			if(!is_readable($path))
+			{
+				return;
+			}
 		}
 				
 		$ret = ($force) ? include($path) : include_once($path);
