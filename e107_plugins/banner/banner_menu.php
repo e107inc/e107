@@ -30,7 +30,7 @@ To define your own banner to use here ...
 3. Save file
 */
 
-//include_lan(e_PLUGIN.'banner/languages/'.e_LANGUAGE.'_menu_banner.php');
+//inclXXXude_lan(e_PLUGIN.'banner/languages/'.e_LANGUAGE.'_menu_banner.php');
 
 if(file_exists(THEME.'banner_template.php'))
 {

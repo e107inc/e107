@@ -35,7 +35,8 @@ if (!plugInstalled('chatbox_menu'))
 	return '';
 }
 
-include_lan(e_PLUGIN.'chatbox_menu/languages/'.e_LANGUAGE.'/'.e_LANGUAGE.'.php');
+
+e107::lan('chatbox_menu',e_LANGUAGE);
 
 // FIXME - start - LAN is not loaded
 /*
@@ -47,7 +48,7 @@ if(($pref['cb_layer']==2) || isset($_POST['chatbox_ajax']))
 
 		//Normally the menu.sc file will auto-load the language file, this is needed in case
 		//ajax is turned on and the menu is not loaded from the menu.sc
-		include_lan(e_PLUGIN.'chatbox_menu/languages/'.e_LANGUAGE.'/'.e_LANGUAGE.'.php');
+		inclXXXude_lan(e_PLUGIN.'chatbox_menu/languages/'.e_LANGUAGE.'/'.e_LANGUAGE.'.php');
 	}
 }
 // FIXME - end
@@ -58,12 +59,9 @@ if(($pref['cb_layer']==2) || isset($_POST['chatbox_ajax']))
 
 $emessage='';
 
-
-
-
-
-
-// FIX - using generic sc names is affecting old installs/templates and global wrappers (e.g. sc_style[USERNAME])
+/**
+ * Chatbox Menu Shortcodes. 
+ */
 if(!class_exists('chatbox_shortcodes'))
 {
 	class chatbox_shortcodes extends e_shortcode
@@ -135,18 +133,6 @@ if(!class_exists('chatbox_shortcodes'))
 	
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

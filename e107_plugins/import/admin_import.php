@@ -40,9 +40,8 @@ require_once("../../class2.php");
 $frm = e107::getForm();
 $mes = e107::getMessage();
 
-include_lan(e_PLUGIN.'import/languages/'.e_LANGUAGE.'_admin_import.php');
 
-
+//e107::lan('import',e_LANGUAGE.'_admin_import.php');
 
 //XXX A Fresh Start 
 class import_admin extends e_admin_dispatcher

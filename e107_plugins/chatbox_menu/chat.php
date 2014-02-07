@@ -15,7 +15,7 @@ if (!plugInstalled('chatbox_menu'))
 	exit;
 }
 
-include_lan(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php");
+e107::lan('chatbox_menu',e_LANGUAGE);
 
 require_once(HEADERF);
 $mes = e107::getMessage();
