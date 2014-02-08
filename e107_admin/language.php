@@ -67,6 +67,8 @@ if (isset($_POST['submit_prefs']) && isset($_POST['mainsitelanguage']) && getper
 	
 	e107::getConfig()->setPref($temp)->save(true);
 	
+	e107::getSession()->clear('e_language');
+	
 //	if ($admin_log->logArrayDiffs($temp, $pref, 'LANG_01'))
 	{
 		

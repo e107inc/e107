@@ -535,7 +535,8 @@ class language{
 			}
 			else
 			{
-				$user_language = (e_ADMIN_AREA && vartrue($pref['adminlanguage'])) ? $pref['adminlanguage'] : $pref['sitelanguage'];	
+								
+				$user_language = $pref['sitelanguage'];	
 				
 				if($session->is('e_language'))
 				{
