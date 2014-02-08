@@ -480,7 +480,7 @@ $DOWNLOAD_TEMPLATE['view']['item'] = "
 		      </tr>
 		      <tr>
    		      <td>{DOWNLOAD_VIEW_LINK_LAN}</td>
-	   	      <td>{DOWNLOAD_VIEW_LINK}</td>
+	   	      <td>{DOWNLOAD_VIEW_LINK: size=2x}</td>
 		      </tr>
 		      <tr>
 		         <td>{DOWNLOAD_VIEW_RATING_LAN}</td>
@@ -493,7 +493,7 @@ $DOWNLOAD_TEMPLATE['view']['item'] = "
 
 $DOWNLOAD_TEMPLATE['view']['end'] = "";
 
-
+/*
 $DOWNLOAD_TEMPLATE['view']['nextprev'] = "
 <div style='text-align:center'>
 	<table style='".USER_WIDTH."'>
@@ -504,17 +504,21 @@ $DOWNLOAD_TEMPLATE['view']['nextprev'] = "
 	</tr>
 	</table>
 </div>\n";
+*/
 
 $DOWNLOAD_TEMPLATE['view']['nextprev'] = '
-    <ul class="pager">
+    <ul class="pager download-view-nextprev">
     <li class="previous">
-    {DOWNLOAD_VIEW_PREV}
+    	{DOWNLOAD_VIEW_PREV}
+    </li>
+	<li>
+    	{DOWNLOAD_BACK_TO_LIST}
     </li>
     <li class="next">
-    {DOWNLOAD_VIEW_NEXT}
+    	{DOWNLOAD_VIEW_NEXT}
     </li>
     </ul>
-    <div class="text-center">{DOWNLOAD_BACK_TO_LIST}</div>
+
 ';
 
 // ##### ------------------------------------------------------------------------------------------
