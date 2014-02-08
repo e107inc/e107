@@ -32,7 +32,7 @@ class gallery_shortcodes extends e_shortcode
 	function sc_gallery_caption($parm='')
 	{
 		$tp = e107::getParser();
-		$text = "<a class='gallery-caption' title='".$tp->toAttribute($this->var['media_caption'])."' href='".$tp->thumbUrl($this->var['media_url'], $this->attFull)."' rel='lightbox.Gallery2' >";
+		$text = "<a class='gallery-caption' title='".$tp->toAttribute($this->var['media_caption'])."' href='".$tp->thumbUrl($this->var['media_url'], $this->attFull)."' rel='prettyPhoto[slide]' >";     // Erase  rel"lightbox.Gallery2"  - Write "prettyPhoto[slide]"
 		$text .= $this->var['media_caption'];
 		$text .= "</a>";
 		return $text;
