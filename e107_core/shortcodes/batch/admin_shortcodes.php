@@ -1661,10 +1661,17 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		{
 			$slng = e107::getLanguage();
 			$languages = $slng->installed();//array('English','French');
+			$multiDoms = array();
 			
-			$langSubs = explode("\n", e107::getPref('multilanguage_subdomain'));
-			
-		//	print_a($langSubs);
+			if($langSubs = explode("\n", e107::getPref('multilanguage_subdomain')))
+			{
+				
+				foreach($langSubs as $v)
+				{
+					$multiDoms[] = trim($v);	
+				}
+				
+			}
 			
 			if(count($languages) > 1)
 			{
@@ -1679,7 +1686,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 						$checked = $tp->toGlyph('ok')." ";
 						$link = '#';
 					}
-					elseif(!empty($langSubs) && in_array(e_DOMAIN,$langSubs))
+					elseif(in_array(e_DOMAIN,$multiDoms))
 					{
 						$code = ($lng == e107::getPref('sitelanguage')) ? 'www' : $code;
 						$link = str_replace($_SERVER['HTTP_HOST'], $code.'.'.e_DOMAIN, e_REQUEST_URL); // includes query string

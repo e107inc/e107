@@ -2294,6 +2294,13 @@ class e107
 				return;
 			}
 		}
+		
+		$adminLanguage = self::getPref('adminlanguage');
+		
+		if(e_ADMIN_AREA && vartrue($adminLanguage))
+		{
+			$path = str_replace(e_LANGUAGE, $adminLanguage, $path);	
+		}
 				
 		$ret = ($force) ? include($path) : include_once($path);
 		return (isset($ret)) ? $ret : "";
@@ -2546,11 +2553,13 @@ class e107
 				break;
 			case 'admin' :
 				
-				$searchPath[1] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'_admin_'.$unitName.'.php'; 
-				$searchPath[2] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'/'.'admin_'.$unitName.'.php'; 
-				$searchPath[3] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'/admin/'.e_LANGUAGE.'.php';
-				$searchPath[4] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'/'.e_LANGUAGE.'_admin.php'; // Preferred. 
-				$searchPath[5] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'_admin.php'; // consistent with English_global.php, English_log.php etc. 
+				$adminLan = vartrue(self::getPref('adminlanguage'), e_LANGUAGE);
+						
+				$searchPath[1] = e_PLUGIN.$unitName.'/languages/'.$adminLan.'_admin_'.$unitName.'.php'; 
+				$searchPath[2] = e_PLUGIN.$unitName.'/languages/'.$adminLan.'/'.'admin_'.$unitName.'.php'; 
+				$searchPath[3] = e_PLUGIN.$unitName.'/languages/'.$adminLan.'/admin/'.$adminLan.'.php';
+				$searchPath[4] = e_PLUGIN.$unitName.'/languages/'.$adminLan.'/'.$adminLan.'_admin.php'; // Preferred. 
+				$searchPath[5] = e_PLUGIN.$unitName.'/languages/'.$adminLan.'_admin.php'; // consistent with English_global.php, English_log.php etc. 
 				
 				break;
 			case 'theme' :
