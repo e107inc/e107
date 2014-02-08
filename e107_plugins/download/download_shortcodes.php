@@ -316,12 +316,12 @@ class download_shortcodes extends e_shortcode
    {
 	  $tp = e107::getParser();
 	  
-      $img = ($this->var['download_thumb']) ? "<img class='download-thumb' src='".$tp->replaceConstants($this->var['download_thumb'])."' alt='*'  />" : "";
+      $img = ($this->var['download_thumb']) ? "<img class='download-thumb img-responsive' src='".$tp->thumbUrl($this->var['download_thumb'])."' alt=\"".$this->var['download_name']."\"  />" : "";
       
       if ($parm == "link" && $this->var['download_thumb'])
       {
       	$url = e107::getUrl()->create('download/view/item',array('id'=>$this->var['download_id'], 'name'=>$this->var['download_sef']));	
-		return "<a href='".$url."'>".$img."</a>";	
+		return "<a  href='".$url."'>".$img."</a>";	
       //	return "<a href='".e_PLUGIN_ABS."download/download.php?action=view&id=".$this->var['download_id']."'>".$img."</a>";
       }
       else
@@ -387,7 +387,7 @@ class download_shortcodes extends e_shortcode
    function sc_download_list_imagefull($parm='')
    {
 	
-		$img = ($this->var['download_image']) ? "<img class='download-image dl_image img-responsive' src='".e107::getParser()->replaceConstants($this->var['download_image'])."' alt=''  />" : "";
+		$img = ($this->var['download_image']) ? "<img class='download-image dl_image img-responsive' src='".e107::getParser()->thumbUrl($this->var['download_image'])."'  alt=\"".$this->var['download_name']."\"   />" : "";
 		
 		if($parm == "link" && $this->var['download_image'])
 		{
@@ -434,7 +434,11 @@ class download_shortcodes extends e_shortcode
    
    function sc_download_admin_edit()
    {
-      return (ADMIN && getperms('6')) ? "<a href='".e_ADMIN."download.php?create.edit.".$this->var['download_id']."' title='edit'><img src='".e_IMAGE."generic/lite/edit.png' alt='*' style='padding:0px;border:0px' /></a>" : "";
+   		$icon = (deftrue('BOOTSTRAP')) ? e107::getParser()->toGlyph('edit') : "<img src='".e_IMAGE_ABS."generic/edit.png' alt='*' style='padding:0px;border:0px' />";
+	
+		$url = e_PLUGIN_ABS."download/admin_download.php?action=edit&id=".$this->var['download_id'];
+	
+		return (ADMIN && getperms('6')) ? "<a class='pull-right e-tip' href='".$url."' title='edit'>".$icon."</a>" : "";
    }
    
    function sc_download_category()
@@ -554,7 +558,7 @@ class download_shortcodes extends e_shortcode
 	  
       if ($this->var['download_thumb']) 
       {
-      	return ($this->var['download_image'] ? "<a href='".e_PLUGIN_ABS."download/request.php?download.".$this->var['download_id']."'><img class='download-image dl_image img-responsive' src='".$tp->replaceConstants($this->var['download_thumb'])."' alt='*'  /></a>" : "<img class='download-image dl_image' src='".$tp->replaceConstants($this->var['download_thumb'])."' alt='*'  />");
+      	return ($this->var['download_image'] ? "<a href='".e_PLUGIN_ABS."download/request.php?download.".$this->var['download_id']."'><img class='download-image dl_image img-responsive' src='".$tp->thumbUrl($this->var['download_thumb'])."' alt='*'  /></a>" : "<img class='download-image dl_image img-responsive' src='".$tp->thumbUrl($this->var['download_thumb'])."' alt='*'  />");
       }
       elseif ($this->var['download_image'])
 	  {
@@ -565,14 +569,20 @@ class download_shortcodes extends e_shortcode
       	return LAN_dl_75;
       }
    }
-   
-   function sc_download_view_imagefull()
+
+   /**
+    * {DOWNLOAD_VIEW_LINK: class=thumbnail}
+    */   
+   function sc_download_view_imagefull($parm)
    {
 	  $tp = e107::getParser();
-      return ($this->var['download_image']) ? "<img class='download-image dl_image img-responsive' src='".$tp->replaceConstants($this->var['download_image'])."' alt='*'  />" : "";
+      return ($this->var['download_image']) ? "<img class='download-image dl_image download-view-image img-responsive ".vartrue($parm['class'])."' src='".$tp->thumbUrl($this->var['download_image'])."' alt='*'  />" : "";
    }
    
-	function sc_download_view_link()
+   /**
+    * {DOWNLOAD_VIEW_LINK: size=2x}
+    */
+	function sc_download_view_link($parm)
 	{
    		$tp = e107::getParser();
 		$pref = e107::getPref();
@@ -583,7 +593,7 @@ class download_shortcodes extends e_shortcode
       
 		if(deftrue('BOOTSTRAP'))
 		{
-			$img = e107::getParser()->toGlyph('icon-download.glyph',false); // '<i class="icon-download"></i>'; 
+			$img = e107::getParser()->toGlyph('download',$parm); // '<i class="icon-download"></i>'; 
 		}	
 		
 		if ($pref['agree_flag'] == 1) 
@@ -592,6 +602,12 @@ class download_shortcodes extends e_shortcode
 		}
 		
 		$url = e107::getUrl()->create('download/request/item',array('id'=>$this->var['download_id'], 'name'=>$this->var['download_sef']));	
+     	
+     	if(varset($parm['type']) == 'href')
+		{
+			return $url;	
+		}
+     	
      	$dnld_link = "<a href='".$url."'{$click}>";
      	
 		if ($this->var['download_mirror'])
@@ -804,10 +820,14 @@ class download_shortcodes extends e_shortcode
    
    
       //  -----------  Download View : Previous and Next  ---------------
-      
-   function sc_download_view_prev()
+   
+   	/**
+	 * {DOWNLOAD_VIEW_PREV: x=y}
+	 */   
+   function sc_download_view_prev($parm='')
    {
 		$sql = e107::getDb();
+	  	$tp = e107::getParser();
 	  
       	$dlrow_id = intval($this->var['download_id']);
 		
@@ -817,7 +837,9 @@ class download_shortcodes extends e_shortcode
 			
 			$url = e107::getUrl()->create('download/view/item',array('id'=>$dlrowrow['download_id'], 'name'=>$dlrowrow['download_sef']));
 	    	
-	    	return "<a href='".$url ."'>&lt;&lt; ".LAN_dl_33." [".$dlrowrow['download_name']."]</a>\n";
+			$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('chevron-left') : '&lt;&lt;';
+			
+	    	return "<a class='e-tip' href='".$url ."' title=\"".$dlrowrow['download_name']."\">".$icon." ".LAN_dl_33."</a>\n";
    		
       	//	return "<a href='".e_PLUGIN_ABS."download/download.php?action=view&id=".$dlrowrow['download_id']."'>&lt;&lt; ".LAN_dl_33." [".$dlrowrow['download_name']."]</a>\n";
       	}
@@ -827,9 +849,13 @@ class download_shortcodes extends e_shortcode
       	}
    }
    
-	function sc_download_view_next()
+   	/**
+	 * {DOWNLOAD_VIEW_NEXT: x=y}
+	 */
+	function sc_download_view_next($parm='')
 	{
 		$sql = e107::getDb();
+		$tp = e107::getParser();
 		$dlrow_id = intval($this->var['download_id']);
 	  
 		if ($sql->select("download", "*", "download_category='".intval($this->var['download_category_id'])."' AND download_id > {$dlrow_id} AND download_active > 0 && download_visible IN (".USERCLASS_LIST.") ORDER BY download_datestamp ASC LIMIT 1")) 
@@ -838,7 +864,9 @@ class download_shortcodes extends e_shortcode
 			extract($dlrowrow);
 			$url = e107::getUrl()->create('download/view/item', array('id'=>$dlrowrow['download_id'], 'name'=>$dlrowrow['download_sef'])); 
 
-			return "<a href='".$url."'>[".$dlrowrow['download_name']."] ".LAN_dl_34." &gt;&gt;</a>\n";
+			$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('chevron-right') : '&gt;&gt;';
+
+			return "<a class='e-tip' href='".$url."' title=\"".$dlrowrow['download_name']."\">".LAN_dl_34." ".$icon."</a>\n";
    		 
       //		return "<a href='".e_PLUGIN_ABS."download/download.php?action=view&id=".$dlrowrow['download_id']."'>[".$dlrowrow['download_name']."] ".LAN_dl_34." &gt;&gt;</a>\n";
       	}
@@ -848,9 +876,18 @@ class download_shortcodes extends e_shortcode
       	}
 	}
    
-   function sc_download_back_to_list()
+   	/**
+	 * {DOWNLOAD_BACK_TO_LIST: x=y}
+	 */
+   function sc_download_back_to_list($parm)
    {
-      return "<a class='btn btn-default' href='".e_PLUGIN_ABS."download/download.php?action=list&id=".$this->var['download_category']."'>".LAN_dl_35."</a>";
+   		$url = e107::getUrl()->create('download/list/category', array('id'=>$this->var['download_category_id'],'name'=>$this->var['download_category_sef']));
+		// e_PLUGIN_ABS."download/download.php?action=list&id=".$this->var['download_category']
+		
+		$title = "Back to [x]";
+		
+		
+		return "<a class='e-tip' title=\"".e107::getParser()->lanVars($title,array('x'=>$this->var['download_category_name']))."\" href='".$url."'>".LAN_BACK."</a>";
    }
    
    function sc_download_back_to_category_list()

@@ -11,7 +11,10 @@ e107::lan('download','download');
 $log = e107::getAdminLog(); 
 $id = FALSE;
 
-if (!is_numeric(e_QUERY)) 
+
+
+
+if (!is_numeric(e_QUERY) && empty($_GET['id'])) 
 {
 	if ($sql->select('download', 'download_id', "download_url='".$tp->toDB(e_QUERY)."'")) 
 	{
@@ -89,6 +92,14 @@ else
 	$id = intval($tmp[1]);
 	$type = "image";
 }
+
+if(vartrue($_GET['id'])) // SEF URL 
+{
+	$id = intval($_GET['id']);	
+	$type = 'file';
+}
+
+
 
 
 if (preg_match("#.*\.[a-z,A-Z]{3,4}#", e_QUERY)) 

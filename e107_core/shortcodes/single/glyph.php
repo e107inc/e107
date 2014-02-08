@@ -3,6 +3,16 @@
 
 function glyph_shortcode($parm = '')
 {
-	$file = "icon-".$parm.".glyph";
-	return e107::getParser()->toGlyph($file,false);
+	if(!is_array($parm))
+	{
+		$file = $parm;
+		$parm = null;
+	}
+	else
+	{
+		$file = vartrue($parm['type']);
+		unset($parm['type']);	
+	}
+	
+	return e107::getParser()->toGlyph($file,$parm);
 }
