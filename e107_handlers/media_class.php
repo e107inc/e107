@@ -247,6 +247,48 @@ class e_media
 		return e107::getDb()->db_Insert('core_media_cat', $data);
 	}
 	
+
+
+	
+	/**
+	 * Create a user Media-Category. 
+	 * @param $type string image | file | video
+	 * @param $userId int - leave empty for currently logged in user. 
+	 * @param $userName string - leave blank for currently logged in user
+	 * @param $parms (optional) - for future use. 
+	 */
+	public function createUserCategory($type='image', $userId = USERID, $userName = USERNAME, $parms=null)
+	{
+		
+		if($type !='image' && $type='file' && $type !='video')
+		{
+			return false;
+		}
+				
+		$cat = 'user_'.$type.'_'.intval($userId);
+		
+		if(!e107::getDb()->gen('SELECT media_cat_id FROM #core_media_cat WHERE media_cat_category = "'.$cat.'" LIMIT 1'))
+		{
+			$insert = array(
+				'owner' => 'user',
+				'category'	=> $cat,
+				'title'	=> $userName,
+				'sef'	=> 'media-'.eHelper::title2sef($userName),
+				'diz'	=> '',
+				'class'	=> '',
+				'image'	=> '',
+				'order'	=> ''
+			);
+
+			return $this->createCategory($insert);
+		}
+		
+		return false;
+
+	}
+	
+	
+	
 	/**
 	 * Create multiple media categories in once
 	 * @param array $data
