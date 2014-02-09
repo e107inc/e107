@@ -138,7 +138,8 @@ class page_chapters_ui extends e_admin_ui
 			'chapter_sef' 				=> array('title'=> "SEF Url String",		'type' => 'text',			'width' => 'auto', 'readonly'=>FALSE, 'inline'=>true, 'writeParms'=>'size=xxlarge&inline-empty=1'), // Display name
 			'chapter_manager' 			=> array('title'=> "Can be edited by",		'type' => 'userclass',		'inline'=>true, 'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
 			'chapter_order' 			=> array('title'=> LAN_ORDER,				'type' => 'text',			'width' => 'auto', 'thclass' => 'right', 'class'=> 'right' ),										
-			
+			'chapter_visibility' 		=> array('title'=> LAN_VISIBILITY,			'type' => 'userclass',		'inline'=>true, 'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
+		
 			'options' 					=> array('title'=> LAN_OPTIONS,				'type' => 'method',			'width' => '10%', 'forced'=>TRUE, 'thclass' => 'left last', 'class' => 'left', 'readParms'=>'sort=1')
 		
 		);

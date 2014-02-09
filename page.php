@@ -218,7 +218,7 @@ class pageClass
 		$text = "";
 		
 		
-		if(e107::getPref('listBooks',false) && $sql->select("page_chapters", "*", "chapter_parent ='0' ORDER BY chapter_order ASC "))
+		if(e107::getPref('listBooks',false) && $sql->select("page_chapters", "*", "chapter_parent ='0' AND chapter_visibility IN (".USERCLASS_LIST.") ORDER BY chapter_order ASC "))
 		{
 			$layout 	= e107::getPref('listBooksTemplate','default'); 		
 			$tml 		= e107::getCoreTemplate('chapter','', true, true); // always merge	
@@ -282,7 +282,7 @@ class pageClass
 		$frm = e107::getForm();
 		
 		// retrieve the template to use for this book 
-		if(!$layout = $sql->retrieve('page_chapters','chapter_template','chapter_id = '.intval($book).' LIMIT 1'))
+		if(!$layout = $sql->retrieve('page_chapters','chapter_template','chapter_id = '.intval($book).' AND chapter_visibility IN ('.USERCLASS_LIST.') LIMIT 1'))
 		{
 			$layout = 'default';
 		}
@@ -293,7 +293,7 @@ class pageClass
 		
 		$template = $tmpl['listChapters'];
 		
-		if($sql->select("page_chapters", "*", "chapter_parent = ".intval($book)."  ORDER BY chapter_order ASC "))
+		if($sql->select("page_chapters", "*", "chapter_parent = ".intval($book)."  AND chapter_visibility IN (".USERCLASS_LIST.") ORDER BY chapter_order ASC "))
 		{
 			$text .= $template['start']; 
 			
