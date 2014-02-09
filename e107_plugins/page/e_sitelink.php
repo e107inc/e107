@@ -92,7 +92,7 @@ class page_sitelink // include plugin-folder in the name.
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		
-		if($sql->select("page_chapters", "*", "chapter_parent = ".intval($book)."  ORDER BY chapter_order ASC "))
+		if($sql->select("page_chapters", "*", "chapter_parent = ".intval($book)." AND chapter_visibility IN (".USERCLASS_LIST.")  ORDER BY chapter_order ASC "))
 		{
 			$sublinks = array();
 			
@@ -209,13 +209,13 @@ class page_sitelink // include plugin-folder in the name.
 			);
 		}
 
-		$filter = 1;
+		$filter = "chapter_visibility IN (".USERCLASS_LIST.") " ;
 		
 		if(vartrue($options['chapter']))
 		{
 			//$filter = "chapter_id > ".intval($options['chapter']);
 			
-			$title = $sql->retrieve('page_chapters', 'chapter_name', 'chapter_id='.intval($options['chapter']));
+			$title = $sql->retrieve('page_chapters', 'chapter_name', 'chapter_id='.intval($options['chapter']).' AND chapter_visibility IN ('.USERCLASS_LIST.')' );
 			$outArray 	= array();
 			if(!$title) return e107::getNav()->compile($_pdata, $outArray, $options['chapter']);	
 			return array('title' => $title, 'body' => e107::getNav()->compile($_pdata, $outArray, $options['chapter']));
@@ -235,7 +235,7 @@ class page_sitelink // include plugin-folder in the name.
 		//	print_a('parent='.$parent);
 		}
 
-
+		
 		$books = $sql->retrieve("SELECT * FROM #page_chapters WHERE ".$filter." ORDER BY chapter_order ASC" , true);
 		foreach($books as $row)
 		{
