@@ -412,6 +412,7 @@ CREATE TABLE page_chapters (
   chapter_icon varchar(250) NOT NULL default '',
   chapter_order tinyint(3) unsigned NOT NULL default '0',
   chapter_template varchar(50) NOT NULL default '',
+  chapter_visibility tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (chapter_id),
   KEY chapter_order (chapter_order)
 ) ENGINE=MyISAM;
