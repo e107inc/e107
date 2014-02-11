@@ -72,7 +72,7 @@ class banner_shortcodes
 					
 					$src = ($row['banner_image'][0] == '{') ? $tp->replaceConstants($row['banner_image'],'full') : e_IMAGE_ABS.'banners/'.$row['banner_image'];
 					
-					$ban_ret = "<img class='e-banner' src='".$src."' alt='".$row['banner_clickurl']."' style='border:0' />";
+					$ban_ret = "<img class='e-banner img-responsive' src='".$src."' alt='".$row['banner_clickurl']."' style='border:0' />";
 					break;
 			}
 			return "<a href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external'>".$ban_ret.'</a>';
