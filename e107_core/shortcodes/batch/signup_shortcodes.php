@@ -184,7 +184,10 @@ class signup_shortcodes extends e_shortcode
 	//	$options['title'] = 'Password must contain at least 6 characters, including UPPER/lowercase and numbers';
 		$len = vartrue(e107::getPref('signup_pass_len'),6);
 		$options['title'] = str_replace("[x]",$len,LAN_SIGNUP_107); // Password must be at least 
-		$options['pattern'] = '(?=.*\d)(?=.*[a-z])(?=.*[A-Z])\w{'.$len.',}'; // at least one number, one lowercase and uppercase. 
+	//	$options['pattern'] = '(?=.*\d)(?=.*[a-z])(?=.*[A-Z])\w{'.$len.',}'; // at least one number, one lowercase and uppercase. 
+		$options['required'] = true;
+		$options['pattern'] = '(?=^.{'.$len.',}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$';
+		
 	//	$options['pattern'] = '\w{'.$len.',}'; // word of minimum length 
 		
 		return e107::getForm()->password('password1', '', 20, $options);
