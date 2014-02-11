@@ -31,16 +31,15 @@ class bbcode_shortcodes extends e_shortcode
 	{
 		$formats = array(
 			0 => array('[p][/p]','Paragraph'),
-			1 => array('[h=2][/h]','Heading 1'),
-			2 => array('[h=2][/h]','Heading 2'),
-			3 => array('[h=3][/h]','Heading 3'),
-			4 => array('[h=4][/h]','Heading 4'),
-			5 => array('[h=5][/h]','Heading 5'),
-			6 => array('[h=5][/h]','Heading 6'),
-			7 => array('[block][/block]','Block'),
-			8 => array('[blockquote][/blockquote]', 'Quote'),
-			9 => array('[code][/code]', 'Code Block'),
-			10 => array('[code=inline][/code]', 'Code Inline')
+			1 => array('[h=2][/h]','Heading 2'),
+			2 => array('[h=3][/h]','Heading 3'),
+			3 => array('[h=4][/h]','Heading 4'),
+			4 => array('[h=5][/h]','Heading 5'),
+			5 => array('[h=6][/h]','Heading 6'),
+			6 => array('[block][/block]','Block'),
+			7 => array('[blockquote][/blockquote]', 'Quote'),
+			8 => array('[code][/code]', 'Code Block'),
+			9 => array('[code=inline][/code]', 'Code Inline')
 		); 
 		
 		
