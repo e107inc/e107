@@ -1543,7 +1543,7 @@ function plugin_adminmenu()
 
 
 /**
- * Plugin Admin Generator by CaMer0n. //TODO Incorporate plugin.xml generation
+ * Plugin Admin Generator by CaMer0n. //TODO - Added dummy template and shortcode creation, plus e_search, e_cron, e_xxxxx etc. 
  */
 class pluginBuilder
 {
@@ -2665,8 +2665,17 @@ class ".$table." extends e_admin_ui
 		protected \$pluginName		= '".$vars['pluginName']."';
 		protected \$table			= '".$vars['table']."';
 		protected \$pid				= '".$vars['pid']."';
-		protected \$perPage 			= 10; 
-			
+		protected \$perPage			= 10; 
+		protected \$batchDelete		= true;
+	//	protected \$batchCopy		= true;		
+	//	protected \$sortField		= 'somefield_order';
+	//	protected \$orderStep		= 10;
+	//	protected \$tabs			= array('Tabl 1','Tab 2'); // Use 'tab'=>0  OR 'tab'=>1 in the \$fields below to enable. 
+		
+	//	protected \$listQry      	= \"SELECT * FROM #tableName WHERE field != '' \"; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
+	
+		protected \$listOrder		= '".$vars['pid']." DESC';
+	
 		protected \$fields 		= ".$FIELDS.";		
 		
 		protected \$fieldpref = array(".implode(", ",$FIELDPREF).");
