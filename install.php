@@ -998,7 +998,9 @@ class e_install
 		global $e_forms;
 		
 		$this->e107->e107_dirs['SYSTEM_DIRECTORY'] = str_replace("[hash]",$this->e107->site_path,$this->e107->e107_dirs['SYSTEM_DIRECTORY']);	
-		$this->e107->e107_dirs['CACHE_DIRECTORY'] = str_replace("[hash]",$this->e107->site_path,$this->e107->e107_dirs['CACHE_DIRECTORY']);
+		$this->e107->e107_dirs['CACHE_DIRECTORY']  = str_replace("[hash]",$this->e107->site_path,$this->e107->e107_dirs['CACHE_DIRECTORY']);
+		$this->e107->e107_dirs['SYSTEM_DIRECTORY'] = str_replace("/".$this->e107->site_path,"",$this->e107->e107_dirs['SYSTEM_DIRECTORY']);
+		$this->e107->e107_dirs['MEDIA_DIRECTORY']  = str_replace("/".$this->e107->site_path,"",$this->e107->e107_dirs['MEDIA_DIRECTORY']);
 
 		$this->stage = 7;
 		$this->logLine('Stage 7 started');
@@ -1045,59 +1047,6 @@ class e_install
 			return $this->stage_6();
 		}
 
-		// Data is okay - Continue.
-
-		// $this->previous_steps['prefs']['sitename'] 		= $_POST['sitename'];
-		// $this->previous_steps['prefs']['sitetheme'] 		= $_POST['sitetheme'];
-		// $this->previous_steps['generate_content'] 		= $_POST['generate_content'];
-
-		$this->template->SetTag("installation_heading", LANINS_001);
-		$this->template->SetTag("stage_pre", LANINS_002);
-		$this->template->SetTag("stage_num", LANINS_058);
-		$this->template->SetTag("stage_title", LANINS_055);
-		$this->template->SetTag("percent", 80);
-		$this->template->SetTag("bartype", 'warning');
-
-		$e_forms->start_form("confirmation", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
-		$page = '<div class="alert alert-success">'.nl2br(LANINS_057).'</div>';
-		$this->finish_form();
-		$e_forms->add_button("submit", LANINS_035);
-
-		$this->template->SetTag("stage_content", $page.$e_forms->return_form());
-		$this->logLine('Stage 7 completed');
-	}
-
-	/**
-	 *	Stage 8 - actually create database and set up the site
-	 *
-	 *	@return none
-	 */
-	private function stage_8()
-	{
-		global $e_forms;
-	
-		$system_dir = str_replace("/".$this->e107->site_path,"",$this->e107->e107_dirs['SYSTEM_DIRECTORY']);
-		$media_dir = str_replace("/".$this->e107->site_path,"",$this->e107->e107_dirs['MEDIA_DIRECTORY']);
-
-		// required for various core routines
-		if(!defined('USERNAME'))
-		{
-			define('USERNAME', $this->previous_steps['admin']['user']);
-			define('USEREMAIL', $this->previous_steps['admin']['email']);
-		}
-
-		$this->stage = 8;
-		$this->logLine('Stage 8 started');
-
-		$this->template->SetTag("installation_heading", LANINS_001);
-		$this->template->SetTag("stage_pre", LANINS_002);
-		$this->template->SetTag("stage_num", LANINS_120);
-		$this->template->SetTag("stage_title", LANINS_071);
-		$this->template->SetTag("percent", 100);
-		$this->template->SetTag("bartype", 'success');
-	
-		$htaccessError = $this->htaccess();
-
 		$config_file = "<?php
 /*
  * e107 website system
@@ -1125,22 +1074,79 @@ class e_install
 \$HANDLERS_DIRECTORY  = '{$this->e107->e107_dirs['HANDLERS_DIRECTORY']}';
 \$LANGUAGES_DIRECTORY = '{$this->e107->e107_dirs['LANGUAGES_DIRECTORY']}';
 \$HELP_DIRECTORY      = '{$this->e107->e107_dirs['HELP_DIRECTORY']}';
-\$MEDIA_DIRECTORY	 = '{$media_dir}';
-\$SYSTEM_DIRECTORY    = '{$system_dir}';
+\$MEDIA_DIRECTORY	  = '{$this->e107->e107_dirs['MEDIA_DIRECTORY']}';
+\$SYSTEM_DIRECTORY    = '{$this->e107->e107_dirs['SYSTEM_DIRECTORY']}';
 
 ";
 
-		$config_result = $this->write_config($config_file);
-		$e_forms->start_form("confirmation", "index.php");
+		$config_result = $this->write_config($config_file);		
+
 		if ($config_result)
 		{
 			$page = $config_result."<br />";
 			$this->logLine('Error writing config file: '.$config_result);
 			$alertType = 'warning';
+		} else {
+            $this->logLine('Config file written successfully');
 		}
-		else
+		 
+
+		// Data is okay - Continue.
+
+		// $this->previous_steps['prefs']['sitename'] 		= $_POST['sitename'];
+		// $this->previous_steps['prefs']['sitetheme'] 		= $_POST['sitetheme'];
+		// $this->previous_steps['generate_content'] 		= $_POST['generate_content'];
+
+		$this->template->SetTag("installation_heading", LANINS_001);
+		$this->template->SetTag("stage_pre", LANINS_002);
+		$this->template->SetTag("stage_num", LANINS_058);
+		$this->template->SetTag("stage_title", LANINS_055);
+		$this->template->SetTag("percent", 80);
+		$this->template->SetTag("bartype", 'warning');
+
+		$e_forms->start_form("confirmation", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
+		$page = '<div class="alert alert-success">'.nl2br(LANINS_057).'</div>';
+		$this->finish_form();
+		$e_forms->add_button("submit", LANINS_035);
+
+		$this->template->SetTag("stage_content", $page.$e_forms->return_form());
+		$this->logLine('Stage 7 completed');
+	 
+	}
+
+	/**
+	 *	Stage 8 - actually create database and set up the site
+	 *
+	 *	@return none
+	 */
+	private function stage_8()
+	{
+		global $e_forms;
+	
+		//$system_dir = str_replace("/".$this->e107->site_path,"",$this->e107->e107_dirs['SYSTEM_DIRECTORY']);
+		//$media_dir = str_replace("/".$this->e107->site_path,"",$this->e107->e107_dirs['MEDIA_DIRECTORY']);
+
+		// required for various core routines
+		if(!defined('USERNAME'))
 		{
-			$this->logLine('Config file written successfully');
+			define('USERNAME', $this->previous_steps['admin']['user']);
+			define('USEREMAIL', $this->previous_steps['admin']['email']);
+		}
+
+		$this->stage = 8;
+		$this->logLine('Stage 8 started');
+
+		$this->template->SetTag("installation_heading", LANINS_001);
+		$this->template->SetTag("stage_pre", LANINS_002);
+		$this->template->SetTag("stage_num", LANINS_120);
+		$this->template->SetTag("stage_title", LANINS_071);
+		$this->template->SetTag("percent", 100);
+		$this->template->SetTag("bartype", 'success');
+	
+		$htaccessError = $this->htaccess();
+
+		$e_forms->start_form("confirmation", "index.php");
+
 			$errors = $this->create_tables();
 			if ($errors == true)
 			{
@@ -1163,7 +1169,7 @@ class e_install
 				}	
 				$e_forms->add_button('submit', LANINS_035);
 			}
-		}
+		 
 		$this->finish_form();
 		$this->template->SetTag("stage_content", "<div class='alert alert-block alert-{$alertType}'>".$page."</div>".$e_forms->return_form());
 		$this->logLine('Stage 8 completed');
@@ -1265,7 +1271,7 @@ class e_install
 		// [SecretR] should work now - fixed log errors (argument noLogs = true) change to false to enable log
 		
 		$coreConfig = $this->e107->e107_dirs['CORE_DIRECTORY']. "xml/default_install.xml";		
-		$ret = e107::getXml()->e107Import($coreConfig, 'add', true, false); // Add core pref values
+		$ret = e107::getXml()->e107Import($coreConfig, 'replace', true, false); // Add core pref values
 		$this->logLine('Attempting to Write Core Prefs.');
 		$this->logLine(print_r($ret, true));
 		
@@ -1921,5 +1927,3 @@ function template_data()
 	';
 	return $data;
 }
-
-
