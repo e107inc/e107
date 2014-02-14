@@ -386,13 +386,14 @@ class news_shortcodes extends e_shortcode
 		{
 			$tp = e107::getParser();
 			$text = $tp->toHtml($this->news_item['news_body'],true);
-			$text = str_replace("<br />"," ",$text);
+			$text = str_replace("<br />","\n",$text);
 			$text = strip_tags($text);	
-			$tmp = preg_split('/\.\s/i', trim($text));	
+			$tmp = preg_split('/(\.\s|!|\r|\n|\?)/i', trim($text));	
+			$tmp = array_filter($tmp);
 			
-			if($tmp[0] && $tmp[1])
+			if($tmp[0])
 			{
-				return trim($tmp[0]).". ".trim($tmp[1]).'.<br />';	
+				return trim($tmp[0]);	
 			}
 		}
 	}
@@ -606,7 +607,7 @@ class news_shortcodes extends e_shortcode
 		$class .= ' news-image-'.$tmp['count'];
 		
 			
-		if($tp->isVideo($this->news_item['news_thumbnail']))
+		if($tp->isVideo($srcPath))
 		{
 			return; 
 		}
@@ -635,9 +636,16 @@ class news_shortcodes extends e_shortcode
 			}
 		}
 		
-		if(vartrue($parm['nolegacy']) && strpos($src,'newspost_images')!==false)
+	
+		
+		if(vartrue($parm['nolegacy'])) // Remove legacy thumbnails. 
 		{
-			return;
+			$legSrc = urldecode($src);
+
+		 	if(strpos($legSrc,'newspost_images/thumb_')!==false)
+			{
+				return;	
+			}
 		}
 		
 
