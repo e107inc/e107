@@ -165,7 +165,7 @@ if(false === $cached)
 		$month_selector = '<div class="btn-group pull-right"><a class="btn btn-mini btn-default btn-xs " href="#blogCalendar" data-slide="prev">‹</a>  
  		<a class="btn btn-mini btn-default btn-xs" href="#blogCalendar" data-slide="next">›</a></div>';
 		 
-		$caption = "<span class='inline-text'>".BLOGCAL_L1." ".$month_selector."</span>";	
+		$caption = "<div class='inline-text'>".BLOGCAL_L1." ".$month_selector."</div>";	
 		
 		$menu = "<div id='blogCalendar' data-interval='false' class='carousel slide blogcalendar-block text-center'>";
 		$menu .= "<div class='blogcalendar-day-selector carousel-inner'>";

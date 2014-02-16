@@ -42,7 +42,7 @@ if(!$OTHERNEWS_STYLE)
 		$item_selector = '<div class="btn-group pull-right"><a class="btn btn-mini btn-xs btn-default" href="#otherNews" data-slide="prev">‹</a>  
  		<a class="btn btn-mini btn-xs btn-default" href="#otherNews" data-slide="next">›</a></div>';
 		 
-		$caption = "<span class='inline-text'>".$template['caption']." ".$item_selector."</span>";		
+		$caption = "<div class='inline-text'>".$template['caption']." ".$item_selector."</div>";		
 				
 		$OTHERNEWS_STYLE = $template['item']; 
 	}
