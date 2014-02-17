@@ -1736,7 +1736,14 @@ function create_tables_unattended()
 	{
 		return false;
 	}
-	@include('e107_config.php');
+	
+	if(file_exists('e107_config.php'))
+	{
+		@include('e107_config.php');
+	} else {
+		return false;
+	}	
+	
 	//If mysql info not set, config file is not created properly
 	if(!isset($mySQLuser) || !isset($mySQLpassword) || !isset($mySQLdefaultdb) || !isset($mySQLprefix))
 	{
@@ -1749,7 +1756,7 @@ function create_tables_unattended()
 		return false;
 	}
 
-	$einstall = new e_install;
+	$einstall = new e_install();
 	$einstall->previous_steps['mysql']['server'] 	= $mySQLserver;
 	$einstall->previous_steps['mysql']['user']		= $mySQLuser;
 	$einstall->previous_steps['mysql']['password'] 	= $mySQLpassword;
@@ -1768,12 +1775,12 @@ function create_tables_unattended()
 	$einstall->previous_steps['prefs']['sitename'] 	= isset($_GET['sitename']) ? urldecode($_GET['sitename']) : LANINS_113;
 	$einstall->previous_steps['prefs']['sitetheme'] = isset($_GET['theme']) ? urldecode($_GET['theme']) : 'jayya';
 
-	@include_once("./{$HANDLERS_DIRECTORY}e107_class.php");
-	$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'CACHE_DIRECTORY', 'DOWNLOADS_DIRECTORY', 'UPLOADS_DIRECTORY');
-	$e107 = e107::getInstance();
-	$e107->init($e107_paths, realpath(dirname(__FILE__)));
+	//@include_once("./{$HANDLERS_DIRECTORY}e107_class.php");
+	//$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'CACHE_DIRECTORY', 'DOWNLOADS_DIRECTORY', 'UPLOADS_DIRECTORY');
+	//$e107 = e107::getInstance();
+	//$e107->init($e107_paths, realpath(dirname(__FILE__)));
 
-	$einstall->e107 = &$e107;
+	//$einstall->e107 = &$e107;
 
 	//FIXME - does not appear to work for import_configuration. ie. tables are blank except for user table.
 
