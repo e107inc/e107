@@ -23,7 +23,7 @@ global $eMenuActive, $pref, $e107, $sql, $tp, $ns, $use_imagecode, $ADMIN_DIRECT
 $ip = e107::getIPHandler()->getIP(FALSE);
 
 //shortcodes
-require_once(e_PLUGIN."login_menu/login_menu_shortcodes.php");
+$login_menu_shortcodes = e107::getScBatch('login_menu',TRUE);
 
 //Bullet
 if(defined("BULLET"))
