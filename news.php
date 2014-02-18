@@ -820,10 +820,17 @@ else
 	{
 		$news = $newsAr[$i];
 		
+		// Set the Values for the social shortcode usage. 
+		$socialArray = array('url'=>e107::getUrl()->create('news/view/item', $news, 'full=1'), 'title'=>$tp->toText($news['news_title']));
+		e107::getScBatch('social')->setVars($socialArray);
+		
+		
+		
 		if(function_exists("news_style")) // BC
 		{
 			$template = news_style($news, $action, $param);	
 		}
+		
 		
 		//        render new date header if pref selected ...
 		$thispostday = strftime("%j", $news['news_datestamp']);
@@ -839,6 +846,9 @@ else
 		}
 		// $template = false;
 		$ix->render_newsitem($news, 'default', '', $template, $param);
+		
+		
+		
 		$i++;
 	}
 

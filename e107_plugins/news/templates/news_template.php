@@ -97,7 +97,7 @@ $NEWS_TEMPLATE['default']['item'] = '
           {NEWSBODY}
 		  <hr>
 			<div class="options">
-			<div class="btn-group">{NEWSCOMMENTLINK: glyph=comments&class=btn btn-default}{EMAILICON: class=btn btn-default}{PRINTICON: class=btn btn-default}{PDFICON}{ADMINOPTIONS: class=btn btn-default}</div> 
+			<div class="btn-group">{NEWSCOMMENTLINK: glyph=comments&class=btn btn-default}{PRINTICON: class=btn btn-default}{PDFICON}{SOCIALSHARE: type=basic}{ADMINOPTIONS: class=btn btn-default}</div> 
 			</div>
 
 ';
