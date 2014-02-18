@@ -46,13 +46,13 @@ $NEXTPREV_TEMPLATE['bootstrap_start']			= "<!-- Start of Next/Prev -->\n<div cla
 $NEXTPREV_TEMPLATE['bootstrap_end'] 			= "</ul></div><!-- End of Next/Prev -->";
 $NEXTPREV_TEMPLATE['bootstrap_nav_caption'] 	= ''; 
 
-$NEXTPREV_TEMPLATE['bootstrap_nav_first'] 		= '<li><a class="first" href="{url}" title="{url_label}">{label}</a></li>';
+$NEXTPREV_TEMPLATE['bootstrap_nav_first'] 		= '<li><a class="first hidden-xs" href="{url}" title="{url_label}">{label}</a></li>';
 $NEXTPREV_TEMPLATE['bootstrap_nav_prev'] 		= '<li><a class="prev" href="{url}" title="{url_label}">{label}</a></li>';
-$NEXTPREV_TEMPLATE['bootstrap_nav_last'] 		= '<li><a class="last" href="{url}" title="{url_label}">{label}</a></li>';
+$NEXTPREV_TEMPLATE['bootstrap_nav_last'] 		= '<li><a class="last hidden-xs" href="{url}" title="{url_label}">{label}</a></li>';
 $NEXTPREV_TEMPLATE['bootstrap_nav_next'] 		= '<li><a class="next" href="{url}" title="{url_label}">{label}</a></li>';
 
 $NEXTPREV_TEMPLATE['bootstrap_items_start'] 	= '';
-$NEXTPREV_TEMPLATE['bootstrap_item'] 			= '<li><a href="{url}" title="{url_label}">{label}</a></li>';
+$NEXTPREV_TEMPLATE['bootstrap_item'] 			= '<li><a class="hidden-xs" href="{url}" title="{url_label}">{label}</a></li>';
 $NEXTPREV_TEMPLATE['bootstrap_item_current'] 	= '<li class="active disabled"><a  href="#" onclick="return false;" title="{url_label}">{label}</a></li>';
 $NEXTPREV_TEMPLATE['bootstrap_items_end'] 		= '';
 
