@@ -8,10 +8,13 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+
+
+
 class social_shortcodes extends e_shortcode
 {
 		
-		
+	public $var;	
 	/**
 	 * {XURL_ICONS: size=2x}
 	 */	
@@ -66,18 +69,27 @@ class social_shortcodes extends e_shortcode
 
 	/**
 	 * {SOCIALSHARE: url=x&title=y}
+	 * @example {SOCIALSHARE: type=basic} - Show only Email, Facebook, Twitter and Google. 
+	 * @example {SOCIALSHARE: dropdown=1&type=basic} - Show only Email, Facebook, Twitter and Google in a drop-down button 
+	 * @example for plugin developers:  send 'var' values for use by the social shortcode. (useful for loops where the value must change regularly) 
+	 * 	$socialArray = array('url'=>'your-url-here', 'title'=>'your-title-here');
+		e107::getScBatch('social')->setVars($socialArray);
 	 */
 	function sc_socialshare($parm='') // Designed so that no additional JS required. 
-	{
-					
-		$tp 			= e107::getParser();
-		$url 			= varset($parm['url'], e_REQUEST_URL);
-		$title 			= varset($parm['title'], deftrue('e_PAGETITLE'). " | ". SITENAME ) ;
-		$description 	= varset($parm['title'], e107::getUrl()->response()->getMetaDescription());
-		$media 			= "";
-		$label 			= varset($parm['label'], $tp->toGlyph('e-social-spread'));
+	{		
+		$defaultUrl 	= vartrue($this->var['url'], e_REQUEST_URL);
+		$defaultTitle	= vartrue($this->var['title'], deftrue('e_PAGETITLE'). " | ". SITENAME);
+		$defaultDiz		= vartrue($this->var['description'], e107::getUrl()->response()->getMetaDescription());
 		
-		$size			= varset($parm['size'],'md');
+		$tp 			= e107::getParser();
+		
+		$url 			= varset($parm['url'], 		$defaultUrl);
+		$title 			= varset($parm['title'], 	$defaultTitle) ;
+		$description 	= varset($parm['title'], 	$defaultDiz);
+		$media 			= "";
+		$label 			= varset($parm['label'], 	$tp->toGlyph('e-social-spread'));
+		
+		$size			= varset($parm['size'],		'md');
 		
 		//TODO LANS ie. "Share on [x]" in English_global.php 
 		
@@ -116,15 +128,24 @@ class social_shortcodes extends e_shortcode
 
 		$opt = array();
 		
-		foreach($providers as $val)
+		foreach($providers as $k=>$val)
 		{
 			$pUrl = str_replace("&","&amp;",$val['url']);
 			
 			$shareUrl = $tp->lanVars($pUrl,$data);
 			
-			$opt[] = "<a class='e-tip btn ".$butSize." btn-default social-share'  target='_blank' title='".$val["title"]."' href='".$shareUrl."'>".$tp->toIcon($val["icon"])."</a>";	
+			$opt[$k] = "<a class='e-tip btn ".$butSize." btn-default social-share'  target='_blank' title='".$val["title"]."' href='".$shareUrl."'>".$tp->toIcon($val["icon"])."</a>";	
 		}
 		
+		// Show only Email, Facebook, Twitter and Google. 
+		if(varset($parm['type']) == 'basic')
+		{
+			$remove = array('linkedi','pinterest', 'stumbleupon', 'digg', 'reddit', 'linkedin');
+			foreach($remove as $v)
+			{
+				unset($opt[$v]);	
+			}	
+		}
 		
 		if(vartrue($parm['dropdown']))
 		{
@@ -144,7 +165,10 @@ class social_shortcodes extends e_shortcode
 		else
 		{
 			
-			return '<div class="btn-group text-center"><button class="btn btn-sm btn-default disabled">'.$label.'</button>'.implode("\n",$opt)."</div>";
+		
+			
+			
+			return '<div class="btn-group text-center">'.implode("\n",$opt)."</div>";
 		
 		}	
 		
