@@ -266,13 +266,13 @@ $text = "
 					<tr>
 						<td><label for='sitename'>".PRFLAN_2."</label></td>
 						<td>
-							".$frm->text('sitename', $pref['sitename'], 100, 'required=1')."
+							".$frm->text('sitename', $pref['sitename'], 100, 'required=1&size=xxlarge')."
 						</td>
 					</tr>
 					<tr>
 						<td><label for='siteurl'>".PRFLAN_3."</label></td>
 						<td>
-							".$frm->text('siteurl', $pref['siteurl'], 150)."
+							".$frm->text('siteurl', $pref['siteurl'], 150, 'required=1&size=xxlarge')."
 							".($pref['siteurl'] == SITEURL ? "" : "<div class='field-help'>".PRFLAN_159.": <strong>".SITEURL."</strong></div>")."
 						</td>
 					</tr>
@@ -313,14 +313,14 @@ $text .= "<div class='field-spacer'>".$tp->parseTemplate("{IMAGESELECTOR={$parms
 $sLogo = siteinfo_shortcodes::sc_logo();
 */
 
-$text .= $frm->imagepicker('sitebutton',$pref['sitebutton'],'_common','help=Used by Facebook and others. Should be a square image of at least 144px in width and height.');
+$text .= $frm->imagepicker('sitebutton',$pref['sitebutton'],'','help=Used by Facebook and others. Should be a square image of at least 144px in width and height.');
 
 $text .= "
 						</td>
 					</tr>
 					<tr>
 						<td><label for='sitelogo'>".PRFLAN_214."</label></td>
-						<td>".$frm->imagepicker('sitelogo',$pref['sitelogo'],'_common','help=Used by some themes as the header image on some pages.')."</td>
+						<td>".$frm->imagepicker('sitelogo',$pref['sitelogo'],'','help=Used by some themes as the header image on some pages.')."</td>
 					</tr>
 					<tr>
 						<td><label for='sitetag'>".PRFLAN_5."</label></td>
