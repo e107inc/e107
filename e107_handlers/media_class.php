@@ -1031,7 +1031,7 @@ class e_media
 		$img_data['media_url']			= $tp->createConstants($newpath,'rel');
 		$img_data['media_name'] 		= $tp->toDB($file);
 		$img_data['media_caption'] 		= $new_data['media_caption'];
-		$img_data['media_category'] 	= $category;
+		$img_data['media_category'] 	= vartrue($category,'_common_image');
 		$img_data['media_description'] 	= $new_data['media_description'];
 		$img_data['media_userclass'] 	= '0';	
 

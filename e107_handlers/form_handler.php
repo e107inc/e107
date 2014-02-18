@@ -508,6 +508,11 @@ class e_form
 		
 	//	print_a($sc_parameters);
 	
+		if(empty($sc_parameters['media']))
+		{
+			$sc_parameters['media'] = '_common';	
+		}
+	
 		$default_thumb = $default;
 		if($default)
 		{
