@@ -250,11 +250,17 @@ class convert
 			return null;
 		}
 		
+		if(STRPTIME_COMPAT !== TRUE) // returns months from 0 - 11 on Unix so we need to +1 
+		{
+			$tdata['tm_mon'] = $tdata['tm_mon'] +1;	 
+		}
+				
+		
 		$unxTimestamp = mktime( 
 			$tdata['tm_hour'], 
 			$tdata['tm_min'], 
 			$tdata['tm_sec'], 
-			$tdata['tm_mon'] + 1, // returns months from 0 - 11 so we need to +1 
+			$tdata['tm_mon'] , 
 			$tdata['tm_mday'], 
 			($tdata['tm_year'] + 1900) 
 		); 
@@ -531,11 +537,11 @@ class convert
 	 */
 	public function strptime($str, $format)
 	{
-		if(STRPTIME_COMPAT !== TRUE && function_exists('strptime'))
+		if(STRPTIME_COMPAT !== TRUE && function_exists('strptime')) // Unix Only.  
 		{
 			$vals = strptime($str,$format); // PHP5 is more accurate than below. 
-			$vals['tm_amon'] = 	strftime('%b', mktime(0,0,0, $vals['mon']) );
-			$vals['tm_fmon'] = 	strftime('%B', mktime(0,0,0, $vals['mon']) );
+			$vals['tm_amon'] = 	strftime('%b', mktime(0,0,0, $vals['tm_mon'] +1) );
+			$vals['tm_fmon'] = 	strftime('%B', mktime(0,0,0, $vals['tm_mon'] +1) );
 			return $vals;
 		}	
 			
@@ -651,9 +657,16 @@ class convert
 			//$vals['tm_sec'] -= 1; always increasing tm_sec + 1 ??????
 			
 			#-- calculate wday/yday
+			//$vals['tm_mon'] = $vals['tm_mon'] + 1; // returns months from 0 - 11 so we need to +1 
+			
+			
 			$unxTimestamp = mktime($vals['tm_hour'], $vals['tm_min'], $vals['tm_sec'], ($vals['tm_mon'] + 1), $vals['tm_mday'], ($vals['tm_year'] + 1900));
+			
+			$vals['tm_fmon'] = strftime('%B', mktime($vals['tm_hour'], $vals['tm_min'], $vals['tm_sec'], $vals['tm_mon']));
 			$vals['tm_wday'] = (int) strftime('%w', $unxTimestamp); // Days since Sunday (0-6)
 			$vals['tm_yday'] = (strftime('%j', $unxTimestamp) - 1); // Days since January 1 (0-365)
+			
+
 			//var_dump($vals, $str, strftime($format, $unxTimestamp), $unxTimestamp);
 		}
 		
