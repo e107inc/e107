@@ -580,9 +580,21 @@ echo "</head>\n";
 	{
 		foreach($LAYOUT as $key=>$template)
 		{
-			list($hd,$ft) = explode("{---}",$template);
-			$HEADER[$key] = isset($LAYOUT['_header_']) ? $LAYOUT['_header_'] . $hd : $hd;
-			$FOOTER[$key] = isset($LAYOUT['_footer_']) ? $ft . $LAYOUT['_footer_'] : $ft ;	
+			if($key == '_header_' || $key == '_footer_')
+			{
+				continue;	
+			}
+			
+			if(strpos($template,'{---}') !==false)
+			{
+				list($hd,$ft) = explode("{---}",$template);
+				$HEADER[$key] = isset($LAYOUT['_header_']) ? $LAYOUT['_header_'] . $hd : $hd;
+				$FOOTER[$key] = isset($LAYOUT['_footer_']) ? $ft . $LAYOUT['_footer_'] : $ft ;	
+			}
+			else 
+			{
+				e107::getMessage()->addDebug('Missing "{---}" in $LAYOUT["'.$key.'"] ');
+			}
 		}	
 		unset($hd,$ft);
 	}
