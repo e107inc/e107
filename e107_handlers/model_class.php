@@ -38,7 +38,7 @@ class e_object
 	 * @var array
 	 */
 	protected $_params = array();
-	
+
 
     /**
     * Name of object id field
@@ -84,7 +84,7 @@ class e_object
     {
         return $this->_field_id;
     }
-    
+
     /**
      * Retrieve object primary id field value
      *
@@ -125,7 +125,7 @@ class e_object
     {
     	return (isset($this->_data[$key]) ? $this->_data[$key] : $default);
     }
-    
+
     /**
      * Get object data
      * @return array
@@ -134,7 +134,7 @@ class e_object
     {
     	return $this->_data;
     }
-    
+
     /**
      * Overwrite data in the object for a single field.
      *
@@ -147,7 +147,7 @@ class e_object
     	$this->_data[$key] = $value;
     	return $this;
     }
-    
+
     /**
      * Set object data
      * @return e_object
@@ -157,7 +157,7 @@ class e_object
     	$this->_data = $data;
     	return $this;
     }
-    
+
     /**
      * Update object data
      * @return e_object
@@ -170,7 +170,7 @@ class e_object
 		}
     	return $this;
     }
-    
+
     /**
      * Remove object data key
      *
@@ -182,7 +182,7 @@ class e_object
     	unset($this->_data[$key]);
     	return $this;
     }
-    
+
     /**
      * Reset  object data key
      *
@@ -203,7 +203,7 @@ class e_object
     {
     	return (isset($this->_data[$key]));
     }
-    
+
     /**
      * Check if key is set and not empty
      * @param string $key
@@ -213,7 +213,7 @@ class e_object
     {
     	return (isset($this->_data[$key]) && !empty($this->_data[$key]));
     }
-    
+
     /**
      * Check if object has data
      * @return boolean
@@ -222,7 +222,7 @@ class e_object
     {
     	return !empty($this->_data);
     }
-    
+
 	/**
 	 * Set parameter array
 	 * @param array $params
@@ -233,7 +233,7 @@ class e_object
 		$this->_params = $params;
 		return $this;
 	}
-    
+
 	/**
 	 * Update parameter array
 	 * @param array $params
@@ -241,11 +241,11 @@ class e_object
 	 */
 	public function updateParams(array $params)
 	{
-		foreach ($params as $k => $v) 
+		foreach ($params as $k => $v)
 		{
 			$this->setParam($k, $v);
 		}
-		
+
 		return $this;
 	}
 
@@ -273,7 +273,7 @@ class e_object
 			unset($this->_params[$key]);
 		}
 		else $this->_params[$key] = $value;
-		
+
 		return $this;
 	}
 
@@ -287,7 +287,7 @@ class e_object
 	{
 		return (isset($this->_params[$key]) ? $this->_params[$key] : $default);
 	}
-	
+
 	/**
 	 * Convert object data to simple shortcodes (e_vars object)
 	 * @return string
@@ -295,8 +295,8 @@ class e_object
 	public function toSc()
 	{
 		return new e_vars($this->_data);
-	}	
-	
+	}
+
 	/**
 	 * Convert object data to array
 	 * @return string
@@ -314,7 +314,7 @@ class e_object
 	{
 		return $this->_data;
 	}
-	
+
 	/**
 	 * Magic method - convert object data to an array
 	 *
@@ -353,7 +353,7 @@ class e_object
 	/**
 	 * Magic setter
 	 * Triggered on e.g. <code><?php $e_object->myKey = 'someValue'; </code>
-	 * 
+	 *
 	 * @param string $key
 	 * @param mixed $value
 	 */
@@ -468,7 +468,7 @@ class e_vars extends e_object
 	{
 		return (!$this->hasData());
 	}
-	
+
 	/**
 	 * Check if given data key is set
 	 * @param string $key
@@ -478,7 +478,7 @@ class e_vars extends e_object
 	{
 		return $this->is($key);
 	}
-	
+
 	/**
 	 * No need of object conversion, optional cloning
 	 * @param boolean $clone return current object clone
@@ -521,15 +521,15 @@ class e_model extends e_object
 	 * @var string
 	 */
 	protected $_db_table;
-    
+
     /**
      * Current url Profile data
 	 * Example: array('route'=>'page/view/index', 'vars' => array('id' => 'page_id', 'sef' => 'page_sef'), 'name' => 'page_title', 'description' => '');
      * @var string
      */
     protected $_url = array();
-	
-	
+
+
     /**
      * Current Featurebox Profile data
 	 * Example: array('title' => 'page_title', 'text' => '');
@@ -574,7 +574,7 @@ class e_model extends e_object
 	 */
 	protected $_cache_force = false;
 
-	
+
 	/**
 	 * Optional DB table - used for auto-load data from the DB
 	 * @param string $table
@@ -608,7 +608,7 @@ class e_model extends e_object
         $this->_url = $url;
         return $this;
     }
-    
+
     /**
      * Get url profile
      * @return array
@@ -617,7 +617,7 @@ class e_model extends e_object
     {
         return $this->_url;
     }
- 
+
     /**
      * Set model Featurebox  Profile
      * @param string $table
@@ -629,7 +629,7 @@ class e_model extends e_object
         $this->_featurebox = $fb;
         return $this;
     }
-    
+
     /**
      * Get Featurebox profile
      * @return array
@@ -637,9 +637,9 @@ class e_model extends e_object
     public function getFeaturebox()
     {
         return $this->_featurebox;
-    } 
- 
-    
+    }
+
+
     /**
      * Generic URL assembling method
 	 * @param array $options [optional] see eRouter::assemble() for $options structure
@@ -648,67 +648,67 @@ class e_model extends e_object
      */
     public function url($options = array(), $extended = false)
     {
-        $urldata = $this->getUrl(); 
+        $urldata = $this->getUrl();
 		if(empty($urldata) || !vartrue($urldata['route'])) return ($extended ? array() : null);
-		
+
 		$eurl = e107::getUrl();
-		
+
 		if(empty($options)) $options = array();
 		elseif(!is_array($options)) parse_str($options, $options);
-		
+
 		$vars = $this->toArray();
 		if(!isset($options['allow']) || empty($options['allow']))
 		{
 			if(vartrue($urldata['vars']) && is_array($urldata['vars']))
 			{
 				$vars = array();
-				foreach ($urldata['vars'] as $var => $field) 
+				foreach ($urldata['vars'] as $var => $field)
 				{
 					if($field === true) $field = $var;
 					$vars[$var] = $this->get($field);
 				}
 			}
 		}
-		
+
 		$method = isset($options['sc']) ? 'sc' : 'create';
-		
+
 		$url = e107::getUrl()->$method($urldata['route'], $vars, $options);
-		
+
 		if(!$extended)
 		{
 			return $url;
 		}
-		
+
 		return array(
-			'url' => $url, 
+			'url' => $url,
 			'name' => vartrue($urldata['name']) ? $this->get($urldata['name']) : '',
 			'description' => vartrue($urldata['description']) ? $this->get($urldata['description']) : '',
 		);
     }
- 
- 
+
+
      /**
      * Generic Featurebox assembling method
      * @return mixed URL string or extended array data
      */
     public function featurebox($options = array(), $extended = false)
     {
-    	   		
-		
+
+
     }
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
     /**
      * Get data fields array
      * @return array
@@ -893,14 +893,14 @@ class e_model extends e_object
      *
      * If $index is specified it will assume that attribute data is an array
      * and retrieve corresponding member.
-     * 
+     *
      * NEW: '/' supported in keys now, just use double slashes '//' as key separator
      * Examples:
      * - 'key//some/key/with/slashes//more' -> [key][some/key/with/slashes][more]
      * - '//some/key' -> [some/key] - starting with // means - don't parse!
      * - '///some/key/' -> [/some/key/]
      * - '//key//some/key/with/slashes//more' WRONG -> single key [key//some/key/with/slashes//more]
-     * 
+     *
      * @param string $key
      * @param mixed $default
      * @param integer $index
@@ -913,7 +913,7 @@ class e_model extends e_object
         {
             return $this->$data_src;
         }
-		        
+
         $simple = false;
         if(strpos($key, '//') === 0)
         {
@@ -923,11 +923,11 @@ class e_model extends e_object
         /*elseif($key[0] == '/')
         {
         	// just use it!
-        	$simple = true; 
+        	$simple = true;
         }*/
         else
         {
-        	$simple = strpos($key, '/') === false; 
+        	$simple = strpos($key, '/') === false;
         }
 
         // Fix - check if _data[path/to/value] really doesn't exist
@@ -938,7 +938,7 @@ class e_model extends e_object
         	{
         		return $this->_parsed_keys[$data_src.'/'.$key];
         	}
-        	// new feature (double slash) - when searched key string is key//some/key/with/slashes//more 
+        	// new feature (double slash) - when searched key string is key//some/key/with/slashes//more
         	// -> search for 'key' => array('some/key/with/slashes', array('more' => value));
             $keyArr = explode(strpos($key, '//') ? '//' : '/', $key);
             $data = $this->$data_src;
@@ -1023,7 +1023,7 @@ class e_model extends e_object
      * - '//some/key' -> [some/key] - starting with // means - don't parse!
      * - '///some/key/' -> [/some/key/]
      * - '//key//some/key/with/slashes//more' WRONG -> single key [key//some/key/with/slashes//more]
-     * 
+     *
      *
      * @param string|array $key
      * @param mixed $value
@@ -1053,13 +1053,13 @@ class e_model extends e_object
        	{
 			foreach($value as $k => $v)
 			{
-				// new - $k couldn't be a path - e.g. 'key' 'value/value1' 
+				// new - $k couldn't be a path - e.g. 'key' 'value/value1'
 				// will result in 'key' => 'value/value1' and NOT 'key' => array('value' => value1)
 			    $this->_setData($key.'//'.$k, $v, true, $data_src);
 			}
 			return $this;
        	}
-       	
+
         $simple = false;
         if(strpos($key, '//') === 0)
         {
@@ -1072,14 +1072,14 @@ class e_model extends e_object
         }
         /*elseif($key[0] == '/')
         {
-        	$simple = true; 
+        	$simple = true;
         }*/
         else
         {
-        	$simple = strpos($key, '/') === false; 
+        	$simple = strpos($key, '/') === false;
         }
 
-        //multidimensional array support - parse key      
+        //multidimensional array support - parse key
         if(!$simple)
         {
         	//$key = trim($key, '/');
@@ -1088,8 +1088,8 @@ class e_model extends e_object
 	        {
 	        	return $this;
 	        }
-	        
-        	// new feature (double slash) - when parsing key: key//some/key/with/slashes//more 
+
+        	// new feature (double slash) - when parsing key: key//some/key/with/slashes//more
         	// -> result is 'key' => array('some/key/with/slashes', array('more' => value));
 	        $keyArr = explode(strpos($key, '//') ? '//' : '/', $key);
         	//$keyArr = explode('/', $key);
@@ -1492,7 +1492,7 @@ class e_model extends e_object
 		else
 		{
 			if(!is_numeric($id)) $id = "'{$id}'";
-			
+
 			$res = $sql->db_Select(
 				$this->getModelTable(),
 				$this->getParam('db_fields', '*'),
@@ -1568,7 +1568,7 @@ class e_model extends e_object
 		e107::getCache()->clear_sys($this->getCacheString(true), false);
 		return $this;
 	}
-	
+
 	/**
 	 * Clrear system cache (public proxy) if enabled for the model
 	 * @return e_model
@@ -1738,15 +1738,15 @@ class e_model extends e_object
 	{
 		$larr = localeconv();
 		$search = array(
-			$larr['decimal_point'], 
-			$larr['mon_decimal_point'], 
-			$larr['thousands_sep'], 
-			$larr['mon_thousands_sep'], 
-			$larr['currency_symbol'], 
+			$larr['decimal_point'],
+			$larr['mon_decimal_point'],
+			$larr['thousands_sep'],
+			$larr['mon_thousands_sep'],
+			$larr['currency_symbol'],
 			$larr['int_curr_symbol']
 		);
 		$replace = array('.', '.', '', '', '', '');
-			
+
 		return str_replace($search, $replace, $value);
 	}
 
@@ -2214,7 +2214,7 @@ class e_front_model extends e_model
 
 		$oldData = $this->getData();
 //		$this->addMessageDebug("OLDD".print_a($oldData,true));
-	
+
 
 		$data = $this->getPostedData();
 
@@ -2248,10 +2248,10 @@ class e_front_model extends e_model
     		$this->setData($field, $dt, $strict)
     			->removePostedData($field);
     	}
-		
-	
-		
-		
+
+
+
+
     	return $this;
     }
 
@@ -2301,8 +2301,8 @@ class e_front_model extends e_model
 		{
 			$this->setData($key, $value, $strict);
 		}
-		
-		
+
+
 
     	return $this;
     }
@@ -2326,16 +2326,16 @@ class e_front_model extends e_model
 		{
 			$data = $this->getPostedData();
 		}
-		
+
 		// New param to control validate process - useful when part of the data is going to be updated
 		// Use it with cautious!!!
 		$availableOnly = false;
-		if($this->getParam('validateAvailable')) 
+		if($this->getParam('validateAvailable'))
 		{
 			$availableOnly = true;
 			$this->setParam('validateAvailable', null); // reset it
 		}
-		
+
 		return $this->getValidator()->validate($data, $availableOnly);
     }
 
@@ -2540,18 +2540,18 @@ class e_front_model extends e_model
 		}
 
 		$qry['_FIELD_TYPES'] = $this->_FIELD_TYPES; //DB field types are optional
-		
+
 		// support for tables with no auto-increment PK
 		$id = $this->getId();
 		$qry['data'][$this->getFieldIdName()] = $id;
-		
+
 		if($action == 'create' && !$id) $qry['_FIELD_TYPES'][$this->getFieldIdName()] = 'NULL';
 		elseif(is_numeric($id)) $qry['_FIELD_TYPES'][$this->getFieldIdName()] = 'integer';
 		else $qry['_FIELD_TYPES'][$this->getFieldIdName()] = 'string';
-		
+
 		foreach ($this->_data_fields as $key => $type)
 		{
-			
+
 			if($key == $this->getFieldIdName())
 			{
 				continue;
@@ -2560,14 +2560,14 @@ class e_front_model extends e_model
 			{
 				$qry['_FIELD_TYPES'][$key] = $type; //_FIELD_TYPES much more optional now...
 			}
-			
+
 			if($qry['_FIELD_TYPES'][$key] == 'set') //new 'set' type, could be moved in mysql handler now
 			{
-				$qry['_FIELD_TYPES'][$key] = 'str';		
+				$qry['_FIELD_TYPES'][$key] = 'str';
 				if(is_array($this->getData($key)))	$this->setData($key, implode(',', $this->getData($key)));
 			}
 			$qry['data'][$key] = $this->getData($key);
-			
+
 		}
 
 		switch($action)
@@ -2583,11 +2583,11 @@ class e_front_model extends e_model
 				unset($qry['data'][$this->getFieldIdName()]);
 				if(is_numeric($id)) $id = intval($id);
 				else $id = "'".e107::getParser()->toDB($id)."'";
-				$qry['WHERE'] = $this->getFieldIdName().'='.$id; 
+				$qry['WHERE'] = $this->getFieldIdName().'='.$id;
 			break;
 		}
-	
-		$this->addMessageDebug('SQL Qry: '.print_a($qry,true), $session_messages); 
+
+		$this->addMessageDebug('SQL Qry: '.print_a($qry,true), $session_messages);
 		return $qry;
 	}
 
@@ -2618,7 +2618,7 @@ class e_front_model extends e_model
 			}
 			return $ret;
 		}
-		
+
 		if(!isset($this->_data_fields[$key]))
 		{
 			return null;
@@ -2686,11 +2686,11 @@ class e_front_model extends e_model
     		$this->_db_errno = 0;
 		$this->_db_errmsg = '';
 		$this->_db_qry = '';
-		
+
 	//	 $this->getData();
 	//	 $this->getPostedData();
-		
-	
+
+
 		if($this->hasError()) return false;
 		if(!$this->data_has_changed && !$force)
 		{
@@ -2700,7 +2700,7 @@ class e_front_model extends e_model
 		$sql = e107::getDb();
 		$qry = $this->toSqlQuery('update');
 		$table = $this->getModelTable();
-		
+
 		$res = $sql->db_Update($table, $qry, $this->getParam('db_debug', false));
 		if(!$res)
 		{
@@ -2717,12 +2717,12 @@ class e_front_model extends e_model
 			return 0;
 		}
 		$this->clearCache()->addMessageSuccess(LAN_UPDATED);
-		
+
 		e107::getAdminLog()->addSuccess('TABLE: '.$table, false);
 		e107::getAdminLog()->addSuccess('WHERE: '.$qry['WHERE'], false);
 		e107::getAdminLog()->save('ADMINUI_02');
-		
-		
+
+
 		return $res;
     }
 
@@ -2741,7 +2741,7 @@ class e_front_model extends e_model
 
 		if($from_post)
 		{
-			//no strict copy, validate & sanitize		
+			//no strict copy, validate & sanitize
 			$this->mergePostedData(false, true, true);
 		}
 
@@ -2752,7 +2752,7 @@ class e_front_model extends e_model
 
 		return false;
     }
-	
+
     /**
      * Update record
      *
@@ -2848,7 +2848,7 @@ class e_admin_model extends e_front_model
 
 		return $this->dbInsert($session_messages);
     }
-	
+
     /**
      * Insert record
      *
@@ -2897,7 +2897,7 @@ class e_admin_model extends e_front_model
 		$sql = e107::getDb();
 		$sqlQry = $this->toSqlQuery('create');
 		$table = $this->getModelTable();
-		
+
 		$res = $sql->db_Insert($table, $sqlQry, $this->getParam('db_debug', false));
 		if(!$res)
 		{
@@ -2906,13 +2906,13 @@ class e_admin_model extends e_front_model
 			$this->_db_qry = $sql->getLastQuery();
 			$this->addMessageError('SQL Insert Error', $session_messages); //TODO - Lan
 			$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
-			
+
 			return false;
 		}
 
 		e107::getAdminLog()->save('ADMINUI_01');
 	//	e107::getAdminLog()->clear()->addSuccess($table,false)->addArray($sqlQry)->save('ADMINUI_01');
-	
+
 		// Set the reutrned ID
 		$this->setId($res);
 		$this->clearCache()->addMessageSuccess(LAN_CREATED);
@@ -2929,9 +2929,9 @@ class e_admin_model extends e_front_model
     protected function dbReplace($force = false, $session_messages = false)
     {
     		$this->_db_errno = 0;
-    		$this->_db_errmsg = '';	
+    		$this->_db_errmsg = '';
 		$this->_db_qry = '';
-		
+
 		if($this->hasError()) return false;
 		if(!$this->data_has_changed && !$force)
 		{
@@ -2968,7 +2968,7 @@ class e_admin_model extends e_front_model
     		$this->_db_errno = 0;
 		$this->_db_errmsg = '';
 		$this->_db_qry = '';
-		
+
 		if($this->hasError())
 		{
 			return false;
@@ -3118,7 +3118,7 @@ class e_tree_model extends e_front_model
 		{
 			return $this;
 		}
-		
+
 		e107::getCache()->set_sys(
 			$this->getCacheString(true),
 			$this->toString(false, null, $this->getParam('nocount') ? false : true),
@@ -3177,11 +3177,11 @@ class e_tree_model extends e_front_model
 
 			$this->_total = false;
 		}
-		
+
 		if($this->isCacheEnabled() && !$this->getParam('noCacheStringModify'))
 		{
-			$str = !$this->getParam('db_query') 
-				? 
+			$str = !$this->getParam('db_query')
+				?
 					$this->getModelTable()
 					.$this->getParam('nocount')
 					.$this->getParam('db_where')
@@ -3189,7 +3189,7 @@ class e_tree_model extends e_front_model
 					.$this->getParam('db_limit')
 				:
 					$this->getParam('db_query');
-				
+
 			$this->setCacheString($this->getCacheString().'_'.md5($str));
 		}
 
@@ -3199,7 +3199,7 @@ class e_tree_model extends e_front_model
 			$this->_loadFromArray($cached);
 			return $this;
 		}
-		
+
 		$class_name = $this->getParam('model_class', 'e_model');
 		// auto-load all
 		if(!$this->getParam('db_query') && $this->getModelTable())
@@ -3235,12 +3235,12 @@ class e_tree_model extends e_front_model
 				{
 					//SQL_CALC_FOUND_ROWS not found in the query, do one more query
 				//	$this->_total = e107::getDb()->db_Count($this->getModelTable()); // fails with specific listQry
-					
-					// Calculates correct total when using filters and search. //XXX Optimize. 	
+
+					// Calculates correct total when using filters and search. //XXX Optimize.
 					$countQry = preg_replace('/(LIMIT ([\d,\s])*)$/', "", $this->getParam('db_query'));
-					
+
 					$this->_total = e107::getDb()->gen($countQry);
-	
+
 				}
 
 				unset($tmp);
@@ -3498,7 +3498,7 @@ class e_front_tree_model extends e_tree_model
 		{
 			$syncvalue = $value;
 		}
-		
+
 		if($sanitize)
 		{
 			$ids = array_map(array($tp, 'toDB'), $ids);
@@ -3511,7 +3511,7 @@ class e_front_tree_model extends e_tree_model
 		$this->_db_errno = $sql->getLastErrorNumber();
 		$this->_db_errmsg = $sql->getLastErrorText();
 		$this->_db_qry = $sql->getLastQuery();
-		
+
 		if(!$res)
 		{
 			if($sql->getLastErrorNumber())
@@ -3536,7 +3536,7 @@ class e_front_tree_model extends e_tree_model
 		{
 			$node = $this->getNode($id);
 			if(!$node) continue;
-			
+
 			if(null !== $syncvalue)
 			{
 				$node->set($field, $syncvalue)
@@ -3575,15 +3575,15 @@ class e_admin_tree_model extends e_front_tree_model
 		$sql = e107::getDb();
 		$table = $this->getModelTable();
 		$sqlQry = $this->getFieldIdName().' IN (\''.$idstr.'\')';
-		
+
 		$res = $sql->db_Delete($table, $sqlQry);
-		
+
 		$this->_db_errno = $sql->getLastErrorNumber();
 		$this->_db_errmsg = $sql->getLastErrorText();
 		$this->_db_qry = $sql->getLastQuery();
-		
+
 		$modelCacheCheck = $this->getParam('clearModelCache');
-		
+
 		if(!$res)
 		{
 			if($sql->getLastErrorNumber())
@@ -3615,7 +3615,7 @@ class e_admin_tree_model extends e_front_tree_model
 	}
 
 	/**
-	 * Batch Copy Table Rows. 
+	 * Batch Copy Table Rows.
 	 */
 	public function copy($ids)
 	{
@@ -3635,25 +3635,25 @@ class e_admin_tree_model extends e_front_tree_model
 			{
 				$this->addMessageError('SQL Copy Error', $session_messages); //TODO - Lan
 				$this->addMessageDebug('SQL Error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
-			}	
+			}
 		}
 		$this->_db_errno = $sql->getLastErrorNumber();
 		$this->_db_errmsg = $sql->getLastErrorText();
 		$this->_db_qry = $sql->getLastQuery();
-		return $res;	
+		return $res;
 	}
-    
-    
+
+
 	/**
 	 * Get urls/url data for given nodes
 	 */
     public function url($ids, $options = array(), $extended = false)
     {
     	$ret = array();
-    	foreach ($ids as $id) 
+    	foreach ($ids as $id)
     	{
     		if(!$this->hasNode($id)) continue;
-			
+
 			$model = $this->getNode($id);
 			if($this->getUrl()) $model->setUrl($this->getUrl()); // copy url config data if available
 			$ret[$id] = $model->url($options, $extended);

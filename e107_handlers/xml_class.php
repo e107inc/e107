@@ -335,7 +335,7 @@ class xmlClass
 	/**
 	 * Set Xml tags that should always return arrays.
 	 *
-	 * @param object $string (comma separated)
+	 * @param string $string (comma separated)
 	 * @return xmlClass
 	 */
 	public function setOptArrayTags($string)
