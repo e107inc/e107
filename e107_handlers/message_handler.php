@@ -78,6 +78,13 @@ class eMessage
 	 * @var array
 	 */
 	protected $_unique = array();
+
+	/**
+	 * @var array
+	 */
+	static $_customTitle = array();
+
+
 	
 	/**
 	 * Singleton instance
@@ -367,12 +374,34 @@ class eMessage
 	 */
 	public static function getTitle($type, $message_stack = 'default')
 	{
+		if(!empty(self::$_customTitle[$type]))
+		{
+			return self::$_customTitle[$type];		
+		}
+		
 		if($message_stack && $message_stack != 'default' && defined('EMESSLAN_TITLE_'.strtoupper($type.'_'.$message_stack)))
 		{
 			return constant('EMESSLAN_TITLE_'.strtoupper($type.'_'.$message_stack));
 		}
 		return defsettrue('EMESSLAN_TITLE_'.strtoupper($type), '');
 	}
+	
+	
+	/**
+	 * Set a custom title/caption (useful for front-end)
+	 *
+	 * @param string $title
+	 * @param string $type  E_MESSAGE_SUCCESS,E_MESSAGE_ERROR, E_MESSAGE_WARNING, E_MESSAGE_INFO
+	 * @example e107::getMessage()->setTitle('Custom Title', E_MESSAGE_INFO);
+	 */
+	public function setTitle($title, $type)
+	{
+		$tp = e107::getParser();
+		self::$_customTitle[$type] = $tp->toText($title);
+		
+		return $this;
+	}
+	
 
 	/**
 	 * Message getter
