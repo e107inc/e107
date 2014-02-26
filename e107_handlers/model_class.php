@@ -3617,7 +3617,7 @@ class e_admin_tree_model extends e_front_tree_model
 	/**
 	 * Batch Copy Table Rows.
 	 */
-	public function copy($ids)
+	public function copy($ids, $session_messages = false)
 	{
 		$tp = e107::getParser();
 		$ids = array_map(array($tp, 'toDB'), $ids);

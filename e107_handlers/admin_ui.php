@@ -4054,7 +4054,9 @@ class e_admin_ui extends e_admin_controller_ui
 	protected function handleListCopyBatch($selected)
 	{
 		// Batch Copy 
-		$this->getTreeModel()->copy($selected);
+		$res = $this->getTreeModel()->copy($selected);
+		// callback
+		$this->afterCopy($res, $selected);
 		// move messages to default stack 
 		$this->getTreeModel()->setMessages();
 		// send messages to session
@@ -4817,6 +4819,16 @@ class e_admin_ui extends e_admin_controller_ui
 	 * User defined error handling, return true to suppress model messages
 	 */
 	public function onUpdateError($new_data, $old_data, $id)
+	{
+	}
+
+	/**
+	 * User defined after-update logic
+	 * @param mixed $result
+	 * @param array $selected
+	 * @return void
+	 */
+	public function afterCopy($result, $selected)
 	{
 	}
 
