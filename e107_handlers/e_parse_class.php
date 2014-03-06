@@ -3120,7 +3120,7 @@ class e_parser
     
         $cleaned = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
         
-        return $cleaned;
+        return trim($cleaned);
     }
  
  

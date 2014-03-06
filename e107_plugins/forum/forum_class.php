@@ -197,7 +197,8 @@ class e107forum
 		
 		if($create == true && !is_dir($baseDir))
 		{
-			mkdir($baseDir,0755);	
+ 			// create folder recursive...
+			@mkdir($baseDir, 0755, true);
 		}
 		
 		$baseDir .= "/";
