@@ -188,7 +188,7 @@ class e107forum
 	}
 
 	
-	function getAttachmentPath($user,$create=false)
+	function getAttachmentPath($user, $create=false)
 	{
 		$user = intval($user);
 		$tp = e107::getParser();
@@ -197,7 +197,9 @@ class e107forum
 		
 		if($create == true && !is_dir($baseDir))
 		{
-			mkdir($baseDir,0755);	
+			// create folder recursive... 
+			// Added by Luca Filosofi > aseptik@gmail.com
+			@mkdir($baseDir, 0755, true);	
 		}
 		
 		$baseDir .= "/";
