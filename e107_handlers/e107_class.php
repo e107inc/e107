@@ -3178,6 +3178,7 @@ class e107
 			 (!$isPluginDir && strpos($e107Path, $ADMIN_DIRECTORY) === 0 ) 									// Core admin directory
 			  || ($isPluginDir && (strpos(e_PAGE,'_admin.php') !== false || strpos(e_PAGE,'admin_') === 0 || strpos($e107Path, 'admin/') !== FALSE)) // Plugin admin file or directory
 			  || (varsettrue($eplug_admin) || defsettrue('ADMIN_AREA'))		// Admin forced
+			  || (preg_match('/^\/(.*?)\/(usersettings\.php|user\/edit)(\?|\/)(\d+)$/i', $_SERVER['REQUEST_URI']) && ADMIN)
 			)
 		{
 			$inAdminDir = TRUE;
@@ -3197,12 +3198,8 @@ class e107
 			define('e_PLUGIN_DIR_ABS', '');
 		}
 
-		// This should avoid further checks - NOTE: used in js_manager.php
-		if(!defined('e_ADMIN_AREA'))
-		{
-			define('e_ADMIN_AREA', ($inAdminDir  && !deftrue('USER_AREA'))); //Force USER_AREA added	
-		}
-		
+
+		define('e_ADMIN_AREA', $inAdminDir);	
 		define('ADMINDIR', $ADMIN_DIRECTORY);
 
 		define('SITEURLBASE', $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST']);
