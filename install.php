@@ -386,7 +386,7 @@ class e_install
 		// $page_info = nl2br(LANINS_023);
 		$page_info = "<div class='alert alert-block alert-info'>Please fill in the form below with your MySQL details. If you do not know this information, please contact your hosting provider. You may hover over each field for additional information.</div>";
 		$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
-		$isrequired = (($_SERVER['SERVER_ADDR'] == "127.0.0.1") || ($_SERVER['SERVER_ADDR'] == "localhost")) ? "" :  "required='required'"; // + regex for 198.168.x.x
+		$isrequired = (($_SERVER['SERVER_ADDR'] == "127.0.0.1") || ($_SERVER['SERVER_ADDR'] == "localhost") || ($_SERVER['SERVER_ADDR'] == "::1") || preg_match('^192\.168\.\d{1,3}\.\d{1,3}$',$_SERVER['SERVER_ADDR'])) ? "" :  "required='required'"; // Deals with IP V6, and 192.168.x.x address ranges, could be improved to validate x.x to a valid IP but for this use, I dont think its required to be that picky.
 
 		$output = "
 			<div style='width: 100%; padding-left: auto; padding-right: auto;'>
