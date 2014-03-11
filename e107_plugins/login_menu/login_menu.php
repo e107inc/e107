@@ -47,7 +47,7 @@ if (defined('CORRUPT_COOKIE') && CORRUPT_COOKIE == TRUE)
 {
 	$text = "<div class='core-sysmsg loginbox'>".LOGIN_MENU_L7."<br /><br />
 	{$bullet} <a href='".SITEURL."index.php?logout'>".LOGIN_MENU_L8."</a></div>";
-	$ns->tablerender(LOGIN_MENU_L9, $text, 'loginbox_error');
+	$ns->tablerender(LOGIN_MENU_L9, $text, 'login_error');
 }
     
 //Image code
@@ -152,7 +152,7 @@ if (USER == TRUE || ADMIN == TRUE)
 	}
 	
 	//render
-	$ns->tablerender($caption, $text, 'loginbox');
+	$ns->tablerender($caption, $text, 'login');
 
 // END LOGGED CODE	
 } 
