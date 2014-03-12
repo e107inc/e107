@@ -23,12 +23,19 @@ define('COMMENTOFFSTRING', '');
 
 define('PRE_EXTENDEDSTRING', '<br />');
 
-
-function tablestyle($caption, $text, $mode='') 
+/**
+ * @param string $caption
+ * @param string $text
+ * @param string $id : id of the current render
+ * @param array $info : current style and other menu data. 
+ */
+function tablestyle($caption, $text, $id='', $info=array()) 
 {
-	global $style;
+//	global $style; // no longer needed. 
 	
-	echo "<!-- tablestyle: style=".$style." mode=".$mode." -->\n\n";
+	$style = $info['setStyle'];
+	
+	echo "<!-- tablestyle: style=".$style." id=".$id." -->\n\n";
 	
 	$type = $style;
 	if(empty($caption))
@@ -41,6 +48,18 @@ function tablestyle($caption, $text, $mode='')
 		echo $text;
 		return;
 	}
+	
+	/*
+	if($id == 'wm') // Example - If rendered from 'welcome message' 
+	{
+		
+	}
+	
+	if($id == 'featurebox') // Example - If rendered from 'featurebox' 
+	{
+		
+	}	
+	*/
 	
 	
 	if($style == 'jumbotron')
