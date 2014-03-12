@@ -21,11 +21,71 @@ Admin log events:
 USET_01 - admin changed user data
 */
 
-if(is_numeric($_SERVER["QUERY_STRING"]))
+if(preg_match('/^\/(.*?)\/(usersettings\.php|user\/edit)(\?|\/)(\d+)$/i', $_SERVER['REQUEST_URI']))
 {
 	$eplug_admin = TRUE;
 }
+
 require_once ('class2.php');
+
+
+class usersetting_admin extends e_admin_dispatcher
+{
+
+	protected $modes = array(
+		'main'		=> array(
+			'controller' 	=> 'usersettings_admin_ui',
+			'path' 			=> null,
+			'ui' 			=> null,
+			'uipath' 		=> null,
+			//'perm'			=> '0',
+			)				
+		);	
+
+
+	protected $adminMenu = array(
+		'main/list'		=> array('caption'=> LAN_MANAGE, 'perm' => '0', 'url' => '{e_ADMIN}users.php'),
+		'main/add' 		=> array('caption'=> LAN_USER_QUICKADD, 'perm' => '4|U0|U1', 'url' => '{e_ADMIN}users.php'),
+		'main/prefs' 	=> array('caption'=> LAN_OPTIONS, 'perm' => '4|U2', 'url' => '{e_ADMIN}users.php'),
+		'main/ranks'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3', 'url' => '{e_ADMIN}users.php')		
+		);
+
+	protected $adminMenuAliases = array(
+		'main/edit'		=> 'main/list',
+		'main/admin'	=> 'main/list',
+		'main/userclass'=> 'main/list',					
+		'main/test'		=> 'main/list',					
+		);	
+
+
+	
+	protected $menuTitle = 'users';
+
+
+	public function runObservers($run_header = true)
+	{
+		// Catch useraction
+		if (isset($_POST['updatesettings']))
+		{
+
+		}
+		
+		return parent::runObservers($run_header);
+	}
+
+	
+
+}
+
+class usersettings_admin_ui extends e_admin_ui
+{
+	public function EditPage()
+	{
+
+	}
+
+}
+
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 define("US_DEBUG",FALSE);
@@ -46,9 +106,9 @@ if ((!ADMIN || !getperms("4")) && e_QUERY && e_QUERY != "update" )
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');		// Generic user-related language defines
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_usersettings.php');
-	
 
-	
+
+
 require_once (e_HANDLER.'ren_help.php');
 require_once (e_HANDLER.'user_extended_class.php');
 // require_once (e_HANDLER.'user_handler.php');
@@ -85,11 +145,11 @@ else
 
 
 e107::js('footer-inline',"
-function addtext_us(sc)
-		{
-			document.getElementById('dataform').image.value = sc;
-		}
-");
+	function addtext_us(sc)
+	{
+		document.getElementById('dataform').image.value = sc;
+	}
+	");
 
 
 
@@ -111,15 +171,29 @@ if(is_numeric(e_QUERY))
 {	// Trying to edit specific user record
 	if (ADMIN)
 	{	// Admin edit of specific record
-		$inp = (int)e_QUERY;
-		$_uid = $inp;
-		$info = get_user_data($inp);
+		preg_match('/^\/(.*?)\/(usersettings\.php|user\/edit)(\?|\/)(\d+)$/i', $_SERVER['REQUEST_URI'], $matches);		 
+/*
+$matches = Array
+(
+    [0] => /e107/usersettings.php?# OR /e107/edit/user/#
+    [1] => e107
+    [2] => usersettings.php OR edit/user
+    [3] => ? OR /
+    [4] => #
+)
+*/
+$inp = is_numeric(e_QUERY) ? intval(e_QUERY) : intval($matches[4]);
+
+$usersettings_form_action = strstr('?', $matches[3]) ? e_SELF . '?' . e_QUERY : e_SELF;
+
+$_uid = $inp;
+$info = get_user_data($inp);
 		//Only site admin is able to change setting for other admins
-		if(!is_array($info) || ($info['user_admin'] == 1 && (!defined('ADMINPERMS') || ADMINPERMS !== '0')) || ((!defined('ADMINPERMS') || ADMINPERMS !== '0') && !getperms('4')))
-		{
-			header('location:'.e_BASE.'index.php');
-			exit();
-		}
+if(!is_array($info) || ($info['user_admin'] == 1 && (!defined('ADMINPERMS') || ADMINPERMS !== '0')) || ((!defined('ADMINPERMS') || ADMINPERMS !== '0') && !getperms('4')))
+{
+	header('location:'.e_BASE.'index.php');
+	exit();
+}
 		$adminEdit = TRUE;		// Flag to indicate admin edit
 	}
 	else
@@ -135,26 +209,26 @@ if($adminEdit) // try to stay in Admin when admin is editing.
 	$mes = e107::getMessage();
 	$ADMIN_USERSETTINGS_EDIT =  $mes->render(). "
 	<table class='table adminform'>
-    	<colgroup span='2'>
-    		<col class='col-label' />
-    		<col class='col-control' />
-    	</colgroup>
+		<colgroup span='2'>
+		<col class='col-label' />
+		<col class='col-control' />
+	</colgroup>
 
 	{USERNAME}
 	{LOGINNAME}
 
 	<tr>
-	<td>".LAN_USER_60.req(!$pref['disable_emailcheck'])."</td>
-	<td>
-	{EMAIL}
-	</td>
+		<td>".LAN_USER_60.req(!$pref['disable_emailcheck'])."</td>
+		<td>
+			{EMAIL}
+		</td>
 	</tr>
 
 	<tr>
-	<td>".LAN_USER_63.req($pref['signup_option_realname'])."</td>
-	<td>
-	{REALNAME}
-	</td>
+		<td>".LAN_USER_63.req($pref['signup_option_realname'])."</td>
+		<td>
+			{REALNAME}
+		</td>
 	</tr>
 
 	{CUSTOMTITLE}
@@ -165,41 +239,43 @@ if($adminEdit) // try to stay in Admin when admin is editing.
 
 
 	<tr>
-	<td>".LAN_USER_83."</td>
-	<td><span class='defaulttext'>
-	{HIDEEMAIL=radio}
-	</span>
+		<td>".LAN_USER_83."</td>
+		<td><span class='defaulttext'>
+			{HIDEEMAIL=radio}
+		</span>
 	</td>
-	</tr>
-	
-	<tr>
+</tr>
+
+<tr>
 	<td>".LAN_USER_07.req($pref['signup_option_image'])."</td>
 	<td>
-	{AVATAR_REMOTE}
+		{AVATAR_REMOTE}
 	</td>
-	</tr>
+</tr>
 
-	{AVATAR_UPLOAD}
-	{PHOTO_UPLOAD}
+{AVATAR_UPLOAD}
+{PHOTO_UPLOAD}
 
-	{USERCLASSES}
-	{USEREXTENDED_ALL}
+{USERCLASSES}
+{USEREXTENDED_ALL}
 
-	
-	{SIGNATURE=cols=58&rows=4}	
-	{SIGNATURE_HELP}
-	</tr>
-	</table>
-	<div class='buttons-bar center'>
+
+{SIGNATURE=cols=58&rows=4}	
+{SIGNATURE_HELP}
+</tr>
+</table>
+<div class='buttons-bar center'>
 	".e107::getForm()->admin_button('updatesettings',LAN_UPDATE,'update')."
-	</div>
-	
-	";
-	
-	
-	$USERSETTINGS_EDIT = $ADMIN_USERSETTINGS_EDIT;
-	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php");
-	require_once (e_ADMIN."auth.php");
+</div>
+
+";
+
+
+$USERSETTINGS_EDIT = $ADMIN_USERSETTINGS_EDIT;
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php");
+new usersetting_admin();
+require_once (e_ADMIN."auth.php");
+//e107::getAdminUI()->runPage();
 }
 else
 {
@@ -312,8 +388,8 @@ if (isset($_POST['updatesettings']))
 	// See if user just wants to delete existing photo
 	if (isset($_POST['user_delete_photo']))
 	{
-	  $photo_to_delete = $udata['user_sess'];
-	  $changedUserData['user_sess'] = '';
+		$photo_to_delete = $udata['user_sess'];
+		$changedUserData['user_sess'] = '';
 	}
 
 
@@ -343,10 +419,10 @@ if (isset($_POST['updatesettings']))
 		unset($changedUserData['user_class']);		// We always recalculate this
 		if (FALSE === $adminEdit)
 		{	// Make sure admin can't edit another's user classes
-			if (!is_object($e_userclass))
-			{
-				$e_userclass = new user_class;
-			}
+	if (!is_object($e_userclass))
+	{
+		$e_userclass = new user_class;
+	}
 			$ucList = $e_userclass->get_editable_classes(USERCLASS_LIST,TRUE);	 // List of classes which this user can edit
 			if (count($ucList))
 			{
@@ -403,19 +479,19 @@ elseif (isset($_POST['SaveValidatedInfo']))
 		$new_data = base64_decode($_POST['updated_data']);
 		if (md5($new_data) != $_POST['updated_key'])
 		{  // Should only happen if someone's fooling around
-			echo 'Mismatch on validation key<br />';
-			exit();
-		}
+	echo 'Mismatch on validation key<br />';
+	exit();
+}
 
-		if (isset($_POST['updated_extended']))
-		{
-			$new_extended = base64_decode($_POST['updated_extended']);
-			if (md5($new_extended) != $_POST['extended_key'])
+if (isset($_POST['updated_extended']))
+{
+	$new_extended = base64_decode($_POST['updated_extended']);
+	if (md5($new_extended) != $_POST['extended_key'])
 			{  // Should only happen if someone's fooling around
-				echo 'Mismatch on validity key<br />';
-				exit();
-			}
-		}
+		echo 'Mismatch on validity key<br />';
+		exit();
+	}
+}
 
 		if ($userMethods->CheckPassword($_POST['currentpassword'], $udata['user_loginname'], $udata['user_password']) === false) // Use old data to validate
 
@@ -427,7 +503,7 @@ elseif (isset($_POST['SaveValidatedInfo']))
 			}
 			else
 			{
-            	require_once(e_ADMIN."footer.php");
+				require_once(e_ADMIN."footer.php");
 			}
 			exit();
 		}
@@ -735,39 +811,39 @@ if ($promptPassword)
 	$extended_key = md5($updated_extended);
 	$updated_extended = base64_encode($updated_extended);
 	$text = "<form method='post' action='".e_SELF.(e_QUERY ? "?".e_QUERY : '')."'>
-		<table><tr><td style='text-align:center'>";
-	foreach ($_POST as $k => $v)
-	{
-		if (is_array($v))
+	<table><tr><td style='text-align:center'>";
+		foreach ($_POST as $k => $v)
 		{
-			foreach ($v as $sk => $sv)
+			if (is_array($v))
 			{
-				$text .= "<input type='hidden' name='{$k}[{$sk}]' value='{$sv}' />\n";
-			}
-		}
-		else
-		{
-			$text .= "<input type='hidden' name='{$k}' value='{$v}' />\n";
-		}
-	}
-	$text .= LAN_USET_21."</td></tr><tr><td>&nbsp;</td></tr>
-		<tr><td style='text-align:center'><input type='password' name='currentpassword' value='' size='30' />";
-	$text .= "<input type='hidden' name='updated_data' value='{$updated_data}' /><input type='hidden' name='updated_key' value='{$validation_key}' />
-		<input type='hidden' name='updated_extended' value='{$updated_extended}' /><input type='hidden' name='extended_key' value='{$extended_key}' />
-		</td></tr>
-		<tr><td>&nbsp;</td></tr>
-		<tr><td style='text-align:center'><input type='submit' name='SaveValidatedInfo' value='".LAN_ENTER."' /></td></tr>
-		</table>
-		</form>";
-	$ns->tablerender(LAN_USET_39, $text);
-    			if(!$adminEdit)
-			{
-				require_once (FOOTERF);
+				foreach ($v as $sk => $sv)
+				{
+					$text .= "<input type='hidden' name='{$k}[{$sk}]' value='{$sv}' />\n";
+				}
 			}
 			else
 			{
-            	require_once(e_ADMIN."footer.php");
+				$text .= "<input type='hidden' name='{$k}' value='{$v}' />\n";
 			}
+		}
+		$text .= LAN_USET_21."</td></tr><tr><td>&nbsp;</td></tr>
+		<tr><td style='text-align:center'><input type='password' name='currentpassword' value='' size='30' />";
+			$text .= "<input type='hidden' name='updated_data' value='{$updated_data}' /><input type='hidden' name='updated_key' value='{$validation_key}' />
+			<input type='hidden' name='updated_extended' value='{$updated_extended}' /><input type='hidden' name='extended_key' value='{$extended_key}' />
+		</td></tr>
+		<tr><td>&nbsp;</td></tr>
+		<tr><td style='text-align:center'><input type='submit' name='SaveValidatedInfo' value='".LAN_ENTER."' /></td></tr>
+	</table>
+</form>";
+$ns->tablerender(LAN_USET_39, $text);
+if(!$adminEdit)
+{
+	require_once (FOOTERF);
+}
+else
+{
+	require_once(e_ADMIN."footer.php");
+}
 }
 
 
@@ -798,10 +874,12 @@ if (vartrue($_POST))
 	}
 }
 
-require_once (e_HANDLER."form_handler.php");
-$rs = new form;
+//require_once (e_HANDLER."form_handler.php");
+//$rs = new form;
 
-$text = (e_QUERY ? $rs->form_open("post", e_SELF."?".e_QUERY, "dataform", "", " class='form-horizontal' role='form' enctype='multipart/form-data'") : $rs->form_open("post", e_SELF, "dataform", "", " class='form-horizontal' role='form' enctype='multipart/form-data'"));
+$text = '<form method="post" action="'.$usersettings_form_action.'" id="dataform" class="form-horizontal" role="form" enctype="multipart/form-data">';
+
+//$text = (is_numeric($_uid) ? $rs->form_open("post", e_SELF."?".e_QUERY, "dataform", "", " class='form-horizontal' role='form' enctype='multipart/form-data'") : $rs->form_open("post", e_SELF, "dataform", "", " class='form-horizontal' role='form' enctype='multipart/form-data'"));
 
 if (e_QUERY == "update")
 {
@@ -815,8 +893,8 @@ $text .= $tp->parseTemplate($USERSETTINGS_EDIT, false, $usersettings_shortcodes)
 
 
 $text .= "<div><input type='hidden' name='_uid' value='{$uuid}' /></div>
-	</form>
-	";
+</form>
+";
 
 $caption = (isset($USERSETTINGS_EDIT_CAPTION)) ? $USERSETTINGS_EDIT_CAPTION : LAN_USET_39; // 'Update User Settings'	
 
@@ -828,7 +906,7 @@ if(!$adminEdit)
 }
 else
 {
-   	require_once(e_ADMIN."footer.php");
+	require_once(e_ADMIN."footer.php");
 }
 
 
@@ -866,34 +944,39 @@ function delete_file($fname, $dir = 'avatars/')
 	}
 	return false;
 }
-
+/*
 function usersettings_adminmenu()
 {
-		include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
-		
-		if ($action == '')
-		{
-			$action = 'main';
-		}
+	//include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
+
+	if ($action == '')
+	{
+		$action = 'main';
+	}
 		// ##### Display options
-		$var = array();
-		$var ['main']['text'] = LAN_USER_LIST;
-		$var ['main']['link'] = e_ADMIN.'users.php';
-		$var ['main']['perm'] = '4';
-		$var ['create']['text'] = LAN_USER_QUICKADD;
-		$var ['create']['link'] = e_ADMIN.'users.php?create';
-		$var ['create']['perm'] = '4|U1';
-		$var ['prune']['text'] = LAN_USER_PRUNE;
-		$var ['prune']['link'] = e_ADMIN.'users.php?prune';// Will be moved to "Schedule tasks"
-		$var ['prune']['perm'] = '4';
+	$var = array();
+	$var ['main']['text'] = LAN_USER_LIST;
+	$var ['main']['link'] = e_ADMIN_ABS.'users.php'; //e107::getUrl()->create('user/profile/edit', 'id='.(int) $_POST['userid'], 'full=1&encode=0')
+	$var ['main']['perm'] = '4';
+	$var ['create']['text'] = LAN_USER_QUICKADD;
+	$var ['create']['link'] = e_ADMIN_ABS.'users.php?create';
+	$var ['create']['perm'] = '4|U1';
+	//FIXME - move user prune to Schedule tasks (cron)
+	//$var ['prune']['text'] = LAN_USER_PRUNE;
+		//$var ['prune']['link'] = e_ADMIN_ABS.'users.php?prune';// Will be moved to "Schedule tasks"
+		//$var ['prune']['perm'] = '4';
 		$var ['options']['text'] = LAN_OPTIONS;
-		$var ['options']['link'] = e_ADMIN.'users.php?options';
+		$var ['options']['link'] = e_ADMIN_ABS.'users.php?options';
 		$var ['options']['perm'] = '4|U2';	
 		$var ['ranks']['text'] = LAN_USER_RANKS;
-		$var ['ranks']['link'] = e_ADMIN.'users.php?ranks';
+		$var ['ranks']['link'] = e_ADMIN_ABS.'users.php?ranks';
 		$var ['ranks']['perm'] = '4|U3';	
 		//  $var['mailing']['text']= USRLAN_121;
 		//   $var['mailing']['link']="mailout.php";
 		show_admin_menu(LAN_USER_OPTIONS, $action,$var);
-}
-?>
+	}*/
+
+
+
+
+	?>

@@ -569,13 +569,10 @@ function process_upload()
 	{
 		require_once(e_HANDLER.'upload_handler.php');
 		
-		$attachmentDir = $forum->getAttachmentPath(USERID);
-
-		if(!is_dir($attachmentDir))
-		{
-			mkdir($attachmentDir, 0755);	
-		}
-	//	$thumbDir = e_PLUGIN.'forum/attachments/thumb/';
+		// get attachment path and create it if doesn't exists...
+		// Added by Luca Filosofi > aseptik@gmail.com
+				
+		$attachmentDir = $forum->getAttachmentPath(USERID, true);
 
 		if ($uploaded = process_uploaded_files($attachmentDir, 'attachment', ''))
 		{
