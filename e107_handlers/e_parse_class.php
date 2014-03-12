@@ -2846,10 +2846,24 @@ class e_parser
 		
 		$thumb = vartrue($parm['thumb']);
 		
+		
+		$pref = e107::getPref();
+		$ytpref = array();
+		foreach($pref as $k=>$v) // Find all Youtube Prefs. 
+		{
+			if(substr($k,0,8) == 'youtube_')
+			{
+				$key = substr($k,8);
+				$ytpref[$key] = $v;
+			}	
+		} 
+		
+		$ytqry = http_build_query($ytpref);
+		
 		if($type == 'youtube')
 		{		
 			
-			$video =  '<iframe width="560" height="315" src="//www.youtube.com/embed/'.$id.'" style="border:0px" allowfullscreen></iframe>';
+			$video =  '<iframe width="560" height="315" src="//www.youtube.com/embed/'.$id.'?'.$ytqry.'" style="border:0px" allowfullscreen></iframe>';
 			$thumbSrc = "https://i1.ytimg.com/vi/".$id."/0.jpg";
 		
 			if($thumb == 'tag')

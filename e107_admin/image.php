@@ -651,6 +651,8 @@ class media_admin_ui extends e_admin_ui
     	 * It needs to also take into consideration the type of media (image, video etc) which comes from another field.
     	 */
 
+    	protected $preftabs			= array('General',"Watermark", "Youtube"); 
+    	 
 		protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null,			'data'=> null,		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'media_id'				=> array('title'=> LAN_ID,			'type' => 'number',		'data'=> 'int',		'width' =>'5%', 'forced'=> TRUE, 'nolist'=>TRUE),
@@ -692,7 +694,7 @@ class media_admin_ui extends e_admin_ui
 
 	
 	protected $prefs = array(
-		'image_post'	   				=> array('title'=> IMALAN_1, 'type'=>'boolean', 'data'=>'int', 'writeParms'=>'help=IMALAN_2'),
+		'image_post'	   				=> array('title'=> IMALAN_1, 'tab'=>0, 'type'=>'boolean', 'data'=>'int', 'writeParms'=>'help=IMALAN_2'),
 		'image_post_class' 				=> array('title'=> IMALAN_10, 'type' => 'userclass', 'data'=>'int', 'writeParms'=>'help=IMALAN_11&classlist=public,guest,nobody,member,admin,main,classes' ),
 		'image_post_disabled_method'	=> array('title'=> IMALAN_12, 'type' => 'boolean','writeParms'=>'enabled=IMALAN_15&disabled=IMALAN_14'),
 		'resize_method'					=> array('title'=> IMALAN_3, 'type'=>'method', 'data'=>'str'),
@@ -702,19 +704,28 @@ class media_admin_ui extends e_admin_ui
 		'im_height'						=> array('title'=> "Avatar Height", 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=Avatar images will be constrained to these dimensions (in pixels)'),
 		'resize_dimensions'				=> array('title'=> "Resize-Image Dimensions", 'type'=>'method', 'data'=>'str'),
 		
-		'watermark_activate'			=> array('title'=> 'Watermark Activation', 'type' => 'number', 'data' => 'str', 'help'=>'All images with a width or height greater than this value will be given a watermark during resizing.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
-		'watermark_text'				=> array('title'=> 'Watermark Text', 'type' => 'text', 'data' => 'str', 'help'=>'Optional Watermark Text'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
-		'watermark_font'				=> array('title'=> 'Watermark Font', 'type' => 'dropdown', 'data' => 'str', 'help'=>'Optional Watermark Font. Upload more .ttf fonts to the /fonts folder in your theme directory.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
-		'watermark_size'				=> array('title'=> 'Watermark Size', 'type' => 'number', 'data' => 'int', 'help'=>'Size of the font in pts'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
+		'watermark_activate'			=> array('title'=> 'Watermark Activation', 'tab'=>1, 'type' => 'number', 'data' => 'str', 'help'=>'All images with a width or height greater than this value will be given a watermark during resizing.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
+		'watermark_text'				=> array('title'=> 'Watermark Text','tab'=>1, 'type' => 'text', 'data' => 'str', 'help'=>'Optional Watermark Text'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
+		'watermark_font'				=> array('title'=> 'Watermark Font','tab'=>1, 'type' => 'dropdown', 'data' => 'str', 'help'=>'Optional Watermark Font. Upload more .ttf fonts to the /fonts folder in your theme directory.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
+		'watermark_size'				=> array('title'=> 'Watermark Size', 'tab'=>1,'type' => 'number', 'data' => 'int', 'help'=>'Size of the font in pts'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
 		
-		'watermark_pos'					=> array('title'=> 'Watermark Position', 'type' => 'dropdown', 'data' => 'str', 'help'=>'Watermark Position'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
-		'watermark_margin'				=> array('title'=> 'Watermark Margin', 'type' => 'number', 'data' => 'int', 'help'=>'The distance that watermark will appear from the edge of the image.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
+		'watermark_pos'					=> array('title'=> 'Watermark Position','tab'=>1, 'type' => 'dropdown', 'data' => 'str', 'help'=>'Watermark Position'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
+		'watermark_margin'				=> array('title'=> 'Watermark Margin', 'tab'=>1,'type' => 'number', 'data' => 'int', 'help'=>'The distance that watermark will appear from the edge of the image.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
 		
-		'watermark_color'				=> array('title'=> 'Watermark Color', 'type' => 'text', 'data' => 'str', 'help'=>'Color of the watermark eg. 000000'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
-		'watermark_shadowcolor'			=> array('title'=> 'Watermark Shadow-Color', 'type' => 'text', 'data' => 'str', 'help'=>'Shadow Color of the watermark eg. ffffff '), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
+		'watermark_color'				=> array('title'=> 'Watermark Color', 'tab'=>1, 'type' => 'text', 'data' => 'str', 'help'=>'Color of the watermark eg. 000000'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
+		'watermark_shadowcolor'			=> array('title'=> 'Watermark Shadow-Color', 'tab'=>1,'type' => 'text', 'data' => 'str', 'help'=>'Shadow Color of the watermark eg. ffffff '), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
 	
-		'watermark_opacity'				=> array('title'=> 'Watermark Opacity', 'type' => 'number', 'data' => 'int', 'help'=>'Enter a number between 1 and 100'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
+		'watermark_opacity'				=> array('title'=> 'Watermark Opacity', 'tab'=>1, 'type' => 'number', 'data' => 'int', 'help'=>'Enter a number between 1 and 100'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
 	
+		// https://developers.google.com/youtube/player_parameters
+	
+		'youtube_rel'					=> array('title'=> "Show Related Videos", 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
+		'youtube_showinfo'				=> array('title'=> "Show Video Info", 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
+		'youtube_cc_load_policy'		=> array('title'=> "Show Closed-Captions by default", 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
+		'youtube_modestbranding'		=> array('title'=> "Use Modest Branding", 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
+		
+		// 
+
 	);
 	
 
