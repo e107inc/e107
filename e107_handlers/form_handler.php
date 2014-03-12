@@ -1116,10 +1116,9 @@ class e_form
 			return $this->radio_multi($name, $value, $checked, $options);
 		}
 
+		$label = vartrue($options['label']) ? "<label class='radio inline' ".$this->_format_id('', $name, $value, 'for').">{$options['label']}</label>" : "";
 
-		$label = isset($options['label']) ? "<label  class='radio inline' ".$this->_format_id('', $name, $value, 'for').">{$options['label']}</label>" : "";
-
-		$help = isset($options['help']) ?  "<span class='field-help'>{$options['help']}</span>" : "";
+		$help = vartrue($options['help']) ?  "<span class='field-help'>{$options['help']}</span>" : "";
 		
 		$options = $this->format_options('radio', $name, $options);
 		$options['checked'] = $checked; //comes as separate argument just for convenience	
@@ -1127,7 +1126,6 @@ class e_form
 
 		$input = "<input type='radio' name='{$name}' value='{$value}' {$attributes} />";
  
-		
 		return sprintf("%s%s%s", $input, $label, $help);
 	}
 
