@@ -17,5 +17,7 @@
 	$MENU_TEMPLATE['buttom-image']['body'] 				= '{CMENUIMAGE}<br />{CPAGEBUTTON}'; 
 	$MENU_TEMPLATE['buttom-image']['end'] 				= '</div>'; 
 
-
+	$MENU_TEMPLATE['image-only']['start'] 					= ''; 
+	$MENU_TEMPLATE['image-only']['body'] 					= '{CMENUIMAGE}'; 
+	$MENU_TEMPLATE['image-only']['end'] 					= ''; 	
 ?>
