@@ -1104,49 +1104,31 @@ class e_form
 	 * @param $checked boolean
 	 * @param $options 
 	 */
+
+	                
 	function radio($name, $value, $checked = false, $options = null)
 	{
-		
+
 		if(!is_array($options)) parse_str($options, $options);
-		
+
 		if(is_array($value))
 		{
 			return $this->radio_multi($name, $value, $checked, $options);
 		}
-		
-		$labelFound = vartrue($options['label']);
-		unset($options['label']); // label attribute not valid in html5
-				
-		$options = $this->format_options('radio', $name, $options);
-		$options['checked'] = $checked; //comes as separate argument just for convenience
-		// $options['class'] = 'inline';	
-		$text = "";
-		
 
+
+		$label = isset($options['label']) ? "<label  class='radio inline' ".$this->_format_id('', $name, $value, 'for').">{$options['label']}</label>" : "";
+
+		$help = isset($options['help']) ?  "<span class='field-help'>{$options['help']}</span>" : "";
 		
-	//	return print_a($options,true);
-		if($labelFound) // Bootstrap compatible markup
-		{
-			$text .= "<label class='radio inline'>";	
-			
-		}
+		$options = $this->format_options('radio', $name, $options);
+		$options['checked'] = $checked; //comes as separate argument just for convenience	
+		$attributes = $this->get_attributes($options, $name, $value);
+
+		$input = "<input type='radio' name='{$name}' value='{$value}' {$attributes} />";
+ 
 		
-	
-		
-		
-		$text .= "<input type='radio' name='{$name}' value='".$value."'".$this->get_attributes($options, $name, $value)." />";
-		
-		if(vartrue($options['help']))
-		{
-			$text .= "<div class='field-help'>".$options['help']."</div>";
-		}
-		
-		if($labelFound)
-		{
-			$text .= $labelFound."</label>";	
-		}
-		
-		return $text;
+		return sprintf("%s%s%s", $input, $label, $help);
 	}
 
 	/**
@@ -1156,7 +1138,7 @@ class e_form
 	 * @param label_disabled
 	 * @param options
 	 */
-	function radio_switch($name, $checked_enabled = false, $label_enabled = '', $label_disabled = '',$options=array())
+	function radio_switch($name, $checked_enabled = false, $label_enabled = '', $label_disabled = '', $options=array())
 	{
 		if(!is_array($options)) parse_str($options, $options);
 		
@@ -1192,7 +1174,7 @@ class e_form
 			
 		//	['help'] = $helpLabel;
 		//	$text[] = $this->radio($name, $value, (string) $checked === (string) $value, $options);
-		return $this->radio($name, 1, $checked_enabled, $options_on)." 	".$this->radio($name, 0, !$checked_enabled, $options_off);
+		return '<div class="e-radio-switch">' . $this->radio($name, 1, $checked_enabled, $options_on)." 	".$this->radio($name, 0, !$checked_enabled, $options_off). '</div>';
 		
 		
 	//	return $this->radio($name, 1, $checked_enabled, $options_on)."".$this->label($label_enabled ? $label_enabled : LAN_ENABLED, $name, 1)."&nbsp;&nbsp;
