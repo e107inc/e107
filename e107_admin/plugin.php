@@ -22,7 +22,7 @@ e107::coreLan('plugin', true);
 $e_sub_cat = 'plug_manage';
 
 define('PLUGIN_SHOW_REFRESH', FALSE);
-define('PLUGIN_SCAN_INTERVAL', 360);
+define('PLUGIN_SCAN_INTERVAL', $_SERVER['E_DEV'] ? 0 : 360);
 
 global $user_pref;
 
@@ -167,7 +167,7 @@ function e_help()
 {
 	return array(
 		'caption'	=> "Scan for Changes",
-		'text'		=> "Plugin folders are scanned every ".(PLUGIN_SCAN_INTERVAL / 60) ." minutes for changes. Click the button below to scan now.
+		'text'		=> "Plugin folders are scanned every ".(PLUGIN_SCAN_INTERVAL ? PLUGIN_SCAN_INTERVAL / 60 : 0) ." minutes for changes. Click the button below to scan now.
 			<p><a class='btn btn-mini btn-primary' href='".e_SELF."?refresh'>Refresh</a></p>"
 	);
 }
@@ -944,6 +944,12 @@ class pluginManager{
     function pluginCheck($force=false)
 	{
 		global $plugin;
+
+		if(!PLUGIN_SCAN_INTERVAL)
+		{
+			$plugin->update_plugins_table('update');
+			return;
+		}
 		
 		if((time() > vartrue($_SESSION['nextPluginFolderScan'],0)) || $force == true)
 		{
