@@ -283,8 +283,8 @@ $text = "
 							".$frm->radio('redirectsiteurl', 1, $pref['redirectsiteurl'], array('label'=>LAN_ENABLED))." 
 							".$frm->radio('redirectsiteurl', 0, !$pref['redirectsiteurl'], array('label'=>LAN_DISABLED))."
 						*/
-						$text .= $frm->radio_switch('redirectsiteurl', $pref['redirectsiteurl'])."<div class='field-help'>".PRFLAN_135."</div>
-						</td>
+						$text .= $frm->radio_switch('redirectsiteurl', $pref['redirectsiteurl'], '', '', array('disabled'=>array('help'=>PRFLAN_135)));
+						$text .="</td>
 					</tr>
 					<tr>
 						<td><label for='sitebutton'>".PRFLAN_4."</label></td>
@@ -533,10 +533,9 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 							".$frm->label(LAN_DISABLED, 'contact_emailcopy', 0)."
 							<div class='smalltext field-help'>".PRFLAN_165."</div>
 						*/
-					$text .= $frm->radio_switch('contact_emailcopy', $pref['contact_emailcopy'])."<div class='smalltext field-help'>".PRFLAN_165."</div>
 
-
-
+					$text .= $frm->radio_switch('contact_emailcopy', $pref['contact_emailcopy'], '', '', array( 'disabled' => array('help'=>PRFLAN_165)));
+$text .="
 						</td>
 					</tr>
 						</tbody>
@@ -604,15 +603,15 @@ $text .= "
 					<tr>
 						<td><label for='admin-alerts-ok'>".PRFLAN_95."</label></td>
 						<td>
-							".$frm->radio_switch('admin_alerts_ok', $pref['admin_alerts_ok'])."
-							<div class='field-help'>".PRFLAN_96."</div>
+							".$frm->radio_switch('admin_alerts_ok', $pref['admin_alerts_ok'], '', '', array( 'disabled' => array('help'=>PRFLAN_96)))."
+							 
 						</td>
 					</tr>
 					<tr>
 						<td><label for='admin-alerts-uniquemenu'>".PRFLAN_97."</label></td>
 						<td>
-							".$frm->radio_switch('admin_alerts_uniquemenu', $pref['admin_alerts_uniquemenu'])."
-							<div class='field-help'>".PRFLAN_98."</div>
+							".$frm->radio_switch('admin_alerts_uniquemenu', $pref['admin_alerts_uniquemenu'], '', '', array( 'disabled' => array('help'=>PRFLAN_98)))."
+							
 						</td>
 					</tr>";
 					/*<tr>
@@ -626,8 +625,8 @@ $text .= "
 					<tr>
 						<td><label for='admin-separate-plugins'>".PRFLAN_204."</label></td>
 						<td>
-							".$frm->radio_switch('admin_separate_plugins', $pref['admin_separate_plugins'])."
-							<div class='field-help'>".PRFLAN_205."</div>
+							".$frm->radio_switch('admin_separate_plugins', $pref['admin_separate_plugins'], '', '', array( 'disabled' => array( 'help'=>PRFLAN_205)))."
+							 
 						</td>
 					</tr>
 				</tbody>
@@ -1334,8 +1333,13 @@ $text .= "
 					<tr>
 						<td><label for='user-reg'>".PRFLAN_29."</label></td>
 						<td>
-							".$frm->radio_switch('user_reg', $pref['user_reg'])."
-							<div class='smalltext field-help'>".PRFLAN_30."</div>
+							".$frm->radio_switch('user_reg', $pref['user_reg'],'','', array(
+							 
+							'disabled' => array( 
+								'help' => PRFLAN_30
+								)
+							))."
+							 
 						</td>
 					</tr>
 
@@ -1389,8 +1393,8 @@ $text .= "
 					<tr>
 						<td><label for='use-coppa'>".PRFLAN_45."</label></td>
 						<td>
-							".$frm->radio_switch('use_coppa', $pref['use_coppa'])."
-							<div class='field-help'>".PRFLAN_46." <a href='http://www.ftc.gov/privacy/coppafaqs.shtm'>".PRFLAN_94."</a></div>
+							".$frm->radio_switch('use_coppa', $pref['use_coppa'], '', '', array( 'disabled' => array( 'help'=>PRFLAN_46." <a href='http://www.ftc.gov/privacy/coppafaqs.shtm'>".PRFLAN_94)))."
+				
 						</td>
 					</tr>
 					<tr>
@@ -1399,8 +1403,21 @@ $text .= "
 					
 					$memDisp = !vartrue($pref['membersonly_enabled']) ? "e-hideme" : "";
 						
-					$text .= $frm->radio_switch('membersonly_enabled', $pref['membersonly_enabled'],'', '', 'class=e-expandit')."
-							<div class='field-help'>".PRFLAN_59."</div>
+					$text .= $frm->radio_switch(
+						'membersonly_enabled', 
+						$pref['membersonly_enabled'],
+						'', 
+						'',
+						array(
+							'expandit' => true, 
+							'disabled' => array( 
+								'help' => PRFLAN_59
+								)
+							)
+						);
+
+					$text .="
+							
 							<div class='e-expandit-container {$memDisp}' style='padding-top:10px'>".
 							$frm->textarea('membersonly_exceptions', $pref['membersonly_exceptions'], 3, 1, 'placeholder='.PRFLAN_206)."
 							<div class='field-help'>".PRFLAN_207."</div>
@@ -1411,8 +1428,13 @@ $text .= "
                		<tr>
 						<td><label for='autologinpostsignup'>".PRFLAN_197."</label></td>
 						<td>
-							".$frm->radio_switch('autologinpostsignup', $pref['autologinpostsignup'])."
-							<div class='smalltext field-help'>".PRFLAN_198."</div>
+							".$frm->radio_switch('autologinpostsignup', $pref['autologinpostsignup'], '', '', array(
+							
+							'disabled' => array( 
+								'help' => PRFLAN_198
+								)
+							))."
+							 
 						</td>
 					</tr>
 
@@ -1584,8 +1606,7 @@ $xurls = array(
 					{
 						switch ($k) {
 							case 'enabled':
-								$eopt = array('class'=>'e-expandit');
-								$text .= $frm->radio_switch('social_login['.$prov.'][enabled]', vartrue($pref['social_login'][$prov]['enabled']),'','',$eopt);
+								$text .= $frm->radio_switch('social_login['.$prov.'][enabled]', vartrue($pref['social_login'][$prov]['enabled']),'','', array('expandit' => true));
 							break;
 							
 							case 'keys':
@@ -1745,8 +1766,13 @@ $text .= "
 					<tr>
 						<td><label for='make-clickable'>".PRFLAN_127.":</label></td>
 						<td>
-							".$frm->radio_switch('make_clickable', $pref['make_clickable'])."
-							<div class='smalltext field-help'>".PRFLAN_128."</div>
+							".$frm->radio_switch('make_clickable', $pref['make_clickable'], '', '', array(
+							
+							'disabled' => array( 
+								'help' => PRFLAN_128
+								)
+							))."
+							 
 						</td>
 					</tr>";
 					
@@ -1756,8 +1782,13 @@ $text .= "
 					<tr>
 						<td><label for='link-replace'>".PRFLAN_102."?:</label></td>
 						<td>
-							".$frm->radio_switch('link_replace', $pref['link_replace'],'', '', 'expandit=1')."
-							<div class='smalltext field-help'>".PRFLAN_103."</div>
+							".$frm->radio_switch('link_replace', $pref['link_replace'], '', '', array(
+							'expandit' => true,
+							'disabled' => array( 
+								'help' => PRFLAN_103
+								)
+							))."
+							 
 							<div class='e-expandit-container {$replaceDisp}'>
 							".$frm->text('link_text', $pref['link_text'], 200, 'placeholder='.PRFLAN_104)."
 							<div class='smalltext field-help'>".PRFLAN_105."</div>".
@@ -1771,8 +1802,13 @@ $text .= "
 					<tr >
 						<td><label for='links-new-window'>".PRFLAN_145."?:</label></td>
 						<td>
-							".$frm->radio_switch('links_new_window', $pref['links_new_window'])."
-							<div class='smalltext field-help'>".PRFLAN_146."</div>
+							".$frm->radio_switch('links_new_window', $pref['links_new_window'], '', '', array(
+							 
+							'disabled' => array( 
+								'help' => PRFLAN_146
+								)
+							))."
+							
 						</td>
 					</tr>
 					
@@ -1780,8 +1816,13 @@ $text .= "
 					<tr>
 						<td><label for='profanity-filter'>".PRFLAN_40."</label></td>
 						<td>
-							".$frm->radio_switch('profanity_filter', $pref['profanity_filter'])."
-							<div class='smalltext field-help'>".PRFLAN_41."</div>
+							".$frm->radio_switch('profanity_filter', $pref['profanity_filter'], '', '', array(
+							 
+							'disabled' => array( 
+								'help' => PRFLAN_41
+								)
+							))."
+							 
 						</td>
 					</tr>
 
@@ -1833,29 +1874,49 @@ $text .= "
 					<tr>
 						<td><label for='filter-script'>".PRFLAN_217.":</label></td>
 						<td>
-							".$frm->radio_switch('filter_script', varset($pref['filter_script'], 1))."
-							<div class='smalltext field-help'>".PRFLAN_218."</div>
+							".$frm->radio_switch('filter_script', varset($pref['filter_script'], 1), '', '', array(
+							 
+							'disabled' => array( 
+								'help' => PRFLAN_218
+								)
+							))."
+							 
 						</td>
 					</tr>
 					<tr>
 						<td><label for='html-abuse'>".PRFLAN_220.":</label></td>
 						<td>
-							".$frm->radio_switch('html_abuse', varset($pref['html_abuse'], 1))."
-							<div class='smalltext field-help'>".PRFLAN_221."</div>
+							".$frm->radio_switch('html_abuse', varset($pref['html_abuse'], 1), '', '', array(
+							 
+							'disabled' => array( 
+								'help' => PRFLAN_221
+								)
+							))."
+							 
 						</td>
 					</tr>
 					<tr>
 						<td><label for='wysiwyg'>".PRFLAN_122.":</label></td>
 						<td>
-							".$frm->radio_switch('wysiwyg', $pref['wysiwyg'])."
-							<div class='smalltext field-help'>".PRFLAN_123."</div>
+							".$frm->radio_switch('wysiwyg', $pref['wysiwyg'], '', '', array(
+							 
+							'disabled' => array( 
+								'help' => PRFLAN_123
+								)
+							))."
+							 
 						</td>
 					</tr>
 					<tr>
 						<td><label for='old_np'>".PRFLAN_124.":</label></td>
 						<td>
-							".$frm->radio_switch('old_np', $pref['old_np'])."
-							<div class='smalltext field-help'>".PRFLAN_125."</div>
+							".$frm->radio_switch('old_np', $pref['old_np'], '', '', array(
+							 
+							'disabled' => array( 
+								'help' => PRFLAN_125
+								)
+							))."
+							 
 						</td>
 					</tr>
 					
@@ -1867,8 +1928,13 @@ if(file_exists(e_PLUGIN."geshi/geshi.php"))
 					<tr>
 						<td><label for='usegeshi'>".PRFLAN_118."?:</label></td>
 						<td>
-							".$frm->radio_switch('useGeshi', $pref['useGeshi'])."
-							<div class='smalltext field-help'>".str_replace("[link]", "http://qbnz.com/highlighter/", PRFLAN_119)."</div>
+							".$frm->radio_switch('useGeshi', $pref['useGeshi'], '', '', array(
+							 
+							'disabled' => array( 
+								'help' => str_replace("[link]", "http://qbnz.com/highlighter/", PRFLAN_119)
+								)
+							))."
+							
 						</td>
 					</tr>
 					<tr>
@@ -1916,8 +1982,13 @@ $text .= "
 						<td><label for='ssl-enabled'>".PRFLAN_60."</label></td>
 
 						<td>
-							".$frm->radio_switch('ssl_enabled', $pref['ssl_enabled'])."
-							<div class='field-help'>".PRFLAN_61."</div>
+							".$frm->radio_switch('ssl_enabled', $pref['ssl_enabled'], '', '', array(
+							 
+							'disabled' => array( 
+								'help' => PRFLAN_61
+								)
+							))."
+							 
 						</td>
 					</tr>
 					<!-- Secure Image -->
@@ -1934,7 +2005,12 @@ $text .= "
 		$text .= "<tr><td><label for='".$key."'>".$label."</label></td><td>";	
 		if($hasGD)
 		{
-			$text .= $frm->radio_switch($key, $pref[$key]);
+			$text .= $frm->radio_switch($key, $pref[$key], '', '', array(
+							 
+							'disabled' => array( 
+								'help' => PRFLAN_223
+								)
+							));
 		}
 		else
 		{
@@ -1942,7 +2018,7 @@ $text .= "
 		}
 		
 		$text .= "
-		<div class='field-help'>".PRFLAN_223."</div>
+		 
 		</td></tr>\n";
 		
 	}
@@ -1998,8 +2074,13 @@ $text .= "					<tr>
 					<tr>
 						<td><label for='disallowmultilogin'>".PRFLAN_129.":</label></td>
 						<td>
-							".$frm->radio_switch('disallowMultiLogin', $pref['disallowMultiLogin'], LAN_YES, LAN_NO)."
-							<div class='smalltext field-help'>".PRFLAN_130."</div>
+							".$frm->radio_switch('disallowMultiLogin', $pref['disallowMultiLogin'], LAN_YES, LAN_NO, array(
+							 
+							'disabled' => array( 
+								'help' => PRFLAN_130
+								)
+							))."
+							 
 						</td>
 					</tr>
 
@@ -2042,8 +2123,13 @@ $text .= "					<tr>
 					<tr>
 						<td><label for='passwordencoding'>".PRFLAN_188.":</label></td>
 						<td>
-							".$frm->radio_switch('passwordEncoding', varset($pref['passwordEncoding'], 0), PRFLAN_190, PRFLAN_189)."
-							<div class='smalltext field-help'>".PRFLAN_191."</div>
+							".$frm->radio_switch('passwordEncoding', varset($pref['passwordEncoding'], 0), PRFLAN_190, PRFLAN_189, array(
+							 
+							'disabled' => array( 
+								'help' => PRFLAN_191
+								)
+							))."
+							 
 						</td>
 					</tr>
 					<tr>";
@@ -2130,8 +2216,13 @@ $text .= "
              		<tr>
 						<td>".PRFLAN_32."</td>
 						<td>
-							".$frm->radio_switch('anon_post', $pref['anon_post'], LAN_YES, LAN_NO)."
-							<div class='field-help'>".PRFLAN_33."</div>
+							".$frm->radio_switch('anon_post', $pref['anon_post'], LAN_YES, LAN_NO, array(
+							 
+							'disabled' => array( 
+								'help' => PRFLAN_33
+								)
+							))."
+							 
 						</td>
 					</tr>
 					<tr>
@@ -2225,9 +2316,14 @@ $text .= "
 	<td>".UPLLAN_25."</td>
 	<td>".
 	
-	$frm->radio_switch('upload_enabled', $pref['upload_enabled'], LAN_YES, LAN_NO)
+	$frm->radio_switch('upload_enabled', $pref['upload_enabled'], LAN_YES, LAN_NO, array(
+							 
+							'disabled' => array( 
+								'help' => UPLLAN_26
+								)
+							))
 	."
-	<div class='field-help'>".UPLLAN_26."</div>
+	 
 	</td>
 	</tr>
 
@@ -2315,29 +2411,49 @@ $text .= "
 					<tr>
 						<td>Disable scripts consolidation</td>
 						<td>
-							".$frm->radio_switch('e_jslib_nocombine', $pref['e_jslib_nocombine'], LAN_YES, LAN_NO)."
-							<div class='smalltext field-help'>If disabled, scripts will be loaded in one consolidated file</div>
+							".$frm->radio_switch('e_jslib_nocombine', $pref['e_jslib_nocombine'], LAN_YES, LAN_NO, array(
+							 
+							'disabled' => array( 
+								'help' => "If disabled, scripts will be loaded in one consolidated file"
+								)
+							))."
+							 
 						</td>
 					</tr>
 					<tr>
 						<td>Enable consolidated scripts zlib compression:</td>
 						<td>
-							".$frm->radio_switch('e_jslib_gzip', $pref['e_jslib_gzip'], LAN_YES, LAN_NO)."
-							<div class='smalltext field-help'>Used only when script consolidation is enabled</div>
+							".$frm->radio_switch('e_jslib_gzip', $pref['e_jslib_gzip'], LAN_YES, LAN_NO, array(
+							 
+							'disabled' => array( 
+								'help' => "Used only when script consolidation is enabled"
+								)
+							))."
+							 
 						</td>
 					</tr>
 					<tr>
 						<td>Disable consolidated scripts server cache:</td>
 						<td>
-							".$frm->radio_switch('e_jslib_nocache', $pref['e_jslib_nocache'], LAN_YES, LAN_NO)."
-							<div class='smalltext field-help'>Used only when script consolidation is enabled</div>
+							".$frm->radio_switch('e_jslib_nocache', $pref['e_jslib_nocache'], LAN_YES, LAN_NO, array(
+							 
+							'disabled' => array( 
+								'help' => "Used only when script consolidation is enabled"
+								)
+							))."
+							 
 						</td>
 					</tr>
 					<tr>
 						<td>Disable consolidated scripts browser cache:</td>
 						<td>
-							".$frm->radio_switch('e_jslib_nobcache', $pref['e_jslib_nobcache'], LAN_YES, LAN_NO)."
-							<div class='smalltext field-help'>Used only when script consolidation is enabled</div>
+							".$frm->radio_switch('e_jslib_nobcache', $pref['e_jslib_nobcache'], LAN_YES, LAN_NO, array(
+							 
+							'disabled' => array( 
+								'help' => "Used only when script consolidation is enabled"
+								)
+							))."
+							
 						</td>
 					</tr>
 		";	
@@ -2384,15 +2500,25 @@ $text .= "
 					<tr>
 						<td>".PRFLAN_147.":</td>
 						<td>
-							".$frm->radio_switch('developer', $pref['developer'])."
-							<div class='smalltext field-help'>".PRFLAN_148."</div>
+							".$frm->radio_switch('developer', $pref['developer'],'','', array(
+							 
+							'disabled' => array( 
+								'help' => PRFLAN_148
+								)
+							))."
+							 
 						</td>
 					</tr>
 					<tr>
 						<td>".PRFLAN_196."</td>
 						<td>
-						".$frm->radio_switch('log_page_accesses', $pref['log_page_accesses'])."
-						<div class='field-help'>".PRFLAN_196a." <strong>".e_LOG."</strong></div>
+						".$frm->radio_switch('log_page_accesses', $pref['log_page_accesses'],'','', array(
+							 
+							'disabled' => array( 
+								'help' => PRFLAN_196a." <strong>".e_LOG."</strong>"
+								)
+							))."
+						 
 						</td>
 					</tr>
 					<tr>
