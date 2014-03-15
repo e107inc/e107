@@ -1918,21 +1918,29 @@ class e107
 	 */
 	public static function coreTemplatePath($id, $override = true)
 	{
-		$id = str_replace('..', '', $id); //simple security, '/' is allowed
-		$override_path 	= $override ? self::getThemeInfo($override, 'rel').'templates/'.$id.'_template.php' : null;		
-		$legacy_path 	= e_THEME.'templates/'.$id.'_template.php';
-		$core_path 		= e_CORE.'templates/'.$id.'_template.php';
+		$id 						= str_replace('..', '', $id); //simple security, '/' is allowed
+		$curTheme 					= self::getThemeInfo($override, 'rel');
 		
-		if($override_path && is_readable($override_path))
+		$override_path 				= $override ? $curTheme.'templates/'.$id.'_template.php' : null;	
+		$legacy_override_path 		= $override ? $curTheme.$id.'_template.php' : null;	
+
+		$legacy_core_path 			= e_THEME.'templates/'.$id.'_template.php';
+		$core_path 					= e_CORE.'templates/'.$id.'_template.php';
+		
+		if($override_path && is_readable($override_path)) // v2 override template. 
 		{
-			return $override_path; 	
+			return $override_path;
 		}
-		elseif(is_readable($legacy_path))
+		elseif($legacy_override_path && is_readable($legacy_override_path)) //v1 override template. 
 		{
-			return $legacy_path;
+			return $legacy_override_path; 	
+		}
+		elseif(is_readable($legacy_core_path)) //v1 core template. 
+		{
+			return $legacy_core_path;
 		}
 
-		return $core_path;
+		return $core_path; 
 	}
 
 	/**
