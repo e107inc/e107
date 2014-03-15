@@ -45,14 +45,24 @@ if($_POST)
 
 if (isset($_POST['wm_update'])) 
 {
-	$data = $tp->toDB($_POST['data']);
-	$wm_title = $tp->toDB($_POST['wm_caption']);
-	$wmId = intval($_POST['wm_id']);
-	welcome_adminlog('02', $wmId, $wm_title);
+	$data 		= $_POST['data']; // $tp->toDB($_POST['data']) causes issues with ':'
+	$wm_title 	= $tp->toDB($_POST['wm_caption']);
+	$wmId 		= intval($_POST['wm_id']);
+	
+	$updateArray = array(
+		'gen_chardata'	=> $data,
+		'gen_ip'		=> $wm_title,
+		'gen_intdata'	=>  $_POST['wm_active'],
+		'WHERE'			=> "gen_id=".$wmId
+	); 
+	
 	//$message = ($sql->db_Update("generic", "gen_chardata ='{$data}',gen_ip ='{$wm_title}', gen_intdata='".$_POST['wm_active']."' WHERE gen_id=".$wmId." ")) ? LAN_UPDATED : LAN_UPDATED_FAILED;
-	if ($sql->update("generic", "gen_chardata ='{$data}',gen_ip ='{$wm_title}', gen_intdata='".$_POST['wm_active']."' WHERE gen_id=".$wmId." "))
+	// if ($sql->update("generic", "gen_chardata ='{$data}',gen_ip ='{$wm_title}', gen_intdata='".$_POST['wm_active']."' WHERE gen_id=".$wmId." "))
+	
+	if ($sql->update("generic", $updateArray))
 	{
 		$mes->addSuccess(LAN_UPDATED);
+		welcome_adminlog('02', $wmId, $wm_title);
 	}
 	else 
 	{
@@ -62,9 +72,10 @@ if (isset($_POST['wm_update']))
 
 if (isset($_POST['wm_insert'])) 
 {
-	$wmtext = $tp->toDB($_POST['data']);
-	$wmtitle = $tp->toDB($_POST['wm_caption']);
+	$wmtext 	= $tp->toDB($_POST['data']);
+	$wmtitle 	= $tp->toDB($_POST['wm_caption']);
 	welcome_adminlog('01', 0, $wmtitle);
+		
 	//$message = ($sql->db_Insert("generic", "0, 'wmessage', '".time()."', ".USERID.", '{$wmtitle}', '{$_POST['wm_active']}', '{$wmtext}' ")) ? LAN_CREATED :  LAN_CREATED_FAILED ;
 	if ($sql->db_Insert("generic", "0, 'wmessage', '".time()."', ".USERID.", '{$wmtitle}', '{$_POST['wm_active']}', '{$wmtext}' "))
 	{
