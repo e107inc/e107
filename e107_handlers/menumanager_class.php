@@ -1043,7 +1043,6 @@ class e_menuManager {
 
 		$text .= "</tr></table>";
 
-		/** FIXME (SecretR - this block is breaking menu manager ($this->menu_areas is always empty )
 		if(!count($this->menu_areas))
 		{
 			$text = "<div class='alert alert-block alert-warning text-left'>";
@@ -1057,7 +1056,6 @@ class e_menuManager {
 			
 			$text .= "</div>";
 		}
-		*/
 	//	$ns -> tablerender(MENLAN_22.'blabla', $text);
 		echo $this->renderPanel(MENLAN_22, $text);
         echo $rs->form_close();
