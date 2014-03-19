@@ -3573,7 +3573,7 @@ class eRequest
 	 */
 	public function setLegacyQstring($qstring = null)
 	{
-		if(defined('e_QUERY')) return $this;;
+		if(defined('e_QUERY')) return $this;
 		
 		if(null === $qstring)
 		{
@@ -3586,7 +3586,7 @@ class eRequest
 		
 		if(strpos(e_QUERY,"=")!==false ) // Fix for legacyQuery using $_GET ie. ?x=y&z=1 etc. 
 		{
-			parse_str(e_QUERY,$tmp);	
+			parse_str(str_replace(array('&amp;'), array('&'), e_QUERY),$tmp);
 			foreach($tmp as $key=>$value)
 			{
 				$_GET[$key] = $value;	
