@@ -131,6 +131,8 @@ class pm_extended extends private_message
 		$sc = e107::getScBatch('pm',TRUE);
 		$sc->setVars($pm_info);
 		
+		$PM_SEND_PM = $this->updateTemplate($PM_SEND_PM);
+		
 		$text = "<form {$enc} method='post' action='".e_SELF."' id='dataform'>
 		<div><input type='hidden' name='numsent' value='{$pm_outbox['outbox']['total']}' />".
 		e107::getParser()->parseTemplate($PM_SEND_PM, TRUE, $sc).
@@ -160,6 +162,12 @@ class pm_extended extends private_message
 		
 		$sc = e107::getScBatch('pm',TRUE);
 		$sc->pmNextPrev = array('start' => $start, 'total' => $pmlist['total_messages']);
+		
+		
+		$PM_INBOX_HEADER = $this->updateTemplate($PM_INBOX_HEADER);
+		$PM_INBOX_TABLE = $this->updateTemplate($PM_INBOX_TABLE);
+		$PM_INBOX_EMPTY = $this->updateTemplate($PM_INBOX_EMPTY);
+		$PM_INBOX_FOOTER = $this->updateTemplate($PM_INBOX_FOOTER);
 		
 		$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
 		$txt .= $tp->parseTemplate($PM_INBOX_HEADER, true, $sc);
@@ -202,6 +210,11 @@ class pm_extended extends private_message
 		
 		$sc = e107::getScBatch('pm',TRUE);
 		$sc->pmNextPrev = array('start' => $start, 'total' => $pmlist['total_messages']);
+		
+		$PM_OUTBOX_HEADER = $this->updateTemplate($PM_OUTBOX_HEADER);
+		$PM_OUTBOX_TABLE = $this->updateTemplate($PM_OUTBOX_TABLE);
+		$PM_OUTBOX_EMPTY = $this->updateTemplate($PM_OUTBOX_EMPTY);
+		$PM_OUTBOX_FOOTER = $this->updateTemplate($PM_OUTBOX_FOOTER);	
 		
 		
 		$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
@@ -259,6 +272,9 @@ class pm_extended extends private_message
 			$this->pm_mark_read($pmid, $pm_info);
 		}
 
+
+		$PM_SHOW = $this->updateTemplate($PM_SHOW);
+
 		$txt = e107::getParser()->parseTemplate($PM_SHOW, true, $sc);
 		$ns->tablerender(LAN_PM, $txt);
 
@@ -294,6 +310,12 @@ class pm_extended extends private_message
 
 		$sc = e107::getScBatch('pm',TRUE);
 		$sc->pmBlocks = $pmBlocks; 
+	
+		$PM_BLOCKED_HEADER = $this->updateTemplate($PM_BLOCKED_HEADER);
+		$PM_BLOCKED_TABLE  = $this->updateTemplate($PM_BLOCKED_TABLE);
+		$PM_BLOCKED_EMPTY  = $this->updateTemplate($PM_BLOCKED_EMPTY);
+		$PM_BLOCKED_FOOTER  = $this->updateTemplate($PM_BLOCKED_FOOTER);
+	
 	
 		$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
 		$txt .= $tp->parseTemplate($PM_BLOCKED_HEADER, true, $sc);
