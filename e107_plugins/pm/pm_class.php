@@ -707,4 +707,44 @@ class private_message
 			fclose($res);
 		}
 	}
+
+
+	
+	function updateTemplate($template)
+	{
+		$array = array(
+		'FORM_TOUSER'		=> 'PM_FORM_TOUSER',
+		'FORM_TOCLASS'		=> 'PM_FORM_TOCLASS',
+		'FORM_SUBJECT'		=> 'PM_FORM_SUBJECT',
+		'FORM_MESSAGE '		=> 'PM_FORM_MESSAGE ',
+		'EMOTES'				=> 'PM_EMOTES',
+		'ATTACHMENT'			=> 'PM_ATTACHMENT',
+		'RECEIPT'			=> 'PM_RECEIPT',
+		'INBOX_TOTAL'		=> 'PM_INBOX_TOTAL',
+		'INBOX_UNREAD'		=> 'PM_INBOX_UNREAD',
+		'INBOX_FILLED'		=> 'PM_INBOX_FILLED',
+		'OUTBOX_TOTAL'		=> 'PM_OUTBOX_TOTAL',
+		'OUTBOX_UNREAD'		=> 'PM_OUTBOX_UNREAD',
+		'OUTBOX_FILLED'		=> 'PM_OUTBOX_FILLED',
+
+
+		'SEND_PM_LINK'		=> 'PM_SEND_PM_LINK',
+		'NEWPM_ANIMATE'		=> 'PM_NEWPM_ANIMATE',
+	
+		'BLOCKED_SENDERS_MANAGE'		=> 'PM_BLOCKED_SENDERS_MANAGE',
+	
+
+		'DELETE_BLOCKED_SELECTED'		=> 'DELETE_BLOCKED_SELECTED'
+		);	
+		
+		
+		foreach($array as $old => $new)
+		{	
+			$template = str_replace("{".$old."}", "{".$new."}", $template);
+		}
+		
+		return $template;
+		
+	}
+
 }
