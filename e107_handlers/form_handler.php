@@ -202,7 +202,7 @@ class e_form
 
 		if(deftrue('BOOTSTRAP') === 3)
 		{
-			$options['class'] = 'form-control';
+			$options['class'] .= ' form-control';
 		}
 
 		/*
