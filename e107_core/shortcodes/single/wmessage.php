@@ -10,7 +10,7 @@ function wmessage_shortcode($parm)
 	$e107 = e107::getInstance();
 	$e107cache = e107::getCache();
 	$pref = e107::getPref();
-	
+	$front_url = '';
 	/* DEPRECATED - see auto-detect in header_default.php 
 	$prefwmsc = varset($pref['wmessage_sc'], FALSE);
 	if (($prefwmsc && $parm == 'header') || (!$prefwmsc && ($parm !='header')) )
