@@ -39,8 +39,13 @@ if(e_AJAX_REQUEST && isset($_GET['action'])) // Ajax
 		$string =  base64_decode($_GET['src']);	
 		parse_str($string, $p);
 		
-		$mp = $pman->getMarketplace();
-		$mp->generateAuthKey($e107SiteUsername, $e107SiteUserpass);
+		print_a($p);
+		
+	//	$mp = $pman->getMarketplace();
+	//	$mp->generateAuthKey($e107SiteUsername, $e107SiteUserpass);
+	
+	
+	
 		// Server flush useless. It's ajax ready state 4, we can't flush (sadly) before that (at least not for all browsers) 
 		echo "<pre>Connecting...\n"; flush(); // FIXME change the modal default label, default is Loading...
 		// download and flush
@@ -206,7 +211,8 @@ class pluginManager{
     			"plugin_folder"			=> array("title" => EPL_ADLAN_64, "type"=>"text", "width" => "10%", "thclass" => "middle"),
 				"plugin_category"		=> array("title" => LAN_CATEGORY, "type"=>"text", "width" => "auto", "thclass" => "middle"),
                 "plugin_author"			=> array("title" => EPL_ADLAN_12, "type"=>"text", "width" => "10%", "thclass" => "middle"),
-  				"plugin_price"			=> array("title" => "Price", 	 'nolist'=>true,	"forced"=>true, "type"=>"text", "width" => "5%", "thclass" => "left"),	
+                "plugin_license"		=> array("title" => "License", 	 'nolist'=>true,	"forced"=>true, "type"=>"text", "width" => "5%", "thclass" => "left"),	
+  		//		"plugin_price"			=> array("title" => "Price", 	 'nolist'=>true,	"forced"=>true, "type"=>"text", "width" => "5%", "thclass" => "left"),	
   				"plugin_compatible"		=> array("title" => EPL_ADLAN_13, "type"=>"text", "width" => "5%", "thclass" => "middle"),
 				"plugin_description"	=> array("title" => EPL_ADLAN_14, "type"=>"bbarea", "width" => "30%", "thclass" => "middle center",  'readParms' => 'expand=1&truncate=180&bb=1'),
 				"plugin_compliant"		=> array("title" => EPL_ADLAN_81, "type"=>"text", "width" => "5%", "thclass" => "middle center", "url" => ""),
@@ -235,7 +241,8 @@ class pluginManager{
 
 		if($this->action == 'online')
 		{
-			$this->fields["plugin_price"]['nolist'] = false; //  = array("title" => "Price", "forced"=>true, "type"=>"text", "width" => "5%", "thclass" => "middle center");		
+		//	$this->fields["plugin_price"]['nolist'] = false; //  = array("title" => "Price", "forced"=>true, "type"=>"text", "width" => "5%", "thclass" => "middle center");		
+			$this->fields["plugin_license"]['nolist'] = false; 
 		}
 
         $keys = array_keys($this -> titlearray);
@@ -410,6 +417,7 @@ class pluginManager{
 		$from = isset($_GET['frm']) ? intval($_GET['frm']) : 0;
 		$srch = preg_replace('/[^\w]/','', vartrue($_GET['srch'])); 
 		
+	
 		$mp = $this->getMarketplace();
 		// auth
 		$mp->generateAuthKey($e107SiteUsername, $e107SiteUserpass);
@@ -420,27 +428,38 @@ class pluginManager{
 			'params' => array('limit' => 10, 'search' => $srch, 'from' => $from)
 		));
 		$total = $xdata['params']['count'];
+	
 		
 		// OLD BIT OF CODE ------------------------------->
-		/*	
+	/*
 	//	$file = SITEURLBASE.e_PLUGIN_ABS."release/release.php";  // temporary testing
 		$file = "http://e107.org/feed?type=plugin&frm=".$from."&srch=".$srch."&limit=10";
 		
 		$xml->setOptArrayTags('plugin'); // make sure 'plugin' tag always returns an array
 		$xdata = $xml->loadXMLfile($file,'advanced');
 
-		$total = $xdata['@attributes']['total'];*/
+		$total = $xdata['@attributes']['total'];
+		
+		echo 'file='.$file;
+	//	print_a($xdata);
+		
+		$xdata['data'] = $xdata['plugin'];
+		*/
 		// OLD BIT OF CODE END ------------------------------->
-
+		
+		
+// print_a($xdata);
 		 
 		$c = 1;
 		foreach($xdata['data'] as $row)
 		{
 			//$row = $r['@attributes'];
 			
+			//	print_a($row);
+			
 				$badge 		= $this->compatibilityLabel($row['compatibility']);;
 				$featured 	= ($row['featured']== 1) ? " <span class='label label-info'>Featured</span>" : '';
-				$price 		= ($row['price'] > 0) ? "<span class='label label-success'>".$row['price']." credits</span>" : "<span class='label label-success'>Free</span>";
+				$price 		= ($row['price'] > 0) ? "<span class='label label-info'>Buy</span>" : "<span class='label label-success'>Free</span>";
 			
 				$data[] = array(
 					'plugin_id'				=> $row['params']['id'],
@@ -448,6 +467,7 @@ class pluginManager{
 					'plugin_icon'			=> vartrue($row['icon'],'e-plugins-32'),
 					'plugin_name'			=> stripslashes($row['name']),
 					'plugin_featured'		=> $featured,
+					'plugin_sef'			=> '',
 					'plugin_folder'			=> $row['folder'],
 					'plugin_date'			=> vartrue($row['date']),
 					'plugin_category'		=> vartrue($row['category'], 'n/a'),
@@ -457,9 +477,10 @@ class pluginManager{
 					'plugin_compatible'		=> $badge,
 				
 					'plugin_website'		=> vartrue($row['authorUrl']),
-					//'plugin_url'			=> $row['url'],
+					'plugin_url'			=> $row['urlView'],
 					'plugin_notes'			=> '',
-					'plugin_price'			=> $price 
+				//	'plugin_price'			=> $price,
+					'plugin_license'		=> $price
 				);	
 				
 			$c++;
@@ -508,7 +529,7 @@ class pluginManager{
 				// echo '<br />v='.$v;
 				$text .= "<td style='height: 40px' class='".vartrue($this->fields[$v]['class'],'left')."'>".$frm->renderValue($v, $_value, $this->fields[$v], $key)."</td>\n";
 			}
-			$text .= "<td class='center'>".$this->options($val)."</td>";
+			$text .= "<td class='right'>".$this->options($val)."</td>";
 			$text .= "</tr>";		
 			
 		}
@@ -554,8 +575,13 @@ class pluginManager{
 		$url = e_SELF.'?action=download&amp;src='.base64_encode($d);//$url.'&amp;action=download';
 		$id = 'plug_'.$data['plugin_id'];
 		//<button type='button' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='btn btn-primary e-ajax middle' value='Download and Install' data-src='".$url."' ><span>Download and Install</span></button>
-		$dicon = "<a data-toggle='modal' data-modal-caption=\"Downloading ".$data['plugin_name']." ".$data['plugin_version']."\" href='{$url}' data-cache='false' data-target='#uiModal' title='".$LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";
-		return "<div id='{$id}' style='vertical-align:middle'>
+		
+		// Temporary Pop-up version. 
+		$dicon = '<a class="e-modal" href="'.$data['plugin_url'].'" rel="external" data-modal-caption="'.$data['plugin_name']." ".$data['plugin_version'].'"  target="_blank" ><img class="top" src="'.e_IMAGE_ABS.'icons/download_32.png" alt=""  /></a>';
+		
+	//	$dicon = "<a data-toggle='modal' data-modal-caption=\"Downloading ".$data['plugin_name']." ".$data['plugin_version']."\" href='{$url}' data-cache='false' data-target='#uiModal' title='".$LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";
+	
+		return "<div id='{$id}' class='right' >
 		{$dicon}
 		</div>";				
 	}

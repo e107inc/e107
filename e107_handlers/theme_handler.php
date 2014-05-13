@@ -533,7 +533,7 @@ class themeHandler
 						'date'			=> $r['date'],
 						'version'		=> $r['version'],
 						'thumbnail'		=> $r['thumbnail'],
-						//'url'			=> $r['url'],
+						'url'			=> $r['urlView'],
 						'author'		=> $r['author'],
 						'website'		=> $r['authorUrl'],
 						'compatibility'	=> $r['compatibility'],
@@ -1028,6 +1028,7 @@ class themeHandler
 			$id = $frm->name2id($theme['name']);
 			$LAN_DOWNLOAD = ($theme['price'] > 0) ? "Buy/Download" : "Download";
 			
+			/*
 			if($this->mp->hasAuthKey())
 			{
 				$action = 'download';	
@@ -1038,13 +1039,20 @@ class themeHandler
 				$action = 'login';
 				$caption = "Please login to your e107.org account to proceed..";
 			}
-			
+			*/
 			
 			$downloadUrl = e_SELF.'?action='.$action.'&amp;src='.base64_encode($d);//$url.'&amp;action=download';
 			$infoUrl = $url.'&amp;action=info';
 			
+			$viewUrl = $theme['url'];
+			
 			//$main_icon = "<a data-src='".$downloadUrl."' href='{$downloadUrl}' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='-e-ajax' title='".$LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";		
-			$main_icon = "<a data-toggle='modal' data-modal-caption=\"".$caption."\" href='{$downloadUrl}' data-cache='false' data-target='#uiModal' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('download',array('size'=>'2x'))."</a> ";
+		//	$main_icon = "<a data-toggle='modal' data-modal-caption=\"".$caption."\" href='{$downloadUrl}' data-cache='false' data-target='#uiModal' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('download',array('size'=>'2x'))."</a> ";
+			
+			// Temporary Pop-up version. 
+			$main_icon = "<a class='e-modal' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" rel='external'  href='{$viewUrl}' data-cache='false' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('download',array('size'=>'2x'))."</a> ";
+		
+			
 			$info_icon 	= "<a data-toggle='modal' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".$infoUrl."' data-cache='false' data-target='#uiModal'  title='".TPVLAN_7."'>".$tp->toGlyph('fa-info-circle',array('size'=>'2x'))."</a>";
 			
 			if($theme['livedemo'])
