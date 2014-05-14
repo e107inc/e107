@@ -2737,7 +2737,7 @@ class e_parser
 		{
 			$prefix = 'fa fa-';
 			$size 	= (vartrue($parm['size'])) ?  ' fa-'.$parm['size'] : '';	
-			$tag 	= 'span';
+			$tag 	= 'i';
 		}
 		elseif(deftrue("BOOTSTRAP")) 
 		{
