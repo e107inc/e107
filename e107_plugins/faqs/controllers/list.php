@@ -116,6 +116,7 @@ class plugin_faqs_list_controller extends eControllerFront
 			$sc->counter++;
 			if($category) $meta = $rw;
 		}
+		$text .= ($start) ? $tp->parseTemplate($FAQ_LISTALL['end'], true, $sc) : "";
 		$text .= $tp->parseTemplate($FAQ_LISTALL['end'], true, $sc);
 		$text .= $tp->parseTemplate($FAQ_END, true, $sc);
 		
