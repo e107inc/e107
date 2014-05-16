@@ -104,7 +104,7 @@ class theme_shortcodes extends e_shortcode
 		
 		if(ADMIN) 
 		{
-			$text .= '<li><a href="'.e_ADMIN_ABS.'"><span class="glyphicon glyphicon-cogs"></span> Admin Area</a></li>';	
+			$text .= '<li><a href="'.e_ADMIN_ABS.'"><span class="fa fa-cogs"></span> Admin Area</a></li>';	
 		}
 		
 		$text .= '

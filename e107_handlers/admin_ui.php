@@ -3545,9 +3545,19 @@ class e_admin_controller_ui extends e_admin_controller
 						}		
 					break;
 					
-					default:
 					
-						$searchQry[] = $this->fields[$filterField]['__tableField']." = '".$tp->toDB($filterValue)."'";
+					
+					default:
+						
+						if($this->fields[$filterField]['type'] == 'method') // More flexible filtering. 
+						{
+							$searchQry[] = $this->fields[$filterField]['__tableField']." LIKE \"%".$tp->toDB($filterValue)."%\"";	
+						}
+						else 
+						{
+							$searchQry[] = $this->fields[$filterField]['__tableField']." = '".$tp->toDB($filterValue)."'";	
+						}
+						
 						//exit;
 					break;
 				}

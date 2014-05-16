@@ -39,6 +39,7 @@ class e_marketplace
 		{
 			$this->_adapter_name = 'wsdl';
 		}
+		
 	}
 	
 	/**
