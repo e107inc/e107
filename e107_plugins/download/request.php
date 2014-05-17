@@ -334,6 +334,7 @@ else
 		} 
 		elseif(is_file(e_FILE."downloadimages/{$image}")) 
 		{
+      $image = $tp->replaceConstants($image);
 			echo "<img src='".e_FILE."downloadimages/{$image}' alt='' />";
 		} 
 		else 
