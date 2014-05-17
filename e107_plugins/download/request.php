@@ -310,6 +310,7 @@ else
 	if ($table == "download") 
 	{
 		require_once(HEADERF);
+    $imagecaption = ''; // TODO ?name or text Screenshot
 		if (file_exists(e_FILE."download/{$image}")) 
 		{
 			$disp = "<div style='text-align:center'><img src='".e_FILE."download/{$image}' alt='' /></div>";
@@ -320,10 +321,11 @@ else
 		} 
 		else 
 		{
+      $image = $tp->replaceConstants($image);
 			$disp = "<div style='text-align:center'><img src='".e_UPLOAD.$image."' alt='' /></div>";
 		}
 		$disp .= "<br /><div style='text-align:center'><a href='javascript:history.back(1)'>".LAN_dl_64."</a></div>";
-		$ns->tablerender($image, $disp);
+		$ns->tablerender($imagecaption, $disp);
 
 		require_once(FOOTERF);
 	} else 
