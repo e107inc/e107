@@ -1,4 +1,4 @@
-1<?php
+<?php
 /*
  * e107 website system
  *
