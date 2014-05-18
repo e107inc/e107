@@ -620,7 +620,7 @@ class private_message
 		$qry = "
 		SELECT SQL_CALC_FOUND_ROWS pm.*, u.user_image, u.user_name FROM #private_msg AS pm
 		LEFT JOIN #user AS u ON u.user_id = pm.pm_to
-		WHERE pm.pm_from='{$uid}' AND pm.pm_sent_del=0
+		WHERE pm.pm_from='{$uid}' AND pm.pm_read_del=0
 		ORDER BY pm.pm_sent DESC
 		LIMIT ".$from.', '.$limit;
 		
