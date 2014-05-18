@@ -1,4 +1,4 @@
-<?php
+1<?php
 /*
  * e107 website system
  *
@@ -36,7 +36,7 @@ class e_ranks
 			$this->ranks = array();
 			if($sql->select('generic', '*', "gen_type = 'user_rank_data' ORDER BY gen_intdata ASC"))
 			{
-				$i=0;
+				$i=1;
 				while($row = $sql->fetch())
 				{
 					$tmp = array();
