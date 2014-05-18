@@ -10,7 +10,7 @@ function wmessage_shortcode($parm)
 	$e107 = e107::getInstance();
 	$e107cache = e107::getCache();
 	$pref = e107::getPref();
-	
+	$front_url = '';	
 	/* DEPRECATED - see auto-detect in header_default.php 
 	$prefwmsc = varset($pref['wmessage_sc'], FALSE);
 	if (($prefwmsc && $parm == 'header') || (!$prefwmsc && ($parm !='header')) )
@@ -65,7 +65,16 @@ function wmessage_shortcode($parm)
 			{
 				while ($row = $sql->fetch())
 				{
-					$wmessage[] = $tp->toHTML($row['gen_chardata'], TRUE, 'BODY, defs', 'admin');
+          if(deftrue("BOOTSTRAP") && BOOTSTRAP === 3 ) 
+          {
+            if(deftrue('FONTAWESOME') && FONTAWESOME  === 4) 
+            {
+            $row['gen_chardata'] = str_replace('icon-', 'fa fa-', $row['gen_chardata']); 
+            }
+            else $row['gen_chardata'] = str_replace('icon-', 'glyph glyph-', $row['gen_chardata']);  
+          }					
+          
+          $wmessage[] = $tp->toHTML($row['gen_chardata'], TRUE, 'BODY, defs', 'admin');
 					if(!$wmcaption)
 					{
 						$wmcaption = $tp->toHTML($row['gen_ip'], TRUE, 'TITLE');
