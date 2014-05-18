@@ -11,7 +11,7 @@ class theme__blank implements e_theme_config
 		
 		$theme_pref 					= array();
 		$theme_pref['example']			= $_POST['_blank_example'];
-		$theme_pref['example2'] 	= intval($_POST['_blank_example2']);
+		$theme_pref['example2'] 		= intval($_POST['_blank_example2']);
 
 		$pref->set('sitetheme_pref', $theme_pref);
 		return $pref->dataHasChanged();
@@ -19,13 +19,13 @@ class theme__blank implements e_theme_config
 
 	function config()
 	{
-		$tp = e107::getParser();
+		$frm = e107::getForm();
 		
 		$var[0]['caption'] = "Sample configuration field";
-		$var[0]['html'] = $tp->text('_blank_example', e107::getThemePref('example', 'default'));
+		$var[0]['html'] = $frm->text('_blank_example', e107::getThemePref('example', 'default'));
 
-		$var[1]['caption'] = "Sample configuration field";
-		$var[1]['html'] = $tp->text('_blank_example2', e107::getThemePref('example2', 'default'));
+		$var[1]['caption'] = "Sample configuration field2";
+		$var[1]['html'] = $frm->text('_blank_example2', e107::getThemePref('example2', 'default'));
 		
 		return $var;
 	}
