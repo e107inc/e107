@@ -12,8 +12,8 @@ $NAVIGATION_TEMPLATE['main']['start'] = '<ul class="nav navbar-nav">';
 
 // Main Link
 $NAVIGATION_TEMPLATE['main']['item'] = '
-	<li class="dropdown">
-		<a class="dropdown-toggle"  role="button" href="{LINK_URL}"{LINK_OPEN} title="{LINK_DESCRIPTION}">
+	<li>
+		<a  role="button" href="{LINK_URL}"{LINK_OPEN} title="{LINK_DESCRIPTION}">
 		 {LINK_ICON}{LINK_NAME} 
 		</a> 
 	</li>
@@ -41,8 +41,8 @@ $NAVIGATION_TEMPLATE['main']['item_submenu_active'] = '
 ';	
 
 $NAVIGATION_TEMPLATE['main']['item_active'] = '
-	<li class="dropdown active">
-		<a class="dropdown-toggle e-tip" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}"{LINK_OPEN} title="{LINK_DESCRIPTION}">
+	<li>
+		<a class="e-tip" role="button"  data-target="#" href="{LINK_URL}"{LINK_OPEN} title="{LINK_DESCRIPTION}">
 		 {LINK_ICON} {LINK_NAME}
 		</a>
 	</li>
