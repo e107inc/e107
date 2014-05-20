@@ -313,7 +313,7 @@ class user_shortcodes extends e_shortcode
 			default:
 			case 'realname':
 			case 'user':
-				return ($boot) ? "<i class='icon-user'></i>" : $this->sc_user_icon();		
+				return ($boot) ? "<i class='icon-user'></i>" : $this->sc_user_realname_icon();		
 			break;
 		}
 
