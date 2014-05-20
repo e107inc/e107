@@ -197,7 +197,7 @@ class user_shortcodes extends e_shortcode
 			return "<img src='".THEME_ABS."images/user_realname.png' alt='' style='vertical-align:middle;' /> ";
 		}
 		
-		return "<img src='".e_IMAGE_ABS."user_icons/user_realname.png' alt='' style='vertical-align:middle;' /> ";
+		return "<img src='".e_IMAGE_ABS."user_icons/user_realname_".IMODE.".png' alt='' style='vertical-align:middle;' /> ";
 	}
 
 	
