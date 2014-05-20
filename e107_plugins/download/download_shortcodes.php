@@ -172,6 +172,11 @@ class download_shortcodes extends e_shortcode
       return $this->_sc_cat_icons($this->dlsubsubrow['download_category_icon'], $this->dlsubsubrow['d_count'], $this->dlsubsubrow['download_category_name']);
    }
    
+   function sc_download_cat_subsub_new_icon()
+   {
+      return ($this->isNewDownload($this->dlsubsubrow['d_last'])) ? $this->renderNewIcon() : "";
+   }
+
    function sc_download_cat_subsub_count() 
    {
       return $this->dlsubsubrow['d_count'];
