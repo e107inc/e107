@@ -322,7 +322,7 @@ else
 		else 
 		{
       $image = $tp->replaceConstants($image);
-			$disp = "<div style='text-align:center'><img src='".e_UPLOAD.$image."' alt='' /></div>";
+			$disp = "<div style='text-align:center'><img src='".$image."' alt='' /></div>";
 		}
 		$disp .= "<br /><div style='text-align:center'><a href='javascript:history.back(1)'>".LAN_dl_64."</a></div>";
 		$ns->tablerender($imagecaption, $disp);
