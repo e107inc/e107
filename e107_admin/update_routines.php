@@ -1359,6 +1359,13 @@ function update_706_to_800($type='')
 	// 	e107::getSingleton('e107plugin')->save_addon_prefs(); //XXX Needed? Uncomment if SQL update does not occur. 
 	}
 	
+	if (!e107::isInstalled('banner') && $sql->gen("SELECT * FROM #banner LIMIT 1"))
+	{
+		if ($just_check) return update_needed('Banner Table found, but plugin not installed. Needs to be refreshed.');	
+		e107::getSingleton('e107plugin')->refresh('banner');
+	// 	e107::getSingleton('e107plugin')->save_addon_prefs(); //XXX Needed? Uncomment if SQL update does not occur. 
+	}
+	
 	// ---------------------------------
 	
 		
