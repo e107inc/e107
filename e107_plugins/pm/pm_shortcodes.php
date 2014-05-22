@@ -153,6 +153,9 @@ class pm_shortcodes extends e_shortcode
 				$value = LAN_PM_58.$value;
 			}
 		}
+		
+		return e107::getForm()->text('pm_subject',$value,255);
+		
 		return "<input class='tbox' type='text' name='pm_subject' value='{$value}' size='63' maxlength='255' />";
 	}
 
@@ -168,7 +171,7 @@ class pm_shortcodes extends e_shortcode
 				$value = "[quote{$t}={$this->var['from_name']}]\n{$this->var['pm_text']}\n[/quote{$t}]\n\n";
 			}
 		}
-		return "<textarea class='tbox' name='pm_message' cols='60' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>{$value}</textarea>";
+		return "<textarea class='tbox form-control' name='pm_message' cols='60' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>{$value}</textarea>";
 	}
 
 
@@ -181,7 +184,7 @@ class pm_shortcodes extends e_shortcode
 
 	public function sc_pm_post_button()
 	{
-		return "<input class='button btn' type='submit' name='postpm' value='".LAN_PM_1."' />";
+		return "<input class='button btn btn-primary' type='submit' name='postpm' value='".LAN_PM_1."' />";
 	}
 
 
