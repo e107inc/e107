@@ -93,6 +93,8 @@ class pm_shortcodes extends e_shortcode
 	{
 		$pm_prefs = e107::getPlugPref('pm');
 		$this->pmManager = new pmbox_manager($pm_prefs);
+		$this->pmPrefs = $pm_prefs;
+		// print_a($pm_prefs);
 	}
 
 
@@ -484,7 +486,7 @@ class pm_shortcodes extends e_shortcode
 			// pm_id is mapped insisde the config to id key
 			$ret = "
 			<form method='post' action='".$this->url('reply', $this->var)."'>
-			<input type='checkbox' name='quote' /> ".LAN_PM_54." &nbsp;&nbsp;&nbsp<input class='btn btn-default button' type='submit' name='reply' value='".LAN_PM_55."' />
+			<input type='checkbox' name='quote' /> ".LAN_PM_54." &nbsp;&nbsp;&nbsp<input class='btn btn-primary button' type='submit' name='reply' value='".LAN_PM_55."' />
 			</form>
 			";
 			return $ret;

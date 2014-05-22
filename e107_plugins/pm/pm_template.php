@@ -223,10 +223,10 @@ $PM_SHOW =
 "<div style='text-align: center'>
 <table class='table fborder'>
 <tr>
-	<td class='fcaption' colspan='2'>{PM_SUBJECT}</td>
+	<td class='fcaption text-left' colspan='2'>{PM_SUBJECT}</td>
 </tr>
 <tr>
-	<td class='forumheader3' style='width:20%; vertical-align:top'>
+	<td class='forumheader3 text-left' style='width:20%; vertical-align:top'>
 		{PM_FROM_TO}
 		<br />
 		<br />
@@ -238,7 +238,7 @@ $PM_SHOW =
 		<br />
 		{PM_DELETE}
 	</td>
-	<td class='forumheader3' style='width:80%; vertical-align:top'>{PM_MESSAGE}<br /><br />{PM_ATTACHMENTS}</td>
+	<td class='forumheader3 text-left' style='width:80%; vertical-align:top'>{PM_MESSAGE}<br /><br />{PM_ATTACHMENTS}</td>
 </tr>
 {PM_REPLY}
 </table>
