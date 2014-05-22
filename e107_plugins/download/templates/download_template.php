@@ -148,12 +148,12 @@ if(!isset($DOWNLOAD_LIST_TABLE_START))
                </colgroup>
                <tr>
                   <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=name}</th>
-                  <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=date}</th>
-                  <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=author}</th>
-                  <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=size}</th>
-                  <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=downloads}</th>
-                  <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=rating}</th>
-                  <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=get}</th>
+	              <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=datestamp}</th>
+	              <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=author}</th>
+	              <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=filesize}</th>
+	              <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=requested}</th>
+	              <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=rating}</th>
+	              <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=link}</th>
                </tr>";
 }
 if(!isset($DOWNLOAD_LIST_TABLE))
