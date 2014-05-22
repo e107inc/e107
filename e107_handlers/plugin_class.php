@@ -1537,7 +1537,7 @@ class e107plugin
 
 		$p_installed = e107::getPref('plug_installed', array()); // load preference;
 
-		if ($function == 'install' || $function == 'upgrade')
+		if ($function == 'install' || $function == 'upgrade' || $function == 'refresh')
 		{
 			$sql->update('plugin', "plugin_installflag = 1, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['@attributes']['version']}', plugin_category ='".$this->manage_category($plug_vars['category'])."' WHERE plugin_id = ".$id);
 			$p_installed[$plug['plugin_path']] = $plug_vars['@attributes']['version'];
@@ -2429,6 +2429,46 @@ class e107plugin
 		
 	}
 
+	/**
+	 * Refresh Plugin Info, Install flag, e_xxx, ignore existing tables. etc. 
+	 *
+	 * @param int $dir - plugin folder. 
+	 */
+	function refresh($dir)
+	{
+		if(empty($dir))
+		{
+			return;	
+		}	
+		
+		global $sysprefs, $mySQLprefix;
+		
+		$ns = e107::getRender();
+		$sql = e107::getDb();
+		$tp = e107::getParser();		
+		
+		$plug = $this->getinfo($dir);
+		
+		$this->options = array('nolinks'=>true);
+		
+		if(!is_array($plug))
+		{
+			return "'{$id}' is missing from the plugin db table";	
+		}
+		
+		$_path = e_PLUGIN.$plug['plugin_path'].'/';
+		
+		if (file_exists($_path.'plugin.xml'))
+		{
+			$text = $this->install_plugin_xml($plug, 'refresh');
+		}
+		else
+		{
+			$text = EPL_ADLAN_21;
+			
+		}
+		return $text;
+	}
 
 
 	/**
