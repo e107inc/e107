@@ -156,6 +156,7 @@
   'news' => '1.0',
   'page' => '1.0',
   'siteinfo' => '1.0',
+  'social' => '1.0',
   'tinymce' => '1.0',
 )]]></core>
 		<core name="post_html">254</core>
