@@ -1270,8 +1270,15 @@ function js_location($qry)
 }
 
 function check_email($email)
-{
-	return preg_match("/^([_a-zA-Z0-9-+]+)(\.[_a-zA-Z0-9-]+)*@([a-zA-Z0-9-]+)(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,6})$/" , $email) ? $email : false;
+{	
+	if(filter_var($email, FILTER_VALIDATE_EMAIL))
+	{
+		return $email;	
+	}
+	
+	return false; 
+	
+	// return preg_match("/^([_a-zA-Z0-9-+]+)(\.[_a-zA-Z0-9-]+)*@([a-zA-Z0-9-]+)(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,6})$/" , $email) ? $email : false;
 }
 
 //---------------------------------------------------------------------------------------------------------------------------------------------
