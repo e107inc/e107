@@ -506,8 +506,10 @@ class poll
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_VOTED_LOOP : $POLL_VOTED_LOOP));
 						$count ++;
 					}
+						
+					$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_VOTED_END : $POLL_VOTED_END));
 				}
-				$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_VOTED_END : $POLL_VOTED_END));
+			
 				break;
 
 			case 'disallowed':
@@ -565,9 +567,14 @@ class poll
 	{
 		if(deftrue('BOOTSTRAP',false))
 		{
-			return	"<div class='progress'>
-		    <div class='bar' style='width: ".intval($perc)."%;'></div>
-		    </div>";	
+			$val = intval($perc);
+			 return '
+			 <div class="progress">
+			 <div class="bar progress-bar" role="progressbar" aria-valuenow="'.$val.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$val.'%;">
+			   <span class="sr-only">'.$val.'%</span>
+			 </div>
+			 </div>';	
+			
 		}
 		else
 		{
