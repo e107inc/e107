@@ -90,7 +90,7 @@ class banlist_ui extends e_admin_ui
 		protected $pluginTitle		= BANLAN_16;
 		// protected $pluginName		= 'myplugin';
 		protected $table			= 'banlist';
-		protected $pid				= 'banlist_ip';
+		protected $pid				= 'banlist_datestamp'; //XXX Not Ideal - From Cam: Should we add a primary ID field to the banlist table?
 		protected $perPage 			= 10; 
 			
 		//FIXME banlist_ip should be data => 'str' - however, edit link will not contain a value for 'id' when this is the case. 
