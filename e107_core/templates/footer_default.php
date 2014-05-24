@@ -374,7 +374,7 @@ if(varset($pref['compress_output'],false) && $server_support == true && $browser
 	$page = gzencode($page, $level);
 	header("Content-Encoding: gzip", true);
 	header("Content-Length: ".strlen($page), true);
-
+	header('Vary: Accept-Encoding');
 } 
 else 
 {
@@ -388,10 +388,11 @@ else
 	}
 	
 	header("Content-Length: ".strlen($page), true);
+	header('Vary: Accept');
 }
 
 header("X-Powered-By: e107", true); // no less secure than e107-specific html. 
-header('Vary: Accept');
+
 
 // should come after the Etag header
 if ($canCache && isset($_SERVER['HTTP_IF_NONE_MATCH']))
