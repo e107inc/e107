@@ -31,6 +31,37 @@ class _system_cron
 	}
 	
 	/**
+	 * Update the current Repo. of this e107 installation.  (eg. e107 on github)
+	 */
+	function gitrepo()
+	{
+		$mes = e107::getMessage();
+		
+		if(is_dir(e_BASE.".git")) // Check it's a Git Repo
+		{
+			
+			// Change Dir. 
+			$cmd = 'cd '.e_ROOT;
+			$mes->addDebug($cmd);
+			$text .= `$cmd 2>&1`;
+			
+			// Run Pull request
+			$cmd = 'git pull';
+			$mes->addDebug($cmd);
+			$text .= `$cmd 2>&1`;
+
+			$return = print_a($text,true);
+			$mes->addSuccess($return);
+		}
+		else
+		{
+			$mes->addError("No git repo found");	//TODO LAN
+		}
+	}
+	
+	
+	
+	/**
 	 * Burnsy - This is just a test
 	 * 
 	 */

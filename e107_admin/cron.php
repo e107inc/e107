@@ -66,7 +66,7 @@ class cron_admin_ui extends e_admin_ui
 		protected $pluginName	= 'core';
 		protected $table		= "cron";
 		protected $pid			= "cron_id";
-		protected $listOrder	= 'cron_category';
+		protected $listOrder	= 'cron_category desc'; // Show 'upgrades' on first page. 
 		protected $perPage		= 10;
 		protected $batchDelete	= TRUE;
 			   	
@@ -108,8 +108,8 @@ class cron_admin_ui extends e_admin_ui
 				$pwd = $this->setCronPwd();
 			}
 			
-			$sql->db_Select_gen("SELECT cron_function,cron_active FROM #cron ");
-			while($row = $sql->db_Fetch(MYSQL_ASSOC))
+			$sql->gen("SELECT cron_function,cron_active FROM #cron ");
+			while($row = $sql->fetch(MYSQL_ASSOC))
 			{
 				$this->curCrons[] = $row['cron_function'];
 				if($row['cron_active']==1)
@@ -164,12 +164,28 @@ class cron_admin_ui extends e_admin_ui
 				),
 				6 => array(
 					'name' 			=> LAN_CRON_20_1,
-					'category'		=> '',
+					'category'		=> 'update',
 					'function' 		=> 'checkCoreUpdate',
 					'description' 	=> LAN_CRON_20_2 ."<br />". LAN_CRON_20_3,
 				//	'available' 	=> e107::getPref('ban_retrigger')
 				),
+				
 			);
+			
+			if(is_dir(e_BASE.".git"))
+			{
+				$cronDefaults['_system'][7] = array(
+					'name' 			=> "Update this Git repository", //TODO LAN
+					'category'		=> 'update',
+					'function' 		=> 'gitrepo',
+					'description' 	=> "Update this e107 installation with the very latest files from github.<br />Recommended for developers only.<br /><span class='label label-warning'>Warning!</span> May cause site instability!", //TODO LAN
+				//	'available' 	=> e107::getPref('ban_retrigger')
+				);
+
+			}
+			
+			
+			
 	
 			if(!vartrue($_GET['action']) || $_GET['action'] == 'refresh')
 			{
@@ -260,7 +276,7 @@ class cron_admin_ui extends e_admin_ui
 				return;			
 			}
 			
-			if(!$sql->db_Insert('cron',$insert))
+			if(!$sql->insert('cron',$insert))
 			{
 				e107::getMessage()->add(LAN_CRON_6, E_MESSAGE_ERROR);
 			}
@@ -285,7 +301,7 @@ class cron_admin_ui extends e_admin_ui
 			$cron_function = $insert['cron_function'];
 			unset($insert['cron_function']);
 					
-			if($sql->db_Update('cron',$insert)===FALSE)
+			if($sql->update('cron',$insert)===FALSE)
 			{
 				e107::getMessage()->add(LAN_CRON_7, E_MESSAGE_ERROR);
 			}
@@ -475,7 +491,8 @@ class cron_admin_form_ui extends e_admin_form_ui
 						'mail'		=> ADLAN_136,				
 						'notify'	=> ADLAN_149, 
 						'user'		=> LAN_USER,
-						'plugin'	=> ADLAN_CL_7
+						'plugin'	=> ADLAN_CL_7,
+						'update'	=> LAN_UPDATE
 	);
 	
 	/**
