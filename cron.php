@@ -35,6 +35,7 @@ require_once(realpath(dirname(__FILE__)."/class2.php"));
 	if($pref['e_cron_pwd'] != $pwd)
 	{	
 		require_once(e_HANDLER."mail.php");
+		
 		$message = "Your Cron Schedule is not configured correctly. Your passwords do not match.
 		<br /><br /> 
 		Sent from cron: ".$pwd."<br />
@@ -57,9 +58,9 @@ e107::getCache()->set('cronLastLoad',time(),TRUE,FALSE,TRUE);
 	$list = array();
 
 	$sql = e107::getDb();
-	if($sql->db_Select("cron",'cron_function,cron_tab','cron_active =1'))
+	if($sql->select("cron",'cron_function,cron_tab','cron_active =1'))
 	{
-		while($row = $sql->db_Fetch(MYSQL_ASSOC))
+		while($row = $sql->fetch(MYSQL_ASSOC))
 		{
 			list($class,$function) = explode("::",$row['cron_function'],2);			
 			$key = $class."__".$function;
