@@ -734,6 +734,48 @@ City, State, Country
 				<field name="link_function"></field>
 				<field name="link_sefurl"></field>
 			</item>
+			<item>
+				<field name="link_id">8</field>
+				<field name="link_name">Article 1</field>
+				<field name="link_url">page.php?id=1</field>
+				<field name="link_description"></field>
+				<field name="link_button"></field>
+				<field name="link_category">1</field>
+				<field name="link_order">0</field>
+				<field name="link_parent">7</field>
+				<field name="link_open">0</field>
+				<field name="link_class">0</field>
+				<field name="link_function"></field>
+				<field name="link_sefurl"></field>
+			</item>
+			<item>
+				<field name="link_id">9</field>
+				<field name="link_name">Article 2</field>
+				<field name="link_url">page.php?id=2</field>
+				<field name="link_description"></field>
+				<field name="link_button"></field>
+				<field name="link_category">1</field>
+				<field name="link_order">1</field>
+				<field name="link_parent">7</field>
+				<field name="link_open">0</field>
+				<field name="link_class">0</field>
+				<field name="link_function"></field>
+				<field name="link_sefurl"></field>
+			</item>
+			<item>
+				<field name="link_id">10</field>
+				<field name="link_name">Article 3</field>
+				<field name="link_url">page.php?id=3</field>
+				<field name="link_description"></field>
+				<field name="link_button"></field>
+				<field name="link_category">1</field>
+				<field name="link_order">2</field>
+				<field name="link_parent">7</field>
+				<field name="link_open">0</field>
+				<field name="link_class">0</field>
+				<field name="link_function"></field>
+				<field name="link_sefurl"></field>
+			</item>
 		</dbTable>
 		<dbTable name="menus">
 			<item>
@@ -962,7 +1004,7 @@ City, State, Country
 			<field name="news_id">1</field>
 			<field name="news_title">Welcome to e107</field>
 			<field name="news_sef">welcome-to-e107</field>
-			<field name="news_body">[p]Welcome [img=style=vertical-align%3A+middle%3B+border%3A+0%3B]{e_IMAGE}emotes/default/smile.png[/img] [img=style=vertical-align%3A+middle%3B+border%3A+0%3B]{e_IMAGE}emotes/default/frown.png[/img] [img=style=vertical-align%3A+middle%3B+border%3A+0%3B]{e_IMAGE}emotes/default/smile.png[/img] ))[/p]</field>
+			<field name="news_body">[p]Welcome to your new website![/p][p]Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin tempus enim vel nisi fringilla, sit amet volutpat enim tincidunt. Vivamus commodo sit amet leo id viverra. Nulla facilisi. Nam et orci sodales tellus aliquet sollicitudin metus.[/p]</field>
 			<field name="news_extended">[p] [/p]</field>
 			<field name="news_meta_keywords"></field>
 			<field name="news_meta_description"></field>
