@@ -36,7 +36,13 @@ if (isset($_POST['updatesettings']))
 	$temp['cb_layer_height'] = max(varset($_POST['cb_layer_height'], 200), 150);
 	$temp['cb_emote'] = intval($_POST['cb_emote']);
 	$temp['cb_mod'] = intval($_POST['cb_mod']);
-	if ($admin_log->logArrayDiffs($temp, $pref, 'CHBLAN_01'))
+	
+	
+	e107::getConfig('core')->setPref($temp)->save(false);
+	e107::getCache()->clear("nq_chatbox");
+	
+	/*
+	if ($admin_log->logArrayXXXXXDiffs($temp, $pref, 'CHBLAN_01'))
 	{
 		save_prefs();		// Only save if changes
 		$e107cache->clear("nq_chatbox");
@@ -45,6 +51,8 @@ if (isset($_POST['updatesettings']))
 	{
 		$mes->addInfo(LAN_NO_CHANGE);
 	}
+	 
+	 */
 }
 
 

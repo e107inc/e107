@@ -62,23 +62,11 @@ if (isset($_POST['submit_prefs']) && isset($_POST['mainsitelanguage']) && getper
 	$temp['sitelanguage'] = $_POST['mainsitelanguage'];
 	$temp['adminlanguage'] = $_POST['mainadminlanguage'];
 	$temp['noLanguageSubs'] = $_POST['noLanguageSubs'];
-	
-	//save_prefs();
-	
+		
 	e107::getConfig()->setPref($temp)->save(true);
 	
 	e107::getSession()->clear('e_language');
-	
-//	if ($admin_log->logArrayDiffs($temp, $pref, 'LANG_01'))
-	{
-		
-	//	save_prefs(); // Only save if changes
-		//$mes->addSuccess(LAN_SETSAVED, E_MESSAGE_SUCCESS);
-	}
-//	else
-	{
-//		$mes->addInfo(LAN_NO_CHANGE);
-	}
+
 }
 // ----------------- delete tables ---------------------------------------------
 if (isset($_POST['del_existing']) && $_POST['lang_choices'] && getperms('0'))

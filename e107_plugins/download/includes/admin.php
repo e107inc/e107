@@ -1030,17 +1030,12 @@ $columnInfo = array(
 			$temp['agree_text'] = $tp->toDB($_POST['agree_text']);
 			$temp['download_denied'] = $tp->toDB($_POST['download_denied']);
 			$temp['download_reportbroken'] = $_POST['download_reportbroken'];
+						
 			if ($_POST['download_subsub']) $temp['download_subsub'] = '1'; else $temp['download_subsub'] = '0';
 			if ($_POST['download_incinfo']) $temp['download_incinfo'] = '1'; else $temp['download_incinfo'] = '0';
-			if ($admin_log->logArrayDiffs($temp, $pref, 'DOWNL_01'))
-			{
-				save_prefs();
-				// e107::getMessage()->add(DOWLAN_65);
-			}
-			else
-			{
-				// e107::getMessage()->add(DOWLAN_8);
-			}
+			
+			e107::getConfig('core')->setPref($temp)->save(false);
+
 		}
 
 			
