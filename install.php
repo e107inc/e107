@@ -1556,9 +1556,12 @@ class e_install
 		$system_dirs['SYSTEM_DIRECTORY'] = str_replace("[hash]/","", $system_dirs['SYSTEM_DIRECTORY']);
 
 		$e107_config = 'e107_config.php';
-		if (!file_exists($e107_config)) 
-		{	// fix to create empty config file before it is checked
-			file_put_contents($e107_config, '');
+		if (!file_exists($e107_config))  // fix to create empty config file before it is checked
+		{	
+			if(file_put_contents($e107_config, '')===false)
+			{
+				echo "Error creating /e107_config.php file. Please create manually!";
+			}
 		}
 		
 		$data['must_write'] = 'e107_config.php|{$MEDIA_DIRECTORY}|{$SYSTEM_DIRECTORY}'; // all-sub folders are created on-the-fly
