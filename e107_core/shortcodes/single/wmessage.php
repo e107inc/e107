@@ -1,15 +1,17 @@
 <?php
 
-function wmessage_shortcode($parm)
+function wmessage_shortcode($parm='')
 {
 	if($parm == 'hide')
 	{
 		return;
 	}
 	
-	$e107 = e107::getInstance();
-	$e107cache = e107::getCache();
-	$pref = e107::getPref();
+	$e107 		= e107::getInstance();
+	$e107cache 	= e107::getCache();
+	$pref 		= e107::getPref();
+	
+	$front_url = '';
 	
 	/* DEPRECATED - see auto-detect in header_default.php 
 	$prefwmsc = varset($pref['wmessage_sc'], FALSE);
