@@ -2,20 +2,13 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2014 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Plugin - Newsletter
  *
 */
-
-/**
- *	e107 Newsletter plugin
- *
- *	@package	e107_plugins
- *	@subpackage	newsletter
- */
 
 
 require_once('../../class2.php');
@@ -296,13 +289,13 @@ class newsletter
 
 		if(isset($_POST['editid']))
 		{
-			$sql -> db_Update('newsletter', "newsletter_title='{$letter['newsletter_title']}', newsletter_text='{$letter['newsletter_text']}', newsletter_header='{$letter['newsletter_header']}', newsletter_footer='{$letter['newsletter_footer']}' WHERE newsletter_id=".intval($_POST['editid']));
+			$sql ->update('newsletter', "newsletter_title='{$letter['newsletter_title']}', newsletter_text='{$letter['newsletter_text']}', newsletter_header='{$letter['newsletter_header']}', newsletter_footer='{$letter['newsletter_footer']}' WHERE newsletter_id=".intval($_POST['editid']));
 			$mes->addSuccess(LAN_UPDATED);
 		}
 		else
 		{
 			$letter['newsletter_datestamp'] = time();
-			$sql->db_Insert('newsletter', $letter);
+			$sql->insert('newsletter', $letter);
 			$mes->addSuccess(LAN_CREATED);
 		}
 	}
@@ -324,7 +317,7 @@ class newsletter
 			$newsletter_issue = $tp->toFORM($edit['newsletter_issue']);
 		}
 
-		if(!$sql->db_Select('newsletter', '*', "newsletter_parent='0' "))
+		if(!$sql->select('newsletter', '*', "newsletter_parent='0' "))
 		{
 			//$this -> message = NLLAN_05;
 			$mes->addInfo(NLLAN_05);
@@ -395,13 +388,13 @@ class newsletter
 
 		if (isset($_POST['editid']))
 		{
-			$sql->db_Update('newsletter', "newsletter_title='{$letter['newsletter_title']}', newsletter_text='{$letter['newsletter_text']}', newsletter_parent='".$letter['newsletter_parent']."', newsletter_issue='".$letter['newsletter_issue']."' WHERE newsletter_id=".intval($_POST['editid']));
+			$sql->update('newsletter', "newsletter_title='{$letter['newsletter_title']}', newsletter_text='{$letter['newsletter_text']}', newsletter_parent='".$letter['newsletter_parent']."', newsletter_issue='".$letter['newsletter_issue']."' WHERE newsletter_id=".intval($_POST['editid']));
 			$mes->addSuccess(LAN_UPDATED);
 		}
 		else
 		{
 			$letter['newsletter_datestamp'] = time();
-			$sql->db_Insert('newsletter', $letter);
+			$sql->insert('newsletter', $letter);
 			$mes->addSuccess(NLLAN_39);
 		}
 
@@ -422,6 +415,7 @@ class newsletter
 		$pref = e107::getPref();
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
+		$ns = e107::getRender();
 
 		$issue = intval(str_replace('nlmailnow_', '', $issue));
 
@@ -437,7 +431,7 @@ class newsletter
 		{
 			return FALSE;
 		}
-		$newsletterParentInfo = $sql->db_Fetch(MYSQL_ASSOC);
+		$newsletterParentInfo = $sql->fetch(MYSQL_ASSOC);
 		$memberArray = explode(chr(1), $newsletterParentInfo['newsletter_subscribers']);
 
 		require(e_HANDLER.'mail_manager_class.php');
@@ -482,7 +476,7 @@ class newsletter
 		{
 			if ($memberID = intval($memberID))
 			{
-				if($sql->db_Select('user', 'user_name,user_email,user_loginname,user_lastvisit', 'user_id='.$memberID))
+				if($sql->select('user', 'user_name,user_email,user_loginname,user_lastvisit', 'user_id='.$memberID))
 				{
 					$row = $sql->db_Fetch(MYSQL_ASSOC);
 					$uTarget = array('mail_recipient_id' => $memberID,
@@ -514,7 +508,7 @@ class newsletter
 			//$this->message = str_replace('--COUNT--', $counters['add'],NLLAN_40);
 			$mes->addSuccess(str_replace('--COUNT--', $counters['add'], NLLAN_40));
 		}
-		$sql->db_Update('newsletter', "newsletter_flag='1' WHERE newsletter_id=".$issue);
+		$sql->update('newsletter', "newsletter_flag='1' WHERE newsletter_id=".$issue);
 
 		$ns->tablerender($caption, $mes->render() . $text);
 	}
@@ -711,7 +705,7 @@ class newsletter
 			$subscribers_list = array_flip(explode(chr(1), $nl_row['newsletter_subscribers']));
 			unset($subscribers_list[$p_key]);
 			$new_subscriber_list = implode(chr(1), array_keys($subscribers_list));
-			$sql->db_Update('newsletter', "newsletter_subscribers='{$new_subscriber_list}' WHERE newsletter_id='".$p_id."'");
+			$sql->update('newsletter', "newsletter_subscribers='{$new_subscriber_list}' WHERE newsletter_id='".$p_id."'");
 		}
 	}
 }
