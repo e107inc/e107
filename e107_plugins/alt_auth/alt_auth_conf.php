@@ -55,7 +55,7 @@ if(isset($_POST['updateprefs']))
 	$temp['auth_badpassword'] = intval($_POST['auth_badpassword']);
 	if ($admin_log->logArrayDiffs($temp, $pref, 'AUTH_01'))
 	{
-		save_prefs();		// Only save if changes  @TODO:
+		e107::getConfig('core')->setPref($temp)->save(false);
 		header('location:'.e_SELF);
 		exit;
 	}
