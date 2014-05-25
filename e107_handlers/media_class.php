@@ -69,7 +69,11 @@ class e_media
 		}
 		$img_array = $fl->get_files($epath,$fmask,'',2);
 	
-		if(!count($img_array)){ return $this;}
+		if(!count($img_array))
+		{
+			e107::getMessage()->addDebug("Media-Import could not find any files in <b>".$epath."</b> with fmask: ".$fmask);
+			return $this;
+		}
 		
 	//	print_a($img_array);
 	//	return;
