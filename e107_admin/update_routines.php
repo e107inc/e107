@@ -1356,7 +1356,8 @@ function update_706_to_800($type='')
 	{
 		if ($just_check) return update_needed('Download Plugin needs to be installed.');	
 		e107::getSingleton('e107plugin')->install('download',array('nolinks'=>true));
-	// 	e107::getSingleton('e107plugin')->save_addon_prefs(); //XXX Needed? Uncomment if SQL update does not occur. 
+		e107::getSingleton('e107plugin')->refresh('download');
+	 	e107::getSingleton('e107plugin')->save_addon_prefs(); // Needed for SQL update. 
 	}
 	
 	if (!e107::isInstalled('banner') && $sql->gen("SELECT * FROM #banner LIMIT 1"))
