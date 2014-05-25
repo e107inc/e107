@@ -52,6 +52,11 @@ class _system_cron
 
 			$return = print_a($text,true);
 			$mes->addSuccess($return);
+			
+			if(unlink(e_BASE."install.php"))
+			{
+				$mes->addDebug("Removed install.php");	
+			}
 		}
 		else
 		{
