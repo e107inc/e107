@@ -105,6 +105,26 @@ class page_admin_form_ui extends e_admin_form_ui
 	}
 	
 
+		// Override the default Options field. 
+	function options($parms, $value, $id, $attributes)
+	{
+		
+		if($attributes['mode'] == 'read')
+		{
+			parse_str(str_replace('&amp;', '&', e_QUERY), $query); //FIXME - FIX THIS
+			$query['action'] = 'edit';
+			$query['id'] = $id;
+			$query = http_build_query($query);	
+				
+			$text = "<a href='".e_SELF."?{$query}' class='btn btn-default' title='".LAN_EDIT."' data-toggle='tooltip' data-placement='left'>
+						".ADMIN_EDIT_ICON."</a>";
+			
+			$text .= $this->submit_image('menu_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn btn-default'.$delcls));
+			
+			return $text;
+		}
+	}
+
 }
 
 //FIXME - needs a layout similar to the admin sitelinks page. ie. showing chapters as we would 'sublinks'. 
@@ -484,6 +504,16 @@ class page_admin_ui extends e_admin_ui
 		function init()
 		{
 			
+			if(vartrue($_POST['menu_delete'])) // Delete a Menu (or rather, remove it's data )
+			{
+				$key = key($_POST['menu_delete']);
+				
+				if($key)
+				{
+					e107::getDb()->update('page',"menu_name = '' WHERE page_id=".intval($key)." LIMIT 1");
+				}
+			}
+			
 			// USED IN Menu LIST/INLINE-EDIT MODE ONLY. 
 			if($this->getMode() == 'menu' && ($this->getACtion() == 'list' || $this->getACtion() == 'inline'))
 			{
@@ -509,7 +539,7 @@ class page_admin_ui extends e_admin_ui
 			  		'menu_title'	   	=> array('title'=> "Menu Title", 	'forced'=> TRUE, 	'type' => 'text', 		'inline'=>true,		'width'=>'25%'),
 					'menu_text' 		=> array('title'=> "Menu Body",		 	'type' => 'bbarea',		'data'=>'str',	'width' => 'auto', 'readParms' => 'expand=...&truncate=50&bb=1', 'writeParms'=>'media=page'), 
 				
-					'options' 	=> array('title'=> LAN_OPTIONS, 'type' => null,	'noselector' => true, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center','readParms'=>'deleteClass=252')
+					'options' 	=> array('title'=> LAN_OPTIONS, 'type' => 'method',	'noselector' => true, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center','readParms'=>'delete=0&deleteClass='.e_UC_NOBODY)
 				);
 	
 				$this->fieldpref = array("page_id","menu_name", "menu_title", "menu_text", 'menu_image', 'menu_template', 'menu_icon');	
