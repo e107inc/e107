@@ -2295,6 +2295,178 @@ class error_handler
 	}
 }
 
+
+
+
+/**
+ * Manage Headers sent to browser. 
+ * It is important to specify one of Expires or Cache-Control max-age, and one of Last-Modified or ETag, for all cacheable resources. 
+ * It is redundant to specify both Expires and Cache-Control: max-age, or to specify both Last-Modified and ETag. 
+ * Reference : http://css-tricks.com/snippets/php/intelligent-php-cache-control/
+ * XXX Etag cannot be relied on as some hosts have Etag disabled. 
+ * XXX session_cache_limiter('private') will override some of the things below and bring back our browser cache issues. 
+ */
+class e_http_header
+{
+	private $content;
+	private $etag;
+	private $compress_output = false;
+	private $compression_level = 6;
+	private $compression_browser_support = false;
+	private $compression_server_support = false;
+	private $headers = array();
+
+	
+	function __construct()
+	{
+		if (strstr(varset($_SERVER['HTTP_ACCEPT_ENCODING'], ''), 'gzip'))
+		{
+			$this->compression_browser_support = true;
+		}
+		
+		if(ini_get("zlib.output_compression") == '' && function_exists("gzencode")) 
+		{
+			$this->compression_server_support = true;
+		}	
+		
+		$this->compress_output = varset(e107::getPref('compress_output'),false);
+
+	}
+	
+	
+	function setContent($content)
+	{
+		$this->etag = md5($content);
+		$this->content = $content;
+	}
+	
+	function setHeader($header, $force=false, $response_code=null)
+	{
+		list($key,$val) = explode(':',$header,2);
+		$this->headers[$key] = $val;
+		header($header, $force, $response_code);
+	}
+			
+	function debug()
+	{
+		
+		echo "<h3>Server Headers</h3>";
+		$server = getallheaders();
+		ksort($server);
+		print_a($server);
+		echo "<h3>e107 Headers</h3>";
+		ksort($this->headers);
+		print_a($this->headers);
+		var_dump($this->compress_output);
+		
+		$server = array();
+		foreach($_SERVER as $k=>$v)
+		{
+			if(substr($k,0,4) == 'HTTP')
+			{
+				$server[$k] = $v;	
+			}	
+		}
+		echo "<h3>_SERVER</h3>";
+		print_a($server);
+		
+	}			
+		
+	
+	function send()
+	{
+		// Disable caching of html. 	
+		/*
+		$this->setHeader("Expires: 0", true);
+		$this->setHeader("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT", true);
+		$this->setHeader("Cache-Control: no-store, no-cache, must-revalidate", true);
+		$this->setHeader("Cache-Control: post-check=0, pre-check=0", false);
+		$this->setHeader("Pragma: no-cache");
+		$this->setHeader("Cache-Control: max-age=0", false);
+		*/
+	//	$this->setHeader("Cache-Control: public", true);
+	
+	
+		$canCache = e107::canCache();
+		
+	// $this->setHeader("Cache-Control: must-revalidate", true); 
+		 
+		if($canCache && !deftrue('e_NOCACHE') && $_SERVER['REQUEST_METHOD'] === 'GET' && $_SERVER['QUERY_STRING'] != 'logout')
+		{
+			// header("Cache-Control: must-revalidate", true);	
+			if(e107::getPref('site_page_expires')) // TODO - allow per page
+			{ 
+				if (function_exists('date_default_timezone_set')) 
+				{
+				    date_default_timezone_set('UTC');
+				}
+				$time = time()+ (integer) e107::getPref('site_page_expires');
+				$this->setHeader('Expires: '.gmdate("D, d M Y H:i:s", $time).' GMT', true);
+			}
+		}
+		else
+		{
+			$canCache = false;
+		}
+		
+
+		if($this->compress_out != false && $this->compression_server_support == true && $this->compression_browser_support == true) 
+		{
+		//	$this->setHeader("ETag: \"{$this->etag}-gzip\"");
+			$this->setHeader('ETag: "'.$this->etag.'-gzip"', true);	
+			$page = gzencode($this->content, $this->compression_level);
+			$this->setHeader("Content-Encoding: gzip", true);
+			$this->setHeader("Content-Length: ".strlen($page), true);
+
+		} 
+		else 
+		{
+			if($this->compression_browser_support ==true) 
+			{
+				$this->setHeader('ETag: "'.$this->etag.'-gzip"', true);	
+			}
+			else
+			{
+				$this->setHeader('ETag: "'.$this->etag.'"', true);	
+			}
+			
+			$this->setHeader("Content-Length: ".strlen($this->content), true);
+		}
+		
+		$this->setHeader("X-Powered-By: e107", true); // no less secure than e107-specific html. 
+		
+		if($this->compression_server_support == true)
+		{
+			$this->setHeader('Vary: Accept-Encoding');	
+		}
+		else 
+		{
+			$this->setHeader('Vary: Accept');	
+		}
+		
+		// should come after the Etag header
+		if ($canCache && isset($_SERVER['HTTP_IF_NONE_MATCH']))
+		{
+			$IF_NONE_MATCH = str_replace('"','',$_SERVER['HTTP_IF_NONE_MATCH']);
+			if($IF_NONE_MATCH == $this->etag || ($IF_NONE_MATCH == ($this->etag."-gzip")))
+			{
+				$this->setHeader('HTTP/1.1 304 Not Modified'); 
+				exit();	
+			}
+		}
+	}
+					
+				
+			
+		
+	
+	
+}	
+
+
+
+
+
 $sql->db_Mark_Time('(After class2)');
 
 

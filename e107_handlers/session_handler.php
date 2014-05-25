@@ -467,12 +467,9 @@ class e_session
 
 		if ($this->_sessionCacheLimiter)
 		{
-			session_cache_limiter((string) $this->_sessionCacheLimiter);
+			session_cache_limiter((string) $this->_sessionCacheLimiter); //XXX Remove and have e_headers class handle it?
 		}
-		elseif(!defined('e_NOCACHE') || !e_NOCACHE)
-		{
-			session_cache_limiter('private'); 
-		}
+		
 	
 		session_start();
 		$this->_sessionStarted = true;

@@ -332,78 +332,11 @@ $e107->destruct();
 //
 $page = ob_get_clean();
 
-$etag = md5($page);
-
-//header('Pragma:');
-// previously disabled or there is posted data
-$canCache = e107::canCache();
- header("Cache-Control: must-revalidate", true); //XXX testing it here to check for improvement. 
-if($canCache && !deftrue('e_NOCACHE') && $_SERVER['REQUEST_METHOD'] === 'GET' && $_SERVER['QUERY_STRING'] != 'logout')
-{
-	// header("Cache-Control: must-revalidate", true);	
-	if(e107::getPref('site_page_expires')) // TODO - allow per page
-	{ 
-		if (function_exists('date_default_timezone_set')) 
-		{
-		    date_default_timezone_set('UTC');
-		}
-		$time = time()+ (integer) e107::getPref('site_page_expires');
-		header('Expires: '.gmdate("D, d M Y H:i:s", $time).' GMT', true);
-	}
-}
-else
-{
-	$canCache = false;
-}
-
-$pref['compression_level'] = 6;
-$browser_support = FALSE;
-$server_support = FALSE;
-if (strstr(varset($_SERVER['HTTP_ACCEPT_ENCODING'], ''), 'gzip'))
-{
-	$browser_support = true;
-}
-if(ini_get("zlib.output_compression") == '' && function_exists("gzencode")) 
-{
-	$server_support = true;
-}
-if(varset($pref['compress_output'],false) && $server_support == true && $browser_support == true) 
-{
-	$level = intval($pref['compression_level']);
-	header("ETag: \"{$etag}-gzip\"");
-	$page = gzencode($page, $level);
-	header("Content-Encoding: gzip", true);
-	header("Content-Length: ".strlen($page), true);
-	header('Vary: Accept-Encoding');
-} 
-else 
-{
-	if($browser_support==TRUE) 
-	{
-		header("ETag: \"{$etag}-gzip\"");	
-	}
-	else
-	{
-		header("ETag: \"{$etag}\"");	
-	}
-	
-	header("Content-Length: ".strlen($page), true);
-	header('Vary: Accept');
-}
-
-header("X-Powered-By: e107", true); // no less secure than e107-specific html. 
-
-
-// should come after the Etag header
-if ($canCache && isset($_SERVER['HTTP_IF_NONE_MATCH']))
-{
-	$IF_NONE_MATCH = str_replace('"','',$_SERVER['HTTP_IF_NONE_MATCH']);
-	if($IF_NONE_MATCH == $etag || ($IF_NONE_MATCH == ($etag."-gzip")))
-	{
-		header('HTTP/1.1 304 Not Modified');
-		exit();	
-	}
-}
+// New - see class2.php 
+$ehd = new e_http_header;
+$ehd->setContent($page);
+$ehd->send();
+// $ehd->debug();
 
 // real output
 echo $page;
