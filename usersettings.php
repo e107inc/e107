@@ -468,9 +468,6 @@ if (isset($_POST['updatesettings']))
 			$error = TRUE;
 		}
 	}
-	
-	
-	
 }  // End - update setttings
 elseif (isset($_POST['SaveValidatedInfo']))
 {	// Next bit only valid if user editing their own data
@@ -479,19 +476,19 @@ elseif (isset($_POST['SaveValidatedInfo']))
 		$new_data = base64_decode($_POST['updated_data']);
 		if (md5($new_data) != $_POST['updated_key'])
 		{  // Should only happen if someone's fooling around
-	echo 'Mismatch on validation key<br />';
-	exit();
-}
+			echo LAN_USET_42.'<br />';
+			exit();
+		}
 
-if (isset($_POST['updated_extended']))
-{
-	$new_extended = base64_decode($_POST['updated_extended']);
-	if (md5($new_extended) != $_POST['extended_key'])
+		if (isset($_POST['updated_extended']))
+		{
+			$new_extended = base64_decode($_POST['updated_extended']);
+			if (md5($new_extended) != $_POST['extended_key'])
 			{  // Should only happen if someone's fooling around
-		echo 'Mismatch on validity key<br />';
-		exit();
-	}
-}
+				echo LAN_USET_42.'<br />';
+				exit();
+			}
+		}
 
 		if ($userMethods->CheckPassword($_POST['currentpassword'], $udata['user_loginname'], $udata['user_password']) === false) // Use old data to validate
 
@@ -552,7 +549,7 @@ if ($dataToSave)
 		if ((isset($changedUserData['user_loginname']) && $userMethods->isPasswordRequired('user_loginname'))
 			|| (isset($changedUserData['user_email']) && $userMethods->isPasswordRequired('user_email')))
 		{
-			if ($_uid)
+			if ($_uid && ADMIN)
 			{	// Admin is changing it
 				$error = LAN_USET_20;
 			}
@@ -577,21 +574,20 @@ if ($dataToSave && !$promptPassword)
 		$changedData['WHERE'] = 'user_id='.$inp;
 		validatorClass::addFieldTypes($userMethods->userVettingInfo,$changedData);
 
-		//print_a($changedData);
+		// print_a($changedData);
 		if (FALSE === $sql->db_Update('user', $changedData))
 		{
-			$message .= '<br />Error updating user data';
+			$message .= '<br />'.LAN_USET_43;
 		}
 		else
 		{
 			if (isset($changedUserData['user_password']) && !$adminEdit)
 			{
-			//	echo "Make new cookie<br />";
+				//	echo "Make new cookie<br />";
 				$userMethods->makeUserCookie(array('user_id' => $udata['user_id'],'user_password' => $changedUserData['user_password']), FALSE);		// Can't handle autologin ATM
 			}
 		}
 	}
-
 
 	// Save extended field values
 	if (isset($changedEUFData['data']) && count($changedEUFData['data']))

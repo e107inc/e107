@@ -74,7 +74,7 @@ define("LAN_USET_4", "Maximum allowable height is");
 //define("LAN_USET_5", "Subscribed to");					// Now LAN_USER_76
 //define("LAN_USET_6", "Subscribe to our mailing-list(s) and/or sections of this site.");		Now LAN_USER_73
 define("LAN_USET_7", "Miscellaneous");
-define("LAN_USET_8", "User Signature");
+define("LAN_USET_8", "User signature");
 define("LAN_USET_9", "Some of the required fields (marked with a *) are missing from your settings.");
 define("LAN_USET_10","Please update your settings now, in order to proceed.");
 define("LAN_USET_11", "That user name cannot be accepted as valid, please choose a different user name");
@@ -90,46 +90,46 @@ define('LAN_USET_20', "You must also change the user's password if you are chang
 define('LAN_USET_21', 'Please validate the changes by re-entering your password: ');
 define('LAN_USET_22', 'Invalid password!'); // TODO LAN common?
 define('LAN_USET_23', 'Leave blank to keep existing password');		// LAN_401
-define('LAN_USET_24', 'New Password: ');							// LAN_152
-define('LAN_USET_25', 'Re-type New Password: ');					// LAN_153
-define('LAN_USET_26', 'Upload your Avatar');						// LAN_415
-define('LAN_USET_27', 'Upload your Photograph');					// LAN_414
+define('LAN_USET_24', 'New password: ');							// LAN_152
+define('LAN_USET_25', 'Re-type new password: ');					// LAN_153
+define('LAN_USET_26', 'Upload your avatar');						// LAN_415
+define('LAN_USET_27', 'Upload your photograph');					// LAN_414
 define('LAN_USET_28', 'This will be shown on your profile page');	// LAN_426
 //define('LAN_USET_29', 'URL to your XUP file');						// LAN_433
 define('LAN_USET_30', 'what\'s this?');								// LAN_434
-define('LAN_USET_31', 'Registration Information');					// LAN_418
+define('LAN_USET_31', 'Registration information');					// LAN_418
 define('LAN_USET_32', 'Please note: Any image uploaded to this server that is deemed inappropriate by the administrators will be deleted immediately.');	// LAN_404
 define('LAN_USET_33', 'Choose site-stored avatar');					// LAN_421
 define('LAN_USET_34', 'Use remote avatar');							// LAN_422
 define('LAN_USET_35', 'Please type full address to image');			// LAN_423
 define('LAN_USET_36', 'Click button to see avatars stored on this site');	// LAN_424
-define('LAN_USET_37', 'Save Settings');								// LAN_154 //TODO common LAN?
+define('LAN_USET_37', 'Save settings');								// LAN_154 //TODO common LAN?
 define('LAN_USET_38', 'Choose avatar');								// LAN_403
-define('LAN_USET_39', 'Update User Settings');						// LAN_155
+define('LAN_USET_39', 'Update user settings');						// LAN_155
 define('LAN_USET_40', 'The two passwords do not match');			// LAN_105
 define('LAN_USET_41', 'Settings updated and saved into database.');	// LAN_150 //TODO Common LAN?
-define('LAN_USET_42', '');
-
+define('LAN_USET_42', 'Mismatch on validation key');
+define('LAN_USET_43', 'Error updating user data');
 
 // BC for v1.x template
 define("LAN_7", "Display Name: ");
 define("LAN_8", "the name displayed on site");
 define("LAN_9", "Username: ");
 define("LAN_10", "the name you use to login to the site");
-define("LAN_112", "Email Address: ");
+define("LAN_112", "Email address: ");
 define("LAN_113", "Hide email address?: ");
 define("LAN_114", "This will prevent your email address from being displayed on site");
 define("LAN_120", "Signature: ");
-define("LAN_122", "Timezone:");
-define("LAN_152", "New Password: ");
-define("LAN_153", "Re-type New Password: ");
-define("LAN_154", "Save Settings");
-define("LAN_308", "Real Name: ");
+define("LAN_122", "Time zone:");
+define("LAN_152", "New password: ");
+define("LAN_153", "Re-type new password: ");
+define("LAN_154", "Save settings");
+define("LAN_308", "Real name: ");
 define("LAN_401", "Leave blank to keep existing password");
 define("LAN_404", "Please note: Any image uploaded to this server that is deemed inappropriate by the administrators will be deleted immediately.");
-define("LAN_414", "Upload Your Photograph");
-define("LAN_415", "Upload your Avatar");
-define("LAN_418", "Registration Information");
+define("LAN_414", "Upload your photograph");
+define("LAN_415", "Upload your avatar");
+define("LAN_418", "Registration information");
 define("LAN_420", "Avatar");
 define("LAN_421", "Choose site-stored avatar");
 define("LAN_422", "Use remote avatar");
@@ -138,11 +138,10 @@ define("LAN_424", "Click button to see avatars stored on this site");
 define("LAN_425", "Photograph");
 define("LAN_426", "This will be shown on your profile page");
 define("LAN_433", "URL to your XUP file");
-define("LAN_434", "what's this?");
+define("LAN_434", "What's this?");
 define("LAN_435", "XML User Protocol file");
-define("LAN_CUSTOMTITLE", "Custom Title");
+define("LAN_CUSTOMTITLE", "Custom title");
 define("LAN_USET_5", "Subscribed to");
 define("LAN_USET_6", "Subscribe to our mailing-list(s) and/or sections of this site.");
-define("LAN_USET_8", "Signature / Timezone");
-
+define("LAN_USET_8", "Signature / Time zone");
 ?>
