@@ -145,6 +145,8 @@ if ($thread->message)
 
 //if (isset($thread->threadInfo['thread_options']['poll'])) //XXX Currently Failing - misconfigured thread-options. 
 //{
+if(e107::isInstalled('poll'))
+{
 	$_qry = 'SELECT * FROM `#polls` WHERE `poll_datestamp` = ' . $thread->threadId;
 	if($sql->gen($_qry))
 	{
@@ -155,6 +157,7 @@ if ($thread->message)
 		$poll = new poll;
 		$pollstr = "<div class='spacer'>" . $poll->render_poll($_qry, 'forum', 'query', true) . '</div>';
 	}
+}
 //}
 //Load forum templates
 // FIXME - new template paths!
