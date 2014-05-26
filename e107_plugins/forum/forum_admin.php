@@ -1273,9 +1273,10 @@ class forumAdmin
 		$ns->tablerender(FORLAN_62, $mes->render() . $text);
 	}
 
-	function show_reported ($sub_action, $id)
+	function show_reported ($sub_action, $id) // FIXME - $id does not seem to be in use.. remove? 
 	{
-		global $rs; // FIX replace by $frm
+		//global $rs; // FIX replace by $frm
+		$rs = new form; // FIXME - update to $frm
 		$sql = e107::getDb();
 		$ns = e107::getRender(); 
 		$tp = e107::getParser();
