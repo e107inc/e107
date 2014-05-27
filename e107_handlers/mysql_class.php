@@ -299,7 +299,8 @@ class e_db_mysql
 		{
 			try 
 			{
-        		$this->mySQLaccess->select_db($database);
+				$this->mySQLaccess->query("use ".$database);
+        		// $this->mySQLaccess->select_db($database); $dbh->query("use newdatabase");
 		    }
 			catch (PDOException $e) 
 			{
