@@ -11,7 +11,7 @@
 */
 
 // minimal software version
-define('MIN_PHP_VERSION',   '5.0');
+define('MIN_PHP_VERSION',   '5.3');
 define('MIN_MYSQL_VERSION', '4.1.2');
 define('MAKE_INSTALL_LOG', false);
 
@@ -68,7 +68,7 @@ define('MAGIC_QUOTES_GPC', (ini_get('magic_quotes_gpc') ? true : false));
 $php_version = phpversion();
 if(version_compare($php_version, MIN_PHP_VERSION, "<"))
 {
-	die('A minimum version of PHP '.MIN_PHP_VERSION.' is required');
+	die_fatal_error('A minimum version of PHP '.MIN_PHP_VERSION.' is required');
 }
 
 //  Ensure that '.' is the first part of the include path
@@ -81,9 +81,9 @@ if($inc_path[0] != ".")
 }
 unset($inc_path);
 
-if(!function_exists("mysql_connect"))
+if(!function_exists("mysql_connect")) //FIXME Adjust this once PDO is fully functional. 
 {
-	die("e107 requires PHP to be installed or compiled with the MySQL extension to work correctly, please see the MySQL manual for more information.");
+	die_fatal_error("e107 requires PHP to be installed or compiled with the MySQL extension to work correctly, please see the MySQL manual for more information.");
 }
 
 # Check for the realpath(). Some hosts (I'm looking at you, Awardspace) are totally dumb and
@@ -109,7 +109,7 @@ if($functions_ok == true && function_exists("realpath") == false)
 }
 if($functions_ok == false)
 {
-	die("e107 requires the realpath() function to be enabled and your host appears to have disabled it. This function is required for some <b>important</b> security checks and there is <b>NO workaround</b>. Please contact your host for more information.");
+	die_fatal_error("e107 requires the realpath() function to be enabled and your host appears to have disabled it. This function is required for some <b>important</b> security checks and there is <b>NO workaround</b>. Please contact your host for more information.");
 }
 
 //obsolete $installer_folder_name = 'e107_install';
@@ -133,14 +133,21 @@ if(isset($_POST['previous_steps']))
 //$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'CACHE_DIRECTORY', 'DOWNLOADS_DIRECTORY', 'UPLOADS_DIRECTORY', 'MEDIA_DIRECTORY', 'LOGS_DIRECTORY', 'SYSTEM_DIRECTORY', 'CORE_DIRECTORY');
 $e107_paths = array();
 $e107 = e107::getInstance();
-$e107->initInstall($e107_paths, realpath(dirname(__FILE__)), $override);
-unset($e107_paths,$override);
+$ebase = realpath(dirname(__FILE__));
+if($e107->initInstall($e107_paths, $ebase, $override)===false)
+{
+	die_fatal_error("Error creating the following empty file: <b>".$ebase.DIRECTORY_SEPARATOR."e107_config.php</b><br />Please create it manually and then run the installation again.");
+}
+	
+unset($e107_paths,$override,$ebase);
+
+
 
 ### NEW Register Autoload - do it asap
 if(!function_exists('spl_autoload_register'))
 {
 	// PHP >= 5.1.2 required
-	die('Fatal exception - spl_autoload_* required.');
+	die_fatal_error('Fatal exception - spl_autoload_* required.');
 }
 
 // register core autoload
@@ -1554,15 +1561,6 @@ class e_install
 		$system_dirs = $this->e107->e107_dirs;
 		$system_dirs['MEDIA_DIRECTORY'] = str_replace("[hash]/","", $system_dirs['MEDIA_DIRECTORY']);
 		$system_dirs['SYSTEM_DIRECTORY'] = str_replace("[hash]/","", $system_dirs['SYSTEM_DIRECTORY']);
-
-		$e107_config = 'e107_config.php';
-		if (!file_exists($e107_config))  // fix to create empty config file before it is checked
-		{	
-			if(file_put_contents($e107_config, '')===false)
-			{
-				echo "Error creating /e107_config.php file. Please create manually!";
-			}
-		}
 		
 		$data['must_write'] = 'e107_config.php|{$MEDIA_DIRECTORY}|{$SYSTEM_DIRECTORY}'; // all-sub folders are created on-the-fly
 		
@@ -1937,3 +1935,39 @@ function template_data()
 	';
 	return $data;
 }
+
+/**
+ * Render a Fatal error and halt installation. 
+ */
+function die_fatal_error($error)
+{
+		
+	define("e_IMAGE","e107_images/");
+	define("e_JS","e107_web/js/");
+	define("e_THEME", "e107_themes/");
+	define("e_LANGUAGEDIR", "e107_languages/");
+	
+	include(e_LANGUAGEDIR."English/English.php");
+	include(e_LANGUAGEDIR."English/lan_installer.php");
+	
+	$var = array();
+	$var["installation_heading"] 	= LANINS_001;
+	$var["stage_pre"] 				= LANINS_002;
+	$var["stage_num"] 				=  LANINS_003;
+	$var["stage_title"] 			= LAN_ERROR;
+	$var["percent"] 				= 10;
+	$var["bartype"] 				= 'danger';
+	$var['stage_content']			= "<div class='alert alert-error alert-block'>".$error."</div>";
+	$var['debug_info'] 				= '';
+	
+	$template = template_data();
+	
+	foreach($var as $k=>$val)
+	{
+		$template = str_replace("{".$k."}", $val, $template);	
+		
+	}
+	echo $template;
+	exit;		
+}
+	
