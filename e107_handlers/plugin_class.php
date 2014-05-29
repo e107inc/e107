@@ -2467,6 +2467,9 @@ class e107plugin
 			$text = EPL_ADLAN_21;
 			
 		}
+		
+		$this->save_addon_prefs();
+		
 		return $text;
 	}
 
