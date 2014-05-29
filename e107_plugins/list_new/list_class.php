@@ -100,6 +100,9 @@ class listclass
 	 */
 	function getListPrefs()
 	{
+		return e107::pref('list_new'); //TODO Convert from old format to new. 
+		
+		/*
 		$sql = e107::getDb();
 		//check preferences from database
 		$num_rows = $sql->gen("SELECT * FROM #core WHERE e107_name='list' ");
@@ -118,6 +121,7 @@ class listclass
 
 		$this->list_pref = $this->e107->arrayStorage->ReadArray($row['e107_value']);
 		return $this->list_pref;
+		*/
 	}
 
 	/**
