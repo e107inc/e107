@@ -159,7 +159,7 @@ define("LANINS_102", 'Date / Time');
 //define("LANINS_104", 'Review Front Page ...');
 
 define("LANINS_105", 'A database name or prefix beginning with some digits followed by “e” or “E” is not acceptable');
-define("LANINS_106", 'WARNING - E107 cannot write to the directories and/or files listed. While this will not stop E107 installing, it will mean that certain features are not available. 
+define("LANINS_106", 'WARNING - e107 cannot write to the directories and/or files listed. While this will not stop e107 installing, it will mean that certain features are not available. 
 				You will need to change the file permissions to use these features');
 				
 define("LANINS_107", "Website Name");

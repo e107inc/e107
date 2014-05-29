@@ -43,7 +43,7 @@ switch ($action)
 	break;
   case 'debug' :
 	$text = "For advanced users only - shows the hierarchy of the classes, plus the assigned classes and the classes to which the first 20 site members have access.<br />
-	The number in front of the class name is its unique ID (reference number). The 'Everyone' class has an ID of 0 (zero). E107 uses these IDs throughout to refer to classes.<br />
+	The number in front of the class name is its unique ID (reference number). The 'Everyone' class has an ID of 0 (zero). e107 uses these IDs throughout to refer to classes.<br />
 	After the class name is the class visibility and editability - [vis:253, edit: 27] for example. This means that the class will be visible in most selectors only if the current user is a member of class 253, 
 	and the user may edit their class membership only if they are a member of class 27.<br />
 	Finally, after the '=', is a list of all classes either above or below each class in the tree, plus the ID of that class. Thus a user who is a member of a particular class will
