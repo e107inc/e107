@@ -3168,6 +3168,19 @@ class e_form
 				$ret =  $this->imagepicker($key, $value, defset($label, $label), $parms);
 			break;
 			
+			case 'images':
+				
+				$value = str_replace('&#039;',"'",html_entity_decode($value)); //FIXME @SecretR Horrible workaround to Line 3203 of admin_ui.php				
+				$ival = e107::unserialize($value);
+
+				for ($i=0; $i < 5; $i++) 
+				{
+					$k = $key.'[path]['.$i.']'; 
+					$ret .=  $this->imagepicker($k, $ival['path'][$i], defset($label, $label), $parms);		
+				}
+				
+			break;
+			
 			case 'file': //TODO - thumb, image list shortcode, js tooltip...
 				$label = varset($parms['label'], 'LAN_EDIT');
 				unset($parms['label']);

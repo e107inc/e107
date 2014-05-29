@@ -3196,6 +3196,11 @@ class e_admin_controller_ui extends e_admin_controller
 						$value = implode(',', $value);
 					}
 				break;
+				
+				case 'images':
+					//XXX FIXME - entities in stored result. 
+				break;
+				
 	
 			}
 	
