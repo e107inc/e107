@@ -238,11 +238,67 @@ if(!function_exists('spl_autoload_register'))
 	die('Fatal exception - spl_autoload_* required.');
 }
 
+
+
+
+
 // allow disable of autoloading - may be removed as e107::autoload_register() is flexible enough
 if(!defset('E107_DISABLE_AUTOLOAD', false))
 {
+	/**
+	 * Generic autoloader. (didn't work while in e107_class.php) 
+	 * @example if your plugin calls 'use Xxxxx\Yyyyy\Zzzzz;' it will attempt to load: ./vendor/Xxxxx/Yyyyy/Zzzzz.php
+	 */
+	function autoloadPsr0($className)
+	{
+		$className = str_replace("_", "\\", $className);
+		$className = ltrim($className, '\\');
+		$fileName = '';
+		$namespace = '';
+		
+		if ($lastNsPos = strripos($className, '\\'))
+		{
+			$namespace = substr($className, 0, $lastNsPos);
+			$className = substr($className, $lastNsPos + 1);
+			$fileName = str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
+		}
+		
+		$fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
+		
+		$fullPath = 'vendor'. DIRECTORY_SEPARATOR . $fileName;
+		
+		if(file_exists($fullPath))
+		{
+			e107_require_once($fullPath);	
+		}
+		else
+		{
+			return false;	
+		} 
+		
+	}
+
 	e107::autoload_register(array('e107', 'autoload'));
+//	e107::autoload_register('autoloadPsr0');  // Generic 'use xxxx\yyyy\zzzz;' fix/solution for plugin developers. 
+	
 }
+
+	function genericAutoload($className)
+	    {
+	        $className = str_replace("_", "\\", $className);
+	        $className = ltrim($className, '\\');
+	        $fileName = '';
+	        $namespace = '';
+	        if ($lastNsPos = strripos($className, '\\'))
+	        {
+	            $namespace = substr($className, 0, $lastNsPos);
+	            $className = substr($className, $lastNsPos + 1);
+	            $fileName = str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
+	        }
+	        $fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
+	
+	        e107_require_once($fileName);
+	    }
 
 /**
  * NEW - system security levels
