@@ -651,6 +651,19 @@ function update_706_to_800($type='')
 	
 	//@TODO de-serialize the user_prefs also. 
 	
+	
+	// Banlist
+	
+	if(!$sql->field('banlist','banlist_id'))
+	{
+		if ($just_check) return update_needed('Banlist table requires updating.');	
+		$sql->gen("ALTER TABLE #banlist DROP PRIMARY KEY");
+		$sql->gen("ALTER TABLE `#banlist` ADD `banlist_id` INT( 11 ) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST");
+	}
+	
+	
+	
+	
 
 
 	// Move the maximum online counts from menu prefs to a separate pref - 'history'

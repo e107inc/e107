@@ -984,15 +984,16 @@ class eIPHandler
 			$ban_message .= 'Host: '.$this->get_host_name($ban_ip);
 		}
 		// Add using an array - handles DB changes better
-		$sql->db_Insert('banlist', 
+		$sql->insert('banlist', 
 			array(
-				'banlist_ip' => $ban_ip , 
-				'banlist_bantype' => $bantype , 
-				'banlist_datestamp' => time() , 
-				'banlist_banexpires' => (varsettrue($pref['ban_durations'][$bantype]) ? time()+($pref['ban_durations'][$bantype]*60*60) : 0) , 
-				'banlist_admin' => $ban_user , 
-				'banlist_reason' => $ban_message , 
-				'banlist_notes' => $ban_notes
+				'banlist_id'			=> 0,
+				'banlist_ip' 			=> $ban_ip , 
+				'banlist_bantype' 		=> $bantype , 
+				'banlist_datestamp' 	=> time() , 
+				'banlist_banexpires' 	=> (varsettrue($pref['ban_durations'][$bantype]) ? time()+($pref['ban_durations'][$bantype]*60*60) : 0) , 
+				'banlist_admin' 		=> $ban_user , 
+				'banlist_reason' 		=> $ban_message , 
+				'banlist_notes' 		=> $ban_notes
 			));
 
 		$this->regenerateFiles();

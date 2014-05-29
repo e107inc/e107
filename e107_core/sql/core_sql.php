@@ -72,6 +72,7 @@ CREATE TABLE audit_log (
 #
 
 CREATE TABLE banlist (
+  banlist_id int(10) unsigned NOT NULL auto_increment,
   banlist_ip varchar(100) NOT NULL default '',
   banlist_bantype tinyint(3) signed NOT NULL default '0',
   banlist_datestamp int(10) unsigned NOT NULL default '0',
@@ -79,7 +80,8 @@ CREATE TABLE banlist (
   banlist_admin smallint(5) unsigned NOT NULL default '0',
   banlist_reason tinytext NOT NULL,
   banlist_notes tinytext NOT NULL,
-  PRIMARY KEY  (banlist_ip),
+  PRIMARY KEY  (banlist_id),
+  KEY banlist_ip (banlist_ip),
   KEY banlist_datestamp (banlist_datestamp),
   KEY banlist_banexpires (banlist_banexpires)
 ) ENGINE=MyISAM;
