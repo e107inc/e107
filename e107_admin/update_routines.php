@@ -1368,16 +1368,14 @@ function update_706_to_800($type='')
 	if (!e107::isInstalled('download') && $sql->gen("SELECT * FROM #links WHERE link_url LIKE 'download.php%' AND link_class != '".e_UC_NOBODY."' LIMIT 1"))
 	{
 		if ($just_check) return update_needed('Download Plugin needs to be installed.');	
-		e107::getSingleton('e107plugin')->install('download',array('nolinks'=>true));
+	//	e107::getSingleton('e107plugin')->install('download',array('nolinks'=>true));
 		e107::getSingleton('e107plugin')->refresh('download');
-	 	e107::getSingleton('e107plugin')->save_addon_prefs(); // Needed for SQL update. 
 	}
 	
 	if (!e107::isInstalled('banner') && $sql->gen("SELECT * FROM #banner LIMIT 1"))
 	{
 		if ($just_check) return update_needed('Banner Table found, but plugin not installed. Needs to be refreshed.');	
 		e107::getSingleton('e107plugin')->refresh('banner');
-	 	e107::getSingleton('e107plugin')->save_addon_prefs(); // Needed for SQL update. 
 	}
 	
 	// ---------------------------------
@@ -1521,23 +1519,24 @@ function update_706_to_800($type='')
 	if((count($dl_files) || count($public_files)) && !$sql->gen("SELECT * FROM `#core_media` WHERE `media_category` = 'download_file' "))
 	{
 		if ($just_check) return update_needed('Import '.count($dl_files).' Download File(s) and '.count($public_files).' Public File(s) into Media Manager');
-	// check for file-types;
-		if (is_readable(e_ADMIN.'filetypes.php'))
+		
+		if($sql->gen("SELECT download_url FROM `#download` "))
 		{
-			$a_types = strtolower(trim(file_get_contents(e_ADMIN.'filetypes.php')));
-			$srch = array("png","jpg","jpeg","gif");
-			$a_types = str_replace($srch,"",$a_types); // filter-out images. 
+			$allowed_types = array();
 			
-		} else
+			while($row = $sql->fetch())
+			{
+				$suffix = strrchr($row['download_url'], "."); 
+				$allowed_types[] = ltrim($suffix,".");	
+			}
+			
+			$allowed_types = array_unique($allowed_types);
+		}		
+		else
 		{
-			$a_types = 'zip, gz, pdf';
+			$allowed_types = array('zip','gz','pdf');	
 		}
 		
-		$a_types = explode(',', $a_types);
-		foreach ($a_types as $f_type) {
-			$allowed_types[] = trim(str_replace('.', '', $f_type));
-		}
-				
 		$fmask = '[a-zA-z0-9_-]+\.('.implode('|',$allowed_types).')$';
 		$med->import('download_file',e_DOWNLOAD, $fmask);
 		$med->import('_common_file',e_FILE.'public', $fmask);	
