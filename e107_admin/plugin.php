@@ -503,7 +503,7 @@ class pluginManager{
 					
 					
 					
-					<table id=core-plugin-list' class='table adminlist'>
+					<table id=core-plugin-list' class='table adminlist table-striped'>
 						".$frm->colGroup($fieldList,$this->fieldpref).
 						$frm->thead($fieldList,$this->fieldpref)."
 						<tbody>
@@ -1074,7 +1074,7 @@ class pluginManager{
 			<form action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='post'>
 				<fieldset id='core-plugin-list'>
 					<legend class='e-hideme'>".vartrue($caption)."</legend>
-					<table class='table adminlist'>
+					<table class='table adminlist table-striped'>
 						".$frm->colGroup($this->fields,$this->fieldpref).
 						$frm->thead($this->fields,$this->fieldpref)."
 						<tbody>
