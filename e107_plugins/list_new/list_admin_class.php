@@ -42,15 +42,23 @@ class list_admin
 	 */
 	function db_update_menu()
 	{
-		$sql = e107::getDb();
-		$tp = e107::getParser();
+	//	$sql = e107::getDb();
+	//	$tp = e107::getParser();
 		// Get the preferences so we've got a reference for changes
-		$list_pref = $this->parent->getListPrefs();
-		$temp = array();
-		while(list($key, $value) = each($_POST))
-		{
-			if($value != LIST_ADMIN_2){ $temp[$tp->toDB($key)] = $tp->toDB($value); }
-		}
+	//	$list_pref = $this->parent->getListPrefs();
+	//	$temp = array();
+	//	while(list($key, $value) = each($_POST))
+	//	{
+	//		if($value != LIST_ADMIN_2){ $temp[$tp->toDB($key)] = $tp->toDB($value); }
+	//	}
+		
+		e107::getPlugConfig('list_new')->setPref($_POST)->save(true); 
+		
+	//	retrieve with e107::pref('list_new');
+		
+		return;
+		
+		/*
 		if ($this->e107->admin_log->logArrayDiffs($temp, $list_pref, 'LISTNEW_01'))
 		{
 			$tmp = $this->e107->arrayStorage->WriteArray($list_pref);
@@ -62,6 +70,7 @@ class list_admin
 			$message = LIST_ADMIN_17;
 		}
 		return $message;
+		 */
 	}
 
 	/**
