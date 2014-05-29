@@ -415,6 +415,12 @@ class e_db_mysql
 		
 		if($this->pdo)
 		{
+		//	print_a($query);
+		//	$prep = $this->mySQLaccess->prepare($query);
+		//	print_a($query);
+		//	print_a($prep);
+		//	echo "<hr>";
+		//	$sQryRes = $prep->execute($query); 	
 			$sQryRes = $this->mySQLaccess->query($query); 	
 		}
 		else 
@@ -746,6 +752,8 @@ class e_db_mysql
 				$tmp[] = $this->_getFieldValue($fk, $fv, $fieldTypes);
 			}
 			$valList= implode(', ', $tmp);
+			
+			
 			unset($tmp);
 
 			if($REPLACE === FALSE)
@@ -1710,6 +1718,12 @@ class e_db_mysql
 	 */
 	function escape($data, $strip = true)
 	{
+		
+		if($this->pdo)
+		{
+			return $data;
+		}
+		
 		if ($strip)
 		{
 			$data = strip_if_magic($data);
@@ -1720,6 +1734,8 @@ class e_db_mysql
 			global $db_ConnectionID;
         	$this->mySQLaccess = $db_ConnectionID;
 		}
+		
+		
 
 		return mysql_real_escape_string($data,$this->mySQLaccess);
 	}
