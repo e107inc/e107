@@ -237,7 +237,7 @@ class e107_db_debug {
 		}
 
 		if ($badCount) {
-			$text .= "\n<table class='fborder table table-striped'>\n";
+			$text .= "\n<table class='fborder table table-striped table-bordered'>\n";
 			$text .= "<tr><td class='fcaption' colspan='2'><b>$badCount Query Errors!</b></td></tr>\n";
 			$text .= "<tr><td class='fcaption'><b>Index</b></td><td class='fcaption'><b>Query / Error</b></td></tr>\n";
 
@@ -254,7 +254,7 @@ class e107_db_debug {
 		// Optionally list good queries
 		//
 		if ($okCount && E107_DBG_SQLDETAILS) {
-			$text .= "\n<table class='fborder table table-striped'>\n";
+			$text .= "\n<table class='fborder table table-striped table-bordered'>\n";
 			$text .= "<tr><td class='fcaption' colspan='3'><b>{$okCount[TRUE]} Good Queries</b></td></tr>\n";
 			$text .= "<tr><td class='fcaption'><b>Index</b></td><td class='fcaption'><b>Qtime</b></td><td class='fcaption'><b>Query</b></td></tr>\n
 				 <tr><td class='fcaption'>&nbsp;</td><td class='fcaption'><b>(msec)</b></td><td class='fcaption'>&nbsp;</td></tr>\n
@@ -275,7 +275,7 @@ class e107_db_debug {
 		//
 		if (E107_DBG_SQLDETAILS) {
 			foreach ($this->aSQLdetails as $idx => $cQuery) {
-				$text .= "\n<table class='fborder' style='width: 100%;'>\n";
+				$text .= "\n<table class='fborder table table-striped table-bordered' style='width: 100%;'>\n";
 				$text .= "<tr><td class='forumheader3' colspan='".$cQuery['nFields']."'><b>".$idx.") Query:</b> [".$cQuery['marker']." - ".$cQuery['caller']."]<br />".$cQuery['query']."</td></tr>\n";
 				if (isset($cQuery['explain'])) {
 					$text .= $cQuery['explain'];
