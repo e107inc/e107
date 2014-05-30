@@ -288,8 +288,15 @@ class cpage_shortcodes extends e_shortcode
 	function sc_cpageurl()
 	{
 		$route = ($this->page['page_chapter'] == 0) ? 'page/view/other' : 'page/view';
+		$urldata = $this->page;
 		
-		return e107::getUrl()->create($route, $this->page, array('allow' => 'page_sef,page_title,page_id,chapter_sef,book_sef'));
+		if($this->page['page_chapter'] && $this->chapterData[$this->page['page_chapter']])
+		{
+			$chapter = $this->chapterData[$this->page['page_chapter']]; 
+			$urldata = array_merge($this->page, $chapter);
+			$urldata['book_sef'] = $this->chapterData[$chapter['chapter_parent']]['chapter_sef'];
+		}
+		return e107::getUrl()->create($route, $urldata, array('allow' => 'page_sef,page_title,page_id,chapter_sef,book_sef'));
 	}
 	
 	function sc_cpagemetadiz()
