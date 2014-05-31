@@ -2782,9 +2782,9 @@ class e_parser
 		{
 			return;
 		}
-		
+				
 		$ext = pathinfo($icon, PATHINFO_EXTENSION);
-						
+		
 		if(!$ext || $ext == 'glyph') // Bootstrap or Font-Awesome. 
 		{
 			return $this->toGlyph($icon,$parm);
@@ -2800,14 +2800,18 @@ class e_parser
 		}
 		elseif(vartrue($parm['legacy']))
 		{
-			if(is_readable($parm['legacy'].$icon))
+			
+			$legacyPath = $parm['legacy'].$icon;
+			$filePath = $this->replaceConstants($legacyPath,'rel');
+			
+			if(is_readable($filePath))
 			{
-				$path = $parm['legacy'].$icon;		
+				$path = $this->replaceConstants($legacyPath,'full');	
 			}
 			else
 			{
 				$log = e107::getAdminLog();
-				$log->addDebug('Broken Icon Path: '.$icon, false)->save('IMALAN_00');
+				$log->addDebug('Broken Icon Path: '.$legacyPath, false)->save('IMALAN_00');
 			}
 			
 		}
@@ -2815,6 +2819,8 @@ class e_parser
 		{
 			$path = $icon;
 		}
+	
+		
 		
 		return "<img class='icon' src='".$path."' alt='".basename($path)."'  />";	
 	}	
