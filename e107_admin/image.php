@@ -1031,13 +1031,22 @@ class media_admin_ui extends e_admin_ui
 						
 		$text = "<ul class='nav nav-tabs'>\n";
 		
-		if($this->getQuery('bbcode') != 'video')
+		if($this->getQuery('bbcode') != 'video' && $this->getQuery('bbcode') != 'glyph')
 		{
 			$text .= "<li class='active'><a data-toggle='tab' href='#core-media-select'>Choose from Library</a></li>\n";	
 		}
 		else
 		{
-			$videoActive = 'active';		
+			if($this->getQuery('bbcode') == 'glyph')
+			{
+				$glyphActive = 'active';	
+			}
+			else 
+			{
+				$videoActive = 'active';		
+			}
+				
+					
 		}
 		
 		if($this->getQuery('bbcode') != 'video' && $this->getQuery('bbcode') !='glyph')
@@ -1052,7 +1061,7 @@ class media_admin_ui extends e_admin_ui
 		
 		if($this->getQuery('glyphs') == 1 || $this->getQuery('bbcode') == 'glyph')
 		{
-			$text .= "<li><a data-toggle='tab' href='#core-media-glyphs'>Glyphs</a></li>\n";	
+			$text .= "<li class='{$glyphActive}'><a data-toggle='tab' href='#core-media-glyphs'>Glyphs</a></li>\n";	
 		}
 		
 		if($this->getQuery('video') == 1 || $this->getQuery('bbcode') == 'video')
@@ -1071,9 +1080,9 @@ class media_admin_ui extends e_admin_ui
 				
 		$text .= "
 			</ul>
-			<div class='tab-content'>";
+			<div class='tab-content media-manager'>";
 			
-		if($this->getQuery('bbcode') != 'video')
+		if($this->getQuery('bbcode') != 'video' && $this->getQuery('bbcode') != 'glyph')
 		{	
 			$text .= "<div class='tab-pane active' id='core-media-select'>			
 					<div class='table' style='display:block'>";
@@ -1164,7 +1173,7 @@ class media_admin_ui extends e_admin_ui
 		if($this->getQuery('glyphs') == 1 || $this->getQuery('bbcode') == 'glyph')
 		{
 			//TODO 
-			$text .= "<div class='tab-pane clearfix' id='core-media-glyphs' style='font-size:24px'>";
+			$text .= "<div class='tab-pane clearfix {$glyphActive}' id='core-media-glyphs' style='font-size:24px'>";
 	
 			$text .= $this->glyphTab();
 			
@@ -1260,7 +1269,7 @@ class media_admin_ui extends e_admin_ui
 			'type'		=>'glyph', 
 			'tagid'		=> $this->getQuery('tagid'), 
 			'action'	=>'glyph', 								// Used by AJAX to identify correct function. 
-			'perPage'	=> 90,
+			'perPage'	=> 84,
 			'gridClass'	=> 'media-carousel-item-glyph pull-left',
 			'bbcode'	=>'glyph',
 			'close'		=> 'true'		
