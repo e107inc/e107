@@ -16,6 +16,7 @@ if (!defined('e107_INIT')) { exit; }
 
 e107::css('inline','
 	a.e-wysiwyg-toggle { margin-top:5px }
+
 ');
 
 $pref = e107::getPref();
@@ -137,9 +138,27 @@ if((e_WYSIWYG && check_class($pref['post_html'])) || strpos(e_SELF,"tinymce4/adm
 		            tinymce.activeEditor.execCommand('mceAddControl', false, id);
 			});	
 			
-			$('.e-dialog-save').click(function(){
+			
+			$('.e-dialog-save').live('click', function(){
 				
-				var html = $('#html_holder').val();	
+			//	var html = $('#html_holder').val();	
+				
+				var s = $('#bbcode_holder').val();	
+				
+				var p = $.ajax({
+					type: 'POST',
+					url: '".e_PLUGIN_ABS. "tinymce4/plugins/e107/parser.php', // parse bbcode value 
+					data: { content: s, mode: 'tohtml' },
+					async       : false,
+
+					dataType: 'html',
+					success: function(html) {
+				      return html;
+				    }
+				}).responseText;
+
+				html = p;
+					//	alert(html);		
 				
 				if(html === undefined)
 				{
@@ -152,10 +171,10 @@ if((e_WYSIWYG && check_class($pref['post_html'])) || strpos(e_SELF,"tinymce4/adm
 	
 			});
 			
-			$('.e-dialog-close').click(function(){
+		//	$('.e-dialog-close').click(function(){
 				
-				top.tinymce.activeEditor.windowManager.close();
-			});
+			//	top.tinymce.activeEditor.windowManager.close();
+		//	});
 			
 			
 							
