@@ -964,6 +964,9 @@ li.rssRow > div {
 
 .media-carousel-item-glyph { width: 64px; height:64px; overflow:hidden; margin-right:5px; margin-bottom:0px }
 
+.media-manager {padding:20px; min-height:400px }
+
+
 /*
 
 body { background-color: rgb(68, 68, 68); }
