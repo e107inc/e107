@@ -1526,8 +1526,14 @@ function update_706_to_800($type='')
 			
 			while($row = $sql->fetch())
 			{
-				$suffix = strrchr($row['download_url'], "."); 
-				$allowed_types[] = ltrim($suffix,".");	
+				$ext = strrchr($row['download_url'], "."); 
+				$suffix = ltrim($ext,".");
+
+				if(!isset($allowed_types[$suffix]))
+				{
+					$allowed_types[$suffix] = $suffix;		
+				}
+				
 			}
 			
 			$allowed_types = array_unique($allowed_types);
