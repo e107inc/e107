@@ -44,7 +44,7 @@ class e_bbcode
 		'b', 'justify', 'file', 'stream',
 		'textarea', 'list', 'time',
 		'spoiler', 'hide', 'youtube', 'sanitised', 
-		'p', 'h', 'nobr', 'block','table','th', 'tr','tbody','td','markdown','video'
+		'p', 'h', 'nobr', 'block','table','th', 'tr','tbody','td','markdown','video','glyph'
 		);
 
 		foreach($this->core_bb as $c)
@@ -310,11 +310,7 @@ class e_bbcode
 
 		$code_text = $code_text_par;
 
-		if (E107_DEBUG_LEVEL)
-		{
-			global $db_debug;
-			$db_debug->logCode(1, $code, $parm, $postID);
-		}
+	
 
 		if (is_array($this->bbList) && array_key_exists($code, $this->bbList))
 		{	// Check the bbcode 'cache'
@@ -326,11 +322,13 @@ class e_bbcode
 			{
 				$bbPath = e_CORE.'bbcodes/';
 				$bbFile = strtolower(str_replace('_', '', $code));
+				$debugFile = $bbFile;
 			}
 			else
 			{	// Add code to check for plugin bbcode addition
 				$bbPath = e_PLUGIN.$this->bbLocation[$code].'/';
 				$bbFile = strtolower($code);
+				$debugFile = $bbFile;
 			}
 			if (file_exists($bbPath.'bb_'.$bbFile.'.php'))
 			{	// Its a bbcode class file
@@ -338,11 +336,13 @@ class e_bbcode
 				//echo "Load: {$bbFile}.php<br />";
 				$className = 'bb_'.$code;
 				$this->bbList[$code] = new $className();
+				$debugFile = $bbPath.'bb_'.$bbFile.'.php';
 			}
 			elseif (file_exists($bbPath.$bbFile.'.bb'))
 			{
 				$bbcode = file_get_contents($bbPath.$bbFile.'.bb');
 				$this->bbList[$code] = $bbcode;
+				$debugFile = $bbPath.$bbFile.'.bb';
 			}
 			else
 			{
@@ -351,6 +351,19 @@ class e_bbcode
 				return false;
 			}
 		}
+		
+		if (E107_DEBUG_LEVEL)
+		{
+			global $db_debug;
+			
+			$info = array(
+				'class' =>$className,
+				'path'	=> $debugFile
+			);
+			
+			$db_debug->logCode(1, $code, $parm, print_a($info,true));
+		}
+		
 		global $e107_debug;
 
 		if (is_object($this->bbList[$code]))
