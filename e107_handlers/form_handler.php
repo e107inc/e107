@@ -3751,24 +3751,53 @@ class e_form
 					}
 					unset($tmp);
 				}
-				 
+				
+				 * 
+				 * 
+				 * 
+				 *  
 				 */
-				$text .= "
+				 
+				$leftCell = $required."<span{$required_class}>".defset(vartrue($att['title']), vartrue($att['title']))."</span>".$label;
+				$rightCell = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()), $model->getId())." {$help}";
+				 
+				if(vartrue($att['type']) == 'bbarea')
+				{
+					$text .= "
+					<tr><td colspan='2'>
+							<div style='padding-bottom:8px'>".$leftCell."</div>".
+							$rightCell."
+						</td>
+						
+					</tr>
+				";	
+					
+				}
+				else 
+				{
+					$text .= "
 					<tr>
 						<td>
-							".$required."<span{$required_class}>".defset(vartrue($att['title']), vartrue($att['title']))."</span>".$label."
+							".$leftCell."
 						</td>
 						<td>
-							".$this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()), $model->getId())."
-							{$help}
+							".$rightCell."
 						</td>
 					</tr>
 				";
+				}
+				 
+				
+				
+				
+				
 			}
 			//if($bckp) $model->remove($bckp);
 
 		}
-
+		
+		print_a($fdata);
+		
 		if($required_help)
 		{
 			$required_help = '<div class="form-note">'.$this->getRequiredString().' - required fields</div>'; //TODO - lans

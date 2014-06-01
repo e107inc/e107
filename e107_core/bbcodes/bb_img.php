@@ -82,11 +82,16 @@ class bb_img extends e_bb_base
         
         parse_str($parm,$imgParms);
         
-      //  foreach($tmp as $p => $v)
+
+		if(!vartrue($imgParms['width']) && strpos($parm,'width')!==false) // Calculate thumbnail width from style. 
         {
-         //   $imgParms[$p]=$v;
-        }
-        
+			preg_match("/width:([\d]*)/i", $parm, $m);
+			if($m[1] > 0)
+			{
+				$imgParms['width'] = $m[1];
+			}
+		}
+		
         if(!vartrue($imgParms['alt'])) // Generate an Alt value from filename if one not found.  
         {
            preg_match("/([\w]*)(?:\.png|\.jpg|\.jpeg|\.gif)/i", $code_text, $match); // Generate required Alt attribute. 
