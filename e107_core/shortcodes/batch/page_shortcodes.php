@@ -19,6 +19,7 @@ class cpage_shortcodes extends e_shortcode
 {
 	// var $var; // parsed DB values
 	private $chapterData = array();
+	public $page = array();
 	// Grab all book/chapter data. 
 	function __construct()
 	{
