@@ -180,14 +180,17 @@ class e_search
 		else 
 		{
 			$this -> query = str_replace('&quot;', '"', $this -> query);
-			$field_query = implode(',', $search_fields);
+			//$field_query = implode(',', $search_fields);
 			
 			foreach ($search_fields as $field_key => $field) 
 			{
 				$search_query[] = "(". varset($weights[$field_key],0.6)." * (MATCH(".$field.") AGAINST ('".$this -> query."' IN BOOLEAN MODE)))";
+				$field_query[] = "MATCH(".$field.") AGAINST ('".$this -> query."' IN BOOLEAN MODE)";
 			}
 			
 			$match_query = implode(' + ', $search_query);
+			$field_query = implode(' || ', $field_query);
+
 			$sql_order = '';
 			
 			foreach ($order as $sort_key => $sort_value) 
@@ -197,7 +200,7 @@ class e_search
 			
 			$limit = " LIMIT ".$result_flag.",".$search_res;
 			
-			$sql_query = "SELECT SQL_CALC_FOUND_ROWS ".$return_fields.", (".$match_query.") AS relevance FROM #".$table." WHERE ".$where." ( MATCH(".$field_query.") AGAINST ('".$this -> query."' IN BOOLEAN MODE) ) HAVING relevance > 0 ORDER BY relevance DESC ".$sql_order.$limit.";";
+			$sql_query = "SELECT SQL_CALC_FOUND_ROWS ".$return_fields.", (".$match_query.") AS relevance FROM #".$table." WHERE ".$where." (".$field_query.") HAVING relevance > 0 ORDER BY relevance DESC ".$sql_order.$limit.";";
 		}
 
 		if ($ps['results'] = $sql->gen($sql_query)) 
