@@ -152,7 +152,7 @@ class search extends e_shortcode
 		";
 		
 		$text .= '<ul class="dropdown-menu pull-right">
-          <li><a class="e-expandit" href="#" data-target="search-advanced,search-enhanced"><small>Toggle Advanced Mode</small></a></li>
+          <li><a class="e-expandit" href="#" data-target="search-advanced,search-enhanced"><small>'.LAN_SEARCH_202.'</small></a></li>
         </ul>';
 		
 		$text .= "
