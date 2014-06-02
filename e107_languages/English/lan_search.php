@@ -114,4 +114,4 @@ define("LAN_SEARCH_99", "Comments");
 //define("LAN_SEARCH_200", "Categories:");						// Redundant LAN?
 define("LAN_SEARCH_201", "Please redefine your search query");
 
-?>
+define("LAN_SEARCH_202", "Toggle Advanced Mode");
