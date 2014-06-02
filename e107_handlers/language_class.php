@@ -404,6 +404,11 @@ class language{
 		global $pref;
 		$codelnk = ($language == $pref['sitelanguage']) ? "www" : $this->convert($language);
 		
+		if($codelnk == '')
+		{
+			$codelnk = 'www';	
+		}
+		
       //  $urlval = str_replace($_SERVER['HTTP_HOST'],$codelnk.".".e_DOMAIN,e_SELF);
 		
 		$urlval = (e_QUERY)
