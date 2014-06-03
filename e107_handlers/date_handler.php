@@ -24,6 +24,63 @@ class convert
 		
 		
 	}
+	
+	
+	/**
+	 * Return an array of language terms representing months
+	 * @param $type string : month, month-short, day, day-short, day-shortest
+	 * @return array
+	 * TODO Cache!
+	 */
+	public function terms($type='month')
+	{
+		if($type == 'month' || $type == 'month-short')
+		{
+			$val = ($type == 'month-short') ? '%b' : '%B';  //eg. 'Aug' / 'August'
+			$marray = array();
+			for ($i=1; $i < 13; $i++) 
+			{ 
+				$marray[] = strftime($val,mktime(1,1,1,$i,1,2000));	
+			}
+			
+			return $marray;
+		}	
+		
+		if(substr($type,0,3) == 'day')
+		{
+			$days = array();
+			for ($i=2; $i < 9; $i++) 
+			{
+				switch ($type) 
+				{
+					case 'day-shortest': // eg. 'Tu'
+						$days[] = substr(strftime('%a',mktime(1,1,1,6,$i,2014)),0,2);	
+					break;
+					
+					case 'day-short':  // eg. 'Tue'
+						$days[] = strftime('%a',mktime(1,1,1,6,$i,2014));	
+					break;
+					
+					default:  // eg. 'Tuesday'
+						$days[] = strftime('%A',mktime(1,1,1,6,$i,2014));	
+					break;
+				}
+			}
+			
+			return $days;
+		}	
+		
+		
+		
+		return false;
+	}
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * Convert datestamp to human readable date.
 	 * System time offset is considered.
