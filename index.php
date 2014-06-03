@@ -54,12 +54,77 @@
 	set_include_path(ROOT.PATH_SEPARATOR.get_include_path());
 	
 	require_once("class2.php");
+
+// ----------------------------
+	
+/**
+ * Simple URL ReWrite (experimental) //TODO test, discuss, benchmark, enhance and include in eFront etc. if all goes well.  
+ * Why?: 
+ * - To make simple url rewrites as quick and easy for plugin developers to implement as it currently is to do the same with .htaccess 
+ * - To use the same familiar standard as used by e_cron, e_status, e_rss etc. etc. so even a novice developer can understand it. 
+ * 
+ * @example (.httaccess): 
+ * RewriteRule ^ref-(.*)/?$ e107_plugins/myplugin/myplugin.php?ref=$1 [NC,L] 
+ * 
+ * @example (e_url.php file - in the 'myplugin' folder)
+ * 
+ *	class myplugin_url // plugin-folder + '_url' 
+	{
+		function config() 
+		{
+			$config = array();
+		
+			$config[] = array(
+				'regex'			=> '^ref-(.*)/?$',
+				'redirect'		=> '{e_PLUGIN}myplugin/myplugin.php?ref=$1',
+			);
+			
+			return $config;
+		}
+		
+	}
+ */
+ 
+	$sql->db_Mark_Time("Start Simple URL-ReWrite Routine");
+	
+	$tmp = e107::getAddonConfig('e_url');
+	if(count($tmp))
+	{
+		foreach($tmp as $plug=>$cfg)
+		{
+			foreach($cfg as $k=>$v)
+			{
+				$req = str_replace(e_HTTP,'', e_REQUEST_URI);
+				$regex = '#'.$v['regex'].'#';
+				if($newLocation = preg_replace($regex,$v['redirect'],$req))
+				{
+					$redirect = e107::getParser()->replaceConstants($newLocation);
+					list($file,$query) = explode("?",$redirect,2);
+					
+					parse_str($query,$_GET);
+					include_once($file);
+					//print_a($_GET);
+					exit;
+				}				
+			}	
+			
+		}
+		
+		unset($tmp,$redirect,$regex);
+	}
+
+	
+// -----------------------------------------
+
+	$sql->db_Mark_Time("Start regular eFront Class");
 	
 	$front = eFront::instance();
 	$front->init()
 		->run();
 	
 	$request = $front->getRequest();
+	
+	
 	
 	// If not already done - define legacy constants
 	$request->setLegacyQstring();
