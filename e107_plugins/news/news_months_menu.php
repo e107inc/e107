@@ -33,7 +33,7 @@ if(false === $cached)
 	$tp = e107::getParser();
 	$sql = e107::getDb();
 	
-	$marray  = e107::getDate()->getTerms('month');
+	$marray  = e107::getDate()->terms('month');
 	
 	// TODO parms
 	//$parms['year'] = "2011 0";
