@@ -88,20 +88,27 @@
 	$sql->db_Mark_Time("Start Simple URL-ReWrite Routine");
 	
 	$tmp = e107::getAddonConfig('e_url');
+	
+		$req = str_replace(e_HTTP,'', e_REQUEST_URI);
+	
 	if(count($tmp))
 	{
 		foreach($tmp as $plug=>$cfg)
 		{
 			foreach($cfg as $k=>$v)
 			{
-				$req = str_replace(e_HTTP,'', e_REQUEST_URI);
+			
 				$regex = '#'.$v['regex'].'#';
-				if($newLocation = preg_replace($regex,$v['redirect'],$req))
+				
+				$newLocation = preg_replace($regex, $v['redirect'], $req);
+				
+				if($newLocation !=$req)
 				{
 					$redirect = e107::getParser()->replaceConstants($newLocation);
 					list($file,$query) = explode("?",$redirect,2);
 					
 					parse_str($query,$_GET);
+				//	echo " file=".$file;
 					include_once($file);
 					//print_a($_GET);
 					exit;

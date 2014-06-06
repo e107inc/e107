@@ -2527,7 +2527,25 @@ class e107
 		
 	}
 
+	/**
+ 	* Experimental static (easy) sef-url creation method (works with e_url.php @see /index.php)
+ 	*/
+	public static function url($plugin='',$key)
+	{
+		$tmp = e107::getAddonConfig('e_url');
 
+		if(varset($tmp[$plugin][$key]['sef']))
+		{
+			return e_HTTP.$tmp[$plugin][$key]['sef'];
+		}
+		elseif(varset($tmp[$plugin][$key]['redirect']))
+		{
+			return self::getParser()->replaceConstants($tmp[$plugin][$key]['redirect'],'full');		
+		}
+
+		return;
+
+	}
 
 
 
