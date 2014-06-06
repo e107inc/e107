@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<tinymce name="Admin" version="4">
+	<plugins>advlist autolink lists link image charmap print preview hr anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen
+        insertdatetime media nonbreaking save table contextmenu directionality emoticons template paste textcolor</plugins>
+	<menubar>edit view format insert table tools</menubar>
+	<toolbar1>undo redo | styleselect | bold italic forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | e107-image e107-video e107-glyph | preview</toolbar1>
+	<external_plugins>e107 example</external_plugins>
+	<image_advtab>true</image_advtab>
+	<extended_valid_elements>i[*], object[*],embed[*],bbcode[*]</extended_valid_elements>
+</tinymce>
