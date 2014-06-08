@@ -71,7 +71,7 @@
 		<core name="e_jslib_plugin"><![CDATA[array ()]]></core>
 		<core name="e_jslib_theme"><![CDATA[array ()]]></core>
 		<core name="e_meta_list"><![CDATA[array (
-  'tinymce' => 'tinymce',
+  'tinymce4' => 'tinymce4',
 )]]></core>
 		<core name="e_shortcode_list"><![CDATA[array (
   'siteinfo' => 'siteinfo',
@@ -157,7 +157,7 @@
   'page' => '1.0',
   'siteinfo' => '1.0',
   'social' => '1.0',
-  'tinymce' => '1.0',
+  'tinymce4' => '1.0',
 )]]></core>
 		<core name="post_html">254</core>
 		<core name="post_script">254</core>
