@@ -2537,25 +2537,34 @@ class e_parse extends e_parser
  */
 class e_parser
 {
-    public $domObj             = null;
-    private $removedList        = array();
-    private $nodesToDelete      = array();
-    private $nodesToConvert     = array();
-    private $pathList           = array();
-    private $allowedAttributes  = array(
+    /**
+     * @var DOMDocument
+     */
+    public $domObj                = null;
+    protected $removedList        = array();
+    protected $nodesToDelete      = array();
+    protected $nodesToConvert     = array();
+    protected $pathList           = array();
+    protected $allowedAttributes  = array(
                                     'default'   => array('id', 'style', 'class'),
                                     'img'       => array('id', 'src', 'style', 'class', 'alt', 'title', 'width', 'height'),
                                     'a'         => array('id', 'href', 'style', 'class', 'title', 'target'),
                                     'script'	=> array('type', 'src', 'language'),
                                     'iframe'	=> array('id', 'src', 'frameborder', 'class', 'width', 'height', 'style')
-                                  ); 
-    private $badAttrValues       = array("javascript[\s]*?:","alert\(","vbscript[\s]*?:","data:text\/html", "mhtml[\s]*?:", "data:[\s]*?image");
-    private $allowedTags        = array('html', 'body','div','a','img','table','tr', 'td', 'th', 'tbody', 'thead', 'colgroup', 'b', 
+                                  );
+
+    protected $badAttrValues     = array('javascript[\s]*?:','alert\(','vbscript[\s]*?:','data:text\/html', 'mhtml[\s]*?:', 'data:[\s]*?image');
+
+    protected $replaceAttrValues = array(
+        'default' => array()
+    );
+
+    protected $allowedTags        = array('html', 'body','div','a','img','table','tr', 'td', 'th', 'tbody', 'thead', 'colgroup', 'b',
                                         'i', 'pre','code', 'strong', 'u', 'em','ul','li','img','h1','h2','h3','h4','h5','h6','p',
                                         'div','pre','section','article', 'blockquote','hgroup','aside','figure','span', 'video', 'br',
                                         'small', 'caption', 'noscript'
                                    );
-	private $scriptTags 		= array('script','applet','iframe'); //allowed whem $pref['post_script'] is enabled. 
+    protected $scriptTags 		= array('script','applet','iframe'); //allowed when $pref['post_script'] is enabled.
 	
 	protected $blockTags		= array('pre','div','h1','h2','h3','h4','h5','h6','blockquote'); // element includes its own line-break. 
         
@@ -2586,7 +2595,6 @@ class e_parser
         $this->allowedTags = $array;    
     } 
 
- 
      /**
      * Set Allowed Attributes. 
      * @param $array 
@@ -2596,8 +2604,15 @@ class e_parser
         $this->allowedAttributes = $array;    
     } 
 
+     /**
+     * Set Script Tags.
+     * @param $array
+     */
+    public function setScriptTags($array=array())
+    {
+        $this->scriptTags = $array;
+    }
 
- 
 	/**
 	 * Add leading zeros to a number. eg. 3 might become 000003
 	 * @param $num integer 
@@ -2959,6 +2974,7 @@ class e_parser
     {
       //  $tp = e107::getParser();
         $sql = e107::getDb();
+        $tp = e107::getParser();
         
         $html = $this->getXss();
                    
@@ -2970,17 +2986,17 @@ class e_parser
         echo "<h3>\$tp->dataFilter()</h3>";
         // echo $tp->dataFilter($html); // Remove Comment for a real mess! 
         $sql->db_Mark_Time('------ Start Parser Test -------');
-        print_a($this->dataFilter($html));   
+        print_a($tp->dataFilter($html));
         $sql->db_Mark_Time('tp->dataFilter');
          
         echo "<h3>\$tp->toHtml()</h3>";
         // echo $tp->dataFilter($html); // Remove Comment for a real mess! 
-        print_a($this->tohtml($html));
+        print_a($tp->toHTML($html));
         $sql->db_Mark_Time('tp->toHtml');     
         
         echo "<h3>\$tp->toDB()</h3>";
         // echo $tp->dataFilter($html); // Remove Comment for a real mess! 
-        print_a($this->toDB($html)); 
+        print_a($tp->toDB($html));
         $sql->db_Mark_Time('tp->toDB');             
         
         
@@ -3005,13 +3021,15 @@ class e_parser
  
     
     /**
-     * Process and clean HTML from user input. 
-     * @param $html raw HTML
-     * TODO Html5 tag support. 
+     * Process and clean HTML from user input.
+     * TODO Html5 tag support.
+     * @param string $html raw HTML
+     * @param boolean $checkPref
+     * @return string
      */
-    public function cleanHtml($html='')
+    public function cleanHtml($html='', $checkPref = true)
     {
-        if(!vartrue($html)){ return; }
+        if(empty($html)){ return; }
         
    //     $html = mb_convert_encoding($html, 'UTF-8');     
         
@@ -3031,17 +3049,20 @@ class e_parser
 		{
 			$this->init();	
 		}
-		
-		$post_scripts = e107::getConfig()->get('post_script', e_UC_MAINADMIN); // Pref to Allow <script> tags 
-		
-		if(check_class($post_scripts)) 
-		{
-			$this->allowedTags = array_merge($this->allowedTags,$this->scriptTags);
-		}
+
+        if($checkPref)
+        {
+            $post_scripts = e107::getConfig()->get('post_script', e_UC_MAINADMIN); // Pref to Allow <script> tags
+            if(check_class($post_scripts))
+            {
+                $this->allowedTags = array_merge($this->allowedTags,$this->scriptTags);
+            }
+        }
+
 		
         // Set it up for processing. 
         $doc  = $this->domObj;   
-        
+
         @$doc->loadHTML($html); 
         $doc->encoding = 'UTF-8'; //FIXME 
      //   $doc->resolveExternals = true;
@@ -3052,21 +3073,20 @@ class e_parser
 		$this->nodesToDelete 	= array(); // required. 
 		$this->removedList		= array();
 
-		$tmp = $doc->getElementsByTagName('*');   
-		
+		$tmp = $doc->getElementsByTagName('*');
+
+        /** @var DOMElement $node */
         foreach($tmp as $node)
         {
-    
             $path = $node->getNodePath();
-			
+
 		//	echo "<br />Path = ".$path;
          //   $tag = strval(basename($path));
             
             $tag = preg_replace('/([a-z0-9\[\]\/]*)?\/([\w]*)(\[(\d)*\])?$/i', "$2", $path);
             if(!in_array($tag, $this->allowedTags))
             {
-                  
-                 if(strpos($path,'/code/') !== false || strpos($path,'/pre/') !== false) //  treat as html. 
+                 if(strpos($path,'/code/') !== false || strpos($path,'/pre/') !== false) //  treat as html.
                  {
                     $this->pathList[] = $path; 
                     $this->nodesToConvert[] =  $node->parentNode; // $node; 
@@ -3077,28 +3097,47 @@ class e_parser
                 $this->nodesToDelete[] = $node; 
                 continue;
             }
-             
+
             foreach ($node->attributes as $attr)
             {
                 $name = $attr->nodeName;
-                $value = $attr->nodeValue; 
-                
+                $value = $attr->nodeValue;
+
                 $allow = varset($this->allowedAttributes[$tag], $this->allowedAttributes['default']);
+                $removeAttributes = array();
 
                 if(!in_array($name, $allow))
                 {
-                     $node->removeAttribute($name);   
-                     $this->removedList['attributes'][] = $name. " from <".$tag.">";
-                     continue;
+                    $removeAttributes[] = $name;
+                    //$node->removeAttribute($name);
+                    $this->removedList['attributes'][] = $name. " from <".$tag.">";
+                    continue;
                 }
-                
-                if($this->invalidAttributeVal( $value)) // Check value against whitelist. 
+
+                if($this->invalidAttributeValue($value)) // Check value against blacklisted values.
                 {
-					$node->removeAttribute($name);
+					//$node->removeAttribute($name);
                     $node->setAttribute($name, '#---sanitized---#');
 					$this->removedList['sanitized'][] = $tag.'['.$name.']';    
-                }       
-            } 
+                }
+                else
+                {
+                    $_value = $this->secureAttributeValue($name, $value);
+
+                    $node->setAttribute($name, $_value);
+                    if($_value !== $value)
+                    {
+                        $this->removedList['sanitized'][] = $tag.'['.$name.'] converted "'.$value.'" -> "'.$_value.'"';
+                    }
+                }
+            }
+
+            // required - removing attributes in a loop breaks the loop
+            foreach ($removeAttributes as $name)
+            {
+                $node->removeAttribute($name);
+            }
+
 
         }
         
@@ -3131,33 +3170,42 @@ class e_parser
             
             $value = htmlentities(htmlentities($value)); // Needed 
             $node->nodeValue = $value;
-        }  
-       
-       
+        }
+
         $cleaned = $doc->saveHTML();
-        
+
         $cleaned = str_replace(array('<body>','</body>','<html>','</html>','<!DOCTYPE html>','<meta charset="UTF-8">','<?xml version="1.0" encoding="utf-8"?>'),'',$cleaned); // filter out tags. 
     
         $cleaned = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
         
         return trim($cleaned);
     }
+
+    public function secureAttributeValue($attribute, $value)
+    {
+        $search = isset($this->replaceAttrValues[$attribute]) ? $this->replaceAttrValues[$attribute] : $this->replaceAttrValues['default'];
+        if(!empty($search))
+        {
+            $value = str_replace($search, '', $value);
+        }
+        return $value;
+    }
  
  
     /**
      * Check for Invalid Attribute Values
-     * @param $val string 
+     * @param $value string
      * @return true/false
      */   
-    function invalidAttributeVal($val)
+    function invalidAttributeValue($value)
     {
     	
     	
         foreach($this->badAttrValues as $v) // global list because a bad value is bad regardless of the attribute it's in. ;-)
         {
-            if(preg_match('/'.$v.'/i',$val)==true)  
+            if(preg_match('/'.$v.'/i',$value)==true)
             {
-				$this->removedList['blacklist'][]	= "Match found for '{$v}' in '{$val}'";	
+				$this->removedList['blacklist'][]	= "Match found for '{$v}' in '{$value}'";
             	
                 return true;    
             }   

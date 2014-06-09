@@ -170,6 +170,7 @@ class e107
 		'e_object'						 => '{e_HANDLER}model_class.php',
 		'e_online'						 => '{e_HANDLER}online_class.php',
 		'e_parse'						 => '{e_HANDLER}e_parse_class.php',
+		'e_parser'						 => '{e_HANDLER}e_parse_class.php',
 		'e_parse_shortcode'				 => '{e_HANDLER}shortcode_handler.php',
 		'e_ranks'						 => '{e_HANDLER}e_ranks_class.php',
 		'e_shortcode'					 => '{e_HANDLER}shortcode_handler.php',
