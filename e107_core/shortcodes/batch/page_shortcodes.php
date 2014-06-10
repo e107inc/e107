@@ -19,7 +19,8 @@ class cpage_shortcodes extends e_shortcode
 {
 	// var $var; // parsed DB values
 	private $chapterData = array();
-	public $page = array();
+    // Works in 'magic' mode, so setting it breaks everything
+	//public $page = array();
 	// Grab all book/chapter data. 
 	function __construct()
 	{
@@ -290,7 +291,7 @@ class cpage_shortcodes extends e_shortcode
 	{
 		$route = ($this->page['page_chapter'] == 0) ? 'page/view/other' : 'page/view';
 		$urldata = $this->page;
-		
+
 		if($this->page['page_chapter'] && $this->chapterData[$this->page['page_chapter']])
 		{
 			$chapter = $this->chapterData[$this->page['page_chapter']]; 
