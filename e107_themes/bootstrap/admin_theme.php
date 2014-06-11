@@ -11,7 +11,7 @@ e107::js('core','bootstrap/js/bootstrap.min.js');
 e107::css('core','bootstrap/css/bootstrap.min.css');
 e107::css('core','bootstrap/css/bootstrap-responsive.min.css');
 //e107::css('core','font-awesome/css/font-awesome.min.css');
-e107::css('url', "//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css");
+e107::css('url', "//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css");
 
 // e107::css('core','bootstrap/css/jquery-ui.custom.css');
 e107::css('theme','admin_style.css');
