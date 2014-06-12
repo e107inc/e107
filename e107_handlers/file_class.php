@@ -266,10 +266,10 @@ class e_file
 								}
 								else 
 								{
-									$finfo['path'] = $path.DIRECTORY_SEPARATOR;  // important: leave this slash here and update other file instead.
+									$finfo['path'] = $path.'/';  // important: leave this slash here and update other file instead.
 									$finfo['fname'] = $file;
 								}
-							//	$finfo['path'] = $path.DIRECTORY_SEPARATOR;  // important: leave this slash here and update other file instead.
+							//	$finfo['path'] = $path.'/';  // important: leave this slash here and update other file instead.
 							//	$finfo['fname'] = $file;
 
 								$ret[] = $finfo;
@@ -376,7 +376,7 @@ class e_file
 
 		$finfo['fullpath'] 	= $path_to_file;
 		$finfo['fname'] 	= basename($path_to_file);
-		$finfo['path'] 		= dirname($path_to_file).DIRECTORY_SEPARATOR;
+		$finfo['path'] 		= dirname($path_to_file).'/';
 
 	//	$finfo['mime'] = vartrue($finfo['mime'],'application/'.$finfo['pathinfo']['extension']);
 		
