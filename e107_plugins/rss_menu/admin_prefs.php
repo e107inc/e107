@@ -315,7 +315,7 @@ if(!isset($RSS_ADMIN_CREATE_TABLE))
 	<form action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."' id='dataform' method='post' >
 	<table class='table adminform'>
 	<tr>
-		<td style='width:12%'>".RSS_LAN_ADMIN_4."</td>
+		<td style='width:12%'>".LAN_NAME."</td>
 		<td>{RSS_ADMIN_FORM_NAME}</td>
 	</tr>
 	<tr>

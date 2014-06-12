@@ -101,7 +101,7 @@ SC_END
 
 SC_BEGIN RSS_ADMIN_FORM_URL
 global $row,$PLUGINS_DIRECTORY;
-return SITEURL.$PLUGINS_DIRECTORY."rss_menu/rss.php?".e_LANQRY." <input class='tbox' type='text' name='rss_url' size='10' value=\"".$row['rss_url']."\" maxlength='50' /> .{".RSS_LAN_ADMIN_9."}.{".RSS_LAN_ADMIN_12."}";
+return SITEURL.$PLUGINS_DIRECTORY."rss_menu/rss.php?".e_LANQRY." <input class='tbox' type='text' name='rss_url' size='10' value=\"".$row['rss_url']."\" maxlength='50' /> .{".LAN_TYPE."}.{".RSS_LAN_ADMIN_12."}";
 SC_END
 
 SC_BEGIN RSS_ADMIN_FORM_TOPICID
