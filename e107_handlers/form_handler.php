@@ -2809,11 +2809,11 @@ class e_form
 						return $video;
 					}
 					
-					if(!preg_match("/[a-zA-z0-9_-\s\(\)]+\.(png|jpg|jpeg|gif|PNG|JPG|JPEG|GIF)$/",$value))
+					if(!preg_match("/[a-zA-z0-9_-\s\(\)]+\.(png|jpg|jpeg|gif|PNG|JPG|JPEG|GIF)$/",$value) && strpos($value,'.')!==false)
 					{
 						$icon = "{e_IMAGE}filemanager/zip_32.png";	
 						$src = $tp->replaceConstants(vartrue($parms['pre']).$icon, 'abs');
-						return '<img src="'.$src.'" alt="'.$value.'" class="e-thumb" title="'.$value.'" />';
+					//	return '<img src="'.$src.'" alt="'.$value.'" class="e-thumb" title="'.$value.'" />';
 					}
 					
 					if(vartrue($parms['thumb']))
