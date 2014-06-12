@@ -959,13 +959,15 @@ class e_media
 		
 		$info = e107::getFile()->get_file_info($path,true);
 		
+		
+		
 		$this->log("File info for $path : ".print_r($info,true));
 		
 		return array(
 			'media_type'		=> vartrue($info['mime']),
 			'media_datestamp'	=> time(),
-			'media_url'			=> e107::getParser()->createConstants($path, 'rel'),
-			'media_size'		=> filesize($path),
+			'media_url'			=> e107::getParser()->createConstants($info['fullpath'], 'rel'),
+			'media_size'		=> filesize($info['fullpath']),
 			'media_author'		=> USERID,
 			'media_usedby'		=> '',
 			'media_tags'		=> '',

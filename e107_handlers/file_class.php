@@ -264,8 +264,13 @@ class e_file
 								{
 									$finfo = $this->get_file_info($path."/".$file, ('file' != $this->finfo)); // -> 'all' & 'image'
 								}
-								$finfo['path'] = $path."/";  // important: leave this slash here and update other file instead.
-								$finfo['fname'] = $file;
+								else 
+								{
+									$finfo['path'] = $path.DIRECTORY_SEPARATOR;  // important: leave this slash here and update other file instead.
+									$finfo['fname'] = $file;
+								}
+							//	$finfo['path'] = $path.DIRECTORY_SEPARATOR;  // important: leave this slash here and update other file instead.
+							//	$finfo['fname'] = $file;
 
 								$ret[] = $finfo;
 							break;
@@ -276,6 +281,24 @@ class e_file
 		}
 		return $ret;
 	}
+
+
+	function getFileExtension($mimeType)
+	{
+		$extensions = array(
+			'image/jpeg'=>'.jpg',
+			'image/png'	=> '.png',
+			'image/gif'	=> '.gif'
+		);	
+		
+		if(isset($extensions[$mimeType]))
+		{
+			return $extensions[$mimeType];		
+		}
+		
+	}
+
+
 
 	/**
 	 * Collect file information
@@ -291,16 +314,56 @@ class e_file
 		{
 			return false; 	
 		}
+		
+		$finfo['pathinfo'] = pathinfo($path_to_file);
+		
+		if(class_exists('finfo')) // Best Mime detection method. 
+		{
+			$fin = new finfo(FILEINFO_MIME);
+			list($mime, $other) = explode(";", $fin->file($path_to_file));
+			
+			if(!empty($mime))
+			{
+				$finfo['mime'] = $mime;	
+			}
+			
+		}
+		
+		// Auto-Fix Files without an extensions using known mime-type. 
+		if(empty($finfo['pathinfo']['extension']) && !is_dir($path_to_file) && !empty($finfo['mime']))
+		{
+			if($ext = $this->getFileExtension($finfo['mime']))
+			{
+				$finfo['pathinfo']['extension'] = $ext;
+				
+				
+				$newFile = $path_to_file . $ext;	
+				if(!file_exists($newFile))
+				{
+					if(rename($path_to_file,$newFile)===true)
+					{
+						$finfo['pathinfo'] = pathinfo($newFile);
+						$path_to_file = $newFile;
+					}	
+				}
+			}
+		}
+		
 
 		if($imgcheck && ($tmp = getimagesize($path_to_file)))
 		{
 			$finfo['img-width'] = $tmp[0];
 			$finfo['img-height'] = $tmp[1];
-			$finfo['mime'] = $tmp['mime'];
+			
+			if(empty($finfo['mime']))
+			{
+				$finfo['mime'] = $tmp['mime'];	
+			}
+			
 		}
-
-		$tmp = stat($path_to_file);
 		
+		$tmp = stat($path_to_file);
+
 		if($tmp)
 		{
 			
@@ -309,9 +372,17 @@ class e_file
 		}
 
 		// associative array elements: dirname, basename, extension, filename
-		$finfo['pathinfo'] = pathinfo($path_to_file);
+		
 
-		$finfo['mime'] = vartrue($finfo['mime'],'application/'.$finfo['pathinfo']['extension']);
+		$finfo['fullpath'] 	= $path_to_file;
+		$finfo['fname'] 	= basename($path_to_file);
+		$finfo['path'] 		= dirname($path_to_file).DIRECTORY_SEPARATOR;
+
+	//	$finfo['mime'] = vartrue($finfo['mime'],'application/'.$finfo['pathinfo']['extension']);
+		
+	
+		
+		
 		return $finfo;
 	}
 
