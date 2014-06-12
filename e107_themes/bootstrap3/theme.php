@@ -10,7 +10,7 @@ define('VIEWPORT', 		"width=device-width, initial-scale=1.0");
 
 e107::js("url", 			"//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js");
 e107::css('url', 			'//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css');
-e107::css('url', 			"//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css");
+e107::css('url', 			"//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css");
 
 e107::js("footer-inline", 	"$('.e-tip').tooltip({container: 'body'})"); // activate bootstrap tooltips. 
 					
