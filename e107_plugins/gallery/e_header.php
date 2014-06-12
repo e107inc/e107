@@ -11,6 +11,11 @@ if (!defined('e107_INIT')) { exit; }
 //e107::css('gallery', 'jslib/lightbox/css/lightbox.css','jquery');
 
 // See: http://www.no-margin-for-errors.com/projects/prettyPhoto-jquery-lightbox-clone
+
+
+if(USER_AREA)
+{
+
 e107::js('gallery', 'jslib/prettyPhoto/js/jquery.prettyPhoto.js','jquery');
 e107::css('gallery', 'jslib/prettyPhoto/css/prettyPhoto.css','jquery');
 
@@ -91,6 +96,6 @@ $(document).ready(function()
 
 	
 unset($gp);
-
+}
 
 ?>

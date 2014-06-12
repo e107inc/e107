@@ -240,7 +240,14 @@ class wysiwyg
 
 		$this->config['convert_fonts_to_spans']	= false;
 		$this->config['content_css']			= 'http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css';
-
+		
+		$this->config['relative_urls']			= false;  //Media Manager prefers it like this. 
+		$this->config['preformatted']			= true;
+		$this->config['document_base_url']		= SITEURL;
+		
+		//	$this->config['verify_css_classes']	= 'false';
+		
+		
 		return; 
 
 		// -------------------------------------------------------------------------------------
