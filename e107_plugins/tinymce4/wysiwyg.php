@@ -10,6 +10,7 @@
 $_E107['no_online'] = true;
 require_once("../../class2.php");
 
+/*
 $text = <<<TMPL
 
 
@@ -44,6 +45,8 @@ tinymce.init({
 TMPL;
 
 $output = str_replace("{e_PLUGIN_ABS}", e_PLUGIN_ABS, $text);
+*/
+
 
 $wy = new wysiwyg();
 
@@ -239,7 +242,7 @@ class wysiwyg
 		}
 
 		$this->config['convert_fonts_to_spans']	= false;
-		$this->config['content_css']			= 'http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css';
+		$this->config['content_css']			= 'http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css';
 		
 		$this->config['relative_urls']			= false;  //Media Manager prefers it like this. 
 		$this->config['preformatted']			= true;
