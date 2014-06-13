@@ -15,12 +15,15 @@ if (!defined('e107_INIT')) { exit; }
  *
  *	Shortcodes for custom page display
  */
+ 
+ 
+// XXX FIXME All shortcodes should return a value from $this->var.  
+ 
 class cpage_shortcodes extends e_shortcode
 {
 	// var $var; // parsed DB values
 	private $chapterData = array();
-    // Works in 'magic' mode, so setting it breaks everything
-	//public $page = array();
+	
 	// Grab all book/chapter data. 
 	function __construct()
 	{
@@ -34,11 +37,19 @@ class cpage_shortcodes extends e_shortcode
 		}	
 	
 	}
+		
 	
-	// Return data for a specific chapter-id
+	// Set Chapter. // @see chapter_menu.php 
+	public function setChapter($id)
+	{
+		$this->var['page_chapter'] = intval($id);	
+	}
+	
+	// Return data for a specific chapter-id - XXX @SecretR - without $page defined above, this will return nothing. All $this->var need to be replaced with $this->var
 	function getChapter()
 	{
-		$id = $this->page['page_chapter'];
+		
+		$id = $this->var['page_chapter'];
 		
 		if(vartrue($this->chapterData[$id]['chapter_id']) && $this->chapterData[$id]['chapter_parent'] > 0)
 		{
@@ -49,10 +60,13 @@ class cpage_shortcodes extends e_shortcode
 	
 	
 	// Return data for a specific book-id
-	function getBook()
+	function getBook($cid='')
 	{
-		$pid = $this->page['page_chapter'];
-		$cid = $this->chapterData[$pid]['chapter_parent'];
+		if(empty($cid))
+		{
+			$pid = $this->var['page_chapter'];
+			$cid = $this->chapterData[$pid]['chapter_parent'];
+		}
 		
 		$row = $this->chapterData[$cid];
 		
@@ -71,38 +85,38 @@ class cpage_shortcodes extends e_shortcode
 
 	function sc_cpagetitle($parm='')
 	{
-		return e107::getParser()->toHTML($this->getParserVars()->title, true, 'TITLE');
+		return e107::getParser()->toHTML($this->var['page_title'], true, 'TITLE');
 	}
 	
 	function sc_cpagesubtitle()
 	{
-		$subtitle = $this->getParserVars()->sub_title;
+		$subtitle = $this->var['sub_title'];
 		return $subtitle ? e107::getParser()->toHTML($subtitle, true, 'TITLE') : '';
 	}
 
 
 	function sc_cpagebody($parm='')
 	{
-		// already parsed
-		return $this->getParserVars()->text;
+		$text = $this->var['page_text'];
+		return $text ? e107::getParser()->toHTML($text, true, 'BODY') : '';
 	}
 
 	function sc_cpageauthor($parm)
 	{
 		$parms = eHelper::scParams($parm);
 		$author = '';
-		$url = e107::getUrl()->create('user/profile/view', array('name' => $this->page['user_name'], 'id' => $this->page['user_id']));
+		$url = e107::getUrl()->create('user/profile/view', array('name' => $this->var['user_name'], 'id' => $this->var['user_id']));
 		
 		if(isset($parms['url']))
 		{
 			return $url;
 		}
 		
-		if($this->page['page_author'])
+		if($this->var['page_author'])
 		{
 			// currently this field used as Real Name, no matter what the db name says
-			if($this->page['user_login'] && !isset($parms['user'])) $author = $this->page['user_login'];
-			elseif($this->page['user_name']) $author = preg_replace('/[^\w\pL\s]+/u', ' ', $this->page['user_name']);
+			if($this->var['user_login'] && !isset($parms['user'])) $author = $this->var['user_login'];
+			elseif($this->var['user_name']) $author = preg_replace('/[^\w\pL\s]+/u', ' ', $this->var['user_name']);
 		}
 		
 		if(empty($author)) return '';
@@ -121,43 +135,49 @@ class cpage_shortcodes extends e_shortcode
 	{
 		if(empty($parm))
 		{
-			return e107::getDateConvert()->convert_date($this->page['page_datestamp'], 'long');
+			return e107::getDateConvert()->convert_date($this->var['page_datestamp'], 'long');
 		}
-		return e107::getDateConvert()->convert_date($this->page['page_datestamp'], $parm);
+		return e107::getDateConvert()->convert_date($this->var['page_datestamp'], $parm);
 	}
 
 	function sc_cpageid()
 	{
-		return $this->page['page_id'];
+		return $this->var['page_id'];
 	}
 
 	function sc_cpageanchor()
 	{
-		$frm = e107::getForm();
-		return $frm->name2id($this->page['page_title']);
+		return e107::getForm()->name2id($this->var['page_title']);
 	}
 
 	// Not a shortcode really, as it shouldn't be cached at all :/
 	function cpagecomments()
 	{
-		$com = $this->getParserVars()->comments;
+		$com = $this->var['comments'];
 		//if($parm && isset($com[$parm])) return $com[$parm];
 		return $com['comment'].$com['comment_form'];
 	}
 	
 	function sc_cpagenav()
 	{
-		return $this->getParserVars()->np;
+		return $this->var['np'];
 	}
 	
 	function sc_cpagerating()
 	{
-		return $this->getParserVars()->rating;
+		return $this->var['rating'];
 	}
 	
 	function sc_cpagemessage()
 	{
 		return e107::getMessage()->render();
+	}
+	
+	function sc_cpagemenu()
+	{
+		$parm = $this->var['menu_name'];
+		return e107::getMenu()->renderMenu($parm,  false, false, true);			
+		
 	}
 
 	/**
@@ -206,9 +226,9 @@ class cpage_shortcodes extends e_shortcode
 	function sc_cpageimage($parm = '')
 	{
 		list($num,$size) = explode("|",$parm);
-		if($this->page['page_images'])
+		if($this->var['page_images'])
 		{
-			$img = explode(",",$this->page['page_images']);
+			$img = explode(",",$this->var['page_images']);
 			
 		}	
 	}
@@ -233,7 +253,7 @@ class cpage_shortcodes extends e_shortcode
 			return $url;
 		}
 		
-		if(trim($this->page['page_text']) == '') // Hide the button when there is no page content. (avoids templates with and without buttons)
+		if(trim($this->var['page_text']) == '') // Hide the button when there is no page content. (avoids templates with and without buttons)
 		{
 			return "<!-- Button Removed: No page text exists! -->";	
 		}
@@ -252,27 +272,27 @@ class cpage_shortcodes extends e_shortcode
 	{
 		$tp 	= e107::getParser(); 
 	//
-		return $tp->toHTML($this->page['menu_title'], true, 'TITLE');
+		return $tp->toHTML($this->var['menu_title'], true, 'TITLE');
 	}	
 
 
 	function sc_cmenubody($parm='')
 	{
 		// print_a($this);
-		return e107::getParser()->toHTML($this->page['menu_text'], true, 'BODY');
+		return e107::getParser()->toHTML($this->var['menu_text'], true, 'BODY');
 	}
 	
 	
 	function sc_cmenuimage($parm='')
 	{
 		$tp = e107::getParser();
-		
-		if($video = $tp->toVideo($this->page['menu_image']))
+
+		if($video = $tp->toVideo($this->var['menu_image']))
 		{
 			return $video;	
 		}
 		
-		$img = $tp->thumbUrl($this->page['menu_image']);
+		$img = $tp->thumbUrl($this->var['menu_image']);
 		if($parm == 'url')
 		{
 			return $img;	
@@ -283,19 +303,19 @@ class cpage_shortcodes extends e_shortcode
 	
 	function sc_cmenuicon($parm='')
 	{
-		return e107::getParser()->toIcon($this->page['menu_icon'], array('space'=>' '));
+		return e107::getParser()->toIcon($this->var['menu_icon'], array('space'=>' '));
 	}		
 
 
 	function sc_cpageurl()
 	{
-		$route = ($this->page['page_chapter'] == 0) ? 'page/view/other' : 'page/view';
-		$urldata = $this->page;
+		$route = ($this->var['page_chapter'] == 0) ? 'page/view/other' : 'page/view';
+		$urldata = $this->var;
 
-		if($this->page['page_chapter'] && $this->chapterData[$this->page['page_chapter']])
+		if($this->var['page_chapter'] && $this->chapterData[$this->var['page_chapter']])
 		{
-			$chapter = $this->chapterData[$this->page['page_chapter']]; 
-			$urldata = array_merge($this->page, $chapter);
+			$chapter = $this->chapterData[$this->var['page_chapter']]; 
+			$urldata = array_merge($this->var, $chapter);
 			$urldata['book_sef'] = $this->chapterData[$chapter['chapter_parent']]['chapter_sef'];
 		}
 		return e107::getUrl()->create($route, $urldata, array('allow' => 'page_sef,page_title,page_id,chapter_sef,book_sef'));
@@ -303,12 +323,12 @@ class cpage_shortcodes extends e_shortcode
 	
 	function sc_cpagemetadiz()
 	{
-  		return $this->page['page_metadscr'];
+  		return $this->var['page_metadscr'];
 	}
 	
 	function sc_cpagesef()
 	{
-  		return vartrue($this->page['page_sef'],'page-no-sef');
+  		return vartrue($this->var['page_sef'],'page-no-sef');
 	}	
 	
 	// -------------------- Book - specific to the current page. -------------------------
@@ -352,8 +372,11 @@ class cpage_shortcodes extends e_shortcode
 	
 	function sc_chapter_name()
 	{
+		
 		$tp = e107::getParser();
 		$row = $this->getChapter();
+		
+	
 
 		return $tp->toHtml($row['chapter_name'], false, 'TITLE');		
 	}
@@ -382,6 +405,26 @@ class cpage_shortcodes extends e_shortcode
 		return $tp->toHtml($row['chapter_meta_description'], true, 'BODY');
 	}
 	
+	function sc_chapter_url()
+	{
+		$tp = e107::getParser();
+		$row = $this->getChapter();
+		
+		$brow = $this->getBook($row['chapter_parent']);
+		$row['book_sef']  = vartrue($brow['chapter_sef'],"no-sef-found"); //$this->getBook();
+		
+		return e107::getUrl()->create('page/chapter/index', $row,'allow=chapter_id,chapter_sef,book_sef') ;
+		
+	}
+	
+	function sc_chapter_button($options)
+	{		
+		$text = vartrue($options['text'], LAN_READ_MORE);
+		$size = vartrue($options['size'], "");
+		$inc = ($size) ? " btn-".$size : "";
+		
+		return '<a class="cpage btn btn-primary btn-chapter'.$inc.'" href="'.$url.'">'.$text.'</a>';	
+	}
 		
 	
 	function sc_cpagerelated($array=array())
@@ -391,9 +434,8 @@ class cpage_shortcodes extends e_shortcode
 			$array['types'] = 'page,news';
 		}
 			
-		return e107::getForm()->renderRelated($array, $this->page['page_metakeys'], array('page'=>$this->page['page_id']));	
+		return e107::getForm()->renderRelated($array, $this->var['page_metakeys'], array('page'=>$this->var['page_id']));	
 	}
-	
 	
 	
 	

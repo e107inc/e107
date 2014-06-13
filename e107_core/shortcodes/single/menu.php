@@ -6,6 +6,7 @@ if(!defined('e107_INIT'))
 
 function menu_shortcode($parm, $mode='')
 {
+	
 	if(is_array($parm)) //v2.x format allowing for parms. {MENU: path=y&count=x}
 	{
 		list($plugin,$menu) = explode("/",$parm['path'],2); 		
