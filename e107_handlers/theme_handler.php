@@ -943,7 +943,6 @@ class themeHandler
 	{
 		
 		$mes = e107::getMessage();
-		
 		$mes->addDebug("Rendering Theme Config"); 
 		
 		$this->loadThemeConfig();
@@ -951,10 +950,13 @@ class themeHandler
 		if($this->themeConfigObj)
 		{
 			$var = call_user_func(array(&$this->themeConfigObj, 'config'));
+			vartrue($text); // avoid notice
+			
 			foreach ($var as $val)
 			{
-				$text = "<tr><td><b>".$val['caption']."</b>:</td><td colspan='2'>".$val['html']."</td></tr>";
+				$text .= "<tr><td><b>".$val['caption']."</b>:</td><td colspan='2'>".$val['html']."</td></tr>";
 			}
+
 			return $text;
 		}
 	
