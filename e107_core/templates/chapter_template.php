@@ -108,7 +108,7 @@ $CHAPTER_TEMPLATE['nav']['showPage'] = $CHAPTER_TEMPLATE['nav']['listChapters'];
 
 // Used by e107_plugins/page/chapter_menu.php 
 $CHAPTER_TEMPLATE['panel']['listChapters']['start']				= "<div class='chapter-panel-list'>";
-$CHAPTER_TEMPLATE['panel']['listChapters']['item']				= "<h1><a href='{CHAPTER_URL}' >{CHAPTER_ICON}</a></h1><br /><p>{CHAPTER_DESCRIPTION}</p>";
+$CHAPTER_TEMPLATE['panel']['listChapters']['item']				= "<h1><a href='{CHAPTER_URL}' >{CHAPTER_ICON}</a></h1><br /><p>{CHAPTER_DESCRIPTION}</p><p>{CHAPTER_BUTTON}</p>";
 $CHAPTER_TEMPLATE['panel']['listChapters']['end']				= "</div>";
 
 
