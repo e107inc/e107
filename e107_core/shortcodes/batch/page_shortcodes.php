@@ -296,7 +296,7 @@ class cpage_shortcodes extends e_shortcode
 			return $img;	
 		}
 		
-		return "<img class='img-responsive' src='".$img."' alt='' />";
+		return "<img class='img-responsive img-rounded' src='".$img."' alt='' />";
 	}
 	
 	function sc_cmenuicon($parm='')
