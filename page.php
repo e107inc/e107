@@ -93,8 +93,10 @@ class pageClass
 	public $cacheData = null;			/* cache data */
 	protected $chapterSef;				/* authorized status */
 	protected $chapterParent;
-
+	
 	protected $chapterData = array();
+	
+	protected $displayAllMode = false;	// set to True when no book/chapter/page has been defined by the url/query. 
 	
 	function __construct($debug=FALSE)
 	{
@@ -146,8 +148,6 @@ class pageClass
 		foreach($books as $row)
 		{
 			$id 							= $row['chapter_id'];
-		//	$this->chapterSef[$id] 			= $row['chapter_sef'];
-		//	$this->chapterParent[$id] 		= $row['chapter_parent'];
 			$this->chapterData[$id]			= $row;
 		}	
 		
@@ -215,6 +215,8 @@ class pageClass
 		$tp = e107::getParser();
 		$frm = e107::getForm();
 		
+		$this->displayAllMode = true;
+		
 		$text = "";
 		
 		
@@ -272,6 +274,8 @@ class pageClass
 	}
 
 
+
+
 	/**
 	 * Parse the Book/Chapter "listChapters' template 
 	 */
@@ -287,9 +291,15 @@ class pageClass
 			$layout = 'default';
 		}
 		
+		if($this->displayAllMode === true)
+		{
+			$layout = e107::getPref('listBooksTemplate');	
+		}
+		
+		$error = array('listChapters' => array('start'=>"Chapter template not found: ".$layout));
 		
 		$tml = e107::getCoreTemplate('chapter','', true, true); // always merge	
-		$tmpl = varset($tml[$layout]);
+		$tmpl = varset($tml[$layout],$error );
 		
 		$template = $tmpl['listChapters'];
 		
@@ -369,7 +379,15 @@ class pageClass
 
 		// retrieve the template to use for this chapter. 
 		$row = $sql->retrieve('page_chapters','chapter_id,chapter_icon,chapter_name,chapter_parent, chapter_meta_description,chapter_template','chapter_id = '.intval($chapt).' LIMIT 1');
-		$layout = vartrue($row['chapter_template'],'default');
+		
+		if($this->displayAllMode === true)
+		{
+			$layout = e107::getPref('listBooksTemplate');	
+		}
+		else 
+		{
+			$layout = vartrue($row['chapter_template'],'default');
+		}
 		
 		$bookSef = $this->getSef($row['chapter_parent']);
 		
@@ -410,22 +428,24 @@ class pageClass
 					$page['chapter_sef'] = $this->getSef($page['page_chapter']); // $chapter_sef;
 					$page['book_sef'] = $bookSef; 
 					
-					$this->page = $page;
-					$this->batch->setVars(new e_vars($data))->setScVar('page', $this->page);
+				//	$this->page = $page;
+					$this->batch->setVars($page);
+				//	$this->batch->setVars(new e_vars($data))->setScVar('page', $this->page);
+					
 
 				//	$url = e107::getUrl()->create('page/view', $page, 'allow=page_id,page_sef,chapter_sef,book_sef');
 					// $text .= "<li><a href='".$url."'>".$tp->toHtml($page['page_title'])."</a></li>"; 
 					$text .= e107::getParser()->parseTemplate($template['item'], true, $this->batch);
 				}
 				
-				$text .= $tp->simpleParse($template['end'],$var);
+				$text .= $tp->simpleParse($template['end'], $var);
 				
 		
 			//	$caption = ($title !='')? $title: LAN_PAGE_11;
 			//	e107::getRender()->tablerender($caption, $text,"cpage_list");
 			}
 
-			$caption = $tp->simpleParse($template['caption'],$var);
+			$caption = $tp->simpleParse($template['caption'], $var);
 		
 		return array('caption'=>$caption, 'text'=> $text);
 	}
@@ -446,6 +466,9 @@ class pageClass
 
 		if(!$sql->gen($query))
 		{
+			
+			/*
+			
 			$ret['title'] = LAN_PAGE_12;			// ***** CHANGED
 			$ret['sub_title'] = '';
 			$ret['text'] = LAN_PAGE_3;
@@ -454,11 +477,30 @@ class pageClass
 			$ret['np'] = '';
 			$ret['err'] = TRUE;
 			$ret['cachecontrol'] = false;
+			*/
+			
+			// ---------- New (to replace values above) ----
+			
+			$this->page['page_title'] = LAN_PAGE_12;			// ***** CHANGED
+			$this->page['sub_title'] = '';
+			$this->page['page_text'] = LAN_PAGE_3;
+			$this->page['comments'] = '';
+			$this->page['rating'] = '';
+			$this->page['np'] = '';
+			$this->page['err'] = TRUE;
+			$this->page['cachecontrol'] = false;
+			
+			// -------------------------------------
+			
 			$this->authorized = 'nf';
 			$this->template = e107::getCoreTemplate('page', 'default');
-			$this->batch = e107::getScBatch('page',null,'cpage')->setVars(new e_vars($ret))->setScVar('page', array());
+		//	$this->batch = e107::getScBatch('page',null,'cpage')->setVars(new e_vars($ret))->setScVar('page', array()); ///FIXME Needs upgrading to setVars() array. (not using '$this->page')
 			
-			define("e_PAGETITLE", $ret['title']);
+			$this->batch = e107::getScBatch('page',null,'cpage')->setVars($this->page); 
+		
+			
+			
+			define("e_PAGETITLE", $this->page['page_title']);
 			
 			return;
 		}
@@ -467,6 +509,7 @@ class pageClass
 
 		// setting override to true breaks default. 
 		$this->template = e107::getCoreTemplate('page', vartrue($this->page['page_template'], 'default'), true, true); 
+		
 		if(!$this->template)
 		{
 			// switch to default
@@ -498,7 +541,7 @@ class pageClass
 			$rating = $this->pageRating($this->page['page_rating_flag']);
 			$comments = $this->pageComment($this->page['page_comment_flag']);
 		}
-
+		/*
 		$ret['title'] = $this->page['page_title'];
 		$ret['sub_title'] = $this->title;
         $ret['text'] = $this->pageToRender;
@@ -507,8 +550,23 @@ class pageClass
 		$ret['comments'] = $comments;
 		$ret['err'] = FALSE;
 		$ret['cachecontrol'] = (isset($this->page['page_password']) && !$this->page['page_password'] && $this->authorized === true);		// Don't cache password protected pages
+		*/
 		
-		$this->batch->setVars(new e_vars($ret))->setScVar('page', $this->page);
+	//	$this->batch->setVars(new e_vars($ret))->setScVar('page', $this->page); // Removed in favour of $this->var (cross-compatible with menus and other parts of e107 that use the same shortcodes) 
+	
+		// ---- New --- -
+		$this->page['page_text'] 	= $this->pageToRender;
+		$this->page['np'] 			= $pagenav;
+		$this->page['rating'] 		= $rating;
+		$this->page['comments'] 	= $comments;
+		$this->page['err'] 			= FALSE;
+		$this->page['cachecontrol'] = (isset($this->page['page_password']) && !$this->page['page_password'] && $this->authorized === true);	
+		
+		// -----------------
+	
+	
+		$this->batch->setVars($this->page);
+		
 		
 		define('e_PAGETITLE', eHelper::formatMetaTitle($ret['title']));
 		if($this->page['page_metadscr']) define('META_DESCRIPTION', eHelper::formatMetaDescription($this->page['page_metadscr']));
@@ -590,7 +648,7 @@ class pageClass
 		$vars = $this->batch->getParserVars();
 		
 		// reset batch data
-		$this->batch->setVars(null)->setScVar('page', array());
+//		$this->batch->setVars(null)->setScVar('page', array());
 		
 		// copy some data
 		$extend->title = $vars->title;
@@ -628,28 +686,25 @@ class pageClass
 	
 	public function renderPage($template, $vars = null)
 	{
+		
 		if(null === $vars) 
 		{
 			$ret = e107::getParser()->parseTemplate($template, true, $this->batch);
-			$vars = $this->batch->getParserVars();
 		}
 		else 
 		{
 			$ret = e107::getParser()->simpleParse($template, $vars);
 		}
 		
-	//	if(vartrue($this->template['noTableRender'])) //XXX Deprecated - use tablerender $mode instead. eg. cpage-templatename : echo $text;
-	//	{
-	//		return $ret;
-	//	}
-		
 		$mode = vartrue($this->template['tableRender'], 'cpage-'.$template);
-		$title = $vars->title;
 		
-		return e107::getRender()->tablerender($title, $ret, $mode, true);
+		return e107::getRender()->tablerender($this->page['page_title'], $ret, $mode, true);
+		
 	}
 
-	public function parsePage()
+
+
+	public function parsePage() //XXX FIXME Move to page_shortcodes. 
 	{
 		$tp = e107::getParser();
 		e107::getBB()->setClass("page");
@@ -731,6 +786,8 @@ class pageClass
 		e107::getBB()->clearClass();
 	}
 
+
+
 	function pageIndex()
 	{
     	// Use always nextprev shortcode (with a special default 'page' tempalte)
@@ -755,44 +812,6 @@ class pageClass
 		if($page_rating_flag)
 		{
 			return "<br /><div style='text-align:right'>".e107::getRate()->render("page", $this->pageID,array('label'=>LAN_PAGE_4))."</div>";
-			/*
-			
-						$rate_text = '';      // Notice removal
-						
-						require_once(e_HANDLER."rate_class.php");
-						$rater = new rater;
-						$rate_text = "<br /><table style='width:100%'><tr><td style='width:50%'>";
-			
-						if ($ratearray = $rater->getrating("page", $this->pageID))
-						{
-							if ($ratearray[2] == "")
-							{
-								$ratearray[2] = 0;
-							}
-							$rate_text .= "<img src='".e_IMAGE_ABS."rate/box/box".$ratearray[1].".png' alt='' style='vertical-align:middle;' />\n";
-							$rate_text .= "&nbsp;".$ratearray[1].".".$ratearray[2]." - ".$ratearray[0]."&nbsp;";
-							$rate_text .= ($ratearray[0] == 1 ? "vote" : "votes");
-						}
-						else
-						{
-							$rating .= LAN_PAGE_dl_13;
-						}
-						$rate_text .= "</td><td style='width:50%; text-align:right'>";
-			
-						if (!$rater->checkrated("page", $this->pageID) && USER)
-						{
-							$rate_text .= $rater->rateselect("&nbsp;&nbsp;&nbsp;&nbsp; <b>".LAN_PAGE_4."</b>", "page", $this->pageID);
-						}
-						else if(!USER)
-						{
-							$rate_text .= "&nbsp;";
-						}
-						else
-						{
-							$rate_text .= LAN_PAGE_5;
-						}
-						$rate_text .= "</td></tr></table>";
-						*/
 			
 		}
 		
@@ -800,12 +819,14 @@ class pageClass
 		// return $rate_text;
 	}
 
+
+
+
 	function pageComment($page_comment_flag)
 	{
 		if($page_comment_flag)
 		{
-			require_once(e_HANDLER."comment_class.php");
-			$cobj = new comment;
+			$cobj = e107::getComment();
 
 			if (isset($_POST['commentsubmit']))
 			{
@@ -817,6 +838,8 @@ class pageClass
             return $cobj->compose_comment("page", "comment", $this->pageID, 0, $this->title, false, true);
 		}
 	}
+
+
 
 	function pageCheckPerms($page_class, $page_password, $page_title="&nbsp;")
 	{
@@ -867,10 +890,14 @@ class pageClass
 		return false;
 	}
 
+	
+	
 	function getCookieName()
 	{
 		return e_COOKIE.'_page_'.$this->pageID;
 	}
+
+
 
 	function setPageCookie()
 	{

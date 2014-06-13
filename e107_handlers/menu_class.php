@@ -432,7 +432,7 @@ class e_menu
 			{
 				$template = e107::getCoreTemplate('menu',$page['menu_template']);	
 				$page_shortcodes = e107::getScBatch('page',null,'cpage');  
-				$page_shortcodes->page = $page;
+				$page_shortcodes->setVars($page);
 				  
 				$head = $tp->parseTemplate($template['start'], true);
 				$foot = $tp->parseTemplate($template['end'], true);
