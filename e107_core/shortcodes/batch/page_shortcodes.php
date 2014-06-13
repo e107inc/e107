@@ -17,8 +17,6 @@ if (!defined('e107_INIT')) { exit; }
  */
  
  
-// XXX FIXME All shortcodes should return a value from $this->var.  
- 
 class cpage_shortcodes extends e_shortcode
 {
 	// var $var; // parsed DB values
@@ -369,18 +367,22 @@ class cpage_shortcodes extends e_shortcode
 	
 	// -------------------- Chapter - specific to the current page. -------------------------
 	
-	
+	/**
+	 * @example {CHAPTER_NAME}
+	 */		
 	function sc_chapter_name()
 	{
 		
 		$tp = e107::getParser();
 		$row = $this->getChapter();
-		
-	
 
 		return $tp->toHtml($row['chapter_name'], false, 'TITLE');		
 	}
-	
+
+
+	/**
+	 * @example {CHAPTER_ANCHOR}
+	 */		
 	function sc_chapter_anchor()
 	{
 		$frm = e107::getForm();
@@ -388,7 +390,10 @@ class cpage_shortcodes extends e_shortcode
 		
 		return $frm->name2id($row['chapter_name']);
 	}
-	
+
+	/**
+	 * @example {CHAPTER_ICON}
+	 */		
 	function sc_chapter_icon()
 	{
 		$tp = e107::getParser();
@@ -396,7 +401,10 @@ class cpage_shortcodes extends e_shortcode
 		
 		return $tp->toIcon($row['chapter_icon']);
 	}
-	
+
+	/**
+	 * @example {CHAPTER_DESCRIPTION}
+	 */		
 	function sc_chapter_description()
 	{
 		$tp = e107::getParser();
@@ -404,7 +412,10 @@ class cpage_shortcodes extends e_shortcode
 		
 		return $tp->toHtml($row['chapter_meta_description'], true, 'BODY');
 	}
-	
+
+	/**
+	 * @example {CHAPTER_URL}
+	 */	
 	function sc_chapter_url()
 	{
 		$tp = e107::getParser();
@@ -417,16 +428,22 @@ class cpage_shortcodes extends e_shortcode
 		
 	}
 	
+	/**
+	 * @example {CHAPTER_BUTTON: text=More&size=sm}
+	 */
 	function sc_chapter_button($options)
 	{		
 		$text = vartrue($options['text'], LAN_READ_MORE);
 		$size = vartrue($options['size'], "");
 		$inc = ($size) ? " btn-".$size : "";
+		$url = $this->sc_chapter_url();
 		
 		return '<a class="cpage btn btn-primary btn-chapter'.$inc.'" href="'.$url.'">'.$text.'</a>';	
 	}
 		
-	
+	/**
+	 * @example {CPAGERELATED: types=news}
+	 */	
 	function sc_cpagerelated($array=array())
 	{
 		if(!varset($array['types']))
