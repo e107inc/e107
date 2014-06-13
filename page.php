@@ -30,7 +30,7 @@ if(!e_QUERY)
 //	$text = $tp->parseTemplate("{PAGE_NAVIGATION=book=2}",true);
 	if(is_array($tmp))
 	{
-		$ns->tablerender($tmp['title'], $text, 'cpage');
+		$ns->tablerender($tmp['title'], $text, 'cpage-full-list');
 	}
 	require_once(FOOTERF);
 	exit;
@@ -41,7 +41,7 @@ elseif(vartrue($_GET['bk'])) //  List Chapters within a specific Book
 	
 	require_once(HEADERF);
 	$text = $e107CorePage->listChapters($_GET['bk']);
-	$ns->tablerender('', $text, 'cpage'); // TODO FIXME Caption eg. "book title"
+	$ns->tablerender('', $text, 'cpage-chapter-list'); // TODO FIXME Caption eg. "book title"
 	require_once(FOOTERF);
 	exit;	
 }
@@ -52,7 +52,7 @@ elseif(vartrue($_GET['ch'])) // List Pages within a specific Chapter
 	require_once(HEADERF);	
 
 	$data = $e107CorePage->listPages($_GET['ch']);
-	$ns->tablerender($data['caption'], $data['text'], 'cpage'); 
+	$ns->tablerender($data['caption'], $data['text'], 'cpage-page-list'); 
 	
 	require_once(FOOTERF);
 	exit;		
@@ -445,8 +445,9 @@ class pageClass
 			//	e107::getRender()->tablerender($caption, $text,"cpage_list");
 			}
 
+
+
 			$caption = $tp->simpleParse($template['caption'], $var);
-		
 		return array('caption'=>$caption, 'text'=> $text);
 	}
 
