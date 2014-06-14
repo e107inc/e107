@@ -35,7 +35,7 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 	'; 
 	
 	// always used - it's inside the {PAGE} sc from 'page' template
-	$PAGE_TEMPLATE['default']['start'] = '<div id="{CPAGESEF}" class="cpage_body cpage-body">'; 
+	$PAGE_TEMPLATE['default']['start'] = '<div id="{CPAGESEF}" class="cpage_body cpage-body">{CHAPTER_BREADCRUMB}'; 
 	
 	// page body
 	$PAGE_TEMPLATE['default']['body'] = '

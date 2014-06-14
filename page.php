@@ -40,8 +40,8 @@ elseif(vartrue($_GET['bk'])) //  List Chapters within a specific Book
 	$e107CorePage->setRequest('listChapters');
 	
 	require_once(HEADERF);
-	$text = $e107CorePage->listChapters($_GET['bk']);
-	$ns->tablerender('', $text, 'cpage-chapter-list'); // TODO FIXME Caption eg. "book title"
+	$data = $e107CorePage->listChapters($_GET['bk']);
+	$ns->tablerender($data['caption'], $data['text'], 'cpage-chapter-list'); // TODO FIXME Caption eg. "book title"
 	require_once(FOOTERF);
 	exit;	
 }
@@ -143,7 +143,7 @@ class pageClass
 			$this->debug .= "<b>pageSelected</b> ".$this->pageSelected." <br />";
 		}
 		
-		$books = e107::getDb()->retrieve("SELECT chapter_id,chapter_sef FROM #page_chapters ORDER BY chapter_id ASC" , true);
+		$books = e107::getDb()->retrieve("SELECT chapter_id,chapter_sef,chapter_name FROM #page_chapters ORDER BY chapter_id ASC" , true);
 				
 		foreach($books as $row)
 		{
@@ -229,6 +229,8 @@ class pageClass
 			
 			$text = $template['start'];
 			
+			
+			
 			while($row = $sql->fetch())
 			{
 				
@@ -236,12 +238,14 @@ class pageClass
 				$sef['book_sef'] = $this->getSef($row['chapter_id']);
 				$sef['page_sef'] = $this->getSef($row['chapter_id']);
 				
+				$listChapters = $this->listChapters(intval($row['chapter_id']), $row['chapter_sef']);
+				
 				$var = array(
 					'BOOK_NAME' 		=> $tp->toHtml($row['chapter_name']),
 					'BOOK_ANCHOR'		=> $frm->name2id($row['chapter_name']),
 					'BOOK_ICON'			=> $this->chapterIcon($row['chapter_icon']),
 					'BOOK_DESCRIPTION'	=> $tp->toHtml($row['chapter_meta_description'],true,'BODY'),
-					'CHAPTERS'			=> $this->listChapters(intval($row['chapter_id']), $row['chapter_sef']),
+					'CHAPTERS'			=> $listChapters['text'],
 					'BOOK_URL'			=> e107::getUrl()->create('page/book/index', $sef,'allow=chapter_id,chapter_sef,book_sef,page_sef') // e_BASE."page.php?bk=".intval($row['chapter_id']) // FIXME SEF-URL
 				);
 			
@@ -285,10 +289,14 @@ class pageClass
 		$tp = e107::getParser();
 		$frm = e107::getForm();
 		
-		// retrieve the template to use for this book 
-		if(!$layout = $sql->retrieve('page_chapters','chapter_template','chapter_id = '.intval($book).' AND chapter_visibility IN ('.USERCLASS_LIST.') LIMIT 1'))
+		// retrieve book information. 
+		if(!$brow = $sql->retrieve('page_chapters','chapter_name,chapter_template','chapter_id = '.intval($book).' AND chapter_visibility IN ('.USERCLASS_LIST.') LIMIT 1'))
 		{
 			$layout = 'default';
+		}
+		else
+		{
+			$layout = $brow['chapter_template'];
 		}
 		
 		if($this->displayAllMode === true)
@@ -296,12 +304,25 @@ class pageClass
 			$layout = e107::getPref('listBooksTemplate');	
 		}
 		
-		$error = array('listChapters' => array('start'=>"Chapter template not found: ".$layout));
+	
 		
 		$tml = e107::getCoreTemplate('chapter','', true, true); // always merge	
+		
+		$error = array('listChapters' => array('start'=>"Chapter template not found: ".$layout));
 		$tmpl = varset($tml[$layout],$error );
 		
 		$template = $tmpl['listChapters'];
+		
+		$bvar = array(
+				'BOOK_NAME' 		=> $tp->toHtml($brow['chapter_name']),
+				'BOOK_ANCHOR'		=> $frm->name2id($brow['chapter_name']),
+				'BOOK_ICON'			=> $this->chapterIcon($brow['chapter_icon']),
+				'BOOK_DESCRIPTION'	=> $tp->toHtml($brow['chapter_meta_description'],true,'BODY'),
+			);
+		
+		$caption = $tp->simpleParse($template['caption'],$bvar);
+		
+		
 		
 		if($sql->select("page_chapters", "*", "chapter_parent = ".intval($book)."  AND chapter_visibility IN (".USERCLASS_LIST.") ORDER BY chapter_order ASC "))
 		{
@@ -341,8 +362,8 @@ class pageClass
 		{
 			$text = e107::getMessage()->addInfo("There are no chapters in this book")->render();	
 		}	
-		
-		return $text;		
+			
+		return array('caption'=>$caption, 'text'=>$text);		
 	}
 
 
@@ -389,16 +410,34 @@ class pageClass
 			$layout = vartrue($row['chapter_template'],'default');
 		}
 		
+		$bookId = $row['chapter_parent'];
 		$bookSef = $this->getSef($row['chapter_parent']);
+		$bookTitle = $this->getName($row['chapter_parent']);
+		
+		$urlData = array(
+			'chapter_id' 	=> $row['chapter_id'],
+			'chapter_name'	=> $tp->toHtml($row['chapter_name']),
+			'chapter_sef'	=> $bookSef,
+			'book_sef'		=> $bookSef,
+			'page_sef'		=> ''
+		);
+		
+		
+		//print_a($this->chapterData);
 		
 		$tml = e107::getCoreTemplate('chapter','', true, true); // always merge	
 		$tmpl = varset($tml[$layout]);
+		
+		$bread = array(
+			0 => array('text' => $tp->toHtml($bookTitle), 'url'=> e107::getUrl()->create('page/book/index', $urlData,'allow=chapter_id,chapter_sef,book_sef,page_sef'))
+		);
 	
 		$var = array(
 					'CHAPTER_NAME' 			=> $tp->toHtml($row['chapter_name']),
 					'CHAPTER_ANCHOR'		=> $frm->name2id($row['chapter_name']),
 					'CHAPTER_ICON'			=> $this->chapterIcon($row['chapter_icon']),
-					'CHAPTER_DESCRIPTION'	=> $tp->toHtml($row['chapter_meta_description'], true,'BODY')
+					'CHAPTER_DESCRIPTION'	=> $tp->toHtml($row['chapter_meta_description'], true,'BODY'),
+					'CHAPTER_BREADCRUMB'	=> $frm->breadcrumb($bread)
 		);		
 	
 		
