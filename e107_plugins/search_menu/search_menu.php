@@ -76,7 +76,7 @@ if(deftrue('BOOTSTRAP'))
 		
 	$text .= '
          <span class="input-group-btn">
-         <button class="btn btn-default" type="submit" name="s"><span class="glyphicon glyphicon-search"></span></button>
+         <button class="btn btn-default" type="submit" name="s">'.$tp->toGlyph('search').'</button>
          </span>
     </div>
     </form>';
