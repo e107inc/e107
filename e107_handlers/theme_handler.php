@@ -1138,6 +1138,13 @@ class themeHandler
 		{
 			$text .= "<li><a data-toggle='tab' href='#core-thememanager-help'>".LAN_HELP."</a></li>\n";
 		}
+
+
+		if($this->themeConfigObj && call_user_func(array(&$this->themeConfigObj, 'config')) && $mode == 1)
+		{
+			$text .= "<li><a data-toggle='tab' href='#core-thememanager-customconfig'>".LAN_CUSTOM."</a></li>\n";
+		}
+		
 		
 		$text .= "</ul>
 		<div class='tab-content'>
@@ -1381,11 +1388,12 @@ class themeHandler
 						$text .= "</table></td></tr>";
 					}
 
-		
+					/*
 					if($mode == 1)
 					{
 						$text .= $this->renderThemeConfig();
 					}
+					*/ 
 					
 					$text .= "</table>
 
@@ -1412,6 +1420,19 @@ class themeHandler
 			</div>
 			
 			 <div class='tab-pane' id='core-thememanager-help'>".$this->renderThemeHelp()."</div>
+			 
+			 <div class='tab-pane' id='core-thememanager-customconfig'>
+			 	<table class='table adminform'>
+		        	<colgroup>
+		        		<col class='col-label' />
+		        		<col class='col-control' />
+						<col class='col-control' />
+		        	</colgroup>
+	
+					".$this->renderThemeConfig()."
+
+				</table>
+			</div>
         </div>
 		\n";
 		
