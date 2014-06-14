@@ -29,7 +29,7 @@ $data = $sql->retrieve("SELECT * FROM #page_chapters WHERE chapter_visibility IN
 
 $sc = e107::getScBatch('page', null, 'cpage');
 
-echo $template['listChapters']['start'];
+$body = $template['listChapters']['start'];
 
 foreach($data as $row)
 {
@@ -37,11 +37,15 @@ foreach($data as $row)
 
 	$sc->setChapter($row['chapter_id']); 
 	$title = $tp->toHtml($row['chapter_name'],false,'TITLE'); // Used when tablerender style includes the caption. 
-	$body = $tp->parseTemplate($template['listChapters']['item'], true, $sc);
+	$body .= $tp->parseTemplate($template['listChapters']['item'], true, $sc);
 	
-	$ns->tablerender($title, $body, 'chapter-menu'); // check for $mode == 'page-menu' in tablestyle() if you need a simple 'echo' without rendering styles. 
+	// check for $mode == 'page-menu' in tablestyle() if you need a simple 'echo' without rendering styles. 
 }
 
-echo $template['listChapters']['end'];
+$body .= $template['listChapters']['end'];
+
+$caption = $tp->parseTemplate($template['listChapters']['caption'], true, $sc);
+
+$ns->tablerender($caption, $body, 'chapter-menu'); 
 
 ?>
