@@ -430,7 +430,7 @@ class e_menu
 			
 			if(vartrue($page['menu_template'])) // New v2.x templates. see core/menu_template.php 
 			{
-				$template = e107::getCoreTemplate('menu',$page['menu_template']);	
+				$template = e107::getCoreTemplate('menu',$page['menu_template'],true,true);	// override and merge required. ie. when menu template is not in the theme, but only in the core. 
 				$page_shortcodes = e107::getScBatch('page',null,'cpage');  
 				$page_shortcodes->setVars($page);
 				  
