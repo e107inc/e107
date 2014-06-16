@@ -1066,7 +1066,17 @@ function setNewsFrontMeta($news, $type='news')
 		if($news['news_thumbnail'])
 		{
 			$iurl = (substr($news['news_thumbnail'],0,3)=="{e_") ? $tp->replaceConstants($news['news_thumbnail'],'full') : SITEURL.e_IMAGE."newspost_images/".$news['news_thumbnail'];	
-			e107::meta('og:image',$iurl);			
+			$tmp = explode(",", $iurl);
+			foreach($tmp as $mimg)
+			{
+				if(substr($mimg,-8) == '.youtube')
+				{
+					continue;
+				}
+				
+				e107::meta('og:image',$mimg);		
+			}
+					
 		}
 
 		$url = e107::getUrl()->create('news/view/item', $news,'full=1');
