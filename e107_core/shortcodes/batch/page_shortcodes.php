@@ -328,9 +328,19 @@ class cpage_shortcodes extends e_shortcode
 	{
   		return vartrue($this->var['page_sef'],'page-no-sef');
 	}	
+
+
 	
 	// -------------------- Book - specific to the current page. -------------------------
 	
+	function sc_book_id()
+	{
+		$frm = e107::getForm();
+		$row = $this->getBook();
+		
+		return $row['chapter_id'];
+	}
+		
 	function sc_book_name()
 	{
 		$tp = e107::getParser();
@@ -363,10 +373,25 @@ class cpage_shortcodes extends e_shortcode
 		return $tp->toHtml($row['chapter_meta_description'], true, 'BODY');
 	}
 	
-	
+	function sc_book_url()
+	{
+		$row = $this->getBook();		
+		return e107::getUrl()->create('page/book/index', $row,'allow=chapter_id,chapter_sef,book_sef') ;
+	}	
 	
 	// -------------------- Chapter - specific to the current page. -------------------------
+		
+	/**
+	 * @example {CHAPTER_ID}
+	 */	
+	function sc_chapter_id()
+	{
+		$row = $this->getChapter();
+		return $row['chapter_id'];
+	}
 	
+	
+		
 	/**
 	 * @example {CHAPTER_NAME}
 	 */		
