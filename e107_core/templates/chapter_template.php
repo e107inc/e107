@@ -11,11 +11,14 @@
  * Template for Book and Chapter Listings, as well as navigation on those pages. 
  */
 
+
+ 
 $CHAPTER_TEMPLATE['default']['listPages']['caption']				= "{CHAPTER_NAME}";
 $CHAPTER_TEMPLATE['default']['listPages']['start'] 					= "<ul class='page-pages-list'>";
 $CHAPTER_TEMPLATE['default']['listPages']['item'] 					= "<li><a href='{CPAGEURL}'>{CPAGETITLE}</a></li>";
 $CHAPTER_TEMPLATE['default']['listPages']['end'] 					= "</ul>";	
-	
+
+$CHAPTER_TEMPLATE['default']['listChapters']['caption']				= "{BOOK_NAME}";	
 $CHAPTER_TEMPLATE['default']['listChapters']['start']				= "<ul class='page-chapters-list'>";
 $CHAPTER_TEMPLATE['default']['listChapters']['item']				= "<li><h4><a href='{CHAPTER_URL}'>{CHAPTER_NAME}</a></h4>{PAGES}";
 $CHAPTER_TEMPLATE['default']['listChapters']['end']					= "</ul>";
