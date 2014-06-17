@@ -41,7 +41,7 @@ elseif(vartrue($_GET['bk'])) //  List Chapters within a specific Book
 	
 	require_once(HEADERF);
 	$data = $e107CorePage->listChapters($_GET['bk']);
-	$ns->tablerender($data['caption'], $data['text'], 'cpage-chapter-list'); // TODO FIXME Caption eg. "book title"
+	$ns->tablerender($data['caption'], $data['text'], 'cpage-chapter-list'); 
 	require_once(FOOTERF);
 	exit;	
 }
@@ -109,7 +109,7 @@ class pageClass
 			$this->pageTitles 	= array();
 			$this->bullet 		= '';
 		}
-		else // NEW URLS  /page.php?id=x // TODO Complete and test. 
+		else // NEW URLS  /page.php?id=x 
 		{
 			$tmp 				= explode(".", e_QUERY);
 			$this->pageID 		= intval($_GET['id']);
@@ -246,7 +246,7 @@ class pageClass
 					'BOOK_ICON'			=> $this->chapterIcon($row['chapter_icon']),
 					'BOOK_DESCRIPTION'	=> $tp->toHtml($row['chapter_meta_description'],true,'BODY'),
 					'CHAPTERS'			=> $listChapters['text'],
-					'BOOK_URL'			=> e107::getUrl()->create('page/book/index', $sef,'allow=chapter_id,chapter_sef,book_sef,page_sef') // e_BASE."page.php?bk=".intval($row['chapter_id']) // FIXME SEF-URL
+					'BOOK_URL'			=> e107::getUrl()->create('page/book/index', $sef,'allow=chapter_id,chapter_sef,book_sef,page_sef') 
 				);
 			
 				$text .= $tp->simpleParse($template['item'],$var);
@@ -348,7 +348,7 @@ class pageClass
 					'CHAPTER_ICON'			=> $this->chapterIcon($row['chapter_icon']),
 					'CHAPTER_DESCRIPTION'	=> $tp->toHtml($row['chapter_meta_description'],true,'BODY'),
 					'PAGES'					=> $tmp['text'],
-					'CHAPTER_URL'			=> e107::getUrl()->create('page/chapter/index', $row,'allow=chapter_id,chapter_sef,book_sef') // e_BASE."page.php?ch=".intval($row['chapter_id']) // FIXME SEF-URL
+					'CHAPTER_URL'			=> e107::getUrl()->create('page/chapter/index', $row,'allow=chapter_id,chapter_sef,book_sef') 
 				);
 				
 				$text .= $tp->simpleParse($template['item'],$var);
@@ -442,9 +442,11 @@ class pageClass
 	
 		
 	//	$tmpl = e107::getCoreTemplate('chapter','docs', true, true); // always merge	
-		$template = $tmpl['listPages'];
+			$template = $tmpl['listPages'];
 		
-			if(!$count = $sql->select("page", "*", "page_title !='' AND page_chapter=".intval($chapt)." AND page_class IN (".USERCLASS_LIST.") ORDER BY page_order ASC "))
+			$pageOnly = ($layout == 'panel') ? '1' : "page_title !='' "; // When in 'panel' mode, allow Menus to be rendered. 
+		
+			if(!$count = $sql->select("page", "*", $pageOnly."  AND page_chapter=".intval($chapt)." AND page_class IN (".USERCLASS_LIST.") ORDER BY page_order ASC "))
 			{
 				return array('text' => "<em>".(LAN_PAGE_2)."</em>");
 			//	$text = "<ul class='page-pages-list page-pages-none'><li>".LAN_PAGE_2."</li></ul>";
@@ -493,6 +495,7 @@ class pageClass
 	
 	function processViewPage()
 	{
+		
 		if($this->checkCache())
 		{
 			return;
@@ -504,6 +507,9 @@ class pageClass
 		LEFT JOIN #user AS u ON p.page_author = u.user_id
 		WHERE p.page_id=".intval($this->pageID); // REMOVED AND p.page_class IN (".USERCLASS_LIST.") - permission check is done later 
 
+		
+		
+		
 		if(!$sql->gen($query))
 		{
 			
@@ -534,7 +540,7 @@ class pageClass
 			
 			$this->authorized = 'nf';
 			$this->template = e107::getCoreTemplate('page', 'default');
-		//	$this->batch = e107::getScBatch('page',null,'cpage')->setVars(new e_vars($ret))->setScVar('page', array()); ///FIXME Needs upgrading to setVars() array. (not using '$this->page')
+		//	$this->batch = e107::getScBatch('page',null,'cpage')->setVars(new e_vars($ret))->setScVar('page', array()); ///Upgraded to setVars() array. (not using '$this->page')
 			
 			$this->batch = e107::getScBatch('page',null,'cpage')->setVars($this->page); 
 		
@@ -660,6 +666,11 @@ class pageClass
 	{
 		
 		
+		
+
+
+		
+		
 		if(null !== $this->cacheData)
 		{
 			
@@ -744,7 +755,7 @@ class pageClass
 
 
 
-	public function parsePage() //XXX FIXME Move to page_shortcodes. 
+	public function parsePage() 
 	{
 		$tp = e107::getParser();
 		e107::getBB()->setClass("page");

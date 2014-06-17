@@ -173,8 +173,8 @@ class cpage_shortcodes extends e_shortcode
 	
 	function sc_cpagemenu()
 	{
-		$parm = $this->var['menu_name'];
-		return e107::getMenu()->renderMenu($parm,  false, false, true);			
+		$parm = $this->var['page_id'];
+		return e107::getMenu()->renderMenu($parm, true, false, true);			
 		
 	}
 
