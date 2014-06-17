@@ -529,20 +529,23 @@ class page_admin_ui extends e_admin_ui
 		       
 					'menu_image'		=> array('title' =>"Menu Image/Video", 	 	'type' => 'image', 		'width' => '110px',	'thclass' => 'left', 'class' => "left", 'nosort' => false, 'readParms'=>'thumb=140&thumb_urlraw=0&thumb_aw=140', 'readonly'=>false),		  					
 				
-				  	'menu_name' 		=> array('title'=> "Menu Name", 	'type' => 'text', 	'inline'=>true,	'width' => 'auto','nolist'=>false, "help"=>"Will be listed in the Menu-Manager under this name"),
-					'menu_template' 	=> array('title'=> "Menu Template",  	'type' => 'dropdown', 	'width' => 'auto', 'filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
+				  	'menu_name' 		=> array('title'=> "Menu Name", 	'type' => 'text', 	'inline'=>true,	'width' => '10%','nolist'=>false, "help"=>"Will be listed in the Menu-Manager under this name"),
+					'menu_template' 	=> array('title'=> "Menu Template",  	'type' => 'dropdown', 	'width' => '15%', 'filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
        
 				// 	'page_author' 		=> array('title'=> LAN_AUTHOR, 		'tab' => 0,	'type' => 'user', 		'data'=>'int','width' => 'auto', 'thclass' => 'left'),
 					'page_datestamp' 	=> array('title'=> LAN_DATE, 		'type' => 'datestamp', 	'data'=>'int',	'width' => 'auto','writeParms'=>'auto=1&readonly=1'),
 		     		'menu_icon'			=> array('title'=> LAN_ICON, 	 	'type' => 'icon', 		'width' => '80px',	'thclass' => 'center', 'class' => "center", 'nosort' => false, 'readParms'=>'thumb=80&thumb_urlraw=0&thumb_aw=80', 'readonly'=>false),		  					
 				
 			  		'menu_title'	   	=> array('title'=> "Menu Title", 	'forced'=> TRUE, 	'type' => 'text', 		'inline'=>true,		'width'=>'25%'),
+			
+			   		'page_chapter' 		=> array('title'=> 'Book/Chapter', 	'tab' => 0,	'type' => 'dropdown', 	'width' => '20%', 'filter' => true, 'batch'=>true, 'inline'=>true),
+      
 					'menu_text' 		=> array('title'=> "Menu Body",		 	'type' => 'bbarea',		'data'=>'str',	'width' => 'auto', 'readParms' => 'expand=...&truncate=50&bb=1', 'writeParms'=>'media=page'), 
 				
 					'options' 	=> array('title'=> LAN_OPTIONS, 'type' => 'method',	'noselector' => true, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center','readParms'=>'delete=0&deleteClass='.e_UC_NOBODY)
 				);
 	
-				$this->fieldpref = array("page_id","menu_name", "menu_title", "menu_text", 'menu_image', 'menu_template', 'menu_icon');	
+				$this->fieldpref = array("page_id","menu_name", "menu_title", 'menu_image', 'menu_template', 'menu_icon', 'page_chapter');	
 			}
 				
 							
