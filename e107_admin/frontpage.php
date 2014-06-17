@@ -119,11 +119,9 @@ if(!$gotpub)
 $fp_update_prefs = FALSE;
 
 
-/*
-Following code replaced - values not passed on image clicks with Firefox
-if(isset($_POST['fp_inc']))
+if(isset($_GET['up']))
 {
-	$mv = intval($_POST['fp_inc']);
+	$mv = intval($_GET['up']);
 	echo "Increment: {$mv}<br />";
 	if(($mv > 1) && ($mv <= count($fp_settings)))
 	{
@@ -134,9 +132,9 @@ if(isset($_POST['fp_inc']))
 		frontpage_adminlog('01', 'Inc '.$mv);
 	}
 }
-elseif(isset($_POST['fp_dec']))
+elseif(isset($_GET['down']))
 {
-	$mv = intval($_POST['fp_dec']);
+	$mv = intval($_GET['down']);
 	echo "Decrement: {$mv}<br />";
 	if(($mv > 0) && ($mv < count($fp_settings)))
 	{
@@ -147,7 +145,7 @@ elseif(isset($_POST['fp_dec']))
 		frontpage_adminlog('01', 'Dec '.$mv);
 	}
 }
-*/
+
 
 if (isset($_POST))
 {
@@ -403,8 +401,8 @@ class frontpage
 						<td>".$this->lookup_path($current_value['force'])."</td>
 						<td class='center options last'>
 						<div class='btn-group'>
-							".$frm->admin_button('fp_inc',$order,'up',ADMIN_UP_ICON)."
-							".$frm->admin_button('fp_dec',$order,'down',ADMIN_DOWN_ICON)."
+							<a class='btn' title='".LAN_UP."'href='".e_SELF."?up=".$order."'>".ADMIN_UP_ICON."</a>
+							<a class='btn' title='".LAN_DOWN."'href='".e_SELF."?down=".$order."'>".ADMIN_DOWN_ICON."</a>
 							<a class='btn' title='".LAN_EDIT."' href='".e_SELF."?id=".$order."' >".ADMIN_EDIT_ICON."</a>
 							".$frm->admin_button('fp_delete_rule['.$order.']',$order,'',ADMIN_DELETE_ICON)."					
 						</div>
