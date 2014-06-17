@@ -89,7 +89,12 @@ if($_POST['mode'] == 'tobbcode')
 		$content = updateImg($content);
 		$content 	= $tp->parseBBTags($content,true); // replace html with bbcode equivalent 
         
-        echo ($content) ? "[html]".$content."[/html]" : ""; // Add the tags before saving to DB. 
+        if(strip_tags($content, '<i>') == '&nbsp;') // Avoid this: [html]<p>&nbsp;</p>[/html]
+		{
+			exit;	
+		}
+ 
+        echo $content ? "[html]".$content."[/html]" : ""; // Add the tags before saving to DB. 
     }
     else  // bbcode Mode. //XXX Disabled at the moment in tinymce/e_meta.php - post_html is required to activate. 
     {
