@@ -120,7 +120,22 @@ $NAVIGATION_TEMPLATE['side']['submenu_item_active'] = '<li class="active"><a hre
 $NAVIGATION_TEMPLATE['side']['submenu_end'] 		= '';
 
 
-$NAVIGATION_TEMPLATE['footer'] 						= $NAVIGATION_TEMPLATE['side'];
+// Footer links.  - ie. 3 columns of links. 
+
+$NAVIGATION_TEMPLATE["footer"]["start"] 				= "<ul class='list-unstyled nav-footer'>\n";
+$NAVIGATION_TEMPLATE["footer"]["item"] 					= "<li><a href='{LINK_URL}'{LINK_OPEN}>{LINK_ICON}{LINK_NAME}</a></li>\n";
+$NAVIGATION_TEMPLATE["footer"]["item_submenu"] 			= "<li class='nav-header col-md-4'>{LINK_ICON}{LINK_NAME}{LINK_SUB}</li>\n";
+$NAVIGATION_TEMPLATE["footer"]["item_active"] 			= "<li class='active'{LINK_OPEN}><a href='{LINK_URL}'>{LINK_ICON}{LINK_NAME}</a></li>\n";
+$NAVIGATION_TEMPLATE["footer"]["end"] 					= "</ul>\n";
+$NAVIGATION_TEMPLATE["footer"]["submenu_start"] 		= "<ul class='list-unstyled'>";
+$NAVIGATION_TEMPLATE["footer"]["submenu_item"]			= "<li><a href='{LINK_URL}'{LINK_OPEN}>{LINK_ICON}{LINK_NAME}</a></li>\n";
+$NAVIGATION_TEMPLATE["footer"]["submenu_loweritem"] 	= "<li><a href='{LINK_URL}'{LINK_OPEN}>{LINK_ICON}{LINK_NAME}</a>{LINK_SUB}</li>\n";
+$NAVIGATION_TEMPLATE["footer"]["submenu_item_active"] 	= "<li class='active'><a href='{LINK_URL}'>{LINK_ICON}{LINK_NAME}</a></li>\n";
+$NAVIGATION_TEMPLATE["footer"]["submenu_end"] 			= "</ul>";
+
+
+
+
 $NAVIGATION_TEMPLATE['alt'] 						= $NAVIGATION_TEMPLATE['side'];
 $NAVIGATION_TEMPLATE['alt5'] 						= $NAVIGATION_TEMPLATE['side'];
 $NAVIGATION_TEMPLATE['alt6'] 						= $NAVIGATION_TEMPLATE['side'];
