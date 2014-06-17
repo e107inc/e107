@@ -141,16 +141,19 @@ $LAYOUT['_header_'] = '
 
 // applied after every layout. 
 $LAYOUT['_footer_'] = '  <hr>
-
-	<footer>
+<div class="row">
+	<footer >
 		<div class="col-lg-6">
-			{SITEDISCLAIMER} 
+			{NAVIGATION=footer} 
 		</div>
 		<div class="col-lg-6 text-right">
 			{XURL_ICONS: size=2x}
 		</div>
+		<div class="col-lg-12 text-center">
+			<small>{SITEDISCLAIMER}</small>
+		</div>
 	</footer>
-	
+</div>	
     </div> <!-- /container -->
 ';
 
