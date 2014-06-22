@@ -686,7 +686,8 @@ class adminstyle_infopanel
 								'strokeColor'  		=>  "rgba(220,220,220,1)",
 								'pointColor '  		=>  "rgba(220,220,220,1)",
 								'pointStrokeColor'  =>  "#fff",
-								'data'				=> array(65,59,90,81,56,55,40)	
+								'data'				=> array(65,59,90,81,56,55,40),
+								'title'				=> "Visits"
 				
 			);
 			
@@ -695,7 +696,8 @@ class adminstyle_infopanel
 								'strokeColor'  		=>  "rgba(151,187,205,1)",
 								'pointColor '  		=>  "rgba(151,187,205,1)",
 								'pointStrokeColor'  =>  "#fff",
-								'data'				=> array(28,48,40,19,96,27,100)		
+								'data'				=> array(28,48,40,19,96,27,100),
+								'title'				=> "Unique Visits"		
 			);	
 			
 			return $data;
@@ -849,6 +851,10 @@ class adminstyle_infopanel
 		
 		$cht = e107::getChart();
 		$cht->setType('line');
+		$cht->setOptions(array(
+			'annotateDisplay' => true,
+			'annotateFontSize' => 8
+		));
 		$cht->setData($data,'canvas');
 		$text = $cht->render('canvas');
 	
