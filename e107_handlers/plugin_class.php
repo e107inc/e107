@@ -2045,7 +2045,7 @@ class e107plugin
 					}
 					else
 					{
-						$mes->add('Userclass: '.$name.' left in place'.$name, $status);
+						$mes->add('Userclass: '.$name.' left in place', $status);
 					}
 
 					break;
@@ -2110,7 +2110,7 @@ class e107plugin
 					}
 					else
 					{
-						$mes->add('Extended Field: '.$name.' left in place'.$name, E_MESSAGE_SUCCESS);
+						$mes->add('Extended Field: '.$name.' left in place', E_MESSAGE_SUCCESS);
 					}
 					break;
 			}
