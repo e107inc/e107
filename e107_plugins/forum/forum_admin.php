@@ -1177,7 +1177,7 @@ class forumAdmin
 			if($poll_installed)
 			{
 			//<td>".$e107->user_class->uc_dropdown("mods[{$f['forum_id']}]", $f['forum_moderators'], 'admin,classes')."</td>
-				$text .= "<td>".$e107->user_class->uc_dropdown('forum_poll', $fPref->get('poll'), 'admin,classes').'<span class="field-help">'.FORLAN_50.'</span></td>';
+				$text .= "<td>".$e107->user_class->uc_dropdown('forum_poll', $fPref->get('poll')).'<span class="field-help">'.FORLAN_50.'</span></td>';
 			}
 			else
 			{
