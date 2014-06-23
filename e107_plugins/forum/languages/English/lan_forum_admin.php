@@ -57,7 +57,7 @@ define("FORLAN_45", "Tick this to render the forum within theme table");
 define("FORLAN_46", "Title displayed in caption if enclose tables is ticked");
 define("FORLAN_47", "Enable email notification");
 define("FORLAN_48", "Tick this to allow your users to have the option of receiving an email when somebody replies to their post");
-define("FORLAN_49", "Enable polls");
+define("FORLAN_49", "Enable polls for");
 define("FORLAN_50", "Select userclass allowed to create polls in the forums");
 define("FORLAN_51", "Enable tracking");
 define("FORLAN_52", "Tick this to allow your users to track threads and be emailed when the thread is replied to");
