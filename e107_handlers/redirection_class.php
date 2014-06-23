@@ -201,6 +201,11 @@ class redirection
 			return;
 		}
 		
+		if(deftrue('NO_MAINTENANCE')) // per-page disable option. 
+		{
+			return;	
+		}
+		
 		if(e107::getPref('maintainance_flag') && defset('e_PAGE') != 'secure_img_render.php')
 		{
 			// if not admin
