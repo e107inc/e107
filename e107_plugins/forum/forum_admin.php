@@ -754,7 +754,7 @@ class forumAdmin
 
 	function show_existing_forums($sub_action, $id, $mode = false)
 	{
-		global $e107, $for;
+		global $for; // $e107
 		$frm = e107::getForm();
 		$sql = e107::getDb();
 		$tp = e107::getParser();
@@ -794,7 +794,7 @@ class forumAdmin
 				$text .= "
 				<tr>
 				<td colspan='2'>".$parent['forum_name']."
-				<br /><b>".FORLAN_140.":</b> ".$e107->user_class->uc_get_classname($parent['forum_class'])."&nbsp;&nbsp;<b>".FORLAN_141.":</b> ".$e107->user_class->uc_get_classname($parent['forum_postclass'])."
+				<br /><b>".FORLAN_140.":</b> ".e107::getUserClass()->uc_get_classname($parent['forum_class'])."&nbsp;&nbsp;<b>".FORLAN_141.":</b> ".e107::getUserClass()->uc_get_classname($parent['forum_postclass'])."
 				</td>";
 
 				$text .= "<td style='text-align:center'>";
@@ -835,12 +835,12 @@ class forumAdmin
 					{
 						$text .= "
 						<tr>
-						<td style='width:5%; text-align:center'>".IMAGE_new."</td>\n<td style='width:55%'><a href='".$e107->url->create('forum/forum/view', $forum)."'>".$tp->toHTML($forum['forum_name'])."</a>";
+						<td style='width:5%; text-align:center'>".IMAGE_new."</td>\n<td style='width:55%'><a href='".e107::getUrl()->create('forum/forum/view', $forum)."'>".$tp->toHTML($forum['forum_name'])."</a>";
 //						<td style='width:5%; text-align:center'>".IMAGE_new."</td>\n<td style='width:55%'><a href='".e_PLUGIN."forum/forum_viewforum.php?{$forum['forum_id']}'>".$tp->toHTML($forum['forum_name'])."</a>";
 
 						$text .= "
 						<br /><span class='smallblacktext'>".$tp->toHTML($forum['forum_description'])."&nbsp;</span>
-						<br /><b>".FORLAN_140.":</b> ".$e107->user_class->uc_get_classname($forum['forum_class'])."&nbsp;&nbsp;<b>".FORLAN_141.":</b> ".$e107->user_class->uc_get_classname($forum['forum_postclass'])."
+						<br /><b>".FORLAN_140.":</b> ".e107::getUserClass()->uc_get_classname($forum['forum_class'])."&nbsp;&nbsp;<b>".FORLAN_141.":</b> ".e107::getUserClass()->uc_get_classname($forum['forum_postclass'])."
 
 						</td>
 
@@ -891,7 +891,7 @@ class forumAdmin
 
 	function create_parents($sub_action, $id)
 	{
-		global $e107;
+		//global $e107;
 		$frm = e107::getForm();
 		$sql = e107::getDb();
 		$tp = e107::getParser();
@@ -927,15 +927,15 @@ class forumAdmin
 		</tr>
 		<tr>
 			<td>".FORLAN_23.":</td>
-			<td>".$e107->user_class->uc_dropdown('forum_class', $row['forum_class'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_24."</span></td>
+			<td>".e107::getUserClass()->uc_dropdown('forum_class', $row['forum_class'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_24."</span></td>
 		</tr>
 		<tr>
 			<td>".FORLAN_142.":</td>
-			<td>".$e107->user_class->uc_dropdown("forum_postclass", $row['forum_postclass'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_143."</span></td>
+			<td>".e107::getUserClass()->uc_dropdown("forum_postclass", $row['forum_postclass'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_143."</span></td>
 		</tr>
 		<tr>
 			<td>".FORLAN_184.":</td>
-			<td>".$e107->user_class->uc_dropdown('forum_threadclass', $row['forum_threadclass'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_185."</span></td>
+			<td>".e107::getUserClass()->uc_dropdown('forum_threadclass', $row['forum_threadclass'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_185."</span></td>
 		</tr>
 		</table>
 		<div class='buttons-bar center'>";
@@ -956,7 +956,7 @@ class forumAdmin
 
 	function create_forums($sub_action, $id)
 	{
-		global $e107;
+		//global $e107;
 		$frm = e107::getForm();
 		$sql = e107::getDb();
 		$tp = e107::getParser();
@@ -1015,23 +1015,23 @@ class forumAdmin
 		<tr>
 			<td>".FORLAN_33.":</td>
 			<td>";
-			$text .= $e107->user_class->uc_dropdown('forum_moderators', $fInfo['forum_moderators'], 'admin,classes')."<span class='field-help'>".FORLAN_34."</span>";
+			$text .= e107::getUserClass()->uc_dropdown('forum_moderators', $fInfo['forum_moderators'], 'admin,classes')."<span class='field-help'>".FORLAN_34."</span>";
 			$text .= "</td>
 		</tr>
 		
 		<tr>
 			<td>".FORLAN_23.":</td>
-			<td>".$e107->user_class->uc_dropdown('forum_class', $fInfo['forum_class'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_24."</span></td>
+			<td>".e107::getUserClass()->uc_dropdown('forum_class', $fInfo['forum_class'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_24."</span></td>
 		</tr>
 
 		<tr>
 			<td>".FORLAN_142.":</td>
-			<td>".$e107->user_class->uc_dropdown('forum_postclass', $fInfo['forum_postclass'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_143."</span></td>
+			<td>".e107::getUserClass()->uc_dropdown('forum_postclass', $fInfo['forum_postclass'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_143."</span></td>
 		</tr>
 
 		<tr>
 			<td>".FORLAN_184.":</td>
-			<td>".$e107->user_class->uc_dropdown('forum_threadclass', $fInfo['forum_threadclass'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_185."</span></td>
+			<td>".e107::getUserClass()->uc_dropdown('forum_threadclass', $fInfo['forum_threadclass'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_185."</span></td>
 		</tr>
 		</table>
 		
@@ -1129,11 +1129,11 @@ class forumAdmin
 		global $fPref;
 		$ns = e107::getRender();
 		$sql    = e107::getDb(); 
-		$e107 = e107::getInstance();
+		//$e107 = e107::getInstance();
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
 
-		$poll_installed = plugInstalled('poll');
+		$poll_installed = e107::isInstalled('poll');
 
 
 		if(!$poll_installed)
@@ -1176,8 +1176,8 @@ class forumAdmin
 			<td>".FORLAN_49.":</td>";
 			if($poll_installed)
 			{
-			//<td>".$e107->user_class->uc_dropdown("mods[{$f['forum_id']}]", $f['forum_moderators'], 'admin,classes')."</td>
-				$text .= "<td>".$e107->user_class->uc_dropdown('forum_poll', $fPref->get('poll')).'<span class="field-help">'.FORLAN_50.'</span></td>';
+			//<td>".e107::getUserClass()->uc_dropdown("mods[{$f['forum_id']}]", $f['forum_moderators'], 'admin,classes')."</td>
+				$text .= "<td>".e107::getUserClass()->uc_dropdown('forum_poll', $fPref->get('poll'), 'nobody,public,member,admin,main,classes').'<span class="field-help">'.FORLAN_50.'</span></td>';
 			}
 			else
 			{
@@ -1422,7 +1422,7 @@ class forumAdmin
 		global $for;
 		$ns = e107::getRender();
 		$sql = e107::getDB();
-		$e107 = e107::getInstance(); // FIX needed?
+		//$e107 = e107::getInstance();
 		$forumList = $for->forum_getforums('all');
 		$parentList = $for->forum_getparents('list');
 		$subList   = $for->forumGetSubs('bysub');
@@ -1449,7 +1449,7 @@ class forumAdmin
 				$txt .= "
 				<tr>
 					<td>{$f['forum_name']}</td>
-					<td>".$e107->user_class->uc_dropdown("mods[{$f['forum_id']}]", $f['forum_moderators'], 'admin,classes')."</td>
+					<td>".e107::getUserClass()->uc_dropdown("mods[{$f['forum_id']}]", $f['forum_moderators'], 'admin,classes')."</td>
 				</tr>
 				";
 				foreach($subList[$f['forum_id']] as $s)
@@ -1457,7 +1457,7 @@ class forumAdmin
 					$txt .= "
 					<tr>
 						<td>&nbsp;&nbsp;&nbsp;&nbsp;{$s['forum_name']}</td>
-						<td>".$e107->user_class->uc_dropdown("mods[{$s['forum_id']}]", $s['forum_moderators'], 'admin,classes')."</td>	
+						<td>".e107::getUserClass()->uc_dropdown("mods[{$s['forum_id']}]", $s['forum_moderators'], 'admin,classes')."</td>	
 					</tr>
 					";
 				}
