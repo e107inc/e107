@@ -253,7 +253,7 @@ class e_form
 		{
 			$options['class'] .= ' form-control';
 		}
-
+		
 		/*
 		if(!vartrue($options['class']))
 		{
@@ -296,6 +296,8 @@ class e_form
 		$mlength = vartrue($maxlength) ? "maxlength=".$maxlength : "";
 				
 		$options = $this->format_options('text', $name, $options);
+		
+	
 		//never allow id in format name-value for text fields
 		return "<input type='text' name='{$name}' value='{$value}' {$mlength} ".$this->get_attributes($options, $name)." />";
 	}
@@ -308,8 +310,24 @@ class e_form
 		if (vartrue($options['maxlength'])) $maxlength = $options['maxlength'];
 		unset($options['maxlength']);
 		if(!vartrue($options['size'])) $options['size'] = 15;
-		if(!vartrue($options['class'])) $options['class'] = 'tbox number e-spinner input-small';
+		if(!vartrue($options['class'])) $options['class'] = 'tbox number e-spinner input-small form-control';
 		if(!$value) $value = '0';
+		
+		$options['type'] ='number';
+		
+		$mlength = vartrue($maxlength) ? "maxlength=".$maxlength : "";
+				
+		$options = $this->format_options('text', $name, $options);
+		
+		$min = vartrue($options['min']) ? 'min="'.$options['min'].'"' : '';
+		$max = vartrue($options['max']) ? 'min="'.$options['max'].'"' : '';
+		
+		//never allow id in format name-value for text fields
+		if(deftrue('BOOTSTRAP'))
+		{
+			return "<input type='number' name='{$name}' value='{$value}' {$mlength}  {$min} {$max} ".$this->get_attributes($options, $name)." />";
+		}
+		
 		return $this->text($name, $value, $maxlength, $options);	
 	}
 
