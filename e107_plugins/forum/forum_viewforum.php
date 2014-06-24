@@ -192,7 +192,7 @@ if($forum->checkPerm($forumId, 'post'))
 	$fVars->NEWTHREADBUTTONX = newthreadjump(e107::getUrl()->create('forum/thread/new', array('id' => $forumId))); // "<a class='btn btn-primary' href='".."'>New Thread</a>";
 }
 
-if(BOOTSTRAP !== true)
+if(!BOOTSTRAP)
 {
 	$fVars->NEWTHREADBUTTONX = $fVars->NEWTHREADBUTTON;
 }
