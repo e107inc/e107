@@ -176,6 +176,55 @@ class e_form
 		$options['size'] = 7;
 		return $this->text($name, $value, $maxlength, $options);	
 	}
+	
+	/**
+	 * Render Bootstrap Tabs
+	 * @param $array
+	 * @param $options
+	 * @example
+	 * $array = array(
+	 * 		'home' => array('caption' => 'Home', 'text' => 'some tab content' ),
+	 * 		'other' => array('caption' => 'Other', 'text' => 'second tab content' )
+	 * 	);
+	 */
+	function tabs($array,$options = array())
+	{
+		
+		$text  ='
+		<!-- Nav tabs -->
+			<ul class="nav nav-tabs">';
+
+		$c = 0;
+		foreach($array as $key=>$tab)
+		{
+			$active = ($c == 0) ? ' class="active"' : '';
+			$text .= '<li'.$active.'><a href="#'.$key.'" data-toggle="tab">'.$tab['caption'].'</a></li>';
+			$c++;
+		}
+		
+		$text .= '</ul>';
+
+		$text .= '
+		<!-- Tab panes -->
+		<div class="tab-content">';
+		
+		$c=0;
+		foreach($array as $key=>$tab)
+		{
+			$active = ($c == 0) ? ' active' : '';
+			$text .= '<div class="tab-pane'.$active.'" id="'.$key.'">'.$tab['text'].'</div>';
+			$c++;
+		}
+		
+		$text .= '
+		</div>';
+
+		return $text;
+
+	}
+	
+	
+	
 
 	/**
 	 * Text-Field Form Element
