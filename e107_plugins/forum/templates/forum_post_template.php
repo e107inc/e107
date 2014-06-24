@@ -224,33 +224,33 @@ $THREADTOPIC_REPLY = "
 // New in v2.x - requires a bootstrap theme be loaded.  
 
 $FORUMPOST_TEMPLATE['form']		= " 
-									<div style='text-align:center'>
-									<div class='spacer'>
 									{FORMSTART}
+									<div class='row-fluid'>
+										<div>{BACKLINK}</div>
+									</div>
+
 									<table class='table'>
+									<tr>								
+										{USERBOX}
+										{SUBJECTBOX}
 									<tr>
-									<td colspan='2'>{BACKLINK}
-									</td>
+										<td style='width:20%'>{POSTTYPE} </td>
+										<td style='width:80%'>
+											{POSTBOX}
+											{EMAILNOTIFY}
+										</td>
 									</tr>
-									{USERBOX}
-									{SUBJECTBOX}
-									<tr>
-									<td style='width:20%'>{POSTTYPE} </td>
-									<td style='width:80%'>
-									{POSTBOX}
-									{EMAILNOTIFY}
-									</td></tr>
-									<td style='width:20%'>Post Options</td>
-									<td style='width:80%'>
-									{POSTOPTIONS}
-									</td></tr></table>
+										<td style='width:20%'>Post Options</td>
+										<td style='width:80%'>{POSTOPTIONS}</td>
+									</tr>
+									</table>
+
 									<div class='text-center'>									
 										{BUTTONS}
 									</div>
 									{FORMEND}
-									
-									</div></div>
-";
+								";
+
 $FORUMPOST_TEMPLATE['reply']	= "";
 
 
