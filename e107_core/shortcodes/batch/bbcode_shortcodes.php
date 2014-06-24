@@ -536,6 +536,7 @@ class bbcode_shortcodes extends e_shortcode
 		$bbcode['left'] 		= array($bbcode_func,	"[left][/left]", 					LANHELP_29,		"left.png",				'',	'',	'align-left');
 		$bbcode['right'] 		= array($bbcode_func,	"[right][/right]", 					LANHELP_30,		"right.png",			'',	'',	'align-right');
 
+		$bbcode['bq'] 			= array($bbcode_func,	"[blockquote][/blockquote]", 			LANHELP_31,		"blockquote.png",		'',	'',	'quote-left');
 		$bbcode['list'] 		= array($bbcode_func,	"[list][/list]", 					LANHELP_36,		"list.png",				'',	'',	'list');
 		$bbcode['img'] 			= array($bbcode_func,	"[img][/img]", 						LANHELP_27,		"image.png"	,			'',	'',	'picture-o');
 		$bbcode['flash']		= array($bbcode_func,	"[flash=width,height][/flash]", 	LANHELP_47,		"flash.png",			'',	'',	'flash');
