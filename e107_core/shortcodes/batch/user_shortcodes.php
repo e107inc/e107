@@ -275,45 +275,46 @@ class user_shortcodes extends e_shortcode
 	function sc_user_icon($parm='') 
 	{
 		$boot = deftrue('BOOTSTRAP');
+		$tp = e107::getParser();
 		
 		switch ($parm) 
 		{
 			case 'email':
-				return ($boot) ? "<i class='icon-envelope'></i>" : $this->sc_user_email_icon();	
+				return ($boot) ? $tp->toGlyph('envelope') : $this->sc_user_email_icon();	
 			break;
 			
 			case 'lastvisit':
-				return ($boot) ? "<i class='icon-time'></i>" : '';		 	
+				return ($boot) ? $tp->toGlyph('time') : '';		 	
 			break;
 			
 			case 'birthday':
-				return ($boot) ? "<i class='icon-calendar'></i>" : $this->sc_user_birthday_icon();		
+				return ($boot) ? $tp->toGlyph('calendar') : $this->sc_user_birthday_icon();		
 			break;
 
 			case 'level':
-				return ($boot) ? "<i class='icon-signal'></i>" : '';	
+				return ($boot) ? $tp->toGlyph('signal') : '';	
 			break;
 			
 			case 'website':
-				return ($boot) ? "<i class='icon-home'></i>" : '';		
+				return ($boot) ? $tp->toGlyph('home') : '';		
 			break;
 			
 			case 'location':
-				return ($boot) ? "<i class='icon-map-marker'></i>" : '';		
+				return ($boot) ? $tp->toGlyph('map-marker') : '';		
 			break;
 			
 			case 'icq':
-				return ($boot) ? "<i class='icon-comment'></i>" : '';		
+				return ($boot) ? $tp->toGlyph('comment') : '';		
 			break;	
 				
 			case 'msn':
-				return ($boot) ? "<i class='icon-comment'></i>" : '';		
+				return ($boot) ? $tp->toGlyph('comment') : '';		
 			break;		
 
 			default:
 			case 'realname':
 			case 'user':
-				return ($boot) ? "<i class='icon-user'></i>" : $this->sc_user_realname_icon();		
+				return ($boot) ? $tp->toGlyph('user') : $this->sc_user_realname_icon();		
 			break;
 		}
 
