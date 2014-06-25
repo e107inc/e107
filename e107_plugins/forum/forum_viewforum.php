@@ -583,7 +583,7 @@ function parse_thread($thread_info)
 		$_TEMPLATE = "<tr id='thread-{$threadId}'>".substr($_TEMPLATE,4);	
 	}
 	
-	if(BOOTSTRAP !== true)
+	if(!BOOTSTRAP)
 	{
 		$tVars->REPLIESX = 	$tVars->REPLIES;
 		$tVars->VIEWSX	 = $tVars->VIEWS;
