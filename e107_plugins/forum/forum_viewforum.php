@@ -672,6 +672,7 @@ function fadminoptions($thread_info)
 {
 	$tVars = new e_vars;
 	$e107 = e107::getInstance();
+	$tp = e107::getParser();
 	
 //	$text = "<form method='post' action='".e_REQUEST_URI."' id='frmMod_{$forumId}_{$threadId}' style='margin:0;'>";
 	$text .= '<div class="btn-group"><button class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
@@ -689,19 +690,19 @@ function fadminoptions($thread_info)
 	
 	$lan = array('stick'=>'Stick','unstick'=>'Unstick','lock'=>"Lock", 'unlock'=>"Unlock");
 	$icon = array(
-		'unstick'	=>	"<i class='icon-chevron-down'></i>",
-		'stick'	=>	"<i class='icon-chevron-up'></i>",
-		'lock'	=>	"<i class='icon-lock'></i>",
-		'unlock'	=>	"<i class='icon-unlock'></i>",
+		'unstick'	=>	$tp->toGlyph('chevron-down'),
+		'stick'		=>	$tp->toGlyph('chevron-up'),
+		'lock'		=>	$tp->toGlyph('lock'),
+		'unlock'	=>	$tp->toGlyph('unlock'),
 	);
 	
 
 
-	$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='delete' data-forum-thread='".$id."'>Delete <i class='icon-trash'></i></a></li>";
+	$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='delete' data-forum-thread='".$id."'>Delete ".$tp->toGlyph('trash');
 	$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='".$stickUnstick."' data-forum-thread='".$id."'>".$lan[$stickUnstick]." ".$icon[$stickUnstick]."</a></li>";
 	$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='".$lockUnlock."' data-forum-thread='".$id."'>".$lan[$lockUnlock]." ".$icon[$lockUnlock]."</a></li>";
 	
-	$text .= "<li><a href='{$moveUrl}'>Move <i class='icon-move'></i></a></li>";
+	$text .= "<li><a href='{$moveUrl}'>Move ".$tp->toGlyph('move')."</i></a></li>";
 
 /*
 	$text .= "<li><input type='image' ".IMAGE_admin_delete." name='deleteThread_{$threadId}' value='thread_action' onclick=\"return confirm_({$threadId})\" /> Delete</li>";
