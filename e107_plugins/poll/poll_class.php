@@ -605,7 +605,7 @@ class poll
 	//	echo "MODE=".$mode;
 		
 		//XXX New v2.x default for front-end. Currently used by forum-post in bootstrap mode. 
-		// TODO Moc - Needs a more generic LAN rewrite when used on another area than forum
+		// TODO LAN - Needs a more generic LAN rewrite when used on another area than forum
 		if ($mode == 'front')
 		{				
 			
@@ -615,31 +615,38 @@ class poll
 				<small >".LAN_FORUM_3029."</small>
 			</div>
 			
-			<div class='control-group'>
-				<div>
-					<input class='tbox input-xxlarge' placeholder='".LAN_FORUM_3030."' type='text' name='poll_title' size='70' value='".$tp->post_toForm(vartrue($_POST['poll_title']))."' maxlength='200' />
+			<form>
+				<div class='form-group'>
+					<label for='poll_title'>Poll question</label>
+					".$frm->text('poll_title', $tp->post_toForm(vartrue($_POST['poll_title'])), '200', array('placeholder' => LAN_FORUM_3030, 'id' => 'poll_title'))." 
 				</div>";
 
 			$option_count = vartrue($_POST['poll_option']) ? count($_POST['poll_option']) : 2;
 			$text .= "		
-				<div id='pollsection'>";
-	
+				<div id='pollsection'>
+					<label for='pollopt'>Poll answers</label>";
+				
 				for($count = 1; $count <= $option_count; $count++)
 				{
-					if ($count != 1 && $_POST['poll_option'][($count-1)] =="")
-					{
-					//	break;
-					}
-					$opt = ($count==1) ? "id='pollopt' class='btn-group input-append' " : "";
-					$text .="<span {$opt}><input placeholder='".LAN_FORUM_3031."' class='tbox' type='text' name='poll_option[]' size='40' value=\"".$_POST['poll_option'][($count-1)]."\" maxlength='200' />";
-					$text .= "</span><br />";
+					// if ($count != 1 && $_POST['poll_option'][($count-1)] =="")
+					// {
+					// //	break;
+					// }
+					
+					$opt = ($count==1) ? "id='poll_answer'" : "";
+
+					$text .= "<div class='form-group' ".$opt.">
+								".$frm->text('poll_option[]', $_POST['poll_option'][($count-1)], '200', array('placeholder' => LAN_FORUM_3031, 'id' => $opt))."
+							  </div>";
 				}
-	
-				$text .="</div>
-				<div class='control-group'>
-				<input class='btn' type='button' name='addoption' value='".LAN_FORUM_3032."' onclick=\"duplicateHTML('pollopt','pollsection')\" /><br />
-				</div>
-			</div>";
+
+				$text .= "</div>"; // end pollsection div
+
+				$text .= "<div  class='control-group'>
+							<input class='btn' type='button' id='addoption' name='addoption' value='".LAN_FORUM_3032."' />
+						</div>
+
+			</form>";
 			
 			//FIXME - get this looking good with Bootstrap CSS only. 
 			
@@ -647,14 +654,13 @@ class poll
 				
 			// Set to IP address.. Can add a pref to Poll admin for 'default front-end storage method' if demand is there for it. 
 		
-		$text .= "
+		$text .= "<br />
 			 <div class='form-horizontal control-group'>
-			<label class='control-label'>".LAN_FORUM_3033."</label>
-			<div class='controls'>
-			". $frm->radio('multipleChoice',$opts, vartrue($_POST['multipleChoice'], 0) ).$frm->hidden('storageMethod',1)."
-			</div>
-			</div>
-			
+				<label class='control-label'>".LAN_FORUM_3033."</label>
+				<div class='controls'>
+					". $frm->radio('multipleChoice',$opts, vartrue($_POST['multipleChoice'], 0) ).$frm->hidden('storageMethod', 1)."
+				</div>
+			</div>			
 		";
 		
 		return $text;
