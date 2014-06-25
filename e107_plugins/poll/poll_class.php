@@ -80,6 +80,25 @@ class poll
 		}
 	}
 
+
+
+	/* 
+	function clean_poll_array
+	parameter in: original array with poll answers as entered in the forums
+	parameter out: cleaned array which trims the poll answers (to avoid 'falsely' empty answers) but allows to have '0' as an option
+
+	Note: Used instead of array_filter because array_filter($array, 'trim') would also ignore the value '0' (as that returns FALSE)
+	http://www.bubjavier.com/common-problems-php-arrayfilter-no-callback
+	*/
+
+	function clean_poll_array($val) 
+	{
+ 		$val = trim($val); // trims the array to remove poll answers which are (seemingly) empty but which may contain spaces
+  		$allowed_vals = array("0"); // Allows for '0' to be a poll answer option. Possible to add more allowed values. 
+ 		
+ 		return in_array($val, $allowed_vals, true) ? true : ( $val ? true : false );
+	}
+
 	/*
 	function submit_poll
 	$mode = 1 :: poll is main poll
@@ -89,11 +108,9 @@ class poll
 	function submit_poll($mode=1)
 	{
 		global $admin_log;
-		
-		
+				
 		$tp = e107::getParser();
 		$sql = e107::getDb();
-		
 		
 		$poll_title		= $tp->toDB($_POST['poll_title']);
 		$poll_comment	= $tp->toDB($_POST['poll_comment']);
@@ -105,9 +122,11 @@ class poll
 		$active_end		= (!$_POST['endmonth'] || !$_POST['endday'] || !$_POST['endyear'] ? 0 : mktime (0, 0, 0, $_POST['endmonth'], $_POST['endday'], $_POST['endyear']));
 		$poll_options	= '';
 
-		$_POST['poll_option'] = array_filter($_POST['poll_option']);
+		$_POST['poll_option'] = array_filter($_POST['poll_option'], 'poll::clean_poll_array');
+ 
 		foreach ($_POST['poll_option'] as $key => $value)
 		{
+
 			$poll_options .= $tp->toDB($value).chr(1);
 		}
 
