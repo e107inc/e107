@@ -325,7 +325,7 @@ class e_form
 		//never allow id in format name-value for text fields
 		if(deftrue('BOOTSTRAP'))
 		{
-			return "<input type='number' name='{$name}' value='{$value}' {$mlength}  {$min} {$max} ".$this->get_attributes($options, $name)." />";
+			return "<input pattern='[0-9]*' type='number' name='{$name}' value='{$value}' {$mlength}  {$min} {$max} ".$this->get_attributes($options, $name)." />";
 		}
 		
 		return $this->text($name, $value, $maxlength, $options);	
