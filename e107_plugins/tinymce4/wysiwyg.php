@@ -99,7 +99,7 @@ class wysiwyg
 		$this->getConfig($config);	
 		$text .= "\n /* TinyMce Config: ".$this->configName." */\n\n";
 		$text .= "tinymce.init(";
-		$text .= json_encode($this->config, JSON_PRETTY_PRINT);
+		$text .= json_encode($this->config); // Moc: temporary fix for BC with PHP 5.3: https://github.com/e107inc/e107/issues/614
 		$text .= ");";
 		
 		return stripslashes($text);
