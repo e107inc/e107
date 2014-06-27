@@ -367,6 +367,20 @@ class e_menuManager {
 			$efile->dirFilter = array('/', 'CVS', '.svn', 'languages');
 			$fileList = $efile->get_files(e_PLUGIN,"_menu\.php$",'standard',2);
 			
+			$this->menuAddMessage('Scanning for new menus', E_MESSAGE_DEBUG);
+			
+			$menuList = array(); // existing menus in table. 
+			if($result = $sql->retrieve('menus', 'menu_name', null, true))
+			{
+				foreach($result as $mn)
+				{
+					if($mn['menu_name'])
+					{
+						$menuList[] = $mn['menu_name'];		
+					}
+				}
+			}
+			
 			foreach($fileList as $file)
 			{
 
@@ -374,7 +388,8 @@ class e_menuManager {
 				$file['path'] = str_replace(e_PLUGIN,"",$file['path']);
 				$file['fname'] = str_replace(".php","",$file['fname']);
 				$valid_menu = FALSE;
-				$existing_menu = $sql->count("menus", "(*)", "WHERE menu_name='{$file['fname']}'");
+			
+				$existing_menu = in_array($file['fname'], $menuList); // $sql->count("menus", "(*)", "WHERE menu_name='{$file['fname']}'");
 				if (file_exists(e_PLUGIN.$parent_dir.'/plugin.xml') || file_exists(e_PLUGIN.$parent_dir.'/plugin.php'))
 				{
 					if (e107::isInstalled($parent_dir))
@@ -405,10 +420,14 @@ class e_menuManager {
 							'menu_parms'	=> ''
 						);
 
-   						if($sql->db_Insert("menus",$insert))
+   						if($sql->insert("menus",$insert))
 						{
 					  		// Could do admin logging here - but probably not needed
 							$message .= MENLAN_10." - ".$file['fname']."<br />"; //FIXME
+						}
+						else
+						{
+							$this->menuAddMessage("Couldn't add menu: ".$file['fname']." to table ", E_MESSAGE_DEBUG);	
 						}
 					}
 				}
