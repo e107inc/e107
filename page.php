@@ -446,7 +446,7 @@ class pageClass
 		
 			$pageOnly = ($layout == 'panel') ? " menu_class IN (".USERCLASS_LIST.") " : "page_title !='' AND page_class IN (".USERCLASS_LIST.")  "; // When in 'panel' mode, allow Menus to be rendered while checking menu_class. 
 		
-			if(!$count = $sql->select("page", "*", $pageOnly."  AND page_chapter=".intval($chapt)." AND ORDER BY page_order ASC "))
+			if(!$count = $sql->select("page", "*", $pageOnly."  AND page_chapter=".intval($chapt)." ORDER BY page_order ASC "))
 			{
 				return array('text' => "<em>".(LAN_PAGE_2)."</em>");
 			//	$text = "<ul class='page-pages-list page-pages-none'><li>".LAN_PAGE_2."</li></ul>";
