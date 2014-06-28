@@ -383,7 +383,7 @@ CREATE TABLE page (
   page_rating_flag tinyint(1) unsigned NOT NULL default '0',
   page_comment_flag tinyint(1) unsigned NOT NULL default '0',
   page_password varchar(50) NOT NULL default '',
-  page_class varchar(250) NOT NULL default '',
+  page_class varchar(250) NOT NULL default '0',
   page_ip_restrict text NOT NULL,
   page_template varchar(50) NOT NULL default '',
   page_order int(4) unsigned NOT NULL default '9999',
@@ -393,7 +393,7 @@ CREATE TABLE page (
   menu_image varchar(250) NOT NULL default '',
   menu_icon varchar(250) NOT NULL default '',
   menu_template varchar(50) NOT NULL default '',
-  menu_class varchar(250) NOT NULL default '',
+  menu_class varchar(250) NOT NULL default '0',
   
   PRIMARY KEY  (page_id)
 ) ENGINE=MyISAM;
