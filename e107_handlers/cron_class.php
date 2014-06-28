@@ -45,6 +45,11 @@ class _system_cron
 			$mes->addDebug($cmd);
 			$text .= `$cmd 2>&1`;
 			
+			// Remove any local changes. 
+			$cmd = 'git reset --hard';
+			$mes->addDebug($cmd);
+			$text .= `$cmd 2>&1`;
+			
 			// Run Pull request
 			$cmd = 'git pull';
 			$mes->addDebug($cmd);
