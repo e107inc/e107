@@ -1237,6 +1237,28 @@ class e_jsmanager
 		$content_array = array_unique($content_array); //TODO quick fix, we need better control!
 		echo "\n";
 
+		$raw = array();
+
+		if($type == 'js') // support for raw html as inline code. (eg. google/bing/yahoo analytics)
+		{
+			$script = array();
+			foreach($content_array as $code)
+			{
+				$start = substr($code,0,7);
+				if($start == '<script' || $start == '<iframe')
+				{
+					$raw[] = $code;	
+				}
+				else 
+				{
+					$script[] = $code;	
+				}
+			}
+			
+			$content_array = $script;
+		}
+
+
 		switch ($type)
 		{
 			case 'js':
@@ -1250,6 +1272,16 @@ class e_jsmanager
 				echo "\n//]]>\n";
 				echo '</script>';
 				echo "\n";
+				
+				if(!empty($raw))
+				{
+					if($label) //TODO - print comments only if site debug is on
+					{
+						echo "\n<!-- [JSManager] (Raw) ".$label." -->\n";
+					}
+					echo implode("\n\n", $raw);	
+					echo "\n\n";
+				}
 			break;
 
 			case 'css':
