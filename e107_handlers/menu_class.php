@@ -425,6 +425,13 @@ class e_menu
 			
 			$sql->select("page", "*", $query);
 			$page = $sql->fetch();
+			
+			if(!empty($page['menu_class']) && !check_class($page['menu_class']))
+			{
+				echo "\n<!-- Menu not rendered due to userclass settings -->\n";
+				return;	
+			}
+			
 			$caption = (vartrue($page['menu_icon'])) ? $tp->toIcon($page['menu_icon']) : '';
 			$caption .= $tp->toHTML($page['menu_title'], true, 'parse_sc, constants');
 			
