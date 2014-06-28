@@ -244,6 +244,12 @@ class cpage_shortcodes extends e_shortcode
 	
 	function sc_cpagebutton($parm)
 	{
+		
+		if(!check_class($this->var['page_class']))
+		{
+			return "<!-- Button Removed: Page check_class() returned false. -->";	
+		}
+		
 		$url = $this->sc_cpageurl();
 		
 		if($parm == 'href' || !$url)
