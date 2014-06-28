@@ -393,6 +393,7 @@ CREATE TABLE page (
   menu_image varchar(250) NOT NULL default '',
   menu_icon varchar(250) NOT NULL default '',
   menu_template varchar(50) NOT NULL default '',
+  menu_class varchar(250) NOT NULL default '',
   
   PRIMARY KEY  (page_id)
 ) ENGINE=MyISAM;
