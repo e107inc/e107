@@ -1730,7 +1730,7 @@ class admin_newspost
 		$temp['news_unstemplate'] 		= intval($_POST['news_unstemplate']);
 		$temp['news_editauthor']		= intval($_POST['news_editauthor']);
 		$temp['news_ping_services']		= explode("\n",$_POST['news_ping_services']);
-		$temp['news_sefbase']			= preg_replace('#[^\w\pL\-]#u', '', $_POST['news_sefbase']);
+		$temp['news_default_template']	= preg_replace('#[^\w\pL\-]#u', '', $_POST['news_default_template']);
 		$temp['news_list_limit']		= intval($_POST['news_list_limit']);
 
 
@@ -3020,12 +3020,14 @@ class admin_newspost
 
 		$sefbaseDiz = str_replace(array("[br]","[","]"), array("<br />","<a href='".e_ADMIN_ABS."eurl.php'>","</a>"), NWSLAN_128 );
 		$pingOpt = array('placeholder'=>'eg. blogsearch.google.com/ping/RPC2');
-
+		$pingVal = (!empty($pref['news_ping_services'])) ? implode("\n",$pref['news_ping_services']) : '';
+		$newsTemplates = array('default'=>'Default', 'list'=>'List'); //TODO  'category'=>'Categories'? research 'Use non-standard template for news layout' and integrate here. 
 
 		$text = "
-			<form method='post' action='".e_SELF."?pref' id='core-newspost-settings-form'>
-				<fieldset id='core-newspost-settings'>
-					<legend class='e-hideme'>".NWSLAN_90."</legend>
+			<form method='post' action='".e_SELF."?pref' id='core-newspost-settings-form'>";
+			
+		$tab1 = "
+				
 					<table class='table adminform'>
 						<colgroup>
 							<col class='col-label' />
@@ -3035,14 +3037,14 @@ class admin_newspost
 							<tr>
 								<td>".NWSLAN_127."</td>
 								<td>
-									".$frm->text('news_sefbase', $pref['news_sefbase'])."
-									<div class='field-help'>".$sefbaseDiz.'<strong>'.SITEURL.($pref['news_sefbase'] ? $pref['news_sefbase'].'/' : '')."</strong></div>
+									".$frm->select('news_default_template', $newsTemplates, $pref['news_default_template'])."
+									<div class='field-help'>Determines how the default news page should appear.</div>
 								</td>
 							</tr>
 							<tr>
 								<td>Ping Services</td>
 								<td>
-									".$frm->textarea('news_ping_services', implode("\n",$pref['news_ping_services']), 4, 100,$pingOpt)."
+									".$frm->textarea('news_ping_services', $pingVal, 4, 100, $pingOpt)."
 									<div class='field-help'>Notify these services when you create/update news items. <br />One per line.</div>
 								</td>
 							</tr>
@@ -3059,27 +3061,20 @@ class admin_newspost
 								</td>
 							</tr>
 							<tr>
-							<td>".NWSLAN_88."</td>
-							<td>
-								".$frm->select('newsposts', $this->_optrange(50, false), $pref['newsposts'], 'class=tbox')."
-							</td>
+								<td>".NWSLAN_88."</td>
+								<td>
+									".$frm->select('newsposts', $this->_optrange(50, false), $pref['newsposts'], 'class=tbox')."
+								</td>
 							</tr>
 							
 							<tr>
-							<td>Limit for News-Listing Pages</td>
-							<td>
-								".$frm->select('news_list_limit', $this->_optrange(50, false), $pref['news_list_limit'], 'class=tbox')."
-								<div class='field-help'>eg. news.php?all or news.php?cat.1 or news.php?tag=xxx</div>
-							</td>
+								<td>Limit for News-Listing Pages</td>
+								<td>
+									".$frm->select('news_list_limit', $this->_optrange(50, false), $pref['news_list_limit'], 'class=tbox')."
+									<div class='field-help'>eg. news.php?all or news.php?cat.1 or news.php?tag=xxx</div>
+								</td>
 							</tr>
-		";
-
-
-		// ##### ADDED FOR NEWS ARCHIVE --------------------------------------------------------------------
-		// the possible archive values are from "0" to "< $pref['newsposts']"
-		// this should really be made as an onchange event on the selectbox for $pref['newsposts'] ...
-		//SecretR - Done
-		$text .= "
+		
 							<tr>
 								<td>".NWSLAN_115."</td>
 								<td id='newsposts-archive-cont'>
@@ -3093,10 +3088,7 @@ class admin_newspost
 									".$frm->text('newsposts_archive_title', $pref['newsposts_archive_title'])."
 								</td>
 							</tr>
-		";
-		// ##### END --------------------------------------------------------------------------------------
-
-		$text .= "
+		
 							<tr>
 								<td>".LAN_NEWS_51."</td>
 								<td>
@@ -3153,7 +3145,16 @@ class admin_newspost
 								</td>
 							</tr>
 						</tbody>
-					</table>
+					</table>";
+			
+			$text .= $frm->tabs(array(
+				'general'	=> array('caption'=>'General', 'text'=>$tab1),
+				'subnews'	=> array('caption'=>'Submit News', 'text'=>$tab2)
+			));
+			
+					
+					$text .= "
+					
 					<div class='buttons-bar center'>
 						".$frm->admin_button('save_prefs', LAN_UPDATE, 'update')."
 					</div>

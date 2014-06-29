@@ -54,6 +54,8 @@ if(!defined("NEWSLIST_LIMIT"))
 	 define("NEWSLIST_LIMIT", varset($pref['news_list_limit'],15)); 
 }
 
+$defTemplate = e107::getPref('news_default_template');
+
 if (e_QUERY) //TODO add support for $_GET['cat'] and $_GET['mode'] and phase-out the x.x.x format. 
 {
 
@@ -63,6 +65,12 @@ if (e_QUERY) //TODO add support for $_GET['cat'] and $_GET['mode'] and phase-out
 	//	$id = varset($tmp[2],'');					// ID of specific news item where required
 	$newsfrom = intval(varset($tmp[2],0));	// Item number for first item on multi-page lists
 	$cacheString = 'news.php_'.e_QUERY;
+}
+else 
+{
+	
+	$opt = array('default'=>'', 'list'=>'all');
+	$action = varset($opt[$defTemplate],'');
 }
 
 //$newsfrom = (!is_numeric($action) || !e_QUERY ? 0 : ($action ? $action : e_QUERY));
@@ -197,7 +205,7 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 		AND (n.news_end=0 || n.news_end>".time().")
 		ORDER BY n.news_sticky DESC, n.news_datestamp DESC
 		LIMIT ".intval($newsfrom).",".deftrue('NEWSALL_LIMIT', NEWSLIST_LIMIT); // NEWSALL_LIMIT just for BC. NEWSLIST_LIMIT is sufficient. 
-		$category_name = "All";
+		$category_name = ($defTemplate == 'list') ? PAGE_NAME : "All";
 	}
 	elseif ($action == 'cat') // show archive of all news items in a particular category using list-style template.
 	{
@@ -318,8 +326,10 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 		$NEWSLISTTITLE = str_replace("{NEWSCATEGORY}",$tp->toHTML($category_name,FALSE,'TITLE'),$NEWSLISTTITLE);
 	}
 	
-	$text .= "<div class='center news-list-footer'><a class='btn btn-default' href='".e107::getUrl()->create('news/list/all')."'>".LAN_NEWS_84."</a></div>";
-
+	if($defTemplate != 'list')
+	{
+		$text .= "<div class='center news-list-footer'><a class='btn btn-default' href='".e107::getUrl()->create('news/list/all')."'>".LAN_NEWS_84."</a></div>";
+	}
 
 	ob_start();
 	$ns->tablerender($NEWSLISTTITLE, $text, 'news');
