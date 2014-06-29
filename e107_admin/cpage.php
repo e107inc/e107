@@ -430,7 +430,7 @@ class page_admin_ui extends e_admin_ui
 		protected $orderStep 		= 10;
 		//protected $url         	= array('profile'=>'page/view', 'name' => 'page_title', 'description' => '', 'link'=>'{e_BASE}page.php?id=[id]'); // 'link' only needed if profile not provided. 
 		protected $url         		= array('route'=>'page/view/index', 'vars' => array('id' => 'page_id', 'name' => 'page_sef'), 'name' => 'page_title', 'description' => ''); // 'link' only needed if profile not provided. 
-		protected $tabs		 		= array("Page","Page Options","Menu");
+		protected $tabs		 		= array("Page","Page Options","Menu", "Menu Options");
 		protected $featurebox		= array('name'=>'page_title', 'description'=>'page_text', 'image' => 'menu_image', 'visibility' => 'page_class', 'url' => true);
 		
 		/*
@@ -477,7 +477,10 @@ class page_admin_ui extends e_admin_ui
 		   	'menu_title'	   	=> array('title'=> "Menu Title", 	'nolist'=>true, 'tab' => 2,	'type' => 'text', 'inline'=>true,		'width'=>'25%', "help"=>"Caption displayed on the menu item.", 'writeParms'=>'size=xxlarge'),
 			'menu_text' 		=> array('title'=> "Menu Body",		'nolist'=>true, 'tab' => 2,	'type' => 'bbarea',		'data'=>'str',	'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1', 'writeParms'=>'media=page' ), 
 			'menu_template' 	=> array('title'=> "Menu Template", 'nolist'=>true, 'tab' => 2,	'type' => 'dropdown', 	'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
-            'menu_class' 		=> array('title'=> LAN_USERCLASS, 	'tab' => 2,	'type' => 'userclass', 	'data'=>'int', 'inline'=>true, 'width' => 'auto',  'filter' => true, 'batch' => true),
+            'menu_class' 		=> array('title'=> LAN_VISIBILITY, 	'tab' => 3,	'type' => 'userclass', 	'data'=>'int', 'inline'=>true, 'width' => 'auto',  'filter' => true, 'batch' => true),
+			'menu_button_text'	=> array('title'=> "Custom Button Text", 	'nolist'=>true, 'tab' => 3,	'type' => 'text', 'inline'=>true,		'width'=>'25%', "help"=>"Leave blank to use the default"),
+		
+			'menu_button_url'	=> array('title'=> "Custom Button URL", 	'nolist'=>true, 'tab' => 3,	'type' => 'text', 'inline'=>true,		'width'=>'25%', "help"=>"Leave blank to use the corresponding page", 'writeParms'=>'size=xxlarge'),
 		
 			'menu_icon'			=> array('title' =>"Menu Icon/Glyph", 'nolist'=>true, 'tab' => 2,	'type' => 'icon', 		'width' => '110px',	'thclass' => 'center', 			'class' => "center", 'nosort' => false, 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','writeParms'=>'media=page&glyphs=1', 'readonly'=>false),		  					
 		
