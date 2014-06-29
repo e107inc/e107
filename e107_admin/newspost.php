@@ -3088,13 +3088,21 @@ class admin_newspost
 									".$frm->text('newsposts_archive_title', $pref['newsposts_archive_title'])."
 								</td>
 							</tr>
-		
-							<tr>
+								<tr>
 								<td>".LAN_NEWS_51."</td>
 								<td>
 									".$frm->uc_select('news_editauthor', vartrue($pref['news_editauthor']), 'nobody,main,admin,classes')."
 								</td>
 							</tr>
+							";
+		
+							$tab2  = "<table class='table adminform'>
+								<colgroup>
+									<col class='col-label' />
+									<col class='col-control' />
+								</colgroup>
+								<tbody>
+							
 							<tr>
 								<td>".NWSLAN_106."</td>
 								<td>
@@ -3121,6 +3129,17 @@ class admin_newspost
 								</td>
 							</tr>
 							<tr>
+								<td>".NWSLAN_120."</td>
+								<td>
+									".$frm->bbarea('news_subheader', stripcslashes(vartrue($pref['news_subheader'])), 2, 'helpb')."
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					";
+							
+							$tab1 .= "
+							<tr>
 								<td>".NWSLAN_111."</td>
 								<td>
 									<div class='auto-toggle-area autocheck'>
@@ -3138,12 +3157,7 @@ class admin_newspost
 									</div>
 								</td>
 							</tr>
-							<tr>
-								<td>".NWSLAN_120."</td>
-								<td>
-									".$frm->bbarea('news_subheader', stripcslashes(vartrue($pref['news_subheader'])), 2, 'helpb')."
-								</td>
-							</tr>
+						
 						</tbody>
 					</table>";
 			
