@@ -244,6 +244,7 @@ class cpage_shortcodes extends e_shortcode
 	
 	function sc_cpagebutton($parm)
 	{
+		$tp = e107::getParser();
 		
 		if(!check_class($this->var['page_class']))
 		{
@@ -264,11 +265,14 @@ class cpage_shortcodes extends e_shortcode
 		
 		parse_str($parm,$options);
 		
-		$text = vartrue($options['text'], LAN_READ_MORE);
+		$buttonText = (empty($this->var['menu_button_text'])) ? LAN_READ_MORE : $this->var['menu_button_text'];
+		$buttonUrl	= (empty($this->var['menu_button_url'])) ? $url : $tp->replaceConstants($this->var['menu_button_url']);
+		
+		$text = vartrue($options['text'], $buttonText);
 		$size = vartrue($options['size'], "");
 		$inc = ($size) ? " btn-".$size : "";
 		
-		return '<a class="cpage btn btn-primary btn-cpage'.$inc.'" href="'.$url.'">'.$text.'</a>';
+		return '<a class="cpage btn btn-primary btn-cpage'.$inc.'" href="'.$buttonUrl.'">'.$text.'</a>';
 	}	
 	
 	
