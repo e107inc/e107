@@ -126,7 +126,7 @@ define("NWSLAN_123", "Posted");
 // define("NWSLAN_125", "Email");
 // define("NWSLAN_126", "IP");
 
-define("NWSLAN_127", "URL identifier");
+define("NWSLAN_127", "Default template");
 define("NWSLAN_128", "Set a string to be used in news pages URL. This will only work proper .htaccess rules and <a href='%s'>eURL config</a><br />Resolved URL based on current value: "); //FIXME HTML
 
 // define("LAN_NEWS_5", "Error! - Was unable to update news item into database!");
