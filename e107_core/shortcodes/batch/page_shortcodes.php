@@ -246,7 +246,7 @@ class cpage_shortcodes extends e_shortcode
 	{
 		$tp = e107::getParser();
 		
-		if(!check_class($this->var['page_class']))
+		if(empty($this->var['menu_button_url']) && !check_class($this->var['page_class'])) // ignore when custom url used. 
 		{
 			return "<!-- Button Removed: Page check_class() returned false. -->";	
 		}
