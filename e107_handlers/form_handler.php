@@ -304,14 +304,14 @@ class e_form
 
 
 	
-	function number($name, $value, $maxlength = 200, $options = array())
+	function number($name, $value=0, $maxlength = 200, $options = array())
 	{
 		if(is_string($options)) parse_str($options, $options);
 		if (vartrue($options['maxlength'])) $maxlength = $options['maxlength'];
 		unset($options['maxlength']);
 		if(!vartrue($options['size'])) $options['size'] = 15;
 		if(!vartrue($options['class'])) $options['class'] = 'tbox number e-spinner input-small form-control';
-		if(!$value) $value = '0';
+		
 		
 		$options['type'] ='number';
 		
