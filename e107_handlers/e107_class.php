@@ -2507,6 +2507,8 @@ class e107
 
 	/**
 	 * Generic PREF retrieval Method for use by theme and plugin developers. 
+	 * @param $type : 'core', 'theme', plugin-name
+	 * @param $pname : name of specific preference, or leave blank for full array. 
 	 */
 	public static function pref($type = 'core', $pname = null, $default = null)
 	{

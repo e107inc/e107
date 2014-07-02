@@ -115,6 +115,10 @@ class e_form
 		{
 			$class = "class='".$options['class']."'";
 		}
+		else  // default 
+		{
+			$class= "class='form-horizontal'"; 
+		}
 		
 		if(isset($options['autocomplete'])) // leave as isset()
 		{
