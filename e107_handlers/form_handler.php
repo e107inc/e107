@@ -340,8 +340,14 @@ class e_form
 	function email($name, $value, $maxlength = 200, $options = array())
 	{
 		$options = $this->format_options('text', $name, $options);
+		
+		if(deftrue('BOOTSTRAP') === 3)
+		{
+			$options['class'] .= ' form-control';
+		}
+		
 		//never allow id in format name-value for text fields
-		return "<input type='email' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />
+		return "<input type='email' name='{$name}' value='{$value}' maxlength='{$maxlength}' ".$this->get_attributes($options, $name)." />
 		";
 	}
 
