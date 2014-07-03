@@ -297,7 +297,7 @@ class notify_config
 		$text = "
 			<tr>
 				<td >".$description.":	</td>
-				<td  class='nowrap'>
+				<td  class='form-inline nowrap'>
 				".$uc->uc_dropdown('event['.$id.'][class]', varset($this->notify_prefs['event'][$id]['class'],255), "nobody,main,admin,member,classes,email","onchange=\"mail_field(this.value,'event_".$id."');\" ");
 
 			if($this -> notify_prefs['event'][$id]['class'] == 'email')
@@ -311,7 +311,7 @@ class notify_config
 				$value= "";
 			}
 
-			$text .= "<input type='text' style='width:180px;$disp' class='tbox' id='event_".$id."' name='event[".$id."][email]' value=\"".$value."\" />\n";
+			$text .= "<input type='text' style='width:200px;$disp' class='tbox' id='event_".$id."' name='event[".$id."][email]' value=\"".$value."\" />\n";
 
 		$text .= $frm->hidden("event[".$id."][include]", $include);
 		$text .= $frm->hidden("event[".$id."][legacy]", $legacy); // function or method 
