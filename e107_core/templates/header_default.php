@@ -170,7 +170,7 @@ $e_pref = e107::getConfig('core');
 
 // Register Core CSS first, TODO - convert $no_core_css to constant, awaiting for path changes
 // NOTE: PREVIEWTHEME check commented - It shouldn't break anything as it's overridden by theme CSS now
-if (/*!defined("PREVIEWTHEME") && */!isset($no_core_css) || !$no_core_css) 
+if (/*!defined("PREVIEWTHEME") && */! (isset($no_core_css) && $no_core_css !==true) && defset('CORE_CSS') !== false) 
 {
 	//echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
 	$e_js->otherCSS('{e_WEB_CSS}e107.css');

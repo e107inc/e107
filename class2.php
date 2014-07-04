@@ -224,7 +224,7 @@ $tmp = realpath(dirname(__FILE__).'/'.$HANDLERS_DIRECTORY);
 e107_require_once($tmp.'/e107_class.php');
 unset($tmp);
 
-$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY','UPLOADS_DIRECTORY','SYSTEM_DIRECTORY', 'MEDIA_DIRECTORY','CACHE_DIRECTORY','LOGS_DIRECTORY');
+$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY','UPLOADS_DIRECTORY','SYSTEM_DIRECTORY', 'MEDIA_DIRECTORY','CACHE_DIRECTORY','LOGS_DIRECTORY', 'CORE_DIRECTORY', 'WEB_DIRECTORY');
 $sql_info = compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix');
 $e107 = e107::getInstance()->initCore($e107_paths, realpath(dirname(__FILE__)), $sql_info, varset($E107_CONFIG, array()));
 
@@ -2051,6 +2051,12 @@ function session_set($name, $value, $expire='', $path = e_HTTP, $domain = '', $s
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function message_handler($mode, $message, $line = 0, $file = '')
 {
+	if(defined('e_DEBUG') && e_DEBUG === true)
+	{
+		echo $message;	
+		return;
+	}
+
 	e107_require_once(e_HANDLER.'message_handler.php');
 	show_emessage($mode, $message, $line, $file);
 }
@@ -2489,7 +2495,10 @@ class e_http_header
 			$this->setHeader("Content-Length: ".strlen($this->content), true);
 		}
 		
-		$this->setHeader("X-Powered-By: e107", true); // no less secure than e107-specific html. 
+		if(defset('X-POWERED-BY') !== false)
+		{
+			$this->setHeader("X-Powered-By: e107", true); // no less secure than e107-specific html. 
+		}
 		
 		if($this->compression_server_support == true)
 		{
@@ -2544,3 +2553,4 @@ function plugInstalled($plugname)
 	// Could add more checks here later if appropriate
 	return isset($pref['plug_installed'][$plugname]);*/
 }
+
