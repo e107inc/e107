@@ -1113,7 +1113,7 @@ class e_jsmanager
 		}
 		$tp = e107::getParser();
 		echo "\n";
-		if($label) //TODO - print comments only if site debug is on
+		if($label && E107_DEBUG_LEVEL > 0) 
 		{
 			echo $external ? "<!-- [JSManager] ".$label." -->\n" : "/* [JSManager] ".$label." */\n\n";
 		}
@@ -1262,7 +1262,7 @@ class e_jsmanager
 		switch ($type)
 		{
 			case 'js':
-				if($label) //TODO - print comments only if site debug is on
+				if($label && E107_DEBUG_LEVEL > 0) 
 				{
 					echo "<!-- [JSManager] ".$label." -->\n";
 				}
@@ -1285,7 +1285,7 @@ class e_jsmanager
 			break;
 
 			case 'css':
-				if($label) //TODO - print comments only if site debug is on
+				if($label && E107_DEBUG_LEVEL > 0) 
 				{
 					echo "<!-- [CSSManager] ".$label." -->\n";
 				}
