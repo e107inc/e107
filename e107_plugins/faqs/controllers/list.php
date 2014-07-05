@@ -19,7 +19,6 @@
  */
 
 
- 
 class plugin_faqs_list_controller extends eControllerFront
 {
 	/**
@@ -62,6 +61,7 @@ class plugin_faqs_list_controller extends eControllerFront
 		$FAQ_START = e107::getTemplate('faqs', true, 'start');
 		$FAQ_END = e107::getTemplate('faqs', true, 'end');
 		$FAQ_LISTALL = e107::getTemplate('faqs', true, 'all');
+		$FAQ_CAPTION = e107::getTemplate('faqs', true, 'caption');
 
 		// request parameter based on filter (int match in this case, see $this->filter[all][category]) - SAFE to be used in a query
 		$category = $this->getRequest()->getRequestParam('category');
@@ -133,7 +133,9 @@ class plugin_faqs_list_controller extends eControllerFront
 			}
 		}
 		
-		$this->addTitle(LAN_PLUGIN_FAQS_FRONT_NAME);
+		$caption = ($FAQ_CAPTION) ? $FAQ_CAPTION : LAN_PLUGIN_FAQS_FRONT_NAME;
+	
+		$this->addTitle($caption);
 		
 		$this->addBody($text);
 	}
