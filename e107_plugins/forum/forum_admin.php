@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2014 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -22,24 +22,23 @@ $e_sub_cat = 'forum';
 require_once(e_ADMIN.'auth.php');
 require_once(e_HANDLER.'userclass_class.php');
 require_once(e_HANDLER.'form_handler.php');
-require_once(e_HANDLER.'ren_help.php'); // FIXME
 require_once(e_PLUGIN.'forum/forum_class.php');
-// require_once(e_PLUGIN.'forum/forum_admin_class.php');
 
-$mes = e107::getMessage();
-$for = new e107forum;
-$forum = new forumAdmin;
-$sql = e107::getDb();
-$tp = e107::GetParser();
+$for 	= new e107forum;
+$forum 	= new forumAdmin;
+
+$mes 	= e107::getMessage();
+$sql 	= e107::getDb();
+$tp 	= e107::getParser();
 
 $fPref = e107::getPlugConfig('forum', '', false);
 
-
-define('IMAGE_new', "<img src='".img_path('new.png')."' alt='' />");
-define('IMAGE_sub', "<img src='".e_PLUGIN."forum/images/forums_16.png' alt='".FORLAN_145."' title='".FORLAN_145."' />");
-define('IMAGE_nosub', "<img src='".e_PLUGIN."forum/images/sub_forums_16.png' alt='".FORLAN_145."' title='".FORLAN_145."' />");
+define('IMAGE_new', 	"<img src='".img_path('new.png')."' alt='' />");
+define('IMAGE_sub', 	"<img src='".e_PLUGIN."forum/images/forums_16.png' alt='".FORLAN_145."' title='".FORLAN_145."' />");
+define('IMAGE_nosub', 	"<img src='".e_PLUGIN."forum/images/sub_forums_16.png' alt='".FORLAN_145."' title='".FORLAN_145."' />");
 
 $deltest = array_flip($_POST);
+
 if (e_QUERY)
 {
 	$tmp = explode('.', e_QUERY);
@@ -59,13 +58,20 @@ if(isset($_POST['setMods']))
 {
 	foreach($_POST['mods'] as $fid => $modid)
 	{
-		$sql->update('forum',"forum_moderators = '{$modid}' WHERE forum_id = {$fid}");
+		if($sql->update('forum',"forum_moderators = '{$modid}' WHERE forum_id = {$fid}"))
+		{
+			$mes->addSuccess(LAN_UPDATED);
+		}
+		else
+		{
+			$mes->addError(LAN_UPDATED_FAILED); 
+		}
+
 	}
-	//$forum->show_message(FORLAN_144);
-	$mes->addSuccess(FORLAN_144);
+	
+	$ns->tablerender($caption, $mes->render().$text);
 }
 
-$ns->tablerender($caption, $mes->render() . $text);
 
 if(isset($_POST['tools']))
 {
@@ -107,19 +113,19 @@ if(isset($_POST['tools']))
 		}
 		$msg .= FORLAN_169.' <br />';
 	}
-	//$forum->show_message($msg);
 	$mes->addSuccess($msg);
+	$ns->tablerender($caption, $mes->render().$text);
 }
 
-$ns->tablerender($caption, $mes->render() . $text);
+
 
 if(isset($_POST['create_sub']))
 {
 	$fid = (int)($sub_action);
 	$tmp = array();
-	$tmp['forum_name']  = $tp->toDB($_POST['subname_new']);
-	$tmp['forum_description']  = $tp->toDB($_POST['subdesc_new']);
-	$tmp['forum_order'] = (int)$_POST['suborder_new'];
+	$tmp['forum_name']  		= $tp->toDB($_POST['subname_new']);
+	$tmp['forum_description']  	= $tp->toDB($_POST['subdesc_new']);
+	$tmp['forum_order'] 		= (int)$_POST['suborder_new'];
 
 	if($tmp['forum_name'] != '' && $sql->select('forum', '*', "forum_id = {$fid}"))
 	{
@@ -131,18 +137,16 @@ if(isset($_POST['create_sub']))
 		$tmp['forum_sub'] = $fid;
 		if($sql->insert('forum', $tmp))
 		{
-			//$forum->show_message(FORLAN_150.' - '.LAN_CREATED);
 			$mes->addSuccess(LAN_CREATED);
 		}
 		else
 		{
-			//$forum->show_message(FORLAN_150.' - '.LAN_CREATED_FAILED);
-			$mes->addSuccess(LAN_CREATED_FAILED);
+			$mes->addError(LAN_CREATED_FAILED);
 		}
 	}
+	$ns->tablerender($caption, $mes->render().$text);
 }
 
-$ns->tablerender($caption, $mes->render() . $text);
 
 if(isset($_POST['update_subs']))
 {
@@ -172,19 +176,22 @@ if(isset($_POST['update_subs']))
 	if($msg)
 	{
 		$mes->addSuccess($msg);
-		$ns->tablerender($caption, $mes->render() . $text);
+		$ns->tablerender($caption, $mes->render().$text);
 	}
 }
 
 if(isset($_POST['submit_parent']))
 {
-	$tmp = array();
-	$tmp['forum_name'] = $tp->toDB($_POST['forum_name']);
-	$tmp['forum_datestamp'] = time();
-	$tmp['forum_class'] = (int)$_POST['forum_class'];
-	$tmp['forum_postclass'] = (int)$_POST['forum_postclass'];
-	$tmp['forum_threadclass'] = (int)$_POST['forum_threadclass'];
-	if($sql->insert('forum',$tmp))
+	unset($insert);
+	$insert = array(
+		'forum_name' 		=> $tp->toDB($_POST['forum_name']),
+		'forum_datestamp' 	=> time(),
+		'forum_class' 		=> (int)$_POST['forum_class'],
+		'forum_postclass'	=> (int)$_POST['forum_postclass'],
+		'forum_threadclass'	=> (int)$_POST['forum_threadclass'],
+	);
+	
+	if($sql->insert('forum', $insert))
 	{
 		$mes->addSuccess(LAN_CREATED);
 	}
@@ -192,43 +199,51 @@ if(isset($_POST['submit_parent']))
 	{
 		$mes->addError(LAN_CREATED_FAILED);
 	}
+	
+	$ns->tablerender($caption, $mes->render().$text);
 }
 
-$ns->tablerender($caption, $mes->render() . $text);
+
 
 if(isset($_POST['update_parent']))
 {
-	$tmp = $_POST;
-	unset($tmp['update_parent']);
-	$tmp['_FIELD_TYPES']['forum_name'] = 'todb';
-	$tmp['_FIELD_TYPES']['forum_class'] = 'int';
-	$tmp['_FIELD_TYPES']['forum_postclass'] = 'int';
-	$tmp['_FIELD_TYPES']['forum_threadclass'] = 'int';
-	$tmp['WHERE'] = 'forum_id = '.(int)$id;
-	$tmp['data']['forum_name'] = $_POST['forum_name'];
-	$tmp['data']['forum_datestamp'] = time();
-	$tmp['data']['forum_class'] = $_POST['forum_class'];
-	$tmp['data']['forum_postclass'] = $_POST['forum_postclass'];
-	$tmp['data']['forum_threadclass'] = $_POST['forum_threadclass'];
-	$sql->update('forum', $tmp);
+	unset($update);
+	$update = array(
+		'forum_name' 		=> $tp->toDb($_POST['forum_name']), 
+		'forum_datestamp' 	=> time(), 
+		'forum_class' 		=> (int)$_POST['forum_class'], 
+		'forum_postclass' 	=> (int)$_POST['forum_postclass'], 
+		'forum_threadclass' => (int)$_POST['forum_threadclass'], 
+		'WHERE' 			=> 'forum_id = '.(int)$id
+	); 
 
-	$mes->addSuccess(LAN_UPDATED);
+	if($sql->update('forum', $update))
+	{
+		$mes->addSuccess(LAN_UPDATED);
+	}
+	else
+	{
+		$mes->addError(LAN_UPDATED_FAILED);
+	}
+
 	$action = 'main';
+	$ns->tablerender($caption, $mes->render().$text);
 }
 
-$ns->tablerender($caption, $mes->render() . $text);
+
 
 if(isset($_POST['submit_forum']))
 {
 	$tmp = array();
-	$tmp['forum_moderators'] = (int)$_POST['forum_moderators'];
-	$tmp['forum_name'] = $tp->toDB($_POST['forum_name']);
-	$tmp['forum_description'] = $tp->toDB($_POST['forum_description']);
-	$tmp['forum_datestamp'] = time();
-	$tmp['forum_class'] = (int)$_POST['forum_class'];
-	$tmp['forum_postclass'] = (int)$_POST['forum_postclass'];
-	$tmp['forum_threadclass'] = (int)$_POST['forum_threadclass'];
-	$tmp['forum_parent'] = (int)$_POST['forum_parent'];
+	$tmp['forum_moderators'] 	= (int)$_POST['forum_moderators'];
+	$tmp['forum_name'] 			= $tp->toDB($_POST['forum_name']);
+	$tmp['forum_description'] 	= $tp->toDB($_POST['forum_description']);
+	$tmp['forum_datestamp'] 	= time();
+	$tmp['forum_class'] 		= (int)$_POST['forum_class'];
+	$tmp['forum_postclass'] 	= (int)$_POST['forum_postclass'];
+	$tmp['forum_threadclass'] 	= (int)$_POST['forum_threadclass'];
+	$tmp['forum_parent'] 		= (int)$_POST['forum_parent'];
+	
 	if($sql->insert('forum', $tmp))
 	{
 		$mes->addSuccess(LAN_CREATED);
@@ -237,30 +252,32 @@ if(isset($_POST['submit_forum']))
 	{
 		$mes->addError(LAN_CREATED_FAILED);
 	}
+	$ns->tablerender($caption, $mes->render().$text);
 }
 
-$ns->tablerender($caption, $mes->render() . $text);
+
 
 if(isset($_POST['update_forum']))
 {
 	unset($_POST['update_forum']);
-	$tmp['data'] = $_POST;
-	$tmp['WHERE'] = 'forum_id = '.(int)$id;
+	$tmp['data'] 	= $_POST;
+	$tmp['WHERE'] 	= 'forum_id = '.(int)$id;
 
-	$tmp2['forum_moderators'] = $tmp['forum_moderators'];
-	$tmp2['forum_class'] = $tmp['forum_class'];
-	$tmp2['forum_postclass'] = $tmp['forum_postclass'];
-	$tmp2['forum_threadclass'] = $tmp['forum_threadclass'];
+	$tmp2['forum_moderators']	= $tmp['forum_moderators'];
+	$tmp2['forum_class'] 		= $tmp['forum_class'];
+	$tmp2['forum_postclass'] 	= $tmp['forum_postclass'];
+	$tmp2['forum_threadclass'] 	= $tmp['forum_threadclass'];
 	$tmp2['WHERE'] = 'forum_sub = '.(int)$id;
 
 	$sql->update('forum', $tmp);
 	$sql->update('forum', $tmp2);
 
 	$mes->addSuccess(LAN_UPDATED);
+	$ns->tablerender($caption, $mes->render().$text);
 	$action = 'main';
 }
 
-$ns->tablerender($caption, $mes->render() . $text);
+
 
 if (isset($_POST['update_order']))
 {
@@ -270,9 +287,10 @@ if (isset($_POST['update_order']))
 		$sql->update('forum', "forum_order=".$tmp[1]." WHERE forum_id=".$tmp[0]);
 	}
 	$mes->addSuccess(LAN_UPDATED);
+	$ns->tablerender($caption, $mes->render().$text); 
 }
 
-$ns->tablerender($caption, $mes->render() . $text);
+
 
 if (isset($_POST['updateoptions']))
 {
@@ -298,24 +316,26 @@ if (isset($_POST['updateoptions']))
 	$fPref->save(true, true);
 
 	$mes->addSuccess();
+	$ns->tablerender($caption, $mes->render().$text); 
 }
 
-$ns->tablerender($caption, $mes->render() . $text);
+
 
 if (isset($_POST['do_prune']))
 {
 	$msg = $for->forumPrune($_POST['prune_type'], $_POST['prune_days'], $_POST['pruneForum']);
 	$mes->addSuccess($msg);
 	$action = 'main';
+	$ns->tablerender($caption, $mes->render().$text);
+
 }
 
-$ns->tablerender($caption, $mes->render() . $text);
 
 if (isset($_POST['frsubmit']))
 {
-	$guestrules = $tp->toDB($_POST['guestrules']);
-	$memberrules = $tp->toDB($_POST['memberrules']);
-	$adminrules = $tp->toDB($_POST['adminrules']);
+	$guestrules 	= $tp->toDB($_POST['guestrules']);
+	$memberrules 	= $tp->toDB($_POST['memberrules']);
+	$adminrules 	= $tp->toDB($_POST['adminrules']);
 	if(!$sql->update("generic", "gen_chardata ='$guestrules', gen_intdata='".$_POST['guest_active']."' WHERE gen_type='forum_rules_guest' "))
 	{
 		$sql->insert("generic", "0, 'forum_rules_guest', '".time()."', 0, '', '".$_POST['guest_active']."', '$guestrules' ");
@@ -328,9 +348,8 @@ if (isset($_POST['frsubmit']))
 	{
 		$sql->insert("generic", "0, 'forum_rules_admin', '".time()."', 0, '', '".$_POST['admin_active']."', '$adminrules' ");
 	}
+	$ns->tablerender($caption, $mes->render().$text);
 }
-
-$ns->tablerender($caption, $mes->render() . $text);
 
 if (vartrue($delete) == 'main') {
 	if ($sql->delete('forum', "forum_id='$del_id' ")) 
@@ -341,9 +360,9 @@ if (vartrue($delete) == 'main') {
 	{
 		$mes->addError(LAN_DELETED_FAILED);
 	}
+	$ns->tablerender($caption, $mes->render().$text);
 }
 
-$ns->tablerender($caption, $mes->render() . $text);
 
 if (vartrue($action) == 'create')
 {
@@ -369,10 +388,12 @@ if ($delete == 'cat')
 	else 
 	{
 		$mes->addError(LAN_DELETED_FAILED);
-	}	
+	}
+
+	$ns->tablerender($caption, $mes->render().$text);	
 }
 
-$ns->tablerender($caption, $mes->render() . $text);
+
 
 switch($action)
 {
@@ -425,34 +446,31 @@ if ($delete == 'reported')
 }
 
 
-
-
 if (!e_QUERY || $action == 'main')
 {
 	$forum->show_existing_forums(vartrue($sub_action), vartrue($id));
 }
 
-//$forum->show_options($action);
 require_once(e_ADMIN.'footer.php');
-function headerjs()
-{
-	$e107 = e107::getInstance();
-	$tp = e107::getParser();
+// function headerjs()
+// {
+// 	$e107 = e107::getInstance();
+// 	$tp = e107::getParser();
 
-	// These functions need to be removed and replaced with the generic jsconfirm() function.
-	$headerjs = "<script type=\"text/javascript\">
-	function confirm_(mode, forum_id, forum_name) {
-		if (mode == 'sr') {
-			return confirm(\"".$tp->toJS(FORLAN_117)."\");
-		} else if(mode == 'parent') {
-			return confirm(\"".$tp->toJS(FORLAN_81)." [ID: \" + forum_name + \"]\");
-		} else {
-			return confirm(\"".$tp->toJS(FORLAN_82)." [ID: \" + forum_name + \"]\");
-		}
-	}
-	</script>";
-	return $headerjs;
-}
+// 	// These functions need to be removed and replaced with the generic jsconfirm() function.
+// 	$headerjs = "<script type=\"text/javascript\">
+// 	function confirm_(mode, forum_id, forum_name) {
+// 		if (mode == 'sr') {
+// 			return confirm(\"".$tp->toJS(FORLAN_117)."\");
+// 		} else if(mode == 'parent') {
+// 			return confirm(\"".$tp->toJS(FORLAN_81)." [ID: \" + forum_name + \"]\");
+// 		} else {
+// 			return confirm(\"".$tp->toJS(FORLAN_82)." [ID: \" + forum_name + \"]\");
+// 		}
+// 	}
+// 	</script>";
+// 	return $headerjs;
+// }
 
 function forum_admin_adminmenu()
 {
@@ -472,6 +490,7 @@ class forumAdmin
 		
 		$sql = e107::getDb();
 		if ($action == '') { $action = 'main'; }
+		
 		// ##### Display options ---------------------------------------------------------------------------------------------------------
 		$var['main']['text'] = FORLAN_76;
 		$var['main']['link'] = e_SELF;
@@ -502,14 +521,21 @@ class forumAdmin
 
 	function delete_item($id)
 	{
+		if($_POST['cancel'])
+		{
+			$this->show_existing_forums(vartrue($sub_action), vartrue($id));
+			return;
+		}
+
 		$sql = e107::getDb();
 		$id = (int)$id;
 		$confirm = isset($_POST['confirm']) ? true : false;
 
-		if($sql->select('forum', '*', "forum_id = {$id}"))
+		if($sql->select('forum', 'forum_parent, forum_sub', "forum_id = {$id}"))
 		{
 			$txt = "";
 			$row = $sql->fetch();
+			
 			if($row['forum_parent'] == 0)
 			{
 				$txt .= $this->delete_parent($id, $confirm);
@@ -522,15 +548,25 @@ class forumAdmin
 			{
 				$txt .= $this->delete_forum($id, $confirm);
 			}
+
+
 			if($confirm)
 			{
-				$this->show_message($txt);
+				e107::getRender()->tablerender('', e107::getMessage()->render().$txt);
 			}
 			else
 			{
 				$this->delete_show_confirm($txt);
 			}
 		}
+		else
+		{
+			// forum_id not found, should not happen. 
+			$this->show_existing_forums(vartrue($sub_action), vartrue($id));
+			return;
+		}
+
+
 	}
 
 	function delete_parent($id, $confirm = false)
@@ -539,41 +575,34 @@ class forumAdmin
 		$mes = e107::getMessage();
 		$ns = e107::getRender();
 
-		//$ret = '';
+
 		if($sql->select('forum', 'forum_id', "forum_parent = {$id} AND forum_sub = 0"))
 		{
 			$fList = $sql->db_getList();
 			foreach($fList as $f)
 			{
-				$ret .= $this->delete_forum($f['forum_id'], $confirm);
+				$this->delete_forum($f['forum_id'], $confirm);
 			}
 		}
+
 		if($confirm)
 		{
 			if($sql->delete('forum', "forum_id = {$id}"))
 			{
-				//$ret .= 'Forum parent successfully deleted'; 
-				$mes->addSuccess(LAN_DELETED);
+				return LAN_DELETED;
 			}
 			else
 			{
-				//$ret .= 'Forum parent could not be deleted'; // TODO LAN
-				$mes->addError(LAN_DELETED_FAILED); 
+				return LAN_DELETED_FAILED; 
 			}
-			//return $ret;
-			$ns->tablerender($caption, $mes->render(). $text);
 		}
-		//return 'The forum parent has the following info: <br />'.$ret; // TODO LAN
-
 	}
-
-
 
 	function deleteForum($forumId)
 	{
 		$sql = e107::getDb();
 		$forumId = (int)$forumId;
-//		echo "id = $forumId <br />";
+
 		// Check for any sub forums
 		if($sql->select('forum', 'forum_id', "forum_sub = {$forumId}"))
 		{
@@ -603,35 +632,31 @@ class forumAdmin
 		$ns = e107::getRender();
 		$mes = e107::getMessage();
 
-		//$ret = '';
+	
 		if($sql->select('forum', 'forum_id', 'forum_sub = '.$id))
 		{
 			$fList = $sql->db_getList();
 			foreach($fList as $f)
 			{
-				$ret .= $this->delete_sub($f['forum_id'], $confirm);
+				$this->delete_sub($f['forum_id'], $confirm);
 			}
 		}
 		if($confirm)
 		{
 			if($this->deleteForum($id))
 			{
-				//$ret .= "Forum {$id} successfully deleted"; // TODO LAN
 				$mes->addSuccess(LAN_DELETED);
 			}
 			else
 			{
-				//$ret .= "Forum {$id} could not be deleted"; // TODO LAN
 				$mes->addError(LAN_DELETED_FAILED);
 			} 			
 		}
 
 		$sql->select('forum', 'forum_name, forum_threads, forum_replies', 'forum_id = '.$id);
 		$row = $sql->fetch();
-		//return "Forum {$id} [".$tp->toHTML($row['forum_name'])."] has {$row['forum_threads']} threads, {$row['forum_replies']} replies. <br />".$ret;
-		$mes->addInfo("Forum {$id} [".$tp->toHTML($row['forum_name'])."] has {$row['forum_threads']} threads and {$row['forum_replies']} replies."); //FIXME combine multiple info's into one message
-
-		$ns->tablerender($caption, $mes->render() . $text);
+	
+		$mes->addInfo("Forum {$id} [".$tp->toHTML($row['forum_name'])."] has {$row['forum_threads']} threads and {$row['forum_replies']} replies."); 
 	}
 
 	function delete_sub($id, $confirm = FALSE)
@@ -645,38 +670,34 @@ class forumAdmin
 		{
 			if($this->deleteForum($id))
 			{
-				//$ret .= "Sub-forum {$id} successfully deleted"; // TODO LAN
 				$mes->addSuccess(LAN_DELETED);
 			}
 			else
 			{
-				//$ret .= "Sub-forum {$id} could not be deleted"; // TODO LAN
 				$mes->addError(LAN_DELETED);
 			}
-			//return $ret;
 		}
 
 		$sql->select('forum', '*', 'forum_id = '.$id);
 		$row = $sql->fetch();
-		//return "Sub-forum {$id} [".$tp->toHTML($row['forum_name'])."] has {$row['forum_threads']} threads, {$row['forum_replies']} replies. <br />".$ret;
-		$mes->addInfo("Sub-forum {$id} [".$tp->toHTML($row['forum_name'])."] has {$row['forum_threads']} threads, {$row['forum_replies']} replies."); // FIXME show just once  on confirm and not LAN_DELETED
-		$ns->tablerender($caption, $mes->render() . $text);
+		$mes->addInfo("Sub-forum {$id} [".$tp->toHTML($row['forum_name'])."] has {$row['forum_threads']} threads, {$row['forum_replies']} replies."); 
 	}
 
-	function delete_show_confirm($txt)
+	function delete_show_confirm($message)
 	{
-		$ns = e107::getRender();
-		$this->show_message($txt);
-		$frm = e107::getForm();
-		$txt = "
+		$mes = e107::getMessage();
+		
+		$mes->addInfo($message);
+		
+		$text = "
 		<form method='post' action='".e_SELF.'?'.e_QUERY."'>
-		<div style='text-align:center'>".LAN_CONFDELETE."<br /><br />
-			".$frm->admin_button('confirm', LAN_UI_DELETE_LABEL, 'submit')."
-		<input type='submit' class='btn btn-warning button' name='confirm' value='".LAN_DELETE."' />
+		<div align='center'>
+			".e107::getForm()->admin_button('confirm', LAN_UI_DELETE_LABEL, 'delete')."
+			".e107::getForm()->admin_button('cancel', LAN_CANCEL, 'cancel')."
 		</div>
 		</form>
 		";
-		$ns->tablerender(LAN_UI_DELETE_LABEL, $txt);
+		e107::getRender()->tablerender('Forum'.SEP.'Delete forum(s)', $mes->render().$text);
 	}
 
 	function show_subs($id)
@@ -891,7 +912,6 @@ class forumAdmin
 
 	function create_parents($sub_action, $id)
 	{
-		//global $e107;
 		$frm = e107::getForm();
 		$sql = e107::getDb();
 		$tp = e107::getParser();
@@ -1052,11 +1072,11 @@ class forumAdmin
 	}
 
 	
-	function show_message($message) // FIX
-	{
-		$ns = e107::getRender();
-		$ns->tablerender('', "<div style='text-align:center'><b>".$message."</b></div>"); //FIX: v2 style = render?
-	}
+	// function show_message($message) 
+	// {
+		
+	// 	e107::getRender();->tablerender('', $message); 
+	// }
 	
 
 	function show_tools()
@@ -1273,9 +1293,8 @@ class forumAdmin
 		$ns->tablerender(FORLAN_62, $mes->render() . $text);
 	}
 
-	function show_reported ($sub_action, $id) // FIXME - $id does not seem to be in use.. remove? 
+	function show_reported($sub_action) 
 	{
-		//global $rs; // FIX replace by $frm
 		$rs = new form; // FIXME - update to $frm
 		$sql = e107::getDb();
 		$ns = e107::getRender(); 
@@ -1287,7 +1306,7 @@ class forumAdmin
 			$row = $sql->fetch();
 			$sql->select("user", "*", "user_id='". $row['gen_user_id']."'");
 			$user = $sql->fetch();
-			$con = new convert;
+			//$con = new convert;
 			$text = "
 			<table class='table adminlist'>
 			<colgroup span='2'>
@@ -1309,7 +1328,7 @@ class forumAdmin
 			</tr>
 			<tr>
 				<td>".FORLAN_175.":</td>
-				<td>".$con -> convert_date($row['gen_datestamp'], "long")."</td>
+				<td>".e107::getDate()->convert_date($row['gen_datestamp'], "long")."</td>
 			</tr>
 			<tr>
 				<td>".FORLAN_176.":</td>
@@ -1324,7 +1343,7 @@ class forumAdmin
 			</tr>
 			</table>";
 
-			$ns -> tablerender(FORLAN_116, $text);
+			$ns->tablerender(FORLAN_116, $text);
 
 			} 
 			else
@@ -1339,14 +1358,15 @@ class forumAdmin
 					</tr>";
 					while ($row = $sql->fetch())
 					{
-						$text .= "<tr>
-						<td<a href='".e_SELF."?sr.".$row['gen_id']."'>".FORLAN_171." #".$row['gen_intdata']."</a></td>
-						<td text-align:center; vertical-align:top; white-space: nowrap'>
-						".$rs->form_open("post", e_SELF."?sr", "", "", "", " onsubmit=\"return confirm_('sr',".$row['gen_datestamp'].")\"")."
-						".$rs->form_button("submit", "delete[reported_{$row['gen_id']}]", FORLAN_172)."
-						".$rs->form_close()."
-						</td>
-						</tr>\n";
+						$text .= " 
+						<tr>
+							<td<a href='".e_SELF."?sr.".$row['gen_id']."'>".FORLAN_171." #".$row['gen_intdata']."</a></td>
+							<td text-align:center; vertical-align:top; white-space: nowrap'>
+							".$rs->form_open("post", e_SELF."?sr", "", "", "", " onsubmit=\"return confirm_('sr',".$row['gen_datestamp'].")\"")."
+							".$rs->form_button("submit", "delete[reported_{$row['gen_id']}]", FORLAN_172)."
+							".$rs->form_close()."
+							</td>
+						</tr>";
 					}
 					$text .= "</table>";
 				}
@@ -1355,7 +1375,7 @@ class forumAdmin
 					//$text = "<div style='text-align:center'>".FORLAN_121."</div>";
 					$mes->addInfo(FORLAN_121);
 				}
-				$ns->tablerender(FORLAN_116, $mes->render() . $text);
+				$ns->tablerender(FORLAN_116, $mes->render().$text);
 			}
 	}
 

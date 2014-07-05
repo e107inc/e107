@@ -162,7 +162,7 @@ define("FORLAN_140", "View");
 define("FORLAN_141", "Post");
 define("FORLAN_142", "Post permission");
 define("FORLAN_143", "Indicates who can post to the forum");
-define("FORLAN_144", "Moderators set");
+//define("FORLAN_144", "Moderators set");
 define("FORLAN_145", "Configure sub-forums");
 define("FORLAN_146", "No sub-forums yet");
 //define("FORLAN_147", "Update sub-forums");

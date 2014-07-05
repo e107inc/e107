@@ -717,16 +717,16 @@ class e107ForumThread
 				break;
 
 			case 'report':
-				$threadId = (int)$_GET['id'];
-				$postId = (int)$_GET['post'];
-				$postInfo = $forum->postGet($postId, 'post');
+				$threadId 	= (int)$_GET['id'];
+				$postId 	= (int)$_GET['post'];
+				$postInfo 	= $forum->postGet($postId, 'post');
 
-				if (isset($_POST['report_thread']))
+				if(isset($_POST['report_thread']))
 				{
 					$report_add = $tp->toDB($_POST['report_add']);
-					if ($forum->prefs->get('reported_post_email'))
+					if($forum->prefs->get('reported_post_email'))
 					{
-						require_once (e_HANDLER . 'mail.php');
+						require_once(e_HANDLER.'mail.php');
 						$report = LAN_FORUM_2018." ".SITENAME." : ".(substr(SITEURL, -1) == "/" ? SITEURL : SITEURL."/") . $e107->getFolder('plugins') . "forum/forum_viewtopic.php?" . $this->threadId . ".post\n
 						".LAN_FORUM_2019.": ".USERNAME. "\n" . $report_add;
 						$subject = LAN_FORUM_2020." ". SITENAME;
@@ -737,7 +737,7 @@ class e107ForumThread
 					define('e_PAGETITLE', LAN_FORUM_1001 . " / " . LAN_FORUM_2021);
 					$url = $e107->url->create('forum/thread/post', array('id' => $postId, 'name' => $postInfo['thread_name'], 'thread' => $threadId)); // both post info and thread info contain thread name
 					$text = LAN_FORUM_2021 . "<br /><br /><a href='{$url}'>".LAN_FORUM_2022.'</a>';
-					return $ns->tablerender(LAN_FORUM_2023, $text, array('forum_viewtopic', 'report'), true);
+					return $ns->tablerender(LAN_FORUM_2023, $text, array('forum_viewtopic', 'report'), false);
 				}
 				else
 				{
@@ -763,7 +763,7 @@ class e107ForumThread
 						<td colspan='2' style='text-align:center;'><br /><input class='btn btn-default button' type='submit' name='report_thread' value='".LAN_FORUM_2029."' /></td>
 					</tr>
 					</table>";
-					return e107::getRender()->tablerender(LAN_FORUM_2023, $text, array('forum_viewtopic', 'report2'), true);
+					return e107::getRender()->tablerender(LAN_FORUM_2023, $text, array('forum_viewtopic', 'report2'), false);
 				}
 
 				exit;
