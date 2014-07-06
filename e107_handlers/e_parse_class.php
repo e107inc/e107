@@ -2714,10 +2714,17 @@ class e_parser
 			return false;	
 		}
 		
+		
+		
 		if(is_array($space)) 
 		{
 			$parm = $space;
 			$space = varset($parm['space'],'');
+		}
+		elseif(strpos($space,'='))
+		{
+			parse_str($space,$parm);
+			$space = varset($parm['space'],'');	
 		}
 		else 
 		{
