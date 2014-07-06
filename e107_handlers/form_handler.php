@@ -2865,7 +2865,7 @@ class e_form
 			case 'image': //TODO - thumb, js tooltip...
 				if($value)
 				{
-				
+					
 					if(strpos($value,",")!==false)
 					{
 						$tmp = explode(",",$value);
@@ -2885,7 +2885,8 @@ class e_form
 					{
 						$icon = "{e_IMAGE}filemanager/zip_32.png";	
 						$src = $tp->replaceConstants(vartrue($parms['pre']).$icon, 'abs');
-					//	return '<img src="'.$src.'" alt="'.$value.'" class="e-thumb" title="'.$value.'" />';
+						return e107::getParser()->toGlyph('fa-file','size=2x');
+				//		return '<img src="'.$src.'" alt="'.$value.'" class="e-thumb" title="'.$value.'" />';
 					}
 					
 					if(vartrue($parms['thumb']))
