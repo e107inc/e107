@@ -405,6 +405,14 @@ class e_media
 	}
 	
 	
+	public function getFiles($from=0, $amount = null, $search = null)
+	{
+		return $this->getImages('_common_file', $from, $amount, $search);	
+	}
+	
+	
+	
+	
 	/**
 	 * Return an array of Images in a particular category
 	 * @param string $cat : category name. use + to include _common eg. 'news+'
