@@ -1537,9 +1537,9 @@ class e_form
 	}
 
 
-	function optgroup_open($label, $disabled = false)
+	function optgroup_open($label, $disabled = false, $options = null)
 	{
-		return "<optgroup class='optgroup' label='{$label}'".($disabled ? " disabled='disabled'" : '').">";
+		return "<optgroup class='optgroup ".varset($options['class'])."' label='{$label}'".($disabled ? " disabled='disabled'" : '').">";
 	}
 
     /**
@@ -1576,7 +1576,20 @@ class e_form
 				$text .= $this->optgroup_open($value);
 				foreach($label as $val => $lab)
 				{
-					$text .= $this->option($lab, $val, (is_array($selected) ? in_array($val, $selected) : $selected == $val), $options)."\n";
+					
+					if(is_array($lab)) 
+					{
+						$text .= $this->optgroup_open($val,null,array('class'=>'level-2')); // Not valid HTML5 - but appears to work in modern browsers. 
+						foreach($lab as $k=>$v)
+						{
+							$text .= $this->option($v, $k, (is_array($selected) ? in_array($k, $selected) : $selected == $k), $options)."\n";
+						}	
+						$text .= $this->optgroup_close($val);
+					}
+					else
+					{
+						$text .= $this->option($lab, $val, (is_array($selected) ? in_array($val, $selected) : $selected == $val), $options)."\n";
+					}
 				}
 				$text .= $this->optgroup_close();
 			}
