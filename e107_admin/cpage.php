@@ -416,7 +416,13 @@ class page_admin_ui extends e_admin_ui
 		protected $pluginName   	= 'core';
 		protected $table        	= "page";
 		
-		protected $listQry      	= "SELECT p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE p.page_title != '' "; // without any Order or Limit.
+		protected $listQry      	= "SELECT
+		                                    p.*,u.user_id,u.user_name,pch.chapter_sef,pbk.chapter_sef AS book_sef
+		                               FROM #page AS p
+		                               LEFT JOIN #user AS u ON p.page_author = u.user_id
+		                               LEFT JOIN #page_chapters AS pch ON p.page_chapter = pch.chapter_id
+		                               LEFT JOIN #page_chapters AS pbk ON pch.chapter_parent = pbk.chapter_id
+		                               WHERE p.page_title != '' "; // without any Order or Limit.
 		//protected $editQry = "SELECT * FROM #comments WHERE comment_id = {ID}";
 		
 		protected $pid 				= "page_id";
@@ -429,7 +435,7 @@ class page_admin_ui extends e_admin_ui
 		protected $sortField		= 'page_order';
 		protected $orderStep 		= 10;
 		//protected $url         	= array('profile'=>'page/view', 'name' => 'page_title', 'description' => '', 'link'=>'{e_BASE}page.php?id=[id]'); // 'link' only needed if profile not provided. 
-		protected $url         		= array('route'=>'page/view/index', 'vars' => array('id' => 'page_id', 'name' => 'page_sef'), 'name' => 'page_title', 'description' => ''); // 'link' only needed if profile not provided. 
+		protected $url         		= array('route'=>'page/view/index', 'vars' => array('id' => 'page_id', 'name' => 'page_sef', 'chapter' => 'chapter_sef', 'book' => 'book_sef'), 'name' => 'page_title', 'description' => ''); // 'link' only needed if profile not provided.
 		protected $tabs		 		= array("Page","Page Options","Menu", "Menu Options");
 		protected $featurebox		= array('name'=>'page_title', 'description'=>'page_text', 'image' => 'menu_image', 'visibility' => 'page_class', 'url' => true);
 		
@@ -518,7 +524,7 @@ class page_admin_ui extends e_admin_ui
 					e107::getDb()->update('page',"menu_name = '' WHERE page_id=".intval($key)." LIMIT 1");
 				}
 			}
-			
+
 			// USED IN Menu LIST/INLINE-EDIT MODE ONLY. 
 			if($this->getMode() == 'menu' && ($this->getACtion() == 'list' || $this->getACtion() == 'inline'))
 			{
@@ -602,7 +608,28 @@ class page_admin_ui extends e_admin_ui
 		}
 
 
+        /**
+         * Overrid
+         */
+        public function ListObserver()
+        {
+            parent::ListObserver();
 
+            // fix current url config limitation
+            $tree = $this->getTreeModel();
+
+            /** @var e_admin_model $model */
+            foreach ($tree->getTree() as $id => $model)
+            {
+                // No chapter, override route
+                if(!$model->get('page_chapter'))
+                {
+                    $urlData = $this->url;
+                    $urlData['route'] = 'page/view/other';
+                    $model->setUrl($urlData);
+                }
+            }
+        }
 
 		function afterCreate($newdata,$olddata, $id)
 		{
