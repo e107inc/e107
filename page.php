@@ -38,22 +38,20 @@ if(!e_QUERY)
 elseif(vartrue($_GET['bk'])) //  List Chapters within a specific Book
 {
 	$e107CorePage->setRequest('listChapters');
+    $e107CorePage->listChapters($_GET['bk']);
 	
 	require_once(HEADERF);
-	$data = $e107CorePage->listChapters($_GET['bk']);
-	$ns->tablerender($data['caption'], $data['text'], 'cpage-chapter-list'); 
+	$ns->tablerender($e107CorePage->pageOutput['caption'], $e107CorePage->pageOutput['text'], 'cpage-chapter-list');
 	require_once(FOOTERF);
 	exit;	
 }
 elseif(vartrue($_GET['ch'])) // List Pages within a specific Chapter
 {
 	$e107CorePage->setRequest('listPages');
+    $e107CorePage->listPages($_GET['ch']);
 
 	require_once(HEADERF);	
-
-	$data = $e107CorePage->listPages($_GET['ch']);
-	$ns->tablerender($data['caption'], $data['text'], 'cpage-page-list'); 
-	
+	$ns->tablerender($e107CorePage->pageOutput['caption'], $e107CorePage->pageOutput['text'], 'cpage-page-list');
 	require_once(FOOTERF);
 	exit;		
 }
@@ -96,7 +94,9 @@ class pageClass
 	
 	protected $chapterData = array();
 	
-	protected $displayAllMode = false;	// set to True when no book/chapter/page has been defined by the url/query. 
+	protected $displayAllMode = false;	// set to True when no book/chapter/page has been defined by the url/query.
+
+    public $pageOutput = '';
 	
 	function __construct($debug=FALSE)
 	{
@@ -321,7 +321,13 @@ class pageClass
 			);
 		
 		$caption = $tp->simpleParse($template['caption'],$bvar);
-		
+
+        if($brow)
+        {
+            define('e_PAGETITLE', eHelper::formatMetaTitle($brow['chapter_name']));
+            if($brow['chapter_meta_description']) define('META_DESCRIPTION', eHelper::formatMetaDescription($brow['chapter_meta_description']));
+            if($brow['chapter_meta_keywords']) define('META_KEYWORDS', eHelper::formatMetaKeys($brow['chapter_meta_keywords']));
+        }
 		
 		
 		if($sql->select("page_chapters", "*", "chapter_parent = ".intval($book)."  AND chapter_visibility IN (".USERCLASS_LIST.") ORDER BY chapter_order ASC "))
@@ -363,7 +369,8 @@ class pageClass
 			$text = e107::getMessage()->addInfo("There are no chapters in this book")->render();	
 		}	
 			
-		return array('caption'=>$caption, 'text'=>$text);		
+		#return array('caption'=>$caption, 'text'=>$text);
+		$this->pageOutput = array('caption'=>$caption, 'text'=>$text);
 	}
 
 
@@ -409,6 +416,13 @@ class pageClass
 		{
 			$layout = vartrue($row['chapter_template'],'default');
 		}
+
+        if($row)
+        {
+            define('e_PAGETITLE', eHelper::formatMetaTitle($row['chapter_name']));
+            if($row['chapter_meta_description']) define('META_DESCRIPTION', eHelper::formatMetaDescription($row['chapter_meta_description']));
+            if($row['chapter_meta_keywords']) define('META_KEYWORDS', eHelper::formatMetaKeys($row['chapter_meta_keywords']));
+        }
 		
 		$bookId = $row['chapter_parent'];
 		$bookSef = $this->getSef($row['chapter_parent']);
@@ -489,7 +503,8 @@ class pageClass
 
 
 			$caption = $tp->simpleParse($template['caption'], $var);
-		return array('caption'=>$caption, 'text'=> $text);
+		#return array('caption'=>$caption, 'text'=> $text);
+		$this->pageOutput = array('caption'=>$caption, 'text'=> $text);
 	}
 
 	
@@ -614,7 +629,7 @@ class pageClass
 		$this->batch->setVars($this->page);
 		
 		
-		define('e_PAGETITLE', eHelper::formatMetaTitle($this->page['title']));
+		define('e_PAGETITLE', eHelper::formatMetaTitle($this->page['page_title']));
 		if($this->page['page_metadscr']) define('META_DESCRIPTION', eHelper::formatMetaDescription($this->page['page_metadscr']));
 		if($this->page['page_metakeys']) define('META_KEYWORDS', eHelper::formatMetaKeys($this->page['page_metakeys']));
 		//return $ret;
