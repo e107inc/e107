@@ -795,7 +795,9 @@ class pageClass
 		}
 		else
 		{
-			$this->pageToRender = $tp->toHTML($this->pageText, TRUE, 'BODY');
+			// $this->pageToRender = $tp->toHTML($this->pageText, TRUE, 'BODY');
+            // Remove double parsing - it breaks HTML (inserts <br> as [html] is already removed)
+			$this->pageToRender = $this->pageText;
 			return;
 		}
 
