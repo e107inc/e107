@@ -614,7 +614,7 @@ class pageClass
 		$this->batch->setVars($this->page);
 		
 		
-		define('e_PAGETITLE', eHelper::formatMetaTitle($ret['title']));
+		define('e_PAGETITLE', eHelper::formatMetaTitle($this->page['title']));
 		if($this->page['page_metadscr']) define('META_DESCRIPTION', eHelper::formatMetaDescription($this->page['page_metadscr']));
 		if($this->page['page_metakeys']) define('META_KEYWORDS', eHelper::formatMetaKeys($this->page['page_metakeys']));
 		//return $ret;
