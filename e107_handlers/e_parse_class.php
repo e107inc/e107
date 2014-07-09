@@ -791,11 +791,11 @@ class e_parse extends e_parser
 	 * Simple parser
 	 *
 	 * @param string $template
-	 * @param e_vars $vars
+	 * @param e_vars|array $vars
 	 * @param string $replaceUnset string to be used if replace variable is not set, false - don't replace
 	 * @return string parsed content
 	 */
-	function simpleParse($template, e_vars $vars, $replaceUnset='')
+	function simpleParse($template, $vars, $replaceUnset='')
 	{
 		$this->replaceVars = $vars;
 		$this->replaceUnset = $replaceUnset;
@@ -808,8 +808,9 @@ class e_parse extends e_parser
 		$key = $tmp[1];
 		if(is_array($this->replaceVars))
 		{
-			return ($this->replaceVars[$key] !== null ? $this->replaceVars[$key]: $unset);	
-		}		
+            $this->replaceVars = new e_vars($this->replaceVars);
+			//return ($this->replaceVars[$key] !== null ? $this->replaceVars[$key]: $unset);
+		}
 	//	
 		return ($this->replaceVars->$tmp[1] !== null ? $this->replaceVars->$tmp[1] : $unset); // Doesn't work. 
 	}
