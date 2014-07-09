@@ -2781,7 +2781,7 @@ class e_form
                     {
                     	$model = $this->getController()->getListModel();
 						// copy url config
-						$model->setUrl($this->getController()->getUrl());
+						if(!$model->getUrl()) $model->setUrl($this->getController()->getUrl());
 						// assemble the url
                     	$link = $model->url();
                     }
