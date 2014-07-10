@@ -59,10 +59,11 @@ else
 {
 	$e107CorePage->setRequest('showPage');
 	$e107CorePage->processViewPage();
-	
+    $e107CorePage->setPage();
+
 	require_once(HEADERF);
 	
-	echo $e107CorePage->showPage();
+	echo $e107CorePage->pageOutput['text'];
 	
 	require_once(FOOTERF);
 	exit;
@@ -679,7 +680,7 @@ class pageClass
 		return str_replace('[[PAGECOMMENTS]]', $comments, $this->cacheData['PAGE']);
 	}
 
-	public function showPage()
+	public function setPage()
 	{
 		
 		
@@ -709,7 +710,9 @@ class pageClass
 
 			if($vars->cachecontrol) $this->setCache($ret, $this->batch->sc_cpagetitle(), $this->page['page_comment_flag']);
 			
-			return str_replace('[[PAGECOMMENTS]]', $this->batch->cpagecomments(), $ret);
+			//return str_replace('[[PAGECOMMENTS]]', $this->batch->cpagecomments(), $ret);
+            $this->pageOutput = array('text' => str_replace('[[PAGECOMMENTS]]', $this->batch->cpagecomments(), $ret));
+            return;
 		}
 		
 		$extend = new e_vars;
@@ -749,7 +752,8 @@ class pageClass
 			break;
 		}
 		
-		return $this->renderPage($template, $extend);
+		// return $this->renderPage($template, $extend);
+        $this->pageOutput = array('text' => $this->renderPage($template, $extend));
 	}
 	
 	public function renderPage($template, $vars = null)
