@@ -1885,6 +1885,24 @@ class pluginBuilder
 					
 				}
 			}
+
+			$existingXml = e_PLUGIN.$this->pluginName."/plugin.xml";		
+			if(file_exists($existingXml))
+			{
+				$p = e107::getXml()->loadXMLfile($existingXml,true);
+			//	print_a($p);
+				$defaults = array(
+					"main-name"					=> varset($p['@attributes']['name']),
+					"author-name"				=> varset($p['author']['@attributes']['name']),
+					"author-url"				=> varset($p['author']['@attributes']['url']),
+					"description-description"	=> varset($p['description']),
+					"summary-summary"			=> varset($p['summary'], $p['description']),
+					"category-category"			=> varset($p['category']),
+				);
+				
+				unset($p);
+		
+			}
 			
 			$text = "<table class='table adminform'>";
 					
@@ -1927,6 +1945,7 @@ class pluginBuilder
 					$help 		= "The name of your plugin. (Must be written in English)";
 					$required 	= true;
 					$pattern 	= "[A-Za-z0-9 ]*";
+					$xsize		= 'medium';
 				break;
 		
 				case 'main-lang':
@@ -1934,11 +1953,13 @@ class pluginBuilder
 					$required 	= false;
 					$placeholder= " ";
 					$pattern 	= "[A-Z0-9_]*";
+					$xsize		= 'medium';
 				break;
 				
 				case 'main-date':
 					$help 		= "Creation date of your plugin";
 					$required 	= true;
+					$xsize		= 'medium';
 				break;
 				
 				case 'main-version':
@@ -1946,6 +1967,7 @@ class pluginBuilder
 					$required 	= true;
 					$help 		= "The version of your plugin. Format: x.x";
 					$pattern	= "^[\d]{1,2}\.[\d]{1,2}$";
+					$xsize		= 'small';
 				break;
 
 				case 'main-compatibility':
@@ -1953,6 +1975,7 @@ class pluginBuilder
 					$required 	= true;
 					$help 		= "Compatible with this version of e107";
 					$pattern	= "^[\d]{1,2}\.[\d]{1,2}$";
+					$xsize		= 'small';
 				break;
 				
 				case 'author-name':
@@ -1960,12 +1983,14 @@ class pluginBuilder
 					$required 	= true;
 					$help 		= "Author Name";
 					$pattern	= "[A-Za-z \.0-9]*";
+					$xsize		= 'medium';
 				break;
 				
 				case 'author-url':
 					$required 	= true;
 					$help 		= "Author Website Url";
 				//	$pattern	= "https?://.+";
+					$xsize		= 'medium';
 				break;
 				
 				//case 'main-installRequired':
@@ -1978,6 +2003,7 @@ class pluginBuilder
 					$size 		= 100;
 					$placeholder= " ";
 					$pattern	= "[A-Za-z \.0-9]*";
+					$xsize		= 'block-level';
 				break;	
 				
 				case 'keywords-one':
@@ -1987,6 +2013,7 @@ class pluginBuilder
 					$size 		= 20;
 					$placeholder= " ";
 					$pattern 	= '^[a-z]*$';
+					$xsize		= 'medium';
 				break;	
 				
 				case 'description-description':
@@ -1995,6 +2022,7 @@ class pluginBuilder
 					$size 		= 100;
 					$placeholder = " ";
 					$pattern	= "[A-Za-z \.0-9]*";
+					$xsize		= 'block-level';
 				break;
 				
 					
@@ -2012,15 +2040,16 @@ class pluginBuilder
 			$req = ($required == true) ? "&required=1" : "";	
 			$placeholder = (varset($placeholder)) ? $placeholder : $type;
 			$pat = ($pattern) ? "&pattern=".$pattern : "";
+			$sz = ($xsize) ? "&size=".$xsize : "";
 			
 			switch ($type) 
 			{
 				case 'date':
-					$text = $frm->datepicker($name, time(), 'format=yyyy-mm-dd'.$req);		
+					$text = $frm->datepicker($name, time(), 'format=yyyy-mm-dd'.$req . $sz);		
 				break;
 				
 				case 'description':
-					$text = $frm->textarea($name,$default, 3, 100, $req);	// pattern not supported. 	
+					$text = $frm->textarea($name,$default, 3, 100, $req.$sz);	// pattern not supported. 	
 				break;
 								
 						
@@ -2036,12 +2065,12 @@ class pluginBuilder
 					'about'		=> 'about'
 					);
 				
-					$text = $frm->select($name, $options,'','required=1&class=null', true);	
+					$text = $frm->select($name, $options, $default,'required=1&class=null', true);	
 				break;
 				
 				
 				default:
-					$text = $frm->text($name, $default, $size, 'placeholder='.$placeholder . $req. $pat);	
+					$text = $frm->text($name, $default, $size, 'placeholder='.$placeholder . $sz. $req. $pat);	
 				break;
 			}
 	
@@ -2292,7 +2321,7 @@ TEMPLATE;
 				case 'smallint':
 					$array = array(
 					"boolean"	=> "True/False",
-					"number"	=> "Text Box",
+					"number"	=> "Text Box (number)",
 					"dropdown"	=> "DropDown",
 					"userclass"	=> "DropDown (userclasses)",
 					"datestamp"	=> "Date",
@@ -2315,12 +2344,22 @@ TEMPLATE;
 				case 'tinytext':
 				$array = array(
 					'text'		=> "Text Box",
+					"url"		=> "Text Box (url)",
+					"email"		=> "Text Box (email)",
+					"ip"		=> "Text Box (ip)",
+					"number"	=> "Text Box (number)",
+					"password"	=> "Text Box (password)",
+					"tags"		=> "Text Box (keywords)",
+					
 					"dropdown"	=> "DropDown",
 					"userclass"	=> "DropDown (userclasses)",
-					"url"		=> "Text Box (url)",
+					"language"	=> "DropDown (languages)",
+
 					"icon"		=> "Icon",
 					"image"		=> "Image",
+					"file"		=> "File",
 					"method"	=> "Custom Function",
+
 					"hidden"	=> "Hidden"
 					);
 				break;
@@ -2332,8 +2371,10 @@ TEMPLATE;
 					'textarea'	=> "Text Area",
 					'bbarea'	=> "Rich-Text Area",
 					'text'		=> "Text Box",
+					"tags"		=> "Text Box (keywords)",
 					"method"	=> "Custom Function",
-					"image"		=> "Image",
+					"image"		=> "Image (string)",
+					"images"	=> "Images (array)",
 					"hidden"	=> "Hidden"
 					);
 				break;
@@ -2365,7 +2406,7 @@ TEMPLATE;
 			$ret['class'] = 'left';
 			$ret['thclass'] = 'left';
 			
-			//echo "<br />name=".$name; 
+		//	echo "<br />name=".$name; 
 			switch ($name) 
 			{
 				
@@ -2390,6 +2431,20 @@ TEMPLATE;
 					$ret['inline'] = false;
 				break;
 				
+				case 'prename':
+				case 'firstname':
+				case 'lastname':
+				case 'company':
+				case 'city':
+					$ret['title'] = ucfirst($name);
+					$ret['type'] = 'text';
+					$ret['batch'] = false;
+					$ret['filter'] = false;
+					$ret['fieldpref'] = true;
+					$ret['inline'] = true;
+				break;
+
+				
 				case 'name':
 				case 'title':
 				case 'subject':
@@ -2402,6 +2457,28 @@ TEMPLATE;
 					$ret['inline'] = true;
 				break;
 				
+				case 'email':
+				case 'email2':
+					$ret['title'] = 'LAN_EMAIL';
+					$ret['type'] = 'email';
+					$ret['batch'] = false;
+					$ret['filter'] = false;
+					$ret['fieldpref'] = false;
+					$ret['inline'] = true;
+				break;
+
+				
+				case 'ip':
+					$ret['title'] = 'LAN_IP';
+					$ret['type'] = 'ip';
+					$ret['batch'] = false;
+					$ret['filter'] = false;
+					$ret['fieldpref'] = false;
+					$ret['inline'] = false;
+				break;
+				
+				case 'user':	
+				case 'userid':				
 				case 'author':
 					$ret['title'] = 'LAN_AUTHOR';
 					$ret['type'] = 'user';
@@ -2429,14 +2506,25 @@ TEMPLATE;
 					$ret['filter'] = false;
 					$ret['inline'] = false;
 				break;
+				
+				case 'code':
+				case 'zip':
+					$ret['title'] = ucfirst($name);
+					$ret['type'] = 'number';
+					$ret['batch'] = false;
+					$ret['filter'] = false;
+					$ret['inline'] = true;
+				break;
 
+				case 'state':
+				case 'country':
 				case 'category':
-					$ret['title'] = 'LAN_CATEGORY';
+					$ret['title'] = ($name == 'category') ? 'LAN_CATEGORY' : ucfirst($name);
 					$ret['type'] = 'dropdown';
 					$ret['batch'] = true;
 					$ret['filter'] = true;
 					$ret['fieldpref'] = true;
-					$ret['inline'] = false;
+					$ret['inline'] = true;
 				break;
 				
 				case 'type':
@@ -2477,8 +2565,12 @@ TEMPLATE;
 					$ret['inline'] = true;
 				break;
 				
+				case 'notes':
+				case 'comment':
+				case 'comments':
+				case 'address':
 				case 'description':
-					$ret['title'] = 'LAN_DESCRIPTION';
+					$ret['title'] = ($name == 'description') ? 'LAN_DESCRIPTION' : ucfirst($name);
 					 $ret['type'] = ($val['type'] == 'TEXT') ? 'textarea' : 'text';
 					 $ret['width'] = '40%';
 					$ret['inline'] = false;
@@ -2628,7 +2720,7 @@ $text .= "
 		'main/edit'	=> 'main/list'				
 	);	
 	
-	protected \$menuTitle = '".vartrue($vars['pluginName'],'Nav')."';
+	protected \$menuTitle = '".vartrue($vars['pluginName'], $pluginTitle)."';
 }
 
 
@@ -2718,9 +2810,7 @@ class ".$table." extends e_admin_ui
 if($_POST['pluginPrefs'] && ($vars['mode']=='main'))
 {
 	$text .= "		
-		
-	
-		protected \$prefs = array(	\n";
+		protected \$prefs = array(";
 		
 		foreach($_POST['pluginPrefs'] as $k=>$val)
 		{
@@ -2729,7 +2819,7 @@ if($_POST['pluginPrefs'] && ($vars['mode']=='main'))
 				$index = $val['index'];
 				$type = vartrue($val['type'],'text');
 				
-				$text .= "\t\t\t'".$index."'\t\t=> array('title'=> '".ucfirst($index)."', 'type'=>'".$type."', 'data' => 'string','help'=>'Help Text goes here'),\n";	
+				$text .= "\n\t\t\t'".$index."'\t\t=> array('title'=> '".ucfirst($index)."', 'type'=>'".$type."', 'data' => 'string','help'=>'Help Text goes here'),";	
 			}	
 	
 		}
@@ -2740,24 +2830,30 @@ if($_POST['pluginPrefs'] && ($vars['mode']=='main'))
 }
 				
 			
-		
-	
-
-
-
-
-
-
 
 $text .= "	
-	/*	
-		// optional
 		public function init()
 		{
+			// Set drop-down values (if any). 
+";
 			
+		foreach($vars['fields'] as $k=>$v)
+		{
+			if($v['type'] == 'dropdown')
+			{
+				$text .= "\t\t\t\$this->fields['".$k."']['writeParms'] = array('".$k."_0','".$k."_1', '".$k."_2'); // Example Drop-down array. \n";
+			}
+		}
+					
+				
+				
+			
+			
+$text .= "	
 		}
 	
-		
+	/*	
+		// optional - override edit page. 
 		public function customPage()
 		{
 			\$ns = e107::getRender();
