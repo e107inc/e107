@@ -648,7 +648,9 @@ class pageClass
 			$this->cacheData['COMMENT_FLAG'] = $comment_flag;
 			$this->cacheData['META_KEYS'] = $meta_keys;
 			$this->cacheData['META_DSCR'] = $meta_dscr;
+            return true;
 		}
+        return false;
 	}
 	
 	public function setCache($data, $title, $comment_flag)
