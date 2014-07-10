@@ -751,6 +751,7 @@ class e_form
 		$size 		= vartrue($options['size']) ? intval($options['size']) : 40;
 		$required 	= vartrue($options['required']) ? "required" : "";
 		$firstDay	= vartrue($options['firstDay']) ? $options['firstDay'] : 0;
+		$xsize		= (vartrue($options['size']) && !is_numeric($options['size'])) ? $options['size'] : 'xlarge';
 		
 		if(vartrue($options['inline']))
 		{
@@ -760,7 +761,7 @@ class e_form
 		}
 		else
 		{			
-			$text .= "<input class='{$class} input-xlarge' type='text' size='{$size}' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-date-ampm='{$ampm}'  data-date-language='".e_LAN."' data-date-firstday='{$firstDay}' {$required} />";		
+			$text .= "<input class='{$class} input-".$xsize."' type='text' size='{$size}' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-date-ampm='{$ampm}'  data-date-language='".e_LAN."' data-date-firstday='{$firstDay}' {$required} />";		
 		}
 
 	//	$text .= "ValueFormat: ".$dateFormat."  Value: ".$value;
@@ -3238,7 +3239,7 @@ class e_form
 					$value = "";
 				}
 
-				$text .= $this->textarea($key, $value, vartrue($parms['rows'], 5), vartrue($parms['cols'], 40), vartrue($parms['__options']), varset($parms['counter'], false));
+				$text .= $this->textarea($key, $value, vartrue($parms['rows'], 5), vartrue($parms['cols'], 40), vartrue($parms['__options'],$parms), varset($parms['counter'], false));
 				$ret =  $text;
 			break;
 
