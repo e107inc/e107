@@ -19,24 +19,19 @@ class core_page_sef_chapters_url extends eUrlConfig
 				'format'		=> 'path', 	// get|path - notify core for the current URL format, if set to 'get' rules will be ignored
 				'defaultRoute'	=> 'view/index',// [optional] default empty; route (no leading module) used when module is found with no additional controller/action information e.g. /news/
 				'urlSuffix' 	=> '',		// [optional] default empty; string to append to the URL (e.g. .html)
-			
-				'mapVars' 		=> array(  
-					'page_id' => 'id', 
-					'page_sef' => 'name', 
-				),
-				
+
 				'allowVars' 		=> array(  
 					'page',
 				),
 			),
 
-			### using only title for pages is risky enough (empty sef for old DB's)
-			'rules' => array( 
-				'<book:{sefsecure}>/<chapter:{sefsecure}>/<name:{secure}>' 	=> array('view/index',  	'allowVars' => false, 'mapVars' => array('page_id'=>'id', 'page_sef'=>'name', 'chapter_sef'=>'chapter', 'book_sef'=>'book'), 'legacyQuery' => '{name}.{page}', 'parseCallback' => 'itemIdByTitle'),
-				'<book:{sefsecure}>/<name:{sefsecure}>' 					=> array('chapter/index',  	'allowVars' => false, 'mapVars' => array('chapter_id'=>'id', 'chapter_sef'=>'name', 'book_sef'=>'book'), 'legacyQuery' => 'ch={id}', 'parseCallback' => 'chapterIdByTitle'),
-				'<name:{sefsecure}>' 										=> array('book/index',  	'allowVars' => false, 'mapVars' => array('chapter_id'=>'id', 'chapter_sef'=>'name'), 'legacyQuery' => '{type}={id}', 'parseCallback' => 'chapterIdByTitle'),	
-				'<name:{secure}>' 											=> array('view/other', 		'allowVars' => false, 'legacyQuery' => '{type}={id}', 'parseCallback' => 'chapterIdByTitle'),
-				'/'															=> array('list/index', 		'legacyQuery' => '', ), // page list
+			'rules' => array(
+                ### match page view with no assigned chapter first to avoid namespace collisions
+                'item/<name:{secure}>' 								    => array('view/other', 		'mapVars' => array('page_id'=>'id', 'page_sef'=>'name'),'legacyQuery' => '{id}.{page}', 'parseCallback' => 'itemIdByTitle'),
+                '<book:{sefsecure}>/<chapter:{sefsecure}>/<name:{secure}>' 	=> array('view/index',  	'mapVars' => array('page_id'=>'id', 'page_sef'=>'name', 'chapter_sef'=>'chapter', 'book_sef'=>'book'), 'legacyQuery' => '{id}.{page}', 'parseCallback' => 'itemIdByTitle'),
+                '<book:{sefsecure}>/<name:{sefsecure}>' 					=> array('chapter/index',  	'allowVars' => false, 'mapVars' => array('chapter_id'=>'id', 'chapter_sef'=>'name', 'book_sef'=>'book'), 'legacyQuery' => 'ch={id}', 'parseCallback' => 'chapterIdByTitle'),
+                '<book:{sefsecure}>' 										=> array('book/index',  	'allowVars' => false, 'mapVars' => array('chapter_id'=>'id', 'chapter_sef'=>'book'), 'legacyQuery' => 'bk={id}', 'parseCallback' => 'chapterIdByTitle'),
+				'/'															=> array('list/index', 		'allowVars' => false, 'legacyQuery' => '', ), // page list
 			) 
 		);
 	}
@@ -98,7 +93,8 @@ class core_page_sef_chapters_url extends eUrlConfig
 		{
 			$name = $sql->fetch();
 			//$request->setRequestParam('legacyQuery','{name}.{page}');
-			$request->setRequestParam('name', $name['page_id']);
+			$request->setRequestParam('name', $name['page_id'])
+                ->setRequestParam('id', $name['page_id']);
 			e107::getMessage()->addDebug("Set PAGE ID =  '".$name['page_id']."'");
 		}
 	
@@ -132,7 +128,12 @@ class core_page_sef_chapters_url extends eUrlConfig
 	public function chapterIdByTitle(eRequest $request)
 	{	
 		$name = $request->getRequestParam('name');
-		
+        if(null == $name)
+        {
+            // Book view
+            $name = $request->getRequestParam('book');
+        }
+
 		if(($id = $request->getRequestParam('id'))) 
 		{
 			$request->setRequestParam('name', $id);
@@ -153,17 +154,19 @@ class core_page_sef_chapters_url extends eUrlConfig
 		if($sql->select('page_chapters', 'chapter_id', "chapter_sef='{$name}'")) // First check books and chapters. 
 		{
 			$name = $sql->fetch();
-			$request->setRequestParam('id', $name['chapter_id']);
-			$request->setRequestParam('type', 'bk');
+			$request->setRequestParam('id', $name['chapter_id'])
+                ->setRequestParam('name', $name['chapter_id']);
+
+			//$request->setRequestParam('type', 'bk');
 			e107::getMessage()->addDebug("Set CHAPTER ID =  '".$name['chapter_id']."'");
 		}
-		elseif($sql->select('page', 'page_id', "page_sef='{$name}'")) // fall back to pages. 
+		/*elseif($sql->select('page', 'page_id', "page_sef='{$name}'")) // fall back to pages.
 		{
 			$name = $sql->fetch();
 			$request->setRequestParam('id', $name['page_id']);
 			$request->setRequestParam('type', 'id');
 			e107::getMessage()->addDebug("Set PAGE ID =  '".$name['page_id']."'");
-		}
+		}*/
 		else 
 		{
 			if(ADMIN)

@@ -435,7 +435,7 @@ class page_admin_ui extends e_admin_ui
 		protected $sortField		= 'page_order';
 		protected $orderStep 		= 10;
 		//protected $url         	= array('profile'=>'page/view', 'name' => 'page_title', 'description' => '', 'link'=>'{e_BASE}page.php?id=[id]'); // 'link' only needed if profile not provided. 
-		protected $url         		= array('route'=>'page/view/index', 'vars' => array('id' => 'page_id', 'name' => 'page_sef', 'chapter' => 'chapter_sef', 'book' => 'book_sef'), 'name' => 'page_title', 'description' => ''); // 'link' only needed if profile not provided.
+		protected $url         		= array('route'=>'page/view/index', 'vars' => array('id' => 'page_id', 'name' => 'page_sef', 'other' => 'page_sef', 'chapter' => 'chapter_sef', 'book' => 'book_sef'), 'name' => 'page_title', 'description' => ''); // 'link' only needed if profile not provided.
 		protected $tabs		 		= array("Page","Page Options","Menu", "Menu Options");
 		protected $featurebox		= array('name'=>'page_title', 'description'=>'page_text', 'image' => 'menu_image', 'visibility' => 'page_class', 'url' => true);
 		

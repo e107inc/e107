@@ -326,7 +326,8 @@ class cpage_shortcodes extends e_shortcode
 			$urldata = array_merge($this->var, $chapter);
 			$urldata['book_sef'] = $this->chapterData[$chapter['chapter_parent']]['chapter_sef'];
 		}
-		return e107::getUrl()->create($route, $urldata, array('allow' => 'page_sef,page_title,page_id,chapter_sef,book_sef'));
+
+		return e107::getUrl()->create($route, $urldata, array('allow' => 'page_sef,page_id,chapter_sef,book_sef'));
 	}
 	
 	function sc_cpagemetadiz()
