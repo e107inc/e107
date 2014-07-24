@@ -325,7 +325,7 @@ if (isset($_POST['updatesettings']))
 				elseif ($upload['name'] && ($upload['index'] == 'photo') && $pref['photo_upload'])
 				{
 					// photograph uploaded
-					$_POST['user_sess'] = $upload['name'];
+					$_POST['user_sess'] = '-upload-'.$upload['name'];
 				}
 				elseif (isset($upload['error']) && isset($upload['message']))
 				{
