@@ -17,21 +17,23 @@ e107::coreLan('page');
 
 $e107CorePage = new pageClass(false);
 
-
 // Important - save request BEFORE any output (header footer) - used in navigation menu
 if(!e_QUERY)
 {
 	$e107CorePage->setRequest('listBooks');
-	
+    $e107CorePage->listBooks();
+
 	require_once(HEADERF);
+
+    e107::getRender()->tablerender($e107CorePage->pageOutput['caption'], $e107CorePage->pageOutput['text'], "cpage-full-list");
 //	$tmp = $e107CorePage->listPages();
-	$tmp = $e107CorePage->listBooks();
+	//$tmp = $e107CorePage->listBooks();
 	
 //	$text = $tp->parseTemplate("{PAGE_NAVIGATION=book=2}",true);
-	if(is_array($tmp))
+	/*if(is_array($tmp))
 	{
 		$ns->tablerender($tmp['title'], $text, 'cpage-full-list');
-	}
+	}*/
 	require_once(FOOTERF);
 	exit;
 }
@@ -41,7 +43,7 @@ elseif(vartrue($_GET['bk'])) //  List Chapters within a specific Book
     $e107CorePage->listChapters($_GET['bk']);
 	
 	require_once(HEADERF);
-	$ns->tablerender($e107CorePage->pageOutput['caption'], $e107CorePage->pageOutput['text'], 'cpage-chapter-list');
+    e107::getRender()->tablerender($e107CorePage->pageOutput['caption'], $e107CorePage->pageOutput['text'], 'cpage-chapter-list');
 	require_once(FOOTERF);
 	exit;	
 }
@@ -50,8 +52,8 @@ elseif(vartrue($_GET['ch'])) // List Pages within a specific Chapter
 	$e107CorePage->setRequest('listPages');
     $e107CorePage->listPages($_GET['ch']);
 
-	require_once(HEADERF);	
-	$ns->tablerender($e107CorePage->pageOutput['caption'], $e107CorePage->pageOutput['text'], 'cpage-page-list');
+	require_once(HEADERF);
+    e107::getRender()->tablerender($e107CorePage->pageOutput['caption'], $e107CorePage->pageOutput['text'], 'cpage-page-list');
 	require_once(FOOTERF);
 	exit;		
 }
@@ -84,7 +86,10 @@ class pageClass
 	public $debug;						/* temp debug flag */
 	public $title;						/* title of page, it if has one (as defined in [newpage=title] tag */
 	public $page;						/* page DB data */
-	public $batch;						/* shortcode batch object */
+    /**
+     * @var cpage_shortcodes
+     */
+    public $batch;						/* shortcode batch object */
 	public $template;					/* current template array */
 	protected $authorized;				/* authorized status */
 	public $cacheString;				/* current page cache string */
@@ -97,7 +102,8 @@ class pageClass
 	
 	protected $displayAllMode = false;	// set to True when no book/chapter/page has been defined by the url/query.
 
-    public $pageOutput = '';
+    public $pageOutput = array();   // Output storage - text and caption
+    protected $renderMode;          // Page render mode to be used on view page
 	
 	function __construct($debug=FALSE)
 	{
@@ -263,14 +269,16 @@ class pageClass
 		
 		if($text)
 		{
-			$caption = varset($template['caption'],"Articles"); 
-			e107::getRender()->tablerender($caption, $text, "cpage_list");
+			$caption = varset($template['caption'], "Articles");
+            $this->pageOutput = array('caption'=>$caption, 'text'=>$text);
+			//e107::getRender()->tablerender($caption, $text, "cpage_list");
 		}
 		else
 		{
-			message_handler("MESSAGE", LAN_PAGE_1);
-			require_once(FOOTERF); // prevent message from showing twice and still listing chapters
-			exit;
+            $this->pageOutput = array('caption'=>LAN_ERROR, 'text'=>LAN_PAGE_1);
+			//message_handler("MESSAGE", LAN_PAGE_1);
+			//require_once(FOOTERF); // prevent message from showing twice and still listing chapters
+			//exit;
 		}
 		
 		
@@ -372,6 +380,7 @@ class pageClass
 			
 		#return array('caption'=>$caption, 'text'=>$text);
 		$this->pageOutput = array('caption'=>$caption, 'text'=>$text);
+        return $this->pageOutput;
 	}
 
 
@@ -506,6 +515,7 @@ class pageClass
 			$caption = $tp->simpleParse($template['caption'], $var);
 		#return array('caption'=>$caption, 'text'=> $text);
 		$this->pageOutput = array('caption'=>$caption, 'text'=> $text);
+        return $this->pageOutput;
 	}
 
 	
@@ -682,13 +692,6 @@ class pageClass
 
 	public function setPage()
 	{
-		
-		
-		
-
-
-		
-		
 		if(null !== $this->cacheData)
 		{
 			
@@ -716,20 +719,22 @@ class pageClass
 		}
 		
 		$extend = new e_vars;
-		$vars = $this->batch->getParserVars();
+		$vars = new e_vars($this->batch->getParserVars());
 		
 		// reset batch data
 //		$this->batch->setVars(null)->setScVar('page', array());
 		
 		// copy some data
-		$extend->title = $vars->title;
+		$extend->title = $vars->page_title;
 		$extend->message = e107::getMessage()->render();
-		
+        $tp = e107::getParser();
+
 		switch ($this->authorized) 
 		{
 			case 'class':
 				$extend->text = LAN_PAGE_6;
-				$template = $this->template['start'].$this->template['restricted'].$this->template['end'];
+				$template = $tp->parseTemplate($this->template['start'], true).$this->template['restricted'].$tp->parseTemplate($this->template['end'] ,true);
+                $this->renderMode = 'cpage-restricted';
 			break;
 			
 			case 'pw':
@@ -742,16 +747,18 @@ class pageClass
 				// FIXME - add form open/close e_form methods
 				$extend->form_open = '<form method="post" action="'.e_REQUEST_URI.'" id="pwform">';
 				$extend->form_close = '</form>';
-				$template = $this->template['start'].$this->template['authorize'].$this->template['end'];
+				$template = $tp->parseTemplate($this->template['start'], true).$this->template['authorize'].$tp->parseTemplate($this->template['end'] ,true);
+                $this->renderMode = 'cpage-authorize';
 			break;
 				
 			case 'nf':
 			default:
-				$extend->text = $vars->text;
-				$template = $this->template['start'].$this->template['notfound'].$this->template['end'];
+				$extend->text = $vars->page_text;
+                $template = $tp->parseTemplate($this->template['start'], true).$this->template['notfound'].$tp->parseTemplate($this->template['end'] ,true);
+                $this->renderMode = 'cpage-notfound';
 			break;
 		}
-		
+
 		// return $this->renderPage($template, $extend);
         $this->pageOutput = array('text' => $this->renderPage($template, $extend));
 	}
@@ -767,9 +774,16 @@ class pageClass
 		{
 			$ret = e107::getParser()->simpleParse($template, $vars);
 		}
-		
-		$mode = vartrue($this->template['tableRender'], 'cpage-'.$template);
-		
+
+        if($this->renderMode)
+        {
+            $mode = $this->renderMode;
+        }
+		else
+        {
+            $mode = vartrue($this->template['tableRender'], 'cpage-page-view');
+        }
+
 		return e107::getRender()->tablerender($this->page['page_title'], $ret, $mode, true);
 		
 	}
@@ -783,7 +797,7 @@ class pageClass
 		
 		$this->pageTitles = array();		// Notice removal
 
-		if(preg_match_all("/\[newpage.*?\]/si", $this->pageText, $pt))
+		if(preg_match_all('/\[newpage.*?\]/si', $this->pageText, $pt))
 		{
 			if (substr($this->pageText, 0, 6) == '[html]')
 			{	// Need to strip html bbcode from wysiwyg on multi-page docs (handled automatically on single pages)
