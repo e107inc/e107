@@ -3169,7 +3169,7 @@ class e107
 			// go back to e_SELF
 			$requestUri = $eSelf;
 			$requestUrl = $_self;
-			if (e_QUERY)
+            if(defset('e_QUERY'))
 			{
 				$requestUri .= '?'.e_QUERY; // TODO e_SINGLE_ENTRY check, separate static method for cleaning QUERY_STRING
 				$requestUrl .= '?'.e_QUERY;
@@ -3190,7 +3190,7 @@ class e107
 		{
 			$requestUri = str_replace('['.e_MENU.']', '', $requestUri);
 			$requestUrl = str_replace('['.e_MENU.']', '', $requestUrl);
-			parse_str(e_QUERY,$_GET);
+			if(defset('e_QUERY')) parse_str(e_QUERY,$_GET);
 		}
 
 		// the last anti-XSS measure, XHTML compliant URL to be used in forms instead e_SELF
