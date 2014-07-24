@@ -21,7 +21,7 @@ Admin log events:
 USET_01 - admin changed user data
 */
 
-if(preg_match('/^\/(.*?)\/(usersettings\.php|user\/edit)(\?|\/)(\d+)$/i', $_SERVER['REQUEST_URI'], $_usersettings_matches))
+if(preg_match('/^\/(.*?)\/(usersettings\.php|\/edit)(\?|\/)(\d+)$/i', $_SERVER['REQUEST_URI'], $_usersettings_matches))
 {
 	$eplug_admin = TRUE;
 }
