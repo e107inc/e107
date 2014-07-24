@@ -152,22 +152,50 @@
   graphMax : "DEFAULT"
  */ 
 
+ 
+ 
+/**
+ * Using with Google Charts: 
+ * $cht = e107::getChart();
+	$cht->setProvider('google');
+	$cht->setType('line');
+	$cht->setOptions('demo');
+	$cht->setData('demo','canvas');
+	$text = $cht->render('canvas');
+ */
 class e_chart
 {
 	protected $id;
 	protected $data = null;
 	protected $type = 'line';
 	protected $options = array('scaleFontSize' => 14, 'annotateDisplay' => true, 'bezierCurve' => true, 'inGraphDataShow'=>false);
+	protected $provider = null;
 	
 	
 	function __construct()
 	{
 	//	e107::js('core','chart/Chart.min.js','jquery');	
-		e107::js('core','chart/ChartNew.js','jquery');	
+	
+	
+	
+		
 		
 	
 		// e107::css('inline','canvas.e-graph {  width: 100% !important;  max-width: 800px;  height: auto !important; 	}');	
 	}		
+	
+	public function setProvider($type = null)
+	{
+		if(!empty($type))
+		{
+			$this->provider = $type;	
+		}	
+	}
+	
+	public function getProvider()
+	{
+		return $this->provider;	
+	}
 	
 	
 	private function getData()
@@ -199,14 +227,83 @@ class e_chart
 	public function setData($data,$id)
 	{
 		$this->id = $id;
-		$this->data = $data;
+		if($data == 'demo')
+		{
+			$this->data = $this->getDemoData();	
+		}
+		else
+		{
+			$this->data = $data;	
+		}
+		
 		return $this;		
+	}
+	
+	private function getDemoData()
+	{
+			$data = array();
+
+			if($this->provider == 'google')
+			{
+				
+				$data = array(
+					array('Year', 'Sales', 'Expenses'),
+					array('2013',  1000,      400),
+					array('2014',  1170,      460),
+					array('2015',  660,       1120),
+					array('2016',  1030,      540)
+				);
+					
+				return $data;
+			}
+			
+			
+		
+			$data['labels'] 	= array("January","February","March","April","May","June","July");
+
+			$data['datasets'][]	= array(
+								'fillColor' 		=> "rgba(220,220,220,0.5)",
+								'strokeColor'  		=>  "rgba(220,220,220,1)",
+								'pointColor '  		=>  "rgba(220,220,220,1)",
+								'pointStrokeColor'  =>  "#fff",
+								'data'				=> array(65,59,90,81,56,55,40),
+								'title'				=> "Visits"
+				
+			);
+			
+			$data['datasets'][]	= array(
+								'fillColor' 		=> "rgba(151,187,205,0.5)",
+								'strokeColor'  		=>  "rgba(151,187,205,1)",
+								'pointColor '  		=>  "rgba(151,187,205,1)",
+								'pointStrokeColor'  =>  "#fff",
+								'data'				=> array(28,48,40,19,96,27,100),
+								'title'				=> "Unique Visits"		
+			);	
+			
+			return $data;	
+		
+		
 	}
 
 
 	public function setOptions($data,$id)
 	{
-		$this->options = $data;
+		
+		if($this->provider == 'google' && $data == 'demo')
+		{
+			$this->options =	array(
+				'title' => 'Company Performance',
+				'hAxis' => array('title'=>'Year', 'titleTextStyle'=>array('color'=>'#333')),
+				'vAxis'	=> array('minValue'=>0)
+			);
+			
+		}
+		else 
+		{
+			$this->options = $data;	
+		}
+		
+		
 		return $this;		
 	}
 	
@@ -220,11 +317,48 @@ class e_chart
 	public function render($id, $width='100%',$height=300)
 	{
 		
+		
 		if($this->data == null)
 		{
 			return "<div class='alert alert-info alert-block'>No chart data provided</div>";	
 		}
 		
+		
+		if($this->provider == 'google')
+		{
+			$this->options['width'] = $width;
+			$this->options['height']= $height;
+
+			$fName = 'draw'.ucfirst($id);	
+				
+		      $js = " google.load('visualization', '1', {packages:['corechart']});
+			      google.setOnLoadCallback(".$fName.");
+			      function ".$fName."() {
+			        var data = google.visualization.arrayToDataTable(".$this->getData().");
+			
+			        var options = ".$this->getOptions()." ;
+			
+			        var chart = new google.visualization.AreaChart(document.getElementById('".$id."'));
+			        chart.draw(data, options);
+			      }
+
+				$(window).resize(function(){
+					  ".$fName."();
+					
+					});
+
+		      ";
+
+			e107::js('footer','https://www.google.com/jsapi');
+			e107::js('footer-inline', $js);
+
+			return "<div class='e-graph e-chart' id='".$id."' style='width: ".$width."; height: ".$height."px;'></div>";
+
+
+		}
+		
+		
+		e107::js('core','chart/ChartNew.js','jquery');		
 		
 		$js = "var ChartData = ".$this->getData()."\n";
 		$js .=  'var ChartOptions = '.$this->getOptions(); 
@@ -292,7 +426,7 @@ class e_chart
 
 		e107::js('footer-inline',$js);
 
-		return '<canvas class="e-graph" id="'.$id.'" height="'.$height.'" width="'.$width.'" >HTML5 Canvas not supported.</canvas>';
+		return '<canvas class="e-graph e-chart" id="'.$id.'" height="'.$height.'" width="'.$width.'" >HTML5 Canvas not supported.</canvas>';
 		
 	}
 	
