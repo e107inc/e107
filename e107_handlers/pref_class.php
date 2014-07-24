@@ -150,6 +150,18 @@ class e_pref extends e_front_model
 		return $this;
 	}
 
+    /**
+     * Reset preference object to given/empty state
+     * @param array $prefs
+     * @return $this
+     */
+    public function reset($prefs = array())
+    {
+        parent::setData(array());
+
+        return $this;
+    }
+
 	/**
 	 * Advanced setter - $pref_name could be path in format 'pref1/pref2/pref3' (multidimensional arrays support)
 	 * Object data reseting is not allowed, adding new preferences is controlled by $strict parameter

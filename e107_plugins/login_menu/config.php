@@ -91,6 +91,8 @@ if (isset($_POST['update_menu']))
 	if (!isset($loginPrefs['new_news']))	{ $loginPrefs['new_news'] = '0';   }
 	if (!isset($loginPrefs['new_comments']))	{ $loginPrefs['new_comments'] = '0';  }
 	if (!isset($loginPrefs['new_members']))	{ $loginPrefs['new_members'] = '0'; }
+
+    $menuPref->reset();
 	foreach($loginPrefs as $k => $v)
 	{
 		$menuPref->setPref('login_menu/'.$k, $v);
@@ -99,7 +101,7 @@ if (isset($_POST['update_menu']))
 	$menuPref->save(false, true, false);
 	$admin_log->log_event('MISC_03','', E_LOG_INFORMATIVE,'');
 	//$ns->tablerender("", '<div style=\'text-align:center\'><b>'.LAN_SETSAVED.'</b></div>');
-	$mes->addSuccess();
+	$mes->addSuccess(LAN_SAVED);
 	$ns->tablerender("", $mes->render() . $text); 
 }
 
