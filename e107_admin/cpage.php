@@ -416,7 +416,7 @@ class page_admin_ui extends e_admin_ui
 		protected $pluginName   	= 'core';
 		protected $table        	= "page";
 		
-		protected $listQry      	= "SELECT
+		protected $listQry      	= "SELECT SQL_CALC_FOUND_ROWS
 		                                    p.*,u.user_id,u.user_name,pch.chapter_sef,pbk.chapter_sef AS book_sef
 		                               FROM #page AS p
 		                               LEFT JOIN #user AS u ON p.page_author = u.user_id
@@ -529,7 +529,7 @@ class page_admin_ui extends e_admin_ui
 			if($this->getMode() == 'menu' && ($this->getACtion() == 'list' || $this->getACtion() == 'inline'))
 			{
 			
-				$this->listQry = "SELECT p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE p.menu_name != '' "; // without any Order or Limit.
+				$this->listQry = "SELECT SQL_CALC_FOUND_ROWS p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE p.menu_name != '' "; // without any Order or Limit.
 			
 				$this->listOrder 		= 'p.page_id desc';
 			
@@ -558,7 +558,11 @@ class page_admin_ui extends e_admin_ui
 					'options' 	=> array('title'=> LAN_OPTIONS, 'type' => 'method',	'noselector' => true, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center','readParms'=>'delete=0&deleteClass='.e_UC_NOBODY)
 				);
 	
-				$this->fieldpref = array("page_id","menu_name", "menu_title", 'menu_image', 'menu_template', 'menu_icon', 'page_chapter', 'menu_class');	
+				$this->fieldpref = array("page_id","menu_name", "menu_title", 'menu_image', 'menu_template', 'menu_icon', 'page_chapter', 'menu_class');
+
+                ### Parse aliases again or all filters shall fail due to the menu hack!
+                $this->_alias_parsed = false;
+                $this->parseAliases();
 			}
 				
 							
