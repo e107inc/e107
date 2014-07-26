@@ -403,14 +403,8 @@ class search extends e_shortcode
 					} 
 					else if ($adv_value['type'] == 'author') 
 					{
-					//	require_once(e_HANDLER.'user_select_class.php');
-						
-					//	$us = new user_select;
 						$vars['SEARCH_ADV_A'] = $adv_value['text'];
-						$vars['SEARCH_ADV_B'] = e107::getForm()->userpicker($adv_key."_name",$adv_key,$_GET[$adv_key]); // $us -> select_form('popup', $adv_key, $_GET[$adv_key]);
-						
-						
-						
+						$vars['SEARCH_ADV_B'] = e107::getForm()->userpicker($adv_key."_name",$adv_key,$_GET[$adv_key]);
 					} 
 					else if ($adv_value['type'] == 'dual') 
 					{
