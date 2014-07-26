@@ -12,6 +12,9 @@
  * $Id$
  */
 
+// DEPRECATED - SUBJECT TO REMOVAL
+// Possible replacements: $frm->userpicker();
+
 if (!defined("e_THEME")) {
 	require_once('../class2.php');
 	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_select.php");

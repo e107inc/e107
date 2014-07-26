@@ -97,7 +97,7 @@ class pm_shortcodes extends e_shortcode
 		// print_a($pm_prefs);
 	}
 
-
+	// TODO rewrite $frm->userpicker(), etc. Get rid of e107_handlers/user_select_class.php
 	public function sc_pm_form_touser()
 	{
 		if(vartrue($this->var['from_name']))
