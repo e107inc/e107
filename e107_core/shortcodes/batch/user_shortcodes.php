@@ -68,7 +68,8 @@ class user_shortcodes extends e_shortcode
 	function sc_user_forumposts($parm) 
 	{
 		//return $this->var['user_forums']; //FIXME column not present in v2. Possible fix on next line.
-		return e107::getDb()->count("forum_thread","(*)","where thread_user=".$this->var['user_id']);
+		//return e107::getDb()->count("forum_thread","(*)","where thread_user=".$this->var['user_id']); // Does not account for pruned posts? #716. Possible fix on next line.
+		return e107::getDb()->retrieve('user_extended', 'user_plugin_forum_posts', 'user_extended_id = '.$this->var['user_id']);
 	}
 	
 	
@@ -117,13 +118,15 @@ class user_shortcodes extends e_shortcode
 	function sc_user_forumper($parm) 
 	{
 		$sql = e107::getDb();
-		if(!$forumposts = e107::getRegistry('total_forumposts'))
+		if(!$total_forumposts = e107::getRegistry('total_forumposts'))
 		{
-			$forumposts = (e107::isInstalled("forum")) ? intval($sql->count("forum_thread")) : 0;
-			e107::setRegistry('total_forumposts', $forumposts);
-			$user_forumposts = $sql->count("forum_thread","(*)","where thread_user=".$this->var['user_id']);
+			$total_forumposts = (e107::isInstalled("forum")) ? intval($sql->count("forum_post")) : 0;
+			e107::setRegistry('total_forumposts', $total_forumposts);
+			//$user_forumposts = $sql->count("forum_thread","(*)","where thread_user=".$this->var['user_id']);
+			$user_forumposts = e107::getDb()->retrieve('user_extended', 'user_plugin_forum_posts', 'user_extended_id = '.$this->var['user_id']);
+
 		}
-		return ($forumposts > 0) ? round(($user_forumposts/$forumposts) * 100, 2) : 0;
+		return ($total_forumposts > 0) ? round(($user_forumposts/$total_forumposts) * 100, 2) : 0;
 	}
 	
 
