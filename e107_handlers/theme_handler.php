@@ -1247,7 +1247,7 @@ class themeHandler
 							
 							$itext .= "<td style='vertical-align:top'><label for='".$frm->name2id($key)."'>";
 						//	$itext .= ($val['@attributes']['previewFull']) ? "<a href='".e_THEME_ABS.$theme['path']."/".$val['@attributes']['previewFull']."' >" : "";
-							$itext .= $val['@attributes']['title'];
+							$itext .= $val['@attributes']['title']."</label><div class='field-help'>".$key."</div>"; 
 						//	$itext .= ($val['@attributes']['previewFull']) ? "</a>" : "";
 							
 							$custompage_count = (isset($pref['sitetheme_custompages'][$key])) ? " [".count($pref['sitetheme_custompages'][$key])."]" : "";
@@ -1272,7 +1272,7 @@ class themeHandler
 							}
 			
 							
-							$itext .= "</label></td>
+							$itext .= "</td>
 											<td style='vertical-align:top'>";
 							// Default
 							$itext .= ($pref['sitetheme_deflayout'] != $key) ? $custompage_diz."<div class='e-hideme' id='element-to-be-shown-{$key}'><textarea style='width:97%' rows='6' placeholder='usersettings.php' cols='20' name='custompages[".$key."]' >".(isset($pref['sitetheme_custompages'][$key]) ? implode("\n", $pref['sitetheme_custompages'][$key]) : "")."</textarea></div>\n" : TPVLAN_55;
