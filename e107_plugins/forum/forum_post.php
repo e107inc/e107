@@ -569,17 +569,11 @@ function process_upload()
 	{
 		require_once(e_HANDLER.'upload_handler.php');
 		
-		$attachmentDir = $forum->getAttachmentPath(USERID);
+		// retrieve and create attachment directory if needed
+		$attachmentDir = $forum->getAttachmentPath(USERID, TRUE);
 
-		if(!is_dir($attachmentDir))
-		{
-			mkdir($attachmentDir, 0755);	
-		}
-	//	$thumbDir = e_PLUGIN.'forum/attachments/thumb/';
-
-		if ($uploaded = process_uploaded_files($attachmentDir, 'attachment', ''))
-		{
-			
+		if($uploaded = process_uploaded_files($attachmentDir, 'attachment', ''))
+		{			
 			foreach($uploaded as $upload)
 			{
 			  if ($upload['error'] == 0)
@@ -664,9 +658,10 @@ function process_upload()
 			return $ret;
 		}
 	}
-
-//exit;
-
+	else
+	{
+		// error message?
+	}
 }
 
 function image_getsize($fname)
