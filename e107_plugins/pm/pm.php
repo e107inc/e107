@@ -394,7 +394,7 @@ class pm_extended extends private_message
 					{
 						if($to_info = $this->pm_getuid($to))
 						{	// Check whether sender is blocked - if so, add one to count
-							if(!e107::getDb()->update('private_msg_block',"pm_block_count=pm_block_count+1 WHERE pm_block_from = '".USERID."' AND pm_block_to = '".$tp->toDB($to)."'"))
+							if(!e107::getDb()->update('private_msg_block',"pm_block_count=pm_block_count+1 WHERE pm_block_from = '".USERID."' AND pm_block_to = '".e107::getParser()->toDB($to)."'"))
 							{
 								$_POST['to_array'][] = $to_info;
 							}
