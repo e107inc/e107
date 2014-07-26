@@ -187,25 +187,27 @@ class e107forum
 */
 	}
 
-	
-	function getAttachmentPath($user,$create=false)
+	/**
+	 * @param $user integer userid (if empty "anon" will be used)
+	 * @param $create boolean creates the attachment folder if set to true
+	 * @return forum attachment path for specific user
+	 */
+	function getAttachmentPath($user, $create = FALSE)
 	{
 		$user = intval($user);
 		$tp = e107::getParser();
 		$baseDir = e_MEDIA.'plugins/forum/attachments/';
 		$baseDir .= ($user) ? "user_". $tp->leadingZeros($user, 6) : "anon";
 		
-		if($create == true && !is_dir($baseDir))
+		if($create == TRUE && !is_dir($baseDir))
 		{
-			mkdir($baseDir,0755);	
+			mkdir($baseDir, 0755, TRUE); // recursively	
 		}
 		
 		$baseDir .= "/";
 
 		return $baseDir;
 	}
-
-
 
 
 	function sendFile($data)
