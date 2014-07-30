@@ -240,7 +240,7 @@ class news {
 			$excerpt = e107::getParser()->text_truncate(strip_tags(e107::getParser()->post_toHTML($news['news_body'])), 100, '...');
 
 //			$id=mysql_insert_id();
-			$permLink = $e107->base_path."comment.php?comment.news.".intval($news['news_id']);
+			$permLink = e107::getInstance()->base_path."comment.php?comment.news.".intval($news['news_id']);
 
 			require_once(e_PLUGIN."trackback/trackbackClass.php");
 			$trackback = new trackbackClass();
@@ -569,14 +569,14 @@ class e_news_tree extends e_front_tree_model
 	/**
 	 * Current tree news category id
 	 *
-	 * @var integer
+	 * @var integer|array
 	 */
 	protected $_current_category_id;
 
 	/**
 	 * Set current category Id
 	 *
-	 * @param integer $category_id
+	 * @param mixed $category_id
 	 * @return e_news_tree
 	 */
 	function setCurrentCategoryId($category_id)
@@ -620,20 +620,33 @@ class e_news_tree extends e_front_tree_model
 	/**
 	 * Load joined tree by category id
 	 *
-	 * @param integer $category_id
+	 * @param mixed $category_id
 	 * @param boolean $force
 	 * @param array $params DB query parameters
 	 * @return e_news_tree
 	 */
 	public function loadJoin($category_id = 0, $force = false, $params = array())
 	{
-		$category_id = intval($category_id);
+        if(is_string($category_id) && strpos($category_id, ','))
+        {
+            $category_id = array_map('trim', explode(',', $category_id));
+        }
+        if(is_array($category_id))
+        {
+            $category_id = array_map('intval', $category_id);
+        }
+		else $category_id = intval($category_id);
+
 		if(!$this->hasCurrentCategoryId() || $force) $this->setCurrentCategoryId($category_id);
 		
 		$where = vartrue($params['db_where']);
 		if($category_id)
 		{
-			$where .= ($where ? ' AND ' : '').' n.news_category='.intval($category_id);
+            if(is_array($category_id))
+            {
+                $where .= ($where ? ' AND ' : '').' n.news_category IN ('.implode(',', $category_id).')';
+            }
+			else $where .= ($where ? ' AND ' : '').' n.news_category='.$category_id;
 		}
 		if($where) $where = 'WHERE '.$where;
 		
@@ -657,7 +670,7 @@ class e_news_tree extends e_front_tree_model
 	/**
 	 * Load active joined tree by category id
 	 *
-	 * @param integer $category_id
+	 * @param mixed $category_id
 	 * @param boolean $force
 	 * @param array $params DB query parameters
 	 * @return e_news_tree
