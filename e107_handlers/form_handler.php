@@ -180,6 +180,11 @@ class e_form
 		$options['size'] = 7;
 		return $this->text($name, $value, $maxlength, $options);	
 	}
+
+
+
+
+
 	
 	/**
 	 * Render Bootstrap Tabs
@@ -226,8 +231,82 @@ class e_form
 		return $text;
 
 	}
+
+
+
 	
-	
+	/**
+	 * Render Bootstrap Carousel 
+	 * @param $name : A unique name 
+	 * @param $array
+	 * @param $options : placeholder for any future options. (currently not in use) 
+	 * @example
+	 * $array = array(
+	 * 		'slide1' => array('caption' => 'Slide 1', 'text' => 'first slide content' ),
+	 * 		'slide2' => array('caption' => 'Slide 2', 'text' => 'second slide content' ),
+	 * 		'slide3' => array('caption' => 'Slide 3', 'text' => 'third slide content' )
+	 * 	);
+	 */
+	function carousel($name="e-carousel", $array, $options = array())
+	{
+		
+		$text  ='
+		<!-- Carousel -->
+		
+		<div id="'.$name.'" class="carousel slide" data-ride="carousel">
+  		<!-- Indicators -->
+  		<ol class="carousel-indicators">
+		';
+
+		$c = 0;
+		foreach($array as $key=>$tab)
+		{
+			$active = ($c == 0) ? ' class="active"' : '';
+			$text .=  '<li data-target="#'.$name.'" data-slide-to="'.$c.'" '.$active.'></li>';
+			$c++;
+		}
+		
+		$text .= '
+		</ol>
+
+		<div class="carousel-inner">
+		';
+
+		
+		$c=0;
+		foreach($array as $key=>$tab)
+		{
+			$active = ($c == 0) ? ' active' : '';
+			$text .= '<div class="item'.$active.'" id="'.$key.'">';
+			$text .= $tab['text'];
+			
+			if(!empty($tab['caption']))
+			{
+				$text .= '<div class="carousel-caption">'.$tab['caption'].'</div>';	
+			}
+			
+			$text .= '</div>';
+			$c++;
+		}
+		
+		$text .= '
+		</div>';
+		
+		$text .= '
+		<a class="left carousel-control" href="#'.$name.'" role="button" data-slide="prev">
+    	<span class="glyphicon glyphicon-chevron-left"></span>
+		</a>
+		<a class="right carousel-control" href="#'.$name.'" role="button" data-slide="next">
+		<span class="glyphicon glyphicon-chevron-right"></span>
+		</a>';
+		
+		$text .= '</div><!-- End Carousel -->';
+
+		return $text;
+
+	}	
+
+
 	
 
 	/**
