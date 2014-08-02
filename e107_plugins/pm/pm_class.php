@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2014 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -11,12 +11,6 @@
  */
 
 
-/**
- *	e107 Private messenger plugin
- *
- *	@package	e107_plugins
- *	@subpackage	pm
- */
 
 if (!defined('e107_INIT')) { exit; }
 
@@ -162,7 +156,7 @@ class private_message
 				'pm_read' => 0,							/* Date read */
 				'pm_subject' => $pm_subject,
 				'pm_text' => $pm_message,
-				'pm_sent_del' => 1,						/* Set when can delete */
+				'pm_sent_del' => 0,						/* Set when can delete */
 				'pm_read_del' => 0,						/* set when can delete */
 				'pm_attachments' => $attachlist,
 				'pm_option' => $pm_options,				/* Options associated with PM - '+rr' for read receipt */
@@ -279,18 +273,22 @@ class private_message
 		if($sql->select('private_msg', '*', 'pm_id = '.$pmid.' AND (pm_from = '.USERID.' OR pm_to = '.USERID.')'))
 		{
 			$row = $sql->fetch();
+
+			// if user is the receiver of the PM
 			if (!$force && ($row['pm_to'] == USERID))
 			{
 				$newvals = 'pm_read_del = 1';
 				$ret .= LAN_PM_42.'<br />';
-				if($row['pm_sent_del'] == 1) { $force = TRUE; }
+				if($row['pm_sent_del'] == 1) { $force = TRUE; } // sender has deleted as well, set force to true so the DB record can be deleted
 			}
+
+			// if user is the sender of the PM
 			if (!$force && ($row['pm_from'] == USERID))
 			{
 				if($newvals != '') { $force = TRUE; }
 				$newvals = 'pm_sent_del = 1';
 				$ret .= LAN_PM_43."<br />";
-				if($row['pm_read_del'] == 1) { $force = TRUE; }
+				if($row['pm_read_del'] == 1) { $force = TRUE; } // receiver has deleted as well, set force to true so the DB record can be deleted
 			}
 
 			if($force == TRUE)
@@ -620,7 +618,7 @@ class private_message
 		$qry = "
 		SELECT SQL_CALC_FOUND_ROWS pm.*, u.user_image, u.user_name FROM #private_msg AS pm
 		LEFT JOIN #user AS u ON u.user_id = pm.pm_to
-		WHERE pm.pm_from='{$uid}' AND pm.pm_read_del=0
+		WHERE pm.pm_from='{$uid}' AND pm.pm_sent_del = '0'
 		ORDER BY pm.pm_sent DESC
 		LIMIT ".$from.', '.$limit;
 		
