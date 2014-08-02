@@ -247,13 +247,31 @@ class e_form
 	 * 		'slide3' => array('caption' => 'Slide 3', 'text' => 'third slide content' )
 	 * 	);
 	 */
-	function carousel($name="e-carousel", $array, $options = array())
+	function carousel($name="e-carousel", $array, $options = null)
 	{
+		$interval = null;
+		$wrap = null;
+		$pause = null;
+		
+		if(isset($options['wrap']))
+		{
+			$wrap = 'data-wrap="'.$options['wrap'].'"';	
+		}
+		
+		if(isset($options['interval']))
+		{
+			$interval = 'data-interval="'.$options['interval'].'"';	
+		}
+		
+		if(isset($options['pause']))
+		{
+			$interval = 'data-pause="'.$options['pause'].'"';	
+		}
 		
 		$text  ='
 		<!-- Carousel -->
 		
-		<div id="'.$name.'" class="carousel slide" data-ride="carousel">
+		<div id="'.$name.'" class="carousel slide" data-ride="carousel" '.$interval.' '.$wrap.' '.$pause.'>
   		<!-- Indicators -->
   		<ol class="carousel-indicators">
 		';
