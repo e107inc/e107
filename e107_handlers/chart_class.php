@@ -337,8 +337,44 @@ class e_chart
 			        var data = google.visualization.arrayToDataTable(".$this->getData().");
 			
 			        var options = ".$this->getOptions()." ;
+					";
 			
-			        var chart = new google.visualization.AreaChart(document.getElementById('".$id."'));
+			
+				switch ($this->type) 
+				{
+		
+					case 'bar':					
+						//
+					break;
+		
+					case 'column':
+						$js .= "var chart = new google.visualization.ColumnChart(document.getElementById('".$id."'));	";
+						
+					break;
+		
+					case 'polar':
+						//TODO
+					break;
+		
+					case 'doughnut':
+						//
+					break;
+					
+					case 'pie':
+						$js .= "var chart = new google.visualization.PieChart(document.getElementById('".$id."'));	";
+					break;
+		
+					default:
+					case 'line':
+					case 'area':
+						
+						$js .= "var chart = new google.visualization.AreaChart(document.getElementById('".$id."'));	";
+						
+					break;
+				}
+			
+	
+				$js .= "
 			        chart.draw(data, options);
 			      }
 
