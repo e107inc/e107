@@ -506,8 +506,12 @@ class plugin_forum_view_shortcodes extends e_shortcode
 				$text .= "<li><a href='".e107::getUrl()->create('forum/thread/edit', array('id' => $this->postInfo['post_id']))."'>".LAN_FORUM_2039." ".$tp->toGlyph('edit')."</a></li>";
 			}
 			
-			$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='deletepost' data-forum-post='".$this->postInfo['post_id']."'>".LAN_FORUM_2040." ".$tp->toGlyph('trash')."</a></li>"; 
-
+			// only show delete button when post is not the initial post of the topic
+			if(!$this->forum->threadDetermineInitialPost($this->postInfo['post_id'])) 
+			{
+				$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='deletepost' data-forum-post='".$this->postInfo['post_id']."'>".LAN_FORUM_2040." ".$tp->toGlyph('trash')."</a></li>"; 
+			}
+		
 			if ($type == 'thread')
 			{
 				$text .= "<li><a href='" . e107::getUrl()->create('forum/thread/move', array('id' => $this->postInfo['post_id']))."'>".LAN_FORUM_2042." ".$tp->toGlyph('move')."</a></a></li>"; 
