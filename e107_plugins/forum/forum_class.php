@@ -1826,9 +1826,12 @@ class e107forum
 		if ($threadInfo = $this->threadGet($threadId))
 		{
 			// delete poll if there is one
-			$sql->delete('polls', 'poll_datestamp='.$threadId);
-
-			//decrement user post counts
+			if($sql->select('polls', '*', 'poll_datestamp='.$threadId))
+			{
+				$sql->delete('polls', 'poll_datestamp='.$threadId);
+			} 
+	
+			// decrement user post counts
 			if ($postCount = $this->threadGetUserPostcount($threadId))
 			{
 				foreach ($postCount as $k => $v)
@@ -1838,14 +1841,14 @@ class e107forum
 			}
 
 			// delete all posts
-			$qry = 'SELECT post_id FROM `#forum_post` WHERE post_thread = '.$threadId;
-			if($sql->gen($qry))
+			if($sql->select('forum_post', 'post_id', 'post_thread = '.$threadId))
 			{
 				$postList = array();
 				while($row = $sql->fetch(MYSQL_ASSOC))
 				{
 					$postList[] = $row['post_id'];
 				}
+
 				foreach($postList as $postId)
 				{
 					$this->postDelete($postId, false);
@@ -1859,8 +1862,11 @@ class e107forum
 			}
 
 			//Delete any thread tracking
-			$sql->delete('forum_track', 'track_thread='.$threadId);
-
+			if($sql->select('forum_track', '*', 'track_thread='.$threadId))
+			{	
+				$sql->delete('forum_track', 'track_thread='.$threadId);
+			}
+			
 			// update forum with correct thread/reply counts
 			$sql->update('forum', "forum_threads=GREATEST(forum_threads-1,0), forum_replies=GREATEST(forum_replies-{$threadInfo['thread_total_replies']},0) WHERE forum_id=".$threadInfo['thread_forum_id']);
 
@@ -1872,7 +1878,6 @@ class e107forum
 			return $status; // - XXX should return true/false $threadInfo['thread_total_replies'];
 		}
 	}
-
 
 	/**
 	 * Delete a Post
