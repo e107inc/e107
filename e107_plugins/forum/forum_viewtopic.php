@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2014 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -12,6 +12,7 @@
 
 require_once ('../../class2.php');
 define('NAVIGATION_ACTIVE','forum');
+
 $e107 = e107::getInstance();
 $tp = e107::getParser();
 $ns = e107::getRender();
@@ -27,6 +28,7 @@ if (isset($_POST['fjsubmit']))
 	header('location:' . e107::getUrl()->create('forum/forum/view', array('id'=>(int) $_POST['forumjump']), 'full=1&encode=0'));
 	exit;
 }
+
 $highlight_search = isset($_POST['highlight_search']);
 
 if (!e_QUERY)
@@ -36,22 +38,17 @@ if (!e_QUERY)
 	exit;
 }
 
-
-
-include_once (e_PLUGIN . 'forum/forum_class.php');
-
+include_once(e_PLUGIN.'forum/forum_class.php');
 
 $forum = new e107forum();
 $thread = new e107ForumThread();
 
+// check if user wants to download a file 
 if(vartrue($_GET['id']) && isset($_GET['dl']))
 {
 	$forum->sendFile($_GET);
 	exit;
-			
 }
-
-
 
 if(e_AJAX_REQUEST && varset($_POST['action']) == 'quickreply')
 {
@@ -63,8 +60,6 @@ if(e_AJAX_REQUEST && MODERATOR) // see javascript above.
 	$forum->ajaxModerate();
 }
 		
-
-
 if (isset($_GET['last']))
 {
 	$_GET['f'] = 'last';
@@ -114,8 +109,7 @@ e107::getScBatch('view', 'forum')->setScVar('forum', $forum);
 //var_dump(e107::getScBatch('forum', 'forum'));
 
 
-
-if (MODERATOR && isset($_POST['mod']))
+if(MODERATOR && isset($_POST['mod']))
 {
 	require_once(e_PLUGIN."forum/forum_mod.php");
 	$thread->message = forum_thread_moderate($_POST);
@@ -135,7 +129,7 @@ if(count($postList))
 }
 
 $gen = new convert;
-if ($thread->message)
+if($thread->message)
 {
 	//$ns->tablerender('', $thread->message, array('forum_viewtopic', 'msg'));
 	e107::getMessage()->add($thread->message);
@@ -159,25 +153,27 @@ if(e107::isInstalled('poll'))
 	}
 }
 //}
+
 //Load forum templates
 // FIXME - new template paths!
-if (file_exists(THEME . 'forum_design.php'))
+if(file_exists(THEME.'forum_design.php')) // legacy file
 {
-	include_once (THEME . 'forum_design.php');
+	include_once (THEME.'forum_design.php');
 }
+
 if (!vartrue($FORUMSTART))
 {
-	if (file_exists(THEME . 'forum_viewtopic_template.php'))
+	if(file_exists(THEME.'forum_viewtopic_template.php'))
 	{
-		require_once (THEME . 'forum_viewtopic_template.php');
+		require_once (THEME.'forum_viewtopic_template.php');
 	}
-	elseif (file_exists(THEME . 'forum_template.php'))
+	elseif(file_exists(THEME.'forum_template.php'))
 	{
-		require_once (THEME . 'forum_template.php');
+		require_once(THEME.'forum_template.php');
 	}
 	else
 	{
-		require_once (e_PLUGIN . 'forum/templates/forum_viewtopic_template.php');
+		require_once(e_PLUGIN.'forum/templates/forum_viewtopic_template.php');
 	}
 }
 
@@ -190,7 +186,6 @@ if(is_array($FORUM_VIEWTOPIC_TEMPLATE) && deftrue('BOOTSTRAP',false))
 	$FORUMEND				= $FORUM_VIEWTOPIC_TEMPLATE['end'];
 	$FORUMREPLYSTYLE 		= $FORUM_VIEWTOPIC_TEMPLATE['replies'];	
 }
-
 
 
 
