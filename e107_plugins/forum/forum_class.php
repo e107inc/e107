@@ -843,6 +843,37 @@ class e107forum
 		return $ret;
 	}
 
+	/**
+	* Checks if post is the initial post which started the topic. 
+	* Retrieves list of post_id's belonging to one post_thread. When lowest value is equal to input param, return true. 
+	* Used to prevent deleting of the initial post (so topic shows empty does not get hidden accidently while posts remain in database)
+    *
+	* @param int id of the post
+	* @return boolean true if post is the initial post of the topic (false, if not) 
+    *
+	*/
+	function threadDetermineInitialPost($postId)
+	{
+		$sql = e107::getDb();
+		$postId = (int)$postId;
+		$threadId = $sql->retrieve('forum_post', 'post_thread', 'post_id = '.$postId);
+
+		if($rows = $sql->retrieve('forum_post', 'post_id', 'post_thread = '.$threadId, TRUE))
+		{	
+			$postids = array();
+
+			foreach($rows as $row)
+			{
+				$postids[] = $row['post_id'];
+			}
+
+			if($postId == min($postids))
+			{
+				return true;
+			}			 
+		}
+		return false;
+	}
 
 	function threadGetUserPostcount($threadId)
 	{
