@@ -210,17 +210,18 @@ class e107forum
 	}
 
 
-	function sendFile($data)
-	{
-		$sql 	= e107::getDb();
-		$fid 	= intval($data['dl']);
-		
-		$array 	= $sql->retrieve('forum_post','post_user,post_attachments','post_id='.intval($data['id']));
-		$attach = e107::serialize($array['post_attachments']);
-		$file 	= $this->getAttachmentPath($array['post_user']).varset($attach['file'][$fid]);
+    function sendFile($data)
+    {
+        $sql = e107::getDb();
+        $id  = intval($data['id']); // forum (post) id
+        $fid = intval($data['dl']); // file id
 
-		e107::getFile()->send($file);	
-	}
+        $array = $sql->retrieve('forum_post','post_user,post_attachments','post_id='.$id);
+        $attach = e107::unserialize($array['post_attachments']);
+        $file = $this->getAttachmentPath($array['post_user']).varset($attach['file'][$fid]);
+ 
+        e107::getFile()->send($file);
+    }
 
 
 	/**
