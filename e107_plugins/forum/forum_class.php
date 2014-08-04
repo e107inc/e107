@@ -1756,7 +1756,7 @@ class e107forum
 		if ($threadInfo = $this->threadGet($threadId))
 		{
 			// delete poll if there is one
-			$sql->delete('poll', 'poll_datestamp='.$threadId);
+			$sql->delete('polls', 'poll_datestamp='.$threadId);
 
 			//decrement user post counts
 			if ($postCount = $this->threadGetUserPostcount($threadId))
