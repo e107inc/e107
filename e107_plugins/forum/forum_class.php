@@ -209,18 +209,34 @@ class e107forum
 		return $baseDir;
 	}
 
-
     function sendFile($data)
     {
-        $sql = e107::getDb();
-        $id  = intval($data['id']); // forum (post) id
-        $fid = intval($data['dl']); // file id
+        $sql 		= e107::getDb();
+        $post_id  	= intval($data['id']); // forum (post) id
+        $file_id 	= intval($data['dl']); // file id
+        $forum_id 	= $sql->retrieve('forum_post','post_forum','post_id='.$post_id);
 
-        $array = $sql->retrieve('forum_post','post_user,post_attachments','post_id='.$id);
+        // Check if user is allowed to download this file (has 'view' permissions to forum)
+    	if(!$this->checkPerm($forum_id, 'view'))
+		{
+			header('Location:'.e107::getUrl()->create('forum/forum/main')); // FIXME needs proper redirect and 403 header 
+			exit;
+		}
+
+        $array 	= $sql->retrieve('forum_post','post_user,post_attachments','post_id='.$post_id);
         $attach = e107::unserialize($array['post_attachments']);
-        $file = $this->getAttachmentPath($array['post_user']).varset($attach['file'][$fid]);
- 
-        e107::getFile()->send($file);
+        $file 	= $this->getAttachmentPath($array['post_user']).varset($attach['file'][$file_id]);
+
+        // Check if file exists. Send file for download if it does, return 404 error code when file does not exist. 
+ 		if(file_exists($file))
+ 		{
+ 		   e107::getFile()->send($file);
+ 		}
+ 		else
+ 		{
+			header('Location:'.e107::getUrl()->create('forum/forum/main', TRUE, 404)); // FIXME needs proper redirect and 404 header
+			exit;
+ 		}
     }
 
 
