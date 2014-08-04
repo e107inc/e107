@@ -2,7 +2,7 @@
 /*
 * e107 website system
 *
-* Copyright (c) 2008-2013 e107 Inc (e107.org)
+* Copyright (c) 2008-2014 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
@@ -334,20 +334,20 @@ class e107forum
 			
 		//	print_r($_POST);
 			
-			$ret = array('hide'=>false,'msg'=>'','status'=>null); 
+			$ret = array('hide' => false, 'msg' => '', 'status' => null); 
 			
 			switch ($_POST['action']) 
 			{
 				case 'delete':
 					if($this->threadDelete($id))
 					{
-						$ret['msg'] 	= 'Deleted Thread #'.$id;
+						$ret['msg'] 	= 'Deleted topic #'.$id;
 						$ret['hide'] 	= true; 
 						$ret['status'] 	= 'ok';	
 					}
 					else
 					{
-						$ret['msg'] 	= "Couldn't Delete the Thread";
+						$ret['msg'] 	= "Couldn't delete the topic";
 						$ret['status'] 	= 'error';	
 					}
 				break;
@@ -355,19 +355,21 @@ class e107forum
 				case 'deletepost':
 					if(!$postId = vartrue($_POST['post']))
 					{
-						echo "No Post";
-						exit;	
+						// echo "No Post";
+						// exit;
+						$ret['msg'] 	= 'Post not found';
+						$ret['status'] 	= 'error';		
 					}
 					
 					if($this->postDelete($postId))
 					{
-						$ret['msg'] 	= 'Deleted Post #'.$postId;
+						$ret['msg'] 	= 'Deleted post #'.$postId;
 						$ret['hide'] 	= true; 
 						$ret['status'] 	= 'ok';	
 					}
 					else
 					{
-						$ret['msg'] 	= "Couldn't Delete the Post #".$postId;
+						$ret['msg'] 	= "Couldn't delete post #".$postId;
 						$ret['status'] 	= 'error';	
 					}
 				break;
@@ -375,12 +377,12 @@ class e107forum
 				case 'lock':
 					if(e107::getDb()->update('forum_thread', 'thread_active=0 WHERE thread_id='.$id))
 					{
-						$ret['msg'] = FORLAN_CLOSE;
+						$ret['msg'] 	= FORLAN_CLOSE;
 						$ret['status'] 	= 'ok';	
 					}
 					else
 					{
-						$ret['msg'] = "failed to close thread";
+						$ret['msg'] 	= "Failed to close thread";
 						$ret['status'] 	= 'error';	
 					}
 				break;
@@ -881,37 +883,101 @@ class e107forum
 	}
 
 
-	function postDeleteAttachments($type = 'post', $id='', $f='')
+	function postDeleteAttachments($type = 'post', $id = '') // postDeleteAttachments($type = 'post', $id='', $f='')
 	{
 		$e107 = e107::getInstance();
-		$sql = e107::getDb();
+		$sql  = e107::getDb();
+		$log  = e107::getAdminLog(); 
 
 		$id = (int)$id;
 		if(!$id) { return; }
+		
+		// Moc: Is the code below used at all? When deleting a thread, threadDelete() loops through each post separately to delete attachments (type=post)
+		/*
 		if($type == 'thread')
 		{
 			if(!$sql->select('forum_post', 'post_id', 'post_attachments IS NOT NULL'))
 			{
 				return true;
 			}
+
 			$postList = array();
+			
 			while($row = $sql->Fetch(MYSQL_ASSOC))
 			{
 				$postList[] = $row['post_id'];
 			}
+
 			foreach($postList as $postId)
 			{
 				$this->postDeleteAttachment('post', $postId);
 			}
 		}
+		*/
+		
+		// if we are deleting just a single post
 		if($type == 'post')
 		{
-			if(!$sql->select('forum_post', 'post_attachments', 'post_id = '.$id))
+			if(!$sql->select('forum_post', 'post_user, post_attachments', 'post_id = '.$id))
 			{
 				return true;
 			}
+
 			$tmp = $sql->fetch(MYSQL_ASSOC);
-			$attachments = explode(',', $tmp['post_attachments']);
+
+			$attachment_array = e107::unserialize($tmp['post_attachments']);
+	   		$files = $attachment_array['file'];
+	   		$imgs  = $attachment_array['img']; 
+	   		
+	   		// TODO see if files/images check can be written more efficiently 
+	   		// check if there are files to be deleted 
+	   		if(is_array($files))
+	   		{
+		   		// loop through each file and delete it
+		   		foreach ($files as $file) 
+		   		{
+		   			$file = $this->getAttachmentPath($tmp['post_user']).$file;
+		   			@unlink($file);
+
+	   				// Confirm that file has been deleted. Add warning to log file when file could not be deleted.
+		   			if(file_exists($file))
+		   			{
+		   				$log->addWarning("Could not delete file: ".$file.". Please delete manually as this file is now no longer in use (orphaned).");
+		   			}
+		   		} 
+	   		}
+	   		// check if there are images to be deleted
+	   		elseif(is_array($imgs))
+	   		{
+	   			// loop through each image and delete it
+		   		foreach ($imgs as $img) 
+		   		{
+		   			$img = $this->getAttachmentPath($tmp['post_user']).$img;
+		   			@unlink($img);
+
+	   				// Confirm that file has been deleted. Add warning to log file when file could not be deleted.
+		   			if(file_exists($img))
+		   			{
+		   				$log->addWarning("Could not delete image: ".$img.". Please delete manually as this file is now no longer in use (orphaned).");
+		   			}
+		   		} 	
+	   		}
+	   		// Apparently there are attachments other than 'files' or 'images' present. Add warning to log and proceed.
+	   		else
+	   		{
+	   			$log->addError("Unknown attachments detected in post (id: ".$id.")");
+	   		}
+	   	
+	   		// At this point we assume that all attachments have been deleted from the post. The log file may prove otherwise (see above). 
+	   		$log->toFile('forum_delete_attachments', 'Forum plugin - Delete attachments', TRUE);
+
+	   		// Empty the post_attachments field for this post in the database (prevents loop when deleting entire thread)
+	   		$sql->update("forum_post", "post_attachments = NULL WHERE post_id = ".$id);
+
+	    		
+			/* Old code when attachments were still stored in plugin folder. 
+			Left for review but may be deleted in future.  
+
 			foreach($attachments as $k => $a)
 			{
 				$info = explode('*', $a);
@@ -929,6 +995,7 @@ class e107forum
 				}
 				unset($attachments[$k]);
 			}
+
 			$tmp = array();
 			if(count($attachments))
 			{
@@ -938,11 +1005,14 @@ class e107forum
 			{
 				$tmp['post_attachments'] = '_NULL_';
 			}
+
 			$info = array();
 			$info['data'] = $tmp;
 			$info['_FILE_TYPES']['post_attachments'] = 'array';
 			$info['WHERE'] = 'post_id = '.$id;
 			$sql->update('forum_post', $info);
+
+			*/
 		}
 	}
 
@@ -1822,6 +1892,7 @@ class e107forum
 			echo 'NOT FOUND!'; return;
 		}
 		
+
 		$row = $sql->fetch(MYSQL_ASSOC);
 
 		//delete attachments if they exist
@@ -1830,15 +1901,16 @@ class e107forum
 			$this->postDeleteAttachments('post', $postId);
 		}
 
-		// delete post
+		// delete post from database
 		if($sql->delete('forum_post', 'post_id='.$postId))
 		{
 			$deleted = true; 
 		}
 
+		// update statistics
 		if($updateCounts)
 		{
-			//decrement user post counts
+			// decrement user post counts
 			if ($row['post_user'])
 			{
 				$sql->update('user_extended', 'user_plugin_forum_posts=GREATEST(user_plugin_forum_posts-1,0) WHERE user_extended_id='.$row['post_user']);
