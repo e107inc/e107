@@ -99,22 +99,22 @@ class plugin_forum_view_shortcodes extends e_shortcode
 			$baseDir = $this->forum->getAttachmentPath($this->postInfo['post_user']);
 
 			$images = array();
-
-			$attachArray = e107::unserialize($this->postInfo['post_attachments']);
 		
+			$attachArray = e107::unserialize($this->postInfo['post_attachments']);
+			//print_a($attachArray); 
 			foreach($attachArray as $type=>$vals)
 			{
 				foreach($vals as $key=>$file)
 				{
-					list($date,$user,$tmp,$name) = explode("_", $file, 4); // FIXME $name is empty when there are just 3 parts to the filename (e.g. 1407153763_1_abbas.zip)
+					list($date,$user, $name) = explode("_", $file, 3); 
 
 					switch($type)
 					{
 						case 'file':
-						
+					
 							$url = e_SELF."?id=".$this->postInfo['post_id']."&amp;dl=".$key;
-							$txt .= IMAGE_attachment." <a href='".$url."'>{$name}</a><br />";
-							
+							$txt = IMAGE_attachment." <a href='".$url."'>{$name}</a><br />";
+
 						break;
 
 						case 'img': //Always use thumb to hide the hash. 
@@ -142,9 +142,9 @@ class plugin_forum_view_shortcodes extends e_shortcode
 				
 			}
 			
-			if(count($images) )
+			if(count($images))
 			{
-				return (deftrue('BOOTSTRAP')) ? "<ul class='thumbnails'><li>".implode("</li><li>",$images)."</li></ul>" : implode("<br />",$images);	
+				return (deftrue('BOOTSTRAP')) ? "<ul class='thumbnails'><li>".implode("</li><li>",$images)."</li></ul>".vartrue($txt) : implode("<br />",$images).vartrue($txt);	
 			}
 			
 			
