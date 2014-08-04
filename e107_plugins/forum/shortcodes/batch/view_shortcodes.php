@@ -106,7 +106,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 			{
 				foreach($vals as $key=>$file)
 				{
-					list($date,$user,$tmp,$name) = explode("_",$file,4);
+					list($date,$user,$tmp,$name) = explode("_", $file, 4); // FIXME $name is empty when there are just 3 parts to the filename (e.g. 1407153763_1_abbas.zip)
 
 					switch($type)
 					{
