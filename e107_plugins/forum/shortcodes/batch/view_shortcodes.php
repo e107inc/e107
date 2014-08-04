@@ -441,9 +441,9 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	
 	$text .= "<li class='divider'></li>";
 	
-	if(plugInstalled('pm') && ($this->postInfo['post_user'] > 0))
+	if(e107::isInstalled('pm') && ($this->postInfo['post_user'] > 0))
 	{
-		$text .= "<li><a href='".e_PLUGIN_ABS."pm/pm.php?send.{$this->postInfo['post_user']}'>".LAN_FORUM_2036."</a></li>";
+		$text .= "<li><a href='".e_PLUGIN_ABS."pm/pm.php?send.{$this->postInfo['post_user']}'>".$tp->toGlyph('envelope')." ".LAN_FORUM_2036." </a></li>";
 	}
 	
 	if($website = $this->sc_website())
