@@ -977,8 +977,9 @@ class e107forum
 		   			}
 		   		} 
 	   		}
+	   		
 	   		// check if there are images to be deleted
-	   		elseif(is_array($imgs))
+	   		if(is_array($imgs))
 	   		{
 	   			// loop through each image and delete it
 		   		foreach ($imgs as $img) 
@@ -993,12 +994,7 @@ class e107forum
 		   			}
 		   		} 	
 	   		}
-	   		// Apparently there are attachments other than 'files' or 'images' present. Add warning to log and proceed.
-	   		else
-	   		{
-	   			$log->addError("Unknown attachments detected in post (id: ".$id.")");
-	   		}
-	   	
+
 	   		// At this point we assume that all attachments have been deleted from the post. The log file may prove otherwise (see above). 
 	   		$log->toFile('forum_delete_attachments', 'Forum plugin - Delete attachments', TRUE);
 
