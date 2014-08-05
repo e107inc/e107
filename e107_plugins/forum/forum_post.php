@@ -658,13 +658,12 @@ function process_upload()
 			  }
 			}
 
-
 			return $ret;
 		}
 	}
 	else
 	{
-		e107::getMessage()->addError('Something went wrong during the attachment uploading process.')); 
+		e107::getMessage()->addError('Something went wrong during the attachment uploading process.'); 
 	}
 }
 
