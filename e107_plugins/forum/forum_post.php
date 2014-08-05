@@ -576,6 +576,7 @@ function process_upload()
 		{			
 			foreach($uploaded as $upload)
 			{
+			  //print_a($upload); exit; 
 			  if ($upload['error'] == 0)
 			  {
 				$_txt = '';
@@ -650,7 +651,8 @@ function process_upload()
 			  }
 			  else
 			  {  // Error in uploaded file
-			    echo 'Error in uploaded file: '.(isset($upload['rawname']) ? $upload['rawname'] : $upload['name']).'<br />';
+			    //echo 'Error in uploaded file: '.(isset($upload['rawname']) ? $upload['rawname'] : $upload['name']).'<br />';
+			    e107::getMessage()->addError('Error in uploading attachment: '.vartrue($upload['message'])); 
 			  }
 			}
 
