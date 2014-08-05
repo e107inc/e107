@@ -165,7 +165,11 @@ if (!vartrue($FORUMSTART))
 {
 	if(file_exists(THEME.'forum_viewtopic_template.php'))
 	{
-		require_once (THEME.'forum_viewtopic_template.php');
+		require_once(THEME.'forum_viewtopic_template.php');
+	}
+	elseif(file_exists(THEME.'templates/forum/forum_viewtopic_template.php'))
+	{
+		require_once(THEME.'templates/forum/forum_viewtopic_template.php'); 
 	}
 	elseif(file_exists(THEME.'forum_template.php'))
 	{
