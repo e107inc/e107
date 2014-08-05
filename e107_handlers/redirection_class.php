@@ -335,6 +335,8 @@ class redirection
 	 */
 	public function go($url, $replace = TRUE, $http_response_code = NULL, $preventCache = true)
 	{
+		$url = str_replace("&amp;", "&", $url); // cleanup when using e_QUERY in $url; 
+		
 		if(session_id())
 		{
 			e107::getSession()->end();
