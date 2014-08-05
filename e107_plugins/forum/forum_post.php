@@ -362,7 +362,8 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 			
 
 
-			echo (isset($_POST['newthread']) ? $FORUMTHREADPOSTED : $FORUMREPLYPOSTED);
+			$txt = (isset($_POST['newthread']) ? $FORUMTHREADPOSTED : $FORUMREPLYPOSTED);
+			e107::getRender()->tablerender('Forums', e107::getMessage()->render().$txt); 
 			require_once(FOOTERF);
 			exit;
 		}
@@ -650,7 +651,8 @@ function process_upload()
 				}
 			  }
 			  else
-			  {  // Error in uploaded file
+			  {  
+			  	// Error in uploaded file, proceed but add error message.
 			    //echo 'Error in uploaded file: '.(isset($upload['rawname']) ? $upload['rawname'] : $upload['name']).'<br />';
 			    e107::getMessage()->addError('Error in uploading attachment: '.vartrue($upload['message'])); 
 			  }
@@ -662,7 +664,7 @@ function process_upload()
 	}
 	else
 	{
-		// error message?
+		e107::getMessage()->addError('Something went wrong during the attachment uploading process.')); 
 	}
 }
 
