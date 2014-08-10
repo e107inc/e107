@@ -22,11 +22,12 @@ class theme__blank implements e_theme_config
 	{
 		$frm = e107::getForm();
 		
-		$var[0]['caption'] = "Sample configuration field";
-		$var[0]['html'] = $frm->text('_blank_example', e107::getThemePref('example', 'default'));
+		$var[0]['caption'] 	= "Sample configuration field";
+		$var[0]['html'] 	= $frm->text('_blank_example', e107::getThemePref('example', 'default'));
+		$var[0]['help']		= "Example help text for this input field"; 
 
-		$var[1]['caption'] = "Sample configuration field 2";
-		$var[1]['html'] = $frm->text('_blank_example2', e107::getThemePref('example2', 'default'));
+		$var[1]['caption'] 	= "Sample configuration field 2";
+		$var[1]['html'] 	= $frm->text('_blank_example2', e107::getThemePref('example2', 'default'));
 		
 		return $var;
 	}
