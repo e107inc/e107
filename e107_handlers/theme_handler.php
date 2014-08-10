@@ -954,7 +954,8 @@ class themeHandler
 			
 			foreach ($var as $val)
 			{
-				$text .= "<tr><td><b>".$val['caption']."</b>:</td><td colspan='2'>".$val['html']."</td></tr>";
+				$text .= "<tr><td><b>".$val['caption']."</b>:</td><td colspan='2'>".$val['html']."<div class='field-help'>".$val['help']."</div>
+</td></tr>";
 			}
 
 			return $text;
