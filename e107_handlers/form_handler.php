@@ -109,8 +109,6 @@ class e_form
 	
 		parse_str($options,$options);
 	
-		$target = str_replace("&", "&amp;", $target);
-	
 		if(vartrue($options['class']))
 		{
 			$class = "class='".$options['class']."'";
@@ -125,11 +123,11 @@ class e_form
 			$autoComplete = " autocomplete='".($options['autocomplete'] ? 'on' : 'off')."'";	
 		}
 		
-		$text = "\n<form {$class} action='{$target}' id='".$this->name2id($name)."' method = '{$method}'{$autoComplete}>\n";
 		
 		if($method == 'get' && strpos($target,'='))
 		{
 			list($url,$qry) = explode("?",$target);
+			$text = "\n<form {$class} action='{$url}' id='".$this->name2id($name)."' method = '{$method}'{$autoComplete}>\n";
 			
 			parse_str($qry,$m);
 			foreach($m as $k=>$v)
@@ -138,7 +136,11 @@ class e_form
 			}
 			
 		}	
-		
+		else 
+		{
+			$target = str_replace("&", "&amp;", $target);
+			$text = "\n<form {$class} action='{$target}' id='".$this->name2id($name)."' method = '{$method}'{$autoComplete}>\n";
+		}
 		return $text;	
 	}
 	
