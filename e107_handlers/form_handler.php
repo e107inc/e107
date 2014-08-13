@@ -4453,6 +4453,7 @@ class e_form
 	}
 }
 
+// DEPRECATED - use above methods instead ($frm)
 class form 
 {
 	function form_open($form_method, $form_action, $form_name = "", $form_target = "", $form_enctype = "", $form_js = "") 
