@@ -519,8 +519,10 @@ class forumAdmin
 		show_admin_menu(FORLAN_7, $action, $var);
 	}
 
+	// Initial delete function. Determines which delete routine should be applied. 
 	function delete_item($id)
 	{
+		// If a delete routine is cancelled, redirect back to forum listing
 		if($_POST['cancel'])
 		{
 			$this->show_existing_forums(vartrue($sub_action), vartrue($id));
@@ -529,44 +531,44 @@ class forumAdmin
 
 		$sql = e107::getDb();
 		$id = (int)$id;
+		
 		$confirm = isset($_POST['confirm']) ? true : false;
+		
+		if($confirm)
+		{
+			e107::getRender()->tablerender('Forums', e107::getMessage()->render().$txt);
+		}
+		else
+		{
+			$this->delete_show_confirm($txt);
+		}
 
-		if($sql->select('forum', 'forum_parent, forum_sub', "forum_id = {$id}"))
+		if($row = $sql->retrieve('forum', 'forum_parent, forum_sub', "forum_id = {$id}"))
 		{
 			$txt = "";
-			$row = $sql->fetch();
-			
+
+			// is parent
 			if($row['forum_parent'] == 0)
 			{
 				$txt .= $this->delete_parent($id, $confirm);
 			}
+			// is subforum
 			elseif($row['forum_sub'] > 0)
 			{
 				$txt .= $this->delete_sub($id, $confirm);
 			}
+			// is forum
 			else
 			{
 				$txt .= $this->delete_forum($id, $confirm);
 			}
-
-
-			if($confirm)
-			{
-				e107::getRender()->tablerender('', e107::getMessage()->render().$txt);
-			}
-			else
-			{
-				$this->delete_show_confirm($txt);
-			}
 		}
+		// forum_id not found, should not happen. 
 		else
 		{
-			// forum_id not found, should not happen. 
 			$this->show_existing_forums(vartrue($sub_action), vartrue($id));
 			return;
 		}
-
-
 	}
 
 	function delete_parent($id, $confirm = false)
@@ -575,10 +577,10 @@ class forumAdmin
 		$mes = e107::getMessage();
 		$ns = e107::getRender();
 
-
-		if($sql->select('forum', 'forum_id', "forum_parent = {$id} AND forum_sub = 0"))
+		// check if parent contains forums and delete them if needed
+		if($sql->select('forum', 'forum_id', 'forum_parent = '.$id))
 		{
-			$fList = $sql->db_getList();
+			$fList = $sql->rows();
 			foreach($fList as $f)
 			{
 				$this->delete_forum($f['forum_id'], $confirm);
@@ -589,42 +591,43 @@ class forumAdmin
 		{
 			if($sql->delete('forum', "forum_id = {$id}"))
 			{
-				return LAN_DELETED;
+				$mes->addSuccess(LAN_DELETED);
 			}
 			else
 			{
-				return LAN_DELETED_FAILED; 
+				$mes->addError(LAN_DELETED_FAILED); 
 			}
 		}
 	}
 
-	function deleteForum($forumId)
-	{
-		$sql = e107::getDb();
-		$forumId = (int)$forumId;
+	// function deleteForum($forumId)
+	// {
+	// 	$sql = e107::getDb();
+	// 	$forumId = (int)$forumId;
 
-		// Check for any sub forums
-		if($sql->select('forum', 'forum_id', "forum_sub = {$forumId}"))
-		{
-			$list = $sql->db_getList();
-			foreach($list as $f)
-			{
-				$ret .= $this->deleteForum($f['forum_id']);
-			}
-		}
-		require_once(e_PLUGIN.'forum/forum_class.php');
-		$f = new e107Forum;
-		if($sql->delete('forum_thread', 'thread_id','thread_forum_id='.$forumId))
-		{
-			$list = $sql->db_getList();
-			foreach($list as $t)
-			{
-				$f->threadDelete($t['thread_id'], false);
-			}
-		}
-		return $sql->delete('forum', 'forum_id = '.$forumId);
-	}
+	// 	// Check for any sub forums
+	// 	if($sql->select('forum', 'forum_id', "forum_sub = {$forumId}"))
+	// 	{
+	// 		$list = $sql->rows();
+	// 		foreach($list as $f)
+	// 		{
+	// 			$ret .= $this->deleteForum($f['forum_id']);
+	// 		}
+	// 	}
+	// 	require_once(e_PLUGIN.'forum/forum_class.php');
+	// 	$f = new e107Forum;
+	// 	if($sql->delete('forum_thread', 'thread_id','thread_forum_id='.$forumId))
+	// 	{
+	// 		$list = $sql->rows();
+	// 		foreach($list as $t)
+	// 		{
+	// 			$f->threadDelete($t['thread_id'], false);
+	// 		}
+	// 	}
+	// 	return $sql->delete('forum', 'forum_id = '.$forumId);
+	// }
 
+	// delete forum 
 	function delete_forum($id, $confirm = false)
 	{
 		$sql = e107::getDb();
@@ -632,10 +635,10 @@ class forumAdmin
 		$ns = e107::getRender();
 		$mes = e107::getMessage();
 
-	
+		// check if forum contains subforums
 		if($sql->select('forum', 'forum_id', 'forum_sub = '.$id))
 		{
-			$fList = $sql->db_getList();
+			$fList = $sql->rows();
 			foreach($fList as $f)
 			{
 				$this->delete_sub($f['forum_id'], $confirm);
@@ -1492,6 +1495,7 @@ class forumAdmin
 			$ns->tablerender(FORLAN_33, $txt);  // FIX: LAN button update was WMGLAN_4." ".FORLAN_33)
 		}
 
+		// TODO: check media category on $frm->bbarea()
 		function show_rules()
 		{
 			$pref 	= e107::getPref();
@@ -1524,9 +1528,9 @@ class forumAdmin
 				$admin_rules = $sql->fetch();
 			}
 
-			$guesttext 	= $tp->toFORM(vartrue($guest_rules['gen_chardata']));
-			$membertext = $tp->toFORM(vartrue($member_rules['gen_chardata']));
-			$admintext 	= $tp->toFORM(vartrue($admin_rules['gen_chardata']));
+			$guesttext 	= $tp->toForm(vartrue($guest_rules['gen_chardata']));
+			$membertext = $tp->toForm(vartrue($member_rules['gen_chardata']));
+			$admintext 	= $tp->toForm(vartrue($admin_rules['gen_chardata']));
 
 			$text = "
 			<form method='post' action='".e_SELF."?rules'  id='wmform'>
@@ -1539,7 +1543,7 @@ class forumAdmin
 				<td>".WMGLAN_1.": <br />
 				".WMGLAN_6.":";
 				if (vartrue($guest_rules['gen_intdata']))
-				{
+				{ 
 					$text .= "<input type='checkbox' name='guest_active' value='1'  checked='checked' />";
 				}
 				else
@@ -1549,11 +1553,7 @@ class forumAdmin
 				$text .= "</td>
 				
 				<td>
-					<textarea class='tbox input-xxlarge' name='guestrules' cols='70' rows='8'>$guesttext</textarea>
-					<br />
-					<input class='helpbox' type='text' name='helpguest' size='100' />
-					<br />
-					".display_help('helpb', 1, 'addtext1', 'help1')."
+					".$frm->bbarea('guestrules', $guesttext)." 
 				</td>
 			</tr>
 
@@ -1571,11 +1571,7 @@ class forumAdmin
 				$text .= "</td>
 				
 				<td>
-					<textarea class='tbox input-xxlarge' name='memberrules' cols='70' rows='8'>$membertext</textarea>
-					<br />
-					<input class='helpbox' type='text' name='helpmember' size='100' /> 
-					<br />
-					".display_help('helpb', 1, 'addtext2', 'help2')."
+					".$frm->bbarea('memberrules', $membertext)."
 				</td>
 			</tr>
 
@@ -1594,11 +1590,7 @@ class forumAdmin
 
 				$text .= "</td>
 				<td>
-					<textarea class='tbox input-xxlarge' name='adminrules' cols='70' rows='8'>$admintext</textarea>
-					<br />
-					<input class='helpbox' type='text' name='helpadmin' size='100' />
-					<br />
-					".display_help('helpb', 1, 'addtext3', 'help3')."
+					".$frm->bbarea('adminrules', $admintext)." 
 				</td>
 			</tr>
 			</table>
