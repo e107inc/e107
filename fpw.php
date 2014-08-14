@@ -2,18 +2,19 @@
 /*
 * e107 website system
 *
-* Copyright 2008-2010 e107 Inc (e107.org)
+* Copyright 2008-2014 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
 * Interface for users who have forgotten their password
 *
-* $URL$
-* $Id$
-*
 */
+
 require_once('class2.php');
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+
+//include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE); 
+e107::coreLan('fpw'); 
+
 $tp = e107::getParser();
 
 if (USER && !getperms('0'))
@@ -24,13 +25,13 @@ if (USER && !getperms('0'))
 
 if($pref['fpwcode'] && extension_loaded('gd'))
 {
-	define('USE_IMAGECODE',TRUE);
+	define('USE_IMAGECODE', TRUE);
 	require_once(e_HANDLER.'secure_img_handler.php');
 	$sec_img = new secure_image;
 }
 else
 {
-	define('USE_IMAGECODE',FALSE);
+	define('USE_IMAGECODE', FALSE);
 }
 
 
@@ -45,23 +46,25 @@ class fpw_shortcodes extends e_shortcode
 		$this->secImg = $sec_img;	
 	}
 
-	function sc_fpw_username($parm='') //TODO Use $frm
+	function sc_fpw_username($parm='') // TODO check if this is still used/needed
 	{
-		return "<input class='tbox' type='text' name='username' size='40' value='' maxlength='100' />";	
+		// return "<input class='tbox' type='text' name='username' size='40' value='' maxlength='100' />";	
+		return e107::getForm()->text('username');
 	}
 
-	function sc_fpw_useremail($parm='') //TODO Use $frm
+	function sc_fpw_useremail($parm='') 
 	{
-		return '<input class="tbox form-control" type="text" name="email" size="40" value="" maxlength="100" placeholder="Email" required="required" type="email">';
-	//	return "<input class='tbox' type='text' name='email' size='40' value='' maxlength='100' />";	
+		// return '<input class="tbox form-control" type="text" name="email" size="40" value="" maxlength="100" placeholder="Email" required="required" type="email">';
+		// return "<input class='tbox' type='text' name='email' size='40' value='' maxlength='100' />";	
+		return e107::getForm()->email('email', '', 200, array('placeholder' => 'Email', 'required' => 'required')); 
 	}
 
-	function sc_fpw_submit($parm='') //TODO Use $frm
+	function sc_fpw_submit($parm='') 
 	{
-		$label = deftrue('LAN_FPW_102', LAN_156);
-		return '<button type="submit" name="pwsubmit" class="button btn btn-primary btn-block reset">'.$label.'</button>';
-		
+		// return '<button type="submit" name="pwsubmit" class="button btn btn-primary btn-block reset">'.$label.'</button>';
 		// return "<input class='button btn btn-primary btn-block' type='submit' name='pwsubmit' value='".$label."' />";	
+		$label = deftrue('LAN_FPW_102', LAN_156);
+		return e107::getForm()->button('pwsubmit', $label); 
 	}
 
 	function sc_fpw_captcha_lan($parm='')
@@ -99,14 +102,6 @@ class fpw_shortcodes extends e_shortcode
 
 
 
-
-
-
-
-
-
-
-
 if ($pref['membersonly_enabled'])
 {
 	$sc = array (
@@ -140,12 +135,9 @@ function fpw_error($txt)
 	exit;
 }
 
-
-
 //the separator character used
 define('FPW_SEPARATOR', '#');
 //$fpw_sep = '#';
-
 
 
 if (e_QUERY)
@@ -156,21 +148,21 @@ if (e_QUERY)
 	{
 		die();			// Shouldn't be any characters that toDB() changes
 	}
-	if ($sql->db_Select('tmp', '*', "`tmp_ip`='pwreset' AND `tmp_info` LIKE '%".FPW_SEPARATOR.$tmpinfo."' "))
+	if ($sql->select('tmp', '*', "`tmp_ip`='pwreset' AND `tmp_info` LIKE '%".FPW_SEPARATOR.$tmpinfo."' "))
 	{
-		$row = $sql->db_Fetch();
-		$sql->db_Delete('tmp', "`tmp_time` = ".$row['tmp_time']." AND `tmp_info` = '".$row['tmp_info']."' ");
+		$row = $sql->fetch();
+		$sql->delete('tmp', "`tmp_time` = ".$row['tmp_time']." AND `tmp_info` = '".$row['tmp_info']."' ");
 
 		list($loginName, $md5) = explode(FPW_SEPARATOR, $row['tmp_info']);
-		$loginName = $tp -> toDB($loginName, true);
+		$loginName = $tp->toDB($loginName, true);
 
 		if ($md5 != $tmpinfo)
 		{
 			die('Random mismatch!');			// This should never happen!
 		}
 
-		$newpw = $user_info->generateRandomString(str_repeat('*', rand(8, 12)));		// Generate new temporary password
-		$mdnewpw = $user_info->HashPassword($newpw,$loginName);
+		$newpw 		= $user_info->generateRandomString(str_repeat('*', rand(8, 12)));		// Generate new temporary password
+		$mdnewpw 	= $user_info->HashPassword($newpw,$loginName);
 
 		// Details for admin log
 		$do_log['password_action'] = LAN_FPW21;
@@ -180,13 +172,13 @@ if (e_QUERY)
 		$do_log['user_password'] = $mdnewpw;
 		$admin_log->user_audit(USER_AUDIT_PW_RES,$do_log,0,$do_log['user_name']);
 
-		$sql->db_Update('user', "`user_password`='{$mdnewpw}' WHERE `user_loginname`='".$loginName."' ");
+		$sql->update('user', "`user_password`='{$mdnewpw}' WHERE `user_loginname`='".$loginName."' ");
 		
 		if((integer) e107::getPref('allowEmailLogin') > 0)
 		{
 			// always show email when possible
-			$sql->db_Select('user', 'user_email', "user_loginname='{$loginName}'");
-			$tmp = $sql->db_Fetch();
+			$sql->select('user', 'user_email', "user_loginname='{$loginName}'");
+			$tmp = $sql->fetch();
 			$loginName = $tmp['user_email'];
 			unset($tmp);
 		}
@@ -213,10 +205,10 @@ if (e_QUERY)
 // Request to reset password
 //--------------------------
 if (isset($_POST['pwsubmit']))
-{	// Request for password reset submitted
+{	
+	// Request for password reset submitted
 	require_once(e_HANDLER.'mail.php');
-	$email = $_POST['email'];
-
+	
 	if ($pref['fpwcode'] && extension_loaded('gd'))
 	{
 		if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify']))
@@ -224,16 +216,18 @@ if (isset($_POST['pwsubmit']))
 			fpw_error(LAN_FPW3);
 		}
 	}
-
-	$clean_email = check_email($tp -> toDB($_POST['email']));
-	$clean_username = $tp -> toDB(varset($_POST['username'], ''));
+	
+	$email 			= $_POST['email'];
+	$clean_email 	= check_email($tp->toDB($_POST['email']));
+	$clean_username = $tp->toDB(varset($_POST['username'], ''));
+ 	
  	$query = "`user_email`='{$clean_email}' ";
 	// Allow admins to remove 'username' from fpw_template.php if they wish.
 	$query .= (isset($_POST['username'])) ? " AND `user_loginname`='{$clean_username}'" : "";
 
-	if ($sql->db_Select('user', '*', $query))
+	if($sql->select('user', '*', $query))
 	{	// Found user in DB
-		$row = $sql->db_Fetch();
+		$row = $sql->fetch();
 
 		if (($row['user_admin'] == 1) && (($row['user_perms'] == '0')  OR ($row['user_perms'] == '0.')))
 		{	// Main admin expected to be competent enough to never forget password! (And its a security check - so warn them)
@@ -253,7 +247,7 @@ if (isset($_POST['pwsubmit']))
 				exit;
 		}
 
-		if ($result = $sql->db_Select('tmp', '*', "`tmp_ip` = 'pwreset' AND `tmp_info` LIKE '".$row['user_loginname'].FPW_SEPARATOR."%'"))
+		if ($result = $sql->select('tmp', '*', "`tmp_ip` = 'pwreset' AND `tmp_info` LIKE '".$row['user_loginname'].FPW_SEPARATOR."%'"))
 		{
 			fpw_error(LAN_FPW4);		// Password reset already requested
 			exit;
