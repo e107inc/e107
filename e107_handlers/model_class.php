@@ -2683,7 +2683,7 @@ class e_front_model extends e_model
      */
     protected function dbUpdate($force = false, $session_messages = false)
     {
-    		$this->_db_errno = 0;
+        $this->_db_errno = 0;
 		$this->_db_errmsg = '';
 		$this->_db_qry = '';
 
@@ -2702,10 +2702,12 @@ class e_front_model extends e_model
 		$table = $this->getModelTable();
 
 		$res = $sql->db_Update($table, $qry, $this->getParam('db_debug', false));
+        $this->_db_qry = $sql->getLastQuery();
 		if(!$res)
 		{
 			$this->_db_errno = $sql->getLastErrorNumber();
 			$this->_db_errmsg = $sql->getLastErrorText();
+
 			if($this->_db_errno)
 			{
 				$this->addMessageError('SQL Update Error', $session_messages); //TODO - Lan
@@ -2887,8 +2889,8 @@ class e_admin_model extends e_front_model
      */
     protected function dbInsert($session_messages = false)
     {
-    		$this->_db_errno = 0;
-    		$this->_db_errmsg = '';
+        $this->_db_errno = 0;
+        $this->_db_errmsg = '';
 		$this->_db_qry = '';
 		if($this->hasError()/* || (!$this->data_has_changed && !$force)*/) // not appropriate here!
 		{
@@ -2899,11 +2901,12 @@ class e_admin_model extends e_front_model
 		$table = $this->getModelTable();
 
 		$res = $sql->db_Insert($table, $sqlQry, $this->getParam('db_debug', false));
+        $this->_db_qry = $sql->getLastQuery();
 		if(!$res)
 		{
 			$this->_db_errno = $sql->getLastErrorNumber();
 			$this->_db_errmsg = $sql->getLastErrorText();
-			$this->_db_qry = $sql->getLastQuery();
+
 			$this->addMessageError('SQL Insert Error', $session_messages); //TODO - Lan
 			$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
 
@@ -2928,8 +2931,8 @@ class e_admin_model extends e_front_model
      */
     protected function dbReplace($force = false, $session_messages = false)
     {
-    		$this->_db_errno = 0;
-    		$this->_db_errmsg = '';
+    	$this->_db_errno = 0;
+    	$this->_db_errmsg = '';
 		$this->_db_qry = '';
 
 		if($this->hasError()) return false;
@@ -2939,11 +2942,12 @@ class e_admin_model extends e_front_model
 		}
 		$sql = e107::getDb();
 		$res = $sql->db_Insert($this->getModelTable(), $this->toSqlQuery('replace'));
+        $this->_db_qry = $sql->getLastQuery();
 		if(!$res)
 		{
 			$this->_db_errno = $sql->getLastErrorNumber();
 			$this->_db_errmsg = $sql->getLastErrorText();
-			$this->_db_qry = $sql->getLastQuery();
+
 			if($this->_db_errno)
 			{
 				$this->addMessageError('SQL Replace Error', $session_messages); //TODO - Lan
@@ -2965,7 +2969,7 @@ class e_admin_model extends e_front_model
      */
     protected function dbDelete($session_messages = false)
     {
-    		$this->_db_errno = 0;
+    	$this->_db_errno = 0;
 		$this->_db_errmsg = '';
 		$this->_db_qry = '';
 
@@ -2985,11 +2989,13 @@ class e_admin_model extends e_front_model
 		else  $id = "'".e107::getParser()->toDB($id)."'";
 		$table  = $this->getModelTable();
 		$res = $sql->db_Delete($table, $this->getFieldIdName().'='.$id);
+        $this->_db_qry = $sql->getLastQuery();
+
 		if(!$res)
 		{
 			$this->_db_errno = $sql->getLastErrorNumber();
 			$this->_db_errmsg = $sql->getLastErrorText();
-			$this->_db_qry = $sql->getLastQuery();
+
 			if($this->_db_errno)
 			{
 				$this->addMessageError('SQL Delete Error', $session_messages); //TODO - Lan
