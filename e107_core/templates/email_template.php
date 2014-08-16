@@ -334,7 +334,44 @@ $QUICKADDUSER_TEMPLATE = array(
 	'email_body' => USRLAN_185.USRLAN_186,
 //	'email_footer' => 'footer'
 	);
+
+
+
+
+
 	
-	
+
+/** Standardized v2 template rewrite 
+ * Format for individual emails sent by e107 (not bulk emails for now) - a work in progress - bulk could be ported later.
+ * @see e107Email::sendEmail(); 
+ * Aim: to make email templates follow the same spec. as other templates while remaining as intuitive as other v2 templates in e107. 
+ */
+
+
+// Default - test email and when no template specified. 
+
+$EMAIL_TEMPLATE['default']['name']	 		= 'Default';
+$EMAIL_TEMPLATE['default']['overrides']		= '';
+$EMAIL_TEMPLATE['default']['header']		= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
+												<html xmlns='http://www.w3.org/1999/xhtml' >
+												<head>
+												<meta http-equiv='content-type' content='text/html; charset=utf-8' />
+												<style>
+													body { padding:10px; background-color: #E1E1E1 } 
+													 div#body { padding:10px; width: 600px; background-color: #FFFFFF; border-radius: 5px }
+												</style>
+												</head>
+												
+												<body>
+												<div id='body'>
+												";
+
+$EMAIL_TEMPLATE['default']['body']			= "{BODY}";											
+
+$EMAIL_TEMPLATE['default']['footer']		= "<br /><br />
+												{SITENAME=link}
+												</div>
+												</body>
+												</html>";
 
 ?>
