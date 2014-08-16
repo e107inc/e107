@@ -120,6 +120,8 @@
 		<core name="mail_pause">3</core>
 		<core name="mail_bounce">none</core>
 		<core name="mail_pausetime">4</core>
+		<core name="mail_sendstyle">texthtml</core>		
+		<core name="mail_workpertick">5</core>
 		<core name="mailer">php</core>
 		<core name="main_wordwrap"></core>
 		<core name="maintainance_flag">0</core>
