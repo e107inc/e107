@@ -217,13 +217,33 @@ function sendTest()
 	else
 	{
 		$mailheader_e107id = USERID;
-		require_once(e_HANDLER.'mail.php');
+	//	require_once(e_HANDLER.'mail.php');
 		$add = ($pref['mailer']) ? " (".strtoupper($pref['mailer']).")" : ' (PHP)';
 		$sendto = trim($_POST['testaddress']);
-		if (!sendemail($sendto, LAN_MAILOUT_113." ".SITENAME.$add, str_replace("[br]", "\n", LAN_MAILOUT_114),LAN_MAILOUT_189)) 
+		
+		
+		$eml = array(); 
+		
+		$eml['email_subject']		= LAN_MAILOUT_113." ".SITENAME.$add;
+		$eml['email_sender_email']	= null; 
+		$eml['email_sender_name']	= null;
+		$eml['email_replyto']		= null;
+		$eml['email_replytonames']	= null; 
+		$eml['send_html']			= true; 
+		$eml['add_html_header'] 	= null; 
+		$eml['email_body']			= str_replace("[br]", "<br>", LAN_MAILOUT_114);
+		$eml['email_attach']		= null;
+		$eml['template']			= 'default';
+		$eml['e107_header']			= USERID;
+
+		if (!e107::getEmail()->sendEmail($sendto, LAN_MAILOUT_189, $eml)) 
 		{
 			$mes->addError(($pref['mailer'] == 'smtp')  ? LAN_MAILOUT_67 : LAN_MAILOUT_106);
 		} 
+	//	if (!sendemail($sendto, LAN_MAILOUT_113." ".SITENAME.$add, str_replace("[br]", "\n", LAN_MAILOUT_114),LAN_MAILOUT_189)) 
+	//	{
+	//		$mes->addError(($pref['mailer'] == 'smtp')  ? LAN_MAILOUT_67 : LAN_MAILOUT_106);
+	//	} 
 		else 
 		{
 			$mes->addSuccess(LAN_MAILOUT_81. ' ('.$sendto.')');

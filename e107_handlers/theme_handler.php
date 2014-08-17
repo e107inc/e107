@@ -954,7 +954,8 @@ class themeHandler
 			
 			foreach ($var as $val)
 			{
-				$text .= "<tr><td><b>".$val['caption']."</b>:</td><td colspan='2'>".$val['html']."</td></tr>";
+				$text .= "<tr><td><b>".$val['caption']."</b>:</td><td colspan='2'>".$val['html']."<div class='field-help'>".$val['help']."</div>
+</td></tr>";
 			}
 
 			return $text;
@@ -1134,17 +1135,16 @@ class themeHandler
         <ul class='nav nav-tabs'>
         <li class='active'><a data-toggle='tab' href='#core-thememanager-configure'>".LAN_CONFIGURE."</a></li>";
 		
-		if($this->themeConfigObj && call_user_func(array(&$this->themeConfigObj, 'help')))
-		{
-			$text .= "<li><a data-toggle='tab' href='#core-thememanager-help'>".LAN_HELP."</a></li>\n";
-		}
-
 
 		if($this->themeConfigObj && call_user_func(array(&$this->themeConfigObj, 'config')) && $mode == 1)
 		{
 			$text .= "<li><a data-toggle='tab' href='#core-thememanager-customconfig'>".LAN_CUSTOM."</a></li>\n";
 		}
 		
+		if($this->themeConfigObj && call_user_func(array(&$this->themeConfigObj, 'help')))
+		{
+			$text .= "<li><a data-toggle='tab' href='#core-thememanager-help'>".LAN_HELP."</a></li>\n";
+		}
 		
 		$text .= "</ul>
 		<div class='tab-content'>
@@ -1432,6 +1432,26 @@ class themeHandler
 					".$this->renderThemeConfig()."
 
 				</table>
+
+				<div class='center buttons-bar'>";
+		
+				if($mode == 2) // admin
+				{
+					$mainid = "selectmain[".$theme['id']."]";
+					$text .= $this->frm->admin_button('submit_adminstyle', TPVLAN_35, 'update');
+					//$text .= $this->frm->admin_button($mainid, TPVLAN_10, 'other');
+				
+				}
+				else // main
+				{
+					$adminid = "selectadmin[".$theme['id']."]";
+					$text .= $this->frm->admin_button('submit_style', TPVLAN_35, 'update');
+					//$text .= $this->frm->admin_button($adminid, TPVLAN_32, 'other');
+				}
+				
+				$text .= "<input type='hidden' name='curTheme' value='".$theme['path']."' />";
+		
+				$text .= "</div>
 			</div>
         </div>
 		\n";

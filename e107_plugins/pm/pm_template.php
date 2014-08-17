@@ -106,10 +106,10 @@ $PM_INBOX_HEADER = "
 	<th class='fcaption' style='width:8%'>&nbsp;</th>
 </tr>
 </thead>
+	<tbody>
 ";
 
 $PM_INBOX_TABLE = "
-<tbody>
 <tr>
 	<td class='forumheader3'>{PM_SELECT}</td>
 	<td class='forumheader3'>{PM_READ_ICON}</td>

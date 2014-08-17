@@ -1,14 +1,11 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_fpw.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
+ * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Forgotten password language file - Password reset
+ *
 */
+
 define("PAGE_NAME", "Password Reset");
 
 define("LAN_02", "Sorry, unable to send email - please contact the main site administrator.");

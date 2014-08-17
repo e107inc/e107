@@ -2,24 +2,13 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2014 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Templates for all emails
  *
- * $URL: $
- * $Revision: 11315 $
- * $Id: $
  */
-
-/**
- * 
- *	@package     e107
- *	@subpackage	e107_templates
- *	@version 	$Id: mail_manager_class.php 11315 2010-02-10 18:18:01Z secretr $;
- *
-*/
 
 
 /**
@@ -318,13 +307,7 @@ $MONTHLYUPDATE_TEMPLATE = array(
 	);
 	
 
-/*
- * QUICK ADD USER EMAIL TEMPLATE - BODY. 	
- * This is the email that is sent when an admin creates a user account in admin. "Quick Add User"
- 	USRLAN_185 = A user account has been created for you at {SITEURL} with the following login:<br />Login Name: {LOGIN}<br />Password: {PASSWORD}<br/><br />
-	USRLAN_186 = Please go to the site as soon as possible and log in, then change your password using the \'Settings\' option.<br /><br />
-						You can also change other settings at the same time.<br /><br />Note that your password cannot be recovered if you lose it.
-*/
+
 
 $QUICKADDUSER_TEMPLATE = array(
 	'template_name' => 'Quick-Add-User',
@@ -334,7 +317,102 @@ $QUICKADDUSER_TEMPLATE = array(
 	'email_body' => USRLAN_185.USRLAN_186,
 //	'email_footer' => 'footer'
 	);
+
+
+
+
+
 	
-	
+
+/** Standardized v2 template rewrite 
+ * Format for individual emails sent by e107 (not bulk emails for now) - a work in progress - bulk could be ported later.
+ * @see e107Email::sendEmail(); 
+ * Aim: to make email templates follow the same spec. as other templates while remaining as intuitive as other v2 templates in e107. 
+ */
+
+
+// Default - test email and when no template specified. 
+
+$EMAIL_TEMPLATE['default']['name']	 		= 'Default';
+$EMAIL_TEMPLATE['default']['header']		= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
+												<html xmlns='http://www.w3.org/1999/xhtml' >
+												<head>
+												<meta http-equiv='content-type' content='text/html; charset=utf-8' />
+												<style>
+													body { padding:10px; background-color: #E1E1E1 } 
+													 div#body { padding:10px; width: 800px; background-color: #FFFFFF; border-radius: 5px }
+												</style>
+												</head>
+												
+												<body>
+												<div id='body'>
+												";
+
+$EMAIL_TEMPLATE['default']['body']			= "{BODY}";											
+
+$EMAIL_TEMPLATE['default']['footer']		= "<br /><br />
+												{SITENAME=link}
+												</div>
+												</body>
+												</html>";
+
+
+// Signup Template. 
+
+
+$EMAIL_TEMPLATE['signup']['subject']		= LAN_SIGNUP_96.' {SITENAME}';
+$EMAIL_TEMPLATE['signup']['header']			= $EMAIL_TEMPLATE['default']['header'];
+$EMAIL_TEMPLATE['signup']['body'] 			= "											
+												<div style='text-align:left'>
+												".LAN_EMAIL_01." {USERNAME},<br />
+												<br />".
+												LAN_SIGNUP_97." {SITENAME}<br />
+												".LAN_SIGNUP_21."<br />
+												<br />
+												{ACTIVATION_LINK}<br />
+												<br />
+												<small>".LAN_SIGNUP_59."</small><br />
+												<br />
+												".LAN_SIGNUP_18."<br />
+												<br />
+												".LAN_LOGINNAME.": <b> {LOGINNAME} </b><br />
+												".LAN_PASSWORD.": <b> {PASSWORD} </b><br />
+												<br />
+												".LAN_EMAIL_04."<br />
+												".LAN_EMAIL_05."<br />
+												<br />
+												".LAN_EMAIL_06."<br />
+												<br />
+												{SITENAME=link}<br />
+												{SITEURL}
+											
+												<br /><br />".($includeSiteButton ? "<a href='".SITEURL."' title=''><img src='".e_IMAGE_ABS.str_replace('{e_IMAGE}', '', $includeSiteButton)."' alt='' /></a>" : '')."
+												</div>
+												
+												";
+$EMAIL_TEMPLATE['signup']['footer']			= "</div>
+												</body>
+												</html>";
+$EMAIL_TEMPLATE['signup']['cc']				= "";
+$EMAIL_TEMPLATE['signup']['bcc']			= "";
+$EMAIL_TEMPLATE['signup']['attachments']	= "";
+												
+/*
+ * QUICK ADD USER EMAIL TEMPLATE - BODY. 	
+ * This is the email that is sent when an admin creates a user account in admin. "Quick Add User"
+ 	USRLAN_185 = A user account has been created for you at {SITEURL} with the following login:<br />Login Name: {LOGIN}<br />Password: {PASSWORD}<br/><br />
+	USRLAN_186 = Please go to the site as soon as possible and log in, then change your password using the \'Settings\' option.<br /><br />
+						You can also change other settings at the same time.<br /><br />Note that your password cannot be recovered if you lose it.
+*/
+$EMAIL_TEMPLATE['quickadd']['header']		= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 												
+$EMAIL_TEMPLATE['quickadd']['body']			= USRLAN_185.USRLAN_186;											
+$EMAIL_TEMPLATE['quickadd']['footer']		= $EMAIL_TEMPLATE['default']['footer']; // will use default footer above. 		
+
+
+// Notify (@see admin-> notify) // TODO
+
+$EMAIL_TEMPLATE['notify']['header']			= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 	
+$EMAIL_TEMPLATE['notify']['body']			= $EMAIL_TEMPLATE['default']['body']; // will use default header above. 	
+$EMAIL_TEMPLATE['notify']['footer']			= $EMAIL_TEMPLATE['default']['footer']; // will use default header above. 	
 
 ?>

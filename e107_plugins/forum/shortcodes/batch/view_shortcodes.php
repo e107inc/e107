@@ -99,22 +99,23 @@ class plugin_forum_view_shortcodes extends e_shortcode
 			$baseDir = $this->forum->getAttachmentPath($this->postInfo['post_user']);
 
 			$images = array();
-
-			$attachArray = e107::unserialize($this->postInfo['post_attachments']);
+			$txt = '';
 		
+			$attachArray = e107::unserialize($this->postInfo['post_attachments']);
+			//print_a($attachArray); 
 			foreach($attachArray as $type=>$vals)
 			{
 				foreach($vals as $key=>$file)
 				{
-					list($date,$user,$tmp,$name) = explode("_",$file,4);
+					list($date,$user, $name) = explode("_", $file, 3); 
 
 					switch($type)
 					{
 						case 'file':
-						
+					
 							$url = e_SELF."?id=".$this->postInfo['post_id']."&amp;dl=".$key;
 							$txt .= IMAGE_attachment." <a href='".$url."'>{$name}</a><br />";
-							
+
 						break;
 
 						case 'img': //Always use thumb to hide the hash. 
@@ -142,15 +143,20 @@ class plugin_forum_view_shortcodes extends e_shortcode
 				
 			}
 			
-			if(count($images) )
+			if(count($images))
 			{
-				return (deftrue('BOOTSTRAP')) ? "<ul class='thumbnails'><li>".implode("</li><li>",$images)."</li></ul>" : implode("<br />",$images);	
+				if(deftrue('BOOTSTRAP')) 
+				{
+
+					return "<ul class='thumbnails list-unstyled list-inline'><li>".implode("</li><li>",$images)."</li></ul>".vartrue($txt); 
+				}
+				else
+				{
+					return implode("<br />",$images)."<br />".vartrue($txt);	
+				}
 			}
-			
-			
+						
 			return $txt;
-			
-			
 		}
 
 	}
@@ -441,9 +447,9 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	
 	$text .= "<li class='divider'></li>";
 	
-	if(plugInstalled('pm') && ($this->postInfo['post_user'] > 0))
+	if(e107::isInstalled('pm') && ($this->postInfo['post_user'] > 0))
 	{
-		$text .= "<li><a href='".e_PLUGIN_ABS."pm/pm.php?send.{$this->postInfo['post_user']}'>".LAN_FORUM_2036."</a></li>";
+		$text .= "<li><a href='".e_PLUGIN_ABS."pm/pm.php?send.{$this->postInfo['post_user']}'>".$tp->toGlyph('envelope')." ".LAN_FORUM_2036." </a></li>";
 	}
 	
 	if($website = $this->sc_website())
@@ -506,8 +512,12 @@ class plugin_forum_view_shortcodes extends e_shortcode
 				$text .= "<li><a href='".e107::getUrl()->create('forum/thread/edit', array('id' => $this->postInfo['post_id']))."'>".LAN_FORUM_2039." ".$tp->toGlyph('edit')."</a></li>";
 			}
 			
-			$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='deletepost' data-forum-post='".$this->postInfo['post_id']."'>".LAN_FORUM_2040." ".$tp->toGlyph('trash')."</a></li>"; 
-
+			// only show delete button when post is not the initial post of the topic
+			if(!$this->forum->threadDetermineInitialPost($this->postInfo['post_id'])) 
+			{
+				$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='deletepost' data-forum-post='".$this->postInfo['post_id']."'>".LAN_FORUM_2040." ".$tp->toGlyph('trash')."</a></li>"; 
+			}
+		
 			if ($type == 'thread')
 			{
 				$text .= "<li><a href='" . e107::getUrl()->create('forum/thread/move', array('id' => $this->postInfo['post_id']))."'>".LAN_FORUM_2042." ".$tp->toGlyph('move')."</a></a></li>"; 

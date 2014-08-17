@@ -995,6 +995,7 @@ class e_user_model extends e_admin_model
 // TODO - add some more useful methods, sc_* methods support
 class e_system_user extends e_user_model
 {
+	public $debug = false;
 	/**
 	 * Constructor
 	 *
@@ -1047,17 +1048,36 @@ class e_system_user extends e_user_model
 		}
 		
 		$eml = $this->renderEmail($type, $userInfo);
-		if(empty($eml)) return false;
+		
+		
+		
+		if(empty($eml))
+		{
+			if($this->debug)
+			{
+				echo '$eml returned nothing';
+			}
+			 return false;
+		}
+		else
+		{
+			if($this->debug)
+			{
+				echo '<h3>$eml array</h3>';
+				print_a($eml);
+			}	
+		}
 		
 		$mailer = e107::getEmail();
 		
 		$mailer->template = $eml['template'];
-		unset($eml['template']);
+
 		
 		// Custom e107 Header
 		if($userInfo['user_id'])
 		{
-			$mailer->AddCustomHeader("X-e107-id: {$userInfo['user_id']}");
+			$eml['e107_header'] = $userInfo['user_id']; 
+		//	$mailer->AddCustomHeader("X-e107-id: {$userInfo['user_id']}");
 		}
 		
 		return $mailer->sendEmail($userInfo['user_email'], $userInfo['user_name'], $eml, false);
@@ -1082,7 +1102,9 @@ class e_system_user extends e_user_model
 	{	
 		$pref = e107::getPref();
 		$ret = array();
+		$tp = e107::getParser();
 		
+	
 		// mailer options
 		if(isset($userInfo['mail_options']) && is_array($userInfo['mail_options']))
 		{
@@ -1092,41 +1114,58 @@ class e_system_user extends e_user_model
 		// required for signup and quickadd email type
 		e107::coreLan('signup');
 
-		// FIXME convert to the new template to avoid include on every call
-		// BC
-		if (file_exists(THEME.'email_template.php'))
+
+		
+		$EMAIL_TEMPLATE = e107::getCoreTemplate('email');
+		
+		if(!is_array($EMAIL_TEMPLATE)) //BC Fixes. pre v2 alpha3. 
 		{
-			include(THEME.'email_template.php');
-		}
-		else
-		{
-			// new standards
-			include(e107::coreTemplatePath('email'));
+			// load from old location. (root of theme folder if it exists)
+			if (file_exists(THEME.'email_template.php'))
+			{
+				include(THEME.'email_template.php');
+			}
+			else
+			{
+				// include core default. 
+				include(e107::coreTemplatePath('email'));
+			}
+			
+			// BC Fixes. 
+			$EMAIL_TEMPLATE['signup']['subject'] 	= $SIGNUPEMAIL_SUBJECT;
+			$EMAIL_TEMPLATE['signup']['cc']			= $SIGNUPEMAIL_CC;
+			$EMAIL_TEMPLATE['signup']['bcc']		= $SIGNUPEMAIL_BCC;
+			$EMAIL_TEMPLATE['signup']['attachments']= $SIGNUPEMAIL_ATTACHMENTS;
+			
+			$EMAIL_TEMPLATE['signup']['body']		= $SIGNUPEMAIL_TEMPLATE;
+			
+			$EMAIL_TEMPLATE['quickadd']['body']		= $QUICKADDUSER_TEMPLATE['email_body'];
+			$EMAIL_TEMPLATE['notify']['body']		= $NOTIFY_TEMPLATE['email_body'];
+			
 		}
 		
-		// FIXME by SecretR - email template mess - there are changes to emails and templates that need to be implemented here
 		$template = '';
 		switch ($type) 
 		{
 			case 'signup':
-				if(vartrue($SIGNUPPROVIDEREMAIL_TEMPLATE)) $template = $SIGNUPPROVIDEREMAIL_TEMPLATE; 
-				else $template = $SIGNUPEMAIL_TEMPLATE;
-				$ret['template'] = false; // Don't allow additional headers (mailer)
+				$template = (vartrue($SIGNUPPROVIDEREMAIL_TEMPLATE)) ? $SIGNUPPROVIDEREMAIL_TEMPLATE :  $EMAIL_TEMPLATE['signup']['body'];
+				$ret['template'] = false;// 'signup'; // false; // Don't allow additional headers (mailer) ??
 			break;
 			
 			case 'quickadd':
-				$template = $QUICKADDUSER_TEMPLATE['email_body']; // XXX quick fix - add the email templating engine
-				$ret['template'] = 'email'; // Don't allow additional headers (mailer)
+				$template = $EMAIL_TEMPLATE['quickadd']['body']; 
+				$ret['template'] = 'quickadd'; // Don't allow additional headers (mailer)
 			break;
 				
-			case 'notify': //emailer changes
-				if(vartrue($userInfo['mail_body'])) $template = $userInfo['mail_body'];//$NOTIFY_HEADER.$userInfo['mail_body'].$NOTIFY_FOOTER; 
+			case 'notify': 
+				if(vartrue($userInfo['mail_body'])) $template = $userInfo['mail_body']; //$NOTIFY_HEADER.$userInfo['mail_body'].$NOTIFY_FOOTER; 
 				$ret['template'] = 'notify';
 			break;
 				
-			case 'email'://emailer changes
+			case 'email':
+			case 'default':
 				if(vartrue($userInfo['mail_body'])) $template = $userInfo['mail_body']; //$EMAIL_HEADER.$userInfo['mail_body'].$EMAIL_FOOTER; 
-				$ret['template'] = 'email';
+				$ret['template'] = 'default';
 			break;
 		}
 		
@@ -1137,11 +1176,15 @@ class e_system_user extends e_user_model
 		// signup email only
 		if($type == 'signup')
 		{
+			$HEAD = '';
+			$FOOT = '';
+			
+			
 			$ret['e107_header'] = $userInfo['user_id'];
-			if (vartrue($SIGNUPEMAIL_CC)) { $ret['email_copy_to'] = $SIGNUPEMAIL_CC; }
-			if (vartrue($SIGNUPEMAIL_BCC)) { $ret['email_bcopy_to'] = $SIGNUPEMAIL_BCC; }
+			if (vartrue($EMAIL_TEMPLATE['signup']['cc'])) { $ret['email_copy_to'] = $EMAIL_TEMPLATE['signup']['cc']; }
+			if (vartrue($EMAIL_TEMPLATE['signup']['bcc'])) { $ret['email_bcopy_to'] = $EMAIL_TEMPLATE['signup']['bcc']; }
 			if (vartrue($userInfo['email_attach'])) { $ret['email_attach'] = $userInfo['mail_attach']; }
-			elseif (vartrue($SIGNUPEMAIL_ATTACHMENTS)) { $ret['email_attach'] = $SIGNUPEMAIL_ATTACHMENTS; }
+			elseif (vartrue($EMAIL_TEMPLATE['signup']['attachments'])) { $ret['email_attach'] = $EMAIL_TEMPLATE['signup']['attachments']; }
 			
 			$style = vartrue($SIGNUPEMAIL_LINKSTYLE) ? "style='{$SIGNUPEMAIL_LINKSTYLE}'" : "";
 		
@@ -1164,7 +1207,7 @@ class e_system_user extends e_user_model
 			$replace[5] = $userInfo['user_name'];
 		
 			$search[6] = '{USERURL}';
-			$replace[6] = varsettrue($userInfo['user_website']) ? $userInfo['user_website'] : "";
+			$replace[6] = vartrue($userInfo['user_website']) ? $userInfo['user_website'] : "";
 			
 			$search[7] = '{DISPLAYNAME}';
 			$replace[7] = $userInfo['user_login'] ? $userInfo['user_login'] : $userInfo['user_name'];
@@ -1175,32 +1218,50 @@ class e_system_user extends e_user_model
 			$search[9] = '{ACTIVATION_URL}';
 			$replace[9] = $userInfo['activation_url'];
 		
-			$subject = str_replace($search, $replace, $SIGNUPEMAIL_SUBJECT);
+			$subject = str_replace($search, $replace, $EMAIL_TEMPLATE['signup']['subject']);
+			
 			$ret['email_subject'] =  $subject;
 			$ret['send_html'] = TRUE;
 		
-			$HEAD = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
-			$HEAD .= "<html xmlns='http://www.w3.org/1999/xhtml' >\n";
-			$HEAD .= "<head><meta http-equiv='content-type' content='text/html; charset=utf-8' />\n";
-			$HEAD .= ($SIGNUPEMAIL_USETHEME == 1) ? "<link rel=\"stylesheet\" href=\"".SITEURLBASE.THEME_ABS."style.css\" type=\"text/css\" />\n" : "";
-		    $HEAD .= "<title>".LAN_SIGNUP_58."</title>\n";
-			
-			if($SIGNUPEMAIL_USETHEME == 2)
+			if(!varset($EMAIL_TEMPLATE['signup']['header']))
 			{
-				$CSS = file_get_contents(THEME."style.css");
-				$HEAD .= "<style>\n".$CSS."\n</style>";
-			}
 		
-			$HEAD .= "</head>\n";
-			if(vartrue($SIGNUPEMAIL_BACKGROUNDIMAGE))
-			{
-				$HEAD .= "<body background=\"".$SIGNUPEMAIL_BACKGROUNDIMAGE."\" >\n";
+				$HEAD = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
+				$HEAD .= "<html xmlns='http://www.w3.org/1999/xhtml' >\n";
+				$HEAD .= "<head><meta http-equiv='content-type' content='text/html; charset=utf-8' />\n";
+				$HEAD .= ($SIGNUPEMAIL_USETHEME == 1) ? "<link rel=\"stylesheet\" href=\"".SITEURLBASE.THEME_ABS."style.css\" type=\"text/css\" />\n" : "";
+			    $HEAD .= "<title>".LAN_SIGNUP_58."</title>\n";
+				
+				if($SIGNUPEMAIL_USETHEME == 2) // @deprecated in favor of {STYLESHEET}
+				{ 
+					$CSS = file_get_contents(THEME."style.css");
+					$HEAD .= "<style>\n".$CSS."\n</style>";
+				}
+			
+				$HEAD .= "</head>\n";
+				if(vartrue($SIGNUPEMAIL_BACKGROUNDIMAGE)) // @deprecated. 
+				{
+					$HEAD .= "<body background=\"".$SIGNUPEMAIL_BACKGROUNDIMAGE."\" >\n";
+				}
+				else
+				{
+					$HEAD .= "<body>\n";
+				}
+			
 			}
 			else
 			{
-				$HEAD .= "<body>\n";
+				$HEAD = $tp->parseTemplate($EMAIL_TEMPLATE['signup']['header'], true);	
 			}
-			$FOOT = "\n</body>\n</html>\n";
+			
+			if(!varset($EMAIL_TEMPLATE['signup']['footer']))
+			{
+				$FOOT = "\n</body>\n</html>\n";
+			}
+			else
+			{
+				$FOOT = $tp->parseTemplate($EMAIL_TEMPLATE['signup']['footer'], true);
+			}
 		
 			$ret['send_html'] = TRUE;
 			$ret['email_body'] = e107::getParser()->parseTemplate(str_replace($search,$replace,$HEAD.$template.$FOOT), true);

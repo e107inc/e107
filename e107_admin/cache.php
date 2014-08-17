@@ -45,7 +45,8 @@ if (e107::getPref('cachestatus') == '2')
 
 if(!is_writable(e_CACHE_CONTENT))
 {
-	e107::getRender()->tablerender(CACLAN_3, CACLAN_10."<br />(".$CACHE_DIRECTORY.")");
+	$mes->addError(CACLAN_10." (".e_CACHE.")");
+	e107::getRender()->tablerender(CACLAN_3, $mes->render());
 	require_once("footer.php");
 	exit;
 }
