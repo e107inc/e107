@@ -2314,8 +2314,11 @@ class e_form
 	{
         $text = "";
 
-		// Recommended pattern: mode=list&field=[FIELD]&asc=[ASC]&from=[FROM]
+        $querypattern = filter_var($querypattern, FILTER_SANITIZE_STRING);
+        if(!$requeststr) $requeststr = rawurldecode(e_QUERY);
+        $requeststr = filter_var($requeststr, FILTER_SANITIZE_STRING);
 
+		// Recommended pattern: mode=list&field=[FIELD]&asc=[ASC]&from=[FROM]
 		if(strpos($querypattern,'&')!==FALSE)
 		{
 			// we can assume it's always $_GET since that's what it will generate
