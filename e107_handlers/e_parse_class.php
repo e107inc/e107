@@ -441,7 +441,7 @@ class e_parse extends e_parser
 				return mb_substr($haystack, $needle, $before_needle);
 		}
 		// No utf8 pack backup
-		return stristr($str, $start, $length);
+		return stristr($haystack, $needle, $before_needle);
 	}
 	
 	/**
