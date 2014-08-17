@@ -2,10 +2,10 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2014 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
- *
+ * 
  * Tagwords Class
  *
 */
@@ -312,8 +312,8 @@ class tagwords
 		//insert the differences (insert what has been added)
 		$insert_diff = array_diff($new, $existing);
 		$count = 0;
-	//	print_a($insert_diff);
-		return ("Tagword Insert: ".print_a($new,true)); // FIXME
+		//print_a($insert_diff);
+		//return ("Tagword Insert: ".print_a($new,true)); // debug info
 		
 		foreach($insert_diff as $word)
 		{
@@ -325,10 +325,10 @@ class tagwords
 			$args['tag_itemid'] = $tag_itemid;
 			$args['tag_word'] = $word;
 			$count += $sql->insert($this->table, $args) ? 1 : 0;
-			return "a Diff was made";
+			//return "a Diff was made";
 		}
 		
-		return "<br />".LAN_TAG_3.": ".$count." words."; // FIXME
+		return "<br />".LAN_TAG_3.": ".$count." words."; 
 	}
 
 	/*

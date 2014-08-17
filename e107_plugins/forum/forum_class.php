@@ -2,7 +2,7 @@
 /*
 * e107 website system
 *
-* Copyright (c) 2008-2013 e107 Inc (e107.org)
+* Copyright (c) 2008-2014 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
@@ -209,18 +209,35 @@ class e107forum
 		return $baseDir;
 	}
 
+    function sendFile($data)
+    {
+        $sql 		= e107::getDb();
+        $post_id  	= intval($data['id']); // forum (post) id
+        $file_id 	= intval($data['dl']); // file id
+        $forum_id 	= $sql->retrieve('forum_post','post_forum','post_id='.$post_id);
 
-	function sendFile($data)
-	{
-		$sql 	= e107::getDb();
-		$fid 	= intval($data['dl']);
-		
-		$array 	= $sql->retrieve('forum_post','post_user,post_attachments','post_id='.intval($data['id']));
-		$attach = e107::serialize($array['post_attachments']);
-		$file 	= $this->getAttachmentPath($array['post_user']).varset($attach['file'][$fid]);
+        // Check if user is allowed to download this file (has 'view' permissions to forum)
+    	if(!$this->checkPerm($forum_id, 'view'))
+		{
+			header('Location:'.e107::getUrl()->create('forum/forum/main')); // FIXME needs proper redirect and 403 header 
+			exit;
+		}
 
-		e107::getFile()->send($file);	
-	}
+        $array 	= $sql->retrieve('forum_post','post_user,post_attachments','post_id='.$post_id);
+        $attach = e107::unserialize($array['post_attachments']);
+        $file 	= $this->getAttachmentPath($array['post_user']).varset($attach['file'][$file_id]);
+
+        // Check if file exists. Send file for download if it does, return 404 error code when file does not exist. 
+ 		if(file_exists($file))
+ 		{
+ 		   e107::getFile()->send($file);
+ 		}
+ 		else
+ 		{
+			header('Location:'.e107::getUrl()->create('forum/forum/main', TRUE, 404)); // FIXME needs proper redirect and 404 header
+			exit;
+ 		}
+    }
 
 
 	/**
@@ -317,20 +334,20 @@ class e107forum
 			
 		//	print_r($_POST);
 			
-			$ret = array('hide'=>false,'msg'=>'','status'=>null); 
+			$ret = array('hide' => false, 'msg' => '', 'status' => null); 
 			
 			switch ($_POST['action']) 
 			{
 				case 'delete':
 					if($this->threadDelete($id))
 					{
-						$ret['msg'] 	= 'Deleted Thread #'.$id;
+						$ret['msg'] 	= 'Deleted topic #'.$id;
 						$ret['hide'] 	= true; 
 						$ret['status'] 	= 'ok';	
 					}
 					else
 					{
-						$ret['msg'] 	= "Couldn't Delete the Thread";
+						$ret['msg'] 	= "Couldn't delete the topic";
 						$ret['status'] 	= 'error';	
 					}
 				break;
@@ -338,19 +355,21 @@ class e107forum
 				case 'deletepost':
 					if(!$postId = vartrue($_POST['post']))
 					{
-						echo "No Post";
-						exit;	
+						// echo "No Post";
+						// exit;
+						$ret['msg'] 	= 'Post not found';
+						$ret['status'] 	= 'error';		
 					}
 					
 					if($this->postDelete($postId))
 					{
-						$ret['msg'] 	= 'Deleted Post #'.$postId;
+						$ret['msg'] 	= 'Deleted post #'.$postId;
 						$ret['hide'] 	= true; 
 						$ret['status'] 	= 'ok';	
 					}
 					else
 					{
-						$ret['msg'] 	= "Couldn't Delete the Post #".$postId;
+						$ret['msg'] 	= "Couldn't delete post #".$postId;
 						$ret['status'] 	= 'error';	
 					}
 				break;
@@ -358,12 +377,12 @@ class e107forum
 				case 'lock':
 					if(e107::getDb()->update('forum_thread', 'thread_active=0 WHERE thread_id='.$id))
 					{
-						$ret['msg'] = FORLAN_CLOSE;
+						$ret['msg'] 	= FORLAN_CLOSE;
 						$ret['status'] 	= 'ok';	
 					}
 					else
 					{
-						$ret['msg'] = "failed to close thread";
+						$ret['msg'] 	= "Failed to close thread";
 						$ret['status'] 	= 'error';	
 					}
 				break;
@@ -824,6 +843,37 @@ class e107forum
 		return $ret;
 	}
 
+	/**
+	* Checks if post is the initial post which started the topic. 
+	* Retrieves list of post_id's belonging to one post_thread. When lowest value is equal to input param, return true. 
+	* Used to prevent deleting of the initial post (so topic shows empty does not get hidden accidently while posts remain in database)
+    *
+	* @param int id of the post
+	* @return boolean true if post is the initial post of the topic (false, if not) 
+    *
+	*/
+	function threadDetermineInitialPost($postId)
+	{
+		$sql = e107::getDb();
+		$postId = (int)$postId;
+		$threadId = $sql->retrieve('forum_post', 'post_thread', 'post_id = '.$postId);
+
+		if($rows = $sql->retrieve('forum_post', 'post_id', 'post_thread = '.$threadId, TRUE))
+		{	
+			$postids = array();
+
+			foreach($rows as $row)
+			{
+				$postids[] = $row['post_id'];
+			}
+
+			if($postId == min($postids))
+			{
+				return true;
+			}			 
+		}
+		return false;
+	}
 
 	function threadGetUserPostcount($threadId)
 	{
@@ -864,37 +914,97 @@ class e107forum
 	}
 
 
-	function postDeleteAttachments($type = 'post', $id='', $f='')
+	function postDeleteAttachments($type = 'post', $id = '') // postDeleteAttachments($type = 'post', $id='', $f='')
 	{
 		$e107 = e107::getInstance();
-		$sql = e107::getDb();
+		$sql  = e107::getDb();
+		$log  = e107::getAdminLog(); 
 
 		$id = (int)$id;
 		if(!$id) { return; }
+		
+		// Moc: Is the code below used at all? When deleting a thread, threadDelete() loops through each post separately to delete attachments (type=post)
+		/*
 		if($type == 'thread')
 		{
 			if(!$sql->select('forum_post', 'post_id', 'post_attachments IS NOT NULL'))
 			{
 				return true;
 			}
+
 			$postList = array();
+			
 			while($row = $sql->Fetch(MYSQL_ASSOC))
 			{
 				$postList[] = $row['post_id'];
 			}
+
 			foreach($postList as $postId)
 			{
 				$this->postDeleteAttachment('post', $postId);
 			}
 		}
+		*/
+		
+		// if we are deleting just a single post
 		if($type == 'post')
 		{
-			if(!$sql->select('forum_post', 'post_attachments', 'post_id = '.$id))
+			if(!$sql->select('forum_post', 'post_user, post_attachments', 'post_id = '.$id))
 			{
 				return true;
 			}
+
 			$tmp = $sql->fetch(MYSQL_ASSOC);
-			$attachments = explode(',', $tmp['post_attachments']);
+
+			$attachment_array = e107::unserialize($tmp['post_attachments']);
+	   		$files = $attachment_array['file'];
+	   		$imgs  = $attachment_array['img']; 
+	   		
+	   		// TODO see if files/images check can be written more efficiently 
+	   		// check if there are files to be deleted 
+	   		if(is_array($files))
+	   		{
+		   		// loop through each file and delete it
+		   		foreach ($files as $file) 
+		   		{
+		   			$file = $this->getAttachmentPath($tmp['post_user']).$file;
+		   			@unlink($file);
+
+	   				// Confirm that file has been deleted. Add warning to log file when file could not be deleted.
+		   			if(file_exists($file))
+		   			{
+		   				$log->addWarning("Could not delete file: ".$file.". Please delete manually as this file is now no longer in use (orphaned).");
+		   			}
+		   		} 
+	   		}
+	   		
+	   		// check if there are images to be deleted
+	   		if(is_array($imgs))
+	   		{
+	   			// loop through each image and delete it
+		   		foreach ($imgs as $img) 
+		   		{
+		   			$img = $this->getAttachmentPath($tmp['post_user']).$img;
+		   			@unlink($img);
+
+	   				// Confirm that file has been deleted. Add warning to log file when file could not be deleted.
+		   			if(file_exists($img))
+		   			{
+		   				$log->addWarning("Could not delete image: ".$img.". Please delete manually as this file is now no longer in use (orphaned).");
+		   			}
+		   		} 	
+	   		}
+
+	   		// At this point we assume that all attachments have been deleted from the post. The log file may prove otherwise (see above). 
+	   		$log->toFile('forum_delete_attachments', 'Forum plugin - Delete attachments', TRUE);
+
+	   		// Empty the post_attachments field for this post in the database (prevents loop when deleting entire thread)
+	   		$sql->update("forum_post", "post_attachments = NULL WHERE post_id = ".$id);
+
+	    		
+			/* Old code when attachments were still stored in plugin folder. 
+			Left for review but may be deleted in future.  
+
 			foreach($attachments as $k => $a)
 			{
 				$info = explode('*', $a);
@@ -912,6 +1022,7 @@ class e107forum
 				}
 				unset($attachments[$k]);
 			}
+
 			$tmp = array();
 			if(count($attachments))
 			{
@@ -921,11 +1032,14 @@ class e107forum
 			{
 				$tmp['post_attachments'] = '_NULL_';
 			}
+
 			$info = array();
 			$info['data'] = $tmp;
 			$info['_FILE_TYPES']['post_attachments'] = 'array';
 			$info['WHERE'] = 'post_id = '.$id;
 			$sql->update('forum_post', $info);
+
+			*/
 		}
 	}
 
@@ -1739,9 +1853,12 @@ class e107forum
 		if ($threadInfo = $this->threadGet($threadId))
 		{
 			// delete poll if there is one
-			$sql->delete('poll', 'poll_datestamp='.$threadId);
-
-			//decrement user post counts
+			if($sql->select('polls', '*', 'poll_datestamp='.$threadId))
+			{
+				$sql->delete('polls', 'poll_datestamp='.$threadId);
+			} 
+	
+			// decrement user post counts
 			if ($postCount = $this->threadGetUserPostcount($threadId))
 			{
 				foreach ($postCount as $k => $v)
@@ -1751,14 +1868,14 @@ class e107forum
 			}
 
 			// delete all posts
-			$qry = 'SELECT post_id FROM `#forum_post` WHERE post_thread = '.$threadId;
-			if($sql->gen($qry))
+			if($sql->select('forum_post', 'post_id', 'post_thread = '.$threadId))
 			{
 				$postList = array();
 				while($row = $sql->fetch(MYSQL_ASSOC))
 				{
 					$postList[] = $row['post_id'];
 				}
+
 				foreach($postList as $postId)
 				{
 					$this->postDelete($postId, false);
@@ -1772,8 +1889,11 @@ class e107forum
 			}
 
 			//Delete any thread tracking
-			$sql->delete('forum_track', 'track_thread='.$threadId);
-
+			if($sql->select('forum_track', '*', 'track_thread='.$threadId))
+			{	
+				$sql->delete('forum_track', 'track_thread='.$threadId);
+			}
+			
 			// update forum with correct thread/reply counts
 			$sql->update('forum', "forum_threads=GREATEST(forum_threads-1,0), forum_replies=GREATEST(forum_replies-{$threadInfo['thread_total_replies']},0) WHERE forum_id=".$threadInfo['thread_forum_id']);
 
@@ -1785,7 +1905,6 @@ class e107forum
 			return $status; // - XXX should return true/false $threadInfo['thread_total_replies'];
 		}
 	}
-
 
 	/**
 	 * Delete a Post
@@ -1805,6 +1924,7 @@ class e107forum
 			echo 'NOT FOUND!'; return;
 		}
 		
+
 		$row = $sql->fetch(MYSQL_ASSOC);
 
 		//delete attachments if they exist
@@ -1813,15 +1933,16 @@ class e107forum
 			$this->postDeleteAttachments('post', $postId);
 		}
 
-		// delete post
+		// delete post from database
 		if($sql->delete('forum_post', 'post_id='.$postId))
 		{
 			$deleted = true; 
 		}
 
+		// update statistics
 		if($updateCounts)
 		{
-			//decrement user post counts
+			// decrement user post counts
 			if ($row['post_user'])
 			{
 				$sql->update('user_extended', 'user_plugin_forum_posts=GREATEST(user_plugin_forum_posts-1,0) WHERE user_extended_id='.$row['post_user']);
