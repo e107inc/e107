@@ -764,15 +764,17 @@ class e_parse_shortcode
 			// auto-register eVars if possible - call it manually?
 			// $this->callScFunc($classname, 'setParserVars', $this->eVars);
 		}
-		elseif (is_array($extraCodes))
+		elseif (is_array($extraCodes)) // Array value contains the contents of a .sc file which is then parsed. ie. return " whatever "; 
 		{
-			$this->addedCodes = &$extraCodes;
+			$this->addedCodes = &$extraCodes; 
 			/*
 			foreach ($extraCodes as $sc => $code)
 			{
 				$this->scList[$sc] = $code;
 			}
 			*/
+			
+		//	print_a($this);
 		}
 		$ret = preg_replace_callback('#\{(\S[^\x02]*?\S)\}#', array(&$this, 'doCode'), $text);
 		$this->parseSCFiles = $saveParseSCFiles; // Restore previous value
@@ -781,7 +783,7 @@ class e_parse_shortcode
 		$this->debug_legacy = null;
 		
 		
-	//	$this->sc_style = array();	 //XXX Adding this will also fix #2 above. 
+			//	$this->sc_style = array();	 //XXX Adding this will also fix #2 above. 
 
 		
 		return $ret;

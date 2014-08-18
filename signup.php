@@ -787,17 +787,11 @@ function headerjs()
 
 /**
  * Create email to send to user who just registered.
- * DEPRECATED use $user->email()
  * @param array $userInfo is the array of user-related DB variables
- *
  * @return array of data for mailer - field names directly compatible
  */
-/*function render_email($userInfo, $preview = FALSE)
+function render_email($userInfo, $preview = FALSE)
 {
-	// 1 = Body
-	// 2 = Subject
-
-	global $pref,$SIGNUPEMAIL_LINKSTYLE,$SIGNUPEMAIL_SUBJECT,$SIGNUPEMAIL_TEMPLATE;
 
 	if($preview == TRUE)
 	{
@@ -808,8 +802,18 @@ function headerjs()
 		$userInfo['user_website'] = "www.test-site.com";		// This may not be defined
 		$userInfo['user_id'] = 0;
 		$userInfo['user_sess'] = "1234567890ABCDEFGHIJKLMNOP";
+		$userInfo['user_email'] = 'cameron@teslapower.solar';
+		$userInfo['activation_url'] = 'http://whereever.to.activate.com/';
 	}
-
+	
+	return  e107::getSystemUser($userInfo['user_id'], false)->renderEmail('signup', $userInfo);
+	
+	
+	
+	/*
+	
+	global $pref,$SIGNUPEMAIL_LINKSTYLE,$SIGNUPEMAIL_SUBJECT,$SIGNUPEMAIL_TEMPLATE;
+	 * 
 	define('RETURNADDRESS', (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$userInfo['user_id'].".".$userInfo['user_sess'] : SITEURL."/signup.php?activate.".$userInfo['user_id'].".".$userInfo['user_sess'].".".e_LAN));
 	$pass_show = ($pref['user_reg_secureveri'])? '*******' : $userInfo['user_password'];
 
@@ -882,8 +886,10 @@ function headerjs()
 	$ret['preview'] = $ret['mail_body'];												// Non-standard field
 
 	return $ret;
+
+	 */
 }
-*/
+
 
 
 function render_after_signup($error_message)
