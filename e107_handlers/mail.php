@@ -599,31 +599,47 @@ class e107Email extends PHPMailer
 	public function arraySet($eml)
 	{
 		
-		if($this->debug)
-		{
-			print_a($eml);
-		}
+	
 		
 		
 		if(vartrue($eml['template'])) // @see e107_core/templates/email_template.php
 		{
 			$tp = e107::getParser();
 			
-			if($tmpl = e107::getCoreTemplate('email',$eml['template'], true, true))  // $EMAIL_TEMPLATE['default']	
+			if($tmpl = e107::getCoreTemplate('email', $eml['template'], true, true))  // $EMAIL_TEMPLATE['default']	
 			{
-				$filter = array("\n", "\t");
-				$tmpl['header'] = str_replace($filter,'', $tmpl['header']);
-				$tmpl['footer'] = str_replace($filter,'', $tmpl['footer']);
+			//	$filter = array("\n", "\t");
+			//	$tmpl['header'] = str_replace($filter,'', $tmpl['header']);
+			//	$tmpl['footer'] = str_replace($filter,'', $tmpl['footer']);
 				
-				$eml['email_body'] = ($tp->toEmail($tmpl['header']). str_replace('{BODY}', $eml['email_body'], $tmpl['body']). $tp->toEmail($tmpl['footer']));
+				$eml['shortcodes']['BODY'] = $eml['email_body'];
+				$eml['shortcodes']['SUBJECT'] = $eml['email_subject'];
+				
+				$emailBody = $tmpl['header']. $tmpl['body'] . $tmpl['footer']; 
+				
+				$eml['email_body'] = $tp->parseTemplate($emailBody, true, varset($eml['shortcodes'],null));
+				
+			//	$eml['email_body'] = ($tp->toEmail($tmpl['header']). str_replace('{BODY}', $eml['email_body'], $tmpl['body']). $tp->toEmail($tmpl['footer']));
+				
+				if($this->debug)
+				{
+					print_a($tmpl);	
+				}
+				
 				unset($eml['add_html_header']); // disable other headers when template is used. 
+				
+				$this->Subject = $tp->parseTemplate($tmpl['subject'], true, varset($eml['shortcodes'],null)); 
 			}
 			
+		}
+		else
+		{
+			if (vartrue($eml['email_subject'])) $this->Subject = $tp->parseTemplate($eml['email_subject'], true, varset($eml['shortcodes'],null)); 	
 		}
 		
 		
 		if (isset($eml['SMTPDebug'])) $this->SMTPDebug = $eml['SMTPDebug'];			// 'FALSE' is a valid value!
-		if (vartrue($eml['email_subject'])) $this->Subject = $eml['email_subject'];
+		
 		if (vartrue($eml['email_sender_email'])) $this->From = $eml['email_sender_email'];
 		if (vartrue($eml['email_sender_name'])) $this->FromName = $eml['email_sender_name'];
 		if (vartrue($eml['email_replyto'])) $this->AddAddressList('replyto',$eml['email_replyto'],vartrue($eml['email_replytonames'],''));	
@@ -640,7 +656,10 @@ class e107Email extends PHPMailer
 			$this->save_bouncepath = $eml['bouncepath'];		// Bounce path
 		}
 		
-	
+		if($this->debug)
+		{
+			print_a($eml);
+		}
 		
 		
 		

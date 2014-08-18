@@ -321,7 +321,7 @@ $QUICKADDUSER_TEMPLATE = array(
 
 
 
-
+// ----------------------- Everything above this line is deprecated but may continue to work for a while  ------------------------------- // 
 	
 
 /** Standardized v2 template rewrite 
@@ -334,6 +334,7 @@ $QUICKADDUSER_TEMPLATE = array(
 // Default - test email and when no template specified. 
 
 $EMAIL_TEMPLATE['default']['name']	 		= 'Default';
+$EMAIL_TEMPLATE['default']['subject']		= '{SUBJECT} {SITENAME}';
 $EMAIL_TEMPLATE['default']['header']		= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
 												<html xmlns='http://www.w3.org/1999/xhtml' >
 												<head>
@@ -357,8 +358,13 @@ $EMAIL_TEMPLATE['default']['footer']		= "<br /><br />
 												</html>";
 
 
-// Signup Template. 
-
+/**
+ *  Signup Template. 
+ * @example developer tests
+ * signup.php?preview
+ * signup.php?test 
+ * signup.php?preview.aftersignup
+ */
 
 $EMAIL_TEMPLATE['signup']['subject']		= LAN_SIGNUP_96.' {SITENAME}';
 $EMAIL_TEMPLATE['signup']['header']			= $EMAIL_TEMPLATE['default']['header'];
@@ -404,15 +410,16 @@ $EMAIL_TEMPLATE['signup']['attachments']	= "";
 	USRLAN_186 = Please go to the site as soon as possible and log in, then change your password using the \'Settings\' option.<br /><br />
 						You can also change other settings at the same time.<br /><br />Note that your password cannot be recovered if you lose it.
 */
-$EMAIL_TEMPLATE['quickadd']['header']		= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 												
-$EMAIL_TEMPLATE['quickadd']['body']			= USRLAN_185.USRLAN_186;											
-$EMAIL_TEMPLATE['quickadd']['footer']		= $EMAIL_TEMPLATE['default']['footer']; // will use default footer above. 		
+$EMAIL_TEMPLATE['quickadduser']['subject']		= '{SITENAME}: {SUBJECT} ';
+$EMAIL_TEMPLATE['quickadduser']['header']		= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 												
+$EMAIL_TEMPLATE['quickadduser']['body']			= USRLAN_185.USRLAN_186;											
+$EMAIL_TEMPLATE['quickadduser']['footer']		= $EMAIL_TEMPLATE['default']['footer']; // will use default footer above. 		
 
 
 // Notify (@see admin-> notify) // TODO
-
-$EMAIL_TEMPLATE['notify']['header']			= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 	
-$EMAIL_TEMPLATE['notify']['body']			= $EMAIL_TEMPLATE['default']['body']; // will use default header above. 	
-$EMAIL_TEMPLATE['notify']['footer']			= $EMAIL_TEMPLATE['default']['footer']; // will use default header above. 	
+$EMAIL_TEMPLATE['notify']['subject']			= '{SITENAME}: {SUBJECT} ';
+$EMAIL_TEMPLATE['notify']['header']				= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 	
+$EMAIL_TEMPLATE['notify']['body']				= $EMAIL_TEMPLATE['default']['body']; // will use default header above. 	
+$EMAIL_TEMPLATE['notify']['footer']				= $EMAIL_TEMPLATE['default']['footer']; // will use default header above. 	
 
 ?>
