@@ -3198,11 +3198,28 @@ class e_admin_controller_ui extends e_admin_controller
 				break;
 				
 				case 'images':
-					//XXX FIXME - entities in stored result. 
+				case 'files':
+		
+				//	XXX Cam @ SecretR: didn't work here. See model_class.php line 2046. 
+				// if(!is_array($value))
+			//		{
+				//		$value = e107::unserialize($value);	
+				//	}
 				break;
 				
 	
 			}
+/*
+			if($attributes['serialize'] == true)
+			{
+				$attributes['data'] = 'array';		
+			}
+
+			if($attributes['data'] != 'array')
+			{
+				$value = e107::unserialize($value);	
+			}
+*/
 	
 			if(vartrue($attributes['dataPath']))
 			{
