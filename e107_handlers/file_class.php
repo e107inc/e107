@@ -304,9 +304,10 @@ class e_file
 	 * Collect file information
 	 * @param string $path_to_file
 	 * @param boolean $imgcheck
+	 * @param boolean $auto_fix_ext
 	 * @return array
 	 */
-	function get_file_info($path_to_file, $imgcheck = true)
+	function get_file_info($path_to_file, $imgcheck = true, $auto_fix_ext = true)
 	{
 		$finfo = array();
 		
@@ -328,27 +329,30 @@ class e_file
 			}
 			
 		}
-		
-		// Auto-Fix Files without an extensions using known mime-type. 
-		if(empty($finfo['pathinfo']['extension']) && !is_dir($path_to_file) && !empty($finfo['mime']))
-		{
-			if($ext = $this->getFileExtension($finfo['mime']))
-			{
-				$finfo['pathinfo']['extension'] = $ext;
-				
-				
-				$newFile = $path_to_file . $ext;	
-				if(!file_exists($newFile))
-				{
-					if(rename($path_to_file,$newFile)===true)
-					{
-						$finfo['pathinfo'] = pathinfo($newFile);
-						$path_to_file = $newFile;
-					}	
-				}
-			}
-		}
-		
+
+        if($auto_fix_ext)
+        {
+            // Auto-Fix Files without an extensions using known mime-type.
+            if(empty($finfo['pathinfo']['extension']) && !is_dir($path_to_file) && !empty($finfo['mime']))
+            {
+                if($ext = $this->getFileExtension($finfo['mime']))
+                {
+                    $finfo['pathinfo']['extension'] = $ext;
+
+
+                    $newFile = $path_to_file . $ext;
+                    if(!file_exists($newFile))
+                    {
+                        if(rename($path_to_file,$newFile)===true)
+                        {
+                            $finfo['pathinfo'] = pathinfo($newFile);
+                            $path_to_file = $newFile;
+                        }
+                    }
+                }
+            }
+        }
+
 
 		if($imgcheck && ($tmp = getimagesize($path_to_file)))
 		{
