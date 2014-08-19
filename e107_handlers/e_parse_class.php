@@ -794,6 +794,8 @@ class e_parse extends e_parser
 			$text = $this->simpleParse($text, $extraCodes, false);	
 		}
 		
+		
+		
 		return e107::getScParser()->parseCodes($text, $parseSCFiles, $extraCodes, $eVars);
 	}
 
@@ -2091,8 +2093,10 @@ class e_parse extends e_parser
 			'e_HANDLER/' 		=> '{e_HANDLER}', // BC
 			'e_MEDIA/' 			=> '{e_MEDIA}',
 			'e_WEB/' 			=> '{e_ADMIN}',
+			'THEME/'			=> '{THEME}',
 		);
-
+		
+		
 		switch ($type)
 		{
 			case 'sc':
