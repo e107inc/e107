@@ -191,12 +191,11 @@ $MAILOUT_FOOTER = "
 
 */
 
-// FIXME clean up the whole email template/render tempalte mess
 
 //-------------------------------------------------------------
 //		'SIGNUP' TEMPLATE
 //-------------------------------------------------------------
-
+//@Deprecated 
 $SIGNUPEMAIL_TEMPLATE = "
 <div style='padding:10px'>
 <div style='text-align:left; width:90%'>
@@ -357,6 +356,8 @@ $EMAIL_TEMPLATE['default']['footer']		= "<br /><br />
 												</body>
 												</html>";
 
+// -------------------------------
+
 
 /**
  *  Signup Template. 
@@ -392,7 +393,7 @@ $EMAIL_TEMPLATE['signup']['body'] 			= "
 												{SITENAME=link}<br />
 												{SITEURL}
 											
-												<br /><br />".($includeSiteButton ? "<a href='".SITEURL."' title=''><img src='".e_IMAGE_ABS.str_replace('{e_IMAGE}', '', $includeSiteButton)."' alt='' /></a>" : '')."
+												<br /><br />".($includeSiteButton ? "<a href='".SITEURL."' title=''>{SITEBUTTON}</a>" : '')."
 												</div>
 												
 												";
@@ -402,6 +403,11 @@ $EMAIL_TEMPLATE['signup']['footer']			= "</div>
 $EMAIL_TEMPLATE['signup']['cc']				= "";
 $EMAIL_TEMPLATE['signup']['bcc']			= "";
 $EMAIL_TEMPLATE['signup']['attachments']	= "";
+
+//TODO FIXME {SITEBUTTON} not working at the moment. (broken path)
+
+// -----------------------------
+
 												
 /*
  * QUICK ADD USER EMAIL TEMPLATE - BODY. 	
@@ -415,11 +421,25 @@ $EMAIL_TEMPLATE['quickadduser']['header']		= $EMAIL_TEMPLATE['default']['header'
 $EMAIL_TEMPLATE['quickadduser']['body']			= USRLAN_185.USRLAN_186;											
 $EMAIL_TEMPLATE['quickadduser']['footer']		= $EMAIL_TEMPLATE['default']['footer']; // will use default footer above. 		
 
+// ---------------------------------
+
+
 
 // Notify (@see admin-> notify) // TODO
 $EMAIL_TEMPLATE['notify']['subject']			= '{SITENAME}: {SUBJECT} ';
 $EMAIL_TEMPLATE['notify']['header']				= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 	
 $EMAIL_TEMPLATE['notify']['body']				= $EMAIL_TEMPLATE['default']['body']; // will use default header above. 	
 $EMAIL_TEMPLATE['notify']['footer']				= $EMAIL_TEMPLATE['default']['footer']; // will use default header above. 	
+
+// A Dummy Example for theme developers. 
+$EMAIL_TEMPLATE['example']['subject']			= '{SITENAME}: {SUBJECT} ';
+$EMAIL_TEMPLATE['example']['header']			= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 	
+$EMAIL_TEMPLATE['example']['body']				= $EMAIL_TEMPLATE['default']['body']; // will use default header above. 	
+$EMAIL_TEMPLATE['example']['footer']			= "<br /><br />
+												
+												<a href='{SITEURL}'><img src='{THEME}images/my-signature.png' alt='{SITENAME}' /></a>
+												</div>
+												</body>
+												</html>";
 
 ?>

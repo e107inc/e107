@@ -825,20 +825,28 @@ class e107Email extends PHPMailer
 	 */
 	public function MsgHTML($message, $basedir = '') 
 	{
+		
+		
 		preg_match_all("/(src|background)=([\"\'])(.*)\\2/Ui", $message, $images);			// Modified to accept single quotes as well
 		if(isset($images[3])) 
 		{
 			
 			if($this->debug)
 			{
+				echo "<h4>Detected Image Paths</h4>";
 				print_a($images[3]);	
 			}
+			
+			$tp = e107::getParser();
 			
 			foreach($images[3] as $i => $url) 
 			{
 				// do not change urls for absolute images (thanks to corvuscorax)
 				if (!preg_match('#^[A-z]+://#',$url)) 
 				{
+					$url = $tp->replaceConstants($url);
+					
+					
 					$delim = $images[2][$i];			// Will be single or double quote
 					$filename = basename($url);
 					$directory = dirname($url);
@@ -848,7 +856,12 @@ class e107Email extends PHPMailer
 						$directory = substr(SERVERBASE, 0, -1).$directory;		// Convert to absolute server reference
 						$basedir = '';
 					}
-					//echo "CID file {$filename} in {$directory}. Base = ".SERVERBASE."<   BaseDir = {$basedir}<br />";
+					
+					if ($this->debug)
+					{ 
+						echo "<br />CID file {$filename} in {$directory}. Base = ".SERVERBASE."<   BaseDir = {$basedir}<br />";
+					}
+					
 					$cid = 'cid:' . md5($filename);
 					$ext = pathinfo($filename, PATHINFO_EXTENSION);
 					$mimeType  = self::_mime_types($ext);
@@ -858,15 +871,29 @@ class e107Email extends PHPMailer
 					if ( $this->AddEmbeddedImage($basedir.$directory.$filename, md5($filename), $filename, 'base64',$mimeType) ) 
 					{
 						// $images[1][$i] contains 'src' or 'background'
-						$message = preg_replace("/".$images[1][$i]."=".$delim.preg_quote($url, '/').$delim."/Ui", $images[1][$i]."=".$delim.$cid.$delim, $message);
+						$message = preg_replace("/".$images[1][$i]."=".$delim.preg_quote($images[3][$i], '/').$delim."/Ui", $images[1][$i]."=".$delim.$cid.$delim, $message);
 					}
 					else
 					{
-						if ($this->debug) echo "Add embedded image {$url} failed<br />";
+						if ($this->debug)
+						{
+							 echo "Add embedded image {$url} failed<br />";
+							 echo "<br />basedir=".$basedir;
+							 echo "<br />dir=".$directory;
+							 echo "<br />file=".$filename;
+							 echo "<br />";
+						}
 					}
+				}
+				elseif($this->debug)
+				{
+					echo "<br />Absolute Image: ".$url;	
+					
 				}
 			}
 		}
+
+
 		$this->IsHTML(true);
 		$this->Body = $message;
 		//print_a($message);
