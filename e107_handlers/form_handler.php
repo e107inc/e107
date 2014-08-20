@@ -1037,7 +1037,14 @@ class e_form
 		//never allow id in format name-value for text fields
 		$text = "<input type='password' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
 
-		return "<span class='form-inline'>".$text.$gen."</span>".vartrue($addon);
+		if(empty($gen) && empty($addon))
+		{
+			return $text;	
+		}
+		else 
+		{
+			return "<span class='form-inline'>".$text.$gen."</span>".vartrue($addon);
+		}	
 		
 	}
 
