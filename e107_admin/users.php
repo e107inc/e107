@@ -146,8 +146,16 @@ class users_admin extends e_admin_dispatcher
 				
 				// redirect to TestObserver/TestPage
 				case 'usersettings':
-					header('location:'.e107::getUrl()->create('user/profile/edit', 'id='.(int) $_POST['userid'], 'full=1&encode=0'));
-					exit;
+					$this->getRequest()
+						->setQuery(array())
+						->setMode('main')
+						->setAction('edit')
+						->setId($_POST['userid']);
+					$this->getController()->redirect();
+					
+					
+					//XXX Broken to the point of being unusable. //header('location:'.e107::getUrl()->create('user/profile/edit', 'id='.(int) $_POST['userid'], 'full=1&encode=0'));
+					// exit;
 				break;
 			}
 			
@@ -189,7 +197,7 @@ class users_admin_ui extends e_admin_ui
 	/**
 	 * List (numerical array) of only disallowed for this controller actions
 	 */
-	protected $disallow = array('edit', 'create');
+	protected $disallow = array('create');
 
 	
 	//TODO - finish 'user' type, set 'data' to all editable fields, set 'noedit' for all non-editable fields
@@ -200,28 +208,28 @@ class users_admin_ui extends e_admin_ui
 //		'user_status' 		=> array('title' => LAN_STATUS,		'type' => 'method',	'alias'=>'user_status', 'width' => 'auto','forced' => true, 'nosort'=>TRUE),
 		'user_ban' 			=> array('title' => LAN_STATUS,		'type' => 'method', 'width' => 'auto', 'filter'=>true, 'batch'=>true,'thclass'=>'center', 'class'=>'center'),
 	
-		'user_name' 		=> array('title' => LAN_USER_01,	'type' => 'text',	'width' => 'auto','thclass' => 'left first'), // Display name
- 		'user_loginname' 	=> array('title' => LAN_USER_02,	'type' => 'text',	'width' => 'auto'), // User name
- 		'user_login' 		=> array('title' => LAN_USER_03,	'type' => 'text',	'width' => 'auto'), // Real name (no real vetting)
- 		'user_customtitle' 	=> array('title' => LAN_USER_04,	'type' => 'text',	'width' => 'auto'), // No real vetting
- 		'user_password' 	=> array('title' => LAN_USER_05,	'type' => 'password',	'width' => 'auto'), //TODO add md5 option to form handler? 
-		'user_sess' 		=> array('title' => 'Session',		'type' => 'text',	'width' => 'auto'), // Photo
- 		'user_image' 		=> array('title' => LAN_USER_07,	'type' => 'text',	'width' => 'auto'), // Avatar
- 		'user_email' 		=> array('title' => LAN_EMAIL,		'type' => 'text',	'width' => 'auto'),
-		'user_hideemail' 	=> array('title' => LAN_USER_10,	'type' => 'boolean',	'width' => 'auto', 'thclass'=>'center', 'class'=>'center', 'filter'=>true, 'batch'=>true, 'readParms'=>'trueonly=1'),
-		'user_xup' 			=> array('title' => 'Xup',			'type' => 'text',	'width' => 'auto'),
-		'user_class' 		=> array('title' => LAN_USER_12,	'type' => 'userclasses' , 'writeParms' => 'classlist=classes', 'inline'=>true, 'filter'=>true, 'batch'=>true),
-		'user_join' 		=> array('title' => LAN_USER_14,	'type' => 'datestamp', 	'width' => 'auto', 'writeParms'=>'readonly=1'),
-		'user_lastvisit' 	=> array('title' => LAN_USER_15,	'type' => 'datestamp', 	'width' => 'auto'),
-		'user_currentvisit' => array('title' => LAN_USER_16,	'type' => 'datestamp', 	'width' => 'auto'),
-		'user_comments' 	=> array('title' => LAN_USER_17,	'type' => 'int', 	'width' => 'auto','thclass'=>'right','class'=>'right'),
-		'user_lastpost' 	=> array('title' => 'Last Post',	'type' => 'datestamp', 	'width' => 'auto'),
-		'user_ip' 			=> array('title' => LAN_USER_18,	'type' => 'ip',		'width' => 'auto'),
+		'user_name' 		=> array('title' => LAN_USER_01,	'type' => 'text',	'data'=>'str', 'width' => 'auto','thclass' => 'left first'), // Display name
+ 		'user_loginname' 	=> array('title' => LAN_USER_02,	'type' => 'text',	'data'=>'str', 'width' => 'auto'), // User name
+ 		'user_login' 		=> array('title' => LAN_USER_03,	'type' => 'text',	'data'=>'str', 'width' => 'auto'), // Real name (no real vetting)
+ 		'user_customtitle' 	=> array('title' => LAN_USER_04,	'type' => 'text',	'data'=>'str', 'width' => 'auto'), // No real vetting
+ 		'user_password' 	=> array('title' => LAN_USER_05,	'type' => 'method',	'data'=>'str', 'width' => 'auto'), //TODO add md5 option to form handler? 
+		'user_sess' 		=> array('title' => 'Session',		'noedit'=>true, 'type' => 'text',	'width' => 'auto'), // Photo
+ 		'user_image' 		=> array('title' => LAN_USER_07,	'type' => 'dropdown',	'data'=>'str', 'width' => 'auto'), // Avatar
+ 		'user_email' 		=> array('title' => LAN_EMAIL,		'type' => 'text', 'inline'=>true, 'data'=>'str',	'width' => 'auto'),
+		'user_hideemail' 	=> array('title' => LAN_USER_10,	'type' => 'boolean', 'data'=>'int',	'width' => 'auto', 'thclass'=>'center', 'class'=>'center', 'filter'=>true, 'batch'=>true, 'readParms'=>'trueonly=1'),
+		'user_xup' 			=> array('title' => 'Xup',			'noedit'=>true, 'type' => 'text',	'width' => 'auto'),
+		'user_class' 		=> array('title' => LAN_USER_12,	'type' => 'userclasses' , 'inline'=>true, 'writeParms' => 'classlist=classes', 'inline'=>true, 'filter'=>true, 'batch'=>true),
+		'user_join' 		=> array('title' => LAN_USER_14,	'noedit'=>true, 'type' => 'datestamp', 	'width' => 'auto', 'writeParms'=>'readonly=1'),
+		'user_lastvisit' 	=> array('title' => LAN_USER_15,	'noedit'=>true, 'type' => 'datestamp', 	'width' => 'auto'),
+		'user_currentvisit' => array('title' => LAN_USER_16,	'noedit'=>true, 'type' => 'datestamp', 	'width' => 'auto'),
+		'user_comments' 	=> array('title' => LAN_USER_17,	'noedit'=>true, 'type' => 'int', 	'width' => 'auto','thclass'=>'right','class'=>'right'),
+		'user_lastpost' 	=> array('title' => 'Last Post',	'noedit'=>true, 'type' => 'datestamp', 	'width' => 'auto'),
+		'user_ip' 			=> array('title' => LAN_USER_18,	'noedit'=>true, 'type' => 'ip',		'width' => 'auto'),
 		//	'user_prefs' 		=> array('title' => LAN_USER_20,	'type' => 'text', 	'width' => 'auto'),
-		'user_visits' 		=> array('title' => LAN_USER_21,	'type' => 'int', 'width' => 'auto','thclass'=>'right','class'=>'right'),
+		'user_visits' 		=> array('title' => LAN_USER_21,	'noedit'=>true, 'type' => 'int', 'width' => 'auto','thclass'=>'right','class'=>'right'),
 		'user_admin' 		=> array('title' => LAN_USER_22,	'type' => 'boolean', 'width' => 'auto', 'thclass'=>'center', 'class'=>'center', 'filter'=>true, 'batch'=>true, 'readParms'=>'trueonly=1'),
-		'user_perms' 		=> array('title' => LAN_USER_23,	'type' => 'method', 	'width' => 'auto'),
-		'user_pwchange'		=> array('title' => LAN_USER_24,	'type'=>'datestamp' , 'width' => 'auto'),
+		'user_perms' 		=> array('title' => LAN_USER_23,	'type' => 'method', 'data'=>'str',	'width' => 'auto'),
+		'user_pwchange'		=> array('title' => LAN_USER_24,	'noedit'=>true, 'type'=>'datestamp' , 'width' => 'auto'),
 					
 	);
 	
@@ -249,6 +257,13 @@ class users_admin_ui extends e_admin_ui
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		
+		if($this->getAction() == 'edit')
+		{
+			$this->fields['user_class']['noedit'] = true; 	
+		}
+		
+		
+		
 		// Extended fields - FIXME - better field types
 		if($sql->db_Select('user_extended_struct', 'user_extended_struct_name,user_extended_struct_text', "user_extended_struct_type > 0 AND user_extended_struct_text != '_system_' ORDER BY user_extended_struct_parent ASC"))
 		{
@@ -265,7 +280,7 @@ class users_admin_ui extends e_admin_ui
 		}
 		$this->fields['user_signature']['writeParms']['data'] = e107::getUserClass()->uc_required_class_list("classes");
 		
-		$this->fields['user_signature'] = array('title' => LAN_USER_09,	'type' => 'bbarea',	'width' => 'auto');
+		$this->fields['user_signature'] = array('title' => LAN_USER_09,	'type' => 'textarea', 'data'=>'str',	'width' => 'auto');
 		$this->fields['options'] = array('title'=> LAN_OPTIONS,	'type' => 'method',	'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'left');
 
 				
@@ -274,6 +289,31 @@ class users_admin_ui extends e_admin_ui
 			unset($this->fields['checkboxes']);
 			unset($this->fields['options']);			
 		}	
+		
+		$avs = array(''=>LAN_NONE);
+		$upload = array();
+		$sys = array();
+		$uploaded = e107::getFile()->get_files(e_AVATAR_UPLOAD);
+		foreach($uploaded as $f)
+		{
+			$id = '-upload-'.$f['fname'];
+			$upload[$id] = $f['fname'];	
+		}
+		$system = e107::getFile()->get_files(e_AVATAR_DEFAULT);
+		foreach($system as $f)
+		{
+			$id = $f['fname'];
+			$sys[$id] = $f['fname'];	
+		}
+		
+		$avs['uploaded'] = $upload;
+		$avs['system'] = $sys;
+		
+	//	$avs = array_merge($uploaded,$system);
+	//	print_a($uploaded);
+	//	print_a($avs);
+		
+		$this->fields['user_image']['writeParms'] = $avs;
 		
 		//FIXME - handle user extended search...
 		//$this->_alias_parsed = false;
@@ -284,6 +324,26 @@ class users_admin_ui extends e_admin_ui
 			// addUser();		
 		// }	
 
+	}
+
+
+	public function beforeUpdate($new_data, $old_data, $id)
+	{
+		if(empty($new_data['user_password']))
+		{
+			$new_data['user_password'] = $old_data['user_password'];
+		}
+		else 
+		{
+			$new_data['user_password']	= md5($new_data['user_password']); //TODO add support for salted passwords etc. 
+		}
+		
+		if(!empty($new_data['perms']))
+		{
+			$new_data['user_perms']	= implode(".",$new_data['perms']);
+		}
+		
+		return $new_data;
 	}
 
 	/**
@@ -1878,6 +1938,29 @@ class users_admin_form_ui extends e_admin_form_ui
 			
 		
 	}
+	
+	function user_password($curval,$mode)
+	{
+		if($mode == 'read')
+		{
+			if(empty($curVal))
+			{
+				return "No password!";	
+			}
+		}
+		if($mode == 'write')
+		{
+			return $this->password('user_password', '', 20, array('size' => 50, 'class' => 'tbox e-password', 'placeholder' => 'Leave blank for no change', 'generate' => 1, 'strength' => 1, 'required'=>0))."
+			";			
+		}
+			
+		
+	}
+	
+	
+	
+	
+	
 	
 	function user_ban($curval,$mode)
 	{
