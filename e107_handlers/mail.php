@@ -600,11 +600,11 @@ class e107Email extends PHPMailer
 	{
 		
 	
-		
+		$tp = e107::getParser();
 		
 		if(vartrue($eml['template'])) // @see e107_core/templates/email_template.php
 		{
-			$tp = e107::getParser();
+			
 			
 			if($tmpl = e107::getCoreTemplate('email', $eml['template'], true, true))  // $EMAIL_TEMPLATE['default']	
 			{
