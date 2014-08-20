@@ -602,8 +602,12 @@ class e_form
 	
 				$text .= "<div style='margin-bottom:10px'>".LAN_USET_26."
 				<input  class='tbox' name='file_userfile[avatar]' type='file' size='47' title=\"{$diz}\" />
-				</div>
-				<div class='divider'><span>OR</span></div>";
+				</div>";
+				
+				if(count($avFiles) > 0)
+				{
+					$text .= "<div class='divider'><span>OR</span></div>";
+				}
 		}
 		
 				

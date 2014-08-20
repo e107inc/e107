@@ -141,7 +141,7 @@ class usersettings_shortcodes extends e_shortcode
 		if($parm == 'radio')
 		{
 			$options['enabled'] = array('title' => LAN_USER_84);
-			return e107::getForm()->radio_switch("hideemail", $this->var['user_hideemail'],LAN_YES,LAN_NO,$options);		
+			return "<div class='radio'>".e107::getForm()->radio_switch("hideemail", $this->var['user_hideemail'],LAN_YES,LAN_NO,$options)."</div>";		
 		}
 	}
 	
@@ -238,14 +238,26 @@ class usersettings_shortcodes extends e_shortcode
 	
 	function sc_photo_upload($parm)
 	{ 
-		$diz = LAN_USET_27."<br />".LAN_USET_28;
+		$diz = LAN_USET_27.". ".LAN_USET_28.".";
+		
+		if(USERPHOTO)
+		{
+			$text .= e107::getParser()->parseTemplate("{PICTURE}",true);
+		}
 		
 		if (e107::getPref('photo_upload') && FILE_UPLOADS)
 		{
-			return  "<input type='checkbox' name='user_delete_photo' value='1' />".LAN_USET_16."<br />\n
-			        <input class='tbox' name='file_userfile[photo]' type='file' size='47'  />
-			        <div class='field-help'>{$diz}</div>";
+			$text .= "<div class='checkbox'>";
+			$text .= e107::getForm()->checkbox('user_delete_photo', 1, false, LAN_USET_16);
+			$text .= "</div>";	
+		
+			
+		//	$text .=  "<input type='checkbox' name='user_delete_photo' value='1' />".LAN_USET_16."<br />\n";
+			$text .= "<p><input class='tbox' name='file_userfile[photo]' type='file' size='47' title=\"".$diz."\" /></p>\n";
+
 		}
+		
+		return $text;
 	}
 	
 	
