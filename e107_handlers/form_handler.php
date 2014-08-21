@@ -239,9 +239,9 @@ class e_form
 	
 	/**
 	 * Render Bootstrap Carousel 
-	 * @param $name : A unique name 
-	 * @param $array
-	 * @param $options : placeholder for any future options. (currently not in use) 
+	 * @param string $name : A unique name 
+	 * @param array $array
+	 * @param array $options : default, interval, pause, wrap
 	 * @example
 	 * $array = array(
 	 * 		'slide1' => array('caption' => 'Slide 1', 'text' => 'first slide content' ),
@@ -254,6 +254,8 @@ class e_form
 		$interval = null;
 		$wrap = null;
 		$pause = null;
+				
+		$act = varset($options['default'], 0);
 		
 		if(isset($options['wrap']))
 		{
@@ -281,7 +283,7 @@ class e_form
 		$c = 0;
 		foreach($array as $key=>$tab)
 		{
-			$active = ($c == 0) ? ' class="active"' : '';
+			$active = ($c == $act) ? ' class="active"' : '';
 			$text .=  '<li data-target="#'.$name.'" data-slide-to="'.$c.'" '.$active.'></li>';
 			$c++;
 		}
@@ -296,7 +298,7 @@ class e_form
 		$c=0;
 		foreach($array as $key=>$tab)
 		{
-			$active = ($c == 0) ? ' active' : '';
+			$active = ($c == $act) ? ' active' : '';
 			$text .= '<div class="item'.$active.'" id="'.$key.'">';
 			$text .= $tab['text'];
 			
