@@ -255,8 +255,7 @@ $USERSETTINGS_TEMPLATE['edit'] = "
 	{USERNAME}
 	{LOGINNAME}
 
-	<h4>".LAN_USET_31."</h4>
-	
+
 	<div class='form-group'>
 	<label for='loginname' class='col-sm-3 control-label'>".LAN_USER_60.req(!$pref['disable_emailcheck'])."</label>
 	<div class='col-sm-9'>
