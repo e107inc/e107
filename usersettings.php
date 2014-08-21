@@ -885,7 +885,7 @@ if (e_QUERY == "update")
 // e107::scStyle($sc_style);
 e107::getScBatch('usersettings')->setVars($curVal);
 
-$text .= $tp->parseTemplate($USERSETTINGS_EDIT, false, $usersettings_shortcodes);
+$text .= $tp->parseTemplate($USERSETTINGS_EDIT, true, $usersettings_shortcodes); //ParseSC must be set to true so that custom plugin -shortcodes can be utilized. 
 
 
 $text .= "<div><input type='hidden' name='_uid' value='{$uuid}' /></div>
