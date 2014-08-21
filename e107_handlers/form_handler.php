@@ -573,9 +573,9 @@ class e_form
 		
 		
 		$path = (substr($curVal,0,8) == '-upload-') ? '{e_AVATAR}upload/' : '{e_AVATAR}default/';
-		$curVal = str_replace('-upload-','',$curVal);
+		$newVal = str_replace('-upload-','',$curVal);
 	
-		$img = (strpos($curVal,"://")!==false) ? $curVal : $tp->thumbUrl($path.$curVal);
+		$img = (strpos($curVal,"://")!==false) ? $curVal : $tp->thumbUrl($path.$newVal);
 				
 		if(!$curVal)
 		{

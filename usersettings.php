@@ -21,14 +21,18 @@ Admin log events:
 USET_01 - admin changed user data
 */
 
+/*
 if(preg_match('/^\/(.*?)\/(usersettings\.php|\/edit)(\?|\/)(\d+)$/i', $_SERVER['REQUEST_URI'], $_usersettings_matches))
 {
 	$eplug_admin = TRUE;
 }
+*/
 
 require_once ('class2.php');
 
+// TODO - Remove all the adminEdit stuff. 
 
+/*
 class usersetting_admin extends e_admin_dispatcher
 {
 
@@ -85,6 +89,7 @@ class usersettings_admin_ui extends e_admin_ui
 	}
 
 }
+*/
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
@@ -204,6 +209,9 @@ if(!is_array($info) || ($info['user_admin'] == 1 && (!defined('ADMINPERMS') || A
 	}
 
 }
+// TODO - Remove all the adminEdit stuff. 
+/*
+
 if($adminEdit) // try to stay in Admin when admin is editing.
 {
 	$mes = e107::getMessage();
@@ -277,7 +285,8 @@ new usersetting_admin();
 require_once (e_ADMIN."auth.php");
 //e107::getAdminUI()->runPage();
 }
-else
+*/
+// else
 {
 	require_once (HEADERF);
 }
@@ -288,7 +297,9 @@ else
 
 if (isset($_POST['updatesettings']) || isset($_POST['SaveValidatedInfo']))
 {
-	$udata = get_user_data($inp);				// Get all the existing user data, including any extended fields
+//	$udata = get_user_data($inp);	//@deprecated			// Get all the existing user data, including any extended fields
+	
+	$udata = e107::user($inp); // Get all the existing user data, including any extended fields
 	$udata['user_classlist'] = $userMethods->addCommonClasses($udata, FALSE);
 }
 
@@ -366,6 +377,11 @@ if (isset($_POST['updatesettings']))
 	$changedUserData = validatorClass::findChanges($allData['data'], $udata,FALSE);
 
 
+e107::getMessage()->addDebug("<h5>Existing User Info</h5>".print_a($udata,true));
+e107::getMessage()->addDebug('<h5>$allData</h5>'.print_a($allData['data'],true));
+
+e107::getMessage()->addDebug("<h5>Posted Changes</h5>".print_a($changedUserData,true));
+
 	// Login Name checks - only admin can change login name
 	if (isset($changedUserData['user_loginname']))
 	{
@@ -442,6 +458,9 @@ if (isset($_POST['updatesettings']))
 		}
 	}
 
+
+
+	e107::getMessage()->addDebug("<h4>Processed Posted Changes</h4>".print_a($changedUserData,true));
 
 	// All key fields validated here
 	// -----------------------------
