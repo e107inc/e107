@@ -95,10 +95,10 @@ if(isset($_POST['send-contactus']))
 
 	}
 
-// No errors - so proceed to email the admin and the user (if selected).
+	// No errors - so proceed to email the admin and the user (if selected).
     if(!$error)
 	{
-		$body .= "\n\nIP:\t".USERIP."\n";
+		$body .= "\n\nIP:\t".e107::getIPHandler()->getIP(TRUE)."\n";
 		if (USER)
 		{
 		$body .= "User:\t#".USERID." ".USERNAME."\n";
