@@ -105,7 +105,7 @@ if(false === $cached)
 	if($cached) 
 	{
 		if(!$parms['showarchive']) $cached .= '<ul class="nav nav-list e-menu-link news-menu-archive"><li><a href="'.e_PLUGIN_ABS.'blogcalendar_menu/archive.php">'.BLOGCAL_L2.'</a></li></ul>';
-		$cached = $ns->tablerender(BLOGCAL_L1.$req_year, $cached, 'news_months_menu', true);
+		$cached = $ns->tablerender(BLOGCAL_L1." ".$req_year, $cached, 'news_months_menu', true);
 	}
 	e107::getCache()->set($cString, $cached);
 }
