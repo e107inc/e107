@@ -228,26 +228,7 @@ LAN_SIGNUP_97." {SITENAME}<br />
 //-------------------------------------------------------------
 //		'NOTIFY' TEMPLATE
 //-------------------------------------------------------------
-$NOTIFY_TEMPLATE = array(
-	'template_name' => 'Notify',
-	'template_type' => 'system',
-	'email_overrides' => '',
-	'email_header' => "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
-		<html xmlns='http://www.w3.org/1999/xhtml' >
-		<head>
-		<meta http-equiv='content-type' content='text/html; charset=utf-8' />
-		</head>
-		<body>
-		<div style='padding:0px 10px'>
-		",
-	'email_body' => '{BODY}',
-	'email_footer' => "<br /><br />
-		{SITENAME=link}
-		</div>
-		</body>
-		</html>",
-	'email_plainText' => ''
-	);
+
 
 
 //-------------------------------------------------------------
@@ -308,14 +289,6 @@ $MONTHLYUPDATE_TEMPLATE = array(
 
 
 
-$QUICKADDUSER_TEMPLATE = array(
-	'template_name' => 'Quick-Add-User',
-	'template_type' => 'quickadd',
-	'email_overrides' => '',
-//	'email_header' - any header information (usually loaded from the default)
-	'email_body' => USRLAN_185.USRLAN_186,
-//	'email_footer' => 'footer'
-	);
 
 
 
@@ -421,15 +394,22 @@ $EMAIL_TEMPLATE['quickadduser']['header']		= $EMAIL_TEMPLATE['default']['header'
 $EMAIL_TEMPLATE['quickadduser']['body']			= USRLAN_185.USRLAN_186;											
 $EMAIL_TEMPLATE['quickadduser']['footer']		= $EMAIL_TEMPLATE['default']['footer']; // will use default footer above. 		
 
+
+
 // ---------------------------------
 
 
 
-// Notify (@see admin-> notify) // TODO
+// Notify (@see admin-> notify) 
 $EMAIL_TEMPLATE['notify']['subject']			= '{SITENAME}: {SUBJECT} ';
 $EMAIL_TEMPLATE['notify']['header']				= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 	
 $EMAIL_TEMPLATE['notify']['body']				= $EMAIL_TEMPLATE['default']['body']; // will use default header above. 	
 $EMAIL_TEMPLATE['notify']['footer']				= $EMAIL_TEMPLATE['default']['footer']; // will use default header above. 	
+
+
+// ---------------------------------
+
+
 
 // A Dummy Example for theme developers. 
 $EMAIL_TEMPLATE['example']['subject']			= '{SITENAME}: {SUBJECT} ';

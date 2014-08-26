@@ -799,6 +799,8 @@ class e107MailManager
 			//'extra_header'	- additional headers (format is name: value
 			//'wordwrap'		- Set wordwrap value
 			//'split'			- If true, sends an individual email to each recipient
+			'template'		=> 'template', // required
+			'shortcodes'	=> 'shortcodes' // required
 			);
 		$result = array();
 		if (!isset($email['mail_source_id'])) $email['mail_source_id'] = 0;
@@ -827,6 +829,8 @@ class e107MailManager
 		}
 		$result['send_html'] = ($email['mail_send_style'] != 'textonly');
 		$result['add_html_header'] = FALSE;				// We look after our own headers
+		
+
 		
 		// Set up any extra mailer parameters that need it
 		if (!vartrue($email['e107_header']))
@@ -1497,7 +1501,7 @@ class e107MailManager
 		// Get template data, override email settings as appropriate
 		require_once(e_HANDLER.'mail_template_class.php');
 		$ourTemplate = new e107MailTemplate();
-		if (!$ourTemplate->setNewTemplate($templateName)) return FALSE;		// Probably template not found if error
+		if (!$ourTemplate->setNewTemplate($templateName) && empty($emailData['template'])) return FALSE;		// Probably template not found if error
 		if (!$ourTemplate->makeEmailBody($emailData['mail_body'], varset($emailData['mail_include_images'], TRUE))) return FALSE;		// Create body text
 		$emailData['mail_body_templated'] = $ourTemplate->mainBodyText;
 		$this->currentMailBody = $emailData['mail_body_templated'];			// In case we send immediately
@@ -1507,6 +1511,17 @@ class e107MailManager
 		{
 			$emailData['mail_overrides'] = $ourTemplate->lastTemplateData['email_overrides'];
 		}
+		
+		if(!empty($emailData['template'])) // Quick Fix for new email template standards. 
+		{
+			$this->currentMailBody = $emailData['mail_body'];
+			unset($emailData['mail_body_templated']);
+			
+			if($this->debugMode)
+			{
+				echo "<h4>".$emailData['template']." Template detected</h4>";
+			}
+		}
 	
 
 		$forceQueue = FALSE;
@@ -1514,6 +1529,13 @@ class e107MailManager
 		{
 			$forceQueue = $extra['mail_force_queue'];
 			unset($extra['mail_force_queue']);
+		}
+
+		if($this->debugMode)
+		{
+			print_a($emailData);
+			print_a($recipientData);	
+
 		}
 
 		if ((count($recipientData) <= 5) && !$forceQueue)	// Arbitrary upper limit for sending multiple emails immediately
@@ -1537,9 +1559,19 @@ class e107MailManager
 				if (FALSE == $this->mailer->sendEmail($recip['mail_recipient_email'], $recip['mail_recipient_name'], $mailToSend, TRUE))
 				{
 					$tempResult = FALSE;
+					if($this->debugMode)
+					{
+						echo "<h4>Failed to send to: ".$recip['mail_recipient_email']." [". $recip['mail_recipient_name'] ."]</h4>";
+						print_a($mailToSend);
+					}
 				}
 				else
 				{	// Success here
+					if($this->debugMode)
+					{
+						echo "<h4>Mail Sent successfully to: ".$recip['mail_recipient_email']." [". $recip['mail_recipient_name'] ."]</h4>";
+						print_a($mailToSend);
+					}
 					if ($eCount == 0)
 					{	// Only send these on first email - otherwise someone could get inundated!
 						unset($emailData['mail_copy_to']);

@@ -606,7 +606,7 @@ class e107Email extends PHPMailer
 		{
 			
 			
-			if($tmpl = e107::getCoreTemplate('email', $eml['template'], true, true))  // $EMAIL_TEMPLATE['default']	
+			if($tmpl = e107::getCoreTemplate('email', $eml['template'], true, true))  //FIXME - Core template is failing with template 'notify'. Works with theme template. Issue with core template registry?
 			{
 			//	$filter = array("\n", "\t");
 			//	$tmpl['header'] = str_replace($filter,'', $tmpl['header']);
@@ -623,12 +623,22 @@ class e107Email extends PHPMailer
 				
 				if($this->debug)
 				{
+					echo "<h4>e107Email::arraySet() - line ".__LINE__."</h4>";
 					print_a($tmpl);	
 				}
 				
 				unset($eml['add_html_header']); // disable other headers when template is used. 
 				
 				$this->Subject = $tp->parseTemplate($tmpl['subject'], true, varset($eml['shortcodes'],null)); 
+			}
+			else
+			{
+				if($this->debug)
+				{
+					echo "<h4>Couldn't find email template: ".$eml['template']."</h4>";	
+				}
+				if (vartrue($eml['email_subject'])) $this->Subject = $tp->parseTemplate($eml['email_subject'], true, varset($eml['shortcodes'],null)); 	
+				e107::getMessage()->addDebug("Couldn't find email template: ".$eml['template']);	
 			}
 			
 		}
@@ -658,10 +668,9 @@ class e107Email extends PHPMailer
 		
 		if($this->debug)
 		{
+			echo "<h4>e107Email::arraySet() - line ".__LINE__."</h4>";
 			print_a($eml);
 		}
-		
-		
 		
 		
 		if (vartrue($eml['returnreceipt'])) $this->ConfirmReadingTo = $eml['returnreceipt'];
