@@ -29,7 +29,8 @@ if(false === $cached)
 	//parse_str($parm, $parms); // FIXME - menu settings...
 	$parms['showarchive'] = 0;
 		
-	e107::plugLan('blogcalendar_menu');
+	//e107::plugLan('blogcalendar_menu');
+	e107::lan('blogcalendar_menu', e_LANGUAGE); // FIXME decide on language file structure (#743)
 	$tp = e107::getParser();
 	$sql = e107::getDb();
 	
