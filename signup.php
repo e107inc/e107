@@ -326,11 +326,12 @@ if (e_QUERY)
 				$dbData['WHERE'] = " user_sess='".$tp->toDB($qs[2], true)."' ";
 				$dbData['data'] = array('user_ban'=>'0', 'user_sess'=>'');
 				
+				 
 				// Set initial classes, and any which the user can opt to join
-				if ($userMethods->userClassUpdate($row, 'userveri'))
+				if ($init_class = $userMethods->userClassUpdate($row, 'userfull'))
 				{
-					$dbData['data']['user_class'] = $row['user_class'];
-				
+					//print_a($init_class); exit; 
+					$dbData['data']['user_class'] = $init_class;
 				}
 				
 				$userMethods->addNonDefaulted($dbData);
@@ -674,17 +675,34 @@ if (isset($_POST['register']) && $pref['user_reg'] == 1)
 			require_once(FOOTERF);
 			exit;
 		}
+		// User can be signed up immediately
 		else
-		{	// User can be signed up immediately
+		{	
 			require_once(HEADERF);
 
-			if(!$sql->db_Select("user", "user_id", "user_loginname='".$allData['data']['user_loginname']."' AND user_password='".$allData['data']['user_password']."'"))
+			if(!$sql->select("user", "user_id", "user_loginname='".$allData['data']['user_loginname']."' AND user_password='".$allData['data']['user_password']."'"))
 			{	
 				// Error looking up newly created user
 				$ns->tablerender("", LAN_SIGNUP_36);
 				require_once(FOOTERF);
 				exit;
 			}
+
+			// Set initial classes, and any which the user can opt to join
+			if ($init_class = $userMethods->userClassUpdate($row, 'userpartial'))
+			{
+				$allData['data']['user_class'] = $init_class;
+				$user_class_update = $sql->update("user", "user_class = '{$allData['data']['user_class']}' WHERE user_name='{$allData['data']['user_name']}'");
+				
+				if($user_class_update === FALSE)
+				{
+					//$admin_log->e_log_event(10,debug_backtrace(),'USER','Userclass update fail',print_r($row,TRUE),FALSE,LOG_TO_ROLLING);
+					require_once(HEADERF);
+					$ns->tablerender(LAN_SIGNUP_75, LAN_SIGNUP_101);
+					require_once(FOOTERF);
+					exit;
+				}
+			}	
 
 			e107::getEvent()->trigger('usersup', $_POST);  // send everything in the template, including extended fields.
 			e107::getEvent()->trigger('userfull', array_merge($allData['data'],$eufVals['data']));  // New trigger - send everything in the template, including extended fields.

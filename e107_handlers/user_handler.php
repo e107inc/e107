@@ -708,7 +708,7 @@ Following fields auto-filled in code as required:
 	 *
 	 *	@return boolean - true if $user['user_class'] updated, false otherwise
 	 */
-	public function userClassUpdate(&$user, $event='userveri')
+	public function userClassUpdate($user, $event='userfull')
 	{
 		$pref = e107::getPref();
 		$tp = e107::getParser();
@@ -717,34 +717,37 @@ Following fields auto-filled in code as required:
 		$doClasses = FALSE;
 		$doProbation = FALSE;
 		$ret = FALSE;
+
 		switch ($event)
 		{
-			case 'userall' :
+			case 'userall':
 				$doClasses = TRUE;
 				$doProbation = TRUE;
 				break;
-			case 'userfull' :		// A 'fully fledged' user
+			case 'userfull': 		
 				if (!$pref['user_reg_veri'] || ($pref['init_class_stage'] == '2'))
 				{
-					$doClasses = TRUE;
+					$doClasses = TRUE; 
 				}
 				$doProbation = TRUE;
 				break;
 			case 'userpartial' :
 				if ($pref['init_class_stage'] == '1')
-				{	// Set initial classes if to be done on partial signup, or if selected to add them now
+				{	
+					// Set initial classes if to be done on partial signup, or if selected to add them now
 					$doClasses = TRUE;
 				}
 				$doProbation = TRUE;
 				break;
 		}
-		if ($doClasses)
+		if($doClasses)
 		{
 			if (isset($pref['initial_user_classes'])) { $initClasses = explode(',',$pref['initial_user_classes']); }	 // Any initial user classes to be set at some stage
 			if ($doProbation && (varset($pref['user_new_period'], 0) > 0))
 			{
 				$initClasses[] = e_UC_NEWUSER;		// Probationary user class
 			}
+			
 			if (count($initClasses))
 			{	// Update the user classes
 				if ($user['user_class'])
@@ -752,7 +755,8 @@ Following fields auto-filled in code as required:
 					$initClasses = array_unique(array_merge($initClasses, explode(',',$user['user_class'])));
 				}
 				$user['user_class'] = $tp->toDB(implode(',',$initClasses));
-				$ret = TRUE;
+				//$ret = TRUE;
+				$ret = $user['user_class'];
 			}
 		}
 		return $ret;
