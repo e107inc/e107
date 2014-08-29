@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2014 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -10,13 +10,13 @@
  * 
  */
 
-
 require_once("class2.php");
 
 if(vartrue($_POST['email2'])) // spam-trap. 
 {
 	exit; 	
 }
+
 $qs = explode(".", e_QUERY);
 
 if($qs[0] != 'activate')
@@ -34,16 +34,13 @@ e107::js('core', 'jquery.mailcheck.min.js','jquery',2);
 
 include_once(e_HANDLER.'user_extended_class.php');
 $usere = new e107_user_extended;
-// require_once(e_HANDLER.'calendar/calendar_class.ph_');
-// $cal = new DHTML_Calendar(true);
+
 require_once(e_HANDLER.'validator_class.php');
 // require_once(e_HANDLER.'user_handler.php');
 $userMethods = e107::getUserSession();
 $userMethods->deleteExpired();				// Delete time-expired partial registrations
 
 require_once(e107::coreTemplatePath('signup')); //correct way to load a core template.
-
-//include_once(e_CORE.'shortcodes/batch/signup_shortcodes.php');
 
 $signup_shortcodes = e107::getScBatch('signup');
 // $facebook_shortcodes = e107::getScBatch('facebook',TRUE);
@@ -53,7 +50,6 @@ $text = '';
 $extraErrors = array();
 $error = FALSE;
 
-
 //-------------------------------
 // Resend Activation Email
 //-------------------------------
@@ -61,13 +57,13 @@ if((e_QUERY == 'resend') && !USER && ($pref['user_reg_veri'] == 1))
 {
 	require_once(HEADERF);
 
-	$clean_email = $tp -> toDB($_POST['resend_email']);
+	$clean_email = $tp->toDB($_POST['resend_email']);
     if(!check_email($clean_email))
 	{
 		$clean_email = "xxx";
 	}
 
-    $new_email = $tp -> toDB(varset($_POST['resend_newemail'], ''));
+    $new_email = $tp->toDB(varset($_POST['resend_newemail'], ''));
     if(!check_email($new_email ))
 	{
     	$new_email = FALSE;
@@ -79,35 +75,35 @@ if((e_QUERY == 'resend') && !USER && ($pref['user_reg_veri'] == 1))
 		// 'resend_newemail' - corrected email address
 		// 'resend_password' - password (required if changing email address)
 
-		if($_POST['resend_email'] && !$new_email && $clean_email && $sql->db_Select_gen("SELECT * FROM #user WHERE user_ban=0 AND user_sess='' AND (`user_loginname`= '".$clean_email."' OR `user_name` = '".$clean_email."' OR `user_email` = '".$clean_email."' ) "))
+		if($_POST['resend_email'] && !$new_email && $clean_email && $sql->select_gen("SELECT * FROM #user WHERE user_ban=0 AND user_sess='' AND (`user_loginname`= '".$clean_email."' OR `user_name` = '".$clean_email."' OR `user_email` = '".$clean_email."' ) "))
 		{	// Account already activated
-			$ns -> tablerender(LAN_SIGNUP_40,LAN_SIGNUP_41."<br />");
+			$ns->tablerender(LAN_SIGNUP_40,LAN_SIGNUP_41."<br />");
 			require_once(FOOTERF);
 			exit();
 		}
 
 
 		// Start by looking up the user
-		if(!$sql->db_Select("user", "*", "(`user_loginname` = '".$clean_email."' OR `user_name` = '".$clean_email."' OR `user_email` = '".$clean_email."' ) AND `user_ban`=".USER_REGISTERED_NOT_VALIDATED." AND `user_sess` !='' LIMIT 1"))
+		if(!$sql->select("user", "*", "(`user_loginname` = '".$clean_email."' OR `user_name` = '".$clean_email."' OR `user_email` = '".$clean_email."' ) AND `user_ban`=".USER_REGISTERED_NOT_VALIDATED." AND `user_sess` !='' LIMIT 1"))
 		{
 			message_handler("ALERT",LAN_SIGNUP_64.': '.$clean_email); // email (or other info) not valid.
 			require_once(FOOTERF);
 			exit();
 		}
-		$row = $sql -> db_Fetch();
+		$row = $sql -> fetch();
 		// We should have a user record here
 
 		if(trim($_POST['resend_password']) !="" && $new_email)
 		{  // Need to change the email address - check password to make sure
 			if ($userMethods->CheckPassword($_POST['resend_password'], $row['user_loginname'], $row['user_password']) === TRUE)
 			{
-				if ($sql->db_select('user', 'user_id, user_email', "user_email='".$new_email."'"))
+				if ($sql->select('user', 'user_id, user_email', "user_email='".$new_email."'"))
 				{	// Email address already used by someone
 					message_handler("ALERT",LAN_SIGNUP_106); 	// Duplicate email
 					require_once(FOOTERF);
 					exit();
 				}
-				if($sql->db_Update("user", "user_email='".$new_email."' WHERE user_id = '".$row['user_id']."' LIMIT 1 "))
+				if($sql->update("user", "user_email='".$new_email."' WHERE user_id = '".$row['user_id']."' LIMIT 1 "))
 				{
 					$row['user_email'] = $new_email;
 				}
@@ -133,12 +129,12 @@ if((e_QUERY == 'resend') && !USER && ($pref['user_reg_veri'] == 1))
 
 		if(!sendemail($row['user_email'], $eml['subject'], $eml['message'], $row['user_name'], "", "", $eml['attachments'], $eml['cc'], $eml['bcc'], $returnpath, $returnreceipt,$eml['inline-images']))
 		{
-			$ns -> tablerender(LAN_ERROR,LAN_SIGNUP_42);
+			$ns->tablerender(LAN_ERROR,LAN_SIGNUP_42);
 			$do_log['signup_result'] = LAN_SIGNUP_62;
 		}
 		else
 		{
-			$ns -> tablerender(LAN_SIGNUP_43,LAN_SIGNUP_44." ".$row['user_email']." - ".LAN_SIGNUP_45."<br /><br />");
+			$ns->tablerender(LAN_SIGNUP_43,LAN_SIGNUP_44." ".$row['user_email']." - ".LAN_SIGNUP_45."<br /><br />");
 			$do_log['signup_result'] = LAN_SIGNUP_61;
 		}
 		// Now log this (log will ignore if its disabled)
@@ -147,7 +143,8 @@ if((e_QUERY == 'resend') && !USER && ($pref['user_reg_veri'] == 1))
 		exit;
 	}
 	elseif(!$_POST['submit_resend'])
-	{	// Display form to get info from user
+	{	
+		// Display form to get info from user
 		$text .= "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."?resend' id='resend_form' autocomplete='off'>
 		<table style='".USER_WIDTH."' class='fborder'>
@@ -181,7 +178,7 @@ if((e_QUERY == 'resend') && !USER && ($pref['user_reg_veri'] == 1))
 		</form>
 		</div>";
 
-		$ns -> tablerender(LAN_SIGNUP_47, $text);
+		$ns->tablerender(LAN_SIGNUP_47, $text);
 		require_once(FOOTERF);
 		exit;
 	}
@@ -207,15 +204,6 @@ if(!$_POST)
 }
 
 
-
-
-
-
-
-
-
-
-
 if(ADMIN && (e_QUERY == 'preview' || e_QUERY == 'test'  || e_QUERY == 'preview.aftersignup'))
 {
 	if(e_QUERY == "preview.aftersignup")
@@ -233,7 +221,7 @@ if(ADMIN && (e_QUERY == 'preview' || e_QUERY == 'test'  || e_QUERY == 'preview.a
 	}
 
 	$temp = array();
-	$eml = render_email($temp,TRUE);		// It ignores the data, anyway
+	$eml = render_email($temp, TRUE); // It ignores the data, anyway
 	echo $eml['preview'];
 
 	if(e_QUERY == 'test')
@@ -253,6 +241,7 @@ if(ADMIN && (e_QUERY == 'preview' || e_QUERY == 'test'  || e_QUERY == 'preview.a
 	exit;
 }
 
+// FIXME - strange HTML output in browser
 if ($pref['membersonly_enabled'])
 {
 	$HEADER = "<div style='text-align:center; width:100%;margin-left:auto;margin-right:auto;text-align:center'><div style='width:70%;text-align:center;margin-left:auto;margin-right:auto'><br />";
@@ -268,12 +257,13 @@ if ($pref['membersonly_enabled'])
 	$FOOTER = '</div></div>';
 }
 
+/*
 if($signup_imagecode)
 {
 	// require_once(e_HANDLER."secure_img_handler.php");
 	// $sec_img = new secure_image;
 }
-
+*/
 
 if ((USER || ($pref['user_reg'] != 1) || (vartrue($pref['auth_method'],'e107') != 'e107')) && !getperms('0'))
 {
@@ -305,7 +295,7 @@ if (e_QUERY)
 	$qs = explode('.', e_QUERY);
 	if ($qs[0] == 'activate' && (count($qs) == 3 || count($qs) == 4) && $qs[2])
 	{
-		//TODO use generic multilanguage selection
+		// FIXME TODO use generic multilanguage selection => e107::coreLan(); 
 		// return the message in the correct language.
 		if(isset($qs[3]) && strlen($qs[3]) == 2 )
 		{
@@ -327,23 +317,27 @@ if (e_QUERY)
 		}
 
 
-		$e107cache->clear("online_menu_totals");
-		if ($sql->db_Select("user", "*", "user_sess='".$tp -> toDB($qs[2], true)."' "))
+		e107::getCache()->clear("online_menu_totals");
+		if ($sql->select("user", "*", "user_sess='".$tp->toDB($qs[2], true)."' "))
 		{
-			if ($row = $sql->db_Fetch())
+			if ($row = $sql->fetch())
 			{
 				$dbData = array();
-				$dbData['WHERE'] = " user_sess='".$tp -> toDB($qs[2], true)."' ";
+				$dbData['WHERE'] = " user_sess='".$tp->toDB($qs[2], true)."' ";
 				$dbData['data'] = array('user_ban'=>'0', 'user_sess'=>'');
+				
 				// Set initial classes, and any which the user can opt to join
 				if ($userMethods->userClassUpdate($row, 'userveri'))
 				{
 					$dbData['data']['user_class'] = $row['user_class'];
+				
 				}
+				
 				$userMethods->addNonDefaulted($dbData);
 				validatorClass::addFieldTypes($userMethods->userVettingInfo,$dbData);
-				$newID = $sql->db_Update('user',$dbData);
-				if ($newID === FALSE)
+				$newID = $sql->update('user',$dbData);
+				
+				if($newID === FALSE)
 				{
 					$admin_log->e_log_event(10,debug_backtrace(),'USER','Verification Fail',print_r($row,TRUE),FALSE,LOG_TO_ROLLING);
 					require_once(HEADERF);
@@ -352,18 +346,19 @@ if (e_QUERY)
 					exit;
 				}
 
-
 				// Log to user audit log if enabled
 				$admin_log->user_audit(USER_AUDIT_EMAILACK,$row);
 
-				$e_event->trigger('userveri', $row);			// Legacy event
-				$e_event->trigger('userfull', $row);			// 'New' event
+				e107::getEvent()->trigger('userveri', $row);			// Legacy event
+				e107::getEvent()->trigger('userfull', $row);			// 'New' event
+				
 				if (varset($pref['autologinpostsignup']))
 				{
 					require_once(e_HANDLER.'login.php');
 					$usr = new userlogin();
 					$usr->login($row['user_loginname'], md5($row['user_name'].$row['user_password'].$row['user_join']), 'signup', '');
 				}
+
 				require_once(HEADERF);
 				$text = LAN_SIGNUP_74." <a href='index.php'>".LAN_SIGNUP_22."</a> ".LAN_SIGNUP_23."<br />".LAN_SIGNUP_24." ".SITENAME;
 				$ns->tablerender(LAN_SIGNUP_75, $text);
@@ -372,7 +367,8 @@ if (e_QUERY)
 			}
 		}
 		else
-		{	// Invalid activation code
+		{	
+			// Invalid activation code
 			header("location: ".e_BASE."index.php");
 			exit;
 		}
@@ -386,7 +382,8 @@ if (e_QUERY)
 
 if (isset($_POST['register']) && $pref['user_reg'] == 1) 
 {	
-	$e107cache->clear("online_menu_totals");
+	e107::getCache()->clear("online_menu_totals");
+	
 	if (isset($_POST['rand_num']) && $signup_imagecode)
 	{	
 		if ($badCodeMsg = e107::getSecureImg()->invalidCode($_POST['rand_num'], $_POST['code_verify'])) // better: allows class to return the error. 
@@ -397,7 +394,7 @@ if (isset($_POST['register']) && $pref['user_reg'] == 1)
 		}
 	}
 
-	if($invalid = $e_event->trigger("usersup_veri", $_POST))
+	if($invalid = e107::getEvent()->trigger("usersup_veri", $_POST))
 	{
     	$extraErrors[] = $invalid."\\n";
         $error = TRUE;
@@ -432,12 +429,15 @@ if (isset($_POST['register']) && $pref['user_reg'] == 1)
 		validatorClass::checkMandatory('user_name,user_loginname', $allData);						// Check for missing fields (email done in userValidation() )
 		validatorClass::dbValidateArray($allData, $userMethods->userVettingInfo, 'user', 0);		// Do basic DB-related checks
 		$userMethods->userValidation($allData);														// Do user-specific DB checks
+		
 		if (!isset($allData['errors']['user_password']))
-		{	// No errors in password - keep it outside the main data array
+		{	
+			// No errors in password - keep it outside the main data array
 			$savePassword = $allData['data']['user_password'];
-			unset($allData['data']['user_password']);						// Delete the password value in the output array
+			unset($allData['data']['user_password']); // Delete the password value in the output array
 		}
-		unset($_POST['password1']);					// Restrict the scope of this
+
+		unset($_POST['password1']); // Restrict the scope of this
 		unset($_POST['password2']);
 
 		$allData['user_ip'] = e107::getIPHandler()->getIP(FALSE);
@@ -446,13 +446,13 @@ if (isset($_POST['register']) && $pref['user_reg'] == 1)
 		// check for multiple signups from the same IP address. But ignore localhost
 		if ($allData['user_ip'] != e107::LOCALHOST_IP)
 		{
-			if($ipcount = $sql->db_Select('user', '*', "user_ip='".$allData['user_ip']."' and user_ban !='2' "))
+			if($ipcount = $sql->select('user', '*', "user_ip='".$allData['user_ip']."' and user_ban !='2' "))
 			{
 				if($ipcount >= $pref['signup_maxip'] && trim($pref['signup_maxip']) != "")
 				{
 					$allData['errors']['user_email'] = ERR_GENERIC;
 					$allData['errortext']['user_email'] =  LAN_SIGNUP_71;
-					$admin_log->log_event('USET_15',LAN_SIGNUP_103.e107::getIPHandler()->getIP(FALSE),4);
+					$admin_log->log_event('USET_15',LAN_SIGNUP_103.e107::getIPHandler()->getIP(FALSE), 4);
 				}
 			}
 		}
@@ -487,7 +487,7 @@ if (isset($_POST['register']) && $pref['user_reg'] == 1)
 		$eufVals = array();
 		//if (isset($_POST['ue']))
 		{
-			$eufVals = $usere->userExtendedValidateAll(varset($_POST['ue'], array()), varset($_POST['hide'],array()), TRUE);		// Validate the extended user fields
+			$eufVals = $usere->userExtendedValidateAll(varset($_POST['ue'], array()), varset($_POST['hide'],array()), TRUE); // Validate the extended user fields
 		}
 
 
@@ -536,14 +536,14 @@ if (isset($_POST['register']) && $pref['user_reg'] == 1)
 			exit;
 		}
 
-		if ($_POST['email'] && $sql->db_Select("user", "*", "user_email='".$_POST['email']."' AND user_ban='".USER_BANNED."'"))
+		if ($_POST['email'] && $sql->select("user", "*", "user_email='".$_POST['email']."' AND user_ban='".USER_BANNED."'"))
 		{
 			exit;
 		}
 
 
-		$u_key = e_user_model::randomKey();				// Key for signup completion
-		$allData['data']['user_sess'] = $u_key;			// Validation key
+		$u_key = e_user_model::randomKey();		// Key for signup completion
+		$allData['data']['user_sess'] = $u_key;	// Validation key
 
 		$userMethods->userClassUpdate($allData['data'], 'usersup');
 
@@ -555,15 +555,14 @@ if (isset($_POST['register']) && $pref['user_reg'] == 1)
 		{
 			$allData['data']['user_ban'] = USER_VALIDATED;
 		}
+		
 		// Work out data to be written to user audit trail
 		$signup_data = array('user_name', 'user_loginname', 'user_email', 'user_ip');
 //		foreach (array() as $f)
 		foreach ($signup_data as $f)
 		{
-			$signup_data[$f] = $allData['data'][$f];		// Just copy across selected fields
+			$signup_data[$f] = $allData['data'][$f]; // Just copy across selected fields
 		}
-
-
 
 		$allData['data']['user_password'] = $userMethods->HashPassword($savePassword,$allData['data']['user_loginname']);
 		
@@ -627,10 +626,9 @@ if (isset($_POST['register']) && $pref['user_reg'] == 1)
 			$adviseLoginName = LAN_SIGNUP_65.': '.$allData['data']['user_loginname'].'<br />'.LAN_SIGNUP_66.'<br />';
 		}
 
-
+		// Verification required (may be by email or by admin)
 		if ($pref['user_reg_veri'])
-		{	// Verification required (may be by email or by admin)
-
+		{	
 			// ========== Send Email =========>
 			if (($pref['user_reg_veri'] != 2) && $allData['data']['user_email'])		// Don't send if email address blank - means that its not compulsory
 			{
@@ -664,9 +662,9 @@ if (isset($_POST['register']) && $pref['user_reg'] == 1)
 				unset($allData['data']['user_password']);
 			}
 
-			$e_event->trigger('usersup', $_POST);  // Old trigger - send everything in the template, including extended fields.
+			e107::getEvent()->trigger('usersup', $_POST);  // Old trigger - send everything in the template, including extended fields.
 			// FIXME - undocummented feature - userpartial trigger (better trigger name?)
-			$e_event->trigger('userpartial', array_merge($allData['data'],$eufVals['data']));  // New trigger - send everything in the template, including extended fields.
+			e107::getEvent()->trigger('userpartial', array_merge($allData['data'],$eufVals['data']));  // New trigger - send everything in the template, including extended fields.
 
 			require_once(HEADERF);
 
@@ -680,15 +678,16 @@ if (isset($_POST['register']) && $pref['user_reg'] == 1)
 		{	// User can be signed up immediately
 			require_once(HEADERF);
 
-			if(!$sql -> db_Select("user", "user_id", "user_loginname='".$allData['data']['user_loginname']."' AND user_password='".$allData['data']['user_password']."'"))
-			{	// Error looking up newly created user
+			if(!$sql->db_Select("user", "user_id", "user_loginname='".$allData['data']['user_loginname']."' AND user_password='".$allData['data']['user_password']."'"))
+			{	
+				// Error looking up newly created user
 				$ns->tablerender("", LAN_SIGNUP_36);
 				require_once(FOOTERF);
 				exit;
 			}
 
-			$e_event->trigger('usersup', $_POST);  // send everything in the template, including extended fields.
-			$e_event->trigger('userfull', array_merge($allData['data'],$eufVals['data']));  // New trigger - send everything in the template, including extended fields.
+			e107::getEvent()->trigger('usersup', $_POST);  // send everything in the template, including extended fields.
+			e107::getEvent()->trigger('userfull', array_merge($allData['data'],$eufVals['data']));  // New trigger - send everything in the template, including extended fields.
 
 			if (isset($pref['signup_text_after']) && (strlen($pref['signup_text_after']) > 2))
 			{
