@@ -776,30 +776,54 @@ class e_form
 
 
 			
-		
+	/**
+	 * File Picker 
+	 * @param string name  eg. 'myfield' or 'myfield[]'
+	 * @param mixed default
+	 * @param string label
+	 * @param mixed sc_parameters
+	 */		
 	function filepicker($name, $default, $label = '', $sc_parameters = '')
 	{
 		$tp = e107::getParser();
 		$name_id = $this->name2id($name);
+				
 		if(is_string($sc_parameters))
 		{
 			if(strpos($sc_parameters, '=') === false) $sc_parameters = 'media='.$sc_parameters;
 			parse_str($sc_parameters, $sc_parameters);
 		}
 
-		$cat 		= vartrue($sc_parameters['media']) ? $tp->toDB($sc_parameters['media']) : "_common_file";	
+		$cat = vartrue($sc_parameters['media']) ? $tp->toDB($sc_parameters['media']) : "_common_file";	
 		
-		$default_label 	= ($default) ? $default : "Choose a file";
-		$label 		= "<span id='{$name_id}_prev' class='btn btn-default btn-small'>".basename($default_label)."</span>";
+		if($sc_parameters['data'] === 'array')
+		{
+			// Do not use $this->hidden() method - as it will break 'id' value. 
+			$ret .=	"<input type='hidden' name='".$name."[path]' id='".$this->name2id($name."[path]")."' value='".varset($default['path'])."'  />"; 	
+			$ret .=	"<input type='hidden' name='".$name."[name]' id='".$this->name2id($name."[name]")."' value='".varset($default['name'])."'  />"; 	
+			$ret .=	"<input type='hidden' name='".$name."[id]' id='".$this->name2id($name."[id]")."' value='".varset($default['id'])."'  />"; 	
+		
+			$default = $default['path'];
+		}	
+		else
+		{
+			$ret .=	"<input type='hidden' name='{$name}' id='{$name_id}' value='{$default}' style='width:400px' />"; 	
+		}
+		
+		
+		$default_label 				= ($default) ? $default : "Choose a file";
+		$label 						= "<span id='{$name_id}_prev' class='btn btn-default btn-small'>".basename($default_label)."</span>";
 			
-		$sc_parameters['mode'] = 'main';
-		$sc_parameters['action'] = 'dialog';	
+		$sc_parameters['mode'] 		= 'main';
+		$sc_parameters['action'] 	= 'dialog';	
 			
 		
 	//	$ret .= $this->mediaUrl($cat, $label,$name_id,"mode=dialog&action=list");
-			$ret .= $this->mediaUrl($cat, $label,$name_id,$sc_parameters);
-		$ret .=	"<input type='hidden' name='{$name}' id='{$name_id}' value='{$default}' style='width:400px' />"; 
-			
+		$ret .= $this->mediaUrl($cat, $label,$name_id,$sc_parameters);
+	
+		
+	
+		
 		return $ret;
 	
 		
@@ -3396,11 +3420,19 @@ class e_form
 			break;
 			
 			case 'files':
+			
+				if($attributes['data'] == 'array')
+				{
+					$parms['data'] = 'array';	
+				}
+
 				$ret = '<ol>';
 				for ($i=0; $i < 5; $i++) 
 				{				
-					$k 		= $key.'['.$i.'][path]';
-					$ival 	= $value[$i]['path'];
+				//	$k 		= $key.'['.$i.'][path]';
+				//	$ival 	= $value[$i]['path'];
+					$k 		= $key.'['.$i.']';
+					$ival 	= $value[$i];
 					$ret .=  '<li>'.$this->filepicker($k, $ival, defset($label, $label), $parms).'</li>';		
 				}
 				$ret .= '</ol>';
