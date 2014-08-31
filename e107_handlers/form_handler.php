@@ -3045,7 +3045,19 @@ class e_form
 					}
 				}
 			break;
-
+			
+			case 'files':
+				$ret = '<ol>';
+				for ($i=0; $i < 5; $i++) 
+				{				
+					$k 		= $key.'['.$i.'][path]';
+					$ival 	= $value[$i]['path'];
+					$ret .=  '<li>'.$ival.'</li>';		
+				}
+				$ret .= '</ol>';
+				$value = $ret;
+			break; 
+			
 			case 'datestamp':
 				$value = $value ? e107::getDate()->convert_date($value, vartrue($parms['mask'], 'short')) : '';
 			break;
@@ -3383,7 +3395,16 @@ class e_form
 				
 			break;
 			
-			//TODO 'files'
+			case 'files':
+				$ret = '<ol>';
+				for ($i=0; $i < 5; $i++) 
+				{				
+					$k 		= $key.'['.$i.'][path]';
+					$ival 	= $value[$i]['path'];
+					$ret .=  '<li>'.$this->filepicker($k, $ival, defset($label, $label), $parms).'</li>';		
+				}
+				$ret .= '</ol>';
+			break;
 			
 			case 'file': //TODO - thumb, image list shortcode, js tooltip...
 				$label = varset($parms['label'], 'LAN_EDIT');
