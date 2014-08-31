@@ -119,13 +119,13 @@ $(document).ready(function()
     		//	console.log(this);
     	
 
-				var id			= $(this).attr('data-id');
+				var id			= $(this).attr('data-id'); // id of the mm item
 				var target 		= $(this).attr('data-target');
-				var path		= $(this).attr('data-path');
+				var path		= $(this).attr('data-path'); // path of the mm item
 				var preview 	= $(this).attr('data-preview');
 				var src			= $(this).attr('data-src');
 				var bbcode		= $(this).attr('data-bbcode'); // TinyMce/Textarea insert mode
-				var name		= $(this).attr('data-name');
+				var name		= $(this).attr('data-name'); // title of the mm item
 				var width		= $(this).attr('data-width');
 				var height		= ''; // disable for now - will be updated by bb parser. // $(this).attr('data-height');		
 				var type		= $(this).attr('data-type');
@@ -198,10 +198,36 @@ $(document).ready(function()
 				$('div#' + target + "_prev", window.top.document).html(preview); // set new value
 				$('span#' + target + "_prev", window.top.document).html(preview); // set new value
 							
-				// see $frm->filepicker()
+				// @see $frm->filepicker()
 				if(target !='')
 				{
-					$('input#' + target , window.top.document).attr('value',path); // set new value	
+					if($('input#' + target)!== undefined)
+					{
+						$('input#' + target , window.top.document).attr('value',path); // set new value	
+					}
+					
+					
+					// array mode : 
+					var pathTarget = target + '-path';
+					var nameTarget = target + '-name';
+					var idTarget = target + '-id';
+					
+					
+					if($('input#' + pathTarget)!== undefined)
+					{
+				    	$('input#' + pathTarget , window.top.document).attr('value',path); // set new value	   
+					}
+					
+					if($('input#' + nameTarget)!== undefined)
+					{
+				    	$('input#' + nameTarget , window.top.document).attr('value',name); // set new value	   
+					}
+					
+					if($('input#' + idTarget)!== undefined)
+					{
+				        $('input#' + idTarget , window.top.document).attr('value',id); // set new value	   
+					}
+					
 				}
 				
 			
