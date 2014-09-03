@@ -155,6 +155,7 @@ class e107Email extends PHPMailer
 
 	public	$legacyBody 		= false;	// TRUE enables legacy conversion of plain text body to HTML in HTML emails
 	private $debug 				= false;	// echos various debug info when set to true. 
+	private $pref 				= array();	// Store code prefs. 
 	
 	/**
 	 * Constructor sets up all the global options, and sensible defaults - it should be the only place the prefs are accessed
@@ -175,6 +176,8 @@ class e107Email extends PHPMailer
 		{
 			$this->debug = true;
 		}
+		
+		$this->pref = $pref;
 
 		$this->CharSet = 'utf-8';
 		$this->SetLanguage(CORE_LC);
@@ -606,14 +609,11 @@ class e107Email extends PHPMailer
 		{
 			
 			
-			if($tmpl = e107::getCoreTemplate('email', $eml['template'], true, true))  //FIXME - Core template is failing with template 'notify'. Works with theme template. Issue with core template registry?
-			{
-			//	$filter = array("\n", "\t");
-			//	$tmpl['header'] = str_replace($filter,'', $tmpl['header']);
-			//	$tmpl['footer'] = str_replace($filter,'', $tmpl['footer']);
-				
-				$eml['shortcodes']['BODY'] = $eml['email_body'];
-				$eml['shortcodes']['SUBJECT'] = $eml['email_subject'];
+			if($tmpl = e107::getCoreTemplate('email', $eml['template'], 'front', true))  //FIXME - Core template is failing with template 'notify'. Works with theme template. Issue with core template registry?
+			{				
+				$eml['shortcodes']['BODY'] 		= $eml['email_body'];
+				$eml['shortcodes']['SUBJECT'] 	= $eml['email_subject'];
+				$eml['shortcodes']['THEME'] 	= e_THEME.$this->pref['sitetheme'].'/'; // Always use front-end theme path. 
 				
 				$emailBody = $tmpl['header']. $tmpl['body'] . $tmpl['footer']; 
 				
