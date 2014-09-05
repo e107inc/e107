@@ -1128,7 +1128,7 @@ class e_form
 
 		$options = $this->format_options('textarea', $name, $options);
 		
-		print_a($options);
+//		print_a($options);
 		//never allow id in format name-value for text fields
 		return "<textarea name='{$name}' rows='{$rows}' cols='{$cols}'".$this->get_attributes($options, $name).">{$value}</textarea>".(false !== $counter ? $this->hidden('__'.$name.'autoheight_opt', $counter) : '');
 	}
