@@ -71,6 +71,7 @@ class admin_start
 			'aa_jquery'		=> 1.2,
 			'who'			=> 1.0,
 			'ratings'		=> 4.2,
+			'lightbox'		=> 1.5,
 			'e107slider'	=> 0.1
 	);
 
