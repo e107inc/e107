@@ -126,6 +126,12 @@ class faqs_shortcodes extends e_shortcode
 		{
 			return "<a href='".$this->sc_faq_current_tag('url')."'>".$tp->toHTML($this->var['faq_info_title'])." &raquo; ".$this->sc_faq_current_tag('raw')."</a>";
 		}
+		
+		if($parm == 'raw')
+		{
+			return $tp->toHTML($this->var['faq_info_title']);	
+		}
+		
 		return "<a href='".e107::getUrl()->create('faqs/list/all', array('category' => $this->var['faq_info_id']))."'>".$tp->toHTML($this->var['faq_info_title'])."</a>";	
 	}
 	
