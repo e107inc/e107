@@ -18,11 +18,17 @@
  
 require_once ("../../class2.php");
 
-$url = e107::getUrl()->create('faqs/list/all', false, 'full=1&noencode=1');
-header('Location: '.$url);
-exit;
+if(file_exists(e_PLUGIN."faqs/controllers/list.php"))
+{
+	$url = e107::getUrl()->create('faqs/list/all', false, 'full=1&noencode=1');
+	header('Location: '.$url);
+	exit;
+}
+else 
+{
+	include_lan(e_PLUGIN."faqs/languages/".e_LANGUAGE."/".e_LANGUAGE."_global.php");
+}
 
-incluXXXde_lan(e_PLUGIN."faqs/languages/".e_LANGUAGE."/".e_LANGUAGE."_front.php");
 
 
 require_once (e_HANDLER."form_handler.php");
@@ -34,11 +40,11 @@ if (!vartrue($FAQ_VIEW_TEMPLATE))
 {
 	if (file_exists(THEME."faqs_template.php"))
 	{
-		require_once (THEME."faqs_template.php");
+	//	require_once (THEME."faqs_template.php");
 	}
 	else
 	{
-		require_once (e_PLUGIN."faqs/faqs_template.php");
+	//	require_once (e_PLUGIN."faqs/templates/faqs_template.php");
 	}
 }
 
@@ -126,12 +132,12 @@ if (isset($_POST['commentsubmit']))
 		}
 		else
 		{
-			define("e_PAGETITLE", FAQLAN_23);
+			define("e_PAGETITLE", $ftmp['caption']);
 		}
 
 		require_once (HEADERF);
 				
-		$ns->tablerender($caption, $ftmp['text']);
+		$ns->tablerender($ftmp['caption'], $ftmp['text']);
 		
 	}
 
@@ -184,19 +190,32 @@ class faq
 		$tp = e107::getParser();
 		$ret = array();
 
+		$template = e107::getTemplate('faqs');
+		
+	//	print_a($template);
+		
+	
+		
 		global $FAQ_START, $FAQ_END, $FAQ_LISTALL_START,$FAQ_LISTALL_LOOP,$FAQ_LISTALL_END;
+
+		if($FAQ_START)
+		{
+			
+		}
 
 		//require_once (e_PLUGIN."faqs/faqs_shortcodes.php");
 
 		$query = "SELECT f.*,cat.* FROM #faqs AS f LEFT JOIN #faqs_info AS cat ON f.faq_parent = cat.faq_info_id WHERE cat.faq_info_class IN (".USERCLASS_LIST.") ORDER BY cat.faq_info_order,f.faq_order ";
-		$sql->db_Select_gen($query);
-		$text = $tp->parseTemplate($FAQ_START, true);
+		$sql->gen($query);
+	
 		$prevcat = "";
 		$sc = e107::getScBatch('faqs',TRUE);
 		
+		$text = $tp->parseTemplate($template['start'], true, $sc);
+		
 		// var_dump($sc);
 		
-		while ($rw = $sql->db_Fetch())
+		while ($rw = $sql->fetch())
 		{
 			$sc->setVars($rw);	
 
@@ -204,23 +223,25 @@ class faq
 			{
 				if($prevcat !='')
 				{
-					$text .= $tp->parseTemplate($FAQ_LISTALL_END, true, $sc);
+					$text .= $tp->parseTemplate($template['all']['end'], true, $sc);
 				}
 				$text .= "\n\n<!-- FAQ Start ".$rw['faq_info_order']."-->\n\n";
-				$text .= $tp->parseTemplate($FAQ_LISTALL_START, true, $sc);
+				$text .= $tp->parseTemplate($template['all']['start'], true, $sc);
 				$start = TRUE;
 			}
 
-			$text .= $tp->parseTemplate($FAQ_LISTALL_LOOP, true, $sc);
+			$text .= $tp->parseTemplate($template['all']['item'], true, $sc);
 			$prevcat = $rw['faq_info_order'];
 
 		}
-		$text .= $tp->parseTemplate($FAQ_LISTALL_END, true, $sc);
-		$text .= $tp->parseTemplate($FAQ_END, true, $sc);
+		$text .= $tp->parseTemplate($template['all']['end'], true, $sc);
+		$text .= $tp->parseTemplate($template['end'], true, $sc);
 
 		$ret['title'] = FAQLAN_FAQ;
 		$ret['text'] = $text;
-		$ret['caption'] = vartrue($caption);
+		$ret['caption'] = varset($template['all']['caption']) ? $tp->parseTemplate($template['all']['caption'], true, $sc) : LAN_PLUGIN_FAQS_FRONT_NAME;
+		
+		
 		
 		return $ret;
 	}
