@@ -267,7 +267,7 @@ class faq
 		
 		if(!$sql->gen($query))
 		{
-			return;
+			return "<div class='alert alert-warning alert-block'><b>".$srch."</b> was not found in search results.</div>" ; //TODO LAN
 		}
 			
 		$text = '';	
