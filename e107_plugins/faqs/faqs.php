@@ -55,13 +55,23 @@ if (!vartrue($FAQ_VIEW_TEMPLATE))
 $rs = new form;
 $cobj = new comment;
 
-if (!vartrue($_GET['elan']))
+if (!vartrue($_GET['elan']) && empty($_GET))
 {
 	$qs = explode(".", e_QUERY);
 	$action = $qs[0];
 	$id = $qs[1];
 	$idx = $qs[2];
 }
+else
+{
+	
+}
+
+
+
+
+
+
 $from = (vartrue($from) ? $from : 0);
 $amount = 50;
 
@@ -122,7 +132,8 @@ if (isset($_POST['commentsubmit']))
 		}
 		else
 		{
-			$ftmp = $faq->view_all();
+			$srch = vartrue($_GET['srch']);
+			$ftmp = $faq->view_all($srch);
 			$caption = FAQLAN_FAQ;			
 		}
 
@@ -175,6 +186,8 @@ exit;
 class faq
 {
 	var $pref = array();
+	protected $sc = null;
+	protected $template = null;
 
 	function __construct()
 	{
@@ -184,13 +197,14 @@ class faq
 		// setScVar('faqs_shortcodes', 'pref', $this->pref);
 	}
 
-	function view_all() // new funtion to render all FAQs
+	function view_all($srch) // new funtion to render all FAQs
 	{
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		$ret = array();
 
 		$template = e107::getTemplate('faqs');
+		$this->template = $template;
 		
 	//	print_a($template);
 		
@@ -205,46 +219,87 @@ class faq
 
 		//require_once (e_PLUGIN."faqs/faqs_shortcodes.php");
 
-		$query = "SELECT f.*,cat.* FROM #faqs AS f LEFT JOIN #faqs_info AS cat ON f.faq_parent = cat.faq_info_id WHERE cat.faq_info_class IN (".USERCLASS_LIST.") ORDER BY cat.faq_info_order,f.faq_order ";
-		$sql->gen($query);
+	
 	
 		$prevcat = "";
-		$sc = e107::getScBatch('faqs',TRUE);
+
+		$this->sc = e107::getScBatch('faqs',TRUE);
 		
-		$text = $tp->parseTemplate($template['start'], true, $sc);
+		$text = $tp->parseTemplate($template['start'], true, $this->sc);
 		
 		// var_dump($sc);
 		
-		while ($rw = $sql->fetch())
-		{
-			$sc->setVars($rw);	
-
-			if($rw['faq_info_order'] != $prevcat)
-			{
-				if($prevcat !='')
-				{
-					$text .= $tp->parseTemplate($template['all']['end'], true, $sc);
-				}
-				$text .= "\n\n<!-- FAQ Start ".$rw['faq_info_order']."-->\n\n";
-				$text .= $tp->parseTemplate($template['all']['start'], true, $sc);
-				$start = TRUE;
-			}
-
-			$text .= $tp->parseTemplate($template['all']['item'], true, $sc);
-			$prevcat = $rw['faq_info_order'];
-
-		}
-		$text .= $tp->parseTemplate($template['all']['end'], true, $sc);
-		$text .= $tp->parseTemplate($template['end'], true, $sc);
+		$text .= "<div id='faqs-container'>";
+		
+		$text .= $this->view_all_query($srch);
+		
+		$text .= "</div>";
+	
+		$text .= $tp->parseTemplate($template['end'], true, $this->sc);
 
 		$ret['title'] = FAQLAN_FAQ;
 		$ret['text'] = $text;
-		$ret['caption'] = varset($template['all']['caption']) ? $tp->parseTemplate($template['all']['caption'], true, $sc) : LAN_PLUGIN_FAQS_FRONT_NAME;
+		$ret['caption'] = varset($template['caption']) ? $tp->parseTemplate($template['caption'], true, $this->sc) : LAN_PLUGIN_FAQS_FRONT_NAME;
 		
 		
 		
 		return $ret;
 	}
+
+
+
+	function view_all_query($srch='')
+	{
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+		
+		if(!empty($srch))
+		{
+			$srch = $tp->toDB($srch);
+			$insert = " AND (f.faq_question LIKE '%".$srch."%' OR FIND_IN_SET ('".$srch."', f.faq_tags) ) ";
+		}
+		else
+		{
+			$insert = "";	
+		}
+
+		$query = "SELECT f.*,cat.* FROM #faqs AS f LEFT JOIN #faqs_info AS cat ON f.faq_parent = cat.faq_info_id WHERE cat.faq_info_class IN (".USERCLASS_LIST.") ".$insert." ORDER BY cat.faq_info_order,f.faq_order ";
+		
+		if(!$sql->gen($query))
+		{
+			return;
+		}
+			
+		$text = '';	
+			
+		while ($rw = $sql->fetch())
+		{
+			$this->sc->setVars($rw);	
+
+			if($rw['faq_info_order'] != $prevcat)
+			{
+				if($prevcat !='')
+				{
+					$text .= $tp->parseTemplate($template['all']['end'], true, $this->sc);
+				}
+				
+				$text .= "\n\n<!-- FAQ Start ".$rw['faq_info_order']."-->\n\n";
+				$text .= $tp->parseTemplate($this->template['all']['start'], true, $this->sc);
+				$start = TRUE;
+			}
+
+			$text .= $tp->parseTemplate($this->template['all']['item'], true, $this->sc);
+			$prevcat = $rw['faq_info_order'];
+
+		}
+		$text .= $tp->parseTemplate($this->template['all']['end'], true, $this->sc);	
+		
+		
+		return $text;
+		
+	}
+
+
 
 
 // -------------  Everything below here is kept for backwards-compatability 'Classic Look' ------------
