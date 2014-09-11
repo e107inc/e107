@@ -25,8 +25,7 @@ if (USER && !getperms('0'))
 if($pref['fpwcode'] && extension_loaded('gd'))
 {
 	define('USE_IMAGECODE', TRUE);
-	require_once(e_HANDLER.'secure_img_handler.php');
-	$sec_img = new secure_image;
+	$sec_img = e107::getSecureImg();
 }
 else
 {
@@ -72,17 +71,17 @@ class fpw_shortcodes extends e_shortcode
 	
 	function sc_fpw_captcha_hidden($parm='')
 	{
-		return; // no longer required - included in renderInput();	
+		return; // no longer required - included in renderInput();
 	}	
 	
 	function sc_fpw_captcha_img($parm='')
 	{
-		return $this->secImg->renderImage();
+		if(USE_IMAGECODE){ return $this->secImg->renderImage(); }
 	}
 	
 	function sc_fpw_captcha_input($parm='')
 	{
-		return $this->secImg->renderInput();		
+		if(USE_IMAGECODE){ return $this->secImg->renderInput(); }		
 	}
 
 	function sc_fpw_logo($parm='')
