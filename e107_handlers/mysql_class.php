@@ -1969,18 +1969,19 @@ class e_db_mysql
 		$fileName		= ($table =='*') ? str_replace(" ","_",SITENAME) : $table; 
 		$fileName	 	= preg_replace('/[^\w]/i',"",$fileName);
 		
-		$backupFile 	= ($file) ? e_BACKUP.$file  :  e_BACKUP.$fileName."_".$this->mySQLPrefix.date("Y-m-d-H-i-s").".sql";
+		$backupFile 	= ($file) ? e_BACKUP.$file  :  e_BACKUP.strtolower($fileName)."_".$this->mySQLPrefix.date("Y-m-d-H-i-s").".sql";
 		
 		if($table=='*') 
 		{
-			$nolog 		= vartrue($options['nologs']) ? 'nologs' : '';
+			$nolog 		= vartrue($options['nologs']) ? 'nologs' : 'all';
 			$tableList 	= $this->db_TableList($nolog);
 		}
 		else
 		{
 			$tableList 		= explode(",",$table); 
 		}
-			
+		
+				
 		$header = "-- e107 Database Backup File \n";	
 		$header .= "-- Host: ".$_SERVER['SERVER_NAME']."\n";
 		$header .= "-- Generation Time: ".date('r')."\n";
