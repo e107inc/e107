@@ -239,9 +239,9 @@ class e_form
 	
 	/**
 	 * Render Bootstrap Carousel 
-	 * @param $name : A unique name 
-	 * @param $array
-	 * @param $options : placeholder for any future options. (currently not in use) 
+	 * @param string $name : A unique name 
+	 * @param array $array
+	 * @param array $options : default, interval, pause, wrap
 	 * @example
 	 * $array = array(
 	 * 		'slide1' => array('caption' => 'Slide 1', 'text' => 'first slide content' ),
@@ -254,6 +254,8 @@ class e_form
 		$interval = null;
 		$wrap = null;
 		$pause = null;
+				
+		$act = varset($options['default'], 0);
 		
 		if(isset($options['wrap']))
 		{
@@ -281,7 +283,7 @@ class e_form
 		$c = 0;
 		foreach($array as $key=>$tab)
 		{
-			$active = ($c == 0) ? ' class="active"' : '';
+			$active = ($c == $act) ? ' class="active"' : '';
 			$text .=  '<li data-target="#'.$name.'" data-slide-to="'.$c.'" '.$active.'></li>';
 			$c++;
 		}
@@ -296,7 +298,7 @@ class e_form
 		$c=0;
 		foreach($array as $key=>$tab)
 		{
-			$active = ($c == 0) ? ' active' : '';
+			$active = ($c == $act) ? ' active' : '';
 			$text .= '<div class="item'.$active.'" id="'.$key.'">';
 			$text .= $tab['text'];
 			
@@ -571,9 +573,9 @@ class e_form
 		
 		
 		$path = (substr($curVal,0,8) == '-upload-') ? '{e_AVATAR}upload/' : '{e_AVATAR}default/';
-		$curVal = str_replace('-upload-','',$curVal);
+		$newVal = str_replace('-upload-','',$curVal);
 	
-		$img = (strpos($curVal,"://")!==false) ? $curVal : $tp->thumbUrl($path.$curVal);
+		$img = (strpos($curVal,"://")!==false) ? $curVal : $tp->thumbUrl($path.$newVal);
 				
 		if(!$curVal)
 		{
@@ -602,8 +604,12 @@ class e_form
 	
 				$text .= "<div style='margin-bottom:10px'>".LAN_USET_26."
 				<input  class='tbox' name='file_userfile[avatar]' type='file' size='47' title=\"{$diz}\" />
-				</div>
-				<div class='divider'><span>OR</span></div>";
+				</div>";
+				
+				if(count($avFiles) > 0)
+				{
+					$text .= "<div class='divider'><span>OR</span></div>";
+				}
 		}
 		
 				
@@ -770,30 +776,54 @@ class e_form
 
 
 			
-		
+	/**
+	 * File Picker 
+	 * @param string name  eg. 'myfield' or 'myfield[]'
+	 * @param mixed default
+	 * @param string label
+	 * @param mixed sc_parameters
+	 */		
 	function filepicker($name, $default, $label = '', $sc_parameters = '')
 	{
 		$tp = e107::getParser();
 		$name_id = $this->name2id($name);
+				
 		if(is_string($sc_parameters))
 		{
 			if(strpos($sc_parameters, '=') === false) $sc_parameters = 'media='.$sc_parameters;
 			parse_str($sc_parameters, $sc_parameters);
 		}
 
-		$cat 		= vartrue($sc_parameters['media']) ? $tp->toDB($sc_parameters['media']) : "_common_file";	
+		$cat = vartrue($sc_parameters['media']) ? $tp->toDB($sc_parameters['media']) : "_common_file";	
 		
-		$default_label 	= ($default) ? $default : "Choose a file";
-		$label 		= "<span id='{$name_id}_prev' class='btn btn-default btn-small'>".basename($default_label)."</span>";
+		if($sc_parameters['data'] === 'array')
+		{
+			// Do not use $this->hidden() method - as it will break 'id' value. 
+			$ret .=	"<input type='hidden' name='".$name."[path]' id='".$this->name2id($name."[path]")."' value='".varset($default['path'])."'  />"; 	
+			$ret .=	"<input type='hidden' name='".$name."[name]' id='".$this->name2id($name."[name]")."' value='".varset($default['name'])."'  />"; 	
+			$ret .=	"<input type='hidden' name='".$name."[id]' id='".$this->name2id($name."[id]")."' value='".varset($default['id'])."'  />"; 	
+		
+			$default = $default['path'];
+		}	
+		else
+		{
+			$ret .=	"<input type='hidden' name='{$name}' id='{$name_id}' value='{$default}' style='width:400px' />"; 	
+		}
+		
+		
+		$default_label 				= ($default) ? $default : "Choose a file";
+		$label 						= "<span id='{$name_id}_prev' class='btn btn-default btn-small'>".basename($default_label)."</span>";
 			
-		$sc_parameters['mode'] = 'main';
-		$sc_parameters['action'] = 'dialog';	
+		$sc_parameters['mode'] 		= 'main';
+		$sc_parameters['action'] 	= 'dialog';	
 			
 		
 	//	$ret .= $this->mediaUrl($cat, $label,$name_id,"mode=dialog&action=list");
-			$ret .= $this->mediaUrl($cat, $label,$name_id,$sc_parameters);
-		$ret .=	"<input type='hidden' name='{$name}' id='{$name_id}' value='{$default}' style='width:400px' />"; 
-			
+		$ret .= $this->mediaUrl($cat, $label,$name_id,$sc_parameters);
+	
+		
+	
+		
 		return $ret;
 	
 		
@@ -1037,7 +1067,14 @@ class e_form
 		//never allow id in format name-value for text fields
 		$text = "<input type='password' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
 
-		return "<span class='form-inline'>".$text.$gen."</span>".vartrue($addon);
+		if(empty($gen) && empty($addon))
+		{
+			return $text;	
+		}
+		else 
+		{
+			return "<span class='form-inline'>".$text.$gen."</span>".vartrue($addon);
+		}	
 		
 	}
 
@@ -1090,6 +1127,8 @@ class e_form
 		}
 
 		$options = $this->format_options('textarea', $name, $options);
+		
+//		print_a($options);
 		//never allow id in format name-value for text fields
 		return "<textarea name='{$name}' rows='{$rows}' cols='{$cols}'".$this->get_attributes($options, $name).">{$value}</textarea>".(false !== $counter ? $this->hidden('__'.$name.'autoheight_opt', $counter) : '');
 	}
@@ -2015,6 +2054,10 @@ class e_form
 					if($optval) $ret .= " selected='selected'";
 					break;
 
+				case 'maxlength':
+					if($optval) $ret .= " maxlength='{$optval}'";
+					break;
+
 				case 'checked':
 					if($optval) $ret .= " checked='checked'";
 					break;
@@ -2154,7 +2197,8 @@ class e_form
 			'placeholder' 	=> '',
 			'pattern'		=> '',
 			'other' 		=> '',
-			'autocomplete' 	=> ''
+			'autocomplete' 	=> '',
+			'maxlength'		=> ''
 			//	'multiple' => false, - see case 'select'
 		);
 
@@ -3032,7 +3076,19 @@ class e_form
 					}
 				}
 			break;
-
+			
+			case 'files':
+				$ret = '<ol>';
+				for ($i=0; $i < 5; $i++) 
+				{				
+					$k 		= $key.'['.$i.'][path]';
+					$ival 	= $value[$i]['path'];
+					$ret .=  '<li>'.$ival.'</li>';		
+				}
+				$ret .= '</ol>';
+				$value = $ret;
+			break; 
+			
 			case 'datestamp':
 				$value = $value ? e107::getDate()->convert_date($value, vartrue($parms['mask'], 'short')) : '';
 			break;
@@ -3358,16 +3414,35 @@ class e_form
 			break;
 			
 			case 'images':
-				
-				$value = str_replace('&#039;',"'",html_entity_decode($value)); //FIXME @SecretR Horrible workaround to Line 3203 of admin_ui.php				
-				$ival = e107::unserialize($value);
+			//	return print_a($value, true);
 
 				for ($i=0; $i < 5; $i++) 
-				{
-					$k = $key.'[path]['.$i.']'; 
-					$ret .=  $this->imagepicker($k, $ival['path'][$i], defset($label, $label), $parms);		
+				{				
+					$k 		= $key.'['.$i.'][path]';
+					$ival 	= $value[$i]['path'];
+					
+					$ret .=  $this->imagepicker($k, $ival, defset($label, $label), $parms);		
 				}
 				
+			break;
+			
+			case 'files':
+			
+				if($attributes['data'] == 'array')
+				{
+					$parms['data'] = 'array';	
+				}
+
+				$ret = '<ol>';
+				for ($i=0; $i < 5; $i++) 
+				{				
+				//	$k 		= $key.'['.$i.'][path]';
+				//	$ival 	= $value[$i]['path'];
+					$k 		= $key.'['.$i.']';
+					$ival 	= $value[$i];
+					$ret .=  '<li>'.$this->filepicker($k, $ival, defset($label, $label), $parms).'</li>';		
+				}
+				$ret .= '</ol>';
 			break;
 			
 			case 'file': //TODO - thumb, image list shortcode, js tooltip...

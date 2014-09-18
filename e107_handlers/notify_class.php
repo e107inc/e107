@@ -147,16 +147,18 @@ class notify
 
 			// Create the mail body
 			$mailData = array(
-				'mail_content_status' => MAIL_STATUS_TEMP,
-				'mail_create_app' => 'notify',
-				'mail_title' => 'NOTIFY',
-				'mail_subject' => $subject,
-				'mail_sender_email' => e107::getPref('siteadminemail'),
-				'mail_sender_name'	=> e107::getPref('siteadmin'),
-				'mail_send_style'	=> 'textonly',
-				'mail_notify_complete' => 0,			// NEVER notify when this email sent!!!!!
-				'mail_body' => $message
+				'mail_content_status' 	=> MAIL_STATUS_TEMP,
+				'mail_create_app' 		=> 'notify',
+				'mail_title' 			=> 'NOTIFY',
+				'mail_subject' 			=> $subject,
+				'mail_sender_email' 	=> e107::getPref('siteadminemail'),
+				'mail_sender_name'		=> e107::getPref('siteadmin'),
+			//	'mail_send_style'		=> 'textonly',
+				'mail_notify_complete' 	=> 0,			// NEVER notify when this email sent!!!!!
+				'mail_body' 			=> $message,
+				'template'				=> 'notify'
 			);
+			
 			$result = $mailer->sendEmails('NOTIFY_TEMPLATE', $mailData, $recipients);
 			$e107->admin_log->e_log_event(10,-1,'NOTIFY',$subject,$message,FALSE,LOG_TO_ROLLING);
 		}

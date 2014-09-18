@@ -1996,7 +1996,7 @@ class e107
 	 *
 	 * @param string $id - file prefix, e.g. user for user_template.php
 	 * @param string|null $key
-	 * @param boolean $override see {@link getThemeInfo()}
+	 * @param mixed $override see {@link getThemeInfo()} true/false,  front or admin. 
 	 * @param boolean $merge merge theme with core templates, default is false
 	 * @param boolean $info retrieve template info only
 	 * @return string|array

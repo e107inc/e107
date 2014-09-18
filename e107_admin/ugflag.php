@@ -78,9 +78,12 @@ $text = "
 				</colgroup>
 				<tbody>";
 				
-$elements = array(e_UC_PUBLIC=>LAN_DISABLED,
-	 e_UC_ADMIN=>UGFLAN_8,
-	 e_UC_MAINADMIN=>UGFLAN_9);
+$elements = array(
+	e_UC_PUBLIC		=> LAN_DISABLED,
+	e_UC_MEMBER		=> ADLAN_110,
+	e_UC_ADMIN		=> UGFLAN_8,
+	e_UC_MAINADMIN	=> UGFLAN_9
+);
 	 
 $text .= "
 					<tr>

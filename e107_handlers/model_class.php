@@ -2041,6 +2041,13 @@ class e_front_model extends e_model
      */
     public function getIfPosted($key, $default = '', $index = null)
     {
+    	$d = $this->getDataFields();
+		
+		if($d[$key] == 'array')
+		{
+			return e107::unserialize($this->getData((string) $key, $default, $index));	
+		}   
+		
     	$posted = $this->getPostedData((string) $key, null, $index);
 		if(null !== $posted)
 		{

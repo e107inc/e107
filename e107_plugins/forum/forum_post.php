@@ -661,10 +661,13 @@ function process_upload()
 			return $ret;
 		}
 	}
+	/* no file uploaded at all, proceed with creating the topic or reply
+	// TODO don't call process_upload() when no attachments are uploaded.. (check  user input first, then call if needed)
 	else
 	{
 		e107::getMessage()->addError('Something went wrong during the attachment uploading process.'); 
 	}
+	*/ 
 }
 
 function image_getsize($fname)

@@ -781,11 +781,51 @@ class e_parse extends e_parser
 		return $this->toHTML($text, TRUE, $extra);
 	}
 
-
+	/**
+	 * @param $text - template to parse. 
+	 * @param boolean $parseSCFiles - parse core 'single' shortcodes
+	 * @param array $extraCodes - support legacy shortcode content (eg. content within .sc) as well as simpleParse array format. 
+	 * @param object $eVars - XXX more info needed. 
+	 */
 	function parseTemplate($text, $parseSCFiles = TRUE, $extraCodes = null, $eVars = null)
 	{
+		if(!empty($extraCodes) && $this->isSimpleParse($extraCodes)) // support for a combined simple and standard template parse. - (eg. used by signup email template.) 
+		{
+			$text = $this->simpleParse($text, $extraCodes, false);	
+		}
+		
+		
+		
 		return e107::getScParser()->parseCodes($text, $parseSCFiles, $extraCodes, $eVars);
 	}
+
+	
+	/**
+	 * Check if we are using the simple-Parse array format, or a legacy .sc format which contains 'return ' 
+	 * @param array $extraCodes
+	 */
+	private function isSimpleParse($extraCodes)
+	{
+		
+		if(!is_array($extraCodes))
+		{
+			return false;	
+		}
+		
+		foreach ($extraCodes as $sc => $code)
+		{			
+			if(!strpos($code, 'return '))
+			{
+				return true;
+			}
+			else 
+			{
+				return false;
+			}
+		}		
+	}
+
+
 
 	/**
 	 * Simple parser
@@ -2053,8 +2093,10 @@ class e_parse extends e_parser
 			'e_HANDLER/' 		=> '{e_HANDLER}', // BC
 			'e_MEDIA/' 			=> '{e_MEDIA}',
 			'e_WEB/' 			=> '{e_ADMIN}',
+	//		'THEME/'			=> '{THEME}',
 		);
-
+		
+		
 		switch ($type)
 		{
 			case 'sc':
