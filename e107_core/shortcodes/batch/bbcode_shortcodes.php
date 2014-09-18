@@ -584,7 +584,8 @@ class bbcode_shortcodes extends e_shortcode
 				
 				extract($val); 
 				//	echo "$onclick $onclick_var $helptext $icon <br />";
-				$bbcode[$name] = array($onclick,$onclick_var,$helptext,$icon,$function,$function_var);
+                // NEW support of 'glyph' (replace icon) and 'class' (to be added to <a> tag) keys
+				$bbcode[$name] = array($onclick,$onclick_var,$helptext,$icon,$function,$function_var,$glyph,$class);
 				if($val['icon']) $iconpath[$name] = $icon;
 				else unset($iconpath[$name]);
 			}
@@ -608,10 +609,10 @@ class bbcode_shortcodes extends e_shortcode
 		}
 		else
 		{
-			$pre = "<a class='btn  e-pointer' title=\"".str_replace('<br />','\\n',($_helptxt))."\" onclick=\"{$_onclick_func}('".$_onclick_var."')\" ".($bbcode_helpactive ? "onmouseout=\"{$bbcode_help}(''{$bbcode_tag})\" onmouseover=\"{$bbcode_help}('".$_helptxt."'{$bbcode_tag})\"" : "" )." />";
+			$pre = "<a class='btn  ".vartrue($bbcode[$parm][7], 'e-pointer')."' title=\"".str_replace('<br />','\\n',($_helptxt))."\" onclick=\"{$_onclick_func}('".$_onclick_var."')\" ".($bbcode_helpactive ? "onmouseout=\"{$bbcode_help}(''{$bbcode_tag})\" onmouseover=\"{$bbcode_help}('".$_helptxt."'{$bbcode_tag})\"" : "" )." />";
 			$post = "</a>\n";	 // btn-small bbcode bbcode_buttons
 		}
-		
+
 		if($bbcode[$parm])  // default - insert text.
 		{
 			$text = $pre;
