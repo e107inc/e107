@@ -18,11 +18,17 @@
  
 require_once ("../../class2.php");
 
-$url = e107::getUrl()->create('faqs/list/all', false, 'full=1&noencode=1');
-header('Location: '.$url);
-exit;
+if(file_exists(e_PLUGIN."faqs/controllers/list.php"))
+{
+	$url = e107::getUrl()->create('faqs/list/all', false, 'full=1&noencode=1');
+	header('Location: '.$url);
+	exit;
+}
+else 
+{
+	include_lan(e_PLUGIN."faqs/languages/".e_LANGUAGE."/".e_LANGUAGE."_global.php");
+}
 
-incluXXXde_lan(e_PLUGIN."faqs/languages/".e_LANGUAGE."/".e_LANGUAGE."_front.php");
 
 
 require_once (e_HANDLER."form_handler.php");
@@ -34,11 +40,11 @@ if (!vartrue($FAQ_VIEW_TEMPLATE))
 {
 	if (file_exists(THEME."faqs_template.php"))
 	{
-		require_once (THEME."faqs_template.php");
+	//	require_once (THEME."faqs_template.php");
 	}
 	else
 	{
-		require_once (e_PLUGIN."faqs/faqs_template.php");
+	//	require_once (e_PLUGIN."faqs/templates/faqs_template.php");
 	}
 }
 
@@ -49,13 +55,23 @@ if (!vartrue($FAQ_VIEW_TEMPLATE))
 $rs = new form;
 $cobj = new comment;
 
-if (!vartrue($_GET['elan']))
+if (!vartrue($_GET['elan']) && empty($_GET))
 {
 	$qs = explode(".", e_QUERY);
 	$action = $qs[0];
 	$id = $qs[1];
 	$idx = $qs[2];
 }
+else
+{
+	
+}
+
+
+
+
+
+
 $from = (vartrue($from) ? $from : 0);
 $amount = 50;
 
@@ -116,7 +132,8 @@ if (isset($_POST['commentsubmit']))
 		}
 		else
 		{
-			$ftmp = $faq->view_all();
+			$srch = vartrue($_GET['srch']);
+			$ftmp = $faq->view_all($srch);
 			$caption = FAQLAN_FAQ;			
 		}
 
@@ -126,12 +143,12 @@ if (isset($_POST['commentsubmit']))
 		}
 		else
 		{
-			define("e_PAGETITLE", FAQLAN_23);
+			define("e_PAGETITLE", $ftmp['caption']);
 		}
 
 		require_once (HEADERF);
 				
-		$ns->tablerender($caption, $ftmp['text']);
+		$ns->tablerender($ftmp['caption'], $ftmp['text']);
 		
 	}
 
@@ -169,6 +186,8 @@ exit;
 class faq
 {
 	var $pref = array();
+	protected $sc = null;
+	protected $template = null;
 
 	function __construct()
 	{
@@ -178,52 +197,109 @@ class faq
 		// setScVar('faqs_shortcodes', 'pref', $this->pref);
 	}
 
-	function view_all() // new funtion to render all FAQs
+	function view_all($srch) // new funtion to render all FAQs
 	{
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		$ret = array();
 
+		$template = e107::getTemplate('faqs');
+		$this->template = $template;
+		
+	//	print_a($template);
+		
+	
+		
 		global $FAQ_START, $FAQ_END, $FAQ_LISTALL_START,$FAQ_LISTALL_LOOP,$FAQ_LISTALL_END;
+
+		if($FAQ_START)
+		{
+			
+		}
 
 		//require_once (e_PLUGIN."faqs/faqs_shortcodes.php");
 
-		$query = "SELECT f.*,cat.* FROM #faqs AS f LEFT JOIN #faqs_info AS cat ON f.faq_parent = cat.faq_info_id WHERE cat.faq_info_class IN (".USERCLASS_LIST.") ORDER BY cat.faq_info_order,f.faq_order ";
-		$sql->db_Select_gen($query);
-		$text = $tp->parseTemplate($FAQ_START, true);
+	
+	
 		$prevcat = "";
-		$sc = e107::getScBatch('faqs',TRUE);
+
+		$this->sc = e107::getScBatch('faqs',TRUE);
+		
+		$text = $tp->parseTemplate($template['start'], true, $this->sc);
 		
 		// var_dump($sc);
 		
-		while ($rw = $sql->db_Fetch())
+		$text .= "<div id='faqs-container'>";
+		
+		$text .= $this->view_all_query($srch);
+		
+		$text .= "</div>";
+	
+		$text .= $tp->parseTemplate($template['end'], true, $this->sc);
+
+		$ret['title'] = FAQLAN_FAQ;
+		$ret['text'] = $text;
+		$ret['caption'] = varset($template['caption']) ? $tp->parseTemplate($template['caption'], true, $this->sc) : LAN_PLUGIN_FAQS_FRONT_NAME;
+		
+		
+		
+		return $ret;
+	}
+
+
+
+	function view_all_query($srch='')
+	{
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+		
+		if(!empty($srch))
 		{
-			$sc->setVars($rw);	
+			$srch = $tp->toDB($srch);
+			$insert = " AND (f.faq_question LIKE '%".$srch."%' OR FIND_IN_SET ('".$srch."', f.faq_tags) ) ";
+		}
+		else
+		{
+			$insert = "";	
+		}
+
+		$query = "SELECT f.*,cat.* FROM #faqs AS f LEFT JOIN #faqs_info AS cat ON f.faq_parent = cat.faq_info_id WHERE cat.faq_info_class IN (".USERCLASS_LIST.") ".$insert." ORDER BY cat.faq_info_order,f.faq_order ";
+		
+		if(!$sql->gen($query))
+		{
+			return "<div class='alert alert-warning alert-block'><b>".$srch."</b> was not found in search results.</div>" ; //TODO LAN
+		}
+			
+		$text = '';	
+			
+		while ($rw = $sql->fetch())
+		{
+			$this->sc->setVars($rw);	
 
 			if($rw['faq_info_order'] != $prevcat)
 			{
 				if($prevcat !='')
 				{
-					$text .= $tp->parseTemplate($FAQ_LISTALL_END, true, $sc);
+					$text .= $tp->parseTemplate($template['all']['end'], true, $this->sc);
 				}
+				
 				$text .= "\n\n<!-- FAQ Start ".$rw['faq_info_order']."-->\n\n";
-				$text .= $tp->parseTemplate($FAQ_LISTALL_START, true, $sc);
+				$text .= $tp->parseTemplate($this->template['all']['start'], true, $this->sc);
 				$start = TRUE;
 			}
 
-			$text .= $tp->parseTemplate($FAQ_LISTALL_LOOP, true, $sc);
+			$text .= $tp->parseTemplate($this->template['all']['item'], true, $this->sc);
 			$prevcat = $rw['faq_info_order'];
 
 		}
-		$text .= $tp->parseTemplate($FAQ_LISTALL_END, true, $sc);
-		$text .= $tp->parseTemplate($FAQ_END, true, $sc);
-
-		$ret['title'] = FAQLAN_FAQ;
-		$ret['text'] = $text;
-		$ret['caption'] = vartrue($caption);
+		$text .= $tp->parseTemplate($this->template['all']['end'], true, $this->sc);	
 		
-		return $ret;
+		
+		return $text;
+		
 	}
+
+
 
 
 // -------------  Everything below here is kept for backwards-compatability 'Classic Look' ------------

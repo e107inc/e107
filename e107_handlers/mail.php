@@ -155,6 +155,7 @@ class e107Email extends PHPMailer
 
 	public	$legacyBody 		= false;	// TRUE enables legacy conversion of plain text body to HTML in HTML emails
 	private $debug 				= false;	// echos various debug info when set to true. 
+	private $pref 				= array();	// Store code prefs. 
 	
 	/**
 	 * Constructor sets up all the global options, and sensible defaults - it should be the only place the prefs are accessed
@@ -175,6 +176,8 @@ class e107Email extends PHPMailer
 		{
 			$this->debug = true;
 		}
+		
+		$this->pref = $pref;
 
 		$this->CharSet = 'utf-8';
 		$this->SetLanguage(CORE_LC);
@@ -599,31 +602,54 @@ class e107Email extends PHPMailer
 	public function arraySet($eml)
 	{
 		
-		if($this->debug)
-		{
-			print_a($eml);
-		}
-		
+	
+		$tp = e107::getParser();
 		
 		if(vartrue($eml['template'])) // @see e107_core/templates/email_template.php
 		{
-			$tp = e107::getParser();
 			
-			if($tmpl = e107::getCoreTemplate('email',$eml['template'], true, true))  // $EMAIL_TEMPLATE['default']	
-			{
-				$filter = array("\n", "\t");
-				$tmpl['header'] = str_replace($filter,'', $tmpl['header']);
-				$tmpl['footer'] = str_replace($filter,'', $tmpl['footer']);
+			
+			if($tmpl = e107::getCoreTemplate('email', $eml['template'], 'front', true))  //FIXME - Core template is failing with template 'notify'. Works with theme template. Issue with core template registry?
+			{				
+				$eml['shortcodes']['BODY'] 		= $eml['email_body'];
+				$eml['shortcodes']['SUBJECT'] 	= $eml['email_subject'];
+				$eml['shortcodes']['THEME'] 	= e_THEME.$this->pref['sitetheme'].'/'; // Always use front-end theme path. 
 				
-				$eml['email_body'] = ($tp->toEmail($tmpl['header']). str_replace('{BODY}', $eml['email_body'], $tmpl['body']). $tp->toEmail($tmpl['footer']));
+				$emailBody = $tmpl['header']. $tmpl['body'] . $tmpl['footer']; 
+				
+				$eml['email_body'] = $tp->parseTemplate($emailBody, true, varset($eml['shortcodes'],null));
+				
+			//	$eml['email_body'] = ($tp->toEmail($tmpl['header']). str_replace('{BODY}', $eml['email_body'], $tmpl['body']). $tp->toEmail($tmpl['footer']));
+				
+				if($this->debug)
+				{
+					echo "<h4>e107Email::arraySet() - line ".__LINE__."</h4>";
+					print_a($tmpl);	
+				}
+				
 				unset($eml['add_html_header']); // disable other headers when template is used. 
+				
+				$this->Subject = $tp->parseTemplate($tmpl['subject'], true, varset($eml['shortcodes'],null)); 
+			}
+			else
+			{
+				if($this->debug)
+				{
+					echo "<h4>Couldn't find email template: ".$eml['template']."</h4>";	
+				}
+				if (vartrue($eml['email_subject'])) $this->Subject = $tp->parseTemplate($eml['email_subject'], true, varset($eml['shortcodes'],null)); 	
+				e107::getMessage()->addDebug("Couldn't find email template: ".$eml['template']);	
 			}
 			
+		}
+		else
+		{
+			if (vartrue($eml['email_subject'])) $this->Subject = $tp->parseTemplate($eml['email_subject'], true, varset($eml['shortcodes'],null)); 	
 		}
 		
 		
 		if (isset($eml['SMTPDebug'])) $this->SMTPDebug = $eml['SMTPDebug'];			// 'FALSE' is a valid value!
-		if (vartrue($eml['email_subject'])) $this->Subject = $eml['email_subject'];
+		
 		if (vartrue($eml['email_sender_email'])) $this->From = $eml['email_sender_email'];
 		if (vartrue($eml['email_sender_name'])) $this->FromName = $eml['email_sender_name'];
 		if (vartrue($eml['email_replyto'])) $this->AddAddressList('replyto',$eml['email_replyto'],vartrue($eml['email_replytonames'],''));	
@@ -640,9 +666,11 @@ class e107Email extends PHPMailer
 			$this->save_bouncepath = $eml['bouncepath'];		// Bounce path
 		}
 		
-	
-		
-		
+		if($this->debug)
+		{
+			echo "<h4>e107Email::arraySet() - line ".__LINE__."</h4>";
+			print_a($eml);
+		}
 		
 		
 		if (vartrue($eml['returnreceipt'])) $this->ConfirmReadingTo = $eml['returnreceipt'];
@@ -806,20 +834,28 @@ class e107Email extends PHPMailer
 	 */
 	public function MsgHTML($message, $basedir = '') 
 	{
+		
+		
 		preg_match_all("/(src|background)=([\"\'])(.*)\\2/Ui", $message, $images);			// Modified to accept single quotes as well
 		if(isset($images[3])) 
 		{
 			
 			if($this->debug)
 			{
+				echo "<h4>Detected Image Paths</h4>";
 				print_a($images[3]);	
 			}
+			
+			$tp = e107::getParser();
 			
 			foreach($images[3] as $i => $url) 
 			{
 				// do not change urls for absolute images (thanks to corvuscorax)
 				if (!preg_match('#^[A-z]+://#',$url)) 
 				{
+					$url = $tp->replaceConstants($url);
+					
+					
 					$delim = $images[2][$i];			// Will be single or double quote
 					$filename = basename($url);
 					$directory = dirname($url);
@@ -829,7 +865,12 @@ class e107Email extends PHPMailer
 						$directory = substr(SERVERBASE, 0, -1).$directory;		// Convert to absolute server reference
 						$basedir = '';
 					}
-					//echo "CID file {$filename} in {$directory}. Base = ".SERVERBASE."<   BaseDir = {$basedir}<br />";
+					
+					if ($this->debug)
+					{ 
+						echo "<br />CID file {$filename} in {$directory}. Base = ".SERVERBASE."<   BaseDir = {$basedir}<br />";
+					}
+					
 					$cid = 'cid:' . md5($filename);
 					$ext = pathinfo($filename, PATHINFO_EXTENSION);
 					$mimeType  = self::_mime_types($ext);
@@ -839,15 +880,29 @@ class e107Email extends PHPMailer
 					if ( $this->AddEmbeddedImage($basedir.$directory.$filename, md5($filename), $filename, 'base64',$mimeType) ) 
 					{
 						// $images[1][$i] contains 'src' or 'background'
-						$message = preg_replace("/".$images[1][$i]."=".$delim.preg_quote($url, '/').$delim."/Ui", $images[1][$i]."=".$delim.$cid.$delim, $message);
+						$message = preg_replace("/".$images[1][$i]."=".$delim.preg_quote($images[3][$i], '/').$delim."/Ui", $images[1][$i]."=".$delim.$cid.$delim, $message);
 					}
 					else
 					{
-						if ($this->debug) echo "Add embedded image {$url} failed<br />";
+						if ($this->debug)
+						{
+							 echo "Add embedded image {$url} failed<br />";
+							 echo "<br />basedir=".$basedir;
+							 echo "<br />dir=".$directory;
+							 echo "<br />file=".$filename;
+							 echo "<br />";
+						}
 					}
+				}
+				elseif($this->debug)
+				{
+					echo "<br />Absolute Image: ".$url;	
+					
 				}
 			}
 		}
+
+
 		$this->IsHTML(true);
 		$this->Body = $message;
 		//print_a($message);

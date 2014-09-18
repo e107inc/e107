@@ -191,12 +191,11 @@ $MAILOUT_FOOTER = "
 
 */
 
-// FIXME clean up the whole email template/render tempalte mess
 
 //-------------------------------------------------------------
 //		'SIGNUP' TEMPLATE
 //-------------------------------------------------------------
-
+//@Deprecated 
 $SIGNUPEMAIL_TEMPLATE = "
 <div style='padding:10px'>
 <div style='text-align:left; width:90%'>
@@ -229,26 +228,7 @@ LAN_SIGNUP_97." {SITENAME}<br />
 //-------------------------------------------------------------
 //		'NOTIFY' TEMPLATE
 //-------------------------------------------------------------
-$NOTIFY_TEMPLATE = array(
-	'template_name' => 'Notify',
-	'template_type' => 'system',
-	'email_overrides' => '',
-	'email_header' => "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
-		<html xmlns='http://www.w3.org/1999/xhtml' >
-		<head>
-		<meta http-equiv='content-type' content='text/html; charset=utf-8' />
-		</head>
-		<body>
-		<div style='padding:0px 10px'>
-		",
-	'email_body' => '{BODY}',
-	'email_footer' => "<br /><br />
-		{SITENAME=link}
-		</div>
-		</body>
-		</html>",
-	'email_plainText' => ''
-	);
+
 
 
 //-------------------------------------------------------------
@@ -309,19 +289,11 @@ $MONTHLYUPDATE_TEMPLATE = array(
 
 
 
-$QUICKADDUSER_TEMPLATE = array(
-	'template_name' => 'Quick-Add-User',
-	'template_type' => 'quickadd',
-	'email_overrides' => '',
-//	'email_header' - any header information (usually loaded from the default)
-	'email_body' => USRLAN_185.USRLAN_186,
-//	'email_footer' => 'footer'
-	);
 
 
 
 
-
+// ----------------------- Everything above this line is deprecated but may continue to work for a while  ------------------------------- // 
 	
 
 /** Standardized v2 template rewrite 
@@ -334,6 +306,7 @@ $QUICKADDUSER_TEMPLATE = array(
 // Default - test email and when no template specified. 
 
 $EMAIL_TEMPLATE['default']['name']	 		= 'Default';
+$EMAIL_TEMPLATE['default']['subject']		= '{SUBJECT} {SITENAME}';
 $EMAIL_TEMPLATE['default']['header']		= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
 												<html xmlns='http://www.w3.org/1999/xhtml' >
 												<head>
@@ -356,9 +329,16 @@ $EMAIL_TEMPLATE['default']['footer']		= "<br /><br />
 												</body>
 												</html>";
 
+// -------------------------------
 
-// Signup Template. 
 
+/**
+ *  Signup Template. 
+ * @example developer tests
+ * signup.php?preview
+ * signup.php?test 
+ * signup.php?preview.aftersignup
+ */
 
 $EMAIL_TEMPLATE['signup']['subject']		= LAN_SIGNUP_96.' {SITENAME}';
 $EMAIL_TEMPLATE['signup']['header']			= $EMAIL_TEMPLATE['default']['header'];
@@ -386,7 +366,7 @@ $EMAIL_TEMPLATE['signup']['body'] 			= "
 												{SITENAME=link}<br />
 												{SITEURL}
 											
-												<br /><br />".($includeSiteButton ? "<a href='".SITEURL."' title=''><img src='".e_IMAGE_ABS.str_replace('{e_IMAGE}', '', $includeSiteButton)."' alt='' /></a>" : '')."
+												<br /><br />".($includeSiteButton ? "<a href='".SITEURL."' title=''>{SITEBUTTON}</a>" : '')."
 												</div>
 												
 												";
@@ -396,6 +376,11 @@ $EMAIL_TEMPLATE['signup']['footer']			= "</div>
 $EMAIL_TEMPLATE['signup']['cc']				= "";
 $EMAIL_TEMPLATE['signup']['bcc']			= "";
 $EMAIL_TEMPLATE['signup']['attachments']	= "";
+
+//TODO FIXME {SITEBUTTON} not working at the moment. (broken path)
+
+// -----------------------------
+
 												
 /*
  * QUICK ADD USER EMAIL TEMPLATE - BODY. 	
@@ -404,15 +389,37 @@ $EMAIL_TEMPLATE['signup']['attachments']	= "";
 	USRLAN_186 = Please go to the site as soon as possible and log in, then change your password using the \'Settings\' option.<br /><br />
 						You can also change other settings at the same time.<br /><br />Note that your password cannot be recovered if you lose it.
 */
-$EMAIL_TEMPLATE['quickadd']['header']		= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 												
-$EMAIL_TEMPLATE['quickadd']['body']			= USRLAN_185.USRLAN_186;											
-$EMAIL_TEMPLATE['quickadd']['footer']		= $EMAIL_TEMPLATE['default']['footer']; // will use default footer above. 		
+$EMAIL_TEMPLATE['quickadduser']['subject']		= '{SITENAME}: {SUBJECT} ';
+$EMAIL_TEMPLATE['quickadduser']['header']		= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 												
+$EMAIL_TEMPLATE['quickadduser']['body']			= USRLAN_185.USRLAN_186;											
+$EMAIL_TEMPLATE['quickadduser']['footer']		= $EMAIL_TEMPLATE['default']['footer']; // will use default footer above. 		
 
 
-// Notify (@see admin-> notify) // TODO
 
-$EMAIL_TEMPLATE['notify']['header']			= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 	
-$EMAIL_TEMPLATE['notify']['body']			= $EMAIL_TEMPLATE['default']['body']; // will use default header above. 	
-$EMAIL_TEMPLATE['notify']['footer']			= $EMAIL_TEMPLATE['default']['footer']; // will use default header above. 	
+// ---------------------------------
+
+
+
+// Notify (@see admin-> notify) 
+$EMAIL_TEMPLATE['notify']['subject']			= '{SITENAME}: {SUBJECT} ';
+$EMAIL_TEMPLATE['notify']['header']				= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 	
+$EMAIL_TEMPLATE['notify']['body']				= $EMAIL_TEMPLATE['default']['body']; // will use default header above. 	
+$EMAIL_TEMPLATE['notify']['footer']				= $EMAIL_TEMPLATE['default']['footer']; // will use default header above. 	
+
+
+// ---------------------------------
+
+
+
+// A Dummy Example for theme developers. 
+$EMAIL_TEMPLATE['example']['subject']			= '{SITENAME}: {SUBJECT} ';
+$EMAIL_TEMPLATE['example']['header']			= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 	
+$EMAIL_TEMPLATE['example']['body']				= $EMAIL_TEMPLATE['default']['body']; // will use default header above. 	
+$EMAIL_TEMPLATE['example']['footer']			= "<br /><br />
+												
+												<a href='{SITEURL}'><img src='{THEME}images/my-signature.png' alt='{SITENAME}' /></a>
+												</div>
+												</body>
+												</html>";
 
 ?>

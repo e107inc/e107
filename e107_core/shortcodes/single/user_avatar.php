@@ -27,7 +27,7 @@ function user_avatar_shortcode($parm=null)
 			$image=$row['user_image'];
 		}
 	}
-	elseif(!is_null($parm))
+	elseif(!empty($parm))
 	{
 		$image=$parm;
 	}
@@ -56,6 +56,7 @@ function user_avatar_shortcode($parm=null)
 		}
 		elseif(substr($image,0,8) == "-upload-")
 		{
+			
 			$image = substr($image,8); // strip the -upload- from the beginning. 
 			if(file_exists(e_AVATAR_UPLOAD.$image)) // Local Default Image
 			{
@@ -63,6 +64,7 @@ function user_avatar_shortcode($parm=null)
 			}	
 			else 
 			{
+				
 				$img = $genericImg;
 			}	
 		}
@@ -72,6 +74,7 @@ function user_avatar_shortcode($parm=null)
 		}
 		else // Image Missing. 
 		{
+			
 			$img = $genericImg;
 		}
 	}

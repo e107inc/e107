@@ -1114,8 +1114,6 @@ class e_system_user extends e_user_model
 		// required for signup and quickadd email type
 		e107::coreLan('signup');
 
-
-		
 		$EMAIL_TEMPLATE = e107::getCoreTemplate('email');
 		
 		if(!is_array($EMAIL_TEMPLATE)) //BC Fixes. pre v2 alpha3. 
@@ -1132,15 +1130,14 @@ class e_system_user extends e_user_model
 			}
 			
 			// BC Fixes. 
-			$EMAIL_TEMPLATE['signup']['subject'] 	= $SIGNUPEMAIL_SUBJECT;
-			$EMAIL_TEMPLATE['signup']['cc']			= $SIGNUPEMAIL_CC;
-			$EMAIL_TEMPLATE['signup']['bcc']		= $SIGNUPEMAIL_BCC;
-			$EMAIL_TEMPLATE['signup']['attachments']= $SIGNUPEMAIL_ATTACHMENTS;
+			$EMAIL_TEMPLATE['signup']['subject'] 		= $SIGNUPEMAIL_SUBJECT;
+			$EMAIL_TEMPLATE['signup']['cc']				= $SIGNUPEMAIL_CC;
+			$EMAIL_TEMPLATE['signup']['bcc']			= $SIGNUPEMAIL_BCC;
+			$EMAIL_TEMPLATE['signup']['attachments']	= $SIGNUPEMAIL_ATTACHMENTS;		
+			$EMAIL_TEMPLATE['signup']['body']			= $SIGNUPEMAIL_TEMPLATE;
 			
-			$EMAIL_TEMPLATE['signup']['body']		= $SIGNUPEMAIL_TEMPLATE;
-			
-			$EMAIL_TEMPLATE['quickadd']['body']		= $QUICKADDUSER_TEMPLATE['email_body'];
-			$EMAIL_TEMPLATE['notify']['body']		= $NOTIFY_TEMPLATE['email_body'];
+			$EMAIL_TEMPLATE['quickadduser']['body']		= $QUICKADDUSER_TEMPLATE['email_body'];
+			$EMAIL_TEMPLATE['notify']['body']			= $NOTIFY_TEMPLATE['email_body'];
 			
 		}
 		
@@ -1149,12 +1146,12 @@ class e_system_user extends e_user_model
 		{
 			case 'signup':
 				$template = (vartrue($SIGNUPPROVIDEREMAIL_TEMPLATE)) ? $SIGNUPPROVIDEREMAIL_TEMPLATE :  $EMAIL_TEMPLATE['signup']['body'];
-				$ret['template'] = false;// 'signup'; // false; // Don't allow additional headers (mailer) ??
+				$ret['template'] = 'signup'; //  // false Don't allow additional headers (mailer) ??
 			break;
 			
 			case 'quickadd':
-				$template = $EMAIL_TEMPLATE['quickadd']['body']; 
-				$ret['template'] = 'quickadd'; // Don't allow additional headers (mailer)
+				$template = $EMAIL_TEMPLATE['quickadduser']['body']; 
+				$ret['template'] = 'quickadduser'; // Don't allow additional headers (mailer)
 			break;
 				
 			case 'notify': 
@@ -1181,47 +1178,31 @@ class e_system_user extends e_user_model
 			
 			
 			$ret['e107_header'] = $userInfo['user_id'];
+			
 			if (vartrue($EMAIL_TEMPLATE['signup']['cc'])) { $ret['email_copy_to'] = $EMAIL_TEMPLATE['signup']['cc']; }
 			if (vartrue($EMAIL_TEMPLATE['signup']['bcc'])) { $ret['email_bcopy_to'] = $EMAIL_TEMPLATE['signup']['bcc']; }
 			if (vartrue($userInfo['email_attach'])) { $ret['email_attach'] = $userInfo['mail_attach']; }
 			elseif (vartrue($EMAIL_TEMPLATE['signup']['attachments'])) { $ret['email_attach'] = $EMAIL_TEMPLATE['signup']['attachments']; }
 			
 			$style = vartrue($SIGNUPEMAIL_LINKSTYLE) ? "style='{$SIGNUPEMAIL_LINKSTYLE}'" : "";
-		
-			$search[0] = '{LOGINNAME}';
-			$replace[0] = intval($pref['allowEmailLogin']) === 0 ? $userInfo['user_loginname'] : $userInfo['user_email'];
-		
-			$search[1] = '{PASSWORD}';
-			$replace[1] = $pass_show ? $pass_show : '******';
-
-			$search[2] = '{ACTIVATION_LINK}';
-			$replace[2] = strpos($userInfo['activation_url'], 'http') === 0 ? '<a href="'.$userInfo['activation_url'].'">'.$userInfo['activation_url'].'</a>' : $userInfo['activation_url'];
-		
-			$search[3] = '{SITENAME}';
-			$replace[3] = SITENAME;
-		
-			$search[4] = '{SITEURL}';
-			$replace[4] = "<a href='".SITEURL."' {$style}>".SITEURL."</a>";
-		
-			$search[5] = '{USERNAME}';
-			$replace[5] = $userInfo['user_name'];
-		
-			$search[6] = '{USERURL}';
-			$replace[6] = vartrue($userInfo['user_website']) ? $userInfo['user_website'] : "";
 			
-			$search[7] = '{DISPLAYNAME}';
-			$replace[7] = $userInfo['user_login'] ? $userInfo['user_login'] : $userInfo['user_name'];
 			
-			$search[8] = '{EMAIL}';
-			$replace[8] = $userInfo['user_email'];
+			$sc = array();
 			
-			$search[9] = '{ACTIVATION_URL}';
-			$replace[9] = $userInfo['activation_url'];
-		
-			$subject = str_replace($search, $replace, $EMAIL_TEMPLATE['signup']['subject']);
+			$sc['LOGINNAME'] 		= intval($pref['allowEmailLogin']) === 0 ? $userInfo['user_loginname'] : $userInfo['user_email'];
+			$sc['PASSWORD']			= $pass_show ? $pass_show : '******';
+			$sc['ACTIVATION_LINK']	= strpos($userInfo['activation_url'], 'http') === 0 ? '<a href="'.$userInfo['activation_url'].'">'.$userInfo['activation_url'].'</a>' : $userInfo['activation_url'];
+		//	$sc['SITENAME']			= SITENAME;
+			$sc['SITEURL']			= "<a href='".SITEURL."' {$style}>".SITEURL."</a>";
+			$sc['USERNAME']			= $userInfo['user_name'];
+			$sc['USERURL']			= vartrue($userInfo['user_website']) ? $userInfo['user_website'] : "";
+			$sc['DISPLAYNAME']		= $userInfo['user_login'] ? $userInfo['user_login'] : $userInfo['user_name'];
+			$sc['EMAIL']			= $userInfo['user_email'];
+			$sc['ACTIVATION_URL']	= $userInfo['activation_url'];
 			
-			$ret['email_subject'] =  $subject;
+			$ret['email_subject'] =  $EMAIL_TEMPLATE['signup']['subject']; // $subject;
 			$ret['send_html'] = TRUE;
+			$ret['shortcodes'] = $sc;
 		
 			if(!varset($EMAIL_TEMPLATE['signup']['header']))
 			{
@@ -1251,7 +1232,7 @@ class e_system_user extends e_user_model
 			}
 			else
 			{
-				$HEAD = $tp->parseTemplate($EMAIL_TEMPLATE['signup']['header'], true);	
+				$HEAD = ""; // $tp->parseTemplate($EMAIL_TEMPLATE['signup']['header'], true);	
 			}
 			
 			if(!varset($EMAIL_TEMPLATE['signup']['footer']))
@@ -1260,25 +1241,42 @@ class e_system_user extends e_user_model
 			}
 			else
 			{
-				$FOOT = $tp->parseTemplate($EMAIL_TEMPLATE['signup']['footer'], true);
+				$FOOT = ""; // $tp->parseTemplate($EMAIL_TEMPLATE['signup']['footer'], true);
 			}
 		
-			$ret['send_html'] = TRUE;
-			$ret['email_body'] = e107::getParser()->parseTemplate(str_replace($search,$replace,$HEAD.$template.$FOOT), true);
-			$ret['preview'] = $ret['email_body'];// Non-standard field
+			$ret['send_html'] 		= TRUE;
+			$ret['email_body'] 		= $HEAD.$template.$FOOT; // e107::getParser()->parseTemplate(str_replace($search,$replace,$HEAD.$template.$FOOT), true);
+			$ret['preview'] 		= $tp->parseTemplate($ret['email_body'],true, $sc);// Non-standard field
+			$ret['shortcodes'] 		= $sc;
+			
+			
 			return $ret;
 		}
 
-		// all other email types
-		$subject = $userInfo['email_subject'];
+		// all other email types		
+		if(!$userInfo['email_subject'])
+		{
+			 return array();
+		}
 		
-		if(!$subject) return array();
+		$ret['email_subject'] 	=  $userInfo['email_subject']; // $EMAIL_TEMPLATE['signup']['subject']; 
+		$ret['e107_header'] 	= $userInfo['user_id'];
 		
-		$ret['e107_header'] = $userInfo['user_id'];
-		if (vartrue($userInfo['email_copy_to'])) { $ret['email_copy_to'] = $userInfo['email_copy_to']; }
-		if (vartrue($userInfo['email_bcopy_to'])) { $ret['email_bcopy_to'] = $userInfo['email_bcopy_to']; }
-		if (vartrue($userInfo['email_attach'])) { $ret['email_attach'] = $userInfo['email_attach']; }
+		if (vartrue($userInfo['email_copy_to'])) 	{ 	$ret['email_copy_to']	= $userInfo['email_copy_to']; }
+		if (vartrue($userInfo['email_bcopy_to'])) 	{ 	$ret['email_bcopy_to'] 	= $userInfo['email_bcopy_to']; }
+		if (vartrue($userInfo['email_attach']))		{ 	$ret['email_attach'] 	= $userInfo['email_attach']; }
 		
+		$sc = array();
+		
+		$sc['LOGINNAME']			= intval($pref['allowEmailLogin']) === 0 ? $userInfo['user_loginname'] : $userInfo['user_email'];
+		$sc['DISPLAYNAME']			= $userInfo['user_login'] ? $userInfo['user_login'] : $userInfo['user_name'];
+		$sc['SITEURL']				= "<a href='".SITEURL."'>".SITEURL."</a>";
+		$sc['USERNAME']				= $userInfo['user_name'];
+		$sc['USERURL']				= vartrue($userInfo['user_website']) ? $userInfo['user_website'] : "";
+		$sc['PASSWORD']				= $pass_show ? $pass_show : '******';
+
+		
+		/*
 		$search[0] = '{LOGINNAME}';
 		$replace[0] = intval($pref['allowEmailLogin']) === 0 ? $userInfo['user_loginname'] : $userInfo['user_email'];
 		
@@ -1300,23 +1298,31 @@ class e_system_user extends e_user_model
 		$search[6] = '{USERURL}';
 		$replace[6] = vartrue($userInfo['user_website']) ? $userInfo['user_website'] : "";
 	
-		$ret['email_subject'] =  str_replace($search, $replace, $subject);
+		$ret['email_subject'] =  $subject; // str_replace($search, $replace, $subject); - performed in mail handler. 
 		
 		$search[7] = '{PASSWORD}';
 		$replace[7] = $pass_show ? $pass_show : '******';
+		*/
+		
 		
 		if(isset($userInfo['activation_url']))
 		{
+			$sc['ACTIVATION_URL']	= $userInfo['activation_url'];
+			$sc['ACTIVATION_LINK']	= strpos($userInfo['activation_url'], 'http') === 0 ? '<a href="'.$userInfo['activation_url'].'">'.$userInfo['activation_url'].'</a>' : $userInfo['activation_url'];
+			
+			/*
 			$search[8] = '{ACTIVATION_URL}';
 			$replace[8] = $userInfo['activation_url'];
 			
 			$search[9] = '{ACTIVATION_LINK}';
 			$replace[9] = strpos($userInfo['activation_url'], 'http') === 0 ? '<a href="'.$userInfo['activation_url'].'">'.$userInfo['activation_url'].'</a>' : $userInfo['activation_url'];
+			*/
 		}
 		
-		$ret['send_html'] = TRUE;
-		$ret['email_body'] = e107::getParser()->parseTemplate(str_replace($search, $replace, $template));
-		$ret['preview'] = $ret['mail_body']; // Non-standard field
+		$ret['send_html'] 		= TRUE;
+		$ret['email_body'] 		= $template; // e107::getParser()->parseTemplate(str_replace($search, $replace, $template)); - performed in mail handler. 
+		$ret['preview'] 		= $ret['mail_body']; // Non-standard field
+		$ret['shortcodes'] 		= $sc;
 		
 		return $ret;
 	}

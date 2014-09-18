@@ -69,6 +69,7 @@ class e_parse_shortcode
 	protected $scClasses = array(); // Batch shortcode classes - TODO make it private
 	protected $scOverride = array(); // Array of codes found in override/shortcodes dir
 	protected $scBatchOverride = array(); // Array of codes found in override/shortcodes/batch dir
+	protected $ignoreCodes = array(); // Shortcodes to be ignored and remain unchanged. (ie. {THEME}, {e_PLUGIN} etc. )
 	/**
 	 * @var e_vars
 	 */
@@ -89,7 +90,7 @@ class e_parse_shortcode
 	function __construct()
 	{
 		$this->parseSCFiles = true; // Default probably never used, but make sure its defined.
-		
+		$this->ignoreCodes = e107::getParser()->getUrlConstants(); // ignore all URL shortcodes. ie. {e_PLUGIN} 
 		$this->loadOverrideShortcodes();
 		$this->loadThemeShortcodes();
 		$this->loadPluginShortcodes();
@@ -764,15 +765,17 @@ class e_parse_shortcode
 			// auto-register eVars if possible - call it manually?
 			// $this->callScFunc($classname, 'setParserVars', $this->eVars);
 		}
-		elseif (is_array($extraCodes))
+		elseif (is_array($extraCodes)) // Array value contains the contents of a .sc file which is then parsed. ie. return " whatever "; 
 		{
-			$this->addedCodes = &$extraCodes;
+			$this->addedCodes = &$extraCodes; 
 			/*
 			foreach ($extraCodes as $sc => $code)
 			{
 				$this->scList[$sc] = $code;
 			}
 			*/
+			
+		//	print_a($this);
 		}
 		$ret = preg_replace_callback('#\{(\S[^\x02]*?\S)\}#', array(&$this, 'doCode'), $text);
 		$this->parseSCFiles = $saveParseSCFiles; // Restore previous value
@@ -781,7 +784,7 @@ class e_parse_shortcode
 		$this->debug_legacy = null;
 		
 		
-	//	$this->sc_style = array();	 //XXX Adding this will also fix #2 above. 
+			//	$this->sc_style = array();	 //XXX Adding this will also fix #2 above. 
 
 		
 		return $ret;
@@ -793,6 +796,13 @@ class e_parse_shortcode
 	 */
 	function doCode($matches)
 	{
+		// print_a($matches);
+		
+		if(in_array($matches[0],$this->ignoreCodes)) // Ignore all {e_PLUGIN}, {THEME} etc. otherwise it will just return blank for these items. 
+		{
+			return $matches[0];	
+		}
+
 		// XXX remove all globals, $sc_style removed
 		global $pref, $e107cache, $menu_pref, $parm, $sql;
 		
@@ -1018,6 +1028,11 @@ class e_parse_shortcode
 					$scCode = file_get_contents($scFile);
 					$this->scList[$code] = $scCode;
 					$_path = $scFile;
+				}	
+				else
+				{
+				//	$ret = 'Missing!'; 
+					$_path .=	" MISSING!";
 				}
 			}
 

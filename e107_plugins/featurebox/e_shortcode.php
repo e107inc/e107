@@ -1,7 +1,6 @@
 <?php
 /*
 * Copyright (c) e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id$
 *
 * Featurebox shortcode batch class - shortcodes available site-wide. ie. equivalent to multiple .sc files.
 */

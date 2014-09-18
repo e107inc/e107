@@ -209,9 +209,14 @@ class redirection
 		if(e107::getPref('maintainance_flag') && defset('e_PAGE') != 'secure_img_render.php')
 		{
 			// if not admin
-			if(!ADMIN 
+			
+			$allowed = e107::getPref('maintainance_flag'); 
+			
+	//		if(!ADMIN 
 			// or if not mainadmin - ie e_UC_MAINADMIN
-			|| (e_UC_MAINADMIN == e107::getPref('maintainance_flag') && !getperms('0')))
+	//		|| (e_UC_MAINADMIN == e107::getPref('maintainance_flag') && !getperms('0')))
+			
+			if(!check_class($allowed)  && !getperms('0'))
 			{
 				// 307 Temporary Redirect
 				$this->redirect(SITEURL.'sitedown.php', TRUE, 307);

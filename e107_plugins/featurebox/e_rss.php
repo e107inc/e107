@@ -19,9 +19,9 @@ $eplug_rss_feed[] = $feed;
 //##### create rss data, return as array $eplug_rss_data -----------------------------------
 $rss = array();
 $sqlrss = new db;
-if($items = $sqlrss -> db_Select('featurebox', "*", "fb_class = 0 DESC LIMIT 0,".$this->limit )){
+if($items = $sqlrss->select('featurebox', "*", "fb_class = 0 DESC LIMIT 0,".$this->limit )){
 	$i=0;
-	while($rowrss = $sqlrss -> db_Fetch()){
+	while($rowrss = $sqlrss->fetch()){
 		$rss[$i]['author']			= '';
 		$rss[$i]['author_email']	= '';
 		$rss[$i]['link']			= '';
