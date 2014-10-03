@@ -3,6 +3,7 @@
 
 define("LAN_PLUGIN_CHATBOX_MENU_NAME",		 	"Chatbox");
 define("LAN_PLUGIN_CHATBOX_MENU_DESCRIPTION", 	"Chatbox Menu");
+define("LAN_PLUGIN_CHATBOX_MENU_POSTS",			"Chatbox Posts");
 
 // Admin Log 
 //FIXME - Global LANS must begin with LAN_PLUGIN_{FOLDER_NAME}_ 
