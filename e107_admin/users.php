@@ -969,6 +969,7 @@ class users_admin_ui extends e_admin_ui
 		
 		// custom header now auto-added in email() method 
 		//$mailheader_e107id = $id;
+	
 		
 		$check = $sysuser->email('email', array(
 			'mail_subject' => LAN_SIGNUP_96." ".SITENAME,
@@ -1257,7 +1258,7 @@ class users_admin_ui extends e_admin_ui
 						// activate and send password
 						$check = $sysuser->email('quickadd', array(
 							'user_password' => $savePassword, 
-							'email_subject' => USRLAN_187.SITENAME,
+							'mail_subject' => USRLAN_187.SITENAME,
 							// TODO lan
 							'activation_url' => 'Your current status is <strong>Active</strong>',
 						));
@@ -1271,7 +1272,7 @@ class users_admin_ui extends e_admin_ui
 							
 						$check = $sysuser->email('quickadd', array(
 							'user_password' => $savePassword, 
-							'email_subject' => USRLAN_187.SITENAME,
+							'mail_subject' => USRLAN_187.SITENAME,
 							'activation_url' => SITEURL."signup.php?activate.".$sysuser->getId().".".$sysuser->getValue('sess'),
 						));
 					break;

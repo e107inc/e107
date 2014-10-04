@@ -1054,7 +1054,13 @@ class e_parse_shortcode
 
 		if ($scCode)
 		{
-			$ret = eval($scCode);
+			$ret = @eval($scCode);
+			
+			if($ret === false && E107_DEBUG_LEVEL > 0) // Error in Code. 
+			{
+				$string = print_a($scCode,true);
+				e107::getMessage()->addDebug('Could not parse Shortcode '.$scFile.' :: {'.$code .'} '.$string);
+			}
 		}
 
 		if (isset($ret) && ($ret != '' || is_numeric($ret)))
