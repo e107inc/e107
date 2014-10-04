@@ -1055,7 +1055,8 @@ class e_system_user extends e_user_model
 		{
 			if($this->debug)
 			{
-				echo '$eml returned nothing';
+				echo '$eml returned nothing on Line 1050 of user_model.php using $type = '.$type;
+				print_a($userInfo);
 			}
 			 return false;
 		}
@@ -1103,6 +1104,7 @@ class e_system_user extends e_user_model
 		$pref = e107::getPref();
 		$ret = array();
 		$tp = e107::getParser();
+		$mes = e107::getMessage();
 		
 	
 		// mailer options
@@ -1166,7 +1168,11 @@ class e_system_user extends e_user_model
 			break;
 		}
 		
-		if(!$template) return array();
+		if(!$template)
+		{
+			$mes->addDebug('$template is empty in user_model.php line 1171.'); // Debug only, do not translate. 
+			return array();
+		}
 
 		$pass_show = varset($userInfo['user_password']);
 		
@@ -1253,13 +1259,20 @@ class e_system_user extends e_user_model
 			return $ret;
 		}
 
+		
+
+
 		// all other email types		
-		if(!$userInfo['email_subject'])
+		if(!$userInfo['mail_subject'])
 		{
-			 return array();
+			$mes->addDebug('No Email subject provided to renderEmail() method.'); // Debug only, do not translate. 
+			return array();
 		}
 		
-		$ret['email_subject'] 	=  $userInfo['email_subject']; // $EMAIL_TEMPLATE['signup']['subject']; 
+		
+		$templateName = $ret['template'];
+		
+		$ret['email_subject'] 	=  varset($EMAIL_TEMPLATE[$templateName]['subject'], $EMAIL_TEMPLATE['default']['subject']) ; // $subject;
 		$ret['e107_header'] 	= $userInfo['user_id'];
 		
 		if (vartrue($userInfo['email_copy_to'])) 	{ 	$ret['email_copy_to']	= $userInfo['email_copy_to']; }
@@ -1274,6 +1287,7 @@ class e_system_user extends e_user_model
 		$sc['USERNAME']				= $userInfo['user_name'];
 		$sc['USERURL']				= vartrue($userInfo['user_website']) ? $userInfo['user_website'] : "";
 		$sc['PASSWORD']				= $pass_show ? $pass_show : '******';
+		$sc['SUBJECT']				= $userInfo['mail_subject'];
 
 		
 		/*
