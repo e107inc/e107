@@ -1096,7 +1096,7 @@ class e_form
 		$class = vartrue($options['class'],'');	
 		
 		return	"<div class='progress ".$class."' id='".$this->name2id($name)."'>
-   		 	<div class='bar' style='width: ".number_format($value,1)."%'></div>
+   		 	<div class='progress-bar bar' style='width: ".number_format($value,1)."%'></div>
     	</div>";
 
 	}
