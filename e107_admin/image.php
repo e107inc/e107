@@ -168,9 +168,9 @@ class media_cat_ui extends e_admin_ui
          	'media_cat_image' 		=> array('title'=> LAN_IMAGE,		'type' => 'image', 			'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>FALSE,	'batch' => FALSE, 'filter'=>FALSE),			       	
          	'media_cat_owner' 		=> array('title'=> LAN_OWNER,		'type' => 'dropdown',		'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
          	
-         	'media_cat_type' 		=> array('title'=> LAN_TYPE,		'type' => 'radio',	'data'=>false,		'width' => 'auto', 'thclass' => 'left', 'validate' => true, 'nolist'=>true),
+         	'media_cat_type' 		=> array('title'=> LAN_TYPE,		'type' => 'radio',			'data'=>false,		'width' => 'auto', 'thclass' => 'left', 'validate' => true, 'nolist'=>true),
          	
-			'media_cat_category' 	=> array('title'=> LAN_CATEGORY,	'type' => 'text',	'data'=>'str',		'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),		
+			'media_cat_category' 	=> array('title'=> LAN_CATEGORY,	'type' => 'text',			'data'=>'str',		'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),		
 			'media_cat_title' 		=> array('title'=> LAN_TITLE,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE, 'validate' => true),
          	'media_cat_sef' 		=> array('title'=> LAN_SEFURL,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),        
          	'media_cat_diz' 		=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=150&bb=1','readonly'=>FALSE), // Display name
@@ -210,23 +210,29 @@ class media_cat_ui extends e_admin_ui
 		$sql = e107::getDb();
 		
 	
-		if($sql->db_Select_gen("SELECT media_cat_owner, count(media_cat_id) as number FROM `#core_media_cat` GROUP BY media_cat_owner"))
+		if($sql->gen("SELECT media_cat_owner, MAX(media_cat_category) as maxnum, count(media_cat_id) as number FROM `#core_media_cat`  GROUP BY media_cat_owner"))
 		{
-			while($row = $sql->db_Fetch())	
+			while($row = $sql->fetch())	
 			{
 				$this->ownerCount[$row['media_cat_owner']] = $row['number'];
-				$own = $row['media_cat_owner'];
+				$own = $row['media_cat_owner']; 
 				if(!in_array($own,$restricted))
-				{
-					
+				{		
 					$this->fields['media_cat_owner']['writeParms'][$own] = $own;	
 					
+					list($tmp,$tmp2,$maxnum) = explode("_",$row['maxnum']); // check for highest value. 
+					if($maxnum > 0)
+					{
+						$this->ownerCount[$row['media_cat_owner']] = $maxnum;	
+					}
 				}		
 			}
 		}
 		
-		
 	}
+
+
+
 
 
 	public function createPage()
