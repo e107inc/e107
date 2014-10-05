@@ -295,7 +295,7 @@ $USERSETTINGS_TEMPLATE['edit'] = "
 	{PHOTO_UPLOAD}
 
 	{USERCLASSES}
-	{USEREXTENDED_ALL}
+	{USEREXTENDED_ALL=tabs}
 
 	
 	{SIGNATURE=cols=58&rows=4}	
@@ -308,11 +308,16 @@ $USERSETTINGS_TEMPLATE['edit'] = "
 	</div>
 
 </div>
-
-
 ";
 
-
+$USERSETTINGS_TEMPLATE['extended-category'] = "<h3>{CATNAME}</h3>";
+$USERSETTINGS_TEMPLATE['extended-field'] = "<div class='form-group'>
+	<label class='col-sm-3 control-label'>{FIELDNAME}</label>
+	<div class='col-sm-9'>
+	{FIELDVAL} {HIDEFIELD}
+	</div>
+	</div>
+											";
 
 
 
