@@ -3390,11 +3390,15 @@ class e_form
 
 			case 'textarea':
 				$text = "";
-				if(vartrue($parms['append'])) // similar to comments - TODO TBD. a 'comment' field type may be better.
+				if(vartrue($parms['append']) && vartrue($value)) // similar to comments - TODO TBD. a 'comment' field type may be better.
 				{
 					$attributes['readParms'] = 'bb=1';
-					$text = $this->renderValue($key, $value, $attributes).$this->hidden($key, $value).'<br />';
+					
+					$text = $this->renderValue($key, $value, $attributes);					
+					$text .= '<br />';
 					$value = "";
+					
+					// Appending needs is  performed and customized using function: beforeUpdate($new_data, $old_data, $id)
 				}
 
 				$text .= $this->textarea($key, $value, vartrue($parms['rows'], 5), vartrue($parms['cols'], 40), vartrue($parms['__options'],$parms), varset($parms['counter'], false));
