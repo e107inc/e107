@@ -199,7 +199,7 @@ class tagwords
 				return implode($this->pref['tagwords_word_seperator'], $arr);
 			}
 			//return a \n seperated list of tagwords for the specific item
-			return implode("\n", $ret);
+			return implode($this->pref['tagwords_word_seperator'], $ret);
 		}
 		return;
 	}
@@ -295,10 +295,10 @@ class tagwords
 
 		//get existing word records
 		$existing_array = $this->getRecords($tag_type, $tag_itemid, false);
-		$existing = explode("\n", $existing_array);
+		$existing = explode($this->pref['tagwords_word_seperator'], $existing_array);
 
 		//create array of new posted words
-		$new = explode("\n", $tag_word);
+		$new = explode($this->pref['tagwords_word_seperator'], $tag_word);
 
 		//delete the differences (delete what has been removed)
 		$delete_diff = array_diff($existing, $new);
