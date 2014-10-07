@@ -267,6 +267,8 @@ class usersettings_shortcodes extends e_shortcode
 	{
 		$sql = e107::getDb();
 		$tp = e107::getParser();
+		$frm = e107::getForm();
+		
 		
 		$qry = "
 		SELECT * FROM #user_extended_struct
@@ -428,7 +430,7 @@ class usersettings_shortcodes extends e_shortcode
 			if(defined($fname)) $fname = constant($fname);
 			$fname = $tp->toHTML($fname, "", "emotes_off, defs");
 			
-			if($fInfo['user_extended_struct_required'] == 1)
+			if($fInfo['user_extended_struct_required'] == 1 && !deftrue('BOOTSTRAP'))
 			{
 				$fname = str_replace("{FIELDNAME}", $fname, $REQUIRED_FIELD);
 			}
