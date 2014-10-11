@@ -357,7 +357,7 @@ class mailout_main_ui extends e_admin_ui
 		$ret['mail_create_date'] = time();
 		$ret['mail_creator'] = USERID;	
 		$ret['mail_create_app'] = 'core';
-		$ret['mail_content_status'] = 20; // Default status is 'Saved';
+		$ret['mail_content_status'] = 22; // Default status is 'Saved';
 		
 		return $ret;	
 
@@ -408,11 +408,6 @@ class mailout_main_ui extends e_admin_ui
 			
 	}
 		
-	private function checkForId()
-	{
-		
-		
-	}
 
 	private function emailSendNow($mailId)
 	{
@@ -423,12 +418,14 @@ class mailout_main_ui extends e_admin_ui
 	
 	private function emailSend($mailId)
 	{
-		$log = e107::getAdminLog();	
+		$log 		= e107::getAdminLog();	
 			
-		$notify = isset($_POST['mail_notify_complete']) ? 3 : 2;
-		$first = 0;
-		$last = 0;		// Set defaults for earliest and latest send times.
-		// TODO: Save these fields
+		$notify 	= isset($_POST['mail_notify_complete']) ? 3 : 2;
+		$first 		= 0;
+		$last 		= 0;		// Set defaults for earliest and latest send times.
+	
+		
+		
 		if (isset($_POST['mail_earliest_time']))
 		{
 			$first = e107::getDateConvert()->decodeDateTime($_POST['mail_earliest_time'], 'datetime', CORE_DATE_ORDER, FALSE);
@@ -437,6 +434,7 @@ class mailout_main_ui extends e_admin_ui
 		{
 			$last = e107::getDateConvert()->decodeDateTime($_POST['mail_earliest_time'], 'datetime', CORE_DATE_ORDER, TRUE);
 		}
+
 		if ($this->mailAdmin->activateEmail($mailId, FALSE, $notify, $first, $last))
 		{
 			e107::getMessage()->addSuccess(LAN_MAILOUT_185);
@@ -544,7 +542,11 @@ class mailout_main_ui extends e_admin_ui
 			return '';	
 		}
 
-		 return $this->mailAdmin->sendEmailCircular($mailData, $fromHold);
+		$fromHold = false;
+		
+		$mailData = $this->mailAdmin->dbToMail($mailData);
+				
+		return $this->mailAdmin->sendEmailCircular($mailData, $fromHold);
 		
 		
 	}
