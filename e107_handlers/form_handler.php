@@ -3984,12 +3984,21 @@ class e_form
 				}
 			}
 			
+			if(!is_array($att['writeParms']))
+			{
+				 parse_str(varset($att['writeParms']), $writeParms);
+			}
+			else
+			{
+				 $writeParms = $att['writeParms'];
+			}
+			
+			
+			
 			if('hidden' === $att['type'])
 			{
-				if(!is_array($att['writeParms'])) parse_str(varset($att['writeParms']), $tmp);
-				else $tmp = $att['writeParms'];
 				
-				if(!vartrue($tmp['show']))
+				if(!vartrue($writeParms['show']))
 				{
 					continue;
 				}
@@ -4039,12 +4048,13 @@ class e_form
 				$leftCell = $required."<span{$required_class}>".defset(vartrue($att['title']), vartrue($att['title']))."</span>".$label;
 				$rightCell = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()), $model->getId())." {$help}";
 				 
-				if(vartrue($att['type']) == 'bbarea')
+				if(vartrue($att['type']) == 'bbarea' || $writeParms['nolabel'] == true)
 				{
 					$text .= "
-					<tr><td colspan='2'>
-							<div style='padding-bottom:8px'>".$leftCell."</div>".
-							$rightCell."
+					<tr><td colspan='2'>";
+					
+					$text .= "<div style='padding-bottom:8px'>".$leftCell."</div>";
+					$text .= $rightCell."
 						</td>
 						
 					</tr>

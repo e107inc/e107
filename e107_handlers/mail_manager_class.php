@@ -262,8 +262,8 @@ class e107MailManager
 				$res[$f] = '';
 			}
 		}
-		$array = new ArrayData;
-		$res['mail_other'] = $array->WriteArray($res1, TRUE);	// Ready to write to DB
+	//	$array = new ArrayData;
+		$res['mail_other'] = e107::serialize($res1, TRUE);	// Ready to write to DB
 		return $res;
 	}
 
@@ -296,8 +296,8 @@ class e107MailManager
 		}
 		if (isset($data['mail_other']))
 		{
-			$array = new ArrayData;
-			$tmp = $array->ReadArray(str_replace('\\\'', '\'',$data['mail_other']));	// May have escaped data
+			
+			$tmp = e107::unserialize(str_replace('\\\'', '\'',$data['mail_other']));	// May have escaped data
 			if (is_array($tmp))
 			{
 				$res = array_merge($res,$tmp);

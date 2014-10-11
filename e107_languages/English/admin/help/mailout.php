@@ -37,6 +37,7 @@ $action = e107::getParser()->toDB(varset($_GET['mode'],'makemail'));
 	  break;
 	case 'savedmail' :
 	case 'makemail' :
+	case 'main' :
 	  $text = 'Create an email, give it a meaningful title, and select the list of recipients. You can save everything as a template for later, or send immediately.<br />';
 	  $text .= 'Email addresses may be contributed by plugins (such as newsletter), and duplicates are removed when the mail is sent<br />';
 	  $text .= 'Any attachment is selected from the list of valid downloads.<br />';

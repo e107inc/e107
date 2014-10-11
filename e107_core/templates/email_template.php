@@ -297,6 +297,7 @@ $MONTHLYUPDATE_TEMPLATE = array(
 	
 
 /** Standardized v2 template rewrite 
+ * 
  * Format for individual emails sent by e107 (not bulk emails for now) - a work in progress - bulk could be ported later.
  * @see e107Email::sendEmail(); 
  * Aim: to make email templates follow the same spec. as other templates while remaining as intuitive as other v2 templates in e107. 
@@ -396,22 +397,35 @@ $EMAIL_TEMPLATE['quickadduser']['footer']		= $EMAIL_TEMPLATE['default']['footer'
 
 
 
-// ---------------------------------
 
+// ------- Notify (@see admin-> notify) 
 
-
-// Notify (@see admin-> notify) 
 $EMAIL_TEMPLATE['notify']['subject']			= '{SITENAME}: {SUBJECT} ';
 $EMAIL_TEMPLATE['notify']['header']				= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 	
 $EMAIL_TEMPLATE['notify']['body']				= $EMAIL_TEMPLATE['default']['body']; // will use default header above. 	
 $EMAIL_TEMPLATE['notify']['footer']				= $EMAIL_TEMPLATE['default']['footer']; // will use default header above. 	
 
 
-// ---------------------------------
+// ------ User-Mailout Templates 
+
+
+$EMAIL_TEMPLATE['user-monthly']['name']			= 'Monthly Update';												
+$EMAIL_TEMPLATE['user-monthly']['subject']		= '{SITENAME}: {SUBJECT} ';
+$EMAIL_TEMPLATE['user-monthly']['header']		= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 	
+$EMAIL_TEMPLATE['user-monthly']['body']			= "Just to keep you up to date, here's a reminder of what's changed in the past month.<br />{BODY}<br />To find out more, simply click on the links!";
+$EMAIL_TEMPLATE['user-monthly']['footer']		= $EMAIL_TEMPLATE['default']['footer'];
+
+
+$EMAIL_TEMPLATE['user-whatsnew']['name']		= "What's New";												
+$EMAIL_TEMPLATE['user-whatsnew']['subject']		= '{SITENAME}: {SUBJECT} ';
+$EMAIL_TEMPLATE['user-whatsnew']['header']		= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 	
+$EMAIL_TEMPLATE['user-whatsnew']['body']		= "All the latest news and updates.<br />{BODY}<br />To find out more, simply click on the links!";
+$EMAIL_TEMPLATE['user-whatsnew']['footer']		= $EMAIL_TEMPLATE['default']['footer'];
 
 
 
-// A Dummy Example for theme developers. 
+// ------ A Dummy Example for theme developers. 
+
 $EMAIL_TEMPLATE['example']['subject']			= '{SITENAME}: {SUBJECT} ';
 $EMAIL_TEMPLATE['example']['header']			= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 	
 $EMAIL_TEMPLATE['example']['body']				= $EMAIL_TEMPLATE['default']['body']; // will use default header above. 	
@@ -421,5 +435,8 @@ $EMAIL_TEMPLATE['example']['footer']			= "<br /><br />
 												</div>
 												</body>
 												</html>";
+
+
+
 
 ?>
