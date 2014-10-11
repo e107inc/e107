@@ -473,7 +473,6 @@ class mailoutAdminClass extends e107MailManager
 		$ret = '';
 		$tab = '';
 		$tabc = '';
-
 		
 		foreach ($this->mailHandlers as $key => $m)
 		{
@@ -489,7 +488,7 @@ class mailoutAdminClass extends e107MailManager
 				
 				if(is_array($content))
 				{
-					$tabc .= "<table class='table adminform' style='width:100%;margin-left:0px'>
+					$tabc .= "<table class='table ' style='width:100%;margin-left:0px'>
 					<colgroup span='2'>
 						<col class='col-label' />
 						<col class='col-control' />
@@ -498,7 +497,7 @@ class mailoutAdminClass extends e107MailManager
 					
 					foreach($content as $var)
 					{
-						$tabc .= "<tr><td>".$var['caption']."</td><td>".$var['html']."</td></tr>";	
+						$tabc .= "<tr><td style='padding-left:0px'>".$var['caption']."</td><td class='form-inline'>".$var['html']."</td></tr>";	
 					}
 					$tabc .= "</table>";	
 				}
@@ -552,7 +551,7 @@ class mailoutAdminClass extends e107MailManager
 	 */
 	public function userClassesTotals($name, $curSel) 
 	{
-		$fixedClasses = array('all' => LAN_MAILOUT_12,'unverified' => LAN_MAILOUT_13, 'admin' => LAN_MAILOUT_53, 'self' => LAN_MAILOUT_54);
+		$fixedClasses = array('self' => LAN_MAILOUT_54, 'all' => LAN_MAILOUT_12,'unverified' => LAN_MAILOUT_13, 'admin' => LAN_MAILOUT_53 );
 
 		$ret = '';
 		$this->checkDB(2);			// Make sure DB object created
@@ -793,7 +792,7 @@ class mailoutAdminClass extends e107MailManager
 			'texttheme' => LAN_MAILOUT_127
 		);
 
-		$text = "<select class='tbox' name='{$name}'>\n";
+		$text = "<select class='tbox' name='{$name}' required>\n";
 
 		foreach ($emFormat as $key=>$val)
 		{
@@ -856,9 +855,12 @@ class mailoutAdminClass extends e107MailManager
 	
 		
 		$text .= "<div>
-			<form method='post' action='".e_SELF."?mode=makemail' id='mailout_form'>
-			".$this->emailSelector('all', varset($mailSource['mail_selectors'], FALSE))."
-			<table class='table adminform'>
+			<form method='post' action='".e_SELF."?mode=makemail' id='mailout_form'>";
+			
+			
+		$text .= $this->emailSelector('all', varset($mailSource['mail_selectors'], FALSE));
+		
+		$text .= "<table class='table'>
 			<colgroup>
 				<col class='col-label' />
 				<col class='col-control' />
@@ -901,7 +903,7 @@ class mailoutAdminClass extends e107MailManager
 
 			<tr>
 				<td>".LAN_MAILOUT_51.": </td>
-				<td>".$frm->text('email_subject',varset($email_subject,''))."</td>
+				<td>".$frm->text('email_subject',varset($email_subject,''),255,'required=1&size=xxlarge')."</td>
 			</tr>";
 
 
@@ -999,7 +1001,9 @@ class mailoutAdminClass extends e107MailManager
 		</form>
 		</div>";
 
-		$ns->tablerender(ADLAN_136.SEP.LAN_MAILOUT_15, $mes->render(). $text);		// Render the complete form
+		return $text;
+		
+		// $ns->tablerender(ADLAN_136.SEP.LAN_MAILOUT_15, $mes->render(). $text);		// Render the complete form
 	}
 
 
@@ -1784,6 +1788,22 @@ class mailoutAdminClass extends e107MailManager
 	public function getEmailTemplateNames($sel = 'all')
 	{
 		$ret = array();
+		
+		$templates = e107::getCoreTemplate('email');
+		
+		foreach($templates as $key=>$layout)
+		{
+			if(substr($key,0,5)== 'user-' || $key == 'default')
+			{
+				$ret[$key] = $layout['name'];		
+			}
+			
+			
+		}
+
+		return $ret;
+		/*
+		
 		foreach (array(e_CORE.'templates/email_template.php', THEME.'templates/email_template.php') as $templateFileName )	// Override file then defaults
 		if (is_readable($templateFileName))
 		{
@@ -1805,7 +1825,14 @@ class mailoutAdminClass extends e107MailManager
 				}
 			}
 		}
+		
+		
+		
+		
+		print_a($ret);
 		return $ret;
+		 
+		 */
 	}
 }
 

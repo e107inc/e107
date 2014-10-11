@@ -22,8 +22,8 @@ define("LAN_MAILOUT_08", "Send Email");
 define("LAN_MAILOUT_09", "Send format");
 define("LAN_MAILOUT_10", "User Subscribed");
 define("LAN_MAILOUT_11", "Insert Variables");
-define("LAN_MAILOUT_12", "All Members");
-define("LAN_MAILOUT_13", "All Unverified Members ");
+define("LAN_MAILOUT_12", "All Users");
+define("LAN_MAILOUT_13", "All Unverified Users ");
 define("LAN_MAILOUT_14", "Display Name");
 define("LAN_MAILOUT_15", "Mailout");
 define("LAN_MAILOUT_16", "Username");
@@ -279,6 +279,8 @@ define("LAN_MAILOUT_259", "");
 
 define("LAN_SEND", "Send");
 define("LAN_HOLD", "Hold");
+define("LAN_MAILOUT_260", "User-Type");
+
 //define("LAN_SUBMIT", "Do it!"); LAN_RUN
 
 ?>

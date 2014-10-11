@@ -268,7 +268,7 @@ class core_mailout
 		
 		$var = array();
 	
-		$var[0]['caption'] 	= LAN_MAILOUT_03;	// User class select
+		$var[0]['caption'] 	= LAN_MAILOUT_260; // LAN_MAILOUT_03;	// User class select
 		
 		if ($allow_edit)
 		{  
