@@ -297,6 +297,7 @@ class mailoutAdminClass extends e107MailManager
 	 * @param $target - display mode
 	 * @return none
 	 */
+	 /*
 	public function mailbodySaveColumnPref($target)
 	{
 		global $user_pref;
@@ -313,7 +314,7 @@ class mailoutAdminClass extends e107MailManager
 			$this->fieldPref = $user_pref['admin_mailout_columns'][$target];
 		}
 	}
-
+	*/
 	/**
 	 *	Get the user name associated with a user ID.
 	 *	The result is cached in case required again
@@ -819,6 +820,7 @@ class mailoutAdminClass extends e107MailManager
 	 * @param $mailSource - array of mail information
 	 * @return text for display
 	 */
+	 /*
 	function show_mailform(&$mailSource)
 	{
 		global $HANDLERS_DIRECTORY;
@@ -882,14 +884,14 @@ class mailoutAdminClass extends e107MailManager
 
 
 			// Add in the core and any plugin selectors here
-	
+	*/
 		/*$text .= "
 		
 			<tr>
 				<td>".LAN_MAILOUT_03.": </td>
 				<td>".$this->emailSelector('all', varset($mailSource['mail_selectors'], FALSE))."</td>
 			</tr>";*/
-		
+	/*	
 		$text .= "
 			<tr>
 				<td>".LAN_MAILOUT_04.": </td>
@@ -1005,7 +1007,7 @@ class mailoutAdminClass extends e107MailManager
 		
 		// $ns->tablerender(ADLAN_136.SEP.LAN_MAILOUT_15, $mes->render(). $text);		// Render the complete form
 	}
-
+	*/
 
 	/**
 	 *		Helper function manages the shortcodes which can be inserted
@@ -1115,6 +1117,7 @@ class mailoutAdminClass extends e107MailManager
 	 * @param $nextPage - 'mode' specification for page to return to following delete
 	 * @return text for display
 	 */
+	/*
 	public function showDeleteConfirm($mailID, $nextPage = 'saved')
 	{
 		$mailData = $this->retrieveEmail($mailID);
@@ -1157,7 +1160,8 @@ class mailoutAdminClass extends e107MailManager
 
 		$ns->tablerender(ADLAN_136.SEP.LAN_MAILOUT_171, $text);
 	}
-
+	*/
+	
 
 
 	/**
@@ -1168,6 +1172,7 @@ class mailoutAdminClass extends e107MailManager
 	 * @param $amount - number to return
 	 * @return text for display
 	 */
+	/*
 	public function showEmailList($type, $from = 0, $amount = 10)
 	{
 		// Need to select main email entries; count number of addresses attached to each
@@ -1269,8 +1274,18 @@ class mailoutAdminClass extends e107MailManager
 		$text .= '</fieldset></form>';
 		$ns->tablerender(ADLAN_136.SEP.$this->tasks[$type]['title'], $text);
 	}
+	*/
+	
 
-
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * Generate a list of emails to send
 	 * Returns various information to display in a confirmation screen
@@ -1345,12 +1360,12 @@ class mailoutAdminClass extends e107MailManager
 			//	$this->e107->admin_log->log_event('MAIL_02','ID: '.$mailMainID.' '.$counters['add'].'[!br!]'.$_POST['email_from_name']." &lt;".$_POST['email_from_email'],E_LOG_INFORMATIVE,'');
 		}
 
-
 		// We've got all the email addresses here - display a confirmation form
 		// Include start/end dates for send
-
+	//	$text = "<form action='".e_SELF.'?mode=marksend&amp;m='.$mailMainID."' id='email_send' method='post'>";
+		
 		$text = "
-			<form action='".e_SELF.'?mode=marksend&amp;m='.$mailMainID."' id='email_send' method='post'>
+			<form action='".e_SELF."' id='email_send' method='post'>
 			<fieldset id='email-send'>
 			<table class='table adminlist'>
 			<colgroup>
@@ -1387,23 +1402,27 @@ class mailoutAdminClass extends e107MailManager
 
 		$text .= "<div class='buttons-bar center'>";
 		
-		$text .= $frm->admin_button('email_sendnow',"Send Now");
+		$text .= $frm->admin_button('email_sendnow',"Send Now", 'primary');
 		$text .= $frm->admin_button('email_send',"Send Later");
 		
 		// $text .= "<input  type='submit' name='email_send' value=\"".LAN_SEND."\" />";
 		
 		if (!$fromHold)
 		{
-			$text .= $frm->admin_button('email_hold',LAN_HOLD);
-			$text .= $frm->admin_button('email_cancel',LAN_CANCEL);
+			$text .= $frm->admin_button('email_hold',LAN_HOLD, 'warning');
+			$text .= $frm->admin_button('email_cancel',LAN_CANCEL, 'delete');
 			// $text .= "&nbsp;<input  type='submit' name='email_hold' value=\"".LAN_HOLD."\" />";
 			// $text .= "&nbsp;<input  type='submit' name='email_cancel' value=\"".LAN_CANCEL."\" />";
 		}
+		
+		$text .= $frm->hidden('email_id',$mailMainID);
+		
 		$text .= "</div>
 		</form>
 		</div>";
 		
-		e107::getRender()->tablerender(ADLAN_136.SEP.LAN_MAILOUT_179, $mes->render(). $text);
+		return $text; 
+	//	e107::getRender()->tablerender(ADLAN_136.SEP.LAN_MAILOUT_179, $mes->render(). $text);
 	}	// End of previewed email
 
 

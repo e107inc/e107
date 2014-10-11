@@ -1944,6 +1944,7 @@ class e_form
 			case 'create':
 			case 'import':
 			case 'submit':
+			case 'success':
 				$options['class'] .= 'btn-success';
 			break;
 			
@@ -1956,6 +1957,7 @@ class e_form
 			break;
 
 			case 'delete':
+			case 'danger':
 				$options['class'] .= 'btn-danger';
 				$options['other'] = 'data-confirm="'.LAN_JSCONFIRM.'"';
 			break;
@@ -1966,6 +1968,7 @@ class e_form
 			
 			case 'other':
 			case 'login':	
+			case 'primary':
 				$options['class'] .= 'btn-primary';
 			break;	
 			
