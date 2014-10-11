@@ -262,8 +262,8 @@ class e107MailManager
 				$res[$f] = '';
 			}
 		}
-	//	$array = new ArrayData;
-		$res['mail_other'] = e107::serialize($res1, TRUE);	// Ready to write to DB
+
+		$res['mail_other'] = e107::serialize($res1,false);	// Ready to write to DB
 		return $res;
 	}
 
@@ -348,8 +348,7 @@ class e107MailManager
 		}
 		if (isset($data['mail_target_info']) && is_array($data['mail_target_info']))
 		{
-			$array = new ArrayData;
-			$tmp = $array->WriteArray($data['mail_target_info'], TRUE);
+			$tmp = e107::serialize($data['mail_target_info'], TRUE);
 			$res['mail_target_info'] = $tmp;
 		}
 		return $res;
@@ -896,9 +895,10 @@ class e107MailManager
 		$this->checkDB(2);						// Make sure we have a DB object to use
 
 		$dbData = $this->mailToDB($emailData, FALSE);		// Convert array formats
-//		print_a($dbData);
+	//	print_a($dbData);
 
-		if ($isNew)
+
+		if ($isNew === true)
 		{
 			unset($dbData['mail_source_id']);				// Just in case - there are circumstances where might be set
 			$result = $this->db2->db_Insert('mail_content', array('data' => $dbData, 
