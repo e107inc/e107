@@ -123,7 +123,7 @@ class e107MailManager
 	const	E107_EMAIL_MAX_TRIES = 3;			// Maximum number of tries by us (mail server may do more)
 												// - max allowable value is MAIL_STATUS_MAX_ACTIVE - MAIL_STATUS_PENDING 
 
-	private		$debugMode = 0;
+	private		$debugMode = 1;
 	protected	$e107;
 	protected	$db = NULL;					// Use our own database object - this one for reading data
 	protected	$db2 = NULL;				// Use our own database object - this one for updates

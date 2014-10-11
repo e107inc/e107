@@ -146,7 +146,9 @@ class mailout_admin extends e_admin_dispatcher
 	//	'makemail/makemail'		=> array('caption'=> LAN_MAILOUT_190, 	'perm' => 'W', 'url'=>e_SELF),
 		'main/list'			=> array('caption'=> LAN_MANAGE, 		'perm'=>  'W'),
 		'main/create'		=> array('caption'=> LAN_MAILOUT_190, 	'perm' => 'W'),
+	
 		'recipients/list'	=> array('caption'=> "Recipients", 		'perm' => 'W'),		
+	//	'main/send'			=> array('caption'=> "Send", 			'perm' => 'W'),
 		'other' 			=> array('divider'=> true),
 		'saved/list'		=> array('caption'=> LAN_MAILOUT_191, 	'perm' => 'W'),
 		'pending/list'		=> array('caption'=> LAN_MAILOUT_193, 	'perm' => 'W'),
@@ -161,7 +163,7 @@ class mailout_admin extends e_admin_dispatcher
 
 
 	protected $adminMenuAliases = array(
-	//	'main/edit'	=> 'main/list',	
+		'main/send'	=> 'main/create',	
 	);	
 	
 	protected $menuTitle = LAN_MAILOUT_15;
@@ -207,9 +209,9 @@ class mailout_main_ui extends e_admin_ui
 			'mail_bounce_count' 	=> array('title' => LAN_MAILOUT_144, 'noedit'=>true, 'type'=>'number'),
 			'mail_start_send' 		=> array('title' => LAN_MAILOUT_131,'noedit'=>true,  'type'=>'number', 'proc' => 'sdatetime'),
 			'mail_end_send' 		=> array('title' => LAN_MAILOUT_132, 'noedit'=>true,  'type'=>'number', 'proc' => 'sdatetime'),
-			'mail_create_date' 		=> array('title' => LAN_MAILOUT_130, 'noedit'=>true, 'type'=>'datestamp', 'proc' => 'sdatetime'),
-			'mail_creator' 			=> array('title' => LAN_MAILOUT_85, 'noedit'=>true, 'type'=>'user', 'proc' => 'username'),
-			'mail_create_app' 		=> array('title' => LAN_MAILOUT_133, 'noedit'=>true),
+			'mail_create_date' 		=> array('title' => LAN_MAILOUT_130, 'type'=>null, 'noedit'=>true, 'data'=>'int', 'type'=>'number'),
+			'mail_creator' 			=> array('title' => LAN_MAILOUT_85, 'type'=>null, 'noedit'=>true, 'data'=>'int'),
+			'mail_create_app' 		=> array('title' => LAN_MAILOUT_133, 'type'=>null, 'noedit'=>true,'data'=>'str'),
 			'mail_e107_priority' 	=> array('title' => LAN_MAILOUT_134, 'noedit'=>true),
 			'mail_notify_complete' => array('title' => LAN_MAILOUT_243,  'noedit'=>true, 'nolist' => true),
 			'mail_last_date' 		=> array('title' => LAN_MAILOUT_129, 'noedit'=>true, 'type'=>'int', 'proc' => 'sdatetime'),
@@ -302,10 +304,13 @@ class mailout_main_ui extends e_admin_ui
 		}
 		else 
 		{
-			$this->fields['options']['type'] = '';
+		//	$this->fields['options']['type'] = '';
 		}
 				
 		$this->fields['mail_content_status']['writeParms'] = $types; 
+		
+		$this->processSendActions();
+		
 		
 		
 		if (getperms('0'))
@@ -351,6 +356,7 @@ class mailout_main_ui extends e_admin_ui
 		
 		$ret['mail_create_date'] = time();
 		$ret['mail_creator'] = USERID;	
+		$ret['mail_create_app'] = 'core';
 		$ret['mail_content_status'] = 20; // Default status is 'Saved';
 		
 		return $ret;	
@@ -360,9 +366,121 @@ class mailout_main_ui extends e_admin_ui
 	
 	public function beforeUpdate($new_data, $old_data, $id)
 	{
-		return $this->processData($new_data);
+		$ret = $this->processData($new_data);
+
+		return $ret;
 	}
 	
+	
+	
+	
+	
+	private function processSendActions()
+	{
+		
+		if((vartrue($_POST['email_sendnow']) || vartrue($_POST['email_send']) || vartrue($_POST['email_hold']) || vartrue($_POST['email_cancel'])) && !vartrue($_POST['email_id']))
+		{
+			e107::getMessage()->addError("No Message ID submitted");
+			return;
+		}
+		
+		$id = intval($_POST['email_id']);
+		
+		if(vartrue($_POST['email_sendnow']))
+		{
+			$this->emailSendNow($id);	
+		}	
+			
+		if(vartrue($_POST['email_send']))
+		{
+			$this->emailSend($id);		
+		}	
+		
+		if(vartrue($_POST['email_hold']))
+		{
+			$this->emailHold($id);		
+		}	
+		
+		if(vartrue($_POST['email_cancel']))
+		{
+			$this->emailCancel($id);			
+		}		
+			
+	}
+		
+	private function checkForId()
+	{
+		
+		
+	}
+
+	private function emailSendNow($mailId)
+	{
+		e107::getMessage()->addInfo("'Send Now' is Under Construction");	
+	}
+	
+	
+	
+	private function emailSend($mailId)
+	{
+		$log = e107::getAdminLog();	
+			
+		$notify = isset($_POST['mail_notify_complete']) ? 3 : 2;
+		$first = 0;
+		$last = 0;		// Set defaults for earliest and latest send times.
+		// TODO: Save these fields
+		if (isset($_POST['mail_earliest_time']))
+		{
+			$first = e107::getDateConvert()->decodeDateTime($_POST['mail_earliest_time'], 'datetime', CORE_DATE_ORDER, FALSE);
+		}
+		if (isset($_POST['mail_latest_time']))
+		{
+			$last = e107::getDateConvert()->decodeDateTime($_POST['mail_earliest_time'], 'datetime', CORE_DATE_ORDER, TRUE);
+		}
+		if ($this->mailAdmin->activateEmail($mailId, FALSE, $notify, $first, $last))
+		{
+			e107::getMessage()->addSuccess(LAN_MAILOUT_185);
+			$log->log_event('MAIL_06','ID: '.$mailId,E_LOG_INFORMATIVE,'');
+		}
+		else
+		{
+			$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_188);
+		}
+	}
+	
+	
+	
+	private function emailHold($mailId)
+	{
+		if ($this->mailAdmin->activateEmail($mailId, TRUE))
+		{
+			e107::getMessage()->addSuccess(str_replace('--ID--', $mailId, LAN_MAILOUT_187));
+		}
+		else
+		{
+			$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_166);
+		}
+	}
+	
+	
+	
+	private function emailCancel($mailId)
+	{
+		if ($this->mailAdmin->cancelEmail($mailId))
+		{
+			e107::getMessage()->addSuccess(str_replace('--ID--', $mailId, LAN_MAILOUT_220));
+		}
+		else
+		{
+			$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_221);
+		}
+	}	
+	
+
+
+
+
+
 	
 	/**
 	 * Process Posted Data
@@ -413,7 +531,23 @@ class mailout_main_ui extends e_admin_ui
 	}
 	*/
 	
+	function sendPage()
+	{
+		
+		$id = $this->getId();
+		
+		$mailData = e107::getDb()->retrieve('mail_content','*','mail_source_id='.intval($id));
+		
+		if(empty($mailData))
+		{
+			e107::getMessage()->addError("Couldn't retrieve mail data for id: ".$id);
+			return '';	
+		}
 
+		 return $this->mailAdmin->sendEmailCircular($mailData, $fromHold);
+		
+		
+	}
 	
 	function maintPage()
 	{
@@ -978,10 +1112,26 @@ class mailout_admin_form_ui extends e_admin_form_ui
 	}
 	
 	
-	function options()
+	function options($parms, $value, $id, $attributes)
 	{
 		$controller = $this->getController();
 		
+		
+		
+		$mode = $this->getController()->getMode();
+
+		if($mode == 'main')
+		{
+			$text = "";
+			
+
+			$link = e_SELF."?mode=main&action=send&id=".$id;	
+			$text .= "<a href='".$link."' class='btn' title='Send Mail'>".E_32_MAIL."</a>";
+			$text .= $this->renderValue('options',$value,$att,$id);
+				
+			return $text;
+		}
+
 		$mode 		= $controller->getMode();
 		$mailData 	= $controller->getListModel()->getData();
 			
@@ -1022,7 +1172,7 @@ class mailout_recipients_ui extends e_admin_ui
 			'mail_recipient_id' 	=> array('title' => LAN_MAILOUT_142, 'thclass' => 'center'),
 			'mail_recipient_name' 	=> array('title' => LAN_MAILOUT_141, 'forced' => TRUE),
 			'mail_recipient_email' 	=> array('title' => LAN_MAILOUT_140, 'thclass' => 'left', 'forced' => TRUE),
-			'mail_status' 			=> array('title' => LAN_MAILOUT_138, 'thclass' => 'center', 'proc' => 'contentstatus'),
+			'mail_status' 			=> array('title' => LAN_MAILOUT_138, 'thclass' => 'left', 'class'=>'left', 'proc' => 'contentstatus'),
 			'mail_detail_id' 		=> array('title' => LAN_MAILOUT_137, 'type'=>'dropdown', 'filter'=>true),
 			'mail_send_date' 		=> array('title' => LAN_MAILOUT_139, 'proc' => 'sdatetime'),
 			'mail_target_info'		=> array('title' => LAN_MAILOUT_148, 'proc' => 'array'),
@@ -1240,6 +1390,7 @@ switch ($action)
 		}
 		break;
 	*/
+	/*
 	case 'mailedit' :		// Edit existing mail
 		if (isset($_POST['mailaction']))
 		{
@@ -1252,7 +1403,8 @@ switch ($action)
 			}
 		}
 		break;
-
+	*/
+	
 	case 'makemail' :
 		$newMail = TRUE;
 		
