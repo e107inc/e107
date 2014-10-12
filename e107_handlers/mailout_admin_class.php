@@ -1470,6 +1470,7 @@ class mailoutAdminClass extends e107MailManager
 		else
 		{
 			// Start by saving the email
+			/*
 			$mailData['mail_content_status'] = MAIL_STATUS_TEMP;
 			$mailData['mail_create_app'] = 'core';
 			$result = $this->saveEmail($mailData, TRUE);
@@ -1482,11 +1483,11 @@ class mailoutAdminClass extends e107MailManager
 			{
 				e107::getMessage()->addDebug("Couldn't save email. (".__FILE__." Line: ".__LINE__.")");
 			}
+			*/
 			
-			
+			$mailMainID = $mailData['mail_source_id'];
 
-			$this->mailInitCounters($mailMainID);
-			// Initialise counters for emails added		
+			$this->mailInitCounters($mailMainID); // Initialise counters for emails added		
 			
 			foreach($this->mailHandlers as $key => $m)
 			{
@@ -1494,16 +1495,15 @@ class mailoutAdminClass extends e107MailManager
 				// all can use the $sql data object
 				if($m->mailerEnabled && isset($mailData['mail_selectors'][$key]))
 				{
-					// Initialise
-					$mailerCount = $m->selectInit($mailData['mail_selectors'][$key]);
+					
+					$mailerCount = $m->selectInit($mailData['mail_selectors'][$key]); // Initialise
 					if($mailerCount > 0)
 					{
-						// Get email addresses - add to list, strip duplicates
-						while($row = $m->selectAdd())
-						{
-							// Add email addresses to the database ready for sending (the body is never saved
-							// in the DB - it gets passed as a $_POST value)
-							$result = $this->mailAddNoDup($mailMainID, $row, MAIL_STATUS_TEMP);
+						
+						while($row = $m->selectAdd()) // Get email addresses - add to list, strip duplicates
+						{						
+							$result = $this->mailAddNoDup($mailMainID, $row, MAIL_STATUS_TEMP); // Add email addresses to the database ready for sending (the body is never saved // in the DB - it gets passed as a $_POST value)
+							
 							if($result === FALSE)
 							{
 								// Error
@@ -1660,6 +1660,7 @@ class mailoutAdminClass extends e107MailManager
 		return e107::getForm()->datepicker($calName, $calVal, $options);
 	}
 
+
 	/**
 	 * Show recipients of an email
 	 *
@@ -1667,6 +1668,7 @@ class mailoutAdminClass extends e107MailManager
 	 * @param $nextPage - 'mode' specification for page to return to following delete
 	 * @return text for display
 	 */
+	/*
 	public function showmailRecipients($mailID, $nextPage = 'saved')
 	{
 		$gen = new convert;
@@ -1804,7 +1806,9 @@ class mailoutAdminClass extends e107MailManager
 
 		$ns->tablerender(ADLAN_136 . SEP . LAN_MAILOUT_181, $mes->render() . $text);
 	}
-
+	*/
+	
+	
 	/**
 	 * Clean up mailout DB
 	 * Dump array of results to admin log

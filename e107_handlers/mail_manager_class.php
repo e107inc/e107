@@ -422,10 +422,9 @@ class e107MailManager
 		}
 
 		// Now array fields
-		$array = new ArrayData;
 		if (isset($data['mail_other']))
 		{
-			$tmp = $array->ReadArray(str_replace('\\\'', '\'',$data['mail_other']));	// May have escaped data
+			$tmp = e107::unserialize(str_replace('\\\'', '\'',$data['mail_other']));	// May have escaped data
 			if (is_array($tmp))
 			{
 				$res = array_merge($res,$tmp);
@@ -441,7 +440,7 @@ class e107MailManager
 		}
 		if (isset($data['mail_target_info']))
 		{
-			$tmp = $array->ReadArray(str_replace('\\\'', '\'',$data['mail_target_info']));	// May have escaped data
+			$tmp = e107::unserialize(str_replace('\\\'', '\'',$data['mail_target_info']));	// May have escaped data
 			$res['mail_target_info'] = $tmp;
 		}
 		return $res;
@@ -853,6 +852,9 @@ class e107MailManager
 			}
 		}
 		if (isset($email['mail_overrides']) && is_array($email['mail_overrides'])) $result = array_merge($result, $email['mail_overrides']);
+		
+		e107::getAdminLog()->addDebug(print_a($email,true),false);
+		
 		return $result;
 	}
 
@@ -878,6 +880,10 @@ class e107MailManager
 				$this->mailer->allSent();		// Tidy up on completion
 			}
 		}
+		else 
+		{
+			e107::getAdminLog()->addDebug("Couldn't select emails", false);
+		}
 	}
 
 
@@ -902,8 +908,7 @@ class e107MailManager
 		{
 			unset($dbData['mail_source_id']);				// Just in case - there are circumstances where might be set
 			$result = $this->db2->db_Insert('mail_content', array('data' => $dbData, 
-														'_FIELD_TYPES' => $this->dbTypes['mail_content'], 
-														'_NOTNULL' => $this->dbNull['mail_content']));
+														'_FIELD_TYPES' => $this->dbTypes['mail_content'], 												'_NOTNULL' => $this->dbNull['mail_content']));
 		}
 		else
 		{
@@ -1483,30 +1488,47 @@ class e107MailManager
 
 	public function sendEmails($templateName, $emailData, $recipientData, $extra = FALSE)
 	{
-		if (!is_array($emailData)) return FALSE;
+		$log = e107::getAdminLog();
+		$log->addDebug(print_a($emailData, true),false);
+		$log->addDebug(print_a($recipientData, true),false);
+		$log->toFile('mail_manager','Main Manager Log',true);
+		
+		
+		if (!is_array($emailData)) 
+		{
+			return FALSE;
+		}
+		
 		if (!is_array($recipientData))
 		{
 			$recipientData = array('mail_recipient_email' => $recipientData, 'mail_recipient_name' => $recipientData);
 		}
+
 		$emailData['mail_content_status'] = MAIL_STATUS_TEMP;
 
 		if ($templateName == '')
 		{
-			$templateName = varset($email['mail_send_style'], 'textonly');		// Safest default if nothing specified
+			$templateName = varset($emailData['mail_send_style'], 'textonly');		// Safest default if nothing specified
 		}
+
+
 		$templateName = trim($templateName);
 		if ($templateName == '') return FALSE;
 
-
+		
 		// Get template data, override email settings as appropriate
-		require_once(e_HANDLER.'mail_template_class.php');
-		$ourTemplate = new e107MailTemplate();
-		if (!$ourTemplate->setNewTemplate($templateName) && empty($emailData['template'])) return FALSE;		// Probably template not found if error
-		if (!$ourTemplate->makeEmailBody($emailData['mail_body'], varset($emailData['mail_include_images'], TRUE))) return FALSE;		// Create body text
-		$emailData['mail_body_templated'] = $ourTemplate->mainBodyText;
-		$this->currentMailBody = $emailData['mail_body_templated'];			// In case we send immediately
-		$emailData['mail_body_alt'] = $ourTemplate->altBodyText;
-		$this->currentTextBody = $emailData['mail_body_alt'];
+	//	require_once(e_HANDLER.'mail_template_class.php');
+	//	$ourTemplate = new e107MailTemplate();
+	//	if (!$ourTemplate->setNewTemplate($templateName) && empty($emailData['template'])) return FALSE;		// Probably template not found if error
+	//	if (!$ourTemplate->makeEmailBody($emailData['mail_body'], varset($emailData['mail_include_images'], TRUE))) return FALSE;		// Create body text
+	
+	
+	
+//		$emailData['mail_body_templated'] 	= $ourTemplate->mainBodyText;
+		$this->currentMailBody 				= $emailData['mail_body'];			// In case we send immediately
+//		$emailData['mail_body_alt'] 		= $ourTemplate->altBodyText;
+		$this->currentTextBody 				= strip_tags($emailData['mail_body']);
+		
 		if (!isset($emailData['mail_overrides']))
 		{
 			$emailData['mail_overrides'] = $ourTemplate->lastTemplateData['email_overrides'];
@@ -1522,9 +1544,13 @@ class e107MailManager
 				echo "<h4>".$emailData['template']." Template detected</h4>";
 			}
 		}
+		
+		
 	
-
+	
 		$forceQueue = FALSE;
+		
+		
 		if (is_array($extra) && isset($extra['mail_force_queue']))
 		{
 			$forceQueue = $extra['mail_force_queue'];
