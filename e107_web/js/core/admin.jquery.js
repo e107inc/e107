@@ -205,12 +205,12 @@ $(document).ready(function()
 
 
 
-		
+
 		$('.e-progress').on('click', function(e) 
 		{
 		//	alert('Process Started');
-			
-			var target 	= 'progress';
+
+			var target	= $(this).attr('data-progress-target');
 			var script 	= $(this).attr('data-progress');
 			var show 	= $(this).attr('data-progress-show');
 			var hide 	= $(this).attr('data-progress-hide');
@@ -235,8 +235,8 @@ $(document).ready(function()
 				if(data > 99.999) {
 		      	
 			   		clearInterval(progresspump);
-			        
-			        $("#progressouter").removeClass("active");
+			        $("#"+target).closest('.progress').removeClass("active");
+
 			        $("#"+target).html("Done");
 			        
 			        if(hide !== 'undefined')

@@ -66,7 +66,7 @@ Valid subparameters (where required):
 	$_GET['m'] - id of mail info in db
 	$_GET['t'] - id of target info in db
 */
-header('Content-Encoding: none'); // turn off gzip. 
+// header('Content-Encoding: none'); // turn off gzip. 
 require_once('../class2.php');
 
 if (!getperms('W'))
@@ -85,6 +85,73 @@ require_once(e_HANDLER.'mailout_admin_class.php');		// Admin tasks handler
 require_once(e_HANDLER.'mail_manager_class.php');		// Mail DB API
 
 
+/**
+ * Display Progress-bar of real-time mail-out. 
+ * @return 
+ */
+function sendProgress($id)
+{
+	$pref = e107::getPref();
+	
+	$mailManager = new e107MailManager();
+	$mailManager->doEmailTask(varset($pref['mail_workpertick'],5));
+	
+	$sqld = e107::getDb();
+	
+	$sqld->select("mail_content","mail_togo_count,mail_sent_count,mail_fail_count","mail_source_id= ".intval($id) );
+    $row = $sqld->fetch();
+  
+ 	$rand 	= ($row['mail_sent_count'] + $row['mail_fail_count']);
+	$total 	= ($row['mail_togo_count'] + $row['mail_sent_count'] + $row['mail_fail_count']);
+
+	// $rand = rand(90,100);
+	// return $rand;
+
+	$inc = round(($rand / $total) * 100);
+	
+	return $inc;
+
+	 
+}
+
+if(e_AJAX_REQUEST)
+{
+	$id = intval($_GET['mode']);
+	// echo rand(92,100);
+	echo sendProgress($id);
+	exit;
+
+}
+		
+	
+
+if(vartrue($_GET['mode']) == "progress")
+{
+//	session_write_close();
+//	sendProgress();
+//	exit;
+}
+
+
+$mes = e107::getMessage();
+$tp = e107::getParser();
+/*
+if($_GET['mode']=="process")
+{
+	session_write_close(); // allow other scripts to run in parallel. 
+	header('Content-Encoding: none');
+	ignore_user_abort(true);
+	set_time_limit(0);
+
+	header("Content-Length: $size");
+	header('Connection: close');
+	
+	$mailManager = new e107MailManager();
+	$mailManager->doEmailTask(999999);	
+	echo "Completed Mailout ID: ".$_GET['id'];
+	exit;
+}
+*/
 
 
 class mailout_admin extends e_admin_dispatcher
@@ -354,10 +421,10 @@ class mailout_main_ui extends e_admin_ui
 	{
 		$ret = $this->processData($new_data);
 		
-		$ret['mail_create_date'] = time();
-		$ret['mail_creator'] = USERID;	
-		$ret['mail_create_app'] = 'core';
-		$ret['mail_content_status'] = 22; // Default status is 'Saved';
+		$ret['mail_create_date'] 	= time();
+		$ret['mail_creator'] 		= USERID;	
+		$ret['mail_create_app'] 	= 'core';
+		$ret['mail_content_status'] = MAIL_STATUS_TEMP; 
 		
 		return $ret;	
 
@@ -409,9 +476,15 @@ class mailout_main_ui extends e_admin_ui
 	}
 		
 
-	private function emailSendNow($mailId)
+	private function emailSendNow($id)
 	{
-		e107::getMessage()->addInfo("'Send Now' is Under Construction");	
+		$mes = e107::getMessage();		
+		$text = e107::getForm()->progressBar('mail-progress',1, array('btn-label'=>'Start', 'url'=> e_SELF));
+
+		$mes->setTitle('Ready to Process Mail Queue', E_MESSAGE_INFO)->addInfo($text);
+		return '';
+		
+		//; e107::getRender()->tablerender("Sending...", $mes->render());
 	}
 	
 	
@@ -1174,7 +1247,7 @@ class mailout_recipients_ui extends e_admin_ui
 			'mail_recipient_id' 	=> array('title' => LAN_MAILOUT_142, 'thclass' => 'center'),
 			'mail_recipient_name' 	=> array('title' => LAN_MAILOUT_141, 'forced' => TRUE),
 			'mail_recipient_email' 	=> array('title' => LAN_MAILOUT_140, 'thclass' => 'left', 'forced' => TRUE),
-			'mail_status' 			=> array('title' => LAN_MAILOUT_138, 'thclass' => 'left', 'class'=>'left', 'proc' => 'contentstatus'),
+			'mail_status' 			=> array('title' => LAN_MAILOUT_138, 'type'=>'method', 'thclass' => 'left', 'class'=>'left', 'proc' => 'contentstatus'),
 			'mail_detail_id' 		=> array('title' => LAN_MAILOUT_137, 'type'=>'dropdown', 'filter'=>true),
 			'mail_send_date' 		=> array('title' => LAN_MAILOUT_139, 'proc' => 'sdatetime'),
 			'mail_target_info'		=> array('title' => LAN_MAILOUT_148, 'proc' => 'array'),
@@ -1184,15 +1257,22 @@ class mailout_recipients_ui extends e_admin_ui
 	
 	protected $fieldpref = array('checkboxes', 'mail_target_id', 'mail_recipient_name', 'mail_recipient_email', 'mail_detail_id', 'mail_status', 'options');
 	
+	public $mailManager = null;
 	
 	function init()
 	{
+		
+		$this->mailManager = new e107MailManager;
+		
+		
+		
 		$sql = e107::getDb();
 		$sql->gen("SELECT r.mail_detail_id,c.mail_title FROM #mail_recipients AS r LEFT JOIN #mail_content as c ON r.mail_detail_id = c.mail_source_id GROUP BY r.mail_detail_id");
-		
+				
 		while($row = $sql->fetch())
 		{
-			$array[] = $row['mail_title'];	
+			$id = $row['mail_detail_id'];
+			$array[$id] = varset($row['mail_title'], "(No Name)");	
 		}
 		$this->fields['mail_detail_id']['writeParms'] = $array;
 		
@@ -1218,7 +1298,19 @@ class mailout_recipients_ui extends e_admin_ui
 class mailout_recipients_form_ui extends e_admin_form_ui
 {
 	
-	
+	public function mail_status($curVal,$mode)
+	{
+		if($mode == 'read')
+		{
+			return $this->getController()->mailManager->statusToText($curVal);
+		}
+		
+		if($mode == 'write')
+		{
+			return $curVal;
+		}
+		
+	}	
 	
 }
 
@@ -1241,32 +1333,7 @@ new mailout_admin();
 
 $e_sub_cat = 'mail';
 
-if(vartrue($_GET['mode']) == "progress")
-{
-	session_write_close();
-	sendProgress();
-	exit;
-}
 
-
-$mes = e107::getMessage();
-$tp = e107::getParser();
-
-if($_GET['mode']=="process")
-{
-	session_write_close(); // allow other scripts to run in parallel. 
-	header('Content-Encoding: none');
-	ignore_user_abort(true);
-	set_time_limit(0);
-
-	header("Content-Length: $size");
-	header('Connection: close');
-	
-	$mailManager = new e107MailManager();
-	$mailManager->doEmailTask(999999);	
-	echo "Completed Mailout ID: ".$_GET['id'];
-	exit;
-}
 
 
 
@@ -1751,6 +1818,7 @@ require_once(e_ADMIN.'footer.php');
  * @param integer $id (mailing id)
  * @return 
  */
+ /*
 function sendImmediately($id)
 {
 	$mes = e107::getMessage();
@@ -1794,45 +1862,8 @@ function sendImmediately($id)
 	e107::getRender()->tablerender("Sending...", $mes->render());
 
 }
+*/
 
-/**
- * Display Progress-bar of real-time mail-out. 
- * @return 
- */
-function sendProgress()
-{
-	$sqld = e107::getDb();
-	
-	$sqld->db_Select("mail_content","mail_togo_count,mail_sent_count,mail_fail_count","mail_source_id= ".intval($_GET['id']) );
-    $row = $sqld -> db_Fetch();
-  
- 	$rand = $row['mail_sent_count'] + $row['mail_fail_count'];
-	
-	$total = $row['mail_togo_count'] + $row['mail_sent_count'] + $row['mail_fail_count'];
-
-	// $rand = rand(1,20);
-	//$total = 20;
-
-	$inc = round(($rand / $total) * 100);
-	
-	if($rand >= $total && $total !=0)
-	{
-    	echo "<script type='text/javascript'>x.stop();</script>";
-		echo "<div style='background-image:url(".THEME."images/bar.jpg);color:black;margin-left:auto;margin-right:auto;border:2px inset black;height:16px;width:500px;overflow:hidden;text-align:center'>
-		Complete </div>";
-		echo "<div style='text-align:center'>".$rand." / ".$total." </div>";
-		return;
-	}
-
-    echo "<div style='margin-left:auto;margin-right:auto;border:2px inset black;height:16px;width:500px;overflow:hidden;text-align:left'>";
-    for($j=1;$j<=$inc;$j++)
-	{
-		echo "<img src='".THEME."images/bar.jpg' style='width:5px;height:16px;vertical-align:top'>";
-	}
-    echo " $inc % </div>";
-	echo "<div style='text-align:center'>".$rand." / ".$total." </div>";
-	return;
-}
 
 
 

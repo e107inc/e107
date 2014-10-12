@@ -138,7 +138,7 @@ define('MAIL_LOG_PATH',e_LOG);
 class e107Email extends PHPMailer
 {
 	private $general_opts 		= array();
-	private $logEnable 			= 0;		// 0 = log disabled, 1 = 'dry run' (debug and log, no send). 2 = 'log all' (send, and log result)
+	private $logEnable 			= 1;		// 0 = log disabled, 1 = 'dry run' (debug and log, no send). 2 = 'log all' (send, and log result)
 	private $logHandle 			= FALSE;	// Save handle of log file if opened
 
 	private $localUseVerp 		= FALSE;	// Use our own variable - PHPMailer one doesn't work with all mailers
@@ -601,8 +601,6 @@ class e107Email extends PHPMailer
 	 */
 	public function arraySet($eml)
 	{
-		
-	
 		$tp = e107::getParser();
 		
 		if(vartrue($eml['template'])) // @see e107_core/templates/email_template.php
@@ -637,6 +635,8 @@ class e107Email extends PHPMailer
 				{
 					echo "<h4>Couldn't find email template: ".$eml['template']."</h4>";	
 				}
+				$emailBody = $eml['email_body'];
+				
 				if (vartrue($eml['email_subject'])) $this->Subject = $tp->parseTemplate($eml['email_subject'], true, varset($eml['shortcodes'],null)); 	
 				e107::getMessage()->addDebug("Couldn't find email template: ".$eml['template']);	
 			}
@@ -645,6 +645,7 @@ class e107Email extends PHPMailer
 		else
 		{
 			if (vartrue($eml['email_subject'])) $this->Subject = $tp->parseTemplate($eml['email_subject'], true, varset($eml['shortcodes'],null)); 	
+				//	$eml['email_body'] = ($tp->toEmail($tmpl['header']). str_replace('{BODY}', $eml['email_body'], $tmpl['body']). $tp->toEmail($tmpl['footer']));
 		}
 		
 		
@@ -695,6 +696,8 @@ class e107Email extends PHPMailer
 		if (varset($eml['wordwrap'])) $this->WordWrap = $eml['wordwrap'];
 		if (vartrue($eml['split'])) $this->SingleTo = ($eml['split'] != FALSE);
 
+		$this->logLine("ArraySet Data:".print_r($eml,true));
+
 		return 0;				// No error
 	}
 
@@ -741,7 +744,7 @@ class e107Email extends PHPMailer
 	{
 		if (count($eml))
 		{	// Set parameters from list
-			$ret = $this->arraySet($eml);
+			$ret = $this->arraySet($eml); // returns error on fail and nothing if all is okay. 
 			if ($ret) return $ret;
 		}
 
@@ -784,6 +787,12 @@ class e107Email extends PHPMailer
 		}
 
 		$this->logLine("Send to {$to_name} at {$send_to} Mail-ID={$this->MessageID} - ".($result ? 'Success' : 'Fail'));
+		
+		if(!$result)
+		{
+			$this->logLine(print_r($eml,true));	
+		}
+		
 		
 		$this->ClearAddresses();			// In case we send another email
 		$this->ClearCustomHeaders();

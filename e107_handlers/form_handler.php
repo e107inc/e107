@@ -1104,11 +1104,24 @@ class e_form
 		}		
 			
 		$class = vartrue($options['class'],'');	
+		$target = $this->name2id($name);
 		
-		return	"<div class='progress ".$class."' id='".$this->name2id($name)."'>
-   		 	<div class='progress-bar bar' style='width: ".number_format($value,1)."%'></div>
+		$striped = (vartrue($options['btn-label'])) ? ' progress-striped active' : '';	
+		
+		$text =	"<div class='progress ".$class."{$striped}' >
+   		 	<div id='".$target."' class='progress-bar bar' style='width: ".number_format($value,1)."%'></div>
     	</div>";
-
+		
+		$loading = vartrue($options['loading'],'Please wait...');
+		
+		if(vartrue($options['btn-label']))
+		{
+			$text .= '<a id="mail-progress-start" data-loading-text="'.$loading.'" data-progress-target="'.$target.'" data-progress="' . $options['url'] . '" data-progress-mode="'.$id.'" data-progress-show="'.$nextStep.'" data-progress-hide="'.$thisStep.'" class="btn btn-primary e-progress" >'.$options['btn-label'].'</a>';
+		}
+		
+		
+		return $text;
+		
 	}
 
 
