@@ -138,7 +138,7 @@ define('MAIL_LOG_PATH',e_LOG);
 class e107Email extends PHPMailer
 {
 	private $general_opts 		= array();
-	private $logEnable 			= 1;		// 0 = log disabled, 1 = 'dry run' (debug and log, no send). 2 = 'log all' (send, and log result)
+	private $logEnable 			= 2;		// 0 = log disabled, 1 = 'dry run' (debug and log, no send). 2 = 'log all' (send, and log result)
 	private $logHandle 			= FALSE;	// Save handle of log file if opened
 
 	private $localUseVerp 		= FALSE;	// Use our own variable - PHPMailer one doesn't work with all mailers
@@ -154,7 +154,7 @@ class e107Email extends PHPMailer
 	private $pause_time 		= 1;		// Time to pause after sending a block of emails
 
 	public	$legacyBody 		= false;	// TRUE enables legacy conversion of plain text body to HTML in HTML emails
-	private $debug 				= false;	// echos various debug info when set to true. 
+	private $debug 				= true;	// echos various debug info when set to true. 
 	private $pref 				= array();	// Store code prefs. 
 	
 	/**
@@ -196,7 +196,12 @@ class e107Email extends PHPMailer
 		$this->allow_html = varset($pref['mail_sendstyle'],'textonly') == 'texthtml' ? true : 1;
 
 		if (varsettrue($pref['mail_options'])) $this->general_opts = explode(',',$pref['mail_options'],'');
-		if ($this->debug) echo 'Mail_options: '.$pref['mail_options'].' Count: '.count($this->general_opts).'<br />';
+		
+		if ($this->debug)
+		{
+			echo 'Mail_options: '.$pref['mail_options'].' Count: '.count($this->general_opts).'<br />';
+		}
+		
 		foreach ($this->general_opts as $k => $v) 
 		{
 			$v = trim($v);
@@ -609,7 +614,7 @@ class e107Email extends PHPMailer
 			
 			if($tmpl = e107::getCoreTemplate('email', $eml['template'], 'front', true))  //FIXME - Core template is failing with template 'notify'. Works with theme template. Issue with core template registry?
 			{				
-				$eml['shortcodes']['BODY'] 		= $eml['email_body'];
+				$eml['shortcodes']['BODY'] 		= $tp->toEmail($eml['email_body']);
 				$eml['shortcodes']['SUBJECT'] 	= $eml['email_subject'];
 				$eml['shortcodes']['THEME'] 	= e_THEME.$this->pref['sitetheme'].'/'; // Always use front-end theme path. 
 				
@@ -732,6 +737,7 @@ class e107Email extends PHPMailer
 		$eml['wordwrap']		- Set wordwrap value
 		$eml['split']			- If true, sends an individual email to each recipient
 	    $eml['template']		- template to use. 'default'
+	    $eml['shortcodes']		- array of shortcode values. eg. array('MY_SHORTCODE'=>'12345'); 
 
 	 *	@param string $send_to - recipient email address
 	 *	@param string $to_name - recipient name
@@ -743,9 +749,12 @@ class e107Email extends PHPMailer
 	public function sendEmail($send_to, $to_name, $eml = '', $bulkmail = FALSE)
 	{
 		if (count($eml))
-		{	// Set parameters from list
-			$ret = $this->arraySet($eml); // returns error on fail and nothing if all is okay. 
-			if ($ret) return $ret;
+		{	
+			if($error = $this->arraySet($eml))  // Set parameters from list
+			{
+				return $error;
+			} 
+			
 		}
 
 		if ($bulkmail && $this->localUseVerp && $this->save_bouncepath && (strpos($this->save_bouncepath,'@') !== FALSE))
