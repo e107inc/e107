@@ -886,6 +886,13 @@ class mailoutAdminClass extends e107MailManager
 		{
 			$text .= '<tr><td>' . $this->fields['mail_content'][$k]['title'] . '</td><td>';
 			$val = $mailSource[$k];
+			
+			if($k == 'mail_body')
+			{
+				$text .= $tp->toHtml($val,true);	
+				continue;
+			}
+			
 			if(is_numeric($v))
 			{
 				$text .= ($v > 1)? $tp->text_truncate($val, $v, '...'): $val;
@@ -901,6 +908,7 @@ class mailoutAdminClass extends e107MailManager
 						$text .= $gen->convert_date($val, 'short');
 					break;
 					case 'trunc200':
+						
 						$text .= e107::getParser()->text_truncate($val, 200, '...');
 					break;
 					case 'chars':
@@ -1541,33 +1549,40 @@ class mailoutAdminClass extends e107MailManager
 
 		$text .= $this->showMailDetail($mailData, 'send');
 
+		$text .= '<tr><td>' . LAN_MAILOUT_03 . '</td><td>'; // TO 
+		
 		// Add in core and any plugin selectors here
 		foreach($this->mailHandlers as $key => $m)
 		{
 
 			if($m->mailerEnabled && ($contentArray = $m->showSelect(FALSE, $mailData['mail_selectors'][$key])))
 			{
-				$text .= '<tr><td>' . LAN_MAILOUT_180 . '<br />' . $m->mailerName . '</td>';
-				$text .= '<td><ul>';
+				
+				$text .= $m->mailerName.':<ul>';
 				foreach($contentArray as $val)
 				{
 					$text .= "<li>" . $val['caption'] . " : " . $val['html'] . "</li>";
 				}
-				$text .= '</ul></td></tr>';
+				$text .= '</ul>';
 			}
 		}
 
+		$text .= '</td></tr>';
+		
 		// Figures - number of emails to send, number of duplicates stripped
 		$text .= '<tr><td>' . LAN_MAILOUT_173 . '</td><td>' . ($mailData['mail_togo_count']) . "<input type='hidden' name='mailIDConf' value='{$mailMainID}' /></td></tr>";
 		$text .= '<tr><td>' . LAN_MAILOUT_71 . '</td><td> ' . $counters['add'] . ' ' . LAN_MAILOUT_69 . $counters['dups'] . LAN_MAILOUT_70 . '</td></tr>';
 		$text .= "</tbody></table>\n</fieldset>";
 
+		$this->updateCounter($mailMainID,'total',$counters['add']);
+		
 		$text .= $this->makeAdvancedOptions(TRUE);
 		// Show the table of advanced options
 
 		$text .= "<div class='buttons-bar center'>";
-
-		$text .= $frm->admin_button('email_sendnow', "Send Now", 'primary');
+		$text .= "<a href='".e_SELF."?mode=main&action=sendnow&id=".$mailMainID."' class='btn btn-primary'>Send Now</a>";
+		 
+	//	$text .= $frm->admin_button('email_sendnow', "Send Now", 'primary');
 		$text .= $frm->admin_button('email_send', "Send Later");
 
 		// $text .= "<input  type='submit' name='email_send' value=\"".LAN_SEND."\" />";

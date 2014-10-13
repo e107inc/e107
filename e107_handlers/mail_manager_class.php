@@ -797,8 +797,8 @@ class e107MailManager
 			//'extra_header'	- additional headers (format is name: value
 			//'wordwrap'		- Set wordwrap value
 			//'split'			- If true, sends an individual email to each recipient
-			'template'		=> 'template', // required
-			'shortcodes'	=> 'shortcodes' // required
+			'template'		=> 'mail_send_style', // required
+			'shortcodes'	=> 'mail_target_info' // required
 			);
 		$result = array();
 		if (!isset($email['mail_source_id'])) $email['mail_source_id'] = 0;
@@ -853,8 +853,14 @@ class e107MailManager
 		}
 		if (isset($email['mail_overrides']) && is_array($email['mail_overrides'])) $result = array_merge($result, $email['mail_overrides']);
 		
-		e107::getAdminLog()->addDebug(print_a($email,true),false);
+		e107::getAdminLog()->addDebug(print_a($email,true),true);
 		
+		print_a($email);
+		
+	//	$result['template'] = $email['mail_send_style'];
+		
+		echo "<h4>".__METHOD__." Line: ".__LINE__."</h4>";
+		print_a($result);
 		return $result;
 	}
 
@@ -882,7 +888,7 @@ class e107MailManager
 		}
 		else 
 		{
-			e107::getAdminLog()->addDebug("Couldn't select emails", false);
+			e107::getAdminLog()->addDebug("Couldn't select emails", true);
 		}
 	}
 
@@ -1046,12 +1052,33 @@ class e107MailManager
 		if (($handle <= 0) || !is_numeric($handle)) return FALSE;
 		if (!isset($this->mailCounters[$handle])) return 'nocounter';
 		$this->checkDB(2);			// Make sure DB object created
+		
+		
+		
+		
+		
 		$query = '`mail_togo_count`='.intval($this->mailCounters[$handle]['add']).' WHERE `mail_source_id`='.$handle;
 		if ($this->db2->db_Update('mail_content', $query))
 		{
 			return $this->mailCounters[$handle]['add'];
 		}
 		return FALSE;
+	}
+	
+	
+	public function updateCounter($id, $type, $count)
+	{
+		if(empty($id) || empty($type))
+		{
+			return false; 	
+		}
+		
+		$update = array(
+			'mail_'.$type.'_count'	=> intval($count),
+			'WHERE'					=> "mail_source_id=".intval($id)
+		);
+		
+		return e107::getDb('mail')->update('mail_content', $update) ? $count : false;
 	}
 	
 	
@@ -1489,8 +1516,8 @@ class e107MailManager
 	public function sendEmails($templateName, $emailData, $recipientData, $extra = FALSE)
 	{
 		$log = e107::getAdminLog();
-		$log->addDebug(print_a($emailData, true),false);
-		$log->addDebug(print_a($recipientData, true),false);
+		$log->addDebug(print_a($emailData, true),true);
+		$log->addDebug(print_a($recipientData, true),true);
 		$log->toFile('mail_manager','Main Manager Log',true);
 		
 		
@@ -1559,6 +1586,8 @@ class e107MailManager
 
 		if($this->debugMode)
 		{
+			 
+			echo "<h4>".__CLASS__." :: ".__METHOD__." - Line ".__LINE__."</h4>";
 			print_a($emailData);
 			print_a($recipientData);	
 

@@ -91,11 +91,16 @@ require_once(e_HANDLER.'mail_manager_class.php');		// Mail DB API
  */
 function sendProgress($id)
 {
+	
+//	return rand(92,100);
+	
 	$pref = e107::getPref();
+	
+	ob_start();
 	
 	$mailManager = new e107MailManager();
 	$mailManager->doEmailTask(varset($pref['mail_workpertick'],5));
-	
+
 	$sqld = e107::getDb();
 	
 	$sqld->select("mail_content","mail_togo_count,mail_sent_count,mail_fail_count","mail_source_id= ".intval($id) );
@@ -104,10 +109,14 @@ function sendProgress($id)
  	$rand 	= ($row['mail_sent_count'] + $row['mail_fail_count']);
 	$total 	= ($row['mail_togo_count'] + $row['mail_sent_count'] + $row['mail_fail_count']);
 
-	// $rand = rand(90,100);
-	// return $rand;
+	$errors = ob_get_clean();
+	
+	e107::getMessage()->addDebug($errors);
 
+//	file_put_contents(e_LOG.'send-mail-progress.txt',$errors);
+	
 	$inc = round(($rand / $total) * 100);
+	e107::getMessage()->addDebug("Returned: ".$inc);
 	
 	return $inc;
 
@@ -117,7 +126,6 @@ function sendProgress($id)
 if(e_AJAX_REQUEST)
 {
 	$id = intval($_GET['mode']);
-	// echo rand(92,100);
 	echo sendProgress($id);
 	exit;
 
@@ -212,12 +220,12 @@ class mailout_admin extends e_admin_dispatcher
 	protected $adminMenu = array(
 	//	'makemail/makemail'		=> array('caption'=> LAN_MAILOUT_190, 	'perm' => 'W', 'url'=>e_SELF),
 		'main/list'			=> array('caption'=> LAN_MANAGE, 		'perm'=>  'W'),
-		'main/create'		=> array('caption'=> LAN_MAILOUT_190, 	'perm' => 'W'),
+		'main/create'		=> array('caption'=> LAN_CREATE, 	'perm' => 'W'),
 	
 		'recipients/list'	=> array('caption'=> "Recipients", 		'perm' => 'W'),		
 	//	'main/send'			=> array('caption'=> "Send", 			'perm' => 'W'),
 		'other' 			=> array('divider'=> true),
-		'saved/list'		=> array('caption'=> LAN_MAILOUT_191, 	'perm' => 'W'),
+	//	'saved/list'		=> array('caption'=> LAN_MAILOUT_191, 	'perm' => 'W'),
 		'pending/list'		=> array('caption'=> LAN_MAILOUT_193, 	'perm' => 'W'),
 		'held/list'			=> array('caption'=> LAN_MAILOUT_194, 	'perm' => 'W'),
 		'sent/list'			=> array('caption'=> LAN_MAILOUT_192, 	'perm' => 'W'),
@@ -244,7 +252,7 @@ class mailout_main_ui extends e_admin_ui
 		protected $pluginName		= LAN_MAILOUT_15;
 		protected $table			= "mail_content";
 
-	//	protected $listQry			= "SELECT * FROM #mail_content WHERE mail_content_status = 20 ";
+	//	protected $listQry			= null;
 
 
 	//	protected $editQry			= "SELECT * FROM #mail_content WHERE cust_id = {ID}";
@@ -269,9 +277,11 @@ class mailout_main_ui extends e_admin_ui
 			'mail_copy_to'			=> array('title' => LAN_MAILOUT_151,'tab'=>1, 'type'=>'method','data'=>false),
 			'mail_bcopy_to'			=> array('title' => LAN_MAILOUT_152,'tab'=>1, 'type'=>'method','data'=>false),	
 			'mail_subject' 			=> array('title' => LAN_MAILOUT_06, 'type'=>'text', 'forced' => TRUE,'data'=>'str', 'inline'=>true, 'writeParms'=>'size=xxlarge&required=1'),
-			'mail_content_status' 	=> array('title' => LAN_MAILOUT_136, 'tab'=>1, 'type'=> 'dropdown', 'data'=>'int', 'filter'=>false, 'inline'=>true, 'thclass' => 'left', 'class'=>'left'),
-			'mail_togo_count' 		=> array('title' => LAN_MAILOUT_83, 'noedit'=>true, 'type'=>'number'),
+			'mail_content_status' 	=> array('title' => LAN_MAILOUT_136, 'tab'=>1, 'type'=> 'dropdown', 'data'=>'int', 'filter'=>false, 'inline'=>false, 'thclass' => 'left', 'class'=>'left'),
+			'mail_total_count' 		=> array('title' => "Total Recipients", 'noedit'=>true, 'type'=>'number'),
 			'mail_sent_count' 		=> array('title' => LAN_MAILOUT_82, 'noedit'=>true, 'type'=>'number'),
+			'mail_togo_count' 		=> array('title' => LAN_MAILOUT_83, 'noedit'=>true, 'type'=>'number'),
+		
 			'mail_fail_count' 		=> array('title' => LAN_MAILOUT_128, 'noedit'=>true, 'type'=>'number'),
 			'mail_bounce_count' 	=> array('title' => LAN_MAILOUT_144, 'noedit'=>true, 'type'=>'number'),
 			'mail_start_send' 		=> array('title' => LAN_MAILOUT_131,'noedit'=>true,  'type'=>'number', 'proc' => 'sdatetime'),
@@ -369,9 +379,15 @@ class mailout_main_ui extends e_admin_ui
 		{
 			$this->listQry	= "SELECT * FROM #mail_content WHERE mail_content_status =  ".varset($qr[$action],20);
 		}
-		else 
+		else
 		{
-		//	$this->fields['options']['type'] = '';
+			$this->listQry	= "SELECT * FROM #mail_content WHERE (mail_content_status =  ".MAIL_STATUS_TEMP ." OR mail_content_status = ".MAIL_STATUS_SAVED.")";	
+		}
+		
+
+		if($action == 'sent' || $action == 'pending' || $action == 'held')
+		{
+			$this->fieldpref = array('checkboxes', 'mail_source_id', 'mail_title', 'mail_subject','mail_total_count', 'mail_togo_count', 'mail_sent_count', 'mail_fail_count', 'mail_bounce_count', 'options');	
 		}
 				
 		$this->fields['mail_content_status']['writeParms'] = $types; 
@@ -445,19 +461,14 @@ class mailout_main_ui extends e_admin_ui
 	private function processSendActions()
 	{
 		
-		if((vartrue($_POST['email_sendnow']) || vartrue($_POST['email_send']) || vartrue($_POST['email_hold']) || vartrue($_POST['email_cancel'])) && !vartrue($_POST['email_id']))
+		if((vartrue($_POST['email_send']) || vartrue($_POST['email_hold']) || vartrue($_POST['email_cancel'])) && !vartrue($_POST['email_id']))
 		{
 			e107::getMessage()->addError("No Message ID submitted");
 			return;
 		}
 		
 		$id = intval($_POST['email_id']);
-		
-		if(vartrue($_POST['email_sendnow']))
-		{
-			$this->emailSendNow($id);	
-		}	
-			
+				
 		if(vartrue($_POST['email_send']))
 		{
 			$this->emailSend($id);		
@@ -478,13 +489,7 @@ class mailout_main_ui extends e_admin_ui
 
 	private function emailSendNow($id)
 	{
-		$mes = e107::getMessage();		
-		$text = e107::getForm()->progressBar('mail-progress',1, array('btn-label'=>'Start', 'url'=> e_SELF));
-
-		$mes->setTitle('Ready to Process Mail Queue', E_MESSAGE_INFO)->addInfo($text);
-		return '';
-		
-		//; e107::getRender()->tablerender("Sending...", $mes->render());
+	
 	}
 	
 	
@@ -601,7 +606,29 @@ class mailout_main_ui extends e_admin_ui
 
 	}
 	*/
+
+	function sendnowPage()
+	{
+		$id = $this->getId();
 	
+		e107::getDb()->update('mail_content', 'mail_content_status='.MAIL_STATUS_PENDING.' WHERE mail_source_id = '.intval($id));
+		e107::getDb()->update('mail_recipients', 'mail_status='.MAIL_STATUS_PENDING.' WHERE mail_detail_id = '.intval($id));
+	
+		if(E107_DEBUG_LEVEL > 0)
+		{
+			echo "<h4>Debug Mode : Mail is sent and data displayed below. </h4>";
+			sendProgress($id);	
+		}
+		else 
+		{
+			$text = "<h4>Ready to Process Mail Queue</h4>";
+			$text .= e107::getForm()->progressBar('mail-progress',1, array('btn-label'=>'Start', 'url'=> e_SELF));
+		}
+	
+		return $text;	
+	}	
+	
+		
 	function sendPage()
 	{
 		
@@ -618,6 +645,10 @@ class mailout_main_ui extends e_admin_ui
 		$fromHold = false;
 		
 		$mailData = $this->mailAdmin->dbToMail($mailData);
+		
+		e107::getMessage()->addDebug("Regenerating recipient list");
+		
+		e107::getDb()->delete('mail_recipients','mail_detail_id='.intval($id));
 				
 		return $this->mailAdmin->sendEmailCircular($mailData, $fromHold);
 		
@@ -1206,6 +1237,15 @@ class mailout_admin_form_ui extends e_admin_form_ui
 				
 			return $text;
 		}
+		
+		if($mode == 'sent' || $mode == 'pending' || $mode == 'held')
+		{
+			$link = e_SELF."?searchquery=&filter_options=mail_detail_id__".$id."&mode=recipients&action=list";	
+			$text .= "<a href='".$link."' class='btn' title='Recipients'>".E_32_USER."</a>";
+			$att['readParms']['editClass'] = e_UC_NOBODY;
+			$text .= $this->renderValue('options',$value,$att,$id);
+			return $text;
+		}
 
 		$mode 		= $controller->getMode();
 		$mailData 	= $controller->getListModel()->getData();
@@ -1272,7 +1312,7 @@ class mailout_recipients_ui extends e_admin_ui
 		while($row = $sql->fetch())
 		{
 			$id = $row['mail_detail_id'];
-			$array[$id] = varset($row['mail_title'], "(No Name)");	
+			$array[$id] = vartrue($row['mail_title'], "(No Name)");	
 		}
 		$this->fields['mail_detail_id']['writeParms'] = $array;
 		
@@ -1729,7 +1769,7 @@ switch ($midAction)
 
 if(isset($_POST['email_sendnow']))
 {
-	sendImmediately($mailId);
+//	sendImmediately($mailId);
 }
 
 // --------------------- Display errors and results ------------------------
@@ -1805,7 +1845,7 @@ switch ($action)
 		{
 			$mailData = array();			// Empty array just in case
 		}
-		$mailAdmin->show_mailform($mailData);
+	//	$mailAdmin->show_mailform($mailData);
 		break;
 }
 

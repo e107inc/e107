@@ -197,7 +197,7 @@ class newsletter_mailout
 				
 		$selects = array_flip(explode(',', $selectVals));
 
-		if ($sql->db_Select('newsletter', 'newsletter_id, newsletter_title', '`newsletter_parent`=0'))
+		if ($sql->select('newsletter', 'newsletter_id, newsletter_title', '`newsletter_parent`=0'))
 		{
 			$c=0;
 			while ($row = $sql->db_Fetch(MYSQL_ASSOC))
@@ -219,8 +219,9 @@ class newsletter_mailout
 		}
 		else
 		{
-			$var[$c]['caption'] = NLLAN_50;
-			$var[$c]['html'] = '';
+			return false; // Return Nothing to avoid confusion. 
+			// $var[$c]['caption'] = NLLAN_50;
+			// $var[$c]['html'] = '';
 		}
 		
 		return $var; 

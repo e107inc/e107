@@ -255,6 +255,7 @@ CREATE TABLE mail_recipients (
 CREATE TABLE mail_content (
 	mail_source_id int(10) unsigned NOT NULL auto_increment,
 	mail_content_status tinyint(1) unsigned NOT NULL default '0',
+	mail_total_count int(10) unsigned NOT NULL default '0',
 	mail_togo_count int(10) unsigned NOT NULL default '0',
 	mail_sent_count int(10) unsigned NOT NULL default '0',
 	mail_fail_count int(10) unsigned NOT NULL default '0',

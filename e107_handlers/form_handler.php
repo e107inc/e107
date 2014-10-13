@@ -1095,6 +1095,7 @@ class e_form
 	 * @param string $name
 	 * @param number $value
 	 * @param array $options
+	 * @example  Use 
 	 */
 	public function progressBar($name,$value,$options=array())
 	{
@@ -1114,9 +1115,13 @@ class e_form
 		
 		$loading = vartrue($options['loading'],'Please wait...');
 		
+		$buttonId = $target.'-start';
+		
 		if(vartrue($options['btn-label']))
 		{
-			$text .= '<a id="mail-progress-start" data-loading-text="'.$loading.'" data-progress-target="'.$target.'" data-progress="' . $options['url'] . '" data-progress-mode="'.$id.'" data-progress-show="'.$nextStep.'" data-progress-hide="'.$thisStep.'" class="btn btn-primary e-progress" >'.$options['btn-label'].'</a>';
+			$text .= '<a id="'.$buttonId.'" data-loading-text="'.$loading.'" data-progress-target="'.$target.'" data-progress="' . $options['url'] . '" data-progress-mode="'.varset($options['mode'],0).'" data-progress-show="'.$nextStep.'" data-progress-hide="'.$buttonId.'" class="btn btn-primary e-progress" >'.$options['btn-label'].'</a>';
+			$text .= ' <a data-progress-target="'.$target.'" class="btn btn-danger e-progress-cancel" >'.LAN_CANCEL.'</a>';
+		
 		}
 		
 		
