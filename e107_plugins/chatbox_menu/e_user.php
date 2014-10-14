@@ -14,7 +14,7 @@ if (!defined('e107_INIT')) { exit; }
 class chatbox_menu_user // plugin-folder + '_user' 
 {		
 		
-	function profile() 
+	function profile($udata) 
 	{
 		
 		if(!$chatposts = e107::getRegistry('total_chatposts'))
@@ -27,9 +27,11 @@ class chatbox_menu_user // plugin-folder + '_user'
 			e107::setRegistry('total_chatposts', $chatposts);
 		}
 		
+		$perc = ($chatposts > 0) ? round(($udata['user_chats']/$chatposts) * 100, 2) : 0;
+		
 		
 		$var = array(
-			0 => array('label' => LAN_PLUGIN_CHATBOX_MENU_POST, 'text' => $chatposts)
+			0 => array('label' => LAN_PLUGIN_CHATBOX_MENU_POSTS, 'text' => $udata['user_chats']." ( ".$perc."% )")
 		);
 
 		return $var;
