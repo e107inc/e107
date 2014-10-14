@@ -210,7 +210,7 @@ class media_cat_ui extends e_admin_ui
 		$sql = e107::getDb();
 		
 	
-		if($sql->gen("SELECT media_cat_owner, MAX(media_cat_category) as maxnum, count(media_cat_id) as number FROM `#core_media_cat`  GROUP BY media_cat_owner"))
+		if($sql->gen("SELECT media_cat_owner,  MAX(CAST(SUBSTRING_INDEX(media_cat_category, '_', -1 ) AS UNSIGNED)) as maxnum, count(media_cat_id) as number FROM `#core_media_cat`  GROUP BY media_cat_owner"))
 		{
 			while($row = $sql->fetch())	
 			{
@@ -220,10 +220,9 @@ class media_cat_ui extends e_admin_ui
 				{		
 					$this->fields['media_cat_owner']['writeParms'][$own] = $own;	
 					
-					list($tmp,$tmp2,$maxnum) = explode("_",$row['maxnum']); // check for highest value. 
-					if($maxnum > 0)
+					if($row['maxnum'] > 0)
 					{
-						$this->ownerCount[$row['media_cat_owner']] = $maxnum;	
+						$this->ownerCount[$row['media_cat_owner']] = $row['maxnum']; // $maxnum;	
 					}
 				}		
 			}
