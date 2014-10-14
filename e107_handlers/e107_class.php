@@ -1806,7 +1806,7 @@ class e107
 	 * @param string $methodName [optional] (if different from 'config')
 	 * @return none
 	 */
-	public function getAddonConfig($addonName, $className = '', $methodName='config' )
+	public function getAddonConfig($addonName, $className = '', $methodName='config', $param=null )
 	{
 		$new_addon = array();
 		$sql = e107::getDb(); // Might be used by older plugins. 
@@ -1828,7 +1828,7 @@ class e107
 					include_once(e_PLUGIN.$key.'/'.$filename.'.php');
 
 					$class_name = $key.'_'.$className;
-					$array = self::callMethod($class_name, $methodName);
+					$array = self::callMethod($class_name, $methodName,$param);
 
 					if($array)
 					{

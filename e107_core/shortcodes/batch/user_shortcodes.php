@@ -60,7 +60,7 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_user_commentposts($parm) 
 	{
-		return $this->var['user_comments'];
+		return "<a href='".e_HTTP."userposts.php?0.comments.".$this->var['user_id']."'>".$this->var['user_comments']."</a>";
 	}
 	
 	
@@ -110,7 +110,7 @@ class user_shortcodes extends e_shortcode
 			$commentposts = intval($sql->count("comments"));
 			e107::setRegistry('total_commentposts', $commentposts);
 		}
-		return ($commentposts > 0) ? round(($this->var['user_comments']/$commentposts) * 100, 2) : 0;
+		return ($commentposts > 0) ? "<a href='".e_HTTP."userposts.php?0.comments.".$this->var['user_id']."'>".round(($this->var['user_comments']/$commentposts) * 100, 2)."</a>" : 0;
 	}
 	
 	
@@ -505,11 +505,11 @@ class user_shortcodes extends e_shortcode
 		if (USERID == $this->var['user_id']) 
 		{
 			//return "<a href='".$url->create('user/myprofile/edit')."'>".LAN_USER_38."</a>";
-			return "<a href='".e_HTTP."usersettings.php'>".LAN_USER_38."</a>"; // TODO: repair dirty fix for usersettings
+			return "<a class='btn btn-default' href='".e_HTTP."usersettings.php'>".LAN_USER_38."</a>"; // TODO: repair dirty fix for usersettings
 		}
 		else if(ADMIN && getperms("4") && !$this->var['user_admin']) 
 		{
-			return "<a href='".$url->create('user/profile/edit', array('id' => $this->var['user_id'], 'name' => $this->var['user_name']))."'>".LAN_USER_39."</a>";
+			return "<a class='btn btn-default' href='".$url->create('user/profile/edit', array('id' => $this->var['user_id'], 'name' => $this->var['user_name']))."'>".LAN_USER_39."</a>";
 		}
 	}
 	
@@ -519,6 +519,8 @@ class user_shortcodes extends e_shortcode
 	{
 		global $full_perms;
 		$sql = e107::getDb();
+		$tp = e107::getParser();
+		
 		if (!$full_perms) return;
 		$url = e107::getUrl();
 		if(!$userjump = e107::getRegistry('userjump'))
@@ -539,13 +541,23 @@ class user_shortcodes extends e_shortcode
 		  }
 		  e107::setRegistry('userjump', $userjump);
 		}
+		
+
+	
 		if($parm == 'prev')
 		{
-			return isset($userjump['prev']['id']) ? "&lt;&lt; ".LAN_USER_40." [ <a href='".$url->create('user/profile/view', $userjump['prev'])."'>".$userjump['prev']['name']."</a> ]" : "&nbsp;";
+		
+			$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('chevron-left') : '&lt;&lt;';			
+	    	return isset($userjump['prev']['id']) ? "<a class='e-tip' href='".$url->create('user/profile/view', $userjump['prev']) ."' title=\"".$userjump['prev']['name']."\">".$icon." ".LAN_USER_40."</a>\n" : "&nbsp;";
+		
+			// return isset($userjump['prev']['id']) ? "&lt;&lt; ".LAN_USER_40." [ <a href='".$url->create('user/profile/view', $userjump['prev'])."'>".$userjump['prev']['name']."</a> ]" : "&nbsp;";
+		
 		}
 		else
 		{
-			return isset($userjump['next']['id']) ? "[ <a href='".$url->create('user/profile/view', $userjump['next'])."'>".$userjump['next']['name']."</a> ] ".LAN_USER_41." &gt;&gt;" : "&nbsp;";
+			$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('chevron-right') : '&gt;&gt;';
+			return isset($userjump['next']['id']) ? "<a class='e-tip' href='".$url->create('user/profile/view', $userjump['next'])."' title=\"".$userjump['next']['name']."\">".LAN_USER_41." ".$icon."</a>\n" : "&nbsp;";
+			// return isset($userjump['next']['id']) ? "[ <a href='".$url->create('user/profile/view', $userjump['next'])."'>".$userjump['next']['name']."</a> ] ".LAN_USER_41." &gt;&gt;" : "&nbsp;";
 		}
 	}
 	
@@ -763,7 +775,7 @@ class user_shortcodes extends e_shortcode
 	{
 		$template 	= e107::getCoreTemplate('user','addon');
 		$tp 		= e107::getParser();
-		$data 		= e107::getAddonConfig('e_user',null,'profile');
+		$data 		= e107::getAddonConfig('e_user',null,'profile',$this->var);
 		
 		if(empty($data))
 		{
@@ -776,9 +788,11 @@ class user_shortcodes extends e_shortcode
 		{
 			foreach($val as $v)
 			{
+				$value = vartrue($v['url']) ? "<a href=\"".$v['url']."\">".$v['text']."</a>" : $v['text'];		
+
 				$array = array(
 					'USER_ADDON_LABEL' => $v['label'],
-					'USER_ADDON_TEXT' => $v['text']
+					'USER_ADDON_TEXT' => $value
 				);
 
 				$text .= $tp->parseTemplate($template, true, $array);
