@@ -1803,9 +1803,10 @@ class e107
 	 * Retrieves config() from all plugins for addons such as e_url.php, e_cron.php, e_sitelink.php
 	 * @param string $addonName eg. e_cron, e_url
 	 * @param string $className [optional] (if different from addonName)
+	 * @param string $methodName [optional] (if different from 'config')
 	 * @return none
 	 */
-	public function getAddonConfig($addonName, $className = '')
+	public function getAddonConfig($addonName, $className = '', $methodName='config' )
 	{
 		$new_addon = array();
 		$sql = e107::getDb(); // Might be used by older plugins. 
@@ -1827,7 +1828,7 @@ class e107
 					include_once(e_PLUGIN.$key.'/'.$filename.'.php');
 
 					$class_name = $key.'_'.$className;
-					$array = self::callMethod($class_name, 'config');
+					$array = self::callMethod($class_name, $methodName);
 
 					if($array)
 					{
@@ -2250,6 +2251,8 @@ class e107
 		
 		//FIXME XXX URGENT - Add support for _WRAPPER and $sc_style BC. - save in registry and retrieve in getScBatch()?
 		// Use: list($pre,$post) = explode("{---}",$text,2); 
+		
+		$tp = self::getParser(); // BC FIx - avoid breaking old templates due to missing globals. 
 
 		if(null === self::getRegistry($regPath))
 		{

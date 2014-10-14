@@ -44,9 +44,9 @@ class e107plugin
 		'e_event',
 		'e_comment',
 		'e_sql',
-		'e_userprofile',
+	//	'e_userprofile', @deprecated @see e_user
 		'e_header',
-		'e_userinfo',
+	//	'e_userinfo', @deprecated @see e_user
 		'e_tagwords',
 		'e_url',
 		
@@ -56,6 +56,7 @@ class e107plugin
 		'e_featurebox',
 		'e_related',
 		'e_rss',
+		'e_user'
 	);
 
 
