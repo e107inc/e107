@@ -216,15 +216,23 @@ class newsletter_mailout
 				}
 				$c++;
 			}
+			
+			return $var; 
 		}
-		else
+		elseif($allow_edit == true)
 		{
-			return false; // Return Nothing to avoid confusion. 
-			// $var[$c]['caption'] = NLLAN_50;
-			// $var[$c]['html'] = '';
+			
+			$var[0]['caption'] = "No newsletters found";
+			$var[0]['html'] = '';	
+			
+			return $var; 
+		}
+		else 
+		{
+			return false; // Return Nothing to avoid confusion. 	
 		}
 		
-		return $var; 
+		
 	}
 }
 
