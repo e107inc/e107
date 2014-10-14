@@ -123,7 +123,7 @@ class admin_log_ui extends e_admin_ui
 {
 			
 		protected $pluginTitle		= ADLAN_155;
-		protected $pluginName		= 'adminlog';
+		protected $pluginName		= 'core';
 		protected $table			= 'admin_log';
 		protected $pid				= 'dblog_id';
 		protected $perPage 			= 10; 
@@ -159,7 +159,7 @@ class admin_log_ui extends e_admin_ui
 			'user_audit_class'			=> array('title'=> RL_LAN_123, 'type'=>'userclass', 'data' => 'int','help'=>''),
 			'user_audit_opts'			=> array('title'=> RL_LAN_031, 'type'=>'method', 'data' => 'array','help'=>''),
 			'roll_log_active'			=> array('title'=> RL_LAN_008, 'type'=>'boolean', 'data' => 'int','help'=>''),
-			'roll_log_days'				=> array('title'=> RL_LAN_009, 'type'=>'text', 'data' => 'string','help'=>''),
+			'roll_log_days'				=> array('title'=> RL_LAN_009, 'type'=>'number', 'data' => 'string','help'=>''),
 		//	'Delete admin log events older than '		=> array('title'=> RL_LAN_045, 'type'=>'method', 'data' => 'string','help'=>'Help Text goes here'),
 		//	'Delete user audit trail log events older'		=> array('title'=> 'Delete user audit trail log events older', 'type'=>'method', 'data' => 'string','help'=>'Help Text goes here'),
 		); 
@@ -184,7 +184,10 @@ class admin_log_ui extends e_admin_ui
 		// optional
 		public function init()
 		{
-			$this->prefs['sys_log_perpage']['writeParms'] = array(10, 20, 30, 40, 50);
+			$perPage = e107::getConfig()->get('sys_log_perpage');
+			$this->perPage = vartrue($perPage,10);
+			
+			$this->prefs['sys_log_perpage']['writeParms'] = array(10=>10, 20=>20, 30=>30, 40=>40, 50=>50);
 			
 			
 			$sql = e107::getDb();
@@ -382,7 +385,7 @@ class admin_log_form_ui extends e_admin_form_ui
 	
 	function user_audit_opts($curVal,$mode)
 	{
-		$pref = e107::getPref();
+		
 		$frm = e107::getForm();
 		
 		// User Audit log options (for info)
@@ -407,15 +410,14 @@ class admin_log_form_ui extends e_admin_form_ui
 		USER_AUDIT_ADD_ADMIN => RL_LAN_080, USER_AUDIT_MAIL_BOUNCE => RL_LAN_081, USER_AUDIT_BANNED => RL_LAN_082, USER_AUDIT_BOUNCE_RESET => RL_LAN_083,
 		USER_AUDIT_TEMP_ACCOUNT => RL_LAN_084);
 	
-	
-		$user_signup_opts = array_flip(explode(',', varset($pref['user_audit_opts'], '')));
+		$userAuditOpts = e107::getConfig()->get('user_audit_opts');
 
 		$text = "";
 		
 		foreach($audit_checkboxes as $k => $t)
 		{
-			$checked = isset($user_signup_opts[$k]) ? true : false;
-			$text .= $frm->checkbox('user_audit_opts[]',$k, $checked, array('label'=>$t));	
+			$checked = isset($userAuditOpts[$k]) ? true : false;
+			$text .= $frm->checkbox('user_audit_opts['.$k.']',$k, $checked, array('label'=>$t));	
 		}
 		
 		$text .= $frm->admin_button('check_all', 'jstarget:user_audit_opts', 'checkall', LAN_CHECKALL).$frm->admin_button('uncheck_all', 'jstarget:user_audit_opts', 'checkall', LAN_UNCHECKALL);
@@ -807,7 +809,7 @@ $mes = e107::getMessage();
 $frm = e107::getForm();
 
 define('AL_DATE_TIME_FORMAT', 'y-m-d  H:i:s');
-
+/*
 if(isset($_POST['setoptions']))
 {
 	unset($temp);
@@ -839,6 +841,7 @@ if(isset($_POST['setoptions']))
 	}
 
 }
+*/
 
 $ns->tablerender($caption, $mes->render() . $text);
 
