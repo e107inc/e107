@@ -629,7 +629,7 @@ if ($dataToSave && !$promptPassword)
 
 	// Now see if we need to log anything. First check the options and class membership
 	// (Normally we would leave logging decision to the log class. But this one's a bit more complicated)
-	$user_logging_opts = array_flip(explode(',', varset($pref['user_audit_opts'], '')));
+	$user_logging_opts = e107::getConfig()->get('user_audit_opts');
 	$do_log = array();
 	$log_action = '';
 	if ($_uid)

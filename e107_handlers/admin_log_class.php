@@ -383,12 +383,13 @@ class e_admin_log
 	 */
 	function user_audit($event_type, $event_data, $id = '', $u_name = '')
 	{
-		global $e107,$tp,$pref;
+		global $e107,$tp;
 		list($time_usec, $time_sec) = explode(" ", microtime()); // Log event time immediately to minimise uncertainty
 		$time_usec = $time_usec * 1000000;
 
 		// See whether we should log this
-		$user_logging_opts = array_flip(explode(',', varset($pref['user_audit_opts'], '')));
+		$user_logging_opts = e107::getConfig()->get('user_audit_opts');
+		
 		if (!isset($user_logging_opts[$event_type]))
 			return; // Finished if not set to log this event type
 
