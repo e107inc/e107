@@ -2690,7 +2690,15 @@ class e_form
 	 */
 	private function renderInline($dbField, $pid, $fieldName, $curVal, $linkText, $type='text', $array=null)
 	{
-		$source = str_replace('"',"'",json_encode($array, JSON_FORCE_OBJECT)); // SecretR - force object, fix number of bugs
+		$jsonArray = array();
+		foreach($array as $k=>$v)
+		{
+			$jsonArray[$k] = str_replace("'", "`", $v);	
+		}
+		
+		$source = str_replace('"',"'",json_encode($jsonArray, JSON_FORCE_OBJECT)); // SecretR - force object, fix number of bugs
+		
+		
 		$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 		
 		$text = "<a class='e-tip e-editable editable-click' data-name='".$dbField."' ";
@@ -3276,10 +3284,15 @@ class e_form
 					// Inline Editing.  
 				if(!vartrue($attributes['noedit']) && vartrue($parms['editable'])) // avoid bad markup, better solution coming up
 				{
+					
 					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 					$methodParms = call_user_func_array(array($this, $method), array($value, 'inline', $parms));
-					$source = str_replace('"',"'",json_encode($methodParms, JSON_FORCE_OBJECT));
-					$value = "<a class='e-tip e-editable editable-click' data-type='select' data-value='".$_value."' data-name='".$field."' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\"  data-pk='".$id."' data-url='".e_SELF."?mode=&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$value."</a>";
+					$xtype = 'select';
+				
+					$value = $this->renderInline($field, $id, $attributes['title'], $_value, $value, $xtype, $methodParms);
+				
+				//	$source = str_replace('"',"'",json_encode($methodParms, JSON_FORCE_OBJECT));
+				//	$value = "<a class='e-tip e-editable editable-click' data-type='select' data-value='".$_value."' data-name='".$field."' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\"  data-pk='".$id."' data-url='".e_SELF."?mode=&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$value."</a>";
 				}
 							
 			break;
