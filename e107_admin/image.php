@@ -229,6 +229,7 @@ class media_cat_ui extends e_admin_ui
 			}
 		}
 		
+		e107::getMessage()->addDebug("Max value for category names: ".print_a($this->ownerCount,true));
 	}
 
 
