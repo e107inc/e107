@@ -599,11 +599,18 @@ class user_shortcodes extends e_shortcode
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		
-		global $EXTENDED_CATEGORY_START, $EXTENDED_CATEGORY_END, $EXTENDED_CATEGORY_TABLE;
+		$template = e107::getCoreTemplate('user','extended');
+		
+		
+		$EXTENDED_CATEGORY_START 	= $template['start'];
+		$EXTENDED_CATEGORY_END		= $template['end'];
+		$EXTENDED_CATEGORY_TABLE 	= $template['item'];;
+		
 		$qry = "SELECT f.*, c.user_extended_struct_name AS category_name, c.user_extended_struct_id AS category_id FROM #user_extended_struct as f
 			LEFT JOIN #user_extended_struct as c ON f.user_extended_struct_parent = c.user_extended_struct_id
 			ORDER BY c.user_extended_struct_order ASC, f.user_extended_struct_order ASC
 		";
+		
 		
 		
 		
@@ -612,18 +619,31 @@ class user_shortcodes extends e_shortcode
 		$ue = new e107_user_extended;
 		$ueCatList = $ue->user_extended_get_categories();
 		$ueFieldList = $ue->user_extended_get_fields();
+		
+		
+		
 		$ueCatList[0][0] = array('user_extended_struct_name' => LAN_USER_44, 'user_extended_struct_text' => '');
+		
+	//	print_a($ueFieldList);
+		
 		$ret = "";
 		foreach($ueCatList as $catnum => $cat)
 		{
+			
+			
+			
 			$key = $cat[0]['user_extended_struct_text'] ? $cat[0]['user_extended_struct_text'] : $cat[0]['user_extended_struct_name'];
-			$cat_name = $tp->parseTemplate("{USER_EXTENDED={$key}.text.{$this->var['user_id']}}", TRUE);
+			$cat_name = $tp->parseTemplate("{USER_EXTENDED={$key}.text.{$this->var['user_id']}}", TRUE); //XXX FIXME Fails
+			
+			$cat_name = true; //XXX TEMP Fix. 
+			
 			if($cat_name != FALSE && count($ueFieldList[$catnum]))
 			{
-		
+					
 				$ret .= str_replace("{EXTENDED_NAME}", $key, $EXTENDED_CATEGORY_START);
 				foreach($ueFieldList[$catnum] as $f)
 				{
+					
 					$key = $f['user_extended_struct_name'];
 					if($ue_name = $tp->parseTemplate("{USER_EXTENDED={$key}.text.{$this->var['user_id']}}", TRUE))
 					{
@@ -739,11 +759,47 @@ class user_shortcodes extends e_shortcode
 	}
 
 
-	
-	function sc_user_embed_userprofile($parm) 
+	function sc_user_addons($parm='')
 	{
-		global $pref, $USER_EMBED_USERPROFILE_TEMPLATE, $embed_already_rendered;
+		$template 	= e107::getCoreTemplate('user','addon');
+		$tp 		= e107::getParser();
+		$data 		= e107::getAddonConfig('e_user',null,'profile');
 		
+		if(empty($data))
+		{
+			return;
+		}
+		
+		$text = '';	
+			
+		foreach($data as $plugin=>$val)
+		{
+			foreach($val as $v)
+			{
+				$array = array(
+					'USER_ADDON_LABEL' => $v['label'],
+					'USER_ADDON_TEXT' => $v['text']
+				);
+
+				$text .= $tp->parseTemplate($template, true, $array);
+			}		
+				
+		}
+			
+		return $text;			
+
+	}
+
+
+
+
+	/**
+	 * @Deprecated Use {USER_ADDONS} instead. 
+	 */
+	function sc_user_embed_userprofile($parm='') 
+	{
+		
+		return $this->sc_user_addons($parm);
 		//if no parm, it means we render ALL embedded contents
 		//so we're preloading all registerd e_userprofile files
 		$key = varset($pref['e_userprofile_list']); 
