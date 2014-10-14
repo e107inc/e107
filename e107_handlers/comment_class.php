@@ -921,12 +921,12 @@ class comment
 	/**
 	 * Displays existing comments, and a comment entry form
 	 *
-	 * @param unknown_type $table - the source table for the associated item
-	 * @param unknown_type $action - usually 'comment' or 'reply'
-	 * @param unknown_type $id - ID of item associated with comments (e.g. news ID)
+	 * @param string $table - the source table for the associated item
+	 * @param string $action - usually 'comment' or 'reply'
+	 * @param integer $id - ID of item associated with comments (e.g. news ID)
 	 * @param unknown_type $width - appears to not be used
-	 * @param unknown_type $subject
-	 * @param unknown_type $rate
+	 * @param string $subject
+	 * @param boolean $rate
 	 */
 	function compose_comment($table, $action, $id, $width, $subject, $rate = FALSE, $return = FALSE, $tablerender = TRUE)
 	{
