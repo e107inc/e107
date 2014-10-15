@@ -1107,7 +1107,7 @@ if(! defined("USER_WIDTH"))
 //			CONFIGURATION OPTIONS MENU
 //====================================================================
 
-
+/*
 if($action == "config")
 {
 	// User Audit log options (for info)
@@ -1246,6 +1246,7 @@ if($action == "config")
 
 	$ns->tablerender(ADLAN_155.SEP.LAN_OPTIONS, $mes->render().$text);
 }
+*/
 
 //====================================================================
 //					LOG VIEW MENU
