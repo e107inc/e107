@@ -292,7 +292,7 @@ class usersettings_shortcodes extends e_shortcode
 		
 		$tabs = array();
 		
-		if($parm == 'tabs')
+		if($parm == 'tabs' && deftrue('BOOTSTRAP'))
 		{
 			$this->extendedTabs = true;	
 		}
@@ -308,11 +308,11 @@ class usersettings_shortcodes extends e_shortcode
 		}
 		
 		
-		if($parm == 'tabs' && deftrue('BOOTSTRAP'))
+		
+		if($parm == 'tabs' && deftrue('BOOTSTRAP')===3)
 		{
 			return e107::getForm()->tabs($tabs);		
 		}
-		
 		
 		
 		return $ret;
@@ -324,10 +324,11 @@ class usersettings_shortcodes extends e_shortcode
 	{ 
 		global $usersettings_shortcodes, $USER_EXTENDED_CAT, $extended_showed;
 		
-		if(deftrue('BOOTSTRAP'))
+		if(deftrue('BOOTSTRAP')===3)
 		{
 			$USER_EXTENDED_CAT = e107::getCoreTemplate('usersettings','extended-category'); 
 		}
+		
 		
 		$sql = e107::getDb();
 		$tp = e107::getParser();
@@ -389,10 +390,10 @@ class usersettings_shortcodes extends e_shortcode
 	
 	
 	function sc_userextended_field($parm='')
-	{ 
+	{		 
 		global $usersettings_shortcodes, $extended_showed, $ue, $USEREXTENDED_FIELD, $REQUIRED_FIELD;
 		
-		if(deftrue('BOOTSTRAP'))
+		if(deftrue('BOOTSTRAP')===3)
 		{
 			$USEREXTENDED_FIELD = e107::getCoreTemplate('usersettings','extended-field'); 
 		}
