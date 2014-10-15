@@ -688,7 +688,7 @@ class e107_user_extended
 		{
 			case EUF_TEXT :  //textbox
 			case EUF_INTEGER :  //integer
-		 		$ret = "<input id='{$fid}' name='{$fname}' value='{$curval}' {$include} {$required} />";
+		 		$ret = "<input id='{$fid}' type='text' name='{$fname}' value='{$curval}' {$include} {$required} />";
 			
 		  		return $ret;
 		  	break;

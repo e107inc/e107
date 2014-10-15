@@ -181,7 +181,7 @@ $USERSETTINGS_EDIT = "
 	
 	
 	
-// e107 v2. bootstrap3 compatible. 
+// e107 v2. bootstrap3 compatible template. 
 
 $USERSETTINGS_WRAPPER['edit']['USERNAME'] =				"<div class='form-group'>
 															<label for='username' class='col-sm-3 control-label'>".LAN_USER_01."</label>
@@ -246,7 +246,7 @@ $USERSETTINGS_WRAPPER['edit']['SIGNATURE']			= "<div class='form-group'>
 
 
 
-
+// Bootstrap 3 only. 
 
 $USERSETTINGS_TEMPLATE['edit'] = "
 
