@@ -154,7 +154,7 @@ class e107Email extends PHPMailer
 	private $pause_time 		= 1;		// Time to pause after sending a block of emails
 
 	public	$legacyBody 		= false;	// TRUE enables legacy conversion of plain text body to HTML in HTML emails
-	private $debug 				= true;	// echos various debug info when set to true. 
+	private $debug 				= false;	// echos various debug info when set to true. 
 	private $pref 				= array();	// Store code prefs. 
 	
 	/**
