@@ -546,19 +546,20 @@ class mailoutAdminClass extends e107MailManager
 
 		$ret = 0;
 		$toLoad = explode(',', $options);
-		if(in_array('core', $toLoad) || ($options == 'all'))
+		
+		$active_mailers = explode(',', varset($pref['mailout_enabled'], 'core'));
+		
+		if((in_array('core', $toLoad) || ($options == 'all')) && in_array('core', $active_mailers))
 		{
 			require_once (e_HANDLER . 'mailout_class.php');
-			$this->mailHandlers['core'] = new core_mailout;
-			// Start by loading the core mailout class
+			$this->mailHandlers['core'] = new core_mailout; // Start by loading the core mailout class
 			$ret++;
 		}
-
-		$active_mailers = explode(',', varset($pref['mailout_enabled'], ''));
-
-		// Load additional configured handlers
+		
+		// Load additional configured handlers e_mailout.php from plugins. 
 		foreach($pref['e_mailout_list'] as $mailer => $v)
 		{
+			
 			if(isset($pref['plug_installed'][$mailer]) && in_array($mailer, $active_mailers) && (($options == 'all') || in_array($mailer, $toLoad)))
 			{
 				// Could potentially use this handler - its installed and enabled
@@ -608,25 +609,19 @@ class mailoutAdminClass extends e107MailManager
 	 */
 	public function emailSelector($options = 'all', $selectorInfo = FALSE)
 	{
-		$ret = '';
-		$tab = '';
-		$tabc = '';
+		$tabs = array();
 
 		foreach($this->mailHandlers as $key => $m)
 		{
+			
 			if($m->mailerEnabled)
 			{
-				$lactive = ($key == 'core')? " class='active'": '';
-				$tab .= "<li" . $lactive . "><a data-toggle='tab' href='#main-mail-" . $key . "'>" . $m->mailerName . "</a></li>";
-
-				$pactive = ($key == 'core')? 'active': '';
-				$tabc .= "<div id='main-mail-" . $key . "' class='tab-pane " . $pactive . "'>";
-
+				
 				$content = $m->showSelect(TRUE, varset($selectorInfo[$key], FALSE));
 
 				if(is_array($content))
 				{
-					$tabc .= "<table class='table ' style='width:100%;margin-left:0px'>
+					$text = "<table class='table ' style='width:100%;margin-left:0px'>
 					<colgroup span='2'>
 						<col class='col-label' />
 						<col class='col-control' />
@@ -635,30 +630,36 @@ class mailoutAdminClass extends e107MailManager
 
 					foreach($content as $var)
 					{
-						$tabc .= "<tr><td style='padding-left:0px'>" . $var['caption'] . "</td><td class='form-inline'>" . $var['html'] . "</td></tr>";
+						$text .= "
+						<tr>
+							<td style='padding-left:0px'>" . $var['caption'] . "</td>
+							<td class='form-inline'>" . $var['html'] . "</td>
+						</tr>";
 					}
-					$tabc .= "</table>";
+					
+					$text .= "</table>";
+
 				}
 				else
 				{
-					$tabc .= $content;
-					//BC (0.8 only) but should be deprecated
+					$text = $content;  //BC (0.8 only) but should be deprecated
 				}
 
-				$tabc .= "</div>";
+				$tabs[$key] = array('caption'=>$m->mailerName, 'text'=>$text);
+
 			}
 		}
-
-		//		$ret .= "<ul class='e-tabs e-hideme' id='core-mail-tabs'>".$tab."</ul>";		//
-		// This hides tabs!
-		$ret .= "<ul class='nav nav-tabs'>" . $tab . "</ul>";
-		$ret .= "<div class='tab-content'>\n";
-		$ret .= $tabc;
-		$ret .= "</div>";
-
-		return $ret;
-
+		
+		if(count($tabs) < 2) // no tabs if there's only 1 category. 
+		{
+			return $text;	
+		}
+		
+		
+		return e107::getForm()->tabs($tabs);
 	}
+
+
 
 	/**
 	 * Get the selector details from each mail plugin (to add to mail data)
