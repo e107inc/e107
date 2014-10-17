@@ -2043,7 +2043,7 @@ class mailoutAdminClass extends e107MailManager
 	{
 		$ret = array();
 
-		$templates = e107::getCoreTemplate('email');
+		$templates = e107::getCoreTemplate('email', false, 'front', false);
 
 		foreach($templates as $key => $layout)
 		{

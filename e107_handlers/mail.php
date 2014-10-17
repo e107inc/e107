@@ -608,21 +608,32 @@ class e107Email extends PHPMailer
 	{
 		$tp = e107::getParser();
 		
+		// Cleanup legacy key names. ie. remove 'email_' prefix. 		
+		foreach($eml as $k=>$v)
+		{
+			if(substr($k,0,6) == 'email_')
+			{
+				$nkey = substr($k,6);
+				$eml[$nkey] = $v;	
+				unset($eml[$k]);
+			}		
+		}
+		
+
 		if(vartrue($eml['template'])) // @see e107_core/templates/email_template.php
 		{
-			
-			
+					
 			if($tmpl = e107::getCoreTemplate('email', $eml['template'], 'front', true))  //FIXME - Core template is failing with template 'notify'. Works with theme template. Issue with core template registry?
 			{				
-				$eml['shortcodes']['BODY'] 		= $tp->toEmail($eml['email_body']);
-				$eml['shortcodes']['SUBJECT'] 	= $eml['email_subject'];
+				$eml['shortcodes']['BODY'] 		= $tp->toEmail($eml['body']);
+				$eml['shortcodes']['SUBJECT'] 	= $eml['subject'];
 				$eml['shortcodes']['THEME'] 	= e_THEME.$this->pref['sitetheme'].'/'; // Always use front-end theme path. 
 				
 				$emailBody = $tmpl['header']. $tmpl['body'] . $tmpl['footer']; 
 				
-				$eml['email_body'] = $tp->parseTemplate($emailBody, true, varset($eml['shortcodes'],null));
+				$eml['body'] = $tp->parseTemplate($emailBody, true, varset($eml['shortcodes'],null));
 				
-			//	$eml['email_body'] = ($tp->toEmail($tmpl['header']). str_replace('{BODY}', $eml['email_body'], $tmpl['body']). $tp->toEmail($tmpl['footer']));
+			//	$eml['body'] = ($tp->toEmail($tmpl['header']). str_replace('{BODY}', $eml['body'], $tmpl['body']). $tp->toEmail($tmpl['footer']));
 				
 				if($this->debug)
 				{
@@ -640,31 +651,32 @@ class e107Email extends PHPMailer
 				{
 					echo "<h4>Couldn't find email template: ".$eml['template']."</h4>";	
 				}
-				$emailBody = $eml['email_body'];
+				$emailBody = $eml['body'];
 				
-				if (vartrue($eml['email_subject'])) $this->Subject = $tp->parseTemplate($eml['email_subject'], true, varset($eml['shortcodes'],null)); 	
+				if (vartrue($eml['subject'])) $this->Subject = $tp->parseTemplate($eml['subject'], true, varset($eml['shortcodes'],null)); 	
 				e107::getMessage()->addDebug("Couldn't find email template: ".$eml['template']);	
 			}
 			
 		}
 		else
 		{
-			if (vartrue($eml['email_subject'])) $this->Subject = $tp->parseTemplate($eml['email_subject'], true, varset($eml['shortcodes'],null)); 	
-				//	$eml['email_body'] = ($tp->toEmail($tmpl['header']). str_replace('{BODY}', $eml['email_body'], $tmpl['body']). $tp->toEmail($tmpl['footer']));
+			if (vartrue($eml['subject'])) $this->Subject = $tp->parseTemplate($eml['subject'], true, varset($eml['shortcodes'],null)); 	
+				//	$eml['body'] = ($tp->toEmail($tmpl['header']). str_replace('{BODY}', $eml['body'], $tmpl['body']). $tp->toEmail($tmpl['footer']));
 		}
-		
+
+
 		
 		if (isset($eml['SMTPDebug'])) $this->SMTPDebug = $eml['SMTPDebug'];			// 'FALSE' is a valid value!
 		
-		if (vartrue($eml['email_sender_email'])) $this->From = $eml['email_sender_email'];
-		if (vartrue($eml['email_sender_name'])) $this->FromName = $eml['email_sender_name'];
-		if (vartrue($eml['email_replyto'])) $this->AddAddressList('replyto',$eml['email_replyto'],vartrue($eml['email_replytonames'],''));	
+		if (vartrue($eml['sender_email'])) $this->From = $eml['sender_email'];
+		if (vartrue($eml['sender_name'])) $this->FromName = $eml['sender_name'];
+		if (vartrue($eml['replyto'])) $this->AddAddressList('replyto',$eml['replyto'],vartrue($eml['replytonames'],''));	
 		if (isset($eml['send_html'])) $this->allow_html = $eml['send_html'];							// 'FALSE' is a valid value!
 		if (isset($eml['add_html_header'])) $this->add_HTML_header = $eml['add_html_header'];			// 'FALSE' is a valid value!
-		if (vartrue($eml['email_body'])) $this->makeBody($eml['email_body'], $this->allow_html, $this->add_HTML_header);
-		if (vartrue($eml['email_attach'])) $this->attach($eml['email_attach']);
-		if (vartrue($eml['email_copy_to'])) $this->AddAddressList('cc',$eml['email_copy_to'],vartrue($eml['email_cc_names'],''));
-		if (vartrue($eml['email_bcopy_to'])) $this->AddAddressList('bcc',$eml['email_bcopy_to'],vartrue($eml['email_bcc_names'],''));
+		if (vartrue($eml['body'])) $this->makeBody($eml['body'], $this->allow_html, $this->add_HTML_header);
+		if (vartrue($eml['attach'])) $this->attach($eml['attach']);
+		if (vartrue($eml['copy_to'])) $this->AddAddressList('cc',$eml['copy_to'],vartrue($eml['cc_names'],''));
+		if (vartrue($eml['bcopy_to'])) $this->AddAddressList('bcc',$eml['bcopy_to'],vartrue($eml['bcc_names'],''));
 		
 		if (vartrue($eml['bouncepath'])) 
 		{
@@ -680,8 +692,8 @@ class e107Email extends PHPMailer
 		
 		
 		if (vartrue($eml['returnreceipt'])) $this->ConfirmReadingTo = $eml['returnreceipt'];
-		if (vartrue($eml['email_inline_images'])) $this->addInlineImages($eml['email_inline_images']);
-		if (vartrue($eml['email_priority'])) $this->Priority = $eml['email_priority'];
+		if (vartrue($eml['inline_images'])) $this->addInlineImages($eml['inline_images']);
+		if (vartrue($eml['priority'])) $this->Priority = $eml['priority'];
 		if (vartrue($eml['e107_header'])) $this->AddCustomHeader("X-e107-id: {$eml['e107_header']}");
 		if (vartrue($eml['extra_header'])) 
 		{
@@ -714,23 +726,24 @@ class e107Email extends PHPMailer
 		Where parameter not present in the array, doesn't get changed - useful for bulk mailing
 		If doing bulk mailing with repetitive calls, set $bulkmail parameter true, and must call allSent() when completed
 		Some of these parameters have been made compatible with the array calculated by render_email() in signup.php
+	 *
 		Possible array parameters:
-		$eml['email_subject']
-		$eml['email_sender_email']	- 'From' email address
-		$eml['email_sender_name']	- 'From' name
-		$eml['email_replyto']		- Optional 'reply to' field 
-		$eml['email_replytonames']	- Name(s) corresponding to 'reply to' field  - only used if 'replyto' used
+		$eml['subject']
+		$eml['sender_email']	- 'From' email address
+		$eml['sender_name']		- 'From' name
+		$eml['replyto']			- Optional 'reply to' field 
+		$eml['replytonames']	- Name(s) corresponding to 'reply to' field  - only used if 'replyto' used
 		$eml['send_html']		- if TRUE, includes HTML part in messages (only those added after this flag)
 		$eml['add_html_header'] - if TRUE, adds the 2-line DOCTYPE declaration to the front of the HTML part (but doesn't add <head>...</head>)
-		$eml['email_body']		- message body. May be HTML or text. Added according to the current state of the HTML enable flag
-		$eml['email_attach']	- string if one file, array of filenames if one or more.
-		$eml['email_copy_to']	- comma-separated list of cc addresses.
-		$eml['email_cc_names']  - comma-separated list of cc names. Optional, used only if $eml['email_copy_to'] specified
-		$eml['email_bcopy_to']	- comma-separated list
-		$eml['email_bcc_names'] - comma-separated list of bcc names. Optional, used only if $eml['email_copy_to'] specified
+		$eml['body']			- message body. May be HTML or text. Added according to the current state of the HTML enable flag
+		$eml['attach']			- string if one file, array of filenames if one or more.
+		$eml['copy_to']			- comma-separated list of cc addresses.
+		$eml['cc_names']  		- comma-separated list of cc names. Optional, used only if $eml['copy_to'] specified
+		$eml['bcopy_to']		- comma-separated list
+		$eml['bcc_names'] 		- comma-separated list of bcc names. Optional, used only if $eml['copy_to'] specified
 		$eml['bouncepath']		- Sender field (used for bounces)
 		$eml['returnreceipt']	- email address for notification of receipt (reading)
-		$eml['email_inline_images']	- array of files for inline images
+		$eml['inline_images']	- array of files for inline images
 		$eml['priority']		- Email priority (1 = High, 3 = Normal, 5 = low)
 		$eml['e107_header']		- Adds specific 'X-e107-id:' header
 		$eml['extra_header']	- additional headers (format is name: value

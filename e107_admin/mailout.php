@@ -101,21 +101,29 @@ function sendProgress($id)
 	$mailManager = new e107MailManager();
 	$mailManager->doEmailTask(varset($pref['mail_workpertick'],5));
 
-	$sqld = e107::getDb();
+	$sqld = e107::getDb('progress');
 	
-	$sqld->select("mail_content","mail_togo_count,mail_sent_count,mail_fail_count","mail_source_id= ".intval($id) );
+	$sqld->select("mail_content","mail_total_count,mail_togo_count,mail_sent_count,mail_fail_count","mail_source_id= ".intval($id) );
     $row = $sqld->fetch();
   
  	$rand 	= ($row['mail_sent_count'] + $row['mail_fail_count']);
-	$total 	= ($row['mail_togo_count'] + $row['mail_sent_count'] + $row['mail_fail_count']);
+	$total 	= ($row['mail_total_count']);
 
 	$errors = ob_get_clean();
 	
+	$errors .= " id=".$id;
+	
+	
 	e107::getMessage()->addDebug($errors);
 
-//	file_put_contents(e_LOG.'send-mail-progress.txt',$errors);
+	
 	
 	$inc = round(($rand / $total) * 100);
+	
+	$errors .= " inc=".$inc;
+	
+	file_put_contents(e_LOG.'send-mail-progress.txt',$errors);
+	
 	e107::getMessage()->addDebug("Returned: ".$inc);
 	
 	return $inc;
@@ -394,33 +402,13 @@ class mailout_main_ui extends e_admin_ui
 		
 		$this->processSendActions();
 		
-		
+		$mes = e107::getMessage();
 		
 		if (getperms('0'))
 		{
 			if (isset($_POST['testemail'])) 
-			{		//		Send test email - uses standard 'single email' handler
-				if(trim($_POST['testaddress']) == '')
-				{
-					$mes->addError(LAN_MAILOUT_19);
-					$subAction = 'error';
-				}
-				else
-				{
-					$mailheader_e107id = USERID;
-					require_once(e_HANDLER.'mail.php');
-					$add = ($pref['mailer']) ? " (".strtoupper($pref['mailer']).")" : ' (PHP)';
-					$sendto = trim($_POST['testaddress']);
-					if (!sendemail($sendto, LAN_MAILOUT_113." ".SITENAME.$add, str_replace("[br]", "\n", LAN_MAILOUT_114),LAN_MAILOUT_189)) 
-					{
-						$mes->addError(($pref['mailer'] == 'smtp')  ? LAN_MAILOUT_67 : LAN_MAILOUT_106);
-					} 
-					else 
-					{
-						$mes->addSuccess(LAN_MAILOUT_81. ' ('.$sendto.')');
-						$admin_log->log_event('MAIL_01',$sendto,E_LOG_INFORMATIVE,'');
-					}
-				}
+			{		
+				$this->sendTestEmail(); 	//	Send test email - uses standard 'single email' handler
 			}
 			elseif (isset($_POST['updateprefs']))
 			{
@@ -428,6 +416,43 @@ class mailout_main_ui extends e_admin_ui
 			}
 		}
 		
+		
+		
+	}
+
+	private function sendTestEmail()
+	{
+		$mes = e107::getMessage();
+		$pref = e107::getPref();
+		
+		if(trim($_POST['testaddress']) == '')
+		{
+			$mes->addError(LAN_MAILOUT_19);
+			$subAction = 'error';
+		}
+		else
+		{
+			$mailheader_e107id = USERID;
+		
+			$add = ($pref['mailer']) ? " (".strtoupper($pref['mailer']).")" : ' (PHP)';
+			$sendto = trim($_POST['testaddress']);
+			
+			$eml = array(
+				'subject'	=> LAN_MAILOUT_113." ".$add,
+				'body'		=> str_replace("[br]", "\n", LAN_MAILOUT_114),
+				'template'	=> vartrue($_POST['testtemplate'],null)
+			);
+			
+			if (!e107::getEmail()->sendEmail($sendto,LAN_MAILOUT_189,$eml)) 	
+			{
+				$mes->addError(($pref['mailer'] == 'smtp')  ? LAN_MAILOUT_67 : LAN_MAILOUT_106);
+			} 
+			else 
+			{
+				$mes->addSuccess(LAN_MAILOUT_81. ' ('.$sendto.')');
+				e107::getAdminLog()->log_event('MAIL_01',$sendto,E_LOG_INFORMATIVE,'');
+			}
+		}	
 		
 		
 	}
@@ -622,7 +647,7 @@ class mailout_main_ui extends e_admin_ui
 		else 
 		{
 			$text = "<h4>Ready to Process Mail Queue</h4>";
-			$text .= e107::getForm()->progressBar('mail-progress',1, array('btn-label'=>'Start', 'url'=> e_SELF));
+			$text .= e107::getForm()->progressBar('mail-progress',1, array('btn-label'=>'Start #'.$id, 'url'=> e_SELF, 'mode'=>$id));
 		}
 	
 		return $text;	
@@ -722,6 +747,7 @@ class mailout_main_ui extends e_admin_ui
 			<td>".LAN_MAILOUT_110."<br /></td>
 			<td class='form-inline'>".$frm->admin_button('testemail', LAN_MAILOUT_112,'other')."&nbsp;
 			<input name='testaddress' class='tbox' type='text' size='40' maxlength='80' value=\"".(varset($_POST['testaddress']) ? $_POST['testaddress'] : USEREMAIL)."\" />
+			".$this->mailAdmin->sendStyleSelect(varset($_POST['testtemplate'], 'textonly'), 'testtemplate')."
 			</td>
 		</tr>
 
