@@ -409,12 +409,14 @@ class e_form
 		}
 			
 		$mlength = vartrue($maxlength) ? "maxlength=".$maxlength : "";
+		
+		$type = varset($options['type']) == 'email' ? 'email' : 'text'; // used by $this->email(); 
 				
 		$options = $this->format_options('text', $name, $options);
 		
 	
 		//never allow id in format name-value for text fields
-		return "<input type='text' name='{$name}' value='{$value}' {$mlength} ".$this->get_attributes($options, $name)." />";
+		return "<input type='".$type."' name='{$name}' value='{$value}' {$mlength} ".$this->get_attributes($options, $name)." />";
 	}
 
 
@@ -450,11 +452,8 @@ class e_form
 	
 	function email($name, $value, $maxlength = 200, $options = array())
 	{
-		$options = $this->format_options('text', $name, $options);
-				
-		//never allow id in format name-value for text fields
-		return "<input type='email' name='{$name}' value='{$value}' maxlength='{$maxlength}' ".$this->get_attributes($options, $name)." />
-		";
+		$options['type'] = 'email';
+		return $this->text($name,$value,$maxlength,$options);
 	}
 
 
@@ -1573,7 +1572,11 @@ class e_form
 
 		if(isset($options['default']))
 		{
-			$text .= $this->option($options['default'], varset($options['defaultValue']));
+			if($options['default'] === 'blank')
+			{
+				$options['default'] = '&nbsp;';			
+			}
+			$text .= $this->option($options['default'], varset($options['defaultValue'],''));
 		}
 		elseif($defaultBlank)
 		{
@@ -3419,8 +3422,14 @@ class e_form
 				$ret =  $this->text($key, e107::getIPHandler()->ipDecode($value), 32, $parms);
 			break;
 
-			case 'url':
 			case 'email':
+				$maxlength = vartrue($parms['maxlength'], 255);
+				unset($parms['maxlength']);
+				$ret =  vartrue($parms['pre']).$this->email($key, $value, $maxlength, $parms).vartrue($parms['post']); // vartrue($parms['__options']) is limited. See 'required'=>true
+			break;
+
+			case 'url':
+		//	case 'email':
 			case 'text':
 			case 'password': // encrypts to md5 when saved. 
 				$maxlength = vartrue($parms['maxlength'], 255);

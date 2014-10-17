@@ -31,23 +31,23 @@ $(document).ready(function()
 				return text;	
 				}
 			});
-	 	});
+		});
 	
 		/* Switch to Tab containing invalid form field. */
 		$('input[type=submit],button[type=submit]').on('click', function() {
 			
 			var id 		= $(this).closest('form').attr('id');
 			var found 	= false;
-		          
-            $('#'+id).find(':invalid').each(function(index, node) {
+		       
+			 $('#'+id).find('input:invalid,select:invalid,textarea:invalid').each(function(index, node) {
 			
 				var tab = $('#'+node.id).closest('.tab-pane').attr('id');
-		
-				if(tab && (found == false))
+			
+				if(tab && (found === false))
 				{
 					$('a[href="#'+tab+'"]').tab('show');
 					found = true;
-					//alert(node.id+' : '+tab);
+				//	alert(node.id+' : '+tab + ' '.index);
 				}
 			//   var label = $('label[for=' + node.id + ']');
             });
@@ -55,8 +55,7 @@ $(document).ready(function()
             return true;
 		});
 	
-	 	
-		 	
+	
 
 		// run tips on title attribute. 
 		$(".e-tip").each(function() {
@@ -319,7 +318,8 @@ $(document).ready(function()
 			
 			if(multi === undefined)
 			{
-				$(this).selectpicker();	
+			//	 $(this).selectpicker();	// causes HTML5 validation alert to be hidden. 
+				return;
 			}
 			else
 			{

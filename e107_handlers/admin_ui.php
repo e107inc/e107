@@ -5559,8 +5559,9 @@ class e_admin_form_ui extends e_form
 		// TODO - core ui-batch-option class!!! REMOVE INLINE STYLE!
 		// XXX Quick Fix for styling - correct. 
 		$text = "
-			<div class='navbar navbar-inner left' style='padding-left:30px; padding-top:6px; margin-top:-20px;border-top:0px'>
-         		<img src='".e_IMAGE_ABS."generic/branchbottom.gif' alt='' class='icon action' />
+			<div class='navbar navbar-inner left' style='padding-left:15px; padding-top:8px; margin-top:-20px;border-top:0px'>
+				<div class='input-append'>
+         		<img src='".e_IMAGE_ABS."generic/branchbottom.gif' alt='' class='icon action' style='padding-top:5px' />
 				".$this->select_open('etrigger_batch', array('class' => 'tbox select batch e-autosubmit reset', 'id' => false))."
 					".$this->option(LAN_BATCH_LABEL_SELECTED, '', false)."
 					".($allow_copy ? $this->option(LAN_COPY, 'copy', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."					
@@ -5571,6 +5572,7 @@ class e_admin_form_ui extends e_form
 					".$this->renderBatchFilter('batch')."
 				".$this->select_close()."
 				".$this->admin_button('e__execute_batch', 'e__execute_batch', 'batch e-hide-if-js', LAN_GO, array('id' => false))."
+				</div>
 			</div>
 		";
 
