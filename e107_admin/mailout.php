@@ -854,11 +854,15 @@ class mailout_main_ui extends e_admin_ui
 			<td> ";
 			
 	  		$mail_enable = explode(',',$pref['mailout_enabled']);
+			
+			$coreCheck = (in_array('core',$mail_enable)) ? "checked='checked'" : "";
+			$text .= $frm->checkbox('mail_mailer_enabled[]','core', $coreCheck, 'users');
 	  
 			foreach ($pref['e_mailout_list'] as $mailer => $v)	 
 			 {
 				$check = (in_array($mailer,$mail_enable)) ? "checked='checked'" : "";
-				$text .= "&nbsp;<input type='checkbox' name='mail_mailer_enabled[]' value='{$mailer}' {$check} /> {$mailer}<br />";
+				$text .= $frm->checkbox('mail_mailer_enabled[]',$mailer,$check,$mailer);
+			//	$text .= "&nbsp;<input type='checkbox' name='mail_mailer_enabled[]' value='{$mailer}' {$check} /> {$mailer}<br />";
 			}
 			  
 	 	 $text .= "</td></tr>\n";
@@ -1062,7 +1066,7 @@ class mailout_main_ui extends e_admin_ui
 		$temp['mail_bounce_type'] = $tp->toDB($_POST['mail_bounce_type']);
 		$temp['mail_bounce_delete'] = intval(varset($_POST['mail_bounce_delete'], 0));
 	
-		$temp['mailout_enabled'] = implode(',',varset($_POST['mail_mailer_enabled'], ''));
+		$temp['mailout_enabled'] = implode(',', varset($_POST['mail_mailer_enabled'], ''));
 		$temp['mail_log_options'] = intval($_POST['mail_log_option']).','.intval($_POST['mail_log_email']);
 	
 		foreach ($temp as &$t)
@@ -1096,7 +1100,7 @@ class mailout_admin_form_ui extends e_admin_form_ui
 		switch($mode)
 		{
 			case 'read':
-				return varset($data['mail_send_style'], '');
+				return varset($data['mail_selectors'], '');
 			break;
 
 			case 'write':
