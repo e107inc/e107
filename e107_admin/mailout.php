@@ -591,13 +591,14 @@ class mailout_main_ui extends e_admin_ui
 	function previewPage()
 	{
 		$mailData = e107::getDb()->retrieve('mail_content','*','mail_source_id='.intval($_GET['id'])." LIMIT 1");
-		
-		
+
 		$data = $this->mailAdmin->dbToMail($mailData);
-		
+
 		$eml = array(
-			'body' 		=> $data['mail_body'],
-			'template'	=> $data['mail_send_style']
+			'subject'		=> $data['mail_subject'],
+			'body' 			=> $data['mail_body'],
+			'template'		=> $data['mail_send_style'],
+			'shortcodes'	=> array('USERNAME'=>'John Example', 'DISPLAYNAME'=> 'John Example', 'USERID'=>'555', 'UNSUBSCRIBE'=>SITEURL."unsubscribe/?id=example1234567")
 		);
 		
 		return e107::getEmail()->preview($eml);
@@ -1284,9 +1285,10 @@ class mailout_admin_form_ui extends e_admin_form_ui
 		{
 			$text = "";
 			
-
 			$link = e_SELF."?mode=main&action=send&id=".$id;	
+			$preview = e_SELF."?mode=main&action=preview&id=".$id;
 			$text .= "<a href='".$link."' class='btn' title='Send Mail'>".E_32_MAIL."</a>";
+			$text .= "<a rel='external' class='btn e-modal' data-modal-caption='Email preview' href='".$preview."' class='btn' title='Preview'>".E_32_SEARCH."</a>";
 			$text .= $this->renderValue('options',$value,$att,$id);
 				
 			return $text;
