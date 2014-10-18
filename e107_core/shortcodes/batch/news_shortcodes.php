@@ -718,7 +718,7 @@ class news_shortcodes extends e_shortcode
 		switch($parm)
 		{
 			case 'src':
-				return $category_icon;
+				return $src;
 			break;
 
 			case 'tag':
