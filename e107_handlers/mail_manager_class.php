@@ -315,6 +315,12 @@ class e107MailManager
 				$res[$f] = '';
 			}
 		}
+		
+		if (isset($data['mail_media']))
+		{
+			$res['mail_media'] = e107::unserialize($data['mail_media']);	
+		}
+		
 		return $res;
 	}
 
@@ -443,6 +449,12 @@ class e107MailManager
 			$tmp = e107::unserialize(str_replace('\\\'', '\'',$data['mail_target_info']));	// May have escaped data
 			$res['mail_target_info'] = $tmp;
 		}
+		
+		if (isset($data['mail_media']))
+		{
+			$res['mail_media'] = e107::unserialize($data['mail_media']);	
+		}
+		
 		return $res;
 	}
 

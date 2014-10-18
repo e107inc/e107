@@ -273,6 +273,7 @@ CREATE TABLE mail_content (
 	mail_body text,
 	mail_body_templated text,
 	mail_other text,
+	mail_media text,
 	PRIMARY KEY (mail_source_id),
 	KEY mail_content_status (mail_content_status)
 ) ENGINE=MyISAM;
