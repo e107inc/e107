@@ -37,8 +37,6 @@ See e_HANDLER.mail.php for more information
 
 if (!defined('e107_INIT')) { exit; }
 
-
-// @TODO: Move signup email into templated form
 $includeSiteButton = e107::getPref('sitebutton');
 
 /*
@@ -159,6 +157,7 @@ LAN_SIGNUP_97." {SITENAME}<br />
  * Format for individual emails sent by e107 (not bulk emails for now) - a work in progress - bulk could be ported later.
  * @see e107Email::sendEmail(); 
  * Aim: to make email templates follow the same spec. as other templates while remaining as intuitive as other v2 templates in e107. 
+ * Note: giving a template a 'name' value will make it available in the admin->mailout area. 
  */
 
 
@@ -172,7 +171,8 @@ $EMAIL_TEMPLATE['default']['header']		= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHT
 												<meta http-equiv='content-type' content='text/html; charset=utf-8' />
 												<style type='text/css'>
 													body { padding:10px; background-color: #E1E1E1 } 
-													 div#body { padding:10px; width: 800px; background-color: #FFFFFF; border-radius: 5px }
+													 div#body { padding:10px; width: 800px; background-color: #FFFFFF; border-radius: 5px; font-family: helvetica,arial }
+													.video-thumbnail { max-width: 100% }
 												</style>
 												</head>
 												
@@ -264,21 +264,23 @@ $EMAIL_TEMPLATE['notify']['body']				= $EMAIL_TEMPLATE['default']['body']; // wi
 $EMAIL_TEMPLATE['notify']['footer']				= $EMAIL_TEMPLATE['default']['footer']; // will use default header above. 	
 
 
-// ------ User-Mailout Templates 
+// ------ User-Specific Templates 
 
 
-$EMAIL_TEMPLATE['user-monthly']['name']			= 'Monthly Update';												
-$EMAIL_TEMPLATE['user-monthly']['subject']		= '{SITENAME}: {SUBJECT} ';
-$EMAIL_TEMPLATE['user-monthly']['header']		= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 	
-$EMAIL_TEMPLATE['user-monthly']['body']			= "Just to keep you up to date, here's a reminder of what's changed in the past month.<br />{BODY}<br />To find out more, simply click on the links!";
-$EMAIL_TEMPLATE['user-monthly']['footer']		= $EMAIL_TEMPLATE['default']['footer'];
+$EMAIL_TEMPLATE['monthly']['name']				= 'Monthly Update';												
+$EMAIL_TEMPLATE['monthly']['subject']			= '{SITENAME}: {SUBJECT} ';
+$EMAIL_TEMPLATE['monthly']['header']			= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 	
+$EMAIL_TEMPLATE['monthly']['body']				= "Just to keep you up to date, here's a reminder of what's changed in the past month.<br />{BODY}{MEDIA1}{MEDIA2}{MEDIA3}{MEDIA4}{MEDIA5}To find out more, simply click on the links!";
+$EMAIL_TEMPLATE['monthly']['footer']			= $EMAIL_TEMPLATE['default']['footer'];
 
 
-$EMAIL_TEMPLATE['user-whatsnew']['name']		= "What's New";												
-$EMAIL_TEMPLATE['user-whatsnew']['subject']		= '{SITENAME}: {SUBJECT} ';
-$EMAIL_TEMPLATE['user-whatsnew']['header']		= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 	
-$EMAIL_TEMPLATE['user-whatsnew']['body']		= "All the latest news and updates.<br />{BODY}<br />To find out more, simply click on the links!";
-$EMAIL_TEMPLATE['user-whatsnew']['footer']		= $EMAIL_TEMPLATE['default']['footer'];
+
+
+$EMAIL_TEMPLATE['whatsnew']['name']				= "What's New";												
+$EMAIL_TEMPLATE['whatsnew']['subject']			= '{SITENAME}: {SUBJECT} ';
+$EMAIL_TEMPLATE['whatsnew']['header']			= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 	
+$EMAIL_TEMPLATE['whatsnew']['body']				= "All the latest news and updates.<br />{BODY}<br />To find out more, simply click on the links!";
+$EMAIL_TEMPLATE['whatsnew']['footer']			= $EMAIL_TEMPLATE['default']['footer'];
 
 
 

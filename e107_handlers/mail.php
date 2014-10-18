@@ -619,6 +619,42 @@ class e107Email extends PHPMailer
 	}
 
 
+	function processShortcodes($eml)
+	{
+		$tp = e107::getParser();
+		
+		$eml['shortcodes']['BODY'] 		= $tp->toEmail($eml['body']);
+		$eml['shortcodes']['SUBJECT'] 	= $eml['subject'];
+		$eml['shortcodes']['THEME'] 	= e_THEME.$this->pref['sitetheme'].'/'; // Always use front-end theme path. 
+				
+				
+		if(!empty($eml['media']) && is_array($eml['media']))
+		{
+			foreach($eml['media'] as $k=>$val)
+			{
+				if(vartrue($val['path']))
+				{
+					$id = 'MEDIA'.($k+1);
+					
+					if($tp->isVideo($val['path']))
+					{
+						$eml['shortcodes'][$id] = "<div class='media'>".$tp->toVideo($val['path'],array('thumb'=>'email'))."</div>";
+					}
+					else
+					{
+						$eml['shortcodes'][$id] = "<div class='media'><img class='img-responsive' src='".$tp->replaceConstants($val['path'])."' alt='' /></div>";		
+					}
+					
+				}	
+			}
+			
+					
+		}
+		
+		return $eml['shortcodes'];	
+		
+	}
+
 
 	/**
 	 *	Sets one or more parameters from an array. See @see{sendEmail()} for list of parameters
@@ -645,15 +681,20 @@ class e107Email extends PHPMailer
 		}
 		
 
+
 		if(vartrue($eml['template'])) // @see e107_core/templates/email_template.php
-		{
+		{		
 					
 			if($tmpl = e107::getCoreTemplate('email', $eml['template'], 'front', true))  //FIXME - Core template is failing with template 'notify'. Works with theme template. Issue with core template registry?
 			{				
-				$eml['shortcodes']['BODY'] 		= $tp->toEmail($eml['body']);
-				$eml['shortcodes']['SUBJECT'] 	= $eml['subject'];
-				$eml['shortcodes']['THEME'] 	= e_THEME.$this->pref['sitetheme'].'/'; // Always use front-end theme path. 
+			//	$eml['shortcodes']['BODY'] 		= $tp->toEmail($eml['body']);
+			//	$eml['shortcodes']['SUBJECT'] 	= $eml['subject'];
+			//	$eml['shortcodes']['THEME'] 	= e_THEME.$this->pref['sitetheme'].'/'; // Always use front-end theme path. 
 				
+				$eml['shortcodes'] = $this->processShortcodes($eml);
+
+			//	print_a($eml);
+						
 				$emailBody = $tmpl['header']. $tmpl['body'] . $tmpl['footer']; 
 				
 				$eml['body'] = $tp->parseTemplate($emailBody, true, varset($eml['shortcodes'],null));

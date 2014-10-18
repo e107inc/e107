@@ -303,10 +303,12 @@ class mailout_main_ui extends e_admin_ui
 			'mail_attach'			=> array('title' => LAN_MAILOUT_153, 'tab'=>1, 'type'=>'method','data'=>false),
 			'mail_include_images' 	=> array('title' => LAN_MAILOUT_224, 'tab'=>1, 'type'=>'boolean','data'=>false, 'proc' => 'yesno'),
 			'mail_send_style'		=> array('title' => LAN_MAILOUT_154,'type'=>'method','data'=>false),
+			'mail_media' 			=> array('title' => 'Embed Media', 'type' => 'images', 'data' => 'array', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => 'video=1', 'class' => 'center', 'thclass' => 'center',  ),
+	 
 			'mail_body' 			=> array('title' => LAN_MAILOUT_100, 'type'=>'bbarea', 'proc' => 'trunc200'),
 			'mail_body_templated' 	=> array('title' => LAN_MAILOUT_257, 'noedit'=>true, 'proc' => 'chars'),
 			'mail_other' 			=> array('title' => LAN_MAILOUT_84, 'type'=>null, 'noedit'=>true, 'data'=>'array', 'nolist'=>true),
-
+	  	
 			'options' 				=> array('title' => LAN_OPTIONS, 'type'=>'method', 'width'=>'10%', 'forced' => TRUE)
 		
 	);
@@ -591,16 +593,17 @@ class mailout_main_ui extends e_admin_ui
 	function previewPage()
 	{
 		$mailData = e107::getDb()->retrieve('mail_content','*','mail_source_id='.intval($_GET['id'])." LIMIT 1");
-
+		
 		$data = $this->mailAdmin->dbToMail($mailData);
 
 		$eml = array(
 			'subject'		=> $data['mail_subject'],
 			'body' 			=> $data['mail_body'],
 			'template'		=> $data['mail_send_style'],
-			'shortcodes'	=> array('USERNAME'=>'John Example', 'DISPLAYNAME'=> 'John Example', 'USERID'=>'555', 'UNSUBSCRIBE'=>SITEURL."unsubscribe/?id=example1234567")
+			'shortcodes'	=> array('USERNAME'=>'John Example', 'DISPLAYNAME'=> 'John Example', 'USERID'=>'555', 'UNSUBSCRIBE'=>SITEURL."unsubscribe/?id=example1234567"),
+			'media'			=> $data['mail_media'],
 		);
-		
+				
 		return e107::getEmail()->preview($eml);
 		exit;
 
@@ -1297,7 +1300,10 @@ class mailout_admin_form_ui extends e_admin_form_ui
 		if($mode == 'sent' || $mode == 'pending' || $mode == 'held')
 		{
 			$link = e_SELF."?searchquery=&filter_options=mail_detail_id__".$id."&mode=recipients&action=list";	
+			$preview = e_SELF."?mode=main&action=preview&id=".$id;
 			$text .= "<a href='".$link."' class='btn' title='Recipients'>".E_32_USER."</a>";
+				$text .= "<a rel='external' class='btn e-modal' data-modal-caption='Email preview' href='".$preview."' class='btn' title='Preview'>".E_32_SEARCH."</a>";
+		
 			$att['readParms']['editClass'] = e_UC_NOBODY;
 			$text .= $this->renderValue('options',$value,$att,$id);
 			return $text;

@@ -2049,7 +2049,7 @@ class mailoutAdminClass extends e107MailManager
 
 		foreach($templates as $key => $layout)
 		{
-			if(substr($key, 0, 5) == 'user-' || $key == 'default')
+			if(vartrue($layout['name']))
 			{
 				$ret[$key] = $layout['name'];
 			}
