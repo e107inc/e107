@@ -156,7 +156,7 @@ class e107Email extends PHPMailer
 	public	$legacyBody 		= false;	// TRUE enables legacy conversion of plain text body to HTML in HTML emails
 	private $debug 				= false;	// echos various debug info when set to true. 
 	private $pref 				= array();	// Store code prefs. 
-	
+	private $previewMode		= false;
 	/**
 	 * Constructor sets up all the global options, and sensible defaults - it should be the only place the prefs are accessed
 	 * 
@@ -525,7 +525,10 @@ class e107Email extends PHPMailer
 				$message = str_replace("\r","\n",$message);			// Handle alternative newline characters
 				$message = str_replace("\n", "<br />\n", $message);
 			}
+			
+	
 			$this->MsgHTML($message);		// Theoretically this should do everything, including handling of inline images.
+		
 		}
 		else
 		{	// generate the plain text as the sole part of the email
@@ -600,6 +603,8 @@ class e107Email extends PHPMailer
 	 */
 	public function preview($eml)
 	{
+		$this->previewMode = true; 
+		
 		if (count($eml))
 		{	
 			if($error = $this->arraySet($eml))  // Set parameters from list
@@ -888,7 +893,7 @@ class e107Email extends PHPMailer
 		
 		
 		preg_match_all("/(src|background)=([\"\'])(.*)\\2/Ui", $message, $images);			// Modified to accept single quotes as well
-		if(isset($images[3])) 
+		if(isset($images[3]) && ($this->previewMode === false)) 
 		{
 			
 			if($this->debug)
