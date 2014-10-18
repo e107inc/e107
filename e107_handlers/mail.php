@@ -594,6 +594,26 @@ class e107Email extends PHPMailer
 		}
 	}
 
+	/**
+	 * Preview the BODY of an email 
+	 * @param $eml - array. 
+	 */
+	public function preview($eml)
+	{
+		if (count($eml))
+		{	
+			if($error = $this->arraySet($eml))  // Set parameters from list
+			{
+				return $error;
+			} 
+			
+		}	
+		
+		return $this->Body;
+		
+	}
+
+
 
 	/**
 	 *	Sets one or more parameters from an array. See @see{sendEmail()} for list of parameters

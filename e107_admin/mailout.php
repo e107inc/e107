@@ -354,7 +354,14 @@ class mailout_main_ui extends e_admin_ui
 	function init()
 	{
 		$action = varset($_GET['mode'], 'main');
+
 		$this->mailAdmin = new mailoutAdminClass($action);	
+		
+		if($_GET['action'] == 'preview')
+		{
+			echo $this->previewPage();
+			exit;
+		}
 		
 		if ($this->mailAdmin->loadMailHandlers() == 0)
 		{
@@ -578,8 +585,25 @@ class mailout_main_ui extends e_admin_ui
 	}	
 	
 
+	/**
+	 * Preview the Email. 
+	 */
+	function previewPage()
+	{
+		$mailData = e107::getDb()->retrieve('mail_content','*','mail_source_id='.intval($_GET['id'])." LIMIT 1");
+		
+		
+		$data = $this->mailAdmin->dbToMail($mailData);
+		
+		$eml = array(
+			'body' 		=> $data['mail_body'],
+			'template'	=> $data['mail_send_style']
+		);
+		
+		return e107::getEmail()->preview($eml);
+		exit;
 
-
+	}
 
 
 	
