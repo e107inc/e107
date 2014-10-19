@@ -848,31 +848,40 @@ class e107MailManager
 			$temp = intval($email['mail_recipient_id']).'/'.intval($email['mail_source_id']).'/'.intval($email['mail_target_id']).'/';
 			$result['e107_header'] = $temp.md5($temp);		// Set up an ID
 		}
+		
 		if (isset($email['mail_attach']) && (trim($email['mail_attach']) || is_array($email['mail_attach'])))
 		{
-			$downDir = realpath(e_ROOT.$this->e107->getFolder('downloads'));
+			$tp = e107::getParser();
+			
 			if (is_array($email['mail_attach']))
 			{
 				foreach ($email['mail_attach'] as $k => $v)
 				{
-					$result['email_attach'][$k] = $downDir.$v;
+					$result['email_attach'][$k] = $tp->replaceConstants($v);
 				}
 			}
 			else
 			{
-				$result['email_attach'] = $downDir.trim($email['mail_attach']);
+				$result['email_attach'] = $tp->replaceConstants(trim($email['mail_attach']));
 			}
 		}
-		if (isset($email['mail_overrides']) && is_array($email['mail_overrides'])) $result = array_merge($result, $email['mail_overrides']);
 		
-		e107::getAdminLog()->addDebug(print_a($email,true),true);
+		if (isset($email['mail_overrides']) && is_array($email['mail_overrides']))
+		{
+			 $result = array_merge($result, $email['mail_overrides']);
+		}
 		
-		print_a($email);
+		$title = "<h4>".__METHOD__." Line: ".__LINE__."</h4>";
+		e107::getAdminLog()->addDebug($title.print_a($email,true),true);
 		
-	//	$result['template'] = $email['mail_send_style'];
-		
-		echo "<h4>".__METHOD__." Line: ".__LINE__."</h4>";
-		print_a($result);
+		if(!empty($email['mail_media']))
+		{
+			$result['media'] = $email['mail_media'];
+		}
+				
+		$title2 = "<h4>".__METHOD__." Line: ".__LINE__."</h4>";
+		e107::getAdminLog()->addDebug($title2.print_a($result,true),true);
+	
 		return $result;
 	}
 

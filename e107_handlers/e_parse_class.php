@@ -2961,7 +2961,8 @@ class e_parser
 					e107::getFile()->getRemoteFile($thumbSrc, $filename,'media');	
 				}
 								
-				return "<a href='".$url."'><img class='video-responsive video-thumbnail' src='".$filepath."' alt='Youtube Video' title='Click to view on Youtube' /></a>";	
+				return "<a href='".$url."'><img class='video-responsive video-thumbnail' src='".$filepath."' alt='Youtube Video' title='Click to view on Youtube' />
+				<div class='video-thumbnail-caption'><small>Click to watch video</small></div></a>";	
 			}
 			
 			if($thumb == 'src')

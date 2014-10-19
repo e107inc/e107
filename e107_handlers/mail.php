@@ -638,11 +638,11 @@ class e107Email extends PHPMailer
 					
 					if($tp->isVideo($val['path']))
 					{
-						$eml['shortcodes'][$id] = "<div class='media'>".$tp->toVideo($val['path'],array('thumb'=>'email'))."</div>";
+						$eml['shortcodes'][$id] = "<div class='media media-video'>".$tp->toVideo($val['path'],array('thumb'=>'email'))."</div>";
 					}
 					else
 					{
-						$eml['shortcodes'][$id] = "<div class='media'><img class='img-responsive' src='".$tp->replaceConstants($val['path'])."' alt='' /></div>";		
+						$eml['shortcodes'][$id] = "<div class='media media-image'><img class='img-responsive' src='".$tp->replaceConstants($val['path'])."' alt='' /></div>";		
 					}
 					
 				}	
