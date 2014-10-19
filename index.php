@@ -89,29 +89,47 @@
 	
 	$tmp = e107::getAddonConfig('e_url');
 	
-		$req = str_replace(e_HTTP,'', e_REQUEST_URI);
-	
+	$req = (e_HTTP === '/') ? ltrim(e_REQUEST_URI,'/') : str_replace(e_HTTP,'', e_REQUEST_URI) ;
+		
 	if(count($tmp))
 	{
+
 		foreach($tmp as $plug=>$cfg)
 		{
+
 			foreach($cfg as $k=>$v)
 			{
 			
 				$regex = '#'.$v['regex'].'#';
 				
-				$newLocation = preg_replace($regex, $v['redirect'], $req);
+				if(empty($v['redirect']))
+				{
+					continue;	
+				}
+			
 				
+				$newLocation = preg_replace($regex, $v['redirect'], $req);
+
 				if($newLocation !=$req)
 				{
 					$redirect = e107::getParser()->replaceConstants($newLocation);
 					list($file,$query) = explode("?",$redirect,2);
 					
 					parse_str($query,$_GET);
-				//	echo " file=".$file;
-					include_once($file);
-					//print_a($_GET);
-					exit;
+					
+					e107::getMessage()->addDebug('e_URL in <b>'.$plug.'</b> matched <b>'.$v['regex'].'</b> and included: <b>'.$file.'</b> with $_GET: '.print_a($_GET,true));
+
+					if(file_exists($file))
+					{
+						include_once($file);
+						exit;
+					}
+					elseif(getperms('0')) 
+					{
+						echo "File missing: ".$file;
+						exit;	
+					}
+
 				}				
 			}	
 			
@@ -120,7 +138,7 @@
 		unset($tmp,$redirect,$regex);
 	}
 
-	
+
 // -----------------------------------------
 
 	$sql->db_Mark_Time("Start regular eFront Class");
