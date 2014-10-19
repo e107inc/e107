@@ -173,6 +173,7 @@ $EMAIL_TEMPLATE['default']['header']		= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHT
 													body { padding:10px; background-color: #E1E1E1 } 
 													 div#body { padding:10px; width: 800px; background-color: #FFFFFF; border-radius: 5px; font-family: helvetica,arial }
 													.video-thumbnail { max-width: 100% }
+													
 												</style>
 												</head>
 												
