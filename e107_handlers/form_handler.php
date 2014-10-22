@@ -1528,6 +1528,13 @@ class e_form
 
 	function select_open($name, $options = array())
 	{
+		if(!is_array($options)) parse_str($options, $options);
+		
+		if(vartrue($options['size']) && !is_numeric($options['size']))
+		{
+			$options['class'] .= " input-".$options['size'];	
+			unset($options['size']); // don't include in html 'size='. 	
+		}
 		$options = $this->format_options('select', $name, $options);
 	
 		return "<select name='{$name}'".$this->get_attributes($options, $name).">";
