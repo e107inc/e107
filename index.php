@@ -115,7 +115,10 @@
 					$redirect = e107::getParser()->replaceConstants($newLocation);
 					list($file,$query) = explode("?",$redirect,2);
 					
-					parse_str($query,$_GET);
+					if(!empty($query))
+					{
+						parse_str($query,$_GET);
+					}
 					
 					e107::getMessage()->addDebug('e_URL in <b>'.$plug.'</b> matched <b>'.$v['regex'].'</b> and included: <b>'.$file.'</b> with $_GET: '.print_a($_GET,true));
 
