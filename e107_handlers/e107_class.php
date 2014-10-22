@@ -1260,10 +1260,20 @@ class e107
 
 	/**
 	 * Retrieve admin log singleton object
-	 *
+	 * @Deprecated - use e107::getLog();
 	 * @return e_admin_log
 	 */
 	public static function getAdminLog()
+	{
+		return self::getSingleton('e_admin_log', true);
+	}
+
+	/**
+	 * Retrieve admin log singleton object
+	 *
+	 * @return e_admin_log
+	 */
+	public static function getLog()
 	{
 		return self::getSingleton('e_admin_log', true);
 	}
@@ -1842,9 +1852,10 @@ class e107
 		return $new_addon;
 	}
 
+
 	/**
 	 * Safe way to call user methods.
-	 * @param string $class_name
+	 * @param string|object $class_name 
 	 * @param string $method_name
 	 * @return boolean FALSE
 	 */
@@ -1852,9 +1863,19 @@ class e107
 	{
 		$mes = e107::getMessage();
 
-		if(class_exists($class_name))
+		if(is_object($class_name) || class_exists($class_name))
 		{
-			$obj = new $class_name;
+			
+			if(is_object($class_name))
+			{
+				$obj = $class_name;
+				$class_name = get_class($obj);
+			}
+			else 
+			{
+				$obj = new $class_name;	
+			}
+			
 			if(method_exists($obj, $method_name))
 			{
 				if(E107_DBG_INCLUDES)
@@ -1870,6 +1891,7 @@ class e107
 		}
 		return FALSE;
 	}
+
 
 	/**
 	 * Get theme name or path.
