@@ -729,7 +729,8 @@ class media_admin_ui extends e_admin_ui
 		'youtube_showinfo'				=> array('title'=> "Show Video Info", 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
 		'youtube_cc_load_policy'		=> array('title'=> "Show Closed-Captions by default", 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
 		'youtube_modestbranding'		=> array('title'=> "Use Modest Branding", 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
-		
+		'youtube_bbcode_responsive'		=> array('title'=> "Make the YouTube bbcode responsive", 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
+	
 		// 
 
 	);
