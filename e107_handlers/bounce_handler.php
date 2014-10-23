@@ -44,8 +44,8 @@ class e107Bounce
 		$head 		= BounceHandler::parse_head($strEmail); 
 		$message 	= null;
 		
-
-	 	$e107_userid = (isset($head['X-e107-id'])) ? $head['X-e107-id'] : $this->getHeader($strEmail,'X-e107-id');
+		$identifier = deftrue('MAIL_IDENTIFIER', 'X-e107-id');
+	 	$e107_userid = (isset($head[$identifier])) ? $head[$identifier] : $this->getHeader($strEmail, $identifier);
 		
 		if($_E107['debug'])
 		{
@@ -97,7 +97,7 @@ class e107Bounce
 		
 		foreach($multiArray as $the)
 		{
-			$the['user_id'] = $head['X-e107-id'];
+			$the['user_id'] = $head[$identifier];
 			$the['user_email'] = $the['recipient'];
 			unset($the['recipient']);
 
