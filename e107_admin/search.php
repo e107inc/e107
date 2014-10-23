@@ -81,7 +81,7 @@ if (vartrue($save_search))
 //	$sql -> db_Update("core", "e107_value='".$serialpref."' WHERE e107_name='search_prefs'");
 	e107::getConfig('search')->setPref($search_prefs)->save(false,true,false);
 	
-	$admin_log->log_event('SEARCH_03','',E_LOG_INFORMATIVE,'');
+	e107::getLog()->add('SEARCH_03','',E_LOG_INFORMATIVE,'');
 }
 
 
@@ -142,7 +142,7 @@ if (isset($_POST['update_handler']))
 	if($check)
 	{
 		$mes->addSuccess(LAN_UPDATED);
-		$admin_log->log_event('SEARCH_05', $handler_type.', '.$query[2], E_LOG_INFORMATIVE, '');
+		e107::getLog()->add('SEARCH_05', $handler_type.', '.$query[2], E_LOG_INFORMATIVE, '');
 	}
 	elseif(0 === $check) $mes->addInfo(LAN_NO_CHANGE);
 	else
@@ -174,7 +174,7 @@ if (isset($_POST['update_prefs']))
 		if($check)
 		{
 			$mes->addSuccess(LAN_UPDATED);
-			$admin_log->log_event('SEARCH_05', $handler_type.', '.$query[2], E_LOG_INFORMATIVE, '');
+			e107::getLog()->add('SEARCH_05', $handler_type.', '.$query[2], E_LOG_INFORMATIVE, '');
 		}
 		else //it's an error
 		{

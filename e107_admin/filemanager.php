@@ -114,11 +114,11 @@ if (isset($_POST['deleteconfirm']))
 	}
 	if (count($deleteList))
 	{
-		$admin_log->log_event('FILEMAN_01',implode('[!br!]',$deleteList),E_LOG_INFORMATIVE,'');
+		e107::getLog()->add('FILEMAN_01',implode('[!br!]',$deleteList),E_LOG_INFORMATIVE,'');
 	}
 	if (count($moveList))
 	{
-		$admin_log->log_event('FILEMAN_02',implode('[!br!]',$moveList),E_LOG_INFORMATIVE,'');
+		e107::getLog()->add('FILEMAN_02',implode('[!br!]',$moveList),E_LOG_INFORMATIVE,'');
 	}
 }
 
@@ -173,7 +173,7 @@ if (isset($_POST['upload']))
 	}
 	if (count($uploadList))
 	{
-		$admin_log->log_event('FILEMAN_03',implode('[!br!]',$uploadList),E_LOG_INFORMATIVE,'');
+		e107::getLog()->add('FILEMAN_03',implode('[!br!]',$uploadList),E_LOG_INFORMATIVE,'');
 	}
 }
 

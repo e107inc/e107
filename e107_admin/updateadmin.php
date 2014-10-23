@@ -50,7 +50,7 @@ if (isset($_POST['update_settings']))
 			$check = $sql -> db_Update('user',$userData);
 			if ($check) 
 			{
-				$admin_log->log_event('ADMINPW_01', '', E_LOG_INFORMATIVE, '');
+				e107::getLog()->add('ADMINPW_01', '', E_LOG_INFORMATIVE, '');
 				$userMethods->makeUserCookie(array('user_id' => USERID,'user_password' => $userData['data']['user_password']), FALSE);		// Can't handle autologin ATM
 				$mes->addSuccess(UDALAN_3." ".ADMINNAME);
 				$e_event -> trigger('adpword');

@@ -67,7 +67,7 @@ if ($tmp)
 	{
 		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_order ='".($_order-1)."'");
 		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_id='".$_id."'");
-		$admin_log->log_event('EUF_01',$_id.', '.$_order.', '.$_parent,E_LOG_INFORMATIVE,'');
+		e107::getLog()->add('EUF_01',$_id.', '.$_order.', '.$_parent,E_LOG_INFORMATIVE,'');
 		e107::getCache()->clear_sys('user_extended_struct', true);
 	}
 }
@@ -85,7 +85,7 @@ if ($tmp)
 	{
 		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_order='".($_order+1)."'");
 		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_id='".$_id."'");
-		$admin_log->log_event('EUF_02',$_id.', '.$_order.', '.$_parent,E_LOG_INFORMATIVE,'');
+		e107::getLog()->add('EUF_02',$_id.', '.$_order.', '.$_parent,E_LOG_INFORMATIVE,'');
 		e107::getCache()->clear_sys('user_extended_struct', true);
 	}
 }
@@ -100,7 +100,7 @@ if (isset($_POST['catup_x']) || isset($_POST['catup']))
 	{
 		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type = 0 AND user_extended_struct_order='".($_order-1)."'");
 		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type = 0 AND user_extended_struct_id='".$_id."'");
-		$admin_log->log_event('EUF_03',$_id.', '.$_order,E_LOG_INFORMATIVE,'');
+		e107::getLog()->add('EUF_03',$_id.', '.$_order,E_LOG_INFORMATIVE,'');
 		e107::getCache()->clear_sys('user_extended_struct', true);
 	}
 }
@@ -115,7 +115,7 @@ if (isset($_POST['catdown_x']) || isset($_POST['catdown']))
 	{
 		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type = 0 AND user_extended_struct_order='".($_order+1)."'");
 		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type = 0 AND user_extended_struct_id='".$_id."'");
-		$admin_log->log_event('EUF_04',$_id.', '.$_order,E_LOG_INFORMATIVE,'');
+		e107::getLog()->add('EUF_04',$_id.', '.$_order,E_LOG_INFORMATIVE,'');
 		e107::getCache()->clear_sys('user_extended_struct', true);
 	}
 }
@@ -153,7 +153,7 @@ if (isset($_POST['add_field']))
 			}
 			else
 			{
-				$admin_log->log_event('EUF_05',$ue_field_name.'[!br!]'.$tp->toDB($_POST['user_text']).'[!br!]'.intval($_POST['user_type']),E_LOG_INFORMATIVE,'');
+				e107::getLog()->add('EUF_05',$ue_field_name.'[!br!]'.$tp->toDB($_POST['user_text']).'[!br!]'.intval($_POST['user_type']),E_LOG_INFORMATIVE,'');
 				e107::getCache()->clear_sys('user_extended_struct', true);
 			}
 		}
@@ -177,7 +177,7 @@ if (isset($_POST['update_field']))
 	$result = $mes->addAuto($ue->user_extended_modify($sub_action, $tp->toDB($_POST['user_field']), $tp->toDB($_POST['user_text']), intval($_POST['user_type']), $upd_parms, $upd_values, $tp->toDB($_POST['user_default']), intval($_POST['user_required']), intval($_POST['user_read']), intval($_POST['user_write']), intval($_POST['user_applicable']), intval($_POST['user_parent'])), 'update', EXTLAN_29, false, false);
 	if($result)
 	{
-		$admin_log->log_event('EUF_06',$tp->toDB($_POST['user_field']).'[!br!]'.$tp->toDB($_POST['user_text']).'[!br!]'.intval($_POST['user_type']),E_LOG_INFORMATIVE,'');
+		e107::getLog()->add('EUF_06',$tp->toDB($_POST['user_field']).'[!br!]'.$tp->toDB($_POST['user_text']).'[!br!]'.intval($_POST['user_type']),E_LOG_INFORMATIVE,'');
 		e107::getCache()->clear_sys('user_extended_struct', true);
 	}
 }
@@ -199,7 +199,7 @@ if (isset($_POST['update_category']))
 		);
 		if($result)
 		{
-			$admin_log->log_event('EUF_09',$name,E_LOG_INFORMATIVE,'');
+			e107::getLog()->add('EUF_09',$name,E_LOG_INFORMATIVE,'');
 			e107::getCache()->clear_sys('user_extended_struct', true);
 		}
 	}
@@ -219,7 +219,7 @@ if (isset($_POST['add_category']))
 		$result = $mes->addAuto($sql->db_Insert("user_extended_struct","'0', '{$name}', '".$tp->toDB($_POST['user_text'])."', 0, '', '', '', '".intval($_POST['user_read'])."', '".intval($_POST['user_write'])."', '0', '0', '".intval($_POST['user_applicable'])."', '0', '0'"), 'insert', EXTLAN_40, false, false);
 		if($result)
 		{
-			$admin_log->log_event('EUF_08',$name,E_LOG_INFORMATIVE,'');
+			e107::getLog()->add('EUF_08',$name,E_LOG_INFORMATIVE,'');
 			e107::getCache()->clear_sys('user_extended_struct', true);
 		}
 	}
@@ -242,7 +242,7 @@ if (varset($_POST['eu_action'],'') == "delcat")
 	}
 	elseif($ue->user_extended_remove($_id, $_name))
 	{
-		$admin_log->log_event('EUF_10',$_id.', '.$_name,E_LOG_INFORMATIVE,'');
+		e107::getLog()->add('EUF_10',$_id.', '.$_name,E_LOG_INFORMATIVE,'');
 		$message = EXTLAN_41;
 		e107::getCache()->clear_sys('user_extended_struct', true);
 	}
@@ -1182,7 +1182,7 @@ class users_ext
 				$ret .= EXTLAN_70." $f ".EXTLAN_71."<br />";
 			}
 		}
-		$admin_log->log_event('EUF_11',implode(', ',$_POST['activate']),E_LOG_INFORMATIVE,'');
+		e107::getLog()->add('EUF_11',implode(', ',$_POST['activate']),E_LOG_INFORMATIVE,'');
 		return $ret;
 	}
 
@@ -1205,7 +1205,7 @@ class users_ext
 				$ret .= EXTLAN_70." $f ".EXTLAN_73."<br />";
 			}
 		}
-		$admin_log->log_event('EUF_12',implode(', ',$_POST['deactivate']),E_LOG_INFORMATIVE,'');
+		e107::getLog()->add('EUF_12',implode(', ',$_POST['deactivate']),E_LOG_INFORMATIVE,'');
 		return $ret;
 	}
 

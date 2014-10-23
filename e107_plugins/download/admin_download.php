@@ -102,7 +102,7 @@ if (isset($_POST['update_catorder']))
 			$sql -> db_Update("download_category", "download_category_order='".intval($order)."' WHERE download_category_id='".intval($key)."'");
 		}
 	}
-	$admin_log->log_event('DOWNL_08',implode(',',array_keys($_POST['catorder'])),E_LOG_INFORMATIVE,'');
+	e107::getLog()->add('DOWNL_08',implode(',',array_keys($_POST['catorder'])),E_LOG_INFORMATIVE,'');
 	$ns->tablerender("", "<div style='text-align:center'><b>".LAN_UPDATED."</b></div>");
 }
 /*
@@ -175,7 +175,7 @@ if (isset($_POST['addlimit']))
 		if ($sql->db_Insert('generic',$vals))
 		{
 			$message = DOWLAN_117;
-			$admin_log->log_event('DOWNL_09',$valString,E_LOG_INFORMATIVE,'');
+			e107::getLog()->add('DOWNL_09',$valString,E_LOG_INFORMATIVE,'');
 		}
 		else
 		{
@@ -208,7 +208,7 @@ if (isset($_POST['updatelimits']))
 			if ($sql->db_Delete('generic',"gen_id = {$idLim}"))
 			{
 				$message .= $idLim." - ".DOWLAN_119."<br/>";
-				$admin_log->log_event('DOWNL_11','ID: '.$idLim,E_LOG_INFORMATIVE,'');
+				e107::getLog()->add('DOWNL_11','ID: '.$idLim,E_LOG_INFORMATIVE,'');
 			}
 			else
 			{
@@ -224,7 +224,7 @@ if (isset($_POST['updatelimits']))
 			}
 			$valString = implode(',',$vals);
 			$sql->db_UpdateArray('generic',$vals," WHERE gen_id = {$idLim}");
-			$admin_log->log_event('DOWNL_10',$idLim.', '.$valString,E_LOG_INFORMATIVE,'');
+			e107::getLog()->add('DOWNL_10',$idLim.', '.$valString,E_LOG_INFORMATIVE,'');
 			$message .= $idLim." - ".DOWLAN_121."<br/>";
 			unset($vals);
 		}

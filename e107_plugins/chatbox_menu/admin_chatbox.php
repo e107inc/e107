@@ -62,7 +62,7 @@ if (isset($_POST['prune']))
 	$prunetime = time() - $chatbox_prune;
 
 	$sql->db_Delete("chatbox", "cb_datestamp < '{$prunetime}' ");
-	$admin_log->log_event('CHBLAN_02', $chatbox_prune.', '.$prunetime, E_LOG_INFORMATIVE, '');
+	e107::getLog()->add('CHBLAN_02', $chatbox_prune.', '.$prunetime, E_LOG_INFORMATIVE, '');
 	$e107cache->clear("nq_chatbox");
 	$mes->addSuccess(CHBLAN_28);
 }
@@ -88,7 +88,7 @@ if (isset($_POST['recalculate']))
 		{
 			$sql->db_Update("user", "user_chats = '{$cnt}' WHERE user_id = '{$uid}'");
 		}
-	$admin_log->log_event('CHBLAN_03','', E_LOG_INFORMATIVE, '');
+	e107::getLog()->add('CHBLAN_03','', E_LOG_INFORMATIVE, '');
 	$mes->addSuccess(CHBLAN_33);
 }
 

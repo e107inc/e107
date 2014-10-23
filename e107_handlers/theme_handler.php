@@ -1844,7 +1844,7 @@ class themeHandler
 		}
 		global $pref,$admin_log;
 		//  if (!varset($pref['admin_log_log']['admin_banlist'],0)) return;
-		$admin_log->log_event('THEME_'.$msg_num, $woffle, E_LOG_INFORMATIVE, '');
+		e107::getLog()->add('THEME_'.$msg_num, $woffle, E_LOG_INFORMATIVE, '');
 	}
 	
 	function parse_theme_php($path)
