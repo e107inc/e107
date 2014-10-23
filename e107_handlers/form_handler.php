@@ -3777,7 +3777,7 @@ class e_form
 			$field = vartrue($options['field'], $options['pid']);
 			$asc = strtoupper(vartrue($options['asc'], 'asc'));
 			$elid = $fid;//$options['id'];
-			$query = isset($options['query']) ? $options['query'] : e_QUERY ;
+			$query = vartrue($options['query'],e_QUERY); //  ? $options['query'] :  ;
 			if(vartrue($_GET['action']) == 'list')
 			{
 				$query = e_QUERY; //XXX Quick fix for loss of pagination after 'delete'. 	
@@ -3787,6 +3787,8 @@ class e_form
 			$fields = $options['fields'];
 			$current_fields = varset($options['fieldpref']) ? $options['fieldpref'] : array_keys($options['fields']);
 			$legend_class = vartrue($options['legend_class'], 'e-hideme');
+
+			
 
 	        $text .= "
 				<form method='post' action='{$formurl}' id='{$elid}-list-form'>
