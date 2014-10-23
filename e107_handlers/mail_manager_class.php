@@ -1243,6 +1243,8 @@ class e107MailManager
 	public function markBounce($bounceString, $emailAddress = '')
 	{
 	
+		$bounceString = trim($bounceString);
+	
 		$bounceInfo 	= array('mail_bounce_string' => $bounceString, 'mail_recipient_email' => $emailAddress);		// Ready for event data
 		$errors 		= array();						// Log all errors, at least until proven
 		$vals 			= explode('/', $bounceString);		// Should get one or four fields
@@ -1261,10 +1263,6 @@ class e107MailManager
 		
 		if (count($vals) == 4) // Admin->Mailout format. 
 		{
-			if (md5($vals[0].'/'.$vals[1].'/'.$vals[2].'/') != $vals[3]) // 'Extended' ID has md5 validation
-			{		
-				$errors[] = 'Bad md5';
-			}
 			
 			if (!is_numeric($vals[1])) 		// Email body record number
 			{
@@ -1276,10 +1274,22 @@ class e107MailManager
 				$errors[] = 'Bad recipient record: '.$vals[2];
 			}
 			
+			$vals[0] = intval($vals[0]);
 			$vals[1] = intval($vals[1]);
 			$vals[2] = intval($vals[2]);
+			$vals[3] = trim($vals[3]);
+
+
+			$hash = ($vals[0].'/'.$vals[1].'/'.$vals[2].'/');
 			
-			if (count($errors) == 0)
+			if (md5($hash) != $vals[3]) // 'Extended' ID has md5 validation
+			{		
+				$errors[] = 'Bad md5';
+				$errors[] = print_r($vals,true);
+				$errors[] = 'hash:'.md5($hash);
+			}
+			
+			if (empty($errors))
 			{	
 				$this->checkDB(1); // Look up in mailer DB if no errors so far
 				
@@ -1374,21 +1384,23 @@ class e107MailManager
 			}
 		}
 		
-		if (count($errors))
+		if (!empty($errors))
 		{
-			$logString = $bounceString.' ('.$emailAddress.')[!br!]'.implode('[!br!]',$errors);
+			$logString = $bounceString.' ('.$emailAddress.')[!br!]'.implode('[!br!]',$errors).implode('[!br!]',$bounceInfo);
 		//	e107::getAdminLog()->e_log_event(10,-1,'BOUNCE','Bounce receive error',$logString, FALSE,LOG_TO_ROLLING);
 			e107::getAdminLog()->add('Bounce receive error',$logString, E_LOG_WARNING, 'BOUNCE', LOG_TO_ROLLING);
-			return false;
+			return $errors;
+		}
+		else 
+		{
+			//	e107::getAdminLog()->e_log_event(10,-1,'BOUNCE','Bounce received/logged',$bounceInfo, FALSE,LOG_TO_ROLLING);
+			e107::getAdminLog()->add('Bounce received/logged',$bounceInfo, E_LOG_INFORMATIVE, 'BOUNCE',LOG_TO_ROLLING);	
 		}
 		
-		//	e107::getAdminLog()->e_log_event(10,-1,'BOUNCE','Bounce received/logged',$bounceInfo, FALSE,LOG_TO_ROLLING);
-		
-		e107::getAdminLog()->add('Bounce received/logged',$bounceInfo, E_LOG_INFORMATIVE, 'BOUNCE',LOG_TO_ROLLING);
 		
 		e107::getEvent()->trigger('mailbounce', $bounceInfo);
 		
-		return true;
+		return false;
 	}
 
 

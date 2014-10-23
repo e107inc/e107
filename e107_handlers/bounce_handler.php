@@ -14,7 +14,6 @@ if (!defined('e107_INIT'))
 	require_once($class2);
 }
 
-echo "test";
 
 $bnc = new e107Bounce;
 $process = (varset($_GET['eml']) && $_E107['debug']) ? $_GET['eml'].".eml" : FALSE;
@@ -43,6 +42,8 @@ class e107Bounce
 		
 		$multiArray = Bouncehandler::get_the_facts($strEmail);
 		$head 		= BounceHandler::parse_head($strEmail); 
+		$message 	= null;
+		
 
 	 	$e107_userid = (isset($head['X-e107-id'])) ? $head['X-e107-id'] : $this->getHeader($strEmail,'X-e107-id');
 		
@@ -50,12 +51,16 @@ class e107Bounce
 		{
 			require_once(e_HANDLER."mail.php");
 			$message = "Your Bounce Handler is working. The data of the email you sent is displayed below.<br />";
+			
 			if($e107_userid)
 			{
 				$message .= "A user-id was detected in the email you sent: <b>".$e107_userid."</b><br />";
 			}
-			$message .= "<br />";
-			$message .= "<pre>".print_r($multiArray,TRUE). "</pre>";
+			
+			$message .= "<br /><h4>Head</h4>";
+			$message .= print_a($head,true);
+			$message .= "<h4>Emails Found</h4><pre>".print_r($multiArray,TRUE). "</pre>";
+			
 			$message .= "<pre>".$strEmail. "</pre>";		
 							
 	    	if(varset($_GET['eml']))
@@ -64,15 +69,26 @@ class e107Bounce
 			}
 			else
 			{
-				sendemail($pref['siteadminemail'], SITENAME." :: Bounce-Handler.", $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);	
 			}
 		}	
 		
-		if($e107_userid && ($this->setUser_Bounced($e107_userid)==true))
+		
+		
+		if(!empty($e107_userid))
 		{
-			return;	
+			if($errors = $this->setUser_Bounced($e107_userid))
+			{
+				$mesage .= print_a($errors);	
+			}
+
 		}
-				
+		
+		if(!empty($message))
+		{
+			sendemail($pref['siteadminemail'], SITENAME." :: Bounce-Handler.", $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);	
+		}
+		
+		return;		
 /*		echo "<pre>";
 		print_r($multiArray);
 		echo "</pre>"; 
@@ -126,7 +142,7 @@ class e107Bounce
 		{
 			if(strpos($val,$id.":")!== false)
 			{
-	            return intval(str_replace($id.":","",$val));
+	            return str_replace($id.":","",$val);
 			}
 		}   
 	}
@@ -140,12 +156,12 @@ class e107Bounce
 		require_once(e_HANDLER.'mail_manager_class.php');
 
 		$mailManager = new e107MailManager();
-		if ($mailManager->markBounce($bounceString, $email))
-		{	// Success
+		if ($errors = $mailManager->markBounce($bounceString, $email))
+		{	
+			return $errors;  // Failure
 		}
-		// Failure
-	//	$query = (is_numeric($id_or_email)) ? "user_ban = 3 WHERE user_id = ".intval($id_or_email)." LIMIT 1" : "user_ban = 3 WHERE user_email = '".$id_or_email."' ";
-	//	return e107::getDb()->db_Update('user',$query);
+		
+
 	}
 
 	
