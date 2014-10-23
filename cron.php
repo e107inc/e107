@@ -42,6 +42,9 @@ require_once(realpath(dirname(__FILE__)."/class2.php"));
 		Stored in e107: ".$pref['e_cron_pwd']."<br /><br />
 		You should regenerate the cron command in admin and enter it again in your server configuration. 
 		";
+		
+		$message .= "<h4>Debug Info</h4>";
+		$message .= print_r($_SERVER,true);
 						
 	    sendemail($pref['siteadminemail'], "e107 - Cron Schedule Misconfigured.", $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);
 		exit;
