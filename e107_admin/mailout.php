@@ -600,7 +600,7 @@ class mailout_main_ui extends e_admin_ui
 			'subject'		=> $data['mail_subject'],
 			'body' 			=> $data['mail_body'],
 			'template'		=> $data['mail_send_style'],
-			'shortcodes'	=> array('USERNAME'=>'John Example', 'DISPLAYNAME'=> 'John Example', 'USERID'=>'555', 'UNSUBSCRIBE'=>SITEURL."unsubscribe/?id=example1234567"),
+			'shortcodes'	=> array('USERNAME'=>'John Example', 'DISPLAYNAME'=> 'John Example', 'USERID'=>'555', 'MAILREF'=>$_GET['id'], 'NEWSLETTER'=>SITEURL."newsletter/?id=example1234567", 'UNSUBSCRIBE'=>SITEURL."unsubscribe/?id=example1234567"),
 			'media'			=> $data['mail_media'],
 		);
 				
@@ -753,6 +753,11 @@ class mailout_main_ui extends e_admin_ui
 	$frm = e107::getForm();
 	$mes = e107::getMessage();
 	$ns = e107::getRender();
+	
+	if($pref['mail_bounce'] == 'auto' && !empty($pref['mail_bounce_email']) && !is_executable(e_HANDLER."bounce_handler.php"))
+	{
+		$mes->addWarning('Your bounce_handler.php file is NOT executable');	
+	}
 
 
 	e107::getCache()->CachePageMD5 = '_';
@@ -782,7 +787,7 @@ class mailout_main_ui extends e_admin_ui
 		<tr>
 		<td style='vertical-align:top'>".LAN_MAILOUT_115."<br /></td>
 		<td>
-		<select class='tbox' name='mailer' onchange='disp(this.value)'>\n";
+		<select class='tbox input-xxlarge' name='mailer' onchange='disp(this.value)'>\n";
 	$mailers = array('php','smtp','sendmail');
 	foreach($mailers as $opt)
 	{
@@ -886,17 +891,15 @@ class mailout_main_ui extends e_admin_ui
 	
 	<tr>
 		<td>".LAN_MAILOUT_25."</td>
-		<td class='form-inline'> ".LAN_MAILOUT_26."
-		<input class='tbox e-spinner' size='3' type='text' name='mail_pause' value='".$pref['mail_pause']."' /> ".LAN_MAILOUT_27.
-		"<input class='tbox e-spinner' size='3' type='text' name='mail_pausetime' value='".$pref['mail_pausetime']."' /> ".LAN_MAILOUT_29.".<br />
+		<td class='form-inline'> ".LAN_MAILOUT_26." ".$frm->number('mail_pause', $pref['mail_pause'])." ".LAN_MAILOUT_27." ".
+		$frm->number('mail_pausetime', $pref['mail_pausetime'])." ".LAN_MAILOUT_29.".<br />
 		<span class='field-help'>".LAN_MAILOUT_30."</span>
 		</td>
 	</tr>\n
 	
 	<tr>
 		<td>".LAN_MAILOUT_156."</td>
-		<td><input class='tbox e-spinner' size='3' type='text' name='mail_workpertick' value='".varset($pref['mail_workpertick'],5)."' />
-		<span class='field-help'>".LAN_MAILOUT_157."</span>
+		<td>".$frm->number('mail_workpertick',varset($pref['mail_workpertick'],5))."<span class='field-help'>".LAN_MAILOUT_157."</span>
 		</td>
 	</tr>\n";
 	
@@ -981,7 +984,10 @@ class mailout_main_ui extends e_admin_ui
 			<col class='col-control' />
 		</colgroup>
 		<tbody>
-		<tr><td>".LAN_MAILOUT_32."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_email2' value=\"".$pref['mail_bounce_email']."\" /></td></tr>
+		<tr>
+			<td>".LAN_MAILOUT_32."</td>
+			<td>".$frm->text('mail_bounce_email2', $pref['mail_bounce_email'], 40, 'size=xxlarge')."</td>
+		</tr>
 	
 	<tr>
 		<td>".LAN_MAILOUT_233."</td><td><b>".(e_DOCROOT).e107::getFolder('handlers')."bounce_handler.php</b>";
@@ -1006,11 +1012,25 @@ class mailout_main_ui extends e_admin_ui
 			<col class='col-label' />
 			<col class='col-control' />
 		</colgroup>
-		<tbody>
+		<tbody>";
+	
+	$bouncePrefs = array('mail_bounce_email'=>LAN_MAILOUT_32, 'mail_bounce_pop3'=>LAN_MAILOUT_33, 'mail_bounce_user'=>LAN_MAILOUT_34, 'mail_bounce_pass'=>LAN_MAILOUT_35);
+	
+	foreach($bouncePrefs as $key =>$label)
+	{
+		$text .= "<tr><td>".$label."</td><td>".$frm->text($key,$pref[$key],40,'size=xlarge')."</td></tr>";
+	}	
+	
+	/*	
+	$text .= "
 		<tr><td>".LAN_MAILOUT_32."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_email' value=\"".$pref['mail_bounce_email']."\" /></td></tr>
 		<tr><td>".LAN_MAILOUT_33."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_pop3' value=\"".$pref['mail_bounce_pop3']."\" /></td></tr>
 		<tr><td>".LAN_MAILOUT_34."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_user' value=\"".$pref['mail_bounce_user']."\" /></td></tr>
 		<tr><td>".LAN_MAILOUT_35."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_pass' value=\"".$pref['mail_bounce_pass']."\" /></td></tr>
+	";
+	*/
+		
+	$text .= "	
 		<tr><td>".LAN_MAILOUT_120."</td><td><select class='tbox' name='mail_bounce_type'>\n
 			<option value=''>&nbsp;</option>\n
 			<option value='pop3'".(($pref['mail_bounce_type']=='pop3') ? " selected='selected'" : "").">".LAN_MAILOUT_121."</option>\n
@@ -1450,8 +1470,8 @@ $mailAdmin = new mailoutAdminClass($action);			// This decodes parts of the quer
 e107::setRegistry('_mailout_admin', $mailAdmin);
 if ($mailAdmin->loadMailHandlers() == 0)
 {	// No mail handlers loaded
-	echo 'No mail handlers loaded!!';
-	exit;
+//	echo 'No mail handlers loaded!!';
+	//exit;
 }
 
 require_once(e_ADMIN.'auth.php');

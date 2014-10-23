@@ -944,7 +944,6 @@ class mailoutAdminClass extends e107MailManager
 	 * @param $name name of item
 	 * @return text for display
 	 */
-	//FIXME use $frm->select() instead.
 	public function sendStyleSelect($curval = '', $name = 'email_send_style', $incTemplates = TRUE)
 	{
 
@@ -954,24 +953,24 @@ class mailoutAdminClass extends e107MailManager
 			'texttheme' => LAN_MAILOUT_127
 		);
 
-		$text = "<select class='tbox' name='{$name}' required>\n";
-
-		foreach($emFormat as $key => $val)
-		{
-			$selected = ($key == $curval)? " selected='selected'": '';
-			$text .= "<option value='" . $key . "'{$selected}>" . $val . "</option>\n";
-		}
 		if($incTemplates)
 		{
 			$tList = self::getEmailTemplateNames('user');
 			foreach($tList as $key => $val)
 			{
-				$selected = ($key == $curval)? " selected='selected'": '';
-				$text .= "<option value='" . $key . "'{$selected}>" . LAN_MAILOUT_258 . $val . "</option>\n";
-			}
+				$emFormat[$key] = LAN_MAILOUT_258 . $val;
+			}	
 		}
-		$text .= "</select>\n";
-		return $text;
+		
+		if(empty($curval))
+		{
+			$curval = e107::getConfig()->get('mail_sendstyle');
+				
+		}
+
+		
+		return e107::getForm()->select($name,$emFormat, $curval, 'required=1&size=xxlarge');
+
 	}
 
 	/**

@@ -250,7 +250,7 @@ define("LAN_MAILOUT_231", "Bounced emails - Processing method");
 define("LAN_MAILOUT_232", "None");
 define("LAN_MAILOUT_233", "Auto-process script");
 define("LAN_MAILOUT_234", "Mail account");
-define("LAN_MAILOUT_235", "(Your server has to be configured to use this script)");
+define("LAN_MAILOUT_235", "(Your server must forward or 'pipe' from the email address above to the script path above.)");
 define("LAN_MAILOUT_236", "Last Bounce Processed");
 define("LAN_MAILOUT_237", "Summary counters updated on --COUNT-- emails");
 define("LAN_MAILOUT_238", "Earliest time to send");

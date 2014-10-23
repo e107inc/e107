@@ -8,10 +8,6 @@
  *
  * Newsletter plugin - mailout function
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/newsletter/e_mailout.php,v $
- * $Revision$
- * $Date$
- * $Author$
  *
 */
 
@@ -102,7 +98,7 @@ class newsletter_mailout
 
 		$qry = "SELECT newsletter_id,newsletter_subscribers FROM `#newsletter` WHERE (`newsletter_parent`=0) AND (`newsletter_id` IN ({$selectVals}))";
 //		echo "Selector {$selectVals} query: ".$qry.'<br />';
-		if (!($sql->db_Select_gen($qry))) return FALSE;
+		if (!($sql->gen($qry))) return FALSE;
 		$this->selectorActive = TRUE;
 		$this->mail_count = 1;			// We have no idea of how many subscribers without reading all relevant DB records
 		$this->mail_read = 0;
@@ -134,7 +130,7 @@ class newsletter_mailout
 		{
 			if (count($this->targets) == 0)
 			{	// Read in and process another newletter mailing list
-				if (!($row = $sql->db_Fetch(MYSQL_ASSOC)))
+				if (!($row = $sql->fetch()))
 				{
 					$this->selectorActive = FALSE;
 					return FALSE;		// Run out of DB records
@@ -146,9 +142,9 @@ class newsletter_mailout
 			{
 				if ($uid = intval(trim($v)))
 				{	// Got a user ID here - look them up and add their data
-					if ($this->ourDB->db_Select('user', 'user_name,user_email,user_lastvisit', '`user_id`='.$uid))
+					if ($this->ourDB->select('user', 'user_name,user_email,user_lastvisit', '`user_id`='.$uid))
 					{
-						$row = $this->ourDB->db_Fetch();
+						$row = $this->ourDB->fetch();
 						$ret = array('mail_recipient_id' => $uid,
 									 'mail_recipient_name' => $row['user_name'],		// Should this use realname?
 									 'mail_recipient_email' => $row['user_email'],
@@ -200,7 +196,7 @@ class newsletter_mailout
 		if ($sql->select('newsletter', 'newsletter_id, newsletter_title', '`newsletter_parent`=0'))
 		{
 			$c=0;
-			while ($row = $sql->db_Fetch(MYSQL_ASSOC))
+			while ($row = $sql->fetch())
 			{
 				$checked = (isset($selects[$row['newsletter_id']])) ? " checked='checked'" : '';
 				
@@ -231,9 +227,17 @@ class newsletter_mailout
 		{
 			return false; // Return Nothing to avoid confusion. 	
 		}
-		
-		
+	
 	}
+	
+	/**
+	 * Manage Bounces. 
+	 */
+	public function bounce($data)
+	{
+		e107::getLog()->add('Newsletter Bounce', $data, E_LOG_INFORMATIVE, 'BOUNCE');	
+	}
+	
 }
 
 
