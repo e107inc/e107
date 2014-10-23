@@ -1783,7 +1783,7 @@ $columnInfo = array(
 	      if ($delete == "mirror")
 	      {
 	         $mes->addAuto($sql -> db_Delete("download_mirror", "mirror_id=".$del_id), delete, DOWLAN_135);
-	         $admin_log->log_event('DOWNL_14','ID: '.$del_id,E_LOG_INFORMATIVE,'');
+	         e107::getLog()->add('DOWNL_14','ID: '.$del_id,E_LOG_INFORMATIVE,'');
 	      }
 	
 	
@@ -1934,12 +1934,12 @@ $columnInfo = array(
 		         if (isset($_POST['id']))
 		         {
 		            $mes->addAuto($sql -> db_Update("download_mirror", "mirror_name='{$name}', mirror_url='{$url}', mirror_image='".$tp->toDB($_POST['mirror_image'])."', mirror_location='{$location}', mirror_description='{$description}' WHERE mirror_id=".intval($_POST['id'])), 'update', DOWLAN_133);
-		            $admin_log->log_event('DOWNL_13','ID: '.intval($_POST['id']).'[!br!]'.$logString,E_LOG_INFORMATIVE,'');
+		            e107::getLog()->add('DOWNL_13','ID: '.intval($_POST['id']).'[!br!]'.$logString,E_LOG_INFORMATIVE,'');
 		         }
 		         else
 		         {
 		            $mes->addAuto($sql -> db_Insert("download_mirror", "0, '{$name}', '{$url}', '".$tp->toDB($_POST['mirror_image'])."', '{$location}', '{$description}', 0"), 'insert', DOWLAN_134);
-		            $admin_log->log_event('DOWNL_12',$logString,E_LOG_INFORMATIVE,'');
+		            e107::getLog()->add('DOWNL_12',$logString,E_LOG_INFORMATIVE,'');
 		         }
 		      }
 	   }
@@ -2120,7 +2120,7 @@ $columnInfo = array(
 					$logString .= '[!br!]'.$k.'=>'.$v;
 				}
 			}
-			$admin_log->log_event($aText,$logString,E_LOG_INFORMATIVE,'');
+			e107::getLog()->add($aText,$logString,E_LOG_INFORMATIVE,'');
 	   }
 
 

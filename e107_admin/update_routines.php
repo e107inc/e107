@@ -444,7 +444,7 @@ function update_core_prefs($type='')
 		e107::getConfig('core')->setPref($pref)->save();
 		$admin_log->logMessage(LAN_UPDATE_14.$e107info['e107_version'], E_MESSAGE_NODISPLAY, E_MESSAGE_INFO);
 		$admin_log->flushMessages('UPDATE_03',E_LOG_INFORMATIVE);
-		//$admin_log->log_event('UPDATE_03',LAN_UPDATE_14.$e107info['e107_version'].'[!br!]'.implode(', ',$accum),E_LOG_INFORMATIVE,'');	// Log result of actual update
+		//e107::getLog()->add('UPDATE_03',LAN_UPDATE_14.$e107info['e107_version'].'[!br!]'.implode(', ',$accum),E_LOG_INFORMATIVE,'');	// Log result of actual update
 	}
 	return $just_check;
 }
@@ -1638,7 +1638,7 @@ function update_706_to_800($type='')
 	
 	
 	
-	//$admin_log->log_event('UPDATE_01',LAN_UPDATE_14.$e107info['e107_version'].'[!br!]'.implode('[!br!]',$updateMessages),E_LOG_INFORMATIVE,'');	// Log result of actual update
+	//e107::getLog()->add('UPDATE_01',LAN_UPDATE_14.$e107info['e107_version'].'[!br!]'.implode('[!br!]',$updateMessages),E_LOG_INFORMATIVE,'');	// Log result of actual update
 	return $just_check;
 }
 
@@ -1773,7 +1773,7 @@ function update_70x_to_706($type='')
 
 	// If we get to here, in checking mode no updates are required. In update mode, all done.
 	if ($just_check) return TRUE;
-	$admin_log->log_event('UPDATE_02',LAN_UPDATE_14.$e107info['e107_version'],E_LOG_INFORMATIVE,'');	// Log result of actual update
+	e107::getLog()->add('UPDATE_02',LAN_UPDATE_14.$e107info['e107_version'],E_LOG_INFORMATIVE,'');	// Log result of actual update
 	return $just_check;		// TRUE if no updates needed, FALSE if updates needed and completed
 
 }

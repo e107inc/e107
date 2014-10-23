@@ -695,7 +695,7 @@ class pluginManager{
 				}
 
 				$logInfo = deftrue($plug['plugin_name'],$plug['plugin_name']). " v".$plug['plugin_version']." ({e_PLUGIN}".$plug['plugin_path'].")";
-				$admin_log->log_event('PLUGMAN_03', $logInfo, E_LOG_INFORMATIVE, '');
+				e107::getLog()->add('PLUGMAN_03', $logInfo, E_LOG_INFORMATIVE, '');
 			}
 
 			if($_POST['delete_files'])
@@ -930,7 +930,7 @@ class pluginManager{
 				 
 			$name = deftrue($info['plugin_name'],$info['plugin_name']). " v".$eplug_version. "({e_PLUGIN}".$info['plugin_path'].")";
 
-			$admin_log->log_event('PLUGMAN_02', $name, E_LOG_INFORMATIVE, '');
+			e107::getLog()->add('PLUGMAN_02', $name, E_LOG_INFORMATIVE, '');
 			$text .= (isset($eplug_upgrade_done)) ? '<br />'.$eplug_upgrade_done : "<br />".LAN_UPGRADE_SUCCESSFUL;
 			$sql->update('plugin', "plugin_version ='{$eplug_version}', plugin_addons='{$eplug_addons}' WHERE plugin_id='$this->id' ");
 			$pref['plug_installed'][$plug['plugin_path']] = $eplug_version; 			// Update the version
@@ -959,7 +959,7 @@ class pluginManager{
 			if(file_exists($_path.'plugin.xml'))
 			{
 				$text .= $plugin->install_plugin_xml($this->id, 'refresh');
-				$admin_log->log_event('PLUGMAN_04', $this->id.':'.$plug['plugin_path'], E_LOG_INFORMATIVE, '');
+				e107::getLog()->add('PLUGMAN_04', $this->id.':'.$plug['plugin_path'], E_LOG_INFORMATIVE, '');
 			}
 
     }

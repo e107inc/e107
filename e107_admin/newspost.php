@@ -1287,7 +1287,7 @@ class admin_newspost
 					e107::getEvent()->trigger("newsdel", $del_id);
 					if($sql->delete("news", "news_id={$del_id}"))
 					{
-						$admin_log->log_event('NEWS_01',$del_id,E_LOG_INFORMATIVE,'');
+						e107::getLog()->add('NEWS_01',$del_id,E_LOG_INFORMATIVE,'');
 						$this->show_message(NWSLAN_31." #".$del_id." ".NWSLAN_32, E_MESSAGE_SUCCESS);
 						$this->clear_cache();
 
@@ -1314,7 +1314,7 @@ class admin_newspost
 					e107::getEvent()->trigger("newscatdel", $del_id);
 					if ($sql->delete("news_category", "category_id={$del_id}"))
 					{
-						$admin_log->log_event('NEWS_02',$del_id,E_LOG_INFORMATIVE,'');
+						e107::getLog()->add('NEWS_02',$del_id,E_LOG_INFORMATIVE,'');
 						$this->show_message(NWSLAN_33." #".$del_id." ".NWSLAN_32, E_MESSAGE_SUCCESS);
 						$this->clear_cache();
 					}
@@ -1324,7 +1324,7 @@ class admin_newspost
 			case 'sn':
 				if ($sql->delete("submitnews", "submitnews_id={$del_id}"))
 				{
-					$admin_log->log_event('NEWS_03',$del_id,E_LOG_INFORMATIVE,'');
+					e107::getLog()->add('NEWS_03',$del_id,E_LOG_INFORMATIVE,'');
 					$this->show_message(NWSLAN_34." #".$del_id." ".NWSLAN_32);
 					$this->clear_cache();
 				}

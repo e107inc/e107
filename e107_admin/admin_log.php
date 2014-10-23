@@ -874,7 +874,7 @@ if(isset($_POST['deleteitems']) && ($action == 'comments'))
 	{
 		//$text = str_replace('--NUMBER--', $count,RL_LAN_112);
 		$emessage->add(str_replace('--NUMBER--', $count, RL_LAN_112), E_MESSAGE_SUCCESS);
-		$admin_log->log_event('COMMENT_01', 'ID: '.implode(',', $_POST['del_item']), E_LOG_INFORMATIVE, '');
+		e107::getLog()->add('COMMENT_01', 'ID: '.implode(',', $_POST['del_item']), E_LOG_INFORMATIVE, '');
 	}
 	else
 	{
@@ -952,7 +952,7 @@ if(($action == "backdel") && isset($_POST['backdeltype']))
 			// Add in a log event
 			$message = $db_name.str_replace(array('--OLD--', '--NUM--'), array($old_string, $del_count), RL_LAN_057);
 			$mes->addSuccess($message);
-			$admin_log->log_event($db_msg, "db_Delete - earlier than {$old_string} (past {$qs[2]} days)[!br!]".$message.'[!br!]'.$db_table.' '.$qry, E_LOG_INFORMATIVE, '');
+			e107::getLog()->add($db_msg, "db_Delete - earlier than {$old_string} (past {$qs[2]} days)[!br!]".$message.'[!br!]'.$db_table.' '.$qry, E_LOG_INFORMATIVE, '');
 		}
 		else
 		{

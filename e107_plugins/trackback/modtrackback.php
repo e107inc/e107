@@ -40,7 +40,7 @@ if (isset($_POST['moderate']))
 		}
 		if (count($temp))
 		{
-			$admin_log->log_event('TRACK_02',implode(', ',$temp), E_LOG_INFORMATIVE,'');
+			e107::getLog()->add('TRACK_02',implode(', ',$temp), E_LOG_INFORMATIVE,'');
 		}
 	}
 	$ns->tablerender("", "<div style='text-align:center'><b>".TRACKBACK_L15."</b></div>");

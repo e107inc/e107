@@ -2308,7 +2308,7 @@ if (isset($_POST['submit_show_delete_multi']))
 		//Format system message
 		if(!empty($message))
 		{
-			$admin_log->log_event('IMALAN_01', implode('[!br!]', $message), E_LOG_INFORMATIVE, '');
+			e107::getLog()->add('IMALAN_01', implode('[!br!]', $message), E_LOG_INFORMATIVE, '');
 			$mes->addSuccess(implode(', ', $message).' '.IMALAN_28);
 		}
 	}
@@ -2346,7 +2346,7 @@ if (isset($_POST['submit_show_deleteall']))
 
 		$message = $count." ".IMALAN_26;
 		$mes->addSuccess($message);
-		$admin_log->log_event('IMALAN_02', $message.$imgList,E_LOG_INFORMATIVE, '');
+		e107::getLog()->add('IMALAN_02', $message.$imgList,E_LOG_INFORMATIVE, '');
 		unset($imgList);
 	}
 }
@@ -2391,7 +2391,7 @@ if (isset($_POST['submit_avdelete_multi']))
 		}
 
 		$mes->addSuccess(IMALAN_51.'<strong>'.implode(', ', $tmp).'</strong> '.IMALAN_28);
-		$admin_log->log_event('IMALAN_03', implode('[!br!]', $avList), E_LOG_INFORMATIVE, '');
+		e107::getLog()->add('IMALAN_03', implode('[!br!]', $avList), E_LOG_INFORMATIVE, '');
 
 		unset($search_users);
 	}

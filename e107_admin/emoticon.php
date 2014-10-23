@@ -40,7 +40,7 @@ if (isset($_POST['active']))
 	if ($pref['smiley_activate'] != $_POST['smiley_activate'])
 	{
 		$pref['smiley_activate'] = $_POST['smiley_activate'];
-		$admin_log->log_event($pref['smiley_activate'] ? 'EMOTE_02' : 'EMOTE_03', $pref['emotepack'], E_LOG_INFORMATIVE, '');
+		e107::getLog()->add($pref['smiley_activate'] ? 'EMOTE_02' : 'EMOTE_03', $pref['emotepack'], E_LOG_INFORMATIVE, '');
 		save_prefs();
 		$update = true;
 	}
@@ -88,7 +88,7 @@ foreach($_POST as $key => $value)
 		{
 			$mes->addInfo(LAN_NO_CHANGE);
 		}
-		$admin_log->log_event('EMOTE_01', $pref['emotepack'], E_LOG_INFORMATIVE, '');
+		e107::getLog()->add('EMOTE_01', $pref['emotepack'], E_LOG_INFORMATIVE, '');
 		break;
 	}
 

@@ -92,7 +92,7 @@ if (isset($_POST['del_existing']) && $_POST['lang_choices'] && getperms('0'))
 			}
 		}
 	}
-	$admin_log->log_event('LANG_02', $message.'[!br!]', E_LOG_INFORMATIVE, '');
+	e107::getLog()->add('LANG_02', $message.'[!br!]', E_LOG_INFORMATIVE, '');
 	$sql->db_ResetTableList();
 
 	if ($action == 'modify')
@@ -158,7 +158,7 @@ if (isset($_POST['create_tables']) && $_POST['language'])
 			}
 		}
 	}
-	$admin_log->log_event('LANG_03', $message, E_LOG_INFORMATIVE, '');
+	e107::getLog()->add('LANG_03', $message, E_LOG_INFORMATIVE, '');
 	$sql->db_ResetTableList();
 }
 /*
@@ -194,7 +194,7 @@ if (varset($_POST['ziplang']) && varset($_POST['language']))
 	if(varset($pref['lancheck'][$_POST['language']]) == 1)
 	{
 		$text = zip_up_lang($_POST['language']);
-		$admin_log->log_event('LANG_04', $_POST['language'], E_LOG_INFORMATIVE, '');
+		e107::getLog()->add('LANG_04', $_POST['language'], E_LOG_INFORMATIVE, '');
 		$mes->addInfo(LANG_LAN_25.': '.$text);	
 	}
 	else

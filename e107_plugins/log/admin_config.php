@@ -196,7 +196,7 @@ if(IsSet($_POST['wipeSubmit']))
 		}
 		$logStr .= '[!br!]'.$key;
 	}
-	$admin_log->log_event('STAT_01',ADSTAT_L81.$logStr,'');
+	e107::getLog()->add('STAT_01',ADSTAT_L81.$logStr,'');
 
 	//$message = ADSTAT_L25; // TODO:$emessage
 	$mes->addSuccess(LAN_UPDATED);
@@ -237,7 +237,7 @@ if (isset($_POST['updatesettings']))
 	}
 	save_prefs();
 	file_put_contents(e_LOG.LogFlagFile, "<?php\n\$logEnable={$pref['statActivate']};\n?>\n");		// Logging task uses to see if logging enabled
-	$admin_log->log_event('STAT_02',ADSTAT_L82.$logStr,'');
+	e107::getLog()->add('STAT_02',ADSTAT_L82.$logStr,'');
 }
 
 $ns->tablerender($caption, $mes->render() . $text);
@@ -526,7 +526,7 @@ switch ($action)
 			  $logStr .= "[!br!]{$k} => ".$v;
 			}
 			$text .= "</td></tr>";
-			$admin_log->log_event('STAT_04',ADSTAT_L83.$logStr,'');
+			e107::getLog()->add('STAT_04',ADSTAT_L83.$logStr,'');
 		  }
 		$text .= "<tr><td>".ADSTAT_L70."</td>";
 		$text .= "<td><select class='tbox' name='delete_month'>\n";
@@ -776,7 +776,7 @@ function rempagego()
 	{
 		$sql -> db_Insert("logstats", "0, 'pageTotal', '{$pagetotal}' ");
 	}
-	$admin_log->log_event('STAT_03',ADSTAT_L80."[!br!]".implode("[!br!]",$_POST['remcb']),'');
+	e107::getLog()->add('STAT_03',ADSTAT_L80."[!br!]".implode("[!br!]",$_POST['remcb']),'');
 
 	$varStart = chr(36);
 	$quote = chr(34);
