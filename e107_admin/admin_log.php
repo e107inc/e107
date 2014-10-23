@@ -690,7 +690,8 @@ class dblog_ui extends e_admin_ui
 		protected $pluginName		= 'adminlog';
 		protected $table			= 'dblog';
 		protected $pid				= 'dblog_id';
-		protected $perPage 			= 10; 
+		protected $perPage 			= 15; 
+		protected $listOrder		= 'dblog_id desc';
 			
 		protected $fields 		= array (  
 	//	  'checkboxes' 			=>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
