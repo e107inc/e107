@@ -581,7 +581,8 @@ class e107MailManager
 							AND (ms.`mail_last_date` >= ".time()." OR ms.`mail_last_date`=0)
 							ORDER BY ms.`mail_e107_priority` DESC {$count}";
 //		echo $query.'<br />';
-		$result = $this->db->db_Select_gen($query);
+		$result = $this->db->gen($query);
+		
 		if ($result !== FALSE)
 		{
 			$this->queryActive = $result;		// Note number of emails to go
@@ -766,9 +767,9 @@ class e107MailManager
 
 			if ($email['mail_notify_complete'] & 1)
 			{	// Notify email initiator
-				if ($this->db2->db_Select('user', 'user_name, user_email', '`user_id`='.intval($email['mail_creator'])))
+				if ($this->db2->select('user', 'user_name, user_email', '`user_id`='.intval($email['mail_creator'])))
 				{
-					$row = $this->db2->db_Fetch(MYSQL_ASSOC);
+					$row = $this->db2->fetch(MYSQL_ASSOC);
 					require_once(e_HANDLER.'mail.php');
 					$mailer = new e107Email();
 					$mailer->sendEmail($row['user_name'], $row['user_email'], $message,FALSE);
@@ -777,6 +778,7 @@ class e107MailManager
 			if ($email['mail_notify_complete'] & 2)
 			{	// Do e107 notify
 				require_once(e_HANDLER."notify_class.php");
+			
 				notify_maildone($message);
 			}
 			e107::getEvent()->trigger('maildone', $email);
@@ -882,6 +884,8 @@ class e107MailManager
 		$title2 = "<h4>".__METHOD__." Line: ".__LINE__."</h4>";
 		e107::getAdminLog()->addDebug($title2.print_a($result,true),true);
 	
+		$result['shortcodes']['MAILREF'] = $email['mail_source_id'];
+	
 		return $result;
 	}
 
@@ -934,14 +938,14 @@ class e107MailManager
 		if ($isNew === true)
 		{
 			unset($dbData['mail_source_id']);				// Just in case - there are circumstances where might be set
-			$result = $this->db2->db_Insert('mail_content', array('data' => $dbData, 
+			$result = $this->db2->insert('mail_content', array('data' => $dbData, 
 														'_FIELD_TYPES' => $this->dbTypes['mail_content'], 												'_NOTNULL' => $this->dbNull['mail_content']));
 		}
 		else
 		{
 			if (isset($dbData['mail_source_id']))
 			{
-				$result = $this->db2->db_Update('mail_content', array('data' => $dbData, 
+				$result = $this->db2->update('mail_content', array('data' => $dbData, 
 																	'_FIELD_TYPES' => $this->dbTypes['mail_content'], 
 																	'WHERE' => '`mail_source_id` = '.intval($dbData['mail_source_id'])));
 				if ($result !== FALSE) { $result = $dbData['mail_source_id']; }
@@ -970,11 +974,11 @@ class e107MailManager
 			return FALSE;
 		}
 		$this->checkDB(2);						// Make sure we have a DB object to use
-		if ($this->db2->db_Select('mail_content', '*', '`mail_source_id`='.$mailID) === FALSE)
+		if ($this->db2->select('mail_content', '*', '`mail_source_id`='.$mailID) === FALSE)
 		{
 			return FALSE;
 		}
-		$mailData = $this->db2->db_Fetch(MYSQL_ASSOC);
+		$mailData = $this->db2->fetch();
 		return $this->dbToMail($mailData, $addMissing);				// Convert to 'flat array' format
 	}
 
@@ -991,20 +995,23 @@ class e107MailManager
 		$result = array();
 		if ($actions == 'all') $actions = 'content,recipients';
 		$actArray = explode(',', $actions);
+		
 		if (!is_numeric($mailID) || ($mailID == 0))
 		{
 			return FALSE;
 		}
 
 		$this->checkDB(2);						// Make sure we have a DB object to use
+		
 		if (isset($actArray['content']))
 		{
-			$result['content'] = $this->db2->db_Delete('mail_content', '`mail_source_id`='.$mailID);
+			$result['content'] = $this->db2->delete('mail_content', '`mail_source_id`='.$mailID);
 		}
 		if (isset($actArray['recipients']))
 		{
-			$result['recipients'] = $this->db2->db_Delete('mail_recipients', '`mail_detail_id`='.$mailID);
+			$result['recipients'] = $this->db2->delete('mail_recipients', '`mail_detail_id`='.$mailID);
 		}
+		
 		return $result;
 	}
 
@@ -1161,15 +1168,17 @@ class e107MailManager
 		$query .= '`mail_notify_complete`='.intval($notify).', `mail_content_status` = '.($hold ? MAIL_STATUS_HELD : MAIL_STATUS_PENDING).$lt.' WHERE `mail_source_id` = '.intval($handle);
 		//	echo "Update mail body: {$query}<br />";
 		// Set status of email body first
-		if (!$this->db->db_Update('mail_content',$query))
+		
+		if (!$this->db->update('mail_content',$query))
 		{
 			$this->e107->admin_log->e_log_event(10,-1,'MAIL','Activate/hold mail','mail_content: '.$query.'[!br!]Fail: '.$this->db->mySQLlastErrText,FALSE,LOG_TO_ROLLING);
 			return FALSE;
 		}
+		
 		// Now set status of individual emails
 		$query = '`mail_status` = '.($hold ? MAIL_STATUS_HELD : (MAIL_STATUS_PENDING + e107MailManager::E107_EMAIL_MAX_TRIES)).$ft.' WHERE `mail_detail_id` = '.intval($handle);
 		//	echo "Update individual emails: {$query}<br />";
-		if (FALSE === $this->db->db_Update('mail_recipients',$query))
+		if (FALSE === $this->db->update('mail_recipients',$query))
 		{
 			$this->e107->admin_log->e_log_event(10,-1,'MAIL','Activate/hold mail','mail_recipient: '.$query.'[!br!]Fail: '.$this->db->mySQLlastErrText,FALSE,LOG_TO_ROLLING);
 			return FALSE;
@@ -1188,12 +1197,12 @@ class e107MailManager
 		if (($handle <= 0) || !is_numeric($handle)) return FALSE;
 		$this->checkDB(1);			// Make sure DB object created
 		// Set status of individual emails first, so we can get a count
-		if (FALSE === ($count = $this->db->db_Update('mail_recipients','`mail_status` = '.MAIL_STATUS_CANCELLED.' WHERE `mail_detail_id` = '.intval($handle).' AND `mail_status` >'.MAIL_STATUS_FAILED)))
+		if (FALSE === ($count = $this->db->update('mail_recipients','`mail_status` = '.MAIL_STATUS_CANCELLED.' WHERE `mail_detail_id` = '.intval($handle).' AND `mail_status` >'.MAIL_STATUS_FAILED)))
 		{
 			return FALSE;
 		}
 		// Now do status of email body - no emails to go, add those not sent to fail count
-		if (!$this->db->db_Update('mail_content','`mail_content_status` = '.MAIL_STATUS_PARTIAL.', `mail_togo_count`=0, `mail_fail_count` = `mail_fail_count` + '.intval($count).' WHERE `mail_source_id` = '.intval($handle)))
+		if (!$this->db->update('mail_content','`mail_content_status` = '.MAIL_STATUS_PARTIAL.', `mail_togo_count`=0, `mail_fail_count` = `mail_fail_count` + '.intval($count).' WHERE `mail_source_id` = '.intval($handle)))
 		{
 			return FALSE;
 		}
@@ -1211,13 +1220,13 @@ class e107MailManager
 		if (($handle <= 0) || !is_numeric($handle)) return FALSE;
 		$this->checkDB(1);			// Make sure DB object created
 		// Set status of individual emails first, so we can get a count
-		if (FALSE === ($count = $this->db->db_Update('mail_recipients','`mail_status` = '.MAIL_STATUS_HELD.' WHERE `mail_detail_id` = '.intval($handle).' AND `mail_status` >'.MAIL_STATUS_FAILED)))
+		if (FALSE === ($count = $this->db->update('mail_recipients','`mail_status` = '.MAIL_STATUS_HELD.' WHERE `mail_detail_id` = '.intval($handle).' AND `mail_status` >'.MAIL_STATUS_FAILED)))
 		{
 			return FALSE;
 		}
 		if ($count == 0) return TRUE;		// If zero count, must have held email just as queue being emptied, so don't touch main status
 
-		if (!$this->db->db_Update('mail_content','`mail_content_status` = '.MAIL_STATUS_HELD.' WHERE `mail_source_id` = '.intval($handle)))
+		if (!$this->db->update('mail_content','`mail_content_status` = '.MAIL_STATUS_HELD.' WHERE `mail_source_id` = '.intval($handle)))
 		{
 			return FALSE;
 		}
@@ -1233,83 +1242,153 @@ class e107MailManager
 	 */
 	public function markBounce($bounceString, $emailAddress = '')
 	{
-		$bounceInfo = array('mail_bounce_string' => $bounceString, 'mail_recipient_email' => $emailAddress);		// Ready for event data
-		$errors = array();						// Log all errors, at least until proven
-		$vals = explode('/',$bounceString);		// Should get one or four fields
+	
+		$bounceInfo 	= array('mail_bounce_string' => $bounceString, 'mail_recipient_email' => $emailAddress);		// Ready for event data
+		$errors 		= array();						// Log all errors, at least until proven
+		$vals 			= explode('/', $bounceString);		// Should get one or four fields
+		
+	//	echo "<h4>Bounce String</h4>";
+	//	print_a($bounceString);
+	//	echo "<h4>Vals</h4>";
+	//	print_a($vals);
+		
 		if (!is_numeric($vals[0])) 				// Email recipient user id number (may be zero)
 		{
 			$errors[] = 'Bad user ID: '.$vals[0];
 		}
+		
 		$uid = intval($vals[0]);				// User ID (zero is valid)
-		if (count($vals) == 4) 
+		
+		if (count($vals) == 4) // Admin->Mailout format. 
 		{
-			if (md5($vals[0].'/'.$vals[1].'/'.$vals[2].'/') != $vals[3])
-			{		// 'Extended' ID has md5 validation
+			if (md5($vals[0].'/'.$vals[1].'/'.$vals[2].'/') != $vals[3]) // 'Extended' ID has md5 validation
+			{		
 				$errors[] = 'Bad md5';
 			}
+			
 			if (!is_numeric($vals[1])) 		// Email body record number
 			{
 				$errors[] = 'Bad body record: '.$vals[1];
 			}
+			
 			if (!is_numeric($vals[2])) 		// Email recipient table record number
 			{
 				$errors[] = 'Bad recipient record: '.$vals[2];
 			}
+			
 			$vals[1] = intval($vals[1]);
 			$vals[2] = intval($vals[2]);
+			
 			if (count($errors) == 0)
-			{	// Look up in mailer DB if no errors so far
-				$this->checkDB(1);
-				if (FALSE === ($this->db->db_Select_gen(
-					"SELECT mr.`mail_recipient_id`, mr.`mail_recipient_email`, mr.`mail_recipient_name` FROM `#mail_recipients` AS mr 
-						LEFT JOIN `#mail_content` as mc ON mr.`mail_detail_id` = mc.`mail_source_id`
+			{	
+				$this->checkDB(1); // Look up in mailer DB if no errors so far
+				
+				if (false === ($this->db->gen(
+					"SELECT mr.`mail_recipient_id`, mr.`mail_recipient_email`, mr.`mail_recipient_name`, mr.mail_target_info, 
+					mc.mail_create_date, mc.mail_start_send, mc.mail_end_send, mc.`mail_title`, mc.`mail_subject`, mc.`mail_creator`, mc.`mail_other` FROM `#mail_recipients` AS mr 
+					LEFT JOIN `#mail_content` as mc ON mr.`mail_detail_id` = mc.`mail_source_id`
 						WHERE mr.`mail_target_id` = {$vals[2]} AND mc.`mail_source_id` = {$vals[1]}")))
 				{	// Invalid mailer record
 					$errors[] = 'Not found in DB: '.$vals[1].'/'.$vals[2];
 				}
-				$row = $this->db->db_Fetch(MYSQL_ASSOC);
-				if ($emailAddress && ($emailAddress != $row['mail_recipient_email']))
-				{	// Email address mismatch
+				
+				$row = $this->db->fetch(MYSQL_ASSOC);
+				
+				$row = $this->dbToBoth($row);
+				
+				$bounceInfo = $row;
+
+				if ($emailAddress && ($emailAddress != $row['mail_recipient_email'])) // Email address mismatch
+				{	
 					$errors[] = 'Email address mismatch: '.$emailAddress.'/'.$row['mail_recipient_email'];
 				}
-				if ($uid != $row['mail_recipient_id'])
-				{	// User ID mismatch
+				
+				if ($uid != $row['mail_recipient_id']) 	// User ID mismatch
+				{
 					$errors[] = 'User ID mismatch: '.$uid.'/'.$row['mail_recipient_id'];
 				}
-				if (count($errors) == 0)
-				{	// All passed - can update mailout databases
-					$this->db->db_Update('mail_content', '`mail_bounce_count` = `mail_bounce_count` + 1 WHERE `mail_source_id` = '.$vals[1]);
-					$this->db->db_Update('mail_recipients', '`mail_status` = '.MAIL_STATUS_BOUNCED.' WHERE `mail_target_id` = '.$vals[2]);
-					$bounceInfo['mail_source_id'] = $vals[1];
-					$bounceInfo['mail_target_id'] = $vals[2];
-					$bounceInfo['mail_recipient_id'] = $uid;
-					$bounceInfo['mail_recipient_name'] = $row['mail_recipient_name'];
+				
+				if (count($errors) == 0) // All passed - can update mailout databases
+				{
+					$bounceInfo['mail_source_id'] 		= $vals[1];
+					$bounceInfo['mail_target_id'] 		= $vals[2];
+					$bounceInfo['mail_recipient_id'] 	= $uid;
+					$bounceInfo['mail_recipient_name'] 	= $row['mail_recipient_name'];		
+						
+						
+					if(!$this->db->update('mail_content', '`mail_bounce_count` = `mail_bounce_count` + 1 WHERE `mail_source_id` = '.$vals[1]))
+					{
+						e107::getAdminLog()->add('Unable to increment bounce-count on mail_source_id='.$vals[1],$bounceInfo, E_LOG_FATAL, 'BOUNCE',LOG_TO_ROLLING);	
+					}
+					
+					
+					if(!$this->db->update('mail_recipients', '`mail_status` = '.MAIL_STATUS_BOUNCED.' WHERE `mail_target_id` = '.$vals[2]))
+					{
+						e107::getAdminLog()->add('Unable to update recipient mail_status to bounce on mail_target_id = '.$vals[2],$bounceInfo, E_LOG_FATAL, 'BOUNCE',LOG_TO_ROLLING);	
+					}
+				
+					$addons = array_keys($row['mail_selectors']); // trigger e_mailout.php addons. 'bounce' method. 
+					foreach($addons as $plug)
+					{
+						if($plug == 'core')
+						{
+							require_once(e_HANDLER.'user_handler.php');
+							if($err = userHandler::userStatusUpdate('bounce', $uid, $emailAddress));
+							{
+								$errors[] = $err;
+							}	
+							
+						}
+						else 
+						{
+							if($cls = e107::getAddon($plug,'e_mailout'))
+							{
+								if(e107::callMethod($cls, 'bounce', $bounceInfo)===false)
+								{
+									e107::getAdminLog()->add($plug.' bounce process failed',$bounceInfo, E_LOG_FATAL, 'BOUNCE',LOG_TO_ROLLING);	
+								}
+							}
+							
+						}	
+					}
 				}
+				
+				
+			//	echo e107::getMessage()->render();
+			//	print_a($bounceInfo);
+				
+				
 			}
 		}
-
-		if ((count($vals) != 1) && (count($vals) != 4))
+		elseif ((count($vals) != 1) && (count($vals) != 4)) // invalid e107-id header. 
 		{
 			$errors[] = 'Bad element count: '.count($vals);
 		}
-		elseif ($uid || $emailAddress)
-		{	// Now log the bounce against the user  (user handler will do any required logging)
+		elseif ($uid || $emailAddress) // Not using admin->mailout, so just update the user table for user_id = $uid; 
+		{	
 			require_once(e_HANDLER.'user_handler.php');
-			$result = userHandler::userStatusUpdate('bounce', $uid, $emailAddress);
-			if ($result)	// Returns FALSE if update successful
+		
+			if($err = userHandler::userStatusUpdate('bounce', $uid, $emailAddress))
 			{
-				$errors[] = $result;
+				$errors[] = $err;
 			}
 		}
+		
 		if (count($errors))
 		{
 			$logString = $bounceString.' ('.$emailAddress.')[!br!]'.implode('[!br!]',$errors);
-			$this->e107->admin_log->e_log_event(10,-1,'BOUNCE','Bounce receive error',$logString,FALSE,LOG_TO_ROLLING);
-			return FALSE;
+		//	e107::getAdminLog()->e_log_event(10,-1,'BOUNCE','Bounce receive error',$logString, FALSE,LOG_TO_ROLLING);
+			e107::getAdminLog()->add('Bounce receive error',$logString, E_LOG_WARNING, 'BOUNCE', LOG_TO_ROLLING);
+			return false;
 		}
-		$this->e107->admin_log->e_log_event(10,-1,'BOUNCE','Bounce received/logged',$bounceString.' ('.$emailAddress.')',FALSE,LOG_TO_ROLLING);
+		
+		//	e107::getAdminLog()->e_log_event(10,-1,'BOUNCE','Bounce received/logged',$bounceInfo, FALSE,LOG_TO_ROLLING);
+		
+		e107::getAdminLog()->add('Bounce received/logged',$bounceInfo, E_LOG_INFORMATIVE, 'BOUNCE',LOG_TO_ROLLING);
+		
 		e107::getEvent()->trigger('mailbounce', $bounceInfo);
-		return TRUE;
+		
+		return true;
 	}
 
 

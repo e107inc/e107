@@ -625,7 +625,7 @@ class e107Email extends PHPMailer
 		
 		$eml['shortcodes']['BODY'] 		= $tp->toEmail($eml['body']);
 		$eml['shortcodes']['SUBJECT'] 	= $eml['subject'];
-		$eml['shortcodes']['THEME'] 	= e_THEME.$this->pref['sitetheme'].'/'; // Always use front-end theme path. 
+		$eml['shortcodes']['THEME'] 	= ($this->previewMode == true) ? e_THEME_ABS.$this->pref['sitetheme'].'/' :  e_THEME.$this->pref['sitetheme'].'/'; // Always use front-end theme path. 
 				
 				
 		if(!empty($eml['media']) && is_array($eml['media']))
@@ -642,7 +642,7 @@ class e107Email extends PHPMailer
 					}
 					else
 					{
-						$eml['shortcodes'][$id] = "<div class='media media-image'><img class='img-responsive' src='".$tp->replaceConstants($val['path'])."' alt='' /></div>";		
+						$eml['shortcodes'][$id] = "<div class='media media-image'><img class='img-responsive' src='".$val['path']."' alt='' /></div>";		
 					}
 					
 				}	
@@ -687,9 +687,6 @@ class e107Email extends PHPMailer
 					
 			if($tmpl = e107::getCoreTemplate('email', $eml['template'], 'front', true))  //FIXME - Core template is failing with template 'notify'. Works with theme template. Issue with core template registry?
 			{				
-			//	$eml['shortcodes']['BODY'] 		= $tp->toEmail($eml['body']);
-			//	$eml['shortcodes']['SUBJECT'] 	= $eml['subject'];
-			//	$eml['shortcodes']['THEME'] 	= e_THEME.$this->pref['sitetheme'].'/'; // Always use front-end theme path. 
 				
 				$eml['shortcodes'] = $this->processShortcodes($eml);
 
@@ -697,7 +694,7 @@ class e107Email extends PHPMailer
 						
 				$emailBody = $tmpl['header']. $tmpl['body'] . $tmpl['footer']; 
 				
-				$eml['body'] = $tp->parseTemplate($emailBody, true, varset($eml['shortcodes'],null));
+				$eml['body'] = $tp->parseTemplate($emailBody, true, $eml['shortcodes']);
 				
 			//	$eml['body'] = ($tp->toEmail($tmpl['header']). str_replace('{BODY}', $eml['body'], $tmpl['body']). $tp->toEmail($tmpl['footer']));
 				
@@ -717,7 +714,7 @@ class e107Email extends PHPMailer
 				{
 					echo "<h4>Couldn't find email template: ".$eml['template']."</h4>";	
 				}
-				$emailBody = $eml['body'];
+			//	$emailBody = $eml['body'];
 				
 				if (vartrue($eml['subject'])) $this->Subject = $tp->parseTemplate($eml['subject'], true, varset($eml['shortcodes'],null)); 	
 				e107::getMessage()->addDebug("Couldn't find email template: ".$eml['template']);	
@@ -855,8 +852,17 @@ class e107Email extends PHPMailer
 
 		if (($this->logEnable == 0) || ($this->logEnable == 2))
 		{
+			// prevent user/script details being exposed in X-PHP-Script header 
+			$oldphpself 			= $_SERVER['PHP_SELF']; 
+			$oldremoteaddr			= $_SERVER['REMOTE_ADDR']; 
+			$_SERVER['PHP_SELF'] 	= "/"; 
+			$_SERVER['REMOTE_ADDR'] = $_SERVER['SERVER_ADDR']; 
+			
 			$result = $this->Send();		// Actually send email
-
+			
+			$_SERVER['PHP_SELF'] = $oldphpself; 
+			$_SERVER['REMOTE_ADDR'] = $oldremoteaddr;
+			
 			if (!$bulkmail && !$this->SMTPKeepAlive && ($this->Mailer == 'smtp')) $this->SmtpClose();
 		}
 		else
@@ -867,6 +873,7 @@ class e107Email extends PHPMailer
 		}
 
 		$this->TotalSent++;
+		
 		if (($this->pause_amount > 0) && ($this->SendCount >= $this->pause_amount))
 		{
 			if ($this->SMTPKeepAlive && ($this->Mailer == 'smtp')) $this->SmtpClose();
@@ -931,8 +938,8 @@ class e107Email extends PHPMailer
 	 */
 	public function MsgHTML($message, $basedir = '') 
 	{
-		
-		
+		$tp = e107::getParser();
+				
 		preg_match_all("/(src|background)=([\"\'])(.*)\\2/Ui", $message, $images);			// Modified to accept single quotes as well
 		if(isset($images[3]) && ($this->previewMode === false)) 
 		{
@@ -943,10 +950,12 @@ class e107Email extends PHPMailer
 				print_a($images[3]);	
 			}
 			
-			$tp = e107::getParser();
-			
 			foreach($images[3] as $i => $url) 
 			{
+				
+			
+				
+				
 				// do not change urls for absolute images (thanks to corvuscorax)
 				if (!preg_match('#^[A-z]+://#',$url)) 
 				{
@@ -997,6 +1006,11 @@ class e107Email extends PHPMailer
 					
 				}
 			}
+		}
+
+		if($this->previewMode === true)
+		{
+			$message = $tp->replaceConstants($message, 'abs');
 		}
 
 
