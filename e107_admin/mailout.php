@@ -447,12 +447,13 @@ class mailout_main_ui extends e_admin_ui
 			$sendto = trim($_POST['testaddress']);
 			
 			$eml = array(
-				'subject'	=> LAN_MAILOUT_113." ".$add,
-				'body'		=> str_replace("[br]", "\n", LAN_MAILOUT_114),
-				'template'	=> vartrue($_POST['testtemplate'],null)
+				'subject'		=> LAN_MAILOUT_113." ".$add,
+				'body'			=> str_replace("[br]", "\n", LAN_MAILOUT_114),
+				'template'		=> vartrue($_POST['testtemplate'],null),
+				'shortcodes'	=> array('USERID'=>555, 'USERNAME'=>'John Smith', 'LOGINNAME'=>'TestName', 'PASSWORD'=>'xxxxxxx', 'ACTIVATION_LINK'=>SITEURL."signup.php#activate")
 			);
 			
-			if (!e107::getEmail()->sendEmail($sendto,LAN_MAILOUT_189,$eml)) 	
+			if (!e107::getEmail()->sendEmail($sendto, LAN_MAILOUT_189, $eml)) 	
 			{
 				$mes->addError(($pref['mailer'] == 'smtp')  ? LAN_MAILOUT_67 : LAN_MAILOUT_106);
 			} 
