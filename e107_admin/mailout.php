@@ -447,6 +447,7 @@ class mailout_main_ui extends e_admin_ui
 			$sendto = trim($_POST['testaddress']);
 			
 			$eml = array(
+				'e107_header'	=> 9999999,
 				'subject'		=> LAN_MAILOUT_113." ".$add,
 				'body'			=> str_replace("[br]", "\n", LAN_MAILOUT_114),
 				'template'		=> vartrue($_POST['testtemplate'],null),

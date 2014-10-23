@@ -753,11 +753,12 @@ class e107Email extends PHPMailer
 			print_a($eml);
 		}
 		
+		$identifier = deftrue('MAIL_IDENTIFIER', 'X-e107-id');
 		
 		if (vartrue($eml['returnreceipt'])) $this->ConfirmReadingTo = $eml['returnreceipt'];
 		if (vartrue($eml['inline_images'])) $this->addInlineImages($eml['inline_images']);
 		if (vartrue($eml['priority'])) $this->Priority = $eml['priority'];
-		if (vartrue($eml['e107_header'])) $this->AddCustomHeader("X-e107-id: {$eml['e107_header']}");
+		if (vartrue($eml['e107_header'])) $this->AddCustomHeader($identifier.": {$eml['e107_header']}");
 		if (vartrue($eml['extra_header'])) 
 		{
 			if (is_array($eml['extra_header']))
@@ -1119,8 +1120,10 @@ function sendemail($send_to, $subject, $message, $to_name='', $send_from='', $fr
 
 	// Create a mailer object of the correct type (which auto-fills in sending method, server details)
 	$mail = new e107Email($overrides);
+	
+	$identifier = deftrue('MAIL_IDENTIFIER', 'X-e107-id');
 
-	if (varsettrue($mailheader_e107id)) $mail->AddCustomHeader("X-e107-id: {$mailheader_e107id}");
+	if (varsettrue($mailheader_e107id)) $mail->AddCustomHeader($identifier.": {$mailheader_e107id}");
 
 	$mail->legacyBody = TRUE;				// Need to handle plain text email conversion to HTML
 	$mail->makeBody($message);				// Add body, with conversion if required
