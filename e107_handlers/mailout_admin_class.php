@@ -2028,7 +2028,7 @@ class mailoutAdminClass extends e107MailManager
 				$results[] = str_replace('--COUNT--', $changeCount, LAN_MAILOUT_237);
 		}
 
-		$this->e107->admin_log->log_event('MAIL_05', implode('[!br!]', $results), E_LOG_INFORMATIVE, '');
+		e107::getLog()->add('MAIL_05', implode('[!br!]', $results), E_LOG_INFORMATIVE, '');
 		return $noError;
 	}
 

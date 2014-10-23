@@ -1856,13 +1856,16 @@ class users_admin_ui extends e_admin_ui
 		$DEL = ($pref['mail_bounce_delete']) ? true : false;
 		$text = "<br /><div><form  method='post' action='".e_SELF.$qry."'><table>
 		<tr><td style='width:5%'>#</td><td>e107-id</td><td>email</td><td>Subject</td><td>Bounce</td></tr>\n";
+		
+		$identifier = deftrue('MAIL_IDENTIFIER', 'X-e107-id');
+		
 		for ($i = 1; $i <= $tot; $i++)
 		{
 			$head = $obj->getHeaders($i);
 			if ($head['bounce'])
 			{
 			// Its a 'bounce' email
-				if (preg_match('/.*X-e107-id:(.*)MIME/',$obj->getBody($i),$result))
+				if (preg_match('/.*'.$identifier.':(.*)MIME/',$obj->getBody($i),$result))
 				{
 					if ($result[1])
 					{
