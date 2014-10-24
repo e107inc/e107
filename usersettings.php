@@ -558,9 +558,9 @@ if ($dataToSave)
 		$changedUserData['user_password'] = $sql->escape($userMethods->HashPassword($savePassword, $loginname), false);
 		if (varset($pref['allowEmailLogin'], FALSE))
 		{
-			$user_prefs = unserialize($udata['user_prefs']);
+			$user_prefs = e107::getArrayStorage()->unserialize($udata['user_prefs']);
 			$user_prefs['email_password'] = $userMethods->HashPassword($savePassword, $email);
-			$changedUserData['user_prefs'] = serialize($user_prefs);
+			$changedUserData['user_prefs'] = e107::getArrayStorage()->serialize($user_prefs);
 		}
 	}
 	else

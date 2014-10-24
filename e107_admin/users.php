@@ -1213,7 +1213,10 @@ class users_admin_ui extends e_admin_ui
 		if ($userMethods->needEmailPassword())
 		{
 			// Save separate password encryption for use with email address
-			$user_data['user_prefs'] = serialize(array('email_password' => $userMethods->HashPassword($savePassword, $user_data['user_email'])));
+            $user_prefs = e107::getArrayStorage()->unserialize($user_data['user_prefs']);
+            $user_prefs['email_password'] = $userMethods->HashPassword($savePassword, $user_data['user_email']);
+			$user_data['user_prefs'] = e107::getArrayStorage()->serialize($user_prefs);
+            unset($user_prefs);
 		}
 		
 		$userMethods->userClassUpdate($allData['data'], 'userall');

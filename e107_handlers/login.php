@@ -403,8 +403,9 @@ class userlogin
 		
 		if ($this->lookEmail && varsettrue($pref['passwordEncoding']))
 		{
-			$tmp = unserialize($this->userData['user_prefs']);
-			$requiredPassword = varset($tmp['email_password'],$this->userData['user_password']);	// Use email-specific password if set. Otherwise, 'normal' one might work
+			$tmp = e107::getArrayStorage()->unserialize($this->userData['user_prefs']);
+            if(!$tmp && $this->userData['user_prefs']) $tmp = unserialize($this->userData['user_prefs']); // try old storage type
+			$requiredPassword = varset($tmp['email_password'], $this->userData['user_password']);	// Use email-specific password if set. Otherwise, 'normal' one might work
 			unset($tmp);
 		}
 		else
