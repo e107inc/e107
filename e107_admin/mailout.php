@@ -620,6 +620,7 @@ class mailout_main_ui extends e_admin_ui
 				'shortcodes'	=> array(
 				
 					'USERNAME'			=>'test-username', 
+					'EMAIL'				=> 'test@email.com',
 					'DISPLAYNAME'		=> 'John Example', 
 					'USERID'			=>'555', 
 					'MAILREF'			=> '123', 
