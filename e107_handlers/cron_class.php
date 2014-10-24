@@ -36,6 +36,7 @@ class _system_cron
 	function gitrepo()
 	{
 		$mes = e107::getMessage();
+		$fl = e107::getFile();
 		
 		if(is_dir(e_BASE.".git")) // Check it's a Git Repo
 		{
@@ -67,6 +68,9 @@ class _system_cron
 		{
 			$mes->addError("No git repo found");	//TODO LAN
 		}
+		
+		$fl->chmod(e_BASE."cron.php",0755);
+		$fl->chmod(e_HANDLER."bounce_handler.php",0755);
 	}
 	
 	
