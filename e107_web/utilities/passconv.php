@@ -177,8 +177,9 @@ if (isset($_POST['GetOnWithIt']))
 	    $recordCount++;
 	    $newData = array();
 		$newPrefs = '';
-		$user_prefs = unserialize($row['user_prefs']);
-		if ($saltConvert)
+		$user_prefs = e107::getArrayStorage()->unserialize($row['user_prefs']);
+          if(!$user_prefs && $row['user_prefs']) $user_prefs = unserialize($row['user_prefs']);
+          if ($saltConvert)
 		{
 		  if ($user_info->canConvert($row['user_password']))
 		  {
@@ -204,7 +205,7 @@ if (isset($_POST['GetOnWithIt']))
 		  unset($user_prefs['email_password']);
 		  $emailProcess++;
 		}
-		if (count($user_prefs)) $newPrefs = serialize($user_prefs); else $newPrefs = '';
+		if (count($user_prefs)) $newPrefs = e107::getArrayStorage()->serialize($user_prefs); else $newPrefs = '';
 		if($newPrefs != $user_prefs)
 		{
 		  $newData['user_prefs'] = $newPrefs;
