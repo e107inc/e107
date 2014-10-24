@@ -615,7 +615,8 @@ class mailout_main_ui extends e_admin_ui
 			
 			$eml = array(
 				'subject'		=> 'Test Subject',
-				'body' 			=> "This is the body text of your email. Below you may find media attachments such as images or video thumbnails if they have been included in the template.",
+				'body' 			=> "This is the body text of your email. Included are example media attachments such as images and video thumbnails.<br /></br >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed aliquam volutpat risus, a efficitur ex dignissim ac. Phasellus ornare tortor est, a elementum orci finibus non! Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce feugiat bibendum venenatis. Ut sit amet purus id magna consequat euismod vitae ac elit. Maecenas rutrum nisi metus, sed pulvinar velit fermentum eu? Aliquam erat volutpat.<br />
+									Ut risus massa, consequat et gravida vitae, tincidunt in metus. Nam sodales felis non tortor faucibus lacinia! Integer neque libero, maximus eu cursus nec, fringilla varius erat. Phasellus elementum scelerisque mauris at fermentum. Aliquam erat volutpat. Aliquam sit amet placerat leo, vitae mollis purus. Nulla laoreet nulla pretium risus placerat, a luctus risus pulvinar. Duis ut dolor sed arcu aliquam dictum sed auctor magna. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Etiam eleifend in mi lobortis blandit. Aliquam vestibulum rhoncus vestibulum. Cras metus.",
 				'template'		=> $id,
 				'shortcodes'	=> array(
 				
@@ -626,7 +627,7 @@ class mailout_main_ui extends e_admin_ui
 					'MAILREF'			=> '123', 
 					'NEWSLETTER'		=> SITEURL."newsletter/?id=example1234567", 
 					'UNSUBSCRIBE'		=> SITEURL."unsubscribe/?id=example1234567",
-					'ACTIVATION_LINK'	=> 'http://whereever.to.activate.com/',
+					'ACTIVATION_LINK'	=> "<a href='http://whereever.to.activate.com/'>http://whereever.to.activate.com/</a>",
 					'USERURL'			=> "www.user-website.com",
 					'PASSWORD'			=> "test-password",
 					'LOGINNAME'			=> "test-loginname"
