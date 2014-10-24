@@ -38,9 +38,9 @@ if (isset($_POST['update_settings']))
 			unset($_POST['a_password2']);
 			if (varsettrue($pref['allowEmailLogin']))
 			{
-				$user_prefs = unserialize($currentUser['user_prefs']);
+				$user_prefs = e107::getArrayStorage()->unserialize($currentUser['user_prefs']);
 				$user_prefs['email_password'] = $userMethods->HashPassword($new_pass, $email);
-				$userData['data']['user_prefs'] = serialize($user_prefs);
+				$userData['data']['user_prefs'] = e107::getArrayStorage()->serialize($user_prefs);
 			}
 
 			$userData['data']['user_pwchange'] = time();
