@@ -8,11 +8,27 @@ if (!defined('e107_INIT')) { exit; }
 
 class siteinfo_shortcodes // must match the folder name of the plugin. 
 {
-	function sc_sitebutton()
+	function sc_sitebutton($parm='')
 	{
-		$path = ($_POST['sitebutton'] && $_POST['ajax_used']) ? e107::getParser()->replaceConstants($_POST['sitebutton']) : (strstr(SITEBUTTON, 'http:') ? SITEBUTTON : e_IMAGE.SITEBUTTON);
+		
+		if($_POST['sitebutton'] && $_POST['ajax_used'])
+		{
+			$path = e107::getParser()->replaceConstants($_POST['sitebutton']);
+		}
+		else 
+		{
+			$path = (strstr(SITEBUTTON, 'http:') ? SITEBUTTON : e_IMAGE.SITEBUTTON);
+		}
+		
+		if($parm == 'email')
+		{
+			$path = e107::getConfig()->get('sitebutton');
+		}
 		//TODO use CSS class?
-		return '<a href="'.SITEURL.'"><img src="'.$path.'" alt="'.SITENAME.'" /></a>';
+		if(!empty($path))
+		{
+			return '<a href="'.SITEURL.'"><img src="'.$path.'" alt="'.SITENAME.'" /></a>';
+		}
 	}
 
 	function sc_sitedisclaimer()

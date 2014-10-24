@@ -172,8 +172,8 @@ $EMAIL_TEMPLATE['default']['header']		= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHT
 												<style type='text/css'>
 													body { padding:10px; background-color: #E1E1E1 } 
 													 div#body { padding:10px; width: 800px; background-color: #FFFFFF; border-radius: 5px; font-family: helvetica,arial }
-													.video-thumbnail { max-width: 100% }
-													
+													.video-thumbnail { max-width: 400px }
+													.media img { max-width:600px }
 												</style>
 												</head>
 												
@@ -181,7 +181,7 @@ $EMAIL_TEMPLATE['default']['header']		= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHT
 												<div id='body'>
 												";
 
-$EMAIL_TEMPLATE['default']['body']			= "{BODY}";											
+$EMAIL_TEMPLATE['default']['body']			= "{BODY}<br />{MEDIA1}{MEDIA2}{MEDIA3}{MEDIA4}{MEDIA5}";											
 
 $EMAIL_TEMPLATE['default']['footer']		= "<br /><br />
 												{SITENAME=link}
@@ -226,7 +226,7 @@ $EMAIL_TEMPLATE['signup']['body'] 			= "
 												{SITENAME=link}<br />
 												{SITEURL}
 											
-												<br /><br />".($includeSiteButton ? "<a href='".SITEURL."' title=''>{SITEBUTTON}</a>" : '')."
+												<br /><br />{SITEBUTTON=email}
 												</div>
 												
 												";
