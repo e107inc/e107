@@ -74,7 +74,7 @@ if(isset($_POST['updateeufs']))
 	{
 		$pref['auth_extended'] = $au;				// @TODO:
 		save_prefs();
-		$admin_log->log_event('AUTH_02',$au,'');
+		e107::getLog()->add('AUTH_02',$au,'');
 	}
 }
 

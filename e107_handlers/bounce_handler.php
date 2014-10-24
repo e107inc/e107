@@ -4,7 +4,7 @@
 
  // WARNING, any echoed output from this script will be returned to the sender as a bounce message. 
  
- $_E107['debug'] = FALSE;
+ $_E107['debug'] = true;
  
  
 if (!defined('e107_INIT'))
@@ -33,33 +33,62 @@ class e107Bounce
 		
 		if(!$strEmail)
 		{
+			if($_E107['debug'] === true)
+			{
+				echo "Couldn't get email data";
+			}
 			return;
 		}
 		
 		$multiArray = Bouncehandler::get_the_facts($strEmail);
 		$head 		= BounceHandler::parse_head($strEmail); 
-
-	 	$e107_userid = (isset($head['X-e107-id'])) ? intval($head['X-e107-id']) : $this->getHeader($strEmail,'X-e107-id');
+		$message 	= null;
+		
+		$identifier = deftrue('MAIL_IDENTIFIER', 'X-e107-id');
+	 	$e107_userid = (isset($head[$identifier])) ? $head[$identifier] : $this->getHeader($strEmail, $identifier);
 		
 		if($_E107['debug'])
 		{
 			require_once(e_HANDLER."mail.php");
 			$message = "Your Bounce Handler is working. The data of the email you sent is displayed below.<br />";
+			
 			if($e107_userid)
 			{
 				$message .= "A user-id was detected in the email you sent: <b>".$e107_userid."</b><br />";
 			}
-			$message .= "<br />";
-			$message .= "<pre>".print_r($multiArray,TRUE). "</pre>";
-			$message .= "<pre>".$strEmail. "</pre>";						
-	    	sendemail($pref['siteadminemail'], SITENAME." :: Bounce-Handler.", $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);	
+			
+			$message .= "<br /><h4>Head</h4>";
+			$message .= print_a($head,true);
+			$message .= "<h4>Emails Found</h4><pre>".print_r($multiArray,TRUE). "</pre>";
+			
+			$message .= "<pre>".$strEmail. "</pre>";		
+							
+	    	if(varset($_GET['eml']))
+			{
+		//		echo $message;	
+			}
+			else
+			{
+			}
 		}	
 		
-		if($e107_userid && ($this->setUser_Bounced($e107_userid)==TRUE))
+		
+		
+		if(!empty($e107_userid))
 		{
-			return;	
+			if($errors = $this->setUser_Bounced($e107_userid))
+			{
+				$mesage .= print_a($errors);	
+			}
+
 		}
-				
+		
+		if(!empty($message))
+		{
+			sendemail($pref['siteadminemail'], SITENAME." :: Bounce-Handler.", $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);	
+		}
+		
+		return;		
 /*		echo "<pre>";
 		print_r($multiArray);
 		echo "</pre>"; 
@@ -68,7 +97,7 @@ class e107Bounce
 		
 		foreach($multiArray as $the)
 		{
-			$the['user_id'] = $head['X-e107-id'];
+			$the['user_id'] = $head[$identifier];
 			$the['user_email'] = $the['recipient'];
 			unset($the['recipient']);
 
@@ -76,7 +105,7 @@ class e107Bounce
 			{
 	            case 'failed':
 					e107::getEvent()->trigger('email-bounce-failed', $the);
-					$this->setUser_Bounced($the['user_email']);
+					$this->setUser_Bounced(null, $the['user_email']);
 					break;
 					
 	            case 'transient':
@@ -85,7 +114,7 @@ class e107Bounce
 					e107::getEvent()->trigger('email-bounce-transient', $the);
 	                if($num_attempts  > 10)
 					{
-	                    $this->setUser_Bounced($the['user_email'], $the['user_id']);
+	                    $this->setUser_Bounced($the['user_id'], $the['user_email']);
 	                }
 	                else
 					{
@@ -111,27 +140,28 @@ class e107Bounce
 		$tmp = explode("\n",$message); 
 		foreach($tmp as $val)
 		{
-			if(strpos($val,$id.":")!==FALSE)
+			if(strpos($val,$id.":")!== false)
 			{
-	            return intval(str_replace($id.":","",$val));
+	            return str_replace($id.":","",$val);
 			}
 		}   
 	}
 
 
 	
-	function setUser_Bounced($email, $bounceString = '')
+	function setUser_Bounced($bounceString = '', $email='' )
 	{
 		if(!$email && !$bounceString){ return; }
 	//	echo "Email bounced ID: ".$id_or_email;	
 		require_once(e_HANDLER.'mail_manager_class.php');
-		$mailHandler = new e107MailManager();
-		if ($mailManager->markBounce($bounceString, $email))
-		{	// Success
+
+		$mailManager = new e107MailManager();
+		if ($errors = $mailManager->markBounce($bounceString, $email))
+		{	
+			return $errors;  // Failure
 		}
-		// Failure
-	//	$query = (is_numeric($id_or_email)) ? "user_ban = 3 WHERE user_id = ".intval($id_or_email)." LIMIT 1" : "user_ban = 3 WHERE user_email = '".$id_or_email."' ";
-	//	return e107::getDb()->db_Update('user',$query);
+		
+
 	}
 
 	

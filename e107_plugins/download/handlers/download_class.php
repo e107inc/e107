@@ -379,8 +379,8 @@ class download
 		unset($text);
 	
 		if ($dlrow['download_comment']) 
-		{
-			$comments = e107::getComment()->compose_comment("download", "comment", $id, $width,$dlrow['download_name'], FALSE, true);
+		{			
+			$comments = e107::getComment()->compose_comment("download", "comment", $dlrow['download_id'], $width, $dlrow['download_name'], FALSE, true);
 			$ret .= $ns->tablerender($comments['caption'], $comments['comment'].$comments['comment_form'], 'download-comments', true);
 		}	
 		

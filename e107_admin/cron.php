@@ -383,7 +383,7 @@ class cron_admin_ui extends e_admin_ui
 			elseif (!$active) // show instructions
 			{
 				$setpwd_message = $frm->open("generate")."<small>"
-				.LAN_CRON_15.":</small><br /><pre style='color:black'>".rtrim($_SERVER['DOCUMENT_ROOT'], '/').e_HTTP."cron.php ".$pref['e_cron_pwd'];
+				.LAN_CRON_15.":</small><br /><pre style='color:black'>".rtrim($_SERVER['DOCUMENT_ROOT'], '/').e_HTTP."cron.php token=".$pref['e_cron_pwd'].' >/dev/null 2>&1';
 				
 				$setpwd_message .= "</pre><small>". LAN_CRON_16."</small>";
 				if(e_DOMAIN && file_exists("/usr/local/cpanel/version"))

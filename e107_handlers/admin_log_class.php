@@ -136,7 +136,7 @@ class e_admin_log
 	
 
 	/**
-	 * Add a Save an event into the admin log. 
+	 * Add a Save an event into the admin, rolloing or user log. 
 	 * 
 	 * Alternative admin log entry point - compatible with legacy calls, and a bit simpler to use than the generic entry point.
 	 * ($eventcode has been added - give it a reference to identify the source module, such as 'NEWS_12' or 'ECAL_03')
@@ -150,11 +150,12 @@ class e_admin_log
 	 *
 	 * @param string $event_title
 	 * @param mixed $event_details
-	 * @param integer $event_type [optional] Log level
-	 * @param unknown $event_code [optional]
+	 * @param integer $event_type [optional] Log level eg. E_LOG_INFORMATIVE, E_LOG_NOTICE, E_LOG_WARNING, E_LOG_FATAL
+	 * @param string $event_code [optional] - eg. 'BOUNCE'
+	 * @param integer $target [optional]  LOG_TO_ADMIN, LOG_TO_AUDIT, LOG_TO_ROLLING
 	 * @return e_admin_log
 	 */
-	public function add($event_title, $event_detail, $event_type = E_LOG_INFORMATIVE , $event_code = '')
+	public function add($event_title, $event_detail, $event_type = E_LOG_INFORMATIVE , $event_code = '', $target = LOG_TO_ADMIN )
 	{
 		if ($event_code == '')
 		{
@@ -200,7 +201,7 @@ class e_admin_log
 		}
 		
 		
-		$this->e_log_event($event_type, -1, $event_code, $event_title, $event_detail, FALSE, LOG_TO_ADMIN);
+		$this->e_log_event($event_type, -1, $event_code, $event_title, $event_detail, FALSE, $target);
 
 		return $this;
 	}
@@ -383,12 +384,13 @@ class e_admin_log
 	 */
 	function user_audit($event_type, $event_data, $id = '', $u_name = '')
 	{
-		global $e107,$tp,$pref;
+		global $e107,$tp;
 		list($time_usec, $time_sec) = explode(" ", microtime()); // Log event time immediately to minimise uncertainty
 		$time_usec = $time_usec * 1000000;
 
 		// See whether we should log this
-		$user_logging_opts = array_flip(explode(',', varset($pref['user_audit_opts'], '')));
+		$user_logging_opts = e107::getConfig()->get('user_audit_opts');
+		
 		if (!isset($user_logging_opts[$event_type]))
 			return; // Finished if not set to log this event type
 

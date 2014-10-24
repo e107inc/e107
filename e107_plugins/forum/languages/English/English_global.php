@@ -2,7 +2,7 @@
 
 define("LAN_PLUGIN_FORUM_NAME", "Forum");
 define("LAN_PLUGIN_FORUM_DESC", "This plugin is a fully featured forum system.");
-
+define("LAN_PLUGIN_FORUM_POSTS", "Forum posts");
 // Notify
 // TODO - LAN cleanup (see e_notify)
 

@@ -75,7 +75,7 @@ class poll
 			{
 				admin_purge_related("poll", $existing);
 			}
-			$admin_log->log_event('POLL_01',LAN_AL_POLL_01.': '.$existing,'');
+			e107::getLog()->add('POLL_01',LAN_AL_POLL_01.': '.$existing,'');
 			//return POLL_ADLAN08;
 		}
 	}
@@ -158,7 +158,7 @@ class poll
 				$sql->update("polls", "poll_votes='".$foo['poll_votes']."' WHERE poll_id='".intval(POLLID)."' ");
 			}
 
-			$admin_log->log_event('POLL_02','ID: '.POLLID.' - '.$poll_title,'');
+			e107::getLog()->add('POLL_02','ID: '.POLLID.' - '.$poll_title,'');
 			//$message = POLLAN_45;
 		} 
 		else 
@@ -181,7 +181,7 @@ class poll
 					}
 				}
 				$ret = $sql->insert("polls", "'0', ".time().", ".intval($active_start).", ".intval($active_end).", ".ADMINID.", '{$poll_title}', '{$poll_options}', '{$votes}', '', '1', '".$tp->toDB($poll_comment)."', '".intval($multipleChoice)."', '".intval($showResults)."', '".intval($pollUserclass)."', '".intval($storageMethod)."'");
-				$admin_log->log_event('POLL_03','ID: '.$ret.' - '.$poll_title,'');		// Intentionally only log admin-entered polls
+				e107::getLog()->add('POLL_03','ID: '.$ret.' - '.$poll_title,'');		// Intentionally only log admin-entered polls
 			}
 			else
 			{

@@ -48,7 +48,7 @@ if(isset($_POST['updatesettings']))
 	
 	if($changed)
 	{
-		$admin_log->log_event(($pref['maintainance_flag'] == 0) ? 'MAINT_02' : 'MAINT_01', $pref['maintainance_text'], E_LOG_INFORMATIVE, '');
+		e107::getLog()->add(($pref['maintainance_flag'] == 0) ? 'MAINT_02' : 'MAINT_01', $pref['maintainance_text'], E_LOG_INFORMATIVE, '');
 		save_prefs();
 		$mes->addSuccess(UGFLAN_1);
 	}

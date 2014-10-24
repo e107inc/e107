@@ -547,7 +547,7 @@ function renderProgress($caption, $step)
 	   				<div class="bar" id="progress"></div>
 				</div>
 			
-			<a id="'.$thisStep.'" data-loading-text="Please wait..." data-progress="' . e_SELF . '" data-progress-mode="'.$step.'" data-progress-show="'.$nextStep.'" data-progress-hide="'.$thisStep.'" class="btn btn-primary e-progress" >'.$caption.'</a>
+			<a id="'.$thisStep.'" data-loading-text="Please wait..." data-progress="' . e_SELF . '"  data-progress-target="progress"  data-progress-mode="'.$step.'" data-progress-show="'.$nextStep.'" data-progress-hide="'.$thisStep.'" class="btn btn-primary e-progress" >'.$caption.'</a>
 			</div>
 		</div>';
 

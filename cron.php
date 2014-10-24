@@ -31,6 +31,11 @@ $_E107['no_menus'] = TRUE;
 require_once(realpath(dirname(__FILE__)."/class2.php"));
 
 	$pwd = ($_E107['debug'] && $_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : trim($_SERVER['argv'][1]);
+	
+	if(empty($pwd) && !empty($_GET['token']))
+	{
+		$pwd = $_GET['token'];	
+	}
 		
 	if($pref['e_cron_pwd'] != $pwd)
 	{	
@@ -42,10 +47,16 @@ require_once(realpath(dirname(__FILE__)."/class2.php"));
 		Stored in e107: ".$pref['e_cron_pwd']."<br /><br />
 		You should regenerate the cron command in admin and enter it again in your server configuration. 
 		";
+		
+		$message .= "<h4>Debug Info</h4>";
+		$message .= print_a($_SERVER,true); 
+		$message .= print_a($_ENV,true); 
+		$message .= print_a($_GET,true); 
 						
 	    sendemail($pref['siteadminemail'], "e107 - Cron Schedule Misconfigured.", $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);
 		exit;
 	}
+
 
 e107::getCache()->CachePageMD5 = '_';
 e107::getCache()->set('cronLastLoad',time(),TRUE,FALSE,TRUE);

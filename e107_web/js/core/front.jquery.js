@@ -1,4 +1,4 @@
-
+/* global $ */
 
 $(document).ready(function()
 {
@@ -37,8 +37,8 @@ $(document).ready(function()
 	
 		$(".e-comment-submit").live("click", function(){
 			
-			var url 	= $(this).attr("data-target");
-			var sort 	= $(this).attr("data-sort");
+			var url		= $(this).attr("data-target");
+			var sort	= $(this).attr("data-sort");
 			var pid 	= parseInt($(this).attr("data-pid"));
 			var formid 	= (pid != '0') ? "#e-comment-form-reply" : "#e-comment-form";
 			var data 	= $('form'+formid).serialize() ;
@@ -231,7 +231,7 @@ $(document).ready(function()
 			  url: url + '?ajax_used=1&mode=delete',
 			  data: { itemid: sp[3] },
 			  success: function(data) {
-			  	var a = $.parseJSON(data);
+			var a = $.parseJSON(data);
 			  
 				if(!a.error)
 				{
@@ -248,23 +248,23 @@ $(document).ready(function()
 		
 		$(".e-comment-approve").live("click", function(){
 			
-			var url 	= $(this).attr("data-target");
-			var sp 		= $(this).attr('id').split("-");	
-			var id 		= "#comment-status-" + sp[3];
+			var url = $(this).attr("data-target");
+			var sp = $(this).attr('id').split("-");	
+			var id = "#comment-status-" + sp[3];
 	
 			$.ajax({
 			  type: 'POST',
 			  url: url + '?ajax_used=1&mode=approve',
 			  data: { itemid: sp[3] },
 			  success: function(data) {
-			  	
+	
 			  
-			  	var a = $.parseJSON(data);
-				
-			  	
+			var a = $.parseJSON(data);
+			
+	
 				if(!a.error)
 				{		
-					//TODO modify status of html on page. 	
+					//TODO modify status of html on page 	
 					 $(id).text(a.html)
 					 .fadeIn('slow')
 					 .addClass('e-comment-edit-success'); //TODO another class?
@@ -289,28 +289,28 @@ $(document).ready(function()
 		
 		$(".e-rate-thumb").live("click", function(){
 					
-  			var src 		= $(this).attr("href");	
-  			var thumb 		= $(this);	
-  			var tmp 		= src.split('#');
-  			var	id 			= tmp[1];
-  			var	src 		= tmp[0];
-  			
+			var src 		= $(this).attr("href");	
+			var thumb 		= $(this);	
+			var tmp 		= src.split('#');
+			var	id 			= tmp[1];
+			var	src 		= tmp[0];
+			
  
-  			$.ajax({
+			$.ajax({
 				type: "POST",
 				url: src,
 				data: { ajax_used: 1, mode: 'thumb' },
 				dataType: "html",
 				success: function(html) {
 					
-					if(html == '')
+					if(html === '')
 					{
 						return false;	
 					}
 					
 					var tmp = html.split('|');
-  					up= tmp[0];
-  					down = tmp[1];	
+					up= tmp[0];
+					down = tmp[1];	
 					
 				    $('#'+id +'-up').text(up);
 				    $('#'+id +'-down').text(down);
@@ -322,5 +322,31 @@ $(document).ready(function()
 			return false; 	
 		});
 
+	
+	
+	
+	
+		/* Switch to Tab containing invalid form field. */
+		$('input[type=submit],button[type=submit]').on('click', function() {
+			
+			var id = $(this).closest('form').attr('id'), found = false;
+				
+			$('#'+ id).find(':invalid').each(function (index, node) {
+
+			var tab = $('#'+node.id).closest('.tab-pane').attr('id');
+			// console.log(node.id);
+			
+			if(tab && (found === false))
+			{
+				$('a[href="#'+tab+'"]').tab('show');
+					found = true;
+				}
+	
+			});
+            
+            return true;
+		});
+	
+	
 	
 });

@@ -99,7 +99,7 @@ if (isset($_POST['update_menu']))
 	}
 	//$menuPref->setPref('login_menu', $loginPrefs);
 	$menuPref->save(false, true, false);
-	$admin_log->log_event('MISC_03','', E_LOG_INFORMATIVE,'');
+	e107::getLog()->add('MISC_03','', E_LOG_INFORMATIVE,'');
 	//$ns->tablerender("", '<div style=\'text-align:center\'><b>'.LAN_SETSAVED.'</b></div>');
 	$mes->addSuccess(LAN_SAVED);
 	$ns->tablerender("", $mes->render() . $text); 

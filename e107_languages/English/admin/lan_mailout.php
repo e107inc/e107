@@ -22,8 +22,8 @@ define("LAN_MAILOUT_08", "Send Email");
 define("LAN_MAILOUT_09", "Send format");
 define("LAN_MAILOUT_10", "User Subscribed");
 define("LAN_MAILOUT_11", "Insert Variables");
-define("LAN_MAILOUT_12", "All Members");
-define("LAN_MAILOUT_13", "All Unverified Members ");
+define("LAN_MAILOUT_12", "All Users");
+define("LAN_MAILOUT_13", "All Unverified Users ");
 define("LAN_MAILOUT_14", "Display Name");
 define("LAN_MAILOUT_15", "Mailout");
 define("LAN_MAILOUT_16", "Username");
@@ -250,7 +250,7 @@ define("LAN_MAILOUT_231", "Bounced emails - Processing method");
 define("LAN_MAILOUT_232", "None");
 define("LAN_MAILOUT_233", "Auto-process script");
 define("LAN_MAILOUT_234", "Mail account");
-define("LAN_MAILOUT_235", "(Your server has to be configured to use this script)");
+define("LAN_MAILOUT_235", "(Your server must forward or 'pipe' from the email address above to the script path above.)");
 define("LAN_MAILOUT_236", "Last Bounce Processed");
 define("LAN_MAILOUT_237", "Summary counters updated on --COUNT-- emails");
 define("LAN_MAILOUT_238", "Earliest time to send");
@@ -279,6 +279,8 @@ define("LAN_MAILOUT_259", "");
 
 define("LAN_SEND", "Send");
 define("LAN_HOLD", "Hold");
+define("LAN_MAILOUT_260", "User-Type");
+
 //define("LAN_SUBMIT", "Do it!"); LAN_RUN
 
 ?>
