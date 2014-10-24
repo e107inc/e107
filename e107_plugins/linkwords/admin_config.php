@@ -66,7 +66,7 @@ if(isset($deltest[LAN_DELETE]))
 	if ($sql->db_Count('linkwords', '(*)', "WHERE linkword_id = ".$delete_id))
 	{
 		$sql->db_Delete('linkwords', 'linkword_id='.$delete_id);
-		$admin_log->log_event('LINKWD_03','ID: '.$delete_id,'');
+		e107::getLog()->add('LINKWD_03','ID: '.$delete_id,'');
 		$e107->ecache->clear_sys(LW_CACHE_TAG);
 		//$message = LWLAN_19;
 		$mes->addSuccess(LAN_DELETED);
@@ -116,7 +116,7 @@ if (isset($_POST['saveopts_linkword']))
 	save_prefs();
 	$logString = implode(', ',$pref['lw_context_visibility']).'[!br!]'.$pref['lw_page_visibility'].'[!br!]'.$pref['lw_ajax_enable'].'[!br!]'.$pref['lw_notsamepage'];
 	$e107->ecache->clear_sys(LW_CACHE_TAG);
-	$admin_log->log_event('LINKWD_04',$logString,'');
+	e107::getLog()->add('LINKWD_04',$logString,'');
 }
 
 
@@ -140,7 +140,7 @@ if (isset($_POST['submit_linkword']) || isset($_POST['update_linkword']))
 		{
 			if ($sql->db_Insert('linkwords', $data))
 			{
-				$admin_log->log_event('LINKWD_01',$logString,'');
+				e107::getLog()->add('LINKWD_01',$logString,'');
 				$mes->addSuccess(LAN_CREATED);
 			}
 			else
@@ -156,7 +156,7 @@ if (isset($_POST['submit_linkword']) || isset($_POST['update_linkword']))
 			{
 				$mes->addSuccess(LAN_UPDATED);
 				$logString = 'ID: '.$id.'[!br!]'.$logString;
-				$admin_log->log_event('LINKWD_02',$logString,'');
+				e107::getLog()->add('LINKWD_02',$logString,'');
 			}
 			else
 			{

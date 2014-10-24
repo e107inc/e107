@@ -1260,10 +1260,20 @@ class e107
 
 	/**
 	 * Retrieve admin log singleton object
-	 *
+	 * @Deprecated - use e107::getLog();
 	 * @return e_admin_log
 	 */
 	public static function getAdminLog()
+	{
+		return self::getSingleton('e_admin_log', true);
+	}
+
+	/**
+	 * Retrieve admin log singleton object
+	 *
+	 * @return e_admin_log
+	 */
+	public static function getLog()
 	{
 		return self::getSingleton('e_admin_log', true);
 	}
@@ -1803,9 +1813,10 @@ class e107
 	 * Retrieves config() from all plugins for addons such as e_url.php, e_cron.php, e_sitelink.php
 	 * @param string $addonName eg. e_cron, e_url
 	 * @param string $className [optional] (if different from addonName)
+	 * @param string $methodName [optional] (if different from 'config')
 	 * @return none
 	 */
-	public function getAddonConfig($addonName, $className = '')
+	public function getAddonConfig($addonName, $className = '', $methodName='config', $param=null )
 	{
 		$new_addon = array();
 		$sql = e107::getDb(); // Might be used by older plugins. 
@@ -1827,7 +1838,7 @@ class e107
 					include_once(e_PLUGIN.$key.'/'.$filename.'.php');
 
 					$class_name = $key.'_'.$className;
-					$array = self::callMethod($class_name, 'config');
+					$array = self::callMethod($class_name, $methodName,$param);
 
 					if($array)
 					{
@@ -1841,9 +1852,10 @@ class e107
 		return $new_addon;
 	}
 
+
 	/**
 	 * Safe way to call user methods.
-	 * @param string $class_name
+	 * @param string|object $class_name 
 	 * @param string $method_name
 	 * @return boolean FALSE
 	 */
@@ -1851,9 +1863,19 @@ class e107
 	{
 		$mes = e107::getMessage();
 
-		if(class_exists($class_name))
+		if(is_object($class_name) || class_exists($class_name))
 		{
-			$obj = new $class_name;
+			
+			if(is_object($class_name))
+			{
+				$obj = $class_name;
+				$class_name = get_class($obj);
+			}
+			else 
+			{
+				$obj = new $class_name;	
+			}
+			
 			if(method_exists($obj, $method_name))
 			{
 				if(E107_DBG_INCLUDES)
@@ -1869,6 +1891,7 @@ class e107
 		}
 		return FALSE;
 	}
+
 
 	/**
 	 * Get theme name or path.
@@ -2250,6 +2273,8 @@ class e107
 		
 		//FIXME XXX URGENT - Add support for _WRAPPER and $sc_style BC. - save in registry and retrieve in getScBatch()?
 		// Use: list($pre,$post) = explode("{---}",$text,2); 
+		
+		$tp = self::getParser(); // BC FIx - avoid breaking old templates due to missing globals. 
 
 		if(null === self::getRegistry($regPath))
 		{

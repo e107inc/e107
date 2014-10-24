@@ -68,10 +68,21 @@ if (isset($_POST['delp']))
 $qs = explode(".", e_QUERY);
 $self_page =($qs[0] == 'id' && intval($qs[1]) == USERID);
 
-include_once(e107::coreTemplatePath('user')); //correct way to load a core template.
+
+$USER_TEMPLATE = e107::getCoreTemplate('user');
+e107::scStyle($sc_style);
+
+if(empty($USER_TEMPLATE)) // BC Fix for loading old templates. 
+{
+	 echo "DEBUG: Using v1.x user template";
+	include_once(e107::coreTemplatePath('user')); //correct way to load a core template.	
+}
+
+
+$TEMPLATE = str_replace('{USER_EMBED_USERPROFILE}','{USER_ADDONS}', $TEMPLATE); // BC Fix
 
 $user_shortcodes = e107::getScBatch('user');
-
+$user_shortcodes->wrapper('user/view');
 
 
 
@@ -214,7 +225,7 @@ echo "<div class='nextprev'>&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}")."<
 function renderuser($uid, $mode = "verbose")
 {
 	global $sql, $pref, $tp, $sc_style, $user_shortcodes;
-	global $EXTENDED_START, $EXTENDED_TABLE, $EXTENDED_END, $USER_SHORT_TEMPLATE, $USER_FULL_TEMPLATE;
+	global $EXTENDED_START, $EXTENDED_TABLE, $EXTENDED_END, $USER_SHORT_TEMPLATE, $USER_FULL_TEMPLATE, $USER_TEMPLATE;
 	global $user;
 
 	if(is_array($uid))
@@ -233,7 +244,7 @@ function renderuser($uid, $mode = "verbose")
 
 	if($mode == 'verbose')
 	{
-		return $tp->parseTemplate($USER_FULL_TEMPLATE, TRUE, $user_shortcodes);
+		return $tp->parseTemplate($USER_TEMPLATE['view'], TRUE, $user_shortcodes);
 	}
 	else
 	{

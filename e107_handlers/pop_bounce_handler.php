@@ -217,6 +217,8 @@ class pop3BounceHandler
 	 */
 	public function processBounces()
 	{
+		$identifier = deftrue('MAIL_IDENTIFIER', 'X-e107-id');
+		
 		$this->connect();
 		$tot = $this->getTotalMails();		// Get all the emails
 		for ($i = 1; $i <= $tot; $i++)
@@ -227,7 +229,7 @@ class pop3BounceHandler
 				//print_a($head);
 				$body = $this->getBody($i);
 				$e107Header = '';
-				if (preg_match('#.*X-e107-id:(.*?)[\n\r]#',$body, $result))
+				if (preg_match('#.*'.$identifier.':(.*?)[\n\r]#',$body, $result))
 				{
 					$e107Header = varset($result[1],'');
 				}

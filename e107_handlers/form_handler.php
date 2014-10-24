@@ -208,6 +208,11 @@ class e_form
 		$c = 0;
 		foreach($array as $key=>$tab)
 		{
+			if(is_numeric($key))
+			{
+				$key = 'tab-'.$this->name2id($tab['caption']);
+			}
+			
 			$active = ($c == 0) ? ' class="active"' : '';
 			$text .= '<li'.$active.'><a href="#'.$key.'" data-toggle="tab">'.$tab['caption'].'</a></li>';
 			$c++;
@@ -222,6 +227,11 @@ class e_form
 		$c=0;
 		foreach($array as $key=>$tab)
 		{
+			if(is_numeric($key))
+			{
+				$key = 'tab-'.$this->name2id($tab['caption']);
+			}
+			
 			$active = ($c == 0) ? ' active' : '';
 			$text .= '<div class="tab-pane'.$active.'" id="'.$key.'">'.$tab['text'].'</div>';
 			$c++;
@@ -399,12 +409,14 @@ class e_form
 		}
 			
 		$mlength = vartrue($maxlength) ? "maxlength=".$maxlength : "";
+		
+		$type = varset($options['type']) == 'email' ? 'email' : 'text'; // used by $this->email(); 
 				
 		$options = $this->format_options('text', $name, $options);
 		
 	
 		//never allow id in format name-value for text fields
-		return "<input type='text' name='{$name}' value='{$value}' {$mlength} ".$this->get_attributes($options, $name)." />";
+		return "<input type='".$type."' name='{$name}' value='{$value}' {$mlength} ".$this->get_attributes($options, $name)." />";
 	}
 
 
@@ -440,11 +452,8 @@ class e_form
 	
 	function email($name, $value, $maxlength = 200, $options = array())
 	{
-		$options = $this->format_options('text', $name, $options);
-				
-		//never allow id in format name-value for text fields
-		return "<input type='email' name='{$name}' value='{$value}' maxlength='{$maxlength}' ".$this->get_attributes($options, $name)." />
-		";
+		$options['type'] = 'email';
+		return $this->text($name,$value,$maxlength,$options);
 	}
 
 
@@ -890,7 +899,7 @@ class e_form
 		}
 		else
 		{			
-			$text .= "<input class='{$class} input-".$xsize."' type='text' size='{$size}' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-date-ampm='{$ampm}'  data-date-language='".e_LAN."' data-date-firstday='{$firstDay}' {$required} />";		
+			$text .= "<input class='{$class} input-".$xsize." form-control' type='text' size='{$size}' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-date-ampm='{$ampm}'  data-date-language='".e_LAN."' data-date-firstday='{$firstDay}' {$required} />";		
 		}
 
 	//	$text .= "ValueFormat: ".$dateFormat."  Value: ".$value;
@@ -1085,6 +1094,7 @@ class e_form
 	 * @param string $name
 	 * @param number $value
 	 * @param array $options
+	 * @example  Use 
 	 */
 	public function progressBar($name,$value,$options=array())
 	{
@@ -1094,11 +1104,28 @@ class e_form
 		}		
 			
 		$class = vartrue($options['class'],'');	
+		$target = $this->name2id($name);
 		
-		return	"<div class='progress ".$class."' id='".$this->name2id($name)."'>
-   		 	<div class='bar' style='width: ".number_format($value,1)."%'></div>
+		$striped = (vartrue($options['btn-label'])) ? ' progress-striped active' : '';	
+		
+		$text =	"<div class='progress ".$class."{$striped}' >
+   		 	<div id='".$target."' class='progress-bar bar' style='width: ".number_format($value,1)."%'></div>
     	</div>";
-
+		
+		$loading = vartrue($options['loading'],'Please wait...');
+		
+		$buttonId = $target.'-start';
+		
+		if(vartrue($options['btn-label']))
+		{
+			$text .= '<a id="'.$buttonId.'" data-loading-text="'.$loading.'" data-progress-target="'.$target.'" data-progress="' . $options['url'] . '" data-progress-mode="'.varset($options['mode'],0).'" data-progress-show="'.$nextStep.'" data-progress-hide="'.$buttonId.'" class="btn btn-primary e-progress" >'.$options['btn-label'].'</a>';
+			$text .= ' <a data-progress-target="'.$target.'" class="btn btn-danger e-progress-cancel" >'.LAN_CANCEL.'</a>';
+		
+		}
+		
+		
+		return $text;
+		
 	}
 
 
@@ -1501,6 +1528,13 @@ class e_form
 
 	function select_open($name, $options = array())
 	{
+		if(!is_array($options)) parse_str($options, $options);
+		
+		if(vartrue($options['size']) && !is_numeric($options['size']))
+		{
+			$options['class'] .= " input-".$options['size'];	
+			unset($options['size']); // don't include in html 'size='. 	
+		}
 		$options = $this->format_options('select', $name, $options);
 	
 		return "<select name='{$name}'".$this->get_attributes($options, $name).">";
@@ -1545,7 +1579,11 @@ class e_form
 
 		if(isset($options['default']))
 		{
-			$text .= $this->option($options['default'], varset($options['defaultValue']));
+			if($options['default'] === 'blank')
+			{
+				$options['default'] = '&nbsp;';			
+			}
+			$text .= $this->option($options['default'], varset($options['defaultValue'],''));
 		}
 		elseif($defaultBlank)
 		{
@@ -1934,6 +1972,7 @@ class e_form
 			case 'create':
 			case 'import':
 			case 'submit':
+			case 'success':
 				$options['class'] .= 'btn-success';
 			break;
 			
@@ -1946,6 +1985,7 @@ class e_form
 			break;
 
 			case 'delete':
+			case 'danger':
 				$options['class'] .= 'btn-danger';
 				$options['other'] = 'data-confirm="'.LAN_JSCONFIRM.'"';
 			break;
@@ -1956,6 +1996,7 @@ class e_form
 			
 			case 'other':
 			case 'login':	
+			case 'primary':
 				$options['class'] .= 'btn-primary';
 			break;	
 			
@@ -2659,7 +2700,15 @@ class e_form
 	 */
 	private function renderInline($dbField, $pid, $fieldName, $curVal, $linkText, $type='text', $array=null)
 	{
-		$source = str_replace('"',"'",json_encode($array, JSON_FORCE_OBJECT)); // SecretR - force object, fix number of bugs
+		$jsonArray = array();
+		foreach($array as $k=>$v)
+		{
+			$jsonArray[$k] = str_replace("'", "`", $v);	
+		}
+		
+		$source = str_replace('"',"'",json_encode($jsonArray, JSON_FORCE_OBJECT)); // SecretR - force object, fix number of bugs
+		
+		
 		$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 		
 		$text = "<a class='e-tip e-editable editable-click' data-name='".$dbField."' ";
@@ -3245,10 +3294,15 @@ class e_form
 					// Inline Editing.  
 				if(!vartrue($attributes['noedit']) && vartrue($parms['editable'])) // avoid bad markup, better solution coming up
 				{
+					
 					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 					$methodParms = call_user_func_array(array($this, $method), array($value, 'inline', $parms));
-					$source = str_replace('"',"'",json_encode($methodParms, JSON_FORCE_OBJECT));
-					$value = "<a class='e-tip e-editable editable-click' data-type='select' data-value='".$_value."' data-name='".$field."' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\"  data-pk='".$id."' data-url='".e_SELF."?mode=&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$value."</a>";
+					$xtype = 'select';
+				
+					$value = $this->renderInline($field, $id, $attributes['title'], $_value, $value, $xtype, $methodParms);
+				
+				//	$source = str_replace('"',"'",json_encode($methodParms, JSON_FORCE_OBJECT));
+				//	$value = "<a class='e-tip e-editable editable-click' data-type='select' data-value='".$_value."' data-name='".$field."' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\"  data-pk='".$id."' data-url='".e_SELF."?mode=&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$value."</a>";
 				}
 							
 			break;
@@ -3375,8 +3429,14 @@ class e_form
 				$ret =  $this->text($key, e107::getIPHandler()->ipDecode($value), 32, $parms);
 			break;
 
-			case 'url':
 			case 'email':
+				$maxlength = vartrue($parms['maxlength'], 255);
+				unset($parms['maxlength']);
+				$ret =  vartrue($parms['pre']).$this->email($key, $value, $maxlength, $parms).vartrue($parms['post']); // vartrue($parms['__options']) is limited. See 'required'=>true
+			break;
+
+			case 'url':
+		//	case 'email':
 			case 'text':
 			case 'password': // encrypts to md5 when saved. 
 				$maxlength = vartrue($parms['maxlength'], 255);
@@ -3390,11 +3450,15 @@ class e_form
 
 			case 'textarea':
 				$text = "";
-				if(vartrue($parms['append'])) // similar to comments - TODO TBD. a 'comment' field type may be better.
+				if(vartrue($parms['append']) && vartrue($value)) // similar to comments - TODO TBD. a 'comment' field type may be better.
 				{
 					$attributes['readParms'] = 'bb=1';
-					$text = $this->renderValue($key, $value, $attributes).$this->hidden($key, $value).'<br />';
+					
+					$text = $this->renderValue($key, $value, $attributes);					
+					$text .= '<br />';
 					$value = "";
+					
+					// Appending needs is  performed and customized using function: beforeUpdate($new_data, $old_data, $id)
 				}
 
 				$text .= $this->textarea($key, $value, vartrue($parms['rows'], 5), vartrue($parms['cols'], 40), vartrue($parms['__options'],$parms), varset($parms['counter'], false));
@@ -3713,7 +3777,7 @@ class e_form
 			$field = vartrue($options['field'], $options['pid']);
 			$asc = strtoupper(vartrue($options['asc'], 'asc'));
 			$elid = $fid;//$options['id'];
-			$query = isset($options['query']) ? $options['query'] : e_QUERY ;
+			$query = vartrue($options['query'],e_QUERY); //  ? $options['query'] :  ;
 			if(vartrue($_GET['action']) == 'list')
 			{
 				$query = e_QUERY; //XXX Quick fix for loss of pagination after 'delete'. 	
@@ -3723,6 +3787,8 @@ class e_form
 			$fields = $options['fields'];
 			$current_fields = varset($options['fieldpref']) ? $options['fieldpref'] : array_keys($options['fields']);
 			$legend_class = vartrue($options['legend_class'], 'e-hideme');
+
+			
 
 	        $text .= "
 				<form method='post' action='{$formurl}' id='{$elid}-list-form'>
@@ -3970,12 +4036,21 @@ class e_form
 				}
 			}
 			
+			if(!is_array($att['writeParms']))
+			{
+				 parse_str(varset($att['writeParms']), $writeParms);
+			}
+			else
+			{
+				 $writeParms = $att['writeParms'];
+			}
+			
+			
+			
 			if('hidden' === $att['type'])
 			{
-				if(!is_array($att['writeParms'])) parse_str(varset($att['writeParms']), $tmp);
-				else $tmp = $att['writeParms'];
 				
-				if(!vartrue($tmp['show']))
+				if(!vartrue($writeParms['show']))
 				{
 					continue;
 				}
@@ -4025,12 +4100,13 @@ class e_form
 				$leftCell = $required."<span{$required_class}>".defset(vartrue($att['title']), vartrue($att['title']))."</span>".$label;
 				$rightCell = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()), $model->getId())." {$help}";
 				 
-				if(vartrue($att['type']) == 'bbarea')
+				if(vartrue($att['type']) == 'bbarea' || $writeParms['nolabel'] == true)
 				{
 					$text .= "
-					<tr><td colspan='2'>
-							<div style='padding-bottom:8px'>".$leftCell."</div>".
-							$rightCell."
+					<tr><td colspan='2'>";
+					
+					$text .= "<div style='padding-bottom:8px'>".$leftCell."</div>";
+					$text .= $rightCell."
 						</td>
 						
 					</tr>

@@ -326,7 +326,7 @@ class alt_auth_admin extends alt_auth_base
 				}
 			}
 		}
-		e107::getAdminLog()->log_event('AUTH_03',$prefix,E_LOG_INFORMATIVE,'');
+		e107::getLog()->add('AUTH_03',$prefix,E_LOG_INFORMATIVE,'');
 		return LAN_ALT_UPDATED;
 	}
 

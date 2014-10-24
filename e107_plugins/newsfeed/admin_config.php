@@ -87,7 +87,7 @@ $ns->tablerender($caption, $mes->render() . $text);
 if($action == "delete") 
 {
 	$sql->db_Delete('newsfeed', 'newsfeed_id='.$id);
-	$admin_log->log_event('NEWSFD_03','ID: '.$id,E_LOG_INFORMATIVE,'');
+	e107::getLog()->add('NEWSFD_03','ID: '.$id,E_LOG_INFORMATIVE,'');
 	$mes->addSuccess(LAN_DELETED);
 }
 

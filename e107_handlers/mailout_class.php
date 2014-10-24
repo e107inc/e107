@@ -113,11 +113,10 @@ class core_mailout
 
 		$where = array();
 		$incExtended = array();
-		if ($selectVals === FALSE)
-		{
-			$selectVals = array('email_to' => 'all');
-		}
-		switch (varset($selectVals['email_to'], 'all'))
+				
+		$emailTo = vartrue($selectVals['email_to'], false);
+		
+		switch ($emailTo)
 		{
 			// Build the query for the user database
 			case 'all' :
@@ -137,7 +136,7 @@ class core_mailout
 				{
 					$where[] = "u.`user_class` REGEXP concat('(^|,)',{$selectVals['email_to']},'(,|$)')";
 				}
-				$where[] = "u.`user_ban`=0";
+			
 		}
 
 		if (vartrue($selectVals['extended_1_name']) && vartrue($selectVals['extended_1_value']))
@@ -183,8 +182,19 @@ class core_mailout
 				}
 			}
 		}
+
+		if(empty($where) && empty($incExtended))
+		{
+			$this->mail_read = 0;
+			$this->mail_count = 0;	
+			return $this->mail_count;
+		}
+
+
 		$where[] = "u.`user_email` != ''";			// Ignore all records with empty email address
 
+		
+		
 		// Now assemble the query from the pieces
 		// Determine which fields we actually need (u.user_sess is the signup link)
 		$qry = 'SELECT u.user_id, u.user_name, u.user_email, u.user_loginname, u.user_sess, u.user_lastvisit';
@@ -203,6 +213,9 @@ class core_mailout
 
 		$qry .= ' WHERE '.implode(' AND ',$where).' ORDER BY u.user_name';
 //		echo "Selector query: ".$qry.'<br />';
+		
+		e107::getMessage()->addDebug("Selector query: ".$qry);
+
 		if (!( $this->mail_count = $sql->db_Select_gen($qry))) return FALSE;
 		$this->mail_read = 0;
 		return $this->mail_count;
@@ -268,7 +281,7 @@ class core_mailout
 		
 		$var = array();
 	
-		$var[0]['caption'] 	= LAN_MAILOUT_03;	// User class select
+		$var[0]['caption'] 	= LAN_MAILOUT_260; // LAN_MAILOUT_03;	// User class select
 		
 		if ($allow_edit)
 		{  

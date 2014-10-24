@@ -168,9 +168,9 @@ class media_cat_ui extends e_admin_ui
          	'media_cat_image' 		=> array('title'=> LAN_IMAGE,		'type' => 'image', 			'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>FALSE,	'batch' => FALSE, 'filter'=>FALSE),			       	
          	'media_cat_owner' 		=> array('title'=> LAN_OWNER,		'type' => 'dropdown',		'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
          	
-         	'media_cat_type' 		=> array('title'=> LAN_TYPE,		'type' => 'radio',	'data'=>false,		'width' => 'auto', 'thclass' => 'left', 'validate' => true, 'nolist'=>true),
+         	'media_cat_type' 		=> array('title'=> LAN_TYPE,		'type' => 'radio',			'data'=>false,		'width' => 'auto', 'thclass' => 'left', 'validate' => true, 'nolist'=>true),
          	
-			'media_cat_category' 	=> array('title'=> LAN_CATEGORY,	'type' => 'text',	'data'=>'str',		'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),		
+			'media_cat_category' 	=> array('title'=> LAN_CATEGORY,	'type' => 'text',			'data'=>'str',		'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),		
 			'media_cat_title' 		=> array('title'=> LAN_TITLE,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE, 'validate' => true),
          	'media_cat_sef' 		=> array('title'=> LAN_SEFURL,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),        
          	'media_cat_diz' 		=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=150&bb=1','readonly'=>FALSE), // Display name
@@ -210,23 +210,29 @@ class media_cat_ui extends e_admin_ui
 		$sql = e107::getDb();
 		
 	
-		if($sql->db_Select_gen("SELECT media_cat_owner, count(media_cat_id) as number FROM `#core_media_cat` GROUP BY media_cat_owner"))
+		if($sql->gen("SELECT media_cat_owner,  MAX(CAST(SUBSTRING_INDEX(media_cat_category, '_', -1 ) AS UNSIGNED)) as maxnum, count(media_cat_id) as number FROM `#core_media_cat`  GROUP BY media_cat_owner"))
 		{
-			while($row = $sql->db_Fetch())	
+			while($row = $sql->fetch())	
 			{
 				$this->ownerCount[$row['media_cat_owner']] = $row['number'];
-				$own = $row['media_cat_owner'];
+				$own = $row['media_cat_owner']; 
 				if(!in_array($own,$restricted))
-				{
-					
+				{		
 					$this->fields['media_cat_owner']['writeParms'][$own] = $own;	
 					
+					if($row['maxnum'] > 0)
+					{
+						$this->ownerCount[$row['media_cat_owner']] = $row['maxnum']; // $maxnum;	
+					}
 				}		
 			}
 		}
 		
-		
+		e107::getMessage()->addDebug("Max value for category names: ".print_a($this->ownerCount,true));
 	}
+
+
+
 
 
 	public function createPage()
@@ -723,7 +729,8 @@ class media_admin_ui extends e_admin_ui
 		'youtube_showinfo'				=> array('title'=> "Show Video Info", 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
 		'youtube_cc_load_policy'		=> array('title'=> "Show Closed-Captions by default", 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
 		'youtube_modestbranding'		=> array('title'=> "Use Modest Branding", 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
-		
+		'youtube_bbcode_responsive'		=> array('title'=> "Make the YouTube bbcode responsive", 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
+	
 		// 
 
 	);
@@ -2301,7 +2308,7 @@ if (isset($_POST['submit_show_delete_multi']))
 		//Format system message
 		if(!empty($message))
 		{
-			$admin_log->log_event('IMALAN_01', implode('[!br!]', $message), E_LOG_INFORMATIVE, '');
+			e107::getLog()->add('IMALAN_01', implode('[!br!]', $message), E_LOG_INFORMATIVE, '');
 			$mes->addSuccess(implode(', ', $message).' '.IMALAN_28);
 		}
 	}
@@ -2339,7 +2346,7 @@ if (isset($_POST['submit_show_deleteall']))
 
 		$message = $count." ".IMALAN_26;
 		$mes->addSuccess($message);
-		$admin_log->log_event('IMALAN_02', $message.$imgList,E_LOG_INFORMATIVE, '');
+		e107::getLog()->add('IMALAN_02', $message.$imgList,E_LOG_INFORMATIVE, '');
 		unset($imgList);
 	}
 }
@@ -2384,7 +2391,7 @@ if (isset($_POST['submit_avdelete_multi']))
 		}
 
 		$mes->addSuccess(IMALAN_51.'<strong>'.implode(', ', $tmp).'</strong> '.IMALAN_28);
-		$admin_log->log_event('IMALAN_03', implode('[!br!]', $avList), E_LOG_INFORMATIVE, '');
+		e107::getLog()->add('IMALAN_03', implode('[!br!]', $avList), E_LOG_INFORMATIVE, '');
 
 		unset($search_users);
 	}

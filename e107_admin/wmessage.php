@@ -308,6 +308,6 @@ function welcome_adminlog($msg_num='00', $id=0, $woffle='')
 		if ($msg) $msg .= '[!br!]';
 		$msg .= $woffle;
 	}
-	$admin_log->log_event('WELCOME_'.$msg_num,$msg,E_LOG_INFORMATIVE,'');
+	e107::getLog()->add('WELCOME_'.$msg_num,$msg,E_LOG_INFORMATIVE,'');
 }
 ?>

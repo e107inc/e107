@@ -15,7 +15,11 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
-if (!defined("USER_WIDTH")){ define("USER_WIDTH", "width:95%"); }
+if (!defined("USER_WIDTH"))
+{
+	 $legacyWidth = deftrue('BOOTSTRAP') ? ""  : "width:95%";
+	 define("USER_WIDTH", $legacyWidth); 
+}
 
 global $user_shortcodes, $pref, $user;
 //Set this to TRUE if you would like any extended user field that is empty to NOT be shown on the profile page
@@ -25,11 +29,9 @@ $EXTENDED_CATEGORY_START = "<tr><td colspan='2' class='forumheader center'>{EXTE
 
 $EXTENDED_CATEGORY_TABLE = "
 	<tr>
-		<td style='width:40%' class='forumheader3'>
-			{EXTENDED_ICON}&nbsp;
-			{EXTENDED_NAME}
+		<td style='width:30%' class='forumheader3'>{EXTENDED_ICON}{EXTENDED_NAME}
 		</td>
-		<td style='width:60%' class='forumheader3'>{EXTENDED_VALUE}</td>
+		<td style='width:70%' class='forumheader3'>{EXTENDED_VALUE}</td>
 	</tr>
 	";
 
@@ -95,6 +97,9 @@ $sc_style['USER_RATING']['pre'] = "<tr><td colspan='2' class='forumheader3'><div
 $sc_style['USER_RATING']['post'] = "</div></td></tr>";
 
 $sc_style['USER_LOGINNAME']['pre'] = " : ";
+
+
+
 
 //FIXME TODO - Remove IF statements from template. 
 if(isset($pref['photo_upload']) && $pref['photo_upload'])
@@ -173,44 +178,65 @@ $USER_FULL_TEMPLATE = "{SETIMAGE: w=250}
 </tr>
 
 <tr>
-	<td style='width:30%' class='forumheader3'>".LAN_USER_67."</td>
-	<td style='width:70%' class='forumheader3'>{USER_CHATPOSTS} ( {USER_CHATPER}% )</td>
+	<td style='width:30%' class='forumheader3'>".LAN_USER_66."</td>
+	<td style='width:70%' class='forumheader3'>{USER_VISITS}</td>
 </tr>
+
+{USER_ADDONS}
+
 
 <tr>
 	<td style='width:30%' class='forumheader3'>".LAN_USER_68."</td>
 	<td style='width:70%' class='forumheader3'>{USER_COMMENTPOSTS} ( {USER_COMMENTPER}% )</td>
 </tr>
-{USER_COMMENTS_LINK}
 
-<tr>
-	<td style='width:30%' class='forumheader3'>".LAN_USER_69."</td>
-	<td style='width:70%' class='forumheader3'>{USER_FORUMPOSTS} ( {USER_FORUMPER}% )</td>
-</tr>
-{USER_FORUM_LINK}
-<tr>
-	<td style='width:30%' class='forumheader3'>".LAN_USER_66."</td>
-	<td style='width:70%' class='forumheader3'>{USER_VISITS}</td>
-</tr>
-{USER_EMBED_USERPROFILE}
+
 {USER_UPDATE_LINK}
-<tr>
-	<td colspan='2' class='forumheader3 center'>
-		<table style='width:95%'>
-			<tr>
-				<td style='width:50%'>{USER_JUMP_LINK=prev}</td>
-				<td class='right' style='width:50%;'>{USER_JUMP_LINK=next}</td>
-			</tr>
-		</table>
-	</td>
-</tr>
-</table></div>
+</table>
+ <ul class='pager user-view-nextprev'>
+    <li class='previous'>
+    	{USER_JUMP_LINK=prev}
+    </li>
+	<li>
+    	<!-- Back to List? -->
+    </li>
+    <li class='next'>
+    	{USER_JUMP_LINK=next}
+    </li>
+    </ul>
+</div>    
 {PROFILE_COMMENTS}
 {PROFILE_COMMENT_FORM}
 ";
 
 $USER_EMBED_USERPROFILE_TEMPLATE = "
-<tr><td colspan='2' class='fcaption'>{USER_EMBED_USERPROFILE_CAPTION}</td></tr>
-<tr><td colspan='2' class='forumheader3'>{USER_EMBED_USERPROFILE_TEXT}</td></tr>";
+<tr>
+	<td class='forumheader3'>{USER_ADDON_LABEL}</td>
+	<td class='forumheader3'>{USER_ADDON_TEXT}</td>
+</tr>";
+
+
+
+// Convert Templates from v1.x to v2.x Standards. 
+
+$USER_TEMPLATE['view'] 				= $USER_FULL_TEMPLATE;
+$USER_TEMPLATE['extended']['start'] = $EXTENDED_CATEGORY_START;
+$USER_TEMPLATE['extended']['item'] 	= $EXTENDED_CATEGORY_TABLE ;
+$USER_TEMPLATE['extended']['start'] = $EXTENDED_CATEGORY_END;
+$USER_TEMPLATE['addon'] 			= $USER_EMBED_USERPROFILE_TEMPLATE;
+
+$USER_TEMPLATE['list']['start'] 	= $USER_SHORT_TEMPLATE_START;
+$USER_TEMPLATE['list']['item'] 		= $USER_SHORT_TEMPLATE;
+$USER_TEMPLATE['list']['end'] 		= $USER_SHORT_TEMPLATE_END;
+
+// Convert Shortcode Wrappers from v1.x to v2.x standards. 
+
+$USER_WRAPPER['view']['USER_COMMENTS_LINK'] =	$sc_style['USER_COMMENTS_LINK']['pre']."{---}".$sc_style['USER_COMMENTS_LINK']['post'];
+$USER_WRAPPER['view']['USER_SIGNATURE'] 	=	$sc_style['USER_SIGNATURE']['pre']."{---}".$sc_style['USER_SIGNATURE']['post'];
+$USER_WRAPPER['view']['USER_UPDATE_LINK'] 	=	$sc_style['USER_UPDATE_LINK']['pre']."{---}".$sc_style['USER_UPDATE_LINK']['post'];
+$USER_WRAPPER['view']['USER_FORUM_LINK'] 	=	$sc_style['USER_FORUM_LINK']['pre']."{---}".$sc_style['USER_FORUM_LINK']['post'];
+$USER_WRAPPER['view']['USER_RATING'] 		=	$sc_style['USER_RATING']['pre']."{---}".$sc_style['USER_RATING']['post'];
+$USER_WRAPPER['view']['USER_SENDPM'] 		=	$sc_style['USER_SENDPM']['pre']."{---}".$sc_style['USER_SENDPM']['post'];
+$USER_WRAPPER['view']['USER_LOGINNAME'] 	=	$sc_style['USER_LOGINNAME']['pre']."{---}";
 
 ?>

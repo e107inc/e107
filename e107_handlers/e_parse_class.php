@@ -2949,6 +2949,22 @@ class e_parser
 				return "<img class='img-responsive' src='".$thumbSrc."' alt='Youtube Video' style='width:".vartrue($parm['w'],'80')."px'/>";	
 			}
 			
+			if($thumb == 'email')
+			{
+				$thumbSrc = "http://i1.ytimg.com/vi/".$id."/maxresdefault.jpg"; // 640 x 480
+				$filename = 'temp/yt-thumb-'.md5($id).".jpg";
+				$filepath = e_MEDIA.$filename;
+				$url 	= 'http://youtu.be/'.$id;
+				
+				if(!file_exists($filepath))
+				{
+					e107::getFile()->getRemoteFile($thumbSrc, $filename,'media');	
+				}
+								
+				return "<a href='".$url."'><img class='video-responsive video-thumbnail' src='{e_MEDIA}".$filename."' alt='Youtube Video' title='Click to view on Youtube' />
+				<div class='video-thumbnail-caption'><small>Click to watch video</small></div></a>";	
+			}
+			
 			if($thumb == 'src')
 			{
 				return $thumbSrc;

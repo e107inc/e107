@@ -629,12 +629,12 @@ if ($dataToSave && !$promptPassword)
 
 	// Now see if we need to log anything. First check the options and class membership
 	// (Normally we would leave logging decision to the log class. But this one's a bit more complicated)
-	$user_logging_opts = array_flip(explode(',', varset($pref['user_audit_opts'], '')));
+	$user_logging_opts = e107::getConfig()->get('user_audit_opts');
 	$do_log = array();
 	$log_action = '';
 	if ($_uid)
 	{		// Its an admin changing someone elses data - make an admin log entry here
-		$admin_log->log_event('USET_01', "UID: {$udata['user_id']}. UName: {$udata['user_name']}", E_LOG_INFORMATIVE);
+		e107::getLog()->add('USET_01', "UID: {$udata['user_id']}. UName: {$udata['user_name']}", E_LOG_INFORMATIVE);
 		// Check against the class of the target user, not the admin!
 		if (!check_class(varset($pref['user_audit_class'], ''), $udata['user_class'])) { $user_logging_opts = array(); }
 	}

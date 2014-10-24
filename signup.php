@@ -453,7 +453,7 @@ if (isset($_POST['register']) && $pref['user_reg'] == 1)
 				{
 					$allData['errors']['user_email'] = ERR_GENERIC;
 					$allData['errortext']['user_email'] =  LAN_SIGNUP_71;
-					$admin_log->log_event('USET_15',LAN_SIGNUP_103.e107::getIPHandler()->getIP(FALSE), 4);
+					e107::getLog()->add('USET_15',LAN_SIGNUP_103.e107::getIPHandler()->getIP(FALSE), 4);
 				}
 			}
 		}

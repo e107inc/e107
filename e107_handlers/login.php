@@ -243,7 +243,7 @@ class userlogin
 		// Problem is that USERCLASS_LIST just contains 'guest' and 'everyone' at this point
 		$class_list = $this->userMethods->addCommonClasses($this->userData, TRUE);
 
-		$user_logging_opts = array_flip(explode(',',varset($pref['user_audit_opts'],'')));
+		$user_logging_opts = e107::getConfig()->get('user_audit_opts');
 		if (isset($user_logging_opts[USER_AUDIT_LOGIN]) && in_array(varset($pref['user_audit_class'],''),$class_list))
 		{  // Need to note in user audit trail
 			$this->e107->admin_log->user_audit(USER_AUDIT_LOGIN,'', $user_id,$user_name);

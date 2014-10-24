@@ -138,7 +138,7 @@ define('MAIL_LOG_PATH',e_LOG);
 class e107Email extends PHPMailer
 {
 	private $general_opts 		= array();
-	private $logEnable 			= 0;		// 0 = log disabled, 1 = 'dry run' (debug and log, no send). 2 = 'log all' (send, and log result)
+	private $logEnable 			= 2;		// 0 = log disabled, 1 = 'dry run' (debug and log, no send). 2 = 'log all' (send, and log result)
 	private $logHandle 			= FALSE;	// Save handle of log file if opened
 
 	private $localUseVerp 		= FALSE;	// Use our own variable - PHPMailer one doesn't work with all mailers
@@ -156,7 +156,7 @@ class e107Email extends PHPMailer
 	public	$legacyBody 		= false;	// TRUE enables legacy conversion of plain text body to HTML in HTML emails
 	private $debug 				= false;	// echos various debug info when set to true. 
 	private $pref 				= array();	// Store code prefs. 
-	
+	private $previewMode		= false;
 	/**
 	 * Constructor sets up all the global options, and sensible defaults - it should be the only place the prefs are accessed
 	 * 
@@ -196,7 +196,12 @@ class e107Email extends PHPMailer
 		$this->allow_html = varset($pref['mail_sendstyle'],'textonly') == 'texthtml' ? true : 1;
 
 		if (varsettrue($pref['mail_options'])) $this->general_opts = explode(',',$pref['mail_options'],'');
-		if ($this->debug) echo 'Mail_options: '.$pref['mail_options'].' Count: '.count($this->general_opts).'<br />';
+		
+		if ($this->debug)
+		{
+			echo 'Mail_options: '.$pref['mail_options'].' Count: '.count($this->general_opts).'<br />';
+		}
+		
 		foreach ($this->general_opts as $k => $v) 
 		{
 			$v = trim($v);
@@ -520,7 +525,10 @@ class e107Email extends PHPMailer
 				$message = str_replace("\r","\n",$message);			// Handle alternative newline characters
 				$message = str_replace("\n", "<br />\n", $message);
 			}
+			
+	
 			$this->MsgHTML($message);		// Theoretically this should do everything, including handling of inline images.
+		
 		}
 		else
 		{	// generate the plain text as the sole part of the email
@@ -589,6 +597,64 @@ class e107Email extends PHPMailer
 		}
 	}
 
+	/**
+	 * Preview the BODY of an email 
+	 * @param $eml - array. 
+	 */
+	public function preview($eml)
+	{
+		$this->previewMode = true; 
+		
+		if (count($eml))
+		{	
+			if($error = $this->arraySet($eml))  // Set parameters from list
+			{
+				return $error;
+			} 
+			
+		}	
+		
+		return $this->Body;
+		
+	}
+
+
+	function processShortcodes($eml)
+	{
+		$tp = e107::getParser();
+		
+		$eml['shortcodes']['BODY'] 		= $tp->toEmail($eml['body']);
+		$eml['shortcodes']['SUBJECT'] 	= $eml['subject'];
+		$eml['shortcodes']['THEME'] 	= ($this->previewMode == true) ? e_THEME_ABS.$this->pref['sitetheme'].'/' :  e_THEME.$this->pref['sitetheme'].'/'; // Always use front-end theme path. 
+				
+				
+		if(!empty($eml['media']) && is_array($eml['media']))
+		{
+			foreach($eml['media'] as $k=>$val)
+			{
+				if(vartrue($val['path']))
+				{
+					$id = 'MEDIA'.($k+1);
+					
+					if($tp->isVideo($val['path']))
+					{
+						$eml['shortcodes'][$id] = "<div class='media media-video'>".$tp->toVideo($val['path'],array('thumb'=>'email'))."</div>";
+					}
+					else
+					{
+						$eml['shortcodes'][$id] = "<div class='media media-image'><img class='img-responsive' src='".$val['path']."' alt='' /></div>";		
+					}
+					
+				}	
+			}
+			
+					
+		}
+		
+		return $eml['shortcodes'];	
+		
+	}
+
 
 	/**
 	 *	Sets one or more parameters from an array. See @see{sendEmail()} for list of parameters
@@ -601,25 +667,36 @@ class e107Email extends PHPMailer
 	 */
 	public function arraySet($eml)
 	{
-		
-	
 		$tp = e107::getParser();
 		
-		if(vartrue($eml['template'])) // @see e107_core/templates/email_template.php
+		// Cleanup legacy key names. ie. remove 'email_' prefix. 		
+		foreach($eml as $k=>$v)
 		{
-			
-			
+			if(substr($k,0,6) == 'email_')
+			{
+				$nkey = substr($k,6);
+				$eml[$nkey] = $v;	
+				unset($eml[$k]);
+			}		
+		}
+		
+
+
+		if(vartrue($eml['template'])) // @see e107_core/templates/email_template.php
+		{		
+					
 			if($tmpl = e107::getCoreTemplate('email', $eml['template'], 'front', true))  //FIXME - Core template is failing with template 'notify'. Works with theme template. Issue with core template registry?
 			{				
-				$eml['shortcodes']['BODY'] 		= $eml['email_body'];
-				$eml['shortcodes']['SUBJECT'] 	= $eml['email_subject'];
-				$eml['shortcodes']['THEME'] 	= e_THEME.$this->pref['sitetheme'].'/'; // Always use front-end theme path. 
 				
+				$eml['shortcodes'] = $this->processShortcodes($eml);
+
+			//	print_a($eml);
+						
 				$emailBody = $tmpl['header']. $tmpl['body'] . $tmpl['footer']; 
 				
-				$eml['email_body'] = $tp->parseTemplate($emailBody, true, varset($eml['shortcodes'],null));
+				$eml['body'] = $tp->parseTemplate($emailBody, true, $eml['shortcodes']);
 				
-			//	$eml['email_body'] = ($tp->toEmail($tmpl['header']). str_replace('{BODY}', $eml['email_body'], $tmpl['body']). $tp->toEmail($tmpl['footer']));
+			//	$eml['body'] = ($tp->toEmail($tmpl['header']). str_replace('{BODY}', $eml['body'], $tmpl['body']). $tp->toEmail($tmpl['footer']));
 				
 				if($this->debug)
 				{
@@ -637,28 +714,32 @@ class e107Email extends PHPMailer
 				{
 					echo "<h4>Couldn't find email template: ".$eml['template']."</h4>";	
 				}
-				if (vartrue($eml['email_subject'])) $this->Subject = $tp->parseTemplate($eml['email_subject'], true, varset($eml['shortcodes'],null)); 	
+			//	$emailBody = $eml['body'];
+				
+				if (vartrue($eml['subject'])) $this->Subject = $tp->parseTemplate($eml['subject'], true, varset($eml['shortcodes'],null)); 	
 				e107::getMessage()->addDebug("Couldn't find email template: ".$eml['template']);	
 			}
 			
 		}
 		else
 		{
-			if (vartrue($eml['email_subject'])) $this->Subject = $tp->parseTemplate($eml['email_subject'], true, varset($eml['shortcodes'],null)); 	
+			if (vartrue($eml['subject'])) $this->Subject = $tp->parseTemplate($eml['subject'], true, varset($eml['shortcodes'],null)); 	
+				//	$eml['body'] = ($tp->toEmail($tmpl['header']). str_replace('{BODY}', $eml['body'], $tmpl['body']). $tp->toEmail($tmpl['footer']));
 		}
-		
+
+
 		
 		if (isset($eml['SMTPDebug'])) $this->SMTPDebug = $eml['SMTPDebug'];			// 'FALSE' is a valid value!
 		
-		if (vartrue($eml['email_sender_email'])) $this->From = $eml['email_sender_email'];
-		if (vartrue($eml['email_sender_name'])) $this->FromName = $eml['email_sender_name'];
-		if (vartrue($eml['email_replyto'])) $this->AddAddressList('replyto',$eml['email_replyto'],vartrue($eml['email_replytonames'],''));	
+		if (vartrue($eml['sender_email'])) $this->From = $eml['sender_email'];
+		if (vartrue($eml['sender_name'])) $this->FromName = $eml['sender_name'];
+		if (vartrue($eml['replyto'])) $this->AddAddressList('replyto',$eml['replyto'],vartrue($eml['replytonames'],''));	
 		if (isset($eml['send_html'])) $this->allow_html = $eml['send_html'];							// 'FALSE' is a valid value!
 		if (isset($eml['add_html_header'])) $this->add_HTML_header = $eml['add_html_header'];			// 'FALSE' is a valid value!
-		if (vartrue($eml['email_body'])) $this->makeBody($eml['email_body'], $this->allow_html, $this->add_HTML_header);
-		if (vartrue($eml['email_attach'])) $this->attach($eml['email_attach']);
-		if (vartrue($eml['email_copy_to'])) $this->AddAddressList('cc',$eml['email_copy_to'],vartrue($eml['email_cc_names'],''));
-		if (vartrue($eml['email_bcopy_to'])) $this->AddAddressList('bcc',$eml['email_bcopy_to'],vartrue($eml['email_bcc_names'],''));
+		if (vartrue($eml['body'])) $this->makeBody($eml['body'], $this->allow_html, $this->add_HTML_header);
+		if (vartrue($eml['attach'])) $this->attach($eml['attach']);
+		if (vartrue($eml['copy_to'])) $this->AddAddressList('cc',$eml['copy_to'],vartrue($eml['cc_names'],''));
+		if (vartrue($eml['bcopy_to'])) $this->AddAddressList('bcc',$eml['bcopy_to'],vartrue($eml['bcc_names'],''));
 		
 		if (vartrue($eml['bouncepath'])) 
 		{
@@ -672,11 +753,12 @@ class e107Email extends PHPMailer
 			print_a($eml);
 		}
 		
+		$identifier = deftrue('MAIL_IDENTIFIER', 'X-e107-id');
 		
 		if (vartrue($eml['returnreceipt'])) $this->ConfirmReadingTo = $eml['returnreceipt'];
-		if (vartrue($eml['email_inline_images'])) $this->addInlineImages($eml['email_inline_images']);
-		if (vartrue($eml['email_priority'])) $this->Priority = $eml['email_priority'];
-		if (vartrue($eml['e107_header'])) $this->AddCustomHeader("X-e107-id: {$eml['e107_header']}");
+		if (vartrue($eml['inline_images'])) $this->addInlineImages($eml['inline_images']);
+		if (vartrue($eml['priority'])) $this->Priority = $eml['priority'];
+		if (vartrue($eml['e107_header'])) $this->AddCustomHeader($identifier.": {$eml['e107_header']}");
 		if (vartrue($eml['extra_header'])) 
 		{
 			if (is_array($eml['extra_header']))
@@ -695,6 +777,8 @@ class e107Email extends PHPMailer
 		if (varset($eml['wordwrap'])) $this->WordWrap = $eml['wordwrap'];
 		if (vartrue($eml['split'])) $this->SingleTo = ($eml['split'] != FALSE);
 
+		$this->logLine("ArraySet Data:".print_r($eml,true));
+
 		return 0;				// No error
 	}
 
@@ -706,29 +790,31 @@ class e107Email extends PHPMailer
 		Where parameter not present in the array, doesn't get changed - useful for bulk mailing
 		If doing bulk mailing with repetitive calls, set $bulkmail parameter true, and must call allSent() when completed
 		Some of these parameters have been made compatible with the array calculated by render_email() in signup.php
+	 *
 		Possible array parameters:
-		$eml['email_subject']
-		$eml['email_sender_email']	- 'From' email address
-		$eml['email_sender_name']	- 'From' name
-		$eml['email_replyto']		- Optional 'reply to' field 
-		$eml['email_replytonames']	- Name(s) corresponding to 'reply to' field  - only used if 'replyto' used
+		$eml['subject']
+		$eml['sender_email']	- 'From' email address
+		$eml['sender_name']		- 'From' name
+		$eml['replyto']			- Optional 'reply to' field 
+		$eml['replytonames']	- Name(s) corresponding to 'reply to' field  - only used if 'replyto' used
 		$eml['send_html']		- if TRUE, includes HTML part in messages (only those added after this flag)
 		$eml['add_html_header'] - if TRUE, adds the 2-line DOCTYPE declaration to the front of the HTML part (but doesn't add <head>...</head>)
-		$eml['email_body']		- message body. May be HTML or text. Added according to the current state of the HTML enable flag
-		$eml['email_attach']	- string if one file, array of filenames if one or more.
-		$eml['email_copy_to']	- comma-separated list of cc addresses.
-		$eml['email_cc_names']  - comma-separated list of cc names. Optional, used only if $eml['email_copy_to'] specified
-		$eml['email_bcopy_to']	- comma-separated list
-		$eml['email_bcc_names'] - comma-separated list of bcc names. Optional, used only if $eml['email_copy_to'] specified
+		$eml['body']			- message body. May be HTML or text. Added according to the current state of the HTML enable flag
+		$eml['attach']			- string if one file, array of filenames if one or more.
+		$eml['copy_to']			- comma-separated list of cc addresses.
+		$eml['cc_names']  		- comma-separated list of cc names. Optional, used only if $eml['copy_to'] specified
+		$eml['bcopy_to']		- comma-separated list
+		$eml['bcc_names'] 		- comma-separated list of bcc names. Optional, used only if $eml['copy_to'] specified
 		$eml['bouncepath']		- Sender field (used for bounces)
 		$eml['returnreceipt']	- email address for notification of receipt (reading)
-		$eml['email_inline_images']	- array of files for inline images
+		$eml['inline_images']	- array of files for inline images
 		$eml['priority']		- Email priority (1 = High, 3 = Normal, 5 = low)
 		$eml['e107_header']		- Adds specific 'X-e107-id:' header
 		$eml['extra_header']	- additional headers (format is name: value
 		$eml['wordwrap']		- Set wordwrap value
 		$eml['split']			- If true, sends an individual email to each recipient
 	    $eml['template']		- template to use. 'default'
+	    $eml['shortcodes']		- array of shortcode values. eg. array('MY_SHORTCODE'=>'12345'); 
 
 	 *	@param string $send_to - recipient email address
 	 *	@param string $to_name - recipient name
@@ -740,9 +826,12 @@ class e107Email extends PHPMailer
 	public function sendEmail($send_to, $to_name, $eml = '', $bulkmail = FALSE)
 	{
 		if (count($eml))
-		{	// Set parameters from list
-			$ret = $this->arraySet($eml);
-			if ($ret) return $ret;
+		{	
+			if($error = $this->arraySet($eml))  // Set parameters from list
+			{
+				return $error;
+			} 
+			
 		}
 
 		if ($bulkmail && $this->localUseVerp && $this->save_bouncepath && (strpos($this->save_bouncepath,'@') !== FALSE))
@@ -764,8 +853,17 @@ class e107Email extends PHPMailer
 
 		if (($this->logEnable == 0) || ($this->logEnable == 2))
 		{
+			// prevent user/script details being exposed in X-PHP-Script header 
+			$oldphpself 			= $_SERVER['PHP_SELF']; 
+			$oldremoteaddr			= $_SERVER['REMOTE_ADDR']; 
+			$_SERVER['PHP_SELF'] 	= "/"; 
+			$_SERVER['REMOTE_ADDR'] = $_SERVER['SERVER_ADDR']; 
+			
 			$result = $this->Send();		// Actually send email
-
+			
+			$_SERVER['PHP_SELF'] = $oldphpself; 
+			$_SERVER['REMOTE_ADDR'] = $oldremoteaddr;
+			
 			if (!$bulkmail && !$this->SMTPKeepAlive && ($this->Mailer == 'smtp')) $this->SmtpClose();
 		}
 		else
@@ -776,6 +874,7 @@ class e107Email extends PHPMailer
 		}
 
 		$this->TotalSent++;
+		
 		if (($this->pause_amount > 0) && ($this->SendCount >= $this->pause_amount))
 		{
 			if ($this->SMTPKeepAlive && ($this->Mailer == 'smtp')) $this->SmtpClose();
@@ -784,6 +883,12 @@ class e107Email extends PHPMailer
 		}
 
 		$this->logLine("Send to {$to_name} at {$send_to} Mail-ID={$this->MessageID} - ".($result ? 'Success' : 'Fail'));
+		
+		if(!$result)
+		{
+			$this->logLine(print_r($eml,true));	
+		}
+		
 		
 		$this->ClearAddresses();			// In case we send another email
 		$this->ClearCustomHeaders();
@@ -834,10 +939,10 @@ class e107Email extends PHPMailer
 	 */
 	public function MsgHTML($message, $basedir = '') 
 	{
-		
-		
+		$tp = e107::getParser();
+				
 		preg_match_all("/(src|background)=([\"\'])(.*)\\2/Ui", $message, $images);			// Modified to accept single quotes as well
-		if(isset($images[3])) 
+		if(isset($images[3]) && ($this->previewMode === false)) 
 		{
 			
 			if($this->debug)
@@ -846,10 +951,12 @@ class e107Email extends PHPMailer
 				print_a($images[3]);	
 			}
 			
-			$tp = e107::getParser();
-			
 			foreach($images[3] as $i => $url) 
 			{
+				
+			
+				
+				
 				// do not change urls for absolute images (thanks to corvuscorax)
 				if (!preg_match('#^[A-z]+://#',$url)) 
 				{
@@ -900,6 +1007,11 @@ class e107Email extends PHPMailer
 					
 				}
 			}
+		}
+
+		if($this->previewMode === true)
+		{
+			$message = $tp->replaceConstants($message, 'abs');
 		}
 
 
@@ -1008,8 +1120,10 @@ function sendemail($send_to, $subject, $message, $to_name='', $send_from='', $fr
 
 	// Create a mailer object of the correct type (which auto-fills in sending method, server details)
 	$mail = new e107Email($overrides);
+	
+	$identifier = deftrue('MAIL_IDENTIFIER', 'X-e107-id');
 
-	if (varsettrue($mailheader_e107id)) $mail->AddCustomHeader("X-e107-id: {$mailheader_e107id}");
+	if (varsettrue($mailheader_e107id)) $mail->AddCustomHeader($identifier.": {$mailheader_e107id}");
 
 	$mail->legacyBody = TRUE;				// Need to handle plain text email conversion to HTML
 	$mail->makeBody($message);				// Add body, with conversion if required

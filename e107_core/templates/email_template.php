@@ -10,43 +10,9 @@
  *
  */
 
-
 /**
  *	This file defines the default templates for each type of email which may be sent.
  *	In general it is assumed that HTML emails are being sent (with a plain text alternate part), although simple plain text emails are also possible.
- *
- *	Default values are defined for the key elements of an email:
- *
- *	$EMAIL_HEADER - the first part of the email, usually defining the headers, and everything up to and including <body>
- *	$EMAIL_FOOTER - the last part of the email - it may include a displayed footer, as well as </body> and other 'closing' tags
- *
- *		Taken as a pair, $EMAIL_HEADER.$EMAIL_FOOTER must generate standards-compliant XHTML
- *
- *	$EMAIL_BODY - the body text of the email - essentially, the message. It gets sandwiched between $EMAIL_HEADER and $EMAIL_FOOTER
- *		This must generate standards-compliant XHTML in its own right, when taken with an appropriate header and footer section.
- *		Within the template definition, insert the shortcode '{BODY}' to indicate where the passed text of the email is to be stored.
- *
- *	$EMAIL_OVERRIDES may optionally be defined, in which case it can override default mailout settings (see later). Only define this variable
- *		if you explicitly want overrides - a defined, but empty, variable may have unexpected consequences!
- *
- *	$EMAIL_PLAINTEXT - an alternative template for the alternative text part of HTML emails. Set to empty string if hard-coded default to be used
- *
- *
- *	Templates may be defined for specific purposes
- *	Each template is given a name, which is the name of the variable.
- *	This variable may be a simple string, in which case it defines the email body, and is only available via code.
- *	Alternatively the variable may be an array, in which case each element of the array defines a different aspect of the email:
- *
- *		$NAME['template_name'] is a user-friendly name shown in the mass mailer
- *		$NAME['template_type'] takes values (user|system|all) to define its purpose - only 'user' and 'all' templates are shown in the mass mailer
- *		$NAME['email_header'] defines the header - optional
- *		$NAME['email_footer'] defines the footer - optional
- *		$NAME['email_body'] defines the body text
- *		$NAME['email_overrides'] defines any mailout settings which are to be overridden (see later) - optional
- *
- *		The format and functionality of these four main array elements correspond exactly to those of the defaults already described.
- *
- *		The template need only define those variables which are to be overridden, in which case the default definitions will be used for the others.
  *
  *
  *	For templated HTML emails, a style sheet MUST be specified in the header field (if its required), in one of the following forms:
@@ -71,11 +37,9 @@ See e_HANDLER.mail.php for more information
 
 if (!defined('e107_INIT')) { exit; }
 
-
-// @TODO: Move signup email into templated form
 $includeSiteButton = e107::getPref('sitebutton');
 
-
+/*
 $SIGNUPEMAIL_SUBJECT = LAN_SIGNUP_96.' {SITENAME}';
 $SIGNUPEMAIL_USETHEME = 1; 			// Use CSS STYLE from THEME: 0 = Off, 1 = external, 2 = embedded
 $SIGNUPEMAIL_LINKSTYLE = ''; 		// css to use on links eg. color:red;
@@ -84,7 +48,7 @@ $SIGNUPEMAIL_CC = "";  				// comma separated email addresses to put in CC of th
 $SIGNUPEMAIL_BCC = "";   			// comma separated email addresses to put in BCC of the signup email.
 $SIGNUPEMAIL_ATTACHMENTS = ""; 		// files-path array of attachments. eg. array(e_FILE."myfile.zip",e_FILE."myotherfile.zip");
 $SIGNUPEMAIL_BACKGROUNDIMAGE = "";	// absolute path to a background image eg. e_IMAGE."mybackground.jpg";
-
+*/
 
 
 /*===========================================================================
@@ -121,6 +85,7 @@ $EMAIL_OVERRIDES = array(
 */
 
 // Not used in signup email
+/*
 $EMAIL_HEADER = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
 <html xmlns='http://www.w3.org/1999/xhtml' >
 <head>
@@ -144,58 +109,15 @@ $EMAIL_FOOTER = "
 
 
 $EMAIL_PLAINTEXT = '';
-
-/*===========================================================================
-				TEMPLATES FOR SPECIFIC EMAIL TYPES
-=============================================================================*/
-
-/**
-Each template is an array whose name must match that used in the code.
-The array has two mandatory elements (name and type).
-The array may have up to five optional elements, each of which overrides the corresponding default value if present
-An empty element sets the field to empty.
-An element that is not present results in the default being used.
-
-Elements are as follows:
-	'template_name'		- string - mandatory - a 'user-friendly' name for display
-	'template_type'		- string(user|system|all) - mandatory - 'all' and 'user' templates are available for selection in the bulk mailer
-	'email_overrides'	- an array
-	'email_header'		- string
-	'email_body'		- string
-	'email_footer'		- string
-	'email_plainText'	- string
-
-// If everything is standard apart from the body, the body can be defined as a simple variable
-
 */
-//TODO - integrate into mailout routine
-/*
-$MAILOUT_HEADER = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
-<html xmlns='http://www.w3.org/1999/xhtml' >
-<head>
-<meta http-equiv='content-type' content='text/html; charset=utf-8' />
-{STYLESHEET}
-</head>
-<body>
-<div style='padding:10px'>
-";
 
-$MAILOUT_FOOTER = "
-<br /><br />
-{SITENAME=link}
-</div>
-</body>
-</html>";
-
-
-
-*/
 
 
 //-------------------------------------------------------------
 //		'SIGNUP' TEMPLATE
 //-------------------------------------------------------------
 //@Deprecated 
+/*
 $SIGNUPEMAIL_TEMPLATE = "
 <div style='padding:10px'>
 <div style='text-align:left; width:90%'>
@@ -224,82 +146,18 @@ LAN_SIGNUP_97." {SITENAME}<br />
 </div>
 </div>
 ";
-
-//-------------------------------------------------------------
-//		'NOTIFY' TEMPLATE
-//-------------------------------------------------------------
+*/
 
 
-
-//-------------------------------------------------------------
-//		USER-DEFINED TEMPLATES (for mass mailouts)
-//-------------------------------------------------------------
-/*
-$TEST_TEMPLATE = array(
-	'template_name' => 'TEst1',
-	'template_type' => 'system',
-	'email_overrides' => '',
-//	'email_header' - any header information (usually loaded from the default)
-	'email_body' => '{BODY}',
-	'email_footer' => 'footer',
-	'email_plainText' => ''
-	);
-$TEST2_TEMPLATE = array(
-	'template_name' => 'TEst2',
-	'template_type' => 'all',
-	'email_overrides' => '',
-//	'email_header' - any header information (usually loaded from the default)
-	'email_body' => '{BODY}',
-	'email_footer' => 'footer'
-	);
-$TEST3_TEMPLATE = array(
-	'template_name' => 'TEst4',
-	'template_type' => 'user',
-	'email_overrides' => '',
-//	'email_header' - any header information (usually loaded from the default)
-	'email_body' => '{BODY}',
-	'email_footer' => 'footer'
-	);
-$TEST4_TEMPLATE = array(
-	'template_name' => 'TEst5',
-	'email_overrides' => '',
-//	'email_header' - any header information (usually loaded from the default)
-	'email_body' => '{BODY}',
-	'email_footer' => 'footer'
-	);
-	*/
-$WHATSNEW_TEMPLATE = array(
-	'template_name' => 'WhatsNew',
-	'template_type' => 'user',
-	'email_overrides' => '',
-//	'email_header' - any header information (usually loaded from the default)
-	'email_body' => 'All the latest news and updates.<br />{BODY}<br />To find out more, simply click on the links!',
-//	'email_footer' => 'footer'
-	);
-$MONTHLYUPDATE_TEMPLATE = array(
-	'template_name' => 'MonthlyUpdate',
-	'template_type' => 'user',
-	'email_overrides' => '',
-//	'email_header' - any header information (usually loaded from the default)
-	'email_body' => 'Just to keep you up to date, here\'s a reminder of what\'s changed in the past month.<br />
-	{BODY}<br />To find out more, simply click on the links!',
-//	'email_footer' => 'footer'
-	);
-	
-
-
-
-
-
-
-
-// ----------------------- Everything above this line is deprecated but may continue to work for a while  ------------------------------- // 
+// ----------------------- Everything above this line is deprecated  ------------------------------- // 
 	
 
 /** Standardized v2 template rewrite 
+ * 
  * Format for individual emails sent by e107 (not bulk emails for now) - a work in progress - bulk could be ported later.
  * @see e107Email::sendEmail(); 
  * Aim: to make email templates follow the same spec. as other templates while remaining as intuitive as other v2 templates in e107. 
+ * Note: giving a template a 'name' value will make it available in the admin->mailout area. 
  */
 
 
@@ -311,9 +169,11 @@ $EMAIL_TEMPLATE['default']['header']		= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHT
 												<html xmlns='http://www.w3.org/1999/xhtml' >
 												<head>
 												<meta http-equiv='content-type' content='text/html; charset=utf-8' />
-												<style>
+												<style type='text/css'>
 													body { padding:10px; background-color: #E1E1E1 } 
-													 div#body { padding:10px; width: 800px; background-color: #FFFFFF; border-radius: 5px }
+													 div#body { padding:10px; width: 800px; background-color: #FFFFFF; border-radius: 5px; font-family: helvetica,arial }
+													.video-thumbnail { max-width: 100% }
+													
 												</style>
 												</head>
 												
@@ -396,22 +256,37 @@ $EMAIL_TEMPLATE['quickadduser']['footer']		= $EMAIL_TEMPLATE['default']['footer'
 
 
 
-// ---------------------------------
 
+// ------- Notify (@see admin-> notify) 
 
-
-// Notify (@see admin-> notify) 
 $EMAIL_TEMPLATE['notify']['subject']			= '{SITENAME}: {SUBJECT} ';
 $EMAIL_TEMPLATE['notify']['header']				= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 	
 $EMAIL_TEMPLATE['notify']['body']				= $EMAIL_TEMPLATE['default']['body']; // will use default header above. 	
 $EMAIL_TEMPLATE['notify']['footer']				= $EMAIL_TEMPLATE['default']['footer']; // will use default header above. 	
 
 
-// ---------------------------------
+// ------ User-Specific Templates 
+
+
+$EMAIL_TEMPLATE['monthly']['name']				= 'Monthly Update';												
+$EMAIL_TEMPLATE['monthly']['subject']			= '{SITENAME}: {SUBJECT} ';
+$EMAIL_TEMPLATE['monthly']['header']			= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 	
+$EMAIL_TEMPLATE['monthly']['body']				= "Just to keep you up to date, here's a reminder of what's changed in the past month.<br />{BODY}{MEDIA1}{MEDIA2}{MEDIA3}{MEDIA4}{MEDIA5}To find out more, simply click on the links!";
+$EMAIL_TEMPLATE['monthly']['footer']			= $EMAIL_TEMPLATE['default']['footer'];
 
 
 
-// A Dummy Example for theme developers. 
+
+$EMAIL_TEMPLATE['whatsnew']['name']				= "What's New";												
+$EMAIL_TEMPLATE['whatsnew']['subject']			= '{SITENAME}: {SUBJECT} ';
+$EMAIL_TEMPLATE['whatsnew']['header']			= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 	
+$EMAIL_TEMPLATE['whatsnew']['body']				= "All the latest news and updates.<br />{BODY}<br />To find out more, simply click on the links!";
+$EMAIL_TEMPLATE['whatsnew']['footer']			= $EMAIL_TEMPLATE['default']['footer'];
+
+
+
+// ------ A Dummy Example for theme developers. 
+
 $EMAIL_TEMPLATE['example']['subject']			= '{SITENAME}: {SUBJECT} ';
 $EMAIL_TEMPLATE['example']['header']			= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 	
 $EMAIL_TEMPLATE['example']['body']				= $EMAIL_TEMPLATE['default']['body']; // will use default header above. 	
@@ -421,5 +296,8 @@ $EMAIL_TEMPLATE['example']['footer']			= "<br /><br />
 												</div>
 												</body>
 												</html>";
+
+
+
 
 ?>

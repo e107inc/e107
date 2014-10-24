@@ -687,7 +687,7 @@ function banners_adminlog($msg_num='00', $woffle='')
   $pref = e107::getPref();
 
 //  if (!varset($pref['admin_log_log']['admin_banners'],0)) return;
-  $admin_log->log_event('BANNER_'.$msg_num,$woffle, E_LOG_INFORMATIVE,'');
+  e107::getLog()->add('BANNER_'.$msg_num,$woffle, E_LOG_INFORMATIVE,'');
 }
 
 ?>

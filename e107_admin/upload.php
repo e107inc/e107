@@ -199,7 +199,7 @@ if ($action == "dis" && isset($_POST['updelete']['upload_'.$id]) )
 		unlink(e_UPLOAD.$row['upload_ss']);
 	}
 	$message = ($sql->db_Delete("upload", "upload_id='".intval($id)."'")) ? UPLLAN_1 : LAN_DELETED_FAILED;
-	$admin_log->log_event('UPLOAD_01',$row['upload_file'],E_LOG_INFORMATIVE,'');
+	e107::getLog()->add('UPLOAD_01',$row['upload_file'],E_LOG_INFORMATIVE,'');
 }
 
 if ($action == "dlm") 

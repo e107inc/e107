@@ -675,10 +675,12 @@ class e107_user_extended
 		$regex 		= $tp->toText($parms[1]);
 		$regexfail 	= $tp->toText($parms[2]);
 		$fname 		= "ue[user_".$struct['user_extended_struct_name']."]";
+		$required	= vartrue($struct['user_extended_struct_required']) ? "required"  : "";
+		$fid		= $frm->name2id($fname);
 		
 		if(strpos($include, 'class') === FALSE)
 		{
-			$include .= " class='tbox' ";
+			$include .= " class='form-control tbox' ";
 		}
 
 
@@ -686,7 +688,8 @@ class e107_user_extended
 		{
 			case EUF_TEXT :  //textbox
 			case EUF_INTEGER :  //integer
-		 		$ret = "<input name='{$fname}' value='{$curval}' {$include} />";
+		 		$ret = "<input id='{$fid}' type='text' name='{$fname}' value='{$curval}' {$include} {$required} />";
+			
 		  		return $ret;
 		  	break;
 
@@ -715,12 +718,12 @@ class e107_user_extended
 					
 					if(deftrue('BOOTSTRAP'))
 					{
-						$ret .= $frm->radio($fname,$val,($curval == $val),array('label'=>$label));	
+						$ret .= $frm->radio($fname,$val,($curval == $val),array('label'=>$label, 'required'=> $struct['user_extended_struct_required']));	
 					}
 					else 
 					{
 						$chk = ($curval == $val)? " checked='checked' " : "";
-						$ret .= "<input {$include} type='radio' name='{$fname}' value='{$val}' {$chk} /> {$label}";	
+						$ret .= "<input id='{$fid}' {$include} type='radio' name='{$fname}' value='{$val}' {$chk} {$required} /> {$label}";	
 					}
 					
 				}
@@ -751,7 +754,7 @@ class e107_user_extended
 				
 				if(deftrue('BOOTSTRAP'))
 				{
-					$ret .= $frm->checkbox($fname,$val,($curval == $val),array('label'=>$label));	
+					$ret .= $frm->checkbox($fname,$val,($curval == $val),array('label'=>$label, 'required'=> $struct['user_extended_struct_required']));	
 				}
 				else 
 				{
@@ -764,7 +767,7 @@ class e107_user_extended
 		break;
 
 		case EUF_DROPDOWN : //dropdown
-		  $ret = "<select {$include} name='{$fname}'>\n";
+		  $ret = "<select {$include} id='{$fid}' name='{$fname}' {$required} >\n";
 		  $ret .= "<option value=''>&nbsp;</option>\n";  // ensures that the user chose it.
 		  foreach($choices as $choice)
 		  {
@@ -788,7 +791,7 @@ class e107_user_extended
 			if (!method_exists($className, 'getValue')) return '???-???';
 			$temp->pointerReset();
 			
-			$ret = "<select {$include} name='{$fname}'>\n";
+			$ret = "<select id='{$fid}' {$include} name='{$fname}' {$required} >\n";
 			$ret .= "<option value=''>&nbsp;</option>\n";  // ensures that the user chooses it.
 			while (FALSE !== ($row = $temp->getValue(0, 'next')))
 			{
@@ -808,7 +811,7 @@ class e107_user_extended
 
 				if($sql->db_Select($tp -> toDB($choices[0], true), $tp -> toDB($choices[1], true).",".$tp -> toDB($choices[2], true), "1 $order")){
 					$choiceList = $sql->db_getList('ALL',FALSE);
-					$ret = "<select {$include} name='{$fname}'  >\n";
+					$ret = "<select id='{$fid}' {$include} name='{$fname}' {$required}  >\n";
 					$ret .= "<option value=''>&nbsp;</option>\n";  // ensures that the user chose it.
 					foreach($choiceList as $cArray)
 					{
@@ -825,7 +828,7 @@ class e107_user_extended
 				break;
 
 			case EUF_TEXTAREA : //textarea
-				return "<textarea {$include} name='{$fname}' >{$curval}</textarea>";
+				return "<textarea id='{$fid}' {$include} name='{$fname}'  {$required} >{$curval}</textarea>";
 				break;
 
 			case EUF_DATE : //date
@@ -839,11 +842,10 @@ class e107_user_extended
 				break;
 
 			case EUF_LANGUAGE : // language
-				require_once(e_HANDLER."file_class.php");
-				$fl = new e_file;
-				$lanlist = $fl->get_dirs(e_LANGUAGEDIR);
+				$lanlist = e107::getLanguage()->installed();
 				sort($lanlist);
-            $ret = "<select {$include} name='{$fname}'>\n";
+				
+            	$ret = "<select {$include} id='{$fid}' name='{$fname}' {$required} >\n";
 				$ret .= "<option value=''>&nbsp;</option>\n";  // ensures that the user chose it.
 				foreach($lanlist as $choice)
 				{
@@ -852,6 +854,7 @@ class e107_user_extended
 					$ret .= "<option value='{$choice}' {$sel}>{$choice}</option>\n";
 				}
 				$ret .= "</select>\n";
+				
            	break;
 
 		}

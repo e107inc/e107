@@ -724,6 +724,11 @@ else
 	define('XURL_VIMEO', false);
 }
 
+if(!defined('MAIL_IDENTIFIER'))
+{
+	define('MAIL_IDENTIFIER', 'X-e107-id');	
+}
+
 /* Withdrawn 0.8
 // legacy module.php file loading.
 if (isset($pref['modules']) && $pref['modules']) {

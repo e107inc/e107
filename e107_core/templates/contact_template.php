@@ -65,10 +65,10 @@ $CONTACT_TEMPLATE['menu'] =  '
 	$CONTACT_WRAPPER['form']['CONTACT_EMAIL_COPY'] 			= "<tr><td>{---}".LANCONTACT_07."</td></tr>";
 	$CONTACT_WRAPPER['form']['CONTACT_PERSON']				= "<tr><td>".LANCONTACT_14."<br />{---}</td></tr>";
 
-
+	//FIXME Upgrade to bootstrap3 non-table format for phone/tablet compatibility. 
 	$CONTACT_TEMPLATE['form'] = "
 	<form action='".e_SELF."' method='post' id='contactForm' >
-	<table class='table' style='".USER_WIDTH."' cellpadding='1' cellspacing='7'>
+	<table class='table'>
 	{CONTACT_PERSON}
 	<tr><td>".LANCONTACT_03."<br />
 	{CONTACT_NAME}
