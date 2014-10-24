@@ -674,6 +674,7 @@ class e_admin_response
 	function getTitle($namespace = 'default', $reset = false, $glue = '  ')
 	{
 		$content = array();
+				
 		if(isset($this->_title[$namespace]) && is_array($this->_title[$namespace]))
 		{
 			$content = $this->_title[$namespace];
@@ -1814,6 +1815,8 @@ class e_admin_controller
 	 */
 	public function addTitle($title = true, $meta = true)
 	{
+		
+		
 		if(true === $title)
 		{
 			$_dispatcher = $this->getDispatcher();
@@ -1828,6 +1831,9 @@ class e_admin_controller
 			}
 			$title = $res['caption'];
 		}
+		
+		//	echo "<h3>".__METHOD__." - ".$title."</h3>";
+	
 	//	print_a($title);
 		$this->getResponse()->appendTitle($title);
 		if($meta) $this->addMetaTitle($title);
@@ -1952,6 +1958,7 @@ class e_admin_controller
 		if(method_exists($this, $actionObserverName))
 		{
 			$this->$actionObserverName();
+			
 		}
 
 		// check for triggers, not available in Ajax mode
@@ -2032,6 +2039,7 @@ class e_admin_controller
 			$this->setRequest($request);
 		}
 		$response = $this->getResponse();
+	//	print_a($response);
 		$this->_preDispatch($action);
 
 		if(null === $action)
@@ -2047,6 +2055,12 @@ class e_admin_controller
 			e107::getMessage()->add('Action '.$actionName.' no found!', E_MESSAGE_ERROR);
 			return $response;
 		}
+		
+		if($action != 'Prefs' && $action != 'Create' && $action !='Edit' && $action != 'List') // Custom Page method in use, so add the title. 
+		{
+			$this->addTitle(); 	
+		}	
+		
 		ob_start(); //catch any output
 		$ret = $this->{$actionName}();
 
@@ -2076,7 +2090,7 @@ class e_admin_controller
 		{
 			$response->appendBody($ret);
 		}
-
+	
 		return $response;
 	}
 
