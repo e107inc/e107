@@ -240,7 +240,7 @@ class mailout_admin extends e_admin_dispatcher
 		'other2' 			=> array('divider'=> true),
 		'prefs/prefs' 		=> array('caption'=> LAN_PREFS, 		'perm' => '0'),
 		'maint/maint'		=> array('caption'=> ADLAN_40, 			'perm' => '0'),
-		
+		'main/templates'	=> array('caption'=> 'Template Preview', 'perm' => '0'),
 	);
 
 
@@ -361,7 +361,7 @@ class mailout_main_ui extends e_admin_ui
 		
 		if($_GET['action'] == 'preview')
 		{
-			echo $this->previewPage();
+			echo $this->previewPage($_GET['id']);
 			exit;
 		}
 		
@@ -447,7 +447,7 @@ class mailout_main_ui extends e_admin_ui
 			$sendto = trim($_POST['testaddress']);
 			
 			$eml = array(
-				'e107_header'	=> 9999999,
+				'e107_header'	=> USERID,
 				'subject'		=> LAN_MAILOUT_113." ".$add,
 				'body'			=> str_replace("[br]", "\n", LAN_MAILOUT_114),
 				'template'		=> vartrue($_POST['testtemplate'],null),
@@ -461,7 +461,7 @@ class mailout_main_ui extends e_admin_ui
 			else 
 			{
 				$mes->addSuccess(LAN_MAILOUT_81. ' ('.$sendto.')');
-				e107::getAdminLog()->log_event('MAIL_01',$sendto,E_LOG_INFORMATIVE,'');
+				e107::getAdminLog()->log_event('MAIL_01', $sendto, E_LOG_INFORMATIVE,'');
 			}
 		}	
 		
@@ -592,26 +592,75 @@ class mailout_main_ui extends e_admin_ui
 	/**
 	 * Preview the Email. 
 	 */
-	function previewPage()
+	function previewPage($id='')
 	{
-		$mailData = e107::getDb()->retrieve('mail_content','*','mail_source_id='.intval($_GET['id'])." LIMIT 1");
 		
-		$data = $this->mailAdmin->dbToMail($mailData);
-
-		$eml = array(
-			'subject'		=> $data['mail_subject'],
-			'body' 			=> $data['mail_body'],
-			'template'		=> $data['mail_send_style'],
-			'shortcodes'	=> array('USERNAME'=>'John Example', 'DISPLAYNAME'=> 'John Example', 'USERID'=>'555', 'MAILREF'=>$_GET['id'], 'NEWSLETTER'=>SITEURL."newsletter/?id=example1234567", 'UNSUBSCRIBE'=>SITEURL."unsubscribe/?id=example1234567"),
-			'media'			=> $data['mail_media'],
-		);
+		if(is_numeric($id))
+		{
+			$mailData = e107::getDb()->retrieve('mail_content','*','mail_source_id='.intval($id)." LIMIT 1");
+			
+			$data = $this->mailAdmin->dbToMail($mailData);
+	
+			$eml = array(
+				'subject'		=> $data['mail_subject'],
+				'body' 			=> $data['mail_body'],
+				'template'		=> $data['mail_send_style'],
+				'shortcodes'	=> array('USERNAME'=>'John Example', 'DISPLAYNAME'=> 'John Example', 'USERID'=>'555', 'MAILREF'=>$_GET['id'], 'NEWSLETTER'=>SITEURL."newsletter/?id=example1234567", 'UNSUBSCRIBE'=>SITEURL."unsubscribe/?id=example1234567"),
+				'media'			=> $data['mail_media'],
+			);
+		}
+		else
+		{
+			e107::coreLan('signup');
+			
+			$eml = array(
+				'subject'		=> 'Test Subject',
+				'body' 			=> "This is the body text of your email. Below you may find media attachments such as images or video thumbnails if they have been included in the template.",
+				'template'		=> $id,
+				'shortcodes'	=> array(
 				
+					'USERNAME'			=>'test-username', 
+					'DISPLAYNAME'		=> 'John Example', 
+					'USERID'			=>'555', 
+					'MAILREF'			=> '123', 
+					'NEWSLETTER'		=> SITEURL."newsletter/?id=example1234567", 
+					'UNSUBSCRIBE'		=> SITEURL."unsubscribe/?id=example1234567",
+					'ACTIVATION_LINK'	=> 'http://whereever.to.activate.com/',
+					'USERURL'			=> "www.user-website.com",
+					'PASSWORD'			=> "test-password",
+					'LOGINNAME'			=> "test-loginname"
+				),
+				'media'			=>  array(
+						0 => array('path' => '{e_PLUGIN}gallery/images/butterfly.jpg'),
+						1 => array('path' => 'h-v880sXEOQ.youtube'),
+						2 => array('path' => '_j0b9syAuIk.youtube'),
+						3 => array('path' => '{e_PLUGIN}gallery/images/horse.jpg'),
+						4 => array('path' => '{e_PLUGIN}gallery/images/lake-and-forest.jpg'),
+				)
+			);	
+			
+		}
+			
 		return e107::getEmail()->preview($eml);
 		exit;
 
 	}
 
-
+	function templatesPage()
+	{
+		$templates = e107::getCoreTemplate('email',null,'front');
+		$tab = array();
+		
+		foreach($templates as $k=>$layout)
+		{
+			$caption = $k;
+			$text = "<iframe src='".e_ADMIN."mailout.php?mode=main&action=preview&id=".$k."' width='100%' height='700'>Loading...</iframe>";	
+			$tab[$k] = array('caption'=>$caption, 'text'=>$text);
+					
+		}	
+		
+		return e107::getForm()->tabs($tab); 
+	}
 	
 	/**
 	 * Process Posted Data
@@ -1557,7 +1606,7 @@ switch ($action)
 					else 
 					{
 						$mes->addSuccess(LAN_MAILOUT_81. ' ('.$sendto.')');
-						$admin_log->log_event('MAIL_01',$sendto,E_LOG_INFORMATIVE,'');
+						e107::getLog()->add('MAIL_01',$sendto,E_LOG_INFORMATIVE,'');
 					}
 				}
 			}
@@ -1795,7 +1844,7 @@ switch ($midAction)
 //		$emessage->add($pageMode.': Would delete here: '.$mailId, E_MESSAGE_SUCCESS);
 //		break;														// Delete this
 		$result = $mailAdmin->deleteEmail($mailId, 'all');
-		$admin_log->log_event('MAIL_04','ID: '.$mailId,E_LOG_INFORMATIVE,'');
+		e107::getLog()->add('MAIL_04','ID: '.$mailId,E_LOG_INFORMATIVE,'');
 		if (($result === FALSE) || !is_array($result))
 		{
 			$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_166);
@@ -1842,7 +1891,7 @@ switch ($midAction)
 		if ($mailAdmin->activateEmail($mailId, FALSE, $notify, $first, $last))
 		{
 			$mes->addSuccess(LAN_MAILOUT_185);
-			$admin_log->log_event('MAIL_06','ID: '.$mailId,E_LOG_INFORMATIVE,'');
+			e107::getLog()->add('MAIL_06','ID: '.$mailId,E_LOG_INFORMATIVE,'');
 		}
 		else
 		{
