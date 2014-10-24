@@ -1889,8 +1889,9 @@ class pluginBuilder
 			$existingXml = e_PLUGIN.$this->pluginName."/plugin.xml";		
 			if(file_exists($existingXml))
 			{
-				$p = e107::getXml()->loadXMLfile($existingXml,true);
-			//	print_a($p);
+				$p = e107::getXml()->loadXMLfile($existingXml,true);	
+				
+		//		print_a($p);
 				$defaults = array(
 					"main-name"					=> varset($p['@attributes']['name']),
 					"author-name"				=> varset($p['author']['@attributes']['name']),
@@ -1898,6 +1899,8 @@ class pluginBuilder
 					"description-description"	=> varset($p['description']),
 					"summary-summary"			=> varset($p['summary'], $p['description']),
 					"category-category"			=> varset($p['category']),
+					"keywords-one"				=> varset($p['keywords']['word'][0]),
+					"keywords-two"				=> varset($p['keywords']['word'][1]),
 				);
 				
 				unset($p);
