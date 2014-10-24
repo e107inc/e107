@@ -3188,6 +3188,7 @@ class e_admin_controller_ui extends e_admin_controller
 				case 'lanlist':
 				case 'userclasses':
 				case 'comma':
+				case 'checkboxes':
 					if(is_array($value))
 					{
 						// no sanitize here - data is added to model posted stack
@@ -3548,11 +3549,16 @@ class e_admin_controller_ui extends e_admin_controller
 			if($filterField && $filterValue !== '' && isset($this->fields[$filterField]))
 			{
 				$_type = $this->fields[$filterField]['data'];
-				if($this->fields[$filterField]['type'] === 'comma') $_type = 'set'; 
+				
+				if($this->fields[$filterField]['type'] === 'comma' || $this->fields[$filterField]['type'] === 'checkboxes')
+				{
+					 $_type = 'set'; 
+				}
+
 				switch ($_type) 
 				{
 					case 'set':
-						$searchQry[] = "FIND_IN_SET('".$tp->toDB($filterValue)."',".$this->fields[$filterField]['__tableField'].")";
+						$searchQry[] = "FIND_IN_SET('".$tp->toDB($filterValue)."', ".$this->fields[$filterField]['__tableField'].")";
 					break;
 					
 					case 'int':
@@ -3802,8 +3808,9 @@ class e_admin_controller_ui extends e_admin_controller
 		}
 
 		// Debug Filter Query.
-		
-	//	 echo $qry.'<br />';		
+		e107::getMessage()->addDebug('QRY='.$qry);
+	//	 echo $qry.'<br />';	
+	// print_a($this->fields);	
 	//	 print_a($_GET);
 
 		return $qry;
@@ -5620,6 +5627,7 @@ class e_admin_form_ui extends e_form
 						}
 					break;
 					
+					case 'checkboxes':
 					case 'comma':
 						// TODO lan
 						if(!isset($parms['__options'])) $parms['__options'] = array();

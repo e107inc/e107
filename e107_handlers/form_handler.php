@@ -1268,6 +1268,32 @@ class e_form
 		return $pre.$text.$post;
 	}
 
+
+	/**
+	 * Render an array of checkboxes. 
+	 * @param string $name
+	 * @param array $option_array
+	 * @param mixed $checked
+	 * @param array $options [optional]
+	 */
+	function checkboxes($name, $option_array, $checked, $options=array())
+	{
+		$name = (strpos($name, '[') === false) ? $name.'[]' : $name;
+		if(!is_array($checked)) $checked = explode(",",$checked);
+		
+		$text = "";
+		
+		foreach($option_array as $k=>$label)
+		{
+			$c = in_array($k, $checked) ? true : false;
+			$text .= $this->checkbox($name, $k, $c, $label);	
+		}	
+		
+		return $text;
+		
+	}
+	
+
 	function checkbox_label($label_title, $name, $value, $checked = false, $options = array())
 	{
 		return $this->checkbox($name, $value, $checked, $options).$this->label($label_title, $name, $value);
@@ -2739,6 +2765,11 @@ class e_form
 		if(vartrue($attributes['inline'])) $parms['editable'] = true; // attribute alias
 		if(vartrue($attributes['sort'])) $parms['sort'] = true; // attribute alias
 		
+		if(vartrue($parms['type'])) // Allow the use of a different type in readMode. eg. type=method.
+		{
+			$attributes['type'] = $parms['type'];	
+		}
+				
 		$this->renderValueTrigger($field, $value, $parms, $id);
 
 		$tp = e107::getParser();
@@ -2882,6 +2913,7 @@ class e_form
 			//	$value = $pre.vartrue($tmp[$value]).$post; // FIXME "Fatal error: Only variables can be passed by reference" featurebox list page. 
 			break;
 
+			case 'checkboxes':
 			case 'comma':
 			case 'dropdown':
 				// XXX - should we use readParams at all here? see writeParms check below
@@ -2904,7 +2936,12 @@ class e_form
 				unset($wparms['__options']);
 				$_value = $value;
 				
-				if(vartrue($opts['multiple']) || vartrue($attributes['type']) == 'comma')
+				if($attributes['type'] == 'checkboxes' || $attributes['type'] == 'comma')
+				{
+					$opts['multiple'] = true;	
+				}
+			
+				if(vartrue($opts['multiple']))
 				{
 					$ret = array();
 					$value = is_array($value) ? $value : explode(',', $value);
@@ -2920,7 +2957,7 @@ class e_form
 					if(isset($wparms[$value])) $ret = $wparms[$value];
 					$value = $ret;
 				}
-	
+			
 				$value = ($value ? vartrue($parms['pre']).defset($value, $value).vartrue($parms['post']) : '');
 				
 				// Inline Editing.  
@@ -3291,13 +3328,24 @@ class e_form
 				$_value = $value;
 				$value = call_user_func_array(array($this, $method), array($value, 'read', $parms));
 				
+			//	 print_a($attributes);
 					// Inline Editing.  
 				if(!vartrue($attributes['noedit']) && vartrue($parms['editable'])) // avoid bad markup, better solution coming up
 				{
 					
 					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 					$methodParms = call_user_func_array(array($this, $method), array($value, 'inline', $parms));
-					$xtype = 'select';
+					
+					if($attributes['inline'] === 'checklist')
+					{
+						$xtype = 'checklist';	
+					}
+					else
+					{
+						$xtype = 'select';		
+					}	
+					
+					
 				
 					$value = $this->renderInline($field, $id, $attributes['title'], $_value, $value, $xtype, $methodParms);
 				
@@ -3597,6 +3645,20 @@ class e_form
 				}
 				$ret =  (vartrue($parms['raw']) ? $templates : $this->selectbox($key, $templates, $value));
 			break;
+
+			case 'checkboxes':
+				
+				if(is_array($parms))
+				{
+					if(!is_array($value) && !empty($value))
+					{
+						$value = explode(",",$value);		
+					}
+					$ret =  vartrue($eloptions['pre']).$this->checkboxes($key, $parms, $value, $eloptions).vartrue($eloptions['post']);		
+				}
+				return $ret;
+			break;
+
 
 			case 'dropdown':
 			case 'comma':	
