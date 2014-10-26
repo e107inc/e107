@@ -311,13 +311,13 @@ class login_menu_shortcodes extends e_shortcode
 		if(!isset($data['new_news'])) return ''; 
 		$tmp = array();
 		if($data['new_news']){
-			$tmp['LM_STAT_NEW'] = "return '".$data['new_news']."';";
-			$tmp['LM_STAT_LABEL'] = $data['new_news'] == 1 ? "return '".LOGIN_MENU_L14."';" : "return '".LOGIN_MENU_L15."';";
+			$tmp['LM_STAT_NEW']   = $data['new_news'];
+			$tmp['LM_STAT_LABEL'] = $data['new_news'] == 1 ? LOGIN_MENU_L14 : LOGIN_MENU_L15;
 			$tmp['LM_STAT_EMPTY'] = '';
 		} else {
 			$tmp['LM_STAT_NEW'] = '';
 			$tmp['LM_STAT_LABEL'] = '';
-			$tmp['LM_STAT_EMPTY'] = "return '".LOGIN_MENU_L26." ".LOGIN_MENU_L15."';";
+			$tmp['LM_STAT_EMPTY'] = LOGIN_MENU_L26." ".LOGIN_MENU_L15;
 		}
 		return $tp -> parseTemplate($LOGIN_MENU_STATITEM, false, $tmp);
 	}
@@ -329,13 +329,13 @@ class login_menu_shortcodes extends e_shortcode
 		if(!isset($data['new_comments'])) return '';
 		$tmp = array();
 		if($data['new_comments']){
-			$tmp['LM_STAT_NEW'] = "return '".$data['new_comments']."';";
-			$tmp['LM_STAT_LABEL'] = $data['new_comments'] == 1 ? "return '".LOGIN_MENU_L18."';" : "return '".LOGIN_MENU_L19."';";
+			$tmp['LM_STAT_NEW']   = $data['new_comments'];
+			$tmp['LM_STAT_LABEL'] = $data['new_comments'] == 1 ? LOGIN_MENU_L18 : LOGIN_MENU_L19;
 			$tmp['LM_STAT_EMPTY'] = '';
 		} else {
-			$tmp['LM_STAT_NEW'] = '';
+			$tmp['LM_STAT_NEW']   = '';
 			$tmp['LM_STAT_LABEL'] = '';
-			$tmp['LM_STAT_EMPTY'] = "return '".LOGIN_MENU_L26." ".LOGIN_MENU_L19."';";
+			$tmp['LM_STAT_EMPTY'] = LOGIN_MENU_L26." ".LOGIN_MENU_L19;
 		}
 		return $tp -> parseTemplate($LOGIN_MENU_STATITEM, false, $tmp);
 	}
@@ -347,13 +347,13 @@ class login_menu_shortcodes extends e_shortcode
 		if(!isset($data['new_users'])) return '';
 		$tmp = array();
 		if($data['new_users']){
-			$tmp['LM_STAT_NEW'] = "return '".$data['new_users']."';";
-			$tmp['LM_STAT_LABEL'] = $data['new_users'] == 1 ? "return '".LOGIN_MENU_L22."';" : "return '".LOGIN_MENU_L23."';";
+			$tmp['LM_STAT_NEW']   = $data['new_users'];
+			$tmp['LM_STAT_LABEL'] = $data['new_users'] == 1 ? LOGIN_MENU_L22 : LOGIN_MENU_L23;
 			$tmp['LM_STAT_EMPTY'] = '';
 		} else {
-			$tmp['LM_STAT_NEW'] = '';
+			$tmp['LM_STAT_NEW']   = '';
 			$tmp['LM_STAT_LABEL'] = '';
-			$tmp['LM_STAT_EMPTY'] = "return '".LOGIN_MENU_L26." ".LOGIN_MENU_L23."';";
+			$tmp['LM_STAT_EMPTY'] = LOGIN_MENU_L26." ".LOGIN_MENU_L23;
 		}
 		return $tp -> parseTemplate($LOGIN_MENU_STATITEM, false, $tmp);
 	}
