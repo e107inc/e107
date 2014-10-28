@@ -696,8 +696,19 @@ class e107MailManager
 
 //		print_a($email);
 
+		if($this->debugMode)
+		{
+			$logName = "mailout_simulation_".$email['mail_source_id'];
+			e107::getLog()->addDebug("Sending Email to <".$email['mail_recipient_name']."> ".$email['mail_recipient_email'])->toFile($logName,'Mailout Simulation Log',true);	
+			$result = true; 
+		}
+		else
+		{
+			$result = $this->mailer->sendEmail($email['mail_recipient_email'], $email['mail_recipient_name'], $mailToSend, TRUE);	
+		}
+
 		// Try and send
-		$result = $this->mailer->sendEmail($email['mail_recipient_email'], $email['mail_recipient_name'], $mailToSend, TRUE);
+		
 
 //		return;			// ************************************************** Temporarily stop DB being updated when line active *****************************
 		
@@ -738,20 +749,19 @@ class e107MailManager
 		if (count($targetData))
 		{
 			//print_a($targetData);
-			$this->db2->db_Update('mail_recipients', array('data' => $targetData, 
-														'_FIELD_TYPES' => $this->dbTypes['mail_recipients'], 
-														'WHERE' => '`mail_target_id` = '.intval($email['mail_target_id'])));
+			$this->db2->update('mail_recipients', array('data' => $targetData, '_FIELD_TYPES' => $this->dbTypes['mail_recipients'], 'WHERE' => '`mail_target_id` = '.intval($email['mail_target_id'])));
 		}
+		
 		if (count($this->currentBatchInfo))
 		{
 			//print_a($this->currentBatchInfo);
-			$this->db2->db_Update('mail_content', array('data' => $this->currentBatchInfo, 
+			$this->db2->update('mail_content', array('data' => $this->currentBatchInfo, 
 														'_FIELD_TYPES' => $this->dbTypes['mail_content'], 
 														'WHERE' => '`mail_source_id` = '.intval($email['mail_source_id'])));
 		}
 
-		if (($this->currentBatchInfo['mail_togo_count'] == 0) && ($email['mail_notify_complete'] > 0))
-		{	// Need to notify completion
+		if (($this->currentBatchInfo['mail_togo_count'] == 0) && ($email['mail_notify_complete'] > 0)) // Need to notify completion
+		{	
 			$email = array_merge($email, $this->currentBatchInfo);		// This should ensure the counters are up to date
 			$mailInfo = LAN_MAILOUT_247.'<br />'.LAN_MAILOUT_135.': '.$email['mail_title'].'<br />'.LAN_MAILOUT_248.$this->statusToText($email['mail_content_status']).'<br />';
 			$mailInfo .= '<br />'.LAN_MAILOUT_249.'<br />';
@@ -765,20 +775,17 @@ class e107MailManager
 					'mail_body' => $mailInfo.'<br />'
 				);
 
-			if ($email['mail_notify_complete'] & 1)
-			{	// Notify email initiator
+			if ($email['mail_notify_complete'] & 1) // Notify email initiator
+			{	
 				if ($this->db2->select('user', 'user_name, user_email', '`user_id`='.intval($email['mail_creator'])))
 				{
-					$row = $this->db2->fetch(MYSQL_ASSOC);
-					require_once(e_HANDLER.'mail.php');
-					$mailer = new e107Email();
-					$mailer->sendEmail($row['user_name'], $row['user_email'], $message,FALSE);
+					$row = $this->db2->fetch();
+					e107::getEmail()->sendEmail($row['user_name'], $row['user_email'], $message,FALSE);
 				}
 			}
-			if ($email['mail_notify_complete'] & 2)
-			{	// Do e107 notify
+			if ($email['mail_notify_complete'] & 2) // Do e107 notify
+			{	
 				require_once(e_HANDLER."notify_class.php");
-			
 				notify_maildone($message);
 			}
 			e107::getEvent()->trigger('maildone', $email);
@@ -874,7 +881,7 @@ class e107MailManager
 		}
 		
 		$title = "<h4>".__METHOD__." Line: ".__LINE__."</h4>";
-		e107::getAdminLog()->addDebug($title.print_a($email,true),true);
+	//	e107::getAdminLog()->addDebug($title.print_a($email,true),true);
 		
 		if(!empty($email['mail_media']))
 		{
@@ -882,7 +889,7 @@ class e107MailManager
 		}
 				
 		$title2 = "<h4>".__METHOD__." Line: ".__LINE__."</h4>";
-		e107::getAdminLog()->addDebug($title2.print_a($result,true),true);
+	//	e107::getAdminLog()->addDebug($title2.print_a($result,true),true);
 	
 		$result['shortcodes']['MAILREF'] = $email['mail_source_id'];
 	
@@ -1630,7 +1637,7 @@ class e107MailManager
 		$log = e107::getAdminLog();
 		$log->addDebug(print_a($emailData, true),true);
 		$log->addDebug(print_a($recipientData, true),true);
-		$log->toFile('mail_manager','Main Manager Log',true);
+		$log->toFile('mail_manager','Mail Manager Log',true);
 		
 		
 		if (!is_array($emailData)) 
@@ -1723,6 +1730,11 @@ class e107MailManager
 				// Fill in other bits of email
 				$emailData['mail_target_info'] = $recip;
 				$mailToSend = $this->makeEmailBlock($emailData);			// Substitute mail-specific variables, attachments etc
+				
+				
+				
+				
+				
 				if (FALSE == $this->mailer->sendEmail($recip['mail_recipient_email'], $recip['mail_recipient_name'], $mailToSend, TRUE))
 				{
 					$tempResult = FALSE;

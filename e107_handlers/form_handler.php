@@ -1116,11 +1116,13 @@ class e_form
 		
 		$buttonId = $target.'-start';
 		
+		
+		
 		if(vartrue($options['btn-label']))
 		{
-			$text .= '<a id="'.$buttonId.'" data-loading-text="'.$loading.'" data-progress-target="'.$target.'" data-progress="' . $options['url'] . '" data-progress-mode="'.varset($options['mode'],0).'" data-progress-show="'.$nextStep.'" data-progress-hide="'.$buttonId.'" class="btn btn-primary e-progress" >'.$options['btn-label'].'</a>';
+			$interval = vartrue($options['interval'],1000);
+			$text .= '<a id="'.$buttonId.'" data-loading-text="'.$loading.'" data-progress-interval="'.$interval.'" data-progress-target="'.$target.'" data-progress="' . $options['url'] . '" data-progress-mode="'.varset($options['mode'],0).'" data-progress-show="'.$nextStep.'" data-progress-hide="'.$buttonId.'" class="btn btn-primary e-progress" >'.$options['btn-label'].'</a>';
 			$text .= ' <a data-progress-target="'.$target.'" class="btn btn-danger e-progress-cancel" >'.LAN_CANCEL.'</a>';
-		
 		}
 		
 		
@@ -3336,14 +3338,31 @@ class e_form
 					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 					$methodParms = call_user_func_array(array($this, $method), array($value, 'inline', $parms));
 					
-					if($attributes['inline'] === 'checklist')
+					if(is_string($attributes['inline'])) // text, textarea, select, checklist. 
 					{
-						$xtype = 'checklist';	
+						switch ($attributes['inline']) 
+						{
+					
+							case 'checklist':
+								$xtype = 'checklist';		
+							break;
+							
+							case 'select':
+								$xtype = 'select';		
+							break;
+							
+							case 'textarea':
+								$xtype = 'textarea';		
+							break;
+							
+							
+							default:
+								$xtype = 'text';
+								$methodParms = null;
+							break;
+						}
 					}
-					else
-					{
-						$xtype = 'select';		
-					}	
+					
 					
 					
 				
