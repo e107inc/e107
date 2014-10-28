@@ -172,18 +172,23 @@ class _system_cron
 	
 	function procEmailQueue()
 	{
-		//global $pref;
+
+		$sendPerHit = e107::getConfig()->get('mail_workpertick',5);
+		$pauseCount =  e107::getConfig()->get('mail_pause',5);
+		$pauseTime =  e107::getConfig()->get('mail_pausetime',2);
+			
 		if (CRON_MAIL_DEBUG)
 		{
-			$e107 = e107::getInstance();
-			$e107->admin_log->e_log_event(10,debug_backtrace(),'DEBUG','CRON Email','Email run started',FALSE,LOG_TO_ROLLING);
+			e107::getLog()->e_log_event(10,debug_backtrace(),'DEBUG','CRON Email','Email run started',FALSE,LOG_TO_ROLLING);
 		}
+		
 		require_once(e_HANDLER.'mail_manager_class.php');
 		$mailManager = new e107MailManager();
-		$mailManager->doEmailTask(varset($pref['mail_workpertick'],5));
+		$mailManager->doEmailTask($sendPerHit,$pauseCount,$pauseTime);
+		
 		if (CRON_MAIL_DEBUG)
 		{
-			$e107->admin_log->e_log_event(10,debug_backtrace(),'DEBUG','CRON Email','Email run completed',FALSE,LOG_TO_ROLLING);
+			e107::getLog()->e_log_event(10,debug_backtrace(),'DEBUG','CRON Email','Email run completed',FALSE,LOG_TO_ROLLING);
 		}
 	}
 	

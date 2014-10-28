@@ -123,7 +123,7 @@ class e107MailManager
 	const	E107_EMAIL_MAX_TRIES = 3;			// Maximum number of tries by us (mail server may do more)
 												// - max allowable value is MAIL_STATUS_MAX_ACTIVE - MAIL_STATUS_PENDING 
 
-	private		$debugMode = 1;
+	private		$debugMode = false;
 	protected	$e107;
 	protected	$db = NULL;					// Use our own database object - this one for reading data
 	protected	$db2 = NULL;				// Use our own database object - this one for updates
@@ -902,16 +902,26 @@ class e107MailManager
 	 * Call to do a number of 'units' of email processing - from a cron job, for example
 	 * Each 'unit' sends one email from the queue - potentially it could do some other task.
 	 * @param $limit - number of units of work to do - zero to clear the queue (or do maximum allowed by a hard-coded limit)
+	 * @param $pauseCount - pause after so many emails
+	 * @param $pauseTime - time in seconds to pause after 'pauseCount' number of emails. 
 	 * @return None
 	 */
-	public function doEmailTask($limit = 0)
+	public function doEmailTask($limit = 0, $pauseCount=null, $pauseTime=1)
 	{
 		if ($count = $this->selectEmails($limit))
 		{
+			$c=1;
 			while ($count > 0)
 			{
 				$this->sendNextEmail();
 				$count--;
+				
+				if(!empty($pauseCount) && ($c === $pauseCount))
+				{
+					sleep($pauseTime);
+					$c=1;
+				}
+					
 			}
 			if ($this->mailer)
 			{
