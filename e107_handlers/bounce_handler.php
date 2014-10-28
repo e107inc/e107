@@ -4,7 +4,7 @@
 
  // WARNING, any echoed output from this script will be returned to the sender as a bounce message. 
  
- $_E107['debug'] = true;
+ $_E107['debug'] = false;
  
  
 if (!defined('e107_INIT'))
@@ -14,6 +14,10 @@ if (!defined('e107_INIT'))
 	require_once($class2);
 }
 
+if(ADMIN && varset($_GET['eml']))
+{
+	$_E107['debug'] = true;		
+}
 
 $bnc = new e107Bounce;
 $process = (varset($_GET['eml']) && $_E107['debug']) ? $_GET['eml'].".eml" : FALSE;
@@ -65,7 +69,7 @@ class e107Bounce
 							
 	    	if(varset($_GET['eml']))
 			{
-		//		echo $message;	
+				echo $message;	
 			}
 			else
 			{
