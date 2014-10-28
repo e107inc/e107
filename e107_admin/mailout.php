@@ -98,8 +98,10 @@ function sendProgress($id)
 	
 	ob_start();
 	
+	$perAjaxHit = e107::getConfig()->get('mail_pause',1);
+	
 	$mailManager = new e107MailManager();
-	$mailManager->doEmailTask(varset($pref['mail_workpertick'],5));
+	$mailManager->doEmailTask($perAjaxHit);
 
 	$sqld = e107::getDb('progress');
 	
@@ -716,6 +718,8 @@ class mailout_main_ui extends e_admin_ui
 	function sendnowPage()
 	{
 		$id = $this->getId();
+
+		$this->getResponse()->setTitle(LAN_MAILOUT_15.SEP.'Process Mail Queue #'.$id);
 	
 		e107::getDb()->update('mail_content', 'mail_content_status='.MAIL_STATUS_PENDING.' WHERE mail_source_id = '.intval($id));
 		e107::getDb()->update('mail_recipients', 'mail_status='.MAIL_STATUS_PENDING.' WHERE mail_detail_id = '.intval($id));
@@ -727,8 +731,10 @@ class mailout_main_ui extends e_admin_ui
 		}
 		else 
 		{
-			$text = "<h4>Ready to Process Mail Queue</h4>";
-			$text .= e107::getForm()->progressBar('mail-progress',1, array('btn-label'=>'Start #'.$id, 'url'=> e_SELF, 'mode'=>$id));
+			$pause = e107::getConfig()->get('mail_pausetime',1);
+			$interval = ($pause * 1000);
+			
+			$text = e107::getForm()->progressBar('mail-progress',1, array('btn-label'=>'Start', 'interval'=>$interval, 'url'=> e_SELF, 'mode'=>$id));
 		}
 	
 		return $text;	
