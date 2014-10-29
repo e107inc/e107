@@ -297,6 +297,11 @@ $EMAIL_TEMPLATE['example']['footer']			= "<br /><br />
 												</body>
 												</html>";
 
+												// Overrides any data sent from script. 											
+$EMAIL_TEMPLATE['example']['cc']				= "example@example.com";
+$EMAIL_TEMPLATE['example']['bcc']				= "example@example.com";
+$EMAIL_TEMPLATE['example']['attachment']		= "{e_PLUGIN}myplugin/myattachment.zip";
+$EMAIL_TEMPLATE['example']['priority']			= 3; // (1 = High, 3 = Normal, 5 = low).
 
 
 

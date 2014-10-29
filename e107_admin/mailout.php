@@ -453,8 +453,13 @@ class mailout_main_ui extends e_admin_ui
 				'subject'		=> LAN_MAILOUT_113." ".$add,
 				'body'			=> str_replace("[br]", "\n", LAN_MAILOUT_114),
 				'template'		=> vartrue($_POST['testtemplate'],null),
-				'shortcodes'	=> array('USERID'=>555, 'USERNAME'=>'John Smith', 'LOGINNAME'=>'TestName', 'PASSWORD'=>'xxxxxxx', 'ACTIVATION_LINK'=>SITEURL."signup.php#activate")
+				'shortcodes'	=> array('USERID'=>555, 'USERNAME'=>'John Smith', 'LOGINNAME'=>'TestName', 'PASSWORD'=>'xxxxxxx', 'ACTIVATION_LINK'=>SITEURL."signup.php#activate"),
 			);
+			
+			if(E107_DEBUG_LEVEL > 0)
+			{
+				$eml['SMTPDebug'] = true; 	
+			}
 			
 			if (!e107::getEmail()->sendEmail($sendto, LAN_MAILOUT_189, $eml)) 	
 			{
