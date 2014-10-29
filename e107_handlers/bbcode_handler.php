@@ -310,7 +310,8 @@ class e_bbcode
 
 		$code_text = $code_text_par;
 
-	
+		$className = null;
+		$debugFile = null;
 
 		if (is_array($this->bbList) && array_key_exists($code, $this->bbList))
 		{	// Check the bbcode 'cache'
