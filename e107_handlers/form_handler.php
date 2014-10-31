@@ -3489,7 +3489,7 @@ class e_form
 				if(!vartrue($parms['size'])) $parms['size'] = 'mini';
 				if(!vartrue($parms['class'])) $parms['class'] = 'tbox number e-spinner';
 				if(!$value) $value = '0';
-				$ret =  vartrue($parms['pre']).$this->text($key, $value, $maxlength, $parms).vartrue($parms['post']);
+				$ret =  vartrue($parms['pre']).$this->number($key, $value, $maxlength, $parms).vartrue($parms['post']);
 			break;
 
 			case 'ip':
