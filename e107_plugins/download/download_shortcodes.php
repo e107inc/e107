@@ -913,7 +913,7 @@ class download_shortcodes extends e_shortcode
    		$text .= '<div><div class="input-group">';
 		$text .= "<input class='tbox form-control search-query' type='text' name='q' size='30' value='' placeholder=\"".LAN_dl_41."\" maxlength='50' />
 		 			<input type='hidden' name='r' value='0' />
-		 			<input type='hidden' name='t' value='downloads' />
+		 			<input type='hidden' name='t' value='download' />
 		 			";
 			
 		$text .= '
