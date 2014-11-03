@@ -23,7 +23,7 @@ class e_media
 {
 	protected $imagelist = array();
 	
-	protected $logging = true;
+	protected $logging = false;
 	
 	protected $mimePaths = array(
 				'text'			=> e_MEDIA_FILE,
