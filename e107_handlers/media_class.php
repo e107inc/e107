@@ -1004,13 +1004,13 @@ class e_media
 	
 	
 	
-	public function importFile($file='',$category='_common_image')
+	public function importFile($file='',$category='_common_image', $oldpath = null, $new_data = array())
 	{
 		$mes = e107::getMessage();
 		$tp = e107::getParser();
 		$sql = e107::getDb();
-				
-		$oldpath = e_IMPORT.$file;
+
+        if(!$oldpath) $oldpath = e_IMPORT.$file;
 		
 		if(!file_exists($oldpath))
 		{
