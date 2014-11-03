@@ -71,61 +71,245 @@ class upload_ui extends e_admin_ui
 		protected $pid				= 'upload_id';
 		protected $perPage 			= 10; 
 			
-		protected $fields 		= array (  'checkboxes' =>   array ( 'title' => '', 'type' => '', 'data' => '', 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
-		  'upload_id' =>   array ( 'title' => 'LAN_ID', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'upload_name' =>   array ( 'title' => 'LAN_TITLE', 'type' => 'text', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),	
-		  'upload_poster' =>   array ( 'title' => 'Poster', 'type' => 'user', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'upload_email' =>   array ( 'title' => 'Email', 'type' => 'text', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'upload_website' =>   array ( 'title' => 'LAN_URL', 'type' => 'url', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'upload_datestamp' =>   array ( 'title' => 'LAN_DATESTAMP', 'type' => 'datestamp', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'upload_version' =>   array ( 'title' => 'Version', 'type' => 'text', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'upload_file' =>   array ( 'title' => 'File', 'type' => 'text', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'upload_ss' =>   array ( 'title' => 'Ss', 'type' => 'text', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'upload_description' =>   array ( 'title' => 'LAN_DESCRIPTION', 'type' => 'textarea', 'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'upload_demo' =>   array ( 'title' => 'Demo', 'type' => 'url', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'upload_filesize' =>   array ( 'title' => 'Filesize', 'type' => 'hidden', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'upload_active' =>   array ( 'title' => 'Active', 'type' => 'boolean', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'upload_category' =>   array ( 'title' => 'LAN_CATEGORY', 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'options' =>   array ( 'title' => 'Options', 'type' => '', 'data' => '', 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
+		protected $fields = array (
+            'checkboxes'            =>   array ( 'title' => '', 'type' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => true, 'class' => 'center', 'toggle' => 'e-multiselect',  ),
+            'upload_id'             =>   array ( 'title' => 'LAN_ID', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+            'upload_name'           =>   array ( 'title' => 'LAN_TITLE', 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left', 'validate' => true, 'inline' => true),
+            'upload_poster'         =>   array ( 'title' => 'Poster', 'type' => 'user', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+            'upload_email'          =>   array ( 'title' => 'Email', 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+            'upload_website'        =>   array ( 'title' => 'LAN_URL', 'type' => 'url', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+            'upload_datestamp'      =>   array ( 'title' => 'LAN_DATESTAMP', 'type' => 'datestamp', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+            'upload_version'        =>   array ( 'title' => 'Version', 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+            'upload_file'           =>   array ( 'title' => 'File', 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center', 'validate' => true ),
+            'upload_ss'             =>   array ( 'title' => 'Ss', 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+            'upload_description'    =>   array ( 'title' => 'LAN_DESCRIPTION', 'type' => 'textarea', 'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+            'upload_demo'           =>   array ( 'title' => 'Demo', 'type' => 'url', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+            'upload_filesize'       =>   array ( 'title' => 'Filesize', 'type' => 'hidden', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+            'upload_active'         =>   array ( 'title' => 'Status', 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => array('singleOption' => true), 'class' => 'center', 'thclass' => 'center',  'batch' => true),
+            'upload_category'       =>   array ( 'title' => 'LAN_CATEGORY', 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'left', 'thclass' => 'left', 'validate' => true ),
+            'options'               =>   array ( 'title' => 'Options', 'type' => '', 'data' => '', 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
 		
 		protected $fieldpref = array('checkboxes', 'upload_datestamp', 'upload_name', 'upload_category', 'options');
 		
 		
-		
-		/*
-		protected  = array(
-			'pref_type'	   				=> array('title'=> 'type', 'type'=>'text', 'data' => 'string', 'validate' => true),
-			'pref_folder' 				=> array('title'=> 'folder', 'type' => 'boolean', 'data' => 'integer'),
-			'pref_name' 				=> array('title'=> 'name', 'type' => 'text', 'data' => 'string', 'validate' => 'regex', 'rule' => '#^[\w]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')
-		);
 
 		
-		// optional
-		public function init()
-		{
-			
-		}
-	
-		
-		public function customPage()
-		{
-			$ns = e107::getRender();
-			$text = 'Hello World!';
-			$ns->tablerender('Hello',$text);	
-			
-		}
-		*/
-			
+    // optional
+    public function init()
+    {
+        $qry = "
+        SELECT dc.download_category_name, dc.download_category_id
+        FROM #download_category AS dc
+        WHERE dc.download_category_parent = 0
+        ORDER by dc.download_category_order ASC";
+        $cats = e107::getDb('dc')->retrieve($qry, null, null, true, 'download_category_id');
+
+        $parentIndex = array_keys($cats);
+        $subIndex = array();
+
+        $qry = "
+        SELECT dc.download_category_name, dc.download_category_parent, dc.download_category_id
+        FROM #download_category AS dc
+        WHERE dc.download_category_parent != 0
+        ORDER by dc.download_category_order ASC";
+        if(e107::getDb('dc')->gen($qry))
+        {
+            while($row = e107::getDb('dc')->fetch())
+            {
+                $subIndex[$row['download_category_parent']][] = $row['download_category_id'];
+                $cats[$row['download_category_id']] = $row;
+            }
+        }
+
+        foreach ($parentIndex as $id)
+        {
+            $parent = $cats[$id];
+            $label = e107::getParser()->toHTML($parent['download_category_name'], false, 'TITLE');
+            $this->addSubcategories($id, $cats, $subIndex, $label);
+        }
+    }
+
+    private function addSubcategories($parent_id, &$cats, $subIndex, $label)
+    {
+        if(isset($subIndex[$parent_id]))
+        {
+            foreach ($subIndex[$parent_id] as $sub_id)
+            {
+                $cat = $cats[$sub_id];
+                $_label = e107::getParser()->toHTML($cat['download_category_name'], false, 'TITLE');
+                if($cat['download_category_parent'] && isset($subIndex[$sub_id]))
+                {
+                    $this->addSubcategories($sub_id, $cats, $subIndex, $label.' / '.$_label);
+                }
+                else
+                {
+                    if($this->getAction() == 'list')
+                    {
+                        $this->fields['upload_category']['writeParms'][$sub_id] = $label.' / '.$_label;
+                    }
+                    else
+                    {
+                        $this->fields['upload_category']['writeParms'][$label][$sub_id] = $_label;
+                    }
+                }
+            }
+        }
+    }
+
+    protected function handleListUploadActiveBatch($selected, $value = null)
+    {
+        $ids = array_map('intval', array_values($selected));
+        foreach ($ids as $id)
+        {
+            $model = $this->getTreeModel()->getNode($id);
+            if($model)
+            {
+                $data = $model->toArray();
+                $data['upload_active'] = 1;
+                $this->afterUpdate($data, $data, $id);
+            }
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function beforeUpdate($new_data, $old_data, $id)
+    {
+        if($new_data['upload_active'] && !e107::isInstalled('download'))
+        {
+            $this->getModel()->addValidationError('Download plugin is not installed - activation not possible.'); // TODO lan
+            $new_data['upload_active'] = 0;
+            return $new_data;
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function afterUpdate($new_data, $old_data, $id)
+    {
+        $did = $this->move2download($new_data);
+        $isSession = vartrue($_POST['__after_submit_action']) && !isset($_POST['e__execute_batch']) != 'edit' ? true : false;
+        if($did)
+        {
+            $sql = e107::getDb('activate');
+            if(!$sql->delete('upload', 'upload_id='.$id))
+            {
+                e107::getMessage()
+                    ->addError('SQL Error: #'.$sql->getLastErrorNumber().' '.$sql->getLastErrorText(), 'default', $isSession) // TODO lan
+                    ->addDebug($sql->getLastQuery(), 'default', $isSession);
+            }
+            // TODO lan
+            else e107::getMessage()->addSuccess('Record moved to Downloads. <br><a href="'.e_PLUGIN_ABS.'download/admin_download.php?mode=main&action=edit&id='.$did.'">Manage Download</a>', 'default', $isSession);
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function afterDelete($deleted_data, $id, $deleted_check)
+    {
+        if($deleted_check)
+        {
+            $uploadFile = e_UPLOAD.$deleted_data['upload_file'];
+            $uploadImage = e_UPLOAD.$deleted_data['upload_ss'];
+            @unlink($uploadFile);
+            @unlink($uploadImage);
+        }
+    }
+
+    protected function move2download($upload)
+    {
+
+        if(!$upload['upload_active'])
+        {
+            return 0;
+        }
+
+        $media = e107::getMedia();
+        $uploadPath = e_UPLOAD;
+        if(!file_exists($uploadPath.$upload['upload_file']))
+        {
+            $this->getModel()->addValidationError('File not found'); // TODO lan
+            return false;
+        }
+        $downloadPath = $media->importFile($upload['upload_file'], 'download_file', $uploadPath.$upload['upload_file'], array('media_caption' => $upload['upload_name']));
+        if(false === $downloadPath)
+        {
+            $this->getModel()->addValidationError('Download path error'); // TODO lan
+            return false;
+        }
+
+        $imagePath = null;
+        if($upload['upload_ss'] && file_exists($uploadPath.$upload['upload_ss']))
+        {
+            $imagePath = $media->importFile($upload['upload_ss'], '_common_image', $uploadPath.$upload['upload_ss'], array('media_caption' => $upload['upload_name'].' Preview')); // TODO lan
+        }
+
+        $author = $upload['upload_poster'] ? e107::getSystemUser($upload['upload_poster'])->getRealName() : 'Anonymous'; // TODO lan
+
+        $dl = array(
+            'download_name' => $upload['upload_name'],
+            'download_url' => $downloadPath,
+            'download_sef' => eHelper::title2sef($upload['upload_name']),
+            'download_author' => $author,
+            'download_author_email' => $upload['upload_email'],
+            'download_author_website' => $upload['upload_website'],
+            'download_description' => $upload['upload_description'],
+            'download_keywords' => null,
+            'download_filesize' => $upload['upload_filesize'],
+            'download_requested' => 0,
+            'download_category' => $upload['upload_category'],
+            'download_active' => 1,
+            'download_datestamp' => $upload['upload_datestamp'],
+            'download_thumb' => null,
+            'download_image' => $imagePath,
+            'download_comment' => 1,
+            'download_class' => e_UC_MEMBER,
+            'download_visible' => e_UC_MEMBER,
+            'download_mirror' => null,
+            'download_mirror_type' => 0,
+        );
+
+        $sql = e107::getDb('activate');
+        $id = $sql->insert('download', $dl);
+        if(!$id)
+        {
+            $this->getModel()->addValidationError('SQL Error: #'.$sql->getLastErrorNumber().' '.$sql->getLastErrorText());  // TODO lan
+            e107::getMessage()->addDebug($sql->getLastQuery());
+            return;
+        }
+
+        return $id;
+    }
+
 }
 				
 
 
 class upload_form_ui extends e_admin_form_ui
 {
+    public function upload_active($value, $type, $options = array())
+    {
+        switch($type)
+        {
+            case 'write':
+                return $this->radio_switch('upload_active', $value, 'Accept', 'Pending', $options);
+            break;
 
-}		
-		
+            case 'read':
+                return $value ? ADMIN_TRUE_ICON : ADMIN_FALSE_ICON;
+            break;
+
+            case 'batch':
+                return $this->option('Accept', 'upload_active', false, array('other' => 'style="padding-left: 15px"'));
+            break;
+        }
+    }
+}
+
 		
 new upload_admin();
 
@@ -340,9 +524,6 @@ switch ($action)
 	  }
 	  else
 	  {
-//	    echo "<pre>";
-//		var_dump($temp_vars);
-//		echo "</pre>";
 		foreach ($temp_vars['class'] as $v1)
 		{
 		  $v = $v1['@attributes'];
