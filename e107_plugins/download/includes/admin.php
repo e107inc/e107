@@ -458,8 +458,29 @@ $columnInfo = array(
                }
             }
 		}
-		
-		
+
+        /**
+         * @inheritdoc
+         */
+        public function afterDelete($deleted_data, $id, $deleted_check)
+        {
+            if($deleted_check)
+            {
+                $sql = e107::getDb('mmcleanup');
+                if(strpos($deleted_data['download_url'], '{e_MEDIA_') === 0 && $sql->delete('core_media', "media_url='{$deleted_data['download_url']}'"))
+                {
+                    $mediaFile = e107::getParser()->replaceConstants($deleted_data['download_url']);
+                    @unlink($mediaFile);
+                    e107::getMessage()->addSuccess('Associated media record successfully erased');
+                }
+                if(strpos($deleted_data['download_image'], '{e_MEDIA_') === 0 && $sql->delete('core_media', "media_url='{$deleted_data['download_image']}'"))
+                {
+                    $mediaImage = e107::getParser()->replaceConstants($deleted_data['download_image']);
+                    e107::getMessage()->addSuccess('Associated media image successfully erased');
+                    @unlink($mediaImage);
+                }
+            }
+        }
 
 		function createPage()
 		{

@@ -29,117 +29,116 @@ if (!check_class($pref['upload_class']))
   exit;
 }
 
-
-$message = '';
 $postemail ='';
+$msghandler = e107::getMessage();
+$error = false;
 if (isset($_POST['upload']))
 {
-  if (($_POST['file_email'] || USER == TRUE) && $_POST['file_name'] && $_POST['file_description'] && $_POST['download_category'])
-  {
-	require_once(e_HANDLER."upload_handler.php");
-//	$uploaded = file_upload(e_FILE."public/", "unique");
-	$uploaded = process_uploaded_files(e_UPLOAD, "unique", array('max_file_count' => 2, 'extra_file_types' => TRUE));
+    if (($_POST['file_email'] || USER == TRUE) && $_POST['file_name'] && $_POST['file_description'] && $_POST['download_category'])
+    {
+        require_once(e_HANDLER."upload_handler.php");
+    //	$uploaded = file_upload(e_FILE."public/", "unique");
+        $uploaded = process_uploaded_files(e_UPLOAD, "unique", array('max_file_count' => 2, 'extra_file_types' => TRUE));
 
-// First, see what errors the upload handler picked up
-	if ($uploaded === FALSE)
-	{
-	  $message = LAN_UL_021.'<br />';
-	}
+    // First, see what errors the upload handler picked up
+        if ($uploaded === FALSE)
+        {
+            $error = true;
+            $msghandler->addError(LAN_UL_021);
+        }
 
-// Now see if we have a code file
-	if (count($uploaded) > 0)
-	{
-	  if ($uploaded[0]['error'] == 0)
-	  {
-	  $file = $uploaded[0]['name'];
-	  $filesize = $uploaded[0]['size'];
-	  }
-	  else
-	  {
-	    $message .= $uploaded[0]['message'].'<br />';
-	  }
-	}
+    // Now see if we have a code file
+        if (count($uploaded) > 0)
+        {
+            if ($uploaded[0]['error'] == 0)
+            {
+              $file = $uploaded[0]['name'];
+              $filesize = $uploaded[0]['size'];
+            }
+            else
+            {
+              $error = true;
+              $msghandler->addError($uploaded[0]['message']);
+            }
+        }
 
-// Now see if we have an image file
-	if (count($uploaded) > 1)
-	{
-	  if ($uploaded[1]['error'] == 0)
-	  {
-		$image = $uploaded[1]['name'];
-	  }
-	  else
-	  {
-	    $message .= $uploaded[1]['message'].'<br />';
-	  }
-	}
+    // Now see if we have an image file
+        if (count($uploaded) > 1)
+        {
+            if ($uploaded[1]['error'] == 0)
+            {
+                $image = $uploaded[1]['name'];
+            }
+            else
+            {
+                $error = true;
+                $msghandler->addError($uploaded[1]['message']);
+            }
+        }
 
-// The upload handler checks max file size
-	$downloadCategory = intval($_POST['download_category']);
-	if (!$downloadCategory)
-	{
-		$message .= LAN_UL_037.'<br />';
-	}
+    // The upload handler checks max file size
+        $downloadCategory = intval($_POST['download_category']);
+        if (!$downloadCategory)
+        {
+            $error = true;
+            $msghandler->addError(LAN_UL_037);
+        }
 
-// $message non-null here indicates an error - delete the files to keep things tidy
-	if ($message)
-	{
-	  @unlink($file);
-	  @unlink($image);
-	}
-	else
-	{
-	  if (USER)
-	  {
-		$qry = "SELECT user_hideemail FROM #user WHERE user_id=".USERID;
-		if(!$sql->db_Select_gen($qry))
-		{
-		  echo "Fatal database error!";
-		  exit;
-		}
-	    $poster = USERID.".".USERNAME;
-		$row = $sql->db_Fetch();
-		if ($row['user_hideemail'])
-		{
-		  $postemail = '-witheld-';
-		}
-		else
-		{
-		  $postemail = USEREMAIL;
-		}
-	  }
-	  else
-	  {
-	    $poster = "0".$tp -> toDB($_POST['file_poster']);
-		$postemail = $tp->toDB($_POST['file_email']);
-	  }
-	  if (($postemail != '-witheld-') && !check_email($postemail))
-	  {
-	    $message = LAN_UL_001."<br />";
-	  }
-	  else
-	  {
-		if ($postemail == '-witheld-') $postemail = '';
-		$_POST['file_description'] = $tp->toDB($_POST['file_description']);
-		$file_time = time();
-		$sql->db_Insert("upload", "0, '".$poster."', '".$postemail."', '".$tp -> toDB($_POST['file_website'])."', '".$file_time."', '".$tp -> toDB($_POST['file_name'])."', '".$tp -> toDB($_POST['file_version'])."', '".$file."', '".$image."', '".$tp -> toDB($_POST['file_description'])."', '".$tp -> toDB($_POST['file_demo'])."', '".$filesize."', 0, '".$downloadCategory."'");
-		$edata_fu = array("upload_user" => $poster, "upload_email" => $postemail, "upload_name" => $tp -> toDB($_POST['file_name']),"upload_file" => $file, "upload_version" => $_POST['file_version'], "upload_description" => $tp -> toDB($_POST['file_description']), "upload_size" => $filesize, "upload_category" => $downloadCategory, "upload_website" => $tp -> toDB($_POST['file_website']), "upload_image" => $image, "upload_demo" => $tp -> toDB($_POST['file_demo']), "upload_time" => $file_time);
-		$e_event->trigger("fileupload", $edata_fu);
-		$message .= "<br />".LAN_404;
-	  }
-	}
-  }
-  else
-  {	// Error - missing data
-	message_handler("ALERT", 5);
-  }
-}
+    // an error - delete the files to keep things tidy
+        if ($error)
+        {
+          @unlink($file);
+          @unlink($image);
+        }
+        else
+        {
+            if (USER)
+            {
+                $poster = USERID;
+                $row = e107::getUser()->toArray();
+                if ($row['user_hideemail'])
+                {
+                  $postemail = '-witheld-';
+                }
+                else
+                {
+                  $postemail = USEREMAIL;
+                }
+            }
+            else
+            {
+                $poster = "0";//.$tp -> toDB($_POST['file_poster']);
+                $postemail = $tp->toDB($_POST['file_email']);
+            }
+            if (($postemail != '-witheld-') && !check_email($postemail))
+            {
+                $error = true;
+                $msghandler->addError(LAN_UL_001);
+            }
+            else
+            {
+                if ($postemail == '-witheld-') $postemail = '';
+                $_POST['file_description'] = $tp->toDB($_POST['file_description']);
+                $file_time = time();
+                $sql->insert("upload", "0, '".$poster."', '".$postemail."', '".$tp -> toDB($_POST['file_website'])."', '".$file_time."', '".$tp -> toDB($_POST['file_name'])."', '".$tp -> toDB($_POST['file_version'])."', '".$file."', '".$image."', '".$tp -> toDB($_POST['file_description'])."', '".$tp -> toDB($_POST['file_demo'])."', '".$filesize."', 0, '".$downloadCategory."'");
+                $edata_fu = array("upload_user" => $poster, "upload_email" => $postemail, "upload_name" => $tp -> toDB($_POST['file_name']),"upload_file" => $file, "upload_version" => $_POST['file_version'], "upload_description" => $tp -> toDB($_POST['file_description']), "upload_size" => $filesize, "upload_category" => $downloadCategory, "upload_website" => $tp -> toDB($_POST['file_website']), "upload_image" => $image, "upload_demo" => $tp -> toDB($_POST['file_demo']), "upload_time" => $file_time);
+                $e_event->trigger("fileupload", $edata_fu);
+                $msghandler->addInfo(LAN_404);
+            }
+        }
+    }
+    else
+    {	// Error - missing data
+        message_handler("ALERT", 5);
+    }
 
-if ($message)
-{
-	$text = "<div style=\"text-align:center\"><b>".$message."</b></div>";
-	$ns->tablerender("", $text);
-  require_once(FOOTERF);
-  exit;
+    if(!$error)
+    {
+        $ns->tablerender('Success', e107::getMessage()->render()); // TODO lan
+
+        require_once(FOOTERF);
+        exit;
+    }
 }
 
 
