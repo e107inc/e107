@@ -148,7 +148,7 @@ $(document).ready(function()
 
 
 		/* InfoPanel Comment approval and deletion */
-		$("button[data-comment-action]").live("click", function(){
+		$(document).on("click", "button[data-comment-action]", function(){
 				
 				var url 	= $(this).attr("data-target");
 				var action 	= $(this).attr('data-comment-action');	
@@ -358,9 +358,9 @@ $(document).ready(function()
 		});
 	
 	//	 $(".e-spinner").spinner(); //FIXME breaks tooltips etc. 
-	
-	
-		$(".e-alert").live("click", function(){
+
+
+    $(document).on("click", ".e-alert", function(){
 			
 			var message = $(this).html();
 			alert(message);
