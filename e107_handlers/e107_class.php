@@ -2047,7 +2047,8 @@ class e107
 		$reg_path = 'core/e107/templates/'.$id;
 		$path = self::coreTemplatePath($id, false);
 		$id = str_replace('/', '_', $id);
-		$ret_core = self::_getTemplate($id, $key, $reg_path, $path, $info);
+        // Introducing noWrapper when merging
+		$ret_core = self::_getTemplate($id, $key, $reg_path, $path, $info, true);
 		
 		return (is_array($ret_core) ? array_merge($ret_core, $ret) : $ret);
 	}
@@ -2111,7 +2112,8 @@ class e107
 		
 		
 		$id = str_replace('/', '_', $id);
-		$ret_plug = self::_getTemplate($id, $key, $reg_path, $path, $info);
+        // Introduced noWrapper when merging
+		$ret_plug = self::_getTemplate($id, $key, $reg_path, $path, $info, true);
 
 		return (is_array($ret_plug) ? array_merge($ret_plug, $ret) : $ret);
 	}
@@ -2259,9 +2261,10 @@ class e107
 	 * @param string $reg_path
 	 * @param string $path
 	 * @param boolean $info
+     * @param boolean $noWrapper
 	 * @return string|array
 	 */
-	public static function _getTemplate($id, $key, $reg_path, $path, $info = false)
+	public static function _getTemplate($id, $key, $reg_path, $path, $info = false, $noWrapper = false)
 	{
 		$regPath = $reg_path;
 		$var = strtoupper($id).'_TEMPLATE';
@@ -2282,16 +2285,21 @@ class e107
 			self::setRegistry($regPath, (isset($$var) ? $$var : array()));
 			
 			// sc_style not a global anymore and uppercase
-			if(isset($SC_WRAPPER))
-			{
-				self::scStyle($SC_WRAPPER);
-			}
-			
-			// ID_WRAPPER support
-			if(isset($$wrapper) && !empty($$wrapper) && is_array($$wrapper))
-			{
-				self::setRegistry($wrapperRegPath, $$wrapper);
-			}
+
+            // Fix template merge issue - no-wrapper sent to avoid sc wrappers confusions
+            if(!$noWrapper)
+            {
+                if(isset($SC_WRAPPER))
+                {
+                    self::scStyle($SC_WRAPPER);
+                }
+
+                // ID_WRAPPER support
+                if(isset($$wrapper) && !empty($$wrapper) && is_array($$wrapper))
+                {
+                    self::setRegistry($wrapperRegPath, $$wrapper);
+                }
+            }
 		}
 		if(null === self::getRegistry($regPathInfo))
 		{
