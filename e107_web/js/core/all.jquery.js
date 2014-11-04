@@ -442,13 +442,13 @@ $(document).ready(function()
 
 		});
 		*/
-		
-				
-		$(".e-dialog-close").live("click", function(){
+
+
+    $(document).on("click", ".e-dialog-close", function(){
 			parent.$('.modal').modal('hide');
 			
 			// parent.$.colorbox.close()	
-		}); 
+	});
 		
 		
 		

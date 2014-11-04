@@ -113,7 +113,7 @@ $(document).ready(function()
 		
 		
 				// $(".e-media-select").click(function () {  
-		$(".e-media-select").live("click", function(){
+    $(document).on("click", ".e-media-select", function(){
   	 		
   	 	
     		//	console.log(this);
@@ -242,7 +242,7 @@ $(document).ready(function()
 	
 	
 	// Must be defined  after e-media-select
-	$(".e-dialog-save").live("click", function(){// FIXME TODO missing caret , text selection overwrite etc. 
+    $(document).on("click", ".e-dialog-save", function(){// FIXME TODO missing caret , text selection overwrite etc.
 					
 		var newval 	= $('#bbcode_holder').val();
 		var target 	= $(this).attr('data-target');

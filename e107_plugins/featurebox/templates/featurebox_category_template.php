@@ -318,9 +318,10 @@ $FEATUREBOX_CATEGORY_TEMPLATE['camera']['nav_item'] = ''; // <li><a href="#tab-{
 $FEATUREBOX_CATEGORY_TEMPLATE['camera']['nav_end'] = ''; // </ul>';
 $FEATUREBOX_CATEGORY_TEMPLATE['camera']['nav_separator'] = '';
 
-$FEATUREBOX_CATEGORY_TEMPLATE['camera']['js'] = '{e_WEB_JS}camera/scripts/camera.min.js';
-$FEATUREBOX_CATEGORY_TEMPLATE['camera']['js_inline'] = "$('.camera_wrap').camera({FEATUREBOX_PARMS});";
-$FEATUREBOX_CATEGORY_TEMPLATE['camera']['js_type'] = 'jquery';
+// Depracated camera.js, need replacement
+//$FEATUREBOX_CATEGORY_TEMPLATE['camera']['js'] = '{e_WEB_JS}camera/scripts/camera.min.js';
+//$FEATUREBOX_CATEGORY_TEMPLATE['camera']['js_inline'] = "$('.camera_wrap').camera({FEATUREBOX_PARMS});";
+//$FEATUREBOX_CATEGORY_TEMPLATE['camera']['js_type'] = 'jquery';
 
 
 
