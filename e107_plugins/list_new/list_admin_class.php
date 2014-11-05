@@ -52,8 +52,8 @@ class list_admin
 	//		if($value != LIST_ADMIN_2){ $temp[$tp->toDB($key)] = $tp->toDB($value); }
 	//	}
 		
-		e107::getPlugConfig('list_new')->setPref($_POST)->save(true); 
-		
+		e107::getPlugConfig('list_new')->reset()->setPref($_POST)->save(true);
+
 	//	retrieve with e107::pref('list_new');
 		
 		return;
