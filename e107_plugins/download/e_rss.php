@@ -32,7 +32,8 @@ if (!defined('e107_INIT')) { exit; }
 // ------------------------------------------------------------------------------------
 
 
-		// Download categories for admin import. 
+		// Download categories for admin import.
+        $sqli = e107::getDb('download');
 		
 		if($sqli -> db_Select("download_category", "*","download_category_id!='' ORDER BY download_category_order "))
 		{
