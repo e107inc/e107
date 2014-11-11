@@ -159,6 +159,7 @@ class e107Email extends PHPMailer
 	private $debug 				= false;	// echos various debug info when set to true. 
 	private $pref 				= array();	// Store code prefs. 
 	private $previewMode		= false;
+	private $previewAttachments = array();
 	private $overrides			 = array(
 									// Legacy					// New 
 									'SMTPDebug' 			=> 'SMTPDebug', 
@@ -599,15 +600,29 @@ class e107Email extends PHPMailer
 	{
 		if (!$attachments) return;
 		if (!is_array($attachments)) $attachments = array($attachments);
+		$mes = e107::getMessage();
 
 		foreach($attachments as $attach)
 		{
 			$tempName = basename($attach);
-			if(is_readable($attach) && $tempName)
-			{	// First parameter is complete path + filename; second parameter is 'name' of file to send
-				$ext = pathinfo($attach, PATHINFO_EXTENSION);
-				$this->AddAttachment($attach, $tempName,'base64',$this->_mime_types($ext));
+			if(is_readable($attach) && $tempName) // First parameter is complete path + filename; second parameter is 'name' of file to send
+			{	
+				if($this->previewMode === true)
+				{
+					$this->previewAttachments[] = array('file'=>$attach, 'status'=>true); 			
+				}
+				else 
+				{
+					$ext = pathinfo($attach, PATHINFO_EXTENSION);
+					$this->AddAttachment($attach, $tempName,'base64',$this->_mime_types($ext));	
+				}
+			
 			}
+			elseif($this->previewMode === true)
+			{
+				$this->previewAttachments[] = array('file'=>$attach, 'status'=>false); 			
+			}
+			
 		}
 	}
 
@@ -638,6 +653,7 @@ class e107Email extends PHPMailer
 	public function preview($eml)
 	{
 		$this->previewMode = true; 
+		$mes = e107::getMessage();
 		
 		if (count($eml))
 		{	
@@ -648,7 +664,20 @@ class e107Email extends PHPMailer
 			
 		}	
 		
-		return $this->Body;
+		$text = $this->Body;
+		
+		if(!empty($this->previewAttachments))
+		{
+			$text .= "<hr />Attachments:";
+			foreach($this->previewAttachments as $val)
+			{
+				$text .= "<div>".$val['file']." - ";
+				$text .= ($val['status'] !== true) ? "Not Found" : "OK";
+				$text .= "</div>";	
+			}	
+		}
+		
+		return $text;
 		
 	}
 
