@@ -2318,9 +2318,17 @@ TEMPLATE;
 			
 			switch ($type) 
 			{
+				case 'date':
+				case 'datetime':
+					$array = array(
+					'text'		=> "Text Box",	
+					"hidden"	=> "Hidden"
+					);
+				break;
 			
 				case 'int':
 				case 'tinyint':
+				case 'bigint':
 				case 'smallint':
 					$array = array(
 					"boolean"	=> "True/False",
@@ -2399,9 +2407,13 @@ TEMPLATE;
 			{
 				$name = $tmp[2];	
 			}
-			else // Link_description
+			elseif(count($tmp) == 2) // Link_description
 			{
 				$name = $tmp[1];		
+			}
+			elseif(count($tmp) === 1)
+			{
+				$name = $data;	
 			}
 	
 			$ret['title'] = ucfirst($name);
