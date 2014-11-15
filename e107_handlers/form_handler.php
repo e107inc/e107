@@ -3293,8 +3293,12 @@ class e_form
 
 				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
 				{
-					$false = vartrue($parms['trueonly']) ? "-" : "False";				
-					$wparms = (vartrue($parms['reverse'])) ? array(0=>'True', 1=>$false) : array(0=>$false, 1=>'True'); //TODO LAN
+					
+					$false = ($value === '') ? "&square;" : "&cross;";		
+					
+					$value = intval($value);
+							
+					$wparms = (vartrue($parms['reverse'])) ? array(0=>'&check;', 1=>$false) : array(0=>$false, 1=>'&check;'); //TODO LAN
 					$dispValue = $wparms[$value];
 
 					return $this->renderInline($field, $id, $attributes['title'], $value, $dispValue, 'select', $wparms);
