@@ -712,6 +712,29 @@ class e107MailManager
 
 //		return;			// ************************************************** Temporarily stop DB being updated when line active *****************************
 		
+		$addons = array_keys($email['mail_selectors']); // trigger e_mailout.php addons. 'sent' method. 
+	
+		foreach($addons as $plug)
+		{
+			if($plug === 'core')
+			{
+				continue;
+			}
+			
+			if($cls = e107::getAddon($plug,'e_mailout'))
+			{
+				$email['status'] = $result;
+				
+				if(e107::callMethod($cls, 'sent', $email) === false)
+				{
+					e107::getAdminLog()->add($plug.' sent process failed', $email, E_LOG_FATAL, 'SENT');	
+				}
+			}		
+		}
+		// --------------------------
+		
+		
+		
 		$this->checkDB(2);			// Make sure DB object created
 
 		// Now update email status in DB. We just create new arrays of changed data
