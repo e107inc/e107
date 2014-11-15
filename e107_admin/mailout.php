@@ -849,6 +849,28 @@ class mailout_main_ui extends e_admin_ui
 		</tr>
 
 		<tr>
+		<td>".LAN_MAILOUT_77."</td>
+		<td> ";
+		
+		$mail_enable = explode(',',vartrue($pref['mailout_enabled'],'core'));
+		
+		$coreCheck = (in_array('core',$mail_enable)) ? "checked='checked'" : "";
+		$text .= $frm->checkbox('mail_mailer_enabled[]','core', $coreCheck, 'users');
+	 
+		if(!empty($pref['e_mailout_list']))
+		{
+			foreach ($pref['e_mailout_list'] as $mailer => $v)	 
+			 {
+				$check = (in_array($mailer,$mail_enable)) ? "checked='checked'" : "";
+				$text .= $frm->checkbox('mail_mailer_enabled[]',$mailer,$check,$mailer);
+			//	$text .= "&nbsp;<input type='checkbox' name='mail_mailer_enabled[]' value='{$mailer}' {$check} /> {$mailer}<br />";
+			}
+		}
+			  
+	$text .= "</td></tr>	
+		
+		
+		<tr>
 		<td style='vertical-align:top'>".LAN_MAILOUT_115."<br /></td>
 		<td>
 		<select class='tbox input-xxlarge' name='mailer' onchange='disp(this.value)'>\n";
@@ -965,29 +987,10 @@ class mailout_main_ui extends e_admin_ui
 		<td>".LAN_MAILOUT_156."</td>
 		<td>".$frm->number('mail_workpertick',varset($pref['mail_workpertick'],5))."<span class='field-help'>".LAN_MAILOUT_157."</span>
 		</td>
-	</tr>\n";
+	</tr>
 	
-	if (isset($pref['e_mailout_list']))  // Allow selection of email address sources
-	{ 
-		$text .= "
-		<tr>
-			<td>".LAN_MAILOUT_77."</td>
-			<td> ";
-			
-	  		$mail_enable = explode(',',$pref['mailout_enabled']);
-			
-			$coreCheck = (in_array('core',$mail_enable)) ? "checked='checked'" : "";
-			$text .= $frm->checkbox('mail_mailer_enabled[]','core', $coreCheck, 'users');
-	  
-			foreach ($pref['e_mailout_list'] as $mailer => $v)	 
-			 {
-				$check = (in_array($mailer,$mail_enable)) ? "checked='checked'" : "";
-				$text .= $frm->checkbox('mail_mailer_enabled[]',$mailer,$check,$mailer);
-			//	$text .= "&nbsp;<input type='checkbox' name='mail_mailer_enabled[]' value='{$mailer}' {$check} /> {$mailer}<br />";
-			}
-			  
-	 	 $text .= "</td></tr>\n";
-	}
+	
+	";
 
 	list($mail_log_option,$mail_log_email) = explode(',',varset($pref['mail_log_options'],'0,0'));
 	

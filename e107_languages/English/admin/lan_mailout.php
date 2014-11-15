@@ -87,7 +87,7 @@ define("LAN_MAILOUT_73", "No logging");
 define("LAN_MAILOUT_74", "Logging only (no send)");
 define("LAN_MAILOUT_75", "Log and send");
 define("LAN_MAILOUT_76", "Include email info in log");
-define("LAN_MAILOUT_77", "Supplementary email address sources");
+define("LAN_MAILOUT_77", "Email address sources");
 define("LAN_MAILOUT_78", "Mailshot Status");
 define("LAN_MAILOUT_79", "No mailshots to display");
 define("LAN_MAILOUT_80", "Date");
