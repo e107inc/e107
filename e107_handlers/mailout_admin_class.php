@@ -556,6 +556,12 @@ class mailoutAdminClass extends e107MailManager
 			$ret++;
 		}
 		
+		if(empty($pref['e_mailout_list']))
+		{
+			return $ret;
+		}
+		
+		
 		// Load additional configured handlers e_mailout.php from plugins. 
 		foreach($pref['e_mailout_list'] as $mailer => $v)
 		{

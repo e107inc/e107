@@ -218,6 +218,18 @@ class e107MailManager
 	{
 		$this->e107 = e107::getInstance();
 		$this->mailOverrides = $overrides;
+		
+		if(deftrue('e_DEBUG'))
+		{
+			$this->debugMode = true; 	
+		}
+		
+		if($this->debugMode === true)
+		{
+			e107::getMessage()->addWarning('Debug Mode is active. Emailing will only be simulated!');	
+		}
+		
+		
 	}
 
 

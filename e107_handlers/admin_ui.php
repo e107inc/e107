@@ -3822,7 +3822,7 @@ class e_admin_controller_ui extends e_admin_controller
 		}
 
 		// Debug Filter Query.
-		e107::getMessage()->addDebug('QRY='.$qry);
+		e107::getMessage()->addDebug('QRY='.str_replace('#', MPREFIX, $qry));
 	//	 echo $qry.'<br />';	
 	// print_a($this->fields);	
 	//	 print_a($_GET);
