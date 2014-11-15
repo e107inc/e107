@@ -980,7 +980,7 @@ if(varset($pref['force_userupdate']) && USER && !isset($_E107['no_forceuserupdat
 $sql->db_Mark_Time('Start: Signup/splash/admin');
 
 
-if(($pref['membersonly_enabled'] && !isset($_E107['allow_guest'])) || $pref['maintainance_flag'])
+if(($pref['membersonly_enabled'] && !isset($_E107['allow_guest'])) || ($pref['maintainance_flag'] && empty($_E107['cli'])))
 {
 	//XXX move force_userupdate() also?
 	e107::getRedirect()->checkMaintenance();
