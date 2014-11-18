@@ -616,4 +616,13 @@ class language{
 		}
 		return $this->_select_array;
 	}
+
+	/**
+	 * Return an array of all language types. 
+	 */
+	public function getList()
+	{
+		return $this->list;	
+	}
+
 }

@@ -3290,6 +3290,19 @@ class e_form
 			case 'bool':
 			case 'boolean':
 				$false = vartrue($parms['trueonly']) ? "" : ADMIN_FALSE_ICON;
+
+				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
+				{
+					
+					$false = ($value === '') ? "&square;" : "&cross;";		
+					
+					$value = intval($value);
+							
+					$wparms = (vartrue($parms['reverse'])) ? array(0=>'&check;', 1=>$false) : array(0=>$false, 1=>'&check;'); //TODO LAN
+					$dispValue = $wparms[$value];
+
+					return $this->renderInline($field, $id, $attributes['title'], $value, $dispValue, 'select', $wparms);
+				}
 				
 				if(vartrue($parms['reverse']))
 				{
@@ -3298,7 +3311,8 @@ class e_form
 				else
 				{
 					$value = $value ? ADMIN_TRUE_ICON : $false;	
-				}				
+				}	
+							
 			break;
 
 			case 'url':
@@ -3377,8 +3391,24 @@ class e_form
 			case 'hidden':
 				return (vartrue($parms['show']) ? ($value ? $value : vartrue($parms['empty'])) : '');
 			break;
+			
+			case 'language': // All Known Languages. 
+				
+				if(!empty($value))
+				{
+						if(strlen($value) === 2)
+						{
+							return e107::getLanguage()->convert($value);
+						}
+						else
+						{
+							return $value;	
+						}	
+				}
+				
+			break;
 
-			case 'lanlist':
+			case 'lanlist': // installed languages. 
 				$options = e107::getLanguage()->getLanSelectArray();
 
 				if($options) // FIXME - add support for multi-level arrays (option groups)
@@ -3773,9 +3803,10 @@ class e_form
 				$ret =  $ret.$this->hidden($key, $value);
 			break;
 
-			case 'lanlist':
-			case 'language':
-				$options = e107::getLanguage()->getLanSelectArray();
+			case 'lanlist': // installed languages
+			case 'language': // all languages
+				
+				$options = ($attributes['type'] === 'language') ? e107::getLanguage()->getList() : e107::getLanguage()->getLanSelectArray();
 
 				$eloptions  = vartrue($parms['__options'], array());
 				if(!is_array($eloptions)) parse_str($eloptions, $eloptions);

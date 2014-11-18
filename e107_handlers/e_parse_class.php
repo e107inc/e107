@@ -1618,7 +1618,7 @@ class e_parse extends e_parser
 						// Convert URL's to clickable links, unless modifiers or prefs override
 						if ($opts['link_click'])
 						{
-							if ($opts['link_replace'])
+							if ($opts['link_replace'] && ADMIN_AREA !== true)
 							{
 								$_ext = ($pref['links_new_window'] ? " rel=\"external\"" : "");
 								$link_text = $pref['link_text'];

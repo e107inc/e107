@@ -218,6 +218,18 @@ class e107MailManager
 	{
 		$this->e107 = e107::getInstance();
 		$this->mailOverrides = $overrides;
+		
+		if(deftrue('e_DEBUG'))
+		{
+			$this->debugMode = true; 	
+		}
+		
+		if($this->debugMode === true)
+		{
+			e107::getMessage()->addWarning('Debug Mode is active. Emailing will only be simulated!');	
+		}
+		
+		
 	}
 
 
@@ -711,6 +723,29 @@ class e107MailManager
 		
 
 //		return;			// ************************************************** Temporarily stop DB being updated when line active *****************************
+		
+		$addons = array_keys($email['mail_selectors']); // trigger e_mailout.php addons. 'sent' method. 
+	
+		foreach($addons as $plug)
+		{
+			if($plug === 'core')
+			{
+				continue;
+			}
+			
+			if($cls = e107::getAddon($plug,'e_mailout'))
+			{
+				$email['status'] = $result;
+				
+				if(e107::callMethod($cls, 'sent', $email) === false)
+				{
+					e107::getAdminLog()->add($plug.' sent process failed', $email, E_LOG_FATAL, 'SENT');	
+				}
+			}		
+		}
+		// --------------------------
+		
+		
 		
 		$this->checkDB(2);			// Make sure DB object created
 
