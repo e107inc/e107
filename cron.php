@@ -4,35 +4,32 @@
 + ----------------------------------------------------------------------------+
 ||     e107 website system
 |
-|     Copyright (C) 2008-2009 e107 Inc 
+|     Copyright (C) 2008-2014 e107 Inc 
 |     http://e107.org
 |
 |
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.8/cron.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
 */
 
 // Usage: [full path to this script]cron.php --u=admin --p=password // use your admin login. 
 // test
 
-$_E107['cli'] = TRUE;
+$_E107['cli'] = true;
 $_E107['debug'] = false;
-$_E107['no_online'] = TRUE;
-$_E107['no_forceuserupdate'] = TRUE;
-$_E107['no_menus'] = TRUE;
+$_E107['no_online'] = true;
+$_E107['no_forceuserupdate'] = true;
+$_E107['no_menus'] = true;
+$_E107['allow_guest'] = true; // allow crons to run while in members-only mode. 
+
 // we allow theme init as cron jobs might need to access current theme templates (e.g. custom email templates)
 
 require_once(realpath(dirname(__FILE__)."/class2.php"));
 
 	$pwd = ($_E107['debug'] && $_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : trim($_SERVER['argv'][1]);
 	
-	if(empty($pwd) && !empty($_GET['token']))
+	if(!empty($_GET['token']))
 	{
 		$pwd = $_GET['token'];	
 	}
@@ -48,9 +45,12 @@ require_once(realpath(dirname(__FILE__)."/class2.php"));
 		You should regenerate the cron command in admin and enter it again in your server configuration. 
 		";
 		
-		$message .= "<h4>Debug Info</h4>";
+		$message .= "<h2>Debug Info</h2>";
+		$message .= "<h3>_SERVER</h3>";
 		$message .= print_a($_SERVER,true); 
+		$message .= "<h3>_ENV</h3>";
 		$message .= print_a($_ENV,true); 
+		$message .= "<h3>_GET</h3>";
 		$message .= print_a($_GET,true); 
 						
 	    sendemail($pref['siteadminemail'], "e107 - Cron Schedule Misconfigured.", $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);

@@ -1449,8 +1449,13 @@ class e107
     * @return string
     */
     public static function serialize($ArrayData, $AddSlashes = false) 
-    {       
-       return self::getArrayStorage()->serialize($ArrayData, $AddSlashes); 
+    {
+    	if(empty($ArrayData))
+		{
+			return array();	
+		}			
+		       
+		return self::getArrayStorage()->serialize($ArrayData, $AddSlashes); 
     }
 	
 	  /**
@@ -1460,8 +1465,13 @@ class e107
     * @return array stored data
     */
     public static function unserialize($ArrayData) 
-    {       
-       return self::getArrayStorage()->unserialize($ArrayData); 
+    {
+    	if(empty($ArrayData))
+		{
+			return array();	
+		}	
+		       
+		return self::getArrayStorage()->unserialize($ArrayData); 
     }
 
 

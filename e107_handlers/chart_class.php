@@ -224,7 +224,7 @@ class e_chart
 	 * @param array $data
 	 * @param string $id of canvas element
 	 */
-	public function setData($data,$id)
+	public function setData($data)
 	{
 		$this->id = $id;
 		if($data == 'demo')
