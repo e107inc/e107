@@ -1968,7 +1968,7 @@ class e_parse extends e_parser
 	 */
 	public function thumbWidth($width=null)
 	{
-		if($val !== null)
+		if($height !== null)
 		{
 			$this->thumbWidth = intval($width);
 		}
@@ -1986,7 +1986,7 @@ class e_parse extends e_parser
 	 */
 	public function thumbHeight($height= null)
 	{
-		if($val !== null)
+		if($height !== null)
 		{
 			$this->thumbHeight = intval($height);
 		}
