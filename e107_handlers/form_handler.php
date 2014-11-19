@@ -3393,18 +3393,23 @@ class e_form
 			break;
 			
 			case 'language': // All Known Languages. 
-				
+					
 				if(!empty($value))
 				{
-						if(strlen($value) === 2)
-						{
-							return e107::getLanguage()->convert($value);
-						}
-						else
-						{
-							return $value;	
-						}	
+					$_value = $value;
+					if(strlen($value) === 2)
+					{
+						$value = e107::getLanguage()->convert($value);
+					}
 				}
+				
+				if(!vartrue($attributes['noedit']) && vartrue($parms['editable'])) 
+				{
+					$wparms = e107::getLanguage()->getList();
+					return $this->renderInline($field, $id, $attributes['title'], $_value, $value, 'select', $wparms);	
+				}	
+				
+				return $value;
 				
 			break;
 

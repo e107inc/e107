@@ -5737,6 +5737,7 @@ class e_admin_form_ui extends e_form
 						}
 					break;
 
+					case 'language': // full list of 
 					case 'lanlist': // use the array $parm;
 						if(!is_array(varset($parms['__options']))) parse_str($parms['__options'], $parms['__options']);
 						$opts = $parms['__options'];
@@ -5745,7 +5746,7 @@ class e_admin_form_ui extends e_form
 							// no batch support for multiple, should have some for filters soon
 							continue;
 						}
-						$options = e107::getLanguage()->getLanSelectArray();
+						$options = ($val['type'] === 'language') ? e107::getLanguage()->getList() : e107::getLanguage()->getLanSelectArray();
 						foreach($options as $code => $name)
 						{
 							$option[$key.'__'.$code] = $name;
