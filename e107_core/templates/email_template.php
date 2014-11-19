@@ -271,7 +271,7 @@ $EMAIL_TEMPLATE['notify']['footer']				= $EMAIL_TEMPLATE['default']['footer']; /
 $EMAIL_TEMPLATE['monthly']['name']				= 'Monthly Update';												
 $EMAIL_TEMPLATE['monthly']['subject']			= '{SITENAME}: {SUBJECT} ';
 $EMAIL_TEMPLATE['monthly']['header']			= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 	
-$EMAIL_TEMPLATE['monthly']['body']				= "Just to keep you up to date, here's a reminder of what's changed in the past month.<br />{BODY}{MEDIA1}{MEDIA2}{MEDIA3}{MEDIA4}{MEDIA5}To find out more, simply click on the links!";
+$EMAIL_TEMPLATE['monthly']['body']				= "Hi {USERNAME},<br /><br />Just to keep you up to date, here's a reminder of what's changed in the past month.<br />{BODY}{MEDIA1}{MEDIA2}{MEDIA3}{MEDIA4}{MEDIA5}To find out more, simply click on the links!";
 $EMAIL_TEMPLATE['monthly']['footer']			= $EMAIL_TEMPLATE['default']['footer'];
 
 

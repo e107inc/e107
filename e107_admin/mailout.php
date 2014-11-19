@@ -363,7 +363,7 @@ class mailout_main_ui extends e_admin_ui
 		
 		if($_GET['action'] == 'preview')
 		{
-			echo $this->previewPage($_GET['id']);
+			echo $this->previewPage($_GET['id'], $_GET['user']);
 			exit;
 		}
 		
@@ -599,22 +599,32 @@ class mailout_main_ui extends e_admin_ui
 	/**
 	 * Preview the Email. 
 	 */
-	function previewPage($id='')
+	function previewPage($id='', $user=null)
 	{
 		
 		if(is_numeric($id))
 		{
 			$mailData = e107::getDb()->retrieve('mail_content','*','mail_source_id='.intval($id)." LIMIT 1");
 			
+			$shortcodes = array('USERNAME'=>'John Example', 'DISPLAYNAME'=> 'John Example', 'USERID'=>'555', 'MAILREF'=>$_GET['id'], 'NEWSLETTER'=>SITEURL."newsletter/?id=example1234567", 'UNSUBSCRIBE'=>SITEURL."unsubscribe/?id=example1234567");
+			
+			if(!empty($user))
+			{
+				$userData = e107::getDb()->retrieve('mail_recipients','*', 'mail_detail_id = '.intval($id).' AND mail_recipient_id = '.intval($user).' LIMIT 1');
+				$shortcodes = e107::unserialize(stripslashes($userData['mail_target_info']));
+			}
+						
 			$data = $this->mailAdmin->dbToMail($mailData);
 	
 			$eml = array(
 				'subject'		=> $data['mail_subject'],
 				'body' 			=> $data['mail_body'],
 				'template'		=> $data['mail_send_style'],
-				'shortcodes'	=> array('USERNAME'=>'John Example', 'DISPLAYNAME'=> 'John Example', 'USERID'=>'555', 'MAILREF'=>$_GET['id'], 'NEWSLETTER'=>SITEURL."newsletter/?id=example1234567", 'UNSUBSCRIBE'=>SITEURL."unsubscribe/?id=example1234567"),
+				'shortcodes'	=> $shortcodes,
 				'media'			=> $data['mail_media'],
 			);
+			
+		//	return print_a($data,true);
 		}
 		else
 		{
@@ -1386,8 +1396,9 @@ class mailout_admin_form_ui extends e_admin_form_ui
 		
 		if($mode == 'sent' || $mode == 'pending' || $mode == 'held')
 		{
+			$user = $this->getController()->getModel()->get('mail_recipient_id');
 			$link = e_SELF."?searchquery=&filter_options=mail_detail_id__".$id."&mode=recipients&action=list";	
-			$preview = e_SELF."?mode=main&action=preview&id=".$id;
+			$preview = e_SELF."?mode=main&action=preview&id=".$id.'&user='.$user;
 			$text .= "<a href='".$link."' class='btn' title='Recipients'>".E_32_USER."</a>";
 				$text .= "<a rel='external' class='btn e-modal' data-modal-caption='Email preview' href='".$preview."' class='btn' title='Preview'>".E_32_SEARCH."</a>";
 		
@@ -1412,7 +1423,6 @@ class mailout_admin_form_ui extends e_admin_form_ui
 class mailout_recipients_ui extends e_admin_ui
 {
 		
-		//TODO Move to Class above.
 		protected $pluginTitle		= LAN_MAILOUT_15;
 		protected $pluginName		= LAN_MAILOUT_15;
 		protected $table			= "mail_recipients";
@@ -1433,14 +1443,14 @@ class mailout_recipients_ui extends e_admin_ui
 	protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null, 		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),	
 			'mail_target_id'  		=> array('title' => LAN_MAILOUT_143, 'thclass' => 'center', 'forced' => TRUE),
-			'mail_recipient_id' 	=> array('title' => LAN_MAILOUT_142, 'thclass' => 'center'),
+			'mail_recipient_id' 	=> array('title' => LAN_MAILOUT_142, 'type'=>'number', 'data'=>'int', 'thclass' => 'center'),
 			'mail_recipient_name' 	=> array('title' => LAN_MAILOUT_141, 'forced' => TRUE),
 			'mail_recipient_email' 	=> array('title' => LAN_MAILOUT_140, 'thclass' => 'left', 'forced' => TRUE),
-			'mail_status' 			=> array('title' => LAN_MAILOUT_138, 'type'=>'method', 'thclass' => 'left', 'class'=>'left', 'proc' => 'contentstatus'),
-			'mail_detail_id' 		=> array('title' => LAN_MAILOUT_137, 'type'=>'dropdown', 'filter'=>true),
+			'mail_status' 			=> array('title' => LAN_MAILOUT_138, 'type'=>'method', 'data'=>'str', 'thclass' => 'left', 'class'=>'left', 'proc' => 'contentstatus'),
+			'mail_detail_id' 		=> array('title' => LAN_MAILOUT_137, 'type'=>'number', 'filter'=>true),
 			'mail_send_date' 		=> array('title' => LAN_MAILOUT_139, 'proc' => 'sdatetime'),
 			'mail_target_info'		=> array('title' => LAN_MAILOUT_148, 'proc' => 'array'),
-			'options' 				=> array('title' => LAN_OPTIONS,  'width'=>'10%', 'forced' => TRUE)
+			'options' 				=> array('title' => LAN_OPTIONS, 'type'=>'method',  'width'=>'10%', 'forced' => TRUE)
 		);
 	
 	
@@ -1500,6 +1510,23 @@ class mailout_recipients_form_ui extends e_admin_form_ui
 		}
 		
 	}	
+	
+	function options($parms, $value, $id, $attributes)
+	{
+		
+		$user = $this->getController()->getListModel()->get('mail_recipient_id');
+		$eid = $this->getController()->getListModel()->get('mail_detail_id');
+		
+		$preview = e_SELF."?mode=main&action=preview&id=".$eid.'&user='.$user;
+		$text .= "<a rel='external' class='btn e-modal' data-modal-caption='Email preview' href='".$preview."' class='btn' title='Preview'>".E_32_SEARCH."</a>";
+		
+		$att['readParms']['editClass'] = e_UC_NOBODY;
+		$text .= $this->renderValue('options',$value,$att,$id);
+		return $text;
+	
+		
+		
+	}
 	
 }
 
