@@ -493,6 +493,8 @@ class mailout_main_ui extends e_admin_ui
 	public function beforeUpdate($new_data, $old_data, $id)
 	{
 		$ret = $this->processData($new_data);
+		
+		$ret['mail_content_status'] = MAIL_STATUS_TEMP; 
 
 		return $ret;
 	}
