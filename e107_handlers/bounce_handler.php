@@ -3,55 +3,79 @@
 
 
  // WARNING, any echoed output from this script will be returned to the sender as a bounce message. 
- 
- $_E107['debug'] = false;
- 
- 
+  
+ $_E107['debug'] = true;  
+  
 if (!defined('e107_INIT'))
 { 
-	$_E107['cli'] = TRUE;	
-	$class2 = realpath(dirname(__FILE__)."/../")."/class2.php";
-	require_once($class2);
-}
+	$_E107['cli'] = true;	
+	$_E107['allow_guest'] = true; // allow to run while in members-only mode. 	
+	$_E107['no_forceuserupdate'] = true;
+	$_E107['no_maintenance'] = true;
 
-if(ADMIN && varset($_GET['eml']))
-{
-	$_E107['debug'] = true;		
+	$class2 = realpath(dirname(__FILE__)."/../")."/class2.php";
+
+	@require_once($class2);
 }
 
 $bnc = new e107Bounce;
-$process = (varset($_GET['eml']) && $_E107['debug']) ? $_GET['eml'].".eml" : FALSE;
-$bnc->process($process);
+$bnc->process();
+
 
 
 class e107Bounce
 {
+	private $debug = false;
+	private $source = false;
+	
+	function __construct()
+	{
+		if(ADMIN && vartrue($_GET['eml']))
+		{
+			$this->debug = true;
+			$this->source = $_GET['eml'].".eml";		
+		}			
+	}
+	
 	function process($source='')
 	{
-		global $_E107,$pref;
-		
+	
+		$pref = e107::getPref();
+
 		e107::getCache()->CachePageMD5 = '_';
 		e107::getCache()->set('emailLastBounce',time(),TRUE,FALSE,TRUE);
 		
-		$strEmail= (!$source) ? $this->mailRead(-1) : file_get_contents(e_HANDLER."eml/".$source);
+		$strEmail= ($this->source == false) ? $this->mailRead(-1) : file_get_contents(e_HANDLER."eml/".$this->source);
 		
-		if(!$strEmail)
+		if(strpos($strEmail,'X-Bounce-Test: true')!==false) // Bounce Test from Admin Area. 
 		{
-			if($_E107['debug'] === true)
+			$this->debug = true;	
+		}
+				
+		if(empty($strEmail)) // Failed. 
+		{
+			if($this->debug === true && !empty($this->source))
 			{
 				echo "Couldn't get email data";
 			}
-			return;
+			else
+			{
+				$message = "Empty Email!";	
+			}
+					
+		}
+		else
+		{
+			$multiArray = Bouncehandler::get_the_facts($strEmail);
+			$head 		= BounceHandler::parse_head($strEmail); 
+			$message 	= null;
+			$identifier = deftrue('MAIL_IDENTIFIER', 'X-e107-id');
+	 		$e107_userid = (isset($head[$identifier])) ? $head[$identifier] : $this->getHeader($strEmail, $identifier);
 		}
 		
-		$multiArray = Bouncehandler::get_the_facts($strEmail);
-		$head 		= BounceHandler::parse_head($strEmail); 
-		$message 	= null;
+
 		
-		$identifier = deftrue('MAIL_IDENTIFIER', 'X-e107-id');
-	 	$e107_userid = (isset($head[$identifier])) ? $head[$identifier] : $this->getHeader($strEmail, $identifier);
-		
-		if($_E107['debug'])
+		if($this->debug === true)
 		{
 			require_once(e_HANDLER."mail.php");
 			$message = "Your Bounce Handler is working. The data of the email you sent is displayed below.<br />";
@@ -61,13 +85,13 @@ class e107Bounce
 				$message .= "A user-id was detected in the email you sent: <b>".$e107_userid."</b><br />";
 			}
 			
-			$message .= "<br /><h4>Head</h4>";
-			$message .= print_a($head,true);
-			$message .= "<h4>Emails Found</h4><pre>".print_r($multiArray,TRUE). "</pre>";
+		//	$message .= "<br /><h4>Head</h4>";
+		//	$message .= print_a($head,true);
+		//	$message .= "<h4>Emails Found</h4><pre>".print_r($multiArray,TRUE). "</pre>";
 			
 			$message .= "<pre>".$strEmail. "</pre>";		
 							
-	    	if(varset($_GET['eml']))
+	    	if(!empty($this->source ))
 			{
 				echo $message;	
 			}
@@ -82,7 +106,7 @@ class e107Bounce
 		{
 			if($errors = $this->setUser_Bounced($e107_userid))
 			{
-				$mesage .= print_a($errors);	
+		//		$message .= print_a($errors,true);	
 			}
 
 		}

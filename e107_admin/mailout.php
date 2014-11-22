@@ -421,6 +421,10 @@ class mailout_main_ui extends e_admin_ui
 			{		
 				$this->sendTestEmail(); 	//	Send test email - uses standard 'single email' handler
 			}
+			if(!empty($_POST['send_bounce_test']))
+			{
+				$this->sendTestBounce();	
+			}
 			elseif (isset($_POST['updateprefs']))
 			{
 				$this->saveMailPrefs($mes); // TODO check if functional, $emessage -> $mes
@@ -430,6 +434,29 @@ class mailout_main_ui extends e_admin_ui
 		
 		
 	}
+
+
+	private function sendTestBounce()
+	{
+		$mes = e107::getMessage();
+		$pref = e107::getPref();
+		
+		$sendto = $pref['mail_bounce_email'];
+		
+		$eml = array('subject'=>'Test Bounce',	'body'	=> 'Test Bounce Email address','e107_header'=>99999999, 'extra_header' => 'X-Bounce-Test: true');
+		
+		if(e107::getEmail()->sendEmail($sendto, 'Bounce handler', $eml))
+		{
+			$mes->addSuccess('Test Bounce sent to '.$sendto);
+		}
+		else
+		{
+			$mes->addError('Failed Bounce email sent to '.$sendto);	
+		}	
+		
+		
+	}
+
 
 	private function sendTestEmail()
 	{
@@ -840,7 +867,7 @@ class mailout_main_ui extends e_admin_ui
 	$lastload = e107::getCache()->retrieve('emailLastBounce',FALSE,TRUE,TRUE);
 	$lastBounce = round((time() - $lastload) / 60);
 	
-	$lastBounceText = ($lastBounce > 1256474) ? "<b>Never</b>" : "<b>".$lastBounce . " minutes </b>ago."; 
+	$lastBounceText = ($lastBounce > 1256474) ? "<span class='label label-important'>Never</span>" : "<span class='label label-success'>".$lastBounce . " minutes ago.</span>"; 
 
 	$text = "
 		<form method='post' action='".e_SELF."?".e_QUERY."' id='mailsettingsform'>
@@ -1065,22 +1092,45 @@ class mailout_main_ui extends e_admin_ui
 		<tbody>
 		<tr>
 			<td>".LAN_MAILOUT_32."</td>
-			<td>".$frm->text('mail_bounce_email2', $pref['mail_bounce_email'], 40, 'size=xxlarge')."</td>
+			<td><div class='input-append'>".$frm->text('mail_bounce_email2', $pref['mail_bounce_email'], 40, 'size=xlarge');
+			
+			if(!empty($pref['mail_bounce_email']))
+			{
+				$text .= $frm->admin_button('send_bounce_test','Send Test','primary','Test');	
+			}
+			
+			$text .= "</div></td>
 		</tr>
 	
 	<tr>
-		<td>".LAN_MAILOUT_233."</td><td><b>".(e_DOCROOT).e107::getFolder('handlers')."bounce_handler.php</b>";
+		<td>".LAN_MAILOUT_233."</td><td><b>".(e_ROOT).e107::getFolder('handlers')."bounce_handler.php</b>";
 	
-
+	$status = '';
+	
 	if(!is_readable(e_HANDLER.'bounce_handler.php'))
 	{
-		$text .= "<br /><span class='required'>".LAN_MAILOUT_161.'</span>';
+		$status = LAN_MAILOUT_161;
 	}
 	elseif(!is_executable(e_HANDLER.'bounce_handler.php'))		// Seems to give wrong answers on Windoze
 	{
-		$text .= "<br /><span class='required'>".LAN_MAILOUT_162.'</span>';
+		$status = LAN_MAILOUT_162;
 	}
-	$text .= "<br /><span class='field-help'>".LAN_MAILOUT_235."</span></td></tr>
+	else 
+	{
+	//	$text .= " ".ADMIN_TRUE_ICON;	
+	}
+	
+	if(!empty($status))
+	{
+		$text .= "&nbsp;&nbsp;<span class='label label-warning'>".$status."</span>"; 
+	}
+			
+		
+	
+	$text .= "<div>".LAN_MAILOUT_235."</div>
+	
+	
+	</td></tr>
 	<tr><td>".LAN_MAILOUT_236."</td><td>".$lastBounceText."</td></tr>
 	</tbody></table>";
 
