@@ -122,7 +122,7 @@ define("LAN_MAILOUT_108", "Result");
 define("LAN_MAILOUT_109", "Show detail");
 define("LAN_MAILOUT_110", "Send test email");
 define("LAN_MAILOUT_111", "Email Title (not sent)");
-define("LAN_MAILOUT_112", "Click to send email to");
+define("LAN_MAILOUT_112", "Send test email to");
 define("LAN_MAILOUT_113", "Test email from");
 define("LAN_MAILOUT_114", "This is a test email, it appears that your email settings are working ok! [br][br] Regards [br] from the e107 website system.");
 define("LAN_MAILOUT_115", "Emailing method");

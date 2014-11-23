@@ -881,10 +881,10 @@ class mailout_main_ui extends e_admin_ui
 		<tbody>
 		<tr>
 			<td>".LAN_MAILOUT_110."<br /></td>
-			<td class='form-inline'>".$frm->admin_button('testemail', LAN_MAILOUT_112,'other')."&nbsp;
-			<input name='testaddress' class='tbox' type='text' size='40' maxlength='80' value=\"".(varset($_POST['testaddress']) ? $_POST['testaddress'] : USEREMAIL)."\" />
-			".$this->mailAdmin->sendStyleSelect(varset($_POST['testtemplate'], 'textonly'), 'testtemplate')."
-			</td>
+			<td class='form-inline'><div class='input-append'>".$frm->admin_button('testemail', LAN_MAILOUT_112,'other')."&nbsp;
+			<input name='testaddress' class='tbox input-xlarge' type='text' size='40' maxlength='80' value=\"".(varset($_POST['testaddress']) ? $_POST['testaddress'] : USEREMAIL)."\" />
+			 <span style='padding-left:5px'>".$this->mailAdmin->sendStyleSelect(varset($_POST['testtemplate'], 'textonly'), 'testtemplate')."</span>
+			</div></td>
 		</tr>
 
 		<tr>

@@ -47,6 +47,9 @@ class e107Bounce
 		
 		$strEmail= ($this->source == false) ? $this->mailRead(-1) : file_get_contents(e_HANDLER."eml/".$this->source);
 		
+		file_put_contents(e_LOG."bounce.log",date('r')."\n\n".$strEmail."\n\n", FILE_APPEND);
+		
+		
 		if(strpos($strEmail,'X-Bounce-Test: true')!==false) // Bounce Test from Admin Area. 
 		{
 			$this->debug = true;	
@@ -73,7 +76,7 @@ class e107Bounce
 	 		$e107_userid = (isset($head[$identifier])) ? $head[$identifier] : $this->getHeader($strEmail, $identifier);
 		}
 		
-
+		
 		
 		if($this->debug === true)
 		{
