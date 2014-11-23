@@ -201,6 +201,10 @@ class e107Email extends PHPMailer
 		{
 			$this->debug = true;
 		}
+		else 
+		{
+			$this->Debugoutput = 'handlePHPMailerDebug';	
+		}
 		
 		$this->pref = $pref;
 
@@ -1140,6 +1144,11 @@ class e107MailerException extends phpmailerException
 }
 
 
+// Called by PHPMailer when SMTP debug is active. 
+function handlePHPMailerDebug($str,$other)
+{
+	e107::getMessage()->addInfo($str);		
+}
 //--------------------------------------
 //		Generic e107 Exception handler
 //--------------------------------------
