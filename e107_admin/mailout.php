@@ -527,7 +527,31 @@ class mailout_main_ui extends e_admin_ui
 	}
 	
 	
-	
+	function afterCopy($result,$id)
+	{
+		if($result == true)
+		{
+			$update = array(
+				'mail_content_status'	=> MAIL_STATUS_TEMP,
+				'mail_total_count'		=> 0,
+				'mail_togo_count'		=> 0,
+				'mail_sent_count'		=> 0,
+				'mail_fail_count'		=> 0,
+				'mail_bounce_count'		=> 0,
+				'mail_start_send'		=> '',
+				'mail_end_send'			=> '',
+				'mail_create_date'		=> time(),
+				'WHERE'					=> "mail_source_id IN (".implode(",",$id).")" // FIXME Currently modifies the original instead of the copy. 
+			);
+			
+			if(!e107::getDb()->update('mail_content',$update))
+			{
+				e107::getMessage()->addError(print_a($update,true));	
+			}
+			
+		}
+
+	}
 	
 	
 	private function processSendActions()
