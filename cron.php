@@ -22,10 +22,13 @@ $_E107['no_online'] = true;
 $_E107['no_forceuserupdate'] = true;
 $_E107['no_menus'] = true;
 $_E107['allow_guest'] = true; // allow crons to run while in members-only mode. 
+$_E107['no_maintenance'] = true;
 
 // we allow theme init as cron jobs might need to access current theme templates (e.g. custom email templates)
 
+
 require_once(realpath(dirname(__FILE__)."/class2.php"));
+
 
 	$pwd = ($_E107['debug'] && $_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : trim($_SERVER['argv'][1]);
 	

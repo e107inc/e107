@@ -591,7 +591,31 @@ class media_form_ui extends e_admin_form_ui
 	}
 	
 
+	function media_preview($curVal, $mode, $attributes, $id)
+	{
+		
+		$attributes['type'] = 'image';
+		
+		switch($mode)
+		{
+			case 'read':
+				$attributes['readParms'] = 'thumb=60&thumb_urlraw=0&thumb_aw=60';
+				$val 	= $this->getController()->getListModel()->get('media_url');	
+			break;
 
+			case 'write':
+				$attributes['readParms'] = 'thumb=180&thumb_urlraw=0&thumb_aw=180';
+				$val 	= $this->getController()->getModel()->get('media_url');		
+			break;
+
+			case 'filter':
+			case 'batch':
+				return '';
+			break;
+		}
+
+		return $this->renderValue('media_preview', $val, $attributes, $id);
+	}
 
 
 /*
@@ -650,20 +674,15 @@ class media_admin_ui extends e_admin_ui
 		public $deleteConfirmScreen = true;
 		public $deleteConfirmMessage = 'You are about to delete [x] records and <strong>ALL CORRESPONDING FILES</strong>! Please confirm to continue!';
 
-		//TODO - finish 'user' type, set 'data' to all editable fields, set 'noedit' for all non-editable fields
-    	/*
-    	 * We need a column with a preview that is generated from the path of another field.
-    	 * ie. the preview column should show a thumbnail which is generated from the media_url column.
-    	 * It needs to also take into consideration the type of media (image, video etc) which comes from another field.
-    	 */
 
     	protected $preftabs			= array('General',"Watermark", "Youtube"); 
     	 
 		protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null,			'data'=> null,		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'media_id'				=> array('title'=> LAN_ID,			'type' => 'number',		'data'=> 'int',		'width' =>'5%', 'forced'=> TRUE, 'nolist'=>TRUE),
-      		'media_url' 			=> array('title'=> 'Preview',		'type' => 'image',		'data'=> 'str',		'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>TRUE, 'writeParms'=>'thumb=180&thumb_urlraw=0&thumb_aw=180',	'width' => '110px'),
-			'media_category' 		=> array('title'=> LAN_CATEGORY,	'type' => 'comma',	'inline'=>false,	'data'=> 'str',		'width' => 'auto', 'filter' => true, 'batch' => true, 'class'=>'left'),
+      		'media_preview'			=> array('title'=>'Preview', 		'type'=>'method', 		'data'=>false, 	'forced'=>true, 'width' => '110px', 'thclass' => 'center', 'class'=>'center'),
+      		'media_url' 			=> array('title'=> 'Path',			'type' => 'text',		'data'=> 'str',		'thclass' => 'left', 'class'=>'left', 'width' => 'auto', 'writeParms'=>'size=xxlarge'),
+			'media_category' 		=> array('title'=> LAN_CATEGORY,	'type' => 'comma',	'inline'=>false,	'data'=> 'str',		'width' => '10%', 'filter' => true, 'batch' => true, 'class'=>'left'),
 			
 		// Upload should be managed completely separately via upload-handler.
        	//	'media_upload' 			=> array('title'=> "Upload File",	'type' => 'upload',		'data'=> false,		'readParms' => 'hidden', 'writeParms' => 'disable_button=1', 'width' => '10%', 'nolist' => true),
@@ -674,7 +693,7 @@ class media_admin_ui extends e_admin_ui
          	'media_type' 			=> array('title'=> "Mime Type",		'type' => 'text',		'data'=> 'str',		'width' => 'auto', 'noedit'=>TRUE),
 			'media_author' 			=> array('title'=> LAN_USER,		'type' => 'user',		'data'=> 'int', 	'width' => 'auto', 'thclass' => 'center', 'class'=>'center','readParms' => 'link=1', 'filter' => true, 'batch' => true, 'noedit'=>TRUE	),
 			'media_datestamp' 		=> array('title'=> LAN_DATESTAMP,	'type' => 'datestamp',	'data'=> 'int',		'width' => '10%', 'noedit'=>TRUE),	// User date
-          	'media_size' 			=> array('title'=> "Size",			'type' => 'number',		'data'=> 'int',		'width' => 'auto', 'noedit'=>TRUE),
+          	'media_size' 			=> array('title'=> "Size",			'type' => 'number',		'data'=> 'int',		'width' => 'auto', 'readonly'=>2),
 			'media_dimensions' 		=> array('title'=> "Dimensions",	'type' => 'text',		'data'=> 'str',		'width' => '5%', 'readonly'=>TRUE, 'class'=>'nowrap','noedit'=>TRUE),
 			'media_userclass' 		=> array('title'=> LAN_USERCLASS,	'type' => 'userclass',	'data'=> 'str',		'inline'=>true, 'width' => '10%', 'thclass' => 'center','filter'=>TRUE,'batch'=>TRUE ),
 			'media_tags' 			=> array('title'=> "Tags/Keywords",	'type' => 'tags',		'data'=> 'str',		'width' => '10%',  'filter'=>TRUE,'batch'=>TRUE ),
@@ -693,7 +712,8 @@ class media_admin_ui extends e_admin_ui
 				'video'			=> e_MEDIA_VIDEO,
 				'other'			=> e_MEDIA_FILE
 		);
-	//	protected $fieldpref = array('checkboxes','media_url', 'media_id', 'media_thumb', 'media_title', 'media_caption', 'media_description', 'media_category', 'media_datestamp','media_userclass', 'options');
+		
+		protected $fieldpref = array( 'media_id', 'media_title', 'media_caption', 'media_category', 'media_datestamp','media_userclass', 'options');
 
 
 
