@@ -30,9 +30,6 @@
  *
  */
 
-//TODO before release. - replace majority of code with admin_gui class setup. 
-
-
 require_once ('../class2.php');
 if(! getperms('S'))
 {
@@ -132,6 +129,7 @@ class admin_log_ui extends e_admin_ui
 		protected $listOrder		= 'f.dblog_id DESC';
 		
 		protected $batchDelete		= false;
+		protected $batchDeleteLog	= false; //TODO - AdminUI option to disable logging of changes.  
 			
 		protected $fields 		= array (  
 	//	'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'nolist'=>true, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
@@ -199,6 +197,16 @@ class admin_log_ui extends e_admin_ui
 			}
 
 			asort($this->eventTypes);
+			
+			if(getperms('0'))
+			{
+				
+				$arr = array_reverse($this->fields, true);
+				$arr['checkboxes'] =  array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect'  );
+				
+				$this->fields = array_reverse($arr, true); 
+				$this->batchDelete = true;
+			}
 		}
 		
 		
