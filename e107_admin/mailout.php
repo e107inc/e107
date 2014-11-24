@@ -527,9 +527,17 @@ class mailout_main_ui extends e_admin_ui
 	}
 	
 	
-	function afterCopy($result,$id)
+	function afterCopy($firstInsert, $copied)
 	{
-		if($result == true)
+		$num = array();
+		$count = 0; 
+		foreach($copied as $tmp)
+		{
+			$num[] = ($firstInsert + $count);
+			$count ++; 	
+		} 
+		
+		if(!empty($firstInsert))
 		{
 			$update = array(
 				'mail_content_status'	=> MAIL_STATUS_TEMP,
@@ -541,13 +549,14 @@ class mailout_main_ui extends e_admin_ui
 				'mail_start_send'		=> '',
 				'mail_end_send'			=> '',
 				'mail_create_date'		=> time(),
-				'WHERE'					=> "mail_source_id IN (".implode(",",$id).")" // FIXME Currently modifies the original instead of the copy. 
+				'WHERE'					=> "mail_source_id IN (".implode(",",$num).")" // FIXME Currently modifies the original instead of the copy. 
 			);
-			
+
 			if(!e107::getDb()->update('mail_content',$update))
 			{
-				e107::getMessage()->addError(print_a($update,true));	
+				e107::getMessage()->addDebug(print_a($update,true));	
 			}
+			
 			
 		}
 
