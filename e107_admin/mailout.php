@@ -1528,7 +1528,7 @@ class mailout_recipients_ui extends e_admin_ui
 	protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null, 		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),	
 			'mail_target_id'  		=> array('title' => LAN_MAILOUT_143, 'thclass' => 'center', 'forced' => TRUE),
-			'mail_recipient_id' 	=> array('title' => LAN_MAILOUT_142, 'type'=>'number', 'data'=>'int', 'thclass' => 'center'),
+			'mail_recipient_id' 	=> array('title' => LAN_MAILOUT_142, 'type'=>'number', 'data'=>'int', 'thclass' => 'left'),
 			'mail_recipient_name' 	=> array('title' => LAN_MAILOUT_141, 'forced' => TRUE),
 			'mail_recipient_email' 	=> array('title' => LAN_MAILOUT_140, 'thclass' => 'left', 'forced' => TRUE),
 			'mail_status' 			=> array('title' => LAN_MAILOUT_138, 'type'=>'method', 'data'=>'str', 'thclass' => 'left', 'class'=>'left', 'proc' => 'contentstatus'),
@@ -1563,15 +1563,36 @@ class mailout_recipients_ui extends e_admin_ui
 		
 		if(strpos($_GET['filter_options'],'mail_detail_id__')===false)
 		{
-			$ns = e107::getRender();
-			e107::getMessage()->addInfo("Please select a mailing list from the filter menu below to view recipients.");
-			$this->listQry = "SELECT * FROM #mail_recipients WHERE mail_target_id = 0"; // simulated empty result. 
-			return false;
+		//	$ns = e107::getRender();
+		//	e107::getMessage()->addInfo("Please select a mailing list from the filter menu below to view recipients.");
+		//	$this->listQry = "SELECT * FROM #mail_recipients WHERE mail_target_id = 0"; // simulated empty result. 
+		//	return false;
 		}	
 		
 		
 			
 			
+	}
+	
+	/**
+	 * Fix Total counts after recipient deletion. 
+	 */
+	public function afterDelete($data, $id, $deleted_check)
+	{
+		
+		if($data['mail_status'] < MAIL_STATUS_PENDING)
+		{
+			return;	
+		}
+						
+		$query = "mail_total_count = mail_total_count - 1, mail_togo_count = mail_togo_count - 1 WHERE mail_source_id = ".intval($data['mail_detail_id'])." LIMIT 1";
+
+		if(!e107::getDb()->update('mail_content',$query))
+		{
+			e107::getMessage()->addDebug(print_a($update,true));	
+		}
+		
+		
 	}
 	
 
@@ -1586,7 +1607,13 @@ class mailout_recipients_form_ui extends e_admin_form_ui
 	{
 		if($mode == 'read')
 		{
-			return $this->getController()->mailManager->statusToText($curVal);
+			$stat = array();
+			$stat[0] = 'label-success';
+			$stat[10] = 'label-warning';
+			$stat[13] = 'label-warning';
+			$stat[5] = 'label-error'; // MAIL_STATUS_FAILED
+			
+			return "<span class='label ".varset($stat[$curVal])."'>".$this->getController()->mailManager->statusToText($curVal)."</span>";
 		}
 		
 		if($mode == 'write')
