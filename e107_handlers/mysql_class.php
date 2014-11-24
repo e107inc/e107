@@ -635,7 +635,7 @@ class e_db_mysql
 			if ($this->mySQLresult = $this->db_Query('SELECT '.$fields.' FROM '.$this->mySQLPrefix.$table.' WHERE '.$arg, NULL, 'db_Select', $debug, $log_type, $log_remark))
 			{
 				$this->dbError('dbQuery');
-				return $this->db_Rows();
+				return $this->rowCount();
 			}
 			else
 			{
@@ -648,7 +648,7 @@ class e_db_mysql
 			if ($this->mySQLresult = $this->db_Query('SELECT '.$fields.' FROM '.$this->mySQLPrefix.$table.' '.$arg, NULL, 'db_Select', $debug, $log_type, $log_remark))
 			{
 				$this->dbError('dbQuery');
-				return $this->db_Rows();
+				return $this->rowCount();
 			}
 			else
 			{
@@ -661,7 +661,7 @@ class e_db_mysql
 			if ($this->mySQLresult = $this->db_Query('SELECT '.$fields.' FROM '.$this->mySQLPrefix.$table, NULL, 'db_Select', $debug, $log_type, $log_remark))
 			{
 				$this->dbError('dbQuery');
-				return $this->db_Rows();
+				return $this->rowCount();
 			}
 			else
 			{
@@ -799,6 +799,23 @@ class e_db_mysql
 			return FALSE;
 		}
 	}
+	
+
+	public function lastInsertId()
+	{
+		$tmp = ($this->pdo) ? $this->mySQLaccess->lastInsertId() : mysql_insert_id($this->mySQLaccess);	
+		return ($tmp) ? $tmp : true; // return true even if table doesn't have auto-increment.
+	}
+
+
+	public function rowCount($result=null)
+	{
+		$rows = $this->mySQLrows = ($this->pdo) ? $this->mySQLresult->rowCount() :  mysql_num_rows($this->mySQLresult);
+		$this->dbError('db_Rows');
+		return $rows;	
+	}
+
+
 	
 	/**
 	 * insert() alias
@@ -1271,15 +1288,14 @@ class e_db_mysql
 
 
 	/**
-	* @return unknown
+	* @deprecated
 	* @desc Enter description here...
 	* @access private
 	*/
 	function db_Rows()
 	{
-		$rows = $this->mySQLrows = ($this->pdo) ? $this->mySQLresult->rowCount() :  @mysql_num_rows($this->mySQLresult);
-		$this->dbError('db_Rows');
-		return $rows;
+		return $this->rowCount();
+		
 	}
 
 
@@ -1346,7 +1362,7 @@ class e_db_mysql
 		else
 		{	// Successful query which does return a row count - get the count and return it
 			$this->dbError('db_Select_gen');
-			return $this->db_Rows();
+			return $this->rowCount();
 		}
 	}
 
@@ -1612,14 +1628,15 @@ class e_db_mysql
 
 		if ($prefix == '') $prefix = $this->mySQLPrefix;
 
-		if (FALSE === ($result = mysql_query('SHOW COLUMNS FROM '.$prefix.$table,$this->mySQLaccess)))
+		if (FALSE === ($result = $this->gen('SHOW COLUMNS FROM '.$prefix.$table,$this->mySQLaccess)))
 		{
 			return FALSE;		// Error return
 		}
 		$ret = array();
-        if (mysql_num_rows($result) > 0)
+		
+        if ($this->rowCount() > 0)
 		{
-			while ($row = mysql_fetch_assoc($result))
+			while ($row = $this->fetch($result))
 			{
 				if ($retinfo)
 				{
@@ -1681,11 +1698,11 @@ class e_db_mysql
 			$this->mySQLaccess = $db_ConnectionID;
 		}
 
-        $result = mysql_query("SHOW COLUMNS FROM ".$this->mySQLPrefix.$table,$this->mySQLaccess);
-        if ($result && mysql_num_rows($result) > 0)
+        $result = $this->gen("SHOW COLUMNS FROM ".$this->mySQLPrefix.$table,$this->mySQLaccess);
+        if ($result && ($this->rowCount() > 0))
 		{
 			$c=0;
-			while ($row = mysql_fetch_assoc($result))
+			while ($row = $this->fetch())
 			{
 				if(is_numeric($fieldid))
 				{
@@ -1792,7 +1809,7 @@ class e_db_mysql
 				$table = array();
 				if($res = $this->db_Query("SHOW TABLES LIKE '".$this->mySQLPrefix."lan_".strtolower($language)."%' "))
 				{
-					while($rows = $this->db_Fetch(MYSQL_NUM))
+					while($rows = $this->fetch(MYSQL_NUM))
 					{
 						$table[] = str_replace($this->mySQLPrefix,"",$rows[0]);
 					}
@@ -1811,7 +1828,7 @@ class e_db_mysql
 			$table = array();
 			if($res = $this->db_Query("SHOW TABLES LIKE '".$this->mySQLPrefix."%' "))
 			{
-				while($rows = $this->db_Fetch(MYSQL_NUM))
+				while($rows = $this->fetch(MYSQL_NUM))
 				{
 					$table[] = str_replace($this->mySQLPrefix,"",$rows[0]);
 				}
@@ -1908,8 +1925,9 @@ class e_db_mysql
 			$fieldList = $fields;
 		}
 			
-		return $this->db_Select_gen("INSERT INTO #".$table."(".$fieldList.") SELECT ".$fieldList." FROM #".$table." WHERE ".$args);
-				
+		$id = $this->gen("INSERT INTO #".$table."(".$fieldList.") SELECT ".$fieldList." FROM #".$table." WHERE ".$args);
+		return $this->lastInsertId();
+
 	}
 	
 	
@@ -1921,16 +1939,16 @@ class e_db_mysql
 
 		if ($drop)
 		{
-			$this->db_Select_gen("DROP TABLE IF EXISTS {$new}");
+			$this->gen("DROP TABLE IF EXISTS {$new}");
 		}
 
 		//Get $old table structure
-		$this->db_Select_gen('SET SQL_QUOTE_SHOW_CREATE = 1');
+		$this->gen('SET SQL_QUOTE_SHOW_CREATE = 1');
 
 		$qry = "SHOW CREATE TABLE {$old}";
-		if ($this->db_Select_gen($qry))
+		if ($this->gen($qry))
 		{
-			$row = $this->db_Fetch(MYSQL_NUM);
+			$row = $this->fetch(MYSQL_NUM);
 			$qry = $row[1];
 			//        $qry = str_replace($old, $new, $qry);
 			$qry = preg_replace("#CREATE\sTABLE\s`{0,1}".$old."`{0,1}\s#", "CREATE TABLE `{$new}` ", $qry, 1); // More selective search
@@ -1948,7 +1966,7 @@ class e_db_mysql
 		if ($data) //We need to copy the data too
 		{
 			$qry = "INSERT INTO {$new} SELECT * FROM {$old}";
-			$result = $this->db_Select_gen($qry);
+			$result = $this->gen($qry);
 		}
 		return $result;
 	}
