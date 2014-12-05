@@ -153,7 +153,7 @@ define("LAN_MAILOUT_139", "Date active");
 define("LAN_MAILOUT_140", "Recipient Email");
 define("LAN_MAILOUT_141", "Recipient Name");
 define("LAN_MAILOUT_142", "Recipient User ID");
-define("LAN_MAILOUT_143", "Email ref.");
+define("LAN_MAILOUT_143", "Recipient ref.");
 define("LAN_MAILOUT_144", "Bounced");
 define("LAN_MAILOUT_145", "New email saved");
 define("LAN_MAILOUT_146", "Error saving email");
