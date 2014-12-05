@@ -1527,12 +1527,12 @@ class mailout_recipients_ui extends e_admin_ui
 
 	protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null, 		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),	
-			'mail_target_id'  		=> array('title' => LAN_MAILOUT_143, 'thclass' => 'center', 'forced' => TRUE),
+			'mail_target_id'  		=> array('title' => LAN_MAILOUT_143, 'thclass' => 'left', 'forced' => TRUE),
 			'mail_recipient_id' 	=> array('title' => LAN_MAILOUT_142, 'type'=>'number', 'data'=>'int', 'thclass' => 'left'),
 			'mail_recipient_name' 	=> array('title' => LAN_MAILOUT_141, 'forced' => TRUE),
 			'mail_recipient_email' 	=> array('title' => LAN_MAILOUT_140, 'thclass' => 'left', 'forced' => TRUE),
-			'mail_status' 			=> array('title' => LAN_MAILOUT_138, 'type'=>'method', 'data'=>'str', 'thclass' => 'left', 'class'=>'left', 'proc' => 'contentstatus'),
-			'mail_detail_id' 		=> array('title' => LAN_MAILOUT_137, 'type'=>'number', 'filter'=>true),
+			'mail_status' 			=> array('title' => LAN_MAILOUT_138, 'type'=>'method', 'filter'=>true, 'data'=>'int', 'thclass' => 'left', 'class'=>'left', 'writeParms'=>''),
+			'mail_detail_id' 		=> array('title' => LAN_MAILOUT_137, 'type'=>'dropdown', 'filter'=>true),
 			'mail_send_date' 		=> array('title' => LAN_MAILOUT_139, 'proc' => 'sdatetime'),
 			'mail_target_info'		=> array('title' => LAN_MAILOUT_148, 'proc' => 'array'),
 			'options' 				=> array('title' => LAN_OPTIONS, 'type'=>'method',  'width'=>'10%', 'forced' => TRUE)
@@ -1542,36 +1542,35 @@ class mailout_recipients_ui extends e_admin_ui
 	protected $fieldpref = array('checkboxes', 'mail_target_id', 'mail_recipient_name', 'mail_recipient_email', 'mail_detail_id', 'mail_status', 'options');
 	
 	public $mailManager = null;
+	public $mailStatus = array();
 	
 	function init()
 	{
 		
 		$this->mailManager = new e107MailManager;
-		
-		
-		
+
 		$sql = e107::getDb();
 		$sql->gen("SELECT r.mail_detail_id,c.mail_title FROM #mail_recipients AS r LEFT JOIN #mail_content as c ON r.mail_detail_id = c.mail_source_id GROUP BY r.mail_detail_id");
 				
 		while($row = $sql->fetch())
 		{
 			$id = $row['mail_detail_id'];
-			$array[$id] = vartrue($row['mail_title'], "(No Name)");	
+			$array[$id] = $id." : ".vartrue($row['mail_title'], "(No Name)");	
 		}
 		$this->fields['mail_detail_id']['writeParms'] = $array;
 		
 		
-		if(strpos($_GET['filter_options'],'mail_detail_id__')===false)
-		{
-		//	$ns = e107::getRender();
-		//	e107::getMessage()->addInfo("Please select a mailing list from the filter menu below to view recipients.");
-		//	$this->listQry = "SELECT * FROM #mail_recipients WHERE mail_target_id = 0"; // simulated empty result. 
-		//	return false;
-		}	
-		
-		
-			
-			
+		$this->mailStatus = array(
+			 MAIL_STATUS_SENT 		=> LAN_MAILOUT_211,
+			 MAIL_STATUS_BOUNCED 	=> LAN_MAILOUT_213,
+			 MAIL_STATUS_CANCELLED	=> LAN_MAILOUT_218,
+			 MAIL_STATUS_PARTIAL	=> LAN_MAILOUT_219,
+			 MAIL_STATUS_FAILED		=> LAN_MAILOUT_212,
+			 MAIL_STATUS_PENDING 	=> LAN_MAILOUT_214,
+			 MAIL_STATUS_SAVED 		=> LAN_MAILOUT_215,
+			 MAIL_STATUS_HELD		=> LAN_MAILOUT_217
+		);
+				
 	}
 	
 	/**
@@ -1602,6 +1601,24 @@ class mailout_recipients_ui extends e_admin_ui
 
 class mailout_recipients_form_ui extends e_admin_form_ui
 {
+	private $mailStatus = array();
+	
+	function init()
+	{
+		$this->mailStatus = array(
+			 MAIL_STATUS_SENT 		=> LAN_MAILOUT_211,
+			 MAIL_STATUS_BOUNCED 	=> LAN_MAILOUT_213,
+			 MAIL_STATUS_CANCELLED	=> LAN_MAILOUT_218,
+			 MAIL_STATUS_PARTIAL	=> LAN_MAILOUT_219,
+			 MAIL_STATUS_FAILED		=> LAN_MAILOUT_212,
+			 MAIL_STATUS_PENDING 	=> LAN_MAILOUT_214,
+		//	 MAIL_STATUS_SAVED 		=> LAN_MAILOUT_215,
+		//	 MAIL_STATUS_HELD		=> LAN_MAILOUT_217
+		);	
+		
+		
+	}
+	
 	
 	public function mail_status($curVal,$mode)
 	{
@@ -1619,6 +1636,11 @@ class mailout_recipients_form_ui extends e_admin_form_ui
 		if($mode == 'write')
 		{
 			return $curVal;
+		}
+		
+		if($mode == 'filter')
+		{
+			return $this->mailStatus;
 		}
 		
 	}	
