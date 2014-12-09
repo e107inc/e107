@@ -694,7 +694,7 @@ class search extends e_shortcode
 		$ns = e107::getRender();
 		$sch = new e_search;
 		$tp = e107::getParser();
-		 
+	
 		
 		$query = $this->query;
 		
@@ -731,11 +731,12 @@ class search extends e_shortcode
 						{
 							continue;
 						}
+						
 						$obj = new $className;
-	
+						
 						$where = (method_exists($obj,'where')) ? $obj->where($_GET) : "";
 						
-						$ps = $obj->parsesearch($this->search_info[$key]['table'], $this->search_info[$key]['return_fields'], $this->search_info[$key]['search_fields'], $this->search_info[$key]['weights'], 'self', varset($this->search_info[$key]['no_results'],LAN_198), $where , $this->search_info[$key]['order']);
+						$ps = $obj->parsesearch($this->search_info[$key]['table'], $this->search_info[$key]['return_fields'], $this->search_info[$key]['search_fields'], $this->search_info[$key]['weights'], 'self', varset($this->search_info[$key]['no_results'],"<div class='alert alert-danger'>".LAN_198."</div>"), $where , $this->search_info[$key]['order']);
 						
 						$text .= '<div class="search-block">';
 						$text .= $ps['text'];
@@ -1128,7 +1129,7 @@ if (!varsettrue($_GET['adv']) || $_GET['t'] == 'all')
   {
 	if ($gk != 't' && $gk != 'q' && $gk != 'r' && $gk != 'in' && $gk != 'ex' && $gk != 'ep' && $gk != 'be' && $gk != 'adv') 
 	{
-	  unset($_GET[$gk]);
+//	  unset($_GET[$gk]);
 	}
   }
 }
