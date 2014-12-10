@@ -3918,22 +3918,19 @@ class eResponse
 	/**
 	 *
 	 * @param string $render_mod
-	 * @param string $ns
+	 * @param mixed $ns
 	 * @return eResponse
 	 */
 	function setRenderMod($render_mod, $ns = 'default')
 	{
-		if(!is_string($ns) || empty($ns))
-		{
-			return $this;
-		}
-		$this->_render_mod[$ns] = (string) $render_mod;
+		$this->_render_mod[$ns] = $render_mod;
 		return $this;
 	}
 
 	/**
 	 * Retrieve render mod
-	 * @param string $ns
+	 * @param mixed $ns
+     * @return mixed
 	 */
 	function getRenderMod($ns = 'default')
 	{
