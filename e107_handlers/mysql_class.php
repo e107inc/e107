@@ -1628,7 +1628,7 @@ class e_db_mysql
 
 		if ($prefix == '') $prefix = $this->mySQLPrefix;
 
-		if (FALSE === ($result = $this->gen('SHOW COLUMNS FROM '.$prefix.$table,$this->mySQLaccess)))
+		if (FALSE === ($result = $this->gen('SHOW COLUMNS FROM '.$prefix.$table)))
 		{
 			return FALSE;		// Error return
 		}
@@ -1698,7 +1698,7 @@ class e_db_mysql
 			$this->mySQLaccess = $db_ConnectionID;
 		}
 
-        $result = $this->gen("SHOW COLUMNS FROM ".$this->mySQLPrefix.$table,$this->mySQLaccess);
+        $result = $this->gen("SHOW COLUMNS FROM ".$this->mySQLPrefix.$table);
         if ($result && ($this->rowCount() > 0))
 		{
 			$c=0;
