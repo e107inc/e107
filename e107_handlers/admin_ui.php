@@ -2059,7 +2059,12 @@ class e_admin_controller
 		if($action != 'Prefs' && $action != 'Create' && $action !='Edit' && $action != 'List') // Custom Page method in use, so add the title. 
 		{
 			$this->addTitle(); 	
-		}	
+		}
+		
+		if($action == 'Edit')
+		{
+			$this->addTitle('#'.$this->getId()); // Inform user of which record is being edited. 	
+		}
 		
 		ob_start(); //catch any output
 		$ret = $this->{$actionName}();
