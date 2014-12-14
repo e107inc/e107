@@ -1667,8 +1667,8 @@ class e107
 			
 			case 'footer':
 				// data is e.g. '{e_PLUGIN}myplugin/jslib/myplug.js'
-				if(null !== $zone) $jshandler->footerFile($data, $zone);
-				else $jshandler->footerFile($data);
+				if(null !== $zone) $jshandler->footerFile($data, $zone, $pre, $post);
+				else $jshandler->footerFile($data, 5, $pre, $post);
 			break;
 			
 			// $type is plugin name
