@@ -512,9 +512,9 @@ class e_jsmanager
 	 * @param integer $zone 1-5 (see header.php)
 	 * @return e_jsmanager
 	 */
-	public function headerCore($file_path, $zone = 2)
+	public function headerCore($file_path, $zone = 2, $pre = '', $post = '')
 	{
-		$this->headerFile('{e_WEB_JS}'.trim($file_path, '/'), $zone);
+		$this->headerFile('{e_WEB_JS}'.trim($file_path, '/'), $zone, $pre, $post);
 		return $this;
 	}
 
@@ -539,9 +539,9 @@ class e_jsmanager
 	 * @param integer $zone 1-5 (see header.php) - REMOVED, actually we need to prevent zone change
 	 * @return e_jsmanager
 	 */
-	public function headerPlugin($plugname, $file_path)
+	public function headerPlugin($plugname, $file_path, $pre, $post)
 	{
-		$this->headerFile('{e_PLUGIN}'.$plugname.'/'.trim($file_path, '/'), 2);	// Zone 2 - after libraries
+		$this->headerFile('{e_PLUGIN}'.$plugname.'/'.trim($file_path, '/'), 2, $pre, $post);	// Zone 2 - after libraries
 		return $this;
 	}
 
@@ -572,9 +572,9 @@ class e_jsmanager
 	 * @param integer $priority 1-5 (see footer.php)
 	 * @return e_jsmanager
 	 */
-	public function footerFile($file_path, $priority = 5)
+	public function footerFile($file_path, $priority = 5, $pre = '', $post = '')
 	{
-		$this->addJs('footer', $file_path, $priority);
+		$this->addJs('footer', $file_path, $priority, $pre, $post);
 		return $this;
 	}
 
@@ -845,7 +845,7 @@ class e_jsmanager
 		{
 			case 'core':
 				// added direct CDN support
-				$file_path = (strpos($file_path, 'http') !== 0 ? '{e_WEB_JS}' : '').trim($file_path, '/');
+				$file_path = (strpos($file_path, 'http') !== 0 ? '{e_WEB_JS}' : '').trim($file_path, '/')."|{$pre}|{$post}";
 				$registry = &$this->_e_jslib_core;
 			break;
 
@@ -1140,7 +1140,7 @@ class e_jsmanager
 				}
 				elseif($external) //true or 'js'
 				{
-					if(strpos($path, 'http') === 0) continue; // not allowed
+					if(strpos($path, 'http') === 0 || strpos($path, '//') === 0) continue; // not allowed
 					
 					$path = explode('|', $path, 3);
 					$pre = varset($path[1], '');
@@ -1164,7 +1164,7 @@ class e_jsmanager
             {
             	// CDN fix, ignore URLs inside consolidation script, render as external scripts
             	$isExternal = false;
-				if(strpos($path, 'http') === 0) 
+				if(strpos($path, 'http') === 0 || strpos($path, '//') === 0)
 				{
 					if($external !== 'css') $isExternal = true;
 				}
@@ -1184,14 +1184,16 @@ class e_jsmanager
 					echo "\n";
 					continue;
 				}
-				
-				$path = explode('|', $path, 3);
+
+				$path = explode('|', $path, 4);
 				$pre = varset($path[1], '');
 				if($pre) $pre .= "\n";
 				$post = varset($path[2], '');
 				if($post) $post = "\n".$post;
+				$inline = isset($path[3]) ? $path[3] : '';
+				if($inline) $inline = " ".$inline;
 				$path = $path[0];
-				
+
             	if($external)
 				{
 					// Never use CacheID on a CDN script, always render if it's CDN
@@ -1204,7 +1206,7 @@ class e_jsmanager
 						}
 						$path = $tp->replaceConstants($path, 'abs').'?'.$this->getCacheId();
 					}
-					echo $pre.'<script type="text/javascript" src="'.$path.'"></script>'.$post;
+					echo $pre.'<script type="text/javascript" src="'.$path.'"'.$inline.'></script>'.$post;
 					echo "\n";
 					continue;
 				}
