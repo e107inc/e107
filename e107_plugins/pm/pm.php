@@ -47,6 +47,16 @@ $qs = explode('.', e_QUERY);
 $action = varset($qs[0],'inbox');
 if (!$action) $action = 'inbox';
 
+if($action == 'textarea' || $action == 'input')
+{
+	if($qs[1] == 'pm_to') {
+		require_once(e_HANDLER.'user_select_class.php');
+		$us = new user_select;
+		$us->popup();
+		exit;
+	}
+}
+
 $pm_proc_id = intval(varset($qs[1],0));
 
 //$pm_prefs = $sysprefs->getArray('pm_prefs');
