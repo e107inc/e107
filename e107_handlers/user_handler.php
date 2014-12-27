@@ -1598,6 +1598,13 @@ class e_userperms
 	 	}
 		
 		//$sql->db_Update("user", "user_perms='{$perm}' WHERE user_id='{$modID}' ") 
+		if(!$sysuser->isAdmin())
+		{
+			$sysuser->set('user_admin', 1)->save();
+			$lan = str_replace(array('--UID--', '--NAME--', '--EMAIL--'), array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email')), USRLAN_164);
+			e107::getLog()->add('USET_08', $lan, E_LOG_INFORMATIVE);
+		}
+		
 		e107::getMessage()->addAuto($sysuser->set('user_perms', $perm)->save(), 'update', sprintf(LAN_UPDATED, $tp->toDB($_POST['ad_name'])), false, false);
 		$logMsg = str_replace(array('--ID--', '--NAME--'),array($modID, $a_name),ADMSLAN_72).$perm;
 		e107::getLog()->add('ADMIN_01',$logMsg,E_LOG_INFORMATIVE,'');
