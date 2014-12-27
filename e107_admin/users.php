@@ -695,15 +695,23 @@ class users_admin_ui extends e_admin_ui
 			$this->redirect('list', 'main', true);
 		}
 		
-		if(!$sysuser->isAdmin())
+	
+		if($this->getPosted('update_admin'))
 		{
-			$sysuser->set('user_admin', 1)->save(); //"user","user_admin='1' WHERE user_id={$userid}"
-			$lan = str_replace(array('--UID--', '--NAME--', '--EMAIL--'), array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email')), USRLAN_164);
-			e107::getLog()->add('USET_08', $lan, E_LOG_INFORMATIVE);
-			$mes->addSuccess($lan);
+			 e107::getUserPerms()->updatePerms($userid, $_POST['perms']);
+			 $this->redirect('list', 'main', true);
 		}
 		
-		if($this->getPosted('update_admin')) e107::getUserPerms()->updatePerms($userid, $_POST['perms']);
+		if(!$sysuser->isAdmin()) // Security Check Only. Admin status check is added during 'updatePerms'. 
+		{
+		//	$sysuser->set('user_admin', 1)->save(); //"user","user_admin='1' WHERE user_id={$userid}"
+		//	$lan = str_replace(array('--UID--', '--NAME--', '--EMAIL--'), array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email')), USRLAN_164);
+		//	e107::getLog()->add('USET_08', $lan, E_LOG_INFORMATIVE);
+		//	$mes->addSuccess($lan);
+			$mes->addWarning("You are about to make User #<b>".$sysuser->getId()."</b> : <b>".$sysuser->getName()."</b> (".$sysuser->getValue('email').") an <b>administrator</b>."); ///TODO LAN
+			$mes->addWarning("Set the permissions and click <b>Update</b> to proceed or <b>Back</b> to abort.");
+		}
+		
 	}
 	
 	/**
