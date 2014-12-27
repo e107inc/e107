@@ -61,7 +61,7 @@ $NEWS_MENU_TEMPLATE['other']['start']		= "<div id='otherNews' data-interval='fal
 												<div class='carousel-inner'>
 												{SETIMAGE: w=400&h=200&crop=1}"; // set the {NEWSIMAGE} dimensions. 								
 $NEWS_MENU_TEMPLATE['other']['item']		= '<div class="item {ACTIVE}">
-												{NEWSIMAGE=placeholder}
+												{NEWSTHUMBNAIL=placeholder}
               									<h3>{NEWSTITLE}</h3>
               									<p>{NEWSSUMMARY}</p>
               									<p class="text-right"><a class="btn btn-primary btn-othernews" href="{NEWSURL}">'.LAN_READ_MORE.' &raquo;</a></p>
@@ -80,7 +80,7 @@ $NEWS_MENU_TEMPLATE['other']['end']			= "</div></div>";
 $NEWS_MENU_TEMPLATE['other2']['caption'] 	= TD_MENU_L2;
 $NEWS_MENU_TEMPLATE['other2']['start'] 	= "<ul class='media-list unstyled othernews2-block'>{SETIMAGE: w=100&h=100&crop=1}"; // set the {NEWSIMAGE} dimensions. 	
 $NEWS_MENU_TEMPLATE['other2']['item'] 	= "<li class='media'>
-										<span class='media-object pull-left'>{NEWSIMAGE=placeholder}</span> 
+										<span class='media-object pull-left'>{NEWSTHUMBNAIL=placeholder}</span> 
 										<div class='media-body'><h4>{NEWSTITLELINK}</h4>
 										<p class='text-right'><a class='btn btn-primary btn-othernews2' href='{NEWSURL}'>".LAN_READ_MORE." &raquo;</a></p>
 										</div>
