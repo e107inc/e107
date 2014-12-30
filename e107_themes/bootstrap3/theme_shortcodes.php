@@ -42,6 +42,9 @@ class theme_shortcodes extends e_shortcode
 			<li class="dropdown">
 				<a class="dropdown-toggle" href="#" data-toggle="dropdown">Sign In <strong class="caret"></strong></a>
 				<div class="dropdown-menu col-sm-12" style="min-width:250px; padding: 15px; padding-bottom: 0px;">
+				<div class="center" style="display:block;padding:10px">
+					{LM_XUP}
+				<h2 class="signup-divider"><span>OR</span></h2></div>
 				<form method="post" onsubmit="hashLoginPassword(this);return true" action="'.e_REQUEST_HTTP.'" accept-charset="UTF-8">
 				{LM_USERNAME_INPUT}
 				{LM_PASSWORD_INPUT}
