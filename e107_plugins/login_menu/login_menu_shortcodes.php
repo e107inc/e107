@@ -64,6 +64,32 @@ class login_menu_shortcodes extends e_shortcode
 		
 	}
 	
+	// TODO: CHECK IF WE CAN USE SOCIAL MEDIA NOW TO LOGIN
+	function sc_lm_xup()
+	{
+		$pref = e107::getPref('social_login_active');
+			
+		if(!empty($pref))
+		{
+			$text = "";
+			$providers = e107::getPref('social_login'); 
+
+			foreach($providers as $p=>$v)
+			{
+				$p = strtolower($p);
+				if($v['enabled'] == 1)
+				{
+					//TODO: image should be sized depending on the theme location.
+					$text .= "<a href='".e107::getUrl()->create('system/xup/login?provider='.$p.'&back='.base64_encode(e_REQUEST_URL))."'><img class='e-tip' title='Login using your {$p} account' src='".e_IMAGE_ABS."xup/{$p}.png' alt='' /></a>";		
+				}
+				//TODO different icon options. see: http://zocial.smcllns.com/
+			}	
+			
+		//	$text .= "<hr />";
+			return $text;	
+		}	
+	}
+	
 	function sc_lm_username_input($parm='')
 	{
 		$pref = e107::getPref();
