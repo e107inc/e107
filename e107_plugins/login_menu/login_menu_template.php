@@ -64,6 +64,10 @@ if ( ! isset($LOGIN_MENU_FORM))
     $sc_style['LM_IMAGECODE_BOX']['pre'] = "";
     $sc_style['LM_IMAGECODE_BOX']['post'] = "<br />";
 
+    //TODO: CHECK IF WE CAN USE SOCIAL MEDIA NOW TO LOGIN #197
+    $sc_style['LM_XUP']['pre'] = "<div class='center' style='display:block;padding:10px'>";
+    $sc_style['LM_XUP']['post'] = "<h2 class='signup-divider'><span>OR</span></h2></div>";
+
 	$LOGIN_MENU_FORM = "{LM_MESSAGE}";
 
 	if ((varset($pref['password_CHAP'],0) == 2) && ($pref['user_tracking'] == "session"))
@@ -80,6 +84,7 @@ if ( ! isset($LOGIN_MENU_FORM))
 	}
 
 	$LOGIN_MENU_FORM .= "
+	    {LM_XUP}
             {LM_USERNAME_LABEL}<br />
             {LM_USERNAME_INPUT}<br />
             {LM_PASSWORD_LABEL}<br />
@@ -90,7 +95,7 @@ if ( ! isset($LOGIN_MENU_FORM))
             {LM_SIGNUP_LINK}
             {LM_FPW_LINK}
             {LM_RESEND_LINK}
-			{FB_LOGIN_BUTTON} 
+	    {FB_LOGIN_BUTTON} 
     	</div>
 	";
 }
