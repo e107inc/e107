@@ -865,6 +865,7 @@ class e_form
 		$type		= varset($options['type']) ? trim($options['type']) : "date"; // OR  'datetime'
 		$dateFormat = varset($options['format']) ? trim($options['format']) :e107::getPref('inputdate', '%Y-%m-%d');
 		$ampm		= (preg_match("/%l|%I|%p|%P/",$dateFormat)) ? 'true' : 'false';	
+		$value		= null;
 				
 		if($type == 'datetime' && !varset($options['format']))
 		{
@@ -3471,6 +3472,11 @@ class e_form
 		$tp = e107::getParser();
 
 		if(is_string($parms)) parse_str($parms, $parms);
+		
+		if(empty($value) && !empty($parms['default'])) // Allow writeParms to set default value. 
+		{
+			$value = $parms['default'];
+		}
 
 		// Two modes of read-only. 1 = read-only, but only when there is a value, 2 = read-only regardless.
 		if(vartrue($attributes['readonly']) && (vartrue($value) || vartrue($attributes['readonly'])===2)) // quick fix (maybe 'noedit'=>'readonly'?)
@@ -4153,13 +4159,13 @@ class e_form
 				}
 			}
 			
-			if(!is_array($att['writeParms']))
+			if(!empty($att['writeParms']) && !is_array($att['writeParms']))
 			{
 				 parse_str(varset($att['writeParms']), $writeParms);
 			}
 			else
 			{
-				 $writeParms = $att['writeParms'];
+				 $writeParms = varset($att['writeParms']);
 			}
 			
 			
@@ -4217,7 +4223,7 @@ class e_form
 				$leftCell = $required."<span{$required_class}>".defset(vartrue($att['title']), vartrue($att['title']))."</span>".$label;
 				$rightCell = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()), $model->getId())." {$help}";
 				 
-				if(vartrue($att['type']) == 'bbarea' || $writeParms['nolabel'] == true)
+				if(vartrue($att['type']) == 'bbarea' || varset($writeParms['nolabel']) == true)
 				{
 					$text .= "
 					<tr><td colspan='2'>";
@@ -4368,7 +4374,7 @@ class e_form
 					<tbody>
 		";
 		*/
-		
+		$text = '';
 		
 		// required fields - model definition
 		$model_required = $model->getValidationRules();
