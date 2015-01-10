@@ -36,19 +36,20 @@ class e107plugin
 		'e_meta',
 		'e_emailprint',
 		'e_frontpage',
-		'e_latest',
-		'e_status',
+		'e_latest', // @TODO Move inside e_dashboard as latest()
+		'e_status', // @TODO Move inside e_dashboard as status()
 		'e_search',
 		'e_shortcode',
 		'e_module',
 		'e_event',
 		'e_comment',
 		'e_sql',
+		'e_dashboard', // Admin Front-Page addon. 
 	//	'e_userprofile', @deprecated @see e_user
 		'e_header',
 	//	'e_userinfo', @deprecated @see e_user
 		'e_tagwords',
-		'e_url',
+		'e_url', // simple mod-rewrite. 
 		
 		'e_mailout',
 		'e_sitelink',
