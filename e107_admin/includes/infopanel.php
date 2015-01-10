@@ -338,31 +338,29 @@ class adminstyle_infopanel
 		  </div>
 		 */
 		
+		$tab = array();
+		$tab['e-stats'] = array('caption'=>$tp->toGlyph('fa-signal').' Stats', 'text'=>$this->renderChart());
+		$tab['e-online'] = array('caption'=>$tp->toGlyph('fa-user').' Online ('.$this->renderOnlineUsers('count').')', 'text'=>$this->renderOnlineUsers());
 		
-		
-		$dashboard = '
-		  <ul class="nav nav-tabs">
-		    <li class="active"><a href="#tab1" data-toggle="tab">'.$tp->toGlyph('fa-signal').' Stats</a></li>
-		    <li ><a href="#tab2" data-toggle="tab">'.$tp->toGlyph('fa-user').' Online ('.$this->renderOnlineUsers('count').')</a></li>
-		  </ul>
-		  
-		  <div class="tab-content" style="min-height:300px">
-		
-			<div class="tab-pane active" id="tab1">
-		      <div class="separator">
-			'.$this->renderChart().'		
-		      </div>		
-		    </div>
-		
-		    <div class="tab-pane" id="tab2">
-		      <div class="separator">
-		        '.$this->renderOnlineUsers().'
-		      </div>
-			</div>
-			
-		  </div>';	
 
-		return $dashboard;
+
+		if($plugs = e107::getAddonConfig('e_dashboard',null, 'chart'))
+		{
+			foreach($plugs as $plug => $val)
+			{
+				foreach($val as $item)
+				{
+					if(!empty($item))
+					{
+						$tab[] = $item;	
+					}	
+				}			
+			}
+		}
+
+		return e107::getForm()->tabs($tab);
+		
+
 	}
 
 
