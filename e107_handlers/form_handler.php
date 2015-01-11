@@ -2202,7 +2202,7 @@ class e_form
 	function name2id($name)
 	{
 		$name = strtolower($name);
-		return rtrim(str_replace(array('[]', '[', ']', '_', '/', ' ','.'), array('-', '-', '', '-', '-', '-', '-'), $name), '-');
+		return rtrim(str_replace(array('[]', '[', ']', '_', '/', ' ','.', '(', ')'), array('-', '-', '', '-', '-', '-', '-','',''), $name), '-');
 	}
 
 	/**

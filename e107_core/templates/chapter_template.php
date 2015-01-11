@@ -14,7 +14,7 @@
 
  
 $CHAPTER_TEMPLATE['default']['listPages']['caption']				= "{CHAPTER_NAME}";
-$CHAPTER_TEMPLATE['default']['listPages']['start'] 					= "<ul class='page-pages-list'>";
+$CHAPTER_TEMPLATE['default']['listPages']['start'] 					= "{CHAPTER_BREADCRUMB}<ul class='page-pages-list'>";
 $CHAPTER_TEMPLATE['default']['listPages']['item'] 					= "<li><a href='{CPAGEURL}'>{CPAGETITLE}</a></li>";
 $CHAPTER_TEMPLATE['default']['listPages']['end'] 					= "</ul>";	
 

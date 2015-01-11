@@ -34,6 +34,7 @@ if(!e_QUERY)
 	{
 		$ns->tablerender($tmp['title'], $text, 'cpage-full-list');
 	}*/
+	
 	require_once(FOOTERF);
 	exit;
 }
@@ -461,7 +462,7 @@ class pageClass
 					'CHAPTER_ANCHOR'		=> $frm->name2id($row['chapter_name']),
 					'CHAPTER_ICON'			=> $this->chapterIcon($row['chapter_icon']),
 					'CHAPTER_DESCRIPTION'	=> $tp->toHtml($row['chapter_meta_description'], true,'BODY'),
-					'CHAPTER_BREADCRUMB'	=> $frm->breadcrumb($bread)
+					'CHAPTER_BREADCRUMB'	=> !empty($_GET['ch']) ? $frm->breadcrumb($bread) : ''
 		);		
 	
 		
