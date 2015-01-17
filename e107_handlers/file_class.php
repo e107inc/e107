@@ -823,6 +823,7 @@ class e_file
 		$DOWNLOADS_DIRECTORY 	= ($DOWNLOADS_DIR[0] == DIRECTORY_SEPARATOR) ? $DOWNLOADS_DIR : e_BASE.$DOWNLOADS_DIR; // support for full path eg. /home/account/folder. 
 		$FILES_DIRECTORY 		= e_BASE.e107::getFolder('FILES');
 		$MEDIA_DIRECTORY		= realpath(e_MEDIA); //  could be image, file or other type. 
+		$SYSTEM_DIRECTORY		= realpath(e_SYSTEM); // downloading of logs etc. via browser if required. (Admin-only)
 		
 		$file = $tp->replaceConstants($file);
 		
@@ -840,14 +841,20 @@ class e_file
 		$path_downloads = realpath($DOWNLOADS_DIRECTORY);
 		$path_public = realpath($FILES_DIRECTORY."public/");
 		
+		if(strstr($path, $SYSTEM_DIRECTORY) && !ADMIN)
+		{
+			header("location: {$e107->base_path}");
+			exit();
+		}
 		
-		
-		if(!strstr($path, $path_downloads) && !strstr($path,$path_public) && !strstr($path, $MEDIA_DIRECTORY)) 
+		if(!strstr($path, $path_downloads) && !strstr($path,$path_public) && !strstr($path, $MEDIA_DIRECTORY) && !strstr($path, $SYSTEM_DIRECTORY)) 
 		{
 	        if(E107_DEBUG_LEVEL > 0 && ADMIN)
 			{
 				echo "Failed to Download <b>".$file."</b><br />";
-				echo "The file-path <b>".$path."<b> didn't match with either <b>{$path_downloads}</b> or <b>{$path_public}</b><br />";
+				echo "The file-path <b>".$path."<b> didn't match with either of 
+				<ul><li><b>{$path_downloads}</b></li>
+				<li><b>{$path_public}</b></li></ul><br />";
 				echo "Downloads Path: ".$path_downloads. " (".$DOWNLOADS_DIRECTORY.")";
 				exit();
 	        }
