@@ -2730,11 +2730,14 @@ class e_form
 	private function renderInline($dbField, $pid, $fieldName, $curVal, $linkText, $type='text', $array=null)
 	{
 		$jsonArray = array();
-		foreach($array as $k=>$v)
+				
+		if(!empty($array))
 		{
-			$jsonArray[$k] = str_replace("'", "`", $v);	
+			foreach($array as $k=>$v)
+			{
+				$jsonArray[$k] = str_replace("'", "`", $v);	
+			}
 		}
-		
 		$source = str_replace('"',"'",json_encode($jsonArray, JSON_FORCE_OBJECT)); // SecretR - force object, fix number of bugs
 		
 		
