@@ -5291,6 +5291,8 @@ class e_admin_form_ui extends e_form
 
 		// if going through confirm screen - no JS confirm
 		$controller->setFieldAttr('options', 'noConfirm', $controller->deleteConfirmScreen);
+		
+		$this->listTotal = $tree[$id]->getTotal();
 
 		$options[$id] = array(
 			'id' => $this->getElementId(), // unique string used for building element ids, REQUIRED
@@ -5569,6 +5571,9 @@ class e_admin_form_ui extends e_form
 		// $allow_copy = TRUE;
 		
 		$fields = $this->getController()->getFields();
+		
+	
+		
 		if(!varset($fields['checkboxes']))
 		{
 			$mes = e107::getMessage();
@@ -5586,22 +5591,25 @@ class e_admin_form_ui extends e_form
 		// XXX Quick Fix for styling - correct. 
 		$text = "
 			<div class='navbar navbar-inner left' style='padding-left:15px; padding-top:8px; margin-top:-20px;border-top:0px'>
-				<div class='input-append'>
-         		<img src='".e_IMAGE_ABS."generic/branchbottom.gif' alt='' class='icon action' style='padding-top:5px' />
-				".$this->select_open('etrigger_batch', array('class' => 'tbox select batch e-autosubmit reset', 'id' => false))."
-					".$this->option(LAN_BATCH_LABEL_SELECTED, '', false)."
-					".($allow_copy ? $this->option(LAN_COPY, 'copy', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."					
-					".($allow_delete ? $this->option(LAN_DELETE, 'delete', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."					
-				    ".($allow_url ? $this->option(LAN_UI_BATCH_CREATELINK, 'url', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."   
-				  	".($allow_featurebox ? $this->option(LAN_PLUGIN_FEATUREBOX_BATCH, 'featurebox', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."   
-			
-					".$this->renderBatchFilter('batch')."
-				".$this->select_close()."
-				".$this->admin_button('e__execute_batch', 'e__execute_batch', 'batch e-hide-if-js', LAN_GO, array('id' => false))."
+				<div class='span6'>
+					<div class='input-append'>
+	         		<img src='".e_IMAGE_ABS."generic/branchbottom.gif' alt='' class='icon action' style='padding-top:5px' />
+						".$this->select_open('etrigger_batch', array('class' => 'tbox select batch e-autosubmit reset', 'id' => false))."
+						".$this->option(LAN_BATCH_LABEL_SELECTED, '', false)."
+						".($allow_copy ? $this->option(LAN_COPY, 'copy', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."					
+						".($allow_delete ? $this->option(LAN_DELETE, 'delete', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."					
+					    ".($allow_url ? $this->option(LAN_UI_BATCH_CREATELINK, 'url', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."   
+					  	".($allow_featurebox ? $this->option(LAN_PLUGIN_FEATUREBOX_BATCH, 'featurebox', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."   
+				
+						".$this->renderBatchFilter('batch')."
+					".$this->select_close()."
+					".$this->admin_button('e__execute_batch', 'e__execute_batch', 'batch e-hide-if-js', LAN_GO, array('id' => false))."
+					</div>
 				</div>
+				<div class='span6 right' style='padding-top:5px'><span>".e107::getParser()->lanVars(LAN_UI_TOTAL_RECORDS,number_format($this->listTotal))."</span></div>
 			</div>
 		";
-
+	
 		return $text;
 	}
 
