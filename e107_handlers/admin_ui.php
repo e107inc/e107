@@ -3594,15 +3594,30 @@ class e_admin_controller_ui extends e_admin_controller
 					
 					
 					
-					default:
+					default: // string usually. 
 						
 						if($this->fields[$filterField]['type'] == 'method') // More flexible filtering. 
 						{
-							$searchQry[] = $this->fields[$filterField]['__tableField']." LIKE \"%".$tp->toDB($filterValue)."%\"";	
+							if($filterValue == '_ISEMPTY_')
+							{
+								$searchQry[] = $this->fields[$filterField]['__tableField']." = '' ";
+							}
+							else 
+							{
+								$searchQry[] = $this->fields[$filterField]['__tableField']." LIKE \"%".$tp->toDB($filterValue)."%\"";		
+							}
+							
 						}
 						else 
 						{
-							$searchQry[] = $this->fields[$filterField]['__tableField']." = '".$tp->toDB($filterValue)."'";	
+							if($filterValue == '_ISEMPTY_')
+							{
+								$searchQry[] = $this->fields[$filterField]['__tableField']." = '' ";
+							}
+							else 
+							{
+								$searchQry[] = $this->fields[$filterField]['__tableField']." = '".$tp->toDB($filterValue)."'";	
+							}
 						}
 						
 						//exit;
@@ -3654,6 +3669,7 @@ class e_admin_controller_ui extends e_admin_controller
 					}
 					continue;
 				}
+							
 				$filter[] = $var['__tableField']." LIKE '%".$searchQuery."%'";
 				if($isfilter)
 				{
