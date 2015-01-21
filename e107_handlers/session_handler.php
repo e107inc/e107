@@ -499,6 +499,15 @@ class e_session
 	{
 		return session_id();
 	}
+	
+	/**
+	 * Retrieve current session save method. 
+	 * @return string
+	 */
+	public function getSaveMethod()
+	{
+		return $this->_sessionSaveMethod;	
+	}
 
 	/**
 	 * Set new session name
