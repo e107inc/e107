@@ -2745,7 +2745,7 @@ class e_form
 		
 		$text = "<a class='e-tip e-editable editable-click' data-name='".$dbField."' ";
 		$text .= (is_array($array)) ? "data-source=\"".$source."\"  " : "";
-		$text .= " title=\"".LAN_EDIT." ".$fieldName."\" data-type='".$type."' data-value=\"{$curVal}\" data-pk='".$pid."' data-url='".e_SELF."?mode={$mode}&amp;action=inline&amp;id={$pid}&amp;ajax_used=1' href='#'>".$linkText."</a>";	
+		$text .= " title=\"".LAN_EDIT." ".$fieldName."\" data-type='".$type."' data-inputclass='x-editable-".$this->name2id($dbField)."' data-value=\"{$curVal}\" data-pk='".$pid."' data-url='".e_SELF."?mode={$mode}&amp;action=inline&amp;id={$pid}&amp;ajax_used=1' href='#'>".$linkText."</a>";	
 		
 		return $text;	
 	}
@@ -3297,12 +3297,21 @@ class e_form
 
 				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
 				{
+					if(isset($parms['false'])) // custom representation for 'false'. (supports font-awesome when set by css)
+					{
+						$false = $parms['false'];	
+					}
+					else
+					{	
+						$false = ($value === '') ? "&square;" : "&cross;";		
+					}
 					
-					$false = ($value === '') ? "&square;" : "&cross;";		
+					$true = varset($parms['true'],'&check;'); // custom representation for 'true'. (supports font-awesome when set by css)
+					
 					
 					$value = intval($value);
 							
-					$wparms = (vartrue($parms['reverse'])) ? array(0=>'&check;', 1=>$false) : array(0=>$false, 1=>'&check;'); //TODO LAN
+					$wparms = (vartrue($parms['reverse'])) ? array(0=>$true, 1=>$false) : array(0=>$false, 1=>$true); 
 					$dispValue = $wparms[$value];
 
 					return $this->renderInline($field, $id, $attributes['title'], $value, $dispValue, 'select', $wparms);
