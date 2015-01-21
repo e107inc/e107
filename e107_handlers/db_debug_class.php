@@ -537,7 +537,7 @@ class e107_db_debug {
 			}
 		}
 				
-			
+		$sess = e107::getSession();
 					
 		$text .= "
 			
@@ -553,6 +553,21 @@ class e107_db_debug {
 			<tr>
 				<td class='fcaption' colspan='2'><h2>Session</h2></td>
 			</tr>
+			<tr>
+				<td class='forumheader3'>Session lifetime</td>
+				<td class='forumheader3'>".$sess->getOption('lifetime')." seconds</td>
+			</tr>
+			<tr>
+				<td class='forumheader3'>Session domain</td>
+				<td class='forumheader3'>".$sess->getOption('domain')."</td>
+			</tr>
+			<tr>
+				<td class='forumheader3'>Session save method</td>
+				<td class='forumheader3'>".$sess->getSaveMethod()."</td>
+			</tr>
+			
+			
+			
 			<tr>
 				<td class='forumheader3' colspan='2'><pre>".htmlspecialchars(print_r($_SESSION,TRUE))."</pre></td>
 			</tr>
