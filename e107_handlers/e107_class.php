@@ -3311,7 +3311,8 @@ class e107
 			}
 		}
 
-		if (strpos($_SERVER['QUERY_STRING'], ']') && preg_match('#\[(.*?)](.*)#', $_SERVER['QUERY_STRING'], $matches))
+		$eMENUQry = str_replace(array('%5B','%5D'),array('[',']'),$_SERVER['QUERY_STRING']); //FIX for urlencoded QUERY_STRING without breaking the '+' used by debug. 
+		if (strpos($eMENUQry, ']') && preg_match('#\[(.*?)](.*)#', $eMENUQry, $matches))
 		{
 			define('e_MENU', $matches[1]);
 			$e_QUERY = $matches[2];
