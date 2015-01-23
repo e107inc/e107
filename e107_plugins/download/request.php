@@ -122,7 +122,7 @@ if (preg_match("#.*\.[a-z,A-Z]{3,4}#", e_QUERY))
 	$log->addError("Line".__LINE__.": Couldn't find ".e_DOWNLOAD.e_QUERY);
 	$log->toFile('download_requests','Download Requests', true); // Create a log file and add the log messages
 	require_once(HEADERF);
-	$ns->tablerender(LAN_dl_61, "<div style='text-align:center'>".LAN_dl_65."\n<br /><br />\n<a href='javascript:history.back(1)'>".LAN_dl_64."</a></div>");
+	$ns->tablerender(LAN_dl_61, "<div style='text-align:center'>".LAN_dl_65."\n<br /><br />\n<a href='javascript:history.back(1)'>".LAN_BACK."</a></div>");
 	require_once(FOOTERF);
 	exit();
 }
@@ -275,7 +275,7 @@ if ($type == "file")
 	$log->addError("Line".__LINE__.": Couldn't find ".e_DOWNLOAD.e_QUERY);
 	$log->toFile('download_requests','Download Requests', true); // Create a log file and add the log messages
 	require_once(HEADERF);
-	$ns -> tablerender(LAN_dl_61, "<div style='text-align:center'>".LAN_dl_65."<br /><br /><a href='javascript:history.back(1)'>".LAN_dl_64."</a></div>");
+	$ns -> tablerender(LAN_dl_61, "<div style='text-align:center'>".LAN_dl_65."<br /><br /><a href='javascript:history.back(1)'>".LAN_BACK."</a></div>");
 	require_once(FOOTERF);
 	exit();
 }
@@ -324,7 +324,7 @@ else
       $image = $tp->replaceConstants($image);
 			$disp = "<div style='text-align:center'><img src='".$image."' alt='' /></div>";
 		}
-		$disp .= "<br /><div style='text-align:center'><a href='javascript:history.back(1)'>".LAN_dl_64."</a></div>";
+		$disp .= "<br /><div style='text-align:center'><a href='javascript:history.back(1)'>".LAN_BACK."</a></div>";
 		$ns->tablerender($imagecaption, $disp);
 
 		require_once(FOOTERF);
@@ -341,7 +341,7 @@ else
 		else 
 		{
 			require_once(HEADERF);
-			$ns->tablerender(LAN_dl_61, "<div style='text-align:center'>".LAN_dl_65."<br /><br /><a href='javascript:history.back(1)'>".LAN_dl_64."</a></div>");
+			$ns->tablerender(LAN_dl_61, "<div style='text-align:center'>".LAN_dl_65."<br /><br /><a href='javascript:history.back(1)'>".LAN_BACK."</a></div>");
 			require_once(FOOTERF);
 			exit;
 		}

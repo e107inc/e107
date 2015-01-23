@@ -18,7 +18,7 @@ if (!e107::isInstalled('download'))
 	header("location:".e_BASE."index.php");
 }
 
-	e107::lan('download','download'); // Loads e_PLUGIN.'download/languages/'.e_LANGUAGE.'/download.php'
+	e107::lan('download',false, true); // Loads e_PLUGIN.'download/languages/'.e_LANGUAGE.'/English_front.php'
 	
 	require_once(e_PLUGIN.'download/handlers/download_class.php');
 	require_once(e_PLUGIN.'download/handlers/category_class.php');

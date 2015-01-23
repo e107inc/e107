@@ -195,7 +195,7 @@ if(!isset($DOWNLOAD_LIST_TABLE_END))
 		</div>\n";
 }
 // ##### VIEW TABLE -------------------------------------------------------------------------------
-$DL_VIEW_PAGETITLE = PAGE_NAME." / {DOWNLOAD_CATEGORY} / {DOWNLOAD_VIEW_NAME}";
+$DL_VIEW_PAGETITLE = LAN_PLUGIN_DOWNLOAD_NAME." / {DOWNLOAD_CATEGORY} / {DOWNLOAD_VIEW_NAME}";
 
 $DL_VIEW_NEXTPREV = "
 <div style='text-align:center'>
@@ -437,7 +437,7 @@ $DOWNLOAD_WRAPPER['view']['DOWNLOAD_VIEW_AUTHORWEBSITE'] 		= "<td style='width:8
 $DOWNLOAD_WRAPPER['view']['DOWNLOAD_REPORT_LINK'] 				= "<tr><td style='width:20%' colspan='2'>{---}</td></tr>";
 
 
-$DOWNLOAD_TEMPLATE['view']['caption'] = LAN_dl_18;
+$DOWNLOAD_TEMPLATE['view']['caption'] = LAN_PLUGIN_DOWNLOAD_NAME;
 $DOWNLOAD_TEMPLATE['view']['start'] = " ";
 
 $DOWNLOAD_TEMPLATE['view']['item'] = "
