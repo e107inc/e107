@@ -14,9 +14,10 @@
  * $Author$
  */
 
- // SUBJECT OF REMOVAL
- 
-require_once ("../../class2.php");
+if (!defined('e107_INIT'))
+{
+	require_once("../../class2.php");
+}
 
 if(file_exists(e_PLUGIN."faqs/controllers/list.php"))
 {
