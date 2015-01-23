@@ -2,11 +2,11 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2015 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * Chatbox plugin - Status
+ * Chatbox plugin - Dashboard (Status)
  *
 */
 
@@ -20,9 +20,16 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-class chatbox_menu_status // include plugin-folder in the name.
+class chatbox_menu_dashboard // include plugin-folder in the name.
 {
-	function config()
+	function chart()
+	{
+		return false;
+	}
+	
+	
+	
+	function status()
 	{
 		$sql = e107::getDb();
 		$chatbox_posts = $sql->count('chatbox');
@@ -31,7 +38,7 @@ class chatbox_menu_status // include plugin-folder in the name.
 		$var[0]['title'] 	= ADLAN_115;
 		$var[0]['url']		= e_PLUGIN."chatbox_menu/admin_chatbox.php";
 		$var[0]['total'] 	= $chatbox_posts;
-
+echo "BLA";
 		return $var;
 	}	
 }
