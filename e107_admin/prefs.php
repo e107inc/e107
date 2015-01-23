@@ -1469,6 +1469,27 @@ $social_logins = array (
 			"AOL"  => array ( 
 				"enabled" => true 
 			),
+			
+			"Facebook" => array ( 
+				"enabled" => true,
+				"keys"    => array ( "id" => "", "secret" => "" ),
+				"trustForwarded" => false,
+				// A comma-separated list of permissions you want to request from the user. See the Facebook docs for a full list of available permissions: http://developers.facebook.com/docs/reference/api/permissions.
+				"scope"   => "", 
+
+				// The display context to show the authentication page. Options are: page, popup, iframe, touch and wap. Read the Facebook docs for more details: http://developers.facebook.com/docs/reference/dialogs#display. Default: page
+				"display" => "" 
+			),
+			
+			"Foursquare" => array (
+				"enabled" => true,
+				"keys"    => array ( "id" => "", "secret" => "" ) 
+			),
+			
+			"Github" => array ( 
+				"enabled" => true,
+				"keys"    => array ( "key" => "", "secret" => "" ) 
+			),
 
 			"Google" => array ( 
 				"enabled" => true,
@@ -1476,42 +1497,36 @@ $social_logins = array (
 				"scope"   => ""
 			),
 
-			"Facebook" => array ( 
+			"LinkedIn" => array ( 
 				"enabled" => true,
-				"keys"    => array ( "id" => "", "secret" => "" ),
-
-				// A comma-separated list of permissions you want to request from the user. See the Facebook docs for a full list of available permissions: http://developers.facebook.com/docs/reference/api/permissions.
-				"scope"   => "", 
-
-				// The display context to show the authentication page. Options are: page, popup, iframe, touch and wap. Read the Facebook docs for more details: http://developers.facebook.com/docs/reference/dialogs#display. Default: page
-				"display" => "" 
+				"keys"    => array ( "key" => "", "secret" => "" ) 
 			),
+			
+				// windows live
+			"Live" => array ( 
+				"enabled" => true,
+				"keys"    => array ( "id" => "", "secret" => "" ) 
+			),
+			
+			
+			"MySpace" => array ( 
+				"enabled" => true,
+				"keys"    => array ( "key" => "", "secret" => "" ) 
+			),
+			
 
 			"Twitter" => array ( 
 				"enabled" => true,
 				"keys"    => array ( "key" => "", "secret" => "" ) 
 			),
+			
+		
 
-			// windows live
-			"Live" => array ( 
-				"enabled" => true,
-				"keys"    => array ( "id" => "", "secret" => "" ) 
-			),
+		
 
-			"MySpace" => array ( 
-				"enabled" => true,
-				"keys"    => array ( "key" => "", "secret" => "" ) 
-			),
+		
 
-			"LinkedIn" => array ( 
-				"enabled" => true,
-				"keys"    => array ( "key" => "", "secret" => "" ) 
-			),
-
-			"Foursquare" => array (
-				"enabled" => true,
-				"keys"    => array ( "id" => "", "secret" => "" ) 
-			)
+		
 		);
  
  
@@ -1523,7 +1538,8 @@ $social_external = array(
 			"Google"		=> "https://code.google.com/apis/console/",
 			"Live"			=> "https://manage.dev.live.com/ApplicationOverview.aspx",
 			"LinkedIn"		=> "https://www.linkedin.com/secure/developer",
-			"Foursquare"	=> "https://www.foursquare.com/oauth/"
+			"Foursquare"	=> "https://www.foursquare.com/oauth/",
+			"Github"		=> "https://github.com/settings/applications/new",
 ); 
  
  
