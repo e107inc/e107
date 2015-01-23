@@ -672,7 +672,7 @@ function multilang_prefs()
 					</tr>";
 					
 					
-					if(isset($_SERVER['E_DEV_LANGUAGE']) &&  $_SERVER['E_DEV_LANGUAGE'] === 'true') 
+				//	if(isset($_SERVER['E_DEV_LANGUAGE']) &&  $_SERVER['E_DEV_LANGUAGE'] === 'true') 
 					{
 					
 						$text .= "	
@@ -1071,7 +1071,7 @@ function show_tools()
 	
 	show_packs();
 	
-	if(vartrue($_SERVER['E_DEV']))
+	if(!vartrue($_SERVER['E_DEV']))
 	{
 		return; 
 	}
@@ -1668,8 +1668,8 @@ function unused($lanfile,$script,$reverse=false)
 		
 
 	
-	
-
+//	print_a($compare);
+//	print_a($lanDefines);
 
 	if(!$compare)
 	{

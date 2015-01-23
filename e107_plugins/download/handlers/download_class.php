@@ -208,7 +208,7 @@ class download
 
 		if ($dlcat->down_count == 0)
 	   	{
-			return $ns->tablerender(LAN_dl_18, "<div style='text-align:center'>".LAN_dl_2."</div>",'download-categories',true);
+			return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, "<div style='text-align:center'>".LAN_dl_2."</div>",'download-categories',true);
 		}
 				
 		$download_cat_table_string = "";
@@ -237,7 +237,7 @@ class download
 		$dl_text .= $download_cat_table_string;
 		$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_END, TRUE, $sc);
 	   
-		$caption = varset($DOWNLOAD_CAT_CAPTION) ? $tp->parseTemplate($DOWNLOAD_CAT_CAPTION, TRUE, $sc) : LAN_dl_18;
+		$caption = varset($DOWNLOAD_CAT_CAPTION) ? $tp->parseTemplate($DOWNLOAD_CAT_CAPTION, TRUE, $sc) : LAN_PLUGIN_DOWNLOAD_NAME;
 		
 		//ob_start();
 		
@@ -321,7 +321,7 @@ class download
 		if(!$sql->gen($query))
 		{
 			//require_once(HEADERF);
-			return $ns->tablerender(LAN_dl_18, "<div style='text-align:center'>".LAN_dl_3."</div>", 'download-view', true);
+			return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, "<div style='text-align:center'>".LAN_dl_3."</div>", 'download-view', true);
 			//require_once(FOOTERF);
 			//exit;
 		}
@@ -336,7 +336,7 @@ class download
 		
 	    if(!isset($DL_VIEW_PAGETITLE))
 		{
-	    	$DL_VIEW_PAGETITLE = PAGE_NAME." / {DOWNLOAD_CATEGORY} / {DOWNLOAD_VIEW_NAME}";
+	    	$DL_VIEW_PAGETITLE = LAN_PLUGIN_DOWNLOAD_NAME." / {DOWNLOAD_CATEGORY} / {DOWNLOAD_VIEW_NAME}";
 		}
 	
 	    $DL_TITLE = $tp->parseTemplate($DL_VIEW_PAGETITLE, TRUE, $sc);
@@ -465,12 +465,12 @@ class download
 		   
 		   $this->qry['name'] = $dlrow['download_category_sef'];
 		   
-	   	   define("e_PAGETITLE", PAGE_NAME." / ".$dlrow['download_category_name']);
+	   	   define("e_PAGETITLE", LAN_PLUGIN_DOWNLOAD_NAME." / ".$dlrow['download_category_name']);
 		}
 		else
 		{  // No access to this category
-	   	   define("e_PAGETITLE", PAGE_NAME);
-	   	   return $ns->tablerender(LAN_dl_18, "<div class='alert alert-info' style='text-align:center'>".LAN_dl_3."</div>",'download-list',true);
+	   	   define("e_PAGETITLE", LAN_PLUGIN_DOWNLOAD_NAME);
+	   	   return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, "<div class='alert alert-info' style='text-align:center'>".LAN_dl_3."</div>",'download-list',true);
 		}
 		
 		if ($dlrow['download_category_parent'] == 0)  // It's a main category - change the listing type required
@@ -541,7 +541,7 @@ class download
 		{
 	
 			
-			$ns->tablerender(LAN_dl_18, "
+			$ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, "
 			<div style='text-align:center'>
 				" . LAN_dl_3 . "
 			</div>");
@@ -605,7 +605,7 @@ class download
 
 			$dl_text .= $tp->parseTemplate($this->templateFooter, TRUE, $sc);
 			
-			$text .= $ns->tablerender(LAN_dl_18, $dl_text, 'download-list', true);
+			$text .= $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, $dl_text, 'download-list', true);
 		}
 
 		if(!isset($DOWNLOAD_LIST_NEXTPREV))
@@ -697,21 +697,21 @@ class download
 	
 			$sql->insert('generic', "0, 'Broken Download', ".time().",'".USERID."', '{$download_name}', {$id}, '{$report_add}'");
 	
-			define("e_PAGETITLE", PAGE_NAME." / ".LAN_dl_47);
+			define("e_PAGETITLE", LAN_PLUGIN_DOWNLOAD_NAME." / ".LAN_dl_47);
 			
 	
 			$text = LAN_dl_48."<br /><br /><a href='".e_PLUGIN."download/download.php?action=view&id=".$download_id."'>".LAN_dl_49."</a>";
 
 	   
-			return $ns->tablerender(LAN_dl_18, $text, 'download-report', true);
+			return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, $text, 'download-report', true);
 		}
 		else 
 		{
-			define("e_PAGETITLE", PAGE_NAME." / ".LAN_dl_51." ".$download_name);
+			define("e_PAGETITLE", LAN_PLUGIN_DOWNLOAD_NAME." / ".LAN_dl_51." ".$download_name);
 		//	require_once(HEADERF);
 		
 			$breadcrumb 	= array();
-			$breadcrumb[]	= array('text' => LAN_dl_18,						'url' => e_SELF);
+			$breadcrumb[]	= array('text' => LAN_PLUGIN_DOWNLOAD_NAME,						'url' => e_SELF);
 			$breadcrumb[]	= array('text' => $dlrow['download_category_name'],	'url' => e_SELF."?action=list&id=".$dlrow['download_category_id']);
 			$breadcrumb[]	= array('text' => $dlrow['download_name'],			'url' => e_SELF."?action=view&id=".$dlrow['download_id']);
 			$breadcrumb[]	= array('text' => LAN_dl_50,						'url' => null);
@@ -729,7 +729,7 @@ class download
 				</div>
 		   </form>";
 		   	  
-			return $ns->tablerender(LAN_dl_18, $text, 'download-report', true);
+			return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, $text, 'download-report', true);
 		}
 	}
 				
@@ -847,7 +847,7 @@ class download
 			
 			$dl_text .= $tp->parseTemplate($this->templateFooter, TRUE, $sc);
 			
-		   	return $ns->tablerender(LAN_dl_18, $dl_text, 'download-mirror', true);	
+		   	return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, $dl_text, 'download-mirror', true);	
 		
 		
 		}

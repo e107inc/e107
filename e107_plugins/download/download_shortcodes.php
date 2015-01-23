@@ -46,18 +46,18 @@ class download_shortcodes extends e_shortcode
 		switch ($this->qry['action']) 
 		{
 			case 'mirror':
-				$breadcrumb[]	= array('text' => LAN_dl_18,							'url' => $url->create('download/index'));
+				$breadcrumb[]	= array('text' => LAN_PLUGIN_DOWNLOAD_NAME,							'url' => $url->create('download/index'));
 				$breadcrumb[]	= array('text' => $this->var['download_category_name'],	'url' => $url->create('download/list/category', array('id'=>$this->var['download_category_id'],'name'=>$this->var['download_category_sef']))); // e_SELF."?action=list&id=".$this->var['download_category_id']);
 				$breadcrumb[]	= array('text' => $this->var['download_name'],			'url' => $url->create('download/view/item', array('id'=>$this->var['download_id'], 'name'=>$this->var['download_sef']))); //  e_SELF."?action=view&id=".$this->var['download_id']);
 				$breadcrumb[]	= array('text' => LAN_dl_67,							'url' => null);
 			break;
 			
 			case 'maincats':
-				$breadcrumb[]	= array('text' => LAN_dl_18,							'url' => $url->create('download/index'));
+				$breadcrumb[]	= array('text' => LAN_PLUGIN_DOWNLOAD_NAME,							'url' => $url->create('download/index'));
 			break;
 			
 			default:
-				$breadcrumb[]	= array('text' => LAN_dl_18,							'url' => $url->create('download/index'));
+				$breadcrumb[]	= array('text' => LAN_PLUGIN_DOWNLOAD_NAME,							'url' => $url->create('download/index'));
 				$breadcrumb[]	= array('text' => $this->var['download_category_name'],	'url' => ($this->var['download_category_id']) ? $url->create('download/list/category', array('id'=>$this->var['download_category_id'],'name'=>$this->var['download_category_sef'])) : null);
 				$breadcrumb[]	= array('text' => $this->var['download_name'],			'url' => null);
 			break;

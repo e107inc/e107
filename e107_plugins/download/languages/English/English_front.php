@@ -5,7 +5,6 @@
  * Language file - download plugin
  *
 */
-define("PAGE_NAME", "Downloads"); //FIXME use term from English_global.php
 
 define("LAN_dl_1", "(Restricted)");
 define("LAN_dl_2", "No downloads yet, please check back soon");
@@ -24,7 +23,7 @@ define("LAN_dl_14", "Rate this download");
 define("LAN_dl_15", "Thanks for rating");
 define("LAN_dl_16", "download(s) from");
 define("LAN_dl_17", "files");
-define("LAN_dl_18", "Downloads");	//FIXME use term from English_global.php
+// define("LAN_dl_18", "Downloads");	
 define("LAN_dl_19", "Category"); //FIXME Use Generic
 define("LAN_dl_20", "Files");
 define("LAN_dl_21", "Size");
@@ -33,14 +32,14 @@ define("LAN_dl_23", "Filename");
 define("LAN_dl_24", "Author"); //FIXME Use Generic
 define("LAN_dl_25", "Ascending");
 define("LAN_dl_26", "Descending");
-define("LAN_dl_27", "Go"); //FIXME Use Generic
+// define("LAN_dl_27", "Go");
 define("LAN_dl_28", "Name"); //FIXME Use Generic
 define("LAN_dl_29", "DL's");
 define("LAN_dl_30", "Author email");
 define("LAN_dl_31", "Author website");
 define("LAN_dl_32", "Download");
-define("LAN_dl_33", "Previous");
-define("LAN_dl_34", "Next"); //FIXME Use Generic
+// define("LAN_dl_33", "Previous");
+// define("LAN_dl_34", "Next"); 
 define("LAN_dl_35", "Back to list"); //FIXME Use Generic
 define("LAN_dl_36", "New downloads");
 
@@ -75,7 +74,7 @@ define("LAN_dl_60", "Broken download report from");
 define("LAN_dl_61", "Download Error");
 define("LAN_dl_62", "You have been prevented from downloading this file; you have exceeded your download quota");
 define("LAN_dl_63", "You do not have the correct permissions to download this file.");
-define("LAN_dl_64", "Back");
+// define("LAN_dl_64", "Back");
 define("LAN_dl_65", "File Not Found");
 
 define("LAN_dl_66", "Select download mirror");
