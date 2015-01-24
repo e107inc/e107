@@ -923,6 +923,10 @@ class e_user_provider
 		return null;
 	}
 	
+	/**
+	 * XUP Signup Method (falls-back to XUP login when existing user is detected). 
+	 * May be used as a simple XUP login link for existing and non-existing users.  
+	 */
 	public function signup($redirectUrl = true, $loginAfterSuccess = true, $emailAfterSuccess = true)
 	{
 		if(!e107::getPref('social_login_active', false))
@@ -949,7 +953,12 @@ class e_user_provider
 		
 		if(e107::getUser()->isUser())
 		{
-			throw new Exception( "Signup failed! User already signed in. ", 1); // TODO lan
+			if($redirectUrl)
+			{
+				e107::getRedirect()->redirect($redirectUrl);
+			}
+			return; 
+		//	throw new Exception( "Signup failed! User already signed in. ", 1); // TODO lan
 		}
 		
 		$this->adapter = $this->hybridauth->authenticate($this->getProvider());
@@ -977,15 +986,22 @@ class e_user_provider
 			$userdata['user_xup'] = $sql->escape($this->userId());
 			$userdata['user_class'] = ''; // TODO - check (with Steve) initial class for new users feature...
 			
+	//		print_a($userdata);
+		
+			
 			// user_name, user_xup, user_email and user_loginname shouldn't match
-			if($sql->db_Count("user", "(*)", "user_xup='".$sql->escape($this->userId())."' OR user_email='{$userdata['user_email']}' OR user_loginname='{$userdata['user_loginname']}' OR user_name='{$userdata['user_name']}'"))
+			$insert = (!empty($userdata['user_email'])) ? "OR user_email='".$userdata['user_email']."' " : "";
+			
+			if($sql->count("user", "(*)", "user_xup='".$sql->escape($this->userId())."' ".$insert." OR user_loginname='{$userdata['user_loginname']}' OR user_name='{$userdata['user_name']}'"))
 			{
-				throw new Exception( "Signup failed! User already exists. Please use 'login' instead.", 3); // TODO lan
+				$this->login($redirectUrl); // auto-login
+				return; 
+				// throw new Exception( "Signup failed! User already exists. Please use 'login' instead.", 3); // TODO lan
 			}
 			
-			if(empty($userdata['user_email']))
+			if(empty($userdata['user_email']) && e107::getPref('disable_emailcheck', 0)==0) // Allow it if set-up that way. 
 			{
-				throw new Exception( "Signup failed! Can't access user email - registration without an email is impossible.", 4); // TODO lan
+				throw new Exception( "Signup failed! Can't access user email - registration without an email is impossible.".print_a($userdata,true), 4); // TODO lan
 			}
 			
 			// other fields
@@ -1015,7 +1031,7 @@ class e_user_provider
 			{
 				throw new Exception($user->renderMessages(), 5); 
 			}
-			
+
 			### Successful signup!
 			
 			// FIXME documentation of new signup trigger - usersupprov
@@ -1039,6 +1055,8 @@ class e_user_provider
 			{
 				e107::getUser()->loginProvider($this->userId()); // if not proper after-login, return true so user can see login screen
 			}
+			
+			
 			
 			if($redirectUrl)
 			{
