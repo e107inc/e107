@@ -95,11 +95,22 @@ class core_system_xup_controller extends eController
 			e107::getUser()->logout();
 		}
 		
-		echo 'Logged in: '.(e107::getUser()->isUser() ? '<span class="label label-success">true</span>' : '<span class="label label-danger">false</span>');
-		
+		$profileData = null;
 		$provider = e107::getUser()->getProvider();
-		if($provider) print_a($provider->getUserProfile());
+		if($provider)
+		{
+			$profileData = $provider->getUserProfile();
+			
+			if(!empty($profileData))
+			{
+				print_a($profileData);	
+			}
 		
+			 
+		}
+		
+		echo 'Logged in: '.(e107::getUser()->isUser() && !empty($profileData) ? '<span class="label label-success">true</span>' : '<span class="label label-danger">false</span>');
+	
 	
 		$testUrl = SITEURL."?route=system/xup/test"; 
 		$providers = e107::getPref('social_login', array());
@@ -109,15 +120,16 @@ class core_system_xup_controller extends eController
 			if($var['enabled'] == 1)
 			{
 				echo '<h3>'.$key.'</h3><ul>';
-				echo '<li><a href="'.e107::getUrl()->create('system/xup/login?provider='.$key.'&back='.base64_encode($testUrl)).'">Test login only with '.$key.'</a></li>';
-				echo '<li><a href="'.e107::getUrl()->create('system/xup/signup?provider='.$key.'&back='.base64_encode($testUrl)).'">Test signup/login with '.$key.'</a></li>';	
+				echo '<li><a class="btn btn-default" href="'.e107::getUrl()->create('system/xup/login?provider='.$key.'&back='.base64_encode($testUrl)).'">Test login only with '.$key.'</a></li>';
+				echo '<li><a class="btn btn-default" href="'.e107::getUrl()->create('system/xup/signup?provider='.$key.'&back='.base64_encode($testUrl)).'">Test signup/login with '.$key.'</a></li>';		
+			
 				echo "</ul>";
 			}
 			
 		//	print_a($var);
 		}
 		
-			echo '<br /><br /><a href="'.e107::getUrl()->create('system/xup/test?lgt').'">Test logout</a>';
+			echo '<br /><br /><a class="btn btn-default" href="'.e107::getUrl()->create('system/xup/test?lgt').'">Test logout</a>';
 		
 		/*
 		echo '<h3>Facebook</h3>';

@@ -996,7 +996,13 @@ class e_user_provider
 			
 			if($sql->count("user", "(*)", "user_xup='".$sql->escape($this->userId())."' ".$insert." OR user_loginname='{$userdata['user_loginname']}' OR user_name='{$userdata['user_name']}'"))
 			{
-				$this->login($redirectUrl); // auto-login
+				// $this->login($redirectUrl); // auto-login
+				e107::getUser()->loginProvider($this->userId());
+				if($redirectUrl) 
+				{
+					e107::getRedirect()->redirect($redirectUrl);
+				}
+				
 				return; 
 				// throw new Exception( "Signup failed! User already exists. Please use 'login' instead.", 3); // TODO lan
 			}
@@ -1057,9 +1063,7 @@ class e_user_provider
 			{
 				e107::getUser()->loginProvider($this->userId()); // if not proper after-login, return true so user can see login screen
 			}
-			
-			
-			
+						
 			if($redirectUrl)
 			{
 				e107::getRedirect()->redirect($redirectUrl);
