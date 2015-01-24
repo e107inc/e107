@@ -342,6 +342,14 @@ class redirection
 	{
 		$url = str_replace("&amp;", "&", $url); // cleanup when using e_QUERY in $url; 
 		
+		if(defset('e_DEBUG') == 'redirect')
+		{
+			$error = debug_backtrace();
+		
+			e107::getLog()->addDebug("URL: ".$url."\nFile: ".$error[1]['file']."\nLine: ".$error[1]['line']."\nClass: ".$error[1]['class']."\nFunction: ".$error[1]['function']."\n\n");
+			e107::getLog()->toFile('redirect.log',true); 
+		}
+		
 		if(session_id())
 		{
 			e107::getSession()->end();
