@@ -861,8 +861,10 @@ class e_user_provider
 		else 
 		{
 			$this->_config = array(
-				"base_url" => e107::getUrl()->create('system/xup/endpoint', array(), array('full' => true)), 
-				"providers" => e107::getPref('social_login', array())	
+				"base_url" 		=> e107::getUrl()->create('system/xup/endpoint', array(), array('full' => true)), 
+				"providers" 	=> e107::getPref('social_login', array()),
+				"debug_mode" 	=> 'error', 
+				"debug_file"	=> e_LOG."hybridAuth.log"	
 			);
 			
 		}

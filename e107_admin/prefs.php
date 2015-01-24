@@ -1542,11 +1542,13 @@ $social_external = array(
 			"Github"		=> "https://github.com/settings/applications/new",
 ); 
  
+$testUrl = SITEURL."?route=system/xup/test"; 
  
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-sociallogin'>
 					<legend>Social Options</legend>
-					<div class='alert alert-warning'>Note: This section requires further testing</div>
+					<div class='alert alert-warning'>Note: This section requires further testing.<br />You may test with the following URL: 
+					<a href='".$testUrl."' rel='external'>".$testUrl."</a></div>
 					<table class='table adminform'>
 						<colgroup>
 							<col class='col-label' />
