@@ -101,7 +101,7 @@ class core_system_xup_controller extends eController
 		if($provider) print_a($provider->getUserProfile());
 		
 	
-		
+		$testUrl = SITEURL."?route=system/xup/test"; 
 		$providers = e107::getPref('social_login', array());
 		
 		foreach($providers as $key=>$var)
@@ -109,8 +109,8 @@ class core_system_xup_controller extends eController
 			if($var['enabled'] == 1)
 			{
 				echo '<h3>'.$key.'</h3><ul>';
-				echo '<li><a href="'.e107::getUrl()->create('system/xup/login?provider='.$key.'&back='.base64_encode(e_REQUEST_URL)).'">Test login only with '.$key.'</a></li>';
-				echo '<li><a href="'.e107::getUrl()->create('system/xup/signup?provider='.$key.'&back='.base64_encode(e_REQUEST_URL)).'">Test signup/login with '.$key.'</a></li>';	
+				echo '<li><a href="'.e107::getUrl()->create('system/xup/login?provider='.$key.'&back='.base64_encode($testUrl)).'">Test login only with '.$key.'</a></li>';
+				echo '<li><a href="'.e107::getUrl()->create('system/xup/signup?provider='.$key.'&back='.base64_encode($testUrl)).'">Test signup/login with '.$key.'</a></li>';	
 				echo "</ul>";
 			}
 			
