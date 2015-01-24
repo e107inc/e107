@@ -1488,7 +1488,7 @@ $social_logins = array (
 			
 			"Github" => array ( 
 				"enabled" => true,
-				"keys"    => array ( "key" => "", "secret" => "" ) 
+				"keys"    => array ( "id" => "", "secret" => "" ) 
 			),
 
 			"Google" => array ( 
@@ -1508,12 +1508,12 @@ $social_logins = array (
 				"keys"    => array ( "id" => "", "secret" => "" ) 
 			),
 			
-			
+			/*
 			"MySpace" => array ( 
 				"enabled" => true,
 				"keys"    => array ( "key" => "", "secret" => "" ) 
 			),
-			
+			*/
 
 			"Twitter" => array ( 
 				"enabled" => true,

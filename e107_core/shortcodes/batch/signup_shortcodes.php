@@ -71,7 +71,19 @@ class signup_shortcodes extends e_shortcode
 				$p = strtolower($p);
 				if($v['enabled'] == 1)
 				{
-					$text .= "<a href='".e107::getUrl()->create('system/xup/login?provider='.$p.'&back='.base64_encode(e_REQUEST_URL))."'><img class='e-tip' title='Register using your {$p} account' src='".e_IMAGE_ABS."xup/{$p}.png' alt='' /></a>";		
+					
+				//		$text .= "<a href='".e107::getUrl()->create('system/xup/login?provider='.$p.'&back='.base64_encode(e_REQUEST_URL))."'><img class='e-tip' title='Register using your {$p} account' src='".e_IMAGE_ABS."xup/{$p}.png' alt='' /></a>";		
+				
+					$ic = strtolower($p);
+					
+					if($ic == 'live')
+					{
+						$ic = 'windows';
+					}
+					
+					// 'signup' Creates a new XUP user if not found, otherwise it logs the person in. 
+					$button = (defset('FONTAWESOME') === 4) ? "<span title='Register using your {$p} account'>".$tp->toGlyph('fa-'.$ic, array('size'=>'3x'))."</span>" : "<img class='e-tip' title='Register using your {$p} account' src='".e_IMAGE_ABS."xup/{$p}.png' alt='' />";			
+					$text .= "&nbsp;<a class='signup-xup' href='".e107::getUrl()->create('system/xup/signup?provider='.$p.'&back='.base64_encode(e_REQUEST_URL))."'>".$button."</a>&nbsp;";		
 				}
 				//TODO different icon options. see: http://zocial.smcllns.com/
 			}	
@@ -85,7 +97,7 @@ class signup_shortcodes extends e_shortcode
 	function sc_signup_xup_signup()
 	{
 		$pref = e107::getPref('social_login_active');
-			
+			$tp = e107::getParser();
 		if(!empty($pref))
 		{
 			$text = "";
@@ -96,7 +108,16 @@ class signup_shortcodes extends e_shortcode
 				$p = strtolower($p);
 				if($v['enabled'] == 1)
 				{
-					$text .= "<a href='".e107::getUrl()->create('system/xup/signup?provider='.$p.'&back='.base64_encode(e_REQUEST_URL))."'><img class='e-tip' title='Register using your {$p} account' src='".e_IMAGE_ABS."xup/{$p}.png' alt='' /></a>";		
+					$ic = strtolower($p);
+					
+					if($ic == 'live')
+					{
+						$ic = 'windows';
+					}
+					
+					$button = (defset('FONTAWESOME') === 4) ? "<span title='Register using your {$p} account'>".$tp->toGlyph('fa-'.$ic, array('size'=>'3x'))."</span>" : "<img class='e-tip' title='Register using your {$p} account' src='".e_IMAGE_ABS."xup/{$p}.png' alt='' />";
+				
+					$text .= "&nbsp;<a class='signup-xup' href='".e107::getUrl()->create('system/xup/signup?provider='.$p.'&back='.base64_encode(e_REQUEST_URL))."'>".$button."</a>&nbsp;";		
 				}
 				//TODO different icon options. see: http://zocial.smcllns.com/
 			}	
