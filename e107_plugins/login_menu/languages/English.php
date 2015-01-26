@@ -16,7 +16,7 @@
 
 define("LOGIN_MENU_L1", "Username: ");
 define("LOGIN_MENU_L2", "Password: ");
-define("LOGIN_MENU_L3", "Signup");
+define("LOGIN_MENU_L3", "Sign up");
 define("LOGIN_MENU_L4", "Forgot password?");
 define("LOGIN_MENU_L5", "Welcome");
 define("LOGIN_MENU_L6", "Remember me");
@@ -74,5 +74,6 @@ define('LOGIN_MENU_L47', 'Login menu - Recent plugin additions');
 define('LOGIN_MENU_L48', 'Menu Config');
 define('LOGIN_MENU_L49', 'Email: ');
 define('LOGIN_MENU_L50', 'Username or Email: '); 
+define("LOGIN_MENU_L51", "Sign In");
 
 ?>

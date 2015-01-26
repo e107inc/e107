@@ -33,8 +33,8 @@ class theme_shortcodes extends e_shortcode
 			if(deftrue('USER_REGISTRATION'))
 			{
 				$text .= '
-				<li><a href="'.e_SIGNUP.'">Sign Up</a></li>
-				';
+				<li><a href="'.e_SIGNUP.'">'.LOGIN_MENU_L3.'</a></li>
+				'; // Signup
 			}
 			
 			$text .= '
@@ -49,10 +49,11 @@ class theme_shortcodes extends e_shortcode
 				{LM_IMAGECODE_BOX}
 				
 				<div class="checkbox">
-				<input style="float: left; margin-right: 10px;" type="checkbox" name="autologin" id="autologin" value="1">
-				<label class="string optional" for="autologin"> Remember me</label>
+				
+				<label class="string optional" for="autologin"><input style="margin-right: 10px;" type="checkbox" name="autologin" id="autologin" value="1">
+				'.LOGIN_MENU_L6.'</label>
 				</div>
-				<input class="btn btn-primary btn-block" type="submit" name="userlogin" id="userlogin" value="Sign In">
+				<input class="btn btn-primary btn-block" type="submit" name="userlogin" id="userlogin" value="'.LOGIN_MENU_L51.'">
 			';
 			
 			$text .= '
