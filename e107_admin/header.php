@@ -67,6 +67,8 @@ function loadJSAddons()
 	e107::css('core', 	'bootstrap-datetimepicker/css/datetimepicker.css', 'jquery');
 	e107::js('core', 	'bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js', 'jquery', 2);
 	
+	e107::js('core',	'jquery.h5validate.min.js','jquery',2);
+	
 	if(e_LAN != 'en')
 	{ 
 		e107::js('inline', buildDateLocale(),'jquery', 2);

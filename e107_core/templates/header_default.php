@@ -32,6 +32,8 @@ e107::css('core',	'bootstrap/css/tooltip.css','jquery');
 e107::js('core',	'bootstrap-notify/js/bootstrap-notify.js','jquery');
 e107::css('core',	'bootstrap-notify/css/bootstrap-notify.css','jquery');
 
+e107::js('core',	'jquery.h5validate.min.js','jquery');
+
 // ------------------
 
 // e107::js('core', 	'jquery.elastic.js', 'jquery', 2);
