@@ -36,7 +36,13 @@ class plugin_download_admin extends e_admin_dispatcher
 					'path' 			=> null,
 					'ui' 			=> 'download_cat_form_ui',
 					'uipath' 		=> null
-		)	
+		),
+		'mirror'	=> array(
+			'controller' 	=> 'download_mirror_ui',
+			'path' 			=> null,
+			'ui' 			=> 'download_mirror_form_ui',
+			'uipath' 		=> null
+		),	
 	);
 
 	/* Both are optional
@@ -52,12 +58,24 @@ class plugin_download_admin extends e_admin_dispatcher
 	protected $adminMenu = array(
 		'main/list'			=> array('caption'=> 'Manage', 'perm' => 'P'),
 		'main/create' 		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
+		
+		'other0' 		=> array('divider'=> true),
+		
 		'cat/list'			=> array('caption'=> LAN_CATEGORIES, 'perm'=>'P'),
 		'cat/create' 		=> array('caption'=> "Create Category", 'perm' => 'Q'),
+		
+		'other1' 		=> array('divider'=> true),
+		
+		'mirror/list'		=> array('caption'=> DOWLAN_128, 'perm' => 'P'),
+		'mirror/create'		=> array('caption'=> DOWLAN_143, 'perm' => 'P'),
+		
+		'other2' 		=> array('divider'=> true),
+			
 		'main/settings' 	=> array('caption'=> LAN_PREFS, 'perm' => 'P'),
 	//	'main/maint' 		=> array('caption'=> DOWLAN_165, 'perm' => 'P'),
 		'main/limits'		=> array('caption'=> DOWLAN_112, 'perm' => 'P'),
-		'main/mirror'		=> array('caption'=> DOWLAN_128, 'perm' => 'P')
+	
+	//	'main/mirror'		=> array('caption'=> DOWLAN_128, 'perm' => 'P')
 	);
 /*
 	$var['main']['text'] = DOWLAN_29;
@@ -2304,3 +2322,62 @@ class download_main_admin_form_ui extends e_admin_form_ui
   		}
 	}
 }
+
+				
+class download_mirror_ui extends e_admin_ui
+{
+			
+		protected $pluginTitle		= 'Downloads';
+		protected $pluginName		= 'download';
+		protected $table			= 'download_mirror';
+		protected $pid				= 'mirror_id';
+		protected $perPage			= 10; 
+		protected $batchDelete		= true;
+	//	protected $batchCopy		= true;		
+	//	protected $sortField		= 'somefield_order';
+	//	protected $orderStep		= 10;
+	//	protected $tabs			= array('Tabl 1','Tab 2'); // Use 'tab'=>0  OR 'tab'=>1 in the $fields below to enable. 
+		
+	//	protected $listQry      	= "SELECT * FROM #tableName WHERE field != '' "; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
+	
+		protected $listOrder		= 'mirror_id DESC';
+	
+		protected $fields 		= array (  'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
+		  'mirror_id' 			=>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'mirror_name' 		=>   array ( 'title' => LAN_TITLE, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'mirror_url' 			=>   array ( 'title' => LAN_URL, 'type' => 'url', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'mirror_image' 		=>   array ( 'title' => LAN_IMAGE, 'type' => 'image', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'mirror_location' 	=>   array ( 'title' => 'Location', 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'mirror_description' 	=>   array ( 'title' => LAN_DESCRIPTION, 'type' => 'bbarea', 'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'mirror_count' 		=>   array ( 'title' => 'Count', 'type' => 'hidden', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'options' 			=>   array ( 'title' => 'Options', 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
+		);		
+		
+		protected $fieldpref = array('mirror_name', 'mirror_url', 'mirror_image', 'mirror_location');
+		
+	
+		public function init()
+		{
+			// Set drop-down values (if any). 
+	
+		}
+	
+	/*	
+		// optional - override edit page. 
+		public function customPage()
+		{
+			$ns = e107::getRender();
+			$text = 'Hello World!';
+			$ns->tablerender('Hello',$text);	
+			
+		}
+	*/
+			
+}
+				
+
+
+class download_mirror_form_ui extends e_admin_form_ui
+{
+
+}		
