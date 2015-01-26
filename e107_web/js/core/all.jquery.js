@@ -11,11 +11,11 @@ $.ajaxSetup({
 
 $(document).ready(function()
 {
-    	 $(".e-hideme").hide();
-    	 $(".e-expandit").show();   	 
+		$(".e-hideme").hide();
+		$(".e-expandit").show();   	
+		$('form').h5Validate(); // allow older browsers to use html5 validation. 
     //	 $(".e-spinner").spinner(); //FIXME breaks tooltips
-    	 
-
+	 
 
     	 
 		 //check all

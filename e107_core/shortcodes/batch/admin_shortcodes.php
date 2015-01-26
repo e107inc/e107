@@ -40,13 +40,13 @@ class admin_shortcodes
             if($parm=='icon')
             {
 				
-				return '<ul class="nav pill">
+				return '<ul class="nav navbar pill navbar-nav">
         			<li class="dropdown">
             		<a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" href="#">
                 	'.E_16_E107.' <b class="caret"></b>
             	</a> 
             	<ul class="dropdown-menu" role="menu">
-                	<li class="nav-header">Update Available</li>
+                	<li class="nav-header navbar-header">Update Available</li>
                     <li><a href="'.$installUrl.'">e107 v'.$cacheData.'</a></li>
 	          	 </ul>
 	        	</li>
@@ -698,13 +698,13 @@ class admin_shortcodes
 		$outboxUrl = e_PLUGIN.'pm/admin_config.php?'.'searchquery=&amp;iframe=1&amp;filter_options=bool__pm_from__'.USERID;
 		$composeUrl = e_PLUGIN.'pm/admin_config.php?'.'mode=main&amp;iframe=1&amp;action=create';
 
-       $text = '<ul class="nav nav-pills">
+       $text = '<ul class="nav navbar-nav nav-pills">
         <li class="dropdown">
             <a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" href="#" >
                 '.$tp->toGlyph('fa-envelope').$countDisp.'<b class="caret"></b>
             </a> 
             <ul class="dropdown-menu" role="menu" >
-                <li class="nav-header">Private Messages</li>
+                <li class="nav-header navbar-header">Private Messages</li>
                     <li><a class="e-modal" data-cache="false" data-modal-caption="Inbox" data-target="#uiModal" href="'.$inboxUrl.'" >Inbox</a></li>
                     <li><a class="e-modal" data-cache="false" data-modal-caption="Outbox" data-target="#uiModal" href="'.$outboxUrl.'">Outbox</a></li>
                     <li><a class="e-modal" data-cache="false" data-modal-caption="Compose" data-target="#uiModal" href="'.$composeUrl.'">Compose</a></li>
@@ -728,7 +728,7 @@ class admin_shortcodes
 			</a> 
 			<div id="dropdown" class="dropdown-menu pull-right e-noclick" style="padding:10px;width:300px">
 				<ul class="nav-list">
-		    		<li class="nav-header">Unread Messages</li>
+		    		<li class="nav-header navbar-header">Unread Messages</li>
 		    		<li><a href="#">Incoming Message Number 1</a></li>
 		      		<li><a href="#">Incoming Message Number 2</a></li>
 		        	<li><a href="#">Incoming Message Number 3</a></li>
