@@ -181,7 +181,7 @@ class adminstyle_infopanel
 		
 		
 			
-				<div class='left' style='padding-bottom:20px'>";
+				<div class='left'>";
 			
 			foreach ($this->iconlist as $key=>$val)
 			{
