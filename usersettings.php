@@ -778,7 +778,7 @@ if (!$error && !$promptPassword)
 
 if ($error)
 {
-	require_once (e_HANDLER.'message_handler.php');
+	// require_once (e_HANDLER.'message_handler.php');
 	$temp = array();
 	if (count($extraErrors))
 	{
@@ -792,7 +792,20 @@ if ($error)
 	{
 		$temp[] = '<br />'.validatorClass::makeErrorList($eufVals,'USER_ERR_','%n - %x - %t: %v', '<br />', NULL);
 	}
-	message_handler('P_ALERT', implode('<br />', $temp));
+	// message_handler('P_ALERT', implode('<br />', $temp));
+	
+	$errorMsg = implode('<br />', $temp);
+		
+	if(deftrue('BOOTSTRAP'))
+	{
+		echo e107::getMessage()->addError($errorMsg)->render();	
+	}
+	else 
+	{
+		$ns->tablerender($caption, $message);
+	}	
+	
+	
 //	$adref = $_POST['adminreturn'];
 }
 

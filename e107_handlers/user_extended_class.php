@@ -114,7 +114,7 @@ class e107_user_extended
 		$this->systemCount = 0;
 		$this->userCount = 0;
 
-		if($sql->db_Select('user_extended_struct', '*', "user_extended_struct_text != '_system_' ORDER BY user_extended_struct_order ASC"))
+		if($sql->select('user_extended_struct', '*', "user_extended_struct_text != '_system_' ORDER BY user_extended_struct_order ASC"))
 		{
 			while($row = $sql->db_Fetch(MYSQL_ASSOC))
 			{
@@ -344,7 +344,7 @@ class e107_user_extended
 	   	$ret = array();
 		$sql = e107::getDb('ue');
 		
-		if($sql->db_Select("user_extended_struct", "*", "user_extended_struct_type = 0 ORDER BY user_extended_struct_order ASC"))
+		if($sql->select("user_extended_struct", "*", "user_extended_struct_type = 0 ORDER BY user_extended_struct_order ASC"))
 		{
 			if($byID == TRUE)
 			{
@@ -600,23 +600,23 @@ class e107_user_extended
 			// field of type category
 			if($field_info)
 			{
-				$sql->db_Select_gen("ALTER TABLE #user_extended MODIFY user_".$tp -> toDB($name, true)." ".$field_info);
+				$sql->gen("ALTER TABLE #user_extended MODIFY user_".$tp -> toDB($name, true)." ".$field_info);
 			}
 			
 			$newfield_info = "
-			user_extended_struct_text = '".$tp -> toDB($text, true)."',
-			user_extended_struct_type = '".intval($type)."',
-			user_extended_struct_parms = '".$tp -> toDB($parms, true)."',
-			user_extended_struct_values = '".$tp -> toDB($values, true)."',
-			user_extended_struct_default = '".$tp -> toDB($default, true)."',
-			user_extended_struct_required = '".intval($required)."',
-			user_extended_struct_read = '".intval($read)."',
-			user_extended_struct_write = '".intval($write)."',
-			user_extended_struct_applicable = '".intval($applicable)."',
-			user_extended_struct_parent = '".intval($parent)."'
-			WHERE user_extended_struct_id = '".intval($id)."'
+				user_extended_struct_text = '".$tp -> toDB($text, true)."',
+				user_extended_struct_type = '".intval($type)."',
+				user_extended_struct_parms = '".$tp -> toDB($parms, true)."',
+				user_extended_struct_values = '".$tp -> toDB($values, true)."',
+				user_extended_struct_default = '".$tp -> toDB($default, true)."',
+				user_extended_struct_required = '".intval($required)."',
+				user_extended_struct_read = '".intval($read)."',
+				user_extended_struct_write = '".intval($write)."',
+				user_extended_struct_applicable = '".intval($applicable)."',
+				user_extended_struct_parent = '".intval($parent)."'
+				WHERE user_extended_struct_id = '".intval($id)."'
 			";
-			return $sql->db_Update("user_extended_struct", $newfield_info);
+			return $sql->update("user_extended_struct", $newfield_info);
 		}
 	}
 
@@ -630,7 +630,7 @@ class e107_user_extended
 		{
 			// FIXME - no table structure changes for categories
 			// but no good way to detect it right now - ignore the sql error for now, fix it asap
-			$sql->db_Select_gen("ALTER TABLE #user_extended DROP user_".$tp -> toDB($name, true));
+			$sql->gen("ALTER TABLE #user_extended DROP user_".$tp -> toDB($name, true));
 			
 			if(is_numeric($id))
 			{
@@ -809,7 +809,7 @@ class e107_user_extended
 				$sql = e107::getDb('ue');
 				$order = ($choices[3]) ? "ORDER BY ".$tp -> toDB($choices[3], true) : "";
 
-				if($sql->db_Select($tp -> toDB($choices[0], true), $tp -> toDB($choices[1], true).",".$tp -> toDB($choices[2], true), "1 $order")){
+				if($sql->select($tp -> toDB($choices[0], true), $tp -> toDB($choices[1], true).",".$tp -> toDB($choices[2], true), "1 $order")){
 					$choiceList = $sql->db_getList('ALL',FALSE);
 					$ret = "<select id='{$fid}' {$include} name='{$fname}' {$required}  >\n";
 					$ret .= "<option value=''>&nbsp;</option>\n";  // ensures that the user chose it.
@@ -1018,7 +1018,7 @@ class e107_user_extended
 		VALUES ({$uid}, {$newvalue})
 		ON DUPLICATE KEY UPDATE {$field_name} = {$newvalue}
 		";
-		return $sql->db_Select_gen($qry);
+		return $sql->gen($qry);
 	}
 
 
