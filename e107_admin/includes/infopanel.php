@@ -181,7 +181,7 @@ class adminstyle_infopanel
 		
 		
 			
-				<div class='left' style='padding:32px'>";
+				<div class='left' style='padding-bottom:20px'>";
 			
 			foreach ($this->iconlist as $key=>$val)
 			{
@@ -584,7 +584,7 @@ class adminstyle_infopanel
 		$frm = e107::getForm();
 		global  $user_pref;
 			
-		$text = "";
+		$text = "<div style='padding-left:20px'>";
         
      
 	
@@ -594,7 +594,7 @@ class adminstyle_infopanel
 			if (getperms($icon['perms']))
 			{
 				$checked = (varset($user_pref['core-infopanel-mye107']) && in_array($key, $user_pref['core-infopanel-mye107'])) ? true : false;
-				$text .= "<div class='left f-left list field-spacer' style='display:block;height:24px;width:200px;'>
+				$text .= "<div class='left f-left list field-spacer checkbox' style='display:block;height:24px;width:200px;'>
 		                        ".$icon['icon'].' '.$frm->checkbox_label($icon['title'], 'e-mye107[]', $key, $checked)."</div>";
 								
 			}
@@ -607,12 +607,12 @@ class adminstyle_infopanel
 				if (getperms($icon['perms']))
 				{
 					$checked = (in_array('p-'.$key, $user_pref['core-infopanel-mye107'])) ? true : false;
-					$text .= "<div class='left f-left list field-spacer' style='display:block;height:24px;width:200px;'>
+					$text .= "<div class='left f-left list field-spacer checkbox' style='display:block;height:24px;width:200px;'>
 			                         ".$icon['icon'].$frm->checkbox_label($icon['title'], 'e-mye107[]', $key, $checked)."</div>";
 				}
 			}
 		}
-		$text .= "<div class='clear'>&nbsp;</div>";
+		$text .= "</div><div class='clear'>&nbsp;</div>";
 		return $text;
 	}
 
@@ -630,7 +630,7 @@ class adminstyle_infopanel
 		$pref = e107::getPref();
 		
 	
-		$text = "";
+		$text = "<div style='padding-left:20px'>";
 		$menu_qry = 'SELECT * FROM #menus WHERE menu_id!= 0  GROUP BY menu_name ORDER BY menu_name';
 		$settings = varset($pref['core-infopanel-menus'],array());
 	
@@ -650,7 +650,7 @@ class adminstyle_infopanel
 			}
 		}
 		
-		$text .= "<div class='clear'>&nbsp;</div>";
+		$text .= "</div><div class='clear'>&nbsp;</div>";
 		return $text;
 	}
 	
