@@ -217,13 +217,29 @@ class e107plugin
 		{
 			return FALSE;
 		}
+		
+		require_once(e_HANDLER."db_verify_class.php");
+		$dbv = new db_verify;
+		
 				
 		foreach($plugVersions as $path=>$version)
 		{
 			$fullPath = e_PLUGIN.$path."/plugin.xml";
 			if(is_file(e_PLUGIN.$path."/plugin.xml"))
-			{
+			{	
 				$data = $xml->loadXMLfile($fullPath, true);
+				
+				if(!in_array($path, $this->core_plugins)) // check non-core plugins for sql file changes. 
+				{
+					$dbv->errors = array();
+					$dbv->compare($path);
+					
+					if($dbv->errors())
+					{
+						$needed[$path] = $data;		
+					}
+				}
+				
 				$curVal = floatval($version);
 				$fileVal = floatval($data['@attributes']['version']);
 				
@@ -1347,8 +1363,12 @@ class e107plugin
 		$error = array(); // Array of error messages
 		$canContinue = TRUE; // Clear flag if must abort part way through
 
-		
-		if(is_array($id))
+		if(is_string($id)) // Plugin Path. 
+		{
+			$id = $this->getId($id); 
+			$plug = $this->getinfo($id); // Get plugin info from DB		
+		}
+		elseif(is_array($id))
 		{
 			$plug = $id;	
 			$id = $plug['plugin_id'];
@@ -1358,7 +1378,7 @@ class e107plugin
 			$id = (int) $id;
 			$plug = $this->getinfo($id); // Get plugin info from DB	
 		}
-		
+				
 		$this->current_plug = $plug;
 		
 		$txt = '';
@@ -1407,6 +1427,7 @@ class e107plugin
 
 		if (!$canContinue)
 		{
+			
 			return FALSE;
 		}
 
@@ -1447,6 +1468,7 @@ class e107plugin
 							$mes->add($txt, $status);
 							break;
 						case 'upgrade':
+		
 							$tmp = $dbHandler->update_table_structure($ct, FALSE, TRUE, $pref['multilanguage']);
 							if ($tmp === FALSE)
 							{
@@ -1456,6 +1478,9 @@ class e107plugin
 							{
 								$error[] = $tmp;
 							}
+							
+								
+						
 							break;
 						case 'refresh': // Leave things alone
 							break;

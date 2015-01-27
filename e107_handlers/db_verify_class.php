@@ -90,7 +90,7 @@ class db_verify
 	 */
 	function verify()
 	{
-					
+		print_a($_POST);			
 		if(vartrue($_POST['verify_table']))
 		{			
 			$this->runComparison($_POST['verify_table']);
@@ -112,7 +112,7 @@ class db_verify
 		
 	function runComparison($fileArray)
 	{
-		
+	
 		$ns = e107::getRender();
 		$mes = e107::getMessage();
 		$frm = e107::getForm();
@@ -366,6 +366,15 @@ class db_verify
 		}
 	
 	}
+
+	/** 
+	 * Returns the number of errors
+	 */
+	public function errors()
+	{
+		return count($this->errors);	
+	}
+
 	
 	
 	function renderResults()
