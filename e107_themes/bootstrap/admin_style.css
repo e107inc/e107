@@ -44,9 +44,11 @@ e-tabs fieldset 			{ padding:0px ; padding-left:3px; border-top:0px;}
 .tab-border 				{ border-left: 1px solid #ddd; }
 .tab-content 				{ overflow: visible }
 
-.core-mainpanel-block 		{ text-align:center; width:110px; float:left; height:48px; display:block; padding:20px 5px 20px 5px; margin: 0px 6px 30px 6px;  }
+.core-mainpanel-block 		{ text-align:center; width:110px; float:left; height:80px; display:block; padding:15px; margin: 0px 2px -15px 2px;  }
 .core-mainpanel-link-text 	{ text-decoration: none; display:block;  }
-
+a.core-mainpanel-link-icon	{ height:80px; display:block; width: 100px; padding-top:20px;  }
+a.core-mainpanel-link-icon:hover { text-decoration: none; filter: none; }
+a.core-mainpanel-link-icon 
 
 div.bbcode-panel {
 	
@@ -965,6 +967,7 @@ li.rssRow > div {
 .media-carousel-item-glyph { width: 64px; height:64px; overflow:hidden; margin-right:5px; margin-bottom:0px }
 
 .media-manager {padding:20px; min-height:400px }
+
 
 
 /*
