@@ -1,5 +1,9 @@
 $(document).ready(function()
 {
+		$('form').h5Validate(
+			{ errorClass: 'has-error' }
+		); // allow older browsers to use html5 validation. 
+	
 		// Change hash when a tab changes
 		$('.nav-tabs a').on('shown', function (event) {
 			var hash = event.target.href.toString().split('#')[1], form = $(event.target).parents('form')[0];
