@@ -2883,7 +2883,7 @@ class e_parser
 			else
 			{
 				$log = e107::getAdminLog();
-				$log->addDebug('Broken Icon Path: '.$legacyPath, false)->save('IMALAN_00');
+				$log->addDebug('Broken Icon Path: '.$legacyPath."\n".print_r(debug_backtrace(null,2), true), false)->save('IMALAN_00');
 			}
 			
 		}

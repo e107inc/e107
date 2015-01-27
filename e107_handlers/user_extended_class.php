@@ -25,7 +25,7 @@ if (!defined('e107_INIT')) { exit; }
  *	@todo: - change some routines to access the cached variables rather than DB
  *	@todo: Remove setting up of _FIELD_TYPES array (may be necessary, since UEF data structure not fixed)
  *	@todo: Consider changing field type constants to class constants
- *	@todo - cache field structure (already done in a different way in get_user_data() in class2.php line 1387 or so)
+ *	@todo - cache field structure (already done in a different way in e107::user() in class2.php line 1387 or so)
  *	@todo - class variables - confirm whether public/protected assignments are correct
  *	@todo - consider whether to split system and non-system fields
 
@@ -1036,7 +1036,7 @@ class e107_user_extended
 		{
 			$field_name = 'user_'.$field_name;
 		}
-		$uinfo = get_user_data($uid);
+		$uinfo = e107::user($uid);
 		if (!isset($uinfo[$field_name])) return $ifnotset;
 		return $uinfo[$field_name];
 	}

@@ -137,7 +137,7 @@ elseif ($action == 'forums')
 
 	/*if(is_numeric($id))
 	{
-		$uinfo = get_user_data($id);
+		$uinfo = e107::user($id);
 		$fcaption = UP_LAN_0.' '.$uinfo['user_name'];
 	}
 	else

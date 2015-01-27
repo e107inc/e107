@@ -33,7 +33,7 @@ if($uid == 0)
 	}
 }
 
-$udata = get_user_data($uid);
+$udata = e107::user($uid);
 
 $udata['user_class'] .= ($udata['user_class'] == '' ? '' : ',');
 $udata['user_class'] .= e_UC_PUBLIC.",".e_UC_MEMBER;

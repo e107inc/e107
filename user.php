@@ -234,7 +234,7 @@ function renderuser($uid, $mode = "verbose")
 	}
 	else
 	{
-		if(!$user = get_user_data($uid))
+		if(!$user = e107::user($uid))
 		{
 			return FALSE;
 		}

@@ -206,7 +206,7 @@ class e_ranks
 		}
 		else
 		{
-			$userData = e107::getSystemUser($userId)->getData(); //get_user_data($userId);
+			$userData = e107::getSystemUser($userId)->getData(); //get_usXer_data($userId);
 		}
 
 		if($userData['user_admin'])

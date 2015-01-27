@@ -1482,12 +1482,12 @@ function get_user_data($uid, $extra = '')
 	{
 		e107::getAdminLog()->log_event(
 			'Deprecated call - get_user_data()',
-			'Call to deprecated function get_user_data() (class2.php)',
+			'Call to deprecated function get_user_data() (class2.php) '."\n".print_r(debug_backtrace(null,2), true),
 			E_LOG_INFORMATIVE,
 			'DEPRECATED'
 		);
 		// TODO - debug screen Deprecated Functions (e107)
-		e107::getMessage()->addDebug('Deprecated get_user_data() backtrace:<pre>'."\n".print_r(debug_backtrace(), true).'</pre>');
+		e107::getMessage()->addDebug('Deprecated get_user_data() backtrace:<pre>'."\n".print_r(debug_backtrace(null,2), true).'</pre>');
 	}
 
 	$var = array();
@@ -1497,80 +1497,6 @@ function get_user_data($uid, $extra = '')
 		$var = $user->getUserData();
 	}
 	return $var;
-
-	/*$e107 = e107::getInstance();
-	$uid = (int)$uid;
-	$var = array();
-	if($uid == 0) { return $var; }
-	if($ret = getcachedvars("userdata_{$uid}"))
-	{
-		return $ret;
-	}
-
-	$qry = "
-	SELECT u.*, ue.* FROM `#user` AS u
-	LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = u.user_id
-	WHERE u.user_id = {$uid} {$extra}
-	";
-	if (!$e107->sql->db_Select_gen($qry))
-	{
-		$qry = "SELECT * FROM #user AS u WHERE u.user_id = {$uid} {$extra}";
-		if(!$e107->sql->db_Select_gen($qry))
-		{
-			return FALSE;
-		}
-	}
-	$var = $e107->sql->db_Fetch(MYSQL_ASSOC);
-
-	if(!$e107->extended_struct = getcachedvars('extended_struct'))
-	{
-		if($tmp = $e107->ecache->retrieve_sys('nomd5_extended_struct'))
-		{
-			$e107->extended_struct = $e107->arrayStorage->ReadArray($tmp);
-		}
-		else
-		{
-			$qry = 'SHOW COLUMNS FROM `#user_extended` ';
-			if($e107->sql->db_Select_gen($qry))
-			{
-				while($row = $e107->sql->db_Fetch())
-				{
-					$e107->extended_struct[] = $row;
-				}
-			}
-			$tmp = $e107->arrayStorage->WriteArray($e107->extended_struct, false);
-			$e107->ecache->set_sys('nomd5_extended_struct', $tmp);
-			unset($tmp);
-		}
-		if(isset($e107->extended_struct))
-		{
-			cachevars('extended_struct', $e107->extended_struct);
-		}
-	}
-
-	if(isset($e107->extended_struct) && is_array($e107->extended_struct))
-	{
-		foreach($e107->extended_struct as $row)
-		{
-			if($row['Default'] != '' && ($var[$row['Field']] == NULL || $var[$row['Field']] == '' ))
-			{
-				$var[$row['Field']] = $row['Default'];
-			}
-		}
-	}
-
-
-	if ($var['user_perms'] == '0.') $var['user_perms'] = '0';		// Handle some legacy situations
-	//===========================================================
-	$var['user_baseclasslist'] = $var['user_class'];			// Keep track of which base classes are in DB
-	// Now look up the 'inherited' user classes
-	$var['user_class'] = $e107->user_class->get_all_user_classes($var['user_class']);
-
-	//===========================================================
-
-	cachevars("userdata_{$uid}", $var);
-	return $var;
-	*/
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -1616,43 +1542,6 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 			return $tmp;
 			break;
 	}
-	/*
-  if ($table == 'core')
-  {
-		if ($row_val == '')
-		{ 	// Save old version as a backup first
-	  		$sql->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('SitePrefs_Backup', '".addslashes($PrefCache)."') ");
-
-		  	// Now save the updated values
-		  	// traverse the pref array, with toDB on everything
-		  	$_pref = $tp->toDB($pref, true, true);
-		  	// Create the data to be stored
-	  		if($sql->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('SitePrefs', '".$eArrayStorage->WriteArray($_pref)."') "))
-			{
-		  		ecacXXXhe::clear_sys('Config_core');
-				return true;
-			}
-			else
-			{
-            	return false;
-			}
-		}
-  }
-  elseif($table == "theme")
-  {
-  		$pref['sitetheme_pref'] = $theme_pref;
-		save_prefs();
-  }
-  else
-  {
-	 //	$_user_pref = $tp -> toDB($user_pref);
-	 //	$tmp=addslashes(serialize($_user_pref));
-	 	$_user_pref = $tp->toDB($user_pref, true, true);
-	 	$tmp = $eArrayStorage->WriteArray($_user_pref);
-		$sql->db_Update('user', "user_prefs='$tmp' WHERE user_id=".intval($uid));
-		return $tmp;
-  }
-	*/
 }
 
 
@@ -1865,145 +1754,6 @@ function init_session()
 	define('e_CLASS_REGEXP', $user->getClassRegex());
 	define('e_NOBODY_REGEXP', '(^|,)'.e_UC_NOBODY.'(,|$)');
 
-		/* XXX - remove it after everything is working well!!
-		if(!isset($_E107['cli']))
-		{
-			list($uid, $upw)=(isset($_COOKIE[e_COOKIE]) && $_COOKIE[e_COOKIE] ? explode(".", $_COOKIE[e_COOKIE]) : explode(".", $_SESSION[e_COOKIE]));
-        }
-		else // FIXME - this will never happen - see above
-		{
-        	list($uid, $upw)= explode('.', $cli_log);
-		}
-
-		if (empty($uid) || empty($upw))
-		{
-			//$_SESSION[] = e_SELF."?".e_QUERY;
-
-			cookie(e_COOKIE, '', (time() - 2592000));
-			$_SESSION[e_COOKIE] = "";
-			session_destroy();
-			define('ADMIN', false);
-			define('USER', false);
-			define('USERID', 0);
-			define('USERCLASS', '');
-			define('USERCLASS_LIST', class_list());
-			define('LOGINMESSAGE', CORE_LAN10.'<br /><br />');
-			return (false);
-		}
-
-		$result = get_user_data($uid);
-		if(is_array($result) && md5($result['user_password']) == $upw)
-		{
-
-			define('USERID', $result['user_id']);
-			define('USERNAME', $result['user_name']);
-			define('USERURL', (isset($result['user_homepage']) ? $result['user_homepage'] : false));
-			define('USEREMAIL', $result['user_email']);
-			define('USER', true);
-			define('USERCLASS', $result['user_class']);
-			//define('USERVIEWED', $result['user_viewed']);  - removed from the DB
-			define('USERIMAGE', $result['user_image']);
-			define('USERPHOTO', $result['user_sess']);
-
-			$update_ip = ($result['user_ip'] != USERIP ? ", user_ip = '".USERIP."'" : "");
-			if($result['user_currentvisit'] + 3600 < time() || !$result['user_lastvisit'])
-			{
-				$result['user_lastvisit'] = $result['user_currentvisit'];
-				$result['user_currentvisit'] = time();
-				$sql->db_Update('user', "user_visits = user_visits + 1, user_lastvisit = '{$result['user_lastvisit']}', user_currentvisit = '{$result['user_currentvisit']}' {$update_ip} WHERE user_id='".USERID."' ");
-			}
-			else
-			{
-				$result['user_currentvisit'] = time();
-				$sql->db_Update('user', "user_currentvisit = '{$result['user_currentvisit']}'{$update_ip} WHERE user_id='".USERID."' ");
-			}
-
-			$currentUser = $result;
-			$currentUser['user_realname'] = $result['user_login']; // Used by force_userupdate
-			$e107->currentUser = &$currentUser;
-			define('USERLV', $result['user_lastvisit']);
-
-			if ($result['user_ban'] == 1)
-			{
-			  if (isset($pref['ban_messages']))
-			  {
-				echo $tp->toHTML(varsettrue($pref['ban_messages'][6]));		// Show message if one set
-			  }
-			  exit;
-			}
-
-			if ($result['user_admin'])
-			{
-				define('ADMIN', TRUE);
-				define('ADMINID', $result['user_id']);
-				define('ADMINNAME', $result['user_name']);
-				define('ADMINPERMS', $result['user_perms']);
-				define('ADMINEMAIL', $result['user_email']);
-				define('ADMINPWCHANGE', $result['user_pwchange']);
-				e107::getRedirect()->setPreviousUrl();
-
-			}
-			else
-			{
-				define('ADMIN', FALSE);
-			}
-
-			if($result['user_prefs'])
-			{
-               $user_pref =	(substr($result['user_prefs'],0,5) == "array") ? $eArrayStorage->ReadArray($result['user_prefs']) : unserialize($result['user_prefs']);
-			}
-
-
-
-
-			$tempClasses = class_list();
-			if (check_class(varset($pref['allow_theme_select'],FALSE), $tempClasses))
-			{	// User can set own theme
- 				if (isset($_POST['settheme']))
-				{
-					if($pref['sitetheme'] != $_POST['sitetheme'])
-					{
-                		require_once(e_HANDLER."theme_handler.php");
-						$utheme = new themeHandler;
-	                    $ut = $utheme->themeArray[$_POST['sitetheme']];
-
-                     	$user_pref['sitetheme'] 			= $_POST['sitetheme'];
-						$user_pref['sitetheme_custompages'] = $ut['custompages'];
-						$user_pref['sitetheme_deflayout'] 	= $utheme->findDefault($_POST['sitetheme']);
-					}
-					else
-					{
-                    	unset($user_pref['sitetheme'],$user_pref['sitetheme_custompages'],$user_pref['sitetheme_deflayout']);
-					}
-
-					save_prefs('user');
-					unset($ut);
-				}
-   			}
-   			elseif (isset($user_pref['sitetheme']))
-   			{	// User obviously no longer allowed his own theme - clear it
-   				unset($user_pref['sitetheme'],$user_pref['sitetheme_custompages'],$user_pref['sitetheme_deflayout']);
-   				save_prefs('user');
-			}
-
-
-			define('USERTHEME', (isset($user_pref['sitetheme']) && file_exists(e_THEME.$user_pref['sitetheme']."/theme.php") ? $user_pref['sitetheme'] : false));
-//			global $ADMIN_DIRECTORY, $PLUGINS_DIRECTORY;
-		}*/
-		/*else
-		{
-			define('USER', false);
-			define('USERID', 0);
-			define('USERTHEME', false);
-			define('ADMIN', false);
-			define('CORRUPT_COOKIE', true);
-			define('USERCLASS', '');
-		}
-	}*/
-
-	/*define('USERCLASS_LIST', class_list());
-	define('e_CLASS_REGEXP', '(^|,)('.str_replace(',', '|', USERCLASS_LIST).')(,|$)');
-	define('e_NOBODY_REGEXP', '(^|,)'.e_UC_NOBODY.'(,|$)');*/
 }
 
 
@@ -2099,7 +1849,7 @@ function class_list($uid = '')
 	{
 		if (is_numeric($uid))
 		{
-			if($ud = get_user_data($uid))
+			if($ud = e107::user($uid))
 			{
 				$admin_status = $ud['user_admin'];
 				$class_list = $ud['user_class'];

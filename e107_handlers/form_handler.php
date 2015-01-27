@@ -3249,7 +3249,7 @@ class e_form
 				
 				/*if(is_numeric($value))
 				{
-					$value = get_user_data($value);
+					$value = e107::user($value);
 					if($value)
 					{
 						$value = $value[$attributes['type']] ? $value[$attributes['type']] : $value['user_name'];
@@ -3781,7 +3781,7 @@ class e_form
 
 				if(!is_array($value))
 				{
-					$value = $value ? e107::getSystemUser($value, true)->getUserData() : array();// get_user_data($value);
+					$value = $value ? e107::getSystemUser($value, true)->getUserData() : array();// e107::user($value);
 				}
 
 				$colname = vartrue($parms['nameType'], 'user_name');

@@ -12,7 +12,7 @@ if(is_numeric($parm))
 	}
 	else
 	{
-		$row = get_user_data(intval($parm));
+		$row = e107::user($parm);
 		$image=$row['user_sess'];
 	}
 }
