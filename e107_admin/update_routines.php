@@ -216,6 +216,9 @@ class e107Update
 	function updatePlugin($path)
 	{
 		 e107::getPlugin()->install_plugin_xml($path, 'upgrade');
+		 e107::getMessage()->reset(E_MESSAGE_INFO); 
+		e107::getMessage()->addSuccess(LAN_UPDATED." : ".$path);
+		
 	}
 	
 	
@@ -1136,6 +1139,7 @@ function update_706_to_800($type='')
 	if($plugUpgradeReq = e107::getPlugin()->updateRequired())
 	{
 		$exclude =  array_keys($plugUpgradeReq); // search xxxxx_setup.php and check for 'upgrade_required()' == true. 
+		asort($exclude);
 	}
 	else 
 	{
