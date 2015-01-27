@@ -70,7 +70,7 @@ class e107
 	 * Used for runtime caching of user extended struct
 	 *
 	 * @var array
-	 * @see get_user_data()
+	 * @see e107::user()
 	 */
 	public $extended_struct;
 
@@ -1428,7 +1428,9 @@ class e107
 	 */
 	public static function user($uid=null)
 	{
-		if(!$uid){ return false; }
+		$uid = intval($uid);
+		
+		if(empty($uid)){ return false; }
 			
 		$user = self::getSystemUser($uid, true);
 		$var = array();

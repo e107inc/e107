@@ -23,7 +23,7 @@ function user_avatar_shortcode($parm=null)
 		}
 		else
 		{
-			$row = get_user_data(intval($parm));
+			$row = e107::user($parm);
 			$image=$row['user_image'];
 		}
 	}

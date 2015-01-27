@@ -192,7 +192,7 @@ $inp = intval(e_QUERY);
 $usersettings_form_action = strstr('?', $_usersettings_matches[3]) ? e_SELF.'?'.e_QUERY : e_SELF;
 
 $_uid = $inp;
-$info = get_user_data($inp);
+$info = e107::user($inp);
 		//Only site admin is able to change setting for other admins
 if(!is_array($info) || ($info['user_admin'] == 1 && (!defined('ADMINPERMS') || ADMINPERMS !== '0')) || ((!defined('ADMINPERMS') || ADMINPERMS !== '0') && !getperms('4')))
 {
@@ -297,7 +297,7 @@ require_once (e_ADMIN."auth.php");
 
 if (isset($_POST['updatesettings']) || isset($_POST['SaveValidatedInfo']))
 {
-//	$udata = get_user_data($inp);	//@deprecated			// Get all the existing user data, including any extended fields
+//	$udata = e107::user($inp);	//@deprecated			// Get all the existing user data, including any extended fields
 	
 	$udata = e107::user($inp); // Get all the existing user data, including any extended fields
 	$udata['user_classlist'] = $userMethods->addCommonClasses($udata, FALSE);
