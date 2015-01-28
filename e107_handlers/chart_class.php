@@ -286,7 +286,7 @@ class e_chart
 	}
 
 
-	public function setOptions($data,$id)
+	public function setOptions($data)
 	{
 		
 		if($this->provider == 'google' && $data == 'demo')

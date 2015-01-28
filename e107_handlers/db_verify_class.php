@@ -175,12 +175,15 @@ class db_verify
 			$this->compare($tb);	
 		}
 			
-		foreach($this->sqlLanguageTables as $lng=>$lantab) // language tables. 
+		if(!empty($this->sqlLanguageTables)) // language tables. 
 		{
-			foreach($dtables as $tb)
+			foreach($this->sqlLanguageTables as $lng=>$lantab) 
 			{
-				$this->compare($tb,$lng);	
-			}			
+				foreach($dtables as $tb)
+				{
+					$this->compare($tb,$lng);	
+				}			
+			}
 		}
 	}
 	
@@ -192,6 +195,10 @@ class db_verify
 	function compare($selection,$language='')
 	{
 		
+		if(empty($this->tables[$selection]['tables']))
+		{
+			return; 	
+		}
 	
 		foreach($this->tables[$selection]['tables'] as $key=>$tbl)
 		{

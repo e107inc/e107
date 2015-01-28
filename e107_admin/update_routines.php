@@ -1600,6 +1600,7 @@ function update_706_to_800($type='')
 	{
 		if ($just_check) return update_needed('Core search handlers need to be updated.');
 		$searchPref->removePref('core_handlers/pages')->save(false,true,false);
+		e107::getSingleton('e107plugin')->refresh('page');
 	}
 	
 	
