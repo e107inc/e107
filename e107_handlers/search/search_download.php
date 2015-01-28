@@ -17,6 +17,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 // advanced 
+/*
 $advanced_where = "";
 if (isset($_GET['cat']) && is_numeric($_GET['cat'])) {
 	$advanced_where .= " d.download_category='".$_GET['cat']."' AND";
@@ -59,5 +60,5 @@ function search_downloads($row) {
 	$res['detail'] = LAN_SEARCH_15." ".$row['download_author']." | ".LAN_SEARCH_66.": ".$datestamp;
 	return $res;
 }
-
+*/
 ?>

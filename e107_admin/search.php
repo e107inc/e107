@@ -34,11 +34,13 @@ $query = explode('.', e_QUERY);
 
 $search_prefs = $sysprefs -> getArray('search_prefs');
 
-//$search_handlers['news'] = ADLAN_0;
+
+
+//$search_handlers['news'] = ADLAN_0; // Moved to Plugin
 $search_handlers['comments'] = ADLAN_114;
 $search_handlers['users'] = SEALAN_7;
-//$search_handlers['downloads'] = ADLAN_24;
-$search_handlers['pages'] = SEALAN_39;
+//$search_handlers['downloads'] = ADLAN_24; // Moved to Plugin
+// $search_handlers['pages'] = SEALAN_39; // Moved to Plugin
 
 
 foreach($pref['e_search_list'] as $file)

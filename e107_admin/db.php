@@ -1161,8 +1161,8 @@ class system_tools
 		$tp = e107::getParser();
 		$pref = e107::getPref();
 
-		$config = ($type == 'core') ? e107::getConfig('core') : e107::getPlugConfig($type);
-
+		$config = ($type == 'core' || $type == 'search' ) ? e107::getConfig($type) : e107::getPlugConfig($type);
+		
 		$spref = $config->getPref();
 
 		ksort($spref);
@@ -1173,7 +1173,8 @@ class system_tools
 						<legend class='e-hideme'>".DBLAN_20."</legend>";
 
 		$text .= "<select class='tbox' name='type_select' onchange='urljump(this.options[selectedIndex].value)' >
-		<option value='".e_ADMIN."db.php?mode=".$_GET['mode']."&amp;type=core'>Core</option>\n";
+		<option value='".e_ADMIN."db.php?mode=".$_GET['mode']."&amp;type=core'>Core</option>\n
+		<option value='".e_ADMIN."db.php?mode=".$_GET['mode']."&amp;type=search'>Search</option>\n";
 
 	//	e107::getConfig($type)->aliases
 

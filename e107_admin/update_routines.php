@@ -1580,7 +1580,34 @@ function update_706_to_800($type='')
 		$log->addDebug("Icon category added");
 	}
 	
+	// Search Clean up ----------------------------------
+	
+	$searchPref = e107::getConfig('search');
 
+	if($searchPref->getPref('core_handlers/news'))
+	{
+		if ($just_check) return update_needed('Core search handlers need to be updated.');
+		$searchPref->removePref('core_handlers/news')->save(false,true,false);
+	}
+
+	if($searchPref->getPref('core_handlers/downloads'))
+	{
+		if ($just_check) return update_needed('Core search handlers need to be updated.');
+		$searchPref->removePref('core_handlers/downloads')->save(false,true,false);
+	}
+
+	if($searchPref->getPref('core_handlers/pages'))
+	{
+		if ($just_check) return update_needed('Core search handlers need to be updated.');
+		$searchPref->removePref('core_handlers/pages')->save(false,true,false);
+	}
+	
+	
+	
+	
+	
+	
+	
 	// Any other images should be imported manually via Media Manager batch-import.
 
 	// ------------------------------------------------------------------
