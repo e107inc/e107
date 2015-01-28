@@ -15,7 +15,7 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
-
+/*
 $advanced['cat']['type'] = 'dropdown';
 $advanced['cat']['text'] = LAN_SEARCH_55.':';
 $advanced['cat']['list'][] = array('id' => 'all', 'title' => LAN_SEARCH_51);
@@ -37,5 +37,6 @@ $advanced['match']['type'] = 'dropdown';
 $advanced['match']['text'] = LAN_SEARCH_52.':';
 $advanced['match']['list'][] = array('id' => 0, 'title' => LAN_SEARCH_53);
 $advanced['match']['list'][] = array('id' => 1, 'title' => LAN_SEARCH_54);
+*/
 
 ?>

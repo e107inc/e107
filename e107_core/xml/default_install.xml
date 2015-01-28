@@ -413,15 +413,7 @@ City, State, Country
   ),
 )]]></search>
 		<search name="core_handlers"><![CDATA[array (
-  'news' => 
-  array (
-    'class' => '0',
-    'pre_title' => '0',
-    'pre_title_alt' => '',
-    'chars' => '150',
-    'results' => '10',
-    'order' => '1',
-  ),
+
   'comments' => 
   array (
     'class' => '0',
@@ -440,24 +432,7 @@ City, State, Country
     'results' => '10',
     'order' => '3',
   ),
-  'downloads' => 
-  array (
-    'class' => '0',
-    'pre_title' => '1',
-    'pre_title_alt' => '',
-    'chars' => '150',
-    'results' => '10',
-    'order' => '4',
-  ),
-  'pages' => 
-  array (
-    'class' => '0',
-    'chars' => '150',
-    'results' => '10',
-    'pre_title' => '0',
-    'pre_title_alt' => '',
-    'order' => '5',
-  ),
+
 )]]></search>
 		<search name="google">0</search>
 		<search name="multisearch">1</search>
