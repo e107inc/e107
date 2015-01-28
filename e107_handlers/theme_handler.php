@@ -1587,6 +1587,13 @@ class themeHandler
 		$core->set('sitetheme_custompages', $customPages);
 		
 		$core->set('sitetheme_version', $version);
+				
+		if(!empty($this->themeArray[$name]['preferences']))
+		{
+			 $core->set('sitetheme_pref', $this->themeArray[$name]['preferences']);	
+		}
+		
+		
 	//	$core->set('sitetheme_releaseUrl', $this->themeArray[$name]['releaseUrl']);
 		
 		
@@ -1966,10 +1973,18 @@ class themeHandler
 				//	loadLanFiles($path, 'admin');     // Look for LAN files on default paths
 		// layout should always be an array.
 		$xml->setOptArrayTags('layout,screenshots/image');
-		$xml->setOptStringTags('menuPresets,customPages');
+		$xml->setOptStringTags('menuPresets,customPages,custompages');
 	
 			
-		$vars = $xml->loadXMLfile(e_THEME.$path.'/theme.xml', true, true);
+	//	$vars = $xml->loadXMLfile(e_THEME.$path.'/theme.xml', true, true);
+		
+		$vars = $xml->loadXMLfile(e_THEME.$path.'/theme.xml', 'advanced', true); // must be 'advanced' 
+		
+		if($path == "_blank" )
+		{
+	//		echo "<table class='table'><tr><td>".print_a($vars,true)."</td><td>".print_a($adv,true)."</td></tr></table>";
+		}
+		
 		
 		$vars['name'] 			= varset($vars['@attributes']['name']);
 		$vars['version'] 		= varset($vars['@attributes']['version']);
@@ -1987,6 +2002,17 @@ class themeHandler
 		$vars['@attributes']['default'] = (varset($vars['@attributes']['default']) && strtolower($vars['@attributes']['default']) == 'true') ? 1 : 0;
 		$vars['preview'] 		= varset($vars['screenshots']['image']);
 		$vars['thumbnail'] 		= varset($vars['preview'][0]);
+		
+		if(!empty($vars['themePrefs']))
+		{
+			
+			foreach($vars['themePrefs']['pref'] as $k=>$val)
+			{
+				$name = $val['@attributes']['name'];
+				$vars['preferences'][$name] = $val['@value']; 
+			}	
+		}
+
 		
 		unset($vars['authorEmail'], $vars['authorUrl'], $vars['xhtmlCompliant'], $vars['cssCompliant'], $vars['description'],$vars['screenshots']);
 		
@@ -2067,6 +2093,11 @@ class themeHandler
 		//	$mes->addDebug("<h2>".$path."</h2>");
 		//	$mes->addDebug(print_a($vars,true));
 		//	$mes->addDebug("<hr />");
+		}
+
+		if($path == "_blank" )
+		{
+		//	echo "<table class='table'><tr><td>".print_a($vars,true)."</td><td>".print_a($adv,true)."</td></tr></table>";
 		}
 
 	

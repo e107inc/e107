@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <e107Theme name="blank" version="1.0" date="2031-05-01" compatibility="2.0" livedemo='http://e107.org'>
 	<author name ="e107 Inc" email="nospam@e107.org" url="http://e107.org" />
-	<summary>Bootstrap e107 admin theme</summary>
+	<summary>Blank Example theme</summary>
 	<description>Blank e107 Theme</description>
 	<category>generic</category>
 	<compliance xhtml="1.1" css="2.1" />
@@ -25,4 +25,8 @@
 			<custompages>/forum</custompages>
 		</layout>
 	</layouts>
+	<themePrefs>
+		<pref name='example'>Stored Theme value 1</pref>
+		<pref name='example2'>Stored Theme value 2</pref>
+	</themePrefs>
 </e107Theme>
