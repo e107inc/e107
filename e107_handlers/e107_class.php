@@ -2578,20 +2578,24 @@ class e107
 	/**
  	* Experimental static (easy) sef-url creation method (works with e_url.php @see /index.php)
  	*/
-	public static function url($plugin='',$key)
+	public static function url($plugin='',$key, $row=array())
 	{
 		$tmp = e107::getAddonConfig('e_url');
+		$tp = e107::getParser();
 
 		if(varset($tmp[$plugin][$key]['sef']))
 		{
-			return e_HTTP.$tmp[$plugin][$key]['sef'];
+			$rawUrl = $tp->simpleParse($tmp[$plugin][$key]['sef'], $row);
+			return e_HTTP.$rawUrl;
 		}
+		/*
 		elseif(varset($tmp[$plugin][$key]['redirect']))
 		{
 			return self::getParser()->replaceConstants($tmp[$plugin][$key]['redirect'],'full');		
 		}
 
 		return;
+		 * */
 
 	}
 
