@@ -228,10 +228,14 @@ class e107_db_debug {
 		$badCount=0;
 		$okCount=0;
 
-		foreach ($this->aSQLdetails as $cQuery) {
-			if ($cQuery['ok']) {
+		foreach ($this->aSQLdetails as $cQuery) 
+		{
+			if ($cQuery['ok']==1) 
+			{
 				$okCount++;
-			} else {
+			} 
+			else 
+			{
 				$badCount++;
 			}
 		}
@@ -242,7 +246,8 @@ class e107_db_debug {
 			$text .= "<tr><td class='fcaption'><b>Index</b></td><td class='fcaption'><b>Query / Error</b></td></tr>\n";
 
 			foreach ($this->aSQLdetails as $idx => $cQuery) {
-				if (!$cQuery['ok']) {
+				if (!$cQuery['ok']) 
+				{
 					$text .= "<tr><td class='forumheader3' rowspan='2' style='text-align:right'>{$idx}&nbsp;</td>
     	       	        <td class='forumheader3'>".$cQuery['query']."</td></tr>\n<tr><td class='forumheader3'>".$cQuery['error']."</td></tr>\n";
 				}
@@ -253,14 +258,16 @@ class e107_db_debug {
 		//
 		// Optionally list good queries
 		//
+		
 		if ($okCount && E107_DBG_SQLDETAILS) {
 			$text .= "\n<table class='fborder table table-striped table-bordered'>\n";
-			$text .= "<tr><td class='fcaption' colspan='3'><b>{$okCount[TRUE]} Good Queries</b></td></tr>\n";
+			$text .= "<tr><td class='fcaption' colspan='3'><b>".$this->countLabel($okCount)." Good Queries</b></td></tr>\n";
 			$text .= "<tr><td class='fcaption'><b>Index</b></td><td class='fcaption'><b>Qtime</b></td><td class='fcaption'><b>Query</b></td></tr>\n
 				 <tr><td class='fcaption'>&nbsp;</td><td class='fcaption'><b>(msec)</b></td><td class='fcaption'>&nbsp;</td></tr>\n
 				 ";
 
-			foreach ($this->aSQLdetails as $idx => $cQuery) {
+			foreach ($this->aSQLdetails as $idx => $cQuery) 
+			{
 				if ($cQuery['ok']) {
 					$text .= "<tr><td class='forumheader3' style='text-align:right'>{$idx}&nbsp;</td>
 	       	        <td class='forumheader3' style='text-align:right'>".number_format($cQuery['time'] * 1000.0, 4)."&nbsp;</td><td class='forumheader3'>".$cQuery['query'].'<br />['.$cQuery['marker']." - ".$cQuery['caller']."]</td></tr>\n";
@@ -290,6 +297,25 @@ class e107_db_debug {
 
 		return $text;
 	}
+	
+	function countLabel($amount)
+	{
+		if($amount < 30)
+		{
+			$inc = 'label-success';
+		}
+		elseif($amount < 50)
+		{
+			$inc = 'label-warning';	
+		}	
+		elseif($amount > 49)
+		{
+			$inc = 'label-danger label-important';		
+		}
+		
+		return "<span class='label ".$inc."'>".$amount."</span>";
+	}
+	
 
 	function Show_Performance() {
 		//
