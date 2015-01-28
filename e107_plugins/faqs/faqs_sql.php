@@ -21,6 +21,7 @@ CREATE TABLE faqs_info (
   faq_info_icon varchar(255) NOT NULL default '',
   faq_info_metad varchar(255) NOT NULL default '',
   faq_info_metak varchar(255) NOT NULL default '',
+  faq_info_sef varchar(255) NOT NULL default '',
   PRIMARY KEY  (faq_info_id)
 ) ENGINE=MyISAM;
 

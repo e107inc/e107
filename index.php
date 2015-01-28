@@ -120,7 +120,7 @@
 						parse_str($query,$_GET);
 					}
 					
-					e107::getMessage()->addDebug('e_URL in <b>'.$plug.'</b> matched <b>'.$v['regex'].'</b> and included: <b>'.$file.'</b> with $_GET: '.print_a($_GET,true));
+					e107::getMessage()->addDebug('e_URL in <b>'.$plug.'</b> with key: <b>'.$k.'</b> matched <b>'.$v['regex'].'</b> and included: <b>'.$file.'</b> with $_GET: '.print_a($_GET,true));
 
 					if(file_exists($file))
 					{

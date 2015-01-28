@@ -121,6 +121,19 @@ class faqs_shortcodes extends e_shortcode
 	
 	function sc_faq_category($parm = '')
 	{
+	//	$tp = e107::getParser();
+	//	return $tp->toHTML($this->var['faq_info_title']);
+		
+		
+		$tp = e107::getParser();
+		$url = e107::url('faqs','category', $this->var); //@See faqs/e_url.php 
+		return "<a href='".$url."'>".$tp->toHTML($this->var['faq_info_title'])."</a>";	
+		
+
+		return "<a href='".e107::getUrl()->create('faqs/list/all', array('category' => $this->var['faq_info_id']))."'>".$tp->toHTML($this->var['faq_info_title'])."</a>";	
+		
+		
+		
 		$tp = e107::getParser();
 		if($parm == 'extend' && $this->tag)
 		{

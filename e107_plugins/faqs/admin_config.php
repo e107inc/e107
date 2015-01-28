@@ -72,7 +72,9 @@ class faq_cat_ui extends e_admin_ui
 		 	'faq_info_parent' 			=> array('title'=> LAN_CATEGORY,	'type' => 'dropdown',		'width' => '5%', 'writeParms'=>''),		
 			'faq_info_class' 			=> array('title'=> LAN_VISIBILITY,	'type' => 'userclass',		'width' => 'auto', 'data' => 'int', 'inline'=>true),
 			'faq_info_metad' 			=> array('title'=> LANA_FAQ_METAD,	'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readParms'=>'editable=1'), 
-			'faq_info_metak' 			=> array('title'=> LANA_FAQ_METAK,	'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readParms'=>'editable=1'), 				
+			'faq_info_metak' 			=> array('title'=> LANA_FAQ_METAK,	'type' => 'tags',			'width' => 'auto', 'thclass' => 'left', 'readParms'=>'editable=1'), 				
+			'faq_info_sef' 				=> array('title'=> LAN_SEFURL,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'inline'=>true, 'writeParms'=>'size=xxlarge'), 				
+	
 			'faq_info_order' 			=> array('title'=> LAN_ORDER,		'type' => 'number',			'width' => '5%', 'thclass' => 'left' ),	
 			'options' 					=> array('title'=> LAN_OPTIONS,		'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center','readParms'=>'sort=1')
 		);	

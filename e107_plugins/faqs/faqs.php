@@ -193,9 +193,9 @@ class faq
 	function __construct()
 	{
 		$sc = e107::getScBatch('faqs',TRUE);
-		$this->pref = e107::getPlugConfig('faqs')->getPref();
+		$this->pref = e107::pref('faqs'); // Short version of e107::getPlugConfig('faqs')->getPref(); ;
 		$sc->pref = $this->pref;
-		// setScVar('faqs_shortcodes', 'pref', $this->pref);
+
 	}
 
 	function view_all($srch) // new funtion to render all FAQs
@@ -206,21 +206,6 @@ class faq
 
 		$template = e107::getTemplate('faqs');
 		$this->template = $template;
-		
-	//	print_a($template);
-		
-	
-		
-		global $FAQ_START, $FAQ_END, $FAQ_LISTALL_START,$FAQ_LISTALL_LOOP,$FAQ_LISTALL_END;
-
-		if($FAQ_START)
-		{
-			
-		}
-
-		//require_once (e_PLUGIN."faqs/faqs_shortcodes.php");
-
-	
 	
 		$prevcat = "";
 
@@ -238,6 +223,8 @@ class faq
 	
 		$text .= $tp->parseTemplate($template['end'], true, $this->sc);
 
+		
+
 		$ret['title'] = FAQLAN_FAQ;
 		$ret['text'] = $text;
 		$ret['caption'] = varset($template['caption']) ? $tp->parseTemplate($template['caption'], true, $this->sc) : LAN_PLUGIN_FAQS_FRONT_NAME;
@@ -254,14 +241,18 @@ class faq
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		
+		$insert = "";	
+		
 		if(!empty($srch))
 		{
 			$srch = $tp->toDB($srch);
 			$insert = " AND (f.faq_question LIKE '%".$srch."%' OR FIND_IN_SET ('".$srch."', f.faq_tags) ) ";
 		}
-		else
+		
+		if(!empty($_GET['cat']))
 		{
-			$insert = "";	
+			$srch = $tp->toDB($_GET['cat']);
+			$insert = " AND (cat.faq_info_sef = '".$srch."') ";	
 		}
 
 		$query = "SELECT f.*,cat.* FROM #faqs AS f LEFT JOIN #faqs_info AS cat ON f.faq_parent = cat.faq_info_id WHERE cat.faq_info_class IN (".USERCLASS_LIST.") ".$insert." ORDER BY cat.faq_info_order,f.faq_order ";
@@ -270,32 +261,45 @@ class faq
 		{
 			return "<div class='alert alert-warning alert-block'><b>".$srch."</b> was not found in search results.</div>" ; //TODO LAN
 		}
-			
-		$text = '';	
-			
+		
+		// -----------------
+		
+		$FAQ_START = e107::getTemplate('faqs', true, 'start');
+		$FAQ_END = e107::getTemplate('faqs', true, 'end');
+		$FAQ_LISTALL = e107::getTemplate('faqs', true, 'all');
+		$FAQ_CAPTION = e107::getTemplate('faqs', true, 'caption');
+		
+		
+			$prevcat = "";
+		$sc = e107::getScBatch('faqs', true);
+		$sc->counter = 1;
+		$sc->tag = htmlspecialchars($tag, ENT_QUOTES, 'utf-8');
+		$sc->category = $category;
+
+		$text = $tp->parseTemplate($FAQ_START, true, $sc);
+		
 		while ($rw = $sql->fetch())
 		{
-			$this->sc->setVars($rw);	
-
+			$sc->setVars($rw);	
+			
 			if($rw['faq_info_order'] != $prevcat)
 			{
 				if($prevcat !='')
 				{
-					$text .= $tp->parseTemplate($template['all']['end'], true, $this->sc);
+					$text .= $tp->parseTemplate($FAQ_LISTALL['end'], true, $sc);
 				}
-				
 				$text .= "\n\n<!-- FAQ Start ".$rw['faq_info_order']."-->\n\n";
-				$text .= $tp->parseTemplate($this->template['all']['start'], true, $this->sc);
+				$text .= $tp->parseTemplate($FAQ_LISTALL['start'], true, $sc);
 				$start = TRUE;
 			}
 
-			$text .= $tp->parseTemplate($this->template['all']['item'], true, $this->sc);
+			$text .= $tp->parseTemplate($FAQ_LISTALL['item'], true, $sc);
 			$prevcat = $rw['faq_info_order'];
-
+			$sc->counter++;
 		}
-		$text .= $tp->parseTemplate($this->template['all']['end'], true, $this->sc);	
-		
-		
+		$text .= ($start) ? $tp->parseTemplate($FAQ_LISTALL['end'], true, $sc) : "";
+		$text .= $tp->parseTemplate($FAQ_END, true, $sc);
+				
 		return $text;
 		
 	}
