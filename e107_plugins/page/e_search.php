@@ -23,7 +23,7 @@ class page_search extends e_search // include plugin-folder in the name.
 	{
 		$sql = e107::getDb();
 		
-		$books = $sql->retrieve("SELECT chapter_id,chapter_sef,chapter_parent, chapter_name FROM #page_chapters WHERE chapter_visibility IN (".USERCLASS_LIST.") ORDER BY chapter_parent, chapter_order ASC" , true);
+		$books = $sql->retrieve("SELECT chapter_id,chapter_sef,chapter_parent, chapter_name FROM #page_chapters ORDER BY chapter_parent, chapter_order ASC" , true);
 				
 		foreach($books as $row)
 		{
@@ -41,7 +41,7 @@ class page_search extends e_search // include plugin-folder in the name.
 	
 	private function getSef($chapter)
 	{
-		return vartrue($this->catList[$chapter]['chapter_sef'],'--sef-not-assigned--');		
+		return vartrue($this->catList[$chapter]['chapter_sef'],false);		
 	}
 	
 	private function getParent($chapter)
@@ -49,7 +49,11 @@ class page_search extends e_search // include plugin-folder in the name.
 		return varset($this->catList[$chapter]['chapter_parent'], false);			
 	}	
 
-
+	private function isVisible($chapter)
+	{
+		return check_class($this->catList[$chapter]['chapter_visibility']);
+		// return varset($this->catList[$chapter]['chapter_visibility'], 0);				
+	}
 
 		
 	function config()
@@ -62,7 +66,7 @@ class page_search extends e_search // include plugin-folder in the name.
 		
 		foreach($this->catList as $key=>$row)
 		{
-			if(!empty($row['chapter_parent']))
+			if(!empty($row['chapter_parent']) && $this->isVisible($key))
 			{
 				$catList[] = array('id' => $key, 'title' => $this->getName($row['chapter_parent'])." - ".$row['chapter_name']);
 			}
@@ -72,7 +76,7 @@ class page_search extends e_search // include plugin-folder in the name.
 			
 		$search = array(
 			'name'			=> "Pages",
-			'table'			=> 'page',
+			'table'			=> 'page AS p LEFT JOIN #page_chapters AS c ON p.page_chapter = c.chapter_id ',
 
 			'advanced' 		=> array(
 								'cat'	=> array('type'	=> 'dropdown', 		'text' => "Search in Book/Chapter", 'list'=>$catList),
@@ -80,8 +84,8 @@ class page_search extends e_search // include plugin-folder in the name.
 					//			'match'=> array('type'	=> 'dropdown',		'text' =>  LAN_SEARCH_52, 'list'=>$matchList)
 							),
 							
-			'return_fields'	=> array('page_id', 'page_title', 'page_sef', 'page_text', 'page_chapter', 'page_datestamp', 'menu_image'), 
-			'search_fields'	=> array('page_title' => '1.2', 'page_text' => '0.6', 'page_metakeys'=> '1.0'), // fields and their weights. 
+			'return_fields'	=> array('p.page_id', 'p.page_title', 'p.page_sef', 'p.page_text', 'p.page_chapter', 'p.page_datestamp', 'p.menu_image'), 
+			'search_fields'	=> array('p.page_title' => '1.2', 'p.page_text' => '0.6', 'p.page_metakeys'=> '1.0'), // fields and their weights. 
 	
 			'order'			=> array('page_datestamp' => DESC),
 			'refpage'		=> 'page.php'
@@ -103,14 +107,14 @@ class page_search extends e_search // include plugin-folder in the name.
 		$row['chapter_sef'] = $this->getSef($row['page_chapter']);
 		$row['book_sef']	= $this->getSef($book); 
 			
-		if(!vartrue($row['page_sef']))
+		if(empty($row['page_sef']))
 		{
 			$row['page_sef'] = '--sef-not-assigned--';	
 		}
 				
 		$res = array();
 				
-		$res['link'] 		= e107::getUrl()->create('page/view', $row, array('allow' => 'page_sef,page_title,page_id,chapter_sef,book_sef'));
+		$res['link'] 		= str_replace('///','/', e107::getUrl()->create('page/view', $row, array('allow' => 'page_sef,page_title,page_id,chapter_sef,book_sef')));
 		$res['pre_title'] 	= $tp->toHtml($this->getName($book),false,'TITLE').' - '. $tp->toHtml($this->getName($row['page_chapter']),false,'TITLE'). " | ";
 		$res['title'] 		= $tp->toHtml($row['page_title'], false, 'TITLE');
 		$res['summary'] 	= (!empty($row['page_metadscr'])) ? $row['page_metadscr'] : $row['page_text'];
@@ -133,11 +137,11 @@ class page_search extends e_search // include plugin-folder in the name.
 	
 		$time = time();
 
-		$qry = " page_class IN (".USERCLASS_LIST.") AND `menu_name` = '' AND ";
+		$qry = " (c.chapter_visibility IN (".USERCLASS_LIST.") OR p.page_chapter = 0) AND p.page_class IN (".USERCLASS_LIST.") AND p.page_text != '' AND ";
 		
 		if(!empty($parm['cat']) && $parm['cat'] != 'all')
 		{
-			$qry .= " page_chapter='".intval($parm['cat'])."' AND";	
+			$qry .= " p.page_chapter='".intval($parm['cat'])."' AND";	
 		}
 		
 		return $qry;
