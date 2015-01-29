@@ -33,7 +33,7 @@ class e107plugin
 		'e_linkgen',
 		'e_list',
 		
-		'e_meta',
+		'e_meta', // @Deprecated 
 		'e_emailprint',
 		'e_frontpage',
 		'e_latest', // @Deprecated  - see e_dashboard
@@ -248,19 +248,19 @@ class e107plugin
 				{
 					if($mode == 'boolean')
 					{
-						$mes->addDebug("Plugin Update(s) Required");
+						$mes->addDebug("Plugin Update(s) Required in ".$path."_seup.php");
 						return TRUE;	
 					}
 				
 					$needed[$path] = $data;		
 				} 
 				
-				if($curVal < $fileVal)
+				if($curVal < $fileVal) // check pref version against file version. 
 				{
 					
 					if($mode == 'boolean')
 					{
-						$mes->addDebug("Plugin Update(s) Required");
+						$mes->addDebug("Plugin Update(s) Required - different version");
 						return TRUE;	
 					}
 					
@@ -2565,6 +2565,8 @@ class e107plugin
 	 */
 	function save_addon_prefs($mode = 'upgrade') 
 	{
+		e107::getMessage()->addDebug('Running save_addon_prefs('.$mode.')'); 	
+		
 		$sql = e107::getDb();
 		$core = e107::getConfig('core');
 
