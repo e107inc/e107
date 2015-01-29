@@ -148,15 +148,7 @@ echo e107::getUrl()->response()->renderMeta()."\n";
 echo "<title>".(defined('e_PAGETITLE') ? e_PAGETITLE.' - ' : (defined('PAGE_NAME') ? PAGE_NAME.' - ' : "")).SITENAME."</title>\n\n";
 
 
-// Wysiwyg JS support on or off.
-if (varset($pref['wysiwyg'],FALSE))
-{
-	define("e_WYSIWYG",TRUE);
-}
-else
-{
-	define("e_WYSIWYG",FALSE);
-}
+
 
 
 
