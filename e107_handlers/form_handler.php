@@ -1218,6 +1218,9 @@ class e_form
 		
 		$_SESSION['media_category'] = $mediaCat; // used by TinyMce. 
 		
+		e107::wysiwyg(true); // bbarea loaded, so activate wysiwyg (if enabled in preferences)
+	
+		
 		return $ret;
 		
 		// Quick fix - hide TinyMCE links if not installed, dups are handled by JS handler

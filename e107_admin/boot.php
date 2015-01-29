@@ -70,18 +70,6 @@ if (!defined('ADMIN_WIDTH')) //BC Only
 
 
 
-
-// Wysiwyg JS support on or off.
-// your code should run off e_WYSIWYG
-if (e107::getPref('wysiwyg', false) ) // posts bbcode by default. 
-{
-	define("e_WYSIWYG", TRUE);
-}
-else
-{
-	define("e_WYSIWYG", FALSE);
-}
-
 /**
  * Automate DB system messages DEPRECATED
  * NOTE: default value of $output parameter will be changed to false (no output by default) in the future

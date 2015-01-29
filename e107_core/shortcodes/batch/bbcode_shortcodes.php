@@ -132,7 +132,7 @@ class bbcode_shortcodes extends e_shortcode
 			list($tag,$tmp) = explode("--",$this->var['tagid']); // works with $frm->bbarea to detect textarea from first half of tag. 
 		}			
 				
-		$text = "<a class='e-modal btn btn-primary' data-modal-caption='Media Manager' data-target='#uiModal' title='Insert a Youtube video via Media Manager : ".$this->var['template']."' id='{$id}' href='".e_ADMIN."image.php?mode=main&action=dialog&for=".$this->var['template']."&tagid=".$tag."&iframe=1&bbcode=video'  >";
+		$text = "<a class='e-modal btn btn-primary' data-modal-caption='Media Manager' data-target='#uiModal' title='Insert a Youtube video via Media Manager : ".$this->var['template']."' id='{$id}' href='".e_ADMIN."image.php?mode=main&amp;action=dialog&amp;for=".$this->var['template']."&amp;tagid=".$tag."&amp;iframe=1&amp;bbcode=video'  >";
 		$text .= $this->button(e_IMAGE_ABS."bbcode/youtube.png", 'youtube', LANHELP_48);
 		
 		$text .= "</a>";
@@ -152,7 +152,7 @@ class bbcode_shortcodes extends e_shortcode
 		}			
 				
 			
-		$text = "<a class='e-modal btn btn-primary' data-modal-caption='Media Manager' data-target='#uiModal' title='Insert a Glyphicon via Media Manager : ".$this->var['template']."' id='{$id}' href='".e_ADMIN."image.php?mode=main&action=dialog&for=".$this->var['template']."&tagid=".$tag."&iframe=1&bbcode=glyph'  >";
+		$text = "<a class='e-modal btn btn-primary' data-modal-caption='Media Manager' data-target='#uiModal' title='Insert a Glyphicon via Media Manager : ".$this->var['template']."' id='{$id}' href='".e_ADMIN."image.php?mode=main&amp;action=dialog&amp;for=".$this->var['template']."&amp;tagid=".$tag."&amp;iframe=1&amp;bbcode=glyph'  >";
 		$text .= $this->button(e_IMAGE_ABS."bbcode/youtube.png", 'youtube', LANHELP_48);
 		
 		$text .= "</a>";
@@ -211,7 +211,7 @@ class bbcode_shortcodes extends e_shortcode
 		{
 			list($tag,$tmp) = explode("--",$this->var['tagid']); // works with $frm->bbarea to detect textarea from first half of tag. 
 		}
-		$text = "<a class='e-modal btn btn-primary' data-modal-caption='Media Manager' data-target='#uiModal' title='Insert an Image from the Media Manager : ".$this->var['template']."' id='{$id}' href='".e_ADMIN."image.php?mode=main&action=dialog&for=".$this->var['template']."&tagid=".$tag."&iframe=1&bbcode=img'  >";
+		$text = "<a class='e-modal btn btn-primary' data-modal-caption='Media Manager' data-target='#uiModal' title='Insert an Image from the Media Manager : ".$this->var['template']."' id='{$id}' href='".e_ADMIN."image.php?mode=main&amp;action=dialog&amp;for=".$this->var['template']."&amp;tagid=".$tag."&amp;iframe=1&amp;bbcode=img'  >";
 		
 		$text .= $this->button(e_IMAGE_ABS."bbcode/preimage.png",'picture-o');
 	//	$text .= "<img class='btn btn-small bbcode bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/preimage.png' title='".LANHELP_45."' alt='' />";
@@ -297,7 +297,7 @@ class bbcode_shortcodes extends e_shortcode
 		
 		$pref = e107::getPref();
 		
-		if ($pref['comments_emoticons'] && $pref['smiley_activate'] && !defsettrue('e_WYSIWYG'))
+		if ($pref['comments_emoticons'] && $pref['smiley_activate'] && !e107::wysiwyg())
 		{
 			if(deftrue('BOOTSTRAP'))
 			{
@@ -498,7 +498,7 @@ class bbcode_shortcodes extends e_shortcode
 		//FIXME - cachevars/getcachedvars!
 		global $pref, $eplug_bb, $bbcode_func, $bbcode_help, $bbcode_helpactive, $bbcode_helptag, $register_bb;
 
-	//	if(defsettrue('e_WYSIWYG')){ return; }
+	
 		$eplug_bb = $this->var['eplug_bb'] ? $this->var['eplug_bb'] : array();
 
 		$bbcode_func = ($this->var['trigger']) ? $this->var['trigger'] : "addtext";
@@ -508,20 +508,7 @@ class bbcode_shortcodes extends e_shortcode
 		$bbcode_tag  = ($bbcode_helptag != 'helpb') ? ",'$bbcode_helptag'" : "";
 
 		$rand = rand(1000,9999);
-	//	$imagedir_display = str_replace('../','',$bbcode_imagedir);
-/*
-		if($parm == 'emotes')
-		{
-			if ($pref['comments_emoticons'] && $pref['smiley_activate'] && !defsettrue('e_WYSIWYG'))
-			{
-				$bbcode['emotes'] = array("expandit","emoticon_selector_".$rand, LANHELP_44, "emotes.png", "Emoticon_Select", "emoticon_selector_".$rand);
-			}
-			else
-			{	// If emotes disabled, don't return anything (without this we return an empty image reference)
-				return '';
-			}
-		}
-*/
+
 		// Format: $bbcode['UNIQUE_NAME'] = array(ONCLICK_FUNC, ONCLICK_VAR, HELPTEXT, ICON, INCLUDE_FUNC, INCLUDE_FUNCTION_VAR);
 
 		
@@ -609,7 +596,7 @@ class bbcode_shortcodes extends e_shortcode
 		}
 		else
 		{
-			$pre = "<a class='btn  ".vartrue($bbcode[$parm][7], 'e-pointer')."' title=\"".str_replace('<br />','\\n',($_helptxt))."\" onclick=\"{$_onclick_func}('".$_onclick_var."')\" ".($bbcode_helpactive ? "onmouseout=\"{$bbcode_help}(''{$bbcode_tag})\" onmouseover=\"{$bbcode_help}('".$_helptxt."'{$bbcode_tag})\"" : "" )." />";
+			$pre = "<a class='btn  ".vartrue($bbcode[$parm][7], 'e-pointer')."' title=\"".str_replace('<br />','\\n',($_helptxt))."\" onclick=\"{$_onclick_func}('".$_onclick_var."')\" ".($bbcode_helpactive ? "onmouseout=\"{$bbcode_help}(''{$bbcode_tag})\" onmouseover=\"{$bbcode_help}('".$_helptxt."'{$bbcode_tag})\"" : "" )." >";
 			$post = "</a>\n";	 // btn-small bbcode bbcode_buttons
 		}
 
@@ -656,7 +643,7 @@ class bbcode_shortcodes extends e_shortcode
 
 	function sc_bb_preimagedir($parm)
 	{
-	//	if(defsettrue('e_WYSIWYG')) { return; }
+
 	//	global $bbcode_imagedir;
 	//	$bbcode_imagedir = $parm;
 	//	return;

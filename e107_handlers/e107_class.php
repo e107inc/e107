@@ -2599,6 +2599,26 @@ class e107
 
 	}
 
+	/**
+	 * Set or Retrieve WYSIWYG active status. (replaces constant  e_WYSIWYG) 
+	 */
+	public static function wysiwyg($val=null)
+	{
+		if (self::getPref('core','wysiwyg',false) != true)
+		{
+			return false; 	
+		}
+
+		if(is_null($val))
+		{
+			return self::getRegistry('core/e107/wysiwyg');
+		}
+		else
+		{
+			return self::setRegistry('core/e107/wysiwyg',$val); 	
+		}	
+		
+	}
 
 
 	/**

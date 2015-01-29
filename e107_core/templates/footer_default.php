@@ -277,6 +277,29 @@ if (isset($footer_js) && is_array($footer_js))
 	}
 }
 
+// Load e_footer.php files. 
+if (is_array($pref['e_footer_list']))
+{
+	ob_start();
+	
+	foreach($pref['e_footer_list'] as $val)
+	{		
+		$fname = e_PLUGIN.$val."/e_footer.php"; // Do not place inside a function - BC $pref required. . 
+		
+		if(is_readable($fname))
+		{
+			
+			$ret = ($e107_debug || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
+		}	
+	}
+
+	$e_footer_ouput = ob_get_contents(); // Don't use. 
+	ob_end_clean();
+	unset($ret);
+}
+
+
+
 // [JSManager] Load JS Footer Includes by priority
 e107::getJs()->renderJs('footer', true);
 
