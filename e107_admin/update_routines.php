@@ -215,8 +215,9 @@ class e107Update
 	
 	function updatePlugin($path)
 	{
-		 e107::getPlugin()->install_plugin_xml($path, 'upgrade');
-		 e107::getMessage()->reset(E_MESSAGE_INFO); 
+		e107::getPlugin()->install_plugin_xml($path, 'upgrade');
+		e107::getPlugin()->save_addon_prefs(); // Rebuild addon prefs. 
+		e107::getMessage()->reset(E_MESSAGE_INFO); 
 		e107::getMessage()->addSuccess(LAN_UPDATED." : ".$path);
 		
 	}
