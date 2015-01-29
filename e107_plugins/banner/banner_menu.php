@@ -30,9 +30,12 @@ To define your own banner to use here ...
 3. Save file
 */
 
-//inclXXXude_lan(e_PLUGIN.'banner/languages/'.e_LANGUAGE.'_menu_banner.php');
 
-if(file_exists(THEME.'banner_template.php'))
+if(file_exists(THEME.'templates/banner/banner_template.php')) // v2.x location. 
+{
+	require_once (THEME.'templates/banner/banner_template.php');
+}
+elseif(file_exists(THEME.'banner_template.php')) // v1.x location. 
 {
 	require_once (THEME.'banner_template.php');
 }
@@ -46,10 +49,8 @@ $menu_pref = e107::getConfig('menu')->getPref('');
 if(isset($campaign))
 {
 	$parm = $campaign;
-	$bannersccode = file_get_contents(e_CORE.'shortcodes/single/banner.sc'); // FIXME file not there?
-	$BANNER = eval($bannersccode);
 	$txt = $BANNER_MENU_START;
-	$txt .= preg_replace("/\{(.*?)\}/e", '$\1', $BANNER_MENU);
+	$txt .= e107::getParser()->parseTemplate("{BANNER=".$parm."}",true); 
 	$txt .= $BANNER_MENU_END;
 
 }
@@ -79,13 +80,12 @@ else
 		}
 		
 		$txt = $BANNER_MENU_START;
-		
+
 		foreach ($parms as $parm)
 		{
-			$bannersccode = file_get_contents(e_CORE.'shortcodes/banner.sc');
-			$BANNER = eval($bannersccode);
-			$txt .= preg_replace("/\{(.*?)\}/e", '$\1', $BANNER_MENU);
+			$txt .= e107::getParser()->parseTemplate("{BANNER=".$parm."}",true); 
 		}
+		
 		$txt .= $BANNER_MENU_END;
 	}
 

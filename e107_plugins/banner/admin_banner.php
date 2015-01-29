@@ -81,7 +81,9 @@ if (isset($_POST['update_menu']))
 			$menuPref->setPref($k, $v);
 		}
 		$menuPref->save(false, true, false);
-
+		e107::getMessage()->addSuccess(LAN_SAVED);
+		
+		$menu_pref = e107::getConfig('menu')->getPref('');
 		//banners_adminlog('01', $menu_pref['banner_caption'].'[!br!]'.$menu_pref['banner_amount'].', '.$menu_pref['banner_rendertype'].'[!br!]'.$menu_pref['banner_campaign']);
 	}
 }
@@ -598,7 +600,7 @@ if ($action == "menu")
 					<tbody>
 						<tr>
 							<td>".BNRLAN_37."</td>
-							<td>".$frm->text('banner_caption', $menu_pref['banner_caption'])."</td>
+							<td>".$frm->text('banner_caption', $menu_pref['banner_caption'],255,'size=xxlarge')."</td>
 						</tr>
 						<tr>
 							<td>".BNRLAN_39."</td>
@@ -607,19 +609,21 @@ if ($action == "menu")
 
 	if($all_catname)
 	{
+		
 		foreach($all_catname as $name)
 		{
-			//$text .= "<option value='{$name}'>{$name}</option>";
+
 			$text .= "
 									<div class='field-spacer'>
-										".$frm->checkbox('multiaction_cat_active[]', $name, in_array($name, $in_catname)).$frm->label($name, 'multiaction_cat_active[]', $name)."
+										".$frm->checkbox('multiaction_cat_active[]', $name, in_array($name, $in_catname), $name)."
 									</div>
 			";
 		}
+
 		$text .= "
-									<div class='field-spacer'>
-										".$frm->admin_button('check_all', LAN_CHECKALL, 'other')."
-										".$frm->admin_button('uncheck_all', LAN_UNCHECKALL, 'other')."
+									<div class='field-spacer control-group form-group'>
+										".$frm->admin_button('check_all', 'jstarget:multiaction_cat_active', 'checkall', LAN_CHECKALL)."
+										".$frm->admin_button('uncheck_all','jstarget:multiaction_cat_active', 'checkall', LAN_UNCHECKALL)."
 									</div>
 		";
 	}
@@ -627,6 +631,13 @@ if ($action == "menu")
 	{
 		$text .= BNRLAN_40;
 	}
+	
+	
+	$renderTypes = array(BNRLAN_44,'1 - '.BNRLAN_45,'2 - '.BNRLAN_46);
+	
+//	$renderTypes[3] = "3 - ".BNRLAN_47; //TODO 
+	
+	
 	$text .= "
 
 							</td>
@@ -637,14 +648,7 @@ if ($action == "menu")
 						</tr>
 						<tr>
 							<td>".BNRLAN_43."</td>
-							<td>
-								<select class='tbox select' id='banner_rendertype' name='banner_rendertype'>
-									".$frm->option(BNRLAN_44, 0, (empty($menu_pref['banner_rendertype'])))."
-									".$frm->option("1 - ".BNRLAN_45, 1, ($menu_pref['banner_rendertype'] == "1"))."
-									".$frm->option("2 - ".BNRLAN_46, 2, ($menu_pref['banner_rendertype'] == "2"))."
-									".$frm->option("3 - ".BNRLAN_47, 3, ($menu_pref['banner_rendertype'] == "3"))."
-								</select>
-							</td>
+							<td>".$frm->select('banner_rendertype', $renderTypes, $menu_pref['banner_rendertype'],'size=xxlarge')."</td>
 						</tr>
 					</tbody>
 				</table>
