@@ -277,7 +277,10 @@ define("LAN_FORUM_4012", "Unstick thread"); // LAN_398
 define("LAN_FORUM_4013", "Lock thread"); // LAN_399
 define("LAN_FORUM_4014", "Unlock thread"); // LAN_400
 
-
+define("LAN_FORUM_CLOSE", "Thread closed.");
+define("LAN_FORUM_OPEN", "Thread reopened.");
+define("LAN_FORUM_STICK", "Thread made sticky.");
+define("LAN_FORUM_UNSTICK", "Thread unstuck.");
 
 
 /*  THIS WILL BE DELETED ONCE THE REWRITE IS DONE

@@ -88,7 +88,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		
 		
 		$rows = (e107::wysiwyg()==true) ? 15 : 10;
-		$ret = "<textarea class='e-wysiwyg tbox' id='post' name='post' cols='70' rows='{$rows}' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$post</textarea>\n<br />\n";
+		$ret = "<textarea class='e-wysiwyg tbox form-control' id='post' name='post' cols='70' rows='{$rows}' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$post</textarea>\n<br />\n";
 	//	if(!e_WYSIWYG)
 		{
 	//		$ret .= display_help('helpb', 'forum');

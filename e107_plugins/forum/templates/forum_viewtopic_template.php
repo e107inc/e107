@@ -312,40 +312,40 @@ $FORUM_CRUMB['forum']['value'] = "<a class='forumlink' href='{FORUM_HREF}'>{FORU
 
 $FORUM_VIEWTOPIC_TEMPLATE['start'] 	= "
 
-	<div class='row-fluid'>
+	<div class='row row-fluid'>
 		<div>{BACKLINK}</div>
 	</div>
 	
-	<div class='row-fluid'>
-		<div class='span9 pull-left'><h3>{THREADNAME}</h3></div><div class='span3 pull-right right' style='padding-top:10px'>{BUTTONSX}</div>
+	<div class='row row-fluid'>
+		<div class='col-md-9 span9 pull-left'><h3>{THREADNAME}</h3></div><div class='col-md-3 span3 pull-right right text-right' style='padding-top:10px'>{BUTTONSX}</div>
 	</div>
 	
 	{MESSAGE}
 	
 											
-<ul id='forum-viewtopic' class='unstyled'>
+<ul id='forum-viewtopic' class='unstyled list-unstyled'>
 <li class='divider'></li>
 ";
 
 $FORUM_VIEWTOPIC_TEMPLATE['thread'] = "
 									<li id='post-{POSTID}'>
-										<div class='row-fluid btn-navbar'>
-												<div class='span2 center'>{NEWFLAG}<small>
+										<div class='row row-fluid btn-navbar navbar-btn'>
+												<div class='col-md-2 span2 center'>{NEWFLAG}<small>
 														{LEVEL=badge} {LEVEL=pic}
 													</small> {ANON_IP}</div>
-												<div class='span4  muted'><small>{THREADDATESTAMP=relative}</small></div>
-												<div class='span5 muted right'><small>{LASTEDIT}{LASTEDITBY=link}</small></div>
-												<div class='span1 right'>{POSTOPTIONS}</div>	
+												<div class='col-md-4 text-muted span4  muted'><small>{THREADDATESTAMP=relative}</small></div>
+												<div class='col-md-5 text-muted span5 muted right text-right'><small>{LASTEDIT}{LASTEDITBY=link}</small></div>
+												<div class='col-md-1 span1 right text-right'>{POSTOPTIONS}</div>	
 										
 										</div>
 										
-										<div class='row-fluid'  >
-											<div class='span2 center'>
+										<div class='row row-fluid'  >
+											<div class='col-md-2 span2 center'>
 													{AVATAR}<br />
 													{USERCOMBO}<br />
 													{CUSTOMTITLE}
 											</div>
-											<div class='span9 '>
+											<div class='col-md-9 span9 '>
 												{POLL}
 												{THREAD_TEXT}
 												{ATTACHMENTS}
@@ -353,15 +353,15 @@ $FORUM_VIEWTOPIC_TEMPLATE['thread'] = "
 										</div>
 										
 										
-										<div class='row-fluid'>
-											<div class='span2 finfobar'>
+										<div class='row row-fluid'>
+											<div class='col-md-2 span2 finfobar'>
 												&nbsp;
 											</div>
-											<div class='span9  finfobar' >
+											<div class='col-md-9 span9  finfobar' >
 												<small> {SIGNATURE=clean}</small>
 											</div>
 											
-											<div class='span3'>
+											<div class='col-md-3 span3'>
 											</div>
 										</div>
 										
@@ -370,10 +370,10 @@ $FORUM_VIEWTOPIC_TEMPLATE['thread'] = "
 									<li class='divider'></li>";
 
 $FORUM_VIEWTOPIC_TEMPLATE['end'] = "</ul>
-<div class='row-fluid clearfix'>
-		<div class='span3 pull-left'>{GOTOPAGES}</div>
-		<div class='span6 center'>{QUICKREPLY}</div>
-		<div class='span3 pull-right right '>{BUTTONSX}</div>
+<div class='row row-fluid clearfix'>
+		<div class='col-md-3 span3 pull-left'>{GOTOPAGES}</div>
+		<div class='col-md-6 text-center span6 center'>{QUICKREPLY}</div>
+		<div class='col-md-3 span3 pull-right right '>{BUTTONSX}</div>
 	</div>
 	{THREADSTATUS}
 	

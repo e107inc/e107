@@ -698,11 +698,11 @@ function fadminoptions($thread_info)
 	
 
 
-	$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='delete' data-forum-thread='".$id."'>Delete ".$tp->toGlyph('trash');
-	$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='".$stickUnstick."' data-forum-thread='".$id."'>".$lan[$stickUnstick]." ".$icon[$stickUnstick]."</a></li>";
-	$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='".$lockUnlock."' data-forum-thread='".$id."'>".$lan[$lockUnlock]." ".$icon[$lockUnlock]."</a></li>";
+	$text .= "<li class='text-right'><a href='".e_REQUEST_URI."' data-forum-action='delete' data-forum-thread='".$id."'>Delete ".$tp->toGlyph('trash');
+	$text .= "<li class='text-right'><a href='".e_REQUEST_URI."' data-forum-action='".$stickUnstick."' data-forum-thread='".$id."'>".$lan[$stickUnstick]." ".$icon[$stickUnstick]."</a></li>";
+	$text .= "<li class='text-right'><a href='".e_REQUEST_URI."' data-forum-action='".$lockUnlock."' data-forum-thread='".$id."'>".$lan[$lockUnlock]." ".$icon[$lockUnlock]."</a></li>";
 	
-	$text .= "<li><a href='{$moveUrl}'>Move ".$tp->toGlyph('move')."</i></a></li>";
+	$text .= "<li class='text-right'><a href='{$moveUrl}'>Move ".$tp->toGlyph('move')."</i></a></li>";
 
 /*
 	$text .= "<li><input type='image' ".IMAGE_admin_delete." name='deleteThread_{$threadId}' value='thread_action' onclick=\"return confirm_({$threadId})\" /> Delete</li>";
