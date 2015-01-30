@@ -1243,13 +1243,20 @@ $columnInfo = array(
 	                  <tr>
 	                       <td>".DOWLAN_149."</td>
 	                       <td style='width:80%;'>
-	                          <input class='tbox' type='text' name='download_url_external' size='70' value='{$download_url_external}' maxlength='255'/>
+	                          <input class='tbox input-xxlarge' type='text' name='download_url_external' size='90' value='{$download_url_external}' maxlength='255'/>
 	                       </td>
 	                    </tr>
 	                    <tr>
 	                       <td>".DOWLAN_66."</td>
 	                       <td>
 	                          <input class='tbox' type='text' name='download_filesize_external' size='8' value='{$download_filesize}' maxlength='10'/>
+	                       	 <select class='tbox' name='download_filesize_unit'>
+						      <option value='B'{$b_sel}>".CORE_LAN_B."</option>
+						      <option value='KB'{$kb_sel}>".CORE_LAN_KB."</option>
+						      <option value='MB'>".CORE_LAN_MB."</option>
+						      <option value='GB'>".CORE_LAN_GB."</option>
+						      <option value='TB'>".CORE_LAN_TB."</option>
+							  </select>
 	                       </td>
 	                  </tr>
 	               </table>
@@ -1550,7 +1557,27 @@ $columnInfo = array(
 	     echo $text;
 	   }
 
-
+	function calc_filesize($size, $unit)
+	{
+		switch($unit)
+		{
+			case 'B' :
+				return $size;
+				break;
+			case 'KB' :
+				return $size * 1024;
+				break;
+			case 'MB' :
+				return $size * 1024 * 1024;
+				break;
+			case 'GB' :
+				return $size * 1024 * 1024 * 1024;
+				break;
+			case 'TB' :
+				return $size * 1024 * 1024 * 1024 * 1024;
+				break;
+		}
+	}
 
 	// Actually save a new or edited download to the DB
 	   function submit_download()
@@ -1577,10 +1604,11 @@ $columnInfo = array(
 		       	}
 			}
 	
-			if ($_POST['download_url_external'] && $_POST['download_url'] == '')
+			if (!empty($_POST['download_url_external']) && empty($_POST['download_url']) && !empty($_POST['download_filesize_unit']))
 			{
 				$dlInfo['download_url'] = $tp->toDB($_POST['download_url_external']);
-				$filesize = intval($_POST['download_filesize_external']);
+			//	$filesize = intval($_POST['download_filesize_external']);
+				$filesize = $this->calc_filesize($_POST['download_filesize_external'], $_POST['download_filesize_unit']);		
 			}
 			else
 			{
@@ -1588,6 +1616,7 @@ $columnInfo = array(
 				if ($_POST['download_filesize_external'])
 				{
 	            	$filesize = intval($_POST['download_filesize_external']);
+					
 	         	}
 	         	else
 	         	{
