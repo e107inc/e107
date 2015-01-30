@@ -79,14 +79,14 @@ $FORUM_TRACK_END	= "<br />TRACK-END";
 // New in v2.x - requires a bootstrap theme be loaded.  
 
 
-$FORUM_TEMPLATE['main-start']			= "<div class='row-fluid'>
-											{FORUM_BREADCRUMB}
-											<div class='right'>
-												{SEARCH}
+$FORUM_TEMPLATE['main-start']			= "<div class='row row-fluid'>
+												{FORUM_BREADCRUMB}
+												<div class='form-group right'>
+													{SEARCH}
+												</div>
 											</div>
-											
-											</div>
-											<table class='table table-striped'>
+											<div class='row'>
+											<table class='table table-striped table-bordered table-hover'>
 											<colgroup>
 											<col style='width:3%' />
 											<col />
@@ -114,7 +114,7 @@ $FORUM_TEMPLATE['main-forum']			= 	"<tr>
 											<td><small>{LASTPOSTUSER} {LASTPOSTDATE}</small></td>
 											</tr>";
 
-$FORUM_TEMPLATE['main-end']				= "</table>";
+$FORUM_TEMPLATE['main-end']				= "</table></div>";
 /*
 $FORUM_TEMPLATE['main-end']				.= "
 

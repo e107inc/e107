@@ -377,7 +377,7 @@ class e107forum
 				case 'lock':
 					if(e107::getDb()->update('forum_thread', 'thread_active=0 WHERE thread_id='.$id))
 					{
-						$ret['msg'] 	= FORLAN_CLOSE;
+						$ret['msg'] 	= LAN_FORUM_CLOSE; // FORLAN_CLOSE;
 						$ret['status'] 	= 'ok';	
 					}
 					else
@@ -390,7 +390,7 @@ class e107forum
 				case 'unlock':
 					if(e107::getDb()->update('forum_thread', 'thread_active=1 WHERE thread_id='.$id))
 					{
-						$ret['msg'] = FORLAN_OPEN;
+						$ret['msg'] = LAN_FORUM_OPEN; // FORLAN_OPEN;
 						$ret['status'] 	= 'ok';	
 					}
 					else
@@ -403,7 +403,7 @@ class e107forum
 				case 'stick':
 					if(e107::getDb()->update('forum_thread', 'thread_sticky=1 WHERE thread_id='.$id))
 					{
-						$ret['msg'] = FORLAN_STICK;
+						$ret['msg'] = LAN_FORUM_STICK; // FORLAN_STICK;
 						$ret['status'] 	= 'ok';	
 					}
 					else
@@ -416,7 +416,7 @@ class e107forum
 				case 'unstick':
 					if(e107::getDb()->update('forum_thread', 'thread_sticky=0 WHERE thread_id='.$id))
 					{
-						$ret['msg'] = FORLAN_UNSTICK;
+						$ret['msg'] = LAN_FORUM_UNSTICK; // FORLAN_UNSTICK;
 						$ret['status'] 	= 'ok';		
 					}
 					else

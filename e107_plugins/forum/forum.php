@@ -123,13 +123,21 @@ $fVars->ICONKEY = "
 <td style='width:10%'><span class='smallblacktext'>".LAN_FORUM_0041."</span></td>
 </tr>\n</table>\n";
 
+if(!$srchIcon = $tp->toGlyph('fa-search'))
+{
+	$srchIcon = LAN_SEARCH; 	
+}
+
 $fVars->SEARCH = "
 <form method='get' class='form-inline input-append' action='".e_BASE."search.php'>
-
-<input class='tbox' type='text' name='q' size='20' value='' maxlength='50' />
-<input class='btn btn-default button' type='submit' name='s' value='".LAN_SEARCH."' />
+<div class='input-group'>
+<input class='tbox form-control' type='text' name='q' size='20' value='' maxlength='50' />
+<span class='input-group-btn'>
+<button class='btn btn-default button' type='submit' name='s' value='search' />".$srchIcon."</button>
+</span>
 <input type='hidden' name='r' value='0' />
 <input type='hidden' name='ref' value='forum' />
+</div>
 
 </form>\n";
 
