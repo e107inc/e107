@@ -189,20 +189,18 @@ $POLL_TEMPLATE = array();
 $POLL_TEMPLATE['form']['start'] = "
 <div class='clearfix'>
 	<div>
-		<div class='control-group'>
-			<ul class='nav nav-list'>
-				<li class='nav-header'>
-					Poll: {QUESTION}
-				</li>
+		<div class='form-group control-group'>
+			Poll: {QUESTION}
+			
 ";
 
 $POLL_TEMPLATE['form']['item'] = "
-			<li>
+			<div class='radio'>
 				{ANSWER} 
-			</li>";
+			</div>";
 
 $POLL_TEMPLATE['form']['end'] = "
-			</ul>
+			
 		</div>
 		<div class='control-group'>
 			 <div class='controls text-center'>
