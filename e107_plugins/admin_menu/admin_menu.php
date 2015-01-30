@@ -28,7 +28,7 @@ if (ADMIN == TRUE)
     $array_functions = $nav->adminLinks();
 
 	$amtext = "<div class='text-center' style='text-align:center'>
-	<select name='activate' onchange='urljump(this.options[selectedIndex].value)' class='tbox'>
+	<select name='activate' onchange='urljump(this.options[selectedIndex].value)' class='tbox form-control'>
 	<option>".LAN_SELECT."</option>\n";
 	foreach ($array_functions as $link_value)
 	{

@@ -29,16 +29,16 @@ $CONTACT_TEMPLATE['info'] = "
 
 $CONTACT_TEMPLATE['menu'] =  '
 	<div class="contactMenuForm">
-		<div class="control-group">
+		<div class="control-group form-group">
 			<label >Name</label>
    			 {CONTACT_NAME}
 		 </div>
 		 
-		<div class="control-group">
+		<div class="control-group form-group">
 			<label class="control-label" for="contactEmail">Email</label>
 				{CONTACT_EMAIL}
 		</div>
-		<div class="control-group">
+		<div class="control-group form-group">
 			<label>Comments</label>
 			{CONTACT_BODY=rows=5&cols=30}							
 		</div>

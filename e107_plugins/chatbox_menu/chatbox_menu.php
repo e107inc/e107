@@ -223,7 +223,7 @@ else
 	{
 		$texta =  (e_QUERY ? "\n<form id='chatbox' method='post' action='".e_SELF."?".e_QUERY."'>" : "\n<form id='chatbox' method='post' action='".e_SELF."'>");
 	}
-	$texta .= "<div class='control-group' id='chatbox-input-block'>";
+	$texta .= "<div class='control-group form-group' id='chatbox-input-block'>";
 
 	if(($pref['anon_post'] == "1" && USER == FALSE))
 	{
@@ -240,7 +240,7 @@ else
 		$oc = "";
 	}
 	$texta .= "
-	<textarea placeholder=\"".LAN_CHATBOX_100."\" required class='tbox chatbox input-xlarge' id='cmessage' name='cmessage' cols='20' rows='5' style='max-width:97%; ".($cb_width ? "width:".$cb_width.";" : '')." overflow: auto' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
+	<textarea placeholder=\"".LAN_CHATBOX_100."\" required class='tbox chatbox form-control input-xlarge' id='cmessage' name='cmessage' cols='20' rows='5' style='max-width:97%; ".($cb_width ? "width:".$cb_width.";" : '')." overflow: auto' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
 	<br />
 	<input class='btn btn-default button' type='submit' id='chat_submit' name='chat_submit' value='".CHATBOX_L4."' {$oc}/>
 	";
