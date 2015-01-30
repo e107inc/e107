@@ -11,6 +11,66 @@ $_E107['no_online'] = true;
 require_once("../../class2.php");
 
 /*
+echo '
+
+
+tinymce.init({
+	"selector": ".e-wysiwyg",
+	"theme": "modern",
+	"plugins": "advlist autolink lists link image charmap print preview hr anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen        insertdatetime media nonbreaking save table contextmenu directionality emoticons template paste textcolor",
+	"language": "en",
+	"menubar": "edit view format insert table tools",
+	"toolbar1": "undo redo | styleselect | bold italic forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | e107-image e107-video e107-glyph | preview",
+	"external_plugins": {"e107":"/e107_plugins/tinymce4/plugins/e107/plugin.js","example":"/e107_plugins/tinymce4/plugins/example/plugin.js"},
+	"image_advtab": true,
+	"extended_valid_elements": "i[*], object[*],embed[*],bbcode[*]",
+	"convert_fonts_to_spans": false,
+	"content_css": "http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css",
+	"relative_urls": false,
+	"preformatted": true,
+//	"document_base_url": "http://eternal.technology/"
+});
+';
+exit;
+*/
+
+
+
+/*
+echo 'tinymce.init({
+	 selector: ".e-wysiwyg",
+    theme: "modern",
+    plugins: "template",
+    toolbar: "template",
+ //   template_cdate_classes: "cdate creationdate",
+ //   template_mdate_classes: "mdate modifieddate",
+ //   template_selected_content_classes: "selcontent",
+ //   template_cdate_format: "%m/%d/%Y : %H:%M:%S",
+ //   template_mdate_format: "%m/%d/%Y : %H:%M:%S",
+ //   template_replace_values: {
+//        username : "Jack Black",
+//        staffid : "991234"
+ //   },
+    templates : [
+        {
+            title: "Editor Details",
+            url: "editor_details.htm",
+            description: "Adds Editor Name and Staff ID"
+        },
+        {
+            title: "Timestamp",
+            content: "Some Content goes here. ",
+            description: "Adds an editing timestamp."
+        }
+    ]
+});';
+*/
+
+// exit;
+
+
+
+/*
 $text = <<<TMPL
 
 
@@ -55,6 +115,7 @@ $gen = $wy->renderConfig();
 
 if(ADMIN && e_QUERY == 'debug')
 {
+	define('e_IFRAME', true); 
 	require_once(HEADERF);
 
 	echo "<table class='table'><tr><td>";
@@ -98,9 +159,9 @@ class wysiwyg
 	{
 		$this->getConfig($config);	
 		$text .= "\n /* TinyMce Config: ".$this->configName." */\n\n";
-		$text .= "tinymce.init(";
-		$text .= json_encode($this->config); // Moc: temporary fix for BC with PHP 5.3: https://github.com/e107inc/e107/issues/614
-		$text .= ");";
+		$text .= "tinymce.init({\n";
+		$text .= $this->config; // Moc: temporary fix for BC with PHP 5.3: https://github.com/e107inc/e107/issues/614
+		$text .= "\n});";
 		
 		return stripslashes($text);
 	}
@@ -165,26 +226,36 @@ class wysiwyg
 		}
 			
 			
-		return $ext;
+		return json_encode($ext);
 	}
 		
 		
 				
 	function convertBoolean($string)
 	{
-		$string = str_replace("\n","",$string);
-		
-		if($string === 'true')
+	
+		if(is_string($string))
 		{
-			return true;
+			$string = trim($string); 
+			$string = str_replace("\n","",$string);
 		}
 		
-		if($string === 'false')
+		if($string === true)
 		{
-			return false;	
+			return 'true';	
 		}
-				
-		return $string;
+		
+		if($string === false)
+		{
+			return 'false';	
+		}
+		
+		if($string === 'true' || $string === 'false' || $string[0] == '[')
+		{
+			return $string; 
+		}
+						
+		return '"'.$string.'"';
 	}			
 		
 
@@ -220,8 +291,8 @@ class wysiwyg
 
 		unset($config['@attributes']);
 
-		$this->config = array(
-			'selector' 	=> '.e-wysiwyg',
+		$ret = array(
+			'selector' 			=> '.e-wysiwyg',
 			'theme'				=> 'modern',
 			'plugins'			=> $this->filter_plugins($config['tinymce_plugins']),
 			'language'			=> $this->tinymce_lang()
@@ -232,23 +303,35 @@ class wysiwyg
 		// Loop thru XML parms. 
 		foreach($config as $k=>$xml)
 		{
-			if($k == 'external_plugins')
-			{
-				$this->config['external_plugins'] = $this->getExternalPlugins($xml); 
-				continue;		
-			}
-			
-			$this->config[$k] = $this->convertBoolean($xml);
+			$ret[$k] = $xml; 			
 		}
 
-		$this->config['convert_fonts_to_spans']	= false;
-		$this->config['content_css']			= 'http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css';
+		$ret['convert_fonts_to_spans']	= false;
+		$ret['content_css']				= e_PLUGIN_ABS.'tinymce4/editor.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css,http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css';
 		
-		$this->config['relative_urls']			= false;  //Media Manager prefers it like this. 
-		$this->config['preformatted']			= true;
-		$this->config['document_base_url']		= SITEURL;
+		$ret['relative_urls']			= false;  //Media Manager prefers it like this. 
+		$ret['preformatted']			= true;
+		$ret['document_base_url']		= SITEURL;
 		
+		if(!empty($ret['templates']))
+		{
+			$ret['templates']				 = $tp->replaceConstants($ret['templates'],'abs'); // $this->getTemplates(); 
+		}
 		//	$this->config['verify_css_classes']	= 'false';
+		
+		$text = array();
+		foreach($ret as $k=>$v)
+		{
+			if($k == 'external_plugins')
+			{
+				$text[] = 'external_plugins: '. $this->getExternalPlugins($v); 
+				continue;		
+			}
+			$text[] = $k.': '.$this->convertBoolean($v);	
+		}
+		
+		
+		$this->config = implode(",\n",$text); 
 		
 		
 		return; 
@@ -386,6 +469,16 @@ class wysiwyg
 		{
 	//		$this->config['external_link_list_url'] = e_PLUGIN_ABS."tiny_mce/filelist.php";
 		}
+	}
+
+
+	function getTemplates()
+	{
+		$templatePath = (is_readable(THEME."templates/tinymce/".$template)) ? THEME."templates/tinymce/".$template : e_PLUGIN."tinymce4/templates/".$template;
+		
+		
+		
+		
 	}
 
 
