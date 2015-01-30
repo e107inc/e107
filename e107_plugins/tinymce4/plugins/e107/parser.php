@@ -38,6 +38,9 @@ if($_POST['mode'] == 'tohtml')
     if(check_class($pref['post_html'])) // raw HTML within [html] tags. 
     {
     	
+    	
+    //	$content = $tp->replaceConstants($content,'abs');	
+		
     	if(strstr($content,"[html]") === false) // BC - convert old BB code text to html. 
 		{
 			e107::getBB()->clearClass();
@@ -46,12 +49,22 @@ if($_POST['mode'] == 'tohtml')
 			$content =  nl2br($content, true);
 			$content = $tp->toHtml($content, true);	
 		}		
-    		
-        $content 		= str_replace("{e_BASE}","",$content); // We want {e_BASE} in the final data going to the DB, but not the editor. 
+    	
+		
+		
+        $content 		= str_replace("{e_BASE}",e_HTTP,$content); // We want {e_BASE} in the final data going to the DB, but not the editor. 
         $srch 			= array("<!-- bbcode-html-start -->","<!-- bbcode-html-end -->","[html]","[/html]");
         $content 		= str_replace($srch,"",$content);
 		$content 		= e107::getBB()->parseBBCodes($content); // parse the <bbcode> tag so we see the HTML equivalent while editing!
-        echo $content;
+        
+        if(!empty($content) && E107_DEBUG_LEVEL > 0)
+		{
+			$content =  "-- DEBUG MODE ACTIVE -- \n".$content;		
+			echo htmlentities($content)."\n";
+			exit;		
+		}
+        
+     	 echo $content;
     }
     else  // bbcode Mode. 
     {   
@@ -63,6 +76,13 @@ if($_POST['mode'] == 'tohtml')
         $content = $tp->toHtml($content, true);
         $content = str_replace(e_MEDIA_IMAGE,"{e_MEDIA_IMAGE}",$content);
         
+		 if(!empty($content) && E107_DEBUG_LEVEL > 0)
+		{
+			echo "<!-- bbcode mode -->";			
+			//print_r(htmlentities($content))."\n";
+			//exit;		
+		}
+		
         echo $content;
     }
 	
