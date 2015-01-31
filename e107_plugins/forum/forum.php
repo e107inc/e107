@@ -62,7 +62,7 @@ if(isset($_GET['f']))
 $fVars = new e_vars;
 $gen = new convert;
 
-$fVars->FORUMTITLE = LAN_FORUM_0001;
+$fVars->FORUMTITLE = LAN_PLUGIN_FORUM_NAME;
 $fVars->THREADTITLE = LAN_FORUM_0002;
 $fVars->REPLYTITLE = LAN_FORUM_0003;
 $fVars->LASTPOSTITLE = LAN_FORUM_0004;
@@ -251,7 +251,7 @@ $newflag_list = $forum->forumGetUnreadForums();
 
 if (!$forumList)
 {
-	$ns->tablerender(LAN_FORUM_0001, "<div style='text-align:center'>".LAN_FORUM_0067.'</div>', array('forum', '51'));
+	$ns->tablerender(LAN_PLUGIN_FORUM_NAME, "<div style='text-align:center'>".LAN_FORUM_0067.'</div>', array('forum', '51'));
 	require_once(FOOTERF);
 	exit;
 }
@@ -552,7 +552,7 @@ function forum_rules($action = 'check')
 	{
 		$rules_text = LAN_FORUM_0072;
 	}
-	e107::getRender()->tablerender(LAN_FORUM_0071, "<div style='text-align:center'>{$rules_text}</div>", array('forum', 'forum_rules'));
+	e107::getRender()->tablerender(LAN_FORUM_0016, "<div style='text-align:center'>{$rules_text}</div>", array('forum', 'forum_rules'));
 }
 
 ?>

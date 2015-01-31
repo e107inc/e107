@@ -24,7 +24,7 @@ vf = viewforum, vt = viewtopic, p = post, etc.
 define("e_PAGETITLE", "Forum");
 
 // forum.php (forum_template)
-define("LAN_FORUM_0001", "Forum"); // LAN_46	
+// define("LAN_FORUM_0001", "Forum"); // LAN_46	
 define("LAN_FORUM_0002", "Topics"); // LAN_47 / FORLAN_21
 define("LAN_FORUM_0003", "Replies"); // LAN_48 / LAN_55
 define("LAN_FORUM_0004", "Last Post"); // LAN_49 / FORLAN_22 / LAN_57
@@ -109,7 +109,7 @@ define("LAN_FORUM_0068", "No forums in this section yet, please check back soon.
 define('LAN_FORUM_0069', 'Sub-forums'); // FORLAN_444 
 
 define("LAN_FORUM_0070", "Cancel Topic Tracking"); // LAN_392 
-define("LAN_FORUM_0071", "Forum Rules"); // LAN_433
+//define("LAN_FORUM_0071", "Forum Rules"); // LAN_433
 define("LAN_FORUM_0072", "No rules defined."); // FORLAN_441
 define("LAN_FORUM_0073", "Tracked topics"); // LAN_397
 define("LAN_FORUM_0074", "Posted by");  // LAN_423
@@ -137,7 +137,7 @@ define("LAN_FORUM_1016", "Poll"); // FORLAN_23
 
 define("LAN_FORUM_1017", "Go to"); // LAN_401 (p?)
 define("LAN_FORUM_1018", "New topic");
-define("LAN_FORUM_1019", "Are you sure?"); // new
+// define("LAN_FORUM_1019", "Are you sure?"); // new
 
 // starting at LAN_FORUM_2xxx => forum_viewtopic.php
 define("LAN_FORUM_2001", "Previous topic"); // LAN_389 
@@ -190,8 +190,8 @@ define("LAN_FORUM_2036", "Send Private Message"); // new / LAN_399
 define("LAN_FORUM_2037", "Post deleted on"); // new
 define("LAN_FORUM_2038", "Reason"); // new
 
-define("LAN_FORUM_2039", "Edit"); // LAN_400
-define("LAN_FORUM_2040", "Delete"); // LAN_435 (vf)?
+// define("LAN_FORUM_2039", "Edit"); // LAN_400
+// define("LAN_FORUM_2040", "Delete"); // LAN_435 (vf)?
 define("LAN_FORUM_2041", "Quote"); // LAN_401
 define("LAN_FORUM_2042", "Move"); // FORCONF_25 ?
 define("LAN_FORUM_2043", "Split"); // new
@@ -204,9 +204,9 @@ define("LAN_FORUM_3001", "You are not authorized to post to this forum."); // LA
 define("LAN_FORUM_3002", "This topic is locked."); // LAN_397
 define("LAN_FORUM_3003", "Replying to"); // LAN_02 (p)
 
-define("LAN_FORUM_3004", "Anonymous"); // LAN_311
+// define("LAN_FORUM_3004", "Anonymous"); // LAN_311
 define("LAN_FORUM_3005", "Preview"); // LAN_323
-define("LAN_FORUM_3006", "Duplicate post"); // LAN_FORUM_2
+// define("LAN_FORUM_3006", "Duplicate post"); // LAN_FORUM_2
 define("LAN_FORUM_3007", "You left required field(s) blank"); // LAN_27
 define("LAN_FORUM_3008", "Unauthorised"); // LAN_95
 define("LAN_FORUM_3009", "You are not authorised to edit this forum post."); //LAN_96
@@ -234,15 +234,6 @@ define("LAN_FORUM_3026", "Post topic as"); // LAN_400 (p)
 
 // poll - partly in e107_plugins/poll/poll_class.php
 define("LAN_FORUM_3028", "Add Poll"); // new
-define("LAN_FORUM_3029", "If you do not wish to add a poll to your topic, leave the fields blank."); // LAN_386
-define("LAN_FORUM_3030", "Poll question"); // LAN_5
-define("LAN_FORUM_3031", "Poll answer"); // LAN_391
-define("LAN_FORUM_3032", "Add another answer"); // LAN_6
-define("LAN_FORUM_3033", "Allow multiple choices?"); // LAN_506
-define("LAN_FORUM_3034", "Vote storage method"); // POLLAN_16
-define("LAN_FORUM_3035", "Cookie"); // POLLAN_17
-define("LAN_FORUM_3036", "IP address"); // POLLAN_18
-define("LAN_FORUM_3037", "User ID (only members can vote)"); // POLLAN_19
 
 define("LAN_FORUM_3038", "Normal"); // LAN_1
 define("LAN_FORUM_3039", "Deactivate emoticons for this post"); // LAN_FORUMPOST_EMOTES
@@ -277,11 +268,45 @@ define("LAN_FORUM_4012", "Unstick thread"); // LAN_398
 define("LAN_FORUM_4013", "Lock thread"); // LAN_399
 define("LAN_FORUM_4014", "Unlock thread"); // LAN_400
 
+
+// Ajax and actions 
 define("LAN_FORUM_CLOSE", "Thread closed.");
 define("LAN_FORUM_OPEN", "Thread reopened.");
 define("LAN_FORUM_STICK", "Thread made sticky.");
 define("LAN_FORUM_UNSTICK", "Thread unstuck.");
 
+// Config -TO BE RENAMED
+
+define("FORCONF_5", "Poll deleted."); // FORCONF_5
+define("FORCONF_6", "Thread deleted"); // FORCONF_6
+define("FORCONF_7", "replies deleted"); // FORCONF_7
+define("FORCONF_8", "Delete cancelled."); // FORCONF_8
+define("FORCONF_9", "Thread moved."); // FORCONF_9
+define("FORCONF_10", "Move cancelled."); // FORCONF_10
+define("FORCONF_11", "Back To Forums"); // FORCONF_11
+define("FORCONF_12", "Forum Configuration"); // FORCONF_12
+define("FORCONF_13", "Are you absolutely certain you want to delete this poll?<br />Once deleted it <b><u>cannot</u></b> be retrieved.");
+// define("FORCONF_14", "Cancel");
+define("FORCONF_15", "Confirm Delete Forum Post"); // FORCONF_15
+// define("FORCONF_16", "Confirm Delete Poll"); // FORCONF_16
+define("FORCONF_17", "posted by"); // FORCONF_17
+define("FORCONF_18", "Are you absolutely certain you want to delete this forum");
+define("FORCONF_19", "thread and it's related posts?");
+define("FORCONF_20", "the poll will also be deleted");
+define("FORCONF_21", "Once deleted they");
+define("FORCONF_22", "post?<br />Once deleted it");
+define("FORCONF_23", "cannot</u></b> be retrieved");
+define("FORCONF_24", "Move thread  to forum");
+define("FORCONF_25", "Move Thread");
+define("FORCONF_26", "Reply deleted");
+
+define("FORCONF_27", "moved");
+
+define("FORCONF_28", "Do not rename thread title");
+define("FORCONF_29", "Add");
+define("FORCONF_30", "to title");
+define("FORCONF_31", "Rename to:");
+define("FORCONF_32", "Rename thread options:");
 
 /*  THIS WILL BE DELETED ONCE THE REWRITE IS DONE
 ==================================================

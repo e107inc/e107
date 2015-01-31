@@ -780,7 +780,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				$array_sub_functions = array();
 				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php', LAN_MANAGE, ADLAN_3, 'H', 3, E_16_MANAGE, E_32_MANAGE);
 				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php?create', LAN_CREATE, ADLAN_2, 'H', 3, E_16_CREATE, E_32_CREATE);
-				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php?pref', LAN_PREFS, ADLAN_4, 'H', 3, E_16_SETTINGS, E_32_SETTINGS);	
+				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php?pref', LAN_PREFS, LAN_PREFS, 'H', 3, E_16_SETTINGS, E_32_SETTINGS);	
 				
 				return $array_sub_functions;
 		}
@@ -810,8 +810,8 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			16 => array(e_ADMIN_ABS.'meta.php', 		ADLAN_66,	ADLAN_67,	'T', 1, E_16_META, E_32_META),
 			17 => array(e_ADMIN_ABS.'newspost.php', 	ADLAN_0,	ADLAN_1,	'H|N|7', 3, E_16_NEWS, E_32_NEWS),
 			18 => array(e_ADMIN_ABS.'phpinfo.php', 		ADLAN_68, 	ADLAN_69,	'0', 20, E_16_PHP, E_32_PHP),
-			19 => array(e_ADMIN_ABS.'prefs.php', 		ADLAN_4, 	ADLAN_5,	'1', 1, E_16_PREFS, E_32_PREFS),
-			20 => array(e_ADMIN_ABS.'search.php', 		ADLAN_142,	ADLAN_143,	'X', 1, E_16_SEARCH, E_32_SEARCH),
+			19 => array(e_ADMIN_ABS.'prefs.php', 		LAN_PREFS, 	ADLAN_5,	'1', 1, E_16_PREFS, E_32_PREFS),
+			20 => array(e_ADMIN_ABS.'search.php', 		LAN_SEARCH,	ADLAN_143,	'X', 1, E_16_SEARCH, E_32_SEARCH),
 			21 => array(e_ADMIN_ABS.'admin_log.php', 	ADLAN_155,	ADLAN_156,	'S', 4, E_16_ADMINLOG, E_32_ADMINLOG),
 			22 => array(e_ADMIN_ABS.'theme.php', 		ADLAN_140,	ADLAN_141,	'1', 5, E_16_THEMEMANAGER, E_32_THEMEMANAGER),
 			23 => array(e_ADMIN_ABS.'upload.php', 		ADLAN_72,	ADLAN_73,	'V', 3, E_16_UPLOADS, E_32_UPLOADS),

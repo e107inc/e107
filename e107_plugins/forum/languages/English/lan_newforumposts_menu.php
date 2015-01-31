@@ -24,7 +24,7 @@ define("NFP_7", "Postfix for too long posts?");
 define("NFP_8", "Show original topics in menu?");
 define("NFP_9", "Update menu Settings");
 define("NFP_10", "New Forum Posts Menu Configuration");
-define("NFP_11", "Posted by");
+// define("NFP_11", "Posted by");
 define("NFP_12", "Maximum age of displayed posts");
 define("NFP_13", "Use zero on a quiet site; setting a value in days will reduce database time on a busy site");
 	

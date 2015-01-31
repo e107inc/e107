@@ -148,7 +148,7 @@ if (isset($_POST['fpreview']))
 	}
 	else
 	{
-		$poster = ($_POST['anonname']) ? $_POST['anonname'] : LAN_FORUM_3004;
+		$poster = ($_POST['anonname']) ? $_POST['anonname'] : LAN_ANONYMOUS;
 	}
 	$postdate = $gen->convert_date(time(), "forum");
 	$tsubject = $tp->post_toHTML($_POST['subject'], true);

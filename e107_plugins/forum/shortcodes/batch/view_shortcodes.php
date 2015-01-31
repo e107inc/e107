@@ -492,7 +492,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		// Edit
 		if ( (USER && $this->postInfo['post_user'] == USERID && $this->thread->threadInfo['thread_active']))
 		{
-			$text .= "<li class='text-right'><a href='".e107::getUrl()->create('forum/thread/edit', array('id' => $this->postInfo['post_id']))."'>".LAN_FORUM_2039." ".$tp->toGlyph('edit')."</a></li>";
+			$text .= "<li class='text-right'><a href='".e107::getUrl()->create('forum/thread/edit', array('id' => $this->postInfo['post_id']))."'>".LAN_EDIT." ".$tp->toGlyph('edit')."</a></li>";
 			
 		}
 	
@@ -509,13 +509,13 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 			if ((USER && $this->postInfo['post_user'] != USERID && $this->thread->threadInfo['thread_active']))
 			{
-				$text .= "<li class='text-right'><a href='".e107::getUrl()->create('forum/thread/edit', array('id' => $this->postInfo['post_id']))."'>".LAN_FORUM_2039." ".$tp->toGlyph('edit')."</a></li>";
+				$text .= "<li class='text-right'><a href='".e107::getUrl()->create('forum/thread/edit', array('id' => $this->postInfo['post_id']))."'>".LAN_EDIT." ".$tp->toGlyph('edit')."</a></li>";
 			}
 			
 			// only show delete button when post is not the initial post of the topic
 			if(!$this->forum->threadDetermineInitialPost($this->postInfo['post_id'])) 
 			{
-				$text .= "<li class='text-right'><a href='".e_REQUEST_URI."' data-forum-action='deletepost' data-forum-post='".$this->postInfo['post_id']."'>".LAN_FORUM_2040." ".$tp->toGlyph('trash')."</a></li>"; 
+				$text .= "<li class='text-right'><a href='".e_REQUEST_URI."' data-forum-action='deletepost' data-forum-post='".$this->postInfo['post_id']."'>".LAN_DELETE." ".$tp->toGlyph('trash')."</a></li>"; 
 			}
 		
 			if ($type == 'thread')

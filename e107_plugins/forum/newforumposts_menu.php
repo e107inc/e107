@@ -17,6 +17,7 @@ $tp = e107::getParser();
 $sql = e107::getDb();
 $gen = new convert;
 $pref = e107::getPref();
+e107::lan('forum','front');
 
 include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_newforumposts_menu.php');
 include_once(e_PLUGIN.'forum/forum_class.php');
@@ -76,11 +77,11 @@ if($results = $sql->gen($qry))
 		
 		if ($menu_pref['newforumposts_title'])
 		{
-			$text .= "<a href='{$url}'>{$topic}</a><br />{$post}<br /><small class='muted'>".NFP_11." {$poster} {$datestamp}</small>";
+			$text .= "<a href='{$url}'>{$topic}</a><br />{$post}<br /><small class='muted'>".LAN_FORUM_0074." {$poster} {$datestamp}</small>";
 		}
 		else
 		{
-			$text .= "<a href='{$url}'>".NFP_11."</a> {$poster} <small class='muted'>{$datestamp}</small><br />{$post}<br />";
+			$text .= "<a href='{$url}'>".LAN_FORUM_0074."</a> {$poster} <small class='muted'>{$datestamp}</small><br />{$post}<br />";
 		}
 		
 		$text .= "</li>";

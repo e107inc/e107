@@ -24,6 +24,8 @@ if(!USER)
 
 include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_uploads.php');
 
+e107::lan('forum','front');
+
 if(is_array($_POST['delete']))
 {
 	foreach(array_keys($_POST['delete']) as $fname)
@@ -101,7 +103,7 @@ if(is_array($fileList))
 			}
 			else
 			{
-				$txt .= "<td class='forumheader3'>".FRMUP_8." <input class='btn btn-default button' type='submit' name='delete[{$finfo['fname']}]' value='".FRMUP_10."' /></td>";
+				$txt .= "<td class='forumheader3'>".FRMUP_8." <input class='btn btn-default button' type='submit' name='delete[{$finfo['fname']}]' value='".LAN_DELETE."' /></td>";
 			}
 			$txt .= "</tr>";
 		}

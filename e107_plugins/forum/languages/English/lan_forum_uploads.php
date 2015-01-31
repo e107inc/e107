@@ -20,6 +20,6 @@ define('FRMUP_6','Result');
 define('FRMUP_7','Found in thread');
 define('FRMUP_8','NOT FOUND');
 define('FRMUP_9','No uploaded files found');
-define('FRMUP_10','Delete');
+// define('FRMUP_10','Delete');
 	
 ?>

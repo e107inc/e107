@@ -377,7 +377,7 @@ class e107forum
 				case 'lock':
 					if(e107::getDb()->update('forum_thread', 'thread_active=0 WHERE thread_id='.$id))
 					{
-						$ret['msg'] 	= LAN_FORUM_CLOSE; // FORLAN_CLOSE;
+						$ret['msg'] 	= LAN_FORUM_CLOSE; 
 						$ret['status'] 	= 'ok';	
 					}
 					else
@@ -390,7 +390,7 @@ class e107forum
 				case 'unlock':
 					if(e107::getDb()->update('forum_thread', 'thread_active=1 WHERE thread_id='.$id))
 					{
-						$ret['msg'] = LAN_FORUM_OPEN; // FORLAN_OPEN;
+						$ret['msg'] = LAN_FORUM_OPEN; 
 						$ret['status'] 	= 'ok';	
 					}
 					else
@@ -403,7 +403,7 @@ class e107forum
 				case 'stick':
 					if(e107::getDb()->update('forum_thread', 'thread_sticky=1 WHERE thread_id='.$id))
 					{
-						$ret['msg'] = LAN_FORUM_STICK; // FORLAN_STICK;
+						$ret['msg'] = LAN_FORUM_STICK; 
 						$ret['status'] 	= 'ok';	
 					}
 					else
@@ -416,7 +416,7 @@ class e107forum
 				case 'unstick':
 					if(e107::getDb()->update('forum_thread', 'thread_sticky=0 WHERE thread_id='.$id))
 					{
-						$ret['msg'] = LAN_FORUM_UNSTICK; // FORLAN_UNSTICK;
+						$ret['msg'] = LAN_FORUM_UNSTICK; 
 						$ret['status'] 	= 'ok';		
 					}
 					else
@@ -1736,7 +1736,7 @@ class e107forum
 			$FORUM_CRUMB['sitename']['value'] = str_replace($search, $replace, $FORUM_CRUMB['sitename']['value']);
 
 			$search 	= array('{FORUMS_TITLE}', '{FORUMS_HREF}');
-			$replace 	= array(LAN_FORUM_0001, e107::getUrl()->create('forum/forum/main'));
+			$replace 	= array(LAN_PLUGIN_FORUM_NAME, e107::getUrl()->create('forum/forum/main'));
 			$FORUM_CRUMB['forums']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forums']['value']);
 
 			$search 	= array('{PARENT_TITLE}', '{PARENT_HREF}');
@@ -1771,7 +1771,7 @@ class e107forum
 		else
 		{
 			$dfltsep = ' :: ';
-			$BREADCRUMB = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a>".$dfltsep."<a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_FORUM_0001."</a>".$dfltsep;
+			$BREADCRUMB = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a>".$dfltsep."<a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_PLUGIN_FORUM_NAME."</a>".$dfltsep;
 			if($forumInfo['sub_parent'])
 			{
 				$forum_sub_parent = (substr($forumInfo['sub_parent'], 0, 1) == '*' ? substr($forumInfo['sub_parent'], 1) : $forumInfo['sub_parent']);
@@ -1800,7 +1800,7 @@ class e107forum
 
 		$breadcrumb = array();
 		
-		$breadcrumb[]	= array('text'=> LAN_FORUM_0001		, 'url'=> e107::getUrl()->create('forum/forum/main'));
+		$breadcrumb[]	= array('text'=> LAN_PLUGIN_FORUM_NAME		, 'url'=> e107::getUrl()->create('forum/forum/main'));
 		
 		if($forumInfo['sub_parent'])
 		{
@@ -1970,16 +1970,12 @@ class e107forum
 * @return string path to and filename of forum icon image
 *
 * @param string $filename  filename of forum image
-* @param string $eMLANG_folder if specified, indicates its a multilanguage image being processed and
-*       gives the subfolder of the image path to the eMLANG_path() function,
-*       default = FALSE
-* @param string $eMLANG_pref  if specified, indicates that $filename may be overridden by the
-*       $pref with $eMLANG_pref as its key if that pref is TRUE, default = FALSE
+
 *
 * @desc checks for the existence of a forum icon image in the themes forum folder and if it is found
 *  returns the path and filename of that file, otherwise it returns the path and filename of the
-*  default forum icon image in e_IMAGES. The additional $eMLANG args if specfied switch the process
-*  to the sister multi-language function eMLANG_path().
+*  default forum icon image in e_IMAGES. The additional  args if specfied switch the process
+*  to the sister multi-language function 
 *
 * @access public
 */
