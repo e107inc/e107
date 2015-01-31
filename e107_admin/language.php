@@ -1071,6 +1071,8 @@ function show_tools()
 	
 	show_packs();
 	
+	return; 
+	
 	if(!vartrue($_SERVER['E_DEV']))
 	{
 		return; 

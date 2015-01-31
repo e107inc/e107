@@ -18,7 +18,7 @@ if (!getperms('P') || !e107::isInstalled('linkwords'))
 }
 require_once(e_ADMIN.'auth.php');
 
-e107::lan('linkwords', e_LANGUAGE."_admin_linkwords.php"); // e_PLUGIN.'linkwords/languages/'.e_LANGUAGE.'_admin_linkwords.php'
+e107::lan('linkwords', true); // e_PLUGIN.'linkwords/languages/'.e_LANGUAGE.'_admin.php'
 
 define('LW_CACHE_TAG', 'nomd5_linkwords');
 
