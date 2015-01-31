@@ -5,7 +5,7 @@
 *
 * URL configuration language file (adminsitration)
 */
-define("FORUM_LAN_URL_NAME", "Forum");
+// define("FORUM_LAN_URL_NAME", "Forum");
 define("FORUM_LAN_URL_DEFAULT_LABEL", "Default Forum URLs");
 define("FORUM_LAN_URL_DEFAULT_DESCR", "URLs of 'GET type' with no single entry point. Examples:<br />http://yoursite.com/e107_plugins/forum/forum.php (forum index)<br />http://yoursite.com/e107_plugins/forum/forum_viewtopic.php?id=2 (thread view)");
 

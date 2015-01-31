@@ -11,6 +11,7 @@
 $eplug_admin = true;
 require_once('../../class2.php');
 include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_admin.php');
+e107::lan('forum','front');
 
 if (!getperms('P'))
 {
@@ -157,7 +158,7 @@ if(isset($_POST['update_subs']))
 		{
 			if ($sql->delete("forum", "forum_id='$id' "))
 			{
-				$msg .= FORLAN_150."  ". LAN_ID.":"." ".$id." ".LAN_DELETED."<br />";
+				$msg .= LAN_FORUM_1002."  ". LAN_ID.":"." ".$id." ".LAN_DELETED."<br />";
 				$cnt = $sql->delete("forum_thread", "thread_forum_id = {$id}");
 				$msg .= $cnt." ".FORLAN_152." ".LAN_DELETED."<br />";
 			}
@@ -169,7 +170,7 @@ if(isset($_POST['update_subs']))
 			$_order = (int)$_POST['suborder'][$id];
 			if($sql->update('forum', "forum_name='{$_name}', forum_description='{$_desc}', forum_order='{$_order}' WHERE forum_id = {$id}"))
 			{
-				$msg .= FORLAN_150 ." ". LAN_ID.":"." ".$id." ".LAN_UPDATED."<br />";
+				$msg .= LAN_FORUM_1002 ." ". LAN_ID.":"." ".$id." ".LAN_UPDATED."<br />";
 			}
 		}
 	}
@@ -503,15 +504,15 @@ class forumAdmin
 		}
 		$var['order']['text'] = FORLAN_78;
 		$var['order']['link'] = e_SELF.'?order';
-		$var['opt']['text'] = FORLAN_79;
+		$var['opt']['text'] = LAN_PREFS;
 		$var['opt']['link'] = e_SELF.'?opt';
 		$var['prune']['text'] = LAN_PRUNE;
 		$var['prune']['link'] = e_SELF.'?prune';
-		$var['rules']['text'] = FORLAN_123;
+		$var['rules']['text'] = LAN_FORUM_0016;
 		$var['rules']['link'] = e_SELF.'?rules';
 		$var['sr']['text'] = FORLAN_116;
 		$var['sr']['link'] = e_SELF.'?sr';
-		$var['mods']['text'] = FORLAN_33;
+		$var['mods']['text'] = LAN_FORUM_2003;
 		$var['mods']['link'] = e_SELF.'?mods';
 		$var['tools']['text'] = FORLAN_153;
 		$var['tools']['link'] = e_SELF.'?tools';
@@ -716,8 +717,8 @@ class forumAdmin
 			<td>".LAN_ID."</td>
 			<td>".LAN_NAME."</td>
 			<td>".LAN_DESCRIPTION."</td>
-			<td>".FORLAN_37."</td>
-			<td>".FORLAN_20."</td>
+			<td>".LAN_ORDER."</td>
+			<td>".LAN_DELETE."</td>
 		</tr>
 		";
 		if($sql->select('forum', 'forum_id, forum_name, forum_description, forum_order', "forum_sub = {$id} ORDER by forum_order ASC"))
@@ -757,7 +758,7 @@ class forumAdmin
 			<td>".LAN_ID."</td>
 			<td>".LAN_NAME."</td>
 			<td>".LAN_DESCRIPTION."</td>
-			<td>".FORLAN_37."</td>
+			<td>".LAN_ORDER."</td>
 			<td>&nbsp;</td>
 		</tr>
 		<tr>
@@ -771,9 +772,9 @@ class forumAdmin
 			<td colspan='5' style='text-align:center'>".$frm->admin_button('create_sub', LAN_CREATE, 'submit')."</td>
 		</tr>
 		</table>
-		</form>
-		";
-		$ns->tablerender(FORLAN_149, $txt); // TODO LAN
+		</form>";
+		
+		$ns->tablerender(LAN_FORUM_0069, $txt); 
 	}
 
 	function show_existing_forums($sub_action, $id, $mode = false)
@@ -806,7 +807,7 @@ class forumAdmin
 			$text .= "
 			<table class='table adminlist'>
 			<tr>
-				<th colspan='2'>".FORLAN_28."</th>
+				<th colspan='2'>".LAN_FORUM_1001."</th>
 				<th>".LAN_OPTIONS."</th>
 			</tr>";
 			while ($row = $sql->fetch(MYSQL_ASSOC))
@@ -818,7 +819,7 @@ class forumAdmin
 				$text .= "
 				<tr>
 				<td colspan='2'>".$parent['forum_name']."
-				<br /><b>".FORLAN_140.":</b> ".e107::getUserClass()->uc_get_classname($parent['forum_class'])."&nbsp;&nbsp;<b>".FORLAN_141.":</b> ".e107::getUserClass()->uc_get_classname($parent['forum_postclass'])."
+				<br /><b>".FORLAN_140.":</b> ".e107::getUserClass()->uc_get_classname($parent['forum_class'])."&nbsp;&nbsp;<b>".LAN_FORUM_2015.":</b> ".e107::getUserClass()->uc_get_classname($parent['forum_postclass'])."
 				</td>";
 
 				$text .= "<td style='text-align:center'>";
@@ -864,7 +865,7 @@ class forumAdmin
 
 						$text .= "
 						<br /><span class='smallblacktext'>".$tp->toHTML($forum['forum_description'])."&nbsp;</span>
-						<br /><b>".FORLAN_140.":</b> ".e107::getUserClass()->uc_get_classname($forum['forum_class'])."&nbsp;&nbsp;<b>".FORLAN_141.":</b> ".e107::getUserClass()->uc_get_classname($forum['forum_postclass'])."
+						<br /><b>".FORLAN_140.":</b> ".e107::getUserClass()->uc_get_classname($forum['forum_class'])."&nbsp;&nbsp;<b>".LAN_FORUM_2015.":</b> ".e107::getUserClass()->uc_get_classname($forum['forum_postclass'])."
 
 						</td>
 
@@ -907,7 +908,7 @@ class forumAdmin
 		else
 		{
 			$text .= "</table><div class='buttons-bar center'>".$frm->admin_button('update_order', LAN_UPDATE, 'update')."</div></form>";
-			$ns->tablerender(FORLAN_37, $mes->render() . $text);
+			$ns->tablerender(LAN_ORDER, $mes->render() . $text);
 		}
 
 	}
@@ -1012,7 +1013,7 @@ class forumAdmin
     		<col class='col-control' />
     	</colgroup>
 		<tr>
-			<td>".FORLAN_22.":</td>
+			<td>".LAN_FORUM_0004.":</td>
 			<td>";
 
 			$sql->select('forum', '*', 'forum_parent=0');
@@ -1036,7 +1037,7 @@ class forumAdmin
 		</tr>
 
 		<tr>
-			<td>".FORLAN_33.":</td>
+			<td>".LAN_FORUM_2003.":</td>
 			<td>";
 			$text .= e107::getUserClass()->uc_dropdown('forum_moderators', $fInfo['forum_moderators'], 'admin,classes')."<span class='field-help'>".FORLAN_34."</span>";
 			$text .= "</td>
@@ -1071,7 +1072,7 @@ class forumAdmin
 		</div>
 		</form>
 ";
-		$ns->tablerender(FORLAN_28, $text);
+		$ns->tablerender(LAN_FORUM_1001, $text);
 	}
 
 	
@@ -1109,7 +1110,7 @@ class forumAdmin
 				{
 					$txt .= "<input type='checkbox' name='forumlist[{$f['forum_id']}]' value='1' /> ".$tp->toHTML($f['forum_name'])."<br />";
 				}
-				$txt .= "<input type='checkbox' name='forum_all' value='1' /> <strong>".FORLAN_157."</strong>";
+				$txt .= "<input type='checkbox' name='forum_all' value='1' /> <strong>".LAN_PLUGIN_FORUM_ALLFORUMS."</strong>";
 			}
 			$txt .= "
 			</td>
@@ -1334,7 +1335,7 @@ class forumAdmin
 				<td>".e107::getDate()->convert_date($row['gen_datestamp'], "long")."</td>
 			</tr>
 			<tr>
-				<td>".FORLAN_176.":</td>
+				<td>".LAN_FORUM_2046.":</td>
 				<td>".$row['gen_chardata']."</td>
 			</tr>
 			<tr>
@@ -1492,7 +1493,7 @@ class forumAdmin
 				".$frm->admin_button('setMods', LAN_UPDATE, 'update')."
 			</div>
 			</form>";
-			$ns->tablerender(FORLAN_33, $txt);  // FIX: LAN button update was WMGLAN_4." ".FORLAN_33)
+			$ns->tablerender(LAN_FORUM_2003, $txt);  
 		}
 
 		// TODO: check media category on $frm->bbarea()

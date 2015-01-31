@@ -22,6 +22,9 @@ if (!$e107->isInstalled('forum'))
 //TODO: Investigate the queries used here
 
 include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_stats.php');
+e107::lan('forum','front');
+
+
 require_once(e_PLUGIN.'forum/forum_class.php');
 $gen = new convert;
 $forum = new e107forum;
@@ -219,7 +222,7 @@ $text = "
 	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_2.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$open_date}</td></tr>
 	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_3.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$open_since}</td></tr>
 	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_4.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$total_posts}</td></tr>
-	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_5.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$total_topics}</td></tr>
+	<tr><td style='width: 50%; text-align: right;'><b>".LAN_FORUM_1007.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$total_topics}</td></tr>
 	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_6.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$total_replies}</td></tr>
 	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_7.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$total_views}</td></tr>
 	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_24.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$postsperday}</td></tr>
@@ -231,14 +234,14 @@ $text = "
 <div class='spacer'>
 <table style='width: 100%;' class='fborder table'>
 <tr>
-<td class='forumheader' colspan='5'>".FSLAN_10."</td>
+<td class='forumheader' colspan='5'>".LAN_FORUM_0011."</td>
 </tr>
 <tr>
 <th style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_11."</th>
-<th style='width: 40%;' class='fcaption'>".FSLAN_12."</th>
-<th style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_13."</th>
+<th style='width: 40%;' class='fcaption'>".LAN_FORUM_1003."</th>
+<th style='width: 10%; text-align: center;' class='fcaption'>".LAN_FORUM_0003."</th>
 <th style='width: 20%; text-align: center;' class='fcaption'>".FSLAN_14."</th>
-<th style='width: 20%; text-align: center;' class='fcaption'>".FSLAN_15."</th>
+<th style='width: 20%; text-align: center;' class='fcaption'>".LAN_DATE."</th>
 </tr>
 ";
 
@@ -276,10 +279,10 @@ $text .= "</table>
 </tr>
 <tr>
 <th style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_11."</th>
-<th style='width: 40%;' class='fcaption'>".FSLAN_12."</th>
-<th style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_17."</th>
+<th style='width: 40%;' class='fcaption'>".LAN_FORUM_1003."</th>
+<th style='width: 10%; text-align: center;' class='fcaption'>".LAN_FORUM_1005."</th>
 <th style='width: 20%; text-align: center;' class='fcaption'>".FSLAN_14."</th>
-<th style='width: 20%; text-align: center;' class='fcaption'>".FSLAN_15."</th>
+<th style='width: 20%; text-align: center;' class='fcaption'>".LAN_DATE."</th>
 </tr>
 ";
 
@@ -313,13 +316,13 @@ $text .= "</table>
 <div class='spacer'>
 <table style='width: 100%;' class='fborder table'>
 <tr>
-<td class='forumheader' colspan='5'>".FSLAN_18."</td>
+<td class='forumheader' colspan='5'>".LAN_FORUM_0010."</td>
 </tr>
 <thead>
 <tr>
 <th style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_11."</th>
-<th style='width: 20%;' class='fcaption'>".FSLAN_19."</th>
-<th style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_20."</th>
+<th style='width: 20%;' class='fcaption'>".LAN_NAME."</th>
+<th style='width: 10%; text-align: center;' class='fcaption'>".LAN_FORUM_2032."</th>
 <th style='width: 10%; text-align: center;' class='fcaption'>%</th>
 <th style='width: 50%; text-align: center;' class='fcaption'>&nbsp;</th>
 </tr>
@@ -353,8 +356,8 @@ $text .= "</tbody>
 </tr>
 <tr>
 <th style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_11."</th>
-<th style='width: 20%;' class='fcaption'>".FSLAN_19."</th>
-<th style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_20."</th>
+<th style='width: 20%;' class='fcaption'>".LAN_NAME."</th>
+<th style='width: 10%; text-align: center;' class='fcaption'>".LAN_FORUM_2032."</th>
 <th style='width: 10%; text-align: center;' class='fcaption'>%</th>
 <th style='width: 50%; text-align: center;' class='fcaption'>&nbsp;</th>
 </tr>
@@ -385,8 +388,8 @@ $text .= "</table>
 </tr>
 <tr>
 <th style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_11."</th>
-<th style='width: 20%;' class='fcaption'>".FSLAN_19."</th>
-<th style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_20."</th>
+<th style='width: 20%;' class='fcaption'>".LAN_NAME."</th>
+<th style='width: 10%; text-align: center;' class='fcaption'>".LAN_FORUM_2032."</th>
 <th style='width: 10%; text-align: center;' class='fcaption'>%</th>
 <th style='width: 50%; text-align: center;' class='fcaption'>&nbsp;</th>
 </tr>

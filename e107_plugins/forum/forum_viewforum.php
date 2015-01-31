@@ -365,7 +365,7 @@ else
 echo "<script type=\"text/javascript\">
 	function confirm_(thread_id)
 	{
-		return confirm(\"".$tp->toJS(LAN_FORUM_1019)."\");
+		return confirm(\"".$tp->toJS(LAN_JSCONFIRM)."\");
 	}
 	</script>";
 

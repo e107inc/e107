@@ -46,6 +46,8 @@ define("EMESSLAN_TITLE_SUCCESS", "Success");
 define("EMESSLAN_TITLE_WARNING", "Warning");
 define("EMESSLAN_TITLE_DEBUG", "System Debug");
 
+define("LAN_EDIT","Edit");
+define("LAN_DELETE","Delete");
 define("LAN_MORE", "More..");
 define("LAN_READ_MORE", "Read more..");
 define("LAN_GOPAGE", "Go to page");
@@ -65,6 +67,10 @@ define("LAN_INVALID_CODE", "Incorrect code entered.");
 define("LAN_SEARCH", "Search");
 define("LAN_SHARE", "Share");
 define("LAN_BACK", "Back");
+define("LAN_NAME", "Name");
+define("LAN_CANCEL","Cancel");
+define("LAN_DATE","Date");
+define("LAN_JSCONFIRM","Are you sure?");
 
 
 ?>

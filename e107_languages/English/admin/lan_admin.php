@@ -11,7 +11,7 @@ define("ADLAN_1", "Manage news items");
 define("ADLAN_2", "Create news item");
 define("ADLAN_3", "News items List");
 define("ADLAN_3a", "News Settings");
-define("ADLAN_4", "Preferences");
+// define("ADLAN_4", "Preferences");
 define("ADLAN_5", "Edit Site Preferences");
 define("ADLAN_6", "Menu Manager");
 define("ADLAN_7", "Alter the order of your menus");
@@ -115,7 +115,7 @@ define("ADLAN_106", "Image Settings");
 define("ADLAN_110", "Registered members");
 define("ADLAN_111", "Unverified members");
 define("ADLAN_112", "Banned users");
-define("ADLAN_113", "Forum posts");
+// define("ADLAN_113", "Forum posts"); // should already be loaded from forum global language file. 
 define("ADLAN_114", "Comments");
 define("ADLAN_115", "Chatbox posts");
 define("ADLAN_116", "Admin log ...");
@@ -154,7 +154,7 @@ define("ADLAN_139", "Add/edit/delete links");
 define("ADLAN_140", "Theme Manager");
 define("ADLAN_141", "Install / set themes etc");
 
-define("ADLAN_142", "Search");
+// define("ADLAN_142", "Search");
 define("ADLAN_143", "Search Configuration");
 define("ADLAN_144", "You are in simple-view mode, to switch to advanced-view");
 define("ADLAN_145", "click here");
@@ -216,8 +216,7 @@ define("ADLAN_ERR_3", "There are one or more files in your public upload directo
 
 
 // Common Terms
-define("LAN_EDIT","Edit");
-define("LAN_DELETE","Delete");
+
 define("LAN_CREATE","Create");
 define("LAN_MANAGE","Manage");
 define("LAN_UPDATE","Update");
@@ -227,7 +226,7 @@ define("LAN_SAVED","Saved");
 define("LAN_SETSAVED","Your settings have been saved");
 define("LAN_NOCHANGE_NOTSAVED", "Nothing changed - not saved");
 define("LAN_CONFIRMDEL","Please confirm you wish to delete");
-define("LAN_JSCONFIRM","Are you sure?");
+
 define("LAN_OPTIONS","Options");
 define("LAN_PREFS","Preferences");
 define("LAN_DELETED","Successfully deleted");
@@ -245,20 +244,20 @@ define("LAN_RESET","Reset");
 define("LAN_CLEAR","Clear");
 // define("LAN_OK","OK");     // defined in e107_languages/English/English.php
 
-define("LAN_PRESET","Preset");
-define("LAN_PRESET_SAVED","Preset saved successfully");
+// define("LAN_PRESET","Preset");
+// define("LAN_PRESET_SAVED","Preset saved successfully");
 
-define("LAN_PRESET_DELETED","Preset successfully deleted");
-define("LAN_PRESET_CONFIRMDEL","Are you sure you want to delete this preset?");
+// define("LAN_PRESET_DELETED","Preset successfully deleted");
+// define("LAN_PRESET_CONFIRMDEL","Are you sure you want to delete this preset?");
 define("LAN_NOTWRITABLE"," is not writable, you need to CHMOD 777 the file or folder first.");
-define("LAN_DATE","Date");
+
 define("LAN_TIME","Time");
 // define("LAN_YES","Yes");
 // define("LAN_NO","No");   // defined in e107_languages/English/English.php
 define("LAN_EMPTY","There are no entries in the database yet");
 define("LAN_EXISTING","Existing Entries");
 
-define("LAN_CANCEL","Cancel");
+
 define("LAN_CONFDELETE","Confirm Delete");
 define("LAN_PLUGIN","Plugin");
 define("LAN_ORDER","Order");
@@ -320,7 +319,7 @@ define("LAN_STATUS", "Status");
 define("LAN_URL", "URL");
 define("LAN_USER", "User");
 define("LAN_OWNER", "Owner");
-define("LAN_NAME", "Name");
+
 define("LAN_EMAIL","Email address");
 define("LAN_ID", "ID");
 define("LAN_IP", "IP Address");

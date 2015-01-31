@@ -3,6 +3,7 @@
 define("LAN_PLUGIN_FORUM_NAME", "Forum");
 define("LAN_PLUGIN_FORUM_DESC", "This plugin is a fully featured forum system.");
 define("LAN_PLUGIN_FORUM_POSTS", "Forum posts");
+define("LAN_PLUGIN_FORUM_ALLFORUMS", "All Forums"); 
 // Notify
 // TODO - LAN cleanup (see e_notify)
 
@@ -11,7 +12,7 @@ define("LAN_PLUGIN_FORUM_POSTS", "Forum posts");
 //define('FORUM_NT_3', 'Post');
 //define('FORUM_NT_4', 'added by');
 //define('FORUM_NT_5', 'moved by');
-define('FORUM_NT_6', 'Forum - Thread created');
+// define('FORUM_NT_6', 'Forum - Thread created');
 define('FORUM_NT_7', 'Forum - Thread created by new user');
 define('FORUM_NT_8', 'Forum - Thread deleted');
 define('FORUM_NT_9', 'Forum - Thread split');

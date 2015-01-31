@@ -72,3 +72,15 @@ define("POLLAN_44", "Delete this poll?");
 define("POLLAN_45", "Poll successfully updated");
 //define("POLLAN_46", "Field(s) left blank");
 
+
+// TODO NEED TO BE RENAMED!
+
+// define("LAN_FORUM_3029", "If you do not wish to add a poll to your topic, leave the fields blank."); // LAN_386
+define("LAN_FORUM_3030", "Poll question"); // LAN_5
+define("LAN_FORUM_3031", "Poll answer"); // LAN_391
+define("LAN_FORUM_3032", "Add another answer"); // LAN_6
+define("LAN_FORUM_3033", "Allow multiple choices?"); // LAN_506
+define("LAN_FORUM_3034", "Vote storage method"); // POLLAN_16
+define("LAN_FORUM_3035", "Cookie"); // POLLAN_17
+define("LAN_FORUM_3036", "IP address"); // POLLAN_18
+define("LAN_FORUM_3037", "User ID (only members can vote)"); // POLLAN_19

@@ -64,7 +64,7 @@ class forum_notify extends notify
 	function forum_nt($data) 
 	{
 		$message = 'todo';
-		$this->send('forum_nt', FORUM_NT_6, $message);
+		$this->send('forum_nt', LAN_PLUGIN_FORUM_NAME, $message);
 	}
 
 	function forum_ntp($data)

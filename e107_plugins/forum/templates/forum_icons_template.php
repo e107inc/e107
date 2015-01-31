@@ -38,11 +38,11 @@ define('IMAGE_profile', '<img src="'.img_path('profile.png').'" alt="'.LAN_FORUM
 
 // action
 define('IMAGE_pm', 			'<img src="'.img_path('pm.png').'" alt="'.LAN_FORUM_4008.'" title="'.LAN_FORUM_4008.'" class="icon S16 action" />');
-define('IMAGE_edit', 		'<img src="'.img_path('edit.png').'" alt="'.LAN_FORUM_2039.'" title="'.LAN_FORUM_2039.'" class="icon S16 action" />');
+define('IMAGE_edit', 		'<img src="'.img_path('edit.png').'" alt="'.LAN_EDIT.'" title="'.LAN_EDIT.'" class="icon S16 action" />');
 define('IMAGE_quote', 		'<img src="'.img_path('quote.png').'" alt="'.LAN_FORUM_2041.'" title="'.LAN_FORUM_2041.'" class="icon S16 action" />');
 define('IMAGE_track', 		'<img src="'.img_path('track.png').'" alt="'.LAN_FORUM_4009.'" title="'.LAN_FORUM_4009.'" class="icon S16 action" />');
 define('IMAGE_untrack', 	'<img src="'.img_path('untrack.png').'" alt="'.LAN_FORUM_4010.'" title="'.LAN_FORUM_4010.'" class="icon S16 action" />');
-define('IMAGE_admin_edit', 	'<img src="'.img_path('admin_edit.png').'" alt="'.LAN_FORUM_2039.'" title="'.LAN_FORUM_2039.'" class="icon S16 action" />');
+define('IMAGE_admin_edit', 	'<img src="'.img_path('admin_edit.png').'" alt="'.LAN_EDIT.'" title="'.LAN_EDIT.'" class="icon S16 action" />');
 define('IMAGE_admin_move', 	'<img src="'.img_path('admin_move.png').'" alt="'.LAN_FORUM_2042.'" title="'.LAN_FORUM_2042.'" class="icon S16 action" />');
 define('IMAGE_admin_split', '<img src="'.img_path('admin_split.png').'" alt="'.LAN_FORUM_2043.'" title="'.LAN_FORUM_2043.'" class="icon S16 action" />');
 define('IMAGE_admin_move2',	'<img src="'.img_path('admin_move.png').'" alt="'.LAN_FORUM_2042.'" title="'.LAN_FORUM_2042.'" class="icon S16 action" />');
@@ -52,7 +52,7 @@ define('IMAGE_post',		'<img src="'.img_path('post.png').'" alt="" title="" />');
 define('IMAGE_post2', 		'<img src="'.img_path('post2.png').'" alt="" title="" class="icon S16 action" />');
 
 // Admin <input> Icons
-define('IMAGE_admin_delete',	'src="'.img_path('admin_delete.png').'" alt="'.LAN_FORUM_2040.'" title="'.LAN_FORUM_2040.'" ');
+define('IMAGE_admin_delete',	'src="'.img_path('admin_delete.png').'" alt="'.LAN_DELETE.'" title="'.LAN_DELETE.'" ');
 define('IMAGE_admin_stick',		'src="'.img_path('admin_stick.png').'" alt="'.LAN_FORUM_4011.'" title="'.LAN_FORUM_4011.'" ');
 define('IMAGE_admin_unstick',	'src="'.img_path('admin_unstick.png').'" alt="'.LAN_FORUM_4012.'" title="'.LAN_FORUM_4012.'" ');
 define('IMAGE_admin_lock',		'src="'.img_path('admin_lock.png').'" alt="'.LAN_FORUM_4013.'" title="'.LAN_FORUM_4013.'" ');
