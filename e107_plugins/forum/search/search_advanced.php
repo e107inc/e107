@@ -31,7 +31,7 @@ if ($sql -> db_Select_gen("SELECT f.forum_id, f.forum_name FROM #forum AS f LEFT
 }
 
 $advanced['date']['type'] = 'date';
-$advanced['date']['text'] = LAN_SEARCH_50.':';
+$advanced['date']['text'] = LAN_DATE_POSTED.':';
 
 $advanced['author']['type'] = 'author';
 $advanced['author']['text'] = LAN_SEARCH_61.':';

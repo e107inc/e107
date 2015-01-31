@@ -39,7 +39,7 @@ define("CHBLAN_27", "- Delete all posts -");
 // define("CHBLAN_28", "Chatbox pruned.");
 
 define("CHBLAN_29", "Display chatbox inside scrolling layer with height [x]"); // [x] will be replaced automatically
-define("CHBLAN_30", "Layer height");
+// define("CHBLAN_30", "Layer height");
 define("CHBLAN_31", "Show emoticons");
 define("CHBLAN_32", "Moderator userclass");
 

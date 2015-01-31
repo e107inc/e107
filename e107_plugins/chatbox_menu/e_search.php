@@ -25,7 +25,7 @@ class chatbox_menu_search extends e_search // include plugin-folder in the name.
 			'table'			=> 'chatbox',
 
 			'advanced' 		=> array(
-								'date'	=> array('type'	=> 'date', 		'text' => LAN_SEARCH_50),
+								'date'	=> array('type'	=> 'date', 		'text' => LAN_DATE_POSTED),
 								'author'=> array('type'	=> 'author',	'text' => LAN_SEARCH_61)
 							),
 							

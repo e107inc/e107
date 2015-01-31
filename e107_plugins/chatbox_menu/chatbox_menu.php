@@ -346,7 +346,7 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 
 
 
-$caption = (file_exists(THEME."images/chatbox_menu.png") ? "<img src='".THEME_ABS."images/chatbox_menu.png' alt='' /> ".LAN_PLUGIN_CHATBOX_MENU_NAME : CHATBOX_L2);
+$caption = (file_exists(THEME."images/chatbox_menu.png") ? "<img src='".THEME_ABS."images/chatbox_menu.png' alt='' /> ".LAN_PLUGIN_CHATBOX_MENU_NAME : LAN_PLUGIN_CHATBOX_MENU_NAME);
 
 if($pref['cb_layer'] == 1)
 {

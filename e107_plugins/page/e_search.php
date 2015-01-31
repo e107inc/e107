@@ -80,7 +80,7 @@ class page_search extends e_search // include plugin-folder in the name.
 
 			'advanced' 		=> array(
 								'cat'	=> array('type'	=> 'dropdown', 		'text' => "Search in Book/Chapter", 'list'=>$catList),
-						//		'date'=> array('type'	=> 'date',			'text' => LAN_SEARCH_50),
+						//		'date'=> array('type'	=> 'date',			'text' => LAN_DATE_POSTED),
 					//			'match'=> array('type'	=> 'dropdown',		'text' =>  LAN_SEARCH_52, 'list'=>$matchList)
 							),
 							
