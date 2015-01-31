@@ -253,6 +253,7 @@ class e_install
 		if(isset($this->previous_steps['language']))
 		{
 			define("e_LANGUAGE", $this->previous_steps['language']);
+			include_lan(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.".php");
 			include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php");
 		}
 	}
@@ -352,6 +353,8 @@ class e_install
 		$this->stage = 1;
 		$this->logLine('Stage 1 started');
 
+
+		
 		$this->template->SetTag("installation_heading", LANINS_001);
 		$this->template->SetTag("stage_pre", LANINS_002);
 		$this->template->SetTag("stage_num", LANINS_003);
@@ -381,13 +384,18 @@ class e_install
 		$this->stage = 2;
 		$this->logLine('Stage 2 started');
 		$this->previous_steps['language'] = $_POST['language'];
-
+		
 		$this->template->SetTag("installation_heading", LANINS_001);
 		$this->template->SetTag("stage_pre", LANINS_002);
 		$this->template->SetTag("stage_num", LANINS_021);
 		$this->template->SetTag("stage_title", LANINS_022);
 		$this->template->SetTag("percent", 25);
 		$this->template->SetTag("bartype", 'warning');
+		
+		if(!isset($this->previous_steps['mysql']['createdb']))
+		{
+			$this->previous_steps['mysql']['createdb'] = 1; // default to yes. 	
+		}
 		
 		// $this->template->SetTag("onload", "document.getElementById('name').focus()");
 		// $page_info = nl2br(LANINS_023);
@@ -409,7 +417,7 @@ class e_install
 				<tr>
 					<td><label for='name'>".LANINS_025."</label></td>
 					<td>
-						<input class='tbox' type='text' name='name' id='name' size='40' value='' maxlength='100' required='required' />
+						<input class='tbox' type='text' name='name' id='name' value='{$this->previous_steps['mysql']['user']}' size='40' value='' maxlength='100' required='required' />
 						<span class='field-help'>".LANINS_031."</span>
 					</td>
 				</tr>
@@ -417,7 +425,7 @@ class e_install
 				<tr>
 					<td><label for='password'>".LANINS_026."</label></td>
 					<td>
-						<input class='tbox' type='password' name='password' size='40' id='password' value='' maxlength='100' {$isrequired} />
+						<input class='tbox' type='password' name='password' size='40' id='password' value='{$this->previous_steps['mysql']['password']}' maxlength='100' {$isrequired} />
 						<span class='field-help'>".LANINS_032."</span>
 					</td>
 				</tr>
@@ -426,7 +434,7 @@ class e_install
 					<td><label for='db'>".LANINS_027."</label></td>
 					<td class='form-inline'>
 						<input type='text' name='db' size='20' id='db' value='' maxlength='100' required='required' pattern='^[a-z][a-z0-9_-]*' />
-						<label class='checkbox inline'><input type='checkbox' name='createdb' value='1' /><small>".LANINS_028."</small></label>
+						<label class='checkbox inline'><input type='checkbox' name='createdb' value='1' ".($this->previous_steps['mysql']['createdb'] ==1 ? "checked='checked'" : "")." /><small>".LANINS_028."</small></label>
 						<span class='field-help'>".LANINS_033."</span>
 					</td>
 				</tr>
@@ -480,6 +488,12 @@ class e_install
 
 	private function stage_3()
 	{
+		
+		if(!empty($_POST['back']))
+		{
+			return $this->stage_2(); 	
+		}
+		
 		global $e_forms;
 		$success = TRUE;
 		$this->stage = 3;
@@ -492,19 +506,29 @@ class e_install
 		$this->template->SetTag("percent", 40);
 		$this->template->SetTag("bartype", 'warning');
 
-		$this->previous_steps['mysql']['server'] = trim($_POST['server']);
-		$this->previous_steps['mysql']['user'] = trim($_POST['name']);
-		$this->previous_steps['mysql']['password'] = $_POST['password'];
-		$this->previous_steps['mysql']['db'] = trim($_POST['db']);
-		$this->previous_steps['mysql']['createdb'] = (isset($_POST['createdb']) && $_POST['createdb'] == TRUE ? TRUE : FALSE);
-		$this->previous_steps['mysql']['prefix'] = trim($_POST['prefix']);
+	
+		if(!empty($_POST['server']))
+		{
+			$this->previous_steps['mysql']['server'] = trim($_POST['server']);
+			$this->previous_steps['mysql']['user'] = trim($_POST['name']);
+			$this->previous_steps['mysql']['password'] = $_POST['password'];
+			$this->previous_steps['mysql']['db'] = trim($_POST['db']);
+			$this->previous_steps['mysql']['createdb'] = (isset($_POST['createdb']) && $_POST['createdb'] == TRUE ? TRUE : FALSE);
+			$this->previous_steps['mysql']['prefix'] = trim($_POST['prefix']);
+		}
 		
-		
+		if(!empty($_POST['overwritedb']))
+		{
+			$this->previous_steps['mysql']['overwritedb'] = 1;;
+		}
+					
 		$success = $this->check_name($this->previous_steps['mysql']['db'], FALSE) && $this->check_name($this->previous_steps['mysql']['prefix'], TRUE);
+		
 		if ($success)
 		{
 			$success = $this->checkDbFields($this->previous_steps['mysql']);		// Check for invalid characters
 		}
+		
 		if(!$success || $this->previous_steps['mysql']['server'] == "" || $this->previous_steps['mysql']['user'] == "")
 		{
 			$this->stage = 3;
@@ -516,7 +540,7 @@ class e_install
 			<table cellspacing='0'>
 				<tr>
 					<td style='border-top: 1px solid #999;'><label for='server'>".LANINS_024."</label></td>
-					<td style='border-top: 1px solid #999;'><input class='tbox' type='text' id='server' name='server' size='40' value='{$this->previous_steps['mysql']['server']}' maxlength='100' /></td>
+					<td style='border-top: 1px solid #999;'><input class='tbox' type='text' id='server' name='server' size='40' value='{$this->previous_steps['mysql']['server']}' maxlength='100' required /></td>
 					<td style='width: 40%; border-top: 1px solid #999;'>".LANINS_030."</td>
 				</tr>
 
@@ -544,10 +568,12 @@ class e_install
 					<td><input type='text' name='prefix' id='prefix' size='20' value='{$this->previous_steps['mysql']['prefix']}'  maxlength='100' /></td>
 					<td>".LANINS_034."</td>
 				</tr>";
+				
 			if (!$success)
 			{
 				$output .= "<tr><td colspan='3'>".LANINS_105."</td></tr>";
 			}
+			
 			$output .= "
 			</table>
 			<br /><br />
@@ -559,13 +585,31 @@ class e_install
 		}
 		else
 		{
-			$this->template->SetTag("stage_title", LANINS_037.($this->previous_steps['mysql']['createdb'] == 1 ? LANINS_038 : ""));
+			$this->template->SetTag("stage_title", LANINS_037.($this->previous_steps['mysql']['createdb'] == 1 ? LANINS_038 : ""));		
+			
 			if (!$res = @mysql_connect($this->previous_steps['mysql']['server'], $this->previous_steps['mysql']['user'], $this->previous_steps['mysql']['password']))
 			{
 				$success = FALSE;
 				$page_content = LANINS_041.nl2br("\n\n<b>".LANINS_083."\n</b><i>".mysql_error()."</i>");
 				
 				$alertType = 'error';
+			}
+			elseif(($this->previous_steps['mysql']['createdb'] == 1) && empty($this->previous_steps['mysql']['overwritedb']) && mysql_select_db($this->previous_steps['mysql']['db'], $res))
+			{
+				$success = false; 
+				$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
+				$head = str_replace('[x]', '<b>'.$this->previous_steps['mysql']['db'].'</b>', LANINS_127);
+				$alertType = 'error';	
+				$e_forms->add_plain_html("
+				<input type='submit' id='overwritedb' name='back' value=\"'&laquo; ".LAN_BACK."\" class='btn btn-large' />&nbsp;
+				<input type='submit' id='overwritedb' name='overwritedb' value=\"".LANINS_128." &raquo;\" class='btn btn-large btn-primary' />"
+				
+				);
+
+				$this->finish_form(3);
+				$this->template->SetTag("stage_content", "<div class='alert alert-block alert-{$alertType}'>".$head."</div>".$e_forms->return_form());
+				$this->logLine('Stage 3 completed');
+				return; 
 			}
 			else
 			{
@@ -580,17 +624,30 @@ class e_install
 				}
 */
 				// Do brute force for now - Should be enough
-
-				$DB_ALREADY_EXISTS = mysql_select_db($this->previous_steps['mysql']['db'], $res);
-
-				//TODO Add option to continue install even if DB exists.
-
-				if($this->previous_steps['mysql']['createdb'] == 1 || !$DB_ALREADY_EXISTS)
+				
+				if(!empty($this->previous_steps['mysql']['overwritedb']))
 				{
-				    $query = 'CREATE DATABASE `'.$this->previous_steps['mysql']['db'].'` CHARACTER SET `utf8` ';
+					if($this->dbqry('DROP DATABASE `'.$this->previous_steps['mysql']['db'].'` '))
+					{
+						$page_content .= "<br /><i class='icon-ok'></i> Deleted existing database";
+					}
+					else 
+					{
+						$success = false;
+						$page_content .= "<br /><br />".LANINS_043.nl2br("\n\n<b>".LANINS_083."\n</b><i>".mysql_error()."</i>");	
+					}
+						
 				}
-				elseif($DB_ALREADY_EXISTS)
+				
+				if($this->previous_steps['mysql']['createdb'] == 1)
 				{
+					$notification = "<br /><i class='icon-ok'></i> ".LANINS_044;
+				    $query = 'CREATE DATABASE `'.$this->previous_steps['mysql']['db'].'` CHARACTER SET `utf8` ';
+					
+				}
+				else
+				{
+					$notification = "<br /><i class='icon-ok'></i> Found existing database";
 				    $query = 'ALTER DATABASE `'.$this->previous_steps['mysql']['db'].'` CHARACTER SET `utf8` ';
 				}
 
@@ -602,9 +659,10 @@ class e_install
 				else
 				{
                     $this->dbqry('SET NAMES `utf8`');
-					$page_content .= "<br /><i class='icon-ok'></i> ".LANINS_044;
+					$page_content .= $notification; // "
 				}
 			}
+			
 			if($success)
 			{
 				$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
@@ -958,10 +1016,12 @@ class e_install
 					$title 		= vartrue($themeInfo['@attributes']['name']);
 					$category 	= vartrue($themeInfo['category']);
 
+					$selected = ($val == 'bootstrap3') ? "selected='selected'" : "";
+
 					$output .= "
 								<tr>
 									<td>
-										<label class='radio'><input type='radio' name='sitetheme' value='{$val}' required='required' />{$title}</label>
+										<label class='radio'><input type='radio' name='sitetheme' value='{$val}' required='required' $selected />{$title}</label>
 									</td>
 									<td>{$category}</td>
 								</tr>";
@@ -1663,7 +1723,7 @@ class e_install
 		{
 			$errorInfo = 'Query Error [#'.mysql_errno().']: '.mysql_error()."\nQuery: {$qry}";
 			echo $errorInfo."<br />";
-			exit;
+			//exit;
 			$this->debug_db_info['db_error_log'][] = $errorInfo;
 			//$this->debug_db_info['db_log'][] = $qry;
 			return false;
@@ -1694,13 +1754,16 @@ class e_forms
 		}
 		$this->form .= "</select>\n";
 	}
+	
+	
 
 	function add_button($id, $title, $align = "right", $type = "submit")
 	{
 		$this->form .= "<div class='buttons-bar inline' style='text-align: {$align}; z-index: 10;'>";
 		if($id != 'start')
 		{
-			$this->form .= "<a class='btn btn-large ' href='javascript:history.go(-1)'>&laquo; Back</a>&nbsp;";
+			$this->form .= "<a class='btn btn-large ' href='javascript:history.go(-1)'>&laquo; ".LAN_BACK."</a>&nbsp;";
+		//	$this->form .= "<button class='btn btn-large ' name='back' id='back' value='1' type='submit'>&laquo; Back</button>&nbsp;";
 		}
 		if($id != 'back')
 		{			
