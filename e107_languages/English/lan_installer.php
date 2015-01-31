@@ -182,5 +182,6 @@ define("LANINS_123", "Optional: Your public name or alias. Leave blank to use th
 define("LANINS_124", "Please choose a password of at least 8 characters");
 define("LANINS_125", "e107 has been installed successfully!");
 define("LANINS_126", "For security reasons you should now set the file permissions on the e107_config.php file back to 644.");
-
+define("LANINS_127", "The database [x] already exists. Overwrite it? (any existing data will be lost)"); 
+define("LANINS_128", "Overwrite"); 
 				
