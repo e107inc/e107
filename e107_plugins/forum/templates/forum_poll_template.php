@@ -17,21 +17,19 @@ $FORUM_POLL_TEMPLATE = array();
 
 $FORUM_POLL_TEMPLATE['form']['start'] = "
 <div class='clearfix'>
-	<div class='well span6'>
-		<div class='control-group'>
-			<ul class='nav nav-list'>
-				<li class='nav-header'>
-					Poll: {QUESTION}
-				</li>
+	<div class='well col-md-8 span6'>
+		<div class='form-group control-group'>
+			Poll: {QUESTION}
+			
 ";
 
 $FORUM_POLL_TEMPLATE['form']['item'] = "
-			<li>
+			<div class='radio'>
 				{ANSWER} 
-			</li>";
+			</div>";
 
 $FORUM_POLL_TEMPLATE['form']['end'] = "
-			</ul>
+			
 		</div>
 		<div class='control-group'>
 			 <div class='controls text-center'>
@@ -41,8 +39,6 @@ $FORUM_POLL_TEMPLATE['form']['end'] = "
 	</div>
 </div>
 ";
-
-
 
 /*	v2.x template for forum polls when user HAS voted		*/
 

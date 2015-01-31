@@ -28,7 +28,7 @@ define("GSLAN_15", "monthly");
 define("GSLAN_16", "yearly");
 
 define("GSLAN_18", "Import ticked links");
-define("GSLAN_19", "Google Sitemap");
+// define("GSLAN_19", "Google Sitemap");
 define("GSLAN_20", "Listing");
 define("GSLAN_21", "Instructions");
 define("GSLAN_22", "Create New Entry");
@@ -47,7 +47,7 @@ define("GSLAN_36", "You can also enter individual links manually by clicking 'Cr
 define("GSLAN_37", "Once you have some entries, go to [URL] and enter the following URL -> <b>".SITEURL."gsitemap.php</b> - if this url doesn't look right to you, please make sure your site url is correct in admin -> preferences");
 define("GSLAN_38", "For more information on Google Sitemap protocol, go to [URL].");
 define("GSLAN_39", "No links in sitemap - import sitelinks?");
-define("GSLAN_40", "Google Sitemap Entries");
+// define("GSLAN_40", "Google Sitemap Entries");
 
 //define("GSLAN_Name", "Sitemap");
 // define("GSLAN_17", "never");

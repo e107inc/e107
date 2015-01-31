@@ -42,7 +42,7 @@ $tp = e107::getParser();
 
 e107::lan('banner',false,'front'); 
 
-e107::lan('banner','admin_banner',true); // e_PLUGIN.'banner/languages/'.e_LANGUAGE.'_admin_banner.php'
+e107::lan('banner',true,true); // e_PLUGIN.'banner/languages/'.e_LANGUAGE.'_admin_banner.php'
 
 
 if(e_QUERY)

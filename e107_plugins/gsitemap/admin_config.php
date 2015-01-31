@@ -117,7 +117,7 @@ class gsitemap
 			
 			$mes->addInfo($text);
 			
-			$ns -> tablerender(GSLAN_40, $mes->render());
+			$ns -> tablerender(GSLAN_24, $mes->render());
 			return;
 		}
 		else
@@ -564,7 +564,7 @@ function admin_config_adminmenu()
 	$var['import']['link'] = e_SELF."?import";
 	$var['import']['perm'] = "0";
 	
-	show_admin_menu(GSLAN_19, $action, $var);
+	show_admin_menu(LAN_PLUGIN_GSITEMAP_NAME, $action, $var);
 }
 
 ?>

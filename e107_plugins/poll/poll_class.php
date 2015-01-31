@@ -661,8 +661,8 @@ class poll
 
 				$text .= "</div>"; // end pollsection div
 
-				$text .= "<div  class='control-group'>
-							<input class='btn' type='button' id='addoption' name='addoption' value='".LAN_FORUM_3032."' />
+				$text .= "<div  class='form-group control-group'>
+							<input class='btn btn-default' type='button' id='addoption' name='addoption' value='".LAN_FORUM_3032."' />
 						</div>
 
 			</form>";
@@ -798,7 +798,7 @@ class poll
 			$text .= "</span><br />";
 		}
 
-		$text .="</div><input class='btn' type='button' name='addoption' value='".POLLAN_8."' onclick=\"duplicateHTML('pollopt','pollsection')\" /><br />
+		$text .="</div><input class='btn btn-default' type='button' name='addoption' value='".POLLAN_8."' onclick=\"duplicateHTML('pollopt','pollsection')\" /><br />
 		</td></tr>
 
 		<tr>

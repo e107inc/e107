@@ -10,12 +10,12 @@ define("BNRLAN_00", "No banners created yet."); // 15
 define("BNRLAN_01", "Banner ID not found.");
 
 // define("BNRLAN_1", "Client"); //27
-define("BNRLAN_2", "Clickthroughs");
-define("BNRLAN_3", "Click %");
-define("BNRLAN_4", "Impressions"); 
-define("BNRLAN_5", "Impressions Left");
+// define("BNRLAN_2", "Clickthroughs");
+// define("BNRLAN_3", "Click %");
+// define("BNRLAN_4", "Impressions"); 
+// define("BNRLAN_5", "Impressions Left");
 
-define("BNRLAN_6", "Unlimited"); // 35
+// define("BNRLAN_6", "Unlimited"); // 35
 define("BNRLAN_7", "Stats"); // 65
 define("BNRLAN_8", "N/A"); // 66
 define("BNRLAN_9", "Starts"); // 45
@@ -33,8 +33,8 @@ define("BNRLAN_18", "End Date"); //37
 // 19 - 24 extra space
 
 define("BNRLAN_25", "Add new or choose existing campaign");
-define("BNRLAN_26", "Enter new campaign");
-define("BNRLAN_27", "New Campaign"); // 26a
+// define("BNRLAN_26", "Enter new campaign");
+// define("BNRLAN_27", "New Campaign"); // 26a
 define("BNRLAN_28", "Add new or choose existing client");
 define("BNRLAN_29", "Enter new client");
 define("BNRLAN_30", "New Client"); // 29a
@@ -61,6 +61,6 @@ define("BNRLAN_43", "How to show the campaigns?"); // BANNER_MENU_L10
 define("BNRLAN_44", "Choose render type ..."); // BANNER_MENU_L11
 define("BNRLAN_45", "One campaign in a single menu"); // BANNER_MENU_L12
 define("BNRLAN_46", "All selected campaigns in one single menu"); // BANNER_MENU_L13
-define("BNRLAN_47", "All selected campaigns in separate menus"); // BANNER_MENU_L14
+// define("BNRLAN_47", "All selected campaigns in separate menus"); // BANNER_MENU_L14
 
 ?>

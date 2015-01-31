@@ -75,7 +75,7 @@ define("POLLAN_45", "Poll successfully updated");
 
 // TODO NEED TO BE RENAMED!
 
-// define("LAN_FORUM_3029", "If you do not wish to add a poll to your topic, leave the fields blank."); // LAN_386
+define("LAN_FORUM_3029", "If you do not wish to add a poll to your topic, leave the fields blank."); // LAN_386
 define("LAN_FORUM_3030", "Poll question"); // LAN_5
 define("LAN_FORUM_3031", "Poll answer"); // LAN_391
 define("LAN_FORUM_3032", "Add another answer"); // LAN_6

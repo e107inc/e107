@@ -59,8 +59,8 @@ define("ADLAN_49", "main site administrator");
 define("ADLAN_51", "Please log in to gain access to administration area");
 define("ADLAN_52", "Admin Front Page");
 define("ADLAN_53", "Leave Admin");
-define("ADLAN_54", "Banners");
-define("ADLAN_55", "Configure banners");
+// define("ADLAN_54", "Banners");
+// define("ADLAN_55", "Configure banners");
 //define("ADLAN_56", "Chatbox");
 //define("ADLAN_57", "Configure chatbox");
 define("ADLAN_58", "Emoticons");
@@ -167,7 +167,7 @@ define("ADLAN_149", "Notify");
 define("ADLAN_150", "Admin Email Notifications");
 
 define("ADLAN_151", "Main");
-define("ADLAN_152", "Enter Code");
+// define("ADLAN_152", "Enter Code");
 
 define("ADLAN_153", "Administration Area");
 define("ADLAN_154", "Error contacting Sourceforge to check for new version");
