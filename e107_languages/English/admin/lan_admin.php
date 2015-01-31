@@ -29,7 +29,7 @@ define("ADLAN_13", "System documentation");
 //define("ADLAN_19", "Add new/edit/delete reviews");
 //define("ADLAN_22", "Link Categories");
 //define("ADLAN_23", "Add new/edit/delete link categories");
-define("ADLAN_24", "Downloads");
+// define("ADLAN_24", "Downloads");
 define("ADLAN_25", "Manage Downloads");
 //define("ADLAN_26", "Download Categories");
 //define("ADLAN_27", "Add new/edit/delete download categories");
@@ -117,7 +117,7 @@ define("ADLAN_111", "Unverified members");
 define("ADLAN_112", "Banned users");
 // define("ADLAN_113", "Forum posts"); // should already be loaded from forum global language file. 
 define("ADLAN_114", "Comments");
-define("ADLAN_115", "Chatbox posts");
+// define("ADLAN_115", "Chatbox posts");
 define("ADLAN_116", "Admin log ...");
 define("ADLAN_117", "Show all entries");
 define("ADLAN_118", "Clear log");
@@ -322,7 +322,7 @@ define("LAN_OWNER", "Owner");
 
 define("LAN_EMAIL","Email address");
 define("LAN_ID", "ID");
-define("LAN_IP", "IP Address");
+
 define("LAN_TITLE", "Title");
 define("LAN_DESCRIPTION", "Description");
 define("LAN_VISIBILITY", "Visibility");

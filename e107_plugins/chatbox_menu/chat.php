@@ -25,7 +25,7 @@ $row = $sql->fetch();
 if (!check_class($row['menu_class'])) 
 {
 	$mes->addError(CHATBOX_L24); 
-	$ns->tablerender(CHATBOX_L23, $mes->render());
+	$ns->tablerender(LAN_ERROR, $mes->render());
 	require_once(FOOTERF);
 	exit;
 }
@@ -120,7 +120,7 @@ foreach ($chatList as $row)
 	}
 	if(CB_MOD)
 	{
-		$cb_message .= "<br /><input type='checkbox' name='delete[{$row['cb_id']}]' value='1' />".CHATBOX_L10;
+		$cb_message .= "<br /><input type='checkbox' name='delete[{$row['cb_id']}]' value='1' />".LAN_DELETE;
 		if($row['cb_blocked'])
 		{
 			$cb_message .= "&nbsp;&nbsp;&nbsp;<input type='checkbox' name='unblock[{$row['cb_id']}]' value='1' />".CHATBOX_L7;
@@ -164,8 +164,6 @@ $text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}").'</d
 $ns->tablerender(CHATBOX_L20, $mes->render().$text);
 
 
-//require_once(e_HANDLER."np_class.php");
-//$ix = new nextprev("chat.php", $from, 30, $chat_total, CHATBOX_L21);
 
 require_once(FOOTERF);
 ?>
