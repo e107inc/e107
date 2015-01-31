@@ -35,10 +35,10 @@ class chatbox_menu_dashboard // include plugin-folder in the name.
 		$chatbox_posts = $sql->count('chatbox');
 		
 		$var[0]['icon'] 	= "<img src='".e_PLUGIN_ABS."chatbox_menu/images/chatbox_16.png' style='width: 16px; height: 16px; vertical-align: bottom' alt='' /> ";
-		$var[0]['title'] 	= ADLAN_115;
+		$var[0]['title'] 	= LAN_PLUGIN_CHATBOX_MENU_POSTS;
 		$var[0]['url']		= e_PLUGIN."chatbox_menu/admin_chatbox.php";
 		$var[0]['total'] 	= $chatbox_posts;
-echo "BLA";
+
 		return $var;
 	}	
 }

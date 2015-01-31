@@ -1659,23 +1659,27 @@ class pluginLanguage
 				$this->scanScriptFile($path);
 			}
 				
-	
+		
 			$this->renderResults(); 
 
 			
 		}
 		
 		
-		function renderSimilar($data)
+		function findSimilar($data)
 		{
 			$sim = array(); 
 			
 			foreach($this->lanDefsData as $k=>$v)
 			{
+				if(empty($v['value']))
+				{
+					continue; 	
+				}
+				
 				similar_text($v['value'], $data['value'], $percentSimilar);
 				
-				
-				if(($v['value'] == $data['value'] || $percentSimilar > 80) && $data['file'] != $v['file'])
+				if((($v['value'] == $data['value'] || $percentSimilar > 80) && $data['file'] != $v['file']))
 				{
 					if(strpos($v['lan'],'LAN')===false) // Defined constants that don't contain 'LAN'. 
 					{
@@ -1691,7 +1695,20 @@ class pluginLanguage
 				}	
 			}	
 			
-			if(empty($sim))
+			
+			
+			return $sim; 	
+			
+		}
+		
+		
+		function renderSimilar($data,$mode='')
+		{
+			
+			$sim = $this->findSimilar($data); 
+			
+			
+			if(empty($sim) || ($mode == 'script' && count($sim) < 2))
 			{
 				return; //  ADMIN_TRUE_ICON; 	
 			}
@@ -1702,9 +1719,9 @@ class pluginLanguage
 			foreach($sim as $k=>$val)
 			{
 				$text .= "<tr>
-				<td>".$this->shortPath($val['file'])."</td>
-				<td style='width:40%'>".$val['lan']."<br />".$val['value']."</td>
-				<td style='width:10%'>".$this->renderStatus($val['status'])."</td>
+				<td style='width:30%'>".$this->shortPath($val['file'])."</td>
+				<td style='width:45%'>".$val['lan']."<br /><small>".$val['value']."</small></td>
+				<td style='width:25%'>".$this->renderStatus($val['status'])."</td>
 				</tr>";	
 				
 			}
@@ -1771,8 +1788,20 @@ class pluginLanguage
 			{
 				return str_replace(e_PLUGIN.$this->plugin.'/','',$path); 		
 			}
+			else
+			{
 			
-			return str_replace(e_PLUGIN.$this->plugin.'/languages','',$path); 	
+				$text = str_replace(e_PLUGIN.$this->plugin.'/languages/','',$path); 
+				
+				if(strpos($path,'_front.php')===false && strpos($path,'_admin.php')===false && strpos($path,'_global.php')===false)
+				{
+					return "<span class='text-error e-tip' title='File name should be either English_front.php, English_admin.php or English_global.php'>".$text."</span>";	
+				} 
+				
+				return $text;
+				
+			}
+				
 		}
 		
 
@@ -1827,21 +1856,28 @@ class pluginLanguage
 			<th>id</th>
 			<th>File</th>
 			<th>Detected LAN</th>
+			<th>LAN Value</th>
 			<th>Found on Line</th>
 			<th style='width:10%'>Status</th>
+			<th>Duplicates / Possible Substitions</th>
 			</tr>
 			";
 			
 			foreach($this->scriptDefsData as $k=>$v)
 			{
 				$status = in_array($v['lan'],$this->lanDefs) ? 1 : 0;
+			//	$lan = $v['lan'];
+			//	$v['value'] = $this->lanDefsRaw[$lan];
+			//	$sim = $this->findSimilar($v);
 				
 				$text2 .= "<tr>
 					<td style='width:5%'>".$k."</td>
 					<td>".$this->shortPath($v['file'],'script')."</td>
 					<td >".$v['lan']."</td>
+					<td ><small>".$this->lanDefsRaw[$v['lan']]."</small></td>
 					<td>".$v['line']."</td>
 					<td>".$this->renderStatus($status,'script')."</td>
+					<td>".$this->renderSimilar($v,'script')."</td> 
 					</tr>";	
 				
 			}
@@ -1889,10 +1925,11 @@ class pluginLanguage
 			
 			// echo $text2;
 			$tabs = array (
-				0 => array('caption'=>'Used', 'text'=>$used),
-				1 => array('caption'=>'Unused', 'text'=>$unused),
-				2 => array('caption'=>'Unsure', 'text'=>$unsure),
-				3	=> array('caption'=>'Script Files', 'text'=> $this->renderScriptTable()),
+				0	=> array('caption'=>'Plugin Files', 'text'=> $this->renderScriptTable()),
+				1 => array('caption'=>'Used', 'text'=>$used),
+				2 => array('caption'=>'Unused', 'text'=>$unused),
+				3 => array('caption'=>'Unsure', 'text'=>$unsure),
+				
 
 			);
 		
@@ -1937,7 +1974,7 @@ class pluginLanguage
 						if($lan != 'e_LANGUAGE' && $lan != 'e_LANGUAGEDIR' && $lan != 'LAN' ) // remove 'TODO LAN'
 						{
 							$this->scriptDefs[] = $lan;
-							$this->scriptDefsData[] = array('file'=>$path, 'line'=>$ln, 'lan'=>$lan); 
+							$this->scriptDefsData[] = array('file'=>$path, 'line'=>$ln, 'lan'=>$lan, 'value'=>$this->lanDefsRaw[$lan]); 
 						//	$this->scriptData[$path][$ln] = $row; 
 						}
 					}
@@ -1977,6 +2014,7 @@ class pluginLanguage
 					$retloc[$type][$d]= $values[$k];
 					$this->lanDefs[] = $d;
 					$this->lanDefsData[] = array('file'=>$path, 'lan'=>$d, 'value'=>$values[$k]); 
+					$this->lanDefsRaw[$d] = $values[$k];
 				}	
 			}
 			

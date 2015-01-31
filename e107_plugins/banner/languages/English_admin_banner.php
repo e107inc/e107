@@ -9,7 +9,7 @@
 define("BNRLAN_00", "No banners created yet."); // 15
 define("BNRLAN_01", "Banner ID not found.");
 
-define("BNRLAN_1", "Client"); //27
+// define("BNRLAN_1", "Client"); //27
 define("BNRLAN_2", "Clickthroughs");
 define("BNRLAN_3", "Click %");
 define("BNRLAN_4", "Impressions"); 

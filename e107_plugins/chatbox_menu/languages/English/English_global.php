@@ -17,7 +17,7 @@ define("LAN_AL_CHBLAN_05","");
 define("NT_LAN_CB_1", "Chatbox Events");
 define("NT_LAN_CB_2", "Message posted");
 define("NT_LAN_CB_3", "Posted by");
-define("NT_LAN_CB_4", "IP Address");
+// define("NT_LAN_CB_4", "IP Address");
 define("NT_LAN_CB_5", "Message");
 define("NT_LAN_CB_6", "Chatbox Message Posted");
 

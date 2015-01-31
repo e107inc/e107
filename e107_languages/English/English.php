@@ -70,7 +70,9 @@ define("LAN_BACK", "Back");
 define("LAN_NAME", "Name");
 define("LAN_CANCEL","Cancel");
 define("LAN_DATE","Date");
+define("LAN_DATE_POSTED", "Date posted");
 define("LAN_JSCONFIRM","Are you sure?");
+define("LAN_IP", "IP Address");
 
 
 ?>

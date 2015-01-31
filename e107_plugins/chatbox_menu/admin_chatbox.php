@@ -41,18 +41,6 @@ if (isset($_POST['updatesettings']))
 	e107::getConfig('core')->setPref($temp)->save(false);
 	e107::getCache()->clear("nq_chatbox");
 	
-	/*
-	if ($admin_log->logArrayXXXXXDiffs($temp, $pref, 'CHBLAN_01'))
-	{
-		save_prefs();		// Only save if changes
-		$e107cache->clear("nq_chatbox");
-	}
-	else
-	{
-		$mes->addInfo(LAN_NO_CHANGE);
-	}
-	 
-	 */
 }
 
 
@@ -64,7 +52,7 @@ if (isset($_POST['prune']))
 	$sql->db_Delete("chatbox", "cb_datestamp < '{$prunetime}' ");
 	e107::getLog()->add('CHBLAN_02', $chatbox_prune.', '.$prunetime, E_LOG_INFORMATIVE, '');
 	$e107cache->clear("nq_chatbox");
-	$mes->addSuccess(CHBLAN_28);
+	$mes->addSuccess(LAN_AL_CHBLAN_02);
 }
 
 if (isset($_POST['recalculate'])) 

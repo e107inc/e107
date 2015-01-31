@@ -40,8 +40,9 @@ $frm = e107::getForm();
 $mes = e107::getMessage();
 $tp = e107::getParser();
 
+e107::lan('banner',false,'front'); 
 
-e107::lan('banner',e_LANGUAGE.'_admin_banner.php',true); // e_PLUGIN.'banner/languages/'.e_LANGUAGE.'_admin_banner.php'
+e107::lan('banner','admin_banner',true); // e_PLUGIN.'banner/languages/'.e_LANGUAGE.'_admin_banner.php'
 
 
 if(e_QUERY)
@@ -221,11 +222,11 @@ if (!$action)
 					<thead>
 						<tr>
 							<th class='center'>".LAN_ID."</th>
-							<th>".BNRLAN_1."</th>
-							<th class='center'>".BNRLAN_2."</th>
-							<th class='center'>".BNRLAN_3."</th>
-							<th class='center'>".BNRLAN_4."</th>
-							<th class='center'>".BNRLAN_5."</th>
+							<th>".BANNERLAN_22."</th>
+							<th class='center'>".BANNERLAN_24."</th>
+							<th class='center'>".BANNERLAN_25."</th>
+							<th class='center'>".BANNERLAN_26."</th>
+							<th class='center'>".BANNERLAN_26."</th>
 							<th class='center'>".LAN_OPTIONS."</th>
 						</tr>
 					</thead>
@@ -235,8 +236,8 @@ if (!$action)
 		{
 
 			$clickpercentage = ($banner_row['banner_clicks'] && $banner_row['banner_impressions'] ? round(($banner_row['banner_clicks'] / $banner_row['banner_impressions']) * 100)."%" : "-");
-			$impressions_left = ($banner_row['banner_impurchased'] ? $banner_row['banner_impurchased'] - $banner_row['banner_impressions'] : BNRLAN_6);
-			$impressions_purchased = ($banner_row['banner_impurchased'] ? $banner_row['banner_impurchased'] : BNRLAN_6);
+			$impressions_left = ($banner_row['banner_impurchased'] ? $banner_row['banner_impurchased'] - $banner_row['banner_impressions'] : BANNERLAN_30);
+			$impressions_purchased = ($banner_row['banner_impurchased'] ? $banner_row['banner_impurchased'] : BANNERLAN_30);
 
 			$start_date = ($banner_row['banner_startdate'] ? strftime("%d %B %Y", $banner_row['banner_startdate']) : LAN_NONE);
 			$end_date = ($banner_row['banner_enddate'] ? strftime("%d %B %Y", $banner_row['banner_enddate']) : LAN_NONE);
@@ -368,7 +369,7 @@ if ($action == "create")
 	</tr>
 
 	<tr>
-		<td>".BNRLAN_1."</td>
+		<td>".BANNERLAN_22."</td>
 		<td>
 	";
 
