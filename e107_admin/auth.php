@@ -312,7 +312,7 @@ class auth
 		{
 			$text .= "
 			<div class='field'>
-				<label for='code_verify'>".ADLAN_152."</label>"
+				<label for='code_verify'>".LAN_ENTER_CODE."</label>"
 				.$sec_img->renderImage().
 				$sec_img->renderInput()."	
 			</div>";

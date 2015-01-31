@@ -41,7 +41,7 @@ $lw_context_areas = array(
 		);
 
 // Yes, I know its a silly order - but that's history!
-$lwaction_vals = array(1=>LWLAN_51, 0=>LWLAN_52, 2=>LWLAN_53, 3=>LWLAN_54);
+$lwaction_vals = array(1=>LAN_INACTIVE, 0=>LWLAN_52, 2=>LWLAN_53, 3=>LWLAN_54);
 $frm = e107::getForm();
 // Generate dropdown for possible actions on finding a linkword
 function lw_act_opts($curval)

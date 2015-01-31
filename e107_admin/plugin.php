@@ -1622,7 +1622,7 @@ class pluginLanguage
 			
 		
 		
-			return $this->step1();
+			// return $this->step1();
 		}
 
 
@@ -1679,7 +1679,7 @@ class pluginLanguage
 				
 				similar_text($v['value'], $data['value'], $percentSimilar);
 				
-				if((($v['value'] == $data['value'] || $percentSimilar > 80) && $data['file'] != $v['file']))
+				if((($v['value'] == $data['value'] || $percentSimilar > 89) && $data['file'] != $v['file']))
 				{
 					if(strpos($v['lan'],'LAN')===false) // Defined constants that don't contain 'LAN'. 
 					{
@@ -1857,7 +1857,7 @@ class pluginLanguage
 			<th>File</th>
 			<th>Detected LAN</th>
 			<th>LAN Value</th>
-			<th>Found on Line</th>
+			<th class='right'>Found on Line</th>
 			<th style='width:10%'>Status</th>
 			<th>Duplicates / Possible Substitions</th>
 			</tr>
@@ -1875,7 +1875,7 @@ class pluginLanguage
 					<td>".$this->shortPath($v['file'],'script')."</td>
 					<td >".$v['lan']."</td>
 					<td ><small>".$this->lanDefsRaw[$v['lan']]."</small></td>
-					<td>".$v['line']."</td>
+					<td class='right'>".$v['line']."</td>
 					<td>".$this->renderStatus($status,'script')."</td>
 					<td>".$this->renderSimilar($v,'script')."</td> 
 					</tr>";	

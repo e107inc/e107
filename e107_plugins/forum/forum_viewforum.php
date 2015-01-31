@@ -675,7 +675,7 @@ function fadminoptions($thread_info)
 	$tp = e107::getParser();
 	
 //	$text = "<form method='post' action='".e_REQUEST_URI."' id='frmMod_{$forumId}_{$threadId}' style='margin:0;'>";
-	$text .= '<div class="btn-group"><button class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
+	$text .= '<div class="btn-group"><button class="btn btn-default btn-sm btn-mini dropdown-toggle" data-toggle="dropdown">
     <span class="caret"></span>
     </button>
     <ul class="dropdown-menu pull-right">	

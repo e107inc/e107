@@ -50,7 +50,7 @@ define('ADLAN_PM_54', "Main settings");
 define('ADLAN_PM_55', "Limits");
 
 //define('ADLAN_PM_57', "This plugin is a fully featured Private Messaging system.");
-define('ADLAN_PM_58', "Private Messenger");
+// define('ADLAN_PM_58', "Private Messenger");
 define('ADLAN_PM_59', 'Maintenance');
 define('ADLAN_PM_60', 'PM Maintenance');
 //define('ADLAN_PM_61', 'Execute');

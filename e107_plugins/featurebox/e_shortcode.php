@@ -115,7 +115,7 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 			return $ret;
 		}
 		
-		return e107::getRender()->tablerender(FBLAN_01, $ret, vartrue($parm['tablestyle'], 'featurebox'), true);
+		return e107::getRender()->tablerender(LAN_PLUGIN_FEATUREBOX_NAME, $ret, vartrue($parm['tablestyle'], 'featurebox'), true);
 	}
 	
 	/**
