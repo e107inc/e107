@@ -529,7 +529,7 @@ function search_adminmenu()
 	$var['main']['text'] = SEALAN_41;
 	$var['main']['link'] = e_SELF;
 
-	$var['settings']['text'] = ADLAN_4;
+	$var['settings']['text'] = LAN_PREFS;
 	$var['settings']['link'] = e_SELF."?settings";
 
 	e107::getNav()->admin(SEALAN_40, $action, $var);
