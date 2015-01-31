@@ -84,8 +84,10 @@ function wmessage_shortcode($parm='')
 				}
 				else
 				{
+					echo "<div class='wmessage'>";
 				  	echo ($wmcaption) ? $wmcaption.'<br />' : '';
 					echo implode('<br />',$wmessage);
+					echo "</div>";
 				}
 
 				$cache_data = ob_get_flush();
