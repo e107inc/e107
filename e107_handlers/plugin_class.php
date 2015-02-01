@@ -70,12 +70,12 @@ class e107plugin
 
 	protected $core_plugins = array(
 		"_blank","admin_menu","alt_auth","banner","blogcalendar_menu",
-		"calendar_menu","chatbox_menu",	"clock_menu","comment_menu",
+		"chatbox_menu",	"clock_menu","comment_menu",
 		"contact", "download","faqs", "featurebox", "forum","gallery", 
 		"gsitemap","import", "linkwords", "list_new", "log", "login_menu",
 		"metaweblog", "newforumposts_main", "news", "newsfeed",
-		"newsletter","online", "page", "pdf", "pm", "pm","poll",
-		"rss_menu","search_menu","siteinfo", "social", "tagwords", "tinymce",
+		"newsletter","online", "page", "pm","poll",
+		"rss_menu","search_menu","siteinfo", "social", "tagwords", "tinymce4",
 		"trackback","tree_menu","user"
 	);
 
@@ -1404,7 +1404,7 @@ class e107plugin
 		if (!file_exists($path.'plugin.xml') || $function == '')
 		{
 			$error[] = EPL_ADLAN_77;
-			$canContinue = FALSE;
+			$canContinue = false;
 		}
 
 		if ($canContinue && $this->parse_plugin_xml($plug['plugin_path']))
@@ -1426,26 +1426,26 @@ class e107plugin
 			$canContinue = $this->XmlDependencies($plug_vars['dependencies']);
 		}
 
-		if (!$canContinue)
+		if ($canContinue === false)
 		{
-			
-			return FALSE;
+			return false;
 		}
 
 		// All the dependencies are OK - can start the install now
 		
-		if ($canContinue) // Run custom {plugin}_setup install/upgrade etc. for INSERT, ALTER etc. etc. etc. 
+		// Run custom {plugin}_setup install/upgrade etc. for INSERT, ALTER etc. etc. etc. 
+		$ret = $this->execute_function($plug['plugin_path'], $function, 'pre'); 
+		if (!is_bool($ret))
 		{
-			$ret = $this->execute_function($plug['plugin_path'], $function, 'pre'); 
-			if (!is_bool($ret))
-				$txt .= $ret;
+			$txt .= $ret;
 		}
-	
-			
+		
 		// Handle tables
-		if ($canContinue && count($sql_list)) // TODO - move to it's own function. XmlTables(). 
-		{ 
+		$this->XmlTables($function, $plug); 
 
+		if ($canContinue && count($sql_list)) // TODO - move more of it to $this->XmlTables(). 
+		{
+			
 			require_once(e_HANDLER.'db_table_admin_class.php');
 			$dbHandler = new db_table_admin;
 			foreach ($sql_list as $sqlFile)
@@ -1467,9 +1467,13 @@ class e107plugin
 							$txt = "Adding Table: {$ct[1]} ... ";
 							$status = $this->manage_tables('add', array($sqlTable)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR; // Pass the statement to create the table
 							$mes->add($txt, $status);
-							break;
+						break;
+						
+						
+						
+						/*	 Has Bugs.. - @See replacement: $this->XmlTables()
 						case 'upgrade':
-		
+				
 							$tmp = $dbHandler->update_table_structure($ct, FALSE, TRUE, $pref['multilanguage']);
 							if ($tmp === FALSE)
 							{
@@ -1479,12 +1483,15 @@ class e107plugin
 							{
 								$error[] = $tmp;
 							}
-							
-								
+									
+						break;
+						*/
 						
-							break;
+						
 						case 'refresh': // Leave things alone
-							break;
+						case 'upgrade':
+						break;
+						
 						case 'uninstall':
 							if (vartrue($options['delete_tables'], FALSE))
 							{
@@ -1619,9 +1626,33 @@ class e107plugin
 	}
 
 	// Placeholder. 
-	function XmlTables($data)
+	function XmlTables($function, $plug)		
 	{
-					
+
+		$sqlFile = e_PLUGIN.$plug['plugin_path'].'/'.$plug['plugin_path']."_sql.php";
+
+		if(!is_readable($sqlFile))
+		{
+			return; 
+		}
+		
+		require_once(e_HANDLER."db_verify_class.php");
+		$dbv = new db_verify;
+		
+		if($function == 'upgrade')
+		{
+			$dbv->errors = array();
+			$dbv->compare($plug['plugin_path']);
+			if($dbv->errors())
+			{
+				$dbv->compileResults();
+				$dbv->runFix(); 
+			}
+			
+		}
+				
+			
+						
 	}
 				
 			
@@ -2144,6 +2175,7 @@ class e107plugin
 			}
 		}
 	}
+
 
 	/**
 	 * Process XML tags <mainPrefs> and <pluginPrefs>
