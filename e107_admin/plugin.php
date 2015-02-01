@@ -2098,7 +2098,7 @@ class pluginBuilder
 			foreach($plugFolders as $dir)
 			{
 				$lanDir[$dir] = $dir;
-				if(file_exists(e_PLUGIN.$dir."/admin_config.php"))
+				if(E107_DEBUG_LEVEL == 0 && file_exists(e_PLUGIN.$dir."/admin_config.php"))
 				{
 					continue;	
 				}	
@@ -2122,7 +2122,7 @@ class pluginBuilder
 						</colgroup>
 				<tr>
 					<td>Build an admin-area and xml file for: </td>
-					<td><div class='input-append'>".$frm->open('createPlugin','get').$frm->select("newplugin",$newDir).$frm->admin_button('step', 2,'other','Go')."</div> ".$frm->checkbox('createFiles',1,1,'Create Files').$frm->close()."</td>
+					<td><div class='input-append'>".$frm->open('createPlugin','get',e_SELF."?mode=create").$frm->select("newplugin",$newDir).$frm->admin_button('step', 2,'other','Go')."</div> ".$frm->checkbox('createFiles',1,1,'Create Files').$frm->close()."</td>
 				</tr>
 				
 				<tr>
@@ -2663,7 +2663,7 @@ TEMPLATE;
 		{
 			$frm = e107::getForm();
 					
-			$modes = array("main"=>"Main Area","cat"=>"Categories","other1"=>"Other 1","other2"=>"Other 2");
+			$modes = array("main"=>"Main Area","cat"=>"Categories","other1"=>"Other 1","other2"=>"Other 2","other3"=>"Other 3","other4"=>"Other 4");
 			
 		//	echo "TABLE COUNT= ".$this->tableCount ;
 			
