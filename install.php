@@ -1265,7 +1265,7 @@ class e_install
 				$error = "DEBUG: Rename from e107.htaccess to .htaccess was successful";		
 			}
 		}
-		else
+		elseif(file_exists("e107.htaccess"))
 		{		
 			$error = "IMPORTANT: Please copy and paste the contents of the <b>e107.htaccess</b> into your <b>.htaccess</b> file. Please take care NOT to overwrite any existing data that may be in it.";				
 		}		
