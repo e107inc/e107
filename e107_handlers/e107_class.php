@@ -2604,7 +2604,8 @@ class e107
 	 */
 	public static function wysiwyg($val=null)
 	{
-		if (self::getPref('core','wysiwyg',false) != true)
+		
+		if (self::getPref('wysiwyg',false) != true)
 		{
 			return false; 	
 		}
