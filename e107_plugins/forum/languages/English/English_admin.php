@@ -70,7 +70,7 @@ define("FORLAN_58", "Number of posts displayed per page");
 //define("FORLAN_59", "Prune");
 define("FORLAN_60", "This will delete all threads that have not received a reply in the number of days you enter. <br /><b>Please be careful using this function!</b>");
 //define("FORLAN_61", "Update Options");
-define("FORLAN_62", "Forum Options");
+// define("FORLAN_62", "Forum Options");
 // define("FORLAN_63", "Ranks");
 // define("FORLAN_64", "Enter your levels here, if left blank generic stars will be used to denote level. Separate levels with comma. Maximum of 10 levels, lowest first.");
 define("FORLAN_65", "Forum Title");
@@ -141,7 +141,7 @@ define("FORLAN_122", "Click here to email admin when someone reports a forum pos
 define("WMGLAN_1", "Rules for Guests");
 define("WMGLAN_2", "Rules for Members");
 define("WMGLAN_3", "Rules for Administrators");
-define("WMGLAN_4", "Submit");
+// define("WMGLAN_4", "Submit");
 define("WMGLAN_5", "Set Forum Rules");
 define("WMGLAN_6", "Activate?");
 define("FORLAN_126", "Show Tooltips");

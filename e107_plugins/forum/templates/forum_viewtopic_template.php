@@ -89,7 +89,7 @@ $FORUMSTART = "<a id='top'></a><div style='text-align:center'>
 	<table style='".USER_WIDTH."' class='fborder table'>
 	<tr>
 	<td style='width:20%; text-align:center' class='fcaption'>
-	".LAN_FORUM_2014."
+	".LAN_AUTHOR."
 	</td>
 	<td style='width:80%; text-align:center' class='fcaption'>
 	".LAN_FORUM_2015."

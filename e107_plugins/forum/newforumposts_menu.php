@@ -17,9 +17,10 @@ $tp = e107::getParser();
 $sql = e107::getDb();
 $gen = new convert;
 $pref = e107::getPref();
-e107::lan('forum','front');
+e107::lan('forum','menu',true);  // English_menu.php or {LANGUAGE}_menu.php
 
-include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_newforumposts_menu.php');
+// include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_newforumposts_menu.php');
+// include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/'.e_LANGUAGE.'_menu.php');
 include_once(e_PLUGIN.'forum/forum_class.php');
 
 $max_age = vartrue($menu_pref['newforumposts_maxage'], 0);
@@ -77,11 +78,11 @@ if($results = $sql->gen($qry))
 		
 		if ($menu_pref['newforumposts_title'])
 		{
-			$text .= "<a href='{$url}'>{$topic}</a><br />{$post}<br /><small class='muted'>".LAN_FORUM_0074." {$poster} {$datestamp}</small>";
+			$text .= "<a href='{$url}'>{$topic}</a><br />{$post}<br /><small class='muted'>".LAN_FORUM_MENU_001." {$poster} {$datestamp}</small>";
 		}
 		else
 		{
-			$text .= "<a href='{$url}'>".LAN_FORUM_0074."</a> {$poster} <small class='muted'>{$datestamp}</small><br />{$post}<br />";
+			$text .= "<a href='{$url}'>".LAN_FORUM_MENU_001."</a> {$poster} <small class='muted'>{$datestamp}</small><br />{$post}<br />";
 		}
 		
 		$text .= "</li>";
@@ -92,6 +93,6 @@ if($results = $sql->gen($qry))
 }
 else
 {
-	$text = NFP_2;
+	$text = LAN_FORUM_MENU_002;
 }
 e107::getRender()->tablerender($menu_pref['newforumposts_caption'], $text, 'nfp_menu');

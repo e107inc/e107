@@ -65,7 +65,7 @@ if (isset($_POST['deletepollconfirm']))
 	 extract($row);
 	$thread_name = str_replace("[poll] ", "", $thread_name);
 	$sql->update("forum_thread", "thread_name='$thread_name' WHERE thread_id='$thread_id' ");
-	$message = FORCONF_5;
+	$message = LAN_FORUM_5001;
 	$url = e_PLUGIN."forum/forum_viewtopic.php?".$thread_id;
 }
 
@@ -78,7 +78,7 @@ if (isset($_POST['move']))
 	$newThreadTitle = '';
 	if($_POST['rename_thread'] == 'add')
 	{
-		$newThreadTitle = '['.FORCONF_27.']';
+		$newThreadTitle = '['.LAN_FORUM_5021.']';
 		$newThreadTitleType = 0;
 	}
 	elseif($_POST['rename_thread'] == 'rename' && trim($_POST['newtitle']) != '')
@@ -92,7 +92,7 @@ if (isset($_POST['move']))
 
 	$forum->threadMove($threadId, $toForum, $newThreadTitle, $newThreadTitleType);
 
-	$message = FORCONF_9;// XXX _URL_ thread name
+	$message = LAN_FORUM_5005;// XXX _URL_ thread name
 	$url = $e107::getUrl()->create('forum/thread/view', 'id='.$threadId);
 }
 
@@ -102,7 +102,7 @@ if (isset($_POST['movecancel']))
 	$forum = new e107forum;
 	$postInfo = $forum->postGet($id, 0, 1);
 
-	$message = FORCONF_10;
+	$message = LAN_FORUM_5006;
 //	$url = e_PLUGIN."forum/forum_viewforum.php?".$info['forum_id'];
 	$url = $e107::getUrl()->create('forum/forum/view', 'id='.$postInfo[0]['post_forum']);// XXX _URL_ thread name
 }
@@ -111,9 +111,9 @@ if ($message)
 {
 	$text = "<div style='text-align:center'>".$message."
 		<br />
-		<a href='$url'>".FORCONF_11.'</a>
+		<a href='$url'>".LAN_FORUM_5007.'</a>
 		</div>';
-	$ns->tablerender(FORCONF_12, $text);
+	$ns->tablerender(LAN_FORUM_5008, $text);
 	require_once(FOOTERF);
 	exit;
 }
@@ -121,11 +121,11 @@ if ($message)
 if ($action == "delete_poll")
 {
 	$text = "<div style='text-align:center'>
-		".FORCONF_13."
+		".LAN_FORUM_5009."
 		<br /><br />
 		<form method='post' action='".e_SELF."?".e_QUERY."'>
 		<input class='btn btn-default button' type='submit' name='deletecancel' value='".LAN_CANCEL."' />
-		<input class='btn btn-default button' type='submit' name='deletepollconfirm' value='".FORCONF_15."' />
+		<input class='btn btn-default button' type='submit' name='deletepollconfirm' value='".LAN_FORUM_5010."' />
 		</form>
 		</div>";
 	$ns->tablerender(LAN_UI_DELETE_LABEL, $text);
@@ -167,7 +167,7 @@ if ($action == 'move')
 		<div style='text-align:center'>
 		<table class='table table-striped' style='".ADMIN_WIDTH."'>
 		<tr>
-		<td>".FORCONF_24.": </td>
+		<td>".LAN_FORUM_5019.": </td>
 		<td>
 		<select name='forum_move' class='tbox'>";
 
@@ -187,18 +187,18 @@ if ($action == 'move')
 		</td>
 		</tr>
 		<tr>
-		<td >".FORCONF_32."</td>
+		<td >".LAN_FORUM_5026."</td>
 		<td><div class='radio'>
-		".$frm->radio('rename_thread','none',true, 'label='.FORCONF_28)."
-		".$frm->radio('rename_thread', 'add', false, array('label'=> FORCONF_29.' ['.FORCONF_27.'] '.FORCONF_30)). "
-		<div class='form-inline'>".$frm->radio('rename_thread','rename', false, array('label'=>FORCONF_31))."
+		".$frm->radio('rename_thread','none',true, 'label='.LAN_FORUM_5022)."
+		".$frm->radio('rename_thread', 'add', false, array('label'=> LAN_ADD.' ['.LAN_FORUM_5021.'] '.LAN_FORUM_5024)). "
+		<div class='form-inline'>".$frm->radio('rename_thread','rename', false, array('label'=>LAN_FORUM_5025))."
 		".$frm->text('newtitle', $tp->toForm($threadInfo['thread_name']), 250)."
 		</div>
 		</div></td>
 		</tr>
 		</table>
 		<div class='center'>
-		<input class='btn btn-primary button' type='submit' name='move' value='".FORCONF_25."' />
+		<input class='btn btn-primary button' type='submit' name='move' value='".LAN_FORUM_5019."' />
 		<input class='btn btn-default button' type='submit' name='movecancel' value='".LAN_CANCEL."' />
 		</div>
 		
@@ -210,7 +210,7 @@ if ($action == 'move')
 		$threadText = $tp->toHTML($postInfo[0]['post_entry'], true);
 		
 	$text .= "<h3>".$threadName."</h3><div>".$threadText."</div>"; // $e107->ns->tablerender(, ), '', true).$ns->tablerender('', $text, '', true);
-	$ns->tablerender(FORCONF_25, $text);
+	$ns->tablerender(LAN_FORUM_5019, $text);
 
 }
 require_once(FOOTERF);

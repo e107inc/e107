@@ -217,17 +217,17 @@ $text = "
 <div class='spacer'>
 <table style='width: 100%;' class='fborder table'>
 <tr>
-<th class='forumheader' colspan='2'>".FSLAN_1."</th>
+<th class='forumheader' colspan='2'>".LAN_FORUM_6000."</th>
 </tr>
-	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_2.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$open_date}</td></tr>
-	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_3.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$open_since}</td></tr>
-	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_4.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$total_posts}</td></tr>
+	<tr><td style='width: 50%; text-align: right;'><b>".LAN_FORUM_6001.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$open_date}</td></tr>
+	<tr><td style='width: 50%; text-align: right;'><b>".LAN_FORUM_6002.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$open_since}</td></tr>
+	<tr><td style='width: 50%; text-align: right;'><b>".LAN_FORUM_6003.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$total_posts}</td></tr>
 	<tr><td style='width: 50%; text-align: right;'><b>".LAN_FORUM_1007.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$total_topics}</td></tr>
-	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_6.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$total_replies}</td></tr>
-	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_7.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$total_views}</td></tr>
-	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_24.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$postsperday}</td></tr>
-	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_8.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$db_size}</td></tr>
-	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_9.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$avg_row_len}</td></tr>
+	<tr><td style='width: 50%; text-align: right;'><b>".LAN_FORUM_6004.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$total_replies}</td></tr>
+	<tr><td style='width: 50%; text-align: right;'><b>".LAN_FORUM_6005.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$total_views}</td></tr>
+	<tr><td style='width: 50%; text-align: right;'><b>".LAN_FORUM_6014.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$postsperday}</td></tr>
+	<tr><td style='width: 50%; text-align: right;'><b>".LAN_FORUM_6006.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$db_size}</td></tr>
+	<tr><td style='width: 50%; text-align: right;'><b>".LAN_FORUM_6007.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$avg_row_len}</td></tr>
 </table>
 </div>
 
@@ -237,10 +237,10 @@ $text = "
 <td class='forumheader' colspan='5'>".LAN_FORUM_0011."</td>
 </tr>
 <tr>
-<th style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_11."</th>
+<th style='width: 10%; text-align: center;' class='fcaption'>".LAN_FORUM_6008."</th>
 <th style='width: 40%;' class='fcaption'>".LAN_FORUM_1003."</th>
 <th style='width: 10%; text-align: center;' class='fcaption'>".LAN_FORUM_0003."</th>
-<th style='width: 20%; text-align: center;' class='fcaption'>".FSLAN_14."</th>
+<th style='width: 20%; text-align: center;' class='fcaption'>".LAN_FORUM_6009."</th>
 <th style='width: 20%; text-align: center;' class='fcaption'>".LAN_DATE."</th>
 </tr>
 ";
@@ -275,13 +275,13 @@ $text .= "</table>
 <div class='spacer'>
 <table style='width: 100%;' class='fborder table'>
 <tr>
-<td class='forumheader' colspan='5'>".FSLAN_16."</td>
+<td class='forumheader' colspan='5'>".LAN_FORUM_6010."</td>
 </tr>
 <tr>
-<th style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_11."</th>
+<th style='width: 10%; text-align: center;' class='fcaption'>".LAN_FORUM_6008."</th>
 <th style='width: 40%;' class='fcaption'>".LAN_FORUM_1003."</th>
 <th style='width: 10%; text-align: center;' class='fcaption'>".LAN_FORUM_1005."</th>
-<th style='width: 20%; text-align: center;' class='fcaption'>".FSLAN_14."</th>
+<th style='width: 20%; text-align: center;' class='fcaption'>".LAN_FORUM_6009."</th>
 <th style='width: 20%; text-align: center;' class='fcaption'>".LAN_DATE."</th>
 </tr>
 ";
@@ -320,7 +320,7 @@ $text .= "</table>
 </tr>
 <thead>
 <tr>
-<th style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_11."</th>
+<th style='width: 10%; text-align: center;' class='fcaption'>".LAN_FORUM_6008."</th>
 <th style='width: 20%;' class='fcaption'>".LAN_NAME."</th>
 <th style='width: 10%; text-align: center;' class='fcaption'>".LAN_FORUM_2032."</th>
 <th style='width: 10%; text-align: center;' class='fcaption'>%</th>
@@ -352,10 +352,10 @@ $text .= "</tbody>
 <div class='spacer'>
 <table style='width: 100%;' class='fborder table'>
 <tr>
-<td class='forumheader' colspan='5'>".FSLAN_21."</td>
+<td class='forumheader' colspan='5'>".LAN_FORUM_6011."</td>
 </tr>
 <tr>
-<th style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_11."</th>
+<th style='width: 10%; text-align: center;' class='fcaption'>".LAN_FORUM_6008."</th>
 <th style='width: 20%;' class='fcaption'>".LAN_NAME."</th>
 <th style='width: 10%; text-align: center;' class='fcaption'>".LAN_FORUM_2032."</th>
 <th style='width: 10%; text-align: center;' class='fcaption'>%</th>
@@ -384,10 +384,10 @@ $text .= "</table>
 <div class='spacer'>
 <table style='width: 100%;' class='fborder table'>
 <tr>
-<td class='forumheader' colspan='5'>".FSLAN_22."</td>
+<td class='forumheader' colspan='5'>".LAN_FORUM_6012."</td>
 </tr>
 <tr>
-<th style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_11."</th>
+<th style='width: 10%; text-align: center;' class='fcaption'>".LAN_FORUM_6008."</th>
 <th style='width: 20%;' class='fcaption'>".LAN_NAME."</th>
 <th style='width: 10%; text-align: center;' class='fcaption'>".LAN_FORUM_2032."</th>
 <th style='width: 10%; text-align: center;' class='fcaption'>%</th>
@@ -413,7 +413,7 @@ $text .= '</table>
 </div>
 ';
 
-$ns -> tablerender(FSLAN_23, $text);
+$ns -> tablerender(LAN_FORUM_6013, $text);
 
 require_once(FOOTERF);
 ?>

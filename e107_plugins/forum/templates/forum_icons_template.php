@@ -32,8 +32,8 @@ define('IMAGE_closed_small', 		'<img src="'.img_path('closed_small.png').'" alt=
 define('IMAGE_closed', 				'<img src="'.img_path('closed.png').'" alt="'.LAN_FORUM_1014.'" title="'.LAN_FORUM_1014.'" />');
 
 // User info
-define('IMAGE_website', '<img src="'.img_path('website.png').'" alt="'.LAN_FORUM_4005.'" title="'.LAN_FORUM_4005.'" />');
-define('IMAGE_email', 	'<img src="'.img_path('email.png').'" alt="'.LAN_FORUM_4006.'" title="'.LAN_FORUM_4006.'" />');
+define('IMAGE_website', '<img src="'.img_path('website.png').'" alt="'.LAN_FORUM_2034.'" title="'.LAN_FORUM_2034.'" />');
+define('IMAGE_email', 	'<img src="'.img_path('email.png').'" alt="'.LAN_FORUM_2044.'" title="'.LAN_FORUM_2044.'" />');
 define('IMAGE_profile', '<img src="'.img_path('profile.png').'" alt="'.LAN_FORUM_4007.'" title="'.LAN_FORUM_4007.'" />');
 
 // action
