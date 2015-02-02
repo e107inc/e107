@@ -86,7 +86,13 @@ class plugin_gallery_admin extends e_admin_dispatcher
 	 */
 	protected $menuTitle = 'Gallery';
 	
-
+	function init()
+	{
+		if(E107_DEBUG_LEVEL > 0)
+		{
+			$this->adminMenu['main/list'] = array('caption'=> LAN_CATEGORY, 'perm' => 'P'); 	
+		}			
+	}
 }
 
 
@@ -99,7 +105,8 @@ class gallery_cat_admin_ui extends e_admin_ui
 		protected $perPage 		= 10; //no limit
 		protected $listOrder = 'media_cat_order';
 
-		protected $listQry = "SELECT * FROM #core_media_cat WHERE media_cat_owner = 'gallery' "; // without any Order or Limit. 
+	 	protected $listQry = "SELECT * FROM #core_media_cat WHERE media_cat_owner = 'gallery' "; // without any Order or Limit. 
+	//		protected $listQry = "SELECT * FROM #core_media  "; // without any Order or Limit. 
 	//	protected $editQry = "SELECT * FROM #faq_info WHERE faq_info_id = {ID}";
 	 	 	
 		protected $fields = array(
