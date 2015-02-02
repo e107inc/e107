@@ -591,7 +591,7 @@ class media_form_ui extends e_admin_form_ui
 	}
 	
 
-	function media_preview($curVal, $mode, $attributes, $id)
+	function media_preview($curVal, $mode, $attributes, $id='')
 	{
 		
 		$attributes['type'] = 'image';
@@ -690,7 +690,7 @@ class media_admin_ui extends e_admin_ui
 			'media_caption' 		=> array('title'=> "Caption",		'type' => 'text',		'data'=> 'str',		'inline'=>true, 'width' => 'auto'),
          	// media_description is type = textarea until bbarea can be reduced to not include youtube etc
          	'media_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'textarea',		'data'=> 'str',		'width' => 'auto', 'thclass' => 'left first', 'readParms' => 'truncate=100', 'writeParms' => 'counter=0'),
-         	'media_type' 			=> array('title'=> "Mime Type",		'type' => 'text',		'data'=> 'str',		'width' => 'auto', 'noedit'=>TRUE),
+         	'media_type' 			=> array('title'=> "Mime Type",		'type' => 'dropdown',		'data'=> 'str',		'filter'=>true, 'width' => 'auto', 'noedit'=>TRUE),
 			'media_author' 			=> array('title'=> LAN_USER,		'type' => 'user',		'data'=> 'int', 	'width' => 'auto', 'thclass' => 'center', 'class'=>'center','readParms' => 'link=1', 'filter' => true, 'batch' => true, 'noedit'=>TRUE	),
 			'media_datestamp' 		=> array('title'=> LAN_DATESTAMP,	'type' => 'datestamp',	'data'=> 'int',		'width' => '10%', 'noedit'=>TRUE),	// User date
           	'media_size' 			=> array('title'=> "Size",			'type' => 'number',		'data'=> 'int',		'width' => 'auto', 'readonly'=>2),
@@ -837,7 +837,19 @@ class media_admin_ui extends e_admin_ui
 		}
 		asort($this->cats);
 		
+		
+		$tmp = $sql->retrieve('core_media','media_type','media_type !="" GROUP BY media_type',true); 
+		$mimeTypes = array(); 
+		foreach($tmp as $val)
+		{
+			$id =  $val['media_type'];
+			$mimeTypes[$id] = $id; 	
+		}
+		asort($mimeTypes);
+		
 		$this->fields['media_category']['writeParms'] = $this->cats;
+		$this->fields['media_type']['writeParms'] = $mimeTypes;
+		
 				
 		$pref 	= e107::getPref();
 		$tp 	= e107::getParser();

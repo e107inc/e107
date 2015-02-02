@@ -338,8 +338,15 @@ class e_form
 
 	}	
 
-
-	
+	/**
+	 * Same as $this->text() except it adds input validation for urls. 
+	 * At this stage, checking only for spaces. Should include sef-urls. 
+	 */
+	function url($name, $value = '', $maxlength = 80, $options= array())
+	{
+		$options['pattern'] = '^\S*$';
+		return $this->text($name, $value, $maxlength, $options);
+	}
 
 	/**
 	 * Text-Field Form Element
@@ -3559,6 +3566,11 @@ class e_form
 			break;
 
 			case 'url':
+				$maxlength = vartrue($parms['maxlength'], 255);
+				unset($parms['maxlength']);
+				$ret =  vartrue($parms['pre']).$this->url($key, $value, $maxlength, $parms).vartrue($parms['post']); // vartrue($parms['__options']) is limited. See 'required'=>true
+		
+			break; 
 		//	case 'email':
 			case 'text':
 			case 'password': // encrypts to md5 when saved. 

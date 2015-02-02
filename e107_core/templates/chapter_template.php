@@ -71,7 +71,7 @@ $CHAPTER_TEMPLATE['nav']['listChapters']['item_active'] 			= '
 $CHAPTER_TEMPLATE['nav']['listChapters']['end'] 					= '</ul>';		
 
 	
-$CHAPTER_TEMPLATE['nav']['listChapters']['submenu_start'] 			= '<ul class="page-nav" id="page-nav-{LINK_PARENT}" role="menu" >';
+$CHAPTER_TEMPLATE['nav']['listChapters']['submenu_start'] 			= '<ul class="page-nav" id="{LINK_IDENTIFIER}" role="menu" >';
 	
 	
 $CHAPTER_TEMPLATE['nav']['listChapters']['submenu_item'] 			= '
