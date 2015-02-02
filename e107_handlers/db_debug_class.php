@@ -155,8 +155,8 @@ class e107_db_debug {
 		}
 
 		// Record Basic query info
-		$sCallingFile	= varset($aTrace[1]['file']);
-		$sCallingLine	= varset($aTrace[1]['line']);
+		$sCallingFile	= varset($aTrace[2]['file']);
+		$sCallingLine	= varset($aTrace[2]['line']);
 
 		$t 				= &$this->aSQLdetails[$sql->db_QueryCount()];
 		$t['marker']	= $this->curTimeMark;
@@ -270,10 +270,11 @@ class e107_db_debug {
 			{
 				if ($cQuery['ok']) {
 					$text .= "<tr><td class='forumheader3' style='text-align:right'>{$idx}&nbsp;</td>
-	       	        <td class='forumheader3' style='text-align:right'>".number_format($cQuery['time'] * 1000.0, 4)."&nbsp;</td><td class='forumheader3'>".$cQuery['query'].'<br />['.$cQuery['marker']." - ".$cQuery['caller']."]</td></tr>\n";
+	       	        <td class='forumheader3' style='text-align:right'>".number_format($cQuery['time'] * 1000.0, 4)."&nbsp;</td>
+	       	        <td class='forumheader3'>".$cQuery['query'].'<br />['.$cQuery['marker']." - ".$cQuery['caller']."]</td></tr>\n";
 				}
 			}
-			$text .= "\n</table><br />\n";
+				$text .= "\n</table><br />\n";
 		}
 
 
@@ -291,7 +292,9 @@ class e107_db_debug {
 					$text .= "<tr><td class='forumheader3' ><b>Error in query:</b></td></tr>\n<tr><td class='forumheader3'>".$cQuery['error']."</td></tr>\n";
 				}
 
-				$text .= "<tr><td class='forumheader3'  colspan='".$cQuery['nFields']."'><b>Query time:</b> ".number_format($cQuery['time'] * 1000.0, 4).' (ms)</td></tr></table><br />'."\n";
+				$text .= "<tr><td class='forumheader3'  colspan='".$cQuery['nFields']."'><b>Query time:</b> ".number_format($cQuery['time'] * 1000.0, 4).' (ms)</td></tr>';
+			
+				$text .= '</table><br />'."\n";
 			}
 		}
 
