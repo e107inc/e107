@@ -3550,15 +3550,20 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	protected function parseCustomListQry($qry)
 	{
-		if(strpos($qry,'`')===false) 
+		e107::getMessage()->addDebug('Using Custom listQry ');	
+			
+		if(strpos($qry,'`')===false && strpos($qry, 'JOIN')===false) 
 		{
-			$ret = preg_replace("/FROM\s*(#[\w]*/","FROM `$1`", $qry);	 // backticks missing, so add them. 	
-			e107::getMessage()->addDebug('Your $listQry is missing `backticks` around the table name!'); 
-			return $ret; 
+			$ret = preg_replace("/FROM\s*(#[\w]*)/","FROM `$1`", $qry);  // backticks missing, so add them. 
+						
+			if($ret)
+			{
+				e107::getMessage()->addDebug('Your $listQry is missing `backticks` around the table name! It should look like this'. print_a($ret,true)); 
+				return $ret; 	
+			}
 		}
 		
 		return $qry; 
-		
 	}
 
 
@@ -3759,7 +3764,8 @@ class e_admin_controller_ui extends e_admin_controller
 		}
 		else
 		{
-			$qry = $this->parseCustomListQry($listQry) ? $listQry : "SELECT SQL_CALC_FOUND_ROWS ".$tableSFields." FROM ".$tableFrom;
+
+			$qry = $listQry ? $this->parseCustomListQry($listQry) : "SELECT SQL_CALC_FOUND_ROWS ".$tableSFields." FROM ".$tableFrom;
 		}
 
 		// group field - currently auto-added only if there are joins
@@ -3861,10 +3867,7 @@ class e_admin_controller_ui extends e_admin_controller
 		}
 
 		// Debug Filter Query.
-		if($listQry)
-		{
-			e107::getMessage()->addDebug('Using Custom listQry ');	
-		}
+	
 		e107::getMessage()->addDebug('QRY='.str_replace('#', MPREFIX, $qry));
 	
 	//	 echo $qry.'<br />';	
