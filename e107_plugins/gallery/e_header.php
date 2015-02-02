@@ -33,8 +33,9 @@ margin-left:0;
 
 $prettyPhoto = <<<JS
 $(document).ready(function(){
-    $("a[rel^='prettyPhoto']").prettyPhoto(
+    $("a[data-gal^='prettyPhoto']").prettyPhoto(
 	    {
+	    	hook: 'data-gal',
 	    	theme: 'pp_default', /* pp_default , light_rounded , dark_rounded , light_square , dark_square ,facebook */
 	    	overlay_gallery: false,
 	    	deeplinking: false

@@ -111,7 +111,8 @@ class page_sitelink // include plugin-folder in the name.
 					'link_order'		=> '',
 					'link_parent'		=> $row['chapter_parent'],
 					'link_open'			=> '',
-					'link_class'		=> 0
+					'link_class'		=> 0,
+					'link_identifier'	=> 'page-nav-'.intval($row['chapter_id']) // used for css id. 
 				);
 
 			}
@@ -129,6 +130,8 @@ class page_sitelink // include plugin-folder in the name.
 		{
 			parse_str($parm,$options);	
 		}
+			
+
 			
 		$sql 		= e107::getDb();
 		$sublinks 	= array();
@@ -205,7 +208,9 @@ class page_sitelink // include plugin-folder in the name.
 				'link_parent'		=> $row['page_chapter'],
 				'link_open'			=> '',
 				'link_class'		=> intval($row['page_class']),
-				'link_active'		=> (isset($options['cpage']) && $row['page_id'] == $options['cpage'])
+				'link_active'		=> (isset($options['cpage']) && $row['page_id'] == $options['cpage']),
+				'link_identifier'	=> 'page-nav-'.intval($row['page_id']) // used for css id. 
+	
 			);
 		}
 
@@ -261,9 +266,11 @@ class page_sitelink // include plugin-folder in the name.
 				'link_class'		=> 0, 
 				'link_sub'			=> (!vartrue($options['book']) && !vartrue($options['auto'])) ? varset($sublinks[$row['chapter_id']]) : '', //XXX always test with docs template in bootstrap before changing. 
 				'link_active'		=> $row['chapter_parent'] == 0 ? isset($options['cbook']) && $options['cbook'] == $row['chapter_id'] : isset($options['cchapter']) && $options['cchapter'] == $row['chapter_id'],
+				'link_identifier'	=> 'page-nav-'.intval($row['chapter_id']) // used for css id. 
 			);	
+			
 		}
-		
+
 		
 		$outArray 	= array();
 		$parent = vartrue($options['book']) ? intval($options['book']) : 0;
