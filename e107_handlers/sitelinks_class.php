@@ -1687,6 +1687,11 @@ class navigation_shortcodes extends e_shortcode
 	}
 
 
+	function sc_link_identifier($parm='')
+	{
+		return $this->var['link_identifier'];	
+	}
+
 	/**
 	 * Return the URL of the current link
 	 * @return string
