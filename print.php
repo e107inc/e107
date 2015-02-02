@@ -18,19 +18,23 @@
 */
 require_once("class2.php");
 //include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+
 e107::coreLan('print');
 
+/*
 $HEADER="";
 $FOOTER="";
 $CUSTOMHEADER = "";
 $CUSTOMFOOTER = "";
-
+*/
 
 $qs = explode(".", e_QUERY,2);
 if ($qs[0] == "") {
 	header("location:".e_BASE."index.php");
 	 exit;
 }
+define('e_IFRAME', true); 
+
 $source = $qs[0];
 $parms = varset($qs[1],'');
 unset($qs);
