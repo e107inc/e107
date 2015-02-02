@@ -73,6 +73,8 @@ define("LAN_DATE","Date");
 define("LAN_DATE_POSTED", "Date posted");
 define("LAN_JSCONFIRM","Are you sure?");
 define("LAN_IP", "IP Address");
+define("LAN_AUTHOR",	"Author");
+define("LAN_CATEGORY", "Category");
 
 
 ?>

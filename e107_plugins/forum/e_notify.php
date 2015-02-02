@@ -14,6 +14,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+e107::lan('forum','notify',true); 
+
 // v2.x Standard 
 class forum_notify extends notify
 {		
@@ -23,37 +25,37 @@ class forum_notify extends notify
 		$config = array();
 	
 		$config[] = array(
-			'name'			=> FORUM_NT_NEWTOPIC,
+			'name'			=> LAN_FORUM_NT_NEWTOPIC,
 			'function'		=> "forum_nt",
 			'category'		=> ''
 		);	
 
 		$config[] = array(
-			'name'			=> FORUM_NT_NEWTOPIC_PROB,
+			'name'			=> LAN_FORUM_NT_NEWTOPIC_PROB,
 			'function'		=> "forum_ntp",
 			'category'		=> ''
 		);
 
 		$config[] = array(
-			'name'			=> FORUM_NT_TOPIC_DELETED,
+			'name'			=> LAN_FORUM_NT_TOPIC_DELETED,
 			'function'		=> "forum_topic_del",
 			'category'		=> ''
 		);	
 
 		$config[] = array(
-			'name'			=> FORUM_NT_TOPIC_SPLIT,
+			'name'			=> LAN_FORUM_NT_TOPIC_SPLIT,
 			'function'		=> "forum_topic_split",
 			'category'		=> ''
 		);	
 
 		$config[] = array(
-			'name'			=> FORUM_NT_POST_DELETED,
+			'name'			=> LAN_FORUM_NT_POST_DELETED,
 			'function'		=> "forum_post_del",
 			'category'		=> ''
 		);	
 
 		$config[] = array(
-			'name'			=> FORUM_NT_POST_REPORTED,
+			'name'			=> LAN_FORUM_NT_POST_REPORTED,
 			'function'		=> "forum_post_rep",
 			'category'		=> ''
 		);		
@@ -70,31 +72,31 @@ class forum_notify extends notify
 	function forum_ntp($data)
 	{
 		$message = 'todo';
-		$this->send('forum_nt', FORUM_NT_7, $message);
+		$this->send('forum_nt', LAN_FORUM_NT_7, $message);
 	}
 
 	function forum_topic_del($data) 
 	{
 		$message = 'todo';
-		$this->send('forum_topic_del', FORUM_NT_8, $message);
+		$this->send('forum_topic_del', LAN_FORUM_NT_8, $message);
 	}
 
 	function forum_topic_split($data) 
 	{
 		$message = 'todo';
-		$this->send('forum_topic_split', FORUM_NT_9, $message);
+		$this->send('forum_topic_split', LAN_FORUM_NT_9, $message);
 	}
 
 	function forum_post_del($data) 
 	{
 		$message = 'todo';
-		$this->send('forum_post_del', FORUM_NT_10, $message);
+		$this->send('forum_post_del', LAN_FORUM_NT_10, $message);
 	}
 
 	function forum_post_rep($data) 
 	{
 		$message = 'todo';
-		$this->send('forum_post_rep', FORUM_NT_11, $message);
+		$this->send('forum_post_rep', LAN_FORUM_NT_11, $message);
 	}
 	
 }

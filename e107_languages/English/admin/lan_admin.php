@@ -301,8 +301,7 @@ define("LAN_UNCHECKALL", "Uncheck All");
 define("LAN_DELCHECKED", "Delete Checked");
 
 define("LAN_USERCLASS", "Userclass");
-define("LAN_AUTHOR",	"Author");
-define("LAN_CATEGORY", "Category");
+
 
 define("LAN_HELP", "Help");
 define("LAN_CUSTOM", "Custom configuration");

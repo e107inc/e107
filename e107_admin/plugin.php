@@ -1609,7 +1609,7 @@ class pluginLanguage
 	
 	private $excludeLans 	= array('CORE_LC', 'CORE_LC2'); 
 	
-	
+	private $useSimilar		= false; 
 	
 	
 	function __construct()
@@ -1677,7 +1677,14 @@ class pluginLanguage
 					continue; 	
 				}
 				
-				similar_text($v['value'], $data['value'], $percentSimilar);
+				if($this->useSimilar == true)
+				{
+					similar_text($v['value'], $data['value'], $percentSimilar);
+				}
+				else
+				{
+					$percentSimilar = 0; 	
+				}
 				
 				if((($v['value'] == $data['value'] || $percentSimilar > 89) && $data['file'] != $v['file']))
 				{
@@ -1793,7 +1800,7 @@ class pluginLanguage
 			
 				$text = str_replace(e_PLUGIN.$this->plugin.'/languages/','',$path); 
 				
-				if(strpos($path,'_front.php')===false && strpos($path,'_admin.php')===false && strpos($path,'_global.php')===false)
+				if(strpos($path,'_front.php')===false && strpos($path,'_admin.php')===false && strpos($path,'_global.php')===false && strpos($path,'_menu.php')===false && strpos($path,'_notify.php')===false && strpos($path,'_search.php')===false)
 				{
 					return "<span class='text-error e-tip' title='File name should be either English_front.php, English_admin.php or English_global.php'>".$text."</span>";	
 				} 
@@ -1971,7 +1978,7 @@ class pluginLanguage
 				{
 					foreach($match[1] as $lan)
 					{
-						if($lan != 'e_LANGUAGE' && $lan != 'e_LANGUAGEDIR' && $lan != 'LAN' ) // remove 'TODO LAN'
+						if($lan != 'e_LANGUAGE' && $lan != 'e_LANGUAGEDIR' && $lan != 'LAN' && $lan != 'LANGUAGE') // remove 'TODO LAN'
 						{
 							$this->scriptDefs[] = $lan;
 							$this->scriptDefsData[] = array('file'=>$path, 'line'=>$ln, 'lan'=>$lan, 'value'=>$this->lanDefsRaw[$lan]); 

@@ -1294,7 +1294,7 @@ class forumAdmin
 		</div>
 		</form>
 ";
-		$ns->tablerender(FORLAN_62, $mes->render() . $text);
+		$ns->tablerender(FORLAN_7, $mes->render() . $text);
 	}
 
 	function show_reported($sub_action) 
