@@ -591,7 +591,7 @@ class media_form_ui extends e_admin_form_ui
 	}
 	
 
-	function media_preview($curVal, $mode, $attributes, $id='')
+	function media_preview($curVal, $mode, $attributes, $id=null)
 	{
 		
 		$attributes['type'] = 'image';
