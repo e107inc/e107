@@ -3582,6 +3582,8 @@ class e_admin_controller_ui extends e_admin_controller
 
 		$searchQuery = $tp->toDB($request->getQuery('searchquery', ''));
 		$searchFilter = $this->_parseFilterRequest($request->getQuery('filter_options', ''));
+		
+		e107::getMessage()->addDebug('searchQuery: <b>'.$searchQuery.'</b>'); 
 
 		if($searchFilter && is_array($searchFilter))
 		{
@@ -3872,7 +3874,8 @@ class e_admin_controller_ui extends e_admin_controller
 	
 	//	 echo $qry.'<br />';	
 	// print_a($this->fields);	
-	//	 print_a($_GET);
+	
+	
 
 		return $qry;
 	}
