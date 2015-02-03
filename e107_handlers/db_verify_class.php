@@ -90,7 +90,7 @@ class db_verify
 	 */
 	function verify()
 	{
-		print_a($_POST);			
+		
 		if(vartrue($_POST['verify_table']))
 		{			
 			$this->runComparison($_POST['verify_table']);

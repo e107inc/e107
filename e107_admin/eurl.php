@@ -39,6 +39,7 @@ class eurl_admin extends e_admin_dispatcher
 		'main/config'		=> array('caption'=> LAN_EURL_MENU_CONFIG, 'perm' => 'L'),
 		'main/alias' 		=> array('caption'=> LAN_EURL_MENU_ALIASES, 'perm' => 'L'),
 		'main/settings' 	=> array('caption'=> LAN_EURL_MENU_SETTINGS, 'perm' => 'L'),
+		'main/simple' 		=> array('caption'=> 'Redirects', 'perm' => 'L'), //TODO LAN
 	//	'main/help' 		=> array('caption'=> LAN_EURL_MENU_HELP, 'perm' => 'L'),
 	);
 
@@ -146,6 +147,39 @@ class eurl_admin_ui extends e_admin_controller_ui
 		$this->addTitle(LAN_EURL_NAME_HELP);
 		return LAN_EURL_UC;
 	}
+	
+	public function simplePage()
+	{
+		// $this->addTitle("Simple Redirects");
+		$eUrl =e107::getAddonConfig('e_url'); 
+		
+		if(empty($eUrl))
+		{
+			return; 		
+		}
+		
+		$text = "";
+			
+		foreach($eUrl as $plug=>$val)
+		{
+			$text .= "<h5>".$plug."</h5>";
+			$text .= "<table class='table table-striped table-bordered'>";
+			$text .= "<tr><th>Regular Expression</th>
+			<th>".LAN_URL."</th>
+			</tr>";
+			
+			foreach($val as $k=>$v)
+			{
+					$text .= "<tr><td style='width:50%'>".$v['regex']."</td><td>".$v['redirect']."</td></tr>";
+			}
+		
+					
+			$text .= "</table>";
+		}	
+		
+		return $text;		
+	}
+		
 	
 	public function SettingsObserver()
 	{

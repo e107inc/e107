@@ -157,9 +157,12 @@ class notify_config
     <li><a href='#mail' data-toggle='tab'>Mail</a></li>
     <li><a href='#files' data-toggle='tab'>Files</a></li>";
 	
-	foreach ($this -> notify_prefs['plugins'] as $id => $var)
+	if(!empty($this->notify_prefs['plugins']))
 	{
-		$text .= "<li><a href='#notify-".$id."' data-toggle='tab'>".ucfirst($id)."</a></li>";
+		foreach ($this -> notify_prefs['plugins'] as $id => $var)
+		{
+			$text .= "<li><a href='#notify-".$id."' data-toggle='tab'>".ucfirst($id)."</a></li>";
+		}
 	}
 	
 	$text .= "
@@ -245,32 +248,36 @@ class notify_config
 		</fieldset>
 		</div>";
 
-		foreach ($this->notify_prefs['plugins'] as $plugin_id => $plugin_settings)
+		if(!empty($this->notify_prefs['plugins']))
 		{
-            if(is_readable(e_PLUGIN.$plugin_id.'/e_notify.php'))
+	
+			foreach ($this->notify_prefs['plugins'] as $plugin_id => $plugin_settings)
 			{
-				$config_category = $this->pluginConfig[$plugin_id]['category'];
-				$legacy = $this->pluginConfig[$plugin_id]['legacy'];
-				
-			//	require(e_PLUGIN.$plugin_id.'/e_notify.php');
-
-				$text .= "<div class='tab-pane' id='notify-".$plugin_id."'>
-				<fieldset id='core-notify-".str_replace(" ","_",$config_category)."'>
-		        <legend>".$config_category."</legend>
-		        <table class='table adminform'>
-		        	<colgroup>
-		        		<col class='col-label' />
-		        		<col class='col-control' />
-		        	</colgroup>";
-				;
-
-				foreach ($this->pluginConfig[$plugin_id]['events'] as $event_id => $event_text)
+	            if(is_readable(e_PLUGIN.$plugin_id.'/e_notify.php'))
 				{
-					$text .= $this->render_event($event_id, $event_text, $plugin_id, $legacy);
+					$config_category = $this->pluginConfig[$plugin_id]['category'];
+					$legacy = $this->pluginConfig[$plugin_id]['legacy'];
+					
+				//	require(e_PLUGIN.$plugin_id.'/e_notify.php');
+	
+					$text .= "<div class='tab-pane' id='notify-".$plugin_id."'>
+					<fieldset id='core-notify-".str_replace(" ","_",$config_category)."'>
+			        <legend>".$config_category."</legend>
+			        <table class='table adminform'>
+			        	<colgroup>
+			        		<col class='col-label' />
+			        		<col class='col-control' />
+			        	</colgroup>";
+					;
+	
+					foreach ($this->pluginConfig[$plugin_id]['events'] as $event_id => $event_text)
+					{
+						$text .= $this->render_event($event_id, $event_text, $plugin_id, $legacy);
+					}
+					
+					$text .= "</table>
+					</div>";
 				}
-				
-				$text .= "</table>
-				</div>";
 			}
 		}
 
