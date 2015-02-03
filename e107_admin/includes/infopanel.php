@@ -272,11 +272,11 @@ class adminstyle_infopanel
 			echo $mes->render().'
 
 			<!-- INFOPANEL -->
-			<div class="span6">
+			<div class="span6 col-md-6">
 			 <ul class="thumbnails">'.$text.'</ul>
 			 </div>
 			 
-			 <div class="span6">
+			 <div class="span6 col-md-6">
 			 <ul class="thumbnails">'.$text2.'</ul>
 			 </div>
 						 
