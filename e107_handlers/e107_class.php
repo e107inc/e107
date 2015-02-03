@@ -3265,7 +3265,7 @@ class e107
 
 		// the last anti-XSS measure, XHTML compliant URL to be used in forms instead e_SELF
 		define('e_REQUEST_URL', str_replace(array("'", '"'), array('%27', '%22'), $requestUrl)); // full request url string (including domain)
-		define('e_REQUEST_SELF', array_shift(explode('?', e_REQUEST_URL))); // full URL without the QUERY string
+		define('e_REQUEST_SELF', rtrim(array_shift(explode('?', e_REQUEST_URL)),'/').'/'); // full URL without the QUERY string
 		define('e_REQUEST_URI', str_replace(array("'", '"'), array('%27', '%22'), $requestUri)); // absolute http path + query string
 		define('e_REQUEST_HTTP', array_shift(explode('?', e_REQUEST_URI))); // SELF URL without the QUERY string and leading domain part
 		unset($requestUrl, $requestUri);
