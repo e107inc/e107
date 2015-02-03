@@ -1910,6 +1910,7 @@ class media_admin_ui extends e_admin_ui
 		{
 			$default = $this->getFileXml($f['fname']);
 			$f = $fl->cleanFileName($f,true);
+			
 			$c = md5($f['path'].$f['fname']);
 			
 			if($f['error'])
@@ -2003,6 +2004,9 @@ class media_admin_ui extends e_admin_ui
 			
 		$srch = array("_","-");	
 		$description = str_replace($srch," ",$file);	
+		
+		$file = utf8_encode($file);
+		$description = utf8_encode($description); 
 			
 		return array('title'=>basename($file),'description'=>$description,'authorName'=>USERNAME,'authorEmail'=>'');
 		
