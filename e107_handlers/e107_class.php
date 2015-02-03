@@ -1828,7 +1828,7 @@ class e107
 	 * @param string $methodName [optional] (if different from 'config')
 	 * @return none
 	 */
-	public function getAddonConfig($addonName, $className = '', $methodName='config', $param=null )
+	public static function getAddonConfig($addonName, $className = '', $methodName='config', $param=null )
 	{
 		$new_addon = array();
 		$sql = e107::getDb(); // Might be used by older plugins. 
