@@ -3263,9 +3263,17 @@ class e107
 			if(defset('e_QUERY')) parse_str(e_QUERY,$_GET);
 		}
 
-		// the last anti-XSS measure, XHTML compliant URL to be used in forms instead e_SELF
 		define('e_REQUEST_URL', str_replace(array("'", '"'), array('%27', '%22'), $requestUrl)); // full request url string (including domain)
-		define('e_REQUEST_SELF', rtrim(array_shift(explode('?', e_REQUEST_URL)),'/').'/'); // full URL without the QUERY string
+		
+		$requestSelf =  array_shift(explode('?', e_REQUEST_URL)); 
+		
+		if(substr($requestSelf,-4) !== '.php' && substr($requestSelf,-1) !== '/')
+		{
+			$requestSelf .= '/'; // Always include a trailing slash on SEF Urls so that e_REQUEST_SELF."?".e_QUERY doesn't break. 	
+		}
+
+		// the last anti-XSS measure, XHTML compliant URL to be used in forms instead e_SELF
+		define('e_REQUEST_SELF', $requestSelf); // full URL without the QUERY string
 		define('e_REQUEST_URI', str_replace(array("'", '"'), array('%27', '%22'), $requestUri)); // absolute http path + query string
 		define('e_REQUEST_HTTP', array_shift(explode('?', e_REQUEST_URI))); // SELF URL without the QUERY string and leading domain part
 		unset($requestUrl, $requestUri);
