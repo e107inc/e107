@@ -2273,8 +2273,9 @@ class pluginBuilder
 			
 				$options = array(
 					'text'		=> "Text Box",
+					'textarea'	=> "Text Area",
 					'bbarea'	=> "Rich-Text Area",
-					'boolean'	=> "Text Area",
+					'boolean'	=> "True/False",
 					"method"	=> "Custom Function",
 					"image"		=> "Image",
 				);
@@ -3197,7 +3198,6 @@ if($_POST['pluginPrefs'][0]['index'])
 {
 				
 $text .= "			
-	
 		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),	
 ";
 }
@@ -3283,9 +3283,9 @@ class ".$table." extends e_admin_ui
 	//	protected \$batchCopy		= true;		
 	//	protected \$sortField		= 'somefield_order';
 	//	protected \$orderStep		= 10;
-	//	protected \$tabs			= array('Tabl 1','Tab 2'); // Use 'tab'=>0  OR 'tab'=>1 in the \$fields below to enable. 
+	//	protected \$tabs				= array('Tabl 1','Tab 2'); // Use 'tab'=>0  OR 'tab'=>1 in the \$fields below to enable. 
 		
-	//	protected \$listQry      	= \"SELECT * FROM #tableName WHERE field != '' \"; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
+	//	protected \$listQry      	= \"SELECT * FROM `#tableName` WHERE field != '' \"; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
 	
 		protected \$listOrder		= '".$vars['pid']." DESC';
 	
@@ -3340,9 +3340,46 @@ $text .= "
 			
 $text .= "	
 		}
+
+		
+		// ------- Customize Create --------
+		
+		public function beforeCreate(\$new_data)
+		{
+			return \$new_data;
+		}
 	
+		public function afterCreate(\$new_data, \$old_data, \$id)
+		{
+			// do something
+		}
+
+		public function onCreateError(\$new_data, \$old_data)
+		{
+			// do something		
+		}		
+		
+		
+		// ------- Customize Update --------
+		
+		public function beforeUpdate(\$new_data, \$old_data, \$id)
+		{
+			return \$new_data;
+		}
+
+		public function afterUpdate(\$new_data, \$old_data, \$id)
+		{
+			// do something	
+		}
+		
+		public function onUpdateError(\$new_data, \$old_data, \$id)
+		{
+			// do something		
+		}		
+		
+			
 	/*	
-		// optional - override edit page. 
+		// optional - a custom page.  
 		public function customPage()
 		{
 			\$ns = e107::getRender();
