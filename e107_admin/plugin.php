@@ -293,9 +293,11 @@ class pluginManager{
 	{
 
         global $user_pref,$admin_log;
+        
     	if (isset($_POST['upload']))
 		{
         	$this -> pluginProcessUpload();
+			$this->action = 'avail'; 
 		}
 
         if(isset($_POST['etrigger_ecolumns']))
@@ -572,7 +574,7 @@ class pluginManager{
 		if($total > $amount)
 		{
 			$parms = $total.",".$amount.",".$from.",".e_SELF.'?mode='.$_GET['mode'].'&amp;frm=[FROM]';
-			$text .= "<div style='text-align:center;margin-top:10px'>".$tp->parseTemplate("{NEXTPREV=$parms}",TRUE)."</div>";
+			$text .= "<div class='control-group form-inline input-inline' style='text-align:center;margin-top:10px'>".$tp->parseTemplate("{NEXTPREV=$parms}",TRUE)."</div>";
 		}
 		
 		e107::getRender()->tablerender(ADLAN_98.SEP.$caption, $mes->render(). $text);
@@ -600,7 +602,7 @@ class pluginManager{
 		//<button type='button' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='btn btn-primary e-ajax middle' value='Download and Install' data-src='".$url."' ><span>Download and Install</span></button>
 		
 		$url = e_SELF.'?mode=download&amp;src='.base64_encode($d);
-		$dicon = '<a class="e-modal btn btn-default" href="'.$url.'" rel="external" data-loading="'.e_IMAGE.'/generic/loading_32.gif"  data-cache="false" data-modal-caption="Downloading and Installing '.$data['plugin_name']." ".$data['plugin_version'].'"  target="_blank" ><img class="top" src="'.e_IMAGE_ABS.'icons/download_32.png" alt=""  /></a>';
+		$dicon = '<a title="Download and Install" class="e-modal btn btn-default" href="'.$url.'" rel="external" data-loading="'.e_IMAGE.'/generic/loading_32.gif"  data-cache="false" data-modal-caption="Downloading and Installing '.$data['plugin_name']." ".$data['plugin_version'].'"  target="_blank" >'.ADMIN_INSTALLPLUGIN_ICON.'</a>';
 	
 	
 		// Temporary Pop-up version. 
@@ -807,17 +809,42 @@ class pluginManager{
 			{
 				exit;
 			}
+			
+			$fl = e107::getFile();
+			$data = $fl->getUploaded(e_TEMP); 
+			$mes = e107::getMessage();
+			
+			if(empty($data[0]['error']))
+			{
+				if($fl->unzipArchive($data[0]['name'],'plugin') === true)
+				{
+					$mes->addSuccess(EPL_ADLAN_43); 
+				}
+				else 
+				{
+					$mes->addError("There was a problem extracting the .zip file to your plugin directory."); 
+				}
+			}
+			
+		//	$data = process_uploaded_files(e_TEMP);
+		//	print_a($data); 
+			
+			echo $mes->render(); 
+			
+			return; 
 
+			// ----------------- Everything below is unused. 
+			
 			extract($_FILES);
 			/* check if e_PLUGIN dir is writable ... */
 			if(!is_writable(e_PLUGIN))
 			{
-				/* still not writable - spawn error message */
+				// still not writable - spawn error message 
 				e107::getRender()->tablerender(EPL_ADLAN_40, EPL_ADLAN_39);
 			}
 			else
 			{
-				/* e_PLUGIN is writable - continue */
+				// e_PLUGIN is writable
 				require_once(e_HANDLER."upload_handler.php");
 				$fileName = $file_userfile['name'][0];
 				$fileSize = $file_userfile['size'][0];
@@ -833,10 +860,9 @@ class pluginManager{
 				}
 				else
 				{
-					/* not zip or tar - spawn error message */
+					// not zip or tar - spawn error message
 					e107::getRender()->tablerender(EPL_ADLAN_40, EPL_ADLAN_41);
-					require_once("footer.php");
-					exit;
+					return false; 
 				}
 
 				if ($fileSize)
@@ -844,7 +870,7 @@ class pluginManager{
 					$uploaded = file_upload(e_PLUGIN);
 					$archiveName = $uploaded[0]['name'];
 
-					/* attempt to unarchive ... */
+					// attempt to unarchive 
 
 					if($fileType == "zip")
 					{
@@ -860,7 +886,7 @@ class pluginManager{
 
 					if(!$unarc)
 					{
-						/* unarc failed ... */
+						// unarc failed ... 
 						if($fileType == "zip")
 						{
 							$error = EPL_ADLAN_46." '".$archive -> errorName(TRUE)."'";
@@ -874,9 +900,9 @@ class pluginManager{
 						exit;
 					}
 
-					/* ok it looks like the unarc succeeded - continue */
+					// ok it looks like the unarc succeeded - continue */
 
-					/* get folder name ...  */
+					// get folder name ...  
 					
 					$folderName = substr($fileList[0]['stored_filename'], 0, (strpos($fileList[0]['stored_filename'], "/")));
 
@@ -1624,12 +1650,17 @@ class pluginManager{
 				$var['avail']['text'] = EPL_ADLAN_23;
 				$var['avail']['link'] = e_SELF."?avail";
 
-			//	$var['upload']['text'] = EPL_ADLAN_38;
-			//	$var['upload']['link'] = e_SELF."?upload";
 				
 				$var['online']['text'] = "Find Plugins";
 				$var['online']['link'] = e_SELF."?mode=online";
 				
+				
+				if(E107_DEBUG_LEVEL > 0)
+				{	
+					$var['upload']['text'] = EPL_ADLAN_38;
+					$var['upload']['link'] = e_SELF."?mode=upload";
+				}
+
 				$var['create']['text'] = "Plugin Builder";
 				$var['create']['link'] = e_SELF."?mode=create";
 				

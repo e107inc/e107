@@ -417,6 +417,8 @@ class themeHandler
 	{
 		$frm = e107::getForm();
 		
+		return $frm->search($name, $searchVal, $submitName, $filterName, $filterArray, $filterVal);
+		
 		$text = '<span class="input-append e-search"><i class="icon-search"></i>
     		'.$frm->text($name, $searchVal,20,'class=search-query').'
    			 <button class="btn btn-primary" name="'.$submitName.'" type="submit">'.LAN_GO.'</button>
