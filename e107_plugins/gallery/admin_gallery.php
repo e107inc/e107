@@ -158,7 +158,7 @@ class gallery_cat_admin_ui extends e_admin_ui
 	//	'slideshow_circular'	=> array('title'=> 'Slide circular-mode', 'type' => 'boolean', 'data' => 'integer', 'help'=>'By default when the first/last slide is reached, calling prev/next does nothing. If you want the effect to continue enable this option.'), // 
 		'slideshow_effect'		=> array('title'=> 'Slide effect', 'type' => 'dropdown', 'data' => 'str', 'help'=>'Type of effect. '), // 
 	//	'slideshow_transition'	=> array('title'=> 'Slide transition', 'type' => 'dropdown', 'data' => 'str', 'help'=>'Type of transition. ') //
-		'perpage'				=> array('title'=> 'Images per page', 'type' => 'number', 'data' => 'int', 'help'=>'Number of images to be shown per page', 'validate' => 'required'), // 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')), 	
+		'perpage'				=> array('title'=> 'Images per page', 'type' => 'number', 'data' => 'int', 'help'=>'Number of images to be shown per page'), // 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')), 	
 	);
 	
 	
@@ -180,10 +180,11 @@ class gallery_cat_admin_ui extends e_admin_ui
 					
 		$this->prefs['slideshow_effect']['writeParms'] 		= $effects;	
 		$this->prefs['slideshow_effect']['readParms'] 		= $effects;	
+	//	
+	//	$transitions = array('sinoidal'=>'sinoidal','spring'=>'spring');	
 		
-		$transitions = array('sinoidal'=>'sinoidal','spring'=>'spring');	
-		$this->prefs['slideshow_transition']['writeParms'] 	= $transitions;	
-		$this->prefs['slideshow_transition']['readParms'] 	= $transitions;	
+	//	$this->prefs['slideshow_transition']['writeParms'] 	= $transitions;	
+	//	$this->prefs['slideshow_transition']['readParms'] 	= $transitions;	
 		
 		$categories = e107::getMedia()->getCategories('gallery');
 		$cats = array();
