@@ -1052,8 +1052,8 @@ City, State, Country
 				<field name="userclass_name">Admin</field>
 				<field name="userclass_description">Site Administrators</field>
 				<field name="userclass_editclass">250</field>
-				<field name="userclass_parent">249</field>
-				<field name="userclass_accum">254</field>
+				<field name="userclass_parent">0</field>
+				<field name="userclass_accum">0,254</field>
 				<field name="userclass_visibility">253</field>
 				<field name="userclass_type">0</field>
 				<field name="userclass_icon"></field>
@@ -1063,8 +1063,8 @@ City, State, Country
 				<field name="userclass_name">Forum Moderators</field>
 				<field name="userclass_description">Moderators for Forums and other areas</field>
 				<field name="userclass_editclass">250</field>
-				<field name="userclass_parent">249</field>
-				<field name="userclass_accum">248</field>
+				<field name="userclass_parent">0</field>
+				<field name="userclass_accum">0,248</field>
 				<field name="userclass_visibility">253</field>
 				<field name="userclass_type">0</field>
 				<field name="userclass_icon"></field>
@@ -1074,8 +1074,8 @@ City, State, Country
 				<field name="userclass_name">Admins and Mods</field>
 				<field name="userclass_description">Anyone able to administer something, moderate forums etc</field>
 				<field name="userclass_editclass">250</field>
-				<field name="userclass_parent">250</field>
-				<field name="userclass_accum">249,254,248</field>
+				<field name="userclass_parent">0</field>
+				<field name="userclass_accum">0,249</field>
 				<field name="userclass_visibility">253</field>
 				<field name="userclass_type">0</field>
 				<field name="userclass_icon"></field>
@@ -1085,8 +1085,8 @@ City, State, Country
 				<field name="userclass_name">PRIVATEMENU</field>
 				<field name="userclass_description">Grants access to private menu items</field>
 				<field name="userclass_editclass">254</field>
-				<field name="userclass_parent">253</field>
-				<field name="userclass_accum">0,253,1</field>
+				<field name="userclass_parent">0</field>
+				<field name="userclass_accum">0,1</field>
 				<field name="userclass_visibility">0</field>
 				<field name="userclass_type">0</field>
 				<field name="userclass_icon"></field>
@@ -1096,8 +1096,8 @@ City, State, Country
 				<field name="userclass_name">New Users</field>
 				<field name="userclass_description">Recently joined users</field>
 				<field name="userclass_editclass">250</field>
-				<field name="userclass_parent">253</field>
-				<field name="userclass_accum">0,253,247</field>
+				<field name="userclass_parent">0</field>
+				<field name="userclass_accum">0,247</field>
 				<field name="userclass_visibility">254</field>
 				<field name="userclass_type">0</field>
 				<field name="userclass_icon"></field>
@@ -1107,8 +1107,8 @@ City, State, Country
 				<field name="userclass_name">Main Admin</field>
 				<field name="userclass_description">Main site Administrators</field>
 				<field name="userclass_editclass">250</field>
-				<field name="userclass_parent">255</field>
-				<field name="userclass_accum">250,249,254,248</field>
+				<field name="userclass_parent">0</field>
+				<field name="userclass_accum">0,250</field>
 				<field name="userclass_visibility">253</field>
 				<field name="userclass_type">0</field>
 				<field name="userclass_icon"></field>
@@ -1130,7 +1130,7 @@ City, State, Country
 				<field name="userclass_description">Fixed class</field>
 				<field name="userclass_editclass">250</field>
 				<field name="userclass_parent">0</field>
-				<field name="userclass_accum">252</field>
+				<field name="userclass_accum">0,252</field>
 				<field name="userclass_visibility">0</field>
 				<field name="userclass_type">0</field>
 				<field name="userclass_icon"></field>
@@ -1152,7 +1152,7 @@ City, State, Country
 				<field name="userclass_description">Fixed class</field>
 				<field name="userclass_editclass">250</field>
 				<field name="userclass_parent">0</field>
-				<field name="userclass_accum">251</field>
+				<field name="userclass_accum">0,251</field>
 				<field name="userclass_visibility">0</field>
 				<field name="userclass_type">0</field>
 				<field name="userclass_icon"></field>
