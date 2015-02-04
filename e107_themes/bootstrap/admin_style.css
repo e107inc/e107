@@ -239,8 +239,10 @@ img.S32:hover 				{}
 
 .adminlist .col-selection-cont 				{ position: relative; float:right; }
 
-span.e-search input[type='text']				{ padding-left:25px }
+span.e-search input[type='text']				{ padding-left:15px; text-decoration: italic }
+/*
 span.e-search i								{ margin-right:-20px; margin-left:5px; margin-top:-7px; z-index:100; position:relative; }
+*/
 // span.e-search								{ margin-bottom:-5px; margin-top:10px }
 /******** SyS Messages / Message text formatting */
 

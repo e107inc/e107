@@ -1672,9 +1672,9 @@ class e_form
 	{
 		$tp = e107::getParser();
 		
-		$text = '<span class="input-append e-search">'.$tp->toGlyph('fa-search').'
-    		'.$this->text($name, $searchVal,20,'class=search-query').'
-   			 <button class="btn btn-primary" name="'.$submitName.'" type="submit">'.LAN_GO.'</button>
+		$text = '<span class="input-append e-search">
+    		'.$this->text($name, $searchVal,20,'class=search-query&placeholder='.LAN_SEARCH).'
+   			 <button class="btn btn-primary" name="'.$submitName.'" type="submit">'.$tp->toGlyph('fa-search',' ').'</button>
     	</span>';
 		
 		

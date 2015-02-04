@@ -313,6 +313,7 @@ abstract class e_marketplace_adapter_abstract
 	{
 		$tp = e107::getParser();
 		$mes = e107::getMessage();
+		$fl = e107::getFile();
 		
 		$id = intval($id);
 		$qry = 'id='.$id.'&type='.$type.'&mode='.$mode;
@@ -327,13 +328,13 @@ abstract class e_marketplace_adapter_abstract
 		
 		if(!$result)
 		{
-			$mes->addError("Download Error"); //  flush(); 
 			if(filesize(e_TEMP.$localfile))
 			{
 				$contents = file_get_contents(e_TEMP.$localfile);
 				$contents = explode('REQ_', $contents);
 				$mes->addError('[#'.trim($contents[1]).'] '.trim($contents[0])); flush(); 
 			}
+			
 			@unlink(e_TEMP.$localfile);
 			return false;
 		}
@@ -350,91 +351,28 @@ abstract class e_marketplace_adapter_abstract
 
 			return false;
 		}
-		else
+		
+		
+		if($fl->unzipArchive($localfile,$type))
 		{
-		//	$mes->addSuccess("Download Successful");		
-		}
-		/*
-		else 
-				{
-					$contents = file_get_contents(e_TEMP.$localfile);
-					if(strlen($contents) < 400)
-					{
-						echo "<script>alert('".$tp->toJS($contents)."')</script>";
-						return;	
-					}
-		}*/
-		
-		
-		chmod(e_TEMP.$localfile, 0755);
-		require_once(e_HANDLER."pclzip.lib.php");
-		
-		$archive 	= new PclZip(e_TEMP.$localfile);
-		$unarc 		= ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_TEMP, PCLZIP_OPT_SET_CHMOD, 0755)); // Store in TEMP first. 
-		$dir 		= e107::getFile(true)->getRootFolder($unarc);	
-		$destpath 	= ($type == 'theme') ? e_THEME : e_PLUGIN;
-		$typeDiz 	= ucfirst($type);
-		
-		@copy(e_TEMP.$localfile, e_BACKUP.$dir.".zip"); // Make a Backup in the system folder. 
-		
-		if($dir && is_dir($destpath.$dir))
-		{
-			$mes->addError("(".ucfirst($type).") Already Downloaded - ".basename($destpath).'/'.$dir); flush(); 
-			@unlink(e_TEMP.$localfile);
-			@unlink(e_TEMP.$dir );
-			return false;
-		}
-	
-		if($dir == '')
-		{
-			$mes->addError("Couldn't detect the root folder in the zip."); //  flush();
-			@unlink(e_TEMP.$localfile);
-			return false;		
-		}
-	
-		if(is_dir(e_TEMP.$dir)) 
-		{
-			$this->success[] = "Unzipping...";
-			if(!rename(e_TEMP.$dir,$destpath.$dir))
-			{
-				$mes->addError("Couldn't Move ".e_TEMP.$dir." to ".$destpath.$dir." Folder"); //  flush(); usleep(50000);
-				@unlink(e_TEMP.$localfile);
-				return false;
-			}	
-			
-			$mes->addSuccess("Download Complete!"); flush();
-			
-		//	$dir 		= basename($unarc[0]['filename']);
-		//	$plugPath	= preg_replace("/[^a-z0-9-\._]/", "-", strtolower($dir));	
-			//$status = "Done"; // ADMIN_TRUE_ICON;		
-			@unlink(e_TEMP.$localfile);	
-			return true;
+			$mes->addSuccess("Download Complete!"); 
+			return true; 
 		}
 		else 
 		{
-			//ADMIN_FALSE_ICON.
 			$mes->addSuccess( "<a href='".$remotefile."'>Download Manually</a>"); // flush(); usleep(50000);
-			if(E107_DEBUG_LEVEL > 0)
-			{
-				$mes->addDebug(print_a($unarc, true)); flush();
-			}
-			
+			$mes->addDebug(print_a($unarc, true)); flush();		
 		}
 		
-		@unlink(e_TEMP.$localfile);
 		return false; 
 	}
 
-
-	public function getErrors()
-	{
-		return $this->errors; 
-	}
 	
-	public function getSuccess()
-	{
-		return $this->success; 
-	}
+	
+	
+	
+	
+	
 			
 		
 

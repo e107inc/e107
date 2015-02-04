@@ -47,13 +47,13 @@ define("EPL_ADLAN_34", "Plugin successfully updated.");
 define("EPL_ADLAN_35", "Parser settings successfully added.");
 define("EPL_ADLAN_36", "Parser code insert failed, incorrectly formatted.");
 
-define("EPL_ADLAN_37", "Upload plugin (.zip or .tar.gz format)");
+define("EPL_ADLAN_37", "Upload plugin (.zip format)");
 define("EPL_ADLAN_38", "Upload Plugin");
 define("EPL_ADLAN_39", "The file could not be uploaded as the ".e_PLUGIN." folder does not have the correct permissions - please change the write permissions and re-upload the file.");
 define("EPL_ADLAN_40", "Admin Message");
 define("EPL_ADLAN_41", "That file does not appear to be a valid .zip or .tar archive.");
 define("EPL_ADLAN_42", "An error has occurred, unable to un-archive the file");
-define("EPL_ADLAN_43", "Your plugin has been uploaded and unzipped; to install go to <a href='".e_ADMIN."plugin.php?avail'>the uninstalled plugins page</a>."); // FIXME HTML
+define("EPL_ADLAN_43", "Your plugin has been uploaded and add to the uninstalled plugins list."); // FIXME HTML
 define("EPL_ADLAN_44", "Auto plugin upload and extraction is disabled as upload to your plugins folder is not allowed at present - if you want to be able to do this, please change the permissions on your ".e_PLUGIN." folder to allow uploads.");
 define("EPL_ADLAN_45", "Your menu item has been uploaded and unzipped, to activate go to <a href='".e_ADMIN."menus.php'>your menus page</a>."); //FIXME HTML
 define("EPL_ADLAN_46", "PCLZIP extract error:");
