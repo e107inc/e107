@@ -1957,6 +1957,34 @@ class e107plugin
 		}
 	}
 
+
+
+
+	function getPerm($type, $default = 'member')
+	{
+		
+		if(empty($type))
+		{
+			$type = $default; 	
+		}
+		
+		$plug_perm = array(); 
+		$plug_perm['everyone'] 	= e_UC_PUBLIC;
+		$plug_perm['guest'] 	= e_UC_GUEST;
+		$plug_perm['member'] 	= e_UC_MEMBER;
+		$plug_perm['mainadmin'] = e_UC_MAINADMIN;
+		$plug_perm['admin'] 	= e_UC_ADMIN;
+		$plug_perm['nobody'] 	= e_UC_NOBODY;	
+		
+		if(isset($plug_perm[$type]))
+		{
+			return $plug_perm[$type]; 	
+		}
+		
+		return $plug_perm[$default]; 
+	}
+
+
 	// Only 1 category per file-type allowed. ie. 1 for images, 1 for files. 
 	function XmlMediaCategories($function, $tag)
 	{
@@ -1995,7 +2023,7 @@ class e107plugin
 					$data['title'] 		= $v['@value'];
 					$data['sef'] 		= vartrue($v['@attributes']['sef']);
 				//	$data['type'] = $v['@attributes']['type']; //TODO
-					$data['class'] 		= 253;
+					$data['class'] 		= $this->getPerm($v['@attributes']['perm'], 'member');
 					
 					$status = e107::getMedia()->createCategory($data) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 					$mes->add("Adding Media Category: {$data['category']}", $status);				

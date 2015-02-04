@@ -12,7 +12,7 @@
 	<mainPrefs>
 	</mainPrefs>
 	<mediaCategories>
-		<category type="image" sef="gallery-1" image='{e_PLUGIN}gallery/images/butterfly.jpg'>Gallery 1</category>
+		<category type="image" sef="gallery-1" perm="everyone" image='{e_PLUGIN}gallery/images/butterfly.jpg'>Gallery 1</category>
 	</mediaCategories>
 	<pluginPrefs>
 		<pref name="popup_w">800</pref>	
