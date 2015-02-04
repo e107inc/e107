@@ -1047,6 +1047,7 @@ class e_user_provider
 			$userdata = $user->getData();
 			$userdata['provider'] = $this->getProvider();
 			
+			e107::getEvent()->trigger('userveri', $userdata);	 // Trigger New verified user. 
 			$ret = e107::getEvent()->trigger('usersupprov', $userdata);	// XXX - it's time to pass objects instead of array? 
 			if(true === $ret) return $this;
 			
