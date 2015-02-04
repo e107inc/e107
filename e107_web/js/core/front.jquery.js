@@ -109,7 +109,12 @@ $(document).ready(function()
 			var sp 		= $(this).attr('id').split("-");
 			var id 		= "#comment-" + sp[3];
 
-			if($('.e-comment-edit-save').length != 0) //prevent creating save button twice.
+			var present = $('#e-comment-form-reply'); 
+		//	console.log(present);
+			
+
+
+			if($('.e-comment-edit-save').length !== 0 || $('#e-comment-form-reply').length !== 0 ) //prevent creating save button twice.
 			{
 				return false;
 			}
