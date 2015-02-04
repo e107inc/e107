@@ -226,7 +226,7 @@ abstract class e_marketplace_adapter_abstract
 	 * e107.org download URL
 	 * @var string
 	 */
-	protected $downloadUrl = 'http://e107.org/request';	
+	protected $downloadUrl = 'http://e107.org/request/';	
 	
 	/**
 	 * e107.org service URL [adapter implementation required]
@@ -240,6 +240,7 @@ abstract class e_marketplace_adapter_abstract
 	 */
 	public $requestMethod = null;
 	
+
 	/**
 	 * @var eAuth
 	 */
@@ -311,40 +312,47 @@ abstract class e_marketplace_adapter_abstract
 	public function download($id, $mode, $type)
 	{
 		$tp = e107::getParser();
+		$mes = e107::getMessage();
+		
 		$id = intval($id);
 		$qry = 'id='.$id.'&type='.$type.'&mode='.$mode;
 		$remotefile = $this->downloadUrl."?auth=".$this->getAuthKey()."&".$qry;
 
 		$localfile = md5($remotefile.time()).".zip";
-		echo "Downloading...<br />"; 
-		flush(); 
+		$mes->addSuccess("Downloading..."); 
+	
 		// FIXME call the service, check status first, then download (if status OK), else retireve the error break and show it
 		
 		$result 	= $this->getRemoteFile($remotefile, $localfile);
 		
 		if(!$result)
 		{
-			echo "Download Error.<br />"; flush(); 
+			$mes->addError("Download Error"); //  flush(); 
 			if(filesize(e_TEMP.$localfile))
 			{
 				$contents = file_get_contents(e_TEMP.$localfile);
 				$contents = explode('REQ_', $contents);
-				echo '[#'.trim($contents[1]).'] '.trim($contents[0]); flush(); 
+				$mes->addError('[#'.trim($contents[1]).'] '.trim($contents[0])); flush(); 
 			}
 			@unlink(e_TEMP.$localfile);
-			return;
+			return false;
 		}
+
+		
 		if(!file_exists(e_TEMP.$localfile))
 		{
-			//ADMIN_FALSE_ICON
-			echo "Automated download not possible. Please <a href='".$remotefile."'>Download Manually</a>"; flush();
+			$mes->addError( "Automated download not possible. Please <a href='".$remotefile."'>Download Manually</a>"); 
 			
 			if(E107_DEBUG_LEVEL > 0)
 			{
-				echo '<br />local='.$localfile; flush(); 
+				$mes->addDebug('local='.$localfile); // ; flush(); 
 			}
 
-			return;
+			return false;
+		}
+		else
+		{
+		//	$mes->addSuccess("Download Successful");		
 		}
 		/*
 		else 
@@ -371,48 +379,64 @@ abstract class e_marketplace_adapter_abstract
 		
 		if($dir && is_dir($destpath.$dir))
 		{
-			echo "(".ucfirst($type).") Already Downloaded - ".basename($destpath).'/'.$dir; flush(); 
+			$mes->addError("(".ucfirst($type).") Already Downloaded - ".basename($destpath).'/'.$dir); flush(); 
 			@unlink(e_TEMP.$localfile);
-			return;
+			@unlink(e_TEMP.$dir );
+			return false;
 		}
 	
 		if($dir == '')
 		{
-			echo "Couldn't detect the root folder in the zip."; flush();
+			$mes->addError("Couldn't detect the root folder in the zip."); //  flush();
 			@unlink(e_TEMP.$localfile);
-			return;		
+			return false;		
 		}
 	
 		if(is_dir(e_TEMP.$dir)) 
 		{
-			echo "Unzipping...<br />";
+			$this->success[] = "Unzipping...";
 			if(!rename(e_TEMP.$dir,$destpath.$dir))
 			{
-				echo "Couldn't Move ".e_TEMP.$dir." to ".$destpath.$dir." Folder"; flush(); usleep(50000);
+				$mes->addError("Couldn't Move ".e_TEMP.$dir." to ".$destpath.$dir." Folder"); //  flush(); usleep(50000);
 				@unlink(e_TEMP.$localfile);
-				return;
+				return false;
 			}	
 			
-			echo "Download Complete!<br />"; flush();
+			$mes->addSuccess("Download Complete!"); flush();
 			
 		//	$dir 		= basename($unarc[0]['filename']);
 		//	$plugPath	= preg_replace("/[^a-z0-9-\._]/", "-", strtolower($dir));	
 			//$status = "Done"; // ADMIN_TRUE_ICON;		
 			@unlink(e_TEMP.$localfile);	
-			return;
+			return true;
 		}
 		else 
 		{
 			//ADMIN_FALSE_ICON.
-			echo "<a href='".$remotefile."'>Download Manually</a>"; flush(); usleep(50000);
+			$mes->addSuccess( "<a href='".$remotefile."'>Download Manually</a>"); // flush(); usleep(50000);
 			if(E107_DEBUG_LEVEL > 0)
 			{
-				echo print_a($unarc, true); flush();
+				$mes->addDebug(print_a($unarc, true)); flush();
 			}
+			
 		}
 		
 		@unlink(e_TEMP.$localfile);
+		return false; 
 	}
+
+
+	public function getErrors()
+	{
+		return $this->errors; 
+	}
+	
+	public function getSuccess()
+	{
+		return $this->success; 
+	}
+			
+		
 
 	// Grab a remote file and save it in the /temp directory. requires CURL
 	function getRemoteFile($remote_url, $local_file, $type='temp')

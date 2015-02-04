@@ -946,7 +946,8 @@ class e_file
 				$text .= "\\n target=".$target;
 				if(E107_DEBUG_LEVEL > 0)
 				{
-					echo "<script>alert('".$text."')</script>";
+					e107::getMessage()->addDebug($text); 
+				// 	echo "<script>alert('".$text."')</script>";
 				}
 				return $target; 
 		

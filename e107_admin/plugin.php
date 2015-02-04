@@ -32,6 +32,15 @@ $plugin = new e107plugin;
 $pman = new pluginManager;
 define("e_PAGETITLE",ADLAN_98." - ".$pman->pagetitle);
 
+if(e_AJAX_REQUEST) // Ajax 
+{
+	print_a($_POST);
+	print_a($_GET);
+	exit; 	
+	
+}
+
+
 if(e_AJAX_REQUEST && isset($_GET['action'])) // Ajax 
 {
 	if($_GET['action'] == 'download')
@@ -39,7 +48,7 @@ if(e_AJAX_REQUEST && isset($_GET['action'])) // Ajax
 		$string =  base64_decode($_GET['src']);	
 		parse_str($string, $p);
 		
-		print_a($p);
+	//	print_a($p);
 		
 	//	$mp = $pman->getMarketplace();
 	//	$mp->generateAuthKey($e107SiteUsername, $e107SiteUserpass);
@@ -49,7 +58,7 @@ if(e_AJAX_REQUEST && isset($_GET['action'])) // Ajax
 		// Server flush useless. It's ajax ready state 4, we can't flush (sadly) before that (at least not for all browsers) 
 		echo "<pre>Connecting...\n"; flush(); // FIXME change the modal default label, default is Loading...
 		// download and flush
-		$mp->download($p['plugin_id'], $p['plugin_mode'], 'plugin');
+	//	$mp->download($p['plugin_id'], $p['plugin_mode'], 'plugin');
 		
 		echo "</pre>"; flush();
 	}
@@ -306,6 +315,13 @@ class pluginManager{
 			{
 				$this->fieldpref[] = $key;	
 			}		
+		}
+		
+		if($this->action == 'download')
+		{
+			$this->pluginDownload();
+			return; 	
+			
 		}
 	
 
@@ -579,18 +595,76 @@ class pluginManager{
 				
 		$d = http_build_query($data,false,'&');
 		//$url = e_SELF."?src=".base64_encode($d);
-		$url = e_SELF.'?action=download&amp;src='.base64_encode($d);//$url.'&amp;action=download';
+	//	$url = e_SELF.'?action=download&amp;src='.base64_encode($d);//$url.'&amp;action=download';
 		$id = 'plug_'.$data['plugin_id'];
 		//<button type='button' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='btn btn-primary e-ajax middle' value='Download and Install' data-src='".$url."' ><span>Download and Install</span></button>
 		
+		$url = e_SELF.'?mode=download&amp;src='.base64_encode($d);
+		$dicon = '<a class="e-modal btn btn-default" href="'.$url.'" rel="external" data-loading="'.e_IMAGE.'/generic/loading_32.gif"  data-cache="false" data-modal-caption="Downloading and Installing '.$data['plugin_name']." ".$data['plugin_version'].'"  target="_blank" ><img class="top" src="'.e_IMAGE_ABS.'icons/download_32.png" alt=""  /></a>';
+	
+	
 		// Temporary Pop-up version. 
-		$dicon = '<a class="e-modal" href="'.$data['plugin_url'].'" rel="external" data-modal-caption="'.$data['plugin_name']." ".$data['plugin_version'].'"  target="_blank" ><img class="top" src="'.e_IMAGE_ABS.'icons/download_32.png" alt=""  /></a>';
+	//	$dicon = '<a class="e-modal" href="'.$data['plugin_url'].'" rel="external" data-modal-caption="'.$data['plugin_name']." ".$data['plugin_version'].'"  target="_blank" ><img class="top" src="'.e_IMAGE_ABS.'icons/download_32.png" alt=""  /></a>';
 		
 	//	$dicon = "<a data-toggle='modal' data-modal-caption=\"Downloading ".$data['plugin_name']." ".$data['plugin_version']."\" href='{$url}' data-cache='false' data-target='#uiModal' title='".$LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";
 	
 		return "<div id='{$id}' class='right' >
 		{$dicon}
 		</div>";				
+	}
+
+
+
+	private function pluginDownload()
+	{
+		define('e_IFRAME', true);
+		$frm = e107::getForm();
+		$mes = e107::getMessage();
+		
+	//	print_a($_GET); 	
+		
+		$string =  base64_decode($_GET['src']);	
+		parse_str($string, $data);
+		
+		
+		$mp = $this->getMarketplace();
+	//	$mp->generateAuthKey($e107SiteUsername, $e107SiteUserpass);
+	
+	//	print_a($data); 
+		
+		// Server flush useless. It's ajax ready state 4, we can't flush (sadly) before that (at least not for all browsers) 
+	 	$mes->addSuccess("Connecting...");  
+
+		if($mp->download($data['plugin_id'], $data['plugin_mode'], 'plugin'))
+		{
+			$text = e107::getPlugin()->install($data['plugin_folder']); 
+
+			$mes->addInfo($text); 
+			echo $mes->render('default', 'success'); 
+		}
+		else
+		{
+			echo $mes->addError('Unable to continue')->render('default', 'error'); 
+		}
+		
+		echo $mes->render('default', 'debug'); 
+		return; 
+		
+		
+		
+		$text ="<iframe src='".$data['plugin_url']."' style='width:99%; height:500px; border:0px'>Loading...</iframe>";	
+	//	print_a($data); 
+		$text .= $frm->open('upload-url-form','post');
+		
+		$text .= "<div class='form-inline' style='padding:20px'>";
+		$text .= "<input type='text' name='upload_url' size='255' style='width:70%;height:50px;text-align:center' placeholder='eg. http://website.com/some-plugin.zip' />";
+		$text .= $frm->admin_button('upload_remote_url',1,'create','Install');
+	    $text .= "</div>";
+		$text .= "</div>\n\n";
+		
+		$text .= $frm->close();
+		echo $text; 
+		
 	}
 	
 	
