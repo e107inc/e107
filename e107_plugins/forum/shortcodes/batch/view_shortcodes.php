@@ -171,8 +171,8 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 	function sc_avatar()
 	{
-		$tp = e107::getParser();
-		return $tp->parseTemplate("{USER_AVATAR=".$this->postInfo['user_image']."}", true);
+		return e107::getParser()->toAvatar($this->postInfo);
+		// return $tp->parseTemplate("{USER_AVATAR=".$this->postInfo['user_image']."}", true);
 	}
 
 	function sc_anon_ip()
