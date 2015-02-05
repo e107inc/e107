@@ -228,6 +228,7 @@ CREATE TABLE links (
   link_class varchar(255) NOT NULL default '0',
   link_function varchar(100) NOT NULL default '',
   link_sefurl varchar(255) NOT NULL,
+  link_owner varchar(50) NOT NULL default '',
   PRIMARY KEY  (link_id)
 ) ENGINE=MyISAM;
 
