@@ -71,26 +71,25 @@ class page_search extends e_search // include plugin-folder in the name.
 				$catList[] = array('id' => $key, 'title' => $this->getName($row['chapter_parent'])." - ".$row['chapter_name']);
 			}
 		}
-		
-
 			
 		$search = array(
 			'name'			=> "Pages",
 			'table'			=> 'page AS p LEFT JOIN #page_chapters AS c ON p.page_chapter = c.chapter_id ',
-
-			'advanced' 		=> array(
-								'cat'	=> array('type'	=> 'dropdown', 		'text' => "Search in Book/Chapter", 'list'=>$catList),
-						//		'date'=> array('type'	=> 'date',			'text' => LAN_DATE_POSTED),
-					//			'match'=> array('type'	=> 'dropdown',		'text' =>  LAN_SEARCH_52, 'list'=>$matchList)
-							),
-							
 			'return_fields'	=> array('p.page_id', 'p.page_title', 'p.page_sef', 'p.page_text', 'p.page_chapter', 'p.page_datestamp', 'p.menu_image'), 
 			'search_fields'	=> array('p.page_title' => '1.2', 'p.page_text' => '0.6', 'p.page_metakeys'=> '1.0'), // fields and their weights. 
 	
 			'order'			=> array('page_datestamp' => DESC),
 			'refpage'		=> 'page.php'
 		);
-
+		
+		if(!empty($catList))
+		{
+			$search['advanced'] = array(
+								'cat'	=> array('type'	=> 'dropdown', 		'text' => "Search in Book/Chapter", 'list'=>$catList),
+						//		'date'=> array('type'	=> 'date',			'text' => LAN_DATE_POSTED),
+					//			'match'=> array('type'	=> 'dropdown',		'text' =>  LAN_SEARCH_52, 'list'=>$matchList)
+							);
+		}
 
 		return $search;
 	}
