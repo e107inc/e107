@@ -21,14 +21,13 @@ if(!plugInstalled('gsitemap'))
 	exit();
 }
 
-include_lan(e_PLUGIN."gsitemap/languages/gsitemap_".e_LANGUAGE.".php");
+e107::lan('gsitemap'); 
 
 if(e_QUERY == "show")
 {
 	require_once(HEADERF);
 
-	$sql -> db_Select("gsitemap", "*", "gsitemap_active IN (".USERCLASS_LIST.") ORDER BY gsitemap_order ");
-	$nfArray = $sql -> db_getList();
+	$nfArray = $sql ->retrieve("gsitemap", "*", "gsitemap_active IN (".USERCLASS_LIST.") ORDER BY gsitemap_order ",true);
 	$text = "<div style='text-align:left'><ul>";
 
 	foreach($nfArray as $nfa)
@@ -44,14 +43,14 @@ if(e_QUERY == "show")
 	exit;
 }
 
-
+header('Content-type: application/xml', TRUE);
 $xml = "<?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.google.com/schemas/sitemap/0.84'
 xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'	xsi:schemaLocation='http://www.google.com/schemas/sitemap/0.84
 http://www.google.com/schemas/sitemap/0.84/sitemap.xsd'>";
 
-$sql -> db_Select("gsitemap", "*", "gsitemap_active IN (".USERCLASS_LIST.") ORDER BY gsitemap_order ");
-$smArray = $sql -> db_getList();
+$smArray = $sql ->retrieve("gsitemap", "*", "gsitemap_active IN (".USERCLASS_LIST.") ORDER BY gsitemap_order ",true);
+
 foreach($smArray as $sm)
 {
 	if($sm['gsitemap_url'][0] == '/') $sm['gsitemap_url'] = ltrim($sm['gsitemap_url'], '/');
