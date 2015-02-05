@@ -19,9 +19,8 @@ class faqs_search extends e_search // include plugin-folder in the name.
 		//						'author'=> array('type'	=> 'author',	'text' => LAN_SEARCH_61)
 		//					),
 							
-			'return_fields'	=> array('t.faq_question','t.faq_answer','t.faq_datestamp','x.faq_info_title','t.faq_id','x.faq_info_id','x.faq_info_class'), 
-			'search_fields'	=> array('t.faq_question'=>1.0, 't.faq_answer'=>1.2, "x.faq_info_title"=>0.6), // fields and weights. 
-		//	$where = " find_in_set(faq_info_class,'".USERCLASS_LIST."') and ";
+			'return_fields'	=> array('t.faq_question','t.faq_answer','t.faq_datestamp','x.faq_info_title','t.faq_id','x.faq_info_id','x.faq_info_title', 'x.faq_info_class','x.faq_info_sef'), 
+			'search_fields'	=> array('t.faq_question'=>1.0, 't.faq_answer'=>1.2, "x.faq_info_title"=>0.6, 't.faq_tags'=> 1.4), // fields and weights. 
 			'order'			=> array('t.faq_question' => DESC),
 			'refpage'		=> 'chat.php'
 		);
@@ -35,17 +34,13 @@ class faqs_search extends e_search // include plugin-folder in the name.
 	/* Compile Database data for output */
 	function compile($row)
 	{
-		$tp = e107::getParser();
-
-		preg_match("/([0-9]+)\.(.*)/", $row['cb_nick'], $user);
-
 		$res = array();
-	
-		$res['link'] 		= e_PLUGIN."chatbox_menu/chat.php?".$row['cb_id'].".fs";
-		$res['pre_title'] 	= LAN_SEARCH_7;
-		$res['title'] 		= $user[2];
-		$res['summary'] 	= $row['cb_message'];
-		$res['detail'] 		= $tp->toDate($row['cb_datestamp'], "long");
+
+	    $res['link'] 		= $url = e107::url('faqs','category', $row); // e_PLUGIN . "faq/faq.php?cat." . $cat_id . "." . $link_id . "";
+	    $res['pre_title'] 	= $row['faq_info_title'] ? $row['faq_info_title'] .' | ' : "";
+	    $res['title'] 		= $row['faq_question'];
+	    $res['summary'] 	= substr($row['faq_answer'], 0, 100)."....  ";
+	    $res['detail'] 		= e107::getParser()->toDate($row['faq_datestamp'],'long');
 
 		return $res;
 		
@@ -61,7 +56,7 @@ class faqs_search extends e_search // include plugin-folder in the name.
 	{
 		$tp = e107::getParser();
 
-		$qry = "";
+		$qry = " find_in_set(x.faq_info_class,'".USERCLASS_LIST."') AND ";
 		
 		if (vartrue($parm['time']) && is_numeric($parm['time'])) 
 		{
