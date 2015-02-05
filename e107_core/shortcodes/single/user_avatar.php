@@ -1,11 +1,10 @@
 <?php
 // $Id$
-function user_avatar_shortcode($parm=null)
+function user_avatar_shortcode($parm=null) //TODO new function $tp->toAvatar(); so full arrays can be passed to it. 
 {
 	global $loop_uid;
 	
-	
-	
+		
 	$tp 		= e107::getParser();
 	$width 		= $tp->thumbWidth;
 	$height 	= ($tp->thumbHeight !== 0) ? $tp->thumbHeight : "";
