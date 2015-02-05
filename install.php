@@ -1012,11 +1012,16 @@ class e_install
 
 				foreach($themes as $val)
 				{
+					if($val == 'bootstrap')
+					{
+						continue; 
+					} 
+					
 					$themeInfo 	= $this->get_theme_xml($val);
 					$title 		= vartrue($themeInfo['@attributes']['name']);
 					$category 	= vartrue($themeInfo['category']);
 
-					$selected = ($val == 'bootstrap3') ? "selected='selected'" : "";
+					$selected = ($val == 'bootstrap3') ? " checked" : "";
 
 					$output .= "
 								<tr>
