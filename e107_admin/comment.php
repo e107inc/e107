@@ -64,7 +64,7 @@ class comments_admin_ui extends e_admin_ui
 		
 		//protected $listQry = "SELECT SQL_CALC_FOUND_ROWS * FROM #comments"; // without any Order or Limit. 
 		protected $listQry = "SELECT c.*,u.user_name FROM #comments as c LEFT JOIN #user AS u ON c.comment_author_id = u.user_id ";
-		
+		protected $listOrder	= "comment_id desc";
 		//protected $editQry = "SELECT * FROM #comments WHERE comment_id = {ID}";
 		
 		protected $pid = "comment_id";
@@ -105,6 +105,26 @@ class comments_admin_ui extends e_admin_ui
 			'comments_emoticons'	=> array('title'=>PRFLAN_166, 	'type'=>'boolean')
 		);
 				
+		public function beforeDelete($data, $id)
+		{
+			return true;
+		}
+	
+		/**
+		 * User defined after-delete logic
+		 */
+		public function afterDelete($deleted_data, $id, $deleted_check)
+		{
+			$sql = e107::getDb();
+			
+			switch ($deleted_data['comment_type'])
+			{
+				case '0' :
+				case 'news' :		// Need to update count in news record as well
+					$sql->update('news', 'news_comment_total = CAST(GREATEST(CAST(news_comment_total AS SIGNED) - 1, 0) AS UNSIGNED) WHERE news_id='.$deleted_data['comment_item_id']);
+				break;
+			}
+		}
 		
 }
 
