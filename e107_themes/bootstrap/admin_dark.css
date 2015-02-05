@@ -69,7 +69,8 @@ tr.highlight-even			{ background-color: #212121; }
     background-color: #222;
 }
 
-
+div.col-selection .caret { border-top-color: #C6C6C6;
+border-bottom-color: #C6C6C6; }
 
 /* Uncomment if font-awesome/darkstrap overlay issue returns. 
 .btn-primary > [class^="icon-"] {

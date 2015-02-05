@@ -651,10 +651,20 @@ i.e-seamonkey-32{ background-position: -485px 0; width: 32px; height: 32px; }
 th, .fcaption								{ font: 12px HelveticaNeue,Helvetica,Arial;  }
 tr.first a, th a							{ color: rgb(102, 102, 102); }
 /* Dark Drop-Down Menus */
-ul.col-selection 							{ text-align:left;  overflow:visible; z-index:101; max-height:600px; overflow:auto; background-color: rgb(23, 23, 23); }
+
+
+ul.col-selection 				{ padding:5px; text-align:left; background-color: #FCFDFF; border: 1px outset black; width:200px; margin-right:0px;overflow:visible; position:absolute; z-index:101; right:0px;}
+
+
+ul.col-selection 							{ text-align:left;  overflow:visible; z-index:101;  background-color: rgb(23, 23, 23); }
 ul.col-selection > li a 					{ border-top: 1px solid rgb(51, 51, 51);  border-bottom: 1px solid rgb(32, 32, 32); }
 ul.col-selection > li a 					{ padding: 3px 0px 0px 25px; color: rgb(153, 153, 153); }
 ul.col-selection > li a label 				{ padding-left:0px; display:block; line-height:25px; }
+ul.col-selection > li a:hover 				{ color: #FFF; background-image: linear-gradient(to bottom, #08C, #0077B3);}
+
+
+ul.col-selection 							{ background-color: rgb(39, 39, 39);} 
+ul.scroll-menu 								{  max-height:350px; overflow:auto;    }
 
 
 .nav ul li ul.dropdown-menu 				{ border-left:1px solid rgb(51, 51, 51); background-color: rgb(39, 39, 39); }
