@@ -413,7 +413,7 @@ class pm_shortcodes extends e_shortcode
 
 	public function sc_pm_avatar()
 	{
-		return e107::getParser()->parseTemplate("{USER_AVATAR={$this->var['user_image']}}");
+		return e107::getParser()->toAvatar($this->var); 
 	}
 
 
