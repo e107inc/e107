@@ -3003,10 +3003,11 @@ class e107plugin
 
 		$ret['menuName'] = varset($eplug_menu_name);
 
-		if (varset($eplug_prefs))
+
+		if (!empty($eplug_prefs) && is_array($eplug_prefs))
 		{
 			$c = 0;
-			foreach ($eplug_prefs as $name => $value)
+			foreach($eplug_prefs as $name => $value)
 			{
 				$ret['mainPrefs']['pref'][$c]['@attributes']['name'] = $name;
 				$ret['mainPrefs']['pref'][$c]['@value'] = $value;
