@@ -748,7 +748,7 @@ class e_parse extends e_parser
 		$search = array('&#036;', '&quot;', '<', '>');
 		$replace = array('$', '"', '&lt;', '&gt;');
 		$text = str_replace($search, $replace, $text);
-		if (e_WYSIWYG !== TRUE)
+		if (e107::wysiwyg() !== true)
 		{
 			// fix for utf-8 issue with html_entity_decode(); ???
 			$text = str_replace("&nbsp;", " ", $text);
@@ -2840,6 +2840,67 @@ class e_parser
 	}
 	
 
+
+
+
+	/**
+	 * Render an avatar based on supplied user data or current user when missing. 
+	 * @param @array  - user data from e107_user. 
+	 * @return <img> tag of avatar.  
+	 */
+	public function toAvatar($userData=null)
+	{
+		$tp 		= e107::getParser();
+		$width 		= $tp->thumbWidth;
+		$height 	= ($tp->thumbHeight !== 0) ? $tp->thumbHeight : "";		
+		
+		
+		if(!isset($userData['user_image']) && USERID)
+		{
+			$userData['user_image']	= USERIMAGE;
+			$userData['user_name']	= USERNAME; 
+		}
+		
+		
+		$image = varset($userData['user_image']); 
+		
+		$genericImg = $tp->thumbUrl(e_IMAGE."generic/blank_avatar.jpg","w=".$width."&h=".$height,true);	
+		
+		if (!empty($image)) 
+		{
+			
+			if(strpos($image,"://")!==false) // Remove Image
+			{
+				$img = $image;	
+			}
+			elseif(substr($image,0,8) == "-upload-")
+			{
+				
+				$image = substr($image,8); // strip the -upload- from the beginning. 
+				$img = (file_exists(e_AVATAR_UPLOAD.$image))  ? $tp->thumbUrl(e_AVATAR_UPLOAD.$image,"w=".$width."&h=".$height) : $genericImg;
+			}
+			elseif(file_exists(e_AVATAR_DEFAULT.$image))  // User-Uplaoded Image
+			{
+				$img =	$tp->thumbUrl(e_AVATAR_DEFAULT.$image,"w=".$width."&h=".$height);		
+			}
+			else // Image Missing. 
+			{
+				
+				$img = $genericImg;
+			}
+		}
+		else // No image provided - so send generic. 
+		{
+			$img = $genericImg;
+		}
+		
+		$title = (ADMIN) ? $image : $tp->toAttribute($userData['user_name']);
+		
+		$text = "<img class='img-rounded user-avatar e-tip' title=\"".$title."\" src='".$img."' alt='' style='width:".$width."px; height:".$height."px' />";
+	//	return $img;
+		return $text;
+		
+	}
 
 
 	

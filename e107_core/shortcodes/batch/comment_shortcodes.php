@@ -107,12 +107,12 @@ class comment_shortcodes extends e_shortcode
 		$tp 	= e107::getParser();
 		
 	//	return $this->var['user_image']; 
-	
 	//	$url = $tp->thumbUrl($this->var['user_image']); 
-	
 	//	$text = $tp->parseTemplate("{USER_AVATAR=".vartrue($this->var['user_image'],USERIMAGE)."}");
-		$text = $tp->parseTemplate("{USER_AVATAR=".$this->var['user_id']."}");				
-		$text = 
+	//	$text = $tp->parseTemplate("{USER_AVATAR=".$this->var['user_id']."}");		
+		
+		$text = $tp->toAvatar($this->var); 		
+	
 		$text .= "<div class='field-help' style='display:none;'>
 		<div class='left'>";
 		$text .= "<h2>".$this->sc_username()."</h2>";

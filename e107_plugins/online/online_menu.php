@@ -25,7 +25,11 @@ include_lan(e_PLUGIN.'online/languages/'.e_LANGUAGE.'.php');
 
 require_once(e_PLUGIN.'online/online_shortcodes.php');
 
-if (is_readable(THEME.'online_menu_template.php')) 
+if (is_readable(THEME.'templates/online/online_menu_template.php')) 
+{
+	require(THEME.'templates/online/online_menu_template.php');
+} 
+elseif (is_readable(THEME.'online_menu_template.php')) 
 {
 	require(THEME.'online_menu_template.php');
 } 

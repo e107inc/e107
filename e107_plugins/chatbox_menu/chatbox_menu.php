@@ -112,7 +112,7 @@ if(!class_exists('chatbox_shortcodes'))
 	
 		function sc_cb_avatar($parm='')
 		{
-			return e107::getParser()->parseTemplate("{USER_AVATAR=".vartrue($this->var['user_image'])."}");
+			return e107::getParser()->toAvatar($this->var); // parseTemplate("{USER_AVATAR=".vartrue($this->var['user_image'])."}");
 		}
 		
 		function sc_cb_bullet($parm = '')
