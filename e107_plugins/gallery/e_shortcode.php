@@ -75,7 +75,7 @@ class gallery_shortcodes extends e_shortcode
 		$w 			= vartrue($parms['w']) ? $parms['w'] : $tp->thumbWidth(); // 190; // 160;
 		$h 			= vartrue($parms['h']) ? $parms['h'] : $tp->thumbHeight(); // 130;	
 		
-		$class 		= ($this->slideMode == TRUE) ? 'gallery-slideshow-thumb img-responsive' : varset($parms['class'],'gallery-thumb img-responsive');
+		$class 		= ($this->slideMode == TRUE) ? 'gallery-slideshow-thumb img-responsive img-rounded' : varset($parms['class'],'gallery-thumb img-responsive');
 	//	$rel 		= ($this->slideMode == TRUE) ? 'lightbox.SlideGallery' : 'lightbox.Gallery';
 			$rel 		= ($this->slideMode == TRUE) ? 'prettyPhoto[slide]' : 'prettyPhoto[gal]';
 		$att 		= 'aw='.$w.'&ah='.$h.'&x=1'; // 'aw=190&ah=150';
@@ -218,7 +218,6 @@ class gallery_shortcodes extends e_shortcode
 		$tp 				= e107::getParser();
 		$this->slideMode 	= TRUE;
 		$parms 				= eHelper::scDualParams($parm);
-		
 		$amount 			= $parms[1] ? intval($parms[1]) : 3; // vartrue(e107::getPlugPref('gallery','slideshow_perslide'),3);
 		$parms 				= $parms[2];
 		$limit 				= (integer) vartrue($parms['limit'], 16);

@@ -62,21 +62,21 @@ $GALLERY_TEMPLATE['cat_end'] =
 $GALLERY_TEMPLATE['slideshow_wrapper'] = '
 			
 			<div id="gallery-slideshow-wrapper">
-			    <div id="gallery-slideshow-content">
+			    <div id="gallery-slideshow-content" >
 			        {GALLERY_SLIDES=4}
 			    </div>
 			</div>
 			
 			<div class="gallery-slideshow-controls">		
-            	<a href="#" class="gallery-control gal-next" style="float: right">Next &rsaquo;</a>           
-                <a href="#" class="gallery-control gal-prev" >&lsaquo; Previous</a>
+            	<a href="#" class="gallery-control gal-next btn btn-xs btn-default" style="float: right">Next {GLYPH=fa-chevron-right}</a>           
+                <a href="#" class="gallery-control gal-prev btn btn-xs btn-default" >{GLYPH=fa-chevron-left} Previous</a>
                 <span class="gallery-slide-jumper-container">{GALLERY_JUMPER}</span>
             </div>
          
             
 		';	
 
-$GALLERY_TEMPLATE['slideshow_slide_item'] = '<span class="gallery-slide-item">{GALLERY_THUMB=w=150&h=120}</span>';
+$GALLERY_TEMPLATE['slideshow_slide_item'] = '<span class="gallery-slide-item">{GALLERY_THUMB: w=150&h=120}</span>';
 
 		
 
