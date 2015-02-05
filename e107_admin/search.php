@@ -403,17 +403,17 @@ else
 	foreach ($search_prefs['plug_handlers'] as $plug_dir => $active)
 	{
 				
-		if(varset($searchConfigs[$plug_dir]))
+		if(varset($searchConfigs[$plug_dir])) // v2.x 
 		{
 			$search_handlers[] = $searchConfigs[$plug_dir];	
 			$search_info[0]['qtype'] = $searchConfigs[$plug_dir]['name'];
 		}	
-		elseif(e107::isInstalled($plug_dir) && is_readable(e_PLUGIN.$plug_dir."/e_search.php"))
+		elseif(e107::isInstalled($plug_dir) && is_readable(e_PLUGIN.$plug_dir."/e_search.php")) // v1.x
 		{
 			e107::getMessage()->addDebug("Including: ".$plug_dir."/e_search.php");
 			require(e_PLUGIN.$plug_dir."/e_search.php");
 		}
-		else   // workaround for a messy pref data.  Missing a plugin or file. 
+		else   // workaround for messy pref data.  Missing a plugin or file. 
 		{
 			continue;	
 		}
