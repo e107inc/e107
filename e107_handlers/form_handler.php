@@ -2348,16 +2348,19 @@ class e_form
 		$columnsArray = array_filter($columnsArray);
 		
 	
-		$text = '<div class="dropdown e-tip pull-right" data-placement="left">
+		$text = '<div class="col-selection dropdown e-tip pull-right" data-placement="left">
     <a class="dropdown-toggle" title="Select columns to display" data-toggle="dropdown" href="#"><b class="caret"></b></a>
-    <ul class="dropdown-menu col-selection e-noclick" role="menu" aria-labelledby="dLabel">
-    <li class="nav-header">Display Columns</li>';
+    <ul class="dropdown-menu  col-selection e-noclick" role="menu" aria-labelledby="dLabel">
+   
+    <li class="navbar-header nav-header">Display Columns</li>
+    <li>
+     <ul class="nav scroll-menu" >';
 		
         unset($columnsArray['options'], $columnsArray['checkboxes']);
 
 		foreach($columnsArray as $key => $fld)
 		{
-			if (!varset($fld['forced']) && !vartrue($fld['nolist']) && vartrue($fld['type'])!='upload')
+			if (empty($fld['forced']) && empty($fld['nolist']) && vartrue($fld['type'])!='hidden' && vartrue($fld['type'])!='upload')
 			{
 				$checked = (in_array($key,$columnsDefault)) ?  TRUE : FALSE;
 				$ttl = isset($fld['title']) ? defset($fld['title'], $fld['title']) : $key;
@@ -2377,11 +2380,14 @@ class e_form
 		}
 
 		// has issues with the checkboxes.
-        $text .= "<li>
-				<div id='{$id}-button' class='right'>
-					".$this->admin_button('etrigger_ecolumns', LAN_SAVE, 'btn-small')."
-				</div>
+        $text .= "
+				</ul>
 				</li>
+				 <li class='navbar-header nav-header'>
+				<div id='{$id}-button' class='right'>
+					".$this->admin_button('etrigger_ecolumns', LAN_SAVE, 'btn btn-primary btn-small')."
+				</div>
+				 </li>
 				</ul>
 			</div>";
 			
