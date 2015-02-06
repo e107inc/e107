@@ -238,6 +238,7 @@ img.S32:hover 				{}
 .adminlist tr.last td						{ border-bottom: 0px solid;}
 
 .adminlist .col-selection-cont 				{ position: relative; float:right; }
+table.adminlist								{ margin-bottom: 0px }
 
 span.e-search input[type='text']				{ padding-left:15px; text-decoration: italic }
 /*

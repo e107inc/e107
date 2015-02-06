@@ -106,6 +106,7 @@ class gallery_cat_admin_ui extends e_admin_ui
 		protected $listOrder = 'media_cat_order';
 
 	 	protected $listQry = "SELECT * FROM #core_media_cat WHERE media_cat_owner = 'gallery' "; // without any Order or Limit. 
+	 	
 	//		protected $listQry = "SELECT * FROM #core_media  "; // without any Order or Limit. 
 	//	protected $editQry = "SELECT * FROM #faq_info WHERE faq_info_id = {ID}";
 	 	 	
@@ -141,24 +142,26 @@ class gallery_cat_admin_ui extends e_admin_ui
 	}
 	
 	
-	protected $prefs = array(
-		'popup_w'				=> array('title'=> 'Image Max. Width', 'type' => 'text', 'data' => 'int', 'help'=>'Images will be auto-resized if greater than the width given here'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
-		'popup_h'				=> array('title'=> 'Image Max. Height', 'type' => 'text', 'data' => 'int', 'help'=>'Images will be auto-resized if greater than the height given here'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
-		
-		'downloadable'			=> array('title'=> 'Show "download" link', 'type' => 'boolean', 'data' => 'int', 'help'=>'A download option will be shown next to the popup caption'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
+	protected $preftabs = array('General', 'Slideshow Menu'); 
 	
-		'slideshow_category'	=> array('title'=> 'Slideshow category', 'type' => 'dropdown', 'data' => 'str', 'help'=>'Images from this category will be used in the sliding menu.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
+	protected $prefs = array(
+		'popup_w'				=> array('title'=> 'Image Max. Width',  'tab'=>0, 'type' => 'text', 'data' => 'int', 'help'=>'Images will be auto-resized if greater than the width given here'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
+		'popup_h'				=> array('title'=> 'Image Max. Height',  'tab'=>0, 'type' => 'text', 'data' => 'int', 'help'=>'Images will be auto-resized if greater than the height given here'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
+		
+		'downloadable'			=> array('title'=> 'Show "download" link',  'tab'=>0, 'type' => 'boolean', 'data' => 'int', 'help'=>'A download option will be shown next to the popup caption'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
+	
+		'slideshow_category'	=> array('title'=> 'Slideshow category', 'tab'=>1, 'type' => 'dropdown', 'data' => 'str', 'help'=>'Images from this category will be used in the sliding menu.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
 	//	'slideshow_thumb_w'	=> array('title'=> 'Thumbnail Width', 'type' => 'number', 'data' => 'integer', 'help'=>'Width in px'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
 	//	'slideshow_thumb_h'	=> array('title'=> 'Thumbnail Height', 'type' => 'number', 'data' => 'integer', 'help'=>'Height in px'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),		
 	
 	//	'slideshow_perslide'	=> array('title'=> 'Images per slide', 'type' => 'number', 'data' => 'integer', 'help'=>'Number of images to show per slide.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
-		'slideshow_duration'	=> array('title'=> 'Slide duration', 'type' => 'number', 'data' => 'integer', 'help'=>'The duration (in seconds) of a full jump.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),		
-		'slideshow_auto'		=> array('title'=> 'Slide auto-start', 'type'=>'boolean', 'data' => 'integer','help' => 'When enabled image-rotation begins automatically when the page is loaded.'),
-		'slideshow_freq'		=> array('title'=> 'Slide frequency', 'type' => 'number', 'data' => 'integer', 'help'=>'When auto-start is enabled, this dictates how long a slides stays put before the next jump. '), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
+		'slideshow_duration'	=> array('title'=> 'Slide duration', 'type' => 'number',  'tab'=>1,'data' => 'integer', 'help'=>'The duration (in seconds) of a full jump.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),		
+		'slideshow_auto'		=> array('title'=> 'Slide auto-start', 'type'=>'boolean',  'tab'=>1,'data' => 'integer','help' => 'When enabled image-rotation begins automatically when the page is loaded.'),
+		'slideshow_freq'		=> array('title'=> 'Slide frequency', 'type' => 'number',  'tab'=>1,'data' => 'integer', 'help'=>'When auto-start is enabled, this dictates how long a slides stays put before the next jump. '), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
 	//	'slideshow_circular'	=> array('title'=> 'Slide circular-mode', 'type' => 'boolean', 'data' => 'integer', 'help'=>'By default when the first/last slide is reached, calling prev/next does nothing. If you want the effect to continue enable this option.'), // 
-		'slideshow_effect'		=> array('title'=> 'Slide effect', 'type' => 'dropdown', 'data' => 'str', 'help'=>'Type of effect. '), // 
+		'slideshow_effect'		=> array('title'=> 'Slide effect', 'type' => 'dropdown',  'tab'=>1,'data' => 'str', 'help'=>'Type of effect. '), // 
 	//	'slideshow_transition'	=> array('title'=> 'Slide transition', 'type' => 'dropdown', 'data' => 'str', 'help'=>'Type of transition. ') //
-		'perpage'				=> array('title'=> 'Images per page', 'type' => 'number', 'data' => 'int', 'help'=>'Number of images to be shown per page'), // 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')), 	
+		'perpage'				=> array('title'=> 'Images per page',  'tab'=>0, 'type' => 'number', 'data' => 'int', 'help'=>'Number of images to be shown per page'), // 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')), 	
 	);
 	
 	

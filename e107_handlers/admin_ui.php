@@ -5353,7 +5353,9 @@ class e_admin_form_ui extends e_form
 			'fields' => $controller->getFields(), // see e_admin_ui::$fields
 			'fieldpref' => $controller->getFieldPref(), // see e_admin_ui::$fieldpref
 			'table_pre' => '', // markup to be added before opening table element
-			'table_post' => !$tree[$id]->isEmpty() ? $this->renderBatch($controller->getBatchDelete(),$controller->getBatchCopy(),$controller->getBatchLink(),$controller->getBatchFeaturebox()) : '',
+		//	'table_post' => !$tree[$id]->isEmpty() ? $this->renderBatch($controller->getBatchDelete(),$controller->getBatchCopy(),$controller->getBatchLink(),$controller->getBatchFeaturebox()) : '',
+			'table_post' => $this->renderBatch($controller->getBatchDelete(),$controller->getBatchCopy(),$controller->getBatchLink(),$controller->getBatchFeaturebox()),
+	
 			'fieldset_pre' => '', // markup to be added before opening fieldset element
 			'fieldset_post' => '', // markup to be added after closing fieldset element
 			'perPage' => $controller->getPerPage(), // if 0 - no next/prev navigation
@@ -5635,8 +5637,12 @@ class e_admin_form_ui extends e_form
 		// TODO - core ui-batch-option class!!! REMOVE INLINE STYLE!
 		// XXX Quick Fix for styling - correct. 
 		$text = "
-			<div class='navbar navbar-inner left' style='padding-left:15px; padding-top:8px; margin-top:-20px;border-top:0px'>
-				<div class='span6'>
+			<div class='navbar navbar-inner left' style='padding-left:15px; padding-top:8px;'>
+				<div class='span6'>";
+				
+		if(!$this->getController()->getTreeModel()->isEmpty())
+		{		
+			$text .= "
 					<div class='input-append'>
 	         		<img src='".e_IMAGE_ABS."generic/branchbottom.gif' alt='' class='icon action' style='padding-top:5px' />
 						".$this->select_open('etrigger_batch', array('class' => 'tbox select batch e-autosubmit reset', 'id' => false))."
@@ -5650,6 +5656,11 @@ class e_admin_form_ui extends e_form
 					".$this->select_close()."
 					".$this->admin_button('e__execute_batch', 'e__execute_batch', 'batch e-hide-if-js', LAN_GO, array('id' => false))."
 					</div>
+				";
+		}
+
+		
+		$text .= "
 				</div>
 				<div class='span6 right' style='padding-top:5px'><span>".e107::getParser()->lanVars(LAN_UI_TOTAL_RECORDS,number_format($this->listTotal))."</span></div>
 			</div>
