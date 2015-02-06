@@ -25,6 +25,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 $e_sub_cat = 'theme_manage';
 
 e107::css("inline","
+h2 							{ text-align: right; margin-bottom: -30px; padding-right: 10px; }
 .hide						{ display: none }
 .admin-theme-thumb			{ height:130px;overflow:hidden;border:1px solid black; margin:0px; margin-bottom:10px; padding:0px;   }
 .admin-theme-thumb:hover	{ opacity:0.4 }
