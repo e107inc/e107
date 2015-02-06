@@ -268,6 +268,7 @@ if($signup_imagecode)
 if ((USER || ($pref['user_reg'] != 1) || (vartrue($pref['auth_method'],'e107') != 'e107')) && !getperms('0'))
 {
 	 header('location: '.e_HTTP.'index.php');
+	
 }
 
 if(getperms('0')) // allow main admin to view signup page for design/testing. 
@@ -277,7 +278,7 @@ if(getperms('0')) // allow main admin to view signup page for design/testing.
 	
 	$adminMsg = LAN_SIGNUP_112;
 	
-	if($pref['user_reg'] != 1)
+	if($pref['user_reg'] !== 1)
 	{
 		$adminMsg .= "<br />User registration is currently disabled";	
 	}
@@ -381,7 +382,7 @@ if (e_QUERY)
 // 		Initial signup (registration)
 //----------------------------------------
 
-if (isset($_POST['register']) && $pref['user_reg'] == 1) 
+if (isset($_POST['register']) && $pref['user_reg'] === 1) 
 {	
 	e107::getCache()->clear("online_menu_totals");
 	

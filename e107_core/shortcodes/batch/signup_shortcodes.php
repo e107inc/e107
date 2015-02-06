@@ -57,9 +57,12 @@ class signup_shortcodes extends e_shortcode
 	}
 	
 	// TODO - template
-	function sc_signup_xup_login()
+	function sc_signup_xup_login($parm)
 	{
 		$pref = e107::getPref('social_login_active');
+		$tp = e107::getParser();
+			
+		$size = empty($parm['size']) ? '3x' : $parm['size'];	
 			
 		if(!empty($pref))
 		{
@@ -82,8 +85,9 @@ class signup_shortcodes extends e_shortcode
 					}
 					
 					// 'signup' Creates a new XUP user if not found, otherwise it logs the person in. 
-					$button = (defset('FONTAWESOME') === 4) ? "<span title='Register using your {$p} account'>".$tp->toGlyph('fa-'.$ic, array('size'=>'3x'))."</span>" : "<img class='e-tip' title='Register using your {$p} account' src='".e_IMAGE_ABS."xup/{$p}.png' alt='' />";			
-					$text .= "&nbsp;<a class='signup-xup' href='".e107::getUrl()->create('system/xup/signup?provider='.$p.'&back='.base64_encode(e_REQUEST_URL))."'>".$button."</a>&nbsp;";		
+					
+					$button = (defset('FONTAWESOME') === 4) ? $tp->toGlyph('fa-'.$ic, array('size'=>$size)) : "<img class='e-tip' title='Register using your {$p} account' src='".e_IMAGE_ABS."xup/{$p}.png' alt='' />";			
+					$text .= " <a title='Sign-in using your {$p} account' role='button' class='signup-xup  btn btn-primary' href='".e107::getUrl()->create('system/xup/signup?provider='.$p.'&back='.base64_encode(e_REQUEST_URL))."'>".$button."</a> ";		
 				}
 				//TODO different icon options. see: http://zocial.smcllns.com/
 			}	
@@ -94,14 +98,22 @@ class signup_shortcodes extends e_shortcode
 	}
 	
 	// TODO - template
-	function sc_signup_xup_signup()
+	function sc_signup_xup_signup($parm)
 	{
 		$pref = e107::getPref('social_login_active');
 			$tp = e107::getParser();
 		if(!empty($pref))
 		{
 			$text = "";
-			$providers = e107::getPref('social_login'); 
+			$providers = e107::pref('core', 'social_login'); 
+			
+			$size = empty($parm['size']) ? '2x' : $parm['size'];	
+			$class = empty($parm['class']) ?  'btn btn-primary' : $parm['class'] ; 
+			
+			if($size == '2x')
+			{
+				$class .= ' btn-lg';	
+			}
 
 			foreach($providers as $p=>$v)
 			{
@@ -115,9 +127,9 @@ class signup_shortcodes extends e_shortcode
 						$ic = 'windows';
 					}
 					
-					$button = (defset('FONTAWESOME') === 4) ? "<span title='Register using your {$p} account'>".$tp->toGlyph('fa-'.$ic, array('size'=>'3x'))."</span>" : "<img class='e-tip' title='Register using your {$p} account' src='".e_IMAGE_ABS."xup/{$p}.png' alt='' />";
+					$button = (defset('FONTAWESOME') === 4) ? "<span title='Register using your {$p} account'>".$tp->toGlyph('fa-'.$ic, array('size'=>$size))."</span>" : "<img class='e-tip' title='Register using your {$p} account' src='".e_IMAGE_ABS."xup/{$p}.png' alt='' />";
 				
-					$text .= "&nbsp;<a class='signup-xup' href='".e107::getUrl()->create('system/xup/signup?provider='.$p.'&back='.base64_encode(e_REQUEST_URL))."'>".$button."</a>&nbsp;";		
+					$text .= " <a class='signup-xup ".$class."' role='button' href='".e107::getUrl()->create('system/xup/signup?provider='.$p.'&back='.base64_encode(e_REQUEST_URL))."'>".$button."</a> ";		
 				}
 				//TODO different icon options. see: http://zocial.smcllns.com/
 			}	
