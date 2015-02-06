@@ -23,7 +23,7 @@ class page_search extends e_search // include plugin-folder in the name.
 	{
 		$sql = e107::getDb();
 		
-		$books = $sql->retrieve("SELECT chapter_id,chapter_sef,chapter_parent, chapter_name FROM #page_chapters ORDER BY chapter_parent, chapter_order ASC" , true);
+		$books = $sql->retrieve("SELECT chapter_id,chapter_sef,chapter_parent, chapter_name, chapter_visibility FROM #page_chapters ORDER BY chapter_parent, chapter_order ASC" , true);
 				
 		foreach($books as $row)
 		{
