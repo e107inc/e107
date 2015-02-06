@@ -479,7 +479,7 @@ class page_admin_ui extends e_admin_ui
 			'page_order' 		=> array('title'=> LAN_ORDER, 		'tab' => 1,	'type' => 'number', 'width' => 'auto', 'inline'=>true),
 			
 			// Menu Tab  XXX 'menu_name' is 'menu_name' - not caption. 
-			'menu_name' 		=> array('title'=> "Menu Name", 		'tab' => 2,	'type' => 'text', 		'width' => 'auto','nolist'=>true, "help"=>"Will be listed in the Menu-Manager under this name or may be called using {CMENU=name} in your theme."),
+			'menu_name' 		=> array('title'=> "Menu Name", 		'tab' => 2,	'type' => 'text', 		'width' => 'auto','nolist'=>true, "help"=>"Will be listed in the Menu-Manager under this name or may be called using {CMENU=name} in your theme. Must use ASCII characters only."),
 		   	'menu_title'	   	=> array('title'=> "Menu Title", 	'nolist'=>true, 'tab' => 2,	'type' => 'text', 'inline'=>true,		'width'=>'25%', "help"=>"Caption displayed on the menu item.", 'writeParms'=>'size=xxlarge'),
 			'menu_text' 		=> array('title'=> "Menu Body",		'nolist'=>true, 'tab' => 2,	'type' => 'bbarea',		'data'=>'str',	'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1', 'writeParms'=>'media=page' ), 
 			'menu_template' 	=> array('title'=> "Menu Template", 'nolist'=>true, 'tab' => 2,	'type' => 'dropdown', 	'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
@@ -544,7 +544,7 @@ class page_admin_ui extends e_admin_ui
 			  		'menu_title'	   	=> array('title'=> "Menu Title", 	'forced'=> TRUE, 	'type' => 'text', 		'inline'=>true,		'width'=>'20%'),
 			
 				
-				  	'menu_name' 		=> array('title'=> "Menu Name", 	'type' => 'text', 	'inline'=>true,	'width' => '10%','nolist'=>false, "help"=>"Will be listed in the Menu-Manager under this name"),
+				  	'menu_name' 		=> array('title'=> "Menu Name", 	'type' => 'text', 	'inline'=>true,	'width' => '10%','nolist'=>false, "help"=>"Will be listed in the Menu-Manager under this name. Must use ASCII characters only."),
 					'menu_template' 	=> array('title'=> "Menu Template",  	'type' => 'dropdown', 	'width' => '15%', 'filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
           			'menu_class' 		=> array('title'=> LAN_USERCLASS, 		'type' => 'userclass', 	'data'=>'int', 'inline'=>true, 'width' => 'auto',  'filter' => true, 'batch' => true),
 		
@@ -572,6 +572,7 @@ class page_admin_ui extends e_admin_ui
 			
 			$this->fields['page_template']['writeParms'] = $this->templates;			
 			$this->fields['menu_template']['writeParms'] = e107::getLayouts('', 'menu', 'front', '', true, false); 
+			$this->fields['menu_name']['writeParms'] 	= array('pattern'=>'^[\w-]*'); 
 			
 			
 			$tmp = e107::getLayouts('', 'chapter', 'front', '', true, false);
