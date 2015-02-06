@@ -230,4 +230,6 @@ define("PRFLAN_223", "Completely Automated Public Turing test to tell Computers 
 // define("PRFLAN_222", "Moderate Comments made by");
 // define("PRFLAN_223", "Comments will require manual approval by an admin prior to being visible to other users");
 
+define("PRFLAN_224", "User registration system");
+
 ?>

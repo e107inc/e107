@@ -1342,117 +1342,8 @@ $text .= "
 ";
 
 // =========== Registration Preferences. ==================
-$text .= "
-		<fieldset class='e-hideme' id='core-prefs-registration'>
-			<legend>".PRFLAN_28."</legend>
-			<table class='table adminform'>
-				<colgroup>
-					<col class='col-label' />
-					<col class='col-control' />
-				</colgroup>
-				<tbody>
-					<tr>
-						<td><label for='user-reg'>".PRFLAN_29."</label></td>
-						<td>
-							".$frm->radio_switch('user_reg', $pref['user_reg'])."
-							<div class='smalltext field-help'>".PRFLAN_30."</div>
-						</td>
-					</tr>
 
 
-					<tr>
-						<td><label for='user-reg-veri'>".PRFLAN_154."</label></td>
-						<td>
-							".$frm->select_open('user_reg_veri');
-                            $veri_list = array(PRFLAN_152,PRFLAN_31,PRFLAN_153);
-
-							foreach($veri_list as $v => $v_title)
-							{
-								$text .= $frm->option($v_title, $v, ($pref['user_reg_veri'] == $v));
-							}
-
-					$text .= "
-							</select>
-							<div class='field-help'>".PRFLAN_154a."</div>
-						</td>
-					</tr>
-                    <tr>
-						<td><label for='allowemaillogin'>".PRFLAN_184."</label></td>
-						<td>".$frm->select_open('allowEmailLogin');
-                     //   $login_list = array(PRFLAN_201,PRFLAN_202,PRFLAN_203);
-                        $login_list = array(
-	                        2 => PRFLAN_203,
-	                        1 => PRFLAN_202,
-	                        0 => PRFLAN_201
-                        );
-                        foreach($login_list as $l => $l_title)
-						{
-							$text .= $frm->option($l_title, $l, ($pref['allowEmailLogin'] == $l));
-						}
-
-					$text .= "
-							</select></td>
-					</tr>
-					<tr>
-						<td><label for='signup-remote-emailcheck'>".PRFLAN_160."</label></td>
-						<td>
-							".$frm->radio_switch('signup_remote_emailcheck', $pref['signup_remote_emailcheck'])."
-						</td>
-					</tr>
-					<tr>
-						<td><label for='disable-emailcheck'>".PRFLAN_167."</label></td>
-						<td>
-							".$frm->radio_switch('disable_emailcheck', $pref['disable_emailcheck'])."
-						</td>
-					</tr>
-
-					<tr>
-						<td><label for='use-coppa'>".PRFLAN_45."</label></td>
-						<td>
-							".$frm->radio_switch('use_coppa', $pref['use_coppa'])."
-							<div class='field-help'>".PRFLAN_46." <a href='http://www.ftc.gov/privacy/coppafaqs.shtm'>".PRFLAN_94."</a></div>
-						</td>
-					</tr>
-					<tr>
-						<td><label for='membersonly-enabled'>".PRFLAN_58."</label></td>
-						<td>";
-					
-					$memDisp = !vartrue($pref['membersonly_enabled']) ? "e-hideme" : "";
-						
-					$text .= $frm->radio_switch('membersonly_enabled', $pref['membersonly_enabled'],'', '', 'class=e-expandit')."
-							<div class='field-help'>".PRFLAN_59."</div>
-							<div class='e-expandit-container {$memDisp}' style='padding-top:10px'>".
-							$frm->textarea('membersonly_exceptions', $pref['membersonly_exceptions'], 3, 1, 'placeholder='.PRFLAN_206)."
-							<div class='field-help'>".PRFLAN_207."</div>
-							</div>
-						</td>
-					</tr>
-              
-               		<tr>
-						<td><label for='autologinpostsignup'>".PRFLAN_197."</label></td>
-						<td>
-							".$frm->radio_switch('autologinpostsignup', $pref['autologinpostsignup'])."
-							<div class='smalltext field-help'>".PRFLAN_198."</div>
-						</td>
-					</tr>
-
-
-					<tr>
-						<td><label for='signup-maxip'>".PRFLAN_136."</label></td>
-						<td>
-							".$frm->number('signup_maxip', $pref['signup_maxip'], 3)."
-							<div class='field-help'>".PRFLAN_78."</div>
-						</td>
-					</tr>
-
-				
-				</tbody>
-			</table>
-			".pref_submit('registration')."
-		</fieldset>
-
-	";
-	
 // Single/ Social  Login / / copied from hybridAuth config.php so it's easy to add more. 
 // Used Below. 
 
@@ -1530,8 +1421,6 @@ $social_logins = array (
 		);
  
  
-// Key registration 
-// TODO LAN
 $social_external = array(
 			"Facebook" 		=> "https://developers.facebook.com/apps",
 			"Twitter"		=> "https://dev.twitter.com/apps/new",
@@ -1543,12 +1432,216 @@ $social_external = array(
 ); 
  
 $testUrl = SITEURL."?route=system/xup/test"; 
+
+$elements = array(1=>'Register & Login', 2=> 'Login Only', 0=>LAN_DISABLED); 
+
+
+$text .= "
+		<fieldset class='e-hideme' id='core-prefs-registration'>
+			<legend>".PRFLAN_28."</legend>
+			<table class='table adminform'>
+				<colgroup>
+					<col class='col-label' />
+					<col class='col-control' />
+				</colgroup>
+				<thead>
+					<tr>
+						<td><label for='user-reg'>".PRFLAN_224."</label></td>
+						<td>
+							".$frm->radio('user_reg', $elements, $pref['user_reg'])."
+							<div class='smalltext field-help'>".PRFLAN_30."</div>
+						</td>
+					</tr>
+					</thead>
+					<tbody>
+
+					<tr>
+						<td><label for='user-reg-veri'>".PRFLAN_154."</label></td>
+						<td>
+							".$frm->select_open('user_reg_veri');
+                            $veri_list = array(PRFLAN_152,PRFLAN_31,PRFLAN_153);
+
+							foreach($veri_list as $v => $v_title)
+							{
+								$text .= $frm->option($v_title, $v, ($pref['user_reg_veri'] == $v));
+							}
+
+					$text .= "
+							</select>
+							<div class='field-help'>".PRFLAN_154a."</div>
+						</td>
+					</tr>
+					
+					 <tr>
+						<td><label for='allowemaillogin'>".PRFLAN_184."</label></td>
+						<td>".$frm->select_open('allowEmailLogin');
+                     //   $login_list = array(PRFLAN_201,PRFLAN_202,PRFLAN_203);
+                        $login_list = array(
+	                        2 => PRFLAN_203,
+	                        1 => PRFLAN_202,
+	                        0 => PRFLAN_201
+                        );
+                        foreach($login_list as $l => $l_title)
+						{
+							$text .= $frm->option($l_title, $l, ($pref['allowEmailLogin'] == $l));
+						}
+
+					$text .= "
+							</select></td>
+					</tr>
+					<tr>
+						<td><label for='signup-remote-emailcheck'>".PRFLAN_160."</label></td>
+						<td>
+							".$frm->radio_switch('signup_remote_emailcheck', $pref['signup_remote_emailcheck'])."
+						</td>
+					</tr>
+					<tr>
+						<td><label for='disable-emailcheck'>".PRFLAN_167."</label></td>
+						<td>
+							".$frm->radio_switch('disable_emailcheck', $pref['disable_emailcheck'])."
+						</td>
+					</tr>
+
+					<tr>
+						<td><label for='use-coppa'>".PRFLAN_45."</label></td>
+						<td>
+							".$frm->radio_switch('use_coppa', $pref['use_coppa'])."
+							<div class='field-help'>".PRFLAN_46." <a href='http://www.ftc.gov/privacy/coppafaqs.shtm'>".PRFLAN_94."</a></div>
+						</td>
+					</tr>
+					<tr>
+						<td><label for='membersonly-enabled'>".PRFLAN_58."</label></td>
+						<td>";
+					
+					$memDisp = !vartrue($pref['membersonly_enabled']) ? "e-hideme" : "";
+						
+					$text .= $frm->radio_switch('membersonly_enabled', $pref['membersonly_enabled'],'', '', 'class=e-expandit')."
+							<div class='field-help'>".PRFLAN_59."</div>
+							<div class='e-expandit-container {$memDisp}' style='padding-top:10px'>".
+							$frm->textarea('membersonly_exceptions', $pref['membersonly_exceptions'], 3, 1, 'placeholder='.PRFLAN_206)."
+							<div class='field-help'>".PRFLAN_207."</div>
+							</div>
+						</td>
+					</tr>
+              
+               		<tr>
+						<td><label for='autologinpostsignup'>".PRFLAN_197."</label></td>
+						<td>
+							".$frm->radio_switch('autologinpostsignup', $pref['autologinpostsignup'])."
+							<div class='smalltext field-help'>".PRFLAN_198."</div>
+						</td>
+					</tr>
+
+
+					<tr>
+						<td><label for='signup-maxip'>".PRFLAN_136."</label></td>
+						<td>
+							".$frm->number('signup_maxip', $pref['signup_maxip'], 3)."
+							<div class='field-help'>".PRFLAN_78."</div>
+						</td>
+					</tr>
+					
+					
+					</tbody>";
+					
+					
+						$text .= "		
+					<thead>
+					<tr>
+						<th><label for='social-login-active'>Social Signup/Login</label>
+						</th>
+						<td>
+							".$frm->radio_switch('social_login_active', $pref['social_login_active'])."
+								<div class='smalltext field-help'>Allows users to signup/login with their social media accounts. When enabled, this option will still allow users to signup/login even if the core user registration system above is disabled. </div>
+					
+						</td>
+					</tr>
+					</thead>
+					<tbody>
+					<tr><td colspan='2'><div>Note: In most cases you will need to obtain an id and secret key from one of the providers. Click the blue links below to configure.
+					<br />You may test your configuration with the following URL: 
+					<a href='".$testUrl."' rel='external'>".$testUrl."</a></div>
+					</div>
+					</tr>
+					
+					";
+					
+			if(!is_array($pref['social_login']))
+			{
+				$pref['social_login'] = array();	
+			}
+							
+			foreach($social_logins as $prov=>$val)
+			{
+					
+					$label = varset($social_external[$prov]) ? "<a class='e-tip' rel='external' title='Get a key from the provider' href='".$social_external[$prov]."'>".$prov."</a>" : $prov;
+					$radio_label = strtolower($prov); 				
+					$text .= "
+					<tr>
+						<td><label for='social-login-".$radio_label."-enabled'>".$label."</label></td>
+						<td>
+						";
+					foreach($val as $k=>$v)
+					{
+						switch ($k) {
+							case 'enabled':
+								$eopt = array('class'=>'e-expandit');
+								$text .= $frm->radio_switch('social_login['.$prov.'][enabled]', vartrue($pref['social_login'][$prov]['enabled']),'','',$eopt);
+							break;
+							
+							case 'keys':
+								// $cls = vartrue($pref['single_login'][$prov]['keys'][$tk]) ? "class='e-hideme'" : '';
+								$sty = vartrue($pref['social_login'][$prov]['keys'][vartrue($tk)]) ? "" : "e-hideme";
+								$text .= "<div class='e-expandit-container {$sty}' id='option-{$prov}' >";
+								foreach($v as $tk=>$idk)
+								{
+									$eopt = array('placeholder'=> $tk, 'size'=>'xxlarge');
+									$text .= "<br />".$frm->text('social_login['.$prov.'][keys]['.$tk.']', vartrue($pref['social_login'][$prov]['keys'][$tk]), 100, $eopt);								
+								}	
+								$text .= "</div>";
+								
+							break;
+							
+							case 'scope':
+								$text .= $frm->hidden('social_login['.$prov.'][scope]','email');
+							break;
+							
+							default:
+								
+							break;
+						}	
+					}				
+				
+				$text .= "</td>
+					</tr>					
+					";
+			}		
+					
+					
+	
+					
+					
+					
+					
+				$text .= "	
+                   
+				
+				</tbody>
+			</table>
+			".pref_submit('registration')."
+		</fieldset>
+
+	";
+	
+
+// Key registration 
+// TODO LAN
+
  
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-sociallogin'>
 					<legend>Social Options</legend>
-					<div class='alert alert-warning'>Note: This section requires further testing.<br />You may test with the following URL: 
-					<a href='".$testUrl."' rel='external'>".$testUrl."</a></div>
+					
 					<table class='table adminform'>
 						<colgroup>
 							<col class='col-label' />
@@ -1592,68 +1685,7 @@ $xurls = array(
 				";
 	}		
 					
-			$text .= "		
-					<tr>
-						<th colspan='2'>Social Logins</th>
-					</tr>
-					<tr>
-						<td><label for='social-login-active'>Enable Social Logins</label></td>
-						<td>
-							".$frm->radio_switch('social_login_active', $pref['social_login_active'])."
-						</td>
-					</tr>";
-					
-			if(!is_array($pref['social_login']))
-			{
-				$pref['social_login'] = array();	
-			}
-							
-			foreach($social_logins as $prov=>$val)
-			{
-					
-					$label = varset($social_external[$prov]) ? "<a class='e-tip' rel='external' title='Get a key from the provider' href='".$social_external[$prov]."'>".$prov."</a>" : $prov;
-					$radio_label = strtolower($prov); 				
-					$text .= "
-					<tr>
-						<td><label for='social-login-".$radio_label."-enabled'>".$label."</label></td>
-						<td>
-						";
-					foreach($val as $k=>$v)
-					{
-						switch ($k) {
-							case 'enabled':
-								$eopt = array('class'=>'e-expandit');
-								$text .= $frm->radio_switch('social_login['.$prov.'][enabled]', vartrue($pref['social_login'][$prov]['enabled']),'','',$eopt);
-							break;
-							
-							case 'keys':
-								// $cls = vartrue($pref['single_login'][$prov]['keys'][$tk]) ? "class='e-hideme'" : '';
-								$sty = vartrue($pref['social_login'][$prov]['keys'][vartrue($tk)]) ? "" : "e-hideme";
-								$text .= "<div class='e-expandit-container {$sty}' id='option-{$prov}' >";
-								foreach($v as $tk=>$idk)
-								{
-									$eopt = array('placeholder'=> $tk);
-									$text .= "<br />".$frm->text('social_login['.$prov.'][keys]['.$tk.']', vartrue($pref['social_login'][$prov]['keys'][$tk]), 100, $eopt);								
-								}	
-								$text .= "</div>";
-								
-							break;
-							
-							case 'scope':
-								$text .= $frm->hidden('social_login['.$prov.'][scope]','email');
-							break;
-							
-							default:
-								
-							break;
-						}	
-					}				
-				
-				$text .= "</td>
-					</tr>					
-					";
-			}		
-					
+		
 	
 	
 $text .= "

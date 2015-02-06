@@ -24,24 +24,40 @@ class theme_shortcodes extends e_shortcode
 		
 		$tp = e107::getParser();		   
 		require_once(e_PLUGIN."login_menu/login_menu_shortcodes.php");
+		
+		$userReg = defset('USER_REGISTRATION');
 				   
 		if(!USERID) // Logged Out. 
 		{		
 			$text = '
 			<ul class="nav navbar-nav navbar-right">';
 			
-			if(deftrue('USER_REGISTRATION'))
+			if($userReg==1)
 			{
 				$text .= '
 				<li><a href="'.e_SIGNUP.'">'.LOGIN_MENU_L3.'</a></li>
 				'; // Signup
 			}
 			
+			
+			
 			$text .= '
 			<li class="divider-vertical"></li>
 			<li class="dropdown">
+			
 				<a class="dropdown-toggle" href="#" data-toggle="dropdown">Sign In <strong class="caret"></strong></a>
 				<div class="dropdown-menu col-sm-12" style="min-width:250px; padding: 15px; padding-bottom: 0px;">
+				
+				{SOCIAL_LOGIN: size=2x}		
+			';
+			
+			
+			
+			
+			if(!empty($userReg)) // value of 1 or 2 = login okay. 
+			{
+				$text .='	
+				
 				<form method="post" onsubmit="hashLoginPassword(this);return true" action="'.e_REQUEST_HTTP.'" accept-charset="UTF-8">
 				{LM_USERNAME_INPUT}
 				{LM_PASSWORD_INPUT}
@@ -54,36 +70,40 @@ class theme_shortcodes extends e_shortcode
 				'.LOGIN_MENU_L6.'</label>
 				</div>
 				<input class="btn btn-primary btn-block" type="submit" name="userlogin" id="userlogin" value="'.LOGIN_MENU_L51.'">
-			';
+				';
+				
+				$text .= '
+				
+				<a href="{LM_FPW_LINK=href}" class="btn btn-default btn-sm  btn-block">'.LOGIN_MENU_L4.'</a>
+				<a href="{LM_RESEND_LINK=href}" class="btn btn-default btn-sm  btn-block">'.LOGIN_MENU_L40.'</a>
+				';
+				
+				
+				/*
+				$text .= '
+					<label style="text-align:center;margin-top:5px">or</label>
+					<input class="btn btn-primary btn-block" type="button" id="sign-in-google" value="Sign In with Google">
+					<input class="btn btn-primary btn-block" type="button" id="sign-in-twitter" value="Sign In with Twitter">
+				';
+				*/
+				
+				$text .= "<p></p>
+				</form>
+				</div>
+				
+				</li>
+				";
 			
-			$text .= '
-			
-			<a href="{LM_FPW_LINK=href}" class="btn btn-default btn-sm  btn-block">'.LOGIN_MENU_L4.'</a>
-			<a href="{LM_RESEND_LINK=href}" class="btn btn-default btn-sm  btn-block">'.LOGIN_MENU_L40.'</a>
-			';
-			
-			
-			/*
-			$text .= '
-				<label style="text-align:center;margin-top:5px">or</label>
-				<input class="btn btn-primary btn-block" type="button" id="sign-in-google" value="Sign In with Google">
-				<input class="btn btn-primary btn-block" type="button" id="sign-in-twitter" value="Sign In with Twitter">
-			';
-			*/
-			
-			$text .= "<p></p>
-			</form>
-			</div>
-			
-			</li>
-			
+			}
+
+			$text .= "
 			
 			
 			</ul>";	
 			
 			
 			
-			return $tp->parseTemplate($text, false, $login_menu_shortcodes);
+			return $tp->parseTemplate($text, true, $login_menu_shortcodes);
 		}  
 
 		

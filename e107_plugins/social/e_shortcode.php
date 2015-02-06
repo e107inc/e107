@@ -63,7 +63,23 @@ class social_shortcodes extends e_shortcode
 	}	
 
 
-
+	function sc_social_login($parm=null)
+	{
+		$pref = e107::pref('core', 'social_login_active');
+		
+		if(empty($pref))
+		{
+			return; 
+		}
+		
+		$sc = e107::getScBatch('signup');
+		$text .= "<p>Sign in with:</p>";
+		$text .= $sc->sc_signup_xup_login($parm);
+		$text .= "
+		<div class='clearfix'></div><hr class='clearfix' />";
+		
+		return $text; 	
+	}
 
 
 
