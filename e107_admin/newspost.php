@@ -2477,7 +2477,7 @@ class admin_newspost
 							<tr>
 								<td>".NWSLAN_15.":</td>
 								<td>
-									".$frm->radio_switch('news_allow_comments', vartrue($_POST['news_allow_comments']))."
+									".$frm->radio_switch('news_allow_comments', vartrue($_POST['news_allow_comments']),null,null,'inverse=1')."
 									<div class='field-help'>
 										".NWSLAN_18."
 									</div>

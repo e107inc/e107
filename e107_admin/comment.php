@@ -97,7 +97,7 @@ class comments_admin_ui extends e_admin_ui
 		// optional, if $pluginName == 'core', core prefs will be used, else e107::getPluginConfig($pluginName);
 		
 		protected $prefs = array(
-			'comments_disabled'		=> array('title'=>PRFLAN_161, 	'type'=>'boolean'), // TODO reverse this setting somehow? ie. 'Allow comments' instead of 'Disable comments' (Moc) 
+			'comments_disabled'		=> array('title'=>PRFLAN_161, 	'type'=>'boolean', 'writeParms'=>'inverse=1'), // Same as 'writeParms'=>'reverse=1&enabled=LAN_DISABLED&disabled=LAN_ENABLED'  
 			'anon_post'				=> array('title'=>PRFLAN_32, 	'type'=>'boolean'),
 			'comments_icon'			=> array('title'=>PRFLAN_89, 	'type'=>'boolean'),
 			'nested_comments'		=> array('title'=>PRFLAN_88, 	'type'=>'boolean'),
