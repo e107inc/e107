@@ -13,10 +13,10 @@ body {
 	margin-top:20px 
 }
 
-
+/* Make posted content images responsive too */
+.bbcode-img { display: block; 	max-width: 100%; 	height: auto; }
 
 /* Sign in Page */
-
 
 .form-signin {
   max-width: 330px;
