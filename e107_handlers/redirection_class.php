@@ -325,14 +325,15 @@ class redirection
 
 	public function redirect($url, $replace = TRUE, $http_response_code = NULL, $preventCache = true)
 	{
-		return $this->go($url, $replace, $http_response_code, $preventCache);	
+		$this->go($url, $replace, $http_response_code, $preventCache);
+		exit; 	
 	}
 
 	
 	/**
 	 * Redirect to the given URI
 	 *
-	 * @param string $url
+	 * @param string $url or error code number. eg. 404 = Not Found. 
 	 * @param boolean $replace - default TRUE
 	 * @param integer|null $http_response_code - default NULL
 	 * @param boolean $preventCache
@@ -341,13 +342,15 @@ class redirection
 	public function go($url, $replace = TRUE, $http_response_code = NULL, $preventCache = true)
 	{
 		$url = str_replace("&amp;", "&", $url); // cleanup when using e_QUERY in $url; 
-		
-		if(defset('e_DEBUG') == 'redirect')
+					
+		if(defset('e_DEBUG') === 'redirect')
 		{
 			$error = debug_backtrace();
 		
 			e107::getLog()->addDebug("URL: ".$url."\nFile: ".$error[1]['file']."\nLine: ".$error[1]['line']."\nClass: ".$error[1]['class']."\nFunction: ".$error[1]['function']."\n\n");
 			e107::getLog()->toFile('redirect.log',true); 
+			echo "debug active";
+			return; 
 		}
 		
 		if(session_id())
