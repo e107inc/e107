@@ -809,7 +809,7 @@ class themeHandler
 			$itext .= "<tr>
 					<td style='vertical-align:top; width:24%'><b>".TPVLAN_50."</b>:</td>
 					<td class='well' style='vertical-align:top'>
-					<table class='table' style='margin-left:0px;margin-right:auto' >
+					<table class='table table-striped table-bordered' style='margin-left:0px;margin-right:auto' >
 						<tr>";
 			$itext .= ($mode == 1) ? "<td class='fcaption' style='text-align:center;vertical-align:top;'>Default</td>" : "";
 			$itext .= "
@@ -1214,7 +1214,7 @@ class themeHandler
 						$itext = "<tr>
 								<td style='vertical-align:top; width:24%'><b>".TPVLAN_50."</b>:</td>
 								<td colspan='2' style='vertical-align:top'>
-			                    <table class='table adminlist'>
+			                    <table class='table table-bordered table-striped'>
 			                      	<colgroup>
 			                      		<col class='col-tm-layout-default' style='width:10%' />
 			                      		<col class='col-tm-layout-name' style='width:40%' />
@@ -1333,7 +1333,7 @@ class themeHandler
 						$text .= "
 							<tr><td style='vertical-align:top;'><b>".TPVLAN_22.":</b></td>
 							<td colspan='2' style='vertical-align:top'>
-							<table class='table adminlist' >
+							<table class='table table-bordered table-striped' >
 							<tr>
 			                	<td class='center' style='width:10%'>".TPVLAN_55."</td>
 						  		<td style='width:20%'>".TPVLAN_52."</td>
@@ -1472,7 +1472,9 @@ class themeHandler
 		
 		$men = new e_menuManager();
 		$men->curLayout = $key;
-		$preset = $men->getMenuPreset();
+		$preset = $men->getMenuPreset(); //FIXME Broken XML format. 
+		
+// 		print_a($preset); 
 		
 		$text .= "<div class='btn-group pull-right'>".$frm->admin_button("setMenuPreset[".$key."]", "Activate Menus",'other');
 		$text .= '<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
