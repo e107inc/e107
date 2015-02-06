@@ -116,6 +116,10 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 				$logo = THEME_ABS.'images/e_logo.png';		// HTML path
 				$path = THEME.'images/e_logo.png';			// PHP path
 			}
+			elseif(varset($parm['fallback']) == 'sitename') // fallback to 
+			{
+				return $this->sc_sitename('link'); 	
+			}
 			else
 			{
 				$logo = e_IMAGE_ABS.'logo.png';				// HTML path
