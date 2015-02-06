@@ -1427,11 +1427,12 @@ class e_form
 	}
 
 	/**
-	 * @param name
-	 * @param check_enabled
-	 * @param label_enabled
-	 * @param label_disabled
-	 * @param options
+	 * Boolean Radio Buttons. 
+	 * @param name string
+	 * @param check_enabled boolean
+	 * @param label_enabled default is LAN_ENABLED
+	 * @param label_disabled default is LAN_DISABLED
+	 * @param options array - inverse=1 (invert values) or reverse=1 (switch display order) 
 	 */
 	function radio_switch($name, $checked_enabled = false, $label_enabled = '', $label_disabled = '',$options=array())
 	{
@@ -1449,32 +1450,23 @@ class e_form
 		$options_on['label'] = $label_enabled ? defset($label_enabled,$label_enabled) : LAN_ENABLED; 
 		$options_off['label'] = $label_disabled ? defset($label_disabled,$label_disabled) : LAN_DISABLED; 
 		
-		if(vartrue($options['reverse'])) // reverse order. 
+		if(!empty($options['inverse'])) // Same as 'writeParms'=>'reverse=1&enabled=LAN_DISABLED&disabled=LAN_ENABLED'  
 		{
-			unset($options['reverse']);
+			$text = $this->radio($name, 0, !$checked_enabled, $options_on)." 	".$this->radio($name, 1, $checked_enabled, $options_off);		
 			
-			return $this->radio($name, 0, !$checked_enabled, $options_off)." ".
-			$this->radio($name, 1, $checked_enabled, $options_on);			
-			
-		//	return $this->radio($name, 0, !$checked_enabled, $options_off)."".$this->label($label_disabled ? $label_disabled : LAN_DISABLED, $name, 0)."&nbsp;&nbsp;".
-		//	$this->radio($name, 1, $checked_enabled, $options_on)."".$this->label($label_enabled ? $label_enabled : LAN_ENABLED, $name, 1);			
 		}
-		
-	
+		elseif(!empty($options['reverse'])) // reverse display order. 
+		{
+			$text = $this->radio($name, 0, !$checked_enabled, $options_off)." ".$this->radio($name, 1, $checked_enabled, $options_on);		
+		}
+		else
+		{
 			
-	//		$helpLabel = (is_array($help)) ? vartrue($help[$value]) : $help;
-		
-		// Bootstrap Style Code - for use later. 	
-	
-			
-		//	['help'] = $helpLabel;
-		//	$text[] = $this->radio($name, $value, (string) $checked === (string) $value, $options);
-		return $this->radio($name, 1, $checked_enabled, $options_on)." 	".$this->radio($name, 0, !$checked_enabled, $options_off);
-		
-		
-	//	return $this->radio($name, 1, $checked_enabled, $options_on)."".$this->label($label_enabled ? $label_enabled : LAN_ENABLED, $name, 1)."&nbsp;&nbsp;
-	//		".$this->radio($name, 0, !$checked_enabled, $options_off)."".$this->label($label_disabled ? $label_disabled : LAN_DISABLED, $name, 0);
+			$text = $this->radio($name, 1, $checked_enabled, $options_on)." 	".$this->radio($name, 0, !$checked_enabled, $options_off);	
+		}
 
+		return $text;
+		
 	}
 
 
