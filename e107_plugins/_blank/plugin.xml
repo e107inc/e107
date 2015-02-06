@@ -14,7 +14,7 @@
 		<link url="admin_config.php?mode=options" description="Configure Blank Prefs" icon="manage" >Blank Prefs</link>
 	</adminLinks>
 	<siteLinks>
-		<link url="{e_PLUGIN}_blank/_blank.php" perm='everyone'>LAN_PLUGIN__BLANK_LINK</link>		
+		<link url="{e_PLUGIN}_blank/_blank.php" perm='everyone' sef='blank-plugin'>LAN_PLUGIN__BLANK_LINK</link>		
 	</siteLinks>
 	<pluginPrefs>
 		<pref name="blank_pref_1">1</pref>

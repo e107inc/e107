@@ -942,17 +942,26 @@ class e107plugin
 						'link_parent'		 => '0',
 						'link_open'			 => '0',
 						'link_class'		 => vartrue($linkclass,'0'),
-						'link_function'		 => (vartrue($options['link_function']) ? $this->plugFolder ."::".$options['link_function'] : "")
+						'link_function'		 => (vartrue($options['link_function']) ? $this->plugFolder ."::".$options['link_function'] : ""),
+						'link_sefurl'			 => vartrue($options['link_sef']),
+						'link_owner'		 => vartrue($options['link_owner'])
 					);
-					return $sql->insert('links', $linkData); // TODO: Add the _FIELD_DEFS array
+					return $sql->insert('links', $linkData); 
 			}
 			else
 			{
 				return ;
 			}
 		}
-		if ($action == 'remove')
-		{ // Look up by URL if we can - should be more reliable. Otherwise try looking up by name (as previously)
+		if ($action == 'remove') 
+		{
+			//v2.x  
+			if(vartrue($options['link_owner']) && $sql->select('links', 'link_id', "link_owner = '".$options['link_owner']."'")) 
+			{
+				return $sql->delete('links', "link_owner = '".$options['link_owner']."' ");	
+			}
+			
+			// Look up by URL if we can - should be more reliable. Otherwise try looking up by name (as previously)
 			if (($path && $sql->select('links', 'link_id,link_order', "link_url = '{$path}'")) || $sql->select('links', 'link_id,link_order', "link_name = '{$link_name}'"))
 			{
 					$row = $sql->fetch();
@@ -1517,7 +1526,7 @@ class e107plugin
 
 		if (varset($plug_vars['siteLinks']))
 		{
-			$this->XmlSiteLinks($function, $plug_vars['siteLinks']);
+			$this->XmlSiteLinks($function, $plug_vars);
 		}
 
 		if (varset($plug_vars['mainPrefs'])) //Core pref items <mainPrefs>
@@ -1883,7 +1892,7 @@ class e107plugin
 	 * @param array $array
 	 * @return none
 	 */
-	function XmlSiteLinks($function, $array)
+	function XmlSiteLinks($function, $plug_vars)
 	{
 		$mes = e107::getMessage();
 		
@@ -1892,6 +1901,9 @@ class e107plugin
 			return;	
 		}
 		
+	//	print_a($plug_vars); 
+		
+		$array = $plug_vars['siteLinks']; 
 
 		foreach ($array['link'] as $link)
 		{
@@ -1900,9 +1912,12 @@ class e107plugin
 			$remove 	= (varset($attrib['deprecate']) == 'true') ? TRUE : FALSE;
 			$url 		= vartrue($attrib['url']);
 			$perm 		= vartrue($attrib['perm'],'everyone'); 
+			$sef		= vartrue($attrib['sef']);
 			
 			$options 	= array(
-				'link_function'=>vartrue($attrib['function'])
+				'link_function'	=>	vartrue($attrib['function']),
+				'link_owner'	=> 	vartrue($plug_vars['folder']),
+				'link_sef'		=> $sef
 			);
 
 			switch ($function)
@@ -1932,7 +1947,7 @@ class e107plugin
 
 				case 'uninstall': //remove all links
 
-					$status = ($this->manage_link('remove', $url, $linkName)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+					$status = ($this->manage_link('remove', $url, $linkName, $perm, $options)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 					$mes->add("Removing Link: {$linkName} with url [{$url}]", $status);
 					break;
 			}
@@ -2473,7 +2488,7 @@ class e107plugin
 
 		if (varset($plug_vars['siteLinks']))
 		{
-			$this->XmlSiteLinks($function, $plug_vars['siteLinks']);
+			$this->XmlSiteLinks($function, $plug_vars);
 		}
 
 		if (varset($plug_vars['userClasses']))
