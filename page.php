@@ -539,7 +539,8 @@ class pageClass
 		
 		if(!$sql->gen($query))
 		{
-			
+		 	header("HTTP/1.0 404 Not Found");
+		 //	exit; 
 			/*
 			
 			$ret['title'] = LAN_PAGE_12;			// ***** CHANGED
