@@ -447,7 +447,7 @@ SC_BEGIN DOWNLOAD_CATEGORY_SELECT
 	    	exit;
 	  	}
 
-	  	$boxinfo .= "<select name='download_category' id='download_category' class='tbox'>
+	  	$boxinfo .= "<select name='download_category' id='download_category' class='tbox form-control' required>
 					<option value=''>&nbsp;</option>\n";
 
 		// Its a structured display option - need a 2-step process to create a tree
