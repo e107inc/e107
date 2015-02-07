@@ -23,7 +23,7 @@
  
 
 require_once("../../class2.php");
-if (!plugInstalled('gallery'))
+if (!e107::isInstalled('gallery'))
 {
 	header('location:'.e_BASE.'index.php');
 	exit;

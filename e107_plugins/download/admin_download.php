@@ -18,7 +18,7 @@ $eplug_admin = true;
 define('DOWNLOAD_DEBUG',FALSE);
 
 require_once("../../class2.php");
-if (!getperms("P") || !plugInstalled('download'))
+if (!getperms("P") || !e107::isInstalled('download'))
 {
 	header("location:".e_BASE."index.php");
 	exit() ;

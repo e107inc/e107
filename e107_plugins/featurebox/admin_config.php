@@ -10,7 +10,7 @@
 *
 */
 require_once("../../class2.php");
-if (!getperms("P") || !plugInstalled('featurebox')) 
+if (!getperms("P") || !e107::isInstalled('featurebox')) 
 {
 	header("location:".e_BASE."index.php");
 	 exit;

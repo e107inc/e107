@@ -527,7 +527,7 @@ class listclass
 			}
 			else
 			{
-				if (plugInstalled($file))
+				if (e107::isInstalled($file))
 				{
 					if(is_readable(e_PLUGIN.$file."/e_list.php"))
 					{

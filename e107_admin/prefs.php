@@ -189,7 +189,7 @@ if(isset($_POST['updateprefs']))
 	}
 }
 
-if (plugInstalled('alt_auth'))
+if (e107::isInstalled('alt_auth'))
 {
 	$authlist[] = "e107";
 	$handle = opendir(e_PLUGIN."alt_auth");

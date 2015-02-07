@@ -17,7 +17,7 @@
 $eplug_admin = true;
 
 require_once("../../class2.php");
-if (!getperms("P") || !plugInstalled('gallery'))
+if (!getperms("P") || !e107::isInstalled('gallery'))
 {
 	header("location:".e_BASE."index.php");
 	exit() ;

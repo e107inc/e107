@@ -16,7 +16,7 @@
 */
 
 if (!defined('e107_INIT')) { exit; }
-if (!plugInstalled('newsfeed')) 
+if (!e107::isInstalled('newsfeed')) 
 {
 	return;
 }

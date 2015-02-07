@@ -24,7 +24,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-if (!plugInstalled('list_new'))
+if (!e107::isInstalled('list_new'))
 {
 	return;
 }

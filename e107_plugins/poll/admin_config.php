@@ -10,7 +10,7 @@
 
 require_once("../../class2.php");
 if (!is_object($tp)) $tp = new e_parse;
-if (!getperms("P") || !plugInstalled('poll')) 
+if (!getperms("P") || !e107::isInstalled('poll')) 
 {
 	header("location:".e_BASE."index.php");
 	exit;

@@ -30,7 +30,7 @@ $pref = e107::getPref();
 
 
 
-if (!plugInstalled('chatbox_menu')) 
+if (!e107::isInstalled('chatbox_menu')) 
 {
 	return '';
 }

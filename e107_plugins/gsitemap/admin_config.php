@@ -10,7 +10,7 @@
  *
 */
 require_once("../../class2.php");
-if(!getperms("P") || !plugInstalled('gsitemap'))
+if(!getperms("P") || !e107::isInstalled('gsitemap'))
 { 
 	header("location:".e_BASE."index.php"); 
 	exit();
@@ -382,7 +382,7 @@ class gsitemap
 
 
 		/* forums ... */
-		if(plugInstalled('forum'))
+		if(e107::isInstalled('forum'))
 		{ 
 			$sql -> select("forum", "*", "forum_parent!='0' ORDER BY forum_order ASC");
 			$nfArray = $sql -> db_getList();
@@ -397,7 +397,7 @@ class gsitemap
 
 
 		/* DEPRECATED content pages ...
-		if(plugInstalled('content'))
+		if(e107::isInstalled('content'))
 		{ 	
 			$sql -> select("pcontent", "content_id, content_heading", "LEFT(content_parent,1) = '0' ORDER BY content_heading");
 			$nfArray = $sql -> db_getList();

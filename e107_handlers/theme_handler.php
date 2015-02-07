@@ -1517,7 +1517,7 @@ class themeHandler
 		{
 			$plug = trim($p['@attributes']['name']);
 			
-			if(plugInstalled($plug))
+			if(e107::isInstalled($plug))
 			{
 				$text .= $plug." ".ADMIN_TRUE_ICON;
 			}

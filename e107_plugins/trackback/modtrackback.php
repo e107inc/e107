@@ -17,7 +17,7 @@
 $eplug_admin = true;
 require_once("../../class2.php");
 
-if (!getperms("P") || !plugInstalled('trackback') || !$pref['trackbackEnabled'])
+if (!getperms("P") || !e107::isInstalled('trackback') || !$pref['trackbackEnabled'])
 {
 	header("location:".e_BASE."index.php");
 	exit;
