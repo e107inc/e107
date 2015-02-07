@@ -1062,7 +1062,12 @@ class e_form
 		
 		if(vartrue($options['generate']))
 		{
-			$gen = '&nbsp;<a href="#" class="btn btn-default btn-small e-tip" id="Spn_PasswordGenerator" title="Generate a password">Generate</a> <a class="btn btn-default btn-small e-tip" href="#" id="showPwd" title="Display the password">Show</a><br />';	
+			$gen = '&nbsp;<a href="#" class="btn btn-default btn-small e-tip" id="Spn_PasswordGenerator" title="Generate a password">Generate</a> ';
+			
+			if(empty($options['nomask']))
+			{
+				$gen .= '<a class="btn btn-default btn-small e-tip" href="#" id="showPwd" title="Display the password">Show</a><br />';	
+			}
 		}
 		
 		if(vartrue($options['strength']))
@@ -1079,10 +1084,19 @@ class e_form
 			$options['class'] .= ' form-control';
 		}
 		
+		if(vartrue($options['size']) && !is_numeric($options['size']))
+		{
+			$options['class'] .= " input-".$options['size'];	
+			unset($options['size']); // don't include in html 'size='. 	
+		}
+		
+		$type = empty($options['nomask']) ? 'password' : 'text';
+		
 		$options = $this->format_options('text', $name, $options);
 
+	
 		//never allow id in format name-value for text fields
-		$text = "<input type='password' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
+		$text = "<input type='".$type."' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
 
 		if(empty($gen) && empty($addon))
 		{
@@ -2316,7 +2330,7 @@ class e_form
 				break;
 
 			case 'submit':
-				$def_options['class'] = 'button';
+				$def_options['class'] = 'button btn btn-primary';
 				unset($def_options['checked'], $def_options['selected'], $def_options['readonly']);
 				break;
 
@@ -3570,11 +3584,28 @@ class e_form
 		
 			break; 
 		//	case 'email':
-			case 'text':
+		
 			case 'password': // encrypts to md5 when saved. 
 				$maxlength = vartrue($parms['maxlength'], 255);
 				unset($parms['maxlength']);
-				$ret =  vartrue($parms['pre']).$this->text($key, $value, $maxlength, $parms).vartrue($parms['post']); // vartrue($parms['__options']) is limited. See 'required'=>true
+				$ret =  vartrue($parms['pre']).$this->password($key, $value, $maxlength, $parms).vartrue($parms['post']); // vartrue($parms['__options']) is limited. See 'required'=>true
+			
+			break; 
+		
+			case 'text':
+
+				$maxlength = vartrue($parms['maxlength'], 255);
+				unset($parms['maxlength']);
+				
+				if(!empty($parms['password'])) // password mechanism without the md5 storage. 
+				{
+					$ret =  vartrue($parms['pre']).$this->password($key, $value, $maxlength, $parms).vartrue($parms['post']);	
+				}
+				else
+				{
+					$ret =  vartrue($parms['pre']).$this->text($key, $value, $maxlength, $parms).vartrue($parms['post']); // vartrue($parms['__options']) is limited. See 'required'=>true
+				}
+				
 			break;
 			
 			case 'tags':

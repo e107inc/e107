@@ -743,11 +743,11 @@ class pageClass
 				$frm = e107::getForm();
 				$extend->caption = LAN_PAGE_8;
 				$extend->label = LAN_PAGE_9;
-				$extend->password = $frm->password('page_pw');
+				$extend->password = $frm->password('page_pw','',50,'size=xlarge&required=1');
 				$extend->icon = e_IMAGE_ABS.'generic/password.png';
 				$extend->submit = $frm->submit('submit_page_pw', LAN_PAGE_10);
 				// FIXME - add form open/close e_form methods
-				$extend->form_open = '<form method="post" action="'.e_REQUEST_URI.'" id="pwform">';
+				$extend->form_open = '<form method="post" class="form-inline" action="'.e_REQUEST_URI.'" id="pwform">';
 				$extend->form_close = '</form>';
 				$template = $tp->parseTemplate($this->template['start'], true).$this->template['authorize'].$tp->parseTemplate($this->template['end'] ,true);
                 $this->renderMode = 'cpage-authorize';
@@ -952,6 +952,8 @@ class pageClass
 
 		if(isset($_POST['submit_page_pw']))
 		{
+			
+			
 			if($_POST['page_pw'] == $page_password)
 			{
 				$this->setPageCookie();
