@@ -103,9 +103,9 @@ class banlist_ui extends e_admin_ui
 		  'banlist_datestamp' 	=>   array ( 'title' => LAN_DATESTAMP, 		'type' => 'datestamp', 	'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => 'auto=1&hidden=1&readonly=1', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banlist_banexpires' 	=>   array ( 'title' => 'Expires',	 		'type' => 'method', 	'data' => 'int', 'inline'=>true, 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banlist_admin' 		=>   array ( 'title' => 'Admin', 			'type' => 'boolean', 	'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'banlist_reason' 		=>   array ( 'title' => 'Reason', 			'type' => 'text', 		'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'banlist_notes' 		=>   array ( 'title' => 'Notes', 			'type' => 'text', 		'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'options' 			=>   array ( 'title' => LAN_OPTIONS, 			'type' => '', 			'data' => '', 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
+		  'banlist_reason' 		=>   array ( 'title' => 'Reason', 			'type' => 'text', 		'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'banlist_notes' 		=>   array ( 'title' => 'Notes', 			'type' => 'text', 		'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'options' 			=>   array ( 'title' => LAN_OPTIONS, 		'type' => '', 			'data' => '', 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
 		
 		protected $fieldpref = array('checkboxes', 'banlist_ip', 'banlist_bantype', 'banlist_datestamp', 'banlist_banexpires', 'banlist_reason', 'banlist_notes', 'options');
@@ -126,7 +126,18 @@ class banlist_ui extends e_admin_ui
 			if($_POST['something']) // example 
 			{
 				//$this->processSomething();				
-			}		
+			}	
+			
+			if (isset($_POST['update_ban_prefs']))		// Update ban messages
+			{
+				$this->timesPageSave(); 	
+			}
+						
+						
+						
+			
+			
+				
 		}
 	
 		
@@ -143,9 +154,127 @@ class banlist_ui extends e_admin_ui
 			//FIXME Put Import code in here. 
 		}
 		
+	
+		
+		private function timesPageSave()
+		{
+			$ipAdministrator = new banlistManager;
+			$tp = e107::getParser();
+			$changed = FALSE;
+			
+			foreach ($ipAdministrator->getValidReasonList() as $bt)
+			{
+				$i = abs($bt) + 1;		// Forces a single-digit positive number for part of field name
+				$t1 = $tp->toDB(varset($_POST['ban_text_'.($i)],''));
+				$t2 = intval(varset($_POST['ban_time_'.($i)],0));
+				if (!isset($pref['ban_messages'][$bt]) || ($pref['ban_messages'][$bt] != $t1))
+				{
+					$pref['ban_messages'][$bt] = $t1;
+					$changed = TRUE;
+				}
+				if (!isset($pref['ban_durations'][$bt]) || ($pref['ban_durations'][$bt] != $t2))
+				{
+					$pref['ban_durations'][$bt] = $t2;
+					$changed = TRUE;
+				}
+			}
+			if ($changed)
+			{
+			// @todo write actual prefs changes to log file (different methods for prefs?)
+				e107::getConfig()->setPref($pref)->save(); 
+			// 	save_prefs();
+				/*****************************************
+					Write messages and times to disc file
+				 *****************************************/
+				$ipAdministrator->writeBanMessageFile();
+				banlist_adminlog('08','');
+				//$ns->tablerender(BANLAN_9, "<div style='text-align:center'>".BANLAN_33.'</div>');
+			//	$mes->addSuccess(BANLAN_33);
+			}	
+			
+			
+		}
+
+
+
+		
 		public function timesPage()
 		{
-			//FIXME Put Times code in here. 
+			if (!getperms('0'))
+			{
+				return;
+			}
+			
+			$pref = e107::getPref();
+			$tp = e107::getParser();		
+			$frm = e107::getForm();
+			$mes = e107::getMessage();
+			
+			$ipAdministrator = new banlistManager;
+						
+			$text = '';
+			if ((!isset($pref['ban_messages'])) || !is_array($pref['ban_messages']))
+			{
+				foreach ($ipAdministrator->getValidReasonList() as $bt)
+				{
+					$pref['ban_messages'][$bt] = '';
+				}
+			}
+			if ((!isset($pref['ban_durations'])) || !is_array($pref['ban_durations']))
+			{
+				foreach ($ipAdministrator->getValidReasonList() as $bt)
+				{
+					$pref['ban_durations'][$bt] = 0;
+				}
+			}
+	
+			$text .= "
+				<form method='post' action='".e_SELF.'?'.e_QUERY."' id='ban_options'>
+					<fieldset id='core-banlist-times'>
+						<legend class='e-hideme'>".BANLAN_77."</legend>
+						<table class='table adminlist'>
+							<colgroup>
+								<col style='width: 20%' />
+								<col style='width: 65%' />
+								<col style='width: 15%' />
+							</colgroup>
+							<thead>
+								<tr>
+									<th>".BANLAN_28."</th>
+									<th>".BANLAN_29."<br />".BANLAN_31."</th>
+									<th class='center last'>".BANLAN_30."</th>
+								</tr>
+							</thead>
+							<tbody>
+			";
+			foreach ($ipAdministrator->getValidReasonList() as $bt)
+			{
+				$i = abs($bt) + 1;		// Forces a single-digit positive number
+				$text .= "
+						<tr>
+							<td>
+								<strong>".$ipAdministrator->getBanTypeString($bt, FALSE)."</strong>
+								<div class='field-help'>".$ipAdministrator->getBanTypeString($bt, TRUE)."</div>
+							</td>
+							<td class='left'>
+								".$frm->textarea('ban_text_'.($i), $pref['ban_messages'][$bt], 4, 15)."
+							</td>
+							<td class='center'>".ban_time_dropdown('', BANLAN_32, $pref['ban_durations'][$bt], 'ban_time_'.($i))."</td>
+						</tr>
+					";
+			}
+			$text .= "
+							</tbody>
+						</table>
+						<div class='buttons-bar center'>
+							".$frm->admin_button('update_ban_prefs', LAN_UPDATE, 'update')."
+							<input type='hidden' name='e-token' value='".e_TOKEN."' />
+						</div>
+					</fieldset>
+				</form>
+				";
+	
+			echo $mes->render().$text; 
 		}		
 
 		
@@ -321,39 +450,7 @@ if($_GET['action']) // Temporary Fix.
 	$action = $_GET['action'];	
 }
 
-if (isset($_POST['update_ban_prefs']))		// Update ban messages
-{
-	$changed = FALSE;
 
-	foreach ($ipAdministrator->getValidReasonList() as $bt)
-	{
-		$i = abs($bt) + 1;		// Forces a single-digit positive number for part of field name
-		$t1 = $tp->toDB(varset($_POST['ban_text_'.($i)],''));
-		$t2 = intval(varset($_POST['ban_time_'.($i)],0));
-		if (!isset($pref['ban_messages'][$bt]) || ($pref['ban_messages'][$bt] != $t1))
-		{
-			$pref['ban_messages'][$bt] = $t1;
-			$changed = TRUE;
-		}
-		if (!isset($pref['ban_durations'][$bt]) || ($pref['ban_durations'][$bt] != $t2))
-		{
-			$pref['ban_durations'][$bt] = $t2;
-			$changed = TRUE;
-		}
-	}
-	if ($changed)
-	{
-	// @todo write actual prefs changes to log file (different methods for prefs?)
-		save_prefs();
-		/*****************************************
-			Write messages and times to disc file
-		 *****************************************/
-		$ipAdministrator->writeBanMessageFile();
-		banlist_adminlog('08','');
-		//$ns->tablerender(BANLAN_9, "<div style='text-align:center'>".BANLAN_33.'</div>');
-		$mes->addSuccess(BANLAN_33);
-	}
-}
 
 
 
@@ -642,7 +739,8 @@ switch ($action)
 			$text .= "&nbsp;&nbsp;&nbsp;".str_replace('--NUM--', $num_entry, BANLAN_87);
 		}
 		
-		e107::getRender()->tablerender(BANLAN_16.SEP.BANLAN_86, $text);
+		echo $text; 
+	//	e107::getRender()->tablerender(BANLAN_16.SEP.BANLAN_86, $text);
 		break;
 
 
@@ -749,75 +847,16 @@ switch ($action)
 				</fieldset>
 			</form>
 		";
-		e107::getRender()->tablerender(BANLAN_16.SEP.LAN_OPTIONS, $mes->render().$text);
+		
+		echo $mes->render().$text; 
+		
+	//	e107::getRender()->tablerender(BANLAN_16.SEP.LAN_OPTIONS, $mes->render().$text);
 		break;
 
 	case 'times' :
-		if (!getperms('0'))
-			exit();
-		$text = '';
-		if ((!isset($pref['ban_messages'])) || !is_array($pref['ban_messages']))
-		{
-			foreach ($ipAdministrator->getValidReasonList() as $bt)
-			{
-				$pref['ban_messages'][$bt] = '';
-			}
-		}
-		if ((!isset($pref['ban_durations'])) || !is_array($pref['ban_durations']))
-		{
-			foreach ($ipAdministrator->getValidReasonList() as $bt)
-			{
-				$pref['ban_durations'][$bt] = 0;
-			}
-		}
 
-		$text .= "
-			<form method='post' action='".e_SELF.'?'.e_QUERY."' id='ban_options'>
-				<fieldset id='core-banlist-times'>
-					<legend class='e-hideme'>".BANLAN_77."</legend>
-					<table class='table adminlist'>
-						<colgroup>
-							<col style='width: 20%' />
-							<col style='width: 65%' />
-							<col style='width: 15%' />
-						</colgroup>
-						<thead>
-							<tr>
-								<th>".BANLAN_28."</th>
-								<th>".BANLAN_29."<br />".BANLAN_31."</th>
-								<th class='center last'>".BANLAN_30."</th>
-							</tr>
-						</thead>
-						<tbody>
-		";
-		foreach ($ipAdministrator->getValidReasonList() as $bt)
-		{
-			$i = abs($bt) + 1;		// Forces a single-digit positive number
-			$text .= "
-					<tr>
-						<td>
-							<strong>".$ipAdministrator->getBanTypeString($bt, FALSE)."</strong>
-							<div class='field-help'>".$ipAdministrator->getBanTypeString($bt, TRUE)."</div>
-						</td>
-						<td class='center'>
-							".$frm->textarea('ban_text_'.($i), $pref['ban_messages'][$bt], 4, 15)."
-						</td>
-						<td class='center'>".ban_time_dropdown('', BANLAN_32, $pref['ban_durations'][$bt], 'ban_time_'.($i))."</td>
-					</tr>
-				";
-		}
-		$text .= "
-						</tbody>
-					</table>
-					<div class='buttons-bar center'>
-						".$frm->admin_button('update_ban_prefs', LAN_UPDATE, 'update')."
-						<input type='hidden' name='e-token' value='".e_TOKEN."' />
-					</div>
-				</fieldset>
-			</form>
-			";
-
-		e107::getRender()->tablerender(BANLAN_16.SEP.BANLAN_77, $mes->render().$text);
+			
+	//	e107::getRender()->tablerender(BANLAN_16.SEP.BANLAN_77, $mes->render().$text);
 		break;
 
 	case 'edit' :		// Edit an existing ban
@@ -948,7 +987,8 @@ switch ($action)
 			</form>
 		";
 
-		e107::getRender()->tablerender($page_title[$action], $mes->render().$text);
+		echo  $mes->render().$text; 
+	//	e107::getRender()->tablerender($page_title[$action], $mes->render().$text);
 		break;		// End of 'Add' and 'Edit'
 
 
@@ -1068,7 +1108,8 @@ switch ($action)
 			</form>
 		";
 
-		e107::getRender()->tablerender(BANLAN_16.SEP.BANLAN_35, $mes->render().$text);
+		echo $mes->render().$text; 
+	//	e107::getRender()->tablerender(BANLAN_16.SEP.BANLAN_35, $mes->render().$text);
 		break;		// End case 'transfer'
 
 	case 'list' :
@@ -1194,7 +1235,8 @@ switch ($action)
 			</form>
 		";
 
-		e107::getRender()->tablerender(($action == 'list' ? BANLAN_3 : BANLAN_61), $mes->render().$text);
+		echo $mes->render().$text; 
+	//	e107::getRender()->tablerender(($action == 'list' ? BANLAN_3 : BANLAN_61), $mes->render().$text);
 		// End of case 'list' and the default case
 }		// End switch ($action)
 

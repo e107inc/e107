@@ -68,7 +68,7 @@ class generic_ui extends e_admin_ui
 		protected $table			= 'generic';
 		protected $pid				= 'gen_id';
 		protected $perPage 			= 10; 
-		protected $listQry			= "SELECT * FROM #generic WHERE gen_type='failed_login' ORDER BY gen_datestamp DESC";
+		protected $listQry			= "SELECT * FROM `#generic` WHERE gen_type='failed_login' ORDER BY gen_datestamp DESC";
 			
 		protected $fields 		= array (  'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
 		  'gen_id' 				=> array ( 'title' => LAN_ID,	 'nolist'=>true,	'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
