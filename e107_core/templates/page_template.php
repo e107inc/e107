@@ -53,11 +53,20 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 	
 	// used only when password authorization is required
 	$PAGE_TEMPLATE['default']['authorize'] = '
-		<div class="cpage-restrict">
+		<div class="cpage-restrict ">
 			{message}
 			{form_open}
-				<h2>{caption}</h2>
-				<div clas="center">{label} {password} {submit}</div>
+			<div class="panel panel-default">
+				<div class="panel-heading">{caption}</div>
+					<div class="panel-body">
+					    <div class="form-group">
+				       		 <label class="col-sm-3 control-label">{label}</label>
+					        <div class="col-sm-9">
+					               {password} {submit} 
+					        </div>
+			     		</div>
+					</div>
+      			</div>
 			{form_close}
 		</div>
 	';
