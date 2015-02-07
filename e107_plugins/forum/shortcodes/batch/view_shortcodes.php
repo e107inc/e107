@@ -163,7 +163,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 	function sc_privmessage()
 	{
-		if(plugInstalled('pm') && ($this->postInfo['post_user'] > 0))
+		if(e107::isInstalled('pm') && ($this->postInfo['post_user'] > 0))
 		{
 			return e107::getParser()->parseTemplate("{SENDPM={$this->postInfo['post_user']}}");
 		}

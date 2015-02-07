@@ -15,7 +15,7 @@
  *
 */
 require_once("class2.php");
-if(!plugInstalled('gsitemap'))
+if(!e107::isInstalled('gsitemap'))
 { 
 	header("location:".e_BASE."index.php"); 
 	exit();

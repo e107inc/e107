@@ -1006,7 +1006,7 @@ function update_706_to_800($type='')
 	// Plugin tables whose definition needs changing significantly
 	foreach ($pluginChangedTables as $plugName => $plugList)
 	{
-		if (plugInstalled($plugName))
+		if (e107::isInstalled($plugName))
 		{
 			$ttc = explode(',',$plugList);
 			foreach ($ttc as $ct)

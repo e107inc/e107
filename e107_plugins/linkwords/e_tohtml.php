@@ -28,7 +28,7 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
-// if (!plugInstalled('linkwords')) exit; // This will completely break a site during  upgrades. 
+// if (!e107::isInstalled('linkwords')) exit; // This will completely break a site during  upgrades. 
 
 define('LW_CACHE_ENABLE', FALSE);
 

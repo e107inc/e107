@@ -15,7 +15,7 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
-if (!plugInstalled('rss_menu')) 
+if (!e107::isInstalled('rss_menu')) 
 {
 	return '';
 }

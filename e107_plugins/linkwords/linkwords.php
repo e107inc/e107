@@ -22,7 +22,7 @@
 */
 
 if (!defined('e107_INIT')) { exit; }
-// if (!plugInstalled('linkwords')) exit; // This will break a site completely under some circumstance. 
+// if (!e107::isInstalled('linkwords')) exit; // This will break a site completely under some circumstance. 
 
 
 class e_linkwords

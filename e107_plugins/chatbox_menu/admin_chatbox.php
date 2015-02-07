@@ -12,7 +12,7 @@
 
 require_once("../../class2.php");
 
-if (!plugInstalled('chatbox_menu') || !getperms("P")) 
+if (!e107::isInstalled('chatbox_menu') || !getperms("P")) 
 {
 	header("Location: ".e_BASE."index.php");
 	exit;

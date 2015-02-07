@@ -16,7 +16,7 @@
 */
 
 if (!defined('e107_INIT')) { exit; }
-/*if(!plugInstalled('gsitemap'))
+/*if(!e107::isInstalled('gsitemap'))
 { 
 	return;
 }*/

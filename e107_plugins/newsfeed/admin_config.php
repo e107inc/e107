@@ -11,7 +11,7 @@
  *
 */
 require_once("../../class2.php");
-if (!getperms("P") || !plugInstalled('newsfeed')) 
+if (!getperms("P") || !e107::isInstalled('newsfeed')) 
 {
 	header("location:".e_BASE."index.php");
 	exit;

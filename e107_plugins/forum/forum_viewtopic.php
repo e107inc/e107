@@ -93,7 +93,7 @@ if(isset($_GET['f']))
 
 e107::getScBatch('view', 'forum')->setScVar('thread', $thread);
 
-$pm_installed = plugInstalled('pm');
+$pm_installed = e107::isInstalled('pm');
 
 //Only increment thread views if not being viewed by thread starter
 if (USER && (USERID != $thread->threadInfo['thread_user'] || $thread->threadInfo['thread_total_replies'] > 0) || !$thread->noInc)

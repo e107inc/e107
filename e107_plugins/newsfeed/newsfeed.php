@@ -15,7 +15,7 @@
  *
 */
 require_once('../../class2.php');
-if (!plugInstalled('newsfeed')) 
+if (!e107::isInstalled('newsfeed')) 
 {
 	header("location:".e_BASE."index.php");
 	exit;

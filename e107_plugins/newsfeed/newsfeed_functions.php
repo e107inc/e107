@@ -24,7 +24,7 @@ feed refresh time has expired, the cache is updated.
 */
 
 if (!defined('e107_INIT')) { exit; }
-if (!plugInstalled('newsfeed')) 
+if (!e107::isInstalled('newsfeed')) 
 {
 	return;
 }
