@@ -51,13 +51,13 @@ class e107plugin
 	//	'e_userinfo', @deprecated @see e_user
 		'e_tagwords',
 		'e_url', // simple mod-rewrite. 
-		
 		'e_mailout',
 		'e_sitelink', // sitelinks generator. 
 		'e_tohtml',
 		'e_featurebox',
 		'e_related',
 		'e_rss',
+		'e_upload',
 		'e_user'
 	);
 
