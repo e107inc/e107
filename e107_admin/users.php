@@ -174,7 +174,7 @@ class users_admin_ui extends e_admin_ui
 	protected $table = "user";
 		
 //	protected $listQry = "SELECT SQL_CALC_FOUND_ROWS * FROM #users"; // without any Order or Limit. 
-	protected $listQry = "SELECT SQL_CALC_FOUND_ROWS u.*,ue.* from #user AS u left join #user_extended AS ue ON u.user_id = ue.user_extended_id  "; // without any Order or Limit.
+	protected $listQry = "SELECT SQL_CALC_FOUND_ROWS u.*,ue.* from #user AS u LEFT JOIN #user_extended AS ue ON u.user_id = ue.user_extended_id  "; // without any Order or Limit.
 			
 	protected $editQry = "SELECT u.*,ue.* FROM #user AS u left join #user_extended AS ue ON u.user_id = ue.user_extended_id  WHERE user_id = {ID}";
 	

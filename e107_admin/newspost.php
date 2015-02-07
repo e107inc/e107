@@ -202,8 +202,8 @@ class news_sub_ui extends e_admin_ui
 		//	'submitnews_item' 			=> array('title'=> LAN_DESCRIPTION,		'type' => 'method',			'width' => 'auto', 'thclass' => 'left','readParms' => 'expand=...&truncate=150&bb=1', 'readonly'=>TRUE),
 			'submitnews_name' 			=> array('title'=> LAN_AUTHOR,			'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),
        		'submitnews_ip' 			=> array('title'=> "IP",			'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),			
-			'submitnews_auth' 			=> array('title'=> "User",			'type' => 'user',			'width' => 'auto', 'thclass' => 'right', 'class'=> 'right' ),										
-			'options' 					=> array('title'=> LAN_OPTIONS,			'type' => "method",				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center')
+			'submitnews_auth' 			=> array('title'=> "User",			'type' => 'user',			'width' => 'auto', 'thclass' => 'left', 'class'=> 'left' ),										
+			'options' 					=> array('title'=> LAN_OPTIONS,			'type' => "method",				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'right')
 		);
 
 		protected $fieldpref = array('checkboxes', 'submitnews_id',  'submitnews_title', 'submitnews_category', 'options');

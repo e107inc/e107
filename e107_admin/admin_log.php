@@ -110,6 +110,23 @@ class adminlog_admin extends e_admin_dispatcher
 	);	
 	
 	protected $menuTitle = ADLAN_155;
+	
+	function init()
+	{
+		
+		e107::css('inline', "
+		
+		.fa { font-size:130% }
+		.fa-question-circle	{ }
+		.fa-exclamation-circle { color: #FAA732 }
+		.fa-warning { color: red }
+		
+		
+		
+		");	
+		
+		
+	}
 }
 
 
@@ -487,6 +504,7 @@ class admin_log_form_ui extends e_admin_form_ui
 	// Custom Method/Function 
 	function dblog_type($curVal,$mode)
 	{
+		$tp = e107::getParser();
 		/*
 		define("E_LOG_INFORMATIVE", 0); // Minimal Log Level, including really minor stuff
 		define("E_LOG_NOTICE", 1); // More important than informative, but less important than notice
@@ -503,8 +521,9 @@ class admin_log_form_ui extends e_admin_form_ui
 			' '  // Plugin information - Deprecated - Leave empty. 
 		 );
 		
-		
-		
+		$array[1] = $tp->toGlyph('fa-question-circle'); 
+		$array[2] = $tp->toGlyph('fa-exclamation-circle'); 
+		$array[3] = $tp->toGlyph('fa-warning'); 
 		
 		switch($mode)
 		{
