@@ -23,7 +23,7 @@ class e_media
 {
 	protected $imagelist = array();
 	
-	protected $logging = false;
+	protected $logging = false; 
 	
 	protected $mimePaths = array(
 				'text'			=> e_MEDIA_FILE,
@@ -35,7 +35,14 @@ class e_media
 				'other'			=> e_MEDIA_FILE
 		);
 	
-	
+	function __construct()
+	{
+		if(E107_DEBUG_LEVEL > 0)
+		{
+			$this->logging = true; 	
+		}	
+		
+	}
 	/**
 	 * Import files from specified path into media database. 
 	 * @param string $cat Category nickname
@@ -115,10 +122,10 @@ class e_media
 				'media_type'		=> $f['mime']
 			);
 	
-			if(!$sql->db_Select('core_media','media_url',"media_url = '".$fullpath."' LIMIT 1"))
+			if(!$sql->select('core_media','media_url',"media_url = '".$fullpath."' LIMIT 1"))
 			{
 			
-				if($sql->db_Insert("core_media",$insert))
+				if($sql->insert("core_media",$insert))
 				{
 					$count++;
 					$mes->addDebug("Imported Media: ".$f['fname']);
@@ -172,7 +179,7 @@ class e_media
 						
 		if(vartrue($cat))
 		{
-			$status = ($sql->db_Delete('core_media',"media_cat = '".$cat."'")) ? TRUE : FALSE;
+			$status = ($sql->delete('core_media',"media_cat = '".$cat."'")) ? TRUE : FALSE;
 			$mes->add("Removing Media in Category: ".$cat, E_MESSAGE_DEBUG);
 			return $status;	
 		}	
@@ -197,7 +204,7 @@ class e_media
 		if(vartrue($epath))
 		{
 			$path = $tp->createConstants($epath, 'rel');
-			$status = ($sql->db_Delete('core_media',"media_url LIKE '".$path."%'".$qry)) ? TRUE : FALSE;
+			$status = ($sql->delete('core_media',"media_url LIKE '".$path."%'".$qry)) ? TRUE : FALSE;
 			$message = ($type == 'image') ?  "Removing Media with path: ".$path : "Removing Icons with path: ".$path;
 			$mes->add($message, E_MESSAGE_DEBUG);
 			return $status;	
@@ -221,8 +228,8 @@ class e_media
 		
 		$path = $tp->createConstants($epath, 'rel');
 	
-		$status = ($sql->db_Select_gen("SELECT * FROM `#core_media` WHERE `media_url` LIKE '".$path."%' AND media_category REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' ")) ? TRUE : FALSE;		
-		while ($row = $sql->db_Fetch())
+		$status = ($sql->gen("SELECT * FROM `#core_media` WHERE `media_url` LIKE '".$path."%' AND media_category REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' ")) ? TRUE : FALSE;		
+		while ($row = $sql->fetch())
 		{
 			$ret[] = $row['media_url'];
 		}
@@ -248,7 +255,7 @@ class e_media
 		{
 			$data['media_cat_class'] = defset('e_UC_MEMBER', 253);
 		}
-		return e107::getDb()->db_Insert('core_media_cat', $data);
+		return e107::getDb()->insert('core_media_cat', $data);
 	}
 	
 
@@ -322,13 +329,13 @@ class e_media
 		
 		$sql = e107::getDb();
 		
-		$sql->db_Select('core_media_cat',"media_cat_category", "media_cat_owner = '".$owner."' ");
+		$sql->select('core_media_cat',"media_cat_category", "media_cat_owner = '".$owner."' ");
 		while($row = $sql->db_Fetch())
 		{
 			$categories[] = "'".$row['media_cat_category']."'";	
 		}
 		
-		if($sql->db_Delete('core_media_cat', "media_cat_owner = '".$owner."' "))
+		if($sql->delete('core_media_cat', "media_cat_owner = '".$owner."' "))
 		{
 			//TODO retrieve all category names for owner, and reset all media categories to _common. 
 			return TRUE;
@@ -352,7 +359,7 @@ class e_media
 		$qry .= "ORDER BY media_cat_order";
 		
 		e107::getDb()->gen($qry);
-		while($row = e107::getDb()->db_Fetch(MYSQL_ASSOC))
+		while($row = e107::getDb()->fetch(MYSQL_ASSOC))
 		{
 			$id = $row['media_cat_category'];
 			$ret[$id] = $row;
@@ -1017,6 +1024,7 @@ class e_media
 			// Check it hasn't been imported already. 	
 			if($newpath = $this->checkDupe($oldpath, $file))
 			{
+				$this->log("Line: ".__LINE__." Couldn't find the file: ".$oldpath);
 				return $newpath; 
 			}
 			$this->log("Line: ".__LINE__." Couldn't find the file: ".$oldpath);
@@ -1049,7 +1057,7 @@ class e_media
 		$img_data['media_description'] 	= $new_data['media_description'];
 		$img_data['media_userclass'] 	= '0';	
 
-		if($sql->db_Insert("core_media",$img_data))
+		if($sql->insert("core_media",$img_data))
 		{		
 			$mes->add("Importing Media: ".$file, E_MESSAGE_SUCCESS);
 			$this->log("Importing Media: ".$file." successful");
