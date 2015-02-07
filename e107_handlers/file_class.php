@@ -382,8 +382,10 @@ class e_file
 		$finfo['fname'] 	= basename($path_to_file);
 		$finfo['path'] 		= dirname($path_to_file).'/';
 
-	//	$finfo['mime'] = vartrue($finfo['mime'],'application/'.$finfo['pathinfo']['extension']);
-		
+		if(empty($finfo['mime'])) // last resort. 
+		{
+			$finfo['mime'] = 'application/'.$finfo['pathinfo']['extension'];
+		}
 	
 		
 		
