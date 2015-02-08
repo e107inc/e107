@@ -217,7 +217,10 @@ class rssCreate
 				foreach($tmp as $value)
 				{
 					$this -> rssItems[$loop]['title'] = $value['news_title'];
-					$this -> rssItems[$loop]['link'] = "http://".$_SERVER['HTTP_HOST'].e_HTTP."news.php?item.".$value['news_id'].".".$value['news_category'];
+				//	$this -> rssItems[$loop]['link'] = "http://".$_SERVER['HTTP_HOST'].e_HTTP."news.php?item.".$value['news_id'].".".$value['news_category'];
+					
+					$this -> rssItems[$loop]['link'] = e107::getUrl()->create('news/view/item', $value, 'full=1'); 
+					
 					if($value['news_summary'] && $pref['rss_summarydiz'])
 					{
 						$this -> rssItems[$loop]['description'] = $value['news_summary'];
