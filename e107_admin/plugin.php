@@ -2378,11 +2378,22 @@ class pluginBuilder
 			
 				$options = array(
 					'text'		=> "Text Box",
+					'number'	=> "Text Box (number)",
+					'url'		=> "Text Box (url)",
 					'textarea'	=> "Text Area",
 					'bbarea'	=> "Rich-Text Area",
 					'boolean'	=> "True/False",
 					"method"	=> "Custom Function",
 					"image"		=> "Image",
+					
+					"dropdown"	=> "DropDown",
+					"userclass"	=> "DropDown (userclasses)",
+					"language"	=> "DropDown (languages)",
+
+					"icon"		=> "Icon",
+		
+					"file"		=> "File",
+	
 				);
 						
 			
@@ -2851,8 +2862,8 @@ TEMPLATE;
 					<td class='center'>".$frm->checkbox($this->table."[fields][".$name."][validate]", true)."</td>
 					<td class='center'>".$frm->checkbox($this->table."[fields][".$name."][fieldpref]", true, $this->guess($name, $val,'fieldpref'))."</td>
 					<td>".$frm->text($this->table."[fields][".$name."][help]",'', 50,'size=medium')."</td>
-					<td>".$frm->text($this->table."[fields][".$name."][readParms]",'', 20,'size=small')."</td>
-					<td>".$frm->text($this->table."[fields][".$name."][writeParms]",'', 20,'size=small').
+					<td>".$frm->text($this->table."[fields][".$name."][readParms]",'', 60,'size=small')."</td>
+					<td>".$frm->text($this->table."[fields][".$name."][writeParms]",'', 60,'size=small').
 					$frm->hidden($this->table."[fields][".$name."][class]", $this->guess($name, $val,'class')).
 					$frm->hidden($this->table."[fields][".$name."][thclass]", $this->guess($name, $val,'thclass')).
 					"</td>
