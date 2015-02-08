@@ -3155,6 +3155,7 @@ class e_form
 						return $video;
 					}
 					
+					// Not an image but a file.  (media manager)  
 					if(!preg_match("/[a-zA-z0-9_-\s\(\)]+\.(png|jpg|jpeg|gif|PNG|JPG|JPEG|GIF)$/",$value) && strpos($value,'.')!==false)
 					{
 						$icon = "{e_IMAGE}filemanager/zip_32.png";	
@@ -3165,17 +3166,34 @@ class e_form
 					
 					if(vartrue($parms['thumb']))
 					{
-						$src = $tp->replaceConstants(vartrue($parms['pre']).$value, 'abs');
-						$thumb = $parms['thumb'];
 						$thparms = array();
-						if(is_numeric($thumb) && '1' != $thumb)
+						
+						// Support readParms example: thumb=1&w=200&h=300
+						// Support readParms example: thumb=1&aw=80&ah=30
+						if(isset($parms['h']))		{ 	$thparms['h'] 	= intval($parms['h']); 		}
+						if(isset($parms['ah']))		{ 	$thparms['ah'] 	= intval($parms['ah']); 	}		
+						if(isset($parms['w']))		{ 	$thparms['w'] 	= intval($parms['w']); 		}
+						if(isset($parms['aw']))		{ 	$thparms['aw'] 	= intval($parms['aw']); 	}
+						
+						// Support readParms example: thumb=200x300 (wxh)
+						if(strpos($parms['thumb'],'x')!==false)
+						{
+							list($thparms['w'],$thparms['h']) = explode('x',$parms['thumb']); 	
+						}
+						
+						// Support readParms example: thumb={width}
+						if(!isset($parms['w']) && is_numeric($parms['thumb']) && '1' != $parms['thumb']) 
 						{
 							$thparms['w'] = intval($thumb);
 						}
-						elseif(vartrue($parms['thumb_aw']))
+						elseif(vartrue($parms['thumb_aw'])) // Legacy v2. 
 						{
 							$thparms['aw'] = intval($parms['thumb_aw']);
 						}
+						
+					//	return print_a($thparms,true); 
+					
+						$src = $tp->replaceConstants(vartrue($parms['pre']).$value, 'abs');
 						$thsrc = $tp->thumbUrl(vartrue($parms['pre']).$value, $thparms, varset($parms['thumb_urlraw']));
 						$alt = basename($src);
 						$ttl = '<img src="'.$thsrc.'" alt="'.$alt.'" class="thumbnail e-thumb" />';
