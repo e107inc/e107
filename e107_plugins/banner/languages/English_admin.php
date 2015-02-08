@@ -61,6 +61,6 @@ define("BNRLAN_43", "How to show the campaigns?"); // BANNER_MENU_L10
 define("BNRLAN_44", "Choose render type ..."); // BANNER_MENU_L11
 define("BNRLAN_45", "One campaign in a single menu"); // BANNER_MENU_L12
 define("BNRLAN_46", "All selected campaigns in one single menu"); // BANNER_MENU_L13
-// define("BNRLAN_47", "All selected campaigns in separate menus"); // BANNER_MENU_L14
+define("BNRLAN_47", "All selected campaigns in separate menus"); // BANNER_MENU_L14
 
 ?>
