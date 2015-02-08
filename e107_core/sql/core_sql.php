@@ -8,8 +8,6 @@
  *
  * Core SQL
  *
- * $URL$
- * $Id$
 */
 
 header("location:../index.php");
@@ -18,11 +16,9 @@ exit;
 #
 # +---------------------------------------------------------------+
 # |        e107 website system
-# |        /files/sql.php
 # |
-# |        Copyright (C) 2008-2009 e107 Inc (e107.org)
+# |        Copyright (C) 2008-2015 e107 Inc (e107.org)
 # |        http://e107.org
-# |        jalist@e107.org
 # |
 # |        Released under the terms and conditions of the
 # |        GNU General Public License (http://gnu.org).
@@ -196,7 +192,7 @@ CREATE TABLE dblog (
 # --------------------------------------------------------
 
 #
-# Table structure for table `generic`
+# Table structure for table `generic` (includes Welcome Messages)
 #
 CREATE TABLE generic (
   gen_id int(10) unsigned NOT NULL auto_increment,
@@ -212,7 +208,7 @@ CREATE TABLE generic (
 # --------------------------------------------------------
 
 #
-# Table structure for table `links`
+# Table structure for table `links` (navigation)
 #
 
 CREATE TABLE links (
@@ -410,7 +406,7 @@ CREATE TABLE page (
 #
 
 CREATE TABLE page_chapters (
-  chapter_id tinyint(3) unsigned NOT NULL auto_increment,
+  chapter_id int(4) unsigned NOT NULL auto_increment,
   chapter_parent int(4) unsigned NOT NULL default '0',
   chapter_name varchar(200) NOT NULL default '',
   chapter_sef varchar(200) NOT NULL default '',
@@ -418,7 +414,7 @@ CREATE TABLE page_chapters (
   chapter_meta_keywords  varchar(255) NOT NULL default '',
   chapter_manager tinyint(3) unsigned NOT NULL default '254',
   chapter_icon varchar(250) NOT NULL default '',
-  chapter_order tinyint(3) unsigned NOT NULL default '0',
+  chapter_order int(4) unsigned NOT NULL default '0',
   chapter_template varchar(50) NOT NULL default '',
   chapter_visibility tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (chapter_id),
