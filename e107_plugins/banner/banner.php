@@ -21,6 +21,10 @@ if (!e107::isInstalled('banner'))
 }
 
 e107::includeLan(e_PLUGIN."banner/languages/".e_LANGUAGE."_banner.php"); // TODO
+e107::lan('banner'); 
+
+
+
 
 $mes = e107::getMessage();
 $frm = e107::getForm();
@@ -36,10 +40,28 @@ if(e_QUERY)
 	header("Location: {$row['banner_clickurl']}");
 	exit;
 }
+
+if (!$BANNER_LOGIN_TABLE) 
+{
+	if(file_exists(THEME.'templates/banner/banner_template.php')) // v2.x location. 
+	{
+		require_once (THEME.'templates/banner/banner_template.php');
+	}
+	elseif(file_exists(THEME."banner_template.php")) 
+	{
+		require_once(THEME."banner_template.php");
+	} 
+	else 
+	{
+		require_once("banner_template.php");
+	}
+}
+
 	
 require_once(HEADERF);
 	
-if (isset($_POST['clientsubmit'])) {
+if (isset($_POST['clientsubmit'])) 
+{
 	
 	$clean_login 	= $tp->toDB($_POST['clientlogin']);
 	$clean_password = $tp->toDB($_POST['clientpassword']);
@@ -92,39 +114,10 @@ if (isset($_POST['clientsubmit'])) {
 				}
 			}
 
-			// FIXME template loading
-			if (!$BANNER_TABLE) 
-			{
-				if (file_exists(THEME."templates/banner/banner_template.php")) 
-				{
-					require(THEME."templates/banner/banner_template.php");
-				} 
-				elseif (file_exists(THEME."banner_template.php")) 
-				{
-					require(THEME."banner_template.php");
-				} 
-				else 
-				{
-					require(e_PLUGIN."banner/banner_template.php");
-				}
-			}
-
 			$textstring .= preg_replace("/\{(.*?)\}/e", '$\1', $BANNER_TABLE);
 		}
 	}
 	
-	// FIXME template loading
-	if (!$BANNER_TABLE) 
-	{
-		if (file_exists(THEME."banner_template.php")) 
-		{
-			require(THEME."banner_template.php");
-		} 
-		else 
-		{
-			require(e_PLUGIN."banner/banner_template.php");
-		}
-	}
 
 	$textstart = preg_replace("/\{(.*?)\}/e", '$\1', $BANNER_TABLE_START);
 	$textend = preg_replace("/\{(.*?)\}/e", '$\1', $BANNER_TABLE_END);
@@ -141,17 +134,7 @@ $BANNER_LOGIN_TABLE_LOGIN 	= $frm->text("clientlogin", $id);
 $BANNER_LOGIN_TABLE_PASSW 	= $frm->password("clientpassword", $pw);
 $BANNER_LOGIN_TABLE_SUBMIT 	= $frm->button("clientsubmit", LAN_CONTINUE, "submit");
 	
-if (!$BANNER_LOGIN_TABLE) 
-{
-	if(file_exists(THEME."banner_template.php")) 
-	{
-		require_once(THEME."banner_template.php");
-	} 
-	else 
-	{
-		require_once("banner_template.php");
-	}
-}
+
 
 $text = preg_replace("/\{(.*?)\}/e", '$\1', $BANNER_LOGIN_TABLE);
 $ns->tablerender(BANNERLAN_19, $text);
