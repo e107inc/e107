@@ -99,10 +99,7 @@ class e107_event
 					}
 					catch(Exception $e)
 					{
-						//TODO log errors $eventname, $location, $class, $method
-					//	echo "event didn't work. Class=".$class." Method=".$method;
-					//	echo "<br />".$e;
-						//exit;
+						e107::getLog()->add('Event Trigger failed',array('name'=>$eventname,'location'=>$location,'class'=>$class,'method'=>$method,'error'=>$e),E_LOG_WARNING,'EVENT_01'); 
 						continue;
 					}
 				}
@@ -114,7 +111,9 @@ class e107_event
 						break;
 					}
 				}
-				//TODO log errors $eventname, $location, $evt_func
+				
+				e107::getLog()->add('Event Trigger failed',array('name'=>$eventname,'location'=>$location,'function'=>$evt_func),E_LOG_WARNING,'EVENT_01'); 
+				
 			}
 		}
 		return (isset($ret) ? $ret : false);
@@ -123,8 +122,9 @@ class e107_event
 
 
 
-
-
+	/**
+	 * @Deprecated
+	 */
 	function triggerAdminEvent($type, $parms=array())
 	{
 		global $pref;

@@ -2330,7 +2330,7 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @var string event name
 	 * base event trigger name to be used. Leave blank for no trigger. 
 	 */
-	protected $eventName;
+	protected $eventName = null;
 
 	/**
 	 * @var string
@@ -3957,8 +3957,9 @@ class e_admin_controller_ui extends e_admin_controller
 			// Trigger Admin-ui event. 
 			if($triggerName = $this->getEventTriggerName($_posted['etrigger_submit']))
 			{
-				e107::getMessage()->addDebug('Admin-ui Trigger: '.$triggerName); 
-				e107::getEvent()->trigger($triggerName, array('newData'=>$new_data,'oldData'=>$old_data,'id'=> $id)); 	
+				$eventData = array('newData'=>$new_data,'oldData'=>$old_data,'id'=> $id);
+				e107::getMessage()->addDebug('Admin-ui Trigger: '.$triggerName.' with data'.print_a($eventData,true),'default',true); 
+				e107::getEvent()->trigger($triggerName, $eventData); 	
 			}
 			
 			if($callbackAfter && method_exists($this, $callbackAfter))
@@ -3989,7 +3990,9 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	public function getEventTriggerName($type=null)
 	{
-		if(!$plug = $this->getEventName() || empty($type))
+		$plug = $this->getEventName();
+		
+		if(empty($plug) || empty($type))
 		{
 			return false; 
 		} 
@@ -4640,11 +4643,11 @@ class e_admin_ui extends e_admin_controller_ui
 				
 				if($triggerName = $this->getEventTriggerName('delete'))
 				{
-					e107::getMessage()->addDebug('Admin-ui Trigger: '.$triggerName); 
-					e107::getEvent()->trigger($triggerName, array('newData'=>$data,'oldData'=>$data,'id'=> $id)); 	
+					$eventData = array('newData'=>$data,'oldData'=>$data,'id'=> $id);
+					e107::getMessage()->addDebug('Admin-ui Trigger: '.$triggerName.' with data '.print_a($eventData,true),'default',true); //FIXME - Why doesn't this display?
+					e107::getEvent()->trigger($triggerName, $eventData); 	
 				}
-				
-				
+				 		 
 				if($this->afterDelete($data, $id, $check))
 				{
 					$this->getTreeModel()->setMessages();
@@ -4659,6 +4662,7 @@ class e_admin_ui extends e_admin_controller_ui
 		{ 
 			//echo "Couldn't get Node for ID: ".$id;
 			// exit; 
+			e107::getMessage()->addDebug('Model Failure Fallback in use!! ID: '.$id.' file: '.__FILE__. " line: ".__LINE__ ,'default',true); 
 			$check = $this->getTreeModel()->delete($id);
 			return;			
 		}
