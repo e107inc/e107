@@ -517,7 +517,7 @@ class users_admin_ui extends e_admin_ui
 			
 			e107::getLog()->add('USET_10', str_replace(array('--UID--', '--NAME--', '--EMAIL--'), array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email')), USRLAN_166), E_LOG_INFORMATIVE);
 			$e_event->trigger('userfull', $row); //BC
-			e107::getEvent()->trigger('admin-user-verify', $row);
+			e107::getEvent()->trigger('admin-user-activate', $row);
 			
 			$mes->addSuccess(USRLAN_86." (#".$sysuser->getId()." : ".$sysuser->getName().' - '.$sysuser->getValue('email').")");
 			
