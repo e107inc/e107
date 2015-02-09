@@ -3568,7 +3568,10 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	protected function parseCustomListQry($qry)
 	{
-		e107::getMessage()->addDebug('Using Custom listQry ');	
+		if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
+		{
+			e107::getMessage()->addDebug('Using Custom listQry ');	
+		}
 			
 		if(strpos($qry,'`')===false && strpos($qry, 'JOIN')===false) 
 		{
@@ -3601,7 +3604,10 @@ class e_admin_controller_ui extends e_admin_controller
 		$searchQuery = $tp->toDB($request->getQuery('searchquery', ''));
 		$searchFilter = $this->_parseFilterRequest($request->getQuery('filter_options', ''));
 		
-		e107::getMessage()->addDebug('searchQuery: <b>'.$searchQuery.'</b>'); 
+		if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
+		{
+			e107::getMessage()->addDebug('searchQuery: <b>'.$searchQuery.'</b>'); 
+		}
 
 		if($searchFilter && is_array($searchFilter))
 		{
@@ -3887,9 +3893,10 @@ class e_admin_controller_ui extends e_admin_controller
 		}
 
 		// Debug Filter Query.
-	
-		e107::getMessage()->addDebug('QRY='.str_replace('#', MPREFIX, $qry));
-	
+		if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
+		{
+			e107::getMessage()->addDebug('QRY='.str_replace('#', MPREFIX, $qry));
+		}
 	//	 echo $qry.'<br />';	
 	// print_a($this->fields);	
 	
@@ -3939,6 +3946,19 @@ class e_admin_controller_ui extends e_admin_controller
 		}
 
 
+		// Trigger Admin-ui event.  'pre'
+		if($triggerName = $this->getEventTriggerName($_posted['etrigger_submit'])) // 'create' or 'update'; 
+		{
+			$eventData = array('newData'=>$_posted,'oldData'=>$old_data,'id'=> $id);
+			$model->addMessageDebug('Admin-ui Trigger fired: <b>'.$triggerName.'</b> with data '.print_a($eventData,true)); 
+			if($halt = e107::getEvent()->trigger($triggerName, $eventData))
+			{
+				$model->setMessages();
+				return false; 
+			}	
+		}
+
+
 		// Scenario I - use request owned POST data - toForm already executed
 		$model->setPostedData($_posted, null, false, false)
 			->save(true);
@@ -3954,12 +3974,12 @@ class e_admin_controller_ui extends e_admin_controller
 			$new_data 		= $model->getData();
 			$id 			= $model->getId(); 
 
-			// Trigger Admin-ui event. 
-			if($triggerName = $this->getEventTriggerName($_posted['etrigger_submit']))
+			// Trigger Admin-ui event. 'post' 
+			if($triggerName = $this->getEventTriggerName($_posted['etrigger_submit']).'d') // 'created' or 'updated'; 
 			{
-				$eventData = array('newData'=>$new_data,'oldData'=>$old_data,'id'=> $id);
-				e107::getMessage()->addDebug('Admin-ui Trigger: '.$triggerName.' with data'.print_a($eventData,true),'default',true); 
-				e107::getEvent()->trigger($triggerName, $eventData); 	
+				$eventData = array('newData'=>$_posted,'oldData'=>$old_data,'id'=> $id);
+				$model->addMessageDebug('Admin-ui Trigger fired: <b>'.$triggerName.'</b> with data '.print_a($eventData,true)); 
+				e107::getEvent()->trigger($triggerName, $eventData);	
 			}
 			
 			if($callbackAfter && method_exists($this, $callbackAfter))
@@ -4639,17 +4659,29 @@ class e_admin_ui extends e_admin_controller_ui
 			$data = $model->getData();
 			if($this->beforeDelete($data, $id))
 			{
-				$check = $this->getTreeModel()->delete($id);
 				
-				if($triggerName = $this->getEventTriggerName('delete'))
+				$eventData = array('oldData'=>$data,'id'=> $id);
+				
+				if($triggerName = $this->getEventTriggerName('delete')) // trigger for before. 
 				{
-					$eventData = array('newData'=>$data,'oldData'=>$data,'id'=> $id);
-					e107::getMessage()->addDebug('Admin-ui Trigger: '.$triggerName.' with data '.print_a($eventData,true),'default',true); //FIXME - Why doesn't this display?
-					e107::getEvent()->trigger($triggerName, $eventData); 	
+					$this->getTreeModel()->addMessageDebug('Admin-ui Trigger fired: <b>'.$triggerName.'</b> with data '.print_a($eventData,true)); 
+					if($halt = e107::getEvent()->trigger($triggerName, $eventData))
+					{
+						$this->getTreeModel()->setMessages();
+						return; 
+					} 	
 				}
+				
+				$check = $this->getTreeModel()->delete($id);
 				 		 
 				if($this->afterDelete($data, $id, $check))
 				{
+					if($triggerName = $this->getEventTriggerName('deleted')) // trigger for after. 
+					{
+						$this->getTreeModel()->addMessageDebug('Admin-ui Trigger fired: <b>'.$triggerName.'</b>'); //FIXME - Why doesn't this display?
+						e107::getEvent()->trigger($triggerName, $eventData); 	
+					}
+					
 					$this->getTreeModel()->setMessages();
 				}
 			}

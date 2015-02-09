@@ -2594,7 +2594,10 @@ class e_front_model extends e_model
 			break;
 		}
 
-		$this->addMessageDebug('SQL Qry: '.print_a($qry,true), $session_messages);
+		if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
+		{
+			$this->addMessageDebug('SQL Qry: '.print_a($qry,true), $session_messages);
+		}
 		return $qry;
 	}
 
