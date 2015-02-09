@@ -147,7 +147,7 @@ $NEXTPREV_TEMPLATE['admin_separator'] = '&nbsp;';
 
 $NEXTPREV_TEMPLATE['dropdown_start'] = '
 <!-- Start of Next/Prev -->
-<div class="nextprev form-inline">
+<div class="nextprev form-group form-inline">
 ';
 
 $NEXTPREV_TEMPLATE['dropdown_end'] = '
@@ -167,7 +167,7 @@ $NEXTPREV_TEMPLATE['dropdown_nav_prev'] = '<a class="btn btn-default nextprev-it
 $NEXTPREV_TEMPLATE['dropdown_nav_next'] = '&nbsp;<a class="btn btn-default nextprev-item next tbox npbutton" href="{url}" title="{url_label}">{label}</a>';
 
 // 'npdropdown' class is deprecated!!!
-$NEXTPREV_TEMPLATE['dropdown_items_start'] = '<select class="tbox npdropdown nextprev-select" name="pageSelect" onchange="window.location.href=this.options[selectedIndex].value">';
+$NEXTPREV_TEMPLATE['dropdown_items_start'] = '<select class="tbox npdropdown nextprev-select form-control" name="pageSelect" onchange="window.location.href=this.options[selectedIndex].value">';
 $NEXTPREV_TEMPLATE['dropdown_item'] = '<option value="{url}">{label}</option>';
 $NEXTPREV_TEMPLATE['dropdown_item_current'] = '<option value="{url}" selected="selected">{label}</option>';
 $NEXTPREV_TEMPLATE['dropdown_items_end'] = '</select>';

@@ -523,8 +523,8 @@ function nextprev_shortcode($parm = '')
 		$np_parm['template'] = "[PREV]&nbsp;&nbsp;[DROPDOWN]&nbsp;&nbsp;[NEXT]";
 		$np_parms['prev'] = '&nbsp;&nbsp;&lt;&lt;&nbsp;&nbsp;';
 		$np_parms['next'] = '&nbsp;&nbsp;&gt;&gt;&nbsp;&nbsp;';
-		$np_parms['np_class'] = 'tbox npbutton btn';
-		$np_parms['dropdown_class'] = 'tbox npdropdown';
+		$np_parms['np_class'] = 'tbox npbutton btn btn-default';
+		$np_parms['dropdown_class'] = 'tbox npdropdown form-control';
 
 		if($cached_parms = getcachedvars('nextprev'))
 		{
