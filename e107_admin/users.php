@@ -171,6 +171,7 @@ class users_admin_ui extends e_admin_ui
 		
 	protected $pluginTitle = LAN_USER;
 	protected $pluginName = 'core';
+	protected $eventName = 'user';
 	protected $table = "user";
 		
 //	protected $listQry = "SELECT SQL_CALC_FOUND_ROWS * FROM #users"; // without any Order or Limit. 
@@ -379,14 +380,15 @@ class users_admin_ui extends e_admin_ui
 			{
 				$update['WHERE'] = 'user_extended_id='. intval($new_data['submit_value']);
 			
-				if(e107::getDb()->update('user_extended',$update))
-				{
-					e107::getMessage()->addSuccess('Extended Fields Updated'); 	//TODO Replace with Generic or existing LAN. 
-				}
-				else
+				if(e107::getDb()->update('user_extended',$update)===false)
 				{
 					e107::getMessage()->addError('Extended Fields Update Failed');	//TODO Replace with Generic or existing LAN. 
 					e107::getMessage()->addDebug(print_a($update,true));
+				
+				}
+				else
+				{
+				// 	e107::getMessage()->addSuccess('Extended Fields Updated'); 	//TODO Replace with Generic or existing LAN. 	
 				}
 			}
 		}
@@ -514,7 +516,9 @@ class users_admin_ui extends e_admin_ui
 			$sysuser->setData($row)->save();
 			
 			e107::getLog()->add('USET_10', str_replace(array('--UID--', '--NAME--', '--EMAIL--'), array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email')), USRLAN_166), E_LOG_INFORMATIVE);
-			$e_event->trigger('userfull', $row);
+			$e_event->trigger('userfull', $row); //BC
+			e107::getEvent()->trigger('admin-user-verify', $row);
+			
 			$mes->addSuccess(USRLAN_86." (#".$sysuser->getId()." : ".$sysuser->getName().' - '.$sysuser->getValue('email').")");
 			
 			$this->getTreeModel()->load(true);
@@ -573,9 +577,12 @@ class users_admin_ui extends e_admin_ui
 			 // TODO - lan
 			$lan = 'Administrator --ADMIN_EMAIL-- (#--ADMIN_UID--, --ADMIN_NAME--) has logged in as the user --EMAIL-- (#--UID--, --NAME--)';
 			
-			e107::getAdminLog()->log_event('USET_100', str_replace($search, $replace, $lan), E_LOG_INFORMATIVE);
+			e107::getLog()->log_event('USET_100', str_replace($search, $replace, $lan), E_LOG_INFORMATIVE);
 			
-			e107::getEvent()->trigger('loginas', array('user_id' => $sysuser->getId(), 'admin_id' => $user->getId()));
+			$eventData = array('user_id' => $sysuser->getId(), 'admin_id' => $user->getId());
+			e107::getEvent()->trigger('loginas', $eventData); // BC
+			e107::getEvent()->trigger('admin-user-loginas', $eventData); 
+			
 	  	}
 	}
 
@@ -600,7 +607,9 @@ class users_admin_ui extends e_admin_ui
 			
 			e107::getAdminLog()->log_event('USET_101', str_replace($search, $replace, $lan), E_LOG_INFORMATIVE);
 			
-			e107::getEvent()->trigger('logoutas', array('user_id' => $sysuser->getId(), 'admin_id' => $user->getId()));
+			$eventData = array('user_id' => $sysuser->getId(), 'admin_id' => $user->getId());
+			e107::getEvent()->trigger('logoutas', $eventData); //BC 
+			e107::getEvent()->trigger('admin-user-logoutas', $eventData); 
 			$this->redirect('list', 'main', true);
 	  	}
 		
@@ -1251,6 +1260,7 @@ class users_admin_ui extends e_admin_ui
 			// Add to user audit trail
 			$admin_log->user_audit(USER_AUDIT_ADD_ADMIN, $user_data, 0, $user_data['user_loginname']);
 			$e_event->trigger('userfull', $user_data);
+			e107::getEvent()->trigger('admin-user-create', $user_data); 
 			
 			// send everything available for user data - bit sparse compared with user-generated signup
 			if(isset($_POST['sendconfemail']))

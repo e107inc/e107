@@ -201,7 +201,8 @@ class userUpload
 	                
 	                $edata_fu = array("upload_user" => $poster, "upload_email" => $postemail, "upload_name" => $tp -> toDB($_POST['file_name']),"upload_file" => $file, "upload_version" => $_POST['file_version'], "upload_description" => $tp -> toDB($_POST['file_description']), "upload_size" => $filesize, "upload_category" => $downloadCategory, "upload_website" => $tp -> toDB($_POST['file_website']), "upload_image" => $image, "upload_demo" => $tp -> toDB($_POST['file_demo']), "upload_time" => $file_time);
 	                
-					e107::getEvent()->trigger("fileupload", $edata_fu);
+					e107::getEvent()->trigger("fileupload", $edata_fu); // BC
+					e107::getEvent()->trigger("user-file-upload", $edata_fu);
 					
 	                $mes->addSuccess(LAN_404);
 	            }

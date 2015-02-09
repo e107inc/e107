@@ -1561,7 +1561,8 @@ class e_form
 	 */
 	function label($text, $name = '', $value = '')
 	{
-		e107::getMessage()->addDebug("Deprecated \$frm->label() used");
+	//	$backtrack = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2); 
+	//	e107::getMessage()->addDebug("Deprecated \$frm->label() used in: ".print_a($backtrack,true));
 		$for_id = $this->_format_id('', $name, $value, 'for');
 		return "<label$for_id class='e-tip legacy'>{$text}</label>";
 	}
