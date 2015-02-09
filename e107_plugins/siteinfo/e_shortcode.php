@@ -118,7 +118,7 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 			}
 			elseif(varset($parm['fallback']) == 'sitename') // fallback to 
 			{
-				return $this->sc_sitename('link'); 	
+				return $this->sc_sitename($parm); 	
 			}
 			else
 			{
