@@ -415,6 +415,7 @@ class page_admin_ui extends e_admin_ui
 {
 		protected $pluginTitle  	= ADLAN_42;
 		protected $pluginName   	= 'core';
+		protected $eventName   		= 'page';
 		protected $table        	= "page";
 		
 		protected $listQry      	= "SELECT SQL_CALC_FOUND_ROWS

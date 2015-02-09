@@ -88,7 +88,7 @@ class banlist_ui extends e_admin_ui
 {
 			
 		protected $pluginTitle		= BANLAN_16;
-		// protected $pluginName		= 'myplugin';
+		protected $eventName		= 'ban';
 		protected $table			= 'banlist';
 		protected $pid				= 'banlist_id'; 
 		protected $perPage 			= 10; 

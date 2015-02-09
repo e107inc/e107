@@ -47,13 +47,18 @@ if (isset($_POST['update_settings']))
 			$userData['WHERE'] = 'user_id='.USERID;
 			validatorClass::addFieldTypes($userMethods->userVettingInfo,$userData, $userMethods->otherFieldTypes);
 	
-			$check = $sql -> db_Update('user',$userData);
+			$check = $sql->update('user',$userData);
 			if ($check) 
 			{
 				e107::getLog()->add('ADMINPW_01', '', E_LOG_INFORMATIVE, '');
 				$userMethods->makeUserCookie(array('user_id' => USERID,'user_password' => $userData['data']['user_password']), FALSE);		// Can't handle autologin ATM
 				$mes->addSuccess(UDALAN_3." ".ADMINNAME);
-				$e_event -> trigger('adpword');
+				
+				$e_event->trigger('adpword'); //@deprecated 
+				
+				$eventData = array('user_id'=> USERID, 'user_pwchange'=> $userData['data']['user_pwchange']); 
+				e107::getEvent()->trigger('admin-password-update',$eventData ); 
+				 
 				$ns->tablerender(UDALAN_2, $mes->render());
 			}
 			else 
