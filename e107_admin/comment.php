@@ -49,20 +49,9 @@ class comments_admin_ui extends e_admin_ui
 		
 		protected $pluginTitle = LAN_COMMENTMAN;
 		protected $pluginName = 'core';
+		protected $eventName = 'comment';
 		protected $table = "comments";
 		
-		/**
-		 * If present this array will be used to build your list query
-		 * You can link fileds from $field array with 'table' parameter, which should equal to a key (table) from this array
-		 * 'leftField', 'rightField' and 'fields' attributes here are required, the rest is optional
-		 * 
-		 * @var array [optional]
-		 */
-	//	protected $tableJoin = array (
-	//		'u.user' => array('leftField' => 'comment_author_id', 'rightField' => 'user_id', 'fields' => '*'/*, 'leftTable' => '', 'joinType' => 'LEFT JOIN', 'whereJoin' => 'AND u.user_ban=0', 'where' => ''*/)
-	//	);
-		
-		//protected $listQry = "SELECT SQL_CALC_FOUND_ROWS * FROM #comments"; // without any Order or Limit. 
 		protected $listQry = "SELECT c.*,u.user_name FROM #comments as c LEFT JOIN #user AS u ON c.comment_author_id = u.user_id ";
 		protected $listOrder	= "comment_id desc";
 		//protected $editQry = "SELECT * FROM #comments WHERE comment_id = {ID}";

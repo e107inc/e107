@@ -209,6 +209,7 @@ class download_main_admin_ui extends e_admin_ui
 		// required
 		protected $pluginTitle = LAN_PLUGIN_DOWNLOAD_NAME;
 		protected $pluginName = 'download';
+		protected $eventName = 'download';
 		protected $table = "download"; // DB Table, table alias is supported. Example: 'r.release'
 		protected $listQry = "SELECT m.*,u.user_id,u.user_name FROM #download AS m LEFT JOIN #user AS u ON m.download_author = u.user_id "; // without any Order or Limit.
 		
@@ -1781,11 +1782,13 @@ $columnInfo = array(
 				$this->downloadLog('DOWNL_06',$dlInfo,$dlMirrors);
 				$dlInfo['download_datestamp'] = $time;      // This is what 0.7 did, regardless of settings
 				unset($dlInfo['download_class']);         // Also replicating 0.7
-				$e_event->trigger('dlupdate', $dlInfo);
+				$e_event->trigger('dlupdate', $dlInfo); // @deprecated 
+				
+				e107::getEvent()->trigger('admin-download-update',$dlInfo); 
 	      }
 	      else // Its a new entry. 
 	      {
-		         if ($download_id = $sql->db_Insert('download',array_merge($dlInfo,$dlMirrors)))
+		         if ($download_id = $sql->insert('download',array_merge($dlInfo,$dlMirrors)))
 		         {
 		            // Process triggers before calling admin_update so trigger messages can be shown
 		            $data = array('method'=>'create', 'table'=>'download', 'id'=>$download_id, 'plugin'=>'download', 'function'=>'create_download');
@@ -1799,7 +1802,9 @@ $columnInfo = array(
 		            $this->downloadLog('DOWNL_05',$dlInfo,$dlMirrors);
 		            $dlInfo['download_datestamp'] = $time;      // This is what 0.7 did, regardless of settings
 		            unset($dlInfo['download_class']);         // Also replicating 0.7
-		            $e_event->trigger("dlpost", $dlInfo);
+		            $e_event->trigger("dlpost", $dlInfo); // @deprecated 
+					
+					e107::getEvent()->trigger('admin-download-create',$dlInfo); 
 		
 		            if ($_POST['remove_upload'])
 		            {

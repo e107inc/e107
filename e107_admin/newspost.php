@@ -86,6 +86,7 @@ class news_cat_ui extends e_admin_ui
 {
 		protected $pluginTitle	= ADLAN_0; // "News"
 		protected $pluginName	= 'core';
+		protected $eventName	= 'news-category';
 		protected $table 		= "news_category";
 		protected $pid			= "category_id";
 		protected $perPage = 0; //no limit
@@ -1287,6 +1288,7 @@ class admin_newspost
 					e107::getEvent()->trigger("newsdel", $del_id);
 					if($sql->delete("news", "news_id={$del_id}"))
 					{
+						e107::getEvent()->trigger("admin-news-delete", $del_id);
 						e107::getLog()->add('NEWS_01',$del_id,E_LOG_INFORMATIVE,'');
 						$this->show_message(NWSLAN_31." #".$del_id." ".NWSLAN_32, E_MESSAGE_SUCCESS);
 						$this->clear_cache();
@@ -1561,8 +1563,8 @@ class admin_newspost
 				$this->show_message(NWSLAN_35, E_MESSAGE_SUCCESS);
 				$this->clear_cache();
 
-				//TODO - add to WIKI docs
-				e107::getEvent()->trigger("newscatpost", array_merge($inserta['data'], $rwinserta['data']));
+				e107::getEvent()->trigger("newscatpost", array_merge($inserta['data'], $rwinserta['data'])); // @deprecated
+				e107::getEvent()->trigger("admin-news-category-create", array_merge($inserta['data'], $rwinserta['data']));
 			}
 			else
 			{
@@ -1670,8 +1672,9 @@ class admin_newspost
 					$this->show_message(NWSLAN_36, E_MESSAGE_SUCCESS);
 					$this->clear_cache();
 
-					//TODO - add to WIKI docs
-					e107::getEvent()->trigger("newscatupd", array_merge($updatea['data'], $inserta['data']));
+					
+					e107::getEvent()->trigger("newscatupd", array_merge($updatea['data'], $inserta['data'])); // @deprecated
+					e107::getEvent()->trigger("admin-news-category-update", array_merge($updatea['data'], $inserta['data']));
 				}
 				else
 				{
