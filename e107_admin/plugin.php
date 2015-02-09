@@ -2164,7 +2164,7 @@ class pluginBuilder
 		function __construct()
 		{
 			$this->special['checkboxes'] =  array('title'=> '','type' => null, 'data' => null,	 'width'=>'5%', 'thclass' =>'center', 'forced'=> TRUE,  'class'=>'center', 'toggle' => 'e-multiselect', 'fieldpref'=>true);
-			$this->special['options'] = array( 'title'=> LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '10%',	'thclass' => 'center last', 'class' => 'center last', 'forced'=>TRUE, 'fieldpref'=>true);		
+			$this->special['options'] = array( 'title'=> 'LAN_OPTIONS', 'type' => null, 'data' => null, 'width' => '10%',	'thclass' => 'center last', 'class' => 'center last', 'forced'=>TRUE, 'fieldpref'=>true);		
 			
 			if(vartrue($_GET['newplugin']))
 			{
@@ -3372,12 +3372,24 @@ $text .= "
 				{
 					continue;
 				}
+				
+				
+				foreach($vars['fields'] as $key=>$val)
+				{
+					if($val['type'] == 'image' && empty($val['readParms']))
+					{	
+						$vars['fields'][$key]['readParms'] = 'thumb=80x80'; // provide a thumbnail preview by default. 
+					}	
+				}
+						
+
 				$FIELDS = str_replace($srch,$repl,var_export($vars['fields'],true));
 				$FIELDS = preg_replace("#('([A-Z0-9_]*?LAN[_A-Z0-9]*)')#","$2",$FIELDS); // remove quotations from LANs. 
 				$FIELDPREF = array();
 				
 				foreach($vars['fields'] as $k=>$v)
 				{
+										
 					if(isset($v['fieldpref']) && $k != 'checkboxes' && $k !='options')
 					{
 						$FIELDPREF[] = "'".$k."'";
@@ -3392,6 +3404,7 @@ class ".$table." extends e_admin_ui
 			
 		protected \$pluginTitle		= '".$pluginTitle."';
 		protected \$pluginName		= '".$vars['pluginName']."';
+	//	protected \$eventName		= '".$vars['pluginName']."-".$vars['table']."'; // remove comment to enable event triggers in admin. 		
 		protected \$table			= '".$vars['table']."';
 		protected \$pid				= '".$vars['pid']."';
 		protected \$perPage			= 10; 

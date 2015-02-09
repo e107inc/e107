@@ -2324,6 +2324,13 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @var string plugin name
 	 */
 	protected $pluginName;
+	
+
+	/**
+	 * @var string event name
+	 * base event trigger name to be used. Leave blank for no trigger. 
+	 */
+	protected $eventName;
 
 	/**
 	 * @var string
@@ -2476,6 +2483,15 @@ class e_admin_controller_ui extends e_admin_controller
         return $this->batchFeaturebox;
     }
 	
+
+	/**
+	 * @return string
+	 */
+	public function getEventName()
+	{
+		return  $this->eventName;
+	}
+
 	
 	/**
 	 * @return string
@@ -2492,6 +2508,8 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		return deftrue($this->pluginTitle, $this->pluginTitle);
 	}
+	
+	
 	
 	/**
 	 * Get Tab data
@@ -3924,6 +3942,8 @@ class e_admin_controller_ui extends e_admin_controller
 		// Scenario I - use request owned POST data - toForm already executed
 		$model->setPostedData($_posted, null, false, false)
 			->save(true);
+			
+			
 		// Scenario II - inner model sanitize
 		//$this->getModel()->setPosted($this->convertToData($_POST, null, false, true);
 
@@ -3931,9 +3951,19 @@ class e_admin_controller_ui extends e_admin_controller
 		if(!$this->getModel()->hasError())
 		{
 			// callback (if any)
+			$new_data 		= $model->getData();
+			$id 			= $model->getId(); 
+
+			// Trigger Admin-ui event. 
+			if($triggerName = $this->getEventTriggerName($_posted['etrigger_submit']))
+			{
+				e107::getMessage()->addDebug('Admin-ui Trigger: '.$triggerName); 
+				e107::getEvent()->trigger($triggerName, array('newData'=>$new_data,'oldData'=>$old_data,'id'=> $id)); 	
+			}
+			
 			if($callbackAfter && method_exists($this, $callbackAfter))
 			{
-				$this->$callbackAfter($model->getData(), $old_data, $model->getId());
+				$this->$callbackAfter($new_data, $old_data, $id);
 			}
 			$model->setMessages(true); //FIX - move messages (and session messages) to the default stack
 			$this->doAfterSubmit($model->getId(), $noredirectAction);
@@ -3953,6 +3983,19 @@ class e_admin_controller_ui extends e_admin_controller
 		// Copy model messages to the default message stack
 		$model->setMessages();
 		return false;
+	}
+
+	/** Return a custom event trigger name
+	 */
+	public function getEventTriggerName($type=null)
+	{
+		if(!$plug = $this->getEventName() || empty($type))
+		{
+			return false; 
+		} 
+		
+		return 'admin-'.strtolower($plug).'-'.strtolower($type); 
+
 	}
 }
 
@@ -4594,6 +4637,14 @@ class e_admin_ui extends e_admin_controller_ui
 			if($this->beforeDelete($data, $id))
 			{
 				$check = $this->getTreeModel()->delete($id);
+				
+				if($triggerName = $this->getEventTriggerName('delete'))
+				{
+					e107::getMessage()->addDebug('Admin-ui Trigger: '.$triggerName); 
+					e107::getEvent()->trigger($triggerName, array('newData'=>$data,'oldData'=>$data,'id'=> $id)); 	
+				}
+				
+				
 				if($this->afterDelete($data, $id, $check))
 				{
 					$this->getTreeModel()->setMessages();
