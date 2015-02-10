@@ -72,6 +72,11 @@ h2 							{ text-align: right; margin-bottom: -30px; padding-right: 10px; }
 
 require_once(e_HANDLER."theme_handler.php");
 $themec = new themeHandler;
+
+
+$mode = varset($_GET['mode'],'main'); // (e_QUERY) ? e_QUERY :"main" ;
+
+
 if(e_AJAX_REQUEST)
 {
 	define('e_IFRAME',true);
@@ -170,9 +175,35 @@ else
 
 
 
-$mode = varset($_GET['mode'],'main'); // (e_QUERY) ? e_QUERY :"main" ;
 
-if(vartrue($_POST['selectadmin']))
+
+if($mode == 'download' && !empty($_GET['src']))
+{
+		define('e_IFRAME', true);
+		$frm = e107::getForm();
+		$mes = e107::getMessage();		
+		$string =  base64_decode($_GET['src']);	
+		parse_str($string, $data);
+		
+		$mp = $themec->getMarketplace();	
+	 	$mes->addSuccess("Connecting...");   
+
+		if($mp->download($data['id'], $data['mode'], 'theme'))
+		{
+			// Auto install?
+		//	$text = e107::getPlugin()->install($data['plugin_folder']); 
+		//	$mes->addInfo($text); 
+			echo $mes->render('default', 'success'); 
+		}
+		else
+		{
+			echo $mes->addError('Unable to continue')->render('default', 'error'); 
+		}
+		
+		echo $mes->render('default', 'debug'); 
+	
+}
+elseif(vartrue($_POST['selectadmin']))
 {
 	$mode = "admin";
 }
