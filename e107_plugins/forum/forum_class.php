@@ -628,7 +628,7 @@ class e107forum
 			$info['_FIELD_TYPES']['thread_total_replies'] = 'cmd';
 
 			$result = $sql->update('forum_thread', $info);
-		  	e107::getEvent()->trigger('user-forum-thread-updated', $info);
+		  	e107::getEvent()->trigger('user-forum-topic-updated', $info);
 		}
 
 		if(($result || !$updateThread) && $updateForum)
@@ -685,7 +685,7 @@ class e107forum
 		$info['data'] = $threadInfo;
 		if($newThreadId = e107::getDb()->insert('forum_thread', $info))
 		{
-		  	e107::getEvent()->trigger('user-forum-thread-created', $info);
+		  	e107::getEvent()->trigger('user-forum-topic-created', $info);
 			$postInfo['post_thread'] = $newThreadId;
 			$newPostId = $this->postAdd($postInfo, false);
 			$this->threadMarkAsRead($newThreadId);
@@ -742,7 +742,7 @@ class e107forum
 //		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
 		$info['WHERE'] = 'thread_id = '.(int)$threadId;
 		e107::getDb()->update('forum_thread', $info);
-	  	e107::getEvent()->trigger('user-forum-thread-updated', $info);
+	  	e107::getEvent()->trigger('user-forum-topic-updated', $info);
 	}
 
 	
@@ -1890,7 +1890,7 @@ class e107forum
 			if($sql->delete('forum_thread', 'thread_id='.$threadId))
 			{
 				$status = true;
-			  	e107::getEvent()->trigger('user-forum-thread-deleted', $threadId);
+			  	e107::getEvent()->trigger('user-forum-topic-deleted', $threadId);
 			}
 
 			//Delete any thread tracking
