@@ -56,6 +56,7 @@ class private_message
 			{
 				$this->pm_send_receipt($pm_info);
 			}
+		  	e107::getEvent()->trigger('user-pm-read', $pm_id);
 		}
 	}
 
@@ -210,6 +211,7 @@ class private_message
 
 				if($pmid = $sql->insert('private_msg', $info))
 				{
+				  	e107::getEvent()->trigger('user-pm-sent', $info);
 					if($class == FALSE)
 					{
 						$toclass .= $u['user_name'].', ';
