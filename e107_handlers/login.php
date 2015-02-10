@@ -541,8 +541,10 @@ class userlogin
 				$fails = $sql->count("generic", "(*)", "WHERE gen_ip='{$this->userIP}' AND gen_type='failed_login' ");
 				if($fails > 10)
 				{
+					$time = time();
 					e107::getIPHandler()->add_ban(4,LAN_LOGIN_18,$this->userIP,1);
-					e107::getDb()->insert("generic", "0, 'auto_banned', '".time()."', 0, '{$this->userIP}', '{$extra_text}', '".LAN_LOGIN_20.": ".e107::getParser()->toDB($username).", ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
+					e107::getDb()->insert("generic", "0, 'auto_banned', '".$time."', 0, '{$this->userIP}', '{$extra_text}', '".LAN_LOGIN_20.": ".e107::getParser()->toDB($username).", ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
+					e107::getEvent()->trigger('user-ban-failed-login', array('time'=>$time, 'ip'=>$this->userIP, 'other'=>$extra_text)); 
 				}
 			}
 		}
@@ -558,10 +560,9 @@ class userlogin
 	 */
 	protected function logNote($title, $text)
 	{
-		$e107 = e107::getInstance();
 		$title = e107::getParser()->toDB($title);
 		$text  = e107::getParser()->toDB($text);
-		$e107->admin_log->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", $title, $text, FALSE, LOG_TO_ROLLING);
+		e107::getLog()->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", $title, $text, FALSE, LOG_TO_ROLLING);
 	}
 
 
@@ -573,7 +574,6 @@ class userlogin
 	 */
 	protected function genNote($username, $msg1)
 	{
-		$e107 = e107::getInstance();
 		$message = e107::getParser()->toDB($msg1." ::: ".LAN_LOGIN_1.": ".$username);
 		e107::getDb()->insert("generic", "0, 'failed_login', '".time()."', 0, '{$this->userIP}', 0, '{$message}'");
 	}
