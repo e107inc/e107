@@ -51,7 +51,7 @@ $security_risks = array(
         if(ini_get($risk))
         {
             $srch = '<tr><td class="forumheader2">'.$risk.'</td><td class="forumheader3">';
-            $repl = '<tr><td class="forumheader2">'.$risk.'</td><td  title="'.$tp->toAttribute($diz).'" class="forumheader3" style="background-color:red">';
+            $repl = '<tr><td class="forumheader2">'.$risk.'</td><td  title="'.$tp->toAttribute($diz).'" class="forumheader3 alert alert-danger">';
             $phpinfo = str_replace($srch,$repl,$phpinfo);   
             $mes->addWarning("<b>".$risk."</b>: ".$diz);
         }   

@@ -33,7 +33,7 @@ if (!defined('e107_INIT'))
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_upload_handler.php');
 
 //define("UH_DEBUG",TRUE);
-define("UH_DEBUG", FALSE);
+
 
 //FIXME need another name
 // define('e_UPLOAD_TEMP_DIR', e_MEDIA.'temp/');
@@ -119,7 +119,16 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 	{ 
 		$ul_temp_dir = e_UPLOAD_TEMP_DIR;
 	}
-
+	
+	if(E107_DEBUG_LEVEL > 0)
+	{
+		define("UH_DEBUG", true);	
+	}
+	else
+	{
+		define("UH_DEBUG", false);		
+	}
+	
 	if (UH_DEBUG)
 	{
 		e107::getLog()->e_log_event(10, debug_backtrace(), "DEBUG", "Upload Handler test", "Process uploads to {$uploaddir}, fileinfo  ".$fileinfo, FALSE, LOG_TO_ROLLING);

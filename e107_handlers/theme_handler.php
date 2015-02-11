@@ -64,14 +64,29 @@ class themeHandler
 		$this->frm = new e_form();
 		
 		$this->fl = e107::getFile();
-
 		
-		if(isset($_POST['upload']))
+		if(!empty($_POST['upload']))
 		{
-			$this->themeUpload();
+			$unzippedTheme = $this->themeUpload();
 		}
 		
-		if(vartrue($_POST['installContent']))
+		if(!empty($_POST['setUploadTheme']) && !empty($unzippedTheme)) 
+		{
+			$themeArray = $this->getThemes();
+			$this->id = $themeArray[$unzippedTheme]['id'];
+			
+			if($this->setTheme())
+			{
+				$mes->addSuccess(TPVLAN_3);
+			}
+			else
+			{
+				$mes->addError("Could not change site theme."); // TODO LAN
+			}
+			
+		}
+		
+		if(!empty($_POST['installContent']))
 		{
 			$this->installContent($_POST['installContent']);		
 		}
@@ -319,15 +334,33 @@ class themeHandler
 		$mes = e107::getMessage();
 		$ns = e107::getRender();
 		
-		extract($_FILES);
+	//	extract($_FILES);
 		//print_a($_FILES);
 
-		if(!is_writable(e_THEME))
+		if(!is_writable(e_TEMP))
 		{
 			$mes->addInfo(TPVLAN_20);
 			return FALSE;
 		}
-		else
+		
+		
+		$fl = e107::getFile();
+		$mp = $this->getMarketplace(); 
+		$status = $fl->getUploaded(e_TEMP); 
+		
+		if(!empty($status[0]['error']))
+		{
+			$mes->addError($status[0]['message']);
+			return; 	
+		}
+		
+		$mes->addSuccess($status[0]['message']); 
+		
+		return $fl->unzipArchive($status[0]['name'],'theme');
+
+		
+	//	else
+	/*
 		{
 			// FIXME - temporary fixes to upload process, check required. 
 			// Probably in need of a rewrite to use process_uploaded_files();
@@ -410,6 +443,8 @@ class themeHandler
 				@unlink(e_THEME.$archiveName);
 			}
 		}
+	 * 
+	 */
 	}
 	
 
@@ -754,7 +789,7 @@ class themeHandler
 				</tr>
 				</table>
 			
-			<div class='buttons-bar center'>".$frm->admin_button('upload', TPVLAN_14, 'submit')."</div>
+			<div class='buttons-bar center'>".$frm->admin_button('upload', 1, 'submit', LAN_UPLOAD)."</div>
 			</form>
 			";
 		}

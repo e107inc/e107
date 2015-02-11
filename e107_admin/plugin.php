@@ -816,7 +816,7 @@ class pluginManager{
 			
 			if(empty($data[0]['error']))
 			{
-				if($fl->unzipArchive($data[0]['name'],'plugin') === true)
+				if($fl->unzipArchive($data[0]['name'],'plugin'))
 				{
 					$mes->addSuccess(EPL_ADLAN_43); 
 				}
