@@ -142,26 +142,31 @@ class signup_shortcodes extends e_shortcode
 	
 	function sc_signup_form_open()
 	{
-		global $rs;
 		return "<form action='".e_SELF."' method='post' id='signupform' autocomplete='off'><div>".e107::getForm()->token()."</div>";
-		return $rs->form_open("post", e_SELF, "signupform");
 	}
 	
 	
 	function sc_signup_signup_text()
 	{		
-		// global $SIGNUP_TEXT;
 		$pref = e107::getPref();
 		$tp = e107::getParser();
 			
-		if($pref['signup_text'])
+		if(!empty($pref['signup_text']))
 		{
-			return $tp->toHTML($pref['signup_text'], TRUE, 'parse_sc,defs');
+			return "<div id='signup-custom-text' class='alert alert-block alert-warning'>".$tp->toHTML($pref['signup_text'], TRUE, 'parse_sc,defs')."</div>";
 		}
+		
+		/*
+		
 		elseif($pref['user_reg_veri'])
 		{
-			return $SIGNUP_TEXT." ";
+			//	$SIGNUP_TEXT =	LAN_SIGNUP_80." <b>".LAN_SIGNUP_29."</b><br /><br />".
+			// LAN_SIGNUP_30."<br />".
+			// LAN_SIGNUP_85;
+			//	return $SIGNUP_TEXT." ";
 		}
+		 */
+		 
 	}
 	
 	
@@ -387,16 +392,12 @@ class signup_shortcodes extends e_shortcode
 	
 	function sc_signup_signature()
 	{
-		global $pref, $SIGNUP_SIGNATURE_START, $SIGNUP_SIGNATURE_END;
-		if($pref['signup_option_signature'])
+		$sigActive = e107::pref('core','signup_option_signature'); 
+		
+		if($sigActive)
 		{
 			$frm = e107::getForm();
-			return $frm->bbarea('signature', $sig, 'signature','helpb','small');
-		//	require_once(e_HANDLER."ren_help.php");
-			$SIGNUP_SIGNATURE_START = str_replace("{REN_HELP}", $area, $SIGNUP_SIGNATURE_START);
-			$SIGNUP_SIGNATURE_END = str_replace("{REN_HELP}", $area, $SIGNUP_SIGNATURE_END);
-			$sig = ($_POST['signature'] ? $_POST['signature'] : $signature);
-			return $SIGNUP_SIGNATURE_START.$sig.$SIGNUP_SIGNATURE_END;
+			return $frm->bbarea('signature', $sig, 'signature','helpb', 'tiny');
 		}
 	}
 	
