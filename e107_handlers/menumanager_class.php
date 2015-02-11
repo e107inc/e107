@@ -692,49 +692,27 @@ class e_menuManager {
 	    	return FALSE;
 		}
 
-		$temp = $pref['sitetheme_layouts'][$layout]['menuPresets']['area'];
+		$areas = $pref['sitetheme_layouts'][$layout]['menuPresets']['area'];
 
-	// print_a($temp);
-		$multiple = isset($temp['menu'][1]);	
-
-		foreach($temp as $key=>$val)
+		foreach($areas as $area => $menus)
 		{
-			if($val['id'])
+			$areaID = $menus['@attributes']['id'];	
+			foreach($menus['menu'] as $k=>$v)
 			{
-				$iD = $val['id'];	
-			}
-		//	$iD = $val['id'];
-			
-			if($key == 'menu')
-			{
-				if($multiple)  // More than one menu item under <area> in theme.xml.
-				{
-					foreach($val as $k=>$v)
-					{
-						
-					   //	$uclass = (defined(trim($v['@attributes']['perm']))) ? constant(trim($v['@attributes']['userclass'])) : 0;
-						$menuArea[] = array(
-							'menu_location' => $iD,
-							'menu_order'	=> $k,
-							'menu_name'		=> $v['@attributes']['name']."_menu",
-							'menu_class'	=> $this->menuPresetPerms($v['@attributes']['perm'])
-						);
-					}
-				}
-				else  // Only one menu item under <area> in theme.xml.
-				{
-				  //	$uclass = (defined(trim($val['menu']['@attributes']['userclass']))) ? constant(trim($val['menu']['@attributes']['userclass'])) : 0;
-	                $menuArea[] = array(
-							'menu_location' => $iD,
-							'menu_order'	=> 0,
-							'menu_name'		=> $val['menu']['@attributes']['name']."_menu",
-							'menu_class'	=> $this->menuPresetPerms($v['@attributes']['perm'])
-						);
-				}
+				$menuArea[] = array(
+					'menu_location' => $areaID,
+					'menu_order'	=> $k,
+					'menu_name'		=> $v['@attributes']['name']."_menu",
+					'menu_class'	=> $this->menuPresetPerms($v['@attributes']['perm'])
+				);	
 			}
 		}
+						
+		if(E107_DEBUG_LEVEL > 0)
+		{
+	//		e107::getMessage()->addDebug(print_a($menuArea,true)); 	
+		}
 		
-	//	print_a($menuArea);
 
 	   return $menuArea;
 

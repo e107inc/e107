@@ -2021,12 +2021,14 @@ class themeHandler
 	
 			
 	//	$vars = $xml->loadXMLfile(e_THEME.$path.'/theme.xml', true, true);
-		
+	//	$oldvars = 
 		$vars = $xml->loadXMLfile(e_THEME.$path.'/theme.xml', 'advanced', true); // must be 'advanced' 
 		
-		if($path == "_blank" )
+		if($path == "bootstrap3" )
 		{
-	//		echo "<table class='table'><tr><td>".print_a($vars,true)."</td><td>".print_a($adv,true)."</td></tr></table>";
+	//		echo "<table class='table table-bordered'>
+	//		<tr><th>old</th><th>new parser</th></tr>
+	//	<tr><td>".print_a($oldvars,true)."</td><td>".print_a($vars,true)."</td></tr></table>";
 		}
 		
 		
@@ -2139,8 +2141,9 @@ class themeHandler
 		//	$mes->addDebug("<hr />");
 		}
 
-		if($path == "_blank" )
+		if($path == "bootstrap3" )
 		{
+	//		print_a($vars);
 		//	echo "<table class='table'><tr><td>".print_a($vars,true)."</td><td>".print_a($adv,true)."</td></tr></table>";
 		}
 
