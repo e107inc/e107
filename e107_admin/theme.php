@@ -177,6 +177,7 @@ else
 
 
 
+
 if($mode == 'download' && !empty($_GET['src']))
 {
 		define('e_IFRAME', true);
@@ -210,10 +211,9 @@ elseif(vartrue($_POST['selectadmin']))
 
 if(vartrue($_POST['upload']))
 {
-	$mode = "choose";
+	$mode = "upload";
 }
-
-if(vartrue($_POST['selectmain']) || varset($_POST['setUploadTheme']))
+elseif(vartrue($_POST['selectmain']) || varset($_POST['setUploadTheme']))
 {
 	$mode = "main";
 }

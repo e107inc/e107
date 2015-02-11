@@ -1042,6 +1042,7 @@ class e_file
 	 * Unzip Plugin or Theme zip file and move to plugin or theme folder. 
 	 * @param string $localfile - filename located in e_TEMP
 	 * @param string $type - addon type, either 'plugin' or 'theme', (possibly 'language' in future). 
+	 * @return string unzipped folder name on success or false. 
 	 */
 	public function unzipArchive($localfile, $type)
 	{
@@ -1094,13 +1095,28 @@ class e_file
 			//$status = "Done"; // ADMIN_TRUE_ICON;		
 			@unlink(e_TEMP.$localfile);	
 			
-			return true;
+			return $dir;
 		}
 		
 		return false; 
 	}
 	
 	
-	
+	/**
+	 *	Get an array of permitted filetypes according to a set hierarchy.
+	 *	If a specific file name given, that's used. Otherwise the default hierarchy is used
+	 *
+	 *	@param string $file_mask - comma-separated list of allowed file types
+	 *	@param string $filename - optional override file name - defaults ignored
+	 *
+	 *	@return array of filetypes
+	 */
+	function getFiletypeLimits($file_mask = false, $filename = '') // Wrapper only for now. 
+	{
+		require_once(e_HANDLER."upload_handler.php");
+		$limits =  get_filetypes($file_mask, $filename);
+		ksort($limits);
+		return $limits; 
+	}
 
 }

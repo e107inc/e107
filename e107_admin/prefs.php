@@ -2281,10 +2281,34 @@ $text .= "
 // File Uploads
 
 	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_upload.php");
-
+	require_once(e_HANDLER."upload_handler.php"); 
+	
+	
+	
+	
+	
+	
 	$text .= "
 	<fieldset class='e-hideme' id='core-prefs-uploads'>
-			<legend>File Uploading</legend>
+			<legend>File Uploading</legend>";
+	
+	
+	$upload_max_filesize = ini_get('upload_max_filesize');
+	$post_max_size = ini_get('post_max_size');
+	
+	$maxINI = min($upload_max_filesize,$post_max_size); 
+	
+	if($maxINI < $pref['upload_maxfilesize'])
+	{
+		$text .= "<div class='alert-block alert alert-danger'>";
+		$text .= "The maximum upload size imposed by your php.ini settings is: ".$maxINI."</div>";
+		$pref['upload_maxfilesize'] = $maxINI;
+	}
+	
+	
+	
+			
+	$text .= "
 			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
@@ -2307,7 +2331,7 @@ $text .= "
 	<td>".
 	$frm->text('upload_maxfilesize', $pref['upload_maxfilesize'], 10)
 	 ."
-	 <div class='field-help'>".UPLLAN_34." (upload_max_filesize = ".ini_get('upload_max_filesize').", post_max_size = ".ini_get('post_max_size')." )</div>
+	 <div class='field-help'>".UPLLAN_34."</div>
 	</td>
 	</tr>
 
@@ -2317,9 +2341,41 @@ $text .= "
 	<div class='field-help'>".UPLLAN_38."</div>
 	</td>
 	</tr>
+	<tr><td>Filetype upload limits</td>
+	<td>
+
+	<table class='table table-striped table-bordered'>
+	<tr><th>".LAN_TYPE."</th><th>".UPLLAN_33."</th>
+	";
+	
+	$fl = e107::getFile();
+	$data = $fl->getFiletypeLimits(); 
+	 
+	foreach($data as $k=>$v)
+	{
+		$text .= "<tr><td>".$k."</td>
+		<td>".$fl->file_size_encode($v)."</td>
+		</tr>";	
+		
+		
+	}
+//	$text .= print_a($data,true); 
+	
+
+	
+	$text .= "</table>
+	
+	<div>** For security reasons these values may only be changed manually in the following file: <b>".str_replace("../",'',e_SYSTEM).e_READ_FILETYPES."</b></div> 
+	</td>
+	
+	
 	</tbody>
 		</table>
-			".pref_submit('uploads')."
+			".pref_submit('uploads');
+			
+			
+			
+	$text .= "
 		</fieldset>";	
 	
 	
