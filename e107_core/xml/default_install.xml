@@ -256,7 +256,7 @@ City, State, Country
 		<core name="ue_upgrade">1</core>
 		<core name="upload_class">255</core>
 		<core name="upload_enabled">0</core>
-		<core name="upload_maxfilesize"></core>
+		<core name="upload_maxfilesize">2M</core>
 		<core name='url_aliases'><![CDATA[array (
 )]]></core>
 		<core name='url_config'><![CDATA[array (
@@ -983,8 +983,8 @@ City, State, Country
 			<field name="news_title">Welcome to e107</field>
 			<field name="news_sef">welcome-to-e107</field>
 			<field name="news_body">[p]Welcome to your new website![/p][p]Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin tempus enim vel nisi fringilla, sit amet volutpat enim tincidunt. Vivamus commodo sit amet leo id viverra. Nulla facilisi. Nam et orci sodales tellus aliquet sollicitudin metus.[/p]</field>
-			<field name="news_extended">[p] [/p]</field>
-			<field name="news_meta_keywords"></field>
+			<field name="news_extended"></field>
+			<field name="news_meta_keywords">welcome,new website</field>
 			<field name="news_meta_description"></field>
 			<field name="news_datestamp">1355612400</field>
 			<field name="news_author">1</field>
