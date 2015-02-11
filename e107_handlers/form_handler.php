@@ -1169,7 +1169,7 @@ class e_form
 	
 		if(vartrue($options['size']) && !is_numeric($options['size']))
 		{
-			$options['class'] .= " input-".$options['size'];	
+			$options['class'] .= " form-control input-".$options['size'];	
 			unset($options['size']); // don't include in html 'size='. 	
 		}
 		elseif(!vartrue($options['noresize']))
@@ -1187,16 +1187,28 @@ class e_form
 	/**
 	 * Bbcode Area. Name, value, template, media-Cat, size, options array eg. counter
 	 * IMPORTANT: $$mediaCat is also used is the media-manager category identifier
+	 * @param $name
+	 * @param $value
+	 * @param $template
+	 * @param $mediaCat _common
+	 * @param $size : small | medium | large
+	 * @param $options array(); 
 	 */
 	function bbarea($name, $value, $template = '', $mediaCat='_common', $size = 'large', $options = array())
 	{
 		if(is_string($options)) parse_str($options, $options);		
 		//size - large|medium|small
 		//width should be explicit set by current admin theme
-		$size = 'input-large';
+	//	$size = 'input-large';
 		
 		switch($size)
 		{
+			case 'tiny':
+				$rows = '3';
+			//	$height = "style='height:250px'"; // inline required for wysiwyg
+			break;
+			
+			
 			case 'small':
 				$rows = '7';
 				$height = "style='height:250px'"; // inline required for wysiwyg
@@ -1218,7 +1230,7 @@ class e_form
 		}
 
 		// auto-height support
-	   	$options['class'] 	= 'tbox bbarea '.($size ? ' '.$size : '').' e-wysiwyg e-autoheight';
+	   	$options['class'] 	= 'tbox bbarea '.($size ? ' '.$size : '').' e-wysiwyg e-autoheight form-control';
 		$bbbar 				= '';
 		
 
@@ -1227,10 +1239,9 @@ class e_form
 	
 		$counter 			= vartrue($options['counter'],false); 
 		
-		$ret = "
-		<div class='bbarea {$size}'>
+		$ret = "<div class='bbarea {$size}'>
 		<div class='field-spacer'><!-- --></div>\n";
-	
+		
 
 		$ret .=	e107::getBB()->renderButtons($template,$help_tagid);
 		$ret .=	$this->textarea($name, $value, $rows, 70, $options, $counter); // higher thank 70 will break some layouts. 
