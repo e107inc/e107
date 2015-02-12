@@ -299,9 +299,9 @@ class e_parse extends e_parser
 				{
 					// Must use emulation - will probably be slow!
 					$this->utfAction = 2;
-					require (E_UTF8_PACK.'utils/unicode.php');
+					require_once(E_UTF8_PACK.'utils/unicode.php');
 					// Always load the core routines - bound to need some of them!
-					require (E_UTF8_PACK.'native/core.php');
+					require_once(E_UTF8_PACK.'native/core.php');
 				}
 			}
 //		}
