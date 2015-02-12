@@ -239,6 +239,7 @@ echo "<meta name=\"viewport\" content=\"width=device-width; initial-scale=1; max
 
 echo "<title>".(defined("e_PAGETITLE") ? e_PAGETITLE." - " : (defined("PAGE_NAME") ? PAGE_NAME." - " : "")).LAN_head_4." :: ".SITENAME."</title>\n";
 
+// print_a(get_included_files()); 
 //
 // D: Send CSS
 //
@@ -256,6 +257,8 @@ if (!isset($no_core_css) || !$no_core_css)
 // DEPRECATED, use $e_js->pluginCSS('myplug', 'style/myplug.css'[, $media = 'all|screen|...']);
 if (isset($eplug_css) && $eplug_css)
 {
+	e107::getMessage()->addDebug('Deprecated $eplug_css method detected. Use e107::css() in an e_header.php file instead.'.print_a($eplug_css,true)); 
+	
     if(!is_array($eplug_css))
 	{
 		$eplug_css = array($eplug_css);
@@ -324,6 +327,19 @@ if(defined('TEXTDIRECTION') && file_exists(THEME.'/'.strtolower(TEXTDIRECTION).'
 	$e_js->themeCSS(strtolower(TEXTDIRECTION).'.css');
 }
 
+
+// --- Load plugin Header  files  before all CSS nad JS zones.  --------
+if (vartrue($pref['e_header_list']) && is_array($pref['e_header_list']))
+{
+	foreach($pref['e_header_list'] as $val)
+	{
+		// no checks fore existing file - performance
+		e107_include(e_PLUGIN.$val."/e_header.php");
+	}
+}
+unset($e_headers);
+
+
 // ################### RENDER CSS
 
 // Other CSS - from unknown location, different from core/theme/plugin location or backward compatibility
@@ -376,6 +392,7 @@ e107::getJs()->renderJs('header_inline', 2);
 //DEPRECATED - use e107::getJs()->headerFile('{e_PLUGIN}myplug/js/my.js', $zone = 2)
 if (isset($eplug_js) && $eplug_js)
 {
+	e107::getMessage()->addDebug('Deprecated $eplug_js method detected. Use e107::js() function inside an e_header.php file instead.'.print_a($eplug_js,true)); 
 	echo "\n<!-- eplug_js -->\n";
 	echo "<script type='text/javascript' src='{$eplug_js}'></script>\n";
 }
@@ -383,7 +400,8 @@ if (isset($eplug_js) && $eplug_js)
 //FIXME - theme.js/user.js should be registered/rendered through e_jsmanager
 if (file_exists(THEME.'theme.js'))
 {
-	echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n";
+	e107::js('theme','theme.js',null,3); 
+//	echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n";
 }
 if (is_readable(e_FILE.'user.js') && filesize(e_FILE.'user.js'))
 {
@@ -413,16 +431,7 @@ if (vartrue($pref['e_meta_list']))
 	}
 }
 
-// --- Load plugin Header  files  --------
-if (vartrue($pref['e_header_list']) && is_array($pref['e_header_list']))
-{
-	foreach($pref['e_header_list'] as $val)
-	{
-		// no checks fore existing file - performance
-		e107_include(e_PLUGIN.$val."/e_header.php");
-	}
-}
-unset($e_headers);
+
 
 if (!USER && ($pref['user_tracking'] == "session") && varset($pref['password_CHAP'],0))
 {
