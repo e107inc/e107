@@ -1941,6 +1941,8 @@ function include_lan_admin($path)
 //DEPRECATED - use e107::loadLanFiles();
 function loadLanFiles($unitName, $type='runtime')
 {
+	$info = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2); 
+	e107::getMessage()->addDebug("Using deprecated function loanLanFiles(). Replace with e107::loadLanFiles().".print_a($info,true)); 
 	return e107::loadLanFiles($unitName, $type);
 }
 

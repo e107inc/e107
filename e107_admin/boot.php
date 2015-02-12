@@ -29,13 +29,18 @@ e107::coreLan('footer', true);
 // here mostly because of BC reasons
 //if(!deftrue('e_MINIMAL'))
 {
-
+	$_globalLans = e107::pref('core', 'lan_global_list'); 
 	$_plugins = e107::getPref('plug_installed');
 	if(is_array($_plugins) && count($_plugins) > 0)
 	{
 		$_plugins = array_keys($_plugins);
+		
 		foreach ($_plugins as $_p) 
 		{
+			if(in_array($_p, $_globalLans) && e_CURRENT_PLUGIN != $_p) // filter out those with globals unless we are in a plugin folder. 
+			{
+				continue; 	
+			}
 			e107::loadLanFiles($_p, 'admin');
 		}
 	}
@@ -57,7 +62,7 @@ if(!defset('e_ADMIN_UI') && !defset('e_PAGETITLE'))
 	    $link = str_replace("../","",$val[0]);
 		if(strpos(e_SELF,$link)!==FALSE)
 		{
-	    	define('e_PAGETITLE',$val[1]);
+	 //   	define('e_PAGETITLE',$val[1]);
 		}
 	}
 }
