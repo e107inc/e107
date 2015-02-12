@@ -825,7 +825,7 @@ class admin_shortcodes
 					if (is_readable(e_PLUGIN.$plugin_path.'/plugin.xml'))
 					{
 						$readFile = $xml->loadXMLfile(e_PLUGIN.$plugin_path.'/plugin.xml', true, true);
-						e107::loadLanFiles($plugin_path, 'admin');
+					//	e107::loadLanFiles($plugin_path, 'admin');
 						$eplug_caption 	= $tp->toHTML($readFile['@attributes']['name'], FALSE, 'defs, emotes_off');
 						$eplug_conffile = $readFile['administration']['configFile'];
 					}

@@ -943,6 +943,8 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 	
 		$plugs = e107::getObject('e107plugin');
 		
+		
+		
 		if(vartrue($pref['plug_installed']))
 		{
 			foreach($pref['plug_installed'] as $plug=>$vers)
@@ -969,8 +971,12 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 					{
 						continue;
 					}
-					loadLanFiles($plugin_path, 'admin');
 					
+					if(!in_array($plugin_path, $pref['lan_global_list']))
+					{
+						e107::loadLanFiles($plugin_path, 'admin');	
+					}
+								
 					$att = $tag['@attributes'];
 		
 			
