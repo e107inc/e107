@@ -135,14 +135,14 @@ class e107Bounce
 	        switch($the['action'])
 			{
 	            case 'failed':
-					e107::getEvent()->trigger('email-bounce-failed', $the);
+					e107::getEvent()->trigger('email_bounce_failed', $the);
 					$this->setUser_Bounced(null, $the['user_email']);
 					break;
 					
 	            case 'transient':
 	               
 	            //    $num_attempts  = delivery_attempts($the['user_email']);
-					e107::getEvent()->trigger('email-bounce-transient', $the);
+					e107::getEvent()->trigger('email_bounce_transient', $the);
 	                if($num_attempts  > 10)
 					{
 	                    $this->setUser_Bounced($the['user_id'], $the['user_email']);
@@ -154,7 +154,7 @@ class e107Bounce
 	                break;
 					
 	            case 'autoreply':
-	            	e107::getEvent()->trigger('email-bounce-autoreply', $the);    
+	            	e107::getEvent()->trigger('email_bounce_autoreply', $the);    
 	              //  postpone($the['user_email'], '7 days');
 	                break;
 					

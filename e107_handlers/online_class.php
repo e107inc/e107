@@ -221,7 +221,7 @@ class e_online
 					if (true === e107::getIPHandler()->add_ban(2,str_replace('--HITS--',$row['online_pagecount'],BANLAN_78),$ip,0))
 					{
 						e107::getEvent()->trigger('flood', $ip); //BC
-						e107::getEvent()->trigger('user-ban-flood', $ip);
+						e107::getEvent()->trigger('user_ban_flood', $ip);
 						exit;
 					}
 				}

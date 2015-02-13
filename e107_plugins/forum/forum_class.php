@@ -598,7 +598,7 @@ class e107forum
 //		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_post'];
 		$info['data'] = $postInfo;
 		$postId = $sql->insert('forum_post', $info);
-	  	e107::getEvent()->trigger('user-forum-post-created', $info);
+	  	e107::getEvent()->trigger('user_forum_post_created', $info);
 		$forumInfo = array();
 
 		if($postId && $updateThread)
@@ -628,7 +628,7 @@ class e107forum
 			$info['_FIELD_TYPES']['thread_total_replies'] = 'cmd';
 
 			$result = $sql->update('forum_thread', $info);
-		  	e107::getEvent()->trigger('user-forum-topic-updated', $info);
+		  	e107::getEvent()->trigger('user_forum_topic_updated', $info);
 		}
 
 		if(($result || !$updateThread) && $updateForum)
@@ -685,7 +685,7 @@ class e107forum
 		$info['data'] = $threadInfo;
 		if($newThreadId = e107::getDb()->insert('forum_thread', $info))
 		{
-		  	e107::getEvent()->trigger('user-forum-topic-created', $info);
+		  	e107::getEvent()->trigger('user_forum_topic_created', $info);
 			$postInfo['post_thread'] = $newThreadId;
 			$newPostId = $this->postAdd($postInfo, false);
 			$this->threadMarkAsRead($newThreadId);
@@ -742,7 +742,7 @@ class e107forum
 //		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
 		$info['WHERE'] = 'thread_id = '.(int)$threadId;
 		e107::getDb()->update('forum_thread', $info);
-	  	e107::getEvent()->trigger('user-forum-topic-updated', $info);
+	  	e107::getEvent()->trigger('user_forum_topic_updated', $info);
 	}
 
 	
@@ -754,7 +754,7 @@ class e107forum
 //		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_post'];
 		$info['WHERE'] = 'post_id = '.(int)$postId;
 		e107::getDb()->update('forum_post', $info);
-	  	e107::getEvent()->trigger('user-forum-post-updated', $info);
+	  	e107::getEvent()->trigger('user_forum_post_updated', $info);
 	}
 
 	
@@ -1890,7 +1890,7 @@ class e107forum
 			if($sql->delete('forum_thread', 'thread_id='.$threadId))
 			{
 				$status = true;
-			  	e107::getEvent()->trigger('user-forum-topic-deleted', $threadId);
+			  	e107::getEvent()->trigger('user_forum_topic_deleted', $threadId);
 			}
 
 			//Delete any thread tracking
@@ -1942,7 +1942,7 @@ class e107forum
 		if($sql->delete('forum_post', 'post_id='.$postId))
 		{
 			$deleted = true;
-		  	e107::getEvent()->trigger('user-forum-post-deleted', $postId);
+		  	e107::getEvent()->trigger('user_forum_post_deleted', $postId);
 		}
 
 		// update statistics

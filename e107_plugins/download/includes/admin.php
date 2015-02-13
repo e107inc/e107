@@ -1784,7 +1784,7 @@ $columnInfo = array(
 				unset($dlInfo['download_class']);         // Also replicating 0.7
 				$e_event->trigger('dlupdate', $dlInfo); // @deprecated 
 				
-				e107::getEvent()->trigger('admin-download-update',$dlInfo); 
+				e107::getEvent()->trigger('admin_download_update',$dlInfo); 
 	      }
 	      else // Its a new entry. 
 	      {
@@ -1804,7 +1804,7 @@ $columnInfo = array(
 		            unset($dlInfo['download_class']);         // Also replicating 0.7
 		            $e_event->trigger("dlpost", $dlInfo); // @deprecated 
 					
-					e107::getEvent()->trigger('admin-download-create',$dlInfo); 
+					e107::getEvent()->trigger('admin_download_create',$dlInfo); 
 		
 		            if ($_POST['remove_upload'])
 		            {
