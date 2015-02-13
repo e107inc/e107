@@ -1666,7 +1666,7 @@ class e_form
 	
 	
 	
-	//TODO 
+
 	/**
 	 * Universal Userclass selector - checkboxes, dropdown, everything. 
 	 * @param $name - form element name
@@ -1675,10 +1675,21 @@ class e_form
 	 * @param options - query string or array. 'options=admin,mainadmin,classes&vetted=1&exclusions=0' etc. 
 	 * @return the userclass form element 
 	 */
-	function userclass($name, $curval, $type, $options)
+	function userclass($name, $curval=255, $type=null, $options=null)
 	{
-
 		
+		switch ($type) 
+		{
+			case 'checkbox':
+				return e107::getUserClass()->uc_checkboxes($name,$curval,$options,null,true);
+			break;
+
+			case 'dropdown':
+			default:
+				return e107::getUserClass()->uc_dropdown($name,$curval,$options); 	
+			break;
+		}
+
 	}
 	
 	
