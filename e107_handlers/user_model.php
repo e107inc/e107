@@ -1455,8 +1455,11 @@ class e_user extends e_user_model
 		$userlogin = new userlogin();
 		$userlogin->login($uname, $upass_plain, $uauto, $uchallange, $noredirect);
 		
-		$this->setSessionData(true)
-			->setData($userlogin->getUserData());
+		$userdata  = $userlogin->getUserData(); 
+		
+		$this->setSessionData(true)->setData($userdata);
+		
+		e107::getEvent()->trigger('user_login', $userdata); 	
 
 		return $this->isUser();
 	}
@@ -1475,8 +1478,11 @@ class e_user extends e_user_model
 		$userlogin = new userlogin();
 		$userlogin->login($xup, '', 'provider', false, true);
 		
-		$this->setSessionData(true)
-			->setData($userlogin->getUserData());
+		$userdata  = $userlogin->getUserData(); 
+		
+		$this->setSessionData(true)->setData($userdata);
+			
+		e107::getEvent()->trigger('user_xup_login', $userdata); 	
 
 		return $this->isUser();
 	}
@@ -1828,9 +1834,9 @@ class e_user extends e_user_model
 	final protected function _load($user_id)
 	{
 		$qry = 'SELECT u.*, ue.* FROM #user AS u LEFT JOIN #user_extended as ue ON u.user_id=ue.user_extended_id WHERE user_id='.intval($user_id);
-		if(e107::getDb()->db_Select_gen($qry))
+		if(e107::getDb()->gen($qry))
 		{
-			return e107::getDb()->db_Fetch();
+			return e107::getDb()->fetch();
 		}
 		return array();
 	}

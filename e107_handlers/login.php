@@ -544,7 +544,7 @@ class userlogin
 					$time = time();
 					e107::getIPHandler()->add_ban(4,LAN_LOGIN_18,$this->userIP,1);
 					e107::getDb()->insert("generic", "0, 'auto_banned', '".$time."', 0, '{$this->userIP}', '{$extra_text}', '".LAN_LOGIN_20.": ".e107::getParser()->toDB($username).", ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
-					e107::getEvent()->trigger('user-ban-failed-login', array('time'=>$time, 'ip'=>$this->userIP, 'other'=>$extra_text)); 
+					e107::getEvent()->trigger('user_ban_failed_login', array('time'=>$time, 'ip'=>$this->userIP, 'other'=>$extra_text)); 
 				}
 			}
 		}

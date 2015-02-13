@@ -4017,7 +4017,7 @@ class e_admin_controller_ui extends e_admin_controller
 			return false; 
 		} 
 		
-		return 'admin-'.strtolower($plug).'-'.strtolower($type); 
+		return 'admin_'.strtolower($plug).'_'.strtolower($type); 
 
 	}
 }

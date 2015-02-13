@@ -517,7 +517,7 @@ class users_admin_ui extends e_admin_ui
 			
 			e107::getLog()->add('USET_10', str_replace(array('--UID--', '--NAME--', '--EMAIL--'), array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email')), USRLAN_166), E_LOG_INFORMATIVE);
 			$e_event->trigger('userfull', $row); //BC
-			e107::getEvent()->trigger('admin-user-activate', $row);
+			e107::getEvent()->trigger('admin_user_activate', $row);
 			
 			$mes->addSuccess(USRLAN_86." (#".$sysuser->getId()." : ".$sysuser->getName().' - '.$sysuser->getValue('email').")");
 			
@@ -581,7 +581,7 @@ class users_admin_ui extends e_admin_ui
 			
 			$eventData = array('user_id' => $sysuser->getId(), 'admin_id' => $user->getId());
 			e107::getEvent()->trigger('loginas', $eventData); // BC
-			e107::getEvent()->trigger('admin-user-loginas', $eventData); 
+			e107::getEvent()->trigger('admin_user_loginas', $eventData); 
 			
 	  	}
 	}
@@ -609,7 +609,7 @@ class users_admin_ui extends e_admin_ui
 			
 			$eventData = array('user_id' => $sysuser->getId(), 'admin_id' => $user->getId());
 			e107::getEvent()->trigger('logoutas', $eventData); //BC 
-			e107::getEvent()->trigger('admin-user-logoutas', $eventData); 
+			e107::getEvent()->trigger('admin_user_logoutas', $eventData); 
 			$this->redirect('list', 'main', true);
 	  	}
 		
@@ -1260,7 +1260,7 @@ class users_admin_ui extends e_admin_ui
 			// Add to user audit trail
 			$admin_log->user_audit(USER_AUDIT_ADD_ADMIN, $user_data, 0, $user_data['user_loginname']);
 			$e_event->trigger('userfull', $user_data);
-			e107::getEvent()->trigger('admin-user-create', $user_data); 
+			e107::getEvent()->trigger('admin_user_create', $user_data); 
 			
 			// send everything available for user data - bit sparse compared with user-generated signup
 			if(isset($_POST['sendconfemail']))

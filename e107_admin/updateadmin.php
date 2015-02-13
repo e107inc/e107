@@ -57,7 +57,7 @@ if (isset($_POST['update_settings']))
 				$e_event->trigger('adpword'); //@deprecated 
 				
 				$eventData = array('user_id'=> USERID, 'user_pwchange'=> $userData['data']['user_pwchange']); 
-				e107::getEvent()->trigger('admin-password-update',$eventData ); 
+				e107::getEvent()->trigger('admin_password_update',$eventData ); 
 				 
 				$ns->tablerender(UDALAN_2, $mes->render());
 			}

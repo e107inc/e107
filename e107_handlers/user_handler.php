@@ -1048,6 +1048,9 @@ class e_user_provider
 			$userdata['provider'] = $this->getProvider();
 			
 			e107::getEvent()->trigger('userveri', $userdata);	 // Trigger New verified user. 
+			
+			e107::getEvent()->trigger('user_xup_signup', $userdata); 
+			
 			$ret = e107::getEvent()->trigger('usersupprov', $userdata);	// XXX - it's time to pass objects instead of array? 
 			if(true === $ret) return $this;
 			
