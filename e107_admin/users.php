@@ -516,8 +516,8 @@ class users_admin_ui extends e_admin_ui
 			$sysuser->setData($row)->save();
 			
 			e107::getLog()->add('USET_10', str_replace(array('--UID--', '--NAME--', '--EMAIL--'), array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email')), USRLAN_166), E_LOG_INFORMATIVE);
-			$e_event->trigger('userfull', $row); //BC
-			e107::getEvent()->trigger('admin_user_activate', $row);
+			e107::getEvent()->trigger('userfull', $row); //BC
+			e107::getEvent()->trigger('admin_user_activated', $row);
 			
 			$mes->addSuccess(USRLAN_86." (#".$sysuser->getId()." : ".$sysuser->getName().' - '.$sysuser->getValue('email').")");
 			
@@ -1246,7 +1246,7 @@ class users_admin_ui extends e_admin_ui
 		$userMethods->addNonDefaulted($user_data);
 		validatorClass::addFieldTypes($userMethods->userVettingInfo, $allData);
 		
-		$userid = $sql->db_Insert('user', $allData);
+		$userid = $sql->insert('user', $allData);
 		if ($userid)
 		{
 			$sysuser = e107::getSystemUser(false, false);
@@ -1258,9 +1258,9 @@ class users_admin_ui extends e_admin_ui
 			e107::getLog()->add('USET_02',"UName: {$user_data['user_name']}; Email: {$user_data['user_email']}", E_LOG_INFORMATIVE);
 			
 			// Add to user audit trail
-			$admin_log->user_audit(USER_AUDIT_ADD_ADMIN, $user_data, 0, $user_data['user_loginname']);
-			$e_event->trigger('userfull', $user_data);
-			e107::getEvent()->trigger('admin_user_create', $user_data); 
+			e107::getLog()->user_audit(USER_AUDIT_ADD_ADMIN, $user_data, 0, $user_data['user_loginname']);
+			e107::getEvent()->trigger('userfull', $user_data);
+			e107::getEvent()->trigger('admin_user_created', $user_data); 
 			
 			// send everything available for user data - bit sparse compared with user-generated signup
 			if(isset($_POST['sendconfemail']))

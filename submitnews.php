@@ -119,6 +119,7 @@ if (isset($_POST['submitnews_submit']) && $_POST['submitnews_title'] && $_POST['
 		
 		$edata_sn = array("user" => $submitnews_user, "email" => $submitnews_email, "itemtitle" => $submitnews_title, "catid" => intval($_POST['cat_id']), "item" => $submitnews_item, "image" => $submitnews_file, "ip" => $ip);
 		$e_event->trigger("subnews", $edata_sn);
+		e107::getEvent()->trigger("user_news_submit", $edata_sn);
 		
 		$mes = e107::getMessage();
 		$mes->addSuccess(LAN_134);

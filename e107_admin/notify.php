@@ -69,15 +69,16 @@ class notify_config
 
 	function __construct() 
 	{
-		global $sysprefs, $eArrayStorage;
-		$ns = e107::getRender();
-		$tp = e107::getParser();
-		$pref = e107::getPref();
-		$sql = e107::getDb();
+		$ns 	= e107::getRender();
+		$tp 	= e107::getParser();
+		$pref 	= e107::getPref();
+		$sql 	= e107::getDb();
 
-//		$this -> notify_prefs = $sysprefs -> get('notify_prefs');
-//		$this -> notify_prefs = $eArrayStorage -> ReadArray($this -> notify_prefs);
 		$this->notify_prefs = e107::getConfig('notify')->getPref();
+				
+		$this->prefCleanup();
+
+	//	print_a($this->notify_prefs); 
 
 		$recalibrate = FALSE;
 		// load every e_notify.php file.
@@ -131,13 +132,33 @@ class notify_config
 		
 		if ($recalibrate) 
 		{
-			$s_prefs = $tp -> toDB($this -> notify_prefs);
-			$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
+		//	$s_prefs = $tp -> toDB($this -> notify_prefs);
+		//	$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
 		//	$sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'");
 		}
 	}
 
+	function prefCleanup()
+	{
+		$oldPrefs = e107::getEvent()->oldCoreList();
+		$curData = $this->notify_prefs['event'];
 
+		foreach($curData as $k=>$v)
+		{
+			if(isset($oldPrefs[$k]))
+			{
+				$newKey = $oldPrefs[$k];
+				$this->notify_prefs['event'][$newKey] = $v;
+				unset($this->notify_prefs['event'][$k]);	
+			}		
+		
+		}	
+					
+	}
+		
+		
+		
+		
 
 	function config()
 	{
@@ -146,8 +167,74 @@ class notify_config
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
 
-// <div>".NT_LAN_2.":</div>
 
+		$events = e107::getEvent()->coreList(); 
+		$tab = array(); 
+		
+		foreach($events as $k=>$cat)
+		{
+			$text = " <table class='table adminform'>
+        	<colgroup>
+        		<col class='col-label' />
+        		<col class='col-control' />
+        	</colgroup>";
+        	
+			foreach($cat as $c=>$ev)
+			{
+				$text .= $this -> render_event($c, $ev);		
+			}	
+			$text .= "</table>";
+			
+			$caption = str_replace("_menu","",ucfirst($k))." Events"; //TODO LAN
+			
+			$tab[] = array('caption'=>$caption, 'text' => $text);
+		}
+	
+		if(!empty($this->notify_prefs['plugins']))
+		{
+	
+			foreach ($this->notify_prefs['plugins'] as $plugin_id => $plugin_settings)
+			{
+	            if(is_readable(e_PLUGIN.$plugin_id.'/e_notify.php'))
+				{
+					$config_category = $this->pluginConfig[$plugin_id]['category'];
+					$legacy = $this->pluginConfig[$plugin_id]['legacy'];
+						
+					$text = "<table class='table adminform'>
+			        	<colgroup>
+			        		<col class='col-label' />
+			        		<col class='col-control' />
+			        	</colgroup>";
+					;
+	
+					foreach ($this->pluginConfig[$plugin_id]['events'] as $event_id => $event_text)
+					{
+						$text .= $this->render_event($event_id, $event_text, $plugin_id, $legacy);
+					}
+					
+					$text .= "</table>\n";
+					
+					$tab[] = array('caption'=> $config_category, 'text'=> $text); 
+				}
+			}
+		}
+	
+	
+	
+		$text2 = $frm->open('scanform', 'post', e_SELF); // <form action='".e_SELF."?results' method='post' id='scanform'>
+		$text2 .= $frm->tabs($tab); 
+		$text2 .= "<div class='buttons-bar center'>". $frm->admin_button('update', LAN_UPDATE,'update') . "</div>";
+		$text2 .= $frm->close(); 
+		
+
+		$ns -> tablerender(NT_LAN_1, $mes->render() . $text2);
+
+
+	return; 
+	
+
+// <div>".NT_LAN_2.":</div>
+	/*
 		$text = "
 		
 		<form action='".e_SELF."?results' method='post' id='scanform'>
@@ -182,6 +269,7 @@ class notify_config
 		$text .= $this -> render_event('userveri', NU_LAN_3);
 		$text .= $this -> render_event('login', NU_LAN_4);
 		$text .= $this -> render_event('logout', NU_LAN_5);
+		$text .= $this -> render_event('user_xup_', NU_LAN_5);
 
 		$text .= "</table></fieldset>
 		<fieldset id='core-notify-2'>
@@ -292,18 +380,26 @@ class notify_config
 		";
 
 		$ns -> tablerender(NT_LAN_1, $mes->render() . $text);
+	 */
+	 
 	}
 
 
 	function render_event($id, $description, $include='', $legacy = 0) 
 	{
-		global $uc; // $rs
 		$tp = e107::getParser();
 		$frm = e107::getForm();
+		$uc = e107::getUserClass(); 
+		
+		if(defined($description))
+		{
+			$description = constant($description); 
+		}
+			
 
 		$text = "
 			<tr>
-				<td >".$description.":	</td>
+				<td title='".$id."'>".$description.":	</td>
 				<td  class='form-inline nowrap'>
 				".$uc->uc_dropdown('event['.$id.'][class]', varset($this->notify_prefs['event'][$id]['class'],255), "nobody,main,admin,member,classes,email","onchange=\"mail_field(this.value,'event_".$id."');\" ");
 
@@ -333,6 +429,7 @@ class notify_config
 	{
 		global $sql, $pref, $eArrayStorage;
 		$this->changeList = array();
+		
 		foreach ($_POST['event'] as $key => $value)
 		{
 			if ($this -> update_event($key))
@@ -348,7 +445,7 @@ class notify_config
 		{
 		 	$pref['notify'] = FALSE;
 		}
-	  	save_prefs();
+	//  	save_prefs();
 		
 	//	print_a($this->notify_prefs);
 		/*

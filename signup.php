@@ -352,6 +352,7 @@ if (e_QUERY)
 				$admin_log->user_audit(USER_AUDIT_EMAILACK,$row);
 
 				e107::getEvent()->trigger('userveri', $row);			// Legacy event
+				e107::getEvent()->trigger('user_signup_activated', $row);	
 				e107::getEvent()->trigger('userfull', $row);			// 'New' event
 				
 				if (varset($pref['autologinpostsignup']))
@@ -682,7 +683,6 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 			}
 
 			e107::getEvent()->trigger('usersup', $_POST);  // Old trigger - send everything in the template, including extended fields.
-			// FIXME - undocummented feature - userpartial trigger (better trigger name?)
 			e107::getEvent()->trigger('userpartial', array_merge($allData['data'],$eufVals['data']));  // New trigger - send everything in the template, including extended fields.
 
 			require_once(HEADERF);
