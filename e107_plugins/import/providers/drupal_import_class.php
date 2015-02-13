@@ -1,17 +1,15 @@
 <?php
-/*
+/**
  * e107 website system
  *
  * Copyright (C) 2008-2015 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- */
-/**
  * @file
  * Each import file has an identifier which must be the same for:
  * a) This file name - add '_class.php' to get the file name
- * b) The array index of certain variables
+ * b) The array index of certain variables.
  */
 
 require_once('import_classes.php');
