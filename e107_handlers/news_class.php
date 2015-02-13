@@ -171,6 +171,7 @@ class news {
 				$data['data']['news_id'] = $news['news_id'];
 	
 				e107::getEvent()->trigger('newsupd', $data['data']);
+				e107::getEvent()->trigger('admin_news_updated', $data['data']);
 				$message = LAN_UPDATED;
 				$emessage->add(LAN_UPDATED, E_MESSAGE_SUCCESS, $smessages);
 				e107::getCache()->clear('news.php');
@@ -220,6 +221,7 @@ class news {
 				//moved down - prevent wrong mysql_insert_id
 				e107::getAdminLog()->logArrayAll('NEWS_08', $logData);
 				e107::getEvent()->trigger('newspost', $data['data']);
+				e107::getEvent()->trigger('admin_news_created', $data['data']);
 
 				//XXX - triggerHook after trigger?
 				$evdata = array('method'=>'create', 'table'=>'news', 'id'=>$data['data']['news_id'], 'plugin'=>'news', 'function'=>'submit_item');

@@ -23,7 +23,9 @@ class notify
 
 	function notify()
 	{
-		global $e_event;
+	//	global $e_event;
+		
+		$e_event = e107::getEvent(); 
 		
 		$this->notify_prefs = e107::getConfig('notify')->getPref();
 	
@@ -31,7 +33,9 @@ class notify
 		{
 			foreach ($this->notify_prefs['event'] as $id => $status)
 			{
-				if ($status['class'] != 255)
+				$include = null; 
+				
+				if ($status['class'] != e_UC_NOBODY) // 255;
 				{
 					if(varset($status['include'])) // Plugin 
 					{
@@ -50,7 +54,14 @@ class notify
 					}
 					else // core   
 					{
-						$e_event->register($id, 'notify_'.$id);			
+						if(function_exists('notify_'.$id)) // as found below. 
+						{
+							$e_event->register($id, 'notify_'.$id);	
+						}
+						else
+						{
+							$e_event->register($id, array('notify', 'generic')); // use generic notification. 		
+						}		
 					}
 					
 				
@@ -59,6 +70,19 @@ class notify
 		}
 
 		include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_notify.php');
+	//	e107::getEvent()->debug(); 
+	}
+
+
+
+
+	/**
+	 * Generic Notification method when none defined. 
+	 */
+	function generic($data,$id)
+	{
+		$message = print_a($data,true); 
+		$this->send($id, 'Event Triggered: '.$id, $message);	
 	}
 
 
@@ -78,6 +102,15 @@ class notify
 	 */
 	function send($id, $subject, $message)
 	{
+		
+		if(E107_DEBUG_LEVEL > 0)
+		{
+			$data = array('id'=>$id, 'subject'=>$subject, 'message'=>$message); 
+			e107::getLog()->add('Notify Debug', $data, E_LOG_INFORMATIVE, "NOTIFY_DBG"); 
+			return; 	
+		}
+		
+		
 		$e107 = e107::getInstance();
 		$tp = e107::getParser();
 		$sql = e107::getDb();
@@ -153,7 +186,6 @@ class notify
 				'mail_subject' 			=> $subject,
 				'mail_sender_email' 	=> e107::getPref('siteadminemail'),
 				'mail_sender_name'		=> e107::getPref('siteadmin'),
-			//	'mail_send_style'		=> 'textonly',
 				'mail_notify_complete' 	=> 0,			// NEVER notify when this email sent!!!!!
 				'mail_body' 			=> $message,
 				'template'				=> 'notify'
@@ -204,6 +236,7 @@ function notify_userveri($data)
 	$msgtext .= NT_LAN_UV_4.e107::getIPHandler()->getIP(FALSE);
 	$nt->send('userveri', NT_LAN_UV_1, $msgtext);
 }
+
 
 function notify_login($data)
 {

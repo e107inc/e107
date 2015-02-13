@@ -1286,9 +1286,15 @@ class admin_newspost
 				if ($sql->count('news','(*)',"news_id={$del_id}"))
 				{
 					e107::getEvent()->trigger("newsdel", $del_id);
+					
+					if(e107::getEvent()->trigger("admin_news_delete", $del_id)) // Allow trigger to halt process if it returns true.  
+					{
+						return; 
+					}
+					
 					if($sql->delete("news", "news_id={$del_id}"))
 					{
-						e107::getEvent()->trigger("admin_news_delete", $del_id);
+						e107::getEvent()->trigger("admin_news_deleted", $del_id);
 						e107::getLog()->add('NEWS_01',$del_id,E_LOG_INFORMATIVE,'');
 						$this->show_message(NWSLAN_31." #".$del_id." ".NWSLAN_32, E_MESSAGE_SUCCESS);
 						$this->clear_cache();
@@ -1564,7 +1570,7 @@ class admin_newspost
 				$this->clear_cache();
 
 				e107::getEvent()->trigger("newscatpost", array_merge($inserta['data'], $rwinserta['data'])); // @deprecated
-				e107::getEvent()->trigger("admin_news_category_create", array_merge($inserta['data'], $rwinserta['data']));
+				e107::getEvent()->trigger("admin_news_category_created", array_merge($inserta['data'], $rwinserta['data']));
 			}
 			else
 			{
@@ -1674,7 +1680,7 @@ class admin_newspost
 
 					
 					e107::getEvent()->trigger("newscatupd", array_merge($updatea['data'], $inserta['data'])); // @deprecated
-					e107::getEvent()->trigger("admin_news_category_update", array_merge($updatea['data'], $inserta['data']));
+					e107::getEvent()->trigger("admin_news_category_updated", array_merge($updatea['data'], $inserta['data']));
 				}
 				else
 				{

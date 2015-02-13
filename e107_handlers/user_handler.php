@@ -1047,7 +1047,7 @@ class e_user_provider
 			$userdata = $user->getData();
 			$userdata['provider'] = $this->getProvider();
 			
-			e107::getEvent()->trigger('userveri', $userdata);	 // Trigger New verified user. 
+		//	e107::getEvent()->trigger('userveri', $userdata);	 // Trigger New verified user. 
 			
 			e107::getEvent()->trigger('user_xup_signup', $userdata); 
 			
