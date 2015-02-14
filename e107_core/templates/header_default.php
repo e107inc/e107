@@ -621,8 +621,8 @@ echo "</head>\n";
     
     if(deftrue('e_IFRAME'))
     {
-        $HEADER = "";
-        $FOOTER = ""; 
+        $HEADER = deftrue('e_IFRAME_HEADER',"");
+        $FOOTER = deftrue('e_IFRAME_HEADER',"");
         $body_onload .= " class='e-iframe'";
     }
 

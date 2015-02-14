@@ -241,20 +241,15 @@ if(ADMIN && (e_QUERY == 'preview' || e_QUERY == 'test'  || e_QUERY == 'preview.a
 	exit;
 }
 
-// FIXME - strange HTML output in browser
-if ($pref['membersonly_enabled'])
+
+if (!empty($pref['membersonly_enabled']))
 {
-	$HEADER = "<div style='text-align:center; width:100%;margin-left:auto;margin-right:auto;text-align:center'><div style='width:70%;text-align:center;margin-left:auto;margin-right:auto'><br />";
-	if (file_exists(THEME."images/login_logo.png"))
-	{
-		$HEADER .= "<img src='".THEME_ABS."images/login_logo.png' alt='' />\n";
-	}
-	else
-	{
-		$HEADER .= "<img src='".e_IMAGE_ABS."logo.png' alt='' />\n";
-	}
-	$HEADER .= '<br />';
-	$FOOTER = '</div></div>';
+	$template = e107::getCoreTemplate('membersonly','signup');
+	define('e_IFRAME',true);
+	define('e_IFRAME_HEADER', $template['header'] );
+	define('e_IFRAME_FOOTER', $template['footer'] );
+	unset($template);
+
 }
 
 /*

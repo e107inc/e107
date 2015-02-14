@@ -1,21 +1,7 @@
 <?php
-/*
- * e107 website system
- *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
- * Released under the terms and conditions of the
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
- *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_themes/templates/membersonly_template.php,v $
- * $Revision$
- * $Date$
- * $Author$
- */
 
 if (!defined('e107_INIT')) { exit; }
-
+/*
 $MEMBERSONLY_BEGIN = "<div style='width:75%;margin-right:auto;margin-left:auto'><br /><br />";
 
 $MEMBERSONLY_CAPTION = "<div style='text-align:center'>".LAN_MEMBERS_0."</div>";
@@ -37,4 +23,26 @@ $MEMBERSONLY_TABLE = "
 ";
 
 $MEMBERSONLY_END = "<div>";
+*/
+
+	// e107 v2.x
+
+	$MEMBERSONLY_TEMPLATE['default']['caption']	= LAN_MEMBERS_0;
+	$MEMBERSONLY_TEMPLATE['default']['header']	= "<div class='container text-center' style='margin-right:auto;margin-left:auto'><br /><br />";
+	$MEMBERSONLY_TEMPLATE['default']['body']	= "<div class='alert alert-block alert-danger'>
+														{MEMBERSONLY_RESTRICTED_AREA} {MEMBERSONLY_LOGIN}
+														{MEMBERSONLY_SIGNUP}<br /><br />{MEMBERSONLY_RETURNTOHOME}
+
+													</div>
+													";
+
+	$MEMBERSONLY_TEMPLATE['default']['footer'] = "</div";
+
+
+
+	$MEMBERSONLY_TEMPLATE['signup']['header'] = "<div class='container'><div class='text-center'>{LOGO=login}</div>";
+	$MEMBERSONLY_TEMPLATE['signup']['footer'] = "</div>";
+
+
+
 ?>
