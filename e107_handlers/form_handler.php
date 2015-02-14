@@ -3418,6 +3418,12 @@ class e_form
 			case 'method': // Custom Function			
 				$method = $attributes['field']; // prevents table alias in method names. ie. u.my_method. 
 				$_value = $value;
+
+				if($attributes['data'] == 'array') // FIXME @SecretR - please move this to where it should be.
+				{
+					$value = e107::unserialize($value); // (saved as array, return it as an array)
+				}
+
 				$value = call_user_func_array(array($this, $method), array($value, 'read', $parms));
 				
 			//	 print_a($attributes);
