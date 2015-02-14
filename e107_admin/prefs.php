@@ -217,7 +217,8 @@ function sendTest()
 	else
 	{
 		$mailheader_e107id = USERID;
-	//	require_once(e_HANDLER.'mail.php');
+		$pref = e107::pref('core');
+
 		$add = ($pref['mailer']) ? " (".strtoupper($pref['mailer']).")" : ' (PHP)';
 		$sendto = trim($_POST['testaddress']);
 		
@@ -432,6 +433,8 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 
 			// SMTP. -------------->
 			$smtp_opts = explode(',',varset($pref['smtp_options'],''));
+
+
 			$smtpdisp = ($pref['mailer'] != 'smtp') ? "style='display:none;'" : '';
 			$text .= "<div id='smtp' {$smtpdisp}>
 			<table class='table adminlist' style='margin-right:auto;margin-left:0px;border:0px'>
@@ -464,6 +467,17 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 
 			<tr>
 				<td><label for='smtp_options'>".LAN_MAILOUT_90."</label></td><td>
+				";
+
+		$sslOpts = array(
+				'smtp_ssl' 		=> LAN_MAILOUT_92,
+				'smtp_tls'		=> LAN_MAILOUT_93,
+				'smtp_pop3auth'	=> LAN_MAILOUT_91
+		);
+
+		$text .= $frm->select('smtp_options', $sslOpts, $smtp_opts, '', LAN_MAILOUT_96);
+
+				/*
 				<select class='tbox' name='smtp_options' id='smtp_options'>\n
 				<option value=''>".LAN_MAILOUT_96."</option>\n";
 			$selected = (in_array('secure=SSL',$smtp_opts) ? " selected='selected'" : '');
@@ -472,20 +486,21 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 			$text .= "<option value='smtp_tls'{$selected}>".LAN_MAILOUT_93."</option>\n";
 			$selected = (in_array('pop3auth',$smtp_opts) ? " selected='selected'" : '');
 			$text .= "<option value='smtp_pop3auth'{$selected}>".LAN_MAILOUT_91."</option>\n";
-			$text .= "</select><span class='field-help'>".LAN_MAILOUT_94."</span></td></tr>";
+			$text .= "</select>
+			*/
+
+			$text .= "<span class='field-help'>".LAN_MAILOUT_94."</span></td></tr>";
 		
 			$text .= "<tr>
-				<td><label for='smtp_keepalive'>".LAN_MAILOUT_57."</label></td><td>
-				";
-			$checked = (varsettrue($pref['smtp_keepalive']) ) ? "checked='checked'" : '';
-			$text .= "<input type='checkbox' name='smtp_keepalive' id='smtp_keepalive' value='1' {$checked} />
+				<td><label for='smtp_keepalive'>".LAN_MAILOUT_57."</label></td><td>\n";
+
+			$text .= $frm->radio_switch('smtp_keepalive', $pref['smtp_keepalive'])."
 				</td>
 				</tr>";
-		
-			$checked = (in_array('useVERP',$smtp_opts) ? "checked='checked'" : "");
+
 			$text .= "<tr>
-				<td><label for='smtp_useVERP'>".LAN_MAILOUT_95."</label></td><td>
-				<input type='checkbox' name='smtp_useVERP' id='smtp_useVERP' value='1' {$checked} />
+				<td><label for='smtp_useVERP'>".LAN_MAILOUT_95."</label></td><td>".$frm->radio_switch('smtp_useVERP',$pref['smtp_useVERP'])."
+
 				</td>
 				</tr>
 				</table></div>";
