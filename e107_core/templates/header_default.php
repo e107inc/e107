@@ -622,7 +622,7 @@ echo "</head>\n";
     if(deftrue('e_IFRAME'))
     {
         $HEADER = deftrue('e_IFRAME_HEADER',"");
-        $FOOTER = deftrue('e_IFRAME_HEADER',"");
+        $FOOTER = deftrue('e_IFRAME_FOOTER',"");
         $body_onload .= " class='e-iframe'";
     }
 
