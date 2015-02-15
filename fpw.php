@@ -72,16 +72,34 @@ class fpw_shortcodes extends e_shortcode
 	function sc_fpw_captcha_hidden($parm='')
 	{
 		return; // no longer required - included in renderInput();
-	}	
-	
+	}
+
+	/**
+	 * @param string $parm
+	 * @return mixed|null|string
+	 */
 	function sc_fpw_captcha_img($parm='')
 	{
-		if(USE_IMAGECODE){ return $this->secImg->renderImage(); }
+		if(USE_IMAGECODE)
+		{
+			return $this->secImg->renderImage();
+		}
+
+		return null;
 	}
-	
+
+	/**
+	 * @param string $parm
+	 * @return mixed|null|string
+	 */
 	function sc_fpw_captcha_input($parm='')
 	{
-		if(USE_IMAGECODE){ return $this->secImg->renderInput(); }		
+		if(USE_IMAGECODE)
+		{
+			return $this->secImg->renderInput();
+		}
+
+		return null;
 	}
 
 	function sc_fpw_logo($parm='')
@@ -262,6 +280,7 @@ if (isset($_POST['pwsubmit']))
 		{	
 			case USER_BANNED:
 				e107::getRedirect()->redirect(SITEURL);
+				break;
 			case USER_VALIDATED:
 				break;
 			default:

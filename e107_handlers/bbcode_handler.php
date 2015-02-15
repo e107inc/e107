@@ -290,17 +290,16 @@ class e_bbcode
 	}
 
 
-
-
 	/**
-	 *	Process a bbcode
+	 *    Process a bbcode
 	 *
-	 *	@var string $code - textual value of the bbcode (already begins with '_' if a single code)
-	 *	@var string $param1 - any text after '=' in the opening code
-	 *	@var string $code_text_par - text between the opening and closing codes
-	 *	@var string $param2 - any text after '=' for the closing code
-	 *	@var char $sep - character separating bbcode name and any parameters
-	 *	@var string $full_text - the 'raw' text between, and including, the opening and closing bbcode tags
+	 * @var string $code - textual value of the bbcode (already begins with '_' if a single code)
+	 * @var string $param1 - any text after '=' in the opening code
+	 * @var string $code_text_par - text between the opening and closing codes
+	 * @var string $param2 - any text after '=' for the closing code
+	 * @var char $sep - character separating bbcode name and any parameters
+	 * @var string $full_text - the 'raw' text between, and including, the opening and closing bbcode tags
+	 * @return string
 	 */
 	private function proc_bbcode($code, $param1='', $code_text_par='', $param2='', $sep='', $full_text='')
 	{

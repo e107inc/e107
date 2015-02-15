@@ -112,7 +112,7 @@
 
 			function rep(re, str) {
 				s = s.replace(re, str);
-			};
+			}
 			
 		//	return s;
 				
@@ -233,7 +233,7 @@
 
 			function rep(re, str) {
 				s = s.replace(re, str);
-			};
+			}
 			
 	
 			// example: [b] to <strong>

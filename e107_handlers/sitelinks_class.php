@@ -645,7 +645,6 @@ class e_navigation
 				'search' 		=> E_32_SEARCH,
 				'syslogs' 		=> E_32_ADMINLOG,
 				'theme_manage' 	=> E_32_THEMEMANAGER,
-				'maintain' 		=> E_32_MAINTAIN,
 				'upload' 		=> E_32_UPLOADS,
 				'eurl' 			=> E_32_EURL,
 				'userclass' 	=> E_32_USERCLASS,

@@ -89,8 +89,8 @@ class e_form
 	 * @param string name
 	 * @param $method - post|get  default is post
 	 * @param @target - e_REQUEST_URI by default
-
-	 * @param $other - unused at the moment. 
+	 * @param $other - unused at the moment.
+	 * @return string
 	 */
 	public function open($name, $method=null, $target=null, $options=null)
 	{
@@ -245,19 +245,18 @@ class e_form
 	}
 
 
-
-	
 	/**
-	 * Render Bootstrap Carousel 
-	 * @param string $name : A unique name 
+	 * Render Bootstrap Carousel
+	 * @param string $name : A unique name
 	 * @param array $array
 	 * @param array $options : default, interval, pause, wrap
+	 * @return string
 	 * @example
 	 * $array = array(
-	 * 		'slide1' => array('caption' => 'Slide 1', 'text' => 'first slide content' ),
-	 * 		'slide2' => array('caption' => 'Slide 2', 'text' => 'second slide content' ),
-	 * 		'slide3' => array('caption' => 'Slide 3', 'text' => 'third slide content' )
-	 * 	);
+	 *        'slide1' => array('caption' => 'Slide 1', 'text' => 'first slide content' ),
+	 *        'slide2' => array('caption' => 'Slide 2', 'text' => 'second slide content' ),
+	 *        'slide3' => array('caption' => 'Slide 3', 'text' => 'third slide content' )
+	 *    );
 	 */
 	function carousel($name="e-carousel", $array, $options = null)
 	{
@@ -355,9 +354,10 @@ class e_form
 	 * @param $maxlength
 	 * @param $options
 	 *  - size: mini, small, medium, large, xlarge, xxlarge
-	 *  - class: 
-	 *  - typeahead: 'users' 
-	 * 
+	 *  - class:
+	 *  - typeahead: 'users'
+	 *
+	 * @return string
 	 */
 	function text($name, $value = '', $maxlength = 80, $options= array())
 	{
@@ -1275,7 +1275,7 @@ class e_form
 	* @param mixed $value
 	* @param boolean $checked
 	* @param mixed $options query-string or array or string for a label. eg. label=Hello&foo=bar or array('label'=>Hello') or 'Hello'
-	* @return void
+	* @return string
 	*/
 	function checkbox($name, $value, $checked = false, $options = array())
 	{
@@ -4207,6 +4207,7 @@ class e_form
 	 * @param string $id field id
 	 * @param array $fdata fieldset data
 	 * @param e_admin_model $model
+	 * @return string
 	 */
 	function renderCreateFieldset($id, $fdata, $model, $tab=0)
 	{
@@ -4663,13 +4664,14 @@ class e_form
 		";
 		return $text;
 	}
-	
-	
+
+
 	/**
-     * Generic renderForm solution
-     * @param @forms
-     * @param @nocontainer
-     */
+	 * Generic renderForm solution
+	 * @param @forms
+	 * @param @nocontainer
+	 * @return string
+	 */
 	function renderForm($forms, $nocontainer = false)
 	{
 		$text = '';

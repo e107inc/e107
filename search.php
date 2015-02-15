@@ -1447,6 +1447,7 @@ function parsesearch($text, $match)
 	return($text);
 }
 
+
 function headerjs() {
 	global $search_count, $google_id, $search_prefs, $js_adv, $search_info;
 	if ($search_prefs['selector'] == 1) {

@@ -187,7 +187,7 @@ class rss_import extends base_import_class
 		
 		return $target;  // comment out to debug 
 		
-		$this->renderDebug($source,$target);
+	//	$this->renderDebug($source,$target);
 		
 		// DEBUG INFO BELOW. 		
 		

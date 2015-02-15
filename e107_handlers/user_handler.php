@@ -514,13 +514,10 @@ class UserHandler
 	}
 
 
-
 	/**
-	 *	Return an array of descriptive names for each field in the user DB.
-	 *
-	 *	@param bool $all if false, just returns modifiable fields. Else returns all
-	 *
-	 *	$return array - key is field name, value is 'nice name' (descriptive name)
+	 * Return an array of descriptive names for each field in the user DB.
+	 * @param bool $all if false, just returns modifiable fields. Else returns all
+	 * @return array - key is field name, value is 'nice name' (descriptive name)
 	 */
 	public function getNiceNames($all = FALSE)
 	{

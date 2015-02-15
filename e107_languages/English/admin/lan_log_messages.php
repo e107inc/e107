@@ -334,9 +334,7 @@ define("LAN_AL_NEWS_11", "News category rewrite deleted");
 define("LAN_AL_NEWS_12", "News rewrite changed");
 define("LAN_AL_NEWS_13", "News rewrite deleted");
 
-// Comments
-//---------
-define("LAN_AL_COMMENT_01", "Comment(s) deleted");
+
 
 // File Manager
 //-------------

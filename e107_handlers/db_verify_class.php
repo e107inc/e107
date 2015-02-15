@@ -531,7 +531,7 @@ class db_verify
 	function fixForm($file,$table,$field, $newvalue,$mode,$after ='')
 	{
 		$frm = e107::getForm();
-		$text .= $frm->checkbox("fix[$file][$table][$field][]", $mode, false, array('id'=>false));
+		$text = $frm->checkbox("fix[$file][$table][$field][]", $mode, false, array('id'=>false));
 		
 		return $text;
 	}

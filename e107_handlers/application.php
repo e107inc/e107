@@ -677,20 +677,22 @@ class eDispatcher
 		
 		return self::$_configObjects[$reg];
 	}
-	
+
 	/**
 	 * Auto discover module location from stored in core prefs data
 	 * @param string $module
+	 * @return mixed
 	 */
 	public static function getModuleConfigLocation($module)
 	{
 		//retrieve from config prefs
 		return e107::findPref('url_config/'.$module, '');
 	}
-	
+
 	/**
 	 * Auto discover module location from stored in core prefs data
 	 * @param string $module
+	 * @return mixed|null|string
 	 */
 	public static function getDispatchLocation($module)
 	{
@@ -3893,6 +3895,7 @@ class eResponse
 	 * Assemble title
 	 * @param str $ns
 	 * @param bool $reset
+	 * @return string
 	 */
 	function getTitle($ns = 'default', $reset = false)
 	{
@@ -4104,6 +4107,7 @@ class eResponse
 	 * @param string $ns namespace/segment
 	 * @param bool $return
 	 * @param bool $render_message append system messages
+	 * @return null|string
 	 */
 	function send($ns = null, $return = true, $render_message = true)
 	{
@@ -4264,12 +4268,13 @@ class eHelper
 		$descrString = preg_replace('/[\r]*\n[\r]*/', ' ', trim(str_replace(array('"', "'"), '', strip_tags(e107::getParser()->toHTML($descrString, TRUE)))));
 		return trim(preg_replace('/[\s]+/', ' ', str_replace('_', ' ', $descrString)));
 	}
-	
+
 	/**
 	 * Convert title to valid SEF URL string
 	 * Type ending with 'l' stands for 'to lowercase', ending with 'c' - 'to camel case'
 	 * @param string $title
 	 * @param string $type dashl|dashc|dash|underscorel|underscorec|underscore|plusl|plusc|plus|none
+	 * @return mixed|string
 	 */
 	public static function title2sef($title, $type = null)
 	{

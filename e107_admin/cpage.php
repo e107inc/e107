@@ -92,16 +92,16 @@ class page_admin_form_ui extends e_admin_form_ui
 			
 		if($mode == 'write')
 		{
-			return;	
+			return null;
 		}
 			
 		if($mode == 'filter')
 		{
-			return;	
+			return null;
 		}
 		if($mode == 'batch')
 		{
-			return;
+			return null;
 		}		
 	}
 	

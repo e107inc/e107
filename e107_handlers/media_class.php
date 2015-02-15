@@ -257,16 +257,15 @@ class e_media
 		}
 		return e107::getDb()->insert('core_media_cat', $data);
 	}
-	
 
 
-	
 	/**
-	 * Create a user Media-Category. 
+	 * Create a user Media-Category.
 	 * @param $type string image | file | video
-	 * @param $userId int - leave empty for currently logged in user. 
+	 * @param $userId int - leave empty for currently logged in user.
 	 * @param $userName string - leave blank for currently logged in user
-	 * @param $parms (optional) - for future use. 
+	 * @param $parms (optional) - for future use.
+	 * @return bool|int
 	 */
 	public function createUserCategory($type='image', $userId = USERID, $userName = USERNAME, $parms=null)
 	{
@@ -416,16 +415,15 @@ class e_media
 	{
 		return $this->getImages('_common_file', $from, $amount, $search);	
 	}
-	
-	
-	
-	
+
+
 	/**
 	 * Return an array of Images in a particular category
 	 * @param string $cat : category name. use + to include _common eg. 'news+'
 	 * @param $from
 	 * @param $amount
 	 * @param $search
+	 * @return array
 	 */
 	public function getImages($cat='', $from=0, $amount=null,$search=null)
 	{
@@ -503,12 +501,12 @@ class e_media
 	}
 
 
-
 	/**
 	 * Return an array of Images in a particular category
 	 * @param string $type : 16 | 32 | 48 | 64
 	 * @param integer $from
 	 * @param integer $amount
+	 * @return array
 	 */
 	public function getIcons($type='', $from=0, $amount=null)
 	{

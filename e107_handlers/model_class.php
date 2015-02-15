@@ -3371,7 +3371,7 @@ class e_tree_model extends e_front_model
 	public function toHTML($template, $parsesc = true, $eVars = null)
 	{
 		$ret = '';
-		$i == 1;
+		$i = 1;
 		foreach ($this->getTree() as $model)
 		{
 			if($eVars) $eVars->treeCounter = $i;

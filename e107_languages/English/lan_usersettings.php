@@ -143,5 +143,5 @@ define("LAN_435", "XML User Protocol file");
 define("LAN_CUSTOMTITLE", "Custom title");
 define("LAN_USET_5", "Subscribed to");
 define("LAN_USET_6", "Subscribe to our mailing-list(s) and/or sections of this site.");
-define("LAN_USET_8", "Signature / Time zone");
+// define("LAN_USET_8", "Signature / Time zone");
 ?>

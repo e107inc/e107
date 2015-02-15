@@ -568,7 +568,7 @@ class e107
 	 * @param string $for
 	 * @return string
 	 */
-	function getFolder($for)
+	public static function getFolder($for)
 	{
 		$key = strtoupper($for).'_DIRECTORY';
 		$self = self::getInstance();

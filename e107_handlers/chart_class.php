@@ -207,10 +207,11 @@ class e_chart
 	{
 		return json_encode($this->options);	
 	}
-	
+
 	/**
 	 * Set the type of graph
-	 * @param string $type - line | bar | pie | radar | doughnut | polar 
+	 * @param string $type - line | bar | pie | radar | doughnut | polar
+	 * @return $this
 	 */
 	public function setType($type)
 	{
@@ -223,6 +224,7 @@ class e_chart
 	 * Set the data values
 	 * @param array $data
 	 * @param string $id of canvas element
+	 * @return $this
 	 */
 	public function setData($data)
 	{

@@ -123,7 +123,15 @@ class e107_db_debug {
 	}
 
 
-	function Mark_Query($query, $rli, $origQryRes, $aTrace, $mytime, $curtable) 
+	/**
+	 * @param $query
+	 * @param $rli
+	 * @param $origQryRes
+	 * @param $aTrace
+	 * @param $mytime
+	 * @param $curtable
+	 */
+	function Mark_Query($query, $rli, $origQryRes, $aTrace, $mytime, $curtable)
 	{
 	//  global $sql;
 		$sql = e107::getDb( $rli);

@@ -168,10 +168,11 @@ class e_marketplace
 		
 		return $text;
 	}
-	
+
 	/**
 	 * Retrieve currently used adapter
 	 * @param e_marketplace_adapter_abstract
+	 * @return \e_marketplace_adapter_abstract
 	 */
 	public function adapter()
 	{
@@ -652,6 +653,7 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 	 * XXX replace xmlClass::xml2array() after this one passes all tests
 	 * @param SimpleXmlIterator $xml
 	 * @param string $parentName parent node name - used currently for debug only
+	 * @return array|string
 	 */
 	public function parse($xml, $parentName = null)
 	{

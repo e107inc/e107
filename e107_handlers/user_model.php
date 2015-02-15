@@ -182,10 +182,11 @@ class e_user_model extends e_admin_model
 	{
 		return $this->get('user_loginname');
 	}
-	
+
 	/**
 	 * Real name getter. Use it as DB field name will be changed soon.
 	 * @param bool $strict if false, fall back to Display name when empty
+	 * @return mixed
 	 */
 	final public function getRealName($strict = false)
 	{

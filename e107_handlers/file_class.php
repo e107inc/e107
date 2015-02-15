@@ -137,11 +137,12 @@ class e_file
 		$this->fileFilter = $filter;	
 		return $this;	
 	}
-	
+
 	/**
 	 * Clean and rename file name
 	 * @param $f array as returned by get_files();
-	 * @param $rename boolean  - set to true to rename file. 
+	 * @param $rename boolean  - set to true to rename file.
+	 * @return array
 	 */
 	public function cleanFileName($f,$rename=false)
 	{

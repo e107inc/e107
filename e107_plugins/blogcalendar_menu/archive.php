@@ -114,7 +114,7 @@ $archive = "<div style='text-align:center'>
 $archive .= "<td colspan='{$months_per_row}'>{$year_selector}</td></tr><tr>";
 for($i = 1; $i <= 12; $i++) 
 {
-	if (++$newline == $months_per_row+1) 
+	if (++$newline == $months_per_row + 1)
 	{
 		$archive .= "</tr><tr>";
 		$newline = 1;

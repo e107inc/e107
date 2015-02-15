@@ -104,10 +104,11 @@ if(!class_exists('chatbox_shortcodes'))
 			$cb_message = e107::getParser()->toHTML($this->var['cb_message'], false, $emotes_active, $cb_uid, $pref['menu_wordwrap']);
 	
 			return $cb_message;
-	
+			/*
 			$replace[0] = "["; $replace[1] = "]";
 			$search[0] = "&lsqb;"; $search[1] =  "&rsqb;";
-			$cb_message = str_replace($search, $replace, $cb_message);	
+			$cb_message = str_replace($search, $replace, $cb_message);
+			*/
 		}
 	
 		function sc_cb_avatar($parm='')

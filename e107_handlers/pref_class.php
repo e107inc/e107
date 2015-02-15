@@ -339,6 +339,7 @@ class e_pref extends e_front_model
 	 * @param string|array $pref_name
 	 * @param mixed value
 	 * @param boolean $strict
+	 * @return $this|\e_model
 	 */
 	final public function addData($pref_name, $value = null)
 	{

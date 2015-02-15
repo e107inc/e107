@@ -147,7 +147,7 @@ exit;
 
 
 
-echo_gzipped_page(); 
+// echo_gzipped_page();
 
 class wysiwyg
 {

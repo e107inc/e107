@@ -149,11 +149,11 @@ class convert
 	}
 
 
-
 	/**
 	 * Converts between unix timestamp and human-readable date-time OR vice-versa. (auto-detected)
-	 * @param string $string unix timestamp OR human-readable date-time. 
+	 * @param string $string unix timestamp OR human-readable date-time.
 	 * @param string $mask (optional) long | short | input
+	 * @return bool|int|string
 	 */
 	function convert($string=null, $mask = 'inputdate')
 	{

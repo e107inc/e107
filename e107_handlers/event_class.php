@@ -198,7 +198,7 @@ class e107_event
 		global $pref;
 		if(!is_array($parms))
 		{
-			$_tmp = parse_str($parms, $parms);
+			parse_str($parms, $parms);
 		}
 		if(isset($pref['e_admin_events_list']) && is_array($pref['e_admin_events_list']))
 		{
