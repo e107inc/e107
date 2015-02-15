@@ -79,7 +79,7 @@ class newsfeedClass
 			
 			if (!$force && $temp = $e107->ecache->retrieve(NEWSFEED_LIST_CACHE_TAG))
 			{
-				$this->feedList = $eArrayStorage->ReadArray($temp);
+				$this->feedList = e107::unserialize($temp);
 				return;
 			}
 		}
@@ -91,9 +91,9 @@ class newsfeedClass
 			$fieldList = 'newsfeed_id, newsfeed_name, newsfeed_url, newsfeed_timestamp, newsfeed_description, newsfeed_image, newsfeed_active, newsfeed_updateint';
 		}
 		
-		if ($sql -> db_Select("newsfeed", $fieldList, '`newsfeed_active` > 0'))		// Read in all the newsfeed info on the first go
+		if ($sql->select("newsfeed", $fieldList, '`newsfeed_active` > 0'))		// Read in all the newsfeed info on the first go
 		{
-			while ($row = $sql->db_Fetch(MYSQL_ASSOC))
+			while ($row = $sql->fetch(MYSQL_ASSOC))
 			{
 				$nfID = $row['newsfeed_id'];
 				
@@ -112,7 +112,7 @@ class newsfeedClass
 		
 		if ($this->useCache)
 		{	// Cache enabled - we need to save some updated info
-			$temp = $eArrayStorage->WriteArray($this->feedList, FALSE);
+			$temp = e107::serialize($this->feedList, FALSE);
 			$e107->ecache->set(NEWSFEED_LIST_CACHE_TAG,$temp);
 		}
 	}
@@ -242,7 +242,7 @@ class newsfeedClass
 			}
 		}
 
-		return  $eArrayStorage->ReadArray($this->newsList[$feedID]['newsfeed_data']);
+		return  e107::unserialize($this->newsList[$feedID]['newsfeed_data']);
 	}
 
 

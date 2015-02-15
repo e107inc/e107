@@ -117,7 +117,7 @@ class list_admin
 		$this->row['FIELD'] = "";
 		for($i=0;$i<count($this->parent->sections);$i++)
 		{
-			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_display", 1, (varsettrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_display"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
+			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_display", 1, (vartrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_display"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
 		}
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
@@ -129,7 +129,7 @@ class list_admin
 		$this->row['FIELD'] = "";
 		for($i=0;$i<count($this->parent->sections);$i++)
 		{
-			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_open", 1, (varsettrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_open"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
+			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_open", 1, (vartrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_open"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
 		}
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
@@ -141,7 +141,7 @@ class list_admin
 		$this->row['FIELD'] = "";
 		for($i=0;$i<count($this->parent->sections);$i++)
 		{
-			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_author", 1, (varsettrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_author"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
+			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_author", 1, (vartrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_author"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
 		}
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
@@ -153,7 +153,7 @@ class list_admin
 		$this->row['CONTID'] = "list-new-{$type}-expandable-category";
 		for($i=0;$i<count($this->parent->sections);$i++)
 		{
-			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_category", 1, (varsettrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_category"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
+			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_category", 1, (vartrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_category"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
 		}
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
@@ -165,7 +165,7 @@ class list_admin
 		$this->row['CONTID'] = "list-new-{$type}-expandable-date";
 		for($i=0;$i<count($this->parent->sections);$i++)
 		{
-			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_date", 1, (varsettrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_date"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
+			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_date", 1, (vartrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_date"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
 		}
 		$text .= $this->parseTemplate('TOPIC_ROW');
 

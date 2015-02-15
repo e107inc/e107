@@ -1010,7 +1010,7 @@ class validatorClass
 				}
 				else
 				{
-					if (!varsettrue($defs['fieldOptional']))
+					if (!vartrue($defs['fieldOptional']))
 					{
 						$ret['errors'][$dest] = ERR_MISSING_VALUE;		// No source value
 					}
@@ -1021,7 +1021,7 @@ class validatorClass
 				$value = $sourceFields[$src];
 				if (!$errNum && isset($defs['enablePref']))
 				{	// Only process this field if a specified pref enables it
-					if (!varsettrue($pref[$defs['enablePref']]))
+					if (!vartrue($pref[$defs['enablePref']]))
 					{
 						continue;			// Just loop to the next field - ignore this one.
 					}
@@ -1049,7 +1049,7 @@ class validatorClass
 				{
 					if ($value == '')
 					{
-						if (!varsettrue($defs['fieldOptional']))
+						if (!vartrue($defs['fieldOptional']))
 						{
 							$errNum = ERR_MISSING_VALUE;
 						}
@@ -1061,7 +1061,7 @@ class validatorClass
 				}
 				if (!$errNum && isset($defs['maxLength']) && $tp->ustrlen($value) > $defs['maxLength'])
 				{
-					if (varsettrue($defs['longtrim']))
+					if (vartrue($defs['longtrim']))
 					{
 						$value = substr($value,0,$defs['maxLength']);
 					}
@@ -1240,7 +1240,7 @@ class validatorClass
 			if (isset($definitions[$f]))
 			{
 				$options = $definitions[$f];			// Validation options to use
-				if (!varsettrue($options['fieldOptional']) || ($v != ''))
+				if (!vartrue($options['fieldOptional']) || ($v != ''))
 				{
 					$toDo = explode(',',$options['vetMethod']);
 					foreach ($toDo as $vm)
@@ -1281,7 +1281,7 @@ class validatorClass
 								}
 								break;
 							case 3 :			// Check email address against remote server
-								if (varsettrue($pref['signup_remote_emailcheck']))
+								if (vartrue($pref['signup_remote_emailcheck']))
 								{
 									require_once(e_HANDLER."mail_validation_class.php");
 									list($adminuser,$adminhost) = split ("@", SITEADMINEMAIL);

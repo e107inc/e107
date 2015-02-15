@@ -1098,7 +1098,7 @@ if(e_ADMIN_AREA) // Load admin phrases ASAP
 if(!defined('THEME'))
 {
 
-	if (e_ADMIN_AREA && varsettrue($pref['admintheme']))
+	if (e_ADMIN_AREA && vartrue($pref['admintheme']))
 	{
 		//We have now e_IFRAME mod and USER_AREA force
 		// && (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE)

@@ -63,8 +63,7 @@ function defset($str, $default='')
  */
 function varsettrue(&$val, $default='')
 {
-	if (isset($val) && $val) { return $val; }
-	return $default;
+	return vartrue($val, $default);
 }
 
 /**
@@ -76,7 +75,9 @@ function varsettrue(&$val, $default='')
  */
 function vartrue(&$val, $default='')
 {
-	return varsettrue($val, $default);
+
+	if (isset($val) && $val) { return $val; }
+	return $default;
 }
 
 /**
@@ -468,7 +469,7 @@ class e_array {
     /**
     * @DEPRECATED: Use e107::unserialize(); instead. 
     * Returns an array from stored array data.
-    *
+    * @deprecated
     * @param string $ArrayData
     * @return array stored data
     */

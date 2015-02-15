@@ -111,13 +111,13 @@ $email_info = unserialize($row['gen_chardata']);		// Gives us sender_name, sende
 	$mail = new PHPMailer();
 
 
-	$mail->From = varsettrue($email_info['sender_email'],$pref['siteadminemail']);
-	$mail->FromName = varsettrue($email_info['sender_name'], $pref['siteadmin']);
+	$mail->From = vartrue($email_info['sender_email'],$pref['siteadminemail']);
+	$mail->FromName = vartrue($email_info['sender_name'], $pref['siteadmin']);
 	//  $mail->Host     = "smtp1.site.com;smtp2.site.com";
 	if ($pref['mailer']== 'smtp')
 	{
 		$mail->Mailer = "smtp";
-		$mail->SMTPKeepAlive = varsettrue($pref['smtp_keepalive'])  ? TRUE : FALSE;
+		$mail->SMTPKeepAlive = vartrue($pref['smtp_keepalive'])  ? TRUE : FALSE;
 		if($pref['smtp_server'])
 		{
 			$mail->Host = $pref['smtp_server'];
@@ -205,7 +205,7 @@ $email_info = unserialize($row['gen_chardata']);		// Gives us sender_name, sende
 	$mail_head .= "<html xmlns='http://www.w3.org/1999/xhtml' >\n";
 	$mail_head .= "<head><meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />\n";
 
-	if (varsettrue($email_info['use_theme']))
+	if (vartrue($email_info['use_theme']))
 	{
 		$theme = $THEMES_DIRECTORY.$pref['sitetheme']."/";
         $style_css = file_get_contents(e_THEME.$pref['sitetheme']."/style.css");

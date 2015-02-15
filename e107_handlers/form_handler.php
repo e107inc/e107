@@ -2452,7 +2452,7 @@ class e_form
         $count = 0;
 		foreach($fieldarray as $key=>$val)
 		{
-			if ((in_array($key, $columnPref) || $key=='options' || varsettrue($val['forced'])) && !vartrue($val['nolist']))
+			if ((in_array($key, $columnPref) || $key=='options' || vartrue($val['forced'])) && !vartrue($val['nolist']))
 			{
 				$class = vartrue($val['class']) ? 'class="'.$val['class'].'"' : '';
 				$width = vartrue($val['width']) ? ' style="width:'.$val['width'].'"' : '';
@@ -2523,7 +2523,7 @@ class e_form
 					<th id='e-column-".str_replace('_', '-', $key)."'{$cl}>
 				";
 
-                if($querypattern!="" && !varsettrue($val['nosort']) && $key != "options" && $key != "checkboxes")
+                if($querypattern!="" && !vartrue($val['nosort']) && $key != "options" && $key != "checkboxes")
 				{
 					$from = ($key == $field) ? $fromval : 0;
 					$srch = array("[FIELD]","[ASC]","[FROM]");

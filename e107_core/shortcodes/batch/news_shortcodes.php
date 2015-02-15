@@ -153,7 +153,7 @@ class news_shortcodes extends e_shortcode
 	function sc_trackback($parm)
 	{
 		global $pref;
-		if(!varsettrue($pref['trackbackEnabled'])) { return ''; }
+		if(!vartrue($pref['trackbackEnabled'])) { return ''; }
 		$news_item = $this->news_item;
 		$news_item['#'] = 'track';
 		

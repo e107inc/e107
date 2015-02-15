@@ -102,7 +102,7 @@ if (USER == TRUE || ADMIN == TRUE)
 
 		// ------------ News Stats -----------
 
-		if (varsettrue($loginPrefs['new_news']))
+		if (vartrue($loginPrefs['new_news']))
 		{
 			$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
             $menu_data['new_news'] = $sql->count("news", "(*)", "WHERE `news_datestamp` > {$time} AND news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.")");
@@ -111,7 +111,7 @@ if (USER == TRUE || ADMIN == TRUE)
 
 		// ------------ Comments Stats -----------
 
-		if (varsettrue($loginPrefs['new_comments']))
+		if (vartrue($loginPrefs['new_comments']))
 		{
 			$menu_data['new_comments'] = $sql->count('comments', '(*)', 'WHERE `comment_datestamp` > '.$time);
 			$new_total += $menu_data['new_comments'];
@@ -119,7 +119,7 @@ if (USER == TRUE || ADMIN == TRUE)
 
 		// ------------ Member Stats -----------
 
-		if (varsettrue($loginPrefs['new_members'])) 
+		if (vartrue($loginPrefs['new_members']))
         {
 			$menu_data['new_users'] = $sql->count('user', '(user_join)', 'WHERE user_join > '.$time);
 			$new_total += $menu_data['new_users'];
@@ -127,7 +127,7 @@ if (USER == TRUE || ADMIN == TRUE)
 		
 		// ------------ Enable stats / other ---------------
 		
-		$menu_data['enable_stats'] = $menu_data || varsettrue($loginPrefs['external_stats']) ? true : false;
+		$menu_data['enable_stats'] = $menu_data || vartrue($loginPrefs['external_stats']) ? true : false;
 		$menu_data['new_total'] = $new_total + $loginClass->get_stats_total();
 		$menu_data['link_bullet'] = $bullet;
 		$menu_data['link_bullet_src'] = $bullet_src;
@@ -176,7 +176,7 @@ else
 	}
 
 	$text = '<form method="post" action="'.e_SELF.(e_QUERY ? '?'.e_QUERY : '');
-	if (varsettrue($pref['password_CHAP'],0))
+	if (vartrue($pref['password_CHAP'],0))
 	{
 	  $text .= '" onsubmit="hashLoginPassword(this)';
 	}

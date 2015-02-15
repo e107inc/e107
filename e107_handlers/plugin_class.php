@@ -392,7 +392,7 @@ class e107plugin
 					{
 						// print_a($plug_info);
 						$pluginDBList[$plugin_path]['status'] = 'update';
-						$pluginDBList[$plugin_path]['plugin_category'] = (varsettrue($plug_info['category'])) ? $plug_info['category'] : "misc";
+						$pluginDBList[$plugin_path]['plugin_category'] = (vartrue($plug_info['category'])) ? $plug_info['category'] : "misc";
 					}
 
 					// If plugin not installed, and version number of files changed, update version as well
@@ -2140,7 +2140,7 @@ class e107plugin
 
 				case 'uninstall': //If uninstalling, remove all userclasses (active or inactive)
 
-					if (varsettrue($this->unInstallOpts['delete_userclasses'], FALSE))
+					if (vartrue($this->unInstallOpts['delete_userclasses'], FALSE))
 					{
 						$status = $this->manage_userclass('remove', $name, $description) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 						$mes->add('Removing Userclass: '.$name, $status);
@@ -2205,7 +2205,7 @@ class e107plugin
 
 				case 'uninstall': //If uninstalling, remove all extended fields (active or inactive)
 
-					if (varsettrue($this->unInstallOpts['delete_xfields'], FALSE))
+					if (vartrue($this->unInstallOpts['delete_xfields'], FALSE))
 					{
 						$status = ($this->manage_extended_field('remove', $name, $attrib, $source)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 						$mes->add('Removing Extended Field: '.$name.' ... ', $status);

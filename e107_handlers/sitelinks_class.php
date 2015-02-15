@@ -216,7 +216,7 @@ class sitelinks
 		{
 			return;
 		}
-		$sub['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && !varsettrue($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])) ?  TRUE : FALSE;              		
+		$sub['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && !vartrue($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])) ?  TRUE : FALSE;
 						
 		foreach($this->eLinkList[$main_linkid] as $val) // check that something in the submenu is actually selected.
  		{
@@ -236,7 +236,7 @@ class sitelinks
 		foreach ($this->eLinkList[$main_linkid] as $sub)
 		{
 			$id = "sub_".$sub['link_id'];
-			$sub['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && !varsettrue($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$id]) && is_array($this->eLinkList[$id])) ?  TRUE : FALSE;              		
+			$sub['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && !vartrue($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$id]) && is_array($this->eLinkList[$id])) ?  TRUE : FALSE;
 			$class = "sublink-level-".($level+1);
 			$class .= ($css_class) ? " ".$css_class : "";
 			$text .= $this->makeLink($sub, TRUE, $aSubStyle,$class );
@@ -1251,9 +1251,9 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			
 			$replace[0] = str_replace(" ", "&nbsp;", $e107_vars[$act]['text']);
 			// valid URLs
-			$replace[1] = str_replace(array('&amp;', '&'), array('&', '&amp;'), varsettrue($e107_vars[$act]['link'], "#{$act}"));
+			$replace[1] = str_replace(array('&amp;', '&'), array('&', '&amp;'), vartrue($e107_vars[$act]['link'], "#{$act}"));
 			$replace[2] = '';
-			if (varsettrue($e107_vars[$act]['include']))
+			if (vartrue($e107_vars[$act]['include']))
 			{
 				$replace[2] = $e107_vars[$act]['include'];
 				//$replace[2] = $js ? " onclick=\"showhideit('".$act."');\"" : " onclick=\"document.location='".$e107_vars[$act]['link']."'; disabled=true;\"";
@@ -1286,7 +1286,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				$START_SUB = $tmpl['start_sub'];	
 			}		
 	
-			if (varsettrue($e107_vars[$act]['sub']))
+			if (vartrue($e107_vars[$act]['sub']))
 			{
 				$replace[6] = $id ? " id='eplug-nav-{$rid}-sub'" : '';
 				$replace[7] = ' '.varset($e107_vars[$act]['link_class'], 'e-expandit');

@@ -281,7 +281,7 @@ if (isset($eplug_css) && $eplug_css)
 	} 
 
 //NEW - Iframe mod
-if (!defsettrue('e_IFRAME') && isset($pref['admincss']) && $pref['admincss'] && !vartrue($_GET['configure']))
+if (!deftrue('e_IFRAME') && isset($pref['admincss']) && $pref['admincss'] && !vartrue($_GET['configure']))
 {
 	$css_file = file_exists(THEME.'admin_'.$pref['admincss']) ? 'admin_'.$pref['admincss'] : $pref['admincss'];
 	//echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";

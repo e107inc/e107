@@ -1683,11 +1683,14 @@ class themeHandler
 	}
 
 
-
+	/**
+	 * @param $name
+	 */
 	function installContentCheck($name)
 	{
 		$file = e_THEME.$name."/install/install.xml";
 		$frm = e107::getForm();
+		$tp = e107::getParser();
 		
 		if(!is_readable($file))
 		{
@@ -1711,7 +1714,7 @@ class themeHandler
 			$data = array('x'=> $count, 'y' => $val['@attributes']['name']); 	
 			$lan = "Replace/Overwrite [x] record(s) in your [y] table. ";
 	
-			$text .= "<li>".$lng->translate($lan, $data)."</li>";
+			$text .= "<li>".$tp->lanVars($lan, $data)."</li>";
 				
 		}
 		$text .= "</ul>
@@ -1734,19 +1737,12 @@ class themeHandler
 		e107::getXml()->e107Import($file, 'replace', true, false); // Overwrite specific core pref and tables entries. 
 		$mes->addSuccess(LAN_UPDATED);
 	}
-				
-			
-			
-		
 
 
-
-
-
-
-
-
-	
+	/**
+	 * @param $theme
+	 * @return int|string
+	 */
 	function findDefault($theme)
 	{
 		if(varset($_POST['layout_default']))

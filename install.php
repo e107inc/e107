@@ -1448,9 +1448,9 @@ class e_install
 	 */
 	public function install_plugin($plugpath) //FIXME - requires default plugin table entries, see above.
 	{
-		e107::getDb()->db_Select_gen("SELECT * FROM #plugin WHERE plugin_path = '".$plugpath."' LIMIT 1");
-		$row = e107::getDb()->db_Fetch(MYSQL_ASSOC);
-		e107::getSingleton('e107plugin')->install_plugin($row['plugin_id']);
+		e107::getDb()->gen("SELECT * FROM #plugin WHERE plugin_path = '".$plugpath."' LIMIT 1");
+		$row = e107::getDb()->fetch(MYSQL_ASSOC);
+		e107::getPlugin()->install_plugin($row['plugin_id']);
 		
 		e107::getMessage()->reset(false, false, true);
 		

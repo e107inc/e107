@@ -674,7 +674,7 @@ if (isset($_POST['delete_cancel'])) // delete cancelled - redirect back to 'mana
 	exit;
 }
 
-if (vartrue($action) == "delete" && $sub_action && varsettrue($_POST['delete_confirm'])) // delete has been confirmed, process
+if (vartrue($action) == "delete" && $sub_action && vartrue($_POST['delete_confirm'])) // delete has been confirmed, process
 {
 	if($sql->db_Delete("banner", "banner_id=".intval($sub_action)))
 	{

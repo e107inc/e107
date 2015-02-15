@@ -875,7 +875,7 @@ switch ($action)
 		if (!isset($banlist_notes)) $banlist_notes = '';
 
 		$page_title = array('edit' => BANLAN_60, 'add' => BANLAN_9, 'whedit' => BANLAN_59, 'whadd' => BANLAN_58);
-		$rdns_warn = varsettrue($pref['enable_rdns']) ? '' : '<div class="field-help error">'.BANLAN_12.'</div>';
+		$rdns_warn = vartrue($pref['enable_rdns']) ? '' : '<div class="field-help error">'.BANLAN_12.'</div>';
 		$next = ($action == 'whedit' || $action == 'whadd') ? '?white' : '?list';
 		// Edit/add form first
 		$text .= "
@@ -1003,7 +1003,7 @@ switch ($action)
 				$error = true;
 				$mes->addError(BANLAN_47);
 			}
-			if(empty($files) || varsettrue($files[0]['error']))
+			if(empty($files) || vartrue($files[0]['error']))
 			{
 				$error = true;
 				if(varset($files[0]['message']))

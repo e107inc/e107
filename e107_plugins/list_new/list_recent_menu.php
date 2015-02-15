@@ -44,7 +44,7 @@ $rc->mode = "recent_menu";
 //parse menu
 $text = $rc->displayMenu();
 
-$caption = varsettrue($rc->list_pref[$rc->mode."_caption"], LIST_MENU_1);
+$caption = vartrue($rc->list_pref[$rc->mode."_caption"], LIST_MENU_1);
 $caption = $rc->e107->tp->toHtml($caption, FALSE, 'USER_TITLE');
 $text = $rc->e107->tp->toHtml($text, TRUE, 'USER_BODY');
 $rc->e107->ns->tablerender($caption, $text, 'list_recent');

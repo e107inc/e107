@@ -370,7 +370,7 @@ class e_db_mysql
 		$userstring = ( USER === true ? USERNAME : "LAN_ANONYMOUS");
 		$ip = e107::getIPHandler()->getIP(FALSE);
 		$qry = $tp->toDB($log_query);
-		$this->db_Insert('dblog', "0, {$time_sec}, {$time_usec}, '{$log_type}', 'DBDEBUG', {$uid}, '{$userstring}', '{$ip}', '', '{$log_remark}', '{$qry}'");
+		$this->insert('dblog', "0, {$time_sec}, {$time_usec}, '{$log_type}', 'DBDEBUG', {$uid}, '{$userstring}', '{$ip}', '', '{$log_remark}', '{$qry}'");
 	}
 
 
@@ -1280,7 +1280,10 @@ class e_db_mysql
 			}
 		}
 	}
-	
+
+	/**
+	 * @deprecated use $sql->delete();
+	 */
 	function db_Delete($table, $arg = '', $debug = FALSE, $log_type = '', $log_remark = '')
 	{
 		return $this->delete($table, $arg, $debug, $log_type, $log_remark);
@@ -2191,8 +2194,7 @@ class e_db_mysql
 				$temp = file_get_contents(e_CACHE_DB.$tableName.'.php', FILE_TEXT);
 				if ($temp !== FALSE)
 				{
-					$array = e107::getArrayStorage();
-					$typeDefs = $array->ReadArray($temp);
+					$typeDefs = e107::unserialize($temp);
 					unset($temp);
 					$this->dbFieldDefs[$tableName] = $typeDefs;
 				}

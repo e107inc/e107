@@ -1390,15 +1390,15 @@ class e_parse extends e_parser
 		}
 
 		// Turn off a few things if not enabled in options
-		if(!varsettrue($pref['smiley_activate']))
+		if(!vartrue($pref['smiley_activate']))
 		{
 			$opts['emotes'] = FALSE;
 		}
-		if(!varsettrue($pref['make_clickable']))
+		if(!vartrue($pref['make_clickable']))
 		{
 			$opts['link_click'] = FALSE;
 		}
-		if(!varsettrue($pref['link_replace']))
+		if(!vartrue($pref['link_replace']))
 		{
 			$opts['link_replace'] = FALSE;
 		}

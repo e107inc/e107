@@ -360,7 +360,7 @@ class lancheck
 		}
 		
 		// Write the language file.
-		if(isset($_POST['submit']) && varsettrue($_POST['lan']) && in_array($_POST['lan'],$acceptedLans))
+		if(isset($_POST['submit']) && vartrue($_POST['lan']) && in_array($_POST['lan'],$acceptedLans))
 		{
 			
 			$this->write_lanfile($_POST['lan']);	
@@ -368,7 +368,7 @@ class lancheck
 		} 
 		
 		// Edit the Language File.
-		if(varsettrue($_GET['f']) && varsettrue($_GET['lan']) && in_array($_GET['lan'],$acceptedLans))
+		if(vartrue($_GET['f']) && vartrue($_GET['lan']) && in_array($_GET['lan'],$acceptedLans))
 		{
 			
 			if (!$_GET['mode'])
@@ -491,13 +491,13 @@ class lancheck
 		$icon = ($_SESSION['lancheck'][$_POST['language']]['total']>0) ? ADMIN_FALSE_ICON : ADMIN_TRUE_ICON;	
 		
 		
-		$errors_diz = (defsettrue('LAN_CHECK_23')) ? LAN_CHECK_23 : "Errors Found";
+		$errors_diz = (deftrue('LAN_CHECK_23')) ? LAN_CHECK_23 : "Errors Found";
 		
 		$message .= $errors_diz.": ".$_SESSION['lancheck'][$_POST['language']]['total'];	
 	
-		$just_go_diz = (defsettrue('LAN_CHECK_20')) ? LAN_CHECK_20 : "Generate Language Pack";
-		$lang_sel_diz = (defsettrue('LAN_CHECK_21')) ? LAN_CHECK_21 : "Verify Again";
-		$lan_pleasewait = (defsettrue('LAN_PLEASEWAIT')) ?  $tp->toJS(LAN_PLEASEWAIT) : "Please Wait";
+		$just_go_diz = (deftrue('LAN_CHECK_20')) ? LAN_CHECK_20 : "Generate Language Pack";
+		$lang_sel_diz = (deftrue('LAN_CHECK_21')) ? LAN_CHECK_21 : "Verify Again";
+		$lan_pleasewait = (deftrue('LAN_PLEASEWAIT')) ?  $tp->toJS(LAN_PLEASEWAIT) : "Please Wait";
 		
 		$message .= "
 		<br /><br />
@@ -540,7 +540,7 @@ class lancheck
 		$kom_start = chr(47)."*";
 		$kom_end = "*".chr(47);
 	
-		if(varsettrue($_SESSION['lancheck-edit-file']))
+		if(vartrue($_SESSION['lancheck-edit-file']))
 		{
 			$writeit = $_SESSION['lancheck-edit-file'];
 		}
@@ -614,7 +614,7 @@ class lancheck
 				$defvar = $_POST['newdef'][$i];
 			}
 	
-			if($_POST['newdef'][$i] == "LC_ALL" && varsettrue($_SESSION['lancheck-edit-file']))
+			if($_POST['newdef'][$i] == "LC_ALL" && vartrue($_SESSION['lancheck-edit-file']))
 			{
 				$message .= $notdef_start.'setlocale('.htmlentities($defvar).','.$deflang.');<br />'.$notdef_end;
 				$input .= $notdef_start."setlocale(".$defvar.",".$deflang.");".$notdef_end;

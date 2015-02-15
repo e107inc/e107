@@ -443,7 +443,7 @@ class e_session
 		if (empty($this->_options['domain']))
 		{
 			// MULTILANG_SUBDOMAIN set during initial language detection in language handler
-			$doma = ((!e_SUBDOMAIN || defsettrue('MULTILANG_SUBDOMAIN')) && e_DOMAIN != FALSE) ? ".".e_DOMAIN : FALSE; // from v1.x
+			$doma = ((!e_SUBDOMAIN || deftrue('MULTILANG_SUBDOMAIN')) && e_DOMAIN != FALSE) ? ".".e_DOMAIN : FALSE; // from v1.x
 			$this->_options['domain'] = $doma;
 		}
 

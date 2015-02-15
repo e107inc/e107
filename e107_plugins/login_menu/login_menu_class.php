@@ -122,8 +122,8 @@ class login_menu_class
         //$lbox_admin = varsettrue($eplug_admin, false);
         $coreplugs = $this->get_coreplugs(); 
         
-        $lprefs = varsettrue($this->loginPrefs['external_links']) ? explode(',', $this->loginPrefs['external_links']) : array();
-        $sprefs = varsettrue($this->loginPrefs['external_stats']) ? explode(',', $this->loginPrefs['external_stats']) : array();
+        $lprefs = vartrue($this->loginPrefs['external_links']) ? explode(',', $this->loginPrefs['external_links']) : array();
+        $sprefs = vartrue($this->loginPrefs['external_stats']) ? explode(',', $this->loginPrefs['external_stats']) : array();
         
         if($active) 
 		{
@@ -226,15 +226,15 @@ class login_menu_class
         $ret = '';
 
         $lbox_infos = $this->parse_external_list(false);
-        if(!varsettrue($lbox_infos['links'])) return '';
+        if(!vartrue($lbox_infos['links'])) return '';
         
-        $enabled = varsettrue($this->loginPrefs['external_links']) ? explode(',', $this->loginPrefs['external_links']) : array();
+        $enabled = vartrue($this->loginPrefs['external_links']) ? explode(',', $this->loginPrefs['external_links']) : array();
         
         $num = 1;
         foreach ($lbox_infos['links'] as $id => $stack) {
             $links = array();
             foreach ($stack as $value) {
-            	$links[] = '<a href="'.$value['link_url'].'">'.varsettrue($value['link_label'], '['.LOGIN_MENU_L44.']').'</a>';
+            	$links[] = '<a href="'.$value['link_url'].'">'.vartrue($value['link_label'], '['.LOGIN_MENU_L44.']').'</a>';
             }
             
             $plug_data = $this->get_plugin_data($id);
@@ -276,11 +276,11 @@ class login_menu_class
 	{
         $ret = '';
         $lbox_infos = $this->parse_external_list(false);
-        $lbox_infos = varsettrue($lbox_infos['stats'], array());
+        $lbox_infos = vartrue($lbox_infos['stats'], array());
 
         if(!$lbox_infos) return '';
 
-        $enabled = varsettrue($this->loginPrefs['external_stats']) ? explode(',', $this->loginPrefs['external_stats']) : array();
+        $enabled = vartrue($this->loginPrefs['external_stats']) ? explode(',', $this->loginPrefs['external_stats']) : array();
         
         $num = 1;
         foreach ($lbox_infos as $id => $stack) 
@@ -314,7 +314,7 @@ class login_menu_class
     function get_stats_total() 
 	{
         $lbox_infos = $this->parse_external_list(true, false);
-        if(!varsettrue($lbox_infos['stats'])) 
+        if(!vartrue($lbox_infos['stats']))
 		{
 			return 0;
 		}
@@ -380,7 +380,7 @@ class login_menu_class
     
         foreach($link_items as $key => $value) 
 		{
-            if(!varsettrue($value['link_url'])) 
+            if(!vartrue($value['link_url']))
 			{
                 unset($link_items[$key]);
             }

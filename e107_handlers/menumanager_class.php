@@ -58,7 +58,7 @@ class e_menuManager {
 				}
 				else
 				{
-					$this->curLayout = varsettrue($_GET['configure'], $pref['sitetheme_deflayout']);
+					$this->curLayout = vartrue($_GET['configure'], $pref['sitetheme_deflayout']);
 				}
 
 				$this->dbLayout = ($this->curLayout != $pref['sitetheme_deflayout']) ? $this->curLayout : "";  //menu_layout is left blank when it's default.
@@ -1154,7 +1154,7 @@ class e_menuManager {
 	
 	function menuSetCode($matches, &$ret)
 	{
-		if(!$matches || !varsettrue($matches[1]))
+		if(!$matches || !vartrue($matches[1]))
 		{
 			return;
 		}

@@ -644,7 +644,7 @@ class e_layout
 			
 		*/
 						
-			$this->curLayout = varsettrue($_GET['configure'], $pref['sitetheme_deflayout']);
+			$this->curLayout = vartrue($_GET['configure'], $pref['sitetheme_deflayout']);
 			$this->renderLayout($this->curLayout);	
 			
 		

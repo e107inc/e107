@@ -2626,7 +2626,7 @@ class e_user_pref extends e_front_model
 			if(!empty($data))
 			{
 				// BC
-				$data = substr($data, 0, 5) == "array" ? e107::getArrayStorage()->ReadArray($data) : unserialize($data);
+				$data = substr($data, 0, 5) == "array" ? e107::unserialize($data) : unserialize($data);
 				if(!$data) $data = array();
 			}
 			else $data = array();

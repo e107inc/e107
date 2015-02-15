@@ -383,7 +383,7 @@ class eMessage
 		{
 			return constant('EMESSLAN_TITLE_'.strtoupper($type.'_'.$message_stack));
 		}
-		return defsettrue('EMESSLAN_TITLE_'.strtoupper($type), '');
+		return deftrue('EMESSLAN_TITLE_'.strtoupper($type), '');
 	}
 	
 	

@@ -476,7 +476,7 @@ class e_news_item extends e_front_model
 		$val = $this->field($field, '');
 
 		//do more with $parm array, just an example here
-		if(varsettrue($parm['format']))
+		if(vartrue($parm['format']))
 		{
 			switch ($parm['format'])
 			{
@@ -485,7 +485,7 @@ class e_news_item extends e_front_model
 					$method = 'toHTML';
 					$callback = e107::getParser();
 					$parm['arg'] = explode(',', varset($parm['arg']));
-					$parm['arg'][0] = varsettrue($parm['arg'][0]) ? true : false; //to boolean
+					$parm['arg'][0] = vartrue($parm['arg'][0]) ? true : false; //to boolean
 					$params = array($val); //value is always the first callback argument
 					$params += $parm['arg'];
 				break;

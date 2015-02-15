@@ -89,7 +89,7 @@ class core_mailout
 		$res = array();
 		foreach ($this->selectFields as $k)
 		{
-			if (varsettrue($_POST[$k]))
+			if (vartrue($_POST[$k]))
 			{
 				$res[$k] = $tp->toDB($_POST[$k]);
 			}

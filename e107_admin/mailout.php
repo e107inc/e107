@@ -1004,7 +1004,7 @@ class mailout_main_ui extends e_admin_ui
 	$text .= "<tr>
 		<td>".LAN_MAILOUT_57."</td><td>
 		";
-	$checked = (varsettrue($pref['smtp_keepalive']) ) ? "checked='checked'" : '';
+	$checked = (vartrue($pref['smtp_keepalive']) ) ? "checked='checked'" : '';
 	$text .= "<input type='checkbox' name='smtp_keepalive' value='1' {$checked} />
 		</td>
 		</tr>";
@@ -1271,8 +1271,8 @@ class mailout_main_ui extends e_admin_ui
 		    $smtp_opts[] = 'pop3auth';
 			break;
 		}
-		if (varsettrue($_POST['smtp_keepalive'])) $smtp_opts[] = 'keepalive';
-		if (varsettrue($_POST['smtp_useVERP'])) $smtp_opts[] = 'useVERP';
+		if (vartrue($_POST['smtp_keepalive'])) $smtp_opts[] = 'keepalive';
+		if (vartrue($_POST['smtp_useVERP'])) $smtp_opts[] = 'useVERP';
 	
 		$temp['smtp_options'] = implode(',',$smtp_opts);
 	

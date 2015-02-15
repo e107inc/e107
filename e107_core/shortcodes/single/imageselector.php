@@ -27,7 +27,7 @@ function imageselector_shortcode($parm = '', $mod = '')
 		$path = ""; // remove the default path if a constant is used.
 	}
 
-	$scaction = varsettrue($scaction, 'all');
+	$scaction = vartrue($scaction, 'all');
 	$text = '';
 	$name_id = e107::getForm()->name2id($name);
 	$imagelist = array();

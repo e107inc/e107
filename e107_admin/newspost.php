@@ -1053,7 +1053,7 @@ class admin_newspost
 	function parseRequest($qry)
 	{
 		$tmp = explode(".", $qry);
-		$action = varsettrue($tmp[0], 'main');
+		$action = vartrue($tmp[0], 'main');
 		$sub_action = varset($tmp[1], '');
 		$id = isset($tmp[2]) && is_numeric($tmp[2]) ? intval($tmp[2]) : 0;
 		$this->_sort_order = isset($tmp[2]) && !is_numeric($tmp[2]) ? $tmp[2] : 'desc';
@@ -2149,7 +2149,7 @@ class admin_newspost
 				$_POST['news_body'] = $row['submitnews_item'];
 				$_POST['cat_id'] = $row['submitnews_category'];
 
-				if (defsettrue('e_WYSIWYG'))
+				if (deftrue('e_WYSIWYG'))
 				{
 				  if (substr($_POST['news_body'],-7,7) == '[/html]') $_POST['news_body'] = substr($_POST['news_body'],0,-7);
 				  if (substr($_POST['news_body'],0,6) == '[html]') $_POST['news_body'] = substr($_POST['news_body'],6);

@@ -3287,7 +3287,7 @@ class e107
 		if	(
 			 (!$isPluginDir && strpos($e107Path, $ADMIN_DIRECTORY) === 0 ) 									// Core admin directory
 			  || ($isPluginDir && (strpos(e_PAGE,'_admin.php') !== false || strpos(e_PAGE,'admin_') === 0 || strpos($e107Path, 'admin/') !== FALSE)) // Plugin admin file or directory
-			  || (varsettrue($eplug_admin) || defsettrue('ADMIN_AREA'))		// Admin forced
+			  || (vartrue($eplug_admin) || deftrue('ADMIN_AREA'))		// Admin forced
 			  || (preg_match('/^\/(.*?)\/user(settings\.php|\/edit)(\?|\/)(\d+)$/i', $_SERVER['REQUEST_URI']) && ADMIN)
 			)
 		{

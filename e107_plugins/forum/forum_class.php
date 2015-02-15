@@ -454,12 +454,12 @@ class e107forum
 		$e107 = e107::getInstance();
 		if($tmp = $e107->ecache->retrieve_sys('forum_perms'))
 		{
-			$this->permList = $e107->arrayStorage->ReadArray($tmp);
+			$this->permList = e107::unserialize($tmp);
 		}
 		else
 		{
 			$this->_getForumPermList();
-			$tmp = $e107->arrayStorage->WriteArray($this->permList, false);
+			$tmp = e107::serialize($this->permList, false);
 			$e107->ecache->set_sys('forum_perms', $tmp);
 		}
 		unset($tmp);

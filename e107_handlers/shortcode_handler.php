@@ -1162,7 +1162,7 @@ class e_parse_shortcode
 			}
 			else
 			{
-				$cur_shortcodes = $eArrayStorage->ReadArray($sc_cache);
+				$cur_shortcodes = e107::unserialize($sc_cache);
 				$sc_batch = "";
 			}
 		}

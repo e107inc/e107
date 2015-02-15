@@ -186,7 +186,7 @@ class signup_shortcodes extends e_shortcode
 	function sc_signup_loginname()
 	{
 		global $rs, $pref;
-		if (varsettrue($pref['predefinedLoginName']))
+		if (vartrue($pref['predefinedLoginName']))
 		{
 		  return LAN_SIGNUP_67;
 		}
