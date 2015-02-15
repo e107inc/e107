@@ -54,7 +54,7 @@ class list_members
 				$record['heading'] = (USER ? "<a href='".e_BASE."user.php?id.".$row['user_id']."'>".$rowheading."</a>" : $rowheading);
 				$record['category'] = '';
 				$record['author'] = '';
-				$record['date'] = (varsettrue($this->parent->settings['date']) ? $this->parent->getListDate($row['user_join']) : "");
+				$record['date'] = (vartrue($this->parent->settings['date']) ? $this->parent->getListDate($row['user_join']) : "");
 				$record['info'] = '';
 				$list_data[] = $record;
 			}

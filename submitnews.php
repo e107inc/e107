@@ -55,7 +55,7 @@ if (isset($_POST['submitnews_submit']) && $_POST['submitnews_title'] && $_POST['
 	}
 
 	// ==== Process File Upload ====
-	if (FILE_UPLOADS && $_FILES['file_userfile'] && varsettrue($pref['subnews_attach']) && varsettrue($pref['upload_enabled']) && check_class($pref['upload_class']))
+	if (FILE_UPLOADS && $_FILES['file_userfile'] && vartrue($pref['subnews_attach']) && vartrue($pref['upload_enabled']) && check_class($pref['upload_class']))
 	{
 		require_once(e_HANDLER.'upload_handler.php');
 		$uploaded = process_uploaded_files(e_UPLOAD, FALSE, array('file_mask' => 'jpg,gif,png', 'max_file_count' => 1));

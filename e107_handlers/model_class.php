@@ -1535,7 +1535,7 @@ class e_model extends e_object
 		$cached = e107::getCache()->retrieve_sys($this->getCacheString(true), false, $this->_cache_force);
 		if(false !== $cached)
 		{
-			return e107::getArrayStorage()->ReadArray($cached);
+			return e107::unserialize($cached);
 		}
 
 		return false;

@@ -36,7 +36,7 @@ if (isset($_POST['update_settings']))
 			$userData['data']['user_password'] = $sql->escape($userMethods->HashPassword($_POST['a_password'], $currentUser['user_loginname']), FALSE);
 			unset($_POST['a_password']);
 			unset($_POST['a_password2']);
-			if (varsettrue($pref['allowEmailLogin']))
+			if (vartrue($pref['allowEmailLogin']))
 			{
 				$user_prefs = e107::getArrayStorage()->unserialize($currentUser['user_prefs']);
 				$user_prefs['email_password'] = $userMethods->HashPassword($new_pass, $email);

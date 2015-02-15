@@ -205,8 +205,8 @@ class search extends e_shortcode
 		
 		
 		
-		return "<input type='radio' name='adv' value='0' ".(varsettrue($_GET['adv']) ? "" : "checked='checked'")." /> ".LAN_SEARCH_29."&nbsp;
-		<input type='radio' name='adv' value='1' ".(varsettrue($_GET['adv']) ? "checked='checked'" : "" )." /> ".LAN_SEARCH_30;	
+		return "<input type='radio' name='adv' value='0' ".(vartrue($_GET['adv']) ? "" : "checked='checked'")." /> ".LAN_SEARCH_29."&nbsp;
+		<input type='radio' name='adv' value='1' ".(vartrue($_GET['adv']) ? "checked='checked'" : "" )." /> ".LAN_SEARCH_30;
 	}
 	
 	function sc_search_dropdown($parm = '')
@@ -1123,7 +1123,7 @@ $enhanced_types['be'] = LAN_SEARCH_27.':';
 $SEARCH_VARS->ENHANCED_DISPLAY = $enhanced ? "" : "style='display: none'";
 
 // advanced search config
-if (!varsettrue($_GET['adv']) || $_GET['t'] == 'all') 
+if (!vartrue($_GET['adv']) || $_GET['t'] == 'all')
 {
   foreach ($_GET as $gk => $gv) 
   {

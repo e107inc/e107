@@ -267,10 +267,10 @@ class login_menu_shortcodes extends e_shortcode
 	function sc_lm_external_links($parm='')
 	{
 		global $tp, $menu_pref, $login_menu_shortcodes, $LOGIN_MENU_EXTERNAL_LINK;
-		if(!varsettrue($menu_pref['login_menu']['external_links'])) return '';
+		if(!vartrue($menu_pref['login_menu']['external_links'])) return '';
 		$lbox_infos = login_menu_class::parse_external_list(true, false); 
 		$lbox_active = $menu_pref['login_menu']['external_links'] ? explode(',', $menu_pref['login_menu']['external_links']) : array();
-		if(!varsettrue($lbox_infos['links'])) return '';
+		if(!vartrue($lbox_infos['links'])) return '';
 		$ret = '';
 		foreach ($lbox_active as $stackid) {
 		    $lbox_items = login_menu_class::clean_links(varset($lbox_infos['links'][$stackid]));
@@ -287,13 +287,13 @@ class login_menu_shortcodes extends e_shortcode
 	function sc_lm_external_link($parm='')
 	{
 		$lbox_item = getcachedvars('login_menu_linkdata');
-		return $parm == 'href' ? $lbox_item['link_url'] : '<a href="'.$lbox_item['link_url'].'" class="login_menu_link external" id="login_menu_link_external_'.$lbox_item['link_id'].'">'.varsettrue($lbox_item['link_label'], '['.LOGIN_MENU_L44.']').'</a>';
+		return $parm == 'href' ? $lbox_item['link_url'] : '<a href="'.$lbox_item['link_url'].'" class="login_menu_link external" id="login_menu_link_external_'.$lbox_item['link_id'].'">'.vartrue($lbox_item['link_label'], '['.LOGIN_MENU_L44.']').'</a>';
 	}
 	
 	function sc_lm_external_link_label($parm='')
 	{
 		$lbox_item = getcachedvars('login_menu_linkdata');
-		return varsettrue($lbox_item['link_label'], '['.LOGIN_MENU_L44.']');
+		return vartrue($lbox_item['link_label'], '['.LOGIN_MENU_L44.']');
 	}
 	
 	function sc_lm_stats($parm='')
@@ -361,9 +361,9 @@ class login_menu_shortcodes extends e_shortcode
 	function sc_lm_plugin_stats($parm='')
 	{
 		global $tp, $menu_pref, $new_total, $LOGIN_MENU_STATITEM, $LM_STATITEM_SEPARATOR;
-		if(!varsettrue($menu_pref['login_menu']['external_stats'])) return ''; 
+		if(!vartrue($menu_pref['login_menu']['external_stats'])) return '';
 		$lbox_infos = login_menu_class::parse_external_list(true, false);
-		if(!varsettrue($lbox_infos['stats'])) return '';
+		if(!vartrue($lbox_infos['stats'])) return '';
 		$lbox_active_sorted = $menu_pref['login_menu']['external_stats'] ? explode(',', $menu_pref['login_menu']['external_stats']) : array();
 		$ret = array(); 
 		$sep = varset($LM_STATITEM_SEPARATOR, '<br />');
@@ -400,7 +400,7 @@ class login_menu_shortcodes extends e_shortcode
 	function sc_lm_message($parm='')
 	{
 		global $tp, $LOGIN_MENU_MESSAGE;
-		if(!defsettrue('LOGINMESSAGE')) return '';
+		if(!deftrue('LOGINMESSAGE')) return '';
 		if($parm == "popup"){
 			$srch = array("<br />","'");
 			$rep = array("\\n","\'");
@@ -415,7 +415,7 @@ class login_menu_shortcodes extends e_shortcode
 	
 	function sc_lm_message_text($parm='')
 	{
-		return defsettrue('LOGINMESSAGE', '');
+		return deftrue('LOGINMESSAGE', '');
 	}
 
 

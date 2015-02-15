@@ -49,7 +49,7 @@ class tagwords_shortcodes extends e_shortcode
 		switch($sc_mode)
 		{
 			case 'menu':
-				if(varsettrue($tag->pref['tagwords_menu_view_search'])!=1)
+				if(vartrue($tag->pref['tagwords_menu_view_search'])!=1)
 				{
 					return;
 				}
@@ -65,7 +65,7 @@ class tagwords_shortcodes extends e_shortcode
 				break;
 
 			case 'search':
-				if(varsettrue($tag->pref['tagwords_view_search'])!=1)
+				if(vartrue($tag->pref['tagwords_view_search'])!=1)
 				{
 					return;
 				}
@@ -80,7 +80,7 @@ class tagwords_shortcodes extends e_shortcode
 				break;
 
 			default:
-				if(varsettrue($tag->pref['tagwords_view_search'])!=1)
+				if(vartrue($tag->pref['tagwords_view_search'])!=1)
 				{
 					return;
 				}
@@ -94,7 +94,7 @@ class tagwords_shortcodes extends e_shortcode
 	function sc_tag_area_heading()
 	{
 		global $tag;
-		return (varsettrue($tag->area->settings['caption']) ? defset($tag->area->settings['caption'], $tag->area->settings['caption']) : '');
+		return (vartrue($tag->area->settings['caption']) ? defset($tag->area->settings['caption'], $tag->area->settings['caption']) : '');
 	}
 
 	function sc_tag_link($parm, $sc_mode)
@@ -158,13 +158,13 @@ class tagwords_shortcodes extends e_shortcode
 				return $tag->number;
 				break;
 			case 'menu':
-				if(varsettrue($tag->pref['tagwords_menu_view_freq'])==1)
+				if(vartrue($tag->pref['tagwords_menu_view_freq'])==1)
 				{
 					return $tag->number;
 				}
 				break;
 			default:
-				if(varsettrue($tag->pref['tagwords_view_freq'])==1)
+				if(vartrue($tag->pref['tagwords_view_freq'])==1)
 				{
 					return $tag->number;
 				}
@@ -176,7 +176,7 @@ class tagwords_shortcodes extends e_shortcode
 	{
 		global $tag;
 
-		if(varsettrue($tag->pref['tagwords_view_sort'])==1)
+		if(vartrue($tag->pref['tagwords_view_sort'])==1)
 		{
 			$s = varset($_GET['sort'],'');
 			switch($s)
@@ -207,7 +207,7 @@ class tagwords_shortcodes extends e_shortcode
 	{
 		global $tag;
 
-		if(varsettrue($tag->pref['tagwords_view_style'])==1)
+		if(vartrue($tag->pref['tagwords_view_style'])==1)
 		{
 			$t = varset($_GET['type'],'');
 			switch($t)
@@ -237,7 +237,7 @@ class tagwords_shortcodes extends e_shortcode
 	function sc_tag_area()
 	{
 		global $tag;
-		if(varsettrue($tag->pref['tagwords_view_area'])==1)
+		if(vartrue($tag->pref['tagwords_view_area'])==1)
 		{
 			$text = "
 			<select id='area' name='area' class='tbox'>
@@ -247,7 +247,7 @@ class tagwords_shortcodes extends e_shortcode
 					if(array_key_exists($area,$tag->pref['tagwords_activeareas']))
 					{
 						$name = "e_tagwords_{$area}";
-						$selected = (varsettrue($_GET['area'])==$area ? "selected=selected" : '');
+						$selected = (vartrue($_GET['area'])==$area ? "selected=selected" : '');
 						$text .= "<option value='".$area."' ".$selected." >".defset($tag->$name->settings['caption'], $tag->$name->settings['caption'])."</option>";
 					}
 				}
@@ -261,7 +261,7 @@ class tagwords_shortcodes extends e_shortcode
 	function sc_tag_button()
 	{
 		global $tag;
-		if(varsettrue($tag->pref['tagwords_view_sort']) || varsettrue($tag->pref['tagwords_view_style']) || varsettrue($tag->pref['tagwords_view_area']))
+		if(vartrue($tag->pref['tagwords_view_sort']) || vartrue($tag->pref['tagwords_view_style']) || vartrue($tag->pref['tagwords_view_area']))
 			return "<input class='btn btn-default button' type='submit' name='so' value='".LAN_TAG_SEARCH_3."' />";
 		return '';
 	}
@@ -269,7 +269,7 @@ class tagwords_shortcodes extends e_shortcode
 	function sc_tag_options()
 	{
 		global $tag;
-		if( varsettrue($tag->pref['tagwords_view_search'])==1 || varsettrue($tag->pref['tagwords_view_sort'])==1 || varsettrue($tag->pref['tagwords_view_style'])==1 || varsettrue($tag->pref['tagwords_view_area'])==1 )
+		if( vartrue($tag->pref['tagwords_view_search'])==1 || vartrue($tag->pref['tagwords_view_sort'])==1 || vartrue($tag->pref['tagwords_view_style'])==1 || vartrue($tag->pref['tagwords_view_area'])==1 )
 		{
 			return e107::getParser()->parseTemplate($tag->template['options'], true, $tag->shortcodes);
 		}

@@ -1483,7 +1483,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		// ---------------- Cameron's Bit ---------------------------------
 
-		if(!varsettrue($pref['admin_separate_plugins']))
+		if(!vartrue($pref['admin_separate_plugins']))
 		{
         	// Convert Plugin Categories to Core Categories.
 			$convert = array(
@@ -1517,7 +1517,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		// ------------------------------------------------------------------
 
 		//added option to disable leave/logout (ll) - more flexibility for theme developers
-		if(!varsettrue($parms['disable_ll']))
+		if(!vartrue($parms['disable_ll']))
 		{
 		//	$menu_vars += $this->getOtherNav('home');	
 		}

@@ -894,7 +894,7 @@ class eIPHandler
 			}
 			
 			// User is banned hereafter - just need to sort out the details.
-			if (varsettrue($pref['ban_retrigger']) && varsettrue($pref['ban_durations'][$row['banlist_bantype']]))
+			if (vartrue($pref['ban_retrigger']) && vartrue($pref['ban_durations'][$row['banlist_bantype']]))
 			{ // May need to retrigger ban period
 				$sql->db_Update('banlist', "`banlist_banexpires`=".intval(time()+($pref['ban_durations'][$row['banlist_bantype']]*60*60)), "WHERE `banlist_ip`='{$row['banlist_ip']}'");
 				$this->regenerateFiles();
@@ -979,7 +979,7 @@ class eIPHandler
 			//$admin_log->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, "BANLIST_11", 'LAN_AL_BANLIST_11', $ban_ip, FALSE, LOG_TO_ROLLING);
 			return FALSE;
 		} */
-		if(varsettrue($pref['enable_rdns_on_ban']))
+		if(vartrue($pref['enable_rdns_on_ban']))
 		{
 			$ban_message .= 'Host: '.$this->get_host_name($ban_ip);
 		}
@@ -990,7 +990,7 @@ class eIPHandler
 				'banlist_ip' 			=> $ban_ip , 
 				'banlist_bantype' 		=> $bantype , 
 				'banlist_datestamp' 	=> time() , 
-				'banlist_banexpires' 	=> (varsettrue($pref['ban_durations'][$bantype]) ? time()+($pref['ban_durations'][$bantype]*60*60) : 0) , 
+				'banlist_banexpires' 	=> (vartrue($pref['ban_durations'][$bantype]) ? time()+($pref['ban_durations'][$bantype]*60*60) : 0) ,
 				'banlist_admin' 		=> $ban_user , 
 				'banlist_reason' 		=> $ban_message , 
 				'banlist_notes' 		=> $ban_notes

@@ -1081,7 +1081,7 @@ class xmlClass
 				// var_dump(e107::getArrayStorage()->ReadArray($val['@value']));
 				// echo $val['@value'].'</pre>';
 			// }
-			$value = strpos($val['@value'], 'array (') === 0 ? e107::getArrayStorage()->ReadArray($val['@value']) : $val['@value'];
+			$value = strpos($val['@value'], 'array (') === 0 ? e107::unserialize($val['@value']) : $val['@value'];
 			$pref[$name] = $value;
 
 			// $mes->add("Setting up ".$prefType." Pref [".$name."] => ".$value, E_MESSAGE_DEBUG);

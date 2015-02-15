@@ -20,9 +20,9 @@ class bb_img extends e_bb_base
 		$parms = eHelper::scParams($parm);
 		$safe = array();
 		
-		if(varsettrue($parms['class'])) 	$safe['class'] = eHelper::secureClassAttr($parms['class']);
-		if(varsettrue($parms['id']))		$safe['id'] = eHelper::secureIdAttr($parms['id']);
-		if(varsettrue($parms['style'])) 	$safe['style'] = eHelper::secureStyleAttr($parms['style']);
+		if(vartrue($parms['class'])) 	$safe['class'] = eHelper::secureClassAttr($parms['class']);
+		if(vartrue($parms['id']))		$safe['id'] = eHelper::secureIdAttr($parms['id']);
+		if(vartrue($parms['style'])) 	$safe['style'] = eHelper::secureStyleAttr($parms['style']);
 		if($safe)
 		{
 			return '[img='.eHelper::buildAttr($safe).']'.$code_text.'[/img]';
@@ -202,7 +202,7 @@ class bb_img extends e_bb_base
 		
 		
 		// Check for whether we can display image down here - so we can show image name if appropriate
-		if (!varsettrue($pref['image_post']) || !check_class($pref['image_post_class']))
+		if (!vartrue($pref['image_post']) || !check_class($pref['image_post_class']))
 		{
 			switch ($pref['image_post_disabled_method'])
 			{

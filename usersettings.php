@@ -306,7 +306,7 @@ if (isset($_POST['updatesettings']) || isset($_POST['SaveValidatedInfo']))
 
 if (isset($_POST['updatesettings']))
 {
-	if (!varsettrue($pref['auth_method']))
+	if (!vartrue($pref['auth_method']))
 	{
 		$pref['auth_method'] = 'e107';
 	}
@@ -788,7 +788,7 @@ if ($error)
 	{
 		$temp[] = validatorClass::makeErrorList($allData,'USER_ERR_','%n - %x - %t: %v', '<br />', $userMethods->userVettingInfo);
 	}
-	if (varsettrue($eufVals['errors']))
+	if (vartrue($eufVals['errors']))
 	{
 		$temp[] = '<br />'.validatorClass::makeErrorList($eufVals,'USER_ERR_','%n - %x - %t: %v', '<br />', NULL);
 	}

@@ -313,7 +313,7 @@ class e_admin_log
 		//---------------------------------------
 		// 			Rolling Log
 		//---------------------------------------
-		if (($target_logs & LOG_TO_ROLLING) && varsettrue($pref['roll_log_active']))
+		if (($target_logs & LOG_TO_ROLLING) && vartrue($pref['roll_log_active']))
 		{ //	Rolling log
 
 			// 	Process source_call info

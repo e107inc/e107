@@ -116,7 +116,7 @@ else
 
 $img = (is_readable(THEME.'images/online_menu.png') ? "<img src='".THEME_ABS."images/online_menu.png' alt='' />" : '');
 
-$caption = $img.' '.varsettrue($menu_pref['online_caption'],LAN_ONLINE_10);
+$caption = $img.' '.vartrue($menu_pref['online_caption'],LAN_ONLINE_10);
 
 if (getperms('1')) 
 {

@@ -139,7 +139,7 @@ class alt_auth_admin extends alt_auth_base
 		$ret = '';
 		foreach ($this->alt_auth_user_fields as $f => $v)
 		{
-			if (varsettrue($v['showAll']) || varsettrue($v[$tableType]))
+			if (vartrue($v['showAll']) || vartrue($v[$tableType]))
 			{
 				$ret .= "<tr><td$log>";
 				if ($v['optional'] == FALSE) $ret .= '*&nbsp;';
@@ -196,7 +196,7 @@ class alt_auth_admin extends alt_auth_base
 		$ret = array();
 		foreach ($this->alt_auth_user_fields as $f => $v)
 		{
-			if (varsettrue($v['showAll']) || varsettrue($v[$tableType]))
+			if (vartrue($v['showAll']) || vartrue($v[$tableType]))
 			{
 	//	  $fieldname = $tableType.'_'.$v['optname'];
 				$fieldname = $tableType.'_xf_'.$f;			// Name of the input box

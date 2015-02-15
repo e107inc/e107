@@ -557,9 +557,9 @@ if ($action == "uopt")
          $file_text = "<e107Filetypes>\n";
          foreach ($_POST['file_class_select'] as $k => $c)
          {
-            if (!isset($_POST['file_line_delete_'.$c]) && varsettrue($_POST['file_type_list'][$k]))
+            if (!isset($_POST['file_line_delete_'.$c]) && vartrue($_POST['file_type_list'][$k]))
             {
-               $file_text .= "   <class name='{$c}' type='{$_POST['file_type_list'][$k]}' maxupload='".varsettrue($_POST['file_maxupload'][$k],ini_get('upload_max_filesize'))."'/>\n";
+               $file_text .= "   <class name='{$c}' type='{$_POST['file_type_list'][$k]}' maxupload='".vartrue($_POST['file_maxupload'][$k],ini_get('upload_max_filesize'))."'/>\n";
             }
          }
          $file_text .= "</e107Filetypes>";

@@ -409,7 +409,7 @@ function nextprev_shortcode($parm = '')
 
 	if($total_pages > 1)
 	{
-		if(varsettrue($pref['old_np']))
+		if(vartrue($pref['old_np']))
 		{
 
 			$NP_PRE_ACTIVE = '';

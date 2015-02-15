@@ -84,7 +84,7 @@ class list_shortcodes
 	function sc_list_displaystyle()
 	{
 		//open sections if content exists ? yes if true, else use individual setting of section
-		return (varsettrue($this->list_pref[$this->rc->mode."_openifrecords"]) && is_array($this->rc->data['records']) ? "" : $this->rc->data['display']);
+		return (vartrue($this->list_pref[$this->rc->mode."_openifrecords"]) && is_array($this->rc->data['records']) ? "" : $this->rc->data['display']);
 	}
 
 	function sc_list_col_cols()

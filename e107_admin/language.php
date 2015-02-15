@@ -946,8 +946,8 @@ function show_packs()
 	
 	$release_diz = defined("LANG_LAN_30") ? LANG_LAN_30 : "Release Date";
 	$compat_diz = defined("LANG_LAN_31") ?  LANG_LAN_31 : "Compatibility";
-	$lan_pleasewait = (defsettrue('LAN_PLEASEWAIT')) ?  $tp->toJS(LAN_PLEASEWAIT) : "Please Wait";
-	$lan_displayerrors = (defsettrue('LANG_LAN_33')) ?  LANG_LAN_33 : "Display only errors during verification";
+	$lan_pleasewait = (deftrue('LAN_PLEASEWAIT')) ?  $tp->toJS(LAN_PLEASEWAIT) : "Please Wait";
+	$lan_displayerrors = (deftrue('LANG_LAN_33')) ?  LANG_LAN_33 : "Display only errors during verification";
 	
 	
 	$text = "<form id='lancheck' method='post' action='".e_SELF."?tools'>
@@ -1021,7 +1021,7 @@ function show_packs()
 		
 		$srch = array("[","]");
 		$repl = array("<a rel='external' href='http://e107.org/content/About-Us:The-Team#translation-team'>","</a>");
-		$diz = (defsettrue("LANG_LAN_28")) ? LANG_LAN_28 : "Check this box if you're an [e107 certified translator].";
+		$diz = (deftrue("LANG_LAN_28")) ? LANG_LAN_28 : "Check this box if you're an [e107 certified translator].";
 	
 		$checked = varset($_COOKIE['e107_certified']) == 1 ? true : false;
 		

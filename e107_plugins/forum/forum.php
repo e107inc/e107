@@ -205,7 +205,7 @@ if (USER && vartrue($allread) != TRUE && $total_new_threads && $total_new_thread
 	$fVars->INFO .= "<br /><a href='".e_SELF."?mark.all.as.read'>".LAN_FORUM_0057.'</a>'.(e_QUERY != 'new' ? ", <a href='".e_SELF."?new'>".LAN_FORUM_0058."</a>" : '');
 }
 
-if (USER && varsettrue($forum->prefs->get('track')) && e_QUERY != 'track')
+if (USER && vartrue($forum->prefs->get('track')) && e_QUERY != 'track')
 {
 	$fVars->INFO .= "<br /><a href='".e_SELF."?track'>".LAN_FORUM_0030.'</a>';
 }

@@ -2406,7 +2406,7 @@ if (isset($_POST['submit_avdelete_multi']))
 		$search_users = $sql->db_getList('ALL', FALSE, FALSE, 'user_id');
 		foreach($_POST['multiaction'] as $uid)
 		{
-			if (varsettrue($search_users[$uid]))
+			if (vartrue($search_users[$uid]))
 			{
 				$avname = avatar($search_users[$uid]['user_image']);
 				if (strpos($avname, "http://") === FALSE)

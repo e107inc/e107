@@ -401,7 +401,7 @@ class userlogin
 		
 		if($forceLogin === 'provider') return true;
 		
-		if ($this->lookEmail && varsettrue($pref['passwordEncoding']))
+		if ($this->lookEmail && vartrue($pref['passwordEncoding']))
 		{
 			$tmp = e107::getArrayStorage()->unserialize($this->userData['user_prefs']);
             if(!$tmp && $this->userData['user_prefs']) $tmp = unserialize($this->userData['user_prefs']); // try old storage type

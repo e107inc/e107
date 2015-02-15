@@ -1033,7 +1033,7 @@ class e_jsmanager
 			break;
 
 			case 'header':
-				$this->renderFile(varsettrue($this->_runtime_header[$zone], array()), $external, 'Header JS include - zone #'.$zone, $mod);
+				$this->renderFile(vartrue($this->_runtime_header[$zone], array()), $external, 'Header JS include - zone #'.$zone, $mod);
 				unset($this->_runtime_header[$zone]);
 			break;
 
@@ -1075,13 +1075,13 @@ class e_jsmanager
 				}
 				else
 				{
-					$this->renderFile(varsettrue($this->_runtime_footer[$zone], array()), $external, 'Footer JS include - priority #'.$zone, $mod);
+					$this->renderFile(vartrue($this->_runtime_footer[$zone], array()), $external, 'Footer JS include - priority #'.$zone, $mod);
 					unset($this->_runtime_footer[$zone]);
 				}
 			break;
 
 			case 'header_inline':
-				$this->renderInline(varsettrue($this->_runtime_header_src[$zone], array()), 'Header JS - zone #'.$zone);
+				$this->renderInline(vartrue($this->_runtime_header_src[$zone], array()), 'Header JS - zone #'.$zone);
 				unset($this->_runtime_header_src[$zone]);
 			break;
 
@@ -1097,7 +1097,7 @@ class e_jsmanager
 				}
 				else
 				{
-					$this->renderInline(varsettrue($this->_runtime_footer_src[$zone], array()), 'Footer JS - priority #'.$zone);
+					$this->renderInline(vartrue($this->_runtime_footer_src[$zone], array()), 'Footer JS - priority #'.$zone);
 					unset($this->_runtime_footer_src[$zone]);
 				}
 			break;
@@ -1354,7 +1354,7 @@ class e_jsmanager
 	public function getCurrentTheme()
 	{
 		// XXX - USERTHEME is defined only on user session init
-		return ($this->isInAdmin() ? e107::getPref('admintheme') : defsettrue('USERTHEME', e107::getPref('sitetheme')));
+		return ($this->isInAdmin() ? e107::getPref('admintheme') : deftrue('USERTHEME', e107::getPref('sitetheme')));
 	}
 
 	/**

@@ -292,7 +292,7 @@ class db_table_admin
 					{
 						$def .= ' default '.$list['default'];
 					}
-					if (varsettrue($list['autoinc']))
+					if (vartrue($list['autoinc']))
 					{
 						$def .= ' auto_increment';
 					}

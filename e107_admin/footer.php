@@ -96,7 +96,7 @@ if (varset($e107_popup) != 1)
 	// B.2 Send footer template, stop timing, send simple page stats
 	//
 	//NEW - Iframe mod
-	if (!defsettrue('e_IFRAME'))
+	if (!deftrue('e_IFRAME'))
 	{
 		parse_admin($ADMIN_FOOTER);
 	}

@@ -28,7 +28,7 @@ class e_ranks
 		//Check to see if we can get it from cache
 		if($force == false && ($ranks = $e107->ecache->retrieve_sys('nomd5_user_ranks')))
 		{
-			$this->ranks = $e107->arrayStorage->ReadArray($ranks);
+			$this->ranks = e107::unserialize($ranks);
 		}
 		else
 		{

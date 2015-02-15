@@ -401,8 +401,7 @@ class e107MailManager
 		}
 		if (isset($data['mail_target_info']))
 		{
-			$array = new ArrayData;
-			$tmp = $array->ReadArray($data['mail_target_info']);
+			$tmp = e107::unserialize($data['mail_target_info']);
 			$res['mail_target_info'] = $tmp;
 		}
 		return $res;

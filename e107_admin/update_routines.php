@@ -183,7 +183,7 @@ class e107Update
 			{
 				$installed = call_user_func("update_".$func);
 				//?! (LAN_UPDATE == $_POST[$func])
-				if(varsettrue($_POST['update_core'][$func]) && !$installed)
+				if(vartrue($_POST['update_core'][$func]) && !$installed)
 				{
 					if(function_exists("update_".$func))
 					{
@@ -881,7 +881,7 @@ function update_706_to_800($type='')
 	}
 
 	// Check need for user timezone before we delete the field
-	if (varsettrue($pref['signup_option_timezone']))
+	if (vartrue($pref['signup_option_timezone']))
 	{
 		if ($sql->db_Field('user', 'user_timezone', '', TRUE) && !$sql->db_Field('user_extended','user_timezone','',TRUE))
 		{

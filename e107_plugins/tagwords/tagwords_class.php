@@ -360,12 +360,12 @@ class tagwords
 		if($tagarea!='menu')
 		{
 			//if user is able to manually set a area
-			if(varsettrue($this->pref['tagwords_view_area'])=='1')
+			if(vartrue($this->pref['tagwords_view_area'])=='1')
 			{
 				foreach($this->tagwords as $area)
 				{
 					//limit data to only one area, if so, which area
-					if(varsettrue($_GET['area'])==$area)
+					if(vartrue($_GET['area'])==$area)
 					{
 						$ins = "e_tagwords_{$area}";
 						$typeqry = " AND tag_type='".$this->$ins->settings['table']."'";
@@ -434,7 +434,7 @@ class tagwords
 		//MENU
 		if($tagarea=='menu')
 		{
-			if(varsettrue($this->pref['tagwords_menu_default_sort'])==1)
+			if(vartrue($this->pref['tagwords_menu_default_sort'])==1)
 			{
 				//alphabetically
 				ksort($array, SORT_STRING);
@@ -449,7 +449,7 @@ class tagwords
 
 		//PAGE
 		//user can set own sort
-		if(varsettrue($this->pref['tagwords_view_sort'])==1)
+		if(vartrue($this->pref['tagwords_view_sort'])==1)
 		{
 			$s = varset($_GET['sort'],'');
 			switch($s)
@@ -463,7 +463,7 @@ class tagwords
 					arsort($array);
 					break;
 				default:
-					if(varsettrue($this->pref['tagwords_default_sort'])==1)
+					if(vartrue($this->pref['tagwords_default_sort'])==1)
 					{
 						//alphabetically
 						ksort($array, SORT_STRING);
@@ -480,7 +480,7 @@ class tagwords
 		}
 		else
 		{
-			if(varsettrue($this->pref['tagwords_default_sort'])==1)
+			if(vartrue($this->pref['tagwords_default_sort'])==1)
 			{
 				//alphabetically
 				ksort($array, SORT_STRING);
@@ -530,7 +530,7 @@ class tagwords
 		//decide whether to show the taglist or the tagcloud
 
 		//user can set own tag style
-		if(varsettrue($this->pref['tagwords_view_style'])=='1')
+		if(vartrue($this->pref['tagwords_view_style'])=='1')
 		{
 			$t = varset($_GET['type'],'');
 			switch($t)
@@ -542,14 +542,14 @@ class tagwords
 					$type='list';
 					break;
 				default:
-					$type = (varsettrue($this->pref['tagwords_default_style'])=='1' ? 'cloud' : 'list');
+					$type = (vartrue($this->pref['tagwords_default_style'])=='1' ? 'cloud' : 'list');
 					break;
 			}
 		}
 		else
 		{
 			//user cannot set tag style, so use default tag style value
-			$type = (varsettrue($this->pref['tagwords_default_style'])=='1' ? 'cloud' : 'list');
+			$type = (vartrue($this->pref['tagwords_default_style'])=='1' ? 'cloud' : 'list');
 		}
 
 		//show the taglist or tagcloud
@@ -807,7 +807,7 @@ class tagwords
 			$sql->gen("SELECT * FROM #core WHERE e107_name='".$this->table."' ");
 		}
 		$row = $sql->fetch();
-		$p = $this->e107->arrayStorage->ReadArray($row['e107_value']);
+		$p = e107::unserialize($row['e107_value']);
 
 		//validation
 		if(!array_key_exists('tagwords_activeareas', $p))
