@@ -415,7 +415,7 @@ class language{
 		        ? str_replace($_SERVER['HTTP_HOST'], $codelnk.'.'.e_DOMAIN, e_SELF).'?'.e_QUERY
 		        : str_replace($_SERVER['HTTP_HOST'], $codelnk.'.'.e_DOMAIN, e_SELF);
 		
-        return $urlval;
+        return (string) $urlval;
 	}
 	
 	/**

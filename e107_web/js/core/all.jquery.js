@@ -718,7 +718,7 @@ $(document).ready(function()
 				 success: function(data) 
 				 {
 				// 	console.log(data);
-					$("#"+target).html(data).hide().show("slow");;
+					$("#"+target).html(data).hide().show("slow");
 				 }
 			});
 			
@@ -821,7 +821,7 @@ $(document).ready(function()
 				idt = $(e).next("div");	
 								
 				$(idt).toggle("slow");
-				return false;;			
+				return false;
 			}
 			
 			var id = "#" + e; 		
@@ -829,7 +829,7 @@ $(document).ready(function()
 			
 			$(id).toggle("slow");
 			return false;
-	};
+	}
 		
 
 	var addinput = function(text,rep) {
@@ -1172,7 +1172,7 @@ function sendInfo(handler, container, form)
 		 success: function(data) 
 		 {
 		// 	console.log(data);
-			$("#"+container).html(data).hide().show("slow");;
+			$("#"+container).html(data).hide().show("slow");
 		 }
 	});
 	

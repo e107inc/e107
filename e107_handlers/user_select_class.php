@@ -51,12 +51,13 @@ class user_select
 		$text .= "</select>";
 		return $text;
 	}
-	
+
 
 	/**
-	 *	Display selection dropdown of all user classes
+	 *    Display selection dropdown of all user classes
 	 *
-	 *	@param int $class - if its e_UC_MEMBER, all classes are shown. Otherwise only the class matching the value is shown.
+	 * @param int $class - if its e_UC_MEMBER, all classes are shown. Otherwise only the class matching the value is shown.
+	 * @return string
 	 */
 	function class_list($class, $form_name) 
 	{

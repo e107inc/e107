@@ -206,12 +206,14 @@ class usersettings_shortcodes extends e_shortcode
 	function sc_signature_help($parm)
 	{
 		return;
+		/*
 		$pref = e107::getPref();
 		if(!check_class(varset($pref['signature_access'],0)))
 		{
 			return; 		
 		}  
 		return display_help("", 2);
+		*/
 	}
 	
 	

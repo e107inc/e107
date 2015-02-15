@@ -322,7 +322,7 @@ class user_shortcodes extends e_shortcode
 		}
 
 	
-		
+		/*
 		if(defined("USER_ICON"))
 		{
 			return USER_ICON;
@@ -333,6 +333,7 @@ class user_shortcodes extends e_shortcode
 		}
 		
 		return "<img src='".e_IMAGE_ABS."user_icons/user.png' alt='' style='vertical-align:middle;' /> ";
+		*/
 	}
 
 

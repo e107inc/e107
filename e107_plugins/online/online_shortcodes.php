@@ -42,7 +42,7 @@ class online_shortcodes
 	{
 		$seen_ago = $this->gen->computeLapse($this->currentUser['user_currentvisit'], false, false, true, 'short');
 		return $seen_ago;
-		return ($seen_ago ? $seen_ago : '1 '.LANDT_09).' '.LANDT_AGO;
+		// return ($seen_ago ? $seen_ago : '1 '.LANDT_09).' '.LANDT_AGO;
 	}
 
 

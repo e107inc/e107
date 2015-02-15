@@ -158,7 +158,7 @@ class pm_shortcodes extends e_shortcode
 		
 		return e107::getForm()->text('pm_subject',$value,255);
 		
-		return "<input class='tbox' type='text' name='pm_subject' value='{$value}' size='63' maxlength='255' />";
+		// return "<input class='tbox' type='text' name='pm_subject' value='{$value}' size='63' maxlength='255' />";
 	}
 
 

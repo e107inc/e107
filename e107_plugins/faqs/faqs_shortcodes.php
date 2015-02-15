@@ -128,7 +128,7 @@ class faqs_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		$url = e107::url('faqs','category', $this->var); //@See faqs/e_url.php 
 		return "<a href='".$url."'>".$tp->toHTML($this->var['faq_info_title'])."</a>";	
-		
+		/*
 
 		return "<a href='".e107::getUrl()->create('faqs/list/all', array('category' => $this->var['faq_info_id']))."'>".$tp->toHTML($this->var['faq_info_title'])."</a>";	
 		
@@ -146,6 +146,7 @@ class faqs_shortcodes extends e_shortcode
 		}
 		
 		return "<a href='".e107::getUrl()->create('faqs/list/all', array('category' => $this->var['faq_info_id']))."'>".$tp->toHTML($this->var['faq_info_title'])."</a>";	
+	*/
 	}
 	
 	function sc_faq_category_description($parm='')
@@ -217,8 +218,8 @@ class faqs_shortcodes extends e_shortcode
 		
 		
 		return ''; // UNDER CONSTRUCTION
-		$tp = e107::getParser();
-		return "<div style='text-align:center'><br />".$tp->parseTemplate("{SEARCH=faqs}")."</div>";
+	//	$tp = e107::getParser();
+	//	return "<div style='text-align:center'><br />".$tp->parseTemplate("{SEARCH=faqs}")."</div>";
 	}
 
 	

@@ -143,9 +143,6 @@ if (!defined('E_32_PLUGIN')) {
 if (!defined('E_32_PLUGMANAGER')) {
 	define('E_32_PLUGMANAGER', "<i class='S32 e-plugmanager-32'></i> ");
 }
-if (!defined('E_32_DOCS')) {
-	define('E_32_DOCS', "<i class='S32 e-docs-32'></i> ");
-}
 if (!defined('E_32_MAIN')) {
 	define('E_32_MAIN', "<i class='S32 e-main-32'></i> ");
 }
@@ -411,17 +408,11 @@ if (!defined('E_16_PLUGIN')) {
 if (!defined('E_16_PLUGMANAGER')) {
 	define('E_16_PLUGMANAGER', "<i class='S16 e-plugmanager-16'></i>");
 }
-if (!defined('E_16_DOCS')) {
-	define('E_16_DOCS', "<i class='S16 e-docs-16'></i>");
-}
 if (!defined('E_16_THEMEMANAGER')) {
 	define('E_16_THEMEMANAGER', "<i class='S16 e-themes-16'></i>");
 }
 
 // Small Admin Other Images
-if (!defined('E_16_COMMENT')) {
-	define('E_16_COMMENT', "<i class='S16 e-comments-16'></i>");
-}
 if (!defined('E_16_ADMINLOG')) {
 	define('E_16_ADMINLOG', "<i class='S16 e-adminlogs-16'></i>");
 }
@@ -495,7 +486,7 @@ define("E_32_TRUE", "<i class='S32 e-true-32'></i>");
 
 	
 	if(!defined('ADMIN_EDIT_ICON') && !defined('ADMIN_TRUE_ICON'))
-	{
+	{/*
 		define("ADMIN_TRUE_ICON", 			"<i class='S16 e-true-16'></i>");
 		define("ADMIN_FALSE_ICON", 			"<i class='S16 e-false-16'></i>");
 		define("ADMIN_EDIT_ICON", 			"<i class='S16 e-edit-16' ></i>"); 	
@@ -513,12 +504,12 @@ define("E_32_TRUE", "<i class='S32 e-true-32'></i>");
 		define("ADMIN_UPGRADEPLUGIN_ICON", 	"<i class='S16 e-up-16'></i>");
 		define("ADMIN_EXECUTE_ICON",  		"<i class='S16 e-execute-16'></i>");
 		define("ADMIN_SORT_ICON", 			"<i class='S16 e-sort'></i>"); 
-		
+		*/
 		define("ADMIN_TRUE_ICON_PATH", e_IMAGE_ABS."admin_images/true_16.png"); 		//XXX DEPRECATED but used in v1.x
 		define("ADMIN_FALSE_ICON_PATH", e_IMAGE_ABS."admin_images/false_16.png"); 		//XXX DEPRECATED but used in v1.x
-		define("ADMIN_EDIT_ICON_PATH", e_IMAGE_ABS."admin_images/edit_16.png");			//XXX DEPRECATED but used in v1.x
-		define("ADMIN_DELETE_ICON_PATH", e_IMAGE_ABS."admin_images/delete_16.png"); 	//XXX DEPRECATED but used in v1.x
-		define("ADMIN_WARNING_ICON_PATH", e_IMAGE_ABS."admin_images/warning_16.png"); 	//XXX DEPRECATED but used in v1.x
+	//	define("ADMIN_EDIT_ICON_PATH", e_IMAGE_ABS."admin_images/edit_16.png");			//XXX DEPRECATED but used in v1.x
+	//	define("ADMIN_DELETE_ICON_PATH", e_IMAGE_ABS."admin_images/delete_16.png"); 	//XXX DEPRECATED but used in v1.x
+	//	define("ADMIN_WARNING_ICON_PATH", e_IMAGE_ABS."admin_images/warning_16.png"); 	//XXX DEPRECATED but used in v1.x
 	}	
 	
 

@@ -296,7 +296,7 @@ class mailout_main_ui extends e_admin_ui
 			'mail_bounce_count' 	=> array('title' => LAN_MAILOUT_144, 'noedit'=>true, 'type'=>'number'),
 			'mail_start_send' 		=> array('title' => LAN_MAILOUT_131,'noedit'=>true,  'type'=>'number', 'proc' => 'sdatetime'),
 			'mail_end_send' 		=> array('title' => LAN_MAILOUT_132, 'noedit'=>true,  'type'=>'number', 'proc' => 'sdatetime'),
-			'mail_create_date' 		=> array('title' => LAN_MAILOUT_130, 'type'=>null, 'noedit'=>true, 'data'=>'int', 'type'=>'number'),
+			'mail_create_date' 		=> array('title' => LAN_MAILOUT_130, 'type'=>null, 'noedit'=>true, 'data'=>'int'),
 			'mail_creator' 			=> array('title' => LAN_MAILOUT_85, 'type'=>null, 'noedit'=>true, 'data'=>'int'),
 			'mail_create_app' 		=> array('title' => LAN_MAILOUT_133, 'type'=>null, 'noedit'=>true,'data'=>'str'),
 			'mail_e107_priority' 	=> array('title' => LAN_MAILOUT_134, 'noedit'=>true),

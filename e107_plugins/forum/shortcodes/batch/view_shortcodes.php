@@ -83,7 +83,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 			".LAN_FORUM_2037.": {$info['deldate']}<br />
 			".LAN_FORUM_2038.": {$info['delreason']}
 			";
-			$ret = '<pre>'.print_r($info, true).'</pre>';
+		//	$ret = '<pre>'.print_r($info, true).'</pre>';
 		}
 	}
 	

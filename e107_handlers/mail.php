@@ -651,8 +651,9 @@ class e107Email extends PHPMailer
 	}
 
 	/**
-	 * Preview the BODY of an email 
-	 * @param $eml - array. 
+	 * Preview the BODY of an email
+	 * @param $eml - array.
+	 * @return string
 	 */
 	public function preview($eml)
 	{

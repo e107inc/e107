@@ -118,15 +118,15 @@ class e_admin_log
 	}
 
 
-
 	/**
-	 * Save all logs in the queue to the database and render any unhidden messages with the message handler.   
-	 * @see alias flushMessages() method below. 
+	 * Save all logs in the queue to the database and render any unhidden messages with the message handler.
+	 * @see alias flushMessages() method below.
 	 * @param string $logTitle - title for log entry eg. 'PREF_01'
 	 * @param int $logImportance [optional] default E_LOG_INFORMATIVE - passed directly to admin log
 	 * @param string $logEventCode [optional] - passed directly to admin log
 	 * @param string $mstack [optional] message stack passed to message handler
-	 */ 
+	 * @return \e_admin_log
+	 */
 	public function save($logTitle, $logImportance = E_LOG_INFORMATIVE, $logEventCode = '', $mstack = false)
 	{
 		return $this->flushMessages($logTitle, $logImportance, $logEventCode, $mstack);

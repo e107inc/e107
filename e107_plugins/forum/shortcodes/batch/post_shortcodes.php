@@ -86,7 +86,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		global $post;
 		return e107::getForm()->bbarea('post',$post,'forum');
 		
-		
+		/*
 		$rows = (e107::wysiwyg()==true) ? 15 : 10;
 		$ret = "<textarea class='e-wysiwyg tbox form-control' id='post' name='post' cols='70' rows='{$rows}' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$post</textarea>\n<br />\n";
 	//	if(!e_WYSIWYG)
@@ -94,6 +94,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 	//		$ret .= display_help('helpb', 'forum');
 		}
 		return $ret;
+		*/
 	}
 
 	function sc_buttons()

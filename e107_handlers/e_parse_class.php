@@ -782,10 +782,11 @@ class e_parse extends e_parser
 	}
 
 	/**
-	 * @param $text - template to parse. 
+	 * @param $text - template to parse.
 	 * @param boolean $parseSCFiles - parse core 'single' shortcodes
-	 * @param array $extraCodes - support legacy shortcode content (eg. content within .sc) as well as simpleParse array format. 
-	 * @param object $eVars - XXX more info needed. 
+	 * @param array $extraCodes - support legacy shortcode content (eg. content within .sc) as well as simpleParse array format.
+	 * @param object $eVars - XXX more info needed.
+	 * @return string
 	 */
 	function parseTemplate($text, $parseSCFiles = TRUE, $extraCodes = null, $eVars = null)
 	{

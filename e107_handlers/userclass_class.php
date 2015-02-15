@@ -542,17 +542,17 @@ class user_class
 	}
 
 
-
 	/**
-	 *	Very similar to self::uc_dropdown, but returns a list of check boxes. Doesn't encapsulate it.
+	 *    Very similar to self::uc_dropdown, but returns a list of check boxes. Doesn't encapsulate it.
 	 *
-	 *	@param string $fieldname is the name for the array of checkboxes
-	 *	@param string $curval is a comma separated list of class IDs for boxes which are checked.
-	 *	@param string $optlist as for uc_dropdown
-	 *	@param boolean $showdescription - if TRUE, appends the class description in brackets
-	 *	@param boolean $asArray - if TRUE, result returned as array; otherwise result returned as string
+	 * @param string $fieldname is the name for the array of checkboxes
+	 * @param string $curval is a comma separated list of class IDs for boxes which are checked.
+	 * @param string $optlist as for uc_dropdown
+	 * @param boolean $showdescription - if TRUE, appends the class description in brackets
+	 * @param boolean $asArray - if TRUE, result returned as array; otherwise result returned as string
 	 *
-	 *	return string|array according to $asArray
+	 *    return string|array according to $asArray
+	 * @return array|string
 	 */
 	public function uc_checkboxes($fieldname, $curval='', $optlist = '', $showdescription = FALSE, $asArray = FALSE)
 	{

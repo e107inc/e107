@@ -469,46 +469,47 @@ class e_db_mysql
 
 	/**
 	 * Query and fetch at once
-	 * 
+	 *
 	 * Examples:
 	 * <code>
 	 * <?php
-	 * 
+	 *
 	 * // Get single value, $multi and indexField are ignored
 	 * $string = e107::getDb()->retrieve('user', 'user_email', 'user_id=1');
-	 * 
+	 *
 	 * // Get single row set, $multi and indexField are ignored
 	 * $array = e107::getDb()->retrieve('user', 'user_email, user_name', 'user_id=1');
-	 * 
+	 *
 	 * // Fetch all, don't append WHERE to the query, index by user_id, noWhere auto detected (string starts with upper case ORDER)
 	 * $array = e107::getDb()->retrieve('user', 'user_id, user_email, user_name', 'ORDER BY user_email LIMIT 0,20', true, 'user_id');
-	 * 
+	 *
 	 * // Same as above but retrieve() is only used to fetch, not useable for single return value
 	 * if(e107::getDb()->select('user', 'user_id, user_email, user_name', 'ORDER BY user_email LIMIT 0,20', true))
 	 * {
-	 * 		$array = e107::getDb()->retrieve(null, null, null,  true, 'user_id');
+	 *        $array = e107::getDb()->retrieve(null, null, null,  true, 'user_id');
 	 * }
-	 * 
-	 * // Using whole query example, in this case default mode is 'single' 
-	 * $array = e107::getDb()->retrieve('SELECT  
-	 * 	p.*, u.user_email, u.user_name FROM `#user` AS u 
-	 * 	LEFT JOIN `#myplug_table` AS p ON p.myplug_table=u.user_id 
-	 * 	ORDER BY u.user_email LIMIT 0,20'
+	 *
+	 * // Using whole query example, in this case default mode is 'single'
+	 * $array = e107::getDb()->retrieve('SELECT
+	 *    p.*, u.user_email, u.user_name FROM `#user` AS u
+	 *    LEFT JOIN `#myplug_table` AS p ON p.myplug_table=u.user_id
+	 *    ORDER BY u.user_email LIMIT 0,20'
 	 * );
-	 * 
+	 *
 	 * // Using whole query example, multi mode - $fields argument mapped to $multi
 	 * $array = e107::getDb()->retrieve('SELECT u.user_email, u.user_name FROM `#user` AS U ORDER BY user_email LIMIT 0,20', true);
-	 * 
+	 *
 	 * // Using whole query example, multi mode with index field
 	 * $array = e107::getDb()->retrieve('SELECT u.user_email, u.user_name FROM `#user` AS U ORDER BY user_email LIMIT 0,20', null, null, true, 'user_id');
 	 * </code>
-	 * 
+	 *
 	 * @param string $table if empty, enter fetch only mode
 	 * @param string $fields comma separated list of fields or * or single field name (get one); if $fields is of type boolean and $where is not found, $fields overrides $multi
 	 * @param string $where WHERE/ORDER/LIMIT etc clause, empty to disable
 	 * @param boolean $multi if true, fetch all (multi mode)
 	 * @param string $indexField field name to be used for indexing when in multi mode
 	 * @param boolean $debug
+	 * @return array
 	 */
 	public function retrieve($table, $fields = null, $where=null, $multi = false, $indexField = null, $debug = false)
 	{

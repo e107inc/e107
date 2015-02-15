@@ -31,12 +31,13 @@ class e_upgrade
     protected $_options = array();
 
 	/**
-	*
-	* @param string $curFolder  - folder name of the plugin or theme to check
-	* @param string $curVersions - installed version of the plugin or theme.
-	* @param string $releaseUrl - url of the XML file in the above format.
-	* @param boolean $cache
-	*/
+	 *
+	 * @param string $curFolder - folder name of the plugin or theme to check
+	 * @param string $curVersions - installed version of the plugin or theme.
+	 * @param string $releaseUrl - url of the XML file in the above format.
+	 * @param boolean $cache
+	 * @return $this
+	 */
 
     public function setOptions($dataArray)
 	{

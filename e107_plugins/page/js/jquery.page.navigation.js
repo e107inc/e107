@@ -3,8 +3,8 @@
 /**************************************************************/
 function pageNavList() {
 	
-	$('ul.page-nav').find('li:has(ul)').attr('title', 'Expand/Collapse');;
-	
+	$('ul.page-nav').find('li:has(ul)').attr('title', 'Expand/Collapse');
+
     $('ul.page-nav').find('li:has(ul)')
     .click( function(event) {
   
@@ -35,7 +35,7 @@ function pageNavList() {
         $('.collapsed').children().hide('medium');
     });
     
-};
+}
 
 
 /**************************************************************/

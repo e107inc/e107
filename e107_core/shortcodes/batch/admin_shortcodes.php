@@ -259,6 +259,8 @@ class admin_shortcodes
 		sort($lanlist);
 		$text = '';
 
+		$lanperms = array();
+
 		foreach($lanlist as $langval)
 		{
 			if (getperms($langval))
@@ -338,7 +340,7 @@ class admin_shortcodes
 			{
 				$selected = ($lng == $sql->mySQLlanguage || ($lng == $pref['sitelanguage'] && !$sql->mySQLlanguage)) ? " selected='selected'" : "";
 				$urlval = $slng->subdomainUrl($lng);
-				$select .= "<option value='".$urlval."'{$selected}>$lng</option>\n";
+				$select .= "<option value='".$urlval."' {$selected}>$lng</option>\n";
 			}
 			$select .= "</select>";
 

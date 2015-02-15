@@ -385,13 +385,14 @@ class eMessage
 		}
 		return deftrue('EMESSLAN_TITLE_'.strtoupper($type), '');
 	}
-	
-	
+
+
 	/**
 	 * Set a custom title/caption (useful for front-end)
 	 *
 	 * @param string $title
-	 * @param string $type  E_MESSAGE_SUCCESS,E_MESSAGE_ERROR, E_MESSAGE_WARNING, E_MESSAGE_INFO
+	 * @param string $type E_MESSAGE_SUCCESS,E_MESSAGE_ERROR, E_MESSAGE_WARNING, E_MESSAGE_INFO
+	 * @return $this
 	 * @example e107::getMessage()->setTitle('Custom Title', E_MESSAGE_INFO);
 	 */
 	public function setTitle($title, $type)

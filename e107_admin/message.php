@@ -82,7 +82,7 @@ if($amount = $sql -> db_Select("generic", "*", $queryString))
 <td style='width: 100%;' class='forumheader3'><b>".MESSLAN_8."</b>: $gen_type<br />
 <b>".MESSLAN_9."</b>: ".$gen->convert_date($gen_datestamp, 'long')."<br />
 <b>".MESSLAN_10."</b>: $user<br />
-<b>".MESSLAN_13."</b>: $link ";
+<b>".MESSLAN_13."</b>: $link ".
 ($gen_chardata ? "<br /><b>".MESSLAN_12."</b>: $gen_chardata" : "")."<br /><input class='btn button' type='submit' name='delete_message' value='".MESSLAN_2." $gen_id' />
 </td>\n</tr>\n";
 	}
