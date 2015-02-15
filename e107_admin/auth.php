@@ -207,13 +207,14 @@ else
 			.field input:hover	{
 									
 								}
-			#logo				{ background-image: url(".e_IMAGE."logo_template_large.png); 
-									height:140px; 
-									width:310px;
+			#logo				{
+									height:140px;
+									max-width:310px;
 									padding-right:5px;
 									margin-left:auto;
 									margin-right:auto;
 									margin-top:2%;
+									width:95%;
 									
 								}
 			
@@ -221,9 +222,10 @@ else
 									margin-left:auto;
 									margin-right:auto;
 									margin-top:2%;
-									width:400px; 
-									padding: 10px 20px 0 20px;
-					
+									min-width:250px;
+									width:30%;
+									padding: 0px;
+									max-width:100%;
 								
 									/*	
 									
@@ -236,7 +238,8 @@ else
 			.admin-submit 		{ 	text-align: center; 	padding:20px;	}
 			
 			.submit				{  }
-			
+
+
 		
 			.placeholder 		{ color: #646667; font-style:italic	}
 	
@@ -246,16 +249,16 @@ else
 			
 			h2					{ text-align: center; color: #FAAD3D;  }
 			
-			#username			{background: url(".e_IMAGE."admin_images/admins_16.png) no-repeat scroll 7px 9px; padding:7px; padding-left:30px; width:218px; }
-				 
-			#userpass			{background: url(".e_IMAGE."admin_images/lock_16.png) no-repeat scroll 7px 9px; padding:7px;padding-left:30px; width:218px; }
-			
+			#username			{background: url(".e_IMAGE."admin_images/admins_16.png) no-repeat scroll 7px 9px; padding:7px; padding-left:30px; width:80%; max-width:218px; }
+
+			#userpass			{background: url(".e_IMAGE."admin_images/lock_16.png) no-repeat scroll 7px 9px; padding:7px;padding-left:30px; width:80%; max-width:218px; }
+
 			#code-verify		{ padding: 7px; width: 140px }
-			
+
 			input[disabled] 	{	color: silver;	}
 			button[disabled] span	{	color: silver;	}
 			.title_clean		{ display:none; }
-		
+
 		");
 		
 	
@@ -290,12 +293,13 @@ class auth
 		$class = (e_QUERY == 'failed') ? "class='e-shake'" : "";
 			
 		$text = "<form id='admin-login' method='post' action='".e_SELF."' {$incChap} >
-		<div id='logo' ></div>
+		<div id='logo' ><img src='".e_IMAGE."logo_template_large.png' alt='login' /></div>
 		<div id='login-admin' class='well center'>
 		<div {$class}>
 		<div class='navbar navbar-inner'>
-		<h4>admin area</h4>
+			<h4>admin area</h4>
         </div>
+        <div>
 		    <div class='field'>
 		    	<label for='username'>".ADLAN_89."</label> 
 		    	<input class='tbox e-tip' type='text' autofocus required='required' name='authname' placeholder='".ADLAN_89."' id='username' size='30' value='' maxlength='".varset($pref['loginname_maxlength'], 30)."' />
@@ -326,13 +330,15 @@ class auth
 				$text .= "<input type='hidden' name='hashchallenge' id='hashchallenge' value='".e107::getSession()->get('challenge')."' />\n\n";		
 			}
 								
-		$text .= "</div>
+		$text .= "</div></div>
 		</div>
 		</div>
 		</form>";
 		    
 		e107::getRender()->tablerender("", $text, 'admin-login');
-		echo "<div class='center' style='margin-top:30%; color:silver'><span style='padding:0 40px 0 40px;'><a href='http://e107.org'>Powered by e107</a></span> <a href='".e_BASE."index.php'>Return to Website</a></div>";
+		echo "<div class='row-fluid'>
+			<div class='center' style='margin-top:25%; color:silver'><span style='padding:0 40px 0 0px;'><a href='http://e107.org'>Powered by e107</a></span> <a href='".e_BASE."index.php'>Return to Website</a></div>
+			</div>";
 	}
 
 
