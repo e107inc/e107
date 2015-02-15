@@ -569,7 +569,7 @@ class users_ext
 			else
 			{
 				$text .= "
-				<input class='tbox' type='text' name='user_field' size='40' value='".vartrue($current['user_extended_struct_name'])."' maxlength='50' />
+				<input class='tbox' type='text' name='user_field' size='40' value='".vartrue($current['user_extended_struct_name'])."' maxlength='50' required pattern='[a-z0-9_]*' />
 				";
 			}
 			$text .= "
@@ -580,7 +580,7 @@ class users_ext
 			<tr>
 			<td>".EXTLAN_12.":</td>
 			<td colspan='3'>
-			<input class='tbox' type='text' name='user_text' size='40' value='".vartrue($current['user_extended_struct_text'])."' maxlength='50' /><br />
+			<input class='tbox' type='text' name='user_text' size='40' value='".vartrue($current['user_extended_struct_text'])."' maxlength='50' required /><br />
 			<span class='field-help'>".EXTLAN_13."</span>
 			</td>
 			</tr>
@@ -631,7 +631,7 @@ class users_ext
 			}
 			$text .= "
 			</div>
-			<input type='button' class='btn btn-primary button' value='".EXTLAN_48."' onclick=\"duplicateHTML('value_line','value_container');\"  />
+			<input type='button' class='btn btn-primary' value='".EXTLAN_48."' onclick=\"duplicateHTML('value_line','value_container');\"  />
 			<br /><span class='field-help'>".EXTLAN_17."</span></div>";
 // End of Values. --------------------------------------
        		$db_hide = ($current['user_extended_struct_type'] == 4) ? "visible" : "none";
@@ -754,18 +754,27 @@ class users_ext
 
 			<tr>
 			<td>".EXTLAN_18."</td>
-			<td colspan='3'>
+			<td colspan='3'>";
+			/*
+			$text .= "
 			<select class='tbox e-select' name='user_required'>
 			";
-			$_r = array('0' => EXTLAN_65, '1' => EXTLAN_66, '2' => EXTLAN_67);
-			foreach($_r as $k => $v) //FIXME change to $frm->select() 
+
+			foreach($_r as $k => $v)
 			{
-				$sel = (varset($current['user_extended_struct_required']) == $k ? " selected='selected' " : "");
+				$sel = (varset($current['user_extended_struct_required'],1) == $k ? " selected='selected' " : "");
 				$text .= "<option value='{$k}' {$sel}>{$v}</option>\n";
 			}
 
+			$text .= "</select>";
+			*/
+
+			$_r = array('0' => EXTLAN_65, '1' => EXTLAN_66, '2' => EXTLAN_67);
+
+			$text .= $frm->select('user_required',$_r, varset($current['user_extended_struct_required'],1),'size=xxlarge');
+
 			$text .= "
-			</select>
+
 			<br />
 			<span class='field-help'>".EXTLAN_19."</span>
 			</td>
@@ -774,7 +783,7 @@ class users_ext
 			<tr>
 			<td >".EXTLAN_5."</td>
 			<td colspan='3'>
-			".r_userclass("user_applicable", varset($current['user_extended_struct_applicable']), 'off', 'member, admin, main, classes, nobody')."<br /><span class='field-help'>".EXTLAN_20."</span>
+			".r_userclass("user_applicable", varset($current['user_extended_struct_applicable'],253), 'off', 'member, admin, main, classes, nobody')."<br /><span class='field-help'>".EXTLAN_20."</span>
 			</td>
 			</tr>
 

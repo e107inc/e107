@@ -15,7 +15,7 @@ if(!getperms("P")){ header("location:".e_BASE."index.php"); exit; }
 include_lan(e_PLUGIN."metaweblog/languages/".e_LANGUAGE.".php");
 require_once(e_ADMIN."auth.php");
 
-$text = XMLRPC_HELP_011;
+$text = "<div class='alert alert-block'>".XMLRPC_HELP_011."</div>";
 $ns -> tablerender(XMLRPC_CONFIG_001, $text);
 require_once(e_ADMIN."footer.php");
 ?>
