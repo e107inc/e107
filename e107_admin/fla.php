@@ -95,7 +95,10 @@ class generic_ui extends e_admin_ui
 			}
 		}
 	
-
+		public function afterDelete($data)
+		{
+		//	$sql2->db_Delete('banlist', "banlist_ip='{$banIP}'");
+		}
 			
 }
 				
