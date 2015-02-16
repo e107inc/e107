@@ -19,61 +19,65 @@ if (!defined('e107_INIT')) { exit; }
 
 class notify
 {
-	var $notify_prefs;
+	public $notify_prefs;
 
-	function notify()
+	function __construct()
 	{
-	//	global $e_event;
-		
-		$e_event = e107::getEvent(); 
-		
+		include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_notify.php');
+	}
+
+
+	/**
+	 * Register core and plugin notification events.
+	 */
+	public function registerEvents()
+	{
+		$e_event = e107::getEvent();
+
 		$this->notify_prefs = e107::getConfig('notify')->getPref();
-	
+
 		if(varset($this->notify_prefs['event']))
 		{
 			foreach ($this->notify_prefs['event'] as $id => $status)
 			{
-				$include = null; 
-				
+				$include = null;
+
 				if ($status['class'] != e_UC_NOBODY) // 255;
 				{
-					if(varset($status['include'])) // Plugin 
+					if(varset($status['include'])) // Plugin
 					{
 						$include 	= e_PLUGIN.$status['include']."/e_notify.php";
-						
+
 						if(varset($status['legacy']) != 1)
 						{
 							$class 		= $status['include']."_notify";
 							$method 	= $id;
-							$e_event->register($id, array($class, $method), $include);	
+							$e_event->register($id, array($class, $method), $include);
 						}
 						else
 						{
-							$e_event->register($id, 'notify_'.$id, $include);			
+							$e_event->register($id, 'notify_'.$id, $include);
 						}
 					}
-					else // core   
+					else // core
 					{
-						if(function_exists('notify_'.$id)) // as found below. 
+						if(method_exists($this, 'notify_'.$id)) // as found below.
 						{
-							$e_event->register($id, 'notify_'.$id);	
+							$e_event->register($id, array('notify', 'notify_'.$id));
 						}
 						else
 						{
-							$e_event->register($id, array('notify', 'generic')); // use generic notification. 		
-						}		
+							$e_event->register($id, array('notify', 'generic')); // use generic notification.
+						}
 					}
-					
-				
+
+
 				}
 			}
 		}
 
-		include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_notify.php');
-	//	e107::getEvent()->debug(); 
+	//	e107::getEvent()->debug();
 	}
-
-
 
 
 	/**
@@ -95,7 +99,7 @@ class notify
 	 * @param string $id - identifies event actions
 	 * @param string $subject - subject for email
 	 * @param string $message - email message body
-	 * @return none
+	 * @return void
 	 *
 	 *	@todo handle 'everyone except' clauses (email address filter done)
 	 *	@todo set up pref to not notify originator of event which caused notify (see $blockOriginator)
@@ -195,128 +199,137 @@ class notify
 			$e107->admin_log->e_log_event(10,-1,'NOTIFY',$subject,$message,FALSE,LOG_TO_ROLLING);
 		}
 	}
-}
 
 
 
 
-//DEPRECATED, BC, call the method only when needed, $e107->notify caught by __get()
-global $nt;
-$nt = e107::getNotify(); //TODO - find & replace $nt, $e107->notify
+
+	// ---------------------------------------
 
 
-function notify_usersup($data)
-{
-	global $nt;
-	foreach ($data as $key => $value)
+
+	function notify_usersup($data)
 	{
-		if($key != "password1" && $key != "password2" && $key != "email_confirm" && $key != "register")
+		$message = "";
+		foreach ($data as $key => $value)
 		{
-			if(is_array($value))  // show user-extended values.
+			if($key != "password1" && $key != "password2" && $key != "email_confirm" && $key != "register")
 			{
-				foreach($value as $k => $v)
+				if(is_array($value))  // show user-extended values.
 				{
-					$message .= str_replace("user_","",$k).': '.$v.'<br />';
+					foreach($value as $k => $v)
+					{
+						$message .= str_replace("user_","",$k).': '.$v.'<br />';
+					}
+				}
+				else
+				{
+					$message .=  $key.': '.$value.'<br />';
 				}
 			}
-			else
-			{
-				$message .=  $key.': '.$value.'<br />';
-			}
 		}
+
+		$this->send('usersup', NT_LAN_US_1, $message);
 	}
-	$nt->send('usersup', NT_LAN_US_1, $message);
-}
 
-function notify_userveri($data)
-{
-	global $nt, $e107;
-	$msgtext = NT_LAN_UV_2.$data['user_id']."\n";
-	$msgtext .= NT_LAN_UV_3.$data['user_loginname']."\n";
-	$msgtext .= NT_LAN_UV_4.e107::getIPHandler()->getIP(FALSE);
-	$nt->send('userveri', NT_LAN_UV_1, $msgtext);
-}
+	/**
+	 * @param $data
+	 */
+	function notify_userveri($data)
+	{
+		$msgtext = NT_LAN_UV_2.$data['user_id']."\n";
+		$msgtext .= NT_LAN_UV_3.$data['user_loginname']."\n";
+		$msgtext .= NT_LAN_UV_4.e107::getIPHandler()->getIP(FALSE);
 
-
-function notify_login($data)
-{
-	global $nt;
-	foreach ($data as $key => $value) {
-		$message .= $key.': '.$value.'<br />';
+		$this->send('userveri', NT_LAN_UV_1, $msgtext);
 	}
-	$nt->send('login', NT_LAN_LI_1, $message);
-}
 
-function notify_logout()
-{
-	global $nt;
-	$nt->send('logout', NT_LAN_LO_1, USERID.'. '.USERNAME.' '.NT_LAN_LO_2);
-}
 
-function notify_flood($data)
-{
-	global $nt;
-	$nt->send('flood', NT_LAN_FL_1, NT_LAN_FL_2.': '.e107::getIPHandler()->ipDecode($data));
-}
+	function notify_login($data)
+	{
+		$message = "";
+		foreach ($data as $key => $value)
+		{
+			$message .= $key.': '.$value.'<br />';
+		}
 
-function notify_subnews($data)
-{
-	global $nt,$tp;
-	foreach ($data as $key => $value) {
-		$message .= $key.': '.$value.'<br />';
+		$this->send('login', NT_LAN_LI_1, $message);
 	}
-	$nt->send('subnews', NT_LAN_SN_1, $message);
+
+	function notify_logout()
+	{
+		$this->send('logout', NT_LAN_LO_1, USERID.'. '.USERNAME.' '.NT_LAN_LO_2);
+	}
+
+	function notify_flood($data)
+	{
+		$this->send('flood', NT_LAN_FL_1, NT_LAN_FL_2.': '.e107::getIPHandler()->ipDecode($data));
+	}
+
+	function notify_subnews($data)
+	{
+		$message = "";
+		foreach ($data as $key => $value)
+		{
+			$message .= $key.': '.$value.'<br />';
+		}
+
+		$this->send('subnews', NT_LAN_SN_1, $message);
+	}
+
+	function notify_newspost($data)
+	{
+		$message = '<b>'.$data['news_title'].'</b>';
+		if (vartrue($data['news_summary'])) $message .= '<br /><br />'.$data['news_summary'];
+		if (vartrue($data['news_body'])) $message .= '<br /><br />'.$data['news_body'];
+		if (vartrue($data['news_extended'])) $message.= '<br /><br />'.$data['news_extended'];
+		$this->send('newspost', $data['news_title'], e107::getParser()->text_truncate(e107::getParser()->toDB($message), 400, '...'));
+	}
+
+	function notify_newsupd($data)
+	{
+		$message = '<b>'.$data['news_title'].'</b>';
+		if (vartrue($data['news_summary'])) $message .= '<br /><br />'.$data['news_summary'];
+		if (vartrue($data['news_body'])) $message .= '<br /><br />'.$data['news_body'];
+		if (vartrue($data['news_extended'])) $message.= '<br /><br />'.$data['news_extended'];
+		$this->send('newsupd', NT_LAN_NU_1.': '.$data['news_title'], e107::getParser()->text_truncate(e107::getParser()->toDB($message), 400, '...'));
+	}
+
+	function notify_newsdel($data)
+	{
+		$this->send('newsdel', NT_LAN_ND_1, NT_LAN_ND_2.': '.$data);
+	}
+
+
+	function notify_maildone($data)
+	{
+		$message = '<b>'.$data['mail_subject'].'</b><br /><br />'.$data['mail_body'];
+		$this->send('maildone', NT_LAN_ML_1.': '.$data['mail_subject'], $message);
+	}
+
+
+	function notify_fileupload($data)
+	{
+		$message = '<b>'.$data['upload_name'].'</b><br /><br />'.$data['upload_description'].'<br /><br />'.$data['upload_size'].'<br /><br />'.$data['upload_user'];
+		$this->send('fileupload', $data['upload_name'], $message);
+	}
+
+
+
+
 }
 
-function notify_newspost($data)
-{
-	$message = '<b>'.$data['news_title'].'</b>';
-	if (vartrue($data['news_summary'])) $message .= '<br /><br />'.$data['news_summary'];
-	if (vartrue($data['news_body'])) $message .= '<br /><br />'.$data['news_body'];
-	if (vartrue($data['news_extended'])) $message.= '<br /><br />'.$data['news_extended'];
-	e107::getNotify()->send('newspost', $data['news_title'], e107::getParser()->text_truncate(e107::getParser()->toDB($message), 400, '...'));
-}
-
-function notify_newsupd($data)
-{
-	$message = '<b>'.$data['news_title'].'</b>';
-	if (vartrue($data['news_summary'])) $message .= '<br /><br />'.$data['news_summary'];
-	if (vartrue($data['news_body'])) $message .= '<br /><br />'.$data['news_body'];
-	if (vartrue($data['news_extended'])) $message.= '<br /><br />'.$data['news_extended'];
-	e107::getNotify()->send('newsupd', NT_LAN_NU_1.': '.$data['news_title'], e107::getParser()->text_truncate(e107::getParser()->toDB($message), 400, '...'));
-}
-
-function notify_newsdel($data)
-{
-	global $nt;
-	$nt->send('newsdel', NT_LAN_ND_1, NT_LAN_ND_2.': '.$data);
-}
-
-
-function notify_maildone($data)
-{
-	$message = '<b>'.$data['mail_subject'].'</b><br /><br />'.$data['mail_body'];
-	e107::getNotify()->send('maildone', NT_LAN_ML_1.': '.$data['mail_subject'], $message);
-}
-
-
-function notify_fileupload($data)
-{
-	global $nt;
-	$message = '<b>'.$data['upload_name'].'</b><br /><br />'.$data['upload_description'].'<br /><br />'.$data['upload_size'].'<br /><br />'.$data['upload_user'];
-	$nt->send('fileupload', $data['upload_name'], $message);
-}
-
-
-if (isset($nt->notify_prefs['plugins']) && e_PAGE != 'notify.php')
-{
+	/*
+	if (isset($nt->notify_prefs['plugins']) && e_PAGE != 'notify.php')
+	{
 	foreach ($nt->notify_prefs['plugins'] as $plugin_id => $plugin_settings)
 	{
-		if(is_readable(e_PLUGIN.$plugin_id.'/e_notify.php'))
-		{
-			require_once(e_PLUGIN.$plugin_id.'/e_notify.php');
-		}
+	if(is_readable(e_PLUGIN.$plugin_id.'/e_notify.php'))
+	{
+	require_once(e_PLUGIN.$plugin_id.'/e_notify.php');
 	}
-}
+		}
+		}
 
-?>
+	*/
+
