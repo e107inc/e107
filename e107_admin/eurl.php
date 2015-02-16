@@ -39,7 +39,7 @@ class eurl_admin extends e_admin_dispatcher
 		'main/config'		=> array('caption'=> LAN_EURL_MENU_CONFIG, 'perm' => 'L'),
 		'main/alias' 		=> array('caption'=> LAN_EURL_MENU_ALIASES, 'perm' => 'L'),
 		'main/settings' 	=> array('caption'=> LAN_EURL_MENU_SETTINGS, 'perm' => 'L'),
-		'main/simple' 		=> array('caption'=> 'Redirects', 'perm' => 'L'), //TODO LAN
+		'main/simple' 		=> array('caption'=> LAN_EURL_MENU_REDIRECTS, 'perm' => 'L'), //TODO LAN
 	//	'main/help' 		=> array('caption'=> LAN_EURL_MENU_HELP, 'perm' => 'L'),
 	);
 
