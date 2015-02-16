@@ -75,6 +75,6 @@ define("LAN_JSCONFIRM","Are you sure?");
 define("LAN_IP", "IP Address");
 define("LAN_AUTHOR",	"Author");
 define("LAN_CATEGORY", "Category");
-
+define("LAN_GUEST", "Guest");
 
 ?>

@@ -9,7 +9,7 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
-define("LAN_GUEST", "Guest");
+
 define("LAN_WROTE", "wrote"); // as in John wrote.."  ";
 
 

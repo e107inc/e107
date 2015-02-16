@@ -74,4 +74,4 @@ switch ($action)
   default :
 	$text = "You can select classes for editing, and also delete existing classes, from this page.";
 }
-$ns -> tablerender($caption, $text);
+e107::getRender() -> tablerender($caption, $text);
