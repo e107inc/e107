@@ -696,9 +696,9 @@ class admin_shortcodes
             $countDisp = '';    
       }
          
-		$inboxUrl = e_PLUGIN.'pm/admin_config.php?'.'searchquery=&amp;iframe=1&amp;filter_options=bool__pm_to__'.USERID; 
-		$outboxUrl = e_PLUGIN.'pm/admin_config.php?'.'searchquery=&amp;iframe=1&amp;filter_options=bool__pm_from__'.USERID;
-		$composeUrl = e_PLUGIN.'pm/admin_config.php?'.'mode=main&amp;iframe=1&amp;action=create';
+		$inboxUrl = e_PLUGIN.'pm/admin_config.php?mode=inbox&amp;action=list&amp;iframe=1';
+		$outboxUrl = e_PLUGIN.'pm/admin_config.php?mode=outbox&amp;action=list&amp;iframe=1';
+		$composeUrl = e_PLUGIN.'pm/admin_config.php?mode=outbox&amp;action=create&amp;iframe=1';
 
        $text = '<ul class="nav navbar-nav nav-pills">
         <li class="dropdown">

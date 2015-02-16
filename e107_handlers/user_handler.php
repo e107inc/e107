@@ -1136,7 +1136,7 @@ class e_user_provider
 	}
 
 
-	
+
 	public function init()
 	{
 		if(!e107::getPref('social_login_active', false))

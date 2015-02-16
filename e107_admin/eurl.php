@@ -39,7 +39,7 @@ class eurl_admin extends e_admin_dispatcher
 		'main/config'		=> array('caption'=> LAN_EURL_MENU_CONFIG, 'perm' => 'L'),
 		'main/alias' 		=> array('caption'=> LAN_EURL_MENU_ALIASES, 'perm' => 'L'),
 		'main/settings' 	=> array('caption'=> LAN_EURL_MENU_SETTINGS, 'perm' => 'L'),
-		'main/simple' 		=> array('caption'=> LAN_EURL_MENU_REDIRECTS, 'perm' => 'L'), //TODO LAN
+		'main/simple' 		=> array('caption'=> LAN_EURL_MENU_REDIRECTS, 'perm' => 'L'),
 	//	'main/help' 		=> array('caption'=> LAN_EURL_MENU_HELP, 'perm' => 'L'),
 	);
 
@@ -666,7 +666,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 		 
 		 [Miro] Solution comes from the module itself, not related with URL assembling in anyway (as per latest Skype discussion)
 		 */
-		// FIXME TODO XXX
+
 		
 		// Global On/Off Switch Example
 		// [Miro] there is no reason of switch, everything could go through single entry point at any time, without a need of .htaccess (path info)
