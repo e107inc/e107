@@ -11,7 +11,7 @@
 */
 
 require_once("class2.php");
-
+define('e_HANDLER', "e107_handlers/");
 // security image may be disabled by removing the appropriate shortcodes from the template.
 require_once(e_HANDLER."secure_img_handler.php");
 $sec_img = new secure_image;

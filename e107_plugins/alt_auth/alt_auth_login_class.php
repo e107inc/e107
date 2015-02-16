@@ -221,9 +221,10 @@ class alt_login
 						$xFields['user_extended_id'] = $newID;
 						$xArray = array();
 						$xArray['data'] = $xFields;
-						$ue->addDefaultFields($xArray);		// Add in the data types for storage, plus any default values
-						$result = $aa_sql->db_Insert('user_extended',$xArray);
-						if (AA_DEBUG) $this->e107->admin_log->e_log_event(10,debug_backtrace(),'DEBUG','Alt auth login',"Add extended: UID={$newID}  result={$result}",FALSE,LOG_TO_ROLLING);
+
+						e107::getUserExt()->addDefaultFields($xArray);		// Add in the data types for storage, plus any default values
+						$result = $aa_sql->insert('user_extended',$xArray);
+						if (AA_DEBUG) e107::getLog()->e_log_event(10,debug_backtrace(),'DEBUG','Alt auth login',"Add extended: UID={$newID}  result={$result}",FALSE,LOG_TO_ROLLING);
 					}
 				}
 				else

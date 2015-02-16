@@ -65,7 +65,7 @@ if (!e107::isInstalled('download'))
 	
 				e107::getComment()->enter_comment($clean_authorname, $clean_comment, "download", $id, $pid, $clean_subject);
 	//			$e107cache->clear("comment.download.{$sub_action}");	$sub_action not used here
-				$e107cache->clear("comment.download");
+				e107::getCache()->clear("comment.download");
 			}
 		}
 	}

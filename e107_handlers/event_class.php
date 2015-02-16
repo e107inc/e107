@@ -27,7 +27,8 @@ class e107_event
 					'user_xup_login'			=> 'User social login',
 					'user_xup_signup'			=> 'User social signup',
 					'user_ban_flood'			=> NS_LAN_2,
-					'user_ban_failed_login'		=> 'IP banned for multiple failed login attempts'
+					'user_ban_failed_login'		=> 'IP banned for multiple failed login attempts',
+					'user_profile_display'      => "User views profile"
 					
 		),
 		

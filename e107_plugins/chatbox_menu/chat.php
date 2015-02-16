@@ -64,7 +64,7 @@ if($_POST['moderate'] && CB_MOD)
 		}
 		$sql->gen("DELETE FROM #chatbox WHERE cb_id IN ({$deletelist})");
 	}
-	$e107cache->clear("nq_chatbox");
+	e107::getCache()->clear("nq_chatbox");
 	$mes->addSuccess(CHATBOX_L18);
 }
 

@@ -103,7 +103,7 @@ if ($action == 'active')
 			$lastpost_datestamp = $gen->convert_date($row['thread_lastpost'], 'forum');
 			if ($row['user_last'])
 			{
-				$LASTPOST = "<a href='".$e107->url->create('user/profile/view', "name={$row['user_last']}&id={$row['thread_lastuser']}")."'>{$row['user_last']}</a><br />".$lastpost_datestamp;
+				$LASTPOST = "<a href='".e107::getUrl()->create('user/profile/view', "name={$row['user_last']}&id={$row['thread_lastuser']}")."'>{$row['user_last']}</a><br />".$lastpost_datestamp;
 			}
 			else
 			{

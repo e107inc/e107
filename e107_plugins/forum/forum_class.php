@@ -570,10 +570,13 @@ class e107forum
 		$id = (int)$id;
 		if($sql->select('forum_track', 'track_thread', 'track_userid = '.$id))
 		{
+			$ret = array();
+
 			while($row = $sql->fetch(MYSQL_ASSOC))
 			{
 				$ret[] = $row['track_thread'];
 			}
+
 			return ($retType == 'array' ? $ret : implode(',', $ret));
 		}
 		return false;

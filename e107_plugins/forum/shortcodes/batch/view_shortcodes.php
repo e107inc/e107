@@ -389,8 +389,9 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		}
 	}
 
-	function sc_lasteditby()
-	{		if(isset($this->postInfo['edit_name']))
+	function sc_lasteditby($parm='')
+	{
+		if(isset($this->postInfo['edit_name']))
 		{
 			if($parm == 'link')
 			{

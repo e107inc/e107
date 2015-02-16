@@ -54,7 +54,7 @@ if (isset($_POST['update_settings']))
 				$userMethods->makeUserCookie(array('user_id' => USERID,'user_password' => $userData['data']['user_password']), FALSE);		// Can't handle autologin ATM
 				$mes->addSuccess(UDALAN_3." ".ADMINNAME);
 				
-				$e_event->trigger('adpword'); //@deprecated 
+				e107::getEvent()->trigger('adpword'); //@deprecated
 				
 				$eventData = array('user_id'=> USERID, 'user_pwchange'=> $userData['data']['user_pwchange']); 
 				e107::getEvent()->trigger('admin_password_update',$eventData ); 

@@ -433,12 +433,10 @@ e107::getMessage()->addDebug("<h5>Posted Changes</h5>".print_a($changedUserData,
 	if (isset($allData['data']['user_class']))
 	{
 		unset($changedUserData['user_class']);		// We always recalculate this
-		if (FALSE === $adminEdit)
-		{	// Make sure admin can't edit another's user classes
-	if (!is_object($e_userclass))
-	{
-		$e_userclass = new user_class;
-	}
+		if (FALSE === $adminEdit) // Make sure admin can't edit another's user classes
+		{
+
+			$e_userclass = e107::getUserClass();
 			$ucList = $e_userclass->get_editable_classes(USERCLASS_LIST,TRUE);	 // List of classes which this user can edit
 			if (count($ucList))
 			{
@@ -469,7 +467,7 @@ e107::getMessage()->addDebug("<h5>Posted Changes</h5>".print_a($changedUserData,
 	if (!$error && count($changedUserData) || count($changedEUFData))
 	{
 		$_POST['user_id'] = $inp;
-		$ret = $e_event->trigger('preuserset', $_POST);
+		$ret =e107::getEvent()->trigger('preuserset', $_POST);
 
 		if ($ret == '')
 		{
@@ -730,10 +728,10 @@ if ($dataToSave && !$promptPassword)
 
 
 
-	$e_event->trigger('postuserset', $_POST);
+	e107::getEvent()->trigger('postuserset', $_POST);
 	if (count($triggerData))
 	{
-		$e_event->trigger('userdatachanged', $triggerData);
+		e107::getEvent()->trigger('userdatachanged', $triggerData);
 	}
 
 	if (e_QUERY == 'update')
@@ -957,7 +955,11 @@ function req($field)
 // Also deletes from database if appropriate.
 function delete_file($fname, $dir = 'avatars/')
 {
-	global $sql;
+	return;
+	/*
+	$sql = e107::getDb();
+	$tp = e107::getParser();
+
 	$fname = trim($fname);
 	if (!$fname) return false;
 
@@ -971,6 +973,6 @@ function delete_file($fname, $dir = 'avatars/')
 		return true;
 	}
 	return false;
+	*/
 }
 
-	?>

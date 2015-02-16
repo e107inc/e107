@@ -115,7 +115,7 @@ if (isset($_POST['saveopts_linkword']))
 	$pref['lw_notsamepage'] = isset($_POST['lw_notsamepage']);
 	save_prefs();
 	$logString = implode(', ',$pref['lw_context_visibility']).'[!br!]'.$pref['lw_page_visibility'].'[!br!]'.$pref['lw_ajax_enable'].'[!br!]'.$pref['lw_notsamepage'];
-	$e107->ecache->clear_sys(LW_CACHE_TAG);
+	e107::getCache()->clear_sys(LW_CACHE_TAG);
 	e107::getLog()->add('LINKWD_04',$logString,'');
 }
 
@@ -163,7 +163,8 @@ if (isset($_POST['submit_linkword']) || isset($_POST['update_linkword']))
 				$mes->addError(LAN_UPDATED_FAILED);
 			}
 		}
-		$e107->ecache->clear_sys(LW_CACHE_TAG);
+
+		e107::getCache()->clear_sys(LW_CACHE_TAG);
 	}
 }
 

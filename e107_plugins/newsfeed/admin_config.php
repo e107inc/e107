@@ -74,7 +74,7 @@ if (isset($_POST['createFeed']) || isset($_POST['updateFeed']))
 				$mes->addInfo(LAN_NO_CHANGE.': '.$sql->mySQLerror); 
 			}
 		}
-		$e107->ecache->clear(NEWSFEED_LIST_CACHE_TAG);		// This should actually clear all the newsfeed data in one go
+		e107::getCache()->clear(NEWSFEED_LIST_CACHE_TAG);		// This should actually clear all the newsfeed data in one go
 	} 
 	else 
 	{

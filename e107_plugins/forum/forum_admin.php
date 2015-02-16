@@ -1354,7 +1354,7 @@ class forumAdmin
 			{
 				if ($reported_total = $sql->select("generic", "*", "gen_type='reported_post' OR gen_type='Reported Forum Post'"))
 				{
-					$text .= "
+					$text = "
 					<table class='table adminlist'>
 					<tr>
 						<td>".FORLAN_170."</td>

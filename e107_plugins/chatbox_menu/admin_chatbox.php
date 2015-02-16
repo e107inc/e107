@@ -49,21 +49,21 @@ if (isset($_POST['prune']))
 	$chatbox_prune = intval($_POST['chatbox_prune']);
 	$prunetime = time() - $chatbox_prune;
 
-	$sql->db_Delete("chatbox", "cb_datestamp < '{$prunetime}' ");
+	$sql->delete("chatbox", "cb_datestamp < '{$prunetime}' ");
 	e107::getLog()->add('CHBLAN_02', $chatbox_prune.', '.$prunetime, E_LOG_INFORMATIVE, '');
-	$e107cache->clear("nq_chatbox");
+	e107::getCache()->clear("nq_chatbox");
 	$mes->addSuccess(LAN_AL_CHBLAN_02);
 }
 
 if (isset($_POST['recalculate'])) 
 {
-	$sql->db_Update("user", "user_chats = 0");
+	$sql->update("user", "user_chats = 0");
 	$qry = "SELECT u.user_id AS uid, count(c.cb_nick) AS count FROM #chatbox AS c
 		LEFT JOIN #user AS u ON SUBSTRING_INDEX(c.cb_nick,'.',1) = u.user_id
 		WHERE u.user_id > 0
 		GROUP BY uid";
 
-		if ($sql -> db_Select_gen($qry)) 
+		if ($sql->gen($qry))
 		{
 			$ret = array();
 			while($row = $sql -> db_Fetch())
@@ -74,8 +74,9 @@ if (isset($_POST['recalculate']))
 
 		foreach($list as $uid => $cnt)
 		{
-			$sql->db_Update("user", "user_chats = '{$cnt}' WHERE user_id = '{$uid}'");
+			$sql->update("user", "user_chats = '{$cnt}' WHERE user_id = '{$uid}'");
 		}
+
 	e107::getLog()->add('CHBLAN_03','', E_LOG_INFORMATIVE, '');
 	$mes->addSuccess(CHBLAN_33);
 }

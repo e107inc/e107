@@ -135,6 +135,8 @@ class e_db_mysql
 		if(defined('e_LANGUAGE')) $this->mySQLlanguage = e107::getLanguage()->e_language;
 	}
 
+
+
 	/**
 	 * Connects to mySQL server and selects database - generally not required if your table is in the main DB.<br />
 	 * <br />

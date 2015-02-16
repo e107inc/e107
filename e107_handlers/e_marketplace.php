@@ -362,7 +362,6 @@ abstract class e_marketplace_adapter_abstract
 		else 
 		{
 			$mes->addSuccess( "<a href='".$remotefile."'>Download Manually</a>"); // flush(); usleep(50000);
-			$mes->addDebug(print_a($unarc, true)); flush();		
 		}
 		
 		return false; 
@@ -690,7 +689,10 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 			foreach ($xml as $name => $node) 
 			{
 				$_res = $this->parse($node, $name);
-				if(is_string($_res)) $_res = trim($res);
+				if(is_string($_res))
+				{
+					 $_res = trim($_res);
+				}
 				
 				$ret[$name][] = $this->parse($node, $name);
 			}
@@ -737,7 +739,7 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 		{
 			if($tag === 'params')
 			{
-				foreach ($data['param'] as $param) 
+				foreach ($data['param'] as $i => $param)
 				{
 					$result[$tag][$param['@attributes']['name']] = $param['@value'];
 					unset($result[$tag]['param'][$i]);
