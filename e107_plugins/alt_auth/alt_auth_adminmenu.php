@@ -389,7 +389,7 @@ class alt_auth_admin extends alt_auth_base
 				$log_result = $_login->login($val_name, $_POST['passtovalidate'], $pass_vars, ($val_name == ''));
 			}
 
-			$text .= "<tr><td$log>".LAN_ALT_48;
+			$text .= "<tr><td>".LAN_ALT_48;
 			if ($val_name)
 			{
 				$text .= "<br />".LAN_ALT_49.$val_name.'<br />'.LAN_ALT_50;

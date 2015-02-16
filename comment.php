@@ -222,11 +222,11 @@ if (isset($_POST['commentsubmit']) || isset($_POST['editsubmit']))
 	$cobj->enter_comment($clean_authorname, $clean_comment, $table, $id, $pid, $clean_subject);
 	if ($table == "news")
 	{
-		$e107cache->clear("news");
+		e107::getCache()->clear("news");
 	}
 	else
 	{
-		$e107cache->clear("comment.php?{$table}.{$id}");
+		e107::getCache()->clear("comment.php?{$table}.{$id}");
 	}
 
 	if($editpid)
@@ -241,14 +241,14 @@ if (isset($_POST['commentsubmit']) || isset($_POST['editsubmit']))
 
 if (isset($_POST['replysubmit']))
 {	// Reply to nested comment being posted
-	if ($table == "news" && !$sql->db_Select("news", "news_allow_comments", "news_id='{$nid}' "))
+	if ($table == "news" && !$sql->select("news", "news_allow_comments", "news_id='{$nid}' "))
 	{
 		header('location: '.e_BASE.'index.php');
 		exit;
 	}
 	else
 	{
-		$row = $sql->db_Fetch();
+		$row = $sql->fetch();
 		if (!$row['news_id'])
 		{
 			$pid = (isset($_POST['pid']) ? $_POST['pid'] : 0);
@@ -259,7 +259,7 @@ if (isset($_POST['replysubmit']))
 			$clean_subject = $_POST['subject'];
 
 			$cobj->enter_comment($clean_authorname, $clean_comment, $table, $nid, $pid, $clean_subject);
-			$e107cache->clear("comment.php?{$table}.{$id}");
+			e107::getCache()->clear("comment.php?{$table}.{$id}");
 		}
 		$redirectFlag = $nid;
 	}
@@ -389,7 +389,7 @@ elseif ($action == 'comment')
 {  //  Default code if not reply
 
 	// Check cache
-	if ($cache = $e107cache->retrieve("comment.php?{$table}.{$id}"))
+	if ($cache = e107::getCache()->retrieve("comment.php?{$table}.{$id}"))
 	{
 		require_once(HEADERF);
 		echo $cache;
@@ -596,7 +596,7 @@ if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'] && $table == 'n
 if ($comment_ob_start)
 {
 	$cache = ob_get_contents();
-	$e107cache->set("comment.php?{$table}.{$field}", $cache);
+	e107::getCache()->set("comment.php?{$table}.{$field}", $cache);
 	ob_end_flush(); // dump the buffer we started
 }
 

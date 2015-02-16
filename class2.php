@@ -656,7 +656,10 @@ unset($die);
 //
 $sql->db_Mark_Time('Start: Misc resources. Online user tracking, cache');
 
-//DEPRECATED, BC, call the method only when needed, $e107->ecache caught by __get()
+
+/**
+ * @deprecated  BC, call the method only when needed, $e107->ecache caught by __get()
+*/
 $e107cache = e107::getCache(); //TODO - find & replace $e107cache, $e107->ecache
 
 //DEPRECATED, BC, call the method only when needed, $e107->override caught by __get()
@@ -665,10 +668,10 @@ $override = e107::getSingleton('override', true); //TODO - find & replace $overr
 //DEPRECATED, BC, call the method only when needed, $e107->user_class caught by __get()
 $e_userclass = e107::getUserClass();  //TODO - find & replace $e_userclass, $e107->user_class
 
-//TODO - move the check to e107::notify()? What's the idea behind $pref['notify']?
-if(isset($pref['notify']) && $pref['notify'] == true)
+
+if(!empty($pref['notify']))
 {
-	e107_require_once(e_HANDLER.'notify_class.php');
+	e107::getNotify()->registerEvents();
 }
 
 //
@@ -679,7 +682,10 @@ init_session();			// Set up a lot of the user-related constants
 
 
 
-//DEPRECATED but necessary. BC Fix.
+/**
+ * @deprecated but necessary. BC Fix.
+ * @return string
+ */
 function getip()
 {
 	return e107::getIPHandler()->ipDecode(USERIP);
@@ -873,7 +879,7 @@ if (!class_exists('e107table', false))
 		
 		/**
 		 * @param $caption string caption text
-		 * @param $text body text
+		 * @param $text string
 		 * @param $mode unique identifier
 		 * @param $return boolean : return the html instead of echo it. 
 		 * @return null
@@ -1469,11 +1475,9 @@ function getperms($arg, $ap = ADMINPERMS)
 }
 
 /**
- * @DEPRECATED
+ * @deprecated
  * Get the user data from user and user_extended tables
  * SO MUCH DEPRECATED! Use e107::user($uid);
- *
- *
  * @return array
  */
 function get_user_data($uid, $extra = '')
@@ -1546,12 +1550,23 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//DEPRECATED - use e107::setRegistry()
+
+/**
+ * @deprecated use e107::setRegistry()
+ * @param $id
+ * @param $var
+ */
 function cachevars($id, $var)
 {
 	e107::setRegistry('core/cachedvars/'.$id, $var);
 }
-//DEPRECATED - use e107::getRegistry()
+
+
+/**
+ * @deprecated  use e107::getRegistry()
+ * @param $id
+ * @return mixed
+ */
 function getcachedvars($id)
 {
 	return e107::getRegistry('core/cachedvars/'.$id, false);
@@ -1902,7 +1917,7 @@ function class_list($uid = '')
 
 /**
  * Will be deprecated, probably by e107::includeLan();
- *
+ * @deprecated  by e107::lan();
  * @param string $path
  * @param boolean $force [optional] Please use the default
  * @return void
@@ -1939,6 +1954,12 @@ function include_lan_admin($path)
 
 // $pref['noLanguageSubs'] can be set TRUE to prevent searching for the English files if the files for the current site language don't exist.
 //DEPRECATED - use e107::loadLanFiles();
+/**
+ * @deprecated - use e107::loadLanFiles();
+ * @param $unitName
+ * @param string $type
+ * @return bool|string
+ */
 function loadLanFiles($unitName, $type='runtime')
 {
 	$info = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2); 
@@ -2302,7 +2323,13 @@ function e107_ini_set($var, $value)
 }
 
 // Return true if specified plugin installed, false if not
-//DEPRECATED - use e107::isInstalled();
+//DEPRECATED
+
+/**
+ * @deprecated - use e107::isInstalled();
+ * @param $plugname
+ * @return bool
+ */
 function plugInstalled($plugname)
 {
 	return e107::isInstalled($plugname);

@@ -357,9 +357,9 @@ while ($files[$c])
 	{
 		$img = "def";
 	}
-	$size = $e107->parseMemorySize(filesize(e_BASE.$path."/".$files[$c]));
+	$size = eHelper::parseMemorySize(filesize(e_BASE.$path."/".$files[$c]));
 	$gen = new convert;
-	$filedate = $gen -> convert_date(filemtime(e_BASE.$path."/".$files[$c]), "forum");
+	$filedate = e107::getDate()->convert_date(filemtime(e_BASE.$path."/".$files[$c]), "forum");
 
 	$text .= "
 					<tr>

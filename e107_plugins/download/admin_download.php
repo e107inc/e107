@@ -326,7 +326,7 @@ if ($action == "uopt")
       global $ns, $sql, $gen, $e107, $tp;
 
       $frm = new e_form(true); //enable inner tabindex counter
-      $imgd = e_BASE.$IMAGES_DIRECTORY;
+
       $columnInfo = array(
          "checkboxes"         => array("title" => "", "forced"=> TRUE, "width" => "3%", "thclass" => "center first", "toggle" => "dl_selected"),
          "upload_id"          => array("title"=>DOWLAN_67,  "type"=>"", "width"=>"auto", "thclass"=>"", "forced"=>true),
@@ -533,18 +533,14 @@ if ($action == "uopt")
    }
 
 
+	/**
+	 *
+	 */
+	function show_upload_filetypes() {
 
 
-
-
-   function show_upload_filetypes() {
-      global $ns;
-
-      //TODO is there an e107:: copy of this
-      if (!is_object($e_userclass))
-      {
-         $e_userclass = new user_class;
-      }
+      $ns           = e107::getRender();
+      $e_userclass  = e107::getUserClass();
 
       if(!getperms("0")) exit; //TODO still needed?
 

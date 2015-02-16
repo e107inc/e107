@@ -443,7 +443,7 @@ class banner_form_ui extends e_admin_form_ui
 			
 			case 'filter':
 			case 'batch':
-				return  $array; 
+				return null;
 			break;
 		}
 	}

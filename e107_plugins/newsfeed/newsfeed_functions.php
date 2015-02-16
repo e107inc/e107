@@ -113,7 +113,7 @@ class newsfeedClass
 		if ($this->useCache)
 		{	// Cache enabled - we need to save some updated info
 			$temp = e107::serialize($this->feedList, FALSE);
-			$e107->ecache->set(NEWSFEED_LIST_CACHE_TAG,$temp);
+			e107::getCache()->set(NEWSFEED_LIST_CACHE_TAG,$temp);
 		}
 	}
 

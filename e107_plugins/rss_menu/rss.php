@@ -233,7 +233,7 @@ class rssCreate
 					$this -> rssItems[$loop]['author_email'] = $value['user_email'];
 				//	$this -> rssItems[$loop]['category'] = "<category domain='".SITEURL."news.php?cat.".$value['news_category']."'>".$value['category_name']."</category>";
 					$this -> rssItems[$loop]['category_name'] = $tp->toHTML($value['category_name'],TRUE,'defs');
-                    $this -> rssItems[$loop]['category_link'] = $e107->base_path."news.php?cat.".$value['news_category'];
+                    $this -> rssItems[$loop]['category_link'] = SITEURL."news.php?cat.".$value['news_category']; //TODO SEFURL.
 
 					if($value['news_allow_comments'] && $pref['comments_disabled'] != 1)
 					{

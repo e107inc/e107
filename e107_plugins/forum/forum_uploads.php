@@ -18,7 +18,7 @@ if (!$e107->isInstalled('forum'))
 
 if(!USER)
 {
-	header("location:".e_BASE.$PLUGINS_DIRECTORY."forum/forum.php");
+	header("location:".e_PLUGIN."forum/forum.php");
 	exit;
 }
 

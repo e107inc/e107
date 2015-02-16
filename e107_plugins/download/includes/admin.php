@@ -467,8 +467,8 @@ $columnInfo = array(
                      $text .= '</tr>';
                      $foundSome = true;
                   }
-                  $filesize = (is_readable(e_DOWNLOAD.$row['download_url']) ? $e107->parseMemorySize(filesize(e_DOWNLOAD.$file['fname'])) : DOWLAN_181);
-                  $filets   = (is_readable(e_DOWNLOAD.$row['download_url']) ? $gen->convert_date(filectime(e_DOWNLOAD.$file['fname']), "long") : DOWLAN_181);
+                  $filesize = (is_readable(e_DOWNLOAD.$row['download_url']) ? eHelper::parseMemorySize(filesize(e_DOWNLOAD.$file['fname'])) : DOWLAN_181);
+                  $filets   = (is_readable(e_DOWNLOAD.$row['download_url']) ? e107::getDate()->convert_date(filectime(e_DOWNLOAD.$file['fname']), "long") : DOWLAN_181);
                   $text .= '<tr>';
                   $text .= '<td>'.$tp->toHTML($file['fname']).'</td>';
                   $text .= '<td>'.$filets.'</td>';

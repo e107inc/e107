@@ -26,9 +26,9 @@ class sitelinks
 		$sql = e107::getDb('sqlSiteLinks');
 		$ins = ($cat > 0) ? "link_category = ".intval($cat)." AND " : "";
 		$query = "SELECT * FROM #links WHERE ".$ins."  link_class IN (".USERCLASS_LIST.") ORDER BY link_order ASC";
-		if($sql->db_Select_gen($query))
+		if($sql->gen($query))
 		{
-			while ($row = $sql->db_Fetch())
+			while ($row = $sql->fetch())
 			{
 				if($row['link_sefurl'])
 				{

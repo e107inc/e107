@@ -1317,7 +1317,7 @@ require_once("auth.php");
 
 if($_POST)
 {
-	$e107cache->clear_sys("menus_");
+	e107::getCache()->clear_sys("menus_");
 }
 
 

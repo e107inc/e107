@@ -161,8 +161,10 @@ if (isset($id))
 
 	$loop_uid = $id;
 
-	$ret = $e_event->trigger("showuser", $id);
-	if ($ret!='')
+	$ret = e107::getEvent()->trigger("showuser", $id);
+	$ret2 = e107::getEvent()->trigger('user_profile_display',$id);
+
+	if (!empty($ret) || !empty($ret2))
 	{
 		$text = "<div style='text-align:center'>".$ret."</div>";
 		$ns->tablerender(LAN_USER_48, $text);

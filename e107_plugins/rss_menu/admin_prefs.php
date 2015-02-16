@@ -201,7 +201,7 @@ if(isset($_POST['delete']))
 	$d_idt = array_keys($_POST['delete']);
 	$message = ($sql -> db_Delete("rss", "rss_id=".intval($d_idt[0]))) ? LAN_DELETED : LAN_DELETED_FAILED;
 	e107::getLog()->add('RSS_01','ID: '.intval($d_idt[0]).' - '.$message,E_LOG_INFORMATIVE,'');
-    $e107cache->clear("rss");
+    e107::getCache()->clear("rss");
 }
 
 // Create rss feed

@@ -128,6 +128,9 @@ class pm_shortcodes extends e_shortcode
 		{
 			return '';
 		}
+
+		$ret = "";
+
 		if(check_class($this->pmPrefs['opt_userclass']) && check_class($this->pmPrefs['multi_class']))
 		{
 			$ret = "<input type='checkbox' name='to_userclass' value='1' />".LAN_PM_4." ";

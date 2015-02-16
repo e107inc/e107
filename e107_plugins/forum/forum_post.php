@@ -333,7 +333,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 			$poll->submit_poll(2);
 		}
 
-		$e107cache->clear('newforumposts');
+		e107::getCache()->clear('newforumposts');
 		$postInfo = $forum->postGet($newPostId, 'post');
 		$forumInfo = $forum->forumGet($postInfo['post_forum']);
 		
@@ -412,7 +412,7 @@ if (isset($_POST['update_thread']))
 
 		$forum->threadUpdate($postInfo['post_thread'], $threadVals);
 		$forum->postUpdate($postInfo['post_id'], $postVals);
-		$e107cache->clear('newforumposts');
+		e107::getCache()->clear('newforumposts');
 		$url = e107::getUrl()->create('forum/thread/post', array('name'=>$threadVals['thread_name'], 'id' => $postInfo['post_id'], 'thread' => $postInfo['post_thread']), array('encode'=>false));
 		header('location:'.$url);
 		exit;
@@ -440,7 +440,7 @@ if (isset($_POST['update_reply']))
 		$postVals['post_entry'] = $_POST['post'];
 
 		$forum->postUpdate($postInfo['post_id'], $postVals);
-		$e107cache->clear('newforumposts');
+		e107::getCache()->clear('newforumposts');
 		$url = e107::getUrl()->create('forum/thread/post', "id={$postInfo['post_id']}", 'encode=0&full=1'); // XXX what data is available, find thread name
 		header('location:'.$url);
 		exit;

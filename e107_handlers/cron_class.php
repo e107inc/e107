@@ -222,7 +222,7 @@ class _system_cron
 		$ipManager->banRetriggerAction();
 		if (CRON_RETRIGGER_DEBUG)
 		{
-			$e107->admin_log->e_log_event(10,debug_backtrace(),'DEBUG','CRON Ban Retrigger','Retrigger processing completed',FALSE,LOG_TO_ROLLING);
+			e107::getLog()->e_log_event(10,debug_backtrace(),'DEBUG','CRON Ban Retrigger','Retrigger processing completed',FALSE,LOG_TO_ROLLING);
 		}
 	}
 	
