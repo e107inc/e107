@@ -75,3 +75,12 @@ define('LAN_CONVERT_45','Cannot read import code file');
 define('LAN_CONVERT_46','Error: --ERRNUM-- while writing to --DB-- database, line ');
 define('LAN_CONVERT_47','Batch --BLOCK-- import completed. --LINES-- read, --USERS-- added, --ERRORS-- errors');
 define('LAN_CONVERT_48','Forum posts');
+
+define('LAN_CONVERT_49','Drupal');
+define('LAN_CONVERT_50','Basic import');
+define('LAN_CONVERT_51','The version of targeted Drupal.');
+define('LAN_CONVERT_52','Drupal Version');
+define('LAN_CONVERT_53','The base URL of Drupal website (e.g., http://mydrupalsite.com).');
+define('LAN_CONVERT_54','Drupal Base URL');
+define('LAN_CONVERT_55','The base URL path (i.e., directory) of the Drupal installation (e.g., /drupal/).');
+define('LAN_CONVERT_56','Drupal Base Path');

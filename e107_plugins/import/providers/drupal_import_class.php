@@ -20,8 +20,8 @@ require_once('import_classes.php');
 class drupal_import extends base_import_class
 {
 
-	public $title = 'Drupal';
-	public $description = 'Basic import';
+	public $title = LAN_CONVERT_49;
+	public $description = LAN_CONVERT_50;
 	// array('users', 'news','page','links'); //XXX Modify to enable copyNewsData() etc.
 	public $supported = array('users');
 	public $mprefix = false;
@@ -71,25 +71,25 @@ class drupal_import extends base_import_class
 			'8' => 'Drupal 8',
 		);
 
-		$dscVersion = 'The version of targeted Drupal.';
+		$dscVersion = LAN_CONVERT_51;
 		$frmElements[] = array(
-			'caption' => "Drupal Version",
+			'caption' => LAN_CONVERT_52,
 			'html' => $frm->select('version', $versions, $this->version, 50, array(
 					'required' => 1,
 				)) . '<div class="field-help">' . $dscVersion . '</div>',
 		);
 
-		$dscBaseUrl = 'The base URL of Drupal website (e.g., http://mydrupalsite.com).';
+		$dscBaseUrl = LAN_CONVERT_53;
 		$frmElements[] = array(
-			'caption' => "Drupal Base URL",
+			'caption' => LAN_CONVERT_54,
 			'html' => $frm->text('baseUrl', $this->baseUrl, 50, array(
 					'required' => 1,
 				)) . '<div class="field-help">' . $dscBaseUrl . '</div>',
 		);
 
-		$dscBasePath = 'The base URL path (i.e., directory) of the Drupal installation (e.g., /drupal/).';
+		$dscBasePath = LAN_CONVERT_55;
 		$frmElements[] = array(
-			'caption' => "Drupal Base Path",
+			'caption' => LAN_CONVERT_56,
 			'html' => $frm->text('basePath', $this->basePath, 50, array(
 					'required' => 1,
 				)) . '<div class="field-help">' . $dscBasePath . '</div>',
@@ -163,7 +163,10 @@ class drupal_import extends base_import_class
 		switch ((int) $this->version)
 		{
 			case 6:
-				return false;
+				$query = "SELECT * FROM " . $this->DBPrefix . "users AS u ";
+				$query .= "WHERE u.status = 1 AND u.uid > 1 ";
+
+				return $this->ourDB->gen($query);
 				break;
 
 			case 7:
@@ -182,7 +185,15 @@ class drupal_import extends base_import_class
 				break;
 
 			case 8:
-				return false;
+				$fields = array(
+					'ufd.*',
+				);
+
+				$query = "SELECT " . implode(',', $fields) . " FROM " . $this->DBPrefix . "users AS u ";
+				$query .= "LEFT JOIN " . $this->DBPrefix . "users_field_data AS ufd ON u.uid = ufd.uid";
+				$query .= "WHERE ufd.status = 1 AND ufd.uid > 1 ";
+
+				return $this->ourDB->gen($query);
 				break;
 
 			default:
@@ -207,39 +218,17 @@ class drupal_import extends base_import_class
 	{
 		if ($this->copyUserInfo)
 		{
-			// int(10)
 			$target['user_id'] = $source['uid'];
-
-			// varchar(100)
 			$target['user_name'] = $source['name'];
-
-			// varchar(100)
 			$target['user_loginname'] = $source['name'];
-
-			// varchar(50)
 			$target['user_password'] = $source['pass'];
-
-			// varchar(100)
 			$target['user_email'] = $source['mail'];
-
-			// text
 			$target['user_signature'] = $source['signature'];
-
-			// int(10)
 			$target['user_join'] = (int) $source['created'];
-
-			// int(10)
 			$target['user_lastvisit'] = (int) $source['login'];
-
-			// May need conversion varchar(8)
 			$target['user_timezone'] = $source['timezone'];
-
-			// May need conversion varchar(12)
 			$target['user_language'] = $source['language'];
-
 			$user_image = $this->fileSaveAvatar($source);
-
-			// varchar(100)
 			$target['user_image'] = $user_image;
 
 			return $target;
@@ -332,9 +321,6 @@ class drupal_import extends base_import_class
 
 
 	/**
-	 * TODO: resizing avatar...?
-	 * TODO: process_uploaded_files() should be used?
-	 *
 	 * Save avatar picture from Drupal filesystem.
 	 * a) create remote URL to stream file contents
 	 * b) get remote file contents
@@ -351,12 +337,25 @@ class drupal_import extends base_import_class
 		// Set default return value.
 		$local_path = '';
 
-		$src_uri = $row['uri'];
-		$src_pth = unserialize($row['public_file_path']);
-		$src_pth = $this->fileCreateUrl($src_uri, $src_pth);
+		switch ((int) $this->version) {
+			case 6:
+				$src_pth = $this->fileCreateUrl($row['picture'], "");
+				break;
+
+			case 7:
+				$src_uri = $row['uri'];
+				$src_pth = unserialize($row['public_file_path']);
+				$src_pth = $this->fileCreateUrl($src_uri, $src_pth);
+				break;
+
+			case 8:
+				// TODO: need to get user pictures url.
+				return $local_path;
+				break;
+		}
 
 		// If $src_pth is empty, we cannot save remote file, so return...
-		if (empty($src_pth))
+		if (!isset($src_pth) || empty($src_pth))
 		{
 			return $local_path;
 		}
@@ -420,7 +419,7 @@ class drupal_import extends base_import_class
 	 */
 	function fileCreateUrl($uri, $path)
 	{
-		if (empty($uri) || !(substr($uri, 0, 9) == 'public://'))
+		if (empty($uri))
 		{
 			return "";
 		}
