@@ -956,7 +956,7 @@ class e_user_provider
 			{
 				e107::getRedirect()->redirect($redirectUrl);
 			}
-			return; 
+			return false;
 		//	throw new Exception( "Signup failed! User already signed in. ", 1); // TODO lan
 		}
 		
@@ -972,19 +972,33 @@ class e_user_provider
 			$plainPwd = $userMethods->generateRandomString('************'); // auto plain passwords
 			
 			// TODO - auto login name, shouldn't be used if system set to user_email login...
-			$userdata['user_loginname'] = $this->getProvider().$userMethods->generateUserLogin(e107::getPref('predefinedLoginName', '_..#..#..#')); 
-			$userdata['user_email'] = $sql->escape($profile->emailVerified ? $profile->emailVerified : $profile->email);
-			$userdata['user_name'] = $sql->escape($profile->displayName);
-			$userdata['user_login'] = $userdata['user_name'];
-			$userdata['user_customtitle'] = ''; // not used
-			$userdata['user_password'] = $userMethods->HashPassword($plainPwd, $userdata['user_loginname']); // pwd
-			$userdata['user_sess'] = ''; // 
-			$userdata['user_image'] = $profile->photoURL; // avatar
-			$userdata['user_signature'] = ''; // not used
-			$userdata['user_hideemail'] = 1; // hide it by default
-			$userdata['user_xup'] = $sql->escape($this->userId());
-			$userdata['user_class'] = ''; // TODO - check (with Steve) initial class for new users feature...
-			
+			$userdata['user_loginname']     = $this->getProvider().$userMethods->generateUserLogin(e107::getPref('predefinedLoginName', '_..#..#..#'));
+			$userdata['user_email']         = $sql->escape($profile->emailVerified ? $profile->emailVerified : $profile->email);
+			$userdata['user_name']          = $sql->escape($profile->displayName);
+			$userdata['user_login']         = $userdata['user_name'];
+			$userdata['user_customtitle']   = ''; // not used
+			$userdata['user_password']      = $userMethods->HashPassword($plainPwd, $userdata['user_loginname']); // pwd
+			$userdata['user_sess']          = ''; //
+			$userdata['user_image']         = $profile->photoURL; // avatar
+			$userdata['user_signature']     = ''; // not used
+			$userdata['user_hideemail']     = 1; // hide it by default
+			$userdata['user_xup']           = $sql->escape($this->userId());
+
+			$pref = e107::pref('core');
+
+			if(!empty($pref['initial_user_classes']))
+			{
+				$userdata['user_class'] = $pref['initial_user_classes'];
+			}
+			elseif(!empty($pref['user_new_period']))
+			{
+				$userdata['user_class'] = e_UC_NEWUSER;
+			}
+			else
+			{
+				$userdata['user_class'] = '';
+			}
+
 	//		print_a($userdata);
 		
 			
@@ -1000,8 +1014,8 @@ class e_user_provider
 					e107::getRedirect()->redirect($redirectUrl);
 				}
 				
-				return; 
-				// throw new Exception( "Signup failed! User already exists. Please use 'login' instead.", 3); // TODO lan
+				return false;
+				// throw new Exception( "Signup failed! User already exists. Please use 'login' instead.", 3);
 			}
 			
 			if(empty($userdata['user_email']) && e107::getPref('disable_emailcheck', 0)==0) // Allow it if set-up that way. 
@@ -1038,17 +1052,16 @@ class e_user_provider
 			}
 
 			### Successful signup!
-			
-			// FIXME documentation of new signup trigger - usersupprov
 			//$user->set('provider', $this->getProvider());
 			$userdata = $user->getData();
 			$userdata['provider'] = $this->getProvider();
 			
-		//	e107::getEvent()->trigger('userveri', $userdata);	 // Trigger New verified user. 
+		//	e107::getEvent()->trigger('userveri', $userdata);	 // Trigger New verified user.
 			
 			e107::getEvent()->trigger('user_xup_signup', $userdata); 
 			
-			$ret = e107::getEvent()->trigger('usersupprov', $userdata);	// XXX - it's time to pass objects instead of array? 
+			$ret = e107::getEvent()->trigger('usersupprov', $userdata);	// XXX - it's time to pass objects instead of array?
+
 			if(true === $ret) return $this;
 			
 			// send email
@@ -1075,7 +1088,9 @@ class e_user_provider
 
 		return false;
 	}
-	
+
+
+
 	public function login($redirectUrl = true)
 	{
 		if(!e107::getPref('social_login_active', false))
@@ -1119,6 +1134,8 @@ class e_user_provider
 		
 		return $check;
 	}
+
+
 	
 	public function init()
 	{

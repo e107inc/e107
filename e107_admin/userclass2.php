@@ -589,40 +589,39 @@ unset($title);
 
 	$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."?initial' id='initialForm'>
-		<table class='table adminform'>
-		<tr><td>";
-	$text .= UCSLAN_43;
+		<table class='table table-bordered adminform'>
+		<tr><td>".UCSLAN_43."</td><td>";
+
 	if (count($icn) > 0)
 	{
-	  $text .= implode(', ',$icn);
+	//  $text .= implode(', ',$icn);
 	}
 	else
 	{
 	  $text .= UCSLAN_44;
 	}
-	$text .= "</td></tr>
-	<tr></tr><tr><td>";
+
 
 	if ($class_text)
 	{
 	  $text .= $class_text."</td></tr><tr><td>";
 	  $sel_stage = varset($pref['init_class_stage'],2);
-	  $text .= "<table class='table adminform'>
-	  	<tr>
-	  	<td>".UCSLAN_45."<br />	</td>
+	  $text .= UCSLAN_45."<br />	</td>
 	  	<td>
 	  <select class='tbox' name='init_class_stage'>\n
 	  <option value='1'".($sel_stage==1 ? " selected='selected'" : "").">".UCSLAN_47."</option>
 	  <option value='2'".($sel_stage==2 ? " selected='selected'" : "").">".UCSLAN_48."</option>
 	  </select><span class='field-help'>".UCSLAN_46."</span>";
-	  $text .= "</td></tr></table></td></tr>
-	  <tr><td style='text-align:center'>".
-	  $frm->admin_button('set_initial_classes','no-value','create',LAN_UPDATE);
+	  $text .= "</td></tr></table>
+	  <div class='buttons-bar'>".
+	  $frm->admin_button('set_initial_classes','no-value','create',LAN_UPDATE)
+	  ."</div>";
 	}
 	else
 	{
 	  $text .= UCSLAN_39;
 	}
+
 	$text .= "</td></tr></table></form></div>";
 	$ns->tablerender(ADLAN_38.SEP.UCSLAN_40, $mes->render() . $text);
 
@@ -943,10 +942,18 @@ function userclass2_adminmenu()
 
 function e_help()
 {
-	
+
 	global $e_userclass;
-	$text = "<div id='userclass-tree-structure'>".$e_userclass->show_graphical_tree()."</div>";
-	return array('caption'=>'Class Structure', 'text' => $text);
+	$text2 = "<div id='userclass-tree-structure'>".$e_userclass->show_graphical_tree()."</div>";
+
+	$help =  e_LANGUAGEDIR.e_LANGUAGE.'/admin/help/userclass2.php';
+	if(is_readable($help))
+	{
+		require_once($help);
+	}
+//	require_once(e_LANGUAGEDIR.e_LANGUAGE.'/admin/help/userclass2.php');
+
+	return array('caption'=>'Class Structure', 'text' => $text2);
 	
 // $text .= $e_userclass->show_graphical_tree();	
 	
@@ -975,7 +982,7 @@ class uclass_manager
 			'userclass_parent' 			=> array('title'=> UCSLAN_35,	'type' => 'userclass',	'width' => 'auto',	'thclass' => 'left'),
             'userclass_visibility' 		=> array('title'=> UCSLAN_34,	'type' => 'userclass',	'width' => 'auto',	'thclass' => 'left'),
 			'userclass_type' 			=> array('title'=> UCSLAN_79,	'type' => 'method',		'width' => '10%',	'thclass' => 'left',	'class'=>'left' ),
-   			'options' 					=> array('title'=> LAN_OPTIONS, 'type' => null,			'width' => '10%',	'thclass' => 'center last', 'forced'=>TRUE,  'class'=>'center', 'readParms' => array('deleteClass' => e_UC_NOBODY))
+   			'options' 					=> array('title'=> LAN_OPTIONS, 'type' => null,			'width' => '10%',	'thclass' => 'center last', 'forced'=>TRUE,  'class'=>'right', 'readParms' => array('deleteClass' => e_UC_NOBODY))
 		);
 
 	}

@@ -458,7 +458,7 @@ class adminstyle_infopanel
 	{
 		if($val==0)
 		{
-			return "Guest";
+			return LAN_GUEST;
 		}
 		return $val;
 	}
@@ -476,7 +476,7 @@ class adminstyle_infopanel
 				
 		if(!$rows = $sql->retrieve('comments','*','comment_blocked=2 ORDER BY comment_id DESC LIMIT 25',true) )
 		{
-			return;
+			return null;
 		}
 		
 
@@ -503,7 +503,8 @@ class adminstyle_infopanel
 					<p>{COMMENT}</p> 
 				</div>
 				</li>";
-			
+
+			//TODO LAN for 'Posted by [x] ';
 			
 			$sc->setVars($row);  
 		 	$text .= $tp->parseTemplate($TEMPLATE,true,$sc);
@@ -541,7 +542,7 @@ class adminstyle_infopanel
 	
 	
 		
-	function render_infopanel_options($render = false)
+	function render_infopanel_options($render = false) //TODO LAN
 	{
 		// $frm = e107::getSingleton('e_form');
 		$frm = e107::getForm();
@@ -574,7 +575,7 @@ class adminstyle_infopanel
 	//	$end = "</div>";
 			
 		
-		return $mes->render().$text2.$end;
+		return $mes->render().$text2;
 	}
 
 
@@ -583,7 +584,7 @@ class adminstyle_infopanel
 	
 		$frm = e107::getForm();
 		global  $user_pref;
-			
+
 		$text = "<div style='padding-left:20px'>";
         
      
