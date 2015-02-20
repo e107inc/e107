@@ -18,7 +18,7 @@ class chatbox_menu_user // plugin-folder + '_user'
 	{
 		$pref = e107::getPref();
 
-		if(!e107::isInstalled("chatbox_menu") || !$pref['cb_user_addon'])
+		if (!$pref['cb_user_addon'])
 		{
 			return array();
 		}
