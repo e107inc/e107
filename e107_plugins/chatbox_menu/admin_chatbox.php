@@ -67,7 +67,7 @@ if (isset($_POST['recalculate']))
 	if ($sql->gen($qry))
 	{
 		$ret = array();
-		while($row = $sql -> db_Fetch())
+		while($row = $sql -> fetch())
 		{
 			$list[$row['uid']] = $row['count'];
 		}
