@@ -53,7 +53,7 @@ define("CHBLAN_38", "Use javascript code to update posts dynamically (AJAX)");
 //define('CHBLAN_39', 'Nothing changed - not updated');
 // define('CHBLAN_40', 'Chatbox');
 // define('CHBLAN_41', 'Chatbox Menu');
-define("CHBLAN_42", "Amount of posts displayed in user profile");
+define("CHBLAN_42", "Show amount of posts in user profile");
 
 
 
