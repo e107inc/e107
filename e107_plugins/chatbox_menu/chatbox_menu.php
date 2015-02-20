@@ -76,6 +76,7 @@ if(!class_exists('chatbox_shortcodes'))
 			}
 			else
 			{
+				$tp = e107::getParser();
 				$cb_nick = $tp -> toHTML($cb_nick,FALSE,'USER_TITLE, emotes_off, no_make_clickable');
 				$cb_nick = str_replace("Anonymous", LAN_ANONYMOUS, $cb_nick);
 			}
