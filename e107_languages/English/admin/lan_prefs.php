@@ -198,7 +198,7 @@ define("PRFLAN_198", "If disabled, user has to explicitly log in after signup");
 //define("PRFLAN_199", "");
 
 //0.8
-define("PRFLAN_154a", "If 'Admin Approval' is selected, it is recommended that you enable email notification on user signup <a href='.e_ADMIN.'notify.php'>here</a>."); //FIXME HMTL
+define("PRFLAN_154a", "If 'Admin Approval' is selected, it is recommended that you enable email notification on user signup [here].");
 define("PRFLAN_196a", "Log directory:");
 
 define("PRFLAN_199", "Show Admin Sub-links");

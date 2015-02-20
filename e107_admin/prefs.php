@@ -1481,9 +1481,14 @@ $text .= "
 								$text .= $frm->option($v_title, $v, ($pref['user_reg_veri'] == $v));
 							}
 
+					$srch = array('[', ']');
+					$repl = array("<a href='".e_ADMIN_ABS."notify.php'>", '</a>');
+
+					$PRFLAN_154a = str_replace($srch,$repl, PRFLAN_154a);
+
 					$text .= "
 							</select>
-							<div class='field-help'>".PRFLAN_154a."</div>
+							<div class='field-help'>".$PRFLAN_154a."</div>
 						</td>
 					</tr>
 					
