@@ -12,7 +12,7 @@
 
 require_once("../../class2.php");
 
-if (!e107::isInstalled('chatbox_menu') || !getperms("P")) 
+if (!e107::isInstalled('chatbox_menu') || !getperms("P"))
 {
 	header("Location: ".e_BASE."index.php");
 	exit;
@@ -28,7 +28,7 @@ require_once(e_HANDLER."userclass_class.php");
 $mes = e107::getMessage();
 $frm    = e107::getForm();
 
-if (isset($_POST['updatesettings'])) 
+if (isset($_POST['updatesettings']))
 {
 	$temp = array();
 	$temp['chatbox_posts'] = min(intval($_POST['chatbox_posts']), 5);
@@ -36,15 +36,16 @@ if (isset($_POST['updatesettings']))
 	$temp['cb_layer_height'] = max(varset($_POST['cb_layer_height'], 200), 150);
 	$temp['cb_emote'] = intval($_POST['cb_emote']);
 	$temp['cb_mod'] = intval($_POST['cb_mod']);
-	
-	
+	$temp['cb_user_addon'] = intval($_POST['cb_user_addon']);
+
+
 	e107::getConfig('core')->setPref($temp)->save(false);
 	e107::getCache()->clear("nq_chatbox");
-	
+
 }
 
 
-if (isset($_POST['prune'])) 
+if (isset($_POST['prune']))
 {
 	$chatbox_prune = intval($_POST['chatbox_prune']);
 	$prunetime = time() - $chatbox_prune;
@@ -55,7 +56,7 @@ if (isset($_POST['prune']))
 	$mes->addSuccess(LAN_AL_CHBLAN_02);
 }
 
-if (isset($_POST['recalculate'])) 
+if (isset($_POST['recalculate']))
 {
 	$sql->update("user", "user_chats = 0");
 	$qry = "SELECT u.user_id AS uid, count(c.cb_nick) AS count FROM #chatbox AS c
@@ -63,19 +64,19 @@ if (isset($_POST['recalculate']))
 		WHERE u.user_id > 0
 		GROUP BY uid";
 
-		if ($sql->gen($qry))
+	if ($sql->gen($qry))
+	{
+		$ret = array();
+		while($row = $sql -> db_Fetch())
 		{
-			$ret = array();
-			while($row = $sql -> db_Fetch())
-			{
-				$list[$row['uid']] = $row['count'];
-			}
+			$list[$row['uid']] = $row['count'];
 		}
+	}
 
-		foreach($list as $uid => $cnt)
-		{
-			$sql->update("user", "user_chats = '{$cnt}' WHERE user_id = '{$uid}'");
-		}
+	foreach($list as $uid => $cnt)
+	{
+		$sql->update("user", "user_chats = '{$cnt}' WHERE user_id = '{$uid}'");
+	}
 
 	e107::getLog()->add('CHBLAN_03','', E_LOG_INFORMATIVE, '');
 	$mes->addSuccess(CHBLAN_33);
@@ -108,15 +109,19 @@ $text = "
 	</tr>
 	";
 
-	if($pref['smiley_activate'])
-	{
-		$text .= "<tr>
+if($pref['smiley_activate'])
+{
+	$text .= "<tr>
 				  	<td>".CHBLAN_31."?: </td>
 					<td>".$frm->radio_switch('cb_emote', $pref['cb_emote'])."</td>
 				  </tr>";
-	}
+}
 
-	$text .= "
+$text .= "
+	<tr>
+		<td>".CHBLAN_42."</td>
+		<td>".$frm->radio_switch('cb_user_addon', $pref['cb_user_addon'])."</td>
+	</tr>
 	<tr>
 		<td>".LAN_PRUNE.":</td>
 		<td>".CHBLAN_23.$frm->select('chatbox_prune', array(86400 => CHBLAN_24, 604800 => CHBLAN_25, 2592000 => CHBLAN_26, 1 => CHBLAN_27), '', '', true).$frm->admin_button('prune', LAN_PRUNE, 'other')."<span class='field-help'>".CHBLAN_22."</span></td>
