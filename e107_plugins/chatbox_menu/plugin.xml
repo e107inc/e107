@@ -14,5 +14,6 @@
 		<pref name="cb_layer_height">200</pref>
 		<pref name="cb_emote">0</pref>
 		<pref name="cb_mod">254</pref>
+		<pref name="cb_user_addon">1</pref>
 	</mainPrefs>
 </e107Plugin>
