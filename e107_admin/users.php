@@ -1325,6 +1325,11 @@ class users_admin_ui extends e_admin_ui
 			}
 			return;
 		}
+		else
+		{
+			$mes->addError(LAN_CREATED_FAILED);
+			$mes->addError($sql->getLastErrorText());
+		}
 	}
 	
 	/**

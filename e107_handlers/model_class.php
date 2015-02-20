@@ -2552,17 +2552,17 @@ class e_front_model extends e_model
 		$id = $this->getId();
 		$qry['data'][$this->getFieldIdName()] = $id;
 
+		//XXX This check is done in _setModel() of admin-ui.  NULL below will break MySQL strict.
+		// Allow admin config to specify the best data type. 
+		/*
 		if($action == 'create' && !$id) $qry['_FIELD_TYPES'][$this->getFieldIdName()] = 'NULL';
 		elseif(is_numeric($id)) $qry['_FIELD_TYPES'][$this->getFieldIdName()] = 'integer';
 		else $qry['_FIELD_TYPES'][$this->getFieldIdName()] = 'string';
+		*/
 
 		foreach ($this->_data_fields as $key => $type)
 		{
 
-			if($key == $this->getFieldIdName())
-			{
-				continue;
-			}
 			if(!isset($qry['_FIELD_TYPES'][$key]))
 			{
 				$qry['_FIELD_TYPES'][$key] = $type; //_FIELD_TYPES much more optional now...

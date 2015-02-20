@@ -5176,6 +5176,12 @@ class e_admin_ui extends e_admin_controller_ui
 			$this->dataFields = array();
 			foreach ($this->fields as $key => $att)
 			{
+				if($key == $this->pid && empty($att['data'])) // Set integer as default for primary ID when not specified. MySQL Strict Fix.
+				{
+					$this->dataFields[$key] = 'int';
+					continue;
+				}
+
 				if($att['type'] == 'comma' && (!vartrue($att['data']) || !vartrue($att['rule'])))
 				{
 					$att['data'] = 'set';
