@@ -2817,13 +2817,21 @@ class e107
 				$input = preg_replace("/(\[code\])(.*?)(\[\/code\])/is","",$input);
 			}
 		
-			$regex = "/(document\.location|document\.write|base64_decode|chr|php_uname|fwrite|fopen|fputs|passthru|popen|proc_open|shell_exec|exec|proc_nice|proc_terminate|proc_get_status|proc_close|pfsockopen|apache_child_terminate|posix_kill|posix_mkfifo|posix_setpgid|posix_setsid|posix_setuid|phpinfo) *?\((.*) ?\;?/i";
+			$regex = "/(base64_decode|chr|php_uname|fwrite|fopen|fputs|passthru|popen|proc_open|shell_exec|exec|proc_nice|proc_terminate|proc_get_status|proc_close|pfsockopen|apache_child_terminate|posix_kill|posix_mkfifo|posix_setpgid|posix_setsid|posix_setuid|phpinfo) *?\((.*) ?\;?/i";
 			if(preg_match($regex,$input))
 			{
 				header('HTTP/1.0 400 Bad Request', true, 400);
 				exit();
 			}
-			
+
+			// Check for XSS JS
+			$regex = "/(document\.location|document\.write|document\.cookie)/i";
+			if(preg_match($regex,$input))
+			{
+				header('HTTP/1.0 400 Bad Request', true, 400);
+				exit();
+			}
+
 			if(preg_match("/system *?\((.*);.*\)/i",$input))
 			{
 				header('HTTP/1.0 400 Bad Request', true, 400);
