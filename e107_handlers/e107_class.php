@@ -2775,6 +2775,7 @@ class e107
 		e107::ini_set('arg_separator.output',     '&amp;');
 		e107::ini_set('session.use_only_cookies', 1);
 		e107::ini_set('session.use_trans_sid',    0);
+		e107::ini_set('session.cookie_httponly',  1); // cookie won't be accessible by scripting languages, such as JavaScript. Can effectively help to reduce identity theft through XSS attacks
 
 		//  Ensure thet '.' is the first part of the include path
 		$inc_path = explode(PATH_SEPARATOR, ini_get('include_path'));
