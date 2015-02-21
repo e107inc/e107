@@ -3513,8 +3513,8 @@ class e_emotefilter {
 						$this->search[] = " ".$value;
 						$this->search[] = "\n".$value;
 						//TODO CSS class?
-						$this->replace[] = " <img src='".$filename."' alt='' style='vertical-align:middle; border:0' /> ";
-						$this->replace[] = "\n <img src='".$filename."' alt='' style='vertical-align:middle; border:0' /> ";
+						$this->replace[] = " <img src='".$fileloc."' alt='' style='vertical-align:middle; border:0' /> ";
+						$this->replace[] = "\n <img src='".$fileloc."' alt='' style='vertical-align:middle; border:0' /> ";
 					}
 				}
 			  }
