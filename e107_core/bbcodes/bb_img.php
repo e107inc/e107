@@ -21,11 +21,11 @@ class bb_img extends e_bb_base
 		$safe = array();
 		
 		if(vartrue($parms['class'])) 	$safe['class'] = eHelper::secureClassAttr($parms['class']);
-		if(vartrue($parms['id']))		$safe['id'] = eHelper::secureIdAttr($parms['id']);
+		if(vartrue($parms['id']))		$safe['id']     = eHelper::secureIdAttr($parms['id']);
 		if(vartrue($parms['style'])) 	$safe['style'] = eHelper::secureStyleAttr($parms['style']);
 		if($safe)
 		{
-			return '[img='.eHelper::buildAttr($safe).']'.$code_text.'[/img]';
+			return '[img '.eHelper::buildAttr($safe).']'.$code_text.'[/img]';
 		}
 		return '[img]'.$code_text.'[/img]';
 	}
@@ -39,7 +39,7 @@ class bb_img extends e_bb_base
         $tp = e107::getParser();
           
 		// Replace the bbcode path with a real one. 
-		$code_text = str_replace('{e_MEDIA}','{e_MEDIA_IMAGE}',$code_text); //BC 0.8 fix. 
+		$code_text = str_replace('{e_MEDIA}images/','{e_MEDIA_IMAGE}',$code_text); //BC 0.8 fix.
         $code_text = str_replace('{e_MEDIA_IMAGE}', e_HTTP."thumb.php?src=e_MEDIA_IMAGE/", $code_text);
 		$code_text = str_replace('{e_THEME}', e_HTTP."thumb.php?src=e_THEME/", $code_text);
         $imgParms    = $this->processParm($code_text, $parm);

@@ -681,7 +681,7 @@ class media_admin_ui extends e_admin_ui
 			'checkboxes'			=> array('title'=> '',				'type' => null,			'data'=> null,		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'media_id'				=> array('title'=> LAN_ID,			'type' => 'number',		'data'=> 'int',		'width' =>'5%', 'forced'=> TRUE, 'nolist'=>TRUE),
       		'media_preview'			=> array('title'=>'Preview', 		'type'=>'method', 		'data'=>false, 	'forced'=>true, 'width' => '110px', 'thclass' => 'center', 'class'=>'center'),
-      		'media_url' 			=> array('title'=> 'Path',			'type' => 'text',		'data'=> 'str',		'thclass' => 'left', 'class'=>'left', 'width' => 'auto', 'writeParms'=>'size=xxlarge'),
+      		'media_url' 			=> array('title'=> 'Path',			'type' => 'text',		'data'=> 'str',	'inline'=>false,	'thclass' => 'left', 'class'=>'left', 'width' => 'auto', 'writeParms'=>'size=xxlarge'),
 			'media_category' 		=> array('title'=> LAN_CATEGORY,	'type' => 'comma',	'inline'=>false,	'data'=> 'str',		'width' => '10%', 'filter' => true, 'batch' => true, 'class'=>'left'),
 			
 		// Upload should be managed completely separately via upload-handler.
@@ -820,14 +820,19 @@ class media_admin_ui extends e_admin_ui
 	protected $cats = array();
 	protected $owner = array();
 	protected $ownercats = array();
-	
+
 
 	function init()
 	{
+		if(E107_DEBUG_LEVEL > 0)
+		{
+			$this->fields['media_url']['inline'] = true;
+		}
+
 		$sql = e107::getDb();
 	//	$sql->db_Select_gen("SELECT media_cat_title, media_title_nick FROM #core_media as m LEFT JOIN #core_media_cat as c ON m.media_category = c.media_cat_owner GROUP BY m.media_category");
-		$sql->db_Select_gen("SELECT media_cat_title, media_cat_owner, media_cat_category FROM #core_media_cat");
-		while($row = $sql->db_Fetch())
+		$sql->gen("SELECT media_cat_title, media_cat_owner, media_cat_category FROM #core_media_cat");
+		while($row = $sql->fetch())
 		{
 			$cat = $row['media_cat_category'];
 			$owner = $row['media_cat_owner'];
