@@ -3179,12 +3179,14 @@ class e_form
 					{
 						return $video;
 					}
-					
+
+					$fileOnly = basename($value);
 					// Not an image but a file.  (media manager)  
-					if(!preg_match("/[a-zA-z0-9_-\s\(\)]+\.(png|jpg|jpeg|gif|PNG|JPG|JPEG|GIF)$/",$value) && strpos($value,'.')!==false)
+					if(!preg_match("/\.(png|jpg|jpeg|gif|PNG|JPG|JPEG|GIF)$/", $fileOnly) && false !== strpos($fileOnly,'.'))
 					{
 						$icon = "{e_IMAGE}filemanager/zip_32.png";	
 						$src = $tp->replaceConstants(vartrue($parms['pre']).$icon, 'abs');
+					//	return $value;
 						return e107::getParser()->toGlyph('fa-file','size=2x');
 				//		return '<img src="'.$src.'" alt="'.$value.'" class="e-thumb" title="'.$value.'" />';
 					}
