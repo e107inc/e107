@@ -1296,8 +1296,10 @@ class e_form
 		$options['checked'] = $checked; //comes as separate argument just for convenience
 		
 		$text = "";
-		
-		$pre = (vartrue($options['label'])) ? "<label class='checkbox'>" : ""; // Bootstrap compatible markup
+
+		$active = ($checked === true) ? " active" : ""; // allow for styling if needed.
+
+		$pre = (vartrue($options['label'])) ? "<label class='checkbox".$active."'>" : ""; // Bootstrap compatible markup
 		$post = (vartrue($options['label'])) ? $options['label']."</label>" : "";
 		unset($options['label']); // not to be used as attribute; 
 		
