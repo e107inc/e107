@@ -570,8 +570,8 @@ class user_class
 				$c = (in_array($k,$curArray)) ?  true : false;
 				if ($showdescription) $v .= ' ('.$this->uc_get_classdescription($k).')';
 				//$ret[] = "<div class='field-spacer'><input type='checkbox' class='checkbox' name='{$fieldname}[{$k}]' id='{$fieldname}-{$k}' value='{$k}'{$c} /><label for='{$fieldname}-{$k}'>".$v."</label></div>\n";
-				
-				$ret[] = $frm->checkbox($fieldname[$k],$k,$c,$v);
+				$name = $fieldname.'['.$k.']';
+				$ret[] = $frm->checkbox($name,$k,$c,$v);
 				//$ret[] = "<div class='field-spacer'><input type='checkbox' class='checkbox' name='{$fieldname}[{$k}]' id='{$fieldname}-{$k}' value='{$k}'{$c} /><label for='{$fieldname}-{$k}'>".$v."</label></div>\n";
 		
 			}
@@ -1193,6 +1193,7 @@ class user_class_admin extends user_class
 	}
 
 
+
 	/*
 	 *	Internal function, called recursively to rebuild the permissions tree where rights increase going down the tree
 	 *	If the permissions change, sets the 'change_flag' to force rewrite to DB (by other code)
@@ -1542,7 +1543,8 @@ class user_class_admin extends user_class
 	{
 		if (!$classrec['userclass_id'])
 		{
-			echo 'Programming bungle on save - no ID field<br />';
+		e107::getMessage()->addDebug('Programming bungle on save - no ID field');
+		//	echo 'Programming bungle on save - no ID field<br />';
 			return FALSE;
 		}
 		$qry = '';
@@ -1813,9 +1815,9 @@ class user_class_admin extends user_class
 
 		foreach ($init_list as $entry)
 		{
-			if ($this->sql_r->db_Select('userclass_classes','*',"userclass_id='".$entry['userclass_id']."' "))
+			if ($this->sql_r->select('userclass_classes','*',"userclass_id='".$entry['userclass_id']."' "))
 			{
-				$this->sql_r->db_Update('userclass_classes', "userclass_parent='".$entry['userclass_parent']."', userclass_visibility='".$entry['userclass_visibility']."' WHERE userclass_id='".$entry['userclass_id']."'");
+				$this->sql_r->update('userclass_classes', "userclass_parent='".$entry['userclass_parent']."', userclass_visibility='".$entry['userclass_visibility']."' WHERE userclass_id='".$entry['userclass_id']."'");
 			}
 			else
 			{

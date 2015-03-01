@@ -3975,7 +3975,7 @@ class e_admin_controller_ui extends e_admin_controller
 			$id 			= $model->getId(); 
 
 			// Trigger Admin-ui event. 'post' 
-			if($triggerName = $this->getEventTriggerName($_posted['etrigger_submit']).'d') // 'created' or 'updated'; 
+			if($triggerName = $this->getEventTriggerName($_posted['etrigger_submit'],'after')) // 'created' or 'updated';
 			{
 				$eventData = array('newData'=>$_posted,'oldData'=>$old_data,'id'=> $id);
 				$model->addMessageDebug('Admin-ui Trigger fired: <b>'.$triggerName.'</b> with data '.print_a($eventData,true)); 
@@ -4006,16 +4006,26 @@ class e_admin_controller_ui extends e_admin_controller
 		return false;
 	}
 
-	/** Return a custom event trigger name
+
+	/**
+	 *  Return a custom event trigger name
+	 * @param null $type  Usually 'Create' or 'Update'
+	 * @param string $when ' before or after
+	 * @return bool|string
 	 */
-	public function getEventTriggerName($type=null)
+	public function getEventTriggerName($type=null, $when='before')
 	{
 		$plug = $this->getEventName();
 		
 		if(empty($plug) || empty($type))
 		{
 			return false; 
-		} 
+		}
+
+		if($when == 'after')
+		{
+			$type .= 'd'; // ie. 'created' or 'updated'.
+		}
 		
 		return 'admin_'.strtolower($plug).'_'.strtolower($type); 
 
@@ -4231,7 +4241,7 @@ class e_admin_ui extends e_admin_controller_ui
 		// send messages to session
 		e107::getMessage()->moveToSession();
 		// redirect
-		$this->redirect();	
+		$this->redirect();
 	}
 
     /** 

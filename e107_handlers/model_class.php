@@ -92,9 +92,10 @@ class e_object
      */
     public function getId()
     {
+
         if ($this->getFieldIdName())
         {
-            return $this->get($this->getFieldIdName(), null);
+            return $this->get($this->getFieldIdName(), 0); // default of NULL will break MySQL strict in most cases.
         }
         return $this->get('id', 0);
     }
@@ -2596,7 +2597,7 @@ class e_front_model extends e_model
 
 		if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
 		{
-			$this->addMessageDebug('SQL Qry: '.print_a($qry,true), $session_messages);
+			$this->addMessageDebug('SQL Qry: '.print_a($qry,true), null);
 		}
 		return $qry;
 	}
@@ -2853,7 +2854,7 @@ class e_admin_model extends e_front_model
 			$this->mergePostedData(false, true, true);
 		}
 
-		if($this->getId())
+		if($this->getId() && $this->getPostedData('etrigger_submit') !='Create') // Additional Check to allow primary ID to be manually set when auto-increment PID is not used. @see userclass2.php
 		{
 			return $this->dbUpdate($force, $session_messages);
 		}

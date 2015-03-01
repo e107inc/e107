@@ -1683,7 +1683,7 @@ class e_form
 		switch ($type) 
 		{
 			case 'checkbox':
-				return e107::getUserClass()->uc_checkboxes($name,$curval,$options,null,true);
+				return e107::getUserClass()->uc_checkboxes($name,$curval,$options,null,false);
 			break;
 
 			case 'dropdown':
