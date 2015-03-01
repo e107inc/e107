@@ -208,6 +208,7 @@ class e107
 		'sitelinks'						 => '{e_HANDLER}sitelinks_class.php',
 		'themeHandler'					 => '{e_HANDLER}theme_handler.php',
 		'user_class'					 => '{e_HANDLER}userclass_class.php',
+		'user_class_admin'               => '{e_HANDLER}userclass_class.php',
 		'userlogin'					 	 => '{e_HANDLER}login.php',
 		'validatorClass'				 => '{e_HANDLER}validator_class.php',
 		'xmlClass'						 => '{e_HANDLER}xml_class.php',

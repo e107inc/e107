@@ -1932,7 +1932,8 @@ class e_db_mysql
 		}
 			
 		$id = $this->gen("INSERT INTO #".$table."(".$fieldList.") SELECT ".$fieldList." FROM #".$table." WHERE ".$args);
-		return $this->lastInsertId();
+		$lastInsertId = $this->lastInsertId();
+		return ($id && $lastInsertId) ? $lastInsertId : false;
 
 	}
 	
