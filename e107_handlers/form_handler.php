@@ -2675,19 +2675,19 @@ class e_form
 
 		$trclass = vartrue($fieldvalues['__trclass']) ?  ' class="'.$trclass.'"' : '';
 		unset($fieldvalues['__trclass']);
-        
 
 		foreach ($fieldarray as $field => $data)
 		{
-			// shouldn't happen...
+
+
+			// shouldn't happen... test with Admin->Users with user_xup visible and NULL values in user_xup table column before re-enabling this code.
+			/*
 			if(!isset($fieldvalues[$field]) && vartrue($data['alias']))
 			{
 				$fieldvalues[$data['alias']] = $fieldvalues[$data['field']];
 				$field = $data['alias'];
 			}
-			
-			
-           
+			*/
             
 			//Not found
 			if((!varset($data['forced']) && !in_array($field, $currentlist)) || varset($data['nolist']))
@@ -2738,7 +2738,9 @@ class e_form
 
 			}
 			$value = $this->renderValue($field, varset($fieldvalues[$field]), $data, varset($fieldvalues[$pid]));
-		
+
+
+
 			if($tdclass)
 			{
 				$tdclass = ' class="'.$tdclass.'"';
