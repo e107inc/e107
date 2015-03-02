@@ -77,7 +77,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 		protected $pid				= 'userclass_id';
 		protected $perPage			= 10;
 		protected $batchDelete		= true;
-		protected $batchCopy		= true;
+		protected $batchCopy		= false; // no way to generate the non-incrementing primary key at the moment
 		protected $listOrder		= 'userclass_id DESC';
 		//	protected $sortField		= 'somefield_order';
 		//	protected $orderStep		= 10;
