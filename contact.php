@@ -11,7 +11,7 @@
 */
 
 require_once("class2.php");
-define('e_HANDLER', "e107_handlers/");
+//define('e_HANDLER', "e107_handlers/");
 // security image may be disabled by removing the appropriate shortcodes from the template.
 require_once(e_HANDLER."secure_img_handler.php");
 $sec_img = new secure_image;
@@ -96,15 +96,16 @@ if(isset($_POST['send-contactus']))
 	}
 
 	// No errors - so proceed to email the admin and the user (if selected).
-    if(!$error)
+    if(empty($error))
 	{
 		$body .= "\n\nIP:\t".e107::getIPHandler()->getIP(TRUE)."\n";
+
 		if (USER)
 		{
-		$body .= "User:\t#".USERID." ".USERNAME."\n";
+			$body .= "User:\t#".USERID." ".USERNAME."\n";
 		}
 
-		if(!$_POST['contact_person'] && isset($pref['sitecontacts'])) // only 1 person, so contact_person not posted.
+		if(empty($_POST['contact_person']) && !empty($pref['sitecontacts'])) // only 1 person, so contact_person not posted.
 		{
     		if($pref['sitecontacts'] == e_UC_MAINADMIN)
 			{
@@ -124,9 +125,9 @@ if(isset($_POST['send-contactus']))
       		$query = "user_id = ".intval($_POST['contact_person']);
 		}
 
-    	if($sql -> db_Select("user", "user_name,user_email",$query." LIMIT 1"))
+    	if($sql->gen("SELECT user_name,user_email FROM `#user` WHERE ".$query." LIMIT 1"))
 		{
-    		$row = $sql -> db_Fetch();
+    		$row = $sql->fetch();
     		$send_to = $row['user_email'];
 			$send_to_name = $row['user_name'];
 		}
@@ -137,11 +138,15 @@ if(isset($_POST['send-contactus']))
 		}
 
     	require_once(e_HANDLER."mail.php");
+
  		$message =  (sendemail($send_to,"[".SITENAME."] ".$subject, $body,$send_to_name,$sender,$sender_name)) ? LANCONTACT_09 : LANCONTACT_10;
-    	if(isset($pref['contact_emailcopy']) && $pref['contact_emailcopy'] && $_POST['email_copy'] == 1){
+
+    	if(isset($pref['contact_emailcopy']) && $pref['contact_emailcopy'] && $_POST['email_copy'] == 1)
+    	{
 			sendemail($sender,"[".SITENAME."] ".$subject, $body,ADMIN,$sender,$sender_name);
     	}
-    	$ns -> tablerender('', $message);
+
+    	$ns->tablerender('', $message);
 		require_once(FOOTERF);
 		exit;
     }

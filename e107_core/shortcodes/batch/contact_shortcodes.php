@@ -26,7 +26,7 @@ class contact_shortcodes extends e_shortcode
 		global $pref;
 		if(!isset($pref['contact_emailcopy']) || !$pref['contact_emailcopy'])
 		{
-			return;
+			return '';
 		}
 		return "<input type='checkbox' name='email_copy'  value='1'  />";
 	}
@@ -41,7 +41,7 @@ class contact_shortcodes extends e_shortcode
 		
 		if(varset($pref['sitecontacts']) == e_UC_ADMIN)
 		{
-			$query = "user_admin =1";
+			$query = "user_admin =1 AND user_ban = 0";
 		}
 		elseif(varset($pref['sitecontacts']) == e_UC_MAINADMIN)
 		{
@@ -49,23 +49,23 @@ class contact_shortcodes extends e_shortcode
 		}
 		else
 		{
-			$query = "FIND_IN_SET(".$pref['sitecontacts'].",user_class) ";
+			$query = "FIND_IN_SET(".$pref['sitecontacts'].",user_class) AND user_ban = 0 ";
 		}
 		
 		$text = "<select name='contact_person' class='tbox contact_person form-control'>\n";
 		
-		$count = $sql -> db_Select("user", "user_id,user_name", $query . " ORDER BY user_name");
+		$count = $sql ->select("user", "user_id,user_name", $query . " ORDER BY user_name");
 		
 		if($count > 1)
 		{
-		    while($row = $sql-> db_Fetch())
+		    while($row = $sql->fetch())
 			{
 		    	$text .= "<option value='".$row['user_id']."'>".$row['user_name']."</option>\n";
 		    }
 		}
 		else
 		{
-			return;
+			return '';
 		}
 		
 		$text .= "</select>";
