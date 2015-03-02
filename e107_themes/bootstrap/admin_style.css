@@ -46,7 +46,7 @@ body						{ padding-top: 75px;  }
 
 .core-mainpanel-block 		{ text-align:center; width:140px; float:left; height:80px; display:block; padding:1px; margin: 0px 2px 15px 2px;  }
 .core-mainpanel-link-text 	{ text-decoration: none; display:block;  }
-a.core-mainpanel-link-icon	{ height:80px; display:block; width: 120px; padding-top:20px;  }
+a.core-mainpanel-link-icon	{ height:80px; width: 120px; padding-top:20px;  }
 a.core-mainpanel-link-icon:hover { text-decoration: none; filter: none; }
 
 div.bbcode-panel {
