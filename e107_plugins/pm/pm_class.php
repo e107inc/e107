@@ -211,7 +211,8 @@ class private_message
 
 				if($pmid = $sql->insert('private_msg', $info))
 				{
-				  	e107::getEvent()->trigger('user_pm_sent', $info);
+					$info['pm_id'] = $pmid;
+					e107::getEvent()->trigger('user_pm_sent', $info);
 					if($class == FALSE)
 					{
 						$toclass .= $u['user_name'].', ';
@@ -244,6 +245,8 @@ class private_message
 			$info['pm_to'] = intval($vars['to_info']['user_id']);		// Sending to a single user now
 			if($pmid = $sql->insert('private_msg', $info))
 			{
+				$info['pm_id'] = $pmid;
+				e107::getEvent()->trigger('user_pm_sent', $info);
 				if(check_class($this->pmPrefs['notify_class'], $vars['to_info']['user_class']))
 				{
 					set_time_limit(30);
