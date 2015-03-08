@@ -669,10 +669,9 @@ $override = e107::getSingleton('override', true); //TODO - find & replace $overr
 $e_userclass = e107::getUserClass();  //TODO - find & replace $e_userclass, $e107->user_class
 
 
-if(!empty($pref['notify']))
-{
-	e107::getNotify()->registerEvents();
-}
+
+e107::getNotify()->registerEvents();
+
 
 //
 // O: Start user session

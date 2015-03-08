@@ -24,6 +24,12 @@ class notify
 	function __construct()
 	{
 		include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_notify.php');
+
+		if(empty($this->notify_prefs))
+		{
+			$this->notify_prefs = e107::getConfig('notify')->getPref();
+		}
+
 	}
 
 
@@ -32,9 +38,15 @@ class notify
 	 */
 	public function registerEvents()
 	{
-		$e_event = e107::getEvent();
+		$active = e107::getConfig()->get('notify');
 
-		$this->notify_prefs = e107::getConfig('notify')->getPref();
+		if(empty($active))
+		{
+			e107::getMessage()->addDebug('Notify is disabled!');
+			return false;
+		}
+
+		$e_event = e107::getEvent();
 
 		if(varset($this->notify_prefs['event']))
 		{
@@ -91,6 +103,7 @@ class notify
 
 
 
+
 	/**
 	 * Send an email notification following an event.
 	 *
@@ -106,16 +119,7 @@ class notify
 	 */
 	function send($id, $subject, $message)
 	{
-		
-		if(E107_DEBUG_LEVEL > 0)
-		{
-			$data = array('id'=>$id, 'subject'=>$subject, 'message'=>$message); 
-			e107::getLog()->add('Notify Debug', $data, E_LOG_INFORMATIVE, "NOTIFY_DBG"); 
-			return; 	
-		}
-		
-		
-		$e107 = e107::getInstance();
+
 		$tp = e107::getParser();
 		$sql = e107::getDb();
 
@@ -130,8 +134,8 @@ class notify
 		$blockOriginator = FALSE;		// TODO: set this using a pref
 		$recipients = array();
 
-		if ($notifyTarget == 'email')
-		{	// Single email address - that can always go immediately
+		if ($notifyTarget == 'email') // Single email address - that can always go immediately
+		{
 			if (!$blockOriginator || ($this->notify_prefs['event'][$id]['email'] != USEREMAIL))
 			{
 				$recipients[] = array(
@@ -161,7 +165,7 @@ class notify
 			{
 				$qry .= ' AND `user_id` != '.USERID;
 			}
-			if (FALSE !== ($count = $sql->gen($qry)))
+			if (false !== ($count = $sql->gen($qry)))
 			{
 				// Now add email addresses to the list
 				while ($row = $sql->fetch(MYSQL_ASSOC))
@@ -175,7 +179,18 @@ class notify
 					}
 				}
 			}
+
 		}
+
+		if(E107_DEBUG_LEVEL > 0)
+		{
+			$data = array('id'=>$id, 'subject'=>$subject, 'recipients'=> $recipients, 'prefs'=>$this->notify_prefs['event'][$id], 'message'=>$message);
+			e107::getMessage()->addDebug(print_a($data,true));
+			e107::getLog()->add('Notify Debug', $data, E_LOG_INFORMATIVE, "NOTIFY_DBG");
+			return;
+		}
+
+
 
 		if (count($recipients))
 		{
@@ -196,7 +211,12 @@ class notify
 			);
 			
 			$result = $mailer->sendEmails('NOTIFY_TEMPLATE', $mailData, $recipients);
-			$e107->admin_log->e_log_event(10,-1,'NOTIFY',$subject,$message,FALSE,LOG_TO_ROLLING);
+			e107::getLog()->e_log_event(10,-1,'NOTIFY',$subject,$message,FALSE,LOG_TO_ROLLING);
+		}
+		else
+		{
+			$data = array('qry'=>$qry, 'error'=>'No recipients');
+			e107::getLog()->add('Notify Debug', $data,  E_LOG_WARNING_, "NOTIFY_DBG");
 		}
 	}
 

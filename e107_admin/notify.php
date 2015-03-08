@@ -36,8 +36,7 @@ $nc = new notify_config;
 $uc = new user_class;
 $mes = e107::getMessage();
 
-$uc->fixed_classes['email'] = 'Email Address =>';
-$uc->text_class_link['email'] = 'email';
+
 
 if (isset($_POST['update']))
 {
@@ -69,18 +68,14 @@ class notify_config
 
 	function __construct() 
 	{
-		$ns 	= e107::getRender();
-		$tp 	= e107::getParser();
 		$pref 	= e107::getPref();
-		$sql 	= e107::getDb();
-
 		$this->notify_prefs = e107::getConfig('notify')->getPref();
-				
-		$this->prefCleanup();
 
-	//	print_a($this->notify_prefs); 
+		$this->prefCleanup();
+		$this->test();
 
 		$recalibrate = FALSE;
+
 		// load every e_notify.php file.
 		if($pref['e_notify_list'])
 		{
@@ -156,7 +151,19 @@ class notify_config
 					
 	}
 		
-		
+
+	function test()
+	{
+		if(!empty($_POST['test']))
+		{
+			$id = key( $_POST['test']);
+			$exampleData = array('id'=>'Test for '.$id, 'data'=>'example data'	);
+			e107::getMessage()->addSuccess('Triggering: '.$id);
+			e107::getEvent()->trigger($id, $exampleData);
+		}
+
+
+	}
 		
 		
 
@@ -389,7 +396,10 @@ class notify_config
 	{
 		$tp = e107::getParser();
 		$frm = e107::getForm();
-		$uc = e107::getUserClass(); 
+		$uc = e107::getUserClass();
+		$uc->fixed_classes['email'] = 'Email Address =>';
+		$uc->text_class_link['email'] = 'email';
+
 		
 		if(defined($description))
 		{
@@ -401,7 +411,7 @@ class notify_config
 			<tr>
 				<td title='".$id."'>".$description.":	</td>
 				<td  class='form-inline nowrap'>
-				".$uc->uc_dropdown('event['.$id.'][class]', varset($this->notify_prefs['event'][$id]['class'],255), "nobody,main,admin,member,classes,email","onchange=\"mail_field(this.value,'event_".$id."');\" ");
+				".$uc->uc_dropdown('event['.$id.'][class]', varset($this->notify_prefs['event'][$id]['class'], e_UC_NOBODY), "nobody,main,admin,member,classes,email","onchange=\"mail_field(this.value,'event_".$id."');\" ");
 
 			if($this -> notify_prefs['event'][$id]['class'] == 'email')
 			{
@@ -419,6 +429,12 @@ class notify_config
 		$text .= $frm->hidden("event[".$id."][include]", $include);
 		$text .= $frm->hidden("event[".$id."][legacy]", $legacy); // function or method 
 
+		if($this->notify_prefs['event'][$id]['class'] != e_UC_NOBODY)
+		{
+			$text .= $frm->button('test['.$id.']', $id, 'confirm', 'Test');
+		}
+
+
 		$text .= "</td>
 		</tr>";
 		return $text;
@@ -427,41 +443,35 @@ class notify_config
 
 	function update() 
 	{
-		global $sql, $pref, $eArrayStorage;
 		$this->changeList = array();
-		
+
+		$active = false;
+
 		foreach ($_POST['event'] as $key => $value)
 		{
 			if ($this -> update_event($key))
 			{
-				$active = TRUE;
+				$active = true;
 			}
 		}
-        if ($active)
-		{
-		   	$pref['notify'] = TRUE;
-		}
-		else
-		{
-		 	$pref['notify'] = FALSE;
-		}
-	//  	save_prefs();
-		
+
 	//	print_a($this->notify_prefs);
 		/*
 		$s_prefs = $tp -> toDB($this -> notify_prefs);
 		$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
 		if($sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'")!==FALSE)
 		*/
+
+		e107::getConfig()->set('notify',$active)->save(true,true,false);
 		e107::getConfig('notify')->updatePref($this->notify_prefs);
 		if (e107::getConfig('notify')->save(FALSE))
 		{
 			// e107::getAdminLog()->logArrayAll('NOTIFY_01',$this->changeList);
-			return TRUE;
+			return true;
 		}
 		else
 		{
-        	return FALSE;
+        	return false;
 		}
 
 	}
