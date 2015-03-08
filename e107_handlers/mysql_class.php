@@ -1208,27 +1208,37 @@ class e_db_mysql
 
 
 	/**
-	* @return void
-	* @desc Closes the mySQL server connection.<br />
-	* <br />
-	* Only required if you open a second connection.<br />
-	* Native e107 connection is closed in the footer.php file<br />
-	* <br />
-	* Example :<br />
-	* <code>$sql->db_Close();</code>
-	*
-	* @access public
-	*/
-	function db_Close()
+
+	 * @desc Closes the mySQL server connection.<br />
+	 * <br />
+	 * Only required if you open a second connection.<br />
+	 * Native e107 connection is closed in the footer.php file<br />
+	 * <br />
+	 * Example :<br />
+	 * <code>$sql->db_Close();</code>
+	 *
+	 * @access public
+	 * @return void
+	 */
+	function close()
 	{
 		if(!$this->mySQLaccess)
 		{
 			global $db_ConnectionID;
-        	$this->mySQLaccess = $db_ConnectionID;
+			$this->mySQLaccess = $db_ConnectionID;
 		}
 		e107::getSingleton('e107_traffic')->BumpWho('db Close', 1);
 		$this->mySQLaccess = NULL; // correct way to do it when using shared links.
 		$this->dbError('dbClose');
+	}
+
+
+	/**
+	 * BC Alias of close()
+	 */
+	function db_Close()
+	{
+		$this->close();
 	}
 
 
