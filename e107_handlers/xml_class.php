@@ -27,7 +27,7 @@ class parseXml extends xmlClass // BC with v1.x
 		$log->addDebug('Deprecated XML Parser Used');
 		
 		$log->addArray($data);
-		$log->save('DEPRECATED',E_LOG_NOTICE);	
+		$log->save('DEPRECATED',E_LOG_NOTICE,'',false, LOG_TO_ROLLING);
 		
 	}
 	
