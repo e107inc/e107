@@ -140,9 +140,10 @@ class admin_log_ui extends e_admin_ui
 		protected $pluginName		= 'core';
 		protected $table			= 'admin_log';
 		protected $pid				= 'dblog_id';
-		protected $perPage 			= 10; 
-		
-		protected $listQry			= "SELECT  f.*, u.* FROM #admin_log AS f LEFT JOIN #user AS u ON f.dblog_user_id = u.user_id "; // Should not be necessary.
+		protected $perPage 			= 10;
+	// protected $listQry			= "SELECT  f.*, u.* FROM #admin_log AS f LEFT JOIN #user AS u ON f.dblog_user_id = u.user_id "; // Should not be necessary.
+
+		protected $listQry			= "SELECT SQL_CALC_FOUND_ROWS  f.*, u.user_id, u.user_name FROM #admin_log AS f LEFT JOIN #user AS u ON f.dblog_user_id = u.user_id "; // Should not be required but be auto-calculated.
 		protected $listOrder		= 'f.dblog_id DESC';
 		
 		protected $batchDelete		= false;
@@ -662,7 +663,7 @@ class admin_log_form_ui extends e_admin_form_ui
 class audit_log_ui extends e_admin_ui
 {
 			
-		protected $pluginTitle		= 'adminlog';
+		protected $pluginTitle		=  ADLAN_155;
 		protected $pluginName		= 'adminlog';
 		protected $table			= 'audit_log';
 		protected $pid				= 'dblog_id';
@@ -713,7 +714,7 @@ class audit_log_ui extends e_admin_ui
 class dblog_ui extends e_admin_ui
 {
 			
-		protected $pluginTitle		= 'adminlog';
+		protected $pluginTitle		=  ADLAN_155;
 		protected $pluginName		= 'adminlog';
 		protected $table			= 'dblog';
 		protected $pid				= 'dblog_id';

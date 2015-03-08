@@ -125,11 +125,12 @@ class e_admin_log
 	 * @param int $logImportance [optional] default E_LOG_INFORMATIVE - passed directly to admin log
 	 * @param string $logEventCode [optional] - passed directly to admin log
 	 * @param string $mstack [optional] message stack passed to message handler
+	 * @param int LOG_TO_ADMIN|LOG_TO_ROLLING|LOG_TO_AUDIT
 	 * @return \e_admin_log
 	 */
-	public function save($logTitle, $logImportance = E_LOG_INFORMATIVE, $logEventCode = '', $mstack = false)
+	public function save($logTitle, $logImportance = E_LOG_INFORMATIVE, $logEventCode = '', $mstack = false, $target = LOG_TO_ADMIN)
 	{
-		return $this->flushMessages($logTitle, $logImportance, $logEventCode, $mstack);
+		return $this->flushMessages($logTitle, $logImportance, $logEventCode, $mstack, $target);
 	}
 	
 	
@@ -683,7 +684,7 @@ class e_admin_log
 	 *	@param string $mstack [optional] message stack passed to message handler
 	 *	@return e_admin_log
 	 */
-	public function flushMessages($logTitle, $logImportance = E_LOG_INFORMATIVE, $logEventCode = '', $mstack = false)
+	public function flushMessages($logTitle, $logImportance = E_LOG_INFORMATIVE, $logEventCode = '', $mstack = false, $target =LOG_TO_ADMIN)
 	{
 		$mes = e107::getMessage();
 				
@@ -714,7 +715,7 @@ class e_admin_log
 				else $mes->add($m['message'], $m['dislevel'], $m['session']);
 			}
 		}
-		e107::getAdminLog()->add($logTitle, $logString, $logImportance, $logEventCode);
+		$this->add($logTitle, $logString, $logImportance, $logEventCode, $target);
 		$this->_messages = array();		// Clear the memory for reuse
 
 		return $this;
