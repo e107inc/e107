@@ -3165,7 +3165,7 @@ class e_parser
      */
     public function cleanHtml($html='', $checkPref = true)
     {
-        if(empty($html)){ return; }
+        if(empty($html)){ return ''; }
         
    //     $html = mb_convert_encoding($html, 'UTF-8');     
         
@@ -3269,9 +3269,12 @@ class e_parser
             }
 
             // required - removing attributes in a loop breaks the loop
-            foreach ($removeAttributes as $name)
+            if(!empty($removeAttributes))
             {
-                $node->removeAttribute($name);
+	            foreach ($removeAttributes as $name)
+	            {
+	                $node->removeAttribute($name);
+	            }
             }
 
 

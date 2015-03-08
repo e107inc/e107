@@ -1870,7 +1870,7 @@ class e107
 	 * Safe way to call user methods.
 	 * @param string|object $class_name 
 	 * @param string $method_name
-	 * @return boolean FALSE
+	 * @return array|boolean FALSE
 	 */
 	public static function callMethod($class_name, $method_name, $param='')
 	{
