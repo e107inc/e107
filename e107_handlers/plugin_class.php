@@ -2986,8 +2986,18 @@ class e107plugin
 	// Called to parse the (deprecated) plugin.php file
 	function parse_plugin_php($plugName)
 	{
-		$mes = e107::getMessage();
 		$tp = e107::getParser();
+
+		$eplug_conffile     = null;
+		$eplug_table_names  = null;
+		$eplug_prefs        = null;
+		$eplug_module       = null;
+		$eplug_userclass    = null;
+		$eplug_status       = null;
+		$eplug_latest       = null;
+		$eplug_icon         = null;
+		$eplug_icon_small   = null;
+
 
 		if (include(e_PLUGIN.$plugName.'/plugin.php'))
 		{
