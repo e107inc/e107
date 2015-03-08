@@ -226,18 +226,32 @@ class admin_log_ui extends e_admin_ui
 				$this->batchDelete = true;
 			}
 		}
-		
-		
 
+
+		function gen_log_delete($selectname)
+		{
+			$values = array(360, 180, 90, 60, 30, 21, 20, 14, 10, 7, 6, 5, 4, 3, 2, 1);
+			return e107::getForm()->select($selectname, $values, '', 'useValues=1&size=small');
+		}
 	
 		
 		function maintenancePage()
 		{
+
+			if(!empty($_POST['deleteoldadmin']) || !empty($_POST['deleteoldaudit']))
+			{
+				$this->maintenanceProcess();
+
+			}
+
 			$frm = e107::getForm();
+
+
+
 			// Admin log maintenance
 			//==================
-			$text .= "
-			<form method='post' action='".e_SELF."?config'>
+			$text = "
+			<form method='post' action='".e_SELF."?mode=main&action=maintenance'>
 				<fieldset id='core-admin-log-maintenance'>
 					<legend>".RL_LAN_125."</legend>
 					<table class='table adminform'>
@@ -248,7 +262,7 @@ class admin_log_ui extends e_admin_ui
 						<tbody>
 							<tr>
 								<td>".RL_LAN_045." </td>
-								<td>".gen_log_delete('rolllog_clearadmin')." ".RL_LAN_046.$frm->admin_button('deleteoldadmin', 'no-value', 'delete', RL_LAN_049)."</td>
+								<td class='form-inline'>".$this->gen_log_delete('rolllog_clearadmin')." ".RL_LAN_046." ".$frm->admin_button('deleteoldadmin', 'no-value', 'delete', RL_LAN_049)."</td>
 							</tr>
 			";
 		
@@ -257,7 +271,7 @@ class admin_log_ui extends e_admin_ui
 			$text .= "
 							<tr>
 								<td>".RL_LAN_066." </td>
-								<td>".gen_log_delete('rolllog_clearaudit')." ".RL_LAN_046.$frm->admin_button('deleteoldaudit', 'no-value', 'delete', RL_LAN_049)."</td>
+								<td class='form-inline'>".$this->gen_log_delete('rolllog_clearaudit')." ".RL_LAN_046." ".$frm->admin_button('deleteoldaudit', 'no-value', 'delete', RL_LAN_049)."</td>
 							</tr>
 						</tbody>
 					</table>
@@ -276,19 +290,26 @@ class admin_log_ui extends e_admin_ui
 			$mes = e107::getMessage();
 			$ns = e107::getRender();
 			$log = e107::getAdminLog();
+			$frm = e107::getForm();
+			$sql = e107::getDb();
+
+		//	print_a($_POST);
 			
-			if(isset($_POST['deleteoldadmin']) && isset($_POST['rolllog_clearadmin']))
+			if(!empty($_POST['deleteoldadmin']) && isset($_POST['rolllog_clearadmin']))
 			{
 				$back_count = intval($_POST['rolllog_clearadmin']);
-				$next_action = 'confdel';
+				$_POST['backdeltype'] = 'confdel';
+				$action = 'backdel';
 			}
-			elseif(isset($_POST['deleteoldaudit']) && isset($_POST['rolllog_clearaudit']))
+			elseif(!empty($_POST['deleteoldaudit']) && isset($_POST['rolllog_clearaudit']))
 			{
 				$back_count = intval($_POST['rolllog_clearaudit']);
-				$next_action = 'auditdel';
+				$action = 'backdel';
+				$_POST['backdeltype'] = 'auditdel';
 			}
-			
-			if(isset($back_count) && isset($next_action))
+
+			/*
+			if(isset($back_count))
 			{
 				if(($back_count >= 1) && ($back_count <= 90))
 				{
@@ -305,60 +326,53 @@ class admin_log_ui extends e_admin_ui
 					$mes->addWarning(RL_LAN_050);
 				}
 			}
-			
-			if(!isset($admin_log))
-			{
-				$mes->addWarning("Admin Log not valid");
-			}
+			*/
+
+			$old_date = strtotime($back_count.' days ago');
 			
 			
 			// Actually delete back events - admin or user audit log
 			if(($action == "backdel") && isset($_POST['backdeltype']))
 			{
-				if(isset($_POST['confirmdeleteold']))
+			//	$old_date = intval($qs[1]);
+				$old_string = strftime("%d %B %Y", $old_date);
+				$qry = "dblog_datestamp < ".$old_date; // Same field for both logs
+
+				switch($_POST['backdeltype'])
 				{
-					$old_date = intval($qs[1]);
-					$old_string = strftime("%d %B %Y", $old_date);
-					$qry = "dblog_datestamp < ".$old_date; // Same field for both logs
-					switch($_POST['backdeltype'])
-					{
-						case 'confdel':
-							$db_table = 'admin_log';
-							$db_name = RL_LAN_052;
-							$db_msg = "ADLOG_02";
-							break;
-						case 'auditdel':
-							$db_table = 'audit_log';
-							$db_name = RL_LAN_053;
-							$db_msg = "ADLOG_03";
-							break;
-						default:
-							exit(); // Someone fooling around!
-					}
-					//	$message = "Back delete, oldest date = {$old_string}  Query = {$qry}";
-					if($del_count = $sql->db_Delete($db_table, $qry))
-					{
-						// Add in a log event
-						$message = $db_name.str_replace(array('--OLD--', '--NUM--'), array($old_string, $del_count), RL_LAN_057);
-						$mes->addSuccess($message);
-						$log->log_event($db_msg, "db_Delete - earlier than {$old_string} (past {$qs[2]} days)[!br!]".$message.'[!br!]'.$db_table.' '.$qry, E_LOG_INFORMATIVE, '');
-					}
-					else
-					{
-						$mes->addWarning(RL_LAN_054." : ".$sql->mySQLresult);
-					}
-				} 
+					case 'confdel':
+						$db_table = 'admin_log';
+						$db_name = RL_LAN_052;
+						$db_msg = "ADLOG_02";
+						break;
+					case 'auditdel':
+						$db_table = 'audit_log';
+						$db_name = RL_LAN_053;
+						$db_msg = "ADLOG_03";
+						break;
+					default:
+						exit(); // Someone fooling around!
+				}
+
+
+				e107::getMessage()->addDebug("Back delete, oldest date = {$old_string}  Query = {$qry}");
+
+				if($del_count = $sql->delete($db_table, $qry))
+				{
+					// Add in a log event
+					$message = $db_name.str_replace(array('--OLD--', '--NUM--'), array($old_string, $del_count), RL_LAN_057);
+					$mes->addSuccess($message);
+					$log->log_event($db_msg, "db_Delete - earlier than {$old_string} (past {$back_count} days)[!br!]".$message.'[!br!]'.$db_table.' '.$qry, E_LOG_INFORMATIVE, '');
+				}
 				else
 				{
-					$mes->addInfo(LAN_NO_CHANGE);
+					$mes->addWarning(RL_LAN_054." : ".$sql->mySQLresult);
 				}
-			
-				$action = "config";
-				unset($qs[1]);
-				unset($qs[2]);
+
 			}
 			
 			// Prompt to delete back events
+			/*
 			if(($action == "confdel") || ($action == "auditdel"))
 			{
 				$old_string = strftime("%d %B %Y", $qs[1]);
@@ -386,7 +400,7 @@ class admin_log_ui extends e_admin_ui
 				$ns->tablerender(LAN_CONFDELETE, $text);
 			}	
 			
-			
+			*/
 			
 		}
 		
@@ -763,19 +777,7 @@ class dblog_ui extends e_admin_ui
 		}		
 
 
-		function gen_log_delete($selectname)
-		{
-			$values = array(90, 60, 30, 21, 20, 14, 10, 7, 6, 5, 4, 3, 2, 1);
-			$ret = "<select name='{$selectname}' class='tbox select'>";
-			$selected = " selected='selected'"; // Always select the first (highest) value
-			foreach($values as $v)
-			{
-				$ret .= "<option value='{$v}'{$selected}>{$v}</option>";
-				$selected = '';
-			}
-			$ret .= "</select>";
-			return $ret;
-		}
+
 
 
 		
