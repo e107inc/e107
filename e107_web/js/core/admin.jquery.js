@@ -151,6 +151,17 @@ $(document).ready(function()
 		);
 
 
+		$('a[data-toggle-sidebar]').on('click', function(e)
+        {
+            e.preventDefault();
+            
+            $("#left-panel").toggle(1000);
+            $("#right-panel").toggleClass("span10",0);
+
+        });
+
+
+
 		/* InfoPanel Comment approval and deletion */
 		$(document).on("click", "button[data-comment-action]", function(){
 				
