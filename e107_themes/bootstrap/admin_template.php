@@ -188,8 +188,12 @@ $ADMIN_HEADER = '<div class="navbar '.$inverse.' navbar-fixed-top">
     </div>';
 
 $ADMIN_HEADER .= '<div class="container-fluid">
+ <div class="sidebar-toggle"><a href="#" title="Toggle Sidebar" data-toggle-sidebar="true">'.e107::getParser()->toGlyph('fa-caret-right').'</a></div>
+
       <div class="row-fluid">
+
         <div class="span2" id="left-panel">
+
         	{SETSTYLE=admin_menu}
 		
 			{ADMIN_MENU}

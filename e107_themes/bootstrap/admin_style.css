@@ -982,6 +982,10 @@ li.rssRow > div {
 
 .core-mainpanel-link-icon img { margin-bottom: 5px }
 
+.sidebar-toggle { width: 50px; display: inline-block; position: absolute; margin-left: -20px;  }
+.sidebar-toggle a {color:#C6C6C6;}
+#left-panel.toggled { display: none }
+
 /*
 
 body { background-color: rgb(68, 68, 68); }

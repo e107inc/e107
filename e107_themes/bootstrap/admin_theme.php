@@ -154,7 +154,7 @@ class bootstrap_admintheme
 	
 			case 'admin_menu' :
 				echo '
-						<div class="well sidebar-nav" >  
+						<div class="well sidebar-nav" >
 						<div class="nav-header">'.$caption.'</div>
 						'.$text.'
 					</div>
