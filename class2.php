@@ -1915,8 +1915,7 @@ function class_list($uid = '')
 
 
 /**
- * Will be deprecated, probably by e107::includeLan();
- * @deprecated  by e107::lan();
+ * @Deprecated  by e107::lan();
  * @param string $path
  * @param boolean $force [optional] Please use the default
  * @return void
