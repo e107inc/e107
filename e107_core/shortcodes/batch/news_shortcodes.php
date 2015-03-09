@@ -42,8 +42,6 @@ class news_shortcodes extends e_shortcode
 		$pref = e107::getPref();
 		
 		$this->commentsDisabled = vartrue($pref['comments_disabled']);
-		
-		
 	}
 
 	function sc_newstitle()
@@ -106,7 +104,7 @@ class news_shortcodes extends e_shortcode
 		
 		if($this->commentsDisabled)
 		{
-			return;	
+			return '';
 		}
 				
 		$news_item = $this->news_item;
@@ -249,16 +247,20 @@ class news_shortcodes extends e_shortcode
 
 	/**
 	 * {NEWSCOMMENTLINK: glyph=comments&class=btn btn-default btn-sm}
+	 *
 	 */
 	function sc_newscommentlink($parm='')
 	{
+
 		if($this->commentsDisabled)
 		{
 			return;	
 		}
-		
+
 		$class = varset($parm['class']) ? " ".$parm['class'] : "";
-		$text = (!$this->news_item['news_allow_comments'] ? $this->param['commentoffstring'] : "<a title='".$this->sc_newscommentcount()." comments' class='e-tip".$class."' href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$this->param['commentlink'].'</a>');
+
+		// When news_allow_comments = 1 then it is disabled. Backward, but that's how it is in v1.x
+		$text = ($this->news_item['news_allow_comments'] ? $this->param['commentoffstring'] : "<a title='".$this->sc_newscommentcount()." comments' class='e-tip".$class."' href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$this->param['commentlink'].'</a>');
 		return $text;
 	}
 
