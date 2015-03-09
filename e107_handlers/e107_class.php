@@ -237,7 +237,6 @@ class e107
 	 * Use {@link getInstance()}, direct instantiating
 	 * is not possible for singleton objects
 	 *
-	 * @return void
 	 */
 	protected function __construct()
 	{
@@ -272,6 +271,10 @@ class e107
 	 * Initialize environment path constants
 	 * Public proxy to the protected method {@link _init()}
 	 *
+	 * @param $e107_paths
+	 * @param $e107_root_path
+	 * @param $e107_config_mysql_info
+	 * @param array $e107_config_override
 	 * @return e107
 	 */
 	public function initCore($e107_paths, $e107_root_path, $e107_config_mysql_info, $e107_config_override = array())
@@ -282,6 +285,9 @@ class e107
 	/**
 	 * Initialize environment path constants while installing e107
 	 *
+	 * @param $e107_paths
+	 * @param $e107_root_path
+	 * @param array $e107_config_override
 	 * @return e107
 	 */
 	public function initInstall($e107_paths, $e107_root_path, $e107_config_override = array())
@@ -325,6 +331,10 @@ class e107
 	/**
 	 * Resolve paths, will run only once
 	 *
+	 * @param $e107_paths
+	 * @param $e107_root_path
+	 * @param $e107_config_mysql_info
+	 * @param array $e107_config_override
 	 * @return e107
 	 */
 	protected function _init($e107_paths, $e107_root_path, $e107_config_mysql_info, $e107_config_override = array())
@@ -488,6 +498,7 @@ class e107
 	/**
 	 * Set mysql data
 	 *
+	 * @param $e107_config_mysql_info
 	 * @return e107
 	 */
 	public function initInstallSql($e107_config_mysql_info)
@@ -507,6 +518,7 @@ class e107
 	 * Replacement of cachevar()
 	 *
 	 * @param string $id
+	 * @param null $default
 	 * @return mixed
 	 */
 	public static function getRegistry($id, $default = null)
@@ -539,7 +551,7 @@ class e107
 	 *
 	 * @param string $id
 	 * @param mixed|null $data
-	 * @return void
+	 * @param bool $allow_override
 	 */
 	public static function setRegistry($id, $data = null, $allow_override = true)
 	{
@@ -692,9 +704,9 @@ class e107
 	/**
 	 * Get overlod class and path (if any)
 	 *
-	 * @param object $class_name
-	 * @param object $default_handler [optional] return data from $_known_handlers if no overload data available
-	 * @param object $parse_path [optional] parse path shortcodes
+	 * @param string $class_name
+	 * @param bool|object $default_handler [optional] return data from $_known_handlers if no overload data available
+	 * @param bool|object $parse_path [optional] parse path shortcodes
 	 * @return array
 	 */
 	public static function getHandlerOverload($class_name, $default_handler = true, $parse_path = true)
@@ -714,7 +726,7 @@ class e107
 	 * ignore $overload_class_name and  $overload_path arguments
 	 *
 	 * @param string $class_name
-	 * @param string $overload_name [optional]
+	 * @param string $overload_class_name [optional]
 	 * @param string $overload_path [optional]
 	 * @return void
 	 */
@@ -799,7 +811,7 @@ class e107
 	 * Prepare for __autoload
 	 *
 	 * @param string $class_name
-	 * @param mxed $arguments
+	 * @param mixed $arguments
 	 * @param string|boolean $path optional script path
 	 * @return object|null
 	 */
@@ -850,7 +862,9 @@ class e107
 	 * List of allowed $name values (aliases) could be found
 	 * in {@link e_core_pref} class
 	 *
-	 * @param string $name core|core_backup|emote|menu|search|notify 
+	 * @param string $name core|core_backup|emote|menu|search|notify
+	 * @param bool $load
+	 * @param bool $refresh
 	 * @return e_core_pref
 	 */
 	public static function getConfig($name = 'core', $load = true, $refresh=false)
@@ -898,6 +912,7 @@ class e107
 	 * @see e_core_pref::getPref()
 	 * @param string $pref_name
 	 * @param mixed $default default value if preference is not found
+	 * @param null $index
 	 * @return mixed
 	 */
 	public static function findPref($pref_name, $default = null, $index = null)
@@ -972,8 +987,10 @@ class e107
 	 * Shorthand of  self::getPluginConfig()->getPref()
 	 *
 	 * @see e_core_pref::getPref()
+	 * @param $plug_name
 	 * @param string $pref_name
 	 * @param mixed $default default value if preference is not found
+	 * @param null $index
 	 * @return mixed
 	 */
 	public static function findPlugPref($plug_name, $pref_name, $default = null, $index = null)
@@ -989,6 +1006,7 @@ class e107
 	 * @see e_core_pref::getPref()
 	 * @param string $pref_name
 	 * @param mixed $default default value if preference is not found
+	 * @param null $index
 	 * @return mixed
 	 */
 	public static function getThemePref($pref_name = '', $default = null, $index = null)
@@ -1122,6 +1140,7 @@ class e107
 	/**
 	 * Retrieve core session singleton object(s)
 	 *
+	 * @param null $namespace
 	 * @return e_core_session
 	 */
 	public static function getSession($namespace = null)
@@ -1150,7 +1169,7 @@ class e107
 		/**
 	 * Retrieve rater singleton object
 	 *
-	 * @return rate
+	 * @return rater
 	 */
 	public static function getRate()
 	{
@@ -1370,7 +1389,7 @@ class e107
 	/**
 	 * Retrieve HybridAuth object
 	 *
-	 * @return Hybrid_Auth
+	 * @return object
 	 */
 	public static function getHybridAuth($config = null)
 	{
@@ -1498,7 +1517,7 @@ class e107
 	 * Retrieve user model object.
 	 *
 	 * @param integer $user_id target user
-	 * @return e_current_user
+	 * @return e_user_extended_structure_tree
 	 */
 	public static function getUserStructure()
 	{
@@ -1685,14 +1704,16 @@ class e107
 
 		$jshandler->resetDependency();
 	}
-	
+
 	/**
 	 * CSS Common Public Function. Prefered is shortcode script path
 	 * @param string $type core|theme|footer|inline|footer-inline|url or any existing plugin_name
 	 * @param string $data depends on the type - path/url or inline js source
+	 * @param null $dep
 	 * @param string $media any valid media attribute string - http://www.w3schools.com/TAGS/att_link_media.asp
 	 * @param string $preComment possible comment e.g. <!--[if lt IE 7]>
 	 * @param string $postComment possible comment e.g. <![endif]-->
+	 * @param null $dependence
 	 */
 	public static function css($type, $data, $dep = null, $media = 'all', $preComment = '', $postComment = '', $dependence = null)
 	{
@@ -1754,9 +1775,12 @@ class e107
 		}
 		return self::getObject('e_jshelper', null, true);
 	}
-	
+
 	/**
 	 * @see eResponse::addMeta()
+	 * @param null $name
+	 * @param null $content
+	 * @param array $extended
 	 * @return eResponse
 	 */
 	public static function meta($name = null, $content = null, $extended = array())
@@ -1793,7 +1817,7 @@ class e107
 	 * @param string $pluginName e.g. faq, page
 	 * @param string $addonName eg. e_cron, e_url, e_module
 	 * @param mixed $className [optional] true - use default name, false - no object is returned (include only), any string will be used as class name
-	 * @return none
+	 * @return object
 	 */
 	public static function getAddon($pluginName, $addonName, $className = true)
 	{
@@ -1827,12 +1851,13 @@ class e107
 	 * @param string $addonName eg. e_cron, e_url
 	 * @param string $className [optional] (if different from addonName)
 	 * @param string $methodName [optional] (if different from 'config')
-	 * @return none
+	 * @return array
 	 */
 	public static function getAddonConfig($addonName, $className = '', $methodName='config', $param=null )
 	{
 		$new_addon = array();
-		$sql = e107::getDb(); // Might be used by older plugins. 
+
+		$sql = e107::getDb(); // Might be used by older plugins.
 
 		$filename = $addonName; // e.g. 'e_cron';
 		if(!$className)
@@ -1868,9 +1893,10 @@ class e107
 
 	/**
 	 * Safe way to call user methods.
-	 * @param string|object $class_name 
+	 * @param string|object $class_name
 	 * @param string $method_name
-	 * @return array|boolean FALSE
+	 * @param string $param
+	 * @return array|bool FALSE
 	 */
 	public static function callMethod($class_name, $method_name, $param='')
 	{
@@ -1893,13 +1919,13 @@ class e107
 			{
 				if(E107_DBG_INCLUDES)
 				{
-					$mes->debug('Executing <strong>'.$class_name.' :: '.$method_name.'()</strong>');
+					$mes->addDebug('Executing <strong>'.$class_name.' :: '.$method_name.'()</strong>');
 				}
 				return call_user_func(array($obj, $method_name),$param);
 			}
 			else
 			{
-				$mes->debug('Function <strong>'.$class_name.' :: '.$method_name.'()</strong> NOT found.');
+				$mes->addDebug('Function <strong>'.$class_name.' :: '.$method_name.'()</strong> NOT found.');
 			}
 		}
 		return FALSE;
@@ -2205,12 +2231,13 @@ class e107
 
 	/**
 	 * Return a list of available template IDs for a plugin(eg. $MYTEMPLATE['my_id'] -> array('id' => 'My Id'))
-	 * 
+	 *
 	 * FIXME - the format of $allinfo=true array is not usable at all, convert it so that it's compatible with e_form::selectbox() method
-	 * 
+	 *
 	 * @param string $plugin_name
 	 * @param string $template_id [optional] if different from $plugin_name;
 	 * @param mixed $where true - current theme, 'admin' - admin theme, 'front' (default)  - front theme
+	 * @param string $filter_mask
 	 * @param boolean $merge merge theme with core/plugin layouts, default is false
 	 * @param boolean $allinfo reutrn nimerical array of templates and all available template information
 	 * @return array
@@ -2286,8 +2313,7 @@ class e107
 		
 		$wrapper = strtoupper($id).'_WRAPPER'; // see contact_template.php
 		$wrapperRegPath = 'templates/wrapper/'.$id;
-		
-		//FIXME XXX URGENT - Add support for _WRAPPER and $sc_style BC. - save in registry and retrieve in getScBatch()?
+
 		// Use: list($pre,$post) = explode("{---}",$text,2); 
 		
 		$tp = self::getParser(); // BC FIx - avoid breaking old templates due to missing globals. 
@@ -2341,7 +2367,7 @@ class e107
 		{
 			if (self::getPref('noLanguageSubs') || (e_LANGUAGE == 'English'))
 			{
-				return FALSE;
+				return false;
 			}
 			
 			self::getMessage()->addDebug("Couldn't load language file: ".$path);
@@ -2349,7 +2375,7 @@ class e107
 			
 			if(!is_readable($path))
 			{
-				return;
+				return false;
 			}
 		}
 		
@@ -2552,9 +2578,11 @@ class e107
 
 
 	/**
-	 * Generic PREF retrieval Method for use by theme and plugin developers. 
-	 * @param $type : 'core', 'theme', plugin-name
-	 * @param $pname : name of specific preference, or leave blank for full array. 
+	 * Generic PREF retrieval Method for use by theme and plugin developers.
+	 * @param string $type : 'core', 'theme', plugin-name
+	 * @param $pname : name of specific preference, or leave blank for full array.
+	 * @param null $default
+	 * @return mixed
 	 */
 	public static function pref($type = 'core', $pname = null, $default = null)
 	{
@@ -2577,8 +2605,12 @@ class e107
 	}
 
 	/**
- 	* Experimental static (easy) sef-url creation method (works with e_url.php @see /index.php)
- 	*/
+	 * Experimental static (easy) sef-url creation method (works with e_url.php @see /index.php)
+	 * @param string $plugin
+	 * @param $key
+	 * @param array $row
+	 * @return string
+	 */
 	public static function url($plugin='',$key, $row=array())
 	{
 		$tmp = e107::getAddonConfig('e_url');
@@ -2589,6 +2621,9 @@ class e107
 			$rawUrl = $tp->simpleParse($tmp[$plugin][$key]['sef'], $row);
 			return e_HTTP.$rawUrl;
 		}
+
+		return false;
+
 		/*
 		elseif(varset($tmp[$plugin][$key]['redirect']))
 		{
@@ -2596,12 +2631,14 @@ class e107
 		}
 
 		return;
-		 * */
+		*/
 
 	}
 
 	/**
-	 * Set or Retrieve WYSIWYG active status. (replaces constant  e_WYSIWYG) 
+	 * Set or Retrieve WYSIWYG active status. (replaces constant  e_WYSIWYG)
+	 * @param null $val
+	 * @return bool|mixed|void
 	 */
 	public static function wysiwyg($val=null)
 	{
@@ -2617,7 +2654,8 @@ class e107
 		}
 		else
 		{
-			return self::setRegistry('core/e107/wysiwyg',$val); 	
+			self::setRegistry('core/e107/wysiwyg',$val);
+			return true;
 		}	
 		
 	}
@@ -2701,7 +2739,7 @@ class e107
 
 	/**
 	 * Prepare e107 environment
-	 * This is done before e107_dirs initilization and [TODO] config include
+	 * This is done before e107_dirs initilization and config include
 	 * @param bool $checkS basic security check (0.7 like), will be extended in the future
 	 * @return e107
 	 */
@@ -2794,15 +2832,16 @@ class e107
 	/**
 	 * Filter User Input - used by array_walk in prepare_request method above.
 	 * @param string $input array value
-	 * @param string $key	array key
-	 * @param string $type	array type _SESSION, _GET etc.
-	 * @return
+	 * @param string $key array key
+	 * @param string $type array type _SESSION, _GET etc.
+	 * @param bool $base64
+	 * @return bool|void
 	 */
 	public static function filter_request($input,$key,$type,$base64=FALSE)
 	{
 		if(is_string($input) && trim($input)=="")
 		{
-			return;
+			return '';
 		}
 		
 		if (is_array($input))
@@ -3383,13 +3422,15 @@ class e107
 
 		define('e_TBQS', $_SERVER['QUERY_STRING']);
 	}
-	
+
 	/**
 	 * Basic implementation of Browser cache control per user session. Awaiting improvement in future versions
-	 * If no argument is passed it returns 
+	 * If no argument is passed it returns
 	 * boolean (if current page is cacheable).
 	 * If string is passed, it's asumed to be aboslute request path (e_REQUEST_URI alike)
 	 * If true is passed, e_REQUEST_URI is registered
+	 * @param null $set
+	 * @return bool|void
 	 */
 	public static function canCache($set = null)
 	{
@@ -3518,7 +3559,6 @@ class e107
 	 * @param boolean $IP4Legacy
 	 * @return string decoded IP
 	 */
-
 	public function ipdecode($ip, $IP4Legacy = TRUE)
 	{
 		return e107::getIPHandler()->ipDecode($ip, $IP4Legacy);
@@ -3594,7 +3634,7 @@ class e107
 	 * Safe way to set ini var
 	 * @param string $var
 	 * @param string $value
-	 * @return TBD
+	 * @return mixed
 	 */
 	public static function ini_set($var, $value)
 	{
@@ -3604,10 +3644,12 @@ class e107
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Register autoload function (string) or static class method - array('ClassName', 'MethodName')
 	 * @param string|array $function
+	 * @param bool $prepend
+	 * @return bool
 	 */
 	public static function autoload_register($function, $prepend = false)
 	{
@@ -3669,7 +3711,7 @@ class e107
 	        return;
 	    }
 		$tmp = explode('_', $className);
-		$filename = '';
+
 		//echo 'autoloding...'.$className.'<br />';
 		switch($tmp[0])
 		{
@@ -3722,7 +3764,7 @@ class e107
 			break;
 		}
 	
-		if($filename && is_file($filename)) // Test with chatbox_menu 
+		if(!empty($filename) && is_file($filename)) // Test with chatbox_menu
 		{
 			// autoload doesn't REQUIRE files, because this will break things like call_user_func()
 			include($filename);
@@ -3795,7 +3837,11 @@ class e107
 		return $ret;
 	}
 
-	public function destruct()
+
+	/**
+	 *
+	 */
+	public function destruct() //FIXME $path is not defined anywhere.
 	{
 		if(null === self::$_instance) return;
 		
