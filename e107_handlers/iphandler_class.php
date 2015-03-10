@@ -189,7 +189,7 @@ class eIPHandler
 	 *	@param int $reason - numeric reason code, usually in range -10..+10
 	 *	@param string $message - additional text as required (length not checked, but should be less than 100 characters or so
 	 *
-	 *	@return none
+	 *	@return void
 	 */
 	private function logBanItem($reason, $message)
 	{
@@ -489,14 +489,14 @@ class eIPHandler
 	}
 
 
-
-
-
 	/**
-	 *	Encode an IPv4 address into IPv6
-	 *	Similar functionality to ipEncode
+	 *    Encode an IPv4 address into IPv6
+	 *    Similar functionality to ipEncode
 	 *
-	 *	@return string - the 'ip4' bit of an IPv6 address (i.e. last 32 bits)
+	 * @param $ip
+	 * @param bool $wildCards
+	 * @param string $div
+	 * @return string - the 'ip4' bit of an IPv6 address (i.e. last 32 bits)
 	 */
 	private function ip4Encode($ip, $wildCards = FALSE, $div = ':')
 	{
@@ -574,10 +574,11 @@ class eIPHandler
 	}
 
 
-
 	/**
-	 *	Given a potentially truncated IPV6 address as used in the ban list files, adds 'x' characters etc to create
-	 *	a normalised IPV6 address as stored in the DB. Returned length is exactly 39 characters
+	 *    Given a potentially truncated IPV6 address as used in the ban list files, adds 'x' characters etc to create
+	 *    a normalised IPV6 address as stored in the DB. Returned length is exactly 39 characters
+	 * @param $address
+	 * @return string
 	 */
 	public function ip6AddWildcards($address)
 	{
@@ -723,18 +724,18 @@ class eIPHandler
 	}
 
 
-
 	/**
-	 *	Generate DB query for domain name-related checks
+	 *    Generate DB query for domain name-related checks
 	 *
-	 *	If an email address is passed, discards the individual's name
+	 *    If an email address is passed, discards the individual's name
 	 *
-	 *	@param string $email - an email address or domain name string
-	 *	@param string $fieldname - if non-empty, each array entry is a comparison with this field
+	 * @param string $email - an email address or domain name string
+	 * @param string $fieldName
+	 * @return array|bool false if invalid domain name format
+	 * false if invalid domain name format
+	 * array of values to compare
+	 * @internal param string $fieldname - if non-empty, each array entry is a comparison with this field
 	 *
-	 *	@return boolean|array 
-	 *		false if invalid domain name format
-	 *		array of values to compare
 	 */
 	function makeDomainQuery($email, $fieldName = 'banlist_ip')
 	{
@@ -821,7 +822,7 @@ class eIPHandler
 		if ($this->clearBan !== FALSE)
 		{	// Expired ban to clear - match exactly the address which triggered this action - could be a wildcard
 			$clearAddress = $this->ip6AddWildcards($this->clearBan);
-			if ($sql->db_Delete('banlist',"`banlist_ip`='{$clearAddress}'"))
+			if ($sql->delete('banlist',"`banlist_ip`='{$clearAddress}'"))
 			{
 				$this->actionCount--;		// One less item on list
 				$this->logBanItem(0,'Ban cleared: '.$clearAddress);
@@ -876,10 +877,10 @@ class eIPHandler
 		$admin_log = e107::getAdminLog();
 
 		//$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Check for Ban",$query,FALSE,LOG_TO_ROLLING);
-		if ($sql->db_Select('banlist', '*', $query.' ORDER BY `banlist_bantype` DESC'))
+		if ($sql->select('banlist', '*', $query.' ORDER BY `banlist_bantype` DESC'))
 		{
 			// Any whitelist entries will be first, because they are positive numbers - so we can answer based on the first DB record read
-			$row = $sql->db_Fetch();
+			$row = $sql->fetch();
 			if ($row['banlist_bantype'] >= eIPHandler::BAN_TYPE_WHITELIST)
 			{
 				//$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Whitelist hit",$query,FALSE,LOG_TO_ROLLING);
@@ -888,7 +889,7 @@ class eIPHandler
 			// Found banlist entry in table here
 			if (($row['banlist_banexpires']>0) && ($row['banlist_banexpires']<time()))
 			{ // Ban has expired - delete from DB
-				$sql->db_Delete('banlist', $query);
+				$sql->delete('banlist', $query);
 				$this->regenerateFiles();
 				return TRUE;
 			}
@@ -896,7 +897,7 @@ class eIPHandler
 			// User is banned hereafter - just need to sort out the details.
 			if (vartrue($pref['ban_retrigger']) && vartrue($pref['ban_durations'][$row['banlist_bantype']]))
 			{ // May need to retrigger ban period
-				$sql->db_Update('banlist', "`banlist_banexpires`=".intval(time()+($pref['ban_durations'][$row['banlist_bantype']]*60*60)), "WHERE `banlist_ip`='{$row['banlist_ip']}'");
+				$sql->update('banlist', "`banlist_banexpires`=".intval(time()+($pref['ban_durations'][$row['banlist_bantype']]*60*60)), "WHERE `banlist_ip`='{$row['banlist_ip']}'");
 				$this->regenerateFiles();
 				//$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Retrigger Ban",$row['banlist_ip'],FALSE,LOG_TO_ROLLING);
 			}
@@ -961,7 +962,7 @@ class eIPHandler
 			return FALSE;
 		}
 		// See if address already in the banlist
-		if ($sql->db_Select('banlist', '`banlist_bantype`', "`banlist_ip`='{$ban_ip}'"))
+		if ($sql->select('banlist', '`banlist_bantype`', "`banlist_ip`='{$ban_ip}'"))
 		{
 			list($banType) = $sql->fetch(MYSQL_ASSOC);
 			
@@ -1004,7 +1005,7 @@ class eIPHandler
 	/**
 	 *	Regenerate the text-based banlist files (called after a banlist table mod)
 	 */
-	protected function regenerateFiles()
+	public function regenerateFiles()
 	{
 		// Now regenerate the text files - so accesses of this IP address don't use the DB
 		$ipAdministrator = new banlistManager;
@@ -1120,12 +1121,12 @@ class eIPHandler
 	{
 		$ourDB = e107::getDb('olcheckDB');			// @todo is this OK, or should an existing one be used?
 
-		$result = $ourDB->db_Select('online', '*', "`user_ip` = '{$ip}' OR `user_token` = '{$browser}'");
+		$result = $ourDB->select('online', '*', "`user_ip` = '{$ip}' OR `user_token` = '{$browser}'");
 		if ($result === FALSE) return FALSE;
 		$gotIP = FALSE;
 		$gotBrowser = FALSE;
 		$bestRow = FALSE;
-		while (FALSE !== ($row = $ourDB->db_Fetch(MYSQL_ASSOC)))
+		while (FALSE !== ($row = $ourDB->fetch(MYSQL_ASSOC)))
 		{
 			if ($row['user_token'] == $browser)
 			{
@@ -1226,6 +1227,7 @@ class banlistManager
 	 */ 
 	public function writeBanListFiles($options = 'ip', $typeList = '')
 	{
+		e107::getMessage()->addDebug("Writing new Banlist files.");
 		$sql = e107::getDb();
 		$ipManager = e107::getIPHandler();
 
@@ -1310,15 +1312,14 @@ class banlistManager
 	}
 
 
-
-
 	/**
-	 *	Trim wildcards from IP addresses
+	 *    Trim wildcards from IP addresses
 	 *
-	 *	@param string $ip - IP address in any normal form
+	 * @param string $ip - IP address in any normal form
 	 *
-	 *	Note - this removes all characters after (and including) the first '*' or 'x' found. So an '*' or 'x' in the middle of a string may
-	 *			cause unexpected results.
+	 *    Note - this removes all characters after (and including) the first '*' or 'x' found. So an '*' or 'x' in the middle of a string may
+	 *            cause unexpected results.
+	 * @return string
 	 */
 	private function trimWildcard($ip)
 	{
@@ -1545,9 +1546,9 @@ class banlistManager
 
 		foreach ($ipAction as $ipKey => $ipInfo)
 		{
-			if ($ourDb->db_Select('banlist', '*', "`banlist_ip`='".$ipKey."'") === 1)
+			if ($ourDb->select('banlist', '*', "`banlist_ip`='".$ipKey."'") === 1)
 			{
-				if ($row = $ourDb->db_Fetch())
+				if ($row = $ourDb->fetch())
 				{
 					// @todo check next line
 					$writeDb->db_Update('banlist', 
