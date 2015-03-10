@@ -92,14 +92,12 @@ class banlist_ui extends e_admin_ui
 		protected $table			= 'banlist';
 		protected $pid				= 'banlist_id'; 
 		protected $perPage 			= 10; 
-			
-		//FIXME banlist_ip should be data => 'str' - however, edit link will not contain a value for 'id' when this is the case. 
-		//FIXME need to edit/display primary key value. ie. banlist_ip	
+
 		protected $fields 	= array (  
 		  'checkboxes' 			=>   array ( 'title' => '', 				'type' => null, 		'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
-		  'banlist_id'			 =>   array ( 'title' => LAN_ID, 			'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),	
-		  'banlist_ip' 			=>   array ( 'title' => LAN_IP, 			'type' => 'ip', 		'data' => 'str', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'banlist_bantype' 	=>   array ( 'title' => LAN_TYPE, 			'type' => 'method', 	'data' => 'str', 'width' => 'auto', 'filter'=>true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'banlist_id'			 =>   array ( 'title' => LAN_ID, 			'data' => 'int',        'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'banlist_ip' 			=>   array ( 'title' => LAN_IP, 			'type' => 'ip', 		'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'banlist_bantype' 	=>   array ( 'title' => LAN_TYPE, 			'type' => 'method', 	'data' => 'str', 'width' => 'auto', 'filter'=>true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banlist_datestamp' 	=>   array ( 'title' => LAN_DATESTAMP, 		'type' => 'datestamp', 	'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => 'auto=1&hidden=1&readonly=1', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banlist_banexpires' 	=>   array ( 'title' => 'Expires',	 		'type' => 'method', 	'data' => 'int', 'inline'=>true, 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banlist_admin' 		=>   array ( 'title' => 'Admin', 			'type' => 'boolean', 	'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
@@ -109,9 +107,7 @@ class banlist_ui extends e_admin_ui
 		);		
 		
 		protected $fieldpref = array('checkboxes', 'banlist_ip', 'banlist_bantype', 'banlist_datestamp', 'banlist_banexpires', 'banlist_reason', 'banlist_notes', 'options');
-		
-		
-		
+
 		
 	//	protected $pref = array(
 	//		'pref_type'	   				=> array('title'=> 'type', 'type'=>'text', 'data' => 'string', 'validate' => true),
@@ -123,24 +119,28 @@ class banlist_ui extends e_admin_ui
 		// optional
 		public function init()
 		{
-			if($_POST['something']) // example 
-			{
-				//$this->processSomething();				
-			}	
-			
 			if (isset($_POST['update_ban_prefs']))		// Update ban messages
 			{
 				$this->timesPageSave(); 	
 			}
-						
-						
-						
-			
-			
-				
 		}
-	
-		
+
+		public function afterCreate($new_data, $old_data, $id)
+		{
+			e107::getIPHandler()->regenerateFiles();
+		}
+
+		public function afterUpdate($new_data, $old_data, $id)
+		{
+			e107::getIPHandler()->regenerateFiles();
+		}
+
+		public function afterDelete($deleted_data, $id, $deleted_check)
+		{
+			e107::getIPHandler()->regenerateFiles();
+		}
+
+
 		public function addPage()
 		{
 			//$ns = e107::getRender();
@@ -350,13 +350,18 @@ class banlist_form_ui extends e_admin_form_ui
 			break;
 			
 			case 'write': // Edit Page
+				if(!empty($curVal))
+				{
+					$opts[$curVal] = e107::getParser()->toDate($curVal, 'short');
+				}
+
 				return $this->selectbox('banlist_banexpires',$opts, $curVal);
 				// return $frm->text('banlist_banexpires',$curVal);		
 			break;
 			
 			case 'filter':
 			case 'batch':
-				return  $array; 
+				return  false;
 			break;
 		}
 	}
@@ -374,7 +379,7 @@ class banlist_form_ui extends e_admin_form_ui
 			
 			if ($i == 0)
 			{
-				$words = $zero_text ? $zero_text : LAN_NEVER;
+				$words = LAN_NEVER;
 			}
 			elseif (($i % 24) == 0 && $i !== 24)
 			{

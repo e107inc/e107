@@ -3644,27 +3644,22 @@ class e_admin_controller_ui extends e_admin_controller
 					
 					
 					default: // string usually. 
-						
-						if($this->fields[$filterField]['type'] == 'method') // More flexible filtering. 
+
+						if($filterValue == '_ISEMPTY_')
 						{
-							if($filterValue == '_ISEMPTY_')
+							$searchQry[] = $this->fields[$filterField]['__tableField']." = '' ";
+						}
+						else
+						{
+
+							if($this->fields[$filterField]['type'] == 'method') // More flexible filtering.
 							{
-								$searchQry[] = $this->fields[$filterField]['__tableField']." = '' ";
-							}
-							else 
-							{
+
 								$searchQry[] = $this->fields[$filterField]['__tableField']." LIKE \"%".$tp->toDB($filterValue)."%\"";		
 							}
-							
-						}
-						else 
-						{
-							if($filterValue == '_ISEMPTY_')
+							else
 							{
-								$searchQry[] = $this->fields[$filterField]['__tableField']." = '' ";
-							}
-							else 
-							{
+
 								$searchQry[] = $this->fields[$filterField]['__tableField']." = '".$tp->toDB($filterValue)."'";	
 							}
 						}
@@ -3718,8 +3713,16 @@ class e_admin_controller_ui extends e_admin_controller
 					}
 					continue;
 				}
+
+				if($var['type'] == 'ip')
+				{
+					$filter[] = $var['__tableField']." LIKE '%".e107::getIpHandler()->ipEncode($searchQuery)."%'";
+					// Continue below for BC check also.
+				}
 							
 				$filter[] = $var['__tableField']." LIKE '%".$searchQuery."%'";
+
+
 				if($isfilter)
 				{
 					$filterFrom[] = $var['__tableField'];
@@ -3728,7 +3731,10 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 		}
 
-	//	e107::getMessage()->addInfo(print_a($filter,true));
+		if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
+		{
+	//		e107::getMessage()->addInfo(print_a($filter,true));
+		}
 
 		if($isfilter)
 		{
