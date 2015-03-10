@@ -583,7 +583,7 @@ class comment
 	 * Add a comment to an item
 	 * e-token POST value should be always valid when using this method.
 	 *
-	 * @param string or array $data - $author_name or array of all values. 
+	 * @param string|array $data - $author_name or array of all values.
 	 * @param unknown_type $comment
 	 * @param unknown_type $table
 	 * @param integer $id - reference of item in source table to which comment is linked
@@ -614,7 +614,7 @@ class comment
 		}
 		
 		
-		global $e_event,$e107,$rater;
+		global $e107,$rater;
 
 		$sql 		= e107::getDb();
 		$sql2 		= e107::getDb('sql2');
@@ -653,7 +653,7 @@ class comment
 		$cuser_id = 0;
 		$cuser_name = 'Anonymous'; // Preset as an anonymous comment
 		
-		if (!$sql->db_Select("comments", "*", "comment_comment='".$comment."' AND comment_item_id='".intval($id)."' AND comment_type='".$tp->toDB($type, true)."' "))
+		if (!$sql->select("comments", "*", "comment_comment='".$comment."' AND comment_item_id='".intval($id)."' AND comment_type='".$tp->toDB($type, true)."' "))
 		{
 			if ($_POST['comment'])
 			{
@@ -665,12 +665,12 @@ class comment
 				}
 				elseif ($_POST['author_name'] != '') // See if author name is registered user
 				{ 
-					if ($sql2->db_Select("user", "*", "user_name='".$tp->toDB($_POST['author_name'])."' "))
+					if ($sql2->select("user", "*", "user_name='".$tp->toDB($_POST['author_name'])."' "))
 					{
-						if ($sql2->db_Select("user", "*", "user_name='".$tp->toDB($_POST['author_name'])."' AND user_ip='".$tp->toDB($ip, true)."' "))
+						if ($sql2->select("user", "*", "user_name='".$tp->toDB($_POST['author_name'])."' AND user_ip='".$tp->toDB($ip, true)."' "))
 						{
 							//list($cuser_id, $cuser_name) = $sql2->db_Fetch();
-							$tmp = $sql2->db_Fetch();
+							$tmp = $sql2->fetch();
 							$cuser_id = $tmp['user_id'];
 							$cuser_name = $tmp['user_name'];
 							$cuser_mail = $tmp['user_email'];
@@ -689,11 +689,12 @@ class comment
 				{
 					$ip = $e107->getip(); // Store IP 'in the raw' - could be IPv4 or IPv6. Its always returned in a normalised form
 					$_t = time();
+
 					if ($editpid)
 					{
 						$comment .= "\n[ ".COMLAN_319." [time=short]".time()."[/time] ]";
-						$sql->db_Update("comments", "comment_comment='{$comment}' WHERE comment_id='".intval($editpid)."' ");
-						$e107cache->clear("comment");
+						$sql->update("comments", "comment_comment='{$comment}' WHERE comment_id='".intval($editpid)."' ");
+						e107::getCache()->clear("comment");
 						return;
 					}
 
@@ -717,7 +718,7 @@ class comment
 
 					//SecretR: new event 'prepostcomment' - allow plugin hooks - e.g. Spam Check
 					$edata_li_hook = array_merge($edata_li, array('comment_nick' => $cuser_id.'.'.$cuser_name, 'comment_time' => $_t));
-					if($e_event->trigger("prepostcomment", $edata_li_hook))
+					if(e107::getEvent()->trigger("prepostcomment", $edata_li_hook))
 					{
 						return false; //3rd party code interception
 					}
@@ -740,21 +741,22 @@ class comment
 					}
 					unset($edata_li_hook);
 
-					if (!($inserted_id = $sql->db_Insert("comments", $edata_li)))
+					if (!($inserted_id = $sql->insert("comments", $edata_li)))
 					{
 						//echo "<b>".COMLAN_323."</b> ".COMLAN_11;
 						if(e_AJAX_REQUEST)
 						{
 							return "Error";	
 						}
+
 						e107::getMessage()->addStack(COMLAN_11, 'postcomment', E_MESSAGE_ERROR);
 
 					}
 					else
 					{
-						if (USER == TRUE)
+						if (USER == true)
 						{
-							$sql->db_Update("user", "user_comments=user_comments+1, user_lastpost='".time()."' WHERE user_id='".USERID."' ");
+							$sql->update("user", "user_comments=user_comments+1, user_lastpost='".time()."' WHERE user_id='".USERID."' ");
 						}
 						// Next item for backward compatibility
 						$edata_li["comment_nick"] = $cuser_id.'.'.$cuser_name;
@@ -766,13 +768,13 @@ class comment
 						unset($edata_li['comment_author_email']);
 						unset($edata_li['comment_ip']);*/
 
-						$e_event->trigger("postcomment", $edata_li);
-						$e107cache->clear("comment");
+						e107::getEvent()->trigger("postcomment", $edata_li);
+						e107::getCache()->clear("comment");
 
-						//TODO - should be handled by news
-						if (!$type || $type == "news")
+
+						if ((empty($type) || $type == "news") && !$this->moderateComment($pref['comments_moderate']))
 						{
-							$sql->db_Update("news", "news_comment_total=news_comment_total+1 WHERE news_id=".intval($id));
+							$sql->update("news", "news_comment_total=news_comment_total+1 WHERE news_id=".intval($id));
 						}
 
 						//if rateindex is posted, enter the rating from this user
