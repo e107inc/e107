@@ -3701,7 +3701,7 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 
 			// filter for WHERE and FROM clauses
-			$searchable_types = array('text', 'textarea', 'bbarea', 'email', 'int', 'integer', 'str', 'string'); //method? 'user', 
+			$searchable_types = array('text', 'textarea', 'bbarea', 'url', 'ip', 'tags', 'email', 'int', 'integer', 'str', 'string', 'number'); //method? 'user',
 			
 			if($var['type'] == 'method' && ($var['data'] == 'string' || $var['data'] == 'str'))
 			{
@@ -3710,11 +3710,11 @@ class e_admin_controller_ui extends e_admin_controller
 			
 			if(trim($searchQuery) !== '' && in_array($var['type'], $searchable_types) && $var['__tableField'])
 			{
-				if($var['type'] == 'int' || $var['type'] == 'integer')
+				if($var['data'] == 'int' || $var['data'] == 'integer' ||  $var['type'] == 'int' || $var['type'] == 'integer')
 				{
 					if(is_numeric($searchQuery))
 					{
-						$filter[] = $var['__tableField']."=".$searchQuery;
+						$filter[] = $var['__tableField']." = ".$searchQuery;
 					}
 					continue;
 				}
@@ -3727,6 +3727,8 @@ class e_admin_controller_ui extends e_admin_controller
 				}
 			}
 		}
+
+	//	e107::getMessage()->addInfo(print_a($filter,true));
 
 		if($isfilter)
 		{

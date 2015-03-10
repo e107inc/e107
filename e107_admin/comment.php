@@ -63,12 +63,12 @@ class comments_admin_ui extends e_admin_ui
 		//TODO - finish 'user' type, set 'data' to all editable fields, set 'noedit' for all non-editable fields
     	protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
-			'comment_id'			=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 'forced'=> TRUE),
-            'comment_blocked' 		=> array('title'=> LAN_STATUS,		'type' => 'method',		'inline'=>true, /*'writeParms' => array("approved","blocked","pending"), */'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),	 	// Photo
+			'comment_id'			=> array('title'=> LAN_ID,			'type' => null,			'width' =>'5%', 'forced'=> TRUE),
+            'comment_blocked' 		=> array('title'=> LAN_STATUS,		'type' => 'method',	 	'inline'=>false, /*'writeParms' => array("approved","blocked","pending"), */'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),	 	// Photo
 	
 	   		'comment_type' 			=> array('title'=> LAN_TYPE,			'type' => 'method',			'width' => '10%',  'filter'=>TRUE),	
 			
-			'comment_item_id' 		=> array('title'=> "item id",		'type' => 'number',			'width' => '5%'),
+			'comment_item_id' 		=> array('title'=> "item id",		'type' => 'text',	'data'=>'int',		'width' => '5%'),
          	'comment_subject' 		=> array('title'=> "subject",		'type' => 'text',			'width' => 'auto', 'thclass' => 'left first'), // Display name
          	'comment_comment' 		=> array('title'=> "comment",		'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
 		 	'comment_author_id' 	=> array('title'=> LAN_AUTHOR,		'type' => 'user',			'data' => 'int',	'width' => 'auto', 'writeParms' => 'nameField=comment_author_name'),	// User id
@@ -93,6 +93,19 @@ class comments_admin_ui extends e_admin_ui
 			'allowCommentEdit'		=> array('title'=>PRFLAN_90, 	'type'=>'boolean'),			
 			'comments_emoticons'	=> array('title'=>PRFLAN_166, 	'type'=>'boolean')
 		);
+
+
+		public function afterUpdate($new_data, $old_data, $id)
+		{
+			if(($new_data['comment_type'] == 0 || $new_data['comment_type'] == 'news' ))
+			{
+				$total = e107::getDb()->select('comments', 'comment_id', "(comment_type = 0 OR comment_type = 'news') AND comment_item_id = ".$new_data['comment_item_id']." AND comment_blocked = 0");
+				e107::getDb()->update("news", "news_comment_total= ".intval($total)." WHERE news_id=".intval($new_data['comment_item_id']));
+				// e107::getMessage()->addInfo("Total Comments for this item: ".$total);
+			}
+		}
+
+
 				
 		public function beforeDelete($data, $id)
 		{
