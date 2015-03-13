@@ -118,6 +118,46 @@ if(isset($_POST['updateprefs']))
 					);
 
 	$pref['post_html'] = intval($_POST['post_html']);			// This ensures the setting is reflected in set text
+
+
+	$smtp_opts = array();
+
+	if(!empty($_POST['smtp_options']))
+	{
+
+		switch (trim($_POST['smtp_options']))
+		{
+			case 'smtp_ssl' :
+				$smtp_opts[] = 'secure=SSL';
+				break;
+			case 'smtp_tls' :
+				$smtp_opts[] = 'secure=TLS';
+				break;
+			case 'smtp_pop3auth' :
+				$smtp_opts[] = 'pop3auth';
+				break;
+		}
+
+		if (!empty($_POST['smtp_keepalive']))
+		{
+			$smtp_opts[] = 'keepalive';
+		}
+
+		if (!empty($_POST['smtp_useVERP']))
+		{
+			$smtp_opts[] = 'useVERP';
+		}
+
+		$_POST['smtp_options'] = implode(',',$smtp_opts);
+
+		unset($_POST['smtp_keepalive'],$_POST['smtp_useVERP']);
+
+		// e107::getMessage()->addDebug(print_a($_POST['smtp_options'],true));
+	}
+
+
+
+
 	
 	$_POST['membersonly_exceptions'] = explode("\n",$_POST['membersonly_exceptions']);
 
@@ -475,10 +515,10 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 				'smtp_pop3auth'	=> LAN_MAILOUT_91
 		);
 
-		$text .= $frm->select('smtp_options', $sslOpts, $smtp_opts, '', LAN_MAILOUT_96);
+	//	$text .= $frm->select('smtp_options', $sslOpts, $smtp_opts, '', LAN_MAILOUT_96);
 
-				/*
-				<select class='tbox' name='smtp_options' id='smtp_options'>\n
+
+			$text .="<select class='tbox' name='smtp_options' id='smtp_options'>\n
 				<option value=''>".LAN_MAILOUT_96."</option>\n";
 			$selected = (in_array('secure=SSL',$smtp_opts) ? " selected='selected'" : '');
 			$text .= "<option value='smtp_ssl'{$selected}>".LAN_MAILOUT_92."</option>\n";
@@ -486,8 +526,8 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 			$text .= "<option value='smtp_tls'{$selected}>".LAN_MAILOUT_93."</option>\n";
 			$selected = (in_array('pop3auth',$smtp_opts) ? " selected='selected'" : '');
 			$text .= "<option value='smtp_pop3auth'{$selected}>".LAN_MAILOUT_91."</option>\n";
-			$text .= "</select>
-			*/
+			$text .= "</select>";
+
 
 			$text .= "<span class='field-help'>".LAN_MAILOUT_94."</span></td></tr>";
 		
@@ -498,12 +538,14 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 				</td>
 				</tr>";
 
+
 			$text .= "<tr>
-				<td><label for='smtp_useVERP'>".LAN_MAILOUT_95."</label></td><td>".$frm->radio_switch('smtp_useVERP',$pref['smtp_useVERP'])."
+				<td><label for='smtp_useVERP'>".LAN_MAILOUT_95."</label></td><td>".$frm->radio_switch('smtp_useVERP',(in_array('useVERP',$smtp_opts)))."
 
 				</td>
 				</tr>
 				</table></div>";
+
 
 			/* FIXME - posting SENDMAIL path triggers Mod-Security rules. 
 			// Sendmail. -------------->
