@@ -413,7 +413,9 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 		function options($parms, $value, $id, $attributes)
 		{
 
+
 			$text = "";
+			$options = array();
 
 			if($attributes['mode'] == 'read')
 			{
@@ -422,7 +424,13 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 				if(!$this->getController()->getUserClassAdmin()->queryCanDeleteClass($classID))
 				{
-					$options =  array('deleteClass' => e_UC_NOBODY);
+					$options['readParms']['deleteClass'] = e_UC_NOBODY;
+				}
+
+				if($classID == 0)
+				{
+					$options['readParms']['deleteClass'] = e_UC_NOBODY;
+					$options['readParms']['editClass'] = e_UC_NOBODY;
 				}
 
 				$text .= $this->renderValue('options',$value, $options,$id);
