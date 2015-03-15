@@ -2,14 +2,11 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2015 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Administration Area - Front page
- *
- * $URL$
- * $Id$
  *
 */
 
@@ -38,11 +35,11 @@ $mes = e107::getMessage();
 $frontPref = e107::pref('core');              		 	// Get prefs
 
 // Get list of possible options for front page
-$front_page['news'] = array('page' => 'news.php', 'title' => ADLAN_0);
-//$front_page['download'] = array('page' => 'download.php', 'title' => ADLAN_24);		// Its a plugin now
+$front_page['news'] = array('page' => 'news.php', 'title' => ADLAN_0); // TODO Move to e107_plugins/news
+
 $front_page['wmessage'] = array('page' => 'index.php', 'title' => ADLAN_28);
 
-if($sql->db_Select('page', 'page_id, page_title', "menu_name=''"))
+if($sql->db_Select('page', 'page_id, page_title', "menu_name=''")) // TODO Move to e107_plugins/page
 {
 	$front_page['custom']['title'] = FRTLAN_30;
 	while($row = $sql->db_Fetch())
@@ -52,7 +49,7 @@ if($sql->db_Select('page', 'page_id, page_title', "menu_name=''"))
 }
 
 // Now let any plugins add to the options - must append to the $front_page array as above
-if(varset($frontPref['e_frontpage_list']))
+if(varset($frontPref['e_frontpage_list'])) // v1.x spec.
 {
 	foreach($frontPref['e_frontpage_list'] as $val)
 	{
@@ -63,6 +60,12 @@ if(varset($frontPref['e_frontpage_list']))
 	}
 }
 
+//v2.x spec.
+$new = e107::getAddonConfig('e_frontpage');
+foreach($new as $k=>$v)
+{
+	$front_page[$k] = $v;
+}
 
 
 // Make sure links relative to SITEURL
@@ -243,19 +246,23 @@ if(isset($_POST['fp_save_new']))
 	}
 
 	$temp = array('order' => intval($_POST['fp_order']), 'class' => $_POST['class'], 'page' => $frontpage_value, 'force' => trim($forcepage_value));
-	if($temp['order'] == 0)
-	{ // New index to add
+
+	if($temp['order'] == 0) // New index to add
+	{
 		$ind = 0;
 		for($i = 1; $i <= count($fp_settings); $i ++)
 		{
 			if($fp_settings[$i]['class'] == $temp['class'])
 				$ind = $i;
 		}
+
 		if($ind)
 		{
+			$mes->addDebug(print_a($fp_settings,true));
+			$mes->addError( "duplicate definition for class: ".$ind); //TODO LAN
 			unset($fp_settings[$ind]); // Knock out duplicate definition for class
-			echo "duplicate definition for class: ".$ind."<br />";
 		}
+
 		array_unshift($fp_settings, $temp); // Deliberately add twice
 		array_unshift($fp_settings, $temp); // ....because re-indexed from zero
 		unset($fp_settings[0]); // Then knock out index zero
@@ -306,6 +313,8 @@ if($fp_update_prefs)
 	$corePrefs->set('frontpage', $fp_list);
 	$corePrefs->set('frontpage_force', $fp_force);
 	$result = $corePrefs->save(FALSE, TRUE);
+	$mes->addDebug("<h4>Home</h4>".print_a($fp_list, true));
+	$mes->addDebug("<h4>Post-Login</h4>".print_a($fp_force, true));
 }
 
 
@@ -510,7 +519,7 @@ class frontpage
 				</div>
 			</div>
 			
-				<div class='buttons-bar center'>
+				<div class='buttons-bar center form-inline'>
 					".$this->frm->hidden('fp_order', $rule_info['order'])."
 					".FRTLAN_43.": ".e107::getUserClass()->uc_dropdown('class', $rule_info['class'], 'public,guest,member,admin,main,classes')."
 					".$this->frm->admin_button('fp_save_new', LAN_UPDATE, 'update')."
@@ -608,12 +617,14 @@ class frontpage
 				</td>
 				<td>
 			";
-			$text .= $this->frm->select_open($ob_name.'_multipage['.$front_key.']');
+			$text .= $this->frm->select_open($ob_name.'_multipage['.$front_key.']', 'size=xxlarge');
 			foreach($front_value['page'] as $multipage_key => $multipage_value)
 			{
 				$text .= "\n".$this->frm->option($multipage_value['title'], $multipage_key, ($current_setting == $multipage_value['page']))."\n";
 			}
 			$text .= $this->frm->select_close();
+
+
 			$text .= "</td>";
 		}
 		else
