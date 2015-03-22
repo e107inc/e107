@@ -715,15 +715,10 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_user_form_records($parm='') 
 	{
-		global $records, $user_frm;
-		$ret = $user_frm->form_select_open("records");
-		for($i=10; $i<=30; $i+=10)
-		{
-			$sel = ($i == $records ? true: false);
-			$ret .= $user_frm->form_option($i, $sel, $i);
-		}
-		$ret .= $user_frm->form_select_close();
-		return $ret;
+		global $records;
+		$opts = array(5,10,20,30,50);
+		return e107::getForm()->select('records', $opts, $records,'useValues=1');
+
 	}
 	
 	
@@ -732,14 +727,14 @@ class user_shortcodes extends e_shortcode
 		global $order;
 		if ($order == "ASC")
 		{
-			$ret = "<select name='order' class='tbox'>
+			$ret = "<select name='order' class='form-control tbox'>
 			<option value='DESC'>".LAN_USER_45."</option>
 			<option value='ASC' selected='selected'>".LAN_USER_46."</option>
 			</select>";
 		}
 		else
 		{
-			$ret = "<select name='order' class='tbox'>
+			$ret = "<select name='order' class='form-control tbox'>
 			<option value='DESC' selected='selected'>".LAN_USER_45."</option>
 			<option value='ASC'>".LAN_USER_46."</option>
 			</select>";

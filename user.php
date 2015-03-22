@@ -74,10 +74,16 @@ e107::scStyle($sc_style);
 
 if(empty($USER_TEMPLATE)) // BC Fix for loading old templates. 
 {
-	 echo "DEBUG: Using v1.x user template";
+	e107::getMessage()->addDebug( "Using v1.x user template");
 	include_once(e107::coreTemplatePath('user')); //correct way to load a core template.	
 }
-
+else
+{
+	$USER_FULL_TEMPLATE         = $USER_TEMPLATE['view'];
+	$USER_SHORT_TEMPLATE_START  = $USER_TEMPLATE['list']['start'] ;
+	$USER_SHORT_TEMPLATE        = $USER_TEMPLATE['list']['item'] ;
+	$USER_SHORT_TEMPLATE_END    = $USER_TEMPLATE['list']['end'];
+}
 
 $TEMPLATE = str_replace('{USER_EMBED_USERPROFILE}','{USER_ADDONS}', $TEMPLATE); // BC Fix
 
@@ -221,14 +227,16 @@ else
 $ns->tablerender(LAN_USER_52, $text);
 
 $parms = $users_total.",".$records.",".$from.",".e_SELF.'?[FROM].'.$records.".".$order;
-echo "<div class='nextprev'>&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
+echo "<div class='nextprev form-inline'>&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
 
 
 function renderuser($uid, $mode = "verbose")
 {
-	global $sql, $pref, $tp, $sc_style, $user_shortcodes;
+	global $pref, $sc_style, $user_shortcodes;
 	global $EXTENDED_START, $EXTENDED_TABLE, $EXTENDED_END, $USER_SHORT_TEMPLATE, $USER_FULL_TEMPLATE, $USER_TEMPLATE;
 	global $user;
+
+	$tp = e107::getParser();
 
 	if(is_array($uid))
 	{
@@ -246,7 +254,7 @@ function renderuser($uid, $mode = "verbose")
 
 	if($mode == 'verbose')
 	{
-		return $tp->parseTemplate($USER_TEMPLATE['view'], TRUE, $user_shortcodes);
+		return $tp->parseTemplate( $USER_FULL_TEMPLATE, TRUE, $user_shortcodes);
 	}
 	else
 	{
