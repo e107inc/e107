@@ -1632,6 +1632,30 @@ class e107plugin
 
 		}
 
+		if ($function == 'install')
+		{
+			$event = e107::getEvent();
+			$event->trigger('admin_plugin_install', $plug);
+		}
+
+		if ($function == 'uninstall')
+		{
+			$event = e107::getEvent();
+			$event->trigger('admin_plugin_uninstall', $plug);
+		}
+
+		if ($function == 'upgrade')
+		{
+			$event = e107::getEvent();
+			$event->trigger('admin_plugin_upgrade', $plug);
+		}
+
+		if ($function == 'refresh')
+		{
+			$event = e107::getEvent();
+			$event->trigger('admin_plugin_refresh', $plug);
+		}
+
 	}
 
 	// Placeholder. 
@@ -2518,6 +2542,10 @@ class e107plugin
 		{
 			$text .= "<br /><a class='btn btn-primary' href='".e_PLUGIN.$eplug_folder."/".$eplug_conffile."'>".LAN_CONFIGURE."</a>";
 		}
+
+		// Event triggering after plugin installation.
+		$event = e107::getEvent();
+		$event->trigger('admin_plugin_install', $plug);
 
 		return $text;
 	}
