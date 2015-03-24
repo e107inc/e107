@@ -1369,6 +1369,7 @@ class e107plugin
 		$pref = e107::getPref();
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
+	  	$event = e107::getEvent();
 
 		$error = array(); // Array of error messages
 		$canContinue = TRUE; // Clear flag if must abort part way through
@@ -1634,25 +1635,21 @@ class e107plugin
 
 		if ($function == 'install')
 		{
-			$event = e107::getEvent();
 			$event->trigger('admin_plugin_install', $plug);
 		}
 
 		if ($function == 'uninstall')
 		{
-			$event = e107::getEvent();
 			$event->trigger('admin_plugin_uninstall', $plug);
 		}
 
 		if ($function == 'upgrade')
 		{
-			$event = e107::getEvent();
 			$event->trigger('admin_plugin_upgrade', $plug);
 		}
 
 		if ($function == 'refresh')
 		{
-			$event = e107::getEvent();
 			$event->trigger('admin_plugin_refresh', $plug);
 		}
 
