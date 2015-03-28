@@ -282,51 +282,92 @@ $FORUM_CRUMB['forum']['value'] = "{FORUM_TITLE}";
 //TODO Find a good place to put a {SEARCH} dropdown. 
 
 $FORUM_VIEWFORUM_TEMPLATE['start'] 				= "";
-$FORUM_VIEWFORUM_TEMPLATE['header'] 			= "<div class='row row-fluid'><div>{BACKLINK}</div>	</div>
+$FORUM_VIEWFORUM_TEMPLATE['header'] 			= "<div class=' row-fluid'><div>{BACKLINK}</div>	</div>
 													<div class='row row-fluid'>
 													<div class='col-md-9 span9 pull-left'><h3>{FORUMTITLE}</h3></div>
 													<div class='col-md-3 span3 pull-right right' style='padding-top:10px'>{NEWTHREADBUTTONX}</div></div>
-													<table class='table table-hover table-striped'>
+													<table class='table table-hover table-striped table-bordered'>
 													<colgroup>
 													<col style='width:3%' />
 													<col />
 													<col style='width:10%' />
-													<col style='width:10%' />
-													<col style='width:20%' />
+													<col class='hidden-xs' style='width:10%' />
+													<col class='hidden-xs' style='width:20%' />
 													</colgroup>
 												
 													{SUBFORUMS}";
 
-$FORUM_VIEWFORUM_TEMPLATE['item'] 				= "<tr><td>{ICON}</td><td><div>{THREADNAME}</div><div class='pull-left'><small>by {POSTER} {THREADTIMELAPSE} &nbsp;</small></div><div class='pull-left'> {PAGESX}</div></td><td>{REPLIESX}</td><td>{VIEWSX}</td><td><small>{LASTPOSTUSER} {LASTPOSTDATE} </small><div class='span2 right pull-right'>{ADMINOPTIONS}</div></td></tr>\n";
-$FORUM_VIEWFORUM_TEMPLATE['item-sticky'] 		= $FORUMVIEW['item'] ; // "<tr><td>{THREADNAME}</td></tr>\n";
-$FORUM_VIEWFORUM_TEMPLATE['item-announce'] 		= $FORUMVIEW['item'] ; // "<tr><td>{THREADNAME}</td></tr>\n";
+$FORUM_VIEWFORUM_TEMPLATE['item'] 				= "<tr>
+													<td>{ICON}</td>
+													<td>
+													<div class='row'>
+														<div class='col-xs-12 col-md-9'>
+														{THREADNAME}
+														<div><small>by {POSTER} {THREADTIMELAPSE} &nbsp;</small></div>
+														</div><div class='col-xs-12 col-md-3 text-right'> {PAGESX}</div>
+														</div>
+														<div class='row'>
+
+													</td>
+													</div>
+														<td class='hidden-xs'>{REPLIESX}</td><td>{VIEWSX}</td>
+													<td class='hidden-xs'><small>{LASTPOSTUSER} {LASTPOSTDATE} </small><div class='span2 right pull-right'>{ADMINOPTIONS}</div></td>
+													</tr>\n";
+
+$FORUM_VIEWFORUM_TEMPLATE['item-sticky'] 		= $FORUM_VIEWFORUM_TEMPLATE['item'] ; // "<tr><td>{THREADNAME}</td></tr>\n";
+$FORUM_VIEWFORUM_TEMPLATE['item-announce'] 		= $FORUM_VIEWFORUM_TEMPLATE['item'] ; // "<tr><td>{THREADNAME}</td></tr>\n";
 
 
-$FORUM_VIEWFORUM_TEMPLATE['sub-header']			= "<tr><th colspan='2'>".LAN_FORUM_1002."</th><th>".LAN_FORUM_0003."</th><th>".LAN_FORUM_0002."</th><th>".LAN_FORUM_0004."</th></tr>";
+$FORUM_VIEWFORUM_TEMPLATE['sub-header']			= "<tr>
+													<th colspan='2'>".LAN_FORUM_1002."</th>
+													<th>".LAN_FORUM_0003."</th>
+													<th class='hidden-xs'>".LAN_FORUM_0002."</th>
+													<th class='hidden-xs'>".LAN_FORUM_0004."</th>
+												</tr>";
+
 $FORUM_VIEWFORUM_TEMPLATE['sub-item']			= "<tr><td>{NEWFLAG}</td>
 												<td><div>{SUB_FORUMTITLE}</div><small>{SUB_DESCRIPTION}</small></td>
 												<td>{SUB_REPLIESX}</td>
-												<td>{SUB_THREADSX}</td>
-												<td><small>{SUB_LASTPOSTUSER} {SUB_LASTPOSTDATE}</small></td>
+												<td class='hidden-xs'>{SUB_THREADSX}</td>
+												<td class='hidden-xs'><small>{SUB_LASTPOSTUSER} {SUB_LASTPOSTDATE}</small></td>
 												</tr>\n";
 
 
 $FORUM_VIEWFORUM_TEMPLATE['sub-footer']			= "";		
 
-$FORUM_VIEWFORUM_TEMPLATE['divider-important']	= "<tr><th colspan='2'>".LAN_FORUM_1006."</th><th>".LAN_FORUM_0003."</th><th>".LAN_FORUM_1005."</th><th>".LAN_FORUM_0004."</th></tr>";
-$FORUM_VIEWFORUM_TEMPLATE['divider-normal']		= "<tr><th colspan='2'>".LAN_FORUM_1007."</th><th>".LAN_FORUM_0003."</th><th>".LAN_FORUM_1005."</th><th>".LAN_FORUM_0004."</th></tr>";
+$FORUM_VIEWFORUM_TEMPLATE['divider-important']	= "<tr><th colspan='2'>".LAN_FORUM_1006."</th><th>".LAN_FORUM_0003."</th><th class='hidden-xs'>".LAN_FORUM_1005."</th><th class='hidden-xs'>".LAN_FORUM_0004."</th></tr>";
+$FORUM_VIEWFORUM_TEMPLATE['divider-normal']		= "<tr><th colspan='2'>".LAN_FORUM_1007."</th><th >".LAN_FORUM_0003."</th><th class='hidden-xs'>".LAN_FORUM_1005."</th><th class='hidden-xs'>".LAN_FORUM_0004."</th></tr>";
 
 $FORUM_VIEWFORUM_TEMPLATE['footer'] 				= "</table>
-												<div class='row-fluid'>
+												<div class='row row-fluid'>
+
+												<div class='col-md-5 span5 pull-left left' style='padding-top:10px'>{THREADPAGES}</div><div class='col-md-3 span3 pull-right right' style='padding-top:10px'>{NEWTHREADBUTTONX}</div>
+
+												</div>
+												<div class='panel panel-default' style='margin-top:50px'>
+												<div class='panel-body'>
 												{ICONKEY}
-												<div class='span5 pull-left left' style='padding-top:10px'>{THREADPAGES}</div><div class='span3 pull-right right' style='padding-top:10px'>{NEWTHREADBUTTONX}</div>
-												
+												</div>
 												</div>
 												";
 $FORUM_VIEWFORUM_TEMPLATE['end'] 					= "<!--- END --> \n";
 
+// define {ICONKEY}
+$FORUM_VIEWFORUM_TEMPLATE['iconkey'] 			= "
+												<div class='row' >
+													<div class='col-sm-3 col-xs-6'>".IMAGE_new_small." ".LAN_FORUM_0039."</div>
+													<div class='col-sm-3 col-xs-6'>".IMAGE_nonew_small." ".LAN_FORUM_0040."</div>
+													<div class='col-sm-3 col-xs-6'>".IMAGE_sticky_small." ".LAN_FORUM_1011."</div>
+													<div class='col-sm-3 col-xs-6'>".IMAGE_announce_small." ".LAN_FORUM_1013."</div>
+												</div>
 
-
+												<div class='row' >
+													<div class='col-sm-3 col-xs-6'>".IMAGE_new_popular_small." ".LAN_FORUM_0039." ".LAN_FORUM_1010."</div>
+													<div class='col-sm-3 col-xs-6'>".IMAGE_nonew_popular_small." ".LAN_FORUM_0040." ".LAN_FORUM_1010."</div>
+													<div class='col-sm-3 col-xs-6'>".IMAGE_stickyclosed_small." ".LAN_FORUM_1012."</div>
+													<div class='col-sm-3 col-xs-6'>".IMAGE_closed_small." ".LAN_FORUM_1014."</div>
+												</div>
+												";
 
 
 
