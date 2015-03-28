@@ -91,8 +91,8 @@ $FORUM_TEMPLATE['main-start']			= "{FORUM_BREADCRUMB}
 											<colgroup>
 											<col style='width:3%' />
 											<col />
-											<col style='width:20%' />
-											<col style='width:20%' />
+											<col class='hidden-xs' style='width:10%' />
+											<col style='width:10%' />
 											<col class='hidden-xs' style='width:20%' />
 											</colgroup>
 											<tr>
@@ -101,16 +101,16 @@ $FORUM_TEMPLATE['main-start']			= "{FORUM_BREADCRUMB}
 
 $FORUM_TEMPLATE['main-parent']			= 	"<tr>
 											<th colspan='2'>{PARENTNAME} {PARENTSTATUS}</th>
-											<th class='hidden-xs'>".LAN_FORUM_0003."</th>
+											<th  class='hidden-xs' >".LAN_FORUM_0003."</th>
 											<th >".LAN_FORUM_0002."</th>
-											<th >".LAN_FORUM_0004."</th>
+											<th class='hidden-xs' >".LAN_FORUM_0004."</th>
 											</tr>";											
 											
 																						
 $FORUM_TEMPLATE['main-forum']			= 	"<tr>
 											<td>{NEWFLAG}</td>
 											<td>{FORUMNAME}<br /><small>{FORUMDESCRIPTION}</small>{FORUMSUBFORUMS}</td>
-											<td >{REPLIESX}</td>
+											<td class='hidden-xs'>{REPLIESX}</td>
 											<td >{THREADSX}</td>
 											<td class='hidden-xs'><small>{LASTPOSTUSER} {LASTPOSTDATE}</small></td>
 											</tr>";
