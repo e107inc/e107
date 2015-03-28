@@ -164,6 +164,8 @@ class comment
 	function form_comment($action, $table, $id, $subject, $content_type, $return = FALSE, $rating = FALSE, $tablerender = TRUE,$pid = false)
 	{
 		//rating	: boolean, to show rating system in comment
+
+
 		
 		$pref	= e107::getPref();
 		$sql	= e107::getDb();
@@ -172,6 +174,11 @@ class comment
 		if(vartrue($pref['comments_disabled']))
 		{
 			return;
+		}
+
+		if ($user_func = e107::getOverride()->check($this,'form_comment'))
+		{
+			return call_user_func($user_func);
 		}
 
 	// 	require_once(e_HANDLER."ren_help.php");
@@ -353,6 +360,12 @@ class comment
 	 */
 	function render_comment($row, $table, $action, $id, $width, $subject, $addrating = FALSE)
 	{
+
+		if ($user_func = e107::getOverride()->check($this,'render_comment'))
+		{
+			return call_user_func($user_func);
+		}
+
 		//addrating	: boolean, to show rating system in rendered comment
 		global $sc_style, $gen;
 			
@@ -596,7 +609,7 @@ class comment
 	function enter_comment($data, $comment='', $table='', $id='', $pid='', $subject='', $rateindex = FALSE)
 	{
 		//rateindex	: the posted value from the rateselect box (without the urljump) (see function rateselect())
-		
+
 		if(is_array($data))
 		{
 			$table 				= $data['comment_type'];
@@ -619,10 +632,15 @@ class comment
 		$sql 		= e107::getDb();
 		$sql2 		= e107::getDb('sql2');
 		$tp 		= e107::getParser();
-		$e107cache 	= e107::getCache();
 		$pref 		= e107::getPref();
 
 		if ($this->getCommentPermissions() != 'rw') return;
+
+		if ($user_func = e107::getOverride()->check($this,'enter_comment'))
+		{
+			return call_user_func($user_func);
+		}
+
 
 		if(!isset($_POST['e-token'])) $_POST['e-token'] = '';		// check posted token
 		if(!e107::getSession()->check(false)) return false;			// This will return false on error
@@ -933,19 +951,25 @@ class comment
 	 */
 	function compose_comment($table, $action, $id, $width, $subject, $rate = FALSE, $return = FALSE, $tablerender = TRUE)
 	{
+
+
+
 		//compose comment	: single call function will render the existing comments and show the form_comment
 		//rate				: boolean, to show/hide rating system in comment, default FALSE
-		global $e107cache, $totcc;
+		global  $totcc;
 		
 	
 		
 		$tp = e107::getParser();
 		$ns = e107::getRender();
 		$pref = e107::getPref();
-		
-		
+
 		if ($this->getCommentPermissions() === FALSE) return;
 
+		if ($user_func = e107::getOverride()->check($this,'compose_comment'))
+		{
+			return call_user_func($user_func);
+		}
 
 // ------------- TODO move the 'listing' into separate function so that ajax can access it easily. 
 
