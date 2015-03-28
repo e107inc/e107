@@ -23,7 +23,9 @@
 			<custompages>FRONTPAGE</custompages>	
 		</layout>
 		<layout name='modern_business_home' title='Modern Business: Home page carousel with fixed custom-menus' />
-		<layout name='jumbotron_full' title='Jumbotron (full-width)'  />
+		<layout name='jumbotron_full' title='Jumbotron (full-width)'  >
+            <custompages>forum</custompages>
+		</layout>
 		<layout name='jumbotron_sidebar_right' title='Jumbotron (sidebar-right)' default='true' >
 			<custompages>/news</custompages>
 			<menuPresets>

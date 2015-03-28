@@ -2897,7 +2897,7 @@ class e_parser
 		
 		$title = (ADMIN) ? $image : $tp->toAttribute($userData['user_name']);
 		
-		$text = "<img class='img-rounded user-avatar e-tip' title=\"".$title."\" src='".$img."' alt='' style='width:".$width."px; height:".$height."px' />";
+		$text = "<img class='img-rounded img-responsive user-avatar e-tip' title=\"".$title."\" src='".$img."' alt='' style='width:".$width."px; height:".$height."px' />";
 	//	return $img;
 		return $text;
 		

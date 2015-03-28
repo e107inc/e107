@@ -200,9 +200,9 @@ $forum->set_crumb(true, '', $tVars); // Set $BREADCRUMB (and BACKLINK)
 //$tVars->BACKLINK = $tVars->BREADCRUMB;
 //$tVars->FORUM_CRUMB = $crumbs['forum_crumb'];
 $tVars->THREADNAME = $tp->toHTML($thread->threadInfo['thread_name'], true, 'no_hook, emotes_off');
-$tVars->NEXTPREV = "<a class='btn btn-default btn-small' href='" . $e107->url->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>&laquo; " . LAN_FORUM_2001 . "</a>";
+$tVars->NEXTPREV = "<a class='btn btn-default btn-sm btn-small' href='" . $e107->url->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>&laquo; " . LAN_FORUM_2001 . "</a>";
 $tVars->NEXTPREV .= ' | '; // enabled to make it look better on v1 templates
-$tVars->NEXTPREV .= "<a class='btn btn-default btn-small' href='" . $e107->url->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>" . LAN_FORUM_2002 . " &raquo;</a>";
+$tVars->NEXTPREV .= "<a class='btn btn-default btn-sm btn-small' href='" . $e107->url->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>" . LAN_FORUM_2002 . " &raquo;</a>";
 
 if ($forum->prefs->get('track') && USER)
 {
@@ -210,7 +210,7 @@ if ($forum->prefs->get('track') && USER)
 	$url = $e107->url->create('forum/thread/view', array('id' => $thread->threadId), 'encode=0'); // encoding could break AJAX call
 	$tVars->TRACK .= "
 			<span id='forum-track-trigger-container'>
-			<a class='btn btn-default btn-small' href='{$url}' id='forum-track-trigger'>{$img}</a>
+			<a class='btn btn-default btn-sm btn-small' href='{$url}' id='forum-track-trigger'>{$img}</a>
 			</span>
 			<script type='text/javascript'>
 			e107.runOnLoad(function(){

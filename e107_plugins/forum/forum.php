@@ -114,7 +114,7 @@ if(!defined('e_TRACKING_DISABLED'))
 }
 $fVars->STATLINK = "<a href='".e_PLUGIN."forum/forum_stats.php'>".LAN_FORUM_0017."</a>\n";
 $fVars->ICONKEY = "
-<table style='width:100%'>\n<tr>
+<table class='table table-bordered' style='width:100%'>\n<tr>
 <td style='width:2%'>".IMAGE_new_small."</td>
 <td style='width:10%'><span class='smallblacktext'>".LAN_FORUM_0039."</span></td>
 <td style='width:2%'>".IMAGE_nonew_small."</td>

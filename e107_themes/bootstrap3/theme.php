@@ -717,6 +717,25 @@ $NEWSCAT_ITEM = "\n\n\n\n<!-- News Category Item -->\n\n\n\n
 		</td></tr></table></div>
 ";
 
+$tp = e107::getParser();
+// Used by Forum plugin.
 
+	define('IMAGE_e', 					'e');
+	define('IMAGE_new', 				$tp->toGlyph('fa-star', 'size=2x'));
+	define('IMAGE_nonew', 				$tp->toGlyph('fa-comment', 'size=2x'));
+	define('IMAGE_new_small',  			$tp->toGlyph('fa-star'));
+	define('IMAGE_nonew_small',  		$tp->toGlyph('fa-comment-o'));
+	define('IMAGE_new_popular',  		$tp->toGlyph('fa-comments', 'size=2x'));
+	define('IMAGE_nonew_popular', 		$tp->toGlyph('fa-comments-o', 'size=2x'));
+	define('IMAGE_new_popular_small',  	$tp->toGlyph('fa-comments'));
+	define('IMAGE_nonew_popular_small', $tp->toGlyph('fa-comments-o'));
+	define('IMAGE_sticky',  			$tp->toGlyph('fa-thumb-tack', 'size=2x'));
+	define('IMAGE_stickyclosed',  		$tp->toGlyph('fa-lock', 'size=2x'));
+	define('IMAGE_sticky_small', 		$tp->toGlyph('fa-thumb-tack'));
+	define('IMAGE_stickyclosed_small',  $tp->toGlyph('fa-lock'));
+	define('IMAGE_announce',  			$tp->toGlyph('fa-bullhorn', 'size=2x'));
+	define('IMAGE_announce_small',  	$tp->toGlyph('fa-bullhorn'));
+	define('IMAGE_closed_small',  		$tp->toGlyph('fa-lock'));
+	define('IMAGE_closed', 				$tp->toGlyph('fa-lock', 'size=2x'));
 
 ?>

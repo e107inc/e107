@@ -225,7 +225,7 @@ $THREADTOPIC_REPLY = "
 
 $FORUMPOST_TEMPLATE['form']		= " 
 									{FORMSTART}
-									<div class='row row-fluid'>
+									<div class='row-fluid'>
 										<div>{BACKLINK}</div>
 									</div>
 

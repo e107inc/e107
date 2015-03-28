@@ -224,8 +224,15 @@ if(varset($pref['track_online']))
 }
 
 
-$fVars->ICONKEY = "
-	<table class='table' style='width:100%'>
+
+if(defset('BOOTSTRAP')==3 && !empty($FORUM_VIEWFORUM_TEMPLATE['iconkey'])) // v2.x
+{
+	$fVars->ICONKEY = $tp->parseTemplate($FORUM_VIEWFORUM_TEMPLATE['iconkey'],true);
+}
+else // v1.x
+{
+	$fVars->ICONKEY = "
+	<table class='table table-bordered' style='width:100%'>
 	<tr>
 	<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_new_small."</td>
 	<td style='width:10%' class='smallblacktext'>".LAN_FORUM_0039."</td>
@@ -247,6 +254,10 @@ $fVars->ICONKEY = "
 	<td style='width:10%' class='smallblacktext'>".LAN_FORUM_1014."</td>
 	</tr>
 	</table>";
+
+}
+
+
 
 $fVars->SEARCH = "
 	<form method='get' class='form-inline input-append' action='".e_BASE."search.php'>
@@ -765,12 +776,11 @@ function fpages($thread_info, $replies)
 	
 		if(deftrue('BOOTSTRAP'))
 		{
-			$text = "<div class='pagination pagination-mini' style='margin:0px'>
-					<ul>
+			$text = "<ul class='pagination pagination-sm forum-viewforum-pagination'>
 						<li>";
 			
 			$text .= implode("</li><li>",$opts); // ."</div>";	
-			$text .= "</li></ul></div>";				
+			$text .= "</li></ul>";
 		}
 		else 
 		{

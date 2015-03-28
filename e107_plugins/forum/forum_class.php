@@ -114,27 +114,30 @@ $(document).ready(function()
 EON;
 
 e107::js('inline',$jscode,'jquery');
+e107::css('forum','forum.css');
+
 
 e107::lan('forum','English_front');
 // include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum.php');
-
-if (file_exists(THEME.'templates/forum/forum_icons_template.php')) // Preferred v2.x location. 
+if(!defined('IMAGE_new') && !defined('IMAGE_e'))
 {
-	require_once(THEME.'templates/forum/forum_icons_template.php');
+	if (file_exists(THEME.'templates/forum/forum_icons_template.php')) // Preferred v2.x location.
+	{
+		require_once(THEME.'templates/forum/forum_icons_template.php');
+	}
+	elseif (file_exists(THEME.'forum/forum_icons_template.php'))
+	{
+		require_once(THEME.'forum/forum_icons_template.php');
+	}
+	elseif (file_exists(THEME.'forum_icons_template.php'))
+	{
+		require_once(THEME.'forum_icons_template.php');
+	}
+	else
+	{
+		require_once(e_PLUGIN.'forum/templates/forum_icons_template.php');
+	}
 }
-elseif (file_exists(THEME.'forum/forum_icons_template.php'))
-{
-	require_once(THEME.'forum/forum_icons_template.php');
-}
-elseif (file_exists(THEME.'forum_icons_template.php'))
-{
-	require_once(THEME.'forum_icons_template.php');
-}
-else
-{
-	require_once(e_PLUGIN.'forum/templates/forum_icons_template.php');
-}
-
 
 class e107forum
 {
