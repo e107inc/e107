@@ -290,8 +290,8 @@ $FORUM_VIEWFORUM_TEMPLATE['header'] 			= "<div class=' row-fluid'><div>{BACKLINK
 													<colgroup>
 													<col style='width:3%' />
 													<col />
-													<col style='width:10%' />
-													<col class='hidden-xs' style='width:10%' />
+													<col style='width:8%' />
+													<col class='hidden-xs' style='width:8%' />
 													<col class='hidden-xs' style='width:20%' />
 													</colgroup>
 												
@@ -310,7 +310,7 @@ $FORUM_VIEWFORUM_TEMPLATE['item'] 				= "<tr>
 
 													</td>
 													</div>
-														<td class='hidden-xs'>{REPLIESX}</td><td>{VIEWSX}</td>
+														<td >{REPLIESX}</td><td class='hidden-xs'>{VIEWSX}</td>
 													<td class='hidden-xs'><small>{LASTPOSTUSER} {LASTPOSTDATE} </small><div class='span2 right pull-right'>{ADMINOPTIONS}</div></td>
 													</tr>\n";
 
