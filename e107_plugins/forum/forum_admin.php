@@ -18,6 +18,374 @@ if (!getperms('P'))
 	header('location:'.e_BASE.'index.php');
 	exit;
 }
+
+// define('NEW_FORUMADMIN', true);
+
+// Generated e107 Plugin Admin Area
+
+if(deftrue('NEW_FORUMADMIN'))
+{
+
+	class forum_admin extends e_admin_dispatcher
+	{
+
+		protected $modes = array(
+
+			'main'	=> array(
+				'controller' 	=> 'forum_ui',
+				'path' 			=> null,
+				'ui' 			=> 'forum_form_ui',
+				'uipath' 		=> null
+			),
+
+
+		);
+
+
+		protected $adminMenu = array(
+
+			'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
+			'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
+
+			'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),
+
+			// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
+		);
+
+		protected $adminMenuAliases = array(
+			'main/edit'	=> 'main/list'
+		);
+
+		protected $menuTitle = 'Forum';
+	}
+
+
+
+
+
+	class forum_ui extends e_admin_ui
+	{
+
+		protected $pluginTitle		= 'Forum';
+		protected $pluginName		= 'forum';
+		//	protected $eventName		= 'forum-forum'; // remove comment to enable event triggers in admin.
+		protected $table			= 'forum';
+		protected $pid				= 'forum_id';
+		protected $perPage			= 10;
+		protected $batchDelete		= true;
+		//	protected $batchCopy		= true;
+		protected $sortField		= 'forum_order';
+		protected $orderStep		= 50;
+		//	protected $tabs				= array('Tabl 1','Tab 2'); // Use 'tab'=>0  OR 'tab'=>1 in the $fields below to enable.
+
+	//	protected $listQry      	= "SELECT *, xAND forum_order > 45 THEN forum_order ELSE forum_order + forum_parent END AS Sort FROM `#forum` "; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
+
+	//	protected $listQry      	= "SELECT *, CASE WHEN forum_parent = 0 OR forum_order =0 THEN forum_id + (forum_order/1000) ELSE  forum_parent + (forum_order/1000) END AS Sort FROM `#forum` "; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
+
+		protected $listQry          = "SELECT a. *, CASE WHEN a.forum_parent = 0 THEN a.forum_order ELSE b.forum_order + (( a.forum_order)/1000) END AS Sort FROM e107_forum AS a LEFT JOIN e107_forum AS b ON a.forum_parent = b.forum_id ";
+
+	//	protected $listQry = "SELECT * , forum_parent + forum_order AS Sort FROM `#forum` ";
+		protected $listOrder		= 'Sort,forum_order ';
+
+	//	protected $listOrder 	= ' COALESCE(NULLIF(forum_parent,0), forum_order), forum_parent > 0, forum_order '; //FIXME works with parent/child but doesn't respect parent order.
+
+
+		protected $fields 		= array (  'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
+		                                    'forum_id' =>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		                                    'forum_name' =>   array ( 'title' => LAN_TITLE, 'type' => 'method', 'data' => 'str', 'width' => '40%', 'inline' => false, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		                                    'forum_description' =>   array ( 'title' => LAN_DESCRIPTION, 'type' => 'textarea', 'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		                                    'forum_parent' =>   array ( 'title' => 'Parent', 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		                                    'forum_sub' =>   array ( 'title' => 'SubForum of', 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		                                    'forum_moderators' =>   array ( 'title' => 'Moderators', 'type' => 'userclass', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		                                    'forum_threads' =>   array ( 'title' => 'Threads', 'type' => 'number', 'data' => 'int', 'noedit'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		                                    'forum_replies' =>   array ( 'title' => 'Replies', 'type' => 'number', 'data' => 'int', 'noedit'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		                                    'forum_lastpost_user' =>   array ( 'title' => LAN_AUTHOR, 'type' => 'hidden', 'noedit'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		                                    'forum_lastpost_user_anon' =>   array ( 'title' => 'User-Anon', 'type' => 'hidden','noedit'=>true, 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		                                    'forum_lastpost_info' =>   array ( 'title' => 'LastPost', 'type' => 'hidden', 'noedit'=>true, 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		                                    'forum_class' =>   array ( 'title' => LAN_VISIBILITY, 'type' => 'userclass', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		                                    'forum_order' =>   array ( 'title' => LAN_ORDER, 'type' => 'number', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		                                    'forum_postclass' =>   array ( 'title' => 'Post Permission', 'type' => 'userclass', 'inline'=>true,'filter'=>true, 'batch'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		                                    'forum_threadclass' =>   array ( 'title' => 'Thread Creation Class', 'type' => 'userclass', 'inline'=>true, 'filter'=>true, 'batch'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		                                    'forum_datestamp' =>   array ( 'title' => LAN_DATESTAMP, 'type' => 'datestamp', 'data' => 'int', 'noedit'=>true, 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		                       //             'Sort' =>   array ( 'title' => 'Sort', 'type' => 'text', 'data' => 'str', 'noedit'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+
+		                                    'forum_options' =>   array ( 'title' => 'Options', 'type' => 'hidden', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		                                    'options' =>   array ( 'title' => LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1', 'sort'=>1 ),
+		);
+
+		protected $fieldpref = array('forum_name', 'forum_parent', 'Sort', 'forum_description',  'forum_class', 'forum_postclass', 'forum_threadclass', 'forum_order');
+
+
+		protected $prefs = array(
+			'forum_enclose'		=> array('title'=> 'Forum_enclose', 'type'=>'boolean', 'data' => 'string','help'=>'Help Text goes here'),
+			'forum_title'		=> array('title'=> 'Forum_title', 'type'=>'text', 'data' => 'string','help'=>'Help Text goes here'),
+			'email_notify'		=> array('title'=> 'Email_notify', 'type'=>'boolean', 'data' => 'string','help'=>'Help Text goes here'),
+			'email_notify_on'		=> array('title'=> 'Email_notify_on', 'type'=>'boolean', 'data' => 'string','help'=>'Help Text goes here'),
+			'forum_poll'		=> array('title'=> 'Forum_poll', 'type'=>'userclass', 'data' => 'string','help'=>'Help Text goes here'),
+			'forum_attach'		=> array('title'=> 'Forum_attach', 'type'=>'boolean', 'data' => 'string','help'=>'Help Text goes here'),
+			'forum_maxwidth'		=> array('title'=> 'Forum_maxwidth', 'type'=>'number', 'data' => 'string','help'=>'Help Text goes here'),
+			'forum_linkimg'		=> array('title'=> 'Forum_linkimg', 'type'=>'boolean', 'data' => 'string','help'=>'Help Text goes here'),
+			'forum_track'		=> array('title'=> 'Forum_track', 'type'=>'boolean', 'data' => 'string','help'=>'Help Text goes here'),
+			'forum_redirect'		=> array('title'=> 'Forum_redirect', 'type'=>'boolean', 'data' => 'string','help'=>'Help Text goes here'),		);
+
+		public $forumParents = array();
+
+		public function init()
+		{
+
+			$data = e107::getDb()->retrieve('forum', 'forum_id,forum_name,forum_parent', 'forum_id != 0',true);
+			$this->forumParents[0] = "(New Parent)";
+			$forumSubParents = array();
+
+			foreach($data as $val)
+			{
+				$id = $val['forum_id'];
+
+				if($val['forum_parent'] == 0)
+				{
+					$this->forumParents[$id] = $val['forum_name'];
+				}
+				else
+				{
+					$forumSubParents[$id] = $val['forum_name'];
+				}
+
+			}
+
+			$this->fields['forum_parent']['writeParms'] = $this->forumParents;
+			$this->fields['forum_sub']['writeParms'] = $forumSubParents;
+
+		}
+
+
+		// ------- Customize Create --------
+
+		public function beforeCreate($new_data)
+		{
+			// return $new_data;
+		}
+
+		public function afterCreate($new_data, $old_data, $id)
+		{
+			// do something
+		}
+
+		public function onCreateError($new_data, $old_data)
+		{
+			// do something
+		}
+
+
+		// ------- Customize Update --------
+
+		public function beforeUpdate($new_data, $old_data, $id)
+		{
+			// return $new_data;
+		}
+
+		public function afterUpdate($new_data, $old_data, $id)
+		{
+			// do something
+		}
+
+		public function onUpdateError($new_data, $old_data, $id)
+		{
+			// do something
+		}
+
+
+		/*
+			// optional - a custom page.
+			public function customPage()
+			{
+				$ns = e107::getRender();
+				$text = 'Hello World!';
+				$ns->tablerender('Hello',$text);
+
+			}
+		*/
+
+	}
+
+
+
+	class forum_form_ui extends e_admin_form_ui
+	{
+
+		function forum_name($curVal,$mode,$parm)
+		{
+
+			$frm = e107::getForm();
+
+			if($mode == 'read')
+			{
+				$parent 	= $this->getController()->getListModel()->get('forum_parent');
+				$id			= $this->getController()->getListModel()->get('forum_id');
+				$sub     = $this->getController()->getListModel()->get('forum_sub');
+
+
+
+				$level = 1;
+
+				if(!empty($sub))
+				{
+					$level = 3;
+				}
+
+				$linkQ = e_SELF."?searchquery=&filter_options=page_chapter__".$id."&mode=page&action=list";
+				$level_image = $parent ? '<img src="'.e_IMAGE_ABS.'generic/branchbottom.gif" class="icon" alt="" style="margin-left: '.($level * 20).'px" />&nbsp;' : '';
+
+
+
+				return ($parent) ?  $level_image.$curVal : $curVal;
+			}
+
+			if($mode == 'write')
+			{
+				return $frm->text('forum_name',$curVal,255,'size=xxlarge');
+			}
+
+			if($mode == 'filter')
+			{
+				return;
+			}
+			if($mode == 'batch')
+			{
+				return;
+			}
+		}
+
+
+		// Custom Method/Function
+		function forum_parent($curVal,$mode)
+		{
+			$frm = e107::getForm();
+
+			switch($mode)
+			{
+				case 'read': // List Page
+					return $curVal;
+					break;
+
+				case 'write': // Edit Page
+					return $frm->text('forum_parent',$curVal);
+					break;
+
+				case 'filter':
+				case 'batch':
+					return  $array;
+					break;
+			}
+		}
+
+
+		// Custom Method/Function
+		function forum_sub($curVal,$mode)
+		{
+			$frm = e107::getForm();
+
+			switch($mode)
+			{
+				case 'read': // List Page
+					return $curVal;
+					break;
+
+				case 'write': // Edit Page
+					return $frm->text('forum_sub',$curVal);
+					break;
+
+				case 'filter':
+				case 'batch':
+					return  $array;
+					break;
+			}
+		}
+
+
+		// Custom Method/Function
+		function forum_moderators($curVal,$mode)
+		{
+			$frm = e107::getForm();
+
+			switch($mode)
+			{
+				case 'read': // List Page
+					return $curVal;
+					break;
+
+				case 'write': // Edit Page
+					return $frm->text('forum_moderators',$curVal);
+					break;
+
+				case 'filter':
+				case 'batch':
+					return  $array;
+					break;
+			}
+		}
+
+
+		// Custom Method/Function
+		function forum_lastpost_info($curVal,$mode)
+		{
+			$frm = e107::getForm();
+
+			switch($mode)
+			{
+				case 'read': // List Page
+					return $curVal;
+					break;
+
+				case 'write': // Edit Page
+					return $frm->text('forum_lastpost_info',$curVal);
+					break;
+
+				case 'filter':
+				case 'batch':
+					return  $array;
+					break;
+			}
+		}
+
+
+		// Custom Method/Function
+		function forum_options($curVal,$mode)
+		{
+			$frm = e107::getForm();
+
+			switch($mode)
+			{
+				case 'read': // List Page
+					return $curVal;
+					break;
+
+				case 'write': // Edit Page
+					return $frm->text('forum_options',$curVal);
+					break;
+
+				case 'filter':
+				case 'batch':
+					return  $array;
+					break;
+			}
+		}
+
+	}
+
+
+	new forum_admin();
+
+	require_once(e_ADMIN."auth.php");
+	e107::getAdminUI()->runPage();
+
+	require_once(e_ADMIN."footer.php");
+	exit;
+
+
+}
+
+
+
 $e_sub_cat = 'forum';
 
 require_once(e_ADMIN.'auth.php');
