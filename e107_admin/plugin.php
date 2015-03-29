@@ -2787,7 +2787,7 @@ TEMPLATE;
 		{
 			$frm = e107::getForm();
 					
-			$modes = array("main"=>"Main Area","cat"=>"Categories","other1"=>"Other 1","other2"=>"Other 2","other3"=>"Other 3","other4"=>"Other 4");
+			$modes = array("main"=>"Main Area","cat"=>"Categories","other1"=>"Other 1","other2"=>"Other 2","other3"=>"Other 3","other4"=>"Other 4", 'exclude'=>'Exclude this table');
 			
 		//	echo "TABLE COUNT= ".$this->tableCount ;
 			
@@ -3270,7 +3270,7 @@ class ".$thePlugin."_admin extends e_admin_dispatcher
 	
 			foreach($_POST as $table => $vars) // LOOP Through Tables. 
 			{
-				if(vartrue($vars['mode']))
+				if(vartrue($vars['mode']) && $vars['mode'] != 'exclude')
 				{
 	$text .= "
 		'".$vars['mode']."'	=> array(
@@ -3301,7 +3301,7 @@ $text .= "
 ";
 			foreach($_POST as $table => $vars) // LOOP Through Tables. 
 			{
-				if(vartrue($vars['mode']))
+				if(vartrue($vars['mode']) && $vars['mode'] != 'exclude')
 				{
 $text .= "
 		'".$vars['mode']."/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
@@ -3368,7 +3368,10 @@ $text .= "
 			$tableCount = 1;
 			foreach($_POST as $table => $vars) // LOOP Through Tables. 
 			{
-				if($table == 'pluginPrefs')
+
+
+
+				if($table == 'pluginPrefs' || $vars['mode'] == 'exclude')
 				{
 					continue;
 				}
