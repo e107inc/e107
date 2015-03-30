@@ -149,6 +149,7 @@ class rss_import extends base_import_class
 				
 		$body 			= $this->saveImages($body,'news');
 		$keywords 		= $this->process('category',$source);
+		$sef            = $this->process('sef',$source);
 							
 		if(!vartrue($source['title'][0]))
 		{
@@ -165,7 +166,7 @@ class rss_import extends base_import_class
 		}
 		
 		$target['news_title']					= $title;
-		//	$target['news_sef']					= $source['post_name'];
+		$target['news_sef']					    = $sef;
 		$target['news_body']					= "[html]".$body."[/html]";
 		//	$target['news_extended']			= '';
 		$target['news_meta_keywords']			= implode(",",$keywords);
@@ -222,6 +223,10 @@ class rss_import extends base_import_class
 					}
 					return $keywords;		
 				}
+			break;
+
+			case 'sef':
+				return '';
 			break;
 			
 			default:
