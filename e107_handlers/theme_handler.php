@@ -1186,7 +1186,7 @@ class themeHandler
 
 		if($this->themeConfigObj && call_user_func(array(&$this->themeConfigObj, 'config')) && $mode == 1)
 		{
-			$text .= "<li><a data-toggle='tab' href='#core-thememanager-customconfig'>".LAN_CUSTOM."</a></li>\n";
+			$text .= "<li><a data-toggle='tab' href='#core-thememanager-customconfig'>".LAN_PREFS."</a></li>\n";
 		}
 		
 		if($this->themeConfigObj && call_user_func(array(&$this->themeConfigObj, 'help')))

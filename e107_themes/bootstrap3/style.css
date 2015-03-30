@@ -13,6 +13,11 @@ body {
 	margin-top:20px 
 }
 
+img.logo {
+    margin-top: -5px;
+    margin-right: 5px;
+}
+
 /* Make posted content images responsive too */
 .bbcode-img { display: block; 	max-width: 100%; 	height: auto; }
 
