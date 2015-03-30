@@ -169,7 +169,7 @@ class theme_shortcodes extends e_shortcode
 		
 		$text = '
 		
-		<ul class="nav navbar-nav navbar-right">
+		<ul class="nav navbar-nav navbar-right'.$direction.'">
 		<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">{SETIMAGE: w=20}{USER_AVATAR} '. USERNAME.' <b class="caret"></b></a>
 		<ul class="dropdown-menu">
 		<li>
