@@ -39,7 +39,7 @@ class e_bbcode
 		$this->core_bb = array(
 		'blockquote', 'img', 'i', 'u', 'center',
 		'_br', 'color', 'size', 'code',
-		'html', 'flash', 'link', 'email',
+		 'flash', 'link', 'email',
 		'url', 'quote', 'left', 'right',
 		'b', 'justify', 'file', 'stream',
 		'textarea', 'list', 'time',
