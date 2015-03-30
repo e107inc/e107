@@ -126,11 +126,11 @@ $LAYOUT['_header_'] = '
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="{SITEURL}">{SITENAME}</a>
+          <a class="navbar-brand" href="{SITEURL}">{BOOTSTRAP_BRANDING}</a>
         </div>
-        <div class="navbar-collapse collapse">
+        <div class="navbar-collapse collapse {BOOTSTRAP_NAV_ALIGN}">
         	{NAVIGATION=main}
-         	{BOOTSTRAP_USERNAV}         
+         	{BOOTSTRAP_USERNAV: placement=top}
         </div><!--/.navbar-collapse -->
       </div>
     </div>
@@ -148,7 +148,9 @@ $LAYOUT['_footer_'] = '  <hr>
 		</div>
 		<div class="col-lg-6 text-right">
 			{XURL_ICONS: size=2x}
+			{BOOTSTRAP_USERNAV: placement=bottom&dir=up}
 		</div>
+
 		<div class="col-lg-12 text-center">
 			<small>{SITEDISCLAIMER}</small>
 		</div>

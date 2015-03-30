@@ -17,20 +17,77 @@ class theme_shortcodes extends e_shortcode
 	{
 		
 	}
-	
-	function sc_bootstrap_usernav()
+
+
+	function sc_bootstrap_branding()
 	{
+		$pref = e107::pref('theme', 'branding', 'sitename');
+
+		switch($pref)
+		{
+			case 'logo':
+
+				return e107::getParser()->parseTemplate('{SITELOGO: h=30}',true);
+
+			break;
+
+			case 'sitenamelogo':
+
+				return "<span class='pull-left'>".e107::getParser()->parseTemplate('{SITELOGO: h=30}',true)."</span>".SITENAME;
+
+			break;
+
+			case 'sitename':
+			default:
+
+				return SITENAME;
+
+			break;
+		}
+
+	}
+
+
+
+	function sc_bootstrap_nav_align()
+	{
+		$pref = e107::pref('theme', 'nav_alignment');
+
+		if($pref == 'right')
+		{
+			return "navbar-right";
+		}
+		else
+		{
+			return "";
+		}
+	}
+
+
+
+	function sc_bootstrap_usernav($parm='')
+	{
+
+		$placement = e107::pref('theme', 'usernav_placement', 'top');
+
+		if($parm['placement'] != $placement)
+		{
+			return '';
+		}
+
 		include_lan(e_PLUGIN."login_menu/languages/".e_LANGUAGE.".php");
 		
 		$tp = e107::getParser();		   
 		require_once(e_PLUGIN."login_menu/login_menu_shortcodes.php");
+
+		$direction = vartrue($parm['dir']) == 'up' ? ' dropup' : '';
 		
 		$userReg = defset('USER_REGISTRATION');
 				   
 		if(!USERID) // Logged Out. 
 		{		
 			$text = '
-			<ul class="nav navbar-nav navbar-right">';
+			<ul class="nav navbar-nav navbar-right'.$direction.'"">';
 			
 			if($userReg==1)
 			{
