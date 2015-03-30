@@ -339,12 +339,11 @@ class e107
 	 */
 	protected function _init($e107_paths, $e107_root_path, $e107_config_mysql_info, $e107_config_override = array())
 	{
-
 		if(empty($this->e107_dirs))
 		{
 			// Do some security checks/cleanup, prepare the environment
 			$this->prepare_request();
-	
+
 			// mysql connection info
 			$this->e107_config_mysql_info = $e107_config_mysql_info;
 			
@@ -2766,7 +2765,7 @@ class e107
 		{
 			define('e_AJAX_REQUEST', isset($_REQUEST['ajax_used']));	
 		}
-				
+
 		unset($_REQUEST['ajax_used']); // removed because it's auto-appended from JS (AJAX), could break something...
 
 		//$GLOBALS['_E107'] - minimal mode - here because of the e_AJAX_REQUEST
@@ -2861,6 +2860,10 @@ class e107
 			if(preg_match($regex,$input))
 			{
 				header('HTTP/1.0 400 Bad Request', true, 400);
+				if(deftrue('e_DEBUG'))
+				{
+					echo "Bad Request: ".__METHOD__." : ". __LINE__;
+				}
 				exit();
 			}
 
@@ -2869,12 +2872,20 @@ class e107
 			if(preg_match($regex,$input))
 			{
 				header('HTTP/1.0 400 Bad Request', true, 400);
+				if(deftrue('e_DEBUG'))
+				{
+					echo "Bad Request: ".__METHOD__." : ". __LINE__;
+				}
 				exit();
 			}
 
-			if(preg_match("/system *?\((.*);.*\)/i",$input))
+			if(preg_match("/system\((.*);.*\)/i",$input))
 			{
 				header('HTTP/1.0 400 Bad Request', true, 400);
+				if(deftrue('e_DEBUG'))
+				{
+					echo "Bad Request: ".__METHOD__." : ". __LINE__;
+				}
 				exit();	
 			}
 			
@@ -2882,6 +2893,10 @@ class e107
 			if(preg_match($regex,$input))
 			{
 				header('HTTP/1.0 400 Bad Request', true, 400);
+				if(deftrue('e_DEBUG'))
+				{
+					echo "Bad Request: ".__METHOD__." : ". __LINE__;
+				}
 				exit();
 			}
 		
@@ -2900,12 +2915,20 @@ class e107
 			{
 	
 				header('HTTP/1.0 400 Bad Request', true, 400);
+				if(deftrue('e_DEBUG'))
+				{
+					echo "Bad Request: ".__METHOD__." : ". __LINE__;
+				}
 				exit();
 			}
 						
 			if(($key == "HTTP_USER_AGENT") && strpos($input,"libwww-perl")!==FALSE)
 			{
 				header('HTTP/1.0 400 Bad Request', true, 400);
+				if(deftrue('e_DEBUG'))
+				{
+					echo "Bad Request: ".__METHOD__." : ". __LINE__;
+				}
 				exit();	
 			}
 			
@@ -2915,6 +2938,10 @@ class e107
 		if(strpos(str_replace('.', '', $input), '22250738585072011') !== FALSE) // php-bug 53632
 		{
 			header('HTTP/1.0 400 Bad Request', true, 400);
+			if(deftrue('e_DEBUG'))
+			{
+				echo "Bad Request: ".__METHOD__." : ". __LINE__;
+			}
 			exit();
 		} 
 		

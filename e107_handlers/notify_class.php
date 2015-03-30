@@ -40,7 +40,7 @@ class notify
 	{
 		$active = e107::getConfig()->get('notify');
 
-		if(empty($active))
+		if(empty($active) && e_PAGE == 'notify.php')
 		{
 			e107::getMessage()->addDebug('Notify is disabled!');
 			return false;

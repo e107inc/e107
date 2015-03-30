@@ -505,7 +505,7 @@ class e_parse extends e_parser
 			return $ret;
 		}
 
-	
+
 
 		if (MAGIC_QUOTES_GPC == TRUE && $nostrip == FALSE)
 		{
@@ -515,7 +515,7 @@ class e_parse extends e_parser
 		if ($mod != 'pReFs') //XXX We're not saving prefs. 
 		{
 			$data = $this->preFilter($data); // used by bb_xxx.php toDB() functions. bb_code.php toDB() allows us to properly bypass HTML cleaning below. 
-			
+
 			if (strip_tags($data) != $data) // html tags present. 
 			{
 			//	return $data;
@@ -1593,10 +1593,11 @@ class e_parse extends e_parser
 					elseif(substr($sub_blk, 0, 6) == '<style')
 					{
 						// Its a style block - just pass it through unaltered - except, do we need the line break stuff? - QUERY XXX-01
-						if(DB_INF_SHOW)
+						if(defined('DB_INF_SHOW'))
 						{
 							echo "Processing stylesheet: {$sub_blk}<br />";
 						}
+
 						$ret_parser .= $sub_blk;
 					}
 					else
