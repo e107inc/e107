@@ -22,7 +22,7 @@ e107::coreLan('plugin', true);
 $e_sub_cat = 'plug_manage';
 
 define('PLUGIN_SHOW_REFRESH', FALSE);
-define('PLUGIN_SCAN_INTERVAL', $_SERVER['E_DEV'] ? 0 : 360);
+define('PLUGIN_SCAN_INTERVAL', !empty($_SERVER['E_DEV']) ? 0 : 360);
 
 global $user_pref;
 
@@ -433,7 +433,7 @@ class pluginManager{
 		
 	//	$mes->addWarning("Some older plugins may produce unpredictable results.");
 		// check for cURL
-		if(!function_exists(curl_init))
+		if(!function_exists('curl_init'))
 		{
 			$mes->addWarning("cURL is currently required to use this feature. Contact your webhosting provider to enable cURL"); // TODO LAN?
 		}
@@ -444,6 +444,7 @@ class pluginManager{
 		
 	
 		$mp = $this->getMarketplace();
+
 		// auth
 		$mp->generateAuthKey($e107SiteUsername, $e107SiteUserpass);
 		
@@ -454,7 +455,6 @@ class pluginManager{
 		));
 		$total = $xdata['params']['count'];
 	
-		
 		// OLD BIT OF CODE ------------------------------->
 	/*
 	//	$file = SITEURLBASE.e_PLUGIN_ABS."release/release.php";  // temporary testing
