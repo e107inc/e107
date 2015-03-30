@@ -39,7 +39,7 @@ class e_marketplace
 		{
 			$this->_adapter_name = 'wsdl';
 		}
-		
+
 	}
 	
 	/**
@@ -190,6 +190,10 @@ class e_marketplace
 	 */
 	public function call($method, $data, $apply = true)
 	{
+		if(E107_DEBUG_LEVEL > 0)
+		{
+			e107::getMessage()->addDebug("Calling e107.org  using <b> ".$this->_adapter_name."</b> adapter");
+		}
 		return $this->adapter()->call($method, $data, $apply);
 	}
 	
@@ -596,14 +600,21 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 	public function call($method, $data, $apply = true)
 	{
 		$client = $this->client();
-		
+
 		// settings based on current method
 		$this->prepareClient($method, $client);
 		
 		// authorization data
 		$data['auth'] = $this->getAuthKey();
 		$data['action'] = $method;
-		
+
+		foreach($data['params'] as $k=>$v)
+		{
+			$data[$k] = $v;
+		}
+		unset($data['params']);
+
+
 		// build the request query
 		$qry = str_replace(array('s%5B', '%5D'), array('[', ']'), http_build_query($data, null, '&'));
 		$url = $this->serviceUrl.'?'.$qry;
