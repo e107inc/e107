@@ -30,7 +30,9 @@ if(false === $cached)
 	$parms['showarchive'] = 0;
 		
 	//e107::plugLan('blogcalendar_menu');
-	e107::lan('blogcalendar_menu', e_LANGUAGE); // FIXME decide on language file structure (#743)
+//	e107::lan('blogcalendar_menu', e_LANGUAGE); // FIXME decide on language file structure (#743)
+	e107::includeLan(e_PLUGIN.'blogcalendar_menu/languages/English.php');
+
 	$tp = e107::getParser();
 	$sql = e107::getDb();
 	
