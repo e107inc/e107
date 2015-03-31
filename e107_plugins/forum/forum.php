@@ -508,7 +508,7 @@ if (e_QUERY == 'new')
 $frm = e107::getForm();
 
 $breadarray = array(
-					array('text'=> $forum->prefs->get('title'), 'url' => e_REQUEST_URL )
+					array('text'=> $forum->prefs->get('title'), 'url' => e107::url('forum','index') )
 );
 
 $fVars->FORUM_BREADCRUMB = $frm->breadcrumb($breadarray);

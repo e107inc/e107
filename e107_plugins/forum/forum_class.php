@@ -1810,7 +1810,7 @@ class e107forum
 
 		$breadcrumb = array();
 		
-		$breadcrumb[]	= array('text'=> LAN_PLUGIN_FORUM_NAME		, 'url'=> e107::getUrl()->create('forum/forum/main'));
+		$breadcrumb[]	= array('text'=> LAN_PLUGIN_FORUM_NAME		, 'url'=> e107::url('forum','index'));
 		
 		if($forumInfo['sub_parent'])
 		{

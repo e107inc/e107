@@ -30,9 +30,9 @@ class sitelinks
 		{
 			while ($row = $sql->fetch())
 			{
-				if($row['link_sefurl'])
+				if(!empty($row['link_sefurl']) && !empty($row['link_owner']))
 				{
-					$this->sefList[$row['link_sefurl']]	= $row['link_url'];	
+					$this->sefList[$row['link_sefurl']]	= e107::url($row['link_owner'],$row['link_url']);
 				}
 				
 				//	if (substr($row['link_name'], 0, 8) == 'submenu.'){
@@ -1704,6 +1704,11 @@ class navigation_shortcodes extends e_shortcode
 	function sc_link_url($parm='')
 	{
 		$tp = e107::getParser();
+
+		if(!empty($this->var['link_owner']) && !empty($this->var['link_sefurl']))
+		{
+			return e107::url($this->var['link_owner'],$this->var['link_sefurl']);
+		}
 		
 		if(strpos($this->var['link_url'], e_HTTP) === 0)
 		{

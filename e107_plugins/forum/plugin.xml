@@ -11,7 +11,7 @@
 		<link url="forum_admin.php?opt" description="Forum Preferences"  icon="settings" perm="mainadmin" >Preferences</link>
 	</adminLinks>
 	<siteLinks>
-		<link url="{e_PLUGIN}forum/forum.php" perm='everyone'>Forum</link>		
+		<link url="{e_PLUGIN}forum/forum.php" sef='index' perm='everyone' lan='LAN_PLUGIN_FORUM_NAME'>Forum</link>
 	</siteLinks>
 	<pluginPrefs>
 		<pref name="show_topics">1</pref>

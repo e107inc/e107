@@ -6,7 +6,7 @@
 		<link url='admin_config.php' description='ADSTAT_L33' icon='images/stats_32.png' iconSmall='images/stats_16.png' primary='true' >LAN_PLUGIN_LOG_CONFIGURE</link>	
 	</adminLinks>
 	<siteLinks>
-		<link url="{e_PLUGIN}log/stats.php?1" >LAN_PLUGIN_LOG_LINK</link>
+		<link url="{e_PLUGIN}log/stats.php?1" sef='index' >LAN_PLUGIN_LOG_LINK</link>
 	</siteLinks>	
 	<mainPrefs>
 		<pref name="statActivate">0</pref>

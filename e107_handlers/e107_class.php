@@ -2647,6 +2647,8 @@ class e107
 
 		}
 
+		e107::getMessage()->addDebug("e_url.php in <b>".e_PLUGIN.$plugin."</b> is missing the key: <b>".$key."</b>. Or, you may need to <a href='".e_ADMIN."db.php?mode=plugin_scan'>scan your plugin directories</a> to register e_url.php");
+
 		return false;
 
 		/*
