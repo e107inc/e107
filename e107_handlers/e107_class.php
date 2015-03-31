@@ -2617,8 +2617,36 @@ class e107
 
 		if(varset($tmp[$plugin][$key]['sef']))
 		{
-			$rawUrl = $tp->simpleParse($tmp[$plugin][$key]['sef'], $row);
-			return e_HTTP.$rawUrl;
+			$mode = 'sef'; //TODO Auto-detect when mod-rewrite is active.
+
+			if($mode == 'sef')  // Search-Engine-Friendly URL
+			{
+				$rawUrl = $tp->simpleParse($tmp[$plugin][$key]['sef'], $row);
+				return e_HTTP.$rawUrl;
+			}
+			else // Legacy URL.
+			{
+				preg_match('#({[a-z_]*})#', $tmp[$plugin][$key]['sef'],$matches);
+
+				unset($matches[0]);
+
+				$srch = array();
+				$repl = array();
+
+				foreach($matches as $k=>$val)
+				{
+					$srch[] = '$'.$k;
+					$repl[] = $val;
+				}
+
+				$urlTemplate = str_replace($srch,$repl,$tmp[$plugin][$key]['redirect']);
+				$urlTemplate = $tp->replaceConstants($urlTemplate,'abs');
+				$legacyUrl = $tp->simpleParse($urlTemplate, $row);
+
+				return $legacyUrl;
+			}
+
+
 		}
 
 		return false;
