@@ -104,7 +104,7 @@ function tablestyle($caption, $text, $id='', $info=array())
 		return;
 	}
 	
-	echo '<h2>'.$caption.'</h2>
+	echo '<h2 class="caption">'.$caption.'</h2>
 			
 			'.$text.'
 			';
