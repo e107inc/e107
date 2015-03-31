@@ -85,7 +85,7 @@ class eMessage
 	static $_customTitle = array();
 
 
-	
+	static $_close = array('info'=>true,'success'=>true,'warning'=>true,'error'=>true,'debug'=>true);
 	/**
 	 * Singleton instance
 	 * 
@@ -402,7 +402,23 @@ class eMessage
 		
 		return $this;
 	}
-	
+
+
+	/**
+	 * Enable the 'x' close functionality of an alert.
+	 *
+	 * @param boolean $toggle
+	 * @param string $type E_MESSAGE_SUCCESS,E_MESSAGE_ERROR, E_MESSAGE_WARNING, E_MESSAGE_INFO
+	 * @return $this
+	 * @example e107::getMessage()->setClose(false, E_MESSAGE_INFO);
+	 */
+	public function setClose($toggle, $type)
+	{
+		self::$_close[$type] = $toggle;
+		return $this;
+	}
+
+
 
 	/**
 	 * Message getter
@@ -557,16 +573,18 @@ class eMessage
 			$message = "<div class='s-message-item'>".implode("</div>\n<div class='s-message-item'>", $message)."</div>";
 		}
 		
-		return "
-			<div class='s-message alert alert-block fade in {$type} {$bclass}'>
-			<a class='close' data-dismiss='alert'>×</a>
-				<i class='s-message-icon s-message-".$type."'></i>
+		$text = "<div class='s-message alert alert-block fade in {$type} {$bclass}'>";
+		$text .= (self::$_close[$type] === true) ? "<a class='close' data-dismiss='alert'>×</a>" : "";
+		$text .= "<i class='s-message-icon s-message-".$type."'></i>
 				<h4 class='s-message-title'>".self::getTitle($type, $mstack)."</h4>
 				<div class='s-message-body'>
 					{$message}
 				</div>
 			</div>
 		";
+
+
+		return $text;
 	}
 
 	/**
