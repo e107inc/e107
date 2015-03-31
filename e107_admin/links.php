@@ -84,8 +84,8 @@ class links_admin_ui extends e_admin_ui
 	    'link_category'     => array('title'=> LAN_TEMPLATE,    'type' => 'dropdown', 'inline'=>true, 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
     
     	'link_parent' 		=> array('title'=> 'Sublink of', 	'type' => 'method', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
-		'link_url'	   		=> array('title'=> LAN_URL, 		'width'=>'auto', 'type'=>'url', 'inline'=>true, 'required'=>true,'validate' => true, 'writeParms'=>'size=xxlarge'),
-	//	'link_sefurl' 		=> array('title'=> LAN_SEFURL, 		'type' => 'text', 'inline'=>true, 'width' => 'auto'),
+		'link_url'	   		=> array('title'=> LAN_URL, 		'width'=>'auto', 'type'=>'method', 'inline'=>true, 'required'=>true,'validate' => true, 'writeParms'=>'size=xxlarge'),
+		'link_sefurl' 		=> array('title'=> LAN_SEFURL, 		'type' => 'method', 'inline'=>false, 'width' => 'auto', 'help'=>'Enable to override URL with a dynamically created Search-Engine-Friendly URL'), //TODO LAN
 		'link_class' 		=> array('title'=> LAN_USERCLASS, 	'type' => 'userclass','inline'=>true, 'writeParms' => 'classlist=public,guest,nobody,member,classes,admin,main', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
 		'link_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'textarea', 'width' => 'auto'), // 'method'=>'tinymce_plugins',  ?
 		'link_order' 		=> array('title'=> LAN_ORDER, 		'type' => 'number', 'width' => 'auto', 'nolist'=>false, 'inline' => true),
@@ -634,8 +634,88 @@ class links_admin_form_ui extends e_admin_form_ui
 			return $this->linkFunctions;
 		}
 	}
-	
-	
+
+
+	function link_sefurl($curVal,$mode)
+	{
+		if($mode == 'read')
+		{
+			return $curVal; //  $this->linkFunctions[$curVal];
+		}
+
+		if($mode == 'write')
+		{
+			$plugin = $this->getController()->getModel()->get('link_owner');
+			$obj    = e107::getAddon($plugin,'e_url');
+			$config = e107::callMethod($obj,'config');
+			$opts   = array();
+
+			if(empty($config))
+			{
+				return $this->hidden('link_sefurl','')."<span class='label label-warning'>Not available</span>"; //TODO Generic LAN
+			}
+
+			foreach($config as $k=>$v)
+			{
+				if(strpos($v['regex'],')')===false) // only provide urls without dynamic elements.
+				{
+					$opts[] = $k;
+				}
+			}
+
+
+			return $this->select('link_sefurl', $opts, $curVal, array('useValues'=>true,'defaultValue'=>'','default'=>'('.LAN_DISABLED.')'));
+		}
+
+	}
+
+	function link_url($curVal,$mode)
+	{
+		if($mode == 'read')
+		{
+			$owner = $this->getController()->getListModel()->get('link_owner');
+			$sef =  $this->getController()->getListModel()->get('link_sefurl');
+
+			if(!empty($owner) && !empty($sef))
+			{
+				$curVal = str_replace(e_HTTP,'',e107::url($owner,$sef));
+			}
+
+			return $curVal; //  $this->linkFunctions[$curVal];
+		}
+
+		if($mode == 'write')
+		{
+			$owner = $this->getController()->getModel()->get('link_owner');
+			$sef =  $this->getController()->getModel()->get('link_sefurl');
+
+			if(!empty($owner) && !empty($sef))
+			{
+
+				$text = str_replace(e_HTTP,'',e107::url($owner,$sef)); // dynamically created.
+				$text .= $this->hidden('link_url',$curVal);
+				$text .= " <span class='label label-warning'>Auto-generated</span>";
+
+				return $text;
+
+			}
+
+			return $this->text('link_url', $curVal, 255,  array('size'=>'xxlarge'));
+		}
+
+		if($mode == 'inline')
+		{
+			$sef =  $this->getController()->getListModel()->get('link_sefurl');
+
+			if(empty($sef))
+			{
+				return array('inlineType'=>'text');
+			}
+
+			return false;
+		}
+
+	}
 
 	/**
 	 *

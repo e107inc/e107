@@ -3448,7 +3448,14 @@ class e_form
 					
 					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 					$methodParms = call_user_func_array(array($this, $method), array($value, 'inline', $parms));
-					
+
+
+					if(!empty($methodParms['inlineType']))
+					{
+						$attributes['inline'] = $methodParms['inlineType'];
+						$methodParms = (!empty($methodParms['inlineData'])) ? $methodParms['inlineData'] : null;
+					}
+
 					if(is_string($attributes['inline'])) // text, textarea, select, checklist. 
 					{
 						switch ($attributes['inline']) 
@@ -3459,6 +3466,7 @@ class e_form
 							break;
 							
 							case 'select':
+							case 'dropdown':
 								$xtype = 'select';		
 							break;
 							
@@ -3473,14 +3481,14 @@ class e_form
 							break;
 						}
 					}
-					
-					
-					
+
+					if(!empty($xtype))
+					{
+						$value = $this->renderInline($field, $id, $attributes['title'], $_value, $value, $xtype, $methodParms);
+					}
 				
-					$value = $this->renderInline($field, $id, $attributes['title'], $_value, $value, $xtype, $methodParms);
+
 				
-				//	$source = str_replace('"',"'",json_encode($methodParms, JSON_FORCE_OBJECT));
-				//	$value = "<a class='e-tip e-editable editable-click' data-type='select' data-value='".$_value."' data-name='".$field."' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\"  data-pk='".$id."' data-url='".e_SELF."?mode=&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$value."</a>";
 				}
 							
 			break;

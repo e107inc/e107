@@ -178,13 +178,13 @@ class eurl_admin_ui extends e_admin_controller_ui
 		{
 			$text .= "<h5>".$plug."</h5>";
 			$text .= "<table class='table table-striped table-bordered'>";
-			$text .= "<tr><th>Regular Expression</th>
+			$text .= "<tr><th>Key</th><th>Regular Expression</th>
 			<th>".LAN_URL."</th>
 			</tr>";
 			
 			foreach($val as $k=>$v)
 			{
-					$text .= "<tr><td style='width:50%'>".$v['regex']."</td><td>".$v['redirect']."</td></tr>";
+					$text .= "<tr><td style='width:20%'>".$k."</td><td style='width:40%'>".$v['regex']."</td><td style='width:40%'>".$v['redirect']."</td></tr>";
 			}
 		
 					
