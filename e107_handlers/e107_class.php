@@ -2617,9 +2617,7 @@ class e107
 
 		if(varset($tmp[$plugin][$key]['sef']))
 		{
-			$mode = 'sef'; //TODO Auto-detect when mod-rewrite is active.
-
-			if($mode == 'sef')  // Search-Engine-Friendly URL
+			if(deftrue('e_MOD_REWRITE'))  // Search-Engine-Friendly URL
 			{
 				$rawUrl = $tp->simpleParse($tmp[$plugin][$key]['sef'], $row);
 				return e_HTTP.$rawUrl;
@@ -3003,6 +3001,8 @@ class e107
 		define('MPREFIX', $this->getMySQLConfig('prefix')); // mysql prefix
 
 		define('CHARSET', 'utf-8'); // set CHARSET for backward compatibility
+
+		define('e_MOD_REWRITE', (getenv('HTTP_MOD_REWRITE')=='On' ? true : false));
 
 		// Define the domain name and subdomain name.
 		if(is_numeric(str_replace(".","",$_SERVER['HTTP_HOST'])))

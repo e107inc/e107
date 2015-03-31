@@ -38,6 +38,9 @@
 ### LimitRequestBody 10240000
 
 <IfModule mod_rewrite.c>
+
+SetEnv HTTP_MOD_REWRITE On
+
 ### enable rewrites
 	Options +FollowSymLinks 
 	RewriteEngine On

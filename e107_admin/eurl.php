@@ -63,6 +63,14 @@ class eurl_admin_ui extends e_admin_controller_ui
 	
 	public function init()
 	{
+
+
+		$htaccess = file_get_contents(e_BASE.".htaccess");
+
+		if(strpos($htaccess, 'SetEnv HTTP_MOD_REWRITE On')===false)
+		{
+			e107::getMessage()->addWarning("Mod-rewrite is disabled. Please add the following to your <b>.htaccess</b> file after the line \"Rewrite Engine On\":<br /><pre>SetEnv HTTP_MOD_REWRITE On</pre>");
+		}
 	
 		if(is_array($_POST['rebuild']))
 		{
@@ -151,12 +159,18 @@ class eurl_admin_ui extends e_admin_controller_ui
 	public function simplePage()
 	{
 		// $this->addTitle("Simple Redirects");
-		$eUrl =e107::getAddonConfig('e_url'); 
+		$eUrl =e107::getAddonConfig('e_url');
 		
 		if(empty($eUrl))
 		{
 			return; 		
 		}
+
+
+
+
+
+
 		
 		$text = "";
 			
