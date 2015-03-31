@@ -27,7 +27,7 @@ if(file_exists(e_PLUGIN."faqs/controllers/list.php"))
 }
 else 
 {
-	include_lan(e_PLUGIN."faqs/languages/".e_LANGUAGE."/".e_LANGUAGE."_global.php");
+ 	e107::includeLan(e_PLUGIN."faqs/languages/".e_LANGUAGE."/".e_LANGUAGE."_front.php");
 }
 
 
@@ -49,6 +49,8 @@ if (!vartrue($FAQ_VIEW_TEMPLATE))
 	}
 }
 
+
+e107::css('faqs','faqs.css');
 // require_once(HEADERF);
 
 // $pref['add_faq']=1;
@@ -135,7 +137,8 @@ if (isset($_POST['commentsubmit']))
 		{
 			$srch = vartrue($_GET['srch']);
 			$ftmp = $faq->view_all($srch);
-			$caption = FAQLAN_FAQ;			
+			$caption = FAQLAN_FAQ;
+
 		}
 
 		if (vartrue($faqpref['faq_title']))
@@ -196,7 +199,44 @@ class faq
 		$this->pref = e107::pref('faqs'); // Short version of e107::getPlugConfig('faqs')->getPref(); ;
 		$sc->pref = $this->pref;
 
+
+		if(!empty($_POST['submit_a_question']))
+		{
+			$sql = e107::getDb();
+
+			if($sql->select('faqs','faq_id',"faq_answer='' AND faq_author_ip = '".USERIP."' LIMIT 1"))
+			{
+				e107::getMessage()->setTitle('Sorry',E_MESSAGE_INFO)->addInfo("You may only ask another question once your other question has been answered.");
+				return;
+			}
+
+			$question = filter_input(INPUT_POST, 'ask_a_question', FILTER_SANITIZE_STRING);
+
+			$insert = array(
+				'faq_id'        =>0,
+				'faq_parent'    =>0,
+				'faq_question'  => $question,
+				'faq_answer'    => '',
+				'faq_comment'   => 0,
+				'faq_datestamp' => time(),
+				'faq_author'    => 0,
+				'faq_author_ip' => USERIP,
+				'faq_tags'      => '',
+				'faq_order'     => 99999
+			);
+
+			if($sql->insert('faqs',$insert))
+			{
+				e107::getMessage()->addSuccess('Thank you. Your question has been saved and will be answered as soon as possible.');
+			}
+
+		}
+
+
+
 	}
+
+
 
 	function view_all($srch) // new funtion to render all FAQs
 	{
@@ -211,7 +251,7 @@ class faq
 
 		$this->sc = e107::getScBatch('faqs',TRUE);
 		
-		$text = $tp->parseTemplate($template['start'], true, $this->sc);
+		$text = $tp->parseTemplate($template['start'], true, $this->sc); // header
 		
 		// var_dump($sc);
 		
@@ -221,7 +261,7 @@ class faq
 		
 		$text .= "</div>";
 	
-		$text .= $tp->parseTemplate($template['end'], true, $this->sc);
+		$text .= $tp->parseTemplate($template['end'], true, $this->sc); // footer
 
 		
 
@@ -240,6 +280,8 @@ class faq
 	{
 		$sql = e107::getDb();
 		$tp = e107::getParser();
+
+		$text = "";
 		
 		$insert = "";	
 		
@@ -252,7 +294,21 @@ class faq
 		if(!empty($_GET['cat']))
 		{
 			$srch = $tp->toDB($_GET['cat']);
-			$insert = " AND (cat.faq_info_sef = '".$srch."') ";	
+			$insert = " AND (cat.faq_info_sef = '".$srch."') ";
+		}
+
+		if(!empty($_GET['tag']))
+		{
+			$srch = $tp->toDB($_GET['tag']);
+
+
+			$insert = " AND FIND_IN_SET ('".$srch."', f.faq_tags)  ";
+
+			$removeUrl = e107::url('faqs','index');
+			$message = "<span class='label label-lg label-info'>".$srch." <a class='e-tip' title='Remove' href='".$removeUrl."'>×</a></span>";
+
+			e107::getMessage()->setClose(false,E_MESSAGE_INFO)->setTitle(LAN_FAQS_FILTER_ACTIVE,E_MESSAGE_INFO)->addInfo($message);
+			$text = e107::getMessage()->render();
 		}
 
 		$query = "SELECT f.*,cat.* FROM #faqs AS f LEFT JOIN #faqs_info AS cat ON f.faq_parent = cat.faq_info_id WHERE cat.faq_info_class IN (".USERCLASS_LIST.") ".$insert." ORDER BY cat.faq_info_order,f.faq_order ";
@@ -264,20 +320,18 @@ class faq
 		
 		// -----------------
 		
-		$FAQ_START = e107::getTemplate('faqs', true, 'start');
-		$FAQ_END = e107::getTemplate('faqs', true, 'end');
 		$FAQ_LISTALL = e107::getTemplate('faqs', true, 'all');
-		$FAQ_CAPTION = e107::getTemplate('faqs', true, 'caption');
-		
-		
-			$prevcat = "";
+
+		$prevcat = "";
 		$sc = e107::getScBatch('faqs', true);
 		$sc->counter = 1;
 		$sc->tag = htmlspecialchars($tag, ENT_QUOTES, 'utf-8');
 		$sc->category = $category;
 
-		$text = $tp->parseTemplate($FAQ_START, true, $sc);
-		
+	//	$text = $tp->parseTemplate($FAQ_START, true, $sc);
+
+	//	$text = "";
+
 		while ($rw = $sql->fetch())
 		{
 			$sc->setVars($rw);	
@@ -298,8 +352,8 @@ class faq
 			$sc->counter++;
 		}
 		$text .= ($start) ? $tp->parseTemplate($FAQ_LISTALL['end'], true, $sc) : "";
-		$text .= $tp->parseTemplate($FAQ_END, true, $sc);
-				
+//		$text .= $tp->parseTemplate($FAQ_END, true, $sc);
+
 		return $text;
 		
 	}

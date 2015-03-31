@@ -31,13 +31,21 @@ class faqs_url // plugin-folder + '_url'
 			'redirect'		=> '{e_PLUGIN}faqs/faqs.php', 		// file-path of what to load when the regex returns true. 
 			
 		);
+
+		$config['tag'] = array(
+			'regex'			=> '^faqs/tag/(.*)$',
+			'sef'			=> 'faqs/tag/{tag}',			// {faq_info_sef} is substituted with database value when parsed by e107::url();
+			'redirect'		=> '{e_PLUGIN}faqs/faqs.php?tag=$1'
+		);
 		
 		$config['category'] = array(
 			'regex'			=> '^faqs/(.*)$',
 			'sef'			=> 'faqs/{faq_info_sef}',			// {faq_info_sef} is substituted with database value when parsed by e107::url(); 
 			'redirect'		=> '{e_PLUGIN}faqs/faqs.php?cat=$1'			
 		);
-		
+
+
+
 		return $config;
 	}
 	
