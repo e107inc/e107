@@ -95,20 +95,26 @@ class theme_shortcodes extends e_shortcode
 				<li><a href="'.e_SIGNUP.'">'.LOGIN_MENU_L3.'</a></li>
 				'; // Signup
 			}
-			
-			
-			
-			$text .= '
-			<li class="divider-vertical"></li>
-			<li class="dropdown">
+
+
+			$socialActive = e107::pref('core', 'social_login_active');
+
+			if(!empty($userReg) || !empty($socialActive)) // e107 or social login is active.
+			{
+				$text .= '
+				<li class="divider-vertical"></li>
+				<li class="dropdown">
 			
 				<a class="dropdown-toggle" href="#" data-toggle="dropdown">Sign In <strong class="caret"></strong></a>
 				<div class="dropdown-menu col-sm-12" style="min-width:250px; padding: 15px; padding-bottom: 0px;">
 				
 				{SOCIAL_LOGIN: size=2x}		
-			';
-			
-			
+				';
+			}
+			else
+			{
+				return '';
+			}
 			
 			
 			if(!empty($userReg)) // value of 1 or 2 = login okay. 
