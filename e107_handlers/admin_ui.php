@@ -3716,7 +3716,11 @@ class e_admin_controller_ui extends e_admin_controller
 
 				if($var['type'] == 'ip')
 				{
-					$filter[] = $var['__tableField']." LIKE '%".e107::getIpHandler()->ipEncode($searchQuery)."%'";
+					$ipSearch = e107::getIpHandler()->ipEncode($searchQuery);
+					if(!empty($ipSearch))
+					{
+						$filter[] = $var['__tableField']." LIKE '%".$ipSearch."%'";
+					}
 					// Continue below for BC check also.
 				}
 							
