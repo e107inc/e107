@@ -1155,7 +1155,60 @@ class e_media
 		return $indicators;
 		
 	}
-	
+
+
+
+
+	/**
+	 * Retriveve a Media-Manager thumbnail which was saved from a remote location. .
+	 * @param $id
+	 * @return bool|string
+	 */
+	function getThumb($id)
+	{
+		$id = trim($id);
+		$filename = 'temp/thumb-'.md5($id).".jpg";
+		$filepath = e_MEDIA.$filename;
+
+		if(file_exists($filepath))
+		{
+			return e107::getParser()->createConstants($filepath);
+		}
+
+		e107::getMessage()->addDebug("Couldn't find ".$filepath);
+		return false;
+	}
+
+
+
+	/**
+	 * Save a Media-Manager thumbnail from remote location.
+	 * @param string $imageUrl
+	 * @param string $id
+	 * @return bool|string
+	 */
+	function saveThumb($imageUrl='',$id='')
+	{
+
+		if(empty($id) || empty($imageUrl))
+		{
+			return false;
+		}
+
+		$filename = 'temp/thumb-'.md5($id).".jpg";
+		$filepath = e_MEDIA.$filename;
+
+		if(!file_exists($filepath))
+		{
+			e107::getFile()->getRemoteFile($imageUrl, $filename,'media');
+		}
+
+		return $filepath;
+	}
+
+
+
+
 	
 	function browserCarousel($data,$parm=null)
 	{
@@ -1176,7 +1229,7 @@ class e_media
 	
 			$data_src = $this->mediaSelectNav($category,$parm['tagid'], $parm);
 			$carouselID = 'myCarousel-'.$parm['action'];
-		
+			$searchToolttip = (empty($parm['searchTooltip'])) ? "Enter some text to filter results" : $parm['searchTooltip'];
 			//$text = "<form class='form-search' action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='get'>";
 					
 					
@@ -1186,7 +1239,8 @@ class e_media
 				$searchPlaceholder = varset($parm['searchPlaceholder'], LAN_SEARCH);
 				
 				$text = '<div class="btn-group"><span class="input-append">';
-				$text .= "<input type='text' class='e-ajax-keyup e-tip' placeholder= '".$searchPlaceholder."...' title='Enter some text to filter results' name='search' value=''  data-target='media-browser-container-".$parm['action']."' data-src='".$data_src."' />";	
+				$text .= "<input type='text' class='e-ajax-keyup input-xxlarge ' placeholder= '".$searchPlaceholder."...' title=\"".$searchToolttip."\" name='search' value=''  data-target='media-browser-container-".$parm['action']."' data-src='".$data_src."' />";
+		//		$text .= "<span class='field-help'>bablalal</span>";
 			//	$text .= '<button class="btn btn-primary" name="'.$submitName.'" type="submit">'.LAN_GO.'</button>';
 				$text .= '<a class="btn btn-primary" href="#'.$carouselID.'" data-slide="prev">&lsaquo;</a><a class="btn btn-primary" href="#'.$carouselID.'" data-slide="next">&rsaquo;</a>';
 				$text .= "</span>";		

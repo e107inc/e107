@@ -744,7 +744,8 @@ class media_admin_ui extends e_admin_ui
 		'watermark_opacity'				=> array('title'=> 'Watermark Opacity', 'tab'=>1, 'type' => 'number', 'data' => 'int', 'help'=>'Enter a number between 1 and 100'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
 	
 		// https://developers.google.com/youtube/player_parameters
-	
+		'youtube_default_account'		=> array('title'=> "Default YouTube account", 'tab'=>2, 'type' => 'text', 'data'=>'str', 'help'=>'Used by the Media-Manager Youtube browser. Enter account name. eg. e107inc'),
+
 		'youtube_rel'					=> array('title'=> "Show Related Videos", 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
 		'youtube_showinfo'				=> array('title'=> "Show Video Info", 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
 		'youtube_cc_load_policy'		=> array('title'=> "Show Closed-Captions by default", 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
@@ -1372,7 +1373,14 @@ class media_admin_ui extends e_admin_ui
 		return e107::getMedia()->browserCarousel($items, $parms);
 	}
 			
-		
+	function getYouTubeCode($url)
+	{
+		list($url,$qry) = explode("?",$url);
+		parse_str($qry,$opt);
+
+		return $opt['v'];
+
+	}
 	
 
 	function videoTab($parm='')
@@ -1381,20 +1389,70 @@ class media_admin_ui extends e_admin_ui
 		//	$feed = "https://gdata.youtube.com/feeds/base/users/e107inc/uploads";
 		
 			// @see https://developers.google.com/youtube/2.0/developers_guide_protocol_api_query_parameters
-		
-			if($search = vartrue($this->getQuery('search')))
+
+			$searchQry = $this->getQuery('search');
+
+
+			if(!empty($searchQry))
 			{
-				$feed = "http://gdata.youtube.com/feeds/api/videos?orderby=relevance&vq=".urlencode($search)."&max-results=50"; // maximum is 50. 
+				if(substr($searchQry,0,6) == 'video:') // YouTube video code?
+				{
+				//	return "video: ".$searchQry;
+					$searchQry = trim(substr($searchQry,6));
+					$data = array();
+					$data['entry'][0]['id'] =  $searchQry;
+					$data['entry'][0]['title'] = "Specified Video";
+					$extension = 'youtube';
+				//	return print_a($parm,true);
+				}
+				elseif(substr($searchQry,0,9) == 'playlist:') // playlist
+				{
+					$searchQry = trim(substr($searchQry,9));
+					$feed = "http://gdata.youtube.com/feeds/api/playlists/".urlencode($searchQry);
+					$plData = e107::getXml()->loadXMLfile($feed,true);
+					unset($feed);
+				//	return print_a($plData,true);
+
+					$code = $this->getYouTubeCode( $plData['entry'][0]['link'][0]['@attributes']['href']);
+
+
+				//	return print_a($searchQry,true);
+
+					if(!empty($plData))
+					{
+						$data = array();
+						$data['entry'][0]['id'] =  $searchQry;
+						$data['entry'][0]['title'] = "Playlist: ". $plData['title'];
+						$data['entry'][0]['thumb'] =  "http://i1.ytimg.com/vi/".$code."/maxresdefault.jpg";
+						$extension = 'youtubepl';
+
+						e107::getMedia()->saveThumb("http://i1.ytimg.com/vi/".$code."/maxresdefault.jpg", $searchQry);
+					}
+
+				}
+				else
+				{
+					$feed = "http://gdata.youtube.com/feeds/api/videos?orderby=relevance&vq=".urlencode($searchQry)."&max-results=50"; // maximum is 50.
+					$extension = 'youtube';
+				}
+
 			}
 			else
 			{
-				$feed = "https://gdata.youtube.com/feeds/api/users/e107inc/uploads";	
-			}	
-					
-			$data = e107::getXml()->loadXMLfile($feed,true);
-			
+
+				$defaultAccount = e107::pref('core','youtube_default_account','e107inc');
+				$feed = "https://gdata.youtube.com/feeds/api/users/".$defaultAccount."/uploads";
+				$extension = 'youtube';
+			}
+
+
+
+			if(!empty($feed) && empty($data))
+			{
+				$data = e107::getXml()->loadXMLfile($feed,true);
+			}
 		//	$text .= "<h2>".$data['title']."</h2>";
-		//	$text .= print_a($data,true);
+		//	return print_a($data,true);
 			
 			$items = array();
 			
@@ -1404,14 +1462,17 @@ class media_admin_ui extends e_admin_ui
 				$thumbnail = "https://i1.ytimg.com/vi/".$id."/0.jpg";
 				
 				$items[] = array( 
-					'previewUrl'	=> $thumbnail,
-					'saveValue'		=> $id.".youtube",
-					'thumbUrl'		=> $thumbnail,
+					'previewUrl'	=> ($value['thumb']) ? $value['thumb'] : $thumbnail,
+					'saveValue'		=> $id.".".$extension, // youtube",
+					'thumbUrl'		=> ($value['thumb']) ? $value['thumb'] : $thumbnail,
 					'title'			=> $value['title']
 				); 	
 			}
-			
-			$parms = array('width' => 200, 'height'=>113, 'type'=>'image', 'bbcode'=>'video', 'tagid'=> $this->getQuery('tagid'), 'action'=>'youtube','searchPlaceholder'=>'Search Youtube');
+
+		//	return print_a($items,true);
+		//	return print_a($data,true);
+
+			$parms = array('width' => 200, 'height'=>113, 'type'=>'image', 'bbcode'=>'video', 'tagid'=> $this->getQuery('tagid'), 'action'=>'youtube','searchPlaceholder'=>'Search Youtube. Use video: or playlist: prefixes if you know the code.' );
 		
 			$text = e107::getMedia()->browserCarousel($items, $parms);
 		

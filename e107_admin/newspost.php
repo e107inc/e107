@@ -2405,7 +2405,7 @@ class admin_newspost
 										".$frm->help(LAN_NEWS_23)."</td>
 										<td>
 				";
-		if(vartrue($_POST['news_thumbnail']) && (strpos($_POST['news_thumbnail'], ",") == false) && $_POST['news_thumbnail'][0] != "{" && substr($_POST['news_thumbnail'],-8) !== '.youtube')//BC compat
+		if(vartrue($_POST['news_thumbnail']) && (strpos($_POST['news_thumbnail'], ",") == false) && $_POST['news_thumbnail'][0] != "{" && $tp->isVideo($_POST['news_thumbnail']) === false )//BC compat
 		{
 			$_POST['news_thumbnail'] = "{e_IMAGE}newspost_images/".$_POST['news_thumbnail'];	
 		}

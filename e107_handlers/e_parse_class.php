@@ -2972,7 +2972,7 @@ class e_parser
 	{
 		$ext = pathinfo($file,PATHINFO_EXTENSION);
 			
-		return ($ext == 'youtube') ? true : false;
+		return ($ext == 'youtube' || $ext == 'youtubepl') ? true : false;
 		
 	}
 
@@ -3039,6 +3039,26 @@ class e_parser
 				return '<div class="video-responsive video-thumbnail thumbnail">'.$video.'</div>';	
 			}
 			
+			return '<div class="video-responsive '.vartrue($parm['class']).'">'.$video.'</div>';
+		}
+
+
+		if($type =='youtubepl')
+		{
+
+			if($thumb == 'tag')
+			{
+				$thumbSrc =  e107::getMedia()->getThumb($id);
+				return "<img class='img-responsive' src='".$thumbSrc."' alt='Youtube Video Playlist' style='width:".vartrue($parm['w'],'80')."px'/>";
+
+			}
+
+			if($thumb == 'src')
+			{
+				return e107::getMedia()->getThumb($id);
+			}
+
+			$video = '<iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list='.$id.'" frameborder="0" allowfullscreen></iframe>';
 			return '<div class="video-responsive '.vartrue($parm['class']).'">'.$video.'</div>';
 		}
 				

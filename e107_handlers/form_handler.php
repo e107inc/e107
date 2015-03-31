@@ -698,7 +698,8 @@ class e_form
 			if(strpos($sc_parameters, '=') === false) $sc_parameters = 'media='.$sc_parameters;
 			parse_str($sc_parameters, $sc_parameters);
 		}
-		
+
+
 	//	print_a($sc_parameters);
 	
 		if(empty($sc_parameters['media']))
