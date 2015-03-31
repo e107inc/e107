@@ -30,10 +30,7 @@ class sitelinks
 		{
 			while ($row = $sql->fetch())
 			{
-				if(!empty($row['link_sefurl']) && !empty($row['link_owner']))
-				{
-					$this->sefList[$row['link_sefurl']]	= e107::url($row['link_owner'],$row['link_url']);
-				}
+
 				
 				//	if (substr($row['link_name'], 0, 8) == 'submenu.'){
 				//		$tmp=explode('.', $row['link_name'], 3);
@@ -259,6 +256,7 @@ class sitelinks
 		if(vartrue($linkInfo['link_sefurl'])) 
 		{
 			$linkInfo['link_url'] = $linkInfo['link_sefurl'];
+
 		}
 
 		// If submenu: Fix Name, Add Indentation.
