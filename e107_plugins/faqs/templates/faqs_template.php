@@ -9,11 +9,11 @@
  */
 
 $FAQS_TEMPLATE['start']	= "
-<div class='faq-start'>
+<div class='faq-start'>{FAQ_SUBMIT_QUESTION}
 ";
 
 $FAQS_TEMPLATE['end']	= "
-	<div class='faq-submit-question'>{FAQ_SUBMIT_QUESTION}</div>
+	<div class='faq-submit-question'></div>
 	<div class='faq-search'>{FAQ_SEARCH}</div>
 </div>
 ";
@@ -30,4 +30,6 @@ $FAQS_TEMPLATE['all']['end'] = "
 	</ul>
 </div>
 ";
+
+
 

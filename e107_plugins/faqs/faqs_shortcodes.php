@@ -44,7 +44,7 @@ class faqs_shortcodes extends e_shortcode
 			$tags = '';
 			if(vartrue($params['tags']) && $this->var['faq_tags'])
 			{
-				$tags = "<div class='faq-tags'>".$this->sc_faq_tags()."</div>";	
+				$tags = "<div class='faq-tags'>".LAN_FAQS_TAGS.": ".$this->sc_faq_tags()."</div>";
 			}
 			$id = "faq_".$this->var['faq_id'];
 			$text = "<a class='e-expandit faq-question' href='#{$id}'>".$tp->toHTML($this->var['faq_question'],true)."</a>
@@ -84,7 +84,8 @@ class faqs_shortcodes extends e_shortcode
 		foreach ($tags as $tag) 
 		{
 			$urlparms['tag'] = $tag;
-			$url = e107::getUrl()->create('faqs/list/all', $urlparms);
+		//	$url = e107::getUrl()->create('faqs/list/all', $urlparms);
+			$url = e107::url('faqs', 'tag',$urlparms);
 			$tag = htmlspecialchars($tag, ENT_QUOTES, 'utf-8');
 			$ret[] = '<a href="'.$url.'" title="'.$tag.'"><span class="label label-info">'.$tag.'</span></a>';
 		}
@@ -181,22 +182,27 @@ class faqs_shortcodes extends e_shortcode
 
 	function sc_faq_submit_question()
 	{
-		return ''; // UNDER CONSTRUCTION
-		$faqpref = e107::getPlugConfig('faqs')->getPref();
-		$frm = e107::getForm();
-		
-		if (check_class($faqpref['add_faq']))
+
+		$faqpref = e107::pref('faqs');
+
+		if (check_class($faqpref['submit_question']))
 		{
-			$text = "<div class='faq-submit-question-container'><a class='e-expandit faq-submit-question' href='faqs.php'>Submit a Question</a>
-			<div class='e-hideme faq-submit-question-form'>
-			<form method=\"post\" action=\"".e_SELF."?cat.$id.$idx\" id=\"dataform\">
-			<div>".$frm->textarea('ask_a_question','').'<br />'.$frm->submit('submit_a_question','Go')."</div>
-			</form>
-			</div>
-			</div>			
-			";
+			$frm = e107::getForm();
+
+			$text = "<a class='btn btn-primary e-expandit faq-submit-question' href='#ask-a-question'>Ask a Question</a>
+			<div id='ask-a-question' class='alert alert-info alert-block e-hideme form-group faq-submit-question-form'>";
+
+			$text .= $frm->open('faq-ask-question','post');
+
+			$text .= "<div>".$frm->text('ask_a_question','',255,array('size'=>'xxlarge','placeholder'=>'Type your question here..')).'<br />'.$frm->submit('submit_a_question','Submit')."</div>";
+
+			$text .= $frm->close();
+
+			$text .= "</div>";
+
 			return $text;
-		}		
+		}
+
 	}
 	
 	function sc_faq_search($parm='')

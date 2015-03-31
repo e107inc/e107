@@ -9,9 +9,14 @@
 	margin-top:20px;
 	margin-left:30px;
 }
-.faq-submit-question
+
+div.faq-tags { font-size: 80%; text-align:right }
+
+a.faq-submit-question
 {
-	margin-top:20px;
+   text-align:right;
+    float: right;
+    margin-top:-50px;
 	margin-bottom: 10px;
 		
 }
@@ -50,8 +55,9 @@ li.faq-listall-loop
 
 .faq-answer
 {
-	margin:20px;
-	border:1px solid silver;
-	background-color: #e3e3e3;
+	margin:20px 0px;
+	border:1px solid #DDDDDD;
+	background-color: #F5F5F5;
 	padding:10px;
+	border-radius: 5px;
 }

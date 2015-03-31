@@ -40,6 +40,8 @@ class faq_admin extends e_admin_dispatcher
 	protected $adminMenu = array(
 		'main/list'		=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
 		'main/create'	=> array('caption'=> LAN_CREATE_ITEM, 'perm' => 'P'),
+		'main/followup'	=> array('caption'=> "Unanswered", 'perm' => 'P', 'uri'=>"admin_config.php?searchquery=&filter_options=faq_author__0&mode=main&action=list"),
+
 		'cat/list' 		=> array('caption'=> LAN_CATEGORIES, 'perm' => 'P'),
 		'cat/create' 	=> array('caption'=> LAN_CREATE_CATEGORY, 'perm' => 'P'),
 		'main/prefs' 	=> array('caption'=> LAN_PREFS, 'perm' => '0'),
@@ -51,6 +53,8 @@ class faq_admin extends e_admin_dispatcher
 	);	
 	
 	protected $menuTitle = 'FAQs';
+
+	//
 }
 
 class faq_cat_ui extends e_admin_ui
@@ -191,8 +195,10 @@ class faq_main_ui extends e_admin_ui
 			'faq_comment' 			=> array('title'=> LANA_FAQ_COMMENT,		'tab' => 1, 'type' => 'userclass',		'data' => 'int',	'width' => 'auto', 'inline'=> true),	// User id
 			
 			'faq_datestamp' 		=> array('title'=> LAN_DATE,		'tab' => 1, 'type' => 'datestamp',		'data'=> 'int','width' => 'auto', 'noedit' => false,'writeParms'=>'auto=1'),	
-            'faq_author' 			=> array('title'=> LAN_USER,		'tab' => 1, 'type' => 'user',			'data'=> 'int', 'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'writeParms' => 'currentInit=1', 'filter' => true, 'batch' => true, 'nolist' => true	),	 	// Photo
-       		'u.user_name' 			=> array('title'=> LANA_FAQ_UNAME,		'tab' => 1, 'type' => 'user',			'width' => 'auto', 'noedit' => true, 'readParms'=>'idField=faq_author&link=1'),	// User name
+       		'faq_author' 			=> array('title'=> LAN_USER,		'tab' => 1, 'type' => 'user',			'data'=> 'int', 'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'writeParms' => 'currentInit=1', 'filter' => true, 'batch' => true, 'nolist' => true	),	 	// Photo
+			'faq_author_ip' 		=> array('title'=> LAN_IP,		    'tab' => 1, 'type' => 'ip',		'readonly'=>2,	'data'=> 'str', 'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'writeParms' => 'currentInit=1', 'filter' => true, 'batch' => true, 'nolist' => true	),	 	// Photo
+
+			'u.user_name' 			=> array('title'=> LANA_FAQ_UNAME,		'tab' => 1, 'type' => 'user',			'width' => 'auto', 'noedit' => true, 'readParms'=>'idField=faq_author&link=1'),	// User name
        		'u.user_loginname' 		=> array('title'=> LANA_FAQ_ULOGINNAME,	'tab' => 1, 'type' => 'user',			'width' => 'auto', 'noedit' => true, 'readParms'=>'idField=faq_author&link=1'),	// User login name
 			'faq_order' 			=> array('title'=> LAN_ORDER,		'tab' => 1, 'type' => 'number',			'data'=> 'int','width' => '5%', 'thclass' => 'center','nolist' => false, 'noedit'=>false, 'readParms'=>'editable=1'),	
 			'options' 				=> array('title'=> LAN_OPTIONS,				 	'type' => null,				'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center','readParms'=>'sort=1')
