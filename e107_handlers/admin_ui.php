@@ -5903,6 +5903,16 @@ class e_admin_form_ui extends e_form
 					break;
 
 					case 'dropdown': // use the array $parm;
+
+						if(!empty($parms['optArray']))
+						{
+							$fopts = $parms;
+							$parms = $fopts['optArray'];
+							unset($fopts['optArray']);
+							$parms['__options'] = $fopts;
+						}
+
+
 						if(!is_array(varset($parms['__options']))) parse_str($parms['__options'], $parms['__options']);
 						$opts = $parms['__options'];
 						if(vartrue($opts['multiple']))

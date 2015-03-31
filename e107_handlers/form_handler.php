@@ -2824,7 +2824,7 @@ class e_form
 		{
 			$attributes['type'] = $parms['type'];	
 		}
-				
+
 		$this->renderValueTrigger($field, $value, $parms, $id);
 
 		$tp = e107::getParser();
@@ -2986,6 +2986,15 @@ class e_form
 				$wparms = $attributes['writeParms'];
 				
 				if(!is_array(varset($wparms['__options']))) parse_str($wparms['__options'], $wparms['__options']);
+
+				if(!empty($wparms['optArray']))
+				{
+					$fopts = $wparms;
+					$wparms = $fopts['optArray'];
+					unset($fopts['optArray']);
+					$wparms['__options'] = $fopts;
+				}
+
 
 				$opts = $wparms['__options'];
 				unset($wparms['__options']);
@@ -3606,7 +3615,16 @@ class e_form
 				$parms['pattern'] = vartrue($attributes['pattern'], $required_data[3]);	
 			}
 		}
-		
+
+		// XXX Fixes For the above.  - use optArray variable. eg. $field['key']['writeParms']['optArray'] = array('one','two','three');
+		if(($attributes['type'] == 'dropdown' || $attributes['type'] == 'radio') && !empty($parms['optArray']))
+		{
+			$fopts = $parms;
+			$parms = $fopts['optArray'];
+			unset($fopts['optArray']);
+			$parms['__options'] = $fopts;
+		}
+
 		$this->renderElementTrigger($key, $value, $parms, $required_data, $id);
 		
 		switch($attributes['type'])
