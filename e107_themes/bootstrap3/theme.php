@@ -181,16 +181,16 @@ $LAYOUT['jumbotron_home'] =  <<<TMPL
       <!-- Example row of columns -->
       <div class="row">
       {SETSTYLE=col-md-4}
-	  {CMENU=jumbotron-menu-1}
-	  {CMENU=jumbotron-menu-2}
-	  {CMENU=jumbotron-menu-3}
+	  {MENU=2}
+	  {MENU=3}
+	  {MENU=4}
       </div>
 
        <div class="row">
       {SETSTYLE=col-md-4}
-	  {MENU=2}
-	  {MENU=3}
-	  {MENU=4}
+	  {MENU=5}
+	  {MENU=6}
+	  {MENU=7}
       </div>
 TMPL;
 
