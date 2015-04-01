@@ -65,11 +65,26 @@ class eurl_admin_ui extends e_admin_controller_ui
 	{
 
 
-		$htaccess = file_get_contents(e_BASE.".htaccess");
+		$htaccess = file_exists(e_BASE.".htaccess");
 
-		if(strpos($htaccess, 'SetEnv HTTP_MOD_REWRITE On')===false)
+		if(function_exists('apache_get_modules'))
 		{
-			e107::getMessage()->addWarning("Mod-rewrite is disabled. Please add the following to your <b>.htaccess</b> file after the line \"Rewrite Engine On\":<br /><pre>SetEnv HTTP_MOD_REWRITE On</pre>");
+			$modules = apache_get_modules();
+			$modRewrite = in_array('mod_rewrite', $modules );
+		}
+		else
+		{
+			$modRewrite = false;
+		}
+
+		if($modRewrite === false)
+		{
+			e107::getMessage()->addInfo("Apache mod_rewrite was not found on this server and is required to use this feature. ");
+		}
+
+		if($htaccess && $modRewrite && !deftrue('e_MOD_REWRITE'))
+		{
+			e107::getMessage()->addInfo("Mod-rewrite is disabled. To enable, please add the following line to your <b>e107_config.php</b> file:<br /><pre>define('e_MOD_REWRITE',true);</pre>");
 		}
 	
 		if(is_array($_POST['rebuild']))
@@ -155,7 +170,8 @@ class eurl_admin_ui extends e_admin_controller_ui
 		$this->addTitle(LAN_EURL_NAME_HELP);
 		return LAN_EURL_UC;
 	}
-	
+
+	//TODO Checkbox for each plugin to enable/disable
 	public function simplePage()
 	{
 		// $this->addTitle("Simple Redirects");
@@ -167,11 +183,6 @@ class eurl_admin_ui extends e_admin_controller_ui
 		}
 
 
-
-
-
-
-		
 		$text = "";
 			
 		foreach($eUrl as $plug=>$val)

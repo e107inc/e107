@@ -3006,8 +3006,10 @@ class e107
 
 		define('CHARSET', 'utf-8'); // set CHARSET for backward compatibility
 
-		define('e_MOD_REWRITE', (getenv('HTTP_MOD_REWRITE')=='On' ? true : false));
-
+		if(!defined('e_MOD_REWRITE')) // Allow e107_config.php to override.
+		{
+			define('e_MOD_REWRITE', (getenv('HTTP_MOD_REWRITE')=='On' ? true : false));
+		}
 		// Define the domain name and subdomain name.
 		if(is_numeric(str_replace(".","",$_SERVER['HTTP_HOST'])))
 		{
