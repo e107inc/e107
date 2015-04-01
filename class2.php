@@ -875,7 +875,17 @@ if (!class_exists('e107table', false))
 		//	$this->themeClass 		= e107::getPref('sitetheme')."_theme"; // disabled at the moment. 
 			$this->adminThemeClass 	= e107::getPref('admintheme')."_admintheme";	// Check for a class. 
 		}
-		
+
+
+		/**
+		 * @param $style
+		 */
+		function setStyle($style)
+		{
+			$this->eSetStyle = $style;
+		}
+
+
 		/**
 		 * @param $caption string caption text
 		 * @param $text string

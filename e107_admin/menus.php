@@ -765,10 +765,10 @@ class e_layout
 		global $style;
 		
 		$style = $this->style;
-	
-		echo $tp->parsetemplate($head);
+
+		echo $tp->parseTemplate($head);
 	//	echo "<div>MAIN CONTENT</div>";
-		echo $tp->parsetemplate($foot);
+		echo $tp->parseTemplate($foot);
 
 	}
 
