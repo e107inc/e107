@@ -1369,6 +1369,7 @@ class e107plugin
 		$pref = e107::getPref();
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
+	  	$event = e107::getEvent();
 
 		$error = array(); // Array of error messages
 		$canContinue = TRUE; // Clear flag if must abort part way through
@@ -1630,6 +1631,26 @@ class e107plugin
 				$mes->addSuccess($text);
 			}
 
+		}
+
+		if ($function == 'install')
+		{
+			$event->trigger('admin_plugin_install', $plug);
+		}
+
+		if ($function == 'uninstall')
+		{
+			$event->trigger('admin_plugin_uninstall', $plug);
+		}
+
+		if ($function == 'upgrade')
+		{
+			$event->trigger('admin_plugin_upgrade', $plug);
+		}
+
+		if ($function == 'refresh')
+		{
+			$event->trigger('admin_plugin_refresh', $plug);
 		}
 
 	}
@@ -2518,6 +2539,10 @@ class e107plugin
 		{
 			$text .= "<br /><a class='btn btn-primary' href='".e_PLUGIN.$eplug_folder."/".$eplug_conffile."'>".LAN_CONFIGURE."</a>";
 		}
+
+		// Event triggering after plugin installation.
+		$event = e107::getEvent();
+		$event->trigger('admin_plugin_install', $plug);
 
 		return $text;
 	}
