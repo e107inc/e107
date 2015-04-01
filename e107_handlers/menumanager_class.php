@@ -807,13 +807,14 @@ class e_menuManager {
 	// -----------------------------------------------------------------------
 
 	function menuDeactivate()
-	{	// Get current menu name
-		global $admin_log;
+	{
+
 		$sql = e107::getDb();
 		$sql2 = e107::getDb();
 		
 		//echo "FOUND= ".$this->menuId;
 		$error = false;
+		$message = '';
 
 		if($sql->gen('SELECT menu_name, menu_location, menu_order FROM #menus WHERE menu_id = '.$this->menuId.' LIMIT 1'))
 		{
@@ -832,14 +833,14 @@ class e_menuManager {
 			else
 			{
 				//menu_location=0 does NOT exist, let's just convert this to it
-				if(!$sql2->db_Update("menus", "menu_location=0, menu_order=0, menu_class=0, menu_pages='' WHERE menu_id=".$this->menuId))
+				if(!$sql2->update("menus", "menu_location=0, menu_order=0, menu_class=0, menu_pages='' WHERE menu_id=".$this->menuId))
 				{
 	            	$message = "FAILED";
 					$error = true;
 				}
 			}
 			//Move all menus up (reduces order number) that have a higher menu order number than one deactivated, in the selected location. 
-			$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_location={$row['menu_location']} AND menu_order > {$row['menu_order']} AND menu_layout = '".$this->dbLayout."' ");
+			$sql->update("menus", "menu_order=menu_order-1 WHERE menu_location={$row['menu_location']} AND menu_order > {$row['menu_order']} AND menu_layout = '".$this->dbLayout."' ");
 			e107::getLog()->add('MENU_04',$row['menu_name'].'[!br!]'.$row['menu_location'].'[!br!]'.$row['menu_order'].'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
 		}
 		else
@@ -855,10 +856,13 @@ class e_menuManager {
 
 	// ----------------------------------------------------------------------
 
+	/**
+	 * Move a Menu
+	 */
 	function menuMove()
 	{// Get current menu name
 
-			global $admin_log,$sql;
+			$sql = e107::getDb();
 
 			if($sql->select('menus', 'menu_name', 'menu_id='.$this->menuId, 'default'))
 			{
@@ -1182,12 +1186,21 @@ class e_menuManager {
 		$tp     = e107::getParser(); 
 		$ns     = e107::getRender();  
 
-		
+
 		$menuLayout = ($this->curLayout != $pref['sitetheme_deflayout']) ? $this->curLayout : "";
 		
 		if(strstr($str, "LOGO"))
 		{
 			echo $tp->parseTemplate("{LOGO}");
+		}
+		elseif(strstr($str, "SETSTYLE"))
+		{
+			$tmp = explode("=", $str);
+			$style = preg_replace("/\{SETSTYLE=(.*?)\}/si", "\\1", $str);
+
+			$this->style = $style;
+			$ns->setStyle($style);
+
 		}
 		elseif(strstr($str, "SITENAME"))
 		{
@@ -1335,16 +1348,10 @@ class e_menuManager {
 				}
 			}
 
-			echo $menuText;
+
+			$ns->tablerender('', $menuText);
 		}
-		else if(strstr($str, "SETSTYLE"))
-		{
-			$tmp = explode("=", $str);
-			$style = preg_replace("/\{SETSTYLE=(.*?)\}/si", "\\1", $str);
-			
-			$this->style = $style;
-			
-		}
+
 		else if(strstr($str, "SITEDISCLAIMER"))
 		{
 			echo "[Sitedisclaimer]";
