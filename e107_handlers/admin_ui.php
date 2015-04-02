@@ -4858,17 +4858,16 @@ class e_admin_ui extends e_admin_controller_ui
 			return;
 		}
 		
-		$sql = e107::getDb();
-		$c = ($_GET['from']) ? intval($_GET['from']) : 0;
+		$sql    = e107::getDb();
+		$step   = $this->orderStep ? intval($this->orderStep) : 1;
+		$from   = ($_GET['from']) ? intval($_GET['from']) * $step : 0;
 
-	//	$c = $c+1;
+		$c = $from;
 		$updated = array();
-		$step = $this->orderStep ? intval($this->orderStep) : 1;
-
 
 		foreach($_POST['all'] as $row)
 		{
-			$c += $step;
+
 			list($tmp,$id) = explode("-", $row, 2);
 			$id = preg_replace('/[^\w-:.]/', '', $id);
 			if(!is_numeric($id)) $id = "'{$id}'";
@@ -4877,18 +4876,21 @@ class e_admin_ui extends e_admin_controller_ui
 				$updated[] = "#".$id."  --  ".$this->sortField." = ".$c;
 			}
 			// echo($sql->getLastQuery()."\n");
+			$c += $step;
 
 		}
 
-		// Increment every other record above the one that was changed.
-		$changed = intval($_POST['neworder']) + intval($_GET['from']) + $step;
-		// eg. 	$qry = "UPDATE e107_faqs e, (SELECT @n := 249) m  SET e.faq_order = @n := @n + 1 WHERE 1";
+		// Increment every other record after the current page of records. 
+	//	$changed = (intval($_POST['neworder']) * $step) + $from ;
+		$changed = $c - $step;
 		$qry = "UPDATE `#".$this->table."` e, (SELECT @n := ".($changed).") m  SET e.".$this->sortField." = @n := @n + ".$step." WHERE ".$this->sortField." > ".($changed);
 		$sql->gen($qry);
 
 	//	e107::getLog()->addDebug(print_r($_POST,true))->toFile('SortAjax','Admin-UI Ajax Sort Log', true);
-	// e107::getLog()->addDebug(print_r($updated,true))->toFile('SortAjax','Admin-UI Ajax Sort Log', true);
+	//	 e107::getLog()->addDebug(print_r($updated,true))->toFile('SortAjax','Admin-UI Ajax Sort Log', true);
 	//	e107::getLog()->addDebug($qry)->toFile('SortAjax','Admin-UI Ajax Sort Log', true);
+
+	// eg. 	$qry = "UPDATE e107_faqs e, (SELECT @n := 249) m  SET e.faq_order = @n := @n + 1 WHERE 1";
 
 	}
 
