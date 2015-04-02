@@ -24,8 +24,8 @@ require_once("../../../../class2.php");
  
 if($_POST['mode'] == 'tohtml')
 {
-   
-    
+
+
 	// XXX @Cam possible fix - convert to BB first, see news admin AJAX request/response values for reference why
 	$content = stripslashes($_POST['content']);
 
@@ -59,12 +59,16 @@ if($_POST['mode'] == 'tohtml')
         
         if(!empty($content) && E107_DEBUG_LEVEL > 0)
 		{
-			$content =  "-- DEBUG MODE ACTIVE -- \n".$content;		
-			echo htmlentities($content)."\n";
-			exit;		
+			$content =  "-- DEBUG MODE ACTIVE -- \n".$content;
+		//	echo htmlentities($content)."\n";
+		//	echo "<pre>".$content."</pre>";
+			echo $content;
+			exit;
 		}
-        
+
+
      	 echo $content;
+
     }
     else  // bbcode Mode. 
     {   

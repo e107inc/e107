@@ -1102,13 +1102,15 @@ class e_media
 		
 			
 		$close = (E107_DEBUG_LEVEL > 0) ? "" : "  data-close='true' ";	//
-	
-		// 		
-		$text .= "\n\n<!-- Start Item -->\n<div class='media-carousel ".$data['gridClass']."'>
+		$select = (E107_DEBUG_LEVEL > 0) ? '' : " e-dialog-save e-dialog-close";
+
+
+
+		$text = "\n\n<!-- Start Item -->\n<div class='media-carousel ".$data['gridClass']."'>
 		
 			<div class='well clearfix'>
 
-				<a data-toggle='context' class='e-media-select e-tip e-dialog-save e-dialog-close' ".$close." data-id='".$data['id']."' data-width='".$data['width']."' data-height='".$data['height']."' data-src='".$data['previewUrl']."' data-type='".$data['type']."' data-bbcode='".$data['bbcode']."' data-target='".$data['tagid']."' data-path='".$data['saveValue']."' data-preview='".$data['previewUrl']."' title=\"".$data['title']."\" style='float:left' href='#' >";
+				<a data-toggle='context' class='e-media-select e-tip".$select."' ".$close." data-id='".$data['id']."' data-width='".$data['width']."' data-height='".$data['height']."' data-src='".$data['previewUrl']."' data-type='".$data['type']."' data-bbcode='".$data['bbcode']."' data-target='".$data['tagid']."' data-path='".$data['saveValue']."' data-preview='".$data['previewUrl']."' title=\"".$data['title']."\" style='float:left' href='#' >";
 		
 				if($data['type'] == 'image')
 				{
@@ -1339,7 +1341,13 @@ class e_media
 			}	
 			
 			$ret = str_replace('{INDICATORS}', $this->browserIndicators($slides,$carouselID), $text);
-			
+
+			if(E107_DEBUG_LEVEL > 0)
+			{
+				print_a($parm);
+			}
+
+
 			return $ret;
 				
 	}

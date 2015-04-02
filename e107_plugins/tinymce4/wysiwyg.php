@@ -306,6 +306,13 @@ class wysiwyg
 			$ret[$k] = $xml; 			
 		}
 
+		$tPref = e107::pref('tinymce4');
+
+		if(!empty($tPref['paste_as_text']))
+		{
+			$ret['paste_as_text']	= true;
+		}
+
 		$ret['convert_fonts_to_spans']	= false;
 		$ret['content_css']				= e_PLUGIN_ABS.'tinymce4/editor.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css,http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css';
 		

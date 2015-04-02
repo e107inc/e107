@@ -26,7 +26,7 @@ e107::css('inline',"
 
 ");
 
-e107::js('tinymce','tiny_mce_popup.js'); 
+e107::js('tinymce4','plugins/compat3x/tiny_mce_popup.js');
 
 e107::js('inline',"
 
@@ -89,7 +89,7 @@ $(document).ready(function()
 				}).responseText;
 
 				html = '<bbcode alt=\"'+encodeURIComponent(s)+'\">' + html + '</bbcode>   ' ;
-				
+alert(html);
 				tinyMCEPopup.editor.execCommand('mceInsertContent', false, html);
 				tinyMCEPopup.close();
 		});
