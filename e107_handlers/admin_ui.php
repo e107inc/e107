@@ -4883,7 +4883,7 @@ class e_admin_ui extends e_admin_controller_ui
 		// Increment every other record above the one that was changed.
 		$changed = intval($_POST['neworder']) + intval($_GET['from']) + $step;
 		// eg. 	$qry = "UPDATE e107_faqs e, (SELECT @n := 249) m  SET e.faq_order = @n := @n + 1 WHERE 1";
-		$qry = "UPDATE #".$this->table." e, (SELECT @n := ".($changed).") m  SET e.".$this->sortField." = @n := @n + ".$step." WHERE ".$this->sortField." > ".($changed);
+		$qry = "UPDATE `#".$this->table."` e, (SELECT @n := ".($changed).") m  SET e.".$this->sortField." = @n := @n + ".$step." WHERE ".$this->sortField." > ".($changed);
 		$sql->gen($qry);
 
 	//	e107::getLog()->addDebug(print_r($_POST,true))->toFile('SortAjax','Admin-UI Ajax Sort Log', true);
