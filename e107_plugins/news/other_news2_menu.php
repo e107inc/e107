@@ -15,11 +15,10 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
-// FIXME full rewrite
-global $e107cache;
+
 
 // Load Data
-if($cacheData = $e107cache->retrieve("nq_othernews2"))
+if($cacheData = e107::getCache()->retrieve("nq_othernews2"))
 {
 	echo $cacheData;
 	return;
@@ -31,19 +30,38 @@ unset($text);
 global $OTHERNEWS2_STYLE;
 $ix = new news;
 
+if(!empty($parm))
+{
+	parse_str($parm, $parms);
+}
+
 if(!$OTHERNEWS2_STYLE) 
 {
 	if(deftrue('BOOTSTRAP')) // v2.x
 	{
 		define("OTHERNEWS_COLS",false);
 		$template = e107::getTemplate('news', 'news_menu', 'other2');
-		$OTHERNEWS2_STYLE = $template['item']; 
+		$OTHERNEWS2_STYLE = $template['item'];
+
+		if(!empty($parms['caption']))
+		{
+			$template['caption'] =  e107::getParser()->toHtml($parms['caption'],true,'TITLE');
+		}
 	}
 	else //v1.x
 	{
 		$template['start'] = '';
 		$template['end'] = '';	
-		$template['caption'] = TD_MENU_L2;
+
+
+		if(!empty($parms['caption']))
+		{
+			$template['caption'] =  e107::getParser()->toHtml($parms['caption'],true,'TITLE');
+		}
+		else
+		{
+			$template['caption'] = TD_MENU_L2;
+		}
 		
 		$OTHERNEWS2_STYLE = "
 		<table class='forumheader3' cellpadding='0' cellspacing='0' style='width:100%'>
@@ -108,7 +126,7 @@ LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") 
 AND FIND_IN_SET(3, n.news_render_type)  ORDER BY n.news_datestamp DESC LIMIT 0,". defset('OTHERNEWS2_LIMIT',5);
 
-if ($sql->gen($query)) 
+if (e107::getDb()->gen($query))
 {
 	$text = $tp->parseTemplate($template['start'],true);
 	
@@ -157,10 +175,10 @@ if ($sql->gen($query))
 	// Save Data
 	ob_start();
 
-	$ns->tablerender($template['caption'], $text, 'other_news2');
+	e107::getRender()->tablerender($template['caption'], $text, 'other_news2');
 
 	$cache_data = ob_get_flush();
-	$e107cache->set("nq_othernews2", $cache_data);
+	e107::getCache()->set("nq_othernews2", $cache_data);
 
 }
 
