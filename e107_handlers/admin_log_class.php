@@ -755,7 +755,9 @@ class e_admin_log
 		{
 			return; 	
 		}		
-		
+
+		$text = '';
+
 		foreach($this->_allMessages as $m)
 		{
 			$text .= date('Y-m-d H:i:s', $m['time'])."  \t".str_pad($m['dislevel'],10," ",STR_PAD_RIGHT)."\t".strip_tags($m['message'])."\n";
