@@ -19,5 +19,6 @@
             description: "Adds an example."
         }
     ]
-</templates>
+    </templates>
+    <table_default_attributes>{  class: 'table table-striped table-bordered'   }</table_default_attributes>
 </tinymce>
