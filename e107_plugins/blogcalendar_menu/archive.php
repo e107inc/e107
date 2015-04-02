@@ -35,8 +35,8 @@ $marray = e107::getDate()->terms('month');
 
 	
 // if nr of rows per month is not set, default to 3
-$months_per_row = $pref['blogcal_mpr']?$pref['blogcal_mpr']:
-"3";
+$months_per_row = (!empty($pref['blogcal_mpr'])) ? $pref['blogcal_mpr']: "3";
+
 $pref['blogcal_ws'] = "monday";
 	
 // -------------------------------------

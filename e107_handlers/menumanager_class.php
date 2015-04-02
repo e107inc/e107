@@ -1594,37 +1594,51 @@ class e_menuManager {
 
     function menuSetConfigList()
 	{
+		e107::getMessage()->addDebug("Scanning for Menu config files");
+
         	$sql = e107::getDb();
         	$pref = e107::getPref();
+			$prev_name = '';
+			$search = array('_menu','_');
 
 			$sql -> select("menus", "*", "menu_location != 0 ORDER BY menu_path,menu_name");
 			while($row = $sql-> fetch())
 			{
 				$link = "";
 
-	  			extract($row);
-				$id = substr($menu_path,0,-1);
+				$id = substr($row['menu_path'],0,-1);
 
-				if (file_exists(e_PLUGIN."{$menu_path}{$menu_name}_menu_config.php"))
+				if (file_exists(e_PLUGIN."{$row['menu_path']}{$row['menu_name']}_menu_config.php"))
 				{
-				    $link = "{$menu_path}{$menu_name}_menu_config.php";
+				    $link = $row['menu_path'].$row['menu_name']."_menu_config.php";
 				}
 
-				if(file_exists(e_PLUGIN."{$menu_path}config.php"))
+				if($row['menu_path'] == 'news/')
 				{
-					 $link = "{$menu_path}config.php";
+					$row['menu_path'] = "blogcalendar_menu/";
 				}
+
+				if(file_exists(e_PLUGIN.$row['menu_path']."config.php"))
+				{
+					 $link = $row['menu_path']."config.php";
+				}
+
+
 
 				if($link)
 				{
-         			$tmp[$id]['name'] = ucwords(str_replace("_menu","",$menu_name));
-					if(vartrue($prev) == $id && ($tmp[$id]['name']!=$prev_name))
+
+
+         			$tmp[$id]['name'] = ucwords(str_replace($search,"",$row['menu_name'])); // remove _
+
+					if(vartrue($prev) == $id && ($tmp[$id]['name'] != $prev_name))
 					{
 	                	$tmp[$id]['name'] .= ":".$prev_name;
 					}
 
 					$tmp[$id]['link'] = $link;
 					$prev = $id;
+
 					$prev_name = $tmp[$id]['name'];
 				}
 			}
@@ -1632,6 +1646,6 @@ class e_menuManager {
            $pref['menuconfig_list'] = vartrue($tmp);
 		   
 		   e107::getConfig()->setPref($pref)->save(false,true,false);
-		 //  save_prefs();
+
 	}
 }  // end of Class.
