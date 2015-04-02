@@ -20,6 +20,7 @@
 	<pluginPrefs>
 		<pref name="add_faq">255</pref>
 		<pref name="submit_question">255</pref>
+        <pref name="submit_question_limit">3</pref>
 		<pref name="classic_look">0</pref>
 	</pluginPrefs>
 </e107Plugin>
