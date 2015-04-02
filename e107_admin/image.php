@@ -946,7 +946,7 @@ class media_admin_ui extends e_admin_ui
 
 		if($this->getQuery('iframe'))
 		{
-			e107::js('tinymce','tiny_mce_popup.js'); 		
+			e107::js('tinymce4','plugins/compat3x/tiny_mce_popup.js');
  			$this->getResponse()->setIframeMod(); // disable header/footer menus etc. 
  			
  			if(!$this->getQuery('for'))
@@ -1262,8 +1262,8 @@ class media_admin_ui extends e_admin_ui
 		}
 		
 		$type = (E107_DEBUG_LEVEL > 0) ?  "text" : "hidden";
-		$br = (E107_DEBUG_LEVEL > 0) ?  "<br />" : "";   
-		
+		$br = (E107_DEBUG_LEVEL > 0) ?  "<br />" : "";
+
 		$text .= "
 		".$br."<input title='bbcode' type='{$type}' readonly='readonly' class='span11' id='bbcode_holder' name='bbcode_holder' value='' />
 		".$br."<input title='html/wysiwyg' type='{$type}' class='span11' readonly='readonly' id='html_holder' name='html_holder' value='' />
