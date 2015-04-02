@@ -3003,10 +3003,11 @@ class e_parser
 		$ytqry = http_build_query($ytpref);
 		
 		if($type == 'youtube')
-		{		
-			
-			$video =  '<iframe width="560" height="315" src="//www.youtube.com/embed/'.$id.'?'.$ytqry.'" style="border:0px" allowfullscreen></iframe>';
-			$thumbSrc = "https://i1.ytimg.com/vi/".$id."/0.jpg";
+		{
+		//	$thumbSrc = "https://i1.ytimg.com/vi/".$id."/0.jpg";
+			$thumbSrc = "http://i1.ytimg.com/vi/".$id."/mqdefault.jpg";
+			$video =  '<iframe width="560" height="315" src="//www.youtube.com/embed/'.$id.'?'.$ytqry.'" style="background-size: 100%;background-image: url('.$thumbSrc.');border:0px" allowfullscreen></iframe>';
+
 		
 			if($thumb == 'tag')
 			{

@@ -233,6 +233,11 @@ class wysiwyg
 				
 	function convertBoolean($string)
 	{
+
+		if(substr($string,0,1) == '{')
+		{
+			return $string;
+		}
 	
 		if(is_string($string))
 		{
@@ -319,6 +324,9 @@ class wysiwyg
 		$ret['relative_urls']			= false;  //Media Manager prefers it like this. 
 		$ret['preformatted']			= true;
 		$ret['document_base_url']		= SITEURL;
+
+	//	$ret['table_default_attributes'] = json_encode(array('class'=>'table table-striped' ));
+
 		
 		if(!empty($ret['templates']))
 		{
