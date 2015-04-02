@@ -204,9 +204,11 @@ class faq
 		{
 			$sql = e107::getDb();
 
-			if($sql->select('faqs','faq_id',"faq_answer='' AND faq_author_ip = '".USERIP."' LIMIT 1"))
+			$existing = $sql->select('faqs','faq_id',"faq_answer='' AND faq_author_ip = '".USERIP."' ");
+
+			if(!empty($this->pref['submit_question_limit']) && $existing >= $this->pref['submit_question_limit'])
 			{
-				e107::getMessage()->setTitle('Sorry',E_MESSAGE_INFO)->addInfo("You may only ask another question once your other question has been answered.");
+				e107::getMessage()->setTitle('Sorry',E_MESSAGE_INFO)->addInfo("You have reached the maximum number of new questions. You may ask more once your existing questions have been answered.");
 				return;
 			}
 

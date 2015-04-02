@@ -19,5 +19,5 @@ define('LANA_FAQ_METAD', 'Meta Description');
 define('LANA_FAQ_METAK', 'Meta Keywords');
 
 define('LANA_FAQ_PREF_1', 'Allow submitting of FAQs by:');
-define('LANA_FAQ_PREF_2', 'Allow submitting of Questions by:');
+define('LANA_FAQ_PREF_2', "'Ask a Question' is limited to");
 define('LANA_FAQ_PREF_3', 'Use Classic Layout');

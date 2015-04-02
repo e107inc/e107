@@ -209,9 +209,11 @@ class faq_main_ui extends e_admin_ui
 		
 		// optional, if $pluginName == 'core', core prefs will be used, else e107::getPluginConfig($pluginName);
 		protected $prefs = array( 
-			'add_faq'	   				=> array('title'=> LANA_FAQ_PREF_1, 'type'=>'userclass', 'help' => 'Under construction'),
-			'submit_question'	   		=> array('title'=> LANA_FAQ_PREF_2, 'type'=>'userclass', 'help' => 'Under construction'),		
-			'classic_look'				=> array('title'=> LANA_FAQ_PREF_3, 'type'=>'boolean', 'help' => 'Under construction')
+			'add_faq'	   				=> array('title'=> LANA_FAQ_PREF_1, 'type'=>'userclass' ),
+			'submit_question'	   		=> array('title'=> LANA_FAQ_PREF_2, 'type'=>'userclass' ),
+			'submit_question_limit'     => array('title'=> "'Ask a Question' limit per user", 'type'=>'number', 'data'=>'int', 'help'=>'0 = no limit'),
+			'classic_look'				=> array('title'=> LANA_FAQ_PREF_3, 'type'=>'boolean' ),
+
 		);
 
 	protected $categories = array();
@@ -239,6 +241,8 @@ class faq_main_ui extends e_admin_ui
 		{
 			$new_data['faq_tags'] = implode(',', array_map('trim', explode(',', $new_data['faq_tags'])));
 		}
+
+		$new_data['faq_order'] = 0;
 
 		return $new_data;
 	}

@@ -238,6 +238,11 @@ class wysiwyg
 		{
 			return $string;
 		}
+
+		if(is_numeric($string))
+		{
+			return $string;
+		}
 	
 		if(is_string($string))
 		{
@@ -324,6 +329,7 @@ class wysiwyg
 		$ret['relative_urls']			= false;  //Media Manager prefers it like this. 
 		$ret['preformatted']			= true;
 		$ret['document_base_url']		= SITEURL;
+
 
 	//	$ret['table_default_attributes'] = json_encode(array('class'=>'table table-striped' ));
 
