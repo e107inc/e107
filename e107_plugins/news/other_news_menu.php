@@ -15,13 +15,16 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
-// FIXME full rewrite
+
 // Load Data
 if($cacheData = e107::getCache()->retrieve("nq_othernews"))
 {
 	echo $cacheData;
 	return;
 }
+
+
+
 
 
 require_once(e_HANDLER."news_class.php");
@@ -32,6 +35,11 @@ $ix = new news;
 
 $caption = TD_MENU_L1;
 
+if(!empty($parm))
+{
+	parse_str($parm, $parms);
+}
+
 if(!$OTHERNEWS_STYLE)
 {
 	if(deftrue('BOOTSTRAP')) // v2.x
@@ -41,13 +49,23 @@ if(!$OTHERNEWS_STYLE)
 		
 		$item_selector = '<div class="btn-group pull-right"><a class="btn btn-mini btn-xs btn-default" href="#otherNews" data-slide="prev">‹</a>  
  		<a class="btn btn-mini btn-xs btn-default" href="#otherNews" data-slide="next">›</a></div>';
-		 
+
+		if(!empty($parms['caption']))
+		{
+			$template['caption'] =  e107::getParser()->toHtml($parms['caption'],true,'TITLE');
+		}
+
 		$caption = "<div class='inline-text'>".$template['caption']." ".$item_selector."</div>";		
 				
 		$OTHERNEWS_STYLE = $template['item']; 
 	}
 	else //v1.x
 	{
+
+		if(!empty($parms['caption']))
+		{
+			$caption =  e107::getParser()->toHtml($parms['caption'], true,'TITLE');
+		}
 			
 		$template['start'] = '';
 		$template['end'] = '';	

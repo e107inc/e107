@@ -11,6 +11,12 @@ if (!defined('e107_INIT')) { exit; }
 $cString = 'nq_news_months_menu_'.md5($parm);
 $cached = e107::getCache()->retrieve($cString);
 
+if(!empty($parm))
+{
+	parse_str($parm, $parms);
+}
+
+
 if(false === $cached)
 {
 	if(!function_exists('newsFormatDate'))
@@ -25,11 +31,12 @@ if(false === $cached)
 		}
 	}
 	
+	if(!isset($parms['showarchive']))
+	{
+		$parms['showarchive'] = 0;
+	}
 
-	//parse_str($parm, $parms); // FIXME - menu settings...
-	$parms['showarchive'] = 0;
 		
-	//e107::plugLan('blogcalendar_menu');
 //	e107::lan('blogcalendar_menu', e_LANGUAGE); // FIXME decide on language file structure (#743)
 	e107::includeLan(e_PLUGIN.'blogcalendar_menu/languages/English.php');
 
@@ -38,7 +45,7 @@ if(false === $cached)
 	
 	$marray  = e107::getDate()->terms('month');
 	
-	// TODO parms
+
 	//$parms['year'] = "2011 0";
 	if(vartrue($parms['year']))
 	{
