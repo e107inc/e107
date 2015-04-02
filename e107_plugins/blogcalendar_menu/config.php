@@ -24,20 +24,13 @@ require_once(e_ADMIN."auth.php");
 $frm = e107::getForm();
 $mes = e107::getMessage();
 
-if (isset($_POST['update_menu'])) 
+if(!empty($_POST['update_menu']))
 {
-	$temp = array();
-	while (list($key, $value) = each($_POST)) 
-	{
-		if ($value != LAN_UPDATE) // ???
-		{
-			$temp[$key] = $value;
-		}
-	}
-	if ($admin_log->logArrayDiffs($temp,$pref,'MISC_06'))
-	{
-		save_prefs();
-	}
+	$cfg = e107::getConfig();
+	$cfg->set('blogcal_mpr', intval($_POST['blogcal_mpr']));
+	$cfg->set('blogcal_padding', intval($_POST['blogcal_padding']));
+	$cfg->save(true,true,true);
+
 }
 
 $ns->tablerender($caption, $mes->render() . $text);

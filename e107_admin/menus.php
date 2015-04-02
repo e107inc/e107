@@ -1348,7 +1348,7 @@ if($_POST)
 			$text .= $men->menuVisibilityOptions();
 			$text .= $men->menuInstanceParameters();
             $text .= $men->menuRenderIframe();
-            $ns -> tablerender(ADLAN_6.SEP.LAN_MENULAYOUT, $text, 'menus_config');
+            $ns -> tablerender(ADLAN_6.SEP.LAN_MENULAYOUT, e107::getMessage()->render(). $text, 'menus_config');
 		}
 		else // Within the IFrame.
 		{
@@ -1407,7 +1407,7 @@ require_once("footer.php");
 function menus_adminmenu()
 {
 
-	// See admin_shortcodes_class.php - get_admin_menumanager()
+	// See admin_shortcodes.php -  sc_admin_menumanager()
 	// required there so it can be shared by plugins.
 
 }

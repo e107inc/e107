@@ -11,6 +11,7 @@
  */
 
 require_once('../../class2.php');
+
 if (!getperms('P') || !e107::isInstalled('log')) 
 {
 	header('Location: '.e_BASE.'index.php');
@@ -19,6 +20,7 @@ if (!getperms('P') || !e107::isInstalled('log'))
 
 
 require_once(e_ADMIN.'auth.php');
+
 require_once(e_HANDLER.'userclass_class.php');
 $frm = e107::getForm();
 $mes = e107::getMessage();
@@ -240,7 +242,7 @@ if (isset($_POST['updatesettings']))
 	e107::getLog()->add('STAT_02',ADSTAT_L82.$logStr,'');
 }
 
-$ns->tablerender($caption, $mes->render() . $text);
+echo  $mes->render() ;
 
 function gen_select($prompt,$name,$value)
 {
@@ -336,6 +338,7 @@ switch ($action)
 		".$frm->admin_button('updatesettings', LAN_UPDATE, 'update')."
 	</div>
 	</form>";
+
 
 	$ns->tablerender(ADSTAT_L16, $text);
 	break;  // case config
