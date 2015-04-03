@@ -380,6 +380,45 @@ class e_menuManager {
 					}
 				}
 			}
+
+
+			//v2.x Scan Custom Page Menus.
+
+			$pageMenus = $sql->retrieve('page','page_id, menu_name, menu_title',"menu_name !='' ", true);
+			foreach($pageMenus as $row)
+			{
+				if(!in_array($row['menu_name'],$menuList))
+				{
+					$insert = array(
+						'menu_id'	=> 0,
+						'menu_name' 	=> $row['menu_name'],
+						'menu_location'	=> 0,
+						'menu_order'	=> 0,
+						'menu_class'	=> 0,
+						'menu_pages'	=> '',
+						'menu_path'		=> $row['page_id'],
+						'menu_layout'  	=> '',
+						'menu_parms'	=> ''
+					);
+
+					if($sql->insert("menus",$insert))
+					{
+						$this->menuAddMessage(MENLAN_10." - ".$row['menu_name'], E_MESSAGE_DEBUG);
+					}
+				}
+
+			}
+
+
+
+
+
+
+
+
+
+
+
 			
 			foreach($fileList as $file)
 			{
@@ -457,11 +496,11 @@ class e_menuManager {
 				if (stristr($menustr, $menu_name) === FALSE)
 				{
 					$sql2->db_Delete("menus", "menu_name='$menu_name'");
-					$message .= MENLAN_11." - ".$menu_name."<br />"; // FIXME
+					$message .= MENLAN_11." - ".$menu_name."<br />";
 				}
 			}
 
-			$this->menuAddMessage(vartrue($message), E_MESSAGE_INFO); //FIXME
+			$this->menuAddMessage(vartrue($message), E_MESSAGE_DEBUG);
 
 	}
 
@@ -913,13 +952,8 @@ class e_menuManager {
 	    	//	$menuInf = $row['menu_path'];
 	    		
 	    		$text .= "<tr style='background-color:$color;color:black'>
-				<td style='text-align:left; color:black;' class='checkbox'>";
-				
-				
-			//	$text .= "
-			////	<input type='checkbox' id='menuselect-{$row['menu_id']}' name='menuselect[]' value='{$row['menu_id']}' />
-			//	<label class='selection-row' for='menuselect-{$row['menu_id']}'>".$row['menu_name'].$menuInf."</label>";
-				
+				<td style='text-align:left; color:black;' >";
+
 				$text .= $frm->checkbox('menuselect[]',$row['menu_id'],'',array('label'=>$row['menu_name'].$menuInf));
 		
 				$text .= "
