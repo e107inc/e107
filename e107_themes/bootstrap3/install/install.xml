@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8' ?>
-<e107Export version="2.0.0 (git)" timestamp="1387636033" >
+<e107Export version="2.0.0 (git)" timestamp="1428087500" >
 	<database>
 	<dbTable name="generic">
 		<item>
@@ -9,9 +9,97 @@
 			<field name="gen_user_id">1</field>
 			<field name="gen_ip">Hello World!</field>
 			<field name="gen_intdata">0</field>
-			<field name="gen_chardata"><![CDATA[
-[html]This is a twitter bootstrap template for a simple marketing or informational website. The only difference is that e107 is managing the content. ie. The text you are reading is the &quot;Welcome Message&quot; and the items below are &quot;News Items&quot;. Visit the admin-area to modify.<br><br><a class=&quot;btn btn-primary btn-large &quot; href=&quot;e107_admin/admin.php&quot;>Go to Admin area</a><br>[/html]
-]]></field>
+			<field name="gen_chardata"><![CDATA[[html]This is a twitter bootstrap template for a simple marketing or informational website. The only difference is that e107 is managing the content. ie. The text you are reading is the &quot;Welcome Message&quot; and the items below are &quot;News Items&quot;. Visit the admin-area to modify.<br><br><a class=&quot;btn btn-primary btn-large &quot; href=&quot;e107_admin/admin.php&quot;>Go to Admin area</a><br>[/html]]]></field>
+		</item>
+	</dbTable>
+	<dbTable name="menus">
+		<item>
+			<field name="menu_id">0</field>
+			<field name="menu_name">jumbotron-menu-2</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">2</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">0</field>
+			<field name="menu_name">jumbotron-menu-3</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">3</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">0</field>
+			<field name="menu_name">feature-menu-1</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">4</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">0</field>
+			<field name="menu_name">feature-menu-2</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">5</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">0</field>
+			<field name="menu_name">feature-menu-3</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">6</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">0</field>
+			<field name="menu_name">jumbotron-menu-1</field>
+			<field name="menu_location">2</field>
+			<field name="menu_order">1</field>
+			<field name="menu_class"></field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">1</field>
+			<field name="menu_layout">jumbotron_home</field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">0</field>
+			<field name="menu_name">jumbotron-menu-2</field>
+			<field name="menu_location">3</field>
+			<field name="menu_order">1</field>
+			<field name="menu_class"></field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">2</field>
+			<field name="menu_layout">jumbotron_home</field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">0</field>
+			<field name="menu_name">jumbotron-menu-3</field>
+			<field name="menu_location">4</field>
+			<field name="menu_order">1</field>
+			<field name="menu_class"></field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">3</field>
+			<field name="menu_layout">jumbotron_home</field>
+			<field name="menu_parms"></field>
 		</item>
 	</dbTable>
 	<dbTable name="page">
@@ -24,8 +112,7 @@
 			<field name="page_metadscr"></field>
 			<field name="page_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec libero ipsum; imperdiet at risus non, dictum sagittis odio! Nulla facilisi. Pellentesque adipiscing facilisis pharetra. Morbi imperdiet augue in ligula luctus, et iaculis est porttitor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. In ultricies vitae nisi ut porttitor. Curabitur lectus tellus, feugiat a elit vel, gravida iaculis dui. Nulla vulputate turpis dui, ac faucibus enim dignissim non. Ut non tellus suscipit, scelerisque orci sed, scelerisque sapien. Aenean convallis sodales nulla in porttitor. In pretium ante sapien, a tempor eros blandit nec.
 
-			Nulla non est nibh? Fusce lacinia quam adipiscing magna posuere dapibus. Sed mollis condimentum rhoncus. Morbi sollicitudin tellus a ligula luctus, ac varius arcu ullamcorper. Mauris in aliquet tellus, nec porttitor dui. Quisque interdum euismod mi sed bibendum. Vivamus non odio quis quam lacinia rhoncus in nec nibh. Integer vitae turpis condimentum, laoreet diam nec viverra fusce.
-			</field>
+			Nulla non est nibh? Fusce lacinia quam adipiscing magna posuere dapibus. Sed mollis condimentum rhoncus. Morbi sollicitudin tellus a ligula luctus, ac varius arcu ullamcorper. Mauris in aliquet tellus, nec porttitor dui. Quisque interdum euismod mi sed bibendum. Vivamus non odio quis quam lacinia rhoncus in nec nibh. Integer vitae turpis condimentum, laoreet diam nec viverra fusce.</field>
 			<field name="page_author">0</field>
 			<field name="page_datestamp">1371420000</field>
 			<field name="page_rating_flag">0</field>
@@ -37,11 +124,13 @@
 			<field name="page_order">9999</field>
 			<field name="menu_name">jumbotron-menu-1</field>
 			<field name="menu_title">Heading 1</field>
-			<field name="menu_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus auctor egestas condimentum. Suspendisse placerat nunc orci, a ultrices tortor eleifend in. Vestibulum tincidunt fringilla malesuada? Phasellus dolor risus, aliquam eu odio quis, mattis cursus magna. Integer ut blandit purus; vitae posuere ante. Vivamus sapien nisl, pulvinar vel turpis a, malesuada vehicula lorem! Curabitur magna justo; laoreet at congue sit amet, tincidunt sit amet erat. Integer vehicula eros quis odio tincidunt, nec dapibus sem molestie. Cras sed viverra eros. Nulla ut lectus tellus.
-
-			</field>
+			<field name="menu_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus auctor egestas condimentum. Suspendisse placerat nunc orci, a ultrices tortor eleifend in. Vestibulum tincidunt fringilla malesuada? Phasellus dolor risus, aliquam eu odio quis, mattis cursus magna. Integer ut blandit purus; vitae posuere ante. Vivamus sapien nisl, pulvinar vel turpis a, malesuada vehicula lorem! Curabitur magna justo; laoreet at congue sit amet, tincidunt sit amet erat. Integer vehicula eros quis odio tincidunt, nec dapibus sem molestie. Cras sed viverra eros. Nulla ut lectus tellus.</field>
 			<field name="menu_image"></field>
+			<field name="menu_icon"></field>
 			<field name="menu_template">button</field>
+			<field name="menu_class">0</field>
+			<field name="menu_button_url"></field>
+			<field name="menu_button_text"></field>
 		</item>
 		<item>
 			<field name="page_id">2</field>
@@ -62,11 +151,13 @@
 			<field name="page_order">9999</field>
 			<field name="menu_name">jumbotron-menu-2</field>
 			<field name="menu_title">Heading 2</field>
-			<field name="menu_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus auctor egestas condimentum. Suspendisse placerat nunc orci, a ultrices tortor eleifend in. Vestibulum tincidunt fringilla malesuada? Phasellus dolor risus, aliquam eu odio quis, mattis cursus magna. Integer ut blandit purus; vitae posuere ante. Vivamus sapien nisl, pulvinar vel turpis a, malesuada vehicula lorem! Curabitur magna justo; laoreet at congue sit amet, tincidunt sit amet erat. Integer vehicula eros quis odio tincidunt, nec dapibus sem molestie. Cras sed viverra eros. Nulla ut lectus tellus.
-
-			</field>
+			<field name="menu_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus auctor egestas condimentum. Suspendisse placerat nunc orci, a ultrices tortor eleifend in. Vestibulum tincidunt fringilla malesuada? Phasellus dolor risus, aliquam eu odio quis, mattis cursus magna. Integer ut blandit purus; vitae posuere ante. Vivamus sapien nisl, pulvinar vel turpis a, malesuada vehicula lorem! Curabitur magna justo; laoreet at congue sit amet, tincidunt sit amet erat. Integer vehicula eros quis odio tincidunt, nec dapibus sem molestie. Cras sed viverra eros. Nulla ut lectus tellus.</field>
 			<field name="menu_image"></field>
+			<field name="menu_icon"></field>
 			<field name="menu_template">button</field>
+			<field name="menu_class">0</field>
+			<field name="menu_button_url"></field>
+			<field name="menu_button_text"></field>
 		</item>
 		<item>
 			<field name="page_id">3</field>
@@ -77,8 +168,7 @@
 			<field name="page_metadscr"></field>
 			<field name="page_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum porttitor a justo ut tristique. Nam molestie sem at leo lobortis, vel luctus ligula tempus. Sed sagittis rutrum lectus vel suscipit. Sed in ligula vitae massa sagittis adipiscing vitae vel sem. Fusce nec rhoncus purus. Aenean mollis magna tellus; non consequat leo feugiat eu. Donec mauris velit, euismod nec facilisis quis, hendrerit nec lorem. Aliquam et lorem sed enim tempus sodales. Vestibulum ut enim adipiscing ipsum semper eleifend in in dolor. Fusce tempor risus velit, in fringilla tellus faucibus eget. Maecenas aliquet nunc nec nulla auctor, sed tristique est pellentesque. Maecenas tristique blandit dolor, nec egestas ligula aliquam eu.
 
-Morbi porta leo iaculis, hendrerit lorem interdum, porta dui. Integer tempor convallis quam, eget tempus neque blandit sit amet. Quisque dictum libero elit, ut vehicula lectus accumsan a. Nam laoreet vulputate massa vel viverra. Sed tempus blandit sapien, in viverra urna aliquet quis. Aliquam erat volutpat. Nulla accumsan posuere.
-			</field>
+Morbi porta leo iaculis, hendrerit lorem interdum, porta dui. Integer tempor convallis quam, eget tempus neque blandit sit amet. Quisque dictum libero elit, ut vehicula lectus accumsan a. Nam laoreet vulputate massa vel viverra. Sed tempus blandit sapien, in viverra urna aliquet quis. Aliquam erat volutpat. Nulla accumsan posuere.</field>
 			<field name="page_author">1</field>
 			<field name="page_datestamp">1336600800</field>
 			<field name="page_rating_flag">0</field>
@@ -90,13 +180,14 @@ Morbi porta leo iaculis, hendrerit lorem interdum, porta dui. Integer tempor con
 			<field name="page_order">9999</field>
 			<field name="menu_name">jumbotron-menu-3</field>
 			<field name="menu_title">Heading 3</field>
-			<field name="menu_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus auctor egestas condimentum. Suspendisse placerat nunc orci, a ultrices tortor eleifend in. Vestibulum tincidunt fringilla malesuada? Phasellus dolor risus, aliquam eu odio quis, mattis cursus magna. Integer ut blandit purus; vitae posuere ante. Vivamus sapien nisl, pulvinar vel turpis a, malesuada vehicula lorem! Curabitur magna justo; laoreet at congue sit amet, tincidunt sit amet erat. Integer vehicula eros quis odio tincidunt, nec dapibus sem molestie. Cras sed viverra eros. Nulla ut lectus tellus.
-
-			</field>
+			<field name="menu_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus auctor egestas condimentum. Suspendisse placerat nunc orci, a ultrices tortor eleifend in. Vestibulum tincidunt fringilla malesuada? Phasellus dolor risus, aliquam eu odio quis, mattis cursus magna. Integer ut blandit purus; vitae posuere ante. Vivamus sapien nisl, pulvinar vel turpis a, malesuada vehicula lorem! Curabitur magna justo; laoreet at congue sit amet, tincidunt sit amet erat. Integer vehicula eros quis odio tincidunt, nec dapibus sem molestie. Cras sed viverra eros. Nulla ut lectus tellus.</field>
 			<field name="menu_image"></field>
+			<field name="menu_icon"></field>
 			<field name="menu_template">button</field>
+			<field name="menu_class">0</field>
+			<field name="menu_button_url"></field>
+			<field name="menu_button_text"></field>
 		</item>
-
 		<item>
 			<field name="page_id">4</field>
 			<field name="page_title">Feature 1</field>
@@ -118,12 +209,13 @@ Morbi porta leo iaculis, hendrerit lorem interdum, porta dui. Integer tempor con
 			<field name="page_order">9999</field>
 			<field name="menu_name">feature-menu-1</field>
 			<field name="menu_title">Modern Business Feature Menu 1</field>
-			<field name="menu_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla iaculis odio sit amet mi consequat varius. Nullam fringilla sodales lacus id mollis. Morbi fermentum turpis quis orci scelerisque, non pellentesque dolor sodales. Nullam luctus ut tellus quis ullamcorper! Suspendisse convallis tortor nec semper condimentum. Proin adipiscing adipiscing elit, ut posuere mauris consequat sed. Maecenas ultrices nisi tortor, sed vehicula urna auctor euismod?
-
-
-</field>
+			<field name="menu_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla iaculis odio sit amet mi consequat varius. Nullam fringilla sodales lacus id mollis. Morbi fermentum turpis quis orci scelerisque, non pellentesque dolor sodales. Nullam luctus ut tellus quis ullamcorper! Suspendisse convallis tortor nec semper condimentum. Proin adipiscing adipiscing elit, ut posuere mauris consequat sed. Maecenas ultrices nisi tortor, sed vehicula urna auctor euismod?</field>
 			<field name="menu_image"></field>
+			<field name="menu_icon"></field>
 			<field name="menu_template">2-column_1:1_text-left</field>
+			<field name="menu_class">0</field>
+			<field name="menu_button_url"></field>
+			<field name="menu_button_text"></field>
 		</item>
 		<item>
 			<field name="page_id">5</field>
@@ -146,12 +238,13 @@ Morbi porta leo iaculis, hendrerit lorem interdum, porta dui. Integer tempor con
 			<field name="page_order">9999</field>
 			<field name="menu_name">feature-menu-2</field>
 			<field name="menu_title">Modern Business Feature Menu 2</field>
-			<field name="menu_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla iaculis odio sit amet mi consequat varius. Nullam fringilla sodales lacus id mollis. Morbi fermentum turpis quis orci scelerisque, non pellentesque dolor sodales. Nullam luctus ut tellus quis ullamcorper! Suspendisse convallis tortor nec semper condimentum. Proin adipiscing adipiscing elit, ut posuere mauris consequat sed. Maecenas ultrices nisi tortor, sed vehicula urna auctor euismod?
-
-
-</field>
+			<field name="menu_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla iaculis odio sit amet mi consequat varius. Nullam fringilla sodales lacus id mollis. Morbi fermentum turpis quis orci scelerisque, non pellentesque dolor sodales. Nullam luctus ut tellus quis ullamcorper! Suspendisse convallis tortor nec semper condimentum. Proin adipiscing adipiscing elit, ut posuere mauris consequat sed. Maecenas ultrices nisi tortor, sed vehicula urna auctor euismod?</field>
 			<field name="menu_image"></field>
+			<field name="menu_icon"></field>
 			<field name="menu_template">2-column_1:1_text-right</field>
+			<field name="menu_class">0</field>
+			<field name="menu_button_url"></field>
+			<field name="menu_button_text"></field>
 		</item>
 		<item>
 			<field name="page_id">6</field>
@@ -174,19 +267,14 @@ Morbi porta leo iaculis, hendrerit lorem interdum, porta dui. Integer tempor con
 			<field name="page_order">9999</field>
 			<field name="menu_name">feature-menu-3</field>
 			<field name="menu_title"><![CDATA[&#039;Modern Business&#039; is a ready-to-use, Bootstrap 3 updated, multi-purpose HTML theme!]]></field>
-			<field name="menu_text">For more templates and more page options that you can integrate into this website template, visit Start Bootstrap!
-
-
-</field>
+			<field name="menu_text">For more templates and more page options that you can integrate into this website template, visit Start Bootstrap!</field>
 			<field name="menu_image"></field>
+			<field name="menu_icon"></field>
 			<field name="menu_template">2-column_2:1_text-left</field>
+			<field name="menu_class">0</field>
+			<field name="menu_button_url"></field>
+			<field name="menu_button_text"></field>
 		</item>
-
-
-
-
-
-
 	</dbTable>
 	<dbTable name="page_chapters">
 		<item>
@@ -200,6 +288,7 @@ Morbi porta leo iaculis, hendrerit lorem interdum, porta dui. Integer tempor con
 			<field name="chapter_icon"></field>
 			<field name="chapter_order">0</field>
 			<field name="chapter_template"></field>
+			<field name="chapter_visibility">0</field>
 		</item>
 		<item>
 			<field name="chapter_id">2</field>
@@ -212,8 +301,8 @@ Morbi porta leo iaculis, hendrerit lorem interdum, porta dui. Integer tempor con
 			<field name="chapter_icon"></field>
 			<field name="chapter_order">0</field>
 			<field name="chapter_template"></field>
+			<field name="chapter_visibility">0</field>
 		</item>
-		
 	</dbTable>
 	</database>
 </e107Export>

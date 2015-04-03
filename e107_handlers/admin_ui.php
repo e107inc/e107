@@ -4880,7 +4880,7 @@ class e_admin_ui extends e_admin_controller_ui
 
 		}
 
-		// Increment every other record after the current page of records. 
+		// Increment every other record after the current page of records.
 	//	$changed = (intval($_POST['neworder']) * $step) + $from ;
 		$changed = $c - $step;
 		$qry = "UPDATE `#".$this->table."` e, (SELECT @n := ".($changed).") m  SET e.".$this->sortField." = @n := @n + ".$step." WHERE ".$this->sortField." > ".($changed);
