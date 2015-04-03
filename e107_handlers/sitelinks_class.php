@@ -253,9 +253,9 @@ class sitelinks
 		$linkstart = $indent = $linkadd = $screentip = $href = $link_append = '';
 		$highlighted = FALSE;
 		
-		if(vartrue($linkInfo['link_sefurl'])) 
+		if(vartrue($linkInfo['link_sefurl']) && !empty($linkInfo['link_owner']))
 		{
-			$linkInfo['link_url'] = $linkInfo['link_sefurl'];
+			$linkInfo['link_url'] = e107::url($linkInfo['link_owner'],$linkInfo['link_sefurl']) ; //  $linkInfo['link_sefurl'];
 
 		}
 
