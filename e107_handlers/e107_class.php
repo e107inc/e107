@@ -2624,16 +2624,15 @@ class e107
 			}
 			else // Legacy URL.
 			{
-				preg_match('#({[a-z_]*})#', $tmp[$plugin][$key]['sef'],$matches);
 
-				unset($matches[0]);
+				preg_match_all('#({[a-z_]*})#', $tmp[$plugin][$key]['sef'],$matches);
 
 				$srch = array();
 				$repl = array();
 
-				foreach($matches as $k=>$val)
+				foreach($matches[1] as $k=>$val)
 				{
-					$srch[] = '$'.$k;
+					$srch[] = '$'.($k+1);
 					$repl[] = $val;
 				}
 
@@ -3413,7 +3412,7 @@ class e107
 		}
 		else
 		{
-			define('e_CURRENT_PLUGIN', '');
+		//	define('e_CURRENT_PLUGIN', ''); // leave it undefined so it can be added later during sef-url detection.
 			define('e_PLUGIN_DIR', '');
 			define('e_PLUGIN_DIR_ABS', '');
 		}
