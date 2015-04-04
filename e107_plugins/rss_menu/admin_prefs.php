@@ -204,7 +204,7 @@ class rss_ui extends e_admin_ui
 					$RSS_ADMIN_IMPORT_FOOTER = "</tbody>
 			</table>
 			<div class='buttons-bar center'>
-				".$frm->admin_button('import_rss',RSS_LAN_ADMIN_17,'submit')."
+				".$frm->admin_button('import_rss',LAN_ADD,'submit')."
 			</div>
 			</form>
 			";
