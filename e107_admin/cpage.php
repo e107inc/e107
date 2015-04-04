@@ -140,17 +140,21 @@ class page_chapters_ui extends e_admin_ui
 		protected $batchDelete 	= false;
 		protected $batchCopy	= true;	
         protected $batchLink   	= true;
-		protected $listOrder 	= ' COALESCE(NULLIF(chapter_parent,0), chapter_id), chapter_parent > 0, chapter_order '; //FIXME works with parent/child but doesn't respect parent order. 
+
+		protected $listQry          = "SELECT a. *, CASE WHEN a.chapter_parent = 0 THEN a.chapter_order ELSE b.chapter_order + (( a.chapter_order)/1000) END AS Sort FROM `#page_chapters` AS a LEFT JOIN `#page_chapters` AS b ON a.chapter_parent = b.chapter_id ";
+		protected $listOrder		= 'Sort,chapter_order ';
+	//	protected $listOrder 	= ' COALESCE(NULLIF(chapter_parent,0), chapter_id), chapter_parent > 0, chapter_order '; //FIXME works with parent/child but doesn't respect parent order.
 		protected $url         	= array('route'=>'page/chapter/index', 'vars' => array('id' => 'chapter_id', 'name' => 'chapter_sef'), 'name' => 'chapter_name', 'description' => ''); // 'link' only needed if profile not provided. 
 	
-	//	protected $sortField	= 'chapter_order';
+		protected $sortField	= 'chapter_order';
+		protected $sortParent   = 'chapter_parent';
 	//	protected $orderStep 	= 10;
 		
 		protected $fields = array(
 			'checkboxes'				=> array('title'=> '',						'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'chapter_id'				=> array('title'=> LAN_ID,					'type' => 'number',			'width' =>'5%', 'forced'=> TRUE, 'readonly'=>TRUE),
          	'chapter_icon' 				=> array('title'=> LAN_ICON,				'type' => 'icon', 			'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'writeParms'=> 'glyphs=1', 'readonly'=>FALSE,	'batch' => FALSE, 'filter'=>FALSE),			       		
-         	'chapter_parent' 			=> array('title'=> "Book",					'type' => 'dropdown',		'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE, 'filter'=>true),                   	
+         	'chapter_parent' 			=> array('title'=> "Book",		    		'type' => 'dropdown',		'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE, 'filter'=>true),
          	'chapter_name' 				=> array('title'=> "Book or Chapter Title",	'type' => 'method',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE, 'writeParms'=>'size=xxlarge'),       
          	'chapter_template' 			=> array('title'=> LAN_TEMPLATE, 			'type' => 'dropdown', 		'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
         
@@ -171,6 +175,12 @@ class page_chapters_ui extends e_admin_ui
 	
 		function init()
 		{
+
+			if($this->getAction() == 'list')
+			{
+				$this->fields['chapter_parent']['title'] = 'Parent';
+			}
+
 			$sql = e107::getDb();
 			$sql->gen("SELECT chapter_id,chapter_name FROM #page_chapters WHERE chapter_parent =0");
 			$this->books[0] = "(New Book)";
@@ -245,6 +255,8 @@ class page_chapters_form_ui extends e_admin_form_ui
 			$parent 	= $this->getController()->getListModel()->get('chapter_parent');
 			$id			= $this->getController()->getListModel()->get('chapter_id');
 
+			$level = 1;
+
 			$linkQ = e_SELF."?searchquery=&filter_options=page_chapter__".$id."&mode=page&action=list";	
 			$level_image = $parent ? '<img src="'.e_IMAGE_ABS.'generic/branchbottom.gif" class="icon" alt="" style="margin-left: '.($level * 20).'px" />&nbsp;' : '';
 
@@ -278,7 +290,7 @@ class page_chapters_form_ui extends e_admin_form_ui
 		//	return "<a href='".e_BASE."page.php?".$id."' >".$curVal."</a>";
 		$parent = $this->getController()->getListModel()->get('chapter_parent');
 	//	$id = $this->getController()->getListModel()->get('chapter_id');
-	//	$att['readParms'] = 'sort=1';
+		$att['readParms'] = 'sort=1';
 		$text = "";
 		
 		if($attributes['mode'] == 'read')

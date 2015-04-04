@@ -19,7 +19,11 @@ if (!getperms('P'))
 	exit;
 }
 
-// define('NEW_FORUMADMIN', true);
+if(E107_DEBUG_LEVEL > 0)
+{
+	define('NEW_FORUMADMIN', true);
+	e107::getMessage()->addwarning("Experimental code now active. Using this page in debug mode active could break your forum configuration.");
+}
 
 // Generated e107 Plugin Admin Area
 
@@ -71,30 +75,31 @@ if(deftrue('NEW_FORUMADMIN'))
 		//	protected $eventName		= 'forum-forum'; // remove comment to enable event triggers in admin.
 		protected $table			= 'forum';
 		protected $pid				= 'forum_id';
-		protected $perPage			= 10;
+		protected $perPage			= 30;
 		protected $batchDelete		= true;
 		//	protected $batchCopy		= true;
 		protected $sortField		= 'forum_order';
+		protected $sortParent       = 'forum_parent';
 		protected $orderStep		= 50;
+
+		/*
 		//	protected $tabs				= array('Tabl 1','Tab 2'); // Use 'tab'=>0  OR 'tab'=>1 in the $fields below to enable.
+		//	protected $listQry      	= "SELECT *, xAND forum_order > 45 THEN forum_order ELSE forum_order + forum_parent END AS Sort FROM `#forum` "; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
+		//	protected $listQry      	= "SELECT *, CASE WHEN forum_parent = 0 OR forum_order =0 THEN forum_id + (forum_order/1000) ELSE  forum_parent + (forum_order/1000) END AS Sort FROM `#forum` "; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
+		//	protected $listOrder 	    = ' COALESCE(NULLIF(forum_parent,0), forum_order), forum_parent > 0, forum_order '; //FIXME works with parent/child but doesn't respect parent order.
+		//	protected $listQry           = "SELECT * , forum_parent + forum_order AS Sort FROM `#forum` ";
+		*/
 
-	//	protected $listQry      	= "SELECT *, xAND forum_order > 45 THEN forum_order ELSE forum_order + forum_parent END AS Sort FROM `#forum` "; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
-
-	//	protected $listQry      	= "SELECT *, CASE WHEN forum_parent = 0 OR forum_order =0 THEN forum_id + (forum_order/1000) ELSE  forum_parent + (forum_order/1000) END AS Sort FROM `#forum` "; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
-
-		protected $listQry          = "SELECT a. *, CASE WHEN a.forum_parent = 0 THEN a.forum_order ELSE b.forum_order + (( a.forum_order)/1000) END AS Sort FROM e107_forum AS a LEFT JOIN e107_forum AS b ON a.forum_parent = b.forum_id ";
-
-	//	protected $listQry = "SELECT * , forum_parent + forum_order AS Sort FROM `#forum` ";
+		protected $listQry          = "SELECT a. *, CASE WHEN a.forum_parent = 0 THEN a.forum_order ELSE b.forum_order + (( a.forum_order)/1000) END AS Sort FROM `#forum` AS a LEFT JOIN `#forum` AS b ON a.forum_parent = b.forum_id ";
 		protected $listOrder		= 'Sort,forum_order ';
-
-	//	protected $listOrder 	= ' COALESCE(NULLIF(forum_parent,0), forum_order), forum_parent > 0, forum_order '; //FIXME works with parent/child but doesn't respect parent order.
+	//	protected $listOrder        = 'forum_order';
 
 
 		protected $fields 		= array (  'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
 		                                    'forum_id' =>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		                                    'forum_name' =>   array ( 'title' => LAN_TITLE, 'type' => 'method', 'data' => 'str', 'width' => '40%', 'inline' => false, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		                                    'forum_description' =>   array ( 'title' => LAN_DESCRIPTION, 'type' => 'textarea', 'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		                                    'forum_parent' =>   array ( 'title' => 'Parent', 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		                                    'forum_name' =>   array ( 'title' => LAN_TITLE, 'type' => 'method', 'inline'=>true,  'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		                                    'forum_description' =>   array ( 'title' => LAN_DESCRIPTION, 'type' => 'textarea', 'data' => 'str', 'width' => '30%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		                                    'forum_parent' =>   array ( 'title' => 'Parent', 'type' => 'dropdown', 'data' => 'int', 'width' => '10%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		                                    'forum_sub' =>   array ( 'title' => 'SubForum of', 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		                                    'forum_moderators' =>   array ( 'title' => 'Moderators', 'type' => 'userclass', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		                                    'forum_threads' =>   array ( 'title' => 'Threads', 'type' => 'number', 'data' => 'int', 'noedit'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
@@ -103,7 +108,7 @@ if(deftrue('NEW_FORUMADMIN'))
 		                                    'forum_lastpost_user_anon' =>   array ( 'title' => 'User-Anon', 'type' => 'hidden','noedit'=>true, 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		                                    'forum_lastpost_info' =>   array ( 'title' => 'LastPost', 'type' => 'hidden', 'noedit'=>true, 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		                                    'forum_class' =>   array ( 'title' => LAN_VISIBILITY, 'type' => 'userclass', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		                                    'forum_order' =>   array ( 'title' => LAN_ORDER, 'type' => 'number', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		                                    'forum_order' =>   array ( 'title' => LAN_ORDER, 'type' => 'text', 'data' => 'int', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		                                    'forum_postclass' =>   array ( 'title' => 'Post Permission', 'type' => 'userclass', 'inline'=>true,'filter'=>true, 'batch'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		                                    'forum_threadclass' =>   array ( 'title' => 'Thread Creation Class', 'type' => 'userclass', 'inline'=>true, 'filter'=>true, 'batch'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		                                    'forum_datestamp' =>   array ( 'title' => LAN_DATESTAMP, 'type' => 'datestamp', 'data' => 'int', 'noedit'=>true, 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
@@ -133,6 +138,12 @@ if(deftrue('NEW_FORUMADMIN'))
 		public function init()
 		{
 
+			if($this->getAction() == 'edit')
+			{
+				$this->fields['forum_order']['noedit'] = true;
+			}
+
+
 			$data = e107::getDb()->retrieve('forum', 'forum_id,forum_name,forum_parent', 'forum_id != 0',true);
 			$this->forumParents[0] = "(New Parent)";
 			$forumSubParents = array();
@@ -153,16 +164,60 @@ if(deftrue('NEW_FORUMADMIN'))
 			}
 
 			$this->fields['forum_parent']['writeParms'] = $this->forumParents;
-			$this->fields['forum_sub']['writeParms'] = $forumSubParents;
+			$this->fields['forum_sub']['writeParms']['optArray'] = $forumSubParents;
+			$this->fields['forum_sub']['writeParms']['default'] = 'blank';
 
 		}
 
 
 		// ------- Customize Create --------
 
+		public function afterSort($result, $selected)
+		{
+
+			return;
+
+			$sql = e107::getDb();
+
+			$data2 = $sql->retrieve('forum','forum_id,forum_name,forum_parent,forum_order','forum_parent = 0',true);
+			foreach($data2 as $val)
+			{
+				$id = $val['forum_id'];
+				$parent[$id] = $val['forum_order'];
+
+			}
+
+			$previous = 0;
+
+			$data = $sql->retrieve('forum','*','forum_parent != 0 ORDER BY forum_order',true);
+			foreach($data as $row)
+			{
+				$p = $row['forum_parent'];
+
+				if($p != $previous)
+				{
+					$c = $parent[$p];
+				}
+
+				$c++;
+				$previous = $p;
+
+			//	echo "<br />".$row['forum_name']." with parent: ".$p." old: ".$row['forum_order']."  new: ".$c;
+				$sql->update('forum','forum_order = '.$c.' WHERE forum_id = '.intval($row['forum_id']).' LIMIT 1');
+
+			}
+
+		}
+
+
+
 		public function beforeCreate($new_data)
 		{
-			// return $new_data;
+			$sql = e107::getDb();
+			$parentOrder = $sql->retrieve('forum','forum_order','forum_id='.$new_data['forum_parent']." LIMIT 1");
+
+			$new_data['forum_order'] = $parentOrder + 1;
+			return $new_data;
 		}
 
 		public function afterCreate($new_data, $old_data, $id)
@@ -252,6 +307,17 @@ if(deftrue('NEW_FORUMADMIN'))
 			if($mode == 'batch')
 			{
 				return;
+			}
+
+			if($mode == 'inline')
+			{
+				$parent 	= $this->getController()->getListModel()->get('forum_parent');
+				if(empty($parent))
+				{
+					return array('inlineType'=>'text');
+				}
+
+				return false;
 			}
 		}
 

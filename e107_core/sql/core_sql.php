@@ -414,7 +414,7 @@ CREATE TABLE page_chapters (
   chapter_meta_keywords  varchar(255) NOT NULL default '',
   chapter_manager tinyint(3) unsigned NOT NULL default '254',
   chapter_icon varchar(250) NOT NULL default '',
-  chapter_order int(4) unsigned NOT NULL default '0',
+  chapter_order int(6) unsigned NOT NULL default '0',
   chapter_template varchar(50) NOT NULL default '',
   chapter_visibility tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (chapter_id),
