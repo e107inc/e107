@@ -48,6 +48,19 @@ else
 }
 
 
+	if(!empty($parm))
+	{
+		parse_str($parm, $parms);
+	}
+
+	if(isset($parms['w']) && isset($parms['h']))
+	{
+		e107::getParser()->setThumbSize(intval($parms['w']), intval($parms['h']));
+
+
+	}
+
+
 /*
 
 

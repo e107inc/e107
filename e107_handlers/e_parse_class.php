@@ -2603,7 +2603,9 @@ class e_parser
                                     'img'       => array('id', 'src', 'style', 'class', 'alt', 'title', 'width', 'height'),
                                     'a'         => array('id', 'href', 'style', 'class', 'title', 'target'),
                                     'script'	=> array('type', 'src', 'language'),
-                                    'iframe'	=> array('id', 'src', 'frameborder', 'class', 'width', 'height', 'style')
+                                    'iframe'	=> array('id', 'src', 'frameborder', 'class', 'width', 'height', 'style'),
+	                                'input'     => array('type','name','value','class','style'),
+	                                'form'      => array('action','method','target')
                                   );
 
     protected $badAttrValues     = array('javascript[\s]*?:','alert\(','vbscript[\s]*?:','data:text\/html', 'mhtml[\s]*?:', 'data:[\s]*?image');
@@ -2617,7 +2619,7 @@ class e_parser
                                         'div','pre','section','article', 'blockquote','hgroup','aside','figure','span', 'video', 'br',
                                         'small', 'caption', 'noscript'
                                    );
-    protected $scriptTags 		= array('script','applet','iframe'); //allowed when $pref['post_script'] is enabled.
+    protected $scriptTags 		= array('script','applet','iframe','form','input','button'); //allowed when $pref['post_script'] is enabled.
 	
 	protected $blockTags		= array('pre','div','h1','h2','h3','h4','h5','h6','blockquote'); // element includes its own line-break. 
         

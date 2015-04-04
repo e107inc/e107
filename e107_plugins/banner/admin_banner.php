@@ -306,7 +306,7 @@ class banner_ui extends e_admin_ui
 			}
 			
 			
-			$renderTypes = array(BNRLAN_44,'1 - '.BNRLAN_45,'2 - '.BNRLAN_46);
+			$renderTypes = array(BNRLAN_48,'1 - '.BNRLAN_45,'2 - '.BNRLAN_46);
 			
 				$renderTypes[3] = "3 - ".BNRLAN_47; //TODO 
 			
