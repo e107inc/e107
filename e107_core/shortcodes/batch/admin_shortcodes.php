@@ -188,7 +188,7 @@ class admin_shortcodes
 			
 			$e_icon_array = e107::getNav()->getIconArray();
 			
-			if (e_CURRENT_PLUGIN)
+			if (deftrue('e_CURRENT_PLUGIN'))
 			{
 				$eplug_icon = '';
 				$eplug_folder = e_CURRENT_PLUGIN.'/';

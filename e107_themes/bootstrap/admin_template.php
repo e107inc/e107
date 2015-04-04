@@ -209,7 +209,7 @@ $ADMIN_HEADER .= '<div class="container-fluid">
 			
 			{ADMIN_LATEST=infopanel}
 			{ADMIN_STATUS=infopanel}
-	
+
 			{ADMIN_MSG=request}
 			{ADMIN_PLUGINS}
 			

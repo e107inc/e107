@@ -124,6 +124,7 @@
 
 					if(file_exists($file))
 					{
+						define('e_CURRENT_PLUGIN', $plug);
 						include_once($file);
 						exit;
 					}

@@ -3440,8 +3440,15 @@ class e_form
 					$value = e107::unserialize($value); // (saved as array, return it as an array)
 				}
 
-				$value = call_user_func_array(array($this, $method), array($value, 'read', $parms));
-				
+
+				if(method_exists($this,$method))
+				{
+					$value = call_user_func_array(array($this, $method), array($value, 'read', $parms));
+				}
+				else
+				{
+					return "<span class='label label-important'>Missing: ".$method."()</span>";
+				}
 			//	 print_a($attributes);
 					// Inline Editing.  
 				if(!vartrue($attributes['noedit']) && vartrue($parms['editable'])) // avoid bad markup, better solution coming up
