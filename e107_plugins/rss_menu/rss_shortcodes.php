@@ -47,6 +47,19 @@ class rss_menu_shortcodes extends e_shortcode
 		$url4 = e107::url('rss_menu','atom', $row);
 
 
+		if(deftrue('BOOTSTRAP') === 3) // v2.x
+		{
+			$text = "
+			<div>
+				<a class='btn btn-sm btn-default'  href='".e107::url('rss_menu', 'rss', $row)."' title='RSS 2.0'>".$tp->toGlyph('fa-rss')." RSS</a>
+				<a class='btn btn-sm btn-default'  href='".e107::url('rss_menu', 'atom', $row)."' title='ATOM'>".$tp->toGlyph('fa-rss')." Atom</a>
+			</div>";
+
+			return $text;
+		}
+
+
+
 		$text = "";
 	//	$text .= "<a href='".$url1."' class='rss'><img src='".e_PLUGIN_ABS."rss_menu/images/rss1.png' class='icon' alt='RSS 0.92' /></a>";
 		$text .= "<a href='".$url2."' class='rss'><img src='".e_PLUGIN_ABS."rss_menu/images/rss2.png' class='icon' alt='RSS 2.0' /></a>";
