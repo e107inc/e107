@@ -1013,7 +1013,7 @@ class e_menuManager {
 		if(!$this->dragDrop)
 		{
 			$text .= "<div class='column' id='portal-column-block-list' style='border:1px inset black;height:250px;display:block;overflow:auto;margin-bottom:20px'>";
-			$text .= "<table class='table table-striped core-menumanager-main' id='core-menumanager-main'  >
+			$text .= "<table class='table table-striped adminlist core-menumanager-main' id='core-menumanager-main'  >
 			<tbody>\n";
 
 		}

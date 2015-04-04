@@ -32,8 +32,8 @@ if(USER_AREA && $sql->select("rss", "*", "rss_class='0' AND rss_limit>0 ORDER BY
 		//	$url = SITEURL.$PLUGINS_DIRECTORY."rss_menu/rss.php?".$tp->toHTML($row['rss_url'], TRUE, 'constants, no_hook, emotes_off').".2";
 		//	$url .= ($row['rss_topicid']) ? ".".$row['rss_topicid'] : "";
 
-			$url2 = e107::url('rss_menu','rss', $row);
-			$url4 = e107::url('rss_menu','atom', $row);
+			$url2 = rtrim(SITEURL,'/') . e107::url('rss_menu','rss', $row);
+			$url4 = rtrim(SITEURL,'/') . e107::url('rss_menu','atom', $row);
 
 			$name = $tp->toHTML($row['rss_name'], TRUE, 'no_hook, emotes_off');
 
