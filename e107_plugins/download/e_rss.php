@@ -20,7 +20,7 @@ if (!defined('e107_INIT')) { exit; }
 
 //##### create feed for admin, return array $eplug_rss_feed --------------------------------
 	// Download
-	$feed['name']		= ADLAN_24;
+	$feed['name']		= LAN_PLUGIN_DOWNLOAD_NAME;
 	$feed['url']		= 'download';
 	$feed['topic_id']	= '';
 	$feed['path']		= 'download';
@@ -36,9 +36,9 @@ if (!defined('e107_INIT')) { exit; }
 
 	if($sqli -> db_Select("download_category", "*","download_category_id!='' ORDER BY download_category_order "))
 	{
-		while($rowi = $sqli -> db_Fetch())
+		while($rowi = $sqli ->fetch())
 		{
-			$feed['name']		= ADLAN_24.' > '.$rowi['download_category_name'];
+			$feed['name']		= LAN_PLUGIN_DOWNLOAD_NAME.' > '.$rowi['download_category_name'];
 			$feed['url']		= 'download';
 			$feed['topic_id']	= $rowi['download_category_id'];
 			$feed['path']		= 'download';
