@@ -386,6 +386,7 @@ class eDispatcher
 		{
 			case 'plugin':
 				//if($custom) $custom = 'url/'.$custom;
+				define('e_CURRENT_PLUGIN', $module); // TODO Move to a better location.
 				return $sc ? '{e_PLUGIN}'.$module.'url/'.$custom.'url.php' : e_PLUGIN.$module.'url/'.$custom.'url.php';
 			break;
 

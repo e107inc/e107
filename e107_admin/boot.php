@@ -37,7 +37,7 @@ e107::coreLan('footer', true);
 		
 		foreach ($_plugins as $_p) 
 		{
-			if(in_array($_p, $_globalLans) && e_CURRENT_PLUGIN != $_p) // filter out those with globals unless we are in a plugin folder. 
+			if(in_array($_p, $_globalLans) && defset('e_CURRENT_PLUGIN') != $_p) // filter out those with globals unless we are in a plugin folder.
 			{
 				continue; 	
 			}
