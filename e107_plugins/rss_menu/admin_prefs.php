@@ -174,22 +174,26 @@ class rss_ui extends e_admin_ui
 		{
 			$RSS_ADMIN_IMPORT_HEADER = "
 			<form action='".e_SELF."' id='imlistform' method='post' >
-			<table class='table adminform'>
+			<table class='table table-striped adminlist'>
+			<thead>
 			<tr>
-				<th>".RSS_LAN_ADMIN_16."</td>
-				<th>".RSS_LAN_ADMIN_3."</td>
+				<th class='center' style='width:5%'>Add</td>
 				<th>".LAN_NAME."</td>
+				<th>".RSS_LAN_ADMIN_3."</td>
+
 				<th>".RSS_LAN_ADMIN_5."</td>
 				<th>".RSS_LAN_ADMIN_12."</td>
-			</tr>";
+			</tr>
+			</thead><tbody>";
 				}
 				if(!isset($RSS_ADMIN_IMPORT_TABLE))
 				{
 					$RSS_ADMIN_IMPORT_TABLE = "
 			<tr>
-				<td>{RSS_ADMIN_IMPORT_CHECK}</td>
+				<td class='first center'>{RSS_ADMIN_IMPORT_CHECK}</td>
+					<td>{RSS_ADMIN_IMPORT_NAME}<small>{RSS_ADMIN_IMPORT_TEXT}</small></td>
 				<td>{RSS_ADMIN_IMPORT_PATH}</td>
-				<td><b>{RSS_ADMIN_IMPORT_NAME}</b><br />{RSS_ADMIN_IMPORT_TEXT}</td>
+
 				<td>{RSS_ADMIN_IMPORT_URL}</td>
 				<td>{RSS_ADMIN_IMPORT_TOPICID}</td>
 			</tr>";
@@ -197,7 +201,7 @@ class rss_ui extends e_admin_ui
 
 				if(!isset($RSS_ADMIN_IMPORT_FOOTER))
 				{
-					$RSS_ADMIN_IMPORT_FOOTER = "
+					$RSS_ADMIN_IMPORT_FOOTER = "</tbody>
 			</table>
 			<div class='buttons-bar center'>
 				".$frm->admin_button('import_rss',RSS_LAN_ADMIN_17,'submit')."
