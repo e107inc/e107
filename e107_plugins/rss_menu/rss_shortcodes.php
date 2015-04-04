@@ -223,7 +223,7 @@ class rss_menu_shortcodes extends e_shortcode
 			$feed['text'] = $feed['description'];
 		}
 
-		$text  = "<input type='checkbox' name='importid[$i]' value='1' />";
+		$text  = "<input id='import-".$i."' type='checkbox' name='importid[$i]' value='1' />";
 		$text .= "<input type='hidden' name='name[$i]' value='".$tp->toForm($feed['name'])."' />";
 		$text .= "<input type='hidden' name='url[$i]' value='".$tp->toForm($feed['url'])."' />";
 		$text .= "<input type='hidden' name='topic_id[$i]' value='".$tp->toForm($feed['topic_id'])."' />";
@@ -236,14 +236,14 @@ class rss_menu_shortcodes extends e_shortcode
 
 	function sc_rss_admin_import_path()
 	{
-		global $feed;
-		return $feed['path'];
+		global $feed, $i;
+		return "<label for='import-".$i."'>".$feed['path']."</label>";
 	}
 
 	function sc_rss_admin_import_name()
 	{
-		global $feed;
-		return $feed['name'];
+		global $feed, $i;
+		return "<label for='import-".$i."'>".$feed['name']."</label>";
 	}
 
 	function sc_rss_admin_import_text()
