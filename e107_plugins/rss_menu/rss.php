@@ -19,9 +19,13 @@ Query string: content_type.rss_type.[topic id]
 Plugins should use an e_rss.php file in their plugin folder
 ----------------------------------------------------------------
 */
+if (!defined('e107_INIT'))
+{
+	require_once('../../class2.php');
+}
 
-require_once('../../class2.php');
 $e107 = e107::getInstance();
+
 if (!$e107->isInstalled('rss_menu'))
 {
 	header('Location: '.e_BASE.'index.php');
@@ -56,13 +60,21 @@ else
 }
 
 // Query handler
-if (e_QUERY)
+if(!empty($_GET))
+{
+	$content_type = $tp->toDB($_GET['cat']);
+	$rss_type = intval(varset($_GET['type'],0));
+	$topic_id = $tp->toDB($_GET['topic'],'');
+
+}
+elseif (e_QUERY)
 {
 	$tmp = explode('.', e_QUERY);
 	$content_type = $tp->toDB($tmp[0]);
 	$rss_type = intval(varset($tmp[1],0));
 	$topic_id = $tp->toDB($tmp[2],'');
 }
+
 
 // List available rss feeds
 if (!$rss_type)

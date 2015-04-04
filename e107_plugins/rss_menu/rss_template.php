@@ -7,8 +7,8 @@ if(!isset($RSS_LIST_HEADER))
 {
 	$RSS_LIST_HEADER = "<table class='table table-striped fborder' style='".USER_WIDTH."'>
 		<tr>
-			<td class='fcaption' style='width:55%'> </td>
-			<td class='fcaption' style='text-align:right'>".RSS_PLUGIN_LAN_6."</td>
+			<th class='fcaption' style='width:55%'> </th>
+			<th class='fcaption' style='text-align:right'>".RSS_PLUGIN_LAN_6."</th>
 		</tr>";
 }
 if(!isset($RSS_LIST_TABLE))
