@@ -142,16 +142,29 @@ $LAYOUT['_header_'] = '
 // applied after every layout. 
 $LAYOUT['_footer_'] = '  <hr>
 <div class="row">
+  	{SETSTYLE=col-md-6}
 	<footer >
-		<div class="col-lg-6">
-			{NAVIGATION=footer} 
+		<div class="row">
+			<div class="col-lg-6">
+				{MENU=10}
+			</div>
+			<div class="col-lg-6">
+				{MENU=11}
+			</div>
 		</div>
-		<div class="col-lg-6 text-right">
-			{XURL_ICONS: size=2x}
-			{BOOTSTRAP_USERNAV: placement=bottom&dir=up}
-		</div>
+		<div class="row">
+			<div class="col-lg-6">
 
+				{NAVIGATION=footer}
+			</div>
+			<div class="col-lg-6 text-right">
+				{XURL_ICONS: size=2x}
+				{BOOTSTRAP_USERNAV: placement=bottom&dir=up}
+			</div>
+		</div>
+		{SETSTYLE=col-md-12}
 		<div class="col-lg-12 text-center">
+			{MENU=12}
 			<small>{SITEDISCLAIMER}</small>
 		</div>
 	</footer>
