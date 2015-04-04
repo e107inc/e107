@@ -4055,6 +4055,9 @@ class e_admin_ui extends e_admin_controller_ui
 	protected $pid;
 	protected $listQry;
 	protected $editQry;
+	protected $sortField;
+	protected $sortParent;
+	protected $orderStep;
 
 
 	/**
@@ -4857,6 +4860,12 @@ class e_admin_ui extends e_admin_controller_ui
 			echo 'Missing sort field value';
 			return;
 		}
+
+		if(!empty($this->sortParent)) // Force 100 positions for child when sorting with parent/child.
+		{
+			$this->orderStep = 100;
+		}
+
 		
 		$sql    = e107::getDb();
 		$step   = $this->orderStep ? intval($this->orderStep) : 1;
@@ -4884,7 +4893,52 @@ class e_admin_ui extends e_admin_controller_ui
 	//	$changed = (intval($_POST['neworder']) * $step) + $from ;
 		$changed = $c - $step;
 		$qry = "UPDATE `#".$this->table."` e, (SELECT @n := ".($changed).") m  SET e.".$this->sortField." = @n := @n + ".$step." WHERE ".$this->sortField." > ".($changed);
-		$sql->gen($qry);
+
+		$result = $sql->gen($qry);
+
+
+		// ------------ Fix Child Order when parent is used. ----------------
+
+		if(!empty($this->sortParent) && !empty($this->sortField) ) // Make sure there is space for at least 99
+		{
+
+
+			$data2 = $sql->retrieve($this->table,$this->pid.','.$this->sortField,$this->sortParent .' = 0',true);
+			foreach($data2 as $val)
+			{
+				$id = $val[$this->pid];
+				$parent[$id] = $val[$this->sortField];
+
+			}
+
+			$previous = 0;
+
+			$data = $sql->retrieve($this->table,'*',$this->sortParent.' != 0 ORDER BY '.$this->sortField,true);
+
+			foreach($data as $row)
+			{
+				$p = $row[$this->sortParent];
+
+				if($p != $previous)
+				{
+					$c = $parent[$p];
+				}
+
+				$c++;
+				$previous = $p;
+
+				//	echo "<br />".$row['forum_name']." with parent: ".$p." old: ".$row['forum_order']."  new: ".$c;
+				$sql->update($this->table, $this->sortField . ' = '.$c.' WHERE '.$this->pid.' = '.intval($row[$this->pid]).' LIMIT 1');
+
+			}
+
+
+
+
+
+		}
+
+		$this->afterSort($result, $_POST);
 
 	//	e107::getLog()->addDebug(print_r($_POST,true))->toFile('SortAjax','Admin-UI Ajax Sort Log', true);
 	//	 e107::getLog()->addDebug(print_r($updated,true))->toFile('SortAjax','Admin-UI Ajax Sort Log', true);
@@ -5043,8 +5097,8 @@ class e_admin_ui extends e_admin_controller_ui
 	}
 
 	/**
-	 * User defined error handling, return true to suppress model messages
-	 */
+ * User defined error handling, return true to suppress model messages
+ */
 	public function onUpdateError($new_data, $old_data, $id)
 	{
 	}
@@ -5056,6 +5110,17 @@ class e_admin_ui extends e_admin_controller_ui
 	 * @return void
 	 */
 	public function afterCopy($result, $selected)
+	{
+	}
+
+
+	/**
+	 * User defined after-sort logic
+	 * @param mixed $result
+	 * @param array $selected
+	 * @return void
+	 */
+	public function afterSort($result, $selected)
 	{
 	}
 
