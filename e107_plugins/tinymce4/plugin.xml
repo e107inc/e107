@@ -6,4 +6,8 @@
     <adminLinks>
         <link url='admin_config.php' description='Configure' icon='images/icon_32.png' iconSmall='images/icon_16.png' primary='true' >Configure</link>
     </adminLinks>
+    <pluginPrefs>
+        <pref name="paste_as_text">0</pref>
+        <pref name="browser_spellcheck">1</pref>
+    </pluginPrefs>
 </e107Plugin>
