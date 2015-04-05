@@ -808,14 +808,20 @@ $(document).ready(function()
 
 	
 	function expandit(e) {
-					
+
+
+
 		//	var href = ($(e).is("a")) ? $(e).attr("href") : '';
 			if($(e).is("a"))
 			{
 				var href = $(e).attr("href");	
 						
 			}
-				
+			else
+            {
+                var href = '';
+            }
+
 			if(href === "#" || e === null || href === undefined) 
 			{
 				idt = $(e).next("div");	
@@ -824,8 +830,9 @@ $(document).ready(function()
 				return false;
 			}
 			
-			var id = "#" + e; 		
-			
+			var id = "#" + e;
+
+
 			
 			$(id).toggle("slow");
 			return false;

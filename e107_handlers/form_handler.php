@@ -1292,6 +1292,9 @@ class e_form
 			}
 	
 		}
+
+		$labelClass = (!empty($options['inline'])) ? 'checkbox-inline' : 'checkbox';
+
 		$options = $this->format_options('checkbox', $name, $options);
 		
 		$options['checked'] = $checked; //comes as separate argument just for convenience
@@ -1300,7 +1303,9 @@ class e_form
 
 		$active = ($checked === true) ? " active" : ""; // allow for styling if needed.
 
-		$pre = (vartrue($options['label'])) ? "<label class='checkbox".$active."'>" : ""; // Bootstrap compatible markup
+
+
+		$pre = (vartrue($options['label'])) ? "<label class='".$labelClass.$active."'>" : ""; // Bootstrap compatible markup
 		$post = (vartrue($options['label'])) ? $options['label']."</label>" : "";
 		unset($options['label']); // not to be used as attribute; 
 		
