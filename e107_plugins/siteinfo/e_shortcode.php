@@ -37,7 +37,7 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 
 		$text = deftrue('SITEDISCLAIMER',$default);
 
-		return e107::getParser()->toHtml($text, true, 'constants defs');
+		return e107::getParser()->toHtml($text, true, 'SUMMARY');
 	}
 	
 	function sc_siteurl($parm='')

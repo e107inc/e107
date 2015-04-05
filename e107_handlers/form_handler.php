@@ -1323,13 +1323,27 @@ class e_form
 		if(!is_array($checked)) $checked = explode(",",$checked);
 		
 		$text = "";
-		
+
+		$cname = $name;
+
 		foreach($option_array as $k=>$label)
 		{
-			$c = in_array($k, $checked) ? true : false;
-			$text .= $this->checkbox($name, $k, $c, $label);	
-		}	
-		
+			if(!empty($options['useKeyValues'])) // ie. auto-generated
+			{
+				$key = $k;
+				$c = in_array($k, $checked) ? true : false;
+			}
+			else
+			{
+				$key = 1;
+				$cname = str_replace('[]','['.$k.']',$name);
+				$c = vartrue($checked[$k]);
+			}
+
+
+			$text .= $this->checkbox($cname, $key, $c, $label);
+		}
+
 		return $text;
 		
 	}
@@ -2811,6 +2825,8 @@ class e_form
 	 */
 	function renderValue($field, $value, $attributes, $id = 0)
 	{
+
+
 		$parms = array();
 		if(isset($attributes['readParms']))
 		{
@@ -3579,7 +3595,7 @@ class e_form
 	 */
 	function renderElement($key, $value, $attributes, $required_data = array(), $id = 0)
 	{
-
+	//	return print_a($value,true);
 		$parms = vartrue($attributes['writeParms'], array());
 		$tp = e107::getParser();
 
@@ -3633,7 +3649,7 @@ class e_form
 		}
 
 		// XXX Fixes For the above.  - use optArray variable. eg. $field['key']['writeParms']['optArray'] = array('one','two','three');
-		if(($attributes['type'] == 'dropdown' || $attributes['type'] == 'radio') && !empty($parms['optArray']))
+		if(($attributes['type'] == 'dropdown' || $attributes['type'] == 'radio' || $attributes['type'] == 'checkboxes') && !empty($parms['optArray']))
 		{
 			$fopts = $parms;
 			$parms = $fopts['optArray'];
@@ -3850,14 +3866,23 @@ class e_form
 			break;
 
 			case 'checkboxes':
-				
+
 				if(is_array($parms))
 				{
+					$eloptions  = vartrue($parms['__options'], array());
+					if(is_string($eloptions)) parse_str($eloptions, $eloptions);
+					if($attributes['type'] === 'comma') $eloptions['multiple'] = true;
+					unset($parms['__options']);
+
 					if(!is_array($value) && !empty($value))
 					{
 						$value = explode(",",$value);		
 					}
-					$ret =  vartrue($eloptions['pre']).$this->checkboxes($key, $parms, $value, $eloptions).vartrue($eloptions['post']);		
+
+
+					$ret =  vartrue($eloptions['pre']).$this->checkboxes($key, $parms, $value, $eloptions).vartrue($eloptions['post']);
+
+
 				}
 				return $ret;
 			break;
