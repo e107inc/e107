@@ -109,26 +109,35 @@ $sql->select("chatbox", "*", "{$qry_where} ORDER BY cb_datestamp DESC LIMIT ".in
 $obj2 = new convert;
 
 $chatList = $sql->db_getList();
+$frm = e107::getForm();
 foreach ($chatList as $row)
 {
-	$CHAT_TABLE_DATESTAMP = $obj2->convert_date($row['cb_datestamp'], "long");
+	$CHAT_TABLE_DATESTAMP = $tp->toDate($row['cb_datestamp'], "relative");
 	$CHAT_TABLE_NICK = preg_replace("/[0-9]+\./", "", $row['cb_nick']);
 	$cb_message = $tp->toHTML($row['cb_message'], TRUE,'USER_BODY');
+
 	if($row['cb_blocked'])
 	{
 		$cb_message .= "<br />".CHATBOX_L25;
 	}
+
 	if(CB_MOD)
 	{
-		$cb_message .= "<br /><input type='checkbox' name='delete[{$row['cb_id']}]' value='1' />".LAN_DELETE;
+		$id = $row['cb_id'];
+		$cb_message .= "<div class='checkbox'>";
+
+		$cb_message .= $frm->checkbox('delete['.$id.']',1, false, array('inline'=>true,'label'=>LAN_DELETE));
+
 		if($row['cb_blocked'])
 		{
-			$cb_message .= "&nbsp;&nbsp;&nbsp;<input type='checkbox' name='unblock[{$row['cb_id']}]' value='1' />".CHATBOX_L7;
+			$cb_message .= $frm->checkbox('unblock['.$id.']',1, false, array('inline'=>true, 'label'=> CHATBOX_L7));
 		}
 		else
 		{
-			$cb_message .= "&nbsp;&nbsp;&nbsp;<input type='checkbox' name='block[{$row['cb_id']}]' value='1' />".CHATBOX_L9;
+			$cb_message .= $frm->checkbox('block['.$id.']',1, false,  array('inline'=>true, 'label'=> CHATBOX_L9));
 		}
+
+		$cb_message .= "</div>";
 	}
 
 	$CHAT_TABLE_MESSAGE = $cb_message;
