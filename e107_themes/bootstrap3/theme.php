@@ -73,9 +73,9 @@ function tablestyle($caption, $text, $id='', $info=array())
 		return;
 	}
 	
-	if($style == 'col-md-4')
+	if($style == 'col-md-4' || $style == 'col-md-6' || $style == 'col-md-8')
 	{
-		echo ' <div class="col-xs-12 col-md-4">
+		echo ' <div class="col-xs-12 '.$style.'">
           <h2>'.$caption.'</h2>
           '.$text.'
         </div>';
@@ -142,9 +142,9 @@ $LAYOUT['_header_'] = '
 // applied after every layout. 
 $LAYOUT['_footer_'] = '  <hr>
 <div class="row">
-  	{SETSTYLE=col-md-6}
+
 	<footer >
-		<div class="row">
+		<div>
 			<div class="col-lg-6">
 				{MENU=10}
 			</div>
@@ -152,7 +152,24 @@ $LAYOUT['_footer_'] = '  <hr>
 				{MENU=11}
 			</div>
 		</div>
-		<div class="row">
+
+		<div>
+			<div class="col-sm-12 col-lg-4">
+				{MENU=12}
+			</div>
+
+			<div class="col-sm-12 col-lg-8">
+				{MENU=13}
+			</div>
+		</div>
+
+		<div >
+			<div class="col-lg-12">
+				{MENU=14}
+			</div>
+		</div>
+
+		<div>
 			<div class="col-lg-6">
 
 				{NAVIGATION=footer}
@@ -162,10 +179,17 @@ $LAYOUT['_footer_'] = '  <hr>
 				{BOOTSTRAP_USERNAV: placement=bottom&dir=up}
 			</div>
 		</div>
-		{SETSTYLE=col-md-12}
-		<div class="col-lg-12 text-center">
-			{MENU=12}
-			<small>{SITEDISCLAIMER}</small>
+
+		<div>
+			<div class="col-lg-12">
+				{MENU=15}
+			</div>
+		</div>
+
+		<div>
+			<div id="sitedisclaimer" class="col-lg-12 text-center">
+				<small >{SITEDISCLAIMER}</small>
+			</div>
 		</div>
 	</footer>
 </div>	
