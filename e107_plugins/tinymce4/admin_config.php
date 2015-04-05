@@ -56,7 +56,9 @@ if( !e107::isInstalled('tinymce4'))
 
 
 		protected $prefs = array(
-			'paste_as_text'		=> array('title'=> 'Paste as text by default', 'type'=>'boolean', 'data' => 'int','help'=> ''),		);
+			'paste_as_text'		=> array('title'=> 'Paste as text by default', 'type'=>'boolean', 'data' => 'int','help'=> ''),
+			'browser_spellcheck' =>  array('title'=> 'Browser spellcheck', 'type'=>'boolean', 'data' => 'int','help'=> 'Enable this if the browser internal spellchecker should be used.'),
+		);
 
 
 		public function init()

@@ -323,6 +323,14 @@ class wysiwyg
 			$ret['paste_as_text']	= true;
 		}
 
+
+		if(!empty($tPref['browser_spellcheck']))
+		{
+			$ret['browser_spellcheck']	= true;
+		}
+
+
+
 		$ret['convert_fonts_to_spans']	= false;
 		$ret['content_css']				= e_PLUGIN_ABS.'tinymce4/editor.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css,http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css';
 		
