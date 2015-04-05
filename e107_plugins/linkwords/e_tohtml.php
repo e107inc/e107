@@ -92,7 +92,7 @@ class e_tohtml_linkwords
 		if (!vartrue($temp))
 		{	// Either cache disabled, or no info in cache (or error reading/processing cache)
 			$link_sql = new db;
-			if($link_sql -> db_Select("linkwords", "*", "linkword_active!=1"))
+			if($link_sql ->select("linkwords", "*", "linkword_active!=1"))
 			{
 				$this->lw_enabled = TRUE;
 				while ($row = $link_sql->db_Fetch())
@@ -217,12 +217,12 @@ class e_tohtml_linkwords
 			if ($this->lwAjaxEnabled)
 			{
 				$linkrel[] = 'linkwordID::'.$this->LinkID[$first];
-				$lwClass[] = 'lw_ajax';
+				$lwClass[] = 'lw_ajax lw-ajax';
 			}
 			else
 			{
 				$tooltip = " title='{$this->tip_list[$first]}' ";
-				$lwClass[] = 'lw_tip';
+				$lwClass[] = 'lw_tip lw-tip';
 			}
 		}
 		if ($this->link_list[$first]) 
@@ -232,7 +232,7 @@ class e_tohtml_linkwords
 			{
 				$linkwd = " href='".$newLink."' ";
 				if ($this->ext_list[$first]) { $linkrel[] = 'external'; }		// Determine external links
-				$lwClass[] = 'lw_link';
+				$lwClass[] = 'lw_link lw-link';
 			}
 		}
 		if (!count($lwClass))
@@ -243,14 +243,16 @@ class e_tohtml_linkwords
 		{
 			$linkwd .= " rel='".implode(' ',$linkrel)."'";
 		}
+
 		// This splits the text into blocks, some of which will precisely contain a linkword
 		$split_line = preg_split('#\b('.$lw.')\b#i'.$this->utfMode, $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );		// *utf (selected)
 		$class = "class='".implode(' ',$lwClass)."' ";
+
 		foreach ($split_line as $sl)
 		{
 			if ($tp->uStrToLower($sl) == $lw)			// We know the linkword is already lower case							// *utf 
 			{  // Do linkword replace
-				$ret .= ' <a '.$class.$linkwd.$tooltip.'>'.$sl.'</a>';
+				$ret .= '<a '.$class.$linkwd.$tooltip.'>'.$sl.'</a>';
 			}
 			elseif (trim($sl))
 			{  // Something worthwhile left - look for more linkwords in it
