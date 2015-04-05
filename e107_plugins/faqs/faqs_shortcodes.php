@@ -47,14 +47,14 @@ class faqs_shortcodes extends e_shortcode
 				$tags = "<div class='faq-tags'>".LAN_FAQS_TAGS.": ".$this->sc_faq_tags()."</div>";
 			}
 			$id = "faq_".$this->var['faq_id'];
-			$text = "<a class='e-expandit faq-question' href='#{$id}'>".$tp->toHTML($this->var['faq_question'],true)."</a>
-			<div id='{$id}' class='e-hideme faq-answer faq_answer clearfix'>".$tp->toHTML($this->var['faq_answer'],TRUE).$tags."</div>
+			$text = "<a class='e-expandit faq-question' href='#{$id}'>".$tp->toHTML($this->var['faq_question'],true,'TITLE')."</a>
+			<div id='{$id}' class='e-hideme faq-answer faq_answer clearfix'>".$tp->toHTML($this->var['faq_answer'],true,'BODY').$tags."</div>
 			";	
 
 		}
 		else
 		{
-			$text = $tp->toHTML($this->var['faq_question'],true);		
+			$text = $tp->toHTML($this->var['faq_question'],true, 'TITLE');
 		}
 		return $text;
 	}
@@ -62,7 +62,7 @@ class faqs_shortcodes extends e_shortcode
 	function sc_faq_question_link($parm='')
 	{
 		$tp = e107::getParser();
-		return "<a class='faq-question' href='". e107::getUrl()->create('faqs/view/item', array('id' => $this->var['faq_id']))."' >".$tp -> toHTML($this->var['faq_question'])."</a>";	
+		return "<a class='faq-question' href='". e107::getUrl()->create('faqs/view/item', array('id' => $this->var['faq_id']))."' >".$tp -> toHTML($this->var['faq_question'],true,'TITLE')."</a>";
 	}
 	
 	function sc_faq_answer()
