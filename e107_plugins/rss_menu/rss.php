@@ -147,7 +147,19 @@ else
 if($rss = new rssCreate($content_type, $rss_type, $topic_id, $row))
 {
 	$rss_title = ($rss->contentType ? $rss->contentType : ucfirst($content_type));
-	$rss->buildRss($rss_title);
+
+	if(E107_DEBUG_LEVEL > 0)
+	{
+		define('e_IFRAME',true);
+		require_once(HEADERF);
+		$rss->debug();
+		require_once(FOOTERF);
+		exit;
+	}
+	else
+	{
+		$rss->buildRss($rss_title);
+	}
 }
 else
 {
@@ -204,61 +216,8 @@ class rssCreate
 		{
 			case 'news' :
 			case 1:
-				if($topic_id && is_numeric($topic_id))
-				{
-					$topic = " AND news_category = ".intval($topic_id);
-				}
-				else
-				{
-					$topic = '';
-				}
-
-				$path='';
-				$render = ($pref['rss_othernews'] != 1) ? "AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type))" : "";
-				$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
-
-				$this -> rssQuery = "
-				SELECT n.*, u.user_id, u.user_name, u.user_email, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
-				LEFT JOIN #user AS u ON n.news_author = u.user_id
-				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-				WHERE n.news_class IN (".USERCLASS_LIST.") AND NOT (n.news_class REGEXP ".$nobody_regexp.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") {$render} {$topic} ORDER BY n.news_datestamp DESC LIMIT 0,".$this -> limit;
-				$sql->gen($this->rssQuery);
-				$tmp = $sql->db_getList();
-				$this -> rssItems = array();
-				$loop=0;
-				foreach($tmp as $value)
-				{
-					$this -> rssItems[$loop]['title'] = $value['news_title'];
-				//	$this -> rssItems[$loop]['link'] = "http://".$_SERVER['HTTP_HOST'].e_HTTP."news.php?item.".$value['news_id'].".".$value['news_category'];
-					
-					$this -> rssItems[$loop]['link'] = e107::getUrl()->create('news/view/item', $value, 'full=1'); 
-					
-					if($value['news_summary'] && $pref['rss_summarydiz'])
-					{
-						$this -> rssItems[$loop]['description'] = $value['news_summary'];
-					}
-					else
-					{
-						$this -> rssItems[$loop]['description'] = ($value['news_body']."<br />".$value['news_extended']);
-					}
-					$this -> rssItems[$loop]['author'] = $value['user_name'];
-					$this -> rssItems[$loop]['author_email'] = $value['user_email'];
-				//	$this -> rssItems[$loop]['category'] = "<category domain='".SITEURL."news.php?cat.".$value['news_category']."'>".$value['category_name']."</category>";
-					$this -> rssItems[$loop]['category_name'] = $tp->toHTML($value['category_name'],TRUE,'defs');
-                    $this -> rssItems[$loop]['category_link'] = SITEURL."news.php?cat.".$value['news_category']; //TODO SEFURL.
-
-					if($value['news_allow_comments'] && $pref['comments_disabled'] != 1)
-					{
-						$this -> rssItems[$loop]['comment'] = "http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$value['news_id'];
-					}
-					$this -> rssItems[$loop]['pubdate'] = $value['news_datestamp'];
-					if($pref['rss_shownewsimage'] == 1 && strlen(trim($value['news_thumbnail'])) > 0) {
-						$this -> rssItems[$loop]['news_thumbnail'] = $value['news_thumbnail'];
-					}
-
-					$loop++;
-				}
-				break;
+				$path = e_PLUGIN."news/e_rss.php";
+				break;;
 			case 2:
 				$path='';
 				$this -> contentType = "articles";
@@ -271,7 +230,7 @@ class rssCreate
 				$path='';
 				$this -> contentType = "content";
 				break;
-			case 'comments' :
+			case 'comments' : //TODO Eventually move to e107_plugins/comments
 			case 5:
 				$path='';
 				$this -> rssQuery = "SELECT * FROM `#comments` WHERE `comment_blocked` = 0 ORDER BY `comment_datestamp` DESC LIMIT 0,".$this -> limit;
@@ -377,7 +336,7 @@ class rssCreate
 							$this -> rssItems[$k]['enc_leng'] = $row['enc_leng'];
 						}
 
-						if($eplug_rss['enc_type'])
+						if(!empty($eplug_rss['enc_type']))
 						{
 							$this -> rssItems[$k]['enc_type'] = $this->getmime($eplug_rss['enc_type']);
 						}
@@ -403,13 +362,25 @@ class rssCreate
 							$this -> rssItems[$k]['pubdate'] = $row['datestamp'];
 						}
 
-						if($row['custom']){
+						if($row['custom'])
+						{
 							$this -> rssItems[$k]['custom'] = $row['custom'];
+						}
+
+						if($row['media'])
+						{
+							$this -> rssItems[$k]['media'] = $row['media'];
 						}
 					}
 				}
 			}
 		}
+	}
+
+	function debug()
+	{
+		print_a($this);
+	//	print_a($this -> rssItems);
 	}
 
 	function buildRss($rss_title)
@@ -472,6 +443,7 @@ class rssCreate
 					xmlns:atom=\"http://www.w3.org/2005/Atom\"
 					xmlns:dc=\"http://purl.org/dc/elements/1.1/\"
 					xmlns:sy=\"http://purl.org/rss/1.0/modules/syndication/\"
+					xmlns:media=\"http://search.yahoo.com/mrss/\"
 				>
 				<channel>
 				<title>".$tp->toRss($rss_title)."</title>
@@ -531,18 +503,11 @@ class rssCreate
 						echo "<link>".$link."</link>\n";
 					}
 
-					echo "<description>".$tp->toRss($value['description'],TRUE);
-					if($pref['rss_shownewsimage'] == 1 && strlen(trim($value['news_thumbnail'])) > 0) //FIXME - Fixed path and height?
-					{
-						$news_thumbnail = SITEURLBASE.e_IMAGE_ABS."newspost_images/".$tp->toRss($value['news_thumbnail']);
-						echo "&lt;a href=&quot;".$link."&quot;&gt;&lt;img src=&quot;".$news_thumbnail."&quot; height=&quot;50&quot; border=&quot;0&quot; hspace=&quot;10&quot; vspace=&quot;10&quot; align=&quot;right&quot;&gt;&lt;/a&gt;";
-						unset($news_thumbail);
-					}
-					echo "</description>\n";
+					echo "<description>".$tp->toRss($value['description'],true). "</description>\n";
 
 					if($value['content_encoded'])
 					{
-						echo "<content:encoded>".$tp->toRss($value['content_encoded'],TRUE)."</content:encoded>\n";
+						echo "<content:encoded>".$tp->toRss($value['content_encoded'],true)."</content:encoded>\n";
 					}
 
 					if($value['category_name'] && $catlink)
@@ -580,6 +545,20 @@ class rssCreate
 							echo "<".$cKey.">".$tp->toRss($cVal)."</".$cKey.">\n";
 						}
 					}
+
+					if(!empty($value['media']))
+					{
+
+						foreach($value['media'] as $cVal)
+						{
+							foreach($cVal as $k=>$v)
+							{
+								echo $this->buildTag($k,$v);
+							}
+						}
+
+					}
+
 
 					echo "</item>\n\n";
 				}
@@ -635,14 +614,7 @@ class rssCreate
 						<dc:date>".$this->get_iso_8601_date($time + $this -> offset)."</dc:date>
 						<dc:creator>".$value['author']."</dc:creator>
 						<dc:subject>".$tp->toRss($value['category_name'])."</dc:subject>
-						<description>".$tp->toRss($value['description']);
-					if($pref['rss_shownewsimage'] == 1 && strlen(trim($value['news_thumbnail'])) > 0)
-					{
-						$news_thumbnail = SITEURLBASE.e_IMAGE_ABS."newspost_images/".$tp->toRss($value['news_thumbnail']);
-						echo "&lt;a href=&quot;".$link."&quot;&gt;&lt;img src=&quot;".$news_thumbnail."&quot; height=&quot;50&quot; border=&quot;0&quot; hspace=&quot;10&quot; vspace=&quot;10&quot; align=&quot;right&quot;&gt;&lt;/a&gt;";
-						unset($news_thumbail);
-					}
-					echo "</description>
+						<description>".$tp->toRss($value['description']). "</description>
 						</item>";
 				}
 				echo "
@@ -713,17 +685,11 @@ class rssCreate
 						//<content>complete story here</content>\n
 						echo "
 						<link rel='alternate' type='text/html' href='".$value['link']."' />\n
-						<summary type='text'>".$tp->toRss($value['description']);
-						if($pref['rss_shownewsimage'] == 1 && strlen(trim($value['news_thumbnail'])) > 0)
-						{
-							$news_thumbnail = SITEURLBASE.e_IMAGE_ABS."newspost_images/".$tp->toRss($value['news_thumbnail']);
-							echo "&lt;a href=&quot;".$value['link']."&quot;&gt;&lt;img src=&quot;".$news_thumbnail."&quot; height=&quot;50&quot; border=&quot;0&quot; hspace=&quot;10&quot; vspace=&quot;10&quot; align=&quot;right&quot;&gt;&lt;/a&gt;";
-							unset($news_thumbail);
-						}
-						echo "</summary>\n";
+						<summary type='text'>".$tp->toRss($value['description']). "</summary>\n";
 
 						// Optional
-						if($value['category_name']){
+						if(!empty($value['category_name']))
+						{
 							echo "<category term='".$tp->toRss($value['category_name'])."'/>\n";
 						}
 						//<contributor>
@@ -745,6 +711,64 @@ class rssCreate
 			break;
 		}
 	}
+
+
+	/**
+	 * Build an XML Tag
+	 * @param string $name
+	 * @param array $attributes
+	 * @param bool $closing
+	 * @return string
+	 */
+	function buildTag($name='', $attributes=array())
+	{
+		$tp = e107::getParser();
+
+		if(empty($name))
+		{
+			return '';
+		}
+
+		if(isset($attributes['value']))
+		{
+			$value = $attributes['value'];
+			unset($attributes['value']);
+		}
+
+		$text = "\n<".$name;
+
+		foreach($attributes as $att=>$attVal)
+		{
+
+			$text .= " ".$att."=\"".$tp->toRss($attVal)."\"";
+		}
+
+		$text .= ">";
+
+		if(!empty($value))
+		{
+			if(is_array($value))
+			{
+				foreach($value as $t=>$r)
+				{
+					$text .= $this->buildTag($t,$r);
+				}
+
+			}
+			else
+			{
+				$text .= $tp->toRss($value);
+			}
+
+		}
+
+		$text .= "</".$name.">\n";
+
+		return $text;
+	}
+
+
+
 
 	function getmime($file)
 	{

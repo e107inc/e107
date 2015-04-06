@@ -218,6 +218,8 @@ class rss_ui extends e_admin_ui
 			$sqli = new db;
 			$feedlist = array();
 
+			// @see e107_plugins/news/e_rss.php
+			/*
 			// News
 			$feed['name']		= ADLAN_0;
 			$feed['url']		= 'news';	// The identifier for the rss feed url
@@ -243,7 +245,7 @@ class rss_ui extends e_admin_ui
 					//	$feed['exclude_class'] = '';
 					$feedlist[]			= $feed;
 				}
-			}
+			}*/
 
 			/*		// Download
 					$feed['name']		= ADLAN_24;
@@ -271,6 +273,9 @@ class rss_ui extends e_admin_ui
 						}
 					}
 			*/
+
+
+			//
 			// Comments
 			$feed['name']		= RSS_PLUGIN_LAN_14;
 			$feed['url']		= 'comments';
