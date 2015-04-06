@@ -142,7 +142,7 @@ $LAYOUT['_header_'] = '
 // applied after every layout. 
 $LAYOUT['_footer_'] = '  <hr>
 <div class="row">
-
+  {SETSTYLE=default}
 	<footer >
 		<div>
 			<div class="col-lg-6">
