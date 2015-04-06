@@ -144,7 +144,7 @@ function show_admins()
 
 	";
 
-	while ($row = $sql->db_Fetch())
+	while ($row = $sql->fetch())
 	{
 		//$permtxt = "";
 		$text .= "
@@ -196,6 +196,8 @@ require_once("footer.php");
  */
 function headerjs()
 {
+	return '';
+/*
 	require_once(e_HANDLER.'js_helper.php');
 	$ret = "
 		<script type='text/javascript'>
@@ -205,6 +207,6 @@ function headerjs()
 		<script type='text/javascript' src='".e_JS."core/admin.js'></script>
 	";
 
-	return $ret;
+	return $ret;*/
 }
 ?>

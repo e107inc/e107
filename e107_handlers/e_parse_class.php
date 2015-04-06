@@ -2961,9 +2961,92 @@ class e_parser
 		
 		
 		return "<img class='icon' src='".$path."' alt='".basename($path)."'  />";	
-	}	
+	}
 
 
+	/**
+	 * @param $file
+	 * @param array $parm  legacy|w|h
+	 * @return string
+	 * @example $tp->toImage('welcome.png', array('legacy'=>{e_IMAGE}newspost_images/','w'=>200));
+	 */
+	public function toImage($file, $parm=array())
+	{
+
+		if(!vartrue($file))
+		{
+			return '';
+		}
+
+		$file = trim($file);
+
+		$ext = pathinfo($file, PATHINFO_EXTENSION);
+
+		if($ext != 'jpg' && $ext !='gif' && $ext != 'png') // Bootstrap or Font-Awesome.
+		{
+			return '';
+		}
+
+		$tp = e107::getParser();
+
+		if(!empty($parm['w']))
+		{
+			$tp->setThumbSize($parm['w']);
+		}
+
+		if(!empty($parm['h']))
+		{
+			$tp->setThumbSize(null, $parm['h']);
+		}
+
+
+		if(strpos($file,'e_MEDIA')!==false || strpos($file,'e_THEME')!==false) //v2.x path.
+		{
+			$path = $tp->thumbUrl($file,null,null,true);
+		}
+		elseif($file[0] == '{') // Legacy v1.x path. Example: {e_WHEREEVER}
+		{
+			$path = $tp->replaceConstants($file,'full');
+		}
+		elseif(!empty($parm['legacy'])) // Search legacy path for image.
+		{
+
+			$legacyPath = $parm['legacy'].$file;
+			$filePath = $tp->replaceConstants($legacyPath,'rel');
+
+			if(is_readable($filePath))
+			{
+				$path = $tp->replaceConstants($legacyPath,'full');
+			}
+			else
+			{
+				$log = e107::getAdminLog();
+				$log->addDebug('Broken Icon Path: '.$legacyPath."\n".print_r(debug_backtrace(null,2), true), false)->save('IMALAN_00');
+			}
+
+		}
+		else // usually http://....
+		{
+			$path = $file;
+		}
+
+
+		if(empty($style))
+		{
+			$insertStyle = '';
+		}
+		else
+		{
+			$insertStyle = "style='";
+
+		}
+
+
+		$alt = (!empty($parm['alt'])) ? $tp->toAttribute($parm['alt']) : basename($path);
+
+		return "<img class='img-responsive' src='".$path."' alt=\"".$alt."\"  {$insertStyle} />";
+
+	}
 
 	/**
 	 * Check if a file is an video or not. 
@@ -2976,6 +3059,18 @@ class e_parser
 			
 		return ($ext == 'youtube' || $ext == 'youtubepl') ? true : false;
 		
+	}
+
+	/**
+	 * Check if a file is an image or not.
+	 * @param $file string
+	 * @return boolean
+	 */
+	function isImage($file)
+	{
+		$ext = pathinfo($file,PATHINFO_EXTENSION);
+
+		return ($ext == 'jpg' || $ext == 'png' || $ext == 'gif' || $ext == 'jpeg') ? true : false;
 	}
 
 	
@@ -3070,7 +3165,7 @@ class e_parser
 			return '
 			<div class="video-responsive">
 			<video width="320" height="240" controls>
-			  <source src="movie.mp4" type="video/mp4">
+			  <source src="'.$file.'" type="video/mp4">
 		
 			  Your browser does not support the video tag.
 			</video>
