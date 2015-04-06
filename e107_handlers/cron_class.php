@@ -231,9 +231,26 @@ class _system_cron
 	{
 		
 		$sql = e107::getDb();
-		$sql->backup('*');
-		
-		
+		$file = $sql->backup('*');
+
+		if(empty($file))
+		{
+			e107::getLog()->addError('Database Backup Failed:'.basename($file))->save('BACKUP');
+			return;
+		}
+
+		$zipFile = $file.".zip";
+		e107::getFile()->zip(array($file),$zipFile, array('remove_path'=>e_BACKUP));
+
+		if(file_exists($zipFile))
+		{
+			e107::getLog()->addSuccess('Database Backup Complete:'.basename($zipFile))->save('BACKUP');
+
+			if(is_file($file))
+			{
+				unlink($file);
+			}
+		}
 		
 		return;
 		

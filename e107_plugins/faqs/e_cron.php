@@ -21,7 +21,7 @@
 			$cron[] = array(
 				'name'			=> "Unanswered Questions Report", //TODO LAN
 				'function'		=> "unanswered",
-				'category'		=> "report",
+				'category'		=> "notify",
 				'description' 	=> "Mails a report of unanswered questions to ".e107::pref('core','siteadminemail').'.' // TODO LAN
 			);
 

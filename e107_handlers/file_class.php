@@ -970,7 +970,7 @@ class e_file
 	 * @param string $newFile
 
 	 */	
-	public function zip($filePaths=null, $newFile='')
+	public function zip($filePaths=null, $newFile='', $options=array())
 	{
 		if(empty($newFile))
 		{
@@ -984,8 +984,10 @@ class e_file
 			
 		require_once(e_HANDLER.'pclzip.lib.php');	
 		$archive = new PclZip($newFile);
-		
-		if ($archive->create($filePaths, PCLZIP_OPT_REMOVE_PATH,e_BASE) == 0)
+
+		$removePath = (!empty($options['remove_path'])) ? $options['remove_path'] : e_BASE;
+
+		if ($archive->create($filePaths, PCLZIP_OPT_REMOVE_PATH, $removePath) == 0)
 		{		
 			$error = $archive->errorInfo(true);
 			e107::getAdminLog()->addError($error)->save('FILE',E_LOG_NOTICE);

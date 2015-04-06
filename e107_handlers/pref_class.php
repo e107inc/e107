@@ -600,6 +600,14 @@ class e_pref extends e_front_model
 				}
 				
 				$log->addSuccess('Settings successfully saved.', ($session_messages === null || $session_messages === true));
+
+				$uid = USERID;
+
+				if(empty($uid)) // Log extra details of any pref changes made by a non-user.
+				{
+					$log->addWarning(print_r(debug_backtrace(null,2), true), false);
+				}
+
 				$log->save($logId);
 
 			//	if(!$disallow_logs) $log->logSuccess('Settings successfully saved.', true, $session_messages)->flushMessages($logId, E_LOG_INFORMATIVE, '', $this->prefid);
