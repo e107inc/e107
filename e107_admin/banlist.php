@@ -337,7 +337,9 @@ class banlist_form_ui extends e_admin_form_ui
 			//	$val =  ($curVal ? strftime($pref['ban_date_format'], $curVal).(($curVal < time()) ? ' ('.BANLAN_34.')' : '') : LAN_NEVER); // ."<br />".$this->banexpires();
 			//	$val .= " (".$curVal.")";
 				// $mod = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
-				$val = vartrue($curVal) ? $date->computeLapse(time(), $curVal) : LAN_NEVER;		
+				$val = vartrue($curVal) ? $date->computeLapse(time(), $curVal) : LAN_NEVER;
+
+				$val = str_replace("ago", "", $val); // quick fix for the 'ago'.
 				
 				if(vartrue($curVal) && $curVal < time())
 				{

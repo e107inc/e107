@@ -82,7 +82,7 @@ define("BANLAN_74", "Banlist Maintenance");
 define("BANLAN_75", "Remove expired bans from list");
 define("BANLAN_76", "Execute");
 define("BANLAN_77", "Messages/Ban Periods");
-// define("BANLAN_78", "Hit count exceeded (--HITS-- requests within allotted time)");
+define("BANLAN_78", "Hit count exceeded (--HITS-- requests within allotted time)");
 define("BANLAN_79", "CSV Export format:");
 define("BANLAN_80", "CSV Import format:");
 define("BANLAN_81", "Ban Action Log");
