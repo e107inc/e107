@@ -122,7 +122,7 @@ class e_form
 		{
 			$autoComplete = " autocomplete='".($options['autocomplete'] ? 'on' : 'off')."'";	
 		}
-		
+
 		
 		if($method == 'get' && strpos($target,'='))
 		{
@@ -4213,7 +4213,7 @@ class e_form
 			$curTab = varset($_GET['tab'],0);
 			
 			$text .= "
-				<form method='post' action='".$url."' id='{$form['id']}-form' enctype='multipart/form-data'>
+				<form method='post' action='".$url."' id='{$form['id']}-form' enctype='multipart/form-data' autocomplete='off' >
 				<div>
 				".vartrue($form['header'])."
 				".$this->token()."
