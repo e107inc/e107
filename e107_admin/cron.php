@@ -344,11 +344,11 @@ class cron_admin_ui extends e_admin_ui
 			$frm = e107::getForm();
 			
 			e107::getCache()->CachePageMD5 = '_';
-			$lastload = e107::getCache()->retrieve('cronLastLoad', FALSE, TRUE, TRUE);
+			$lastload = e107::getCache()->retrieve('cronLastLoad', false, true, true);
 			
 			$ago = (time() - $lastload);
 	
-			$active = ($ago < 901) ? TRUE : FALSE;
+			$active = ($ago < 1200) ? true : false; // longer than 20 minutes, so lets assume it's inactive.
 			$status = ($active) ? LAN_ENABLED : LAN_DISABLED; // "Enabled" : "Offline";
 	
 			$mins = floor($ago / 60);
@@ -365,13 +365,12 @@ class cron_admin_ui extends e_admin_ui
 			$mes->addInfo(LAN_CRON_11.": <b>".$this->activeCrons."</b>");
 			$mes->addInfo(LAN_CRON_12.": ".$lastRefresh."<br /><br />");
 			
-			
-	
-			//FIXME: for Windows, the is_executable() function only checks the file
+
 			// extensions of exe, com, bat and cmd.
 			
 			$isWin = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
 			$actualPerm = substr(decoct(fileperms(e_BASE."cron.php")),3);
+
 			if($isWin)
 			{
 				$mes->addWarning(LAN_CRON_13);
@@ -402,9 +401,9 @@ class cron_admin_ui extends e_admin_ui
 		function cronExecute($cron_id)
 		{
 			$sql = e107::getDb();
-			if($sql->db_Select("cron","cron_name,cron_function","cron_id = ".intval($cron_id)))
+			if($sql->select("cron","cron_name,cron_function","cron_id = ".intval($cron_id)))
 			{
-				$row = $sql->db_Fetch(MYSQL_ASSOC);	
+				$row = $sql->fetch(MYSQL_ASSOC);
 				$class_func = $row['cron_function'];
 				$cron_name = $row['cron_name'];	
 			}
