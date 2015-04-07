@@ -979,8 +979,8 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			
 					$eplug_name 		= $tp->toHTML($name,FALSE,"defs, emotes_off");
 					$eplug_conffile 	= $att['url'];
-					$eplug_icon_small 	= $plugin_path.'/'.$att['iconSmall'];
-					$eplug_icon 		= $plugin_path.'/'.$att['icon'];
+					$eplug_icon_small 	= (!empty($att['iconSmall'])) ? $plugin_path.'/'.$att['iconSmall'] : '';
+					$eplug_icon 		= (!empty($att['icon'])) ? $plugin_path.'/'.$att['icon'] : '';
 					$eplug_caption 		= str_replace("'", '', $tp->toHTML($att['description'], FALSE, 'defs, emotes_off'));
 					
 					if (varset($eplug_conffile))
