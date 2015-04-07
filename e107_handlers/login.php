@@ -561,8 +561,15 @@ class userlogin
 	protected function logNote($title, $text)
 	{
 		$title = e107::getParser()->toDB($title);
-		$text  = e107::getParser()->toDB($text);
-		e107::getLog()->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", $title, $text, FALSE, LOG_TO_ROLLING);
+	//	$text  = e107::getParser()->toDB($text);
+	//	$text = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS_);
+
+		$debug = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2);
+
+
+	//	$array = debug_backtrace();
+	//	e107::getLog()->e_log_event(4, $array, "LOGIN", $title, $text, FALSE, LOG_TO_ROLLING);
+		e107::getLog()->e_log_event(4, $debug[1]['file']."|".$debug[1]['function']."@".$debug[1]['line'], "LOGIN", $title, $debug, FALSE, LOG_TO_ROLLING);
 	}
 
 
