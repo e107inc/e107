@@ -2608,7 +2608,7 @@ class e107
 	 * @param string $plugin
 	 * @param $key
 	 * @param array $row
-	 * @param string $mode abs | full 
+	 * @param string $mode abs | full
 	 * @return string
 	 */
 	public static function url($plugin='',$key, $row=array(), $mode='abs')

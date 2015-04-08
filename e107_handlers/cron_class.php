@@ -244,7 +244,7 @@ class _system_cron
 
 		if(file_exists($zipFile))
 		{
-			e107::getLog()->addSuccess('Database Backup Complete:'.basename($zipFile))->save('BACKUP');
+			e107::getLog()->addSuccess('Database Backup Complete: '.basename($zipFile))->save('BACKUP');
 
 			if(is_file($file))
 			{
