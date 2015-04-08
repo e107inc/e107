@@ -3259,7 +3259,7 @@ if (!getperms('P'))
 
 
 
-class ".$thePlugin."_admin extends e_admin_dispatcher
+class ".$thePlugin."_adminArea extends e_admin_dispatcher
 {
 
 	protected \$modes = array(	
@@ -3572,7 +3572,7 @@ $text .= "
 			} // End LOOP. 
 	
 $text .= '		
-new '.$thePlugin.'_admin();
+new '.$thePlugin.'_adminArea();
 
 require_once(e_ADMIN."auth.php");
 e107::getAdminUI()->runPage();
