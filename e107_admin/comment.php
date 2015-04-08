@@ -86,6 +86,7 @@ class comments_admin_ui extends e_admin_ui
 		// optional, if $pluginName == 'core', core prefs will be used, else e107::getPluginConfig($pluginName);
 		
 		protected $prefs = array(
+			'comments_engine'		=> array('title'=>"Engine", 	'type'=>'dropdown', 'writeParms'=>array()),
 			'comments_disabled'		=> array('title'=>PRFLAN_161, 	'type'=>'boolean', 'writeParms'=>'inverse=1'), // Same as 'writeParms'=>'reverse=1&enabled=LAN_DISABLED&disabled=LAN_ENABLED'  
 			'anon_post'				=> array('title'=>PRFLAN_32, 	'type'=>'boolean'),
 			'comments_icon'			=> array('title'=>PRFLAN_89, 	'type'=>'boolean'),
@@ -93,6 +94,40 @@ class comments_admin_ui extends e_admin_ui
 			'allowCommentEdit'		=> array('title'=>PRFLAN_90, 	'type'=>'boolean'),			
 			'comments_emoticons'	=> array('title'=>PRFLAN_166, 	'type'=>'boolean')
 		);
+
+
+		public function init()
+		{
+			$engine = e107::pref('core', 'comments_engine');
+
+			if($engine != 'e107') // Hide all other prefs.
+			{
+				$this->prefs = array(
+					'comments_engine'		=> array('title'=>"Engine", 	'type'=>'dropdown', 'writeParms'=>array()),
+					'comments_disabled'		=> array('title'=>PRFLAN_161, 	'type'=>'boolean', 'writeParms'=>'inverse=1'),
+				);
+
+			}
+
+
+
+			$this->prefs['comments_engine']['writeParms']['optArray'] = array('e107'=>'e107');
+
+			$addons = e107::getAddonConfig('e_comment');
+			foreach($addons as $plugin=>$config)
+			{
+				foreach($config as $val)
+				{
+					$id = $plugin."::".$val['function'];
+					$this->prefs['comments_engine']['writeParms']['optArray'][$id] = $val['name'];
+				}
+			}
+
+
+
+
+		//	print_a($addons);
+		}
 
 
 		public function afterUpdate($new_data, $old_data, $id)

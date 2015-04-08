@@ -51,6 +51,8 @@ class comment
 	
 	private $table = null;
 
+	private $engine = 'e107';
+
 	function __construct()
 	{
 		
@@ -58,7 +60,12 @@ class comment
 		{
 			$this->moderator = true;	
 		}
-		
+
+		$this->engine = e107::pref('core', 'comments_engine', 'e107');
+
+
+
+
 		//TODO - add a pref for comments per page. 
 		// $this->commentsPerPage = pref; 
 				
@@ -133,6 +140,11 @@ class comment
 
 	function replyComment($id) // Ajax Reply. 
 	{
+		if($this->engine != 'e107')
+		{
+			return null;
+		}
+
 		$sql = e107::getDb();
 		if($sql->db_Select("comments","*","comment_id= ".intval($id)." LIMIT 1"))
 		{
@@ -165,20 +177,18 @@ class comment
 	{
 		//rating	: boolean, to show rating system in comment
 
-
-		
 		$pref	= e107::getPref();
 		$sql	= e107::getDb();
 		$tp	= e107::getParser();
-				
-		if(vartrue($pref['comments_disabled']))
+
+		if(vartrue($pref['comments_disabled']) || $this->engine != 'e107')
 		{
-			return;
+			return null;
 		}
 
 		if ($user_func = e107::getOverride()->check($this,'form_comment'))
 		{
-			return call_user_func($user_func);
+			return call_user_func($user_func, array('action'=>$action, 'table'=>$table, 'id'=>$id, 'subject'=>$subject, 'content_type'=>$content_type, 'return'=>$return, 'rating'=>$rating, 'tablerender'=>$tablerender, 'pid'=>$pid));
 		}
 
 	// 	require_once(e_HANDLER."ren_help.php");
@@ -361,9 +371,14 @@ class comment
 	function render_comment($row, $table, $action, $id, $width, $subject, $addrating = FALSE)
 	{
 
+		if($this->engine != 'e107')
+		{
+			return null;
+		}
+
 		if ($user_func = e107::getOverride()->check($this,'render_comment'))
 		{
-			return call_user_func($user_func);
+			return call_user_func($user_func, array('row'=>$row, 'table'=>$table, 'action'=>$action, 'id'=>$id, 'width'=>$width, 'subject'=>$subject, 'addrating'=>$addrating));
 		}
 
 		//addrating	: boolean, to show rating system in rendered comment
@@ -546,6 +561,12 @@ class comment
 	
 	function deleteComment($id) // delete a single comment by comment id.  
 	{
+
+		if($this->engine != 'e107')
+		{
+			return null;
+		}
+
 		if(!getperms('0') && !getperms("B"))
 		{
 			return;	
@@ -566,6 +587,11 @@ class comment
 	
 	function updateComment($id,$comment)
 	{
+		if($this->engine != 'e107')
+		{
+			return null;
+		}
+
 		$tp = e107::getParser();
 		
 		$comment = trim($comment);
@@ -609,6 +635,11 @@ class comment
 	function enter_comment($data, $comment='', $table='', $id='', $pid='', $subject='', $rateindex = FALSE)
 	{
 		//rateindex	: the posted value from the rateselect box (without the urljump) (see function rateselect())
+		if($this->engine != 'e107')
+		{
+			return;
+		}
+
 
 		if(is_array($data))
 		{
@@ -638,7 +669,7 @@ class comment
 
 		if ($user_func = e107::getOverride()->check($this,'enter_comment'))
 		{
-			return call_user_func($user_func);
+			return call_user_func($user_func, array('data'=>$data, 'comment'=>$comment, 'table'=>$table, 'id'=>$id, 'pid'=>$pid, 'subject'=>$subject, 'rateindex'=>$rateindex));
 		}
 
 
@@ -915,7 +946,8 @@ class comment
 	 */
 	function getCommentPermissions()
 	{
-		global $pref;
+
+		$pref = e107::pref('core');
 
 		if(isset($pref['comments_disabled']) && $pref['comments_disabled'] == TRUE)
 		{
@@ -951,14 +983,10 @@ class comment
 	 */
 	function compose_comment($table, $action, $id, $width, $subject, $rate = FALSE, $return = FALSE, $tablerender = TRUE)
 	{
-
-
-
 		//compose comment	: single call function will render the existing comments and show the form_comment
 		//rate				: boolean, to show/hide rating system in comment, default FALSE
 		global  $totcc;
-		
-	
+
 		
 		$tp = e107::getParser();
 		$ns = e107::getRender();
@@ -966,9 +994,41 @@ class comment
 
 		if ($this->getCommentPermissions() === FALSE) return;
 
+		$params = array('method'=>'compose_comment', 'table'=>$table, 'action'=>$action, 'id'=>$id, 'width'=>$width, 'subject'=>$subject, 'rate'=>$rate, 'return'=>$return, 'tablerender'=>$tablerender);
+
+		if($this->engine != 'e107')
+		{
+			list($plugin,$method) = explode("::", $this->engine);
+			$obj = e107::getAddon($plugin,'e_comment');
+			$text = e107::callMethod($obj, $method, $params);
+
+			if(!$return)
+			{
+				if ($tablerender)
+				{
+					echo $ns->tablerender(null, $text, 'comment', true);
+				}
+				else
+				{
+					echo $text;
+				}
+			}
+			else
+			{
+				$ret['comment'] = $text;
+				$ret['comment_form'] = '';
+				$ret['caption'] = '';
+
+				return (!$return) ? "" : $ret;
+			}
+
+			return '';
+		}
+
+
 		if ($user_func = e107::getOverride()->check($this,'compose_comment'))
 		{
-			return call_user_func($user_func);
+			return call_user_func($user_func, $params);
 		}
 
 // ------------- TODO move the 'listing' into separate function so that ajax can access it easily. 
@@ -1228,6 +1288,12 @@ class comment
 
 		function get_e_comment()
 		{
+
+			if($this->engine != 'e107')
+			{
+				return null;
+			}
+
 			$data = getcachedvars('e_comment');
 			if ($data !== FALSE)
 			{
@@ -1288,6 +1354,12 @@ class comment
 
 		function getCommentData($amount = '', $from = '', $qry = '', $cdvalid = FALSE, $cdreta = FALSE)
 		{
+
+			if($this->engine != 'e107')
+			{
+				return null;
+			}
+
 			global $pref,$sql,$sql2,$tp;
 			$from1 = ($from ? $from : '0');
 			$amount1 = ($amount ? $amount : '10');

@@ -76,5 +76,8 @@ define("LAN_IP", "IP Address");
 define("LAN_AUTHOR",	"Author");
 define("LAN_CATEGORY", "Category");
 define("LAN_GUEST", "Guest");
+define("LAN_NEXT", "Next");
+define("LAN_PREVIOUS", "Previous");
+
 
 ?>
