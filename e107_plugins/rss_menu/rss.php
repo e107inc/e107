@@ -77,7 +77,7 @@ elseif (e_QUERY)
 
 
 // List available rss feeds
-if (!empty($rss_type))
+if (empty($rss_type))
 {	// Display list of all feeds
 	require_once(HEADERF);
 	// require_once(e_PLUGIN.'rss_menu/rss_template.php');		Already loaded
@@ -112,7 +112,7 @@ $conversion[12] = 'download';
 
 // Convert certain old urls so we can check the db entries
 // Rss.php?1.2 (news, rss-2) --> check = news (check conversion table)
-// TODO: legacy stuff still required?
+
 if(is_numeric($content_type) && isset($conversion[$content_type]) )
 {
 	$content_type = $conversion[$content_type];
@@ -218,7 +218,7 @@ class rssCreate
 			case 1:
 				$path = e_PLUGIN."news/e_rss.php";
 				$this->contentType = "news";
-				break;;
+				break;
 			case 2:
 				$path='';
 				$this -> contentType = "articles";
