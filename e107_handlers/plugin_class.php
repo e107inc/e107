@@ -27,6 +27,7 @@ class e107plugin
 {
 	// Reserved Addon names.
 	var $plugin_addons = array(
+		'e_admin',
 		'e_bb',
 		'e_cron',
 		'e_notify',
