@@ -77,7 +77,7 @@ elseif (e_QUERY)
 
 
 // List available rss feeds
-if (!$rss_type)
+if (!empty($rss_type))
 {	// Display list of all feeds
 	require_once(HEADERF);
 	// require_once(e_PLUGIN.'rss_menu/rss_template.php');		Already loaded
@@ -217,6 +217,7 @@ class rssCreate
 			case 'news' :
 			case 1:
 				$path = e_PLUGIN."news/e_rss.php";
+				$this->contentType = "news";
 				break;;
 			case 2:
 				$path='';
@@ -287,7 +288,7 @@ class rssCreate
 				$path = e_PLUGIN."forum/e_rss.php";
 				break;
 
-			case download:
+			case 'download':
 			case 12:
 				$path = e_PLUGIN."download/e_rss.php";
 				break;
@@ -437,7 +438,7 @@ class rssCreate
 				$sitebutton = (strstr(SITEBUTTON, "http:") ? SITEBUTTON : SITEURL.str_replace("../", "", SITEBUTTON));
 				echo "<?xml version=\"1.0\" encoding=\"utf-8\"?".">
 				<!-- generator=\"e107\" -->
-				<!-- content type=\"".$this -> contentType."\" -->
+				<!-- content type=\"".$this->contentType."\" -->
 				<rss {$rss_namespace} version=\"2.0\"
 					xmlns:content=\"http://purl.org/rss/1.0/modules/content/\"
 					xmlns:atom=\"http://www.w3.org/2005/Atom\"
@@ -452,7 +453,8 @@ class rssCreate
 
 				echo $tp->toHtml($rss_custom_channel,FALSE)."\n"; // must not convert to CDATA.
 
-				echo "<language>".CORE_LC.(defined("CORE_LC2") ? "-".CORE_LC2 : "")."</language>
+				echo "
+				<language>".CORE_LC.(defined("CORE_LC2") ? "-".CORE_LC2 : "")."</language>
 				<copyright>".$tp->toRss(SITEDISCLAIMER)."</copyright>
 				<managingEditor>".$this->nospam($pref['siteadminemail'])." (".$pref['siteadmin'].")</managingEditor>
 				<webMaster>".$this->nospam($pref['siteadminemail'])." (".$pref['siteadmin'].")</webMaster>
@@ -462,9 +464,8 @@ class rssCreate
 				<generator>e107 (http://e107.org)</generator>
 				<sy:updatePeriod>hourly</sy:updatePeriod>
 				<sy:updateFrequency>1</sy:updateFrequency>
-				<ttl>60</ttl>\n";
-
-				echo "<atom:link href=\"".e_SELF."?".$content_type.".4.".$this->topicid."\" rel=\"self\" type=\"application/rss+xml\" />\n";
+				<ttl>60</ttl>
+				<atom:link href=\"".e107::url('rss_menu','atom', array('rss_url'=>$this->contentType, 'id'=>$this->topicid),'full')."\" rel=\"self\" type=\"application/rss+xml\" />\n";
 
 				if (trim(SITEBUTTON))
 				{
@@ -645,7 +646,7 @@ class rssCreate
 						echo "
 						<uri>http://e107.org/</uri>\n
 					</author>\n
-					<link rel='self' href='".SITEURLBASE.e_PLUGIN_ABS.'rss_menu/'.e_PAGE.'?'.e_QUERY."' />\n";
+					<link rel='self' href='".e107::url('rss_menu','atom', array('rss_url'=>$this->contentType, 'id'=>$this->topicid),'full')."' />\n";
 
 					// Optional
 					include(e_ADMIN."ver.php");

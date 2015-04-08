@@ -2604,23 +2604,32 @@ class e107
 	}
 
 	/**
-	 * Experimental static (easy) sef-url creation method (works with e_url.php @see /index.php)
+	 * Static (easy) sef-url creation method (works with e_url.php @see /index.php)
 	 * @param string $plugin
 	 * @param $key
 	 * @param array $row
+	 * @param string $mode abs | full 
 	 * @return string
 	 */
-	public static function url($plugin='',$key, $row=array())
+	public static function url($plugin='',$key, $row=array(), $mode='abs')
 	{
 		$tmp = e107::getAddonConfig('e_url');
 		$tp = e107::getParser();
 
 		if(varset($tmp[$plugin][$key]['sef']))
 		{
-			if(deftrue('e_MOD_REWRITE'))  // Search-Engine-Friendly URL
+			if(deftrue('e_MOD_REWRITE'))  // Search-Engine-Friendly URLs active.
 			{
 				$rawUrl = $tp->simpleParse($tmp[$plugin][$key]['sef'], $row);
-				return e_HTTP.$rawUrl;
+
+				if($mode == 'full')
+				{
+					return SITEURL.$rawUrl;
+				}
+				else
+				{
+					return e_HTTP.$rawUrl;
+				}
 			}
 			else // Legacy URL.
 			{
@@ -2637,7 +2646,7 @@ class e107
 				}
 
 				$urlTemplate = str_replace($srch,$repl,$tmp[$plugin][$key]['redirect']);
-				$urlTemplate = $tp->replaceConstants($urlTemplate,'abs');
+				$urlTemplate = $tp->replaceConstants($urlTemplate, $mode);
 				$legacyUrl = $tp->simpleParse($urlTemplate, $row);
 
 				return $legacyUrl;
