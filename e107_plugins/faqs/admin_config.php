@@ -40,7 +40,7 @@ class faq_admin extends e_admin_dispatcher
 	protected $adminMenu = array(
 		'main/list'		=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
 		'main/create'	=> array('caption'=> LAN_CREATE_ITEM, 'perm' => 'P'),
-		'main/followup'	=> array('caption'=> "Unanswered", 'perm' => 'P', 'uri'=>"admin_config.php?searchquery=&filter_options=faq_author__0&mode=main&action=list"),
+		'main/pending'	=> array('caption'=> "Unanswered", 'perm' => 'P', 'uri'=>"admin_config.php?searchquery=&filter_options=faq_author__0&mode=main&action=list&filter=pending"),
 
 		'cat/list' 		=> array('caption'=> LAN_CATEGORIES, 'perm' => 'P'),
 		'cat/create' 	=> array('caption'=> LAN_CREATE_CATEGORY, 'perm' => 'P'),
@@ -55,6 +55,15 @@ class faq_admin extends e_admin_dispatcher
 	protected $menuTitle = 'FAQs';
 
 	//
+	function init()
+	{
+	    if(!empty($_GET['filter']))
+	    {
+			$action = $_GET['filter'];
+			$this->adminMenu['main/'.$action]['selected'] = true;
+	    }
+
+	}
 }
 
 class faq_cat_ui extends e_admin_ui
