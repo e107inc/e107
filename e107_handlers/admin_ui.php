@@ -3962,7 +3962,11 @@ class e_admin_controller_ui extends e_admin_controller
 		if($triggerName = $this->getEventTriggerName($_posted['etrigger_submit'])) // 'create' or 'update'; 
 		{
 			$eventData = array('newData'=>$_posted,'oldData'=>$old_data,'id'=> $id);
-			$model->addMessageDebug('Admin-ui Trigger fired: <b>'.$triggerName.'</b> with data '.print_a($eventData,true)); 
+			if(E107_DBG_ALLERRORS >0 )
+			{
+				$model->addMessageDebug('Admin-ui Trigger fired: <b>'.$triggerName.'</b> with data '.print_a($eventData,true));
+			}
+
 			if($halt = e107::getEvent()->trigger($triggerName, $eventData))
 			{
 				$model->setMessages();
@@ -3990,7 +3994,10 @@ class e_admin_controller_ui extends e_admin_controller
 			if($triggerName = $this->getEventTriggerName($_posted['etrigger_submit'],'after')) // 'created' or 'updated';
 			{
 				$eventData = array('newData'=>$_posted,'oldData'=>$old_data,'id'=> $id);
-				$model->addMessageDebug('Admin-ui Trigger fired: <b>'.$triggerName.'</b> with data '.print_a($eventData,true)); 
+				if(E107_DBG_ALLERRORS >0 )
+				{
+					$model->addMessageDebug('Admin-ui Trigger fired: <b>'.$triggerName.'</b> with data '.print_a($eventData,true));
+				}
 				e107::getEvent()->trigger($triggerName, $eventData);	
 			}
 			
@@ -4133,7 +4140,38 @@ class e_admin_ui extends e_admin_controller_ui
 		}
 
 		$this->addTitle($this->pluginTitle, true)->parseAliases();
+
+		$this->initAdminAddons();
 	}
+
+
+	private function initAdminAddons()
+	{
+		$tmp = e107::getAddonConfig('e_admin', null, 'config', $this);
+
+		if(empty($tmp))
+		{
+			return;
+		}
+
+		foreach($tmp as $plug=>$config)
+		{
+			foreach($config['fields'] as $k=>$v)
+			{
+				$v['data'] = false; // disable data-saving to db table. .
+				$this->fields['x_'.$plug.'_'.$k] = $v; // ie. x_plugin_key
+			}
+		}
+
+		if(!empty($_POST))
+		{
+			e107::getAddonConfig('e_admin',null,'process', $this);
+		}
+
+
+	}
+
+
 
 	/**
 	 * Catch fieldpref submit
@@ -4689,7 +4727,12 @@ class e_admin_ui extends e_admin_controller_ui
 				
 				if($triggerName = $this->getEventTriggerName('delete')) // trigger for before. 
 				{
-					$this->getTreeModel()->addMessageDebug('Admin-ui Trigger fired: <b>'.$triggerName.'</b> with data '.print_a($eventData,true)); 
+
+					if(E107_DBG_ALLERRORS >0 )
+					{
+						$this->getTreeModel()->addMessageDebug('Admin-ui Trigger fired: <b>'.$triggerName.'</b> with data '.print_a($eventData,true));
+					}
+
 					if($halt = e107::getEvent()->trigger($triggerName, $eventData))
 					{
 						$this->getTreeModel()->setMessages();
@@ -4703,8 +4746,11 @@ class e_admin_ui extends e_admin_controller_ui
 				{
 					if($triggerName = $this->getEventTriggerName('deleted')) // trigger for after. 
 					{
-						$this->getTreeModel()->addMessageDebug('Admin-ui Trigger fired: <b>'.$triggerName.'</b>'); //FIXME - Why doesn't this display?
-						e107::getEvent()->trigger($triggerName, $eventData); 	
+						if(E107_DBG_ALLERRORS > 0)
+						{
+							$this->getTreeModel()->addMessageDebug('Admin-ui Trigger fired: <b>'.$triggerName.'</b>'); //FIXME - Why doesn't this display?
+						}
+						e107::getEvent()->trigger($triggerName, $eventData);
 					}
 					
 					$this->getTreeModel()->setMessages();

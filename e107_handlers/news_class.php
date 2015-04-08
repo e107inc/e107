@@ -33,6 +33,7 @@ class news {
 
 	//FIXME - LANs
 	//TODO - synch WIKI docs, add rewrite data to the event data
+	//@Deprecated and no longer used by newspost.php 
 	function submit_item($news, $smessages = false)
 	{
 		$tp = e107::getParser();
@@ -235,64 +236,7 @@ class news {
 			}
 		}
 
-		/* FIXME - trackback should be hooked!	*/
-		if($news['news_id'] && $pref['trackbackEnabled'])
-		{
 
-			$excerpt = e107::getParser()->text_truncate(strip_tags(e107::getParser()->post_toHTML($news['news_body'])), 100, '...');
-
-//			$id=mysql_insert_id();
-			$permLink = e107::getInstance()->base_path."comment.php?comment.news.".intval($news['news_id']);
-
-			require_once(e_PLUGIN."trackback/trackbackClass.php");
-			$trackback = new trackbackClass();
-
-			if($_POST['trackback_urls'])
-			{
-				$urlArray = explode("\n", $_POST['trackback_urls']);
-				foreach($urlArray as $pingurl)
-				{
-					if(!$terror = $trackback->sendTrackback($permLink, $pingurl, $news['news_title'], $excerpt))
-					{
-						$message .= "<br />successfully pinged {$pingurl}.";
-						$emessage->add("Successfully pinged {$pingurl}.", E_MESSAGE_SUCCESS, $smessages);
-					}
-					else
-					{
-						$message .= "<br />was unable to ping {$pingurl}<br />[ Error message returned was : '{$terror}'. ]";
-						$emessage->add("was unable to ping {$pingurl}<br />[ Error message returned was : '{$terror}'. ]", E_MESSAGE_ERROR, $smessages);
-					}
-				}
-			}
-
-			if(isset($_POST['pingback_urls']))
-			{
-				if ($urlArray = $trackback->getPingUrls($news['news_body'])) //FIXME - missing method!!!
-				{
-					foreach($urlArray as $pingurl)
-					{
-
-						if ($trackback -> sendTrackback($permLink, $pingurl, $news['news_title'], $excerpt))
-						{
-	 						$message .= "<br />successfully pinged {$pingurl}.";
-	 						$emessage->add("Successfully pinged {$pingurl}.", E_MESSAGE_SUCCESS, $smessages);
-						}
-						else
-						{
-							$message .= "Pingback to {$pingurl} failed ...";
-							$emessage->add("Pingback to {$pingurl} failed ...", E_MESSAGE_ERROR, $smessages);
-						}
-					}
-				}
-				else
-				{
-					$message .= "<br />No pingback addresses were discovered";
-					$emessage->add("No pingback addresses were discovered", E_MESSAGE_INFO, $smessages);
-				}
-			}
-		}
-
-		/* end trackback */
 
 		//return $message;
 		$data['message'] = $message;

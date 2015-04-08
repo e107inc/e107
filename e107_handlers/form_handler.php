@@ -3411,7 +3411,7 @@ class e_form
 					
 					$value = intval($value);
 							
-					$wparms = (vartrue($parms['reverse'])) ? array(0=>$true, 1=>$false) : array(0=>$false, 1=>$true); 
+					$wparms = (vartrue($parms['reverse'])) ? array(0=>$true, 1=>$false) : array(0=>$false, 1=>$true);
 					$dispValue = $wparms[$value];
 
 					return $this->renderInline($field, $id, $attributes['title'], $value, $dispValue, 'select', $wparms);
@@ -3751,6 +3751,7 @@ class e_form
 			
 			case 'images':
 			//	return print_a($value, true);
+				$ret = "";
 
 				for ($i=0; $i < 5; $i++) 
 				{				
@@ -3968,6 +3969,12 @@ class e_form
 				}
 				unset($parms['enabled'], $parms['disabled'], $parms['label']);
 				$ret =  $this->radio_switch($key, $value, defset($lenabled, $lenabled), defset($ldisabled, $ldisabled),$parms);
+			break;
+
+			case "checkbox":
+
+				$value = (isset($parms['value'])) ? $parms['value'] : $value;
+				$ret =  $this->checkbox($key, 1, $value,$parms);
 			break;
 
 			case 'method': // Custom Function
