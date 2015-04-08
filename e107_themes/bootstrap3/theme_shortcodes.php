@@ -78,7 +78,7 @@ class theme_shortcodes extends e_shortcode
 		include_lan(e_PLUGIN."login_menu/languages/".e_LANGUAGE.".php");
 		
 		$tp = e107::getParser();		   
-		require_once(e_PLUGIN."login_menu/login_menu_shortcodes.php");
+		require(e_PLUGIN."login_menu/login_menu_shortcodes.php"); // don't use 'require_once'.
 
 		$direction = vartrue($parm['dir']) == 'up' ? ' dropup' : '';
 		
