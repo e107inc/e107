@@ -3967,9 +3967,14 @@ class eResponse
 				
 		if(null !== $name)
 		{
-			$key = (substr($name,0,3) == 'og:') ? 'property' : 'name';			
-			$attr[$key] = $name;
+		//	$key = (substr($name,0,3) == 'og:') ? 'property' : 'name';
+		//	$attr[$key] = $name;
+			$attr['property'] = $name;  // giving both should be valid and avoid issues with FB and others.
+			$attr['name'] = $name;
 		}
+
+
+
 		if(null !== $content) $attr['content'] = $content;
 		if(!empty($extended)) 
 		{
