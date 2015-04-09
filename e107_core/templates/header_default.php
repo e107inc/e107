@@ -142,8 +142,22 @@ if(vartrue($pref['meta_author'][e_LANGUAGE])) e107::meta('author',$pref['meta_au
 if($pref['sitebutton']) e107::meta('og:image',$tp->replaceConstants($pref['sitelogo'],'full'));
 if(defined("VIEWPORT")) e107::meta('viewport',VIEWPORT); //BC ONLY 
 
-echo e107::getUrl()->response()->renderMeta()."\n";
 
+// Load Plugin Header Files, allow them to load CSS/JSS/Meta via JS Manager early enouhg
+// NOTE: e_header.php should not output content, it should only register stuff!
+// e_meta.php is more appropriate for outputting header content.
+$e_headers = e107::pref('core','e_header_list');
+if ($e_headers && is_array($e_headers))
+{
+	foreach($e_headers as $val)
+	{
+		// no checks fore existing file - performance
+		e107_include(e_PLUGIN.$val."/e_header.php");
+	}
+}
+unset($e_headers);
+
+echo e107::getUrl()->response()->renderMeta()."\n"; // render all the e107::meta() entries.
 
 echo "<title>".(defined('e_PAGETITLE') ? e_PAGETITLE.' - ' : (defined('PAGE_NAME') ? PAGE_NAME.' - ' : "")).SITENAME."</title>\n\n";
 
@@ -169,18 +183,7 @@ if (/*!defined("PREVIEWTHEME") && */! (isset($no_core_css) && $no_core_css !==tr
 	$e_js->otherCSS('{e_WEB_CSS}e107.css');
 }
 
-// Load Plugin Header Files, allow them to load CSS/JSS via JS Manager early enouhg
-// NOTE: e_header.php should not output content, it should only register stuff! e_meta.php is more appropriate for outputting header content.
-$e_headers = $e_pref->get('e_header_list');
-if ($e_headers && is_array($e_headers))
-{
-	foreach($e_headers as $val)
-	{
-		// no checks fore existing file - performance
-		e107_include(e_PLUGIN.$val."/e_header.php");
-	}
-}
-unset($e_headers);
+
 
 // re-initalize in case globals are destroyed from $e_headers includes
 $e_js = e107::getJs();

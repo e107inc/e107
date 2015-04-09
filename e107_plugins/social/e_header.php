@@ -15,5 +15,4 @@ if(USER_AREA)
 }
 
 
-
 ?>
