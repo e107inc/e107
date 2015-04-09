@@ -1218,9 +1218,14 @@ class user_class_admin extends user_class
 			$this->class_tree[$parent]['userclass_accum'] = $imp_rights;
 			if (!isset($this->class_tree[$cp]['change_flag'])) $this->class_tree[$parent]['change_flag'] = 'UPDATE';
 		}
-		foreach ($this->class_tree[$parent]['class_children'] as $cc)
+
+
+		if(!empty($this->class_tree[$parent]['class_children']))
 		{
-			$this->rebuild_tree($cc,$rights);		// Recursive call
+			foreach ($this->class_tree[$parent]['class_children'] as $cc)
+			{
+				$this->rebuild_tree($cc,$rights);		// Recursive call
+			}
 		}
 	}
 

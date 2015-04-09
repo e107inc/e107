@@ -202,7 +202,8 @@ $ADMIN_HEADER .= '<div class="container-fluid">
 		
 			{ADMIN_PWORD}
 			{SETSTYLE=site_info}
-			
+
+			{ADMINUI_HELP}
 			{ADMIN_HELP}
 			{ADMIN_SITEINFO=creditsonly}
 			{SETSTYLE=admin_menu}

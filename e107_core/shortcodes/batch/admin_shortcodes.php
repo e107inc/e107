@@ -131,17 +131,23 @@ class admin_shortcodes
 		return $ns -> tablerender(FOOTLAN_14,$text, array('id' => 'admin_docs', 'style' => 'button_menu'), TRUE);
 	}
 
+	function sc_adminui_help()
+	{
+		if (!ADMIN) { return ''; }
+
+		if($tmp = e107::getRegistry('core/e107/adminui/help'))
+		{
+			return  e107::getRender()->tablerender($tmp['caption'],$tmp['text'],'e_help',true);
+		}
+
+	}
+
 	function sc_admin_help()
 	{
 		if (!ADMIN) { return ''; }
 	
 		$ns = e107::getRender();
 		$pref = e107::getPref();
-
-		if($tmp = e107::getRegistry('core/e107/adminui/help'))
-		{
-			return $ns->tablerender($tmp['caption'],$tmp['text'],'e_help',true);
-		}
 
 	
 		if(function_exists('e_help') && ($tmp =  e_help())) // new in v2.x for non-admin-ui admin pages. 
