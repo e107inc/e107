@@ -63,7 +63,7 @@ class news_shortcodes extends e_shortcode
 		return '<a href="'.$this->sc_newsurl().'" title="'.preg_replace('/\'|"|<|>/s', '', $this->news_item['news_title']).'">'.$title.'</a>';
 	}
 	
-	function sc_newsbody($parm)
+	function sc_newsbody($parm=null)
 	{
 		$tp = e107::getParser();
 		e107::getBB()->setClass("news"); // For automatic bbcode image resizing. 
@@ -81,7 +81,7 @@ class news_shortcodes extends e_shortcode
 		return $news_body;
 	}
 
-	function sc_newsicon($parm)
+	function sc_newsicon($parm=null)
 	{
 
 		return $this->sc_newscaticon('url');
@@ -103,7 +103,7 @@ class news_shortcodes extends e_shortcode
 		return "<a href='http://e107.org'>e107</a>";
 	}
 
-	function sc_newscomments($parm)
+	function sc_newscomments($parm=null)
 	{
 		
 		$pref = e107::getPref();
@@ -155,7 +155,7 @@ class news_shortcodes extends e_shortcode
 		return (!$news_item['news_allow_comments'] ? ''.($pref['comments_icon'] ? $NEWIMAGE.' ' : '')."<a title='Comments' href='".e107::getUrl()->create('news/view/item', $news_item)."'>".$param['commentlink'].intval($news_item['news_comment_total']).'</a>' : vartrue($param['commentoffstring'],'Disabled') );
 	}
 
-	function sc_trackback($parm)
+	function sc_trackback($parm=null)
 	{
 		global $pref;
 		if(!vartrue($pref['trackbackEnabled'])) { return ''; }
@@ -175,7 +175,7 @@ class news_shortcodes extends e_shortcode
 	 * @example {NEWSNAVLINK: items=category}  // News items for current category. 
 	 * @example {NEWSNAVLINK: text=myCaption}  // Default News item view. ie. news.php
 	 */
-	function sc_newsnavlink($parm='') //TODO add more options. 
+	function sc_newsnavlink($parm=null) //TODO add more options.
 	{
 		
 		if(varset($parm['list']) == 'all') // A list of all items - usually headings and thumbnails
@@ -208,13 +208,13 @@ class news_shortcodes extends e_shortcode
 
 
 
-	function sc_newsheader($parm)
+	function sc_newsheader($parm=null)
 	{
 		return $this->sc_newscaticon('src');
 	}
 
 
-	function sc_newscategory($parm)
+	function sc_newscategory($parm=null)
 	{
 		$category_name = e107::getParser()->toHTML($this->news_item['category_name'], FALSE ,'defs');
 		$category = array('id' => $this->news_item['category_id'], 'name' => $this->news_item['category_sef'] );
@@ -256,7 +256,7 @@ class news_shortcodes extends e_shortcode
 	 * {NEWSCOMMENTLINK: glyph=comments&class=btn btn-default btn-sm}
 	 *
 	 */
-	function sc_newscommentlink($parm='')
+	function sc_newscommentlink($parm=null)
 	{
 
 		if($this->commentsDisabled)
@@ -274,7 +274,7 @@ class news_shortcodes extends e_shortcode
 	/**
 	 * {NEWSCOMMENTCOUNT: glyph=x}
 	 */
-	function sc_newscommentcount($parm='')
+	function sc_newscommentcount($parm=null)
 	{
 		if($this->commentsDisabled || ($this->commentsEngine != 'e107'))
 		{
@@ -754,7 +754,7 @@ class news_shortcodes extends e_shortcode
 	 * @param string $parm
 	 * @return string
 	 */
-	function sc_newsitem_schook($parm)
+	function sc_newsitem_schook($parm='')
 	{
 		$parm = explode('|', $parm, 2);
 		$parm[1] = 'news_id='.$this->news_item['news_id'].(varset($parm[1]) ? '&'.$parm[1] : '');

@@ -93,8 +93,8 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 			'checkboxes' 		        =>  array ( 'title' => '', 		'type' => null,         'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
 			'userclass_id'				=> array('title'=> LAN_ID,		'type' =>'hidden',  	 'data'=>'int', 'width' => '5%',	'thclass' => 'left'),
 			'userclass_icon' 			=> array('title'=> UCSLAN_68,	'type' => 'icon', 		'data'=>'str', 'width' => '5%',	'thclass' => 'left', 'class' => 'center'),
-			'userclass_name'	   		=> array('title'=> UCSLAN_12,	'type' => 'text', 		'data'=>'str', 'width' => 'auto',	'thclass' => 'left'),
-			'userclass_description'   	=> array('title'=> UCSLAN_13,	'type' => 'text', 		'data'=>'str', 'width' => 'auto',	'thclass' => 'left', 'writeParms'=>array('size'=>'xxlarge')),
+			'userclass_name'	   		=> array('title'=> UCSLAN_12,	'type' => 'text', 		'data'=>'str', 'inline'=>true, 'width' => 'auto',	'thclass' => 'left'),
+			'userclass_description'   	=> array('title'=> UCSLAN_13,	'type' => 'text', 		'data'=>'str', 'inline'=>true,'width' => 'auto',	'thclass' => 'left', 'writeParms'=>array('size'=>'xxlarge')),
 			'userclass_type' 			=> array('title'=> UCSLAN_79,	'type' => 'dropdown',	'data'=>'int', 'width' => '10%',	'thclass' => 'left',	'class'=>'left' ),
 			'userclass_editclass' 		=> array('title'=> UCSLAN_24,	'type' => 'userclass',	'data'=>'int', 'width' => 'auto',	'thclass' => 'left', 'writeParms'=>array('classlist'=>'nobody,public,main,admin,classes,matchclass,member, no-excludes')),
 			'userclass_visibility' 		=> array('title'=> UCSLAN_34,	'type' => 'userclass',	'data'=>'int', 'width' => 'auto',	'thclass' => 'left'),
@@ -165,6 +165,17 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 			// do something
 		}
 
+
+		function renderHelp()
+		{
+			$e_userclass = e107::getSingleton('user_class_admin'); 			// Admin functions - should just obliterate any previous object created in class2.php
+			$e_userclass->calc_tree();
+			$text = "<div id='userclass-tree-structure'>".$e_userclass->show_graphical_tree()."</div>";
+
+			return array('caption'=>'Class Structure', 'text' => $text);
+
+			// $text .= $e_userclass->show_graphical_tree();
+		}
 
 		public function optionsPage()
 		{
@@ -1382,28 +1393,6 @@ function userclass2_adminmenu()
 */
 
 
-function e_help()
-{
-//	require_once(e_HANDLER.'userclass_class.php');		// Modified class handler
-//	$e_userclass = new user_class_admin;
-	$e_userclass = e107::getSingleton('user_class_admin'); 			// Admin functions - should just obliterate any previous object created in class2.php
-
-	$e_userclass->calc_tree();
-	$text2 = "<div id='userclass-tree-structure'>".$e_userclass->show_graphical_tree()."</div>";
-
-	$help =  e_LANGUAGEDIR.e_LANGUAGE.'/admin/help/userclass2.php';
-	if(is_readable($help))
-	{
-		require_once($help);
-	}
-//	require_once(e_LANGUAGEDIR.e_LANGUAGE.'/admin/help/userclass2.php');
-
-	return array('caption'=>'Class Structure', 'text' => $text2);
-	
-// $text .= $e_userclass->show_graphical_tree();	
-	
-	
-}
 
 
 /*
