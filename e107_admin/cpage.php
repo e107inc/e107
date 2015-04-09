@@ -740,9 +740,22 @@ class page_admin_ui extends e_admin_ui
 		}
 
 
-		function afterDelete() //TODO Delete Menu item.
+		public function afterDelete($deleted_data, $id, $deleted_check)
 		{
+			$sql = e107::getDb();
 
+			if ($sql->select('menus', 'menu_name', "`menu_path` = ".$id." LIMIT 1"))
+			{
+				if($sql->delete('menus', " menu_path=".intval($id)." ") !== false)
+				{
+					e107::getMessage()->addDebug("Menu with path #".$id." deleted.");
+					return true;
+				}
+				else
+				{
+					e107::getMessage()->addDebug("Couldn't delete menu with path #".$id.".");
+				}
+			}
 
 
 		}
