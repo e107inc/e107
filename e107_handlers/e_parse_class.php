@@ -3156,7 +3156,7 @@ class e_parser
 				return e107::getMedia()->getThumb($id);
 			}
 
-			$video = '<iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list='.$id.'" frameborder="0" allowfullscreen></iframe>';
+			$video = '<iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list='.$id.'" style="border:0" allowfullscreen></iframe>';
 			return '<div class="video-responsive '.vartrue($parm['class']).'">'.$video.'</div>';
 		}
 				
