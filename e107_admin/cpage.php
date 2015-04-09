@@ -740,7 +740,12 @@ class page_admin_ui extends e_admin_ui
 		}
 
 
+		function afterDelete() //TODO Delete Menu item.
+		{
 
+
+
+		}
 
 
 

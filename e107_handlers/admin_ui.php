@@ -1541,8 +1541,8 @@ class e_admin_dispatcher
 	 */
 	function renderHelp()
 	{
-		
-		
+
+
 		
 	}
 
@@ -4142,6 +4142,17 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->addTitle($this->pluginTitle, true)->parseAliases();
 
 		$this->initAdminAddons();
+
+
+		if($help = $this->renderHelp())
+		{
+			if(!empty($help))
+			{
+				e107::setRegistry('core/e107/adminui/help',$help);
+			}
+		}
+
+
 	}
 
 
@@ -5132,6 +5143,8 @@ class e_admin_ui extends e_admin_controller_ui
 	public function beforeUpdate($new_data, $old_data, $id)
 	{
 	}
+
+
 
 	/**
 	 * User defined after-update logic

@@ -1401,94 +1401,6 @@ $text .= "
 // =========== Registration Preferences. ==================
 
 
-// Single/ Social  Login / / copied from hybridAuth config.php so it's easy to add more. 
-// Used Below. 
-
-$social_logins = array ( 
-			// openid providers
-			"OpenID" => array (
-				"enabled" => true
-			),
-
-			"Yahoo" => array ( 
-				"enabled" => true 
-			),
-
-			"AOL"  => array ( 
-				"enabled" => true 
-			),
-			
-			"Facebook" => array ( 
-				"enabled" => true,
-				"keys"    => array ( "id" => "", "secret" => "" ),
-				"trustForwarded" => false,
-				// A comma-separated list of permissions you want to request from the user. See the Facebook docs for a full list of available permissions: http://developers.facebook.com/docs/reference/api/permissions.
-				"scope"   => "", 
-
-				// The display context to show the authentication page. Options are: page, popup, iframe, touch and wap. Read the Facebook docs for more details: http://developers.facebook.com/docs/reference/dialogs#display. Default: page
-				"display" => "" 
-			),
-			
-			"Foursquare" => array (
-				"enabled" => true,
-				"keys"    => array ( "id" => "", "secret" => "" ) 
-			),
-			
-			"Github" => array ( 
-				"enabled" => true,
-				"keys"    => array ( "id" => "", "secret" => "" ) 
-			),
-
-			"Google" => array ( 
-				"enabled" => true,
-				"keys"    => array ( "id" => "", "secret" => "" ),
-				"scope"   => ""
-			),
-
-			"LinkedIn" => array ( 
-				"enabled" => true,
-				"keys"    => array ( "key" => "", "secret" => "" ) 
-			),
-			
-				// windows live
-			"Live" => array ( 
-				"enabled" => true,
-				"keys"    => array ( "id" => "", "secret" => "" ) 
-			),
-			
-			/*
-			"MySpace" => array ( 
-				"enabled" => true,
-				"keys"    => array ( "key" => "", "secret" => "" ) 
-			),
-			*/
-
-			"Twitter" => array ( 
-				"enabled" => true,
-				"keys"    => array ( "key" => "", "secret" => "" ) 
-			),
-			
-		
-
-		
-
-		
-
-		
-		);
- 
- 
-$social_external = array(
-			"Facebook" 		=> "https://developers.facebook.com/apps",
-			"Twitter"		=> "https://dev.twitter.com/apps/new",
-			"Google"		=> "https://code.google.com/apis/console/",
-			"Live"			=> "https://manage.dev.live.com/ApplicationOverview.aspx",
-			"LinkedIn"		=> "https://www.linkedin.com/secure/developer",
-			"Foursquare"	=> "https://www.foursquare.com/oauth/",
-			"Github"		=> "https://github.com/settings/applications/new",
-); 
- 
-$testUrl = SITEURL."?route=system/xup/test"; 
 
 $elements = array(1=>'Register & Login', 2=> 'Login Only', 0=>LAN_DISABLED); 
 
@@ -1501,7 +1413,7 @@ $text .= "
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
-				<thead>
+				<tbody>
 					<tr>
 						<td><label for='user-reg'>".PRFLAN_224."</label></td>
 						<td>
@@ -1509,8 +1421,8 @@ $text .= "
 							<div class='smalltext field-help'>".PRFLAN_30."</div>
 						</td>
 					</tr>
-					</thead>
-					<tbody>
+
+
 
 					<tr>
 						<td><label for='user-reg-veri'>".PRFLAN_154."</label></td>
@@ -1604,91 +1516,9 @@ $text .= "
 					</tr>
 					
 					
-					</tbody>";
+					</tbody>
 					
-					
-						$text .= "		
-					<thead>
-					<tr>
-						<th><label for='social-login-active'>Social Signup/Login</label>
-						</th>
-						<td>
-							".$frm->radio_switch('social_login_active', $pref['social_login_active'])."
-								<div class='smalltext field-help'>Allows users to signup/login with their social media accounts. When enabled, this option will still allow users to signup/login even if the core user registration system above is disabled. </div>
-					
-						</td>
-					</tr>
-					</thead>
-					<tbody>
-					<tr><td colspan='2'><div>Note: In most cases you will need to obtain an id and secret key from one of the providers. Click the blue links below to configure.
-					<br />You may test your configuration with the following URL: 
-					<a href='".$testUrl."' rel='external'>".$testUrl."</a></div>
-					</div>
-					</tr>
-					
-					";
-					
-			if(!is_array($pref['social_login']))
-			{
-				$pref['social_login'] = array();	
-			}
-							
-			foreach($social_logins as $prov=>$val)
-			{
-					
-					$label = varset($social_external[$prov]) ? "<a class='e-tip' rel='external' title='Get a key from the provider' href='".$social_external[$prov]."'>".$prov."</a>" : $prov;
-					$radio_label = strtolower($prov); 				
-					$text .= "
-					<tr>
-						<td><label for='social-login-".$radio_label."-enabled'>".$label."</label></td>
-						<td>
-						";
-					foreach($val as $k=>$v)
-					{
-						switch ($k) {
-							case 'enabled':
-								$eopt = array('class'=>'e-expandit');
-								$text .= $frm->radio_switch('social_login['.$prov.'][enabled]', vartrue($pref['social_login'][$prov]['enabled']),'','',$eopt);
-							break;
-							
-							case 'keys':
-								// $cls = vartrue($pref['single_login'][$prov]['keys'][$tk]) ? "class='e-hideme'" : '';
-								$sty = vartrue($pref['social_login'][$prov]['keys'][vartrue($tk)]) ? "" : "e-hideme";
-								$text .= "<div class='e-expandit-container {$sty}' id='option-{$prov}' >";
-								foreach($v as $tk=>$idk)
-								{
-									$eopt = array('placeholder'=> $tk, 'size'=>'xxlarge');
-									$text .= "<br />".$frm->text('social_login['.$prov.'][keys]['.$tk.']', vartrue($pref['social_login'][$prov]['keys'][$tk]), 100, $eopt);								
-								}	
-								$text .= "</div>";
-								
-							break;
-							
-							case 'scope':
-								$text .= $frm->hidden('social_login['.$prov.'][scope]','email');
-							break;
-							
-							default:
-								
-							break;
-						}	
-					}				
-				
-				$text .= "</td>
-					</tr>					
-					";
-			}		
-					
-					
-	
-					
-					
-					
-					
-				$text .= "	
-                   
-				
-				</tbody>
+
 			</table>
 			".pref_submit('registration')."
 		</fieldset>
@@ -1699,63 +1529,6 @@ $text .= "
 // Key registration 
 // TODO LAN
 
- 
-$text .= "
-		<fieldset class='e-hideme' id='core-prefs-sociallogin'>
-					<legend>Social Options</legend>
-					
-					<table class='table adminform'>
-						<colgroup>
-							<col class='col-label' />
-							<col class='col-control' />
-						</colgroup>
-						<tbody>
-						<tr>
-						<th colspan='2'>External Social Pages</th>
-					</tr>";
-					
-//XXX XURL Definitions. 
-$xurls = array(
-	'facebook'		=> 	array('label'=>"Facebook", "placeholder"=>"eg. https://www.facebook.com/e107CMS"),
-	'twitter'		=>	array('label'=>"Twitter",	"placeholder"=>"eg. https://twitter.com/e107"),
-	'youtube'		=>	array('label'=>"Youtube",	"placeholder"=>"eg.https://youtube.com/e107Inc"),
-	'google'		=>	array('label'=>"Google+",	"placeholder"=>""),
-	'linkedin'		=>	array('label'=>"LinkedIn",	"placeholder"=>"eg. http://www.linkedin.com/groups?home=&gid=1782682"),
-	'github'		=>	array('label'=>"Github",	"placeholder"=>"eg. https://github.com/e107inc"),
-	'flickr'		=>	array('label'=>"Flickr",	"placeholder"=>""),
-	'instagram'		=>	array('label'=>"Instagram",	"placeholder"=>""),
-	'pinterest'		=>	array('label'=>"Pinterest",	"placeholder"=>""),
-	'vimeo'			=>	array('label'=>"Vimeo",		"placeholder"=>""),
-);	
-	
-	foreach($xurls as $k=>$var)
-	{
-		$keypref = "xurl[".$k."]";
-		$text_label = "xurl-".$k."";
-		$def = "XURL_". strtoupper($k);
-		
-		$opts = array('size'=>'xxlarge','placeholder'=> $var['placeholder']);	
-						
-		$text .= "
-					<tr>
-						<td><label for='".$text_label."'>Your ".$var['label']." page</label></td>
-						<td>
-							".$frm->text($keypref, $pref['xurl'][$k], false, $opts)."
-							<div class='field-help'>Used by some themes to provide a link to your ".$var['label']." page. (".$def.")</div>
-						</td>
-					</tr>
-				";
-	}		
-					
-		
-	
-	
-$text .= "
-				</tbody>
-			</table>
-			".pref_submit('sociallogin')."
-		</fieldset>
-";	
 	
 	
 
@@ -2670,7 +2443,7 @@ function prefs_adminmenu()
 	$var['core-prefs-email']['text'] = "Email &amp; Contact Info";
 	$var['core-prefs-registration']['text'] = PRFLAN_28;
 	$var['core-prefs-signup']['text'] = PRFLAN_19;
-	$var['core-prefs-sociallogin']['text'] = "Social Options";
+//	$var['core-prefs-sociallogin']['text'] = "Social Options"; // Moved into plugin.
 	
 	$var['core-prefs-comments']['text'] = PRFLAN_210;
 	$var['core-prefs-uploads']['text'] = "File Uploading"; // TODO LAN

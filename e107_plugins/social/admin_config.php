@@ -30,10 +30,10 @@ class social_adminarea extends e_admin_dispatcher
 
 	//	'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
 		// 'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
-			
+		'main/configure'		=> array('caption'=> LAN_CONFIGURE, 'perm' => 'P'),
 		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),	
 
-		// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
+
 	);
 
 	protected $adminMenuAliases = array(
@@ -71,21 +71,127 @@ class social_ui extends e_admin_ui
 		protected $fieldpref        = array();
 		
 
-		protected $preftabs        = array('Twitter Menu');
+		protected $preftabs        = array('Facebook Comments', 'Twitter Menu');
 
 		protected $prefs = array(
-			'twitter_menu_height'		=> array('title'=> 'Height', 'type'=>'number', 'tab'=>0, 'data' => 'int','help'=>'Height in px'),
-			'twitter_menu_limit'		=> array('title'=> 'Limit', 'type'=>'number', 'tab'=>0, 'data' => 'int','help'=>'Number of tweets to display.'),
+
+
+			'facebook_comments_limit'		=> array('title'=> 'Limit', 'type'=>'number', 'tab'=>0, 'data' => 'int','help'=>'Number of tweets to display.'),
+			'facebook_comments_theme'		=> array('title'=> 'Theme', 'type'=>'dropdown', 'tab'=>0, 'writeParms'=>array('optArray'=>array('light'=>'Light','dark'=>'Dark')), 'data' => 'int','help'=>'Number of tweets to display.'),
+			'facebook_comments_loadingtext'		=> array('title'=> 'Text while loading', 'type'=>'text', 'tab'=>0, 'data' => 'int', 'writeParms'=>array('placeholder'=>'Loading...'), 'help'=>'Number of tweets to display.'),
+
+			'twitter_menu_height'		=> array('title'=> 'Height', 'type'=>'number', 'tab'=>1, 'data' => 'int','help'=>'Height in px'),
+			'twitter_menu_limit'		=> array('title'=> 'Limit', 'type'=>'number', 'tab'=>1, 'data' => 'int','help'=>'Number of tweets to display.'),
 
 
 		);
 
-	
+		protected $social_logins = array();
+
+		protected $social_external = array();
+
 		public function init()
 		{
+			if(!empty($_POST['save_social']) )
+			{
+				$cfg = e107::getConfig();
+
+				$cfg->setPref('social_login', $_POST['social_login']);
+				$cfg->setPref('social_login_active', $_POST['social_login_active']);
+				$cfg->setPref('xurl', $_POST['xurl']);
+				$cfg->save(true, true, true);
+
+			}
 
 
-			//	print_a($this->fields);
+// Single/ Social  Login / / copied from hybridAuth config.php so it's easy to add more.
+// Used Below.
+
+			$this->social_logins = array (
+				// openid providers
+				"OpenID" => array (
+					"enabled" => true
+				),
+
+				"Yahoo" => array (
+					"enabled" => true
+				),
+
+				"AOL"  => array (
+					"enabled" => true
+				),
+
+				"Facebook" => array (
+					"enabled" => true,
+					"keys"    => array ( "id" => "", "secret" => "" ),
+					"trustForwarded" => false,
+					// A comma-separated list of permissions you want to request from the user. See the Facebook docs for a full list of available permissions: http://developers.facebook.com/docs/reference/api/permissions.
+					"scope"   => "",
+
+					// The display context to show the authentication page. Options are: page, popup, iframe, touch and wap. Read the Facebook docs for more details: http://developers.facebook.com/docs/reference/dialogs#display. Default: page
+					"display" => ""
+				),
+
+				"Foursquare" => array (
+					"enabled" => true,
+					"keys"    => array ( "id" => "", "secret" => "" )
+				),
+
+				"Github" => array (
+					"enabled" => true,
+					"keys"    => array ( "id" => "", "secret" => "" )
+				),
+
+				"Google" => array (
+					"enabled" => true,
+					"keys"    => array ( "id" => "", "secret" => "" ),
+					"scope"   => ""
+				),
+
+				"LinkedIn" => array (
+					"enabled" => true,
+					"keys"    => array ( "key" => "", "secret" => "" )
+				),
+
+				// windows live
+				"Live" => array (
+					"enabled" => true,
+					"keys"    => array ( "id" => "", "secret" => "" )
+				),
+
+				/*
+				"MySpace" => array (
+					"enabled" => true,
+					"keys"    => array ( "key" => "", "secret" => "" )
+				),
+				*/
+
+				"Twitter" => array (
+					"enabled" => true,
+					"keys"    => array ( "key" => "", "secret" => "" )
+				),
+
+
+
+
+
+
+
+
+			);
+
+
+			$this->social_external = array(
+				"Facebook" 		=> "https://developers.facebook.com/apps",
+				"Twitter"		=> "https://dev.twitter.com/apps/new",
+				"Google"		=> "https://code.google.com/apis/console/",
+				"Live"			=> "https://manage.dev.live.com/ApplicationOverview.aspx",
+				"LinkedIn"		=> "https://www.linkedin.com/secure/developer",
+				"Foursquare"	=> "https://www.foursquare.com/oauth/",
+				"Github"		=> "https://github.com/settings/applications/new",
+			);
+
+
 		}
 
 		
@@ -124,17 +230,196 @@ class social_ui extends e_admin_ui
 			// do something		
 		}		
 		
-			
-	/*	
+		function renderHelp()
+		{
+			$this->testUrl = SITEURL."?route=system/xup/test";
+
+			$notice = "Note: In most cases you will need to obtain an id and secret key from one of the providers. Click the blue links below to configure.
+					<br />You may test your configuration with the following URL: <a href='".$this->testUrl."' rel='external'>".$this->testUrl."</a>";
+
+			return array("caption"=>"Help",'text'=> $notice);
+
+		}
+
 		// optional - a custom page.  
-		public function customPage()
+		public function configurePage()
 		{
 			$ns = e107::getRender();
-			$text = 'Hello World!';
-			$ns->tablerender('Hello',$text);	
-			
+			$frm = e107::getForm();
+			$pref = e107::pref('core');
+
+
+
+
+		//	e107::getMessage()->addInfo($notice);
+
+
+			$text = "<table class='table adminform'>
+				<colgroup>
+					<col class='col-label' />
+					<col class='col-control' />
+				</colgroup>
+						<tbody>
+					<tr>
+						<td><label for='social-login-active'>Social Signup/Login</label>
+						</td>
+						<td>
+							".$frm->radio_switch('social_login_active', $pref['social_login_active'])."
+								<div class='smalltext field-help'>Allows users to signup/login with their social media accounts. When enabled, this option will still allow users to signup/login even if the core user registration system above is disabled. </div>
+
+						</td>
+					</tr>
+
+
+					<tr>
+						<td>Application Keys and IDs <br /></td>
+						<td>
+							<table class='table table-bordered table-striped'>
+							<colgroup>
+								<col class='col-label' />
+								<col class='col-control' />
+							</colgroup>
+
+					";
+
+			if(!is_array($pref['social_login']))
+			{
+				$pref['social_login'] = array();
+			}
+
+			foreach($this->social_logins as $prov=>$val)
+			{
+
+				$label = varset($this->social_external[$prov]) ? "<a class='e-tip' rel='external' title='Get a key from the provider' href='".$social_external[$prov]."'>".$prov."</a>" : $prov;
+				$radio_label = strtolower($prov);
+				$text .= "
+					<tr>
+						<td><label for='social-login-".$radio_label."-enabled'>".$label."</label></td>
+						<td>
+						";
+				foreach($val as $k=>$v)
+				{
+					switch ($k) {
+						case 'enabled':
+							$eopt = array('class'=>'e-expandit');
+							$text .= $frm->radio_switch('social_login['.$prov.'][enabled]', vartrue($pref['social_login'][$prov]['enabled']),'','',$eopt);
+							break;
+
+						case 'keys':
+							// $cls = vartrue($pref['single_login'][$prov]['keys'][$tk]) ? "class='e-hideme'" : '';
+							$sty = vartrue($pref['social_login'][$prov]['keys'][vartrue($tk)]) ? "" : "e-hideme";
+							$text .= "<div class='e-expandit-container {$sty}' id='option-{$prov}' >";
+							foreach($v as $tk=>$idk)
+							{
+								$eopt = array('placeholder'=> $tk, 'size'=>'xxlarge');
+								$text .= "<br />".$frm->text('social_login['.$prov.'][keys]['.$tk.']', vartrue($pref['social_login'][$prov]['keys'][$tk]), 100, $eopt);
+							}
+							$text .= "</div>";
+
+							break;
+
+						case 'scope':
+							$text .= $frm->hidden('social_login['.$prov.'][scope]','email');
+							break;
+
+						default:
+
+							break;
+					}
+				}
+
+				$text .= "</td>
+					</tr>
+					";
+			}
+
+
+
+
+
+
+
+			$text .= "</table>
+					</td></tr>
+
+
+				</tbody></table>
+			";
+
+
+
+			// -------------------------------
+			//
+			//
+
+
+			$text2 = "
+					<table class='table'>
+						<colgroup>
+							<col class='col-label' />
+							<col class='col-control' />
+						</colgroup>
+						<tbody>
+						";
+
+//XXX XURL Definitions.
+			$xurls = array(
+				'facebook'		=> 	array('label'=>"Facebook", "placeholder"=>"eg. https://www.facebook.com/e107CMS"),
+				'twitter'		=>	array('label'=>"Twitter",	"placeholder"=>"eg. https://twitter.com/e107"),
+				'youtube'		=>	array('label'=>"Youtube",	"placeholder"=>"eg.https://youtube.com/e107Inc"),
+				'google'		=>	array('label'=>"Google+",	"placeholder"=>""),
+				'linkedin'		=>	array('label'=>"LinkedIn",	"placeholder"=>"eg. http://www.linkedin.com/groups?home=&gid=1782682"),
+				'github'		=>	array('label'=>"Github",	"placeholder"=>"eg. https://github.com/e107inc"),
+				'flickr'		=>	array('label'=>"Flickr",	"placeholder"=>""),
+				'instagram'		=>	array('label'=>"Instagram",	"placeholder"=>""),
+				'pinterest'		=>	array('label'=>"Pinterest",	"placeholder"=>""),
+				'vimeo'			=>	array('label'=>"Vimeo",		"placeholder"=>""),
+			);
+
+			foreach($xurls as $k=>$var)
+			{
+				$keypref = "xurl[".$k."]";
+				$text_label = "xurl-".$k."";
+				$def = "XURL_". strtoupper($k);
+
+				$opts = array('size'=>'xxlarge','placeholder'=> $var['placeholder']);
+
+				$text2 .= "
+					<tr>
+						<td><label for='".$text_label."'>Your ".$var['label']." page</label></td>
+						<td>
+							".$frm->text($keypref, $pref['xurl'][$k], false, $opts)."
+							<div class='field-help'>Used by some themes to provide a link to your ".$var['label']." page. (".$def.")</div>
+						</td>
+					</tr>
+				";
+			}
+
+
+
+
+			$text2 .= "
+				</tbody>
+			</table>
+
+";
+			$tabs = array();
+			$tabs[] = array('caption'=>"Apps", 'text'=>$text);
+			$tabs[] = array('caption'=>'Pages', 'text'=>$text2);
+
+			$ret =  $frm->open('social','post',null, 'class=form-horizontal').$frm->tabs($tabs);
+
+			$ret .= "<div class='buttons-bar center'>
+
+			".$frm->button('save_social',1,'submit',LAN_SAVE)."
+
+				</div>";
+
+			$ret .= $frm->close();
+
+			return $ret;
 		}
-	*/
+
 			
 }
 				

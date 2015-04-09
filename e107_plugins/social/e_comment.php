@@ -81,9 +81,12 @@ class social_comment
 			$link = e_REQUEST_URL;
 		}
 
+		$pref       = e107::pref('social');
+		$limit      = vartrue($pref['facebook_comments_limit'], 10);
+		$theme      = vartrue($pref['facebook_comments_theme'], 'light');
+		$loading    = vartrue($pref['facebook_comments_loadingtext'], 'Loading...');
 
-		//TODO Consider adding prefs to colorscheme and number of posts to the social admin area.
-		$text = '<div class="fb-comments" data-href="'.$link.'" data-width="100%" data-numposts="10" data-colorscheme="light">Loading...</div>';
+		$text = '<div class="fb-comments" data-href="'.$link.'" data-width="100%" data-numposts="'.$limit.'" data-colorscheme="'.$theme.'">'.$loading.'</div>';
 
 		return $text;
 	}

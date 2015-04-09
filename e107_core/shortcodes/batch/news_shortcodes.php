@@ -30,6 +30,8 @@ class news_shortcodes extends e_shortcode
 	//protected $param;  - shouldn't be set - see __set/__get methods of e_shortcode & news::render_newsitem()
 
 	protected $commentsDisabled;
+
+	protected $commentsEngine = 'e107';
 	
 	private $imageItem;
 	
@@ -42,6 +44,11 @@ class news_shortcodes extends e_shortcode
 		$pref = e107::getPref();
 		
 		$this->commentsDisabled = vartrue($pref['comments_disabled']);
+
+		if(!empty($pref['comments_engine']))
+		{
+			$this->commentsEngine = $pref['comments_engine'];
+		}
 	}
 
 	function sc_newstitle()
@@ -269,9 +276,9 @@ class news_shortcodes extends e_shortcode
 	 */
 	function sc_newscommentcount($parm='')
 	{
-		if($this->commentsDisabled)
+		if($this->commentsDisabled || ($this->commentsEngine != 'e107'))
 		{
-			return;	
+			return;
 		}
 		
 		$text = varset($parm['glyph']) ? e107::getParser()->toGlyph($parm['glyph']) : "";

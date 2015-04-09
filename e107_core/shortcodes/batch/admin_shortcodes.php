@@ -137,6 +137,12 @@ class admin_shortcodes
 	
 		$ns = e107::getRender();
 		$pref = e107::getPref();
+
+		if($tmp = e107::getRegistry('core/e107/adminui/help'))
+		{
+			return $ns->tablerender($tmp['caption'],$tmp['text'],'e_help',true);
+		}
+
 	
 		if(function_exists('e_help') && ($tmp =  e_help())) // new in v2.x for non-admin-ui admin pages. 
 		{
