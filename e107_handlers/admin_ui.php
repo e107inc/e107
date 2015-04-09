@@ -5183,6 +5183,11 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 	}
 
+
+	public function renderHelp()
+	{
+	}
+
 	/**
 	 * Create - send JS to page Header
 	 * @return none

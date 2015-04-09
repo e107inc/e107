@@ -87,7 +87,7 @@ class theme_shortcodes extends e_shortcode
 		if(!USERID) // Logged Out. 
 		{		
 			$text = '
-			<ul class="nav navbar-nav navbar-right'.$direction.'"">';
+			<ul class="nav navbar-nav navbar-right'.$direction.'">';
 			
 			if($userReg==1)
 			{

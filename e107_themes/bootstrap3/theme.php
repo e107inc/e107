@@ -65,9 +65,13 @@ function tablestyle($caption, $text, $id='', $info=array())
 	if($style == 'jumbotron')
 	{
 		echo '<div class="jumbotron">
-      	<div class="container">
-        	<h1>'.$caption.'</h1>
-        	<p>'.$text.'</p>
+      	<div class="container">';
+        	if(!empty($caption))
+	        {
+	            echo '<h1>'.$caption.'</h1>';
+	        }
+        echo '
+        	'.$text.'
       	</div>
     	</div>';	
 		return;
@@ -75,8 +79,14 @@ function tablestyle($caption, $text, $id='', $info=array())
 	
 	if($style == 'col-md-4' || $style == 'col-md-6' || $style == 'col-md-8')
 	{
-		echo ' <div class="col-xs-12 '.$style.'">
-          <h2>'.$caption.'</h2>
+		echo ' <div class="col-xs-12 '.$style.'">';
+		
+		if(!empty($caption))
+		{
+            echo '<h2>'.$caption.'</h2>';
+		}
+
+		echo '
           '.$text.'
         </div>';
 		return;	
