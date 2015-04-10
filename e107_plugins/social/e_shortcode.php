@@ -13,6 +13,42 @@ if (!defined('e107_INIT')) { exit; }
 
 class social_shortcodes extends e_shortcode
 {
+
+
+	public function getProviders()
+	{
+
+		$emailMessage = "Check out this link: "; //TODO LAN
+
+		//TODO LANS ie. "Share on [x]" in English_global.php
+
+		$providers = array(
+			'email'				=> array('icon'	=> 'e-social-mail',			'title'=>"Email to someone",	'url' => "mailto:EMAIL_RECIPIENT?subject=[t]&body=".urlencode($emailMessage)."[u]"),
+			'facebook-like'		=> array('icon' => 'e-social-thumbs-up',	'title'=>"Like on Facebook",	'url' => "http://www.facebook.com/plugins/like.php?href=[u]"),
+			'facebook-share'	=> array('icon' => 'e-social-facebook',		'title'=>"Share on Facebook",	'url' => "http://www.facebook.com/sharer.php?u=[u]&t=[t]"),
+			'twitter'			=> array('icon' => 'e-social-twitter',		'title'=>"Share on Twitter",	'url' => "http://twitter.com/share?url=[u]&text=[t]"),
+			'google-plus1'		=> array('icon' => 'e-social-gplus',		'title'=>"+1 on Google",		'url' => "https://apis.google.com/_/+1/fastbutton?usegapi=1&size=large&hl=en&url=[u]"),
+
+			//	'google-plus'		=> array('icon' => 'fa-google-plus',		'title'=>"On Google Plus",		'url' => "https://plusone.google.com/_/+1/confirm?hl=en&url=[u]"),
+			'linkedin'			=> array('icon' => 'e-social-linkedin',		'title'=>"Share on LinkedIn",	'url' => "http://www.linkedin.com/shareArticle?mini=true&url=[u]"),
+			'pinterest'			=> array('icon'	=> 'e-social-pinterest',	'title'=>"Share on Pinterest",	'url' => "http://www.pinterest.com/pin/create/button/?url=[u]&description=[t]&media=[m]"),
+			//	'thumblr'			=> array('icon'	=>	'fa-tumblr',			'title'=>"On Tumblr",			'url' => "http://www.tumblr.com/share/link?url=[u]&name=[t]&description=[d]"),
+			'stumbleupon'		=> array('icon'	=> 'e-social-stumbleupon',	'title'=>"Share on StumbleUpon",'url' => "http://www.stumbleupon.com/submit?url=[u]&title=[t]"),
+			'reddit'			=> array('icon'	=> 'e-social-reddit',		'title'=>"Share on Reddit",		'url' => "http://reddit.com/submit?url=[u]&title=[t]"),
+			'digg'				=> array('icon'	=> 'e-social-digg',			'title'=>"Share on Digg",		'url' => "http://www.digg.com/submit?url=[u]"),
+
+			//http://reddit.com/submit?url=http%3A%2F%2Fwebsite.com&title=Website%20Title  // no fa icon available
+			//http://www.digg.com/submit?url=http%3A%2F%2Fwebsite.com	  // no fa icon available
+		);
+
+		return $providers;
+	}
+
+
+
+
+
+
 		
 	public $var;	
 	/**
@@ -93,12 +129,39 @@ class social_shortcodes extends e_shortcode
 		e107::getScBatch('social')->setVars($socialArray);
 	 */
 	function sc_socialshare($parm='') // Designed so that no additional JS required. 
-	{		
+	{
+
+		$pref = e107::pref('social');
+
+		if(varset($pref['sharing_mode']) == 'off')
+		{
+			return '';
+		}
+
+
+
 		$defaultUrl 	= vartrue($this->var['url'], e_REQUEST_URL);
 		$defaultTitle	= vartrue($this->var['title'], deftrue('e_PAGETITLE'). " | ". SITENAME);
 		$defaultDiz		= vartrue($this->var['description'], e107::getUrl()->response()->getMetaDescription());
 		
 		$tp 			= e107::getParser();
+
+		$providers = $this->getProviders();
+
+
+		if(empty($parm)) // No parms so use prefs instead.
+		{
+
+			$parm['dropdown'] = ($pref['sharing_mode'] == 'dropdown') ? 1 : 0;
+			$parm['providers']  = !empty($pref['sharing_providers']) ? array_keys($pref['sharing_providers']) : array_keys($providers);
+		}
+		else
+		{
+			$parm['providers']  = array_keys($providers);
+		}
+
+
+
 		
 		$url 			= varset($parm['url'], 		$defaultUrl);
 		$title 			= varset($parm['title'], 	$defaultTitle) ;
@@ -108,30 +171,10 @@ class social_shortcodes extends e_shortcode
 		
 		$size			= varset($parm['size'],		'md');
 		
-		//TODO LANS ie. "Share on [x]" in English_global.php
 
-		$emailMessage = "Check out this link: "; //TODO LAN
-		
-		$providers = array(
-			'email'				=> array('icon'	=> 'e-social-mail',			'title'=>"Email to someone",	'url' => "mailto:EMAIL_RECIPIENT?subject=[t]&body=".urlencode($emailMessage)."[u]"),
-			'facebook-like'		=> array('icon' => 'e-social-thumbs-up',	'title'=>"Like on Facebook",	'url' => "http://www.facebook.com/plugins/like.php?href=[u]"),
-			'facebook-share'	=> array('icon' => 'e-social-facebook',		'title'=>"Share on Facebook",	'url' => "http://www.facebook.com/sharer.php?u=[u]&t=[t]"),
-			'twitter'			=> array('icon' => 'e-social-twitter',		'title'=>"Share on Twitter",	'url' => "http://twitter.com/share?url=[u]&text=[t]"),
-			'google-plus1'		=> array('icon' => 'e-social-gplus',		'title'=>"+1 on Google",		'url' => "https://apis.google.com/_/+1/fastbutton?usegapi=1&size=large&hl=en&url=[u]"),
-		
-		//	'google-plus'		=> array('icon' => 'fa-google-plus',		'title'=>"On Google Plus",		'url' => "https://plusone.google.com/_/+1/confirm?hl=en&url=[u]"),
-			'linkedin'			=> array('icon' => 'e-social-linkedin',		'title'=>"Share on LinkedIn",	'url' => "http://www.linkedin.com/shareArticle?mini=true&url=[u]"),
-			'pinterest'			=> array('icon'	=> 'e-social-pinterest',	'title'=>"Share on Pinterest",	'url' => "http://www.pinterest.com/pin/create/button/?url=[u]&description=[t]&media=[m]"),
-		//	'thumblr'			=> array('icon'	=>	'fa-tumblr',			'title'=>"On Tumblr",			'url' => "http://www.tumblr.com/share/link?url=[u]&name=[t]&description=[d]"),
-			'stumbleupon'		=> array('icon'	=> 'e-social-stumbleupon',	'title'=>"Share on StumbleUpon",		'url' => "http://www.stumbleupon.com/submit?url=[u]&title=[t]"),
-			'reddit'			=> array('icon'	=> 'e-social-reddit',		'title'=>"Share on Reddit",			'url' => "http://reddit.com/submit?url=[u]&title=[t]"), 
-			'digg'				=> array('icon'	=> 'e-social-digg',			'title'=>"Share on Digg",				'url' => "http://www.digg.com/submit?url=[u]"), 
-		
-			//http://reddit.com/submit?url=http%3A%2F%2Fwebsite.com&title=Website%20Title  // no fa icon available
-			//http://www.digg.com/submit?url=http%3A%2F%2Fwebsite.com	  // no fa icon available		
-		);
-	
-	
+
+
+
 	
 		$data = array('u'=> rawurlencode($url), 't'=> rawurlencode($title), 'd'	=> rawurlencode($description), 'm' => rawurlencode($media));
 		
@@ -149,6 +192,12 @@ class social_shortcodes extends e_shortcode
 		
 		foreach($providers as $k=>$val)
 		{
+
+			if(!in_array($k,$parm['providers']))
+			{
+				continue;
+			}
+
 			$pUrl = str_replace("&","&amp;",$val['url']);
 			
 			$shareUrl = $tp->lanVars($pUrl,$data);
