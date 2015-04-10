@@ -1373,6 +1373,40 @@ class themeHandler
 
 		
 					$text .= $itext;
+
+					$wildcard = false;
+					$curCss = array();
+
+
+					foreach($theme['css'] as $k=>$vl)
+					{
+						if($vl['name'] == '*')
+						{
+							unset($theme['css'][$k]);
+							$wildcard = true;
+						}
+						else
+						{
+							$curCss[] = $vl['name'];
+						}
+					}
+
+
+					if($wildcard == true)
+					{
+						foreach($theme['files'] as $val)
+						{
+							if(substr($val,-4) == '.css' && substr($val,0,5) != 'admin_' && !in_array($val, $curCss))
+							{
+								$theme['css'][] = array('name'=>$val, 'info'=>'User-added Stylesheet', 'nonadmin'=>1);
+							}
+						}
+
+					}
+
+
+
+
 					
 					if(array_key_exists("multipleStylesheets", $theme) && $mode)
 					{
