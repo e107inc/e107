@@ -40,19 +40,21 @@ class _system_cron
 		
 		if(is_dir(e_BASE.".git")) // Check it's a Git Repo
 		{
-			
+
+			$gitPath = defset('e_GIT','git'); // addo to e107_config.php to
+				
 			// Change Dir. 
 			$cmd = 'cd '.e_ROOT;
 			$mes->addDebug($cmd);
-			$text .= `$cmd 2>&1`;
+			$text = `$cmd 2>&1`;
 			
 			// Remove any local changes. 
-			$cmd = 'git reset --hard';
+			$cmd = $gitPath.' reset --hard';
 			$mes->addDebug($cmd);
 			$text .= `$cmd 2>&1`;
 			
 			// Run Pull request
-			$cmd = 'git pull';
+			$cmd = $gitPath.' pull';
 			$mes->addDebug($cmd);
 			$text .= `$cmd 2>&1`;
 
