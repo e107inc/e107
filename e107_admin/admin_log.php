@@ -558,22 +558,37 @@ class admin_log_form_ui extends e_admin_form_ui
 	// Custom Method/Function 
 	function dblog_title($curVal,$mode)
 	{
-		
+		$tp = e107::getParser();
 		
 		switch($mode)
 		{
 			case 'read': // List Page
+
+
+
 				$val = trim($curVal);
 				if(defined($val))
 				{
 					$val = constant($val);
 				}
+
+				if(strpos($val,'[x]') !== false)
+				{
+					$remark = $this->getController()->getListModel()->get('dblog_remarks');
+					preg_match("/\[table\]\s=&gt;\s([\w]*)/i",$remark, $match);
+
+					if(!empty($match[1]))
+					{
+						$val = $tp->lanVars($val, '<b>'.$match[1].'</b>');
+					}
+				}
+
 				return $val;
 			break;
 			
 			case 'filter':
 			case 'batch':
-				return  $array; 
+				return  null;
 			break;
 		}
 	}
