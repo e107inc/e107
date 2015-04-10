@@ -102,6 +102,8 @@
 			'lw_ajax_enable'		=> array('title'=> LWLAN_59, 'type'=>'boolean', 'data' => 'string','help'=>''),
 			'lw_notsamepage'		=> array('title'=> LWLAN_64, 'type'=>'boolean', 'data' => 'string','help'=>LWLAN_65),
 			'linkword_omit_pages'	=> array('title'=> LWLAN_28, 'type'=>'textarea', 'data' => 'string','help'=>''),
+			'lw_max_per_word'	    => array('title'=> "Maximum links/tips per word", 'type'=>'number', 'data' => 'string','help'=>'If the same word is found multiple times in a piece of text.'),
+			'lw_custom_class'	    => array('title'=> "Custom CSS Class", 'type'=>'text', 'writeParms'=>array('placeholder'=> LAN_OPTIONAL ), 'data' => 'string','help'=>'Will add this class to all generated links.'),
 
 		);
 
