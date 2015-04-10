@@ -113,11 +113,19 @@ function tablestyle($caption, $text, $id='', $info=array())
 		</div>';	
 		return;
 	}
-	
-	echo '<h2 class="caption">'.$caption.'</h2>
-			
-			'.$text.'
-			';
+
+
+
+	// default.
+
+	if(!empty($caption))
+	{
+		echo '<h2 class="caption">'.$caption.'</h2>';
+	}
+
+	echo $text;
+
+
 					
 	return;
 	

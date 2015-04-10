@@ -108,10 +108,12 @@ class social_shortcodes extends e_shortcode
 		
 		$size			= varset($parm['size'],		'md');
 		
-		//TODO LANS ie. "Share on [x]" in English_global.php 
+		//TODO LANS ie. "Share on [x]" in English_global.php
+
+		$emailMessage = "Check out this link: "; //TODO LAN
 		
 		$providers = array(
-			'email'				=> array('icon'	=> 'e-social-mail',			'title'=>"Email to someone",	'url' => "mailto:EMAIL_RECIPIENT?subject=[t]&body=Check out this link: [u]"),
+			'email'				=> array('icon'	=> 'e-social-mail',			'title'=>"Email to someone",	'url' => "mailto:EMAIL_RECIPIENT?subject=[t]&body=".urlencode($emailMessage)."[u]"),
 			'facebook-like'		=> array('icon' => 'e-social-thumbs-up',	'title'=>"Like on Facebook",	'url' => "http://www.facebook.com/plugins/like.php?href=[u]"),
 			'facebook-share'	=> array('icon' => 'e-social-facebook',		'title'=>"Share on Facebook",	'url' => "http://www.facebook.com/sharer.php?u=[u]&t=[t]"),
 			'twitter'			=> array('icon' => 'e-social-twitter',		'title'=>"Share on Twitter",	'url' => "http://twitter.com/share?url=[u]&text=[t]"),
@@ -171,7 +173,7 @@ class social_shortcodes extends e_shortcode
 			$text = '<div class="btn-group '.$dir.'">
 				  <a class="e-tip btn btn-dropdown btn-default btn-'.$size.' dropdown-toggle" data-toggle="dropdown" href="#" title="Share">'.$label.'</a>
 				 
-				  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel"  style="min-width:435px">
+				  <ul class="dropdown-menu" role="menu"  style="min-width:435px">
 				  
 				    <li><div class="btn-group" style="padding-left: 7px;">'.implode("\n",$opt).'</div></li>
 				  </ul>

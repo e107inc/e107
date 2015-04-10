@@ -18,6 +18,7 @@
 	</screenshots>
 	<stylesheets>
 		<css file="style.css" name="Default"  />
+        <css file="*" name="*"  />
 	</stylesheets>
 	<layouts>
 		<layout name='jumbotron_home' title='Jumbotron (home)' default='false'>
