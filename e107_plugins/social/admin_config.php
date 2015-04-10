@@ -71,18 +71,20 @@ class social_ui extends e_admin_ui
 		protected $fieldpref        = array();
 		
 
-		protected $preftabs        = array('Facebook Comments', 'Twitter Menu');
+		protected $preftabs        = array("Sharing", 'Facebook Comments', 'Twitter Menu' );
 
 		protected $prefs = array(
 
 
-			'facebook_comments_limit'		=> array('title'=> 'Limit', 'type'=>'number', 'tab'=>0, 'data' => 'int','help'=>'Number of tweets to display.'),
-			'facebook_comments_theme'		=> array('title'=> 'Theme', 'type'=>'dropdown', 'tab'=>0, 'writeParms'=>array('optArray'=>array('light'=>'Light','dark'=>'Dark')), 'data' => 'int','help'=>'Number of tweets to display.'),
-			'facebook_comments_loadingtext'		=> array('title'=> 'Text while loading', 'type'=>'text', 'tab'=>0, 'data' => 'int', 'writeParms'=>array('placeholder'=>'Loading...'), 'help'=>'Number of tweets to display.'),
+			'facebook_comments_limit'		=> array('title'=> 'Limit', 'type'=>'number', 'tab'=>1, 'data' => 'int','help'=>'Number of tweets to display.'),
+			'facebook_comments_theme'		=> array('title'=> 'Theme', 'type'=>'dropdown', 'tab'=>1, 'writeParms'=>array('optArray'=>array('light'=>'Light','dark'=>'Dark')), 'data' => 'int','help'=>'Number of tweets to display.'),
+			'facebook_comments_loadingtext'		=> array('title'=> 'Text while loading', 'type'=>'text', 'tab'=>1, 'data' => 'str', 'writeParms'=>array('placeholder'=>'Loading...'), 'help'=>''),
 
-			'twitter_menu_height'		=> array('title'=> 'Height', 'type'=>'number', 'tab'=>1, 'data' => 'int','help'=>'Height in px'),
-			'twitter_menu_limit'		=> array('title'=> 'Limit', 'type'=>'number', 'tab'=>1, 'data' => 'int','help'=>'Number of tweets to display.'),
+			'twitter_menu_height'		=> array('title'=> 'Height', 'type'=>'number', 'tab'=>2, 'data' => 'int','help'=>'Height in px'),
+			'twitter_menu_limit'		=> array('title'=> 'Limit', 'type'=>'number', 'tab'=>2, 'data' => 'int','help'=>'Number of tweets to display.'),
 
+			'sharing_mode'              => array('title'=> 'Display Mode', 'type'=>'dropdown', 'tab'=>0, 'writeParms'=>array('optArray'=>array('off'=>'Disabled','normal'=>'Normal','dropdown'=>'Dropdown')), 'data' => 'str','help'=>''),
+			'sharing_providers'         => array('title'=> 'Providers', 'type'=>'checkboxes', 'tab'=>0, 'writeParms'=>array(), 'data' => 'str','help'=>''),
 
 		);
 
@@ -102,6 +104,18 @@ class social_ui extends e_admin_ui
 				$cfg->save(true, true, true);
 
 			}
+
+			$tp = e107::getParser();
+
+			require_once(e_PLUGIN."social/e_shortcode.php");
+			$obj = new social_shortcodes;
+			$providers = $obj->getProviders();
+			foreach($providers as $k=>$v)
+			{
+				$this->prefs['sharing_providers']['writeParms']['optArray'][$k] = $k;
+			}
+		//	print_a($bla);
+
 
 
 // Single/ Social  Login / / copied from hybridAuth config.php so it's easy to add more.
