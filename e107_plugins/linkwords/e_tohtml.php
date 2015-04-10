@@ -290,7 +290,10 @@ class e_tohtml_linkwords
 
 		$hash = md5($lw);
 
-		$this->wordCount[$hash] = 0;
+		if(!isset($this->wordCount[$hash]))
+		{
+			$this->wordCount[$hash] = 0;
+		}
 
 		foreach ($split_line as $sl)
 		{
