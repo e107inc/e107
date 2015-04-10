@@ -1522,6 +1522,7 @@ class e_parse extends e_parser
 							$noBreak = TRUE;
 						//	$code_text = str_replace("\r\n", " ", $code_text);
 							$code_text = html_entity_decode($code_text, ENT_QUOTES, CHARSET);
+							$code_text = str_replace('&','&amp;',$code_text); // validation safe.
 							$html_start = "<!-- bbcode-html-start -->"; // markers for html-to-bbcode replacement. 
 							$html_end	= "<!-- bbcode-html-end -->";
 							$full_text = str_replace(array("[html]","[/html]"), "",$code_text); // quick fix.. security issue?							

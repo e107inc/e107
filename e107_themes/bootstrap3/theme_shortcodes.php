@@ -119,11 +119,18 @@ class theme_shortcodes extends e_shortcode
 			
 			if(!empty($userReg)) // value of 1 or 2 = login okay. 
 			{
+
+				global $sc_style;
+				$sc_style = array(); // remove an wrappers.
+
 				$text .='	
 				
 				<form method="post" onsubmit="hashLoginPassword(this);return true" action="'.e_REQUEST_HTTP.'" accept-charset="UTF-8">
-				{LM_USERNAME_INPUT}
-				{LM_PASSWORD_INPUT}
+				<p>{LM_USERNAME_INPUT}</p>
+				<p>{LM_PASSWORD_INPUT}</p>
+
+
+				<div class="form-group"></div>
 				{LM_IMAGECODE_NUMBER}
 				{LM_IMAGECODE_BOX}
 				
@@ -198,6 +205,7 @@ class theme_shortcodes extends e_shortcode
 		</ul>
 		
 		';
+
 
 		return $tp->parseTemplate($text,true,$login_menu_shortcodes);
 	}	

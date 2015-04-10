@@ -33,8 +33,6 @@ if (!defined('e107_INIT')) { exit(); }
 global $tp;
 
 
-$login_menu_shortcodes = e107::getScBatch('login_menu',TRUE);
-
 //$login_menu_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 	if(!class_exists('login_menu_shortcodes'))
 	{
@@ -267,7 +265,10 @@ $login_menu_shortcodes = e107::getScBatch('login_menu',TRUE);
 
 			function sc_lm_external_links($parm='')
 			{
-				global $tp, $menu_pref, $login_menu_shortcodes, $LOGIN_MENU_EXTERNAL_LINK;
+				global $menu_pref, $login_menu_shortcodes, $LOGIN_MENU_EXTERNAL_LINK;
+
+				$tp = e107::getParser();
+
 				if(!vartrue($menu_pref['login_menu']['external_links'])) return '';
 				$lbox_infos = login_menu_class::parse_external_list(true, false);
 				$lbox_active = $menu_pref['login_menu']['external_links'] ? explode(',', $menu_pref['login_menu']['external_links']) : array();
@@ -299,15 +300,17 @@ $login_menu_shortcodes = e107::getScBatch('login_menu',TRUE);
 
 			function sc_lm_stats($parm='')
 			{
-				global $LOGIN_MENU_STATS, $tp, $login_menu_shortcodes;
+				$tp = e107::getParser();
+				global $LOGIN_MENU_STATS;
 				$data = getcachedvars('login_menu_data');
 				if(!$data['enable_stats']) return '';
-				return $tp -> parseTemplate($LOGIN_MENU_STATS, true, $login_menu_shortcodes);
+				return $tp -> parseTemplate($LOGIN_MENU_STATS, true, $this);
 			}
 
 			function sc_lm_new_news($parm='')
 			{
-				global $LOGIN_MENU_STATITEM, $tp;
+				$tp = e107::getParser();
+				global $LOGIN_MENU_STATITEM;
 				$data = getcachedvars('login_menu_data');
 				if(!isset($data['new_news'])) return '';
 				$tmp = array();
@@ -408,8 +411,10 @@ $login_menu_shortcodes = e107::getScBatch('login_menu',TRUE);
 					return "<script type='text/javascript'>
 						alert('".$tp->toJS(LOGINMESSAGE)."');
 						</script>";
-				}else{
-				    return $tp->parseTemplate($LOGIN_MENU_MESSAGE, true, $login_menu_shortcodes);
+				}
+				else
+				{
+				    return e107::getParser()->parseTemplate($LOGIN_MENU_MESSAGE, true, $this);
 				}
 			}
 
@@ -424,4 +429,11 @@ $login_menu_shortcodes = e107::getScBatch('login_menu',TRUE);
 
 		}
 	}
+
+
+
+	$login_menu_shortcodes = e107::getScBatch('login_menu',TRUE);
+
+
+
 ?>
