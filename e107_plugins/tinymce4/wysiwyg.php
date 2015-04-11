@@ -155,14 +155,16 @@ class wysiwyg
 	var $config = array();
 	var $configName;
 
-	function renderConfig()
+	function renderConfig($config='')
 	{
 		$this->getConfig($config);	
-		$text .= "\n /* TinyMce Config: ".$this->configName." */\n\n";
+		$text = "\n /* TinyMce Config: ".$this->configName." */\n\n";
 		$text .= "tinymce.init({\n";
 		$text .= $this->config; // Moc: temporary fix for BC with PHP 5.3: https://github.com/e107inc/e107/issues/614
 		$text .= "\n});";
-		
+
+
+
 		return stripslashes($text);
 	}
 	
@@ -241,7 +243,7 @@ class wysiwyg
 	function convertBoolean($string)
 	{
 
-		if(substr($string,0,1) == '{')
+		if(substr($string,0,1) == '{' || substr($string,0,1) == '[')
 		{
 			return $string;
 		}
@@ -277,7 +279,7 @@ class wysiwyg
 		
 
 
-	function getConfig($config=FALSE)
+	function getConfig($config=false)
 	{
 		$tp = e107::getParser();	
 		$fl = e107::getFile();
@@ -337,7 +339,48 @@ class wysiwyg
 			$ret['browser_spellcheck']	= true;
 		}
 
+		$formats = array(
+			'hilitecolor' => array('inline'=> 'span', 'classes'=> 'hilitecolor', 'styles'=> array('backgroundColor'=> '%value'))
+			//	block : 'h1', attributes : {title : "Header"}, styles : {color : red}
+		);
 
+		$formats = "[
+                {title: 'Headers', items: [
+                    {title: 'h1', block: 'h1'},
+                    {title: 'h2', block: 'h2'},
+                    {title: 'h3', block: 'h3'},
+                    {title: 'h4', block: 'h4'},
+                    {title: 'h5', block: 'h5'},
+                    {title: 'h6', block: 'h6'}
+                ]},
+
+                {title: 'Inline', items: [
+                    {title: 'Bold', inline: 'b', icon: 'bold'},
+                    {title: 'Italic', inline: 'i', icon: 'italic'},
+                    {title: 'Underline', inline: 'span', styles : {textDecoration : 'underline'}, icon: 'underline'},
+                    {title: 'Strikethrough', inline: 'span', styles : {textDecoration : 'line-through'}, icon: 'strikethrough'},
+                    {title: 'Superscript', inline: 'sup', icon: 'superscript'},
+                    {title: 'Subscript', inline: 'sub', icon: 'subscript'},
+                    {title: 'Code', inline: 'code', icon: 'code'},
+                ]},
+
+                {title: 'Blocks', items: [
+                    {title: 'Paragraph', block: 'p'},
+                    {title: 'Blockquote', block: 'blockquote'},
+                    {title: 'Div', block: 'div'},
+                    {title: 'Pre', block: 'pre'},
+                    {title: 'Code Highlighted', block: 'pre', classes: 'prettyprint linenums' }
+                ]},
+
+                {title: 'Alignment', items: [
+                    {title: 'Left', block: 'div', styles : {textAlign : 'left'}, icon: 'alignleft'},
+                    {title: 'Center', block: 'div', styles : {textAlign : 'center'}, icon: 'aligncenter'},
+                    {title: 'Right', block: 'div', styles : {textAlign : 'right'}, icon: 'alignright'},
+                    {title: 'Justify', block: 'div', styles : {textAlign : 'justify'}, icon: 'alignjustify'}
+                ]}
+            ]";
+
+		$ret['style_formats']  = $formats; // json_encode($formats);
 
 
 		// Emoticon Support @see //https://github.com/nhammadi/Smileys
@@ -403,7 +446,8 @@ class wysiwyg
 			}
 			$text[] = $k.': '.$this->convertBoolean($v);	
 		}
-		
+
+
 		
 		$this->config = implode(",\n",$text); 
 		
