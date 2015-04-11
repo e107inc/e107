@@ -74,12 +74,15 @@ class eurl_admin_ui extends e_admin_controller_ui
 		}
 		else
 		{
-			$modRewrite = false;
+			$modRewrite = true; //we don't really know.
+
 		}
 
 		if($modRewrite === false)
 		{
 			e107::getMessage()->addInfo("Apache mod_rewrite was not found on this server and is required to use this feature. ");
+			e107::getMessage()->addDebug(print_a($modules,true));
+
 		}
 
 		if($htaccess && $modRewrite && !deftrue('e_MOD_REWRITE'))
@@ -621,12 +624,14 @@ class eurl_admin_form_ui extends e_admin_form_ui
 				$cssClass = 'e-hideme'; // always hidden for now, some interface changes could come after pre-alpha
 
 				 $exampleUrl = array();
-                foreach($section['examples'] as $ex)
-                {
-                    $exampleUrl[] = str_replace($srch,$repl,$ex);    
-                    
-                }
-                
+				 if(!empty($section['examples']))
+				 {
+	                foreach($section['examples'] as $ex)
+	                {
+	                    $exampleUrl[] = str_replace($srch,$repl,$ex);
+
+	                }
+				 }
                  if(strpos($path,'noid')!==false)
                 {
                //     $exampleUrl .= "  &nbsp; &Dagger;";    //XXX Add footer - denotes more CPU required. ?

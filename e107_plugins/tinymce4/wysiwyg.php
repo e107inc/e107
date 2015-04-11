@@ -215,8 +215,13 @@ class wysiwyg
 		{
 			return;
 		}
-				
+
 		$tmp = explode(" ",$data);
+
+		if(e107::pref('core','smiley_activate',false))
+		{
+			$tmp[] = "smileys";
+		}
 
 		$ext = array();
 
@@ -224,6 +229,8 @@ class wysiwyg
 		{
 			$ext[$val] = e_PLUGIN_ABS."tinymce4/plugins/".$val."/plugin.js";
 		}
+
+
 			
 			
 		return json_encode($ext);
@@ -274,6 +281,7 @@ class wysiwyg
 	{
 		$tp = e107::getParser();	
 		$fl = e107::getFile();
+
 				
 		if(getperms('0'))
 		{
@@ -328,6 +336,43 @@ class wysiwyg
 		{
 			$ret['browser_spellcheck']	= true;
 		}
+
+
+
+
+		// Emoticon Support @see //https://github.com/nhammadi/Smileys
+		if(e107::pref('core','smiley_activate',false))
+		{
+
+			$emo = e107::getConfig("emote")->getPref();
+			$pack = e107::pref('core','emotepack');
+
+			$emotes = array();
+			$i = 0;
+			$c = 0;
+			foreach($emo as $path=>$co)
+			{
+				$codes = explode(" ",$co);
+				$url = SITEURLBASE.e_IMAGE_ABS."emotes/" . $pack . "/" . str_replace("!",".",$path);
+				$emotes[$i][] = array('shortcut'=>$codes, 'url'=>$url, 'title'=>ucfirst($path));
+
+				if($c == 6)
+				{
+					$i++;
+					$c = 0;
+				}
+				else
+				{
+					$c++;
+				}
+			}
+
+		//	print_r($emotes);
+
+			$ret['extended_smileys'] = json_encode($emotes);
+		}
+
+
 
 
 
