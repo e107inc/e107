@@ -344,24 +344,27 @@ class wysiwyg
 			//	block : 'h1', attributes : {title : "Header"}, styles : {color : red}
 		);
 
+		//@see http://www.tinymce.com/wiki.php/Configuration:formats
+
 		$formats = "[
                 {title: 'Headers', items: [
-                    {title: 'h1', block: 'h1'},
-                    {title: 'h2', block: 'h2'},
-                    {title: 'h3', block: 'h3'},
-                    {title: 'h4', block: 'h4'},
-                    {title: 'h5', block: 'h5'},
-                    {title: 'h6', block: 'h6'}
+                    {title: 'Heading 1', block: 'h1'},
+                    {title: 'Heading 2', block: 'h2'},
+                    {title: 'Heading 3', block: 'h3'},
+                    {title: 'Heading 4', block: 'h4'},
+                    {title: 'Heading 5', block: 'h5'},
+                    {title: 'Heading 6', block: 'h6'}
                 ]},
 
                 {title: 'Inline', items: [
                     {title: 'Bold', inline: 'b', icon: 'bold'},
-                    {title: 'Italic', inline: 'i', icon: 'italic'},
+                    {title: 'Italic', inline: 'em', icon: 'italic'},
                     {title: 'Underline', inline: 'span', styles : {textDecoration : 'underline'}, icon: 'underline'},
                     {title: 'Strikethrough', inline: 'span', styles : {textDecoration : 'line-through'}, icon: 'strikethrough'},
                     {title: 'Superscript', inline: 'sup', icon: 'superscript'},
                     {title: 'Subscript', inline: 'sub', icon: 'subscript'},
                     {title: 'Code', inline: 'code', icon: 'code'},
+                    {title: 'Small', inline: 'small', icon: ''},
                 ]},
 
                 {title: 'Blocks', items: [
@@ -373,15 +376,64 @@ class wysiwyg
                 ]},
 
                 {title: 'Alignment', items: [
-                    {title: 'Left', block: 'div', styles : {textAlign : 'left'}, icon: 'alignleft'},
-                    {title: 'Center', block: 'div', styles : {textAlign : 'center'}, icon: 'aligncenter'},
-                    {title: 'Right', block: 'div', styles : {textAlign : 'right'}, icon: 'alignright'},
-                    {title: 'Justify', block: 'div', styles : {textAlign : 'justify'}, icon: 'alignjustify'}
-                ]}
+                    {title: 'Left', block: 'div', classes: 'text-left',  icon: 'alignleft'},
+                    {title: 'Center', block: 'div',classes: 'text-center', icon: 'aligncenter'},
+                    {title: 'Right', block: 'div', classes: 'text-right',  icon: 'alignright'},
+                    {title: 'Justify', block: 'div', classes: 'text-justify', icon: 'alignjustify'},
+                    {title: 'No-Wrap', block: 'div', classes: 'text-nowrap', icon: ''},
+
+                ]},
+
+                {title: 'Bootstrap Inline', items: [
+				 {title: 'Label (Default)', inline: 'span', classes: 'label label-default'},
+				 {title: 'Label (Primary)', inline: 'span', classes: 'label label-primary'},
+                 {title: 'Label (Success)', inline: 'span', classes: 'label label-success'},
+                 {title: 'Label (Info)', inline: 'span', classes: 'label label-info'},
+                 {title: 'Label (Warning)', inline: 'span', classes: 'label label-warning'},
+                 {title: 'Label (Danger)', inline: 'span', classes: 'label label-danger'},
+                 {title: 'Muted', inline: 'span', classes: 'text-muted'},
+                ]},
+
+                 {title: 'Bootstrap Blocks', items: [
+                 {title: 'Alert (Success)', block: 'div', classes: 'alert alert-success'},
+                 {title: 'Alert (Info)', block: 'div', classes: 'alert alert-info'},
+                 {title: 'Alert (Warning)', block: 'div', classes: 'alert alert-warning'},
+                 {title: 'Alert (Danger)', block: 'div', classes: 'alert alert-block alert-danger'},
+                 {title: 'Lead', block: 'p', classes: 'lead'},
+                 {title: 'Well', block: 'div', classes: 'well'}
+                ]},
+
+
+
+
+
             ]";
 
-		$ret['style_formats']  = $formats; // json_encode($formats);
+/*
+		<span class="label label-default">Default</span>
+<span class="label label-primary">Primary</span>
+<span class="label label-success">Success</span>
+<span class="label label-info">Info</span>
+<span class="label label-warning">Warning</span>
+<span class="label label-danger">Danger</span>
+*/
 
+
+	//	$ret['style_formats_merge'] = true;
+
+
+		$ret['style_formats']  = $formats; // json_encode($formats);
+		$ret['link_class_list'] = "[
+        {title: 'None', value: ''},
+        {title: 'Link', value: 'btn btn-link'},
+        {title: 'Alert Link', value: 'alert-link'},
+        {title: 'Button (Default)', value: 'btn btn-default'},
+        {title: 'Button (Primary)', value: 'btn btn-primary'},
+        {title: 'Button (Success)', value: 'btn btn-success'},
+        {title: 'Button (Info)', value: 'btn btn-info'},
+        {title: 'Button (Warning)', value: 'btn btn-warning'},
+        {title: 'Button (Danger)', value: 'btn btn-danger'}
+    ]";
 
 		// Emoticon Support @see //https://github.com/nhammadi/Smileys
 		if(e107::pref('core','smiley_activate',false))
