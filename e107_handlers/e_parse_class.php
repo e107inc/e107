@@ -516,12 +516,18 @@ class e_parse extends e_parser
 
 			$data = $this->preFilter($data); // used by bb_xxx.php toDB() functions. bb_code.php toDB() allows us to properly bypass HTML cleaning below. 
 
-			if (strip_tags($data) != $data) // html tags present. 
+		//	if(strlen($data) != strlen(strip_tags($data))) // html tags present. // strip_tags doesn't look for close '>'.
+			if(strpos($data,'[html]') !== false || preg_match('#(?<=<)\w+(?=[^<]*?>)#', $data))
 			{
-
+				$this->isHtml = true;
 				$data = $this->cleanHtml($data); // sanitize all html.
-				return $data;
+
 				$data = urldecode($data); // symptom of cleaning the HTML - urlencodes src attributes containing { and } .eg. {e_BASE}
+			}
+			else
+			{
+				$data = str_replace('<','&lt;',$data);
+				$data = str_replace('>','&gt;',$data);
 			}
 
 			if (!check_class($core_pref->get('post_html', e_UC_MAINADMIN)))
@@ -535,7 +541,7 @@ class e_parse extends e_parser
 
 
 
-		if (check_class($core_pref->get('post_html'))) /*$core_pref->is('post_html') && */
+		if (check_class($core_pref->get('post_html'))) /*$core_pref->is('post_html') && XXX preformecd by cleanHtml() */
 		{
 			$no_encode = TRUE;
 		}
@@ -544,6 +550,11 @@ class e_parse extends e_parser
 		{
 			$no_encode = FALSE;
 		}
+
+
+		//TODO Determine if the code below is still useful.
+
+
 		if ($no_encode === TRUE && strpos($mod, 'no_html') === FALSE)
 		{
 			$search = array('$', '"', "'", '\\', '<?');
@@ -2617,6 +2628,7 @@ class e_parser
      * @var DOMDocument
      */
     public $domObj                = null;
+	public $isHtml                  = false;
     protected $removedList        = array();
     protected $nodesToDelete      = array();
     protected $nodesToConvert     = array();
@@ -3279,7 +3291,18 @@ TMPL;
 
 	    $dbText = $tp->toDB($text,true);
 
-		echo "<h3>User-input &gg; toDB()</h3>";
+		echo "<h3>User-input &gg; toDB() ";
+
+		if($this->isHtml == true)
+		{
+			echo "<small>detected as <span class='label label-warning'>HTML</span></small>";
+		}
+		else
+		{
+			echo "<small>detected as <span class='label label-info'>Plain text</span></small>";
+		}
+
+		echo "</h3>";
 
 	    print_a($dbText);
 
