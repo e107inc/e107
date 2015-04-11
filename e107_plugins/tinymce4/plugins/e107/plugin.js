@@ -41,7 +41,7 @@
 			
 		// Emoticons 
 			ed.addButton('e107-emotes', {
-				text: 'Media Manager',
+				text: '',
 				icon: 'emoticons',
 				onclick: function() {
 					// Open window
