@@ -3424,12 +3424,7 @@ return;
     {
         if(empty($html)){ return ''; }
 
-
-		$html = mb_convert_encoding($html, 'UTF-8');
-
-	//  $html =  mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
-
-		$html = str_replace ('&nbsp;', '@nbsp;', $html); // prevent replacement of &nbsp; with spaces.
+		$html = str_replace('&nbsp;', '@nbsp;', $html); // prevent replacement of &nbsp; with spaces.
         
         if(preg_match("/<body/i",$html)!==true) // HTML Fragment
 		{
