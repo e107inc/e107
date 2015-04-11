@@ -520,10 +520,10 @@ class e_parse extends e_parser
 			{
 
 				$data = $this->cleanHtml($data); // sanitize all html.
-			//	return $data;
+				return $data;
 				$data = urldecode($data); // symptom of cleaning the HTML - urlencodes src attributes containing { and } .eg. {e_BASE}
 			}
-			
+
 			if (!check_class($core_pref->get('post_html', e_UC_MAINADMIN)))
 			{
 				$data = strip_tags($data); // remove tags from cleaned html. 
@@ -532,6 +532,8 @@ class e_parse extends e_parser
 
 			//  $data = html_entity_decode($data, ENT_QUOTES, 'utf-8');	// Prevent double-entities. Fix for [code]  - see bb_code.php toDB();
 		}
+
+
 
 		if (check_class($core_pref->get('post_html'))) /*$core_pref->is('post_html') && */
 		{
@@ -750,13 +752,15 @@ class e_parse extends e_parser
 		if(substr($text,0,6) == '[html]')
 		{
 			// $text = $this->toHtml($text,true);
-			$search = array('&quot;','&#039;','&');
-			$replace = array('"',"'",'&amp;');
+			$search = array('&quot;','&#039;','&#092;', '&',); // '&' must be last.
+			$replace = array('"',"'","\\", '&amp;');
+
+		//	return htmlspecialchars_decode($text);
 			$text = str_replace($search,$replace,$text);
 		//	return $text;
 			//$text  = htmlentities($text,ENT_NOQUOTES, "UTF-8");
 
-			return $text;
+		//	return $text;
 
 		}
 	//	return htmlentities($text);
@@ -3244,19 +3248,15 @@ class e_parser
     /**
      * Perform and render XSS Test Comparison
      */
-    public function test()
+    public function test($text='',$advanced = false)
     {
       //  $tp = e107::getParser();
         $sql = e107::getDb();
         $tp = e107::getParser();
 
-        // -------------------- Encoding ----------------
-
-		echo "<h2>Encoding Test</h2>";
-
-		echo"<h3>User Input from Form</h3>";
-
-	   $text = <<<TMPL
+	    if(empty($text))
+	    {
+		    $text = <<<TMPL
 [html]<p><strong>bold print</strong></p>
 <pre class="prettyprint linenums">&lt;a href='#'&gt;Something&lt;/a&gt;</pre>
 <p>Some text's and things.</p>
@@ -3266,41 +3266,73 @@ class e_parser
 <p>&nbsp;</p>
 [/html]
 TMPL;
+	    }
 
+	    //   $text .= '[code=inline]<b class="something">Something</b>[/code]日本語 ';
 
+        // -------------------- Encoding ----------------
 
-	 //   $text .= '[code=inline]<b class="something">Something</b>[/code]日本語 ';
-
+		echo "<h2>e107 Parser Test</h2>";
+		echo"<h3>User-input <small>(eg. from \$_POST)</small></h3>";
 
 	    print_a($text);
 
 	    $dbText = $tp->toDB($text,true);
 
-		echo "<h3>Use Input &gg; toDb()</h3>";
+		echo "<h3>User-input &gg; toDB()</h3>";
 
 	    print_a($dbText);
 
-	    echo "<h3>From DB &gg; toHtml()</h3>";
+	    echo "<h3>toDB() &gg; toHtml()</h3>";
 		$html = $tp->toHtml($dbText,true);
 	    print_a($html);
 
-	    echo "<h3>From DB &gg; toHtml() (rendered)</h3>";
+	    echo "<h3>toDB &gg; toHtml() <small>(rendered)</small></h3>";
 	    echo $html;
 
-	    echo "<h3>FromDB &gg; toForm()</h3>";
+	    echo "<h3>toDB &gg; toForm()</h3>";
 		$toForm = $tp->toForm($dbText);
-	    echo e107::getForm()->open('test');
-	    echo "<textarea cols='100' style='width:100%;height:300px' >".$toForm."</textarea>";
-	    echo e107::getForm()->close();
+	    $toFormRender = e107::getForm()->open('test');
+	    $toFormRender .= "<textarea cols='100' style='width:100%;height:300px' >".$toForm."</textarea>";
+	    $toFormRender .= e107::getForm()->close();
 
+		echo  $toFormRender;
+
+		if(!empty($advanced))
+		{
+		    echo "<h3>Converted Paths</h3>";
+		    print_a($this->pathList);
+
+		    echo "<h3>Removed Tags and Attributes</h3>";
+		    print_a($this->removedList);
+
+		    echo "<h3>Nodes to Convert</h3>";
+			print_a($this->nodesToConvert);
+		}
 
 	    similar_text($text, html_entity_decode( $toForm, ENT_COMPAT, 'UTF-8'),$perc);
-	    echo "<h3>Original to compare with above (".number_format($perc)."%) - Should be over 95%</h3>";
+	    $scoreStyle = ($perc > 98) ? 'label-success' : 'label-danger';
+	    echo "<h3><span class='label ".$scoreStyle."'>Score:  ".number_format($perc)."%</span></h3>";
+
+		echo "<table class='table table-bordered'>
 
 
+		<tr>
+			<th style='width:50%'>User-input</th>
+			<th style='width:50%'>toForm() output</th>
+		</tr>
+		<tr>
+			<td>".print_a($text,true)."</td>
+			<td>". $toFormRender."</td>
+		</tr>
 
+		</table>";
+	  /*  <tr>
+			<td>".print_a(json_encode($text),true)."</td>
+			<td>". print_a(json_encode(html_entity_decode( $toForm, ENT_COMPAT, 'UTF-8')),true)."</td>
+		</tr>*/
 
-	    print_a($text);
+	//    print_a($text);
 
 return;
 
@@ -3370,11 +3402,11 @@ return;
         if(empty($html)){ return ''; }
 
 
-      $html = mb_convert_encoding($html, 'UTF-8');
+		$html = mb_convert_encoding($html, 'UTF-8');
 
 	//  $html =  mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
 
-
+		$html = str_replace ('&nbsp;', '@nbsp;', $html); // prevent replacement of &nbsp; with spaces.
         
         if(preg_match("/<body/i",$html)!==true) // HTML Fragment
 		{
@@ -3425,7 +3457,7 @@ return;
             $path = $node->getNodePath();
 
 		//	echo "<br />Path = ".$path;
-         //   $tag = strval(basename($path));
+        //   $tag = strval(basename($path));
             
             $tag = preg_replace('/([a-z0-9\[\]\/]*)?\/([\w]*)(\[(\d)*\])?$/i', "$2", $path);
             if(!in_array($tag, $this->allowedTags))
@@ -3521,8 +3553,12 @@ return;
 
         $cleaned = $doc->saveHTML($doc->documentElement); // $doc->documentElement fixes utf-8/entities issue. @see http://stackoverflow.com/questions/8218230/php-domdocument-loadhtml-not-encoding-utf-8-correctly
 
+		$cleaned = str_replace ('@nbsp;', '&nbsp;',  $cleaned); // prevent replacement of &nbsp; with spaces. - convert back.
+
         $cleaned = str_replace(array('<body>','</body>','<html>','</html>','<!DOCTYPE html>','<meta charset="UTF-8">','<?xml version="1.0" encoding="utf-8"?>'),'',$cleaned); // filter out tags. 
-    
+
+
+
      //   $cleaned = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
         
         return trim($cleaned);
