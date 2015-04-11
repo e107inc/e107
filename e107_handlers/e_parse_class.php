@@ -493,7 +493,6 @@ class e_parse extends e_parser
 	 */
 	public function toDB($data, $nostrip = FALSE, $no_encode = FALSE, $mod = FALSE, $original_author = FALSE)
 	{
-		
 		$core_pref = e107::getConfig();
 		if (is_array($data))
 		{
@@ -514,26 +513,26 @@ class e_parse extends e_parser
 
 		if ($mod != 'pReFs') //XXX We're not saving prefs. 
 		{
+
 			$data = $this->preFilter($data); // used by bb_xxx.php toDB() functions. bb_code.php toDB() allows us to properly bypass HTML cleaning below. 
 
 			if (strip_tags($data) != $data) // html tags present. 
 			{
+
+				$data = $this->cleanHtml($data); // sanitize all html.
 			//	return $data;
-				$data = $this->cleanHtml($data); // sanitize all html. 
-				
-				$data = urldecode($data); // symptom of cleaning the HTML - urlencodes src attributes containing { and } .eg. {e_BASE} 
+				$data = urldecode($data); // symptom of cleaning the HTML - urlencodes src attributes containing { and } .eg. {e_BASE}
 			}
 			
 			if (!check_class($core_pref->get('post_html', e_UC_MAINADMIN)))
 			{
 				$data = strip_tags($data); // remove tags from cleaned html. 
 				$data = str_replace(array('[html]','[/html]'),'',$data); 
-			//	$data = $this->dataFilter($data);
 			}
 
-			$data = html_entity_decode($data, ENT_QUOTES, 'utf-8');	// Prevent double-entities. Fix for [code]  - see bb_code.php toDB(); 
+			//  $data = html_entity_decode($data, ENT_QUOTES, 'utf-8');	// Prevent double-entities. Fix for [code]  - see bb_code.php toDB();
 		}
-	
+
 		if (check_class($core_pref->get('post_html'))) /*$core_pref->is('post_html') && */
 		{
 			$no_encode = TRUE;
@@ -741,17 +740,34 @@ class e_parse extends e_parser
 
 	function toForm($text)
 	{
+
 		if(empty($text)) // fix - handle proper 0, Space etc values.
 		{
 			return $text;
 		}
+
+
+		if(substr($text,0,6) == '[html]')
+		{
+			// $text = $this->toHtml($text,true);
+			$search = array('&quot;','&#039;','&');
+			$replace = array('"',"'",'&amp;');
+			$text = str_replace($search,$replace,$text);
+		//	return $text;
+			//$text  = htmlentities($text,ENT_NOQUOTES, "UTF-8");
+
+			return $text;
+
+		}
+	//	return htmlentities($text);
+
 		$search = array('&#036;', '&quot;', '<', '>');
 		$replace = array('$', '"', '&lt;', '&gt;');
 		$text = str_replace($search, $replace, $text);
 		if (e107::wysiwyg() !== true)
 		{
 			// fix for utf-8 issue with html_entity_decode(); ???
-			$text = str_replace("&nbsp;", " ", $text);
+		//	$text = str_replace("&nbsp;", " ", $text);
 		}
 		return $text;
 	}
@@ -1347,7 +1363,7 @@ class e_parse extends e_parser
 		{
 			return $text;
 		}
-		
+
 		$pref = e107::getPref();
 
 		global $fromadmin;
@@ -1519,10 +1535,11 @@ class e_parse extends e_parser
 
 						case 'html' : // This overrides and deprecates html.bb
 							$proc_funcs = TRUE;
+
 							$noBreak = TRUE;
 						//	$code_text = str_replace("\r\n", " ", $code_text);
-							$code_text = html_entity_decode($code_text, ENT_QUOTES, CHARSET);
-							$code_text = str_replace('&','&amp;',$code_text); // validation safe.
+						//	$code_text = html_entity_decode($code_text, ENT_QUOTES, CHARSET);
+						//	$code_text = str_replace('&','&amp;',$code_text); // validation safe.
 							$html_start = "<!-- bbcode-html-start -->"; // markers for html-to-bbcode replacement. 
 							$html_end	= "<!-- bbcode-html-end -->";
 							$full_text = str_replace(array("[html]","[/html]"), "",$code_text); // quick fix.. security issue?							
@@ -1530,8 +1547,9 @@ class e_parse extends e_parser
 							$full_text = $html_start.$full_text.$html_end;
 							$full_text = $this->parseBBTags($full_text); // strip <bbcode> tags. 
 							$opts['nobreak'] = true;
+
 							break;
-						
+
 						case 'table' : // strip <br /> from inside of <table>		
 						
 							$convertNL = FALSE;
@@ -3231,8 +3249,69 @@ class e_parser
       //  $tp = e107::getParser();
         $sql = e107::getDb();
         $tp = e107::getParser();
+
+        // -------------------- Encoding ----------------
+
+		echo "<h2>Encoding Test</h2>";
+
+		echo"<h3>User Input from Form</h3>";
+
+	   $text = <<<TMPL
+[html]<p><strong>bold print</strong></p>
+<pre class="prettyprint linenums">&lt;a href='#'&gt;Something&lt;/a&gt;</pre>
+<p>Some text's and things.</p>
+<p>&nbsp;</p>
+<p><a href="/test.php?w=9&amp;h=12">link</a></p>
+<p>日本語 简体中文</p>
+<p>&nbsp;</p>
+[/html]
+TMPL;
+
+
+
+	 //   $text .= '[code=inline]<b class="something">Something</b>[/code]日本語 ';
+
+
+	    print_a($text);
+
+	    $dbText = $tp->toDB($text,true);
+
+		echo "<h3>Use Input &gg; toDb()</h3>";
+
+	    print_a($dbText);
+
+	    echo "<h3>From DB &gg; toHtml()</h3>";
+		$html = $tp->toHtml($dbText,true);
+	    print_a($html);
+
+	    echo "<h3>From DB &gg; toHtml() (rendered)</h3>";
+	    echo $html;
+
+	    echo "<h3>FromDB &gg; toForm()</h3>";
+		$toForm = $tp->toForm($dbText);
+	    echo e107::getForm()->open('test');
+	    echo "<textarea cols='100' style='width:100%;height:300px' >".$toForm."</textarea>";
+	    echo e107::getForm()->close();
+
+
+	    similar_text($text, html_entity_decode( $toForm, ENT_COMPAT, 'UTF-8'),$perc);
+	    echo "<h3>Original to compare with above (".number_format($perc)."%) - Should be over 95%</h3>";
+
+
+
+
+	    print_a($text);
+
+return;
+
+//return;
+        // ---------------------------------
+
+
+		$html = $text;
+
         
-        $html = $this->getXss();
+      //  $html = $this->getXss();
                    
         echo "<h2>Unprocessed XSS</h2>";
         // echo $html; // Remove Comment for a real mess! 
@@ -3251,14 +3330,17 @@ class e_parser
         $sql->db_Mark_Time('tp->toHtml');     
         
         echo "<h3>\$tp->toDB()</h3>";
-        // echo $tp->dataFilter($html); // Remove Comment for a real mess! 
-        print_a($tp->toDB($html));
-        $sql->db_Mark_Time('tp->toDB');             
-        
+        // echo $tp->dataFilter($html); // Remove Comment for a real mess!
+        $todb = $tp->toDB($html);
+        print_a( $todb);
+        $sql->db_Mark_Time('tp->toDB');
+
+	    echo "<h3>\$tp->toForm() with toDB input.</h3>";
+       print_a( $tp->toForm($todb));
         
         echo "<h2>New Parser</h2>"; 
         echo "<h3>Processed</h3>";
-        $cleaned = $this->cleanHtml($html);  
+        $cleaned = $this->cleanHtml($html, true);  // false = don't check html pref.
         print_a($cleaned);
         $sql->db_Mark_Time('new Parser');    
       //  $sql->db_Mark_Time('------ End Parser Test -------');
@@ -3286,8 +3368,13 @@ class e_parser
     public function cleanHtml($html='', $checkPref = true)
     {
         if(empty($html)){ return ''; }
-        
-   //     $html = mb_convert_encoding($html, 'UTF-8');     
+
+
+      $html = mb_convert_encoding($html, 'UTF-8');
+
+	//  $html =  mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
+
+
         
         if(preg_match("/<body/i",$html)!==true) // HTML Fragment
 		{
@@ -3319,8 +3406,9 @@ class e_parser
         // Set it up for processing. 
         $doc  = $this->domObj;   
 
-        @$doc->loadHTML($html); 
-        $doc->encoding = 'UTF-8'; //FIXME 
+        @$doc->loadHTML($html);
+		// $doc->encoding = 'UTF-8';
+
      //   $doc->resolveExternals = true;
         
     //    $tmp = $doc->getElementsByTagName('*');   
@@ -3427,15 +3515,15 @@ class e_parser
                 $value = substr($value,0,$end);
             }
             
-            $value = htmlentities(htmlentities($value)); // Needed 
+            $value = htmlentities(htmlentities($value)); // Needed
             $node->nodeValue = $value;
         }
 
-        $cleaned = $doc->saveHTML();
+        $cleaned = $doc->saveHTML($doc->documentElement); // $doc->documentElement fixes utf-8/entities issue. @see http://stackoverflow.com/questions/8218230/php-domdocument-loadhtml-not-encoding-utf-8-correctly
 
         $cleaned = str_replace(array('<body>','</body>','<html>','</html>','<!DOCTYPE html>','<meta charset="UTF-8">','<?xml version="1.0" encoding="utf-8"?>'),'',$cleaned); // filter out tags. 
     
-        $cleaned = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
+     //   $cleaned = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
         
         return trim($cleaned);
     }
