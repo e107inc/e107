@@ -130,7 +130,7 @@ $text = "
 					<tr>
 						<th><!-- --></th>
 						<th class='left'>".CACLAN_17."</th>
-						<th class='center last'>".CACLAN_1."</th>
+						<th class='left last'>".CACLAN_1."</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -140,7 +140,7 @@ $text = "
 							<div class='field-help'>".CACLAN_13."</div>
 						</td>
 						<td>{$contentcache_label}</td>
-						<td class='center middle'>
+						<td class='left middle'>
 							".$frm->radio_switch('cachestatus', e107::getPref('cachestatus'))."
 						</td>
 					</tr>
@@ -150,7 +150,7 @@ $text = "
 							<div class='field-help'>".CACLAN_14."</div>
 						</td>
 						<td>{$syscache_label}</td>
-						<td class='center middle'>
+						<td class='left middle'>
 							".$frm->radio_switch('syscachestatus', e107::getPref('syscachestatus'))."
 						</td>
 					</tr>
@@ -160,7 +160,7 @@ $text = "
 							<div class='field-help'>".CACLAN_21."</div>
 						</td>
 						<td>{$dbcache_label}</td>
-						<td class='center middle'>
+						<td class='left middle'>
 							".LAN_ENABLED."
 						</td>
 					</tr>
@@ -170,13 +170,13 @@ $text = "
 							<div class='field-help'>".CACLAN_23."</div>
 						</td>
 						<td>{$imgcache_label}</td>
-						<td class='center middle'>
+						<td class='left middle'>
 							".LAN_ENABLED."
 						</td>
 					</tr>
 				</tbody>
 			</table>
-			<div class='buttons-bar'>
+			<div class='buttons-bar form-inline'>
 				<div class='f-right'>".$frm->admin_button('submit_cache', CACLAN_2, 'update')."</div>
 				".$frm->select('option_clear_cache', array(
 					'empty_all' => CACLAN_26,

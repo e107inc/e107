@@ -90,7 +90,7 @@ class e_bbcode
 	 *
 	 *	Code uses a crude stack-based syntax analyser to handle nested bbcodes (including nested 'size' bbcodes, for example)
 	 */
-	function parseBBCodes($value, $p_ID, $force_lower = 'default', $bbStrip = FALSE)
+	function parseBBCodes($value, $p_ID='', $force_lower = 'default', $bbStrip = FALSE)
 	{
 		global $postID;
 		$postID = $p_ID;
