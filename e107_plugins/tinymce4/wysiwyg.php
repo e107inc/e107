@@ -133,11 +133,17 @@ if(ADMIN && e_QUERY == 'debug')
 }
 else
 {
-	ob_start();
-	ob_implicit_flush(0);
+	//ob_start();
+	//ob_implicit_flush(0);
 	//header("last-modified: " . gmdate("D, d M Y H:i:s",mktime(0,0,0,15,2,2004)) . " GMT");
 	header('Content-type: text/javascript', TRUE);
-	echo $gen;
+	header('Content-Encoding: gzip');
+
+	$minified = e107::minify($gen);
+	$gzipoutput = gzencode($minified,6);
+
+	header('Content-Length: '.strlen($gzipoutput));
+	echo $gzipoutput;
 }
 		
 	
