@@ -2672,6 +2672,20 @@ class e107
 
 	}
 
+
+	public static function minify($js,$options=null)
+	{
+		if(empty($js))
+		{
+			return;
+		}
+
+		require_once(e_HANDLER."jsshrink/Minifier.php");
+		return JShrink\Minifier::minify($js,$options);
+	}
+
+
+
 	/**
 	 * Set or Retrieve WYSIWYG active status. (replaces constant  e_WYSIWYG)
 	 * @param null $val
