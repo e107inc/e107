@@ -249,7 +249,7 @@ class wysiwyg
 	function convertBoolean($string)
 	{
 
-		if(substr($string,0,1) == '{' || substr($string,0,1) == '[')
+		if(substr($string,0,1) == '{' || substr($string,0,1) == '[' || substr($string,0,9) == 'function(')
 		{
 			return $string;
 		}
@@ -387,6 +387,8 @@ class wysiwyg
                     {title: 'Right', block: 'div', classes: 'text-right',  icon: 'alignright'},
                     {title: 'Justify', block: 'div', classes: 'text-justify', icon: 'alignjustify'},
                     {title: 'No-Wrap', block: 'div', classes: 'text-nowrap', icon: ''},
+                    {title: 'Image Left', selector: 'img', classes: 'pull-left', styles: {'margin': '0 10px 5px 0'  },  icon: 'alignleft'},
+                    {title: 'Image Right', selector: 'img', classes: 'pull-right', styles: { 'margin': '0 0 5px 10px'}, icon: 'alignright'}
 
                 ]},
 
@@ -405,29 +407,48 @@ class wysiwyg
                  {title: 'Alert (Info)', block: 'div', classes: 'alert alert-info'},
                  {title: 'Alert (Warning)', block: 'div', classes: 'alert alert-warning'},
                  {title: 'Alert (Danger)', block: 'div', classes: 'alert alert-block alert-danger'},
+                 {title: 'Float Clear', block: 'div', classes: 'clearfix'},
                  {title: 'Lead', block: 'p', classes: 'lead'},
-                 {title: 'Well', block: 'div', classes: 'well'}
+                 {title: 'Well', block: 'div', classes: 'well'},
+                 {title: '1/4 Width Block', block: 'div', classes: 'col-md-3 col-sm-12'},
+                 {title: '3/4 Width Block', block: 'div', classes: 'col-md-9 col-sm-12'},
+                 {title: '1/3 Width Block', block: 'div', classes: 'col-md-4 col-sm-12'},
+                 {title: '2/3 Width Block', block: 'div', classes: 'col-md-8 col-sm-12'},
+                 {title: '1/2 Width Block', block: 'div', classes: 'col-md-6 col-sm-12'},
                 ]},
 
+                 {title: 'Bootstrap Buttons', items: [
+                 {title: 'Button (Default)', selector: 'a', classes: 'btn btn-default'},
+				 {title: 'Button (Primary)', selector: 'a', classes: 'btn btn-primary'},
+                 {title: 'Button (Success)', selector: 'a', classes: 'btn btn-success'},
+                 {title: 'Button (Info)', selector: 'a', classes: 'btn btn-info'},
+                 {title: 'Button (Warning)', selector: 'a', classes: 'btn-warning'},
+                 {title: 'Button (Danger)', selector: 'a', classes: 'btn-danger'},
+                ]},
 
+				 {title: 'Bootstrap Images', items: [
+				 {title: 'Responsive (recommended)',  selector: 'img', classes: 'img-responsive'},
+				 {title: 'Rounded',  selector: 'img', classes: 'img-rounded'},
+				 {title: 'Circle', selector: 'img', classes: 'img-circle'},
+                 {title: 'Thumbnail', selector: 'img', classes: 'img-thumbnail'},
+                ]},
 
+				 {title: 'Bootstrap Tables', items: [
+				 {title: 'Bordered',  selector: 'table', classes: 'table-bordered'},
+				 {title: 'Condensed', selector: 'table', classes: 'table-condensed'},
+				 {title: 'Hover', selector: 'table', classes: 'table-hover'},
+                 {title: 'Striped', selector: 'table', classes: 'table-striped'},
+                ]},
 
 
             ]";
 
-/*
-		<span class="label label-default">Default</span>
-<span class="label label-primary">Primary</span>
-<span class="label label-success">Success</span>
-<span class="label label-info">Info</span>
-<span class="label label-warning">Warning</span>
-<span class="label label-danger">Danger</span>
-*/
+
 
 
 	//	$ret['style_formats_merge'] = true;
 
-
+	//	$ret['visualblocks_default_state'] = true; //pref
 		$ret['style_formats']  = $formats; // json_encode($formats);
 		$ret['link_class_list'] = "[
         {title: 'None', value: ''},
@@ -440,6 +461,22 @@ class wysiwyg
         {title: 'Button (Warning)', value: 'btn btn-warning'},
         {title: 'Button (Danger)', value: 'btn btn-danger'}
     ]";
+
+
+	/*
+		$ret['setup'] = "function(ed) {
+      ed.addMenuItem('test', {
+         text: 'Clear Floats',
+         context: 'insert',
+         icon: false,
+         onclick: function() {
+            ed.insertContent('<br class=\"clearfix\" />');
+         }
+      });
+      }";
+
+	*/
+
 
 		// Emoticon Support @see //https://github.com/nhammadi/Smileys
 		if(e107::pref('core','smiley_activate',false))
