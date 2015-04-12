@@ -49,23 +49,28 @@ if($sql->db_Select('page', 'page_id, page_title', "menu_name=''")) // TODO Move 
 }
 
 // Now let any plugins add to the options - must append to the $front_page array as above
-if(varset($frontPref['e_frontpage_list'])) // v1.x spec.
-{
-	foreach($frontPref['e_frontpage_list'] as $val)
+
+
+	//v2.x spec. ----------
+	$new = e107::getAddonConfig('e_frontpage');
+	foreach($new as $k=>$v)
 	{
-		if(is_readable(e_PLUGIN.$val.'/e_frontpage.php'))
+		$front_page[$k] = $v;
+	}
+
+	// v1.x spec.---------------
+	if(!empty($frontPref['e_frontpage_list']))
+	{
+		foreach($frontPref['e_frontpage_list'] as $val)
 		{
-			require_once (e_PLUGIN.$val.'/e_frontpage.php');
+			if(is_readable(e_PLUGIN.$val.'/e_frontpage.php'))
+			{
+				require_once (e_PLUGIN.$val.'/e_frontpage.php');
+			}
 		}
 	}
-}
 
-//v2.x spec.
-$new = e107::getAddonConfig('e_frontpage');
-foreach($new as $k=>$v)
-{
-	$front_page[$k] = $v;
-}
+
 
 
 // Make sure links relative to SITEURL
