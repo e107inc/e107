@@ -440,11 +440,13 @@ class e_form
 		$options['type'] ='number';
 		
 		$mlength = vartrue($maxlength) ? "maxlength=".$maxlength : "";
-				
+
+		$min = varset($options['min']) ? 'min="'.$options['min'].'"' : '';
+		$max = vartrue($options['max']) ? 'max="'.$options['max'].'"' : '';
+
 		$options = $this->format_options('text', $name, $options);
 		
-		$min = vartrue($options['min']) ? 'min="'.$options['min'].'"' : '';
-		$max = vartrue($options['max']) ? 'min="'.$options['max'].'"' : '';
+
 		
 		//never allow id in format name-value for text fields
 		if(deftrue('BOOTSTRAP'))
