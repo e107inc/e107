@@ -376,7 +376,7 @@ class news_admin_ui extends e_admin_ui
         'news_category'			=> array('title' => NWSLAN_6, 		'type' => 'dropdown',   'tab'=>0,	'data' => 'int', 'inline'=>true,	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'batch'=>true, 'filter'=>true),
 		'news_start'			=> array('title' => "Starting", 	'type' => 'datestamp',  'tab'=>2,   'writeParms'=>'type=datetime',	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),
        	'news_end'				=> array('title' => "Ending", 		'type' => 'datestamp',  'tab'=>2,  'writeParms'=>'type=datetime',	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),
-        'news_class'			=> array('title' => LAN_VISIBILITY, 'type' => 'userclasses','tab'=>2,   'inline'=>true,	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'batch'=>true, 'filter'=>true),
+        'news_class'			=> array('title' => LAN_VISIBILITY, 'type' => 'userclasses','tab'=>2,   'inline'=>true, 'width' => 'auto', 	'thclass' => '', 				'class' => null,  'batch'=>true, 'filter'=>true),
 		'news_render_type'		=> array('title' => LAN_TEMPLATE, 	'type' => 'dropdown',   'tab'=>0,   'data'=> 'str',		'inline'=>false, 'width' => 'auto', 	'thclass' => 'left', 			'class' => 'left', 		'nosort' => false, 'batch'=>true, 'filter'=>true),
 		'news_sticky'			=> array('title' => LAN_NEWS_28, 	'type' => 'boolean',    'tab'=>2,	'data' => 'int' , 'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false, 'batch'=>true, 'filter'=>true),
         'news_allow_comments' 	=> array('title' => NWSLAN_15, 		'type' => 'boolean',    'tab'=>2,	'writeParms'=>'inverse=1', 'data' => 'int', 'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false,'batch'=>true, 'filter'=>true,'readParms'=>'reverse=1','writeParms'=>'inverse=1'),
@@ -455,6 +455,7 @@ class news_admin_ui extends e_admin_ui
 
 	public function afterCreate($new_data, $old_data, $id)
 	{
+		$this->processPings();
 		e107::getEvent()->trigger('newspost',$new_data);
 		e107::getEvent()->trigger('admin_news_created',$new_data);
 		$evdata = array('method'=>'create', 'table'=>'news', 'id'=>$id, 'plugin'=>'news', 'function'=>'submit_item');
@@ -466,6 +467,8 @@ class news_admin_ui extends e_admin_ui
 
 	public function afterUpdate($new_data, $old_data, $id)
 	{
+		$this->processPings();
+		e107::getMessage()->addInfo(print_a($new_data,true));
 		e107::getEvent()->trigger('newsupd', $new_data);
 		e107::getEvent()->trigger('admin_news_updated',$new_data);
 
@@ -580,6 +583,9 @@ class news_admin_ui extends e_admin_ui
 			$this->saveSettings();
 		}
 
+
+	//	e107::getMessage()->addDebug(print_a($_POST,true));
+
 		if($this->getAction() == 'create' ||  $this->getAction() == 'edit')
 		{
 			uksort($this->fields, array($this, 'ukfield'));
@@ -594,12 +600,14 @@ class news_admin_ui extends e_admin_ui
 
 		}
 
+
+
 	//	$mod = $this->getModel();
 	//	$info = print_a($mod, true);
 
 	//	e107::getMessage()->addInfo($info);
 
-		$this->processPings();
+
 		
 		
 		$sql = e107::getDb();
@@ -667,7 +675,9 @@ class news_admin_ui extends e_admin_ui
 
 		$mes = e107::getMessage();
 
-		if(vartrue($_POST['news_ping'],false) && (count($pingServices)>0) && in_array(e_UC_PUBLIC, $_POST['news_userclass']))
+		$mes->addDebug("Checking for Ping Status",'default',true);
+
+		if(!empty($_POST['news_ping']) && (count($pingServices)>0) && (in_array(e_UC_PUBLIC, $_POST['news_class'])))
 		{
 			$mes->addDebug("Initiating ping",'default',true);
 
@@ -694,13 +704,23 @@ class news_admin_ui extends e_admin_ui
 
 				if($this->ping($server, $port, $path, $weblog_name, $weblog_url, $changes_url, $cat_or_rss, $extended))
 				{
-					e107::getMessage()->addDebug("Successfully Pinged: ".$server .' with '.$changes_url , 'default', true);
+					e107::getMessage()->addInfo("Successfully Pinged: ".$server .' with:<br />url: '.$changes_url .'<br />rss: '.$cat_or_rss , 'default', true);
+				}
+				else
+				{
+					e107::getMessage()->addDebug("Ping failed!: ".$server .' with '.$changes_url , 'default', true);
 				}
 
 			}
 
 		}
+		else
+		{
+		//	$mes->addDebug("Ping not triggerred",'default',true);
+		//	$mes->addDebug("Services: ".print_a($pingServices, true),'default', true);
+		//	$mes->addDebug("Userclass: ".print_a($_POST['news_class'],true),'default', true);
 
+		}
 
 	}
 

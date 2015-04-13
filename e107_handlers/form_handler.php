@@ -468,8 +468,8 @@ class e_form
 	function iconpreview($id, $default, $width='', $height='') // FIXME
 	{
 		// XXX - $name ?!
-		$parms = $name."|".$width."|".$height."|".$id;
-		$sc_parameters .= 'mode=preview&default='.$default.'&id='.$id;
+	//	$parms = $name."|".$width."|".$height."|".$id;
+		$sc_parameters = 'mode=preview&default='.$default.'&id='.$id;
 		return e107::getParser()->parseTemplate("{ICONPICKER=".$sc_parameters."}");
 	}
 
@@ -812,7 +812,9 @@ class e_form
 		}
 
 		$cat = vartrue($sc_parameters['media']) ? $tp->toDB($sc_parameters['media']) : "_common_file";	
-		
+
+		$ret = '';
+
 		if($sc_parameters['data'] === 'array')
 		{
 			// Do not use $this->hidden() method - as it will break 'id' value. 
@@ -903,7 +905,7 @@ class e_form
 		if(vartrue($options['inline']))
 		{
 			$text .= "<div class='{$class}' id='inline-{$id}' data-date-format='{$dformat}'  data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}' ></div>
-				<input  type='hidden' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}' />
+				<input  type='hidden' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}'  data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}' />
 			";
 		}
 		else
@@ -1155,13 +1157,14 @@ class e_form
 
 
 	/**
-	 * Textarea Element 
+	 * Textarea Element
 	 * @param $name
 	 * @param $value
 	 * @param $rows
 	 * @param $cols
 	 * @param $options
 	 * @param $count
+	 * @return string
 	 */
 	function textarea($name, $value, $rows = 10, $cols = 80, $options = array(), $counter = false)
 	{
@@ -1772,6 +1775,12 @@ class e_form
 
 	function uc_select($name, $current_value, $uc_options, $select_options = array(), $opt_options = array())
 	{
+
+		if(!empty($select_options['multiple']) && substr($name,-1) != ']')
+		{
+			$name .= '[]';
+		}
+
 		return $this->select_open($name, $select_options)."\n".$this->_uc->vetted_tree($name, array($this, '_uc_select_cb'), $current_value, $uc_options, $opt_options)."\n".$this->select_close();
 	}
 
@@ -3916,9 +3925,9 @@ class e_form
 			case 'userclasses':
 				$uc_options = vartrue($parms['classlist'], 'public,guest,nobody,member,admin,main,classes'); // defaults to 'public,guest,nobody,member,classes' (userclass handler)
 				unset($parms['classlist']);
-				$method = ($attributes['type'] == 'userclass') ? 'uc_select' : 'uc_select';
-				if(vartrue($atrributes['type']) == 'userclasses'){ $parms['multiple'] = true; }
-				$ret =  $this->$method($key, $value, $uc_options, vartrue($parms, array()));
+			//	$method = ($attributes['type'] == 'userclass') ? 'uc_select' : 'uc_select';
+				if(vartrue($attributes['type']) == 'userclasses'){ $parms['multiple'] = true; }
+				$ret =  $this->uc_select($key, $value, $uc_options, vartrue($parms, array()));
 			break;
 
 			/*case 'user_name':

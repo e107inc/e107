@@ -38,10 +38,10 @@
 				}
 			});
 			
-			
+		/*
 		// Emoticons 
-			ed.addButton('e107-emotes', {
-				text: '',
+			ed.addButton('e107-bbcode', {
+				text: 'bbcode',
 				icon: 'emoticons',
 				onclick: function() {
 					// Open window
@@ -49,7 +49,8 @@
 					ed.windowManager.open({
 						title: 'Example plugin',
 						body: [
-							{type: 'textbox', name: 'title', label: 'Title'}
+							{type: 'textbox', name: 'code', label: 'BbCode'},
+                            {type: 'textbox', name: 'parm', label: 'Parameters'}
 						],
 						onsubmit: function(e) {
 							// Insert content when the window form is submitted
@@ -59,7 +60,7 @@
 				}
 			});
 			
-			
+			*/
 			// Media Manager Button 
 			ed.addButton('e107-image', {
 				text: '',

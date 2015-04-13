@@ -60,26 +60,34 @@ else
 }
 
 // Query handler
-if(!empty($_GET))
+if(!empty($_GET['type']))
 {
 	$content_type = $tp->toDB($_GET['cat']);
 	$rss_type = intval(varset($_GET['type'],0));
 	$topic_id = $tp->toDB($_GET['topic'],'');
 
 }
-elseif (e_QUERY)
+elseif(e_QUERY)
 {
 	$tmp = explode('.', e_QUERY);
+
 	$content_type = $tp->toDB($tmp[0]);
 	$rss_type = intval(varset($tmp[1],0));
 	$topic_id = $tp->toDB($tmp[2],'');
+}
+else
+{
+	$content_type = false;
+	$topic_id = false;
 }
 
 
 // List available rss feeds
 if (empty($rss_type))
 {	// Display list of all feeds
+
 	require_once(HEADERF);
+
 	// require_once(e_PLUGIN.'rss_menu/rss_template.php');		Already loaded
 
 	if(!$sql->select('rss', '*', "`rss_class`=0 AND `rss_limit`>0 AND `rss_topicid` NOT REGEXP ('\\\*') ORDER BY `rss_name`"))

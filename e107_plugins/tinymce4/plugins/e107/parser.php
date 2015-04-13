@@ -94,7 +94,7 @@ class e107TinyMceParser
 
 			if(!empty($content) && E107_DEBUG_LEVEL > 0)
 			{
-				$content =  "-- DEBUG MODE ACTIVE -- \n".$content;
+		//		$content =  "-- DEBUG MODE ACTIVE -- \n".$content;
 				//	echo htmlentities($content)."\n";
 				//	echo "<pre>".$content."</pre>";
 				$text = $content;
