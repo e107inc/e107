@@ -486,7 +486,8 @@ class banlist_form_ui extends e_admin_form_ui
 			
 			if ($i == 0)
 			{
-				$words = LAN_NEVER;
+				$opts[$i]  = LAN_NEVER;
+				continue;
 			}
 			elseif (($i % 24) == 0 && $i !== 24)
 			{
@@ -501,7 +502,7 @@ class banlist_form_ui extends e_admin_form_ui
 			
 			$opts[$calc] = $words; 
 		}
-		
+	//	print_a($opts);
 		return $opts;		
 	}
 
