@@ -26,7 +26,7 @@ define('LAN_LOGIN_14', 'User attempted to login with unrecognised user name');
 define('LAN_LOGIN_15', 'User attempted to login with incorrect password');
 define('LAN_LOGIN_16', 'User attempted to login with username/password combination that was already in use');
 define('LAN_LOGIN_17', 'User password (hashed)');
-define('LAN_LOGIN_18', 'Auto-ban: More than 10 failed login attempts');
+define('LAN_LOGIN_18', 'Auto-ban: More than [x] failed login attempts');
 define('LAN_LOGIN_19', '> 10 failed login attempts');
 define('LAN_LOGIN_20', 'You left required field(s) blank');
 define('LAN_LOGIN_21', "Incorrect login. The entered data doesn't match to a registered user. Check if you have the CAPS-LOCK key activated as logins on this site are case sensitive");
