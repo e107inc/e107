@@ -436,7 +436,7 @@ class admin_shortcodes
 					$oldconfigs = array();
 					$oldconfigs['e-news'][0] = array('icon'=>E_16_NEWS, 'title'=>ADLAN_LAT_2, 'url'=> e_ADMIN."newspost.php?mode=sub&amp;action=list", 'total'=>$submitted_news);
 
-					if(empty($pref['comments_disabled']))
+					if(empty($pref['comments_disabled']) && varset($pref['comments_engine'],'e107') == 'e107')
 					{
 						$oldconfigs['e-comment'][0] = array('icon'=>E_16_COMMENT, 'title'=>ADLAN_LAT_9, 'url'=> e_ADMIN_ABS."comment.php?searchquery=&filter_options=comment_blocked__2", 'total'=>$comments_pending);
 					}
@@ -1111,14 +1111,14 @@ class admin_shortcodes
 					$oldconfigs['e-user'][2] 		= array('icon'=>E_16_BANLIST, 'title'=>ADLAN_112, 'url'=> e_ADMIN."users.php?searchquery=&filter_options=user_ban__1", 'total'=>$banned);
 
 
-					if(empty($pref['comments_disabled']))
+					if(empty($pref['comments_disabled']) && varset($pref['comments_engine'],'e107') == 'e107')
 					{
 						$oldconfigs['e-comments'][0] 	= array('icon'=>E_16_COMMENT, 'title'=>ADLAN_114, 'url'=> e_ADMIN_ABS."comment.php", 'total'=>$comments);
 					}
 					if($flo = $sql->count('generic', '(*)', "WHERE gen_type='failed_login'"))
 					{
 						//$text .= "\n\t\t\t\t\t<div style='padding-bottom: 2px;'>".E_16_FAILEDLOGIN." <a href='".e_ADMIN_ABS."fla.php'>".ADLAN_146.": $flo</a></div>";	
-						$oldconfigs['e-failed'][0]	= array('icon'=>E_16_FAILEDLOGIN, 'title'=>ADLAN_146, 'url'=>e_ADMIN_ABS."fla.php", 'total'=>$flo);
+						$oldconfigs['e-failed'][0]	= array('icon'=>E_16_FAILEDLOGIN, 'title'=>ADLAN_146, 'url'=>e_ADMIN_ABS."banlist.php?mode=failed&action=list", 'total'=>$flo);
 					}
 					
 					
