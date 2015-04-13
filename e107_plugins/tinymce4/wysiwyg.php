@@ -463,6 +463,9 @@ class wysiwyg
     ]";
 
 
+// https://github.com/valtlfelipe/TinyMCE-LocalAutoSave
+
+
 	/*
 		$ret['setup'] = "function(ed) {
       ed.addMenuItem('test', {
@@ -475,7 +478,44 @@ class wysiwyg
       });
       }";
 
+
+
+
 	*/
+
+	// e107 Bbcodes.
+	/*
+
+		$ret['setup'] = "function(ed) {
+			ed.addButton('e107-bbcode', {
+				text: 'bbcode',
+				icon: 'emoticons',
+				onclick: function() {
+		// Open window
+
+			ed.windowManager.open({
+						title: 'Example plugin',
+						body: [
+							{type: 'listbox', name: 'code', label: 'BbCode', values: [
+								{text: 'Left', value: 'left'},
+						        {text: 'Right', value: 'right'},
+						        {text: 'Center', value: 'center'}
+						    ]},
+                            {type: 'textbox', name: 'parm', label: 'Parameters'}
+						],
+						onsubmit: function(e) {
+
+							var selected = ed.selection.getContent({format : 'text'});
+
+						//	alert(selected);
+							// Insert content when the window form is submitted
+							ed.insertContent('[' + e.data.code + ']' + selected + '[/' + e.data.code + ']');
+						}
+					});
+				}
+			});
+	}";
+*/
 
 
 		// Emoticon Support @see //https://github.com/nhammadi/Smileys
