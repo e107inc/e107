@@ -92,6 +92,7 @@
 		<core name="emotepack">default</core>
 		<core name="enable_rdns">0</core>
 		<core name="enable_rdns_on_ban">0</core>
+        <core name="failed_login_limit">10</core>
 		<core name="filter_script">0</core>
 		<core name="flood_hits">100</core>
 		<core name="flood_protect">1</core>
