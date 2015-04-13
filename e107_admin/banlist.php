@@ -91,17 +91,18 @@ class banlist_ui extends e_admin_ui
 		protected $eventName		= 'ban';
 		protected $table			= 'banlist';
 		protected $pid				= 'banlist_id'; 
-		protected $perPage 			= 10; 
+		protected $perPage 			= 10;
+		protected $listOrder		= 'banlist_datestamp DESC';
 
 		protected $fields 	= array (  
 		  'checkboxes' 			=>   array ( 'title' => '', 				'type' => null, 		'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
-		  'banlist_id'			 =>   array ( 'title' => LAN_ID, 			'data' => 'int',        'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'banlist_id'			 =>  array ( 'title' => LAN_ID, 			'data' => 'int',        'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banlist_ip' 			=>   array ( 'title' => LAN_IP, 			'type' => 'ip', 		'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banlist_bantype' 	=>   array ( 'title' => LAN_TYPE, 			'type' => 'method', 	'data' => 'str', 'width' => 'auto', 'filter'=>true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banlist_datestamp' 	=>   array ( 'title' => LAN_DATESTAMP, 		'type' => 'datestamp', 	'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => 'auto=1&hidden=1&readonly=1', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banlist_banexpires' 	=>   array ( 'title' => 'Expires',	 		'type' => 'method', 	'data' => 'int', 'inline'=>true, 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banlist_admin' 		=>   array ( 'title' => 'Admin', 			'type' => 'boolean', 	'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'banlist_reason' 		=>   array ( 'title' => 'Reason', 			'type' => 'text', 		'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'banlist_reason' 		=>   array ( 'title' => 'Reason', 			'type' => 'text', 		'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => 'constant=1', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banlist_notes' 		=>   array ( 'title' => 'Notes', 			'type' => 'text', 		'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'options' 			=>   array ( 'title' => LAN_OPTIONS, 		'type' => '', 			'data' => '', 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
@@ -294,6 +295,28 @@ class banlist_ui extends e_admin_ui
 
 class banlist_form_ui extends e_admin_form_ui
 {
+
+	// Custom Method/Function
+	function banlist_reason($curVal,$mode) //TODO
+	{
+
+		switch($mode)
+		{
+			case 'read': // List Page
+
+				break;
+
+			case 'write': // Edit Page
+				return $this->renderElement('banlist_reason', $curVal, array());
+				break;
+
+			case 'filter':
+			case 'batch':
+
+				break;
+		}
+	}
+
 
 	
 	// Custom Method/Function 

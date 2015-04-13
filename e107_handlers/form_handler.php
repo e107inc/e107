@@ -3085,7 +3085,12 @@ class e_form
 
 			case 'tags':
 			case 'text':
-				
+
+				if(!empty($parms['constant']))
+				{
+					$value = defset($value,$value);
+				}
+
 				if(vartrue($parms['truncate']))
 				{
 					$value = $tp->text_truncate($value, $parms['truncate'], '...');
