@@ -219,7 +219,7 @@ class e_online
 				{
 					e107::lan('core','banlist',true);//e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_banlist.php'
 					$reason = e107::getParser()->lanVars(BANLAN_78,$row['online_pagecount']); //  str_replace('--HITS--',$row['online_pagecount'], BANLAN_78)
-					
+
 					if (true === e107::getIPHandler()->add_ban(2, $reason, $ip,0))
 					{
 						e107::getEvent()->trigger('flood', $ip); //BC
