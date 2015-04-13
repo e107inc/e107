@@ -534,12 +534,15 @@ class userlogin
 
 		e107::getMessage()->addError(LOGINMESSAGE);	
 
-		if ($doCheck)
-		{		// See if ban required (formerly the checkibr() function)
-			if($pref['autoban'] == 1 || $pref['autoban'] == 3)
-			{ // Flood + Login or Login Only.
+		if ($doCheck) // See if ban required (formerly the checkibr() function)
+		{
+			if($pref['autoban'] == 1 || $pref['autoban'] == 3) // Flood + Login or Login Only.
+			{
 				$fails = $sql->count("generic", "(*)", "WHERE gen_ip='{$this->userIP}' AND gen_type='failed_login' ");
-				if($fails > 10)
+
+				$failLimit = vartrue($pref['failed_login_limit'],10);
+
+				if($fails >= $failLimit)
 				{
 					$time = time();
 					e107::getIPHandler()->add_ban(4,LAN_LOGIN_18,$this->userIP,1);
@@ -548,7 +551,7 @@ class userlogin
 				}
 			}
 		}
-		return FALSE;		// Passed back to signal failed login
+		return false;		// Passed back to signal failed login
 	}
 
 

@@ -2006,6 +2006,13 @@ $text .= "
 						</td>
 					</tr>
 					<tr>
+						<td><label for='failed-login-limit'>Maximum failed logins before ban:</label></td>
+						<td>
+							".$frm->number('failed_login_limit', varset($pref['failed_login_limit'],10), 3, array('max'=>10, 'min'=>0))."
+							<div class='smalltext field-help'>Failed logins from the same IP will be banned after this many attempts.</div>
+						</td>
+					</tr>
+					<tr>
 						<td><label for='adminpwordchange'>".PRFLAN_139.":</label></td>
 						<td>
 							".$frm->radio_switch('adminpwordchange', $pref['adminpwordchange'])."
