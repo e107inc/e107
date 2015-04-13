@@ -44,6 +44,19 @@ require_once(e_HANDLER.'iphandler_class.php');		// This is probably already load
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
+e107::js('footer-inline', "
+
+		$('#useip').click(function (event) {
+
+			var id = $(this).attr('data-ip');
+			$('#banlist-ip').val(id);
+			event.preventDefault();
+		});
+
+
+");
+
+
 
 class banlist_admin extends e_admin_dispatcher
 {
@@ -148,6 +161,14 @@ class banlist_ui extends e_admin_ui
 					$this->listQry = "SELECT * FROM `#banlist` WHERE banlist_bantype = 100 ";
 				}
 
+
+				if($this->getAction() == 'create')
+				{
+					$myip = e107::getIPHandler()->getIP(true);
+					$this->fields['banlist_ip']['writeParms']['rightCellClass']  = 'form-inline';
+					$this->fields['banlist_ip']['writeParms']['pre'] = "<div class='input-append'>";
+					$this->fields['banlist_ip']['writeParms']['post'] = "<button class='btn btn-primary' id='useip' data-ip='{$myip}'>Use My IP</button></div>"; // USERIP;
+				}
 
 			}
 
@@ -390,7 +411,7 @@ class banlist_form_ui extends e_admin_form_ui
 				}
 				elseif($this->getController()->getAction() == 'create')
 				{
-					return $this->hidden('banlist_bantype',eIPHandler::BAN_TYPE_MANUAL)."<span class='label label-important'>Blacklist entry</span>"; //TODO LAN 
+					return $this->hidden('banlist_bantype',eIPHandler::BAN_TYPE_MANUAL)."<span class='label label-important'>Blacklist entry</span>"; //TODO LAN
 				}
 
 

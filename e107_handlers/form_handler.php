@@ -3692,7 +3692,7 @@ class e_form
 			break;
 
 			case 'ip':
-				$ret =  $this->text($key, e107::getIPHandler()->ipDecode($value), 32, $parms);
+				$ret = vartrue($parms['pre']).$this->text($key, e107::getIPHandler()->ipDecode($value), 32, $parms).vartrue($parms['post']);
 			break;
 
 			case 'email':
@@ -4435,12 +4435,17 @@ class e_form
 				}
 				else 
 				{
+
+					$leftCellClass = (!empty($writeParms['leftCellClass'])) ? " class='".$writeParms['leftCellClass']."'" : "";
+					$rightCellClass = (!empty($writeParms['rightCellClass'])) ? " class='".$writeParms['rightCellClass']."'" : "";
+
+
 					$text .= "
 					<tr>
-						<td>
+						<td{$leftCellClass}>
 							".$leftCell."
 						</td>
-						<td>
+						<td{$rightCellClass}>
 							".$rightCell."
 						</td>
 					</tr>
