@@ -468,7 +468,7 @@ class news_admin_ui extends e_admin_ui
 	public function afterUpdate($new_data, $old_data, $id)
 	{
 		$this->processPings();
-		e107::getMessage()->addInfo(print_a($new_data,true));
+
 		e107::getEvent()->trigger('newsupd', $new_data);
 		e107::getEvent()->trigger('admin_news_updated',$new_data);
 

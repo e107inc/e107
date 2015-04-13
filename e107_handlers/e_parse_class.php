@@ -506,7 +506,7 @@ class e_parse extends e_parser
 
 
 
-		if (MAGIC_QUOTES_GPC == TRUE && $nostrip == FALSE)
+		if (MAGIC_QUOTES_GPC == true && $nostrip == false)
 		{
 			$data = stripslashes($data);
 		}
@@ -524,10 +524,10 @@ class e_parse extends e_parser
 
 				$data = urldecode($data); // symptom of cleaning the HTML - urlencodes src attributes containing { and } .eg. {e_BASE}
 			}
-			else
+			else // caused double-encoding of '&'
 			{
-				$data = str_replace('<','&lt;',$data);
-				$data = str_replace('>','&gt;',$data);
+				//$data = str_replace('<','&lt;',$data);
+				//$data = str_replace('>','&gt;',$data);
 			}
 
 			if (!check_class($core_pref->get('post_html', e_UC_MAINADMIN)))
@@ -552,9 +552,6 @@ class e_parse extends e_parser
 		}
 
 
-		//TODO Determine if the code below is still useful.
-
-
 		if ($no_encode === TRUE && strpos($mod, 'no_html') === FALSE)
 		{
 			$search = array('$', '"', "'", '\\', '<?');
@@ -563,8 +560,10 @@ class e_parse extends e_parser
 		}
 		else
 		{
+
 			$data = htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
 			$data = str_replace('\\', '&#092;', $data);
+
 
 			$ret = preg_replace("/&amp;#(\d*?);/", "&#\\1;", $data);
 		}
@@ -3305,6 +3304,19 @@ TMPL;
 		echo "</h3>";
 
 	    print_a($dbText);
+
+
+	    if(!empty($advanced))
+	    {
+			echo "<div class='alert alert-warning'>";
+		    $dbText2 = $tp->toDB($text, true, false, 'no_html');
+		    echo "<h3>User-input &gg; toDb(\$text, true, false, 'no_html')</h3>";
+		    print_a($dbText2);
+
+
+		    echo "</div>";
+
+	    }
 
 	    echo "<h3>toDB() &gg; toHtml()</h3>";
 		$html = $tp->toHtml($dbText,true);
