@@ -1395,10 +1395,10 @@ class media_admin_ui extends e_admin_ui
 
 			if(!empty($searchQry))
 			{
-				if(substr($searchQry,0,6) == 'video:') // YouTube video code?
+				if(substr($searchQry,0,6) == 'video:' || substr($searchQry,0,2) == 'v=') // YouTube video code?
 				{
 				//	return "video: ".$searchQry;
-					$searchQry = trim(substr($searchQry,6));
+					$searchQry = (substr($searchQry,0,2) == 'v=') ? trim(substr($searchQry,2)) : trim(substr($searchQry,6));
 					$data = array();
 					$data['entry'][0]['id'] =  $searchQry;
 					$data['entry'][0]['title'] = "Specified Video";
@@ -1414,9 +1414,6 @@ class media_admin_ui extends e_admin_ui
 				//	return print_a($plData,true);
 
 					$code = $this->getYouTubeCode( $plData['entry'][0]['link'][0]['@attributes']['href']);
-
-
-				//	return print_a($searchQry,true);
 
 					if(!empty($plData))
 					{
@@ -1440,12 +1437,17 @@ class media_admin_ui extends e_admin_ui
 			else
 			{
 
-				$defaultAccount = e107::pref('core','youtube_default_account','e107inc');
+				$defaultAccount = e107::pref('core','youtube_default_account');
+				if(empty($defaultAccount))
+				{
+					$defaultAccount = 'e107inc';
+				}
+
 				$feed = "https://gdata.youtube.com/feeds/api/users/".$defaultAccount."/uploads";
 				$extension = 'youtube';
 			}
 
-
+		//return print_a($feed,true);
 
 			if(!empty($feed) && empty($data))
 			{
