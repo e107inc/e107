@@ -296,7 +296,7 @@ if(deftrue('NEW_FORUMADMIN'))
 			$sql = e107::getDb();
 			$parentOrder = $sql->retrieve('forum','forum_order','forum_id='.$new_data['forum_parent']." LIMIT 1");
 
-			$new_data['forum_order'] = $parentOrder + 1;
+			$new_data['forum_order'] = $parentOrder + 50;
 			return $new_data;
 		}
 
