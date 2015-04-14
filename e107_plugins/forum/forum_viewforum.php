@@ -348,7 +348,7 @@ if (count($threadList) )
 }
 else
 {
-	$forum_view_forum .= "<tr><td class='forumheader' colspan='6'>".LAN_FORUM_1008."</td></tr>";
+	$forum_view_forum .= "<tr><td class='forumheader alert alert-warning alert-block' colspan='6'>".LAN_FORUM_1008."</td></tr>";
 }
 
 $fVars->FORUMJUMP = forumjump();
@@ -363,6 +363,9 @@ if($container_only)
 
 $forum_view_start = $tp->simpleParse($FORUM_VIEW_START, $fVars);
 $forum_view_end = $tp->simpleParse($FORUM_VIEW_END, $fVars);
+
+
+
 
 if ($forum->prefs->get('enclose'))
 {	
