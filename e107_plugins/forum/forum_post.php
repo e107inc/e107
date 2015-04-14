@@ -358,7 +358,9 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 					require_once(e_PLUGIN."forum/templates/forum_posted_template.php");
 				}
 			}
-	
+
+
+		//	$FORUMTHREADPOSTED
 			
 
 

@@ -2853,7 +2853,7 @@ class e_form
 		if(vartrue($attributes['inline'])) $parms['editable'] = true; // attribute alias
 		if(vartrue($attributes['sort'])) $parms['sort'] = true; // attribute alias
 		
-		if(vartrue($parms['type'])) // Allow the use of a different type in readMode. eg. type=method.
+		if(!empty($parms['type'])) // Allow the use of a different type in readMode. eg. type=method.
 		{
 			$attributes['type'] = $parms['type'];	
 		}
@@ -3312,7 +3312,10 @@ class e_form
 				{
 					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 
-					$array = e107::getUserClass()->uc_required_class_list(); //XXX Ugly looking (non-standard) function naming - TODO discuss name change. 
+					$uc_options = vartrue($parms['classlist'], 'public,guest,nobody,member,admin,main,classes'); // defaults to 'public,guest,nobody,member,classes' (userclass handler)
+					unset($parms['classlist']);
+
+					$array = e107::getUserClass()->uc_required_class_list($uc_options); //XXX Ugly looking (non-standard) function naming - TODO discuss name change.
 					$source = str_replace('"',"'",json_encode($array, JSON_FORCE_OBJECT));
 					
 					//NOTE Leading ',' required on $value; so it picks up existing value.
@@ -3934,7 +3937,7 @@ class e_form
 				unset($parms['classlist']);
 			//	$method = ($attributes['type'] == 'userclass') ? 'uc_select' : 'uc_select';
 				if(vartrue($attributes['type']) == 'userclasses'){ $parms['multiple'] = true; }
-				$ret =  $this->uc_select($key, $value, $uc_options, vartrue($parms, array()));
+				$ret =   vartrue($parms['pre']).$this->uc_select($key, $value, $uc_options, vartrue($parms, array())). vartrue($parms['post']);
 			break;
 
 			/*case 'user_name':
@@ -3973,6 +3976,7 @@ class e_form
 
 			case 'bool':
 			case 'boolean':
+
 				if(varset($parms['label']) === 'yesno')
 				{
 					$lenabled = 'LAN_YES';
@@ -3984,13 +3988,13 @@ class e_form
 					$ldisabled = vartrue($parms['disabled'], 'LAN_DISABLED');
 				}
 				unset($parms['enabled'], $parms['disabled'], $parms['label']);
-				$ret =  $this->radio_switch($key, $value, defset($lenabled, $lenabled), defset($ldisabled, $ldisabled),$parms);
+				$ret =  vartrue($parms['pre']).$this->radio_switch($key, $value, defset($lenabled, $lenabled), defset($ldisabled, $ldisabled),$parms).vartrue($parms['post']);
 			break;
 
 			case "checkbox":
 
 				$value = (isset($parms['value'])) ? $parms['value'] : $value;
-				$ret =  $this->checkbox($key, 1, $value,$parms);
+				$ret =  vartrue($parms['pre']).$this->checkbox($key, 1, $value,$parms).vartrue($parms['post']);
 			break;
 
 			case 'method': // Custom Function
