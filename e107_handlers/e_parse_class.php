@@ -491,7 +491,7 @@ class e_parse extends e_parser
 	 * @return string
 	 * @todo complete the documentation of this essential method
 	 */
-	public function toDB($data, $nostrip = FALSE, $no_encode = FALSE, $mod = FALSE, $original_author = FALSE)
+	public function toDB($data, $nostrip =false, $no_encode = false, $mod = false, $original_author = false)
 	{
 		$core_pref = e107::getConfig();
 		if (is_array($data))
@@ -516,13 +516,13 @@ class e_parse extends e_parser
 
 			$data = $this->preFilter($data); // used by bb_xxx.php toDB() functions. bb_code.php toDB() allows us to properly bypass HTML cleaning below. 
 
-		//	if(strlen($data) != strlen(strip_tags($data))) // html tags present. // strip_tags doesn't look for close '>'.
-			if(strpos($data,'[html]') !== false || preg_match('#(?<=<)\w+(?=[^<]*?>)#', $data))
+		//	if(strlen($data) != strlen(strip_tags($data))) // html tags present. // strip_tags()  doesn't function doesnt look for unclosed '>'.
+			if((strpos($data,'[html]') !== false || preg_match('#(?<=<)\w+(?=[^<]*?>)#', $data)) && strpos($mod, 'no_html') === false)
 			{
 				$this->isHtml = true;
 				$data = $this->cleanHtml($data); // sanitize all html.
-
 				$data = urldecode($data); // symptom of cleaning the HTML - urlencodes src attributes containing { and } .eg. {e_BASE}
+
 			}
 			else // caused double-encoding of '&'
 			{
@@ -532,9 +532,10 @@ class e_parse extends e_parser
 
 			if (!check_class($core_pref->get('post_html', e_UC_MAINADMIN)))
 			{
-				$data = strip_tags($data); // remove tags from cleaned html. 
-				$data = str_replace(array('[html]','[/html]'),'',$data); 
+				$data = strip_tags($data); // remove tags from cleaned html.
+				$data = str_replace(array('[html]','[/html]'),'',$data);
 			}
+
 
 			//  $data = html_entity_decode($data, ENT_QUOTES, 'utf-8');	// Prevent double-entities. Fix for [code]  - see bb_code.php toDB();
 		}
@@ -543,22 +544,22 @@ class e_parse extends e_parser
 
 		if (check_class($core_pref->get('post_html'))) /*$core_pref->is('post_html') && XXX preformecd by cleanHtml() */
 		{
-			$no_encode = TRUE;
+			$no_encode = true;
 		}
 				
 		if (is_numeric($original_author) && !check_class($core_pref->get('post_html'), '', $original_author))
 		{
-			$no_encode = FALSE;
+			$no_encode = false;
 		}
 
 
-		if ($no_encode === TRUE && strpos($mod, 'no_html') === FALSE)
+		if ($no_encode === true && strpos($mod, 'no_html') === false)
 		{
 			$search = array('$', '"', "'", '\\', '<?');
 			$replace = array('&#036;', '&quot;', '&#039;', '&#092;', '&lt;?');
 			$ret = str_replace($search, $replace, $data);
 		}
-		else
+		else // add entities for everything. we want to save the code.
 		{
 
 			$data = htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
@@ -569,7 +570,7 @@ class e_parse extends e_parser
 		}
 		
 		// XXX - php_bbcode has been deprecated. 
-		if ((strpos($mod, 'no_php') !== FALSE) || !check_class($core_pref->get('php_bbcode')))
+		if ((strpos($mod, 'no_php') !== false) || !check_class($core_pref->get('php_bbcode')))
 		{
 			$ret = preg_replace("#\[(php)#i", "&#91;\\1", $ret);
 		}

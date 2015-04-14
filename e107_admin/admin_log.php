@@ -581,6 +581,16 @@ class admin_log_form_ui extends e_admin_form_ui
 					{
 						$val = $tp->lanVars($val, '<b>'.$match[1].'</b>');
 					}
+					else
+					{
+						preg_match("/\[!br!\]TABLE: ([\w]*)/i", $remark, $m);
+						if(!empty($m[1]))
+						{
+							$val = $tp->lanVars($val, '<b>'.$m[1].'</b>');
+						}
+					}
+
+
 				}
 
 				return $val;
