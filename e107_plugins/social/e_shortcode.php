@@ -58,7 +58,7 @@ class social_shortcodes extends e_shortcode
 	{
 							
 		$social = array(
-			'rss'			=> array('href'=> (e107::isInstalled('rss_menu') ? e107::url('rss_menu', 'index', array('rss_url'=>'news')) : ''), 'title'=>'Feed'),
+			'rss'			=> array('href'=> (e107::isInstalled('rss_menu') ? e107::url('rss_menu', 'index', array('rss_url'=>'news')) : ''), 'title'=>'RSS/Atom Feed'),
 			'facebook'		=> array('href'=> deftrue('XURL_FACEBOOK'), 	'title'=>'Facebook'),
 			'twitter'		=> array('href'=> deftrue('XURL_TWITTER'),		'title'=>'Twitter'),
 			'google-plus'	=> array('href'=> deftrue('XURL_GOOGLE'),		'title'=>'Google Plus'),
@@ -83,7 +83,7 @@ class social_shortcodes extends e_shortcode
 			if($data['href'] != '')
 			{
 
-				 $text .= '<a rel="external" href="'.$data['href'].'" class="e-tip social-icon social-'.$id.'">
+				 $text .= '<a rel="external" href="'.$data['href'].'" class="e-tip social-icon social-'.$id.'" title="'.$data['title'].'">
 				 	<span class="fa fa-'.$id.' '.$class.'"></span>
 				 </a>';
 				 

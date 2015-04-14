@@ -192,8 +192,9 @@ $LAYOUT['_footer_'] = '<hr>
 
 			<div>
 				<div class="col-lg-6">
-
+					{MENU=105}
 					{NAVIGATION=footer}
+					{MENU=106}
 				</div>
 				<div class="col-lg-6 text-right">
 					{XURL_ICONS: size=2x}
@@ -203,7 +204,7 @@ $LAYOUT['_footer_'] = '<hr>
 
 			<div>
 				<div class="col-lg-12">
-					{MENU=105}
+					{MENU=107}
 				</div>
 			</div>
 

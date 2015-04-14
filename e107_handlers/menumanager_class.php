@@ -1236,21 +1236,25 @@ class e_menuManager {
 			$ns->setStyle($style);
 
 		}
-		elseif(strstr($str, "SITENAME"))
+		/*elseif(strstr($str, "SITENAME"))
 		{
 			echo "[SiteName]";
-		}
-		elseif(strstr($str, "SITETAG"))
+		}*/
+		/*elseif(strstr($str, "SITETAG"))
 		{
 			echo "<div style='padding: 2px'>[SiteTag]</div>";
-		}
-		elseif(strstr($str, "SITELINKS"))
-		{
-			echo "[SiteLinks]";
-		}
+		}*/
+	//	elseif(strstr($str, "SITELINKS"))
+	//	{
+	//		echo "[SiteLinks]";
+	//	}
 		elseif(strstr($str, "NAVIGATION"))
 		{
-			echo "[Navigation Area]";
+			echo "<span class='label label-info'>Navigation Area</span>";
+		}
+		elseif(strstr($str, "ALERT"))
+		{
+			//echo "[Navigation Area]";
 		}
 		elseif(strstr($str, "LANGUAGELINKS"))
 		{
@@ -1386,9 +1390,13 @@ class e_menuManager {
 			$ns->tablerender('', $menuText);
 		}
 
-		else if(strstr($str, "SITEDISCLAIMER"))
+	//.	else if(strstr($str, "SITEDISCLAIMER"))
+	//{
+	//		echo "[Sitedisclaimer]";
+	//	}
+		else
 		{
-			echo "[Sitedisclaimer]";
+			echo $tp->parseTemplate($str,true);
 		}
 	}
 	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
