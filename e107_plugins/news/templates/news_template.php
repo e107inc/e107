@@ -89,11 +89,12 @@ $NEWS_TEMPLATE['default']['item'] = '
         	<div class="col-md-8 text-right options">{GLYPH=tags} &nbsp;{NEWSTAGS} &nbsp; {GLYPH=folder-open} &nbsp;{NEWSCATEGORY} </div>
         	</div>
           <hr>
-          {NEWSIMAGE=placeholder}
+          {NEWSIMAGE: item=1}
+
          
           <hr>
           <p class="lead">{NEWSSUMMARY}</p>
-          {NEWSVIDEO}
+          {NEWSVIDEO: item=1}
           {NEWSBODY}
 		  <hr>
 			<div class="options">
