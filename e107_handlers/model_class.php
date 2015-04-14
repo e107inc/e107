@@ -2911,7 +2911,7 @@ class e_admin_model extends e_front_model
 		$sqlQry = $this->toSqlQuery('create');
 		$table = $this->getModelTable();
 
-		$res = $sql->db_Insert($table, $sqlQry, $this->getParam('db_debug', false));
+		$res = $sql->insert($table, $sqlQry, $this->getParam('db_debug', false));
         $this->_db_qry = $sql->getLastQuery();
 		if(!$res)
 		{
@@ -2924,6 +2924,7 @@ class e_admin_model extends e_front_model
 			return false;
 		}
 
+	    e107::getAdminLog()->addSuccess('TABLE: '.$table, false);
 		e107::getAdminLog()->save('ADMINUI_01');
 	//	e107::getAdminLog()->clear()->addSuccess($table,false)->addArray($sqlQry)->save('ADMINUI_01');
 
