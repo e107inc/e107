@@ -158,60 +158,64 @@ $LAYOUT['_header_'] = '
 ';
 
 // applied after every layout. 
-$LAYOUT['_footer_'] = '  <hr>
-<div class="row">
-  {SETSTYLE=default}
-	<footer >
-		<div>
-			<div class="col-lg-6">
-				{MENU=10}
-			</div>
-			<div class="col-lg-6">
-				{MENU=11}
-			</div>
-		</div>
+$LAYOUT['_footer_'] = '<hr>
+</div> <!-- /container -->
+{SETSTYLE=default}
+<footer>
+	<div class="container">
+		<div class="row">
 
-		<div>
-			<div class="col-sm-12 col-lg-4">
-				{MENU=12}
+			<div>
+				<div class="col-lg-6">
+					{MENU=100}
+				</div>
+				<div class="col-lg-6">
+					{MENU=101}
+				</div>
 			</div>
 
-			<div class="col-sm-12 col-lg-8">
-				{MENU=13}
-			</div>
-		</div>
+			<div>
+				<div class="col-sm-12 col-lg-4">
+					{MENU=102}
+				</div>
 
-		<div >
-			<div class="col-lg-12">
-				{MENU=14}
+				<div class="col-sm-12 col-lg-8">
+					{MENU=103}
+				</div>
 			</div>
-		</div>
 
-		<div>
-			<div class="col-lg-6">
+			<div >
+				<div class="col-lg-12">
+					{MENU=104}
+				</div>
+			</div>
 
-				{NAVIGATION=footer}
-			</div>
-			<div class="col-lg-6 text-right">
-				{XURL_ICONS: size=2x}
-				{BOOTSTRAP_USERNAV: placement=bottom&dir=up}
-			</div>
-		</div>
+			<div>
+				<div class="col-lg-6">
 
-		<div>
-			<div class="col-lg-12">
-				{MENU=15}
+					{NAVIGATION=footer}
+				</div>
+				<div class="col-lg-6 text-right">
+					{XURL_ICONS: size=2x}
+					{BOOTSTRAP_USERNAV: placement=bottom&dir=up}
+				</div>
 			</div>
-		</div>
 
-		<div>
-			<div id="sitedisclaimer" class="col-lg-12 text-center">
-				<small >{SITEDISCLAIMER}</small>
+			<div>
+				<div class="col-lg-12">
+					{MENU=105}
+				</div>
 			</div>
-		</div>
-	</footer>
-</div>	
-    </div> <!-- /container -->
+
+			<div>
+				<div id="sitedisclaimer" class="col-lg-12 text-center">
+					<small >{SITEDISCLAIMER}</small>
+				</div>
+			</div>
+
+		</div>	 <!-- /row -->
+	</div> <!-- /container -->
+</footer>
 ';
 
 
@@ -247,6 +251,43 @@ $LAYOUT['jumbotron_home'] =  <<<TMPL
 	  {MENU=6}
 	  {MENU=7}
       </div>
+      {SETSTYLE=default}
+      <div class="row" >
+			<div>
+				<div class="col-lg-6">
+					{MENU=8}
+				</div>
+				<div class="col-lg-6">
+					{MENU=9}
+				</div>
+			</div>
+
+			<div>
+				<div class="col-sm-12 col-lg-4">
+					{MENU=10}
+				</div>
+
+				<div class="col-sm-12 col-lg-8">
+					{MENU=11}
+				</div>
+			</div>
+
+			<div>
+				<div class="col-sm-12 col-lg-8">
+					{MENU=12}
+				</div>
+
+				<div class="col-sm-12 col-lg-4">
+					{MENU=13}
+				</div>
+			</div>
+
+			<div >
+				<div class="col-lg-12">
+					{MENU=14}
+				</div>
+			</div>
+	 </div>
 TMPL;
 
 //TODO Add {GALLERY_PORTFOLIO}  to portfolio_menu.php 
@@ -412,8 +453,45 @@ $LAYOUT['jumbotron_sidebar_right'] =  '
 	
 	</div>
     <div class="container">
-      
+           {SETSTYLE=default}
+      <div class="row" >
+			<div>
+				<div class="col-lg-6">
+					{MENU=2}
+				</div>
+				<div class="col-lg-6">
+					{MENU=3}
+				</div>
+			</div>
 
+			<div>
+				<div class="col-sm-12 col-lg-4">
+					{MENU=4}
+				</div>
+
+				<div class="col-sm-12 col-lg-8">
+					{MENU=5}
+				</div>
+			</div>
+
+			<div>
+				<div class="col-sm-12 col-lg-8">
+					{MENU=6}
+				</div>
+
+				<div class="col-sm-12 col-lg-4">
+					{MENU=7}
+				</div>
+			</div>
+
+			<div >
+				<div class="col-lg-12">
+					{MENU=8}
+				</div>
+			</div>
+	 </div>
+	 </div>
+  <div class="container">
 	';
 
 
