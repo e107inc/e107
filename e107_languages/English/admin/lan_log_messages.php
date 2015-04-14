@@ -382,5 +382,7 @@ define("LAN_AL_ADMINUI_02", "Admin-UI DB Table Update: [x]");
 define("LAN_AL_ADMINUI_03", "Admin-UI DB Table Delete: [x]");
 define("LAN_AL_ADMINUI_04", "Admin-UI DB Error: [x]");
 
+define("LAN_AL_BACKUP", "Database backup");
+
 
 ?>

@@ -1867,7 +1867,7 @@ require_once (e_ADMIN."footer.php");
  * Handle page DOM within the page header
  *
  * @return string JS source
- */
+ *//*
 function headerjs()
 {
 	require_once(e_HANDLER.'js_helper.php');
@@ -1880,6 +1880,6 @@ function headerjs()
 	";
 
 	return $ret;
-}
+}*/
 
 ?>
