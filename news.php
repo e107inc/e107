@@ -832,8 +832,12 @@ else
 		
 		// Set the Values for the social shortcode usage. 
 		$socialArray = array('url'=>e107::getUrl()->create('news/view/item', $news, 'full=1'), 'title'=>$tp->toText($news['news_title']));
-		e107::getScBatch('social')->setVars($socialArray);
-		
+		$socialObj = e107::getScBatch('social');
+
+		if(is_object($socialObj))
+		{
+			$socialObj->setVars($socialArray);
+		}
 		
 		
 		if(function_exists("news_style")) // BC
