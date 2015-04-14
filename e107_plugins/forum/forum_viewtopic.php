@@ -78,15 +78,20 @@ if(isset($_POST['track_toggle']))
 	exit;
 }
 
-if(isset($_GET['f']))
+if(!empty($_GET['f']))
 {
-	$ret = $thread->processFunction();
-	if($ret) {
+	$retext = $thread->processFunction();
+
+	if($retext)
+	{
 		require_once(HEADERF);
-		echo $ret;
+	//	e107::getMessage()->addWarning($retext);
+	//	echo e107::getmessage()->render();
+		echo $retext;
 		require_once(FOOTERF);
 		exit;
 	}
+
 	if($_GET['f'] != 'last') { $thread->init(); }
 }
 
@@ -664,15 +669,22 @@ class e107ForumThread
 		}
 	}
 
+	/**
+	 * @return bool|null|string|void
+	 */
 	function processFunction()
 	{
+
+
+
 		global $forum, $thread;
-		$e107 = e107::getInstance();
+	//	$e107 = e107::getInstance();
 		$ns = e107::getRender();
 		$sql = e107::getDb();
 		$tp = e107::getParser();
-		
-		if (!isset($_GET['f']))
+		$frm = e107::getForm();
+
+		if (empty($_GET['f']))
 		{
 			return;
 		}
@@ -685,7 +697,7 @@ class e107ForumThread
 				$postInfo = $forum->postGet($postId,'post');
 				$postNum = $forum->postGetPostNum($postInfo['post_thread'], $postId);
 				$postPage = ceil($postNum / $forum->prefs->get('postspage'));
-				$url = $e107->url->create('forum/thread/view', array('id' => $postInfo['post_thread'], 'name' => $postInfo['thread_name'], 'page' => $postPage), 'full=1&encode=0');
+				$url = e107::getUrl()->create('forum/thread/view', array('id' => $postInfo['post_thread'], 'name' => $postInfo['thread_name'], 'page' => $postPage), 'full=1&encode=0');
 				header('location: '.$url);
 				exit;
 				break;
@@ -699,7 +711,7 @@ class e107ForumThread
 				$next = $forum->threadGetNextPrev('next', $this->threadId, $this->threadInfo['forum_id'], $this->threadInfo['thread_lastpost']);
 				if ($next)
 				{
-					$url = $e107->url->create('forum/thread/view', array('id' => $next), array('encode' => false, 'full' => 1)); // no thread name info at this time
+					$url = e107::getUrl()->create('forum/thread/view', array('id' => $next), array('encode' => false, 'full' => 1)); // no thread name info at this time
 					header("location: {$url}");
 					exit;
 				}
@@ -710,7 +722,7 @@ class e107ForumThread
 				$prev = $forum->threadGetNextPrev('prev', $this->threadId, $this->threadInfo['forum_id'], $this->threadInfo['thread_lastpost']);
 				if ($prev)
 				{
-					$url = $e107->url->create('forum/thread/view', array('id' => $prev), array('encode' => false, 'full' => 1));// no thread name info at this time
+					$url = e107::getUrl()->create('forum/thread/view', array('id' => $prev), array('encode' => false, 'full' => 1));// no thread name info at this time
 					header("location: {$url}");
 					exit;
 				}
@@ -722,10 +734,11 @@ class e107ForumThread
 				$postId 	= (int)$_GET['post'];
 				$postInfo 	= $forum->postGet($postId, 'post');
 
-				if(isset($_POST['report_thread']))
+				if(!empty($_POST['report_thread']))
 				{
 					$report_add = $tp->toDB($_POST['report_add']);
-					if($forum->prefs->get('reported_post_email'))
+
+					if($forum->prefs->get('reported_post_email')) // todo Use e_NOTIFY.
 					{
 						require_once(e_HANDLER.'mail.php');
 						$report = LAN_FORUM_2018." ".SITENAME." : ".(substr(SITEURL, -1) == "/" ? SITEURL : SITEURL."/") . $e107->getFolder('plugins') . "forum/forum_viewtopic.php?" . $this->threadId . ".post\n
@@ -734,37 +747,103 @@ class e107ForumThread
 						sendemail(SITEADMINEMAIL, $subject, $report);
 					}
 					// no reference of 'head' $threadInfo['head']['thread_name']
-					$sql->insert('generic', "0, 'reported_post', " . time() . ", '" . USERID . "', '{$this->threadInfo['thread_name']}', " . intval($this->threadId) . ", '{$report_add}'");
+
+					$insert = array(
+						'gen_id'        =>	0,
+						'gen_type'      =>	'reported_post',
+						'gen_datestamp' =>	time(),
+						'gen_user_id'   =>	USERID,
+						'gen_ip'        =>	$tp->toDB($postInfo['thread_name']),
+						'gen_intdata'   =>	intval($this->threadId),
+						'gen_chardata'  =>	$report_add,
+
+
+
+					);
+
+					$url = e107::getUrl()->create('forum/thread/post', array('id' => $postId, 'name' => $postInfo['thread_name'], 'thread' => $threadId)); // both post info and thread info contain thread name
+
+					$result = $sql->insert('generic', $insert);
+
+					if($result)
+					{
+						$text = "<div class='alert alert-block alert-success'><h4>".LAN_FORUM_2021 . "</h4><a href='{$url}'>".LAN_FORUM_2022.'</a></div>';
+					}
+					else
+					{
+						$text = "<div class='alert alert-block alert-error'><h4>".LAN_FORUM_2021 . "</h4><a href='{$url}'>".LAN_FORUM_2022.'</a></div>';
+					}
+
 					define('e_PAGETITLE', LAN_FORUM_1001 . " / " . LAN_FORUM_2021);
-					$url = $e107->url->create('forum/thread/post', array('id' => $postId, 'name' => $postInfo['thread_name'], 'thread' => $threadId)); // both post info and thread info contain thread name
-					$text = LAN_FORUM_2021 . "<br /><br /><a href='{$url}'>".LAN_FORUM_2022.'</a>';
-					return $ns->tablerender(LAN_FORUM_2023, $text, array('forum_viewtopic', 'report'), false);
+
+					return $ns->tablerender(LAN_FORUM_2023, $text, array('forum_viewtopic', 'report'), true);
 				}
 				else
 				{
 					$thread_name = e107::getParser()->toHTML($postInfo['thread_name'], true, 'no_hook, emotes_off');
 					define('e_PAGETITLE', LAN_FORUM_1001.' / '.LAN_FORUM_2024.': '.$thread_name);
-					$url = $e107->url->create('forum/thread/post', array('id' => $postId, 'name' => $postInfo['thread_name'], 'thread' => $threadId));
-					$actionUrl = $e107->url->create('forum/thread/report', "id={$threadId}&post={$postId}");
-					$text = "<form action='".$actionUrl."' method='post'>
-					<table style='width:100%'>
-					<tr>
-						<td  style='width:50%'>
-						".LAN_FORUM_2025.': '.$thread_name." <a href='".$url."'><span class='smalltext'>".LAN_FORUM_2026."</span></a>
-						</td>
-						<td style='text-align:center;width:50%'></td>
-					</tr>
-					<tr>
-						<td>".LAN_FORUM_2027."<br />".str_replace(array('[', ']'), array('<b>', '</b>'), LAN_FORUM_2028)."</td>
-					</tr>
-					<tr>
-						<td style='text-align:center;'><textarea cols='40' rows='10' class='tbox' name='report_add'></textarea></td>
-					</tr>
-					<tr>
-						<td colspan='2' style='text-align:center;'><br /><input class='btn btn-default button' type='submit' name='report_thread' value='".LAN_FORUM_2029."' /></td>
-					</tr>
-					</table>";
-					return e107::getRender()->tablerender(LAN_FORUM_2023, $text, array('forum_viewtopic', 'report2'), false);
+					$url = e107::getUrl()->create('forum/thread/post', array('id' => $postId, 'name' => $postInfo['thread_name'], 'thread' => $threadId));
+					$actionUrl = e107::getUrl()->create('forum/thread/report', "id={$threadId}&post={$postId}");
+
+
+					if(deftrue('BOOTSTRAP')) //v2.x
+					{
+						$text = $frm->open('forum-report-thread','post');
+						$text .= "
+							<div>
+								<div class='alert alert-block alert-warning'>
+								<h4>".LAN_FORUM_2025.': '.$thread_name."</h4>
+									".LAN_FORUM_2027."<br />".str_replace(array('[', ']'), array('<b>', '</b>'), LAN_FORUM_2028)."
+								<a class='pull-right btn btn-xs btn-primary e-expandit' href='#post-info'>View Post</a>
+								</div>
+								<div id='post-info' class='e-hideme alert alert-block alert-danger'>
+									".$tp->toHtml($postInfo['post_entry'],true)."
+								</div>
+								<div class='form-group' >
+									<div class='col-md-12'>
+								".$frm->textarea('report_add','',10,35,array('size'=>'xxlarge'))."
+									</div>
+								</div>
+								<div class='form-group'>
+									<div class='col-md-12'>
+									".$frm->button('report_thread',1,'submit',LAN_FORUM_2029)."
+									</div>
+								</div>
+
+							</div>";
+
+						$text .= $frm->close();
+					//	$text .= print_a($postInfo['post_entry'],true);
+
+					}
+					else //v1.x legacy layout.
+					{
+						$text = "<form action='".$actionUrl."' method='post'>
+						<table class='table' style='width:100%'>
+						<tr>
+							<td  style='width:50%'>
+							".LAN_FORUM_2025.': '.$thread_name." <a href='".$url."'><span class='smalltext'>".LAN_FORUM_2026."</span></a>
+							</td>
+							<td style='text-align:center;width:50%'></td>
+						</tr>
+						<tr>
+							<td>".LAN_FORUM_2027."<br />".str_replace(array('[', ']'), array('<b>', '</b>'), LAN_FORUM_2028)."</td>
+						</tr>
+						<tr>
+							<td style='text-align:center;'><textarea cols='40' rows='10' class='tbox' name='report_add'></textarea></td>
+						</tr>
+						<tr>
+							<td colspan='2' style='text-align:center;'><br /><input class='btn btn-default button' type='submit' name='report_thread' value='".LAN_FORUM_2029."' /></td>
+						</tr>
+						</table>
+						</form>";
+
+
+
+					}
+
+
+					return e107::getRender()->tablerender(LAN_FORUM_2023, $text, array('forum_viewtopic', 'report2'), true);
 				}
 
 				exit;
