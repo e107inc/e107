@@ -94,6 +94,24 @@ class user_class
 		$this->readTree(TRUE);			// Initialise the classes on entry
 	}
 
+
+	/**
+	 * Take a key value such as 'member' and return it's numerical value.
+	 * @param $text
+	 * @return bool
+	 */
+	public function getClassFromKey($text)
+	{
+		if(isset($this->text_class_link[$text]))
+		{
+			return $this->text_class_link[$text];
+		}
+
+		return false;
+	}
+
+
+
 	/**
  	*  Return value of isAdmin
  	*/

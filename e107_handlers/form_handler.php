@@ -1783,6 +1783,12 @@ class e_form
 			$name .= '[]';
 		}
 
+		if(empty($current_value) && !empty($uc_options)) // make the first in the opt list the default value.
+		{
+			$tmp = explode(",", $uc_options);
+			$current_value =  e107::getUserClass()->getClassFromKey($tmp[0]);
+		}
+
 		return $this->select_open($name, $select_options)."\n".$this->_uc->vetted_tree($name, array($this, '_uc_select_cb'), $current_value, $uc_options, $opt_options)."\n".$this->select_close();
 	}
 
