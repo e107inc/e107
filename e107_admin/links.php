@@ -83,7 +83,7 @@ class links_admin_ui extends e_admin_ui
 		'link_name'	   		=> array('title'=> LCLAN_15,		'width'=>'auto','type'=>'text', 'inline'=>true, 'required' => true, 'validate' => true),
 	    'link_category'     => array('title'=> LAN_TEMPLATE,    'type' => 'dropdown', 'inline'=>true, 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
     
-    	'link_parent' 		=> array('title'=> 'Sublink of', 	'type' => 'method', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
+    	'link_parent' 		=> array('title'=> 'Sublink of', 	'type' => 'method', 'data'=>'int', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
 		'link_url'	   		=> array('title'=> LAN_URL, 		'width'=>'auto', 'type'=>'method', 'inline'=>true, 'required'=>true,'validate' => true, 'writeParms'=>'size=xxlarge'),
 		'link_sefurl' 		=> array('title'=> LAN_SEFURL, 		'type' => 'method', 'inline'=>false, 'width' => 'auto', 'help'=>'Enable to override URL with a dynamically created Search-Engine-Friendly URL'), //TODO LAN
 		'link_class' 		=> array('title'=> LAN_USERCLASS, 	'type' => 'userclass','inline'=>true, 'writeParms' => 'classlist=public,guest,nobody,member,classes,admin,main', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
