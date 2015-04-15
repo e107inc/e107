@@ -12,7 +12,11 @@ class social_admin
 	function __construct()
 	{
 		$pref = e107::pref('core','social_login');
-		$this->twitterActive = vartrue($pref['Twitter']['keys']['key']);
+
+		if(!empty($pref))
+		{
+			$this->twitterActive = vartrue($pref['Twitter']['keys']['key']);
+		}
 	}
 
 
