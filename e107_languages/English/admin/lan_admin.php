@@ -341,6 +341,9 @@ define("LAN_CATEGORIES", "Categories");
 define("LAN_DEMO_FORBIDDEN", "Changes on this page are not possible in demo mode.");
 define("LAN_COPYRIGHT", "Copyright");
 
+
+define("LAN_PREVIEW", "Preview");
+
 define("LAN_CREATE_CATEGORY", "Create Category");
 define("LAN_CREATE_ITEM",	"Create Item");
 
