@@ -54,69 +54,69 @@ if (e_QUERY)
 	unset($tmp);
 }
 
-// TODO $_POST['up_x'] check for the evil IE
-$tmp = isset($_POST['up']) ? $_POST['up'] : false;
-if ($tmp)
-{
-	$tmp = array_values($tmp);
-	$qs = explode(".", $tmp[0]);
-	$_id = intval($qs[0]);
-	$_order = intval($qs[1]);
-	$_parent = intval($qs[2]); 
+
+if ($action == "up") {
+  $qs = explode(".", e_QUERY);
+  $_id = intval($qs[1]);
+	$_order = intval($qs[2]);
+	$_parent = intval($qs[3]);
 	if (($_id > 0) && ($_order > 0) /*&& ($_parent > 0)*/)
 	{
 		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_order ='".($_order-1)."'");
 		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_id='".$_id."'");
 		e107::getLog()->add('EUF_01',$_id.', '.$_order.', '.$_parent,E_LOG_INFORMATIVE,'');
 		e107::getCache()->clear_sys('user_extended_struct', true);
+		header("location:".e_SELF);
+		exit;
 	}
 }
 
-// TODO $_POST['down_x'] check for the evil IE
-$tmp = isset($_POST['down']) ? $_POST['down'] : false;
-if ($tmp)
-{
-	$tmp = array_values($tmp);
-	$qs = explode(".", $tmp[0]);
-	$_id = intval($qs[0]);
-	$_order = intval($qs[1]);
-	$_parent = intval($qs[2]);
-	if (($_id > 0) && ($_order > 0)/* && ($_parent > 0)*/)
+
+if ($action == "down") {
+  $qs = explode(".", e_QUERY);
+  $_id = intval($qs[1]);
+	$_order = intval($qs[2]);
+	$_parent = intval($qs[3]);
+	if (($_id > 0) && ($_order >= 0) /*&& ($_parent > 0)*/)
 	{
 		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_order='".($_order+1)."'");
 		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_id='".$_id."'");
 		e107::getLog()->add('EUF_02',$_id.', '.$_order.', '.$_parent,E_LOG_INFORMATIVE,'');
 		e107::getCache()->clear_sys('user_extended_struct', true);
+		header("location:".e_SELF);
+		exit;
 	}
 }
 
 
-if (isset($_POST['catup_x']) || isset($_POST['catup']))
-{
-	$qs = explode(".", $_POST['id']);
-	$_id = intval($qs[0]);
-	$_order = intval($qs[1]);
+if ($action == "catup") {
+  $qs = explode(".", e_QUERY);
+  $_id = intval($qs[1]);
+	$_order = intval($qs[2]);
 	if (($_id > 0) && ($_order > 0))
 	{
 		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type = 0 AND user_extended_struct_order='".($_order-1)."'");
 		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type = 0 AND user_extended_struct_id='".$_id."'");
 		e107::getLog()->add('EUF_03',$_id.', '.$_order,E_LOG_INFORMATIVE,'');
 		e107::getCache()->clear_sys('user_extended_struct', true);
+		header("location:".e_SELF."?cat");
+		exit;
 	}
 }
 
 
-if (isset($_POST['catdown_x']) || isset($_POST['catdown']))
-{
-	$qs = explode(".", $_POST['id']);
-	$_id = intval($qs[0]);
-	$_order = intval($qs[1]);
-	if (($_id > 0) && ($_order > 0))
+if ($action == "catdown") {
+  $qs = explode(".", e_QUERY);
+  $_id = intval($qs[1]);
+	$_order = intval($qs[2]);
+	if (($_id > 0) && ($_order >= 0))
 	{
 		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type = 0 AND user_extended_struct_order='".($_order+1)."'");
 		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type = 0 AND user_extended_struct_id='".$_id."'");
 		e107::getLog()->add('EUF_04',$_id.', '.$_order,E_LOG_INFORMATIVE,'');
 		e107::getCache()->clear_sys('user_extended_struct', true);
+		header("location:".e_SELF."?cat");
+		exit;
 	}
 }
 
@@ -479,14 +479,13 @@ class users_ext
 							<td>".r_userclass_name($ext['user_extended_struct_read'])."</td>
 							<td>".r_userclass_name($ext['user_extended_struct_write'])."</td>
 							<td>";
-
-						  	if($i > 0)
-						  	{
-						 		$text .= "<input type='image' alt='' title='".EXTLAN_26."' src='".ADMIN_UP_ICON_PATH."' name='up[$id]' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />";
+					  	if($i > 0)
+					  	{
+						 		$text .= "<a class='btn' style='text-decoration:none' href='".e_SELF."?up.{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}'>".ADMIN_UP_ICON."</a>";
 							}
 							if($i <= count($extendedList[$cn])-2)
 							{
-								$text .= "<input type='image' alt='' title='".EXTLAN_25."' src='".ADMIN_DOWN_ICON_PATH."' name='down[$id]' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />";
+                $text .= "<a class='btn' style='text-decoration:none' href='".e_SELF."?down.{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}'>".ADMIN_DOWN_ICON."</a>";
 							}
 							$text .= "
 						  	</td>
@@ -903,12 +902,14 @@ class users_ext
 				if($i > 0)
 				{
 					$text .= "
-					<input type='image' alt='' title='".EXTLAN_26."' src='".ADMIN_UP_ICON_PATH."' name='catup' value='{$ext['user_extended_struct_id']}.{$i}' />
+          <a class='btn' style='text-decoration:none' href='".e_SELF."?catup.{$ext['user_extended_struct_id']}.{$i}'>".ADMIN_UP_ICON."</a>
 					";
 				}
 				if($i <= count($catList)-2)
 				{
-					$text .= "<input type='image' alt='' title='".EXTLAN_25."' src='".ADMIN_DOWN_ICON_PATH."' name='catdown' value='{$ext['user_extended_struct_id']}.{$i}' />";
+          $text .= "
+          <a class='btn' style='text-decoration:none' href='".e_SELF."?catdown.{$ext['user_extended_struct_id']}.{$i}'>".ADMIN_DOWN_ICON."</a>
+          ";
 				}
 				$text .= "
 				</div>

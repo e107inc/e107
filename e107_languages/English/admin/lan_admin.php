@@ -223,6 +223,8 @@ define("LAN_UPDATE","Update");
 define("LAN_ADD", "Add");
 define("LAN_SAVE","Save");
 define("LAN_SAVED","Saved");
+define("LAN_UP","Move up");
+define("LAN_DOWN","Move down");
 define("LAN_SETSAVED","Your settings have been saved");
 define("LAN_NOCHANGE_NOTSAVED", "Nothing changed - not saved");
 define("LAN_CONFIRMDEL","Please confirm you wish to delete");
