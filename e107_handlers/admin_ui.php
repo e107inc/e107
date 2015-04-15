@@ -2278,6 +2278,8 @@ class e_admin_controller
 //FIXME - move everything from e_admin_ui except model auto-create related code
 class e_admin_controller_ui extends e_admin_controller
 {
+
+	protected $table;
 	/**
 	 * @var array UI field data
 	 */
@@ -3957,10 +3959,24 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 		}
 
+	//	$model->addMessageDebug(print_a($_posted,true));
+	//	$model->addMessageDebug(print_a($this,true));
+
+		// - Autoincrement sortField on 'Create'.
+
+		if(($_posted['etrigger_submit'] == 'Create') && !empty($this->sortField) && empty($this->sortParent) && empty($_posted[$this->sortField])  )
+		{
+
+			$incVal = e107::getDb()->max($this->table, $this->sortField) + 1;
+			$_posted[$this->sortField] = $incVal;
+		//	$model->addMessageInfo(print_a($_posted,true));
+		}
+
 
 		// Trigger Admin-ui event.  'pre'
 		if($triggerName = $this->getEventTriggerName($_posted['etrigger_submit'])) // 'create' or 'update'; 
 		{
+
 			$eventData = array('newData'=>$_posted,'oldData'=>$old_data,'id'=> $id);
 			if(E107_DBG_ALLERRORS >0 )
 			{
@@ -3976,7 +3992,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 
 		// Scenario I - use request owned POST data - toForm already executed
-		$model->setPostedData($_posted, null, false, false)
+		$model->setPostedData($_posted, null, false, false) // insert() or update() dbInsert();
 			->save(true);
 			
 			
