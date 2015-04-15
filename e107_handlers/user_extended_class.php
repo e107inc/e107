@@ -452,6 +452,11 @@ class e107_user_extended
 
 
 	// Return the field creation text for a definition
+	/**
+	 * @param $type
+	 * @param $default
+	 * @return bool|string
+	 */
 	function user_extended_type_text($type, $default)
 	{
 	  $tp = e107::getParser();
@@ -468,7 +473,7 @@ class e107_user_extended
 		  break;
 
 		case EUF_DATE :
-		  $db_type = 'DATE NOT NULL';
+		  $db_type = 'DATE';
 		  break;
 
 		case EUF_TEXTAREA:

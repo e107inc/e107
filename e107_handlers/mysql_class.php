@@ -2343,6 +2343,7 @@ class e_db_mysql
 				case 'pkey' :
 				case 'ukey' :
 				case 'key' :
+				case 'ftkey' :
 					break;			// Do nothing with keys for now
 				default :
 					echo "Unexpected field type: {$k} => {$v['type']}<br />";
