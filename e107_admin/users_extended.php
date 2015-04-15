@@ -25,7 +25,445 @@ if (isset($_POST['cancel_cat']))
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+
+	include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+
+
+	function js()
+	{
+
+		//FIXME
+		include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_extended.php");
+		$text = "
+
+
+		function changeHelp(type) {
+	 //<![CDATA[
+		var ftype;
+		var helptext;
+
+
+		";
+		for($i=1; $i<=9; $i++)
+		{
+			$type_const = "UE_LAN_{$i}";
+			$help_const = "\"".str_replace("/","\/","EXTLAN_HELP_{$i}")."\"";
+			$text .= "
+				if(type == \"{$i}\")
+				{
+					xtype=\"".defset($type_const)."\";
+					what=\"".defset($help_const)."\";
+				}";
+		}
+
+		$text .= "
+		//	document.getElementById('ue_type').innerHTML=''+xtype+'';
+		//	document.getElementById('ue_help').innerHTML=''+what+'';
+
+			if(type == 4){
+				document.getElementById('db_mode').style.display = '';
+				document.getElementById('values').style.display = 'none';
+			}else{
+	            document.getElementById('values').style.display = '';
+				document.getElementById('db_mode').style.display = 'none';
+			}
+			   // ]]>
+		}
+
+
+";
+
+		return $text;
+	}
+
+
+	e107::js('inline', js());
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if(E107_DEBUG_LEVEL > 0)
+{
+
+
+
+	class user_extended_adminArea extends e_admin_dispatcher
+	{
+
+		protected $modes = array(
+
+			'main'	=> array(
+				'controller' 	=> 'user_extended_struct_ui',
+				'path' 			=> null,
+				'ui' 			=> 'user_extended_struct_form_ui',
+				'uipath' 		=> null
+			),
+
+
+		);
+
+
+		protected $adminMenu = array(
+
+			'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
+			'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
+
+			// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
+		);
+
+		protected $adminMenuAliases = array(
+			'main/edit'	=> 'main/list'
+		);
+
+		protected $menuTitle = 'user_extended';
+	}
+
+
+
+
+
+	class user_extended_struct_ui extends e_admin_ui
+	{
+
+		protected $pluginTitle		= 'user_extended';
+		protected $pluginName		= 'user_extended';
+		//	protected $eventName		= 'user_extended-user_extended_struct'; // remove comment to enable event triggers in admin.
+		protected $table			= 'user_extended_struct';
+		protected $pid				= 'user_extended_struct_id';
+		protected $perPage			= 10;
+		protected $batchDelete		= true;
+		//	protected $batchCopy		= true;
+		//	protected $sortField		= 'somefield_order';
+		//	protected $orderStep		= 10;
+		//	protected $tabs				= array('Tabl 1','Tab 2'); // Use 'tab'=>0  OR 'tab'=>1 in the $fields below to enable.
+
+		protected $listQry      	= "SELECT * FROM `#user_extended_struct` WHERE user_extended_struct_type != 0 AND user_extended_struct_text != '_system_'  "; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
+
+		protected $listOrder		= 'user_extended_struct_order ASC';
+
+		protected $fields 		= array (  'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
+		             'user_extended_struct_id' =>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		             'user_extended_struct_name' =>   array ( 'title' => LAN_NAME, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => 'pre=user_', 'class' => 'left', 'thclass' => 'left',  ),
+		             'user_extended_struct_text' =>   array ( 'title' => EXTLAN_79, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => 'constant=1', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		             'user_extended_struct_type' =>   array ( 'title' => EXTLAN_2, 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		             'user_extended_struct_values' =>   array ( 'title' => LAN_VALUES, 'type' => 'method', 'nolist'=>true, 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+
+		             'user_extended_struct_parent' =>   array ( 'title' => LAN_CATEGORY, 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		             'user_extended_struct_required' =>   array ( 'title' => EXTLAN_4, 'type' => 'boolean', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		             'user_extended_struct_applicable' =>   array ( 'title' => EXTLAN_5, 'type' => 'userclass', 'data' => 'int', 'width' => '10%', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+
+
+		             'user_extended_struct_parms' =>   array ( 'title' => LAN_PARMS, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		              'user_extended_struct_default' =>   array ( 'title' => LAN_DEFAULT, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		              'user_extended_struct_read' =>   array ( 'title' =>EXTLAN_6, 'type' => 'userclass', 'data' => 'int', 'width' => '10%', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		              'user_extended_struct_write' =>   array ( 'title' => 'Write Access', 'type' => 'userclass', 'data' => 'int', 'width' => '10%', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		              'user_extended_struct_signup' =>   array ( 'title' => 'Signup', 'type' => 'boolean', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		               'user_extended_struct_order' =>   array ( 'title' => LAN_ORDER, 'type' => 'number', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		               'options' =>   array ( 'title' => LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1', 'readParms'=>'sort=1' ),
+		);
+
+		protected $fieldpref = array('user_extended_struct_name', 'user_extended_struct_text', 'user_extended_struct_type', 'user_extended_struct_read', 'user_extended_struct_write', 'user_extended_struct_required', 'user_extended_struct_applicable');
+
+
+		protected $prefs = array(
+		);
+
+
+		public function init()
+		{
+			// Set drop-down values (if any).
+
+			if($this->getAction() == 'edit' || $this->getAction() == 'create')
+			{
+				$this->fields['user_extended_struct_type']['title'] = LAN_TYPE;
+			}
+
+			$this->fields['user_extended_struct_parent']['writeParms'] = array('user_extended_struct_parent_0','user_extended_struct_parent_1', 'user_extended_struct_parent_2'); // Example Drop-down array.
+
+		}
+
+
+		// ------- Customize Create --------
+
+		public function beforeCreate($new_data)
+		{
+			return $new_data;
+		}
+
+		public function afterCreate($new_data, $old_data, $id)
+		{
+			// do something
+		}
+
+		public function onCreateError($new_data, $old_data)
+		{
+			// do something
+		}
+
+
+		// ------- Customize Update --------
+
+		public function beforeUpdate($new_data, $old_data, $id)
+		{
+			return $new_data;
+		}
+
+		public function afterUpdate($new_data, $old_data, $id)
+		{
+			// do something
+		}
+
+		public function onUpdateError($new_data, $old_data, $id)
+		{
+			// do something
+		}
+
+
+		/*
+			// optional - a custom page.
+			public function customPage()
+			{
+				$ns = e107::getRender();
+				$text = 'Hello World!';
+				return $text;
+
+			}
+		*/
+
+	}
+
+
+
+	class user_extended_struct_form_ui extends e_admin_form_ui
+	{
+
+
+		// Custom Method/Function
+		function user_extended_struct_type($curVal,$mode)
+		{
+			$frm = e107::getForm();
+
+			switch($mode)
+			{
+				case 'read': // List Page
+					$ext = $this->getController()->getListModel()->getData();
+					return e107::getUserExt()->user_extended_edit($ext,$uVal);
+				//	reutrn e107::getParser()>toHTML(deftrue($ext['user_extended_struct_text'], $ext['user_extended_struct_text']), FALSE, "defs")
+					break;
+
+				case 'write': // Edit Page
+					$text = "<select onchange='changeHelp(this.value)' class='tbox e-select' name='user_type' id='user_type'>";
+					foreach(e107::getUserExt()->user_extended_types as $key => $val)
+					{
+						$selected = ($curVal == $key) ? " selected='selected'": "";
+						$text .= "<option value='".$key."' $selected>".$val."</option>";
+					}
+
+					if(empty($curVal))
+					{
+						$curtype = '1';
+					}
+					$text .= "
+				</select>";
+					return $text;
+					break;
+
+				case 'filter':
+				case 'batch':
+					return  array();
+					break;
+			}
+		}
+
+
+
+
+
+
+
+		// Custom Method/Function
+		function user_extended_struct_values($curVal,$mode)
+		{
+			$frm = e107::getForm();
+
+			switch($mode)
+			{
+				case 'read': // List Page
+					return $curVal;
+					break;
+
+				case 'write': // Edit Page
+					return $this->renderStructValues($curVal);
+					break;
+
+				case 'filter':
+				case 'batch':
+					return  array();
+					break;
+			}
+		}
+
+
+
+		function renderStructValues($curVal)
+		{
+			$sql = e107::getDb();
+
+			$current = $this->getController()->getModel()->getData();
+
+			$val_hide = ($current['user_extended_struct_type'] != 4) ? "visible" : "none";
+
+			$text = "<div id='values' style='display:$val_hide'>\n";
+			$text .= "<div id='value_container' >\n";
+			$curVals = explode(",",varset($current['user_extended_struct_values']));
+			if(count($curVals) == 0)
+			{
+				$curVals[]='';
+			}
+			$i=0;
+			foreach($curVals as $v)
+			{
+				$id = $i ? "" : " id='value_line'";
+				$i++;
+				$text .= "
+				<span {$id}>
+				<input class='tbox' type='text' name='user_values[]' size='40' value='{$v}' /></span><br />";
+			}
+			$text .= "
+			</div>
+			<input type='button' class='btn btn-primary' value='".EXTLAN_48."' onclick=\"duplicateHTML('value_line','value_container');\"  />
+			<br /><span class='field-help'>".EXTLAN_17."</span></div>";
+// End of Values. --------------------------------------
+
+
+
+
+			$db_hide = ($current['user_extended_struct_type'] == 4) ? "visible" : "none";
+
+			$text .= "<div id='db_mode' style='display:$db_hide'>\n";
+			$text .= "<table style='width:70%;margin-left:0px'><tr><td>";
+			$text .= EXTLAN_62."</td><td style='70%'><select style='width:99%' class='tbox e-select' name='table_db' onchange=\"this.form.submit()\" >
+            <option value='' class='caption'>".EXTLAN_61."</option>\n";
+			$result = mysql_list_tables($mySQLdefaultdb);
+
+			while ($row2 = mysql_fetch_row($result))
+			{
+				$fld = str_replace(MPREFIX,"",$row2[0]);
+				$selected =  (varset($_POST['table_db'],'') == $fld || $curVals[0] == $fld) ? " selected='selected'" : "";
+				if (MPREFIX!='' && strpos($row2[0], MPREFIX)!==FALSE)
+				{
+					$text .= "<option value=\"".$fld."\" $selected>".$fld."</option>\n";
+				}
+			}
+			$text .= " </select></td></tr>";
+
+			if($_POST['table_db'] || $curVals[0])
+			{
+				// Field ID
+				$text .= "<tr><td>".EXTLAN_63."</td><td><select style='width:99%' class='tbox e-select' name='field_id' >\n
+			<option value='' class='caption'>".EXTLAN_61."</option>\n";
+				$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
+
+				if($sql->gen("DESCRIBE ".MPREFIX."{$table_list}"))
+				{
+					while($row3 = $sql->fetch())
+					{
+						$field_name=$row3['Field'];
+						$selected =  ($curVals[1] == $field_name) ? " selected='selected' " : "";
+						$text .="<option value=\"$field_name\" $selected>".$field_name."</option>\n";
+					}
+				}
+				$text .= " </select></td></tr><tr><td>";
+				// Field Value
+				$text .= EXTLAN_64."</td><td><select style='width:99%' class='tbox e-select' name='field_value' >
+			<option value='' class='caption'>".EXTLAN_61."</option>\n";
+				$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
+
+				if($sql->gen("DESCRIBE ".MPREFIX."{$table_list}"))
+				{
+					while($row3 = $sql->fetch())
+					{
+						$field_name=$row3['Field'];
+						$selected =  ($curVals[2] == $field_name) ? " selected='selected' " : "";
+						$text .="<option value=\"$field_name\" $selected>".$field_name."</option>\n";
+					}
+				}
+				$text .= " </select></td></tr><tr><td>";
+
+				$text .= LAN_ORDER."</td><td><select style='width:99%' class='tbox e-select' name='field_order' >
+			<option value='' class='caption'>".EXTLAN_61."</option>\n";
+				$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
+
+				if($sql ->gen("DESCRIBE ".MPREFIX."{$table_list}"))
+				{
+					while($row3 = $sql->fetch())
+					{
+						$field_name=$row3['Field'];
+						$selected =  ($curVals[3] == $field_name) ? " selected='selected' " : "";
+						$text .="<option value=\"$field_name\" $selected>".$field_name."</option>\n";
+					}
+				}
+				$text .= " </select></td></tr>";
+
+			}
+			$text .= "</table></div>";
+// ---------------------------------------------------------
+
+			return $text;
+
+
+		}
+
+	} // end class.
+
+
+
+
+
+
+
+
+
+
+
+
+
+	new user_extended_adminArea();
+
+	require_once(e_ADMIN."auth.php");
+	e107::getAdminUI()->runPage();
+
+	require_once(e_ADMIN."footer.php");
+
+
+
+
+
+
+	exit;
+
+}
+
+
+// -------------------------------------- Old Code --------------------------------------
+
+
+
+
 
 $e_sub_cat = 'user_extended';
 
@@ -634,6 +1072,10 @@ class users_ext
 			<input type='button' class='btn btn-primary' value='".EXTLAN_48."' onclick=\"duplicateHTML('value_line','value_container');\"  />
 			<br /><span class='field-help'>".EXTLAN_17."</span></div>";
 // End of Values. --------------------------------------
+
+
+
+
        		$db_hide = ($current['user_extended_struct_type'] == 4) ? "visible" : "none";
 
 			$text .= "<div id='db_mode' style='display:$db_hide'>\n";
@@ -702,6 +1144,12 @@ class users_ext
      	}
         $text .= "</table></div>";
 // ---------------------------------------------------------
+
+
+
+
+
+
 			$text .= "
 			</td>
 			</tr>
@@ -1267,47 +1715,5 @@ class users_ext
 		}
 	}
 
-function headerjs()
-{
 
-	//FIXME
-	include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_extended.php");
-	$text = "
-	<script type='text/javascript'>
-
-	function changeHelp(type) {
-	 //<![CDATA[
-		var ftype;
-		var helptext;
-		";
-		for($i=1; $i<=9; $i++)
-		{
-			$type_const = "UE_LAN_{$i}";
-			$help_const = "\"".str_replace("/","\/","EXTLAN_HELP_{$i}")."\"";
-			$text .= "
-			if(type == \"{$i}\")
-			{
-				xtype=\"".defset($type_const)."\";
-				what=\"".defset($help_const)."\";
-			}";
-		}
-		$text .= "
-		document.getElementById('ue_type').innerHTML=''+xtype+'';
-		document.getElementById('ue_help').innerHTML=''+what+'';
-
-		if(type == 4){
-			document.getElementById('db_mode').style.display = '';
-			document.getElementById('values').style.display = 'none';
-		}else{
-            document.getElementById('values').style.display = '';
-			document.getElementById('db_mode').style.display = 'none';
-		}
-		   // ]]>
-	}
-
-
-	</script>";
-
-	echo $text;
-}
 ?>
