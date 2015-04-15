@@ -1557,6 +1557,31 @@ class e_db_mysql
 		return $list;
 	}
 
+
+
+
+	/**
+	 * Return the maximum value for a given table/field
+	 * @param $table (without the prefix)
+	 * @param $field
+	 * @param string $where (optional)
+	 * @return bool|resource
+	 */
+	public function max($table, $field, $where='')
+	{
+		$qry = "SELECT MAX(".$field.") FROM `".$this->mySQLPrefix.$table."` ";
+
+		if(!empty($where))
+		{
+			$qry .= "WHERE ".$where;
+		}
+
+		return $this->retrieve($qry);
+
+	}
+
+
+
 	/**
 	* @return integer
 	* @desc returns total number of queries made so far
