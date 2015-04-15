@@ -1,7 +1,7 @@
 CREATE TABLE faqs (
   faq_id int(10) unsigned NOT NULL auto_increment,
   faq_parent int(10) unsigned NOT NULL default '0',
-  faq_question mediumtext NOT NULL,
+  faq_question text NOT NULL,
   faq_answer text NOT NULL,
   faq_comment tinyint(1) unsigned NOT NULL default '0',
   faq_datestamp int(10) unsigned NOT NULL default '0',

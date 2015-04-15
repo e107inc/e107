@@ -56,14 +56,14 @@
 			$link = $tp->replaceConstants("{e_PLUGIN}faqs/admin_config.php?searchquery=&filter_options=faq_author__0&mode=main&action=list", 'full');
 
 			$eml = array(
-					'subject' 		=> "Unuanswered Question as of ".date('d-M-Y')." ",
+					'subject' 		=> count($existing)." Unuanswered Question as of ".date('d-M-Y')." ",
 				//	'sender_email'	=> $email,
 					'sender_name'	=> SITENAME . " Automation",
 			//		'replyto'		=> $email,
 					'html'			=> true,
 					'template'		=> 'default',
 					'body'			=> "
-							<h2>Unuanswered Questions at ".SITENAME."</h2>To answer these questions, please login to ".SITENAME." and then <a href='{$link}'>click here</a>.<br />
+							<h2>".count($existing)." Unuanswered Questions at ".SITENAME."</h2>To answer these questions, please login to ".SITENAME." and then <a href='{$link}'>click here</a>.<br />
 							<ul><li>".implode("</li><li>",$questions)."</li></ul>"
 				);
 
