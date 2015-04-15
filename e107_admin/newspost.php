@@ -191,8 +191,8 @@ class news_sub_ui extends e_admin_ui
 			'submitnews_category' 		=> array('title'=> LAN_CATEGORY,		'type' => 'dropdown',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),		
 		//	'submitnews_item' 			=> array('title'=> LAN_DESCRIPTION,		'type' => 'method',			'width' => 'auto', 'thclass' => 'left','readParms' => 'expand=...&truncate=150&bb=1', 'readonly'=>TRUE),
 			'submitnews_name' 			=> array('title'=> LAN_AUTHOR,			'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),
-       		'submitnews_ip' 			=> array('title'=> "IP",			'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),			
-			'submitnews_auth' 			=> array('title'=> "User",			'type' => 'user',			'width' => 'auto', 'thclass' => 'left', 'class'=> 'left' ),										
+       		'submitnews_ip' 			=> array('title'=> "IP",			'type' => 'ip',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),
+			'submitnews_auth' 			=> array('title'=> " ",			'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'class'=> 'left', 'readParms'=>"link=1" ),
 			'options' 					=> array('title'=> LAN_OPTIONS,			'type' => "method",				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'right')
 		);
 
@@ -341,6 +341,8 @@ class news_admin_ui extends e_admin_ui
 	protected $batchDelete 	= true;
 	protected $batchCopy 	= true;
     protected $batchLink    = true;
+	protected $listQry      = "SELECT n.*,u.user_id,u.user_name FROM `#news` AS n LEFT JOIN `#user` AS u ON n.news_author = u.user_id "; // without any Order or Limit.
+
 	protected $listOrder	= "news_id desc";
 	// true for 'vars' value means use same var
 
@@ -355,8 +357,7 @@ class news_admin_ui extends e_admin_ui
 	); // 'link' only needed if profile not provided. 
     
 		
-	protected $listQry = "SELECT n.*,u.user_id,u.user_name FROM #news AS n LEFT JOIN #user AS u ON n.news_author = u.user_id "; // without any Order or Limit.
-		
+
 		
 	protected $fields = array(
 		'checkboxes'	   		=> array('title' => '', 			'type' => null, 		'width' => '3%', 	'thclass' => 'center first', 	'class' => 'center', 	'nosort' => true, 'toggle' => 'news_selected', 'forced' => TRUE),
@@ -372,7 +373,7 @@ class news_admin_ui extends e_admin_ui
 		'news_sef'				=> array('title' => LAN_SEFURL, 	'type' => 'text',       'tab'=>1,  'writeParms'=>'size=xxlarge',	'inline'=>true, 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 		'news_ping'				=> array('title' => 'Ping', 	    'type' => 'checkbox',   'tab'=>1, 'data'=>false, 'writeParms'=>'value=0',	'inline'=>true, 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 
-		'news_author'			=> array('title' => LAN_AUTHOR, 	'type' => 'method', 	'tab'=>0, 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
+		'news_author'			=> array('title' => LAN_AUTHOR, 	'type' => 'method', 	'tab'=>0, 	'readParms'=>'idField=user_id&nameField=user_name', 'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 		'news_datestamp'		=> array('title' => LAN_NEWS_32, 	'type' => 'datestamp',  'tab'=>2,   'writeParms'=>'type=datetime', 'data' => 'int',   'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y', 'filter'=>true),
         'news_category'			=> array('title' => NWSLAN_6, 		'type' => 'dropdown',   'tab'=>0,	'data' => 'int', 'inline'=>true,	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'batch'=>true, 'filter'=>true),
 		'news_start'			=> array('title' => "Starting", 	'type' => 'datestamp',  'tab'=>2,   'writeParms'=>'type=datetime',	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),
@@ -1154,9 +1155,24 @@ class news_form_ui extends e_admin_form_ui
 	function news_author($curVal, $mode)
 	{
 
+
+
+
 		$pref = e107::pref('core');
 		$sql = e107::getDb();
 		$frm = e107::getForm();
+
+
+		if($mode == 'read')
+		{
+			$row = $this->getController()->getListModel()->getData();
+			// $att = $this->getController()->getFieldAttr('news_author');
+		//	$att = array('readParms'=> array(['__idval']=>$row['user_id'idField=user_id&nameField=user_name');
+			return $row['user_name'];
+		}
+
+
+
 		$text = "";
 
 		if(!getperms('0') && !check_class($pref['news_editauthor']))
