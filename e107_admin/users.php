@@ -265,6 +265,11 @@ class users_admin_ui extends e_admin_ui
 		{
 			$this->fields['user_class']['noedit'] = true; 	
 		}
+
+
+
+
+
 		
 		// Extended fields - FIXME - better field types
 		
@@ -296,7 +301,27 @@ class users_admin_ui extends e_admin_ui
 		}	
 				
 		$this->fields['user_image']['writeParms'] = $this->getAvatarList();
-		
+
+		if(!empty($_GET['readonly']))
+		{
+			foreach($this->fields as $key=>$v)
+			{
+				if($key == 'options' || $key == 'checkboxes')
+				{
+					continue;
+				}
+
+				$this->fields[$key]['readonly'] = 2;
+
+			}
+		}
+	//	print_a($this->fields);
+		if(!empty($_GET['iframe']))
+		{
+			define('e_IFRAME', true);
+		}
+
+
 		//FIXME - handle user extended search...
 		//$this->_alias_parsed = false;
 		//$this->parseAliases();
@@ -2016,7 +2041,7 @@ class users_admin_form_ui extends e_admin_form_ui
 	{
 		if($mode == 'read')
 		{
-			$uid = $this->getController()->getListModel()->get('user_id');	
+			$uid = $this->getController()->getModel()->get('user_id');
 			return e107::getUserPerms()->renderPerms($curval,$uid);		
 		}
 		if($mode == 'write')

@@ -3405,9 +3405,12 @@ class e_form
 				}
 
 
-				if(vartrue($parms['link']) && $id && $ttl && is_numeric($id))
+				if(!empty($parms['link']) && $id && $ttl && is_numeric($id))
 				{
-					$value = '<a href="'.e107::getUrl()->create('user/profile/view', array('id' => $id, 'name' => $ttl)).'" title="Go to user profile">'.$ttl.'</a>';
+					// Stay in admin area.
+					$link = e_ADMIN."users.php?mode=main&action=edit&id=".$id."&readonly=1&iframe=1"; // e107::getUrl()->create('user/profile/view', array('id' => $id, 'name' => $ttl))
+
+					$value = '<a class="e-modal" data-modal-caption="User #'.$id.' : '.$ttl.'" href="'.$link.'" title="Go to user profile">'.$ttl.'</a>';
 				}
 				else
 				{
