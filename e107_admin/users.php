@@ -358,9 +358,11 @@ class users_admin_ui extends e_admin_ui
 		$update = array();
 		foreach($this->extended as $key) // Grab Extended field data. 
 		{
-		 	$update[$key] = ($new_data[$key]);	
+		 	$update[$key] = vartrue($new_data[$key],'_NULL_');
 		}
-		
+
+		e107::getMessage()->addDebug(print_a($update,true));
+
 		if(!empty($update))
 		{
 			if(!e107::getDb()->count('user_extended', '(user_extended_id)', "user_extended_id=".intval($new_data['submit_value'])))
@@ -372,8 +374,13 @@ class users_admin_ui extends e_admin_ui
 				}
 				else
 				{
-					e107::getMessage()->addError('Extended Fields Update Failed');	 	//TODO Replace with Generic or existing LAN. 
+					e107::getMessage()->addError('Extended Fields Insert Failed');	 	//TODO Replace with Generic or existing LAN.
+					$error = e107::getDb()->getLastErrorText();
+					e107::getMessage()->addDebug($error);
 					e107::getMessage()->addDebug(print_a($update,true));
+
+
+					e107::getDb()->getLastErrorText();
 				}
 			}
 			else 
@@ -382,7 +389,9 @@ class users_admin_ui extends e_admin_ui
 			
 				if(e107::getDb()->update('user_extended',$update)===false)
 				{
-					e107::getMessage()->addError('Extended Fields Update Failed');	//TODO Replace with Generic or existing LAN. 
+					e107::getMessage()->addError('Extended Fields Update Failed');	//TODO Replace with Generic or existing LAN.
+					$error = e107::getDb()->getLastErrorText();
+					e107::getMessage()->addDebug($error);
 					e107::getMessage()->addDebug(print_a($update,true));
 				
 				}

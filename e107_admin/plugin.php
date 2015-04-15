@@ -3184,10 +3184,10 @@ TEMPLATE;
 				
 				default:
 					$ret['type'] = 'boolean';
-					$ret['class'] = 'center';
+					$ret['class'] = 'left';
 					$ret['batch'] = false;
 					$ret['filter'] = false;
-					$ret['thclass'] = 'center';
+					$ret['thclass'] = 'left';
 					$ret['width'] = 'auto';
 					$ret['inline'] = false;
 					break;
@@ -3431,7 +3431,7 @@ class ".$table." extends e_admin_ui
 if($_POST['pluginPrefs'] && ($vars['mode']=='main'))
 {
 	$text .= "		
-		protected \$prefs = array(";
+		protected \$prefs = array(\n";
 		
 		foreach($_POST['pluginPrefs'] as $k=>$val)
 		{
@@ -3440,7 +3440,7 @@ if($_POST['pluginPrefs'] && ($vars['mode']=='main'))
 				$index = $val['index'];
 				$type = vartrue($val['type'],'text');
 				
-				$text .= "\n\t\t\t'".$index."'\t\t=> array('title'=> '".ucfirst($index)."', 'type'=>'".$type."', 'data' => 'string','help'=>'Help Text goes here'),";	
+				$text .= "\t\t\t'".$index."'\t\t=> array('title'=> '".ucfirst($index)."', 'type'=>'".$type."', 'data' => 'str','help'=>'Help Text goes here'),\n";
 			}	
 	
 		}
@@ -3462,7 +3462,7 @@ $text .= "
 		{
 			if($v['type'] == 'dropdown')
 			{
-				$text .= "\t\t\t\$this->fields['".$k."']['writeParms'] = array('".$k."_0','".$k."_1', '".$k."_2'); // Example Drop-down array. \n";
+				$text .= "\t\t\t\$this->fields['".$k."']['writeParms']['optArray'] = array('".$k."_0','".$k."_1', '".$k."_2'); // Example Drop-down array. \n";
 			}
 		}
 					
@@ -3514,9 +3514,8 @@ $text .= "
 		// optional - a custom page.  
 		public function customPage()
 		{
-			\$ns = e107::getRender();
 			\$text = 'Hello World!';
-			\$ns->tablerender('Hello',\$text);	
+			return \$text;
 			
 		}
 	*/
@@ -3550,12 +3549,12 @@ $text .= "
 			break;
 			
 			case 'write': // Edit Page
-				return \$frm->text('".$fld."',\$curVal);		
+				return \$frm->text('".$fld."',\$curVal, 255, 'size=large');
 			break;
 			
 			case 'filter':
 			case 'batch':
-				return  \$array; 
+				return  array();
 			break;
 		}
 	}
