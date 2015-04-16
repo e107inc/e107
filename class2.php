@@ -1372,6 +1372,11 @@ function check_class($var, $userclass = USERCLASS_LIST, $uid = 0)
 		return TRUE;
 	}
 
+	if(e107::isCli())
+	{
+		return true;
+	}
+
 	if(is_numeric($uid) && $uid > 0)
 	{	// userid has been supplied, go build that user's class list
 		$userclass = class_list($uid);
