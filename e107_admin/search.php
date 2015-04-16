@@ -168,8 +168,11 @@ if (isset($_POST['update_prefs']))
 	$temp['php_limit'] = intval($_POST['php_limit']);
 	$temp['boundary'] = intval($_POST['boundary']);
 
+	e107::getConfig('search')->updatePref($temp)->save(false,true,false);
+/*
 	if ($admin_log->logArrayDiffs($temp, $search_prefs, 'SEARCH_01'))
 	{
+		e107::getConfig('search')->setPref($temp)->save(false,true);
 	//	$tmp = addslashes(serialize($search_prefs));
 		$tmp = e107::getArrayStorage()->writeArray($search_prefs, true);
 		$check = $sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'");
@@ -184,16 +187,18 @@ if (isset($_POST['update_prefs']))
 			$mes->addError(LAN_ERROR." ".$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
 		}
 	}
-	else $mes->addInfo(LAN_NO_CHANGE);
+	else $mes->addInfo(LAN_NO_CHANGE);*/
 
 	unset($temp);
 	$temp['search_restrict'] = intval($_POST['search_restrict']);
 	$temp['search_highlight'] = intval($_POST['search_highlight']);
-	if ($admin_log->logArrayDiffs($temp, $pref, 'SEARCH_02'))
-	{ //XXX - additional lan search messages
-		save_prefs();
-	}
+
+	e107::getConfig()->setPref($temp)->save(false,true,true);
+
 }
+
+
+
 
 $handlers_total = count($search_prefs['core_handlers']) + count($search_prefs['plug_handlers']);
 
