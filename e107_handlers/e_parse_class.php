@@ -2675,8 +2675,28 @@ class e_parser
     {
         $this->domObj = new DOMDocument();    
     }
-    
-    /**
+
+	/**
+	 * Add Allowed Tags.
+	 * @param string
+	 */
+	public function addAllowedTag($tag)
+	{
+		$this->allowedTags[] = $tag;
+	}
+
+
+	/**
+	 * @param $tag - html tag.
+	 * @param $attArray - array of attributes. eg. array('style', 'id', 'class') etc.
+	 */
+	public function addAllowedAttribute($tag, $attArray)
+	{
+		$this->allowedAttributes[$tag] = (array) $attArray;
+	}
+
+
+	/**
      * Set Allowed Tags. 
      * @param $array 
      */
@@ -3428,7 +3448,7 @@ return;
         
          //   print_a($p); 
     }
- 
+
     
     /**
      * Process and clean HTML from user input.
@@ -3442,8 +3462,9 @@ return;
         if(empty($html)){ return ''; }
 
 		$html = str_replace('&nbsp;', '@nbsp;', $html); // prevent replacement of &nbsp; with spaces.
-        
-        if(preg_match("/<body/i",$html)!==true) // HTML Fragment
+
+
+        if(strpos($html, "<body")===false) // HTML Fragment
 		{
        		$html = '<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html><html><head><meta charset="utf-8"></head><body>'.$html.'</body></html>'; 
 		}
@@ -3470,7 +3491,8 @@ return;
         }
 
 		
-        // Set it up for processing. 
+        // Set it up for processing.
+	//    libxml_use_internal_errors(true); // hides errors.
         $doc  = $this->domObj;   
 
         @$doc->loadHTML($html);
