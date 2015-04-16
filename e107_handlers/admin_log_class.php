@@ -767,7 +767,7 @@ class e_admin_log
 		
 		$dir = e_LOG;
 		
-		if(e_CURRENT_PLUGIN) // If it's a plugin, create a subfolder. 
+		if(deftrue('e_CURRENT_PLUGIN')) // If it's a plugin, create a subfolder.
 		{
 			$dir = e_LOG.e_CURRENT_PLUGIN."/";
 			
