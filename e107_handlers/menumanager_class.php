@@ -1223,11 +1223,11 @@ class e_menuManager {
 
 		$menuLayout = ($this->curLayout != $pref['sitetheme_deflayout']) ? $this->curLayout : "";
 		
-		if(strstr($str, "LOGO"))
-		{
-			echo $tp->parseTemplate("{LOGO}");
-		}
-		elseif(strstr($str, "SETSTYLE"))
+	//	if(strstr($str, "LOGO"))
+	//	{
+	//		echo $tp->parseTemplate("{LOGO}");
+	//	}
+		if(strstr($str, "SETSTYLE"))
 		{
 			$tmp = explode("=", $str);
 			$style = preg_replace("/\{SETSTYLE=(.*?)\}/si", "\\1", $str);
