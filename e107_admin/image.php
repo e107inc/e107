@@ -13,7 +13,7 @@
  *
 */
 
-if($_GET['action'] == 'dialog')
+if(!empty($_GET['action']) && $_GET['action'] == 'dialog')
 {
 	define('e_MINIMAL',true);
 }
@@ -431,7 +431,7 @@ class media_form_ui extends e_admin_form_ui
 	 */
 	public function resizeImage($oldpath,$img_import_w,$img_import_h)
 	{
-		
+		$mes = e107::getMessage();
 		try
 		{
 		    $thumb = PhpThumbFactory::create($oldpath);
@@ -584,7 +584,7 @@ class media_form_ui extends e_admin_form_ui
 			$text = "<input type='button' value='Select' data-placement='left' class='e-media-select e-dialog-save e-dialog-close btn btn-primary btn-large' data-id='{$id}' data-name=\"".$title."\" data-type='file' data-target='{$tagid}' data-bbcode='{$bbcode}' data-path='{$path}' data-preview='{$preview}' title=\"".$title."\"  />";
 		}
 
-		$text .= $this->renderValue('options',$value,'',$id);
+		$text = $this->renderValue('options',$value,'',$id);
 		
 		return "<div class='nowrap'>".$text."</div>";
 		
@@ -1861,7 +1861,7 @@ class media_admin_ui extends e_admin_ui
 		$tp = e107::getParser();
 		$f = e107::getFile()->get_file_info($oldpath,TRUE);
 		
-		$mes->addDebug("checkDupe(): newpath=".$newpath."<br />oldpath=".$oldpath."<br />".print_r($upload,TRUE));
+		$mes->addDebug("checkDupe(): newpath=".$newpath."<br />oldpath=".$oldpath."<br />".print_r($newpath,TRUE));
 		if(file_exists($newpath) || e107::getDb()->db_Select("core_media","*","media_url = '".$tp->createConstants($newpath,'rel')."' LIMIT 1") )
 		{
 			$mes->addWarning($newpath." already exists.");	
@@ -2023,7 +2023,7 @@ class media_admin_ui extends e_admin_ui
 			
 		//	$waterMarkPath = e_THEME.e107::getPref('sitetheme')."/images/watermark.png"; // Now performed site-wide dynamically. 				
 					
-			if(is_readable($waterMarkPath))
+		//	if(is_readable($waterMarkPath))
 			{
 		//		$text .= $frm->checkbox_label("Add Watermark", 'batch_import_watermark',1);
 			}
