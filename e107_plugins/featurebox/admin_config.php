@@ -233,9 +233,8 @@ class fb_main_ui extends e_admin_ui
 	function init()
 	{
 		$categories = array();
-		if(e107::getDb()->db_Select('featurebox_category'))
+		if(e107::getDb()->select('featurebox_category'))
 		{
-			//$categories[0] = LAN_SELECT;
 			while ($row = e107::getDb()->fetch())
 			{
 				$id = $row['fb_category_id'];
@@ -250,8 +249,8 @@ class fb_main_ui extends e_admin_ui
 		
 		unset($menuCat['unassigned']);
 		
-		$this->prefs['menu_category']['writeParms'] 	= $menuCat;
-		$this->prefs['menu_category']['readParms'] 		= $menuCat;
+		$this->prefs['menu_category']['writeParms']['optArray'] 	= $menuCat;
+		$this->prefs['menu_category']['readParms']['optArray'] 		= $menuCat;
 
 	}
 		

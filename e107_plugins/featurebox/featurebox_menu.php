@@ -14,7 +14,7 @@ $text = e107::getParser()->parseTemplate("{FEATUREBOX|".$type."}");
 
 if(!$text)
 {
-	echo "<div class='alert alert-block'>There are no featurebox items assigned to the ".$type." template</div>";
+	echo "<div class='alert alert-block alert-warning'>There are no featurebox items assigned to the ".$type." template</div>";
 //	e107::getMessage()->addDebug("There are no featurebox items using the ".$type." template");
 }
 
