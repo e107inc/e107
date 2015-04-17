@@ -3445,7 +3445,16 @@ class e107
 		define('ADMINDIR', $ADMIN_DIRECTORY);
 
 		define('SITEURLBASE', $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST']);
-		define('SITEURL', SITEURLBASE.e_HTTP);
+
+		if(self::isCli())
+		{
+			define('SITEURL', SITEURLBASE.$_SERVER['DOMAIN'].e_HTTP);
+		}
+		else
+		{
+			define('SITEURL', SITEURLBASE.e_HTTP);
+		}
+
 
 		// login/signup
 		define('e_SIGNUP', SITEURL.(file_exists(e_BASE.'customsignup.php') ? 'customsignup.php' : 'signup.php'));

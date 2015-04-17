@@ -171,7 +171,7 @@ $EMAIL_TEMPLATE['default']['header']		= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHT
 												<meta http-equiv='content-type' content='text/html; charset=utf-8' />
 												<style type='text/css'>
 													body { padding:10px; background-color: #E1E1E1 } 
-													 div#body { padding:10px; width: 800px; background-color: #FFFFFF; border-radius: 5px; font-family: helvetica,arial }
+													 div#body { padding:10px; width: 93%; max-width:800px; background-color: #FFFFFF; border-radius: 5px; font-family: helvetica,arial }
 													.video-thumbnail { max-width: 400px }
 													.media img { max-width:600px }
 												</style>
