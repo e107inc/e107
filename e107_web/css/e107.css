@@ -119,7 +119,7 @@ a.cpage-np.current { text-decoration: none; }
 .image-preview {}
 
 /* BBcode textareas */
-div.bbarea.large, .tbox.large, .helpbox.large { width: 95% !important; }
+div.bbarea.large, .tbox.large, .helpbox.large, .bbcode-panel { width: 95% !important; }
 div.bbarea.medium, .tbox.medium, .helpbox.medium { width: 60% !important; }
 div.bbarea.small, .tbox.small, .helpbox.small { width: 250px !important; }
 

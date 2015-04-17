@@ -24,6 +24,8 @@ if (!isset($pref['subnews_class']))
 	$pref['subnews_class'] = e_UC_MEMBER;
 }
 
+
+
 if (!check_class($pref['subnews_class']))
 {
 	$ns->tablerender(NWSLAN_12, NWSLAN_11);
@@ -136,20 +138,27 @@ if (isset($_POST['submitnews_submit']) && $_POST['submitnews_title'] && $_POST['
 	}
 }
 
+$text = "";
+
 if (!defined("USER_WIDTH")) { define("USER_WIDTH","width:95%"); }
 
-$text = "
-<div style='text-align:center'>
+
+
+	if (!empty($pref['news_subheader']))
+	{
+		$text .= "
+	  <div class='alert alert-block alert-info '>
+	    ".$tp->toHTML($pref['news_subheader'], true, "BODY")."
+	  </div>";
+	}
+
+
+$text .= "
+<div>
   <form id='dataform' method='post' action='".e_SELF."' enctype='multipart/form-data' onsubmit='return frmVerify()'>
     <table class='table fborder'>";
 
-if (!empty($pref['news_subheader']))
-{
-	  $text .= "
-	  <tr>
-	    <td colspan='2' class='forumheader3'>".$tp->toHTML($pref['news_subheader'], TRUE, "TITLE")."<br /></td>
-	  </tr>";
-}
+
 
 if (!USER)
 {
@@ -173,14 +182,14 @@ $text .= "
   <td style='width:20%' class='forumheader3'>".NWSLAN_6.": </td>
 	<td style='width:80%' class='forumheader3'>";
 
-if (!$sql->db_Select("news_category"))
+if (!$sql->select("news_category"))
 {
 	$text .= NWSLAN_10;
 }
 else
 {
 	$text .= "
-		<select name='cat_id' class='tbox'>";
+		<select name='cat_id' class='tbox form-control'>";
 	while (list($cat_id, $cat_name, $cat_icon) = $sql->db_Fetch(MYSQL_NUM))
 	{
 		$sel = (varset($_POST['cat_id'],'') == $cat_id) ? "selected='selected'" : "";
@@ -195,7 +204,7 @@ $text .= "
 <tr>
   <td style='width:20%' class='forumheader3'>".LAN_62."</td>
 	<td style='width:80%' class='forumheader3'>
-    <input class='tbox' type='text' id='submitnews_title' name='submitnews_title' size='60' value='".$tp->toHTML(vartrue($_POST['submitnews_title']),TRUE,'USER_TITLE')."' maxlength='200' style='width:90%' required />
+    <input class='tbox form-control' type='text' id='submitnews_title' name='submitnews_title' size='60' value='".$tp->toHTML(vartrue($_POST['submitnews_title']),TRUE,'USER_TITLE')."' maxlength='200' style='width:90%' required />
 	</td>
 </tr>
 <tr>
@@ -229,6 +238,13 @@ $text .= "
 </div>";
 
 $ns->tablerender(LAN_136, $text);
+
+
+
+	if(!vartrue($pref['subnews_htmlarea'])) // check after bbarea is called.
+	{
+		e107::wysiwyg(false);
+	}
 
 require_once(FOOTERF);
 
