@@ -397,7 +397,7 @@ class frontpage
 					</colgroup>
 					<thead>
 						<tr>
-							<th class='first'>".LAN_ORDER."</th>
+							<th class='first left'>".LAN_ORDER."</th>
 							<th>".FRTLAN_53."</th>
 							<th>".FRTLAN_49."</th>
 							<th>".FRTLAN_35."</th>
@@ -411,14 +411,17 @@ class frontpage
 			$title = e107::getUserClass()->uc_get_classname($current_value['class']);
 			$text .= "
 					<tr>
-						<td class='right'>".$order."</td>
+						<td class='left'>".$order."</td>
 						<td>".$title."</td>
 						<td>".$this->lookup_path($current_value['page'])."</td>
 						<td>".$this->lookup_path($current_value['force'])."</td>
 						<td class='center options last'>
-						<div class='btn-group'>
-							".$frm->admin_button('fp_inc',$order,'up',ADMIN_UP_ICON)."
-							".$frm->admin_button('fp_dec',$order,'down',ADMIN_DOWN_ICON)."
+						<div class='btn-group'>";
+
+					//		".$frm->admin_button('fp_inc',$order,'up',ADMIN_UP_ICON)."
+					//		".$frm->admin_button('fp_dec',$order,'down',ADMIN_DOWN_ICON)."
+
+						$text .= "
 							<a class='btn' title='".LAN_EDIT."' href='".e_SELF."?id=".$order."' >".ADMIN_EDIT_ICON."</a>
 							".$frm->admin_button('fp_delete_rule['.$order.']',$order,'',ADMIN_DELETE_ICON)."					
 						</div>
@@ -496,14 +499,24 @@ class frontpage
 				<div class='tab-pane active' id='home'>
 					<table class='table adminform'>
 						<colgroup>
-							<col style='width: 30%' />
-							<col style='width: 70%' />
+							<col style='width: 20%' />
+							<col style='width: 80%' />
 						</colgroup>
 						<tbody>
-							".$text_tmp_1."
 							<tr>
-								".$this->add_other('frontpage', $is_other_home, $rule_info['page'])."
+							<td>Selection</td>
+							<td>
+								<table class='table table-striped table-bordered'>
+									<colgroup>
+										<col style='width: 20%' />
+										<col style='width: 80%' />
+									</colgroup>
+									".$text_tmp_1."
+									".$this->add_other('frontpage', $is_other_home, $rule_info['page'])."
+								</table>
+							</td>
 							</tr>
+
 						</tbody>
 					</table>
 				</div>
@@ -511,22 +524,44 @@ class frontpage
 				<div class='tab-pane' id='postlogin'>
 					<table class='table adminform'>
 						<colgroup>
-							<col style='width: 30%' />
-							<col style='width: 70%' />
+							<col style='width: 20%' />
+							<col style='width: 80%' />
 						</colgroup>
-						<tbody>
-							".$text_tmp_2."
-							<tr>
+						<tbody><tr>
+							<td></td>
+							<td>
+								<table class='table table-striped table-bordered'>
+								<colgroup>
+									<col style='width: 20%' />
+									<col style='width: 80%' />
+								</colgroup>
+								".$text_tmp_2."
 								".$this->add_other('fp_force_page', $is_other_force, $rule_info['force'])."
+								</table>
+							</td>
 							</tr>
+
 						</tbody>
 					</table>
 				</div>
 			</div>
+			<table class='table adminform'>
+				<colgroup>
+					<col style='width: 20%' />
+					<col style='width: 80%' />
+				</colgroup>
+				<tr>
+					<td>".FRTLAN_43."</td>
+					<td>".e107::getUserClass()->uc_dropdown('class', $rule_info['class'], 'public,guest,member,admin,main,classes')."</td>
+				</tr>
+				<tr>
+					<td>".LAN_ORDER."</td>
+					<td>".$this->frm->number('fp_order', $rule_info['order'], 3, 'min=0')."</td>
+				</tr>
+			</table>
 			
 				<div class='buttons-bar center form-inline'>
-					".$this->frm->hidden('fp_order', $rule_info['order'])."
-					".FRTLAN_43.": ".e107::getUserClass()->uc_dropdown('class', $rule_info['class'], 'public,guest,member,admin,main,classes')."
+
 					".$this->frm->admin_button('fp_save_new', LAN_UPDATE, 'update')."
 					".$this->frm->admin_button('fp_cancel', LAN_CANCEL, 'cancel')."
 				</div>
