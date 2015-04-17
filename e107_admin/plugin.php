@@ -2538,7 +2538,7 @@ class pluginBuilder
 				case 'main-name':
 					$help 		= "The name of your plugin. (Must be written in English)";
 					$required 	= true;
-					$pattern 	= "[A-Za-z0-9 ]*";
+					$pattern 	= "[A-Za-z0-9 -]*";
 					$xsize		= 'medium';
 				break;
 		
