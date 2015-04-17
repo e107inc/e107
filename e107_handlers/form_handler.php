@@ -3170,6 +3170,10 @@ class e_form
 						$ttl = $expand."<button class='btn btn-default btn-mini pull-right'>More..</button>";
 						$ttl1 = "<button class='btn btn-default btn-mini pull-right'>..Less</button>";
 					}
+					else
+					{
+						$ttl1 = null;
+					}
 					
 					$expands = '<a href="#'.$elid.'-expand" class="e-show-if-js e-expandit">'.defset($ttl, $ttl)."</a>";
 					$contracts = '<a href="#'.$elid.'-expand" class="e-show-if-js e-expandit">'.defset($ttl1, $ttl1)."</a>";
@@ -3266,7 +3270,7 @@ class e_form
 						// Support readParms example: thumb={width}
 						if(!isset($parms['w']) && is_numeric($parms['thumb']) && '1' != $parms['thumb']) 
 						{
-							$thparms['w'] = intval($thumb);
+							$thparms['w'] = intval($parms['thumb']);
 						}
 						elseif(vartrue($parms['thumb_aw'])) // Legacy v2. 
 						{
