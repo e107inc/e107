@@ -8,8 +8,8 @@ define("BOOTSTRAP", 	3);
 define("FONTAWESOME", 	4);
 define('VIEWPORT', 		"width=device-width, initial-scale=1.0");
 
-e107::js("url", 			"http://netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js");
-e107::css('url', 			'http://netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css');
+e107::js("url", 			"http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js");
+e107::css('url', 			'http://netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css');
 e107::css('url', 			"http://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css");
 
 e107::js("footer-inline", 	"$('.e-tip').tooltip({container: 'body'})"); // activate bootstrap tooltips. 
