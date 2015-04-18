@@ -577,7 +577,7 @@ CREATE TABLE userclass_classes (
 
 CREATE TABLE user_extended (
   user_extended_id int(10) unsigned NOT NULL default '0',
-  user_hidden_fields text NOT NULL,
+  user_hidden_fields text,
   PRIMARY KEY  (user_extended_id)
 ) ENGINE=MyISAM;
 # --------------------------------------------------------
