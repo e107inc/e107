@@ -223,35 +223,47 @@ $THREADTOPIC_REPLY = "
 
 // New in v2.x - requires a bootstrap theme be loaded.  
 
-$FORUMPOST_TEMPLATE['form']		= " 
+	$FORUM_POST_TEMPLATE['form']		= "
 									{FORMSTART}
 									<div class='row-fluid'>
 										<div>{BACKLINK}</div>
 									</div>
 
-									<table class='table'>
-									<tr>								
-										{USERBOX}
-										{SUBJECTBOX}
-									<tr>
-										<td style='width:20%'>{POSTTYPE} </td>
-										<td style='width:80%'>
-											{POSTBOX}
-											{EMAILNOTIFY}
-										</td>
-									</tr>
-										<td style='width:20%'>Post Options</td>
-										<td style='width:80%'>{POSTOPTIONS}</td>
-									</tr>
-									</table>
+									<div class='form-group'>
+										<label for='name' class='col-sm-3 control-label'>".LAN_FORUM_3010."</label>
+										 <div class='col-sm-9'>{FORUM_AUTHOR}</div>
+									</div>
 
-									<div class='text-center'>									
+									<div class='form-group'>
+										<label for='subject' class='col-sm-3 control-label'>".LAN_FORUM_3011."</label>
+										 <div class='col-sm-9'>{FORUM_SUBJECT}</div>
+									</div>
+
+									<div class='form-group'>
+										<label class='col-sm-3 control-label'>{POSTTYPE}</label>
+										 <div class='col-sm-9'>
+										 	{POSTBOX}
+											{EMAILNOTIFY}
+										</div>
+									</div>
+
+									<div class='form-group'>
+										<label class='col-sm-3 control-label'>{POSTOPTIONS_LABEL}</label>
+										 <div class='col-sm-9'>{POSTOPTIONS}</div>
+									</div>
+
+									<div class='form-group text-center'>
 										{BUTTONS}
 									</div>
 									{FORMEND}
+
+
 								";
 
-$FORUMPOST_TEMPLATE['reply']	= "";
+
+
+
+$FORUM_POST_TEMPLATE['reply']	= "";
 
 
 

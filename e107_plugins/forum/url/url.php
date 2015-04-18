@@ -108,7 +108,7 @@ class plugin_forum_url extends eUrlConfig
 					break;
 		
 				case 'edit':
-					return $base."forum_post.php?f=edit{$amp}id={$params['id']}";
+					return $base."forum_post.php?f=edit{$amp}id={$params['id']}{$amp}post={$params['post']}";
 					break;
 		
 				case 'move':
@@ -120,7 +120,7 @@ class plugin_forum_url extends eUrlConfig
 					break;
 		
 				case 'quote':
-					return $base."forum_post.php?f=quote{$amp}id={$params['id']}";
+					return $base."forum_post.php?f=quote{$amp}id={$params['id']}{$amp}post={$params['post']}";
 					break;
 		
 				case 'next':

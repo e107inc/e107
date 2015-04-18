@@ -189,7 +189,7 @@ define("LAN_FORUM_3002", "This topic is locked."); // LAN_397
 define("LAN_FORUM_3003", "Replying to"); // LAN_02 (p)
 // define("LAN_FORUM_3004", "Anonymous"); // LAN_311
 define("LAN_FORUM_3005", "Preview"); // LAN_323
-// define("LAN_FORUM_3006", "Duplicate post"); // LAN_FORUM_2
+define("LAN_FORUM_3006", "Duplicate post"); // LAN_FORUM_2
 define("LAN_FORUM_3007", "You left required field(s) blank"); // LAN_27
 define("LAN_FORUM_3008", "Unauthorised"); // LAN_95
 define("LAN_FORUM_3009", "You are not authorised to edit this forum post."); //LAN_96
