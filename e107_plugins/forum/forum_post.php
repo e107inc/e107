@@ -11,7 +11,8 @@
 */
 
 require_once('../../class2.php');
-define('NAVIGATION_ACTIVE','forum');
+define('NAVIGATION_ACTIVE','forum'); // ??
+
 $e107 = e107::getInstance();
 $tp = e107::getParser();
 $ns = e107::getRender();
@@ -23,25 +24,721 @@ if (!$e107->isInstalled('forum'))
 	exit;
 }
 
-// include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_post.php');
+e107::lan('forum','English_front');
 
-if (isset($_POST['fjsubmit']))
+
+
+
+
+class forum_post_handler
 {
-	header('Location:'.e107::getUrl()->create('forum/forum/view', array('id'=>(int) $_POST['forumjump']), '', 'full=1&encode=0'));
-	exit;
+	private $forumObj;
+	private $action;
+	private $id;
+	private $data;
+
+	function __construct()
+	{
+		$this->checkForumJump();
+
+		require_once(e_PLUGIN.'forum/forum_class.php'); // includes LAN file.
+		$forum = new e107forum();
+		$this->forumObj = $forum;
+
+		$this->action   = trim($_GET['f']); // action: rp|quote|nt|edit etc.
+		$this->id       = (int) $_GET['id']; // forum thread/topic id.
+		$this->post     = (int) $_GET['post']; // post ID if needed.
+
+		define('MODERATOR', USER && $this->forumObj->isModerator(USERID));
+
+		$this->checkPerms($this->id);
+		$this->data = $this->processGet();
+		$this->processPosted();
+		$this->renderForm();
+
+	}
+
+
+	function checkForumJump()
+	{
+		if(isset($_POST['fjsubmit']))
+		{
+			header('Location:'.e107::getUrl()->create('forum/forum/view', array('id'=>(int) $_POST['forumjump']), '', 'full=1&encode=0'));
+			exit;
+		}
+
+		if (!e_QUERY || empty($_GET['id']))
+		{
+			header('Location:'.e107::getUrl()->create('forum/forum/main', array(), 'full=1&encode=0'));
+			exit;
+		}
+
+	}
+
+
+	/**
+	 * Handle all _GET request actions.
+	 */
+	function processGet()
+	{
+		switch($this->action)
+		{
+			case 'rp':
+				$thread                 = $this->forumObj->threadGet($this->id, false);
+				$extra                  = $this->forumObj->forumGet($thread['thread_forum_id']);
+				$data                   = array_merge($thread,$extra);
+				$data['action']         = $this->action;
+				$this->setPageTitle($data);
+				return $data;
+				break;
+
+			case 'nt':
+				$forumInfo              = $this->forumObj->forumGet($this->id);
+				$forumInfo['action']    = $this->action;
+				$this->setPageTitle($forumInfo);
+				return $forumInfo;
+				break;
+
+			case 'edit':
+			case 'quote':
+				$postInfo               = $this->forumObj->postGet($this->post, 'post');
+				$forumInfo              = $this->forumObj->forumGet($postInfo['post_forum']);
+				$data                   = array_merge($postInfo ,$forumInfo);
+				$data['action']         = $this->action;
+				$this->setPageTitle($data);
+				return $data;
+				break;
+
+			default:
+				header("Location:".e107::getUrl()->create('forum/forum/main', array(), 'full=1&encode=0'));
+				exit;
+		}
+	}
+
+
+	/**
+	 * Handle all _POST actions.
+	 */
+	function processPosted()
+	{
+
+		if(!empty($_POST['action'])) // override from 'quote' mode to 'rp' mode.
+		{
+			$this->action = $_POST['action'];
+		}
+
+		if(isset($_POST['newthread']) || isset($_POST['reply']))
+		{
+			$this->insertPost();
+		}
+
+		if(isset($_POST['update_thread']))
+		{
+			$this->updateThread();
+		}
+
+		if(isset($_POST['update_reply']))
+		{
+			$this->updateReply();
+		}
+
+		if(!empty($_POST['fpreview']))
+		{
+			$this->renderPreview();
+		}
+
+		if (isset($_POST['submitpoll']))
+		{
+			$this->submitPoll();
+		}
+
+
+	}
+
+
+	/**
+	 * @param $url
+	 */
+	private function redirect($url)
+	{
+		e107::getRedirect()->go($url);
+
+	}
+
+
+	/**
+	 *
+	 */
+	function submitPoll()
+	{
+
+		require_once(e_PLUGIN.'poll/poll_class.php');
+		$poll = new poll;
+
+		require_once(HEADERF);
+		$template = $this->getTemplate('posted');
+		echo $template['poll'];
+		require_once(FOOTERF);
+		exit;
+
+	}
+
+
+
+	function setPageTitle($data)
+	{
+		$tp = e107::getParser();
+
+		$data['forum_name'] = $tp->toHTML($data['forum_name'], true);
+
+		define('e_PAGETITLE', ($this->action == 'rp' ? LAN_FORUM_3003.": ".$data['thread_name'] : LAN_FORUM_1018).' / '.$data['forum_name'].' / '.LAN_FORUM_1001);
+
+
+	}
+
+
+	function checkPerms($forumId)
+	{
+		$mes = e107::getMessage();
+		$ns = e107::getRender();
+
+		if (!$this->forumObj->checkPerm($forumId, 'post')) // check user has permission to post to this thread.
+		{
+			require_once(HEADERF);
+			$mes->addError(LAN_FORUM_3001);
+		//	$mes->addDebug("action: ".$this->action);
+		//	$mes->addDebug("id: ".$this->id);
+		//	$mes->addDebug(print_a($threadInfo, true));
+			$ns->tablerender(LAN_FORUM_1001, $mes->render());
+			require_once(FOOTERF);
+			exit;
+		}
+
+		$data  = $this->forumObj->threadGet($this->id, false);
+
+		if ($this->action != 'nt' && !$data['thread_active'] && !MODERATOR) // check the thread is active.
+		{
+			require_once(HEADERF);
+			$mes->addError(LAN_FORUM_3002);
+			$ns->tablerender(LAN_FORUM_1001, $mes->render());
+			require_once(FOOTERF);
+			exit;
+		}
+
+
+
+	}
+
+
+	/**
+	 * @return string
+	 */
+	function getTemplate($type = 'post')
+	{
+
+		global $FORUMPOST;
+
+		$FORUM_POST_TEMPLATE        = array();
+		$FORUM_POSTED_TEMPLATE      = array();
+		$FORUMREPLYPOSTED           = '';
+		$FORUMTHREADPOSTED          = '';
+		$FORUMPOLLPOSTED            = '';
+
+		$file = "forum_".$type."_template.php";
+
+		if (empty($FORUMPOST) && empty($FORUMREPLYPOSTED) && empty($FORUMTHREADPOSTED))
+		{
+			if (is_readable(THEME.$file))
+			{
+				include_once(THEME.$file);
+			}
+			else
+			{
+				include_once(e_PLUGIN.'forum/templates/'.$file);
+			}
+		}
+
+		if($type == 'post')
+		{
+			return (deftrue('BOOTSTRAP')) ? $FORUM_POST_TEMPLATE : array('form'=>$FORUMPOST);
+		}
+		else
+		{
+			if (deftrue('BOOTSTRAP')) //v2.x
+			{
+				return $FORUM_POSTED_TEMPLATE;
+			}
+			else //v1.x
+			{
+				return array(
+					 "reply"    => $FORUMREPLYPOSTED,
+					 "thread"   => $FORUMTHREADPOSTED,
+					 "poll"     => $FORUMPOLLPOSTED
+				);
+
+			}
+
+
+		}
+
+
+
+	}
+
+
+
+	function renderForm()
+	{
+		$data       = $this->data;
+		$template   = $this->getTemplate();
+		$sc         = e107::getScBatch('post', 'forum')->setScVar('forum', $this->forumObj)->setScVar('threadInfo', vartrue($data))->setVars($data);
+		$text       = e107::getParser()->parseTemplate($template['form'], true, $sc);
+
+		$this->render($text);
+
+		if(empty($data))
+		{
+			e107::getMessage()->addError("No Data supplied");
+		}
+
+
+		if(E107_DEBUG_LEVEL > 0)
+		{
+			e107::getMessage()->addInfo(print_a($data,true));
+			echo e107::getMessage()->render();
+		}
+
+		require_once(FOOTERF);
+		exit;
+
+	}
+
+
+	/**
+	 * @param $text
+	 */
+	function render($text)
+	{
+		$ns = e107::getRender();
+
+		if ($this->forumObj->prefs->get('enclose'))
+		{
+			$ns->tablerender($this->forumObj->prefs->get('title'), $text);
+		}
+		else
+		{
+			echo $text;
+		}
+
+
+	}
+
+
+	/**
+	 *
+	 */
+	function renderPreview()
+	{
+		global $FORUM_PREVIEW; // BC v1.x
+
+		$tp = e107::getParser();
+		$ns = e107::getRender();
+
+		process_upload();
+
+		require_once(HEADERF);
+		if (USER)
+		{
+			$poster = USERNAME;
+		}
+		else
+		{
+			$poster = ($_POST['anonname']) ? $_POST['anonname'] : LAN_ANONYMOUS;
+		}
+
+		$postdate = e107::getDate()->convert_date(time(), "forum");
+		$tsubject = $tp->post_toHTML($_POST['subject'], true);
+		$tpost = $tp->post_toHTML($_POST['post'], true);
+
+		if ($_POST['poll_title'] != '' && check_class($this->forumObj->prefs->get('poll')))
+		{
+			require_once(e_PLUGIN."poll/poll_class.php");
+			$poll = new poll;
+			$poll_text = $poll->render_poll($_POST, 'forum', 'notvoted', true);
+		}
+		else
+		{
+			$poll_text = false;
+		}
+
+		if (empty($FORUM_PREVIEW))
+		{
+
+			if(deftrue('BOOTSTRAP')) //v2.x
+			{
+				$FORUM_PREVIEW = e107::getTemplate('forum','forum_preview', 'item');
+			}
+			else //1.x
+			{
+				if (file_exists(THEME."forum_preview_template.php"))
+				{
+					require_once(THEME."forum_preview_template.php");
+				}
+				else
+				{
+					require_once(e_PLUGIN."forum/templates/forum_preview_template.php");
+				}
+			}
+
+		}
+
+		$shortcodes = array('PREVIEW_DATE'=>$postdate, 'PREVIEW_SUBJECT'=>$tsubject, 'PREVIEW_POST'=>$tpost);
+
+
+		$text = $tp->simpleParse($FORUM_PREVIEW,$shortcodes);
+
+		if ($poll_text)
+		{
+			$ns->tablerender($_POST['poll_title'], $poll_text);
+		}
+
+		$ns->tablerender(LAN_FORUM_3005, $text);
+
+
+		if ($this->action == 'edit')
+		{
+			if ($_POST['subject'])
+			{
+				$action = 'edit';
+			}
+			else
+			{
+				$action = 'rp';
+			}
+			$eaction = true;
+		}
+		else if($this->action == 'quote')
+		{
+			$action = 'rp';
+			$eaction = false;
+		}
+
+
+	}
+
+
+	/**
+	 * Insert a new thread or a reply/quoted reply.
+	 */
+	function insertPost()
+	{
+		$postInfo = array();
+		$threadInfo = array();
+		$threadOptions = array();
+
+		$fp = new floodprotect;
+
+
+		if ((isset($_POST['newthread']) && trim($_POST['subject']) == '') || trim($_POST['post']) == '')
+		{
+			message_handler('ALERT', 5);
+		}
+		else
+		{
+			if ($fp->flood('forum_thread', 'thread_datestamp') == false && !ADMIN)
+			{
+				echo "<script type='text/javascript'>document.location.href='".e_BASE."index.php'</script>\n";
+				exit;
+			}
+
+			$hasPoll = ($this->action == 'nt' && varset($_POST['poll_title']) && $_POST['poll_option'][0] != '' && $_POST['poll_option'][1] != '');
+
+
+			if (USER)
+			{
+				$postInfo['post_user']              = USERID;
+				$threadInfo['thread_lastuser']      = USERID;
+				$threadInfo['thread_user']          = USERID;
+				$threadInfo['thread_lastuser_anon'] = '';
+			}
+			else
+			{
+				$postInfo['post_user_anon']         = $_POST['anonname'];
+				$threadInfo['thread_lastuser_anon'] = $_POST['anonname'];
+				$threadInfo['thread_user_anon']     = $_POST['anonname'];
+			}
+
+			$time = time();
+			$postInfo['post_entry']                 = $_POST['post'];
+			$postInfo['post_forum']                 = $this->id;
+			$postInfo['post_datestamp']             = $time;
+			$postInfo['post_ip']                    = e107::getIPHandler()->getIP(FALSE);
+
+			$threadInfo['thread_lastpost']          = $time;
+
+			if(isset($_POST['no_emote']))
+			{
+				$postInfo['post_options']           = serialize(array('no_emote' => 1));
+			}
+
+			//If we've successfully uploaded something, we'll have to edit the post_entry and post_attachments
+			$newValues = array();
+
+			if($uploadResult = process_upload($newPostId))
+			{
+				foreach($uploadResult as $ur)
+				{
+					//$postInfo['post_entry'] .= $ur['txt'];
+					//	$_tmp = $ur['type'].'*'.$ur['file'];
+					//	if($ur['thumb']) { $_tmp .= '*'.$ur['thumb']; }
+					//	if($ur['fname']) { $_tmp .= '*'.$ur['fname']; }
+
+					$type = $ur['type'];
+					$newValues[$type][] = $ur['file'];
+					// $attachments[] = $_tmp;
+				}
+
+				//	$postInfo['_FIELD_TYPES']['post_attachments'] = 'array';
+				$postInfo['post_attachments'] = e107::serialize($newValues); //FIXME XXX - broken encoding when saved to DB.
+			}
+//		var_dump($uploadResult);
+
+			switch($this->action)
+			{
+				// Reply only.  Add the post, update thread record with latest post info.
+				// Update forum with latest post info
+				case 'rp':
+					$postInfo['post_thread']        = $this->id;
+					$newPostId = $this->forumObj->postAdd($postInfo);
+					break;
+
+				// New thread started.  Add the thread info (with lastest post info), add the post.
+				// Update forum with latest post info
+				case 'nt':
+
+					$threadInfo['thread_sticky']    = (MODERATOR ? (int)$_POST['threadtype'] : 0);
+					$threadInfo['thread_name']      = $_POST['subject'];
+					$threadInfo['thread_forum_id']  = $this->id;
+					$threadInfo['thread_active']    = 1;
+					$threadInfo['thread_datestamp'] = $time;
+
+					if($hasPoll)
+					{
+						$threadOptions['poll'] = '1';
+					}
+
+					if(is_array($threadOptions) && count($threadOptions))
+					{
+						$threadInfo['thread_options'] = serialize($threadOptions);
+					}
+					else
+					{
+						$threadInfo['thread_options'] = '';
+					}
+
+					if($postResult = $this->forumObj->threadAdd($threadInfo, $postInfo))
+					{
+						$newPostId = $postResult['postid'];
+						$newThreadId = $postResult['threadid'];
+
+						if($_POST['email_notify'])
+						{
+							$this->forumObj->track('add', USERID, $newThreadId);
+						}
+					}
+
+					break;
+			}
+
+
+
+
+			if($postResult === -1 || $newPostId === -1) //Duplicate post
+			{
+				require_once(HEADERF);
+				$message = LAN_FORUM_3006."<br ><a class='btn btn-default' href='".$_SERVER['HTTP_REFERER']."'>Return</a>";
+				$text = e107::getMessage()->addError($message)->render();
+				e107::getRender()->tablerender(LAN_PLUGIN_FORUM_NAME, $text); // change to forum-title pref.
+				require_once(FOOTERF);
+				exit;
+			}
+
+			$threadId = ($this->action == 'nt' ? $newThreadId : $this->id);
+
+
+			//If a poll was submitted, let's add it to the poll db
+			if ($this->action == 'nt' && varset($_POST['poll_title']) && $_POST['poll_option'][0] != '' && $_POST['poll_option'][1] != '')
+			{
+				require_once(e_PLUGIN.'poll/poll_class.php');
+				$_POST['iid'] = $threadId;
+				$poll = new poll;
+				$poll->submit_poll(2);
+			}
+
+			e107::getCache()->clear('newforumposts');
+
+
+			$postInfo = $this->forumObj->postGet($newPostId, 'post');
+			$forumInfo = $this->forumObj->forumGet($postInfo['post_forum']);
+
+
+
+			$threadLink = e107::getUrl()->create('forum/thread/last', $postInfo);
+			$forumLink = e107::getUrl()->create('forum/forum/view', $forumInfo);
+
+
+			if ($this->forumObj->prefs->get('redirect'))
+			{
+				header('location:'.e107::getUrl()->create('forum/thread/last', $postInfo, array('encode' => false, 'full' => true)));
+				exit;
+			}
+			else
+			{
+				require_once(HEADERF);
+				$template = $this->getTemplate('posted');
+
+				$SHORTCODES = array(
+					'THREADLINK'    => $threadLink,
+					'FORUMLINK'     => $forumLink
+				);
+
+
+				$txt = (isset($_POST['newthread']) ? $template['thread'] : $template['reply']);
+
+				$txt = e107::getParser()->parseTemplate($txt,true, $SHORTCODES);
+
+
+				e107::getRender()->tablerender('Forums', e107::getMessage()->render().$txt);
+				require_once(FOOTERF);
+				exit;
+			}
+		}
+
+
+
+	}
+
+
+
+	function updateThread()
+	{
+
+		$mes = e107::getMessage();
+
+		if (empty($_POST['subject']) || empty($_POST['post']))
+		{
+			$mes->addError(LAN_FORUM_3007);
+			return;
+		}
+		else
+		{
+			if (!$this->isAuthor())
+			{
+				$mes->addError(LAN_FORUM_3009);
+				return;
+			}
+
+			$postVals = array();
+			$threadVals = array();
+
+			if($uploadResult = process_upload($this->data['post_id']))
+			{
+				$attachments = explode(',', $this->data['post_attachments']);
+				foreach($uploadResult as $ur)
+				{
+					$_tmp = $ur['type'].'*'.$ur['file'];
+					if($ur['thumb']) { $_tmp .= '*'.$ur['thumb']; }
+					if($ur['fname']) { $_tmp .= '*'.$ur['fname']; }
+					$attachments[] = $_tmp;
+				}
+				$postVals['post_attachments'] = implode(',', $attachments);
+			}
+
+			$postVals['post_edit_datestamp']    = time();
+			$postVals['post_edit_user']         = USERID;
+			$postVals['post_entry']             = $_POST['post'];
+
+			$threadVals['thread_name'] = $_POST['subject'];
+
+			$this->forumObj->threadUpdate($this->data['post_thread'], $threadVals);
+			$this->forumObj->postUpdate($this->data['post_id'], $postVals);
+
+			e107::getCache()->clear('newforumposts');
+
+			$url = e107::getUrl()->create('forum/thread/post', array('name'=>$threadVals['thread_name'], 'id' => $this->data['post_id'], 'thread' => $this->data['post_thread']), array('encode'=>false));
+
+			header('location:'.$url);
+			exit;
+		}
+
+
+	}
+
+
+	/**
+	 * @param $id of the post
+	 */
+	function updateReply()
+	{
+		$mes = e107::getMessage();
+		$ns = e107::getRender();
+
+		if (empty($_POST['post']))
+		{
+			$mes->addError(LAN_FORUM_3007);
+			return;
+		}
+
+		if ($this->isAuthor()==false)
+		{
+			$mes->addError(LAN_FORUM_3009);
+			return;
+		}
+
+		$postVals['post_edit_datestamp']    = time();
+		$postVals['post_edit_user']         = USERID;
+		$postVals['post_entry']             = $_POST['post'];
+
+		$this->forumObj->postUpdate($this->data['post_id'], $postVals);
+
+		e107::getCache()->clear('newforumposts');
+		$url = e107::getUrl()->create('forum/thread/post', "id={$this->data['post_id']}", 'encode=0&full=1'); // XXX what data is available, find thread name
+
+		header('location:'.$url);
+		exit;
+
+	}
+
+
+
+
+	function isAuthor()
+	{
+		return ((USERID === (int)$this->data['post_user']) || MODERATOR);
+	}
+
+
+
 }
+
+require_once(HEADERF);
+new forum_post_handler;
+exit;
 
 require_once(e_PLUGIN.'forum/forum_class.php');
 $forum = new e107forum();
 
-if (!e_QUERY || !isset($_GET['id']))
+
+
+$action = trim($_GET['f']);     //
+$id = (int)$_GET['id'];         // topic / thread.
+$post = (int) $_GET['post'];    // individual post.
+
+if(!empty($_POST['action']))
 {
-	header('Location:'.e107::getUrl()->create('forum/forum/main', array(), 'full=1&encode=0'));
-	exit;
+	$action = $_POST['action'];
 }
 
-$action = trim($_GET['f']);
-$id = (int)$_GET['id'];
 
 switch($action)
 {
@@ -58,7 +755,7 @@ switch($action)
 
 	case 'quote':
 	case 'edit':
-		$postInfo = $forum->postGet($id, 'post');
+		$postInfo = $forum->postGet($post, 'post');
 		$threadInfo = $postInfo;
 		$forumId = $postInfo['post_forum'];
 		$forumInfo = $forum->forumGet($forumId);
@@ -75,10 +772,15 @@ if (!$forum->checkPerm($forumId, 'post'))
 {
 	require_once(HEADERF);
 	$mes->addError(LAN_FORUM_3001);
+	//$mes->addDebug("action: ".$action);
+//	$mes->addDebug("id: ".$id);
+//	$mes->addDebug(print_a($threadInfo, true));
 	$ns->tablerender(LAN_FORUM_1001, $mes->render());
 	require_once(FOOTERF);
 	exit;
 }
+
+
 define('MODERATOR', USER && $forum->isModerator(USERID));
 require_once(e_HANDLER.'ren_help.php'); // FIXME deprecated
 
@@ -138,7 +840,7 @@ if (isset($_POST['submitpoll']))
 	exit;
 }
 
-if (isset($_POST['fpreview']))
+/*if (isset($_POST['fpreview']))
 {
 	process_upload();
 	require_once(HEADERF);
@@ -202,7 +904,7 @@ if (isset($_POST['fpreview']))
 		$action = 'reply';
 		$eaction = false;
 	}
-}
+}*/
 
 if (isset($_POST['newthread']) || isset($_POST['reply']))
 {
@@ -311,6 +1013,9 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 		}
 //		print_a($threadInfo);
 //		print_a($postInfo);
+	//	print_a('action: '.$action);
+	//	print_a("newId:".$newPostId);
+	//	print_a($_POST);
 //		exit;
 
 		if($postResult === -1) //Duplicate post
@@ -334,8 +1039,12 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 		}
 
 		e107::getCache()->clear('newforumposts');
+
+
 		$postInfo = $forum->postGet($newPostId, 'post');
 		$forumInfo = $forum->forumGet($postInfo['post_forum']);
+
+
 		
 		$threadLink = e107::getUrl()->create('forum/thread/last', $postInfo);
 		$forumLink = e107::getUrl()->create('forum/forum/view', $forumInfo);
@@ -456,6 +1165,8 @@ if (vartrue($error))
 	$ns->tablerender(EMESSLAN_TITLE_ERROR, $error); // LAN?
 }
 
+
+
 if ($action == 'edit' || $action == 'quote')
 {
  	if ($action == 'edit')
@@ -480,19 +1191,21 @@ if ($action == 'edit' || $action == 'quote')
 
 	if ($action == 'quote')
 	{
+
 		//remote [hide] bbcode, or else it doesn't hide stuff too well :)
-		$post = preg_replace('#\[hide].*?\[/hide]#s', '', $post);
+	/*	$post = preg_replace('#\[hide].*?\[/hide]#s', '', $post);
 		$quoteName = ($postInfo['user_name'] ? $postInfo['user_name'] : $postInfo['post_user_anon']);
-		$post = "[quote={$quoteName}]\n".$post."\n[/quote]\n";
+		$post = "[quote={$quoteName}]\n".$post."\n[/quote]\n";*/
 //		$eaction = true;
-		$action = 'reply';
+	//	$action = 'reply';
+
 	}
 	else
 	{
 		$eaction = true;
 		if($postInfo['post_datestamp'] != $postInfo['thread_datestamp'])
 		{
-			$action = 'reply';
+			$action = 'rp';
 		}
 		else
 		{
@@ -501,6 +1214,14 @@ if ($action == 'edit' || $action == 'quote')
 		}
 	}
 }
+
+	$postInfo['action'] = $action;
+
+	$sc->setVars($postInfo); // send data to shortcodes - remove globals!
+
+
+
+
 
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //Load forumpost template
@@ -563,6 +1284,7 @@ function forumjump()
 
 function process_upload()
 {
+	return;
 	global $forumInfo, $thread_info, $admin_log, $forum;
 
 	$postId = (int)$postId;

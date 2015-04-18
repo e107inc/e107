@@ -585,6 +585,27 @@ class e107forum
 		return false;
 	}
 
+
+	function isDuplicatePost($postInfo)
+	{
+
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+
+		$post = $tp->toDB($postInfo['post_entry']);
+
+		if($sql->select('forum_post', 'post_id', "post_forum = ".intval($postInfo['post_forum'])." AND post_entry='".$post."' AND post_user = ".USERID." LIMIT 1"))
+		{
+			return true;
+		}
+
+		return false;
+
+	}
+
+
+
+
 	/*
 	 * Add a post to the db.
 	 *
@@ -594,14 +615,24 @@ class e107forum
 	function postAdd($postInfo, $updateThread = true, $updateForum = true)
 	{
 //		var_dump($postInfo);
-		//Future option, will just set to true here
+
+		if($this->isDuplicatePost($postInfo)==true)
+		{
+			return -1;
+		}
+
 		$addUserPostCount = true;
 		$result = false;
 
 		$e107 = e107::getInstance();
 		$sql = e107::getDb();
 		$info = array();
+		$tp = e107::getParser();
+
 //		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_post'];
+
+		$postInfo['post_entry'] = $tp->toDB($postInfo['post_entry']);
+
 		$info['data'] = $postInfo;
 		$postId = $sql->insert('forum_post', $info);
 	  	e107::getEvent()->trigger('user_forum_post_created', $info);
@@ -747,7 +778,12 @@ class e107forum
 		$info['data'] = $threadInfo;
 //		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
 		$info['WHERE'] = 'thread_id = '.(int)$threadId;
-		e107::getDb()->update('forum_thread', $info);
+
+		if(e107::getDb()->update('forum_thread', $info)===false)
+		{
+			e107::getMessage()->addDebug("Thread Update Failed: ".print_a($info,true));
+		}
+
 	  	e107::getEvent()->trigger('user_forum_topic_updated', $info);
 	}
 
@@ -759,7 +795,12 @@ class e107forum
 		$info['data'] = $postInfo;
 //		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_post'];
 		$info['WHERE'] = 'post_id = '.(int)$postId;
-		e107::getDb()->update('forum_post', $info);
+
+		if(e107::getDb()->update('forum_post', $info)===false)
+		{
+			e107::getMessage()->addDebug("Post Update Failed: ".print_a($info,true));
+		}
+
 	  	e107::getEvent()->trigger('user_forum_post_updated', $info);
 	}
 
@@ -805,6 +846,10 @@ class e107forum
 				return $tmp;
 			}
 		}
+		else
+		{
+			e107::getMessage()->addDebug('Query failed ('.__METHOD__.' ): '.$qry);
+		}
 		return false;
 	}
 
@@ -818,7 +863,7 @@ class e107forum
 		if('post' === $start)
 		{
 			$qry = '
-			SELECT u.user_name, t.thread_active, t.thread_datestamp, t.thread_name, t.thread_id, p.* FROM `#forum_post` AS p
+			SELECT u.user_name, t.thread_active, t.thread_datestamp, t.thread_name, t.thread_user, t.thread_id, p.* FROM `#forum_post` AS p
 			LEFT JOIN `#forum_thread` AS t ON t.thread_id = p.post_thread
 			LEFT JOIN `#user` AS u ON u.user_id = p.post_user
 			WHERE p.post_id = '.$id;
@@ -848,6 +893,11 @@ class e107forum
 			{
 				$ret[] = $row;
 			}
+		}
+		else
+		{
+			e107::getMessage()->addDebug("Query Failed: ".$qry);
+
 		}
 		if('post' === $start) { return $ret[0]; }
 		return $ret;
@@ -1806,7 +1856,9 @@ class e107forum
 
 
 
-		// New v2.x Bootstrap Standardized Breadcrumb. 
+		// New v2.x Bootstrap Standardized Breadcrumb.
+
+	//	return print_a($forumInfo);
 
 		$breadcrumb = array();
 		

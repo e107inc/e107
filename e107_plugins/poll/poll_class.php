@@ -632,9 +632,14 @@ class poll
 			
 			<div class='alert alert-info'>
 				<small >".LAN_FORUM_3029."</small>
-			</div>
-			
-			<form>
+			</div>";
+
+
+		//		$text .= "<form>";
+
+
+			$text .= "
+
 				<div class='form-group'>
 					<label for='poll_title'>Poll question</label>
 					".$frm->text('poll_title', $tp->post_toForm(vartrue($_POST['poll_title'])), '200', array('placeholder' => LAN_FORUM_3030, 'id' => 'poll_title'))." 
@@ -665,7 +670,7 @@ class poll
 							<input class='btn btn-default' type='button' id='addoption' name='addoption' value='".LAN_FORUM_3032."' />
 						</div>
 
-			</form>";
+				";
 			
 			//FIXME - get this looking good with Bootstrap CSS only. 
 			
@@ -681,6 +686,8 @@ class poll
 				</div>
 			</div>			
 		";
+
+	//	$text .= "</form>";
 		
 		return $text;
 		
