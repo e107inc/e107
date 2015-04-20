@@ -3441,7 +3441,11 @@ class e107
 		}
 
 
-		define('e_ADMIN_AREA', ($inAdminDir  && !deftrue('USER_AREA')));
+		if(!defined('e_ADMIN_AREA'))
+		{
+			define('e_ADMIN_AREA', ($inAdminDir  && !deftrue('USER_AREA')));
+		}
+
 		define('ADMINDIR', $ADMIN_DIRECTORY);
 
 		define('SITEURLBASE', $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST']);

@@ -21,75 +21,11 @@ Admin log events:
 USET_01 - admin changed user data
 */
 
-/*
-if(preg_match('/^\/(.*?)\/(usersettings\.php|\/edit)(\?|\/)(\d+)$/i', $_SERVER['REQUEST_URI'], $_usersettings_matches))
-{
-	$eplug_admin = TRUE;
-}
-*/
 
 require_once ('class2.php');
 
 // TODO - Remove all the adminEdit stuff. 
 
-/*
-class usersetting_admin extends e_admin_dispatcher
-{
-
-	protected $modes = array(
-		'main'		=> array(
-			'controller' 	=> 'usersettings_admin_ui',
-			'path' 			=> null,
-			'ui' 			=> null,
-			'uipath' 		=> null,
-			//'perm'			=> '0',
-			)				
-		);	
-
-
-	protected $adminMenu = array(
-		'main/list'		=> array('caption'=> LAN_MANAGE, 'perm' => '0', 'url' => '{e_ADMIN}users.php'),
-		'main/add' 		=> array('caption'=> LAN_USER_QUICKADD, 'perm' => '4|U0|U1', 'url' => '{e_ADMIN}users.php'),
-		'main/prefs' 	=> array('caption'=> LAN_OPTIONS, 'perm' => '4|U2', 'url' => '{e_ADMIN}users.php'),
-		'main/ranks'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3', 'url' => '{e_ADMIN}users.php')		
-		);
-
-	protected $adminMenuAliases = array(
-		'main/edit'		=> 'main/list',
-		'main/admin'	=> 'main/list',
-		'main/userclass'=> 'main/list',					
-		'main/test'		=> 'main/list',					
-		);	
-
-
-	
-	protected $menuTitle = 'users';
-
-
-	public function runObservers($run_header = true)
-	{
-		// Catch useraction
-		if (isset($_POST['updatesettings']))
-		{
-
-		}
-		
-		return parent::runObservers($run_header);
-	}
-
-	
-
-}
-
-class usersettings_admin_ui extends e_admin_ui
-{
-	public function EditPage()
-	{
-
-	}
-
-}
-*/
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
@@ -209,87 +145,11 @@ if(!is_array($info) || ($info['user_admin'] == 1 && (!defined('ADMINPERMS') || A
 	}
 
 }
-// TODO - Remove all the adminEdit stuff. 
-/*
-
-if($adminEdit) // try to stay in Admin when admin is editing.
-{
-	$mes = e107::getMessage();
-	$ADMIN_USERSETTINGS_EDIT =  $mes->render(). "
-	<table class='table adminform'>
-		<colgroup span='2'>
-		<col class='col-label' />
-		<col class='col-control' />
-	</colgroup>
-
-	{USERNAME}
-	{LOGINNAME}
-
-	<tr>
-		<td>".LAN_USER_60.req(!$pref['disable_emailcheck'])."</td>
-		<td>
-			{EMAIL}
-		</td>
-	</tr>
-
-	<tr>
-		<td>".LAN_USER_63.req($pref['signup_option_realname'])."</td>
-		<td>
-			{REALNAME}
-		</td>
-	</tr>
-
-	{CUSTOMTITLE}
-
-	{PASSWORD1}
-	{PASSWORD_LEN}
-	{PASSWORD2}
 
 
-	<tr>
-		<td>".LAN_USER_83."</td>
-		<td><span class='defaulttext'>
-			{HIDEEMAIL=radio}
-		</span>
-	</td>
-</tr>
 
-<tr>
-	<td>".LAN_USER_07.req($pref['signup_option_image'])."</td>
-	<td>
-		{AVATAR_REMOTE}
-	</td>
-</tr>
+require_once (HEADERF);
 
-{AVATAR_UPLOAD}
-{PHOTO_UPLOAD}
-
-{USERCLASSES}
-{USEREXTENDED_ALL}
-
-
-{SIGNATURE=cols=58&rows=4}	
-{SIGNATURE_HELP}
-</tr>
-</table>
-<div class='buttons-bar center'>
-	".e107::getForm()->admin_button('updatesettings',LAN_UPDATE,'update')."
-</div>
-
-";
-
-
-$USERSETTINGS_EDIT = $ADMIN_USERSETTINGS_EDIT;
-include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php");
-new usersetting_admin();
-require_once (e_ADMIN."auth.php");
-//e107::getAdminUI()->runPage();
-}
-*/
-// else
-{
-	require_once (HEADERF);
-}
 
 
 // Save user settings (changes only)
