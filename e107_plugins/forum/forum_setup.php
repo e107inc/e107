@@ -49,6 +49,12 @@ class forum_setup
 	 */
 	function upgrade_required()
 	{
+		if(!e107::getDb()->db_Table_exists('forum_thread'))
+		{
+			return true;
+		}
+
+
 		if(!e107::getDb()->field('forum_thread','thread_id'))
 		{
 			return true;	 // true to trigger an upgrade alert, and false to not. 	

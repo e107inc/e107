@@ -215,7 +215,7 @@ function step2()
 	else
 	{
 		$text = "<form method='post' action='" . e_SELF . "?step=3'>
-			<input class='btn' type='submit' name='nextStep[3]' value='Proceed to step 3' />
+			<input class='btn btn-success' type='submit' name='nextStep[3]' value='Proceed to step 3' />
 			</form>";
 	}
 	$ns -> tablerender('Step 2: Forum table creation', $mes -> render() . $text);
@@ -791,11 +791,11 @@ function step10()
 
 	if ($_SESSION['forumupdate']['attachment_total'] == 0)
 	{
-		$text .= "
+		$text = "
 		No forum attachments found. 
 		<br /><br />
 		<form method='post' action='" . e_SELF . "?step=11'>
-		<input class='btn' type='submit' name='nextStep[11]' value='Proceed to step 11' />
+		<input class='btn btn-success' type='submit' name='nextStep[11]' value='Proceed to step 11' />
 		</form>
 		";
 		$ns -> tablerender($stepCaption, $text);
