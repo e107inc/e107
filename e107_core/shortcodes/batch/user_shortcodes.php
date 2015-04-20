@@ -510,7 +510,11 @@ class user_shortcodes extends e_shortcode
 		}
 		else if(ADMIN && getperms("4") && !$this->var['user_admin']) 
 		{
-			return "<a class='btn btn-default' href='".$url->create('user/profile/edit', array('id' => $this->var['user_id'], 'name' => $this->var['user_name']))."'>".LAN_USER_39."</a>";
+			$editUrl =  e_ADMIN_ABS."users.php?mode=main&action=edit&id=".$this->var['user_id'];
+
+			return "<a class='btn btn-default' href='".$editUrl."'>".LAN_USER_39."</a>";
+
+			//	return "<a class='btn btn-default' href='".$url->create('user/profile/edit', array('id' => $this->var['user_id'], 'name' => $this->var['user_name']))."'>".LAN_USER_39."</a>";
 		}
 	}
 	

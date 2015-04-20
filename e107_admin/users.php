@@ -10,7 +10,12 @@
 * Administration Area - Users
 *
 */
-require_once ('../class2.php');
+
+if (!defined('e107_INIT'))
+{
+	require_once("../class2.php");
+}
+
 
 e107::coreLan('user');
 e107::coreLan('users', true);
