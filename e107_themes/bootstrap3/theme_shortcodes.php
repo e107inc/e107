@@ -105,11 +105,11 @@ class theme_shortcodes extends e_shortcode
 				<li class="divider-vertical"></li>
 				<li class="dropdown">
 			
-				<a class="dropdown-toggle" href="#" data-toggle="dropdown">Sign In <strong class="caret"></strong></a>
+				<a class="dropdown-toggle" href="#" data-toggle="dropdown">'.LOGIN_MENU_L51.' <strong class="caret"></strong></a>
 				<div class="dropdown-menu col-sm-12" style="min-width:250px; padding: 15px; padding-bottom: 0px;">
 				
 				{SOCIAL_LOGIN: size=2x}		
-				';
+				'; // Sign In
 			}
 			else
 			{
