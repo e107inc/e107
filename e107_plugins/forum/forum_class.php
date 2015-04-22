@@ -1248,7 +1248,7 @@ class e107forum
 		{
 			$_tmp[] = (int)$tid;
 		}
-		$tmp = array_unique($tmp);
+		$tmp = array_unique($_tmp);
 		$viewed = trim(implode(',', $_tmp), ',');
 		return e107::getDb()->update('user_extended', "user_plugin_forum_viewed = '{$viewed}' WHERE user_extended_id = ".USERID);
 	}
