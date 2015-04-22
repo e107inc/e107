@@ -428,7 +428,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	//	$text .= $this->sc_level('pic');
 		
 		$ue = $tp->parseTemplate("{USER_EXTENDED=location.text_value}",true);	
-		$username = $this->postInfo['user_name'];
+		$username = (empty($this->postInfo['user_name'])) ? LAN_ANONYMOUS : $this->postInfo['user_name'];
 								
 		$text = '<div class="btn-group ">
 

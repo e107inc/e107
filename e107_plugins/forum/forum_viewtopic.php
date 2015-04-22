@@ -406,18 +406,27 @@ if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread
 }
 
 
-
+	$mes = e107::getMessage();
 $forend = $tp->simpleParse($FORUMEND, $tVars);
 
 $forumstring = $forstr . $forthr . vartrue($forrep) . $forend;
 
 //If last post came after USERLV and not yet marked as read, mark the thread id as read
 $threadsViewed = explode(',', $currentUser['user_plugin_forum_viewed']);
+
 if ($thread->threadInfo['thread_lastpost'] > USERLV && !in_array($thread->threadId, $threadsViewed))
 {
 	$tst = $forum->threadMarkAsRead($thread->threadId);
+	$mes->addDebug("Marking Forum as read: ".$thread->threadId." result: ".$tst);
 }
-$mes = e107::getMessage();
+else
+{
+	$ret = array('lastpost'=>$thread->threadInfo['thread_lastpost'], 'lastvisit'=>USERLV, 'thread'=>$thread->threadId, 'viewed'=>$threadsViewed);
+	$mes->addDebug(print_a($ret,true));
+	unset($ret);
+}
+
+
 require_once (HEADERF);
 
 
