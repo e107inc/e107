@@ -71,7 +71,10 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	{
 	//	return print_a($this->postInfo['post_entry'],true);
 		$emote = (isset($this->postInfo['post_options']['no_emote']) ? ',emotes_off' : '');
-		return e107::getParser()->toHTML($this->postInfo['post_entry'], true, 'USER_BODY'.$emote, 'class:'.$this->postInfo['user_class']);
+
+		$uclass = (!empty($this->postInfo['user_class'])) ? $this->postInfo['user_class'] : 0;
+
+		return e107::getParser()->toHTML($this->postInfo['post_entry'], true, 'USER_BODY'.$emote, 'class:'.$uclass);
 	}
 
 	function sc_postdeleted()
@@ -287,7 +290,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 	function sc_website()
 	{
-		if ($this->postInfo['user_homepage']) {
+		if (!empty($this->postInfo['user_homepage'])) {
 			return LAN_FORUM_2034.': '.$this->postInfo['user_homepage'].'<br />';
 		}
 	}
