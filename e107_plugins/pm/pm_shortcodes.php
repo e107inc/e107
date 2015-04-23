@@ -427,7 +427,7 @@ class pm_shortcodes extends e_shortcode
 	{
 		if(in_array($this->var['pm_from'], $this->pmBlocks))
 		{
-			$icon = (deftrue('FONTAWESOME')) ? e107::getParser()->toGlyph('fa-user-times') : "<img src='".e_PLUGIN_ABS."pm/images/mail_unblock.png'  alt='".LAN_PM_51."' class='icon S16' />";
+			$icon = (deftrue('FONTAWESOME')) ? e107::getParser()->toGlyph('fa-user-plus') : "<img src='".e_PLUGIN_ABS."pm/images/mail_unblock.png'  alt='".LAN_PM_51."' class='icon S16' />";
 
 			return "<a class='btn btn-sm btn-default' href='".$this->url('action/unblock', 'id='.$this->var['pm_from'])."' title='".LAN_PM_51."'>".$icon."</a>";
 		}
