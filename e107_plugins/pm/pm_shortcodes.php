@@ -30,6 +30,7 @@
 
 include_lan(e_PLUGIN.'pm/languages/'.e_LANGUAGE.'.php');	
 include_once(e_PLUGIN.'pm/pm_func.php');
+
 // register_shortcode('pm_handler_shortcodes', true);
 // initShortcodeClass('pm_handler_shortcodes');
 
@@ -95,6 +96,18 @@ class pm_shortcodes extends e_shortcode
 		$this->pmManager = new pmbox_manager($pm_prefs);
 		$this->pmPrefs = $pm_prefs;
 		// print_a($pm_prefs);
+		require_once(e_PLUGIN."pm/pm_class.php");
+		$pmClass = new private_message($pm_prefs);
+		$blocks = $pmClass->block_get_user();
+
+		foreach($blocks as $usr)
+		{
+			if($usr['pm_block_to'] == USERID)
+			{
+				$this->pmBlocks[] = $usr['pm_block_from'];
+			}
+
+		}
 	}
 
 	// TODO rewrite $frm->userpicker(), etc. Get rid of e107_handlers/user_select_class.php
@@ -425,11 +438,14 @@ class pm_shortcodes extends e_shortcode
 
 	public function sc_pm_block_user()
 	{
+
+
+
 		if(in_array($this->var['pm_from'], $this->pmBlocks))
 		{
 			$icon = (deftrue('FONTAWESOME')) ? e107::getParser()->toGlyph('fa-user-plus') : "<img src='".e_PLUGIN_ABS."pm/images/mail_unblock.png'  alt='".LAN_PM_51."' class='icon S16' />";
 
-			return "<a class='btn btn-sm btn-default' href='".$this->url('action/unblock', 'id='.$this->var['pm_from'])."' title='".LAN_PM_51."'>".$icon."</a>";
+			return "<a class='btn btn-sm btn-default btn-danger' href='".$this->url('action/unblock', 'id='.$this->var['pm_from'])."' title='".LAN_PM_51."'>".$icon."</a>";
 		}
 		else
 		{
