@@ -1103,6 +1103,7 @@ class e107plugin
 				{
 					
 					$tab = str_replace("TYPE=MyISAM","ENGINE=MyISAM",$tab);
+					$tab = str_replace("IF NOT EXISTS", "", $tab);
 										
 					if(!preg_match("/MyISAM.*CHARSET ?= ?utf8/i",$tab))
 					{
