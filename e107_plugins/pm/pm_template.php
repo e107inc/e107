@@ -67,14 +67,15 @@ $sc_style['PM_REPLY']['post'] = "</td>
 	</tr>
 ";
 
-$PM_SEND_PM = "<div style='text-align: center'>
-<table style='width:95%' class='table fborder'>
+$PM_SEND_PM = "<div id='pm-send-pm'>
+<table class='table fborder'>
 <tr>
 	<td colspan='2' class='fcaption'>".LAN_PM_1.": </td>
 </tr>
 <tr>
 	<td class='forumheader3' style='width: 30%'>".LAN_PM_2.": </td>
-	<td class='forumheader3' style='width: 70%; text-align:left'>{PM_FORM_TOUSER}<br />{PM_FORM_TOCLASS}</td>
+	<td class='forumheader3' style='width: 70%; text-align:left'>{PM_FORM_TOUSER}<br />
+	<div class='form-inline'>{PM_FORM_TOCLASS}</div></td>
 </tr>
 <tr>
 	<td class='forumheader3'>".LAN_PM_5.": </td>

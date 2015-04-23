@@ -164,14 +164,14 @@ class private_message
 				'pm_size' => $pmsize
 				);
 		}
+
 		if(isset($vars['to_userclass']) || isset($vars['to_array']))
 		{
 			if(isset($vars['to_userclass']))
 			{
-				require_once(e_HANDLER.'userclass_class.php');
 				$toclass = e107::getUserClass()->uc_get_classname($vars['pm_userclass']);
 				$tolist = $this->get_users_inclass($vars['pm_userclass']);
-				$ret .= LAN_PM_38.": {$vars['to_userclass']}<br />";
+				$ret .= LAN_PM_38.": {$toclass}<br />";
 				$class = TRUE;
 			}
 			else
@@ -213,6 +213,9 @@ class private_message
 				{
 					$info['pm_id'] = $pmid;
 					e107::getEvent()->trigger('user_pm_sent', $info);
+
+					unset($info['pm_id']); // prevent it from being used on the next record.
+
 					if($class == FALSE)
 					{
 						$toclass .= $u['user_name'].', ';
@@ -226,6 +229,7 @@ class private_message
 				else
 				{
 					$ret .= LAN_PM_39.": {$u['user_name']} <br />";
+					e107::getMessage()->addDebug($sql->getLastErrorText());
 				}
 			}
 			if ($addOutbox)

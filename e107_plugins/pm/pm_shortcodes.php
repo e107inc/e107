@@ -133,14 +133,17 @@ class pm_shortcodes extends e_shortcode
 
 		if(check_class($this->pmPrefs['opt_userclass']) && check_class($this->pmPrefs['multi_class']))
 		{
-			$ret = "<input type='checkbox' name='to_userclass' value='1' />".LAN_PM_4." ";
-			require_once(e_HANDLER.'userclass_class.php');
+			//$ret = "<input type='checkbox' name='to_userclass' value='1' />".LAN_PM_4." ";
+
+			$ret = "<div class='input-group'><span class='input-group-addon'>".e107::getForm()->checkbox('to_userclass',1,false, LAN_PM_4)."</span>";
+
 			$args = (ADMIN ? 'admin, classes' : 'classes, matchclass');
 			if(check_class($this->pmPrefs['sendall_class']))
 			{
 				$args = 'member, '.$args;
 			}
-			$ret .= e107::getUserClass()->uc_dropdown('pm_userclass', '', $args);
+
+			$ret .= e107::getUserClass()->uc_dropdown('pm_userclass', '', $args)."</div>";
 			if (strpos($ret,'option') === FALSE)  $ret = '';
 		}
 		return $ret;
@@ -424,11 +427,15 @@ class pm_shortcodes extends e_shortcode
 	{
 		if(in_array($this->var['pm_from'], $this->pmBlocks))
 		{
-			return "<a href='".$this->url('action/unblock', 'id='.$this->var['pm_from'])."'><img src='".e_PLUGIN_ABS."pm/images/mail_unblock.png' title='".LAN_PM_51."' alt='".LAN_PM_51."' class='icon S16' /></a>";
+			$icon = (deftrue('FONTAWESOME')) ? e107::getParser()->toGlyph('fa-user-times') : "<img src='".e_PLUGIN_ABS."pm/images/mail_unblock.png'  alt='".LAN_PM_51."' class='icon S16' />";
+
+			return "<a class='btn btn-sm btn-default' href='".$this->url('action/unblock', 'id='.$this->var['pm_from'])."' title='".LAN_PM_51."'>".$icon."</a>";
 		}
 		else
 		{
-			return "<a href='".$this->url('action/block', 'id='.$this->var['pm_from'])."'><img src='".e_PLUGIN_ABS."pm/images/mail_block.png' title='".LAN_PM_50."' alt='".LAN_PM_50."' class='icon S16' /></a>";
+			$icon = (deftrue('FONTAWESOME')) ? e107::getParser()->toGlyph('fa-user-times') : "<img src='".e_PLUGIN_ABS."pm/images/mail_block.png'  alt='".LAN_PM_50."' class='icon S16' />";
+
+			return "<a class='btn btn-sm btn-default' href='".$this->url('action/block', 'id='.$this->var['pm_from'])."' title='".LAN_PM_50."'>".$icon."</a>";
 		}
 	}
 
@@ -503,7 +510,7 @@ class pm_shortcodes extends e_shortcode
 		if($pm_outbox['outbox']['filled'] < 100)
 		{
 			$link = $this->url('new');
-			return "<a class='btn btn-mini' href='{$link}'>".PM_SEND_LINK."</a>";
+			return "<a class='btn btn-mini btn-xs btn-default' href='{$link}'>".PM_SEND_LINK."</a>";
 		}
 		return '';
 	}
