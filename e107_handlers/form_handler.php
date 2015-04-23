@@ -4021,9 +4021,9 @@ class e_form
 			break;
 
 			case 'hidden':
+
 				$value = (isset($parms['value'])) ? $parms['value'] : $value;
 				$ret = (vartrue($parms['show']) ? ($value ? $value : varset($parms['empty'], $value)) : '');
-				//echo "<br />key=".$key."<br />value=".$value;
 				$ret =  $ret.$this->hidden($key, $value);
 			break;
 
@@ -4037,6 +4037,10 @@ class e_form
 				unset($parms['__options']);
 				if(vartrue($eloptions['multiple']) && !is_array($value)) $value = explode(',', $value);
 				$ret =  vartrue($eloptions['pre']).$this->selectbox($key, $options, $value, $eloptions).vartrue($eloptions['post']);
+			break;
+
+			case null:
+			//	Possibly used in db but should not be submitted in form. @see news_extended.
 			break;
 
 			default:// No LAN necessary, debug only. 
@@ -4338,6 +4342,8 @@ class e_form
 		$model_required = $model->getValidationRules();
 		$required_help = false;
 		$hidden_fields = array();
+
+
 		foreach($fdata['fields'] as $key => $att)
 		{
 			if($tab !== false && varset($att['tab'], 0) !== $tab)
@@ -4351,7 +4357,7 @@ class e_form
 				$key = $att['field'];
 			}
 			
-			if($key == 'checkboxes' || $key == 'options')
+			if($key == 'checkboxes' || $key == 'options' || ($att['type'] === null))
 			{
 				continue;	
 			}
@@ -4389,6 +4395,8 @@ class e_form
 				
 				if(!vartrue($writeParms['show']))
 				{
+					$hidden_fields[] = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()));
+
 					continue;
 				}
 				unset($tmp);
@@ -4415,7 +4423,7 @@ class e_form
 					}
 				}
 
-				/*
+		/*
 				if('hidden' === $att['type'])
 				{
 					parse_str(varset($att['writeParms']), $tmp);
@@ -4427,12 +4435,8 @@ class e_form
 					}
 					unset($tmp);
 				}
-				
-				 * 
-				 * 
-				 * 
-				 *  
-				 */
+				*/
+
 				 
 				$leftCell = $required."<span{$required_class}>".defset(vartrue($att['title']), vartrue($att['title']))."</span>".$label;
 				$rightCell = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()), $model->getId())." {$help}";
@@ -4487,7 +4491,11 @@ class e_form
 
 		$text .= "
 					</tbody>
-				</table></fieldset>";
+				</table>";
+
+		$text .= implode("\n", $hidden_fields);
+
+		$text .= "</fieldset>";
 				
 		$text .= vartrue($fdata['fieldset_post']);
 		
