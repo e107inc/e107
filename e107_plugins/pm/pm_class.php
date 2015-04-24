@@ -352,7 +352,8 @@ class private_message
 	{
 		require_once(e_HANDLER.'mail.php');
 		$subject = LAN_PM_100.SITENAME;
-		$pmlink = $this->url('show', 'id='.$pmid, 'full=1&encode=0');
+	//	$pmlink = $this->url('show', 'id='.$pmid, 'full=1&encode=0'); //TODO broken - replace with e_url.php configuration.
+		$pmlink = SITEURLBASE.e_PLUGIN_ABS."pm/pm.php?show.".$pmid;
 		$txt = LAN_PM_101.SITENAME."\n\n";
 		$txt .= LAN_PM_102.USERNAME."\n";
 		$txt .= LAN_PM_103.$pmInfo['pm_subject']."\n";
@@ -376,12 +377,13 @@ class private_message
 	{
 		require_once(e_HANDLER.'mail.php');
 		$subject = LAN_PM_106.$pmInfo['sent_name'];
-		$pmlink = $this->url('show', 'id='.$pmInfo['pm_id'], 'full=1&encode=0');
+	//	$pmlink = $this->url('show', 'id='.$pmInfo['pm_id'], 'full=1&encode=0');
+		$pmlink = SITEURLBASE.e_PLUGIN_ABS."pm/pm.php?show.".$pmInfo['pm_id'];
 		$txt = str_replace("{UNAME}", $pmInfo['sent_name'], LAN_PM_107).date('l F dS Y h:i:s A')."\n\n";
 		$txt .= LAN_PM_108.date('l F dS Y h:i:s A', $pmInfo['pm_sent'])."\n";
 		$txt .= LAN_PM_103.$pmInfo['pm_subject']."\n";
 		$txt .= LAN_PM_105."\n".$pmlink."\n";
-		sendemail($pminfo['from_email'], $subject, $txt, $pmInfo['from_name']);
+		sendemail($pmInfo['from_email'], $subject, $txt, $pmInfo['from_name']);
 	}
 
 
