@@ -111,6 +111,10 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		elseif($this->var['action'] == 'edit')
 		{
 			$_POST['subject'] = $this->var['thread_name'];
+			if($this->var['thread_user'] != USERID)
+			{
+				$opts['disabled'] = 1;
+			}
 		}
 		else
 		{
