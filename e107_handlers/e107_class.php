@@ -2931,6 +2931,18 @@ class e107
 				exit();
 			}
 
+
+			// Suspicious HTML.
+			if(strpos($input, '<body/onload')!==false)
+			{
+				header('HTTP/1.0 400 Bad Request', true, 400);
+				if(deftrue('e_DEBUG'))
+				{
+					echo "Bad Request: ".__METHOD__." : ". __LINE__;
+				}
+				exit();
+			}
+
 			if(preg_match("/system\((.*);.*\)/i",$input))
 			{
 				header('HTTP/1.0 400 Bad Request', true, 400);
