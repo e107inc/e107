@@ -51,8 +51,9 @@ class forum_post_handler
 
 		define('MODERATOR', USER && $this->forumObj->isModerator(USERID));
 
-		$this->checkPerms($this->id);
+
 		$this->data = $this->processGet();
+		$this->checkPerms($this->data['forum_id']);
 		$this->processPosted();
 		$this->renderForm();
 
@@ -206,9 +207,7 @@ class forum_post_handler
 		{
 			require_once(HEADERF);
 			$mes->addError(LAN_FORUM_3001);
-		//	$mes->addDebug("action: ".$this->action);
-		//	$mes->addDebug("id: ".$this->id);
-		//	$mes->addDebug(print_a($threadInfo, true));
+			$mes->addDebug(print_a($this->data, true));
 			$ns->tablerender(LAN_FORUM_1001, $mes->render());
 			require_once(FOOTERF);
 			exit;
