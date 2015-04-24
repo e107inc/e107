@@ -258,8 +258,16 @@ class users_admin_ui extends e_admin_ui
 		'user_new_period'			=> array('title' => USRLAN_190,  'type' => 'number',  'writeParms' => array('maxlength' => 3, 'post' => LANDT_04s), 'help' => USRLAN_191, 'data' => 'int',),
 	);
 	
-	protected $extended = array();
-	
+	public $extended = array();
+	public $extendedData = array();
+
+
+
+	function getExtended()
+	{
+		return $this->extendedData;
+	}
+
 	function init()
 	{
 	
@@ -278,7 +286,7 @@ class users_admin_ui extends e_admin_ui
 		
 		// Extended fields - FIXME - better field types
 		
-		if($sql->select('user_extended_struct', 'user_extended_struct_name,user_extended_struct_text', "user_extended_struct_type > 0 AND user_extended_struct_text != '_system_' ORDER BY user_extended_struct_parent ASC"))
+		if($sql->select('user_extended_struct', '*', "user_extended_struct_type > 0 AND user_extended_struct_text != '_system_' ORDER BY user_extended_struct_parent ASC"))
 		{
 			// TODO FIXME use the handler to build fields and field attributes
 			// FIXME a way to load 3rd party language files for extended user fields
@@ -286,11 +294,12 @@ class users_admin_ui extends e_admin_ui
 			while ($row = $sql->fetch())
 			{
 				$field = "user_".$row['user_extended_struct_name'];
-				$title = ucfirst(str_replace("user_","",$field));
+				// $title = ucfirst(str_replace("user_","",$field));
 				$label = $tp->toHtml($row['user_extended_struct_text'],false,'defs');
-				$this->fields[$field] = array('title' => $label,'width' => 'auto', 'data'=>false,'type'=>'text', 'tab'=>1, 'noedit'=>false);
+				$this->fields[$field] = array('title' => $label,'width' => 'auto', 'type'=>'method', 'method'=>'user_extended', 'data'=>false, 'tab'=>1, 'noedit'=>false);
 			
 				$this->extended[] = $field;
+				$this->extendedData[$field] = $row;
 			}
 		}
 		$this->fields['user_signature']['writeParms']['data'] = e107::getUserClass()->uc_required_class_list("classes");
@@ -340,6 +349,8 @@ class users_admin_ui extends e_admin_ui
 
 	}
 
+
+
 	protected function getAvatarList()
 	{
 		$avs = array(''=>LAN_NONE);
@@ -384,11 +395,22 @@ class users_admin_ui extends e_admin_ui
 		}
 		
 		// Handle the Extended Fields. 
+		$this->saveExtended($new_data);
+
 		
+	
+		
+		return $new_data;
+	}
+	
+
+
+	function saveExtended($new_data)
+	{
 		$update = array();
-		foreach($this->extended as $key) // Grab Extended field data. 
+		foreach($this->extended as $key) // Grab Extended field data.
 		{
-		 	$update[$key] = vartrue($new_data[$key],'_NULL_');
+			$update[$key] = vartrue($new_data['ue'][$key],'_NULL_');
 		}
 
 		e107::getMessage()->addDebug(print_a($update,true));
@@ -400,7 +422,7 @@ class users_admin_ui extends e_admin_ui
 				$update['user_extended_id'] = intval($new_data['submit_value']);
 				if(e107::getDb()->insert('user_extended', $update))
 				{
-					e107::getMessage()->addSuccess('Extended Fields Updated');	//TODO Replace with Generic or existing LAN. 
+					e107::getMessage()->addSuccess('Extended Fields Updated');	//TODO Replace with Generic or existing LAN.
 				}
 				else
 				{
@@ -413,30 +435,27 @@ class users_admin_ui extends e_admin_ui
 					e107::getDb()->getLastErrorText();
 				}
 			}
-			else 
+			else
 			{
 				$update['WHERE'] = 'user_extended_id='. intval($new_data['submit_value']);
-			
+
 				if(e107::getDb()->update('user_extended',$update)===false)
 				{
 					e107::getMessage()->addError('Extended Fields Update Failed');	//TODO Replace with Generic or existing LAN.
 					$error = e107::getDb()->getLastErrorText();
 					e107::getMessage()->addDebug($error);
 					e107::getMessage()->addDebug(print_a($update,true));
-				
+
 				}
 				else
 				{
-				// 	e107::getMessage()->addSuccess('Extended Fields Updated'); 	//TODO Replace with Generic or existing LAN. 	
+					// 	e107::getMessage()->addSuccess('Extended Fields Updated'); 	//TODO Replace with Generic or existing LAN.
 				}
 			}
 		}
-		
-	
-		
-		return $new_data;
+
+
 	}
-	
 
 
 	/**
@@ -455,9 +474,11 @@ class users_admin_ui extends e_admin_ui
 			e107::getMessage()->addError('User not found.');
 			return;
 		}
+
+		$row = e107::user($userid);
 		
-		$sql->db_Update("user", "user_ban='0' WHERE user_id='".$userid."' ");
-		$sql->db_Delete("banlist"," banlist_ip='{$row['user_ip']}' ");
+		$sql->update("user", "user_ban='0' WHERE user_id='".$userid."' ");
+		$sql->delete("banlist"," banlist_ip='{$row['user_ip']}' ");
 		
 		e107::getAdminLog()->log_event('USET_06', str_replace(array('--UID--', '--NAME--', '--EMAIL--'), array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email')), USRLAN_162), E_LOG_INFORMATIVE);
 		e107::getMessage()->addSuccess("(".$sysuser->getId().".".$sysuser->getName()." - ".$sysuser->getValue('email').") ".USRLAN_9);
@@ -2041,7 +2062,37 @@ class users_admin_ui extends e_admin_ui
 
 class users_admin_form_ui extends e_admin_form_ui
 {
-						
+
+
+	function user_extended($curval,$mode, $att)
+	{
+		if($mode == 'read')
+		{
+			$field = $att['field'];
+			$data =  $this->getController()->getListModel()->get($field); // ($att['field']);
+			return $data;
+
+		}
+		if($mode == 'write')
+		{
+			// e107::getUserExt()->user_extended_edit
+		//	return 'hello';
+			$field = $att['field'];
+			$extData = $this->getController()->getExtended();
+			$extData[$field]['user_extended_struct_required'] = 0;
+
+			return e107::getUserExt()->user_extended_edit($extData[$field],$curval);
+
+		//	return print_a($att,true);
+		}
+
+
+	}
+
+
+
+
+
 	function user_perms($curval,$mode)
 	{
 		if($mode == 'read')
