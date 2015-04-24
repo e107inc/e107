@@ -3493,10 +3493,12 @@ class e_form
 					$value = e107::unserialize($value); // (saved as array, return it as an array)
 				}
 
+				$meth = (!empty($attributes['method'])) ? $attributes['method'] : $method;
 
-				if(method_exists($this,$method))
+				if(method_exists($this,$meth))
 				{
-					$value = call_user_func_array(array($this, $method), array($value, 'read', $parms));
+					$parms['field'] = $field;
+					$value = call_user_func_array(array($this, $meth), array($value, 'read', $parms));
 				}
 				else
 				{
@@ -3634,6 +3636,7 @@ class e_form
 	{
 	//	return print_a($value,true);
 		$parms = vartrue($attributes['writeParms'], array());
+
 		$tp = e107::getParser();
 
 		if(is_string($parms)) parse_str($parms, $parms);
@@ -3749,6 +3752,7 @@ class e_form
 			break;
 			
 			case 'tags':
+				$maxlength = vartrue($parms['maxlength'], 255);
 				$ret =  vartrue($parms['pre']).$this->tags($key, $value, $maxlength, $parms).vartrue($parms['post']); // vartrue($parms['__options']) is limited. See 'required'=>true
 			break;
 
@@ -4011,7 +4015,10 @@ class e_form
 			break;
 
 			case 'method': // Custom Function
-				$ret =  call_user_func_array(array($this, $key), array($value, 'write', $parms));
+				$meth = (!empty($attributes['method'])) ? $attributes['method'] : $key;
+				$parms['field'] = $key;
+
+				$ret =  call_user_func_array(array($this, $meth), array($value, 'write', $parms));
 			break;
 
 			case 'upload': //TODO - from method
