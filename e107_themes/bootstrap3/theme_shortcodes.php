@@ -120,8 +120,8 @@ class theme_shortcodes extends e_shortcode
 			if(!empty($userReg)) // value of 1 or 2 = login okay. 
 			{
 
-				global $sc_style;
-				$sc_style = array(); // remove an wrappers.
+			//	global $sc_style; // never use global - will impact signup/usersettings pages. 
+			//	$sc_style = array(); // remove any wrappers.
 
 				$text .='	
 				
