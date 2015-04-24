@@ -3788,6 +3788,7 @@ class e_form
 			case 'images':
 			//	return print_a($value, true);
 				$ret = "";
+				$label = varset($parms['label'], 'LAN_EDIT');
 
 				for ($i=0; $i < 5; $i++) 
 				{				
@@ -4976,7 +4977,7 @@ class form
 		return "\n<form action='".$form_action."' ".$method.$target.$name.$form_enctype.$form_js."><div>".e107::getForm()->token()."</div>";
 	}
 
-	function form_text($form_name, $form_size, $form_value, $form_maxlength = FALSE, $form_class = "tbox", $form_readonly = "", $form_tooltip = "", $form_js = "") {
+	function form_text($form_name, $form_size, $form_value, $form_maxlength = FALSE, $form_class = "tbox form-control", $form_readonly = "", $form_tooltip = "", $form_js = "") {
 		$name = ($form_name ? " id='".$form_name."' name='".$form_name."'" : "");
 		$value = (isset($form_value) ? " value='".$form_value."'" : "");
 		$size = ($form_size ? " size='".$form_size."'" : "");
@@ -4986,7 +4987,7 @@ class form
 		return "\n<input class='".$form_class."' type='text' ".$name.$value.$size.$maxlength.$readonly.$tooltip.$form_js." />";
 	}
 
-	function form_password($form_name, $form_size, $form_value, $form_maxlength = FALSE, $form_class = "tbox", $form_readonly = "", $form_tooltip = "", $form_js = "") {
+	function form_password($form_name, $form_size, $form_value, $form_maxlength = FALSE, $form_class = "tbox form-control", $form_readonly = "", $form_tooltip = "", $form_js = "") {
 		$name = ($form_name ? " id='".$form_name."' name='".$form_name."'" : "");
 		$value = (isset($form_value) ? " value='".$form_value."'" : "");
 		$size = ($form_size ? " size='".$form_size."'" : "");
@@ -5009,7 +5010,7 @@ class form
 		$tooltip = ($form_tooltip ? " title='".$form_tooltip."'" : "");
 		$wrap = ($form_wrap ? " wrap='".$form_wrap."'" : "");
 		$style = ($form_style ? " style='".$form_style."'" : "");
-		return "\n<textarea class='tbox' cols='".$form_columns."' rows='".$form_rows."' ".$name.$form_js.$style.$wrap.$readonly.$tooltip.">".$form_value."</textarea>";
+		return "\n<textarea class='tbox form-control' cols='".$form_columns."' rows='".$form_rows."' ".$name.$form_js.$style.$wrap.$readonly.$tooltip.">".$form_value."</textarea>";
 	}
 
 	function form_checkbox($form_name, $form_value, $form_checked = 0, $form_tooltip = "", $form_js = "") {
@@ -5035,7 +5036,7 @@ class form
 	}
 
 	function form_select_open($form_name, $form_js = "") {
-		return "\n<select id='".$form_name."' name='".$form_name."' class='tbox' ".$form_js." >";
+		return "\n<select id='".$form_name."' name='".$form_name."' class='tbox form-control' ".$form_js." >";
 	}
 
 	function form_select_close() {
