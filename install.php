@@ -63,6 +63,11 @@ e107_ini_set('arg_separator.output',     '&amp;');
 e107_ini_set('session.use_only_cookies', 1);
 e107_ini_set('session.use_trans_sid',    0);
 
+if (function_exists('date_default_timezone_set'))
+{
+	date_default_timezone_set('UTC');
+}
+
 define('MAGIC_QUOTES_GPC', (ini_get('magic_quotes_gpc') ? true : false));
 
 $php_version = phpversion();
@@ -273,6 +278,27 @@ class e_install
 		fclose($logfp);
 	}
 
+
+
+	function add_button($id, $title='', $align = "right", $type = "submit")
+	{
+
+		global $e_forms;
+
+		$e_forms->form .= "<div class='buttons-bar inline' style='text-align: {$align}; z-index: 10;'>";
+		if($id != 'start')
+		{
+			//		$this->form .= "<a class='btn btn-large ' href='javascript:history.go(-1)'>&laquo; ".LAN_BACK."</a>&nbsp;";
+			$prevStage = ($this->stage - 1);
+			$e_forms->form .= "<button class='btn btn-large no-validate ' name='back' value='".$prevStage."' type='submit'>&laquo; ".LAN_BACK."</button>&nbsp;";
+		}
+		if($id != 'back')
+		{
+			$e_forms->form .= "<input type='{$type}' id='{$id}' name='{$id}' value='{$title} &raquo;' class='btn btn-large btn-primary' />";
+		}
+		$e_forms->form .= "</div>\n";
+	}
+
 	function renderPage()
 	{
 		if(!isset($_POST['stage']))
@@ -280,6 +306,11 @@ class e_install
 			$_POST['stage'] = 1;
 		}
 		$_POST['stage'] = intval($_POST['stage']);
+
+		if(!empty($_POST['back']))
+		{
+			$_POST['stage'] = intval($_POST['back']);
+		}
 
 		switch ($_POST['stage'])
 		{
@@ -313,7 +344,7 @@ class e_install
 
 		if($_SERVER['QUERY_STRING'] == "debug")
 		{
-			$this->template->SetTag("debug_info", print_a($this,TRUE));
+			$this->template->SetTag("debug_info", print_a($this->previous_steps,TRUE));
 		}
 		else
 		{
@@ -365,7 +396,7 @@ class e_install
 		$e_forms->start_form("language_select", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
 		$e_forms->add_select_item("language", $this->get_languages(), "English");
 		$this->finish_form();
-		$e_forms->add_button("start", LANINS_035);
+		$this->add_button("start", LANINS_035);
 		$output = "
 			<div style='text-align: center;'>
 				<div class='alert alert-info alert-block'>
@@ -383,8 +414,11 @@ class e_install
 		global $e_forms;
 		$this->stage = 2;
 		$this->logLine('Stage 2 started');
-		$this->previous_steps['language'] = $_POST['language'];
-		
+
+		if(!empty($_POST['language']))
+		{
+			$this->previous_steps['language'] = $_POST['language'];
+		}
 		$this->template->SetTag("installation_heading", LANINS_001);
 		$this->template->SetTag("stage_pre", LANINS_002);
 		$this->template->SetTag("stage_num", LANINS_021);
@@ -417,7 +451,7 @@ class e_install
 				<tr>
 					<td><label for='name'>".LANINS_025."</label></td>
 					<td>
-						<input class='tbox' type='text' name='name' id='name' value='{$this->previous_steps['mysql']['user']}' size='40' value='' maxlength='100' required='required' />
+						<input class='tbox' type='text' name='name' id='name' value='".varset($this->previous_steps['mysql']['user'])."' size='40' value='' maxlength='100' required='required' />
 						<span class='field-help'>".LANINS_031."</span>
 					</td>
 				</tr>
@@ -425,7 +459,7 @@ class e_install
 				<tr>
 					<td><label for='password'>".LANINS_026."</label></td>
 					<td>
-						<input class='tbox' type='password' name='password' size='40' id='password' value='{$this->previous_steps['mysql']['password']}' maxlength='100' {$isrequired} />
+						<input class='tbox' type='password' name='password' size='40' id='password' value='".varset($this->previous_steps['mysql']['password'])."' maxlength='100' {$isrequired} />
 						<span class='field-help'>".LANINS_032."</span>
 					</td>
 				</tr>
@@ -453,7 +487,7 @@ class e_install
 			
 		$e_forms->add_plain_html($output);
 		$this->finish_form();
-		$e_forms->add_button("submit", LANINS_035);
+		$this->add_button("submit", LANINS_035);
 		$this->template->SetTag("stage_content", $page_info.$e_forms->return_form());
 		$this->logLine('Stage 2 completed');
 	}
@@ -466,7 +500,7 @@ class e_install
 	 */	
 	private function updatePaths()
 	{
-		$hash = e107::makeSiteHash($this->previous_steps['mysql']['db'],$this->previous_steps['mysql']['prefix']);
+		$hash = $this->e107->makeSiteHash($this->previous_steps['mysql']['db'],$this->previous_steps['mysql']['prefix']);
 		$this->e107->site_path = $hash;	
 		
 		$this->previous_steps['paths']['hash'] = $hash;
@@ -488,12 +522,7 @@ class e_install
 
 	private function stage_3()
 	{
-		
-		if(!empty($_POST['back']))
-		{
-			return $this->stage_2(); 	
-		}
-		
+
 		global $e_forms;
 		$success = TRUE;
 		$this->stage = 3;
@@ -580,7 +609,7 @@ class e_install
 			</div>
 			\n";
 			$e_forms->add_plain_html($output);
-			$e_forms->add_button("submit", LANINS_035);
+			$this->add_button("submit", LANINS_035);
 			$this->template->SetTag("stage_title", LANINS_040);
 		}
 		else
@@ -599,12 +628,12 @@ class e_install
 				$success = false; 
 				$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
 				$head = str_replace('[x]', '<b>'.$this->previous_steps['mysql']['db'].'</b>', LANINS_127);
-				$alertType = 'error';	
-				$e_forms->add_plain_html("
-				<input type='submit' id='overwritedb' name='back' value=\"'&laquo; ".LAN_BACK."\" class='btn btn-large' />&nbsp;
+				$alertType = 'error';
+				$this->add_button('overwritedb', LANINS_128);
+			/*	$e_forms->add_plain_html("
 				<input type='submit' id='overwritedb' name='overwritedb' value=\"".LANINS_128." &raquo;\" class='btn btn-large btn-primary' />"
 				
-				);
+				);*/
 
 				$this->finish_form(3);
 				$this->template->SetTag("stage_content", "<div class='alert alert-block alert-{$alertType}'>".$head."</div>".$e_forms->return_form());
@@ -667,13 +696,13 @@ class e_install
 			{
 				$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
 				// $page_content .= "<br /><br />".LANINS_045."<br /><br />";
-				$e_forms->add_button("submit", LANINS_035);
+				$this->add_button("submit", LANINS_035);
 				$alertType = 'success';
 			}
 			else 
 			{
 				
-				$e_forms->add_button("back", LANINS_035);
+				$this->add_button("back", LANINS_035);
 			}
 			$head = $page_content;
 		}
@@ -780,12 +809,12 @@ class e_install
 		$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
 		if(!$perms_pass)
 		{
-			$e_forms->add_button("retest_perms", LANINS_009);
+			$this->add_button("retest_perms", LANINS_009);
 			$this->stage = 3; // make the installer jump back a step
 		}
 		elseif ($perms_pass && !$version_fail && $xml_installed)
 		{
-			$e_forms->add_button("continue_install", LANINS_020);
+			$this->add_button("continue_install", LANINS_020);
 		}
 		
 		$permColor	= ($perms_pass == true) ? "text-success" : "text-error";
@@ -896,7 +925,7 @@ class e_install
 			\n";
 		$e_forms->add_plain_html($output);
 		$this->finish_form();
-		$e_forms->add_button("submit", LANINS_035);
+		$this->add_button("submit", LANINS_035);
 		$this->template->SetTag("stage_content", $e_forms->return_form());
 		$this->logLine('Stage 5 completed');
 	}
@@ -1060,7 +1089,7 @@ class e_install
 			\n";
 		$e_forms->add_plain_html($output);
 		$this->finish_form();
-		$e_forms->add_button("submit", LANINS_035);
+		$this->add_button("submit", LANINS_035);
 		$this->template->SetTag("stage_content", $e_forms->return_form());
 		$this->logLine('Stage 6 completed');
 	}
@@ -1180,7 +1209,7 @@ class e_install
 		$e_forms->start_form("confirmation", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
 		$page = '<div class="alert alert-success">'.nl2br(LANINS_057).'</div>';
 		$this->finish_form();
-		$e_forms->add_button("submit", LANINS_035);
+		$this->add_button("submit", LANINS_035);
 
 		$this->template->SetTag("stage_content", $page.$e_forms->return_form());
 		$this->logLine('Stage 7 completed');
@@ -1240,7 +1269,7 @@ class e_install
 					
 					$page .= "<p class='text-warning'>".$htaccessError."</p>";		
 				}	
-				$e_forms->add_button('submit', LANINS_035);
+				$this->add_button('submit', LANINS_035);
 			}
 		 
 		$this->finish_form();
@@ -1434,6 +1463,11 @@ class e_install
 		$qry = "REPLACE INTO {$this->previous_steps['mysql']['prefix']}user VALUES ({$userp})";
 		$this->dbqry("REPLACE INTO {$this->previous_steps['mysql']['prefix']}user VALUES ({$userp})" );
 		$this->logLine('Admin user created');
+
+		// Add Default user-extended values;
+		$extendedQuery = "REPLACE INTO `{$this->previous_steps['mysql']['prefix']}user_extended` (`user_extended_id` ,	`user_hidden_fields`) VALUES ('1', NULL 	);";
+		$this->dbqry($extendedQuery);
+
 		mysql_close($this->dbLink);
 		
 		e107::getMessage()->reset(false, false, true);
@@ -1761,22 +1795,7 @@ class e_forms
 		$this->form .= "</select>\n";
 	}
 	
-	
 
-	function add_button($id, $title, $align = "right", $type = "submit")
-	{
-		$this->form .= "<div class='buttons-bar inline' style='text-align: {$align}; z-index: 10;'>";
-		if($id != 'start')
-		{
-			$this->form .= "<a class='btn btn-large ' href='javascript:history.go(-1)'>&laquo; ".LAN_BACK."</a>&nbsp;";
-		//	$this->form .= "<button class='btn btn-large ' name='back' id='back' value='1' type='submit'>&laquo; Back</button>&nbsp;";
-		}
-		if($id != 'back')
-		{			
-			$this->form .= "<input type='{$type}' id='{$id}' value='{$title} &raquo;' class='btn btn-large btn-primary' />";
-		}
-		$this->form .= "</div>\n";
-	}
 
 	function add_hidden_data($id, $data)
 	{
@@ -1979,21 +1998,25 @@ function template_data()
 		
 			$("input,textarea,select,label,.e-tip").each(function(c) {
 						
-			var t = $(this).nextAll(".field-help");
-			t.hide();
+				var t = $(this).nextAll(".field-help");
+				t.hide();
 		
-			$(this).tooltip({
-				title: function() {
-					var tip = t.html();			
-					return tip; 
-				},
-				fade: true,
-				html: true,
-				placement: "right",
-				delay: { show: 200, hide: 200 } 
+				$(this).tooltip({
+					title: function() {
+						var tip = t.html();
+						return tip;
+					},
+					fade: true,
+					html: true,
+					placement: "right",
+					delay: { show: 200, hide: 200 }
+				});
 			});
-		
-		});
+
+			// disable validation for back-button.
+			$(".no-validate").click(function () {
+				$("form").attr( "novalidate",true );
+			});
 		
 		});
 		
