@@ -454,16 +454,17 @@ class e107forum
 
 	private function loadPermList()
 	{
-		$e107 = e107::getInstance();
-		if($tmp = $e107->ecache->retrieve_sys('forum_perms'))
+		if($tmp = e107::getCache()->retrieve_sys('forum_perms'))
 		{
+			e107::getMessage()->addDebug("Using Permlist cache: True");
 			$this->permList = e107::unserialize($tmp);
 		}
 		else
 		{
+			e107::getMessage()->addDebug("Using Permlist cache: False");
 			$this->_getForumPermList();
 			$tmp = e107::serialize($this->permList, false);
-			$e107->ecache->set_sys('forum_perms', $tmp);
+			e107::getCache()->set_sys('forum_perms', $tmp);
 		}
 		unset($tmp);
 	}
@@ -497,7 +498,6 @@ class e107forum
 
 	private function _getForumPermList()
 	{
-		$e107 = e107::getInstance();
 		$sql = e107::getDb();
 
 		$this->permList = array();
@@ -535,6 +535,12 @@ class e107forum
 					$tmp[$row['forum_parent']] = 1;
 				}
 				ksort($tmp);
+				if($key == 'post')
+				{
+					//echo "<h3>Raw Perms</h3>";
+				//	echo "Qry: ".$qryList['post'];
+				//	print_a($tmp);
+				}
 				$this->permList[$key] = array_keys($tmp);
 				$this->permList[$key.'_list'] = implode(',', array_keys($tmp));
 			}
@@ -545,6 +551,7 @@ class e107forum
 	
 	function checkPerm($forumId, $type='view')
 	{
+	//	print_a( $this->permList[$type]);
 		return (in_array($forumId, $this->permList[$type]));
 	}
 
