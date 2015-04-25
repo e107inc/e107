@@ -1671,7 +1671,7 @@ class e107plugin
 		$sql = e107::getDb();
 
 		// Add or Remove Table --------------
-		if($function == 'install' || $function = 'uninstall')
+		if($function == 'install' || $function == 'uninstall')
 		{
 			$contents = file_get_contents($sqlFile);
 
