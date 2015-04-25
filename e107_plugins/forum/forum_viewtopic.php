@@ -10,7 +10,11 @@
  *
 */
 
-require_once ('../../class2.php');
+if(!defined('e107_INIT'))
+{
+	require_once('../../class2.php');
+}
+
 define('NAVIGATION_ACTIVE','forum');
 
 $e107 = e107::getInstance();
@@ -197,7 +201,6 @@ if(is_array($FORUM_VIEWTOPIC_TEMPLATE) && deftrue('BOOTSTRAP',false))
 }
 
 
-
 // get info for main thread -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 $tVars = new e_vars;
 $forum->set_crumb(true, '', $tVars); // Set $BREADCRUMB (and BACKLINK)
@@ -242,7 +245,9 @@ $tVars->THREADSTATUS = (!$thread->threadInfo['thread_active'] ? LAN_FORUM_2004 :
 if ($thread->pages > 1)
 {
 	if(!$thread->page) $thread->page = 1;
-	$url = rawurlencode(e107::getUrl()->create('forum/thread/view', array('name' => $thread->threadInfo['thread_name'], 'id' => $thread->threadId, 'page' => '[FROM]')));
+//	$url = rawurlencode(e107::getUrl()->create('forum/thread/view', array('name' => $thread->threadInfo['thread_name'], 'id' => $thread->threadId, 'page' => '[FROM]')));
+
+	$url = e_REQUEST_SELF."?p=[FROM]"; // SEF URL Friendly.
 	$parms = "total={$thread->pages}&type=page&current={$thread->page}&url=".$url."&caption=off&tmpl=default&navcount=4&glyphs=1";
 	
 	//XXX FIXME - pull-down template not practical here. Can we force another?

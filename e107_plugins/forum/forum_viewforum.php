@@ -10,7 +10,10 @@
 *
 */
 
-require_once('../../class2.php');
+if(!defined('e107_INIT'))
+{
+	require_once('../../class2.php');
+}
 $e107 = e107::getInstance();
 if (!$e107->isInstalled('forum'))
 {
@@ -28,10 +31,15 @@ if (isset($_POST['fjsubmit']))
 	exit;
 }
 
-if (!e_QUERY)
+if (!e_QUERY && empty($_GET))
 {
 	header('Location:'.e107::getUrl()->create('forum/forum/main', array(), 'full=1&encode=0'));
 	exit;
+}
+
+if(!empty($_GET['sef']))
+{
+	$_REQUEST['id'] = $sql->retrieve('forum', 'forum_id', "forum_sef= '".$tp->toDB($_GET['sef'])."' LIMIT 1");
 }
 
 require_once(e_PLUGIN.'forum/forum_class.php');
@@ -51,6 +59,7 @@ $fVars->THREADTITLE = LAN_FORUM_1003;
 $fVars->REPLYTITLE = LAN_FORUM_0003;
 $fVars->LASTPOSTITLE = LAN_FORUM_0004;
 $fVars->VIEWTITLE = LAN_FORUM_1005;
+
 
 $forumId = (int)$_REQUEST['id'];
 
@@ -485,7 +494,14 @@ function parse_thread($thread_info)
 	{
 		$title = '';
 	}
-	$tVars->THREADNAME = "<a {$title} href='".e107::getUrl()->create('forum/thread/view', array('id' => $threadId, 'name' => $thread_name))."'>{$thread_name}</a>";
+	// $tVars->THREADNAME = "<a {$title} href='".e107::getUrl()->create('forum/thread/view', array('id' => $threadId, 'name' => $thread_name))."'>{$thread_name}</a>";
+
+//	$url = e107::getUrl()->create('forum/thread/view', array('id' => $threadId, 'name' => $thread_name));
+
+	$url = e107::url('forum','topic', $thread_info);
+	$tVars->THREADNAME = "<a {$title} href='".$url."'>{$thread_name}</a>";
+
+
 	// FIXME - pages -> convert to nextprev shortcode
 	$pages = ceil(($tVars->REPLIES)/$forum->prefs->get('postspage'));
 	$urlparms = $thread_info;

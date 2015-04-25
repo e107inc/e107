@@ -16,6 +16,7 @@ CREATE TABLE forum (
   `forum_postclass` smallint(5) NOT NULL default '0',
   `forum_threadclass` smallint(5) NOT NULL default '0',
   `forum_options` text,
+  `forum_sef` varchar(250) default NULL,
   PRIMARY KEY  (`forum_id`),
   KEY `forum_parent` (`forum_parent`),
   KEY `forum_sub` (`forum_sub`)
@@ -36,6 +37,7 @@ CREATE TABLE forum_thread (
   `thread_lastuser_anon` varchar(30) default NULL,
   `thread_total_replies` int(10) unsigned NOT NULL default '0',
   `thread_options` text,
+  `thread_sef` varchar(250) default NULL,
   PRIMARY KEY  (`thread_id`),
   KEY `thread_forum_id` (`thread_forum_id`),
   KEY `thread_sticky` (`thread_sticky`),

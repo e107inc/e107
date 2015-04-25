@@ -726,7 +726,12 @@ class e107forum
 		$e107 = e107::getInstance();
 		$info = array();
 //		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
+
+		$threadInfo['thread_sef'] = eHelper::title2sef($threadInfo['thread_name']);
+
 		$info['data'] = $threadInfo;
+
+
 		if($newThreadId = e107::getDb()->insert('forum_thread', $info))
 		{
 		  	e107::getEvent()->trigger('user_forum_topic_created', $info);
@@ -782,6 +787,8 @@ class e107forum
 	function threadUpdate($threadId, $threadInfo)
 	{
 		$info = array();
+		$threadInfo['thread_sef'] = eHelper::title2sef($threadInfo['thread_name']);
+
 		$info['data'] = $threadInfo;
 //		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
 		$info['WHERE'] = 'thread_id = '.(int)$threadId;
@@ -1530,15 +1537,22 @@ class e107forum
 		}
 		return $ret;
 	}
-	
-	
+
+
+	/**
+	 * @param $forumId
+	 * @param $from
+	 * @param $view
+	 * @return array
+	 */
 	function forumGetThreads($forumId, $from, $view)
 	{
 		$e107 = e107::getInstance();
 		$sql = e107::getDb();
 		$forumId = (int)$forumId;
 		$qry = "
-		SELECT t.*, u.user_name, lpu.user_name AS lastpost_username from `#forum_thread` as t
+		SELECT t.*, f.forum_id, f.forum_sef, u.user_name, lpu.user_name AS lastpost_username from `#forum_thread` as t
+		LEFT JOIN `#forum` AS f ON t.thread_forum_id = f.forum_id
 		LEFT JOIN `#user` AS u ON t.thread_user = u.user_id
 		LEFT JOIN `#user` AS lpu ON t.thread_lastuser = lpu.user_id
 		WHERE t.thread_forum_id = {$forumId}
@@ -1876,14 +1890,14 @@ class e107forum
 				$forum_sub_parent = (substr($forumInfo['sub_parent'], 0, 1) == '*' ? substr($forumInfo['sub_parent'], 1) : $forumInfo['sub_parent']);
 		}
 		
-		$breadcrumb[]	= array('text'=>$tp->toHTML($forumInfo['parent_name'])		, 'url'=> e107::getUrl()->create('forum/forum/main')."#".$frm->name2id($forumInfo['parent_name']));
+		$breadcrumb[]	= array('text'=>$tp->toHTML($forumInfo['parent_name'])		, 'url'=> e107::url('forum', 'index')."#".$frm->name2id($forumInfo['parent_name']));
 	
 		if($forumInfo['forum_sub'])
 		{
 			$breadcrumb[]	= array('text'=> ltrim($forumInfo['sub_parent'], '*')		, 'url'=> e107::getUrl()->create('forum/forum/view', "id={$forumInfo['forum_sub']}"));
 		}
 	
-		$breadcrumb[]	= array('text'=>ltrim($forumInfo['forum_name'], '*')		, 'url'=> (e_PAGE !='forum_viewforum.php') ? e107::getUrl()->create('forum/forum/view', $forumInfo) : null);
+		$breadcrumb[]	= array('text'=>ltrim($forumInfo['forum_name'], '*')		, 'url'=> (e_PAGE !='forum_viewforum.php') ? e107::url('forum', 'forum', $forumInfo) : null);
 		
 		if(vartrue($forumInfo['thread_name']))
 		{

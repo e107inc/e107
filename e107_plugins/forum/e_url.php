@@ -32,18 +32,18 @@ class forum_url // plugin-folder + '_url'
 			
 		);
 
-
 		$config['topic'] = array(
-			'regex'			=> '^forum/(.*)/(.*)$',
-			'sef'			=> 'forum/{forum_sef}/{topic_sef}',
-			'redirect'		=> '{e_PLUGIN}forum/forum_viewtopic.php?id=$1'
+			'regex'			=> '^forum/(.*)/(\d*)-([\w-]*)/?\??(.*)',
+			'sef'			=> 'forum/{forum_sef}/{thread_id}-{thread_sef}',
+			'redirect'		=> '{e_PLUGIN}forum/forum_viewtopic.php?id=$2&$4'
 		);
 
 
 		$config['forum'] = array(
 			'regex'			=> '^forum/(.*)$',
 			'sef'			=> 'forum/{forum_sef}',
-			'redirect'		=> '{e_PLUGIN}forum/forum_viewforum.php?id=$1'
+			'redirect'		=> '{e_PLUGIN}forum/forum_viewforum.php?sef=$1',
+			'legacy'        => '{e_PLUGIN}forum/forum_viewforum.php?id={forum_id}'
 		);
 
 		return $config;
