@@ -2616,9 +2616,27 @@ class e107
 		$tmp = e107::getAddonConfig('e_url');
 		$tp = e107::getParser();
 
+
+
 		if(varset($tmp[$plugin][$key]['sef']))
 		{
-			if(deftrue('e_MOD_REWRITE'))  // Search-Engine-Friendly URLs active.
+
+			preg_match_all('#{([a-z_]*)}#', $tmp[$plugin][$key]['sef'],$matches);
+
+			$active = true;
+
+			foreach($matches[1] as $k=>$v) // check if a field value is missing, if so, revent to legacy url.
+			{
+				if(!isset($row[$v]))
+				{
+					e107::getMessage()->addDebug("Missing value for ".$v." in ".$plugin."/e_url.php - '".$key."'");
+					$active = false;
+					break;
+				}
+			}
+
+
+			if(deftrue('e_MOD_REWRITE') && ($active == true))  // Search-Engine-Friendly URLs active.
 			{
 				$rawUrl = $tp->simpleParse($tmp[$plugin][$key]['sef'], $row);
 
@@ -2634,20 +2652,22 @@ class e107
 			else // Legacy URL.
 			{
 
-				preg_match_all('#({[a-z_]*})#', $tmp[$plugin][$key]['sef'],$matches);
-
 				$srch = array();
 				$repl = array();
 
-				foreach($matches[1] as $k=>$val)
+				foreach($matches[0] as $k=>$val)
 				{
 					$srch[] = '$'.($k+1);
 					$repl[] = $val;
 				}
 
-				$urlTemplate = str_replace($srch,$repl,$tmp[$plugin][$key]['redirect']);
+				$template = isset($tmp[$plugin][$key]['legacy']) ? $tmp[$plugin][$key]['legacy'] : $tmp[$plugin][$key]['redirect'];
+
+				$urlTemplate = str_replace($srch,$repl, $template);
 				$urlTemplate = $tp->replaceConstants($urlTemplate, $mode);
 				$legacyUrl = $tp->simpleParse($urlTemplate, $row);
+
+				$legacyUrl = preg_replace('/&?\$[\d]/i', "", $legacyUrl); // remove any left-over $x (including prefix of '&')
 
 				return $legacyUrl;
 			}

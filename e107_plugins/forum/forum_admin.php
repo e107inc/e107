@@ -126,8 +126,11 @@ if(deftrue('NEW_FORUMADMIN'))
 		protected $fields 		= array (  'checkboxes'         =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
 		                     'forum_id'          =>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		                     'forum_name'        =>   array ( 'title' => LAN_TITLE, 'type' => 'method', 'inline'=>true,  'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		                                 'forum_description' =>   array ( 'title' => LAN_DESCRIPTION, 'type' => 'textarea', 'data' => 'str', 'width' => '30%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		                                    'forum_parent'      =>   array ( 'title' => 'Parent', 'type' => 'dropdown', 'data' => 'int', 'width' => '10%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		                     'forum_sef'        =>   array ( 'title' => LAN_SEFURL, 'type' => 'text', 'inline'=>true, 'noedit'=>false, 'data' => 'str', 'width' => 'auto', 'help' => 'Leave blank to auto-generate it from the title above.', 'readParms' => '', 'writeParms' => 'size=xxlarge', 'class' => 'left', 'thclass' => 'left',  ),
+
+		                     'forum_description' =>   array ( 'title' => LAN_DESCRIPTION, 'type' => 'textarea', 'data' => 'str', 'width' => '30%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+
+		                     'forum_parent'      =>   array ( 'title' => 'Parent', 'type' => 'dropdown', 'data' => 'int', 'width' => '10%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		                                    'forum_sub'         =>   array ( 'title' => 'SubForum of', 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		                                    'forum_moderators' =>   array ( 'title' => 'Moderators', 'type' => 'userclass', 'inline'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => 'classlist=admin,main,classes', 'writeParms' => "classlist=admin,main,classes", 'class' => 'left', 'thclass' => 'left',  ),
 		                                    'forum_threads'     =>   array ( 'title' => 'Threads', 'type' => 'number', 'data' => 'int', 'noedit'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
@@ -143,7 +146,8 @@ if(deftrue('NEW_FORUMADMIN'))
 		                       //             'Sort' =>   array ( 'title' => 'Sort', 'type' => 'text', 'data' => 'str', 'noedit'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 
 		                                    'forum_options' =>   array ( 'title' => 'Options', 'type' => 'hidden', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		                                    'options' =>   array ( 'title' => LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1', 'sort'=>1 ),
+
+		                     'options' =>   array ( 'title' => LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1', 'sort'=>1 ),
 		);
 
 		protected $fieldpref = array('forum_name', 'forum_parent', 'Sort', 'forum_description',  'forum_class', 'forum_postclass', 'forum_threadclass', 'forum_order');
@@ -334,6 +338,12 @@ if(deftrue('NEW_FORUMADMIN'))
 			$parentOrder = $sql->retrieve('forum','forum_order','forum_id='.$new_data['forum_parent']." LIMIT 1");
 
 			$new_data['forum_order'] = $parentOrder + 50;
+
+			if(empty($new_data['forum_sef']))
+			{
+				$new_data['forum_sef'] = eHelper::title2sef($new_data['forum_name']);
+			}
+			
 			return $new_data;
 		}
 
@@ -352,7 +362,12 @@ if(deftrue('NEW_FORUMADMIN'))
 
 		public function beforeUpdate($new_data, $old_data, $id)
 		{
-			// return $new_data;
+			if(empty($new_data['forum_sef']))
+			{
+				$new_data['forum_sef'] = eHelper::title2sef($new_data['forum_name']);
+			}
+
+			return $new_data;
 		}
 
 		public function afterUpdate($new_data, $old_data, $id)
