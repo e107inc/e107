@@ -1551,11 +1551,13 @@ class e107forum
 		$sql = e107::getDb();
 		$forumId = (int)$forumId;
 		$qry = "
-		SELECT t.*, f.forum_id, f.forum_sef, u.user_name, lpu.user_name AS lastpost_username from `#forum_thread` as t
+		SELECT t.*, f.forum_id, f.forum_sef, u.user_name, lpu.user_name AS lastpost_username, MAX(p.post_id) AS lastpost_id FROM `#forum_thread` as t
 		LEFT JOIN `#forum` AS f ON t.thread_forum_id = f.forum_id
+		LEFT JOIN `#forum_post` AS p ON t.thread_id = p.post_thread
 		LEFT JOIN `#user` AS u ON t.thread_user = u.user_id
 		LEFT JOIN `#user` AS lpu ON t.thread_lastuser = lpu.user_id
 		WHERE t.thread_forum_id = {$forumId}
+		GROUP BY thread_id
 		ORDER BY
 		t.thread_sticky DESC,
 		t.thread_lastpost DESC
@@ -1579,7 +1581,8 @@ class e107forum
 		$sql = e107::getDb();
 		$id = (int)$id;
 		$qry = "
-		SELECT p.post_user, p.post_user_anon, p.post_datestamp, p.post_thread, u.user_name FROM `#forum_post` AS p
+		SELECT p.post_user, p.post_id, p.post_user_anon, p.post_datestamp, p.post_thread, t.thread_sef, u.user_name FROM `#forum_post` AS p
+		LEFT JOIN `#forum_thread` AS t ON p.post_thread = t.thread_id
 		LEFT JOIN `#user` AS u ON u.user_id = p.post_user
 		WHERE p.post_thread = {$id}
 		ORDER BY p.post_datestamp DESC LIMIT 0,1

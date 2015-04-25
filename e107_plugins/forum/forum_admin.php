@@ -343,7 +343,7 @@ if(deftrue('NEW_FORUMADMIN'))
 			{
 				$new_data['forum_sef'] = eHelper::title2sef($new_data['forum_name']);
 			}
-			
+
 			return $new_data;
 		}
 
