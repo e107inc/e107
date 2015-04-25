@@ -1453,8 +1453,8 @@ class e107plugin
 		}
 		
 		// Handle tables
-		$this->XmlTables($function, $plug); 
-
+		$this->XmlTables($function, $plug, $options);
+/*
 		if ($canContinue && count($sql_list)) // TODO - move more of it to $this->XmlTables(). 
 		{
 			
@@ -1483,21 +1483,7 @@ class e107plugin
 						
 						
 						
-						/*	 Has Bugs.. - @See replacement: $this->XmlTables()
-						case 'upgrade':
-				
-							$tmp = $dbHandler->update_table_structure($ct, FALSE, TRUE, $pref['multilanguage']);
-							if ($tmp === FALSE)
-							{
-								$error[] = 'Error Updating Table: '.$ct[1];
-							}
-							elseif ($tmp !== TRUE)
-							{
-								$error[] = $tmp;
-							}
-									
-						break;
-						*/
+
 						
 						
 						case 'refresh': // Leave things alone
@@ -1520,7 +1506,7 @@ class e107plugin
 				}
 			}
 		}
-
+*/
 
 		if (varset($plug_vars['adminLinks']))
 		{
@@ -1607,7 +1593,7 @@ class e107plugin
 		
 		$this->rebuildUrlConfig();
 
-		e107::getConfig('core')->save();
+		e107::getConfig('core')->save(true, false, false);
 
 		/*	if($function == 'install')
 		 {
@@ -1657,20 +1643,84 @@ class e107plugin
 
 	}
 
-	// Placeholder. 
-	function XmlTables($function, $plug)		
+
+	/**
+	 * Parse {plugin}_sql.php file and install/upgrade/uninstall tables.
+	 * @param $function string install|upgrade|uninstall
+	 * @param $plug - array of plugin data - mostly $plug['plugin_path']
+	 * @param array $options
+	 */
+	function XmlTables($function, $plug, $options = array())
 	{
 
 		$sqlFile = e_PLUGIN.$plug['plugin_path'].'/'.$plug['plugin_path']."_sql.php";
 
-		if(!is_readable($sqlFile))
+		if(!file_exists($sqlFile)) // No File, so return;
 		{
+			return;
+		}
+
+		if(!is_readable($sqlFile)) // File Can't be read.
+		{
+			e107::getMessage()->addError("Can't read SQL definition: ".$sqlFile);
 			return; 
 		}
 		
 		require_once(e_HANDLER."db_verify_class.php");
 		$dbv = new db_verify;
-		
+		$sql = e107::getDb();
+
+		// Add or Remove Table --------------
+		if($function == 'install' || $function = 'uninstall')
+		{
+			$contents = file_get_contents($sqlFile);
+
+			if(empty($contents))
+			{
+				e107::getMessage()->addError("Can't read SQL definition: ".$sqlFile);
+				return;
+			}
+
+			$tableData = $dbv->getTables($contents);
+
+			foreach($tableData['tables'] as $k=>$v)
+			{
+				switch($function)
+				{
+					case "install":
+						$query = "CREATE TABLE  `".MPREFIX.$v."` (\n";
+						$query .= $tableData['data'][$k];
+						$query .= "\n) ENGINE=". vartrue($tableData['engine'][$k],"InnoDB")." DEFAULT CHARSET=utf8 ";
+
+						$txt = "Adding Table: <b>{$v}</b> ";
+						$status = $sql->db_Query($query) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+						break;
+
+					case "uninstall":
+						if (!empty($options['delete_tables']))
+						{
+							$query = "DROP TABLE  `".MPREFIX.$v."`; ";
+							$txt = "Removing Table: {$v} <br />";
+							$status = $sql->db_Query_all($query) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+
+						}
+						else
+						{
+							$status = E_MESSAGE_SUCCESS;
+							$txt = "Table {$v} left in place.";
+						}
+						break;
+				}
+
+
+
+				e107::getMessage()->add($txt, $status);
+				e107::getMessage()->addDebug($query);
+			}
+
+		}
+
+		// Upgrade Table --------------
 		if($function == 'upgrade')
 		{
 			$dbv->errors = array();

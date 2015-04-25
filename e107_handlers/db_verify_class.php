@@ -760,7 +760,7 @@ class db_verify
 				
 		$ret['tables'] = $tables;
 		$ret['data'] = $match[2];
-		
+		$ret['engine'] = $match[4];
 		
 		
 		
