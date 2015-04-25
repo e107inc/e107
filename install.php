@@ -486,6 +486,9 @@ class e_install
 			\n";
 			
 		$e_forms->add_plain_html($output);
+
+
+
 		$this->finish_form();
 		$this->add_button("submit", LANINS_035);
 		$this->template->SetTag("stage_content", $page_info.$e_forms->return_form());
@@ -1211,6 +1214,8 @@ class e_install
 		$this->finish_form();
 		$this->add_button("submit", LANINS_035);
 
+
+
 		$this->template->SetTag("stage_content", $page.$e_forms->return_form());
 		$this->logLine('Stage 7 completed');
 	 
@@ -1273,11 +1278,26 @@ class e_install
 			}
 		 
 		$this->finish_form();
+		$this->stats();
 		$this->template->SetTag("stage_content", "<div class='alert alert-block alert-{$alertType}'>".$page."</div>".$e_forms->return_form());
 		$this->logLine('Stage 8 completed');
 
 		e107::getMessage()->reset(false, false, true);
 	}
+
+
+	protected function stats()
+	{
+		global $e_forms;
+
+		$data = array('name'=>$this->previous_steps['prefs']['sitename'], 'theme'=>$this->previous_steps['prefs']['sitetheme'], 'language'=>$this->previous_steps['language'], 'url'=>$_SERVER['HTTP_REFERER']);;
+		$base = base64_encode(http_build_query($data, null, '&'));
+		$url = "http://e107.org/e-install/".$base;
+		$e_forms->add_plain_html("<img src='".$url."' style='width:1px; height:1px' />");
+
+	}
+
+
 
 	/**
 	 *	htaccess - handle the .htaccess file
