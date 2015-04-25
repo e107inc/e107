@@ -385,8 +385,15 @@ function parse_forum($f, $restricted_string = '')
 		{
 			$lastpost_name = $tp->toHTML($f['forum_lastpost_user_anon']);
 		}
+
+		$lastpost = $forum->threadGetLastpost($lastpost_thread); //XXX TODO inefficient to have SQL query here.
+
 		$fVars->LASTPOSTUSER = $lastpost_name;
-		$fVars->LASTPOSTDATE .=  $gen->computeLapse($lastpost_datestamp, time(), false, false, 'short');
+		// {forum_sef}/{thread_id}-{thread_sef}
+
+		$urlData = array('forum_sef'=>$f['forum_sef'], 'thread_id'=>$lastpost['post_thread'],'thread_sef'=>$lastpost['thread_sef']);
+		$url = e107::url('forum', 'topic', $urlData)."?last=1#post-".$lastpost['post_id'];
+		$fVars->LASTPOSTDATE .= "<a href='".$url."'>". $gen->computeLapse($lastpost_datestamp, time(), false, false, 'short')."</a>";
 		$lastpost_datestamp = $gen->convert_date($lastpost_datestamp, 'forum');
 		$fVars->LASTPOST = $lastpost_datestamp.'<br />'.$lastpost_name." <a href='".$e107->url->create('forum/thread/last', array('name' => $lastpost_name, 'id' => $lastpost_thread))."'>".IMAGE_post2.'</a>';
 		

@@ -438,7 +438,15 @@ function parse_thread($thread_info)
 			}
 		}
 		$tVars->LASTPOST .= '<br />'.$lastpost_datestamp;
-		$tVars->LASTPOSTDATE .=  $gen->computeLapse($thread_info['thread_lastpost'],time(), false, false, 'short');
+
+		$tVars->LASTPOSTUSER = $thread_info['lastpost_username']; // $lastpost_name;
+
+		$urlData = array('forum_sef'=>$thread_info['forum_sef'], 'thread_id'=>$thread_info['thread_id'],'thread_sef'=>$thread_info['thread_sef']);
+		$url = e107::url('forum', 'topic', $urlData);
+		$url .= (strpos($url,'?')!==false) ? '&' : '?';
+		$url .= "last=1#post-".$thread_info['lastpost_id'];
+
+		$tVars->LASTPOSTDATE .= "<a href='".$url."'>".  $gen->computeLapse($thread_info['thread_lastpost'],time(), false, false, 'short')."</a>";
 	}
 
 	$newflag = (USER && $thread_info['thread_lastpost'] > USERLV && !in_array($thread_info['thread_id'], $threadsViewed));
@@ -767,8 +775,10 @@ function fpages($thread_info, $replies)
 			{
 				$aa = $a + 1;
 				$text .= $text ? ' ' : '';
-				$urlparms['page'] = $aa;
-				$url = e107::getUrl()->create('forum/thread/view', $urlparms);
+			//	$urlparms['page'] = $aa;
+
+			//	$url = e107::getUrl()->create('forum/thread/view', $urlparms);
+				$url = e107::url('forum','topic',$urlparms).'?p='.$aa;
 				$opts[] = "<a data-toggle='tooltip' title=\"Go to Page $aa\" href='{$url}'>{$aa}</a>"; //FIXME LAN_GOPAGE syntax?
 			}
 			$text .= ' ... ';
@@ -776,8 +786,9 @@ function fpages($thread_info, $replies)
 			{
 				$aa = $a + 1;
 				$text .= $text ? ' ' : '';
-				$urlparms['page'] = $aa;
-				$url = e107::getUrl()->create('forum/thread/view', $urlparms);
+			//	$urlparms['page'] = $aa;
+			//	$url = e107::getUrl()->create('forum/thread/view', $urlparms);
+				$url = e107::url('forum','topic',$urlparms).'?p='.$aa;
 				$opts[] = "<a data-toggle='tooltip' title=\"Go to Page $aa\" href='{$url}'>{$aa}</a>"; //FIXME LAN_GOPAGE syntax?
 			}
 		}
@@ -787,12 +798,13 @@ function fpages($thread_info, $replies)
 			{
 				$aa = $a + 1;
 				$text .= $text ? ' ' : '';
-				$urlparms['page'] = $aa;
-				$url = e107::getUrl()->create('forum/thread/view', $urlparms);
+			//	$urlparms['page'] = $aa;
+			//	$url = e107::getUrl()->create('forum/thread/view', $urlparms);
+				$url = e107::url('forum','topic',$urlparms).'?p='.$aa;
 				$opts[] =  "<a data-toggle='tooltip' title=\"Go to Page $aa\" href='{$url}'>{$aa}</a>"; //FIXME LAN_GOPAGE syntax?
 			}
 		}
-	
+
 		if(deftrue('BOOTSTRAP'))
 		{
 			$text = "<ul class='pagination pagination-sm forum-viewforum-pagination'>
