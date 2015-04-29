@@ -287,7 +287,7 @@ class themeHandler
 			$themeArray[$file] = array_merge($themeArray[$file], $this->parse_theme_php($file));
 		}
 
-		if(count($themeArray[$file]['css']) > 1)
+		if(!empty($themeArray[$file]['css']) && count($themeArray[$file]['css']) > 1)
 		{
 			$themeArray[$file]['multipleStylesheets'] = TRUE;	
 		}

@@ -121,9 +121,9 @@ if($functions_ok == false)
 include_once("./{$HANDLERS_DIRECTORY}core_functions.php");
 include_once("./{$HANDLERS_DIRECTORY}e107_class.php");
 
-function check_class($whatever)
+function check_class($whatever='')
 {
-	return TRUE;
+	return true;
 }
 
 $override = array();
@@ -225,6 +225,8 @@ class e_install
 		define('USERID', 1);
 		define('USER', true);
 		define('ADMIN', true);
+
+		$tp = e107::getParser();
 		
 		// session instance
 		$this->session = e107::getSession();
@@ -245,6 +247,7 @@ class e_install
 		if(isset($_POST['previous_steps']))
 		{
 			$this->previous_steps = unserialize(base64_decode($_POST['previous_steps']));
+			$this->previous_steps = $tp->toDB($this->previous_steps);
 			unset($_POST['previous_steps']);
 		}
 		else
@@ -252,7 +255,9 @@ class e_install
 			$this->previous_steps = array();
 		}
 		$this->get_lan_file();
-		$this->post_data = $_POST;
+		$this->post_data = $tp->toDB($_POST);
+
+
 
 		$this->template->SetTag('required', '');
 		if(isset($this->previous_steps['language']))
@@ -459,7 +464,7 @@ class e_install
 				<tr>
 					<td><label for='password'>".LANINS_026."</label></td>
 					<td>
-						<input class='tbox' type='password' name='password' size='40' id='password' value='".varset($this->previous_steps['mysql']['password'])."' maxlength='100' {$isrequired} />
+						<input class='tbox' type='password' name='password' size='40' id='password' value='".varset($this->previous_steps['mysql']['password'])."' maxlength='100' {$isrequired}  pattern='[^\x22]+' />
 						<span class='field-help'>".LANINS_032."</span>
 					</td>
 				</tr>
@@ -537,21 +542,21 @@ class e_install
 		$this->template->SetTag("onload", "document.getElementById('name').focus()");
 		$this->template->SetTag("percent", 40);
 		$this->template->SetTag("bartype", 'warning');
-
+		$tp = e107::getParser();
 	
 		if(!empty($_POST['server']))
 		{
-			$this->previous_steps['mysql']['server'] = trim($_POST['server']);
-			$this->previous_steps['mysql']['user'] = trim($_POST['name']);
-			$this->previous_steps['mysql']['password'] = $_POST['password'];
-			$this->previous_steps['mysql']['db'] = trim($_POST['db']);
-			$this->previous_steps['mysql']['createdb'] = (isset($_POST['createdb']) && $_POST['createdb'] == TRUE ? TRUE : FALSE);
-			$this->previous_steps['mysql']['prefix'] = trim($_POST['prefix']);
+			$this->previous_steps['mysql']['server']    = trim($tp->filter($_POST['server']));
+			$this->previous_steps['mysql']['user']      = trim($tp->filter($_POST['name']));
+			$this->previous_steps['mysql']['password']  = trim($tp->filter($_POST['password']));
+			$this->previous_steps['mysql']['db']        = trim($tp->filter($_POST['db']));
+			$this->previous_steps['mysql']['createdb']  = (isset($_POST['createdb']) && $_POST['createdb'] == true ? true : false);
+			$this->previous_steps['mysql']['prefix']    = trim($tp->filter($_POST['prefix']));
 		}
 		
 		if(!empty($_POST['overwritedb']))
 		{
-			$this->previous_steps['mysql']['overwritedb'] = 1;;
+			$this->previous_steps['mysql']['overwritedb'] = 1;
 		}
 					
 		$success = $this->check_name($this->previous_steps['mysql']['db'], FALSE) && $this->check_name($this->previous_steps['mysql']['prefix'], TRUE);
@@ -622,6 +627,7 @@ class e_install
 			if (!$res = @mysql_connect($this->previous_steps['mysql']['server'], $this->previous_steps['mysql']['user'], $this->previous_steps['mysql']['password']))
 			{
 				$success = FALSE;
+				$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
 				$page_content = LANINS_041.nl2br("\n\n<b>".LANINS_083."\n</b><i>".mysql_error()."</i>");
 				
 				$alertType = 'error';
@@ -645,6 +651,7 @@ class e_install
 			}
 			else
 			{
+				$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
 				$page_content = "<i class='icon-ok'></i> ".LANINS_042;
 				// @TODO Check database version here?
 /*
@@ -685,26 +692,31 @@ class e_install
 
 				if (!$this->dbqry($query))
 				{
-					$success = FALSE;
-					$page_content .= "<br /><br />".LANINS_043.nl2br("\n\n<b>".LANINS_083."\n</b><i>".mysql_error()."</i>");
+					$success = false;
+					$alertType = 'error';
+					$page_content .= "<br /><br />";
+					$page_content .= (empty($this->previous_steps['mysql']['createdb'])) ? LANINS_129 : LANINS_043;
+
+
+					$page_content .= nl2br("\n\n<b>".LANINS_083."\n</b><i>".mysql_error()."</i>");
 				}
 				else
 				{
                     $this->dbqry('SET NAMES `utf8`');
+
 					$page_content .= $notification; // "
 				}
 			}
 			
 			if($success)
 			{
-				$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
+
 				// $page_content .= "<br /><br />".LANINS_045."<br /><br />";
 				$this->add_button("submit", LANINS_035);
 				$alertType = 'success';
 			}
 			else 
 			{
-				
 				$this->add_button("back", LANINS_035);
 			}
 			$head = $page_content;
@@ -712,7 +724,9 @@ class e_install
 		if ($success)
 			$this->finish_form();
 		else
+		{
 			$this->finish_form(3);
+		}
 		$this->template->SetTag("stage_content", "<div class='alert alert-block alert-{$alertType}'>".$head."</div>".$e_forms->return_form());
 		$this->logLine('Stage 3 completed');
 	}
@@ -941,6 +955,7 @@ class e_install
 	private function stage_6()
 	{
 		global $e_forms;
+		$tp = e107::getParser();
 		$this->stage = 6;
 		$this->logLine('Stage 6 started');
 
@@ -948,7 +963,7 @@ class e_install
 		if(!vartrue($this->previous_steps['admin']['user']) || varset($_POST['u_name']))
 		{
 			$_POST['u_name'] = str_replace(array("'", '"'), "", $_POST['u_name']);
-			$this->previous_steps['admin']['user'] = $_POST['u_name'];
+			$this->previous_steps['admin']['user'] = $tp->filter($_POST['u_name']);
 		}
 
 		if(!vartrue($this->previous_steps['admin']['display']) || varset($_POST['d_name']))
@@ -956,17 +971,17 @@ class e_install
 			$_POST['d_name'] = str_replace(array("'", '"'), "", $_POST['d_name']);
 			if ($_POST['d_name'] == "")
 			{
-				$this->previous_steps['admin']['display'] = $_POST['u_name'];
+				$this->previous_steps['admin']['display'] = $tp->filter($_POST['u_name']);
 			}
 			else
 			{
-				$this->previous_steps['admin']['display'] = $_POST['d_name'];
+				$this->previous_steps['admin']['display'] = $tp->filter($_POST['d_name']);
 			}
 		}
 
 		if(!vartrue($this->previous_steps['admin']['email']) || varset($_POST['email']))
 		{
-			$this->previous_steps['admin']['email'] = $_POST['email'];
+			$this->previous_steps['admin']['email'] = $tp->filter($_POST['email'],'email');
 		}
 
 		if(varset($_POST['pass1']) || !vartrue($this->previous_steps['admin']['password']))
@@ -1100,7 +1115,8 @@ class e_install
 	private function stage_7()
 	{
 		global $e_forms;
-		
+		$tp = e107::getParser();
+
 		$this->e107->e107_dirs['SYSTEM_DIRECTORY'] = str_replace("[hash]",$this->e107->site_path,$this->e107->e107_dirs['SYSTEM_DIRECTORY']);	
 		$this->e107->e107_dirs['CACHE_DIRECTORY']  = str_replace("[hash]",$this->e107->site_path,$this->e107->e107_dirs['CACHE_DIRECTORY']);
 		$this->e107->e107_dirs['SYSTEM_DIRECTORY'] = str_replace("/".$this->e107->site_path,"",$this->e107->e107_dirs['SYSTEM_DIRECTORY']);
@@ -1118,22 +1134,22 @@ class e_install
 
 		if(varset($_POST['sitename']))
 		{
-			$this->previous_steps['prefs']['sitename'] = $_POST['sitename'];
+			$this->previous_steps['prefs']['sitename'] = $tp->filter($_POST['sitename']);
 		}
 
 		if(varset($_POST['sitetheme']))
 		{
-			$this->previous_steps['prefs']['sitetheme'] = $_POST['sitetheme'];
+			$this->previous_steps['prefs']['sitetheme'] = $tp->filter($_POST['sitetheme']);
 		}
 
 		if(varset($_POST['generate_content']))
 		{
-			$this->previous_steps['generate_content'] = $_POST['generate_content'];
+			$this->previous_steps['generate_content'] = $tp->filter($_POST['generate_content'],'int');
 		}
 
 		if(varset($_POST['install_plugins']))
 		{
-			$this->previous_steps['install_plugins'] = $_POST['install_plugins'];
+			$this->previous_steps['install_plugins'] = $tp->filter($_POST['install_plugins'],'int');
 		}
 
 		// Validate
@@ -1782,7 +1798,7 @@ class e_install
 		if(mysql_errno())
 		{
 			$errorInfo = 'Query Error [#'.mysql_errno().']: '.mysql_error()."\nQuery: {$qry}";
-			echo $errorInfo."<br />";
+		//	echo $errorInfo."<br />";
 			//exit;
 			$this->debug_db_info['db_error_log'][] = $errorInfo;
 			//$this->debug_db_info['db_log'][] = $qry;

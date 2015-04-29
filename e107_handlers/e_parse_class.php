@@ -250,6 +250,7 @@ class e_parse extends e_parser
 	public function __construct()
 	{
 		// initialise the type of UTF-8 processing methods depending on PHP version and mb string extension
+
 		$this->init();
 		$this->initCharset();
 
@@ -496,6 +497,7 @@ class e_parse extends e_parser
 		$core_pref = e107::getConfig();
 		if (is_array($data))
 		{
+			$ret = array();
 			foreach ($data as $key => $var)
 			{
 				//Fix - sanitize keys as well
@@ -514,14 +516,15 @@ class e_parse extends e_parser
 		if ($mod != 'pReFs') //XXX We're not saving prefs. 
 		{
 
-			$data = $this->preFilter($data); // used by bb_xxx.php toDB() functions. bb_code.php toDB() allows us to properly bypass HTML cleaning below. 
+			$data = $this->preFilter($data); // used by bb_xxx.php toDB() functions. bb_code.php toDB() allows us to properly bypass HTML cleaning below.
 
 		//	if(strlen($data) != strlen(strip_tags($data))) // html tags present. // strip_tags()  doesn't function doesnt look for unclosed '>'.
-			if((strpos($data,'[html]') !== false || preg_match('#(?<=<)\w+(?=[^<]*?>)#', $data)) && strpos($mod, 'no_html') === false)
+			if((strpos($data,'[html]') !== false || htmlentities($data, ENT_NOQUOTES,'UTF-8') != $data || preg_match('#(?<=<)\w+(?=[^<]*?>)#', $data)) && strpos($mod, 'no_html') === false)
 			{
 				$this->isHtml = true;
 				$data = $this->cleanHtml($data); // sanitize all html.
-				$data = urldecode($data); // symptom of cleaning the HTML - urlencodes src attributes containing { and } .eg. {e_BASE}
+
+			//	$data = urldecode($data); //XXX Commented out :  NO LONGER REQUIRED. symptom of cleaning the HTML - urlencodes src attributes containing { and } .eg. {e_BASE}
 
 			}
 			else // caused double-encoding of '&'
@@ -1893,6 +1896,11 @@ class e_parse extends e_parser
 		return trim($ret_parser);
 	}
 
+
+
+
+
+
 	/**
 	 * Use it on html attributes to avoid breaking markup . 
 	 * @example echo "<a href='#' title='".$tp->toAttribute($text)."'>Hello</a>"; 
@@ -1900,9 +1908,11 @@ class e_parse extends e_parser
 	function toAttribute($text)
 	{
 		// URLs posted without HTML access may have an &amp; in them.
-		$text = str_replace('&amp;', '&', $text);
+
 		// Xhtml compliance.
 		$text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+
+
 		if(!preg_match('/&#|\'|"|<|>/s', $text))
 		{
 			$text = $this->replaceConstants($text);
@@ -2657,9 +2667,13 @@ class e_parser
     protected $scriptTags 		= array('script','applet','iframe','form','input','button'); //allowed when $pref['post_script'] is enabled.
 	
 	protected $blockTags		= array('pre','div','h1','h2','h3','h4','h5','h6','blockquote'); // element includes its own line-break. 
-        
+
+
+    private $scriptAccess      = false; // nobody.
+
     public function __construct()
     {
+
 		$this->init();
          /*
         $meths = get_class_methods('DomDocument');
@@ -2673,7 +2687,9 @@ class e_parser
      */
     function init()
     {
-        $this->domObj = new DOMDocument();    
+        $this->domObj = new DOMDocument();
+
+
     }
 
 	/**
@@ -2703,9 +2719,30 @@ class e_parser
     public function setAllowedTags($array=array())
     {
         $this->allowedTags = $array;    
-    } 
+    }
 
-     /**
+	/**
+	 * Set Script Access
+	 * @param $val int e_UC_MEMBER, e_UC_NOBODY, e_UC_MAINADMIN or userclass number.
+	 */
+	public function setScriptAccess($val)
+	{
+		$this->scriptAccess = $val;
+	}
+
+	public function getAllowedTags()
+	{
+		return $this->allowedTags;
+
+	}
+
+
+	public function getScriptAccess()
+	{
+		return $this->scriptAccess;
+	}
+
+	/**
      * Set Allowed Attributes. 
      * @param $array 
      */
@@ -3308,7 +3345,10 @@ TMPL;
 
         // -------------------- Encoding ----------------
 
-		echo "<h2>e107 Parser Test</h2>";
+		$acc = $this->getScriptAccess();
+		$accName = e107::getUserclass()->uc_get_classname($acc);
+
+		echo "<h2>e107 Parser Test <small>with script access by <span class='label label-warning'>".$accName."</span></small></h2>";
 		echo"<h3>User-input <small>(eg. from \$_POST)</small></h3>";
 
 	    print_a($text);
@@ -3338,6 +3378,32 @@ TMPL;
 		    echo "<h3>User-input &gg; toDb(\$text, true, false, 'no_html')</h3>";
 		    print_a($dbText2);
 
+		   // toClean
+		    $filter3 = $tp->filter($text, 'wds');
+		    echo "<h3>User-input &gg; filter(\$text, 'wds')</h3>";
+		    print_a( $filter3);
+
+		    // Filter by String.
+		    $filter1 = $tp->filter($text,'str');
+		    echo "<h3>User-input &gg; filter(\$text, 'str')</h3>";
+		    print_a($filter1);
+
+		    // Filter by Encoded.
+		    $filter2 = $tp->filter($text,'enc');
+		    echo "<h3>User-input &gg; filter(\$text, 'enc')</h3>";
+		    print_a($filter2);
+
+
+		    // toAttribute
+		    $toAtt = $tp->toAttribute($text);
+		    echo "<h3>User-input &gg; toAttribute(\$text)</h3>";
+		    print_a($toAtt);
+
+		    // toEmail
+		    $toEmail = $tp->toEmail($text);
+		    echo "<h3>User-input &gg; toEmail(\$text)</h3>";
+		    print_a($toEmail);
+
 
 		    echo "</div>";
 
@@ -3360,6 +3426,11 @@ TMPL;
 
 		if(!empty($advanced))
 		{
+
+			echo "<h3>Allowed Tags</h3>";
+			print_a($this->allowedTags);
+
+
 		    echo "<h3>Converted Paths</h3>";
 		    print_a($this->pathList);
 
@@ -3372,7 +3443,7 @@ TMPL;
 
 	    similar_text($text, html_entity_decode( $toForm, ENT_COMPAT, 'UTF-8'),$perc);
 	    $scoreStyle = ($perc > 98) ? 'label-success' : 'label-danger';
-	    echo "<h3><span class='label ".$scoreStyle."'>Score:  ".number_format($perc)."%</span></h3>";
+	    echo "<h3><span class='label ".$scoreStyle."'>Similarity:  ".number_format($perc)."%</span></h3>";
 
 		echo "<table class='table table-bordered'>
 
@@ -3449,7 +3520,64 @@ return;
          //   print_a($p); 
     }
 
-    
+
+
+	/**
+	 * Filters/Validates using the PHP5 filter_var() method.
+	 * @param $text
+	 * @param $type string str|int|email|url
+	 * @return string | boolean
+	 */
+	function filter($text, $type='str',$validate=false)
+	{
+		if(empty($text))
+		{
+			return $text;
+		}
+
+		if($type == 'w') // words only.
+		{
+			return preg_replace('/[^\w]/',"",$text);
+		}
+
+		if($type == 'wds') // words, digits and spaces only.
+		{
+			return preg_replace('/[^\w\d ]/',"",$text);
+		}
+
+
+		if($validate == false)
+		{
+			$filterTypes = array(
+				'int'   => FILTER_SANITIZE_NUMBER_INT,
+				'str'   => FILTER_SANITIZE_STRING, // no html.
+				'email' => FILTER_SANITIZE_EMAIL,
+				'url'   => FILTER_SANITIZE_URL,
+				'enc'   => FILTER_SANITIZE_ENCODED
+			);
+		}
+		else
+		{
+			$filterTypes = array(
+				'int'   => FILTER_VALIDATE_INT,
+				'email' => FILTER_VALIDATE_EMAIL,
+				'ip'    => FILTER_VALIDATE_IP,
+				'url'   => FILTER_VALIDATE_URL,
+
+			);
+		}
+
+		if(is_array($text))
+		{
+			return filter_var_array($text, $filterTypes[$type]);
+		}
+
+
+		return filter_var($text, $filterTypes[$type]);
+
+	}
+
+
     /**
      * Process and clean HTML from user input.
      * TODO Html5 tag support.
@@ -3481,13 +3609,14 @@ return;
 			$this->init();	
 		}
 
-        if($checkPref)
+		if($this->scriptAccess === false)
+		{
+	        $this->scriptAccess = e107::getConfig()->get('post_script', e_UC_MAINADMIN); // Pref to Allow <script> tags11;
+		}
+
+		if(check_class($this->scriptAccess))
         {
-            $post_scripts = e107::getConfig()->get('post_script', e_UC_MAINADMIN); // Pref to Allow <script> tags
-            if(check_class($post_scripts))
-            {
-                $this->allowedTags = array_merge($this->allowedTags,$this->scriptTags);
-            }
+            $this->allowedTags = array_merge($this->allowedTags, $this->scriptTags);
         }
 
 		
@@ -3660,7 +3789,7 @@ return;
     /**
      * XSS HTML code to test against
      */
-    private function getXss()
+    public function getXss()
     {
 
 $html = <<<EOF
