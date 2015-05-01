@@ -1085,16 +1085,15 @@ class e_layout
             return;
 		};
 		$row = $sql->fetch();
-		
-		// TODO lan
+
 		$text = "<div style='text-align:center;'>
 		<form  id='e-save-form' method='post' action='".e_SELF."?lay=".$this->curLayout."'>
         <fieldset id='core-menus-parametersform'>
-		<legend>Menu parameters ".$row['menu_name']."</legend>
+		<legend>".MENLAN_44." ".$row['menu_name']."</legend>
         <table class='table adminform'>
 		<tr>
 		<td>
-		Parameters (query string format):
+		".MENLAN_45."
 		".$frm->text('menu_parms', $row['menu_parms'], 900, 'class=e-save span7')."
 		</td>
 		</tr>
