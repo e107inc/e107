@@ -59,10 +59,5 @@ define("MENLAN_43", "Menu Preset Activated");
 
 define("MENLAN_44", "Menu parameters");
 define("MENLAN_45", "Parameters (query string format):");
-define("MENLAN_46", "Custom");
-define("MENLAN_47", "Custom");
-define("MENLAN_48", "Custom");
-define("MENLAN_49", "Custom");
-define("MENLAN_50", "Custom");
 
 ?>
