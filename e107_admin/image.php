@@ -1775,7 +1775,7 @@ class media_admin_ui extends e_admin_ui
 
 				if(!$typePath = $this->getPath($upload['type']))
 				{
-					$mes->addError("Couldn't generated path from upload data");
+					$mes->addError(IMALAN_107);
 					return FALSE;
 				}
 				$mes->addDebug(print_a($upload,TRUE));
@@ -1786,7 +1786,10 @@ class media_admin_ui extends e_admin_ui
 
 				if(!rename($oldpath, e_MEDIA.$newpath))
 				{
-					$mes->add("Couldn't move file from ".$oldpath." to ".$newpath, E_MESSAGE_ERROR);
+					$srch = array('[x]','[y]');
+					$repl = array($oldpath,$newpath);
+					$text = str_replace($srch,$repl,IMALAN_108);
+					$mes->add($text, E_MESSAGE_ERROR);
 					return FALSE;
 				};
 
@@ -1817,7 +1820,7 @@ class media_admin_ui extends e_admin_ui
 
 			if(!($typePath = $this->getPath($img_data['media_type'])))
 			{
-				$mes->addError("Couldn't get path ".$typePath);
+				$mes->addError(IMALAN_109." ".$typePath);
 					
 				return FALSE;
 			}
@@ -1834,7 +1837,10 @@ class media_admin_ui extends e_admin_ui
 			
 				if(!rename($oldpath, $newpath))
 				{
-					$mes->add("Couldn't move file from ".$oldpath." to ".str_replace('../', '', $newpath), E_MESSAGE_ERROR);
+					$srch = array('[x]','[y]');
+					$repl = array($oldpath,str_replace('../', '', $newpath));
+					$text = str_replace($srch,$repl,IMALAN_110);
+					$mes->add($text, E_MESSAGE_ERROR);
 					return FALSE;
 				}
 				$img_data['media_url'] = $tp->createConstants($newpath, 'rel');
@@ -1890,7 +1896,8 @@ class media_admin_ui extends e_admin_ui
 
 		if(!vartrue($this->mimePaths[$pmime]))
 		{
-			$mes->add("Couldn't detect mime-type($mime). Upload failed.", E_MESSAGE_ERROR);
+			$text = str_replace('[x]',$mime,IMALAN_111);
+			$mes->add($text, E_MESSAGE_ERROR);
 			return FALSE;
 		}
 
@@ -1900,7 +1907,8 @@ class media_admin_ui extends e_admin_ui
 		{
 			if(!mkdir($dir, 0755))
 			{
-				$mes->add("Couldn't create folder ($dir).", E_MESSAGE_ERROR);
+				$text = str_replace('[x]',$dir,IMALAN_112);
+				$mes->add($text, E_MESSAGE_ERROR);
 				return FALSE;
 			};
 		}
@@ -1929,14 +1937,14 @@ class media_admin_ui extends e_admin_ui
 
 		if(!vartrue($_POST['batch_import_selected']))
 		{
-			$mes->add("Scanning for new media (images, videos, files) in folder: <b> ".e_IMPORT."</b>", E_MESSAGE_INFO);
+			$mes->add(IMALAN_113." <b> ".e_IMPORT."</b>", E_MESSAGE_INFO);
 		}
 
 		if(!count($files))
 		{
 			if(!vartrue($_POST['batch_import_selected']))
 			{
-				$mes->add("No media Found! Please upload some files.", E_MESSAGE_INFO);
+				$mes->add(IMALAN_114, E_MESSAGE_INFO);
 			}
 			
 			$text = $this->uploadTab();
@@ -1958,15 +1966,15 @@ class media_admin_ui extends e_admin_ui
 							<thead>
 								<tr>
 									<th class='center'>".e107::getForm()->checkbox_toggle('e-column-toggle', 'batch_selected')."</th>
-									<th class='center' style='width:50px'>Preview</th>
+									<th class='center' style='width:50px'>".IMALAN_121."</th>
 									<th class='center'>".LAN_FILE."</th>
-									<th >Title (internal use)</th>
-									<th >Caption (seen by public)</th>
-									<th >Author</th>
-									<th>Mime Type</th>
-									<th>File Size</th>
+									<th>".IMALAN_115."</th>
+									<th>".IMALAN_116."</th>
+									<th>".IMALAN_117."</th>
+									<th>".IMALAN_118."</th>
+									<th>".IMALAN_119."</th>
 									<th>".LAN_DATESTAMP."</th>
-									<th class='center last'>Dimensions</th>
+									<th class='center last'>".IMALAN_120."</th>
 								</tr>
 							</thead>
 							<tbody>";
@@ -1981,7 +1989,8 @@ class media_admin_ui extends e_admin_ui
 			
 			if($f['error'])
 			{
-				$mes->addWarning($f['fname']." couldn't be renamed. Check file perms.");
+				$text = str_replace('[x]', $f['fname'], IMALAN_122);
+				$mes->addWarning($text);
 			}
 				
 			$large = e107::getParser()->thumbUrl($f['path'].$f['fname'], 'w=800', true);
@@ -2017,7 +2026,7 @@ class media_admin_ui extends e_admin_ui
 				</tbody>
 						</table>
 						<div class='buttons-bar center'>
-						Import into Category: ".$frm->selectbox('batch_category',$this->cats, $_POST['batch_category']);
+						".IMALAN_123." ".$frm->selectbox('batch_category',$this->cats, $_POST['batch_category']);
 			
 		//	$waterMarkPath = e_THEME.e107::getPref('sitetheme')."/images/watermark.png"; // Now performed site-wide dynamically. 				
 					
@@ -2029,8 +2038,8 @@ class media_admin_ui extends e_admin_ui
 						$text .= "
 						</div>
 						<div class='buttons-bar center'>
-							".$frm->admin_button('batch_import_selected', "Import Selected Files", 'import')
-							.$frm->admin_button('batch_import_delete', "Delete Selected Files", 'delete');				
+							".$frm->admin_button('batch_import_selected', IMALAN_124, 'import')
+							.$frm->admin_button('batch_import_delete', IMALAN_125, 'delete');
 			$text .= "
 						</div>
 					</fieldset>
@@ -2140,7 +2149,7 @@ class media_admin_ui extends e_admin_ui
 		
 		if(!count($_POST['batch_selected']))
 		{
-			$mes->addError("Please check at least one file.");
+			$mes->addError(IMALAN_126);
 			return;
 		}
 		
@@ -2181,7 +2190,7 @@ class media_admin_ui extends e_admin_ui
 			if(!$f['mime'])
 			{
 				
-				$mes->add("Couldn't get file info from : ".$oldpath, E_MESSAGE_WARNING);
+				$mes->add(IMALAN_127." ".$oldpath, E_MESSAGE_WARNING);
 				// $mes->add(print_a($f,true), E_MESSAGE_ERROR);
 				$f['mime'] = "other/file";
 			}
@@ -2225,7 +2234,7 @@ class media_admin_ui extends e_admin_ui
 
 				if($sql->db_Insert("core_media",$insert))
 				{
-					$mes->add("Importing Media: ".$f['fname'], E_MESSAGE_SUCCESS);
+					$mes->add(IMALAN_128." ".$f['fname'], E_MESSAGE_SUCCESS);
 					$this->deleteFileXml($f['fname']);
 				}
 				else
