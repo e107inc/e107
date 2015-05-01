@@ -411,7 +411,7 @@ class banlist_form_ui extends e_admin_form_ui
 				}
 				elseif($this->getController()->getAction() == 'create')
 				{
-					return $this->hidden('banlist_bantype',eIPHandler::BAN_TYPE_MANUAL)."<span class='label label-important'>Blacklist entry</span>"; //TODO LAN
+					return $this->hidden('banlist_bantype',eIPHandler::BAN_TYPE_MANUAL)."<span class='label label-important'>".BANLAN_121."</span>";
 				}
 
 

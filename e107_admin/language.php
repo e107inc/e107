@@ -738,12 +738,12 @@ function multilang_prefs()
 					
 					if($opt)
 					{
-						//TODO LANs and class2.php check. 
+						//TODO class2.php check.
 						$text .= "	
 						<tr>
 							<td>
-							Language by Domain Name
-							<div class='label-note'>Domain determines the site's language. Enter domain without the 'www.'</div>
+							".LANG_LAN_106."
+							<div class='label-note'>".LANG_LAN_107."</div>
 							</td>
 							<td><table style='margin-left:0px;width:400px'>".$opt."</table></td>
 						</tr>";
@@ -1308,17 +1308,15 @@ function available_langpacks()
 		}
 
 		ksort($languages);
-		
-		//TODO LANs
-		
+
 		$text .= "<thead>
 		<tr>
-		<th>Name</th>
-		<th>Version</th>
-		<th>Author</th>
-		<th>Release-date</th>		
-		<th>Compatible</th>
-		<th>Download</th>
+		<th>".LANG_LAN_108."</th>
+		<th>".LANG_LAN_109."</th>
+		<th>".LANG_LAN_110."</th>
+		<th>".LANG_LAN_111."</th>
+		<th>".LANG_LAN_112."</th>
+		<th>".LANG_LAN_113."</th>
 		</tr>
 		</thead>
 		<tbody>";
@@ -1332,7 +1330,7 @@ function available_langpacks()
 				<td>".$value['date']."</td>
 				<td>".$value['compatibility']."</td>
 				
-				<td><a href='".$value['url']."'>Download Pack</a></td>
+				<td><a href='".$value['url']."'>".LANG_LAN_114."</a></td>
 				</tr>";
 		}
 		$text .= "</tbody></table>";
@@ -1396,7 +1394,7 @@ function zip_up_lang($language)
 	{
 		$ret = array();
 		$ret['error'] = TRUE;
-		$message = (defined('LANG_LAN_34')) ? LANG_LAN_34 : "Please verify and correct the remaining [x] error(s) before attempting to create a language-pack.";
+		$message = (defined('LANG_LAN_34')) ? LANG_LAN_34 : LANG_LAN_115;
 		$ret['message'] = str_replace("[x]",$_SESSION['lancheck'][$language]['total'],$message);
 		return $ret;		
 	}
@@ -1405,16 +1403,16 @@ function zip_up_lang($language)
 	{
 		$ret = array();
 		$ret['error'] = TRUE;
-		$ret['message'] = (defined('LANG_LAN_27')) ? LANG_LAN_27 : "Please verify your language files ('Verify') then try again.";
+		$ret['message'] = (defined('LANG_LAN_27')) ? LANG_LAN_27 : LANG_LAN_116;
 		return $ret;	
 	}
 	
 	if(varset($_POST['contribute_pack']) && varset($_SESSION['lancheck'][$language]['total']) !='0')
 	{
 		$ret['error'] = TRUE;
-		$ret['message'] = (defined("LANG_LAN_29")) ? LANG_LAN_29 : "You should correct the remaining errors before contributing your language pack.";	
+		$ret['message'] = (defined("LANG_LAN_29")) ? LANG_LAN_29 : LANG_LAN_117;
 		$ret['message']	 .= "<br />";
-		$ret['message']	 .= (defined('LANG_LAN_27')) ? LANG_LAN_27 : "Please verify your language files ('Verify') then try again.";
+		$ret['message']	 .= (defined('LANG_LAN_27')) ? LANG_LAN_27 : LANG_LAN_118;
 		return $ret;
 	}
 	
@@ -1448,7 +1446,7 @@ function zip_up_lang($language)
 	{
 		$ret['error'] = TRUE;
 		$file = "e107_languages/{$language}/{$language}.php";
-		$def = (defined('LANG_LAN_25')) ? LANG_LAN_25 : "Please check that CORE_LC and CORE_LC2 have values in [lcpath] and try again.";
+		$def = (defined('LANG_LAN_25')) ? LANG_LAN_25 : LANG_LAN_119;
 		$ret['message'] = str_replace("[lcpath]",$file,$def); // 
 		return $ret;	
 	}
@@ -1459,7 +1457,7 @@ function zip_up_lang($language)
 	if(($HANDLERS_DIRECTORY != "e107_handlers/") || ( $LANGUAGES_DIRECTORY != "e107_languages/") || ($THEMES_DIRECTORY != "e107_themes/") || ($HELP_DIRECTORY != "e107_docs/help/") || ($PLUGINS_DIRECTORY != "e107_plugins/"))
 	{
 		$ret['error'] = TRUE;
-		$ret['message'] = (defined('LANG_LAN_26')) ? LANG_LAN_26 : "Please make sure you are using default folder names in e107_config.php (eg. e107_languages/, e107_plugins/ etc.) and try again.";
+		$ret['message'] = (defined('LANG_LAN_26')) ? LANG_LAN_26 : LANG_LAN_120;
 		return $ret;	
 	}	
 		
@@ -1632,19 +1630,19 @@ function unused($lanfile,$script,$reverse=false)
 
 		}	
 		
-		$mes->addDebug("Script: ".$script);
+		$mes->addDebug(LANG_LAN_122." ".$script);
 
 		$tmp = explode(",", $lanfile);
 		foreach($tmp as $scr)
 		{
 			if(!file_exists($scr))
 			{
-				$mes->addError("Couldn't Load: ".$scr);
+				$mes->addError(LANG_LAN_121." ".$scr);
 				continue;	
 			}
 			
 			$compare[$scr] = file_get_contents($scr);	
-			$mes->addDebug("LanFile: ".$scr);
+			$mes->addDebug(LANG_LAN_123." ".$scr);
 		
 		}	
 		
@@ -1653,18 +1651,18 @@ function unused($lanfile,$script,$reverse=false)
 	else
 	{
 		$lanDefines = file_get_contents($lanfile);
-		$mes->addDebug("LanFile: ".$lanfile);
+		$mes->addDebug(LANG_LAN_123." ".$lanfile);
 		
 		$tmp = explode(",",$script);
 		foreach($tmp as $scr)
 		{
 			if(!file_exists($scr))
 			{
-				$mes->addError("Couldn't Load: ".$scr);
+				$mes->addError(LANG_LAN_121." ".$scr);
 				continue;	
 			}
 			$compare[$scr] = file_get_contents($scr);	
-			$mes->addDebug("Script: ".$scr);
+			$mes->addDebug(LANG_LAN_122." ".$scr);
 		}		
 	}
 		
@@ -1675,12 +1673,12 @@ function unused($lanfile,$script,$reverse=false)
 
 	if(!$compare)
 	{
-		$mes->addError("Couldn't read ".$script);
+		$mes->addError(LANG_LAN_121." ".$script);
 	}
 	
 	if(!$lanDefines)
 	{
-		$mes->addError("Couldn't read ".$lanfile);
+		$mes->addError(LANG_LAN_121." ".$lanfile);
 	}
 
 	$srch = array("<?php","<?","?>");
@@ -1706,7 +1704,7 @@ function unused($lanfile,$script,$reverse=false)
 			
 			if($reverse == true)
 			{
-				$text .= "<th>Definition</th>";	
+				$text .= "<th>".LANG_LAN_124."</th>";
 			}
 			
 			$text .= "
@@ -1721,7 +1719,7 @@ function unused($lanfile,$script,$reverse=false)
 		{
 			if(trim($line) !="")
 			{	    		
-		   		$disabled = (preg_match("#^//#i",$line)) ? " (disabled)" : FALSE;
+		   		$disabled = (preg_match("#^//#i",$line)) ? " ".LANG_LAN_125 : FALSE;
 				if($match = getDefined($line,$reverse))
 				{
 					$text .= compareit($match['define'],$compare,$match['value'],$disabled,$reverse);					
@@ -1738,7 +1736,7 @@ function unused($lanfile,$script,$reverse=false)
 		
 		if(count($_SESSION['language-tools-unused'])>0 && $reverse == false)
 		{
-			$text .= "<div class='buttons-bar center'>".$frm->admin_button('disabled-unused','Disable All Unused','delete').
+			$text .= "<div class='buttons-bar center'>".$frm->admin_button('disabled-unused',LANG_LAN_126,'delete').
 			$frm->hidden('disable-unused-lanfile',$lanfile).
 			$frm->hidden('deprecatedLans',$script).
 			
@@ -1749,11 +1747,11 @@ function unused($lanfile,$script,$reverse=false)
 		
 		if($reverse != true)
 		{
-			$mes->addInfo("<b>Pink items are likely to be unused LANs.<br />Comment out and test thoroughly.</b>");
+			$mes->addInfo("<b>".LANG_LAN_127."<br />".LANG_LAN_128."</b>");
 		}
 		
 		$ret['text'] = $mes->render().$text;
-		$ret['caption'] = "Deprecated LAN Check (experimental!)";
+		$ret['caption'] = LANG_LAN_129;
 
 		return $ret;
 	}
@@ -1872,13 +1870,13 @@ function compareit($needle,$haystack,$value='',$disabled=FALSE, $reverse=false){
 				{
 					$color = "background-color:#E9EAF2";
 					$text .= ADMIN_TRUE_ICON;	
-					$value = "Common Term";
+					$value = LANG_LAN_130;
 				} 
 				else
 				{
 					$color = "background-color:yellow";	
 					$text .= "<a href='#' title=\"Missing\">".ADMIN_WARNING_ICON."</a>";	
-					$value = "Missing from language file";	
+					$value = LANG_LAN_131;
 				}
 
 			}
@@ -1903,7 +1901,7 @@ function compareit($needle,$haystack,$value='',$disabled=FALSE, $reverse=false){
 	if($foundCommon && $found)
 	{	
 		$color = "background-color:yellow";
-		$disabled .= "<br /><i>".$common."</i> is a common phrase.<br />(Use <b>".$def."</b> instead.)";
+		$disabled .= "<br /><i>".$common."</i> ".LANG_LAN_132."<br />(".LANG_LAN_133." <b>".$def."</b> ".LANG_LAN_134.")";
 		
 		// return "<tr><td style='width:25%;'>".$needle .$disabled. "</td><td></td></tr>";
 	}
@@ -1915,7 +1913,7 @@ function compareit($needle,$haystack,$value='',$disabled=FALSE, $reverse=false){
 		// $disabled .= " <a class='e-tip' href='#' title=\"".$common."\">" . $def."</a>"; //  $common; 		
 	}
 	
-	if($disabled == " (disabled)")
+	if($disabled == " ".LANG_LAN_125)
 	{
 		$color = "background-color:#DFFFDF";
 	}	

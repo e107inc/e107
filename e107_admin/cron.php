@@ -175,10 +175,10 @@ class cron_admin_ui extends e_admin_ui
 			if(is_dir(e_BASE.".git"))
 			{
 				$cronDefaults['_system'][7] = array(
-					'name' 			=> "Update this Git repository", //TODO LAN
+					'name' 			=> LAN_CRON_20_4,
 					'category'		=> 'update',
 					'function' 		=> 'gitrepo',
-					'description' 	=> "Update this e107 installation with the very latest files from github.<br />Recommended for developers only.<br /><span class='label label-warning'>Warning!</span> May cause site instability!", //TODO LAN
+					'description' 	=> LAN_CRON_20_5."<br />".LAN_CRON_20_6."<br /><span class='label label-warning'>".LAN_CRON_20_7."</span> ".LAN_CRON_20_8,
 				//	'available' 	=> e107::getPref('ban_retrigger')
 				);
 

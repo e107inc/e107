@@ -20,6 +20,14 @@ define("LAN_IMA_002", "Not enough memory available to rotate");
 define("LAN_IMA_003", "Rotated");
 define("LAN_IMA_004", "Resizing");
 
+// Options
+define("LAN_IMA_O_001", "News Images");
+define("LAN_IMA_O_002", "News [img] bbcode");
+define("LAN_IMA_O_003", "Page [img] bbcode");
+define("LAN_IMA_O_004", "Featurebox Images");
+define("LAN_IMA_O_005", "Featurebox [img] bbcode");
+define("LAN_IMA_O_006", "[img] bbcode");
+
 // Work in progress (Moc)
 
 define("IMALAN_1", "Enable image display");
@@ -99,5 +107,43 @@ define('IMALAN_70', 'Non-system folder is found!');
 
 // define("IMALAN_72", "Icons");
 
+define('IMALAN_73', 'Thumbnail Quality');
+define('IMALAN_74', 'Set this as low as possible before quality loss is apparent. Max. 100');
+define('IMALAN_75', 'Avatar Width');
+define('IMALAN_76', 'Avatar images will be constrained to these dimensions (in pixels)');
+define('IMALAN_77', 'Avatar Height');
+define('IMALAN_78', 'Avatar images will be constrained to these dimensions (in pixels)');
+define('IMALAN_79', 'Resize-Image Dimensions');
+define('IMALAN_80', 'Watermark Activation');
+define('IMALAN_81', 'All images with a width or height greater than this value will be given a watermark during resizing.');
+define('IMALAN_82', 'Watermark Text');
+define('IMALAN_83', 'Optional Watermark Text');
+define('IMALAN_84', 'Watermark Font');
+define('IMALAN_85', 'Optional Watermark Font. Upload more .ttf fonts to the /fonts folder in your theme directory.');
+define('IMALAN_86', 'Watermark Size');
+define('IMALAN_87', 'Size of the font in pts');
+define('IMALAN_88', 'Watermark Position');
+define('IMALAN_89', 'Watermark Position');
+define('IMALAN_90', 'Watermark Margin');
+define('IMALAN_91', 'The distance that watermark will appear from the edge of the image.');
+define('IMALAN_92', 'Watermark Color');
+define('IMALAN_93', 'Color of the watermark eg. 000000');
+define('IMALAN_94', 'Watermark Shadow-Color');
+define('IMALAN_95', 'Shadow Color of the watermark eg. ffffff');
+define('IMALAN_96', 'Watermark Opacity');
+define('IMALAN_97', 'Enter a number between 1 and 100');
+define('IMALAN_98', 'Default YouTube account');
+define('IMALAN_99', 'Used by the Media-Manager Youtube browser. Enter account name. eg. e107inc');
+define('IMALAN_100', 'Show Related Videos');
+define('IMALAN_101', 'Show Video Info');
+define('IMALAN_102', 'Show Closed-Captions by default');
+define('IMALAN_103', 'Use Modest Branding');
+define('IMALAN_104', 'Make the YouTube bbcode responsive');
+define('IMALAN_105', 'Resize images during media import');
+define('IMALAN_106', 'Leave empty to disable');
+define('IMALAN_107', 'Watermark');
+define('IMALAN_108', 'Watermark');
+define('IMALAN_109', 'Watermark');
+define('IMALAN_110', 'Watermark');
 
 ?>
