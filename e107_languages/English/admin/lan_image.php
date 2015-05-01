@@ -163,7 +163,5 @@ define('IMALAN_125', 'Delete Selected Files');
 define('IMALAN_126', 'Please check at least one file.');
 define('IMALAN_127', 'Couldn\'t get file info from:');
 define('IMALAN_128', 'Importing Media:');
-define('IMALAN_129', 'Could');
-define('IMALAN_130', 'Could');
 
 ?>
