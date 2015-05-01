@@ -511,11 +511,11 @@ class media_form_ui extends e_admin_form_ui
 		$pref 	= e107::getPref();
 		
 		$options = array(
-			"news-image" 			=> "News Images",  // TODO LAN.
-			"news-bbcode" 			=> "News [img] bbcode",
-			"page-bbcode" 			=> "Page [img] bbcode",
-		//	"featurebox-image" 		=> "Featurebox Images",
-		//	"featurebox-bbcode" 	=> "Featurebox [img] bbcode",		
+			"news-image" 			=> LAN_IMA_O_001,
+			"news-bbcode" 			=> LAN_IMA_O_002,
+			"page-bbcode" 			=> LAN_IMA_O_003,
+		//	"featurebox-image" 		=> LAN_IMA_O_004,
+		//	"featurebox-bbcode" 	=> LAN_IMA_O_005,
 		);
 		
 		if(vartrue($pref['e_imageresize']) && is_array($pref['e_imageresize']))
@@ -523,7 +523,7 @@ class media_form_ui extends e_admin_form_ui
 			foreach($pref['e_imageresize'] as $k=>$val)
 			{
 			
-				$options[$k]		= ucfirst($k). " [img] bbcode";
+				$options[$k]		= ucfirst($k)." ".LAN_IMA_O_006;
 			}
 		}
 		
@@ -724,33 +724,33 @@ class media_admin_ui extends e_admin_ui
 		'image_post_class' 				=> array('title'=> IMALAN_10, 'type' => 'userclass', 'data'=>'int', 'writeParms'=>'help=IMALAN_11&classlist=public,guest,nobody,member,admin,main,classes' ),
 		'image_post_disabled_method'	=> array('title'=> IMALAN_12, 'type' => 'boolean','writeParms'=>'enabled=IMALAN_15&disabled=IMALAN_14'),
 		'resize_method'					=> array('title'=> IMALAN_3, 'type'=>'method', 'data'=>'str'),
-		'thumbnail_quality'				=> array('title'=> "Thumbnail Quality", 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=Set this as low as possible before quality loss is apparent. Max. 100'), //TODO LAN
+		'thumbnail_quality'				=> array('title'=> IMALAN_73, 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=IMALAN_74'),
 	
-		'im_width'						=> array('title'=> "Avatar Width", 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=Avatar images will be constrained to these dimensions (in pixels)'), //TODO LAN
-		'im_height'						=> array('title'=> "Avatar Height", 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=Avatar images will be constrained to these dimensions (in pixels)'),
-		'resize_dimensions'				=> array('title'=> "Resize-Image Dimensions", 'type'=>'method', 'data'=>'str'),
+		'im_width'						=> array('title'=> IMALAN_75, 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=IMALAN_76'),
+		'im_height'						=> array('title'=> IMALAN_77, 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=IMALAN_78'),
+		'resize_dimensions'				=> array('title'=> IMALAN_79, 'type'=>'method', 'data'=>'str'),
 		
-		'watermark_activate'			=> array('title'=> 'Watermark Activation', 'tab'=>1, 'type' => 'number', 'data' => 'str', 'help'=>'All images with a width or height greater than this value will be given a watermark during resizing.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
-		'watermark_text'				=> array('title'=> 'Watermark Text','tab'=>1, 'type' => 'text', 'data' => 'str', 'help'=>'Optional Watermark Text'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
-		'watermark_font'				=> array('title'=> 'Watermark Font','tab'=>1, 'type' => 'dropdown', 'data' => 'str', 'help'=>'Optional Watermark Font. Upload more .ttf fonts to the /fonts folder in your theme directory.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
-		'watermark_size'				=> array('title'=> 'Watermark Size', 'tab'=>1,'type' => 'number', 'data' => 'int', 'help'=>'Size of the font in pts'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
+		'watermark_activate'			=> array('title'=> IMALAN_80, 'tab'=>1, 'type' => 'number', 'data' => 'str', 'help'=>IMALAN_81), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
+		'watermark_text'				=> array('title'=> IMALAN_82,'tab'=>1, 'type' => 'text', 'data' => 'str', 'help'=>IMALAN_83), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
+		'watermark_font'				=> array('title'=> IMALAN_84,'tab'=>1, 'type' => 'dropdown', 'data' => 'str', 'help'=>IMALAN_85), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
+		'watermark_size'				=> array('title'=> IMALAN_86, 'tab'=>1,'type' => 'number', 'data' => 'int', 'help'=>IMALAN_87), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
 		
-		'watermark_pos'					=> array('title'=> 'Watermark Position','tab'=>1, 'type' => 'dropdown', 'data' => 'str', 'help'=>'Watermark Position'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
-		'watermark_margin'				=> array('title'=> 'Watermark Margin', 'tab'=>1,'type' => 'number', 'data' => 'int', 'help'=>'The distance that watermark will appear from the edge of the image.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
+		'watermark_pos'					=> array('title'=> IMALAN_88,'tab'=>1, 'type' => 'dropdown', 'data' => 'str', 'help'=>IMALAN_89), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
+		'watermark_margin'				=> array('title'=> IMALAN_90, 'tab'=>1,'type' => 'number', 'data' => 'int', 'help'=>IMALAN_91), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
 		
-		'watermark_color'				=> array('title'=> 'Watermark Color', 'tab'=>1, 'type' => 'text', 'data' => 'str', 'help'=>'Color of the watermark eg. 000000'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
-		'watermark_shadowcolor'			=> array('title'=> 'Watermark Shadow-Color', 'tab'=>1,'type' => 'text', 'data' => 'str', 'help'=>'Shadow Color of the watermark eg. ffffff '), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
+		'watermark_color'				=> array('title'=> IMALAN_92, 'tab'=>1, 'type' => 'text', 'data' => 'str', 'help'=>IMALAN_93), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
+		'watermark_shadowcolor'			=> array('title'=> IMALAN_94, 'tab'=>1,'type' => 'text', 'data' => 'str', 'help'=>IMALAN_95), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
 	
-		'watermark_opacity'				=> array('title'=> 'Watermark Opacity', 'tab'=>1, 'type' => 'number', 'data' => 'int', 'help'=>'Enter a number between 1 and 100'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
+		'watermark_opacity'				=> array('title'=> IMALAN_96, 'tab'=>1, 'type' => 'number', 'data' => 'int', 'help'=>IMALAN_97), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
 	
 		// https://developers.google.com/youtube/player_parameters
-		'youtube_default_account'		=> array('title'=> "Default YouTube account", 'tab'=>2, 'type' => 'text', 'data'=>'str', 'help'=>'Used by the Media-Manager Youtube browser. Enter account name. eg. e107inc'),
+		'youtube_default_account'		=> array('title'=> IMALAN_98, 'tab'=>2, 'type' => 'text', 'data'=>'str', 'help'=>IMALAN_99),
 
-		'youtube_rel'					=> array('title'=> "Show Related Videos", 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
-		'youtube_showinfo'				=> array('title'=> "Show Video Info", 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
-		'youtube_cc_load_policy'		=> array('title'=> "Show Closed-Captions by default", 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
-		'youtube_modestbranding'		=> array('title'=> "Use Modest Branding", 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
-		'youtube_bbcode_responsive'		=> array('title'=> "Make the YouTube bbcode responsive", 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
+		'youtube_rel'					=> array('title'=> IMALAN_100, 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
+		'youtube_showinfo'				=> array('title'=> IMALAN_101, 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
+		'youtube_cc_load_policy'		=> array('title'=> IMALAN_102, 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
+		'youtube_modestbranding'		=> array('title'=> IMALAN_103, 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
+		'youtube_bbcode_responsive'		=> array('title'=> IMALAN_104, 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
 	
 		// 
 
@@ -796,11 +796,10 @@ class media_admin_ui extends e_admin_ui
 							</tr>";
 							
 							list($img_import_w,$img_import_h) = explode("x",$pref['img_import_resize']);
-							
-							//TODO LANS
+
 							$text .= "						
 							<tr>
-								<td>Resize images during media import<div class='label-note'>Leave empty to disable</div></td>
+								<td>".IMALAN_105."<div class='label-note'>".IMALAN_106."</div></td>
 								<td>
 									".$frm->text('img_import_resize_w', $img_import_w,4)."px X ".$frm->text('img_import_resize_h', $img_import_h,4)."px
 								</td>
@@ -1622,10 +1621,9 @@ class media_admin_ui extends e_admin_ui
 							
 							list($img_import_w,$img_import_h) = explode("x",$pref['img_import_resize']);
 							
-							//TODO LANS
-							$text .= "						
+							$text .= "
 							<tr>
-								<td>Resize images during media import<div class='label-note'>Leave empty to disable</div></td>
+								<td>".IMALAN_105."<div class='label-note'>".IMALAN_106."</div></td>
 								<td>
 									".$frm->text('img_import_resize_w', $img_import_w,4)."px X ".$frm->text('img_import_resize_h', $img_import_h,4)."px
 								</td>
