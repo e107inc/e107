@@ -286,6 +286,9 @@ define("LAN_DISABLED","Disabled");
 define("LAN_ENABLED", "Enabled");
 define("LAN_BOOL_REVERSE", "Invert");
 
+define("LAN_NOT_AVAILABLE","Not available");
+define("LAN_AUTO_GENERATED","Auto-generated");
+
 define("LAN_PRESET_CONFIRMSAVE","Save current form values as the default for this page?");
 define("LAN_CONFIGURE", "Configure");
 
