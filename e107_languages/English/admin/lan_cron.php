@@ -88,6 +88,8 @@ define("LAN_CRON_52", "Day(s):");
 define("LAN_CRON_53", "Month(s):");   
 define("LAN_CRON_54", "Weekday(s):");
 
+define("LAN_CRON_55", "Executing config function [b][function][/b]");
+define("LAN_CRON_56", "Config function [b][method][/b] NOT found.");
 
 define("LAN_CRON_BACKUP", "Backup");
 define("LAN_CRON_LOGGING", "Logging");
