@@ -374,27 +374,27 @@ $text .= "<div class='field-spacer'>".$tp->parseTemplate("{IMAGESELECTOR={$parms
 $sLogo = siteinfo_shortcodes::sc_logo();
 */
 
-$text .= $frm->imagepicker('sitebutton',$pref['sitebutton'],'','help=Used by Facebook and others. Should be a square image of at least 144px in width and height.');
+$text .= $frm->imagepicker('sitebutton',$pref['sitebutton'],'','help='.PRFLAN_225);
 
 $text .= "
 						</td>
 					</tr>
 					<tr>
 						<td><label for='sitelogo'>".PRFLAN_214."</label></td>
-						<td>".$frm->imagepicker('sitelogo',$pref['sitelogo'],'','help=Used by some themes as the header image on some pages.')."</td>
+						<td>".$frm->imagepicker('sitelogo',$pref['sitelogo'],'','help='.PRFLAN_226)."</td>
 					</tr>
 					<tr>
 						<td><label for='sitetag'>".PRFLAN_5."</label></td>
 						<td>
 							".$frm->textarea('sitetag', $tp->toForm($pref['sitetag']), 3, 59)."
-							<div class='field-help'>Used by some themes. Place 'SITETAG' in your theme to use this value.</div>
+							<div class='field-help'>".PRFLAN_227."</div>
 						</td>
 					</tr>
 					<tr>
 						<td><label for='sitedescription'>".PRFLAN_6."</label></td>
 						<td>
 							".$frm->textarea('sitedescription', $tp->toForm($pref['sitedescription']), 3, 80)."
-							<div class='field-help'>Used by some themes. Place 'SITEDESCRIPTION' in your theme to use this value.</div>
+							<div class='field-help'>".PRFLAN_228."</div>
 						</td>
 					</tr>
 					
@@ -402,7 +402,7 @@ $text .= "
 						<td><label for='sitedisclaimer'>".PRFLAN_9."</label></td>
 						<td>
 							".$frm->textarea('sitedisclaimer',$tp->toForm( $pref['sitedisclaimer']), 3, 80)."
-							<div class='field-help'>Used by some themes. Place 'SITEDISCLAIMER' in your theme to use this value.</div>
+							<div class='field-help'>".PRFLAN_229."</div>
 						</td>
 					</tr>
 				</tbody>
@@ -803,11 +803,10 @@ $text .= "
 			
 			
 			
-					
-					// TODO LAN
+
 					$text .= "
 					<tr>
-						<td><label for='inputdate'>Date/Time Input-Field format</label></td>
+						<td><label for='inputdate'>".PRFLAN_230."</label></td>
 						<td>
 							".$frm->select('inputdate',$inputdate, e107::getPref('inputdate'));
 							
@@ -1527,7 +1526,6 @@ $text .= "
 	
 
 // Key registration 
-// TODO LAN
 
 	
 	
@@ -1547,13 +1545,13 @@ $text .= "
 				
 		$signup_option_names = array(
 	//	"signup_option_loginname" 	=> "Login Name",
-		"signup_option_email_confirm" 	=> "Email Confirmation",
+		"signup_option_email_confirm" 	=> CUSTSIG_21,
 		"signup_option_realname" 		=> CUSTSIG_2,
 		"signup_option_signature" 		=> CUSTSIG_6,
 		"signup_option_image" 			=> CUSTSIG_7,
 		"signup_option_class" 			=> CUSTSIG_17,
 		'signup_option_customtitle'		=> CUSTSIG_20,
-		'signup_option_hideemail'		=> 'Option to hide email'
+		'signup_option_hideemail'		=> CUSTSIG_22
 	);
 
 	foreach($signup_option_names as $value => $key)
@@ -2006,10 +2004,10 @@ $text .= "
 						</td>
 					</tr>
 					<tr>
-						<td><label for='failed-login-limit'>Maximum failed logins before ban:</label></td>
+						<td><label for='failed-login-limit'>".PRFLAN_231."</label></td>
 						<td>
 							".$frm->number('failed_login_limit', varset($pref['failed_login_limit'],10), 3, array('max'=>10, 'min'=>0))."
-							<div class='smalltext field-help'>Failed logins from the same IP will be banned after this many attempts.</div>
+							<div class='smalltext field-help'>".PRFLAN_232."</div>
 						</td>
 					</tr>
 					<tr>
@@ -2074,22 +2072,22 @@ $text .= "
 					</tr>
 
 					<tr>
-						<td>Moderate Comments made by: </td>
+						<td>".PRFLAN_233."</td>
 						<td>
 							".
 							
 							$frm->uc_select('comments_moderate', $pref['comments_moderate'],"nobody,guest,new,bots,public,admin,main,classes").
 							"
-							<div class='field-help'>Comments will require manual approval by an admin prior to being visible to other users</div>
+							<div class='field-help'>".PRFLAN_234."</div>
 						</td>
 					</tr>
 					<tr>
-						<td>Comment Sorting: </td>
+						<td>".PRFLAN_235."</td>
 						<td>";
 						
 						$comment_sort = array(
-							"desc"	=> "Most recent comments first", //default //TODO LAN
-							'asc'	=> "Most recent comments last" 
+							"desc"	=> PRFLAN_236, //default
+							'asc'	=> PRFLAN_237
 						);
 					
 					$text .= $frm->select('comments_sort',$comment_sort, $pref['comments_moderate'])."
@@ -2132,7 +2130,7 @@ $text .= "
 	
 	$text .= "
 	<fieldset class='e-hideme' id='core-prefs-uploads'>
-			<legend>File Uploading</legend>";
+			<legend>".PRFLAN_238."</legend>";
 	
 	
 	$upload_max_filesize = ini_get('upload_max_filesize');
@@ -2143,7 +2141,7 @@ $text .= "
 	if($maxINI < $pref['upload_maxfilesize'])
 	{
 		$text .= "<div class='alert-block alert alert-danger'>";
-		$text .= "The maximum upload size imposed by your php.ini settings is: ".$maxINI."</div>";
+		$text .= PRFLAN_239." ".$maxINI."</div>";
 		$pref['upload_maxfilesize'] = $maxINI;
 	}
 	
@@ -2183,7 +2181,7 @@ $text .= "
 	<div class='field-help'>".UPLLAN_38."</div>
 	</td>
 	</tr>
-	<tr><td>Filetype upload limits</td>
+	<tr><td>".PRFLAN_240."</td>
 	<td>
 
 	<table class='table table-striped table-bordered'>
@@ -2207,7 +2205,7 @@ $text .= "
 	
 	$text .= "</table>
 	
-	<div>** For security reasons these values may only be changed manually in the following file: <b>".str_replace("../",'',e_SYSTEM).e_READ_FILETYPES."</b></div> 
+	<div>".PRFLAN_241." <b>".str_replace("../",'',e_SYSTEM).e_READ_FILETYPES."</b></div>
 	</td>
 	
 	
@@ -2225,10 +2223,9 @@ $text .= "
 	
 	
 // Javascript Control
-//TODO LANS
 $text .= "
 			<fieldset class='e-hideme' id='core-prefs-javascript'>
-			<legend>Javascript Frameworks (for testing purposes only)</legend>
+			<legend>".PRFLAN_242."</legend>
 			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
@@ -2237,11 +2234,11 @@ $text .= "
 				<tbody>";
 	
 		$js_options = array(
-			'auto'	=> 'Auto (on-demand)', 	// load based on dependency
-			'admin'	=> 'Admin Area', 		// Always load in admin
-			'front'	=> 'Front-End', 		// Always load in front-end
-			'all'	=> "Both",				// Always load in admin and front-end
-			'none'	=> 'Disabled' 			// disabled
+			'auto'	=> PRFLAN_243, 	// load based on dependency
+			'admin'	=> PRFLAN_244, 		// Always load in admin
+			'front'	=> PRFLAN_245, 		// Always load in front-end
+			'all'	=> PRFLAN_246,				// Always load in admin and front-end
+			'none'	=> PRFLAN_247 			// disabled
 		);	
 	
 		
@@ -2281,31 +2278,31 @@ $text .= "
 				</colgroup>
 				<tbody>
 					<tr>
-						<td>Disable scripts consolidation</td>
+						<td>".PRFLAN_248."</td>
 						<td>
 							".$frm->radio_switch('e_jslib_nocombine', $pref['e_jslib_nocombine'], LAN_YES, LAN_NO)."
-							<div class='smalltext field-help'>If disabled, scripts will be loaded in one consolidated file</div>
+							<div class='smalltext field-help'>".PRFLAN_249."</div>
 						</td>
 					</tr>
 					<tr>
-						<td>Enable consolidated scripts zlib compression:</td>
+						<td>".PRFLAN_250."</td>
 						<td>
 							".$frm->radio_switch('e_jslib_gzip', $pref['e_jslib_gzip'], LAN_YES, LAN_NO)."
-							<div class='smalltext field-help'>Used only when script consolidation is enabled</div>
+							<div class='smalltext field-help'>".PRFLAN_251."</div>
 						</td>
 					</tr>
 					<tr>
-						<td>Disable consolidated scripts server cache:</td>
+						<td>".PRFLAN_252."</td>
 						<td>
 							".$frm->radio_switch('e_jslib_nocache', $pref['e_jslib_nocache'], LAN_YES, LAN_NO)."
-							<div class='smalltext field-help'>Used only when script consolidation is enabled</div>
+							<div class='smalltext field-help'>".PRFLAN_251."</div>
 						</td>
 					</tr>
 					<tr>
-						<td>Disable consolidated scripts browser cache:</td>
+						<td>".PRFLAN_253."</td>
 						<td>
 							".$frm->radio_switch('e_jslib_nobcache', $pref['e_jslib_nobcache'], LAN_YES, LAN_NO)."
-							<div class='smalltext field-help'>Used only when script consolidation is enabled</div>
+							<div class='smalltext field-help'>".PRFLAN_251."</div>
 						</td>
 					</tr>
 		";	
@@ -2447,22 +2444,22 @@ function pref_submit($post_id = '')
 function prefs_adminmenu()
 {
 	$var['core-prefs-main']['text'] = PRFLAN_1;
-	$var['core-prefs-email']['text'] = "Email &amp; Contact Info";
+	$var['core-prefs-email']['text'] = PRFLAN_254;
 	$var['core-prefs-registration']['text'] = PRFLAN_28;
 	$var['core-prefs-signup']['text'] = PRFLAN_19;
 //	$var['core-prefs-sociallogin']['text'] = "Social Options"; // Moved into plugin.
 	
 	$var['core-prefs-comments']['text'] = PRFLAN_210;
-	$var['core-prefs-uploads']['text'] = "File Uploading"; // TODO LAN
+	$var['core-prefs-uploads']['text'] = PRFLAN_255;
 	
-	$var['core-prefs-header1']['header'] = "Advanced Options";	
+	$var['core-prefs-header1']['header'] = PRFLAN_256;
 	
 	$var['core-prefs-display']['text'] = PRFLAN_13;
 	$var['core-prefs-admindisp']['text'] = PRFLAN_77;
 	$var['core-prefs-textpost']['text'] = PRFLAN_101;
 	$var['core-prefs-security']['text'] = PRFLAN_47;
 	$var['core-prefs-date']['text'] = PRFLAN_21;	
-	$var['core-prefs-javascript']['text'] = "Javascript Framework"; // TODO LAN
+	$var['core-prefs-javascript']['text'] = PRFLAN_257;
 	$var['core-prefs-advanced']['text'] = PRFLAN_149;
 	
 	e107::getNav()->admin("Basic ".LAN_OPTIONS.'--id--prev_nav', 'core-prefs-main', $var);
