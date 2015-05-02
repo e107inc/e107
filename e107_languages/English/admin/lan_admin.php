@@ -343,7 +343,10 @@ define("LAN_TYPE", "Type");
 define("LAN_CATEGORIES", "Categories");
 define("LAN_DEMO_FORBIDDEN", "Changes on this page are not possible in demo mode.");
 define("LAN_COPYRIGHT", "Copyright");
-
+define("LAN_MANAGER", "Manage Permissions");
+define("LAN_PING", "Ping");
+define("LAN_START", "Starting");
+define("LAN_END", "Ending");
 
 define("LAN_PREVIEW", "Preview");
 
