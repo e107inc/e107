@@ -34,4 +34,6 @@ define('NM_LAN_2', 'Bulk email run complete');
 define("NF_LAN_1", "File Events");
 define("NF_LAN_2", "File uploaded by user");
 
+define("LAN_NOTIFY_01", "Events");
+
 ?>

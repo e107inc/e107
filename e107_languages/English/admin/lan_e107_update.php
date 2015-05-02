@@ -54,6 +54,8 @@ define('LAN_UPDATE_54', 'Missing table --TABLE-- - cannot add index --INDEX--');
 define('LAN_UPDATE_55', 'Description');
 define('LAN_UPDATE_56', 'System Update');
 
+define('LAN_UPDATE_57', 'Before continuing, please manually delete the following outdated folders from your system:');
+
 define('LAN_UPDATE_CAPTION_PLUGIN', 'Plugin Updates'); // Unused
 define('LAN_UPDATE_CAPTION_CORE', 'Core Updates'); // Unused
 
