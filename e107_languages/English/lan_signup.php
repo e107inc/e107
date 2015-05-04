@@ -101,7 +101,7 @@ define('LAN_SIGNUP_60','Signup email resend requested');
 define('LAN_SIGNUP_61','Send succeeded');
 define('LAN_SIGNUP_62','Send failed');
 define('LAN_SIGNUP_63','Password reset email resend requested');
-define('LAN_SIGNUP_64','That doesn\'t appear to be valid user information');
+define('LAN_SIGNUP_64', "That doesn't appear to be valid user information");
 define('LAN_SIGNUP_65','You have been assigned the following login name');
 define('LAN_SIGNUP_66','Please make a note of it.');
 define('LAN_SIGNUP_67','This will be assigned by the system after signup');
