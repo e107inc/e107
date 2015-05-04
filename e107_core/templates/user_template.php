@@ -98,8 +98,11 @@ $sc_style['USER_RATING']['post'] = "</div></td></tr>";
 
 $sc_style['USER_LOGINNAME']['pre'] = " : ";
 
+$sc_style['USER_COMMENTPOSTS']['pre'] = "<tr><td style='width:30%' class='forumheader3'>".LAN_USER_68."</td><td style='width:70%' class='forumheader3'>";
+$sc_style['USER_COMMENTPOSTS']['post'] = "";
 
-
+$sc_style['USER_COMMENTPER']['pre'] = " ( ";
+$sc_style['USER_COMMENTPER']['post'] = "% )</td></tr>";
 
 //FIXME TODO - Remove IF statements from template. 
 if(isset($pref['photo_upload']) && $pref['photo_upload'])
@@ -184,11 +187,8 @@ $USER_FULL_TEMPLATE = "{SETIMAGE: w=250}
 
 {USER_ADDONS}
 
-
-<tr>
-	<td style='width:30%' class='forumheader3'>".LAN_USER_68."</td>
-	<td style='width:70%' class='forumheader3'>{USER_COMMENTPOSTS} ( {USER_COMMENTPER}% )</td>
-</tr>
+{USER_COMMENTPOSTS}
+{USER_COMMENTPER}
 
 
 {USER_UPDATE_LINK}
@@ -239,4 +239,6 @@ $USER_WRAPPER['view']['USER_RATING'] 		=	$sc_style['USER_RATING']['pre']."{---}"
 $USER_WRAPPER['view']['USER_SENDPM'] 		=	$sc_style['USER_SENDPM']['pre']."{---}".$sc_style['USER_SENDPM']['post'];
 $USER_WRAPPER['view']['USER_LOGINNAME'] 	=	$sc_style['USER_LOGINNAME']['pre']."{---}";
 
+$USER_WRAPPER['view']['USER_COMMENTPOSTS'] 	=	$sc_style['USER_COMMENTPOSTS']['pre']."{---}";
+$USER_WRAPPER['view']['USER_COMMENTPER'] 	=	$sc_style['USER_COMMENTPER']['pre']."{---}".$sc_style['USER_COMMENTPER']['post'];
 ?>
