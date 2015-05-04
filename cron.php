@@ -36,6 +36,10 @@ require_once(realpath(dirname(__FILE__)."/class2.php"));
 	{
 		$pwd = $_GET['token'];	
 	}
+	else
+	{
+		$pwd = str_replace('token=','',$pwd);
+	}
 		
 	if($pref['e_cron_pwd'] != $pwd)
 	{	
