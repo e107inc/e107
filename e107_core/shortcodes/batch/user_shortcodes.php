@@ -15,7 +15,24 @@ if (!defined('e107_INIT')) { exit; }
 
 class user_shortcodes extends e_shortcode
 {
-	
+
+	private $commentsDisabled;
+	private $commentsEngine;
+
+	function __construct()
+	{
+		$pref = e107::getPref();
+
+		$this->commentsDisabled = vartrue($pref['comments_disabled']);
+
+		if(!empty($pref['comments_engine']))
+		{
+			$this->commentsEngine = $pref['comments_engine'];
+		}
+	}
+
+
+
 	function sc_total_chatposts($parm) {
 		$sql = e107::getDb();
 		if(!$chatposts = e107::getRegistry('total_chatposts'))
@@ -60,6 +77,10 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_user_commentposts($parm) 
 	{
+		if($this->commentsDisabled)
+		{
+			return false;
+		}
 		return "<a href='".e_HTTP."userposts.php?0.comments.".$this->var['user_id']."'>".$this->var['user_comments']."</a>";
 	}
 	
@@ -104,6 +125,12 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_user_commentper($parm) 
 	{
+		if($this->commentsDisabled)
+		{
+			return false;
+		}
+
+
 		$sql = e107::getDb();
 		if(!$commentposts = e107::getRegistry('total_commentposts'))
 		{
@@ -431,6 +458,10 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_user_comments_link($parm) 
 	{
+		if($this->commentsDisabled)
+		{
+			return false;
+		}
 		return $this->var['user_comments'] ? "<a href='".e_HTTP."userposts.php?0.comments.".$this->var['user_id']."'>".LAN_USER_36."</a>" : "";
 	}
 
