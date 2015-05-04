@@ -124,5 +124,6 @@ define("BANLAN_118", "Spare reason");
 define("BANLAN_119", "Indicates an import error - previously imported bans");
 
 define("BANLAN_120", "Whitelist entry");
+define("BANLAN_121", "Blacklist entry");
 
 ?>

@@ -41,5 +41,10 @@ define("FRTLAN_53", "User Class");
 define("FRTLAN_PAGE_TITLE", "Front Page");
 //define("FRTLAN_54", "Are you sure?");
 //define("FRTLAN_55", "Confirm delete rule?");
+define("FRTLAN_56", "duplicate definition for class:");
+define("FRTLAN_57", "Software error");
+define("FRTLAN_58", "Home");
+define("FRTLAN_59", "Post-Login");
+define("FRTLAN_60", "Front");
 
 ?>

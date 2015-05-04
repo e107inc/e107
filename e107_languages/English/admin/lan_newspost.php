@@ -194,4 +194,38 @@ define("LAN_NEWS_60", "Comment Total");
 define("LAN_NEWS_61", "Also delete disallowed comments");
 define("LAN_NEWS_62", "Error accessing database, or no news items found");
 
+define("LAN_NEWS_63", "Create Category");
+define("LAN_NEWS_64", "Old Submitted");
+define("LAN_NEWS_65", "Please choose unique SEF URL string for this category");
+define("LAN_NEWS_66", "Please choose unique SEF URL string for this category");
+define("LAN_NEWS_67", "Close");
+define("LAN_NEWS_68", "Submitted Item");
+
+// News render-types
+define("LAN_NEWS_69", "Default Area");
+define("LAN_NEWS_70", "Default Area - Title");
+define("LAN_NEWS_71", "Default Area - Title/Summary");
+define("LAN_NEWS_72", "Sidebar - Othernews");
+define("LAN_NEWS_73", "Sidebar - Othernews 2");
+define("LAN_NEWS_74", "Carousel");
+define("LAN_NEWS_75", "Featurebox");
+
+define("LAN_NEWS_76", "Checking for Ping Status");
+define("LAN_NEWS_77", "Initiating ping");
+define("LAN_NEWS_78", "Successfully Pinged:");
+define("LAN_NEWS_79", "with:");
+define("LAN_NEWS_80", "Ping failed!:");
+define("LAN_NEWS_81", "Ping not triggerred");
+define("LAN_NEWS_82", "Services:");
+define("LAN_NEWS_83", "Userclass:");
+define("LAN_NEWS_84", "Attempting to ping:");
+define("LAN_NEWS_85", "Request:");
+define("LAN_NEWS_86", "Error:");
+define("LAN_NEWS_87", "eg. blogsearch.google.com/ping/RPC2");
+define("LAN_NEWS_88", "Determines how the default news page should appear.");
+define("LAN_NEWS_89", "Notify these services when you create/update news items.");
+define("LAN_NEWS_90", "One per line.");
+define("LAN_NEWS_91", "Limit for News-Listing Pages");
+define("LAN_NEWS_92", "eg. news.php?all or news.php?cat.1 or news.php?tag=xxx");
+
 ?>

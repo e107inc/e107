@@ -264,7 +264,7 @@ if(isset($_POST['fp_save_new']))
 		if($ind)
 		{
 			$mes->addDebug(print_a($fp_settings,true));
-			$mes->addError( "duplicate definition for class: ".$ind); //TODO LAN
+			$mes->addError(FRTLAN_56." ".$ind);
 			unset($fp_settings[$ind]); // Knock out duplicate definition for class
 		}
 
@@ -282,7 +282,7 @@ if(isset($_POST['fp_save_new']))
 	}
 	else
 	{ // Someone playing games
-		$mes->addError('Software error'); // TODO LAN
+		$mes->addError(FRTLAN_57);
 	}
 }
 
@@ -318,8 +318,8 @@ if($fp_update_prefs)
 	$corePrefs->set('frontpage', $fp_list);
 	$corePrefs->set('frontpage_force', $fp_force);
 	$result = $corePrefs->save(FALSE, TRUE);
-	$mes->addDebug("<h4>Home</h4>".print_a($fp_list, true));
-	$mes->addDebug("<h4>Post-Login</h4>".print_a($fp_force, true));
+	$mes->addDebug("<h4>".FRTLAN_58."</h4>".print_a($fp_list, true));
+	$mes->addDebug("<h4>".FRTLAN_59."</h4>".print_a($fp_force, true));
 }
 
 

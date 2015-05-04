@@ -65,4 +65,34 @@ define("LANG_LAN_103", "[x] created.");
 define("LANG_LAN_104", "[x] was disabled but left intact.");
 define("LANG_LAN_105", "Delete all tables in [x]?");
 
+define("LANG_LAN_106", "Language by Domain Name");
+define("LANG_LAN_107", "Domain determines the site's language. Enter domain without the 'www.'");
+define("LANG_LAN_108", "Name");
+define("LANG_LAN_109", "Version");
+define("LANG_LAN_110", "Author");
+define("LANG_LAN_111", "Release-date");
+define("LANG_LAN_112", "Compatible");
+define("LANG_LAN_113", "Download");
+define("LANG_LAN_114", "Download Pack");
+define("LANG_LAN_115", "Please verify and correct the remaining [x] error(s) before attempting to create a language-pack.");
+define("LANG_LAN_116", "Please verify your language files ('Verify') then try again.");
+define("LANG_LAN_117", "You should correct the remaining errors before contributing your language pack.");
+define("LANG_LAN_118", "Please verify your language files ('Verify') then try again.");
+define("LANG_LAN_119", "Please check that CORE_LC and CORE_LC2 have values in [lcpath] and try again.");
+define("LANG_LAN_120", "Please make sure you are using default folder names in e107_config.php (eg. e107_languages/, e107_plugins/ etc.) and try again.");
+define("LANG_LAN_121", "Couldn't Load:");
+define("LANG_LAN_122", "Script:");
+define("LANG_LAN_123", "LanFile:");
+define("LANG_LAN_124", "Definition");
+define("LANG_LAN_125", "(disabled)");
+define("LANG_LAN_126", "Disable All Unused");
+define("LANG_LAN_127", "Pink items are likely to be unused LANs.");
+define("LANG_LAN_128", "Comment out and test thoroughly.");
+define("LANG_LAN_129", "Deprecated LAN Check (experimental!)");
+define("LANG_LAN_130", "Common Term");
+define("LANG_LAN_131", "Missing from language file");
+define("LANG_LAN_132", "is a common phrase.");
+define("LANG_LAN_133", "Use");
+define("LANG_LAN_134", "instead.");
+
 ?>

@@ -781,11 +781,10 @@ function update_706_to_800($type='')
 				}
 			}
 		}
-		//TODO LAN
-		
+
 		if(count($chgPath))
 		{
-			$log->addWarning('Before continuing, please manually delete the following outdated folders from your system: ');
+			$log->addWarning(LAN_UPDATE_57.' ');
 			array_unique($chgPath);
 			asort($chgPath);
 			foreach($chgPath as $cgp)
