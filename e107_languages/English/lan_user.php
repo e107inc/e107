@@ -66,7 +66,7 @@ define('LAN_USER_35', '[hidden by request]');					// LAN_143
 define('LAN_USER_36', 'Click here to View User Comments');		// LAN_423
 define('LAN_USER_37', 'Click here to View Forum Posts');		// LAN_424
 define('LAN_USER_38', 'Click here to update your information');	// LAN_411
-define('LAN_USER_39', 'Click here to edit this user\'s information');	// LAN_412
+define('LAN_USER_39', "Click here to edit this user's information");	// LAN_412
 define('LAN_USER_40', 'previous member');						// LAN_414
 define('LAN_USER_41', 'next member');							// LAN_415
 define('LAN_USER_42', 'no photo');								// LAN_408

@@ -96,7 +96,7 @@ define('LAN_USET_26', 'Upload your avatar');						// LAN_415
 define('LAN_USET_27', 'Upload your photograph');					// LAN_414
 define('LAN_USET_28', 'This will be shown on your profile page');	// LAN_426
 //define('LAN_USET_29', 'URL to your XUP file');						// LAN_433
-define('LAN_USET_30', 'what\'s this?');								// LAN_434
+define('LAN_USET_30', "what's this?");								// LAN_434
 define('LAN_USET_31', 'Registration information');					// LAN_418
 define('LAN_USET_32', 'Please note: Any image uploaded to this server that is deemed inappropriate by the administrators will be deleted immediately.');	// LAN_404
 define('LAN_USET_33', 'Choose site-stored avatar');					// LAN_421
