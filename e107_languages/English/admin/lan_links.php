@@ -57,6 +57,15 @@ define("LCLAN_81", "Sub-menus will display only after clicking their parent. (Li
 // define("LCLAN_102", "New 600x400");
 // define("LCLAN_103", "New 800x600");
 
+define("LCLAN_104", "Sublink of");
+define("LCLAN_105", "Function");
+define("LCLAN_106", "Owned by");
+define("LCLAN_107", "Enable to override URL with a dynamically created Search-Engine-Friendly URL");
+define("LCLAN_108", "Some selections omitted - you can't set Link as a Sublink of its Sublink.");
+define("LCLAN_109", "Please choose a parent");
+define("LCLAN_110", "Please choose a generator module");
+define("LCLAN_111", "Not valid generator module data");
+
 define("LINKLAN_1", "Opens in 800x600 window");
 // define("LINKLAN_2", "Parent");
 // define("LINKLAN_3", "No Parent (Normal Link)");

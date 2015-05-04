@@ -192,7 +192,7 @@ class notify_config
 			}	
 			$text .= "</table>";
 			
-			$caption = str_replace("_menu","",ucfirst($k))." Events"; //TODO LAN
+			$caption = str_replace("_menu","",ucfirst($k))." ".LAN_NOTIFY_01;
 			
 			$tab[] = array('caption'=>$caption, 'text' => $text);
 		}

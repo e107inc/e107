@@ -511,11 +511,11 @@ class media_form_ui extends e_admin_form_ui
 		$pref 	= e107::getPref();
 		
 		$options = array(
-			"news-image" 			=> "News Images",  // TODO LAN.
-			"news-bbcode" 			=> "News [img] bbcode",
-			"page-bbcode" 			=> "Page [img] bbcode",
-		//	"featurebox-image" 		=> "Featurebox Images",
-		//	"featurebox-bbcode" 	=> "Featurebox [img] bbcode",		
+			"news-image" 			=> LAN_IMA_O_001,
+			"news-bbcode" 			=> LAN_IMA_O_002,
+			"page-bbcode" 			=> LAN_IMA_O_003,
+		//	"featurebox-image" 		=> LAN_IMA_O_004,
+		//	"featurebox-bbcode" 	=> LAN_IMA_O_005,
 		);
 		
 		if(vartrue($pref['e_imageresize']) && is_array($pref['e_imageresize']))
@@ -523,7 +523,7 @@ class media_form_ui extends e_admin_form_ui
 			foreach($pref['e_imageresize'] as $k=>$val)
 			{
 			
-				$options[$k]		= ucfirst($k). " [img] bbcode";
+				$options[$k]		= ucfirst($k)." ".LAN_IMA_O_006;
 			}
 		}
 		
@@ -724,33 +724,33 @@ class media_admin_ui extends e_admin_ui
 		'image_post_class' 				=> array('title'=> IMALAN_10, 'type' => 'userclass', 'data'=>'int', 'writeParms'=>'help=IMALAN_11&classlist=public,guest,nobody,member,admin,main,classes' ),
 		'image_post_disabled_method'	=> array('title'=> IMALAN_12, 'type' => 'boolean','writeParms'=>'enabled=IMALAN_15&disabled=IMALAN_14'),
 		'resize_method'					=> array('title'=> IMALAN_3, 'type'=>'method', 'data'=>'str'),
-		'thumbnail_quality'				=> array('title'=> "Thumbnail Quality", 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=Set this as low as possible before quality loss is apparent. Max. 100'), //TODO LAN
+		'thumbnail_quality'				=> array('title'=> IMALAN_73, 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=IMALAN_74'),
 	
-		'im_width'						=> array('title'=> "Avatar Width", 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=Avatar images will be constrained to these dimensions (in pixels)'), //TODO LAN
-		'im_height'						=> array('title'=> "Avatar Height", 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=Avatar images will be constrained to these dimensions (in pixels)'),
-		'resize_dimensions'				=> array('title'=> "Resize-Image Dimensions", 'type'=>'method', 'data'=>'str'),
+		'im_width'						=> array('title'=> IMALAN_75, 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=IMALAN_76'),
+		'im_height'						=> array('title'=> IMALAN_77, 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=IMALAN_78'),
+		'resize_dimensions'				=> array('title'=> IMALAN_79, 'type'=>'method', 'data'=>'str'),
 		
-		'watermark_activate'			=> array('title'=> 'Watermark Activation', 'tab'=>1, 'type' => 'number', 'data' => 'str', 'help'=>'All images with a width or height greater than this value will be given a watermark during resizing.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
-		'watermark_text'				=> array('title'=> 'Watermark Text','tab'=>1, 'type' => 'text', 'data' => 'str', 'help'=>'Optional Watermark Text'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
-		'watermark_font'				=> array('title'=> 'Watermark Font','tab'=>1, 'type' => 'dropdown', 'data' => 'str', 'help'=>'Optional Watermark Font. Upload more .ttf fonts to the /fonts folder in your theme directory.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
-		'watermark_size'				=> array('title'=> 'Watermark Size', 'tab'=>1,'type' => 'number', 'data' => 'int', 'help'=>'Size of the font in pts'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
+		'watermark_activate'			=> array('title'=> IMALAN_80, 'tab'=>1, 'type' => 'number', 'data' => 'str', 'help'=>IMALAN_81), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
+		'watermark_text'				=> array('title'=> IMALAN_82,'tab'=>1, 'type' => 'text', 'data' => 'str', 'help'=>IMALAN_83), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
+		'watermark_font'				=> array('title'=> IMALAN_84,'tab'=>1, 'type' => 'dropdown', 'data' => 'str', 'help'=>IMALAN_85), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
+		'watermark_size'				=> array('title'=> IMALAN_86, 'tab'=>1,'type' => 'number', 'data' => 'int', 'help'=>IMALAN_87), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
 		
-		'watermark_pos'					=> array('title'=> 'Watermark Position','tab'=>1, 'type' => 'dropdown', 'data' => 'str', 'help'=>'Watermark Position'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
-		'watermark_margin'				=> array('title'=> 'Watermark Margin', 'tab'=>1,'type' => 'number', 'data' => 'int', 'help'=>'The distance that watermark will appear from the edge of the image.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
+		'watermark_pos'					=> array('title'=> IMALAN_88,'tab'=>1, 'type' => 'dropdown', 'data' => 'str', 'help'=>IMALAN_89), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
+		'watermark_margin'				=> array('title'=> IMALAN_90, 'tab'=>1,'type' => 'number', 'data' => 'int', 'help'=>IMALAN_91), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
 		
-		'watermark_color'				=> array('title'=> 'Watermark Color', 'tab'=>1, 'type' => 'text', 'data' => 'str', 'help'=>'Color of the watermark eg. 000000'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
-		'watermark_shadowcolor'			=> array('title'=> 'Watermark Shadow-Color', 'tab'=>1,'type' => 'text', 'data' => 'str', 'help'=>'Shadow Color of the watermark eg. ffffff '), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
+		'watermark_color'				=> array('title'=> IMALAN_92, 'tab'=>1, 'type' => 'text', 'data' => 'str', 'help'=>IMALAN_93), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
+		'watermark_shadowcolor'			=> array('title'=> IMALAN_94, 'tab'=>1,'type' => 'text', 'data' => 'str', 'help'=>IMALAN_95), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
 	
-		'watermark_opacity'				=> array('title'=> 'Watermark Opacity', 'tab'=>1, 'type' => 'number', 'data' => 'int', 'help'=>'Enter a number between 1 and 100'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
+		'watermark_opacity'				=> array('title'=> IMALAN_96, 'tab'=>1, 'type' => 'number', 'data' => 'int', 'help'=>IMALAN_97), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
 	
 		// https://developers.google.com/youtube/player_parameters
-		'youtube_default_account'		=> array('title'=> "Default YouTube account", 'tab'=>2, 'type' => 'text', 'data'=>'str', 'help'=>'Used by the Media-Manager Youtube browser. Enter account name. eg. e107inc'),
+		'youtube_default_account'		=> array('title'=> IMALAN_98, 'tab'=>2, 'type' => 'text', 'data'=>'str', 'help'=>IMALAN_99),
 
-		'youtube_rel'					=> array('title'=> "Show Related Videos", 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
-		'youtube_showinfo'				=> array('title'=> "Show Video Info", 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
-		'youtube_cc_load_policy'		=> array('title'=> "Show Closed-Captions by default", 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
-		'youtube_modestbranding'		=> array('title'=> "Use Modest Branding", 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
-		'youtube_bbcode_responsive'		=> array('title'=> "Make the YouTube bbcode responsive", 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
+		'youtube_rel'					=> array('title'=> IMALAN_100, 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
+		'youtube_showinfo'				=> array('title'=> IMALAN_101, 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
+		'youtube_cc_load_policy'		=> array('title'=> IMALAN_102, 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
+		'youtube_modestbranding'		=> array('title'=> IMALAN_103, 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
+		'youtube_bbcode_responsive'		=> array('title'=> IMALAN_104, 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
 	
 		// 
 
@@ -796,11 +796,10 @@ class media_admin_ui extends e_admin_ui
 							</tr>";
 							
 							list($img_import_w,$img_import_h) = explode("x",$pref['img_import_resize']);
-							
-							//TODO LANS
+
 							$text .= "						
 							<tr>
-								<td>Resize images during media import<div class='label-note'>Leave empty to disable</div></td>
+								<td>".IMALAN_105."<div class='label-note'>".IMALAN_106."</div></td>
 								<td>
 									".$frm->text('img_import_resize_w', $img_import_w,4)."px X ".$frm->text('img_import_resize_h', $img_import_h,4)."px
 								</td>
@@ -1622,10 +1621,9 @@ class media_admin_ui extends e_admin_ui
 							
 							list($img_import_w,$img_import_h) = explode("x",$pref['img_import_resize']);
 							
-							//TODO LANS
-							$text .= "						
+							$text .= "
 							<tr>
-								<td>Resize images during media import<div class='label-note'>Leave empty to disable</div></td>
+								<td>".IMALAN_105."<div class='label-note'>".IMALAN_106."</div></td>
 								<td>
 									".$frm->text('img_import_resize_w', $img_import_w,4)."px X ".$frm->text('img_import_resize_h', $img_import_h,4)."px
 								</td>
@@ -1777,7 +1775,7 @@ class media_admin_ui extends e_admin_ui
 
 				if(!$typePath = $this->getPath($upload['type']))
 				{
-					$mes->addError("Couldn't generated path from upload data");
+					$mes->addError(IMALAN_107);
 					return FALSE;
 				}
 				$mes->addDebug(print_a($upload,TRUE));
@@ -1788,7 +1786,10 @@ class media_admin_ui extends e_admin_ui
 
 				if(!rename($oldpath, e_MEDIA.$newpath))
 				{
-					$mes->add("Couldn't move file from ".$oldpath." to ".$newpath, E_MESSAGE_ERROR);
+					$srch = array('[x]','[y]');
+					$repl = array($oldpath,$newpath);
+					$text = str_replace($srch,$repl,IMALAN_108);
+					$mes->add($text, E_MESSAGE_ERROR);
 					return FALSE;
 				};
 
@@ -1819,7 +1820,7 @@ class media_admin_ui extends e_admin_ui
 
 			if(!($typePath = $this->getPath($img_data['media_type'])))
 			{
-				$mes->addError("Couldn't get path ".$typePath);
+				$mes->addError(IMALAN_109." ".$typePath);
 					
 				return FALSE;
 			}
@@ -1836,7 +1837,10 @@ class media_admin_ui extends e_admin_ui
 			
 				if(!rename($oldpath, $newpath))
 				{
-					$mes->add("Couldn't move file from ".$oldpath." to ".str_replace('../', '', $newpath), E_MESSAGE_ERROR);
+					$srch = array('[x]','[y]');
+					$repl = array($oldpath,str_replace('../', '', $newpath));
+					$text = str_replace($srch,$repl,IMALAN_110);
+					$mes->add($text, E_MESSAGE_ERROR);
 					return FALSE;
 				}
 				$img_data['media_url'] = $tp->createConstants($newpath, 'rel');
@@ -1892,7 +1896,8 @@ class media_admin_ui extends e_admin_ui
 
 		if(!vartrue($this->mimePaths[$pmime]))
 		{
-			$mes->add("Couldn't detect mime-type($mime). Upload failed.", E_MESSAGE_ERROR);
+			$text = str_replace('[x]',$mime,IMALAN_111);
+			$mes->add($text, E_MESSAGE_ERROR);
 			return FALSE;
 		}
 
@@ -1902,7 +1907,8 @@ class media_admin_ui extends e_admin_ui
 		{
 			if(!mkdir($dir, 0755))
 			{
-				$mes->add("Couldn't create folder ($dir).", E_MESSAGE_ERROR);
+				$text = str_replace('[x]',$dir,IMALAN_112);
+				$mes->add($text, E_MESSAGE_ERROR);
 				return FALSE;
 			};
 		}
@@ -1931,14 +1937,14 @@ class media_admin_ui extends e_admin_ui
 
 		if(!vartrue($_POST['batch_import_selected']))
 		{
-			$mes->add("Scanning for new media (images, videos, files) in folder: <b> ".e_IMPORT."</b>", E_MESSAGE_INFO);
+			$mes->add(IMALAN_113." <b> ".e_IMPORT."</b>", E_MESSAGE_INFO);
 		}
 
 		if(!count($files))
 		{
 			if(!vartrue($_POST['batch_import_selected']))
 			{
-				$mes->add("No media Found! Please upload some files.", E_MESSAGE_INFO);
+				$mes->add(IMALAN_114, E_MESSAGE_INFO);
 			}
 			
 			$text = $this->uploadTab();
@@ -1960,15 +1966,15 @@ class media_admin_ui extends e_admin_ui
 							<thead>
 								<tr>
 									<th class='center'>".e107::getForm()->checkbox_toggle('e-column-toggle', 'batch_selected')."</th>
-									<th class='center' style='width:50px'>Preview</th>
+									<th class='center' style='width:50px'>".IMALAN_121."</th>
 									<th class='center'>".LAN_FILE."</th>
-									<th >Title (internal use)</th>
-									<th >Caption (seen by public)</th>
-									<th >Author</th>
-									<th>Mime Type</th>
-									<th>File Size</th>
+									<th>".IMALAN_115."</th>
+									<th>".IMALAN_116."</th>
+									<th>".IMALAN_117."</th>
+									<th>".IMALAN_118."</th>
+									<th>".IMALAN_119."</th>
 									<th>".LAN_DATESTAMP."</th>
-									<th class='center last'>Dimensions</th>
+									<th class='center last'>".IMALAN_120."</th>
 								</tr>
 							</thead>
 							<tbody>";
@@ -1983,7 +1989,8 @@ class media_admin_ui extends e_admin_ui
 			
 			if($f['error'])
 			{
-				$mes->addWarning($f['fname']." couldn't be renamed. Check file perms.");
+				$text = str_replace('[x]', $f['fname'], IMALAN_122);
+				$mes->addWarning($text);
 			}
 				
 			$large = e107::getParser()->thumbUrl($f['path'].$f['fname'], 'w=800', true);
@@ -2019,7 +2026,7 @@ class media_admin_ui extends e_admin_ui
 				</tbody>
 						</table>
 						<div class='buttons-bar center'>
-						Import into Category: ".$frm->selectbox('batch_category',$this->cats, $_POST['batch_category']);
+						".IMALAN_123." ".$frm->selectbox('batch_category',$this->cats, $_POST['batch_category']);
 			
 		//	$waterMarkPath = e_THEME.e107::getPref('sitetheme')."/images/watermark.png"; // Now performed site-wide dynamically. 				
 					
@@ -2031,8 +2038,8 @@ class media_admin_ui extends e_admin_ui
 						$text .= "
 						</div>
 						<div class='buttons-bar center'>
-							".$frm->admin_button('batch_import_selected', "Import Selected Files", 'import')
-							.$frm->admin_button('batch_import_delete', "Delete Selected Files", 'delete');				
+							".$frm->admin_button('batch_import_selected', IMALAN_124, 'import')
+							.$frm->admin_button('batch_import_delete', IMALAN_125, 'delete');
 			$text .= "
 						</div>
 					</fieldset>
@@ -2142,7 +2149,7 @@ class media_admin_ui extends e_admin_ui
 		
 		if(!count($_POST['batch_selected']))
 		{
-			$mes->addError("Please check at least one file.");
+			$mes->addError(IMALAN_126);
 			return;
 		}
 		
@@ -2183,7 +2190,7 @@ class media_admin_ui extends e_admin_ui
 			if(!$f['mime'])
 			{
 				
-				$mes->add("Couldn't get file info from : ".$oldpath, E_MESSAGE_WARNING);
+				$mes->add(IMALAN_127." ".$oldpath, E_MESSAGE_WARNING);
 				// $mes->add(print_a($f,true), E_MESSAGE_ERROR);
 				$f['mime'] = "other/file";
 			}
@@ -2227,7 +2234,7 @@ class media_admin_ui extends e_admin_ui
 
 				if($sql->db_Insert("core_media",$insert))
 				{
-					$mes->add("Importing Media: ".$f['fname'], E_MESSAGE_SUCCESS);
+					$mes->add(IMALAN_128." ".$f['fname'], E_MESSAGE_SUCCESS);
 					$this->deleteFileXml($f['fname']);
 				}
 				else

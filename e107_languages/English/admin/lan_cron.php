@@ -60,6 +60,11 @@ define("LAN_CRON_16", "Using your server control panel (eg. cPanel, DirectAdmin,
 define("LAN_CRON_20_1", "Check for e107 Update");
 define("LAN_CRON_20_2", "Check e107.org for Core updates"); // [eml] is automatically replaced by head admin e-mail address.
 define("LAN_CRON_20_3", "Recommended to keep system up to date.");
+define("LAN_CRON_20_4", "Update this Git repository");
+define("LAN_CRON_20_5", "Update this e107 installation with the very latest files from github.");
+define("LAN_CRON_20_6", "Recommended for developers only.");
+define("LAN_CRON_20_7", "Warning!");
+define("LAN_CRON_20_8", "May cause site instability!");
 
 define("LAN_CRON_30", "Every Minute");
 define("LAN_CRON_31", "Every Other Minute");
@@ -83,6 +88,8 @@ define("LAN_CRON_52", "Day(s):");
 define("LAN_CRON_53", "Month(s):");   
 define("LAN_CRON_54", "Weekday(s):");
 
+define("LAN_CRON_55", "Executing config function [b][function][/b]");
+define("LAN_CRON_56", "Config function [b][method][/b] NOT found.");
 
 define("LAN_CRON_BACKUP", "Backup");
 define("LAN_CRON_LOGGING", "Logging");

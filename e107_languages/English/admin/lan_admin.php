@@ -286,6 +286,9 @@ define("LAN_DISABLED","Disabled");
 define("LAN_ENABLED", "Enabled");
 define("LAN_BOOL_REVERSE", "Invert");
 
+define("LAN_NOT_AVAILABLE","Not available");
+define("LAN_AUTO_GENERATED","Auto-generated");
+
 define("LAN_PRESET_CONFIRMSAVE","Save current form values as the default for this page?");
 define("LAN_CONFIGURE", "Configure");
 
@@ -340,7 +343,10 @@ define("LAN_TYPE", "Type");
 define("LAN_CATEGORIES", "Categories");
 define("LAN_DEMO_FORBIDDEN", "Changes on this page are not possible in demo mode.");
 define("LAN_COPYRIGHT", "Copyright");
-
+define("LAN_MANAGER", "Manage Permissions");
+define("LAN_PING", "Ping");
+define("LAN_START", "Starting");
+define("LAN_END", "Ending");
 
 define("LAN_PREVIEW", "Preview");
 

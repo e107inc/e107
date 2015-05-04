@@ -179,10 +179,10 @@ $frm = e107::getForm();
 
 function e_help()
 {
+	$help_text = str_replace('[interval]', (PLUGIN_SCAN_INTERVAL ? PLUGIN_SCAN_INTERVAL / 60 : 0), EPL_ADLAN_228);
 	return array(
-		'caption'	=> "Scan for Changes",
-		'text'		=> "Plugin folders are scanned every ".(PLUGIN_SCAN_INTERVAL ? PLUGIN_SCAN_INTERVAL / 60 : 0) ." minutes for changes. Click the button below to scan now.
-			<p><a class='btn btn-mini btn-primary' href='".e_SELF."?refresh'>Refresh</a></p>"
+		'caption'	=> EPL_ADLAN_227,
+		'text'		=> $help_text."<p><a class='btn btn-mini btn-primary' href='".e_SELF."?refresh'>".EPL_ADLAN_229."</a></p>"
 	);
 }
 
@@ -413,7 +413,7 @@ class pluginManager{
 	
 	private function compatibilityLabel($val='')
 	{
-		$badge = (vartrue($val) > 1.9) ? "<span class='label label-warning'>Made for v2</span>" : '1.x';
+		$badge = (vartrue($val) > 1.9) ? "<span class='label label-warning'>".EPL_ADLAN_88."</span>" : '1.x';
 		return $badge;	
 	}
 	
@@ -425,7 +425,7 @@ class pluginManager{
 		$tp = e107::getParser();
 		$frm = e107::getForm();
 		
-		$caption	= "Search Online";
+		$caption	= EPL_ADLAN_89;
 		
 		$e107 = e107::getInstance();
 		$xml = e107::getXml();
@@ -435,7 +435,7 @@ class pluginManager{
 		// check for cURL
 		if(!function_exists('curl_init'))
 		{
-			$mes->addWarning("cURL is currently required to use this feature. Contact your webhosting provider to enable cURL"); // TODO LAN?
+			$mes->addWarning(EPL_ADLAN_90);
 		}
 		
 		//TODO use admin_ui including filter capabilities by sending search queries back to the xml script. 
@@ -483,8 +483,8 @@ class pluginManager{
 			//	print_a($row);
 			
 				$badge 		= $this->compatibilityLabel($row['compatibility']);;
-				$featured 	= ($row['featured']== 1) ? " <span class='label label-info'>Featured</span>" : '';
-				$price 		= ($row['price'] > 0) ? "<span class='label label-info'>Buy</span>" : "<span class='label label-success'>Free</span>";
+				$featured 	= ($row['featured']== 1) ? " <span class='label label-info'>".EPL_ADLAN_91."</span>" : '';
+				$price 		= ($row['price'] > 0) ? "<span class='label label-info'>".EPL_ADLAN_92."</span>" : "<span class='label label-success'>".EPL_ADLAN_93."</span>";
 			
 				$data[] = array(
 					'plugin_id'				=> $row['params']['id'],
@@ -635,7 +635,7 @@ class pluginManager{
 	//	print_a($data); 
 		
 		// Server flush useless. It's ajax ready state 4, we can't flush (sadly) before that (at least not for all browsers) 
-	 	$mes->addSuccess("Connecting...");  
+	 	$mes->addSuccess(EPL_ADLAN_94);
 
 		if($mp->download($data['plugin_id'], $data['plugin_mode'], 'plugin'))
 		{
@@ -646,7 +646,8 @@ class pluginManager{
 		}
 		else
 		{
-			echo $mes->addError('Unable to continue')->render('default', 'error'); 
+			// Unable to continue
+			echo $mes->addError(EPL_ADLAN_95)->render('default', 'error');
 		}
 		
 		echo $mes->render('default', 'debug'); 
@@ -659,7 +660,7 @@ class pluginManager{
 		$text .= $frm->open('upload-url-form','post');
 		
 		$text .= "<div class='form-inline' style='padding:20px'>";
-		$text .= "<input type='text' name='upload_url' size='255' style='width:70%;height:50px;text-align:center' placeholder='eg. http://website.com/some-plugin.zip' />";
+		$text .= "<input type='text' name='upload_url' size='255' style='width:70%;height:50px;text-align:center' placeholder='".EPL_ADLAN_96."' />";
 		$text .= $frm->admin_button('upload_remote_url',1,'create','Install');
 	    $text .= "</div>";
 		$text .= "</div>\n\n";
@@ -822,7 +823,7 @@ class pluginManager{
 				}
 				else 
 				{
-					$mes->addError("There was a problem extracting the .zip file to your plugin directory."); 
+					$mes->addError(EPL_ADLAN_97);
 				}
 			}
 			
@@ -919,7 +920,7 @@ class pluginManager{
 					else
 					{
 						/* upload is unlocatable */
-						e107::getRender()->tablerender(EPL_ADLAN_40, 'Unknown file: '.$fileList[0]['stored_filename']);
+						e107::getRender()->tablerender(EPL_ADLAN_40, EPL_ADLAN_98.' '.$fileList[0]['stored_filename']);
 					}
 
 					/* attempt to delete uploaded archive */
@@ -942,7 +943,7 @@ class pluginManager{
 			
 			if ($text === FALSE)
 			{ // Tidy this up
-				$this->show_message("Error messages above this line", E_MESSAGE_ERROR);
+				$this->show_message(EPL_ADLAN_99, E_MESSAGE_ERROR);
 			}
 			else
 			{
@@ -1193,8 +1194,9 @@ class pluginManager{
 		}
 		else
 		{
-			//TODO LANs
-			$text .= "<tr><td class='center' colspan='".count($this->fields)."'>No plugins installed - <a href='".e_ADMIN."plugin.php?avail'>click here to install some</a>.</td></tr>";
+			$text .= "<tr><td class='center' colspan='".count($this->fields)."'>";
+ 			$text .= str_replace("[link]", "<a href='".e_ADMIN."plugin.php?avail'>".EPL_ADLAN_100."</a>", EPL_ADLAN_101);
+			$text .= "</td></tr>";
 		}
 
 		$text .= "
@@ -1651,7 +1653,7 @@ class pluginManager{
 				$var['avail']['link'] = e_SELF."?avail";
 
 				
-				$var['online']['text'] = "Find Plugins";
+				$var['online']['text'] = EPL_ADLAN_220;
 				$var['online']['link'] = e_SELF."?mode=online";
 				
 				
@@ -1661,7 +1663,7 @@ class pluginManager{
 					$var['upload']['link'] = e_SELF."?mode=upload";
 				}
 
-				$var['create']['text'] = "Plugin Builder";
+				$var['create']['text'] = EPL_ADLAN_114;
 				$var['create']['link'] = e_SELF."?mode=create";
 				
 				
@@ -2037,17 +2039,17 @@ class pluginLanguage
 			
 			// echo $text2;
 			$tabs = array (
-				0	=> array('caption'=>'Plugin Files', 'text'=> $this->renderScriptTable()),
-				1 => array('caption'=>'Used', 'text'=>$used),
-				2 => array('caption'=>'Unused', 'text'=>$unused),
-				3 => array('caption'=>'Unsure', 'text'=>$unsure),
+				0	=> array('caption'=>EPL_ADLAN_222, 'text'=> $this->renderScriptTable()),
+				1 => array('caption'=>EPL_ADLAN_223, 'text'=>$used),
+				2 => array('caption'=>EPL_ADLAN_224, 'text'=>$unused),
+				3 => array('caption'=>EPL_ADLAN_225, 'text'=>$unsure),
 				
 
 			);
 		
 		
 			
-			$ns->tablerender(ADLAN_98.SEP."Plugin Builder".SEP. "Language-File Check".SEP.$this->plugin, $frm->tabs($tabs));	
+			$ns->tablerender(ADLAN_98.SEP.EPL_ADLAN_114.SEP.EPL_ADLAN_221.SEP.$this->plugin, $frm->tabs($tabs));
 				
 		}
 					
@@ -2083,7 +2085,7 @@ class pluginLanguage
 				{
 					foreach($match[1] as $lan)
 					{
-						if($lan != 'e_LANGUAGE' && $lan != 'e_LANGUAGEDIR' && $lan != 'LAN' && $lan != 'LANGUAGE') // remove 'TODO LAN'
+						if($lan != 'e_LANGUAGE' && $lan != 'e_LANGUAGEDIR' && $lan != 'LAN' && $lan != 'LANGUAGE')
 						{
 							$this->scriptDefs[] = $lan;
 							$this->scriptDefsData[] = array('file'=>$path, 'line'=>$ln, 'lan'=>$lan, 'value'=>$this->lanDefsRaw[$lan]); 
@@ -2216,15 +2218,16 @@ class pluginBuilder
 				}	
 				$newDir[$dir] = $dir;
 			}
-			
-			$mes->addInfo("This Wizard will build an admin area for your plugin and generate a plugin.xml meta file.
-				Before you start: <ul>
-						<li>Create a new writable folder in the ".e_PLUGIN." directory eg. <b>myplugin</b></li>
-						<li>If your plugin will use sql tables, create a new file in this folder and name it the same as the directory but with <b>_sql.php</b> as a sufix eg. <b>myplugin_sql.php</b></li>
-						<li>Create your table in Phpmyadmin and paste an sql dump of it into your file and save. (see <il>e107_plugins/_blank/_blank_sql.php</i> for an example)</li>
-						<li>Select your plugin's folder to begin.</li>
-				</ul>
-			");
+
+			$info = EPL_ADLAN_102;
+			$info .= "<ul>";
+			$info .= "<li>".str_replace('[e_PLUGIN]', e_PLUGIN, EPL_ADLAN_103)."</li>";
+			$info .= "<li>".EPL_ADLAN_104."</li>";
+			$info .= "<li>".EPL_ADLAN_105."</li>";
+			$info .= "<li>".EPL_ADLAN_106."</li>";
+			$info .= "</ul>";
+
+			$mes->addInfo($info);
 			
 			$text = $frm->open('createPlugin','get');
 			$text .= "<table class='table adminform'>
@@ -2233,12 +2236,12 @@ class pluginBuilder
 							<col class='col-control' />
 						</colgroup>
 				<tr>
-					<td>Build an admin-area and xml file for: </td>
+					<td>".EPL_ADLAN_107."</td>
 					<td><div class='input-append'>".$frm->open('createPlugin','get',e_SELF."?mode=create").$frm->select("newplugin",$newDir).$frm->admin_button('step', 2,'other','Go')."</div> ".$frm->checkbox('createFiles',1,1,'Create Files').$frm->close()."</td>
 				</tr>
 				
 				<tr>
-					<td>Check language files: </td>
+					<td>".EPL_ADLAN_108."</td>
 					<td><div class='input-append'>".$frm->open('checkPluginLangs','get',e_SELF."?mode=lans").$frm->select("newplugin",$lanDir).$frm->admin_button('step', 2,'other','Go')."</div> ".$frm->close()."</td>
 				</tr>";
 				
@@ -2263,11 +2266,11 @@ class pluginBuilder
 
 			$text .= $frm->close();
 			
-			$ns->tablerender(ADLAN_98.SEP."Plugin Builder", $mes->render() . $text);			
+			$ns->tablerender(ADLAN_98.SEP.EPL_ADLAN_114, $mes->render() . $text);
 			
 			
 			
-		//	$var['lans']['text'] = "Plugin Language-file check";
+		//	$var['lans']['text'] = EPL_ADLAN_226;
 		//		$var['lans']['link'] = e_SELF."?mode=lans";
 			
 			
@@ -2317,7 +2320,7 @@ class pluginBuilder
 			$text = $frm->open('newplugin-step3','post', e_SELF.'?mode=create&newplugin='.$newplug.'&createFiles='.$this->createFiles.'&step=3');
 			
 			$text .= "<ul class='nav nav-tabs'>\n";
-			$text .= "<li class='active'><a data-toggle='tab' href='#xml'>Basic Info.</a></li>";
+			$text .= "<li class='active'><a data-toggle='tab' href='#xml'>".EPL_ADLAN_109."</a></li>";
 			
 			$this->tableCount = count($ret['tables']);
 			
@@ -2326,7 +2329,7 @@ class pluginBuilder
 				$text .= "<li><a data-toggle='tab'  href='#".$table."'>Table: ".$table."</a></li>";
 				$this->tableList[] = $table;
 			}
-			$text .= "<li><a data-toggle='tab'  href='#preferences'>Preferences</a></li>";
+			$text .= "<li><a data-toggle='tab'  href='#preferences'>".EPL_ADLAN_110."</a></li>";
 			
 			$text .= "</ul>";
 			
@@ -2356,17 +2359,17 @@ class pluginBuilder
 			$text .= "
 			<div class='buttons-bar center'>
 			".$frm->hidden('newplugin', $this->pluginName)."
-			".$frm->admin_button('step', 3,'other','Generate')."
+			".$frm->admin_button('step', 3,'other',EPL_ADLAN_111)."
 			</div>";
 			
 			$text .= $frm->close();
 			
-			$mes->addInfo("Review all fields and modify if necessary.");
+			$mes->addInfo(EPL_ADLAN_112);
 
-			$mes->addInfo("Review ALL tabs before clicking 'Generate'.");	
+			$mes->addInfo(EPL_ADLAN_113);
 		
 			
-			$ns->tablerender(ADLAN_98.SEP."Plugin Builder".SEP."Step 2", $mes->render() . $text);		
+			$ns->tablerender(ADLAN_98.SEP.EPL_ADLAN_114.SEP.EPL_ADLAN_115, $mes->render() . $text);
 		}
 
 
@@ -2377,22 +2380,22 @@ class pluginBuilder
 			$text = '';
 			
 				$options = array(
-					'text'		=> "Text Box",
-					'number'	=> "Text Box (number)",
-					'url'		=> "Text Box (url)",
-					'textarea'	=> "Text Area",
-					'bbarea'	=> "Rich-Text Area",
-					'boolean'	=> "True/False",
-					"method"	=> "Custom Function",
-					"image"		=> "Image",
+					'text'		=> EPL_ADLAN_116,
+					'number'	=> EPL_ADLAN_117,
+					'url'		=> EPL_ADLAN_118,
+					'textarea'	=> EPL_ADLAN_119,
+					'bbarea'	=> EPL_ADLAN_120,
+					'boolean'	=> EPL_ADLAN_121,
+					"method"	=> EPL_ADLAN_122,
+					"image"		=> EPL_ADLAN_123,
 					
-					"dropdown"	=> "DropDown",
-					"userclass"	=> "DropDown (userclasses)",
-					"language"	=> "DropDown (languages)",
+					"dropdown"	=> EPL_ADLAN_124,
+					"userclass"	=> EPL_ADLAN_125,
+					"language"	=> EPL_ADLAN_126,
 
-					"icon"		=> "Icon",
+					"icon"		=> EPL_ADLAN_127,
 		
-					"file"		=> "File",
+					"file"		=> EPL_ADLAN_128,
 	
 				);
 						
@@ -2400,9 +2403,9 @@ class pluginBuilder
 			for ($i=0; $i < 10; $i++) 
 			{ 		
 				$text .= "<div>".
-				$frm->text("pluginPrefs[".$i."][index]", '',40,'placeholder=Preference Name')." ".
-				$frm->text("pluginPrefs[".$i."][value]", '',40,'placeholder=Default Value')." ".
-				$frm->select("pluginPrefs[".$i."][type]", $options, '', 'class=null', 'Field Type...').
+				$frm->text("pluginPrefs[".$i."][index]", '',40,'placeholder='.EPL_ADLAN_129)." ".
+				$frm->text("pluginPrefs[".$i."][value]", '',40,'placeholder='.EPL_ADLAN_130)." ".
+				$frm->select("pluginPrefs[".$i."][type]", $options, '', 'class=null', EPL_ADLAN_131).
 				"</div>";		
 			}
 			
@@ -2461,15 +2464,16 @@ class pluginBuilder
 					
 					if(file_put_contents(e_PLUGIN.$this->pluginName."/".$this->pluginName."_sql.php",$cont))
 					{
-						$mes->addInfo($this->pluginName."_sql.php as been generated",'default',true);	
+						$info = str_replace('[file]', $this->pluginName."_sql.php", EPL_ADLAN_132);
+						$mes->addInfo($info,'default',true);
 						$red = e107::getRedirect();
 						$red->redirect(e_REQUEST_URL,true);
 					//	$red->redirect(e_SELF."?mode=create&newplugin=".$this->pluginName."&createFiles=1&step=2",true);
 					}
 					else 
 					{
-						$msg = $this->pluginName."_sql.php is missing!<br />";
-						$msg .= "Please create <b>".$this->pluginName."_sql.php</b> in your plugin directory with the following content:<pre>".$cont."</pre>";
+						$msg = str_replace('[file]', $this->pluginName."_sql.php", EPL_ADLAN_133)."<br />";
+						$msg .= str_replace(array('[file]','[content]'), array($this->pluginName."_sql.php",$cont), EPL_ADLAN_134);
 						$mes->addWarning($msg);	
 					}
 					
@@ -2536,14 +2540,14 @@ class pluginBuilder
 			{
 				
 				case 'main-name':
-					$help 		= "The name of your plugin. (Must be written in English)";
+					$help 		= EPL_ADLAN_135;
 					$required 	= true;
 					$pattern 	= "[A-Za-z0-9 -]*";
 					$xsize		= 'medium';
 				break;
 		
 				case 'main-lang':
-					$help 		= "If you have a language file, enter the LAN_XXX value for the plugin's name";
+					$help 		= EPL_ADLAN_136;
 					$required 	= false;
 					$placeholder= " ";
 					$pattern 	= "[A-Z0-9_]*";
@@ -2551,7 +2555,7 @@ class pluginBuilder
 				break;
 				
 				case 'main-date':
-					$help 		= "Creation date of your plugin";
+					$help 		= EPL_ADLAN_137;
 					$required 	= true;
 					$xsize		= 'medium';
 				break;
@@ -2559,7 +2563,7 @@ class pluginBuilder
 				case 'main-version':
 					$default 	= '1.0';
 					$required 	= true;
-					$help 		= "The version of your plugin. Format: x.x";
+					$help 		= EPL_ADLAN_138;
 					$pattern	= "^[\d]{1,2}\.[\d]{1,2}$";
 					$xsize		= 'small';
 				break;
@@ -2567,7 +2571,7 @@ class pluginBuilder
 				case 'main-compatibility':
 					$default 	= '2.0';
 					$required 	= true;
-					$help 		= "Compatible with this version of e107";
+					$help 		= EPL_ADLAN_139;
 					$pattern	= "^[\d]{1,2}\.[\d]{1,2}$";
 					$xsize		= 'small';
 				break;
@@ -2575,14 +2579,14 @@ class pluginBuilder
 				case 'author-name':
 					$default 	= (vartrue($default)) ? $default : USERNAME;
 					$required 	= true;
-					$help 		= "Author Name";
+					$help 		= EPL_ADLAN_140;
 					$pattern	= "[A-Za-z \.0-9]*";
 					$xsize		= 'medium';
 				break;
 				
 				case 'author-url':
 					$required 	= true;
-					$help 		= "Author Website Url";
+					$help 		= EPL_ADLAN_141;
 				//	$pattern	= "https?://.+";
 					$xsize		= 'medium';
 				break;
@@ -2592,7 +2596,7 @@ class pluginBuilder
 				//break;	
 				
 				case 'summary-summary':
-					$help 		= "A short one-line description of the plugin<br />(Must be written in English)";
+					$help 		= EPL_ADLAN_142."<br />".EPL_ADLAN_143;
 					$required 	= true;
 					$size 		= 100;
 					$placeholder= " ";
@@ -2602,7 +2606,7 @@ class pluginBuilder
 				
 				case 'keywords-one':
 				case 'keywords-two':
-					$help 		= "Keyword/Tag for this plugin<br />(Must be written in English)";
+					$help 		= EPL_ADLAN_144."<br />".EPL_ADLAN_143;
 					$required 	= true;
 					$size 		= 20;
 					$placeholder= " ";
@@ -2611,7 +2615,7 @@ class pluginBuilder
 				break;	
 				
 				case 'description-description':
-					$help 		= "A full description of the plugin<br />(Must be written in English)";
+					$help 		= EPL_ADLAN_145."<br />".EPL_ADLAN_143;
 					$required 	= true;
 					$size 		= 100;
 					$placeholder = " ";
@@ -2621,7 +2625,7 @@ class pluginBuilder
 				
 					
 				case 'category-category':
-					$help 		= "What category of plugin is this?";
+					$help 		= EPL_ADLAN_146;
 					$required 	= true;
 					$size 		= 20;
 				break;
@@ -2649,14 +2653,14 @@ class pluginBuilder
 						
 				case 'category':
 					$options = array(
-					'settings'	=> 'settings',
-					'users'		=> 'users', 
-					'content'	=> 'content',
-					'tools'		=> 'tools',
-					'manage'	=> 'manage',
-					'misc'		=> 'misc',
-					'menu'		=> 'menu',
-					'about'		=> 'about'
+					'settings'	=> EPL_ADLAN_147,
+					'users'		=> EPL_ADLAN_148,
+					'content'	=> EPL_ADLAN_149,
+					'tools'		=> EPL_ADLAN_150,
+					'manage'	=> EPL_ADLAN_151,
+					'misc'		=> EPL_ADLAN_152,
+					'menu'		=> EPL_ADLAN_153,
+					'about'		=> EPL_ADLAN_154
 					);
 				
 					$text = $frm->select($name, $options, $default,'required=1&class=null', true);	
@@ -2767,10 +2771,10 @@ TEMPLATE;
 			{
 				if(file_put_contents($path,$result) )
 				{
-					$mes->addSuccess("Saved: ".$path);
+					$mes->addSuccess(EPL_ADLAN_155." ".$path);
 				}
 				else {
-					$mes->addError("Couldn't Save: ".$path);
+					$mes->addError(EPL_ADLAN_156." ".$path);
 				}
 			}
 			return  htmlentities($result);
@@ -2787,7 +2791,15 @@ TEMPLATE;
 		{
 			$frm = e107::getForm();
 					
-			$modes = array("main"=>"Main Area","cat"=>"Categories","other1"=>"Other 1","other2"=>"Other 2","other3"=>"Other 3","other4"=>"Other 4", 'exclude'=>'Exclude this table');
+			$modes = array(
+				"main"=>EPL_ADLAN_157,
+				"cat"=>EPL_ADLAN_158,
+				"other1"=>EPL_ADLAN_159,
+				"other2"=>EPL_ADLAN_160,
+				"other3"=>EPL_ADLAN_161,
+				"other4"=>EPL_ADLAN_162,
+				'exclude'=>EPL_ADLAN_163,
+			);
 			
 		//	echo "TABLE COUNT= ".$this->tableCount ;
 			
@@ -2828,19 +2840,19 @@ TEMPLATE;
 			$text .= "<table class='table adminlist'>
 						<thead>
 						<tr>
-							<th>Field</th>
-							<th>Caption</th>
-							<th>Type</th>
-							<th>Data</th>
-							<th>Width</th>
-							<th class='center'>Batch</th>
-							<th class='center'>Filter</th>
-							<th class='center'>Inline</th>
-							<th class='center e-tip' title='Field is required to be filled'>Validate</th>
-							<th class='center e-tip' title='Displayed by Default'>Display</th>
-							<th>HelpTip</th>
-							<th>ReadParms</th>
-							<th>WriteParms</th>
+							<th>".EPL_ADLAN_164."</th>
+							<th>".EPL_ADLAN_165."</th>
+							<th>".EPL_ADLAN_166."</th>
+							<th>".EPL_ADLAN_167."</th>
+							<th>".EPL_ADLAN_168."</th>
+							<th class='center'>".EPL_ADLAN_169."</th>
+							<th class='center'>".EPL_ADLAN_170."</th>
+							<th class='center'>".EPL_ADLAN_171."</th>
+							<th class='center e-tip' title='".EPL_ADLAN_177."'>".EPL_ADLAN_172."</th>
+							<th class='center e-tip' title='".EPL_ADLAN_178."'>".EPL_ADLAN_173."</th>
+							<th>".EPL_ADLAN_174."</th>
+							<th>".EPL_ADLAN_175."</th>
+							<th>".EPL_ADLAN_176."</th>
 						</tr>
 						</thead>
 						<tbody>
@@ -2912,8 +2924,8 @@ TEMPLATE;
 				case 'date':
 				case 'datetime':
 					$array = array(
-					'text'		=> "Text Box",	
-					"hidden"	=> "Hidden"
+					'text'		=> EPL_ADLAN_179,
+					"hidden"	=> EPL_ADLAN_180
 					);
 				break;
 			
@@ -2922,47 +2934,47 @@ TEMPLATE;
 				case 'bigint':
 				case 'smallint':
 					$array = array(
-					"boolean"	=> "True/False",
-					"number"	=> "Text Box (number)",
-					"dropdown"	=> "DropDown",
-					"userclass"	=> "DropDown (userclasses)",
-					"datestamp"	=> "Date",
-					"method"	=> "Custom Function",
-					"hidden"	=> "Hidden",
-					"user"		=> "User",
+					"boolean"	=> EPL_ADLAN_181,
+					"number"	=> EPL_ADLAN_182,
+					"dropdown"	=> EPL_ADLAN_183,
+					"userclass"	=> EPL_ADLAN_184,
+					"datestamp"	=> EPL_ADLAN_185,
+					"method"	=> EPL_ADLAN_186,
+					"hidden"	=> EPL_ADLAN_187,
+					"user"		=> EPL_ADLAN_188,
 					);	
 				break;
 				
 				case 'decimal':
 					$array = array(
-					"number"	=> "Text Box",
-					"dropdown"	=> "DropDown",
-					"method"	=> "Custom Function",
-					"hidden"	=> "Hidden",
+					"number"	=> EPL_ADLAN_189,
+					"dropdown"	=> EPL_ADLAN_190,
+					"method"	=> EPL_ADLAN_191,
+					"hidden"	=> EPL_ADLAN_192,
 					);	
 				break;
 				
 				case 'varchar':
 				case 'tinytext':
 				$array = array(
-					'text'		=> "Text Box",
-					"url"		=> "Text Box (url)",
-					"email"		=> "Text Box (email)",
-					"ip"		=> "Text Box (ip)",
-					"number"	=> "Text Box (number)",
-					"password"	=> "Text Box (password)",
-					"tags"		=> "Text Box (keywords)",
+					'text'		=> EPL_ADLAN_193,
+					"url"		=> EPL_ADLAN_194,
+					"email"		=> EPL_ADLAN_195,
+					"ip"		=> EPL_ADLAN_196,
+					"number"	=> EPL_ADLAN_197,
+					"password"	=> EPL_ADLAN_198,
+					"tags"		=> EPL_ADLAN_199,
 					
-					"dropdown"	=> "DropDown",
-					"userclass"	=> "DropDown (userclasses)",
-					"language"	=> "DropDown (languages)",
+					"dropdown"	=> EPL_ADLAN_200,
+					"userclass"	=> EPL_ADLAN_201,
+					"language"	=> EPL_ADLAN_202,
 
-					"icon"		=> "Icon",
-					"image"		=> "Image",
-					"file"		=> "File",
-					"method"	=> "Custom Function",
+					"icon"		=> EPL_ADLAN_203,
+					"image"		=> EPL_ADLAN_204,
+					"file"		=> EPL_ADLAN_205,
+					"method"	=> EPL_ADLAN_206,
 
-					"hidden"	=> "Hidden"
+					"hidden"	=> EPL_ADLAN_207
 					);
 				break;
 				
@@ -2970,14 +2982,14 @@ TEMPLATE;
 				case 'mediumtext':
 				case 'longtext':
 				$array = array(
-					'textarea'	=> "Text Area",
-					'bbarea'	=> "Rich-Text Area",
-					'text'		=> "Text Box",
-					"tags"		=> "Text Box (keywords)",
-					"method"	=> "Custom Function",
-					"image"		=> "Image (string)",
-					"images"	=> "Images (array)",
-					"hidden"	=> "Hidden"
+					'textarea'	=> EPL_ADLAN_208,
+					'bbarea'	=> EPL_ADLAN_209,
+					'text'		=> EPL_ADLAN_210,
+					"tags"		=> EPL_ADLAN_211,
+					"method"	=> EPL_ADLAN_212,
+					"image"		=> EPL_ADLAN_213,
+					"images"	=> EPL_ADLAN_214,
+					"hidden"	=> EPL_ADLAN_215
 					);
 				break;
 			}
@@ -3595,21 +3607,22 @@ exit;
 			{
 				if(file_put_contents($generatedFile, $startPHP .$text . $endPHP))
 				{
-					$mes->addSuccess("<a href='".$generatedFile."'>Click Here</a> to vist your generated admin area");
+					$message = str_replace("[link]", "<a href='".$generatedFile."'>".EPL_ADLAN_216."</a>", EPL_ADLAN_217);
+					$mes->addSuccess($message);
 				}	
 				else 
 				{
-					$mes->addError("Could not write to ".$generatedFile);
+					$mes->addError(str_replace('[file]', $generatedFile, EPL_ADLAN_218);
 				}
 			}
 			else
 			{
-				$mes->addInfo("No Files have been created. Please Copy &amp; Paste the code below into your files. ");	
+				$mes->addInfo(EPL_ADLAN_219);
 			}
 			
 			echo $mes->render();
 			
-			$ns->tablerender(ADLAN_98.SEP."Plugin Builder".SEP." plugin.xml", "<pre style='font-size:80%'>".$xmlText."</pre>");	
+			$ns->tablerender(ADLAN_98.SEP.EPL_ADLAN_114.SEP." plugin.xml", "<pre style='font-size:80%'>".$xmlText."</pre>");
 	
 			
 			$ns->tablerender("admin_config.php", "<pre style='font-size:80%'>".$text."</pre>");

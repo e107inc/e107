@@ -83,15 +83,15 @@ class links_admin_ui extends e_admin_ui
 		'link_name'	   		=> array('title'=> LCLAN_15,		'width'=>'auto','type'=>'text', 'inline'=>true, 'required' => true, 'validate' => true),
 	    'link_category'     => array('title'=> LAN_TEMPLATE,    'type' => 'dropdown', 'inline'=>true, 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
     
-    	'link_parent' 		=> array('title'=> 'Sublink of', 	'type' => 'method', 'data'=>'int', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
+    	'link_parent' 		=> array('title'=> LCLAN_104, 	'type' => 'method', 'data'=>'int', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
 		'link_url'	   		=> array('title'=> LAN_URL, 		'width'=>'auto', 'type'=>'method', 'inline'=>true, 'required'=>true,'validate' => true, 'writeParms'=>'size=xxlarge'),
-		'link_sefurl' 		=> array('title'=> LAN_SEFURL, 		'type' => 'method', 'inline'=>false, 'width' => 'auto', 'help'=>'Enable to override URL with a dynamically created Search-Engine-Friendly URL'), //TODO LAN
+		'link_sefurl' 		=> array('title'=> LAN_SEFURL, 		'type' => 'method', 'inline'=>false, 'width' => 'auto', 'help'=>LCLAN_107),
 		'link_class' 		=> array('title'=> LAN_USERCLASS, 	'type' => 'userclass','inline'=>true, 'writeParms' => 'classlist=public,guest,nobody,member,classes,admin,main', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
 		'link_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'textarea', 'width' => 'auto'), // 'method'=>'tinymce_plugins',  ?
 		'link_order' 		=> array('title'=> LAN_ORDER, 		'type' => 'number', 'width' => 'auto', 'nolist'=>false, 'inline' => true),
 		'link_open'			=> array('title'=> LCLAN_19, 		'type' => 'dropdown', 'inline'=>true, 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
-		'link_function'		=> array('title'=> 'Function', 		'type' => 'method', 'data'=>'str', 'width' => 'auto', 'thclass' => 'left first'),
-		'link_owner'		=> array('title'=> 'Owned by',		'type' => 'hidden', 'data'=>'str'),
+		'link_function'		=> array('title'=> LCLAN_105, 		'type' => 'method', 'data'=>'str', 'width' => 'auto', 'thclass' => 'left first'),
+		'link_owner'		=> array('title'=> LCLAN_106,		'type' => 'hidden', 'data'=>'str'),
 		'options' 			=> array('title'=> LAN_OPTIONS, 	'type'	=> null, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class'=>'center','readParms'=>'sort=1') // quick workaround
 	);
 
@@ -161,7 +161,7 @@ class links_admin_ui extends e_admin_ui
 				$found = true;
 			}
 		}
-		if($found) e107::getMessage()->addWarning('Some selections omitted - you can\'t set Link as a Sublink of its Sublink.');
+		if($found) e107::getMessage()->addWarning(LCLAN_108);
 		if(!$selected) return;
 		
 		if(parent::handleListBatch($selected, $field, $value))
@@ -317,17 +317,17 @@ class links_admin_ui extends e_admin_ui
 
 		if(!$pid)
 		{
-			$mes->warning('Please choose a parent');
+			$mes->warning(LCLAN_109);
 			return;
 		}
 		if(!$subtype)
 		{
-			$mes->warning('Please choose a generator module');
+			$mes->warning(LCLAN_110);
 			return;
 		}
 		if(!$sublink)
 		{
-			$mes->error('Not valid generator module data');
+			$mes->error(LCLAN_111);
 			return;
 		}
 
@@ -664,7 +664,7 @@ class links_admin_form_ui extends e_admin_form_ui
 
 			if(empty($config))
 			{
-				return $this->hidden('link_sefurl','')."<span class='label label-warning'>Not available</span>"; //TODO Generic LAN
+				return $this->hidden('link_sefurl','')."<span class='label label-warning'>".LAN_NOT_AVAILABLE."</span>";
 			}
 
 			foreach($config as $k=>$v)
@@ -706,7 +706,7 @@ class links_admin_form_ui extends e_admin_form_ui
 
 				$text = str_replace(e_HTTP,'',e107::url($owner,$sef)); // dynamically created.
 				$text .= $this->hidden('link_url',$curVal);
-				$text .= " <span class='label label-warning'>Auto-generated</span>";
+				$text .= " <span class='label label-warning'>".LAN_AUTO_GENERATED."</span>";
 
 				return $text;
 
