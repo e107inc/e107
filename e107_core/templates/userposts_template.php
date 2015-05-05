@@ -59,12 +59,13 @@ $USERPOSTS_NP_TABLE = $USERPOSTS_TEMPLATE['np_table']; // BC, will be removed
 	";
 
 // ##### ------------------------------------------------------------------------------------------
+//TODO Put this part into the forum plugin.
 
 // ##### USERPOSTS FORUM TABLE --------------------------------------------------------------------
 	// additional shortcodes available:
 	// {USERPOSTS_FORUM_SEARCH_FIELD}, {USERPOSTS_FORUM_SEARCH_BUTTON}
 	$USERPOSTS_TEMPLATE['forum_table_start'] = "
-	<div style='text-align:center'>
+	<div>
 		{NEXTPREV}
 		<form method='post' action='".e_REQUEST_URL."'>
 		<table class='table fborder up-forum' id='up-forum'>
