@@ -681,7 +681,7 @@ class poll
 		$text .= "<br />
 			 <div class='form-horizontal control-group'>
 				<label class='control-label'>".LAN_FORUM_3033."</label>
-				<div class='controls'>
+				<div class='radio controls'>
 					". $frm->radio('multipleChoice',$opts, vartrue($_POST['multipleChoice'], 0) ).$frm->hidden('storageMethod', 1)."
 				</div>
 			</div>			
