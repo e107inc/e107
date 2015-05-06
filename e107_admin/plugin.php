@@ -3612,7 +3612,7 @@ exit;
 				}	
 				else 
 				{
-					$mes->addError(str_replace('[file]', $generatedFile, EPL_ADLAN_218);
+					$mes->addError(str_replace('[file]', $generatedFile, EPL_ADLAN_218));
 				}
 			}
 			else
