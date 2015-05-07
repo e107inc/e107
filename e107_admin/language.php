@@ -1447,7 +1447,7 @@ function zip_up_lang($language)
 		$ret['error'] = TRUE;
 		$file = "e107_languages/{$language}/{$language}.php";
 		$def = (defined('LANG_LAN_25')) ? LANG_LAN_25 : LANG_LAN_119;
-		$ret['message'] = str_replace("[lcpath]",$file,$def); // 
+		$ret['message'] = str_replace("[x]",$file,$def); //
 		return $ret;	
 	}
 		

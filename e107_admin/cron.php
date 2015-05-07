@@ -456,7 +456,7 @@ class cron_admin_ui extends e_admin_ui
 				}
 				else
 				{
-					$message = str_replace('[method]', $method_name."()", "Config function [b][method][/b] NOT found.");
+					$message = str_replace('[x]', $method_name."()", "Config function [b][x][/b] NOT found.");
 					$mes->add($message, E_MESSAGE_DEBUG);
 				}
 			}
