@@ -93,7 +93,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 	
 
-	function sc_attachments()
+	function sc_attachments($parm=array())
 	{
 		$tp = e107::getParser();
 		
@@ -114,14 +114,22 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 					switch($type)
 					{
-						case 'file':
+						case "file":
 					
-							$url = e_SELF."?id=".$this->postInfo['post_id']."&amp;dl=".$key;
-							$txt .= IMAGE_attachment." <a href='".$url."'>{$name}</a><br />";
+							$url = e_REQUEST_SELF."?id=".$this->postInfo['post_id']."&amp;dl=".$key;
+
+							if(defset("BOOTSTRAP") == 3)
+							{
+								$txt .= "<a class='forum-attachment-file btn btn-sm btn-default' href='".$url."'>".$tp->toGlyph('glyphicon-save')." {$name}</a><br />";
+							}
+							else
+							{
+								$txt .= IMAGE_attachment." <a href='".$url."'>{$name}</a><br />";
+							}
 
 						break;
 
-						case 'img': //Always use thumb to hide the hash. 
+						case 'img': //Always use thumb to hide the hash.
 						
 						//	return $baseDir.$file; 
 							if(file_exists($baseDir.$file))
@@ -130,7 +138,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 								$full = $tp->thumbUrl($baseDir.$file,'w=1000&x=1', true);
 							
 								$inc = (vartrue($parm['modal'])) ? "data-toggle='modal' data-target='#".$parm['modal']."' " : "";
-								$images[] = "<a  {$inc} rel='external' href='{$full}'><img class='thumbnail' src='{$thumb}' alt='' /></a>";	
+								$images[] = "<a  {$inc} rel='external' href='{$full}' class='forum-attachment-image' ><img class='thumbnail' src='{$thumb}' alt='' /></a>";
 							}
 							elseif(ADMIN)
 							{

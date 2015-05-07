@@ -387,10 +387,9 @@ $FORUM_VIEWTOPIC_TEMPLATE['end'] = "</ul>
 
 
 
-	$FORUM_VIEWTOPIC_TEMPLATE['replies'] = $FORUM_VIEWTOPIC_TEMPLATE['thread']; 
+$FORUM_VIEWTOPIC_TEMPLATE['replies'] = $FORUM_VIEWTOPIC_TEMPLATE['thread'];
 	
-
-	
+$FORUM_VIEWTOPIC_WRAPPER['ATTACHMENTS'] = "<div class='alert alert-default alert-block'>{---}</div>";
 
 //$FORUMDELETEDSTYLE		= "<br />DELETED";
 

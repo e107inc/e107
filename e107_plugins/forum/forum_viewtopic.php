@@ -251,6 +251,7 @@ if ($thread->pages > 1)
 	$parms = "total={$thread->pages}&type=page&current={$thread->page}&url=".$url."&caption=off&tmpl=default&navcount=4&glyphs=1";
 	
 	//XXX FIXME - pull-down template not practical here. Can we force another?
+
 	$tVars->GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
 /*
 	$parms = ($thread->pages).",1,{$thread->page},url::forum::thread::func=view&id={$thread->threadId}&page=[FROM],off";
@@ -625,6 +626,8 @@ class e107ForumThread
 	public $perPage;
 	public $noInc;
 	public $pages;
+	public $page;
+
 
 	function init()
 	{
@@ -656,9 +659,13 @@ class e107ForumThread
 			header('Location:' . $e107->url->create('forum/forum/main', array(), 'encode=0&full=1'));
 			exit;
 		}
-		$this->pages = ceil(($this->threadInfo['thread_total_replies']) / $this->perPage);
+
+		$totalPosts = $this->threadInfo['thread_total_replies'] + 1; // add 1 for the original post . ie. not a reply.
+		$this->pages = ceil(($totalPosts)  / $this->perPage);
 		$this->noInc = false;
 	}
+
+
 
 	function toggle_track()
 	{
@@ -717,7 +724,7 @@ class e107ForumThread
 				break;
 
 			case 'last':
-				$pages = ceil(($thread->threadInfo['thread_total_replies']) / $thread->perPage);
+				$pages = ceil(($thread->threadInfo['thread_total_replies'] + 1) / $thread->perPage);
 				$thread->page = $_GET['p'] = $pages;
 				break;
 
