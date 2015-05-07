@@ -270,6 +270,8 @@ define("LAN_DATESTAMP","Date stamp");
 define("LAN_OPTIONAL", "optional");
 define("LAN_INACTIVE","Inactive");
 define("LAN_ACTIVE","Active");
+define("LAN_ACCEPT","Accept");
+define("LAN_PENDING","Pending");
 
 define("LAN_BAN","Ban");
 define("LAN_RATING", "Rating");
