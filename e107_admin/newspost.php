@@ -683,11 +683,11 @@ class news_admin_ui extends e_admin_ui
 
 		$mes = e107::getMessage();
 
-		$mes->addDebug(LAN_NEWS_76,'default',true);
+		$mes->addDebug('Checking for Ping Status','default',true);
 
 		if(!empty($_POST['news_ping']) && (count($pingServices)>0) && (in_array(e_UC_PUBLIC, $_POST['news_class'])))
 		{
-			$mes->addDebug(LAN_NEWS_77,'default',true);
+			$mes->addDebug("Initiating ping",'default',true);
 
 			include (e_HANDLER.'xmlrpc/xmlrpc.inc.php');
 			include (e_HANDLER.'xmlrpc/xmlrpcs.inc.php');
@@ -712,11 +712,11 @@ class news_admin_ui extends e_admin_ui
 
 				if($this->ping($server, $port, $path, $weblog_name, $weblog_url, $changes_url, $cat_or_rss, $extended))
 				{
-					e107::getMessage()->addInfo(LAN_NEWS_78." ".$server .' '.LAN_NEWS_79.'<br />url: '.$changes_url .'<br />rss: '.$cat_or_rss , 'default', true);
+					e107::getMessage()->addInfo("Successfully Pinged: ".$server .' with:<br />url: '.$changes_url .'<br />rss: '.$cat_or_rss , 'default', true);
 				}
 				else
 				{
-					e107::getMessage()->addDebug(LAN_NEWS_80." ".$server .' '.LAN_NEWS_79.' '.$changes_url , 'default', true);
+					e107::getMessage()->addDebug("Ping failed!: ".$server .' with: '.$changes_url , 'default', true);
 				}
 
 			}
@@ -724,9 +724,9 @@ class news_admin_ui extends e_admin_ui
 		}
 		else
 		{
-		//	$mes->addDebug(LAN_NEWS_81,'default',true);
-		//	$mes->addDebug(LAN_NEWS_82." ".print_a($pingServices, true),'default', true);
-		//	$mes->addDebug(LAN_NEWS_83." ".print_a($_POST['news_class'],true),'default', true);
+		//	$mes->addDebug('Ping not triggerred','default',true);
+		//	$mes->addDebug("Services: ".print_a($pingServices, true),'default', true);
+		//	$mes->addDebug("Userclass: ".print_a($_POST['news_class'],true),'default', true);
 
 		}
 
@@ -739,7 +739,7 @@ class news_admin_ui extends e_admin_ui
 		$mes = e107::getMessage();
 		$log = e107::getAdminLog();
 		
-		$mes->addDebug(LAN_NEWS_84." ".$xml_rpc_server, 'default', true);
+		$mes->addDebug("Attempting to ping: ".$xml_rpc_server, 'default', true);
 
 		
         $name_param 		= new xmlrpcval($weblog_name, 'string');
@@ -772,12 +772,12 @@ class news_admin_ui extends e_admin_ui
         $client 	= new xmlrpc_client($xml_rpc_path, $xml_rpc_server, $xml_rpc_port);
         $response 	= $client->send($message);
        
-        $this->log_ping(LAN_NEWS_85." " . $call_text);
+        $this->log_ping("Request: " . $call_text);
         $this->log_ping($message->serialize(), true);
 		
         if ($response == 0) 
         {
-            $error_text = LAN_NEWS_86." " . $xml_rpc_server . ": " . $client->errno . " " . $client->errstring;
+            $error_text = "Error: " . $xml_rpc_server . ": " . $client->errno . " " . $client->errstring;
             $this->report_error($error_text);
             $this->log_ping($error_text);
 			$log->addArray(array('status'=>LAN_ERROR, 'service'=>$xml_rpc_server, 'url'=> $changes_url, 'response'=>$client->errstring))->save('PING_01');
@@ -787,7 +787,7 @@ class news_admin_ui extends e_admin_ui
 		
         if ($response->faultCode() != 0)  
         {
-            $error_text = LAN_NEWS_86." " . $xml_rpc_server . ": " . $response->faultCode() . " " . $response->faultString();
+            $error_text = "Error: " . $xml_rpc_server . ": " . $response->faultCode() . " " . $response->faultString();
             $this->report_error($error_text);
 			$log->addArray(array('status'=>LAN_ERROR, 'service'=>$xml_rpc_server, 'url'=> $changes_url, 'response'=>$response->faultString()))->save('PING_01');
 	
@@ -808,7 +808,7 @@ class news_admin_ui extends e_admin_ui
         // read the response
         if ($fl_error->scalarval() != false) 
         {
-            $error_text = LAN_NEWS_86." " . $xml_rpc_server . ": " . $message->scalarval();
+            $error_text = "Error: " . $xml_rpc_server . ": " . $message->scalarval();
 			$this->report_error($error_text);
 			$log->addArray(array('status'=>LAN_ERROR, 'service'=>$xml_rpc_server, 'url'=> $changes_url, 'response'=>$message->scalarval()))->save('PING_01');
 	

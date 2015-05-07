@@ -81,8 +81,6 @@ define("LANG_LAN_118", "Please verify your language files ('Verify') then try ag
 define("LANG_LAN_119", "Please check that CORE_LC and CORE_LC2 have values in [lcpath] and try again.");
 define("LANG_LAN_120", "Please make sure you are using default folder names in e107_config.php (eg. e107_languages/, e107_plugins/ etc.) and try again.");
 define("LANG_LAN_121", "Couldn't Load:");
-define("LANG_LAN_122", "Script:");
-define("LANG_LAN_123", "LanFile:");
 define("LANG_LAN_124", "Definition");
 define("LANG_LAN_125", "(disabled)");
 define("LANG_LAN_126", "Disable All Unused");
