@@ -318,8 +318,8 @@ if($fp_update_prefs)
 	$corePrefs->set('frontpage', $fp_list);
 	$corePrefs->set('frontpage_force', $fp_force);
 	$result = $corePrefs->save(FALSE, TRUE);
-	$mes->addDebug("<h4>".FRTLAN_58."</h4>".print_a($fp_list, true));
-	$mes->addDebug("<h4>".FRTLAN_59."</h4>".print_a($fp_force, true));
+	$mes->addDebug("<h4>Home</h4>".print_a($fp_list, true));
+	$mes->addDebug("<h4>Post-Login</h4>".print_a($fp_force, true));
 }
 
 

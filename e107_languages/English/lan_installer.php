@@ -189,4 +189,4 @@ define("LANINS_129", "Database not found.");
 define('LANINS_130', "Parked Domain");
 define('LANINS_131', "The parked domain which will become a new e107 website.");
 define('LANINS_132', "mydomain.com");
-define('LANINS_133', "This will create a fresh installation of e107 at the domain you specify. Using your server administration software (eg. cPanel) - park your other domain on top of [domain]");
+define('LANINS_133', "This will create a fresh installation of e107 at the domain you specify. Using your server administration software (eg. cPanel) - park your other domain on top of [x]");

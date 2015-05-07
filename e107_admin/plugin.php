@@ -179,7 +179,7 @@ $frm = e107::getForm();
 
 function e_help()
 {
-	$help_text = str_replace('[interval]', (PLUGIN_SCAN_INTERVAL ? PLUGIN_SCAN_INTERVAL / 60 : 0), EPL_ADLAN_228);
+	$help_text = str_replace('[x]', (PLUGIN_SCAN_INTERVAL ? PLUGIN_SCAN_INTERVAL / 60 : 0), EPL_ADLAN_228);
 	return array(
 		'caption'	=> EPL_ADLAN_227,
 		'text'		=> $help_text."<p><a class='btn btn-mini btn-primary' href='".e_SELF."?refresh'>".EPL_ADLAN_229."</a></p>"
@@ -1195,7 +1195,7 @@ class pluginManager{
 		else
 		{
 			$text .= "<tr><td class='center' colspan='".count($this->fields)."'>";
- 			$text .= str_replace("[link]", "<a href='".e_ADMIN."plugin.php?avail'>".EPL_ADLAN_100."</a>", EPL_ADLAN_101);
+ 			$text .= str_replace("[x]", "<a href='".e_ADMIN."plugin.php?avail'>".EPL_ADLAN_100."</a>", EPL_ADLAN_101);
 			$text .= "</td></tr>";
 		}
 
@@ -2221,7 +2221,7 @@ class pluginBuilder
 
 			$info = EPL_ADLAN_102;
 			$info .= "<ul>";
-			$info .= "<li>".str_replace('[e_PLUGIN]', e_PLUGIN, EPL_ADLAN_103)."</li>";
+			$info .= "<li>".str_replace('[x]', e_PLUGIN, EPL_ADLAN_103)."</li>";
 			$info .= "<li>".EPL_ADLAN_104."</li>";
 			$info .= "<li>".EPL_ADLAN_105."</li>";
 			$info .= "<li>".EPL_ADLAN_106."</li>";
@@ -2464,7 +2464,7 @@ class pluginBuilder
 					
 					if(file_put_contents(e_PLUGIN.$this->pluginName."/".$this->pluginName."_sql.php",$cont))
 					{
-						$info = str_replace('[file]', $this->pluginName."_sql.php", EPL_ADLAN_132);
+						$info = str_replace('[x]', $this->pluginName."_sql.php", EPL_ADLAN_132);
 						$mes->addInfo($info,'default',true);
 						$red = e107::getRedirect();
 						$red->redirect(e_REQUEST_URL,true);
@@ -2472,8 +2472,8 @@ class pluginBuilder
 					}
 					else 
 					{
-						$msg = str_replace('[file]', $this->pluginName."_sql.php", EPL_ADLAN_133)."<br />";
-						$msg .= str_replace(array('[file]','[content]'), array($this->pluginName."_sql.php",$cont), EPL_ADLAN_134);
+						$msg = str_replace('[x]', $this->pluginName."_sql.php", EPL_ADLAN_133)."<br />";
+						$msg .= str_replace(array('[x]','[y]'), array($this->pluginName."_sql.php",$cont), EPL_ADLAN_134);
 						$mes->addWarning($msg);	
 					}
 					
@@ -3607,12 +3607,12 @@ exit;
 			{
 				if(file_put_contents($generatedFile, $startPHP .$text . $endPHP))
 				{
-					$message = str_replace("[link]", "<a href='".$generatedFile."'>".EPL_ADLAN_216."</a>", EPL_ADLAN_217);
+					$message = str_replace("[x]", "<a href='".$generatedFile."'>".EPL_ADLAN_216."</a>", EPL_ADLAN_217);
 					$mes->addSuccess($message);
 				}	
 				else 
 				{
-					$mes->addError(str_replace('[file]', $generatedFile, EPL_ADLAN_218));
+					$mes->addError(str_replace('[x]', $generatedFile, EPL_ADLAN_218));
 				}
 			}
 			else
