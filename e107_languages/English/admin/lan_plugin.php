@@ -116,9 +116,9 @@ define ('EPL_ADLAN_97',"There was a problem extracting the .zip file to your plu
 define ('EPL_ADLAN_98',"Unknown file:");
 define ('EPL_ADLAN_99',"Error messages above this line");
 define ('EPL_ADLAN_100',"click here to install some");
-define ('EPL_ADLAN_101',"No plugins installed - [link].");
+define ('EPL_ADLAN_101',"No plugins installed - [x].");
 define ('EPL_ADLAN_102',"This Wizard will build an admin area for your plugin and generate a plugin.xml meta file. Before you start:");
-define ('EPL_ADLAN_103',"Create a new writable folder in the [e_PLUGIN] directory eg. [b]myplugin[/b]");
+define ('EPL_ADLAN_103',"Create a new writable folder in the [x] directory eg. [b]myplugin[/b]");
 define ('EPL_ADLAN_104',"If your plugin will use sql tables, create a new file in this folder and name it the same as the directory but with [b]_sql.php[/b] as a sufix eg. [b]myplugin_sql.php[/b]");
 define ('EPL_ADLAN_105',"Create your table in phpMyAdmin and paste an sql dump of it into your file and save. (see [i]e107_plugins/_blank/_blank_sql.php[/i] for an example)");
 define ('EPL_ADLAN_106',"Select your plugin's folder to begin.");
@@ -149,9 +149,9 @@ define ('EPL_ADLAN_128',"File");
 define ('EPL_ADLAN_129',"Preference Name");
 define ('EPL_ADLAN_130',"Default Value");
 define ('EPL_ADLAN_131',"Field Type...");
-define ('EPL_ADLAN_132',"[file] has been generated");
-define ('EPL_ADLAN_133',"[file] is missing!");
-define ('EPL_ADLAN_134',"Please create [b][file][/b] in your plugin directory with the following content: [content]");
+define ('EPL_ADLAN_132',"[x] has been generated");
+define ('EPL_ADLAN_133',"[x] is missing!");
+define ('EPL_ADLAN_134',"Please create [b][x][/b] in your plugin directory with the following content: [y]");
 define ('EPL_ADLAN_135',"The name of your plugin. (Must be written in English)");
 define ('EPL_ADLAN_136',"If you have a language file, enter the LAN_XXX value for the plugin's name");
 define ('EPL_ADLAN_137',"Creation date of your plugin");
@@ -250,8 +250,8 @@ define ('EPL_ADLAN_214',"Images (array)");
 define ('EPL_ADLAN_215',"Hidden");
 
 define ('EPL_ADLAN_216',"Click Here");
-define ('EPL_ADLAN_217',"[link] to vist your generated admin area");
-define ('EPL_ADLAN_218',"Could not write to [file]");
+define ('EPL_ADLAN_217',"[x] to vist your generated admin area");
+define ('EPL_ADLAN_218',"Could not write to [x]");
 define ('EPL_ADLAN_219',"No Files have been created. Please Copy &amp; Paste the code below into your files.");
 
 define ('EPL_ADLAN_220',"Find Plugins");
@@ -265,7 +265,7 @@ define ('EPL_ADLAN_225',"Unsure");
 define ('EPL_ADLAN_226',"Plugin Language-File Check");
 
 define ('EPL_ADLAN_227',"Scan for Changes");
-define ('EPL_ADLAN_228',"Plugin folders are scanned every [interval] minutes for changes. Click the button below to scan now.");
+define ('EPL_ADLAN_228',"Plugin folders are scanned every [x] minutes for changes. Click the button below to scan now.");
 define ('EPL_ADLAN_229',"Refresh");
 
 define('LAN_UPGRADE_SUCCESSFUL', "Upgrade Successful");
