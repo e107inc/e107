@@ -442,7 +442,7 @@ class cron_admin_ui extends e_admin_ui
 				$obj = new $class_name;
 				if (method_exists($obj, $method_name))
 				{
-					$message = str_replace('[function]', $class_name." : ".$method_name, "Executing config function [b][function][/b]");
+					$message = str_replace('[x]', $class_name." : ".$method_name, "Executing config function [b][x][/b]");
 					$mes->add($message, E_MESSAGE_DEBUG);
 					if ($return == 'boolean')
 					{
