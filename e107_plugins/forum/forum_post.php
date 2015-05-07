@@ -343,7 +343,7 @@ class forum_post_handler
 		$tp = e107::getParser();
 		$ns = e107::getRender();
 
-		process_upload();
+		$this->processAttachments();
 
 		require_once(HEADERF);
 		if (USER)
@@ -469,7 +469,7 @@ class forum_post_handler
 
 			$time = time();
 			$postInfo['post_entry']                 = $_POST['post'];
-			$postInfo['post_forum']                 = $this->id;
+			$postInfo['post_forum']                 = $this->data['forum_id'];
 			$postInfo['post_datestamp']             = $time;
 			$postInfo['post_ip']                    = e107::getIPHandler()->getIP(FALSE);
 
@@ -483,7 +483,7 @@ class forum_post_handler
 			//If we've successfully uploaded something, we'll have to edit the post_entry and post_attachments
 			$newValues = array();
 
-			if($uploadResult = process_upload($newPostId))
+			if($uploadResult = $this->processAttachments())
 			{
 				foreach($uploadResult as $ur)
 				{
@@ -549,8 +549,8 @@ class forum_post_handler
 					break;
 			}
 
-
-
+			e107::getMessage()->addDebug(print_a($postInfo,true));
+		//	e107::getMessage()->addDebug(print_a($this,true));
 
 			if($postResult === -1 || $newPostId === -1) //Duplicate post
 			{
@@ -640,7 +640,7 @@ class forum_post_handler
 			$postVals = array();
 			$threadVals = array();
 
-			if($uploadResult = process_upload($this->data['post_id']))
+			if($uploadResult = $this->processAttachments())
 			{
 				$attachments = explode(',', $this->data['post_attachments']);
 				foreach($uploadResult as $ur)
@@ -717,6 +717,117 @@ class forum_post_handler
 	}
 
 
+
+
+
+	function processAttachments()
+	{
+
+		$ret = array();
+
+		if (isset($_FILES['file_userfile']['error']))
+		{
+			require_once(e_HANDLER.'upload_handler.php');
+
+			// retrieve and create attachment directory if needed
+			$attachmentDir = $this->forumObj->getAttachmentPath(USERID, true);
+
+			if($uploaded = process_uploaded_files($attachmentDir, 'attachment', ''))
+			{
+				foreach($uploaded as $upload)
+				{
+					//print_a($upload); exit;
+					if ($upload['error'] == 0)
+					{
+						$_txt = '';
+						$_att = '';
+						$_file = '';
+						$_thumb = '';
+						$_fname = '';
+						$fpath = '';
+						if(strstr($upload['type'], 'image'))
+						{
+							$_type = 'img';
+
+							//XXX v2.x Image-resizing is now dynamic.
+
+							/*if($forum->prefs->get('maxwidth', 0) > 0)
+							{
+								require_once(e_HANDLER.'resize_handler.php');
+								$orig_file = $upload['name'];
+								$new_file = 'th_'.$orig_file;
+
+								$resizeDir = ($forum->prefs->get('linkimg') ? 'thumb/' : '');
+
+								if(resize_image($attachmentDir.$orig_file, $attachmentDir.$resizeDir.$new_file, $forum->prefs->get('maxwidth')))
+								{
+									if($forum->prefs->get('linkimg'))
+									{
+										$parms = image_getsize($attachmentDir.$new_file);
+										$_txt = '[br][link='.$fpath.$orig_file."][img{$parms}]".$fpath.$new_file.'[/img][/link][br]';
+										$_file = $orig_file;
+										$_thumb = $new_file;
+										//show resized, link to fullsize
+									}
+									else
+									{
+										@unlink($attachmentDir.$orig_file);
+										//show resized
+										$parms = image_getsize($attachmentDir.$new_file);
+										$_txt = "[br][img{$parms}]".$fpath.$new_file.'[/img][br]';
+										$_file = $new_file;
+									}
+								}
+								else
+								{	//resize failed, show original
+									$parms = image_getsize($attachmentDir.$upload['name']);
+									$_txt = "[br][img{$parms}]".$fpath.$upload['name'].'[/img]';
+									$_file = $upload['name'];
+								}
+							}
+							else
+
+							 */
+							{	//resizing disabled, show original
+								//	$parms = image_getsize($attachmentDir.$upload['name']);
+								//resizing disabled, show original
+								$_txt = "[br][img]".$fpath.$upload['name']."[/img]\n";
+								$_file = $upload['name'];
+							}
+						}
+						else
+						{
+							//upload was not an image, link to file
+							$_type = 'file';
+							$_fname = (isset($upload['rawname']) ? $upload['rawname'] : $upload['name']);
+							$_txt = '[br][file='.$fpath.$upload['name'].']'.$_fname.'[/file]';
+							$_file = $upload['name'];
+							$_thumb = $_fname;
+						}
+						if($_txt && $_file)
+						{
+							$ret[] = array('type' => $_type, 'txt' => $_txt, 'file' => $_file, 'thumb' => $_thumb, 'fname' => $_fname);
+						}
+					}
+					else
+					{
+						// Error in uploaded file, proceed but add error message.
+						//echo 'Error in uploaded file: '.(isset($upload['rawname']) ? $upload['rawname'] : $upload['name']).'<br />';
+						e107::getMessage()->addError('Error in uploading attachment: '.vartrue($upload['message']));
+					}
+				}
+
+				return $ret;
+			}
+		}
+		/* no file uploaded at all, proceed with creating the topic or reply
+		// TODO don't call process_upload() when no attachments are uploaded.. (check  user input first, then call if needed)
+		else
+		{
+			e107::getMessage()->addError('Something went wrong during the attachment uploading process.');
+		}
+		*/
+	}
 
 }
 
@@ -1281,117 +1392,6 @@ function forumjump()
 	return $text;
 }
 
-function process_upload()
-{
-	return;
-	global $forumInfo, $thread_info, $admin_log, $forum;
-
-	$postId = (int)$postId;
-	$ret = array();
-
-	if (isset($_FILES['file_userfile']['error']))
-	{
-		require_once(e_HANDLER.'upload_handler.php');
-		
-		// retrieve and create attachment directory if needed
-		$attachmentDir = $forum->getAttachmentPath(USERID, TRUE);
-
-		if($uploaded = process_uploaded_files($attachmentDir, 'attachment', ''))
-		{			
-			foreach($uploaded as $upload)
-			{
-			  //print_a($upload); exit; 
-			  if ($upload['error'] == 0)
-			  {
-				$_txt = '';
-				$_att = '';
-				$_file = '';
-				$_thumb = '';
-				$_fname = '';
-				$fpath = '';
-				if(strstr($upload['type'], 'image'))
-				{
-					$_type = 'img';
-					
-					//XXX v2.x Image-resizing is now dynamic. 
-
-					/*if($forum->prefs->get('maxwidth', 0) > 0)
-					{
-						require_once(e_HANDLER.'resize_handler.php');
-						$orig_file = $upload['name'];
-						$new_file = 'th_'.$orig_file;
-
-						$resizeDir = ($forum->prefs->get('linkimg') ? 'thumb/' : '');
-
-						if(resize_image($attachmentDir.$orig_file, $attachmentDir.$resizeDir.$new_file, $forum->prefs->get('maxwidth')))
-						{
-							if($forum->prefs->get('linkimg'))
-							{
-								$parms = image_getsize($attachmentDir.$new_file);
-								$_txt = '[br][link='.$fpath.$orig_file."][img{$parms}]".$fpath.$new_file.'[/img][/link][br]';
-								$_file = $orig_file;
-								$_thumb = $new_file;
-								//show resized, link to fullsize
-							}
-							else
-							{
-								@unlink($attachmentDir.$orig_file);
-								//show resized
-								$parms = image_getsize($attachmentDir.$new_file);
-								$_txt = "[br][img{$parms}]".$fpath.$new_file.'[/img][br]';
-								$_file = $new_file;
-							}
-						}
-						else
-						{	//resize failed, show original
-							$parms = image_getsize($attachmentDir.$upload['name']);
-							$_txt = "[br][img{$parms}]".$fpath.$upload['name'].'[/img]';
-							$_file = $upload['name'];
-						}
-					}
-					else
-					 
-					 */
-					{	//resizing disabled, show original
-					//	$parms = image_getsize($attachmentDir.$upload['name']);
-						//resizing disabled, show original
-						$_txt = "[br][img]".$fpath.$upload['name']."[/img]\n";
-						$_file = $upload['name'];
-					}
-				}
-				else
-				{
-					//upload was not an image, link to file
-					$_type = 'file';
-					$_fname = (isset($upload['rawname']) ? $upload['rawname'] : $upload['name']);
-					$_txt = '[br][file='.$fpath.$upload['name'].']'.$_fname.'[/file]';
-					$_file = $upload['name'];
-					$_thumb = $_fname;
-				}
-				if($_txt && $_file)
-				{
-					$ret[] = array('type' => $_type, 'txt' => $_txt, 'file' => $_file, 'thumb' => $_thumb, 'fname' => $_fname);
-				}
-			  }
-			  else
-			  {  
-			  	// Error in uploaded file, proceed but add error message.
-			    //echo 'Error in uploaded file: '.(isset($upload['rawname']) ? $upload['rawname'] : $upload['name']).'<br />';
-			    e107::getMessage()->addError('Error in uploading attachment: '.vartrue($upload['message'])); 
-			  }
-			}
-
-			return $ret;
-		}
-	}
-	/* no file uploaded at all, proceed with creating the topic or reply
-	// TODO don't call process_upload() when no attachments are uploaded.. (check  user input first, then call if needed)
-	else
-	{
-		e107::getMessage()->addError('Something went wrong during the attachment uploading process.'); 
-	}
-	*/ 
-}
 
 function image_getsize($fname)
 {

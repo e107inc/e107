@@ -222,6 +222,12 @@ class e107forum
         // Check if user is allowed to download this file (has 'view' permissions to forum)
     	if(!$this->checkPerm($forum_id, 'view'))
 		{
+			if(E107_DEBUG_LEVEL > 0)
+			{
+				echo "You don't have 'view' access to forum-id: : ".$forum_id;
+				print_a($this->permList);
+				return;
+			}
 			header('Location:'.e107::getUrl()->create('forum/forum/main')); // FIXME needs proper redirect and 403 header 
 			exit;
 		}
@@ -237,6 +243,12 @@ class e107forum
  		}
  		else
  		{
+ 		    if(E107_DEBUG_LEVEL > 0)
+	        {
+	            echo "Couldn't find file: ".$file;
+	            return;
+	        }
+
 			header('Location:'.e107::getUrl()->create('forum/forum/main', TRUE, 404)); // FIXME needs proper redirect and 404 header
 			exit;
  		}
