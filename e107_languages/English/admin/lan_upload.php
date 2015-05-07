@@ -92,13 +92,14 @@ define('UPLLAN_58', 'Default');
 define('UPLLAN_59', 'Settings written to ');
 define('UPLLAN_60', 'Now move this file to ');
 define('UPLLAN_61', 'Error writing file: ');
-define('UPLLAN_62', '');
-define('UPLLAN_63', '');
-define('UPLLAN_64', '');
-define('UPLLAN_65', '');
-define('UPLLAN_66', '');
-define('UPLLAN_67', '');
-define('UPLLAN_68', '');
+
+define('UPLLAN_62', 'Download plugin is not installed - activation not possible.');
+define('UPLLAN_63', 'Record moved to Downloads. [x]');
+define('UPLLAN_64', 'Manage Download');
+define('UPLLAN_65', 'File not found');
+define('UPLLAN_66', 'Download path error');
+define('UPLLAN_67', 'Anonymous');
+define('UPLLAN_68', 'SQL Error:');
 define('UPLLAN_69', '');
 define('UPLLAN_70', '');
 

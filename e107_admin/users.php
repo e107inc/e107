@@ -99,8 +99,10 @@ class users_admin extends e_admin_dispatcher
 						$id = $_POST['userid'];
 						$_POST['etrigger_delete'] = array($id => $id);
 						$user = e107::getDb()->retrieve('user', 'user_email, user_name', 'user_id='.$id);
-						// TODO lan
-						$this->getController()->deleteConfirmMessage = "You are about to delete {$user['user_name']} ({$user['user_email']}) with ID #{$id}. Are you sure?";//
+						$rplc_from = array('[x]', '[y]', '[z]');
+						$rplc_to = array($user['user_name'], $user['user_email'], $id);
+						$message = str_replace($rplc_from, $rplc_to, USRLAN_222);
+						$this->getController()->deleteConfirmMessage = $message;
 					}
 				break;
 				
@@ -470,8 +472,7 @@ class users_admin_ui extends e_admin_ui
 		
 		if(!$sysuser->getId())
 		{
-			// TODO lan
-			e107::getMessage()->addError('User not found.');
+			e107::getMessage()->addError(USRLAN_223);
 			return;
 		}
 
@@ -502,8 +503,7 @@ class users_admin_ui extends e_admin_ui
 		$sysuser = e107::getSystemUser($userid, false);
 		if(!$sysuser->getId())
 		{
-			// TODO lan
-			$mes->addError('User not found.');
+			$mes->addError(USRLAN_223);
 			return;
 		}
 		$row = $sysuser->getData();
@@ -594,19 +594,17 @@ class users_admin_ui extends e_admin_ui
 				);
 				if($sysuser->email('email', $options))
 				{
-					// TODO lan
-					$mes->addSuccess("Email sent to: ".$sysuser->getName().' ('.$sysuser->getValue('email').')');
+					$mes->addSuccess(USRLAN_224." ".$sysuser->getName().' ('.$sysuser->getValue('email').')');
 				}
 				else 
 				{
-					$mes->addError("Failed to send email to: ".$sysuser->getName().' ('.$sysuser->getValue('email').')');
+					$mes->addError(USRLAN_225." ".$sysuser->getName().' ('.$sysuser->getValue('email').')');
 				}
 			}
 		}
 		else
 		{
-			// TODO lan
-			$mes->addError('User not found.');
+			$mes->addError(USRLAN_223);
 			return;
 		}
 	}
@@ -693,15 +691,12 @@ class users_admin_ui extends e_admin_ui
 		
 		if(!$user->checkAdminPerms('3'))
 		{
-			// TODO lan
-			$mes->addError("You don't have enough permissions to do this.", 'default', true);
+			$mes->addError(USRLAN_226, 'default', true);
 			
-			// TODO lan
-			$lan = 'Security violation (not enough permissions) - Administrator --ADMIN_UID-- (--ADMIN_NAME--, --ADMIN_EMAIL--) tried to remove admin status from --UID-- (--NAME--, --EMAIL--)';
 			$search = array('--UID--', '--NAME--', '--EMAIL--', '--ADMIN_UID--', '--ADMIN_NAME--', '--ADMIN_EMAIL--');
 			$replace = array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email'), $user->getId(), $user->getName(), $user->getValue('email'));
 			
-			e107::getAdminLog()->log_event('USET_08', str_replace($search, $replace, $lan), E_LOG_INFORMATIVE);
+			e107::getAdminLog()->log_event('USET_08', str_replace($search, $replace, USRLAN_244), E_LOG_INFORMATIVE);
 			$this->redirect('list', 'main', true);
 		}
 
@@ -719,8 +714,7 @@ class users_admin_ui extends e_admin_ui
 			}
 			else
 			{
-				// TODO lan
-				$mes->addError('Unknown error. Action failed.');
+				$mes->addError(USRLAN_227);
 			}
 		}
 	}
@@ -745,22 +739,18 @@ class users_admin_ui extends e_admin_ui
 		
 		if(!$user->checkAdminPerms('3'))
 		{
-			// TODO lan
-			$mes->addError("You don't have enough permissions to do this.", 'default', true);
-			// TODO lan
-			$lan = 'Security violation (not enough permissions) - Administrator --ADMIN_UID-- (--ADMIN_NAME--, --ADMIN_EMAIL--) tried to make --UID-- (--NAME--, --EMAIL--) system admin';
+			$mes->addError(USRLAN_226, 'default', true);
 			$search = array('--UID--', '--NAME--', '--EMAIL--', '--ADMIN_UID--', '--ADMIN_NAME--', '--ADMIN_EMAIL--');
 			$replace = array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email'), $user->getId(), $user->getName(), $user->getValue('email'));
 			
-			e107::getLog()->add('USET_08', str_replace($search, $replace, $lan), E_LOG_INFORMATIVE);
+			e107::getLog()->add('USET_08', str_replace($search, $replace, USRLAN_245), E_LOG_INFORMATIVE);
 			
 			$this->redirect('list', 'main', true);
 		}
 		
 		if(!$sysuser->getId())
 		{
-			// TODO lan
-			$mes->addError("User not found.", 'default', true);
+			$mes->addError(USRLAN_223, 'default', true);
 			$this->redirect('list', 'main', true);
 		}
 		
@@ -777,8 +767,11 @@ class users_admin_ui extends e_admin_ui
 		//	$lan = str_replace(array('--UID--', '--NAME--', '--EMAIL--'), array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email')), USRLAN_164);
 		//	e107::getLog()->add('USET_08', $lan, E_LOG_INFORMATIVE);
 		//	$mes->addSuccess($lan);
-			$mes->addWarning("You are about to make User #<b>".$sysuser->getId()."</b> : <b>".$sysuser->getName()."</b> (".$sysuser->getValue('email').") an <b>administrator</b>."); ///TODO LAN
-			$mes->addWarning("Set the permissions and click <b>Update</b> to proceed or <b>Back</b> to abort.");
+			$rplc_from = array('[x]', '[y]', '[z]');
+			$rplc_to = array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email'));
+			$message = str_replace($rplc_from, $rplc_to, USRLAN_228);
+			$mes->addWarning($message);
+			$mes->addWarning(USRLAN_229);
 		}
 		
 	}
@@ -801,8 +794,7 @@ class users_admin_ui extends e_admin_ui
 			->appendBody($prm->renderSubmitButtons())
 			->appendBody($frm->close());
 		
-		// TODO lan
-		$this->addTitle(str_replace(array('{NAME}', '{EMAIL}'), array($sysuser->getName(), $sysuser->getValue('email')), 'Update administrator {NAME} ({EMAIL})'));
+		$this->addTitle(str_replace(array('[x]', '[y]'), array($sysuser->getName(), $sysuser->getValue('email')), USRLAN_230));
 	}
 	
 	protected function checkAllowed($class_id) // check userclass change is permitted.
@@ -834,8 +826,7 @@ class users_admin_ui extends e_admin_ui
 		
 		if(!$sysuser->getId())
 		{
-			// TODO lan
-			$mes->addError('User not found.');
+			$mes->addError(USRLAN_223);
 			return false;
 		}
 
@@ -850,8 +841,7 @@ class users_admin_ui extends e_admin_ui
 			$a = intval($a);
 			if(!$this->checkAllowed($a)) 
 			{
-				// TODO lan
-				$mes->addError('Insufficient permissions, operation aborted.');
+				$mes->addError(USRLAN_231);
 				return false;
 			}
 			
@@ -1005,15 +995,13 @@ class users_admin_ui extends e_admin_ui
 		
 		if(!$sysuser->getId())
 		{
-			// TODO lan
-			$mes->addError('User not found.');
+			$mes->addError(USRLAN_223);
 			return false;
 		}
 
 		if(!$key || !$sysuser->getValue('ban'))
 		{
-			// TODO lan
-			$mes->addError('Missing activation key.');
+			$mes->addError(USRLAN_232);
 			return false;
 		}
 		
@@ -1076,22 +1064,19 @@ class users_admin_ui extends e_admin_ui
 		
 		if(!$sysuser->getId())
 		{
-			// TODO lan
-			$mes->addError('User not found.', 'default', true);
+			$mes->addError(USRLAN_223, 'default', true);
 			$this->redirect('list', 'main', true);
 		}
 		
 		$result = $this->testEmail($email);
 		if($result)
 		{
-			// TODO lan
 			$this->setParam('testSucces', $result);
-			$mes->addSuccess($email.' - Valid');
+			$mes->addSuccess($email.' - '.USRLAN_233);
 		}
 		else
 		{
-			// TODO lan
-			$mes->addError($email.' - Invalid', 'default', true);
+			$mes->addError($email.' - '.USRLAN_234, 'default', true);
 			$this->redirect('list', 'main', true);
 		}
 
@@ -1113,8 +1098,7 @@ class users_admin_ui extends e_admin_ui
 		$email = $sysuser->getValue('email');
 		$frm = e107::getForm();
 		
-		// TODO lan
-		$caption = "Test ".$email;
+		$caption = str_replace('[x]', $email, USRLAN_119);
 		$this->addTitle($caption);
 		
 		$text = "<a href='".e_REQUEST_HTTP."?mode=main&amp;action=list'>".LAN_BACK."</a>";
@@ -1171,8 +1155,7 @@ class users_admin_ui extends e_admin_ui
 		
 		if(!$sysuser->getId())
 		{
-			// TODO lan
-			$mes->addError('User not found.', 'default', true);
+			e107::getMessage()->addError(USRLAN_223, 'default', true);
 			return;
 		}
 		
@@ -1181,8 +1164,7 @@ class users_admin_ui extends e_admin_ui
 		
 		if($sysuser->save())
 		{
-			// TODO lan
-			e107::getMessage()->addSuccess('User now has to verify.');
+			e107::getMessage()->addSuccess(USRLAN_235);
 			
 			// TODO - auto-send email or not - discuss
 			$this->resendActivation($userid);
@@ -1194,8 +1176,7 @@ class users_admin_ui extends e_admin_ui
 			return;
 		}
 		
-		// TODO lan
-		e107::getMessage()->addError('Action failed.');
+		e107::getMessage()->addError(USRLAN_236);
 	}
 
 	/**
@@ -1235,8 +1216,7 @@ class users_admin_ui extends e_admin_ui
 			if ($allData['data']['user_name'] != $allData['data']['user_loginname'])
 			{
 				$allData['data']['user_name'] = $allData['data']['user_loginname'];
-				// TODO lan
-				$mes->addWarning(str_replace('--NAME--', $allData['data']['user_loginname'], 'User name and display name cannot be different (based on the site configuration). Display name set to <strong>--NAME--</strong>.'));
+				$mes->addWarning(str_replace('[x]', $allData['data']['user_loginname'], USRLAN_237));
 				//$allData['errors']['user_name'] = ERR_FIELDS_DIFFERENT;
 			}
 		}
@@ -1340,8 +1320,7 @@ class users_admin_ui extends e_admin_ui
 						$check = $sysuser->email('quickadd', array(
 							'user_password' => $savePassword, 
 							'mail_subject' => USRLAN_187.SITENAME,
-							// TODO lan
-							'activation_url' => 'Your current status is <strong>Active</strong>',
+							'activation_url' => USRLAN_238,
 						));
 					break;
 					
@@ -1452,13 +1431,12 @@ class users_admin_ui extends e_admin_ui
 			</tr>
 	
 			<tr>
-				<td>Notification and user status</td>
+				<td>".USRLAN_239."</td>
 				<td>
-					".$frm->select('sendconfemail', array('0' => "Activate, Don't Notify", '1' => 'Activate, Notify (password)', '2' => 'Require Activation, Notify (password and activation link)'), (int) varset($_POST['sendconfemail'], 0))."
+					".$frm->select('sendconfemail', array('0' => USRLAN_240, '1' => USRLAN_241, '2' => USRLAN_242), (int) varset($_POST['sendconfemail'], 0))."
 					<div class='field-help'>".USRLAN_181."</div>
 				</td>
 			</tr>";
-			// TODO lan above
 
 		if (!isset ($user_data['user_class'])) $user_data['user_class'] = varset($pref['initial_user_classes']);
 		$temp = $e_userclass->vetted_tree('class', array($e_userclass, 'checkbox_desc'), $user_data['user_class'], 'classes, no-excludes');
@@ -1483,7 +1461,7 @@ class users_admin_ui extends e_admin_ui
 		<tr>
 			<td>".USRLAN_35."</td>
 			<td>
-				<a href='#set_perms' class='btn e-expandit'>Set Permissions</a>
+				<a href='#set_perms' class='btn e-expandit'>".USRLAN_243."</a>
 				<div class='e-hideme' id='set_perms'>
 		";
 			

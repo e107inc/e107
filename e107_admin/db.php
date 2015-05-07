@@ -455,7 +455,7 @@ class system_tools
 		
 		if(!isset($POST['create_multisite']))
 		{
-			$info = str_replace('[domain]', e_DOMAIN, LANINS_133);
+			$info = str_replace('[x]', e_DOMAIN, LANINS_133);
 			$mes->addInfo($info);
 		}
 		

@@ -1447,7 +1447,7 @@ function zip_up_lang($language)
 		$ret['error'] = TRUE;
 		$file = "e107_languages/{$language}/{$language}.php";
 		$def = (defined('LANG_LAN_25')) ? LANG_LAN_25 : LANG_LAN_119;
-		$ret['message'] = str_replace("[lcpath]",$file,$def); // 
+		$ret['message'] = str_replace("[x]",$file,$def); //
 		return $ret;	
 	}
 		
@@ -1630,7 +1630,7 @@ function unused($lanfile,$script,$reverse=false)
 
 		}	
 		
-		$mes->addDebug(LANG_LAN_122." ".$script);
+		$mes->addDebug("Script: ".$script);
 
 		$tmp = explode(",", $lanfile);
 		foreach($tmp as $scr)
@@ -1642,7 +1642,7 @@ function unused($lanfile,$script,$reverse=false)
 			}
 			
 			$compare[$scr] = file_get_contents($scr);	
-			$mes->addDebug(LANG_LAN_123." ".$scr);
+			$mes->addDebug("LanFile: ".$scr);
 		
 		}	
 		
@@ -1651,7 +1651,7 @@ function unused($lanfile,$script,$reverse=false)
 	else
 	{
 		$lanDefines = file_get_contents($lanfile);
-		$mes->addDebug(LANG_LAN_123." ".$lanfile);
+		$mes->addDebug("LanFile: ".$lanfile);
 		
 		$tmp = explode(",",$script);
 		foreach($tmp as $scr)
@@ -1662,7 +1662,7 @@ function unused($lanfile,$script,$reverse=false)
 				continue;	
 			}
 			$compare[$scr] = file_get_contents($scr);	
-			$mes->addDebug(LANG_LAN_122." ".$scr);
+			$mes->addDebug("Script: ".$scr);
 		}		
 	}
 		
