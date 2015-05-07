@@ -114,6 +114,7 @@ define("USRLAN_115", "Thanks for your registration.");
 define("USRLAN_116", "Please confirm that you wish to resend a confirmation email to:");
 define("USRLAN_117", "Click the button below to test the following email:");
 define("USRLAN_118", "Test Email");
+define("USRLAN_119", "Test [x]");
 
 define("USRLAN_120", "Set Classes");
 define("USRLAN_121", "Mailing");
@@ -235,6 +236,38 @@ define('LAN_BOUNCED','Bounced');
 
 define('USRLAN_220', 'All Userclasses');
 define('USRLAN_221', 'Edit admin perms');
+
+define('USRLAN_222', 'You are about to delete [x] ([y]) with ID #[z]. Are you sure?');
+define('USRLAN_223', 'User not found.');
+define('USRLAN_224', 'Email sent to:');
+define('USRLAN_225', 'Failed to send email to:');
+define('USRLAN_226', "You don't have enough permissions to do this.");
+define('USRLAN_227', 'Unknown error. Action failed.');
+define('USRLAN_228', 'You are about to make User #[b][x][/b] : [b][y][/b] ([z]) an [b]administrator[/b].');
+define('USRLAN_229', 'Set the permissions and click [b]Update[/b] to proceed or [b]Back[/b] to abort.');
+define('USRLAN_230', 'Update administrator [x] ([y])');
+define('USRLAN_231', 'Insufficient permissions, operation aborted.');
+define('USRLAN_232', 'Missing activation key.');
+define('USRLAN_233', 'Valid');
+define('USRLAN_234', 'Invalid');
+define('USRLAN_235', 'User now has to verify.');
+define('USRLAN_236', 'Action failed.');
+define('USRLAN_237', 'User name and display name cannot be different (based on the site configuration). Display name set to [b][x][/b].');
+define('USRLAN_238', 'Your current status is [b]Active[/b]');
+
+define('USRLAN_239', 'Notification and user status');
+define('USRLAN_240', "Activate, Don't Notify");
+define('USRLAN_241', 'Activate, Notify (password)');
+define('USRLAN_242', 'Require Activation, Notify (password and activation link)');
+
+define('USRLAN_243', 'Set Permissions');
+define('USRLAN_244', 'Security violation (not enough permissions) - Administrator --ADMIN_UID-- (--ADMIN_NAME--, --ADMIN_EMAIL--) tried to remove admin status from --UID-- (--NAME--, --EMAIL--)');
+define('USRLAN_245', 'Security violation (not enough permissions) - Administrator --ADMIN_UID-- (--ADMIN_NAME--, --ADMIN_EMAIL--) tried to make --UID-- (--NAME--, --EMAIL--) system admin');
+define('USRLAN_246', 'Us');
+define('USRLAN_247', 'Us');
+define('USRLAN_248', 'Us');
+define('USRLAN_249', 'Us');
+define('USRLAN_250', 'Us');
 
 // These need review - there are duplicates above - they come from admin/lan_userclass.php.
 define("UCSLAN_1", "Sending notification email to");
