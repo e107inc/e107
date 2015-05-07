@@ -210,17 +210,6 @@ define("LAN_NEWS_73", "Sidebar - Othernews 2");
 define("LAN_NEWS_74", "Carousel");
 define("LAN_NEWS_75", "Featurebox");
 
-define("LAN_NEWS_76", "Checking for Ping Status");
-define("LAN_NEWS_77", "Initiating ping");
-define("LAN_NEWS_78", "Successfully Pinged:");
-define("LAN_NEWS_79", "with:");
-define("LAN_NEWS_80", "Ping failed!:");
-define("LAN_NEWS_81", "Ping not triggerred");
-define("LAN_NEWS_82", "Services:");
-define("LAN_NEWS_83", "Userclass:");
-define("LAN_NEWS_84", "Attempting to ping:");
-define("LAN_NEWS_85", "Request:");
-define("LAN_NEWS_86", "Error:");
 define("LAN_NEWS_87", "eg. blogsearch.google.com/ping/RPC2");
 define("LAN_NEWS_88", "Determines how the default news page should appear.");
 define("LAN_NEWS_89", "Notify these services when you create/update news items.");
