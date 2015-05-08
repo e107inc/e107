@@ -22,7 +22,7 @@ $mes = e107::getMessage();
 $sql->select("menus", "*", "menu_name='chatbox_menu'");
 $row = $sql->fetch();
 
-if (!check_class($row['menu_class'])) 
+if (!check_class(intval($row['menu_class'])))
 {
 	$mes->addError(CHATBOX_L24); 
 	$ns->tablerender(LAN_ERROR, $mes->render());
