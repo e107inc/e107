@@ -378,10 +378,20 @@ class users_admin_ui extends e_admin_ui
 	}
 
 
+	public function afterDelete($deletedData,$id=null)
+	{
+		if(!empty($id))
+		{
+			$sql = e107::getDb();
+			$sql->delete('user_extended',"user_extended_id = ".$id);
+		}
+
+	}
+
 	public function beforeUpdate($new_data, $old_data, $id)
 	{
 		$tp = e107::getParser();
-		
+
 		if(empty($new_data['user_password']))
 		{
 			$new_data['user_password'] = $old_data['user_password'];
