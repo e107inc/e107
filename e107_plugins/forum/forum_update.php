@@ -248,8 +248,6 @@ function step3()
 		return;
 	}
 
-	require_once (e_HANDLER . 'user_extended_class.php');
-	$ue = new e107_user_extended;
 
 	$fieldList = array(
 		'plugin_forum_posts' => EUF_INTEGER,
@@ -260,7 +258,7 @@ function step3()
 	foreach ($fieldList as $fieldName => $fieldType)
 	{
 
-		$result = $ue -> user_extended_add_system($fieldName, $fieldType);
+		$result = e107::getUserExt()->user_extended_add_system($fieldName, $fieldType);
 
 		if ($result === true)
 		{
@@ -280,7 +278,7 @@ function step3()
 	}
 	else
 	{
-		$text .= "
+		$text = "
 			<form method='post' action='" . e_SELF . "?step=4'>
 			<input class='btn btn-success' type='submit' name='nextStep[4]' value='Proceed to step 4' />
 			</form>
@@ -468,6 +466,9 @@ function step5()
 			$tmp = $forum;
 			$tmp['forum_threadclass'] = $tmp['forum_postclass'];
 			$tmp['forum_options'] = '_NULL_';
+			$tmp['forum_sef'] = eHelper::title2sef($forum['forum_name'],'dashl');
+
+
 			//			$tmp['_FIELD_TYPES'] = $ftypes['_FIELD_TYPES'];
 			if ($sql -> insert('forum_new', $tmp))
 			{
@@ -489,10 +490,10 @@ function step5()
 		</ul>
 		");
 
-		$result = $sql -> gen('RENAME TABLE `#forum`  TO `#forum_old` ') ? e_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+		$result = $sql -> gen('RENAME TABLE `#forum`  TO `#forum_old` ') ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 		$mes -> add("Renaming forum to forum_old", $result);
 
-		$result = $sql -> gen('RENAME TABLE `#forum_new`  TO `#forum` ') ? e_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+		$result = $sql -> gen('RENAME TABLE `#forum_new`  TO `#forum` ') ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 		$mes -> add("Renaming forum_new to forum", $result);
 
 		$text = "
@@ -634,7 +635,7 @@ function step7()
 
 	//	var_dump($counts);
 
-	$text .= "
+	$text = "
 	Successfully recalculated forum posts for " . count($counts) . " users.
 	<br /><br />
 	<form method='post' action='" . e_SELF . "?step=8'>
@@ -1414,6 +1415,7 @@ class forumUpgrade
 		 * thread_lastuser_anon
 		 * thread_total_replies
 		 * thread_options
+		 * thread_sef
 		 */
 
 		$detected 	= mb_detect_encoding($post['thread_name']); // 'ISO-8859-1'
@@ -1446,6 +1448,8 @@ class forumUpgrade
 		//		$thread['_FIELD_TYPES'] = $forum->fieldTypes['forum_thread'];
 		//		$thread['_FIELD_TYPES']['thread_name'] = 'escape'; //use escape to prevent
 		// double entities
+
+		$thread['thread_sef'] = eHelper::title2sef($threadName,'dashl');
 
 		$result = e107::getDb() -> insert('forum_thread', $thread);
 		return $result;
@@ -1720,13 +1724,16 @@ function forum_update_adminmenu()
 		$var[13]['divider'] = true;
 		
 		$var[14]['text'] = 'Reset';
-		$var[14]['link'] = e_SELF . "?reset";	
+		$var[14]['link'] = e_SELF . "?reset";
+
+		$var[15]['text'] = 'Reset to 6';
+		$var[15]['link'] = e_SELF . "?step=6&reset=6";
+
+		$var[16]['text'] = 'Reset to 7';
+		$var[16]['link'] = e_SELF . "?step=7&reset=7";
 		
-		$var[15]['text'] = 'Reset to 7';
-		$var[15]['link'] = e_SELF . "?step=7&reset=7";	
-		
-		$var[16]['text'] = 'Reset to 10';
-		$var[16]['link'] = e_SELF . "?step=10&reset=10";	
+		$var[17]['text'] = 'Reset to 10';
+		$var[17]['link'] = e_SELF . "?step=10&reset=10";
 		
 	}
 	
