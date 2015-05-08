@@ -727,7 +727,7 @@ class media_admin_ui extends e_admin_ui
 		'thumbnail_quality'				=> array('title'=> IMALAN_73, 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=IMALAN_74'),
 	
 		'im_width'						=> array('title'=> IMALAN_75, 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=IMALAN_76'),
-		'im_height'						=> array('title'=> IMALAN_77, 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=IMALAN_78'),
+		'im_height'						=> array('title'=> IMALAN_77, 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=IMALAN_76'),
 		'resize_dimensions'				=> array('title'=> IMALAN_79, 'type'=>'method', 'data'=>'str'),
 		
 		'watermark_activate'			=> array('title'=> IMALAN_80, 'tab'=>1, 'type' => 'number', 'data' => 'str', 'help'=>IMALAN_81), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
@@ -735,7 +735,7 @@ class media_admin_ui extends e_admin_ui
 		'watermark_font'				=> array('title'=> IMALAN_84,'tab'=>1, 'type' => 'dropdown', 'data' => 'str', 'help'=>IMALAN_85), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
 		'watermark_size'				=> array('title'=> IMALAN_86, 'tab'=>1,'type' => 'number', 'data' => 'int', 'help'=>IMALAN_87), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
 		
-		'watermark_pos'					=> array('title'=> IMALAN_88,'tab'=>1, 'type' => 'dropdown', 'data' => 'str', 'help'=>IMALAN_89), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
+		'watermark_pos'					=> array('title'=> IMALAN_88,'tab'=>1, 'type' => 'dropdown', 'data' => 'str', 'help'=>IMALAN_88), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
 		'watermark_margin'				=> array('title'=> IMALAN_90, 'tab'=>1,'type' => 'number', 'data' => 'int', 'help'=>IMALAN_91), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
 		
 		'watermark_color'				=> array('title'=> IMALAN_92, 'tab'=>1, 'type' => 'text', 'data' => 'str', 'help'=>IMALAN_93), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
@@ -1839,7 +1839,7 @@ class media_admin_ui extends e_admin_ui
 				{
 					$srch = array('[x]','[y]');
 					$repl = array($oldpath,str_replace('../', '', $newpath));
-					$text = str_replace($srch,$repl,IMALAN_110);
+					$text = str_replace($srch,$repl,IMALAN_108);
 					$mes->add($text, E_MESSAGE_ERROR);
 					return FALSE;
 				}

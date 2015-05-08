@@ -112,7 +112,7 @@ define('IMALAN_74', "Set this as low as possible before quality loss is apparent
 define('IMALAN_75', "Avatar Width");
 define('IMALAN_76', "Avatar images will be constrained to these dimensions (in pixels)");
 define('IMALAN_77', "Avatar Height");
-define('IMALAN_78', "Avatar images will be constrained to these dimensions (in pixels)");
+define('IMALAN_78', ""); // Unused
 define('IMALAN_79', "Resize-Image Dimensions");
 define('IMALAN_80', "Watermark Activation");
 define('IMALAN_81', "All images with a width or height greater than this value will be given a watermark during resizing.");
@@ -123,7 +123,7 @@ define('IMALAN_85', "Optional Watermark Font. Upload more .ttf fonts to the /fon
 define('IMALAN_86', "Watermark Size");
 define('IMALAN_87', "Size of the font in pts");
 define('IMALAN_88', "Watermark Position");
-define('IMALAN_89', "Watermark Position");
+define('IMALAN_89', ""); // Unused
 define('IMALAN_90', "Watermark Margin");
 define('IMALAN_91', "The distance that watermark will appear from the edge of the image.");
 define('IMALAN_92', "Watermark Color");
@@ -144,7 +144,7 @@ define('IMALAN_106', "Leave empty to disable");
 define('IMALAN_107', "Couldn't generated path from upload data");
 define('IMALAN_108', "Couldn't move file from [x] to [y]");
 define('IMALAN_109', "Couldn't get path");
-define('IMALAN_110', "Couldn't move file from [x] to [y]");
+define('IMALAN_110', ""); // Unused
 define('IMALAN_111', "Couldn't detect mime-type([x]). Upload failed.");
 define('IMALAN_112', "Couldn't create folder ([x]).");
 define('IMALAN_113', "Scanning for new media (images, videos, files) in folder:");
