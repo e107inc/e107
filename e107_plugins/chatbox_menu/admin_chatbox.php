@@ -31,7 +31,7 @@ $frm    = e107::getForm();
 if (isset($_POST['updatesettings']))
 {
 	$temp = array();
-	$temp['chatbox_posts'] = min(intval($_POST['chatbox_posts']), 5);
+	$temp['chatbox_posts'] = vartrue($_POST['chatbox_posts'], 5);
 	$temp['cb_layer'] = intval($_POST['cb_layer']);
 	$temp['cb_layer_height'] = max(varset($_POST['cb_layer_height'], 200), 150);
 	$temp['cb_emote'] = intval($_POST['cb_emote']);
@@ -97,7 +97,7 @@ $text = "
     	</colgroup>
 	<tr>
 		<td>".CHBLAN_11.":</td>
-		<td>".$frm->select('chatbox_posts', array(5, 10, 15, 20, 25), $pref['chatbox_posts'])."<span class='field-help'>".CHBLAN_12."</span></td>
+		<td>".$frm->select('chatbox_posts', array(5, 10, 15, 20, 25), $pref['chatbox_posts'],'useValues=1')."<span class='field-help'>".CHBLAN_12."</span></td>
 	</tr>
 	<tr>
 		<td>".CHBLAN_32.": </td>
@@ -124,7 +124,7 @@ $text .= "
 	</tr>
 	<tr>
 		<td>".LAN_PRUNE.":</td>
-		<td>".CHBLAN_23.$frm->select('chatbox_prune', array(86400 => CHBLAN_24, 604800 => CHBLAN_25, 2592000 => CHBLAN_26, 1 => CHBLAN_27), '', '', true).$frm->admin_button('prune', LAN_PRUNE, 'other')."<span class='field-help'>".CHBLAN_22."</span></td>
+		<td class='form-inline'>".CHBLAN_23.$frm->select('chatbox_prune', array(86400 => CHBLAN_24, 604800 => CHBLAN_25, 2592000 => CHBLAN_26, 1 => CHBLAN_27), '', '', true).$frm->admin_button('prune', LAN_PRUNE, 'other')."<span class='field-help'>".CHBLAN_22."</span></td>
 	</tr>
 	<tr>
 		<td>".CHBLAN_34.":</td>
