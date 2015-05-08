@@ -2948,7 +2948,7 @@ class e_parser
 	 * @param @array  - user data from e107_user. 
 	 * @return <img> tag of avatar.  
 	 */
-	public function toAvatar($userData=null)
+	public function toAvatar($userData=null, $options=array())
 	{
 		$tp 		= e107::getParser();
 		$width 		= $tp->thumbWidth;
@@ -2995,8 +2995,9 @@ class e_parser
 		}
 		
 		$title = (ADMIN) ? $image : $tp->toAttribute($userData['user_name']);
+		$shape = (vartrue($options['shape'])) ? "img-".$options['shape'] : "img-rounded";
 		
-		$text = "<img class='img-rounded img-responsive user-avatar e-tip' title=\"".$title."\" src='".$img."' alt='' style='width:".$width."px; height:".$height."px' />";
+		$text = "<img class='".$shape." img-responsive user-avatar e-tip' title=\"".$title."\" src='".$img."' alt='' style='width:".$width."px; height:".$height."px' />";
 	//	return $img;
 		return $text;
 		

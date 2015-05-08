@@ -180,9 +180,9 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		}
 	}
 
-	function sc_avatar()
+	function sc_avatar($opts)
 	{
-		return e107::getParser()->toAvatar($this->postInfo);
+		return e107::getParser()->toAvatar($this->postInfo,$opts);
 		// return $tp->parseTemplate("{USER_AVATAR=".$this->postInfo['user_image']."}", true);
 	}
 
@@ -353,7 +353,9 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 		$rankInfo = e107::getRank()->getRanks($this->postInfo['post_user']);
 		// FIXME - level handler!!!
-		
+
+	//	print_a($rankInfo);
+
 		if($parm == 'badge')
 		{
 			return "<span class='label label-info'>".$rankInfo['name']."</span>";	
@@ -376,6 +378,16 @@ class plugin_forum_view_shortcodes extends e_shortcode
 					return "<div class='spacer'>".IMAGE_rank_moderator_image.'</div>';
 				}
 				return '';
+				break;
+
+			case 'glyph':
+				$text = "";
+				$tp = e107::getParser();
+				for($i=0; $i< $rankInfo['value']; $i++)
+				{
+					$text .= $tp->toGlyph('fa-star');
+				}
+				return $text;
 				break;
 
 			default:
@@ -441,10 +453,10 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		$ue = $tp->parseTemplate("{USER_EXTENDED=location.text_value}",true);	
 		$username = (empty($this->postInfo['user_name'])) ? LAN_ANONYMOUS : $this->postInfo['user_name'];
 								
-		$text = '<div class="btn-group ">
+		$text = '<div class="btn-group btn-block ">
 
-    <a class="btn btn-default btn-sm btn-small" href="'.e_BASE.'user.php?id.'.$this->postInfo['post_user'].'">'.$username.'</a>
-    <button class="btn btn-default btn-sm btn-small dropdown-toggle" data-toggle="dropdown">
+    <a class="btn btn-default btn-sm col-sm-10 btn-small" href="'.e_BASE.'user.php?id.'.$this->postInfo['post_user'].'">'.$username.'</a>
+    <button class="btn btn-default btn-sm col-sm-2 btn-small dropdown-toggle" data-toggle="dropdown">
     <span class="caret"></span>
     </button>
     <ul class="dropdown-menu left">

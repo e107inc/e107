@@ -1,3 +1,11 @@
-.forum-viewforum-pagination { margin:0px }
+.forum-viewforum-pagination { margin:0 }
 
-#poll.tab-pane .form-group { margin-left: 0px; margin-right:0px}
+#poll.tab-pane .form-group { margin-left: 0; margin-right:0}
+
+#forum-viewtopic li img.user-avatar { margin-bottom:10px; display:inline-block }
+
+.forum-attachment-file  { margin-top:15px; }
+
+#forum-viewtopic li ul.thumbnails { margin-top:15px}
+
+.forum-user-combo { padding-bottom:5px }

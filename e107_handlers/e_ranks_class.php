@@ -263,6 +263,9 @@ class e_ranks
 			$img_title = ($this->ranks['data'][$rank]['name'] ? " alt='{$data['name']}' title='{$data['name']}'" : ' alt = ""');
 			$data['pic'] = "<img {$img_title} src='".$this->_getImage($this->ranks['data'][$rank])."'{$img_title} />";
 		}
+
+		$data['value'] = $rank;
+
 		$this->userRanks[$userId] = $data;
 
 		return $data;
