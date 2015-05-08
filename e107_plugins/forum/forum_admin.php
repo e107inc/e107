@@ -20,17 +20,17 @@ if (!getperms('P'))
 e107::includeLan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/English_admin.php');
 	e107::lan('forum','', 'front');
 
+$legacy = false;
 
-
-if(E107_DEBUG_LEVEL == 0)
+if(E107_DEBUG_LEVEL > 0 && $legacy == true)
 {
-	define('NEW_FORUMADMIN', true);
+	define('OLD_FORUMADMIN', true);
 	//e107::getMessage()->addwarning("Experimental code now active. Using this page in debug mode active could break your forum configuration.");
 }
 
 // Generated e107 Plugin Admin Area
 
-if(deftrue('NEW_FORUMADMIN'))
+if(!deftrue('OLD_FORUMADMIN'))
 {
 
 	class forum_admin extends e_admin_dispatcher
@@ -89,6 +89,18 @@ if(deftrue('NEW_FORUMADMIN'))
 		);
 
 		protected $menuTitle = 'Forum';
+
+
+		function init()
+		{
+			if(E107_DEBUG_LEVEL > 0)
+			{
+				$this->adminMenu['opt3'] = array('divider'=>true);
+				$this->adminMenu['main/update'] = array('caption'=>"Redo v1.x Forum Upgrade", 'perm'=>0, 'uri'=>'{e_PLUGIN}forum/forum_update.php');
+			}
+
+
+		}
 	}
 
 
@@ -691,10 +703,136 @@ if(deftrue('NEW_FORUMADMIN'))
 
 
 
+		function toolsPageProcess()
+		{
 
+			$mes = e107::getMessage();
+
+			$fList = array();
+
+			if(isset($_POST['tools']))
+			{
+				$msg = '';
+				if(isset($_POST['forum_all']))
+				{
+					$fList[]='all';
+				}
+				else
+				{
+					foreach(array_keys($_POST['forumlist']) as $k)
+					{
+						$fList[] = $k;
+					}
+				}
+				foreach($fList as $fid)
+				{
+					if(isset($_POST['counts']))
+					{
+						$this->forumObj->forumUpdateCounts($fid, $_POST['counts_threads']);
+						$msg .= FORLAN_167.": $fid <br />";
+					}
+					if(isset($_POST['lastpost']))
+					{
+						$with_threads = (!empty($_POST['lastpost_nothread'])) ? FALSE : TRUE;
+						$this->forumObj->forumUpdateLastpost('forum', $fid, $with_threads);
+						$msg .= FORLAN_168.": $fid <br />";
+					}
+				}
+				if(isset($_POST['userpostcounts']))
+				{
+					$ue = e107::getUserExt();
+
+					$list = $this->forumObj->getUserCounts();
+					foreach($list as $uid => $cnt)
+					{
+						$ue->user_extended_setvalue($uid, 'user_plugin_forum_posts', $cnt, 'int');
+					}
+					$msg .= FORLAN_169.' <br />';
+				}
+
+				$mes->addSuccess($msg);
+			//	$ns->tablerender($caption, $mes->render().$text);
+			}
+
+
+		}
+
+
+		//TODO Add SEF-url generation for forum and threads where missing. 
 		function toolsPage()
 		{
-			return "Coming Soon!";
+			$sql = e107::getDb();
+			$ns = e107::getRender();
+			$tp = e107::getParser();
+			$frm = e107::getForm();
+
+			$this->toolsPageProcess();
+
+			$txt = "
+		<form method='post' action='".e_SELF."?".e_QUERY."'>
+		<table class='table adminlist'>
+		<colgroup span='3'>
+    		<col class='col-label' />
+    		<col class='col-control' />
+    		<col class='col-control' style='width:50%' />
+    	</colgroup>
+		<tr>
+			<td>".FORLAN_156."</td>
+
+			<td colspan='2'>
+			";
+			if($sql->select("forum", "*", "1 ORDER BY forum_order"))
+			{
+				$fList = $sql->db_getList();
+				foreach($fList as $f)
+				{
+					$key = 'forumlist['.$f['forum_id'].']';
+					$txt .= $frm->checkbox($key, 1, false, $tp->toHTML($f['forum_name']));
+				//	$txt .= "<input type='checkbox' name='forumlist[{$f['forum_id']}]' value='1' /> ".$tp->toHTML($f['forum_name'])."<br />";
+				}
+				$txt .= "<hr />";
+				$txt .= $frm->checkbox('forum_all', 1, false, LAN_PLUGIN_FORUM_ALLFORUMS);
+			//	$txt .= "<input type='checkbox' name='forum_all' value='1' /> <strong>".LAN_PLUGIN_FORUM_ALLFORUMS."</strong>";
+			}
+
+
+			//TODO LAN - see below
+			$txt .= "
+			</td>
+		</tr>
+		<tr>
+			<td>".FORLAN_158."</td>
+
+			<td>".$frm->checkbox('lastpost', 1, false, LAN_ACTIVE).
+				"</td><td>".
+			$frm->select('lastpost_nothread', array(0=>"Forums and Threads", 1=>"Forums Only"))."
+
+			</td>
+		</tr>
+		<tr>
+			<td>".FORLAN_161."</td>
+
+		<td>".$frm->checkbox('counts', 1, false, LAN_ACTIVE).
+		"</td><td>".
+		$frm->checkbox('counts_threads', 1, false, FORLAN_182)."
+		<span class='text-warning'>".FORLAN_183."</span>
+
+			</td>
+		</tr>
+		<tr>
+			<td>".FORLAN_163."</td>
+
+			<td colspan='2'>".$frm->checkbox('userpostcounts',1, false, LAN_ACTIVE)."</td>
+		</tr>
+		</table>
+		<div class='buttons-bar center'>
+			".$frm->admin_button('tools', LAN_GO, 'submit')."
+		</div>
+		</form>
+		";
+
+			return $txt;
+		//	$ns->tablerender(FORLAN_166, $txt);
 
 
 		}
