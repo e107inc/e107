@@ -4,6 +4,7 @@
 
 #poll.tab-pane .form-group                              { margin-left: 0; margin-right:0}
 
+#forum-viewtopic                                        { margin-top: 15px }
 #forum-viewtopic li.forum-viewtopic-post                { border-top:1px solid #EEE;  padding:15px 10px }
 #forum-viewtopic li.forum-viewtopic-post:nth-child(odd) { background: #F5F5F5 }
 #forum-viewtopic li ul.thumbnails                       { margin-top:15px }

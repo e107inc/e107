@@ -668,7 +668,7 @@ class e107ForumThread
 			exit;
 		}
 
-		$totalPosts = $this->threadInfo['thread_total_replies'] + 1; // add 1 for the original post . ie. not a reply.
+		$totalPosts = $this->threadInfo['thread_total_replies']; //  + 1; // add 1 for the original post . ie. not a reply.
 		$this->pages = ceil(($totalPosts)  / $this->perPage);
 		$this->noInc = false;
 	}
