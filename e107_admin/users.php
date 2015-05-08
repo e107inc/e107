@@ -384,9 +384,15 @@ class users_admin_ui extends e_admin_ui
 		{
 			$sql = e107::getDb();
 			$sql->delete('user_extended',"user_extended_id = ".$id);
+
+			e107::getCache()->clear('online_menu_member_newest');
+			e107::getCache()->clear('online_menu_member_total');
 		}
 
 	}
+
+
+
 
 	public function beforeUpdate($new_data, $old_data, $id)
 	{
