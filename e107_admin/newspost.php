@@ -147,7 +147,7 @@ class news_cat_ui extends e_admin_ui
 			$sef = e107::getParser()->toDB($new_data['category_sef']);
 			if(e107::getDb()->count('news_category', '(*)', "category_sef='{$sef}' AND category_id!=".intval($id)))
 			{
-				e107::getMessage()->addError(LAN_NEWS_66);
+				e107::getMessage()->addError(LAN_NEWS_65);
 				return false;
 			}
 			return $new_data;
