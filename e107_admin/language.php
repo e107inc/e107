@@ -1412,7 +1412,7 @@ function zip_up_lang($language)
 		$ret['error'] = TRUE;
 		$ret['message'] = (defined("LANG_LAN_29")) ? LANG_LAN_29 : LANG_LAN_117;
 		$ret['message']	 .= "<br />";
-		$ret['message']	 .= (defined('LANG_LAN_27')) ? LANG_LAN_27 : LANG_LAN_118;
+		$ret['message']	 .= (defined('LANG_LAN_27')) ? LANG_LAN_27 : LANG_LAN_116;
 		return $ret;
 	}
 	

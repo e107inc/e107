@@ -77,7 +77,7 @@ define("LANG_LAN_114", "Download Pack");
 define("LANG_LAN_115", "Please verify and correct the remaining [x] error(s) before attempting to create a language-pack.");
 define("LANG_LAN_116", "Please verify your language files ('Verify') then try again.");
 define("LANG_LAN_117", "You should correct the remaining errors before contributing your language pack.");
-define("LANG_LAN_118", "Please verify your language files ('Verify') then try again.");
+define("LANG_LAN_118", ""); // Unused
 define("LANG_LAN_119", "Please check that CORE_LC and CORE_LC2 have values in [x] and try again.");
 define("LANG_LAN_120", "Please make sure you are using default folder names in e107_config.php (eg. e107_languages/, e107_plugins/ etc.) and try again.");
 define("LANG_LAN_121", "Couldn't Load:");
