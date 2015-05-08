@@ -324,13 +324,13 @@ $FORUM_VIEWTOPIC_TEMPLATE['start'] 	= "
 	
 											
 <ul id='forum-viewtopic' class='unstyled list-unstyled'>
-<li class='divider'></li>
+
 ";
 
 $FORUM_VIEWTOPIC_TEMPLATE['thread'] = "
-									<li id='post-{POSTID}'>
+									<li id='post-{POSTID}' class='forum-viewtopic-post'>
 										<div class='hidden-xs row row-fluid btn-navbar navbar-btn'>
-											<div class='col-xs-12'><hr /></div>
+
 
 												<div class='col-xs-2 span2 left text-left'>
 													<div class='row'>
@@ -345,7 +345,7 @@ $FORUM_VIEWTOPIC_TEMPLATE['thread'] = "
 										</div>
 
 										<div class='row row-fluid'  >
-												<div class='visible-xs col-xs-12'><hr /></div>
+
 											<div class='col-xs-12 col-md-2 span2 left'>
 													<div class='row'>
 
@@ -382,7 +382,8 @@ $FORUM_VIEWTOPIC_TEMPLATE['thread'] = "
 										
 										
 									</li>
-									<li class='divider'></li>";
+
+									";
 
 $FORUM_VIEWTOPIC_TEMPLATE['end'] = "</ul>
 <div class='row row-fluid clearfix'>

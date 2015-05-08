@@ -78,7 +78,10 @@ $(document).ready(function()
 					//	alert(d.html);
 						if(d.html != false)
 						{
-							$('#forum-viewtopic li:last').after(d.html).hide().slideDown(800);
+							// $('#forum-viewtopic li:last').after(d.html).hide().slideDown(800);
+
+							$(d.html).appendTo("#forum-viewtopic").hide().slideDown(1000);
+
 						}
 						$('#forum-quickreply-text').val('');
 						return;

@@ -387,7 +387,7 @@ if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread
 	if (!vartrue($forum_quickreply))
 	{
 		$ajaxInsert = ($thread->pages == $thread->page || $thread->pages == 0) ? 1 : 0;
-		
+	//	$ajaxInsert = 1;
 	//	echo "AJAX-INSERT=".$ajaxInsert ."(".$thread->pages." vs ".$thread->page.")";
 		$frm = e107::getForm();
 		
@@ -402,6 +402,14 @@ if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread
 		</div>
 		
 		</form>";
+
+		if(E107_DEBUG_LEVEL > 0)
+		{
+		//	echo "<div class='alert alert-info'>Thread id: ".$threadId."</div>";
+		//	print_a($this);
+		}
+
+
 				
 		// Preview should be reserved for the full 'Post reply' page. <input type='submit' name='fpreview' value='" . Preview . "' /> &nbsp;
 	}
