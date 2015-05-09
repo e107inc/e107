@@ -111,7 +111,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		elseif($this->var['action'] == 'edit')
 		{
 			$_POST['subject'] = $this->var['thread_name'];
-			if($this->var['thread_user'] != USERID)
+			if($this->var['thread_user'] != USERID && !deftrue('MODERATOR'))
 			{
 				$opts['disabled'] = 1;
 			}
@@ -152,7 +152,9 @@ class plugin_forum_post_shortcodes extends e_shortcode
 			$post = preg_replace('#\[hide].*?\[/hide]#s', '', trim($this->var['post_entry']));
 			$quoteName = ($this->var['user_name'] ? $this->var['user_name'] : $this->var['post_user_anon']);
 			$text = $tp->toText("[quote={$quoteName}]\n".$post."\n[/quote]\n",true);
-			$text .= "<br /><br />";
+			$text .= "\n\n";
+
+		//	$text = $tp->toForm($text);
 			$this->var['action'] = 'rp';
 		}
 		elseif($this->var['action'] == 'edit')

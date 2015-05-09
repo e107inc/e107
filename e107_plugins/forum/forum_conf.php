@@ -69,6 +69,10 @@ if (isset($_POST['deletepollconfirm']))
 	$url = e_PLUGIN."forum/forum_viewtopic.php?".$thread_id;
 }
 
+
+
+// Moved to forum_post.php
+/*
 if (isset($_POST['move']))
 {
 //	print_a($_POST);
@@ -107,6 +111,12 @@ if (isset($_POST['movecancel']))
 	$url = $e107::getUrl()->create('forum/forum/view', 'id='.$postInfo[0]['post_forum']);// XXX _URL_ thread name
 }
 
+
+
+*/
+
+
+
 if ($message)
 {
 	$text = "<div style='text-align:center'>".$message."
@@ -132,20 +142,10 @@ if ($action == "delete_poll")
 	require_once(FOOTERF);
 	exit;
 }
-
+/*
 if ($action == 'move')
 {
 	$postInfo = $forum->postGet($id, 0, 1);
-	
-	/*
-	 * <form class="form-horizontal">
-<div class="control-group">
-<label class="control-label" for="inputEmail">Email</label>
-<div class="controls">
-<input type="text" id="inputEmail" placeholder="Email">
-</div>
-</div>
-	 */
 	
 	$frm = e107::getForm();
 	
@@ -213,5 +213,10 @@ if ($action == 'move')
 	$ns->tablerender(LAN_FORUM_5019, $text);
 
 }
+*/
+
+
+
+
 require_once(FOOTERF);
 ?>
