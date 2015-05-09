@@ -517,13 +517,19 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		// Edit
 		if ( (USER && $this->postInfo['post_user'] == USERID && $this->thread->threadInfo['thread_active']))
 		{
-			$text .= "<li class='text-right'><a href='".e107::getUrl()->create('forum/thread/edit', array('id' => $this->postInfo['post_thread'], 'post'=>$this->postInfo['post_id']))."'>".LAN_EDIT." ".$tp->toGlyph('edit')."</a></li>";
+
+
+			$url = e107::url('forum','post')."?f=edit&amp;id=".$this->postInfo['post_thread']."&amp;post=".$this->postInfo['post_id'];
+			//$url = e107::getUrl()->create('forum/thread/edit', array('id' => $this->postInfo['post_thread'], 'post'=>$this->postInfo['post_id']));
+			$text .= "<li class='text-right'><a href='".$url."'>".LAN_EDIT." ".$tp->toGlyph('edit')."</a></li>";
 			
 		}
 	
 		if($this->forum->checkperm($this->postInfo['post_forum'], 'post'))
 		{
-			$text .= "<li class='text-right'><a href='".e107::getUrl()->create('forum/thread/quote', array('id' => $this->postInfo['post_thread'], 'post'=>$this->postInfo['post_id']))."'>".LAN_FORUM_2041." ".$tp->toGlyph('share-alt')."</a></li>";
+			$url = e107::url('forum','post')."?f=quote&amp;id=".$this->postInfo['post_thread']."&amp;post=".$this->postInfo['post_id'];
+			//$url = e107::getUrl()->create('forum/thread/quote', array('id' => $this->postInfo['post_thread'], 'post'=>$this->postInfo['post_id']));
+			$text .= "<li class='text-right'><a href='".$url."'>".LAN_FORUM_2041." ".$tp->toGlyph('share-alt')."</a></li>";
 
 			//	$text .= "<li class='text-right'><a href='".e107::getUrl()->create('forum/thread/quote', array('id' => $this->postInfo['post_id']))."'>".LAN_FORUM_2041." ".$tp->toGlyph('share-alt')."</a></li>";
 		}
@@ -536,7 +542,11 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 			if ((USER && $this->postInfo['post_user'] != USERID && $this->thread->threadInfo['thread_active']))
 			{
-				$text .= "<li class='text-right'><a href='".e107::getUrl()->create('forum/thread/edit', array('id' => $this->postInfo['post_thread'], 'post'=>$this->postInfo['post_id']))."'>".LAN_EDIT." ".$tp->toGlyph('edit')."</a></li>";
+
+				$url = e107::url('forum','post')."?f=edit&amp;id=".$this->postInfo['post_thread']."&amp;post=".$this->postInfo['post_id'];
+				// $url = e107::getUrl()->create('forum/thread/edit', array('id' => $this->postInfo['post_thread'], 'post'=>$this->postInfo['post_id']));
+
+				$text .= "<li class='text-right'><a href='".$url."'>".LAN_EDIT." ".$tp->toGlyph('edit')."</a></li>";
 			}
 			
 			// only show delete button when post is not the initial post of the topic
@@ -547,11 +557,13 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		
 			if ($type == 'thread')
 			{
-				$text .= "<li class='text-right'><a href='" . e107::getUrl()->create('forum/thread/move', array('id' => $this->postInfo['post_id']))."'>".LAN_FORUM_2042." ".$tp->toGlyph('move')."</a></a></li>"; 
+				$url = e107::url('forum','post')."?f=move&amp;id=".$this->postInfo['post_thread']."&amp;post=".$this->postInfo['post_id'];
+				// $url = e107::getUrl()->create('forum/thread/move', array('id' => $this->postInfo['post_id'], 'post'=>$this->postInfo['post_id']));
+				$text .= "<li class='text-right'><a href='" . $url."'>".LAN_FORUM_2042." ".$tp->toGlyph('move')."</a></a></li>";
 			}
-			else
+			else //TODO
 			{
-				$text .= "<li class='text-right'><a href='" . e107::getUrl()->create('forum/thread/split', array('id' => $this->postInfo['post_id']))."'>".LAN_FORUM_2043." ".$tp->toGlyph('cut')."</a></li>";
+				// $text .= "<li class='text-right'><a href='" . e107::getUrl()->create('forum/thread/split', array('id' => $this->postInfo['post_id'], 'post'=>$this->postInfo['post_id']))."'>".LAN_FORUM_2043." ".$tp->toGlyph('cut')."</a></li>";
 		
 			}
 		}

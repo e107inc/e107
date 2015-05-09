@@ -767,7 +767,7 @@ class e107forum
 		$oldForumId = $threadInfo['thread_forum_id'];
 
 		//Move thread to new forum, changing thread title if needed
-		if($threadTitle)
+		if(!empty($threadTitle))
 		{
 
 			if($titleType == 0)
@@ -778,9 +778,10 @@ class e107forum
 			else
 			{
 				//Replace title
-				$threadTitle = ", thread_name = '{$threadTitle}'";
+				$threadTitle = ", thread_name = '{$threadTitle}', thread_sef='".eHelper::title2sef($threadTitle,'dashl')."' ";
 			}
 		}
+
 		$sql->update('forum_thread', "thread_forum_id={$newForumId} {$threadTitle} WHERE thread_id={$threadId}");
 
 		//Move all posts to new forum
@@ -892,7 +893,7 @@ class e107forum
 		if('post' === $start)
 		{
 			$qry = '
-			SELECT u.user_name, t.thread_active, t.thread_datestamp, t.thread_name, t.thread_user, t.thread_id, p.* FROM `#forum_post` AS p
+			SELECT u.user_name, t.thread_active, t.thread_datestamp, t.thread_name, t.thread_sef, t.thread_user, t.thread_id, p.* FROM `#forum_post` AS p
 			LEFT JOIN `#forum_thread` AS t ON t.thread_id = p.post_thread
 			LEFT JOIN `#user` AS u ON u.user_id = p.post_user
 			WHERE p.post_id = '.$id;

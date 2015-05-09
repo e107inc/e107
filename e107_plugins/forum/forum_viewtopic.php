@@ -247,8 +247,10 @@ if ($thread->pages > 1)
 	if(!$thread->page) $thread->page = 1;
 //	$url = rawurlencode(e107::getUrl()->create('forum/thread/view', array('name' => $thread->threadInfo['thread_name'], 'id' => $thread->threadId, 'page' => '[FROM]')));
 
-	$url = e_REQUEST_SELF."?p=[FROM]"; // SEF URL Friendly.
-	$parms = "total={$thread->pages}&type=page&current={$thread->page}&url=".$url."&caption=off&tmpl=default&navcount=4&glyphs=1";
+//	$url = e_REQUEST_SELF."?p=[FROM]"; // SEF URL Friendly.
+	$url = e107::url('forum','topic', $thread->threadInfo)."&amp;p=[FROM]";
+
+	$parms = "total={$thread->pages}&type=page&current={$thread->page}&url=".urlencode($url)."&caption=off&tmpl=default&navcount=4&glyphs=1";
 	
 	//XXX FIXME - pull-down template not practical here. Can we force another?
 
@@ -758,6 +760,8 @@ class e107ForumThread
 				$this->message = LAN_FORUM_2012;
 				break;
 
+
+			// TODO Move to form_post.php
 			case 'report':
 				$threadId 	= (int)$_GET['id'];
 				$postId 	= (int)$_GET['post'];

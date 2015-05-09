@@ -265,7 +265,7 @@ define("LAN_FORUM_5010", "Confirm Delete Forum Post"); // LAN_FORUM_5010
 define("LAN_FORUM_5019", "Move Thread"); // LAN_FORUM_5019
 define("LAN_FORUM_5021", "moved"); // LAN_FORUM_5021
 define("LAN_FORUM_5022", "Do not rename thread title"); // LAN_FORUM_5022
-define("LAN_FORUM_5024", "to title"); // LAN_FORUM_5024
+define("LAN_FORUM_5024", "Add [x] prefix to the subject/title"); // LAN_FORUM_5024
 define("LAN_FORUM_5025", "Rename to:"); // LAN_FORUM_5025
 define("LAN_FORUM_5026", "Rename thread options:"); // LAN_FORUM_5026
 

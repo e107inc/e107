@@ -10,7 +10,14 @@
  *
 */
 
-require_once('../../class2.php');
+
+if(!defined('e107_INIT'))
+{
+	require_once('../../class2.php');
+}
+
+
+
 define('NAVIGATION_ACTIVE','forum'); // ??
 
 $e107 = e107::getInstance();
@@ -39,6 +46,9 @@ class forum_post_handler
 
 	function __construct()
 	{
+
+
+
 		$this->checkForumJump();
 
 		require_once(e_PLUGIN.'forum/forum_class.php'); // includes LAN file.
@@ -52,10 +62,25 @@ class forum_post_handler
 		define('MODERATOR', USER && $this->forumObj->isModerator(USERID));
 
 
+
 		$this->data = $this->processGet();
 		$this->checkPerms($this->data['forum_id']);
 		$this->processPosted();
-		$this->renderForm();
+
+		if($this->action == 'move')
+		{
+			$this->renderFormMove();
+		}
+		else
+		{
+			$this->renderForm();
+		}
+
+		if(E107_DEBUG_LEVEL > 0)
+		{
+			e107::getMessage()->addInfo(print_a($this->data,true));
+			echo e107::getMessage()->render();
+		}
 
 	}
 
@@ -70,7 +95,9 @@ class forum_post_handler
 
 		if (!e_QUERY || empty($_GET['id']))
 		{
-			header('Location:'.e107::getUrl()->create('forum/forum/main', array(), 'full=1&encode=0'));
+			$url = e107::url('forum','index',null,'full');
+			e107::getRedirect()->go($url);
+		//	header('Location:'.e107::getUrl()->create('forum/forum/main', array(), 'full=1&encode=0'));
 			exit;
 		}
 
@@ -101,6 +128,7 @@ class forum_post_handler
 				break;
 
 			case 'edit':
+			case 'move':
 			case 'quote':
 				$postInfo               = $this->forumObj->postGet($this->post, 'post');
 				$forumInfo              = $this->forumObj->forumGet($postInfo['post_forum']);
@@ -111,7 +139,9 @@ class forum_post_handler
 				break;
 
 			default:
-				header("Location:".e107::getUrl()->create('forum/forum/main', array(), 'full=1&encode=0'));
+				$url = e107::url('forum','index',null,'full');
+				e107::getRedirect()->go($url);
+			//	header("Location:".e107::getUrl()->create('forum/forum/main', array(), 'full=1&encode=0'));
 				exit;
 		}
 	}
@@ -138,6 +168,11 @@ class forum_post_handler
 			$this->updateThread();
 		}
 
+		if(!empty($_POST['move_thread']))
+		{
+			$this->moveThread($_POST);
+		}
+
 		if(isset($_POST['update_reply']))
 		{
 			$this->updateReply();
@@ -148,10 +183,12 @@ class forum_post_handler
 			$this->renderPreview();
 		}
 
-		if (isset($_POST['submitpoll']))
+		if(isset($_POST['submitpoll']))
 		{
 			$this->submitPoll();
 		}
+
+
 
 
 	}
@@ -285,6 +322,110 @@ class forum_post_handler
 	}
 
 
+	function renderFormMove()
+	{
+		if(!deftrue('MODERATOR'))
+		{
+			return;
+		}
+
+
+		$frm = e107::getForm();
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+		$ns = e107::getRender();
+
+		$qry = "
+		SELECT f.forum_id, f.forum_name, fp.forum_name AS forum_parent, sp.forum_name AS sub_parent
+		FROM `#forum` AS f
+		LEFT JOIN `#forum` AS fp ON f.forum_parent = fp.forum_id
+		LEFT JOIN `#forum` AS sp ON f.forum_sub = sp.forum_id
+		WHERE f.forum_parent != 0
+		ORDER BY f.forum_parent ASC, f.forum_sub, f.forum_order ASC
+		";
+
+		$fList = $sql->retrieve($qry,true);
+
+
+		$opts = array();
+		$currentName = "";
+
+		foreach($fList as $f)
+		{
+			if(substr($f['forum_name'], 0, 1) != '*')
+			{
+				$f['sub_parent'] = ltrim($f['sub_parent'], '*');
+				$for_name = $f['forum_parent'].' &gg; ';
+				$for_name .= ($f['sub_parent'] ? $f['sub_parent'].' &gg; ' : '');
+				$for_name .= $f['forum_name'];
+
+				if($this->data['forum_id'] == $f['forum_id'])
+				{
+					$for_name .= " (Current)";
+					$currentName = $for_name;
+					continue;
+				}
+
+				$id = $f['forum_id'];
+				$opts[$id] = $for_name;
+			}
+		}
+
+
+		$text = "
+		<form class='forum-horizontal' method='post' action='".e_REQUEST_URI."'>
+		<div>
+		<table class='table table-striped' style='".ADMIN_WIDTH."'>
+		<tr>
+		<td>".LAN_FORUM_3011.": </td>
+		<td>
+		".$tp->toHTML($this->data['thread_name'],true)."
+		</td>
+		</tr>
+		<tr><td></td>
+		<td><div class='alert alert-warning'>".$tp->toHTML($this->data['post_entry'], true)."</div></td></tr>
+
+		<tr>
+		<td>".LAN_FORUM_5019.": </td>
+		<td>".$frm->select('forum_move', $opts, $this->data['forum_id'], 'required=1', $currentName)."
+
+		</td>
+		</tr>
+		<tr>
+		<td >".LAN_FORUM_5026."</td>
+		<td><div class='radio'>
+		".$frm->radio('rename_thread','none',true, 'label='.LAN_FORUM_5022)."
+		</div>
+		<div class='radio'>
+		".$frm->radio('rename_thread', 'add', false, array('label'=> $tp->lanVars(LAN_FORUM_5024,'<b> ['.LAN_FORUM_5021.']</b> '))). "
+		</div>
+		<div class='radio'>".$frm->radio('rename_thread','rename', false, array('label'=>LAN_FORUM_5025))."
+		".$frm->text('newtitle', $tp->toForm($this->data['thread_name'], 250))."
+		</div>
+		</div></td>
+		</tr>
+		</table>
+		<div class='center'>
+		<input class='btn btn-primary button' type='submit' name='move_thread' value='".LAN_FORUM_5019."' />
+		<a class='btn btn-default button'  href='".e_REFERER_SELF."' >".LAN_CANCEL."</a>
+		</div>
+
+		</div>
+		</form>";
+
+
+	//	$threadName = $tp->toHTML($this->data['thread_name'], true);
+	//	$threadText = ;
+
+	//	$text .= "<h3>".$threadName."</h3><div>".$threadText."</div>"; // $e107->ns->tablerender(, ), '', true).$ns->tablerender('', $text, '', true);
+		$ns->tablerender(LAN_FORUM_5019, $text);
+
+
+
+	}
+
+
+
 
 	function renderForm()
 	{
@@ -300,15 +441,6 @@ class forum_post_handler
 			e107::getMessage()->addError("No Data supplied");
 		}
 
-
-		if(E107_DEBUG_LEVEL > 0)
-		{
-			e107::getMessage()->addInfo(print_a($data,true));
-			echo e107::getMessage()->render();
-		}
-
-		require_once(FOOTERF);
-		exit;
 
 	}
 
@@ -403,7 +535,7 @@ class forum_post_handler
 
 		$ns->tablerender(LAN_FORUM_3005, $text);
 
-
+/*
 		if ($this->action == 'edit')
 		{
 			if ($_POST['subject'])
@@ -420,7 +552,7 @@ class forum_post_handler
 		{
 			$action = 'rp';
 			$eaction = false;
-		}
+		}*/
 
 
 	}
@@ -582,13 +714,16 @@ class forum_post_handler
 
 
 
-			$threadLink = e107::getUrl()->create('forum/thread/last', $postInfo);
-			$forumLink = e107::getUrl()->create('forum/forum/view', $forumInfo);
+		//	$threadLink = e107::getUrl()->create('forum/thread/last', $postInfo);
+		// 	$forumLink = e107::getUrl()->create('forum/forum/view', $forumInfo);
 
+			$threadLink = e107::url('forum','topic',$this->data,'full')."&amp;last=1";
+			$forumLink = e107::url('forum', 'forum', $this->data);
 
 			if ($this->forumObj->prefs->get('redirect'))
 			{
-				header('location:'.e107::getUrl()->create('forum/thread/last', $postInfo, array('encode' => false, 'full' => true)));
+				e107::getRedirect()->go($threadLink);
+			//	header('location:'.e107::getUrl()->create('forum/thread/last', $postInfo, array('encode' => false, 'full' => true)));
 				exit;
 			}
 			else
@@ -616,6 +751,50 @@ class forum_post_handler
 
 
 	}
+
+
+	function moveThread($posted)
+	{
+
+		if(!deftrue('MODERATOR'))
+		{
+			return;
+		}
+
+		$tp = e107::getParser();
+		$mes = e107::getMessage();
+
+		$newThreadTitle = '';
+		$newThreadTitleType = 0;
+
+		if($posted['rename_thread'] == 'add')
+		{
+			$newThreadTitle = '['.LAN_FORUM_5021.']';
+		}
+		elseif($posted['rename_thread'] == 'rename' && trim($posted['newtitle']) != '')
+		{
+			$newThreadTitle = $tp->toDB($posted['newtitle']);
+			$newThreadTitleType = 1;
+		}
+
+		$threadId = intval($_GET['id']);
+		$toForum = $posted['forum_move'];
+
+		$this->forumObj->threadMove($threadId, $toForum, $newThreadTitle, $newThreadTitleType);
+
+		$message = LAN_FORUM_5005."<br />";// XXX _URL_ thread name
+
+		$url = e107::url('forum','topic', $this->data);
+		$text = "<a class='btn btn-primary' href='".$url."'>".LAN_FORUM_5007."</a>";
+
+		$mes->addSuccess($message.$text);
+		echo $mes->render();
+
+//	$ns->tablerender(LAN_FORUM_5008, $text);
+
+
+	}
+
 
 
 
@@ -664,10 +843,15 @@ class forum_post_handler
 
 			e107::getCache()->clear('newforumposts');
 
-			$url = e107::getUrl()->create('forum/thread/post', array('name'=>$threadVals['thread_name'], 'id' => $this->data['post_id'], 'thread' => $this->data['post_thread']), array('encode'=>false));
+			$url = e107::url('forum','topic',$this->data);
 
-			header('location:'.$url);
+			e107::getRedirect()->go($url);
 			exit;
+
+		//	$url = e107::getUrl()->create('forum/thread/post', array('name'=>$threadVals['thread_name'], 'id' => $this->data['post_id'], 'thread' => $this->data['post_thread']), array('encode'=>false));
+
+		//	header('location:'.$url);
+		//	exit;
 		}
 
 
@@ -701,7 +885,11 @@ class forum_post_handler
 		$this->forumObj->postUpdate($this->data['post_id'], $postVals);
 
 		e107::getCache()->clear('newforumposts');
+
+
 		$url = e107::getUrl()->create('forum/thread/post', "id={$this->data['post_id']}", 'encode=0&full=1'); // XXX what data is available, find thread name
+
+	//	$url = e107::url('forum','topic',$this->data,true)."&f=post"; //FIXME 
 
 		header('location:'.$url);
 		exit;
@@ -833,7 +1021,32 @@ class forum_post_handler
 
 require_once(HEADERF);
 new forum_post_handler;
+require_once(FOOTERF);
 exit;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 require_once(e_PLUGIN.'forum/forum_class.php');
 $forum = new e107forum();
