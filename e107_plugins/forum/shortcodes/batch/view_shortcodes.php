@@ -540,6 +540,8 @@ class plugin_forum_view_shortcodes extends e_shortcode
 			$text .= "<li role='presentation' class='divider'> </li>";
 			$type = ($this->postInfo['thread_start']) ? 'thread' : 'Post';
 
+		//	print_a($this->postInfo);
+
 			if ((USER && $this->postInfo['post_user'] != USERID && $this->thread->threadInfo['thread_active']))
 			{
 
@@ -550,7 +552,8 @@ class plugin_forum_view_shortcodes extends e_shortcode
 			}
 			
 			// only show delete button when post is not the initial post of the topic
-			if(!$this->forum->threadDetermineInitialPost($this->postInfo['post_id'])) 
+		//	if(!$this->forum->threadDetermineInitialPost($this->postInfo['post_id']))
+			if(empty($this->postInfo['thread_start']))
 			{
 				$text .= "<li class='text-right'><a href='".e_REQUEST_URI."' data-forum-action='deletepost' data-forum-post='".$this->postInfo['post_id']."'>".LAN_DELETE." ".$tp->toGlyph('trash')."</a></li>"; 
 			}
