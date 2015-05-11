@@ -39,8 +39,8 @@ class newsletter_mailout
 	protected $mailCount = 0;
 	protected $mailRead = 0;
 	//public $mailerSource = 'newsletter';			// Plugin name (core mailer is special case) Must be directory for this file
-	public $mailerName = NLLAN_48;					// Text to identify the source of selector (displayed on left of admin page)
-	public $mailerEnabled = TRUE;					// Mandatory - set to FALSE to disable this plugin (e.g. due to permissions restrictions)
+	public $mailerName      =LAN_PLUGIN_NEWSLETTER_NAME;					// Text to identify the source of selector (displayed on left of admin page)
+	public $mailerEnabled   = TRUE;					// Mandatory - set to FALSE to disable this plugin (e.g. due to permissions restrictions)
 	private $selectorActive = FALSE;				// Set TRUE if we've got a valid selector to start returning entries
 	private	$targets = array();						// Used to store potential recipients
 	private $ourDB;
