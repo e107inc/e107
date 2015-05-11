@@ -84,6 +84,7 @@ class social_ui extends e_admin_ui
 			'twitter_menu_limit'		=> array('title'=> 'Limit', 'type'=>'number', 'tab'=>2, 'data' => 'int','help'=>'Number of tweets to display.'),
 
 			'sharing_mode'              => array('title'=> 'Display Mode', 'type'=>'dropdown', 'tab'=>0, 'writeParms'=>array('optArray'=>array('normal'=>'Normal','dropdown'=>'Dropdown','off'=>'Disabled')), 'data' => 'str','help'=>''),
+			'sharing_hashtags'		    => array('title'=> 'Hashtags', 'type'=>'tags', 'tab'=>0, 'data' => 'str','help'=>'Excluding the # symbol.'),
 			'sharing_providers'         => array('title'=> 'Providers', 'type'=>'checkboxes', 'tab'=>0, 'writeParms'=>array(), 'data' => 'str','help'=>''),
 
 		);

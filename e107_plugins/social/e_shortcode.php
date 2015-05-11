@@ -138,7 +138,7 @@ class social_shortcodes extends e_shortcode
 			return '';
 		}
 
-
+		$hashtags       = vartrue($pref['sharing_hashtags']);
 
 		$defaultUrl 	= vartrue($this->var['url'], e_REQUEST_URL);
 		$defaultTitle	= vartrue($this->var['title'], deftrue('e_PAGETITLE'). " | ". SITENAME);
@@ -186,10 +186,16 @@ class social_shortcodes extends e_shortcode
 		{
 			$butSize = 'btn-social';
 		}
-		
+
 
 		$opt = array();
-		
+
+
+
+		$hashtags = str_replace(array(" ",'#'),"", $hashtags); // "#mytweet";
+		$twitterAccount = basename(XURL_TWITTER);
+
+	//	return print_a($hashtags,true);
 		foreach($providers as $k=>$val)
 		{
 
@@ -199,8 +205,24 @@ class social_shortcodes extends e_shortcode
 			}
 
 			$pUrl = str_replace("&","&amp;",$val['url']);
-			
+
 			$shareUrl = $tp->lanVars($pUrl,$data);
+
+			if($k == 'twitter')
+			{
+				if(!empty($hashtags))
+				{
+					$shareUrl .= "&amp;hashtags=".rawurlencode($hashtags);
+				}
+
+				if(!empty($twitterAccount))
+				{
+					$shareUrl .= "&amp;via=".$twitterAccount;
+				}
+
+			}
+
+
 			
 			$opt[$k] = "<a class='e-tip btn ".$butSize." btn-default social-share'  target='_blank' title='".$val["title"]."' href='".$shareUrl."'>".$tp->toIcon($val["icon"])."</a>";	
 		}
@@ -249,7 +271,7 @@ class social_shortcodes extends e_shortcode
 	{
 		$ns = e107::getRender();
 		
-		$account = dirname(XURL_TWITTER);
+		$account = basename(XURL_TWITTER);
 		//data-related="twitterapi,twitter"
 		$text = '<a class="twitter-timeline" href="'.XURL_TWITTER.'" data-widget-id="'.varset($parm['id']).'" data-theme="'.varset($parm['theme'],'light').'" data-link-color="#cc0000"   data-aria-polite="assertive" width="100%" height="'.varset($parm['height'],300).'" lang="'.e_LAN.'">Tweets by @'.$account.'</a>';
 
