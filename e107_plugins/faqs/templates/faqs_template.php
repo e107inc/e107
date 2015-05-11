@@ -10,6 +10,7 @@
 
 $FAQS_TEMPLATE['start']	= "
 <div class='faq-start'>{FAQ_SUBMIT_QUESTION}
+{FAQ_SUBMIT_QUESTION_LIST}
 ";
 
 $FAQS_TEMPLATE['end']	= "
@@ -31,5 +32,6 @@ $FAQS_TEMPLATE['all']['end'] = "
 </div>
 ";
 
+$FAQS_TEMPLATE['caption'] = "{FAQ_CAPTION} <small>{FAQ_COUNT}</small>";
 
 

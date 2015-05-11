@@ -53,6 +53,8 @@ li.faq-listall-loop
 
 }
 
+.faq-question.faq-new { font-weight: bold; }
+
 .faq-answer
 {
 	margin:20px 0px;

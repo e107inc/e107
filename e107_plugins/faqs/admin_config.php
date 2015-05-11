@@ -210,7 +210,8 @@ class faq_main_ui extends e_admin_ui
 			'u.user_name' 			=> array('title'=> LANA_FAQ_UNAME,		'tab' => 1, 'type' => 'user',			'width' => 'auto', 'noedit' => true, 'readParms'=>'idField=faq_author&link=1'),	// User name
        		'u.user_loginname' 		=> array('title'=> LANA_FAQ_ULOGINNAME,	'tab' => 1, 'type' => 'user',			'width' => 'auto', 'noedit' => true, 'readParms'=>'idField=faq_author&link=1'),	// User login name
 			'faq_order' 			=> array('title'=> LAN_ORDER,		    'tab' => 1, 'type' => 'number',			'data'=> 'int','width' => '5%', 'thclass' => 'center','nolist' => false, 'noedit'=>false, 'readParms'=>'editable=1'),
-			'options' 				=> array('title'=> LAN_OPTIONS,			'type' => null,				'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center','readParms'=>'sort=1')
+			'options' 				=> array('title'=> LAN_OPTIONS,			'type' => null,				'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center','readParms'=>'sort=1'),
+			'pending'               => array('title' => 'internal',        'type' => 'hidden',    'data'=>false, 'writeParms'=>array()),
 		);
 		 
 		protected $fieldpref = array('checkboxes', 'faq_question', 'faq_answer', 'faq_parent', 'faq_datestamp', 'options');
@@ -224,7 +225,9 @@ class faq_main_ui extends e_admin_ui
 			'classic_look'				=> array('title'=> LANA_FAQ_PREF_3, 'type'=>'boolean' ),
 			'list_type'				    => array('title'=> "List Type", 'type'=>'dropdown', 'writeParms'=>array('ul'=>'Unordered List', 'ol'=>'Ordered List') ),
 			'page_title'				=> array('title'=> "Page Title", 'type'=>'text', 'help'=>'Leave blank to use default' ),
-		);
+			'new'				        => array('title'=> "'New' FAQs are no more than", 'type'=>'number', 'writeParms'=>'size=mini&default=0&post=days old', 'help'=>'Leave blank to use default' ),
+			'display_total'				=> array('title'=> "Display FAQ total", 'type'=>'boolean' ),
+			);
 
 	protected $categories = array();
 
@@ -242,6 +245,17 @@ class faq_main_ui extends e_admin_ui
 		}
 		
 		$this->fields['faq_parent']['writeParms'] = $this->categories;
+
+		//$this->fields['pending']['writeParms']['show'] = 1;
+		$this->fields['pending']['writeParms']['value'] = ($_GET['filter'] == 'pending') ? 1 : 0;
+
+		if(!empty($_GET['filter'])) // hide re-ordering when looking at 'unanswered' list and sort by datestamp.
+		{
+			$this->listOrder = "faq_datestamp ASC";
+			$this->fields['options']['readParms'] = '';
+			$this->sortField = false;
+		}
+
 	}
 	
 	public function beforeCreate($new_data)
@@ -264,6 +278,13 @@ class faq_main_ui extends e_admin_ui
 		if(!empty($new_data['faq_tags']))
 		{
 			$new_data['faq_tags'] = implode(',', array_map('trim', explode(',', $new_data['faq_tags'])));
+		}
+
+	//	e107::getMessage()->addInfo(print_a($new_data, true));
+
+		if(!empty($new_data['pending']))
+		{
+			$new_data['faq_datestamp'] = time();
 		}
 
 		return $new_data;
@@ -291,7 +312,8 @@ class faq_admin_form_ui extends e_admin_form_ui
 			break;
 			
 			case 'write':
-				return $this->selectbox('faq_parent', $controller->getFaqCategory(), $curVal);
+
+				return $this->selectbox('faq_parent', $controller->getFaqCategory(), $curVal).$this->hidden('pending', $pending);
 			break;
 			
 			case 'filter':

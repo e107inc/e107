@@ -141,9 +141,9 @@ if (isset($_POST['commentsubmit']))
 
 		}
 
-		if (vartrue($faqpref['faq_title']))
+		if (vartrue($faqpref['page_title']))
 		{
-			define("e_PAGETITLE", $faqpref['faq_title']);
+			define("e_PAGETITLE", $faqpref['page_title']);
 		}
 		else
 		{
@@ -242,15 +242,12 @@ class faq
 
 	function view_all($srch) // new funtion to render all FAQs
 	{
-		$sql = e107::getDb();
 		$tp = e107::getParser();
 		$ret = array();
 
 		$template = e107::getTemplate('faqs');
 		$this->template = $template;
 	
-		$prevcat = "";
-
 		$this->sc = e107::getScBatch('faqs',TRUE);
 		
 		$text = $tp->parseTemplate($template['start'], true, $this->sc); // header
@@ -264,8 +261,6 @@ class faq
 		$text .= "</div>";
 	
 		$text .= $tp->parseTemplate($template['end'], true, $this->sc); // footer
-
-		
 
 		$ret['title'] = FAQLAN_FAQ;
 		$ret['text'] = $text;

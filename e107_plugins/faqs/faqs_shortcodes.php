@@ -38,7 +38,13 @@ class faqs_shortcodes extends e_shortcode
 		$parm = eHelper::scDualParams($parm);
 		$param = $parm[1];
 		$params = $parm[2];
-		
+
+		$new = e107::pref('faqs','new',3);
+
+		$newDate = strtotime($new." days ago");
+
+		$faqNew = ($this->var['faq_datestamp'] > $newDate) ? " faq-new" : "";
+
 		if($param == 'expand')
 		{
 			$tags = '';
@@ -47,8 +53,8 @@ class faqs_shortcodes extends e_shortcode
 				$tags = "<div class='faq-tags'>".LAN_FAQS_TAGS.": ".$this->sc_faq_tags()."</div>";
 			}
 			$id = "faq_".$this->var['faq_id'];
-			$text = "<a class='e-expandit faq-question' href='#{$id}'>".$tp->toHTML($this->var['faq_question'],true,'TITLE')."</a>
-			<div id='{$id}' class='e-hideme faq-answer faq_answer clearfix'>".$tp->toHTML($this->var['faq_answer'],true,'BODY').$tags."</div>
+			$text = "<a class='e-expandit faq-question{$faqNew}' href='#{$id}'>".$tp->toHTML($this->var['faq_question'],true,'TITLE')."</a>
+			<div id='{$id}' class='e-hideme faq-answer faq_answer clearfix {$faqNew}'>".$tp->toHTML($this->var['faq_answer'],true,'BODY').$tags."</div>
 			";	
 
 		}
@@ -162,10 +168,30 @@ class faqs_shortcodes extends e_shortcode
 	{
 		return e107::getUrl()->create('faqs/list/all', array('category' => $this->var['faq_info_id']));	
 	}
-	
+
+	function sc_faq_caption()
+	{
+
+		$customCaption = e107::pref('faqs', 'page_title');
+
+		if(!empty($customCaption))
+		{
+			return e107::getParser()->toHtml($customCaption,true);
+		}
+
+		return LAN_PLUGIN_FAQS_FRONT_NAME;
+	}
+
+
 	function sc_faq_count()
 	{
-		$tp = e107::getParser();
+		$faqTotal = e107::pref('faqs', 'display_total');
+
+		if(!empty($faqTotal))
+		{
+			return "<span class='faq-total'>(".($this->counter -1).")</span>";
+		}
+
  		return $this->var['f_count'];
 	}
 	
@@ -204,6 +230,45 @@ class faqs_shortcodes extends e_shortcode
 		}
 
 	}
+
+
+	function sc_faq_submit_question_list()
+	{
+		$faqpref = e107::pref('faqs');
+
+		if (check_class($faqpref['submit_question']))
+		{
+			$tp = e107::getParser();
+
+			$list = e107::getDb()->retrieve('faqs','faq_question,faq_datestamp',"faq_answer='' AND faq_author_ip = '".USERIP."' ORDER BY faq_datestamp DESC ", true);
+
+			$text = "";
+
+			if(!empty($list))
+			{
+				//TODO LAN
+				$text = "<div class='alert alert-warning alert-block faq-submit-question-list'>";
+				$text .= "<h4>You have requested answers to the following questions:</h4>";
+				$text .= "<ul>";
+
+				foreach($list as $row)
+				{
+					$text .= "<li>".$tp->toHtml($row['faq_question'],true)."</li>";
+				}
+
+				$text .= "</ul>";
+				$text .= "</div>";
+
+			}
+
+			return $text;
+		}
+
+
+
+
+	}
+
 	
 	function sc_faq_search($parm='')
 	{
