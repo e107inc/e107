@@ -408,7 +408,7 @@ class frontpage
 
 		foreach($fp_settings as $order => $current_value)
 		{
-			$title = e107::getUserClass()->uc_get_classname($current_value['class']);
+			$title = e107::getUserClass()->getName($current_value['class']);
 			$text .= "
 					<tr>
 						<td class='left'>".$order."</td>
