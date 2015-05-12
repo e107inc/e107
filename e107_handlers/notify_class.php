@@ -117,20 +117,23 @@ class notify
 	 *	@todo handle 'everyone except' clauses (email address filter done)
 	 *	@todo set up pref to not notify originator of event which caused notify (see $blockOriginator)
 	 */
-	function send($id, $subject, $message)
+	function send($id, $subject, $message, $media=array())
 	{
 
 		$tp = e107::getParser();
 		$sql = e107::getDb();
 
 		$subject = $tp->toEmail(SITENAME.': '.$subject);
-		$message = $tp->toEmail($message);
+		$message = $tp->replaceConstants($message, "full");
+	//	$message = $tp->toEmail($message);
 		$emailFilter = '';
 		$notifyTarget = $this->notify_prefs['event'][$id]['class'];
+
 		if ($notifyTarget == '-email')
 		{
 			$emailFilter = $this->notify_prefs['event'][$id]['email'];
 		}
+
 		$blockOriginator = FALSE;		// TODO: set this using a pref
 		$recipients = array();
 
@@ -143,7 +146,7 @@ class notify
 								 );	
 			}
 		}
-		elseif (is_numeric($this->notify_prefs['event'][$id]['class']))
+		elseif (is_numeric($notifyTarget))
 		{
 			switch ($notifyTarget)
 			{
@@ -157,14 +160,17 @@ class notify
 					$qry = "`user_ban` = 0";
 					break;
 				default :
-					$qry = "user_ban = 0 AND user_class REGEXP '(^|,)(".$this->notify_prefs['event'][$id]['class'].")(,|$)'";
+					$qry = "user_ban = 0 AND user_class REGEXP '(^|,)(".$notifyTarget.")(,|$)'";
 					break;
 			}
-			$qry = 'SELECT user_id,user_name,user_email FROM `#user` WHERE '.$qry;
+
+			$qry = 'SELECT user_id,user_name,user_email,user_join,user_lastvisit FROM `#user` WHERE '.$qry;
+
 			if ($blockOriginator)
 			{
 				$qry .= ' AND `user_id` != '.USERID;
 			}
+
 			if (false !== ($count = $sql->gen($qry)))
 			{
 				// Now add email addresses to the list
@@ -172,10 +178,28 @@ class notify
 				{
 					if ($row['user_email'] != $emailFilter)
 					{
-						$recipients[] = array('mail_recipient_id' => $row['user_id'],
-										 'mail_recipient_name' => $row['user_name'],		// Should this use realname?
-										 'mail_recipient_email' => $row['user_email']
-										 );	
+
+						$unsubscribe = array('date'=>$row['user_join'],'email'=>$row['user_email'],'id'=>$row['user_id'], 'plugin'=>'user', 'userclass'=>$notifyTarget);
+						$urlQuery = http_build_query($unsubscribe,null,'&');
+						$exclude  = array(e_UC_MEMBER,e_UC_ADMIN, e_UC_MAINADMIN); // no unsubscribe for these classes.
+						$unsubUrl   = SITEURL."unsubscribe.php?id=".base64_encode($urlQuery);
+						$unsubMessage =  "This message was sent to ".$row['user_email'].". If you don't want to receive these emails in the future, please <a href='".$unsubUrl."'>unsubscribe</a>.";
+
+
+						$recipients[] = array(
+							'mail_recipient_id'     => $row['user_id'],
+							'mail_recipient_name'   => $row['user_name'],		// Should this use realname?
+							'mail_recipient_email'  => $row['user_email'],
+							'mail_target_info'		=> array(
+								'USERID'		=> $row['user_id'],
+								'DISPLAYNAME' 	=> $row['user_name'],
+						//		'SIGNUP_LINK' 	=> '',
+								'USERNAME' 		=> $row['user_name'],
+								'USERLASTVISIT' => $row['user_lastvisit'],
+								'UNSUBSCRIBE'	=> (!in_array($notifyTarget, $exclude)) ? $unsubUrl : '',
+								'UNSUBSCRIBE_MESSAGE' => (!in_array($notifyTarget, $exclude)) ? $unsubMessage : ''
+							)
+						);
 					}
 				}
 			}
@@ -199,6 +223,7 @@ class notify
 
 			// Create the mail body
 			$mailData = array(
+				'mail_total_count'      => count($recipients),
 				'mail_content_status' 	=> MAIL_STATUS_TEMP,
 				'mail_create_app' 		=> 'notify',
 				'mail_title' 			=> 'NOTIFY',
@@ -207,10 +232,19 @@ class notify
 				'mail_sender_name'		=> e107::getPref('siteadmin'),
 				'mail_notify_complete' 	=> 0,			// NEVER notify when this email sent!!!!!
 				'mail_body' 			=> $message,
-				'template'				=> 'notify'
+				'template'				=> 'notify',
+				'mail_send_style'       => 'notify'
 			);
+
+			if(!empty($media) && is_array($media))
+			{
+				foreach($media as $k=>$v)
+				{
+					$mailData['mail_media'][$k] = array('path'=>$v);
+				}
+			}
 			
-			$result = $mailer->sendEmails('NOTIFY_TEMPLATE', $mailData, $recipients);
+			$result = $mailer->sendEmails('notify', $mailData, $recipients);
 			e107::getLog()->e_log_event(10,-1,'NOTIFY',$subject,$message,FALSE,LOG_TO_ROLLING);
 		}
 		else
@@ -332,6 +366,33 @@ class notify
 	{
 		$message = '<b>'.$data['upload_name'].'</b><br /><br />'.$data['upload_description'].'<br /><br />'.$data['upload_size'].'<br /><br />'.$data['upload_user'];
 		$this->send('fileupload', $data['upload_name'], $message);
+	}
+
+
+
+	function notify_admin_news_created($data)
+	{
+		$this->notify_newspost($data);
+	}
+
+
+	function notify_admin_news_subscribers($data)
+	{
+		$tp = e107::getParser();
+		$url = e107::getUrl()->create('news/view/item', $data,'full=1');
+		$message = "<b><a href='".$url."'>".$tp->toHtml($data['news_title'])."</a></b>";
+		$img = explode(",",$data['news_thumbnail']);
+
+
+		if (vartrue($data['news_summary'])){ $message .= '<br /><br />'.$tp->toEmail($data['news_summary']);    }
+
+		$message .= "<a href='".$url."'>View now</a>";
+
+		$this->send('admin_news_updated', $data['news_title'], $message, $img);
+
+		print_a($message);
+		return $message;
+
 	}
 
 

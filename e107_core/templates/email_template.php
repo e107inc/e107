@@ -84,73 +84,6 @@ $EMAIL_OVERRIDES = array(
 );
 */
 
-// Not used in signup email
-/*
-$EMAIL_HEADER = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
-<html xmlns='http://www.w3.org/1999/xhtml' >
-<head>
-<meta http-equiv='content-type' content='text/html; charset=utf-8' />
-{STYLESHEET}
-</head>
-<body>
-<div style='padding:10px'>
-";
-
-
-$EMAIL_BODY = 'Software malfunction - no email body text specified for template';		// Help debug
-
-// Not used in signup email
-$EMAIL_FOOTER = "
-<br /><br />
-{SITENAME=link}
-</div>
-</body>
-</html>";
-
-
-$EMAIL_PLAINTEXT = '';
-*/
-
-
-
-//-------------------------------------------------------------
-//		'SIGNUP' TEMPLATE
-//-------------------------------------------------------------
-//@Deprecated 
-/*
-$SIGNUPEMAIL_TEMPLATE = "
-<div style='padding:10px'>
-<div style='text-align:left; width:90%'>
-".LAN_EMAIL_01." {USERNAME},<br />
-<br />".
-LAN_SIGNUP_97." {SITENAME}<br />
-".LAN_SIGNUP_21."<br />
-<br />
-{ACTIVATION_LINK}<br />
-<br />
-".LAN_SIGNUP_59."<br />
-<br />
-".LAN_SIGNUP_18."<br />
-<br />
-".LAN_LOGINNAME.": <b> {LOGINNAME} </b><br />
-".LAN_PASSWORD.": <b> {PASSWORD} </b><br />
-<br />
-".LAN_EMAIL_04."<br />
-".LAN_EMAIL_05."<br />
-<br />
-".LAN_EMAIL_06."<br />
-<br />
-{SITENAME}<br />
-{SITEURL}
-<br /><br />".($includeSiteButton ? "<a href='".SITEURL."' title=''><img src='".e_IMAGE_ABS.str_replace('{e_IMAGE}', '', $includeSiteButton)."' alt='' /></a>" : '')."
-</div>
-</div>
-";
-*/
-
-
-// ----------------------- Everything above this line is deprecated  ------------------------------- // 
-	
 
 /** Standardized v2 template rewrite 
  * 
@@ -174,6 +107,7 @@ $EMAIL_TEMPLATE['default']['header']		= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHT
 													 div#body { padding:10px; width: 93%; max-width:800px; background-color: #FFFFFF; border-radius: 5px; font-family: helvetica,arial }
 													.video-thumbnail { max-width: 400px }
 													.media img { max-width:600px }
+													.unsubscribe { font-size:11px; color:#aaaaaa; margin-top:20px; padding:20px 0; border-top:solid 1px #e5e5e5; }
 												</style>
 												</head>
 												
@@ -260,9 +194,30 @@ $EMAIL_TEMPLATE['quickadduser']['footer']		= $EMAIL_TEMPLATE['default']['footer'
 // ------- Notify (@see admin-> notify) 
 
 $EMAIL_TEMPLATE['notify']['subject']			= '{SITENAME}: {SUBJECT} ';
-$EMAIL_TEMPLATE['notify']['header']				= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 	
-$EMAIL_TEMPLATE['notify']['body']				= $EMAIL_TEMPLATE['default']['body']; // will use default header above. 	
-$EMAIL_TEMPLATE['notify']['footer']				= $EMAIL_TEMPLATE['default']['footer']; // will use default header above. 	
+$EMAIL_TEMPLATE['notify']['header']		        = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
+												<html xmlns='http://www.w3.org/1999/xhtml' >
+												<head>
+												<meta http-equiv='content-type' content='text/html; charset=utf-8' />
+												<style type='text/css'>
+													body { padding:10px; background-color: #E1E1E1 }
+													 div#body { padding:10px; width: 93%; max-width:800px; background-color: #FFFFFF; border-radius: 5px; font-family: helvetica,arial }
+													.video-thumbnail { max-width: 400px }
+													.media img { max-width:200px;  }
+													td.body { padding:5px; vertical-align: top }
+													.unsubscribe { font-size:11px; color:#aaaaaa; margin-top:20px; padding:20px 0; border-top:solid 1px #e5e5e5; }
+												</style>
+												</head>
+
+												<body>
+												<div id='body'>
+												";
+$EMAIL_TEMPLATE['notify']['body']			    = "<table><tr><td>{MEDIA1}</td><td class='body'>{BODY}</td></tr></table>";
+$EMAIL_TEMPLATE['notify']['footer']		        = "<br /><br />
+												{SITENAME=link}
+												<div class='unsubscribe'>{UNSUBSCRIBE_MESSAGE}</div>
+												</div>
+												</body>
+												</html>";
 
 
 // ------ User-Specific Templates 

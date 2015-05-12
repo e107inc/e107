@@ -527,6 +527,7 @@ class e107Email extends PHPMailer
 	 */
 	public function makeBody($message,$want_HTML = 1, $add_HTML_header = FALSE)
 	{
+
 		switch (varset($this->general_opts['textonly'],'off'))
 		{
 		  case 'pref' :		// Disable HTML as default
@@ -541,6 +542,8 @@ class e107Email extends PHPMailer
 		
 		if ($want_HTML !== FALSE)
 		{
+			$message = e107::getParser()->toHtml("[html]".$message."[/html]",true);
+
 			if ($this->debug) echo "Generating multipart email<br />";
 			if ($add_HTML_header)
 			{
