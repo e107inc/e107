@@ -15,20 +15,26 @@ class unsubscribe
 	{
 		$mes = e107::getMessage();
 		$frm = e107::getForm();
+		$tp = e107::getParser();
 		
 	//	$this->simulation();
 		
 		$mailoutPlugins = e107::getConfig()->get('e_mailout_list');
 		
-		if(!vartrue($_GET['id']))
+		if(empty($_GET['id']))
 		{
 			return;	
 		}
 		
 		$tmp = base64_decode($_GET['id']);
-		
+
 		parse_str($tmp,$data);
-		
+
+		$data['plugin'] = $tp->filter($data['plugin'],'str');
+		$data['email'] = $tp->filter($data['email'],'email');
+
+
+
 		e107::getMessage()->addDebug(print_a($data,true));
 		
 		$plugin = vartrue($data['plugin'],false);
@@ -40,28 +46,39 @@ class unsubscribe
 			return;
 		}	
 
-		$ml = e107::getAddon($plugin,'e_mailout');
-		
+		$ml = e107::getAddon($plugin, 'e_mailout');
+
+		if(!empty($data['userclass'])) // userclass unsubscribe.
+		{
+			$data['userclass'] = intval($data['userclass']);
+			$listName = e107::getUserClass()->getName($data['userclass']);
+		}
+		else
+		{
+			$listName = $ml->mailerName;
+		}
+
 		if(vartrue($_POST['remove']) && !empty($data))
 		{
 			if($ml->unsubscribe('process',$data)!=false)
 			{
-				$text = "<p><b>".$data['email']."</b> has been removed from ".$ml->mailerName.".</p>";
+				$text = "<p><b>".$data['email']."</b> has been removed from ".$listName.".</p>";
 				$mes->addSuccess($text);
 			}
 			else
 			{
-				$text = "<p>There was a problem when attempting to remove <b>".$data['email']."</b> from ".$ml->mailerName.".</p>";
+				$text = "<p>There was a problem when attempting to remove <b>".$data['email']."</b> from ".$listName.".</p>";
 				$mes->addError($text);	
 			}
 			
 			echo "<div class='container'>".$mes->render()."</div>";
 			return;			
 		}
-		
+
+
 		if($ml->unsubscribe('check',$data) != false)
 		{
-			$text = "<p>We are very sorry for the inconvenience. <br />Please click the button below to remove <b>".$data['email']."</b> from the ".$ml->mailerName.".</p>";
+			$text = "<p>We are very sorry for the inconvenience. <br />Please click the button below to remove <b>".$data['email']."</b> from <i>".$listName."</i>.</p>";
 			$text .= $frm->open('unsub','post',e_REQUEST_URI);
 			$text .= $frm->button('remove','Remove ','submit');
 			$text .= $frm->close();
