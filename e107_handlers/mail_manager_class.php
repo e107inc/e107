@@ -154,6 +154,7 @@ class e107MailManager
 		'mail_content' => array(
 			'mail_source_id' 	=> 'int',
 			'mail_content_status' => 'int',
+			'mail_total_count' 	=> 'int',
 			'mail_togo_count' 	=> 'int',
 			'mail_sent_count' 	=> 'int',
 			'mail_fail_count' 	=> 'int',
@@ -170,7 +171,8 @@ class e107MailManager
 			'mail_subject' 		=> 'todb',
 			'mail_body' 		=> 'todb',
 			'mail_body_templated' => 'todb',
-			'mail_other' 		=> 'string'			// Don't want entities here!
+			'mail_other' 		=> 'string',		// Don't want entities here!
+			'mail_media'        => 'string'
 		)
 	);
 	
@@ -276,6 +278,12 @@ class e107MailManager
 		}
 
 		$res['mail_other'] = e107::serialize($res1,false);	// Ready to write to DB
+
+		if (!empty($res['mail_media']))
+		{
+			$res['mail_media'] = e107::serialize($res['mail_media']);
+		}
+
 		return $res;
 	}
 
@@ -1808,7 +1816,10 @@ class e107MailManager
 
 		// To many recipients to send at once - add to the emailing queue
 		// @TODO - handle any other relevant $extra fields
+		$emailData['mail_total_count'] = count($recipientData);
+
 		$result = $this->saveEmail($emailData, TRUE);
+
 		if ($result === FALSE)
 		{
 			// TODO: Handle error
