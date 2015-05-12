@@ -142,7 +142,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 		public function afterCreate($new_data, $old_data, $id)
 		{
-			// do something
+			e107::getUserClass()->clearCache();
 		}
 
 		public function beforeUpdate($new_data, $old_data, $id)
@@ -152,8 +152,14 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 		public function afterUpdate($new_data, $old_data, $id)
 		{
-			// e107::getCache()->clear("wmessage");
+			e107::getUserClass()->clearCache();
 		}
+
+		public function afterDelete($data,$id)
+		{
+			e107::getUserClass()->clearCache();
+		}
+
 
 		public function onCreateError($new_data, $old_data)
 		{
@@ -172,7 +178,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 			$e_userclass->calc_tree();
 			$text = "<div id='userclass-tree-structure'>".$e_userclass->show_graphical_tree()."</div>";
 
-			return array('caption'=>'Class Structure', 'text' => $text);
+			return array('caption'=>'Class Structure', 'text' => $text); //TODO LAN
 
 			// $text .= $e_userclass->show_graphical_tree();
 		}
@@ -326,7 +332,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 			foreach ($irc as $i)
 			{
-				if (trim($i)) $icn[] = e107::getUserClass()->uc_get_classname($i);
+				if (trim($i)) $icn[] = e107::getUserClass()->getName($i);
 			}
 
 			$class_text = $frm->userclass('init_classes',$initial_classes, 'checkbox', 'classes,force');

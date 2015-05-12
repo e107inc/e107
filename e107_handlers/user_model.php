@@ -991,6 +991,69 @@ class e_user_model extends e_admin_model
 			 $this->_extended_model = null;
 		}
 	}
+
+
+	/**
+	 * Add userclass to user and save.
+	 * @param null $userClassId
+	 * @return bool
+	 */
+	public function addClass($userClassId=null)
+	{
+		if(empty($userClassId))
+		{
+			return false;
+		}
+
+		$curClasses = explode(",", $this->getData('user_class'));
+		$curClasses[] = $userClassId;
+		$curClasses = array_unique($curClasses);
+
+		$insert = implode(",", $curClasses);
+
+		//FIXME - @SecretR - I'm missing something here with setCore() etc.
+	//	$this->setCore('user_class',$insert );
+	//	$this->saveDebug(false);
+
+		$uid = $this->getData('user_id');
+
+		return e107::getDb()->update('user',"user_class='".$insert."' WHERE user_id = ".$uid." LIMIT 1");
+
+	}
+
+
+	/**
+	 * Remove a userclass from the user.
+	 * @param null $userClassId
+	 * @return bool
+	 */
+	public function removeClass($userClassId=null)
+	{
+		if(empty($userClassId))
+		{
+			return false;
+		}
+
+		$curClasses = explode(",", $this->getData('user_class'));
+
+		foreach($curClasses as $k=>$v)
+		{
+			if($v == $userClassId)
+			{
+				unset($curClasses[$k]);
+			}
+		}
+
+		$uid = $this->getData('user_id');
+
+		$insert = implode(",", $curClasses);
+
+		return e107::getDb()->update('user',"user_class='".$insert."' WHERE user_id = ".$uid." LIMIT 1");
+
+
+	}
+
+
 }
 
 // TODO - add some more useful methods, sc_* methods support

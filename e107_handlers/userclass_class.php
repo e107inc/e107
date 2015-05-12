@@ -864,7 +864,7 @@ class user_class
 	 *	@param integer $id - class number. A negative number indicates 'not a member of...'
 	 *	@return string class name
 	 */
-	public function uc_get_classname($id)
+	public function getName($id)
 	{
 		$cn = abs($id);
 		$ucString = 'Class:'.$id;			// Debugging aid - this should be overridden
@@ -889,14 +889,17 @@ class user_class
 
 
 
+
 	/**
 	 *	Return class description for given class ID
 	 *	@param integer $id - class number. Must be >= 0
 	 *	@return string class description
 	 */
-	public function uc_get_classdescription($id)
+	public function getDescription($id)
 	{
-		if (isset($this->class_tree[$id]))
+		$id = intval($id);
+
+		if(isset($this->class_tree[$id]))
 		{
 			return $this->class_tree[$id]['userclass_description'];
 		}
@@ -905,6 +908,33 @@ class user_class
 			return $this->fixed_classes[$id];	// Name and description the same for fixed classes
 		}
 		return '';
+	}
+
+
+
+	/**
+	 * BC Alias. of getName();
+	 * @deprecated
+	 * @param $id
+	 * @return string
+	 */
+	public function uc_get_classname($id)
+	{
+		return $this->getName($id);
+	}
+
+
+
+
+	/**
+	 * BC Alias of getDescription
+	 * @deprecated
+	 * @param $id
+	 * @return mixed
+	 */
+	public function uc_get_classdescription($id)
+	{
+		return $this->getDescription($id);
 	}
 
 
@@ -1030,6 +1060,16 @@ class user_class
 			}
 		}
 		return $ret;
+	}
+
+
+	/**
+	 *	Clear user class cache
+	 *	@return none
+	 */
+	public function clearCache()
+	{
+		e107::getCache()->clear_sys(UC_CACHE_TAG);
 	}
 }
 
@@ -1881,8 +1921,7 @@ class user_class_admin extends user_class
 	 */
 	public function clearCache()
 	{
-		$e107 = e107::getInstance();
-		$e107->ecache->clear_sys(UC_CACHE_TAG);
+		e107::getCache()->clear_sys(UC_CACHE_TAG);
 	}
 }
 

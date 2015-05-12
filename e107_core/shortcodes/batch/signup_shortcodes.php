@@ -313,7 +313,7 @@ class signup_shortcodes extends e_shortcode
 		  }*/
 
 		  $ret = $USERCLASS_SUBSCRIBE_START;
-		  $ret .= $e_userclass->vetted_tree('class',array($this,show_signup_class),varset($signupData['user_class'],''),'editable, no-excludes');
+		  $ret .= $e_userclass->vetted_tree('class',array($this,'show_signup_class'),varset($signupData['user_class'],''),'editable, no-excludes');
 			$ret .= $USERCLASS_SUBSCRIBE_END;
 			return $ret;
 		}
@@ -321,12 +321,43 @@ class signup_shortcodes extends e_shortcode
 
 	function show_signup_class($treename, $classnum, $current_value, $nest_level)
 	{
-		global $USERCLASS_SUBSCRIBE_ROW, $e_userclass, $tp;
+		$tp = e107::getParser();
+		$uc = e107::getUserClass();
+		$frm = e107::getForm();
+
+		if(deftrue('BOOTSTRAP'))
+		{
+
+			$text   = "<div class='checkbox'>";
+			$label  = $tp->toHTML($uc->getName($classnum),false, 'defs');
+			$diz    = $tp->toHTML($uc->getDescription($classnum),false,'defs');
+			$text   .= $frm->checkbox('class[]', $classnum, $current_value, array('label'=>$label,'title'=> $diz, 'class'=>'e-tip'));
+
+			$text .= "</div>";
+
+			return $text;
+		}
+
+
+		global $USERCLASS_SUBSCRIBE_ROW;
+
+
 		$tmp = explode(',',$current_value);
-		$search = array('{USERCLASS_ID}', '{USERCLASS_NAME}', '{USERCLASS_DESCRIPTION}', '{USERCLASS_INDENT}', '{USERCLASS_CHECKED}');
-		$replace = array($classnum, $tp->toHTML($e_userclass->uc_get_classname($classnum), FALSE, 'defs'), 
-						$tp->toHTML($e_userclass->uc_get_classdescription($classnum), FALSE, 'defs'), " style='text-indent:".(1.2*$nest_level)."em'",
-						( in_array($classnum, $tmp) ? " checked='checked'" : ''));
+
+		$shortcodes = array(
+			'USERCLASS_ID'          => $classnum,
+			'USERCLASS_NAME'        => $tp->toHTML($uc->getName($classnum),false, 'defs'),
+			'USERCLASS_DESCRIPTION' => $tp->toHTML($uc->getDescription($classnum),false,'defs'),
+			'USERCLASS_INDENT'      => " style='text-indent:".(1.2*$nest_level)."em'",
+			'USERCLASS_CHECKED'     => (in_array($classnum, $tmp) ? " checked='checked'" : '')
+		);
+
+
+
+
+
+		return $tp->simpleParse($USERCLASS_SUBSCRIBE_ROW, $shortcodes);
+
 		return str_replace($search, $replace, $USERCLASS_SUBSCRIBE_ROW);
 	}
 	
