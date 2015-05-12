@@ -35,14 +35,14 @@ Allows admins to send mail to those subscribed to one or more newsletters
 
 class user_mailout
 {
-	protected $mailCount = 0;
-	protected $mailRead = 0;
+//	protected $mailCount = 0;
+//	protected $mailRead = 0;
 	//public $mailerSource = 'newsletter';			// Plugin name (core mailer is special case) Must be directory for this file
 	public $mailerName      = LAN_PLUGIN_NEWSLETTER_NAME;					// Text to identify the source of selector (displayed on left of admin page)
 	public $mailerEnabled   = TRUE;					// Mandatory - set to FALSE to disable this plugin (e.g. due to permissions restrictions)
-	private $selectorActive = FALSE;				// Set TRUE if we've got a valid selector to start returning entries
-	private	$targets = array();						// Used to store potential recipients
-	private $ourDB;
+//	private $selectorActive = FALSE;				// Set TRUE if we've got a valid selector to start returning entries
+//	private	$targets = array();						// Used to store potential recipients
+//	private $ourDB;
 
 
 	// Constructor
@@ -71,20 +71,20 @@ class user_mailout
 	{
 		if($mode == 'check') // check that a matching email,id,creation-date exists.
 		{
-			return e107::getDb()->select('user','*', 'user_class!="" AND user_id='.intval($data['id'])." AND user_join=".intval($data['date'])." AND user_email=\"".$data['email']."\"", true);
+			$ucl = intval($data['userclass']);
+
+			return e107::getDb()->select('user','*', 'FIND_IN_SET('.$ucl.',user_class) AND user_id='.intval($data['id'])." AND user_join=".intval($data['date'])." AND user_email=\"".$data['email']."\"");
 		}
 
-		print_a($data);
+	//	print_a($data);
 
 		if($mode == 'process') // Update record. Return true on success, and false on error.
 		{
-			$update = array(
-				'cust_subscribed'	=> 0,
-				'cust_unsubscribed'	=> time(),
-				'WHERE'				=> "user_id=".intval($data['id'])." AND cust_datestamp=".intval($data['date'])." AND cust_email=\"".$data['email']."\""
-			);
+			$uid = intval($data['id']);
+			$ucl = intval($data['userclass']);
 
-		//	return e107::getDb()->update('user',$update);
+			return e107::getSystemUser($uid)->removeClass($ucl); // best way to remove userclass from user.
+
 		}
 
 	}

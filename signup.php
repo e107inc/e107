@@ -832,92 +832,12 @@ function render_email($userInfo, $preview = FALSE)
 		$userInfo['user_website'] = "www.test-site.com";		// This may not be defined
 		$userInfo['user_id'] = 0;
 		$userInfo['user_sess'] = "1234567890ABCDEFGHIJKLMNOP";
-		$userInfo['user_email'] = 'cameron@teslapower.solar';
 		$userInfo['activation_url'] = 'http://whereever.to.activate.com/';
 	}
 	
 	return  e107::getSystemUser($userInfo['user_id'], false)->renderEmail('signup', $userInfo);
 	
-	
-	
-	/*
-	
-	global $pref,$SIGNUPEMAIL_LINKSTYLE,$SIGNUPEMAIL_SUBJECT,$SIGNUPEMAIL_TEMPLATE;
-	 * 
-	define('RETURNADDRESS', (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$userInfo['user_id'].".".$userInfo['user_sess'] : SITEURL."/signup.php?activate.".$userInfo['user_id'].".".$userInfo['user_sess'].".".e_LAN));
-	$pass_show = ($pref['user_reg_secureveri'])? '*******' : $userInfo['user_password'];
 
-	if (file_exists(THEME.'email_template.php'))
-	{
-		require_once(THEME.'email_template.php');
-	}
-	else
-	{
-		require_once(e_CORE.'templates/email_template.php');
-	}
-
-	$ret['mail_recipient_id'] = $userInfo['user_id'];
-	if (vartrue($SIGNUPEMAIL_CC)) { $ret['mail_copy_to'] = $SIGNUPEMAIL_CC; }
-	if (vartrue($SIGNUPEMAIL_BCC)) { $ret['mail_bcopy_to'] = $SIGNUPEMAIL_BCC; }
-	if (vartrue($SIGNUPEMAIL_ATTACHMENTS)) { $ret['mail_attach'] = $SIGNUPEMAIL_ATTACHMENTS; }
-
-	$style = ($SIGNUPEMAIL_LINKSTYLE) ? "style='{$SIGNUPEMAIL_LINKSTYLE}'" : "";
-
-	$search[0] = '{LOGINNAME}';
-	$replace[0] = intval($pref['allowEmailLogin']) === 0 ? $userInfo['user_loginname'] : $userInfo['user_email'];
-
-	$search[1] = '{PASSWORD}';
-	$replace[1] = $pass_show;
-
-	$search[2] = '{ACTIVATION_LINK}';
-	$replace[2] = "<a href='".RETURNADDRESS."' {$style}>".RETURNADDRESS."</a>";
-
-	$search[3] = '{SITENAME}';
-	$replace[3] = SITENAME;
-
-	$search[4] = '{SITEURL}';
-	$replace[4] = "<a href='".SITEURL."' {$style}>".SITEURL."</a>";
-
-	$search[5] = '{USERNAME}';
-	$replace[5] = $userInfo['user_name'];
-
-	$search[6] = '{USERURL}';
-	$replace[6] = vartrue($userInfo['user_website']) ? $userInfo['user_website'] : "";
-
-
-
-	$subject = str_replace($search,$replace,$SIGNUPEMAIL_SUBJECT);
-	$ret['mail_subject'] =  $subject;
-	$ret['send_html'] = TRUE;
-
-	$HEAD = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
-	$HEAD .= "<html xmlns='http://www.w3.org/1999/xhtml' >\n";
-	$HEAD .= "<head><meta http-equiv='content-type' content='text/html; charset=utf-8' />\n";
-	$HEAD .= ($SIGNUPEMAIL_USETHEME == 1) ? "<link rel=\"stylesheet\" href=\"".SITEURL.THEME."style.css\" type=\"text/css\" />\n" : "";
-    $HEAD .= ($preview) ? "<title>".LAN_SIGNUP_58."</title>\n" : "";
-	if($SIGNUPEMAIL_USETHEME == 2)
-	{
-		$CSS = file_get_contents(THEME."style.css");
-		$HEAD .= "<style>\n".$CSS."\n</style>";
-	}
-
-	$HEAD .= "</head>\n";
-	if(vartrue($SIGNUPEMAIL_BACKGROUNDIMAGE))
-	{
-		$HEAD .= "<body background=\"".$SIGNUPEMAIL_BACKGROUNDIMAGE."\" >\n";
-	}
-	else
-	{
-		$HEAD .= "<body>\n";
-	}
-	$FOOT = "\n</body>\n</html>\n";
-
-	$ret['mail_body'] = str_replace($search,$replace,$HEAD.$SIGNUPEMAIL_TEMPLATE.$FOOT);
-	$ret['preview'] = $ret['mail_body'];												// Non-standard field
-
-	return $ret;
-
-	 */
 }
 
 
