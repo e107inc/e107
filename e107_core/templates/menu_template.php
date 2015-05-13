@@ -9,12 +9,12 @@
 	$MENU_TEMPLATE['default']['end'] 					= ''; 
 
 	$MENU_TEMPLATE['button']['start'] 					= '<div class="cpage-menu">'; 
-	$MENU_TEMPLATE['button']['body'] 					= '{CMENUBODY}<br />{CPAGEBUTTON}'; 
+	$MENU_TEMPLATE['button']['body'] 					= '<div>{CMENUBODY}</div>{CPAGEBUTTON}';
 	$MENU_TEMPLATE['button']['end'] 					= '</div>'; 
 
 	### Additional control over image thumbnailing is possible via SETIMAGE e.g. {SETIMAGE: w=200&h=150&crop=1}
 	$MENU_TEMPLATE['buttom-image']['start'] 			= '<div class="cpage-menu">'; 
-	$MENU_TEMPLATE['buttom-image']['body'] 				= '{CMENUIMAGE}<br />{CPAGEBUTTON}'; 
+	$MENU_TEMPLATE['buttom-image']['body'] 				= '<div>{CMENUIMAGE}</div>{CPAGEBUTTON}';
 	$MENU_TEMPLATE['buttom-image']['end'] 				= '</div>'; 
 
 	$MENU_TEMPLATE['image-only']['start'] 					= ''; 

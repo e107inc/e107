@@ -258,7 +258,7 @@ class cpage_shortcodes extends e_shortcode
 			return $url;
 		}
 		
-		if(trim($this->var['page_text']) == '') // Hide the button when there is no page content. (avoids templates with and without buttons)
+		if(trim($this->var['page_text']) == '' && empty($this->var['menu_button_url'])) // Hide the button when there is no page content. (avoids templates with and without buttons)
 		{
 			return "<!-- Button Removed: No page text exists! -->";	
 		}
