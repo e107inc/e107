@@ -449,11 +449,11 @@ class signup
 
 		if(!$mailer->sendEmail(USEREMAIL, USERNAME, $eml, FALSE))
 		{
-			echo "<br /><br /><br /><br >&nbsp;&nbsp;>> ".LAN_SIGNUP_42; // there was a problem.
+			echo "<div class='alert alert-danger'>".LAN_SIGNUP_42."</div>"; // there was a problem.
 		}
 		else
 		{
-			echo "<br /><br />&nbsp;&nbsp;>> ".LAN_SIGNUP_43." [ ".USEREMAIL." ] - ".LAN_SIGNUP_45;
+			echo "<div class='alert alert-success'>".LAN_SIGNUP_43." [ ".USEREMAIL." ] - ".LAN_SIGNUP_45."</div>";
 		}
 
 	}
@@ -899,21 +899,23 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 				if(!vartrue($allData['data']['user_name'])) $allData['data']['user_name'] = $allData['data']['user_login'];
 				
 				// prefered way to send user emails
-				if(!getperms('0')) // Alow logged in main-admin to test signup procedure.
-				{
+			//	if(!getperms('0')) // Alow logged in main-admin to test signup procedure.
+			//	{
 					$sysuser = e107::getSystemUser(false, false);
 					$sysuser->setData($allData['data']);
-					$sysuser->setId($userid);
+					$sysuser->setId($nid);
 					$check = $sysuser->email('signup', array(
+						'user_id'       => $nid,
 						'user_password' => $savePassword, // for security reasons - password passed ONLY through options
 					));
-				}
-				else
+			//	}
+
+				if(getperms('0'))
 				{
-					$check = true;
 					e107::getMessage()->addDebug(print_a($allData,true));
 					e107::getMessage()->addDebug("Password: <b>".$savePassword."</b>");
 				}
+
 				
 				/*
                 $eml = render_email($allData['data']);
