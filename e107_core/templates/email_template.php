@@ -193,7 +193,7 @@ $EMAIL_TEMPLATE['quickadduser']['footer']		= $EMAIL_TEMPLATE['default']['footer'
 
 
 // ------- Notify (@see admin-> notify) 
-
+$EMAIL_TEMPLATE['notify']['name']	 		    = 'Notify';
 $EMAIL_TEMPLATE['notify']['subject']			= '{SITENAME}: {SUBJECT} ';
 $EMAIL_TEMPLATE['notify']['header']		        = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
 												<html xmlns='http://www.w3.org/1999/xhtml' >

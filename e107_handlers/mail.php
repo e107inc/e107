@@ -542,7 +542,7 @@ class e107Email extends PHPMailer
 		
 		if ($want_HTML !== FALSE)
 		{
-			$message = e107::getParser()->toHtml("[html]".$message."[/html]",true);
+			// $message = e107::getParser()->toHtml("[html]".$message."[/html]",true); // using toHtml will break media attachment links. (need to retain {e_XXXX )
 
 			if ($this->debug) echo "Generating multipart email<br />";
 			if ($add_HTML_header)
