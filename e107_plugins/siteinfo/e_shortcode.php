@@ -8,7 +8,7 @@ if (!defined('e107_INIT')) { exit; }
 
 class siteinfo_shortcodes // must match the folder name of the plugin. 
 {
-	function sc_sitebutton($parm='')
+	function sc_sitebutton($parm=null)
 	{
 		
 		if($_POST['sitebutton'] && $_POST['ajax_used'])
@@ -19,10 +19,18 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 		{
 			$path = (strstr(SITEBUTTON, 'http:') ? SITEBUTTON : e_IMAGE.SITEBUTTON);
 		}
-		
-		if($parm == 'email')
+
+		if($parm['type'] == 'email' || $parm == 'email') // (retain {}  constants )
 		{
+			$h = !empty($parm['h']) ? $parm['h'] : 100;
+
 			$path = e107::getConfig()->get('sitebutton');
+			$realPath = e107::getParser()->replaceConstants($path);
+
+			if($resized = e107::getMedia()->resizeImage($path, e_MEDIA."temp/".basename($realPath),'h='.$h))
+			{
+				$path = e107::getParser()->createConstants($resized);
+			}
 		}
 
 		if(!empty($path))

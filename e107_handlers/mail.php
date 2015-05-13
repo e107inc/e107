@@ -991,7 +991,7 @@ class e107Email extends PHPMailer
 			
 			if(!empty($eml['SMTPDebug']))
 			{
-				e107::getMessage()->addError($mail->ErrorInfo);
+				e107::getMessage()->addError($this->ErrorInfo);
 			}
 		}
 		
@@ -1060,15 +1060,17 @@ class e107Email extends PHPMailer
 			foreach($images[3] as $i => $url) 
 			{
 				
-			
-				
-				
 				// do not change urls for absolute images (thanks to corvuscorax)
 				if (!preg_match('#^[A-z]+://#',$url)) 
 				{
 					$url = $tp->replaceConstants($url);
-					
-					
+
+					// resize on the fly.
+					if($resized = e107::getMedia()->resizeImage($url, e_TEMP.basename($url),'w=800'))
+					{
+						$url = $resized;
+					}
+
 					$delim = $images[2][$i];			// Will be single or double quote
 					$filename = basename($url);
 					$directory = dirname($url);

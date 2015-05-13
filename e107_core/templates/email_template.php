@@ -108,7 +108,10 @@ $EMAIL_TEMPLATE['default']['header']		= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHT
 													.video-thumbnail { max-width: 400px }
 													.media img { max-width:600px }
 													.unsubscribe { font-size:11px; color:#aaaaaa; margin-top:20px; padding:20px 0; border-top:solid 1px #e5e5e5; }
-													.sitebutton img { max-height: 100px }
+													.sitebutton img { max-height: 100px; border-radius:4px }
+													h4.sitename  { font-size: 20px; margin-bottom:5px; margin-top:0; text-decoration:none }
+													h4.sitename a { text-decoration:none }
+													a.siteurl { font-size: 14px }
 												</style>
 												</head>
 												
@@ -118,8 +121,11 @@ $EMAIL_TEMPLATE['default']['header']		= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHT
 
 $EMAIL_TEMPLATE['default']['body']			= "{BODY}<br />{MEDIA1}{MEDIA2}{MEDIA3}{MEDIA4}{MEDIA5}";											
 
-$EMAIL_TEMPLATE['default']['footer']		= "<br /><br />
-												{SITENAME=link}
+$EMAIL_TEMPLATE['default']['footer']		= "<br /><br /><table cellspacing='4'>
+												<tr><td>{SITEBUTTON: type=email&h=60}</td>
+												<td><h4 class='sitename'>{SITENAME=link}</h4>
+												<a class='siteurl' href='{SITEURL}'>{SITEURL}</a></td></tr>
+												</table>
 												</div>
 												</body>
 												</html>";
@@ -158,10 +164,13 @@ $EMAIL_TEMPLATE['signup']['body'] 			= "
 												<br />
 												".LAN_EMAIL_06."<br />
 												<br />
-												{SITENAME=link}<br />
-												{SITEURL}
+
 											
-												<br /><br />{SITEBUTTON=email}
+												<br /><table cellspacing='4'>
+												<tr><td>{SITEBUTTON: type=email&h=60}</td>
+												<td><h4 class='sitename'>{SITENAME=link}</h4>
+												<a class='siteurl' href='{SITEURL}'>{SITEURL}</a></td></tr>
+												</table>
 												</div>
 												
 												";
@@ -206,6 +215,7 @@ $EMAIL_TEMPLATE['notify']['header']		        = "<!DOCTYPE html PUBLIC \"-//W3C//
 													.media img { max-width:200px; border-radius:5px  }
 													.text-right { text-align: right }
 													.text-muted { color: #cccccc;  }
+													.pull-left { float:left }
 													h1,h2,h3,h4 { margin-top:0; }
 													h2 small { font-size: 50%; padding-left:20px }
 													h2 { margin-bottom: 5px }
@@ -241,15 +251,17 @@ $EMAIL_TEMPLATE['notify']['header']		        = "<!DOCTYPE html PUBLIC \"-//W3C//
 
 													td { padding:5px; vertical-align: top }
 													td.body { width:80% }
-													table { width: 100%; margin-top:8px; border-top: 1px solid #cccccc; border-bottom: 1px solid #cccccc;padding:10px }
+													table { width: 100%; margin-top:8px; border-top: 1px solid #cccccc; border-bottom: 1px solid #cccccc;padding:10px 0 }
 													.unsubscribe { font-size:11px; color:#aaaaaa; margin-top:20px; padding:20px 0; border-top:solid 1px #e5e5e5; }
+													.sitebutton img { padding-right:5px; border-radius:3px }
+
 												</style>
 												</head>
 
 												<body>
 												<div id='body'>
 												";
-$EMAIL_TEMPLATE['notify']['body']			    = "<h2>{SITENAME=link} <small class='text-muted datestamp'>{DATE_LONG}</small></h2><table><tr><td class='media'>{MEDIA1}</td><td class='body'>{BODY}</td></tr></table>";
+$EMAIL_TEMPLATE['notify']['body']			    = "<h2><span class='pull-left'>{SITEBUTTON: type=email&h=30}</span> {SITENAME=link} <small class='text-muted datestamp'>{DATE_LONG}</small></h2><table><tr><td class='media'>{MEDIA1}</td><td class='body'>{BODY}</td></tr></table>";
 $EMAIL_TEMPLATE['notify']['footer']		        = "<br /><br />
 
 
