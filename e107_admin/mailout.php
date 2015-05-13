@@ -396,11 +396,11 @@ class mailout_main_ui extends e_admin_ui
 		
 		if($action !== 'main'  )
 		{
-			$this->listQry	= "SELECT * FROM #mail_content WHERE mail_content_status =  ".varset($qr[$action],20);
+			$this->listQry	= "SELECT * FROM `#mail_content` WHERE mail_content_status =  ".varset($qr[$action],20);
 		}
 		else
 		{
-			$this->listQry	= "SELECT * FROM #mail_content WHERE (mail_content_status =  ".MAIL_STATUS_TEMP ." OR mail_content_status = ".MAIL_STATUS_SAVED.")";	
+			$this->listQry	= "SELECT * FROM `#mail_content` WHERE (mail_content_status =  ".MAIL_STATUS_TEMP ." OR mail_content_status = ".MAIL_STATUS_SAVED.")";
 		}
 		
 
