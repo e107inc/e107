@@ -1532,6 +1532,7 @@ $text .= "
 
 // Signup options ===========================.
 
+$prefOptionPassword = (isset($pref['signup_option_password'])) ? $pref['signup_option_password'] : 2;
 
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-signup'>
@@ -1541,10 +1542,19 @@ $text .= "
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
-				<tbody>";
+				<tbody>
+				<tr>
+							<td><label for='signup-option-password'>Password</label></td>
+							<td>
+								".$frm->radio('signup_option_password', 0, !$prefOptionPassword, array('label' => CUSTSIG_12))."&nbsp;&nbsp;
+								".$frm->radio('signup_option_password', 1, ($prefOptionPassword == 1), array('label' => CUSTSIG_14, 'disabled'=>true))."&nbsp;&nbsp;
+								".$frm->radio('signup_option_password', 2, ($prefOptionPassword == 2), array('label' => CUSTSIG_15))."
+
+							</td>
+						</tr>";
 				
 		$signup_option_names = array(
-	//	"signup_option_loginname" 	=> "Login Name",
+		//	"signup_option_loginname" 	=> "Login Name",
 		"signup_option_email_confirm" 	=> CUSTSIG_21,
 		"signup_option_realname" 		=> CUSTSIG_2,
 		"signup_option_signature" 		=> CUSTSIG_6,
@@ -1553,6 +1563,7 @@ $text .= "
 		'signup_option_customtitle'		=> CUSTSIG_20,
 		'signup_option_hideemail'		=> CUSTSIG_22
 	);
+
 
 	foreach($signup_option_names as $value => $key)
 	{

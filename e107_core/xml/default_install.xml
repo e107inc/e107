@@ -54,7 +54,7 @@
 		<core name="disallowMultiLogin">0</core>
 		<core name="display_memory_usage">0</core>
 		<core name="displayname_class">255</core>
-		<core name="displayname_maxlength">15</core>
+		<core name="displayname_maxlength">20</core>
 		<core name="displayrendertime">0</core>
 		<core name="displaysql">0</core>
 		<core name="displaythemeinfo">1</core>
@@ -201,6 +201,7 @@
 		<core name="signcode">0</core>
 		<core name="signup_disallow_text"></core>
 		<core name="signup_maxip">3</core>
+        <core name="signup_option_password">2</core>
 		<core name="signup_option_class">0</core>
 		<core name="signup_option_customtitle">0</core>
 		<core name="signup_option_email_confirm">0</core>

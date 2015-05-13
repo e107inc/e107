@@ -30,28 +30,30 @@ class signup_shortcodes extends e_shortcode
 		else
 		{
 			return "
-		<form method='post' action='".e_SELF."?stage1' autocomplete='off'>\n
-		<div><br />
-		<input type='radio' name='coppa' value='0' checked='checked' /> ".LAN_NO."
-		<input type='radio' name='coppa' value='1' /> ".LAN_YES."<br />
-		<br />
-		<input class='btn btn-primary button' type='submit' name='newver' value=\"".LAN_CONTINUE."\" />
-		</div></form>
+			<form method='post' action='".e_SELF."?stage1' autocomplete='off'>\n
+			<div><br />
+			<input type='radio' name='coppa' value='0' checked='checked' /> ".LAN_NO."
+			<input type='radio' name='coppa' value='1' /> ".LAN_YES."<br />
+			<br />
+			<input class='btn btn-primary button' type='submit' name='newver' value=\"".LAN_CONTINUE."\" />
+			</div></form>
 		";
 		}
 	}
-	
+
+
+
 	function sc_signup_xup($param) // show it to those who were using xup
 	{
 		switch ($param) 
 		{
 			case 'login':
-				return $this->sc_signup_xup_login();	
+				return $this->sc_signup_xup_login($param);
 			break;
 			
 			case 'signup':
 			default:
-				return $this->sc_signup_xup_signup();	
+				return $this->sc_signup_xup_signup($param);
 			break;
 		}
 	}
@@ -173,31 +175,34 @@ class signup_shortcodes extends e_shortcode
 	
 	function sc_signup_displayname()
 	{
-		global $pref, $rs;
+		$pref = e107::getPref();
+
 		if (check_class($pref['displayname_class']))
 		{
-		  $dis_name_len = varset($pref['displayname_maxlength'],15);
-		  return e107::getForm()->text('username', ($_POST['username'] ? $_POST['username'] : $username),  $dis_name_len);
-		//  return $rs->form_text('username', 30, , $dis_name_len);
+			$dis_name_len = varset($pref['displayname_maxlength'],15);
+			return e107::getForm()->text('username', ($_POST['username'] ? $_POST['username'] : ''),  $dis_name_len);
+
 		}
 	}
 	
 	
 	function sc_signup_loginname()
 	{
-		global $rs, $pref;
+
+		$pref = e107::getPref();
 		if (vartrue($pref['predefinedLoginName']))
 		{
 		  return LAN_SIGNUP_67;
 		}
+
 	//	if ($pref['signup_option_loginname'])
 		{
 			$log_name_length = varset($pref['loginname_maxlength'],30);
 			$options = array('size'=>30,'required'=>1);
-			$options['title'] = str_replace("[x]",$log_name_length,LAN_SIGNUP_109); // Password must be at least 
+			$options['title'] = str_replace("[x]",$log_name_length,LAN_SIGNUP_109); // Password must be at least
+			$options['pattern'] = '[\S]*';
 	
-			return e107::getForm()->text('loginname', ($_POST['loginname'] ? $_POST['loginname'] : $loginname), $log_name_length, $options);
-			// return $rs->form_text("loginname", 30,  , $log_name_length);
+			return e107::getForm()->text('loginname', ($_POST['loginname'] ? $_POST['loginname'] : ''), $log_name_length, $options);
 		}
 	}
 	
@@ -210,21 +215,30 @@ class signup_shortcodes extends e_shortcode
 		$options 				= array('size'=>30);
 		$options['required'] 	= ($pref==2) ? 1 : 0;
 		$options['title']		= LAN_SIGNUP_110;
-		return e107::getForm()->text('realname', ($_POST['realname'] ? $_POST['realname'] : $realname), 100, $options);
-			
-		//return $rs->form_text("realname", 30,  ($_POST['realname'] ? $_POST['realname'] : $realname), 100);
+
+		return e107::getForm()->text('realname', ($_POST['realname'] ? $_POST['realname'] : ''), 100, $options);
+
 	}
 	
 	
 	function sc_signup_password1()
 	{
+
+		$pref = e107::getPref('signup_option_password', 2);
+
+		if($pref != 2)
+		{
+			return false;
+		}
+
 		$options = array('size'=>30,'class'=>'e-password tbox','required'=>1);
 	//	$options['title'] = 'Password must contain at least 6 characters, including UPPER/lowercase and numbers';
 		$len = vartrue(e107::getPref('signup_pass_len'),6);
-		$options['title'] = str_replace("[x]",$len,LAN_SIGNUP_107); // Password must be at least 
+		$options['title'] = str_replace("[x]", $len, LAN_SIGNUP_107); // Password must contain  at least
 	//	$options['pattern'] = '(?=.*\d)(?=.*[a-z])(?=.*[A-Z])\w{'.$len.',}'; // at least one number, one lowercase and uppercase. 
 		$options['required'] = true;
 		$options['pattern'] = '(?=^.{'.$len.',}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$';
+		$options['autocomplete'] = 'off';
 		
 	//	$options['pattern'] = '\w{'.$len.',}'; // word of minimum length 
 		
@@ -234,6 +248,14 @@ class signup_shortcodes extends e_shortcode
 	
 	function sc_signup_password2()
 	{
+
+		$pref = e107::getPref('signup_option_password', 2);
+
+		if($pref != 2)
+		{
+			return false;
+		}
+
 		return e107::getForm()->password('password2', '', 20, array('size'=>30,'class'=>'tbox','required'=>1));
 	}
 	
@@ -251,8 +273,9 @@ class signup_shortcodes extends e_shortcode
 	function sc_signup_email()
 	{	
 		$options = array('size'=>30,'required'=>1,'class'=>'tbox form-control input-text e-email');
-		$options['title'] = LAN_SIGNUP_108; // Must be a valid email address. 
-		$text = e107::getForm()->email('email',($_POST['email'] ? $_POST['email'] : $email),100,$options);
+		$options['title'] = LAN_SIGNUP_108; // Must be a valid email address.
+
+		$text = e107::getForm()->email('email',vartrue($_POST['email'], ''),100,$options);
 		$text .= "<div class='e-email-hint' style='display:none' data-hint='Did you mean <b>[x]</b>?'><!-- --></div>";
 		$text .= "<input type='text' name='email2' value='' style='display:none' />"; // spam-trap. 
 		return $text;
@@ -268,7 +291,7 @@ class signup_shortcodes extends e_shortcode
 		$options['required'] 	= ($pref==2) ? 1 : 0;
 		$options['class'] 		= 'tbox input-text e-email';
 		
-		return e107::getForm()->email('email_confirm',($_POST['email_confirm'] ? $_POST['email_confirm'] : $email_confirm),100,$options);
+		return e107::getForm()->email('email_confirm', vartrue($_POST['email_confirm']), 100, $options);
 
 	}
 	
@@ -278,6 +301,7 @@ class signup_shortcodes extends e_shortcode
 		global $rs;
 		$default_email_setting = 1;   // Gives option of turning into a pref later if wanted
 		$pref = e107::getPref('signup_option_hideemail');
+
 		if ($pref)
 		{
 			return $rs->form_radio("hideemail", 1, $default_email_setting==1)." ".LAN_YES."&nbsp;&nbsp;".$rs->form_radio("hideemail",  0,$default_email_setting==0)." ".LAN_NO;
@@ -289,6 +313,7 @@ class signup_shortcodes extends e_shortcode
 	{
 		global $pref, $e_userclass, $USERCLASS_SUBSCRIBE_START, $USERCLASS_SUBSCRIBE_END, $signupData;
 		$ret = "";
+
 		if($pref['signup_option_class'])
 		{
 		  if (!is_object($e_userclass))
@@ -352,13 +377,8 @@ class signup_shortcodes extends e_shortcode
 			'USERCLASS_CHECKED'     => (in_array($classnum, $tmp) ? " checked='checked'" : '')
 		);
 
-
-
-
-
 		return $tp->simpleParse($USERCLASS_SUBSCRIBE_ROW, $shortcodes);
 
-		return str_replace($search, $replace, $USERCLASS_SUBSCRIBE_ROW);
 	}
 	
 	
@@ -428,7 +448,7 @@ class signup_shortcodes extends e_shortcode
 		if($sigActive)
 		{
 			$frm = e107::getForm();
-			return $frm->bbarea('signature', $sig, 'signature','helpb', 'tiny');
+			return $frm->bbarea('signature', '', 'signature','helpb', 'tiny');
 		}
 	}
 	

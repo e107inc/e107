@@ -152,7 +152,7 @@ define("LAN_USERNAME", "Display Name");
 
 define("LAN_SIGNUP_107", "Password must be a minimum of [x] characters and include at least one UPPERCASE letter and a digit");
 define("LAN_SIGNUP_108", "Must be a valid email address");
-define("LAN_SIGNUP_109", "Is CaSe sensitive and must not contain spaces");//TODO check against regex requirements 
+define("LAN_SIGNUP_109", "Is CaSe sensitive and must not contain spaces.");//TODO check against regex requirements
 define("LAN_SIGNUP_110", "Your full name");
 define("LAN_SIGNUP_111", "Enter a URL to your image or choose an existing avatar.");
 define("LAN_SIGNUP_112", "You are currently logged in as Main Admin.");

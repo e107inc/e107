@@ -135,12 +135,12 @@ a.brand:hover img 			{
 
 } 
 
-img.image-selector							{ margin-bottom:0px; }
+img.image-selector							{ margin-bottom:0; }
       
 .nav-collapse 								{ margin-top:8px; }
-.dropdown-menu 								{ box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3); }
+.dropdown-menu 								{ box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3); }
 .dropdown-menu i,
-.dropdown-menu img 							{ padding: 0px 0px; margin-right: 10px; }
+.dropdown-menu img 							{ padding: 0 0; margin-right: 10px; }
 
 .nav ul li ul.dropdown-menu > li a img,
 .nav ul li ul.dropdown-menu > li a i		{
@@ -165,7 +165,7 @@ fieldset.hour legend, fieldset.minute legend {
 
 .bootstrap-select.btn-group, .bootstrap-select.btn-group[class*="span"] {
 
-    margin-bottom: 0px;
+    margin-bottom: 0;
 
 }
 
@@ -181,6 +181,8 @@ input:-moz-placeholder 						{ font-style:italic }
 
 
 /* input[type='radio'] 		{ vertical-align:top; } */
+
+.radio.disabled, .checkbox.disabled             {  opacity: .2; }
 
 label.legacy 						{ margin-left:5px;margin-right:10px;	display: inline-block;  }
 
@@ -234,17 +236,19 @@ img.S32:hover 				{}
 .adminlist td 								{ border-bottom:1px solid #ddd }
 */
 .adminlist th.last,
-.adminlist td.last 							{ border-right: 0px solid;}
-.adminlist tr.last td						{ border-bottom: 0px solid;}
+.adminlist td.last 							{ border-right: 0 solid;}
+.adminlist tr.last td						{ border-bottom: 0 solid;}
 
 .adminlist .col-selection-cont 				{ position: relative; float:right; }
-table.adminlist								{ margin-bottom: 0px }
+table.adminlist								{ margin-bottom: 0 }
 
-span.e-search input[type='text']				{ padding-left:15px; text-decoration: italic }
+span.e-search input[type='text']				{ padding-left:15px; font-style: italic }
+
 /*
 span.e-search i								{ margin-right:-20px; margin-left:5px; margin-top:-7px; z-index:100; position:relative; }
-*/
+
 // span.e-search								{ margin-bottom:-5px; margin-top:10px }
+*/
 /******** SyS Messages / Message text formatting */
 
 .s-message .s-message-title { height: 32px; background: 0 50% no-repeat; padding-left: 42px; line-height: 32px; }
