@@ -108,6 +108,7 @@ $EMAIL_TEMPLATE['default']['header']		= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHT
 													.video-thumbnail { max-width: 400px }
 													.media img { max-width:600px }
 													.unsubscribe { font-size:11px; color:#aaaaaa; margin-top:20px; padding:20px 0; border-top:solid 1px #e5e5e5; }
+													.sitebutton img { max-height: 100px }
 												</style>
 												</head>
 												
