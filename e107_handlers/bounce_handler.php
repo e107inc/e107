@@ -116,7 +116,19 @@ class e107Bounce
 		
 		if(!empty($message))
 		{
-			sendemail($pref['siteadminemail'], SITENAME." :: Bounce-Handler.", $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);	
+
+			$eml = array(
+				'subject' 		=> "Bounce-Handler : ",
+				'sender_email'	=> $pref['siteadminemail'],
+				'sender_name'	=> $pref['siteadmin'],
+			//	'replyto'		=> $email,
+				'html'			=> true,
+				'template'		=> 'default',
+				'body'			=> $message
+			);
+
+			e107::getEmail()->sendEmail($pref['siteadminemail'], SITENAME." :: Bounce-Handler.", $eml);
+		//	e107::getEmail()->sendEmail($pref['siteadminemail'], SITENAME." :: Bounce-Handler.", $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);
 		}
 		
 		return;		
@@ -205,25 +217,41 @@ class e107Bounce
 	 */
 	function mailRead($iKlimit = 4096)
     {
-
-		$sErrorSTDINFail = "Error - failed to read mail from STDIN!";
 		$fp = fopen("php://stdin", "r");
 
         if (!$fp)
 		{
-			mail("adminaddress@something.com","Bounce-Processing - Bounce-Processing",$sErrorSTDINFail,$headers);
+			$pref = e107::getPref();
+
+			$eml = array(
+				'subject' 		=> "Bounce-Handler-Error :",
+				'sender_email'	=> $pref['siteadminemail'],
+				'sender_name'	=> $pref['siteadmin'],
+				//	'replyto'		=> $email,
+				'html'			=> true,
+				'template'		=> 'default',
+				'body'			=>  "Error - failed to read mail from STDIN! : ".__FILE__." (".__LINE__.")"
+			);
+
+			e107::getEmail()->sendEmail($pref['siteadminemail'], SITENAME." :: Bounce-Handler.", $eml);
             exit();
         }
 
         // Create empty string for storing message
         $sEmail = "";
+        $i_limit = 0;
 
-        if ($iKlimit == -1) {
-            while (!feof($fp)) {
+        if ($iKlimit == -1)
+        {
+            while (!feof($fp))
+            {
                 $sEmail .= fread($fp, 1024);
             }
-        } else {
-            while (!feof($fp) && $i_limit < $iKlimit) {
+        }
+        else
+        {
+            while (!feof($fp) && $i_limit < $iKlimit)
+            {
                 $sEmail .= fread($fp, 1024);
                 $i_limit++;
             }
@@ -439,7 +467,7 @@ class BounceHandler{
 	// this is the most commonly used public method
 	// quick and dirty
 	// useage: $multiArray = Bouncehandler::get_the_facts($strEmail);
-	function get_the_facts($eml){
+	static function get_the_facts($eml){
 		// fluff up the email
 		$bounce = BounceHandler::init_bouncehandler($eml);
 		list($head, $body) = preg_split("/\r\n\r\n/", $bounce, 2);
@@ -659,7 +687,7 @@ class BounceHandler{
 	       && $head_hash['Content-type']['boundary']!=='';
 	}
 
-	function parse_head($headers){
+	static function parse_head($headers){
 	    if(!is_array($headers)) $headers = explode("\r\n", $headers);
 	    $hash = BounceHandler::standard_parser($headers);
 	    // get a little more complex

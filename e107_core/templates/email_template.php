@@ -212,7 +212,7 @@ $EMAIL_TEMPLATE['notify']['header']		        = "<!DOCTYPE html PUBLIC \"-//W3C//
 													h2 a { text-decoration: none; margin-bottom:5px }
 													h4 { margin-bottom: 3px }
 													a 			{ color: #428BCA }
-													.datestamp { float: right; padding-top:8px }
+													.datestamp { float: right; padding-top:10px }
 													.author { font-style: italic ; color: #cccccc}
 													.summary { padding:5px 0;  }
 													 .btn {
@@ -240,7 +240,7 @@ $EMAIL_TEMPLATE['notify']['header']		        = "<!DOCTYPE html PUBLIC \"-//W3C//
 													}
 
 													td { padding:5px; vertical-align: top }
-													td.media { width: 200px }
+													td.body { width:80% }
 													table { width: 100%; margin-top:8px; border-top: 1px solid #cccccc; border-bottom: 1px solid #cccccc;padding:10px }
 													.unsubscribe { font-size:11px; color:#aaaaaa; margin-top:20px; padding:20px 0; border-top:solid 1px #e5e5e5; }
 												</style>
@@ -249,7 +249,7 @@ $EMAIL_TEMPLATE['notify']['header']		        = "<!DOCTYPE html PUBLIC \"-//W3C//
 												<body>
 												<div id='body'>
 												";
-$EMAIL_TEMPLATE['notify']['body']			    = "<h2>{SITENAME=link} <small class='text-muted datestamp'>{DATE_LONG}</small></h2><table><tr><td class='media'>{MEDIA1}</td><td>{BODY}</td></tr></table>";
+$EMAIL_TEMPLATE['notify']['body']			    = "<h2>{SITENAME=link} <small class='text-muted datestamp'>{DATE_LONG}</small></h2><table><tr><td class='media'>{MEDIA1}</td><td class='body'>{BODY}</td></tr></table>";
 $EMAIL_TEMPLATE['notify']['footer']		        = "<br /><br />
 
 
