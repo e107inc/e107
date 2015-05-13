@@ -125,7 +125,7 @@ $EMAIL_TEMPLATE['default']['body']			= "{BODY}<br />{MEDIA1}{MEDIA2}{MEDIA3}{MED
 $EMAIL_TEMPLATE['default']['footer']		= "<br /><br /><table cellspacing='4'>
 												<tr><td>{SITEBUTTON: type=email&h=60}</td>
 												<td><h4 class='sitename'>{SITENAME=link}</h4>
-												<a class='siteurl' href='{SITEURL}'>{SITEURL}</a></td></tr>
+												{SITEURL}</td></tr>
 												</table>
 												</div>
 												</body>
@@ -170,7 +170,7 @@ $EMAIL_TEMPLATE['signup']['body'] 			= "
 												<br /><table cellspacing='4'>
 												<tr><td>{SITEBUTTON: type=email&h=60}</td>
 												<td><h4 class='sitename'>{SITENAME=link}</h4>
-												<a class='siteurl' href='{SITEURL}'>{SITEURL}</a></td></tr>
+												{SITEURL}</td></tr>
 												</table>
 												</div>
 												

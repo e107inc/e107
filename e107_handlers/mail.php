@@ -920,7 +920,7 @@ class e107Email extends PHPMailer
 	 *
 	 *	@return boolean|string - TRUE if success, error message if failure
 	 */
-	public function sendEmail($send_to, $to_name, $eml = '', $bulkmail = FALSE)
+	public function sendEmail($send_to, $to_name, $eml = '', $bulkmail = false)
 	{
 		if (count($eml))
 		{	
@@ -931,7 +931,7 @@ class e107Email extends PHPMailer
 			
 		}
 
-		if ($bulkmail && $this->localUseVerp && $this->save_bouncepath && (strpos($this->save_bouncepath,'@') !== FALSE))
+		if (($bulkmail == true) && $this->localUseVerp && $this->save_bouncepath && (strpos($this->save_bouncepath,'@') !== false))
 		{
 			// Format where sender is owner@origin, target is user@domain is: owner+user=domain@origin
 			list($our_sender,$our_domain) = explode('@', $this->save_bouncepath,2);
@@ -976,7 +976,7 @@ class e107Email extends PHPMailer
 
 		$this->TotalSent++;
 		
-		if (($this->pause_amount > 0) && ($this->SendCount >= $this->pause_amount))
+		if (($bulkmail == true) && ($this->pause_amount > 0) && ($this->SendCount >= $this->pause_amount))
 		{
 			if ($this->SMTPKeepAlive && ($this->Mailer == 'smtp')) $this->SmtpClose();
 			sleep($this->pause_time);

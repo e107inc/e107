@@ -1572,7 +1572,7 @@ class mailout_recipients_ui extends e_admin_ui
 		$this->mailManager = new e107MailManager;
 
 		$sql = e107::getDb();
-		$sql->gen("SELECT r.mail_detail_id,c.mail_title FROM #mail_recipients AS r LEFT JOIN #mail_content as c ON r.mail_detail_id = c.mail_source_id GROUP BY r.mail_detail_id");
+		$sql->gen("SELECT r.mail_detail_id,c.mail_title FROM `#mail_recipients` AS r LEFT JOIN `#mail_content` as c ON r.mail_detail_id = c.mail_source_id GROUP BY r.mail_detail_id");
 				
 		while($row = $sql->fetch())
 		{
