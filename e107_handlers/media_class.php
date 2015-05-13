@@ -1352,5 +1352,66 @@ class e_media
 				
 	}
 
-	
+
+	/**
+	 * Resize an image.
+	 * @param $src
+	 * @param $dest
+	 * @param string $opts
+	 * @return bool
+	 */
+	function resizeImage($src='',$dest='',$opts=null)
+	{
+		$pref = e107::getPref();
+		$tp = e107::getParser();
+
+		if(is_string($opts))
+		{
+			parse_str($opts,$opts);
+		}
+
+		$quality = vartrue($pref['thumbnail_quality'], 65);
+
+		$src = $tp->replaceConstants($src);
+		$dest =  $tp->replaceConstants($dest);
+
+		$maxWidth = varset($opts['w'], 800);
+		$maxHeight = varset($opts['h'], 800);
+
+		$destDir = dirname($dest);
+		$destFile = basename($dest);
+
+		$destFilePath = $destDir."/".varset($opts['prefix'],$maxWidth.'x'.$maxHeight).'_'.$destFile;
+
+		if(file_exists($destFilePath))
+		{
+			return $destFilePath;
+		}
+
+		@require(e_HANDLER.'phpthumb/ThumbLib.inc.php');
+		try
+		{
+			$thumb = PhpThumbFactory::create($src);
+			$thumb->setOptions(array('correctPermissions' => true, 'resizeUp' => false, 'jpegQuality' => $quality));
+			$thumb->resize($maxWidth, $maxHeight);
+			$thumb->save($destFilePath);
+			return $destFilePath;
+		}
+		catch (Exception $e)
+		{
+			$error =  $e->getMessage();
+echo $error;
+			e107::getMessage()->addDebug($error);
+			e107::getLog()->add("RESIZE ERROR",$error,E_LOG_INFORMATIVE,'RESIZE');
+			return false;
+		}
+
+
+
+	}
+
+
+
+
+
 }
