@@ -203,8 +203,45 @@ $EMAIL_TEMPLATE['notify']['header']		        = "<!DOCTYPE html PUBLIC \"-//W3C//
 													body { padding:10px; background-color: #E1E1E1 }
 													 div#body { padding:10px; width: 93%; max-width:800px; background-color: #FFFFFF; border-radius: 5px; font-family: helvetica,arial }
 													.video-thumbnail { max-width: 400px }
-													.media img { max-width:200px;  }
-													td.body { padding:5px; vertical-align: top }
+													.media img { max-width:200px; border-radius:5px  }
+													.text-right { text-align: right }
+													.text-muted { color: #cccccc;  }
+													h1,h2,h3,h4 { margin-top:0; }
+													h2 small { font-size: 50%; padding-left:20px }
+													h2 { margin-bottom: 5px }
+													h2 a { text-decoration: none; margin-bottom:5px }
+													h4 { margin-bottom: 3px }
+													a 			{ color: #428BCA }
+													.datestamp { float: right; padding-top:8px }
+													.author { font-style: italic ; color: #cccccc}
+													.summary { padding:5px 0;  }
+													 .btn {
+													    display: inline-block;
+													    padding: 6px 12px;
+													    margin-bottom: 0px;
+														margin-top:10px;
+													    font-size: 14px;
+													    font-weight: 400;
+													    line-height: 1.42857;
+													    text-align: center;
+													    white-space: nowrap;
+													    vertical-align: middle;
+													    cursor: pointer;
+													    -moz-user-select: none;
+													    background-image: none;
+													    border: 1px solid transparent;
+													    border-radius: 4px;
+														text-decoration: none;
+													}
+													 .btn-primary {
+													    color: #FFF;
+													    background-color: #428BCA;
+													    border-color: #357EBD;
+													}
+
+													td { padding:5px; vertical-align: top }
+													td.media { width: 200px }
+													table { width: 100%; margin-top:8px; border-top: 1px solid #cccccc; border-bottom: 1px solid #cccccc;padding:10px }
 													.unsubscribe { font-size:11px; color:#aaaaaa; margin-top:20px; padding:20px 0; border-top:solid 1px #e5e5e5; }
 												</style>
 												</head>
@@ -212,9 +249,10 @@ $EMAIL_TEMPLATE['notify']['header']		        = "<!DOCTYPE html PUBLIC \"-//W3C//
 												<body>
 												<div id='body'>
 												";
-$EMAIL_TEMPLATE['notify']['body']			    = "<table><tr><td>{MEDIA1}</td><td class='body'>{BODY}</td></tr></table>";
+$EMAIL_TEMPLATE['notify']['body']			    = "<h2>{SITENAME=link} <small class='text-muted datestamp'>{DATE_LONG}</small></h2><table><tr><td class='media'>{MEDIA1}</td><td>{BODY}</td></tr></table>";
 $EMAIL_TEMPLATE['notify']['footer']		        = "<br /><br />
-												{SITENAME=link}
+
+
 												<div class='unsubscribe'>{UNSUBSCRIBE_MESSAGE}</div>
 												</div>
 												</body>

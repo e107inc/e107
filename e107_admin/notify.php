@@ -36,6 +36,11 @@ $nc = new notify_config;
 $uc = new user_class;
 $mes = e107::getMessage();
 
+if(!empty($_GET['iframe']))
+{
+	define('e_IFRAME', true);
+}
+
 
 
 if (isset($_POST['update']))
@@ -228,7 +233,7 @@ class notify_config
 	
 	
 	
-		$text2 = $frm->open('scanform', 'post', e_SELF); // <form action='".e_SELF."?results' method='post' id='scanform'>
+		$text2 = $frm->open('scanform', 'post', e_REQUEST_URL); // <form action='".e_SELF."?results' method='post' id='scanform'>
 		$text2 .= $frm->tabs($tab); 
 		$text2 .= "<div class='buttons-bar center'>". $frm->admin_button('update', LAN_UPDATE,'update') . "</div>";
 		$text2 .= $frm->close(); 
@@ -405,11 +410,13 @@ class notify_config
 		{
 			$description = constant($description); 
 		}
-			
+
+
+		$highlight = varset($_GET['type']) == $id ? " class='text-warning'" : '';
 
 		$text = "
 			<tr>
-				<td title='".$id."'>".$description.":	</td>
+				<td title='".$id."'><span{$highlight}>".$description.":</span></td>
 				<td  class='form-inline nowrap'>
 				".$uc->uc_dropdown('event['.$id.'][class]', varset($this->notify_prefs['event'][$id]['class'], e_UC_NOBODY), "nobody,main,admin,member,classes,email","onchange=\"mail_field(this.value,'event_".$id."');\" ");
 
@@ -429,7 +436,7 @@ class notify_config
 		$text .= $frm->hidden("event[".$id."][include]", $include);
 		$text .= $frm->hidden("event[".$id."][legacy]", $legacy); // function or method 
 
-		if($this->notify_prefs['event'][$id]['class'] != e_UC_NOBODY)
+		if(isset($this->notify_prefs['event'][$id]['class']) && $this->notify_prefs['event'][$id]['class'] != e_UC_NOBODY)
 		{
 			$text .= $frm->button('test['.$id.']', $id, 'confirm', 'Test');
 		}

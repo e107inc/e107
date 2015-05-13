@@ -66,7 +66,7 @@ class e107_event
 				'admin_news_created'	=> NN_LAN_3,
 				'admin_news_updated'	=> NN_LAN_4,
 				'admin_news_deleted'	=> NN_LAN_5,
-				'admin_news_subscribers' => "Notification of News Subscribers", // TODO LAN
+				'admin_news_notify'     => "News notification triggered", // TODO LAN
 				'user_news_submit'		=> NN_LAN_2,
 
 			),
