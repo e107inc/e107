@@ -142,8 +142,13 @@ class notify
 			if (!$blockOriginator || ($this->notify_prefs['event'][$id]['email'] != USEREMAIL))
 			{
 				$recipients[] = array(
-								 'mail_recipient_email' => $this->notify_prefs['event'][$id]['email']
-								 );	
+					'mail_recipient_email' => $this->notify_prefs['event'][$id]['email'],
+					'mail_target_info'		=> array(
+						'SUBJECT'               => $subject,
+						'DATE_SHORT'            => $tp->toDate(time(),'short'),
+						'DATE_LONG'             => $tp->toDate(time(),'long'),
+					)
+				 );
 			}
 		}
 		elseif (is_numeric($notifyTarget))
