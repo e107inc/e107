@@ -24,10 +24,10 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 		{
 			$path = e107::getConfig()->get('sitebutton');
 		}
-		//TODO use CSS class?
+
 		if(!empty($path))
 		{
-			return '<a href="'.SITEURL.'"><img src="'.$path.'" alt="'.SITENAME.'" /></a>';
+			return '<a href="'.SITEURL.'" class="sitebutton"><img src="'.$path.'" alt="'.SITENAME.'" /></a>';
 		}
 	}
 
