@@ -1470,7 +1470,8 @@ class e_form
 	//	return print_a($options,true);
 		if($labelFound) // Bootstrap compatible markup
 		{
-			$text .= "<label class='radio inline'>";	
+			$dis = (!empty($options['disabled'])) ? " disabled" : "";
+			$text .= "<label class='radio inline{$dis}'>";
 			
 		}
 		

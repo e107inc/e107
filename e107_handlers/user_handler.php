@@ -330,38 +330,40 @@ class UserHandler
 	 *		# - an alpha character
 	 *		. - a numeric character
 	 *		* - an alphanumeric character
+	 *      ! - symbol character
+	 *      ? - alpha, numeric or symbol character.
 	 *		^ - next character from seed
 	 *		alphanumerics are included 'as is'
 	 *	@param int $seed - may be used with the random pattern generator
 	 *
 	 *	@return string - the required random string
 	 */
-	public function generateRandomString($pattern, $seed = '')
+	public function generateRandomString($pattern='', $seed = '')
 	{
 		if (empty($pattern))
+		{
 			$pattern = '##....';
+		}
 
 		$newname = '';
 
 		// Create alpha [A-Z][a-z]
-		$alpha = '';
-		for($i = 65; $i < 91; $i++)
-		{
-			$alpha .= chr($i).chr($i+32);
-		}
+		$alpha = 'AaBbCcDdEeFfGgHhIiJjKkLMmNnPpQqRrSsTtUuVvWwXxYyZz'; // O, o and l removed to avoid possible confusion with numbers.
 		$alphaLength = strlen($alpha) - 1;
 
 		// Create digit [0-9]
-		$digit = '';
-		for($i = 48; $i < 57; $i++)
-		{
-			$digit .= chr($i);
-		}
+		$digit = '0123456789';
 		$digitLength = strlen($digit) - 1;
 
 		// Create alpha numeric [A-Z][a-z]
 		$alphaNum = $alpha.$digit.chr(45).chr(95); // add support for - and _	
 		$alphaNumLength = strlen($alphaNum) - 1;
+
+		$symbols = "~!@#$%^*-+?;:"; // avoid < > and quotes.
+		$symbolsLength = strlen($symbols) - 1;
+
+		$alphaNumSymbol = $alphaNum.$symbols;
+		$alphaNumSymbolLength =  strlen($alphaNumSymbol) - 1;
 
 		// Next character of seed (if used)
 		$seed_ptr = 0;
@@ -370,7 +372,18 @@ class UserHandler
 			$c = $pattern[$i];
 			switch ($c)
 			{
-				// Alpha only (upper and lower case)
+				// Symbols only.
+				case '!':
+					$t = rand(0, $symbolsLength);
+					$newname .= $symbols[$t];
+					break;
+
+				// Alphanumeric + Symbols (most secure)
+				case '?':
+					$t = rand(0, $alphaNumSymbolLength);
+					$newname .= $alphaNumSymbol[$t];
+					break;
+
 				case '#' :
 					$t = rand(0, $alphaLength);
 					$newname .= $alpha[$t];
