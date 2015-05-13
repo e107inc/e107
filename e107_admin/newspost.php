@@ -376,14 +376,16 @@ class news_admin_ui extends e_admin_ui
 		'news_author'			=> array('title' => LAN_AUTHOR, 	'type' => 'method', 	'tab'=>0, 	'readParms'=>'idField=user_id&nameField=user_name', 'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 		'news_datestamp'		=> array('title' => LAN_NEWS_32, 	'type' => 'datestamp',  'tab'=>2,   'writeParms'=>'type=datetime', 'data' => 'int',   'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y', 'filter'=>true),
         'news_category'			=> array('title' => NWSLAN_6, 		'type' => 'dropdown',   'tab'=>0,	'data' => 'int', 'inline'=>true,	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'batch'=>true, 'filter'=>true),
-		'news_start'			=> array('title' => LAN_START, 	'type' => 'datestamp',  'tab'=>2,   'writeParms'=>'type=datetime',	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),
+		'news_start'			=> array('title' => LAN_START, 	    'type' => 'datestamp',  'tab'=>2,   'writeParms'=>'type=datetime',	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),
        	'news_end'				=> array('title' => LAN_END, 		'type' => 'datestamp',  'tab'=>2,  'writeParms'=>'type=datetime',	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),
         'news_class'			=> array('title' => LAN_VISIBILITY, 'type' => 'userclasses','tab'=>2,   'inline'=>true, 'width' => 'auto', 	'thclass' => '', 				'class' => null,  'batch'=>true, 'filter'=>true),
 		'news_render_type'		=> array('title' => LAN_TEMPLATE, 	'type' => 'dropdown',   'tab'=>0,   'data'=> 'str',		'inline'=>false, 'width' => 'auto', 	'thclass' => 'left', 			'class' => 'left', 		'nosort' => false, 'batch'=>true, 'filter'=>true),
 		'news_sticky'			=> array('title' => LAN_NEWS_28, 	'type' => 'boolean',    'tab'=>2,	'data' => 'int' , 'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false, 'batch'=>true, 'filter'=>true),
         'news_allow_comments' 	=> array('title' => NWSLAN_15, 		'type' => 'boolean',    'tab'=>2,	'writeParms'=>'inverse=1', 'data' => 'int', 'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false,'batch'=>true, 'filter'=>true,'readParms'=>'reverse=1','writeParms'=>'inverse=1'),
         'news_comment_total' 	=> array('title' => LAN_NEWS_60, 	'type' => 'number',     'tab'=>2,	'noedit'=>true, 'width' => '10%', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
-		'submitted_id'          => array('title' => LAN_NEWS_68, 'type' => 'hidden',    'data'=>false, 'writeParms'=>'show=1'),
+	//	admin_news_notify
+		'news_email_notify'     => array('title' => "Email notification", 'type' => 'checkbox',   'tab'=>2,  'data'=>false, 'writeParms'=>array('show'=>1), 'help'=>'Trigger an email notification when you submit this form.'),
+		'submitted_id'          => array('title' => LAN_NEWS_68, 'type' => 'hidden',  'tab'=>2,  'data'=>false, 'writeParms'=>'show=0'),
 		'options'				=> array('title' => LAN_OPTIONS, 	'type' => null, 		'width' => '10%', 	'thclass' => 'center last', 	'class' => 'center', 	'nosort' => true, 'forced' => TRUE)
 
 	);
@@ -457,6 +459,11 @@ class news_admin_ui extends e_admin_ui
 	public function afterCreate($new_data, $old_data, $id)
 	{
 
+		if(!empty($_POST['news_email_notify']))
+		{
+			$this->triggerNotify($new_data);
+		}
+
 		if(!empty($new_data['submitted_id']))
 		{
 			e107::getDb()->update('submitnews', "submitnews_auth = 1 WHERE submitnews_id = ".intval($new_data['submitted_id'])." LIMIT 1");
@@ -475,6 +482,14 @@ class news_admin_ui extends e_admin_ui
 
 	public function afterUpdate($new_data, $old_data, $id)
 	{
+
+	//	e107::getMessage()->addInfo(print_a($new_data,true));
+
+		if(!empty($_POST['news_email_notify']))
+		{
+			$this->triggerNotify($new_data);
+		}
+
 		$this->processPings();
 
 		e107::getEvent()->trigger('newsupd', $new_data);
@@ -488,6 +503,27 @@ class news_admin_ui extends e_admin_ui
 
 		$evdata = array('method'=>'update', 'table'=>'news', 'id'=>$id, 'plugin'=>'news', 'function'=>'submit_item');
 		e107::getMessage()->addInfo(e107::getEvent()->triggerHook($evdata));
+	}
+
+
+
+
+	// Trigger the news email notification trigger. (@see admin->notify )
+	private function triggerNotify($new_data)
+	{
+		$visibility = explode(",", $new_data['news_class']);
+
+		if(in_array(e_UC_PUBLIC, $visibility))
+		{
+			e107::getEvent()->trigger('admin_news_notify',$new_data);
+			e107::getMessage()->addSuccess("Email notification triggered");
+		}
+		else
+		{
+			e107::getMessage()->addWarning("News item visibility must include 'everyone' for email notifications to work.");
+		}
+
+
 	}
 
 
@@ -590,6 +626,11 @@ class news_admin_ui extends e_admin_ui
 		{
 			$this->saveSettings();
 		}
+
+
+
+
+		$this->fields['news_email_notify']['writeParms']['post'] = "<span class='radio inline'><a class='e-modal btn btn-mini btn-primary' data-modal-caption='".ADLAN_149."' href='notify.php?iframe=1&type=admin_news_notify#/tab-news-events'>".LAN_CONFIGURE."</a></span>";
 
 
 	//	e107::getMessage()->addDebug(print_a($_POST,true));

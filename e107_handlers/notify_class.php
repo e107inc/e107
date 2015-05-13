@@ -123,7 +123,7 @@ class notify
 		$tp = e107::getParser();
 		$sql = e107::getDb();
 
-		$subject = $tp->toEmail(SITENAME.': '.$subject);
+		$subject = $tp->toEmail($subject);
 		$message = $tp->replaceConstants($message, "full");
 	//	$message = $tp->toEmail($message);
 		$emailFilter = '';
@@ -181,7 +181,7 @@ class notify
 
 						$unsubscribe = array('date'=>$row['user_join'],'email'=>$row['user_email'],'id'=>$row['user_id'], 'plugin'=>'user', 'userclass'=>$notifyTarget);
 						$urlQuery = http_build_query($unsubscribe,null,'&');
-						$exclude  = array(e_UC_MEMBER,e_UC_ADMIN, e_UC_MAINADMIN); // no unsubscribe for these classes.
+						$exclude  = array(e_UC_MEMBER,e_UC_ADMIN, e_UC_MAINADMIN); // no unsubscribing from these classes.
 						$unsubUrl   = SITEURL."unsubscribe.php?id=".base64_encode($urlQuery);
 						$unsubMessage =  "This message was sent to ".$row['user_email'].". If you don't want to receive these emails in the future, please <a href='".$unsubUrl."'>unsubscribe</a>.";
 
@@ -191,13 +191,18 @@ class notify
 							'mail_recipient_name'   => $row['user_name'],		// Should this use realname?
 							'mail_recipient_email'  => $row['user_email'],
 							'mail_target_info'		=> array(
-								'USERID'		=> $row['user_id'],
-								'DISPLAYNAME' 	=> $row['user_name'],
-						//		'SIGNUP_LINK' 	=> '',
-								'USERNAME' 		=> $row['user_name'],
-								'USERLASTVISIT' => $row['user_lastvisit'],
-								'UNSUBSCRIBE'	=> (!in_array($notifyTarget, $exclude)) ? $unsubUrl : '',
-								'UNSUBSCRIBE_MESSAGE' => (!in_array($notifyTarget, $exclude)) ? $unsubMessage : ''
+								'USERID'		        => $row['user_id'],
+								'DISPLAYNAME' 	        => $row['user_name'],
+								'SUBJECT'               => $subject,
+								'USERNAME' 		        => $row['user_name'],
+								'USERLASTVISIT'         => $row['user_lastvisit'],
+								'UNSUBSCRIBE'	        => (!in_array($notifyTarget, $exclude)) ? $unsubUrl : '',
+								'UNSUBSCRIBE_MESSAGE'   => (!in_array($notifyTarget, $exclude)) ? $unsubMessage : '',
+								'USERCLASS'             => $notifyTarget,
+								'DATE_SHORT'            => $tp->toDate(time(),'short'),
+								'DATE_LONG'             => $tp->toDate(time(),'long'),
+
+
 							)
 						);
 					}
@@ -245,6 +250,7 @@ class notify
 			}
 			
 			$result = $mailer->sendEmails('notify', $mailData, $recipients);
+
 			e107::getLog()->e_log_event(10,-1,'NOTIFY',$subject,$message,FALSE,LOG_TO_ROLLING);
 		}
 		else
@@ -376,23 +382,34 @@ class notify
 	}
 
 
-	function notify_admin_news_subscribers($data)
+	function notify_admin_news_notify($data)
 	{
 		$tp = e107::getParser();
-		$url = e107::getUrl()->create('news/view/item', $data,'full=1');
-		$message = "<b><a href='".$url."'>".$tp->toHtml($data['news_title'])."</a></b>";
+		$sql = e107::getDb();
+
+		$author = $sql->retrieve('user','user_name','user_id = '.intval($data['news_author'])." LIMIT 1");
+
+
+		$template = "<h4><a href='{NEWS_URL}'>{NEWS_TITLE}</a></h4>
+					<div class='summary'>{NEWS_SUMMARY}</div>
+					<div class='author'>by {NEWS_AUTHOR}</div>
+					<div><a class='btn btn-primary' href='{NEWS_URL}'>View now</a></div>
+					";
+
+		$shortcodes = array(
+			'NEWS_URL'      => e107::getUrl()->create('news/view/item', $data,'full=1'),
+			'NEWS_TITLE'    => $tp->toHtml($data['news_title']),
+			'NEWS_SUMMARY'  => $tp->toEmail($data['news_summary']),
+			'NEWS_AUTHOR'   => $tp->toHtml($author)
+		);
+
 		$img = explode(",",$data['news_thumbnail']);
 
+		$message = $tp->simpleParse($template, $shortcodes);
 
-		if (vartrue($data['news_summary'])){ $message .= '<br /><br />'.$tp->toEmail($data['news_summary']);    }
+		$this->send('admin_news_notify', $data['news_title'], $message, $img);
 
-		$message .= "<a href='".$url."'>View now</a>";
-
-		$this->send('admin_news_updated', $data['news_title'], $message, $img);
-
-		print_a($message);
-		return $message;
-
+	//	print_a($message);
 	}
 
 
