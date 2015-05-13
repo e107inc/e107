@@ -833,7 +833,7 @@ class mailoutAdminClass extends e107MailManager
 		{
 			// Can be a template name now
 			$errList[] = LAN_MAILOUT_205;
-			break;
+		//	break;
 		}
 		else
 		{
@@ -914,7 +914,7 @@ class mailoutAdminClass extends e107MailManager
 						$text .= $this->getUserName($val);
 					break;
 					case 'sdatetime':
-						$text .= $gen->convert_date($val, 'short');
+						$text .= $tp->toDate($val, 'short');
 					break;
 					case 'trunc200':
 						
@@ -1244,6 +1244,8 @@ class mailoutAdminClass extends e107MailManager
 	{
 		$mes = e107::getMessage();
 		$ns = e107::getRender();
+		$frm = e107::getForm();
+
 
 		$mailData = $this->retrieveEmail($mailId);
 
@@ -1254,7 +1256,7 @@ class mailoutAdminClass extends e107MailManager
 			exit ;
 		}
 
-		$text .= "
+		$text = "
 			<form action='" . e_SELF . "?mode=saved' id='email_show_template' method='post'>
 			<fieldset id='email-show-template'>
 			<table class='table adminlist'>

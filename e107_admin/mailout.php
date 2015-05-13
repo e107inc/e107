@@ -480,8 +480,14 @@ class mailout_main_ui extends e_admin_ui
 				'subject'		=> LAN_MAILOUT_113." ".$add,
 				'body'			=> str_replace("[br]", "\n", LAN_MAILOUT_114),
 				'template'		=> vartrue($_POST['testtemplate'],null),
-				'shortcodes'	=> array('USERID'=>555, 'USERNAME'=>'John Smith', 'LOGINNAME'=>'TestName', 'PASSWORD'=>'xxxxxxx', 'ACTIVATION_LINK'=>SITEURL."signup.php#activate"),
-			);
+				'shortcodes'	=> $this->getExampleShortcodes(),
+				'media'			=>  array(
+					0 => array('path' => '{e_PLUGIN}gallery/images/butterfly.jpg'),
+					1 => array('path' => 'h-v880sXEOQ.youtube'),
+
+				)
+
+				);
 			
 			if(E107_DEBUG_LEVEL > 0)
 			{
@@ -691,27 +697,14 @@ class mailout_main_ui extends e_admin_ui
 		else
 		{
 			e107::coreLan('signup');
-			
+			$tp = e107::getParser();
+
 			$eml = array(
 				'subject'		=> 'Test Subject',
 				'body' 			=> "This is the body text of your email. Included are example media attachments such as images and video thumbnails.<br /></br >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed aliquam volutpat risus, a efficitur ex dignissim ac. Phasellus ornare tortor est, a elementum orci finibus non! Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce feugiat bibendum venenatis. Ut sit amet purus id magna consequat euismod vitae ac elit. Maecenas rutrum nisi metus, sed pulvinar velit fermentum eu? Aliquam erat volutpat.<br />
 									Ut risus massa, consequat et gravida vitae, tincidunt in metus. Nam sodales felis non tortor faucibus lacinia! Integer neque libero, maximus eu cursus nec, fringilla varius erat. Phasellus elementum scelerisque mauris at fermentum. Aliquam erat volutpat. Aliquam sit amet placerat leo, vitae mollis purus. Nulla laoreet nulla pretium risus placerat, a luctus risus pulvinar. Duis ut dolor sed arcu aliquam dictum sed auctor magna. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Etiam eleifend in mi lobortis blandit. Aliquam vestibulum rhoncus vestibulum. Cras metus.",
 				'template'		=> $id,
-				'shortcodes'	=> array(
-				
-					'USERNAME'			=>'test-username', 
-					'EMAIL'				=> 'test@email.com',
-					'DISPLAYNAME'		=> 'John Example', 
-					'USERID'			=>'555', 
-					'MAILREF'			=> '123', 
-					'NEWSLETTER'		=> SITEURL."newsletter/?id=example1234567", 
-					'UNSUBSCRIBE'		=> SITEURL."unsubscribe.php?id=example1234567",
-					'UNSUBSCRIBE_MESSAGE'=> "This email was sent to test@email.com. If you don't want to receive these emails in the future, please <a href='".SITEURL."unsubscribe.php?id=example1234567'>unsubscribe</a>. ",
-					'ACTIVATION_LINK'	=> "<a href='http://whereever.to.activate.com/'>http://whereever.to.activate.com/</a>",
-					'USERURL'			=> "www.user-website.com",
-					'PASSWORD'			=> "test-password",
-					'LOGINNAME'			=> "test-loginname"
-				),
+				'shortcodes'	=> $this->getExampleShortcodes(),
 				'media'			=>  array(
 						0 => array('path' => '{e_PLUGIN}gallery/images/butterfly.jpg'),
 						1 => array('path' => 'h-v880sXEOQ.youtube'),
@@ -725,6 +718,34 @@ class mailout_main_ui extends e_admin_ui
 			
 		return e107::getEmail()->preview($eml);
 		exit;
+
+	}
+
+
+	function getExampleShortcodes()
+	{
+		$tp = e107::getParser();
+
+		return array(
+
+			'USERNAME'			=>'test-username',
+			'EMAIL'				=> 'test@email.com',
+			'DISPLAYNAME'		=> 'John Example',
+			'USERID'			=>'555',
+			'MAILREF'			=> '123',
+			'NEWSLETTER'		=> SITEURL."newsletter/?id=example1234567",
+			'UNSUBSCRIBE'		=> SITEURL."unsubscribe.php?id=example1234567",
+			'UNSUBSCRIBE_MESSAGE'=> "This email was sent to test@email.com. If you don't want to receive these emails in the future, please <a href='".SITEURL."unsubscribe.php?id=example1234567'>unsubscribe</a>. ",
+			'ACTIVATION_LINK'	=> "<a href='http://whereever.to.activate.com/'>http://whereever.to.activate.com/</a>",
+			'USERURL'			=> "www.user-website.com",
+			'PASSWORD'			=> "test-password",
+			'LOGINNAME'			=> "test-loginname",
+			'SUBJECT'           => "Test Subject",
+			'DATE_SHORT'        => $tp->toDate(time(),'short'),
+			'DATE_LONG'         => $tp->toDate(time(),'long'),
+		);
+
+
 
 	}
 
