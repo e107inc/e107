@@ -840,18 +840,41 @@ class e107MailManager
 
 	/**
 	 *	Given an email block, creates an array of data compatible with PHPMailer, including any necessary substitutions
+	 * $eml['subject']
+		$eml['sender_email']	- 'From' email address
+		$eml['sender_name']		- 'From' name
+		$eml['replyto']			- Optional 'reply to' field
+		$eml['replytonames']	- Name(s) corresponding to 'reply to' field  - only used if 'replyto' used
+		$eml['send_html']		- if TRUE, includes HTML part in messages (only those added after this flag)
+		$eml['add_html_header'] - if TRUE, adds the 2-line DOCTYPE declaration to the front of the HTML part (but doesn't add <head>...</head>)
+		$eml['body']			- message body. May be HTML or text. Added according to the current state of the HTML enable flag
+		$eml['attach']			- string if one file, array of filenames if one or more.
+		$eml['copy_to']			- comma-separated list of cc addresses.
+		$eml['cc_names']  		- comma-separated list of cc names. Optional, used only if $eml['copy_to'] specified
+		$eml['bcopy_to']		- comma-separated list
+		$eml['bcc_names'] 		- comma-separated list of bcc names. Optional, used only if $eml['copy_to'] specified
+		$eml['bouncepath']		- Sender field (used for bounces)
+		$eml['returnreceipt']	- email address for notification of receipt (reading)
+		$eml['inline_images']	- array of files for inline images
+		$eml['priority']		- Email priority (1 = High, 3 = Normal, 5 = low)
+		$eml['e107_header']		- Adds specific 'X-e107-id:' header
+		$eml['extra_header']	- additional headers (format is name: value
+		$eml['wordwrap']		- Set wordwrap value
+		$eml['split']			- If true, sends an individual email to each recipient
+		$eml['template']		- template to use. 'default'
+		$eml['shortcodes']		- array of shortcode values. eg. array('MY_SHORTCODE'=>'12345');
 	 */
 	protected function makeEmailBlock($email)
 	{
 		$mailSubsInfo = array(
-	 		'email_subject' => 'mail_subject',
-			'email_sender_email' => 'mail_sender_email',
-			'email_sender_name' => 'mail_sender_name',
+	 		'subject'       => 'mail_subject',
+			'sender_email'  => 'mail_sender_email',
+			'sender_name'   => 'mail_sender_name',
 			// 'email_replyto'		- Optional 'reply to' field 
 			// 'email_replytonames'	- Name(s) corresponding to 'reply to' field  - only used if 'replyto' used
-			'email_copy_to'	=> 'mail_copy_to', 		// - comma-separated list of cc addresses.
+			'copy_to'	    => 'mail_copy_to', 		// - comma-separated list of cc addresses.
 			//'email_cc_names' - comma-separated list of cc names. Optional, used only if $eml['email_copy_to'] specified
-			'email_bcopy_to' => 'mail_bcopy_to',
+			'bcopy_to'      => 'mail_bcopy_to',
 			// 'email_bcc_names' - comma-separated list of bcc names. Optional, used only if $eml['email_copy_to'] specified
 			//'bouncepath'		- Sender field (used for bounces)
 			//'returnreceipt'	- email address for notification of receipt (reading)
@@ -863,17 +886,29 @@ class e107MailManager
 			'template'		=> 'mail_send_style', // required
 			'shortcodes'	=> 'mail_target_info' // required
 			);
+
+
 		$result = array();
+
+
 		if (!isset($email['mail_source_id'])) $email['mail_source_id'] = 0;
 		if (!isset($email['mail_target_id'])) $email['mail_target_id'] = 0;
 		if (!isset($email['mail_recipient_id'])) $email['mail_recipient_id'] = 0;
+
+
+
+
+
 		foreach ($mailSubsInfo as $k => $v)
 		{
 			if (isset($email[$v]))
 			{
 				$result[$k] = $email[$v];
+				//unset($email[$v]);
 			}
 		}
+
+
 
 		// Do any substitutions
 		$search = array();
@@ -883,14 +918,17 @@ class e107MailManager
 			$search[] = '|'.$k.'|';
 			$replace[] = $v;
 		}
+
 		$result['email_body'] = str_replace($search, $replace, $this->currentMailBody);
+
 		if ($this->currentTextBody)
 		{
 			$result['mail_body_alt'] = str_replace($search, $replace, $this->currentTextBody);
 		}
+
 		$result['send_html'] = ($email['mail_send_style'] != 'textonly');
 		$result['add_html_header'] = FALSE;				// We look after our own headers
-		
+
 
 		
 		// Set up any extra mailer parameters that need it
@@ -1775,19 +1813,25 @@ class e107MailManager
 			$eCount = 0;
 			
 			// @TODO: Generate alt text etc
+
 			
 
 			foreach ($recipientData as $recip)
 			{
 				// Fill in other bits of email
-				$emailData['mail_target_info'] = $recip;
-				$mailToSend = $this->makeEmailBlock($emailData);			// Substitute mail-specific variables, attachments etc
-				
-				
-				
-				
-				
-				if (FALSE == $this->mailer->sendEmail($recip['mail_recipient_email'], $recip['mail_recipient_name'], $mailToSend, TRUE))
+			//	$emailData['mail_target_info'] = $recip	;
+				$merged     = array_merge($emailData,$recip);
+				$mailToSend = $this->makeEmailBlock($merged);			// Substitute mail-specific variables, attachments etc
+/*
+				echo "<h2>MERGED</h2>";
+				print_a($merged);
+				echo "<h2>RETURNED</h2>";
+				print_a($mailToSend);
+				echo "<hr />";
+				continue;
+
+		*/
+				if (FALSE == $this->mailer->sendEmail($recip['mail_recipient_email'], $recip['mail_recipient_name'], $mailToSend, true))
 				{
 					$tempResult = FALSE;
 					if($this->debugMode)
@@ -1814,7 +1858,10 @@ class e107MailManager
 			return $tempResult;
 		}
 
-		// To many recipients to send at once - add to the emailing queue
+
+		// ----------- Too many recipients to send at once - add to the emailing queue ---------------- //
+
+
 		// @TODO - handle any other relevant $extra fields
 		$emailData['mail_total_count'] = count($recipientData);
 

@@ -219,12 +219,15 @@ class notify
 		if(E107_DEBUG_LEVEL > 0)
 		{
 			$data = array('id'=>$id, 'subject'=>$subject, 'recipients'=> $recipients, 'prefs'=>$this->notify_prefs['event'][$id], 'message'=>$message);
+
+			e107::getMessage()->addDebug("<b>Mailing is simulated only while in DEBUG mode.</b>");
 			e107::getMessage()->addDebug(print_a($data,true));
 			e107::getLog()->add('Notify Debug', $data, E_LOG_INFORMATIVE, "NOTIFY_DBG");
 			return;
 		}
 
-
+		$siteadminemail = e107::getPref('siteadminemail');
+		$siteadmin = e107::getPref('siteadmin');
 
 		if (count($recipients))
 		{
@@ -238,8 +241,8 @@ class notify
 				'mail_create_app' 		=> 'notify',
 				'mail_title' 			=> 'NOTIFY',
 				'mail_subject' 			=> $subject,
-				'mail_sender_email' 	=> e107::getPref('siteadminemail'),
-				'mail_sender_name'		=> e107::getPref('siteadmin'),
+				'mail_sender_email' 	=> e107::getPref('replyto_email',$siteadminemail),
+				'mail_sender_name'		=> e107::getPref('replyto_name',$siteadmin),
 				'mail_notify_complete' 	=> 0,			// NEVER notify when this email sent!!!!!
 				'mail_body' 			=> $message,
 				'template'				=> 'notify',
