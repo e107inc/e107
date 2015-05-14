@@ -524,6 +524,9 @@ class e_parse extends e_parser
 				$this->isHtml = true;
 				$data = $this->cleanHtml($data); // sanitize all html.
 
+				$data = str_replace(array('%7B','%7D'),array('{','}'),$data); // fix for {e_XXX} paths.
+
+
 			//	$data = urldecode($data); //XXX Commented out :  NO LONGER REQUIRED. symptom of cleaning the HTML - urlencodes src attributes containing { and } .eg. {e_BASE}
 
 			}
