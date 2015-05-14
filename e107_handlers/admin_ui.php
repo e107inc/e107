@@ -3618,14 +3618,15 @@ class e_admin_controller_ui extends e_admin_controller
 			
 			if($filterField && $filterValue !== '' && isset($this->fields[$filterField]))
 			{
-				$_type = $this->fields[$filterField]['data'];
-				
-				if($this->fields[$filterField]['type'] === 'comma' || $this->fields[$filterField]['type'] === 'checkboxes')
+				$_dataType = $this->fields[$filterField]['data'];
+				$_fieldType = $this->fields[$filterField]['type'];
+
+				if($_fieldType === 'comma' || $_fieldType === 'checkboxes' || $_fieldType == 'userclasses')
 				{
-					 $_type = 'set'; 
+					 $_dataType = 'set';
 				}
 
-				switch ($_type) 
+				switch ($_dataType)
 				{
 					case 'set':
 						$searchQry[] = "FIND_IN_SET('".$tp->toDB($filterValue)."', ".$this->fields[$filterField]['__tableField'].")";
@@ -3633,7 +3634,7 @@ class e_admin_controller_ui extends e_admin_controller
 					
 					case 'int':
 					case 'integer':
-						if($this->fields[$filterField]['type'] == 'datestamp') // Past Month, Past Year etc. 
+						if($_fieldType == 'datestamp') // Past Month, Past Year etc.
 						{
 							$searchQry[] = $this->fields[$filterField]['__tableField']." > ".intval($filterValue);	
 						}
@@ -3654,7 +3655,7 @@ class e_admin_controller_ui extends e_admin_controller
 						else
 						{
 
-							if($this->fields[$filterField]['type'] == 'method') // More flexible filtering.
+							if($_fieldType == 'method') // More flexible filtering.
 							{
 
 								$searchQry[] = $this->fields[$filterField]['__tableField']." LIKE \"%".$tp->toDB($filterValue)."%\"";		
