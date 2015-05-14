@@ -36,7 +36,14 @@ class users_admin extends e_admin_dispatcher
 			'ui' 			=> 'users_admin_form_ui',
 			'uipath' 		=> null,
 			//'perm'			=> '0',
-		)				
+		),
+		'ranks'		=> array(
+			'controller' 	=> 'users_ranks_ui',
+			'path' 			=> null,
+			'ui' 			=> 'users_ranks_ui_form',
+			'uipath' 		=> null,
+			//'perm'			=> '0',
+		)
 	);	
 
 
@@ -44,7 +51,8 @@ class users_admin extends e_admin_dispatcher
 		'main/list'		=> array('caption'=> LAN_MANAGE, 'perm' => '0'),
 		'main/add' 		=> array('caption'=> LAN_USER_QUICKADD, 'perm' => '4|U0|U1'),
 		'main/prefs' 	=> array('caption'=> LAN_OPTIONS, 'perm' => '4|U2'),
-		'main/ranks'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3')		
+		'main/ranks'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3'),
+	//	'ranks/list'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3')
 	);
 	
 	/*
@@ -62,6 +70,17 @@ class users_admin extends e_admin_dispatcher
 	);	
 	
 	protected $menuTitle = 'users';
+
+
+	function init()
+	{
+		if(E107_DEBUG_LEVEL > 0)
+		{
+			$this->adminMenu['ranks/list']	= array('caption'=> LAN_USER_RANKS. " (experimental)", 'perm' => '4|U3');
+		}
+
+
+	}
 	
 	/**
 	 * Run observers/headers override
@@ -2337,6 +2356,99 @@ class users_admin_form_ui extends e_admin_form_ui
 	
 	
 }
+
+
+	class users_ranks_ui extends e_admin_ui
+	{
+		protected $pluginTitle		= LAN_USER;
+		protected $pluginName		= 'user_ranks';
+		protected $table			= 'generic';
+		protected $pid				= 'gen_id';
+		protected $perPage 			= 10;
+		protected $listQry			= "SELECT * FROM `#generic` WHERE gen_type='user_rank_data' ";
+		protected $listOrder     = " CASE gen_datestamp WHEN 1 THEN 1 WHEN 2 THEN 2 WHEN 3 THEN 3  WHEN 0 THEN 4 END ";
+
+		protected $fields 		= array (
+		    'checkboxes'        =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
+		    'gen_id' 			=> array ( 'title' => LAN_ID,	 'nolist'=>true,	'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		    'gen_type' 			=> array ( 'title' => LAN_BAN, 	'type' => 'hidden', 'data' => 'str', 'width' => 'auto', 'batch' => true, 'filter' => true, 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => 'value=user_rank_data', 'class' => 'left', 'thclass' => 'left',  ),
+		    'gen_ip' 			=> array ( 'title' => USRLAN_208, 'type' => 'text', 'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		    'gen_intdata' 		=> array ( 'title' => USRLAN_209, 'type' => 'text', 'batch'=>false, 'data' => 'int', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => 'default=-', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+
+		    'gen_datestamp' 	=> array ( 'title' => 'Special', 'type' => 'hidden', 'nolist'=>true, 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		    'gen_user_id' 		=> array ( 'title' => USRLAN_210, 'type' => 'boolean', 'batch'=>true, 'data' => 'int', 'inline'=>true, 'width' => '15%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		    'gen_chardata' 		=> array ( 'title' => LAN_ICON, 'type' => 'dropdown', 'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => array(), 'class' => 'left', 'thclass' => 'left',  ),
+
+
+		    'options'			=> array ( 'title' => LAN_OPTIONS, 'type' =>'method', 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'right last', 'forced' => '1', 'readParms'=>'edit=0'  ),
+		);
+
+		protected $fieldpref = array('gen_datestamp', 'gen_ip', 'gen_chardata');
+
+
+		// optional
+		public function init()
+		{
+			$tmp = e107::getFile()->get_files(e_IMAGE.'ranks', '.*?\.(png|gif|jpg)');
+
+			//	$this->addTitle(LAN_USER_RANKS);
+
+			foreach($tmp as $k => $v)
+			{
+				$id = $v['fname'];
+				$this->fields['gen_chardata']['writeParms']['optArray'][$id] = $v['fname'];
+			}
+
+			unset($tmp);
+			natsort($imageList);
+		}
+
+		public function afterDelete($data)
+		{
+			e107::getCache()->clear_sys('nomd5_user_ranks');
+		}
+
+		public function afterUpdate($new_data, $old_data, $id)
+		{
+			e107::getCache()->clear_sys('nomd5_user_ranks');
+		}
+
+	}
+
+
+
+	class users_ranks_ui_form extends e_admin_form_ui
+	{
+		// Override the default Options field.
+		function options($parms, $value, $id, $attributes)
+		{
+
+			if($attributes['mode'] == 'read')
+			{
+				parse_str(str_replace('&amp;', '&', e_QUERY), $query); //FIXME - FIX THIS
+				$query['action'] = 'edit';
+				$query['id'] = $id;
+				$query = http_build_query($query);
+
+				$text = "<a href='".e_SELF."?{$query}' class='btn btn-default' title='".LAN_EDIT."' data-toggle='tooltip' data-placement='left'>
+						".ADMIN_EDIT_ICON."</a>";
+
+				$special = $this->getController()->getListModel()->get('gen_datestamp');
+
+				if($special == 0)
+				{
+					$text .= $this->submit_image('menu_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn btn-default'.$delcls));
+				}
+
+				return $text;
+			}
+		}
+
+
+
+	}
+
+
 
 new users_admin();
 require_once ('auth.php');
