@@ -64,3 +64,4 @@ class news_featurebox // include plugin-folder in the name.
 
 
 ?>
+?>
