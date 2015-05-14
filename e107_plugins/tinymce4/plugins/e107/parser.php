@@ -38,6 +38,17 @@ class e107TinyMceParser
 	{
 		$html = '';
 
+		if(!empty($_GET['debug']) && getperms('0'))
+		{
+			$debug = true;  // For future use. 
+		//	$_POST['content'] = '';
+		//	$_POST['mode'] = $_GET['mode'];
+		}
+		else
+		{
+			$debug = false;
+		}
+
 		if($_POST['mode'] == 'tohtml')
 		{
 			$html =  $this->toHtml($_POST['content']);
@@ -48,7 +59,11 @@ class e107TinyMceParser
 			$html = $this->toBBcode($_POST['content']);
 		}
 
-		if($this->gzipCompression == true)
+		if($debug == true)
+		{
+			print_a($html);
+		}
+		elseif($this->gzipCompression == true)
 		{
 			header('Content-Encoding: gzip');
 			$gzipoutput = gzencode($html,6);
