@@ -40,7 +40,7 @@ class e107TinyMceParser
 
 		if(!empty($_GET['debug']) && getperms('0'))
 		{
-			$debug = true;  // For future use. 
+			$debug = true;  // For future use.
 		//	$_POST['content'] = '';
 		//	$_POST['mode'] = $_GET['mode'];
 		}
