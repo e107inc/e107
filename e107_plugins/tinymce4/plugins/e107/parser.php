@@ -145,7 +145,7 @@ class e107TinyMceParser
 
 		if(check_class($pref['post_html'])) // Plain HTML mode.
 		{
-			$srch 		= array('src="'.e_HTTP.'thumb.php?','src="/{e_MEDIA_IMAGE}');
+			$srch 		= array('src="../thumb.php?','src="/{e_MEDIA_IMAGE}');
 			$repl 		= array('src="{e_BASE}thumb.php?','src="{e_BASE}thumb.php?src=e_MEDIA_IMAGE/');
 			$content 	= str_replace($srch, $repl, $content);
 
