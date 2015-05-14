@@ -215,9 +215,7 @@ $USERSETTINGS_WRAPPER['edit']['CUSTOMTITLE'] =			"<div class='form-group'>
 
 $USERSETTINGS_WRAPPER['edit']['USERCLASSES'] = 			"<div class='form-group'>
 															<label for='userclasses' class='col-sm-3 control-label'>".LAN_USER_76.":".req($pref['signup_option_class'])."</label>
-														       	<div class='col-sm-9'>{---}
-														       	<br /><span class='smalltext'>".LAN_USER_73."</span>
-														       	</div>
+														       	<div class='col-sm-9'>{---}</div>
 														   </div>
 														";
 

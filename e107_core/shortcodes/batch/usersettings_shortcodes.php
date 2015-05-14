@@ -306,12 +306,15 @@ class usersettings_shortcodes extends e_shortcode
 			$text = $this->sc_userextended_cat($cat['user_extended_struct_id']);
 			$ret .= $text;
 			$catName = vartrue($cat['user_extended_struct_text'], $cat['user_extended_struct_name']);
-			$tabs[] = array('caption'=>$catName, 'text'=>$text);
+			if(!empty($text))
+			{
+				$tabs[] = array('caption'=>$catName, 'text'=>$text);
+			}
 		}
 		
 		
 		
-		if($parm == 'tabs' && deftrue('BOOTSTRAP')===3)
+		if(($parm == 'tabs') && !empty($tabs) && deftrue('BOOTSTRAP')===3)
 		{
 			return e107::getForm()->tabs($tabs);		
 		}
