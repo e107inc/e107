@@ -819,7 +819,6 @@ class e107Email extends PHPMailer
 		}
 
 
-		
 		$identifier = deftrue('MAIL_IDENTIFIER', 'X-e107-id');	
 		
 		if (isset($eml['SMTPDebug']))		{ $this->SMTPDebug = $eml['SMTPDebug'];	}		// 'FALSE' is a valid value!	
@@ -959,6 +958,7 @@ class e107Email extends PHPMailer
 			$_SERVER["HTTP_CF_CONNECTING_IP"] = $_SERVER['SERVER_ADDR'];
 			
 			$result = $this->Send();		// Actually send email
+
 			
 			$_SERVER['PHP_SELF'] = $oldphpself; 
 			$_SERVER['REMOTE_ADDR'] = $oldremoteaddr;
