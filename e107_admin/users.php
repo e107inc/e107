@@ -2364,9 +2364,9 @@ class users_admin_form_ui extends e_admin_form_ui
 		protected $pluginName		= 'user_ranks';
 		protected $table			= 'generic';
 		protected $pid				= 'gen_id';
-		protected $perPage 			= 10;
+		protected $perPage 			= 15;
 		protected $listQry			= "SELECT * FROM `#generic` WHERE gen_type='user_rank_data' ";
-		protected $listOrder     = " CASE gen_datestamp WHEN 1 THEN 1 WHEN 2 THEN 2 WHEN 3 THEN 3  WHEN 0 THEN 4 END ";
+		protected $listOrder     = " CASE gen_datestamp WHEN 1 THEN 1 WHEN 2 THEN 2 WHEN 3 THEN 3  WHEN 0 THEN 4 END, gen_intdata ";
 
 		protected $fields 		= array (
 		    'checkboxes'        =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
@@ -2383,13 +2383,23 @@ class users_admin_form_ui extends e_admin_form_ui
 		    'options'			=> array ( 'title' => LAN_OPTIONS, 'type' =>'method', 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'right last', 'forced' => '1', 'readParms'=>'edit=0'  ),
 		);
 
-		protected $fieldpref = array('gen_datestamp', 'gen_ip', 'gen_chardata');
+		protected $fieldpref = array('gen_datestamp', 'gen_type', 'gen_ip', 'gen_intdata', 'gen_user_id', 'gen_chardata');
 
 
 		// optional
 		public function init()
 		{
 			$tmp = e107::getFile()->get_files(e_IMAGE.'ranks', '.*?\.(png|gif|jpg)');
+
+			$mode = $this->getMode();
+			$action = $this->getAction();
+
+			$existing = e107::getDb()->gen("SELECT gen_id FROM #generic WHERE gen_type='user_rank_data' LIMIT 1 ");
+
+			if($mode == 'ranks' && ($action == 'list') && !$existing)
+			{
+				$this->createDefaultRecords();
+			}
 
 			//	$this->addTitle(LAN_USER_RANKS);
 
@@ -2411,6 +2421,56 @@ class users_admin_form_ui extends e_admin_form_ui
 		public function afterUpdate($new_data, $old_data, $id)
 		{
 			e107::getCache()->clear_sys('nomd5_user_ranks');
+		}
+
+		private function createDefaultRecords()
+		{
+
+			$tmp = array();
+			$tmp['_FIELD_TYPES']['gen_datestamp'] = 'int';
+			$tmp['_FIELD_TYPES']['gen_ip'] = 'todb';
+			$tmp['_FIELD_TYPES']['gen_user_id'] = 'int';
+			$tmp['_FIELD_TYPES']['gen_chardata'] = 'todb';
+			$tmp['_FIELD_TYPES']['gen_intdata'] = 'int';
+
+
+			//Add main site admin info
+			$tmp['data']['gen_datestamp']   = 1;
+			$tmp['data']['gen_type']        = 'user_rank_data';
+			$tmp['data']['gen_ip']          = LAN_MAINADMIN;
+			$tmp['data']['gen_user_id']     = 1;
+			$tmp['data']['gen_chardata']    = 'English_main_admin.png';
+			$tmp['data']['gen_intdata']     = 0;
+			e107::getDb()->insert('generic',$tmp);
+			unset ($tmp['data']);
+
+
+			//Add site admin info
+			$tmp['data']['gen_type']        = 'user_rank_data';
+			$tmp['data']['gen_datestamp']   = 2;
+			$tmp['data']['gen_ip']          = LAN_ADMIN;
+			$tmp['data']['gen_user_id']     = 1;
+			$tmp['data']['gen_chardata']    = 'English_admin.png';
+			$tmp['data']['gen_intdata']     = 0;
+
+
+			e107::getDb()->insert('generic', $tmp);
+
+			for($i=1; $i < 11; $i++)
+			{
+				unset ($tmp['data']);
+				$tmp['data']['gen_type']        = 'user_rank_data';
+				$tmp['data']['gen_datestamp']   = 0;
+				$tmp['data']['gen_ip']          = "Level ".$i;
+				$tmp['data']['gen_user_id']     = 0;
+				$tmp['data']['gen_chardata']    = "lev".$i.".png";
+				$tmp['data']['gen_intdata']     = ($i * 150);
+
+				e107::getDb()->insert('generic', $tmp);
+			}
+
+
+
 		}
 
 	}
