@@ -8,7 +8,7 @@
  */
 
 
-if(empty($_POST['content']))
+if(empty($_POST['content']) && empty($_GET['debug']))
 {
 	header('Content-Length: 0');
 	exit;
@@ -41,8 +41,13 @@ class e107TinyMceParser
 		if(!empty($_GET['debug']) && getperms('0'))
 		{
 			$debug = true;  // For future use.
-		//	$_POST['content'] = '';
-		//	$_POST['mode'] = $_GET['mode'];
+			$text = <<<TEMPL
+
+	[html][code]Something goes here [b]bold print[/b][/code][/html]
+
+TEMPL;
+			$_POST['content'] = $text;
+			$_POST['mode'] = 'tohtml';
 		}
 		else
 		{
@@ -62,6 +67,8 @@ class e107TinyMceParser
 		if($debug == true)
 		{
 			print_a($html);
+			echo "<hr />";
+			echo $html;
 		}
 		elseif($this->gzipCompression == true)
 		{

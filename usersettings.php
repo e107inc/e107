@@ -763,7 +763,7 @@ if (vartrue($_POST))
 //require_once (e_HANDLER."form_handler.php");
 //$rs = new form;
 
-$text = '<form method="post" action="'.$usersettings_form_action.'" id="dataform" class="form-horizontal" role="form" enctype="multipart/form-data">';
+$text = '<form method="post" action="'.$usersettings_form_action.'" id="dataform" class="form-horizontal" role="form" enctype="multipart/form-data" autocomplete="off">';
 
 //$text = (is_numeric($_uid) ? $rs->form_open("post", e_SELF."?".e_QUERY, "dataform", "", " class='form-horizontal' role='form' enctype='multipart/form-data'") : $rs->form_open("post", e_SELF, "dataform", "", " class='form-horizontal' role='form' enctype='multipart/form-data'"));
 

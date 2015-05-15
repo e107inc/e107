@@ -78,7 +78,8 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 		protected $perPage			= 10;
 		protected $batchDelete		= true;
 		protected $batchCopy		= false; // no way to generate the non-incrementing primary key at the moment
-		protected $listOrder		= 'userclass_id DESC';
+	//	protected $listOrder		= 'userclass_id DESC'; //XXX Make more intuitive.
+		protected $listOrder        = "CASE WHEN userclass_id = 250 THEN 1 WHEN userclass_id =254 THEN 2 WHEN userclass_id = 253 THEN 3  WHEN userclass_id < 250 THEN 4 END, userclass_id DESC ";
 		//	protected $sortField		= 'somefield_order';
 		//	protected $orderStep		= 10;
 		//	protected $tabs			= array('Tabl 1','Tab 2'); // Use 'tab'=>0  OR 'tab'=>1 in the $fields below to enable.
