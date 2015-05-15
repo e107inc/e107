@@ -235,12 +235,19 @@ if(getperms('0')) // allow main admin to view signup page for design/testing.
 	//$mes = e107::getMessage();
 	//$mes->debug("You are currently logged in.");
 
-	$adminMsg = LAN_SIGNUP_112;
+	$adminMsg = "<div class='form-group'>".LAN_SIGNUP_112."</div>";
 
 	if(intval($pref['user_reg']) !== 1)
 	{
-		$adminMsg .= "<br />User registration is currently disabled";
+		$adminMsg .= "<div class='form-group'><b>User registration is currently disabled.</b></div>";
 	}
+
+	$adminMsg .= "<div class='form-group form-inline'>
+	<a class='btn btn-warning btn-danger btn-sm' href='".e_SELF."?preview'>Preview Activation Email</a>
+		<a class='btn btn-error btn-danger btn-sm' href='".e_SELF."?preview.aftersignup'>Preview After Form Submit</a>
+		<a class='btn btn-error btn-danger btn-sm e-tip' href='".e_SELF."?test' title=\"to ".USEREMAIL."\">Send a Test Activation</a>
+		</div>
+		";
 
 	$SIGNUP_BEGIN = "<div class='alert alert-block alert-error alert-danger text-center'>".$adminMsg."</div>". $SIGNUP_BEGIN;
 	unset($adminMsg);
@@ -461,10 +468,12 @@ class signup
 
 	function renderEmailPreview()
 	{
+		$ns = e107::getRender();
+		$tp = e107::getParser();
 
 		$temp = array();
-		$eml = render_email($temp, TRUE); // It ignores the data, anyway
-		echo $eml['preview'];
+		$eml = render_email($temp, true); // It ignores the data, anyway
+		$ns->tablerender('Email Preview', $tp->replaceConstants($eml['preview'],'abs'));
 
 	}
 
