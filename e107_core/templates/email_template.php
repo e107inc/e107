@@ -38,6 +38,7 @@ See e_HANDLER.mail.php for more information
 if (!defined('e107_INIT')) { exit; }
 
 $includeSiteButton = e107::getPref('sitebutton');
+e107::lan('core','signup'); // required for when mailer runs under CLI. 
 
 /*
 $SIGNUPEMAIL_SUBJECT = LAN_SIGNUP_96.' {SITENAME}';
@@ -181,8 +182,8 @@ $EMAIL_TEMPLATE['signup']['footer']			= "</div>
 $EMAIL_TEMPLATE['signup']['cc']				= "";
 $EMAIL_TEMPLATE['signup']['bcc']			= "";
 $EMAIL_TEMPLATE['signup']['attachments']	= "";
+$EMAIL_TEMPLATE['signup']['include']        = "{e_LANGUAGEDIR}{e_LANGUAGE}/lan_signup.php";
 
-//TODO FIXME {SITEBUTTON} not working at the moment. (broken path)
 
 // -----------------------------
 

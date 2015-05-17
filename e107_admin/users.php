@@ -1914,8 +1914,9 @@ class users_admin_ui extends e_admin_ui
 
 				if(!$sql2->update('user',$updateQry))
 				{
-					echo "error updating user's password";
-					print_a($updateQry);
+
+					e107::getMessage()->addError("Error updating user's password. #".$row['user_id']." : ".$row['user_email']);
+					e107::getMessage()->addDebug(print_a($updateQry,true));
 
 				//	break;
 				}
@@ -1933,6 +1934,9 @@ class users_admin_ui extends e_admin_ui
 				$rawPassword = '(*** hidden ***)';
 			}
 
+			$activationUrl = SITEURL."signup.php?activate.".$row['user_id'].".".$row['user_sess'];
+
+
 
 			$recipients[] = array(
 				'mail_recipient_id'     => $row['user_id'],
@@ -1946,9 +1950,11 @@ class users_admin_ui extends e_admin_ui
 					'SUBJECT'               => LAN_SIGNUP_98,
 					'USERNAME' 		        => $row['user_name'],
 					'USERLASTVISIT'         => $row['user_lastvisit'],
-					'ACTIVATION_LINK'       =>  SITEURL."signup.php?activate.".$row['user_id'].".".$row['user_sess'],
+					'ACTIVATION_LINK'       => "<a href='".$activationUrl."'>".$activationUrl."</a>",
+					'ACTIVATION_URL'        => $activationUrl,
 					'DATE_SHORT'            => $tp->toDate(time(),'short'),
 					'DATE_LONG'             => $tp->toDate(time(),'long'),
+					'SITEURL'               => SITEURL
 				)
 			);
 

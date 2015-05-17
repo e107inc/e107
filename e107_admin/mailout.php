@@ -76,7 +76,7 @@ if (!getperms('W'))
 }
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_users.php');
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_mailout.php');
-	e107::lan('core','signup');
+//	e107::lan('core','signup');
 
 require_once(e_HANDLER.'ren_help.php');
 
