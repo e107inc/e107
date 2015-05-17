@@ -982,81 +982,154 @@ class eMessage
 
 function show_emessage($mode, $message, $line = 0, $file = "") {
 	global $tp;
+
+	// For critical errors where no theme is available.
+	$errorHead = '
+			<!doctype html>
+		<html lang="en">
+		<head>
+		<meta charset="utf-8" />
+		<title>Error</title>
+		<link rel="stylesheet" media="all" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" />
+		<link rel="stylesheet" media="all" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
+		<link rel="stylesheet" media="all" type="text/css" href="/e107_web/css/e107.css" />
+		</head>
+		<body >
+		<div class="container" style="margin-top:100px">';
+
+
+	$errorFoot = "</div></body></html>";
+
+
+
 	if(is_numeric($message))
 	{
-    	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_error.php");
-	$emessage[1] = "<b>".LAN_ERROR_25."</b>";
-	$emessage[2] = "<b>".LAN_ERROR_26."</b>";
-	$emessage[3] = "<b>".LAN_ERROR_27."</b>";
-	$emessage[4] = "<b>".LAN_ERROR_28."</b>";
-	$emessage[5] = LAN_ERROR_29;
-	$emessage[6] = "<b>".LAN_ERROR_30."</b>";
-	$emessage[7] = "<b>".LAN_ERROR_31."</b>";
-	$emessage[8] = "
-		<div style='text-align:center; font: 12px Verdana, Tahoma'><b>".LAN_ERROR_32." </b><br /><br />
-		".chr(36)."ADMIN_DIRECTORY = \"e107_admin/\";<br />
-		".chr(36)."FILES_DIRECTORY = \"e107_files/\";<br />
-		".chr(36)."IMAGES_DIRECTORY = \"e107_images/\"; <br />
-		".chr(36)."THEMES_DIRECTORY = \"e107_themes/\"; <br />
-		".chr(36)."PLUGINS_DIRECTORY = \"e107_plugins/\"; <br />
-		".chr(36)."HANDLERS_DIRECTORY = \"e107_handlers/\"; <br />
-		".chr(36)."LANGUAGES_DIRECTORY = \"e107_languages/\"; <br />
-		".chr(36)."HELP_DIRECTORY = \"e107_docs/help/\";  <br />
-		".chr(36)."DOWNLOADS_DIRECTORY =  \"e107_files/downloads/\";\n
-		</div>";
+		if(!defined('e_LANGUAGE'))
+		{
+			define('e_LANGUAGE', 'English');
+		}
+
+		if(!defined('e_LANGUAGEDIR'))
+		{
+			define('e_LANGUAGEDIR','e107_languages/');
+		}
+
+		$path = e_LANGUAGEDIR.e_LANGUAGE."/lan_error.php";
+
+		if(is_readable($path))
+		{
+			include($path);
+		}
+
+    //	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_error.php");
+
+		$emessage[1] = "<b>".LAN_ERROR_25."</b>";
+		$emessage[2] = "<b>".LAN_ERROR_26."</b>";
+		$emessage[3] = "<b>".LAN_ERROR_27."</b>";
+		$emessage[4] = "<b>".LAN_ERROR_28."</b>";
+		$emessage[5] = LAN_ERROR_29;
+		$emessage[6] = "<b>".LAN_ERROR_30."</b>";
+		$emessage[7] = "<b>".LAN_ERROR_31."</b>";
+		/*$emessage[8] = "
+			<div style='text-align:center; font: 12px Verdana, Tahoma'><b>".LAN_ERROR_32." </b><br /><br />
+			".chr(36)."ADMIN_DIRECTORY = \"e107_admin/\";<br />
+			".chr(36)."FILES_DIRECTORY = \"e107_files/\";<br />
+			".chr(36)."IMAGES_DIRECTORY = \"e107_images/\"; <br />
+			".chr(36)."THEMES_DIRECTORY = \"e107_themes/\"; <br />
+			".chr(36)."PLUGINS_DIRECTORY = \"e107_plugins/\"; <br />
+			".chr(36)."HANDLERS_DIRECTORY = \"e107_handlers/\"; <br />
+			".chr(36)."LANGUAGES_DIRECTORY = \"e107_languages/\"; <br />
+			".chr(36)."HELP_DIRECTORY = \"e107_docs/help/\";  <br />
+			".chr(36)."DOWNLOADS_DIRECTORY =  \"e107_files/downloads/\";\n
+			</div>";*/
+			//v2.x
+		$emessage[8] = '<b>'.LAN_ERROR_32.' </b><br /><br /><pre>
+$ADMIN_DIRECTORY     = "e107_admin/";
+$IMAGES_DIRECTORY    = "e107_images/";
+$THEMES_DIRECTORY    = "e107_themes/";
+$PLUGINS_DIRECTORY   = "e107_plugins/";
+$HANDLERS_DIRECTORY  = "e107_handlers/";
+$LANGUAGES_DIRECTORY = "e107_languages/";
+$HELP_DIRECTORY	     = "e107_docs/help/";
+$MEDIA_DIRECTORY     = "e107_media/";
+$SYSTEM_DIRECTORY    = "e107_system/";</pre>
+
+		';
+
 	}
+
 
 	if (class_exists('e107table'))
 	{
 	  $ns = new e107table;
 	}
+
 	switch($mode)
 	{
-	  case "CRITICAL_ERROR" :
-		$message = $emessage[$message] ? $emessage[$message] : $message;
-		//FIXME - this breaks class2 pref check!!!
-	    if (is_readable(e_THEME.'index.html'))
-		{
-		  require_once(e_THEME.'index.html');
-		  exit;
-		}
-		echo "<div class='alert alert-block alert-error alert-danger' style='text-align:center; font: 11px verdana, tahoma, arial, helvetica, sans-serif;'><b>CRITICAL_ERROR: </b><br />Line $line $file<br /><br />Error reported as: ".$message."</div>";
-		break;
+		case "CRITICAL_ERROR" :
 
-	  case "MESSAGE":
-		if(strstr(e_SELF, "forum_post.php")) //FIXME Shouldn't be here. 
-		{
-			return;
-		}
-		$ns->tablerender("", "<div class='alert alert-block' style='text-align:center'><b>{$message}</b></div>");
-		break;
+			$message = !empty($emessage[$message]) ? $emessage[$message] : $message;
+
+			//FIXME - this breaks class2 pref check!!! ?
+
+		    if (is_readable(e_THEME.'error.html'))
+			{
+				require_once(e_THEME.'error.html');
+				exit;
+			}
+
+			if(!defined('HEADERF'))
+			{
+				echo $errorHead;
+			}
+
+			echo "<div class='alert alert-block alert-error alert-danger' style='font: 11px verdana, tahoma, arial, helvetica, sans-serif;'><h4>CRITICAL ERROR: </h4>";
+			echo (!empty($line)) ? "Line $line " : "";
+			echo (!empty($file)) ? $file : "";
+			echo "<div>Error reported as: ".$message."</div>";
+			echo "</div>";
+
+			if(!defined('FOOTERF'))
+			{
+				echo $errorFoot;
+			}
+
+			break;
+
+		case "MESSAGE":
+			if(strstr(e_SELF, "forum_post.php")) //FIXME Shouldn't be here.
+			{
+				return;
+			}
+			$ns->tablerender("", "<div class='alert alert-block' style='text-align:center'><b>{$message}</b></div>");
+			break;
 
 		case "ADMIN_MESSAGE":
-		$ns->tablerender("Admin Message", "<div class='alert'><b>{$message}</b></div>");
-		break;
+			$ns->tablerender("Admin Message", "<div class='alert'><b>{$message}</b></div>");
+			break;
 
 		case "ALERT":
-		$message = $emessage[$message] ? $emessage[$message] : $message;
-		echo "<noscript>$message</noscript><script type='text/javascript'>alert(\"".$tp->toJS($message)."\"); window.history.go(-1); </script>\n"; exit;
-		break;
+			$message = $emessage[$message] ? $emessage[$message] : $message;
+			echo "<noscript>$message</noscript><script type='text/javascript'>alert(\"".$tp->toJS($message)."\"); window.history.go(-1); </script>\n"; exit;
+			break;
 
 		case "P_ALERT":
-		echo "<script type='text/javascript'>alert(\"".$tp->toJS($message)."\"); </script>\n";
-		break;
+			echo "<script type='text/javascript'>alert(\"".$tp->toJS($message)."\"); </script>\n";
+			break;
 
 		case 'POPUP':
 
-		$mtext = "<html><head><title>Message</title><link rel=stylesheet href=" . THEME . "style.css></head><body style=padding-left:2px;padding-right:2px;padding:2px;padding-bottom:2px;margin:0px;align;center marginheight=0 marginleft=0 topmargin=0 leftmargin=0><table width=100% align=center style=width:100%;height:99%padding-bottom:2px class=bodytable height=99% ><tr><td width=100% style='text-align:center'><b>--- Message ---</b><br /><br />".$message."<br /><br /><form><input class=button type=submit onclick=self.close() value = ok /></form></td></tr></table></body></html> ";
+			$mtext = "<html><head><title>Message</title><link rel=stylesheet href=" . THEME . "style.css></head><body style=padding-left:2px;padding-right:2px;padding:2px;padding-bottom:2px;margin:0px;align;center marginheight=0 marginleft=0 topmargin=0 leftmargin=0><table width=100% align=center style=width:100%;height:99%padding-bottom:2px class=bodytable height=99% ><tr><td width=100% style='text-align:center'><b>--- Message ---</b><br /><br />".$message."<br /><br /><form><input class=button type=submit onclick=self.close() value = ok /></form></td></tr></table></body></html> ";
 
-		echo "
-		<script type='text/javascript'>
-		winl=(screen.width-200)/2;
-		wint = (screen.height-100)/2;
-		winProp = 'width=200,height=100,left='+winl+',top='+wint+',scrollbars=no';
-		window.open('javascript:document.write(\"".$mtext."\");', \"message\", winProp);
-		</script >";
+			echo "
+			<script type='text/javascript'>
+			winl=(screen.width-200)/2;
+			wint = (screen.height-100)/2;
+			winProp = 'width=200,height=100,left='+winl+',top='+wint+',scrollbars=no';
+			window.open('javascript:document.write(\"".$mtext."\");', \"message\", winProp);
+			</script >";
 
-		break;
+			break;
 
 	}
 }
