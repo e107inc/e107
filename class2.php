@@ -1835,9 +1835,9 @@ function session_set($name, $value, $expire='', $path = e_HTTP, $domain = '', $s
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function message_handler($mode, $message, $line = 0, $file = '')
 {
-	if(defined('e_DEBUG') && e_DEBUG === true)
+	if(!defined('e_HANDLER'))
 	{
-		echo $message;	
+		echo $message;
 		return;
 	}
 
