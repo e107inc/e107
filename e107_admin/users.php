@@ -1834,7 +1834,7 @@ class users_admin_ui extends e_admin_ui
 		$tp = e107::getParser();
 
 		$age = array(
-			3=>'3 hours', 6=> "6 hours", 24 => "24 hours", 48 => '48 hours', 72 => '3 days'
+			3=>'3 hours', 6=> "6 hours", 12=>'12 hours', 24 => "24 hours", 48 => '48 hours', 72 => '3 days'
 		);
 
 		$count = $sql->count('user','(*)',"user_ban = 2 ");
