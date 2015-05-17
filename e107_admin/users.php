@@ -300,7 +300,8 @@ class users_admin_ui extends e_admin_ui
 		if(!empty($_POST['resendToAll']))
 		{
 			$resetPasswords = !empty($_POST['resetPasswords']);
-			$this->resend_to_all($resetPasswords);
+			$age = vartrue($_POST['resendAge'], 24);
+			$this->resend_to_all($resetPasswords, $age);
 		}
 
 		
@@ -1832,10 +1833,12 @@ class users_admin_ui extends e_admin_ui
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 
-		$age = strtotime('24 hours ago');
+		$age = array(
+			3=>'3 hours', 6=> "6 hours", 24 => "24 hours", 48 => '48 hours', 72 => '3 days'
+		);
 
-		$count = $sql->count('user','(*)',"user_ban = 2 AND user_join < ".$age);
-		$caption = $tp->lanVars('Resend account activation email to [x] users who are older than 24 hours.',$count);
+		$count = $sql->count('user','(*)',"user_ban = 2 ");
+		$caption = $tp->lanVars('Resend account activation email to unactivated users.',$count);
 
 		$text = $frm->open('userMaintenance','post');
 
@@ -1847,7 +1850,11 @@ class users_admin_ui extends e_admin_ui
 		</colgroup>
 		<tr><td>".$caption."<td>
 		<td>
-		<div class='form-inline'>".$frm->button('resendToAll', 1, 'warning', LAN_GO).	$frm->checkbox('resetPasswords',1,false,'Reset all passwords')."
+		<div>Older than ".$frm->select('resendAge', $age, 24).$frm->checkbox('resetPasswords',1,false,'Reset all passwords').
+
+		$frm->button('resendToAll', 1, 'warning', LAN_GO)."
+
+
 		</div></td></tr>
 		</table>";
 
@@ -1861,18 +1868,12 @@ class users_admin_ui extends e_admin_ui
 	}
 
 
-
-
-
-
-
-
-
-
-
-
-	// It might be used in the future - batch options
-	function resend_to_all($resetPasswords=false)
+	/**
+	 * Send an activation email to all unactivated users older than so many hours.
+	 * @param bool $resetPasswords
+	 * @param int $age in hours. ie. older than 24 hours will be sent an email.
+	 */
+	function resend_to_all($resetPasswords=false, $age=24)
 	{
 		global $sql,$pref;
 		$tp = e107::getParser();
@@ -1883,7 +1884,8 @@ class users_admin_ui extends e_admin_ui
 
 		e107::lan('core','signup');
 
-		$age = strtotime('24 hours ago');
+		$ageOpt = intval($age)." hours ago";
+		$age = strtotime($ageOpt);
 
 		$query = "SELECT u.*, ue.* FROM `#user` AS u LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = u.user_id WHERE u.user_ban = 2 AND u.user_join < ".$age." ORDER BY u.user_id DESC";
 
@@ -1911,7 +1913,7 @@ class users_admin_ui extends e_admin_ui
 				{
 					echo "error updating user's password";
 					print_a($updateQry);
-					break;
+				//	break;
 				}
 
 				$row['user_sess'] = $sessKey;
@@ -1966,8 +1968,12 @@ class users_admin_ui extends e_admin_ui
 		);
 
 
+		if(count($recipients))
+		{
+			$result = $mailer->sendEmails('signup', $mailData, $recipients);
+		}
 
-		$result = $mailer->sendEmails('signup', $mailData, $recipients);
+		e107::getMessage()->addSuccess("Total emails added to mail queue: ".count($recipients));
 
 	}
 
