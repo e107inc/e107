@@ -214,14 +214,14 @@ class e107_db_debug {
 
 
 
-	function Show_SQL_Details() {
+	function Show_SQL_Details($force=false) {
 		global $sql;
 		//
 		// Show stats from aSQLdetails array
 		//
-		if (!E107_DBG_SQLQUERIES && !E107_DBG_SQLDETAILS)
+		if (!E107_DBG_SQLQUERIES && !E107_DBG_SQLDETAILS  && ($force === false))
 		{
-			return FALSE;
+			return false;
 		}
 
 
@@ -498,11 +498,11 @@ class e107_db_debug {
 		$this->scbcount ++;
 	}
 
-	function Show_SC_BB()
+	function Show_SC_BB($force=false)
 	{
-		if (!E107_DBG_BBSC)
+		if (!E107_DBG_BBSC  && ($force === false))
 		{
-			return FALSE;
+			return false;
 		}
 
 		$text = "<table class='fborder table table-striped table-condensed' style='width: 100%'>
@@ -530,9 +530,9 @@ class e107_db_debug {
 		return $text;
 	}
 
-	function Show_PATH()
+	function Show_PATH($force=false)
 	{
-		if (!E107_DBG_PATH)
+		if (!E107_DBG_PATH && ($force === false))
 		{
 			return FALSE;
 		}
@@ -616,10 +616,11 @@ class e107_db_debug {
 	}
 
 
-	function Show_DEPRECATED(){
-		if (!E107_DBG_DEPRECATED)
+	function Show_DEPRECATED($force=false)
+	{
+		if (!E107_DBG_DEPRECATED  && ($force === false))
 		{
-			return FALSE;
+			return false;
 		} 
 		else 
 		{
@@ -703,9 +704,9 @@ class e107_db_debug {
 		return $text;
 	}
 	
-	function Show_Includes()
+	function Show_Includes($force=false)
 	{
-		if (!E107_DBG_INCLUDES) return FALSE;
+		if (!E107_DBG_INCLUDES  && ($force === false)) return false;
 
 		
         
