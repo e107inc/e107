@@ -721,7 +721,7 @@ class mailout_main_ui extends e_admin_ui
 		}
 		else
 		{
-			e107::coreLan('signup');
+		//	e107::coreLan('signup');
 			$tp = e107::getParser();
 
 			$eml = array(
@@ -767,7 +767,7 @@ class mailout_main_ui extends e_admin_ui
 			'LOGINNAME'			=> "test-loginname",
 			'SUBJECT'           => "Test Subject",
 			'DATE_SHORT'        => $tp->toDate(time(),'short'),
-			'DATE_LONG'         => $tp->toDate(time(),'long'),
+			'DATE_LONG'         => $tp->toDate(time(),'long')
 		);
 
 
