@@ -884,7 +884,9 @@ class e107MailManager
 			//'wordwrap'		- Set wordwrap value
 			//'split'			- If true, sends an individual email to each recipient
 			'template'		=> 'mail_send_style', // required
-			'shortcodes'	=> 'mail_target_info' // required
+			'shortcodes'	=> 'mail_target_info', // required
+			'e107_header'   => 'mail_recipient_id'
+
 			);
 
 
@@ -1725,9 +1727,9 @@ class e107MailManager
 	public function sendEmails($templateName, $emailData, $recipientData, $extra = FALSE)
 	{
 		$log = e107::getAdminLog();
-		$log->addDebug(print_a($emailData, true),true);
-		$log->addDebug(print_a($recipientData, true),true);
-		$log->toFile('mail_manager','Mail Manager Log',true);
+		$log->addDebug(print_r($emailData, true),true);
+		$log->addDebug(print_r($recipientData, true),true);
+		$log->toFile('mail_manager','Mail Manager Log', true);
 		
 		
 		if (!is_array($emailData)) 

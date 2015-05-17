@@ -1144,6 +1144,15 @@ class e_system_user extends e_user_model
 			$eml['e107_header'] = $userInfo['user_id']; 
 		//	$mailer->AddCustomHeader("X-e107-id: {$userInfo['user_id']}");
 		}
+
+
+		if(getperms('0') && E107_DEBUG_LEVEL > 0)
+		{
+			e107::getMessage()->addDebug("Email Debugger active. <b>Simulation Only!</b>");
+			e107::getMessage()->addDebug($mailer->preview($eml));
+			return true;
+		}
+
 		
 		return $mailer->sendEmail($userInfo['user_email'], $userInfo['user_name'], $eml, false);
 	}

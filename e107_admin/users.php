@@ -52,6 +52,7 @@ class users_admin extends e_admin_dispatcher
 		'main/add' 		=> array('caption'=> LAN_USER_QUICKADD, 'perm' => '4|U0|U1'),
 		'main/prefs' 	=> array('caption'=> LAN_OPTIONS, 'perm' => '4|U2'),
 		'main/ranks'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3'),
+		'main/maintenance'  => array('caption'=>'Maintenance', 'perms'=>'4')
 	//	'ranks/list'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3')
 	);
 	
@@ -294,6 +295,14 @@ class users_admin_ui extends e_admin_ui
 	
 		$sql = e107::getDb();
 		$tp = e107::getParser();
+
+
+		if(!empty($_POST['resendToAll']))
+		{
+			$resetPasswords = !empty($_POST['resetPasswords']);
+			$this->resend_to_all($resetPasswords);
+		}
+
 		
 		if($this->getAction() == 'edit')
 		{
@@ -1813,43 +1822,153 @@ class users_admin_ui extends e_admin_ui
 		$ns->tablerender(USFLAN_7, $text);
 	}
 
-	// It might be used in the future - batch options
-	function resend_to_all()
+
+
+
+	function maintenancePage()
 	{
-		global $sql,$pref,$sql3,$admin_log;
-		$count = 0;
-		$pause_count = 1;
-		$pause_amount = ($pref['mail_pause']) ? $pref['mail_pause'] : 10;
-		$pause_time = ($pref['mail_pausetime']) ? $pref['mail_pausetime'] : 1;
-		if ($sql->db_Select_gen('SELECT user_language FROM `#user_extended` LIMIT 1'))
-		{
-			$query = "SELECT u.*, ue.* FROM `#user` AS u LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = u.user_id WHERE u.user_ban = 2 ORDER BY u.user_id DESC";
-		}
-		else
-		{
-			$query = 'SELECT * FROM `#user` WHERE user_ban=2';
-		}
+		$frm = e107::getForm();
+		$ns = e107::getRender();
+		$sql = e107::getDb();
+		$tp = e107::getParser();
 
-		$sql3 = e107::getDb('sql3');
+		$age = strtotime('24 hours ago');
 
-		$sql3->db_Select_gen($query);
-		while ($row = $sql3->db_Fetch())
+		$count = $sql->count('user','(*)',"user_ban = 2 AND user_join < ".$age);
+		$caption = $tp->lanVars('Resend account activation email to [x] users who are older than 24 hours.',$count);
+
+		$text = $frm->open('userMaintenance','post');
+
+		$text .= "
+        <table class='table adminform'>
+		<colgroup>
+		<col class='col-label' />
+		<col class='col-control' />
+		</colgroup>
+		<tr><td>".$caption."<td>
+		<td>
+		<div class='form-inline'>".$frm->button('resendToAll', 1, 'warning', LAN_GO).	$frm->checkbox('resetPasswords',1,false,'Reset all passwords')."
+		</div></td></tr>
+		</table>";
+
+		$text .= $frm->close();
+
+		return $text;
+
+
+
+
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+	// It might be used in the future - batch options
+	function resend_to_all($resetPasswords=false)
+	{
+		global $sql,$pref;
+		$tp = e107::getParser();
+		$sql = e107::getDb();
+		$sql2 = e107::getDb('toall');
+
+		$emailLogin = e107::getPref('allowEmailLogin');
+
+		e107::lan('core','signup');
+
+		$age = strtotime('24 hours ago');
+
+		$query = "SELECT u.*, ue.* FROM `#user` AS u LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = u.user_id WHERE u.user_ban = 2 AND u.user_join < ".$age." ORDER BY u.user_id DESC";
+
+		$sql->gen($query);
+
+		$recipients = array();
+
+		$usr = e107::getUserSession();
+
+		while ($row = $sql->fetch())
 		{
-			echo $row['user_id']." ".$row['user_sess']." ".$row['user_name']." ".$row['user_email']."<br />";
-			$this->resend($row['user_id'],$row['user_sess'],$row['user_name'],$row['user_email'],$row['user_language']);
-			if ($pause_count > $pause_amount)
+
+			if($resetPasswords === true)
 			{
-				sleep($pause_time);
-				$pause_count = 1;
+				$rawPassword    = $usr->generateRandomString('********');
+				$sessKey        = e_user_model::randomKey();
+
+				$updateQry = array(
+					'user_sess'     => $sessKey,
+					'user_password' => $usr->HashPassword($rawPassword, $row['user_loginname']),
+					'WHERE'         => 'user_id = '.$row['user_id']." LIMIT 1"
+				);
+
+				if(!$sql2->update('user',$updateQry))
+				{
+					echo "error updating user's password";
+					print_a($updateQry);
+					break;
+				}
+
+				$row['user_sess'] = $sessKey;
+
 			}
-			sleep(1);
-			$pause_count++;
-			$count++;
+			else
+			{
+				$rawPassword = '(*** hidden ***)';
+			}
+
+
+			$recipients[] = array(
+				'mail_recipient_id'     => $row['user_id'],
+				'mail_recipient_name'   => $row['user_name'],		// Should this use realname?
+				'mail_recipient_email'  => $row['user_email'],
+				'mail_target_info'		=> array(
+					'USERID'		        => $row['user_id'],
+					'LOGINNAME'             => (intval($emailLogin) === 1) ? $row['user_email'] : $row['user_loginname'],
+					'PASSWORD'              => $rawPassword,
+					'DISPLAYNAME' 	        => $row['user_name'],
+					'SUBJECT'               => LAN_SIGNUP_98,
+					'USERNAME' 		        => $row['user_name'],
+					'USERLASTVISIT'         => $row['user_lastvisit'],
+					'ACTIVATION_LINK'       =>  SITEURL."signup.php?activate.".$row['user_id'].".".$row['user_sess'],
+					'DATE_SHORT'            => $tp->toDate(time(),'short'),
+					'DATE_LONG'             => $tp->toDate(time(),'long'),
+				)
+			);
+
+		//	echo $row['user_id']." ".$row['user_sess']." ".$row['user_name']." ".$row['user_email']."<br />";
+
 		}
-		if ($count)
-		{
-			e107::getLog()->add('USET_12',str_replace('--COUNT--',$count,USRLAN_168),E_LOG_INFORMATIVE);
-		}
+
+		$siteadminemail = e107::getPref('siteadminemail');
+		$siteadmin = e107::getPref('siteadmin');
+
+		$mailer = e107::getBulkEmail();
+
+		// Create the mail body
+		$mailData = array(
+			'mail_total_count'      => count($recipients),
+			'mail_content_status' 	=> MAIL_STATUS_TEMP,
+			'mail_create_app' 		=> 'core',
+			'mail_title' 			=> 'RESEND ACTIVATION',
+			'mail_subject' 			=> LAN_SIGNUP_98,
+			'mail_sender_email' 	=> e107::getPref('replyto_email',$siteadminemail),
+			'mail_sender_name'		=> e107::getPref('replyto_name',$siteadmin),
+			'mail_notify_complete' 	=> 0,			// NEVER notify when this email sent!!!!!
+			'mail_body' 			=> 'null',
+			'template'				=> 'signup',
+			'mail_send_style'       => 'signup'
+		);
+
+
+
+		$result = $mailer->sendEmails('signup', $mailData, $recipients);
+
 	}
 
 	// ---------------------------------------------------------------------

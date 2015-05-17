@@ -76,6 +76,7 @@ if (!getperms('W'))
 }
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_users.php');
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_mailout.php');
+	e107::lan('core','signup');
 
 require_once(e_HANDLER.'ren_help.php');
 
@@ -132,6 +133,11 @@ function sendProgress($id)
 
 	 
 }
+
+	if(!empty($_GET['iframe']))
+	{
+		define('e_IFRAME', true);
+	}
 
 if(e_AJAX_REQUEST)
 {
@@ -353,14 +359,26 @@ class mailout_main_ui extends e_admin_ui
 		'mail_body_alt'	,			// If non-empty, use for alternate email text (generally the 'plain text' alternative)
 		'mail_overrides'
 	);
-	
+
+
+	function afterDelete($del_data,$id)
+	{
+		$result = e107::getDb()->delete('mail_recipients', 'mail_detail_id = '.intval($id));
+	//	$this->getModel()->addMessageDebug("Deleted ".$result." recipients from the deleted email #".$id);
+	//	e107::getMessage()->addDebug("Deleted ".$result." recipients from the deleted email #".$id, 'default', true);
+
+	}
+
 
 	function init()
 	{
 		$action = varset($_GET['mode'], 'main');
 
 		$this->mailAdmin = new mailoutAdminClass($action);	
-		
+
+
+
+
 		if($_GET['action'] == 'preview')
 		{
 			echo $this->previewPage($_GET['id'], $_GET['user']);
@@ -470,8 +488,7 @@ class mailout_main_ui extends e_admin_ui
 		}
 		else
 		{
-			$mailheader_e107id = USERID;
-		
+
 			$add = ($pref['mailer']) ? " (".strtoupper($pref['mailer']).")" : ' (PHP)';
 			$sendto = trim($_POST['testaddress']);
 			
@@ -674,7 +691,15 @@ class mailout_main_ui extends e_admin_ui
 		{
 			$mailData = e107::getDb()->retrieve('mail_content','*','mail_source_id='.intval($id)." LIMIT 1");
 			
-			$shortcodes = array('USERNAME'=>'John Example', 'DISPLAYNAME'=> 'John Example', 'USERID'=>'555', 'MAILREF'=>$_GET['id'], 'NEWSLETTER'=>SITEURL."newsletter/?id=example1234567", 'UNSUBSCRIBE'=>SITEURL."unsubscribe/?id=example1234567");
+			$shortcodes = array(
+			'USERNAME'=>'John Example',
+			 'DISPLAYNAME'=> 'John Example',
+			 'USERID'=>'555', 'MAILREF'=>$_GET['id'],
+			 'LOGINNAME' => 'johnE',
+			 'ACTIVATION_LINK' => SITEURL.'signup.php?testing-activation',
+			 'PASSWORD' => 'MyPass123',
+			 'NEWSLETTER'=>SITEURL."newsletter/?id=example1234567",
+			  'UNSUBSCRIBE'=>SITEURL."unsubscribe/?id=example1234567");
 			
 			if(!empty($user))
 			{
@@ -1504,10 +1529,11 @@ class mailout_admin_form_ui extends e_admin_form_ui
 		if($mode == 'sent' || $mode == 'pending' || $mode == 'held')
 		{
 			$user = $this->getController()->getModel()->get('mail_recipient_id');
-			$link = e_SELF."?searchquery=&filter_options=mail_detail_id__".$id."&mode=recipients&action=list";	
+			$link = e_SELF."?searchquery=&filter_options=mail_detail_id__".$id."&mode=recipients&action=list&iframe=1";
 			$preview = e_SELF."?mode=main&action=preview&id=".$id.'&user='.$user;
-			$text .= "<a href='".$link."' class='btn' title='Recipients'>".E_32_USER."</a>";
-				$text .= "<a rel='external' class='btn e-modal' data-modal-caption='Email preview' href='".$preview."' class='btn' title='Preview'>".E_32_SEARCH."</a>";
+
+			$text = "<a href='".$link."' class='btn e-modal' data-modal-caption='Recipients for Mail #".$id."' title='Recipients'>".E_32_USER."</a>";
+			$text .= "<a rel='external' class='btn e-modal' data-modal-caption='Email preview' href='".$preview."' class='btn' title='Preview'>".E_32_SEARCH."</a>";
 		
 			$att['readParms']['editClass'] = e_UC_NOBODY;
 			$text .= $this->renderValue('options',$value,$att,$id);
@@ -1674,7 +1700,7 @@ class mailout_recipients_form_ui extends e_admin_form_ui
 		$eid = $this->getController()->getListModel()->get('mail_detail_id');
 		
 		$preview = e_SELF."?mode=main&action=preview&id=".$eid.'&user='.$user;
-		$text .= "<a rel='external' class='btn e-modal' data-modal-caption='Email preview' href='".$preview."' class='btn' title='Preview'>".E_32_SEARCH."</a>";
+		$text = "<a rel='external' class='btn e-modal' data-modal-caption='Email preview' href='".$preview."' class='btn' title='Preview'>".E_32_SEARCH."</a>";
 		
 		$att['readParms']['editClass'] = e_UC_NOBODY;
 		$text .= $this->renderValue('options',$value,$att,$id);
