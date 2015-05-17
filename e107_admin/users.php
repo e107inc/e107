@@ -1887,7 +1887,10 @@ class users_admin_ui extends e_admin_ui
 		$ageOpt = intval($age)." hours ago";
 		$age = strtotime($ageOpt);
 
-		$query = "SELECT u.*, ue.* FROM `#user` AS u LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = u.user_id WHERE u.user_ban = 2 AND u.user_join < ".$age." ORDER BY u.user_id DESC";
+	//	$query = "SELECT u.*, ue.* FROM `#user` AS u LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = u.user_id WHERE u.user_ban = 2 AND u.user_email != '' AND u.user_join < ".$age." ORDER BY u.user_id DESC";
+
+
+		$query = "SELECT u.* FROM `#user` AS u WHERE u.user_ban = 2 AND u.user_email != '' AND u.user_join < ".$age." ORDER BY u.user_id DESC";
 
 		$sql->gen($query);
 
@@ -1913,8 +1916,14 @@ class users_admin_ui extends e_admin_ui
 				{
 					echo "error updating user's password";
 					print_a($updateQry);
+
 				//	break;
 				}
+				else
+				{
+					e107::getMessage()->addInfo("Updated ".$row['user_id']." : ".$row['user_email']);
+				}
+
 
 				$row['user_sess'] = $sessKey;
 
@@ -1968,12 +1977,10 @@ class users_admin_ui extends e_admin_ui
 		);
 
 
-		if(count($recipients))
-		{
-			$result = $mailer->sendEmails('signup', $mailData, $recipients);
-		}
+		$mailer->sendEmails('signup', $mailData, $recipients);
+		$totalMails = count($recipients);
 
-		e107::getMessage()->addSuccess("Total emails added to mail queue: ".count($recipients));
+		e107::getMessage()->addSuccess("Total emails added to mail queue: ".$totalMails);
 
 	}
 
