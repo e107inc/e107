@@ -212,6 +212,7 @@ class e107
 		'userlogin'					 	 => '{e_HANDLER}login.php',
 		'validatorClass'				 => '{e_HANDLER}validator_class.php',
 		'xmlClass'						 => '{e_HANDLER}xml_class.php',
+		'e107MailManager'                => '{e_HANDLER}mail_manager_class.php'
 	);
 
 	/**
@@ -1204,6 +1205,17 @@ class e107
 	public static function getEmail()
 	{
 		return self::getSingleton('e107Email', true);
+	}
+
+
+	/**
+	 * Retrieve e107Email mail mailer object.
+	 *
+	 * @return e107MailManager
+	 */
+	public static function getBulkEmail()
+	{
+		return self::getSingleton('e107MailManager', true);
 	}
 
 	/**

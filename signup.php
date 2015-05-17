@@ -50,142 +50,6 @@ $text = '';
 $extraErrors = array();
 $error = FALSE;
 
-//-------------------------------
-// Resend Activation Email
-//-------------------------------
-/*
-if((e_QUERY == 'resend') && !USER && ($pref['user_reg_veri'] == 1))
-{
-	require_once(HEADERF);
-
-	$clean_email = $tp->toDB($_POST['resend_email']);
-    if(!check_email($clean_email))
-	{
-		$clean_email = "xxx";
-	}
-
-    $new_email = $tp->toDB(varset($_POST['resend_newemail'], ''));
-    if(!check_email($new_email ))
-	{
-    	$new_email = FALSE;
-	}
-
-	if($_POST['submit_resend'])
-	{	// Action user's submitted information
-		// 'resend_email' - user name or email address actually used to sign up
-		// 'resend_newemail' - corrected email address
-		// 'resend_password' - password (required if changing email address)
-
-		if($_POST['resend_email'] && !$new_email && $clean_email && $sql->gen("SELECT * FROM #user WHERE user_ban=0 AND user_sess='' AND (`user_loginname`= '".$clean_email."' OR `user_name` = '".$clean_email."' OR `user_email` = '".$clean_email."' ) "))
-		{	// Account already activated
-			$ns->tablerender(LAN_SIGNUP_40,LAN_SIGNUP_41."<br />");
-			require_once(FOOTERF);
-			exit();
-		}
-
-
-		// Start by looking up the user
-		if(!$sql->select("user", "*", "(`user_loginname` = '".$clean_email."' OR `user_name` = '".$clean_email."' OR `user_email` = '".$clean_email."' ) AND `user_ban`=".USER_REGISTERED_NOT_VALIDATED." AND `user_sess` !='' LIMIT 1"))
-		{
-			message_handler("ALERT",LAN_SIGNUP_64.': '.$clean_email); // email (or other info) not valid.
-			require_once(FOOTERF);
-			exit();
-		}
-		$row = $sql -> fetch();
-		// We should have a user record here
-
-		if(trim($_POST['resend_password']) !="" && $new_email)
-		{  // Need to change the email address - check password to make sure
-			if ($userMethods->CheckPassword($_POST['resend_password'], $row['user_loginname'], $row['user_password']) === TRUE)
-			{
-				if ($sql->select('user', 'user_id, user_email', "user_email='".$new_email."'"))
-				{	// Email address already used by someone
-					message_handler("ALERT",LAN_SIGNUP_106); 	// Duplicate email
-					require_once(FOOTERF);
-					exit();
-				}
-				if($sql->update("user", "user_email='".$new_email."' WHERE user_id = '".$row['user_id']."' LIMIT 1 "))
-				{
-					$row['user_email'] = $new_email;
-				}
-			}
-			else
-			{
-				message_handler("ALERT",LAN_SIGNUP_52); // Incorrect Password.
-				require_once(FOOTERF);
-				exit();
-			}
-		}
-
-		// Now send the email - got some valid info
-		$row['user_password'] = 'xxxxxxx';		// Don't know the real one
-		$eml = render_email($row);
-		$eml['e107_header'] = $row['user_id'];
-		require_once(e_HANDLER.'mail.php');
-		$mailer = new e107Email();
-
-		if(!$mailer->sendEmail(USEREMAIL, USERNAME, $eml, FALSE))
-
-		$do_log['signup_action'] = LAN_SIGNUP_63;
-
-		if(!sendemail($row['user_email'], $eml['subject'], $eml['message'], $row['user_name'], "", "", $eml['attachments'], $eml['cc'], $eml['bcc'], $returnpath, $returnreceipt,$eml['inline-images']))
-		{
-			$ns->tablerender(LAN_ERROR,LAN_SIGNUP_42);
-			$do_log['signup_result'] = LAN_SIGNUP_62;
-		}
-		else
-		{
-			$ns->tablerender(LAN_SIGNUP_43,LAN_SIGNUP_44." ".$row['user_email']." - ".LAN_SIGNUP_45."<br /><br />");
-			$do_log['signup_result'] = LAN_SIGNUP_61;
-		}
-		// Now log this (log will ignore if its disabled)
-		$admin_log->user_audit(USER_AUDIT_PW_RES,$do_log,$row['user_id'],$row['user_name']);
-		require_once(FOOTERF);
-		exit;
-	}
-	elseif(!$_POST['submit_resend'])
-	{	
-		// Display form to get info from user
-		$text .= "<div style='text-align:center'>
-		<form method='post' action='".e_SELF."?resend' id='resend_form' autocomplete='off'>
-		<table style='".USER_WIDTH."' class='fborder'>
-		<tr>
-			<td class='forumheader3' style='text-align:right'>".LAN_SIGNUP_48."</td>
-        <td class='forumheader3'>
-		<input type='text' name='resend_email' class='tbox' size='50' style='max-width:80%' value='' maxlength='80' />
-		</td>
-		</tr>
-
-		<tr>
-			<td class='forumheader3' colspan='2'>".LAN_SIGNUP_49."</td>
-		</tr>
-		<tr>
-			<td class='forumheader3' style='text-align:right;width:30%'>".LAN_SIGNUP_50."</td>
-			<td class='forumheader3'><input type='text' name='resend_newemail' class='tbox' size='50' style='max-width:80%' value='' maxlength='80' /></td>
-		</tr>
-		<tr>
-			<td class='forumheader3' style='text-align:right'>".LAN_SIGNUP_51."</td>
-			<td class='forumheader3'><input type='text' name='resend_password' class='tbox' size='50' style='max-width:80%' value='' maxlength='80' /></td>
-		</tr>
-
-		";
-
-		$text .="<tr style='vertical-align:top'>
-		<td colspan='2' style='text-align:center' class='forumheader'>";
-		$text .= "<input class='btn btn-default button' type='submit' name='submit_resend' value=\"".LAN_SIGNUP_47."\" />";  // resend activation email.
-		$text .= "</td>
-		</tr>
-		</table>
-		</form>
-		</div>";
-
-		$ns->tablerender(LAN_SIGNUP_47, $text);
-		require_once(FOOTERF);
-		exit;
-	}
-    exit;
-}*/
-
 // ------------------------------------------------------------------
 
 if(!$_POST)
@@ -228,29 +92,6 @@ if ((USER || (intval($pref['user_reg']) !== 1) || (vartrue($pref['auth_method'],
 {
 	 header('location: '.e_HTTP.'index.php');
 	
-}
-
-if(getperms('0')) // allow main admin to view signup page for design/testing. 
-{
-	//$mes = e107::getMessage();
-	//$mes->debug("You are currently logged in.");
-
-	$adminMsg = "<div class='form-group'>".LAN_SIGNUP_112."</div>";
-
-	if(intval($pref['user_reg']) !== 1)
-	{
-		$adminMsg .= "<div class='form-group'><b>User registration is currently disabled.</b></div>";
-	}
-
-	$adminMsg .= "<div class='form-group form-inline'>
-	<a class='btn btn-warning btn-danger btn-sm' href='".e_SELF."?preview'>Preview Activation Email</a>
-		<a class='btn btn-error btn-danger btn-sm' href='".e_SELF."?preview.aftersignup'>Preview After Form Submit</a>
-		<a class='btn btn-error btn-danger btn-sm e-tip' href='".e_SELF."?test' title=\"to ".USEREMAIL."\">Send a Test Activation</a>
-		</div>
-		";
-
-	$SIGNUP_BEGIN = "<div class='alert alert-block alert-error alert-danger text-center'>".$adminMsg."</div>". $SIGNUP_BEGIN;
-	unset($adminMsg);
 }
 
 
@@ -660,7 +501,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 		$noPasswordInput = e107::getPref('signup_option_password', 2); //0 = generate it.
 		if(empty($noPasswordInput) && !isset($_POST['password1']) && intval($pref['user_reg_veri'])===1)
 		{
-			$_POST['password1'] = $userMethods->generateRandomString("#???????!????*#");
+			$_POST['password1'] = $userMethods->generateRandomString("#*******#");
 			$_POST['password2'] = $_POST['password1'];
 		}
 
@@ -908,8 +749,19 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 				if(!vartrue($allData['data']['user_name'])) $allData['data']['user_name'] = $allData['data']['user_login'];
 				
 				// prefered way to send user emails
-			//	if(!getperms('0')) // Alow logged in main-admin to test signup procedure.
-			//	{
+
+				if(getperms('0') && !empty($_POST['simulation']))
+				{
+					$simulation = true;
+					$check = true; //removes error message below.
+				}
+				else
+				{
+					$simulation = false;
+				}
+
+				if($simulation !== true) // Alow logged in main-admin to test signup procedure.
+				{
 					$sysuser = e107::getSystemUser(false, false);
 					$sysuser->setData($allData['data']);
 					$sysuser->setId($nid);
@@ -917,7 +769,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 						'user_id'       => $nid,
 						'user_password' => $savePassword, // for security reasons - password passed ONLY through options
 					));
-			//	}
+				}
 
 				if(getperms('0'))
 				{
@@ -925,7 +777,6 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 					e107::getMessage()->addDebug("Password: <b>".$savePassword."</b>");
 				}
 
-				
 				/*
                 $eml = render_email($allData['data']);
 				$eml['e107_header'] = $eml['userid'];

@@ -503,6 +503,40 @@ class signup_shortcodes extends e_shortcode
 		return " *";
 	}
 
+
+	// allow main admin to view signup page for design/testing.
+	function sc_signup_adminoptions()
+	{
+
+		if(getperms('0'))
+		{
+			$pref = e107::getPref();
+			$frm = e107::getForm();
+			$adminMsg = "<div class='form-group'>".LAN_SIGNUP_112."</div>";
+
+			if(intval($pref['user_reg']) !== 1)
+			{
+				$adminMsg .= "<div class='form-group'><b>User registration is currently disabled.</b></div>";
+			}
+
+			$adminMsg .= "<div class='form-group form-inline'>
+			<a class='btn btn-warning btn-danger btn-sm' href='".e_SELF."?preview'>Preview Activation Email</a>
+			<a class='btn btn-error btn-danger btn-sm' href='".e_SELF."?preview.aftersignup'>Preview After Form Submit</a>
+			<a class='btn btn-error btn-danger btn-sm e-tip' href='".e_SELF."?test' title=\"to ".USEREMAIL."\">Send a Test Activation</a>
+			</div>
+			";
+
+			$adminMsg .= $frm->checkbox('simulation',1, false, "Don't send email");
+
+			return "<div class='alert alert-block alert-error alert-danger text-center'>".$adminMsg."</div>";
+
+		}
+
+
+		return false;
+
+	}
+
 }
 
 ?>
