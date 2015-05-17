@@ -35,8 +35,7 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 
 		if(!empty($path))
 		{
-			$siteurl = $this->sc_siteurl();
-			return '<a href="'.$siteurl.'" class="sitebutton"><img src="'.$path.'" alt="'.SITENAME.'" /></a>';
+			return '<a href="'.SITEURL.'" class="sitebutton"><img src="'.$path.'" alt="'.SITENAME.'" /></a>';
 		}
 	}
 
@@ -62,8 +61,7 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 
 	function sc_sitename($parm='')
 	{
-		$url = $this->sc_siteurl();
-		return ($parm == 'link') ? "<a href='".$url."' title='".SITENAME."'>".SITENAME."</a>" : SITENAME;
+		return ($parm == 'link') ? "<a href='".SITEURL."' title='".SITENAME."'>".SITENAME."</a>" : SITENAME;
 	}
 
 	function sc_sitedescription()
