@@ -157,7 +157,7 @@ class UserHandler
 	 *
 	 *	@return string|boolean - FALSE if invalid emcoding method, else encoded password to store in DB
 	 */
-	public function HashPassword($password, $login_name, $force='')
+	public function HashPassword($password, $login_name='', $force='')
 	{
 	  if ($force == '') $force = $this->preferred;
 	  switch ($force)
@@ -205,6 +205,42 @@ class UserHandler
 		}
 		return PASSWORD_INVALID;
 	}
+
+
+	/**
+	 * Reset the user's password with an auto-generated string.
+	 * @param $uid
+	 * @param string $loginName (optional)
+	 * @return bool|string rawPassword
+	 */
+	public function resetPassword($uid, $loginName='')
+	{
+		if(empty($uid))
+		{
+			return false;
+		}
+
+		$rawPassword    = $this->generateRandomString('********');
+	//	$sessKey        = e_user_model::randomKey();
+
+		$updateQry = array(
+			'user_password' => $this->HashPassword($rawPassword, $loginName),
+			'WHERE'         => 'user_id = '.intval($uid)." LIMIT 1"
+		);
+
+		if(e107::getDb()->update('user', $updateQry))
+		{
+			return $rawPassword;
+		}
+		else
+		{
+			return false;
+		}
+
+
+
+	}
+
 
 
 	/**

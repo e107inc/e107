@@ -43,9 +43,10 @@ class userlogin
 	protected $e107;
 	protected $userMethods;			// Pointer to user handler
 	protected $userIP;				// IP address
-	protected $lookEmail = FALSE;	// Flag set if logged in using email address
+	protected $lookEmail = false;	// Flag set if logged in using email address
 	protected $userData = array();	// Information for current user
-	protected $passResult = FALSE;	// USed to determine if stored password needs update
+	protected $passResult = false;	// USed to determine if stored password needs update
+	protected $testMode   = false;
 
 
 	public function __construct()
@@ -452,6 +453,35 @@ class userlogin
 	}
 
 
+	public function test()
+	{
+
+		$this->testMode = true;
+		$errors = array(
+			'LOGIN_TRY_OTHER'=> 2,		// Try some other authentication method
+			'LOGIN_CONTINUE'=>1,		// Not rejected (which is not exactly the same as 'accepted') by alt_auth
+			'LOGIN_ABORT'=>-1,			// Rejected by alt_auth
+			'LOGIN_BAD_PW'=> -2,		// Password wrong
+			'LOGIN_BAD_USER'=> -3,		// User not in DB
+			'LOGIN_BAD_USERNAME'=> -4,	// Username format unacceptable (e.g. too long)
+			'LOGIN_BAD_CODE'=> -5,		// Wrong image code entered
+			'LOGIN_MULTIPLE'=> -6, 		// Error if multiple logins not allowed
+			'LOGIN_NOT_ACTIVATED'=> -7,	// User in DB=> not activated
+			'LOGIN_BLANK_FIELD'=> -8,	// Username or password blank
+			'LOGIN_BAD_TRIGGER'=> -9,	// Rejected by trigger event
+			'LOGIN_BANNED'=> -10,		// Banned user attempting login
+			'LOGIN_CHAP_FAIL'=> -11,	// CHAP login failed
+			'LOGIN_DB_ERROR'=> -12,		// Error adding user to main DB
+		);
+
+		foreach($errors as $k=>$v)
+		{
+			$this->invalidLogin("John Smith", $v, 'Custom error text');
+			echo "<h4>".$k."</h4>";
+			echo e107::getMessage()->render();
+		}
+
+	}
 
 	/**
 	 * called to log the reason for a failed login.
@@ -463,76 +493,85 @@ class userlogin
 		global $pref, $sql;
 
 		$doCheck = FALSE;			// Flag set if need to ban check
-		switch ($reason)
+
+
+		switch($reason)
 		{
-			case LOGIN_ABORT :		// alt_auth reject
-			  define("LOGINMESSAGE", LAN_LOGIN_21);
-			  $this->genNote($this->userIP,$username, 'Alt_auth: '.LAN_LOGIN_14);
-			  $this->logNote('LAN_ROLL_LOG_04', 'Alt_Auth: '.$username);
-			  $doCheck = TRUE;
-			  break;
-			case LOGIN_DB_ERROR :	// alt_auth couldn't add valid user
-				define("LOGINMESSAGE", LAN_LOGIN_31);
-				$this->genNote($username, 'Alt_auth: '.LAN_LOGIN_30);
+			case LOGIN_ABORT :        // alt_auth reject
+				$message = LAN_LOGIN_21;
+				$this->genNote($this->userIP, $username, 'Alt_auth: ' . LAN_LOGIN_14);
+				$this->logNote('LAN_ROLL_LOG_04', 'Alt_Auth: ' . $username);
+				$doCheck = true;
+				break;
+			case LOGIN_DB_ERROR :    // alt_auth couldn't add valid user
+				$message = LAN_LOGIN_31;
+				$this->genNote($username, 'Alt_auth: ' . LAN_LOGIN_30);
 //				$this->logNote('LAN_ROLL_LOG_04', 'Alt_Auth: '.$username);	// Added in alt_auth login
-				$doCheck = TRUE;
+				$doCheck = true;
 				break;
 			case LOGIN_BAD_PW :
-			  define("LOGINMESSAGE", LAN_LOGIN_21);
-			  $this->logNote('LAN_ROLL_LOG_03', $username);
-			  break;
+				$message = LAN_LOGIN_21;
+				$this->logNote('LAN_ROLL_LOG_03', $username);
+				break;
 			case LOGIN_CHAP_FAIL :
-			  define("LOGINMESSAGE", LAN_LOGIN_21);
-			  $this->logNote('LAN_ROLL_LOG_03', 'CHAP: '.$username);
-			  break;
+				$message = LAN_LOGIN_21;
+				$this->logNote('LAN_ROLL_LOG_03', 'CHAP: ' . $username);
+				break;
 			case LOGIN_BAD_USER :
-			  define("LOGINMESSAGE", LAN_LOGIN_21);
-			  $this->genNote($username, LAN_LOGIN_14);
-			  $this->logNote('LAN_ROLL_LOG_04', $username);
-			  $doCheck = TRUE;
-			  break;
+				$message = LAN_LOGIN_21;
+				$this->genNote($username, LAN_LOGIN_14);
+				$this->logNote('LAN_ROLL_LOG_04', $username);
+				$doCheck = true;
+				break;
 			case LOGIN_BAD_USERNAME :
-			  define("LOGINMESSAGE", LAN_LOGIN_21);
-			  $this->logNote('LAN_ROLL_LOG_08', $username);
-			  break;
+				$message = LAN_LOGIN_21;
+				$this->logNote('LAN_ROLL_LOG_08', $username);
+				break;
 			case LOGIN_MULTIPLE :
-			  define("LOGINMESSAGE", LAN_LOGIN_24);
-			  $this->logNote('LAN_ROLL_LOG_07', "U: {$username} IP: {$this->userIP}");
-			  $this->genNote($username, LAN_LOGIN_16);
-			  $doCheck = TRUE;
-			  break;
+				$message = LAN_LOGIN_24;
+				$this->logNote('LAN_ROLL_LOG_07', "U: {$username} IP: {$this->userIP}");
+				$this->genNote($username, LAN_LOGIN_16);
+				$doCheck = true;
+				break;
 			case LOGIN_BAD_CODE :
-			  define("LOGINMESSAGE", LAN_LOGIN_23);
-			  $this->logNote('LAN_ROLL_LOG_02', $username);
-			  break;
+				$message = LAN_LOGIN_23;
+				$this->logNote('LAN_ROLL_LOG_02', $username);
+				break;
 			case LOGIN_NOT_ACTIVATED :
-			  $srch = array("[","]");
-			  $repl = array("<a href='".e_BASE_ABS."signup.php?resend'>","</a>");
-			  define("LOGINMESSAGE", str_replace($srch,$repl,LAN_LOGIN_22));
-			  $this->logNote('LAN_ROLL_LOG_05', $username);
-			  $this->genNote($username, LAN_LOGIN_27);
-			  $doCheck = TRUE;
-			  break;
+				$srch = array("[", "]");
+				$repl = array("<a href='" . e_HTTP . "signup.php?resend'>", "</a>");
+				$message = str_replace($srch, $repl, LAN_LOGIN_22);
+				$this->logNote('LAN_ROLL_LOG_05', $username);
+				$this->genNote($username, LAN_LOGIN_27);
+				$doCheck = true;
+				break;
 			case LOGIN_BLANK_FIELD :
-			  define("LOGINMESSAGE", LAN_LOGIN_20);
-			  $this->logNote('LAN_ROLL_LOG_01', $username);
-			  break;
+				$message = LAN_LOGIN_20;
+				$this->logNote('LAN_ROLL_LOG_01', $username);
+				break;
 			case LOGIN_BAD_TRIGGER :
-			  define("LOGINMESSAGE", $extra_text);
-			  $this->logNote('LAN_ROLL_LOG_06', $username);
-			  break;
+				$message = $extra_text;
+				$this->logNote('LAN_ROLL_LOG_06', $username);
+				break;
 			case LOGIN_BANNED :
-			  define("LOGINMESSAGE", LAN_LOGIN_21);		// Just give 'incorrect login' message
-			  $this->genNote($username, LAN_LOGIN_25);
-			  $this->logNote('LAN_ROLL_LOG_09', $username);
-			  break;
-			default :		// Something's gone wrong!
-			  define("LOGINMESSAGE", LAN_LOGIN_21);		// Just give 'incorrect login' message
-			  $this->genNote($username, LAN_LOGIN_26);
-			  $this->logNote('LAN_ROLL_LOG_10', $username);
+				$message = LAN_LOGIN_21;        // Just give 'incorrect login' message
+				$this->genNote($username, LAN_LOGIN_25);
+				$this->logNote('LAN_ROLL_LOG_09', $username);
+				break;
+			default :        // Something's gone wrong!
+				$message = LAN_LOGIN_21;        // Just give 'incorrect login' message
+				$this->genNote($username, LAN_LOGIN_26);
+				$this->logNote('LAN_ROLL_LOG_10', $username);
 		}
 
-		e107::getMessage()->addError(LOGINMESSAGE);	
+		e107::getMessage()->addError($message);
+
+		if($this->testMode === true)
+		{
+			return $message;
+		}
+
+		define('LOGINMESSAGE', $message);
 
 		if ($doCheck) // See if ban required (formerly the checkibr() function)
 		{

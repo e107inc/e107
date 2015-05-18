@@ -319,8 +319,15 @@ if (isset($_POST['pwsubmit']))
 		$do_log['user_loginname'] 	= $row['user_loginname'];
 		$do_log['activation_code'] 	= $rcode;
 
+		if(getperms('0'))
+		{
+			$ns->tablerender("Testing Mode", print_a($message,true));
+			require_once(FOOTERF);
+			exit;
+		}
+
 		// Try to send the email 
-		if(sendemail($_POST['email'], "".LAN_09."".SITENAME, $message))
+		if(sendemail($clean_email, "".LAN_09."".SITENAME, $message))
 		{
 			e107::getMessage()->addInfo(LAN_FPW6);
 			$do_log['password_result'] = LAN_FPW20;
