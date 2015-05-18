@@ -359,7 +359,7 @@ class signup
 	    $allData['data']['user_email'] = "example@email.com";
 		$allData['data']['user_loginname'] = "user_loginname";
 
-	  	$after_signup = $this->render_after_signup(null);
+	  	$after_signup = self::render_after_signup(null);
 
 		$ns->tablerender($after_signup['caption'], $after_signup['text']);
 	}
@@ -495,7 +495,7 @@ class signup
 
 
 
-	function render_after_signup($error_message='')
+	static function render_after_signup($error_message='')
 	{
 
 		$ret = array();
@@ -905,7 +905,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 
 			require_once(HEADERF);
 
-			$after_signup = render_after_signup($error_message);
+			$after_signup = signup::render_after_signup($error_message);
 			$ns->tablerender($after_signup['caption'], $after_signup['text']);
 
 			require_once(FOOTERF);
