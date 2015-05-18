@@ -42,6 +42,7 @@ global $tp;
 			private $use_imagecode =0;
 			private $sec;
 			private $usernameLabel = LOGIN_MENU_L1;
+			private $allowEmailLogin;
 
 			function __construct()
 			{
@@ -50,6 +51,7 @@ global $tp;
 				$this->use_imagecode = e107::getConfig()->get('logcode');
 				$this->sec = e107::getSecureImg();
 				$this->usernameLabel = '';
+				$this->allowEmailLogin = $pref['allowEmailLogin'];
 
 				if($pref['allowEmailLogin']==1)
 				{
@@ -66,7 +68,11 @@ global $tp;
 			function sc_lm_username_input($parm='')
 			{
 				$pref = e107::getPref();
-				return "<input class='form-control tbox login user' type='text' name='username' placeholder='".$this->usernameLabel."' required='required' id='username' size='15' value='' maxlength='".varset($pref['loginname_maxlength'],30)."' />\n";
+
+				// If logging in with email address - ignore pref and increase to 100 chars.
+				$maxLength  = ($this->allowEmailLogin == 1 || $this->allowEmailLogin) ? 100 : varset($pref['loginname_maxlength'],30);
+
+				return "<input class='form-control tbox login user' type='text' name='username' placeholder='".$this->usernameLabel."' required='required' id='username' size='15' value='' maxlength='".$maxLength."' />\n";
 			}
 
 

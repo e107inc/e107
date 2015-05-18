@@ -301,7 +301,8 @@ class users_admin_ui extends e_admin_ui
 		{
 			$resetPasswords = !empty($_POST['resetPasswords']);
 			$age = vartrue($_POST['resendAge'], 24);
-			$this->resend_to_all($resetPasswords, $age);
+			$class = vartrue($_POST['resendClass'], false);
+			$this->resend_to_all($resetPasswords, $age, $class);
 		}
 
 		
@@ -1851,7 +1852,7 @@ class users_admin_ui extends e_admin_ui
 		<tr><td>".$caption."<td>
 		<td>
 		<div>Older than ".$frm->select('resendAge', $age, 24).$frm->checkbox('resetPasswords',1,false,'Reset all passwords').
-
+		$frm->userclass('resendClass',false, null ).
 		$frm->button('resendToAll', 1, 'warning', LAN_GO)."
 
 
@@ -1873,7 +1874,7 @@ class users_admin_ui extends e_admin_ui
 	 * @param bool $resetPasswords
 	 * @param int $age in hours. ie. older than 24 hours will be sent an email.
 	 */
-	function resend_to_all($resetPasswords=false, $age=24)
+	function resend_to_all($resetPasswords=false, $age=24, $class='')
 	{
 		global $sql,$pref;
 		$tp = e107::getParser();
@@ -1890,7 +1891,14 @@ class users_admin_ui extends e_admin_ui
 	//	$query = "SELECT u.*, ue.* FROM `#user` AS u LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = u.user_id WHERE u.user_ban = 2 AND u.user_email != '' AND u.user_join < ".$age." ORDER BY u.user_id DESC";
 
 
-		$query = "SELECT u.* FROM `#user` AS u WHERE u.user_ban = 2 AND u.user_email != '' AND u.user_join < ".$age." ORDER BY u.user_id DESC";
+		$query = "SELECT u.* FROM `#user` AS u WHERE u.user_ban = 2 AND u.user_email != '' AND u.user_join < ".$age." ";
+
+		if(!empty($class))
+		{
+			$query .= " AND FIND_IN_SET( ".intval($class).", u.user_class) ";
+		}
+
+		$query .= " ORDER BY u.user_id DESC";
 
 		$sql->gen($query);
 
@@ -1946,11 +1954,11 @@ class users_admin_ui extends e_admin_ui
 					'USERID'		        => $row['user_id'],
 					'LOGINNAME'             => (intval($emailLogin) === 1) ? $row['user_email'] : $row['user_loginname'],
 					'PASSWORD'              => $rawPassword,
-					'DISPLAYNAME' 	        => $row['user_name'],
+					'DISPLAYNAME' 	        => $tp->toDB($row['user_name']),
 					'SUBJECT'               => LAN_SIGNUP_98,
 					'USERNAME' 		        => $row['user_name'],
 					'USERLASTVISIT'         => $row['user_lastvisit'],
-					'ACTIVATION_LINK'       => "<a href='".$activationUrl."'>".$activationUrl."</a>",
+					'ACTIVATION_LINK'       => '<a href="'.$activationUrl.'">'.$activationUrl.'</a>', // Warning: switching the quotes on this will break the template.
 					'ACTIVATION_URL'        => $activationUrl,
 					'DATE_SHORT'            => $tp->toDate(time(),'short'),
 					'DATE_LONG'             => $tp->toDate(time(),'long'),
@@ -1983,10 +1991,12 @@ class users_admin_ui extends e_admin_ui
 		);
 
 
-		$mailer->sendEmails('signup', $mailData, $recipients);
+		$mailer->sendEmails('signup', $mailData, $recipients, array('mail_force_queue'=>1));
 		$totalMails = count($recipients);
 
-		e107::getMessage()->addSuccess("Total emails added to mail queue: ".$totalMails);
+		$url = e_ADMIN."mailout.php?mode=pending&action=list";
+
+		e107::getMessage()->addSuccess("Total emails added to <a href='".$url."'>mail queue</a>: ".$totalMails);
 
 	}
 

@@ -103,9 +103,16 @@ if ((USER || (intval($pref['user_reg']) !== 1) || (vartrue($pref['auth_method'],
 class signup
 {
 
+	private $testMode = false;
+
 	function __construct()
 	{
 		$pref = e107::pref('core');
+
+		if(getperms('0'))
+		{
+			$this->testMode = true;
+		}
 
 
 		if(substr(e_QUERY,0,9)=='activate.')
@@ -113,7 +120,7 @@ class signup
 			$this->processActivationLink();
 		}
 
-		if((e_QUERY == 'resend') && (!USER || getperms('0')) && ($pref['user_reg_veri'] == 1))
+		if((e_QUERY == 'resend') && (!USER || $this->testMode) && ($pref['user_reg_veri'] == 1))
 		{
 			if(empty($_POST['submit_resend']))
 			{
@@ -125,7 +132,7 @@ class signup
 			}
 		}
 
-		if(getperms('0'))
+		if($this->testMode == true)
 		{
 			if(e_QUERY == 'preview')
 			{
@@ -210,28 +217,53 @@ class signup
 		}
 
 		// Now send the email - got some valid info
-		$row['user_password'] = 'xxxxxxx';		// Don't know the real one
-		$eml = render_email($row);
+		$editPassword = e107::getPref('signup_option_password', 2);
+
+		if(empty($editPassword)) // user input of password was disabled, so generate a new one.
+		{
+			$row['user_password'] = $userMethods->resetPassword($row['user_id']);
+		}
+		else
+		{
+			$row['user_password'] = 'xxxxxxx';		// Don't know the real one
+		}
+
+		$row['activation_url'] = SITEURL."signup.php?activate.".$row['user_id'].".".$row['user_sess'];
+
+		$eml = $this->render_email($row);
 		$eml['e107_header'] = $row['user_id'];
 
-		require_once(e_HANDLER.'mail.php');
-		$mailer = new e107Email();
 
-		if(!$mailer->sendEmail(USEREMAIL, USERNAME, $eml, FALSE))
-
-		$do_log['signup_action'] = LAN_SIGNUP_63;
-
-		if(!sendemail($row['user_email'], $eml['subject'], $eml['message'], $row['user_name'], "", "", $eml['attachments'], $eml['cc'], $eml['bcc'], $returnpath, $returnreceipt, $eml['inline-images']))
+		if($this->testMode == true) // Test Mode.
 		{
-			$ns->tablerender(LAN_ERROR,LAN_SIGNUP_42);
+			echo e107::getEmail()->preview($eml);
+
+			e107::getMessage()->setTitle(LAN_SIGNUP_43,E_MESSAGE_SUCCESS)->addSuccess(LAN_SIGNUP_44." ".$row['user_email']." - ".LAN_SIGNUP_45);
+			$ns->tablerender(null,e107::getMessage()->render());
+
+			e107::getMessage()->setTitle(LAN_ERROR,E_MESSAGE_ERROR)->addError(LAN_SIGNUP_42);
+			$ns->tablerender(null, e107::getMessage()->render());
+
+			return true;
+		}
+
+		$result = e107::getEmail()->sendEmail($row['user_email'], $row['user_name'], $eml, false);
+
+		if(!$result)
+		{
+			e107::getMessage()->setTitle(LAN_SIGNUP_43,E_MESSAGE_ERROR)->addError(LAN_SIGNUP_42);
+			$ns->tablerender(null, e107::getMessage()->render());
 			$do_log['signup_result'] = LAN_SIGNUP_62;
 		}
 		else
 		{
-			$ns->tablerender(LAN_SIGNUP_43,LAN_SIGNUP_44." ".$row['user_email']." - ".LAN_SIGNUP_45."<br /><br />");
+			e107::getMessage()->setTitle(LAN_ERROR,E_MESSAGE_SUCCESS)->addSuccess(LAN_SIGNUP_44." ".$row['user_email']." - ".LAN_SIGNUP_45);
+			$ns->tablerender(null,e107::getMessage()->render());
 			$do_log['signup_result'] = LAN_SIGNUP_61;
 		}
+
 		// Now log this (log will ignore if its disabled)
+		$do_log['signup_action'] = LAN_SIGNUP_63;
 
 		e107::getLog()->user_audit(USER_AUDIT_PW_RES,$do_log,$row['user_id'],$row['user_name']);
 
@@ -292,7 +324,7 @@ class signup
 	private function sendEmailPreview()
 	{
 		$temp = array();
-		$eml = render_email($temp, TRUE); // It ignores the data, anyway
+		$eml = $this->render_email($temp, TRUE); // It ignores the data, anyway
 		$mailer = e107::getEmail();
 
 		if(!$mailer->sendEmail(USEREMAIL, USERNAME, $eml, FALSE))
@@ -313,7 +345,7 @@ class signup
 		$tp = e107::getParser();
 
 		$temp = array();
-		$eml = render_email($temp, true); // It ignores the data, anyway
+		$eml = $this->render_email($temp, true); // It ignores the data, anyway
 		$ns->tablerender('Email Preview', $tp->replaceConstants($eml['preview'],'abs'));
 
 	}
@@ -327,7 +359,7 @@ class signup
 	    $allData['data']['user_email'] = "example@email.com";
 		$allData['data']['user_loginname'] = "user_loginname";
 
-	  	$after_signup = render_after_signup(null);
+	  	$after_signup = $this->render_after_signup(null);
 
 		$ns->tablerender($after_signup['caption'], $after_signup['text']);
 	}
@@ -431,6 +463,81 @@ class signup
 
 
 
+
+	}
+
+
+
+	/**
+	 * Create email to send to user who just registered.
+	 * @param array $userInfo is the array of user-related DB variables
+	 * @return array of data for mailer - field names directly compatible
+	 */
+	function render_email($userInfo, $preview = FALSE)
+	{
+
+		if($preview == TRUE)
+		{
+			$userInfo['user_password'] = "test-password";
+			$userInfo['user_loginname'] = "test-loginname";
+			$userInfo['user_name'] = "test-username";
+			$userInfo['user_email'] = "test-username@email";
+			$userInfo['user_website'] = "www.test-site.com";		// This may not be defined
+			$userInfo['user_id'] = 0;
+			$userInfo['user_sess'] = "1234567890ABCDEFGHIJKLMNOP";
+			$userInfo['activation_url'] = 'http://whereever.to.activate.com/';
+		}
+
+		return  e107::getSystemUser($userInfo['user_id'], false)->renderEmail('signup', $userInfo);
+
+
+	}
+
+
+
+	function render_after_signup($error_message='')
+	{
+
+		$ret = array();
+
+		if(!empty($error_message))
+		{
+			$ret['text'] = "<div class='alert alert-danger'>".$error_message."</b></div>";	// Just display the error message
+			$ret['caption'] = LAN_SIGNUP_99; // Problem Detected
+			return $ret;
+		}
+
+		global $pref, $allData, $adviseLoginName, $tp;
+
+		$srch = array("[sitename]","[email]","{NEWLOGINNAME}","{EMAIL}");
+		$repl = array(SITENAME,"<b>".$allData['data']['user_email']."</b>",$allData['data']['user_loginname'],$allData['data']['user_email']);
+
+		$text = "<div class='alert alert-warning'>";
+
+		if (isset($pref['signup_text_after']) && (strlen($pref['signup_text_after']) > 2))
+		{
+			$text .= str_replace($srch, $repl, $tp->toHTML($pref['signup_text_after'], TRUE, 'parse_sc,defs'))."<br />";
+			// keep str_replace() outside of toHTML to allow for search/replace of dynamic terms within 'defs'.
+		}
+		else
+		{
+			$text .= ($pref['user_reg_veri'] == 2) ?  LAN_SIGNUP_37 : str_replace($srch,$repl, LAN_SIGNUP_72);
+			$text .= "<br /><br />".$adviseLoginName;
+		}
+
+		$text .= "</div>";
+
+		$caption_arr = array();
+		$caption_arr[0] = LAN_SIGNUP_73; // Thank you!  (No Approval).
+		$caption_arr[1] = LAN_SIGNUP_98; // Confirm Email (Email Confirmation)
+		$caption_arr[2] = LAN_SIGNUP_100; // Approval Pending (Admin Approval)
+
+		$caption = $caption_arr[$pref['user_reg_veri']];
+
+		$ret['text']    = $text;
+		$ret['caption'] = $caption;
+
+		return $ret;
 
 	}
 
@@ -931,76 +1038,4 @@ function headerjs()
 }
 
 
-/**
- * Create email to send to user who just registered.
- * @param array $userInfo is the array of user-related DB variables
- * @return array of data for mailer - field names directly compatible
- */
-function render_email($userInfo, $preview = FALSE)
-{
-
-	if($preview == TRUE)
-	{
-		$userInfo['user_password'] = "test-password";
-		$userInfo['user_loginname'] = "test-loginname";
-		$userInfo['user_name'] = "test-username";
-		$userInfo['user_email'] = "test-username@email";
-		$userInfo['user_website'] = "www.test-site.com";		// This may not be defined
-		$userInfo['user_id'] = 0;
-		$userInfo['user_sess'] = "1234567890ABCDEFGHIJKLMNOP";
-		$userInfo['activation_url'] = 'http://whereever.to.activate.com/';
-	}
-	
-	return  e107::getSystemUser($userInfo['user_id'], false)->renderEmail('signup', $userInfo);
-	
-
-}
-
-
-
-function render_after_signup($error_message='')
-{
-
-	$ret = array();
-
-	if(!empty($error_message))
-	{
-		$ret['text'] = "<div class='alert alert-danger'>".$error_message."</b></div>";	// Just display the error message
-		$ret['caption'] = LAN_SIGNUP_99; // Problem Detected
-		return $ret;
-	}
-
-	global $pref, $allData, $adviseLoginName, $tp;
-
-	$srch = array("[sitename]","[email]","{NEWLOGINNAME}","{EMAIL}");
-	$repl = array(SITENAME,"<b>".$allData['data']['user_email']."</b>",$allData['data']['user_loginname'],$allData['data']['user_email']);
-
-	$text = "<div class='alert alert-warning'>";
-
-	if (isset($pref['signup_text_after']) && (strlen($pref['signup_text_after']) > 2))
-	{
-		$text .= str_replace($srch, $repl, $tp->toHTML($pref['signup_text_after'], TRUE, 'parse_sc,defs'))."<br />";
-		// keep str_replace() outside of toHTML to allow for search/replace of dynamic terms within 'defs'.
-	}
-	else
-	{
-		$text .= ($pref['user_reg_veri'] == 2) ?  LAN_SIGNUP_37 : str_replace($srch,$repl, LAN_SIGNUP_72);
-		$text .= "<br /><br />".$adviseLoginName;
-	}
-
-	$text .= "</div>";
-
-	$caption_arr = array();
-	$caption_arr[0] = LAN_SIGNUP_73; // Thank you!  (No Approval).
-	$caption_arr[1] = LAN_SIGNUP_98; // Confirm Email (Email Confirmation)
-	$caption_arr[2] = LAN_SIGNUP_100; // Approval Pending (Admin Approval)
-
-    $caption = $caption_arr[$pref['user_reg_veri']];
-
-    $ret['text']    = $text;
-    $ret['caption'] = $caption;
-
-	return $ret;
-
-}
 ?>
