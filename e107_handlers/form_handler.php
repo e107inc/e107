@@ -1487,7 +1487,7 @@ class e_form
 		
 		if($labelFound)
 		{
-			$text .= $labelFound."</label>";	
+			$text .= "<span>".$labelFound."</span></label>";
 		}
 		
 		return $text;
