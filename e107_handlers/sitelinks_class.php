@@ -1572,7 +1572,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		
 		if(E107_DBG_PATH)
 		{
-			e107::getMessage()->addDebug("db=".$dbLink);
+		//	e107::getMessage()->addDebug("db=".$dbLink);
 		}
 	
 		if($exactMatch)
