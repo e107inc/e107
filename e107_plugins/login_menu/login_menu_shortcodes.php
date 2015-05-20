@@ -133,7 +133,7 @@ global $tp;
 
 			function sc_lm_loginbutton($parm='')
 			{
-				return "<input class='button btn login' type='submit' name='userlogin' id='userlogin' value='".LOGIN_MENU_L28."' />";
+				return "<input class='button btn btn-default login' type='submit' name='userlogin' id='userlogin' value='".LOGIN_MENU_L28."' />";
 			}
 
 			function sc_lm_rememberme($parm='')
