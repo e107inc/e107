@@ -3386,19 +3386,7 @@ class e107
 
 		$eSelf = $_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'];
 		$_self = $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST'].$eSelf;
-		if(!deftrue('e_SINGLE_ENTRY'))
-		{
-			$page = substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);
 
-			if(self::isCli() && !empty($_SERVER['_']))
-			{
-				$page = basename($_SERVER['_']);
-			}
-
-
-			define('e_PAGE', $page);
-			define('e_SELF', $_self);	
-		}
 		
 
 		// START New - request uri/url detection, XSS protection
@@ -3459,6 +3447,29 @@ class e107
 		define('e_REQUEST_SELF', $requestSelf); // full URL without the QUERY string
 		define('e_REQUEST_URI', str_replace(array("'", '"'), array('%27', '%22'), $requestUri)); // absolute http path + query string
 		define('e_REQUEST_HTTP', array_shift(explode('?', e_REQUEST_URI))); // SELF URL without the QUERY string and leading domain part
+
+		if(!deftrue('e_SINGLE_ENTRY'))
+		{
+			$page = substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);
+
+			if(self::isCli() && !empty($_SERVER['_']))
+			{
+				$page = basename($_SERVER['_']);
+			}
+
+
+			define('e_PAGE', $page);
+			define('e_SELF', $_self);
+		}
+		else
+		{
+			define('e_SELF', e_REQUEST_SELF);
+		}
+
+
+
+
+
 		unset($requestUrl, $requestUri);
 		// END request uri/url detection, XSS protection
 
@@ -3565,6 +3576,10 @@ class e107
 		{
 			define('e_QUERY', $e_QUERY);	
 			$_SERVER['QUERY_STRING'] = e_QUERY;	
+		}
+		else
+		{
+			define('e_QUERY', '');
 		}
 		
 
