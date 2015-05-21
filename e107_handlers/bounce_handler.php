@@ -109,7 +109,12 @@ class e107Bounce
 		{
 			if($errors = $this->setUser_Bounced($e107_userid))
 			{
-		//		$message .= print_a($errors,true);	
+				if($this->debug)
+				{
+					echo "<h3>Errors</h3>";
+					print_a($errors);
+				}
+
 			}
 
 		}
@@ -194,13 +199,18 @@ class e107Bounce
 	
 	function setUser_Bounced($bounceString = '', $email='' )
 	{
-		if(!$email && !$bounceString){ return; }
+		if(!$email && !$bounceString)
+		{
+			 return false;
+		}
 	//	echo "Email bounced ID: ".$id_or_email;	
-		require_once(e_HANDLER.'mail_manager_class.php');
 
-		$mailManager = new e107MailManager();
+		$mailManager = e107::getBulkEmail();
+
+		$mailManager->controlDebug($this->debug);
+
 		if ($errors = $mailManager->markBounce($bounceString, $email))
-		{	
+		{
 			return $errors;  // Failure
 		}
 		
