@@ -1120,6 +1120,12 @@ class admin_shortcodes
 						//$text .= "\n\t\t\t\t\t<div style='padding-bottom: 2px;'>".E_16_FAILEDLOGIN." <a href='".e_ADMIN_ABS."fla.php'>".ADLAN_146.": $flo</a></div>";	
 						$oldconfigs['e-failed'][0]	= array('icon'=>E_16_FAILEDLOGIN, 'title'=>ADLAN_146, 'url'=>e_ADMIN_ABS."banlist.php?mode=failed&action=list", 'total'=>$flo);
 					}
+
+					if($emls = $sql->count('mail_recipients', '(*)', "WHERE mail_status = 13"))
+					{
+						//$text .= "\n\t\t\t\t\t<div style='padding-bottom: 2px;'>".E_16_FAILEDLOGIN." <a href='".e_ADMIN_ABS."fla.php'>".ADLAN_146.": $flo</a></div>";
+						$oldconfigs['e-mailout'][0]	= array('icon'=>E_16_MAIL, 'title'=>"Pending Mailshots", 'url'=>e_ADMIN_ABS."mailout.php?mode=pending&action=list", 'total'=>$emls);
+					}
 					
 					
 					
