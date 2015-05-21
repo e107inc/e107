@@ -1264,7 +1264,13 @@ class e_system_user extends e_user_model
 			elseif (vartrue($EMAIL_TEMPLATE['signup']['attachments'])) { $ret['email_attach'] = $EMAIL_TEMPLATE['signup']['attachments']; }
 			
 			$style = vartrue($SIGNUPEMAIL_LINKSTYLE) ? "style='{$SIGNUPEMAIL_LINKSTYLE}'" : "";
-			
+
+
+			if(empty($userInfo['activation_url']) && !empty($userInfo['user_sess']) && !empty($userInfo['user_id']))
+			{
+				$userInfo['activation_url'] = SITEURL."signup.php?activate.".$userInfo['user_id'].".".$userInfo['user_sess'];
+			}
+
 			
 			$sc = array();
 			
