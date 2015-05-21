@@ -17,8 +17,9 @@
 */
 if (!defined('e107_INIT')) { exit; }
 
-define ('CRON_MAIL_DEBUG', TRUE);
-define ('CRON_RETRIGGER_DEBUG', TRUE);
+define ('CRON_MAIL_DEBUG', false);
+define ('CRON_RETRIGGER_DEBUG', false);
+
 class _system_cron 
 {
 	

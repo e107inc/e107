@@ -425,9 +425,9 @@ class signup
 					validatorClass::addFieldTypes($userMethods->userVettingInfo,$dbData);
 					$newID = $sql->update('user',$dbData);
 
-					if($newID === FALSE)
+					if($newID === false)
 					{
-						$log->e_log_event(10,debug_backtrace(),'USER','Verification Fail',print_r($row,TRUE),FALSE,LOG_TO_ROLLING);
+						$log->e_log_event(10,debug_backtrace(),'USER','Verification Fail', print_r($row,true),false, LOG_TO_ROLLING);
 						$ns->tablerender(LAN_SIGNUP_75, LAN_SIGNUP_101);
 						return false;
 					}
@@ -455,9 +455,10 @@ class signup
 			else
 			{
 				// Invalid activation code
+				$log->e_log_event(10,debug_backtrace(),'USER','Invalid Verification URL', print_r($qs,true),false, LOG_TO_ROLLING);
 				echo e107::getMessage()->addError("Invalid URL")->render();
 			//	header("location: ".e_BASE."index.php");
-				return;
+				return false;
 			}
 		}
 
