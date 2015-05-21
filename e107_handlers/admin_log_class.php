@@ -303,7 +303,7 @@ class e_admin_log
 				'dblog_remarks'		=> $explain
 			);
 			
-			$this->rldb->db_Insert("admin_log", $adminLogInsert);
+			$this->rldb->insert("admin_log", $adminLogInsert);
 		}
 
 		//---------------------------------------
@@ -360,10 +360,14 @@ class e_admin_log
 			// else $source_call is a string
 
 			// Save new rolling log record
-			$this->rldb->db_Insert("dblog", "0, ".intval($time_sec).', '.intval($time_usec).", '{$importance}', '{$eventcode}', {$userid}, '{$userstring}', '{$userIP}', '{$source_call}', '{$event_title}', '{$explain}' ");
+			$this->rldb->insert("dblog", "0, ".intval($time_sec).', '.intval($time_usec).", '{$importance}', '{$eventcode}', {$userid}, '{$userstring}', '{$userIP}', '{$source_call}', '{$event_title}', '{$explain}' ");
 
 			// Now delete any old stuff
-			$this->rldb->db_Delete("dblog", "dblog_datestamp < '".intval(time() - (varset($pref['roll_log_days'], 7) * 86400))."' ");
+			if(!empty($pref['roll_log_days']))
+			{
+				$days = intval($pref['roll_log_days']);
+				$this->rldb->delete("dblog", "dblog_datestamp < '".intval(time() - ($days * 86400))."' ");
+			}
 		}
 
 		if ($finished)

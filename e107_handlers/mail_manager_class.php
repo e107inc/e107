@@ -1032,7 +1032,8 @@ class e107MailManager
 		}
 		else 
 		{
-			e107::getAdminLog()->addDebug("Couldn't select emails", true);
+
+			// e107::getAdminLog()->addDebug("Couldn't select emails", true);
 		}
 	}
 
