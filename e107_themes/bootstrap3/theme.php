@@ -291,6 +291,34 @@ $LAYOUT['jumbotron_home'] =  <<<TMPL
 	 </div>
 TMPL;
 
+if($theme_pref['portfolio'] == 'enable')
+{
+	$portfolio .= '
+		<div class="section2">
+
+      <div class="container">
+
+        <div class="row">
+          <div class="col-lg-12 text-center">
+            <h2>Display Some Work on the Home Page Portfolio</h2>
+            <hr>
+          </div>
+          
+		  {SETSTYLE=portfolio}
+		  {SETIMAGE: w=700&h=500&crop=1}
+		  {GALLERY_PORTFOLIO: placeholder=1&limit=6}   
+		  
+        </div><!-- /.row -->
+
+      </div><!-- /.container -->
+
+    </div><!-- /.section -->';	
+}
+elseif($theme_pref['portfolio'] == 'disable')
+{
+	$portfolio .= '';		
+}
+
 //TODO Add {GALLERY_PORTFOLIO}  to portfolio_menu.php 
 $LAYOUT['modern_business_home'] =  <<<TMPL
 
@@ -335,25 +363,7 @@ $LAYOUT['modern_business_home'] =  <<<TMPL
 
 	
 	
-	<div class="section">
-
-      <div class="container">
-
-        <div class="row">
-          <div class="col-lg-12 text-center">
-            <h2>Display Some Work on the Home Page Portfolio</h2>
-            <hr>
-          </div>
-          
-		  {SETSTYLE=portfolio}
-		  {SETIMAGE: w=700&h=500&crop=1}
-		  {GALLERY_PORTFOLIO: placeholder=1&limit=6}   
-		  
-        </div><!-- /.row -->
-
-      </div><!-- /.container -->
-
-    </div><!-- /.section -->
+      $portfolio
 
 
 
