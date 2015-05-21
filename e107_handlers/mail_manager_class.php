@@ -500,13 +500,13 @@ class e107MailManager
 	 */
 	protected function checkDB($which = 1)
 	{
-		if (($which == 1) && ($this->db == NULL))
+		if (($which == 1) && ($this->db == null))
 		{
-			$this->db = new db;
+			$this->db = e107::getDb('mail1');
 		}
-		if (($which == 2) && ($this->db2 == NULL))
+		if (($which == 2) && ($this->db2 == null))
 		{
-			$this->db2 = new db;
+			$this->db2 = e107::getDb('mail2');;
 		}
 	}
 
@@ -621,17 +621,17 @@ class e107MailManager
 	{
 		if (!$this->queryActive)
 		{
-			return FALSE;
+			return false;
 		}
-		if ($result = $this->db->db_Fetch(MYSQL_ASSOC))
+		if ($result = $this->db->fetch(MYSQL_ASSOC))
 		{
 			$this->queryActive--;
 			return $this->dbToBoth($result);
 		}
 		else
 		{
-			$this->queryActive = FALSE;		// Make sure no further attempts to read emails
-			return FALSE;
+			$this->queryActive = false;		// Make sure no further attempts to read emails
+			return false;
 		}
 	}
 
@@ -714,7 +714,8 @@ class e107MailManager
 			}
 			$this->currentTextBody = $email['mail_body_alt'];		// May be null
 		}
-		
+
+
 		$mailToSend = $this->makeEmailBlock($email);			// Substitute mail-specific variables, attachments etc
 
 
@@ -729,11 +730,28 @@ class e107MailManager
 			print_a($preview);
 			$logName = "mailout_simulation_".$email['mail_source_id'];
 			e107::getLog()->addDebug("Sending Email to <".$email['mail_recipient_name']."> ".$email['mail_recipient_email'])->toFile($logName,'Mailout Simulation Log',true);	
-			$result = true; 
+			$result = true;
+
+
+			$this->mailer->setDebug(true);
+			echo "<h2>SendEmail()->Body</h2>";
+			print_a($this->mailer->Body);
+			echo "<h2>SendEmail()->AltBody</h2>";
+			print_a($this->mailer->AltBody);
+			echo "<h1>_________________________________________________________________________</h1>";
+			return;
+
+
 		}
-		else
+
+	//	else
 		{
 			$result = $this->mailer->sendEmail($email['mail_recipient_email'], $email['mail_recipient_name'], $mailToSend, TRUE);
+		}
+
+		if($this->debugMode)
+		{
+			return true;
 		}
 
 		// Try and send
@@ -973,7 +991,7 @@ class e107MailManager
 			 $result = array_merge($result, $email['mail_overrides']);
 		}
 		
-		$title = "<h4>".__METHOD__." Line: ".__LINE__."</h4>";
+	//	$title = "<h4>".__METHOD__." Line: ".__LINE__."</h4>";
 	//	e107::getAdminLog()->addDebug($title.print_a($email,true),true);
 		
 		if(!empty($email['mail_media']))
@@ -981,7 +999,7 @@ class e107MailManager
 			$result['media'] = $email['mail_media'];
 		}
 				
-		$title2 = "<h4>".__METHOD__." Line: ".__LINE__."</h4>";
+	//	$title2 = "<h4>".__METHOD__." Line: ".__LINE__."</h4>";
 	//	e107::getAdminLog()->addDebug($title2.print_a($result,true),true);
 	
 		$result['shortcodes']['MAILREF'] = $email['mail_source_id'];
@@ -1368,11 +1386,14 @@ class e107MailManager
 		$bounceInfo 	= array('mail_bounce_string' => $bounceString, 'mail_recipient_email' => $emailAddress);		// Ready for event data
 		$errors 		= array();						// Log all errors, at least until proven
 		$vals 			= explode('/', $bounceString);		// Should get one or four fields
-		
-	//	echo "<h4>Bounce String</h4>";
-	//	print_a($bounceString);
-	//	echo "<h4>Vals</h4>";
-	//	print_a($vals);
+
+		if($this->debugMode)
+		{
+			echo "<h4>Bounce String</h4>";
+			print_a($bounceString);
+			echo "<h4>Vals</h4>";
+			print_a($vals);
+		}
 		
 		if (!is_numeric($vals[0])) 				// Email recipient user id number (may be zero)
 		{
@@ -1448,13 +1469,13 @@ class e107MailManager
 						
 					if(!$this->db->update('mail_content', '`mail_bounce_count` = `mail_bounce_count` + 1 WHERE `mail_source_id` = '.$vals[1]))
 					{
-						e107::getAdminLog()->add('Unable to increment bounce-count on mail_source_id='.$vals[1],$bounceInfo, E_LOG_FATAL, 'BOUNCE',LOG_TO_ROLLING);	
+						e107::getAdminLog()->add('Unable to increment bounce-count on mail_source_id='.$vals[1],$bounceInfo, E_LOG_FATAL, 'BOUNCE', LOG_TO_ROLLING);
 					}
 					
 					
 					if(!$this->db->update('mail_recipients', '`mail_status` = '.MAIL_STATUS_BOUNCED.' WHERE `mail_target_id` = '.$vals[2]))
 					{
-						e107::getAdminLog()->add('Unable to update recipient mail_status to bounce on mail_target_id = '.$vals[2],$bounceInfo, E_LOG_FATAL, 'BOUNCE',LOG_TO_ROLLING);	
+						e107::getAdminLog()->add('Unable to update recipient mail_status to bounce on mail_target_id = '.$vals[2],$bounceInfo, E_LOG_FATAL, 'BOUNCE', LOG_TO_ROLLING);
 					}
 				
 					$addons = array_keys($row['mail_selectors']); // trigger e_mailout.php addons. 'bounce' method. 
@@ -1503,12 +1524,19 @@ class e107MailManager
 				$errors[] = $err;
 			}
 		}
-		
+
 		if (!empty($errors))
 		{
+			$logErrors =$bounceInfo;
+			$logErrors['user_id'] = $uid;
+			$logErrors['mailshot'] = $vals[1];
+			$logErrors['mailshot_recipient'] = $vals[2];
+			$logErrors['errors'] = $errors;
+			$logErrors['email'] = $emailAddress;
+			$logErrors['bounceString'] = $bounceString;
 			$logString = $bounceString.' ('.$emailAddress.')[!br!]'.implode('[!br!]',$errors).implode('[!br!]',$bounceInfo);
 		//	e107::getAdminLog()->e_log_event(10,-1,'BOUNCE','Bounce receive error',$logString, FALSE,LOG_TO_ROLLING);
-			e107::getAdminLog()->add('Bounce receive error',$logString, E_LOG_WARNING, 'BOUNCE', LOG_TO_ROLLING);
+			e107::getAdminLog()->add('Bounce receive error',$logErrors, E_LOG_WARNING, 'BOUNCE', LOG_TO_ROLLING);
 			return $errors;
 		}
 		else 
