@@ -1034,7 +1034,7 @@ class users_admin_ui extends e_admin_ui
 	 */
 	protected function resendActivation($id, $lfile = '')
 	{
-		$admin_log = e107::getAdminLog();
+
 		$sysuser = e107::getSystemUser($id, false);
 		$key = $sysuser->getValue('sess');
 		$mes = e107::getMessage();
@@ -1075,17 +1075,37 @@ class users_admin_ui extends e_admin_ui
 		// FIXME switch to e107::getUrl()->create(), use email content templates
 		//$return_address = (substr(SITEURL,- 1) == "/") ? SITEURL."signup.php?activate.".$sysuser->getId().".".$key : SITEURL."/signup.php?activate.".$sysuser->getId().".".$key;
 		$return_address = SITEURL."signup.php?activate.".$sysuser->getId().".".$key;
-		$message = LAN_EMAIL_01." ".$sysuser->getName()."\n\n".LAN_SIGNUP_24." ".SITENAME.".\n".LAN_SIGNUP_21."\n\n";
-		$message .= "<a href='".$return_address."'>".$return_address."</a>";
+	//	$message = LAN_EMAIL_01." ".$sysuser->getName()."\n\n".LAN_SIGNUP_24." ".SITENAME.".\n".LAN_SIGNUP_21."\n\n";
+	//	$message .= "<a href='".$return_address."'>".$return_address."</a>";
 		
-		// custom header now auto-added in email() method 
-		//$mailheader_e107id = $id;
-	
+
+		$userInfo = array(
+			'user_id'       =>  $sysuser->getId(),
+			'user_name'     => $sysuser->getName(),
+			'user_email'    =>  $sysuser->getValue('email'),
+			'user_sess'     =>  $key,
+			'user_loginname' =>  $sysuser->getValue('loginname'),
+			);
+
+
+		$passwordInput = e107::getPref('signup_option_password', 2);
+
+		if(empty($passwordInput)) // auto-generated password at signup.
+		{
+			$newPwd = e107::getUserSession()->resetPassword($userInfo['user_id']);
+		}
+		else
+		{
+			$newPwd = '**********';
+		}
+
+		$message = 'null';
 		
-		$check = $sysuser->email('email', array(
-			'mail_subject' => LAN_SIGNUP_96." ".SITENAME,
+		$check = $sysuser->email('signup', array(
+			'mail_subject' => LAN_SIGNUP_98,
 			'mail_body' => nl2br($message),
-		));
+			'user_password' => $newPwd
+		), $userInfo);
 		
 		if ($check)
 		{
@@ -1835,7 +1855,7 @@ class users_admin_ui extends e_admin_ui
 		$tp = e107::getParser();
 
 		$age = array(
-			3=>'3 hours', 6=> "6 hours", 12=>'12 hours', 24 => "24 hours", 48 => '48 hours', 72 => '3 days'
+			1=>'1 hour', 3=>'3 hours', 6=> "6 hours", 12=>'12 hours', 24 => "24 hours", 48 => '48 hours', 72 => '3 days'
 		);
 
 		$count = $sql->count('user','(*)',"user_ban = 2 ");
