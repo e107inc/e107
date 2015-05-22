@@ -519,7 +519,7 @@ class e_parse extends e_parser
 			$data = $this->preFilter($data); // used by bb_xxx.php toDB() functions. bb_code.php toDB() allows us to properly bypass HTML cleaning below.
 
 		//	if(strlen($data) != strlen(strip_tags($data))) // html tags present. // strip_tags()  doesn't function doesnt look for unclosed '>'.
-			if((strpos($data,'[html]') !== false || htmlentities($data, ENT_NOQUOTES,'UTF-8') != $data || preg_match('#(?<=<)\w+(?=[^<]*?>)#', $data)) && strpos($mod, 'no_html') === false)
+			if(($this->isHtml($data)) && strpos($mod, 'no_html') === false)
 			{
 				$this->isHtml = true;
 				$data = $this->cleanHtml($data); // sanitize all html.
@@ -2579,7 +2579,17 @@ class e_parse extends e_parser
 		}
 
 		$text = (strtolower($mods) != "rawtext") ? $this->replaceConstants($text, "full") : $text;
-		$text = $this->toHTML($text, TRUE, $mods);
+
+		if($this->isHtml($text))
+		{
+			$text = str_replace(array("[html]","[/html]"), "", $text);
+			$text = html_entity_decode( $text, ENT_COMPAT, 'UTF-8');
+		}
+		else
+		{
+			$text = $this->toHTML($text, true, $mods);
+		}
+
 		return $text;
 	}
 
@@ -3148,6 +3158,27 @@ class e_parser
 
 	}
 
+
+	/**
+	 * Check if a string is HTML
+	 * @param $text
+	 * @return bool
+	 */
+	function isHtml($text)
+	{
+		if(strpos($text,'[html]') !== false || htmlentities($text, ENT_NOQUOTES,'UTF-8') != $text || preg_match('#(?<=<)\w+(?=[^<]*?>)#', $text))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
+	}
+
+
+
 	/**
 	 * Check if a file is an video or not. 
 	 * @param $file string
@@ -3404,8 +3435,8 @@ TMPL;
 		    print_a($toAtt);
 
 		    // toEmail
-		    $toEmail = $tp->toEmail($text);
-		    echo "<h3>User-input &gg; toEmail(\$text)</h3>";
+		    $toEmail = $tp->toEmail($dbText);
+		    echo "<h3>User-input &gg; toEmail(\$text) <small>from DB</small></h3>";
 		    print_a($toEmail);
 
 

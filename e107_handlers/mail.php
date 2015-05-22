@@ -1054,6 +1054,8 @@ class e107Email extends PHPMailer
 	public function MsgHTML($message, $basedir = '') 
 	{
 		$tp = e107::getParser();
+
+		$message = $tp->toEmail($message, false, 'rawtext');
 				
 		preg_match_all("/(src|background)=([\"\'])(.*)\\2/Ui", $message, $images);			// Modified to accept single quotes as well
 		if(isset($images[3]) && ($this->previewMode === false)) 
