@@ -480,7 +480,11 @@ function step5()
 			}
 
 		}
-
+	}
+	else
+	{
+		$counts = array('parents'=>'n/a', 'forums'=>'n/a', 'subs'=>'n/a');
+	}
 		$mes -> addSuccess("
 		Forum data move results:
 		<ul>
@@ -504,7 +508,8 @@ function step5()
 
 		$ns -> tablerender($stepCaption, $mes -> render() . $text);
 
-	}
+
+
 }
 
 
@@ -596,6 +601,11 @@ function step6_ajax()
 			}
 		}
 
+	}
+	else
+	{
+		echo 100;
+		exit;
 	}
 
 	echo round(($_SESSION['forumupdate']['thread_count'] / $_SESSION['forumupdate']['thread_total']) * 100, 1);
@@ -699,6 +709,11 @@ function step8_ajax()
 			$_SESSION['forumupdate']['lastpost_last'] = $id;
 			$_SESSION['forumupdate']['lastpost_count']++;
 		}
+	}
+	else
+	{
+		echo 100;
+		exit;
 	}
 
 	echo round(($_SESSION['forumupdate']['lastpost_count'] / $_SESSION['forumupdate']['lastpost_total']) * 100);
