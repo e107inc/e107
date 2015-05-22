@@ -601,7 +601,7 @@ class e107MailManager
 							AND mt.`mail_status` <= ".MAIL_STATUS_MAX_ACTIVE." 
 							AND mt.`mail_send_date` <= ".time()." 
 							AND (ms.`mail_last_date` >= ".time()." OR ms.`mail_last_date`=0)
-							ORDER BY ms.`mail_e107_priority` DESC {$count}";
+							ORDER BY ms.`mail_e107_priority` DESC, mt.mail_target_id ASC {$count}";
 //		echo $query.'<br />';
 		$result = $this->db->gen($query);
 		
@@ -704,7 +704,7 @@ class e107MailManager
 
 		if (!$this->currentMailBody)
 		{
-			if (isset($email['mail_body_templated']))
+			if (!empty($email['mail_body_templated']))
 			{
 				$this->currentMailBody = $email['mail_body_templated'];
 			}
@@ -712,6 +712,7 @@ class e107MailManager
 			{
 				$this->currentMailBody = $email['mail_body'];
 			}
+
 			$this->currentTextBody = $email['mail_body_alt'];		// May be null
 		}
 

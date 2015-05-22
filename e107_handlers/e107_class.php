@@ -212,6 +212,7 @@ class e107
 		'userlogin'					 	 => '{e_HANDLER}login.php',
 		'validatorClass'				 => '{e_HANDLER}validator_class.php',
 		'xmlClass'						 => '{e_HANDLER}xml_class.php',
+		'e107MailManager'                => '{e_HANDLER}mail_manager_class.php'
 	);
 
 	/**

@@ -1576,8 +1576,8 @@ class mailout_recipients_ui extends e_admin_ui
 	protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null, 		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),	
 			'mail_target_id'  		=> array('title' => LAN_MAILOUT_143, 'thclass' => 'left', 'forced' => TRUE),
-			'mail_recipient_id' 	=> array('title' => LAN_MAILOUT_142, 'type'=>'number', 'data'=>'int', 'thclass' => 'left'),
-			'mail_recipient_name' 	=> array('title' => LAN_MAILOUT_141, 'forced' => TRUE),
+			'mail_recipient_id' 	=> array('title' => LAN_MAILOUT_142, 'type'=>'number', 'data'=>'int', 'thclass' => 'left', 'readonly'=>2),
+			'mail_recipient_name' 	=> array('title' => LAN_MAILOUT_141, 'type'=>'text', 'readonly'=>2, 'forced' => TRUE),
 			'mail_recipient_email' 	=> array('title' => LAN_MAILOUT_140, 'thclass' => 'left', 'forced' => TRUE),
 			'mail_status' 			=> array('title' => LAN_MAILOUT_138, 'type'=>'method', 'filter'=>true, 'data'=>'int', 'thclass' => 'left', 'class'=>'left', 'writeParms'=>''),
 			'mail_detail_id' 		=> array('title' => LAN_MAILOUT_137, 'type'=>'dropdown', 'filter'=>true),
@@ -1683,7 +1683,7 @@ class mailout_recipients_form_ui extends e_admin_form_ui
 		
 		if($mode == 'write')
 		{
-			return $curVal;
+			return $this->select('mail_status', $this->mailStatus, $curVal);
 		}
 		
 		if($mode == 'filter')
@@ -1702,7 +1702,17 @@ class mailout_recipients_form_ui extends e_admin_form_ui
 		$preview = e_SELF."?mode=main&action=preview&id=".$eid.'&user='.$user;
 		$text = "<a rel='external' class='btn e-modal' data-modal-caption='Email preview' href='".$preview."' class='btn' title='Preview'>".E_32_SEARCH."</a>";
 		
-		$att['readParms']['editClass'] = e_UC_NOBODY;
+
+
+		if(E107_DEBUG_LEVEL > 0)
+		{
+			$att['readParms']['editClass'] = e_UC_MAINADMIN;
+		}
+		else
+		{
+			$att['readParms']['editClass'] = e_UC_NOBODY;
+		}
+
 		$text .= $this->renderValue('options',$value,$att,$id);
 		return $text;
 	
