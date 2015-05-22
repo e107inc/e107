@@ -33,7 +33,14 @@ if (isset($_POST['fjsubmit']))
 
 if (!e_QUERY && empty($_GET))
 {
-	header('Location:'.e107::getUrl()->create('forum/forum/main', array(), 'full=1&encode=0'));
+	if(E107_DEBUG_LEVEL > 0)
+	{
+		echo __FILE__ .' Line: '.__LINE__;
+		exit;
+	}
+	$url = e107::url('forum','index','full');
+	e107::getRedirect()->go($url);
+	//header('Location:'.e107::getUrl()->create('forum/forum/main', array(), 'full=1&encode=0'));
 	exit;
 }
 
@@ -73,7 +80,20 @@ if(!$forumId && e_QUERY) // BC Fix for old links.
 
 if (!$forum->checkPerm($forumId, 'view'))
 {
-	header('Location:'.e107::getUrl()->create('forum/forum/main'));
+	// header('Location:'.e107::getUrl()->create('forum/forum/main'));
+
+	$url = e107::url('forum','index','full');
+
+	if(E107_DEBUG_LEVEL > 0)
+	{
+		echo __FILE__ .' Line: '.__LINE__;
+		echo "   forumId: ".$forumId;
+		exit;
+	}
+
+
+	e107::getRedirect()->go($url);
+
 	exit;
 }
 
@@ -197,8 +217,11 @@ if ($pages)
 
 if($forum->checkPerm($forumId, 'post'))
 {
-	$fVars->NEWTHREADBUTTON = "<a href='".e107::getUrl()->create('forum/thread/new', array('id' => $forumId))."'>".IMAGE_newthread.'</a>';
-	$fVars->NEWTHREADBUTTONX = newthreadjump(e107::getUrl()->create('forum/thread/new', array('id' => $forumId))); // "<a class='btn btn-primary' href='".."'>New Thread</a>";
+
+	$ntUrl = e107::url('forum','post')."?f=nt&amp;id=". $forumId;
+//	$ntUrl = e107::getUrl()->create('forum/thread/new', array('id' => $forumId));
+	$fVars->NEWTHREADBUTTON = "<a href='".$ntUrl."'>".IMAGE_newthread.'</a>';
+	$fVars->NEWTHREADBUTTONX = newthreadjump($ntUrl); // "<a class='btn btn-primary' href='".."'>New Thread</a>";
 }
 
 if(!BOOTSTRAP)
