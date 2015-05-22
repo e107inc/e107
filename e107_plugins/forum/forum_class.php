@@ -231,7 +231,10 @@ class e107forum
 				print_a($this->permList);
 				return;
 			}
-			header('Location:'.e107::getUrl()->create('forum/forum/main')); // FIXME needs proper redirect and 403 header 
+
+			$url = e107::url('forum','index','full');
+			e107::getRedirect()->go($url);
+		//	header('Location:'.e107::getUrl()->create('forum/forum/main')); // FIXME needs proper redirect and 403 header
 			exit;
 		}
 
@@ -252,7 +255,9 @@ class e107forum
 	            return;
 	        }
 
-			header('Location:'.e107::getUrl()->create('forum/forum/main', TRUE, 404)); // FIXME needs proper redirect and 404 header
+		    $url = e107::url('forum','index','full');
+		    e107::getRedirect()->go($url);
+		//	header('Location:'.e107::getUrl()->create('forum/forum/main', TRUE, 404)); // FIXME needs proper redirect and 404 header
 			exit;
  		}
     }
@@ -753,7 +758,7 @@ class e107forum
 			$postInfo['post_thread'] = $newThreadId;
 			$newPostId = $this->postAdd($postInfo, false);
 			$this->threadMarkAsRead($newThreadId);
-			return array('postid' => $newPostId, 'threadid' => $newThreadId);
+			return array('postid' => $newPostId, 'threadid' => $newThreadId, 'threadsef'=>$threadInfo['thread_sef']);
 		}
 		return false;
 	}
@@ -1333,13 +1338,15 @@ class e107forum
 	function forumGetForumList($all=false)
 	{
 		$sql = e107::getDb();
-		$where = ($all ? '' : " WHERE forum_id IN ({$this->permList['view_list']}) ");
 
-		$qry = '
-		SELECT f.*, u.user_name FROM `#forum` AS f
+		if(!empty($this->permList['view_list']))
+		{
+			$where = ($all ? '' : " WHERE forum_id IN ({$this->permList['view_list']}) ");
+		}
+
+		$qry = 'SELECT f.*, u.user_name FROM `#forum` AS f
 		LEFT JOIN `#user` AS u ON f.forum_lastpost_user IS NOT NULL AND u.user_id = f.forum_lastpost_user
-		'.$where.
-		'ORDER BY f.forum_order ASC';
+		'.$where.'ORDER BY f.forum_order ASC';
 		if ($sql->gen($qry))
 		{
 			$ret = array();

@@ -569,7 +569,6 @@ class forum_post_handler
 
 		$fp = new floodprotect;
 
-
 		if ((isset($_POST['newthread']) && trim($_POST['subject']) == '') || trim($_POST['post']) == '')
 		{
 			message_handler('ALERT', 5);
@@ -672,6 +671,10 @@ class forum_post_handler
 						$newPostId = $postResult['postid'];
 						$newThreadId = $postResult['threadid'];
 
+						$this->data['thread_id'] = $newThreadId;
+						$this->data['thread_sef'] = $postResult['threadsef'];
+
+
 						if($_POST['email_notify'])
 						{
 							$this->forumObj->track('add', USERID, $newThreadId);
@@ -709,10 +712,8 @@ class forum_post_handler
 			e107::getCache()->clear('newforumposts');
 
 
-			$postInfo = $this->forumObj->postGet($newPostId, 'post');
-			$forumInfo = $this->forumObj->forumGet($postInfo['post_forum']);
-
-
+		//	$postInfo = $this->forumObj->postGet($newPostId, 'post');
+		//	$forumInfo = $this->forumObj->forumGet($postInfo['post_forum']);
 
 		//	$threadLink = e107::getUrl()->create('forum/thread/last', $postInfo);
 		// 	$forumLink = e107::getUrl()->create('forum/forum/view', $forumInfo);
