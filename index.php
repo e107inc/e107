@@ -125,6 +125,7 @@
 					if(file_exists($file))
 					{
 						define('e_CURRENT_PLUGIN', $plug);
+						define('e_QUERY', $query); // do not add to e107_class.php
 						include_once($file);
 						exit;
 					}
