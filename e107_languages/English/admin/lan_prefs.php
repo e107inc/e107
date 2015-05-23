@@ -54,7 +54,7 @@ define("PRFLAN_49", "Cookies");
 define("PRFLAN_50", "Sessions");
 define("PRFLAN_52", "Save Changes");
 define("PRFLAN_53", "Site Preferences");
-define("PRFLAN_55", "Cookie name (if cookies selected)");
+define("PRFLAN_55", "Cookie/Session name");
 define("PRFLAN_56", "Timezone");
 define("PRFLAN_58", "Restrict website to members only");
 define("PRFLAN_59", "ticking will restrict all areas apart from the front page and signup page to members only");
