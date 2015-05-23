@@ -15,7 +15,15 @@ if (!defined('e107_INIT')) { exit; }
 
 if(USER_AREA)
 {
+// Work-around for indent issue. see: https://github.com/twitter/bootstrap/issues/4890
+	e107::css('inline', "
+/* Gallery CSS */
+.thumbnails .span2:nth-child(6n+1) {
+margin-left:0;
+}",'jquery');
 
+
+/*
 e107::js('gallery', 'jslib/prettyPhoto/js/jquery.prettyPhoto.js','jquery');
 
 e107::css('gallery', 'jslib/prettyPhoto/css/prettyPhoto.css','jquery');
@@ -23,12 +31,7 @@ e107::css('gallery', 'jslib/prettyPhoto/css/prettyPhoto.css','jquery');
 
 e107::css('gallery', 'gallery_style.css');
 
-// Work-around for indent issue. see: https://github.com/twitter/bootstrap/issues/4890
-e107::css('inline', "
-/* Gallery CSS */
-.thumbnails .span2:nth-child(6n+1) {
-margin-left:0;
-}",'jquery');
+
 
 
 
@@ -37,7 +40,7 @@ $(document).ready(function(){
     $("a[data-gal^='prettyPhoto']").prettyPhoto(
 	    {
 	    	hook: 'data-gal',
-	    	theme: 'pp_default', /* pp_default , light_rounded , dark_rounded , light_square , dark_square ,facebook */
+	    	theme: 'pp_default',
 	    	overlay_gallery: false,
 	    	deeplinking: false
 	    }
@@ -45,7 +48,7 @@ $(document).ready(function(){
   });
 JS;
 
-e107::js('inline',$prettyPhoto,'jquery');
+e107::js('footer-inline',$prettyPhoto,'jquery');
 
 
 
@@ -53,6 +56,7 @@ e107::js('inline',$prettyPhoto,'jquery');
 
 	
 unset($gp);
+*/
 }
 
 ?>

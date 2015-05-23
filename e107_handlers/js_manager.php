@@ -1305,7 +1305,7 @@ class e_jsmanager
 				{
 					echo "<!-- [CSSManager] ".$label." -->\n";
 				}
-				echo '<style type="text/css">';
+				echo '<style rel="stylesheet" type="text/css" property="stylesheet">';
 				echo implode("\n\n", $content_array);
 				echo '</style>';
 				echo "\n";
