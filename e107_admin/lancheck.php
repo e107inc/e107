@@ -1129,7 +1129,8 @@ class lancheck
 			<th>LAN</th>
 			<th>English</th>
 			<th>".$lan."</th>
-		</tr>";
+		</tr>
+		</thead><tbody>";
 	
 		$subkeys = array_keys($trans['orig']);
 		foreach($subkeys as $sk)
@@ -1164,7 +1165,7 @@ class lancheck
 	
 		//Check if directory is writable
 		
-		$text .= "</table>";
+		$text .= "</tbody></table>";
 		
 		if($writable)
 		{
