@@ -1193,7 +1193,7 @@ class e_jsmanager
 					$path = $path[1];
 					if(strpos($path, 'http') !== 0) $path = $tp->replaceConstants($path, 'abs').'?'.$this->getCacheId();
 					
-					echo $pre.'<link rel="stylesheet" media="'.$media.'" type="text/css" href="'.$path.'" />'.$post;
+					echo $pre.'<link rel="stylesheet" media="'.$media.'" property="stylesheet" type="text/css" href="'.$path.'" />'.$post;
 					echo "\n";
 					continue;
 				}
