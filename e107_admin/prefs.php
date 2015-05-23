@@ -1973,7 +1973,7 @@ $text .= "
 $text .= "
 
 					<tr>
-						<td><label for='disallowmultilogin'>".PRFLAN_129.":</label></td>
+						<td><label for='disallowmultilogin'>".PRFLAN_129."</label></td>
 						<td>
 							".$frm->radio_switch('disallowMultiLogin', $pref['disallowMultiLogin'], LAN_YES, LAN_NO)."
 							<div class='smalltext field-help'>".PRFLAN_130."</div>
@@ -1981,17 +1981,18 @@ $text .= "
 					</tr>
 
 					<tr>
-						<td><label for='user-tracking-cookie'>".PRFLAN_48.":</label></td>
-						<td class='form-inline'>
-							".$frm->radio('user_tracking', array('cookie' => PRFLAN_49, 'session' => PRFLAN_50), $pref['user_tracking'])." ".PRFLAN_55.": ".$frm->text('cookie_name', $pref['cookie_name'], 20)."
-						</td>
+						<td><label for='user-tracking-cookie'>".PRFLAN_48."</label></td>
+						<td >
+							<div class='form-inline'>
+							".$frm->radio('user_tracking', array('cookie' => PRFLAN_49, 'session' => PRFLAN_50), $pref['user_tracking'])."
+						</div></td>
 					</tr>
 					
 				
-		
-
-					
-					
+					<tr>
+						<td><label for='cookie-name'>".PRFLAN_55."</label></td>
+						<td >".$frm->text('cookie_name', $pref['cookie_name'], 20)."
+						<div class='field-help'>Should be unique to this website.</div></td></tr>
 					
 					<tr>
 						<td><label for='passwordencoding'>".PRFLAN_188.":</label></td>
@@ -2017,13 +2018,13 @@ $text .= "
 					</tr>
 					
 					<tr>
-						<td><label for='antiflood1'>".PRFLAN_35.":</label></td>
+						<td><label for='antiflood1'>".PRFLAN_35."</label></td>
 						<td>
 							".$frm->radio_switch('antiflood1', $pref['antiflood1'])."
 						</td>
 					</tr>
 					<tr>
-						<td><label for='antiflood-timeout'>".PRFLAN_36.":</label></td>
+						<td><label for='antiflood-timeout'>".PRFLAN_36."</label></td>
 						<td>
 							".$frm->number('antiflood_timeout', $pref['antiflood_timeout'], 3)."
 							<div class='smalltext field-help'>".PRFLAN_38."</div>
@@ -2062,7 +2063,7 @@ $text .= "
 						</td>
 					</tr>
 					<tr>
-						<td><label for='adminpwordchange'>".PRFLAN_139.":</label></td>
+						<td><label for='adminpwordchange'>".PRFLAN_139."</label></td>
 						<td>
 							".$frm->radio_switch('adminpwordchange', $pref['adminpwordchange'])."
 						</td>
