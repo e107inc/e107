@@ -315,7 +315,7 @@ $pref['membersonly_exceptions'] = implode("\n",$pref['membersonly_exceptions']);
 
 $text = "
 <div id='core-prefs'>
-	<form class='admin-menu' method='post' action='".e_SELF."'>
+	<form class='admin-menu' method='post' action='".e_SELF."' autocomplete='off'>
 		<fieldset id='core-prefs-main'>
 			<legend>".PRFLAN_1."</legend>
 			<table class='table adminform'>
@@ -1468,20 +1468,9 @@ $text .= "
 							".$frm->radio_switch('signup_remote_emailcheck', $pref['signup_remote_emailcheck'])."
 						</td>
 					</tr>
-					<tr>
-						<td><label for='disable-emailcheck'>".PRFLAN_167."</label></td>
-						<td>
-							".$frm->radio_switch('disable_emailcheck', $pref['disable_emailcheck'])."
-						</td>
-					</tr>
 
-					<tr>
-						<td><label for='use-coppa'>".PRFLAN_45."</label></td>
-						<td>
-							".$frm->radio_switch('use_coppa', $pref['use_coppa'])."
-							<div class='field-help'>".PRFLAN_46." <a href='http://www.ftc.gov/privacy/coppafaqs.shtm'>".PRFLAN_94."</a></div>
-						</td>
-					</tr>
+
+
 					<tr>
 						<td><label for='membersonly-enabled'>".PRFLAN_58."</label></td>
 						<td>";
@@ -1505,6 +1494,24 @@ $text .= "
 						</td>
 					</tr>
 
+					<tr>
+						<td><label for='displayname-maxlength'>".PRFLAN_158.":</label></td>
+						<td>
+							".$frm->number('displayname_maxlength', $pref['displayname_maxlength'], 3)."
+						</td>
+					</tr>
+					<tr>
+						<td><label for='loginname-maxlength'>".PRFLAN_172.":</label></td>
+						<td>
+							".$frm->number('loginname_maxlength', $pref['loginname_maxlength'], 3)."
+						</td>
+					</tr>
+					<tr>
+						<td><label for='signup-pass-len'>".CUSTSIG_16."</label></td>
+						<td>
+							".$frm->number('signup_pass_len', $pref['signup_pass_len'], 2)."
+						</td>
+					</tr>
 
 					<tr>
 						<td><label for='signup-maxip'>".PRFLAN_136."</label></td>
@@ -1513,7 +1520,7 @@ $text .= "
 							<div class='field-help'>".PRFLAN_78."</div>
 						</td>
 					</tr>
-					
+
 					
 					</tbody>
 					
@@ -1544,24 +1551,44 @@ $text .= "
 				</colgroup>
 				<tbody>
 				<tr>
+						<td>Field options</td><td><table class='table table-striped table-condensed table-bordered' style='margin-bottom:0px'>
+						<colgroup>
+					<col class='col-label' />
+					<col class='col-control' />
+				</colgroup>
+				<tr>
+							<td><label>Email</label></td>
+							<td>
+								".$frm->radio('disable_emailcheck', 2, ($pref['disable_emailcheck']==2), array('label' => CUSTSIG_12, 'disabled'=>true))."
+								".$frm->radio('disable_emailcheck', 1, (intval($pref['disable_emailcheck']) == 1), array('label' => CUSTSIG_14))."
+								".$frm->radio('disable_emailcheck', 0, (intval($pref['disable_emailcheck']) == 0), array('label' => CUSTSIG_15))."
+
+							</td>
+						</tr>
+						<tr>
 							<td><label for='signup-option-password'>Password</label></td>
 							<td>
-								".$frm->radio('signup_option_password', 0, !$prefOptionPassword, array('label' => CUSTSIG_12))."&nbsp;&nbsp;
-								".$frm->radio('signup_option_password', 1, ($prefOptionPassword == 1), array('label' => CUSTSIG_14, 'disabled'=>true))."&nbsp;&nbsp;
+								".$frm->radio('signup_option_password', 0, !$prefOptionPassword, array('label' => CUSTSIG_12))."
+								".$frm->radio('signup_option_password', 1, ($prefOptionPassword == 1), array('label' => CUSTSIG_14, 'disabled'=>true))."
 								".$frm->radio('signup_option_password', 2, ($prefOptionPassword == 2), array('label' => CUSTSIG_15))."
 
 							</td>
-						</tr>";
+						</tr>
+
+
+						";
 				
 		$signup_option_names = array(
 		//	"signup_option_loginname" 	=> "Login Name",
-		"signup_option_email_confirm" 	=> CUSTSIG_21,
+
 		"signup_option_realname" 		=> CUSTSIG_2,
-		"signup_option_signature" 		=> CUSTSIG_6,
+		"signup_option_email_confirm" 	=> CUSTSIG_21,
 		"signup_option_image" 			=> CUSTSIG_7,
-		"signup_option_class" 			=> CUSTSIG_17,
+
 		'signup_option_customtitle'		=> CUSTSIG_20,
-		'signup_option_hideemail'		=> CUSTSIG_22
+		'signup_option_hideemail'		=> CUSTSIG_22,
+		"signup_option_class" 			=> CUSTSIG_17,
+		"signup_option_signature" 		=> CUSTSIG_6,
 	);
 
 
@@ -1572,8 +1599,8 @@ $text .= "
 						<tr>
 							<td><label for='".$label_value."'>".$key."</label></td>
 							<td>
-								".$frm->radio($value, 0, !$pref[$value], array('label' => CUSTSIG_12))."&nbsp;&nbsp;
-								".$frm->radio($value, 1, ($pref[$value] == 1), array('label' => CUSTSIG_14))."&nbsp;&nbsp;
+								".$frm->radio($value, 0, !$pref[$value], array('label' => CUSTSIG_12))."
+								".$frm->radio($value, 1, ($pref[$value] == 1), array('label' => CUSTSIG_14))."
 								".$frm->radio($value, 2, ($pref[$value] == 2), array('label' => CUSTSIG_15))."
 							</td>
 						</tr>
@@ -1582,6 +1609,37 @@ $text .= "
 				
 				
 				$text .= "
+
+
+	<tr>
+						<td><label for='user-reg-secureveri'>Password in Email Confirmation</label></td>
+						<td>
+							".$frm->radio_switch('user_reg_secureveri', $pref['user_reg_secureveri'], CUSTSIG_12, CUSTSIG_14)."
+						</td>
+					</tr>
+
+
+
+</table>
+						</td></tr>
+
+					<tr>
+						<td><label for='use-coppa'>".PRFLAN_45."</label></td>
+						<td>
+							".$frm->radio_switch('use_coppa', $pref['use_coppa'])."
+							<div class='field-help'>".PRFLAN_46." <a href='http://www.ftc.gov/privacy/coppafaqs.shtm'>".PRFLAN_94."</a></div>
+						</td>
+					</tr>";
+
+/*
+					<tr>
+						<td><label for='disable-emailcheck'>".PRFLAN_167."</label></td>
+						<td>
+							". $pref['disable_emailcheck']."
+						</td>
+					</tr>*/
+
+$text .= "
 					<tr>
 						<td><label for='signup-text'>".PRFLAN_126."</label></td>
 						<td>
@@ -1604,18 +1662,28 @@ $text .= "
 							<div class='field-help'><div style='text-align:left'>".PRFLAN_193."<br />".str_replace("[br]","<br /> ",PRFLAN_194)."</div></div>
 						</td>
 					</tr>
-					<tr>
-						<td><label for='displayname-maxlength'>".PRFLAN_158.":</label></td>
+
+
+
+						<tr>
+						<td><label for='signup-disallow-text'>".CUSTSIG_18."</label></td>
 						<td>
-							".$frm->number('displayname_maxlength', $pref['displayname_maxlength'], 3)."
+							".$frm->tags('signup_disallow_text', $pref['signup_disallow_text'], 500)."
+							<div class='field-help'>".CUSTSIG_19."</div>
 						</td>
 					</tr>
-					<tr>
-						<td><label for='loginname-maxlength'>".PRFLAN_172.":</label></td>
-						<td>
-							".$frm->number('loginname_maxlength', $pref['loginname_maxlength'], 3)."
+
+						<tr>
+						<td><label for='displayname_class'>".PRFLAN_155.":</label></td>
+						<td class='form-inline'>
+							".$e_userclass->uc_dropdown('displayname_class', $pref['displayname_class'], 'nobody,member,admin,classes', "tabindex='".$frm->getNext()."'")."
+							".$frm->admin_button('submit_resetdisplaynames', PRFLAN_156, 'delete')."
 						</td>
 					</tr>
+
+
+
+
 ";
 
 /*
@@ -1902,12 +1970,7 @@ $text .= "
  * 
  
  */
-$text .= "					<tr>
-						<td><label for='user-reg-secureveri'>".PRFLAN_92.":</label></td>
-						<td>
-							".$frm->radio_switch('user_reg_secureveri', $pref['user_reg_secureveri'])."
-						</td>
-					</tr>
+$text .= "
 
 					<tr>
 						<td><label for='disallowmultilogin'>".PRFLAN_129.":</label></td>
@@ -1926,30 +1989,7 @@ $text .= "					<tr>
 					
 				
 		
-					<tr>
-						<td><label for='signup-disallow-text'>".CUSTSIG_18."</label></td>
-						<td>
-							".$frm->textarea('signup_disallow_text', $pref['signup_disallow_text'], 2, 1)."
-							<div class='field-help'>".CUSTSIG_19."</div>
-						</td>
-					</tr>
-					
-						<tr>
-						<td><label for='displayname_class'>".PRFLAN_155.":</label></td>
-						<td>
-							<div class='field-spacer'>".$e_userclass->uc_dropdown('displayname_class', $pref['displayname_class'], 'nobody,member,admin,classes', "tabindex='".$frm->getNext()."'")."</div>
-							".$frm->admin_button('submit_resetdisplaynames', PRFLAN_156)."
-						</td>
-					</tr>
-					
-					
-					
-					<tr>
-						<td><label for='signup-pass-len'>".CUSTSIG_16."</label></td>
-						<td>
-							".$frm->number('signup_pass_len', $pref['signup_pass_len'], 2)."
-						</td>
-					</tr>
+
 					
 					
 					

@@ -50,13 +50,18 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 	
 	function sc_siteurl($parm='')
 	{
+		if(strlen(deftrue('SITEURL')) < 3 ) //fixes CLI/cron
+		{
+			return e107::getPref('siteurl');
+		}
+
 		return SITEURL;	
 	}
 	
 
 	function sc_sitename($parm='')
 	{
-		return ($parm == 'link') ? "<a href='".SITEURL."' title=\"".SITENAME."\">".SITENAME."</a>" : SITENAME;
+		return ($parm == 'link') ? "<a href='".SITEURL."' title='".SITENAME."'>".SITENAME."</a>" : SITENAME;
 	}
 
 	function sc_sitedescription()

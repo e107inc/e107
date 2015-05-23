@@ -1144,6 +1144,15 @@ class e_system_user extends e_user_model
 			$eml['e107_header'] = $userInfo['user_id']; 
 		//	$mailer->AddCustomHeader("X-e107-id: {$userInfo['user_id']}");
 		}
+
+
+		if(getperms('0') && E107_DEBUG_LEVEL > 0)
+		{
+			e107::getMessage()->addDebug("Email Debugger active. <b>Simulation Only!</b>");
+			e107::getMessage()->addDebug($mailer->preview($eml));
+			return true;
+		}
+
 		
 		return $mailer->sendEmail($userInfo['user_email'], $userInfo['user_name'], $eml, false);
 	}
@@ -1255,7 +1264,13 @@ class e_system_user extends e_user_model
 			elseif (vartrue($EMAIL_TEMPLATE['signup']['attachments'])) { $ret['email_attach'] = $EMAIL_TEMPLATE['signup']['attachments']; }
 			
 			$style = vartrue($SIGNUPEMAIL_LINKSTYLE) ? "style='{$SIGNUPEMAIL_LINKSTYLE}'" : "";
-			
+
+
+			if(empty($userInfo['activation_url']) && !empty($userInfo['user_sess']) && !empty($userInfo['user_id']))
+			{
+				$userInfo['activation_url'] = SITEURL."signup.php?activate.".$userInfo['user_id'].".".$userInfo['user_sess'];
+			}
+
 			
 			$sc = array();
 			

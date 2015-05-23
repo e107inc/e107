@@ -17,8 +17,9 @@
 */
 if (!defined('e107_INIT')) { exit; }
 
-define ('CRON_MAIL_DEBUG', TRUE);
-define ('CRON_RETRIGGER_DEBUG', TRUE);
+define ('CRON_MAIL_DEBUG', false);
+define ('CRON_RETRIGGER_DEBUG', false);
+
 class _system_cron 
 {
 	
@@ -171,8 +172,17 @@ class _system_cron
 
 	    sendemail($pref['siteadminemail'], "e107 - TEST Email Sent by cron.".date("r"), $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);
 	}
-	
-	function procEmailQueue()
+
+
+	/**
+	 * Process the Mail Queue
+	 * First create a mail queue then debug with the following:
+	   require_once(e_HANDLER."cron_class.php");
+	   $cron = new _system_cron;
+	   $cron->procEmailQueue(true);
+	 * @param bool $debug
+	 */
+	function procEmailQueue($debug= false)
 	{
 
 		$sendPerHit = e107::getConfig()->get('mail_workpertick',5);
@@ -183,9 +193,14 @@ class _system_cron
 		{
 			e107::getLog()->e_log_event(10,debug_backtrace(),'DEBUG','CRON Email','Email run started',FALSE,LOG_TO_ROLLING);
 		}
-		
-		require_once(e_HANDLER.'mail_manager_class.php');
-		$mailManager = new e107MailManager();
+
+		$mailManager = e107::getBulkEmail();
+
+		if($debug === true)
+		{
+			$mailManager->controlDebug(1);
+		}
+
 		$mailManager->doEmailTask($sendPerHit,$pauseCount,$pauseTime);
 		
 		if (CRON_MAIL_DEBUG)

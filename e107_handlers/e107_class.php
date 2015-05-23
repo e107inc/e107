@@ -212,6 +212,7 @@ class e107
 		'userlogin'					 	 => '{e_HANDLER}login.php',
 		'validatorClass'				 => '{e_HANDLER}validator_class.php',
 		'xmlClass'						 => '{e_HANDLER}xml_class.php',
+		'e107MailManager'                => '{e_HANDLER}mail_manager_class.php'
 	);
 
 	/**
@@ -1206,6 +1207,17 @@ class e107
 		return self::getSingleton('e107Email', true);
 	}
 
+
+	/**
+	 * Retrieve e107Email mail mailer object.
+	 *
+	 * @return e107MailManager
+	 */
+	public static function getBulkEmail()
+	{
+		return self::getSingleton('e107MailManager', true);
+	}
+
 	/**
 	 * Retrieve event singleton object
 	 *
@@ -1321,7 +1333,7 @@ class e107
     /**
      * Retrieve date handler singleton object - preferred method. 
      *
-     * @return convert
+     * @return e107_db_debug
      */
     public static function getDebug() //XXX Discuss  - possible with current setup?
     {
@@ -3195,7 +3207,7 @@ class e107
 		define('e_ROOT',$e_ROOT);	
 
 		$this->relative_base_path = (!self::isCli()) ? $path : e_ROOT;
-		$this->http_path = "http://{$_SERVER['HTTP_HOST']}{$this->server_path}";
+		$this->http_path =  "http://{$_SERVER['HTTP_HOST']}{$this->server_path}";
 		$this->https_path = "https://{$_SERVER['HTTP_HOST']}{$this->server_path}";
 		$this->file_path = $path;
 
@@ -3374,12 +3386,7 @@ class e107
 
 		$eSelf = $_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'];
 		$_self = $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST'].$eSelf;
-		if(!deftrue('e_SINGLE_ENTRY'))
-		{
-			$page = substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);
-			define('e_PAGE', $page);
-			define('e_SELF', $_self);	
-		}
+
 		
 
 		// START New - request uri/url detection, XSS protection
@@ -3440,6 +3447,29 @@ class e107
 		define('e_REQUEST_SELF', $requestSelf); // full URL without the QUERY string
 		define('e_REQUEST_URI', str_replace(array("'", '"'), array('%27', '%22'), $requestUri)); // absolute http path + query string
 		define('e_REQUEST_HTTP', array_shift(explode('?', e_REQUEST_URI))); // SELF URL without the QUERY string and leading domain part
+
+		if(!deftrue('e_SINGLE_ENTRY'))
+		{
+			$page = substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);
+
+			if(self::isCli() && !empty($_SERVER['_']))
+			{
+				$page = basename($_SERVER['_']);
+			}
+
+
+			define('e_PAGE', $page);
+			define('e_SELF', $_self);
+		}
+		else
+		{
+			define('e_SELF', e_REQUEST_SELF);
+		}
+
+
+
+
+
 		unset($requestUrl, $requestUri);
 		// END request uri/url detection, XSS protection
 
@@ -3480,14 +3510,15 @@ class e107
 
 		define('ADMINDIR', $ADMIN_DIRECTORY);
 
-		define('SITEURLBASE', $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST']);
 
 		if(self::isCli())
 		{
-			define('SITEURL', SITEURLBASE.$_SERVER['DOMAIN'].e_HTTP);
+			define('SITEURL', self::getPref('siteurl'));
+			define('SITEURLBASE', rtrim(SITEURL,'/'));
 		}
 		else
 		{
+			define('SITEURLBASE', $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST']);
 			define('SITEURL', SITEURLBASE.e_HTTP);
 		}
 
@@ -3545,6 +3576,10 @@ class e107
 		{
 			define('e_QUERY', $e_QUERY);	
 			$_SERVER['QUERY_STRING'] = e_QUERY;	
+		}
+		else
+		{
+		//	 define('e_QUERY', ''); // breaks news sef-urls and possibly others. Moved to index.php.
 		}
 		
 

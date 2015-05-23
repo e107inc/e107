@@ -1106,7 +1106,7 @@ class admin_shortcodes
 					// for BC only. 	
 	
 					
-					$oldconfigs['e-user'][0] 		= array('icon'=>E_16_USER, 'title'=>ADLAN_110, 'url'=> e_ADMIN_ABS."users.php?searchquery=&amp;filter_options=user_ban__0", 'total'=>$members);
+					$oldconfigs['e-user'][0] 		= array('icon'=>E_16_USER, 'title'=>ADLAN_110, 'url'=> e_ADMIN_ABS."users.php?searchquery=&amp;filter_options=user_ban__0", 'total'=>$members, 'invert'=>1);
 					$oldconfigs['e-user'][1] 		= array('icon'=>E_16_USER, 'title'=>ADLAN_111, 'url'=> e_ADMIN."users.php?searchquery=&amp;filter_options=user_ban__2", 'total'=>$unverified);
 					$oldconfigs['e-user'][2] 		= array('icon'=>E_16_BANLIST, 'title'=>ADLAN_112, 'url'=> e_ADMIN."users.php?searchquery=&filter_options=user_ban__1", 'total'=>$banned);
 
@@ -1119,6 +1119,12 @@ class admin_shortcodes
 					{
 						//$text .= "\n\t\t\t\t\t<div style='padding-bottom: 2px;'>".E_16_FAILEDLOGIN." <a href='".e_ADMIN_ABS."fla.php'>".ADLAN_146.": $flo</a></div>";	
 						$oldconfigs['e-failed'][0]	= array('icon'=>E_16_FAILEDLOGIN, 'title'=>ADLAN_146, 'url'=>e_ADMIN_ABS."banlist.php?mode=failed&action=list", 'total'=>$flo);
+					}
+
+					if($emls = $sql->count('mail_recipients', '(*)', "WHERE mail_status = 13"))
+					{
+						//$text .= "\n\t\t\t\t\t<div style='padding-bottom: 2px;'>".E_16_FAILEDLOGIN." <a href='".e_ADMIN_ABS."fla.php'>".ADLAN_146.": $flo</a></div>";
+						$oldconfigs['e-mailout'][0]	= array('icon'=>E_16_MAIL, 'title'=>"Pending Mailshots", 'url'=>e_ADMIN_ABS."mailout.php?mode=pending&action=list", 'total'=>$emls);
 					}
 					
 					
@@ -1160,7 +1166,8 @@ class admin_shortcodes
 					{
 						foreach($v as $val)
 						{
-							$class = admin_shortcodes::getBadge($val['total']); 
+							$type = empty($val['invert']) ? 'latest' : 'invert';
+							$class = admin_shortcodes::getBadge($val['total'], $type);
 							$link =  "<a href='".$val['url']."'>".str_replace(":"," ",$val['title'])." <span class='".$class."'>".$val['total']."</span></a>";	
 							$text .= "<li>".$val['icon']." ".$link."</li>\n";	
 						}	
@@ -1207,19 +1214,40 @@ Important 	6 	<span class="badge badge-important">6</span>
 Info 	8 	<span class="badge badge-info">8</span>
 Inverse 	10 	<span class="badge badge-inverse">10</span>
 		 */
+		 if($type != 'invert')
+		 {
+			 $important = 'badge-important';
+			 $warning   = 'badge-warning';
+			 $info      = 'badge-info';
+			 $invert = false;
+		 }
+		 else // invert
+		 {
+			 $info      = 'badge-important';
+			 $warning   = 'badge-warning';
+			 $important = 'badge-info';
+			 $type = 'latest';
+			 $invert = true;
+		 }
+
 		
 		$class = 'badge ';
-		if($total > 100 && $type == 'latest')
+
+		if($total > 500 && $invert == true)
 		{
-			$class .= 'badge-important';
+			$class .= 'badge-success';
+		}
+		elseif($total > 100 && $type == 'latest')
+		{
+			$class .= $important;
 		}
 		elseif($total > 50 && $type == 'latest')
 		{
-			$class .= 'badge-warning';
+			$class .= $warning;
 		}
 		elseif($total > 0)
 		{
-			$class .= 'badge-info';
+			$class .= $info;
 		}
 	
 		

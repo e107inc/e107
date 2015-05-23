@@ -8,7 +8,7 @@
  */
 
 
-if(empty($_POST['content']))
+if(empty($_POST['content']) && empty($_GET['debug']))
 {
 	header('Content-Length: 0');
 	exit;
@@ -38,6 +38,22 @@ class e107TinyMceParser
 	{
 		$html = '';
 
+		if(!empty($_GET['debug']) && getperms('0'))
+		{
+			$debug = true;  // For future use.
+			$text = <<<TEMPL
+
+	[html][code]Something goes here [b]bold print[/b][/code][/html]
+
+TEMPL;
+			$_POST['content'] = $text;
+			$_POST['mode'] = 'tohtml';
+		}
+		else
+		{
+			$debug = false;
+		}
+
 		if($_POST['mode'] == 'tohtml')
 		{
 			$html =  $this->toHtml($_POST['content']);
@@ -48,7 +64,13 @@ class e107TinyMceParser
 			$html = $this->toBBcode($_POST['content']);
 		}
 
-		if($this->gzipCompression == true)
+		if($debug == true)
+		{
+			print_a($html);
+			echo "<hr />";
+			echo $html;
+		}
+		elseif($this->gzipCompression == true)
 		{
 			header('Content-Encoding: gzip');
 			$gzipoutput = gzencode($html,6);
@@ -145,7 +167,7 @@ class e107TinyMceParser
 
 		if(check_class($pref['post_html'])) // Plain HTML mode.
 		{
-			$srch 		= array('src="../thumb.php?','src="/{e_MEDIA_IMAGE}');
+			$srch 		= array('src="'.e_HTTP.'thumb.php?','src="/{e_MEDIA_IMAGE}');
 			$repl 		= array('src="{e_BASE}thumb.php?','src="{e_BASE}thumb.php?src=e_MEDIA_IMAGE/');
 			$content 	= str_replace($srch, $repl, $content);
 

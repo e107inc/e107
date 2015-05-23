@@ -1487,7 +1487,7 @@ class e_form
 		
 		if($labelFound)
 		{
-			$text .= $labelFound."</label>";	
+			$text .= "<span>".$labelFound."</span></label>";
 		}
 		
 		return $text;
@@ -3354,24 +3354,35 @@ class e_form
 			break;
 
 			case 'userclasses':
-			
+			//	return $value;
 				$classes = explode(',', $value);
-				
+
 				$uv = array();
 				foreach ($classes as $cid)
 				{
-					$uv[] = $this->_uc->uc_get_classname($cid);
+					if(!empty($parms['defaultLabel']) && $cid === '')
+					{
+						$uv[] = $parms['defaultLabel'];
+						continue;
+					}
+
+					$uv[] = $this->_uc->getName($cid);
 				}
+
+
+
 				$dispvalue = implode(vartrue($parms['separator'],"<br />"), $uv);
-				
+
 				// Inline Editing.  
 				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
 				{
-					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
-					$optlist = $parm['xxxxx']; // XXX TODO - add param for choice of class list options below. 
-					$array = e107::getUserClass()->uc_required_class_list('nobody,admin,main,public,classes'); //XXX Ugly looking (non-standard) function naming - TODO discuss name change. 
-					$source = str_replace('"',"'",json_encode($array, JSON_FORCE_OBJECT));
-					
+					$uc_options = vartrue($parms['classlist'], 'public,guest, nobody,member,admin,main,classes'); // defaults to 'public,guest,nobody,member,classes' (userclass handler)
+					$array      = e107::getUserClass()->uc_required_class_list($uc_options); //XXX Ugly looking (non-standard) function naming - TODO discuss name change.
+
+					//$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
+					$mode       = $tp->filter(vartrue($_GET['mode'], ''),'w');
+					$source     = str_replace('"',"'",json_encode($array, JSON_FORCE_OBJECT));
+
 					//NOTE Leading ',' required on $value; so it picks up existing value.
 					$value = "<a class='e-tip e-editable editable-click' data-placement='bottom' data-value=',".$value."' data-name='".$field."' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='checklist' data-pk='".$id."' data-url='".e_SELF."?mode={$mode}&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$dispvalue."</a>";
 				}
@@ -3379,8 +3390,8 @@ class e_form
 				{
 					$value = $dispvalue;	
 				}
-				
-				
+
+				unset($parms['classlist']);
 				
 			break;
 
@@ -3968,6 +3979,7 @@ class e_form
 			case 'userclasses':
 				$uc_options = vartrue($parms['classlist'], 'public,guest,nobody,member,admin,main,classes'); // defaults to 'public,guest,nobody,member,classes' (userclass handler)
 				unset($parms['classlist']);
+
 			//	$method = ($attributes['type'] == 'userclass') ? 'uc_select' : 'uc_select';
 				if(vartrue($attributes['type']) == 'userclasses'){ $parms['multiple'] = true; }
 				$ret =   vartrue($parms['pre']).$this->uc_select($key, $value, $uc_options, vartrue($parms, array())). vartrue($parms['post']);

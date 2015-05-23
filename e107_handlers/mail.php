@@ -570,7 +570,7 @@ class e107Email extends PHPMailer
 			
 	
 			$this->MsgHTML($message);		// Theoretically this should do everything, including handling of inline images.
-		
+
 		}
 		else
 		{	// generate the plain text as the sole part of the email
@@ -781,8 +781,8 @@ class e107Email extends PHPMailer
 				
 				if($this->debug)
 				{
-					echo "<h4>e107Email::arraySet() - line ".__LINE__."</h4>";
-					print_a($tmpl);	
+				//	echo "<h4>e107Email::arraySet() - line ".__LINE__."</h4>";
+				//	print_a($tmpl);
 				}
 				
 				unset($eml['add_html_header']); // disable other headers when template is used. 
@@ -865,8 +865,9 @@ class e107Email extends PHPMailer
 
 		if($this->debug)
 		{
-			echo "<h4>e107Email::arraySet() - line ".__LINE__."</h4>";
-			print_a($eml);
+		//	echo "<h4>e107Email::arraySet() - line ".__LINE__."</h4>";
+			return 0;
+		//	print_a($eml);
 			//$this->PreSend(); 
 			//$debugEml = $this->GetSentMIMEMessage().
 			//print_a($debugEml);
@@ -947,7 +948,7 @@ class e107Email extends PHPMailer
 		$result = TRUE;			// Temporary 'success' flag
 		$this->SendCount++;
 
-		if (($this->logEnable == 0) || ($this->logEnable == 2))
+		if ($this->debug == false && (($this->logEnable == 0) || ($this->logEnable == 2)) )
 		{
 			// prevent user/script details being exposed in X-PHP-Script header 
 			$oldphpself 					= $_SERVER['PHP_SELF']; 
@@ -969,8 +970,11 @@ class e107Email extends PHPMailer
 		}
 		else
 		{	// Debug
-			$result = TRUE;
-			//print_a($this);
+			$result = true;
+		//	echo "<h2>SendEmail()->Body</h2>";
+		//	print_a($this->Body);
+		//	echo "<h2>SendEmail()->AltBody</h2>";
+		//	print_a($this->AltBody);
 			if (($this->logEnable == 3) && (($this->SendCount % 7) == 4)) $result = FALSE;			// Fail one email in 7 for testing
 		}
 
@@ -1015,6 +1019,10 @@ class e107Email extends PHPMailer
 	}
 
 
+	function setDebug($val)
+	{
+		$this->debug = $val;
+	}
 
 	/**
 	 *	Called after a bulk mailing completed, to tidy up nicely
@@ -1046,6 +1054,8 @@ class e107Email extends PHPMailer
 	public function MsgHTML($message, $basedir = '') 
 	{
 		$tp = e107::getParser();
+
+		$message = $tp->toEmail($message, false, 'rawtext');
 				
 		preg_match_all("/(src|background)=([\"\'])(.*)\\2/Ui", $message, $images);			// Modified to accept single quotes as well
 		if(isset($images[3]) && ($this->previewMode === false)) 
@@ -1126,18 +1136,30 @@ class e107Email extends PHPMailer
 		$this->IsHTML(true);
 		$this->Body = $message;
 		//print_a($message);
-		$textMsg = str_replace(array('<br />', '<br>'), "\n", $message);		// Modified to make sure newlines carried through
+		$textMsg = str_replace("\n", "", $message);
+		$textMsg = str_replace(array('<br />', '<br>'), "\n", $textMsg);		// Modified to make sure newlines carried through
 		$textMsg = preg_replace('#^.*?<body.*?>#', '', $textMsg);		// Knock off everything up to and including the body statement (if present)
 		$textMsg = preg_replace('#</body.*?>.*$#', '', $textMsg);		// Knock off everything after and including the </body> (if present)
 		$textMsg = trim(strip_tags(preg_replace('/<(head|title|style|script)[^>]*>.*?<\/\\1>/s','',$textMsg)));
-		if (!empty($textMsg) && empty($this->AltBody)) 
+
+		if($this->debug)
+		{
+			echo "<h2>".__METHOD__.'  $textMsg<small> Line: '.__LINE__.'</small></h2>';
+			print_a($textMsg);
+		}
+
+		if(!empty($textMsg)) // Always set it, even if AltBody is empty.
 		{
 			$this->AltBody = html_entity_decode($textMsg);
+
 		}
-		if (empty($this->AltBody)) 
+
+		if(empty($this->AltBody))
 		{
 			$this->AltBody = 'To view this email message, enable HTML!' . "\n\n";
 		}
+
+
 	}
 
 }		// End of e107Mailer class

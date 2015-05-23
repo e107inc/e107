@@ -32,7 +32,7 @@ class e107Bounce
 	{
 		if(ADMIN && vartrue($_GET['eml']))
 		{
-			$this->debug = true;
+			$this->debug = 2; // mode2  - via browser for admin.
 			$this->source = $_GET['eml'].".eml";		
 		}			
 	}
@@ -52,7 +52,7 @@ class e107Bounce
 		
 		if(strpos($strEmail,'X-Bounce-Test: true')!==false) // Bounce Test from Admin Area. 
 		{
-			$this->debug = true;	
+			$this->debug = true;	// mode 1 - for email test.
 		}
 				
 		if(empty($strEmail)) // Failed. 
@@ -109,7 +109,12 @@ class e107Bounce
 		{
 			if($errors = $this->setUser_Bounced($e107_userid))
 			{
-		//		$message .= print_a($errors,true);	
+				if($this->debug === 2)
+				{
+					echo "<h3>Errors</h3>";
+					print_a($errors);
+				}
+
 			}
 
 		}
@@ -194,13 +199,20 @@ class e107Bounce
 	
 	function setUser_Bounced($bounceString = '', $email='' )
 	{
-		if(!$email && !$bounceString){ return; }
+		if(!$email && !$bounceString)
+		{
+			 return false;
+		}
 	//	echo "Email bounced ID: ".$id_or_email;	
-		require_once(e_HANDLER.'mail_manager_class.php');
 
-		$mailManager = new e107MailManager();
+		$mailManager = e107::getBulkEmail();
+
+		$debug = ($this->debug === 2) ? true : false;
+
+		$mailManager->controlDebug($debug);
+
 		if ($errors = $mailManager->markBounce($bounceString, $email))
-		{	
+		{
 			return $errors;  // Failure
 		}
 		

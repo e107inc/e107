@@ -36,7 +36,14 @@ class users_admin extends e_admin_dispatcher
 			'ui' 			=> 'users_admin_form_ui',
 			'uipath' 		=> null,
 			//'perm'			=> '0',
-		)				
+		),
+		'ranks'		=> array(
+			'controller' 	=> 'users_ranks_ui',
+			'path' 			=> null,
+			'ui' 			=> 'users_ranks_ui_form',
+			'uipath' 		=> null,
+			//'perm'			=> '0',
+		)
 	);	
 
 
@@ -44,7 +51,9 @@ class users_admin extends e_admin_dispatcher
 		'main/list'		=> array('caption'=> LAN_MANAGE, 'perm' => '0'),
 		'main/add' 		=> array('caption'=> LAN_USER_QUICKADD, 'perm' => '4|U0|U1'),
 		'main/prefs' 	=> array('caption'=> LAN_OPTIONS, 'perm' => '4|U2'),
-		'main/ranks'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3')		
+		'main/ranks'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3'),
+		'main/maintenance'  => array('caption'=>'Maintenance', 'perms'=>'4')
+	//	'ranks/list'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3')
 	);
 	
 	/*
@@ -62,6 +71,17 @@ class users_admin extends e_admin_dispatcher
 	);	
 	
 	protected $menuTitle = 'users';
+
+
+	function init()
+	{
+		if(E107_DEBUG_LEVEL > 0)
+		{
+			$this->adminMenu['ranks/list']	= array('caption'=> LAN_USER_RANKS. " (experimental)", 'perm' => '4|U3');
+		}
+
+
+	}
 	
 	/**
 	 * Run observers/headers override
@@ -227,7 +247,7 @@ class users_admin_ui extends e_admin_ui
  		'user_email' 		=> array('title' => LAN_EMAIL,		'tab'=>0, 'type' => 'text', 'inline'=>true, 'data'=>'str',	'width' => 'auto'),
 		'user_hideemail' 	=> array('title' => LAN_USER_10,	'tab'=>0, 'type' => 'boolean', 'data'=>'int',	'width' => 'auto', 'thclass'=>'center', 'class'=>'center', 'filter'=>true, 'batch'=>true, 'readParms'=>'trueonly=1'),
 		'user_xup' 			=> array('title' => 'Xup',			'tab'=>0, 'noedit'=>true, 'type' => 'text', 'data'=>'str',	'width' => 'auto'),
-		'user_class' 		=> array('title' => LAN_USER_12,	'tab'=>0, 'type' => 'userclasses' , 'inline'=>true, 'writeParms' => 'classlist=classes', 'filter'=>true, 'batch'=>true),
+		'user_class' 		=> array('title' => LAN_USER_12,	'tab'=>0, 'type' => 'userclasses' , 'data'=>'str', 'inline'=>true, 'writeParms' => 'classlist=classes,new', 'readParms'=>'classlist=classes,new&defaultLabel=--', 'filter'=>true, 'batch'=>true),
 		'user_join' 		=> array('title' => LAN_USER_14,	'tab'=>0, 'noedit'=>true, 'type' => 'datestamp', 	'width' => 'auto', 'writeParms'=>'readonly=1'),
 		'user_lastvisit' 	=> array('title' => LAN_USER_15,	'tab'=>0, 'noedit'=>true, 'type' => 'datestamp', 	'width' => 'auto'),
 		'user_currentvisit' => array('title' => LAN_USER_16,	'tab'=>0, 'noedit'=>true, 'type' => 'datestamp', 	'width' => 'auto'),
@@ -275,10 +295,20 @@ class users_admin_ui extends e_admin_ui
 	
 		$sql = e107::getDb();
 		$tp = e107::getParser();
+
+
+		if(!empty($_POST['resendToAll']))
+		{
+			$resetPasswords = !empty($_POST['resetPasswords']);
+			$age = vartrue($_POST['resendAge'], 24);
+			$class = vartrue($_POST['resendClass'], false);
+			$this->resend_to_all($resetPasswords, $age, $class);
+		}
+
 		
 		if($this->getAction() == 'edit')
 		{
-			$this->fields['user_class']['noedit'] = true; 	
+			$this->fields['user_class']['noedit'] = true;
 		}
 
 
@@ -1004,7 +1034,7 @@ class users_admin_ui extends e_admin_ui
 	 */
 	protected function resendActivation($id, $lfile = '')
 	{
-		$admin_log = e107::getAdminLog();
+
 		$sysuser = e107::getSystemUser($id, false);
 		$key = $sysuser->getValue('sess');
 		$mes = e107::getMessage();
@@ -1045,17 +1075,37 @@ class users_admin_ui extends e_admin_ui
 		// FIXME switch to e107::getUrl()->create(), use email content templates
 		//$return_address = (substr(SITEURL,- 1) == "/") ? SITEURL."signup.php?activate.".$sysuser->getId().".".$key : SITEURL."/signup.php?activate.".$sysuser->getId().".".$key;
 		$return_address = SITEURL."signup.php?activate.".$sysuser->getId().".".$key;
-		$message = LAN_EMAIL_01." ".$sysuser->getName()."\n\n".LAN_SIGNUP_24." ".SITENAME.".\n".LAN_SIGNUP_21."\n\n";
-		$message .= "<a href='".$return_address."'>".$return_address."</a>";
+	//	$message = LAN_EMAIL_01." ".$sysuser->getName()."\n\n".LAN_SIGNUP_24." ".SITENAME.".\n".LAN_SIGNUP_21."\n\n";
+	//	$message .= "<a href='".$return_address."'>".$return_address."</a>";
 		
-		// custom header now auto-added in email() method 
-		//$mailheader_e107id = $id;
-	
+
+		$userInfo = array(
+			'user_id'       =>  $sysuser->getId(),
+			'user_name'     => $sysuser->getName(),
+			'user_email'    =>  $sysuser->getValue('email'),
+			'user_sess'     =>  $key,
+			'user_loginname' =>  $sysuser->getValue('loginname'),
+			);
+
+
+		$passwordInput = e107::getPref('signup_option_password', 2);
+
+		if(empty($passwordInput)) // auto-generated password at signup.
+		{
+			$newPwd = e107::getUserSession()->resetPassword($userInfo['user_id']);
+		}
+		else
+		{
+			$newPwd = '**********';
+		}
+
+		$message = 'null';
 		
-		$check = $sysuser->email('email', array(
-			'mail_subject' => LAN_SIGNUP_96." ".SITENAME,
+		$check = $sysuser->email('signup', array(
+			'mail_subject' => LAN_SIGNUP_98,
 			'mail_body' => nl2br($message),
-		));
+			'user_password' => $newPwd
+		), $userInfo);
 		
 		if ($check)
 		{
@@ -1794,43 +1844,180 @@ class users_admin_ui extends e_admin_ui
 		$ns->tablerender(USFLAN_7, $text);
 	}
 
-	// It might be used in the future - batch options
-	function resend_to_all()
+
+
+
+	function maintenancePage()
 	{
-		global $sql,$pref,$sql3,$admin_log;
-		$count = 0;
-		$pause_count = 1;
-		$pause_amount = ($pref['mail_pause']) ? $pref['mail_pause'] : 10;
-		$pause_time = ($pref['mail_pausetime']) ? $pref['mail_pausetime'] : 1;
-		if ($sql->db_Select_gen('SELECT user_language FROM `#user_extended` LIMIT 1'))
+		$frm = e107::getForm();
+		$ns = e107::getRender();
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+
+		$age = array(
+			1=>'1 hour', 3=>'3 hours', 6=> "6 hours", 12=>'12 hours', 24 => "24 hours", 48 => '48 hours', 72 => '3 days'
+		);
+
+		$count = $sql->count('user','(*)',"user_ban = 2 ");
+		$caption = $tp->lanVars('Resend account activation email to unactivated users.',$count);
+
+		$text = $frm->open('userMaintenance','post');
+
+		$text .= "
+        <table class='table adminform'>
+		<colgroup>
+		<col class='col-label' />
+		<col class='col-control' />
+		</colgroup>
+		<tr><td>".$caption."<td>
+		<td>
+		<div>Older than ".$frm->select('resendAge', $age, 24).$frm->checkbox('resetPasswords',1,false,'Reset all passwords').
+		$frm->userclass('resendClass',false, null ).
+		$frm->button('resendToAll', 1, 'warning', LAN_GO)."
+
+
+		</div></td></tr>
+		</table>";
+
+		$text .= $frm->close();
+
+		return $text;
+
+
+
+
+	}
+
+
+	/**
+	 * Send an activation email to all unactivated users older than so many hours.
+	 * @param bool $resetPasswords
+	 * @param int $age in hours. ie. older than 24 hours will be sent an email.
+	 */
+	function resend_to_all($resetPasswords=false, $age=24, $class='')
+	{
+		global $sql,$pref;
+		$tp = e107::getParser();
+		$sql = e107::getDb();
+		$sql2 = e107::getDb('toall');
+
+		$emailLogin = e107::getPref('allowEmailLogin');
+
+		e107::lan('core','signup');
+
+		$ageOpt = intval($age)." hours ago";
+		$age = strtotime($ageOpt);
+
+	//	$query = "SELECT u.*, ue.* FROM `#user` AS u LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = u.user_id WHERE u.user_ban = 2 AND u.user_email != '' AND u.user_join < ".$age." ORDER BY u.user_id DESC";
+
+
+		$query = "SELECT u.* FROM `#user` AS u WHERE u.user_ban = 2 AND u.user_email != '' AND u.user_join < ".$age." ";
+
+		if(!empty($class))
 		{
-			$query = "SELECT u.*, ue.* FROM `#user` AS u LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = u.user_id WHERE u.user_ban = 2 ORDER BY u.user_id DESC";
-		}
-		else
-		{
-			$query = 'SELECT * FROM `#user` WHERE user_ban=2';
+			$query .= " AND FIND_IN_SET( ".intval($class).", u.user_class) ";
 		}
 
-		$sql3 = e107::getDb('sql3');
+		$query .= " ORDER BY u.user_id DESC";
 
-		$sql3->db_Select_gen($query);
-		while ($row = $sql3->db_Fetch())
+		$sql->gen($query);
+
+		$recipients = array();
+
+		$usr = e107::getUserSession();
+
+		while ($row = $sql->fetch())
 		{
-			echo $row['user_id']." ".$row['user_sess']." ".$row['user_name']." ".$row['user_email']."<br />";
-			$this->resend($row['user_id'],$row['user_sess'],$row['user_name'],$row['user_email'],$row['user_language']);
-			if ($pause_count > $pause_amount)
+
+			if($resetPasswords === true)
 			{
-				sleep($pause_time);
-				$pause_count = 1;
+				$rawPassword    = $usr->generateRandomString('********');
+				$sessKey        = e_user_model::randomKey();
+
+				$updateQry = array(
+					'user_sess'     => $sessKey,
+					'user_password' => $usr->HashPassword($rawPassword, $row['user_loginname']),
+					'WHERE'         => 'user_id = '.$row['user_id']." LIMIT 1"
+				);
+
+				if(!$sql2->update('user',$updateQry))
+				{
+
+					e107::getMessage()->addError("Error updating user's password. #".$row['user_id']." : ".$row['user_email']);
+					e107::getMessage()->addDebug(print_a($updateQry,true));
+
+				//	break;
+				}
+				else
+				{
+					e107::getMessage()->addInfo("Updated ".$row['user_id']." : ".$row['user_email']);
+				}
+
+
+				$row['user_sess'] = $sessKey;
+
 			}
-			sleep(1);
-			$pause_count++;
-			$count++;
+			else
+			{
+				$rawPassword = '(*** hidden ***)';
+			}
+
+			$activationUrl = SITEURL."signup.php?activate.".$row['user_id'].".".$row['user_sess'];
+
+
+
+			$recipients[] = array(
+				'mail_recipient_id'     => $row['user_id'],
+				'mail_recipient_name'   => $row['user_name'],		// Should this use realname?
+				'mail_recipient_email'  => $row['user_email'],
+				'mail_target_info'		=> array(
+					'USERID'		        => $row['user_id'],
+					'LOGINNAME'             => (intval($emailLogin) === 1) ? $row['user_email'] : $row['user_loginname'],
+					'PASSWORD'              => $rawPassword,
+					'DISPLAYNAME' 	        => $tp->toDB($row['user_name']),
+					'SUBJECT'               => LAN_SIGNUP_98,
+					'USERNAME' 		        => $row['user_name'],
+					'USERLASTVISIT'         => $row['user_lastvisit'],
+					'ACTIVATION_LINK'       => '<a href="'.$activationUrl.'">'.$activationUrl.'</a>', // Warning: switching the quotes on this will break the template.
+					'ACTIVATION_URL'        => $activationUrl,
+					'DATE_SHORT'            => $tp->toDate(time(),'short'),
+					'DATE_LONG'             => $tp->toDate(time(),'long'),
+					'SITEURL'               => SITEURL
+				)
+			);
+
+		//	echo $row['user_id']." ".$row['user_sess']." ".$row['user_name']." ".$row['user_email']."<br />";
+
 		}
-		if ($count)
-		{
-			e107::getLog()->add('USET_12',str_replace('--COUNT--',$count,USRLAN_168),E_LOG_INFORMATIVE);
-		}
+
+		$siteadminemail = e107::getPref('siteadminemail');
+		$siteadmin = e107::getPref('siteadmin');
+
+		$mailer = e107::getBulkEmail();
+
+		// Create the mail body
+		$mailData = array(
+			'mail_total_count'      => count($recipients),
+			'mail_content_status' 	=> MAIL_STATUS_TEMP,
+			'mail_create_app' 		=> 'core',
+			'mail_title' 			=> 'RESEND ACTIVATION',
+			'mail_subject' 			=> LAN_SIGNUP_98,
+			'mail_sender_email' 	=> e107::getPref('replyto_email',$siteadminemail),
+			'mail_sender_name'		=> e107::getPref('replyto_name',$siteadmin),
+			'mail_notify_complete' 	=> 0,			// NEVER notify when this email sent!!!!!
+			'mail_body' 			=> 'null',
+			'template'				=> 'signup',
+			'mail_send_style'       => 'signup'
+		);
+
+
+		$mailer->sendEmails('signup', $mailData, $recipients, array('mail_force_queue'=>1));
+		$totalMails = count($recipients);
+
+		$url = e_ADMIN."mailout.php?mode=pending&action=list";
+
+		e107::getMessage()->addSuccess("Total emails added to <a href='".$url."'>mail queue</a>: ".$totalMails);
+
 	}
 
 	// ---------------------------------------------------------------------
@@ -2337,6 +2524,159 @@ class users_admin_form_ui extends e_admin_form_ui
 	
 	
 }
+
+
+	class users_ranks_ui extends e_admin_ui
+	{
+		protected $pluginTitle		= LAN_USER;
+		protected $pluginName		= 'user_ranks';
+		protected $table			= 'generic';
+		protected $pid				= 'gen_id';
+		protected $perPage 			= 15;
+		protected $listQry			= "SELECT * FROM `#generic` WHERE gen_type='user_rank_data' ";
+		protected $listOrder     = " CASE gen_datestamp WHEN 1 THEN 1 WHEN 2 THEN 2 WHEN 3 THEN 3  WHEN 0 THEN 4 END, gen_intdata ";
+
+		protected $fields 		= array (
+		    'checkboxes'        =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
+		    'gen_id' 			=> array ( 'title' => LAN_ID,	 'nolist'=>true,	'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		    'gen_type' 			=> array ( 'title' => LAN_BAN, 	'type' => 'hidden', 'data' => 'str', 'width' => 'auto', 'batch' => true, 'filter' => true, 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => 'value=user_rank_data', 'class' => 'left', 'thclass' => 'left',  ),
+		    'gen_ip' 			=> array ( 'title' => USRLAN_208, 'type' => 'text', 'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		    'gen_intdata' 		=> array ( 'title' => USRLAN_209, 'type' => 'text', 'batch'=>false, 'data' => 'int', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => 'default=-', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+
+		    'gen_datestamp' 	=> array ( 'title' => 'Special', 'type' => 'hidden', 'nolist'=>true, 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		    'gen_user_id' 		=> array ( 'title' => USRLAN_210, 'type' => 'boolean', 'batch'=>true, 'data' => 'int', 'inline'=>true, 'width' => '15%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		    'gen_chardata' 		=> array ( 'title' => LAN_ICON, 'type' => 'dropdown', 'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => array(), 'class' => 'left', 'thclass' => 'left',  ),
+
+
+		    'options'			=> array ( 'title' => LAN_OPTIONS, 'type' =>'method', 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'right last', 'forced' => '1', 'readParms'=>'edit=0'  ),
+		);
+
+		protected $fieldpref = array('gen_datestamp', 'gen_type', 'gen_ip', 'gen_intdata', 'gen_user_id', 'gen_chardata');
+
+
+		// optional
+		public function init()
+		{
+			$tmp = e107::getFile()->get_files(e_IMAGE.'ranks', '.*?\.(png|gif|jpg)');
+
+			$mode = $this->getMode();
+			$action = $this->getAction();
+
+			$existing = e107::getDb()->gen("SELECT gen_id FROM #generic WHERE gen_type='user_rank_data' LIMIT 1 ");
+
+			if($mode == 'ranks' && ($action == 'list') && !$existing)
+			{
+				$this->createDefaultRecords();
+			}
+
+			//	$this->addTitle(LAN_USER_RANKS);
+
+			foreach($tmp as $k => $v)
+			{
+				$id = $v['fname'];
+				$this->fields['gen_chardata']['writeParms']['optArray'][$id] = $v['fname'];
+			}
+
+			unset($tmp);
+			natsort($imageList);
+		}
+
+		public function afterDelete($data)
+		{
+			e107::getCache()->clear_sys('nomd5_user_ranks');
+		}
+
+		public function afterUpdate($new_data, $old_data, $id)
+		{
+			e107::getCache()->clear_sys('nomd5_user_ranks');
+		}
+
+		private function createDefaultRecords()
+		{
+
+			$tmp = array();
+			$tmp['_FIELD_TYPES']['gen_datestamp'] = 'int';
+			$tmp['_FIELD_TYPES']['gen_ip'] = 'todb';
+			$tmp['_FIELD_TYPES']['gen_user_id'] = 'int';
+			$tmp['_FIELD_TYPES']['gen_chardata'] = 'todb';
+			$tmp['_FIELD_TYPES']['gen_intdata'] = 'int';
+
+
+			//Add main site admin info
+			$tmp['data']['gen_datestamp']   = 1;
+			$tmp['data']['gen_type']        = 'user_rank_data';
+			$tmp['data']['gen_ip']          = LAN_MAINADMIN;
+			$tmp['data']['gen_user_id']     = 1;
+			$tmp['data']['gen_chardata']    = 'English_main_admin.png';
+			$tmp['data']['gen_intdata']     = 0;
+			e107::getDb()->insert('generic',$tmp);
+			unset ($tmp['data']);
+
+
+			//Add site admin info
+			$tmp['data']['gen_type']        = 'user_rank_data';
+			$tmp['data']['gen_datestamp']   = 2;
+			$tmp['data']['gen_ip']          = LAN_ADMIN;
+			$tmp['data']['gen_user_id']     = 1;
+			$tmp['data']['gen_chardata']    = 'English_admin.png';
+			$tmp['data']['gen_intdata']     = 0;
+
+
+			e107::getDb()->insert('generic', $tmp);
+
+			for($i=1; $i < 11; $i++)
+			{
+				unset ($tmp['data']);
+				$tmp['data']['gen_type']        = 'user_rank_data';
+				$tmp['data']['gen_datestamp']   = 0;
+				$tmp['data']['gen_ip']          = "Level ".$i;
+				$tmp['data']['gen_user_id']     = 0;
+				$tmp['data']['gen_chardata']    = "lev".$i.".png";
+				$tmp['data']['gen_intdata']     = ($i * 150);
+
+				e107::getDb()->insert('generic', $tmp);
+			}
+
+
+
+		}
+
+	}
+
+
+
+	class users_ranks_ui_form extends e_admin_form_ui
+	{
+		// Override the default Options field.
+		function options($parms, $value, $id, $attributes)
+		{
+
+			if($attributes['mode'] == 'read')
+			{
+				parse_str(str_replace('&amp;', '&', e_QUERY), $query); //FIXME - FIX THIS
+				$query['action'] = 'edit';
+				$query['id'] = $id;
+				$query = http_build_query($query);
+
+				$text = "<a href='".e_SELF."?{$query}' class='btn btn-default' title='".LAN_EDIT."' data-toggle='tooltip' data-placement='left'>
+						".ADMIN_EDIT_ICON."</a>";
+
+				$special = $this->getController()->getListModel()->get('gen_datestamp');
+
+				if($special == 0)
+				{
+					$text .= $this->submit_image('menu_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn btn-default'.$delcls));
+				}
+
+				return $text;
+			}
+		}
+
+
+
+	}
+
+
 
 new users_admin();
 require_once ('auth.php');

@@ -113,7 +113,7 @@ document.write('<link rel=\"stylesheet\" type=\"text/css\" href=\"".e_PLUGIN_ABS
 				success: function(e) {
 					if(e)
 					{
-						alert(e);
+				//		alert(e);
 					}
 				}
 			});

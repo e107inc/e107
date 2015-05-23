@@ -223,7 +223,7 @@ class e107MailManager
 		
 		if(deftrue('e_DEBUG'))
 		{
-			$this->debugMode = true; 	
+			$this->debugMode = true;
 		}
 		
 		if($this->debugMode === true)
@@ -426,12 +426,13 @@ class e107MailManager
 	 * @param $data - array of DB-sourced target-related data
 	 * @param $addMissing - if TRUE, undefined fields are added
 	 *
-	 * @return void
+	 * @return array
 	 */
 	public function dbToBoth(&$data, $addMissing = FALSE)
 	{	
 		$res = array();
 		$oneToOne = array_merge($this->dbTypes['mail_content'], $this->dbTypes['mail_recipients']);		// List of valid elements
+
 
 		// Start with simple 'one to one' fields
 		foreach ($oneToOne as $f => $v)
@@ -465,7 +466,9 @@ class e107MailManager
 		}
 		if (isset($data['mail_target_info']))
 		{
-			$tmp = e107::unserialize(str_replace('\\\'', '\'',$data['mail_target_info']));	// May have escaped data
+			$clean = stripslashes($data['mail_target_info']);
+			$tmp = e107::unserialize($clean);	// May have escaped data
+
 			$res['mail_target_info'] = $tmp;
 		}
 		
@@ -497,13 +500,13 @@ class e107MailManager
 	 */
 	protected function checkDB($which = 1)
 	{
-		if (($which == 1) && ($this->db == NULL))
+		if (($which == 1) && ($this->db == null))
 		{
-			$this->db = new db;
+			$this->db = e107::getDb('mail1');
 		}
-		if (($which == 2) && ($this->db2 == NULL))
+		if (($which == 2) && ($this->db2 == null))
 		{
-			$this->db2 = new db;
+			$this->db2 = e107::getDb('mail2');;
 		}
 	}
 
@@ -598,7 +601,7 @@ class e107MailManager
 							AND mt.`mail_status` <= ".MAIL_STATUS_MAX_ACTIVE." 
 							AND mt.`mail_send_date` <= ".time()." 
 							AND (ms.`mail_last_date` >= ".time()." OR ms.`mail_last_date`=0)
-							ORDER BY ms.`mail_e107_priority` DESC {$count}";
+							ORDER BY ms.`mail_e107_priority` DESC, mt.mail_target_id ASC {$count}";
 //		echo $query.'<br />';
 		$result = $this->db->gen($query);
 		
@@ -618,17 +621,17 @@ class e107MailManager
 	{
 		if (!$this->queryActive)
 		{
-			return FALSE;
+			return false;
 		}
-		if ($result = $this->db->db_Fetch(MYSQL_ASSOC))
+		if ($result = $this->db->fetch(MYSQL_ASSOC))
 		{
 			$this->queryActive--;
 			return $this->dbToBoth($result);
 		}
 		else
 		{
-			$this->queryActive = FALSE;		// Make sure no further attempts to read emails
-			return FALSE;
+			$this->queryActive = false;		// Make sure no further attempts to read emails
+			return false;
 		}
 	}
 
@@ -654,10 +657,11 @@ class e107MailManager
 	{
 		$counterList = array('mail_source_id','mail_togo_count', 'mail_sent_count', 'mail_fail_count', 'mail_start_send');
 
-		if (($email = $this->getNextEmail()) === FALSE)
+		if (($email = $this->getNextEmail()) === false)
 		{
-			return FALSE;
+			return false;
 		}
+
 
 		/**
 		 *	The $email variable has all the email data in 'flat' form, including that of the current recipient.
@@ -700,7 +704,7 @@ class e107MailManager
 
 		if (!$this->currentMailBody)
 		{
-			if (isset($email['mail_body_templated']))
+			if (!empty($email['mail_body_templated']))
 			{
 				$this->currentMailBody = $email['mail_body_templated'];
 			}
@@ -708,22 +712,47 @@ class e107MailManager
 			{
 				$this->currentMailBody = $email['mail_body'];
 			}
+
 			$this->currentTextBody = $email['mail_body_alt'];		// May be null
 		}
-		
+
+
 		$mailToSend = $this->makeEmailBlock($email);			// Substitute mail-specific variables, attachments etc
 
-//		print_a($email);
+
 
 		if($this->debugMode)
 		{
+
+			echo "<h3>Preview</h3>";
+			$preview = $this->mailer->preview($mailToSend);
+			echo $preview;
+			echo "<h3>Preview (HTML)</h3>";
+			print_a($preview);
 			$logName = "mailout_simulation_".$email['mail_source_id'];
 			e107::getLog()->addDebug("Sending Email to <".$email['mail_recipient_name']."> ".$email['mail_recipient_email'])->toFile($logName,'Mailout Simulation Log',true);	
-			$result = true; 
+			$result = true;
+
+
+			$this->mailer->setDebug(true);
+			echo "<h2>SendEmail()->Body</h2>";
+			print_a($this->mailer->Body);
+			echo "<h2>SendEmail()->AltBody</h2>";
+			print_a($this->mailer->AltBody);
+			echo "<h1>_________________________________________________________________________</h1>";
+			return;
+
+
 		}
-		else
+
+	//	else
 		{
-			$result = $this->mailer->sendEmail($email['mail_recipient_email'], $email['mail_recipient_name'], $mailToSend, TRUE);	
+			$result = $this->mailer->sendEmail($email['mail_recipient_email'], $email['mail_recipient_name'], $mailToSend, TRUE);
+		}
+
+		if($this->debugMode)
+		{
+			return true;
 		}
 
 		// Try and send
@@ -828,7 +857,7 @@ class e107MailManager
 			if ($email['mail_notify_complete'] & 2) // Do e107 notify
 			{	
 				require_once(e_HANDLER."notify_class.php");
-				notify_maildone($message);
+			//	notify_maildone($message); // FIXME
 			}
 			e107::getEvent()->trigger('maildone', $email);
 		}
@@ -884,8 +913,12 @@ class e107MailManager
 			//'wordwrap'		- Set wordwrap value
 			//'split'			- If true, sends an individual email to each recipient
 			'template'		=> 'mail_send_style', // required
-			'shortcodes'	=> 'mail_target_info' // required
+			'shortcodes'	=> 'mail_target_info', // required
+			'e107_header'   => 'mail_recipient_id'
+
 			);
+
+
 
 
 		$result = array();
@@ -907,7 +940,6 @@ class e107MailManager
 				//unset($email[$v]);
 			}
 		}
-
 
 
 		// Do any substitutions
@@ -960,7 +992,7 @@ class e107MailManager
 			 $result = array_merge($result, $email['mail_overrides']);
 		}
 		
-		$title = "<h4>".__METHOD__." Line: ".__LINE__."</h4>";
+	//	$title = "<h4>".__METHOD__." Line: ".__LINE__."</h4>";
 	//	e107::getAdminLog()->addDebug($title.print_a($email,true),true);
 		
 		if(!empty($email['mail_media']))
@@ -968,11 +1000,20 @@ class e107MailManager
 			$result['media'] = $email['mail_media'];
 		}
 				
-		$title2 = "<h4>".__METHOD__." Line: ".__LINE__."</h4>";
+	//	$title2 = "<h4>".__METHOD__." Line: ".__LINE__."</h4>";
 	//	e107::getAdminLog()->addDebug($title2.print_a($result,true),true);
 	
 		$result['shortcodes']['MAILREF'] = $email['mail_source_id'];
-	
+
+		if($this->debugMode)
+		{
+			echo "<h3>makeEmailBlock() : Incoming</h3>";
+			print_a($email);
+
+			echo "<h3>makeEmailBlock(): Outgoing</h3>";
+			print_a($result);
+		}
+
 		return $result;
 	}
 
@@ -1010,7 +1051,8 @@ class e107MailManager
 		}
 		else 
 		{
-			e107::getAdminLog()->addDebug("Couldn't select emails", true);
+
+			// e107::getAdminLog()->addDebug("Couldn't select emails", true);
 		}
 	}
 
@@ -1345,11 +1387,14 @@ class e107MailManager
 		$bounceInfo 	= array('mail_bounce_string' => $bounceString, 'mail_recipient_email' => $emailAddress);		// Ready for event data
 		$errors 		= array();						// Log all errors, at least until proven
 		$vals 			= explode('/', $bounceString);		// Should get one or four fields
-		
-	//	echo "<h4>Bounce String</h4>";
-	//	print_a($bounceString);
-	//	echo "<h4>Vals</h4>";
-	//	print_a($vals);
+
+		if($this->debugMode)
+		{
+			echo "<h4>Bounce String</h4>";
+			print_a($bounceString);
+			echo "<h4>Vals</h4>";
+			print_a($vals);
+		}
 		
 		if (!is_numeric($vals[0])) 				// Email recipient user id number (may be zero)
 		{
@@ -1425,13 +1470,13 @@ class e107MailManager
 						
 					if(!$this->db->update('mail_content', '`mail_bounce_count` = `mail_bounce_count` + 1 WHERE `mail_source_id` = '.$vals[1]))
 					{
-						e107::getAdminLog()->add('Unable to increment bounce-count on mail_source_id='.$vals[1],$bounceInfo, E_LOG_FATAL, 'BOUNCE',LOG_TO_ROLLING);	
+						e107::getAdminLog()->add('Unable to increment bounce-count on mail_source_id='.$vals[1],$bounceInfo, E_LOG_FATAL, 'BOUNCE', LOG_TO_ROLLING);
 					}
 					
 					
 					if(!$this->db->update('mail_recipients', '`mail_status` = '.MAIL_STATUS_BOUNCED.' WHERE `mail_target_id` = '.$vals[2]))
 					{
-						e107::getAdminLog()->add('Unable to update recipient mail_status to bounce on mail_target_id = '.$vals[2],$bounceInfo, E_LOG_FATAL, 'BOUNCE',LOG_TO_ROLLING);	
+						e107::getAdminLog()->add('Unable to update recipient mail_status to bounce on mail_target_id = '.$vals[2],$bounceInfo, E_LOG_FATAL, 'BOUNCE', LOG_TO_ROLLING);
 					}
 				
 					$addons = array_keys($row['mail_selectors']); // trigger e_mailout.php addons. 'bounce' method. 
@@ -1480,12 +1525,19 @@ class e107MailManager
 				$errors[] = $err;
 			}
 		}
-		
+
 		if (!empty($errors))
 		{
+			$logErrors =$bounceInfo;
+			$logErrors['user_id'] = $uid;
+			$logErrors['mailshot'] = $vals[1];
+			$logErrors['mailshot_recipient'] = $vals[2];
+			$logErrors['errors'] = $errors;
+			$logErrors['email'] = $emailAddress;
+			$logErrors['bounceString'] = $bounceString;
 			$logString = $bounceString.' ('.$emailAddress.')[!br!]'.implode('[!br!]',$errors).implode('[!br!]',$bounceInfo);
 		//	e107::getAdminLog()->e_log_event(10,-1,'BOUNCE','Bounce receive error',$logString, FALSE,LOG_TO_ROLLING);
-			e107::getAdminLog()->add('Bounce receive error',$logString, E_LOG_WARNING, 'BOUNCE', LOG_TO_ROLLING);
+			e107::getAdminLog()->add('Bounce receive error',$logErrors, E_LOG_WARNING, 'BOUNCE', LOG_TO_ROLLING);
 			return $errors;
 		}
 		else 
@@ -1714,25 +1766,24 @@ class e107MailManager
 											 'mail_recipient_email' => $row['user_email']
 											 );	
  *						....and other data as appropriate
- *	@param boolean|array $extra - any additional parameters to be passed to the mailer - as accepted by arraySet method.
+ *	@param boolean|array $options - any additional parameters to be passed to the mailer - as accepted by arraySet method.
  *			These parameters will override any defaults, and any set in the template
- *	if ($extra['mail_force_queue'] is TRUE, the mail will be added to the queue regardless of the number of recipients
+ *	if ($options['mail_force_queue'] is TRUE, the mail will be added to the queue regardless of the number of recipients
  *
  *	@return boolean TRUE if either added to queue, or sent, successfully (does NOT indicate receipt). FALSE on any error
  *		(Note that with a small number of recipients FALSE indicates that one or more emails weren't sent - some may have been sent successfully)
  */
 
-	public function sendEmails($templateName, $emailData, $recipientData, $extra = FALSE)
+	public function sendEmails($templateName, $emailData, $recipientData, $options = false)
 	{
 		$log = e107::getAdminLog();
-		$log->addDebug(print_a($emailData, true),true);
-		$log->addDebug(print_a($recipientData, true),true);
-		$log->toFile('mail_manager','Mail Manager Log',true);
-		
-		
+		$log->addDebug(print_r($emailData, true),true);
+		$log->addDebug(print_r($recipientData, true),true);
+		$log->toFile('mail_manager','Mail Manager Log', true);
+
 		if (!is_array($emailData)) 
 		{
-			return FALSE;
+			return false;
 		}
 		
 		if (!is_array($recipientData))
@@ -1747,23 +1798,14 @@ class e107MailManager
 			$templateName = varset($emailData['mail_send_style'], 'textonly');		// Safest default if nothing specified
 		}
 
-
 		$templateName = trim($templateName);
-		if ($templateName == '') return FALSE;
+		if ($templateName == '') return false;
 
-		
-		// Get template data, override email settings as appropriate
-	//	require_once(e_HANDLER.'mail_template_class.php');
-	//	$ourTemplate = new e107MailTemplate();
-	//	if (!$ourTemplate->setNewTemplate($templateName) && empty($emailData['template'])) return FALSE;		// Probably template not found if error
-	//	if (!$ourTemplate->makeEmailBody($emailData['mail_body'], varset($emailData['mail_include_images'], TRUE))) return FALSE;		// Create body text
-	
-	
-	
-//		$emailData['mail_body_templated'] 	= $ourTemplate->mainBodyText;
 		$this->currentMailBody 				= $emailData['mail_body'];			// In case we send immediately
-//		$emailData['mail_body_alt'] 		= $ourTemplate->altBodyText;
 		$this->currentTextBody 				= strip_tags($emailData['mail_body']);
+
+		//		$emailData['mail_body_templated'] 	= $ourTemplate->mainBodyText;
+		//		$emailData['mail_body_alt'] 		= $ourTemplate->altBodyText;
 		
 		if (!isset($emailData['mail_overrides']))
 		{
@@ -1781,16 +1823,11 @@ class e107MailManager
 			}
 		}
 		
-		
-	
-	
-		$forceQueue = FALSE;
-		
-		
-		if (is_array($extra) && isset($extra['mail_force_queue']))
+
+		if (is_array($options) && isset($options['mail_force_queue']))
 		{
-			$forceQueue = $extra['mail_force_queue'];
-			unset($extra['mail_force_queue']);
+			$forceQueue = $options['mail_force_queue'];
+			unset($options['mail_force_queue']);
 		}
 
 		if($this->debugMode)
@@ -1807,7 +1844,7 @@ class e107MailManager
 			if ($this->mailer == NULL)
 			{
 				e107_require_once(e_HANDLER.'mail.php');
-				$this->mailer = new e107Email($extra);
+				$this->mailer = new e107Email($options);
 			}
 			$tempResult = TRUE;
 			$eCount = 0;
@@ -1831,7 +1868,7 @@ class e107MailManager
 				continue;
 
 		*/
-				if (FALSE == $this->mailer->sendEmail($recip['mail_recipient_email'], $recip['mail_recipient_name'], $mailToSend, true))
+				if (false == $this->mailer->sendEmail($recip['mail_recipient_email'], $recip['mail_recipient_name'], $mailToSend, true))
 				{
 					$tempResult = FALSE;
 					if($this->debugMode)
@@ -1862,7 +1899,7 @@ class e107MailManager
 		// ----------- Too many recipients to send at once - add to the emailing queue ---------------- //
 
 
-		// @TODO - handle any other relevant $extra fields
+		// @TODO - handle any other relevant $options fields
 		$emailData['mail_total_count'] = count($recipientData);
 
 		$result = $this->saveEmail($emailData, TRUE);

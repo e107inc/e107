@@ -157,7 +157,7 @@ class UserHandler
 	 *
 	 *	@return string|boolean - FALSE if invalid emcoding method, else encoded password to store in DB
 	 */
-	public function HashPassword($password, $login_name, $force='')
+	public function HashPassword($password, $login_name='', $force='')
 	{
 	  if ($force == '') $force = $this->preferred;
 	  switch ($force)
@@ -205,6 +205,42 @@ class UserHandler
 		}
 		return PASSWORD_INVALID;
 	}
+
+
+	/**
+	 * Reset the user's password with an auto-generated string.
+	 * @param $uid
+	 * @param string $loginName (optional)
+	 * @return bool|string rawPassword
+	 */
+	public function resetPassword($uid, $loginName='')
+	{
+		if(empty($uid))
+		{
+			return false;
+		}
+
+		$rawPassword    = $this->generateRandomString('********');
+	//	$sessKey        = e_user_model::randomKey();
+
+		$updateQry = array(
+			'user_password' => $this->HashPassword($rawPassword, $loginName),
+			'WHERE'         => 'user_id = '.intval($uid)." LIMIT 1"
+		);
+
+		if(e107::getDb()->update('user', $updateQry))
+		{
+			return $rawPassword;
+		}
+		else
+		{
+			return false;
+		}
+
+
+
+	}
+
 
 
 	/**
@@ -501,7 +537,7 @@ class UserHandler
 	{
 		if ($incInherited)
 		{
-			$classList = e107::getUserClass()->get_all_user_classes($var['user_class']);
+			$classList = e107::getUserClass()->get_all_user_classes($userData['user_class']);
 		}
 		else
 		{
@@ -724,51 +760,57 @@ Following fields auto-filled in code as required:
 		$tp = e107::getParser();
 
 		$initClasses = array();
-		$doClasses = FALSE;
-		$doProbation = FALSE;
-		$ret = FALSE;
+		$doClasses = false;
+		$doProbation = false;
+		$ret = false;
 
-		switch ($event)
+		switch($event)
 		{
 			case 'userall':
-				$doClasses = TRUE;
-				$doProbation = TRUE;
+				$doClasses = true;
+				$doProbation = true;
 				break;
-			case 'userfull': 		
-				if (!$pref['user_reg_veri'] || ($pref['init_class_stage'] == '2'))
+			case 'userfull':
+				if(!$pref['user_reg_veri'] || (intval($pref['init_class_stage']) == 2))
 				{
-					$doClasses = TRUE; 
+					$doClasses = true;
 				}
-				$doProbation = TRUE;
+				$doProbation = true;
 				break;
 			case 'userpartial' :
-				if ($pref['init_class_stage'] == '1')
-				{	
+				if(intval($pref['init_class_stage']) === 1)
+				{
 					// Set initial classes if to be done on partial signup, or if selected to add them now
-					$doClasses = TRUE;
+					$doClasses = true;
 				}
-				$doProbation = TRUE;
+				$doProbation = true;
 				break;
 		}
+
 		if($doClasses)
 		{
-			if (isset($pref['initial_user_classes'])) { $initClasses = explode(',',$pref['initial_user_classes']); }	 // Any initial user classes to be set at some stage
-			if ($doProbation && (varset($pref['user_new_period'], 0) > 0))
+			if(isset($pref['initial_user_classes']))   // Any initial user classes to be set at some stage
 			{
-				$initClasses[] = e_UC_NEWUSER;		// Probationary user class
+				$initClasses = explode(',', $pref['initial_user_classes']);
 			}
-			
-			if (count($initClasses))
-			{	// Update the user classes
-				if ($user['user_class'])
+
+			if($doProbation && (varset($pref['user_new_period'], 0) > 0))
+			{
+				$initClasses[] = e_UC_NEWUSER;        // Probationary user class
+			}
+
+			if(count($initClasses))
+			{    // Update the user classes
+				if($user['user_class'])
 				{
-					$initClasses = array_unique(array_merge($initClasses, explode(',',$user['user_class'])));
+					$initClasses = array_unique(array_merge($initClasses, explode(',', $user['user_class'])));
 				}
-				$user['user_class'] = $tp->toDB(implode(',',$initClasses));
+				$user['user_class'] = $tp->toDB(implode(',', $initClasses));
 				//$ret = TRUE;
 				$ret = $user['user_class'];
 			}
 		}
+
 		return $ret;
 	}
 

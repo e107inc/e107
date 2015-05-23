@@ -38,6 +38,7 @@ See e_HANDLER.mail.php for more information
 if (!defined('e107_INIT')) { exit; }
 
 $includeSiteButton = e107::getPref('sitebutton');
+e107::lan('core','signup'); // required for when mailer runs under CLI.
 
 /*
 $SIGNUPEMAIL_SUBJECT = LAN_SIGNUP_96.' {SITENAME}';
@@ -97,7 +98,7 @@ $EMAIL_OVERRIDES = array(
 // Default - test email and when no template specified. 
 
 $EMAIL_TEMPLATE['default']['name']	 		= 'Default';
-$EMAIL_TEMPLATE['default']['subject']		= '{SUBJECT} {SITENAME}';
+$EMAIL_TEMPLATE['default']['subject']		= '{SITENAME}: {SUBJECT} ';
 $EMAIL_TEMPLATE['default']['header']		= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
 												<html xmlns='http://www.w3.org/1999/xhtml' >
 												<head>
@@ -141,8 +142,8 @@ $EMAIL_TEMPLATE['default']['footer']		= "<br /><br /><table cellspacing='4'>
  * signup.php?test 
  * signup.php?preview.aftersignup
  */
-
-$EMAIL_TEMPLATE['signup']['subject']		= LAN_SIGNUP_96.' {SITENAME}';
+$EMAIL_TEMPLATE['signup']['name']	 		= 'Signup';
+$EMAIL_TEMPLATE['signup']['subject']		= '{SITENAME}: '. LAN_SIGNUP_98;
 $EMAIL_TEMPLATE['signup']['header']			= $EMAIL_TEMPLATE['default']['header'];
 $EMAIL_TEMPLATE['signup']['body'] 			= "											
 												<div style='text-align:left'>
@@ -182,7 +183,7 @@ $EMAIL_TEMPLATE['signup']['cc']				= "";
 $EMAIL_TEMPLATE['signup']['bcc']			= "";
 $EMAIL_TEMPLATE['signup']['attachments']	= "";
 
-//TODO FIXME {SITEBUTTON} not working at the moment. (broken path)
+
 
 // -----------------------------
 

@@ -37,8 +37,12 @@ $highlight_search = isset($_POST['highlight_search']);
 
 if (!e_QUERY)
 {
+//	var_dump(e_QUERY);
+//	exit;
 	//No parameters given, redirect to forum home
-	header('Location:' . e107::getUrl()->create('forum/forum/main', array(), 'full=1&encode=0'));
+	$url = e107::url('forum','index','full');
+	e107::getRedirect()->go($url);
+//	header('Location:' . e107::getUrl()->create('forum/forum/main', array(), 'full=1&encode=0'));
 	exit;
 }
 
@@ -263,11 +267,16 @@ if ($thread->pages > 1)
 $tVars->BUTTONS = '';
 if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread->threadInfo['thread_active'])
 {
-	$tVars->BUTTONS .= "<a href='" . $e107->url->create('forum/thread/reply', array('id' => $thread->threadId)) . "'>" . IMAGE_reply . "</a>";
+	// print_a($thread->threadInfo);
+	$url = e107::url('forum','post')."?f=rp&amp;id=".$thread->threadInfo['thread_id']."&amp;post=".$thread->threadId;
+//	$url = $e107->url->create('forum/thread/reply', array('id' => $thread->threadId));
+	$tVars->BUTTONS .= "<a href='" . $url . "'>" . IMAGE_reply . "</a>";
 }
 if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'thread'))
 {
-	$tVars->BUTTONS .= "<a href='" . $e107->url->create('forum/thread/new', array('id' => $thread->threadInfo['thread_forum_id'])) . "'>" . IMAGE_newthread . "</a>";
+	$ntUrl = e107::url('forum','post')."?f=nt&amp;id=". $thread->threadInfo['thread_forum_id'];
+//	$ntUrl = $e107->url->create('forum/thread/new', array('id' => $thread->threadInfo['thread_forum_id']));
+	$tVars->BUTTONS .= "<a href='" . $ntUrl . "'>" . IMAGE_newthread . "</a>";
 }
 
 
@@ -276,16 +285,19 @@ $tVars->BUTTONSX = forumbuttons($thread);
 function forumbuttons($thread)
 {
 	global $forum; 
-	
-	
+
 	
 	if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread->threadInfo['thread_active'])
 	{
-		$replyUrl = "<a class='btn btn-primary' href='".e107::getUrl()->create('forum/thread/reply', array('id' => $thread->threadId))."'>".LAN_FORUM_2006."</a>";
+		$url = e107::url('forum','post')."?f=rp&amp;id=".$thread->threadInfo['thread_id']."&amp;post=".$thread->threadId;
+	//	$url = e107::getUrl()->create('forum/thread/reply', array('id' => $thread->threadId));
+		$replyUrl = "<a class='btn btn-primary' href='".$url."'>".LAN_FORUM_2006."</a>";
 	}
 	if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'thread'))
 	{
-		$options[] = " <a  href='".e107::getUrl()->create('forum/thread/new', array('id' => $thread->threadInfo['thread_forum_id']))."'>".LAN_FORUM_2005."</a>";
+		$ntUrl = e107::url('forum','post')."?f=nt&amp;id=". $thread->threadInfo['thread_forum_id'];
+	//	$ntUrl = e107::getUrl()->create('forum/thread/new', array('id' => $thread->threadInfo['thread_forum_id']));
+		$options[] = " <a  href='".$ntUrl."'>".LAN_FORUM_2005."</a>";
 	}	
 	
 	$options[] = "<a href='" . e107::getUrl()->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>".LAN_FORUM_1017." ".LAN_FORUM_2001."</a>"; 
@@ -659,14 +671,32 @@ class e107ForumThread
 		//If threadId doesn't exist, or not given, redirect to main forum page
 		if (!$this->threadId || !$this->threadInfo = $forum->threadGet($this->threadId))
 		{
-			header('Location:' . $e107->url->create('forum/forum/main', array(), 'encode=0&full=1'));
+			if(E107_DEBUG_LEVEL > 0)
+			{
+				echo __METHOD__ .' Line: '.__LINE__;
+				exit;
+			}
+
+			$url = e107::url('forum','index','full');
+			e107::getRedirect()->go($url);
+
+		//	header('Location:' . $e107->url->create('forum/forum/main', array(), 'encode=0&full=1'));
 			exit;
 		}
 
 		//If not permitted to view forum, redirect to main forum page
 		if (!$forum->checkPerm($this->threadInfo['thread_forum_id'], 'view'))
 		{
-			header('Location:' . $e107->url->create('forum/forum/main', array(), 'encode=0&full=1'));
+
+			if(E107_DEBUG_LEVEL > 0)
+			{
+				echo __METHOD__ .' Line: '.__LINE__;
+				exit;
+			}
+			$url = e107::url('forum','index','full');
+			e107::getRedirect()->go($url);
+
+		//	header('Location:' . $e107->url->create('forum/forum/main', array(), 'encode=0&full=1'));
 			exit;
 		}
 

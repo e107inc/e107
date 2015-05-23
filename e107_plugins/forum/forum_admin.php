@@ -362,6 +362,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 		public function afterCreate($new_data, $old_data, $id)
 		{
 			// do something
+			e107::getCache()->clear_sys('forum_perms');
 		}
 
 		public function onCreateError($new_data, $old_data)
@@ -385,6 +386,14 @@ if(!deftrue('OLD_FORUMADMIN'))
 		public function afterUpdate($new_data, $old_data, $id)
 		{
 			// do something
+			e107::getCache()->clear_sys('forum_perms');
+
+		}
+
+
+		public function afterDelete($del_data,$id)
+		{
+			e107::getCache()->clear_sys('forum_perms');
 		}
 
 		public function onUpdateError($new_data, $old_data, $id)
