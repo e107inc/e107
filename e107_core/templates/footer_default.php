@@ -302,7 +302,7 @@ if (is_array($pref['e_footer_list']))
 //
 echo "\n\n<!-- ======= [JSManager] FOOTER: Remaining CSS ======= -->";
 
-$CSSORDER = deftrue('CSSORDER') ? explode(",",CSSORDER) : array('other','core','plugin','theme','inline');
+$CSSORDER = deftrue('CSSORDER') ? explode(",",CSSORDER) : array('other','core','plugin','theme');  // INLINE CSS in Body not supported by HTML5. .
 
 foreach($CSSORDER as $val)
 {

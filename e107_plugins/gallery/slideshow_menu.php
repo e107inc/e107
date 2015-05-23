@@ -11,6 +11,41 @@ e107::plugLan('gallery', 'front');
 
 $gp = e107::getPlugPref('gallery');
 
+
+	e107::js('gallery', 'jslib/prettyPhoto/js/jquery.prettyPhoto.js','jquery');
+
+	e107::css('gallery', 'jslib/prettyPhoto/css/prettyPhoto.css','jquery');
+
+
+	e107::css('gallery', 'gallery_style.css');
+
+	// Work-around for indent issue. see: https://github.com/twitter/bootstrap/issues/4890
+	e107::css('inline', "
+
+.thumbnails .span2:nth-child(6n+1) {
+margin-left:0;
+}",'jquery');
+
+
+
+	$prettyPhoto = <<<JS
+$(document).ready(function(){
+    $("a[data-gal^='prettyPhoto']").prettyPhoto(
+	    {
+	    	hook: 'data-gal',
+	    	theme: 'pp_default',
+	    	overlay_gallery: false,
+	    	deeplinking: false
+	    }
+    );
+  });
+JS;
+
+	e107::js('footer-inline',$prettyPhoto,'jquery');
+
+
+
+
 e107::js('gallery', 'jslib/jquery.cycle.all.js','jquery');
 e107::js('footer-inline',"
 
