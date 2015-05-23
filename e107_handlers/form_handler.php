@@ -399,7 +399,125 @@ class e_form
 			}
 		}	
 		*/
-		
+
+		if(vartrue($options['selectize']['loadPath']))
+		{
+			e107::js('core', 'selectize/js/selectize.min.js', 'jquery');
+			e107::css('core', 'selectize/css/selectize.css', 'jquery');
+
+			if(deftrue('BOOTSTRAP') === 3)
+			{
+				e107::css('core', 'selectize/css/selectize.bootstrap3.css', 'jquery');
+			}
+			elseif(deftrue('BOOTSTRAP'))
+			{
+				e107::css('core', 'selectize/css/selectize.bootstrap2.css', 'jquery');
+			}
+
+			$ac = $options['selectize'];
+			$fieldID = vartrue($options['id'], $this->name2id($name));
+
+			// TODO: better method to create suffix as unique identifier.
+			$optionSuffix = $fieldID . vartrue($options['selectize']['e_editable']);
+			$optionSuffix = md5($optionSuffix);
+
+			// We need to declare an options array with unique ID for the selectize.js field, because we have to store
+			// the latest default values, because if the selectize() would be reinitialized, e.g. in x-editable popover,
+			// we have to get the latest value(s).
+			$jsOptions = 'var options' . $optionSuffix . ' = ';
+			$jsOptions .= (vartrue($ac['options']) ? json_encode($ac['options']) : "[]") . ";\n";
+
+			// TODO: more options and callbacks.
+			$js = "$('#" . $fieldID . "').selectize({
+				// General options.
+				items: " . (vartrue($ac['items']) ? json_encode($ac['items']) : '[]') . ",
+				delimiter: '" . (vartrue($ac['delimiter'], ',')) . "',
+				diacritics: " . (vartrue($ac['diacritics'], true) ? 'true' : 'false') . ",
+				create: " . (vartrue($ac['create'], false) ? 'true' : 'false') . ",
+				createOnBlur: " . (vartrue($ac['createOnBlur'], true) ? 'true' : 'false') . ",
+				highlight: " . (vartrue($ac['highlight'], false) ? 'true' : 'false') . ",
+				persist: " . (vartrue($ac['persist'], false) ? 'true' : 'false') . ",
+				openOnFocus: " . (vartrue($ac['openOnFocus'], false) ? 'true' : 'false') . ",
+				maxOptions: " . vartrue($ac['maxOptions'], 'null') . ",
+				maxItems: " . vartrue($ac['maxItems'], 'null') . ",
+				hideSelected: " . (vartrue($ac['hideSelected'], false) ? 'true' : 'false') . ",
+				closeAfterSelect: " . (vartrue($ac['closeAfterSelect'], true) ? 'true' : 'false') . ",
+				allowEmptyOption: " . (vartrue($ac['allowEmptyOption'], false) ? 'true' : 'false') . ",
+				scrollDuration: " . vartrue($ac['scrollDuration'], 60) . ",
+				loadThrottle: " . vartrue($ac['loadThrottle'], 300) . ",
+				loadingClass: '" . vartrue($ac['loadingClass'], 'loading') . "',
+				preload: " . (vartrue($ac['preload'], false) ? 'true' : 'false') . ",
+				dropdownParent: " . vartrue($ac['dropdownParent'], 'null') . ",
+				addPrecedence: " . (vartrue($ac['addPrecedence'], false) ? 'true' : 'false') . ",
+				selectOnTab: " . (vartrue($ac['selectOnTab'], false) ? 'true' : 'false') . ",
+				mode: '" . (vartrue($ac['mode'], 'multi')) . "',
+				plugins: " . (vartrue($ac['plugins']) ? json_encode($ac['plugins']) : '[]') . ",
+
+				// Data / Searching.
+				options: options" . $optionSuffix . ",
+				valueField: '" . vartrue($ac['valueField'], 'value') . "',
+				labelField: '" . vartrue($ac['labelField'], 'label') . "',
+				searchField: '" . vartrue($ac['searchField'], 'label') . "',
+
+				// Callbacks.
+				load: function(query, callback) {
+			        if (!query.length) return callback([]);
+					$.ajax({
+						url: '" . $ac['loadPath'] . "',
+						type: 'POST',
+						dataType: 'json',
+						data: {
+							q: query,
+							l: " . vartrue($ac['maxOptions'], 10) . "
+						},
+						error: function() {
+							callback([]);
+						},
+						success: function(data) {
+							// Update items in options array of this field.
+							options" . $optionSuffix . " = data;
+							callback(data);
+						}
+					});
+				}
+			});";
+
+			// We have to generate JS for x-editable field, so we have to initialize selectize.js after popover opens.
+			if(vartrue($options['selectize']['e_editable']))
+			{
+				// TODO: instead of setTimeout, we should use an x-editable callback.
+				$click = "$('#" . $options['selectize']['e_editable'] . "').click(function(){
+					// Attach success callback for replacing user id with name.
+					$.fn.editable.defaults.success = function(response, newValue) {
+						if(response.status == 'error') return;
+						if ($('#" . $options['selectize']['e_editable'] . "').hasClass('editable-userpicker')) {
+							$('#" . $options['selectize']['e_editable'] . "').hide();
+							options" . $optionSuffix . " = options" . $optionSuffix . " || [];
+							userName = '" . LAN_ANONYMOUS . "';
+							$.each(options" . $optionSuffix . ", function(key, value) {
+								if (value." . vartrue($ac['valueField'], 'value') . " == newValue) {
+									userName = value." . vartrue($ac['labelField'], 'label') . ";
+								}
+							});
+							setTimeout(function(){
+								$('#" . $options['selectize']['e_editable'] . "').html(userName).show();
+								$.fn.editable.defaults.success = function(response, newValue) {}
+							}, 300);
+						}
+					};
+					setTimeout(function(){ " . $js . " }, 300);
+				})";
+
+				e107::js('footer-inline', "$(document).ready(function(){" . $jsOptions . $click . "});");
+			}
+			// We have to render JS for a simple form element.
+			else
+			{
+				e107::js('footer-inline', "$(document).ready(function(){" . $jsOptions . $js . "});");
+			}
+		}
+
+		// TODO: remove typeahead.
 		if(vartrue($options['typeahead']))
 		{
 			if(vartrue($options['typeahead']) == 'users')
@@ -935,90 +1053,38 @@ class e_form
 	 */
 	function userpicker($name_fld, $id_fld, $default_name, $default_id, $options = array())
 	{
-		$tp = e107::getParser();
-		if(!is_array($options)) parse_str($options, $options);
-		
+		if(!is_array($options))
+		{
+			parse_str($options, $options);
+		}
+
 		$default_name = vartrue($default_name, '');
-		$default_id = vartrue($default_id, 0);
-		
-		//TODO Auto-calculate $name_fld from $id_fld ie. append "_usersearch" here ?
-		
-		$fldid = $this->name2id($name_fld);
-		$hidden_fldid = $this->name2id($id_fld);
-		
-		$ret = '<div class="input-append">';
-		$ret .= $this->text($name_fld,$default_name,20, "class=e-tip&title=Type name of user&typeahead=users&readonly=".vartrue($options['readonly']))
-		.$this->hidden($id_fld,$default_id, array('id' => $this->name2id($id_fld)))."<span class='add-on'>".$tp->toGlyph('fa-user')." <span  id='{$fldid}-id'>".$default_id.'</span></span>';
-		$ret .= "<a class='btn btn-inverse' href='#' id='{$fldid}-reset'>reset</a>
-		</div>";
+		$default_id = vartrue($default_id, '');
 
-		e107::js('footer-inline', "
-			\$('#{$fldid}').blur(function () {
-				\$('#{$fldid}-id').html(\$('#{$hidden_fldid}').val());
-			});
-			\$('#{$fldid}-reset').click(function () {
-				\$('#{$fldid}-id').html('0');
-				\$('#{$hidden_fldid}').val(0);
-				\$('#{$fldid}').val('');
-				return false;
-			});
-		");
+		$default_options = array();
+		if (!empty($default_name))
+		{
+			$default_options = array(
+				array(
+					'value' => $default_id,
+					'label' => $default_name,
+				),
+			);
+		}
+
+		$defaults['selectize'] = array(
+			'loadPath' => e_BASE . 'user.php',
+			'create'   => false,
+			'maxItems' => 1,
+			'mode'     => 'multi',
+			'options'  => $default_options,
+		);
+
+		$options = array_replace_recursive($defaults, $options);
+
+		$ret = $this->text($name_fld, $default_id, 20, $options);
 
 		return $ret;
-		/*
-		$label_fld = str_replace('_', '-', $name_fld).'-upicker-lable';
-
-		//'.$this->text($id_fld, $default_id, 10, array('id' => false, 'readonly'=>true, 'class'=>'tbox number')).'
-		$ret = '
-		<div class="e-autocomplete-c">
-			'.$this->text($name_fld, $default_name, 150, array('id' => false, 'readonly' => vartrue($options['readonly']) ? true : false)).'
-			<span id="'.$label_fld.'" class="'.($default_id ? 'success' : 'warning').'">Id #'.((int) $default_id).'</span>
-			'.$this->hidden($id_fld, $default_id, array('id' => false)).'
-				<span class="indicator" style="display: none;">
-					<img src="'.e_IMAGE_ABS.'generic/loading_16.gif" class="icon action S16" alt="Loading..." />
-				</span>
-				<div class="e-autocomplete"></div>
-		</div>
-		';
-				
-		e107::getJs()->requireCoreLib('scriptaculous/controls.js', 2);
-
-		e107::getJs()->footerInline("
-	            //autocomplete fields
-	             \$\$('input[name={$name_fld}]').each(function(el) {
-
-	             	if(el.readOnly) {
-	             		el.observe('click', function(ev) { ev.stop(); var el1 = ev.findElement('input'); el1.blur(); } );
-	             		el.next('span.indicator').hide();
-	             		el.next('div.e-autocomplete').hide();
-	             		return;
-					}
-					new Ajax.Autocompleter(el, el.next('div.e-autocomplete'), '".e_JS."e_ajax.php', {
-					  paramName: '{$name_fld}',
-					  minChars: 2,
-					  frequency: 0.5,
-					  afterUpdateElement: function(txt, li) {
-					  	if(!\$(li)) return;
-					  	var elnext = el.next('input[name={$id_fld}]'),
-					  		ellab = \$('{$label_fld}');
-					  	if(\$(li).id) {
-							elnext.value = parseInt(\$(li).id);
-						} else {
-							elnext.value = 0
-						}
-						if(ellab)
-						{
-							ellab.removeClassName('warning').removeClassName('success');
-							ellab.addClassName((elnext.value ? 'success' : 'warning')).update('Id #' + elnext.value);
-						}
-					  },
-					  indicator:  el.next('span.indicator'),
-					  parameters: 'ajax_used=1&ajax_sc=usersearch=".rawurlencode('searchfld='.str_replace('user_', '', vartrue($options['name'], 'user_name')).'--srcfld='.$name_fld)."'
-					});
-				});
-		");
-		return $ret;
-		*/
 	}
 	
 	
@@ -3414,6 +3480,7 @@ class e_form
 						$value = 'not found';
 					}
 				}*/
+				$row_id = $id;
 				// Dirty, but the only way for now
 				$id = 0;
 				$ttl = LAN_ANONYMOUS;
@@ -3445,6 +3512,14 @@ class e_form
 				else
 				{
 					$value = $ttl;
+				}
+
+				// Inline Editing.
+				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
+				{
+					$tpl = $this->userpicker($field, '', $ttl, $id, array('selectize' => array('e_editable' => $field . '_' . $row_id)));
+					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
+					$value = "<a id='" . $field . '_' . $row_id . "' class='e-tip e-editable editable-click editable-userpicker' data-clear='false' data-tpl='" . str_replace("'", '"', $tpl) . "' data-name='" . $field . "' title=\"" . LAN_EDIT . " " . $attributes['title'] . "\" data-type='text' data-pk='" . $row_id . "' data-value='" . $id . "' data-url='" . e_SELF . "?mode={$mode}&amp;action=inline&amp;id={$row_id}&amp;ajax_used=1' href='#'>" . $ttl . "</a>";
 				}
 				
 			break;
@@ -4016,7 +4091,7 @@ class e_form
 				if(!$value) $value = array();
 				$uname = varset($value[$colname]);
 				$value = varset($value['user_id'], 0);
-				$ret =  $this->userpicker(vartrue($parms['nameField'], $key.'_usersearch'), $key, $uname, $value, vartrue($parms['__options']));
+				$ret =  $this->userpicker(vartrue($parms['nameField'], $key), $key, $uname, $value, vartrue($parms['__options']));
 			break;
 
 			case 'bool':

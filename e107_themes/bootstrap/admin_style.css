@@ -994,7 +994,27 @@ li.rssRow > div {
 #left-panel.toggled { display: none }
 
 
+/* ######## selectize.js ######## */
+.selectize-control.single .selectize-input,
+.selectize-control.single .selectize-input.input-active,
+.selectize-control.single .selectize-input.input-active:hover,
+.selectize-control.single .selectize-input.focus,
+.selectize-control.multi .selectize-input,
+.selectize-control.multi .selectize-input.input-active,
+.selectize-control.multi .selectize-input.input-active:hover,
+.selectize-control.multi .selectize-input.focus {
+    -webkit-box-shadow: rgba(255, 255, 255, 0.1) 0 1px 0, rgba(0, 0, 0, 0.8) 0 1px 7px 0px inset;
+    -moz-box-shadow: rgba(255, 255, 255, 0.1) 0 1px 0, rgba(0, 0, 0, 0.8) 0 1px 7px 0px inset;
+    box-shadow: rgba(255, 255, 255, 0.1) 0 1px 0, rgba(0, 0, 0, 0.8) 0 1px 7px 0px inset;
+    background: #202020 !important;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 0;
+    padding: 4px 6px;
+}
 
+.selectize-input > input {
+    color: #ffffff;
+}
 
 
 /*
