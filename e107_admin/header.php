@@ -61,7 +61,8 @@ function loadJSAddons()
 	
 	e107::css('core', 	'bootstrap-multiselect/css/bootstrap-multiselect.css', 'jquery');
 	e107::js('core', 	'bootstrap-multiselect/js/bootstrap-multiselect.js', 'jquery', 2);
-	
+
+	// TODO: remove typeahead.
 	e107::js('core', 	'bootstrap-jasny/js/jasny-bootstrap.js', 'jquery', 2);
 	
 	e107::css('core', 	'bootstrap-datetimepicker/css/datetimepicker.css', 'jquery');
