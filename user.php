@@ -23,22 +23,30 @@ $user['user_id'] = USERID;
 
 if(e_AJAX_REQUEST)
 {
-	if(vartrue($_GET['q']))
+	if(vartrue($_POST['q']))
 	{
-		$q = filter_var($_GET['q'], FILTER_SANITIZE_STRING);
-		if($sql->select("user", "user_id,user_name", "user_name LIKE '". $q."%' ORDER BY user_name LIMIT 15"))
+		$q = filter_var($_POST['q'], FILTER_SANITIZE_STRING);
+		$l = vartrue($_POST['l']) ? intval($_POST['l']) : 10;
+
+		$db = e107::getDb();
+
+		if($db->select("user", "user_id,user_name", "user_name LIKE '". $q."%' ORDER BY user_name LIMIT " . $l))
 		{
-			while($row = $sql->db_Fetch())
+			$data = array();
+			while($row = $db->fetch())
 			{
-				$id = $row['user_id'];
-				$data[$id] = $row['user_name'];
+				$data[] = array(
+					'value' => $row['user_id'],
+					'label' => $row['user_name'],
+				);
 			}
-			
+
 			if(count($data))
 			{
-				echo json_encode($data);	
+				header('Content-type: application/json');
+				echo json_encode($data);
 			}
-		}		
+		}
 	}
 	exit;
 }
