@@ -298,7 +298,21 @@ if (is_array($pref['e_footer_list']))
 	unset($ret);
 }
 
+// Load Footer CSS
+//
+echo "\n\n<!-- ======= [JSManager] FOOTER: Remaining CSS ======= -->";
 
+$CSSORDER = deftrue('CSSORDER') ? explode(",",CSSORDER) : array('other','core','plugin','theme','inline');
+
+foreach($CSSORDER as $val)
+{
+	$cssId = $val."_css";
+	e107::getJs()->renderJs($cssId, false, 'css', false);
+}
+
+unset($CSSORDER);
+
+echo "\n\n<!-- ======= [JSManager] FOOTER: Remaining JS ======= -->";
 
 // [JSManager] Load JS Footer Includes by priority
 e107::getJs()->renderJs('footer', true);
