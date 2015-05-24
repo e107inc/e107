@@ -1403,7 +1403,7 @@ class validatorClass
 			if(empty($vars['failed'][$f]))
 			{
 				$vars['failed'][$f] = LAN_VALIDATE_191; 
-				print_a($vars['failed']);
+		//		print_a($vars['failed']);
 			}
 			$curLine = str_replace('%v', filter_var($vars['failed'][$f], FILTER_SANITIZE_SPECIAL_CHARS), $curLine);
 			$curLine = str_replace('%f', $f, $curLine);

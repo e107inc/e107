@@ -731,16 +731,21 @@ Following fields auto-filled in code as required:
 		$sql = e107::getDb();
 		
 		$temp1 = 0;
-		if (isset($pref['del_unv']) && $pref['del_unv'] && $pref['user_reg_veri'] != 2)
+		if (isset($pref['del_unv']) && $pref['del_unv'] && intval($pref['user_reg_veri']) != 2)
 		{
 			$threshold= intval(time() - ($pref['del_unv'] * 60));
-			if (($temp1 = $sql->db_Delete('user', 'user_ban = 2 AND user_join < '.$threshold)) > 0) { $force = TRUE; }
+			if(($temp1 = $sql->delete('user', 'user_ban = 2 AND user_join < '.$threshold)) > 0)
+			{
+				$force = true;
+			}
 		}
-		if ($force)
-		{	// Remove 'orphaned' extended user field records
+
+		if ($force) // Remove 'orphaned' extended user field records
+		{
 			$sql->gen("DELETE `#user_extended` FROM `#user_extended` LEFT JOIN `#user` ON `#user_extended`.`user_extended_id` = `#user`.`user_id`
 					WHERE `#user`.`user_id` IS NULL");
 		}
+
 		return $temp1;
 	}
 
