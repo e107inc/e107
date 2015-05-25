@@ -447,11 +447,87 @@ class mailout_main_ui extends e_admin_ui
 			{
 				$this->saveMailPrefs($mes); // TODO check if functional, $emessage -> $mes
 			}
+			elseif(!empty($_POST['DKIM_generate']))
+			{
+				$this->generateDKIM();
+			}
 		}
 		
 		
 		
 	}
+
+
+	/**
+	 *
+	 * https://www.mail-tester.com/spf-dkim-check
+	 * http://dkimvalidator.com/
+	 * @return bool
+	 */
+	private function generateDKIM()
+	{
+		$privatekeyfile = e_SYSTEM.'dkim_private.key';
+		$tp = e107::getParser();
+
+
+		if(file_exists($privatekeyfile))
+		{
+			e107::getMessage()->addInfo("DKIM keys already exists (".$privatekeyfile.")");
+
+			$text = $this->getDKIMPublicKey();
+			e107::getMessage()->addInfo("Add the following to your ".e_DOMAIN." DNS Zone records:".print_a($text,true));
+			e107::getMessage()->addinfo("Consider testing it using this website: http://dkimvalidator.com");
+
+			return false;
+		}
+
+		$keyLength = 1024; // Any higher and cPanel < 11.50 will refuse it.
+
+		$pk = openssl_pkey_new(
+			array(
+				"digest_alg" => "sha1",
+				'private_key_bits' => $keyLength, //  (2048 bits is the recommended minimum key length - gmail won't accept less than 1024 bits)
+				'private_key_type' => OPENSSL_KEYTYPE_RSA
+			)
+		);
+
+		openssl_pkey_export_to_file($pk, $privatekeyfile);
+
+	//	$contents = file_get_contents($privatekeyfile);
+
+		$tmp = openssl_pkey_get_details($pk);
+
+		$pubKey = $tmp['key'];
+
+		file_put_contents( e_SYSTEM."dkim_public.key",$pubKey);
+
+		//	e107::getMessage()->addInfo(nl2br($pubKey));
+
+		$pubString = str_replace(array('-----BEGIN PUBLIC KEY-----','-----END PUBLIC KEY-----',"\n"),"",$pubKey);
+
+	//	$dnsEntry = 'phpmailer._domainkey	IN	TXT	"v=DKIM1; k=rsa; g=*; s=email; h=sha1; t=s; p=[x];"';
+		$dnsEntry = 'phpmailer._domainkey	IN	TXT	"v=DKIM1; k=rsa; p=[x];"';
+
+
+		$text = $tp->lanVars($dnsEntry, $pubString);
+		e107::getMessage()->addInfo("Add the following ".$keyLength." bit key to your ".e_DOMAIN." DNS Zone records:".print_a($text,true));
+		e107::getMessage()->addinfo("Consider testing it using this website: http://dkimvalidator.com");
+	}
+
+
+	private function getDKIMPublicKey()
+	{
+
+		$pubKey = file_get_contents( e_SYSTEM."dkim_public.key");
+
+		$pubString = str_replace(array('-----BEGIN PUBLIC KEY-----','-----END PUBLIC KEY-----',"\n"),"",$pubKey);
+
+		//	$dnsEntry = 'phpmailer._domainkey	IN	TXT	"v=DKIM1; k=rsa; g=*; s=email; h=sha1; t=s; p=[x];"';
+		$dnsEntry = 'phpmailer._domainkey	IN	TXT	"v=DKIM1; k=rsa; p=[x];"';
+
+		return e107::getParser()->lanVars($dnsEntry, $pubString);
+	}
+
 
 
 	private function sendTestBounce()
@@ -1136,8 +1212,12 @@ class mailout_main_ui extends e_admin_ui
 		"</td>
 	</tr>\n";
 	*/
-	
-	
+	if(function_exists('openssl_pkey_new'))
+	{
+
+		$text .= "<tr><td>DomainKeys Identified Mail (DKIM)</td><td class='form-inline'>".$frm->button('DKIM_generate',1,'primary','Generate Public/Private keys')."
+		</td></tr>";
+	}
 	$text .= "</table></fieldset>
 	<fieldset id='core-mail-prefs-bounce'>
 		<legend>".LAN_MAILOUT_31."</legend>
@@ -1211,7 +1291,13 @@ class mailout_main_ui extends e_admin_ui
 	
 	
 	</td></tr>
-	<tr><td>".LAN_MAILOUT_236."</td><td>".$lastBounceText."</td></tr>
+	<tr><td>".LAN_MAILOUT_236."</td><td>".$lastBounceText."</td></tr>";
+
+
+
+
+
+	$text .= "
 	</tbody></table>";
 
 	// Parameters for mail-account based bounce processing
@@ -1254,7 +1340,12 @@ class mailout_main_ui extends e_admin_ui
 
 	$check = ($pref['mail_bounce_auto']==1) ? " checked='checked'" : "";
 	$text .= "<tr><td>".LAN_MAILOUT_245."</td><td><input type='checkbox' name='mail_bounce_auto' value='1' {$check} /><span class='field-help'>&nbsp;".LAN_MAILOUT_246."</span></td></tr>
+				";
 
+
+
+
+				$text .= "
 	</tbody>
 	</table></fieldset>
 
@@ -1577,8 +1668,8 @@ class mailout_recipients_ui extends e_admin_ui
 			'checkboxes'			=> array('title'=> '',				'type' => null, 		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),	
 			'mail_target_id'  		=> array('title' => LAN_MAILOUT_143, 'thclass' => 'left', 'forced' => TRUE),
 			'mail_recipient_id' 	=> array('title' => LAN_MAILOUT_142, 'type'=>'number', 'data'=>'int', 'thclass' => 'left', 'readonly'=>2),
-			'mail_recipient_name' 	=> array('title' => LAN_MAILOUT_141, 'type'=>'text', 'readonly'=>2, 'forced' => TRUE),
-			'mail_recipient_email' 	=> array('title' => LAN_MAILOUT_140, 'thclass' => 'left', 'forced' => TRUE),
+			'mail_recipient_name' 	=> array('title' => LAN_MAILOUT_141, 'type'=>'text', 'data'=>'str', 'readonly'=>2, 'forced' => TRUE),
+			'mail_recipient_email' 	=> array('title' => LAN_MAILOUT_140, 'type'=>'email', 'data'=>'str', 'thclass' => 'left', 'forced' => TRUE),
 			'mail_status' 			=> array('title' => LAN_MAILOUT_138, 'type'=>'method', 'filter'=>true, 'data'=>'int', 'thclass' => 'left', 'class'=>'left', 'writeParms'=>''),
 			'mail_detail_id' 		=> array('title' => LAN_MAILOUT_137, 'type'=>'dropdown', 'filter'=>true),
 			'mail_send_date' 		=> array('title' => LAN_MAILOUT_139, 'proc' => 'sdatetime'),

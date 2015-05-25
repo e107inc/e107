@@ -238,7 +238,7 @@ class notify
 			$mailData = array(
 				'mail_total_count'      => count($recipients),
 				'mail_content_status' 	=> MAIL_STATUS_TEMP,
-				'mail_create_app' 		=> 'notify',
+				'mail_create_app' 		=> 'core',
 				'mail_title' 			=> 'NOTIFY',
 				'mail_subject' 			=> $subject,
 				'mail_sender_email' 	=> e107::getPref('replyto_email',$siteadminemail),

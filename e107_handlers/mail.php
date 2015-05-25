@@ -320,6 +320,21 @@ class e107Email extends PHPMailer
 		$this->From 		= $tp->toHTML(vartrue($pref['replyto_email'],$overrides['siteadminemail']),'','RAWTEXT');
 		$this->WordWrap 	= 76;			// Set a sensible default
 
+		$pref['mail_dkim'] = 1;
+
+		$privatekeyfile = e_SYSTEM.'dkim_private.key';
+
+		if($pref['mail_dkim'] && is_readable($privatekeyfile))
+		{
+			$this->DKIM_domain      = e_DOMAIN; // 'example.com';
+			$this->DKIM_private     = $privatekeyfile;
+			$this->DKIM_selector    = 'phpmailer';
+			$this->DKIM_passphrase  = ''; //key is not encrypted
+			$this->DKIM_identifier  = $this->From;
+		}
+
+
+
 		// Now look for any overrides - slightly cumbersome way of doing it, but does give control over what can be set from here
 		// Options are those accepted by the arraySet() method.
 		if(!empty($overrides))
