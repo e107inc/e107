@@ -1212,12 +1212,19 @@ class mailout_main_ui extends e_admin_ui
 		"</td>
 	</tr>\n";
 	*/
-	if(function_exists('openssl_pkey_new'))
-	{
 
+
+
+	if(function_exists('openssl_pkey_new') && deftrue('e_DEVELOPER'))
+	{
 		$text .= "<tr><td>DomainKeys Identified Mail (DKIM)</td><td class='form-inline'>".$frm->button('DKIM_generate',1,'primary','Generate Public/Private keys')."
-		</td></tr>";
+		<span class='label label-warning'>Developer Mode Only</span></td></tr>";
 	}
+
+
+
+
+
 	$text .= "</table></fieldset>
 	<fieldset id='core-mail-prefs-bounce'>
 		<legend>".LAN_MAILOUT_31."</legend>

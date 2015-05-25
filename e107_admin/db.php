@@ -180,9 +180,9 @@ class system_tools
 			'backup'				=> array('diz'=>DBLAN_68,'label'=>DBLAN_69)
 		);
 		
-		if(vartrue($_SERVER['E_DEV']))
+		if(deftrue('e_DEVELOPER'))
 		{
-			$this->_options['multisite'] = array('diz'=>'', 'label'=> 'Multi-Site');	
+			$this->_options['multisite'] = array('diz'=>"<span class='label label-warning'>Developer Mode Only</span>", 'label'=> 'Multi-Site' );
 		}
 
 		$this->_options = multiarray_sort($this->_options, 'label');
@@ -446,6 +446,12 @@ class system_tools
 	
 	private function multiSite()
 	{
+
+		if(!deftrue('e_DEVELOPER'))
+		{
+			return false;
+		}
+
 		$mes = e107::getMessage();
 		$frm = e107::getForm();
 		
