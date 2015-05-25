@@ -832,7 +832,7 @@ Following fields auto-filled in code as required:
 	 */
 	public function userStatusUpdate($action, $uid, $emailAddress = '')
 	{
-		$db = e107::getDb();
+		$db = e107::getDb('user');
 		$qry = '';
 		$error = FALSE;				// Assume no error to start with
 		$uid = intval($uid);		// Precautionary - should have already been done

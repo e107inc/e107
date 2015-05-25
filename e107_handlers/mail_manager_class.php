@@ -1516,11 +1516,11 @@ class e107MailManager
 		{
 			$errors[] = 'Bad element count: '.count($vals);
 		}
-		elseif ($uid || $emailAddress) // Not using admin->mailout, so just update the user table for user_id = $uid; 
+		elseif (!empty($uid) || !empty($emailAddress)) // Update the user table for user_id = $uid;
 		{	
-			require_once(e_HANDLER.'user_handler.php');
-		
-			if($err = userHandler::userStatusUpdate('bounce', $uid, $emailAddress))
+			// require_once(e_HANDLER.'user_handler.php');
+			$err = e107::getUserSession()->userStatusUpdate('bounce', $uid, $emailAddress);
+			if($err)
 			{
 				$errors[] = $err;
 			}

@@ -191,11 +191,18 @@ class userlogin
 		switch ($this->userData['user_ban'])
 		{
 			case USER_REGISTERED_NOT_VALIDATED : // User not fully signed up - hasn't activated account.
-				return $this->invalidLogin($username,LOGIN_NOT_ACTIVATED);
+				return $this->invalidLogin($username, LOGIN_NOT_ACTIVATED);
 			case USER_BANNED :		// User banned
-				return $this->invalidLogin($username,LOGIN_BANNED,$this->userData['user_id']);
+				return $this->invalidLogin($username, LOGIN_BANNED,$this->userData['user_id']);
 			case USER_VALIDATED :		// Valid user
 				break;			// Nothing to do ATM
+			case USER_EMAIL_BOUNCED:
+				$bounceLAN      = "Emails to [x] are bouncing back. Please [verify your email address is correct]."; //TODO LAN
+				$bounceMessage  =  $tp->lanVars($bounceLAN, $this->userData['user_email'],true );
+				$bounceMessage  = str_replace(array('[',']'),array("<a href='".e_HTTP."usersettings.php'>","</a>"), $bounceMessage);
+
+				e107::getMessage()->addWarning($bounceMessage, 'default', true);
+				break;
 			default :			// May want to pick this up
 		}
 
