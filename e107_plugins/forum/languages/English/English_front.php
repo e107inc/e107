@@ -159,7 +159,7 @@ define("LAN_FORUM_2022", "Click here to return to the forum"); // LAN_429
 define("LAN_FORUM_2023", "Report this topic to a moderator"); // LAN_414 (vt)
 define("LAN_FORUM_2024", "Reporting post in topic"); // LAN_426
 define("LAN_FORUM_2025", "Topic title"); // LAN_415
-define("LAN_FORUM_2026", "Click to view post"); // LAN_420
+define("LAN_FORUM_2026", "View post"); // LAN_420
 define("LAN_FORUM_2027", "The moderator(s) will be made aware of this topic. You may post a message explaining what you found to be objectionable."); // LAN_417
 define("LAN_FORUM_2028", "[Do not] use this form to contact the admin for any other reason."); // LAN_418 - [ and ] are replaced by <b> </b>
 define("LAN_FORUM_2029", "Send Report"); // LAN_419 

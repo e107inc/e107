@@ -332,7 +332,9 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	{
 		global $page;
 		if (USER) {
-			return "<a href='".$this->e107->url->create('forum/thread/report', "id={$this->postInfo['post_thread']}&post={$this->postInfo['post_id']}")."'>".IMAGE_report.'</a> ';
+		//	$actionUrl= $this->e107->url->create('forum/thread/report', "id={$this->postInfo['post_thread']}&post={$this->postInfo['post_id']}");
+			$actionUrl = e107::url('forum','post')."?f=report&amp;id=".$this->data['thread_id']."&amp;post=".$this->data['post_id'];
+			return "<a href='".$actionUrl."'>".IMAGE_report.'</a> ';
 		}
 	}
 
@@ -511,7 +513,9 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	
 		if (USER) // Report
 		{
-			$text .= "<li class='text-right'><a href='".$this->e107->url->create('forum/thread/report', "id={$this->postInfo['post_thread']}&post={$this->postInfo['post_id']}")."'>".LAN_FORUM_2046." ".$tp->toGlyph('flag')."</a></li>";
+			$urlReport = e107::url('forum','post')."?f=report&amp;id=".$this->postInfo['post_thread']."&amp;post=".$this->postInfo['post_id'];
+		//	$urlReport = $this->e107->url->create('forum/thread/report', "id={$this->postInfo['post_thread']}&post={$this->postInfo['post_id']}");
+			$text .= "<li class='text-right'><a href='".$urlReport."'>".LAN_FORUM_2046." ".$tp->toGlyph('flag')."</a></li>";
 		}
 	
 		// Edit

@@ -67,7 +67,11 @@ class forum_post_handler
 		$this->checkPerms($this->data['forum_id']);
 		$this->processPosted();
 
-		if($this->action == 'move')
+		if($this->action == 'report')
+		{
+			$this->renderFormReport();
+		}
+		elseif($this->action == 'move')
 		{
 			$this->renderFormMove();
 		}
@@ -96,7 +100,7 @@ class forum_post_handler
 		if (!e_QUERY || empty($_GET['id']))
 		{
 			$url = e107::url('forum','index',null,'full');
-			e107::getRedirect()->go($url);
+			$this->redirect($url);
 		//	header('Location:'.e107::getUrl()->create('forum/forum/main', array(), 'full=1&encode=0'));
 			exit;
 		}
@@ -129,7 +133,9 @@ class forum_post_handler
 
 			case 'edit':
 			case 'move':
-			case 'quote':
+			case "quote":
+			case "report":
+
 				$postInfo               = $this->forumObj->postGet($this->post, 'post');
 				$forumInfo              = $this->forumObj->forumGet($postInfo['post_forum']);
 				$data                   = array_merge($postInfo ,$forumInfo);
@@ -140,7 +146,7 @@ class forum_post_handler
 
 			default:
 				$url = e107::url('forum','index',null,'full');
-				e107::getRedirect()->go($url);
+				$this->redirect($url);
 			//	header("Location:".e107::getUrl()->create('forum/forum/main', array(), 'full=1&encode=0'));
 				exit;
 		}
@@ -188,7 +194,10 @@ class forum_post_handler
 			$this->submitPoll();
 		}
 
-
+		if(!empty($_POST['report_thread']))
+		{
+			$this->submitReport();
+		}
 
 
 	}
@@ -222,6 +231,51 @@ class forum_post_handler
 	}
 
 
+	/**
+	 * Report a topic post.
+	 */
+	private function submitReport()
+	{
+		$tp = e107::getParser();
+		$sql = e107::getDb();
+
+		$report_add = $tp->toDB($_POST['report_add']);
+
+		$insert = array(
+			'gen_id'        =>	0,
+			'gen_type'      =>	'reported_post',
+			'gen_datestamp' =>	time(),
+			'gen_user_id'   =>	USERID,
+			'gen_ip'        =>	$tp->toDB($this->data['thread_name']),
+			'gen_intdata'   =>	intval($this->data['thread_id']),
+			'gen_chardata'  =>	$report_add,
+		);
+
+		//	$url = e107::getUrl()->create('forum/thread/post', array('id' => $postId, 'name' => $postInfo['thread_name'], 'thread' => $threadId)); // both post info and thread info contain thread name
+
+		$url = e107::url('forum','topic', $this->data);
+		$result = $sql->insert('generic', $insert);
+
+		if($result)
+		{
+			$text = "<div class='alert alert-block alert-success'><h4>".LAN_FORUM_2021 . "</h4><a href='{$url}'>".LAN_FORUM_2022.'</a></div>';
+		}
+		else
+		{
+			$text = "<div class='alert alert-block alert-error'><h4>".LAN_FORUM_2021 . "</h4><a href='{$url}'>".LAN_FORUM_2022.'</a></div>';
+		}
+
+		$link = "{e_PLUGIN}forum/forum_admin.php?mode=post&action=list&id=".intval($result);
+
+		$report = LAN_FORUM_2018." ".SITENAME." : ".$link . "\n
+					".LAN_FORUM_2019.": ".USERNAME. "\n" . $report_add;
+		$subject = LAN_FORUM_2020." ". SITENAME;
+		e107::getNotify()->send('forum_post_rep', $subject, $report);
+		e107::getRender()->tablerender(LAN_FORUM_2023, $text, array('forum_viewtopic', 'report'));
+	}
+
+
+
 
 	function setPageTitle($data)
 	{
@@ -233,6 +287,8 @@ class forum_post_handler
 
 
 	}
+
+
 
 
 	function checkPerms($forumId)
@@ -443,6 +499,92 @@ class forum_post_handler
 
 
 	}
+
+
+	function renderFormReport()
+	{
+		if(!empty($_POST['report_thread']))
+		{
+			return false;
+		}
+
+		$tp = e107::getParser();
+		$frm = e107::getForm();
+
+		$thread_name = e107::getParser()->toHTML($this->data['thread_name'], true, 'no_hook, emotes_off');
+	//	define('e_PAGETITLE', LAN_FORUM_1001.' / '.LAN_FORUM_2024.': '.$thread_name);
+	//	$url = e107::getUrl()->create('forum/thread/post', array('id' => $postId, 'name' => $postInfo['thread_name'], 'thread' => $threadId));
+	//	$actionUrl = e107::getUrl()->create('forum/thread/report', "id={$threadId}&post={$postId}");
+
+		$actionUrl = e107::url('forum','post')."?f=report&amp;id=".$this->data['thread_id']."&amp;post=".$this->data['post_id'];
+
+
+		if(deftrue('BOOTSTRAP')) //v2.x
+		{
+			$text = $frm->open('forum-report-thread','post');
+			$text .= "
+							<div>
+								<div class='alert alert-block alert-warning'>
+								<h4>".LAN_FORUM_2025.': '.$thread_name."</h4>
+									".LAN_FORUM_2027."<br />".str_replace(array('[', ']'), array('<b>', '</b>'), LAN_FORUM_2028)."
+								<a class='pull-right btn btn-xs btn-primary e-expandit' href='#post-info'>".LAN_FORUM_2026."</a>
+								</div>
+								<div id='post-info' class='e-hideme alert alert-block alert-danger'>
+									".$tp->toHtml($this->data['post_entry'],true)."
+								</div>
+								<div class='form-group' >
+									<div class='col-md-12'>
+								".$frm->textarea('report_add','',10,35,array('size'=>'xxlarge'))."
+									</div>
+								</div>
+								<div class='form-group'>
+									<div class='col-md-12'>
+									".$frm->button('report_thread',1,'submit',LAN_FORUM_2029)."
+									</div>
+								</div>
+
+							</div>";
+
+			$text .= $frm->close();
+		}
+		else //v1.x legacy layout.
+		{
+			$text = "<form action='".$actionUrl."' method='post'>
+						<table class='table' style='width:100%'>
+						<tr>
+							<td  style='width:50%'>
+							".LAN_FORUM_2025.': '.$thread_name." <a  class='e-expandit' href='#post-info'><span class='smalltext'>".LAN_FORUM_2026."</span></a>
+							<div id='post-info' class='e-hideme alert alert-block alert-danger'>
+									".$tp->toHtml($this->data['post_entry'],true)."
+							</div>
+							</td>
+							<td style='text-align:center;width:50%'></td>
+						</tr>
+						<tr>
+							<td>".LAN_FORUM_2027."<br />".str_replace(array('[', ']'), array('<b>', '</b>'), LAN_FORUM_2028)."</td>
+						</tr>
+						<tr>
+							<td style='text-align:center;'><textarea cols='40' rows='10' class='tbox' name='report_add'></textarea></td>
+						</tr>
+						<tr>
+							<td colspan='2' style='text-align:center;'><br /><input class='btn btn-default button' type='submit' name='report_thread' value='".LAN_FORUM_2029."' /></td>
+						</tr>
+						</table>
+						</form>";
+
+
+
+		}
+
+
+		e107::getRender()->tablerender(LAN_FORUM_2023, $text, array('forum_viewtopic', 'report2'));
+
+
+
+
+	}
+
+
 
 
 	/**
@@ -723,7 +865,7 @@ class forum_post_handler
 
 			if ($this->forumObj->prefs->get('redirect'))
 			{
-				e107::getRedirect()->go($threadLink);
+				$this->redirect($threadLink);
 			//	header('location:'.e107::getUrl()->create('forum/thread/last', $postInfo, array('encode' => false, 'full' => true)));
 				exit;
 			}
@@ -846,7 +988,7 @@ class forum_post_handler
 
 			$url = e107::url('forum','topic',$this->data);
 
-			e107::getRedirect()->go($url);
+			$this->redirect($url);
 			exit;
 
 		//	$url = e107::getUrl()->create('forum/thread/post', array('name'=>$threadVals['thread_name'], 'id' => $this->data['post_id'], 'thread' => $this->data['post_thread']), array('encode'=>false));
@@ -1600,7 +1742,7 @@ function forumjump()
 	$text = "<form method='post' action='".e_SELF."'><p>".LAN_FORUM_1017.": <select name='forumjump' class='tbox'>";
 	foreach($jumpList as $key => $val)
 	{
-		$text .= "\n<option value='".$key."'>".$val."</option>";
+		$text .= "\n<option value='".e107::url('forum','forum', $val)."'>".$val['forum_name']."</option>";
 	}
 	$text .= "</select> <input class='btn btn-default button' type='submit' name='fjsubmit' value='".LAN_GO."' /></p></form>";
 	return $text;

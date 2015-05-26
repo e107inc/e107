@@ -204,6 +204,7 @@ if(is_array($FORUM_VIEWTOPIC_TEMPLATE) && deftrue('BOOTSTRAP',false))
 	$FORUMREPLYSTYLE 		= $FORUM_VIEWTOPIC_TEMPLATE['replies'];	
 }
 
+//TODO Clean up this mess!!
 
 // get info for main thread -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 $tVars = new e_vars;
@@ -212,9 +213,29 @@ $forum->set_crumb(true, '', $tVars); // Set $BREADCRUMB (and BACKLINK)
 //$tVars->BACKLINK = $tVars->BREADCRUMB;
 //$tVars->FORUM_CRUMB = $crumbs['forum_crumb'];
 $tVars->THREADNAME = $tp->toHTML($thread->threadInfo['thread_name'], true, 'no_hook, emotes_off');
+
+
+	$prev = $forum->threadGetNextPrev('prev', $thread->threadId,$thread->threadInfo['forum_id'], $thread->threadInfo['thread_lastpost']);
+	$next = $forum->threadGetNextPrev('next', $thread->threadId,$thread->threadInfo['forum_id'], $thread->threadInfo['thread_lastpost']);
+
+	$options = array();
+
+	if($prev !== false)
+	{
+		$options[] = "<a class='btn btn-default btn-sm btn-small' href='" . e107::url('forum','topic', $prev) . "'>&laquo; " . LAN_FORUM_2001 . "</a>";
+	}
+	if($next !== false)
+	{
+		$options[] = "<a class='btn btn-default btn-sm btn-small' href='" .  e107::url('forum','topic', $next) . "'>" . LAN_FORUM_2002 . " &raquo;</a>";
+	}
+
+	$tVars->NEXTPREV = implode(" | ", $options);
+
+/*
 $tVars->NEXTPREV = "<a class='btn btn-default btn-sm btn-small' href='" . $e107->url->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>&laquo; " . LAN_FORUM_2001 . "</a>";
 $tVars->NEXTPREV .= ' | '; // enabled to make it look better on v1 templates
 $tVars->NEXTPREV .= "<a class='btn btn-default btn-sm btn-small' href='" . $e107->url->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>" . LAN_FORUM_2002 . " &raquo;</a>";
+*/
 
 if ($forum->prefs->get('track') && USER)
 {
@@ -300,12 +321,22 @@ function forumbuttons($thread)
 		$options[] = " <a  href='".$ntUrl."'>".LAN_FORUM_2005."</a>";
 	}	
 	
-	$options[] = "<a href='" . e107::getUrl()->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>".LAN_FORUM_1017." ".LAN_FORUM_2001."</a>"; 
-	$options[] = "<a href='" . e107::getUrl()->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>".LAN_FORUM_1017." ".LAN_FORUM_2002."</a>";  
+//	$options[] = "<a href='" . e107::getUrl()->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>".LAN_FORUM_1017." ".LAN_FORUM_2001."</a>";
+//	$options[] = "<a href='" . e107::getUrl()->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>".LAN_FORUM_1017." ".LAN_FORUM_2002."</a>";
 
-	
-	
-	
+	$prev = $forum->threadGetNextPrev('prev', $thread->threadId,$thread->threadInfo['forum_id'], $thread->threadInfo['thread_lastpost']);
+	$next = $forum->threadGetNextPrev('next', $thread->threadId,$thread->threadInfo['forum_id'], $thread->threadInfo['thread_lastpost']);
+
+	if($prev !== false)
+	{
+		$options[] = "<a href='" . e107::url('forum','topic', $prev) . "'>".LAN_FORUM_1017." ".LAN_FORUM_2001."</a>";
+	}
+	if($next !== false)
+	{
+		$options[] = "<a href='" .  e107::url('forum','topic', $next) . "'>".LAN_FORUM_1017." ".LAN_FORUM_2002."</a>";
+	}
+
+
 	$text = '<div class="btn-group">
    '.$replyUrl.'
     <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -325,7 +356,7 @@ function forumbuttons($thread)
 	
 	foreach($jumpList as $key=>$val)
 	{
-		$text .= '<li><a href ="'.$key.'">'.LAN_FORUM_1017." ".$val.'</a></li>';	
+		$text .= '<li><a href ="'.e107::url('forum','forum',$val).'">'.LAN_FORUM_1017." ".$val['forum_name'].'</a></li>';
 	}
 	
 	$text .= '
@@ -528,7 +559,7 @@ function forumjump()
 	$text = "<form method='post' action='".e_SELF."'><p>".LAN_FORUM_1017.": <select name='forumjump' class='tbox'>";
 	foreach ($jumpList as $key => $val)
 	{
-		$text .= "\n<option value='" . $key . "'>" . $val . "</option>";
+		$text .= "\n<option value='" . e107::url('forum','forum',$val) . "'>" . $val['forum_name'] . "</option>";
 	}
 	$text .= "</select> <input class='btn btn-default button' type='submit' name='fjsubmit' value='" . LAN_GO . "' /></p></form>";
 	return $text;
@@ -630,7 +661,7 @@ function rpg($user_join, $user_forums)
 		$bar_image = e_PLUGIN . "forum/images/" . IMODE . "/bar.jpg";
 	}
 
-	$rpg_info .= "<div style='padding:2px; white-space:nowrap'>";
+	$rpg_info = "<div style='padding:2px; white-space:nowrap'>";
 	$rpg_info .= "<b>Level = " . $lvl_level . "</b><br />";
 	$rpg_info .= "HP = " . $lvl_hp . "<br /><img src='{$bar_image}' alt='' style='border:#345487 1px solid; height:10px; width:" . $lvl_hp_percent . "%'><br />";
 	$rpg_info .= "EXP = " . $lvl_exp . "<br /><img src='{$bar_image}' alt='' style='border:#345487 1px solid; height:10px; width:" . $lvl_exp_percent . "%'><br />";
@@ -768,7 +799,8 @@ class e107ForumThread
 				$thread->page = $_GET['p'] = $pages;
 				break;
 
-			case 'next': // FIXME - nextprev thread detection not working
+/*              // Now linked directly - no more redirect.
+			case 'next':
 				$next = $forum->threadGetNextPrev('next', $this->threadId, $this->threadInfo['forum_id'], $this->threadInfo['thread_lastpost']);
 				if ($next)
 				{
@@ -779,7 +811,7 @@ class e107ForumThread
 				$this->message = LAN_FORUM_2013;
 				break;
 
-			case 'prev': // FIXME - nextprev thread detection not working
+			case 'prev':
 				$prev = $forum->threadGetNextPrev('prev', $this->threadId, $this->threadInfo['forum_id'], $this->threadInfo['thread_lastpost']);
 				if ($prev)
 				{
@@ -789,9 +821,10 @@ class e107ForumThread
 				}
 				$this->message = LAN_FORUM_2012;
 				break;
+*/
 
-
-			// TODO Move to form_post.php
+			// Moved to form_post.php
+			/*
 			case 'report':
 				$threadId 	= (int)$_GET['id'];
 				$postId 	= (int)$_GET['post'];
@@ -801,7 +834,7 @@ class e107ForumThread
 				{
 					$report_add = $tp->toDB($_POST['report_add']);
 
-					if($forum->prefs->get('reported_post_email')) // todo Use e_NOTIFY.
+					if($forum->prefs->get('reported_post_email'))
 					{
 						require_once(e_HANDLER.'mail.php');
 						$report = LAN_FORUM_2018." ".SITENAME." : ".(substr(SITEURL, -1) == "/" ? SITEURL : SITEURL."/") . $e107->getFolder('plugins') . "forum/forum_viewtopic.php?" . $this->threadId . ".post\n
@@ -910,7 +943,7 @@ class e107ForumThread
 				}
 
 				exit;
-				break;
+				break;*/
 
 		}
 	}
