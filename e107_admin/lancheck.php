@@ -777,11 +777,17 @@ class lancheck
 		// return $eng_line."<br />".$trans_line."<br /><br />";
 			
 		$error = array();
+		$warning = array();
 			
 		if((!array_key_exists($def,$translation) && $eng_line != "") || (trim($trans_line) == "" && $eng_line != ""))
 		{
 			$this->checkLog('def',1);
 			return $def.": ".LAN_CHECK_5."<br />";
+		}
+
+		if($eng_line == $trans_line && !empty($eng_line))
+		{
+			$warning[] = "<span class='text-warning'>".$def. ": Identical string (warning only) </span>";
 		}
 		
 		if((strpos($eng_line,"[link=")!==FALSE && strpos($trans_line,"[link=")===FALSE) || (strpos($eng_line,"[b]")!==FALSE && strpos($trans_line,"[b]")===FALSE))
@@ -821,7 +827,13 @@ class lancheck
 		
 		$this->checkLog('def',count($error));
 	
-		return ($error) ? implode("<br />",$error)."<br />" : "";
+		$text = ($error) ? implode("<br />",$error)."<br />" : "";
+		$text .= ($warning) ? implode("<br />",$warning)."<br />" : "";
+
+		if($text)
+		{
+			return $text;
+		}
 		
 	}
 	
@@ -1138,7 +1150,12 @@ class lancheck
 			$rowamount = round(strlen($trans['orig'][$sk])/34)+1;
 			$hglt1=""; $hglt2="";
 			if ($trans['tran'][$sk] == "" && $trans['orig'][$sk]!="") {
-				$hglt1="<span style='font-style:italic;font-weight:bold;color:red'>";
+				$hglt1="<span class='label label-danger label-important e-tip' title='Missing' >";
+				$hglt2="</span>";
+			}
+			elseif($trans['tran'][$sk] == $trans['orig'][$sk])
+			{
+				$hglt1="<span class='label label-warning e-tip' title='Identical' >";
 				$hglt2="</span>";
 			}
 			$text .="<tr>
