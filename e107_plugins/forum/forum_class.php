@@ -1547,14 +1547,14 @@ class e107forum
 		$sql = e107::getDb();
 		$forumList = implode(',', $this->permList[$type]);
 		$qry = "
-		SELECT forum_id, forum_name FROM `#forum`
-		WHERE forum_id IN ({$forumList})
+		SELECT forum_id, forum_name, forum_sef FROM `#forum`
+		WHERE forum_id IN ({$forumList}) AND forum_parent != 0
 		";
 		if ($sql->gen($qry))
 		{
-			while($row = $sql->fetch(MYSQL_ASSOC))
+			while($row = $sql->fetch())
 			{
-				$ret[$row['forum_id']] = $row['forum_name'];
+				$ret[$row['forum_id']] = $row;
 			}
 
 		}
@@ -1626,40 +1626,39 @@ class e107forum
 
 	function threadGetNextPrev($which, $threadId, $forumId, $lastpost)
 	{
-//		echo "threadid = $threadId <br />forum id = $forumId <br />";
-//		return;
-		$e107 = e107::getInstance();
 		$sql = e107::getDb();
 		
-		$threadId = (int)$threadId;
 		$forumId = (int)$forumId;
 		$lastpost = (int)$lastpost;
 
-		if($which == 'next')
-		{
-			$dir = '<';
-			$sort = 'ASC';
-		}
-		else
-		{
-			$dir = '>';
-			$sort = 'DESC';
-		}
+		$dir = ($which == 'next') ? '<' : '>';
+
 
 		$qry = "
-			SELECT thread_id from `#forum_thread`
-			WHERE thread_forum_id = $forumId
-			AND thread_lastpost {$dir} $lastpost
+			SELECT t.thread_id, t.thread_sef, f.forum_id, f.forum_sef FROM `#forum_thread` AS t
+			LEFT JOIN `#forum` AS f ON t.thread_forum_id = f.forum_id
+			WHERE t.thread_forum_id = $forumId
+			AND t.thread_lastpost {$dir} $lastpost
 			ORDER BY
-			thread_sticky DESC,
-			thread_lastpost {$sort}
+			t.thread_sticky DESC,
+			t.thread_lastpost ASC
 			LIMIT 1";
+
+	//		e107::getMessage()->addDebug(ucfirst($which)." Thread Qry: ".$qry);
+
 			if ($sql->gen($qry))
 			{
 				$row = $sql->fetch();
-				return $row['thread_id'];
+		//		e107::getMessage()->addInfo(ucfirst($which).print_a($row,true));
+				return $row;
+			//	return $row['thread_id'];
 
 			}
+			else
+			{
+			//	e107::getMessage()->addDebug(ucfirst($which)." Thread Qry Returned Nothing: ".$qry);
+			}
+
 			return false;
 	}
 

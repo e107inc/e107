@@ -46,7 +46,10 @@ if (!e_QUERY && empty($_GET))
 
 if(!empty($_GET['sef']))
 {
-	$_REQUEST['id'] = $sql->retrieve('forum', 'forum_id', "forum_sef= '".$tp->toDB($_GET['sef'])."' LIMIT 1");
+	if($newID =  $sql->retrieve('forum', 'forum_id', "forum_sef= '".$tp->toDB($_GET['sef'])."' LIMIT 1"))
+	{
+		$_REQUEST['id'] = $newID;
+	}
 }
 
 require_once(e_PLUGIN.'forum/forum_class.php');
@@ -70,7 +73,7 @@ $fVars->VIEWTITLE = LAN_FORUM_1005;
 
 $forumId = (int)$_REQUEST['id'];
 
-if(!$forumId && e_QUERY) // BC Fix for old links. 
+if(!$forumId && e_QUERY) // BC Fix for old links.
 {
 	list($id,$from) = explode(".",e_QUERY);
 	$forumId = intval($id);		
@@ -86,6 +89,8 @@ if (!$forum->checkPerm($forumId, 'view'))
 
 	if(E107_DEBUG_LEVEL > 0)
 	{
+		print_a($_REQUEST);
+		print_a($_GET);
 		echo __FILE__ .' Line: '.__LINE__;
 		echo "   forumId: ".$forumId;
 		exit;
@@ -722,7 +727,7 @@ function forumjump()
 	$text = "<form method='post' action='".e_SELF."'><p>".LAN_FORUM_1017.": <select name='forumjump' class='tbox'>";
 	foreach($jumpList as $key => $val)
 	{
-		$text .= "\n<option value='".$key."'>".$val."</option>";
+		$text .= "\n<option value='".e107::url('forum','forum',$val)."'>".$val['forum_name']."</option>";
 	}
 	$text .= "</select> <input class='btn btn-default button' type='submit' name='fjsubmit' value='".LAN_GO."' /></form>";
 	return $text;
@@ -876,7 +881,7 @@ function newthreadjump($url)
 	
 	foreach($jumpList as $key => $val)
 	{
-		$text .= '<li><a href="'.$key.'">'.LAN_FORUM_1017.': '.$val.'</a></li>';
+		$text .= '<li><a href="'.e107::url('forum','forum',$val).'">'.LAN_FORUM_1017.': '.$val['forum_name'].'</a></li>';
 	}
 	
 	$text .= '
