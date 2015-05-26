@@ -1842,11 +1842,11 @@ class e107forum
 			$FORUM_CRUMB['sitename']['value'] = str_replace($search, $replace, $FORUM_CRUMB['sitename']['value']);
 
 			$search 	= array('{FORUMS_TITLE}', '{FORUMS_HREF}');
-			$replace 	= array(LAN_PLUGIN_FORUM_NAME, e107::getUrl()->create('forum/forum/main'));
+			$replace 	= array(LAN_PLUGIN_FORUM_NAME, e107::url('forum','index'));
 			$FORUM_CRUMB['forums']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forums']['value']);
 
 			$search 	= array('{PARENT_TITLE}', '{PARENT_HREF}');
-			$replace 	= array($tp->toHTML($forumInfo['parent_name']), e107::getUrl()->create('forum/forum/main')."#".$frm->name2id($forumInfo['parent_name']));
+			$replace 	= array($tp->toHTML($forumInfo['parent_name']), e107::url('forum','index')."#".$frm->name2id($forumInfo['parent_name']));
 			$FORUM_CRUMB['parent']['value'] = str_replace($search, $replace, $FORUM_CRUMB['parent']['value']);
 
 			if($forumInfo['forum_sub'])

@@ -93,7 +93,7 @@ class forum_post_handler
 	{
 		if(isset($_POST['fjsubmit']))
 		{
-			header('Location:'.e107::getUrl()->create('forum/forum/view', array('id'=>(int) $_POST['forumjump']), '', 'full=1&encode=0'));
+			$this->redirect(e107::getUrl()->create('forum/forum/view', array('id'=>(int) $_POST['forumjump']), '', 'full=1&encode=0'));
 			exit;
 		}
 
@@ -208,6 +208,16 @@ class forum_post_handler
 	 */
 	private function redirect($url)
 	{
+
+		if(E107_DEBUG_LEVEL > 0)
+		{
+			require_once(HEADERF);
+			e107::getRender()->tablerender('Debug', "Redirecting to: <a href='".$url."'>".$url."</a>");
+			require_once(FOOTERF);
+			exit;
+
+		}
+
 		e107::getRedirect()->go($url);
 
 	}
@@ -865,6 +875,7 @@ class forum_post_handler
 
 			if ($this->forumObj->prefs->get('redirect'))
 			{
+
 				$this->redirect($threadLink);
 			//	header('location:'.e107::getUrl()->create('forum/thread/last', $postInfo, array('encode' => false, 'full' => true)));
 				exit;
@@ -1030,11 +1041,12 @@ class forum_post_handler
 		e107::getCache()->clear('newforumposts');
 
 
-		$url = e107::getUrl()->create('forum/thread/post', "id={$this->data['post_id']}", 'encode=0&full=1'); // XXX what data is available, find thread name
+	//	$url = e107::getUrl()->create('forum/thread/post', "id={$this->data['post_id']}", 'encode=0&full=1'); // XXX what data is available, find thread name
 
-	//	$url = e107::url('forum','topic',$this->data,true)."&f=post"; //FIXME 
+		$url = e107::url('forum','topic',$this->data,true); // ."&f=post";
 
-		header('location:'.$url);
+		$this->redirect($url);
+
 		exit;
 
 	}
@@ -1190,7 +1202,7 @@ exit;
 
 
 
-
+/*
 require_once(e_PLUGIN.'forum/forum_class.php');
 $forum = new e107forum();
 
@@ -1304,7 +1316,7 @@ if (isset($_POST['submitpoll']))
 	echo $FORUMPOLLPOSTED;
 	require_once(FOOTERF);
 	exit;
-}
+}*/
 
 /*if (isset($_POST['fpreview']))
 {
@@ -1371,7 +1383,7 @@ if (isset($_POST['submitpoll']))
 		$eaction = false;
 	}
 }*/
-
+/*
 if (isset($_POST['newthread']) || isset($_POST['reply']))
 {
 	$postInfo = array();
@@ -1432,7 +1444,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 			}
 			
 		//	$postInfo['_FIELD_TYPES']['post_attachments'] = 'array'; 
-			$postInfo['post_attachments'] = e107::serialize($newValues); //FIXME XXX - broken encoding when saved to DB. 
+			$postInfo['post_attachments'] = e107::serialize($newValues);
 		}
 //		var_dump($uploadResult);
 
@@ -1555,7 +1567,7 @@ if (isset($_POST['update_thread']))
 //	 exit;
 	if (!$_POST['subject'] || !$_POST['post'])
 	{
-		$error = "<div style='text-align:center'>".LAN_FORUM_3007."</div>"; // TODO $mes
+		$error = "<div style='text-align:center'>".LAN_FORUM_3007."</div>";
 	}
 	else
 	{
@@ -1600,7 +1612,7 @@ if (isset($_POST['update_reply']))
 {
 	if (!$_POST['post'])
 	{
-		$error = "<div style='text-align:center'>".LAN_FORUM_3007.'</div>'; // TODO $mes		
+		$error = "<div style='text-align:center'>".LAN_FORUM_3007.'</div>';
 	}
 	else
 	{
@@ -1659,9 +1671,10 @@ if ($action == 'edit' || $action == 'quote')
 	{
 
 		//remote [hide] bbcode, or else it doesn't hide stuff too well :)
-	/*	$post = preg_replace('#\[hide].*?\[/hide]#s', '', $post);
-		$quoteName = ($postInfo['user_name'] ? $postInfo['user_name'] : $postInfo['post_user_anon']);
-		$post = "[quote={$quoteName}]\n".$post."\n[/quote]\n";*/
+	//	$post = preg_replace('#\[hide].*?\[/hide]#s', '', $post);
+	//	$quoteName = ($postInfo['user_name'] ? $postInfo['user_name'] : $postInfo['post_user_anon']);
+	//	$post = "[quote={$quoteName}]\n".$post."\n[/quote]\n";
+
 //		$eaction = true;
 	//	$action = 'reply';
 
@@ -1762,6 +1775,6 @@ function image_getsize($fname)
 }
 
 
-require_once(FOOTERF);
+require_once(FOOTERF);*/
 
 ?>
