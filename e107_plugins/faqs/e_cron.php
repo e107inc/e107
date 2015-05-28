@@ -53,7 +53,7 @@
 			$email = e107::pref('core','siteadminemail');
 			$name = e107::pref('core','siteadmin');
 
-			$link = $tp->replaceConstants("{e_PLUGIN}faqs/admin_config.php?searchquery=&filter_options=faq_author__0&mode=main&action=list", 'full');
+			$link = $tp->replaceConstants("{e_PLUGIN}faqs/admin_config.php?mode=main&action=list&filter=pending", 'full');
 
 			$eml = array(
 					'subject' 		=> count($existing)." Unuanswered Question as of ".date('d-M-Y')." ",

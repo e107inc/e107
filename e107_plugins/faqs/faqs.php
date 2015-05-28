@@ -195,7 +195,7 @@ class faq
 
 	function __construct()
 	{
-		$sc = e107::getScBatch('faqs',TRUE);
+		$sc = e107::getScBatch('faqs', true);
 		$this->pref = e107::pref('faqs'); // Short version of e107::getPlugConfig('faqs')->getPref(); ;
 		$sc->pref = $this->pref;
 
@@ -215,13 +215,13 @@ class faq
 			$question = filter_input(INPUT_POST, 'ask_a_question', FILTER_SANITIZE_STRING);
 
 			$insert = array(
-				'faq_id'        =>0,
-				'faq_parent'    =>0,
+				'faq_id'        => 0,
+				'faq_parent'    => 0, // meaning 'unassigned/unanswered'.
 				'faq_question'  => $question,
 				'faq_answer'    => '',
 				'faq_comment'   => 0,
 				'faq_datestamp' => time(),
-				'faq_author'    => 0,
+				'faq_author'    => USERID,
 				'faq_author_ip' => USERIP,
 				'faq_tags'      => '',
 				'faq_order'     => 99999
@@ -308,7 +308,10 @@ class faq
 			$text = e107::getMessage()->render();
 		}
 
-		$query = "SELECT f.*,cat.* FROM #faqs AS f LEFT JOIN #faqs_info AS cat ON f.faq_parent = cat.faq_info_id WHERE cat.faq_info_class IN (".USERCLASS_LIST.") ".$insert." ORDER BY cat.faq_info_order,f.faq_order ";
+
+		list($orderBy, $ascdesc) = explode('-', vartrue($this->pref['orderby'],'faq_order-ASC'));
+
+		$query = "SELECT f.*,cat.* FROM #faqs AS f LEFT JOIN #faqs_info AS cat ON f.faq_parent = cat.faq_info_id WHERE cat.faq_info_class IN (".USERCLASS_LIST.") ".$insert." ORDER BY cat.faq_info_order, f.".$orderBy." ".$ascdesc." ";
 		
 		if(!$sql->gen($query))
 		{
@@ -328,6 +331,18 @@ class faq
 	//	$text = $tp->parseTemplate($FAQ_START, true, $sc);
 
 	//	$text = "";
+
+
+
+		if($this->pref['list_type'] == 'ol')
+		{
+			$reversed = ($ascdesc == 'DESC') ? 'reversed ' : '';
+			$tsrch = array('<ul ','/ul>');
+			$trepl = array('<ol '.$reversed,'/ol>');
+			$FAQ_LISTALL['start'] = str_replace($tsrch,$trepl, $FAQ_LISTALL['start']);
+			$FAQ_LISTALL['end'] = str_replace($tsrch,$trepl, $FAQ_LISTALL['end']);
+		}
+
 
 		while ($rw = $sql->fetch())
 		{
