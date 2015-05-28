@@ -40,7 +40,7 @@ class faq_admin extends e_admin_dispatcher
 	protected $adminMenu = array(
 		'main/list'		=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
 		'main/create'	=> array('caption'=> LAN_CREATE_ITEM, 'perm' => 'P'),
-		'main/pending'	=> array('caption'=> "Unanswered", 'perm' => 'P', 'uri'=>"admin_config.php?searchquery=&filter_options=faq_author__0&mode=main&action=list&filter=pending"),
+		'main/pending'	=> array('caption'=> "Unanswered", 'perm' => 'P', 'uri'=>"admin_config.php?mode=main&action=list&filter=pending"),
 
 		'cat/list' 		=> array('caption'=> LAN_CATEGORIES, 'perm' => 'P'),
 		'cat/create' 	=> array('caption'=> LAN_CREATE_CATEGORY, 'perm' => 'P'),
@@ -203,7 +203,7 @@ class faq_main_ui extends e_admin_ui
 			'faq_tags' 				=> array('title'=> LANA_FAQ_TAGS,		'tab' => 1, 'type' => 'tags',		    'data' => 'str',	'width' => 'auto', 'inline'=> true, 'help' => LANA_FAQ_TAGS_HELP),	// User id
 			'faq_comment' 			=> array('title'=> LANA_FAQ_COMMENT,	'tab' => 1, 'type' => 'userclass',		'data' => 'int',	'width' => 'auto', 'inline'=> true),	// User id
 			
-			'faq_datestamp' 		=> array('title'=> LAN_DATE,		    'tab' => 1, 'type' => 'datestamp',		'data'=> 'int','width' => 'auto', 'noedit' => false,'writeParms'=>'auto=1'),
+			'faq_datestamp' 		=> array('title'=> LAN_DATE,		    'tab' => 1, 'type' => 'datestamp',		'data'=> 'int','width' => 'auto', 'noedit' => false,'writeParms'=>'type=datetime&auto=1'),
        		'faq_author' 			=> array('title'=> LAN_USER,		    'tab' => 1, 'type' => 'user',			'data'=> 'int', 'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'writeParms' => 'currentInit=1', 'filter' => true, 'batch' => true, 'nolist' => true	),	 	// Photo
 			'faq_author_ip' 		=> array('title'=> LAN_IP,		        'tab' => 1, 'type' => 'ip',		        'readonly'=>2,	'data'=> 'str', 'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'writeParms' => 'currentInit=1', 'filter' => true, 'batch' => true, 'nolist' => true	),	 	// Photo
 
@@ -227,6 +227,7 @@ class faq_main_ui extends e_admin_ui
 			'page_title'				=> array('title'=> "Page Title", 'type'=>'text', 'help'=>'Leave blank to use default' ),
 			'new'				        => array('title'=> "'New' FAQs are no more than", 'type'=>'number', 'writeParms'=>'size=mini&default=0&post=days old', 'help'=>'Leave blank to use default' ),
 			'display_total'				=> array('title'=> "Display FAQ total", 'type'=>'boolean' ),
+			'orderby'                   => array('title'=> LAN_ORDER, 'type'=>'dropdown', 'writeParms'=>array('faq_order-ASC'=>"Specified Order", 'faq_id-ASC'=>'ID ASC', 'faq_id-DESC'=>'ID DESC', 'faq_datestamp-ASC'=>'Date ASC', 'faq_datestamp-DESC'=>'Date DESC'))
 			);
 
 	protected $categories = array();
@@ -251,9 +252,14 @@ class faq_main_ui extends e_admin_ui
 
 		if(!empty($_GET['filter'])) // hide re-ordering when looking at 'unanswered' list and sort by datestamp.
 		{
+			$this->listQry .= " WHERE f.faq_parent = 0 ";
 			$this->listOrder = "faq_datestamp ASC";
 			$this->fields['options']['readParms'] = '';
 			$this->sortField = false;
+		}
+		else
+		{
+			$this->listQry .= " WHERE f.faq_parent != 0 ";
 		}
 
 	}
