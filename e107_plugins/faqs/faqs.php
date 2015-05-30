@@ -229,7 +229,8 @@ class faq
 
 			if($sql->insert('faqs',$insert))
 			{
-				e107::getMessage()->addSuccess('Thank you. Your question has been saved and will be answered as soon as possible.');
+				$message = !empty($this->pref['submit_question_acknowledgement']) ? e107::getParser()->toHtml($this->pref['submit_question_acknowledgement'],true, 'BODY') : 'Thank you. Your question has been saved and will be answered as soon as possible.'; //TODO LAN
+				e107::getMessage()->addSuccess($message);
 			}
 
 		}
@@ -264,8 +265,15 @@ class faq
 
 		$ret['title'] = FAQLAN_FAQ;
 		$ret['text'] = $text;
-		$ret['caption'] = varset($template['caption']) ? $tp->parseTemplate($template['caption'], true, $this->sc) : LAN_PLUGIN_FAQS_FRONT_NAME;
-		
+
+		if (!empty($this->pref['page_title']))
+		{
+			$ret['caption'] = e107::getParser()->toHtml($this->pref['page_title'], true, 'TITLE');
+		}
+		else
+		{
+			$ret['caption'] = varset($template['caption']) ? $tp->parseTemplate($template['caption'], true, $this->sc) : LAN_PLUGIN_FAQS_FRONT_NAME;
+		}
 		
 		
 		return $ret;

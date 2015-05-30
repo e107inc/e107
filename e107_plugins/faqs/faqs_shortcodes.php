@@ -45,7 +45,7 @@ class faqs_shortcodes extends e_shortcode
 
 		$faqNew = ($this->var['faq_datestamp'] > $newDate) ? " faq-new" : "";
 
-		if($param == 'expand')
+		if($param == 'expand' && !empty($this->var['faq_answer']))
 		{
 			$tags = '';
 			if(vartrue($params['tags']) && $this->var['faq_tags'])
@@ -53,14 +53,17 @@ class faqs_shortcodes extends e_shortcode
 				$tags = "<div class='faq-tags'>".LAN_FAQS_TAGS.": ".$this->sc_faq_tags()."</div>";
 			}
 			$id = "faq_".$this->var['faq_id'];
+
+
+
 			$text = "<a class='e-expandit faq-question{$faqNew}' href='#{$id}'>".$tp->toHTML($this->var['faq_question'],true,'TITLE')."</a>
 			<div id='{$id}' class='e-hideme faq-answer faq_answer clearfix {$faqNew}'>".$tp->toHTML($this->var['faq_answer'],true,'BODY').$tags."</div>
-			";	
+			";
 
 		}
 		else
 		{
-			$text = $tp->toHTML($this->var['faq_question'],true, 'TITLE');
+			$text = $tp->toHTML($this->var['faq_question'],true, 'BODY');
 		}
 		return $text;
 	}
@@ -169,6 +172,13 @@ class faqs_shortcodes extends e_shortcode
 		return e107::getUrl()->create('faqs/list/all', array('category' => $this->var['faq_info_id']));	
 	}
 
+
+	function sc_faq_datestamp($parm)
+	{
+		$type = vartrue($parm, 'relative');
+		return e107::getParser()->toDate($this->var['faq_datestamp'], $type);
+	}
+
 	function sc_faq_caption()
 	{
 
@@ -206,17 +216,29 @@ class faqs_shortcodes extends e_shortcode
 		return "<img src='".e_PLUGIN_ABS."faq/images/faq.png'  alt='' />";	
 	}
 
-	function sc_faq_submit_question()
+	function sc_faq_submit_question($parms)
 	{
 
 		$faqpref = e107::pref('faqs');
+
+		if(!empty($parms['expand']))
+		{
+			$hide = 'e-hideme';
+			$button = "<a class='btn btn-primary e-expandit faq-submit-question' href='#form-ask-a-question'>Ask a Question</a>";
+		}
+		else
+		{
+			$hide = "";
+			$button = "";
+		}
 
 		if (check_class($faqpref['submit_question']))
 		{
 			$frm = e107::getForm();
 
-			$text = "<a class='btn btn-primary e-expandit faq-submit-question' href='#ask-a-question'>Ask a Question</a>
-			<div id='ask-a-question' class='alert alert-info alert-block e-hideme form-group faq-submit-question-form'>";
+			$text = $button;
+
+			$text .= "<div id='form-ask-a-question' class='alert alert-info alert-block ".$hide." form-group faq-submit-question-form'>";
 
 			$text .= $frm->open('faq-ask-question','post');
 
