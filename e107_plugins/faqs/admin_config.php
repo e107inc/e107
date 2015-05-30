@@ -222,6 +222,8 @@ class faq_main_ui extends e_admin_ui
 			'add_faq'	   				=> array('title'=> LANA_FAQ_PREF_1, 'type'=>'userclass' ),
 			'submit_question'	   		=> array('title'=> LANA_FAQ_PREF_2, 'type'=>'userclass' ),
 			'submit_question_limit'     => array('title'=> "'Ask a Question' limit per user", 'type'=>'number', 'data'=>'int', 'help'=>'0 = no limit'),
+			'submit_question_acknowledgement'   => array('title'=> "Submitted Questions Acknowledgement", 'type'=>'textarea', 'help'=>'Leave blank to use default' ),
+
 			'classic_look'				=> array('title'=> LANA_FAQ_PREF_3, 'type'=>'boolean' ),
 			'list_type'				    => array('title'=> "List Type", 'type'=>'dropdown', 'writeParms'=>array('ul'=>'Unordered List', 'ol'=>'Ordered List') ),
 			'page_title'				=> array('title'=> "Page Title", 'type'=>'text', 'help'=>'Leave blank to use default' ),

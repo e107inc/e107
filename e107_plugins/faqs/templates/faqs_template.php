@@ -9,7 +9,7 @@
  */
 
 $FAQS_TEMPLATE['start']	= "
-<div class='faq-start'>{FAQ_SUBMIT_QUESTION}
+<div class='faq-start'>{FAQ_SUBMIT_QUESTION: expand=1}
 {FAQ_SUBMIT_QUESTION_LIST}
 ";
 
