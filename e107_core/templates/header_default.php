@@ -459,10 +459,15 @@ $key_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_keywor
 
 function render_meta($type)
 {
-	global $pref,$tp;
+	$tp = e107::getParser();
+	$pref = e107::getPref();
 
-	if (!isset($pref['meta_'.$type][e_LANGUAGE]) || empty($pref['meta_'.$type][e_LANGUAGE]))
-	{ 
+	$key = 'meta_'.$type;
+	$language = e_LANGUAGE;
+
+	if(empty($pref[$key][$language]))
+	{
+	//	e107::getMessage()->addError("Couldn't find: pref - ".$key);
 		return '';
 	}
 
