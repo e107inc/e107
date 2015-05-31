@@ -143,16 +143,29 @@ if(isset($_POST['send-contactus']))
 			$send_to_name = ADMIN;
 		}
 
-    	require_once(e_HANDLER."mail.php");
 
- 		$message =  (sendemail($send_to,"[".SITENAME."] ".$subject, $body,$send_to_name,$sender,$sender_name)) ? LANCONTACT_09 : LANCONTACT_10;
+		// Send as default sender to avoid spam issues. Use 'replyto' instead. 
+    	$eml = array(
+    	    'subject'       => $subject,
+    	    'sender_name'   => $sender_name,
+    	    'body'          => $body,
+		    'replyto'       => $sender,
+		    'replytonames'  => $sender_name,
+		    'template'      => 'default'
+	    );
+
+    	$message = e107::getEmail()->sendEmail($send_to, $send_to_name, $eml, false)  ? LANCONTACT_09 : LANCONTACT_10;
+
+ 	//	$message =  (sendemail($send_to,"[".SITENAME."] ".$subject, $body,$send_to_name,$sender,$sender_name)) ? LANCONTACT_09 : LANCONTACT_10;
 
     	if(isset($pref['contact_emailcopy']) && $pref['contact_emailcopy'] && $_POST['email_copy'] == 1)
     	{
+		    require_once(e_HANDLER."mail.php");
 			sendemail($sender,"[".SITENAME."] ".$subject, $body,ADMIN,$sender,$sender_name);
     	}
 
-    	$ns->tablerender('', $message);
+
+    	$ns->tablerender('', "<div class='alert alert-success'>".$message."</div>");
 		require_once(FOOTERF);
 		exit;
     }
