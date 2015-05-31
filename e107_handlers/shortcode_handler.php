@@ -462,10 +462,20 @@ class e_parse_shortcode
 	//		$this->registered_codes[$code]['type'] = 'plugin';
 	//					$this->registered_codes[$code]['function'] = strtolower($code).'_shortcode';
 	//					$this->registered_codes[$code]['path'] = e_PLUGIN.$path.'/shortcodes/single/';
-	//					$this->registered_codes[$code]['perms'] = $uclass; 
-		
-	
-	
+	//					$this->registered_codes[$code]['perms'] = $uclass;
+
+
+		if(deftrue('e_DEVELOPER')) // experimental, could break something. - use theme shortcodes in other templates.
+		{
+			if(file_exists(THEME."theme_shortcodes.php"))
+			{
+				$classFunc = 'theme_shortcodes';
+				$path = THEME."theme_shortcodes.php";
+				include_once($path);
+				$this->registerClassMethods($classFunc, $path, false);
+
+			}
+		}
 	
 		if (isset($register_sc) && is_array($register_sc))
 		{
