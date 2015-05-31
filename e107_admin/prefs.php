@@ -601,6 +601,13 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 						</td>
 					</tr>
 					<tr>
+						<td><label for='contact_visibility'>Contact Page Visibility</label></td>
+						<td>
+							".$e_userclass->uc_dropdown('contact_visibility', varset( $pref['contact_visibility'],e_UC_PUBLIC), 'public,nobody,main,admin,classes', "tabindex='".$frm->getNext()."'")."
+							<div class='smalltext field-help'>Contact information and/or form will only be visible to this userclass group.</div>
+						</td>
+					</tr>
+					<tr>
 						<td><label for='contact-emailcopy'>".PRFLAN_164."</label></td>
 						<td>";
 						/*

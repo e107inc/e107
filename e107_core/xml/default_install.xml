@@ -30,6 +30,7 @@
 		<core name="comments_sort">desc</core>
 		<core name="compress_output">0</core>
 		<core name="contact_emailcopy">0</core>
+        <core name="contact_visibility">0</core>
 		<core name="cookie_name">e107cookie</core>
 		<core name="core-infopanel-default"><![CDATA[array (
   0 => 'e-administrator',

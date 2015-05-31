@@ -13,6 +13,12 @@
 require_once("class2.php");
 //define('e_HANDLER', "e107_handlers/");
 // security image may be disabled by removing the appropriate shortcodes from the template.
+$active = varset($pref['contact_visibility'], e_UC_PUBLIC);
+if(!check_class($active))
+{
+	e107::getRedirect()->go(e_HTTP."index.php");
+}
+
 require_once(e_HANDLER."secure_img_handler.php");
 $sec_img = new secure_image;
 
