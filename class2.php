@@ -690,6 +690,9 @@ function getip()
 	return e107::getIPHandler()->ipDecode(USERIP);
 }
 
+
+$developerMode = (vartrue($pref['developer'],false) || E107_DEBUG_LEVEL > 0);
+
 // for multi-language these definitions needs to come after the language loaded.
 define('SITENAME', trim($tp->toHTML($pref['sitename'], '', 'USER_TITLE,er_on,defs')));
 define('SITEBUTTON', $tp->replaceConstants($pref['sitebutton'],'abs'));
@@ -701,7 +704,8 @@ define('SITEDISCLAIMER', $tp->toHTML($pref['sitedisclaimer'], '', 'emotes_off,de
 define('SITECONTACTINFO', $tp->toHTML($pref['sitecontactinfo'], true, 'emotes_off,defs'));
 define('SITEEMAIL', vartrue($pref['replyto_email'],$pref['siteadminemail']));
 define('USER_REGISTRATION', vartrue($pref['user_reg'],false)); // User Registration System Active or Not.
-define('e_DEVELOPER', vartrue($pref['developer'],false));
+define('e_DEVELOPER', $developerMode);
+unset($developerMode);
 
 if(is_array($pref['xurl']))
 {

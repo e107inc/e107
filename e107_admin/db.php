@@ -183,7 +183,10 @@ class system_tools
 		if(deftrue('e_DEVELOPER'))
 		{
 			$this->_options['multisite'] = array('diz'=>"<span class='label label-warning'>Developer Mode Only</span>", 'label'=> 'Multi-Site' );
+			$this->_options['github'] = array('diz'=>"<span class='label label-warning'>Developer Mode Only</span> Overwrite local files with the latest from github.", 'label'=> 'Sync with Github' );
 		}
+
+
 
 		$this->_options = multiarray_sort($this->_options, 'label');
 				
@@ -211,7 +214,7 @@ class system_tools
 			return;
 		}
 		
-	
+		// ----------------- Processes ------------------
 		
 	//	if(isset($_POST['verify_sql_record']) || varset($_GET['mode'])=='verify_sql_record' || isset($_POST['check_verify_sql_record']) || isset($_POST['delete_verify_sql_record']))
 	//	{
@@ -263,17 +266,28 @@ class system_tools
 			$this->plugin_viewscan('refresh');
 		}
 		
-		if(isset($_POST['create_multisite']))
+		if(!empty($_POST['create_multisite']))
 		{
 			$this->multiSiteProcess();	
 		}	
 
-		if(vartrue($_POST['perform_utf8_convert']))
+		if(!empty($_POST['perform_utf8_convert']))
 		{
 			$this->perform_utf8_convert();
 			return;
 		}
-		
+
+		if(!empty($_POST['githubSyncProcess']))
+		{
+			$this->githubSyncProcess();
+			return;
+		}
+
+
+
+		// --------------------- Modes --------------------------------.
+
+
 		if(varset($_GET['mode'])=='correct_perms')
 		{
 			$this->correct_perms();	
@@ -284,6 +298,11 @@ class system_tools
 		{
 			$this->multiSite();	
 			return;
+		}
+
+		if(varset($_GET['mode']) == 'github')
+		{
+			$this->githubSync();
 		}
 		
 		if(varset($_GET['mode']) == 'backup')
@@ -300,6 +319,153 @@ class system_tools
 
 
 	}
+
+
+
+
+
+	// Developer Mode ONly.. No LANS.
+	private function githubSync()
+	{
+
+		$frm = e107::getForm();
+		$mes = e107::getMessage();
+
+	//	$message = DBLAN_70;
+	//	$message .= "<br /><a class='e-ajax btn btn-success' data-loading-text='".DBLAN_71."' href='#backupstatus' data-src='".e_SELF."?mode=backup' >".LAN_CREATE."</a>";
+
+		$message = $frm->open('githubSync');
+		$message .= "<p>This will download the latest .zip file from github to <b>".e_SYSTEM."/temp</b> and then unzip it, overwriting any existing files that it finds on your server. It will take into account any custom folders you may have set in e107_config.php. </p>";
+		$message .= $frm->button('githubSyncProcess',1,'delete', "Overwrite Files");
+		$message .= $frm->close();
+
+
+		$mes->addInfo($message);
+
+	//	$text = "<div id='backupstatus' style='margin-top:20px'></div>";
+
+
+		e107::getRender()->tablerender(DBLAN_10.SEP."Sync with Github", $mes->render());
+
+
+
+	}
+
+
+
+
+
+	// Developer Mode ONly.. No LANS.
+	private function githubSyncProcess()
+	{
+
+		// Delete any existing file.
+		if(file_exists(e_TEMP."e107-master.zip"))
+		{
+			unlink(e_TEMP."e107-master.zip");
+		}
+
+		$result = e107::getFile()->getRemoteFile('https://codeload.github.com/e107inc/e107/zip/master', 'e107-master.zip', 'temp');
+
+		if($result == false)
+		{
+			e107::getMessage()->addError( "Couldn't download .zip file");
+		}
+
+
+		$localfile = 'e107-master.zip';
+
+		chmod(e_TEMP.$localfile, 0755);
+		require_once(e_HANDLER."pclzip.lib.php");
+
+//	$base = realpath(dirname(__FILE__));
+
+
+		$newFolders = array(
+			'e107-master/e107_admin/'       => e_BASE.e107::getFolder('ADMIN'),
+			'e107-master/e107_core/'        => e_BASE.e107::getFolder('CORE'),
+			'e107-master/e107_docs/'        => e_BASE.e107::getFolder('DOCS'),
+			'e107-master/e107_handlers/'    => e_BASE.e107::getFolder('HANDLERS'),
+			'e107-master/e107_images/'      => e_BASE.e107::getFolder('IMAGES'),
+			'e107-master/e107_languages/'   => e_BASE.e107::getFolder('LANGUAGES'),
+			'e107-master/e107_media/'       => e_BASE.e107::getFolder('MEDIA'),
+			'e107-master/e107_plugins/'     => e_BASE.e107::getFolder('PLUGINS'),
+			'e107-master/e107_system/'      => e_BASE.e107::getFolder('SYSTEM'),
+			'e107-master/e107_themes/'      => e_BASE.e107::getFolder('THEMES'),
+			'e107-master/e107_web/'         => e_BASE.e107::getFolder('WEB'),
+			'e107-master/'                  => e_BASE
+		);
+
+		$srch = array_keys($newFolders);
+		$repl = array_values($newFolders);
+
+		$archive 	= new PclZip(e_TEMP.$localfile);
+		$unarc 		= ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_TEMP, PCLZIP_OPT_SET_CHMOD, 0755)); // Store in TEMP first.
+
+		$error = array();
+		$success = array();
+		$skipped = array();
+//	print_a($unarc);
+
+
+		$excludes = array('e107-master/','e107-master/install.php','e107-master/favicon.ico');
+
+		foreach($unarc as $k=>$v)
+		{
+			if(in_array($v['stored_filename'],$excludes))
+			{
+				continue;
+			}
+
+			$oldPath = $v['filename'];
+			$newPath =  str_replace($srch,$repl, $v['stored_filename']);
+
+			$message = "Moving ".$oldPath." to ".$newPath;
+
+			if($v['folder'] ==1 && is_dir($newPath))
+			{
+				// $skipped[] =  $newPath. " (already exists)";
+				continue;
+			}
+
+			if(!rename($oldPath,$newPath))
+			{
+				$error[] =  $message;
+			}
+			else
+			{
+				$success[] = $message;
+			}
+
+
+			//	echo $message."<br />";
+
+		}
+
+		if(!empty($success))
+		{
+			e107::getMessage()->addSuccess(print_a($success,true));
+		}
+
+		if(!empty($skipped))
+		{
+			e107::getMessage()->setTitle("Skipped",E_MESSAGE_INFO)->addInfo(print_a($skipped,true));
+		}
+
+		if(!empty($error))
+		{
+			e107::getMessage()->addError(print_a($error,true));
+		}
+
+
+
+
+		e107::getRender()->tablerender(DBLAN_10.SEP."Sync with Github", e107::getMessage()->render());
+
+	}
+
+
+
 
 
 	private function backup()

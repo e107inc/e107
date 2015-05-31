@@ -1035,7 +1035,12 @@ class e_form
 
 	//	$text .= "ValueFormat: ".$dateFormat."  Value: ".$value;
 	//	$text .= " ({$dformat}) type:".$dateFormat." ".$value;
-			
+
+		// Load it in the footer.
+		e107::css('core', 	'bootstrap-datetimepicker/css/datetimepicker.css', 'jquery');
+		e107::js('core', 	'bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js', 'jquery', 2);
+
+
 		return $text;
 
 
