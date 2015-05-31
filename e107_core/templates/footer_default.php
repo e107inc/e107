@@ -300,8 +300,10 @@ if (is_array($pref['e_footer_list']))
 
 // Load Footer CSS
 //
-echo "\n\n<!-- ======= [JSManager] FOOTER: Remaining CSS ======= -->";
-
+if(deftrue('e_DEVELOPER'))
+{
+	echo "\n\n<!-- ======= [JSManager] FOOTER: Remaining CSS ======= -->";
+}
 $CSSORDER = deftrue('CSSORDER') ? explode(",",CSSORDER) : array('other','core','plugin','theme');  // INLINE CSS in Body not supported by HTML5. .
 
 foreach($CSSORDER as $val)
@@ -312,8 +314,10 @@ foreach($CSSORDER as $val)
 
 unset($CSSORDER);
 
-echo "\n\n<!-- ======= [JSManager] FOOTER: Remaining JS ======= -->";
-
+if(deftrue('e_DEVELOPER'))
+{
+	echo "\n\n<!-- ======= [JSManager] FOOTER: Remaining JS ======= -->";
+}
 // [JSManager] Load JS Footer Includes by priority
 e107::getJs()->renderJs('footer', true);
 
