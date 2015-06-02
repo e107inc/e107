@@ -45,32 +45,12 @@ class social_comment
 	function facebook($data)
 	{
 
-		if(empty($this->facebookActive))
+		if(!deftrue('SOCIAL_FACEBOOK_INIT'))
 		{
 			return "<div class='alert alert-important alert-danger'>Unable to render comments. Missing Facebook appID.</div>";
 		}
 
-		$head = "
-
-	      window.fbAsyncInit = function() {
-	        FB.init({
-	          appId      : '".$this->facebookActive."',
-	          xfbml      : true,
-	          version    : 'v2.3'
-	        });
-	      };
-
-	      (function(d, s, id){
-	         var js, fjs = d.getElementsByTagName(s)[0];
-	         if (d.getElementById(id)) {return;}
-	         js = d.createElement(s); js.id = id;
-	         js.src = '//connect.facebook.net/en_US/sdk.js';
-	         fjs.parentNode.insertBefore(js, fjs);
-	       }(document, 'script', 'facebook-jssdk'));
-
-	    ";
-
-		e107::js('footer-inline', $head);
+		e107::js('footer-inline', SOCIAL_FACEBOOK_INIT);
 
 		if(E107_DEBUG_LEVEL > 0)
 		{
