@@ -336,7 +336,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 				if (trim($i)) $icn[] = e107::getUserClass()->getName($i);
 			}
 
-			$class_text = $frm->userclass('init_classes',$initial_classes, 'checkbox', 'classes,force');
+			$class_text = $frm->userclass('init_classes',$initial_classes, 'checkbox', array('options'=>'classes,force'));
 
 		//	$class_text = e107::getUserClass()->uc_checkboxes('init_classes', $initial_classes, 'classes, force', TRUE);
 		//	$class_text = e107::getUserClass()->vetted_tree('init_classes',array($e_userclass,'checkbox_desc'), $initial_classes, 'classes, force, no-excludes');
