@@ -83,6 +83,9 @@ class social_ui extends e_admin_ui
 			'facebook_like_menu_theme'	=> array('title'=> 'Theme', 'type'=>'dropdown', 'tab'=>2, 'writeParms'=>array('optArray'=>array('light'=>'Light','dark'=>'Dark')), 'data' => 'str'),
 			'facebook_like_menu_action'	=> array('title'=> 'Action', 'type'=>'dropdown', 'tab'=>2, 'writeParms'=>array('optArray'=>array('like'=>'Like','recommend'=>'Recommend')), 'data' => 'str'),
 			'facebook_like_menu_width'	=> array('title'=> 'Width', 'type'=>'number', 'tab'=>2, 'data' => 'int','help'=>'Width in px'),
+		//	'facebook_like_menu_ref'	=> array('title'=> "Referrer", 'type'=>'text', 'tab'=>2, 'data' => 'str', 'writeParms'=>'size=xxlarge', 'help'=>'Leave blank to use Site Url'),
+
+
 
 			'twitter_menu_theme'	=> array('title'=> 'Theme', 'type'=>'dropdown', 'tab'=>3, 'writeParms'=>array('optArray'=>array('light'=>'Light','dark'=>'Dark')), 'data' => 'str'),
 			'twitter_menu_height'		=> array('title'=> 'Height', 'type'=>'number', 'tab'=>3, 'data' => 'int','help'=>'Height in px'),

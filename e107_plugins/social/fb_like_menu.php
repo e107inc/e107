@@ -20,12 +20,14 @@ if(deftrue('SOCIAL_FACEBOOK_INIT') )
 	$layout = vartrue($pref['facebook_like_menu_layout'],   'standard'); // standard, button_count, button or box_count.
 	$width = vartrue($pref['facebook_like_menu_width'],     150);
 	$theme  = vartrue($pref['facebook_like_menu_theme'],    'light');
+	$ref    = deftrue('XURL_FACEBOOK', SITEURL); // vartrue($pref['facebook_like_menu_ref'], basename();
+	$share  = vartrue($pref['facebook_like_menu_share'],    'false');
 
 	$text = "<div style='overflow:hidden'>"; // prevent theme breakages.
-	$text .= '<div class="fb-like" data-href="'.SITEURL.'" data-width="'.$width.'px" data-layout="'.$layout.'" data-colorscheme="'.$theme.'" data-action="'.$action.'" data-show-faces="true" data-share="true"></div>';
+	$text .= '<div class="fb-like" data-href="'.rtrim($ref.'/').'" data-width="'.$width.'px" data-layout="'.$layout.'" data-colorscheme="'.$theme.'" data-action="'.$action.'" data-show-faces="true" data-share="'.$share.'"></div>';
 	$text .= "</div>";
 
-	e107::getRender()->tablerender('Facebook '.$theme,$text,'facebook-like-menu');
+	e107::getRender()->tablerender('Facebook',$text,'facebook-like-menu');
 
 }elseif(ADMIN)
 {
