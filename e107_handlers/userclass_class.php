@@ -430,6 +430,20 @@ class user_class
 			}
 		}
 
+		if(is_array($extra_js))
+		{
+			$options = $extra_js;
+			unset($extra_js);
+		}
+
+		$class = "tbox form-control";
+
+		if(!empty($options['class']))
+		{
+			$class .= " ".$options['class'];
+		}
+
+
 		// Inverted Classes
 		if(strpos($optlist, 'no-excludes') === FALSE)
 		{
@@ -453,7 +467,7 @@ class user_class
 		}
 
 		// Only return the select box if we've ended up with some options
-		if ($text) $text = "\n<select class='tbox form-control' name='{$fieldname}' id='{$fieldname}' {$extra_js}>\n".$text."</select>\n";
+		if ($text) $text = "\n<select class='".$class."' name='{$fieldname}' id='{$fieldname}' {$extra_js}>\n".$text."</select>\n";
 		return $text;
 	}
 

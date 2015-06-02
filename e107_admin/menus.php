@@ -983,7 +983,7 @@ class e_layout
 		
 	//	print_a($_GET);
 		
-
+		$tp = e107::getParser();
 		$sql = e107::getDb();
 		$ns = e107::getRender();
 		$frm = e107::getForm();
@@ -1021,12 +1021,12 @@ class e_layout
 		
 		$checked = ($listtype == 1) ? " checked='checked' " : "";
 		
-		$text .= $frm->radio('listtype', 1, $checked, array('label'=>MENLAN_26, 'class'=> 'e-save'));
+		$text .= $frm->radio('listtype', 1, $checked, array('label'=> $tp->toHtml(MENLAN_26,true), 'class'=> 'e-save'));
 		$text .= "<br />";
 	//	$text .= "<input type='radio' class='e-save' {$checked} name='listtype' value='1' /> ".MENLAN_26."<br />";
 		$checked = ($listtype == 2) ? " checked='checked' " : "";
 		
-		$text .= $frm->radio('listtype', 2, $checked, array('label'=>MENLAN_27, 'class'=> 'e-save'));
+		$text .= $frm->radio('listtype', 2, $checked, array('label'=>  $tp->toHtml(MENLAN_27,true), 'class'=> 'e-save'));
 		
 		
 		// $text .= "<input type='radio' class='e-save' {$checked} name='listtype' value='2' /> ".MENLAN_27."<br />";

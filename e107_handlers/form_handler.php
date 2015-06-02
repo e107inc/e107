@@ -1790,16 +1790,34 @@ class e_form
 	 */
 	function userclass($name, $curval=255, $type=null, $options=null)
 	{
-		
-		switch ($type) 
+		if(!empty($options))
+		{
+			if(is_array($options))
+			{
+				$opt = $options;
+			}
+			else
+			{
+				parse_str($options,$opt);
+			}
+
+		}
+		else
+		{
+			$opt = array();
+		}
+
+		$optlist = vartrue($opt['options'],null);
+
+		switch ($type)
 		{
 			case 'checkbox':
-				return e107::getUserClass()->uc_checkboxes($name,$curval,$options,null,false);
+				return e107::getUserClass()->uc_checkboxes($name, $curval, $optlist, null,false);
 			break;
 
 			case 'dropdown':
 			default:
-				return e107::getUserClass()->uc_dropdown($name,$curval,$options); 	
+				return e107::getUserClass()->uc_dropdown($name, $curval, $optlist, $opt);
 			break;
 		}
 

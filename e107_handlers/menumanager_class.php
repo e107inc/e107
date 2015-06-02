@@ -580,6 +580,8 @@ class e_menuManager {
 		$sql = e107::getDb();
 		$ns = e107::getRender();
 		$frm = e107::getForm();
+		$tp = e107::getParser();
+
 		
 		require_once(e_HANDLER."userclass_class.php");
 		
@@ -604,19 +606,19 @@ class e_menuManager {
 			<td>
 			<input type='hidden' name='menuAct[{$row['menu_id']}]' value='sv.{$row['menu_id']}' />
 			".MENLAN_4." ".
-			r_userclass('menu_class', $row['menu_class'], "off", "public,member,guest,admin,main,classes,nobody")."
+			$frm->userclass('menu_class', $row['menu_class'], 'dropdown', array('options'=>"public,member,guest,admin,main,classes,nobody", 'class'=>'e-save'))."
 			</td>
 			</tr>
 			<tr><td><div class='radio'>
 		";
 		$checked = ($listtype == 1) ? " checked='checked' " : "";
 		
-		$text .= $frm->radio('listtype', 1, $checked, array('label'=>MENLAN_26, 'class'=> 'e-save'));
+		$text .= $frm->radio('listtype', 1, $checked, array('label'=>$tp->toHtml(MENLAN_26,true), 'class'=> 'e-save'));
 		$text .= "<br />";
 	//	$text .= "<input type='radio' class='e-save' {$checked} name='listtype' value='1' /> ".MENLAN_26."<br />";
 		$checked = ($listtype == 2) ? " checked='checked' " : "";
 		
-		$text .= $frm->radio('listtype', 2, $checked, array('label'=>MENLAN_27, 'class'=> 'e-save'));
+		$text .= $frm->radio('listtype', 2, $checked, array('label'=> $tp->toHtml(MENLAN_27,true), 'class'=> 'e-save'));
 		
 		
 		// $text .= "<input type='radio' class='e-save' {$checked} name='listtype' value='2' /> ".MENLAN_27."<br />";
