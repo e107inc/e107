@@ -71,22 +71,27 @@ class social_ui extends e_admin_ui
 		protected $fieldpref        = array();
 		
 
-		protected $preftabs        = array("Sharing", 'Facebook Comments', 'Twitter Menu' );
+		protected $preftabs        = array("Sharing", 'Facebook Comments',  'Facebook Menu', 'Twitter Menu', );
 
 		protected $prefs = array(
 
 
 			'facebook_comments_limit'		=> array('title'=> 'Limit', 'type'=>'number', 'tab'=>1, 'data' => 'int','help'=>'Number of tweets to display.'),
-			'facebook_comments_theme'		=> array('title'=> 'Theme', 'type'=>'dropdown', 'tab'=>1, 'writeParms'=>array('optArray'=>array('light'=>'Light','dark'=>'Dark')), 'data' => 'int','help'=>'Number of tweets to display.'),
+			'facebook_comments_theme'		=> array('title'=> 'Theme', 'type'=>'dropdown', 'tab'=>1, 'writeParms'=>array('optArray'=>array('light'=>'Light','dark'=>'Dark')), 'data' => 'str','help'=>''),
 			'facebook_comments_loadingtext'		=> array('title'=> 'Text while loading', 'type'=>'text', 'tab'=>1, 'data' => 'str', 'writeParms'=>array('placeholder'=>'Loading...'), 'help'=>''),
 
-			'twitter_menu_height'		=> array('title'=> 'Height', 'type'=>'number', 'tab'=>2, 'data' => 'int','help'=>'Height in px'),
-			'twitter_menu_limit'		=> array('title'=> 'Limit', 'type'=>'number', 'tab'=>2, 'data' => 'int','help'=>'Number of tweets to display.'),
+			'facebook_like_menu_theme'	=> array('title'=> 'Theme', 'type'=>'dropdown', 'tab'=>2, 'writeParms'=>array('optArray'=>array('light'=>'Light','dark'=>'Dark')), 'data' => 'str'),
+			'facebook_like_menu_action'	=> array('title'=> 'Action', 'type'=>'dropdown', 'tab'=>2, 'writeParms'=>array('optArray'=>array('like'=>'Like','recommend'=>'Recommend')), 'data' => 'str'),
+			'facebook_like_menu_width'	=> array('title'=> 'Width', 'type'=>'number', 'tab'=>2, 'data' => 'int','help'=>'Width in px'),
+
+			'twitter_menu_theme'	=> array('title'=> 'Theme', 'type'=>'dropdown', 'tab'=>3, 'writeParms'=>array('optArray'=>array('light'=>'Light','dark'=>'Dark')), 'data' => 'str'),
+			'twitter_menu_height'		=> array('title'=> 'Height', 'type'=>'number', 'tab'=>3, 'data' => 'int','help'=>'Height in px'),
+			'twitter_menu_limit'		=> array('title'=> 'Limit', 'type'=>'number', 'tab'=>3, 'data' => 'int','help'=>'Number of tweets to display.'),
+
 
 			'sharing_mode'              => array('title'=> 'Display Mode', 'type'=>'dropdown', 'tab'=>0, 'writeParms'=>array('optArray'=>array('normal'=>'Normal','dropdown'=>'Dropdown','off'=>'Disabled')), 'data' => 'str','help'=>''),
 			'sharing_hashtags'		    => array('title'=> 'Hashtags', 'type'=>'tags', 'tab'=>0, 'data' => 'str','help'=>'Excluding the # symbol.'),
 			'sharing_providers'         => array('title'=> 'Providers', 'type'=>'checkboxes', 'tab'=>0, 'writeParms'=>array(), 'data' => 'str','help'=>''),
-
 		);
 
 		protected $social_logins = array();
