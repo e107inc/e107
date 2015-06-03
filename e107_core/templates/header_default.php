@@ -313,7 +313,15 @@ else
 
 //TODO Additional options for 'bootstrap' and 'style' (ie. THEME_STYLE loaded above). Requires changes to js_manager.php 
 
+
+
+
+
 $CSSORDER = deftrue('CSSORDER') ? explode(",",CSSORDER) : array('other','core','plugin','theme','inline');
+
+
+
+
 
 foreach($CSSORDER as $val)
 {
@@ -322,6 +330,11 @@ foreach($CSSORDER as $val)
 }
 
 unset($CSSORDER);
+
+
+$e_js->renderCached('css');
+
+
 
 /*
 $e_js->renderJs('other_css', false, 'css', false);
@@ -363,7 +376,7 @@ echo "\n<!-- footer_inline_css -->\n";
 e107::getJs()->renderJs('header', 1);
 e107::getJs()->renderJs('header_inline', 1);
 
-// Send Javascript Libraries ALWAYS (for now)
+// Send Javascript Libraries ALWAYS (for now) - loads e_jslib.php
 $jslib = e107::getObject('e_jslib', null, e_HANDLER.'jslib_handler.php');
 $jslib->renderHeader('front', false);
 
@@ -570,6 +583,10 @@ e107Event.trigger('loaded', null, document);
 ",'prototype',5);
 
 e107::getJs()->renderJs('header_inline', 5);
+
+
+e107::getJs()->renderCached('js');
+
 
 echo "</head>\n";
 
