@@ -314,12 +314,16 @@ foreach($CSSORDER as $val)
 
 unset($CSSORDER);
 
+e107::getJs()->renderCached('css');
+
 if(deftrue('e_DEVELOPER'))
 {
 	echo "\n\n<!-- ======= [JSManager] FOOTER: Remaining JS ======= -->";
 }
 // [JSManager] Load JS Footer Includes by priority
 e107::getJs()->renderJs('footer', true);
+
+e107::getJs()->renderCached('js');
 
 // [JSManager] Load JS Footer inline code by priority
 e107::getJs()->renderJs('footer_inline', true);

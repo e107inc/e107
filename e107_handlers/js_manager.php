@@ -55,7 +55,15 @@ class e_jsmanager
 			)	
 			
 	);
-	
+
+	/**
+	 * Dynamic List of files to be cached.
+	 * @var array
+	 */
+	protected $_cache_list = array();
+
+
+
 	protected $_core_prefs = array();
 	
     /**
@@ -1125,6 +1133,8 @@ class e_jsmanager
 		{
 			return '';
 		}
+
+
 		$tp = e107::getParser();
 		echo "\n";
 		if($label && E107_DEBUG_LEVEL > 0) 
@@ -1145,10 +1155,14 @@ class e_jsmanager
 					$pre = varset($path[2]) ? $path[2]."\n" : '';
 					$post = varset($path[3]) ? "\n".$path[3] : '';
 					$path = $path[1];
-					if(strpos($path, 'http') !== 0) $path = $tp->replaceConstants($path, 'abs').'?external=1&amp;'.$this->getCacheId();
+					if(strpos($path, 'http') !== 0)
+					{
+						$path = $tp->replaceConstants($path, 'abs').'?external=1&amp;'.$this->getCacheId();
+					}
 					
 					echo $pre.'<link rel="stylesheet" media="'.$media.'" type="text/css" href="'.$path.'" />'.$post;
 					echo "\n";
+				//	$this->cacheList['css'][] = $path;
 					continue;
 				}
 				elseif($external) //true or 'js'
@@ -1191,10 +1205,18 @@ class e_jsmanager
 					$pre = varset($path[2]) ? $path[2]."\n" : '';
 					$post = varset($path[3]) ? "\n".$path[3] : '';
 					$path = $path[1];
-					if(strpos($path, 'http') !== 0) $path = $tp->replaceConstants($path, 'abs').'?'.$this->getCacheId();
+					if(strpos($path, 'http') !== 0) // local file.
+					{
+						if($this->addCache($external,$path) === true) // if cache enabled, then skip and continue.
+						{
+							continue;
+						}
+						$path = $tp->replaceConstants($path, 'abs').'?'.$this->getCacheId();
+					}
 					
 					echo $pre.'<link rel="stylesheet" media="'.$media.'" property="stylesheet" type="text/css" href="'.$path.'" />'.$post;
 					echo "\n";
+
 					continue;
 				}
 
@@ -1207,6 +1229,12 @@ class e_jsmanager
 				if($inline) $inline = " ".$inline;
 				$path = $path[0];
 
+	            if(!$isExternal && $this->addCache('js',$path)===true)
+	            {
+		            continue;
+	            }
+
+
             	if($external)
 				{
 					// Never use CacheID on a CDN script, always render if it's CDN
@@ -1215,15 +1243,24 @@ class e_jsmanager
 						// don't render non CDN libs as external script calls when script consolidation is enabled
 						if($mod === 'core' || $mod === 'plugin' || $mod === 'theme')
 						{
+
+
 							if(!e107::getPref('e_jslib_nocombine')) continue;
 						}
 						$path = $tp->replaceConstants($path, 'abs').'?'.$this->getCacheId();
 					}
+
+
+
 					echo $pre.'<script type="text/javascript" src="'.$path.'"'.$inline.'></script>'.$post;
 					echo "\n";
 					continue;
 				}
-				
+
+
+
+
+
 				// never try to consolidate external scripts
 				if($isExternal) continue;
 				$path = $tp->replaceConstants($path, '');
@@ -1233,7 +1270,98 @@ class e_jsmanager
             }
 		}
 
+
+
 		return $lmodified;
+	}
+
+
+
+
+	/**
+	 * @param $type string css|js
+	 * @param $path
+	 * @return bool
+	 */
+	private function addCache($type,$path)
+	{
+		return false; //return false if cache is disabled - CURRENTLY DISABLED - TODO Add Pref etc. 
+
+		$localPath = e107::getParser()->replaceConstants($path);
+		$this->_cache_list[$type][] = $localPath;
+
+		return true;
+	}
+
+
+
+
+	/**
+	 * Render Cached JS or CSS file.
+	 * @param $type
+	 */
+	public function renderCached($type)
+	{
+
+		if(!empty($this->_cache_list[$type]))
+		{
+			$content = '';
+			$cacheId = $this->getCacheFileId($this->_cache_list[$type]);
+
+			$fileName = $cacheId.".".$type;
+			$saveFilePath = e_WEB.'cache/'.$fileName;
+
+			if(!is_readable($saveFilePath))
+			{
+
+				foreach($this->_cache_list[$type] as $k=>$path)
+				{
+					$content .= "\n\n/* ".str_replace("../",'',$path)." */ \n\n";
+					$content .= file_get_contents($path);
+				}
+
+				if(!@file_put_contents($saveFilePath, $content))
+				{
+					e107::getMessage()->addDebug("Couldn't save js/css cache file: ".$saveFilePath);
+				}
+
+			}
+
+			echo "\n\n<!-- Cached ".$type." -->\n";
+
+			if($type == 'js')
+			{
+				echo "<script type='text/javascript' src='".e_WEB_ABS."cache/".$fileName."'></script>\n\n";
+			}
+			else
+			{
+				echo "<link type='text/css' href='".e_WEB_ABS."cache/".$fileName."' rel='stylesheet' property='stylesheet'  />\n\n";
+			}
+
+			// Remove from list, anything we have added.
+			foreach($this->_cache_list[$type] as $k=>$path)
+			{
+				unset($this->_cache_list[$type][$k]);
+			}
+
+
+		}
+
+
+
+	}
+
+
+	function getCacheFileId($paths)
+	{
+		$id = '';
+		foreach($paths as $p)
+		{
+			$id .= str_replace("../","",$p);
+		}
+
+		return hash('crc32', $id) ;
+
 	}
 
 	/**
