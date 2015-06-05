@@ -5557,20 +5557,38 @@ class e_admin_form_ui extends e_form
 			$form_end = vartrue($controller->footerCreateMarkup);
 		}
 
+		$tabs = $controller->getTabs();
+
+		if($multiLangInfo = $this->renderLanguageTableInfo())
+		{
+			if(empty($tabs))
+			{
+				$head = "<div class='text-right' style='margin-top:-10px;padding-bottom:5px;padding-right:5px'>".$multiLangInfo."</div>";
+			}
+			else
+			{
+				$head = "<div class='text-right' style='margin-bottom:-30px;padding-top:10px;padding-right:5px'>".$multiLangInfo."</div>";
+			}
+		}
+		else
+		{
+			$head = '';
+		}
 
 		$forms = $models = array();
 		$forms[] = array(
 				'id'  => $this->getElementId(),
-				
+				'header' => $head,
+				'footer' => '',
 				//'url' => e_SELF,
 				//'query' => 'self', or custom GET query, self is default
 				'fieldsets' => array(
 					'create' => array(
-						'tabs'	=> $controller->getTabs(), //used within a single form. 
+						'tabs'	=>  $tabs, //used within a single form.
 						'legend' => $legend,
 						'fields' => $controller->getFields(), //see e_admin_ui::$fields
-						'header' => $form_start,
-						'footer' => $form_end,
+						'header' => $form_start, //XXX Unused?
+						'footer' => $form_end,  //XXX Unused?
 						'after_submit_options' => true, // or true for default redirect options
 						'after_submit_default' => $request->getPosted('__after_submit_action', $controller->getDefaultAction()), // or true for default redirect options
 						'triggers' => 'auto', // standard create/update-cancel triggers
@@ -5919,10 +5937,10 @@ class e_admin_form_ui extends e_form
 			$text = "<span class='adminui-language-table-info ".$class." e-tip' title=\"".$diz."\">";
 			$text .= e107::getParser()->toGlyph('fa-hdd-o'); // '<i class="icon-hdd"></i> ';
 			$text .= e107::getLanguage()->toNative($lang)."</span>";
-
+			return $text;
 		}
 
-		return $text;
+		return false;
 	}
 
 
