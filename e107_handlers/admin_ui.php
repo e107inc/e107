@@ -5229,14 +5229,20 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		$data = $this->getPosted();
 
-
-
 		foreach($data as $key=>$val)
 		{
 			if(!empty($this->prefs[$key]['multilan']))
 			{
-				$this->getConfig()->clearPrefCache();
-				$this->getConfig()->setPref($key.'/'.e_LANGUAGE, $val);
+
+				if(is_string($this->getConfig()->get($key))) // most likely upgraded to multilan=>true, so reset to an array structure.
+				{
+					$this->getConfig()->setPostedData($key, array(e_LANGUAGE => $val), false);
+				}
+				else
+				{
+					$this->getConfig()->setPref($key.'/'.e_LANGUAGE, $val);
+				}
+
 			}
 			else
 			{
