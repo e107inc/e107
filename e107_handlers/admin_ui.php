@@ -5750,26 +5750,7 @@ class e_admin_form_ui extends e_form
 
 						
 						// Let Admin know which language table is being saved to. (avoid default table overwrites) 
-						if(e107::getConfig()->get('multilanguage'))
-						{ 
-							$curTable = $controller->getTableName();
-
-							if($curTable != e107::getDb()->db_IsLang($curTable))
-							{
-								$lang = e107::getDb()->mySQLlanguage;
-							}
-							else 
-							{
-								$lang = e107::getConfig()->get('sitelanguage');
-							}
-							
-							$def = deftrue('LAN_UI_USING_DATABASE_TABLE','Using [x] database table');
-							$diz  = e107::getParser()->lanVars($def, $lang); // "Using ".$lang." database table";
-							$text .= "<span class='e-tip' title=\"".$diz."\">";
-							$text .= e107::getParser()->toGlyph('fa-hdd-o'); // '<i class="icon-hdd"></i> ';	
-							$text .= e107::getLanguage()->toNative($lang)."</span>";	
-
-						}
+						$text .= $this->renderLanguageTableInfo();
 						
 						$text .= "
 						</div>
@@ -5886,6 +5867,37 @@ class e_admin_form_ui extends e_form
 
 		return $text;
 	}
+
+
+	private function renderLanguageTableInfo()
+	{
+		$text = '';
+
+		if(e107::getConfig()->get('multilanguage'))
+		{
+			$curTable = $this->getController()->getTableName();
+
+			if($curTable != e107::getDb()->db_IsLang($curTable))
+			{
+				$lang = e107::getDb()->mySQLlanguage;
+			}
+			else
+			{
+				$lang = e107::getConfig()->get('sitelanguage');
+			}
+
+			$def = deftrue('LAN_UI_USING_DATABASE_TABLE','Using [x] database table');
+			$diz  = e107::getParser()->lanVars($def, $lang); // "Using ".$lang." database table";
+			$text = "<span class='e-tip' title=\"".$diz."\">";
+			$text .= e107::getParser()->toGlyph('fa-hdd-o'); // '<i class="icon-hdd"></i> ';
+			$text .= e107::getLanguage()->toNative($lang)."</span>";
+
+		}
+
+		return $text;
+	}
+
+
 
 	// FIXME - use e_form::batchoptions(), nice way of buildig batch dropdown - news administration show_batch_options()
 	function renderBatch($allow_delete = false,$allow_copy= false, $allow_url=false, $allow_featurebox=false)
