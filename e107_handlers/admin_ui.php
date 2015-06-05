@@ -5227,10 +5227,33 @@ class e_admin_ui extends e_admin_controller_ui
 
 	public function PrefsSaveTrigger()
 	{
+		$data = $this->getPosted();
+
+
+
+		foreach($data as $key=>$val)
+		{
+			if(!empty($this->prefs[$key]['multilan']))
+			{
+				$this->getConfig()->clearPrefCache();
+				$this->getConfig()->setPref($key.'/'.e_LANGUAGE, $val);
+			}
+			else
+			{
+				$this->getConfig()->setPostedData($key, $val, false);
+			}
+
+		}
+
+		$this->getConfig()->save(true);
+
+
+/*
 		$this->getConfig()
 			->setPostedData($this->getPosted(), null, false, false)
 			//->setPosted('not_existing_pref_test', 1)
 			->save(true);
+*/
 
 		$this->getConfig()->setMessages();
 
@@ -5587,6 +5610,8 @@ class e_admin_form_ui extends e_form
 				)
 		);
 		$models[] = $controller->getConfig();
+
+	//	print_a($forms);
 
 		return $this->renderCreateForm($forms, $models, e_AJAX_REQUEST);
 	}

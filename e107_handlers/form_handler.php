@@ -2951,7 +2951,10 @@ class e_form
 	 */
 	function renderValue($field, $value, $attributes, $id = 0)
 	{
-
+		if(!empty($attributes['multilan']) && is_array($value))
+		{
+			$value = varset($value[e_LANGUAGE],'');
+		}
 
 		$parms = array();
 		if(isset($attributes['readParms']))
@@ -3764,6 +3767,12 @@ class e_form
 		$tp = e107::getParser();
 
 		if(is_string($parms)) parse_str($parms, $parms);
+
+		if(!empty($attributes['multilan']) && is_array($value))
+		{
+			$value = varset($value[e_LANGUAGE],'');
+			$parms['post'] = "<small class='e-tip' style='cursor:help; padding-left:10px' title='Multi-language field'>".$tp->toGlyph('fa-language')."</small>";
+		}
 		
 		if(empty($value) && !empty($parms['default'])) // Allow writeParms to set default value. 
 		{
@@ -3893,14 +3902,14 @@ class e_form
 					// Appending needs is  performed and customized using function: beforeUpdate($new_data, $old_data, $id)
 				}
 
-				$text .= $this->textarea($key, $value, vartrue($parms['rows'], 5), vartrue($parms['cols'], 40), vartrue($parms['__options'],$parms), varset($parms['counter'], false));
+				$text .= vartrue($parms['pre']).$this->textarea($key, $value, vartrue($parms['rows'], 5), vartrue($parms['cols'], 40), vartrue($parms['__options'],$parms), varset($parms['counter'], false)).vartrue($parms['post']);
 				$ret =  $text;
 			break;
 
 			case 'bbarea':
 				$options = array('counter' => varset($parms['counter'], false)); 
 				// Media = media-category owner used by media-manager. 
-				$ret =  $this->bbarea($key, $value, vartrue($parms['template']), vartrue($parms['media']), vartrue($parms['size'], 'medium'),$options );
+				$ret =  vartrue($parms['pre']).$this->bbarea($key, $value, vartrue($parms['template']), vartrue($parms['media']), vartrue($parms['size'], 'medium'),$options ).vartrue($parms['post']);
 			break;
 
 			case 'image': //TODO - thumb, image list shortcode, js tooltip...
