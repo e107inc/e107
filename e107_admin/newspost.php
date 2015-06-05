@@ -472,7 +472,7 @@ class news_admin_ui extends e_admin_ui
 
 		$this->processPings();
 		e107::getEvent()->trigger('newspost',$new_data);
-		e107::getEvent()->trigger('admin_news_created',$new_data);
+	//	e107::getEvent()->trigger('admin_news_created',$new_data);
 		$evdata = array('method'=>'create', 'table'=>'news', 'id'=>$id, 'plugin'=>'news', 'function'=>'submit_item');
 		e107::getMessage()->addInfo(e107::getEvent()->triggerHook($evdata));
 		$this->clearCache();
@@ -493,7 +493,7 @@ class news_admin_ui extends e_admin_ui
 		$this->processPings();
 
 		e107::getEvent()->trigger('newsupd', $new_data);
-		e107::getEvent()->trigger('admin_news_updated',$new_data);
+	//	e107::getEvent()->trigger('admin_news_updated',$new_data);
 
 		$this->clearCache();
 
