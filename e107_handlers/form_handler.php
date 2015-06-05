@@ -3768,10 +3768,10 @@ class e_form
 
 		if(is_string($parms)) parse_str($parms, $parms);
 
-		if(!empty($attributes['multilan']) && is_array($value))
+		if(!empty($attributes['multilan']))
 		{
-			$value = varset($value[e_LANGUAGE],'');
-			$parms['post'] = "<small class='e-tip' style='cursor:help; padding-left:10px' title='Multi-language field'>".$tp->toGlyph('fa-language')."</small>";
+			$value = is_array($value) ? varset($value[e_LANGUAGE],'') : $value;
+			$parms['post'] = "<small class='e-tip admin-multilanguage-field' style='cursor:help; padding-left:10px' title='Multi-language field'>".$tp->toGlyph('fa-language')."</small>";
 		}
 		
 		if(empty($value) && !empty($parms['default'])) // Allow writeParms to set default value. 
