@@ -76,6 +76,8 @@ div.col-selection .caret { border-top-color: #C6C6C6;
 border-bottom-color: #C6C6C6; }
 
 
+.adminui-language-table-info { color: #FAA732; font-weight: bold; cursor: help }
+.adminui-language-table-info.default { color: white }
 
 
 

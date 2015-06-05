@@ -5901,6 +5901,7 @@ class e_admin_form_ui extends e_form
 		if(e107::getConfig()->get('multilanguage'))
 		{
 			$curTable = $this->getController()->getTableName();
+			$sitelanguage = e107::getConfig()->get('sitelanguage');
 
 			if($curTable != e107::getDb()->db_IsLang($curTable))
 			{
@@ -5908,12 +5909,14 @@ class e_admin_form_ui extends e_form
 			}
 			else
 			{
-				$lang = e107::getConfig()->get('sitelanguage');
+				$lang = $sitelanguage;
 			}
 
 			$def = deftrue('LAN_UI_USING_DATABASE_TABLE','Using [x] database table');
 			$diz  = e107::getParser()->lanVars($def, $lang); // "Using ".$lang." database table";
-			$text = "<span class='e-tip' title=\"".$diz."\">";
+			$class = ($sitelanguage == $lang) ? "default" : "";
+
+			$text = "<span class='adminui-language-table-info ".$class." e-tip' title=\"".$diz."\">";
 			$text .= e107::getParser()->toGlyph('fa-hdd-o'); // '<i class="icon-hdd"></i> ';
 			$text .= e107::getLanguage()->toNative($lang)."</span>";
 
