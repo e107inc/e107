@@ -35,18 +35,19 @@ if($core->get('admintheme') != 'bootstrap' && $core->get('admintheme') != 'boots
 }
 
 // Check Admin-Perms for current language and redirect if necessary. 
-if(deftrue("MULTILANG_SUBDOMAIN") && !getperms('0') && !getperms(e_LANGUAGE))
+if(!getperms('0') && vartrue($pref['multilanguage']) && !getperms(e_LANGUAGE))
 {
-	$lng = e107::getLanguage();	
+	$lng = e107::getLanguage();
+
 	$tmp = explode(".",ADMINPERMS);
 	foreach($tmp as $ln)
 	{
 		if($lng->isValid($ln))
 		{
-			$redirect = $lng->subdomainUrl($ln);
-				//	echo "redirect to: ".$redirect;	
-			e107::getRedirect()->redirect($redirect);	
-	
+			$redirect = deftrue("MULTILANG_SUBDOMAIN") ? $lng->subdomainUrl($ln) : e_SELF."?elan=".$ln;
+			//		echo "redirect to: ".$redirect;
+			e107::getRedirect()->go($redirect);
+		//	break;
 		}	
 	}
 }

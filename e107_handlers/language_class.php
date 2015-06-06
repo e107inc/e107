@@ -263,7 +263,12 @@ class language{
 	 * @return FALSE or the name of the valid Language
 	 */
 	function isValid($lang='')
-	{	
+	{
+		if(empty($lang))
+		{
+			return false;
+		}
+
 		global $pref;
 				
 		if(!$lang)

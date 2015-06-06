@@ -1472,6 +1472,12 @@ class e_admin_dispatcher
 		$selected = false;
 		foreach($this->adminMenu as $key => $val)
 		{
+
+			if(!empty($val['perm']) && !getperms($val['perm']))
+			{
+				continue;
+			}
+
 			$tmp = explode('/', trim($key, '/'), 3);
 
 			// sync with mode/route access
@@ -1544,7 +1550,8 @@ class e_admin_dispatcher
 			$var[$key]['link'] = (vartrue($val['url']) ? $tp->replaceConstants($val['url'], 'abs') : e_SELF).'?mode='.$tmp[0].'&action='.$tmp[1];
 			$var[$key]['perm'] = $val['perm'];	*/
 		}
-		
+
+
 		if(empty($var)) return '';
 		
 		$request = $this->getRequest();
@@ -2926,6 +2933,28 @@ class e_admin_controller_ui extends e_admin_controller
 		$this->_prefs = $config;
 		return $this;
 	}
+
+
+	/**
+	 * @param $val
+	 */
+	public function setBatchDelete($val)
+	{
+		$this->batchDelete = $val;
+		return $this;
+	}
+
+
+
+	/**
+	 * @param $val
+	 */
+	public function setBatchCopy($val)
+	{
+		$this->batchCopy = $val;
+		return $this;
+	}
+
 
 	/**
 	 * User defined config setter
@@ -5682,6 +5711,41 @@ class e_admin_form_ui extends e_form
 		
 		$this->listTotal = $tree[$id]->getTotal();
 
+
+		$fields = $controller->getFields();
+
+		// checks dispatcher perms for edit/delete access in list mode.
+		$mode           = $controller->getMode();
+		$deleteRoute    = $mode."/delete";
+		$editRoute      = $mode."/edit";
+		$createRoute    = $mode."/create";
+		$perm           = $controller->getDispatcher()->getPerm();
+
+		if(isset($perm[$createRoute]) && !getperms($perm[$createRoute])) // disable the batchCopy option.
+		{
+			$controller->setBatchCopy(false);
+		}
+
+		if(isset($perm[$deleteRoute]) && !getperms($perm[$deleteRoute])) // disable the delete button and batch delete.
+		{
+			$fields['options']['readParms']['deleteClass'] = e_UC_NOBODY;
+			$controller->setBatchDelete(false);
+		}
+
+		if(isset($perm[$editRoute]) && !getperms($perm[$editRoute]))
+		{
+			$fields['options']['readParms']['editClass'] = e_UC_NOBODY; // display the edit button.
+			foreach($options[$id]['fields'] as $k=>$v) // disable inline editing.
+			{
+				$fields[$k]['inline'] = false;
+			}
+		}
+
+		// ------------------------------------------
+
+
+
+
 		$options[$id] = array(
 			'id' => $this->getElementId(), // unique string used for building element ids, REQUIRED
 			'pid' => $controller->getPrimaryName(), // primary field name, REQUIRED
@@ -5693,7 +5757,7 @@ class e_admin_form_ui extends e_form
 			'legend' => $controller->getPluginTitle(), // hidden by default
 			'form_pre' => !$ajax ? $this->renderFilter($tp->post_toForm(array($controller->getQuery('searchquery'), $controller->getQuery('filter_options'))), $controller->getMode().'/'.$controller->getAction()) : '', // needs to be visible when a search returns nothing
 			'form_post' => '', // markup to be added after closing form element
-			'fields' => $controller->getFields(), // see e_admin_ui::$fields
+			'fields' => $fields, // see e_admin_ui::$fields
 			'fieldpref' => $controller->getFieldPref(), // see e_admin_ui::$fieldpref
 			'table_pre' => '', // markup to be added before opening table element
 		//	'table_post' => !$tree[$id]->isEmpty() ? $this->renderBatch($controller->getBatchDelete(),$controller->getBatchCopy(),$controller->getBatchLink(),$controller->getBatchFeaturebox()) : '',
@@ -5708,25 +5772,7 @@ class e_admin_form_ui extends e_form
 		);
 
 
-		// checks dispatcher perms for edit/delete access in list mode.
 
-		$deleteRoute = $this->getController()->getMode()."/delete";
-		$editRoute = $this->getController()->getMode()."/edit";
-		$perm = $this->getController()->getDispatcher()->getPerm();
-
-		if(isset($perm[$deleteRoute]) && !getperms($perm[$deleteRoute])) // disable the delete button.
-		{
-			$options[$id]['fields']['options']['readParms']['deleteClass'] = e_UC_NOBODY;
-		}
-
-		if(isset($perm[$editRoute]) && !getperms($perm[$editRoute]))
-		{
-			$options[$id]['fields']['options']['readParms']['editClass'] = e_UC_NOBODY; // display the edit button.
-			foreach($options[$id]['fields'] as $k=>$v) // disable inline editing.
-			{
-				$options[$id]['fields'][$k]['inline'] = false;
-			}
-		}
 
 		return $this->renderListForm($options, $tree, $ajax);
 	}

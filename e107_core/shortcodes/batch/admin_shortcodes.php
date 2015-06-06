@@ -1411,6 +1411,11 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		//CORE SUBLINKS
 		foreach ($array_functions as $key => $subitem)
 		{
+			if(!empty($subitem[3]) && !getperms($subitem[3]))
+			{
+				continue;
+			}
+
 				$catid = $admin_cat['id'][$subitem[4]];
 				$tmp = array();
 				$tmp['text'] = $subitem[1];
@@ -1450,9 +1455,9 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		$plug = new e107plugin;
 		$tmp = array();
 
-   		if($sql->db_Select("plugin", "*", "plugin_installflag =1 ORDER BY plugin_path"))
+   		if($sql->select("plugin", "*", "plugin_installflag =1 ORDER BY plugin_path"))
 		{
-			while($row = $sql->db_Fetch())
+			while($row = $sql->fetch())
 			{
 				
 				if($plug->parse_plugin($row['plugin_path']))
@@ -1479,6 +1484,11 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 						$icon_src = varset($plug_vars['administration']['iconSmall']) ? $plugpath.$plug_vars['administration']['iconSmall'] : '';
 						$icon_src_lrg = varset($plug_vars['administration']['icon']) ? $plugpath.$plug_vars['administration']['iconSmall'] : '';
 						$id = 'plugnav-'.$row['plugin_path'];
+
+						if(!getperms('P'.$row['plugin_id']))
+						{
+							continue;
+						}
 
            	  			$tmp[$id]['text'] = e107::getParser()->toHTML($plug_vars['@attributes']['name'], FALSE, "LINKTEXT");
 						$tmp[$id]['description'] = vartrue($plug_vars['description']['@value']);
@@ -1573,7 +1583,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		//	$menu_vars += $this->getOtherNav('home');	
 		}
 
-		// print_a($menu_vars);
+	//	 print_a($menu_vars);
 		return e107::getNav()->admin('', e_PAGE, $menu_vars, $$tmpl, FALSE, FALSE);
 		//return e_admin_men/u('', e_PAGE, $menu_vars, $$tmpl, FALSE, FALSE);
 	}
