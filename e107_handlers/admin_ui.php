@@ -5720,25 +5720,24 @@ class e_admin_form_ui extends e_form
 
 		$fields = $controller->getFields();
 
-		// checks dispatcher perms for edit/delete access in list mode.
+		// checks dispatcher acess/perms for create/edit/delete access in list mode.
 		$mode           = $controller->getMode();
 		$deleteRoute    = $mode."/delete";
 		$editRoute      = $mode."/edit";
 		$createRoute    = $mode."/create";
-		$perm           = $controller->getDispatcher()->getPerm();
 
-		if(isset($perm[$createRoute]) && !getperms($perm[$createRoute])) // disable the batchCopy option.
+		if(!$controller->getDispatcher()->checkRouteAccess($createRoute)) // disable the batchCopy option.
 		{
 			$controller->setBatchCopy(false);
 		}
 
-		if(isset($perm[$deleteRoute]) && !getperms($perm[$deleteRoute])) // disable the delete button and batch delete.
+		if(!$controller->getDispatcher()->checkRouteAccess($deleteRoute)) // disable the delete button and batch delete.
 		{
 			$fields['options']['readParms']['deleteClass'] = e_UC_NOBODY;
 			$controller->setBatchDelete(false);
 		}
 
-		if(isset($perm[$editRoute]) && !getperms($perm[$editRoute]))
+		if(!$controller->getDispatcher()->checkRouteAccess($editRoute))
 		{
 			$fields['options']['readParms']['editClass'] = e_UC_NOBODY; // display the edit button.
 			foreach($options[$id]['fields'] as $k=>$v) // disable inline editing.
