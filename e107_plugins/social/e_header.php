@@ -15,6 +15,8 @@ if(USER_AREA)
 	{
 		e107::meta('fb:app_id', $appID);
 
+		$locale = strtolower(CORE_LC)."_".strtoupper(CORE_LC2);
+
 		$init = "
 
 			window.fbAsyncInit = function() {
@@ -29,7 +31,7 @@ if(USER_AREA)
 	            var js, fjs = d.getElementsByTagName(s)[0];
 	            if (d.getElementById(id)) {return;}
 	            js = d.createElement(s); js.id = id;
-	            js.src = '//connect.facebook.net/en_US/sdk.js';
+	            js.src = '//connect.facebook.net/".$locale."/sdk.js';
 	            fjs.parentNode.insertBefore(js, fjs);
 	        }(document, 'script', 'facebook-jssdk'));
 
