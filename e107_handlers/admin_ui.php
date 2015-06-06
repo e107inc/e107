@@ -966,9 +966,10 @@ class e_admin_dispatcher
 	/**
 	 * Optional - generic entry point access restriction (via getperms()) 
 	 * Value of this for plugins would be always 'P'.
+	 * When an array is detected, route mode/action = admin perms is used. (similar to $access)
 	 * More detailed access control is granted with $access and $modes[MODE]['perm'] or  $modes[MODE]['userclass'] settings
 	 *
-	 * @var string
+	 * @var string|array
 	 */
 	protected $perm;
 
@@ -1096,7 +1097,7 @@ class e_admin_dispatcher
 		{
 			$request->setAction('e403');
 			e107::getMessage()->addError('You don\'t have permissions to view this page.')
-				->addDebug('Route access restriction triggered.');
+				->addDebug('Route access restriction triggered:'.$route);
 			return false;
 		}
 		
@@ -1116,7 +1117,7 @@ class e_admin_dispatcher
 			return false;
 		}
 		// generic dispatcher admin permission  (former getperms())
-		if(null !== $this->perm && !e107::getUser()->checkAdminPerms($this->perm))
+		if(null !== $this->perm && is_string($this->perm) && !e107::getUser()->checkAdminPerms($this->perm))
 		{
 			return false;
 		}
@@ -1129,6 +1130,13 @@ class e_admin_dispatcher
 		{
 			return false;
 		}
+
+		if(!empty($this->perm) && is_array($this->perm) && !e107::getUser()->checkAdminPerms($this->perm[$route]))
+		{
+			return false;
+		}
+
+
 		return true;
 	}
 
@@ -1328,6 +1336,16 @@ class e_admin_dispatcher
 			break;
 		}
 		return $response->send('default', $options);
+	}
+
+
+	/**
+	 * Get perms
+	 * @return array|string
+	 */
+	public function getPerm()
+	{
+		return $this->perm;
 	}
 
 	/**
@@ -5688,8 +5706,35 @@ class e_admin_form_ui extends e_form
 			'field' => $controller->getQuery('field'), //current order field name, default - primary field
 			'asc' => $controller->getQuery('asc', 'desc'), //current 'order by' rule, default 'asc'
 		);
+
+
+		// checks dispatcher perms for edit/delete access in list mode.
+
+		$deleteRoute = $this->getController()->getMode()."/delete";
+		$editRoute = $this->getController()->getMode()."/edit";
+		$perm = $this->getController()->getDispatcher()->getPerm();
+
+		if(isset($perm[$deleteRoute]) && !getperms($perm[$deleteRoute])) // disable the delete button.
+		{
+			$options[$id]['fields']['options']['readParms']['deleteClass'] = e_UC_NOBODY;
+		}
+
+		if(isset($perm[$editRoute]) && !getperms($perm[$editRoute]))
+		{
+			$options[$id]['fields']['options']['readParms']['editClass'] = e_UC_NOBODY; // display the edit button.
+			foreach($options[$id]['fields'] as $k=>$v) // disable inline editing.
+			{
+				$options[$id]['fields'][$k]['inline'] = false;
+			}
+		}
+
 		return $this->renderListForm($options, $tree, $ajax);
 	}
+
+
+
+
+
 
 	public function getConfirmDelete($ids, $ajax = false)
 	{

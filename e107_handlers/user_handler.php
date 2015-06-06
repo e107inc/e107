@@ -1288,6 +1288,14 @@ class e_userperms
 		"5"	=> array(ADMSLAN_23,E_16_CUST, E_32_CUST),			// create/edit custom PAGES
 		"J"	=> array(ADMSLAN_41,E_16_CUST, E_32_CUST),			// create/edit custom MENUS
 		"H"	=> array(ADMSLAN_39,E_16_NEWS, E_32_NEWS),			// Post News
+
+		"H0" => array(ADMSLAN_39." (".LAN_CREATE.")",E_16_NEWS, E_32_NEWS),			// Create News Items
+		"H1" => array(ADMSLAN_39." (".LAN_EDIT.")",E_16_NEWS, E_32_NEWS),			// Edit News Items
+		"H2" => array(ADMSLAN_39." (".LAN_DELETE.")",E_16_NEWS, E_32_NEWS),			// Delete News Items
+		"H3" => array(ADMSLAN_39." (".LAN_CATEGORY." - ".LAN_CREATE.")",E_16_NEWS, E_32_NEWS),			// Create News Category
+		"H4" => array(ADMSLAN_39." (".LAN_CATEGORY." - ".LAN_EDIT.")",E_16_NEWS, E_32_NEWS),			// Edit News Category
+		"H5" => array(ADMSLAN_39." (".LAN_CATEGORY." - ".LAN_DELETE.")",E_16_NEWS, E_32_NEWS),			// Delete News Category
+
 		"N"	=> array(ADMSLAN_47,E_16_NEWS, E_32_NEWS),			// Moderate submitted news
 		"V"	=> array(ADMSLAN_35,E_16_UPLOADS, E_32_UPLOADS),	// Configure public file uploads
 		"M"	=> array(ADMSLAN_46,E_16_WELCOME, E_32_WELCOME),	// Welcome Messages
