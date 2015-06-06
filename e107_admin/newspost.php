@@ -12,7 +12,7 @@
 
 require_once('../class2.php');
 
-if (!getperms('H|N'))
+if (!getperms('H|N|H0|H1|H2|H3|H4|H5'))
 {
 	header('Location:'.e_BASE.'index.php');
 	exit;
@@ -29,7 +29,8 @@ class news_admin extends e_admin_dispatcher
 			'controller' 	=> 'news_admin_ui',
 			'path' 			=> null,
 			'ui' 			=> 'news_form_ui',
-			'uipath' 		=> null
+			'uipath' 		=> null,
+			'perm'          => null
 		),
 		'cat'		=> array(
 			'controller' 	=> 'news_cat_ui',
@@ -41,9 +42,29 @@ class news_admin extends e_admin_dispatcher
 			'controller' 	=> 'news_sub_ui',
 			'path' 			=> null,
 			'ui' 			=> 'news_sub_form_ui',
-			'uipath' 		=> null
+			'uipath' 		=> null,
+			'perm'          => null
 		)
 	);
+
+
+	protected $access = array(); // as below, but uses userclasses instead of admin perms eg. e_UC_* or numeric userclass value.
+
+
+	//Route access. (equivalent of getperms() for each mode/action )
+	protected $perm = array(
+		'main/list'     => 'H|H0|H1|H2',
+		'main/create'   => 'H|H0',
+		'main/edit'     => 'H|H1', // edit button and inline editing in list mode.
+		'main/delete'   => 'H|H2', // delete button in list mode.
+		'cat/list'      => 'H',
+		'cat/create'    => 'H|H3|H4|H5',
+		'cat/edit'      => 'H|H4', // edit button and inline editing in list mode.
+		'cat/delete'    => 'H|H5', // delete button in list mode.
+		'main/settings' => '0',
+		'sub/list'      => 'N'
+	);
+
 
 
 	protected $adminMenu = array(
@@ -57,6 +78,8 @@ class news_admin extends e_admin_dispatcher
 		'sub/list'			=> array('caption'=> NWSLAN_47, 'perm' => 'N'), // Submitted News
 	//	'main/maint'		=> array('caption'=> LAN_NEWS_55, 'perm' => '0') // Maintenance
 	);
+
+
 
 	protected $adminMenuAliases = array(
 		'main/edit'	=> 'main/list',
