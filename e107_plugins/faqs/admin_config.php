@@ -68,6 +68,16 @@ class faq_admin extends e_admin_dispatcher
 			$this->adminMenu['main/'.$action]['selected'] = true;
 	    }
 
+		$pref = e107::pref('faqs');
+
+		$this->access = array(
+			'main/create'   => varset($pref['admin_faq_create'],   e_UC_ADMIN),
+			'main/edit'     => varset($pref['admin_faq_edit'],     e_UC_ADMIN),
+			'main/delete'   => varset($pref['admin_faq_delete'],   e_UC_ADMIN),
+			'cat/create'    => varset($pref['admin_cat_create'],   e_UC_ADMIN),
+			'cat/edit'      => varset($pref['admin_cat_edit'],     e_UC_ADMIN),
+			'cat/delete'    => varset($pref['admin_cat_delete'],   e_UC_ADMIN),
+		);
 	}
 }
 
@@ -95,7 +105,7 @@ class faq_cat_ui extends e_admin_ui
 			'faq_info_sef' 				=> array('title'=> LAN_SEFURL,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'inline'=>true, 'writeParms'=>'size=xxlarge'), 				
 	
 			'faq_info_order' 			=> array('title'=> LAN_ORDER,		'type' => 'number',			'width' => '5%', 'thclass' => 'left' ),	
-			'options' 					=> array('title'=> LAN_OPTIONS,		'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center','readParms'=>'sort=1')
+			'options' 					=> array('title'=> LAN_OPTIONS,		'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center','readParms'=>array('sort'=>1))
 		);	
 	
 	protected $categories = array();
@@ -217,34 +227,44 @@ class faq_main_ui extends e_admin_ui
 			'u.user_name' 			=> array('title'=> LANA_FAQ_UNAME,		'tab' => 1, 'type' => 'user',			'width' => 'auto', 'noedit' => true, 'readParms'=>'idField=faq_author&link=1'),	// User name
        		'u.user_loginname' 		=> array('title'=> LANA_FAQ_ULOGINNAME,	'tab' => 1, 'type' => 'user',			'width' => 'auto', 'noedit' => true, 'readParms'=>'idField=faq_author&link=1'),	// User login name
 			'faq_order' 			=> array('title'=> LAN_ORDER,		    'tab' => 1, 'type' => 'number',			'data'=> 'int','width' => '5%', 'thclass' => 'center','nolist' => false, 'noedit'=>false, 'readParms'=>'editable=1'),
-			'options' 				=> array('title'=> LAN_OPTIONS,			'type' => null,				'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center','readParms'=>'sort=1'),
+			'options' 				=> array('title'=> LAN_OPTIONS,			'type' => null,				'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center','readParms'=>array('sort'=>1)),
 			'pending'               => array('title' => 'internal',        'type' => 'hidden',    'data'=>false, 'writeParms'=>array()),
 		);
 		 
 		protected $fieldpref = array('checkboxes', 'faq_question', 'faq_answer', 'faq_parent', 'faq_datestamp', 'options');
-		
-		
+
+		protected $preftabs        = array("General", LAN_ADMIN );
 		// optional, if $pluginName == 'core', core prefs will be used, else e107::getPluginConfig($pluginName);
 		protected $prefs = array( 
-			'add_faq'	   				=> array('title'=> LANA_FAQ_PREF_1, 'type'=>'userclass' ),
-			'submit_question'	   		=> array('title'=> LANA_FAQ_PREF_2, 'type'=>'userclass' ),
-			'submit_question_limit'     => array('title'=> "'Ask a Question' limit per user", 'type'=>'number', 'data'=>'int', 'help'=>'0 = no limit'),
+			'add_faq'	   				=> array('title'=> LANA_FAQ_PREF_1, 'tab'=>0, 'type'=>'userclass' ),
+			'submit_question'	   		=> array('title'=> LANA_FAQ_PREF_2, 'tab'=>0, 'type'=>'userclass' ),
+			'submit_question_limit'     => array('title'=> "'Ask a Question' limit per user",  'tab'=>0, 'type'=>'number', 'data'=>'int', 'help'=>'0 = no limit'),
 			'submit_question_acknowledgement'   => array('title'=> "Submitted Questions Acknowledgement", 'type'=>'textarea', 'help'=>'Leave blank to use default' ),
 
-			'classic_look'				=> array('title'=> LANA_FAQ_PREF_3, 'type'=>'boolean' ),
-			'list_type'				    => array('title'=> "List Type", 'type'=>'dropdown', 'writeParms'=>array('ul'=>'Unordered List', 'ol'=>'Ordered List') ),
-			'page_title'				=> array('title'=> "Page Title", 'type'=>'text', 'help'=>'Leave blank to use default' ),
-			'new'				        => array('title'=> "'New' FAQs are no more than", 'type'=>'number', 'writeParms'=>'size=mini&default=0&post=days old', 'help'=>'Leave blank to use default' ),
-			'display_total'				=> array('title'=> "Display FAQ total", 'type'=>'boolean' ),
-			'orderby'                   => array('title'=> LAN_ORDER, 'type'=>'dropdown', 'writeParms'=>array('faq_order-ASC'=>"Specified Order", 'faq_id-ASC'=>'ID ASC', 'faq_id-DESC'=>'ID DESC', 'faq_datestamp-ASC'=>'Date ASC', 'faq_datestamp-DESC'=>'Date DESC'))
-			);
+			'classic_look'				=> array('title'=> LANA_FAQ_PREF_3,'tab'=>0, 'type'=>'boolean' ),
+			'list_type'				    => array('title'=> "List Type", 'tab'=>0,'type'=>'dropdown', 'writeParms'=>array('ul'=>'Unordered List', 'ol'=>'Ordered List') ),
+			'page_title'				=> array('title'=> "Page Title", 'tab'=>0,'type'=>'text', 'help'=>'Leave blank to use default' ),
+			'new'				        => array('title'=> "'New' FAQs are no more than", 'tab'=>0,'type'=>'number', 'writeParms'=>'size=mini&default=0&post=days old', 'help'=>'Leave blank to use default' ),
+			'display_total'				=> array('title'=> "Display FAQ total", 'tab'=>0,'type'=>'boolean' ),
+			'orderby'                   => array('title'=> LAN_ORDER, 'tab'=>0,'type'=>'dropdown', 'writeParms'=>array('faq_order-ASC'=>"Specified Order", 'faq_id-ASC'=>'ID ASC', 'faq_id-DESC'=>'ID DESC', 'faq_datestamp-ASC'=>'Date ASC', 'faq_datestamp-DESC'=>'Date DESC')),
+
+			'admin_faq_create'	   		=> array('title'=> "Create FAQ", 'tab'=>1, 'type'=>'userclass', 'writeParms'=>'default=254&classlist=main,admin,classes,no-excludes' ),
+			'admin_faq_edit'	   		=> array('title'=> "Edit FAQ", 'tab'=>1, 'type'=>'userclass', 'writeParms'=>'default=254&classlist=main,admin,classes,no-excludes' ),
+			'admin_faq_delete'	   		=> array('title'=> "Delete FAQ", 'tab'=>1, 'type'=>'userclass', 'writeParms'=>'default=254&classlist=main,admin,classes,no-excludes' ),
+
+			'admin_cat_create'	   		=> array('title'=> "Create Category", 'tab'=>1, 'type'=>'userclass' , 'writeParms'=>'default=254&classlist=main,admin,classes,no-excludes' ),
+			'admin_cat_edit'	   		=> array('title'=> "Edit Category", 'tab'=>1, 'type'=>'userclass' , 'writeParms'=>'default=254&classlist=main,admin,classes,no-excludes' ),
+			'admin_cat_delete'	   		=> array('title'=> "Delete category", 'tab'=>1, 'type'=>'userclass' , 'writeParms'=>'default=254&classlist=main,admin,classes,no-excludes' ),
+		);
 
 	protected $categories = array();
 
 	
 	public function init()
 	{
-			
+
+
+
 		$sql = e107::getDb();
 		if($sql->select('faqs_info'))
 		{
@@ -253,7 +273,22 @@ class faq_main_ui extends e_admin_ui
 				$this->categories[$row['faq_info_id']] = $row['faq_info_title'];
 			}
 		}
-		
+
+		$faqOrder = e107::pref('faqs','orderby');
+
+		if(!empty($faqOrder))
+		{
+			list($sortField,$sortASC) = explode("-",$faqOrder);
+			$this->listOrder = $sortField." ".$sortASC;
+
+			if($sortField != 'faq_order')
+			{
+				$this->fields['options']['readParms']['sort'] = 0;
+			}
+
+		}
+
+
 		$this->fields['faq_parent']['writeParms'] = $this->categories;
 
 		//$this->fields['pending']['writeParms']['show'] = 1;
