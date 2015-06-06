@@ -48,6 +48,11 @@ class faq_admin extends e_admin_dispatcher
 	//	'main/custom'	=> array('caption'=> 'Custom Page', 'perm' => '0')		
 	);
 
+
+	protected $perm = array(
+		'main/prefs'    => '0'
+	);
+
 	protected $adminMenuAliases = array(
 		'main/edit'	=> 'main/list'				
 	);	
@@ -70,6 +75,7 @@ class faq_cat_ui extends e_admin_ui
 { 	 	 
 		protected $pluginTitle	= LAN_PLUGIN_FAQS_NAME;
 		protected $pluginName	= 'plugin';
+
 		protected $table 		= "faqs_info";
 		protected $pid			= "faq_info_id";
 		protected $perPage 		= 5; //no limit
@@ -171,9 +177,10 @@ class faq_cat_form_ui extends e_admin_form_ui
 
 class faq_main_ui extends e_admin_ui
 {
-		//TODO Move to Class above. 
+
 		protected $pluginTitle		= 'FAQs';
 		protected $pluginName		= 'faqs';
+		protected $eventName	    = 'faqs';
 		protected $table			= "faqs";
 		// without any Order or Limit. 
 		

@@ -1287,8 +1287,8 @@ class e_userperms
 		// Content 			
 		"5"	=> array(ADMSLAN_23,E_16_CUST, E_32_CUST),			// create/edit custom PAGES
 		"J"	=> array(ADMSLAN_41,E_16_CUST, E_32_CUST),			// create/edit custom MENUS
-		"H"	=> array(ADMSLAN_39,E_16_NEWS, E_32_NEWS),			// Post News
 
+		"H"	=> array(ADMSLAN_39,E_16_NEWS, E_32_NEWS),			// Post News - All Areas except settings.
 		"H0" => array(ADMSLAN_39." (".LAN_CREATE.")",E_16_NEWS, E_32_NEWS),			// Create News Items
 		"H1" => array(ADMSLAN_39." (".LAN_EDIT.")",E_16_NEWS, E_32_NEWS),			// Edit News Items
 		"H2" => array(ADMSLAN_39." (".LAN_DELETE.")",E_16_NEWS, E_32_NEWS),			// Delete News Items

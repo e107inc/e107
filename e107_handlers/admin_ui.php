@@ -4026,9 +4026,10 @@ class e_admin_controller_ui extends e_admin_controller
 		{
 
 			$eventData = array('newData'=>$_posted,'oldData'=>$old_data,'id'=> $id);
+			$model->addMessageDebug('Admin-ui Trigger fired: <b>'.$triggerName.'</b>');
 			if(E107_DBG_ALLERRORS >0 )
 			{
-				$model->addMessageDebug('Admin-ui Trigger fired: <b>'.$triggerName.'</b> with data '.print_a($eventData,true));
+				$model->addMessageDebug($triggerName.' data: '.print_a($eventData,true));
 			}
 
 			if($halt = e107::getEvent()->trigger($triggerName, $eventData))
@@ -4057,10 +4058,15 @@ class e_admin_controller_ui extends e_admin_controller
 			// Trigger Admin-ui event. 'post' 
 			if($triggerName = $this->getEventTriggerName($_posted['etrigger_submit'],'after')) // 'created' or 'updated';
 			{
-				$eventData = array('newData'=>$_posted,'oldData'=>$old_data,'id'=> $id);
+				unset($_posted['etrigger_submit'], $_posted['__after_submit_action'], $_posted['submit_value'], $_posted['e-token']);
+
+				$pid = $this->getPrimaryName();
+				$_posted[$pid] = $id; 	// add in the primary ID field.
+				$eventData = array('newData'=>$_posted,'oldData'=>$old_data,'id'=> $id); // use $_posted as it may include unsaved data.
+				$model->addMessageDebug('Admin-ui Trigger fired: <b>'.$triggerName.'</b>');
 				if(E107_DBG_ALLERRORS >0 )
 				{
-					$model->addMessageDebug('Admin-ui Trigger fired: <b>'.$triggerName.'</b> with data '.print_a($eventData,true));
+					$model->addMessageDebug($triggerName.' data: '.print_a($eventData,true));
 				}
 				e107::getEvent()->trigger($triggerName, $eventData);	
 			}

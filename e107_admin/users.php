@@ -816,8 +816,9 @@ class users_admin_ui extends e_admin_ui
 			$rplc_from = array('[x]', '[y]', '[z]');
 			$rplc_to = array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email'));
 			$message = str_replace($rplc_from, $rplc_to, USRLAN_228);
+			$message = e107::getParser()->toHtml($message,true);
 			$mes->addWarning($message);
-			$mes->addWarning(USRLAN_229);
+			$mes->addWarning(e107::getParser()->toHtml(USRLAN_229,true));
 		}
 		
 	}
