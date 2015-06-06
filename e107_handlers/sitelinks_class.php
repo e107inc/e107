@@ -805,7 +805,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			14 => array(e_ADMIN_ABS.'ugflag.php', 		ADLAN_40,	ADLAN_41,	'9', 4, E_16_MAINTAIN, E_32_MAINTAIN),
 			15 => array(e_ADMIN_ABS.'menus.php', 		ADLAN_6,	ADLAN_7,	'2', 5, E_16_MENUS, E_32_MENUS),
 			16 => array(e_ADMIN_ABS.'meta.php', 		ADLAN_66,	ADLAN_67,	'T', 1, E_16_META, E_32_META),
-			17 => array(e_ADMIN_ABS.'newspost.php', 	ADLAN_0,	ADLAN_1,	'H|N|7', 3, E_16_NEWS, E_32_NEWS),
+			17 => array(e_ADMIN_ABS.'newspost.php', 	ADLAN_0,	ADLAN_1,	'H|N|7|H0|H1|H2|H3|H4|H5', 3, E_16_NEWS, E_32_NEWS),
 			18 => array(e_ADMIN_ABS.'phpinfo.php', 		ADLAN_68, 	ADLAN_69,	'0', 20, E_16_PHP, E_32_PHP),
 			19 => array(e_ADMIN_ABS.'prefs.php', 		LAN_PREFS, 	ADLAN_5,	'1', 1, E_16_PREFS, E_32_PREFS),
 			20 => array(e_ADMIN_ABS.'search.php', 		LAN_SEARCH,	ADLAN_143,	'X', 1, E_16_SEARCH, E_32_SEARCH),
