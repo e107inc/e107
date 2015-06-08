@@ -15,7 +15,6 @@ $FAQS_TEMPLATE['start']	= "
 
 $FAQS_TEMPLATE['end']	= "
 	<div class='faq-submit-question'></div>
-	<div class='faq-search'>{FAQ_SEARCH}</div>
 </div>
 ";
 
@@ -25,7 +24,7 @@ $FAQS_TEMPLATE['all']['start'] = "
 	<ul class='faq-listall'>
 ";
 $FAQS_TEMPLATE['all']['item'] = "
-		<li class='faq-listall'>{FAQ_QUESTION=expand|tags=1}</li>
+		<li class='faq-listall'>{FAQ_QUESTION=expand|tags=1|share=1}</li>
 ";
 $FAQS_TEMPLATE['all']['end'] = "
 	</ul>

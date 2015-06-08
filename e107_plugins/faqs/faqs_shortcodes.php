@@ -24,6 +24,24 @@ if (!defined('e107_INIT')) { exit; }
 class faqs_shortcodes extends e_shortcode
 {
 	public $counter = 1;
+	public $item = false;
+	private $share = false;
+	private $datestamp = false;
+
+	function __construct()
+	{
+		$pref = e107::pref('faqs');
+
+		if(!empty($pref['display_social']) && e107::isInstalled('social')==true)
+		{
+			$this->share = true;
+		}
+
+		if(!empty($pref['display_datestamp']))
+		{
+			$this->datestamp = true;
+		}
+	}
 	
 	// Simply FAQ count when needed. 
 	function sc_faq_counter($parm='')
@@ -47,17 +65,36 @@ class faqs_shortcodes extends e_shortcode
 
 		if($param == 'expand' && !empty($this->var['faq_answer']))
 		{
-			$tags = '';
+
+			$id         = "faq_".$this->var['faq_id'];
+			$url        = e107::url('faqs','item', $this->var, 'full');
+			$question   = $tp->toHTML($this->var['faq_question'],true,'TITLE');
+			$hide       = ($this->item != $this->var['faq_id']) ? 'e-hideme' : '';
+
+			$text = "
+			<a class='e-expandit faq-question{$faqNew}' href='#{$id}'>".$question."</a>
+			<div id='{$id}' class='".$hide." faq-answer faq_answer clearfix {$faqNew}'>";
+
+			$text .=  $tp->toHTML($this->var['faq_answer'],true,'BODY');
+
+			$text .= "<div class='faq-extras'>";
+
 			if(vartrue($params['tags']) && $this->var['faq_tags'])
 			{
-				$tags = "<div class='faq-tags'>".LAN_FAQS_TAGS.": ".$this->sc_faq_tags()."</div>";
+				$text .= "<div class='faq-tags'>".LAN_FAQS_TAGS.": ".$this->sc_faq_tags()."</div>";
 			}
-			$id = "faq_".$this->var['faq_id'];
 
+			if($this->datestamp == true)
+			{
+				$text .= "<div class='faq-datestamp'>".$tp->toDate($this->var['faq_datestamp'])."</div>";
+			}
 
+			if($this->share == true)
+			{
+				$text .= "<div class='faq-share'>".$tp->parseTemplate("{SOCIALSHARE: size=xs&type=basic&url=".$url."&title=".$question."}",true)."</div>";
+			}
 
-			$text = "<a class='e-expandit faq-question{$faqNew}' href='#{$id}'>".$tp->toHTML($this->var['faq_question'],true,'TITLE')."</a>
-			<div id='{$id}' class='e-hideme faq-answer faq_answer clearfix {$faqNew}'>".$tp->toHTML($this->var['faq_answer'],true,'BODY').$tags."</div>
+			$text .= "</div></div>
 			";
 
 		}
@@ -295,24 +332,20 @@ class faqs_shortcodes extends e_shortcode
 	function sc_faq_search($parm='')
 	{
 		
-		if($parm == 'ajax') //TODo Ajax JS. 
-		{
 			$frm = e107::getForm();
 			$tp = e107::getParser();
+
+			$target = e107::url('faqs','search');
 			
-			$text = $frm->open('faq-search-form','get', e_REQUEST_SELF);
+			$text = $frm->open('faq-search-form','get', $target);
 			$text .= '<span class="input-group e-search">';
 			$text .= $frm->text('srch', $_GET['srch'], 20,'class=search-query&placeholder='.LAN_SEARCH).'
    			 <span class="input-group-btn"><button class="btn btn-primary"  type="submit">'.$tp->toGlyph('fa-search').'</button>';
 			$text .= '</span></span>';
-			$text .= $frm->close();	
+			$text .= $frm->close();
+
 			return $text;
-		}
-		
-		
-		return ''; // UNDER CONSTRUCTION
-	//	$tp = e107::getParser();
-	//	return "<div style='text-align:center'><br />".$tp->parseTemplate("{SEARCH=faqs}")."</div>";
+
 	}
 
 	
