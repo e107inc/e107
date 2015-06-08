@@ -1976,9 +1976,21 @@ class e_parse extends e_parser
 		return $text;
 	}
 
-	//Convert specific characters back to original form, for use in storing code (or regex) values in the db.
+
+	/**
+	 * Convert any string back to plain text.
+	 * @param $text
+	 * @return mixed|string
+	 */
 	function toText($text)
 	{
+
+		if($this->isHtml($text)==true)
+		{
+			$text = $this->toHtml($text,true);
+			$text = strip_tags($text);
+		}
+
 		$search = array("&amp;#039;", "&amp;#036;", "&#039;", "&#036;", "&#092;", "&amp;#092;");
 		$replace = array("'", '$', "'", '$', "\\", "\\");
 		$text = str_replace($search, $replace, $text);
