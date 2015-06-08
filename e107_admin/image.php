@@ -754,8 +754,10 @@ class media_admin_ui extends e_admin_ui
 		'watermark_shadowcolor'			=> array('title'=> IMALAN_94, 'tab'=>1,'type' => 'text', 'data' => 'str', 'help'=>IMALAN_95), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
 	
 		'watermark_opacity'				=> array('title'=> IMALAN_96, 'tab'=>1, 'type' => 'number', 'data' => 'int', 'help'=>IMALAN_97), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
-	
+
 		// https://developers.google.com/youtube/player_parameters
+		'youtube_apikey'		        => array('title'=> "YouTube Public API key", 'tab'=>2, 'type' => 'text', 'data'=>'str', 'help'=>IMALAN_99, 'writeParms'=>array('post'=>" <a target='_blank' href='https://code.google.com/apis/console/'>More</a>")),
+
 		'youtube_default_account'		=> array('title'=> IMALAN_98, 'tab'=>2, 'type' => 'text', 'data'=>'str', 'help'=>IMALAN_99),
 
 		'youtube_rel'					=> array('title'=> IMALAN_100, 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
@@ -1383,113 +1385,175 @@ class media_admin_ui extends e_admin_ui
 		
 		return e107::getMedia()->browserCarousel($items, $parms);
 	}
-			
+
+	/**
+	 * Extract Video or Playlist code from a URL
+	 * Currently works with v=xxx or list=xxxx
+	 * @param $url
+	 * @return string
+	 */
 	function getYouTubeCode($url)
 	{
-		list($url,$qry) = explode("?",$url);
+		$url = str_replace("url:","http://",$url);
+
+		list($tmp,$qry) = explode("?",$url);
 		parse_str($qry,$opt);
 
-		return $opt['v'];
+
+		if(!empty($opt['list']))
+		{
+			return 'playlist:'.$opt['list'];
+		}
+
+		if(!empty($opt['v']))
+		{
+			return 'video:'.$opt['v'];
+		}
+
+		$pattern = '#^(?:https?://)?(?:www\.|m\.)?(?:youtu\.be/|youtube\.com(?:/embed/|/v/|/watch\?v=|/watch\?.+&v=))([\w-]{11})(?:.+)?$#x';
+		preg_match($pattern, $url, $matches);
+
+		return isset($matches[1]) ? 'video:'.trim($matches[1]) : false;
+
 
 	}
-	
 
+
+	/**
+	 * @param string $parm
+	 * @return mixed|string
+	 * @see https://www.googleapis.com/youtube/v3/search
+	 */
 	function videoTab($parm='')
 	{
-		
-		//	$feed = "https://gdata.youtube.com/feeds/base/users/e107inc/uploads";
-		
-			// @see https://developers.google.com/youtube/2.0/developers_guide_protocol_api_query_parameters
+	//	$apiKey = e107::pref('core','youtube_apikey');
 
-			$searchQry = $this->getQuery('search');
+		$searchQry = $this->getQuery('search');
 
+		if(substr($searchQry,0,4) == 'url:')
+		{
+			$searchQry = $this->getYouTubeCode($searchQry);
 
-			if(!empty($searchQry))
+		}
+
+		if(!empty($searchQry)) // -- Search Active.
+		{
+			if(substr($searchQry,0,6) == 'video:' || substr($searchQry,0,2) == 'v=') // YouTube video code
 			{
-				if(substr($searchQry,0,6) == 'video:' || substr($searchQry,0,2) == 'v=') // YouTube video code?
-				{
-				//	return "video: ".$searchQry;
-					$searchQry = (substr($searchQry,0,2) == 'v=') ? trim(substr($searchQry,2)) : trim(substr($searchQry,6));
-					$data = array();
-					$data['entry'][0]['id'] =  $searchQry;
-					$data['entry'][0]['title'] = "Specified Video";
-					$extension = 'youtube';
-				//	return print_a($parm,true);
-				}
-				elseif(substr($searchQry,0,9) == 'playlist:') // playlist
-				{
-					$searchQry = trim(substr($searchQry,9));
-					$feed = "http://gdata.youtube.com/feeds/api/playlists/".urlencode($searchQry);
-					$plData = e107::getXml()->loadXMLfile($feed,true);
-					unset($feed);
-				//	return print_a($plData,true);
+				$searchQry = (substr($searchQry,0,2) == 'v=') ? trim(substr($searchQry,2)) : trim(substr($searchQry,6));
+				$extension = 'youtube';
+			//	$feed = "https://www.googleapis.com/youtube/v3/videos?part=snippet&id=".urlencode($searchQry)."&key=".$apiKey;
 
-					$code = $this->getYouTubeCode( $plData['entry'][0]['link'][0]['@attributes']['href']);
-
-					if(!empty($plData))
-					{
-						$data = array();
-						$data['entry'][0]['id'] =  $searchQry;
-						$data['entry'][0]['title'] = "Playlist: ". $plData['title'];
-						$data['entry'][0]['thumb'] =  "http://i1.ytimg.com/vi/".$code."/maxresdefault.jpg";
-						$extension = 'youtubepl';
-
-						e107::getMedia()->saveThumb("http://i1.ytimg.com/vi/".$code."/maxresdefault.jpg", $searchQry);
-					}
-
-				}
-				else
-				{
-					$feed = "http://gdata.youtube.com/feeds/api/videos?orderby=relevance&vq=".urlencode($searchQry)."&max-results=50"; // maximum is 50.
-					$extension = 'youtube';
-				}
-
+				$data = array();
+				$data['items'][0]['id']['videoId'] = $searchQry;
+				$data['items'][0]['snippet']['thumbnails']['medium']['url'] = "http://i.ytimg.com/vi/".$searchQry."/mqdefault.jpg";
+				$data['items'][0]['snippet']['title'] = 'Specified Video';
+			}
+			elseif(substr($searchQry,0,9) == 'playlist:') // playlist
+			{
+				$searchQry = trim(substr($searchQry,9));
+				$feed = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=".urlencode($searchQry)."&type=playlist&maxResults=1&key=".$apiKey;
+                  $extension = 'youtubepl';
+			}
+			elseif(substr($searchQry,0,8) == 'channel:')
+			{
+				$searchQry = trim(substr($searchQry,8));
+				$extension = 'youtube';
+				$feed = "https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=".urlencode($searchQry)."&type=video&maxResults=20&key=".$apiKey;
 			}
 			else
 			{
-
-				$defaultAccount = e107::pref('core','youtube_default_account');
-				if(empty($defaultAccount))
-				{
-					$defaultAccount = 'e107inc';
-				}
-
-				$feed = "https://gdata.youtube.com/feeds/api/users/".$defaultAccount."/uploads";
+				$feed = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=".urlencode($searchQry)."&type=video&maxResults=20&key=".$apiKey;
 				$extension = 'youtube';
 			}
 
-		//return print_a($feed,true);
+		}
+		else // -- default state.
+		{
 
-			if(!empty($feed) && empty($data))
+			$defaultAccount = e107::pref('core','youtube_default_account');
+			if(empty($defaultAccount))
 			{
-				$data = e107::getXml()->loadXMLfile($feed,true);
+				$defaultAccount = 'e107inc';
 			}
-		//	$text .= "<h2>".$data['title']."</h2>";
-		//	return print_a($data,true);
-			
-			$items = array();
-			
-			foreach($data['entry'] as $value)
+
+			$accFeed = "https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername=".$defaultAccount."&key=".$apiKey;
+			$accData = e107::getFile()->getRemoteContent($accFeed);
+			$accData = json_decode($accData,true);
+			$channelID = null;
+
+			foreach($accData['items'] as $val)
 			{
-				$id = str_replace('http://gdata.youtube.com/feeds/api/videos/','',$value['id']); // http://gdata.youtube.com/feeds/api/videos/_j0b9syAuIk
-				$thumbnail = "https://i1.ytimg.com/vi/".$id."/0.jpg";
-				
-				$items[] = array( 
-					'previewUrl'	=> ($value['thumb']) ? $value['thumb'] : $thumbnail,
+				if($val['kind'] == 'youtube#channel')
+				{
+						$channelID = $val['id'];
+						break;
+				}
+			}
+
+			$feed = "https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=".$channelID."&type=video&maxResults=20&key=".$apiKey;
+			$extension = 'youtube';
+		}
+
+
+		if(!empty($feed) )
+		{
+
+			if(!empty($apiKey))
+			{
+				$data = e107::getFile()->getRemoteContent($feed);
+				$data = json_decode($data,true);
+				$items = array();
+			}
+			else // empty key.
+			{
+				$items = "<div class='alert alert-info'><p>Youtube search requires a (free) YouTube v3 api key.<br />
+				This key is not required unless you wish to perform a keyword, playlist or channel search.<br />
+				Entering a Youtube video URL directly into the box above will still work without having an api key. <br />
+				<a style='color:black' target='_blank' href='".e_ADMIN."image.php?mode=main&action=prefs#/tab2'>Click here for more information and to enter your api key</a>.
+				</p>
+				</div>";
+			}
+
+		}
+
+
+		if(!empty($data))
+		{
+			foreach($data['items'] as $value)
+			{
+
+				$id = $value['id']['videoId'];
+				$thumbnail = $value['snippet']['thumbnails']['medium']['url'];
+
+				$items[] = array(
+					'previewUrl'	=> $thumbnail,
 					'saveValue'		=> $id.".".$extension, // youtube",
-					'thumbUrl'		=> ($value['thumb']) ? $value['thumb'] : $thumbnail,
-					'title'			=> $value['title']
-				); 	
+					'thumbUrl'		=> $thumbnail,
+					'title'			=> varset($value['snippet']['title'],'')
+				);
+
+				if($extension == 'youtubepl') // save Image for background.
+				{
+					$hiresThumbnail = $thumbnail = $value['snippet']['thumbnails']['high']['url'];
+					e107::getMedia()->saveThumb($hiresThumbnail, $id); //TODO move to $tp->Video(); ?
+				}
 			}
+		}
+	//	return print_a($data,true);
 
-		//	return print_a($items,true);
-		//	return print_a($data,true);
+		$parms = array('width' => 200, 'height'=>113, 'type'=>'image', 'bbcode'=>'video', 'tagid'=> $this->getQuery('tagid'), 'action'=>'youtube','searchPlaceholder'=>'Search Youtube. Paste any YouTube URL here for a specific video/playlist/channel' );
+		$text = e107::getMedia()->browserCarousel($items, $parms);
+		
+		if(E107_DEBUG_LEVEL > 0 && !empty($feed))
+		{
+			$text .= "<div><small>Debug: ". $feed."</small></div>";
+			if(!empty($data))
+			{
+				$text .= print_a($data,true);
+			}
+		}
 
-			$parms = array('width' => 200, 'height'=>113, 'type'=>'image', 'bbcode'=>'video', 'tagid'=> $this->getQuery('tagid'), 'action'=>'youtube','searchPlaceholder'=>'Search Youtube. Use video: or playlist: prefixes if you know the code.' );
-		
-			$text = e107::getMedia()->browserCarousel($items, $parms);
-		
-		
 		return $text;
 		
 	}	

@@ -344,10 +344,12 @@ $(document).ready(function()
 			var id 		= $(this).attr("data-target");
 			var src 	= $(this).attr("data-src");
 			var search 	= $(this).val();
-			
+
 			if(search !== null)
   			{
-  				src = src + '&search=' + encodeURIComponent(search);	
+  			    search  = search.replace('https://','url:');
+                search  = search.replace('http://','url:');
+        		src     = src + '&search=' + encodeURIComponent(search);
   			}
 
   		//	alert(src);
