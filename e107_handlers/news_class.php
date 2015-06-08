@@ -360,6 +360,18 @@ class news {
 		setScVar('news_shortcodes', 'news_item', $news);
 		setScVar('news_shortcodes', 'param', $param);
 		*/
+
+		// Set the Values for the social shortcode usage.
+		$tp = e107::getParser();
+		$socialArray = array('url'=>e107::getUrl()->create('news/view/item', $news, 'full=1'), 'title'=>$tp->toText($news['news_title']), 'tags'=>$news['news_meta_keywords']);
+		$socialObj = e107::getScBatch('social');
+
+		if(is_object($socialObj))
+		{
+			$socialObj->setVars($socialArray);
+		}
+
+
 		// Retrieve batch sc object, set required vars
 		$sc = e107::getScBatch('news')
 			->setScVar('news_item', $news)

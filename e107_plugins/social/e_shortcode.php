@@ -167,6 +167,7 @@ class social_shortcodes extends e_shortcode
 		$defaultUrl 	= vartrue($this->var['url'], e_REQUEST_URL);
 		$defaultTitle	= vartrue($this->var['title'], deftrue('e_PAGETITLE'). " | ". SITENAME);
 		$defaultDiz		= vartrue($this->var['description'], e107::getUrl()->response()->getMetaDescription());
+		$defaultTags    = vartrue($this->var['tags'],'');
 		
 		$tp 			= e107::getParser();
 
@@ -190,11 +191,12 @@ class social_shortcodes extends e_shortcode
 		$url 			= varset($parm['url'], 		$defaultUrl);
 		$title 			= varset($parm['title'], 	$defaultTitle) ;
 		$description 	= varset($parm['title'], 	$defaultDiz);
+		$tags           = varset($parm['tags'],     $defaultTags);
 		$media 			= "";
 		$label 			= varset($parm['label'], 	$tp->toGlyph('e-social-spread'));
 		
 		$size			= varset($parm['size'],		'md');
-		$tags           = varset($parm['tags'],     '');
+
 
 
 
