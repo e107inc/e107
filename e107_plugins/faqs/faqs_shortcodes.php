@@ -258,6 +258,12 @@ class faqs_shortcodes extends e_shortcode
 
 		$faqpref = e107::pref('faqs');
 
+		if(empty($faqpref['submit_question_language']) && e107::getPref('sitelanguage') != e_LANGUAGE)
+		{
+			return false;
+		}
+
+
 		if(!empty($parms['expand']))
 		{
 			$hide = 'e-hideme';

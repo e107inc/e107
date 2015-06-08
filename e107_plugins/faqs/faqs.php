@@ -254,7 +254,7 @@ class faq
 
 			if($sql->insert('faqs',$insert))
 			{
-				$message = !empty($this->pref['submit_question_acknowledgement']) ? e107::getParser()->toHtml($this->pref['submit_question_acknowledgement'],true, 'BODY') : 'Thank you. Your question has been saved and will be answered as soon as possible.'; //TODO LAN
+				$message = !empty($this->pref['submit_question_acknowledgement']) ? e107::getParser()->toHtml($this->pref['submit_question_acknowledgement'],true, 'BODY') : LAN_FAQS_ASKQUESTION_AFTER;
 				e107::getMessage()->addSuccess($message);
 			}
 
@@ -372,7 +372,8 @@ class faq
 		
 		if(!$sql->gen($query))
 		{
-			return "<div class='alert alert-warning alert-block'><b>".$srch."</b> was not found in search results. <a class='e-tip' title='Reset' href='".$removeUrl."'>Reset</a></div>" ; //TODO LAN
+			$message = 	(!empty($srch)) ? "<b>".$srch."</b> was not found in search results. <a class='e-tip' title='Reset' href='".$removeUrl."'>Reset</a>" : LAN_FAQS_NONE_AVAILABLE;
+			return "<div class='alert alert-warning alert-block'>".$message."</div>" ; //TODO LAN
 		}
 		
 		// -----------------

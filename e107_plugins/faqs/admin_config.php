@@ -241,6 +241,8 @@ class faq_main_ui extends e_admin_ui
 			'add_faq'	   				=> array('title'=> LANA_FAQ_PREF_1, 'tab'=>0, 'type'=>'userclass' ),
 			'submit_question'	   		=> array('title'=> LANA_FAQ_PREF_2, 'tab'=>0, 'type'=>'userclass' ),
 			'submit_question_limit'     => array('title'=> "'Ask a Question' limit per user",  'tab'=>0, 'type'=>'number', 'data'=>'int', 'help'=>'0 = no limit'),
+			'submit_question_language'	=> array('title'=> "'Ask a Question' limited to", 'tab'=>0,'type'=>'dropdown' ),
+
 			'submit_question_acknowledgement'   => array('title'=> "Submitted Questions Acknowledgement", 'type'=>'textarea', 'help'=>'Leave blank to use default' ),
 
 			'classic_look'				=> array('title'=> LANA_FAQ_PREF_3,'tab'=>0, 'type'=>'boolean' ),
@@ -267,7 +269,7 @@ class faq_main_ui extends e_admin_ui
 	
 	public function init()
 	{
-
+		$this->prefs['submit_question_language']['writeParms'] = array(0=> 'English', 1=>'All Languages');
 
 
 		$sql = e107::getDb();
