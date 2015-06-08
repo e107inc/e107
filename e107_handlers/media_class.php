@@ -1209,9 +1209,12 @@ class e_media
 	}
 
 
-
-
-	
+	/**
+	 * Carousel Item Browser. 
+	 * @param array|string $data - array for items or string for an error alert.
+	 * @param array $parm
+	 * @return string
+	 */
 	function browserCarousel($data,$parm=null)
 	{
 			/* Fix for Bootstrap2 margin-left issue when wrapping */
@@ -1250,11 +1253,7 @@ class e_media
 				$text .= "<div id='media-browser-container-".$parm['action']."' class='form-inline clearfix row-fluid'>";
 			}
 		
-			if(count($data) < 1)
-			{
-				return "<div class='alert alert-info alert-block text-center'>No Results Found.</div>";	
-			}
-			
+
 			
 		
 		//	$text .= $this->search('srch', $srch, 'go', $filterName, $filterArray, $filterVal).$frm->hidden('mode','online');
@@ -1272,61 +1271,73 @@ class e_media
 				$c=0;
 				
 				$slides = array();
-				
-				foreach($data as $key=>$val)
+
+				if(is_array($data) && count($data) > 0)
 				{
-					if($c == 0)
+
+
+					foreach($data as $key=>$val)
 					{
-						$active = (count($slides) <1) ? ' active' : '';
-						$text .= '
-						
-						<!-- Start Slide -->
-						<div class="item'.$active.'">';	
-						
-						if(vartrue($val['slideCaption']))
+						if($c == 0)
 						{
-							$text .= "<h4>".$val['slideCaption']."</h4>";	
+							$active = (count($slides) <1) ? ' active' : '';
+							$text .= '
+
+							<!-- Start Slide -->
+							<div class="item'.$active.'">';
+
+							if(vartrue($val['slideCaption']))
+							{
+								$text .= "<h4>".$val['slideCaption']."</h4>";
+							}
+						}
+
+
+						$val['width']	= $parm['width'];
+						$val['height']	= $parm['height'];
+						$val['id']		= $parm['id'];
+						$val['tagid']	= $parm['tagid'];
+						$val['type']	= $parm['type'];
+						$val['bbcode']	= $parm['bbcode'];
+						$val['gridClass'] = $parm['gridClass'];
+
+						$text .= $this->browserCarouselItem($val);
+
+						$c++;
+
+						if(varset($val['slideCategory']) && isset($prevCat))
+						{
+							if($val['slideCategory'] !== $prevCat)
+							{
+								$c = $perPage;
+							}
+
+							$prevCat = 	$val['slideCategory'];
+
+						}
+
+						if($c == $perPage)
+						{
+							$text .= '
+							</div>
+							<!-- End Slide -->
+
+							';
+							$slides[] = 1;
+							$c = 0;
 						}
 					}
-					
-					
-					$val['width']	= $parm['width'];
-					$val['height']	= $parm['height'];
-					$val['id']		= $parm['id'];
-					$val['tagid']	= $parm['tagid'];
-					$val['type']	= $parm['type'];
-					$val['bbcode']	= $parm['bbcode'];
-					$val['gridClass'] = $parm['gridClass'];		
 				
-					$text .= $this->browserCarouselItem($val);
-				
-					$c++;
-					
-					if(varset($val['slideCategory']) && isset($prevCat))
-					{
-						if($val['slideCategory'] !== $prevCat)
-						{
-							$c = $perPage;
-						}
-							
-						$prevCat = 	$val['slideCategory'];
-						
-					}
-						
-					if($c == $perPage)
-					{
-						$text .= '
-						</div>
-						<!-- End Slide -->
-						
-						';
-						$slides[] = 1;
-						$c = 0;
-					}
 				}
-				
-			
-				
+				elseif(is_string($data)) // error message.
+				{
+					$text .= "<div style='line-height: 1.5;'>".$data."</div>";
+				}
+				else
+				{
+					$text .= "<div class='alert alert-info alert-block text-center'>No Results Found.</div>";
+				}
+
 				$text .= ($c != 0) ? "</div>\n<!-- End Slide -->\n" : "";
 			
 			
@@ -1344,7 +1355,7 @@ class e_media
 
 			if(E107_DEBUG_LEVEL > 0)
 			{
-				print_a($parm);
+		//		print_a($parm);
 			}
 
 
