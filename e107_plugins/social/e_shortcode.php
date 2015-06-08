@@ -118,6 +118,30 @@ class social_shortcodes extends e_shortcode
 	}
 
 
+	private function getHashtags($extraTags='')
+	{
+		$hashtags = e107::pref('social','sharing_hashtags','');
+
+		$hashtags = str_replace(array(" ",'#'),"", $hashtags);
+
+		$ret = explode(',',$hashtags);
+
+		if(!empty($extraTags))
+		{
+			$extraTags = str_replace(array(" ",'#'),"", $extraTags);
+			$tmp = explode(',',$extraTags);
+			foreach($tmp as $v)
+			{
+				$ret[] = $v;
+			}
+		}
+
+		if(!empty($ret))
+		{
+			return implode(',',$ret);
+		}
+
+	}
 
 
 	/**
@@ -138,7 +162,7 @@ class social_shortcodes extends e_shortcode
 			return '';
 		}
 
-		$hashtags       = vartrue($pref['sharing_hashtags']);
+	//	$hashtags       = vartrue($pref['sharing_hashtags']);
 
 		$defaultUrl 	= vartrue($this->var['url'], e_REQUEST_URL);
 		$defaultTitle	= vartrue($this->var['title'], deftrue('e_PAGETITLE'). " | ". SITENAME);
@@ -170,7 +194,8 @@ class social_shortcodes extends e_shortcode
 		$label 			= varset($parm['label'], 	$tp->toGlyph('e-social-spread'));
 		
 		$size			= varset($parm['size'],		'md');
-		
+		$tags           = varset($parm['tags'],     '');
+
 
 
 
@@ -190,9 +215,14 @@ class social_shortcodes extends e_shortcode
 
 		$opt = array();
 
+	//	$hashtags = '';
+
+	//	$hashtags .= str_replace(array(" ",'#'),"", $hashtags); // "#mytweet";
+
+		$hashtags = $this->getHashtags($tags);
 
 
-		$hashtags = str_replace(array(" ",'#'),"", $hashtags); // "#mytweet";
+
 		$twitterAccount = basename(XURL_TWITTER);
 
 	//	return print_a($hashtags,true);
