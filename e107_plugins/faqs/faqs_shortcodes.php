@@ -91,7 +91,7 @@ class faqs_shortcodes extends e_shortcode
 
 			if($this->share == true)
 			{
-				$text .= "<div class='faq-share'>".$tp->parseTemplate("{SOCIALSHARE: size=xs&type=basic&url=".$url."&title=".$question."}",true)."</div>";
+				$text .= "<div class='faq-share'>".$tp->parseTemplate("{SOCIALSHARE: size=xs&type=basic&url=".$url."&title=".$question."&tags=".$this->var['faq_tags']."}",true)."</div>";
 			}
 
 			$text .= "</div></div>
