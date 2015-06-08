@@ -417,7 +417,7 @@ class faq
 
 		while ($rw = $sql->fetch())
 		{
-			$rw['faq_sef'] = eHelper::title2sef($rw['faq_question'],'dashl');
+			$rw['faq_sef'] = eHelper::title2sef($tp->toText($rw['faq_question']),'dashl');
 
 			$sc->setVars($rw);
 
