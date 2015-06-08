@@ -23,7 +23,7 @@ class social_shortcodes extends e_shortcode
 		//TODO LANS ie. "Share on [x]" in English_global.php
 
 		$providers = array(
-			'email'				=> array('icon'	=> 'e-social-mail',			'title'=>"Email to someone",	'url' => "mailto:EMAIL_RECIPIENT?subject=[t]&body=".urlencode($emailMessage)."[u]"),
+			'email'				=> array('icon'	=> 'e-social-mail',			'title'=>"Email to someone",	'url' => "mailto:EMAIL_RECIPIENT?subject=[t]&body=".rawurlencode($emailMessage)."[u]"),
 			'facebook-like'		=> array('icon' => 'e-social-thumbs-up',	'title'=>"Like on Facebook",	'url' => "http://www.facebook.com/plugins/like.php?href=[u]"),
 			'facebook-share'	=> array('icon' => 'e-social-facebook',		'title'=>"Share on Facebook",	'url' => "http://www.facebook.com/sharer.php?u=[u]&t=[t]"),
 			'twitter'			=> array('icon' => 'e-social-twitter',		'title'=>"Share on Twitter",	'url' => "http://twitter.com/share?url=[u]&text=[t]"),
