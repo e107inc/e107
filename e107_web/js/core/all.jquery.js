@@ -73,7 +73,7 @@ $(document).ready(function()
        			
        			$(select).each( function() {
        				
-       				$('#'+ this).toggle("slow");
+       				$('#'+ this).slideToggle("slow");
 				});
        			
        			return false;
@@ -84,13 +84,13 @@ $(document).ready(function()
 			if(href === "#" || href == "") 
 			{
 				idt = $(this).nextAll("div");	
-				$(idt).toggle("slow");
+				$(idt).slideToggle("slow");
 				 return true;			
 			}
 		
 			      		    		
        		//var id = $(this).attr("href");   		
-			$(href).toggle("slow");
+			$(href).slideToggle("slow");
 			
 			return false;
 		}); 
