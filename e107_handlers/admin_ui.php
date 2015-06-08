@@ -1131,7 +1131,7 @@ class e_admin_dispatcher
 			return false;
 		}
 
-		if(!empty($this->perm) && is_array($this->perm) && !e107::getUser()->checkAdminPerms($this->perm[$route]))
+		if(is_array($this->perm) && !empty($this->perm[$route]) && !e107::getUser()->checkAdminPerms($this->perm[$route]))
 		{
 			return false;
 		}

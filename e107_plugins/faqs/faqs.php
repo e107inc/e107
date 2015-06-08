@@ -141,14 +141,37 @@ if (isset($_POST['commentsubmit']))
 
 		}
 
+		$pageTitle = '';
+
+
+	//	define("e_PAGETITLE", $ftmp['caption']);
+
 		if (vartrue($faqpref['page_title']))
 		{
-			define("e_PAGETITLE", $faqpref['page_title']);
+			$pageTitle = $faqpref['page_title'][e_LANGUAGE];
 		}
 		else
 		{
-			define("e_PAGETITLE", $ftmp['caption']);
+			$pageTitle = $ftmp['caption'];
 		}
+
+		if(!empty($ftmp['pagetitle']))
+		{
+			$pageTitle .= ": ".$ftmp['pagetitle'];
+		}
+		e107::getMessage()->addDebug("TITLE: " . $pageTitle);
+
+		e107::meta('og:title', $pageTitle);
+
+		if(!empty($ftmp['pagedescription']))
+		{
+
+			e107::meta('og:description', $ftmp['pagedescription']);
+		}
+
+		define('e_PAGETITLE', $pageTitle);
+
+
 
 		require_once (HEADERF);
 				
@@ -192,6 +215,8 @@ class faq
 	var $pref = array();
 	protected $sc = null;
 	protected $template = null;
+	protected $pageTitle = null;
+	protected $pageDescription = null;
 
 	function __construct()
 	{
@@ -266,15 +291,24 @@ class faq
 		$ret['title'] = FAQLAN_FAQ;
 		$ret['text'] = $text;
 
-		if (!empty($this->pref['page_title']))
+		if (!empty($this->pref['page_title'][e_LANGUAGE]))
 		{
-			$ret['caption'] = e107::getParser()->toHtml($this->pref['page_title'], true, 'TITLE');
+			$ret['caption'] = e107::getParser()->toHtml($this->pref['page_title'][e_LANGUAGE], true, 'TITLE');
 		}
 		else
 		{
 			$ret['caption'] = varset($template['caption']) ? $tp->parseTemplate($template['caption'], true, $this->sc) : LAN_PLUGIN_FAQS_FRONT_NAME;
 		}
-		
+
+		if(!empty($this->pageTitle))
+		{
+			$ret['pagetitle'] = e107::getParser()->toText($this->pageTitle);
+		}
+
+		if(!empty($this->pageDescription))
+		{
+			$ret['pagedescription'] = e107::getParser()->toText($this->pageDescription,true,'RAWTEXT');
+		}
 		
 		return $ret;
 	}
@@ -288,12 +322,28 @@ class faq
 
 		$text = "";
 		
-		$insert = "";	
+		$insert = "";
+		$item = false;
+
+		$removeUrl = e107::url('faqs','index');
 		
 		if(!empty($srch))
 		{
 			$srch = $tp->toDB($srch);
-			$insert = " AND (f.faq_question LIKE '%".$srch."%' OR FIND_IN_SET ('".$srch."', f.faq_tags) ) ";
+			$insert = " AND (f.faq_question LIKE '%".$srch."%' OR f.faq_answer LIKE '%".$srch."%' OR FIND_IN_SET ('".$srch."', f.faq_tags) ) ";
+
+
+			$message = "<span class='label label-lg label-info'>".$srch." <a class='e-tip' title='Remove' href='".$removeUrl."'>×</a></span>";
+
+			e107::getMessage()->setClose(false,E_MESSAGE_INFO)->setTitle(LAN_FAQS_FILTER_ACTIVE,E_MESSAGE_INFO)->addInfo($message);
+			$text = e107::getMessage()->render();
+		}
+
+		if(!empty($_GET['id'])) // pull out just one specific FAQ.
+		{
+			$srch = intval($_GET['id']);
+		//	$insert = " AND (f.faq_id = ".$srch.") ";
+			$item = $srch;
 		}
 		
 		if(!empty($_GET['cat']))
@@ -309,7 +359,6 @@ class faq
 
 			$insert = " AND FIND_IN_SET ('".$srch."', f.faq_tags)  ";
 
-			$removeUrl = e107::url('faqs','index');
 			$message = "<span class='label label-lg label-info'>".$srch." <a class='e-tip' title='Remove' href='".$removeUrl."'>×</a></span>";
 
 			e107::getMessage()->setClose(false,E_MESSAGE_INFO)->setTitle(LAN_FAQS_FILTER_ACTIVE,E_MESSAGE_INFO)->addInfo($message);
@@ -323,7 +372,7 @@ class faq
 		
 		if(!$sql->gen($query))
 		{
-			return "<div class='alert alert-warning alert-block'><b>".$srch."</b> was not found in search results.</div>" ; //TODO LAN
+			return "<div class='alert alert-warning alert-block'><b>".$srch."</b> was not found in search results. <a class='e-tip' title='Reset' href='".$removeUrl."'>Reset</a></div>" ; //TODO LAN
 		}
 		
 		// -----------------
@@ -335,6 +384,20 @@ class faq
 		$sc->counter = 1;
 		$sc->tag = htmlspecialchars($tag, ENT_QUOTES, 'utf-8');
 		$sc->category = $category;
+
+		 if(!empty($_GET['id'])) // expand one specific FAQ.
+		{
+			$sc->item =intval($_GET['id']);
+
+			$js = "
+				$( document ).ready(function() {
+                    $('html, body').animate({ scrollTop:  $('div#faq_".$sc->item."').offset().top - 300 }, 4000);
+				});
+
+				";
+
+			e107::js('footer-inline', $js);
+		}
 
 	//	$text = $tp->parseTemplate($FAQ_START, true, $sc);
 
@@ -354,7 +417,15 @@ class faq
 
 		while ($rw = $sql->fetch())
 		{
-			$sc->setVars($rw);	
+			$rw['faq_sef'] = eHelper::title2sef($rw['faq_question'],'dashl');
+
+			$sc->setVars($rw);
+
+			if($sc->item == $rw['faq_id'])
+			{
+				$this->pageTitle = $rw['faq_question'];
+				$this->pageDescription = $rw['faq_answer'];
+			}
 			
 			if($rw['faq_info_order'] != $prevcat)
 			{

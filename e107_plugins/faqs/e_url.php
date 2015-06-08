@@ -17,7 +17,8 @@
  
 if (!defined('e107_INIT')) { exit; }
 
-// v2.x Standard  - Simple mod-rewrite module. 
+// v2.x Standard  - Simple mod-rewrite module.
+// https://moz.com/blog/11-best-practices-for-urls
 
 class faqs_url // plugin-folder + '_url' 
 {
@@ -32,12 +33,28 @@ class faqs_url // plugin-folder + '_url'
 			
 		);
 
+		$config['item'] = array(
+			'regex'			=> '^faqs/(\d*)-(.*)$$',
+			'sef'			=> 'faqs/{faq_id}-{faq_sef}',			// {faq_info_sef} is substituted with database value when parsed by e107::url();
+			'redirect'		=> '{e_PLUGIN}faqs/faqs.php?id=$1'
+		);
+
+
+		$config['search'] = array(
+			'regex'			=> '^faqs/\?srch=(.*)$', 						// matched against url, and if true, redirected to 'redirect' below.
+			'sef'			=> 'faqs/', 							// used by e107::url(); to create a url from the db table.
+			'redirect'		=> '{e_PLUGIN}faqs/faqs.php?srch=$1', 		// file-path of what to load when the regex returns true.
+
+		);
+
+
 		$config['tag'] = array(
 			'regex'			=> '^faqs/tag/(.*)$',
 			'sef'			=> 'faqs/tag/{tag}',			// {faq_info_sef} is substituted with database value when parsed by e107::url();
 			'redirect'		=> '{e_PLUGIN}faqs/faqs.php?tag=$1'
 		);
-		
+
+
 		$config['category'] = array(
 			'regex'			=> '^faqs/(.*)$',
 			'sef'			=> 'faqs/{faq_info_sef}',			// {faq_info_sef} is substituted with database value when parsed by e107::url(); 

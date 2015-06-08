@@ -50,7 +50,7 @@ class faq_admin extends e_admin_dispatcher
 
 
 	protected $perm = array(
-		'main/prefs'    => '0'
+	//	'main/prefs'    => '0'
 	);
 
 	protected $adminMenuAliases = array(
@@ -74,10 +74,12 @@ class faq_admin extends e_admin_dispatcher
 			'main/create'   => varset($pref['admin_faq_create'],   e_UC_ADMIN),
 			'main/edit'     => varset($pref['admin_faq_edit'],     e_UC_ADMIN),
 			'main/delete'   => varset($pref['admin_faq_delete'],   e_UC_ADMIN),
+			'cat/list'      => check_class($pref['admin_cat_create']) || check_class($pref['admin_cat_edit']) ? e_UC_ADMIN : e_UC_NOBODY,
 			'cat/create'    => varset($pref['admin_cat_create'],   e_UC_ADMIN),
 			'cat/edit'      => varset($pref['admin_cat_edit'],     e_UC_ADMIN),
 			'cat/delete'    => varset($pref['admin_cat_delete'],   e_UC_ADMIN),
 		);
+
 	}
 }
 
@@ -243,9 +245,12 @@ class faq_main_ui extends e_admin_ui
 
 			'classic_look'				=> array('title'=> LANA_FAQ_PREF_3,'tab'=>0, 'type'=>'boolean' ),
 			'list_type'				    => array('title'=> "List Type", 'tab'=>0,'type'=>'dropdown', 'writeParms'=>array('ul'=>'Unordered List', 'ol'=>'Ordered List') ),
-			'page_title'				=> array('title'=> "Page Title", 'tab'=>0,'type'=>'text', 'help'=>'Leave blank to use default' ),
+			'page_title'				=> array('title'=> "Page Title", 'tab'=>0,'type'=>'text', 'multilan'=>true, 'help'=>'Leave blank to use default' ),
 			'new'				        => array('title'=> "'New' FAQs are no more than", 'tab'=>0,'type'=>'number', 'writeParms'=>'size=mini&default=0&post=days old', 'help'=>'Leave blank to use default' ),
-			'display_total'				=> array('title'=> "Display FAQ total", 'tab'=>0,'type'=>'boolean' ),
+			'display_total'				=> array('title'=> "Display FAQ total", 'tab'=>0,'type'=>'boolean', 'data'=>'int' ),
+			'display_datestamp'			=> array('title'=> "Display Datestamp", 'tab'=>0,'type'=>'boolean', 'data'=>'int' ),
+			'display_social'			=> array('title'=> "Display Social buttons", 'tab'=>0,'type'=>'boolean', 'data'=>'int' ),
+
 			'orderby'                   => array('title'=> LAN_ORDER, 'tab'=>0,'type'=>'dropdown', 'writeParms'=>array('faq_order-ASC'=>"Specified Order", 'faq_id-ASC'=>'ID ASC', 'faq_id-DESC'=>'ID DESC', 'faq_datestamp-ASC'=>'Date ASC', 'faq_datestamp-DESC'=>'Date DESC')),
 
 			'admin_faq_create'	   		=> array('title'=> "Create FAQ", 'tab'=>1, 'type'=>'userclass', 'writeParms'=>'default=254&classlist=main,admin,classes,no-excludes' ),

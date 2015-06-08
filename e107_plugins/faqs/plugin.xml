@@ -22,5 +22,7 @@
 		<pref name="submit_question">255</pref>
         <pref name="submit_question_limit">3</pref>
 		<pref name="classic_look">0</pref>
+		<pref name="display_social">1</pref>
+        <pref name="display_datestamp">1</pref>
 	</pluginPrefs>
 </e107Plugin>
