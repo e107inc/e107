@@ -3239,14 +3239,24 @@ class e_form
                     }
                     
 					// in case something goes wrong...
-                    if($link) $value = "<a class='e-tip{$dialog}' {$ext} href='".$link."' {$modal} title='Quick View'>".$value."</a>";
+                    if($link) $value = "<a class='e-tip{$dialog}' {$ext} href='".$link."' {$modal} title='Quick View' >".$value."</a>";
 				}
-				
+
+				if(empty($value))
+				{
+					$value = '-';
+					$emptyValue = "data-value=''";
+				}
+				else
+				{
+					$emptyValue = "";
+				}
+
 					
 				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
 				{
 					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
-					$value = "<a class='e-tip e-editable editable-click' data-name='".$field."' title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='text' data-pk='".$id."' data-url='".e_SELF."?mode={$mode}&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$value."</a>";
+					$value = "<a class='e-tip e-editable editable-click' data-emptytext='-' data-name='".$field."' title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='text' data-pk='".$id."' ".$emptyValue." data-url='".e_SELF."?mode={$mode}&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$value."</a>";
 				}
 
 				$value = vartrue($parms['pre']).$value.vartrue($parms['post']);

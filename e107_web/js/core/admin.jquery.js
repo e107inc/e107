@@ -88,8 +88,8 @@ $(document).ready(function()
 		
 	
 		$('div.e-container').editable({
-			selector: '.e-editable'
-		});
+			selector: '.e-editable',
+         });
 		
 //		$('.e-editable').editable();
 		
