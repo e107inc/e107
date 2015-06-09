@@ -138,13 +138,13 @@
       this.values.push(value)
       this.createBadge(value)
       
-      this.element.val(this.values.join(', '))
+      this.element.val(this.values.join(','))
     }
   , remove: function ( index ) {
       if ( index >= 0 ) {
         this.values.splice(index, 1)
         this.element.siblings('.tag:eq(' + index + ')').remove()
-        this.element.val(this.values.join(', '))
+        this.element.val(this.values.join(','))
       }
     }
   , process: function () {
