@@ -2748,6 +2748,8 @@ class e_form
 		{
 			return;	
 		}
+
+		$tags = str_replace(', ',',', $tags); //BC Fix, all tags should be comma separated without spaces ie. one,two NOT one, two
 		
 		if(!varset($parm['limit']))
 		{
@@ -3245,18 +3247,26 @@ class e_form
 				if(empty($value))
 				{
 					$value = '-';
-					$emptyValue = "data-value=''";
+					$setValue = "data-value=''";
 				}
 				else
 				{
-					$emptyValue = "";
+					$setValue = "";
+
+					if($attributes['type'] == 'tags' && !empty($value))
+					{
+						$setValue = "data-value='".$value."'";
+						$value = str_replace(",", ", ", $value); // add spaces so it wraps, but don't change the actual values.
+					}
 				}
+
+
 
 					
 				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
 				{
 					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
-					$value = "<a class='e-tip e-editable editable-click' data-emptytext='-' data-name='".$field."' title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='text' data-pk='".$id."' ".$emptyValue." data-url='".e_SELF."?mode={$mode}&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$value."</a>";
+					$value = "<a class='e-tip e-editable editable-click' data-emptytext='-' data-name='".$field."' title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='text' data-pk='".$id."' ".$setValue." data-url='".e_SELF."?mode={$mode}&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$value."</a>";
 				}
 
 				$value = vartrue($parms['pre']).$value.vartrue($parms['post']);

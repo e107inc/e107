@@ -1603,8 +1603,12 @@ function update_706_to_800($type='')
 		e107::getSingleton('e107plugin')->refresh('page');
 	}
 	
-	
-	
+	// Clean up news keywords. - remove spaces between commas.
+	if($sql->select('news', 'news_id', "news_meta_keywords LIKE '%, %' LIMIT 1"))
+	{
+		if ($just_check) return update_needed('News keywords contain spaces between commas and needs to be updated. ');
+		$sql->update('news', "news_meta_keywords = REPLACE(news_meta_keywords, ', ', ',')");
+	}
 	
 	
 	
