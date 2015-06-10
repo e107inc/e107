@@ -48,7 +48,7 @@ class links_admin extends e_admin_dispatcher
 		'main/list'		=> array('caption'=> LAN_MANAGE, 'perm' => 'I'),
 		'main/create' 	=> array('caption'=> LAN_CREATE, 'perm' => 'I'),
 		'main/prefs' 	=> array('caption'=> LAN_OPTIONS, 'perm' => 'I'),
-		'main/tools'	=> array('caption'=> ADLAN_CL_6, 'perm' => 'I')
+		'main/tools'	=> array('caption'=> LINKLAN_4, 'perm' => 'I')
 	);
 
 	protected $adminMenuAliases = array(
@@ -146,64 +146,12 @@ class links_admin_ui extends e_admin_ui
 		);
 
 
-		if(!empty($_POST['generate_lanlinks']))
-		{
-			$this->generateLanLinks();
-		}
 
 
 
 	}
 
 
-	private function generateLanLinks()
-	{
-		$sql = e107::getDb();
-		$frm = e107::getForm();
-		$rows = $sql->retrieve('links','*','',true);
-		$text = '<?php';
-
-		$text .= "\n// e107 Custom Language File \n\n";
-		$update = array();
-
-		foreach($rows as $row)
-		{
-			if(empty($row['link_name']))
-			{
-				continue;
-			}
-
-			$name = str_replace('-','_',$frm->name2id($row['link_name']));
-			$key = "CUSTLAN_".strtoupper($name);
-			$text .= 'define("'.$key.'", "'.$row['link_name'].'");';
-			$text .= "\n";
-			$id = $row['link_id'];
-			$update[$id] = $key;
-
-			// $sql->update('links', 'link_name= "'.$key.'" WHERE link_id = '.$row['link_id'].' LIMIT 1');
-		}
-
-		if(!is_dir(e_SYSTEM."lans"))
-		{
-			mkdir(e_SYSTEM.'lans',0755);
-		}
-
-		if(file_put_contents(e_SYSTEM."lans/English_custom.php",$text))
-		{
-			foreach($update as $id=>$val)
-			{
-				$sql->update('links', 'link_name= "'.$val.'" WHERE link_id = '.$id.' LIMIT 1'); //TODO add a checkbox preference for this.
-			}
-
-			e107::getMessage()->addSuccess(LAN_CREATED);
-		}
-		else
-		{
-			e107::getMessage()->addError(LAN_CREATED);
-		}
-
-
-	}
 
 
 
@@ -325,31 +273,12 @@ class links_admin_ui extends e_admin_ui
 			</fieldset>
 		</form>
 		";
+
 		//$e107->ns->tablerender(LINKLAN_4, $emessage->render().$text);
 	//	$this->addTitle(LINKLAN_4);
 
-		// ------------- Multilanguage Links --------------------
-		$frm = e107::getForm();
+		return $text;
 
-		$text2 = $frm->open('multilan-links');
-		$text2 .= "<div class='alert alert-info'>This will generate LAN definitions for all your sitelinks and store them in a custom language file within your system folder and then update all your link names to use them.</div>
-
-		<div class='buttons-bar center'>
-		".$ui->admin_button('generate_lanlinks', 'no-value', 'delete', "Generate LANs")."
-		</div>";
-
-		$text2 .= $frm->close();
-
-		// ----------------------------------------------------------
-
-
-
-		$tabs = array(
-			0   => array('caption'=>LINKLAN_4, 'text'=>$text),
-			1   => array('caption'=>"Generate LANs", 'text'=>$text2)
-		);
-
-		return e107::getForm()->tabs($tabs); // $text;
 	}
 
 
