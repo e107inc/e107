@@ -404,10 +404,13 @@ class language{
 	 * @param string $language eg. 'Spanish'
 	 * @return URL
 	 */
-	function subdomainUrl($language)
+	function subdomainUrl($language, $url=e_REQUEST_URL)
 	{
 		global $pref;
-		$codelnk = ($language == $pref['sitelanguage']) ? "www" : $this->convert($language);
+
+		$iso = (strlen($language) == 2) ? $language : $this->convert($language);
+
+		$codelnk = ($language == $pref['sitelanguage']) ? "www" : $iso;
 		
 		if($codelnk == '')
 		{
@@ -421,7 +424,10 @@ class language{
 			        : str_replace($_SERVER['HTTP_HOST'], $codelnk.'.'.e_DOMAIN, e_SELF);
 		*/
 
-		$urlval = str_replace($_SERVER['HTTP_HOST'], $codelnk.'.'.e_DOMAIN, e_REQUEST_URL) ;
+
+		$domain = deftrue('e_DOMAIN','example.com');
+
+		$urlval = str_replace($_SERVER['HTTP_HOST'], $codelnk.'.'.$domain, $url) ;
 		
         return (string) $urlval;
 	}
