@@ -332,10 +332,10 @@ class links_admin_ui extends e_admin_ui
 		$frm = e107::getForm();
 
 		$text2 = $frm->open('multilan-links');
-		$text2 .= "<div class='alert alert-info'>This will generate LAN definitions for all your sitelinks and store them in a custom language file within your system folder and then update all your link names to use them.</div>
+		$text2 .= "<div class='alert alert-info'>".LINKLAN_12."</div>
 
 		<div class='buttons-bar center'>
-		".$ui->admin_button('generate_lanlinks', 'no-value', 'delete', "Generate LANs")."
+		".$ui->admin_button('generate_lanlinks', 'no-value', 'delete', LINKLAN_13)."
 		</div>";
 
 		$text2 .= $frm->close();
@@ -346,7 +346,7 @@ class links_admin_ui extends e_admin_ui
 
 		$tabs = array(
 			0   => array('caption'=>LINKLAN_4, 'text'=>$text),
-			1   => array('caption'=>"Generate LANs", 'text'=>$text2)
+			1   => array('caption'=>LINKLAN_13, 'text'=>$text2)
 		);
 
 		return e107::getForm()->tabs($tabs); // $text;

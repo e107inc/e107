@@ -77,5 +77,6 @@ define("LINKLAN_8", "News Categories");
 define("LINKLAN_9", "Download Categories");
 // define("LINKLAN_10", "Create Sublink");
 // define('LINKLAN_11', 'Nothing changed - not updated');
-
+define("LINKLAN_12", "This will generate LAN definitions for all your sitelinks and store them in a custom language file within your system folder and then update all your link names to use them.");
+define("LINKLAN_13", "Generate LANs");
 ?>
