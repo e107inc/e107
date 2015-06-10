@@ -416,9 +416,12 @@ class language{
 		
       //  $urlval = str_replace($_SERVER['HTTP_HOST'],$codelnk.".".e_DOMAIN,e_SELF);
 		
-		$urlval = (e_QUERY)
-		        ? str_replace($_SERVER['HTTP_HOST'], $codelnk.'.'.e_DOMAIN, e_SELF).'?'.e_QUERY
-		        : str_replace($_SERVER['HTTP_HOST'], $codelnk.'.'.e_DOMAIN, e_SELF);
+		/*	$urlval = (e_QUERY)
+			        ? str_replace($_SERVER['HTTP_HOST'], $codelnk.'.'.e_DOMAIN, e_SELF).'?'.e_QUERY
+			        : str_replace($_SERVER['HTTP_HOST'], $codelnk.'.'.e_DOMAIN, e_SELF);
+		*/
+
+		$urlval = str_replace($_SERVER['HTTP_HOST'], $codelnk.'.'.e_DOMAIN, e_REQUEST_URL) ;
 		
         return (string) $urlval;
 	}
