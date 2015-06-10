@@ -936,15 +936,15 @@ class e107plugin
 					$linkData = array(
 						'link_name'			 => $link_name,
 						'link_url'			 => $path,
-						'link_description'	 => '',
-						'link_button'		 => '',
+						'link_description'	 => vartrue($options['link_desription'],''),
+						'link_button'		 => vartrue($options['link_icon'],''),
 						'link_category'		 => '1',
 						'link_order'		 => $link_t + 1,
 						'link_parent'		 => '0',
 						'link_open'			 => '0',
 						'link_class'		 => vartrue($linkclass,'0'),
 						'link_function'		 => (vartrue($options['link_function']) ? $this->plugFolder ."::".$options['link_function'] : ""),
-						'link_sefurl'			 => vartrue($options['link_sef']),
+						'link_sefurl'		 => vartrue($options['link_sef']),
 						'link_owner'		 => vartrue($options['link_owner'])
 					);
 					return $sql->insert('links', $linkData); 
@@ -1981,7 +1981,7 @@ class e107plugin
 		foreach ($array['link'] as $link)
 		{
 			$attrib 	= $link['@attributes'];
-			$linkName 	= (defset($link['@value'])) ? constant($link['@value']) : $link['@value'];
+			$linkName 	= (defset($link['@value'])) ? constant($link['@value']) : vartrue($link['@value'],'');
 			$remove 	= (varset($attrib['deprecate']) == 'true') ? TRUE : FALSE;
 			$url 		= vartrue($attrib['url']);
 			$perm 		= vartrue($attrib['perm'],'everyone'); 
@@ -1990,7 +1990,9 @@ class e107plugin
 			$options 	= array(
 				'link_function'	=>	vartrue($attrib['function']),
 				'link_owner'	=> 	vartrue($plug_vars['folder']),
-				'link_sef'		=> $sef
+				'link_sef'		=> $sef,
+				'link_icon'     => vartrue($attrib['icon']),
+				'link_description'  => vartrue($attrib['description'])
 			);
 
 			switch ($function)
