@@ -295,29 +295,11 @@ if(isset($_POST['language_sel']) && isset($_POST['language']))
 class lancheck
 {
 	
-	var $core_plugins = array(
-		"alt_auth","banner","blogcalendar_menu","calendar_menu","chatbox_menu",
-		"clock_menu","comment_menu","download","faqs", "featurebox", "forum","gallery", "gsitemap","import", "links_page",
-		"linkwords","list_new","log","login_menu","newforumposts_main","newsfeed",
-		"news", "newsletter","online", "page",
-		"pm","poll","rss_menu","search_menu","siteinfo","tagwords", "tinymce",
-		"trackback","tree_menu","user_menu"
-		);
-		
-	/*
-	 * $core_plugins = array(
-	"alt_auth", "banner_menu", "blogcalendar_menu", "calendar_menu", "chatbox_menu",
-	"clock_menu", "comment_menu", "content", 'download', "featurebox", "forum",
-	"gsitemap", "links_page", "linkwords", "list_new", "log", "login_menu",
-	"newforumposts_main", "newsfeed", "newsletter", "online", "other_news_menu",
-	"pdf", "pm", "poll", "rss_menu", "search_menu", "siteinfo", "trackback",
-	"tree_menu", "user_menu"
-);
-	 */	
-		
+	var $core_plugins = array();
+
 	var $core_themes = array("bootstrap"); 
 			
-	var $errorsOnly = FALSE;
+	var $errorsOnly = false;
 	
 	var $coreImage = array();
 
@@ -331,7 +313,14 @@ class lancheck
 		// Check current theme also (but do NOT add to generated zip)
 		$this->core_themes[] = $pref['sitetheme'];
 		$this->core_themes = array_unique($this->core_themes);
-		
+
+		$this->core_plugins = e107::getPlugin()->getCorePlugins();
+
+		if(E107_DEBUG_LEVEL > 0)
+		{
+			print_a($this->core_plugins);
+		}
+
 		$acceptedLans = explode(",",e_LANLIST);
 	
 		
