@@ -942,7 +942,7 @@ class e107plugin
 						'link_order'		 => $link_t + 1,
 						'link_parent'		 => '0',
 						'link_open'			 => '0',
-						'link_class'		 => vartrue($linkclass,'0'),
+						'link_class'		 => vartrue($link_class,'0'),
 						'link_function'		 => (vartrue($options['link_function']) ? $this->plugFolder ."::".$options['link_function'] : ""),
 						'link_sefurl'		 => vartrue($options['link_sef']),
 						'link_owner'		 => vartrue($options['link_owner'])
