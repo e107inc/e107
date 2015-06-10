@@ -34,7 +34,7 @@ class faqs_url // plugin-folder + '_url'
 		);
 
 		$config['item'] = array(
-			'regex'			=> '^faqs/(\d*)-(.*)$$',
+			'regex'			=> '^faqs/(\d*)-(.*)$',
 			'sef'			=> 'faqs/{faq_id}-{faq_sef}',			// {faq_info_sef} is substituted with database value when parsed by e107::url();
 			'redirect'		=> '{e_PLUGIN}faqs/faqs.php?id=$1'
 		);
