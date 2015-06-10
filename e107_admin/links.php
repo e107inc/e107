@@ -80,7 +80,7 @@ class links_admin_ui extends e_admin_ui
 		'checkboxes' 		=> array('title'=> '',				'width' => '3%','forced' => true, 'thclass' => 'center first','class' => 'center first'),
 		'link_button'		=> array('title'=> LAN_ICON, 		'type'=>'icon',			'width'=>'5%', 'thclass' => 'center', 'class'=>'center', 'writeParms'=>'glyphs=1'),
 		'link_id'			=> array('title'=> LAN_ID, 			'type'=>'method','readParms'=>'','noedit'=>TRUE),
-		'link_name'	   		=> array('title'=> LCLAN_15,		'width'=>'auto','type'=>'text', 'inline'=>true, 'required' => true, 'validate' => true),
+		'link_name'	   		=> array('title'=> LCLAN_15,		'width'=>'auto','type'=>'text', 'inline'=>true, 'required' =>false, 'validate' => false), // not required as only an icon may be used.
 	    'link_category'     => array('title'=> LAN_TEMPLATE,    'type' => 'dropdown', 'inline'=>true, 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
     
     	'link_parent' 		=> array('title'=> LCLAN_104, 	'type' => 'method', 'data'=>'int', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
@@ -95,7 +95,7 @@ class links_admin_ui extends e_admin_ui
 		'options' 			=> array('title'=> LAN_OPTIONS, 	'type'	=> null, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class'=>'center','readParms'=>'sort=1') // quick workaround
 	);
 
-	protected $fieldpref =  array('checkboxes','link_id','link_name','link_sefurl','link_class','link_category','options');
+	protected $fieldpref =  array('checkboxes','link_button', 'link_id','link_name','link_sefurl','link_class','link_category','options');
 
 	protected $prefs = array(
 		'linkpage_screentip'	=> array('title'=>LCLAN_78,	'type'=>'boolean', 'help'=>LCLAN_79),
