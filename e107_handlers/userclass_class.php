@@ -969,12 +969,14 @@ class user_class
 
 
 
+
+
 	/**
 	 *	Look up class ID for a given class name
 	 *	@param string $name - class name
 	 *	@return integer|boolean FALSE if not found, else user class ID
 	 */
-	public function ucGetClassIDFromName($name)
+	public function getID($name)
 	{
 		$this->readTree();
 		// We have all the info - can just search the array
@@ -989,6 +991,19 @@ class user_class
 	}
 
 
+
+
+
+	/**
+	 * BC Alias of getID();
+	 * @param $name
+	 * @return mixed
+	 */
+	public function ucGetClassIDFromName($name)
+	{
+		return $this->getId($name);
+
+	}
 
 	/**
 	 *	Utility to remove a specified class ID from the default comma-separated list
