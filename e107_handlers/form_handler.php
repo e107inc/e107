@@ -1893,6 +1893,11 @@ class e_form
 			$current_value =  e107::getUserClass()->getClassFromKey($tmp[0]);
 		}
 
+		if(!empty($current_value) && !is_numeric($current_value)) // convert name to id.
+		{
+			$current_value = $this->_uc->getID($current_value);
+		}
+
 		return $this->select_open($name, $select_options)."\n".$this->_uc->vetted_tree($name, array($this, '_uc_select_cb'), $current_value, $uc_options, $opt_options)."\n".$this->select_close();
 	}
 
