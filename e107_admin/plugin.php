@@ -1713,8 +1713,8 @@ class pluginLanguage
 	
 	private $unused			= array();
 	private $unsure			= array();
-	
-	private $excludeLans 	= array('CORE_LC', 'CORE_LC2'); 
+
+	private $excludeLans 	= array('CORE_LC', 'CORE_LC2', 'e_LAN', 'e_LANGUAGE', 'e_LANGUAGEDIR', 'LAN', 'LANGUAGE');
 	
 	private $useSimilar		= false; 
 	
@@ -2085,7 +2085,7 @@ class pluginLanguage
 				{
 					foreach($match[1] as $lan)
 					{
-						if($lan != 'e_LANGUAGE' && $lan != 'e_LANGUAGEDIR' && $lan != 'LAN' && $lan != 'LANGUAGE')
+						if(!in_array($lan,$this->excludeLans))
 						{
 							$this->scriptDefs[] = $lan;
 							$this->scriptDefsData[] = array('file'=>$path, 'line'=>$ln, 'lan'=>$lan, 'value'=>$this->lanDefsRaw[$lan]); 
