@@ -869,7 +869,7 @@ class admin_shortcodes
 				unset($tmp);
 			}
 
-			$e107_var['lout']['text']=ADLAN_46;
+			$e107_var['lout']['text']=LAN_LOGOUT;
 			$e107_var['lout']['link']=e_ADMIN_ABS.'admin.php?logout';
 
 			$text = e_admin_menu('', '', $e107_var);
@@ -1634,7 +1634,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		{
 			$tmp = array();
 			
-			$tmp[1]['text'] = ADLAN_CL_1;
+			$tmp[1]['text'] = LAN_SETTINGS;
 			$tmp[1]['description'] = ADLAN_151;
 			$tmp[1]['link'] = e_BASE.'usersettings.php';
 			$tmp[1]['image'] =  "<i class='S16 e-settings-16'></i>"; // "<img src='".E_16_CAT_SETT."' alt='".ADLAN_151."' class='icon S16' />";
@@ -1653,7 +1653,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		//	$tmp[2]['perm'] = '';	
 			
 			
-			$tmp[3]['text'] = ADLAN_46;
+			$tmp[3]['text'] = LAN_LOGOUT;
 			$tmp[3]['description'] = ADLAN_151;
 			$tmp[3]['link'] = e_ADMIN_ABS.'admin.php?logout';
 			$tmp[3]['image'] = "<i class='S16 e-logout-16'></i>"; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
@@ -1664,7 +1664,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				
 				
 					
-			$tmp[4]['text'] = ADLAN_46;
+			$tmp[4]['text'] = LAN_LOGOUT;
 			$tmp[4]['description'] = ADLAN_151;
 			$tmp[4]['link'] = e_ADMIN_ABS.'admin.php?logout';
 			$tmp[4]['image'] = "";
@@ -1716,7 +1716,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$menu_vars['logout']['text'] = ADMINNAME; // ""; // ADMINNAME;
 			$menu_vars['logout']['link'] = '#';
 			$menu_vars['logout']['image'] = $tp->toGlyph('fa-user'); // "<i class='icon-user'></i>"; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
-			$menu_vars['logout']['image_src'] = ADLAN_46;
+			$menu_vars['logout']['image_src'] = LAN_LOGOUT;
 			$menu_vars['logout']['sub'] = $tmp;	
 		}
 

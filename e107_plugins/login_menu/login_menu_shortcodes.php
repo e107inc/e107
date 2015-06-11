@@ -41,7 +41,7 @@ global $tp;
 
 			private $use_imagecode =0;
 			private $sec;
-			private $usernameLabel = LOGIN_MENU_L1;
+			private $usernameLabel = LAN_LOGINMENU_1;
 			private $allowEmailLogin;
 
 			function __construct()
@@ -55,12 +55,12 @@ global $tp;
 
 				if($pref['allowEmailLogin']==1)
 				{
-					$this->usernameLabel = LOGIN_MENU_L49;
+					$this->usernameLabel = LAN_LOGINMENU_49;
 				}
 
 				if($pref['allowEmailLogin']==2)
 				{
-					$this->usernameLabel = LOGIN_MENU_L50;
+					$this->usernameLabel = LAN_LOGINMENU_50;
 				}
 
 			}
@@ -93,7 +93,7 @@ global $tp;
 
 			function sc_lm_password_label($parm='')
 			{
-				return LOGIN_MENU_L2;
+				return LAN_LOGINMENU_2;
 			}
 
 
@@ -133,7 +133,7 @@ global $tp;
 
 			function sc_lm_loginbutton($parm='')
 			{
-				return "<input class='button btn btn-default login' type='submit' name='userlogin' id='userlogin' value='".LOGIN_MENU_L28."' />";
+				return "<input class='button btn btn-default login' type='submit' name='userlogin' id='userlogin' value='".LAN_LOGIN."' />";
 			}
 
 			function sc_lm_rememberme($parm='')
@@ -144,7 +144,7 @@ global $tp;
 				}
 				if($pref['user_tracking'] != "session")
 				{
-					return "<input type='checkbox' name='autologin' id='autologin' value='1' checked='checked' />".($parm ? $parm : "<label for='autologin'>".LOGIN_MENU_L6."</label>");
+					return "<input type='checkbox' name='autologin' id='autologin' value='1' checked='checked' />".($parm ? $parm : "<label for='autologin'>".LAN_LOGINMENU_6."</label>");
 				}
 				return '';
 			}
@@ -156,7 +156,7 @@ global $tp;
 				{
 					if (!$pref['auth_method'] || $pref['auth_method'] == 'e107')
 					{
-						return $parm == 'href' ? e_SIGNUP : "<a class='login_menu_link signup' id='login_menu_link_signup' href='".e_SIGNUP."' title=\"".LOGIN_MENU_L3."\">".LOGIN_MENU_L3."</a>";
+						return $parm == 'href' ? e_SIGNUP : "<a class='login_menu_link signup' id='login_menu_link_signup' href='".e_SIGNUP."' title=\"".LAN_LOGINMENU_3."\">".LAN_LOGINMENU_3."</a>";
 					}
 				}
 				return '';
@@ -167,7 +167,7 @@ global $tp;
 				$pref = e107::getPref();
 				if (!$pref['auth_method'] || $pref['auth_method'] == 'e107')
 				{
-					return $parm == 'href' ? SITEURL.'fpw.php' : "<a class='login_menu_link fpw' id='login_menu_link_fpw' href='".SITEURL."fpw.php' title=\"".LOGIN_MENU_L4."\">".LOGIN_MENU_L4."</a>";
+					return $parm == 'href' ? SITEURL.'fpw.php' : "<a class='login_menu_link fpw' id='login_menu_link_fpw' href='".SITEURL."fpw.php' title=\"".LAN_LOGINMENU_4."\">".LAN_LOGINMENU_4."</a>";
 				}
 				return '';
 			}
@@ -182,7 +182,7 @@ global $tp;
 					{
 						if (!$pref['auth_method'] || $pref['auth_method'] == 'e107' )
 						{
-							return $parm == 'href' ? e_SIGNUP.'?resend' : "<a class='login_menu_link resend' id='login_menu_link_resend' href='".e_SIGNUP."?resend' title=\"".LOGIN_MENU_L40."\">".LOGIN_MENU_L40."</a>";
+							return $parm == 'href' ? e_SIGNUP.'?resend' : "<a class='login_menu_link resend' id='login_menu_link_resend' href='".e_SIGNUP."?resend' title=\"".LAN_LOGINMENU_40."\">".LAN_LOGINMENU_40."</a>";
 						}
 					}
 				}
@@ -195,7 +195,7 @@ global $tp;
 
 				if(ADMIN && varset($pref['maintainance_flag']))
 				{
-					return LOGIN_MENU_L10;
+					return LAN_LOGINMENU_10;
 				}
 				return '';
 			}
@@ -213,7 +213,7 @@ global $tp;
 			function sc_lm_adminlink($parm='')
 			{
 				if(ADMIN == TRUE) {
-					return $parm == 'href' ? e_ADMIN_ABS.'admin.php' : '<a class="login_menu_link admin" id="login_menu_link_admin" href="'.e_ADMIN_ABS.'admin.php">'.LOGIN_MENU_L11.'</a>';
+					return $parm == 'href' ? e_ADMIN_ABS.'admin.php' : '<a class="login_menu_link admin" id="login_menu_link_admin" href="'.e_ADMIN_ABS.'admin.php">'.LAN_LOGINMENU_11.'</a>';
 				}
 				return '';
 			}
@@ -221,7 +221,7 @@ global $tp;
 			function sc_lm_admin_configure($parm='')
 			{
 			if(ADMIN == TRUE) {
-				return $parm == 'href' ? e_PLUGIN_ABS.'login_menu/config.php' : '<a class="login_menu_link config" id="login_menu_link_config" href="'.e_PLUGIN_ABS.'login_menu/config.php">'.LOGIN_MENU_L48.'</a>';
+				return $parm == 'href' ? e_PLUGIN_ABS.'login_menu/config.php' : '<a class="login_menu_link config" id="login_menu_link_config" href="'.e_PLUGIN_ABS.'login_menu/config.php">'.LAN_LOGINMENU_48.'</a>';
 			}
 			return '';
 			}
@@ -234,7 +234,7 @@ global $tp;
 
 			function sc_lm_usersettings($parm='')
 			{
-				$text = ($parm) ? $parm : LOGIN_MENU_L12;
+				$text = ($parm) ? $parm : LAN_SETTINGS;
 				$url = $this->sc_lm_usersettings_href();
 				return '<a class="login_menu_link usersettings" id="login_menu_link_usersettings" href="'.$url.'">'.$text.'</a>';
 			}
@@ -247,7 +247,7 @@ global $tp;
 
 			function sc_lm_profile($parm='')
 			{
-				$text = ($parm) ? $parm : LOGIN_MENU_L13;
+				$text = ($parm) ? $parm : LAN_LOGINMENU_13;
 				$url = $this->sc_lm_profile_href();
 				return '<a class="login_menu_link profile" id="login_menu_link_profile" href="'.$url.'">'.$text.'</a>';
 			}
@@ -260,7 +260,7 @@ global $tp;
 
 			function sc_lm_logout($parm='')
 			{
-			$text = ($parm) ? $parm : LOGIN_MENU_L8;
+			$text = ($parm) ? $parm : LAN_LOGOUT;
 			return '<a class="login_menu_link logout" id="login_menu_link_logout" href="'.e_HTTP.'index.php?logout">'.$text.'</a>';
 			}
 
@@ -295,13 +295,13 @@ global $tp;
 			function sc_lm_external_link($parm='')
 			{
 				$lbox_item = getcachedvars('login_menu_linkdata');
-				return $parm == 'href' ? $lbox_item['link_url'] : '<a href="'.$lbox_item['link_url'].'" class="login_menu_link external" id="login_menu_link_external_'.$lbox_item['link_id'].'">'.vartrue($lbox_item['link_label'], '['.LOGIN_MENU_L44.']').'</a>';
+				return $parm == 'href' ? $lbox_item['link_url'] : '<a href="'.$lbox_item['link_url'].'" class="login_menu_link external" id="login_menu_link_external_'.$lbox_item['link_id'].'">'.vartrue($lbox_item['link_label'], '['.LAN_LOGINMENU_44.']').'</a>';
 			}
 
 			function sc_lm_external_link_label($parm='')
 			{
 				$lbox_item = getcachedvars('login_menu_linkdata');
-				return vartrue($lbox_item['link_label'], '['.LOGIN_MENU_L44.']');
+				return vartrue($lbox_item['link_label'], '['.LAN_LOGINMENU_44.']');
 			}
 
 			function sc_lm_stats($parm='')
@@ -322,12 +322,12 @@ global $tp;
 				$tmp = array();
 				if($data['new_news']){
 					$tmp['LM_STAT_NEW']   = $data['new_news'];
-					$tmp['LM_STAT_LABEL'] = $data['new_news'] == 1 ? LOGIN_MENU_L14 : LOGIN_MENU_L15;
+					$tmp['LM_STAT_LABEL'] = $data['new_news'] == 1 ? LAN_LOGINMENU_14 : LAN_LOGINMENU_15;
 					$tmp['LM_STAT_EMPTY'] = '';
 				} else {
 					$tmp['LM_STAT_NEW'] = '';
 					$tmp['LM_STAT_LABEL'] = '';
-					$tmp['LM_STAT_EMPTY'] = LOGIN_MENU_L26." ".LOGIN_MENU_L15;
+					$tmp['LM_STAT_EMPTY'] = LAN_LOGINMENU_26." ".LAN_LOGINMENU_15;
 				}
 				return $tp -> parseTemplate($LOGIN_MENU_STATITEM, false, $tmp);
 			}
@@ -340,12 +340,12 @@ global $tp;
 				$tmp = array();
 				if($data['new_comments']){
 					$tmp['LM_STAT_NEW']   = $data['new_comments'];
-					$tmp['LM_STAT_LABEL'] = $data['new_comments'] == 1 ? LOGIN_MENU_L18 : LOGIN_MENU_L19;
+					$tmp['LM_STAT_LABEL'] = $data['new_comments'] == 1 ? LAN_LOGINMENU_18 : LAN_LOGINMENU_19;
 					$tmp['LM_STAT_EMPTY'] = '';
 				} else {
 					$tmp['LM_STAT_NEW']   = '';
 					$tmp['LM_STAT_LABEL'] = '';
-					$tmp['LM_STAT_EMPTY'] = LOGIN_MENU_L26." ".LOGIN_MENU_L19;
+					$tmp['LM_STAT_EMPTY'] = LAN_LOGINMENU_26." ".LAN_LOGINMENU_19;
 				}
 				return $tp -> parseTemplate($LOGIN_MENU_STATITEM, false, $tmp);
 			}
@@ -358,12 +358,12 @@ global $tp;
 				$tmp = array();
 				if($data['new_users']){
 					$tmp['LM_STAT_NEW']   = $data['new_users'];
-					$tmp['LM_STAT_LABEL'] = $data['new_users'] == 1 ? LOGIN_MENU_L22 : LOGIN_MENU_L23;
+					$tmp['LM_STAT_LABEL'] = $data['new_users'] == 1 ? LAN_LOGINMENU_22 : LAN_LOGINMENU_23;
 					$tmp['LM_STAT_EMPTY'] = '';
 				} else {
 					$tmp['LM_STAT_NEW']   = '';
 					$tmp['LM_STAT_LABEL'] = '';
-					$tmp['LM_STAT_EMPTY'] = LOGIN_MENU_L26." ".LOGIN_MENU_L23;
+					$tmp['LM_STAT_EMPTY'] = LAN_LOGINMENU_26." ".LAN_LOGINMENU_23;
 				}
 				return $tp -> parseTemplate($LOGIN_MENU_STATITEM, false, $tmp);
 			}
@@ -403,7 +403,7 @@ global $tp;
 			{
 				$data = getcachedvars('login_menu_data');
 				if($parm == 'href') return $data['listnew_link'];
-				return $data['listnew_link'] ? '<a href="'.$data['listnew_link'].'" class="login_menu_link listnew" id="login_menu_link_listnew">'.LOGIN_MENU_L24.'</a>' : '';
+				return $data['listnew_link'] ? '<a href="'.$data['listnew_link'].'" class="login_menu_link listnew" id="login_menu_link_listnew">'.LAN_LOGINMENU_24.'</a>' : '';
 			}
 
 

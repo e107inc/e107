@@ -147,7 +147,7 @@ define('LAN_SIGNUP_106', 'Unable to action your request - do you already have an
 
 
 define("LAN_LOGINNAME", "Username");
-define("LAN_PASSWORD", "Password");
+//define("LAN_PASSWORD", "Password");
 define("LAN_USERNAME", "Display Name");
 
 define("LAN_SIGNUP_107", "Password must be a minimum of [x] characters and include at least one UPPERCASE letter and a digit");

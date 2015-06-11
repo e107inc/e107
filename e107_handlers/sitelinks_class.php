@@ -672,7 +672,7 @@ class e_navigation
 		
 		$pref = e107::getPref();
 		
-		$this->admin_cat['title'][1] = ADLAN_CL_1;
+		$this->admin_cat['title'][1] = LAN_SETTINGS;
 		$this->admin_cat['id'][1] = 'setMenu';
 		$this->admin_cat['img'][1] = $tp->toGlyph('e-settings-16');
 		$this->admin_cat['lrg_img'][1] = $tp->toGlyph('e-settings-32'); 
