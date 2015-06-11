@@ -2435,6 +2435,9 @@ class pluginBuilder
 			$legacyFile = e_PLUGIN.$this->pluginName."/plugin.php";		
 			if(file_exists($legacyFile))
 			{
+				$eplug_name = $eplug_author = $eplug_url = $eplug_description = "";
+				$eplug_tables = array();
+
 				require_once($legacyFile);	
 				$mes = e107::getMessage();
 				$mes->addInfo("Loading plugin.php file");

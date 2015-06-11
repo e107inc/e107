@@ -766,7 +766,7 @@ class e_parse extends e_parser
 		}
 
 
-		if(substr($text,0,6) == '[html]')
+		if(is_string($text) && substr($text,0,6) == '[html]')
 		{
 			// $text = $this->toHtml($text,true);
 			$search = array('&quot;','&#039;','&#092;', '&',); // '&' must be last.
@@ -2838,7 +2838,7 @@ class e_parser
 		       
 		$doc->preserveWhiteSpace = true;
 		libxml_use_internal_errors(true);
-        $doc->loadHTML($html); 	
+        $doc->loadHTML($html);
 	
 		$tg = explode(",", $taglist);
 		$ret = array();
@@ -3669,8 +3669,8 @@ return;
 		
         // Set it up for processing.
 	//    libxml_use_internal_errors(true); // hides errors.
-        $doc  = $this->domObj;   
-
+        $doc  = $this->domObj;
+	    libxml_use_internal_errors(true);
         @$doc->loadHTML($html);
 		// $doc->encoding = 'UTF-8';
 

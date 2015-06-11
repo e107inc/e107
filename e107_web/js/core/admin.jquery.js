@@ -355,6 +355,13 @@ $(document).ready(function()
 			{
 				var placement = 'top';	
 			}
+
+            var custplace = $(t).attr('data-placement'); // ie top|left|bottom|right
+
+            if(custplace !== undefined)
+            {
+                placement = custplace;
+            }
 			
 			
 			t.hide();
