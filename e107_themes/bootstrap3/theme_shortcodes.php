@@ -92,7 +92,7 @@ class theme_shortcodes extends e_shortcode
 			if($userReg==1)
 			{
 				$text .= '
-				<li><a href="'.e_SIGNUP.'">'.LOGIN_MENU_L3.'</a></li>
+				<li><a href="'.e_SIGNUP.'">'.LAN_LOGINMENU_3.'</a></li>
 				'; // Signup
 			}
 
@@ -105,7 +105,7 @@ class theme_shortcodes extends e_shortcode
 				<li class="divider-vertical"></li>
 				<li class="dropdown">
 			
-				<a class="dropdown-toggle" href="#" data-toggle="dropdown">'.LOGIN_MENU_L51.' <strong class="caret"></strong></a>
+				<a class="dropdown-toggle" href="#" data-toggle="dropdown">'.LAN_LOGINMENU_51.' <strong class="caret"></strong></a>
 				<div class="dropdown-menu col-sm-12" style="min-width:250px; padding: 15px; padding-bottom: 0px;">
 				
 				{SOCIAL_LOGIN: size=2x}		
@@ -137,15 +137,15 @@ class theme_shortcodes extends e_shortcode
 				<div class="checkbox">
 				
 				<label class="string optional" for="autologin"><input style="margin-right: 10px;" type="checkbox" name="autologin" id="autologin" value="1">
-				'.LOGIN_MENU_L6.'</label>
+				'.LAN_LOGINMENU_6.'</label>
 				</div>
-				<input class="btn btn-primary btn-block" type="submit" name="userlogin" id="userlogin" value="'.LOGIN_MENU_L51.'">
+				<input class="btn btn-primary btn-block" type="submit" name="userlogin" id="userlogin" value="'.LAN_LOGINMENU_51.'">
 				';
 				
 				$text .= '
 				
-				<a href="{LM_FPW_LINK=href}" class="btn btn-default btn-sm  btn-block">'.LOGIN_MENU_L4.'</a>
-				<a href="{LM_RESEND_LINK=href}" class="btn btn-default btn-sm  btn-block">'.LOGIN_MENU_L40.'</a>
+				<a href="{LM_FPW_LINK=href}" class="btn btn-default btn-sm  btn-block">'.LAN_LOGINMENU_4.'</a>
+				<a href="{LM_RESEND_LINK=href}" class="btn btn-default btn-sm  btn-block">'.LAN_LOGINMENU_40.'</a>
 				';
 				
 				

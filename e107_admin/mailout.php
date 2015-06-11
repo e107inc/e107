@@ -1316,7 +1316,7 @@ class mailout_main_ui extends e_admin_ui
 		</colgroup>
 		<tbody>";
 	
-	$bouncePrefs = array('mail_bounce_email'=>LAN_MAILOUT_32, 'mail_bounce_pop3'=>LAN_MAILOUT_33, 'mail_bounce_user'=>LAN_MAILOUT_34, 'mail_bounce_pass'=>LAN_MAILOUT_35);
+	$bouncePrefs = array('mail_bounce_email'=>LAN_MAILOUT_32, 'mail_bounce_pop3'=>LAN_MAILOUT_33, 'mail_bounce_user'=>LAN_MAILOUT_34, 'mail_bounce_pass'=>LAN_PASSWORD);
 	
 	foreach($bouncePrefs as $key =>$label)
 	{
@@ -1328,7 +1328,7 @@ class mailout_main_ui extends e_admin_ui
 		<tr><td>".LAN_MAILOUT_32."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_email' value=\"".$pref['mail_bounce_email']."\" /></td></tr>
 		<tr><td>".LAN_MAILOUT_33."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_pop3' value=\"".$pref['mail_bounce_pop3']."\" /></td></tr>
 		<tr><td>".LAN_MAILOUT_34."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_user' value=\"".$pref['mail_bounce_user']."\" /></td></tr>
-		<tr><td>".LAN_MAILOUT_35."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_pass' value=\"".$pref['mail_bounce_pass']."\" /></td></tr>
+		<tr><td>".LAN_PASSWORD."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_pass' value=\"".$pref['mail_bounce_pass']."\" /></td></tr>
 	";
 	*/
 		
@@ -2627,7 +2627,7 @@ function show_prefs($mailAdmin)
 		<tr><td>".LAN_MAILOUT_32."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_email' value=\"".$pref['mail_bounce_email']."\" /></td></tr>
 		<tr><td>".LAN_MAILOUT_33."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_pop3' value=\"".$pref['mail_bounce_pop3']."\" /></td></tr>
 		<tr><td>".LAN_MAILOUT_34."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_user' value=\"".$pref['mail_bounce_user']."\" /></td></tr>
-		<tr><td>".LAN_MAILOUT_35."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_pass' value=\"".$pref['mail_bounce_pass']."\" /></td></tr>
+		<tr><td>".LAN_PASSWORD."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_pass' value=\"".$pref['mail_bounce_pass']."\" /></td></tr>
 		<tr><td>".LAN_MAILOUT_120."</td><td><select class='tbox' name='mail_bounce_type'>\n
 			<option value=''>&nbsp;</option>\n
 			<option value='pop3'".(($pref['mail_bounce_type']=='pop3') ? " selected='selected'" : "").">".LAN_MAILOUT_121."</option>\n

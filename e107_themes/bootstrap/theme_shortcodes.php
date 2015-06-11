@@ -46,8 +46,8 @@ class theme_shortcodes extends e_shortcode
 			';
 			
 			$text .= '
-			<a href="{LM_FPW_LINK=href}" class="btn btn-small btn-block">'.LOGIN_MENU_L4.'</a>
-			<a href="{LM_RESEND_LINK=href}" class="btn btn-small btn-block">'.LOGIN_MENU_L40.'</a>
+			<a href="{LM_FPW_LINK=href}" class="btn btn-small btn-block">'.LAN_LOGINMENU_4.'</a>
+			<a href="{LM_RESEND_LINK=href}" class="btn btn-small btn-block">'.LAN_LOGINMENU_40.'</a>
 			';
 			
 			

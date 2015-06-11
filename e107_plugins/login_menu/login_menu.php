@@ -45,9 +45,9 @@ else
 //Corrup cookie - template? - TODO
 if (defined('CORRUPT_COOKIE') && CORRUPT_COOKIE == TRUE)
 {
-	$text = "<div class='core-sysmsg loginbox'>".LOGIN_MENU_L7."<br /><br />
-	{$bullet} <a href='".SITEURL."index.php?logout'>".LOGIN_MENU_L8."</a></div>";
-	$ns->tablerender(LOGIN_MENU_L9, $text, 'login_error');
+	$text = "<div class='core-sysmsg loginbox'>".LAN_LOGINMENU_7."<br /><br />
+	{$bullet} <a href='".SITEURL."index.php?logout'>".LAN_LOGOUT."</a></div>";
+	$ns->tablerender(LAN_LOGINMENU_9, $text, 'login_error');
 }
     
 //Image code
@@ -146,9 +146,9 @@ if (USER == TRUE || ADMIN == TRUE)
     
     //menu caption
 	if (file_exists(THEME.'images/login_menu.png')) {
-		$caption = '<img src="'.THEME_ABS.'images/login_menu.png" alt="" />'.LOGIN_MENU_L5.' '.USERNAME;
+		$caption = '<img src="'.THEME_ABS.'images/login_menu.png" alt="" />'.LAN_LOGINMENU_5.' '.USERNAME;
 	} else {
-		$caption = LOGIN_MENU_L5.' '.USERNAME;
+		$caption = LAN_LOGINMENU_5.' '.USERNAME;
 	}
 	
 	//render
@@ -184,9 +184,9 @@ else
 	$text .= '</form>';
 
 	if (file_exists(THEME.'images/login_menu.png')) {
-		$caption = '<img src="'.THEME_ABS.'images/login_menu.png" alt="" />'.LOGIN_MENU_L5;
+		$caption = '<img src="'.THEME_ABS.'images/login_menu.png" alt="" />'.LAN_LOGINMENU_5;
 	} else {
-		$caption = LOGIN_MENU_L5;
+		$caption = LAN_LOGINMENU_5;
 	}
 	$ns->tablerender($caption, $text, 'login');
 }

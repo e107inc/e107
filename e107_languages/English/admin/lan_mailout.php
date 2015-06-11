@@ -45,7 +45,7 @@ define("LAN_MAILOUT_31", "Bounced Email Processing");
 define("LAN_MAILOUT_32", "Email address");
 define("LAN_MAILOUT_33", "Incoming Mail server");
 define("LAN_MAILOUT_34", "Account (user) Name");
-define("LAN_MAILOUT_35", "Password");
+// define("LAN_MAILOUT_35", "Password");
 define("LAN_MAILOUT_36", "Delete Bounced Mails after checking");
 define("LAN_MAILOUT_37", "Proceed");
 define("LAN_MAILOUT_38", "Cancel");

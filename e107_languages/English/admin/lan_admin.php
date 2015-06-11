@@ -51,7 +51,7 @@ define("ADLAN_42", "Pages/Menus");
 define("ADLAN_43", "Create custom menu items");
 define("ADLAN_44", "Database");
 define("ADLAN_45", "Database utilities");
-define("ADLAN_46", "Logout");
+// define("ADLAN_46", "Logout");
 define("ADLAN_47", "Welcome");
 define("ADLAN_48", "Logged in");
 define("ADLAN_49", "main site administrator");
@@ -184,7 +184,7 @@ define("ADLAN_161", "Custom Fields?");
 define("ADLAN_162", "A newer version of your site-theme is available:");
 define("ADLAN_163", "A newer version of an installed plugin is available:");  
 
-define("ADLAN_CL_1", "Settings");
+// define("ADLAN_CL_1", "Settings");
 define("ADLAN_CL_2", "Users");
 define("ADLAN_CL_3", "Content");
 define("ADLAN_CL_4", "Coms");
