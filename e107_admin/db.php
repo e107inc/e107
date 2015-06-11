@@ -1018,7 +1018,8 @@ class system_tools
 
 		$deleted_list = "";
 
-		$config = ($mode == 'core' || $mode='') ? e107::getConfig('core') : e107::getPlugConfig($mode);
+		$config = ($mode == 'core' || $mode=='') ? e107::getConfig('core') : e107::getPlugConfig($mode);
+
 
 		// Single Pref Deletion	using button
 		if(varset($_POST['delpref']))
