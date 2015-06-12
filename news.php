@@ -189,12 +189,18 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 		extract($row);  // still required for the table-render.  :(
 	}
 	
-	//XXX These are all correctly using LIST templates. 
+	//XXX These are all correctly using LIST templates.
 	
 	if ($action == 'all') // show archive of all news items using list-style template.
 	{
+		$renTypeQry = '';
+
+		if(!empty($pref['news_list_templates']) && is_array($pref['news_list_templates']))
+		{
+			$renTypeQry = " AND (n.news_render_type REGEXP '(^|,)(".implode("|", $pref['news_list_templates']).")(,|$)')";
+		}
 		
-		$news_total = $sql->count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().")");
+		$news_total = $sql->count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().")". str_replace("n.news", "news", $renTypeQry));
 		$query = "
 		SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
 		nc.category_meta_keywords, nc.category_meta_description
@@ -202,10 +208,15 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.") AND n.news_start < ".time()."
-		AND (n.news_end=0 || n.news_end>".time().")
+		AND (n.news_end=0 || n.news_end>".time().") ";
+
+		$query .= $renTypeQry;
+
+		$query .= "
 		ORDER BY n.news_sticky DESC, n.news_datestamp DESC
 		LIMIT ".intval($newsfrom).",".deftrue('NEWSALL_LIMIT', NEWSLIST_LIMIT); // NEWSALL_LIMIT just for BC. NEWSLIST_LIMIT is sufficient. 
 		$category_name = ($defTemplate == 'list') ? PAGE_NAME : "All";
+		unset($renTypeQry);
 	}
 	elseif ($action == 'cat') // show archive of all news items in a particular category using list-style template.
 	{
