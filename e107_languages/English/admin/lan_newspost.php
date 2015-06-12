@@ -90,9 +90,9 @@ define("NWSLAN_77", "Post to other news menu");
 define("NWSLAN_83","Extended news post");
 define("NWSLAN_84","Choose which visitors will see news item");
 
-define("NWSLAN_86", "Show News-Category Footer Menu");
-define("NWSLAN_87", "News Category Columns?");
-define("NWSLAN_88", "News posts to display per page?");
+define("NWSLAN_86", "News-category footer menu");
+define("NWSLAN_87", "News-category columns");
+define("NWSLAN_88", "Default-view limit per page");
 //define("NWSLAN_89", "Save News Preferences");
 define("NWSLAN_90", "News Preferences");
 define("NWSLAN_100", "Enable Image uploading on Submit News page");
@@ -111,7 +111,7 @@ define("NWSLAN_112", "If this box is ticked, a box containing the date will be d
 define("NWSLAN_113", "Use non-standard template for news layout");
 define("NWSLAN_114", "if the theme you're using has a news layout template, use this instead of the generic layout");
 
-define("NWSLAN_115", "News posts to display in archive ?");
+define("NWSLAN_115", "Archive limit");
 define("NWSLAN_116", "First update the preferences with the changed display per page setting, then update again after setting the news archive preference. (0 is un-activated)");
 define("NWSLAN_117", "Set the title for the news archive");
 // define("NWSLAN_118", "View Images"); already defined above.
@@ -214,7 +214,9 @@ define("LAN_NEWS_87", "eg. blogsearch.google.com/ping/RPC2");
 define("LAN_NEWS_88", "Determines how the default news page should appear.");
 define("LAN_NEWS_89", "Notify these services when you create/update news items.");
 define("LAN_NEWS_90", "One per line.");
-define("LAN_NEWS_91", "Limit for News-Listing Pages");
+define("LAN_NEWS_91", "List-view limit per page");
 define("LAN_NEWS_92", "eg. news.php?all or news.php?cat.1 or news.php?tag=xxx");
+define("LAN_NEWS_93", "List-view content");
+define("LAN_NEWS_94", "Items assigned to these templates will be displayed in the list.");
 
 ?>

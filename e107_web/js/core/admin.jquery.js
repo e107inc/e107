@@ -345,10 +345,10 @@ $(document).ready(function()
 		});
 		
 			// run tips on .field-help 
-		$("div.tbox,input,textarea,select,label,.e-tip").each(function(c) {
+		$("div.tbox,div.checkboxes,input,textarea,select,label,.e-tip").each(function(c) {
 						
 			var t = $(this).nextAll(".field-help");
-			
+
 			var placement = 'right';	
 			
 			if($(this).is("textarea"))

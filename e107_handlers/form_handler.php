@@ -1410,7 +1410,7 @@ class e_form
 	 * @param string $name
 	 * @param array $option_array
 	 * @param mixed $checked
-	 * @param array $options [optional]
+	 * @param array $options [optional useKeyValues]
 	 */
 	function checkboxes($name, $option_array, $checked, $options=array())
 	{
@@ -1437,6 +1437,11 @@ class e_form
 
 
 			$text .= $this->checkbox($cname, $key, $c, $label);
+		}
+
+		if(!empty($text))
+		{
+			return "<div class='checkboxes' style='display:inline-block'>".$text."</div>";
 		}
 
 		return $text;
