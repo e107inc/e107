@@ -21,7 +21,6 @@ define("CORE_LAN7", "Core is attempting to restore prefs from automatic backup."
 define("CORE_LAN8", "Core Prefs Error");
 define("CORE_LAN9", "Core could not restore from automatic backup. Execution halted.");
 define("CORE_LAN10", "Corrupted cookie detected - logged out.");
-
 // Footer
 define("CORE_LAN11", "Render time: ");
 define("CORE_LAN12", " sec (");
@@ -29,23 +28,19 @@ define("CORE_LAN13", "% of that for queries) ");
 define("CORE_LAN14", "%2.3f cpu sec (%2.2f%% load, %2.3f startup). Clock: ");
 define("CORE_LAN15", "DB queries: ");
 define("CORE_LAN16", "Memory: ");
-
 // img.bb
 define("CORE_LAN17", "[ image disabled ]");
 define("CORE_LAN18", "Image: ");
-
 define("CORE_LAN_B", "B");
 define("CORE_LAN_KB", "kB");
 define("CORE_LAN_MB", "MB");
 define("CORE_LAN_GB", "GB");
 define("CORE_LAN_TB", "TB");
-
 define("EMESSLAN_TITLE_INFO", "System Information");
 define("EMESSLAN_TITLE_ERROR", "Error");
 define("EMESSLAN_TITLE_SUCCESS", "Success");
 define("EMESSLAN_TITLE_WARNING", "Warning");
 define("EMESSLAN_TITLE_DEBUG", "System Debug");
-
 define("LAN_EDIT","Edit");
 define("LAN_DELETE","Delete");
 define("LAN_MORE", "More..");
@@ -83,6 +78,9 @@ define("LAN_LOGOUT", "Logout");
 define("LAN_SETTINGS", "Settings");
 define("LAN_PASSWORD", "Password");
 
-
+define('LAN_E107_NEWS', 		'e107 News');
+define('LAN_WEB_STATUS', 		'Website Status');
+define("LAN_APPROVE", "Approve");
+define("LAN_VIEW_ALL", "View All");
 
 ?>

@@ -672,7 +672,7 @@ class users_admin_ui extends e_admin_ui
 			$user = e107::getUser();
 			
 			// TODO - lan
-			$mes->addSuccess('Successfully logged in as '.$sysuser->getName().' <a href="'.e_ADMIN_ABS.'users.php?mode=main&amp;action=logoutas">[logout]</a>')
+			$mes->addSuccess(''.LAN_AUTH_USER_MESSAGE.' '.$sysuser->getName().' <a href="'.e_ADMIN_ABS.'users.php?mode=main&amp;action=logoutas">[logout]</a>')
 				->addSuccess('Please, <a href="'.SITEURL.'" rel="external">Leave Admin</a> to browse the system as this user. Use &quot;Logout&quot; option in Administration to end front-end session');
 			
 			$search = array('--UID--', '--NAME--', '--EMAIL--', '--ADMIN_UID--', '--ADMIN_NAME--', '--ADMIN_EMAIL--');
@@ -701,7 +701,7 @@ class users_admin_ui extends e_admin_ui
 	  	if(e107::getUser()->logoutAs() && $sysuser && $sysuser->getId())
 	  	{
 	  		 // TODO - lan
-			e107::getMessage()->addSuccess('Successfully logged out from '.$sysuser->getName().' ('.$sysuser->getValue('email').') account', 'default', true);
+			e107::getMessage()->addSuccess(''.USRLAN_AS_4.' '.$sysuser->getName().' ('.$sysuser->getValue('email').')', 'default', true);
 			
 			$search = array('--UID--', '--NAME--', '--EMAIL--', '--ADMIN_UID--', '--ADMIN_NAME--', '--ADMIN_EMAIL--');
 			$replace = array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email'), $user->getId(), $user->getName(), $user->getValue('email'));

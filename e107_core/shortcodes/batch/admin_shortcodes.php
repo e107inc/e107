@@ -30,8 +30,8 @@ class admin_shortcodes
 		
             if($parm=='alert')
             {
-            	$text = 'A new update is ready to install! Click to unzip and install  v'.$cacheData.'</a>.
-            	<a class="btn btn-success" href="'.$installUrl.'">Install</a>'; 
+            	$text = ''.LAN_NEW_UPDATE.''.$cacheData.'</a>.
+            	<a class="btn btn-success" href="'.$installUrl.'">'.LAN_BUTTON_INSTALL.'</a>'; 
 				
                  $mes->addInfo($text);
 				return; //  $mes->render(); 
@@ -46,7 +46,7 @@ class admin_shortcodes
                 	'.E_16_E107.' <b class="caret"></b>
             	</a> 
             	<ul class="dropdown-menu" role="menu">
-                	<li class="nav-header navbar-header">Update Available</li>
+                	<li class="nav-header navbar-header">'.LAN_NAV_HEADU.'</li>
                     <li><a href="'.$installUrl.'">e107 v'.$cacheData.'</a></li>
 	          	 </ul>
 	        	</li>
@@ -869,7 +869,7 @@ class admin_shortcodes
 				unset($tmp);
 			}
 
-			$e107_var['lout']['text']=LAN_LOGOUT;
+			$e107_var['lout']['text']=ADLAN_46;
 			$e107_var['lout']['link']=e_ADMIN_ABS.'admin.php?logout';
 
 			$text = e_admin_menu('', '', $e107_var);
@@ -1634,7 +1634,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		{
 			$tmp = array();
 			
-			$tmp[1]['text'] = LAN_SETTINGS;
+			$tmp[1]['text'] = ADLAN_CL_1;
 			$tmp[1]['description'] = ADLAN_151;
 			$tmp[1]['link'] = e_BASE.'usersettings.php';
 			$tmp[1]['image'] =  "<i class='S16 e-settings-16'></i>"; // "<img src='".E_16_CAT_SETT."' alt='".ADLAN_151."' class='icon S16' />";
@@ -1643,7 +1643,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[1]['image_large_src'] = '';
 			
 						
-			$tmp[2]['text'] = "Personalize"; // TODO - generic LAN in lan_admin.php 
+			$tmp[2]['text'] = LAN_LOGIN_PERSONAL;
 			$tmp[2]['description'] = "Customize administration panels";
 			$tmp[2]['link'] = e_ADMIN.'admin.php?mode=customize';
 			$tmp[2]['image'] =  "<i class='S16 e-admins-16'></i>"; //E_16_ADMIN; // "<img src='".E_16_NAV_ADMIN."' alt='".ADLAN_151."' class='icon S16' />";
@@ -1653,7 +1653,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		//	$tmp[2]['perm'] = '';	
 			
 			
-			$tmp[3]['text'] = LAN_LOGOUT;
+			$tmp[3]['text'] = ADLAN_46;
 			$tmp[3]['description'] = ADLAN_151;
 			$tmp[3]['link'] = e_ADMIN_ABS.'admin.php?logout';
 			$tmp[3]['image'] = "<i class='S16 e-logout-16'></i>"; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
@@ -1664,7 +1664,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				
 				
 					
-			$tmp[4]['text'] = LAN_LOGOUT;
+			$tmp[4]['text'] = ADLAN_46;
 			$tmp[4]['description'] = ADLAN_151;
 			$tmp[4]['link'] = e_ADMIN_ABS.'admin.php?logout';
 			$tmp[4]['image'] = "";
@@ -1684,7 +1684,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[5]['link_class']		= '';
 
 										
-			$tmp[6]['text'] 			= "e107 on Twitter";
+			$tmp[6]['text'] 			= LAN_USER_SOCIALTW;
 			$tmp[6]['description'] 		= '';
 			$tmp[6]['link'] 			= 'http://twitter.com/e107';
 			$tmp[6]['image'] 			= E_16_TWITTER; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
@@ -1694,7 +1694,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[6]['link_class']		= '';
 								
 							
-			$tmp[7]['text'] 			= "e107 on Facebook";
+			$tmp[7]['text'] 			= LAN_USER_SOCIALFAB;
 			$tmp[7]['description'] 		= '';
 			$tmp[7]['link'] 			= 'https://www.facebook.com/e107CMS';
 			$tmp[7]['image'] 			= E_16_FACEBOOK; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
@@ -1704,7 +1704,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[7]['link_class']		= '';	
 	
 			
-			$tmp[8]['text'] 			= "e107 on Github";
+			$tmp[8]['text'] 			= LAN_USER_SOCIALGIT;
 			$tmp[8]['description'] 		= '';
 			$tmp[8]['link'] 			= 'https://github.com/e107inc';
 			$tmp[8]['image'] 			= E_16_GITHUB; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
@@ -1716,7 +1716,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$menu_vars['logout']['text'] = ADMINNAME; // ""; // ADMINNAME;
 			$menu_vars['logout']['link'] = '#';
 			$menu_vars['logout']['image'] = $tp->toGlyph('fa-user'); // "<i class='icon-user'></i>"; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
-			$menu_vars['logout']['image_src'] = LAN_LOGOUT;
+			$menu_vars['logout']['image_src'] = ADLAN_46;
 			$menu_vars['logout']['sub'] = $tmp;	
 		}
 

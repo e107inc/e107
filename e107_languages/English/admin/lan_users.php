@@ -297,6 +297,6 @@ define("USFLAN_7", "User Information");
 define('USRLAN_AS_1', 'Login as %s'); //FIXME use [x]
 define('USRLAN_AS_2', 'Logout from %s account');
 define('USRLAN_AS_3', 'You are already logged in as another user account. Please logout first.');
+define('USRLAN_AS_4', 'Successfully logged out from account  ');
 
-// Always search lan_admin.php before adding more. 
-
+define("LAN_AUTH_USER_MESSAGE", "Successfuly logged in as ");  // in auth php & users php
