@@ -68,7 +68,7 @@ if (ADMIN)
 		if(e107::getUser()->getSessionDataAs())
 		{ // TODO - lan
 			$asuser = e107::getSystemUser(e107::getUser()->getSessionDataAs(), false);
-			e107::getMessage()->addInfo('Successfully logged in as '.($asuser->getId()  ? $asuser->getName().' ('.$asuser->getValue('email').')' : 'unknown'). ' <a href="'.e_ADMIN_ABS.'users.php?mode=main&amp;action=logoutas">[logout]</a>');
+			e107::getMessage()->addInfo(''.LAN_AUTH_USER_MESSAGE.' '.($asuser->getId()  ? $asuser->getName().' ('.$asuser->getValue('email').')' : 'unknown'). ' <a href="'.e_ADMIN_ABS.'users.php?mode=main&amp;action=logoutas">[logout]</a>');
 		}
 		// NEW, legacy 3rd party code fix, header called inside the footer o.O
 		if(deftrue('e_ADMIN_UI'))
@@ -304,13 +304,13 @@ class auth
 		    <div class='field'>
 		    	<label for='username'>".ADLAN_89."</label> 
 		    	<input class='tbox e-tip' type='text' autofocus required='required' name='authname' placeholder='".ADLAN_89."' id='username' size='30' value='' maxlength='".varset($pref['loginname_maxlength'], 30)."' />
-		    	<div class='field-help'>Please enter your username or email</div>
+		    	<div class='field-help'>".LAN_LOGIN_ADMINNAME_HOVER."</div>
 		   	</div>			
 		
 		    <div class='field'>
 		    	<label for='userpass'>".ADLAN_90."</label>
 		    	<input class='tbox e-tip' type='password' required='required' name='authpass' placeholder='".ADLAN_90."' id='userpass' size='30' value='' maxlength='30' />
-		    	<div class='field-help'>Password is required</div>
+		    	<div class='field-help'>".LAN_LOGIN_ADMINPWF_HOVER."</div>
 		    </div>";
 		
 		if ($use_imagecode)
