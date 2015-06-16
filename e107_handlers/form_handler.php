@@ -1186,6 +1186,33 @@ class e_form
 	}
 
 
+	/**
+	 * Render Pagination using 'nextprev' shortcode.
+	 * @param string $url eg. e_REQUEST_SELF.'?from=[FROM]'
+	 * @param int $total total records
+	 * @param int $from value to replace [FROM] with in the URL
+	 * @param int $perPage number of items per page
+	 * @param array $options template, type, glyphs
+	 * @return string
+	 */
+	public function pagination($url='', $total=0, $from=0, $perPage=10, $options=array())
+	{
+		require_once(e_CORE."shortcodes/single/nextprev.php");
+
+		$nextprev = array(
+			'tmpl_prefix'	=> varset($options['template'],'default'),
+			'total'			=> intval($total),
+			'amount'		=> intval($perPage),
+			'current'		=> intval($from),
+			'url'			=> urldecode($url),
+			'type'          => varset($options['type'],'record'), // page|record
+			'glyphs'        => vartrue($options['glyphs'],false) // 1|0
+		);
+
+		return nextprev_shortcode($nextprev);
+	}
+
+
 
 	/**
 	 * Render a bootStrap ProgressBar. 
