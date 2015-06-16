@@ -2338,22 +2338,27 @@ class pluginBuilder
 			$text .= "<div class='tab-pane active' id='xml'>\n";
 			$text .= $this->pluginXml(); 
 			$text .= "</div>";
-				
-			foreach($ret['tables'] as $key=>$table)
+
+			if(!empty($ret['tables']))
 			{
-				$text .= "<div class='tab-pane' id='".$table."'>\n";
-				$fields = $dv->getFields($ret['data'][$key]);
-				$text .= $this->form($table,$fields);
-				$text .= "</div>";	
+				foreach($ret['tables'] as $key=>$table)
+				{
+					$text .= "<div class='tab-pane' id='".$table."'>\n";
+					$fields = $dv->getFields($ret['data'][$key]);
+					$text .= $this->form($table,$fields);
+					$text .= "</div>";
+				}
 			}
-			
 			$text .= "<div class='tab-pane' id='preferences'>\n";
 			$text .= $this->prefs(); 
 			$text .= "</div>";
 			
-			
-			
-			
+			if(empty($ret['tables']))
+			{
+				$text .= $frm->hidden($this->pluginName.'_ui[mode]','main');
+				$text .= $frm->hidden($this->pluginName.'_ui[pluginName]', $this->pluginName);
+			}
+
 			$text .= "</div>";
 			
 			$text .= "
@@ -2837,7 +2842,7 @@ TEMPLATE;
 			{
 				$text .= $frm->hidden($this->table.'[mode]','main');
 			}
-				
+
 			$text .= "</table>".$this->special('checkboxes');
 			
 			$text .= "<table class='table adminlist'>
@@ -3282,6 +3287,7 @@ class ".$thePlugin."_adminArea extends e_admin_dispatcher
 	
 
 	unset($_POST['newplugin']);
+
 	
 			foreach($_POST as $table => $vars) // LOOP Through Tables. 
 			{
@@ -3289,9 +3295,9 @@ class ".$thePlugin."_adminArea extends e_admin_dispatcher
 				{
 	$text .= "
 		'".$vars['mode']."'	=> array(
-			'controller' 	=> '".$vars['table']."_ui',
+			'controller' 	=> '".$table."',
 			'path' 			=> null,
-			'ui' 			=> '".$vars['table']."_form_ui',
+			'ui' 			=> '".str_replace("_ui", "_form_ui", $table)."',
 			'uipath' 		=> null
 		),
 		
@@ -3316,7 +3322,7 @@ $text .= "
 ";
 			foreach($_POST as $table => $vars) // LOOP Through Tables. 
 			{
-				if(vartrue($vars['mode']) && $vars['mode'] != 'exclude')
+				if(vartrue($vars['mode']) && $vars['mode'] != 'exclude' && !empty($vars['table']))
 				{
 $text .= "
 		'".$vars['mode']."/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
@@ -3445,7 +3451,8 @@ class ".$table." extends e_admin_ui
 
 if($_POST['pluginPrefs'] && ($vars['mode']=='main'))
 {
-	$text .= "		
+	$text .= "
+	//	protected \$preftabs        = array('General', 'Other' );
 		protected \$prefs = array(\n";
 		
 		foreach($_POST['pluginPrefs'] as $k=>$val)
@@ -3455,7 +3462,7 @@ if($_POST['pluginPrefs'] && ($vars['mode']=='main'))
 				$index = $val['index'];
 				$type = vartrue($val['type'],'text');
 				
-				$text .= "\t\t\t'".$index."'\t\t=> array('title'=> '".ucfirst($index)."', 'type'=>'".$type."', 'data' => 'str','help'=>'Help Text goes here'),\n";
+				$text .= "\t\t\t'".$index."'\t\t=> array('title'=> '".ucfirst($index)."', 'tab'=>0, 'type'=>'".$type."', 'data' => 'str', 'help'=>'Help Text goes here'),\n";
 			}	
 	
 		}
@@ -3539,7 +3546,7 @@ $text .= "
 				
 
 
-class ".$vars['table']."_form_ui extends e_admin_form_ui
+class ".str_replace("_ui", "_form_ui", $table)." extends e_admin_form_ui
 {
 ";
 
