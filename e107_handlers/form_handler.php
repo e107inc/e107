@@ -2339,7 +2339,10 @@ class e_form
 				case 'placeholder':
 					if($optval) $ret .= " placeholder='{$optval}'";
 					break;
-					
+
+				case 'wrap':
+					if($optval) $ret .= " wrap='{$optval}'";
+					break;
 					
 				case 'autocomplete':
 					if($optval) $ret .= " autocomplete='{$optval}'";
@@ -2460,7 +2463,9 @@ class e_form
 			'pattern'		=> '',
 			'other' 		=> '',
 			'autocomplete' 	=> '',
-			'maxlength'		=> ''
+			'maxlength'		=> '',
+			'wrap'          => '',
+			'maxlength'     => ''
 			//	'multiple' => false, - see case 'select'
 		);
 

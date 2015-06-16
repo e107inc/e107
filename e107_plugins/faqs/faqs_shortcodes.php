@@ -285,7 +285,7 @@ class faqs_shortcodes extends e_shortcode
 
 			$text .= $frm->open('faq-ask-question','post');
 
-			$text .= "<div>".$frm->text('ask_a_question','',255,array('size'=>'xxlarge','placeholder'=>'Type your question here..')).'<br />'.$frm->submit('submit_a_question','Submit')."</div>";
+			$text .= "<div>".$frm->textarea('ask_a_question','',3, 80 ,array('maxlength'=>255, 'size'=>'xxlarge','placeholder'=>'Type your question here..', 'wrap'=>'soft')).'<br />'.$frm->submit('submit_a_question','Submit')."</div>";
 
 			$text .= $frm->close();
 
