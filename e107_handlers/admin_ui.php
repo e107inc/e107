@@ -4940,7 +4940,9 @@ class e_admin_ui extends e_admin_controller_ui
 		$model->setPostedData($_POST, null, false, false)
 			->setParam('validateAvailable', true) // new param to control validate of available data only, reset on validate event
 			->update(true);
-		//$res = $this->_manageSubmit('beforeUpdate', 'afterUpdate', 'onUpdateError', 'edit');
+
+		$res = $this->_manageSubmit('beforeUpdate', 'afterUpdate', 'onUpdateError', 'edit');
+	//	print_r($res);
 			
 		if($model->hasError())
 		{
