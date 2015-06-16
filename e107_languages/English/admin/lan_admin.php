@@ -403,6 +403,21 @@ define("LAN_USER_PRUNE", "Prune Users");
 define("LAN_USER_OPTIONS", "User Options");
 define("LAN_USER_RANKS", "User Ranks");
 
+// dropdown menu admin
+define("LAN_LOGIN_PERSONAL", "Personalize");
+define('LAN_USER_SOCIALTW', 		'e107 on Twitter');
+define('LAN_USER_SOCIALFAB', 		'e107 on Facebook');
+define('LAN_USER_SOCIALGIT', 		'e107 on Github');
+
+define("LAN_NEW_UPDATE", "A new update is ready to install! Click to unzip and install  v");
+define("LAN_BUTTON_INSTALL", "Install");
+define("LAN_NAV_HEADU", "Update available");
+
+// V2      hover messages and  system information
+define("LAN_LOGIN_ADMINNAME_HOVER", "Please enter your username or email");// auth php
+define("LAN_LOGIN_ADMINPWF_HOVER", "Password is required"); //auth php
+define("LAN_AUTH_USER_MESSAGE", "Successfully logged in as ");  // in auth php and user php
+
 
 
 // TODO - move e_form related LANS below, add new lan_form.php file (for both front/back-end)

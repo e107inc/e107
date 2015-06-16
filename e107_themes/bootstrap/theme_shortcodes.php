@@ -83,17 +83,17 @@ class theme_shortcodes extends e_shortcode
 		<ul class="nav pull-right">
 		<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Logged in as '.USERNAME.' <b class="caret"></b></a>
 		<ul class="dropdown-menu">
-		<li><a href="'.e_HTTP.'usersettings.php"><i class="icon-cog"></i> Settings</a></li>
-		<li><a class="dropdown-toggle no-block" role="button" href="'.e_HTTP.'user.php?id.'.USERID.'"><i class="icon-user"></i> Profile</a></li>
+		<li><a href="'.e_HTTP.'usersettings.php"><i class="icon-cog"></i> '.LAN_SETTINGS.'</a></li>
+		<li><a class="dropdown-toggle no-block" role="button" href="'.e_HTTP.'user.php?id.'.USERID.'"><i class="icon-user"></i>&#32; '.LAN_LOGINMENU_13.'</a></li>
 		<li class="divider"></li>';
 		
 		if(ADMIN) 
 		{
-			$text .= '<li><a href="'.e_ADMIN_ABS.'"><i class="icon-cogs"></i> Admin Area</a></li>';	
+			$text .= '<li><a href="'.e_ADMIN_ABS.'"><i class="icon-cogs"></i> '.LAN_LOGINMENU_11.'</a></li>';	
 		}
 		
 		$text .= '
-		<li><a href="'.e_HTTP.'index.php?logout"><i class="icon-off"></i> Logout</a></li>
+		<li><a href="'.e_HTTP.'index.php?logout"><i class="icon-off"></i>&#32; '.LAN_LOGOUT.'</a></li>
 		</ul>
 		</li>
 		</ul>

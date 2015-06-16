@@ -186,20 +186,20 @@ class theme_shortcodes extends e_shortcode
 		<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">{SETIMAGE: w=20}{USER_AVATAR} '. USERNAME.' <b class="caret"></b></a>
 		<ul class="dropdown-menu">
 		<li>
-			<a href="{LM_USERSETTINGS_HREF}"><span class="glyphicon glyphicon-cog"></span> Settings</a>
+			<a href="{LM_USERSETTINGS_HREF}"><span class="glyphicon glyphicon-cog"></span> '.LAN_SETTINGS.'</a>
 		</li>
 		<li>
-			<a class="dropdown-toggle no-block" role="button" href="{LM_PROFILE_HREF}"><span class="glyphicon glyphicon-user"></span> Profile</a>
+			<a class="dropdown-toggle no-block" role="button" href="{LM_PROFILE_HREF}"><span class="glyphicon glyphicon-user"></span>&#32;'.LAN_LOGINMENU_13.'</a>
 		</li>
 		<li class="divider"></li>';
 		
 		if(ADMIN) 
 		{
-			$text .= '<li><a href="'.e_ADMIN_ABS.'"><span class="fa fa-cogs"></span> Admin Area</a></li>';	
+			$text .= '<li><a href="'.e_ADMIN_ABS.'"><span class="fa fa-cogs"></span> '.LAN_LOGINMENU_11.'</a></li>';	
 		}
 		
 		$text .= '
-		<li><a href="'.e_HTTP.'index.php?logout"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
+		<li><a href="'.e_HTTP.'index.php?logout"><span class="glyphicon glyphicon-off"></span>&#32;'.LAN_LOGOUT.'</a></li>
 		</ul>
 		</li>
 		</ul>
