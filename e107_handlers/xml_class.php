@@ -578,8 +578,16 @@ class xmlClass
 		{
 			return FALSE;
 		}
-		
-		$xmlData = str_replace('content:encoded', 'content_encoded', $xmlData);
+
+		$extendedTypes = array(
+			'content:encoded'   => 'content_encoded',
+			'<media:'     => '<media_',
+			'</media:'    => '</media_',
+			'<opensearch:'  => '<opensearch_',
+			'</opensearch:' => '</opensearch_'
+		);
+
+		$xmlData = str_replace(array_keys($extendedTypes), array_values($extendedTypes), $xmlData);
 		
 		if(!$xml = simplexml_load_string($xmlData))
 		{
