@@ -2628,10 +2628,16 @@ class e107
 		$tmp = e107::getAddonConfig('e_url');
 		$tp = e107::getParser();
 
-
+		$pref = self::getPref('e_url_alias');
 
 		if(varset($tmp[$plugin][$key]['sef']))
 		{
+			if(!empty($tmp[$plugin][$key]['alias']))
+			{
+				$alias = (!empty($pref[e_LAN][$plugin][$key])) ? $pref[e_LAN][$plugin][$key] : $tmp[$plugin][$key]['alias'];
+				$tmp[$plugin][$key]['sef'] = str_replace('{alias}', $alias, $tmp[$plugin][$key]['sef']);
+			}
+
 
 			preg_match_all('#{([a-z_]*)}#', $tmp[$plugin][$key]['sef'],$matches);
 

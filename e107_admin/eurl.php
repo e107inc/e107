@@ -179,32 +179,71 @@ class eurl_admin_ui extends e_admin_controller_ui
 	{
 		// $this->addTitle("Simple Redirects");
 		$eUrl =e107::getAddonConfig('e_url');
-		
+		$frm = e107::getForm();
+		$tp = e107::getParser();
+		$cfg = e107::getConfig();
+
+		if(!empty($_POST['saveSimpleSef']))
+		{
+			if(is_string($this->getConfig()->get('e_url_alias')))
+			{
+				$cfg->setPostedData('e_url_alias', array(e_LAN => $_POST['e_url_alias']), false);
+			}
+			else
+			{
+				$cfg->setPref('e_url_alias/'.e_LAN, $_POST['e_url_alias']);
+			}
+
+			$cfg->save(true, true, true);
+
+		}
+
+		$pref = e107::getPref('e_url_alias');
+
 		if(empty($eUrl))
 		{
 			return; 		
 		}
 
 
-		$text = "";
-			
+		$text = $frm->open('simpleSef');
+
+		$multilan = "<small class='e-tip admin-multilanguage-field' style='cursor:help; padding-left:10px' title='Multi-language field'>".$tp->toGlyph('fa-language')."</small>";
+
+		$home = "<small>".SITEURL.'</small>';
+
 		foreach($eUrl as $plug=>$val)
 		{
 			$text .= "<h5>".$plug."</h5>";
 			$text .= "<table class='table table-striped table-bordered'>";
 			$text .= "<tr><th>Key</th><th>Regular Expression</th>
+			<th>Alias</th>
+
 			<th>".LAN_URL."</th>
 			</tr>";
 			
 			foreach($val as $k=>$v)
 			{
-					$text .= "<tr><td style='width:20%'>".$k."</td><td style='width:40%'>".$v['regex']."</td><td style='width:40%'>".$v['redirect']."</td></tr>";
+
+					$alias      = vartrue($pref[e_LAN][$plug][$k], $v['alias']);
+					$regex      = (!empty($alias)) ? str_replace('{alias}', $alias, $v['regex']) : $v['regex'];
+					$sefurl     = (!empty($alias)) ? str_replace('{alias}', $alias, $v['sef']) : $v['sef'];
+					$aliasForm  = (!empty($alias)) ? $home.$frm->text('e_url_alias['.$plug.']['.$k.']', $alias).$multilan : '<small class="muted">Not available</small>';
+
+					$text .= "<tr>
+					<td style='width:5%'>".$k."</td>
+					<td style='width:20%'><span class='e-tip' title='".SITEURL.$sefurl."'>".$regex."</span></td>
+					<td class='form-inline' style='width:30%'>".$aliasForm."</td>
+					<td style='width:30%'>". $v['redirect']."</td>
+					</tr>";
 			}
 		
 					
 			$text .= "</table>";
 		}	
-		
+
+		$text .= "<div class='buttons-bar center'>".$frm->button('saveSimpleSef',LAN_SAVE." (".e_LANGUAGE.")",'submit')."</div>";
+		$text .= $frm->close();
 		return $text;		
 	}
 		
