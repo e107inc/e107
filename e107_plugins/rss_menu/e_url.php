@@ -19,20 +19,23 @@ class rss_menu_url // plugin-folder + '_url'
 		$config = array();
 
 		$config['rss'] = array(
-			'regex'			=> '^feed/(.*)/rss/?([\d]*)?$',
-			'sef'			=> 'feed/{rss_url}/rss/{rss_topicid}',
+			'alias'         => 'feed',
+			'regex'			=> '^{alias}/(.*)/rss/?([\d]*)?$',
+			'sef'			=> '{alias}/{rss_url}/rss/{rss_topicid}',
 			'redirect'		=> '{e_PLUGIN}rss_menu/rss.php?cat=$1&type=2&topic=$2'
 		);
 
 		$config['atom'] = array(
-			'regex'			=> '^feed/(.*)/atom/?([\d]*)?$',
-			'sef'			=> 'feed/{rss_url}/atom/{rss_topicid}',
+			'alias'         => 'feed',
+			'regex'			=> '^{alias}/(.*)/atom/?([\d]*)?$',
+			'sef'			=> '{alias}/{rss_url}/atom/{rss_topicid}',
 			'redirect'		=> '{e_PLUGIN}rss_menu/rss.php?cat=$1&type=4&topic=$2'
 		);
 	
 		$config['index'] = array(
-			'regex'			=> '^feed/?$',
-			'sef'			=> 'feed',
+			'alias'         => 'feed',
+			'regex'			=> '^{alias}/?$',
+			'sef'			=> '{alias}',
 			'redirect'		=> '{e_PLUGIN}rss_menu/rss.php',
 		);
 

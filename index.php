@@ -88,7 +88,7 @@
 	$sql->db_Mark_Time("Start Simple URL-ReWrite Routine");
 	
 	$tmp = e107::getAddonConfig('e_url');
-	
+
 	$req = (e_HTTP === '/') ? ltrim(e_REQUEST_URI,'/') : str_replace(e_HTTP,'', e_REQUEST_URI) ;
 		
 	if(count($tmp))
@@ -99,6 +99,14 @@
 
 			foreach($cfg as $k=>$v)
 			{
+
+				if(!empty($v['alias']))
+				{
+					$alias = (!empty($pref['e_url_alias'][e_LAN][$plug][$k])) ? $pref['e_url_alias'][e_LAN][$plug][$k] : $v['alias'];
+					e107::getMessage()->addDebug("e_url alias found: <b>".$alias."</b>");
+					$v['regex'] = str_replace('{alias}', $alias, $v['regex']);
+				}
+
 			
 				$regex = '#'.$v['regex'].'#';
 				
