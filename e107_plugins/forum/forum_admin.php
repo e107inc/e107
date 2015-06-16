@@ -386,8 +386,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 		public function afterUpdate($new_data, $old_data, $id)
 		{
 			// do something
-			e107::getCache()->clear_sys('forum_perms');
-
+			e107::getCache()->clear_sys('forum_perms',true);
 		}
 
 
