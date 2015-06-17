@@ -497,7 +497,8 @@ class poll
 				
 				
 				$SUBMITBUTTON = "<input class='button btn btn-primary' type='submit' name='pollvote' value='".POLLAN_30."' />";
-				if (('preview' == $type || $preview == TRUE) && strpos(e_SELF, "viewtopic") === FALSE)
+				// disable submit when previewing the poll or when NOT viewing the poll in the forum
+				if (('preview' == $type || $preview == TRUE) && strpos(e_REQUEST_SELF, "forum") === FALSE)
 				{
 					$SUBMITBUTTON = "<input class='button btn e-tip' type='button' name='null' title='Disabled' value='".POLLAN_30."' />";
 				}
