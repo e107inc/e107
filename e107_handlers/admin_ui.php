@@ -3978,6 +3978,7 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	protected function _manageSubmit($callbackBefore = '', $callbackAfter = '', $callbackError = '', $noredirectAction = '')
 	{
+
 		$model = $this->getModel();
 		$old_data = $model->getData();
 
@@ -4941,9 +4942,6 @@ class e_admin_ui extends e_admin_controller_ui
 			->setParam('validateAvailable', true) // new param to control validate of available data only, reset on validate event
 			->update(true);
 
-		$res = $this->_manageSubmit('beforeUpdate', 'afterUpdate', 'onUpdateError', 'edit');
-	//	print_r($res);
-			
 		if($model->hasError())
 		{
 			// using 400
@@ -4956,8 +4954,11 @@ class e_admin_ui extends e_admin_controller_ui
 			else $message = e107::getMessage()->get('error', $model->getMessageStackName(), true);
 			
 			if(!empty($message)) echo implode(' ', $message);
+			$this->logajax($message);
 			return;
 		}
+
+		$res = $this->_manageSubmit('beforeUpdate', 'afterUpdate', 'onUpdateError', 'edit');
 	}
 
 	// Temporary - but useful. :-)
