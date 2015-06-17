@@ -388,8 +388,8 @@ class plugin_forum_post_shortcodes extends e_shortcode
 
 	function sc_postthreadas()
 	{
-
-		if (MODERATOR && $this->var['action'] == "nt")
+		// Show when creating new topic or when editing the original starting post (make sure post is not a reply)
+		if (MODERATOR && $this->var['action'] == "nt" || $this->var['thread_datestamp'] == $this->var['post_datestamp'])
 		{
 			$thread_sticky = (isset($_POST['threadtype']) ? $_POST['threadtype'] : vartrue($this->var['thread_sticky'],0)); // no reference of 'head' $threadInfo['head']['thread_sticky']
 				
