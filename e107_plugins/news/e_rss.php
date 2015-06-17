@@ -100,7 +100,7 @@ class news_rss // plugin-folder + '_rss'
 			$rss[$i]['author_email']    = $value['user_email'];
 			$rss[$i]['category_name']   = $tp->toHTML($value['category_name'],TRUE,'defs');
 			$rss[$i]['category_link']   = SITEURL."news.php?cat.".$value['news_category']; //TODO SEFURL.
-			$rss[$i]['pubdate']         = $value['news_datestamp'];
+			$rss[$i]['datestamp']         = $value['news_datestamp'];
 			$rss[$i]['description']     = $this->getDescription($value);
 
 			if($value['news_allow_comments'] && $pref['comments_disabled'] != 1)

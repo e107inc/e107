@@ -324,6 +324,7 @@ class rssCreate
 						$this -> rssItems[$k]['author'] = $row['author'];
 						$this -> rssItems[$k]['author_email'] = $row['author_email'];
 						$this -> rssItems[$k]['title'] = $row['title'];
+
 						if($row['link'])
 						{
 							if(stripos($row['link'], 'http') !== FALSE)
@@ -366,9 +367,13 @@ class rssCreate
 								$this -> rssItems[$k]['category_link'] = SITEURLBASE.e_PLUGIN_ABS.$row['category_link'];
 							}
 						}
-						if($row['datestamp'])
+						if(!empty($row['datestamp']))
 						{
 							$this -> rssItems[$k]['pubdate'] = $row['datestamp'];
+						}
+						else
+						{
+							$this -> rssItems[$k]['pubdate'] = time();
 						}
 
 						if($row['custom'])
@@ -472,8 +477,10 @@ class rssCreate
 				<generator>e107 (http://e107.org)</generator>
 				<sy:updatePeriod>hourly</sy:updatePeriod>
 				<sy:updateFrequency>1</sy:updateFrequency>
-				<ttl>60</ttl>
-				<atom:link href=\"".e107::url('rss_menu','atom', array('rss_url'=>$this->contentType, 'id'=>$this->topicid),'full')."\" rel=\"self\" type=\"application/rss+xml\" />\n";
+				<ttl>60</ttl>";
+
+				echo "
+				<atom:link href=\"".$tp->toRss(e107::url('rss_menu','atom', array('rss_url'=>$this->contentType, 'rss_topicid'=>$this->topicid),'full'))."\" rel=\"self\" type=\"application/rss+xml\" />\n";
 
 				if (trim(SITEBUTTON))
 				{
@@ -654,7 +661,7 @@ class rssCreate
 						echo "
 						<uri>http://e107.org/</uri>\n
 					</author>\n
-					<link rel='self' href='".e107::url('rss_menu','atom', array('rss_url'=>$this->contentType, 'id'=>$this->topicid),'full')."' />\n";
+					<link rel='self' href='".$tp->toRss(e107::url('rss_menu','atom', array('rss_url'=>$this->contentType, 'rss_topicid'=>$this->topicid),'full'))."' />\n";
 
 					// Optional
 					include(e_ADMIN."ver.php");
@@ -694,7 +701,7 @@ class rssCreate
 						//<content>complete story here</content>\n
 						echo "
 						<link rel='alternate' type='text/html' href='".$value['link']."' />\n
-						<summary type='text'>".$tp->toRss($value['description']). "</summary>\n";
+						<summary type='text'>".$tp->toRss($tp->toText($value['description'])). "</summary>\n";
 
 						// Optional
 						if(!empty($value['category_name']))
