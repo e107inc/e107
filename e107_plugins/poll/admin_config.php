@@ -177,7 +177,7 @@ function poll_list()
 	$text = "
 		<form action='".e_SELF."' method='post' id='del_poll'>";
 	
-	if ($poll_total = $sql->select("polls", "*", "poll_type=1")) 
+	if ($poll_total = $sql->select("polls", "*")) 
 	{
 		$text .= "<table class='table adminlist'>";
 		$text .= $frm->colGroup($fields,$fieldpref).
