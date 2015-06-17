@@ -1955,20 +1955,24 @@ class e_parse extends e_parser
 	 * @param boolean $tags [optional]
 	 * @return string
 	 */
-	function toRss($text, $tags = FALSE)
+	function toRss($text, $tags = false)
 	{
-		if($tags != TRUE)
+		if($tags != true)
 		{
-			$text = $this -> toHTML($text, TRUE);
+			$text = $this -> toHTML($text, true);
 			$text = strip_tags($text);
 		}
 
 		$text = $this->toEmail($text);
-		$search = array("&amp;#039;", "&amp;#036;", "&#039;", "&#036;"," & ", e_BASE, "href='request.php");
-		$replace = array("'", '$', "'", '$',' &amp; ', SITEURL, "href='".SITEURL."request.php" );
+		$search = array("&amp;#039;", "&amp;#036;", "&#039;", "&#036;", e_BASE, "href='request.php");
+		$replace = array("'", '$', "'", '$', SITEURL, "href='".SITEURL."request.php" );
 		$text = str_replace($search, $replace, $text);
 
-		if($tags == TRUE && ($text))
+		// Fix any left-over '&'
+		$text = str_replace('&amp;', '&', $text); //first revert any previously converted.
+		$text = str_replace('&', '&amp;', $text);
+
+		if($tags == true && ($text))
 		{
 			$text = "<![CDATA[".$text."]]>";
 		}
@@ -3451,6 +3455,10 @@ TMPL;
 		    echo "<h3>User-input &gg; toEmail(\$text) <small>from DB</small></h3>";
 		    print_a($toEmail);
 
+		    // toEmail
+		    $toRss = $tp->toRss($text);
+		    echo "<h3>User-input &gg; toRss(\$text)</h3>";
+		    print_a($toRss);
 
 		    echo "</div>";
 
