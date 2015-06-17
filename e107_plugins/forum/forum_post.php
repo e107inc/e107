@@ -990,7 +990,8 @@ class forum_post_handler
 			$postVals['post_edit_user']         = USERID;
 			$postVals['post_entry']             = $_POST['post'];
 
-			$threadVals['thread_name'] = $_POST['subject'];
+			$threadVals['thread_name'] 	 = $_POST['subject'];
+			$threadVals['thread_sticky'] = (MODERATOR ? (int)$_POST['threadtype'] : 0);
 
 			$this->forumObj->threadUpdate($this->data['post_thread'], $threadVals);
 			$this->forumObj->postUpdate($this->data['post_id'], $postVals);
