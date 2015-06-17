@@ -28,14 +28,14 @@ class theme_shortcodes extends e_shortcode
 			if(deftrue('USER_REGISTRATION'))
 			{
 				$text .= '
-				<li><a href="'.e_SIGNUP.'">Sign Up</a></li>
+				<li><a href="'.e_SIGNUP.'">'.LAN_LOGINMENU_3.'</a></li>
 				';
 			}
 			
 			$text .= '
 			<li class="divider-vertical"></li>
 			<li class="dropdown">
-				<a class="dropdown-toggle" href="#" data-toggle="dropdown">Sign In <strong class="caret"></strong></a>
+				<a class="dropdown-toggle" href="#" data-toggle="dropdown">'.LAN_LOGINMENU_51.'<strong class="caret"></strong></a>
 				<div class="dropdown-menu" style="padding: 15px; padding-bottom: 0px;">
 				<form method="post" onsubmit="hashLoginPassword(this)" action="'.e_REQUEST_HTTP.'" accept-charset="UTF-8">
 				{LM_USERNAME_INPUT}
@@ -54,8 +54,8 @@ class theme_shortcodes extends e_shortcode
 			/*
 			$text .= '
 				<label style="text-align:center;margin-top:5px">or</label>
-				<input class="btn btn-primary btn-block" type="button" id="sign-in-google" value="Sign In with Google">
-				<input class="btn btn-primary btn-block" type="button" id="sign-in-twitter" value="Sign In with Twitter">
+				<input class="btn btn-primary btn-block" type="button" id="sign-in-google" value="'.LAN_LOGINMENU_53.'">
+				<input class="btn btn-primary btn-block" type="button" id="sign-in-twitter" value="'.LAN_LOGINMENU_54.'">
 			';
 			*/
 			
@@ -81,7 +81,7 @@ class theme_shortcodes extends e_shortcode
 		$text = '
 		
 		<ul class="nav pull-right">
-		<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Logged in as '.USERNAME.' <b class="caret"></b></a>
+		<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">'.LAN_LOGINMENU_52.' '.USERNAME.' <b class="caret"></b></a>
 		<ul class="dropdown-menu">
 		<li><a href="'.e_HTTP.'usersettings.php"><i class="icon-cog"></i> '.LAN_SETTINGS.'</a></li>
 		<li><a class="dropdown-toggle no-block" role="button" href="'.e_HTTP.'user.php?id.'.USERID.'"><i class="icon-user"></i> '.LAN_LOGINMENU_13.'</a></li>

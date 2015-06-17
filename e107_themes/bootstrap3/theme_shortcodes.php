@@ -152,8 +152,8 @@ class theme_shortcodes extends e_shortcode
 				/*
 				$text .= '
 					<label style="text-align:center;margin-top:5px">or</label>
-					<input class="btn btn-primary btn-block" type="button" id="sign-in-google" value="Sign In with Google">
-					<input class="btn btn-primary btn-block" type="button" id="sign-in-twitter" value="Sign In with Twitter">
+					<input class="btn btn-primary btn-block" type="button" id="sign-in-google" value="'.LAN_LOGINMENU_53.'">
+					<input class="btn btn-primary btn-block" type="button" id="sign-in-twitter" value="'.LAN_LOGINMENU_54.'">
 				';
 				*/
 				
@@ -178,8 +178,7 @@ class theme_shortcodes extends e_shortcode
 
 		
 		// Logged in. 
-		//TODO Generic LANS. (not theme LANs) 	
-		
+				
 		$text = '
 		
 		<ul class="nav navbar-nav navbar-right'.$direction.'">
