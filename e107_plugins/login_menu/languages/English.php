@@ -75,5 +75,8 @@ define('LAN_LOGINMENU_48', 'Menu Config');
 define('LAN_LOGINMENU_49', 'Email: ');
 define('LAN_LOGINMENU_50', 'Username or Email: ');
 define("LAN_LOGINMENU_51", "Sign In");
+define("LAN_LOGINMENU_52", "Logged in as ");
+define("LAN_LOGINMENU_53", "Sign In with Google "); //future ? bootstrap
+define("LAN_LOGINMENU_54", "Sign In with Twitter "); //future ? bootstrap
 
 ?>
