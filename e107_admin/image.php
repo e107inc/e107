@@ -1767,9 +1767,252 @@ class media_admin_ui extends e_admin_ui
 		//	$ns->tablerender(LAN_MEDIAMANAGER." :: ".IMALAN_7, $mes->render().$text);
 	}
 
+
+	function avatarPageDeleteChecked()
+	{
+
+
+		$sql = e107::getDb();
+		$mes = e107::getMessage();
+
+			if(!empty($_POST['multiaction']))
+			{
+				$tmp = array(); $tmp1 = array(); $message = array();
+
+				foreach ($_POST['multiaction'] as $todel)
+				{
+					list($usr,$path) = explode('#', $todel);
+
+				//	$path = basename($path);
+
+					$path = str_replace("../","",$path); // clean the path.
+
+					$mes->addDebug('usr: '.intval($usr).'  path: '.$path);
+
+					$image_type = 2;
+					if(strpos($path, '-upload-') === 0)
+					{
+						$image_type = 1;
+						$path = substr($path, strlen('-upload-'));
+					}
+
+					//delete it from server
+					$deletePath = e_AVATAR.$path;
+					if(@unlink($deletePath))
+					{
+						$mes->addDebug('Deleted: '.$deletePath);
+						$message[] = basename($path); //admin log & sysmessage
+					}
+					else
+					{
+						$mes->addError('Unable to delete: '.$deletePath); // Do not translate, temporary during beta stage.
+					}
+
+					//It's owned by an user
+					if(!empty($usr))
+					{
+						switch ($image_type)
+						{
+							case 1: //avatar
+								$tmp[] = intval($usr);
+								break;
+
+							case 2: //photo
+								$tmp1[] = intval($usr);
+								break;
+						}
+					}
+					
+				}
+
+				//Reset all deleted user avatars with one query
+				if(!empty($tmp))
+				{
+					$sql->update("user", "user_image='' WHERE user_id IN (".implode(',', $tmp).")");
+					$mes->addDebug("user_image='' WHERE user_id IN (".implode(',', $tmp).")");
+				}
+				//Reset all deleted user photos with one query
+				if(!empty($tmp1))
+				{
+					$sql->update("user", "user_sess='' WHERE user_id IN (".implode(',', $tmp1).")");
+					$mes->addDebug("user_sess='' WHERE user_id IN (".implode(',', $tmp1).")");
+				}
+				unset($tmp, $tmp1);
+
+				//Format system message
+				if(!empty($message))
+				{
+					e107::getLog()->add('IMALAN_01', implode('[!br!]', $message), E_LOG_INFORMATIVE, '');
+					$mes->addSuccess(implode(', ', $message).' '.IMALAN_28);
+				}
+			}
+
+
+
+	}
+
+
+
+
+
+
 	function avatarPage()
 	{
-		show_avatars();
+		global $pref;
+
+		if (isset($_POST['submit_show_delete_multi']))
+		{
+			$this->avatarPageDeleteChecked();
+		}
+
+
+		$sql = e107::getDb();
+		$frm = e107::getForm();
+		$tp = e107::getParser();
+		$mes = e107::getMessage();
+
+		$avFiles = e107::getFile()->get_files(e_MEDIA."avatars/",".jpg|.png|.gif|.jpeg|.JPG|.GIF|.PNG",null,2);
+
+		$dirlist = array();
+
+		foreach($avFiles as $f)
+		{
+			$dirlist[] = str_replace(e_MEDIA."avatars/","",$f['path']). $f['fname'];
+		}
+
+		$text = '';
+
+		if (empty($dirlist))
+		{
+			$text .= IMALAN_29;
+		}
+		else
+		{
+
+			$tmp = $sql->retrieve('user','user_id,user_image','user_image !="" ', true);
+			$imageUsed = array();
+
+			foreach($tmp as $val)
+			{
+				$id = $val['user_id'];
+				$imageUsed[$id] = $val['user_image'];
+			}
+
+			$userImages = array_flip($imageUsed);
+
+			$text = $frm->open('core-image-avatars');
+
+			$text .= "<fieldset id='core-iamge-show-avatars'>";
+
+			$count = 0;
+			while (list($key, $image_name) = each($dirlist))
+			{
+				//$users = IMALAN_21." | ";
+				$row = array('user_id' => '');
+				$image_pre = '';
+				$disabled = false;
+				/*
+				if ($sql->db_Select("user", "*", "user_image='-upload-".$tp->toDB($image_name)."' OR user_sess='".$tp->toDB($image_name)."'"))
+				{
+					$row = $sql->db_Fetch();
+					if($row['user_image'] == '-upload-'.$image_name) $image_pre = '-upload-';
+					$users .= "<a href='".$e107->url->create('user/profile/view', 'name='.$row['user_name'].'&id='.$row['user_id'])."'>{$row['user_name']}</a> <span class='smalltext'>(".($row['user_sess'] == $image_name ? IMALAN_24 : IMALAN_23).")</span>";
+				}
+				else
+				{
+
+				}
+			*/
+
+				// :
+				$fileName = basename($image_name);
+				$users = (in_array($fileName,$imageUsed)) ? "<span class='badge badge-warning' style='margin-bottom:5px'>Image in use</span>" : '<span class="badge" style="margin-bottom:5px">Not in use</span>';
+
+				//directory?
+				if(is_dir(e_MEDIA."avatars/".$image_name))
+				{
+					//File info
+					$users = "<a href='#' title='".IMALAN_69.": {$image_name}'><img class='e-tip icon S16' src='".e_IMAGE_ABS."admin_images/info_16.png' alt='".IMALAN_66.": {$image_name}' title='".IMALAN_69.": {$image_name}' /></a> <span class='error'>".IMALAN_69."</span>";
+
+					//Friendly UI - click text to select a form element
+					$img_src =  '<span class="error">'.IMALAN_70.'</span>';
+					$disabled = true;
+				}
+				else
+				{
+					//File info
+					//	$users = "<a class='e-tip' href='#' title='".IMALAN_66.": {$image_name}'><img src='".e_IMAGE_ABS."admin_imaXXXges/info_16.png' alt='".IMALAN_66.": {$image_name}' /></a> ".$users;
+
+					// Control over the image size (design)
+					//	$image_size = getimagesize(e_MEDIA."avatars/".$image_name);
+
+					//Friendly UI - click text to select a form element
+
+					// Resized on-the-fly - avatar-size no longer an issue.
+					$attr = "aw=".$pref['im_width']."&ah=".$pref['im_height'];
+					$img_path = $tp->thumbUrl(e_MEDIA_ABS."avatars/".$image_name,$attr);
+
+					$type = dirname($image_name);
+
+					if($prevType != $type)
+					{
+						$text .= "<div class='clearfix'></div>
+					<h5 >".$type."</h5>";
+					}
+
+
+					$for = $frm->name2id('multiaction-'.$image_name);
+
+					$img_src = "<label for='".$for."' >
+				<div class='thumbnail'>
+				<img  src='".$img_path."' alt='{$image_name}' title='".IMALAN_66.": {$image_name}' />
+				</div>
+				</label>";
+
+					$prevType = $type;
+
+				}
+
+				//style attribute allowed here - server side width/height control
+				//autocheck class - used for JS selectors (see eCoreImage object)
+
+
+
+				$text .= "
+			<div class='buttons-bar image-box f-left center autocheck' style='margin:5px; width: ".(intval($pref['im_width'])+40)."px; height: ".(intval($pref['im_height'])+100)."px;'>
+				<div class='well'>
+				<div class='image-users'>{$users}</div>
+				<div class='image-preview'>{$img_src}</div>
+				<div class='image-delete'>
+					".$frm->checkbox('multiaction[]', intval($userImages[$fileName])."#{$image_pre}{$image_name}", false, array('id' => false, 'disabled' => $disabled))."
+				</div>
+
+				</div>
+			</div>
+			";
+				$count++;
+			}
+
+			$text .= "
+			<div class='spacer clear'>
+				<div class='buttons-bar'>
+					<input type='hidden' name='show_avatars' value='1' />
+					".$frm->admin_button('e_check_all', LAN_CHECKALL, 'action')."
+					".$frm->admin_button('e_uncheck_all', LAN_UNCHECKALL, 'action')."
+					".$frm->admin_button('submit_show_delete_multi', LAN_DELCHECKED, 'delete')."
+					".$frm->admin_button('submit_show_deleteall', "Delete all unused images", 'delete')."
+
+				</div>
+			</div>
+			</fieldset>
+			</form>
+		";
+			// $frm->admin_button('submit_cancel_show', IMALAN_68, 'cancel')
+		}
+
+		return $mes->render().$text;
+
+		// $ns->tablerender(LAN_MEDIAMANAGER." :: ".IMALAN_18, $mes->render().$text);
 	}
 
 	function iconsPage()
@@ -2440,66 +2683,7 @@ if(varset($_GET['action']) == 'settings')
 
 
 
-if (isset($_POST['submit_show_delete_multi']))
-{
-	if(varset($_POST['multiaction']))
-	{
-		$tmp = array(); $tmp1 = array(); $message = array();
 
-		foreach ($_POST['multiaction'] as $todel)
-		{
-			$todel = explode('#', $todel);
-			$todel[1] = basename($todel[1]);
-
-			$image_type = 2;
-			if(strpos($todel[1], '-upload-') === 0)
-			{
-				$image_type = 1;
-				$todel[1] = substr($todel[1], strlen('-upload-'));
-			}
-
-			//delete it from server
-			@unlink(e_UPLOAD."avatars/".$todel[1]);
-
-			//admin log & sysmessage
-			$message[] = $todel[1];
-
-			//It's owned by an user
-			if($todel[0])
-			{
-				switch ($image_type)
-				{
-					case 1: //avatar
-						$tmp[] = intval($todel[0]);
-						break;
-
-					case 2: //photo
-						$tmp1[] = intval($todel[0]);
-						break;
-				}
-			}
-		}
-
-		//Reset all deleted user avatars with one query
-		if(!empty($tmp))
-		{
-			$sql->db_Update("user", "user_image='' WHERE user_id IN (".implode(',', $tmp).")");
-		}
-		//Reset all deleted user photos with one query
-		if(!empty($tmp1))
-		{
-			$sql->db_Update("user", "user_sess='' WHERE user_id IN (".implode(',', $tmp1).")");
-		}
-		unset($tmp, $tmp1);
-
-		//Format system message
-		if(!empty($message))
-		{
-			e107::getLog()->add('IMALAN_01', implode('[!br!]', $message), E_LOG_INFORMATIVE, '');
-			$mes->addSuccess(implode(', ', $message).' '.IMALAN_28);
-		}
-	}
-}
 
 /*
  * DELETE ALL UNUSED IMAGES - SHOW AVATAR SCREEN
@@ -2588,162 +2772,6 @@ if (isset($_POST['submit_avdelete_multi']))
 
 
 
-/*
- * SHOW AVATARS SCREEN
- */
-function show_avatars()
-{
-	global $e107, $pref;
-
-	$ns = e107::getRender();
-	$sql = e107::getDb();
-	$frm = e107::getForm();
-	$tp = e107::getParser();
-	$mes = e107::getMessage();
-
-
-	$avFiles = e107::getFile()->get_files(e_MEDIA."avatars/",".jpg|.png|.gif|.jpeg|.JPG|.GIF|.PNG",null,2);
-
-	$dirlist = array();
-	
-	foreach($avFiles as $f)
-	{
-		$dirlist[] = str_replace(e_MEDIA."avatars/","",$f['path']). $f['fname'];	
-	}
-
-	$text = '';
-
-	if (empty($dirlist))
-	{
-		$text .= IMALAN_29;
-	}
-	else
-	{
-		
-		$tmp = $sql->retrieve('user','user_image','user_image !="" ', true);
-		$imageUsed = array();
-
-		foreach($tmp as $val)
-		{
-			$imageUsed[] = $val['user_image'];	
-		}
-		$text = "
-			<form method='post' action='".e_SELF."?avatars' id='core-iamge-show-avatars-form'>
-			<fieldset id='core-iamge-show-avatars'>
-		";
-
-		$count = 0;
-		while (list($key, $image_name) = each($dirlist))
-		{
-			//$users = IMALAN_21." | ";
-			$row = array('user_id' => '');
-			$image_pre = '';
-			$disabled = false;
-			/*
-			if ($sql->db_Select("user", "*", "user_image='-upload-".$tp->toDB($image_name)."' OR user_sess='".$tp->toDB($image_name)."'"))
-			{
-				$row = $sql->db_Fetch();
-				if($row['user_image'] == '-upload-'.$image_name) $image_pre = '-upload-';
-				$users .= "<a href='".$e107->url->create('user/profile/view', 'name='.$row['user_name'].'&id='.$row['user_id'])."'>{$row['user_name']}</a> <span class='smalltext'>(".($row['user_sess'] == $image_name ? IMALAN_24 : IMALAN_23).")</span>";
-			}
-			else
-			{
-				
-			}
-		*/
-		
-		// : 
-		
-			$users = (in_array(basename($image_name),$imageUsed)) ? "<span class='badge badge-warning' style='margin-bottom:5px'>Image in use</span>" : '<span class="badge" style="margin-bottom:5px">Not in use</span>';
-			
-			//directory?
-			if(is_dir(e_MEDIA."avatars/".$image_name))
-			{
-				//File info
-				$users = "<a href='#' title='".IMALAN_69.": {$image_name}'><img class='e-tip icon S16' src='".e_IMAGE_ABS."admin_images/info_16.png' alt='".IMALAN_66.": {$image_name}' title='".IMALAN_69.": {$image_name}' /></a> <span class='error'>".IMALAN_69."</span>";
-
-				//Friendly UI - click text to select a form element
-				$img_src =  '<span class="error">'.IMALAN_70.'</span>';
-				$disabled = true;
-			}
-			else
-			{
-				//File info
-			//	$users = "<a class='e-tip' href='#' title='".IMALAN_66.": {$image_name}'><img src='".e_IMAGE_ABS."admin_imaXXXges/info_16.png' alt='".IMALAN_66.": {$image_name}' /></a> ".$users;
-
-				// Control over the image size (design)
-			//	$image_size = getimagesize(e_MEDIA."avatars/".$image_name);
-
-				//Friendly UI - click text to select a form element
-				
-				// Resized on-the-fly - avatar-size no longer an issue. 
-				$attr = "aw=".$pref['im_width']."&ah=".$pref['im_height'];
-				$img_path = $tp->thumbUrl(e_MEDIA_ABS."avatars/".$image_name,$attr);
-				
-				$type = dirname($image_name);
-				
-				if($prevType != $type)
-				{
-					$text .= "<div class='clearfix'></div>
-					<h5 >".$type."</h5>";	
-				}	
-				
-				
-				
-				
-				
-				
-				
-				$for = $frm->name2id('multiaction-'.$image_name);
-				
-				$img_src = "<label for='".$for."' >
-				<div class='thumbnail'>
-				<img  src='".$img_path."' alt='{$image_name}' title='".IMALAN_66.": {$image_name}' />
-				</div>
-				</label>";
-				
-				$prevType = $type;
-
-			}
-
-			//style attribute allowed here - server side width/height control
-			//autocheck class - used for JS selectors (see eCoreImage object)
-			$text .= "
-			<div class='buttons-bar image-box f-left center autocheck' style='margin:5px; width: ".(intval($pref['im_width'])+40)."px; height: ".(intval($pref['im_height'])+100)."px;'>
-				<div class='well'>
-				<div class='image-users'>{$users}</div>
-				<div class='image-preview'>{$img_src}</div>
-				<div class='image-delete'>
-					".$frm->checkbox('multiaction[]', "{$row['user_id']}#{$image_pre}{$image_name}", false, array('id' => false, 'disabled' => $disabled))."
-				</div>
-
-				</div>
-			</div>
-			";
-			$count++;
-		}
-
-		$text .= "
-			<div class='spacer clear'>
-				<div class='buttons-bar'>
-					<input type='hidden' name='show_avatars' value='1' />
-					".$frm->admin_button('e_check_all', LAN_CHECKALL, 'action')."
-					".$frm->admin_button('e_uncheck_all', LAN_UNCHECKALL, 'action')."
-					".$frm->admin_button('submit_show_delete_multi', LAN_DELCHECKED, 'delete')."
-					".$frm->admin_button('submit_show_deleteall', "Delete all unused images", 'delete')."
-					
-				</div>
-			</div>
-			</fieldset>
-			</form>
-		";
-		// $frm->admin_button('submit_cancel_show', IMALAN_68, 'cancel')
-	}
-
-	echo $mes->render().$text;
-	return;
-	// $ns->tablerender(LAN_MEDIAMANAGER." :: ".IMALAN_18, $mes->render().$text);
-}
 
 /*
  * CHECK AVATARS SCREEN
