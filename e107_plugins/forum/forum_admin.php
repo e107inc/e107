@@ -375,7 +375,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 		public function beforeUpdate($new_data, $old_data, $id)
 		{
-			if(empty($new_data['forum_sef']))
+			if(empty($new_data['forum_sef']) && !empty($new_data['forum_name']))
 			{
 				$new_data['forum_sef'] = eHelper::title2sef($new_data['forum_name']);
 			}

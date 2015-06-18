@@ -59,6 +59,11 @@ class forum_setup
 		{
 			return true;	 // true to trigger an upgrade alert, and false to not. 	
 		}
+
+		if(e107::getDb()->field('forum_thread', 'thread_sef'))
+		{
+			e107::getDb()->gen("ALTER TABLE `#forum_thread` DROP `thread_sef` ");
+		}
 		
 	}
 	

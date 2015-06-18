@@ -824,7 +824,9 @@ class forum_post_handler
 						$newThreadId = $postResult['threadid'];
 
 						$this->data['thread_id'] = $newThreadId;
-						$this->data['thread_sef'] = $postResult['threadsef'];
+					//	$this->data['thread_sef'] = $postResult['threadsef'];
+						$this->data['thread_sef'] = eHelper::title2sef($threadInfo['thread_name'],'dashl');
+
 
 
 						if($_POST['email_notify'])

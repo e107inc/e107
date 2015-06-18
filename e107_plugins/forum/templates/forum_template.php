@@ -86,7 +86,7 @@ $FORUM_TEMPLATE['main-start']			= "{FORUM_BREADCRUMB}
 													{SEARCH}
 												</div>
 											</div>
-											<div >
+											<div id='forum' >
 											<table class='table table-striped table-bordered table-hover'>
 											<colgroup>
 											<col style='width:3%' />
@@ -115,7 +115,8 @@ $FORUM_TEMPLATE['main-forum']			= 	"<tr>
 											<td class='hidden-xs'><small>{LASTPOSTUSER} {LASTPOSTDATE}</small></td>
 											</tr>";
 
-$FORUM_TEMPLATE['main-end']				= "</table></div>";
+$FORUM_TEMPLATE['main-end']				= "</table><div class='center'><small>{USERINFOX}</small></div></div>";
+
 /*
 $FORUM_TEMPLATE['main-end']				.= "
 
