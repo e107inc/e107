@@ -32,7 +32,7 @@
 	Deny from env=HTTP_SAFE_BADBOT
 
 ### Disable directory listing
-	Options All -Indexes
+	Options -Indexes
 
 ### limit file uploads to 10mb
 ### LimitRequestBody 10240000
