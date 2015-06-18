@@ -1464,7 +1464,6 @@ class forumUpgrade
 		//		$thread['_FIELD_TYPES']['thread_name'] = 'escape'; //use escape to prevent
 		// double entities
 
-		$thread['thread_sef'] = eHelper::title2sef($threadName,'dashl');
 
 		$result = e107::getDb() -> insert('forum_thread', $thread);
 		return $result;
