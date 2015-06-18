@@ -1200,7 +1200,10 @@ class e_db_mysql
 			return FALSE;
 		}
 	}
-	
+
+	/**
+	 * @deprecated use count()
+	 */
 	function db_Count($table, $fields = '(*)', $arg = '', $debug = FALSE, $log_type = '', $log_remark = '')
 	{
 		return $this->count($table, $fields, $arg, $debug, $log_type, $log_remark);

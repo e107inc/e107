@@ -1197,6 +1197,13 @@ class e_form
 	 */
 	public function pagination($url='', $total=0, $from=0, $perPage=10, $options=array())
 	{
+
+		if(!is_numeric($total))
+		{
+			return '<ul class="pager"><li><a href="'.$url.'">'.$total.'</a></li></ul>';
+		}
+
+
 		require_once(e_CORE."shortcodes/single/nextprev.php");
 
 		$nextprev = array(
@@ -1223,10 +1230,16 @@ class e_form
 	 */
 	public function progressBar($name,$value,$options=array())
 	{
-		if(!deftrue('BOOTSTRAP'))
+		if(!deftrue('BOOTSTRAP')) // Legacy ProgressBar.
 		{
-			return;
-		}		
+			$barl = (file_exists(THEME.'images/barl.png') ? THEME_ABS.'images/barl.png' : e_PLUGIN_ABS.'poll/images/barl.png');
+			$barr = (file_exists(THEME.'images/barr.png') ? THEME_ABS.'images/barr.png' : e_PLUGIN_ABS.'poll/images/barr.png');
+			$bar = (file_exists(THEME.'images/bar.png') ? THEME_ABS.'images/bar.png' : e_PLUGIN_ABS.'poll/images/bar.png');
+
+			return "<div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div>
+			<div style='background-image: url($bar); width: ".intval($value)."%; height: 14px; float: left;'></div>
+			<div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div>";
+		}
 			
 		$class = vartrue($options['class'],'');	
 		$target = $this->name2id($name);
