@@ -103,7 +103,7 @@
 				if(!empty($v['alias']))
 				{
 					$alias = (!empty($pref['e_url_alias'][e_LAN][$plug][$k])) ? $pref['e_url_alias'][e_LAN][$plug][$k] : $v['alias'];
-					e107::getMessage()->addDebug("e_url alias found: <b>".$alias."</b>");
+				//	e107::getMessage()->addDebug("e_url alias found: <b>".$alias."</b>");
 					$v['regex'] = str_replace('{alias}', $alias, $v['regex']);
 				}
 
