@@ -469,6 +469,8 @@ function parse_thread($thread_info)
 
 		$tVars->LASTPOSTUSER = $thread_info['lastpost_username']; // $lastpost_name;
 
+		$thread_info['thread_sef'] = eHelper::title2sef($thread_info['thread_name'],'dashl');
+
 		$urlData = array('forum_sef'=>$thread_info['forum_sef'], 'thread_id'=>$thread_info['thread_id'],'thread_sef'=>$thread_info['thread_sef']);
 		$url = e107::url('forum', 'topic', $urlData);
 		$url .= (strpos($url,'?')!==false) ? '&' : '?';
@@ -534,6 +536,7 @@ function parse_thread($thread_info)
 
 //	$url = e107::getUrl()->create('forum/thread/view', array('id' => $threadId, 'name' => $thread_name));
 
+	$thread_info['thread_sef'] = eHelper::title2sef($thread_info['thread_name'],'dashl');
 	$url = e107::url('forum','topic', $thread_info);
 	$tVars->THREADNAME = "<a {$title} href='".$url."'>{$thread_name}</a>";
 
@@ -793,6 +796,7 @@ function fpages($thread_info, $replies)
 	global $forum; 
 	
 	$pages = ceil(($replies)/$forum->prefs->get('postspage'));
+	$thread_info['thread_sef'] = eHelper::title2sef($thread_info['thread_name'],'dashl');
 	$urlparms = $thread_info;
 
 	if ($pages > 1)

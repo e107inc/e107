@@ -25,6 +25,18 @@ class forum_url // plugin-folder + '_url'
 	{
 		$config = array();
 
+		$config['rules'] = array(
+			'regex'			=> '^forum/rules/?',
+			'sef'			=> 'forum/rules',
+			'redirect'		=> '{e_PLUGIN}forum/forum.php?f=rules',
+		);
+
+		$config['stats'] = array(
+			'regex'			=> '^forum/stats/?',
+			'sef'			=> 'forum/stats',
+			'redirect'		=> '{e_PLUGIN}forum/forum_stats.php',
+		);
+
 		$config['post'] = array(
 			'regex'			=> '^forum/post/?',
 			'sef'			=> 'forum/post/',

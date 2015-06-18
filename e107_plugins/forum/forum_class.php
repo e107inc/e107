@@ -747,7 +747,7 @@ class e107forum
 		$info = array();
 //		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
 
-		$threadInfo['thread_sef'] = eHelper::title2sef($threadInfo['thread_name']);
+	//	$threadInfo['thread_sef'] = eHelper::title2sef($threadInfo['thread_name'],'dashl');
 
 		$info['data'] = $threadInfo;
 
@@ -758,6 +758,8 @@ class e107forum
 			$postInfo['post_thread'] = $newThreadId;
 			$newPostId = $this->postAdd($postInfo, false);
 			$this->threadMarkAsRead($newThreadId);
+			$threadInfo['thread_sef'] = eHelper::title2sef($threadInfo['thread_name'],'dashl');
+
 			return array('postid' => $newPostId, 'threadid' => $newThreadId, 'threadsef'=>$threadInfo['thread_sef']);
 		}
 		return false;
@@ -783,7 +785,7 @@ class e107forum
 			else
 			{
 				//Replace title
-				$threadTitle = ", thread_name = '{$threadTitle}', thread_sef='".eHelper::title2sef($threadTitle,'dashl')."' ";
+				$threadTitle = ", thread_name = '{$threadTitle}' "; // , thread_sef='".eHelper::title2sef($threadTitle,'dashl')."' ";
 			}
 		}
 
@@ -808,7 +810,7 @@ class e107forum
 	function threadUpdate($threadId, $threadInfo)
 	{
 		$info = array();
-		$threadInfo['thread_sef'] = eHelper::title2sef($threadInfo['thread_name']);
+	//	$threadInfo['thread_sef'] = eHelper::title2sef($threadInfo['thread_name'],'dashl');
 
 		$info['data'] = $threadInfo;
 //		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
@@ -878,6 +880,9 @@ class e107forum
 				{
 					$tmp['thread_options'] = unserialize($tmp['thread_options']);
 				}
+
+				$tmp['thread_sef'] = eHelper::title2sef($tmp['thread_name'],'dashl');
+
 				return $tmp;
 			}
 		}
@@ -898,7 +903,7 @@ class e107forum
 		if('post' === $start)
 		{
 			$qry = '
-			SELECT u.user_name, t.thread_active, t.thread_datestamp, t.thread_name, t.thread_sef, t.thread_user, t.thread_id, p.* FROM `#forum_post` AS p
+			SELECT u.user_name, t.thread_active, t.thread_datestamp, t.thread_name, t.thread_user, t.thread_id, p.* FROM `#forum_post` AS p
 			LEFT JOIN `#forum_thread` AS t ON t.thread_id = p.post_thread
 			LEFT JOIN `#user` AS u ON u.user_id = p.post_user
 			WHERE p.post_id = '.$id;
@@ -926,6 +931,7 @@ class e107forum
 			$ret = array();
 			while($row = $sql->fetch(MYSQL_ASSOC))
 			{
+				$row['thread_sef'] = eHelper::title2sef($row['thread_name'],'dashl');
 				$ret[] = $row;
 			}
 		}
@@ -1591,6 +1597,7 @@ class e107forum
 		{
 			while ($row = $sql->fetch(MYSQL_ASSOC))
 			{
+			//	$row['thread_sef'] = eHelper::title2sef($row['thread_name']);
 				$ret[] = $row;
 			}
 		}
@@ -1604,7 +1611,7 @@ class e107forum
 		$sql = e107::getDb();
 		$id = (int)$id;
 		$qry = "
-		SELECT p.post_user, p.post_id, p.post_user_anon, p.post_datestamp, p.post_thread, t.thread_sef, u.user_name FROM `#forum_post` AS p
+		SELECT p.post_user, p.post_id, p.post_user_anon, p.post_datestamp, p.post_thread, t.thread_name, u.user_name FROM `#forum_post` AS p
 		LEFT JOIN `#forum_thread` AS t ON p.post_thread = t.thread_id
 		LEFT JOIN `#user` AS u ON u.user_id = p.post_user
 		WHERE p.post_thread = {$id}
@@ -1612,7 +1619,9 @@ class e107forum
 		";
 		if ($sql->gen($qry))
 		{
-			return $sql->fetch(MYSQL_ASSOC);
+			$row = $sql->fetch(MYSQL_ASSOC);
+			$row['thread_sef'] = eHelper::title2sef($row['thread_name'],'dashl');
+			return $row;
 		}
 		return false;
 	}
@@ -1635,7 +1644,7 @@ class e107forum
 
 
 		$qry = "
-			SELECT t.thread_id, t.thread_sef, f.forum_id, f.forum_sef FROM `#forum_thread` AS t
+			SELECT t.thread_id, t.thread_name, f.forum_id, f.forum_sef FROM `#forum_thread` AS t
 			LEFT JOIN `#forum` AS f ON t.thread_forum_id = f.forum_id
 			WHERE t.thread_forum_id = $forumId
 			AND t.thread_lastpost {$dir} $lastpost
@@ -1649,6 +1658,7 @@ class e107forum
 			if ($sql->gen($qry))
 			{
 				$row = $sql->fetch();
+				$row['thread_sef'] = eHelper::title2sef($row['thread_name'],'dashl');
 		//		e107::getMessage()->addInfo(ucfirst($which).print_a($row,true));
 				return $row;
 			//	return $row['thread_id'];

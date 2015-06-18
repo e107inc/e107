@@ -53,6 +53,7 @@ if(isset($_GET['f']))
 
 		case 'rules':
 			include_once(HEADERF);
+
 			forum_rules('show');
 			include_once(FOOTERF);
 			exit;
@@ -74,6 +75,7 @@ $fVars->NEWIMAGE = IMAGE_new_small;
 $fVars->TRACKTITLE = LAN_FORUM_0073;
 
 $rules_text = forum_rules('check');
+
 $fVars->USERINFO = "<a href='".e_BASE."top.php?0.top.forum.10'>".LAN_FORUM_0010."</a> | <a href='".e_BASE."top.php?0.active'>".LAN_FORUM_0011."</a>";
 if(USER)
 {
@@ -83,10 +85,27 @@ if(USER)
 		$fVars->USERINFO .= " | <a href='".e_PLUGIN."forum/forum_uploads.php'>".LAN_FORUM_0015."</a>";
 	}
 }
-if($rules_text != '')
+if(!empty($rules_text))
 {
-	$fVars->USERINFO .= " | <a href='".$e107->url->create('forum/forum/rules')."'>".LAN_FORUM_0016.'</a>';
+	$fVars->USERINFO .= " | <a href='".e107::url('forum','rules')."'>".LAN_FORUM_0016.'</a>';
 }
+
+
+// v2.x --------------------
+$uInfo = array();
+$uInfo[0] = "<a href='".e107::url('forum','stats')."'>".LAN_FORUM_6013.'</a>';
+
+if(!empty($rules_text))
+{
+	$uInfo[1] = "<a href='".e107::url('forum','rules')."'>".LAN_FORUM_0016.'</a>';
+}
+
+$fVars->USERINFOX = implode(" | ",$uInfo);
+// -----------
+
+
+
+
 $total_topics = $sql->count("forum_thread", "(*)");
 $total_replies = $sql->count("forum_post", "(*)");
 $total_members = $sql->count("user");
@@ -562,7 +581,23 @@ function forum_rules($action = 'check')
 	{
 		$rules_text = LAN_FORUM_0072;
 	}
-	e107::getRender()->tablerender(LAN_FORUM_0016, "<div style='text-align:center'>{$rules_text}</div>", array('forum', 'forum_rules'));
+
+	$text = '';
+
+	if(deftrue('BOOTSTRAP'))
+	{
+		$breadarray = array(
+			array('text'=> e107::pref('forum','title', LAN_PLUGIN_FORUM_NAME), 'url' => e107::url('forum','index') ),
+			array('text'=>LAN_FORUM_0016, 'url'=>null)
+		);
+
+		$text = e107::getForm()->breadcrumb($breadarray);
+	}
+
+	$text .= "<div id='forum-rules'>".$rules_text."</div>";
+	$text .=  "<div class='center'>".e107::getForm()->pagination(e107::url('forum','index'), LAN_BACK)."</div>";
+
+	e107::getRender()->tablerender(LAN_FORUM_0016, $text, array('forum', 'forum_rules'));
 }
 
 ?>
