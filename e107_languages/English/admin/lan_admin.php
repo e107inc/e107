@@ -406,3 +406,10 @@ define("LAN_USER_RANKS", "User Ranks");
 
 
 // TODO - move e_form related LANS below, add new lan_form.php file (for both front/back-end)
+
+//
+
+define("ADLAN_MM_1", "The folder");
+define("ADLAN_MM_2", "is not writable. Please correct before proceeding.");
+define("ADLAN_MM_3", "The following plugins are not compatible with this version of e107 and should be uninstalled");
+define("ADLAN_MM_4", "Setting default filetypes");

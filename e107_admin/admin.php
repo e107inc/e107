@@ -98,12 +98,12 @@ class admin_start
 		
 		if(deftrue('e_MEDIA') && is_dir(e_MEDIA) && !is_writable(e_MEDIA))
 		{
-			$mes->addWarning("The folder ".e_MEDIA." is not writable. Please correct before proceeding.");			
+			$mes->addWarning(ADLAN_MM_1." ".e_MEDIA." ".ADLAN_MM_2);
 		}	
 		
 		if(deftrue('e_SYSTEM') && is_dir(e_SYSTEM) && !is_writable(e_SYSTEM))
 		{
-			$mes->addWarning("The folder ".e_SYSTEM." is not writable. Please correct before proceeding.");			
+			$mes->addWarning(ADLAN_MM_1." ".e_SYSTEM." ".ADLAN_MM_2);
 		}			
 		
 	}
@@ -142,7 +142,7 @@ class admin_start
 		if($inCompatText)
 		{
 			$text = "<ul>".$inCompatText."</ul>";
-			$mes->addWarning("The following plugins are not compatible with this version of e107 and should be uninstalled: ".$text."<a class='btn' href='".e_ADMIN."plugin.php'>uninstall</a>");	
+			$mes->addWarning(ADLAN_MM_3.": ".$text."<a class='btn' href='".e_ADMIN."plugin.php'>".LAN_UNINSTALL."</a>");
 		}	
 		
 	}
@@ -156,7 +156,7 @@ class admin_start
 		if (count($this->allowed_types) == 0)
 		{
 			$this->allowed_types = array('zip' => 1, 'gz' => 1, 'jpg' => 1, 'png' => 1, 'gif' => 1);
-			$mes->addInfo("Setting default filetypes: ".implode(', ',array_keys($this->allowed_types)));
+			$mes->addInfo(ADLAN_MM_4.": ".implode(', ',array_keys($this->allowed_types)));
 		
 		}	
 	}

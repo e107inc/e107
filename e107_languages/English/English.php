@@ -82,6 +82,7 @@ define("LAN_LOGIN", "Login");
 define("LAN_LOGOUT", "Logout");
 define("LAN_SETTINGS", "Settings");
 define("LAN_PASSWORD", "Password");
+define("LAN_UNINSTALL", "uninstall");
 
 
 
