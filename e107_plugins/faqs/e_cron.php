@@ -68,12 +68,9 @@
 			The ".$limit." most recent questions are displayed below.
 			<ul><li>".implode("</li><li>",$questions)."</li></ul>";
 
-			$body = "I find the timing of their return very interesting";
-		//	file_put_contents(e_LOG."faq.log", $body);
-		//	return;
 
 			$eml = array(
-					'subject' 		=> count($existing)." Unuanswered Question as of ".date('d-M-Y')." ",
+					'subject' 		=> count($count)." Unuanswered Question as of ".date('d-M-Y')." ",
 				//	'sender_email'	=> $email,
 					'sender_name'	=> SITENAME . " Automation",
 			//		'replyto'		=> $email,
