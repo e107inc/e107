@@ -829,11 +829,9 @@ class e_parse extends e_parser
 	{
 		if(!empty($extraCodes) && $this->isSimpleParse($extraCodes)) // support for a combined simple and standard template parse. - (eg. used by signup email template.) 
 		{
-			$text = $this->simpleParse($text, $extraCodes, false);	
+			$text = $this->simpleParse($text, $extraCodes, false);
 		}
-		
-		
-		
+
 		return e107::getScParser()->parseCodes($text, $parseSCFiles, $extraCodes, $eVars);
 	}
 
@@ -851,15 +849,23 @@ class e_parse extends e_parser
 		}
 		
 		foreach ($extraCodes as $sc => $code)
-		{			
-			if(!strpos($code, 'return '))
+		{
+			if(preg_match('/return(.*);/',$code)) // still problematic. 'return;' Might be used in common speech.
+			{
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		/*	if(!strpos($code, 'return '))
 			{
 				return true;
 			}
 			else 
 			{
 				return false;
-			}
+			}*/
 		}		
 	}
 

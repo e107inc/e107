@@ -264,7 +264,7 @@ class faqs_shortcodes extends e_shortcode
 		}
 
 
-		if(!empty($parms['expand']))
+		if(!empty($parms['expand']) && $faqpref['submit_question'] != e_UC_NOBODY)
 		{
 			$hide = 'e-hideme';
 			$button = "<a class='btn btn-primary e-expandit faq-submit-question' href='#form-ask-a-question'>Ask a Question</a>";
@@ -275,7 +275,7 @@ class faqs_shortcodes extends e_shortcode
 			$button = "";
 		}
 
-		if (check_class($faqpref['submit_question']))
+		if ($faqpref['submit_question'] != e_UC_NOBODY)
 		{
 			$frm = e107::getForm();
 
@@ -283,11 +283,28 @@ class faqs_shortcodes extends e_shortcode
 
 			$text .= "<div id='form-ask-a-question' class='alert alert-info alert-block ".$hide." form-group faq-submit-question-form'>";
 
-			$text .= $frm->open('faq-ask-question','post');
+			if(check_class($faqpref['submit_question']))
+			{
+				$text .= $frm->open('faq-ask-question','post');
 
-			$text .= "<div>".$frm->textarea('ask_a_question','',3, 80 ,array('maxlength'=>255, 'size'=>'xxlarge','placeholder'=>'Type your question here..', 'wrap'=>'soft')).'<br />'.$frm->submit('submit_a_question','Submit')."</div>";
+				$text .= "<div>".$frm->textarea('ask_a_question','',3, 80 ,array('maxlength'=>255, 'size'=>'xxlarge','placeholder'=>'Type your question here..', 'wrap'=>'soft')).'<br />'.$frm->submit('submit_a_question','Submit')."</div>";
 
-			$text .= $frm->close();
+				$text .= $frm->close();
+			}
+			elseif($faqpref['submit_question'] == e_UC_MEMBER)
+			{
+				$srp = array(
+					'[' => "<a href='".e_SIGNUP."'>",
+					']' => "</a>"
+				);
+				//TODO LAN
+				$text .= str_replace(array_keys($srp), array_values($srp), "Please [register] and/or login to post a question.");
+			}
+			else
+			{
+				//TODO LAN
+				$text .= "Not permitted at this time.";
+			}
 
 			$text .= "</div>";
 
