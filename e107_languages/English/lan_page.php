@@ -24,4 +24,9 @@ define("LAN_PAGE_11", "Page List");
 define("LAN_PAGE_12", "Invalid page");
 define("LAN_PAGE_13", "Page");
 
+define("LAN_PAGE_14", "Other Articles");
+define("LAN_PAGE_15", "Articles");
+define("LAN_PAGE_16", "There are no chapters in this book");
+
+
 ?>

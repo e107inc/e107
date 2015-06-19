@@ -263,14 +263,14 @@ class pageClass
 		
 		if(e107::getPref('listPages',false))
 		{
-			$text .= "<h3>Other Articles</h3>"; // Book Title. 		
+			$text .= "<h3>".LAN_PAGE_14."</h3>"; // Book Title.
 			$tmp = $this->listPages(0);
 			$text .= $tmp['text'];	// Pages unassigned to Book/Chapters. 
 		} //
 		
 		if($text)
 		{
-			$caption = varset($template['caption'], "Articles");
+			$caption = varset($template['caption'], LAN_PAGE_15);
             $this->pageOutput = array('caption'=>$caption, 'text'=>$text);
 			//e107::getRender()->tablerender($caption, $text, "cpage_list");
 		}
@@ -376,7 +376,7 @@ class pageClass
 		}
 		else
 		{
-			$text = e107::getMessage()->addInfo("There are no chapters in this book")->render();	
+			$text = e107::getMessage()->addInfo(LAN_PAGE_16)->render();
 		}	
 			
 		#return array('caption'=>$caption, 'text'=>$text);
