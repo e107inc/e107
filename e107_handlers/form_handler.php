@@ -2974,7 +2974,7 @@ class e_form
 	 * @param $type text|textarea|select|date|checklist
 	 * @param $array : array data used in dropdowns etc. 
 	 */
-	private function renderInline($dbField, $pid, $fieldName, $curVal, $linkText, $type='text', $array=null)
+	public function renderInline($dbField, $pid, $fieldName, $curVal, $linkText, $type='text', $array=null, $options=array())
 	{
 		$jsonArray = array();
 				
@@ -2989,10 +2989,36 @@ class e_form
 		
 		
 		$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
-		
+
+		if(!isset($options['url']))
+		{
+			$options['url'] = e_SELF."?mode={$mode}&amp;action=inline&amp;id={$pid}&amp;ajax_used=1";
+		}
+
+		if(!empty($pid))
+		{
+			$options['pk'] = $pid;
+		}
+
+		$title = varset($options['title'] , (LAN_EDIT." ".$fieldName));
+		unset( $options['title']);
+
 		$text = "<a class='e-tip e-editable editable-click' data-name='".$dbField."' ";
 		$text .= (is_array($array)) ? "data-source=\"".$source."\"  " : "";
-		$text .= " title=\"".LAN_EDIT." ".$fieldName."\" data-type='".$type."' data-inputclass='x-editable-".$this->name2id($dbField)."' data-value=\"{$curVal}\" data-pk='".$pid."' data-url='".e_SELF."?mode={$mode}&amp;action=inline&amp;id={$pid}&amp;ajax_used=1' href='#'>".$linkText."</a>";	
+		$text .= " title=\"".$title."\" data-type='".$type."' data-inputclass='x-editable-".$this->name2id($dbField)."' data-value=\"{$curVal}\"   href='#' ";
+
+		if(!empty($options))
+		{
+			foreach($options as $k=>$opt)
+			{
+				if(!empty($opt))
+				{
+					$text .= " data-".$k."='".$opt."'";
+				}
+			}
+		}
+
+		$text .= ">".$linkText."</a>";
 		
 		return $text;	
 	}

@@ -24,6 +24,7 @@ e107::coreLan('eurl', true);
 $e_sub_cat = 'eurl';
 
 
+
 class eurl_admin extends e_admin_dispatcher
 {
 	protected $modes = array(
@@ -63,7 +64,34 @@ class eurl_admin_ui extends e_admin_controller_ui
 	
 	public function init()
 	{
+		if(e_AJAX_REQUEST)
+		{
+			$tp = e107::getParser();
 
+			if(!empty($_POST['pk']) && !empty($_POST['value']))
+			{
+				$cfg = e107::getConfig();
+
+				list($plug,$key) = explode("|", $_POST['pk']);
+
+				if(is_string($cfg->get('e_url_alias')))
+				{
+					$cfg->setPostedData('e_url_alias', array(e_LAN => array($plug => array($key => $tp->filter($_POST['value']))) ), false);
+				}
+				else
+				{
+					$cfg->setPref('e_url_alias/'.e_LAN.'/'.$plug."/".$key, $tp->filter($_POST['value']));
+				}
+
+				$cfg->save(true, true, true);
+			}
+
+
+		//	file_put_contents(e_LOG."e_url.log", print_r($cfg->get('e_url_alias'),true));
+
+			exit;
+
+		}
 
 		$htaccess = file_exists(e_BASE.".htaccess");
 
@@ -205,8 +233,8 @@ class eurl_admin_ui extends e_admin_controller_ui
 			return; 		
 		}
 
-
-		$text = $frm->open('simpleSef');
+		$text = "<div class='e-container'>";
+		$text .= $frm->open('simpleSef');
 
 		$multilan = "<small class='e-tip admin-multilanguage-field' style='cursor:help; padding-left:10px' title='Multi-language field'>".$tp->toGlyph('fa-language')."</small>";
 
@@ -217,7 +245,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 			$text .= "<h5>".$plug."</h5>";
 			$text .= "<table class='table table-striped table-bordered'>";
 			$text .= "<tr><th>Key</th><th>Regular Expression</th>
-			<th>Alias</th>
+
 
 			<th>".LAN_URL."</th>
 			</tr>";
@@ -225,15 +253,18 @@ class eurl_admin_ui extends e_admin_controller_ui
 			foreach($val as $k=>$v)
 			{
 
-					$alias      = vartrue($pref[e_LAN][$plug][$k], $v['alias']);
-					$regex      = (!empty($alias)) ? str_replace('{alias}', $alias, $v['regex']) : $v['regex'];
-					$sefurl     = (!empty($alias)) ? str_replace('{alias}', $alias, $v['sef']) : $v['sef'];
-					$aliasForm  = (!empty($alias)) ? $home.$frm->text('e_url_alias['.$plug.']['.$k.']', $alias).$multilan : '<small class="muted">Not available</small>';
+					$alias          = vartrue($pref[e_LAN][$plug][$k], $v['alias']);
+				//	$sefurl         = (!empty($alias)) ? str_replace('{alias}', $alias, $v['sef']) : $v['sef'];
+					$pid            = $plug."|".$k;
+
+					$v['regex'] = str_replace("^",$home,$v['regex']);
+					$aliasForm      = $frm->renderInline('e_url_alias['.$plug.']['.$k.']', $pid, 'e_url_alias['.$plug.']['.$k.']', $alias, $alias,'text',null,array('title'=>LAN_EDIT." (".e_LANGUAGE." Only)", 'url'=>e_REQUEST_SELF));
+					$aliasRender    = str_replace('{alias}', $aliasForm, $v['regex']);
 
 					$text .= "<tr>
 					<td style='width:5%'>".$k."</td>
-					<td style='width:20%'><span class='e-tip' title='".SITEURL.$sefurl."'>".$regex."</span></td>
-					<td class='form-inline' style='width:30%'>".$aliasForm."</td>
+					<td style='width:20%'>".$aliasRender."</td>
+
 					<td style='width:30%'>". $v['redirect']."</td>
 					</tr>";
 			}
@@ -242,8 +273,9 @@ class eurl_admin_ui extends e_admin_controller_ui
 			$text .= "</table>";
 		}	
 
-		$text .= "<div class='buttons-bar center'>".$frm->button('saveSimpleSef',LAN_SAVE." (".e_LANGUAGE.")",'submit')."</div>";
+	//	$text .= "<div class='buttons-bar center'>".$frm->button('saveSimpleSef',LAN_SAVE." (".e_LANGUAGE.")",'submit')."</div>";
 		$text .= $frm->close();
+		$text .= "</div>";
 		return $text;		
 	}
 		
