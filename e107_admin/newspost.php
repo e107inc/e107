@@ -407,7 +407,7 @@ class news_admin_ui extends e_admin_ui
         'news_allow_comments' 	=> array('title' => NWSLAN_15, 		'type' => 'boolean',    'tab'=>2,	'writeParms'=>'inverse=1', 'data' => 'int', 'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false,'batch'=>true, 'filter'=>true,'readParms'=>'reverse=1','writeParms'=>'inverse=1'),
         'news_comment_total' 	=> array('title' => LAN_NEWS_60, 	'type' => 'number',     'tab'=>2,	'noedit'=>true, 'width' => '10%', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 	//	admin_news_notify
-		'news_email_notify'     => array('title' => "Email notification", 'type' => 'checkbox',   'tab'=>2,  'data'=>false, 'writeParms'=>array('show'=>1), 'help'=>'Trigger an email notification when you submit this form.'),
+		'news_email_notify'     => array('title' => NWSLAN_129, 'type' => 'checkbox',   'tab'=>2,  'data'=>false, 'writeParms'=>array('show'=>1), 'help'=>'Trigger an email notification when you submit this form.'),
 		'submitted_id'          => array('title' => LAN_NEWS_68, 'type' => 'hidden',  'tab'=>2,  'data'=>false, 'writeParms'=>'show=0'),
 		'options'				=> array('title' => LAN_OPTIONS, 	'type' => null, 		'width' => '10%', 	'thclass' => 'center last', 	'class' => 'center', 	'nosort' => true, 'forced' => TRUE)
 
@@ -539,11 +539,11 @@ class news_admin_ui extends e_admin_ui
 		if(in_array(e_UC_PUBLIC, $visibility))
 		{
 			e107::getEvent()->trigger('admin_news_notify',$new_data);
-			e107::getMessage()->addSuccess("Email notification triggered");
+			e107::getMessage()->addSuccess(NWSLAN_130);
 		}
 		else
 		{
-			e107::getMessage()->addWarning("News item visibility must include 'everyone' for email notifications to work.");
+			e107::getMessage()->addWarning(NWSLAN_131);
 		}
 
 
@@ -748,7 +748,7 @@ class news_admin_ui extends e_admin_ui
 
 		$mes = e107::getMessage();
 
-		$mes->addDebug('Checking for Ping Status','default',true);
+		$mes->addDebug(NWSLAN_132,'default',true);
 
 		if(!empty($_POST['news_ping']) && (count($pingServices)>0) && (in_array(e_UC_PUBLIC, $_POST['news_class'])))
 		{
@@ -777,11 +777,11 @@ class news_admin_ui extends e_admin_ui
 
 				if($this->ping($server, $port, $path, $weblog_name, $weblog_url, $changes_url, $cat_or_rss, $extended))
 				{
-					e107::getMessage()->addInfo("Successfully Pinged: ".$server .' with:<br />url: '.$changes_url .'<br />rss: '.$cat_or_rss , 'default', true);
+					e107::getMessage()->addInfo(NWSLAN_133." ".$server .' '.NWSLAN_135.':<br />url: '.$changes_url .'<br />rss: '.$cat_or_rss , 'default', true);
 				}
 				else
 				{
-					e107::getMessage()->addDebug("Ping failed!: ".$server .' with: '.$changes_url , 'default', true);
+					e107::getMessage()->addDebug(NWSLAN_134.": ".$server .' '.NWSLAN_135.': '.$changes_url , 'default', true);
 				}
 
 			}
@@ -804,7 +804,7 @@ class news_admin_ui extends e_admin_ui
 		$mes = e107::getMessage();
 		$log = e107::getAdminLog();
 		
-		$mes->addDebug("Attempting to ping: ".$xml_rpc_server, 'default', true);
+		$mes->addDebug(NWSLAN_136." ".$xml_rpc_server, 'default', true);
 
 		
         $name_param 		= new xmlrpcval($weblog_name, 'string');
@@ -837,12 +837,12 @@ class news_admin_ui extends e_admin_ui
         $client 	= new xmlrpc_client($xml_rpc_path, $xml_rpc_server, $xml_rpc_port);
         $response 	= $client->send($message);
        
-        $this->log_ping("Request: " . $call_text);
+        $this->log_ping(NWSLAN_137.": " . $call_text);
         $this->log_ping($message->serialize(), true);
 		
         if ($response == 0) 
         {
-            $error_text = "Error: " . $xml_rpc_server . ": " . $client->errno . " " . $client->errstring;
+            $error_text = LAN_ERROR.": " . $xml_rpc_server . ": " . $client->errno . " " . $client->errstring;
             $this->report_error($error_text);
             $this->log_ping($error_text);
 			$log->addArray(array('status'=>LAN_ERROR, 'service'=>$xml_rpc_server, 'url'=> $changes_url, 'response'=>$client->errstring))->save('PING_01');
@@ -852,7 +852,7 @@ class news_admin_ui extends e_admin_ui
 		
         if ($response->faultCode() != 0)  
         {
-            $error_text = "Error: " . $xml_rpc_server . ": " . $response->faultCode() . " " . $response->faultString();
+            $error_text = LAN_ERROR.": " . $xml_rpc_server . ": " . $response->faultCode() . " " . $response->faultString();
             $this->report_error($error_text);
 			$log->addArray(array('status'=>LAN_ERROR, 'service'=>$xml_rpc_server, 'url'=> $changes_url, 'response'=>$response->faultString()))->save('PING_01');
 	
@@ -873,7 +873,7 @@ class news_admin_ui extends e_admin_ui
         // read the response
         if ($fl_error->scalarval() != false) 
         {
-            $error_text = "Error: " . $xml_rpc_server . ": " . $message->scalarval();
+            $error_text = LAN_ERROR.": " . $xml_rpc_server . ": " . $message->scalarval();
 			$this->report_error($error_text);
 			$log->addArray(array('status'=>LAN_ERROR, 'service'=>$xml_rpc_server, 'url'=> $changes_url, 'response'=>$message->scalarval()))->save('PING_01');
 	
@@ -1111,8 +1111,8 @@ class news_admin_ui extends e_admin_ui
 					</table>";
 
 			$text .= $frm->tabs(array(
-				'general'	=> array('caption'=>'General', 'text'=>$tab1),
-				'subnews'	=> array('caption'=>'Submit News', 'text'=>$tab2)
+				'general'	=> array('caption'=>NWSLAN_138, 'text'=>$tab1),
+				'subnews'	=> array('caption'=>NWSLAN_139, 'text'=>$tab2)
 			));
 
 
