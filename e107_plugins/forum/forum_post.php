@@ -1046,7 +1046,7 @@ class forum_post_handler
 
 	//	$url = e107::getUrl()->create('forum/thread/post', "id={$this->data['post_id']}", 'encode=0&full=1'); // XXX what data is available, find thread name
 
-		$url = e107::url('forum','topic',$this->data,true); // ."&f=post";
+		$url = e107::url('forum','topic',$this->data); // ."&f=post";
 
 		$this->redirect($url);
 
