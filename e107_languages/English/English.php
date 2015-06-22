@@ -83,7 +83,10 @@ define("LAN_LOGIN", "Login");
 define("LAN_LOGOUT", "Logout");
 define("LAN_SETTINGS", "Settings");
 define("LAN_PASSWORD", "Password");
-
+define("LAN_TYPE", "Type");
+define("LAN_DESCRIPTION", "Description");
+define("LAN_FILE", "File");
+define("LAN_COMMENTS", "Comments");
 
 
 ?>
