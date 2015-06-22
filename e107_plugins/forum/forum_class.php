@@ -903,7 +903,7 @@ class e107forum
 		if('post' === $start)
 		{
 			$qry = '
-			SELECT u.user_name, t.thread_active, t.thread_datestamp, t.thread_name, t.thread_user, t.thread_id, p.* FROM `#forum_post` AS p
+			SELECT u.user_name, t.thread_active, t.thread_datestamp, t.thread_name, t.thread_user, t.thread_id, t.thread_sticky, p.* FROM `#forum_post` AS p
 			LEFT JOIN `#forum_thread` AS t ON t.thread_id = p.post_thread
 			LEFT JOIN `#user` AS u ON u.user_id = p.post_user
 			WHERE p.post_id = '.$id;

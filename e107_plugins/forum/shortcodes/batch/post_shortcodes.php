@@ -391,12 +391,12 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		// Show when creating new topic or when editing the original starting post (make sure post is not a reply)
 		if (MODERATOR && $this->var['action'] == "nt" || $this->var['thread_datestamp'] == $this->var['post_datestamp'])
 		{
-			$thread_sticky = (isset($_POST['threadtype']) ? $_POST['threadtype'] : vartrue($this->var['thread_sticky'],0)); // no reference of 'head' $threadInfo['head']['thread_sticky']
-				
+			$thread_sticky = (isset($_POST['threadtype']) ? $_POST['threadtype'] : vartrue($this->var['thread_sticky'], 0)); // no reference of 'head' $threadInfo['head']['thread_sticky']
+
 			$opts = array(0 => LAN_FORUM_3038, 1 => LAN_FORUM_1011, 2 => LAN_FORUM_1013); 
-				
+
 			return "<div class='checkbox'>".e107::getForm()->radio('threadtype',$opts, $thread_sticky)."</div>";
-			
+
 		//	return "<br /><span class='defaulttext'>post thread as 
 		//	<input name='threadtype' type='radio' value='0' ".(!$thread_sticky ? "checked='checked' " : "")." />".LAN_1."&nbsp;<input name='threadtype' type='radio' value='1' ".($thread_sticky == 1 ? "checked='checked' " : "")." />".LAN_2."&nbsp;<input name='threadtype' type='radio' value='2' ".($thread_sticky == 2 ? "checked='checked' " : "")." />".LAN_3."</span>";
 		}
