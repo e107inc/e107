@@ -78,4 +78,14 @@ define("LINKLAN_9", "Download Categories");
 // define("LINKLAN_10", "Create Sublink");
 // define('LINKLAN_11', 'Nothing changed - not updated');
 
+//
+define("LAN_SITELINK_PAGE_TITLE", "Site links");
+define('LINKLAN_12', 'Main');
+define('LINKLAN_13', 'Sidebar');
+define('LINKLAN_14', 'Footer');
+define('LINKLAN_15', 'Alt');
+define('LINKLAN_16', 'Unassigned');
+define('LINKLAN_17', 'REMOVE PARENT');
+define('LINKLAN_18', 'Main Only');
+
 ?>
