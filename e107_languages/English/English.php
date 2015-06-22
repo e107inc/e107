@@ -51,6 +51,7 @@ define("LAN_DELETE","Delete");
 define("LAN_MORE", "More..");
 define("LAN_READ_MORE", "Read more..");
 define("LAN_GOPAGE", "Go to page");
+define("LAN_GOTOPAGEX", "Go to page [x]");
 define("LAN_GO", "Go");
 define("LAN_NONE", "None");
 define("LAN_WARNING", "Warning!");

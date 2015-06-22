@@ -793,11 +793,13 @@ function fadminoptions($thread_info)
 	
 function fpages($thread_info, $replies)
 {
-	global $forum; 
+	global $forum;
+	$tp = e107::getParser();
 	
 	$pages = ceil(($replies)/$forum->prefs->get('postspage'));
 	$thread_info['thread_sef'] = eHelper::title2sef($thread_info['thread_name'],'dashl');
 	$urlparms = $thread_info;
+	$text = '';
 
 	if ($pages > 1)
 	{
@@ -810,8 +812,9 @@ function fpages($thread_info, $replies)
 			//	$urlparms['page'] = $aa;
 
 			//	$url = e107::getUrl()->create('forum/thread/view', $urlparms);
-				$url = e107::url('forum','topic',$urlparms).'?p='.$aa;
-				$opts[] = "<a data-toggle='tooltip' title=\"Go to Page $aa\" href='{$url}'>{$aa}</a>"; //FIXME LAN_GOPAGE syntax?
+				$title = $tp->lanVars(LAN_GOTOPAGEX, $aa);
+				$url = e107::url('forum','topic',$urlparms).'&amp;p='.$aa;
+				$opts[] = "<a data-toggle='tooltip' title=\"".$title."\" href='{$url}'>{$aa}</a>";
 			}
 			$text .= ' ... ';
 			for($a = $pages-3; $a <= $pages-1; $a++)
@@ -820,20 +823,23 @@ function fpages($thread_info, $replies)
 				$text .= $text ? ' ' : '';
 			//	$urlparms['page'] = $aa;
 			//	$url = e107::getUrl()->create('forum/thread/view', $urlparms);
-				$url = e107::url('forum','topic',$urlparms).'?p='.$aa;
-				$opts[] = "<a data-toggle='tooltip' title=\"Go to Page $aa\" href='{$url}'>{$aa}</a>"; //FIXME LAN_GOPAGE syntax?
+				$title = $tp->lanVars(LAN_GOTOPAGEX, $aa);
+				$url = e107::url('forum','topic',$urlparms).'&amp;p='.$aa;
+				$opts[] = "<a data-toggle='tooltip' title=\"".$title."\" href='{$url}'>{$aa}</a>";
 			}
 		}
 		else
 		{
+		
 			for($a = 0; $a <= ($pages-1); $a++)
 			{
 				$aa = $a + 1;
 				$text .= $text ? ' ' : '';
 			//	$urlparms['page'] = $aa;
 			//	$url = e107::getUrl()->create('forum/thread/view', $urlparms);
-				$url = e107::url('forum','topic',$urlparms).'?p='.$aa;
-				$opts[] =  "<a data-toggle='tooltip' title=\"Go to Page $aa\" href='{$url}'>{$aa}</a>"; //FIXME LAN_GOPAGE syntax?
+				$title = $tp->lanVars(LAN_GOTOPAGEX, $aa);
+				$url = e107::url('forum','topic',$urlparms).'&amp;p='.$aa;
+				$opts[] =  "<a data-toggle='tooltip' title=\"".$title."\" href='{$url}'>{$aa}</a>";
 			}
 		}
 
