@@ -693,7 +693,7 @@ class frontpage
 	 */
 	function add_other($ob_name, $cur_val, $cur_page)
 	{
-		$label = ($cur_val) ? "Disabled or Enter Custom URL:" : "Custom URL: ";
+		$label = ($cur_val) ? FRTLAN_61 : FRTLAN_62;
 		
 	  	return  "
 			<td>".$this->frm->radio($ob_name, 'other', $cur_val, array('label'=> $label))."</td>

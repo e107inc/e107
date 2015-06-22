@@ -944,10 +944,10 @@ function show_packs()
 		
 	$lans = getLanList();
 	
-	$release_diz = defined("LANG_LAN_30") ? LANG_LAN_30 : "Release Date";
-	$compat_diz = defined("LANG_LAN_31") ?  LANG_LAN_31 : "Compatibility";
-	$lan_pleasewait = (deftrue('LAN_PLEASEWAIT')) ?  $tp->toJS(LAN_PLEASEWAIT) : "Please Wait";
-	$lan_displayerrors = (deftrue('LANG_LAN_33')) ?  LANG_LAN_33 : "Display only errors during verification";
+	$release_diz = defined("LANG_LAN_30") ? LANG_LAN_30 : LANG_LAN_30;
+	$compat_diz = defined("LANG_LAN_31") ?  LANG_LAN_31 :LANG_LAN_31;
+	$lan_pleasewait = (deftrue('LAN_PLEASEWAIT')) ?  $tp->toJS(LAN_PLEASEWAIT) : LAN_PLEASEWAIT;
+	$lan_displayerrors = (deftrue('LANG_LAN_33')) ?  LANG_LAN_33 : LANG_LAN_33;
 	
 	
 	$text = "<form id='lancheck' method='post' action='".e_SELF."?tools'>
@@ -1021,7 +1021,7 @@ function show_packs()
 		
 		$srch = array("[","]");
 		$repl = array("<a rel='external' href='http://e107.org/content/About-Us:The-Team#translation-team'>","</a>");
-		$diz = (deftrue("LANG_LAN_28")) ? LANG_LAN_28 : "Check this box if you're an [e107 certified translator].";
+		$diz = (deftrue("LANG_LAN_28")) ? LANG_LAN_28 : LANG_LAN_28;
 	
 		$checked = varset($_COOKIE['e107_certified']) == 1 ? true : false;
 		
@@ -1167,10 +1167,10 @@ function show_tools()
 								
 						$text .= "						
 						<tr>
-							<td>Search for Deprecated Lans</td>
+							<td>".LANG_LAN_135."</td>
 							<td class='form-inline'>
 								<select name='deprecatedLans'>
-									<option value=''>Select Script...</option>";
+									<option value=''>".LANG_LAN_136."</option>";
 									
 									
 									$omit = array('languages','\.png','\.gif','handlers');
@@ -1182,7 +1182,7 @@ function show_tools()
 															
 									$srch = array(e_ADMIN,e_PLUGIN);
 									
-									$text .= "<optgroup label='Admin Area'>";
+									$text .= "<optgroup label='".LAN_ADMIN_AREA."'>";
 									foreach($lans as $script=>$lan)
 									{								
 										if(in_array(basename($lan),$exclude))
@@ -1225,7 +1225,7 @@ function show_tools()
 								
 								$prev = 'Core';
 								$text .= "<select name='deprecatedLanFile'>
-								<option value=''>Auto-Detect</option>
+								<option value=''>".LANG_LAN_137."</option>
 								<optgroup label='CORE'>\n";
 								
 								foreach($_SESSION['languageTools_lanFileList'] as $val)

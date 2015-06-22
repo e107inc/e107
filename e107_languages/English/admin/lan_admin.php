@@ -406,3 +406,21 @@ define("LAN_USER_RANKS", "User Ranks");
 
 
 // TODO - move e_form related LANS below, add new lan_form.php file (for both front/back-end)
+
+//
+
+define("ADLAN_MM_1", "The folder");
+define("ADLAN_MM_2", "is not writable. Please correct before proceeding.");
+define("ADLAN_MM_3", "The following plugins are not compatible with this version of e107 and should be uninstalled");
+define("ADLAN_MM_4", "Setting default filetypes");
+define("LAN_E107_NEWS", "e107 News");
+define("LAN_ADMIN_CPANEL", "'s Control Panel");
+define("ADLAN_CLICK_HERE", "click here");
+define("ADLAN_MM_5", "Customize Admin");
+define("LAN_ADMIN_WEBSITE_STATUS", "Website Status");
+define("ADLAN_MM_6", "These stats are for demonstration purposes only.");
+define("ADLAN_MM_7", "Install Site Stats Plugin");
+define("LAN_VISITS", "Visits");
+define("LAN_UNIQUE_VISITS", "Unique Visits");
+define("LAN_VISITORS", "Visitors");
+define("LAN_UNIQUE_VISITORS", "Unique Visitors");

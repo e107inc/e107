@@ -44,5 +44,7 @@ define("FRTLAN_PAGE_TITLE", "Front Page");
 define("FRTLAN_56", "duplicate definition for class:");
 define("FRTLAN_57", "Software error");
 define("FRTLAN_60", "Front");
+define("FRTLAN_61", "Disabled or Enter Custom URL:");
+define("FRTLAN_62", "Custom URL: ");
 
 ?>

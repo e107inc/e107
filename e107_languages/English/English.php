@@ -48,6 +48,7 @@ define("EMESSLAN_TITLE_DEBUG", "System Debug");
 
 define("LAN_EDIT","Edit");
 define("LAN_DELETE","Delete");
+define("LAN_APPROVE","Approve");
 define("LAN_MORE", "More..");
 define("LAN_READ_MORE", "Read more..");
 define("LAN_GOPAGE", "Go to page");
@@ -57,6 +58,7 @@ define("LAN_WARNING", "Warning!");
 define("LAN_ERROR", "Error");
 define("LAN_ANONYMOUS", "Anonymous");
 define("LAN_EMAIL_SUBS", "-email-");
+define("LAN_EMAIL", "Email");
 define("LAN_YES", "Yes");
 define("LAN_NO", "No");
 define("LAN_OK", "OK");
@@ -82,6 +84,19 @@ define("LAN_LOGIN", "Login");
 define("LAN_LOGOUT", "Logout");
 define("LAN_SETTINGS", "Settings");
 define("LAN_PASSWORD", "Password");
+define("LAN_UNINSTALL", "uninstall");
+define("LAN_USERNAME", "Username");
+define("LAN_TIMESTAMP", "Timestamp");
+define("LAN_PAGE", "Page");
+define("LAN_AGENT", "Agent");
+define("LAN_POSTED_BY", "Posted by");
+define("LAN_VIEW_ALL", "View all");
+define("LAN_LATEST_COMMENTS", "Latest Comments");
+define("LAN_PLEASEWAIT", "Please Wait");
+define("LAN_ADMIN_AREA", "Admin Area");
+define("LAN_FIELD_OPTIONS", "Field options");
+define("LAN_BASIC", "Basic");
+
 
 
 

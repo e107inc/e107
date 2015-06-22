@@ -44,6 +44,7 @@ define("EXTLAN_31", "Category label");
 define("EXTLAN_32", "This is the label of the field as shown on User Settings page. Language constants are allowed.");
 define("EXTLAN_33", "Cancel Edit");
 define("EXTLAN_34", "Extended Fields");
+define("EXTLAN_34a", "Add Custom Field");
 define("EXTLAN_35", "Categories");
 define("EXTLAN_36", "No assigned Category");
 define("EXTLAN_37", "No categories defined");

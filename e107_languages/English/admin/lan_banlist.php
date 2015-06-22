@@ -126,4 +126,17 @@ define("BANLAN_119", "Indicates an import error - previously imported bans");
 define("BANLAN_120", "Whitelist entry");
 define("BANLAN_121", "Blacklist entry");
 
+//
+define("BANLAN_122", "Blacklist");
+define("BANLAN_123", "Add to Blacklist");
+define("BANLAN_124", "Failed logins");
+define("BANLAN_125", "Expires");
+define("BANLAN_126", "Admin");
+define("BANLAN_127", "Reason");
+define("BANLAN_128", "Notes");
+define("BANLAN_129", "Use My IP");
+define("BANLAN_130", "");
+define("BANLAN_131", "");
+define("BANLAN_132", "");
+
 ?>
