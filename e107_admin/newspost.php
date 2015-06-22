@@ -460,20 +460,26 @@ class news_admin_ui extends e_admin_ui
 
 	public function beforeUpdate($new_data, $old_data, $id)
 	{
-		$new_data['news_thumbnail'] = $this->processThumbs($new_data['news_thumbnail']);
+		if(!empty($new_data['news_thumbnail']))
+		{
+			$new_data['news_thumbnail'] = $this->processThumbs($new_data['news_thumbnail']);
+		}
 
 		if(empty($new_data['news_datestamp']))
 		{
 			$new_data['news_datestamp'] = time();
 		}
 
-		if(empty($new_data['news_sef']))
+		if(empty($new_data['news_sef']) && !empty($new_data['news_title']))
 		{
 			$new_data['news_sef'] = eHelper::title2sef($new_data['news_title']);
 		}
 
-		$tmp = explode(chr(35), $new_data['news_author']);
-		$new_data['news_author'] = intval($tmp[0]);
+		if(!empty($new_data['news_author']))
+		{
+			$tmp = explode(chr(35), $new_data['news_author']);
+			$new_data['news_author'] = intval($tmp[0]);
+		}
 
 		return $new_data;
 	}
