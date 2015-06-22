@@ -108,14 +108,14 @@ class eurl_admin_ui extends e_admin_controller_ui
 
 		if($modRewrite === false)
 		{
-			e107::getMessage()->addInfo("Apache mod_rewrite was not found on this server and is required to use this feature. ");
+			e107::getMessage()->addInfo(LAN_EURL_2);
 			e107::getMessage()->addDebug(print_a($modules,true));
 
 		}
 
 		if($htaccess && $modRewrite && !deftrue('e_MOD_REWRITE'))
 		{
-			e107::getMessage()->addInfo("Mod-rewrite is disabled. To enable, please add the following line to your <b>e107_config.php</b> file:<br /><pre>define('e_MOD_REWRITE',true);</pre>");
+			e107::getMessage()->addInfo(LAN_EURL_1);
 		}
 	
 		if(is_array($_POST['rebuild']))
@@ -147,7 +147,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 	{
 		if(empty($table) || empty($input) || empty($output) || empty($primary))
 		{
-			e107::getMessage()->addError("Missing Generator data");	
+			e107::getMessage()->addError(LAN_EURL_3);
 			return;
 		}
 		
@@ -177,12 +177,12 @@ class eurl_admin_ui extends e_admin_controller_ui
 			
 		if($success)
 		{
-			e107::getMessage()->addSuccess($success." SEF URLs were updated.");
+			e107::getMessage()->addSuccess($success." ".LAN_EURL_4);
 		}
 		
 		if($failed)
 		{
-			e107::getMessage()->addError($failed." SEF URLs were NOT updated.");	
+			e107::getMessage()->addError($failed." ".LAN_EURL_5);
 		}
 		
 		
@@ -244,7 +244,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 		{
 			$text .= "<h5>".$plug."</h5>";
 			$text .= "<table class='table table-striped table-bordered'>";
-			$text .= "<tr><th>Key</th><th>Regular Expression</th>
+			$text .= "<tr><th>".LAN_EURL_6."</th><th>".LAN_EURL_7."</th>
 
 
 			<th>".LAN_URL."</th>
@@ -258,7 +258,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 					$pid            = $plug."|".$k;
 
 					$v['regex'] = str_replace("^",$home,$v['regex']);
-					$aliasForm      = $frm->renderInline('e_url_alias['.$plug.']['.$k.']', $pid, 'e_url_alias['.$plug.']['.$k.']', $alias, $alias,'text',null,array('title'=>LAN_EDIT." (".e_LANGUAGE." Only)", 'url'=>e_REQUEST_SELF));
+					$aliasForm      = $frm->renderInline('e_url_alias['.$plug.']['.$k.']', $pid, 'e_url_alias['.$plug.']['.$k.']', $alias, $alias,'text',null,array('title'=>LAN_EDIT." (".e_LANGUAGE." ".LAN_EURL_8.")", 'url'=>e_REQUEST_SELF));
 					$aliasRender    = str_replace('{alias}', $aliasForm, $v['regex']);
 
 					$text .= "<tr>
@@ -773,7 +773,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 		// [Miro] there is no reason of switch, everything could go through single entry point at any time, without a need of .htaccess (path info)
 		// Control is coming per configuration file.
 		$example = "
-		<tr><td>Enable Search-Engine-Friendly URLs</td>
+		<tr><td>".LAN_EURL_9."</td>
 		<td><input type='checkbox' name='SEF-active' value='1' />
 		</td></tr>";
 		
@@ -784,22 +784,22 @@ class eurl_admin_form_ui extends e_admin_form_ui
 					<td style='padding:0px'>
 					<table style='width:600px;margin-left:0px'>
 					<tr>
-						<td><input type='radio' class='radio' name='example' />Default</td><td>/news.php?item.1</td>
+						<td><input type='radio' class='radio' name='example' />".LAN_EURL_DEFAULT."</td><td>/news.php?item.1</td>
 					</tr>
 					<tr>
-						<td><input type='radio' class='radio' name='example' />News Namespace and News Title</td><td>/news/news-item-title</td>
+						<td><input type='radio' class='radio' name='example' />".LAN_EURL_CORE_NEWS_1."</td><td>/news/news-item-title</td>
 					</tr>
 					<tr>
-						<td><input type='radio' class='radio' name='example' />Year and News Title</td><td>/2011/news-item-title</td>
+						<td><input type='radio' class='radio' name='example' />".LAN_EURL_CORE_NEWS_2."</td><td>/2011/news-item-title</td>
 					</tr>
 					<tr>
-						<td><input type='radio' class='radio' name='example' />Year/Month and News Title</td><td>/2011/08/news-item-title</td>
+						<td><input type='radio' class='radio' name='example' />".LAN_EURL_CORE_NEWS_3."</td><td>/2011/08/news-item-title</td>
 					</tr>
 					<tr>
-						<td><input type='radio' class='radio' name='example' />Year/Month/Day and News Title</td><td>/2011/08/27/news-item-title</td>
+						<td><input type='radio' class='radio' name='example' />".LAN_EURL_CORE_NEWS_4."</td><td>/2011/08/27/news-item-title</td>
 					</tr>
 					<tr>
-						<td><input type='radio' class='radio' name='example' />News Category and News Title</td><td>/news-category/news-item-title</td>
+						<td><input type='radio' class='radio' name='example' />".LAN_EURL_CORE_NEWS_5."News Category and News Title</td><td>/news-category/news-item-title</td>
 					</tr>
 					";
 					
