@@ -41,6 +41,7 @@ define("LANG_LAN_AGR", "Note: By using these tools you agree to share your langu
 define("LANG_LAN_EML", "Please email your language pack to:");
 
 
+define("LANG_LAN_28", "Check this box if you're an [e107 certified translator].");
 define("LANG_LAN_29", "You should correct the remaining errors before contributing your language pack.");
 define("LANG_LAN_30", "Release Date");
 define("LANG_LAN_31", "Compatibility");
@@ -92,5 +93,10 @@ define("LANG_LAN_131", "Missing from language file");
 define("LANG_LAN_132", "is a common phrase.");
 define("LANG_LAN_133", "Use");
 define("LANG_LAN_134", "instead.");
+
+//
+define("LANG_LAN_135", "Search for Deprecated Lans");
+define("LANG_LAN_136", "Select Script...");
+define("LANG_LAN_137", "Auto-Detect");
 
 ?>

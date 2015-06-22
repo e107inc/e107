@@ -91,6 +91,8 @@ define("LAN_AGENT", "Agent");
 define("LAN_POSTED_BY", "Posted by");
 define("LAN_VIEW_ALL", "View all");
 define("LAN_LATEST_COMMENTS", "Latest Comments");
+define("LAN_PLEASEWAIT", "Please Wait");
+define("LAN_ADMIN_AREA", "Admin Area");
 
 
 
