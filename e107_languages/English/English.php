@@ -58,6 +58,7 @@ define("LAN_WARNING", "Warning!");
 define("LAN_ERROR", "Error");
 define("LAN_ANONYMOUS", "Anonymous");
 define("LAN_EMAIL_SUBS", "-email-");
+define("LAN_EMAIL", "Email");
 define("LAN_YES", "Yes");
 define("LAN_NO", "No");
 define("LAN_OK", "OK");
@@ -93,6 +94,8 @@ define("LAN_VIEW_ALL", "View all");
 define("LAN_LATEST_COMMENTS", "Latest Comments");
 define("LAN_PLEASEWAIT", "Please Wait");
 define("LAN_ADMIN_AREA", "Admin Area");
+define("LAN_FIELD_OPTIONS", "Field options");
+define("LAN_BASIC", "Basic");
 
 
 
