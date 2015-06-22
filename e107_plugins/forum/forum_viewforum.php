@@ -830,7 +830,7 @@ function fpages($thread_info, $replies)
 		}
 		else
 		{
-		
+
 			for($a = 0; $a <= ($pages-1); $a++)
 			{
 				$aa = $a + 1;
