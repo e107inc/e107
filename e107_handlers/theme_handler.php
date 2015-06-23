@@ -1731,45 +1731,48 @@ class themeHandler
 		$file = e_THEME.$name."/install/install.xml";
 		$frm = e107::getForm();
 		$tp = e107::getParser();
-		
+
 		if(!is_readable($file))
 		{
-			return false;		
-		}		
-		
+			return false;
+		}
+
 		$mes = e107::getMessage();
-		
-		$xmlArray = e107::getXml()-> loadXMLfile($file, 'advanced');
-		
+
+		$xmlArray = e107::getXml()->loadXMLfile($file, 'advanced');
+
 		$text = "
 		<form action='".e_SELF."' method='post'>
-		<div>This theme would like to make the following changes to your database:
+		<div>
+		<p>".TPVLAN_58."<br />
+		".$tp->toHTML(TPVLAN_59, true).":<br />
+		</p>
+
 		<ul>";
-		
+
 		$lng = e107::getLanguage();
-		
+
 		foreach($xmlArray['database']['dbTable'] as $key=>$val)
 		{
 			$count = count($val['item']);
-			$data = array('x'=> $count, 'y' => $val['@attributes']['name']); 	
-			$lan = "Replace/Overwrite [x] record(s) in your [y] table. ";
-	
-			$text .= "<li>".$tp->lanVars($lan, $data)."</li>";
-				
+			$data = array('x'=> $count, 'y' => $val['@attributes']['name']);
+			$text .= "<li>".$tp->lanVars(TPVLAN_60, $data)."</li>";
 		}
+
 		$text .= "</ul>
-		".$frm->admin_button('installContent',$name, 'warning', "Agree")."
-		".$frm->admin_button('dismiss',0, 'cancel', 'Dismiss')."
+
+		<p>".$tp->toHTML(TPVLAN_61, true)."</p>
+
+		".$frm->admin_button('installContent',$name, 'warning', LAN_YES)."
+		".$frm->admin_button('dismiss',0, 'cancel', LAN_NO)."
 		</div>
 		</form>
 		";
 	//	$text .= print_a($xmlArray, true);
-		$mes->addWarning($text);
-	
-
+		$mes->addInfo($text);
 	}
-		
-		
+
+
 	function installContent($name)
 	{
 		$mes = e107::getMessage();
