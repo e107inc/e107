@@ -95,7 +95,6 @@ define("LAN_LATEST_COMMENTS", "Latest Comments");
 define("LAN_PLEASEWAIT", "Please Wait");
 define("LAN_ADMIN_AREA", "Admin Area");
 define("LAN_FIELD_OPTIONS", "Field options");
-define("LAN_BASIC", "Basic");
 
 
 

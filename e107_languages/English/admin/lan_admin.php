@@ -348,6 +348,7 @@ define("LAN_COPYRIGHT", "Copyright");
 define("LAN_MANAGER", "Manage Permissions");
 define("LAN_PING", "Ping");
 define("LAN_START", "Starting");
+define("LAN_STARTa", "Start");
 define("LAN_END", "Ending");
 
 define("LAN_PREVIEW", "Preview");
@@ -424,3 +425,7 @@ define("LAN_VISITS", "Visits");
 define("LAN_UNIQUE_VISITS", "Unique Visits");
 define("LAN_VISITORS", "Visitors");
 define("LAN_UNIQUE_VISITORS", "Unique Visitors");
+
+define("LAN_BASIC", "Basic");
+define("LAN_ADVANCED", "Advanced");
+define("LAN_FAILED", "Failed");

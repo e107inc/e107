@@ -274,12 +274,52 @@ define("LAN_MAILOUT_255", "Templated Email, ID: ");
 define("LAN_MAILOUT_256", "Return");
 define("LAN_MAILOUT_257", "Generated template");
 define("LAN_MAILOUT_258", "Template: ");
-define("LAN_MAILOUT_259", "");
+//define("LAN_MAILOUT_259", "Recipients");
 
 
 define("LAN_SEND", "Send");
 define("LAN_HOLD", "Hold");
 define("LAN_MAILOUT_260", "User-Type");
+define("LAN_MAILOUT_261", "Total Recipients");
+define("LAN_MAILOUT_262", "Embed Media");
+define("LAN_MAILOUT_263", "Template Preview");
+define("LAN_MAILOUT_264", "No mail handlers loaded!!");
+define("LAN_MAILOUT_265", "Pending");
+define("LAN_MAILOUT_266", "Saved");
+define("LAN_MAILOUT_267", "Held");
+define("LAN_MAILOUT_268", "Bounced");
+define("LAN_MAILOUT_269", "Cancelled");
+define("LAN_MAILOUT_270", "Partial");
+define("LAN_MAILOUT_271", "Max Active");
+define("LAN_MAILOUT_272", "Temp");
+define("LAN_MAILOUT_273", "DKIM keys already exists");
+define("LAN_MAILOUT_274", "Add the following to your");
+define("LAN_MAILOUT_275", "DNS Zone records");
+define("LAN_MAILOUT_276", "Consider testing it using this website: http://dkimvalidator.com");
+define("LAN_MAILOUT_277", "Add the following");
+define("LAN_MAILOUT_278", "bit key to your");
+define("LAN_MAILOUT_279", "Test Bounce");
+define("LAN_MAILOUT_280", "Test Bounce Email address");
+define("LAN_MAILOUT_281", "Test Bounce sent to");
+define("LAN_MAILOUT_282", "Failed Bounce email sent to");
+define("LAN_MAILOUT_283", "No Message ID submitted");
+define("LAN_MAILOUT_284", "Test Subject");
+define("LAN_MAILOUT_285", "This is the body text of your email. Included are example media attachments such as images and video thumbnails.
+<br /></br >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed aliquam volutpat risus, a efficitur ex dignissim ac. Phasellus ornare tortor est, a elementum orci finibus non! Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce feugiat bibendum venenatis. Ut sit amet purus id magna consequat euismod vitae ac elit. Maecenas rutrum nisi metus, sed pulvinar velit fermentum eu? Aliquam erat volutpat.
+<br />Ut risus massa, consequat et gravida vitae, tincidunt in metus. Nam sodales felis non tortor faucibus lacinia! Integer neque libero, maximus eu cursus nec, fringilla varius erat. Phasellus elementum scelerisque mauris at fermentum. Aliquam erat volutpat. Aliquam sit amet placerat leo, vitae mollis purus. Nulla laoreet nulla pretium risus placerat, a luctus risus pulvinar. Duis ut dolor sed arcu aliquam dictum sed auctor magna. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Etiam eleifend in mi lobortis blandit. Aliquam vestibulum rhoncus vestibulum. Cras metus.");
+define("LAN_MAILOUT_286", "This email was sent to test@email.com. If you don't want to receive these emails in the future, please <a href='".SITEURL."unsubscribe.php?id=example1234567'>unsubscribe</a>. ");
+define("LAN_MAILOUT_287", "Mail is sent and data displayed below.");
+define("LAN_MAILOUT_288", "Couldn't retrieve mail data for id");
+define("LAN_MAILOUT_289", "Regenerating recipient list");
+define("LAN_MAILOUT_290", "Your bounce_handler.php file is NOT executable");
+define("LAN_MAILOUT_291", "Never");
+define("LAN_MAILOUT_292", "minutes ago");
+define("LAN_MAILOUT_293", "DomainKeys Identified Mail (DKIM)");
+define("LAN_MAILOUT_294", "Generate Public/Private keys");
+define("LAN_MAILOUT_295", "Developer Mode Only");
+define("LAN_MAILOUT_296", "Send Mail");
+define("LAN_MAILOUT_297", "Email preview");
+define("LAN_MAILOUT_298", "Recipients for Mail");
 
 //define("LAN_SUBMIT", "Do it!"); LAN_RUN
 
