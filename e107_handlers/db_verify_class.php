@@ -134,7 +134,7 @@ class db_verify
 		}
 		else
 		{
-			$mes->addSuccess("Tables appear to be okay!"); //TODO LAN
+			$mes->addSuccess(DBBLAN_27);
 			$mes->addSuccess("<a class='btn btn-primary' href='".$this->backUrl."'>".LAN_BACK."</a>");
 			//$debug = "<pre>".print_r($this->results,TRUE)."</pre>";
 			//$mes->add($debug,E_MESSAGE_DEBUG);	

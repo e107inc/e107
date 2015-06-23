@@ -129,4 +129,15 @@ define('DBLAN_108', "Created:");
 define('DBLAN_109', "Copied:");
 define('DBLAN_110', "Couldn't copy:");
 
+//
+define('DBLAN_111', "Starting file backup...");
+define('DBLAN_112', "Overwrite local files with the latest from github.");
+define('DBLAN_113', "Multi-Site");
+define('DBLAN_114', "Sync with Github");
+define('DBLAN_115', "This will download the latest .zip file from github to");
+define('DBLAN_116', "and then unzip it, overwriting any existing files that it finds on your server. It will take into account any custom folders you may have set in e107_config.php. ");
+define('DBLAN_117', "Overwrite Files");
+define('DBLAN_118', "Couldn't download .zip file");
+define('DBLAN_119', "Create New Site");
+
 ?>

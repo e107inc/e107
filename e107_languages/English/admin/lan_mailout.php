@@ -316,7 +316,7 @@ define("LAN_MAILOUT_291", "Never");
 define("LAN_MAILOUT_292", "minutes ago");
 define("LAN_MAILOUT_293", "DomainKeys Identified Mail (DKIM)");
 define("LAN_MAILOUT_294", "Generate Public/Private keys");
-define("LAN_MAILOUT_295", "Developer Mode Only");
+//define("LAN_MAILOUT_295", "Developer Mode Only"); ->LAN_DEVELOPER_MODE
 define("LAN_MAILOUT_296", "Send Mail");
 define("LAN_MAILOUT_297", "Email preview");
 define("LAN_MAILOUT_298", "Recipients for Mail");
