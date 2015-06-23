@@ -1,8 +1,6 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $URL$
-* $Id$
 *
 * Theme manager language file
 */
@@ -72,7 +70,9 @@ define("TPVLAN_55", "Default");
 define("TPVLAN_56", "Visibility Filter");
 define("TPVLAN_57", "Compatibility");
 
-
-
+define("TPVLAN_58", "This theme comes with pre-installed example content (such as pages and menus) which could be used on your website.");
+define("TPVLAN_59", "Please be aware that the example content will [b]overwrite[/b] your current content with the following");
+define("TPVLAN_60", "[x] record(s) in your [y] table");
+define("TPVLAN_61", "Would you like to [b]replace[/b] your current content with the default example content provided by the theme?");
 
 ?>
