@@ -429,3 +429,7 @@ define("LAN_UNIQUE_VISITORS", "Unique Visitors");
 define("LAN_BASIC", "Basic");
 define("LAN_ADVANCED", "Advanced");
 define("LAN_FAILED", "Failed");
+define("LAN_NA", "N/A");
+define("LAN_SUBJECT", "Subject");
+define("LAN_ADMIN_PERMISSIONS", "Admin Permissions");
+define("LAN_SPECIAL", "Special");
