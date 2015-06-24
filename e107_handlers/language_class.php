@@ -21,7 +21,7 @@ class language{
 // http://www.loc.gov/standards/iso639-2/php/code_list.php
 
 // Valid Language Pack Names are shown directly below on the right. 
-	public $detect = FALSE;
+	public $detect = false;
 	public $e_language = 'English'; // replaced later with $pref
 	public $_cookie_domain = '';
 	
@@ -235,7 +235,8 @@ class language{
 			"Swedish"		=> "Svenska",
 			"Thai"			=> "ภาษาไทย",
 			"Turkish"		=> "Türkçe",
-			"Vietnamese"	=> "Tiếng Việt"
+			"Vietnamese"	=> "Tiếng Việt",
+			"Welsh"         => "Cymraeg"
 		);
 
 	/**
@@ -248,11 +249,11 @@ class language{
 		if(strlen($data) > 2)
 		{
         	$tmp = array_flip($this->list);
-			return isset($tmp[$data]) ? $tmp[$data] : FALSE;
+			return isset($tmp[$data]) ? $tmp[$data] : false;
 		}
 		else
 		{
-			return (isset($this->list[$data])) ? $this->list[$data] : FALSE;
+			return (isset($this->list[$data])) ? $this->list[$data] : false;
 		}
 	}
 
@@ -260,7 +261,7 @@ class language{
 	/**
 	 * Check if a Language is installed and valid
 	 * @param object $lang - Language to check. eg. 'es' or 'Spanish'
-	 * @return FALSE or the name of the valid Language
+	 * @return false or the name of the valid Language
 	 */
 	function isValid($lang='')
 	{
@@ -276,9 +277,9 @@ class language{
 			return (ADMIN_AREA &&  vartrue($pref['adminlanguage'])) ? $pref['adminlanguage'] : $pref['sitelanguage'];
 		}
 		
-		if(strpos($lang,"debug")!==FALSE)
+		if(strpos($lang,"debug")!==false)
 		{
-			 return FALSE;			
+			 return false;
 		}
 		
 		if(strlen($lang)== 2)
@@ -291,11 +292,11 @@ class language{
 			$iso = $this->convert($lang);
 		}
 			
-		if($iso==FALSE || $lang==FALSE)
+		if($iso==false || $lang==false)
 		{
 			$diz = ($lang) ? $lang : $iso;
 			trigger_error("The selected language (".$diz.") is invalid. See e107_handlers/language_class.php for a list of valid languages. ", E_USER_ERROR);
-			return FALSE;
+			return false;
 		}
 		
 		if(is_readable(e_LANGUAGEDIR.$lang.'/'.$lang.'.php'))
@@ -305,10 +306,9 @@ class language{
 		else
 		{
 			trigger_error("The selected language (".$lang.") was not found.", E_USER_ERROR);
-			return FALSE;	
+			return false;
 		}
-		
-		return FALSE;	
+
 	}
 	
 	/**
@@ -319,7 +319,7 @@ class language{
 	{
 		if(!$domain)
 		{
-			return FALSE;
+			return false;
 		}
 		
 		global $pref;
@@ -328,11 +328,23 @@ class language{
 		{
         	if($domain == trim($val))
 			{
-            	return TRUE;
+            	return true;
 			}
 		}
+
+		if(!empty($pref['multilanguage_domain']) && is_array($pref['multilanguage_domain']))
+		{
+			foreach($pref['multilanguage_domain'] as $lng=>$val)
+			{
+				if($domain == trim($val))
+				{
+					return $lng;
+				}
+			}
+
+		}
 		
-		return FALSE;
+		return false;
 		
 	}
 
@@ -434,7 +446,8 @@ class language{
 	
 	/**
  	* Detect a Language Change
- 	* 1. Parked (sub)Domain		eg. http://es.mydomain.com (Preferred for SEO)
+	* 0. Parked Domain          eg. http://mylanguagedomain.com
+ 	* 1. Parked subDomain		eg. http://es.mydomain.com (Preferred for SEO)
  	* 2. e_MENU Query			eg. /index.php?[es]
  	* 3. $_GET['elan']			eg. /index.php?elan=es
  	* 4. $_POST['sitelanguage']	eg. <input type='hidden' name='sitelanguage' value='Spanish' /> 
@@ -449,17 +462,23 @@ class language{
 		
 		if(false !== $this->detect && !$force) return $this->detect;
 		$this->_cookie_domain = '';
-		if(vartrue($pref['multilanguage_subdomain']) && $this->isLangDomain(e_DOMAIN) && (defset('MULTILANG_SUBDOMAIN') !== FALSE))
+
+		if(!empty($pref['multilanguage_domain']) &&  ($newLang = $this->isLangDomain(e_DOMAIN)))
+		{
+			$detect_language = $this->isValid($newLang);
+			$this->_cookie_domain = ".".e_DOMAIN;
+		}
+		elseif(vartrue($pref['multilanguage_subdomain']) && $this->isLangDomain(e_DOMAIN) && (defset('MULTILANG_SUBDOMAIN') !== false))
 		{
 			$detect_language = (e_SUBDOMAIN) ? $this->isValid(e_SUBDOMAIN) : $pref['sitelanguage'];
 			// Done in session handler now, based on MULTILANG_SUBDOMAIN value
 			//e107_ini_set("session.cookie_domain", ".".e_DOMAIN); // Must be before session_start()
 			$this->_cookie_domain = ".".e_DOMAIN;
-			define('MULTILANG_SUBDOMAIN',TRUE);
+			define('MULTILANG_SUBDOMAIN',true);
 		}
 		elseif(e_MENU && ($detect_language = $this->isValid(e_MENU))) // 
 		{
-			define("e_LANCODE",TRUE);	
+			define("e_LANCODE",true);
 
 		}
 		elseif(isset($_GET['elan']) && ($detect_language = $this->isValid($_GET['elan']))) // eg: /index.php?elan=Spanish
@@ -477,7 +496,7 @@ class language{
 		}
 		else
 		{
-			$detect_language = FALSE; // ie. No Change. 
+			$detect_language = false; // ie. No Change.
 		}
 		
 		// Done in session handler now
@@ -613,7 +632,7 @@ class language{
 		else
 		{
 			define("e_LANCODE", '');		
-			define("e_LANQRY", FALSE);	
+			define("e_LANQRY", false);
 		} 	
 	}
 	
