@@ -329,11 +329,11 @@ define("LAN_EMAIL","Email address");
 define("LAN_ID", "ID");
 
 define("LAN_TITLE", "Title");
-define("LAN_DESCRIPTION", "Description");
+
 define("LAN_VISIBILITY", "Visibility");
 define("LAN_ICON", "Icon");
 define("LAN_LOADING", "Loading...");
-define("LAN_FILE", "File");
+
 // define("LAN_GO","Go"); // Not "Execute"
 define("LAN_RUN","Run"); 
 define("LAN_SEFURL","SEF URL");
@@ -341,7 +341,7 @@ define("LAN_COPY","Copy");
 define("LAN_KEYWORDS","Keywords");
 define("LAN_IMAGE","Image");
 define("LAN_TEMPLATE","Template");
-define("LAN_TYPE", "Type");
+
 // define("LAN_NONE", "None");
 define("LAN_CATEGORIES", "Categories");
 define("LAN_DEMO_FORBIDDEN", "Changes on this page are not possible in demo mode.");
