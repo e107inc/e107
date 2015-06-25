@@ -1643,7 +1643,7 @@ require_once(HEADERF);
 
 if (vartrue($error))
 {
-	$ns->tablerender(EMESSLAN_TITLE_ERROR, $error); // LAN?
+	$ns->tablerender(LAN_ERROR, $error); // LAN?
 }
 
 

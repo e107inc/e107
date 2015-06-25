@@ -470,7 +470,7 @@ if(!class_exists('pm_shortcodes'))
 			}
 			if($extra !== 'inbox' && $extra !== 'outbox') return '';
 			$action = $extra == 'outbox' ? 'delete-out' : 'delete-in';
-			return "<a href='".$this->url('action/'.$action, 'id='.$this->var['pm_id'])."'><img src='".e_PLUGIN_ABS."pm/images/mail_delete.png' title='".LAN_PM_52."' alt='".LAN_PM_52."' class='icon S16' /></a>";
+			return "<a href='".$this->url('action/'.$action, 'id='.$this->var['pm_id'])."'><img src='".e_PLUGIN_ABS."pm/images/mail_delete.png' title='".LAN_DELETE."' alt='".LAN_DELETE."' class='icon S16' /></a>";
 		}
 
 
@@ -597,7 +597,7 @@ if(!class_exists('pm_shortcodes'))
 
 		public function sc_pm_blocked_delete()
 		{
-			return "<a href='".$this->url('action/delete-blocked', array('id' => $this->pmBlocked['pm_block_from']))."'><img src='".e_PLUGIN_ABS."pm/images/mail_delete.png' title='".LAN_PM_52."' alt='".LAN_PM_52."' class='icon S16' /></a>";
+			return "<a href='".$this->url('action/delete-blocked', array('id' => $this->pmBlocked['pm_block_from']))."'><img src='".e_PLUGIN_ABS."pm/images/mail_delete.png' title='".LAN_DELETE."' alt='".LAN_DELETE."' class='icon S16' /></a>";
 		}
 
 
