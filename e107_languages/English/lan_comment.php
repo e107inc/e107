@@ -13,7 +13,7 @@
 define("COMLAN_0", "[blocked by admin]");
 define("COMLAN_1", "Unblock");
 define("COMLAN_2", "Block");
-define("COMLAN_3", "Delete");
+//define("COMLAN_3", "Delete"); //new > LAN_DELETE
 define("COMLAN_4", "Info");
 define("COMLAN_5", "Comments ...");
 define("COMLAN_6", "You must be logged in to make comments on this site - please log in, or if you are not registered click");

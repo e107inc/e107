@@ -1462,7 +1462,7 @@ class system_tools
 	 */
 	private function plugin_viewscan($mode = 'update')
 	{
-		$error_messages = array(0 => DBLAN_31, 1 => DBLAN_32, 2 => DBLAN_33, 3 => DBLAN_34);
+		$error_messages = array(0 => DBLAN_31, 1 => LAN_ERROR, 2 => DBLAN_33, 3 => DBLAN_34);
 	//	$error_image = array("integrity_pass.png", "integrity_fail.png", "warning.png", "blank.png");
 		$error_glyph = array(ADMIN_TRUE_ICON,ADMIN_FALSE_ICON,"<i class='S16 e-warning-16'></i>","<i style='display:inline-block;width:17px;height:16px;'> </i>");
 		

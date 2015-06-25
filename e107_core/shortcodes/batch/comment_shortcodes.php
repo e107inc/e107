@@ -186,7 +186,7 @@ class comment_shortcodes extends e_shortcode
 		}
 		
 		// TODO put into a <ul> drop-down format. 
-		$text = "<a href='#' data-target='".e_HTTP."comment.php' id='e-comment-delete-".$this->var['comment_id']."' class='e-comment-delete btn btn-default btn-mini btn-xs'>Delete</a> ";
+		$text = "<a href='#' data-target='".e_HTTP."comment.php' id='e-comment-delete-".$this->var['comment_id']."' class='e-comment-delete btn btn-default btn-mini btn-xs'>".LAN_DELETE."</a> ";
 		
 		if($this->var['comment_blocked'] == 2) // pending approval. 
 		{
@@ -198,7 +198,7 @@ class comment_shortcodes extends e_shortcode
 		
 		$unblock 	= "[<a href='".e_ADMIN_ABS."comment.php?unblock-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".COMLAN_1."</a>] ";
 		$block 		= "[<a href='".e_ADMIN_ABS."comment.php?block-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".COMLAN_2."</a>] ";
-		$delete 	= "[<a href='".e_ADMIN_ABS."comment.php?delete-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".COMLAN_3."</a>] ";
+		$delete 	= "[<a href='".e_ADMIN_ABS."comment.php?delete-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".LAN_DELETE."</a>] ";
 		$userinfo 	= "[<a href='".e_ADMIN_ABS."userinfo.php?".e107::getIPHandler()->ipDecode($comrow['comment_ip'])."'>".COMLAN_4."</a>]";
 			
 		return $unblock.$block.$delete.$userinfo;
