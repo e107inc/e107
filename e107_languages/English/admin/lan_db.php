@@ -38,7 +38,7 @@ define("DBLAN_28", "Select to scan plugin directories for changes");
 define("DBLAN_29", "Scan plugin directories");
 define("DBLAN_30", "If an addon shows an error, check for characters outside the PHP opening/closing tags.");
 define("DBLAN_31", "Pass");
-define("DBLAN_32", "Error");
+//define("DBLAN_32", "Error"); new > LAN_ERROR
 define("DBLAN_33", "Inaccessible");
 define("DBLAN_34", "Not checked");
 
