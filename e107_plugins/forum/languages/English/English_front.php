@@ -530,7 +530,7 @@ define("LAN_10", "Login");
 define("LAN_11", "Remember me");
 define("LAN_16", "Username: ");
 define("LAN_17", "Password: ");
-define("LAN_20", "Error");
+define("LAN_20", "Error");//new > LAN_ERROR
 define("LAN_27", "You left required field(s) blank");
 define("LAN_28", "You didn't post anything ..");
 define("LAN_29", "Edited");
