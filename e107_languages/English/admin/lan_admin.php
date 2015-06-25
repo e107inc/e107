@@ -443,3 +443,16 @@ define("LAN_TO", "to");
 define("LAN_SKIPPED", "Skipped");
 define("LAN_BACKUP", "Backup");
 define("LAN_CORE", "Core");
+define("LAN_APPROVE","Approve");
+define("LAN_UNINSTALL", "uninstall");
+define("LAN_USERNAME", "Username");
+define("LAN_TIMESTAMP", "Timestamp");
+define("LAN_PAGE", "Page");
+define("LAN_AGENT", "Agent");
+define("LAN_POSTED_BY", "Posted by");
+define("LAN_VIEW_ALL", "View all");
+define("LAN_LATEST_COMMENTS", "Latest Comments");
+define("LAN_PLEASEWAIT", "Please Wait");
+define("LAN_ADMIN_AREA", "Admin Area");
+define("LAN_FIELD_OPTIONS", "Field options");
+
