@@ -66,7 +66,7 @@ if(deftrue('BOOTSTRAP'))
 	$text = '
 	<form class="form-inline" method="get" action="'.e_HTTP.'search.php">
 	<div class="input-group">
-		<input class="form-control search" type="text" name="q" size="20" maxlength="50" '.$value_text.'>
+		<input class="form-control search" type="text" name="q" size="20" maxlength="50" '.$value_text.' />
 		<input type="hidden" name="r" value="0" />';
 	
 	if (isset($custom_query[4]) && $custom_query[4] != '') 
