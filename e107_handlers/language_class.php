@@ -463,18 +463,18 @@ class language{
 		if(false !== $this->detect && !$force) return $this->detect;
 		$this->_cookie_domain = '';
 
-		if(!empty($pref['multilanguage_domain']) &&  ($newLang = $this->isLangDomain(e_DOMAIN)))
-		{
-			$detect_language = $this->isValid($newLang);
-			$this->_cookie_domain = ".".e_DOMAIN;
-		}
-		elseif(vartrue($pref['multilanguage_subdomain']) && $this->isLangDomain(e_DOMAIN) && (defset('MULTILANG_SUBDOMAIN') !== false))
+		if(vartrue($pref['multilanguage_subdomain']) && $this->isLangDomain(e_DOMAIN) && (defset('MULTILANG_SUBDOMAIN') !== false))
 		{
 			$detect_language = (e_SUBDOMAIN) ? $this->isValid(e_SUBDOMAIN) : $pref['sitelanguage'];
 			// Done in session handler now, based on MULTILANG_SUBDOMAIN value
 			//e107_ini_set("session.cookie_domain", ".".e_DOMAIN); // Must be before session_start()
 			$this->_cookie_domain = ".".e_DOMAIN;
 			define('MULTILANG_SUBDOMAIN',true);
+		}
+		elseif(!empty($pref['multilanguage_domain']) &&  ($newLang = $this->isLangDomain(e_DOMAIN)))
+		{
+			$detect_language = $this->isValid($newLang);
+			$this->_cookie_domain = ".".e_DOMAIN;
 		}
 		elseif(e_MENU && ($detect_language = $this->isValid(e_MENU))) // 
 		{
