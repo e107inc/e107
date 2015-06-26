@@ -578,7 +578,7 @@ class e107forum
 	//	print_a( $this->permList[$type]);
 		if(empty($this->permList[$type]))
 		{
-		//	return false;
+			return false;
 		}
 
 		return (in_array($forumId, $this->permList[$type]));
