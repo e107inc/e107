@@ -474,17 +474,21 @@ class e107forum
 
 	private function loadPermList()
 	{
-		if($tmp = e107::getCache()->retrieve_sys('forum_perms'))
+		if($tmp = e107::getCache()->setMD5(e_LANGUAGE.USERCLASS_LIST)->retrieve('forum_perms'))
 		{
 			e107::getMessage()->addDebug("Using Permlist cache: True");
+
 			$this->permList = e107::unserialize($tmp);
+
+		//	print_a($this->permList);
+
 		}
 		else
 		{
 			e107::getMessage()->addDebug("Using Permlist cache: False");
 			$this->_getForumPermList();
 			$tmp = e107::serialize($this->permList, false);
-			e107::getCache()->set_sys('forum_perms', $tmp);
+			e107::getCache()->setMD5(e_LANGUAGE.USERCLASS_LIST)->set('forum_perms', $tmp);
 		}
 		unset($tmp);
 	}
@@ -572,6 +576,11 @@ class e107forum
 	function checkPerm($forumId, $type='view')
 	{
 	//	print_a( $this->permList[$type]);
+		if(empty($this->permList[$type]))
+		{
+		//	return false;
+		}
+
 		return (in_array($forumId, $this->permList[$type]));
 	}
 
