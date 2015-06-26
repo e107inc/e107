@@ -388,7 +388,7 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 						$error = LANUPLOAD_16;
 				}
 
-				$uploaded[$c]['message'] = LANUPLOAD_11." '".$name."' <br />".LANUPLOAD_12.": ".$error;
+				$uploaded[$c]['message'] = LANUPLOAD_11." '".$name."' <br />".LAN_ERROR.": ".$error;
 				$uploaded[$c]['line'] = __LINE__;
 				$uploaded[$c]['file'] = __FILE__;
 				

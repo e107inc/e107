@@ -52,7 +52,7 @@ define('LAN_PM_48', "ERROR: Block not added, unknown error");
 define('LAN_PM_49', "ERROR: Block already in place for {UNAME}");
 define('LAN_PM_50', "Block User");
 define('LAN_PM_51', "Unblock User");
-define('LAN_PM_52', "Delete");
+//define('LAN_PM_52', "Delete"); '' new > LAN_DELETE
 define('LAN_PM_53', "Delete Selected");
 define('LAN_PM_54', "Quote original");
 define('LAN_PM_55', "Send Reply");

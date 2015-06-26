@@ -27,7 +27,7 @@ define("LANINS_008", "PHP &amp; MySQL Versions Check / File Permissions Check");
 define("LANINS_009", "Retest File Permissions");
 define("LANINS_010", "File not writable: ");
 define("LANINS_010a", "Folder not writable: ");
-define("LANINS_011", "Error");
+//define("LANINS_011", "Error"); new > LAN_ERROR
 define("LANINS_012", "MySQL Functions don't seem to exist. This probably means that either the MySQL PHP Extension isn't installed or your PHP installation wasn't compiled with MySQL support."); // help for 012
 define("LANINS_013", "Couldn't determine your MySQL version number. This is a non fatal error, so please continue installing, but be aware that e107 requires MySQL >= 3.23 to function correctly.");
 define("LANINS_014", "File Permissions");
