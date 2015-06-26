@@ -539,7 +539,8 @@ function showmodoptions()
 		";
 	if ($type == 'Thread')
 	{
-		$ret .= "<a href='" . $e107->url->create('forum/thread/move', array('id' => $postInfo['post_id']))."'>" . IMAGE_admin_move2 . "</a>";
+		$moveUrl     = e107::url('forum','move', array('thread_id'=>$postInfo['post_thread']));
+		$ret .= "<a href='" . $moveUrl."'>" . IMAGE_admin_move2 . "</a>";
 	}
 	else
 	{

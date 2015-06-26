@@ -591,12 +591,15 @@ function parse_thread($thread_info)
 		// FIXME _URL_ thread name
 		// e107::getUrl()->create('forum/forum/view', "id={$thread_info['thread_forum_id']}")
 		// USED self instead
+
+		$moveUrl        = e107::url('forum','move', $thread_info);
+
 		$tVars->ADMIN_ICONS = "
 		<form method='post' action='".e_REQUEST_URI."' id='frmMod_{$forumId}_{$threadId}' style='margin:0;'><div>
 		<input type='image' ".IMAGE_admin_delete." name='deleteThread_{$threadId}' value='thread_action' onclick=\"return confirm_({$threadId})\" />
 		".($thread_info['thread_sticky'] == 1 ? "<input type='image' ".IMAGE_admin_unstick." name='unstick_{$threadId}' value='thread_action' /> " : "<input type='image' ".IMAGE_admin_stick." name='stick_{$threadId}' value='thread_action' /> ")."
 		".($thread_info['thread_active'] ? "<input type='image' ".IMAGE_admin_lock." name='lock_{$threadId}' value='thread_action' /> " : "<input type='image' ".IMAGE_admin_unlock." name='unlock_{$threadId}' value='thread_action' /> "). "
-		<a href='".e107::getUrl()->create('forum/thread/move', "id={$threadId}")."'>".IMAGE_admin_move.'</a>
+		<a href='".$moveUrl."'>".IMAGE_admin_move.'</a>
 		</div></form>
 		';
 		
@@ -744,15 +747,16 @@ function fadminoptions($thread_info)
 	$tp = e107::getParser();
 	
 //	$text = "<form method='post' action='".e_REQUEST_URI."' id='frmMod_{$forumId}_{$threadId}' style='margin:0;'>";
-	$text .= '<div class="btn-group"><button class="btn btn-default btn-sm btn-mini dropdown-toggle" data-toggle="dropdown">
+	$text = '<div class="btn-group"><button class="btn btn-default btn-sm btn-mini dropdown-toggle" data-toggle="dropdown">
     <span class="caret"></span>
     </button>
     <ul class="dropdown-menu pull-right">	
    ';
    
 	//FIXME - not fully working. 
-	
-	$moveUrl 		= e107::getUrl()->create('forum/thread/move', "id=".$thread_info['thread_id']);
+
+	$moveUrl        = e107::url('forum','move', $thread_info);
+
 	$lockUnlock 	= ($thread_info['thread_active'] ) ? 'lock' : 'unlock';
 	$stickUnstick 	= ($thread_info['thread_sticky'] == 1) ? 'unstick' : 'stick';
 	$id = intval($thread_info['thread_id']);

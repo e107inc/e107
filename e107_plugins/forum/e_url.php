@@ -43,6 +43,10 @@ class forum_url // plugin-folder + '_url'
 			'redirect'		=> '{e_PLUGIN}forum/forum_post.php',
 		);
 
+		$config['move'] = array(
+			'sef'           => 'forum/post/?f=move&amp;id={thread_id}',
+		);
+
 		$config['topic'] = array(
 			'regex'			=> '^forum/(.*)/(\d*)-([\w-]*)/?\??(.*)',
 			'sef'			=> 'forum/{forum_sef}/{thread_id}-{thread_sef}/',
