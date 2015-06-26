@@ -78,11 +78,11 @@ if($results = $sql->gen($qry))
 		
 		if ($menu_pref['newforumposts_title'])
 		{
-			$text .= "<a href='{$url}'>{$topic}</a><br />{$post}<br /><small class='muted'>".LAN_FORUM_MENU_001." {$poster} {$datestamp}</small>";
+			$text .= "<a href='{$url}'>{$topic}</a><br />{$post}<br /><small class='muted'>".LAN_POSTED_BY." {$poster} {$datestamp}</small>";
 		}
 		else
 		{
-			$text .= "<a href='{$url}'>".LAN_FORUM_MENU_001."</a> {$poster} <small class='muted'>{$datestamp}</small><br />{$post}<br />";
+			$text .= "<a href='{$url}'>".LAN_POSTED_BY."</a> {$poster} <small class='muted'>{$datestamp}</small><br />{$post}<br />";
 		}
 		
 		$text .= "</li>";

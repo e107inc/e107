@@ -87,6 +87,7 @@ define("LAN_TYPE", "Type");
 define("LAN_DESCRIPTION", "Description");
 define("LAN_FILE", "File");
 define("LAN_COMMENTS", "Comments");
+define("LAN_POSTED_BY", "Posted by"),
 
 
 ?>

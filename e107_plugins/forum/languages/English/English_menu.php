@@ -9,7 +9,7 @@
  */
 
  
-define("LAN_FORUM_MENU_001", "Posted by");
+//define("LAN_FORUM_MENU_001", "Posted by"); new LAN_POSTED_BY
 define("LAN_FORUM_MENU_002", "No posts yet");
 define("LAN_FORUM_MENU_003", "New Forum Posts menu configuration saved");
 define("LAN_FORUM_MENU_004", "Caption");

@@ -22,6 +22,6 @@ define("CM_L8", "New Comments Menu Configuration");
 //define("CM_L10", "Comments menu configuration saved");
 define("CM_L11", "on");
 define("CM_L12", "Re:");
-define("CM_L13", "Posted by");
+//define("CM_L13", "Posted by"); > new LAN_POSTED BY
 
 ?>

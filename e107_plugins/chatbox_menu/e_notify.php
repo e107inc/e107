@@ -20,7 +20,7 @@ if(defined('ADMIN_PAGE') && ADMIN_PAGE === true)
 if (!function_exists('notify_cboxpost')) {
 	function notify_cboxpost($data) {
 		global $nt;
-		$message = NT_LAN_CB_3.': '.USERNAME.' ('.NT_LXAN_CB_4.': '.e107::getIPHandler()->ipDecode($data['ip']).' )<br />';
+		$message = LAN_POSTED_BY.': '.USERNAME.' ('.NT_LXAN_CB_4.': '.e107::getIPHandler()->ipDecode($data['ip']).' )<br />';
 		$message .= NT_LAN_CB_5.':<br />'.$data['cmessage'].'<br /><br />';
 		$nt -> send('cboxpost', NT_LAN_CB_6, $message);
 	}
@@ -48,7 +48,7 @@ class chatbox_menu_notify extends notify // plugin-folder + '_notify'
 	function cboxpost($data) 
 	{
 	
-		$message = NT_LAN_CB_3.': '.USERNAME.' ('.LAN_IP.': '.e107::getIPHandler()->ipDecode($data['ip']).' )<br />';
+		$message = LAN_POSTED_BY.': '.USERNAME.' ('.LAN_IP.': '.e107::getIPHandler()->ipDecode($data['ip']).' )<br />';
 		$message .= NT_LAN_CB_5.':<br />'.$data['cmessage'].'<br /><br />';
 		
 		$this->send('cboxpost', NT_LAN_CB_6, $message);

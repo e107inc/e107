@@ -13,7 +13,7 @@ if (!defined("PAGE_NAME")) { define("PAGE_NAME", "Printer Friendly"); }
 
 define("LAN_PRINT_86", "Category:");
 define("LAN_PRINT_87", "by ");
-define("LAN_PRINT_94", "Posted by");
+//define("LAN_PRINT_94", "Posted by"); > new LAN_POSTED BY
 define("LAN_PRINT_135", "News Item: ");
 define("LAN_PRINT_303", "This news item is from ");
 define("LAN_PRINT_304", "Title: ");

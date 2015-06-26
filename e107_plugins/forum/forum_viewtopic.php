@@ -505,7 +505,7 @@ echo "<script type=\"text/javascript\">
 	if (mode == 'Thread') {
 	return confirm(\"" . $tp->toJS(LAN_FORUM_2009) . "\");
 	} else {
-	return confirm(\"" . $tp->toJS(LAN_FORUM_2010) . " [ " . $tp->toJS(LAN_FORUM_0074) . " \" + thread + \" ]\");
+	return confirm(\"" . $tp->toJS(LAN_FORUM_2010) . " [ " . $tp->toJS(LAN_POSTED_BY) . " \" + thread + \" ]\");
 	}
 	}
 	</script>";
