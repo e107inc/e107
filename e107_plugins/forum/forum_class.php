@@ -2116,7 +2116,7 @@ function img_path($filename)
 
 		if(file_exists(THEME.'forum/'.$filename) || is_readable(THEME.'forum/'.e_LANGUAGE.'_'.$filename))
 		{
-			$image = ($ML && is_readable(THEME.'forum/'.e_LANGUAGE.'_'.$filename)) ? THEME.'forum/'.e_LANGUAGE."_".$filename :  THEME.'forum/'.$filename;
+			$image = ($ML && is_readable(THEME.'forum/'.e_LANGUAGE.'_'.$filename)) ? THEME_ABS.'forum/'.e_LANGUAGE."_".$filename :  THEME_ABS.'forum/'.$filename;
 		}
 		else
 		{
@@ -2124,22 +2124,22 @@ function img_path($filename)
 			{
 				if($ML)
 				{
-                	$image = (is_readable(e_PLUGIN.'forum/images/icons/'.e_LANGUAGE.'_'.$filename)) ? e_PLUGIN.'forum/images/icons/'.e_LANGUAGE.'_'.$filename : e_PLUGIN.'forum/images/icons/English_'.$filename;
+                	$image = (is_readable(e_PLUGIN.'forum/images/icons/'.e_LANGUAGE.'_'.$filename)) ? e_PLUGIN_ABS.'forum/images/icons/'.e_LANGUAGE.'_'.$filename : e_PLUGIN_ABS.'forum/images/icons/English_'.$filename;
 				}
 				else
 				{
-                	$image = e_PLUGIN.'forum/images/icons/'.$filename;
+                	$image = e_PLUGIN_ABS.'forum/images/icons/'.$filename;
 				}
 			}
 			else
 			{
 				if($ML)
 				{
-					$image = (is_readable(e_PLUGIN."forum/images/lite/".e_LANGUAGE.'_'.$filename)) ? e_PLUGIN.'forum/images/icons/'.e_LANGUAGE.'_'.$filename : e_PLUGIN.'forum/images/icons/English_'.$filename;
+					$image = (is_readable(e_PLUGIN."forum/images/lite/".e_LANGUAGE.'_'.$filename)) ? e_PLUGIN_ABS.'forum/images/icons/'.e_LANGUAGE.'_'.$filename : e_PLUGIN_ABS.'forum/images/icons/English_'.$filename;
 				}
 				else
                 {
-           			$image = e_PLUGIN.'forum/images/icons/'.$filename;
+           			$image = e_PLUGIN_ABS.'forum/images/icons/'.$filename;
 				}
 
 			}
