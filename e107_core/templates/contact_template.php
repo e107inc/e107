@@ -60,7 +60,7 @@ $CONTACT_TEMPLATE['menu'] =  '
 	// In this case (see contact.php) e107::getScBatch('contact')->wrapper('contact/form')
 	// Only one Option is used - WRAPPER > SC_STYLE
 
-	$CONTACT_WRAPPER['form']['CONTACT_IMAGECODE'] 			= "<tr><td>".LANCONTACT_16."<br />{---}";
+	$CONTACT_WRAPPER['form']['CONTACT_IMAGECODE'] 			= "<tr><td>".LAN_ENTER_CODE."<br />{---}";
 	$CONTACT_WRAPPER['form']['CONTACT_IMAGECODE_INPUT'] 	= "{---}</td></tr>";
 	$CONTACT_WRAPPER['form']['CONTACT_EMAIL_COPY'] 			= "<tr><td>{---}".LANCONTACT_07."</td></tr>";
 	$CONTACT_WRAPPER['form']['CONTACT_PERSON']				= "<tr><td>".LANCONTACT_14."<br />{---}</td></tr>";

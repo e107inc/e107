@@ -321,7 +321,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 	
 	public function SettingsPage()
 	{
-		$this->addTitle(LAN_EURL_NAME_SETTINGS);
+		//$this->addTitle(LAN_EURL_NAME_SETTINGS);
 		return $this->getUI()->urlSettings();
 	}
 	
@@ -357,7 +357,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 	
 	public function AliasPage()
 	{
-		$this->addTitle(LAN_EURL_NAME_ALIASES);
+	//	$this->addTitle(LAN_EURL_NAME_ALIASES);
 		
 		$aliases = e107::getPref('url_aliases', array());
 		
@@ -412,7 +412,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 	
 	public function ConfigPage()
 	{
-		$this->addTitle(LAN_EURL_NAME_CONFIG);
+		// $this->addTitle(LAN_EURL_NAME_CONFIG);
 		$active = e107::getPref('url_config');
 
 		$set = array();
