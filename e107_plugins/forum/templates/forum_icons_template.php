@@ -13,7 +13,27 @@
 if (!defined('e107_INIT')) { exit(); }
 
 $tp = e107::getParser();
-if(deftrue("FONTAWESOME", 4)) {
+if(deftrue("BOOTSTRAP")) {
+
+define('IMAGE_e', 					'e');
+define('IMAGE_new', 				$tp->toGlyph('icon-star', 'size=2x'));
+define('IMAGE_nonew', 				$tp->toGlyph('icon-comment', 'size=2x'));
+define('IMAGE_new_small',  			$tp->toGlyph('icon-star'));
+define('IMAGE_nonew_small',  		$tp->toGlyph('icon-comment'));
+define('IMAGE_new_popular',  		$tp->toGlyph('icon-comments', 'size=2x'));
+define('IMAGE_nonew_popular', 		$tp->toGlyph('icon-comments-alt', 'size=2x'));
+define('IMAGE_new_popular_small',  	$tp->toGlyph('icon-comments'));
+define('IMAGE_nonew_popular_small', $tp->toGlyph('icon-comments-alt'));
+define('IMAGE_sticky',  			$tp->toGlyph('icon-pushpin', 'size=2x'));
+define('IMAGE_stickyclosed',  		$tp->toGlyph('icon-lock', 'size=2x'));
+define('IMAGE_sticky_small', 		$tp->toGlyph('icon-pushpin'));
+define('IMAGE_stickyclosed_small',  $tp->toGlyph('icon-lock'));
+define('IMAGE_announce',  			$tp->toGlyph('icon-bullhorn', 'size=2x'));
+define('IMAGE_announce_small',  	$tp->toGlyph('icon-bullhorn'));
+define('IMAGE_closed_small',  		$tp->toGlyph('icon-lock'));
+define('IMAGE_closed', 				$tp->toGlyph('icon-lock', 'size=2x'));
+    
+} else if (deftrue("FONTAWESOME", 4)) {
 
 define('IMAGE_e', 					'e');
 define('IMAGE_new', 				$tp->toGlyph('fa-star', 'size=2x'));
