@@ -5,11 +5,13 @@
 #poll.tab-pane .form-group                              { margin-left: 0; margin-right:0}
 
 #forum-viewtopic                                        { margin-top: 15px }
-#forum-viewtopic li.forum-viewtopic-post                { border-top:1px solid #EEE;  padding:15px 10px }
-#forum-viewtopic li.forum-viewtopic-post:nth-child(odd) { background: #F5F5F5 }
+#forum-viewtopic li.forum-viewtopic-post                { border-top:1px solid rgba(0,0,0,0.15);  padding:15px 10px }
+#forum-viewtopic li.forum-viewtopic-post:nth-child(odd) { background: rgba(0,0,0,0.07) }
 #forum-viewtopic li ul.thumbnails                       { margin-top:15px }
 #forum-viewtopic li img.user-avatar                     { margin-bottom:10px; display:inline-block }
-#forum, #forum-stats, #forum-rules                              { min-height: 500px;  }
+#forum, #forum-stats, #forum-rules                              { min-height: 50px;  }
 
 .forum-attachment-file                                  { margin-top:15px; }
-.forum-user-combo                                       { padding-bottom:5px }
+.forum-user-combo                                       { padding-bottom:5px; text-align: center }
+.label-info                                             { margin-left: auto; margin-right: auto; display: table; padding: 5px 10px; font-size: 12px }
+.finfobar small p                                       { border-top: 1px solid rgba(0,0,0,0.15); padding-top: 10px }
