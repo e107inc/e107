@@ -71,12 +71,8 @@ define('LAN_PM_67', 'No users blocked');
 define('LAN_PM_68', 'User Name');
 define('LAN_PM_69', 'Date blocked');
 define('LAN_PM_70', 'Deleting block on user');
-define('LAN_PM_71', '--GOOD-- attachment(s) deleted. --FAIL-- failure(s)');
-define('LAN_PM_72', '');
-define('LAN_PM_73', '');
-define('LAN_PM_74', '');
-define('LAN_PM_75', '');
-define('LAN_PM_76', '');
+define('LAN_PM_71', '[x] attachment(s) deleted. [y] failure(s)');
+
 
 define("LAN_PM_100", "New PM from ");
 define("LAN_PM_101", "You have received a new Private Message from ");
@@ -88,6 +84,5 @@ define("LAN_PM_106", "PM read by ");
 define("LAN_PM_107", "The Private Message you sent to {UNAME} was read on ");
 define("LAN_PM_108", "Message sent on: ");
 define("LAN_PM_109", "New Message(s)");
-define("LAN_PM_110", "ok");
 define("LAN_PM_111", "Read");
 ?>

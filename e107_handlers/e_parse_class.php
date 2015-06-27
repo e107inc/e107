@@ -2811,6 +2811,7 @@ class e_parser
 	 * @param $lan - string LAN
 	 * @param string | array $vals - either a single value, which will replace '[x]' or an array with key=>value pairs.
 	 * @example $tp->lanVars("My name is [x] and I own a [y]", array('x'=>"John", 'y'=>"Cat"));
+	 * @example $tp->lanVars("My name is [x] and I own a [y]", array("John","Cat"));
 	 * @return string
 	 */
 	function lanVars($lan, $vals, $bold=false)
@@ -2821,8 +2822,15 @@ class e_parser
 		$search = array();
 		$replace = array();
 
+		$defaults = array('x', 'y', 'z');
+
 		foreach($array as $k=>$v)
 		{
+			if(is_numeric($k)) // convert array of numeric to x,y,z
+			{
+				$k = $defaults[$k];
+			}
+
 			$search[] = "[".$k."]";
 			$replace[] = ($bold===true) ? "<strong>".$v."</strong>" : $v;
 		}
