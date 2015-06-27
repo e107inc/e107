@@ -389,7 +389,7 @@ else
 }
 
 $fVars->FORUMJUMP = forumjump();
-$fVars->TOPLINK = "<a href='".e_SELF.'?'.e_QUERY."#top' onclick=\"window.scrollTo(0,0);\">".LAN_GOTO.'</a>'; // FIXME - TOPLINK not used anymore?
+$fVars->TOPLINK = "<a href='".e_SELF.'?'.e_QUERY."#top' onclick=\"window.scrollTo(0,0);\">".LAN_GO.'</a>'; // FIXME - TOPLINK not used anymore?
 
 if($container_only)
 {
@@ -428,8 +428,6 @@ function parse_thread($thread_info)
 	global $forum, $FORUM_VIEW_FORUM, $FORUM_VIEW_FORUM_STICKY, $FORUM_VIEW_FORUM_ANNOUNCE, $gen, $menu_pref, $threadsViewed;
 	$tp = e107::getParser();
 	$tVars = new e_vars;
-	$e107 = e107::getInstance();
-	$text = '';
 
 	$threadId = $thread_info['thread_id'];
 	$forumId = $thread_info['thread_forum_id'];
@@ -542,6 +540,7 @@ function parse_thread($thread_info)
 
 
 	// FIXME - pages -> convert to nextprev shortcode
+	/*
 	$pages = ceil(($tVars->REPLIES)/$forum->prefs->get('postspage'));
 	$urlparms = $thread_info;
 	if ($pages > 1)
@@ -583,7 +582,10 @@ function parse_thread($thread_info)
 	{
 		$tVars->PAGES = '';
 	}
-	
+	*/
+
+
+	$tVars->PAGES = fpages($thread_info, $tVars->REPLIES);
 	$tVars->PAGESX = fpages($thread_info, $tVars->REPLIES);
 
 	if (MODERATOR)
@@ -606,9 +608,6 @@ function parse_thread($thread_info)
 		$tVars->ADMINOPTIONS = fadminoptions($thread_info);
 	}
 
-	$text .= "</td>
-		<td style='vertical-align:top; text-align:center; width:20%' class='forumheader3'>".$THREADDATE.'<br />';
-//	$tmp = explode('.', $thread_info['thread_user'], 2);
 
 	if($thread_info['user_name'])
 	{
@@ -667,12 +666,13 @@ function parse_thread($thread_info)
 	return $tp->simpleParse($_TEMPLATE, $tVars);
 }
 
+
 function parse_sub($subInfo)
 {
 	global $FORUM_VIEW_SUB, $gen, $newflag_list;
 	$tp = e107::getParser();
 	$tVars = new e_vars;
-	$e107 = e107::getInstance();
+
 	$forumName = $tp->toHTML($subInfo['forum_name'], true);
 	$tVars->SUB_FORUMTITLE = "<a href='".e107::getUrl()->create('forum/forum/view', $subInfo)."'>{$forumName}</a>";
 	$tVars->SUB_DESCRIPTION = $tp->toHTML($subInfo['forum_description'], false, 'no_hook');
