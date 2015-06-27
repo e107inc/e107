@@ -43,6 +43,7 @@ class forum_url // plugin-folder + '_url'
 			'redirect'		=> '{e_PLUGIN}forum/forum_post.php',
 		);
 
+		// only create url  - parsed above.
 		$config['move'] = array(
 			'sef'           => 'forum/post/?f=move&amp;id={thread_id}',
 		);
@@ -52,7 +53,14 @@ class forum_url // plugin-folder + '_url'
 			'sef'			=> 'forum/{forum_sef}/{thread_id}-{thread_sef}/',
 			'redirect'		=> '{e_PLUGIN}forum/forum_viewtopic.php?id=$2&$4'
 		);
-
+/*
+		$config['subforum'] = array(
+			'regex'			=> '^forum/(.*)/(.*)$',
+			'sef'			=> 'forum/{parent_sef}/{forum_sef}',
+			'redirect'		=> '{e_PLUGIN}forum/forum_viewforum.php?sef=$2',
+			'legacy'        => '{e_PLUGIN}forum/forum_viewforum.php?id={forum_id}'
+		);
+*/
 
 		$config['forum'] = array(
 			'regex'			=> '^forum/(.*)$',

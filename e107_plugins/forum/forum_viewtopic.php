@@ -705,8 +705,9 @@ class e107ForumThread
 		{
 			if(E107_DEBUG_LEVEL > 0)
 			{
-				echo __METHOD__ .' Line: '.__LINE__;
-				exit;
+				e107::getMessage()->addError("Thread not found or query error: ". __METHOD__ .' Line: '.__LINE__ );
+				return;
+			//	exit;
 			}
 
 			$url = e107::url('forum','index','full');

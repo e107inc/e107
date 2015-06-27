@@ -863,8 +863,9 @@ class e107forum
 			//TODO: Fix query to get only forum and parent info needed, with correct naming
 			$qry = '
 			SELECT t.*, f.*,
-			fp.forum_id as parent_id, fp.forum_name as parent_name,
-			sp.forum_id as forum_sub, sp.forum_name as sub_parent,
+			fp.forum_id AS parent_id, fp.forum_name AS parent_name,
+			sp.forum_id AS forum_sub, sp.forum_name AS sub_parent,
+			sp.forum_sef AS parent_sef,
 			tr.track_userid
 			FROM `#forum_thread` AS t
 			LEFT JOIN `#forum` AS f ON t.thread_forum_id = f.forum_id
@@ -897,7 +898,7 @@ class e107forum
 		}
 		else
 		{
-			e107::getMessage()->addDebug('Query failed ('.__METHOD__.' ): '.$qry);
+			e107::getMessage()->addDebug('Query failed ('.__METHOD__.' ): '.str_replace('#', MPREFIX,$qry));
 		}
 		return false;
 	}
@@ -1379,6 +1380,9 @@ class e107forum
 				{
 					$ret['forums'][$row['forum_parent']][] = $row;
 				}
+
+				$id = $row['forum_id'];
+				$ret['all'][$id] = $row;
 			}
 			return $ret;
 		}
@@ -1544,7 +1548,10 @@ class e107forum
 		$sql = e107::getDb();
 		$forum_id = (int)$forum_id;
 		$qry = "
-		SELECT f.*, fp.forum_class as parent_class, fp.forum_name as parent_name, fp.forum_id as parent_id, fp.forum_postclass as parent_postclass, sp.forum_name AS sub_parent FROM #forum AS f
+		SELECT f.*, fp.forum_class as parent_class, fp.forum_name as parent_name,
+		fp.forum_id as parent_id, fp.forum_postclass as parent_postclass,
+		sp.forum_name AS sub_parent, sp.forum_sef AS parent_sef
+		FROM #forum AS f
 		LEFT JOIN #forum AS fp ON fp.forum_id = f.forum_parent
 		LEFT JOIN #forum AS sp ON f.forum_sub = sp.forum_id AND f.forum_sub > 0
 		WHERE f.forum_id = {$forum_id}
@@ -1845,7 +1852,7 @@ class e107forum
 	 */
 	function set_crumb($forum_href=false, $thread_title='', &$templateVar)
 	{
-		$e107 = e107::getInstance();
+
 		$tp = e107::getParser();
 		$frm = e107::getForm();
 		
@@ -1923,7 +1930,8 @@ class e107forum
 
 		// New v2.x Bootstrap Standardized Breadcrumb.
 
-	//	return print_a($forumInfo);
+	//	print_a($forumInfo);
+		// return;
 
 		$breadcrumb = array();
 		
@@ -1938,11 +1946,16 @@ class e107forum
 	
 		if($forumInfo['forum_sub'])
 		{
-			$breadcrumb[]	= array('text'=> ltrim($forumInfo['sub_parent'], '*')		, 'url'=> e107::getUrl()->create('forum/forum/view', "id={$forumInfo['forum_sub']}"));
+			$breadcrumb[]	= array('text'=> ltrim($forumInfo['sub_parent'], '*')		, 'url'=> e107::url('forum','forum', array('forum_sef'=> $forumInfo['parent_sef'])));
+			$breadcrumb[]	= array('text'=>ltrim($forumInfo['forum_name'], '*')		, 'url'=> (e_PAGE !='forum_viewforum.php') ? e107::url('forum', 'forum', $forumInfo) : null);
+
 		}
-	
-		$breadcrumb[]	= array('text'=>ltrim($forumInfo['forum_name'], '*')		, 'url'=> (e_PAGE !='forum_viewforum.php') ? e107::url('forum', 'forum', $forumInfo) : null);
-		
+		else
+		{
+			$breadcrumb[]	= array('text'=>ltrim($forumInfo['forum_name'], '*')		, 'url'=> (e_PAGE !='forum_viewforum.php') ? e107::url('forum', 'forum', $forumInfo) : null);
+
+		}
+
 		if(vartrue($forumInfo['thread_name']))
 		{
 			$breadcrumb[]	= array('text'=> $forumInfo['thread_name'] , 'url'=>null);
