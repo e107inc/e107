@@ -88,5 +88,9 @@ define("LAN_DESCRIPTION", "Description");
 define("LAN_FILE", "File");
 define("LAN_COMMENTS", "Comments");
 
+define("LAN_ENTER_USRNAME_EMAIL", "Please enter your username or email"); // admin php hover field admin name
+define("LAN_PWD_REQUIRED", "Password is required"); // admin php hover field admin password
+
+
 
 ?>
