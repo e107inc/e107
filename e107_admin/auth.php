@@ -304,13 +304,13 @@ class auth
 		    <div class='field'>
 		    	<label for='username'>".ADLAN_89."</label> 
 		    	<input class='tbox e-tip' type='text' autofocus required='required' name='authname' placeholder='".ADLAN_89."' id='username' size='30' value='' maxlength='".varset($pref['loginname_maxlength'], 30)."' />
-		    	<div class='field-help'>Please enter your username or email</div>
+		    	<div class='field-help'>".LAN_ENTER_USRNAME_EMAIL."</div>
 		   	</div>			
 		
 		    <div class='field'>
 		    	<label for='userpass'>".ADLAN_90."</label>
 		    	<input class='tbox e-tip' type='password' required='required' name='authpass' placeholder='".ADLAN_90."' id='userpass' size='30' value='' maxlength='30' />
-		    	<div class='field-help'>Password is required</div>
+		    	<div class='field-help'>".LAN_PWD_REQUIRED."</div>
 		    </div>";
 		
 		if ($use_imagecode)
