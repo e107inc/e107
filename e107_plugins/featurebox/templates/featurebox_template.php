@@ -11,10 +11,10 @@ global $sc_style;
 
 // e107 v2.x Defaults. 
 
-$FEATUREBOX_TEMPLATE['bootstrap_carousel_default'] = '{SETIMAGE: w=1905&h=450&crop=1}
+$FEATUREBOX_TEMPLATE['bootstrap_carousel_default'] = '{SETIMAGE: w=1905&crop=1}
 		<div class="{FEATUREBOX_ACTIVE} item slide{FEATUREBOX_COUNTER}">
 			{FEATUREBOX_IMAGE}		
-           <div class="container">
+           <div class="container-fluid">
             <div class="carousel-caption">
               <h1>{FEATUREBOX_TITLE}</h1>
               <p>{FEATUREBOX_TEXT}</p>
@@ -24,19 +24,19 @@ $FEATUREBOX_TEMPLATE['bootstrap_carousel_default'] = '{SETIMAGE: w=1905&h=450&cr
 
 
 $FEATUREBOX_TEMPLATE['bootstrap_carousel_left'] = '
-   <!-- slide -->			 {SETIMAGE: w=600&h=450&crop=1}
+   <!-- slide -->			 {SETIMAGE: w=600&crop=1}
                             <div class="{FEATUREBOX_ACTIVE} item slide{FEATUREBOX_COUNTER}">
-                                <div class="container">
-                                    <div class="featurebox-item-image col-xs-12 col-md-6 col-sm-6 pull-left ">
+                                <div class="container-fluid">
+                                    <div class="featurebox-item-image col-xs-12 col-md-6 col-sm-6">
                                     	{FEATUREBOX_IMAGE=placeholder}
                                      </div>
-                                    <div class="featurebox-item-text col-xs-12 col-md-6 col-sm-6 span4">
+                                    <div class="featurebox-item-text col-xs-12 col-md-6 col-sm-6">
                                         <h1>
                                             {FEATUREBOX_TITLE}
                                         </h1>
                                         {FEATUREBOX_TEXT}
 										
-										 <p>{FEATUREBOX_BUTTON}</p>
+					<p>{FEATUREBOX_BUTTON}</p>
 										
                                     </div>
                                 </div>
@@ -46,25 +46,23 @@ $FEATUREBOX_TEMPLATE['bootstrap_carousel_left'] = '
 ';
 
 $FEATUREBOX_TEMPLATE['bootstrap_carousel_right'] = '
-							{SETIMAGE: w=600&h=450&crop=1}
- 							<div class="{FEATUREBOX_ACTIVE} item slide{FEATUREBOX_COUNTER}">
-                                <div class="container">
-                                 <div class="featurebox-item-image pull-right col-xs-12 col-sm-6 col-md-6 span6">
-                                         {FEATUREBOX_IMAGE=placeholder}
-                                    </div>
+						{SETIMAGE: w=600&crop=1}
+ 			<div class="{FEATUREBOX_ACTIVE} item slide{FEATUREBOX_COUNTER}">
+                                <div class="container-fluid">
                                     <div class="featurebox-item-text col-xs-12 col-md-6 col-sm-6">
                                         <h1>{FEATUREBOX_TITLE}</h1>
                                         {FEATUREBOX_TEXT}
-										
                                         <p>{FEATUREBOX_BUTTON}</p>
-										
+                                    </div>
+                                    <div class="featurebox-item-image col-xs-12 col-sm-6 col-md-6">
+                                         {FEATUREBOX_IMAGE=placeholder}
                                     </div>
                                 </div>
-                            </div>
+                        </div>
 ';
 
 
-$FEATUREBOX_TEMPLATE['bootstrap_carousel_image'] = '{SETIMAGE: w=1905&h=500&crop=1}
+$FEATUREBOX_TEMPLATE['bootstrap_carousel_image'] = '{SETIMAGE: w=1905&crop=1}
 
 									<div class="{FEATUREBOX_ACTIVE} item slide{FEATUREBOX_COUNTER}">			
 									{FEATUREBOX_IMAGE=placeholder}		
