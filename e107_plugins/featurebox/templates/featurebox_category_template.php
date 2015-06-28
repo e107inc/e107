@@ -59,7 +59,7 @@ $FEATUREBOX_CATEGORY_TEMPLATE['bootstrap3_carousel']['item_empty'] = '';
 $FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_carousel']['list_start'] = '
  <!-- starts carousel -->
 	<div class="row animated fadeInDown">
-		<div class="span12">
+		<div class="col-md-12">
 			<div id="myCarousel" class="carousel slide">
 				<!-- carousel items -->
 				<div class="carousel-inner">
@@ -73,7 +73,7 @@ $FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_carousel']['list_end'] = '
                     <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
                     
 			</div><!-- end myCarousel -->
-		</div><!-- end span12 -->
+		</div><!-- end col-md-12 -->
 	</div><!-- end row -->
 
 <!-- end carousel -->
