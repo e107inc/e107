@@ -17,7 +17,7 @@
 $sc_style['CM_TYPE']['pre'] = "[";
 $sc_style['CM_TYPE']['post'] = "]";
 
-$sc_style['CM_AUTHOR']['pre'] = CM_L13." ";
+$sc_style['CM_AUTHOR']['pre'] = LAN_POSTED_BY." ";
 $sc_style['CM_AUTHOR']['post'] = "";
 
 $sc_style['CM_DATESTAMP']['pre'] = " ";
@@ -26,7 +26,7 @@ $sc_style['CM_DATESTAMP']['post'] = "";
 $sc_style['CM_COMMENT']['pre'] = "";
 $sc_style['CM_COMMENT']['post'] = "";
 
-// $SC_WRAPPER['CM_AUTHOR'] = CM_L13."{---}"; //XXX Not working at time of review
+// $SC_WRAPPER['CM_AUTHOR'] = LAN_POSTED_BY."{---}"; //XXX Not working at time of review
 
 if (!isset($COMMENT_MENU_TEMPLATE))
 {

@@ -82,7 +82,7 @@ else
 	<br />
 	(".LAN_PRINT_86." ".$tp->toHTML($category_name,FALSE,"defs").")
 	<br />
-	".LAN_PRINT_94." ".$a_name."<br />
+	".LAN_POSTED_BY." ".$a_name."<br />
 	".$news_datestamp."
 	<br /><br />".
 	$news_body;
