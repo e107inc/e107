@@ -100,6 +100,13 @@
 			foreach($cfg as $k=>$v)
 			{
 
+				if(empty($v['regex']))
+				{
+				//	e107::getMessage()->addDebug("Skipping empty regex: <b>".$k."</b>");
+					continue;
+				}
+
+
 				if(!empty($v['alias']))
 				{
 					$alias = (!empty($pref['e_url_alias'][e_LAN][$plug][$k])) ? $pref['e_url_alias'][e_LAN][$plug][$k] : $v['alias'];

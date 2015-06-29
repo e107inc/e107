@@ -389,7 +389,7 @@ else
 }
 
 $fVars->FORUMJUMP = forumjump();
-$fVars->TOPLINK = "<a href='".e_SELF.'?'.e_QUERY."#top' onclick=\"window.scrollTo(0,0);\">".LAN_GOTO.'</a>'; // FIXME - TOPLINK not used anymore?
+$fVars->TOPLINK = "<a href='".e_SELF.'?'.e_QUERY."#top' onclick=\"window.scrollTo(0,0);\">".LAN_GO.'</a>'; // FIXME - TOPLINK not used anymore?
 
 if($container_only)
 {
@@ -428,8 +428,6 @@ function parse_thread($thread_info)
 	global $forum, $FORUM_VIEW_FORUM, $FORUM_VIEW_FORUM_STICKY, $FORUM_VIEW_FORUM_ANNOUNCE, $gen, $menu_pref, $threadsViewed;
 	$tp = e107::getParser();
 	$tVars = new e_vars;
-	$e107 = e107::getInstance();
-	$text = '';
 
 	$threadId = $thread_info['thread_id'];
 	$forumId = $thread_info['thread_forum_id'];
@@ -542,6 +540,7 @@ function parse_thread($thread_info)
 
 
 	// FIXME - pages -> convert to nextprev shortcode
+	/*
 	$pages = ceil(($tVars->REPLIES)/$forum->prefs->get('postspage'));
 	$urlparms = $thread_info;
 	if ($pages > 1)
@@ -583,7 +582,10 @@ function parse_thread($thread_info)
 	{
 		$tVars->PAGES = '';
 	}
-	
+	*/
+
+
+	$tVars->PAGES = fpages($thread_info, $tVars->REPLIES);
 	$tVars->PAGESX = fpages($thread_info, $tVars->REPLIES);
 
 	if (MODERATOR)
@@ -591,21 +593,21 @@ function parse_thread($thread_info)
 		// FIXME _URL_ thread name
 		// e107::getUrl()->create('forum/forum/view', "id={$thread_info['thread_forum_id']}")
 		// USED self instead
+
+		$moveUrl        = e107::url('forum','move', $thread_info);
+
 		$tVars->ADMIN_ICONS = "
 		<form method='post' action='".e_REQUEST_URI."' id='frmMod_{$forumId}_{$threadId}' style='margin:0;'><div>
 		<input type='image' ".IMAGE_admin_delete." name='deleteThread_{$threadId}' value='thread_action' onclick=\"return confirm_({$threadId})\" />
 		".($thread_info['thread_sticky'] == 1 ? "<input type='image' ".IMAGE_admin_unstick." name='unstick_{$threadId}' value='thread_action' /> " : "<input type='image' ".IMAGE_admin_stick." name='stick_{$threadId}' value='thread_action' /> ")."
 		".($thread_info['thread_active'] ? "<input type='image' ".IMAGE_admin_lock." name='lock_{$threadId}' value='thread_action' /> " : "<input type='image' ".IMAGE_admin_unlock." name='unlock_{$threadId}' value='thread_action' /> "). "
-		<a href='".e107::getUrl()->create('forum/thread/move', "id={$threadId}")."'>".IMAGE_admin_move.'</a>
+		<a href='".$moveUrl."'>".IMAGE_admin_move.'</a>
 		</div></form>
 		';
 		
 		$tVars->ADMINOPTIONS = fadminoptions($thread_info);
 	}
 
-	$text .= "</td>
-		<td style='vertical-align:top; text-align:center; width:20%' class='forumheader3'>".$THREADDATE.'<br />';
-//	$tmp = explode('.', $thread_info['thread_user'], 2);
 
 	if($thread_info['user_name'])
 	{
@@ -664,12 +666,13 @@ function parse_thread($thread_info)
 	return $tp->simpleParse($_TEMPLATE, $tVars);
 }
 
+
 function parse_sub($subInfo)
 {
 	global $FORUM_VIEW_SUB, $gen, $newflag_list;
 	$tp = e107::getParser();
 	$tVars = new e_vars;
-	$e107 = e107::getInstance();
+
 	$forumName = $tp->toHTML($subInfo['forum_name'], true);
 	$tVars->SUB_FORUMTITLE = "<a href='".e107::getUrl()->create('forum/forum/view', $subInfo)."'>{$forumName}</a>";
 	$tVars->SUB_DESCRIPTION = $tp->toHTML($subInfo['forum_description'], false, 'no_hook');
@@ -744,15 +747,16 @@ function fadminoptions($thread_info)
 	$tp = e107::getParser();
 	
 //	$text = "<form method='post' action='".e_REQUEST_URI."' id='frmMod_{$forumId}_{$threadId}' style='margin:0;'>";
-	$text .= '<div class="btn-group"><button class="btn btn-default btn-sm btn-mini dropdown-toggle" data-toggle="dropdown">
+	$text = '<div class="btn-group"><button class="btn btn-default btn-sm btn-mini dropdown-toggle" data-toggle="dropdown">
     <span class="caret"></span>
     </button>
     <ul class="dropdown-menu pull-right">	
    ';
    
 	//FIXME - not fully working. 
-	
-	$moveUrl 		= e107::getUrl()->create('forum/thread/move', "id=".$thread_info['thread_id']);
+
+	$moveUrl        = e107::url('forum','move', $thread_info);
+
 	$lockUnlock 	= ($thread_info['thread_active'] ) ? 'lock' : 'unlock';
 	$stickUnstick 	= ($thread_info['thread_sticky'] == 1) ? 'unstick' : 'stick';
 	$id = intval($thread_info['thread_id']);

@@ -225,8 +225,11 @@ TEMPL;
 
 			parse_str($qry,$qr);
 
-			$qr['w'] = $img['width'];
-			$qr['h'] = $img['height'];
+			if(substr($url,0,4)!=='http' && empty($qr['w']) && empty($qr['aw']))
+			{
+				$qr['w'] = $img['width'];
+				$qr['h'] = $img['height'];
+			}
 
 			$src = $url."?".urldecode(http_build_query($qr));
 

@@ -316,7 +316,9 @@ class private_message
 				}
 				if ($aCount[0] || $aCount[1])
 				{
-					$ret .= str_replace(array('--GOOD--', '--FAIL--'), $aCount, LAN_PM_71).'<br />';
+
+				//	$ret .= str_replace(array('--GOOD--', '--FAIL--'), $aCount, LAN_PM_71).'<br />';
+					$ret .= e107::getParser()->lanVars(LAN_PM_71, $aCount);
 				}
 				$sql->delete('private_msg', 'pm_id = '.$pmid);
 			}

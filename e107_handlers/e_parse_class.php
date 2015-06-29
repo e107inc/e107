@@ -2040,7 +2040,7 @@ class e_parse extends e_parser
 	 */
 	public function thumbWidth($width=null)
 	{
-		if($height !== null)
+		if($width !== null)
 		{
 			$this->thumbWidth = intval($width);
 		}
@@ -2685,7 +2685,9 @@ class e_parser
                                     'script'	=> array('type', 'src', 'language'),
                                     'iframe'	=> array('id', 'src', 'frameborder', 'class', 'width', 'height', 'style'),
 	                                'input'     => array('type','name','value','class','style'),
-	                                'form'      => array('action','method','target')
+	                                'form'      => array('action','method','target'),
+	                                'audio'     => array('src','controls', 'autoplay', 'loop', 'muted', 'preload' ),
+	                                'video'     => array('autoplay', 'controls', 'height', 'loop', 'muted', 'poster', 'preload', 'src', 'width')
                                   );
 
     protected $badAttrValues     = array('javascript[\s]*?:','alert\(','vbscript[\s]*?:','data:text\/html', 'mhtml[\s]*?:', 'data:[\s]*?image');
@@ -2696,7 +2698,7 @@ class e_parser
 
     protected $allowedTags        = array('html', 'body','div','a','img','table','tr', 'td', 'th', 'tbody', 'thead', 'colgroup', 'b',
                                         'i', 'pre','code', 'strong', 'u', 'em','ul', 'ol', 'li','img','h1','h2','h3','h4','h5','h6','p',
-                                        'div','pre','section','article', 'blockquote','hgroup','aside','figure','span', 'video', 'br',
+                                        'div','pre','section','article', 'blockquote','hgroup','aside','figure','span', 'audio', 'video', 'br',
                                         'small', 'caption', 'noscript'
                                    );
     protected $scriptTags 		= array('script','applet','iframe','form','input','button'); //allowed when $pref['post_script'] is enabled.
@@ -2811,6 +2813,7 @@ class e_parser
 	 * @param $lan - string LAN
 	 * @param string | array $vals - either a single value, which will replace '[x]' or an array with key=>value pairs.
 	 * @example $tp->lanVars("My name is [x] and I own a [y]", array('x'=>"John", 'y'=>"Cat"));
+	 * @example $tp->lanVars("My name is [x] and I own a [y]", array("John","Cat"));
 	 * @return string
 	 */
 	function lanVars($lan, $vals, $bold=false)
@@ -2821,8 +2824,15 @@ class e_parser
 		$search = array();
 		$replace = array();
 
+		$defaults = array('x', 'y', 'z');
+
 		foreach($array as $k=>$v)
 		{
+			if(is_numeric($k)) // convert array of numeric to x,y,z
+			{
+				$k = $defaults[$k];
+			}
+
 			$search[] = "[".$k."]";
 			$replace[] = ($bold===true) ? "<strong>".$v."</strong>" : $v;
 		}

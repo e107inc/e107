@@ -54,15 +54,15 @@ $no_core_css = TRUE;
 class bootstrap_admintheme
 {
 
-	function tablestyle($caption, $text, $mode) 
+	function tablestyle($caption, $text, $mode, $data)
 	{
-		global $style;
-		
+		// global $style;
+
+		$style = $data['setStyle'];
+
+	//	echo "Style: ".$style;
 		$class = '';
-		
-	
-		
-		
+
 		if(is_string($mode) && $mode == 'admin_help') $class = ' '.str_replace('_', '-', $mode);
 			
 		if($mode == 'e_help')
