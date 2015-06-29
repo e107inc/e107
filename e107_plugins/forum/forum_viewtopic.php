@@ -539,7 +539,8 @@ function showmodoptions()
 		";
 	if ($type == 'Thread')
 	{
-		$ret .= "<a href='" . $e107->url->create('forum/thread/move', array('id' => $postInfo['post_id']))."'>" . IMAGE_admin_move2 . "</a>";
+		$moveUrl     = e107::url('forum','move', array('thread_id'=>$postInfo['post_thread']));
+		$ret .= "<a href='" . $moveUrl."'>" . IMAGE_admin_move2 . "</a>";
 	}
 	else
 	{
@@ -704,8 +705,9 @@ class e107ForumThread
 		{
 			if(E107_DEBUG_LEVEL > 0)
 			{
-				echo __METHOD__ .' Line: '.__LINE__;
-				exit;
+				e107::getMessage()->addError("Thread not found or query error: ". __METHOD__ .' Line: '.__LINE__ );
+				return;
+			//	exit;
 			}
 
 			$url = e107::url('forum','index','full');

@@ -199,7 +199,7 @@ $ADMIN_HEADER .= '<div class="container-fluid">
 			{ADMIN_MENU}
 			{ADMIN_MENUMANAGER} 
 			
-		
+
 			{ADMIN_PWORD}
 			{SETSTYLE=site_info}
 
@@ -216,11 +216,10 @@ $ADMIN_HEADER .= '<div class="container-fluid">
 			
 		
 			
-			{SETSTYLE=none}
+			{SETSTYLE=default}
 			
          </div>
         <div class="span10" id="right-panel" >
-        
         ';
 
 
@@ -231,7 +230,7 @@ $ADMIN_FOOTER = '
 
     </div><!--/.fluid-container-->
     <footer class="center mute"> 
-		Copyright &copy; 2008-2013 e107 Inc (e107.org)<br />
+		Copyright &copy; 2008-2015 e107 Inc (e107.org)<br />
       </footer>';
 
 

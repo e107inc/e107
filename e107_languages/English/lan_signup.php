@@ -23,9 +23,9 @@ define("PAGE_NAME", "Register");
 //define("LAN_106", "That doesn't appear to be a valid email address");
 define("LAN_108", "Registration complete");
 define("LAN_185", "You left required field(s) blank");
-define("LAN_201", "Yes");
-define("LAN_200", "No");
-define("LAN_399", "Continue");
+// define("LAN_201", "Yes");
+// define("LAN_200", "No");
+// define("LAN_399", "Continue");
 define("LAN_407", "Please keep this email for your own information. Your password has been encrypted and cannot be retrieved if you misplace or forget it. You can however request a new password if this happens.\n\nThanks for your registration.\n\nFrom");
 //define("LAN_408", "A user with that email address already exists. Please use the 'forgot password' screen to retrieve your password.");
 

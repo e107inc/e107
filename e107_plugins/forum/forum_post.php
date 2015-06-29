@@ -132,13 +132,20 @@ class forum_post_handler
 				break;
 
 			case 'edit':
-			case 'move':
 			case "quote":
 			case "report":
-
 				$postInfo               = $this->forumObj->postGet($this->post, 'post');
 				$forumInfo              = $this->forumObj->forumGet($postInfo['post_forum']);
 				$data                   = array_merge($postInfo ,$forumInfo);
+				$data['action']         = $this->action;
+				$this->setPageTitle($data);
+				return $data;
+				break;
+
+			case 'move':
+				$thread                 = $this->forumObj->threadGet($this->id, true);
+				$extra                  = $this->forumObj->postGet($this->id,0,1);  // get first post.
+				$data                   = array_merge($thread,$extra[0]);
 				$data['action']         = $this->action;
 				$this->setPageTitle($data);
 				return $data;

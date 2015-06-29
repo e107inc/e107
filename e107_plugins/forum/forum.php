@@ -379,7 +379,7 @@ function parse_forum($f, $restricted_string = '')
 	if(is_array($forumList['subs'][$f['forum_id']]))
 	{
 		list($lastpost_datestamp, $lastpost_thread) = explode('.', $f['forum_lastpost_info']);
-		$ret = parse_subs($forumList['subs'][$f['forum_id']], $lastpost_datestamp);
+		$ret = parse_subs($forumList, $f['forum_id'], $lastpost_datestamp);
 		$fVars->FORUMSUBFORUMS = "<br /><div class='smalltext'>".LAN_FORUM_0069.": {$ret['text']}</div>";
 		$fVars->THREADS += $ret['threads'];
 		$fVars->REPLIES += $ret['replies'];
@@ -426,20 +426,31 @@ function parse_forum($f, $restricted_string = '')
 	return $tp->simpleParse($FORUM_MAIN_FORUM, $fVars);
 }
 
-function parse_subs($subList, $lastpost_datestamp)
+
+
+function parse_subs($forumList, $id ='', $lastpost_datestamp)
 {
-	$e107 = e107::getInstance();
+
 	$tp = e107::getParser();
 	$ret = array();
+
+	$subList = $forumList['subs'][$id];
+
 	$ret['text'] = '';
+
 	foreach($subList as $sub)
 	{
 		$ret['text'] .= ($ret['text'] ? ', ' : '');
-		$suburl = $e107->url->create('forum/forum/view', $sub);
-		$ret['text'] .= "<a href='{$suburl}'>".$tp->toHTML($sub['forum_name']).'</a>';
-		$ret['threads'] += $sub['forum_threads'];
-		$ret['replies'] += $sub['forum_replies'];
-		$tmp = explode('.', $sub['forum_lastpost_info']);
+
+		$urlData                = $sub;
+		$urlData['parent_sef']  = $forumList['all'][$sub['forum_sub']]['forum_sef']; //   = array('parent_sef'=>
+		$suburl                 = e107::url('forum','forum', $urlData);
+
+		$ret['text']            .= "<a href='{$suburl}'>".$tp->toHTML($sub['forum_name']).'</a>';
+		$ret['threads']         += $sub['forum_threads'];
+		$ret['replies']         += $sub['forum_replies'];
+		$tmp                    = explode('.', $sub['forum_lastpost_info']);
+
 		if($tmp[0] > $lastpost_datestamp)
 		{
 			$ret['lastpost_info'] = $sub['forum_lastpost_info'];
@@ -449,8 +460,12 @@ function parse_subs($subList, $lastpost_datestamp)
 			$lastpost_datestamp = $tmp[0];
 		}
 	}
+
+
 	return $ret;
 }
+
+
 
 if (e_QUERY == 'track')
 {
@@ -492,6 +507,8 @@ if (e_QUERY == 'track')
 		}
 	}
 }
+
+
 
 if (e_QUERY == 'new')
 {
@@ -553,6 +570,14 @@ else
 {
 	echo $forum_main_start.$forum_string.$forum_main_end;
 }
+
+
+
+
+
+
+
+
 require_once(FOOTERF);
 
 function forum_rules($action = 'check')

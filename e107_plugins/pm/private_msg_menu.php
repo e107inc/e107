@@ -54,7 +54,7 @@ if(!function_exists('pm_show_popup'))
 				<td width=100% style='text-align:center'>
 					<b>--- ".LAN_PM." ---</b><br />".$pm_inbox['inbox']['new'].' '.LAN_PM_109."<br />".$pm_inbox['inbox']['unread'].' '.LAN_PM_37."<br /><br />
 					<form>
-						<input class=\'button\' type=\'submit\' onclick=\'self.close();\' value = \'".LAN_PM_110."\' />
+						<input class=\'button\' type=\'submit\' onclick=\'self.close();\' value = \'".LAN_OK."\' />
 					</form>
 				</td>
 			</tr>
