@@ -112,7 +112,7 @@ define('DBLAN_93', "Database Converted successfully to UTF-8.");
 define('DBLAN_94', "Please make sure you have the following line in your e107_config.php file:");
 
 define('DBLAN_95', "Export Options");
-define('DBLAN_96', "Preferences");
+//define('DBLAN_96', "Preferences");
 define('DBLAN_97', "Tables");
 define('DBLAN_98', "Rows");
 define('DBLAN_99', "Table Data:");
