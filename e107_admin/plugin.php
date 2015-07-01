@@ -2329,7 +2329,7 @@ class pluginBuilder
 				$text .= "<li><a data-toggle='tab'  href='#".$table."'>Table: ".$table."</a></li>";
 				$this->tableList[] = $table;
 			}
-			$text .= "<li><a data-toggle='tab'  href='#preferences'>".EPL_ADLAN_110."</a></li>";
+			$text .= "<li><a data-toggle='tab'  href='#preferences'>".LAN_PREFS."</a></li>";
 			
 			$text .= "</ul>";
 			

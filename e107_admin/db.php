@@ -1186,7 +1186,7 @@ class system_tools
 				</colgroup>
 				<thead>
 				<tr>
-					<th>".$frm->checkbox_toggle('check-all-verify', 'xml_prefs')." ".DBLAN_96."</th>
+					<th>".$frm->checkbox_toggle('check-all-verify', 'xml_prefs')." ".LAN_PREFS."</th>
 					<th class='right'>".DBLAN_98."</th>
 
 				</tr>
