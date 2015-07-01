@@ -10,7 +10,7 @@
 //define("ADMSLAN_1", "now has admin status."); - no references found
 
 //define("ADMSLAN_3", "is the main site administrator and cannot be edited.");
-define("ADMSLAN_4", "Continue");
+//define("ADMSLAN_4", "Continue");//LAN_CONTINUE
 //define("ADMSLAN_5", "Error!"); - global admin LAN_ERROR
 define("ADMSLAN_6", "is the main site administrator and cannot be deleted.");
 
