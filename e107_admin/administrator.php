@@ -83,7 +83,7 @@ if (isset($_POST['del_admin']) && count($_POST['del_admin']))
 	{	// Can't delete main admin
 		$text = $row['user_name']." ".ADMSLAN_6."
 		<br /><br />
-		<a href='".e_ADMIN_ABS."administrator.php'>".ADMSLAN_4."</a>";
+		<a href='".e_ADMIN_ABS."administrator.php'>".LAN_CONTINUE."</a>";
 
 		$mes->addError($text);
 		$ns->tablerender(LAN_ERROR, $mes->render());
