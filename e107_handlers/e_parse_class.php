@@ -2040,7 +2040,7 @@ class e_parse extends e_parser
 	 */
 	public function thumbWidth($width=null)
 	{
-		if($height !== null)
+		if($width !== null)
 		{
 			$this->thumbWidth = intval($width);
 		}
@@ -2685,7 +2685,12 @@ class e_parser
                                     'script'	=> array('type', 'src', 'language'),
                                     'iframe'	=> array('id', 'src', 'frameborder', 'class', 'width', 'height', 'style'),
 	                                'input'     => array('type','name','value','class','style'),
-	                                'form'      => array('action','method','target')
+	                                'form'      => array('action','method','target'),
+	                                'audio'     => array('src','controls', 'autoplay', 'loop', 'muted', 'preload' ),
+	                                'video'     => array('autoplay', 'controls', 'height', 'loop', 'muted', 'poster', 'preload', 'src', 'width'),
+	                                'td'        => array('id', 'style', 'class', 'colspan', 'rowspan'),
+	                                'th'        => array('id', 'style', 'class', 'colspan', 'rowspan'),
+	                                'col'       => array('id', 'span', 'class','style')
                                   );
 
     protected $badAttrValues     = array('javascript[\s]*?:','alert\(','vbscript[\s]*?:','data:text\/html', 'mhtml[\s]*?:', 'data:[\s]*?image');
@@ -2696,7 +2701,7 @@ class e_parser
 
     protected $allowedTags        = array('html', 'body','div','a','img','table','tr', 'td', 'th', 'tbody', 'thead', 'colgroup', 'b',
                                         'i', 'pre','code', 'strong', 'u', 'em','ul', 'ol', 'li','img','h1','h2','h3','h4','h5','h6','p',
-                                        'div','pre','section','article', 'blockquote','hgroup','aside','figure','span', 'video', 'br',
+                                        'div','pre','section','article', 'blockquote','hgroup','aside','figure','span', 'audio', 'video', 'br',
                                         'small', 'caption', 'noscript'
                                    );
     protected $scriptTags 		= array('script','applet','iframe','form','input','button'); //allowed when $pref['post_script'] is enabled.
