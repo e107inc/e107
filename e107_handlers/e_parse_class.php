@@ -2687,7 +2687,10 @@ class e_parser
 	                                'input'     => array('type','name','value','class','style'),
 	                                'form'      => array('action','method','target'),
 	                                'audio'     => array('src','controls', 'autoplay', 'loop', 'muted', 'preload' ),
-	                                'video'     => array('autoplay', 'controls', 'height', 'loop', 'muted', 'poster', 'preload', 'src', 'width')
+	                                'video'     => array('autoplay', 'controls', 'height', 'loop', 'muted', 'poster', 'preload', 'src', 'width'),
+	                                'td'        => array('id', 'style', 'class', 'colspan', 'rowspan'),
+	                                'th'        => array('id', 'style', 'class', 'colspan', 'rowspan'),
+	                                'col'       => array('id', 'span', 'class','style')
                                   );
 
     protected $badAttrValues     = array('javascript[\s]*?:','alert\(','vbscript[\s]*?:','data:text\/html', 'mhtml[\s]*?:', 'data:[\s]*?image');
