@@ -1653,10 +1653,11 @@ class e107plugin
 	function XmlTables($function, $plug, $options = array())
 	{
 
-		$sqlFile = e_PLUGIN.$plug['plugin_path'].'/'.$plug['plugin_path']."_sql.php";
+		$sqlFile = e_PLUGIN.$plug['plugin_path'].'/'.str_replace("_menu","", $plug['plugin_path'])."_sql.php";
 
 		if(!file_exists($sqlFile)) // No File, so return;
 		{
+			e107::getMessage()->addDebug("No SQL File Found at: ".$sqlFile);
 			return;
 		}
 

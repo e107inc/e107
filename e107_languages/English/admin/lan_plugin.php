@@ -125,7 +125,7 @@ define ('EPL_ADLAN_106',"Select your plugin's folder to begin.");
 define ('EPL_ADLAN_107',"Build an admin-area and xml file for:");
 define ('EPL_ADLAN_108',"Check language files:");
 define ('EPL_ADLAN_109',"Basic Info.");
-define ('EPL_ADLAN_110',"Preferences");
+// define ('EPL_ADLAN_110',"Preferences");
 define ('EPL_ADLAN_111',"Generate");
 define ('EPL_ADLAN_112',"Review all fields and modify if necessary.");
 define ('EPL_ADLAN_113',"Review ALL tabs before clicking 'Generate'.");
@@ -186,6 +186,7 @@ define ('EPL_ADLAN_161',"Other 3");
 define ('EPL_ADLAN_162',"Other 4");
 define ('EPL_ADLAN_163',"Exclude this table");
 
+//FIXME TODO Excessive duplicate terms below.
 define ('EPL_ADLAN_164',"Field");
 define ('EPL_ADLAN_165',"Caption");
 define ('EPL_ADLAN_166',"Type");
