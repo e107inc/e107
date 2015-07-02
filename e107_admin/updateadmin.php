@@ -93,7 +93,7 @@ else
 						</td>
 					</tr>
 					<tr>
-						<td>".UDALAN_5.":</td>
+						<td>".LAN_PASSWORD.":</td>
 						<td>".$frm->password('a_password','',20,'generate=1&strength=1')."
 							
 						</td>

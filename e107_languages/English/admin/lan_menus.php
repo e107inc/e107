@@ -25,7 +25,7 @@ define("MENLAN_15", "Deactivate");
 define("MENLAN_17", "Move Up");
 define("MENLAN_18", "Move Down");
 define("MENLAN_19", "Move to Area");
-define("MENLAN_20", "Visibility");
+//define("MENLAN_20", "Visibility");//LAN_VISIBILITY
 
 // define("MENLAN_21", "Visible to Guests only");
 define("MENLAN_22", "Inactive Menus");

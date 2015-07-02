@@ -122,7 +122,7 @@ if (preg_match("#.*\.[a-z,A-Z]{3,4}#", e_QUERY))
 	$log->addError("Line".__LINE__.": Couldn't find ".e_DOWNLOAD.e_QUERY);
 	$log->toFile('download_requests','Download Requests', true); // Create a log file and add the log messages
 	require_once(HEADERF);
-	$ns->tablerender(LAN_dl_61, "<div style='text-align:center'>".LAN_dl_65."\n<br /><br />\n<a href='javascript:history.back(1)'>".LAN_BACK."</a></div>");
+	$ns->tablerender(LAN_ERROR, "<div style='text-align:center'>".LAN_FILE_NOT_FOUND."\n<br /><br />\n<a href='javascript:history.back(1)'>".LAN_BACK."</a></div>");
 	require_once(FOOTERF);
 	exit();
 }
@@ -141,7 +141,7 @@ if ($type == "file")
 			if ($row['download_active'] == 0)
 			{  // Inactive download - don't allow
 				require_once(HEADERF);
-				$ns->tablerender(LAN_dl_61, "<div style='text-align:center'>".str_replace('--LINK--',"<a href='".e_HTTP.'download.php'."'>",LAN_dl_78).'</div>');
+				$ns->tablerender(LAN_ERROR, "<div style='text-align:center'>".str_replace('--LINK--',e_HTTP.'download.php',LAN_dl_78).'</div>');
 				require_once(FOOTERF);
 				exit();
 			}
@@ -275,7 +275,7 @@ if ($type == "file")
 	$log->addError("Line".__LINE__.": Couldn't find ".e_DOWNLOAD.e_QUERY);
 	$log->toFile('download_requests','Download Requests', true); // Create a log file and add the log messages
 	require_once(HEADERF);
-	$ns -> tablerender(LAN_dl_61, "<div style='text-align:center'>".LAN_dl_65."<br /><br /><a href='javascript:history.back(1)'>".LAN_BACK."</a></div>");
+	$ns -> tablerender(LAN_ERROR, "<div style='text-align:center'>".LAN_FILE_NOT_FOUND."<br /><br /><a href='javascript:history.back(1)'>".LAN_BACK."</a></div>");
 	require_once(FOOTERF);
 	exit();
 }
@@ -341,7 +341,7 @@ else
 		else 
 		{
 			require_once(HEADERF);
-			$ns->tablerender(LAN_dl_61, "<div style='text-align:center'>".LAN_dl_65."<br /><br /><a href='javascript:history.back(1)'>".LAN_BACK."</a></div>");
+			$ns->tablerender(LAN_ERROR, "<div style='text-align:center'>".LAN_FILE_NOT_FOUND."<br /><br /><a href='javascript:history.back(1)'>".LAN_BACK."</a></div>");
 			require_once(FOOTERF);
 			exit;
 		}
@@ -378,7 +378,7 @@ function check_download_limits()
 				// Exceeded download count limit
 			  	header("Location: ".e_BASE."download.php?error.{$cutoff}.2");
 				/* require_once(HEADERF);
-				$ns->tablerender(LAN_dl_61, LAN_dl_62);
+				$ns->tablerender(LAN_ERROR, LAN_dl_62);
 				require(FOOTERF);  */
 				exit();
 			}
@@ -408,7 +408,7 @@ function check_download_limits()
 			{	//Exceed bandwith limit
 			  header("Location: ".e_BASE."download.php?error.{$cutoff}.2");
 				/* require(HEADERF);
-				$ns->tablerender(LAN_dl_61, LAN_dl_62);
+				$ns->tablerender(LAN_ERROR, LAN_dl_62);
 				require(FOOTERF); */
 				exit();
 			}

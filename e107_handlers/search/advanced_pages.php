@@ -17,6 +17,6 @@
 if (!defined('e107_INIT')) { exit; }
 /*
 $advanced['date']['type'] = 'date';
-$advanced['date']['text'] = LAN_SEARCH_68.':';
+$advanced['date']['text'] = LAN_DATE.':';
 */
 ?>

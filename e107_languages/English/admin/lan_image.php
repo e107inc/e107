@@ -151,7 +151,7 @@ define('IMALAN_113', "Scanning for new media (images, videos, files) in folder:"
 define('IMALAN_114', "No media Found! Please upload some files.");
 define('IMALAN_115', "Title (internal use)");
 define('IMALAN_116', "Caption (seen by public)");
-define('IMALAN_117', "Author"); // use LAN_AUTHOR
+//define('IMALAN_117', "Author"); // use LAN_AUTHOR
 define('IMALAN_118', "Mime Type");
 define('IMALAN_119', "File Size");
 define('IMALAN_120', "Dimensions");

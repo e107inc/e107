@@ -742,7 +742,7 @@ class pageClass
 			case 'pw':
 				$frm = e107::getForm();
 				$extend->caption = LAN_PAGE_8;
-				$extend->label = LAN_PAGE_9;
+				$extend->label = LAN_PASSWORD;
 				$extend->password = $frm->password('page_pw','',50,'size=xlarge&required=1');
 				$extend->icon = e_IMAGE_ABS.'generic/password.png';
 				$extend->submit = $frm->submit('submit_page_pw', LAN_PAGE_10);

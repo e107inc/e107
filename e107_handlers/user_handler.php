@@ -1259,63 +1259,63 @@ class e_userperms
 
 		$this->core_perms = array(
 
-		// In the same order as admin navigation! 
+		// In the same order as admin navigation! Plus same labels.
 		
 		// Settings
-		"C"	=> array(ADMSLAN_64,E_16_CACHE, E_32_CACHE),		// Clear the system cache
-		"F"	=> array(ADMSLAN_31,E_16_EMOTE, E_32_EMOTE),		// Emoticons
-		"G"	=> array(ADMSLAN_32,E_16_FRONT, E_32_FRONT),		// Front-Page Configuration
-		"L"	=> array(ADMSLAN_76,E_16_LANGUAGE, E_32_LANGUAGE),	// Language Packs
-		"T"	=> array(ADMSLAN_34,E_16_META, E_32_META),			// Meta tags
+		"C"	=> array(ADLAN_74,E_16_CACHE, E_32_CACHE),		    // Clear the system cache
+		"F"	=> array(ADLAN_58,E_16_EMOTE, E_32_EMOTE),	        // Emoticons
+		"G"	=> array(ADLAN_60,E_16_FRONT, E_32_FRONT),		    // Front-Page Configuration
+		"L"	=> array(ADLAN_132,E_16_LANGUAGE, E_32_LANGUAGE),	// Language Packs
+		"T"	=> array(ADLAN_66,E_16_META, E_32_META),			// Meta tags
 		
-		"1"	=> array(ADMSLAN_19,E_16_PREFS, E_32_PREFS),		// Alter Site Preferences
-		"X"	=> array(ADMSLAN_66,E_16_SEARCH, E_32_SEARCH),		// Search
-		"I"	=> array(ADMSLAN_40,E_16_LINKS, E_32_LINKS),		// Post SiteLinks 
+		"1"	=> array(LAN_PREFS,E_16_PREFS, E_32_PREFS),			// Alter Site Preferences
+		"X"	=> array(LAN_SEARCH,E_16_SEARCH, E_32_SEARCH),		// Search
+		"I"	=> array(ADLAN_138,E_16_LINKS, E_32_LINKS),			// Post SiteLinks 
 		"8"	=> array(ADMSLAN_27,E_16_LINKS, E_32_LINKS),		// Oversee SiteLink Categories
-		"K"	=> array(ADMSLAN_43,E_16_EURL, E_32_EURL),			// Configure URLs
+		"K"	=> array(ADLAN_159,E_16_EURL, E_32_EURL),			// Configure URLs
 				
 		// Users 
-		"3"	=> array(ADMSLAN_21,E_16_ADMIN, E_32_ADMIN),		// Modify Admin perms
+		"3"	=> array(ADLAN_8,E_16_ADMIN, E_32_ADMIN),			// Modify Admin perms
 		"4"	=> array(LAN_USER_MANAGEALL,E_16_USER, E_32_USER),	// Manage all user access and settings etc
-		"U0" => array(ADMSLAN_22,E_16_USER, E_32_USER), 		// moderate users/bans but not userclasses or extended fields,
+		"U0" => array(ADLAN_34,E_16_USER, E_32_USER), 		    // moderate users/bans but not userclasses or extended fields,
 		"U1" => array(LAN_USER_QUICKADD,E_16_USER, E_32_USER),	// "User: Quick Add User",
 		"U2" => array(LAN_USER_OPTIONS,E_16_USER, E_32_USER),	// Manage only user-options
 		"U3" => array(LAN_USER_RANKS,E_16_USER, E_32_USER),		// Manage only user-ranks
-		"W"	=> array(ADMSLAN_65,E_16_MAIL, E_32_MAIL),			// Configure mail settings and mailout		
+		"W"	=> array(ADLAN_136,E_16_MAIL, E_32_MAIL),			// Configure mail settings and mailout		
 		
 		
 		// Content 			
-		"5"	=> array(ADMSLAN_23,E_16_CUST, E_32_CUST),			// create/edit custom PAGES
-		"J"	=> array(ADMSLAN_41,E_16_CUST, E_32_CUST),			// create/edit custom MENUS
+		"5"	=> array(ADLAN_42,E_16_CUST, E_32_CUST),			// create/edit custom PAGES 
+		"J"	=> array(ADLAN_42,E_16_CUST, E_32_CUST),			// create/edit custom MENUS
 
-		"H"	=> array(ADMSLAN_39,E_16_NEWS, E_32_NEWS),			// Post News - All Areas except settings.
-		"H0" => array(ADMSLAN_39." (".LAN_CREATE.")",E_16_NEWS, E_32_NEWS),			// Create News Items
-		"H1" => array(ADMSLAN_39." (".LAN_EDIT.")",E_16_NEWS, E_32_NEWS),			// Edit News Items
-		"H2" => array(ADMSLAN_39." (".LAN_DELETE.")",E_16_NEWS, E_32_NEWS),			// Delete News Items
-		"H3" => array(ADMSLAN_39." (".LAN_CATEGORY." - ".LAN_CREATE.")",E_16_NEWS, E_32_NEWS),			// Create News Category
-		"H4" => array(ADMSLAN_39." (".LAN_CATEGORY." - ".LAN_EDIT.")",E_16_NEWS, E_32_NEWS),			// Edit News Category
-		"H5" => array(ADMSLAN_39." (".LAN_CATEGORY." - ".LAN_DELETE.")",E_16_NEWS, E_32_NEWS),			// Delete News Category
+		"H"	=> array(ADLAN_0,E_16_NEWS, E_32_NEWS),								// Post News - All Areas except settings.
+		"H0" => array(ADLAN_0." (".LAN_CREATE.")",E_16_NEWS, E_32_NEWS),					// Create News Items
+		"H1" => array(ADLAN_0." (".LAN_EDIT.")",E_16_NEWS, E_32_NEWS),						// Edit News Items
+		"H2" => array(ADLAN_0." (".LAN_DELETE.")",E_16_NEWS, E_32_NEWS),					// Delete News Items
+		"H3" => array(ADLAN_0." (".LAN_CATEGORY." - ".LAN_CREATE.")",E_16_NEWS, E_32_NEWS),			// Create News Category
+		"H4" => array(ADLAN_0." (".LAN_CATEGORY." - ".LAN_EDIT.")",E_16_NEWS, E_32_NEWS),			// Edit News Category
+		"H5" => array(ADLAN_0." (".LAN_CATEGORY." - ".LAN_DELETE.")",E_16_NEWS, E_32_NEWS),			// Delete News Category
 
-		"N"	=> array(ADMSLAN_47,E_16_NEWS, E_32_NEWS),			// Moderate submitted news
-		"V"	=> array(ADMSLAN_35,E_16_UPLOADS, E_32_UPLOADS),	// Configure public file uploads
-		"M"	=> array(ADMSLAN_46,E_16_WELCOME, E_32_WELCOME),	// Welcome Messages
+		"N"	=> array(ADLAN_0." (".LAN_SUBMITTED.")",E_16_NEWS, E_32_NEWS),			// Moderate submitted news
+		"V"	=> array(ADLAN_31,E_16_UPLOADS, E_32_UPLOADS),							// Configure public file uploads
+		"M"	=> array(ADLAN_28,E_16_WELCOME, E_32_WELCOME),							// Welcome Messages
 				
 		// Tools 
-		"Y"	=> array(ADMSLAN_67,E_16_INSPECT, E_32_INSPECT),	// File inspector
-		"9"	=> array(ADMSLAN_28, E_16_MAINTAIN, E_32_MAINTAIN),	// Take Down site for Maintenance
-		"O"	=> array(ADMSLAN_68,E_16_NOTIFY, E_32_NOTIFY),		// Notify
-		"U"	=> array(ADMSLAN_45,E_16_CRON, E_32_CRON),			// Schedule Tasks
-		"S"	=> array(ADMSLAN_33,E_16_ADMINLOG, E_32_ADMINLOG),	// System Logging
+		"Y"	=> array(ADLAN_147,E_16_INSPECT, E_32_INSPECT),	    // File inspector
+		"9"	=> array(ADLAN_40, E_16_MAINTAIN, E_32_MAINTAIN),	// Take Down site for Maintenance
+		"O"	=> array(ADLAN_149,E_16_NOTIFY, E_32_NOTIFY),		// Notify
+		"U"	=> array(ADLAN_157,E_16_CRON, E_32_CRON),			// Schedule Tasks
+		"S"	=> array(ADLAN_155,E_16_ADMINLOG, E_32_ADMINLOG),	// System Logging
 		
 		// Manage
-		"B"	=> array(ADMSLAN_37,E_16_COMMENT, E_32_COMMENT),	// Moderate Comments
-		"6"	=> array(ADMSLAN_25,E_16_FILE, E_32_FILE),			// File-Manager  - Upload /manage files - 
-		"A"	=> array(ADMSLAN_36,E_16_IMAGES, E_32_IMAGES),		// Media-Manager All Areas. 
-		"A1"=> array(ADMSLAN_36,E_16_IMAGES, E_32_IMAGES),		// Media-Manager (Media Add/Import)
-		"A2"=> array(ADMSLAN_36,E_16_IMAGES, E_32_IMAGES),		// Media-Manager (Media-Categories)
+		"B"	=> array(LAN_COMMENTMAN,E_16_COMMENT, E_32_COMMENT),	    								// Moderate Comments
+		"6"	=> array(LAN_MEDIAMANAGER,E_16_FILE, E_32_FILE),											// File-Manager  - Upload /manage files - 
+		"A"	=> array(LAN_MEDIAMANAGER." (".LAN_ALL.")",E_16_IMAGES, E_32_IMAGES),						// Media-Manager All Areas. 
+		"A1"=> array(LAN_MEDIAMANAGER." (".LAN_CREATE."/".LAN_IMPORT.")",E_16_IMAGES, E_32_IMAGES),		// Media-Manager (Media Add/Import)
+		"A2"=> array(LAN_MEDIAMANAGER." (".LAN_CATEGORIES.")",E_16_IMAGES, E_32_IMAGES),				// Media-Manager (Media-Categories)
 		
 		
-		"2"	=> array(ADMSLAN_20,E_16_MENUS, E_32_MENUS),		// Alter Menus
+		"2"	=> array(ADLAN_6,E_16_MENUS, E_32_MENUS),		// Alter Menus
 		
 		
 		//	"D"=> ADMSLAN_29,	// Manage Banners 				(deprecated - now a plugin)
@@ -1360,7 +1360,7 @@ class e_userperms
 
 		asort($this->plugin_perms);
 
-		$this->plugin_perms = array("Z"=> array('0'=>ADMSLAN_62)) + $this->plugin_perms;
+		$this->plugin_perms = array("Z"=> array('0'=>ADLAN_98)) + $this->plugin_perms;
 
 		if(e107::getConfig()->getPref('multilanguage'))
 		{

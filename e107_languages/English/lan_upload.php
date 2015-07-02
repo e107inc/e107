@@ -43,7 +43,7 @@ define("LAN_408", "Underlined");
 define("LAN_409", "Name of file");
 define("LAN_410", "Version");
 define("LAN_411", "File");
-define("LAN_412", "Screenshot");
+//define("LAN_412", "Screenshot");//LAN_SCREENSHOT
 define("LAN_413", "Description");
 define("LAN_414", "Working demo");
 define("LAN_415", "enter URL to site where demo can be viewed");
