@@ -51,7 +51,7 @@ define("LANINS_026", "MySQL Password:");
 define("LANINS_027", "MySQL Database:");
 define("LANINS_028", "Create Database?");
 define("LANINS_029", "Table prefix:");
-define("LANINS_030", "The MySQL server you would like e107 to use. It can also include a port number. e.g. “hostname:port” or a path to a local socket e.g. \":/path/to/socket\" for the localhost.");
+define("LANINS_030", "The MySQL server you would like e107 to use. It can also include a port number. e.g. 'hostname:port' or a path to a local socket e.g. \":/path/to/socket\" for the localhost.");
 define("LANINS_031", "The username you wish e107 to use to connect to your MySQL server");
 define("LANINS_032", "The Password for the user you just entered. Must not contain single or double quotes.");
 define("LANINS_033", "The MySQL database you wish e107 to reside in, sometimes referred to as a schema. Must begin with a letter. If the user has database create permissions you can opt to create the database automatically if it doesn't already exist.");

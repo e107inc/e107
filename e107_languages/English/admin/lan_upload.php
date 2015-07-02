@@ -22,7 +22,7 @@
 
 define("UPLLAN_1", "Upload removed from list.");
 define("UPLLAN_2", "Settings saved in database");
-define("UPLLAN_3", "Upload ID");
+//define("UPLLAN_3", "Upload ID");//LAN_ID
 define('UPLLAN_4', 'Nothing changed - not updated');
 define("UPLLAN_5", "Poster");
 define("UPLLAN_6", "Email");
@@ -42,7 +42,7 @@ define("UPLLAN_18", "View details");
 define("UPLLAN_19", "There are no unmoderated public uploads");
 define("UPLLAN_20", "There");
 define("UPLLAN_21", "unmoderated public upload");
-define("UPLLAN_22", "ID");
+//define("UPLLAN_22", "ID");//LAN_ID
 define("UPLLAN_23", "Name");
 define("UPLLAN_24", "Filetype");
 define("UPLLAN_25", "Uploads Enabled?");

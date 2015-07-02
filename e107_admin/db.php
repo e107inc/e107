@@ -1869,7 +1869,7 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 							<thead>
 								<tr>
 									<th>".DBLAN_41."</th>
-									<th>".DBLAN_42."</th>
+									<th>".LAN_ID."</th>
 									<th>".DBLAN_43."</th>
 									<th class='center last'>".LAN_OPTIONS."</th>
 								</tr>
