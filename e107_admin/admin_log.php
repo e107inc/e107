@@ -160,14 +160,14 @@ class admin_log_ui extends e_admin_ui
 		  'dblog_user_id' 		=>   array ( 'title' => LAN_USER, 'type' => 'user', 'data' => 'int', 'width' => 'auto', 'filter' => true,  'help' => '', 'readParms'=>'link=1', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'dblog_eventcode' 	=>   array ( 'title' => RL_LAN_023, 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		
-		  'dblog_title' 		=>   array ( 'title' => RL_LAN_025, 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'dblog_title' 		=>   array ( 'title' => LAN_TITLE, 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'dblog_remarks'		=>   array ( 'title' => RL_LAN_033, 'type' => 'method', 'data' => 'str', 'width' => '35%', 'filter'=>true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'options' 			=>   array ( 'title' => 'Options', 'type' => null, 'nolist'=>true, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
 		
 		protected $fieldpref = array( 'dblog_datestamp',  'dblog_type', 'dblog_eventcode', 'dblog_user_id', 'dblog_ip', 'dblog_title', 'dblog_remarks');
 		
-		//'adminlog' => array(RL_LAN_019, RL_LAN_032, RL_LAN_020, RL_LAN_104, LAN_USER, RL_LAN_023, RL_LAN_025, RL_LAN_033), 
+		//'adminlog' => array(RL_LAN_019, RL_LAN_032, RL_LAN_020, RL_LAN_104, LAN_USER, RL_LAN_023, LAN_TITLE, RL_LAN_033), 
 		
 	
 		protected $prefs = array(	
@@ -1357,11 +1357,11 @@ if(isset($page_title[$action]))
 		'comments' => array(14, 7, 7, 7, 14, 3, 10, 12, 5, 17, 1, 1, 1), 
 		'online' => array(18, 15, 7, 14, 32, 6, 4, 4));
 	$col_titles = array(
-		'adminlog' => array(RL_LAN_019, RL_LAN_032, RL_LAN_020, RL_LAN_104, LAN_USER, RL_LAN_023, RL_LAN_025, RL_LAN_033), 
-		'auditlog' => array(RL_LAN_019, RL_LAN_020, RL_LAN_104, LAN_USER, RL_LAN_023, RL_LAN_025, RL_LAN_033), 
-		'rolllog' => array(RL_LAN_019, RL_LAN_032, RL_LAN_020, RL_LAN_104, LAN_USER, RL_LAN_023, RL_LAN_024, RL_LAN_025, RL_LAN_033), 
+		'adminlog' => array(RL_LAN_019, RL_LAN_032, RL_LAN_020, RL_LAN_104, LAN_USER, RL_LAN_023, LAN_TITLE, RL_LAN_033), 
+		'auditlog' => array(RL_LAN_019, RL_LAN_020, RL_LAN_104, LAN_USER, RL_LAN_023, LAN_TITLE, RL_LAN_033), 
+		'rolllog' => array(RL_LAN_019, RL_LAN_032, RL_LAN_020, RL_LAN_104, LAN_USER, RL_LAN_023, RL_LAN_024, LAN_TITLE, RL_LAN_033), 
 		'downlog' => array(RL_LAN_019, RL_LAN_020, RL_LAN_104, LAN_USER, RL_LAN_068, RL_LAN_069), 
-		'detailed' => array(LAN_TIME, RL_LAN_096, RL_LAN_098, RL_LAN_032, RL_LAN_020, RL_LAN_104, LAN_USER, RL_LAN_023, RL_LAN_025, RL_LAN_033),  
+		'detailed' => array(LAN_TIME, RL_LAN_096, RL_LAN_098, RL_LAN_032, RL_LAN_020, RL_LAN_104, LAN_USER, RL_LAN_023, LAN_TITLE, RL_LAN_033),  
 		'online' => array(RL_LAN_019, RL_LAN_020, LAN_ID, LAN_USER, RL_LAN_116, RL_LAN_117, RL_LAN_118, RL_LAN_116));
 
 

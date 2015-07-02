@@ -58,7 +58,7 @@ define("POLLAN_30", "Submit");
 define("POLLAN_31", "Votes");
 define("POLLAN_32", "Click here to see results");
 define("POLLAN_33", "No previous polls yet.");
-define("POLLAN_34", "Title");
+//define("POLLAN_34", "Title");//LAN_TITLE
 define("POLLAN_35", "Posted by");
 define("POLLAN_36", "Active");
 define("POLLAN_37", "active from");

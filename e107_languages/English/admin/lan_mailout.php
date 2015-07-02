@@ -145,7 +145,7 @@ define("LAN_MAILOUT_131", "Sending Started");
 define("LAN_MAILOUT_132", "Sending Complete");
 define("LAN_MAILOUT_133", "Source");
 define("LAN_MAILOUT_134", "Priority");
-define("LAN_MAILOUT_135", "Title");
+//define("LAN_MAILOUT_135", "Title");//LAN_TITLE
 define("LAN_MAILOUT_136", "Mailout Status");
 define("LAN_MAILOUT_137", "Mail Ref");
 define("LAN_MAILOUT_138", "Email status");
