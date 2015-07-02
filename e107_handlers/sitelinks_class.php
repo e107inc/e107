@@ -734,7 +734,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		}
 		
 		//About menu    - No 20 -  leave space for user-categories.
-		$this->admin_cat['title'][20] = ADLAN_CL_20;
+		$this->admin_cat['title'][20] = LAN_ABOUT;
 		$this->admin_cat['id'][20] = 'aboutMenu';
 		$this->admin_cat['img'][20] = ''; // E_16_CAT_ABOUT;//E_16_NAV_DOCS
 		$this->admin_cat['lrg_img'][20] = ''; // E_32_CAT_ABOUT;

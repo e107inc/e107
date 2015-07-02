@@ -887,6 +887,7 @@ class e_parse_shortcode
 
 		$scCode = '';
 		$scFile = '';
+		$_path = '';
 		$ret = '';
 		$_method = 'sc_'.strtolower($code);
 		if (is_object($this->addedCodes) && method_exists($this->addedCodes, $_method)) //It is class-based batch shortcode.  Class already loaded; call the method

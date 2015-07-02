@@ -82,8 +82,8 @@ define("LAN_dl_66", "Select download mirror");
 define("LAN_dl_67", "Select mirror ...");
 define("LAN_dl_68", "Mirror Host");
 // define("LAN_dl_69", "Download"); // duplicate
-//define("LAN_dl_70", "Location");LAN_LOCATION 
-//define("LAN_dl_71", "About");//ADLAN_CL_20
+//define("LAN_dl_70", "Location"); // LAN_LOCATION
+//define("LAN_dl_71", "About"); //LAN_ABOUT
 
 define("LAN_dl_72", "Requesting file: ");
 define("LAN_dl_73", "Downloads from this mirror: ");
