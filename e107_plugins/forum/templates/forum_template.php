@@ -115,7 +115,11 @@ $FORUM_TEMPLATE['main-forum']			= 	"<tr>
 											<td class='hidden-xs'><small>{LASTPOSTUSER} {LASTPOSTDATE}</small></td>
 											</tr>";
 
-$FORUM_TEMPLATE['main-end']				= "</table><div class='center'><small>{USERINFOX}</small></div></div>";
+if (USERID){
+	$FORUM_TEMPLATE['main-end']				= "</table><div class='center'><small>{USERINFOX}</small></div></div>";    
+} else {
+	$FORUM_TEMPLATE['main-end']				= "</table><div class='center'><small></small></div></div>";   
+}
 
 /*
 $FORUM_TEMPLATE['main-end']				.= "
