@@ -678,7 +678,7 @@ switch ($action)
 		</colgroup>
 
 		<tr>
-		<td class='forumheader3'>".UPLLAN_3."</td>
+		<td class='forumheader3'>".LAN_ID."</td>
 		<td class='forumheader3'>{$upload_id}</td>
 		</tr>
 
@@ -763,7 +763,7 @@ switch ($action)
 		<col style='width:50px;white-space:nowrap' />
 		</colgroup>
 		<tr>
-		<td class='fcaption'>".UPLLAN_22."</td>
+		<td class='fcaption'>".LAN_ID."</td>
 		<td class='fcaption'>".LAN_DATE."</td>
 		<td class='fcaption'>".UPLLAN_5."</td>
 		<td class='fcaption'>".UPLLAN_23."</td>

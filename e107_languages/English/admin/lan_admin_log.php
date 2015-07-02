@@ -94,7 +94,7 @@ define("RL_LAN_098", "Source");
 define("RL_LAN_099", "Comments");
 define("RL_LAN_100", "CID");			// Comment ID field
 define("RL_LAN_101", "PID");
-define("RL_LAN_102", "ID");
+//define("RL_LAN_102", "ID");//LAN_ID
 define("RL_LAN_103", "Subject");
 define("RL_LAN_104", "UID");
 // define("RL_LAN_105", "Author");

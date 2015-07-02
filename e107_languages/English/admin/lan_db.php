@@ -49,7 +49,7 @@ define("DBLAN_38", "Start Verify");
 define("DBLAN_39", "Database Record Validation");
 define("DBLAN_40", "Record Validation : ");
 define("DBLAN_41", "table");
-define("DBLAN_42", "id");
+//define("DBLAN_42", "id");//LAN_ID
 define("DBLAN_43", "remark");
 // define("DBLAN_44", "options");
 define("DBLAN_45", "Id Not Found!");
