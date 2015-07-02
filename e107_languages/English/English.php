@@ -94,7 +94,6 @@ define("LAN_LOGOUT", "Logout");
 define("LAN_SETTINGS", "Settings");
 define("LAN_PASSWORD", "Password");
 define("LAN_TYPE", "Type");
-define("LAN_DESCRIPTION", "Description");
 define("LAN_SCREENSHOT", "Screenshot");
 define("LAN_FILE", "File");
 define("LAN_FILETYPES", "Filetypes");
@@ -105,7 +104,11 @@ define("LAN_VERSION", "Version");
 define("LAN_DOWNLOAD", "Download");
 define("LAN_COMMENTS", "Comments");
 define("LAN_LOCATION", "Location");
-define("LAN_NO_RECORDS_FOUND","No Records Found."); 
+define("LAN_NO_RECORDS_FOUND","No Records Found.");
+define("LAN_RATING", "Rating");
+define("LAN_IMAGE","Image");
+define("LAN_ABOUT", "About");
+define("LAN_TITLE", "Title");
 
 define("LAN_ENTER_USRNAME_EMAIL", "Please enter your username or email"); // admin php hover field admin name
 define("LAN_PWD_REQUIRED", "Password is required"); // admin php hover field admin password

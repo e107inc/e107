@@ -194,7 +194,7 @@ define("ADLAN_CL_7", "Plugins");
 
 define("ADLAN_CL_8", "Misc");
 
-define("ADLAN_CL_20", "About");
+// define("ADLAN_CL_20", "About");
 
 define("ADLAN_LAT_1", "Latest");
 
@@ -281,7 +281,7 @@ define("LAN_PENDING","Pending");
 define("LAN_SUBMITTED","Submitted");
 
 define("LAN_BAN","Ban");
-define("LAN_RATING", "Rating");
+
 
 define("LAN_UPLOAD", "Upload");
 define("LAN_UPLOADS","Uploads");
@@ -335,7 +335,7 @@ define("LAN_OWNER", "Owner");
 define("LAN_EMAIL","Email address");
 define("LAN_ID", "ID");
 
-define("LAN_TITLE", "Title");
+
 
 define("LAN_VISIBILITY", "Visibility");
 define("LAN_ICON", "Icon");
@@ -346,7 +346,7 @@ define("LAN_RUN","Run");
 define("LAN_SEFURL","SEF URL");
 define("LAN_COPY","Copy");
 define("LAN_KEYWORDS","Keywords");
-define("LAN_IMAGE","Image");
+
 define("LAN_TEMPLATE","Template");
 
 // define("LAN_NONE", "None");
