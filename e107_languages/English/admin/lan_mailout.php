@@ -60,7 +60,7 @@ define("LAN_MAILOUT_46", "User-Match");
 define("LAN_MAILOUT_47", "contains");
 define("LAN_MAILOUT_48", "equals");
 //define("LAN_MAILOUT_49", "Id");//LAN_ID
-define("LAN_MAILOUT_50", "Author");
+//define("LAN_MAILOUT_50", "Author");//LAN_AUTHOR
 define("LAN_MAILOUT_51", "Subject");
 define("LAN_MAILOUT_52", "Last mod");
 define("LAN_MAILOUT_53", "Admins");
@@ -90,7 +90,7 @@ define("LAN_MAILOUT_76", "Include email info in log");
 define("LAN_MAILOUT_77", "Email address sources");
 define("LAN_MAILOUT_78", "Mailshot Status");
 define("LAN_MAILOUT_79", "No mailshots to display");
-define("LAN_MAILOUT_80", "Date");
+//define("LAN_MAILOUT_80", "Date");//LAN_DATE
 define("LAN_MAILOUT_81", "The email has been successfully sent, please check your inbox.");
 define("LAN_MAILOUT_82", "Mails sent");
 define("LAN_MAILOUT_83", "Mails to go");
@@ -273,7 +273,7 @@ define("LAN_MAILOUT_254", "View templated email");
 define("LAN_MAILOUT_255", "Templated Email, ID: ");
 define("LAN_MAILOUT_256", "Return");
 define("LAN_MAILOUT_257", "Generated template");
-define("LAN_MAILOUT_258", "Template: ");
+//define("LAN_MAILOUT_258", "Template: ");//LAN_TEMPLATE
 define("LAN_MAILOUT_259", "");
 
 

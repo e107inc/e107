@@ -95,7 +95,7 @@ define("LAN_SEARCH_64", "All Download Categories");
 define("LAN_SEARCH_65", "Downloads");
 define("LAN_SEARCH_66", "Date added");
 define("LAN_SEARCH_67", "All downloads details");
-define("LAN_SEARCH_68", "Date");
+//define("LAN_SEARCH_68", "Date");//LAN_DATE
 define("LAN_SEARCH_69", "Relevance");
 
 define("LAN_SEARCH_70", "Posted to download item");

@@ -219,7 +219,7 @@ class pluginManager{
     			
     			"plugin_folder"			=> array("title" => EPL_ADLAN_64, "type"=>"text", "width" => "10%", "thclass" => "middle"),
 				"plugin_category"		=> array("title" => LAN_CATEGORY, "type"=>"text", "width" => "auto", "thclass" => "middle"),
-                "plugin_author"			=> array("title" => EPL_ADLAN_12, "type"=>"text", "width" => "10%", "thclass" => "middle"),
+                "plugin_author"			=> array("title" => LAN_AUTHOR, "type"=>"text", "width" => "10%", "thclass" => "middle"),
                 "plugin_license"		=> array("title" => "License", 	 'nolist'=>true,	"forced"=>true, "type"=>"text", "width" => "5%", "thclass" => "left"),	
   		//		"plugin_price"			=> array("title" => "Price", 	 'nolist'=>true,	"forced"=>true, "type"=>"text", "width" => "5%", "thclass" => "left"),	
   				"plugin_compatible"		=> array("title" => EPL_ADLAN_13, "type"=>"text", "width" => "5%", "thclass" => "middle"),
@@ -2946,7 +2946,7 @@ TEMPLATE;
 					"number"	=> EPL_ADLAN_182,
 					"dropdown"	=> EPL_ADLAN_183,
 					"userclass"	=> EPL_ADLAN_184,
-					"datestamp"	=> EPL_ADLAN_185,
+					"datestamp"	=> LAN_DATE,
 					"method"	=> EPL_ADLAN_186,
 					"hidden"	=> EPL_ADLAN_187,
 					"user"		=> EPL_ADLAN_188,

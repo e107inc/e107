@@ -20,7 +20,7 @@ define("EPL_ADLAN_8", "Preference settings successfully created.");
 define("EPL_ADLAN_9", "SQL commands failed. Check to be sure all upgrade changes are ok.");
 define("EPL_ADLAN_10", "Name");
 define("EPL_ADLAN_11", "Version");
-define("EPL_ADLAN_12", "Author");
+//define("EPL_ADLAN_12", "Author"); //LAN_AUTHOR
 define("EPL_ADLAN_13", "Compatible");
 define("EPL_ADLAN_14", "Description");
 define("EPL_ADLAN_15", "Read the README file for more information");
@@ -212,7 +212,7 @@ define ('EPL_ADLAN_181',"True/False");
 define ('EPL_ADLAN_182',"Text Box (number)");
 define ('EPL_ADLAN_183',"DropDown");
 define ('EPL_ADLAN_184',"DropDown (userclasses)");
-define ('EPL_ADLAN_185',"Date");
+//define ('EPL_ADLAN_185',"Date");//LAN_DATE
 define ('EPL_ADLAN_186',"Custom Function");
 define ('EPL_ADLAN_187',"Hidden");
 define ('EPL_ADLAN_188',"User");

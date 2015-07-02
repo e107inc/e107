@@ -18,7 +18,7 @@ define("CUSLAN_50", "List Books/Chapters");
 define("CUSLAN_51", "Add Book/Chapter");
 define("CUSLAN_52", "Book");
 define("CUSLAN_53", "Book or Chapter Title");
-define("CUSLAN_54", "Meta Keywords");
+//define("CUSLAN_54", "Meta Keywords");//LAN_KEYWORDS
 define("CUSLAN_55", "Can be edited by");
 define("CUSLAN_56", "Parent");
 define("CUSLAN_57", 'Please choose unique SEF URL string for this entry.');

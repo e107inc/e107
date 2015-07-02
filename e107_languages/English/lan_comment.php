@@ -51,7 +51,7 @@ define("COMLAN_323", "Error!");
 define("COMLAN_324", "Subject");
 define("COMLAN_325", "Re:");
 define("COMLAN_326", "Reply to this");
-define("COMLAN_327", "Rating");
+//define("COMLAN_327", "Rating");//LAN_RATING
 define("COMLAN_328", "Comments are locked");
 define("COMLAN_329", "Unauthorized");
 define("COMLAN_330", "IP:");
