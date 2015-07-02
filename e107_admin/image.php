@@ -2289,7 +2289,7 @@ class media_admin_ui extends e_admin_ui
 									<th class='center'>".LAN_FILE."</th>
 									<th>".IMALAN_115."</th>
 									<th>".IMALAN_116."</th>
-									<th>".IMALAN_117."</th>
+									<th>".LAN_AUTHOR."</th>
 									<th>".IMALAN_118."</th>
 									<th>".IMALAN_119."</th>
 									<th>".LAN_DATESTAMP."</th>

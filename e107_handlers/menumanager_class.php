@@ -1498,7 +1498,7 @@ class e_menuManager {
 		$visibilityLink = e_SELF."?enc=".base64_encode('lay='.$this->curLayout.'&vis='.$menu_id.'&iframe=1');
 		
 		$text .= '<span class="menu-options-buttons">
-		<a class="e-menumanager-option menu-btn" data-modal-caption="'.MENLAN_20.'" href="'.$visibilityLink.'" title="'.MENLAN_20.'"><i class="S16 e-search-16"></i></a>';
+		<a class="e-menumanager-option menu-btn" data-modal-caption="'.LAN_VISIBILITY.'" href="'.$visibilityLink.'" title="'.LAN_VISIBILITY.'"><i class="S16 e-search-16"></i></a>';
 
 		if($conf)
 		{

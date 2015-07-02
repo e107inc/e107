@@ -371,7 +371,7 @@ define("LAN_410", "Are you sure you want to delete this reply?");
 define("LAN_411", "posted by ");
 
 //v.616
-define("LAN_412", "Title");
+//define("LAN_412", "Title");//LAN_TITLE
 define("LAN_413", "Report");
 define("LAN_414", "Report this thread to a moderator");
 define("LAN_415", "Thread title");

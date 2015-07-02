@@ -88,7 +88,7 @@ define('LAN_USER_57', 'Order: ');								// LAN_139
 define('LAN_USER_58', 'Member');								// LAN_142
 define('LAN_USER_59', 'Joined');								// LAN_145
 define('LAN_USER_60', 'Email Address: ');						// LAN_112
-define('LAN_USER_61', 'Rating');								// LAN_406
+//define('LAN_USER_61', 'Rating');								// LAN_406 now LAN_RATING
 define('LAN_USER_62', 'Send Private Message');					// LAN_425
 define('LAN_USER_63', 'Real Name: ');							// LAN_308
 define('LAN_USER_64', 'Site Stats');							// LAN_403
@@ -156,7 +156,7 @@ define("LAN_149", "Forum posts");
 define("LAN_308", "Real Name");
 define("LAN_403", "Site Stats");
 define("LAN_404", "Last visit");
-define("LAN_406", "Rating");
+//define("LAN_406", "Rating");//LAN_RATING
 define("LAN_419", "Show");
 define("LAN_425", "Send Private Message");
 

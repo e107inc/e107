@@ -276,7 +276,7 @@ class download_main_admin_ui extends e_admin_ui
 /*		
 $columnInfo = array(
 		 "checkboxes"	   			=> array("title" => "", "forced"=> TRUE, "width" => "3%", "thclass" => "center first", "toggle" => "dl_selected"),
-         "download_id"              => array("title"=>DOWLAN_67,  "type"=>"", "width"=>"auto", "thclass"=>"", "forced"=>true),
+         "download_id"              => array("title"=>LAN_ID,  "type"=>"", "width"=>"auto", "thclass"=>"", "forced"=>true),
          "download_name"            => array("title"=>DOWLAN_12,  "type"=>"", "width"=>"auto", "thclass"=>""),
          "download_url"             => array("title"=>DOWLAN_13,  "type"=>"", "width"=>"auto", "thclass"=>""),
          "download_author"          => array("title"=>DOWLAN_15,  "type"=>"", "width"=>"auto", "thclass"=>""),
@@ -576,7 +576,7 @@ $columnInfo = array(
 					</td>
 				</tr>
 				<tr>
-					<th class='fcaption'>".DOWLAN_67."</th>
+					<th class='fcaption'>".LAN_ID."</th>
 					<th class='fcaption'>".DOWLAN_113."</th>
 					<th class='fcaption'>".DOWLAN_107."</th>
 					<th class='fcaption'>".DOWLAN_108."</th>
@@ -676,7 +676,7 @@ $columnInfo = array(
 		                     			<table class="table adminform">';
 		                     $text .= '<tr>';
 		                     $text .= '<th>'.DOWLAN_13.'</th>';
-		                     $text .= '<th>'.DOWLAN_67.'</th>';
+		                     $text .= '<th>'.LAN_ID.'</th>';
 		                     $text .= '<th>'.DOWLAN_27.'</th>';
 		                     $text .= '<th>'.DOWLAN_11.'</th>';
 		                     $text .= '<th>'.LAN_OPTIONS.'</th>';
@@ -778,7 +778,7 @@ $columnInfo = array(
 		                        $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
 		                        		<table class="adminlist">';
 		                        $text .= '<tr>';
-		                        $text .= '<th>'.DOWLAN_67.'</th>';
+		                        $text .= '<th>'.LAN_ID.'</th>';
 		                        $text .= '<th>'.DOWLAN_27.'</th>';
 		                        $text .= '<th>'.DOWLAN_11.'</th>';
 		                        $text .= '<th>'.DOWLAN_13.'</th>';
@@ -824,7 +824,7 @@ $columnInfo = array(
 		                     $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
 		                     		<table class="table adminform">';
 		                     $text .= '<tr>';
-		                     $text .= '<th>'.DOWLAN_67.'</th>';
+		                     $text .= '<th>'.LAN_ID.'</th>';
 		                     $text .= '<th>'.DOWLAN_27.'</th>';
 		                     $text .= '<th>'.DOWLAN_11.'</th>';
 		                     $text .= '<th>'.DOWLAN_13.'</th>';
@@ -879,7 +879,7 @@ $columnInfo = array(
 		                     <form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
 		                     <table class="table adminlist">';
 		                     $text .= '<tr>';
-		                     $text .= '<th>'.DOWLAN_67.'</th>';
+		                     $text .= '<th>'.LAN_ID.'</th>';
 		                     $text .= '<th>'.DOWLAN_27.'</th>';
 		                     $text .= '<th>'.DOWLAN_13.'</th>';
 		                     $text .= '<th>'.LAN_OPTIONS.'</th>';
@@ -933,7 +933,7 @@ $columnInfo = array(
 		                           $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
 		                           		<table class="table adminlist">';
 		                           $text .= '<tr>';
-		                           $text .= '<th>'.DOWLAN_67.'</th>';
+		                           $text .= '<th>'.LAN_ID.'</th>';
 		                           $text .= '<th>'.DOWLAN_27.'</th>';
 		                           $text .= '<th>'.DOWLAN_11.'</th>';
 		                           $text .= '<th>'.DOWLAN_13.'</th>';
@@ -2096,7 +2096,7 @@ $columnInfo = array(
 		               		      <td>
 		                  		      <select name='mirror_order' class='tbox'>".
 		                  		         ($pref['mirror_order'] == "0" ? "<option value='0' selected='selected'>".DOWLAN_161."</option>" : "<option value='0'>".DOWLAN_161."</option>").
-		                                 ($pref['mirror_order'] == "1" ? "<option value='1' selected='selected'>".DOWLAN_67."</option>" : "<option value='1'>".DOWLAN_67."</option>").
+		                                 ($pref['mirror_order'] == "1" ? "<option value='1' selected='selected'>".LAN_ID."</option>" : "<option value='1'>".LAN_ID."</option>").
 		                                 ($pref['mirror_order'] == "2" ? "<option value='2' selected='selected'>".DOWLAN_163."</option>" : "<option value='2'>".DOWLAN_12."</option>")."
 		            		            </select>
 		               		      </td>

@@ -16,7 +16,7 @@ define("MDCLAN_6", "block");
 define("MDCLAN_8", "Moderate Comments");
 define("MDCLAN_9", "Warning! Deleting Parent comments will also delete all replies!");
 
-define("MDCLAN_10", "options");
+//define("MDCLAN_10", "options");//LAN_OPTIONS
 define("MDCLAN_11", "comment");
 define("MDCLAN_12", "comments");
 define("MDCLAN_13", "blocked");

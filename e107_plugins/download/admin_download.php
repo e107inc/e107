@@ -329,7 +329,7 @@ if ($action == "uopt")
 
       $columnInfo = array(
          "checkboxes"         => array("title" => "", "forced"=> TRUE, "width" => "3%", "thclass" => "center first", "toggle" => "dl_selected"),
-         "upload_id"          => array("title"=>DOWLAN_67,  "type"=>"", "width"=>"auto", "thclass"=>"", "forced"=>true),
+         "upload_id"          => array("title"=>LAN_ID,  "type"=>"", "width"=>"auto", "thclass"=>"", "forced"=>true),
          "upload_date"        => array("title"=>DOWLAN_78,  "type"=>"", "width"=>"auto", "thclass"=>""),
          "upload_uploader"    => array("title"=>DOWLAN_79,  "type"=>"", "width"=>"auto", "thclass"=>""),
          "upload_name"        => array("title"=>DOWLAN_12,  "type"=>"", "width"=>"auto", "thclass"=>""),

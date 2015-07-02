@@ -72,7 +72,7 @@ define("USRLAN_58", "file uploads are disabled in php.ini");
 define("USRLAN_59", "Quick add user"); // FIXME duplicate?
 define("USRLAN_60", "Add user");
 define("USRLAN_61", "Display name");
-define("USRLAN_62", "Password");
+//define("USRLAN_62", "Password");//LAN_PASSWORD
 define("USRLAN_63", "Re-type Password");
 define("USRLAN_64", "Email Address");
 define("USRLAN_65", "That display name cannot be accepted as valid, please choose a different display name");

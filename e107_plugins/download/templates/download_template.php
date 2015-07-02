@@ -37,9 +37,9 @@ if(!isset($DOWNLOAD_CAT_TABLE_START))
 		      </colgroup>
 		      <thead>
                <tr>
-                  <th class='fcaption' colspan='2'>".LAN_dl_19."</th>
+                  <th class='fcaption' colspan='2'>".LAN_CATEGORY."</th>
                   <th class='fcaption'>".LAN_dl_20."</th>
-                  <th class='fcaption'>".LAN_dl_21."</th>
+                  <th class='fcaption'>".LAN_SIZE."</th>
                   <th class='fcaption'>".LAN_dl_77."</th>
                </tr>
             </thead>
@@ -306,10 +306,10 @@ if(!isset($DOWNLOAD_MIRROR_START))
 	      </tr>
 	      <tr>
 	         <th class='forumheader' colspan='2'>".LAN_dl_68."</th>
-	         <th class='forumheader'>".LAN_dl_71."</th>
-	         <th class='forumheader'>".LAN_dl_70."</th>
-	         <th class='forumheader'>".LAN_dl_21."</th>
-	         <th class='forumheader'>".LAN_dl_32."</th>
+	         <th class='forumheader'>".ADLAN_CL_20."</th>
+	         <th class='forumheader'>".LAN_LOCATION."</th>
+	         <th class='forumheader'>".LAN_SIZE"</th>
+	         <th class='forumheader'>".LAN_DOWNLOAD."</th>
 	      </tr>
 	";
 }
@@ -360,9 +360,9 @@ $DOWNLOAD_TEMPLATE['categories']['start'] = "
 		      </colgroup>
 		      <thead>
                <tr>
-                  <th colspan='2'>".LAN_dl_19."</th>
+                  <th colspan='2'>".LAN_CATEGORY."</th>
                   <th>".LAN_dl_20."</th>
-                  <th>".LAN_dl_21."</th>
+                  <th>".LAN_SIZE."</th>
                   <th>".LAN_dl_77."</th>
                </tr>
             </thead>
@@ -616,10 +616,10 @@ $DOWNLOAD_TEMPLATE['mirror']['start'] = "
 	      </tr>
 	      <tr>
 	         <th colspan='2'>".LAN_dl_68."</th>
-	         <th>".LAN_dl_71."</th>
-	         <th>".LAN_dl_70."</th>
-	         <th>".LAN_dl_21."</th>
-	         <th>".LAN_dl_32."</th>
+	         <th>".ADLAN_CL_20."</th>
+	         <th>".LAN_LOCATION."</th>
+	         <th>".LAN_SIZE."</th>
+	         <th>".LAN_DOWNLOAD."</th>
 	      </tr>
 	";			
 			

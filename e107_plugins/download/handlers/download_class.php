@@ -208,7 +208,7 @@ class download
 
 		if ($dlcat->down_count == 0)
 	   	{
-			return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, "<div style='text-align:center'>".LAN_dl_2."</div>",'download-categories',true);
+			return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, "<div style='text-align:center'>".LAN_NO_RECORDS_FOUND."</div>",'download-categories',true);
 		}
 				
 		$download_cat_table_string = "";
@@ -321,7 +321,7 @@ class download
 		if(!$sql->gen($query))
 		{
 			//require_once(HEADERF);
-			return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, "<div style='text-align:center'>".LAN_dl_3."</div>", 'download-view', true);
+			return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, "<div style='text-align:center'>".LAN_NO_RECORDS_FOUND."."</div>", 'download-view', true);
 			//require_once(FOOTERF);
 			//exit;
 		}
@@ -684,7 +684,7 @@ class download
 		{
 			$report_add = $tp->toDB($_POST['report_add']);
 			$download_name = $tp->toDB($download_name);
-			$user = USER ? USERNAME : LAN_dl_52;
+			$user = USER ? USERNAME : LAN_GUEST;
 	
 			if ($pref['download_email']) 
 			{    // this needs to be moved into the NOTIFY, with an event.
@@ -720,7 +720,7 @@ class download
 	
 			$text .= "<form action='".e_SELF."?report.{$download_id}' method='post'>
 			   <div>
-			   	      ".LAN_dl_32.": <a href='".e_PLUGIN."download/download?action=view&id={$download_id}'>".$download_name."</a>
+			   	      ".LAN_DOWNLOAD.": <a href='".e_PLUGIN."download/download?action=view&id={$download_id}'>".$download_name."</a>
 			   </div>
 			   <div>".LAN_dl_54."<br />".LAN_dl_55."</div>
 			   <div> ".$frm->textarea('report_add')."</div>
@@ -888,10 +888,10 @@ class download
 			break;
 			
 			default: // Generic error - shouldn't happen
-	   	     $errmsg = LAN_dl_61." ".$this->qry['error'];		
+	   	     $errmsg = LAN_ERROR." ".$this->qry['error'];		
 		}
 		
-		return $ns->tablerender(LAN_dl_61, $header. "<div class='alert alert-error alert-danger alert-block' style='text-align:center'>".$errmsg."</div>". $footer, 'download-error', true);
+		return $ns->tablerender(LAN_ERROR, $header. "<div class='alert alert-error alert-danger alert-block' style='text-align:center'>".$errmsg."</div>". $footer, 'download-error', true);
 		
 	}
    
