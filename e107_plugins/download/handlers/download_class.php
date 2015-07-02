@@ -321,7 +321,7 @@ class download
 		if(!$sql->gen($query))
 		{
 			//require_once(HEADERF);
-			return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, "<div style='text-align:center'>".LAN_NO_RECORDS_FOUND."."</div>", 'download-view', true);
+			return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, "<div style='text-align:center'>".LAN_NO_RECORDS_FOUND."</div>", 'download-view', true);
 			//require_once(FOOTERF);
 			//exit;
 		}
@@ -330,9 +330,12 @@ class download
 		$dlrow = $sql->fetch();
 		$sc->setVars($dlrow);
 	
-		$comment_edit_query = 'comment.download.'.$id;
+	//	$comment_edit_query = 'comment.download.'.$id;
 		
-		if(!defined("DL_IMAGESTYLE")){ define("DL_IMAGESTYLE","border:0px");}
+		if(!defined("DL_IMAGESTYLE"))
+		{
+			define("DL_IMAGESTYLE","border:0px");
+		}
 		
 	    if(!isset($DL_VIEW_PAGETITLE))
 		{
@@ -380,7 +383,7 @@ class download
 	
 		if ($dlrow['download_comment']) 
 		{			
-			$comments = e107::getComment()->compose_comment("download", "comment", $dlrow['download_id'], $width, $dlrow['download_name'], FALSE, true);
+			$comments = e107::getComment()->compose_comment("download", "comment", $dlrow['download_id'], null, $dlrow['download_name'], FALSE, true);
 			$ret .= $ns->tablerender($comments['caption'], $comments['comment'].$comments['comment_form'], 'download-comments', true);
 		}	
 		
@@ -475,8 +478,8 @@ class download
 		
 		if ($dlrow['download_category_parent'] == 0)  // It's a main category - change the listing type required
 	      { 
-	         $action = 'maincats';
-	   	  	 $maincatval = $id;
+	      //   $action = 'maincats';
+	  // 	  	 $maincatval = $id;
 		}
 		
 		$dl_text = $tp->parseTemplate($this->templateHeader, TRUE, $sc);
@@ -529,7 +532,7 @@ class download
 				
 				$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_END, TRUE, $sc);
 				
-		 	$text = $ns->tablerender($dl_title, $dl_text, 'download-list', true);
+		 	    $text = $ns->tablerender($dl_title, $dl_text, 'download-list', true);
 			}
 			
 		}// End of subcategory display
@@ -584,7 +587,7 @@ class download
 				$sc->setVars($dlrow);	
 				
 				$agreetext = $tp->toHTML($pref['agree_text'], TRUE, 'DESCRIPTION');
-				$current_row = ($current_row)? 0: 1;
+				$current_row = ($current_row) ? 0: 1;
 				// Alternating CSS for each row.(backwards compatible)
 				$template = ($current_row == 1)? $DOWNLOAD_LIST_TABLE: str_replace("forumheader3", "forumheader3 forumheader3_alt", $DOWNLOAD_LIST_TABLE);
 				

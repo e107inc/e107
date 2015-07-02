@@ -15,6 +15,7 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
+if (!defined('USER_WIDTH')) { define('USER_WIDTH', 'display:block'); } // v1.x compat.
 
 
 // ##### CAT TABLE --------------------------------------------------------------------------------
@@ -38,7 +39,7 @@ if(!isset($DOWNLOAD_CAT_TABLE_START))
 		      <thead>
                <tr>
                   <th class='fcaption' colspan='2'>".LAN_CATEGORY."</th>
-                  <th class='fcaption'>".LAN_dl_20."</th>
+                  <th class='fcaption'>".LAN_FILES."</th>
                   <th class='fcaption'>".LAN_SIZE."</th>
                   <th class='fcaption'>".LAN_dl_77."</th>
                </tr>
@@ -306,9 +307,9 @@ if(!isset($DOWNLOAD_MIRROR_START))
 	      </tr>
 	      <tr>
 	         <th class='forumheader' colspan='2'>".LAN_dl_68."</th>
-	         <th class='forumheader'>".ADLAN_CL_20."</th>
+	         <th class='forumheader'>".LAN_ABOUT."</th>
 	         <th class='forumheader'>".LAN_LOCATION."</th>
-	         <th class='forumheader'>".LAN_SIZE"</th>
+	         <th class='forumheader'>".LAN_SIZE."</th>
 	         <th class='forumheader'>".LAN_DOWNLOAD."</th>
 	      </tr>
 	";
@@ -361,7 +362,7 @@ $DOWNLOAD_TEMPLATE['categories']['start'] = "
 		      <thead>
                <tr>
                   <th colspan='2'>".LAN_CATEGORY."</th>
-                  <th>".LAN_dl_20."</th>
+                  <th>".LAN_FILES."</th>
                   <th>".LAN_SIZE."</th>
                   <th>".LAN_dl_77."</th>
                </tr>
@@ -616,7 +617,7 @@ $DOWNLOAD_TEMPLATE['mirror']['start'] = "
 	      </tr>
 	      <tr>
 	         <th colspan='2'>".LAN_dl_68."</th>
-	         <th>".ADLAN_CL_20."</th>
+	         <th>".LAN_ABOUT."</th>
 	         <th>".LAN_LOCATION."</th>
 	         <th>".LAN_SIZE."</th>
 	         <th>".LAN_DOWNLOAD."</th>
