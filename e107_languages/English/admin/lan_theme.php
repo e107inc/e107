@@ -8,11 +8,11 @@
 define("TPVLAN_1", "You are looking at a preview of the <b>'".PREVIEWTHEMENAME."'</b> theme. It has not been set as the main theme for your site, it has been activated to provide a preview of how the theme looks.<br />To set this theme as your site theme, <a href='".e_ADMIN."theme.php?choose'>return to your theme manager</a> and select 'Set As Site Theme'.<br />To preview more themes please <a href='".e_ADMIN."theme.php'>click here</a>");
 define("TPVLAN_2", "Theme Preview");
 define("TPVLAN_3", "Site theme changed.");
-define("TPVLAN_4", "Author");
+//define("TPVLAN_4", "Author");//LAN_AUTHOR
 define("TPVLAN_5", "Website");
 define("TPVLAN_6", "Release date");
 define("TPVLAN_7", "Information");
-define("TPVLAN_8", "Options");
+//define("TPVLAN_8", "Options");
 define("TPVLAN_9", "Preview Theme");
 define("TPVLAN_10", "Set as Site Theme");
 define("TPVLAN_11", "Version");

@@ -16,7 +16,7 @@ define("UE_LAN_3", "Drop-Down Menu");
 define("UE_LAN_4", "DB Table Field");
 define("UE_LAN_5", "Textarea");
 define("UE_LAN_6", "Integer");
-define("UE_LAN_7", "Date");
+//define("UE_LAN_7", "Date");//LAN_DATE
 define("UE_LAN_8", "Language");
 define('UE_LAN_9', 'Predefined list');
 define('UE_LAN_10', 'Checkboxes');

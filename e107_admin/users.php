@@ -1427,7 +1427,7 @@ class users_admin_ui extends e_admin_ui
 				
 			//if (isset($_POST['generatepassword']))
 			{
-				$mes->addSuccess(USRLAN_62.': <strong>'.htmlspecialchars($savePassword, ENT_QUOTES, CHARSET).'</strong>');	
+				$mes->addSuccess(LAN_PASSWORD.': <strong>'.htmlspecialchars($savePassword, ENT_QUOTES, CHARSET).'</strong>');	
 			}
 			return;
 		}
@@ -1482,7 +1482,7 @@ class users_admin_ui extends e_admin_ui
 		</tr>
 
 		<tr>
-			<td>".USRLAN_62."</td>
+			<td>".LAN_PASSWORD."</td>
 			<td>".$frm->password('password', '', 20, array('size' => 40, 'class' => 'tbox e-password', 'generate' => 1, 'strength' => 1))."
 			</td>
 		</tr>";

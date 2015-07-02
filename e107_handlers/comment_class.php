@@ -120,7 +120,7 @@ class comment
 			$sc_style['AUTHOR_INPUT']['pre']		= "<tr><td style='width:20%; vertical-align:top;'>".COMLAN_16."</td><td style='width:80%'>";
 			$sc_style['AUTHOR_INPUT']['post']		= "</td></tr>";
 			
-			$sc_style['RATE_INPUT']['pre']			= "<tr><td style='width:20%; vertical-align:top;'>".COMLAN_327.":</td><td style='width:80%;'>";
+			$sc_style['RATE_INPUT']['pre']			= "<tr><td style='width:20%; vertical-align:top;'>".LAN_RATING.":</td><td style='width:80%;'>";
 			$sc_style['RATE_INPUT']['post']			= "</td></tr>";
 			
 			$sc_style['COMMENT_INPUT']['pre']		= "<tr><td style='width:20%; vertical-align:top;'>".COMLAN_8.":</td><td id='commentform' style='width:80%;'>";
