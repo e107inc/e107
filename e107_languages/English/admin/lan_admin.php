@@ -284,6 +284,7 @@ define("LAN_BAN","Ban");
 define("LAN_RATING", "Rating");
 
 define("LAN_UPLOAD", "Upload");
+define("LAN_UPLOADS","Uploads");
 define("LAN_UPLOAD_IMAGES","Upload Images");
 define("LAN_UPLOAD_FILES","Upload Files");
 define("LAN_UPLOAD_ADDFILE","Add Another File");

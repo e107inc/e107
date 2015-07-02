@@ -207,22 +207,22 @@ class download_shortcodes extends e_shortcode
 		{
 			case 'name':
 				$qry['order'] = 'name';
-				$text = LAN_dl_28;
+				$text = LAN_NAME;
 			break;
 
 			case 'datestamp':
 				$qry['order'] = 'datestamp';
-				$text = LAN_dl_22;
+				$text = LAN_DATE;
 			break;
 			
 			case 'author':
 				$qry['order'] = 'author';
-				$text = LAN_dl_24;
+				$text = LAN_AUTHOR;
 			break;
 				
 			case 'filesize':
 				$qry['order'] = 'filesize';
-				$text = LAN_dl_21;
+				$text = LAN_SIZE;
 			break;
 
 			case 'requested':
@@ -231,7 +231,7 @@ class download_shortcodes extends e_shortcode
 			break;
 
 			case 'rating':
-				$text = LAN_dl_12;
+				$text = LAN_RATING;
 			break;
 				
 			case 'link':
@@ -265,11 +265,11 @@ class download_shortcodes extends e_shortcode
 		
       	if ($this->var['download_mirror_type'])
       	{
-      		$text = ($pref['agree_flag'] ? "<a href='".e_PLUGIN_ABS."download/download.php?mirror.".$this->var['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_PLUGIN_ABS."download/download.php?mirror.".$this->var['download_id']."' title='".LAN_dl_32."'>");
+      		$text = ($pref['agree_flag'] ? "<a href='".e_PLUGIN_ABS."download/download.php?mirror.".$this->var['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_PLUGIN_ABS."download/download.php?mirror.".$this->var['download_id']."' title='".LAN_DOWNLOAD."'>");
       	}
       	else
       	{
-      		$text = ($pref['agree_flag'] ? "<a href='".e_PLUGIN_ABS."download/request.php?".$this->var['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_PLUGIN_ABS."download/request.php?".$this->var['download_id']."' title='".LAN_dl_32."'>");
+      		$text = ($pref['agree_flag'] ? "<a href='".e_PLUGIN_ABS."download/request.php?".$this->var['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_PLUGIN_ABS."download/request.php?".$this->var['download_id']."' title='".LAN_DOWNLOAD."'>");
       	}
 		
       	$text .= $tp->toHTML($this->var['download_name'], FALSE, 'TITLE')."</a>";
@@ -352,7 +352,7 @@ class download_shortcodes extends e_shortcode
 
       	$agreetext = $tp->toJS($tp->toHTML($pref['agree_text'],FALSE,'DESCRIPTION'));
 
-		$img = "<img src='".IMAGE_DOWNLOAD."' alt='".LAN_dl_32."' title='".LAN_dl_32."' />";
+		$img = "<img src='".IMAGE_DOWNLOAD."' alt='".LAN_DOWNLOAD."' title='".LAN_DOWNLOAD."' />";
       
 		if(deftrue('BOOTSTRAP'))
 		{
@@ -362,14 +362,14 @@ class download_shortcodes extends e_shortcode
 	  	
      	if ($this->var['download_mirror_type'])
      	{
-     		return "<a class='e-tip' title='".LAN_dl_32."' href='".e_PLUGIN_ABS."download/download.php?mirror.".$this->var['download_id']."'>{$img}</a>";
+     		return "<a class='e-tip' title='".LAN_DOWNLOAD."' href='".e_PLUGIN_ABS."download/download.php?mirror.".$this->var['download_id']."'>{$img}</a>";
      	}
      	else
      	{
      		$url = e107::getUrl()->create('download/request/item',array('id'=>$this->var['download_id'], 'name'=>$this->var['download_sef']));	
-     	  	return ($pref['agree_flag'] ? "<a class='e-tip' title='".LAN_dl_32."' href='".$url."' onclick= \"return confirm('{$agreetext}');\">{$img}</a>" : "<a class='e-tip' title='".LAN_dl_32."' href='".$url."' >{$img}</a>");
+     	  	return ($pref['agree_flag'] ? "<a class='e-tip' title='".LAN_DOWNLOAD."' href='".$url."' onclick= \"return confirm('{$agreetext}');\">{$img}</a>" : "<a class='e-tip' title='".LAN_DOWNLOAD."' href='".$url."' >{$img}</a>");
    
-		//	return ($pref['agree_flag'] ? "<a class='e-tip' title='".LAN_dl_32."' href='".e_PLUGIN_ABS."download/request.php?".$this->var['download_id']."' onclick= \"return confirm('{$agreetext}');\">{$img}</a>" : "<a class='e-tip' title='".LAN_dl_32."' href='".e_PLUGIN_ABS."download/request.php?".$this->var['download_id']."' >{$img}</a>");
+		//	return ($pref['agree_flag'] ? "<a class='e-tip' title='".LAN_DOWNLOAD."' href='".e_PLUGIN_ABS."download/request.php?".$this->var['download_id']."' onclick= \"return confirm('{$agreetext}');\">{$img}</a>" : "<a class='e-tip' title='".LAN_DOWNLOAD."' href='".e_PLUGIN_ABS."download/request.php?".$this->var['download_id']."' >{$img}</a>");
      	}
    }
    
@@ -423,7 +423,7 @@ class download_shortcodes extends e_shortcode
    function sc_download_list_total_files() 
    {
       global $dlft;
-      return intval($dlft)." ".LAN_dl_17;
+      return intval($dlft)." ".strtolower(LAN_FILES);
    }
    
    
@@ -594,7 +594,7 @@ class download_shortcodes extends e_shortcode
 
 		$click = "";
 		
-		$img = "<img src='".IMAGE_DOWNLOAD."' alt='".LAN_dl_32."' title='".LAN_dl_32."' />";
+		$img = "<img src='".IMAGE_DOWNLOAD."' alt='".LAN_DOWNLOAD."' title='".LAN_DOWNLOAD."' />";
       
 		if(deftrue('BOOTSTRAP'))
 		{
@@ -674,7 +674,7 @@ class download_shortcodes extends e_shortcode
       	else if (!USER) {
       		$text .= "&nbsp;";
       	} else {
-      		$text .= LAN_dl_15;
+      		$text .= LAN_THANK_YOU;
       	}
       	$text .= "</td></tr></table>";
       return $text;
@@ -740,14 +740,14 @@ class download_shortcodes extends e_shortcode
 	   
  		$click = " onclick='return confirm(\"".$tp->toJS($tp->toHTML($pref['agree_text'],FALSE,'DESCRIPTION'))."\")'";
 		
-		$img = "<img src='".IMAGE_DOWNLOAD."' alt='".LAN_dl_32."' title='".LAN_dl_32."' />";
+		$img = "<img src='".IMAGE_DOWNLOAD."' alt='".LAN_DOWNLOAD."' title='".LAN_DOWNLOAD."' />";
       
 		if(deftrue('BOOTSTRAP'))
 		{
 			$img = '<i class="icon-download"></i>'; 
 		}	
 		
-		return "<a href='".e_PLUGIN_ABS."download/download.php?mirror.{$this->var['download_id']}.{$this->mirror['dlmirrorfile'][0]}' title='".LAN_dl_32."'{$click}>".$img."</a>";
+		return "<a href='".e_PLUGIN_ABS."download/download.php?mirror.{$this->var['download_id']}.{$this->mirror['dlmirrorfile'][0]}' title='".LAN_DOWNLOAD."'{$click}>".$img."</a>";
 	}
 	
 	function sc_download_mirror_requests() 
@@ -766,7 +766,7 @@ class download_shortcodes extends e_shortcode
    function sc_download_view_author_lan()
    {
 
-      return ($this->var['download_author']) ? LAN_dl_24 : "";
+      return ($this->var['download_author']) ? LAN_AUTHOR : "";
    }
    
    function sc_download_view_authoremail_lan()
@@ -784,12 +784,12 @@ class download_shortcodes extends e_shortcode
    function sc_download_view_date_lan()
    {
 
-      return ($this->var['download_datestamp']) ? LAN_dl_22 : "";
+      return ($this->var['download_datestamp']) ? LAN_DATE: "";
    }
    
    function sc_download_view_image_lan()
    {
-      return LAN_dl_11;
+      return LAN_IMAGE;
    }
    
    function sc_download_view_requested()
@@ -800,17 +800,17 @@ class download_shortcodes extends e_shortcode
    
    function sc_download_view_rating_lan()
    {
-      return LAN_dl_12;
+      return LAN_RATING;
    }
    
    function sc_download_view_filesize_lan()
    {
-      return LAN_dl_10;
+      return LAN_SIZE;
    }
    
    function sc_download_view_description_lan()
    {
-      return LAN_dl_7;
+      return LAN_DESCRIPTION;
    }
    
    function sc_download_view_requested_lan()
@@ -820,7 +820,7 @@ class download_shortcodes extends e_shortcode
    
    function sc_download_view_link_lan()
    {
-      return LAN_dl_32;
+      return LAN_DOWNLOAD;
    }
    
    
@@ -911,7 +911,7 @@ class download_shortcodes extends e_shortcode
    {
    		$text = "<form class='form-search form-inline' method='get' action='".e_BASE."search.php'>";
    		$text .= '<div><div class="input-group">';
-		$text .= "<input class='tbox form-control search-query' type='text' name='q' size='30' value='' placeholder=\"".LAN_dl_41."\" maxlength='50' />
+		$text .= "<input class='tbox form-control search-query' type='text' name='q' size='30' value='' placeholder=\"".LAN_SEARCH."\" maxlength='50' />
 		 			<input type='hidden' name='r' value='0' />
 		 			<input type='hidden' name='t' value='download' />
 		 			";
@@ -929,7 +929,7 @@ class download_shortcodes extends e_shortcode
 	
       return "<form class='form-search form-inline' method='get' action='".e_BASE."search.php'>
       		  <div class='input-group'>
-      		  <input class='tbox form-control search-query' type='text' name='q' size='30' value='' placeholder=\"".LAN_dl_41."\" maxlength='50' />
+      		  <input class='tbox form-control search-query' type='text' name='q' size='30' value='' placeholder=\"".LAN_SEARCH."\" maxlength='50' />
       		  <button class='btn btn-primary button' type='submit' name='s'  value='1' />".LAN_GO."</button>
       		  <input type='hidden' name='r' value='0' />
       		  </div>

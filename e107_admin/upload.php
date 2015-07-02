@@ -79,12 +79,12 @@ class upload_ui extends e_admin_ui
             'upload_poster'         =>   array ( 'title' => UPLLAN_5, 'type' => 'user', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
             'upload_email'          =>   array ( 'title' => LAN_EMAIL, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
             'upload_website'        =>   array ( 'title' => LAN_URL, 'type' => 'url', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-            'upload_version'        =>   array ( 'title' => UPLLAN_9, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+            'upload_version'        =>   array ( 'title' => LAN_VERSION, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
             'upload_file'           =>   array ( 'title' => LAN_FILE, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center', 'validate' => true ),
             'upload_ss'             =>   array ( 'title' => 'Ss', 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
             'upload_description'    =>   array ( 'title' => LAN_DESCRIPTION, 'type' => 'textarea', 'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
             'upload_demo'           =>   array ( 'title' => UPLLAN_14, 'type' => 'url', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-            'upload_filesize'       =>   array ( 'title' => UPLLAN_11, 'type' => 'hidden', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+            'upload_filesize'       =>   array ( 'title' => LAN_SIZE, 'type' => 'hidden', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
             'upload_active'         =>   array ( 'title' => LAN_STATUS, 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => array('singleOption' => true), 'class' => 'center', 'thclass' => 'center',  'batch' => true),
             'upload_category'       =>   array ( 'title' => LAN_CATEGORY, 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'left', 'thclass' => 'left', 'validate' => true ),
             'options'               =>   array ( 'title' => LAN_OPTIONS, 'type' => '', 'data' => '', 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
@@ -240,7 +240,7 @@ class upload_ui extends e_admin_ui
         $uploadPath = e_UPLOAD;
         if(!file_exists($uploadPath.$upload['upload_file']))
         {
-            $this->getModel()->addValidationError(UPLLAN_65);
+            $this->getModel()->addValidationError(LAN_FILE_NOT_FOUND);
             return false;
         }
         $downloadPath = $media->importFile($upload['upload_file'], 'download_file', $uploadPath.$upload['upload_file'], array('media_caption' => $upload['upload_name']));
@@ -256,7 +256,7 @@ class upload_ui extends e_admin_ui
             $imagePath = $media->importFile($upload['upload_ss'], '_common_image', $uploadPath.$upload['upload_ss'], array('media_caption' => $upload['upload_name'].' '.LAN_PREVIEW));
         }
 
-        $author = $upload['upload_poster'] ? e107::getSystemUser($upload['upload_poster'])->getRealName() : UPLLAN_67;
+        $author = $upload['upload_poster'] ? e107::getSystemUser($upload['upload_poster'])->getRealName() : LAN_ANONYMOUS;
 
         $dl = array(
             'download_name' => $upload['upload_name'],
@@ -467,7 +467,7 @@ if (isset($_POST['optionsubmit']))
 	$temp['upload_enabled'] = (FILE_UPLOADS ? $_POST['upload_enabled'] : 0);
 	if ($temp['upload_enabled'] && !$sql->db_Select("links", "*", "link_url='upload.php' ")) 
 	{
-	  $sql->db_Insert("links", "0, '".UPLLAN_44."', 'upload.php', '', '', 1,0,0,0,0");
+	  $sql->db_Insert("links", "0, '".LAN_UPLOAD."', 'upload.php', '', '', 1,0,0,0,0");
 	}
 
 	if (!$temp['upload_enabled'] && $sql->db_Select("links", "*", "link_url='upload.php' ")) 
@@ -503,7 +503,7 @@ switch ($action)
   case 'filetypes' :
 	if(!getperms('0')) exit;
 
-	$definition_source = UPLLAN_58;
+	$definition_source = LAN_DEFAULT;
 	$source_file = '';
 	$edit_upload_list = varset($_POST['upload_do_edit'],FALSE);
 
@@ -530,7 +530,7 @@ switch ($action)
 		$text = '';
 		$text .= '<br />'.UPLLAN_59.e_UPLOAD_TEMP_DIR.e_SAVE_FILETYPES.'. '.UPLLAN_60.e_ADMIN.e_READ_FILETYPES.'<br />';
 	  }
-	  $ns->tablerender(UPLLAN_49, $text);
+	  $ns->tablerender(LAN_FILETYPES, $text);
 	}
 
 
@@ -584,10 +584,10 @@ switch ($action)
 		<td class='forumheader3' colspan='4'>".UPLLAN_57.$source_file."</td>
 	  </tr>
 	  <tr>
-		<td class='fcaption'>".UPLLAN_53."</td>
+		<td class='fcaption'>".LAN_USERCLASS."</td>
 		<td class='fcaption'>".UPLLAN_54."</td>
 		<td class='fcaption' style='text-align:center'>".UPLLAN_55."</td>
-		<td class='fcaption' style='text-align:center'>".UPLAN_DELETE."</td>
+		<td class='fcaption' style='text-align:center'>".LAN_DELETE."</td>
 	  </tr>";
 	foreach ($current_perms as $uclass => $uinfo)
 	{
@@ -620,7 +620,7 @@ switch ($action)
 	</table></form>
 	</div>";
 
-	$ns->tablerender(UPLLAN_49, $text);
+	$ns->tablerender(LAN_FILETYPES, $text);
     break;
 
   case 'options' :
@@ -651,7 +651,7 @@ switch ($action)
 	</tr>
 
 	<tr>
-	<td colspan='2' class='forumheader' style='text-align:center'>". $rs->form_button("submit", "optionsubmit", UPLLAN_39)."
+	<td colspan='2' class='forumheader' style='text-align:center'>". $rs->form_button("submit", "optionsubmit", LAN_SUBMIT)."
 	</td>
 	</tr>
 	</table>". $rs->form_close()."
@@ -703,32 +703,32 @@ switch ($action)
 		</tr>
 
 		<tr>
-		<td class='forumheader3'>".UPLLAN_8."</td>
+		<td class='forumheader3'>".LAN_FILE_NAME."</td>
 		<td class='forumheader3'>".($upload_name ? $upload_name: " - ")."</td>
 		</tr>
 
 		<tr>
-		<td class='forumheader3'>".UPLLAN_9."</td>
+		<td class='forumheader3'>".LAN_VERSION."</td>
 		<td class='forumheader3'>".($upload_version ? $upload_version : " - ")."</td>
 		</tr>
 
 		<tr>
-		<td class='forumheader3'>".UPLLAN_10."</td>
+		<td class='forumheader3'>".LAN_FILE."</td>
 		<td class='forumheader3'>".(is_numeric($upload_file) ? "Binary file ID ".$upload_file : "<a href='".e_SELF."?dl.{$upload_file}'>$upload_file</a>")."</td>
 		</tr>
 
 		<tr>
-		<td class='forumheader3'>".UPLLAN_11."</td>
+		<td class='forumheader3'>".LAN_SIZE."</td>
 		<td class='forumheader3'>".$e107->parseMemorySize($upload_filesize)."</td>
 		</tr>
 
 		<tr>
-		<td class='forumheader3'>".UPLLAN_12."</td>
+		<td class='forumheader3'>".LAN_SCREENSHOT."</td>
 		<td class='forumheader3'>".($upload_ss ? "<a href='".e_BASE."request.php?upload.".$upload_id."'>".$upload_ss."</a>" : " - ")."</td>
 		</tr>
 
 		<tr>
-		<td class='forumheader3'>".UPLLAN_13."</td>
+		<td class='forumheader3'>".LAN_DESCRIPTION."</td>
 		<td class='forumheader3'>{$upload_description}</td>
 		</tr>
 
@@ -766,10 +766,10 @@ switch ($action)
 		<td class='fcaption'>".LAN_ID."</td>
 		<td class='fcaption'>".LAN_DATE."</td>
 		<td class='fcaption'>".UPLLAN_5."</td>
-		<td class='fcaption'>".UPLLAN_23."</td>
-		<td class='fcaption'>".UPLLAN_8."</td>
-		<td class='fcaption'>".UPLLAN_35."</td>
-		<td class='fcaption'>".UPLLAN_42."</td>
+		<td class='fcaption'>".LAN_NAME."</td>
+		<td class='fcaption'>".LAN_FILE_NAME."</td>
+		<td class='fcaption'>".LAN_SIZE."</td>
+		<td class='fcaption'>".LAN_ACTIONS."</td>
 		</tr>";
 
 	$text .= "<tr><td class='forumheader3' style='text-align:center' colspan='6'>";
@@ -810,7 +810,7 @@ switch ($action)
 	}
 	$text .= "</table>\n</div>";
 
-	$ns->tablerender(UPLLAN_43, $text);
+	$ns->tablerender(LAN_UPLOADS, $text);
 }		// end - switch($action)
 
 
@@ -826,15 +826,15 @@ function upload_adminmenu()
 
 	if(getperms("0"))
 	{
-	  $var['filetypes']['text'] = UPLLAN_49;
+	  $var['filetypes']['text'] = LAN_FILETYPES;
 	  $var['filetypes']['link'] = e_SELF."?filetypes";
    	  $var['filetypes']['perm'] = "0";
 
-	  $var['options']['text'] = UPLLAN_50;
+	  $var['options']['text'] = LAN_OPTIONS;
 	  $var['options']['link'] = e_SELF."?options";
    	  $var['options']['perm'] = "0";
     }
-	show_admin_menu(UPLLAN_43, $action, $var);
+	show_admin_menu(LAN_UPLOADS, $action, $var);
 }
 
 
