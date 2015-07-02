@@ -28,7 +28,7 @@ if (!isset($pref['subnews_class']))
 
 if (!check_class($pref['subnews_class']))
 {
-	$ns->tablerender(NWSLAN_12, NWSLAN_11);
+	$ns->tablerender(LAN_UI_403_TITLE_ERROR, LAN_UI_403_BODY_ERROR);
 	require_once(FOOTERF);
 	exit;
 }
@@ -202,7 +202,7 @@ $text .= "
   </td>
 </tr>
 <tr>
-  <td style='width:20%' class='forumheader3'>".LAN_62."</td>
+  <td style='width:20%' class='forumheader3'>".LAN_TITE."</td>
 	<td style='width:80%' class='forumheader3'>
     <input class='tbox form-control' type='text' id='submitnews_title' name='submitnews_title' size='60' value='".$tp->toHTML(vartrue($_POST['submitnews_title']),TRUE,'USER_TITLE')."' maxlength='200' style='width:90%' required />
 	</td>
