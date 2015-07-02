@@ -50,7 +50,7 @@ class social_adminarea extends e_admin_dispatcher
 class social_ui extends e_admin_ui
 {
 			
-		protected $pluginTitle		= 'Social';
+		protected $pluginTitle		= LAN_PLUGIN_SOCIAL_TITLE;
 		protected $pluginName		= 'social';
 	//	protected $eventName		= 'social-social'; // remove comment to enable event triggers in admin.
 	//	protected $table			= 'social';
@@ -71,30 +71,30 @@ class social_ui extends e_admin_ui
 		protected $fieldpref        = array();
 		
 
-		protected $preftabs        = array("Sharing", 'Facebook Comments',  'Facebook Menu', 'Twitter Menu', );
+		protected $preftabs        = array(LAN_PLUGIN_SOCIAL_1, LAN_PLUGIN_SOCIAL_2, LAN_PLUGIN_SOCIAL_3, LAN_PLUGIN_SOCIAL_3, );
 
 		protected $prefs = array(
 
 
-			'facebook_comments_limit'		=> array('title'=> 'Limit', 'type'=>'number', 'tab'=>1, 'data' => 'int','help'=>'Number of tweets to display.'),
-			'facebook_comments_theme'		=> array('title'=> 'Theme', 'type'=>'dropdown', 'tab'=>1, 'writeParms'=>array('optArray'=>array('light'=>'Light','dark'=>'Dark')), 'data' => 'str','help'=>''),
-			'facebook_comments_loadingtext'		=> array('title'=> 'Text while loading', 'type'=>'text', 'tab'=>1, 'data' => 'str', 'writeParms'=>array('placeholder'=>'Loading...'), 'help'=>''),
+			'facebook_comments_limit'		=> array('title'=> LAN_PLUGIN_SOCIAL_5, 'type'=>'number', 'tab'=>1, 'data' => 'int','help'=>LAN_PLUGIN_SOCIAL_5a),
+			'facebook_comments_theme'		=> array('title'=> LAN_PLUGIN_SOCIAL_6, 'type'=>'dropdown', 'tab'=>1, 'writeParms'=>array('optArray'=>array('light'=>LAN_PLUGIN_SOCIAL_23,'dark'=>LAN_PLUGIN_SOCIAL_24)), 'data' => 'str','help'=>''),
+			'facebook_comments_loadingtext'		=> array('title'=> LAN_PLUGIN_SOCIAL_7, 'type'=>'text', 'tab'=>1, 'data' => 'str', 'writeParms'=>array('placeholder'=>LAN_PLUGIN_SOCIAL_25), 'help'=>''),
 
-			'facebook_like_menu_theme'	=> array('title'=> 'Theme', 'type'=>'dropdown', 'tab'=>2, 'writeParms'=>array('optArray'=>array('light'=>'Light','dark'=>'Dark')), 'data' => 'str'),
-			'facebook_like_menu_action'	=> array('title'=> 'Action', 'type'=>'dropdown', 'tab'=>2, 'writeParms'=>array('optArray'=>array('like'=>'Like','recommend'=>'Recommend')), 'data' => 'str'),
-			'facebook_like_menu_width'	=> array('title'=> 'Width', 'type'=>'number', 'tab'=>2, 'data' => 'int','help'=>'Width in px'),
+			'facebook_like_menu_theme'	=> array('title'=> LAN_PLUGIN_SOCIAL_6, 'type'=>'dropdown', 'tab'=>2, 'writeParms'=>array('optArray'=>array('light'=>LAN_PLUGIN_SOCIAL_23,'dark'=>LAN_PLUGIN_SOCIAL_24)), 'data' => 'str'),
+			'facebook_like_menu_action'	=> array('title'=> LAN_PLUGIN_SOCIAL_8, 'type'=>'dropdown', 'tab'=>2, 'writeParms'=>array('optArray'=>array('like'=>LAN_PLUGIN_SOCIAL_26,'recommend'=>LAN_PLUGIN_SOCIAL_27)), 'data' => 'str'),
+			'facebook_like_menu_width'	=> array('title'=> LAN_PLUGIN_SOCIAL_9, 'type'=>'number', 'tab'=>2, 'data' => 'int','help'=>LAN_PLUGIN_SOCIAL_28),
 		//	'facebook_like_menu_ref'	=> array('title'=> "Referrer", 'type'=>'text', 'tab'=>2, 'data' => 'str', 'writeParms'=>'size=xxlarge', 'help'=>'Leave blank to use Site Url'),
 
 
 
-			'twitter_menu_theme'	=> array('title'=> 'Theme', 'type'=>'dropdown', 'tab'=>3, 'writeParms'=>array('optArray'=>array('light'=>'Light','dark'=>'Dark')), 'data' => 'str'),
-			'twitter_menu_height'		=> array('title'=> 'Height', 'type'=>'number', 'tab'=>3, 'data' => 'int','help'=>'Height in px'),
-			'twitter_menu_limit'		=> array('title'=> 'Limit', 'type'=>'number', 'tab'=>3, 'data' => 'int','help'=>'Number of tweets to display.'),
+			'twitter_menu_theme'	    => array('title'=> LAN_PLUGIN_SOCIAL_6, 'type'=>'dropdown', 'tab'=>3, 'writeParms'=>array('optArray'=>array('light'=>LAN_PLUGIN_SOCIAL_23,'dark'=>LAN_PLUGIN_SOCIAL_24)), 'data' => 'str'),
+			'twitter_menu_height'		=> array('title'=> LAN_PLUGIN_SOCIAL_10, 'type'=>'number', 'tab'=>3, 'data' => 'int','help'=>LAN_PLUGIN_SOCIAL_29),
+			'twitter_menu_limit'		=> array('title'=> LAN_PLUGIN_SOCIAL_5, 'type'=>'number', 'tab'=>3, 'data' => 'int','help'=>LAN_PLUGIN_SOCIAL_5a),
 
 
-			'sharing_mode'              => array('title'=> 'Display Mode', 'type'=>'dropdown', 'tab'=>0, 'writeParms'=>array('optArray'=>array('normal'=>'Normal','dropdown'=>'Dropdown','off'=>'Disabled')), 'data' => 'str','help'=>''),
-			'sharing_hashtags'		    => array('title'=> 'Hashtags', 'type'=>'tags', 'tab'=>0, 'data' => 'str','help'=>'Excluding the # symbol.'),
-			'sharing_providers'         => array('title'=> 'Providers', 'type'=>'checkboxes', 'tab'=>0, 'writeParms'=>array(), 'data' => 'str','help'=>''),
+			'sharing_mode'              => array('title'=> LAN_PLUGIN_SOCIAL_11, 'type'=>'dropdown', 'tab'=>0, 'writeParms'=>array('optArray'=>array('normal'=>LAN_PLUGIN_SOCIAL_30,'dropdown'=>LAN_PLUGIN_SOCIAL_31,'off'=>LAN_DISABLED)), 'data' => 'str','help'=>''),
+			'sharing_hashtags'		    => array('title'=> LAN_PLUGIN_SOCIAL_12, 'type'=>'tags', 'tab'=>0, 'data' => 'str','help'=>LAN_PLUGIN_SOCIAL_32),
+			'sharing_providers'         => array('title'=> LAN_PLUGIN_SOCIAL_13, 'type'=>'checkboxes', 'tab'=>0, 'writeParms'=>array(), 'data' => 'str','help'=>''),
 		);
 
 		protected $social_logins = array();
@@ -257,10 +257,9 @@ class social_ui extends e_admin_ui
 		{
 			$this->testUrl = SITEURL."?route=system/xup/test";
 
-			$notice = "Note: In most cases you will need to obtain an id and secret key from one of the providers. Click the blue links below to configure.
-					<br />You may test your configuration with the following URL: <a href='".$this->testUrl."' rel='external'>".$this->testUrl."</a>";
+			$notice = LAN_PLUGIN_SOCIAL_14." <a href='".$this->testUrl."' rel='external'>".$this->testUrl."</a>";
 
-			return array("caption"=>"Help",'text'=> $notice);
+			return array("caption"=>LAN_HELP,'text'=> $notice);
 
 		}
 
@@ -284,18 +283,18 @@ class social_ui extends e_admin_ui
 				</colgroup>
 						<tbody>
 					<tr>
-						<td><label for='social-login-active'>Social Signup/Login</label>
+						<td><label for='social-login-active'>".LAN_PLUGIN_SOCIAL_15."</label>
 						</td>
 						<td>
 							".$frm->radio_switch('social_login_active', $pref['social_login_active'])."
-								<div class='smalltext field-help'>Allows users to signup/login with their social media accounts. When enabled, this option will still allow users to signup/login even if the core user registration system above is disabled. </div>
+								<div class='smalltext field-help'>".LAN_PLUGIN_SOCIAL_16."</div>
 
 						</td>
 					</tr>
 
 
 					<tr>
-						<td>Application Keys and IDs <br /></td>
+						<td>".LAN_PLUGIN_SOCIAL_17." <br /></td>
 						<td>
 							<table class='table table-bordered table-striped'>
 							<colgroup>
@@ -313,7 +312,7 @@ class social_ui extends e_admin_ui
 			foreach($this->social_logins as $prov=>$val)
 			{
 
-				$label = varset($this->social_external[$prov]) ? "<a class='e-tip' rel='external' title='Get a key from the provider' href='".$social_external[$prov]."'>".$prov."</a>" : $prov;
+				$label = varset($this->social_external[$prov]) ? "<a class='e-tip' rel='external' title='".LAN_PLUGIN_SOCIAL_33."' href='".$social_external[$prov]."'>".$prov."</a>" : $prov;
 				$radio_label = strtolower($prov);
 				$text .= "
 					<tr>
@@ -409,10 +408,10 @@ class social_ui extends e_admin_ui
 
 				$text2 .= "
 					<tr>
-						<td><label for='".$text_label."'>Your ".$var['label']." page</label></td>
+						<td><label for='".$text_label."'>".LAN_PLUGIN_SOCIAL_20." ".$var['label']." ".LAN_PLUGIN_SOCIAL_21."</label></td>
 						<td>
 							".$frm->text($keypref, $pref['xurl'][$k], false, $opts)."
-							<div class='field-help'>Used by some themes to provide a link to your ".$var['label']." page. (".$def.")</div>
+							<div class='field-help'>".LAN_PLUGIN_SOCIAL_22." ".$var['label']." ".LAN_PLUGIN_SOCIAL_21.". (".$def.")</div>
 						</td>
 					</tr>
 				";
@@ -427,8 +426,8 @@ class social_ui extends e_admin_ui
 
 ";
 			$tabs = array();
-			$tabs[] = array('caption'=>"Apps", 'text'=>$text);
-			$tabs[] = array('caption'=>'Pages', 'text'=>$text2);
+			$tabs[] = array('caption'=>LAN_PLUGIN_SOCIAL_18, 'text'=>$text);
+			$tabs[] = array('caption'=>LAN_PLUGIN_SOCIAL_19, 'text'=>$text2);
 
 			$ret =  $frm->open('social','post',null, 'class=form-horizontal').$frm->tabs($tabs);
 

@@ -60,7 +60,7 @@ class links_admin extends e_admin_dispatcher
 
 class links_admin_ui extends e_admin_ui
 {
-	protected $pluginTitle 	= "Site links";
+	protected $pluginTitle 	= LAN_SITELINK_PAGE_TITLE;
 	protected $pluginName 	= 'core';
 	protected $table 		= "links";
 	protected $listQry 		= '';
@@ -125,17 +125,17 @@ class links_admin_ui extends e_admin_ui
 	function init()
 	{
 		$this->fields['link_category']['writeParms'] = array(
-			1	=> "1 - Main",
-			2	=> "2 - Sidebar",
-			3	=> "3 - Footer",
-			4	=> "4 - Alt",
-			5	=> "5 - Alt",
-			6	=> "6 - Alt", // If more than 6 are required, then something is not right with the themeing method. 
-	//		7	=> "7 - Alt",
-	//		8	=> "8 - Alt",
-	//		9	=> "9 - Alt",
-	//		10	=> "10 - Alt"
-	       255 => "(Unassigned)",
+			1	=> "1 - ".LINKLAN_12,
+			2	=> "2 - ".LINKLAN_13,
+			3	=> "3 - ".LINKLAN_14,
+			4	=> "4 - ".LINKLAN_15,
+			5	=> "5 - ".LINKLAN_15,
+			6	=> "6 - ".LINKLAN_15, // If more than 6 are required, then something is not right with the themeing method.
+	//		7	=> "7 - ".LINKLAN_15,
+	//		8	=> "8 - ".LINKLAN_15,
+	//		9	=> "9 - ".LINKLAN_15,
+	//		10	=> "10 - ".LINKLAN_15
+	       255 => "(".LINKLAN_16.")",
 		);
 
 		$this->fields['link_open']['writeParms'] = array(
@@ -634,7 +634,7 @@ class links_admin_form_ui extends e_admin_form_ui
 			case 'filter':
 				$cats	= $this->getController()->getLinkArray();
 
-				$ret[0]	= $mode == 'batch' ? 'REMOVE PARENT' : 'Main Only';
+				$ret[0]	= $mode == 'batch' ? LINKLAN_17 : LINKLAN_18;
 				$this->_parent_select_array(0, $cats, $ret);
 				return $ret;
 			break;

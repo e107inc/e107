@@ -238,7 +238,7 @@ class mailout_admin extends e_admin_dispatcher
 		'main/list'			=> array('caption'=> LAN_MANAGE, 		'perm'=>  'W'),
 		'main/create'		=> array('caption'=> LAN_CREATE, 	'perm' => 'W'),
 	
-		'recipients/list'	=> array('caption'=> "Recipients", 		'perm' => 'W'),		
+		'recipients/list'	=> array('caption'=> LAN_MAILOUT_173, 		'perm' => 'W'),
 	//	'main/send'			=> array('caption'=> "Send", 			'perm' => 'W'),
 		'other' 			=> array('divider'=> true),
 	//	'saved/list'		=> array('caption'=> LAN_MAILOUT_191, 	'perm' => 'W'),
@@ -248,7 +248,7 @@ class mailout_admin extends e_admin_dispatcher
 		'other2' 			=> array('divider'=> true),
 		'prefs/prefs' 		=> array('caption'=> LAN_PREFS, 		'perm' => '0'),
 		'maint/maint'		=> array('caption'=> ADLAN_40, 			'perm' => '0'),
-		'main/templates'	=> array('caption'=> 'Template Preview', 'perm' => '0'),
+		'main/templates'	=> array('caption'=> LAN_MAILOUT_263, 'perm' => '0'),
 	);
 
 
@@ -280,7 +280,7 @@ class mailout_main_ui extends e_admin_ui
 		protected $batchDelete 			= true;	
 		protected $batchCopy 			= true;	
 		
-		protected $tabs					= array('Basic','Advanced'); //TODO Add LAN_BASIC and LAN_ADVANCED to lan_admin.php 
+		protected $tabs					= array(LAN_BASIC,LAN_ADVANCED); //TODO Add LAN_BASIC and LAN_ADVANCED to lan_admin.php
 
 	protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null, 		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
@@ -294,7 +294,7 @@ class mailout_main_ui extends e_admin_ui
 			'mail_bcopy_to'			=> array('title' => LAN_MAILOUT_152,'tab'=>1, 'type'=>'method','data'=>false),	
 			'mail_subject' 			=> array('title' => LAN_MAILOUT_06, 'type'=>'text', 'forced' => TRUE,'data'=>'str', 'inline'=>true, 'writeParms'=>'size=xxlarge&required=1'),
 			'mail_content_status' 	=> array('title' => LAN_MAILOUT_136, 'tab'=>1, 'type'=> 'dropdown', 'data'=>'int', 'filter'=>false, 'inline'=>false, 'thclass' => 'left', 'class'=>'left'),
-			'mail_total_count' 		=> array('title' => "Total Recipients", 'noedit'=>true, 'type'=>'number'),
+			'mail_total_count' 		=> array('title' => LAN_MAILOUT_261, 'noedit'=>true, 'type'=>'number'),
 			'mail_sent_count' 		=> array('title' => LAN_MAILOUT_82, 'noedit'=>true, 'type'=>'number'),
 			'mail_togo_count' 		=> array('title' => LAN_MAILOUT_83, 'noedit'=>true, 'type'=>'number'),
 		
@@ -306,12 +306,12 @@ class mailout_main_ui extends e_admin_ui
 			'mail_creator' 			=> array('title' => LAN_MAILOUT_85, 'type'=>null, 'noedit'=>true, 'data'=>'int'),
 			'mail_create_app' 		=> array('title' => LAN_MAILOUT_133, 'type'=>null, 'noedit'=>true,'data'=>'str'),
 			'mail_e107_priority' 	=> array('title' => LAN_MAILOUT_134, 'noedit'=>true),
-			'mail_notify_complete' => array('title' => LAN_MAILOUT_243,  'noedit'=>true, 'nolist' => true),
+			'mail_notify_complete'  => array('title' => LAN_MAILOUT_243,  'noedit'=>true, 'nolist' => true),
 			'mail_last_date' 		=> array('title' => LAN_MAILOUT_129, 'noedit'=>true, 'type'=>'int', 'proc' => 'sdatetime'),
 			'mail_attach'			=> array('title' => LAN_MAILOUT_153, 'tab'=>1, 'type'=>'method','data'=>false),
 			'mail_include_images' 	=> array('title' => LAN_MAILOUT_224, 'tab'=>1, 'type'=>'boolean','data'=>false, 'proc' => 'yesno'),
 			'mail_send_style'		=> array('title' => LAN_MAILOUT_154,'type'=>'method','data'=>false),
-			'mail_media' 			=> array('title' => 'Embed Media', 'type' => 'images', 'data' => 'array', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => 'video=1', 'class' => 'center', 'thclass' => 'center',  ),
+			'mail_media' 			=> array('title' => LAN_MAILOUT_262, 'type' => 'images', 'data' => 'array', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => 'video=1', 'class' => 'center', 'thclass' => 'center',  ),
 	 
 			'mail_body' 			=> array('title' => LAN_MAILOUT_100, 'type'=>'bbarea', 'proc' => 'trunc200'),
 			'mail_body_templated' 	=> array('title' => LAN_MAILOUT_257, 'noedit'=>true, 'proc' => 'chars'),
@@ -387,7 +387,7 @@ class mailout_main_ui extends e_admin_ui
 		
 		if ($this->mailAdmin->loadMailHandlers() == 0)
 		{
-			e107::getMessage()->addDebug('No mail handlers loaded!!');
+			e107::getMessage()->addDebug(LAN_MAILOUT_264);
 			
 		}	
 		
@@ -407,7 +407,7 @@ class mailout_main_ui extends e_admin_ui
 			define('MAIL_STATUS_TEMP', 22);			// Tags entries which aren't yet in any list
 		*/
 	
-		$types = array(10=>'Pending',20=>"Saved", 21=>"Held", 0=>'Sent', 1=>'Bounced', 2=>'Cancelled', 3=> 'Partial', 5=>'Failed',  19 => "Max Active",  22=>"Temp");
+		$types = array(10=>LAN_MAILOUT_265,20=>LAN_MAILOUT_266, 21=>LAN_MAILOUT_267, 0=>LAN_SEND, 1=>LAN_MAILOUT_268, 2=>LAN_MAILOUT_269, 3=> LAN_MAILOUT_270, 5=>LAN_FAILED,  19 => LAN_MAILOUT_271,  22=>LAN_MAILOUT_272);
 		
 		
 		$qr = array('saved'=>20,'pending'=>10,'held'=>21,'sent'=>0);
@@ -472,11 +472,11 @@ class mailout_main_ui extends e_admin_ui
 
 		if(file_exists($privatekeyfile))
 		{
-			e107::getMessage()->addInfo("DKIM keys already exists (".$privatekeyfile.")");
+			e107::getMessage()->addInfo(LAN_MAILOUT_273." (".$privatekeyfile.")");
 
 			$text = $this->getDKIMPublicKey();
-			e107::getMessage()->addInfo("Add the following to your ".e_DOMAIN." DNS Zone records:".print_a($text,true));
-			e107::getMessage()->addinfo("Consider testing it using this website: http://dkimvalidator.com");
+			e107::getMessage()->addInfo(LAN_MAILOUT_274." ".e_DOMAIN." ".LAN_MAILOUT_275.":".print_a($text,true));
+			e107::getMessage()->addinfo(LAN_MAILOUT_276);
 
 			return false;
 		}
@@ -510,8 +510,8 @@ class mailout_main_ui extends e_admin_ui
 
 
 		$text = $tp->lanVars($dnsEntry, $pubString);
-		e107::getMessage()->addInfo("Add the following ".$keyLength." bit key to your ".e_DOMAIN." DNS Zone records:".print_a($text,true));
-		e107::getMessage()->addinfo("Consider testing it using this website: http://dkimvalidator.com");
+		e107::getMessage()->addInfo(LAN_MAILOUT_277." ".$keyLength." ".LAN_MAILOUT_278." ".e_DOMAIN." ".LAN_MAILOUT_275.":".print_a($text,true));
+		e107::getMessage()->addinfo(LAN_MAILOUT_276);
 	}
 
 
@@ -537,15 +537,15 @@ class mailout_main_ui extends e_admin_ui
 		
 		$sendto = $pref['mail_bounce_email'];
 		
-		$eml = array('subject'=>'Test Bounce',	'body'	=> 'Test Bounce Email address','e107_header'=>99999999, 'extra_header' => 'X-Bounce-Test: true');
+		$eml = array('subject'=>LAN_MAILOUT_279,	'body'	=> LAN_MAILOUT_280,'e107_header'=>99999999, 'extra_header' => 'X-Bounce-Test: true');
 		
 		if(e107::getEmail()->sendEmail($sendto, 'Bounce handler', $eml))
 		{
-			$mes->addSuccess('Test Bounce sent to '.$sendto);
+			$mes->addSuccess(LAN_MAILOUT_281.' '.$sendto);
 		}
 		else
 		{
-			$mes->addError('Failed Bounce email sent to '.$sendto);	
+			$mes->addError(LAN_MAILOUT_282.' '.$sendto);
 		}	
 		
 		
@@ -667,7 +667,7 @@ class mailout_main_ui extends e_admin_ui
 		
 		if((vartrue($_POST['email_send']) || vartrue($_POST['email_hold']) || vartrue($_POST['email_cancel'])) && !vartrue($_POST['email_id']))
 		{
-			e107::getMessage()->addError("No Message ID submitted");
+			e107::getMessage()->addError(LAN_MAILOUT_283);
 			return;
 		}
 		
@@ -801,9 +801,8 @@ class mailout_main_ui extends e_admin_ui
 			$tp = e107::getParser();
 
 			$eml = array(
-				'subject'		=> 'Test Subject',
-				'body' 			=> "This is the body text of your email. Included are example media attachments such as images and video thumbnails.<br /></br >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed aliquam volutpat risus, a efficitur ex dignissim ac. Phasellus ornare tortor est, a elementum orci finibus non! Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce feugiat bibendum venenatis. Ut sit amet purus id magna consequat euismod vitae ac elit. Maecenas rutrum nisi metus, sed pulvinar velit fermentum eu? Aliquam erat volutpat.<br />
-									Ut risus massa, consequat et gravida vitae, tincidunt in metus. Nam sodales felis non tortor faucibus lacinia! Integer neque libero, maximus eu cursus nec, fringilla varius erat. Phasellus elementum scelerisque mauris at fermentum. Aliquam erat volutpat. Aliquam sit amet placerat leo, vitae mollis purus. Nulla laoreet nulla pretium risus placerat, a luctus risus pulvinar. Duis ut dolor sed arcu aliquam dictum sed auctor magna. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Etiam eleifend in mi lobortis blandit. Aliquam vestibulum rhoncus vestibulum. Cras metus.",
+				'subject'		=> LAN_MAILOUT_284,
+				'body' 			=> LAN_MAILOUT_285,
 				'template'		=> $id,
 				'shortcodes'	=> $this->getExampleShortcodes(),
 				'media'			=>  array(
@@ -836,12 +835,12 @@ class mailout_main_ui extends e_admin_ui
 			'MAILREF'			=> '123',
 			'NEWSLETTER'		=> SITEURL."newsletter/?id=example1234567",
 			'UNSUBSCRIBE'		=> SITEURL."unsubscribe.php?id=example1234567",
-			'UNSUBSCRIBE_MESSAGE'=> "This email was sent to test@email.com. If you don't want to receive these emails in the future, please <a href='".SITEURL."unsubscribe.php?id=example1234567'>unsubscribe</a>. ",
+			'UNSUBSCRIBE_MESSAGE'=> LAN_MAILOUT_286,
 			'ACTIVATION_LINK'	=> "<a href='http://whereever.to.activate.com/'>http://whereever.to.activate.com/</a>",
 			'USERURL'			=> "www.user-website.com",
 			'PASSWORD'			=> "test-password",
 			'LOGINNAME'			=> "test-loginname",
-			'SUBJECT'           => "Test Subject",
+			'SUBJECT'           => LAN_MAILOUT_284,
 			'DATE_SHORT'        => $tp->toDate(time(),'short'),
 			'DATE_LONG'         => $tp->toDate(time(),'long')
 		);
@@ -858,7 +857,7 @@ class mailout_main_ui extends e_admin_ui
 		foreach($templates as $k=>$layout)
 		{
 			$caption = $k;
-			$text = "<iframe src='".e_ADMIN."mailout.php?mode=main&action=preview&id=".$k."' width='100%' height='700'>Loading...</iframe>";	
+			$text = "<iframe src='".e_ADMIN."mailout.php?mode=main&action=preview&id=".$k."' width='100%' height='700'>".LAN_LOADING."</iframe>";
 			$tab[$k] = array('caption'=>$caption, 'text'=>$text);
 					
 		}	
@@ -926,7 +925,7 @@ class mailout_main_ui extends e_admin_ui
 	
 		if(E107_DEBUG_LEVEL > 0)
 		{
-			echo "<h4>Debug Mode : Mail is sent and data displayed below. </h4>";
+			echo "<h4>Debug Mode : ".LAN_MAILOUT_287." </h4>";
 			sendProgress($id);	
 		}
 		else 
@@ -934,7 +933,7 @@ class mailout_main_ui extends e_admin_ui
 			$pause = e107::getConfig()->get('mail_pausetime',1);
 			$interval = ($pause * 1000);
 			
-			$text = e107::getForm()->progressBar('mail-progress',1, array('btn-label'=>'Start', 'interval'=>$interval, 'url'=> e_SELF, 'mode'=>$id));
+			$text = e107::getForm()->progressBar('mail-progress',1, array('btn-label'=>LAN_STARTa, 'interval'=>$interval, 'url'=> e_SELF, 'mode'=>$id));
 		}
 	
 		return $text;	
@@ -950,7 +949,7 @@ class mailout_main_ui extends e_admin_ui
 		
 		if(empty($mailData))
 		{
-			e107::getMessage()->addError("Couldn't retrieve mail data for id: ".$id);
+			e107::getMessage()->addError(LAN_MAILOUT_288.": ".$id);
 			return '';	
 		}
 
@@ -958,7 +957,7 @@ class mailout_main_ui extends e_admin_ui
 		
 		$mailData = $this->mailAdmin->dbToMail($mailData);
 		
-		e107::getMessage()->addDebug("Regenerating recipient list");
+		e107::getMessage()->addDebug(LAN_MAILOUT_289);
 		
 		e107::getDb()->delete('mail_recipients','mail_detail_id='.intval($id));
 				
@@ -1015,7 +1014,7 @@ class mailout_main_ui extends e_admin_ui
 	
 	if($pref['mail_bounce'] == 'auto' && !empty($pref['mail_bounce_email']) && !is_executable(e_HANDLER."bounce_handler.php"))
 	{
-		$mes->addWarning('Your bounce_handler.php file is NOT executable');	
+		$mes->addWarning(LAN_MAILOUT_290);
 	}
 
 
@@ -1023,7 +1022,7 @@ class mailout_main_ui extends e_admin_ui
 	$lastload = e107::getCache()->retrieve('emailLastBounce',FALSE,TRUE,TRUE);
 	$lastBounce = round((time() - $lastload) / 60);
 	
-	$lastBounceText = ($lastBounce > 1256474) ? "<span class='label label-important'>Never</span>" : "<span class='label label-success'>".$lastBounce . " minutes ago.</span>"; 
+	$lastBounceText = ($lastBounce > 1256474) ? "<span class='label label-important'>".LAN_MAILOUT_291."</span>" : "<span class='label label-success'>".$lastBounce . " ".LAN_MAILOUT_292.".</span>";
 
 	$text = "
 		<form method='post' action='".e_SELF."?".e_QUERY."' id='mailsettingsform'>
@@ -1217,8 +1216,8 @@ class mailout_main_ui extends e_admin_ui
 
 	if(function_exists('openssl_pkey_new') && deftrue('e_DEVELOPER'))
 	{
-		$text .= "<tr><td>DomainKeys Identified Mail (DKIM)</td><td class='form-inline'>".$frm->button('DKIM_generate',1,'primary','Generate Public/Private keys')."
-		<span class='label label-warning'>Developer Mode Only</span></td></tr>";
+		$text .= "<tr><td>".LAN_MAILOUT_293."</td><td class='form-inline'>".$frm->button('DKIM_generate',1,'primary',LAN_MAILOUT_294)."
+		<span class='label label-warning'>".LAN_MAILOUT_295."</span></td></tr>";
 	}
 
 
@@ -1617,8 +1616,8 @@ class mailout_admin_form_ui extends e_admin_form_ui
 			
 			$link = e_SELF."?mode=main&action=send&id=".$id;	
 			$preview = e_SELF."?mode=main&action=preview&id=".$id;
-			$text .= "<a href='".$link."' class='btn' title='Send Mail'>".E_32_MAIL."</a>";
-			$text .= "<a rel='external' class='btn e-modal' data-modal-caption='Email preview' href='".$preview."' class='btn' title='Preview'>".E_32_SEARCH."</a>";
+			$text .= "<a href='".$link."' class='btn' title='".LAN_MAILOUT_296."'>".E_32_MAIL."</a>";
+			$text .= "<a rel='external' class='btn e-modal' data-modal-caption='".LAN_MAILOUT_297."' href='".$preview."' class='btn' title='".LAN_PREVIEW."'>".E_32_SEARCH."</a>";
 			$text .= $this->renderValue('options',$value,$att,$id);
 				
 			return $text;
@@ -1630,8 +1629,8 @@ class mailout_admin_form_ui extends e_admin_form_ui
 			$link = e_SELF."?searchquery=&filter_options=mail_detail_id__".$id."&mode=recipients&action=list&iframe=1";
 			$preview = e_SELF."?mode=main&action=preview&id=".$id.'&user='.$user;
 
-			$text = "<a href='".$link."' class='btn e-modal' data-modal-caption='Recipients for Mail #".$id."' title='Recipients'>".E_32_USER."</a>";
-			$text .= "<a rel='external' class='btn e-modal' data-modal-caption='Email preview' href='".$preview."' class='btn' title='Preview'>".E_32_SEARCH."</a>";
+			$text = "<a href='".$link."' class='btn e-modal' data-modal-caption='".LAN_MAILOUT_298." #".$id."' title='".LAN_MAILOUT_173."'>".E_32_USER."</a>";
+			$text .= "<a rel='external' class='btn e-modal' data-modal-caption='".LAN_MAILOUT_297."' href='".$preview."' class='btn' title='".LAN_PREVIEW."'>".E_32_SEARCH."</a>";
 		
 			$att['readParms']['editClass'] = e_UC_NOBODY;
 			$text .= $this->renderValue('options',$value,$att,$id);
@@ -1798,7 +1797,7 @@ class mailout_recipients_form_ui extends e_admin_form_ui
 		$eid = $this->getController()->getListModel()->get('mail_detail_id');
 		
 		$preview = e_SELF."?mode=main&action=preview&id=".$eid.'&user='.$user;
-		$text = "<a rel='external' class='btn e-modal' data-modal-caption='Email preview' href='".$preview."' class='btn' title='Preview'>".E_32_SEARCH."</a>";
+		$text = "<a rel='external' class='btn e-modal' data-modal-caption='".LAN_MAILOUT_297."' href='".$preview."' class='btn' title='".LAN_PREVIEW."'>".E_32_SEARCH."</a>";
 		
 
 

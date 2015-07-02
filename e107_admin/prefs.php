@@ -601,10 +601,10 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 						</td>
 					</tr>
 					<tr>
-						<td><label for='contact_visibility'>Contact Page Visibility</label></td>
+						<td><label for='contact_visibility'>".PRFLAN_169a."</label></td>
 						<td>
 							".$e_userclass->uc_dropdown('contact_visibility', varset( $pref['contact_visibility'],e_UC_PUBLIC), null, "tabindex='".$frm->getNext()."'")."
-							<div class='smalltext field-help'>Contact information and/or form will only be visible to this userclass group.</div>
+							<div class='smalltext field-help'>".PRFLAN_169b."</div>
 						</td>
 					</tr>
 					<tr>
@@ -1408,7 +1408,7 @@ $text .= "
 
 
 
-$elements = array(1=>'Register & Login', 2=> 'Login Only', 0=>LAN_DISABLED); 
+$elements = array(1=>PRFLAN_224a, 2=> PRFLAN_224b, 0=>LAN_DISABLED);
 
 
 $text .= "
@@ -1558,13 +1558,13 @@ $text .= "
 				</colgroup>
 				<tbody>
 				<tr>
-						<td>Field options</td><td><table class='table table-striped table-condensed table-bordered' style='margin-bottom:0px'>
+						<td>".LAN_FIELD_OPTIONS."</td><td><table class='table table-striped table-condensed table-bordered' style='margin-bottom:0px'>
 						<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
 				<tr>
-							<td><label>Email</label></td>
+							<td><label>".LAN_EMAIL."</label></td>
 							<td>
 								".$frm->radio('disable_emailcheck', 2, ($pref['disable_emailcheck']==2), array('label' => CUSTSIG_12, 'disabled'=>true))."
 								".$frm->radio('disable_emailcheck', 1, (intval($pref['disable_emailcheck']) == 1), array('label' => CUSTSIG_14))."
@@ -1573,7 +1573,7 @@ $text .= "
 							</td>
 						</tr>
 						<tr>
-							<td><label for='signup-option-password'>Password</label></td>
+							<td><label for='signup-option-password'>".LAN_PASSWORD."</label></td>
 							<td>
 								".$frm->radio('signup_option_password', 0, !$prefOptionPassword, array('label' => CUSTSIG_12))."
 								".$frm->radio('signup_option_password', 1, ($prefOptionPassword == 1), array('label' => CUSTSIG_14, 'disabled'=>true))."
@@ -1619,7 +1619,7 @@ $text .= "
 
 
 	<tr>
-						<td><label for='user-reg-secureveri'>Password in Email Confirmation</label></td>
+						<td><label for='user-reg-secureveri'>".CUSTSIG_23."</label></td>
 						<td>
 							".$frm->radio_switch('user_reg_secureveri', $pref['user_reg_secureveri'], CUSTSIG_12, CUSTSIG_14)."
 						</td>
@@ -2521,6 +2521,6 @@ function prefs_adminmenu()
 	$var['core-prefs-javascript']['text'] = PRFLAN_257;
 	$var['core-prefs-advanced']['text'] = PRFLAN_149;
 	
-	e107::getNav()->admin("Basic ".LAN_OPTIONS.'--id--prev_nav', 'core-prefs-main', $var);
+	e107::getNav()->admin(LAN_BASIC." ".LAN_OPTIONS.'--id--prev_nav', 'core-prefs-main', $var);
 }
 

@@ -222,6 +222,7 @@ define("LAN_MANAGE","Manage");
 define("LAN_UPDATE","Update");
 define("LAN_ADD", "Add");
 define("LAN_SAVE","Save");
+define("LAN_SAVEa","Click to save");
 define("LAN_SAVED","Saved");
 define("LAN_SETSAVED","Your settings have been saved");
 define("LAN_NOCHANGE_NOTSAVED", "Nothing changed - not saved");
@@ -348,6 +349,7 @@ define("LAN_COPYRIGHT", "Copyright");
 define("LAN_MANAGER", "Manage Permissions");
 define("LAN_PING", "Ping");
 define("LAN_START", "Starting");
+define("LAN_STARTa", "Start");
 define("LAN_END", "Ending");
 
 define("LAN_PREVIEW", "Preview");
@@ -406,3 +408,51 @@ define("LAN_USER_RANKS", "User Ranks");
 
 
 // TODO - move e_form related LANS below, add new lan_form.php file (for both front/back-end)
+
+//
+
+define("ADLAN_MM_1", "The folder");
+define("ADLAN_MM_2", "is not writable. Please correct before proceeding.");
+define("ADLAN_MM_3", "The following plugins are not compatible with this version of e107 and should be uninstalled");
+define("ADLAN_MM_4", "Setting default filetypes");
+define("LAN_E107_NEWS", "e107 News");
+define("LAN_ADMIN_CPANEL", "'s Control Panel");
+define("ADLAN_CLICK_HERE", "click here");
+define("ADLAN_MM_5", "Customize Admin");
+define("LAN_ADMIN_WEBSITE_STATUS", "Website Status");
+define("ADLAN_MM_6", "These stats are for demonstration purposes only.");
+define("ADLAN_MM_7", "Install Site Stats Plugin");
+define("LAN_VISITS", "Visits");
+define("LAN_UNIQUE_VISITS", "Unique Visits");
+define("LAN_VISITORS", "Visitors");
+define("LAN_UNIQUE_VISITORS", "Unique Visitors");
+
+define("LAN_BASIC", "Basic");
+define("LAN_ADVANCED", "Advanced");
+define("LAN_FAILED", "Failed");
+define("LAN_NA", "N/A");
+define("LAN_SUBJECT", "Subject");
+define("LAN_ADMIN_PERMISSIONS", "Admin Permissions");
+define("LAN_SPECIAL", "Special");
+define("LAN_COMPLETED", "Completed");
+define("LAN_COMPLETEDa", " completed");
+define("LAN_ORIGINAL", "Original");
+define("LAN_DEVELOPER_MODE", "Developer Mode Only");
+define("LAN_MOVING", "Moving");
+define("LAN_TO", "to");
+define("LAN_SKIPPED", "Skipped");
+define("LAN_BACKUP", "Backup");
+define("LAN_CORE", "Core");
+define("LAN_APPROVE","Approve");
+define("LAN_UNINSTALL", "uninstall");
+define("LAN_USERNAME", "Username");
+define("LAN_TIMESTAMP", "Timestamp");
+define("LAN_PAGE", "Page");
+define("LAN_AGENT", "Agent");
+define("LAN_POSTED_BY", "Posted by");
+define("LAN_VIEW_ALL", "View all");
+define("LAN_LATEST_COMMENTS", "Latest Comments");
+define("LAN_PLEASEWAIT", "Please Wait");
+define("LAN_ADMIN_AREA", "Admin Area");
+define("LAN_FIELD_OPTIONS", "Field options");
+

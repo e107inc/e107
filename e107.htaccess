@@ -1,9 +1,9 @@
 # Custom error pages for php scripts only
-<FilesMatch \.php$> 
+<FilesMatch \.php$>
 	ErrorDocument 400 /error.php?400
 	ErrorDocument 401 /error.php?401
 	ErrorDocument 403 /error.php?403
-	ErrorDocument 404 /error.php?404 
+	ErrorDocument 404 /error.php?404
 	ErrorDocument 500 /error.php?500
 </FilesMatch>
 
@@ -44,30 +44,33 @@
     </IfModule>
 
 ### enable rewrites
-	Options +FollowSymLinks 
+	Options +FollowSymLinks
 	RewriteEngine On
 
 
 ### Set this to your e107 site root, path relative to web root
-### Uncomment it in case your server isn't able to rewrite proper 
+### Uncomment it in case your server isn't able to rewrite proper
 	#RewriteBase /
-	
+
 ### Allow only GET and POST methods
 	RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK|OPTIONS|HEAD)
 	RewriteRule .* - [F]
 
-### send 404 on missing files in these folders 
-	RewriteCond %{REQUEST_URI} !^/(e107_images|e107_files)/ 
+### send 404 on missing files in these folders
+	RewriteCond %{REQUEST_URI} !^/(e107_images|e107_files)/
 
 ### don't rewrite for existing files, directories and links
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
-	RewriteCond %{REQUEST_FILENAME} !-l 
-	
+	RewriteCond %{REQUEST_FILENAME} !-l
+
 ### Single entry point ###
 	RewriteRule .* index.php [L]
 
 </IfModule>
 
-### Enable when developing locally. 
+### Enable when developing locally.
 ### SetEnv E_DEV true
+
+### Enable multi language
+### SetEnv E_DEV_LANGUAGE true

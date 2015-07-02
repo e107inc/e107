@@ -196,12 +196,12 @@ class adminstyle_infopanel
 	      
 			</div>";
 	
-		$text = $ns->tablerender(ucwords(USERNAME)."'s Control Panel", $mainPanel, "core-infopanel_mye107",true);
+		$text = $ns->tablerender(ucwords(USERNAME)."".LAN_ADMIN_CPANEL, $mainPanel, "core-infopanel_mye107",true);
 		
 	
 	//  ------------------------------- e107 News --------------------------------
 		
-		$text2 = $ns->tablerender("e107 News","<div id='e-adminfeed'></div><div class='right'><a rel='external' href='".ADMINFEEDMORE."'>".LAN_MORE."</a></div>","core-infopanel_news",true); 
+		$text2 = $ns->tablerender(LAN_E107_NEWS,"<div id='e-adminfeed'></div><div class='right'><a rel='external' href='".ADMINFEEDMORE."'>".LAN_MORE."</a></div>","core-infopanel_news",true);
 	
 	
 	
@@ -214,7 +214,7 @@ class adminstyle_infopanel
 
 
 		
-		$text2 .= $ns->tablerender("Website Status", $this->renderWebsiteStatus(),"",true);	
+		$text2 .= $ns->tablerender(LAN_ADMIN_WEBSITE_STATUS, $this->renderWebsiteStatus(),"",true);
 		
 		
 	//	$text .= $ns->tablerender(ADLAN_LAT_1,$tp->parseTemplate("{ADMIN_LATEST=norender}"),"core-infopanel_latest",true);
@@ -385,11 +385,11 @@ class adminstyle_infopanel
 				</colgroup>
 				<thead>
 					<tr class='first'>
-						<th>Timestamp</th>
-						<th>Username</th>
+						<th>".LAN_TIMESTAMP."</th>
+						<th>".LAN_USERNAME."</th>
 						<th>IP</th>
-						<th>Page</th>
-						<th class='center'>Agent</th>
+						<th>".LAN_PAGE."</th>
+						<th class='center'>".LAN_AGENT."</th>
 					</tr>
 				</thead>
 				<tbody>";	
@@ -496,10 +496,10 @@ class adminstyle_infopanel
 			<li id='comment-".$row['comment_id']."' class='media".$hide."'>
 				<span class='media-object pull-left'>{USER_AVATAR=".$row['comment_author_id']."}</span> 
 				<div class='btn-group pull-right'>
-	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='delete' class='btn btn-sm btn-mini btn-danger'><i class='icon-remove'></i> Delete</button>
-	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='approve' class='btn btn-sm btn-mini btn-success'><i class='icon-ok'></i> Approve</button>
+	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='delete' class='btn btn-sm btn-mini btn-danger'><i class='icon-remove'></i> ".LAN_DELETE."</button>
+	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='approve' class='btn btn-sm btn-mini btn-success'><i class='icon-ok'></i> ".LAN_APPROVE."</button>
 	            </div>
-				<div class='media-body'><small class='muted smalltext'>Posted by {USERNAME} {TIMEDATE=relative}</small><br />
+				<div class='media-body'><small class='muted smalltext'>".LAN_POSTED_BY." {USERNAME} {TIMEDATE=relative}</small><br />
 					<p>{COMMENT}</p> 
 				</div>
 				</li>";
@@ -515,13 +515,13 @@ class adminstyle_infopanel
     	$text .= '
      		</ul>
 		    <div class="right">
-		      <a class="btn btn-mini btn-primary text-right" href="'.e_ADMIN.'comment.php?searchquery=&filter_options=comment_blocked__2">View all</a>
+		      <a class="btn btn-mini btn-primary text-right" href="'.e_ADMIN.'comment.php?searchquery=&filter_options=comment_blocked__2">'.LAN_VIEW_ALL.'</a>
 		    </div>
 		 ';		
 		// $text .= "<small class='text-center text-warning'>Note: Not fully functional at the moment.</small>";
 		
 		$ns = e107::getRender();
-		return $ns->tablerender("Latest Comments",$text,'core-infopanel_online',true);		
+		return $ns->tablerender(LAN_LATEST_COMMENTS,$text,'core-infopanel_online',true);
 	}
 		
 		
@@ -550,7 +550,7 @@ class adminstyle_infopanel
 		$ns = e107::getRender();
 		
 		$start = "<div>
-		To customize this page, please <a title = 'Customize Admin' href='".e_SELF."?mode=customize&amp;iframe=1' class='e-modal-iframe'>click here</a>.
+		To customize this page, please <a title = '".ADLAN_MM_5."' href='".e_SELF."?mode=customize&amp;iframe=1' class='e-modal-iframe'>".ADLAN_CLICK_HERE."</a>.
 		</div>
 	    ";
 	    
@@ -568,7 +568,7 @@ class adminstyle_infopanel
 	//	$text2 .= render_infopanel_menu_options();
 		$text2 .= "<div class='clear'>&nbsp;</div>";
 		$text2 .= "<div id='button' class='buttons-bar center'>";
-		$text2 .= $frm->admin_button('submit-mye107', 'Save', 'create');
+		$text2 .= $frm->admin_button('submit-mye107', LAN_SAVE, 'create');
 		$text2 .= "</div></form>";
 	//	$text2 .= "</div>";
 		
@@ -676,7 +676,7 @@ class adminstyle_infopanel
 		if($type == 'demo')
 		{
 			$data = array();
-		
+		    //TODO Change to LAN_MONTH_xx
 			$data['labels'] 	= array("January","February","March","April","May","June","July");
 			
 			
@@ -686,7 +686,7 @@ class adminstyle_infopanel
 								'pointColor '  		=>  "rgba(220,220,220,1)",
 								'pointStrokeColor'  =>  "#fff",
 								'data'				=> array(65,59,90,81,56,55,40),
-								'title'				=> "Visits"
+								'title'				=> LAN_VISITS
 				
 			);
 			
@@ -696,7 +696,7 @@ class adminstyle_infopanel
 								'pointColor '  		=>  "rgba(151,187,205,1)",
 								'pointStrokeColor'  =>  "#fff",
 								'data'				=> array(28,48,40,19,96,27,100),
-								'title'				=> "Unique Visits"		
+								'title'				=> LAN_UNIQUE_VISITS
 			);	
 			
 			return $data;
@@ -860,13 +860,13 @@ class adminstyle_infopanel
 			
 		if($type == 'demo')
 		{
-			$text .= "<div class='center'><small>These stats are for demonstration purposes only. <a class='btn btn-mini' href='".e_ADMIN."plugin.php?avail'>Install Site Stats Plugin</a></small></div>";
+			$text .= "<div class='center'><small>".ADLAN_MM_6." <a class='btn btn-mini' href='".e_ADMIN."plugin.php?avail'>".ADLAN_MM_7."</a></small></div>";
 		}
 		else
 		{
 			$text .= "<div class='center'><small>
-			<span style='color:rgba(220,220,220,0.5)'>&diams;</span> Visitors  &nbsp;&nbsp;  
-			<span style='color:rgba(151,187,205,1)'>&diams;</span> Unique Visitors
+			<span style='color:rgba(220,220,220,0.5)'>&diams;</span> ".LAN_VISITORS."  &nbsp;&nbsp;
+			<span style='color:rgba(151,187,205,1)'>&diams;</span> ".LAN_UNIQUE_VISITORS."
 			</small></div>";
 		}
 		

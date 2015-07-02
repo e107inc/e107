@@ -1469,7 +1469,7 @@ class users_ext
 		$var['pre']['text'] = EXTLAN_45;
 		$var['pre']['link'] = e_SELF."?pre";
 
-		$var['editext']['text'] = "Add Custom Field";
+		$var['editext']['text'] = EXTLAN_34a;
 		$var['editext']['link'] = e_SELF."?editext";
 
 		$var['cat']['text'] = EXTLAN_35;

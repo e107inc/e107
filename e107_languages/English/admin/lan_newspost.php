@@ -129,6 +129,18 @@ define("NWSLAN_123", "Posted");
 define("NWSLAN_127", "Default template");
 define("NWSLAN_128", "Set a string to be used in news pages URL. This will only work proper .htaccess rules and <a href='%s'>eURL config</a><br />Resolved URL based on current value: "); //FIXME HTML
 
+define("NWSLAN_129", "Email notification");
+define("NWSLAN_130", "Email notification triggered");
+define("NWSLAN_131", "News item visibility must include 'everyone' for email notifications to work.");
+define("NWSLAN_132", 'Checking for Ping Status');
+define("NWSLAN_133", 'Successfully Pinged:');
+define("NWSLAN_134", 'Ping failed!');
+define("NWSLAN_135", 'with');
+define("NWSLAN_136", 'Attempting to ping:');
+define("NWSLAN_137", 'Request:');
+define("NWSLAN_138", 'General');
+define("NWSLAN_139", 'Submit News');
+
 // define("LAN_NEWS_5", "Error! - Was unable to update news item into database!");
 // define("LAN_NEWS_6", "News entered into database.");
 // define("LAN_NEWS_7", "Error! - Was unable to enter news item into database!");

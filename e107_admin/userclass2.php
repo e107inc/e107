@@ -179,7 +179,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 			$e_userclass->calc_tree();
 			$text = "<div id='userclass-tree-structure'>".$e_userclass->show_graphical_tree()."</div>";
 
-			return array('caption'=>'Class Structure', 'text' => $text); //TODO LAN
+			return array('caption'=>UCSLAN_91, 'text' => $text);
 
 			// $text .= $e_userclass->show_graphical_tree();
 		}
@@ -1093,8 +1093,8 @@ unset($title);
 	$text .= $e_userclass->show_graphical_tree(TRUE);			// Print with debug options
 	$ns->tablerender(UCSLAN_21, $text);
 
-	$text = "<table class='table adminlist'><tr><td colspan='5'>Class rights for first 20 users in database</td></tr>
-	<tr><td>User ID</td><td>Disp Name</td><td>Raw classes</td><td>Inherited classes</td><td>Editable classes</td></tr>";
+	$text = "<table class='table adminlist'><tr><td colspan='5'>".UCSLAN_97."</td></tr>
+	<tr><td>".UCSLAN_92."</td><td>".UCSLAN_93."</td><td>".UCSLAN_94."</td><td>".UCSLAN_95."</td><td>".UCSLAN_96."</td></tr>";
 	$sql->db_Select('user','user_id,user_name,user_class',"ORDER BY user_id LIMIT 0,20",'no_where');
 	while ($row = $sql->db_Fetch())
 	{
@@ -1230,40 +1230,40 @@ unset($title);
 
 	if (isset($_POST['remove_db_fields']))
 	{	// Remove the DB fields
-	  $message = "Remove DB fields: ";
+	  $message = UCSLAN_98;
 	  $sql->db_Select_gen("ALTER TABLE #userclass_classes DROP `userclass_parent`, DROP `userclass_accum`, DROP `userclass_visibility`");
-	  $message .= "Completed";
+	  $message .= LAN_COMPLETED;
 	}
 
 	if (isset($_POST['add_class_tree']))
 	{	// Create a default tree
-	  $message = "Create default class tree: ";
+	  $message = UCSLAN_99;
 	  if (!$e_userclass->update_db(TRUE))
 	  {
-	    $message .= "Must add new DB fields first";
+	    $message .= UCSLAN_100;
 	  }
 	  else
 	  {
 	    $e_userclass->set_default_structure();
 		$e_userclass->read_tree(TRUE);		// Need to re-read the tree to show correct info
-		$message .= "Completed";
+		$message .= LAN_COMPLETED;
 	  }
 	}
 
 	if (isset($_POST['remove_class_tree']))
 	{	// Remove the default tree
-	  $message = "Remove default class tree: ";
+	  $message = UCSLAN_101;
 	  $sql->db_Delete("userclass_classes","`userclass_id` IN (".implode(',',array(e_UC_MAINADMIN,e_UC_MEMBER, e_UC_ADMIN, e_UC_ADMINMOD, e_UC_MODS, e_UC_USERS, e_UC_READONLY)).") ");
 	  $e_userclass->read_tree(TRUE);		// Need to re-read the tree to show correct info
-	  $message .= "completed";
+	  $message .= LAN_COMPLETEDa;
 	}
 
 	if (isset($_POST['rebuild_tree']))
 	{
-	  $message = 'Rebuilding tree: ';
+	  $message = UCSLAN_102;
 	  $e_userclass->calc_tree();
 	  $e_userclass->save_tree();
-	  $message .= " completed";
+	  $message .= LAN_COMPLETEDa;
 	}
 
 	if ($message)
@@ -1272,18 +1272,18 @@ unset($title);
 	}
 
 	$db_status = "Unknown";
-	$db_status = $e_userclass->update_db(TRUE) ? "Updated" : "Original";
+	$db_status = $e_userclass->update_db(TRUE) ? LAN_UPDATED : LAN_ORIGINAL;
 	$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."?test' id='testForm'>
 		<table class='table adminform'>
-		<tr><td class='fcaption' style='text-align:center' colspan='2'>Test Functions and Information</td></tr>";
-	$text .= "<tr><td style='text-align:center' colspan='2'>DB Status: ".$db_status."</td></tr>";
-	$text .= "<tr><td><input class='btn button' type='submit' name='add_db_fields' value='Add new DB fields' />First required step</td>";
-	$text .= "<td><input class='btn button' type='submit' name='remove_db_fields' value='Remove new DB fields' />Reverse the process</td></tr>";
-	$text .= "<tr><td><input class='btn button' type='submit' name='add_class_tree' value='Add class tree' />Optional default tree</td>";
-	$text .= "<td><input class='btn button' type='submit' name='remove_class_tree' value='Remove class tree' />Deletes the 'core' class entries</td></tr>";
-	$text .= "<tr><td><input class='btn button' type='submit' name='rebuild_tree' value='Rebuild class tree' />Sets up all the structures</td>";
-	$text .= "<td><input class='btn button' type='submit' name='' value='Spare' />Spare</td></tr>";
+		<tr><td class='fcaption' style='text-align:center' colspan='2'>".UCSLAN_103."</td></tr>";
+	$text .= "<tr><td style='text-align:center' colspan='2'>".UCSLAN_104.": ".$db_status."</td></tr>";
+	$text .= "<tr><td><input class='btn button' type='submit' name='add_db_fields' value='".UCSLAN_105."' />".UCSLAN_106."</td>";
+	$text .= "<td><input class='btn button' type='submit' name='remove_db_fields' value='".UCSLAN_107."' />".UCSLAN_108."</td></tr>";
+	$text .= "<tr><td><input class='btn button' type='submit' name='add_class_tree' value='".UCSLAN_109."' />".UCSLAN_110."</td>";
+	$text .= "<td><input class='btn button' type='submit' name='remove_class_tree' value='".UCSLAN_111."' />".UCSLAN_112."</td></tr>";
+	$text .= "<tr><td><input class='btn button' type='submit' name='rebuild_tree' value='".UCSLAN_113."' />".UCSLAN_114."</td>";
+	$text .= "<td><input class='btn button' type='submit' name='' value='".UCSLAN_115."' />".UCSLAN_115."</td></tr>";
 	$text .= "<tr><td colspan='2'>&nbsp;</td></tr>";
 	$text .= "<tr><td colspan='2'>".$e_userclass->show_tree(TRUE)."</td></tr>";
 
@@ -1291,7 +1291,7 @@ unset($title);
 
 	$text .= "</form>
 			</div>";
-	$ns->tablerender('User classes - test features', $text);
+	$ns->tablerender(UCSLAN_116, $text);
 	break;				// End of temporary test options
 
 
@@ -1308,29 +1308,29 @@ unset($title);
   $text .= "<select name='class_select'>\n";
   $text .= $e_userclass->vetted_tree('class_select',array($e_userclass,'select'), $_POST['class_select']);
   $text .= "</select>\n";
-  $ns->tablerender('Select box with nested items', $text);
+  $ns->tablerender(UCSLAN_117, $text);
 
   $text = "<select multiple size='10' name='multi_class_select[]'>\n";
   $text .= $e_userclass->vetted_tree('multi_class_select[]',array($e_userclass,'select'), implode(',',$_POST['multi_class_select']));
   $text .= "</select>\n";
-  $ns->tablerender('Multiple Select box with nested items', $text);
+  $ns->tablerender(UCSLAN_118, $text);
 
   $checked_class_list = implode(',',$_POST['classes_select']);
   $text = "<table style='".ADMIN_WIDTH."'><tr><td style='text-align:left'>";
   $text .= $e_userclass->vetted_tree('classes_select', array($e_userclass,'checkbox'), $checked_class_list, 'is-checkbox');
-  $text .= "Classes: ".$checked_class_list;
+  $text .= UCSLAN_119.": ".$checked_class_list;
   $text .= "</td><td style='text-align:left'>";
   $text .= $e_userclass->vetted_tree('normalised_classes_select', array($e_userclass,'checkbox'), $e_userclass->normalise_classes($checked_class_list), 'is-checkbox');
-  $text .= "Normalised Classes: ".$e_userclass->normalise_classes($checked_class_list);
+  $text .= UCSLAN_120.": ".$e_userclass->normalise_classes($checked_class_list);
   $text .= "</td></tr></table>";
-  $ns->tablerender('Nested checkboxes, showing the effect of the normalise() routine', $text);
+  $ns->tablerender(UCSLAN_121, $text);
 
-  $text = "Single class: ".$_POST['class_select']."<br />
-       Multi-select: ".implode(',',$_POST['multi_class_select'])."<br />
-       Check boxes: ".implode(',',$_POST['classes_select'])."<br />";
-  $text .= "<input class='btn button' type='submit' value='Click to save' />
+  $text = UCSLAN_122.": ".$_POST['class_select']."<br />
+       ".UCSLAN_123.": ".implode(',',$_POST['multi_class_select'])."<br />
+       ".UCSLAN_124.": ".implode(',',$_POST['classes_select'])."<br />";
+  $text .= "<input class='btn button' type='submit' value='".LAN_SAVEa."' />
 	</form>	</div>";
-  $ns->tablerender('Click on the button - the settings above should be remembered, and the $_POST values displayed', $text);
+  $ns->tablerender(UCSLAN_125, $text);
     break;				// End of 'debug'
 
 }	// End - switch ($action)

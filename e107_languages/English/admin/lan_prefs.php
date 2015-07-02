@@ -90,6 +90,7 @@ define("CUSTSIG_19", "usernames containing the following text will be rejected, 
 define("CUSTSIG_20", "User Custom Title");
 define("CUSTSIG_21", "Email Confirmation");
 define("CUSTSIG_22", "Option to hide email");
+define("CUSTSIG_23", "Password in Email Confirmation");
 
 define("PRFLAN_91", "If someone is attacking your site by multiple requests to your server, his IP will be automatically banned ! Best done with server config if possible!!!");
 define("PRFLAN_92", "Secure signup verification -- hide password in email?");
@@ -168,6 +169,8 @@ define("PRFLAN_166", "Show emoticon images on comment form?");
 define("PRFLAN_167", "Make entering an email address optional"); // subject to change.
 define("PRFLAN_168", "Site Contact Person(s)");
 define("PRFLAN_169", "If the chosen group contains more than one person, the user will be asked to select a person from the group.");
+define("PRFLAN_169a", "Contact Page Visibility");
+define("PRFLAN_169b", "Contact information and/or form will only be visible to this userclass group.");
 //define("PRFLAN_170", "Use reverse DNS to allow host banning");
 //define("PRFLAN_171", "Turning this option on will allow you to ban users by hostname, rather then just IP or email address.  <br />NOTE: This may affect pageload times on some hosts");
 define("PRFLAN_172", "Login Name maximum length (10..100)");
@@ -233,6 +236,8 @@ define("PRFLAN_223", "Completely Automated Public Turing test to tell Computers 
 // define("PRFLAN_223", "Comments will require manual approval by an admin prior to being visible to other users");
 
 define("PRFLAN_224", "User registration system");
+define("PRFLAN_224a", "Register &amp; Login");
+define("PRFLAN_224b", "Login Only");
 
 define("PRFLAN_225", "Used by Facebook and others. Should be a square image of at least 144px in width and height.");
 define("PRFLAN_226", "Used by some themes as the header image on some pages.");

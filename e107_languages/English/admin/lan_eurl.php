@@ -76,6 +76,11 @@ define("LAN_EURL_REWRITE_DESCR", "Search engine and user friendly URLs.");
 
 // News
 define("LAN_EURL_CORE_NEWS", "News");
+define("LAN_EURL_CORE_NEWS_1", "News Namespace and News Title");
+define("LAN_EURL_CORE_NEWS_2", "Year and News Title");
+define("LAN_EURL_CORE_NEWS_3", "Year/Month and News Title");
+define("LAN_EURL_CORE_NEWS_4", "Year/Month/Day and News Title");
+define("LAN_EURL_CORE_NEWS_5", "News Category and News Title");
 //define("LAN_EURL_NEWS_DEFAULT_LABEL", "Default");
 //define("LAN_EURL_NEWS_DEFAULT_DESCR", "Legacy direct URLs.");
 
@@ -130,3 +135,14 @@ define("LAN_EURL_SYSTEM_REWRITE_DESCR", "URLs for pages like Not Found, Access d
 define("LAN_EURL_CORE_INDEX", "Front Page");
 define("LAN_EURL_CORE_INDEX_INFO", "Front Page can't have an alias.");
 //define("LAN_EURL_", "");
+
+//
+define("LAN_EURL_1", "Mod-rewrite is disabled. To enable, please add the following line to your <b>e107_config.php</b> file:<br /><pre>define('e_MOD_REWRITE',true);</pre>");
+define("LAN_EURL_2", "Apache mod_rewrite was not found on this server and is required to use this feature. ");
+define("LAN_EURL_3", "Missing Generator data");
+define("LAN_EURL_4", "SEF URLs were updated.");
+define("LAN_EURL_5", "SEF URLs were NOT updated.");
+define("LAN_EURL_6", "Key");
+define("LAN_EURL_7", "Regular Expression");
+define("LAN_EURL_8", "Only");
+define("LAN_EURL_9", "Enable Search-Engine-Friendly URLs");

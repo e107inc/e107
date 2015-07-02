@@ -269,6 +269,30 @@ define('USRLAN_248', 'Us');
 define('USRLAN_249', 'Us');
 define('USRLAN_250', 'Us');
 
+//
+define('USRLAN_251', 'Session');
+define('USRLAN_252', 'Last Post');
+define('USRLAN_253', 'Extended Fields Updated');
+define('USRLAN_254', 'Extended Fields Insert Failed');
+define('USRLAN_255', 'Extended Fields Update Failed');
+define('USRLAN_256', 'Successfully logged in as');
+define('USRLAN_257', 'Please');
+define('USRLAN_258', 'Leave Admin');
+define('USRLAN_259', 'to browse the system as this user. Use &quot;Logout&quot; option in Administration to end front-end session');
+define('USRLAN_260', 'hour');
+define('USRLAN_261', 'hours');
+define('USRLAN_262', 'days');
+define('USRLAN_263', 'Resend account activation email to unactivated users.');
+define('USRLAN_264', 'hours ago');
+define('USRLAN_265', "Error updating user's password.");
+define('USRLAN_266', "RESEND ACTIVATION");
+define('USRLAN_267', "Total emails added to");
+define('USRLAN_268', "mail queue");
+define('USRLAN_269', "Bounce");
+define('USRLAN_270', "No password!");
+define('USRLAN_271', "Leave blank for no change");
+define('USRLAN_272', "Make not verified");
+
 // These need review - there are duplicates above - they come from admin/lan_userclass.php.
 define("UCSLAN_1", "Sending notification email to");
 define("UCSLAN_2", "Updated Privileges");
