@@ -132,7 +132,7 @@ if (isset($_POST['updatedownlaodoptions']))
 	}
 	else
 	{
-		// e107::getMessage()->add(DOWLAN_8);
+		// e107::getMessage()->add(LAN_NO_CHANGES_TO_SAVE);
 	}
 }
 
@@ -151,7 +151,7 @@ if (isset($_POST['updateuploadoptions']))
 	}
 	else
 	{
-		$message = DOWLAN_8;
+		$message = LAN_NO_CHANGES_TO_SAVE;
 	}
 }
 
@@ -332,9 +332,9 @@ if ($action == "uopt")
          "upload_id"          => array("title"=>LAN_ID,  "type"=>"", "width"=>"auto", "thclass"=>"", "forced"=>true),
          "upload_date"        => array("title"=>DOWLAN_78,  "type"=>"", "width"=>"auto", "thclass"=>""),
          "upload_uploader"    => array("title"=>DOWLAN_79,  "type"=>"", "width"=>"auto", "thclass"=>""),
-         "upload_name"        => array("title"=>DOWLAN_12,  "type"=>"", "width"=>"auto", "thclass"=>""),
-         "upload_file_name"   => array("title"=>DOWLAN_59,  "type"=>"", "width"=>"auto", "thclass"=>""),
-         "upload_size"        => array("title"=>DOWLAN_66,  "type"=>"", "width"=>"auto", "thclass"=>"right"),
+         "upload_name"        => array("title"=>LAN_NAME,  "type"=>"", "width"=>"auto", "thclass"=>""),
+         "upload_file_name"   => array("title"=>LAN_FILENAME,  "type"=>"", "width"=>"auto", "thclass"=>""),
+         "upload_size"        => array("title"=>LAN_FILESIZE,  "type"=>"", "width"=>"auto", "thclass"=>"right"),
          "options"            => array("title"=>LAN_OPTIONS,"width"=>"15%", "thclass"=>"center last", "forced"=>true)
       );
       //TODO $filterColumns = ($user_pref['admin_download_disp'] ? $user_pref['admin_download_disp'] : array("download_name","download_class"));
@@ -351,7 +351,7 @@ if ($action == "uopt")
 
       if (!$active_uploads = $sql->db_Select("upload", "*", "upload_active=0 ORDER BY upload_id ASC"))
       {
-         $text .= DOWLAN_19.".</td></tr>";
+         $text .= LAN_SCREENSHOT.".</td></tr>";
       }
       else
       {
@@ -380,7 +380,7 @@ if ($action == "uopt")
                      <div>
                         <a href='".e_SELF."?dlm.".$row['upload_id']."'><img src='".e_IMAGE."admin_images/downloads_32.png' alt='".DOWLAN_91."' title='".DOWLAN_91."' style='border:0'/></a>
                         <a href='".e_ADMIN."newspost.php?create.upload.1.".$row['upload_id']."'><img src='".e_IMAGE."admin_images/news_32.png' alt='".DOWLAN_162."' title='".DOWLAN_162."' style='border:0'/></a>
-                        <input type='image' title='".LAN_DELETE."' name='updelete[upload_".$row['upload_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(" [ ".$row['upload_name']." ] ".DOWLAN_33)."') \"/>
+                        <input type='image' title='".LAN_DELETE."' name='updelete[upload_".$row['upload_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(" [ ".$row['upload_name']." ] ".LAN_JSCONFIRM)."') \"/>
                      </div>
                   </form>
                </td>
@@ -413,7 +413,7 @@ if ($action == "uopt")
          <form method='post' action='".e_SELF."' class='e-show-if-js e-filter-form' id='jstarget-downloads-list'>
             <div id='download_search'>
             <fieldset>
-               <legend class='e-hideme'>".DOWLAN_194."</legend>
+               <legend class='e-hideme'>".LAN_SCREENSHOT."</legend>
                <table class='table adminform'>
                   <tr>
                      <td>".DOWLAN_198." ".$frm->text('download-search-text', $this->searchField, 50, array('size'=>50, 'class' => 'someclass'))."&nbsp;<a href='#download_search#download_advanced_search' class='e-swapit'>Switch to Advanced-Search</a></td>
@@ -450,16 +450,16 @@ if ($action == "uopt")
                   <col style='width:35%;'/>
                </colgroup>
                <tr>
-                  <td>".DOWLAN_12."</td>
+                  <td>".LAN_NAME."</td>
                   <td><input class='tbox' type='text' name='download_advanced_search[name]' size='30' value='{$this->advancedSearchFields['name']}' maxlength='50'/></td>
-                  <td>".DOWLAN_18."</td>
+                  <td>".LAN_DESCRIPTION."</td>
                   <td><input class='tbox' type='text' name='download_advanced_search[description]' size='50' value='{$this->advancedSearchFields['description']}' maxlength='50'/></td>
                </tr>
                <tr>
-                  <td>".DOWLAN_11."</td>
+                  <td>".LAN_CATEGORY."</td>
                   <td>".$this->getCategorySelectList($this->advancedSearchFields['category'], true, false, '&nbsp;', 'download_advanced_search[category]');
       $text .= "  </td>
-                  <td>".DOWLAN_149."</td>
+                  <td>".LAN_URL."</td>
                   <td><input class='tbox' type='text' name='download_advanced_search[url]' size='50' value='{$this->advancedSearchFields['url']}' maxlength='50'/></td>
                </tr>
                <tr>
@@ -471,7 +471,7 @@ if ($action == "uopt")
       $text .= "//TODO";
       $text .= "
                   </td>
-                  <td>".DOWLAN_21."</td>
+                  <td>".LAN_STATUS."</td>
                   <td>
                      <select name='download_advanced_search[status]' class='tbox'>";
       $text .= $this->_getStatusList('download_advanced_search[status]', $this->advancedSearchFields['status']);
@@ -479,7 +479,7 @@ if ($action == "uopt")
                   </td>
                </tr>
                <tr>
-                  <td>".DOWLAN_66."</td>
+                  <td>".LAN_FILESIZE."</td>
                   <td>
          ";
       $text .= $this->_getConditionList('download_advanced_search[filesize_condition]', $this->advancedSearchFields['filesize_condition']);
@@ -491,7 +491,7 @@ if ($action == "uopt")
                         <option value='1048576' ".($this->advancedSearchFields['filesize_units'] == '1048576' ? " selected='selected' " : "")." >Mb</option>
                      </select>
                   </td>
-                  <td>".DOWLAN_43."</td>
+                  <td>".LAN_VISIBLE_TO."</td>
                   <td>".$frm->uc_select('download_advanced_search[visible]', $this->advancedSearchFields['visible'], $this->userclassOptions)."</td>
                </tr>
                <tr>
@@ -509,13 +509,13 @@ if ($action == "uopt")
                   </td>
                </tr>
                <tr>
-                  <td>".DOWLAN_15."</td>
+                  <td>".LAN_AUTHOR."</td>
                   <td><input class='tbox' type='text' name='download_advanced_search[author]' size='30' value='{$this->advancedSearchFields['author']}' maxlength='50'/></td>
-                  <td>".DOWLAN_16."</td>
+                  <td>".LAN_AUTHOR_EMAIL."</td>
                   <td><input class='tbox' type='text' name='download_advanced_search[author_email]' size='30' value='{$this->advancedSearchFields['author']}' maxlength='50'/></td>
                </tr>
                <tr>
-                  <td>".DOWLAN_17."</td>
+                  <td>".LAN_AUTHOR." - ".LAN_WEBSITE."</td>
                   <td><input class='tbox' type='text' name='download_advanced_search[author_website]' size='30' value='{$this->advancedSearchFields['author']}' maxlength='50'/></td>
                   <td>&nbsp;</td>
                   <td>&nbsp;</td>
@@ -668,7 +668,7 @@ if ($action == "uopt")
         		</form>
       ";
 
-      $ns->tablerender(DOWLAN_23, $text);
+      $ns->tablerender(LAN_FILETYPES, $text);
    }
    function show_upload_options() {
       global $pref, $ns;
@@ -720,7 +720,7 @@ if ($action == "uopt")
             </div>
            </form>
       ";
-   	$ns->tablerender(LAN_DL_OPTIONS, $text);
+   	$ns->tablerender(LAN_OPTIONS, $text);
    }
 
 
@@ -746,9 +746,9 @@ if ($action == "uopt")
     */
    function _getStatusList($name, $value) {
       $download_status[99]= '&nbsp;';
-      $download_status[0] = DOWLAN_122;
-      $download_status[1] = DOWLAN_123;
-      $download_status[2] = DOWLAN_124;
+      $download_status[0] = LAN_INACTIVE;
+      $download_status[1] = LAN_ACTIVE_LIMITED;
+      $download_status[2] = LAN_ACTIVE;
       $text = "";
       foreach($download_status as $key=>$val){
          $sel = ($value == $key && $value != null) ? " selected='selected'" : "";
@@ -773,7 +773,7 @@ function admin_download_adminmenu($parms)
 	$var['main']['link'] = e_SELF;
 	$var['create']['text'] = DOWLAN_30;
 	$var['create']['link'] = e_SELF."?create";
-	$var['cat']['text'] = DOWLAN_31;
+	$var['cat']['text'] = LAN_CATEGORIES;
 	$var['cat']['link'] = e_SELF."?cat";
 	$var['cat']['perm'] = "Q";
 	$var['opt']['text'] = LAN_OPTIONS;
@@ -784,16 +784,16 @@ function admin_download_adminmenu($parms)
 	$var['limits']['link'] = e_SELF."?limits";
 	$var['mirror']['text'] = DOWLAN_128;
 	$var['mirror']['link'] = e_SELF."?mirror";
-	e107::getNav()->admin(DOWLAN_32, $action, $var);
+	e107::getNav()->admin(LAN_DOWNLOADS, $action, $var);
 
    unset($var);
 	$var['ulist']['text'] = DOWLAN_22;
 	$var['ulist']['link'] = e_SELF."?ulist";;
-	$var['filetypes']['text'] = DOWLAN_23;
+	$var['filetypes']['text'] = LAN_FILETYPES;
 	$var['filetypes']['link'] = e_SELF."?filetypes";
 	$var['uopt']['text'] = LAN_OPTIONS;
 	$var['uopt']['link'] = e_SELF."?uopt";
-	e107::getNav()->admin(DOWLAN_10, $action, $var);
+	e107::getNav()->admin(LAN_UPLOADS, $action, $var);
 }
  */
 

@@ -75,13 +75,13 @@ class upload_ui extends e_admin_ui
             'checkboxes'            =>   array ( 'title' => '', 'type' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => true, 'class' => 'center', 'toggle' => 'e-multiselect',  ),
             'upload_id'             =>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
             'upload_datestamp'      =>   array ( 'title' => LAN_DATESTAMP, 'type' => 'datestamp', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-           'upload_name'           =>   array ( 'title' => LAN_TITLE, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left', 'validate' => true, 'inline' => true),
-            'upload_poster'         =>   array ( 'title' => UPLLAN_5, 'type' => 'user', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-            'upload_email'          =>   array ( 'title' => LAN_EMAIL, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-            'upload_website'        =>   array ( 'title' => LAN_URL, 'type' => 'url', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+            'upload_name'           =>   array ( 'title' => LAN_TITLE, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left', 'validate' => true, 'inline' => true),
+            'upload_poster'         =>   array ( 'title' => LAN_AUTHOR, 'type' => 'user', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+            'upload_email'          =>   array ( 'title' => LAN_AUTHOR." (".LAN_EMAIL.")", 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+            'upload_website'        =>   array ( 'title' => LAN_AUTHOR." (".LAN_URL.")", 'type' => 'url', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
             'upload_version'        =>   array ( 'title' => LAN_VERSION, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
             'upload_file'           =>   array ( 'title' => LAN_FILE, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center', 'validate' => true ),
-            'upload_ss'             =>   array ( 'title' => 'Ss', 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+            'upload_ss'             =>   array ( 'title' => LAN_SCREENSHOT, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
             'upload_description'    =>   array ( 'title' => LAN_DESCRIPTION, 'type' => 'textarea', 'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
             'upload_demo'           =>   array ( 'title' => UPLLAN_14, 'type' => 'url', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
             'upload_filesize'       =>   array ( 'title' => LAN_SIZE, 'type' => 'hidden', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
@@ -688,7 +688,7 @@ switch ($action)
 		</tr>
 
 		<tr>
-		<td class='forumheader3'>".UPLLAN_5."</td>
+		<td class='forumheader3'>".LAN_AUTHOR."</td>
 		<td class='forumheader3'>{$poster}</td>
 		</tr>
 
@@ -765,7 +765,7 @@ switch ($action)
 		<tr>
 		<td class='fcaption'>".LAN_ID."</td>
 		<td class='fcaption'>".LAN_DATE."</td>
-		<td class='fcaption'>".UPLLAN_5."</td>
+		<td class='fcaption'>".LAN_AUTHOR."</td>
 		<td class='fcaption'>".LAN_NAME."</td>
 		<td class='fcaption'>".LAN_FILE_NAME."</td>
 		<td class='fcaption'>".LAN_SIZE."</td>

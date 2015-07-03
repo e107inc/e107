@@ -24,7 +24,7 @@ define("UPLLAN_1", "Upload removed from list.");
 define("UPLLAN_2", "Settings saved in database");
 //define("UPLLAN_3", "Upload ID");//LAN_ID
 define('UPLLAN_4', 'Nothing changed - not updated');
-define("UPLLAN_5", "Poster");
+//define("UPLLAN_5", "Poster");//LAN_AUTHOR
 //define("UPLLAN_6", "Email");//LAN_EMAIL
 define("UPLLAN_7", "Website");
 //define("UPLLAN_8", "File Name");//LAN_FILE_NAME

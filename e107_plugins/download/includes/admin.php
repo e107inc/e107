@@ -82,7 +82,7 @@ class plugin_download_admin extends e_admin_dispatcher
 	$var['main']['link'] = e_SELF;
 	$var['create']['text'] = DOWLAN_30;
 	$var['create']['link'] = e_SELF."?create";
-	$var['cat']['text'] = DOWLAN_31;
+	$var['cat']['text'] = LAN_CATEGORIES;
 	$var['cat']['link'] = e_SELF."?cat";
 	$var['cat']['perm'] = "Q";
 	$var['opt']['text'] = LAN_OPTIONS;
@@ -93,12 +93,12 @@ class plugin_download_admin extends e_admin_dispatcher
 	$var['limits']['link'] = e_SELF."?limits";
 	$var['mirror']['text'] = DOWLAN_128;
 	$var['mirror']['link'] = e_SELF."?mirror";
-	e107::getNav()->admin(DOWLAN_32, $action, $var);
+	e107::getNav()->admin(LAN_DOWNLOADS, $action, $var);
 
    unset($var);
 	$var['ulist']['text'] = DOWLAN_22;
 	$var['ulist']['link'] = e_SELF."?ulist";;
-	$var['filetypes']['text'] = DOWLAN_23;
+	$var['filetypes']['text'] = LAN_FILETYPES;
 	$var['filetypes']['link'] = e_SELF."?filetypes";
 	$var['uopt']['text'] = LAN_OPTIONS;
 	$var['uopt']['link'] = e_SELF."?uopt";
@@ -235,23 +235,23 @@ class download_main_admin_ui extends e_admin_ui
 			'checkboxes'				=> array('title'=> '', 					'type' => null,			'data' => null,			'width'=>'5%', 		'thclass' =>'center', 'forced'=> TRUE,  'class'=>'center', 'toggle' => 'e-multiselect'),
 			'download_id'				=> array('title'=> ID, 					'type' => 'number',		'data' => 'int',		'width'=>'5%',		'thclass' => '',	'forced'=> TRUE, 'primary'=>TRUE/*, 'noedit'=>TRUE*/), //Primary ID is not editable
             'download_name' 			=> array('title'=> LAN_TITLE, 			'type' => 'text', 		'data' => 'str',		'inline'=>true, 'width' => 'auto',	'thclass' => ''),		
-            'download_url'	   			=> array('title'=> DOWLAN_13, 			'type' => 'url', 	'data' => 'str',		'width'=>'auto',	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE),
+            'download_url'	   			=> array('title'=> LAN_FILE, 			'type' => 'url', 	'data' => 'str',		'width'=>'auto',	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE),
 		    'download_sef'	   			=> array('title'=> LAN_SEFURL, 			'type' => 'text', 	'inline'=>true, 'data' => 'str',		'width'=>'auto',	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE),
-		  	'download_keywords'	   	=> array('title'=> LAN_KEYWORDS, 		'type' => 'tags', 	'inline'=>true, 'data' => 'str',		'width'=>'auto',	'thclass' => ''),
+		  	'download_keywords'	   	    => array('title'=> LAN_KEYWORDS, 		'type' => 'tags', 	'inline'=>true, 'data' => 'str',		'width'=>'auto',	'thclass' => ''),
 		
 			'download_author' 			=> array('title'=> LAN_AUTHOR,			'type' => 'user', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
-         	'download_author_email' 	=> array('title'=> DOWLAN_16, 			'type' => 'email', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),  
-         	'download_author_website' 	=> array('title'=> DOWLAN_17, 			'type' => 'url', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
+         	'download_author_email' 	=> array('title'=> LAN_AUTHOR_EMAIL, 	'type' => 'email', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),  
+         	'download_author_website' 	=> array('title'=> LAN_AUTHOR_WEBSITE, 	'type' => 'url', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
             'download_description' 		=> array('title'=> LAN_DESCRIPTION,		'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
 		 	
-		 	'download_filesize' 		=> array('title'=> DOWLAN_66,			'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'right', 'class' => 'right'),			
+		 	'download_filesize' 		=> array('title'=> LAN_FILESIZE,			'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'right', 'class' => 'right'),			
 		 	'download_requested' 		=> array('title'=> DOWLAN_29, 			'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'right', 'class' => 'right'),
 			'download_category' 		=> array('title'=> LAN_CATEGORY,		'type' => 'dropdown',	'width' => 'auto',	'inline'=>true, 'batch' => TRUE, 'filter'=>TRUE),		
-			'download_active'			=> array('title'=> DOWLAN_21,			'type' => 'method', 		'data' => 'int',		'width' => '5%',	'thclass' => 'center', 'class' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'noedit' => true),
+			'download_active'			=> array('title'=> LAN_STATUS,			'type' => 'method', 		'data' => 'int',		'width' => '5%',	'thclass' => 'center', 'class' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'noedit' => true),
 			'download_datestamp' 		=> array('title'=> LAN_DATE, 			'type' => 'datestamp', 	'data' => 'int',		'width' => 'auto',	'thclass' => '', 'readParms' => 'long', 'writeParms' => ''),
 			
-			'download_thumb' 			=> array('title'=> DOWLAN_20,			'type' => 'image', 		'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>TRUE ),
-			'download_image' 			=> array('title'=> DOWLAN_19,			'type' => 'image', 		'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>TRUE,	'batch' => FALSE, 'filter'=>FALSE),
+			'download_thumb' 			=> array('title'=> LAN_THUMBNAIL_IMAGE,			'type' => 'image', 		'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>TRUE ),
+			'download_image' 			=> array('title'=> LAN_SCREENSHOT,			'type' => 'image', 		'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>TRUE,	'batch' => FALSE, 'filter'=>FALSE),
 			'download_comment'			=> array('title'=> DOWLAN_102,			'type' => 'boolean', 		'data' => 'int',		'width' => '5%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'noedit' => true),
 			
 			'download_class' 			=> array('title'=> DOWLAN_113,			'type' => 'userclass',		'width' => 'auto', 'inline'=>true, 'data' => 'int','batch' => TRUE, 'filter'=>TRUE),		
@@ -277,26 +277,26 @@ class download_main_admin_ui extends e_admin_ui
 $columnInfo = array(
 		 "checkboxes"	   			=> array("title" => "", "forced"=> TRUE, "width" => "3%", "thclass" => "center first", "toggle" => "dl_selected"),
          "download_id"              => array("title"=>LAN_ID,  "type"=>"", "width"=>"auto", "thclass"=>"", "forced"=>true),
-         "download_name"            => array("title"=>DOWLAN_12,  "type"=>"", "width"=>"auto", "thclass"=>""),
-         "download_url"             => array("title"=>DOWLAN_13,  "type"=>"", "width"=>"auto", "thclass"=>""),
-         "download_author"          => array("title"=>DOWLAN_15,  "type"=>"", "width"=>"auto", "thclass"=>""),
-         "download_author_email"    => array("title"=>DOWLAN_16,  "type"=>"", "width"=>"auto", "thclass"=>""),
-         "download_author_website"  => array("title"=>DOWLAN_17,  "type"=>"", "width"=>"auto", "thclass"=>""),
-         "download_description"     => array("title"=>DOWLAN_18,  "type"=>"", "width"=>"auto", "thclass"=>""),
+         "download_name"            => array("title"=>LAN_NAME,  "type"=>"", "width"=>"auto", "thclass"=>""),
+         "download_url"             => array("title"=>LAN_FILE,  "type"=>"", "width"=>"auto", "thclass"=>""),
+         "download_author"          => array("title"=>LAN_AUTHOR,  "type"=>"", "width"=>"auto", "thclass"=>""),
+         "download_author_email"    => array("title"=>LAN_AUTHOR_EMAIL,  "type"=>"", "width"=>"auto", "thclass"=>""),
+         "download_author_website"  => array("title"=>LAN_AUTHOR." - ".LAN_WEBSITE,  "type"=>"", "width"=>"auto", "thclass"=>""),
+         "download_description"     => array("title"=>LAN_DESCRIPTION,  "type"=>"", "width"=>"auto", "thclass"=>""),
          
- * 		 "download_filesize"        => array("title"=>DOWLAN_66,  "type"=>"", "width"=>"auto", "thclass"=>"right"),
+ * 		 "download_filesize"        => array("title"=>LAN_FILESIZE,  "type"=>"", "width"=>"auto", "thclass"=>"right"),
          "download_requested"       => array("title"=>DOWLAN_29,  "type"=>"", "width"=>"auto", "thclass"=>"center"),
-         "download_category"        => array("title"=>DOWLAN_11,  "type"=>"", "width"=>"auto", "thclass"=>""),
-         "download_active"          => array("title"=>DOWLAN_21,  "type"=>"", "width"=>"auto", "thclass"=>"center"),
+         "download_category"        => array("title"=>LAN_CATEGORY,  "type"=>"", "width"=>"auto", "thclass"=>""),
+         "download_active"          => array("title"=>LAN_STATUS,  "type"=>"", "width"=>"auto", "thclass"=>"center"),
          "download_datestamp"       => array("title"=>DOWLAN_182, "type"=>"", "width"=>"auto", "thclass"=>""),
          
- * 		 "download_thumb"           => array("title"=>DOWLAN_20,  "type"=>"", "width"=>"auto", "thclass"=>"center"),
-         "download_image"           => array("title"=>DOWLAN_19,  "type"=>"", "width"=>"auto", "thclass"=>""),
+ * 		 "download_thumb"           => array("title"=>LAN_THUMBNAIL_IMAGE,  "type"=>"", "width"=>"auto", "thclass"=>"center"),
+         "download_image"           => array("title"=>LAN_SCREENSHOT,  "type"=>"", "width"=>"auto", "thclass"=>""),
          "download_comment"         => array("title"=>DOWLAN_102, "type"=>"", "width"=>"auto", "thclass"=>"center"),
          "download_class"           => array("title"=>DOWLAN_113, "type"=>"", "width"=>"auto", "thclass"=>""),
          "download_mirror"          => array("title"=>DOWLAN_128, "type"=>"", "width"=>"auto", "thclass"=>""),
          "download_mirror_type"     => array("title"=>DOWLAN_195, "type"=>"", "width"=>"auto", "thclass"=>""),
-         "download_visible"         => array("title"=>DOWLAN_43,  "type"=>"", "width"=>"auto", "thclass"=>""),
+         "download_visible"         => array("title"=>LAN_VISIBLE_TO,  "type"=>"", "width"=>"auto", "thclass"=>""),
 		 "options"			        => array("title"=>LAN_OPTIONS, "width"=>"10%", "thclass"=>"center last", "forced"=>true)
 		);
 */		
@@ -460,9 +460,9 @@ $columnInfo = array(
                      $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
                      <table class="adminlist">';
                      $text .= '<tr>';
-                     $text .= '<th>'.DOWLAN_13.'</th>';
+                     $text .= '<th>'.LAN_FILE.'</th>';
                      $text .= '<th>'.DOWLAN_182.'</th>';
-                     $text .= '<th>'.DOWLAN_66.'</th>';
+                     $text .= '<th>'.LAN_FILESIZE.'</th>';
                      $text .= '<th>'.LAN_OPTIONS.'</th>';
                      $text .= '</tr>';
                      $foundSome = true;
@@ -596,7 +596,7 @@ $columnInfo = array(
 						<input type='text' class='tbox' size='5' name='count_days[{$row['limit_id']}]' value='".($row['limit_count_days'] ? $row['limit_count_days'] : "")."'/> ".DOWLAN_110."
 					</td>
 					<td>
-						<input type='text' class='tbox' size='5' name='bw_num[{$row['limit_id']}]' value='".($row['limit_bw_num'] ? $row['limit_bw_num'] : "")."'/> ".DOWLAN_111." ".DOWLAN_109."
+						<input type='text' class='tbox' size='5' name='bw_num[{$row['limit_id']}]' value='".($row['limit_bw_num'] ? $row['limit_bw_num'] : "")."'/> ".CORE_LAN_KB." ".DOWLAN_109."
 						<input type='text' class='tbox' size='5' name='bw_days[{$row['limit_id']}]' value='".($row['limit_bw_days'] ? $row['limit_bw_days'] : "")."'/> ".DOWLAN_110."
 					</td>
 					</tr>
@@ -620,7 +620,7 @@ $columnInfo = array(
 				<input type='text' class='tbox' size='5' name='new_count_days' value=''/> ".DOWLAN_110."
 			</td>
 			<td>
-				<input type='text' class='tbox' size='5' name='new_bw_num' value=''/> ".DOWLAN_111." ".DOWLAN_109."
+				<input type='text' class='tbox' size='5' name='new_bw_num' value=''/> ".CORE_LAN_KB." ".DOWLAN_109."
 				<input type='text' class='tbox' size='5' name='new_bw_days' value=''/> ".DOWLAN_110."
 			</td>
 			</tr>
@@ -675,10 +675,10 @@ $columnInfo = array(
 		                     $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
 		                     			<table class="table adminform">';
 		                     $text .= '<tr>';
-		                     $text .= '<th>'.DOWLAN_13.'</th>';
+		                     $text .= '<th>'.LAN_FILE.'</th>';
 		                     $text .= '<th>'.LAN_ID.'</th>';
-		                     $text .= '<th>'.DOWLAN_27.'</th>';
-		                     $text .= '<th>'.DOWLAN_11.'</th>';
+		                     $text .= '<th>'.LAN_DOWNLOAD.'</th>';
+		                     $text .= '<th>'.LAN_CATEGORY.'</th>';
 		                     $text .= '<th>'.LAN_OPTIONS.'</th>';
 		                     $text .= '</tr>';
 		                     $foundSome = true;
@@ -701,7 +701,7 @@ $columnInfo = array(
 		                     $text .= '<td>'.$tp->toHTML($row['download_category_name']).'</td>';
 		                     $text .= '<td>
 		                                 <a href="'.e_SELF.'?create.edit.'.$row["download_id"].'.maint.duplicates">'.ADMIN_EDIT_ICON.'</a>
-		   				                  <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$row["download_id"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm("'.$tp->toJS(DOWLAN_33.' [ID: '.$row["download_id"].' ]').'") \'/>
+		   				                  <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$row["download_id"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm("'.$tp->toJS(LAN_JSCONFIRM.' [ID: '.$row["download_id"].' ]').'") \'/>
 		   				               </td>';
 		                     $text .= '</tr>';
 		                  }
@@ -731,9 +731,9 @@ $columnInfo = array(
 		                     $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
 		                     <table class="table adminform">';
 		                     $text .= '<tr>';
-		                     $text .= '<th>'.DOWLAN_13.'</th>';
+		                     $text .= '<th>'.LAN_FILE.'</th>';
 		                     $text .= '<th>'.DOWLAN_182.'</th>';
-		                     $text .= '<th>'.DOWLAN_66.'</th>';
+		                     $text .= '<th>'.LAN_FILESIZE.'</th>';
 		                     $text .= '<th>'.LAN_OPTIONS.'</th>';
 		                     $text .= '</tr>';
 		                     $foundSome = true;
@@ -779,9 +779,9 @@ $columnInfo = array(
 		                        		<table class="adminlist">';
 		                        $text .= '<tr>';
 		                        $text .= '<th>'.LAN_ID.'</th>';
-		                        $text .= '<th>'.DOWLAN_27.'</th>';
-		                        $text .= '<th>'.DOWLAN_11.'</th>';
-		                        $text .= '<th>'.DOWLAN_13.'</th>';
+		                        $text .= '<th>'.LAN_DOWNLOAD.'</th>';
+		                        $text .= '<th>'.LAN_CATEGORY.'</th>';
+		                        $text .= '<th>'.LAN_FILE.'</th>';
 		                        $text .= '<th>'.LAN_OPTIONS.'</th>';
 		                        $text .= '</tr>';
 		                        $foundSome = true;
@@ -793,7 +793,7 @@ $columnInfo = array(
 		                     $text .= '<td>'.$tp->toHTML($row['download_url']).'</td>';
 		                     $text .= '<td>
 		                                 <a href="'.e_SELF.'?create.edit.'.$row["download_id"].'.maint.missing">'.ADMIN_EDIT_ICON.'</a>
-		   					               <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$row["download_id"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm("'.$tp->toJS(DOWLAN_33.' [ID: '.$row["download_id"].' ]').'") \'/>
+		   					               <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$row["download_id"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm("'.$tp->toJS(LAN_JSCONFIRM.' [ID: '.$row["download_id"].' ]').'") \'/>
 		   					            </td>';
 		                     $text .= '</tr>';
 		                  }
@@ -825,9 +825,9 @@ $columnInfo = array(
 		                     		<table class="table adminform">';
 		                     $text .= '<tr>';
 		                     $text .= '<th>'.LAN_ID.'</th>';
-		                     $text .= '<th>'.DOWLAN_27.'</th>';
-		                     $text .= '<th>'.DOWLAN_11.'</th>';
-		                     $text .= '<th>'.DOWLAN_13.'</th>';
+		                     $text .= '<th>'.LAN_DOWNLOAD.'</th>';
+		                     $text .= '<th>'.LAN_CATEGORY.'</th>';
+		                     $text .= '<th>'.LAN_FILE.'</th>';
 		                     $text .= '<th>'.LAN_OPTIONS.'</th>';
 		                     $text .= '</tr>';
 		                     $foundSome = true;
@@ -849,7 +849,7 @@ $columnInfo = array(
 		                  }
 		                  $text .= '<td>
 		                              <a href="'.e_SELF.'?create.edit.'.$row["download_id"].'.maint.inactive">'.ADMIN_EDIT_ICON.'</a>
-		   				               <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$row["download_id"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm("'.$tp->toJS(DOWLAN_33.' [ID: '.$row["download_id"].' ]').'") \'/>
+		   				               <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$row["download_id"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm("'.$tp->toJS(LAN_JSCONFIRM.' [ID: '.$row["download_id"].' ]').'") \'/>
 		   				            </td>';
 		                  $text .= '</tr>';
 		               }
@@ -880,8 +880,8 @@ $columnInfo = array(
 		                     <table class="table adminlist">';
 		                     $text .= '<tr>';
 		                     $text .= '<th>'.LAN_ID.'</th>';
-		                     $text .= '<th>'.DOWLAN_27.'</th>';
-		                     $text .= '<th>'.DOWLAN_13.'</th>';
+		                     $text .= '<th>'.LAN_DOWNLOAD.'</th>';
+		                     $text .= '<th>'.LAN_FILE.'</th>';
 		                     $text .= '<th>'.LAN_OPTIONS.'</th>';
 		                     $text .= '</tr>';
 		                     $foundSome = true;
@@ -901,7 +901,7 @@ $columnInfo = array(
 		                  }
 		                  $text .= '<td>
 		                              <a href="'.e_SELF.'?create.edit.'.$row["download_id"].'.maint.nocategory">'.ADMIN_EDIT_ICON.'</a>
-		   				               <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$row["download_id"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm("'.$tp->toJS(DOWLAN_33.' [ID: '.$row["download_id"].' ]').'") \'/>
+		   				               <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$row["download_id"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm("'.$tp->toJS(LAN_JSCONFIRM.' [ID: '.$row["download_id"].' ]').'") \'/>
 		   				            </td>';
 		                  $text .= '</tr>';
 		               }
@@ -918,7 +918,7 @@ $columnInfo = array(
 		         }
 		         case 'filesize':
 		         {
-		            $title = DOWLAN_66;
+		            $title = LAN_FILESIZE;
 		            $text = "";
 		            $query = "SELECT d.*, dc.* FROM `#download` AS d LEFT JOIN `#download_category` AS dc ON dc.download_category_id=d.download_category WHERE d.download_url<>''";
 		            $count = $sql->gen($query);
@@ -934,9 +934,9 @@ $columnInfo = array(
 		                           		<table class="table adminlist">';
 		                           $text .= '<tr>';
 		                           $text .= '<th>'.LAN_ID.'</th>';
-		                           $text .= '<th>'.DOWLAN_27.'</th>';
-		                           $text .= '<th>'.DOWLAN_11.'</th>';
-		                           $text .= '<th>'.DOWLAN_13.'</th>';
+		                           $text .= '<th>'.LAN_DOWNLOAD.'</th>';
+		                           $text .= '<th>'.LAN_CATEGORY.'</th>';
+		                           $text .= '<th>'.LAN_FILE.'</th>';
 		                           $text .= '<th>'.DOWLAN_180.'</th>';
 		                           $text .= '<th>'.LAN_OPTIONS.'</th>';
 		                           $text .= '</tr>';
@@ -952,7 +952,7 @@ $columnInfo = array(
 		                        $text .= '</td>';
 		                        $text .= '<td>
 		                                    <a href="'.e_SELF.'?create.edit.'.$row["download_id"].'.maint.filesize">'.ADMIN_EDIT_ICON.'</a>
-		   					                  <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$row["download_id"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm("'.$tp->toJS(DOWLAN_33.' [ID: '.$row["download_id"].' ]').'") \'/>
+		   					                  <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$row["download_id"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm("'.$tp->toJS(LAN_JSCONFIRM.' [ID: '.$row["download_id"].' ]').'") \'/>
 		   					               </td>';
 		                        $text .= '</tr>';
 		                     }
@@ -985,7 +985,7 @@ $columnInfo = array(
 		      $text = "
 		      	<form method='post' action='".e_SELF."?".e_QUERY."' id='core-db-main-form'>
 		      		<fieldset id='core-db-plugin-scan'>
-		      		<legend class='e-hideme'>".DOWLAN_10."</legend>
+		      		<legend class='e-hideme'>".LAN_UPLOADS."</legend>
 		      			<table class='table adminform'>
 		      			<colgroup span='2'>
 		      				<col style='width: 40%'></col>
@@ -1023,7 +1023,7 @@ $columnInfo = array(
 		      					</td>
 		      				</tr>
 		      				<tr>
-		      					<td>".DOWLAN_66."</td>
+		      					<td>".LAN_FILESIZE."</td>
 		      					<td>
 		      						".$eform->radio('dl_maint', 'filesize').$eform->label(DOWLAN_190, 'dl_maint', 'filesize')."
 		      					</td>
@@ -1132,9 +1132,9 @@ $columnInfo = array(
 	      $frm = new e_form();
 	      $mirrorArray = array();
 	
-	      $download_status[0] = DOWLAN_122;
-	      $download_status[1] = DOWLAN_123;
-	      $download_status[2] = DOWLAN_124;
+	      $download_status[0] = LAN_INACTIVE;
+	      $download_status[1] = LAN_ACTIVE_LIMITED;
+	      $download_status[2] = LAN_ACTIVE;
 	
 	      if (!$sql->select("download_category"))
 	      {
@@ -1189,7 +1189,7 @@ $columnInfo = array(
 	               
 	                  <table class='table adminform'>
 	                     <tr>
-	                        <td>".DOWLAN_13."</td>
+	                        <td>".LAN_FILE."</td>
 	                        <td style='width:80%'>
 	                           <div>".DOWLAN_131."&nbsp;&nbsp;";
 							  
@@ -1242,13 +1242,13 @@ $columnInfo = array(
 	            <div class='tab-pane' id='download-edit-external'>
 	               <table class='table adminform'>
 	                  <tr>
-	                       <td>".DOWLAN_149."</td>
+	                       <td>".LAN_URL."</td>
 	                       <td style='width:80%;'>
 	                          <input class='tbox input-xxlarge' type='text' name='download_url_external' size='90' value='{$download_url_external}' maxlength='255'/>
 	                       </td>
 	                    </tr>
 	                    <tr>
-	                       <td>".DOWLAN_66."</td>
+	                       <td>".LAN_FILESIZE."</td>
 	                       <td>
 	                          <input class='tbox' type='text' name='download_filesize_external' size='8' value='{$download_filesize}' maxlength='10'/>
 	                       	 <select class='tbox' name='download_filesize_unit'>
@@ -1330,7 +1330,7 @@ $columnInfo = array(
 	            <fieldset id='download-edit-therest'>
 	               <table class='table adminform'>
 	                  <tr>
-	                     <td style='width:20%'>".DOWLAN_11."</td>
+	                     <td style='width:20%'>".LAN_CATEGORY."</td>
 	                     <td style='width:80%'>";
 	                     
 	                     
@@ -1340,31 +1340,31 @@ $columnInfo = array(
 	      $text .= "     </td>
 	                  </tr>
 	                  <tr>
-	                     <td >".DOWLAN_12."</td>
+	                     <td >".LAN_NAME."</td>
 	                     <td style='width:80%'>
 	                        <input class='tbox input-xxlarge' type='text' name='download_name' size='60' value=\"".$tp->toForm($download_name)."\" maxlength='200'/>
 	                     </td>
 	                  </tr>
 	                  <tr>
-	                     <td style='width:20%'>".DOWLAN_15."</td>
+	                     <td style='width:20%'>".LAN_AUTHOR."</td>
 	                     <td style='width:80%'>
 	                        <input class='tbox' type='text' name='download_author' size='60' value='$download_author' maxlength='100'/>
 	                     </td>
 	                  </tr>
 	                  <tr>
-	                     <td style='width:20%'>".DOWLAN_16."</td>
+	                     <td style='width:20%'>".LAN_AUTHOR_EMAIL."</td>
 	                     <td style='width:80%'>
 	                        <input class='tbox' type='text' name='download_author_email' size='60' value='$download_author_email' maxlength='100'/>
 	                     </td>
 	                  </tr>
 	                  <tr>
-	                     <td style='width:20%'>".DOWLAN_17."</td>
+	                     <td style='width:20%'>".LAN_AUTHOR." - ".LAN_WEBSITE."</td>
 	                     <td style='width:80%'>
 	                        <input class='tbox' type='text' name='download_author_website' size='60' value='$download_author_website' maxlength='100'/>
 	                     </td>
 	                  </tr>
 	                  <tr>
-	                     <td style='width:20%'>".DOWLAN_18."</td>
+	                     <td style='width:20%'>".LAN_DESCRIPTION."</td>
 	                     <td style='width:80%'>
 	      ";
 	      $text .= $frm->bbarea('download_description',$download_description);
@@ -1373,7 +1373,7 @@ $columnInfo = array(
 	                  </tr>
 	                 
 	                  <tr>
-	                     <td style='width:20%'>".DOWLAN_19."</td>
+	                     <td style='width:20%'>".LAN_SCREENSHOT."</td>
 	                     <td style='width:80%'>";
 	       /*
 															$text = "<select name='download_image' class='tbox'>
@@ -1404,7 +1404,7 @@ $columnInfo = array(
 	                  
 	           $text .= "
 	                 <tr>
-			            <td style='width:20%'>".DOWLAN_20."</td>
+			            <td style='width:20%'>".LAN_THUMBNAIL_IMAGE."</td>
 			           <td style='width:80%'>";
 			     /*
 												   $text .= "
@@ -1463,7 +1463,7 @@ $columnInfo = array(
 					                
 	                  
 	                  <tr>
-	                     <td style='width:20%'>".DOWLAN_21."</td>
+	                     <td style='width:20%'>".LAN_STATUS."</td>
 	                     <td style='width:80%'>
 	                        <select name='download_active' class='tbox'>";
 	      foreach($download_status as $key => $val){
@@ -1486,7 +1486,7 @@ $columnInfo = array(
 	      $text .= "     </td>
 	                  </tr>
 	                  <tr>
-	                     <td style='width:20%'>".DOWLAN_145."</td>
+	                     <td style='width:20%'>".LAN_VISIBLE_TO."</td>
 	                     <td style='width:80%'>".r_userclass('download_visible', $download_visible, 'off', 'public, nobody, member, admin, classes, language')."</td>
 	                  </tr>
 	                  <tr>
@@ -1540,10 +1540,10 @@ $columnInfo = array(
 						 
 	      if ($id && $subAction == "edit")
 		  {
-	         $text .= "<input class='btn button' type='submit' name='submit_download' value='".DOWLAN_24."'/> ";
+	         $text .= "<input class='btn button' type='submit' name='submit_download' value='".LAN_UPDATE."'/> ";
 	      } else
 	      {
-	         $text .= "<input class='btn button' type='submit' name='submit_download' value='".DOWLAN_25."'/>";
+	         $text .= "<input class='btn button' type='submit' name='submit_download' value='".LAN_SUBMIT."'/>";
 	      }
 	
 	      $text .= "
@@ -1776,7 +1776,7 @@ $columnInfo = array(
 				$updateArray = array_merge($dlInfo,$dlMirrors);
 				$updateArray['WHERE'] = 'download_id='.intval($id);
 				
-				$mes->addAuto($sql->db_Update('download',$updateArray), 'update', DOWLAN_2." (<a href='".e_PLUGIN."download/download.php?view.".$id."'>".$_POST['download_name']."</a>)");
+				$mes->addAuto($sql->db_Update('download',$updateArray), 'update', LAN_UPDATED." (<a href='".e_PLUGIN."download/download.php?view.".$id."'>".$_POST['download_name']."</a>)");
 	                
 				$dlInfo['download_id'] = $id;
 				$this->downloadLog('DOWNL_06',$dlInfo,$dlMirrors);
@@ -1796,7 +1796,7 @@ $columnInfo = array(
 		       
 		            $mes->add($hooks, E_MESSAGE_SUCCESS);
 		
-		            $mes->addAuto($download_id, 'insert', DOWLAN_1." (<a href='".e_PLUGIN."download/download.php?view.".$download_id."'>".$_POST['download_name']."</a>)");
+		            $mes->addAuto($download_id, 'insert', LAN_SAVED." (<a href='".e_PLUGIN."download/download.php?view.".$download_id."'>".$_POST['download_name']."</a>)");
 		
 		            $dlInfo['download_id'] = $download_id;
 		            $this->downloadLog('DOWNL_05',$dlInfo,$dlMirrors);
@@ -1873,8 +1873,8 @@ $columnInfo = array(
 	         <table style='".ADMIN_WIDTH."' class='adminlist'>
 	         <tr>
 	         <td style='width: 10%; text-align: center;' class='forumheader'>ID</td>
-	         <td style='width: 30%;' class='forumheader'>".DOWLAN_12."</td>
-	         <td style='width: 30%;' class='forumheader'>".DOWLAN_136."</td>
+	         <td style='width: 30%;' class='forumheader'>".LAN_NAME."</td>
+	         <td style='width: 30%;' class='forumheader'>". strtolower(LAN_IMAGE)."</td>
 	         <td style='width: 30%; text-align: center;' class='forumheader'>".LAN_OPTIONS."</td>
 	         </tr>
 	         ";
@@ -1889,10 +1889,10 @@ $columnInfo = array(
 	            <tr>
 	            <td style='width: 10%; text-align: center;'>$mirror_id</td>
 	            <td style='width: 30%;'>".$tp -> toHTML($mirror_name)."</td>
-	            <td style='width: 30%;'>".($mirror_image ? "<img src='".e_FILE."downloadimages/".$mirror_image."' alt=''/>" : DOWLAN_28)."</td>
+	            <td style='width: 30%;'>".($mirror_image ? "<img src='".e_FILE."downloadimages/".$mirror_image."' alt=''/>" : LAN_NONE)."</td>
 	            <td style='width: 30%; text-align: center;'>
 	            <a href='".e_SELF."?mirror.edit.{$mirror_id}'>".ADMIN_EDIT_ICON."</a>
-	            <input type='image' title='".LAN_DELETE."' name='delete[mirror_{$mirror_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".DOWLAN_137." [ID: $mirror_id ]')\"/>
+	            <input type='image' title='".LAN_DELETE."' name='delete[mirror_{$mirror_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".LAN_JSCONFIRM." [ID: $mirror_id ]')\"/>
 	            </td>
 	            </tr>
 	            ";
@@ -1924,21 +1924,21 @@ $columnInfo = array(
 	      <table class='table adminform'>
 	
 	      <tr>
-	      <td style='width: 30%;'>".DOWLAN_12."</td>
+	      <td style='width: 30%;'>".LAN_NAME."</td>
 	      <td style='width: 70%;'>
 	      <input class='tbox' type='text' name='mirror_name' size='60' value='{$mirror_name}' maxlength='200'/>
 	      </td>
 	      </tr>
 	
 	      <tr>
-	      <td style='width: 30%;'>".DOWLAN_139."</td>
+	      <td style='width: 30%;'>".LAN_ADDRESS."</td>
 	      <td style='width: 70%;'>
 	      <input class='tbox' type='text' name='mirror_url' size='70' value='{$mirror_url}' maxlength='255'/>
 	      </td>
 	      </tr>
 	
 	      <tr>
-	      <td style='width: 30%;'>".DOWLAN_136."</td>
+	      <td style='width: 30%;'>". strtolower(LAN_IMAGE)."</td>
 	      <td style='width: 70%;'>
 	      <input class='tbox' type='text' id='mirror_image' name='mirror_image' size='60' value='{$mirror_image}' maxlength='200'/>
 	
@@ -1957,14 +1957,14 @@ $columnInfo = array(
 	      </tr>
 	
 	      <tr>
-	      <td style='width: 30%;'>".DOWLAN_141."</td>
+	      <td style='width: 30%;'>".LAN_LOCATION."</td>
 	      <td style='width: 70%;'>
 	      <input class='tbox' type='text' name='mirror_location' size='60' value='$mirror_location' maxlength='200'/>
 	      </td>
 	      </tr>
 	
 	      <tr>
-	      <td style='width: 30%;'>".DOWLAN_18."</td>
+	      <td style='width: 30%;'>".LAN_DESCRIPTION."</td>
 	      <td style='width: 70%;'>";
 	      $text .= $frm->bbarea('mirror_description',$mirror_description);
 	      $text .= "</td>
@@ -2032,21 +2032,21 @@ $columnInfo = array(
 		         "download_id"        => "Id No.",
 		         "download_datestamp" => LAN_DATE,
 		         "download_requested" => ADLAN_24,
-		         "download_name"      => DOWLAN_59,
-		         "download_author"    => DOWLAN_15
+		         "download_name"      => LAN_FILENAME,
+		         "download_author"    => LAN_AUTHOR
 		      );
 		      $sort_options = array(
-		         "ASC"    => DOWLAN_62,
-		         "DESC"   => DOWLAN_63
+		         "ASC"    => LAN_ASCENDING,
+		         "DESC"   => LAN_DESCENDING
 		      );
 		
 		   	$text = "
 				   
 					   <ul class='nav nav-tabs'>
-						   <li class='active'><a data-toggle='tab' href='#core-download-download1'>".LAN_DL_DOWNLOAD_OPT_GENERAL."</a></li>
+						   <li class='active'><a data-toggle='tab' href='#core-download-download1'>".LAN_GENERAL."</a></li>
 						   <li><a data-toggle='tab' href='#core-download-download2'>".LAN_DL_DOWNLOAD_OPT_BROKEN."</a></li>
 						   <li><a data-toggle='tab' href='#core-download-download3'>".LAN_DL_DOWNLOAD_OPT_AGREE."</a></li>
-						   <li><a data-toggle='tab' href='#core-download-download4'>".LAN_DL_UPLOAD."</a></li>
+						   <li><a data-toggle='tab' href='#core-download-download4'>".LAN_UPLOAD."</a></li>
 					   </ul>
 						
 		        		<form method='post' action='".e_SELF."?".e_QUERY."'>\n
@@ -2080,11 +2080,11 @@ $columnInfo = array(
 		            		         ."</td>
 		            		      </tr>
 		            		      <tr>
-		               		      <td>".DOWLAN_55."</td>
+		               		      <td>".LAN_NUMBER_PER_PAGE."</td>
 		            		         <td>".$frm->text('download_view', $pref['download_view'], '4', array('size'=>'4'))."</td>
 		            		      </tr>
 		            		      <tr>
-		            		         <td>".DOWLAN_56."</td>
+		            		         <td>".LAN_ORDER_BY."</td>
 		            		         <td>".$frm->select('download_order', $order_options, $pref['download_order'])."</td>
 		            		      </tr>
 		            		      <tr>
@@ -2095,9 +2095,9 @@ $columnInfo = array(
 		               		      <td>".DOWLAN_160."</td>
 		               		      <td>
 		                  		      <select name='mirror_order' class='tbox'>".
-		                  		         ($pref['mirror_order'] == "0" ? "<option value='0' selected='selected'>".DOWLAN_161."</option>" : "<option value='0'>".DOWLAN_161."</option>").
+		                  		         ($pref['mirror_order'] == "0" ? "<option value='0' selected='selected'>".LAN_RANDOM."</option>" : "<option value='0'>".LAN_RANDOM."</option>").
 		                                 ($pref['mirror_order'] == "1" ? "<option value='1' selected='selected'>".LAN_ID."</option>" : "<option value='1'>".LAN_ID."</option>").
-		                                 ($pref['mirror_order'] == "2" ? "<option value='2' selected='selected'>".DOWLAN_163."</option>" : "<option value='2'>".DOWLAN_12."</option>")."
+		                                 ($pref['mirror_order'] == "2" ? "<option value='2' selected='selected'>".DOWLAN_163."</option>" : "<option value='2'>".LAN_NAME."</option>")."
 		            		            </select>
 		               		      </td>
 		            		      </tr>
@@ -2170,7 +2170,7 @@ $columnInfo = array(
 		           </div>
 		           </form>
 		      ";
-		     // $ns->tablerender(LAN_DL_OPTIONS, $text);
+		     // $ns->tablerender(LAN_OPTIONS, $text);
 		      echo $text;
 		   }
 
@@ -2181,7 +2181,7 @@ $columnInfo = array(
 		function downloadLog($aText, &$dlInfo, &$mirrorInfo=NULL)
 		{
 			global $admin_log;
-			$logString = DOWLAN_9;
+			$logString = LAN_PLUGIN_DOWNLOAD_NAME." - ".LAN_DETAILS." - ";
 			foreach ($dlInfo as $k => $v)
 			{
 				$logString .= '[!br!]'.$k.'=>'.$v;
@@ -2305,9 +2305,9 @@ class download_main_admin_form_ui extends e_admin_form_ui
 	
 	function download_active($curVal,$mode)
 	{
-		$download_status[0] = DOWLAN_122; // Inactive; 
-      	$download_status[1] = DOWLAN_123; // Active
-      	$download_status[2] = DOWLAN_124;
+		$download_status[0] = LAN_INACTIVE; // Inactive; 
+      	$download_status[1] = LAN_ACTIVE_LIMITED; // Active
+      	$download_status[2] = LAN_ACTIVE;
 		
 		if($mode == 'read')
 		{
@@ -2334,7 +2334,7 @@ class download_main_admin_form_ui extends e_admin_form_ui
 				'orphans'		=> DOWLAN_167, // TODO
 				'missing'		=> DOWLAN_168,
 				'nocategory' 	=> DOWLAN_178,
-				'filesize'		=> DOWLAN_66,
+				'filesize'		=> LAN_FILESIZE,
 				'log'			=> DOWLAN_171
 			);
 			
