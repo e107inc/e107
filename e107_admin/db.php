@@ -622,7 +622,14 @@ class system_tools
 		$frm = e107::getForm();
 		
 		e107::lan('core','installer');
-		
+
+		// Leave here until no longer experimental. - Should be placed inside lan_db.php and LANS renamed.
+		define('LANINS_130', "Parked Domain");
+		define('LANINS_131', "The parked domain which will become a new e107 website.");
+		define('LANINS_132', "mydomain.com");
+		define('LANINS_133', "This will create a fresh installation of e107 at the domain you specify. Using your server administration software (e.g. cPanel) - park your other domain on top of [x]");
+
+
 		e107::getMySQLConfig('user'); // prefix|server|user|password|
 		
 		if(!isset($POST['create_multisite']))

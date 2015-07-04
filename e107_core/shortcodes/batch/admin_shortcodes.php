@@ -1776,7 +1776,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				$menu_vars['language']['text'] = strtoupper(e_LAN); // e_LANGUAGE;
 				$menu_vars['language']['link'] = '#';
 				$menu_vars['language']['image'] = $tp->toGlyph('fa-globe'); //  "<i class='icon-globe'></i>" ;
-				$menu_vars['language']['image_src'] = ADLAN_46;
+				$menu_vars['language']['image_src'] = null;
 				$menu_vars['language']['sub'] = $tmp;	
 			}	
 			

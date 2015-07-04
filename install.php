@@ -784,12 +784,12 @@ class e_install
 		if(!function_exists("mysql_connect"))
 		{
 			$version_fail = true;
-			$mysql_note = LANINS_011;
+			$mysql_note = LAN_ERROR;
 			$mysql_help = LANINS_012;
 		}
 		elseif (!@mysql_connect($this->previous_steps['mysql']['server'], $this->previous_steps['mysql']['user'], $this->previous_steps['mysql']['password']))
 		{
-			$mysql_note = LANINS_011;
+			$mysql_note = LAN_ERROR;
 			$mysql_help = LANINS_013;
 		}
 		else
@@ -1039,12 +1039,12 @@ class e_install
 				<tr>
 					<td><label for='sitename'>".LANINS_107."</label></td>
 					<td>
-						<input class='tbox' type='text' autofocus placeholder=\"My Website\" required='required' name='sitename' id='sitename' size='30' value='".(vartrue($_POST['sitename']) ? $_POST['sitename'] : "")."' maxlength='60' />
+						<input class='tbox' type='text' autofocus placeholder=\"".LANINS_108."\" required='required' name='sitename' id='sitename' size='30' value='".(vartrue($_POST['sitename']) ? $_POST['sitename'] : "")."' maxlength='60' />
 					</td>
 				</tr>
 
 				<tr>
-					<td><label>".LANINS_109."</label><br />".LANINS_110."</td>
+					<td><label>".LANINS_109."</label></td>
 					<td>
 						<table class='table' >
 							<thead>
