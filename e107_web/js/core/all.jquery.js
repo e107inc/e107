@@ -75,6 +75,12 @@ $(document).ready(function()
        				
        				$('#'+ this).slideToggle("slow");
 				});
+
+                if($(this).attr("data-return")==='true')
+                {
+                    return true;
+                }
+
        			
        			return false;
        		}
