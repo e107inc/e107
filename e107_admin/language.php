@@ -372,76 +372,7 @@ if (varset($action) == "tools" && !$rendered)
 }
 
 
-	function findIncludedFiles($script,$reverse=false)
-	{
-		$mes = e107::getMessage();
-		
-		$data = file_get_contents($script);
-		
-		if(strpos($data, 'e_admin_dispatcher')!==false)
-		{
-			$reverse = false;	
-		}
-		
-		$dir = dirname($script);
-		
-		$dir = str_replace("/includes","",$dir);
-		$plugin = basename($dir);
-		
-		if(strpos($script,'admin')!==false || strpos($script,'includes')!==false) // Admin Language files. 
-		{
-			
-			$newLangs = array(
-				0 		=>  $dir."/languages/English/English_admin_".$plugin.".php",
-				1 		=>  $dir."/languages/English_admin_".$plugin.".php",
-				2 		=>  $dir."/languages/English_admin.php",
-				3 		=>  $dir."/languages/English/English_admin.php"
-			);
-		}
-		else 
-		{
-			$newLangs = array(
-				0 		=>  $dir."/languages/English/English_".$plugin.".php",
-				1 		=>  $dir."/languages/English_admin_".$plugin.".php",
-				2 		=>  $dir."/languages/English_front.php",
-				3 		=>  $dir."/languages/English/English_front.php",
-				4 		=>  $dir."/languages/English_front.php",
-				5 		=>  $dir."/languages/English/English_front.php"
-			);
-		}
-	//	if(strpos($data, 'e_admin_dispatcher')!==false)
-		{
-			foreach($newLangs as $path)
-			{
-				if(file_exists($path) && $reverse == false)
-				{
-					return $path; 	
-				}	
-			}
-		}
 
-
-		
-		preg_match_all("/.*(include_lan|require_once|include|include_once) ?\((.*e_LANGUAGE.*?\.php)/i",$data,$match);
-		
-		$srch = array(" ",'e_PLUGIN.', 'e_LANGUAGEDIR', '.e_LANGUAGE.', "'", '"', "'.");
-		$repl = array("", e_PLUGIN, e_LANGUAGEDIR, "English", "", "", "");
-
-		foreach($match[2] as $lanFile)
-		{
-			$arrt = str_replace($srch,$repl,$lanFile);	
-		//	if(strpos($arrt,'admin'))
-			{
-				//return $arrt;	
-				$arr[] = $arrt;
-			}
-		}
-		
-		return implode(",",$arr);
-		
-			
-	//	return $arr[0];
-	}
 
 
 if(vartrue($_POST['disabled-unused']) && vartrue($_POST['disable-unused-lanfile']))
@@ -484,57 +415,10 @@ function disableUnused($data)
 }
 
 
-if(varset($_POST['searchDeprecated']) && varset($_POST['deprecatedLans']))
-{
-	$mes = e107::getMessage();
-
-	// $lanfile = $_POST['deprecatedLans'];
-	$script = $_POST['deprecatedLans'];
-
-	if(strpos($script,e_ADMIN)!==false) // CORE
-	{
-		$mes->addDebug("Mode: Core Admin Calculated");
-		//$scriptname = str_replace("lan_","",basename($lanfile));
-		$lanfile = e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".basename($script);		
-	}
-	else  // Plugin 
-	{
-		$mes->addDebug("Mode: Search Plugins");
-		$lanfile = findIncludedFiles($script,vartrue($_POST['deprecatedLansReverse']));		
-	}	
-	
-	if(!is_readable($script))
-	{
-		$mes->addError("Not Readable: ".$script);
-		// $script = $scriptname; // matching files. lan_xxxx.php and xxxx.php
-	}
-	
-	$found = findIncludedFiles($script,vartrue($_POST['deprecatedLansReverse']));
-	
-//	print_a($found);
-	
-	// Exceptions - same language loaded by several scripts. 
-	if($lanfile == e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_e107_update.php")
-	{
-		$script = e_ADMIN."update_routines.php,".e_ADMIN."e107_update.php";
-	}
-	
-	if(vartrue($_POST['deprecatedLanFile'])) //override. 
-	{
-		$lanfile = $_POST['deprecatedLanFile'];	
-	}
-
-	if($res = unused($lanfile, $script, vartrue($_POST['deprecatedLansReverse'])))
-	{
-		$ns -> tablerender($res['caption'],$mes->render(). $res['text']);
-	} 		
 
 
-	
 
-} 
-
-
+new lanDeveloper;
 
 
 
@@ -1071,14 +955,14 @@ function show_tools()
 	
 	show_packs();
 	
-	return; 
+	//return;
 	
-	if(!vartrue($_SERVER['E_DEV']))
+	if(e_DEVELOPER !== true)
 	{
-		return; 
+		return false;
 	}
 	
-	
+	lanDeveloper::form();
 	/*
 	$text = "
 		<form id='core-language-lancheck-form' method='post' action='".e_SELF."?tools'>
@@ -1115,161 +999,7 @@ function show_tools()
 			</fieldset>
 		</form>";
 		*/
-		$text = "";
-		
-		$text .= "
-		<form id='ziplang' method='post' action='".e_SELF."?tools'>
-			<fieldset id='core-language-package'>
-				<legend class='e-hideme'>".LANG_LAN_23."</legend>
-				<table class='table adminform'>
-					<colgroup>
-						<col class='col-label' />
-						<col class='col-control' />
-					</colgroup>
-					<tbody>";
-					
-				/*	
-				$text .= "
-						<tr>
-							<td>".LANG_LAN_23."</td>
-							<td class='form-inline'>
-								<select name='language'>
-									<option value=''>".LAN_SELECT."</option>";
-								$languages = explode(",", e_LANLIST);
-								sort($languages);
-								foreach ($languages as $lang)
-								{
-									if ($lang != "English")
-									{
-										$text .= "
-																<option value='{$lang}' >{$lang}</option>
-										";
-									}
-								}
-								$text .= "
-								</select>
-								".$frm->admin_button('ziplang','no-value','other',LANG_LAN_24)."
-								<input type='checkbox' name='contribute_pack' value='1' /> Check to share your language-pack with the e107 community.
-							</td>
-						</tr>";
-				*/
-			
-						
-						$fl = e107::getFile();
-						$fl->mode = 'full';
-							
-						if(!$_SESSION['languageTools_lanFileList'])
-						{
-							
-							$_SESSION['languageTools_lanFileList'] = $fl->get_files(e_BASE,'.*?(English|lan_).*?\.php$','standard',5);
-						}
-						
-								
-						$text .= "						
-						<tr>
-							<td>Search for Deprecated Lans</td>
-							<td class='form-inline'>
-								<select name='deprecatedLans'>
-									<option value=''>Select Script...</option>";
-									
-									
-									$omit = array('languages','\.png','\.gif','handlers');
-									$lans = $fl->get_files(e_ADMIN,'.php','standard',0);
-									$fl->setFileFilter(array("^e_"));
-									$plugs = $fl->get_files(e_PLUGIN,'.*?/?.*?\.php',$omit,2);
-							
-									$exclude = array('lan_admin.php');	
-															
-									$srch = array(e_ADMIN,e_PLUGIN);
-									
-									$text .= "<optgroup label='Admin Area'>";
-									foreach($lans as $script=>$lan)
-									{								
-										if(in_array(basename($lan),$exclude))
-										{
-											continue;
-										}
-										$selected = ($lan == varset($_POST['deprecatedLans'])) ? "selected='selected'" : "";
-										$text .= "<option value='".$lan."' {$selected}>".str_replace($srch,"",$lan)."</option>\n";
-									}
-									
-									$text .= "</optgroup>";
-									
-									$text .= "<optgroup label='Plugins'>";
-									foreach($plugs as $script=>$lan)
-									{								
-										if(in_array(basename($lan),$exclude))
-										{
-											continue;
-										}
-										$selected = ($lan == varset($_POST['deprecatedLans'])) ? "selected='selected'" : "";
-										$text .= "<option value='".$lan."' {$selected}>".str_replace($srch,"",$lan)."</option>\n";
-									}
-									
-									$text .= "</optgroup>";
-									
-								
-								$depOptions = array(
-									1 => "Script > Lan File",
-									0 => "Script < Lan File"
-									
-								);
-									
-								$text .= "
-								</select> ".
-								$frm->select('deprecatedLansReverse',$depOptions,$_POST['deprecatedLansReverse'],'class=select')." ";
-								
-								$search = array(e_PLUGIN,e_ADMIN,e_LANGUAGEDIR,e_THEME);
-								$replace = array("Plugins ","Admin ","Core ","Themes ");
-								
-								
-								$prev = 'Core';
-								$text .= "<select name='deprecatedLanFile'>
-								<option value=''>Auto-Detect</option>
-								<optgroup label='CORE'>\n";
-								
-								foreach($_SESSION['languageTools_lanFileList'] as $val)
-								{
-									if(strstr($val,e_SYSTEM))
-									{
-										continue;	
-									}
-									
-									
-								 	$selected = ($val === $_POST['deprecatedLanFile']) ? "selected='selected'" : "";
-									$diz 		= str_replace($search,$replace,$val);
-									list($type,$label) = explode(" ",$diz);
-									
-									if($type !== $prev)
-									{
-										$text .= "</optgroup><optgroup label='".$type."'>\n";	
-									}
-									
-									$text .= "<option value='".$val."' ".$selected.">".$label."</option>\n";
-									$prev = $type;
-									
-								}
-											
-								$text .= "</optgroup></select>";		
-									
-								// $frm->select('deprecatedLanFile',$_SESSION['languageTools_lanFileList'], $_POST['deprecatedLanFile'],'class=select&useValues=1','Select Language File (optional)'). 
-								$text .= $frm->admin_button('searchDeprecated',"Check",'other');
-						//		$text .= "<span class='field-help'>".(count($lans) + count($plugs))." files found</span>";
-								$text .= "
-							</td>
-						</tr>";
-						
-						
-						$text .= "				
-					</tbody>
-				</table>
-			</fieldset>
-		</form>
-	";
-	
 
-	
-	e107::getRender()->tablerender(ADLAN_132.SEP.LANG_LAN_21, $mes->render().$text);
 }
 
 
@@ -1281,6 +1011,8 @@ function available_langpacks()
 	$xml = e107::getXml();
 	
 	$feed = e107::getPref('xmlfeed_languagepacks');
+
+	$text = '';
 		
 	if($rawData = $xml -> loadXMLfile($feed, TRUE))
 	{
@@ -1590,177 +1322,665 @@ function grab_lans($path, $language, $filter = "")
 // -----------------------
 
 
-/**
- * Compare Language File against script and find unused LANs
- * @param object $lanfile
- * @param object $script
- * @return string|boolean FALSE on error
- */
-function unused($lanfile,$script,$reverse=false)
+
+
+class lanDeveloper
 {
-	
-	$mes = e107::getMessage();
-	$frm = e107::getForm();
 
-	unset($_SESSION['language-tools-unused']);
-//	$mes->addInfo("LAN=".$lanfile."<br />Script = ".$script);
+	private $lanFile = null;
+	private $scriptFile = null;
+	private $adminFile = false;
+	private $commonPhrases = array();
+	private $errors = 0;
 
-	
-	if($reverse == true)
+	function __construct()
 	{
-		
-		$exclude = array("e_LANGUAGE","e_LANGUAGEDIR","e_LAN","e_LANLIST","e_LANCODE");
-		
-		$data = file_get_contents($script);	
-		
-		if(preg_match_all("/([\w_]*LAN[\w_]*)/", $data, $match))
+		$ns = e107::getRender();
+		$mes = e107::getMessage();
+
+		if(varset($_POST['searchDeprecated']) && varset($_POST['deprecatedLans']))
 		{
-			// print_a($match);
-			$foundLans = array();
-			foreach($match[1] as $val)
+
+
+			// $lanfile = $_POST['deprecatedLans'];
+			$script = $_POST['deprecatedLans'];
+
+			if(strpos($script,e_ADMIN)!==false) // CORE
 			{
-				if(!in_array($val, $exclude))
-				{
-					$foundLans[] = $val;	
-				}	
+				$mes->addDebug("Mode: Core Admin Calculated");
+				//$scriptname = str_replace("lan_","",basename($lanfile));
+				$lanfile = e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".basename($script);
+				$this->adminFile = true;
 			}
-			sort($foundLans);
-			$foundLans = array_unique($foundLans);
-			$lanDefines = implode("\n",$foundLans);
-
-		}	
-		
-		$mes->addDebug("Script: ".$script);
-
-		$tmp = explode(",", $lanfile);
-		foreach($tmp as $scr)
-		{
-			if(!file_exists($scr))
+			else  // Root
 			{
-				$mes->addError(LANG_LAN_121." ".$scr);
-				continue;	
+				$mes->addDebug("Mode: Search Core Root lan calculated");
+				$lanfile = e_LANGUAGEDIR.e_LANGUAGE."/lan_".basename($script);
+				$lanfile = str_replace("lan_install", "lan_installer", $lanfile); //quick fix.,
+
+				//$lanfile = $this->findIncludedFiles($script,vartrue($_POST['deprecatedLansReverse']));
 			}
-			
-			$compare[$scr] = file_get_contents($scr);	
-			$mes->addDebug("LanFile: ".$scr);
-		
-		}	
-		
-		$lanfile = $script;
-	}
-	else
-	{
-		$lanDefines = file_get_contents($lanfile);
-		$mes->addDebug("LanFile: ".$lanfile);
-		
-		$tmp = explode(",",$script);
-		foreach($tmp as $scr)
-		{
-			if(!file_exists($scr))
+
+			if(!is_readable($script))
 			{
-				$mes->addError(LANG_LAN_121." ".$scr);
-				continue;	
+				$mes->addError("Not Readable: ".$script);
+				// $script = $scriptname; // matching files. lan_xxxx.php and xxxx.php
 			}
-			$compare[$scr] = file_get_contents($scr);	
-			$mes->addDebug("Script: ".$scr);
-		}		
-	}
-		
 
-	
-//	print_a($compare);
-//	print_a($lanDefines);
+			$found = $this->findIncludedFiles($script,vartrue($_POST['deprecatedLansReverse']));
 
-	if(!$compare)
-	{
-		$mes->addError(LANG_LAN_121." ".$script);
-	}
-	
-	if(!$lanDefines)
-	{
-		$mes->addError(LANG_LAN_121." ".$lanfile);
-	}
+//	print_a($found);
 
-	$srch = array("<?php","<?","?>");
-	$lanDefines = str_replace($srch,"",$lanDefines);
-	$lanDefines = explode("\n", $lanDefines);
-	
-	if($lanDefines)
-	{
-		$text = $frm->open('language-unused');
-		$text .= "<table class='table adminlist'>
-		<colgroup>
-			<col style='width:40%' />
-			<col style='auto' />
-		</colgroup>
-		<thead>
-		<tr>
-			<th>".$lanfile."</th>";
-			
-			foreach($compare as $k=>$val)
+			// Exceptions - same language loaded by several scripts.
+			if($lanfile == e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_e107_update.php")
 			{
-				$text .= "<th>".$k."</th>";	
+				$script = e_ADMIN."update_routines.php,".e_ADMIN."e107_update.php";
 			}
-			
-			if($reverse == true)
-			{
-				$text .= "<th>".LANG_LAN_124."</th>";
-			}
-			
-			$text .= "
-			</tr>
-			</thead>
-			<tbody>";
-		
-	// 	for ($i=0; $i<count($lanDefines); $i++)
-	//	{
-		
-		foreach($lanDefines as $line)
-		{
-			if(trim($line) !="")
-			{	    		
-		   		$disabled = (preg_match("#^//#i",$line)) ? " ".LANG_LAN_125 : FALSE;
-				if($match = getDefined($line,$reverse))
-				{
-					$text .= compareit($match['define'],$compare,$match['value'],$disabled,$reverse);					
-	    		}			   	 		
-			}
-	 	}
-		
-		
-		
-		
-		
 
-		$text .= "</tbody></table>";
-		
-		if(count($_SESSION['language-tools-unused'])>0 && $reverse == false)
-		{
-			$text .= "<div class='buttons-bar center'>".$frm->admin_button('disabled-unused',LANG_LAN_126,'delete').
-			$frm->hidden('disable-unused-lanfile',$lanfile).
-			$frm->hidden('deprecatedLans',$script).
-			
-			"</div>";
+			if(vartrue($_POST['deprecatedLanFile'])) //override.
+			{
+				$lanfile = $_POST['deprecatedLanFile'];
+			}
+
+			$this->lanFile = $lanfile;
+			$this->scriptFile = $script;
+			$this->commonPhrases = $this->getCommon();
+
+		//	print_a($this->commonPhrases);
+
+			if($res = $this->unused($lanfile, $script, vartrue($_POST['deprecatedLansReverse'])))
+			{
+				$ns->tablerender($res['caption'],$mes->render(). $res['text']);
+			}
+
 		}
-		
-		$text .= $frm->close();
-		
-		if($reverse != true)
-		{
-			$mes->addInfo("<b>".LANG_LAN_127."<br />".LANG_LAN_128."</b>");
-		}
-		
-		$ret['text'] = $mes->render().$text;
-		$ret['caption'] = LANG_LAN_129;
 
-		return $ret;
+	//	print_a($this);
+
 	}
-	else
+
+
+	static function form()
 	{
-    	return FALSE;
+		$frm = e107::getForm();
+		$mes = e107::getMessage();
+		$text = "";
+
+		$text .= "
+		<form id='ziplang' method='post' action='".e_SELF."?tools'>
+			<fieldset id='core-language-package'>
+				<legend class='e-hideme'>".LANG_LAN_23."</legend>
+				<table class='table adminform'>
+					<colgroup>
+						<col class='col-label' />
+						<col class='col-control' />
+					</colgroup>
+					<tbody>";
+
+
+		$fl = e107::getFile();
+		$fl->mode = 'full';
+
+		// $_SESSION['languageTools_lanFileList'] = null;
+
+		if(!$_SESSION['languageTools_lanFileList'])
+		{
+
+			$_SESSION['languageTools_lanFileList'] = $fl->get_files(e_LANGUAGEDIR."English",'.*?(English|lan_).*?\.php$','standard',3);
+		}
+
+		//	print_a($_SESSION['languageTools_lanFileList']);
+
+
+		$text .= "
+						<tr>
+							<td>Search for Deprecated Lans</td>
+							<td class='form-inline'>
+								<select name='deprecatedLans'>
+									<option value=''>Select Script...</option>";
+
+
+		$omit = array('languages','\.png','\.gif','handlers');
+		$lans = $fl->get_files(e_ADMIN,'.php','standard',0);
+		$fl->setFileFilter(array("^e_"));
+		$root = $fl->get_files(e_BASE,'.*?/?.*?\.php',$omit,0);
+
+		$exclude = array('lan_admin.php');
+
+		$srch = array(e_ADMIN,e_PLUGIN, e_BASE);
+
+
+		$text .= "<optgroup label='Root'>";
+		foreach($root as $script=>$lan)
+		{
+			if(in_array(basename($lan),$exclude))
+			{
+				continue;
+			}
+			$selected = ($lan == varset($_POST['deprecatedLans'])) ? "selected='selected'" : "";
+			$text .= "<option value='".$lan."' {$selected}>".str_replace($srch,"",$lan)."</option>\n";
+		}
+
+		$text .= "</optgroup>";
+
+
+		$text .= "<optgroup label='Admin Area'>";
+		foreach($lans as $script=>$lan)
+		{
+			if(in_array(basename($lan),$exclude))
+			{
+				continue;
+			}
+			$selected = ($lan == varset($_POST['deprecatedLans'])) ? "selected='selected'" : "";
+			$text .= "<option value='".$lan."' {$selected}>".str_replace($srch,"",$lan)."</option>\n";
+		}
+
+		$text .= "</optgroup>";
+
+
+		$depOptions = array(
+			1 => "Script > Lan File",
+			0 => "Script < Lan File"
+
+		);
+
+		$text .= "
+								</select> ".
+			$frm->select('deprecatedLansReverse',$depOptions,$_POST['deprecatedLansReverse'],'class=select')." ";
+
+		$search = array(e_PLUGIN,e_ADMIN,e_LANGUAGEDIR."English/",e_THEME);
+		$replace = array("Plugins ","Admin ","Core ","Themes ");
+
+
+		$prev = 'Core';
+		$text .= "<select name='deprecatedLanFile'>
+
+								";
+
+		$text .= "<option value=''>Auto-Detect</option><optgroup label='Specific LAN file:'>\n";
+
+		foreach($_SESSION['languageTools_lanFileList'] as $val)
+		{
+			if(strstr($val,e_SYSTEM))
+			{
+				continue;
+			}
+
+
+			$selected = ($val === $_POST['deprecatedLanFile']) ? "selected='selected'" : "";
+			$diz 		= str_replace($search,$replace,$val);
+			list($type,$label) = explode(" ",$diz);
+
+			if($type !== $prev)
+			{
+				$text .= "</optgroup><optgroup label='".$type."'>\n";
+			}
+
+			$text .= "<option value='".$val."' ".$selected.">".$label."</option>\n";
+			$prev = $type;
+
+		}
+
+		$text .= "</optgroup>";
+		$text .= "</select>";
+
+		// $frm->select('deprecatedLanFile',$_SESSION['languageTools_lanFileList'], $_POST['deprecatedLanFile'],'class=select&useValues=1','Select Language File (optional)').
+		$text .= $frm->admin_button('searchDeprecated',"Check",'other');
+		//		$text .= "<span class='field-help'>".(count($lans) + count($plugs))." files found</span>";
+		$text .= "
+							</td>
+						</tr>";
+
+
+		$text .= "
+					</tbody>
+				</table>
+			</fieldset>
+		</form>
+	";
+
+		e107::getRender()->tablerender(ADLAN_132.SEP."Core Language-Pack Developer", $mes->render().$text);
+
+
 	}
+
+	function getCommon()
+	{
+		$commonPhrases = file_get_contents(e_LANGUAGEDIR."English/English.php");
+
+		if($this->adminFile == true)
+		{
+			$commonPhrases .= file_get_contents(e_LANGUAGEDIR."English/admin/lan_admin.php");
+		}
+
+		$commonLines = explode("\n",$commonPhrases);
+
+		$ar = array();
+
+		foreach($commonLines as $line)
+		{
+			if($match = getDefined($line))
+			{
+				$id = $match['define'];
+				$ar[$id] = $match['value'];
+			}
+		}
+
+		return $ar;
+	}
+
+
+
+	function compareit($needle,$haystack, $value='',$disabled=false, $reverse=false)
+	{
+
+//	return "Need=".$needle."<br />hack=".$haystack."<br />val=".$val;
+		$foundSimilar = FALSE;
+		$foundCommon = FALSE;
+		$ar = $this->commonPhrases;
+		$commonArray = array_keys($ar);
+
+
+
+		// Check if a common phrases was used.
+		foreach($ar as $def=>$common)
+		{
+			similar_text($value, $common, $p);
+
+			if(strtoupper(trim($value)) == strtoupper($common))
+			{
+				//$text .= "<div style='color:yellow'><b>$common</b></div>";
+
+				$foundCommon = true;
+				break;
+			}
+			elseif($p > 75)
+			{
+				$foundSimilar = true;
+				break;
+			}
+			$p = 0 ;
+		}
+
+
+		$text = '';
+		$text2 = '';
+
+
+		foreach($haystack as $script)
+		{
+			$lines = explode("\n",$script);
+
+			$text .= "<td>";
+			$text2 .= ($reverse == true) ? "<td>" : "";
+
+			$count = 1;
+			foreach($lines as $ln)
+			{
+				if(preg_match("/\b".$needle."\b/i",$ln, $mtch))
+				{
+					if($disabled)
+					{
+						$text .= ADMIN_WARNING_ICON;
+						$label = " <span class='label label-important'>Must be re-enabled</span>";
+						$this->errors++;
+						// $text .= "blabla";
+					//	$class = 'alert alert-warning';
+					}
+					elseif($reverse == true)
+					{
+						$text .= ADMIN_TRUE_ICON;
+					}
+
+					$text .= " Line:<b>".$count."</b>  "; // "' Found";
+
+					if($reverse == true)
+					{
+						$text2 .= print_a($ln,true);
+					}
+					$found = true;
+				}
+
+				$count++;
+			}
+
+			if($reverse == true && in_array($needle,$commonArray))
+			{
+				$found = false;
+				$text = "<td>";
+				$text2 = "<td>";
+			}
+
+			if(empty($found))
+			{
+				// echo "<br />Unused: ".$needle;
+				if($reverse == true)
+				{
+					if(in_array($needle,$commonArray))
+					{
+					//	print_a($needle);
+						//$color = "background-color:#E9EAF2";
+						$class = '';
+						$text .= ADMIN_TRUE_ICON;
+						$value = "<span class='label label-success'>".LANG_LAN_130."</span>"; // Common Term.
+					}
+					else
+					{
+						//	$color = "background-color:yellow";
+						$text .= "<a href='#' title=\"Missing\">".ADMIN_WARNING_ICON."</a>";
+						$this->errors++;
+						$value = LANG_LAN_131;
+						$class = "alert alert-warning";
+					}
+
+				}
+				elseif(empty($disabled))
+				{
+					// $color = "background-color:pink";
+					$class = ' ';
+					$label = " <span class='label label-important'>Unused</span>";
+					$text .= "-";
+					$this->errors++; 
+				}
+
+				if(!$disabled)
+				{
+					$_SESSION['language-tools-unused'][] = $needle;
+				}
+			}
+			$text .= "</td>";
+			$text2 .= ($reverse == true) ? "</td>" : "";
+		}
+
+
+		if($foundCommon && $found)
+		{
+			//$color = "background-color:yellow";
+			//	$class = "alert alert-warning";
+			$label .= "<div class='label label-important'><i>".$common."</i> ".LANG_LAN_132."<br />(".LANG_LAN_133." <b>".$def."</b> ".LANG_LAN_134.")</div>";
+
+			// return "<tr><td style='width:25%;'>".$needle .$disabled. "</td><td></td></tr>";
+		}
+
+		elseif($foundSimilar && $found && substr($def,0,4) == "LAN_")
+		{
+			// $color = "background-color:#E9EAF2";
+			$label .= "  <span class='label label-warning' style='cursor:help' title=\"".$common."\">".round($p)."% like ".$def."</span> ";
+			// $disabled .= " <a class='e-tip' href='#' title=\"".$common."\">" . $def."</a>"; //  $common;
+		}
+
+		if($disabled !==false)
+		{
+			$color = "font-style:italic";
+			$class = 'muted text-important ';
+			$label .= " <span class='label label-inverse'>Disabled</span>";
+		}
+
+		if(empty($found) && $disabled === true)
+		{
+			// $needle = "<span class='e-tip' style='cursor:help' title=\"".$value."\">".$needle."</span>";
+		}
+
+		return "<tr><td class='".$class."' style='width:15%;$color'>".$needle .$label. "</td>
+	<td class='".$class."'>".print_r($value,true)."</td>
+	".$text.$text2."</tr>";
+	}
+
+
+
+
+
+	/**
+	 * Compare Language File against script and find unused LANs
+	 * @param object $lanfile
+	 * @param object $script
+	 * @return string|boolean FALSE on error
+	 */
+	function unused($lanfile,$script,$reverse=false)
+	{
+
+		$mes = e107::getMessage();
+		$frm = e107::getForm();
+
+		unset($_SESSION['language-tools-unused']);
+	//	$mes->addInfo("LAN=".$lanfile."<br />Script = ".$script);
+
+
+		if($reverse == true)
+		{
+
+			$exclude = array("e_LANGUAGE","e_LANGUAGEDIR","e_LAN","e_LANLIST","e_LANCODE", "LANGUAGES_DIRECTORY");
+
+			$data = file_get_contents($script);
+
+			if(preg_match_all("/([\w_]*LAN[\w_]*)/", $data, $match))
+			{
+				// print_a($match);
+				$foundLans = array();
+				foreach($match[1] as $val)
+				{
+					if(!in_array($val, $exclude))
+					{
+						$foundLans[] = $val;
+					}
+				}
+				sort($foundLans);
+				$foundLans = array_unique($foundLans);
+				$lanDefines = implode("\n",$foundLans);
+
+			}
+
+			$mes->addDebug("Script: ".$script);
+
+			$tmp = explode(",", $lanfile);
+			foreach($tmp as $scr)
+			{
+				if(!file_exists($scr))
+				{
+					$mes->addError(LANG_LAN_121." ".$scr);
+					continue;
+				}
+
+				$compare[$scr] = file_get_contents($scr);
+				$mes->addDebug("LanFile: ".$scr);
+
+			}
+
+			$lanfile = $script;
+		}
+		else
+		{
+			$lanDefines = file_get_contents($lanfile);
+			$mes->addDebug("LanFile: ".$lanfile);
+
+			$tmp = explode(",",$script);
+			foreach($tmp as $scr)
+			{
+				if(!file_exists($scr))
+				{
+					$mes->addError(LANG_LAN_121." ".$scr);
+					continue;
+				}
+				$compare[$scr] = file_get_contents($scr);
+				$mes->addDebug("Script: ".$scr);
+			}
+		}
+
+
+
+	//	print_a($compare);
+	//	print_a($lanDefines);
+
+		if(!$compare)
+		{
+			$mes->addError(LANG_LAN_121." ".$script);
+		}
+
+		if(!$lanDefines)
+		{
+			$mes->addError(LANG_LAN_121." ".$lanfile);
+		}
+
+		$srch = array("<?php","<?","?>");
+		$lanDefines = str_replace($srch,"",$lanDefines);
+		$lanDefines = explode("\n", $lanDefines);
+
+		if($lanDefines)
+		{
+			$text = $frm->open('language-unused');
+			$text .= "<table class='table adminlist table-striped table-bordered'>
+			<colgroup>
+				<col style='width:20%' />
+				<col style='auto' />
+				<col style='auto' />
+			</colgroup>
+			<thead>
+			<tr>
+				<th>".str_replace(e_LANGUAGEDIR,"",$lanfile)."</th><th>Value</th>";
+
+				foreach($compare as $k=>$val)
+				{
+					$text .= "<th>".str_replace("../","",$k)."</th>";
+				}
+
+				if($reverse == true)
+				{
+					$text .= "<th>".LANG_LAN_124."</th>";
+				}
+
+				$text .= "
+				</tr>
+				</thead>
+				<tbody>";
+
+		// 	for ($i=0; $i<count($lanDefines); $i++)
+		//	{
+
+			foreach($lanDefines as $line)
+			{
+				if(trim($line) !="")
+				{
+			        $disabled = (preg_match("#^//#i",$line)) ? " ".LANG_LAN_125 : false;
+					if($match = getDefined($line,$reverse))
+					{
+						$text .= $this->compareit($match['define'], $compare, $match['value'], $disabled, $reverse);
+		            }
+				}
+		    }
+
+
+			$text .= "</tbody></table>";
+	/*
+			if(count($_SESSION['language-tools-unused'])>0 && $reverse == false)
+			{
+				$text .= "<div class='buttons-bar center'>".$frm->admin_button('disabled-unused',LANG_LAN_126,'delete').
+				$frm->hidden('disable-unused-lanfile',$lanfile).
+				$frm->hidden('deprecatedLans',$script).
+
+				"</div>";
+			}
+	*/
+
+			$text .= $frm->close();
+
+			if($reverse != true)
+			{
+				$mes->addInfo("<b>Search ENTIRE core before commenting out ANY LAN from ANY language file.</b>");
+			}
+
+			$ret['text'] = $mes->render().$text;
+			$ret['caption'] = "Errors: ".intval($this->errors);
+
+			return $ret;
+		}
+		else
+		{
+	        return FALSE;
+		}
+
+	}
+
+
+
+
+
+	function findIncludedFiles($script,$reverse=false)
+	{
+		$mes = e107::getMessage();
+
+		$data = file_get_contents($script);
+
+		if(strpos($data, 'e_admin_dispatcher')!==false)
+		{
+			$reverse = false;
+		}
+
+		$dir = dirname($script);
+
+		$dir = str_replace("/includes","",$dir);
+		$plugin = basename($dir);
+
+		if(strpos($script,'admin')!==false || strpos($script,'includes')!==false) // Admin Language files.
+		{
+
+			$newLangs = array(
+				0 		=>  $dir."/languages/English/English_admin_".$plugin.".php",
+				1 		=>  $dir."/languages/English_admin_".$plugin.".php",
+				2 		=>  $dir."/languages/English_admin.php",
+				3 		=>  $dir."/languages/English/English_admin.php"
+			);
+		}
+		else
+		{
+			$newLangs = array(
+				0 		=>  $dir."/languages/English/English_".$plugin.".php",
+				1 		=>  $dir."/languages/English_admin_".$plugin.".php",
+				2 		=>  $dir."/languages/English_front.php",
+				3 		=>  $dir."/languages/English/English_front.php",
+				4 		=>  $dir."/languages/English_front.php",
+				5 		=>  $dir."/languages/English/English_front.php"
+			);
+		}
+		//	if(strpos($data, 'e_admin_dispatcher')!==false)
+		{
+			foreach($newLangs as $path)
+			{
+				if(file_exists($path) && $reverse == false)
+				{
+					return $path;
+				}
+			}
+		}
+
+
+
+		preg_match_all("/.*(include_lan|require_once|include|include_once) ?\((.*e_LANGUAGE.*?\.php)/i",$data,$match);
+
+		$srch = array(" ",'e_PLUGIN.', 'e_LANGUAGEDIR', '.e_LANGUAGE.', "'", '"', "'.");
+		$repl = array("", e_PLUGIN, e_LANGUAGEDIR, "English", "", "", "");
+
+		foreach($match[2] as $lanFile)
+		{
+			$arrt = str_replace($srch,$repl,$lanFile);
+			//	if(strpos($arrt,'admin'))
+			{
+				//return $arrt;
+				$arr[] = $arrt;
+			}
+		}
+
+		return implode(",",$arr);
+
+
+		//	return $arr[0];
+	}
+
+
+
+
 
 }
+
 
 function getDefined($line,$script=false)
 {
@@ -1785,146 +2005,7 @@ function getDefined($line,$script=false)
 
 
 
-function compareit($needle,$haystack,$value='',$disabled=FALSE, $reverse=false){
-	
-	
-//	return "Need=".$needle."<br />hack=".$haystack."<br />val=".$val;
-	//TODO Move this into a separate function (use a class for this whole script)
-	
-	$commonPhrases = file_get_contents(e_LANGUAGEDIR."English/admin/lan_admin.php");	
-	$commonLines = explode("\n",$commonPhrases);
-	
-	$foundSimilar = FALSE;
-	$foundCommon = FALSE;
-	
-	foreach($commonLines as $line)
-	{
-		if($match = getDefined($line))
-		{
-			$id = $match['define'];
-			$ar[$id] = $match['value'];
-		}
-	}
 
-	$commonArray = array_keys($ar);
-
-	// Check if a common phrases was used. 
-	foreach($ar as $def=>$common)
-	{
-		similar_text($value, $common, $p);
-		
-    	if(strtoupper(trim($value)) == strtoupper($common))
-		{
-			//$text .= "<div style='color:yellow'><b>$common</b></div>";
-			$foundCommon = TRUE;
-			break;
-		}
-		elseif($p > 55)
-		{
-			$foundSimilar = TRUE;
-			break;	
-		}	
-		$p = 0 ; 
-	}
-
-	
-	
-	foreach($haystack as $script)
-	{
-		$lines = explode("\n",$script);
-		
-		$text .= "<td>";
-		$text2 .= ($reverse == true) ? "<td>" : "";
-		
-		$count = 1;
-		foreach($lines as $ln)
-		{	
-			if(preg_match("/\b".$needle."\b/i",$ln, $mtch))
-			{
-				if($disabled)
-				{
-					$text .= ADMIN_WARNING_ICON;
-				}
-				elseif($reverse == true)
-				{
-					$text .= ADMIN_TRUE_ICON;
-				}	
-				$text .= " Line:<b>".$count."</b>  "; // "' Found";
-				
-				if($reverse == true)
-				{
-					$text2 .= print_a($ln,true);
-				}
-				$found = TRUE;
-			}
-
-			$count++;	
-		}
-
-		if(!$found)
-		{
-			// echo "<br />Unused: ".$needle;
-			if($reverse == true)
-			{
-				if(in_array($needle,$commonArray))
-				{
-					$color = "background-color:#E9EAF2";
-					$text .= ADMIN_TRUE_ICON;	
-					$value = LANG_LAN_130;
-				} 
-				else
-				{
-					$color = "background-color:yellow";	
-					$text .= "<a href='#' title=\"Missing\">".ADMIN_WARNING_ICON."</a>";	
-					$value = LANG_LAN_131;
-				}
-
-			}
-			else
-			{
-				$color = "background-color:pink";	
-				$text .= "-";		
-			}
-			
-			if(!$disabled)
-			{
-				$_SESSION['language-tools-unused'][] = $needle;	
-			} 	
-		}
-		$text .= "</td>";
-		$text2 .= ($reverse == true) ? "</td>" : "";
-	}
-
-//	$color = $found ? "" : "background-color:pink";
-
-
-	if($foundCommon && $found)
-	{	
-		$color = "background-color:yellow";
-		$disabled .= "<br /><i>".$common."</i> ".LANG_LAN_132."<br />(".LANG_LAN_133." <b>".$def."</b> ".LANG_LAN_134.")";
-		
-		// return "<tr><td style='width:25%;'>".$needle .$disabled. "</td><td></td></tr>";
-	}
-	
-	elseif($foundSimilar && $found && substr($def,0,4) == "LAN_")
-	{
-		$color = "background-color:#E9EAF2";
-		$disabled .= "  <a class='e-tip' href='#' title=\"".$value." :: ".$common."\">".round($p)."% like ".$def."</a> ";
-		// $disabled .= " <a class='e-tip' href='#' title=\"".$common."\">" . $def."</a>"; //  $common; 		
-	}
-	
-	if($disabled == " ".LANG_LAN_125)
-	{
-		$color = "background-color:#DFFFDF";
-	}	
-
-	if(!$found)
-	{
-		$needle = "<a class='e-tip' href='#' title=\"".$value."\">".$needle."</a>";	
-	}
-	
-	return "<tr><td style='width:25%;$color'>".$needle .$disabled. "</td>".$text.$text2."</tr>";
-}
 
 
 
