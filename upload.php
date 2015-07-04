@@ -79,7 +79,7 @@ class userUpload
 		if(!check_class($uploadAccess))
 		{
 			$text = "<div style='text-align:center'>".LAN_UL_002."</div>";
-			$ns->tablerender(LAN_UL_020, $text);
+			$ns->tablerender(LAN_ERROR, $text);
 			return; 
 		}	
 		
@@ -245,7 +245,7 @@ class userUpload
 			<col style='width:70%' />
 			</colgroup>
 			<tr>
-			<td class='forumheader3'>".DOWLAN_11.":</td>
+			<td class='forumheader3'>".LAN_CATEGORY.":</td>
 			<td class='forumheader3'>";
 		
 			require_once(e_CORE."shortcodes/batch/download_shortcodes.php");
@@ -279,7 +279,7 @@ class userUpload
 		if (ADMIN)
 		{
 			$upper_limit = calc_max_upload_size();
-			$allowed_filetypes = "<table class='table table-striped table-bordered'><tr><th class='text-center'>".LAN_UL_023."&nbsp;&nbsp;</th><th style='text-align:right'>".LAN_UL_024."</th></tr>";
+			$allowed_filetypes = "<table class='table table-striped table-bordered'><tr><th class='text-center'>".LAN_TYPE."&nbsp;&nbsp;</th><th style='text-align:right'>".LAN_UL_024."</th></tr>";
 			
 			foreach ($a_filetypes as $type => $size)
 			{
@@ -309,45 +309,45 @@ class userUpload
 		if (!USER) // Prompt for name, email
 		{	
 		  $text .= "<tr>
-			<td class='forumheader3'>".LAN_61."</td>
+			<td class='forumheader3'>".LAN_AUTHOR."</td>
 			<td class='forumheader3'><input class='tbox form-control' style='width:90%' name='file_poster' type='text' size='50' maxlength='100' value='{$poster}' /></td>
 			</tr>
 		
 			<tr>
-			<td class='forumheader3'><span style='text-decoration:underline'>".LAN_112."</span></td>
+			<td class='forumheader3'><span style='text-decoration:underline'>".LAN_EMAIL_ADDRESS."</span></td>
 			<td class='forumheader3'><input class='tbox form-control' style='width:90%' name='file_email' id='user_email' type='text' size='50' maxlength='100' value='".$postemail."' required /></td>
 			</tr>";
 		}
 
 		$text .= "
 			<tr>
-			<td class='forumheader3'><span style='text-decoration:underline'>".LAN_409."</span></td>
+			<td class='forumheader3'><span style='text-decoration:underline'>".LAN_NAME."</span></td>
 			<td class='forumheader3'><input class='tbox form-control' style='width:90%'  name='file_name' id='file_name' type='text' size='50' maxlength='100' required /></td>
 			</tr>
 		
 			<tr>
-			<td class='forumheader3'>".LAN_410."</td>
+			<td class='forumheader3'>".LAN_VERSION."</td>
 			<td class='forumheader3'><input class='tbox form-control' style='width:90%' name='file_version' type='text' size='10' maxlength='10' /></td>
 			</tr>
 		
 		
 			<tr>
-			<td class='forumheader3'><span style='text-decoration:underline'>".LAN_411."</span></td>
+			<td class='forumheader3'><span style='text-decoration:underline'>".LAN_FILE."</span></td>
 			<td class='forumheader3'><input class='tbox' style='width:90%'  id='file_realpath' name='file_userfile[]' type='file' size='47' /></td>
 			</tr>
 		
 			<tr>
-			<td class='forumheader3'>".LAN_412."</td>
+			<td class='forumheader3'>".LAN_SCREENSHOT."</td>
 			<td class='forumheader3'><input class='tbox' style='width:90%' name='file_userfile[]' type='file' size='47' /></td>
 			</tr>
 		
 			<tr>
-			<td class='forumheader3'><span style='text-decoration:underline'>".LAN_413."</span></td>
+			<td class='forumheader3'><span style='text-decoration:underline'>".LAN_DESCRIPTION."</span></td>
 			<td class='forumheader3'><textarea class='tbox form-control' style='width:90%' name='file_description' id='file_description' cols='59' rows='6' required></textarea></td>
 			</tr>
 		
 			<tr>
-			<td class='forumheader3'>".LAN_144."</td>
+			<td class='forumheader3'>".LAN_AUTHOR." - ".LAN_WEBSITE."</td>
 			<td class='forumheader3'><input class='tbox form-control' style='width:90%' name='file_website' type='text' size='50' maxlength='100' value='".(defined(USERURL) ? USERURL : "")."' /></td>
 			</tr>
 		
@@ -357,7 +357,7 @@ class userUpload
 			</tr>
 		
 			<tr>
-			<td style='text-align:center' colspan='2' class='forumheader'><input class='btn btn-primary button' type='submit' name='upload' value='".LAN_416."' /></td>
+			<td style='text-align:center' colspan='2' class='forumheader'><input class='btn btn-primary button' type='submit' name='upload' value='".LAN_SUBMIT."' /></td>
 			</tr>
 			</table>
 			</form>
@@ -398,7 +398,7 @@ exit;
 if (!check_class($pref['upload_class']))
 {
   $text = "<div style='text-align:center'>".LAN_UL_002."</div>";
-  $ns->tablerender(LAN_UL_020, $text);
+  $ns->tablerender(LAN_ERROR, $text);
   require_once(FOOTERF);
   exit;
 }
@@ -427,7 +427,7 @@ $text = "<div style='text-align:center'>
 	<col style='width:70%' />
 	</colgroup>
 	<tr>
-	<td class='forumheader3'>".DOWLAN_11.":</td>
+	<td class='forumheader3'>".LAN_CATEGORY.":</td>
 	<td class='forumheader3'>";
 
 	require_once(e_CORE."shortcodes/batch/download_shortcodes.php");
@@ -462,7 +462,7 @@ $max_upload_size = set_max_size($a_filetypes, $max_upload_size);
 if (ADMIN)
 {
   $upper_limit = calc_max_upload_size();
-  $allowed_filetypes = "<table><tr><td>".LAN_UL_023."&nbsp;&nbsp;</td><td style='text-align:right'>".LAN_UL_024."</td></tr>";
+  $allowed_filetypes = "<table><tr><td>".LAN_TYPE."&nbsp;&nbsp;</td><td style='text-align:right'>".LAN_UL_024."</td></tr>";
   foreach ($a_filetypes as $type => $size)
   {
     $allowed_filetypes .= "<tr><td>{$type}</td><td style='text-align:right'>".$e107->parseMemorySize($size,0)."</td></tr>";
@@ -489,7 +489,7 @@ if (!USER)
 	</tr>
 
 	<tr>
-	<td class='forumheader3'><span style='text-decoration:underline'>".LAN_112."</span></td>
+	<td class='forumheader3'><span style='text-decoration:underline'>".LAN_EMAIL_ADDRESS."</span></td>
 	<td class='forumheader3'><input class='tbox' style='width:90%' name='file_email' id='user_email' type='text' size='50' maxlength='100' value='".$postemail."' /></td>
 	</tr>";
 }
@@ -501,13 +501,13 @@ $text .= "
 	</tr>
 
 	<tr>
-	<td class='forumheader3'>".LAN_410."</td>
+	<td class='forumheader3'>".LAN_VERSION."</td>
 	<td class='forumheader3'><input class='tbox' style='width:90%' name='file_version' type='text' size='10' maxlength='10' /></td>
 	</tr>
 
 
 	<tr>
-	<td class='forumheader3'><span style='text-decoration:underline'>".LAN_411."</span></td>
+	<td class='forumheader3'><span style='text-decoration:underline'>".LAN_FILE."</span></td>
 	<td class='forumheader3'><input class='tbox' style='width:90%'  id='file_realpath' name='file_userfile[]' type='file' size='47' /></td>
 	</tr>
 
@@ -517,7 +517,7 @@ $text .= "
 	</tr>
 
 	<tr>
-	<td class='forumheader3'><span style='text-decoration:underline'>".LAN_413."</span></td>
+	<td class='forumheader3'><span style='text-decoration:underline'>".LAN_DESCRIPTION."</span></td>
 	<td class='forumheader3'><textarea class='tbox' style='width:90%' name='file_description' id='file_description' cols='59' rows='6'></textarea></td>
 	</tr>
 
@@ -532,7 +532,7 @@ $text .= "
 	</tr>
 
 	<tr>
-	<td style='text-align:center' colspan='2' class='forumheader'><input class='btn btn-default button' type='submit' name='upload' value='".LAN_416."' /></td>
+	<td style='text-align:center' colspan='2' class='forumheader'><input class='btn btn-default button' type='submit' name='upload' value='".LAN_SUBMIT."' /></td>
 	</tr>
 	</table>
 	</form>

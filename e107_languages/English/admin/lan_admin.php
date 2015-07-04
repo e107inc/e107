@@ -223,18 +223,18 @@ Below is the list of files that could potentially be malicious:");
 
 define("LAN_CREATE","Create");
 define("LAN_MANAGE","Manage");
-define("LAN_UPDATE","Update");
+//define("LAN_UPDATE","Update"); //Moved to English.php as used in front end as well
 define("LAN_ADD", "Add");
 define("LAN_SAVE","Save");
-define("LAN_SAVED","Saved");
+//define("LAN_SAVED","Saved");//Moved to English.php 
 define("LAN_SETSAVED","Your settings have been saved");
 define("LAN_NOCHANGE_NOTSAVED", "Nothing changed - not saved");
 define("LAN_CONFIRMDEL","Please confirm you wish to delete");
 
-define("LAN_OPTIONS","Options");
+//define("LAN_OPTIONS","Options");//Moved to English.php 
 define("LAN_PREFS","Preferences");
 define("LAN_DELETED","Successfully deleted");
-define("LAN_UPDATED","Successfully updated");
+//define("LAN_UPDATED","Successfully updated");
 define("LAN_CREATED","Successfully created");
 define("LAN_CREATED_FAILED","Creation Unsuccessful");
 define("LAN_DELETED_FAILED","Deletion Unsuccessful");
@@ -274,8 +274,8 @@ define("LAN_DISPLAYOPT", "Edit Display Options");
 // define("LAN_GOPAGE", "Go to page:");
 define("LAN_DATESTAMP","Date stamp");
 define("LAN_OPTIONAL", "optional");
-define("LAN_INACTIVE","Inactive");
-define("LAN_ACTIVE","Active");
+//define("LAN_INACTIVE","Inactive");//Moved to English.php 
+//define("LAN_ACTIVE","Active");//Moved to English.php 
 define("LAN_ACCEPT","Accept");
 define("LAN_PENDING","Pending");
 define("LAN_SUBMITTED","Submitted");
@@ -283,7 +283,7 @@ define("LAN_SUBMITTED","Submitted");
 define("LAN_BAN","Ban");
 
 
-define("LAN_UPLOAD", "Upload");
+//define("LAN_UPLOAD", "Upload");//Moved to English.php 
 define("LAN_UPLOADS","Uploads");
 define("LAN_UPLOAD_IMAGES","Upload Images");
 define("LAN_UPLOAD_FILES","Upload Files");
@@ -327,8 +327,8 @@ define("LAN_COMMENTMAN", "Comments Manager");
 define("LAN_LIST", "List");
 define("LAN_FILTER", "Filter");
 define("LAN_NO_RECORDS", "No Records Found");
-define("LAN_STATUS", "Status");
-define("LAN_URL", "URL");
+//define("LAN_STATUS", "Status");
+//define("LAN_URL", "URL");//Moved to English.php 
 define("LAN_USER", "User");
 define("LAN_OWNER", "Owner");
 
@@ -350,7 +350,7 @@ define("LAN_KEYWORDS","Keywords");
 define("LAN_TEMPLATE","Template");
 
 // define("LAN_NONE", "None");
-define("LAN_CATEGORIES", "Categories");
+//define("LAN_CATEGORIES", "Categories");//Moved to English.php 
 define("LAN_DEMO_FORBIDDEN", "Changes on this page are not possible in demo mode.");
 define("LAN_COPYRIGHT", "Copyright");
 define("LAN_MANAGER", "Manage Permissions");

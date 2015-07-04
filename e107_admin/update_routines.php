@@ -1168,7 +1168,7 @@ function update_706_to_800($type='')
 	//TODO - send notification messages to Log. 
 
 
-	if($sql->field('page','page_theme') && $sql->gen("SELECT * FROM #page WHERE page_theme != '' AND menu_title = '' LIMIT 1"))
+	if($sql->field('page','page_theme') && $sql->gen("SELECT * FROM #page WHERE ".MPREFIX."page_theme != '' AND menu_title = '' LIMIT 1"))
 	{
 		if ($just_check)
 		{
@@ -1177,7 +1177,7 @@ function update_706_to_800($type='')
 		
 		if($sql->update('page',"menu_name = page_theme, menu_title = page_title, menu_text = page_text, menu_template='default', page_title = '', page_text = '' WHERE page_theme !='' AND menu_title = '' AND menu_text = '' "))
 		{
-			$sql->gen("ALTER TABLE `#page` DROP `page_theme`");
+			$sql->gen("ALTER TABLE `#page` DROP ".MPREFIX."`page_theme`");
 			$mes = e107::getMessage();
 			$log->addDebug("Successfully updated pages/menus table to new format. ");
 		}

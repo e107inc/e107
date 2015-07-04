@@ -10,11 +10,11 @@
 +----------------------------------------------------------------------------+
 */
 // define("LAN_PLUGIN_DOWNLOAD_NAME",	   "Downloads");
-define("LAN_DL_OPTIONS",               "Options"); //FIXME Use Generic
-define("LAN_DL_DOWNLOAD_OPT_GENERAL",  "General");
+//define("LAN_DL_OPTIONS",               "Options"); //LAN_OPTIONS
+//define("LAN_DL_DOWNLOAD_OPT_GENERAL",  "General");//LAN_GENERAL
 define("LAN_DL_DOWNLOAD_OPT_BROKEN",   "Reporting");
 define("LAN_DL_DOWNLOAD_OPT_AGREE",    "Agreements");
-define("LAN_DL_UPLOAD",                "Upload"); //FIXME Use Generic
+//define("LAN_DL_UPLOAD",                "Upload"); //LAN_UPLOAD
 define("LAN_DL_USE_PHP",               "Use PHP");
 define("LAN_DL_USE_PHP_INFO",          "Checking this will send all download requests through PHP");
 define("LAN_DL_SUBSUB_CAT",            "Show sub-sub-categories");
@@ -22,37 +22,38 @@ define("LAN_DL_SUBSUB_CAT_INFO",       "Checking this will show the sub-sub-cate
 define("LAN_DL_SUBSUB_COUNT",          "Combine category counts");
 define("LAN_DL_SUBSUB_COUNT_INFO",     "Include sub-sub-category counts in sub-category counts");
 
-define("DOWLAN_1",   "Download added to database.");
-define("DOWLAN_2",   "Download updated in database.");
+//define("DOWLAN_1",   "Download added to database.");//LAN_SAVED
+//define("DOWLAN_2",   "Download updated in database.");//LAN_UPDATED
 // define("DOWLAN_3",   "Download deleted.");
 // define("DOWLAN_4",   "Please tick the confirm box to delete the download");
 define("DOWLAN_5",   "There are no download categories defined yet, until you define some you cannot enter any downloads.");
 // define("DOWLAN_6",   "No existing downloads");
 // define("DOWLAN_7",   "Existing Downloads"); //FIXME Use Generic
-define("DOWLAN_8",   "Nothing changed - not saved");
-define("DOWLAN_9",   "Download detail:");
-define("DOWLAN_10",  "Uploads"); //FIXME Use Generic
-define("DOWLAN_11",  "Category"); //FIXME Use Generic
-define("DOWLAN_12",  "Name"); //FIXME Use Generic
-define("DOWLAN_13",  "File");
-// define("DOWLAN_14",  "Enter address if download is an external file");
-define("DOWLAN_15",  "Author"); //FIXME Use Generic
-define("DOWLAN_16",  "Author Email"); //FIXME Use Generic
-define("DOWLAN_17",  "Author Website");
-define("DOWLAN_18",  "Description"); //FIXME Use Generic
-define("DOWLAN_19",  "Main image");
-define("DOWLAN_20",  "Thumbnail image");
-define("DOWLAN_21",  "Status"); //FIXME Use Generic
+//define("DOWLAN_8",   "Nothing changed - not saved");//LAN_NO_CHANGES_TO_SAVE
+//define("DOWLAN_9",   "Download detail:");//LAN_PLUGIN_DOWNLOAD_NAME." - ".LAN_DETAILS." - "
+//define("DOWLAN_10",  "Uploads"); //LAN_UPLOADS
+//define("DOWLAN_11",  "Category"); //LAN_CATEGORY
+//define("DOWLAN_12",  "Name"); //LAN_NAME
+//define("DOWLAN_13",  "File");//LAN_FILE
+//define("DOWLAN_14",  "Enter address if download is an external file");
+//define("DOWLAN_15",  "Author"); //LAN_AUTHOR
+//define("DOWLAN_16",  "Author Email"); //LAN_AUTHOR_EMAIL
+//define("DOWLAN_17",  "Author Website"); //LAN_AUTHOR_WEBSITE
+//define("DOWLAN_18",  "Description"); //LAN_DESCRIPTION
+//define("DOWLAN_19",  "Main image"); // LAN_SCREENSHOT
+//define("DOWLAN_20",  "Thumbnail image");// LAN_THUMBNAIL_IMAGE
+//define("DOWLAN_21",  "Status"); //LAN_STATUS
 define("DOWLAN_22",  "List uploads");
-define("DOWLAN_23",  "File types");
-define("DOWLAN_24",  "Update Download");
-define("DOWLAN_25",  "Submit Download");
-// define("DOWLAN_26",  "Uploads enabled?");
-define("DOWLAN_27",  "Download");
-define("DOWLAN_28",  "None");
-define("DOWLAN_31",  "Categories");
-define("DOWLAN_32",  "Downloads");
-define("DOWLAN_33",  "Are you sure you want to delete this download?"); //FIXME Use Generic
+//define("DOWLAN_23",  "File types");//LAN_FILETYPES
+//define("DOWLAN_24",  "Update Download"); //LAN_UPDATE
+//define("DOWLAN_25",  "Submit Download");//LAN_SUBMIT
+//define("DOWLAN_26",  "Uploads enabled?");
+//define("DOWLAN_27",  "Download");//LAN_DOWNLOAD
+//define("DOWLAN_28",  "None");//LAN_NONE
+define("DOWLAN_29",  "Mirror"); 
+//define("DOWLAN_31",  "Categories");//LAN_CATEGORIES
+//define("DOWLAN_32",  "Downloads");//LAN_DOWNLOADS
+//define("DOWLAN_33",  "Are you sure you want to delete this download?"); //FIXME Use Generic //LAN_JSCONFIRM
 // define("DOWLAN_34",  "Are you sure you want to delete this download category?"); //FIXME Use Generic
 // define("DOWLAN_35",  "Maximum file size");
 // define("DOWLAN_36",  "deleted"); //FIXME Use Generic
@@ -61,8 +62,8 @@ define("DOWLAN_33",  "Are you sure you want to delete this download?"); //FIXME 
 // define("DOWLAN_39",  "Download categories");
 // define("DOWLAN_40",  "None - main parent");
 // define("DOWLAN_41",  "Icon"); //FIXME Use Generic
-define("DOWLAN_42",  "View Images");
-define("DOWLAN_43",  "Visible to");
+//define("DOWLAN_42",  "View Images");//LAN_VIEW
+//define("DOWLAN_43",  "Visible to");//LAN_VISIBLE_TO
 // define("DOWLAN_44",  "Selection will make the category visible to only users in that class");
 // define("DOWLAN_45",  "Create Category"); //FIXME Use Generic
 // define("DOWLAN_46",  "Update Category"); //FIXME Use Generic
@@ -74,18 +75,18 @@ define("DOWLAN_43",  "Visible to");
 // define("DOWLAN_52",  "Files");
 // define("DOWLAN_53",  "Subcategory");
 // define("DOWLAN_54",  "Subcategories");
-define("DOWLAN_55",  "Number of downloads to display per page");
-define("DOWLAN_56",  "Sort by ");
+//define("DOWLAN_55",  "Number of downloads to display per page");//LAN_NUMBER_PER_PAGE
+//define("DOWLAN_56",  "Sort by ");// LAN_ORDER_BY
 // define("DOWLAN_57",  "Clear filters");
 // define("DOWLAN_58",  "Absolute maximum upload size in bytes. Further limited by settings from php.ini, and by the settings in filetypes.xml (upload_max_filesize = %1, post_max_size = %2)");
-define("DOWLAN_59",  "Filename");
+//define("DOWLAN_59",  "Filename");//LAN_FILENAME
 // define("DOWLAN_60",  "Select to allow only certain users to upload");
 // define("DOWLAN_61",  "Permissions");
-define("DOWLAN_62",  "Ascending");
-define("DOWLAN_63",  "Descending");
+//define("DOWLAN_62",  "Ascending");//LAN_ASCENDING
+//define("DOWLAN_63",  "Descending");//LAN_DESCENDING
 define("DOWLAN_64",  "Update Options");
 define("DOWLAN_65",  "Options Updated");
-define("DOWLAN_66",  "Filesize");
+//define("DOWLAN_66",  "Filesize");//LAN_FILESIZE
 //define("DOWLAN_67",  "ID"); //FIXME Use Generic // LAN_ID
 define("DOWLAN_68",  "File Missing!");
 // define("DOWLAN_69",  "Downloads handled by PHP");
@@ -121,7 +122,7 @@ define("DOWLAN_107", "Limit download count");
 define("DOWLAN_108", "Limit download bandwidth");
 define("DOWLAN_109", "every");
 define("DOWLAN_110", "days");
-define("DOWLAN_111", "kb"); //FIXME Use Generic
+//define("DOWLAN_111", "kb"); //FIXME Use Generic //CORE_LAN_KB
 define("DOWLAN_112", "Limits");
 define("DOWLAN_113", "Userclass"); //FIXME Use Generic
 define("DOWLAN_114", "Add New Limit");
@@ -132,13 +133,13 @@ define("DOWLAN_115", "Update limits");
 // define("DOWLAN_119", "Limit successfully removed");
 // define("DOWLAN_120", "Limit not removed - unknown error");
 // define("DOWLAN_121", "Limit successfully updated");
-define("DOWLAN_122", "Inactive");
-define("DOWLAN_123", "Active - File is subject to download limits");
-define("DOWLAN_124", "Active - File is NOT subject to download limits");
+//define("DOWLAN_122", "Inactive");//LAN_INACTIVE
+//define("DOWLAN_123", "Active - File is subject to download limits");//LAN_LIMITED
+//define("DOWLAN_124", "Active - File is NOT subject to download limits");//LAN_ACTIVE
 define("DOWLAN_125", "Download limits active");
 // define("DOWLAN_126", "Activation status updated");
 // define("DOWLAN_127", "Only enter filesize if the download is an external file"); // TODO not used?
-define("DOWLAN_128", "Mirrors");
+define("DOWLAN_128",  "Mirrors"); 
 define("DOWLAN_129", "leave blank if not using mirrors");
 define("DOWLAN_130", "Add another mirror");
 define("DOWLAN_131", "Select local file");
@@ -146,20 +147,20 @@ define("DOWLAN_132", "Please enter mirror to use, then address to download and f
 define("DOWLAN_133", "Mirror updated in database");
 define("DOWLAN_134", "Mirror saved in database");
 define("DOWLAN_135", "Mirror deleted");
-define("DOWLAN_136", "image");
-define("DOWLAN_137", "Are you sure you want to delete this mirror?");
+//define("DOWLAN_136", "image"); //  strtolower(LAN_IMAGE)
+//define("DOWLAN_137", "Are you sure you want to delete this mirror?");//LAN_JSCONFIRM
 define("DOWLAN_138", "Existing Mirrors");
-define("DOWLAN_139", "Address");
+//define("DOWLAN_139", "Address");//LAN_ADDRESS
 define("DOWLAN_140", "Upload local images to e107_files/downloadimages to show them here, or enter full address if image is remote");
-define("DOWLAN_141", "Location");
+//define("DOWLAN_141", "Location"); //LAN_LOCATION
 define("DOWLAN_142", "Update Mirror");
 define("DOWLAN_143", "Create Mirror");
 define("DOWLAN_144", "No mirrors defined in mirror section.");
-define("DOWLAN_145", "Download visible to");
+//define("DOWLAN_145", "Download visible to");//LAN_VISIBLE_TO
 define("DOWLAN_146", "Custom Download-denial message or URL");
 // define("DOWLAN_147", "Icon for empty category");
 define("DOWLAN_148", "Check to update date stamp to current time");
-define("DOWLAN_149", "URL"); //FIXME Use Generic
+//define("DOWLAN_149", "URL"); //LAN_URL
 define("DOWLAN_150", "Email admin when broken download reported");
 define("DOWLAN_151", "Broken-download reporting available to");
 define("DOWLAN_152", "Couldn't move file");
@@ -171,7 +172,7 @@ define("DOWLAN_157", "use random mirror - no user choice");
 // define("DOWLAN_158", "Show sub-sub-categories on main download page");
 // define("DOWLAN_159", "Include sub-sub-category counts in subcategory counts");
 define("DOWLAN_160", "Mirror list order");
-define("DOWLAN_161", "Random");
+//define("DOWLAN_161", "Random");
 // define("DOWLAN_162", "Copy to newspost");
 
 define("DOWLAN_164", "Recent downloads age (in days)");

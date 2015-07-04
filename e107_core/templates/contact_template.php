@@ -70,19 +70,19 @@ $CONTACT_TEMPLATE['menu'] =  '
 	<form action='".e_SELF."' method='post' id='contactForm' >
 	<table class='table'>
 	{CONTACT_PERSON}
-	<tr><td>".LANCONTACT_03."<br />
+	<tr><td>".LAN_NAME."<br />
 	{CONTACT_NAME}
 	</td></tr>
-	<tr><td>".LANCONTACT_04."<br />
+	<tr><td>".LAN_EMAIL_ADDRESS."<br />
 	{CONTACT_EMAIL}
 	</td></tr>
 	<tr><td>
-	".LANCONTACT_05."<br />
+	".LAN_SUBJECT."<br />
 	{CONTACT_SUBJECT}
 	</td></tr>
 	{CONTACT_EMAIL_COPY}
 	<tr><td>
-    ".LANCONTACT_06."<br />
+    ".LAN_MESSAGE."<br />
     {CONTACT_BODY}
 	</td></tr>
 	{CONTACT_IMAGECODE}

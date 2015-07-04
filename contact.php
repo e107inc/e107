@@ -61,7 +61,7 @@ if(isset($_POST['send-contactus']))
 // Check Image-Code
     if (isset($_POST['rand_num']) && !$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify']))
 	{
-		$error .= LANCONTACT_15."\\n";
+		$error .= LAN_INVALID_CODE."\\n";
 	}
 
 // Check message body.
