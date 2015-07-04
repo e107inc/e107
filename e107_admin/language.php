@@ -434,11 +434,13 @@ if (isset($_POST['create_edit_existing']))
 if (isset($_POST['edit_existing']))
 {
 	//XXX - JS ok with the current functionality?
+	$frm = e107::getForm();
+
 	$text .= "
 	<form method='post' action='".e_SELF."?db'>
 		<fieldset id='core-language-edit'>
 			<legend class='e-hideme'>".$_POST['lang_choices']."</legend>
-			<table class='table adminlist'>
+			<table class='table adminlist table-striped'>
 				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
@@ -450,22 +452,32 @@ if (isset($_POST['edit_existing']))
 		$installed = 'lan_'.strtolower($_POST['lang_choices'])."_".$table_name;
 		if (stristr($_POST['lang_choices'], $installed) === FALSE)
 		{
+
+			$selected = ($sql->db_Table_exists($table_name,$_POST['lang_choices'])) ? " checked='checked'" : "";
+
+			$tableName = ucfirst(str_replace("_", " ", $table_name));
+			$tableLabel = ($selected) ? "<span class='label label-success'>".$tableName."</span>" : $tableName;
+
 			$text .= "
 					<tr>
-						<td>".ucfirst(str_replace("_", " ", $table_name))."</td>
+						<td>".$tableLabel."</td>
 						<td>
-							<div class='auto-toggle-area f-left e-pointer'>
+							<div>
+							<div class='auto-toggle-area  e-pointer'>
 			";
-			$selected = ($sql->db_Table_exists($table_name,$_POST['lang_choices'])) ? " checked='checked'" : "";
+
+
+
 			$text .= "
-								<input type='checkbox' class='checkbox' id='language-action-{$table_name}' name='{$table_name}' value='1'{$selected} onclick=\"if(document.getElementById('language-action-{$table_name}').checked){document.getElementById('language-datacopy-{$table_name}').style.display = '';}\" />
+								<input type='checkbox' class='checkbox e-expandit' data-return='true' data-target='language-datacopy-{$table_name}' id='language-action-{$table_name}' name='{$table_name}' value='1'{$selected}  />
 							</div>
 
-							<div class='f-left'>
-								<span id='language-datacopy-{$table_name}' class='e-hideme e-pointer'>
-									<input type='checkbox' class='checkbox' name='copydata_{$table_name}' id='copydata-{$table_name}' value='1' />
-									&nbsp;&nbsp;<label for='copydata-{$table_name}'>".LANG_LAN_15."</label>
-								</span>
+									<div id='language-datacopy-{$table_name}' class='offset1 e-hideme e-pointer'>".
+									$frm->checkbox("copydata_".$table_name, 1, false, LANG_LAN_15)."
+
+									</div>
+
+
 							</div>
 						</td>
 					</tr>
@@ -508,7 +520,7 @@ if (isset($_POST['edit_existing']))
 		</fieldset>
 	</form>
 	";
-	$ns->tablerender($_POST['lang_choices'], $mes->render().$text);
+	$ns->tablerender(ADLAN_132.SEP.LANG_LAN_03.SEP.$_POST['lang_choices'], $mes->render().$text);
 }
 require_once (e_ADMIN."footer.php");
 // ---------------------------------------------------------------------------
