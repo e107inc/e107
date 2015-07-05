@@ -10,7 +10,7 @@ if(!$CHAT_TABLE_START){
 if(!$CHAT_TABLE)
 {
 //TODO review bullet
-		$CHAT_TABLE = "<tr><td
+		$CHAT_TABLE = "<tr><td>
 		<div class='spacer'>
 			<div class='{CHAT_TABLE_FLAG}'>
 				<b>{CHAT_TABLE_NICK}</b> ".CHATBOX_L22." {CHAT_TABLE_DATESTAMP}
