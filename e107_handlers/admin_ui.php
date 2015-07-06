@@ -2443,6 +2443,11 @@ class e_admin_controller_ui extends e_admin_controller
      * @var boolean
      */
     protected $batchFeaturebox = false;
+
+	/**
+	 * @var array
+	 */
+	protected $batchOptions = array();
 	
 	/**
 	 * Could be LAN constant (mulit-language support)
@@ -2509,7 +2514,12 @@ class e_admin_controller_ui extends e_admin_controller
     {
         return $this->batchFeaturebox;
     }
-	
+
+	public function getBatchOptions()
+	{
+		return $this->batchOptions;
+	}
+
 
 	/**
 	 * @return string
@@ -3150,6 +3160,7 @@ class e_admin_controller_ui extends e_admin_controller
 				{
 					$this->$method($selected, $field, $value);
 				}
+
 			break;
 		}
 		return $this;
@@ -5769,7 +5780,7 @@ class e_admin_form_ui extends e_form
 			'fieldpref' => $controller->getFieldPref(), // see e_admin_ui::$fieldpref
 			'table_pre' => '', // markup to be added before opening table element
 		//	'table_post' => !$tree[$id]->isEmpty() ? $this->renderBatch($controller->getBatchDelete(),$controller->getBatchCopy(),$controller->getBatchLink(),$controller->getBatchFeaturebox()) : '',
-			'table_post' => $this->renderBatch($controller->getBatchDelete(),$controller->getBatchCopy(),$controller->getBatchLink(),$controller->getBatchFeaturebox()),
+			'table_post' => $this->renderBatch($controller->getBatchDelete(),$controller->getBatchCopy(),$controller->getBatchLink(),$controller->getBatchFeaturebox(), $controller->getBatchOptions()),
 	
 			'fieldset_pre' => '', // markup to be added before opening fieldset element
 			'fieldset_post' => '', // markup to be added after closing fieldset element
@@ -6051,7 +6062,7 @@ class e_admin_form_ui extends e_form
 
 
 	// FIXME - use e_form::batchoptions(), nice way of buildig batch dropdown - news administration show_batch_options()
-	function renderBatch($allow_delete = false,$allow_copy= false, $allow_url=false, $allow_featurebox=false)
+	function renderBatch($allow_delete = false,$allow_copy= false, $allow_url=false, $allow_featurebox=false, $customBatchOptions=array())
 	{
 		
 		// $allow_copy = TRUE;
@@ -6089,13 +6100,24 @@ class e_admin_form_ui extends e_form
 						".($allow_copy ? $this->option(LAN_COPY, 'copy', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."					
 						".($allow_delete ? $this->option(LAN_DELETE, 'delete', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."					
 					    ".($allow_url ? $this->option(LAN_UI_BATCH_CREATELINK, 'url', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."   
-					  	".($allow_featurebox ? $this->option(LAN_PLUGIN_FEATUREBOX_BATCH, 'featurebox', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."   
-				
-						".$this->renderBatchFilter('batch')."
-					".$this->select_close()."
-					".$this->admin_button('e__execute_batch', 'e__execute_batch', 'batch e-hide-if-js', LAN_GO, array('id' => false))."
-					</div>
-				";
+					  	".($allow_featurebox ? $this->option(LAN_PLUGIN_FEATUREBOX_BATCH, 'featurebox', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '');
+
+			if(!empty($customBatchOptions))
+			{
+				foreach($customBatchOptions as $key=>$val)
+				{
+					$text .= $this->option($val, $key, false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"'));
+				}
+
+			}
+
+
+			$text .= "
+				".$this->renderBatchFilter('batch')."
+				".$this->select_close()."
+				".$this->admin_button('e__execute_batch', 'e__execute_batch', 'batch e-hide-if-js', LAN_GO, array('id' => false))."
+				</div>
+			";
 		}
 
 		
