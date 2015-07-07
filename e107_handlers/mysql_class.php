@@ -1476,7 +1476,7 @@ class e_db_mysql
 		if($multiple == FALSE)
 		{
 			$mltable = "lan_".strtolower($this->mySQLlanguage.'_'.$table);
-			return ($this->db_Table_exists($table,$this->mySQLlanguage) ? $mltable : $table);
+			return ($this->isTable($table,$this->mySQLlanguage) ? $mltable : $table);
 		}
 		else // return an array of all matching language tables. eg [french]->e107_lan_news
 		{
@@ -1833,40 +1833,63 @@ class e_db_mysql
 
 
 	/**
+	 * Legacy Alias of isTable();
+	 * @deprecated
+	 * @param $table
+	 * @param string $language
+	 * @return bool
+	 */
+	public function db_Table_exists($table,$language='')
+	{
+		return $this->isTable($table, $language);
+	}
+
+
+
+	/**
 	 * Verify whether a table exists, without causing an error
 	 *
 	 * @param string $table Table name without the prefix
-	 * @param string $lanMode [optional] When set to TRUE, searches for multilanguage tables
+	 * @param string $language (optional) leave blank to search for a regular table, or language-name to search for a language table.
+	 * @example $sql->isTable('news','Spanish');
 	 * @return boolean TRUE if exists
 	 *
 	 * NOTES: Slower (28ms) than "SELECT 1 FROM" (4-5ms), but doesn't produce MySQL errors.
 	 * Multiple checks on a single page will only use 1 query. ie. faster on multiple calls.
 	 */
-	public function db_Table_exists($table,$language='')
+	public function isTable($table, $language='')
 	{
-		global $pref;
+		// global $pref;
 		$table = strtolower($table); // precaution for multilanguage
-		// it's lan table check
-		if($language)
+
+		if(!empty($language)) //ie. is it a language table?
 		{
-			// TODO - discuss this!!! Smells like mislogic - we ignore e.g. bulgarian_news when default language is Bulgarian!
-			if($language == $pref['sitelanguage']) return false;
+			$sitelanguage = $this->getConfig()->get('sitelanguage');
+
+			if($language == $sitelanguage)
+			{
+				 return false;
+			}
+
 			if(!isset($this->mySQLtableListLanguage[$language]))
 			{
 				$this->mySQLtableListLanguage = $this->db_mySQLtableList($language);
 			}
+
 			return in_array('lan_'.strtolower($language)."_".$table,$this->mySQLtableListLanguage[$language]);
 		}
-		else
+		else // regular search
 		{
 			if(!$this->mySQLtableList)
 			{
 				$this->mySQLtableList = $this->db_mySQLtableList();
 			}
+
 			return in_array($table,$this->mySQLtableList);
 		}
 
 	}
+
 
 
 	/**
@@ -2045,7 +2068,7 @@ class e_db_mysql
 			return FALSE;
 		}
 
-		if(!$this->db_Table_exists($newtable))
+		if(!$this->isTable($newtable))
 		{
 			$result = $this->db_Query($qry);
 		}

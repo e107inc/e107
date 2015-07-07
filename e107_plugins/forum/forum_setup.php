@@ -49,7 +49,7 @@ class forum_setup
 	 */
 	function upgrade_required()
 	{
-		if(!e107::getDb()->db_Table_exists('forum_thread'))
+		if(!e107::getDb()->isTable('forum_thread'))
 		{
 			return true;
 		}

@@ -83,7 +83,7 @@ if (isset($_POST['del_existing']) && $_POST['lang_choices'] && getperms('0'))
 
 	foreach ($tabs as $del_table)
 	{
-		if ($sql->db_Table_exists($del_table, $lang))
+		if ($sql->isTable($del_table, $lang))
 		{
 			//	echo $del_table." exists<br />";
 			$qry = "DROP TABLE ".$mySQLprefix."lan_".$lang."_".$del_table;
@@ -140,7 +140,7 @@ if (isset($_POST['create_tables']) && $_POST['language'])
 				}
 			}
 		}
-		elseif ($sql->db_Table_exists($value,$_POST['language']))
+		elseif ($sql->isTable($value,$_POST['language']))
 		{
 			if ($_POST['remove'])
 			{
@@ -464,7 +464,7 @@ if (varset($_GET['mode']) == 'db' && !empty($_GET['action'])  && !empty($_GET['l
 		if (stristr($languageSelected, $installed) === FALSE)
 		{
 
-			$selected = ($sql->db_Table_exists($table_name,$languageSelected)) ? " checked='checked'" : "";
+			$selected = ($sql->isTable($table_name,$languageSelected)) ? " checked='checked'" : "";
 
 			$tableName = ucfirst(str_replace("_", " ", $table_name));
 			$tableLabel = ($selected) ? "<span class='label label-success'>".$tableName."</span>" : $tableName;
@@ -768,7 +768,7 @@ function multilang_db()
 			
 			foreach ($tabs as $tab_name)
 			{
-				if ($e_language != $pref['sitelanguage'] && $sql->db_Table_exists($tab_name,$e_language))
+				if ($e_language != $pref['sitelanguage'] && $sql->isTable($tab_name,$e_language))
 				{
 					$installed[] = $tab_name;
 				}

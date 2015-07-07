@@ -615,7 +615,7 @@ class db_table_admin
 			$debugLevel = E107_DBG_SQLDETAILS;
 	
 			$tableName = $newStructure[1];
-			if (!$sql->db_Table_exists($tableName))
+			if (!$sql->isTable($tableName))
 			{
 				if ($makeNewifNotExist === FALSE)
 				{
