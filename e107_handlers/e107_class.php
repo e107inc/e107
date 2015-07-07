@@ -31,6 +31,7 @@ class e107
 	 * IPV6 string for localhost - as stored in DB
 	 */
 	const LOCALHOST_IP = '0000:0000:0000:0000:0000:ffff:7f00:0001';
+	const LOCALHOST_IP2 = '0000:0000:0000:0000:0000:0000:0000:0001';
 
 	public $server_path;
 

@@ -64,7 +64,8 @@ class eIPHandler
 	/**
 	 * IPV6 string for localhost - as stored in DB
 	 */
-	const LOCALHOST_IP = '0000:0000:0000:0000:0000:ffff:7f00:0001';
+//	const LOCALHOST_IP = '0000:0000:0000:0000:0000:ffff:7f00:0001';
+
 
 	const BAN_REASON_COUNT =	7;				// Update as more ban reasons added (max 10 supported)
 
@@ -834,7 +835,7 @@ class eIPHandler
 		if($this->actionCount)
 		{
 			$ip = $this->getip(); // This will be in normalised IPV6 form
-			if ($ip != eIPHandler::LOCALHOST_IP)
+			if ($ip != e107::LOCALHOST_IP && $ip != e107::LOCALHOST_IP2)
 			{	// Check host name, user email to see if banned
 				$vals = array();
 				if (e107::getPref('enable_rdns'))
@@ -939,6 +940,13 @@ class eIPHandler
 	 */
 	public function add_ban($bantype, $ban_message = '', $ban_ip = '', $ban_user = 0, $ban_notes = '')
 	{
+
+		if ($ban_ip == e107::LOCALHOST_IP || $ban_ip == e107::LOCALHOST_IP2)
+		{
+			return false;
+		}
+
+
 		$sql = e107::getDb();
 		$pref = e107::getPref();
 
