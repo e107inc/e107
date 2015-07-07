@@ -19,6 +19,12 @@ if (!getperms('L'))
 e107::coreLan('language', true);
 
 $e_sub_cat = 'language';
+
+	if(!empty($_GET['iframe']))
+	{
+		define('e_IFRAME', true);
+	}
+
 require_once ("auth.php");
 
 
@@ -52,6 +58,8 @@ elseif(!getperms('0'))
 }
 
 
+
+
 if (isset($_POST['submit_prefs']) && isset($_POST['mainsitelanguage']) && getperms('0'))
 {
 	unset($temp);
@@ -72,9 +80,10 @@ if (isset($_POST['submit_prefs']) && isset($_POST['mainsitelanguage']) && getper
 if (isset($_POST['del_existing']) && $_POST['lang_choices'] && getperms('0'))
 {
 	$lang = strtolower($_POST['lang_choices']);
+
 	foreach ($tabs as $del_table)
 	{
-		if ($sql->db_Table_exists($lang."_".$del_table,TRUE))
+		if ($sql->db_Table_exists($del_table, $lang))
 		{
 			//	echo $del_table." exists<br />";
 			$qry = "DROP TABLE ".$mySQLprefix."lan_".$lang."_".$del_table;
@@ -92,11 +101,11 @@ if (isset($_POST['del_existing']) && $_POST['lang_choices'] && getperms('0'))
 			}
 		}
 	}
+
 	e107::getLog()->add('LANG_02', $message.'[!br!]', E_LOG_INFORMATIVE, '');
 	$sql->db_ResetTableList();
 
-	if ($action == 'modify')
-		$action = 'db';//FIX - force db action when deleting all lan tables
+
 }
 // ----------create tables -----------------------------------------------------
 if (isset($_POST['create_tables']) && $_POST['language'])
@@ -181,7 +190,7 @@ if (!e_QUERY || $action == 'main' && !$_POST['language'] && !$_POST['edit_existi
 {
 	multilang_prefs();
 }
-if (varset($action) == 'db')
+if (varset($_GET['mode']) == 'db' && empty($_GET['action']))
 {
 	multilang_db();
 }
@@ -431,15 +440,17 @@ new lanDeveloper;
 if (isset($_POST['create_edit_existing']))
 	$_POST['edit_existing'] = true;
 // Grab Language configuration. ---
-if (isset($_POST['edit_existing']))
+if (varset($_GET['mode']) == 'db' && !empty($_GET['action'])  && !empty($_GET['lang']))
 {
-	//XXX - JS ok with the current functionality?
+
 	$frm = e107::getForm();
 
+	$languageSelected = $tp->filter($_GET['lang'],'w');
+
 	$text .= "
-	<form method='post' action='".e_SELF."?db'>
+	<form method='post' action='".e_SELF."?mode=db'>
 		<fieldset id='core-language-edit'>
-			<legend class='e-hideme'>".$_POST['lang_choices']."</legend>
+			<legend class='e-hideme'>".$languageSelected."</legend>
 			<table class='table adminlist table-striped'>
 				<colgroup>
 					<col class='col-label' />
@@ -449,11 +460,11 @@ if (isset($_POST['edit_existing']))
 	";
 	foreach ($tabs as $table_name)
 	{
-		$installed = 'lan_'.strtolower($_POST['lang_choices'])."_".$table_name;
-		if (stristr($_POST['lang_choices'], $installed) === FALSE)
+		$installed = 'lan_'.strtolower($languageSelected)."_".$table_name;
+		if (stristr($languageSelected, $installed) === FALSE)
 		{
 
-			$selected = ($sql->db_Table_exists($table_name,$_POST['lang_choices'])) ? " checked='checked'" : "";
+			$selected = ($sql->db_Table_exists($table_name,$languageSelected)) ? " checked='checked'" : "";
 
 			$tableName = ucfirst(str_replace("_", " ", $table_name));
 			$tableLabel = ($selected) ? "<span class='label label-success'>".$tableName."</span>" : $tableName;
@@ -486,7 +497,7 @@ if (isset($_POST['edit_existing']))
 	}
 	// ===========================================================================
 	// Drop tables ? isset()
-	if (varset($_POST['create_edit_existing']))
+	if (varset($_GET['action'])=='create')
 	{
 		$baction = 'create';
 		$bcaption = LANG_LAN_06;
@@ -514,14 +525,24 @@ if (isset($_POST['edit_existing']))
 				</tbody>
 			</table>
 			<div class='buttons-bar center'>
-				<input type='hidden' name='language' value='{$_POST['lang_choices']}' />
+				<input type='hidden' name='language' value='{$languageSelected}' />
 				".$frm->admin_button('create_tables','no-value',$baction,$bcaption)."
 			</div>
 		</fieldset>
 	</form>
 	";
-	$ns->tablerender(ADLAN_132.SEP.LANG_LAN_03.SEP.$_POST['lang_choices'], $mes->render().$text);
+
+	$ns->tablerender(ADLAN_132.SEP.LANG_LAN_03.SEP.$languageSelected, $mes->render().$text);
 }
+
+
+
+
+
+
+
+
+
 require_once (e_ADMIN."footer.php");
 // ---------------------------------------------------------------------------
 
@@ -766,20 +787,22 @@ function multilang_db()
 			
 			$text .= "</td>\n";
 			$text .= "<td>
-				<form id='core-language-form-".str_replace(" ", "-", $e_language)."' action='".e_SELF."?modify' method='post'>\n";
+				<form id='core-language-form-".str_replace(" ", "-", $e_language)."' action='".e_SELF."?mode=db' method='post'>\n";
 			$text .= "
 								<div>
 			";
-			if (count($installed))
+			if(count($installed))
 			{
-			
-				$text .= "<button class='btn btn-primary edit' type='submit' name='edit_existing' value='no-value'><span>".LAN_EDIT."</span></button>
-						<button class='btn btn-danger delete' type='submit' name='del_existing' value='no-value' title='".$tp->lanVars(LANG_LAN_105, $e_language).' '.LAN_JSCONFIRM."'><span>".LAN_DELETE."</span></button>";
+				$text .= "<a class='btn btn-primary edit' href='".e_SELF."?mode=db&action=edit&lang=".$e_language."'>".LAN_EDIT."</a>";
+				// $text .= "<button class='btn btn-primary edit' type='submit' name='edit_existing' value='no-value'><span>".LAN_EDIT."</span></button>";
+
+				$text .= "<button class='btn btn-danger delete' type='submit' name='del_existing' value='no-value' title='".$tp->lanVars(LANG_LAN_105, $e_language).' '.LAN_JSCONFIRM."'><span>".LAN_DELETE."</span></button>";
 			}
 			elseif ($e_language != $pref['sitelanguage'])
 			{
 				// $text .= "<button class='create' type='submit' name='create_edit_existing' value='no-value'><span>".LAN_CREATE."</span></button>";
-				$text .= $frm->admin_button('create_edit_existing','no-value','create',LAN_CREATE);
+			//	$text .= $frm->admin_button('create_edit_existing','no-value','create',LAN_CREATE);
+				$text .= "<a class='btn btn-primary create' href='".e_SELF."?mode=db&action=create&lang=".$e_language."'>".LAN_CREATE."</a>";
 			}
 			$text .= "<input type='hidden' name='lang_choices' value='".$e_language."' />
 								</div>
@@ -1100,7 +1123,7 @@ function language_adminmenu()
 	{
 		$action = getperms('0') ? "main" : "tools";
 	}
-	if ($action == "modify")
+	if ($_GET['mode'] == 'db')
 	{
 		$action = "db";
 	}
@@ -1113,7 +1136,7 @@ function language_adminmenu()
 		if (isset($pref['multilanguage']) && $pref['multilanguage'])
 		{
 			$var['db']['text'] = LANG_LAN_03;
-			$var['db']['link'] = e_SELF."?db";
+			$var['db']['link'] = e_SELF."?mode=db";
 		}
 	}
 	

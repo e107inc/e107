@@ -318,7 +318,7 @@ class lancheck
 
 		if(E107_DEBUG_LEVEL > 0)
 		{
-			print_a($this->core_plugins);
+		//	print_a($this->core_plugins);
 		}
 
 		$acceptedLans = explode(",",e_LANLIST);
