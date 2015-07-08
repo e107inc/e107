@@ -24,7 +24,7 @@ define("COMLAN_10", "Administrator");
 define("COMLAN_11", "Was unable to enter your comment into the database - please retype leaving out any non-standard characters.");
 define("COMLAN_12", "User");
 define("COMLAN_16", "Username: ");
-define("COMLAN_99", "Comments");
+// define("COMLAN_99", "Comments");
 define("COMLAN_100", "News");
 define("COMLAN_101", "Poll");
 define("COMLAN_102", "Replying to: ");

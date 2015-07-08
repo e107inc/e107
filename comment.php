@@ -158,7 +158,7 @@ if(e_AJAX_REQUEST) // TODO improve security
 
 require_once(e_HANDLER."news_class.php"); // FIXME shouldn't be here. 
 require_once(e_HANDLER."comment_class.php");
-define("PAGE_NAME", COMLAN_99);
+define("PAGE_NAME", LAN_COMMENTS);
 
 if (!e_QUERY)
 {
@@ -382,7 +382,7 @@ if ($action == "reply")
 				break;
 		}
 	}
-	define('e_PAGETITLE', COMLAN_102.$subject.($title ? ' / '.$title : '')." / ".COMLAN_99);
+	define('e_PAGETITLE', COMLAN_102.$subject.($title ? ' / '.$title : '')." / ".LAN_COMMENTS);
 	require_once(HEADERF);
 }
 elseif ($action == 'comment')
@@ -431,7 +431,7 @@ elseif ($action == 'comment')
 				{
 					$news = $sql->db_Fetch();
 					$subject = $tp->toForm($news['news_title']);
-					define("e_PAGETITLE", "{$subject} - ".COMLAN_100." / ".COMLAN_99);
+					define("e_PAGETITLE", "{$subject} - ".COMLAN_100." / ".LAN_COMMENTS);
 					require_once(HEADERF);
 					ob_start();
 					$comment_ob_start = TRUE;
@@ -451,7 +451,7 @@ elseif ($action == 'comment')
 					$row = $sql->db_Fetch();
 					$comments_poll = $row['poll_comment'];
 					$subject = $row['poll_title'];
-					define("e_PAGETITLE", $subject.' - '.COMLAN_101." / ".COMLAN_99);
+					define("e_PAGETITLE", $subject.' - '.COMLAN_101." / ".LAN_COMMENTS);
 					$poll_to_show = $id;				// Need to pass poll number through to display routine
 					require_once(HEADERF);
 					require(e_PLUGIN."poll/poll_menu.php");

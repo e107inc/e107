@@ -1113,7 +1113,7 @@ class admin_shortcodes
 
 					if(empty($pref['comments_disabled']) && varset($pref['comments_engine'],'e107') == 'e107')
 					{
-						$oldconfigs['e-comments'][0] 	= array('icon'=>E_16_COMMENT, 'title'=>ADLAN_114, 'url'=> e_ADMIN_ABS."comment.php", 'total'=>$comments);
+						$oldconfigs['e-comments'][0] 	= array('icon'=>E_16_COMMENT, 'title'=>LAN_COMMENTS, 'url'=> e_ADMIN_ABS."comment.php", 'total'=>$comments);
 					}
 					if($flo = $sql->count('generic', '(*)', "WHERE gen_type='failed_login'"))
 					{

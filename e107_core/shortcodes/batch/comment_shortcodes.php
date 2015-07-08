@@ -157,7 +157,7 @@ class comment_shortcodes extends e_shortcode
 	function sc_comments($parm='') 
 	{
 		global $COMMENTS;
-		return (isset($this->var['user_id']) && $this->var['user_id'] ? COMLAN_99.": ".$this->var['user_comments'] : COMLAN_194)."<br />";
+		return (isset($this->var['user_id']) && $this->var['user_id'] ? LAN_COMMENTS.": ".$this->var['user_comments'] : COMLAN_194)."<br />";
 	}
 	
 	

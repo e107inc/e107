@@ -600,7 +600,7 @@ class faq
 				}
 				if (!$pref['nested_comments'])
 				{
-					$ns->tablerender("Comments", $text);
+					$ns->tablerender(LAN_COMMENTS, $text);
 				}
 				if (ADMIN && getperms("B"))
 				{

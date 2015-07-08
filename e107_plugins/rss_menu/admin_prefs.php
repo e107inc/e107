@@ -277,7 +277,7 @@ class rss_ui extends e_admin_ui
 
 			//
 			// Comments
-			$feed['name']		= RSS_PLUGIN_LAN_14;
+			$feed['name']		= LAN_COMMENTS;
 			$feed['url']		= 'comments';
 			$feed['topic_id']	= '';
 			$feed['path']		= 'comments';
@@ -851,7 +851,7 @@ class rss
 		}
 */
 		// Comments
-		$feed['name']		= RSS_PLUGIN_LAN_14;
+		$feed['name']		= LAN_COMMENTS;
 		$feed['url']		= 'comments';
 		$feed['topic_id']	= '';
 		$feed['path']		= 'comments';

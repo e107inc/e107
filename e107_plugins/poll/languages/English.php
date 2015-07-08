@@ -51,7 +51,7 @@ define("POLLAN_23", "Create Poll");
 define("POLLAN_24", "Preview");
 define("POLLAN_25", "Clear form");
 define("POLLAN_26", "votes");
-define("POLLAN_27", "Comments");
+// define("POLLAN_27", "Comments");
 define("POLLAN_28", "Previous polls");
 define("POLLAN_29", "posted by");
 define("POLLAN_30", "Submit");

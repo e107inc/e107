@@ -19,7 +19,7 @@ define("NWSLAN_10", "No news categories");
 //define("NWSLAN_12", "Title");
 define("NWSLAN_13", "Body");
 define("NWSLAN_14", "Extended");
-define("NWSLAN_15", "Comments");
+// define("NWSLAN_15", "Comments");
 // define("NWSLAN_16", "Enabled"); // deprecated see lan_admin.php
 // define("NWSLAN_17", "Disabled"); // deprecated see lan_admin.php
 define("NWSLAN_18", "Allow comments to be posted to this news item");

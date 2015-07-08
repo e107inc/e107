@@ -111,7 +111,7 @@ function admin_purge_related($table, $id)
 	$num = $_com->delete_comments($table, $id);
 	if ($num)
 	{
-		$msg .= $num." ".ADLAN_114." ".LAN_DELETED."<br />";
+		$msg .= $num." ".LAN_COMMENTS." ".LAN_DELETED."<br />";
 	}
 
 	// Delete any related ratings

@@ -37,7 +37,7 @@ $search_prefs = $sysprefs -> getArray('search_prefs');
 
 
 //$search_handlers['news'] = ADLAN_0; // Moved to Plugin
-$search_handlers['comments'] = ADLAN_114;
+$search_handlers['comments'] = LAN_COMMENTS;
 $search_handlers['users'] = SEALAN_7;
 //$search_handlers['downloads'] = ADLAN_24; // Moved to Plugin
 // $search_handlers['pages'] = SEALAN_39; // Moved to Plugin

@@ -110,7 +110,7 @@ define("LAN_SEARCH_77", "Posted on profile page of");
 
 // Following formerly LAN_nnn - renamed to avoid clashes
 define("LAN_SEARCH_98", "News");
-define("LAN_SEARCH_99", "Comments");
+// define("LAN_SEARCH_99", "Comments");
 //define("LAN_SEARCH_200", "Categories:");						// Redundant LAN?
 define("LAN_SEARCH_201", "Please redefine your search query");
 
