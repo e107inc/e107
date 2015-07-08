@@ -326,13 +326,13 @@ define("LAN_COMMENTMAN", "Comments Manager");
 
 define("LAN_LIST", "List");
 define("LAN_FILTER", "Filter");
-define("LAN_NO_RECORDS", "No Records Found");
+// define("LAN_NO_RECORDS", "No Records Found");
 define("LAN_STATUS", "Status");
 define("LAN_URL", "URL");
-define("LAN_USER", "User");
+
 define("LAN_OWNER", "Owner");
 
-define("LAN_EMAIL","Email address");
+
 define("LAN_ID", "ID");
 
 

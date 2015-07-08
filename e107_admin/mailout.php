@@ -1258,7 +1258,7 @@ class mailout_main_ui extends e_admin_ui
 		</colgroup>
 		<tbody>
 		<tr>
-			<td>".LAN_MAILOUT_32."</td>
+			<td>".LAN_EMAIL."</td>
 			<td><div class='input-append'>".$frm->text('mail_bounce_email2', $pref['mail_bounce_email'], 40, 'size=xlarge');
 			
 			if(!empty($pref['mail_bounce_email']))
@@ -1316,7 +1316,7 @@ class mailout_main_ui extends e_admin_ui
 		</colgroup>
 		<tbody>";
 	
-	$bouncePrefs = array('mail_bounce_email'=>LAN_MAILOUT_32, 'mail_bounce_pop3'=>LAN_MAILOUT_33, 'mail_bounce_user'=>LAN_MAILOUT_34, 'mail_bounce_pass'=>LAN_PASSWORD);
+	$bouncePrefs = array('mail_bounce_email'=>LAN_EMAIL, 'mail_bounce_pop3'=>LAN_MAILOUT_33, 'mail_bounce_user'=>LAN_MAILOUT_34, 'mail_bounce_pass'=>LAN_PASSWORD);
 	
 	foreach($bouncePrefs as $key =>$label)
 	{

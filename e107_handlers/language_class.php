@@ -50,19 +50,23 @@ class language{
             "bs" => "Bosnian",
             "br" => "Breton",
             "bg" => "Bulgarian",
+            "my" => "Burmese",
             "ca" => "Catalan",
             "cs" => "Czech",
             "ch" => "Chamorro",
             "ce" => "Chechen",
             "cn" => "ChineseSimp",
+            "tw" => "ChineseTrad",
             "cv" => "Chuvash",
             "kw" => "Cornish",
             "co" => "Corsican",
-            "cy" => "Welsh",
+
             "da" => "Danish",
-            "de" => "German",
+            "nl" => "Dutch",
             "dz" => "Dzongkha",
-            "el" => "Greek",
+            "de" => "German",
+
+
             "en" => "English",
             "eo" => "Esperanto",
             "et" => "Estonian",
@@ -74,9 +78,10 @@ class language{
             "fr" => "French",
             "fy" => "Frisian",
             "gd" => "Gaelic",
+            "el" => "Greek",
             "ga" => "Irish",
             "gl" => "Gallegan",
-            "gv" => "Manx",
+
             "gn" => "Guarani",
             "gu" => "Gujarati",
             "ha" => "Hausa",
@@ -123,13 +128,14 @@ class language{
             "mn" => "Mongolian",
             "mi" => "Maori",
             "ms" => "Malay",
-            "my" => "Burmese",
+            "gv" => "Manx",
+
             "na" => "Nauru",
             "nv" => "Navajo",
 
             "ng" => "Ndonga",
             "ne" => "Nepali",
-            "nl" => "Dutch",
+
 	        "no" => "Norwegian",
 
             "ny" => "Chichewa",
@@ -176,13 +182,14 @@ class language{
             "ts" => "Tsonga",
             "tk" => "Turkmen",
             "tr" => "Turkish",
-            "tw" => "ChineseTrad",
+
             "ug" => "Uighur",
             "uk" => "Ukrainian",
             "ur" => "Urdu",
             "uz" => "Uzbek",
             "vi" => "Vietnamese",
 
+            "cy" => "Welsh",
             "wo" => "Wolof",
             "xh" => "Xhosa",
             "yi" => "Yiddish",
@@ -407,7 +414,7 @@ class language{
 	 */
 	function toNative($lang)
 	{
-		return ($this->names[$lang]) ? $this->names[$lang] : $lang;
+		return (!empty($this->names[$lang])) ? $this->names[$lang] : $lang;
 	}
 
 	/**
@@ -655,7 +662,7 @@ class language{
 	 */
 	public function getList()
 	{
-		return $this->list;	
+		return $this->list;
 	}
 
 }

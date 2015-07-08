@@ -10,21 +10,26 @@
  * With code from Izydor and Lolo.
  *
 */
-require_once("../class2.php");
+if (!defined('e107_INIT'))
+{
+	require_once("../class2.php");
+}
+
+
 if (!getperms("L")) 
 {
 	header("location:".e_BASE."index.php");
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_lancheck.php');
 
 $e_sub_cat = 'language';
 // require_once("auth.php");
 
 $frm = e107::getForm();
 $mes = e107::getMessage();
-$lck = new lancheck;
+// $lck = new lancheck;
 
 
 /*
@@ -297,14 +302,26 @@ class lancheck
 	
 	var $core_plugins = array();
 
-	var $core_themes = array("bootstrap"); 
+	var $core_themes = array("bootstrap3");
 			
 	var $errorsOnly = false;
 	
 	var $coreImage = array();
 
+	private $thirdPartyPlugins = true;
+
+
+	function __construct()
+	{
+		$this->core_plugins = e107::getPlugin()->getCorePlugins();
+	}
+
+	public function thirdPartyPlugins($val)
+	{
+		$this->thirdPartyPlugins = $val;
+	}
 	
-	function init()
+	public function init()
 	{
 		$ns = e107::getRender();
 		$tp = e107::getParser();
@@ -314,7 +331,7 @@ class lancheck
 		$this->core_themes[] = $pref['sitetheme'];
 		$this->core_themes = array_unique($this->core_themes);
 
-		$this->core_plugins = e107::getPlugin()->getCorePlugins();
+
 
 		if(E107_DEBUG_LEVEL > 0)
 		{
@@ -886,20 +903,43 @@ class lancheck
 			return array();
 		}
 		
-		
-		require_once(e_HANDLER."file_class.php");
-		$fl = new e_file;
+
+		$fl = e107::getFile();
+
 		$ret = array();
 			
 		if($lang_array = $fl->get_files($comp_dir, ".php$","standard",$depth)){
 			sort($lang_array);
 		}
 	
+		if(strpos($comp_dir,e_LANGUAGEDIR) !== false)
+		{
+			$regexp = "#.php#";
+			$mode = 'core';
+		}
+		else
+		{
+			$regexp = "#".$lang."#";
+			$mode = 'plugins';
+		}
 
-		$regexp = (strpos($comp_dir,e_LANGUAGEDIR) !== FALSE) ? "#.php#" : "#".$lang."#";
+	//	$regexp = (strpos($comp_dir,e_LANGUAGEDIR) !== FALSE) ? "#.php#" : "#".$lang."#";
 	
 		foreach($lang_array as $f)
 		{
+			if($mode == 'plugins')
+			{
+				$tmpDir = str_replace($comp_dir,'',$f['path']);
+			//	echo "<br />".$tmpDir;
+				list($pluginDirectory, $other) = explode("/",$tmpDir, 2);
+
+
+				if($mode == 'plugins' && ($this->thirdPartyPlugins !== true) && !in_array($pluginDirectory, $this->core_plugins))
+				{
+					continue;
+				}
+			}
+
 			if(preg_match($regexp,$f['path'].$f['fname']) && is_file($f['path'].$f['fname']))
 			{
 				$allData = file_get_contents($f['path'].$f['fname']);

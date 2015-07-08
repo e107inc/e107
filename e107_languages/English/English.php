@@ -109,6 +109,9 @@ define("LAN_RATING", "Rating");
 define("LAN_IMAGE","Image");
 define("LAN_ABOUT", "About");
 define("LAN_TITLE", "Title");
+define("LAN_USER", "User");
+define("LAN_EMAIL","Email address");
+
 
 define("LAN_ENTER_USRNAME_EMAIL", "Please enter your username or email"); // admin php hover field admin name
 define("LAN_PWD_REQUIRED", "Password is required"); // admin php hover field admin password
