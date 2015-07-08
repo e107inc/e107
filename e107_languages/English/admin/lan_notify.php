@@ -28,8 +28,8 @@ define("NN_LAN_3", "News item posted by admin");
 define("NN_LAN_4", "News item edited by admin");
 define("NN_LAN_5", "News item deleted by admin");
 
-define('NM_LAN_1', 'Mail Events');
-define('NM_LAN_2', 'Bulk email run complete');
+define("NM_LAN_1", "Mail Events");
+define("NM_LAN_2", "Bulk email run complete");
 
 define("NF_LAN_1", "File Events");
 define("NF_LAN_2", "File uploaded by user");

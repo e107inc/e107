@@ -54,8 +54,8 @@ define("BNRLAN_38", "Advertisement"); // BANNER_MENU_L1
 define("BNRLAN_39", "Campaigns to show in menu"); // BANNER_MENU_L6
 define("BNRLAN_40", "No campaigns yet."); // 67
 
-define('BNRLAN_41', 'Number of banners to show'); // BANNER_MENU_L19
-define('BNRLAN_42', 'This is only used when multiple campaigns are selected.'); // BANNER_MENU_L20
+define("BNRLAN_41", "Number of banners to show"); // BANNER_MENU_L19
+define("BNRLAN_42", "This is only used when multiple campaigns are selected."); // BANNER_MENU_L20
 
 define("BNRLAN_43", "How to show the campaigns?"); // BANNER_MENU_L10
 define("BNRLAN_44", "Choose render type ..."); // BANNER_MENU_L11

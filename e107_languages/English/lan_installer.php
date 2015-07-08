@@ -160,9 +160,9 @@ define("LANINS_086", "Admin Username, Admin Password and Admin Email are [b]requ
 // define("LANINS_103", 'Reviews');
 // define("LANINS_104", 'Review Front Page ...');
 
-define("LANINS_105", 'A database name or prefix beginning with some digits followed by “e” or “E” is not acceptable');
-define("LANINS_106", 'WARNING - e107 cannot write to the directories and/or files listed. While this will not stop e107 installing, it will mean that certain features are not available. 
-				You will need to change the file permissions to use these features');
+define("LANINS_105", "A database name or prefix beginning with some digits followed by 'e' or 'E' is not acceptable");
+define("LANINS_106", "WARNING - e107 cannot write to the directories and/or files listed. While this will not stop e107 installing, it will mean that certain features are not available.
+				You will need to change the file permissions to use these features");
 				
 define("LANINS_107", "Website Name");
 define("LANINS_108", "My Website");

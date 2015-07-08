@@ -41,39 +41,38 @@ define("LAN_LOGINMENU_24", "Click here to see list of new items");
 define("LAN_LOGINMENU_25", "Since your last visit there have been");
 define("LAN_LOGINMENU_26", "no");
 define("LAN_LOGINMENU_27", "and");
-// define("LAN_LOGINMENU_28", "Login");
-
+//define("LAN_LOGINMENU_28", "Login");
 //define("LAN_LOGINMENU_29", "new article");
 //define("LAN_LOGINMENU_30", "new articles");
 
 // New config options
-define('LAN_LOGINMENU_31', 'Show New News Posts');
-//define('LAN_LOGINMENU_32', 'Show New Article Posts');
-//define('LAN_LOGINMENU_33', 'Show New Chatbox Posts');
-define('LAN_LOGINMENU_34', 'Show New Comment Posts');
-//define('LAN_LOGINMENU_35', 'Show New Forum Posts');
-define('LAN_LOGINMENU_36', 'Show New Members');
+define("LAN_LOGINMENU_31", "Show New News Posts");
+//define("LAN_LOGINMENU_32", "Show New Article Posts");
+//define("LAN_LOGINMENU_33", "Show New Chatbox Posts");
+define("LAN_LOGINMENU_34", "Show New Comment Posts");
+//define("LAN_LOGINMENU_35", "Show New Forum Posts");
+define("LAN_LOGINMENU_36", "Show New Members");
 
 
-define('LAN_LOGINMENU_39', 'Leave Admin');
+define("LAN_LOGINMENU_39", "Leave Admin");
 define("LAN_LOGINMENU_40", "Resend Activation Email");
 define("LAN_LOGINMENU_41", "Login Menu Settings");
 
 //new v0.8
-define('LAN_LOGINMENU_37', 'Show');
-define('LAN_LOGINMENU_38', 'Login menu - Additional Links');
+define("LAN_LOGINMENU_37", "Show");
+define("LAN_LOGINMENU_38", "Login menu - Additional Links");
 
-define('LAN_LOGINMENU_42', 'Login menu - Recent core additions');
-define('LAN_LOGINMENU_43', 'Position');
-define('LAN_LOGINMENU_44', 'missing link title');
-define('LAN_LOGINMENU_45', 'link(s) -');
-define('LAN_LOGINMENU_45a', ''); //pre
-define('LAN_LOGINMENU_45b', 'plugin'); //post
-define('LAN_LOGINMENU_46', 'recent items -');
-define('LAN_LOGINMENU_47', 'Login menu - Recent plugin additions');
-define('LAN_LOGINMENU_48', 'Menu Config');
-define('LAN_LOGINMENU_49', 'Email: ');
-define('LAN_LOGINMENU_50', 'Username or Email: ');
+define("LAN_LOGINMENU_42", "Login menu - Recent core additions");
+define("LAN_LOGINMENU_43", "Position");
+define("LAN_LOGINMENU_44", "missing link title");
+define("LAN_LOGINMENU_45", "link(s) -");
+define("LAN_LOGINMENU_45a", ""); //pre
+define("LAN_LOGINMENU_45b", "plugin"); //post
+define("LAN_LOGINMENU_46", "recent items -");
+define("LAN_LOGINMENU_47", "Login menu - Recent plugin additions");
+define("LAN_LOGINMENU_48", "Menu Config");
+define("LAN_LOGINMENU_49", "Email: ");
+define("LAN_LOGINMENU_50", "Username or Email: ");
 define("LAN_LOGINMENU_51", "Sign In");
 
 ?>

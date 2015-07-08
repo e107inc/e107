@@ -69,7 +69,7 @@ define("FR_LAN_28", "Known insecure files");
 
 define("FR_LAN_29", "Total files matched");
 define("FR_LAN_30", "Total lines matched");
-define('FR_LAN_31', 'Missing complete plugin folder');
+define("FR_LAN_31", "Missing complete plugin folder");
 
 define("FS_LAN_1", "Create Snapshot");
 define("FS_LAN_2", "Absolute path of root directory to create image from");

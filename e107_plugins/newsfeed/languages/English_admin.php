@@ -84,15 +84,15 @@ define("NFLAN_47", "0 or blank to show all");
 
 //define("NFLAN_48", "Unable to save raw data in database.");
 define("NFLAN_49", "Unable to unserialize rss data - uses non-standard syntax");
-//define('NFLAN_50', 'Write to database failed: ');
+//define("NFLAN_50", "Write to database failed: ");
 
 // Admin log messages
 //===================
-define('LAN_AL_NEWSFD_01','News Feed created');
-define('LAN_AL_NEWSFD_02','News Feed updated');
-define('LAN_AL_NEWSFD_03','News Feed deleted');
-define('LAN_AL_NEWSFD_04','');
-define('LAN_AL_NEWSFD_05','');
+define("LAN_AL_NEWSFD_01","News Feed created");
+define("LAN_AL_NEWSFD_02","News Feed updated");
+define("LAN_AL_NEWSFD_03","News Feed deleted");
+define("LAN_AL_NEWSFD_04","");
+define("LAN_AL_NEWSFD_05","");
 
 
 ?>

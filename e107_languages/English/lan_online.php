@@ -62,6 +62,6 @@ define("SURVEY", "Survey");
 define("ARTICLE", "Article");
 define("CONTENT", "Content Page");
 define("REVIEW", "Review");
-define('OTHER', 'Other page: ');
+define("OTHER", "Other page: ");
 
 ?>
