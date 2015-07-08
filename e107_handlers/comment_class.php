@@ -1094,7 +1094,7 @@ class comment
 			if ($tablerender)
 			{
 					
-					echo $ns->tablerender("<span id='e-comment-total'>".$this->totalComments."</span> ".COMLAN_99, $TEMPL, 'comment', TRUE);	
+					echo $ns->tablerender("<span id='e-comment-total'>".$this->totalComments."</span> ".LAN_COMMENTS, $TEMPL, 'comment', TRUE);
 			}
 			else
 			{
@@ -1110,7 +1110,7 @@ class comment
 		$ret['comment'] = $text;
 		
 		$ret['comment_form'] = $comment;
-		$ret['caption'] = "<span id='e-comment-total'>".$this->totalComments."</span> ".COMLAN_99;
+		$ret['caption'] = "<span id='e-comment-total'>".$this->totalComments."</span> ".LAN_COMMENTS;
 
 		return (!$return) ? "" : $ret;
 	}

@@ -103,7 +103,7 @@ class import_main_ui extends e_admin_ui
 		'forumpost' 	=> array('message' => "Forum Posts", 			'classfile' => 'import_forum_class.php', 'classname' => 'forumpost_import', 'nolist'=>true),
 		'forumtrack' 	=> array('message' => "Forum Track", 			'classfile' => 'import_forum_class.php', 'classname' => 'forumtrack_import', 'nolist'=>true),
 	//	'forumpost' 		=> array('message' => "Media", 			'classfile' => 'import_media_class.php', 'classname' => 'media_import'),
-		'comments' 		=> array('message'=> "Comments"),
+		'comments' 		=> array('message'=> LAN_COMMENTS),
 	//	'forumdefs' 	=> array('message' => LAN_CONVERT_26),
 	//	'forumposts' 	=> array('message' => LAN_CONVERT_48), 
 	//	'polls' 		=> array('message' => LAN_CONVERT_27)

@@ -116,7 +116,7 @@ define("ADLAN_110", "Registered members");
 define("ADLAN_111", "Unverified members");
 define("ADLAN_112", "Banned users");
 // define("ADLAN_113", "Forum posts"); // should already be loaded from forum global language file. 
-define("ADLAN_114", "Comments");
+// define("ADLAN_114", "Comments");
 // define("ADLAN_115", "Chatbox posts");
 define("ADLAN_116", "Admin log ...");
 define("ADLAN_117", "Show all entries");

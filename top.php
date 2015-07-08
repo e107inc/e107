@@ -217,13 +217,13 @@ if ($action == 'top')
 			<tr>
 			<td style='width:10%; text-align:center' class='forumheader3'>&nbsp;</td>
 			<td style='width:50%' class='forumheader3'>".TOP_LAN_1."</td>
-			<td style='width:10%; text-align:center' class='forumheader3'>".TOP_LAN_4."</td>
+			<td style='width:10%; text-align:center' class='forumheader3'>".LAN_COMMENTS."</td>
 			<td style='width:30%; text-align:center' class='forumheader3'>".TOP_LAN_6."</td>
 			</tr>\n";
 		$counter = 1;
 		if($top_forum_posters)
 		{
-			while ($row = $sql->db_Fetch())
+			while ($row = $sql->fetch())
 			{
 				// TODO - Custom ranking (comments), LANs
 				$ldata = $rank->getRanks($row);

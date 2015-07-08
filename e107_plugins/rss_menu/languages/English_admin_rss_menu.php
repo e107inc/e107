@@ -39,7 +39,7 @@ define("RSS_PLUGIN_LAN_9", "The rss feed of the comments");
 define("RSS_PLUGIN_LAN_10", "The rss feed of news category:");
 define("RSS_PLUGIN_LAN_11", "The rss feed of download category:");
 
-define("RSS_PLUGIN_LAN_14", "Comments");
+// define("RSS_PLUGIN_LAN_14", "Comments");
 
 define("RSS_LAN_ADMINMENU_1", "RSS Options");
 define("RSS_LAN_ADMINMENU_2", "Listing");

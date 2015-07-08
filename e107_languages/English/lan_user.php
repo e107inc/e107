@@ -47,7 +47,7 @@ define("LAN_USER_13","ID");
 define("LAN_USER_14","Join Date");
 define("LAN_USER_15","Last Visit");
 define("LAN_USER_16","Current Visit");
-define("LAN_USER_17","Comments");
+// define("LAN_USER_17","Comments");
 define("LAN_USER_18","IP Address");
 define("LAN_USER_19","Ban");
 define("LAN_USER_20","Prefs");

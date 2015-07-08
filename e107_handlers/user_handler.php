@@ -106,7 +106,7 @@ class UserHandler
 			'user_join'			=> LAN_USER_14,
 			'user_lastvisit'	=> LAN_USER_15,
 			'user_currentvisit'	=> LAN_USER_16,
-			'user_comments'		=> LAN_USER_17,
+			'user_comments'		=> LAN_COMMENTS,
 			'user_ip'			=> LAN_USER_18,
 			'user_ban'			=> LAN_USER_19,
 			'user_prefs'		=> LAN_USER_20,
