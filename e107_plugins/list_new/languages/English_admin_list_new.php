@@ -47,7 +47,7 @@ define("LIST_ADMIN_13", "Welcome to the Recent page of ".SITENAME." ! This page 
 define("LIST_ADMIN_14", "recent additions");
 define("LIST_ADMIN_15", "new since your last visit");
 define("LIST_ADMIN_16", "Welcome to the New page of ".SITENAME." ! This page shows, for the most common sections of this site, a list of the additions in these sections since your last visit.");
-define("LIST_ADMIN_17", 'Nothing changed - not updated');
+define("LIST_ADMIN_17", "Nothing changed - not updated");
 
 define("LIST_ADMIN_SECT_1", "sections");
 define("LIST_ADMIN_SECT_2", "choose which sections to show");
@@ -94,15 +94,15 @@ define("LIST_ADMIN_OPT_6", "options");
 
 define("LIST_ADMIN_MENU_2", "icon : default");
 define("LIST_ADMIN_MENU_3", "use default theme bullet if no icon is present or if icon:use is disabled");
-define("LIST_ADMIN_MENU_4", "");
+
 
 define("LIST_ADMIN_LAN_2", "caption");
 define("LIST_ADMIN_LAN_3", "define a caption");
-define("LIST_ADMIN_LAN_4", "");
+
 
 define("LIST_ADMIN_LAN_5", "icon : use");
 define("LIST_ADMIN_LAN_6", "use icon from each section");
-define("LIST_ADMIN_LAN_7", "");
+// define("LIST_ADMIN_LAN_7", "");
 
 define("LIST_ADMIN_LAN_8", "characters");
 define("LIST_ADMIN_LAN_9", "choose how many characters of the heading will be shown");
@@ -126,7 +126,7 @@ define("LIST_ADMIN_LAN_22", "define how many columns you want to use. the number
 
 define("LIST_ADMIN_LAN_23", "welcome text");
 define("LIST_ADMIN_LAN_24", "define a welcome text that will be rendered at the top of the page");
-define("LIST_ADMIN_LAN_25", "");
+// define("LIST_ADMIN_LAN_25", "");
 
 define("LIST_ADMIN_LAN_26", "show empty");
 define("LIST_ADMIN_LAN_27", "define if a message needs to be shown when sections have no results ");
@@ -134,25 +134,25 @@ define("LIST_ADMIN_LAN_28", "");
 
 define("LIST_ADMIN_LAN_29", "icon : default");
 define("LIST_ADMIN_LAN_30", "use default theme bullet if no icon is present or if icon:use is disabled");
-define("LIST_ADMIN_LAN_31", "");
+// define("LIST_ADMIN_LAN_31", "");
 
 define("LIST_ADMIN_LAN_32", "timelapse:days");
 define("LIST_ADMIN_LAN_33", "maximum of days users can look back");
-define("LIST_ADMIN_LAN_34", "");
+// define("LIST_ADMIN_LAN_34", "");
 define("LIST_ADMIN_LAN_35", "days");
 
 define("LIST_ADMIN_LAN_36", "timelapse");
 define("LIST_ADMIN_LAN_37", "display a select box with number of days to look back?");
-define("LIST_ADMIN_LAN_38", "");
+// define("LIST_ADMIN_LAN_38", "");
 
 define("LIST_ADMIN_LAN_39", "open if records exist");
 define("LIST_ADMIN_LAN_40", "should sections that contain records be opened by default?");
-define("LIST_ADMIN_LAN_41", '');
+// define("LIST_ADMIN_LAN_41", "");
 
 // Admin log messages
 //-------------------
-define('LAN_AL_LISTNEW_01', 'List New preferences updated');
-define('LAN_AL_LISTNEW_02', '');
+define("LAN_AL_LISTNEW_01", "List New preferences updated");
+// define("LAN_AL_LISTNEW_02", "");
 
 
 ?>

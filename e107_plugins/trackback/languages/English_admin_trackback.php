@@ -28,13 +28,13 @@ define("TRACKBACK_L12", "No trackbacks for this item");
 define("TRACKBACK_L13", "Moderate trackbacks");
 //define("TRACKBACK_L14", "Delete");
 //define("TRACKBACK_L15", "Trackbacks deleted.");
-define('TRACKBACK_L16', 'Trackback');
-//define('TRACKBACK_L17', 'Nothing changed - not saved');
+define("TRACKBACK_L16", "Trackback");
+//define("TRACKBACK_L17", "Nothing changed - not saved");
 
 
 // Admin log messages
 //-------------------
-//define('LAN_AL_TRACK_01', 'Trackback settings changed');
-//define('LAN_AL_TRACK_02', 'Trackback items deleted');
+//define("LAN_AL_TRACK_01", "Trackback settings changed");
+//define("LAN_AL_TRACK_02", "Trackback items deleted");
 
 ?>

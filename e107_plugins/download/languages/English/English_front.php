@@ -93,6 +93,6 @@ define("LAN_dl_75", "no image available ");
 //define("LAN_dl_76", "Go to page");    //FIXME Use Generic
 define("LAN_dl_77", "Downloads");		// Intentional duplicate - some languages need it to be different. This is for number of downloads
 
-define('LAN_dl_78', 'That download has been disabled or discontinued. Please check in the [link=--LINK--]downloads area[/link] for a more recent version.');
+define('LAN_dl_78', "That download has been disabled or discontinued. Please check in the [link=--LINK--]downloads area[/link] for a more recent version.");
 
 ?>

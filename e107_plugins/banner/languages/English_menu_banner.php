@@ -29,6 +29,6 @@ define("BANNER_MENU_L15", "how many banners should be shown ?");
 define("BANNER_MENU_L16", "this setting will only be used with options 2 and 3.<br />if less banners are present the maximum available amount will be used.");
 define("BANNER_MENU_L17", "set amount ...");
 //define("BANNER_MENU_L18", "Update Menu Settings");
-//define('BANNER_MENU_L19', 'Nothing changed - not saved');
+//define('BANNER_MENU_L19', "Nothing changed - not saved");
 */
 ?>

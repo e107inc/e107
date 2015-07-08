@@ -88,12 +88,12 @@ define("EXTLAN_72", "has been deactivated");
 define("EXTLAN_73", "was not deactivated!");
 define("EXTLAN_74", "is a reserved field name and can not be used.");
 define("EXTLAN_75", "Error adding field to database.");
-define("EXTLAN_76", "Invalid characters in field name - only A-Z, a-z, 0-9, '_' allowed.");
+define("EXTLAN_76", "Invalid characters in field name - only A-Z, a-z, 0-9, allowed.");
 define("EXTLAN_77", "Category not deleted - must delete fields in category first: ");
-define('EXTLAN_78', 'Cannot find file --FILE-- needed to create data table');
+define("EXTLAN_78", "Cannot find file --FILE-- needed to create data table");
 
-define('EXTLAN_79', 'Label');
-define('EXTLAN_80', 'Validation error - aborted.');
+define("EXTLAN_79", "Label");
+define("EXTLAN_80", "Validation error - aborted.");
 
 
 //textbox
@@ -113,6 +113,6 @@ define("EXTLAN_HELP_7", "Require user to enter a date");
 // Language
 define("EXTLAN_HELP_8", "Allow user to select from installed languages");
 // Predefined list
-define('EXTLAN_HELP_9', 'Specify a predefined list. The value field selects the type of list - at present only \'timezones\' is a valid entry');
+define("EXTLAN_HELP_9", "Specify a predefined list. The value field selects the type of list - at present only 'timezones' is a valid entry");
 
 ?>

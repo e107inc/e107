@@ -70,9 +70,9 @@ define("POLLAN_44", "Delete this poll?");
 //define("POLLAN_46", "Field(s) left blank");
 
 // Log messages
-define('LAN_AL_POLL_01','Poll deleted');
-define('LAN_AL_POLL_02','Poll updated');
-define('LAN_AL_POLL_03','Poll added');
-define('LAN_AL_POLL_04','');
-define('LAN_AL_POLL_05','');
+define("LAN_AL_POLL_01","Poll deleted");
+define("LAN_AL_POLL_02","Poll updated");
+define("LAN_AL_POLL_03","Poll added");
+define("LAN_AL_POLL_04","");
+define("LAN_AL_POLL_05","");
 

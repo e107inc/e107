@@ -74,7 +74,7 @@ define("FORLAN_60", "This will delete all threads that have not received a reply
 // define("FORLAN_63", "Ranks");
 // define("FORLAN_64", "Enter your levels here, if left blank generic stars will be used to denote level. Separate levels with comma. Maximum of 10 levels, lowest first.");
 define("FORLAN_65", "Forum Title");
-define('FORLAN_66', 'Not installed');
+define("FORLAN_66", "Not installed");
 
 define("FORLAN_70", "Enable file / image attachments");
 define("FORLAN_71", "Allow users to upload file or image with their forum post,");
@@ -206,10 +206,10 @@ define("FORLAN_179", "Adding a * to the beginning of the forum name will make th
 define("FORLAN_182", "also recalculate replies for all threads in selected forum");
 define("FORLAN_183", "(this function is not allowed when selecting 'all forums' due to the number of queries it will generate)");
 
-define('FORLAN_184', 'Thread Creation permission');
-define('FORLAN_185', 'Indicates who can create new threads');
+define("FORLAN_184", "Thread Creation permission");
+define("FORLAN_185", "Indicates who can create new threads");
 
-define('FORLAN_186', 'Threads per page');
-define('FORLAN_187', 'Number of threads displayed per page');
+define("FORLAN_186", "Threads per page");
+define("FORLAN_187", "Number of threads displayed per page");
 
 ?>

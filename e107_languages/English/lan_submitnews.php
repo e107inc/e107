@@ -19,7 +19,7 @@ define("LAN_135", "News Item: ");
 define("LAN_136", "Submit News Item");
 define("NWSLAN_6", "Category");
 define("NWSLAN_10", "No news categories");
-//define("NWSLAN_11", "You don't have access to this area.");//LAN_UI_403_BODY_ERROR
+//define("NWSLAN_11", "You don"t have access to this area.");//LAN_UI_403_BODY_ERROR
 //define("NWSLAN_12", "Access Denied.");//LAN_UI_403_TITLE_ERROR
 
 define("SUBNEWSLAN_1", "You must include a title.\\n");
@@ -28,7 +28,7 @@ define("SUBNEWSLAN_3", "Your attachment must be either a jpg, gif or png file");
 define("SUBNEWSLAN_4", "File too Large");
 define("SUBNEWSLAN_5", "Image File");
 define("SUBNEWSLAN_6", "(jpg, gif or png)");
-define('SUBNEWSLAN_7', 'You must give your name and email address');
-define('SUBNEWSLAN_8', 'Error uploading image');
+define("SUBNEWSLAN_7", "You must give your name and email address");
+define("SUBNEWSLAN_8", "Error uploading image");
 
 ?>
