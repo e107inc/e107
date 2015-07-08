@@ -42,7 +42,7 @@ define("LAN_MAILOUT_28", "Save Changes");
 define("LAN_MAILOUT_29", "seconds");
 define("LAN_MAILOUT_30", "Used mostly with SMTP keepalive. A pause of more than 30 seconds may cause the browser to time-out");
 define("LAN_MAILOUT_31", "Bounced Email Processing");
-define("LAN_MAILOUT_32", "Email address");
+// define("LAN_MAILOUT_32", "Email address");
 define("LAN_MAILOUT_33", "Incoming Mail server");
 define("LAN_MAILOUT_34", "Account (user) Name");
 // define("LAN_MAILOUT_35", "Password");

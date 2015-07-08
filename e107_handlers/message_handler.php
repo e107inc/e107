@@ -1022,6 +1022,7 @@ function show_emessage($mode, $message, $line = 0, $file = "") {
 		}
 
     //	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_error.php");
+		global $mySQLdefaultdb;
 
 		$emessage[1] = "<b>".LAN_ERROR_25."</b>";
 		$emessage[2] = "<b>".LAN_ERROR_26."</b>";
@@ -1029,7 +1030,7 @@ function show_emessage($mode, $message, $line = 0, $file = "") {
 		$emessage[4] = "<b>".LAN_ERROR_28."</b>";
 		$emessage[5] = LAN_ERROR_29;
 		$emessage[6] = "<b>".LAN_ERROR_30."</b>";
-		$emessage[7] = "<b>".LAN_ERROR_31."</b>";
+		$emessage[7] = "<b>".$tp->lanVars(LAN_ERROR_31, $mySQLdefaultdb)."</b>";
 		/*$emessage[8] = "
 			<div style='text-align:center; font: 12px Verdana, Tahoma'><b>".LAN_ERROR_32." </b><br /><br />
 			".chr(36)."ADMIN_DIRECTORY = \"e107_admin/\";<br />

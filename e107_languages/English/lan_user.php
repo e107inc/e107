@@ -35,10 +35,10 @@ define("LAN_USER_01","Display name");
 define("LAN_USER_02","Login Name");
 define("LAN_USER_03","Real Name");
 define("LAN_USER_04","Custom title");
-define("LAN_USER_05","Password");
+// define("LAN_USER_05","Password"); //LAN_PASSWORD
 define("LAN_USER_06","Photograph");
 define("LAN_USER_07","Avatar");
-define("LAN_USER_08","Email address");
+// define("LAN_USER_08","Email address");
 define("LAN_USER_09","Signature");
 define("LAN_USER_10","Hide email");
 //define("LAN_USER_11","XUP file");
