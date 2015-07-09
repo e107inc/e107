@@ -100,7 +100,7 @@ class mailoutAdminClass extends e107MailManager
 				'forced' => TRUE
 			),
 			'mail_title' => array(
-				'title' => LAN_MAILOUT_135,
+				'title' => LAN_TITLE,
 				'forced' => TRUE
 			),
 			'mail_subject' => array(
@@ -964,7 +964,7 @@ class mailoutAdminClass extends e107MailManager
 			$tList = self::getEmailTemplateNames('user');
 			foreach($tList as $key => $val)
 			{
-				$emFormat[$key] = LAN_MAILOUT_258 . $val;
+				$emFormat[$key] = LAN_TEMPLATE . $val;
 			}	
 		}
 		

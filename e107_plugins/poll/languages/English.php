@@ -51,14 +51,14 @@ define("POLLAN_23", "Create Poll");
 define("POLLAN_24", "Preview");
 define("POLLAN_25", "Clear form");
 define("POLLAN_26", "votes");
-define("POLLAN_27", "Comments");
+// define("POLLAN_27", "Comments");
 define("POLLAN_28", "Previous polls");
 define("POLLAN_29", "posted by");
 define("POLLAN_30", "Submit");
 define("POLLAN_31", "Votes");
 define("POLLAN_32", "Click here to see results");
 define("POLLAN_33", "No previous polls yet.");
-define("POLLAN_34", "Title");
+//define("POLLAN_34", "Title");//LAN_TITLE
 define("POLLAN_35", "Posted by");
 define("POLLAN_36", "Active");
 define("POLLAN_37", "active from");

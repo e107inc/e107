@@ -119,7 +119,7 @@ class news_shortcodes extends e_shortcode
 
 		if($param['current_action'] == 'extend')
 		{
-			return LAN_NEWS_99.' ('.$news_item['news_comment_total'].')';
+			return LAN_COMMENTS.' ('.$news_item['news_comment_total'].')';
 		}
 
 		if (vartrue($pref['multilanguage']))
@@ -330,13 +330,14 @@ class news_shortcodes extends e_shortcode
 		if (ADMIN && getperms('H'))
 		{
 			//TODO - discuss - a pref for 'new browser window' loading, or a parm or leave 'new browser window' as default?
-			$default = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('icon-edit',false) :  "<img src='".e_IMAGE_ABS."admin_images/edit_16.png' alt='".LAN_NEWS_25."' class='icon' />";
+			$default = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('icon-edit',false) :  "<img src='".e_IMAGE_ABS."admin_images/edit_16.png' alt=\"".LAN_EDIT."\" class='icon' />";
+
 			
-			$adop_icon = (file_exists(THEME."images/newsedit.png") ? "<img src='".THEME_ABS."images/newsedit.png' alt='".LAN_NEWS_25."' class='icon' />" : $default);
+			$adop_icon = (file_exists(THEME."images/newsedit.png") ? "<img src='".THEME_ABS."images/newsedit.png' alt=\"".LAN_EDIT."\" class='icon' />" : $default);
 			
 			$class = varset($parm['class']);
 			
-			return "<a class='e-tip ".$class."' rel='external' href='".e_ADMIN_ABS."newspost.php?action=edit&amp;id=".$this->news_item['news_id']."' title=\"".LAN_NEWS_25."\">".$adop_icon."</a>\n";
+			return "<a class='e-tip ".$class."' rel='external' href='".e_ADMIN_ABS."newspost.php?action=edit&amp;id=".$this->news_item['news_id']."' title=\"".LAN_EDIT."\">".$adop_icon."</a>\n";
 		}
 		else
 		{

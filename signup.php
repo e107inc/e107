@@ -634,7 +634,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 
 
 		// check for multiple signups from the same IP address. But ignore localhost
-		if ($allData['user_ip'] != e107::LOCALHOST_IP)
+		if ($allData['user_ip'] != e107::LOCALHOST_IP && $allData['user_ip'] != e107::LOCALHOST_IP2)
 		{
 			if($ipcount = $sql->select('user', '*', "user_ip='".$allData['user_ip']."' and user_ban !='2' "))
 			{

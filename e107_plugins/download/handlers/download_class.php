@@ -208,7 +208,7 @@ class download
 
 		if ($dlcat->down_count == 0)
 	   	{
-			return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, "<div style='text-align:center'>".LAN_dl_2."</div>",'download-categories',true);
+			return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, "<div style='text-align:center'>".LAN_NO_RECORDS_FOUND."</div>",'download-categories',true);
 		}
 				
 		$download_cat_table_string = "";
@@ -321,7 +321,7 @@ class download
 		if(!$sql->gen($query))
 		{
 			//require_once(HEADERF);
-			return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, "<div style='text-align:center'>".LAN_dl_3."</div>", 'download-view', true);
+			return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, "<div style='text-align:center'>".LAN_NO_RECORDS_FOUND."</div>", 'download-view', true);
 			//require_once(FOOTERF);
 			//exit;
 		}
@@ -330,9 +330,12 @@ class download
 		$dlrow = $sql->fetch();
 		$sc->setVars($dlrow);
 	
-		$comment_edit_query = 'comment.download.'.$id;
+	//	$comment_edit_query = 'comment.download.'.$id;
 		
-		if(!defined("DL_IMAGESTYLE")){ define("DL_IMAGESTYLE","border:0px");}
+		if(!defined("DL_IMAGESTYLE"))
+		{
+			define("DL_IMAGESTYLE","border:0px");
+		}
 		
 	    if(!isset($DL_VIEW_PAGETITLE))
 		{
@@ -380,7 +383,7 @@ class download
 	
 		if ($dlrow['download_comment']) 
 		{			
-			$comments = e107::getComment()->compose_comment("download", "comment", $dlrow['download_id'], $width, $dlrow['download_name'], FALSE, true);
+			$comments = e107::getComment()->compose_comment("download", "comment", $dlrow['download_id'], null, $dlrow['download_name'], FALSE, true);
 			$ret .= $ns->tablerender($comments['caption'], $comments['comment'].$comments['comment_form'], 'download-comments', true);
 		}	
 		
@@ -475,8 +478,8 @@ class download
 		
 		if ($dlrow['download_category_parent'] == 0)  // It's a main category - change the listing type required
 	      { 
-	         $action = 'maincats';
-	   	  	 $maincatval = $id;
+	      //   $action = 'maincats';
+	  // 	  	 $maincatval = $id;
 		}
 		
 		$dl_text = $tp->parseTemplate($this->templateHeader, TRUE, $sc);
@@ -529,7 +532,7 @@ class download
 				
 				$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_END, TRUE, $sc);
 				
-		 	$text = $ns->tablerender($dl_title, $dl_text, 'download-list', true);
+		 	    $text = $ns->tablerender($dl_title, $dl_text, 'download-list', true);
 			}
 			
 		}// End of subcategory display
@@ -584,7 +587,7 @@ class download
 				$sc->setVars($dlrow);	
 				
 				$agreetext = $tp->toHTML($pref['agree_text'], TRUE, 'DESCRIPTION');
-				$current_row = ($current_row)? 0: 1;
+				$current_row = ($current_row) ? 0: 1;
 				// Alternating CSS for each row.(backwards compatible)
 				$template = ($current_row == 1)? $DOWNLOAD_LIST_TABLE: str_replace("forumheader3", "forumheader3 forumheader3_alt", $DOWNLOAD_LIST_TABLE);
 				
@@ -684,7 +687,7 @@ class download
 		{
 			$report_add = $tp->toDB($_POST['report_add']);
 			$download_name = $tp->toDB($download_name);
-			$user = USER ? USERNAME : LAN_dl_52;
+			$user = USER ? USERNAME : LAN_GUEST;
 	
 			if ($pref['download_email']) 
 			{    // this needs to be moved into the NOTIFY, with an event.
@@ -720,7 +723,7 @@ class download
 	
 			$text .= "<form action='".e_SELF."?report.{$download_id}' method='post'>
 			   <div>
-			   	      ".LAN_dl_32.": <a href='".e_PLUGIN."download/download?action=view&id={$download_id}'>".$download_name."</a>
+			   	      ".LAN_DOWNLOAD.": <a href='".e_PLUGIN."download/download?action=view&id={$download_id}'>".$download_name."</a>
 			   </div>
 			   <div>".LAN_dl_54."<br />".LAN_dl_55."</div>
 			   <div> ".$frm->textarea('report_add')."</div>
@@ -888,10 +891,10 @@ class download
 			break;
 			
 			default: // Generic error - shouldn't happen
-	   	     $errmsg = LAN_dl_61." ".$this->qry['error'];		
+	   	     $errmsg = LAN_ERROR." ".$this->qry['error'];		
 		}
 		
-		return $ns->tablerender(LAN_dl_61, $header. "<div class='alert alert-error alert-danger alert-block' style='text-align:center'>".$errmsg."</div>". $footer, 'download-error', true);
+		return $ns->tablerender(LAN_ERROR, $header. "<div class='alert alert-error alert-danger alert-block' style='text-align:center'>".$errmsg."</div>". $footer, 'download-error', true);
 		
 	}
    

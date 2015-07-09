@@ -69,7 +69,7 @@ define("LANG_LAN_106", "Language by Domain Name");
 define("LANG_LAN_107", "Domain determines the site's language. Enter domain without the 'www.'");
 define("LANG_LAN_108", "Name");
 define("LANG_LAN_109", "Version");
-define("LANG_LAN_110", "Author");
+//define("LANG_LAN_110", "Author");//LAN_AUTHOR
 define("LANG_LAN_111", "Release-date");
 define("LANG_LAN_112", "Compatible");
 define("LANG_LAN_113", "Download");

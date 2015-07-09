@@ -401,7 +401,7 @@ class e_install
 		$e_forms->start_form("language_select", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
 		$e_forms->add_select_item("language", $this->get_languages(), "English");
 		$this->finish_form();
-		$this->add_button("start", LANINS_035);
+		$this->add_button("start", LAN_CONTINUE);
 		$output = "
 			<div style='text-align: center;'>
 				<div class='alert alert-info alert-block'>
@@ -495,7 +495,7 @@ class e_install
 
 
 		$this->finish_form();
-		$this->add_button("submit", LANINS_035);
+		$this->add_button("submit", LAN_CONTINUE);
 		$this->template->SetTag("stage_content", $page_info.$e_forms->return_form());
 		$this->logLine('Stage 2 completed');
 	}
@@ -617,7 +617,7 @@ class e_install
 			</div>
 			\n";
 			$e_forms->add_plain_html($output);
-			$this->add_button("submit", LANINS_035);
+			$this->add_button("submit", LAN_CONTINUE);
 			$this->template->SetTag("stage_title", LANINS_040);
 		}
 		else
@@ -712,12 +712,12 @@ class e_install
 			{
 
 				// $page_content .= "<br /><br />".LANINS_045."<br /><br />";
-				$this->add_button("submit", LANINS_035);
+				$this->add_button("submit", LAN_CONTINUE);
 				$alertType = 'success';
 			}
 			else 
 			{
-				$this->add_button("back", LANINS_035);
+				$this->add_button("back", LAN_CONTINUE);
 			}
 			$head = $page_content;
 		}
@@ -784,12 +784,12 @@ class e_install
 		if(!function_exists("mysql_connect"))
 		{
 			$version_fail = true;
-			$mysql_note = LANINS_011;
+			$mysql_note = LAN_ERROR;
 			$mysql_help = LANINS_012;
 		}
 		elseif (!@mysql_connect($this->previous_steps['mysql']['server'], $this->previous_steps['mysql']['user'], $this->previous_steps['mysql']['password']))
 		{
-			$mysql_note = LANINS_011;
+			$mysql_note = LAN_ERROR;
 			$mysql_help = LANINS_013;
 		}
 		else
@@ -831,7 +831,7 @@ class e_install
 		}
 		elseif ($perms_pass && !$version_fail && $xml_installed)
 		{
-			$this->add_button("continue_install", LANINS_020);
+			$this->add_button("continue_install", LAN_CONTINUE);
 		}
 		
 		$permColor	= ($perms_pass == true) ? "text-success" : "text-error";
@@ -942,7 +942,7 @@ class e_install
 			\n";
 		$e_forms->add_plain_html($output);
 		$this->finish_form();
-		$this->add_button("submit", LANINS_035);
+		$this->add_button("submit", LAN_CONTINUE);
 		$this->template->SetTag("stage_content", $e_forms->return_form());
 		$this->logLine('Stage 5 completed');
 	}
@@ -1039,12 +1039,12 @@ class e_install
 				<tr>
 					<td><label for='sitename'>".LANINS_107."</label></td>
 					<td>
-						<input class='tbox' type='text' autofocus placeholder=\"My Website\" required='required' name='sitename' id='sitename' size='30' value='".(vartrue($_POST['sitename']) ? $_POST['sitename'] : "")."' maxlength='60' />
+						<input class='tbox' type='text' autofocus placeholder=\"".LANINS_108."\" required='required' name='sitename' id='sitename' size='30' value='".(vartrue($_POST['sitename']) ? $_POST['sitename'] : "")."' maxlength='60' />
 					</td>
 				</tr>
 
 				<tr>
-					<td><label>".LANINS_109."</label><br />".LANINS_110."</td>
+					<td><label>".LANINS_109."</label></td>
 					<td>
 						<table class='table' >
 							<thead>
@@ -1107,7 +1107,7 @@ class e_install
 			\n";
 		$e_forms->add_plain_html($output);
 		$this->finish_form();
-		$this->add_button("submit", LANINS_035);
+		$this->add_button("submit", LAN_CONTINUE);
 		$this->template->SetTag("stage_content", $e_forms->return_form());
 		$this->logLine('Stage 6 completed');
 	}
@@ -1228,7 +1228,7 @@ class e_install
 		$e_forms->start_form("confirmation", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
 		$page = '<div class="alert alert-success">'.nl2br(LANINS_057).'</div>';
 		$this->finish_form();
-		$this->add_button("submit", LANINS_035);
+		$this->add_button("submit", LAN_CONTINUE);
 
 
 
@@ -1290,7 +1290,7 @@ class e_install
 					
 					$page .= "<p class='text-warning'>".$htaccessError."</p>";		
 				}	
-				$this->add_button('submit', LANINS_035);
+				$this->add_button('submit', LAN_CONTINUE);
 			}
 		 
 		$this->finish_form();

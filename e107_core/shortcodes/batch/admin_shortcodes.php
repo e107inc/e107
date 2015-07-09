@@ -1113,7 +1113,7 @@ class admin_shortcodes
 
 					if(empty($pref['comments_disabled']) && varset($pref['comments_engine'],'e107') == 'e107')
 					{
-						$oldconfigs['e-comments'][0] 	= array('icon'=>E_16_COMMENT, 'title'=>ADLAN_114, 'url'=> e_ADMIN_ABS."comment.php", 'total'=>$comments);
+						$oldconfigs['e-comments'][0] 	= array('icon'=>E_16_COMMENT, 'title'=>LAN_COMMENTS, 'url'=> e_ADMIN_ABS."comment.php", 'total'=>$comments);
 					}
 					if($flo = $sql->count('generic', '(*)', "WHERE gen_type='failed_login'"))
 					{
@@ -1776,7 +1776,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				$menu_vars['language']['text'] = strtoupper(e_LAN); // e_LANGUAGE;
 				$menu_vars['language']['link'] = '#';
 				$menu_vars['language']['image'] = $tp->toGlyph('fa-globe'); //  "<i class='icon-globe'></i>" ;
-				$menu_vars['language']['image_src'] = ADLAN_46;
+				$menu_vars['language']['image_src'] = null;
 				$menu_vars['language']['sub'] = $tmp;	
 			}	
 			

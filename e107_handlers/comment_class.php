@@ -120,7 +120,7 @@ class comment
 			$sc_style['AUTHOR_INPUT']['pre']		= "<tr><td style='width:20%; vertical-align:top;'>".COMLAN_16."</td><td style='width:80%'>";
 			$sc_style['AUTHOR_INPUT']['post']		= "</td></tr>";
 			
-			$sc_style['RATE_INPUT']['pre']			= "<tr><td style='width:20%; vertical-align:top;'>".COMLAN_327.":</td><td style='width:80%;'>";
+			$sc_style['RATE_INPUT']['pre']			= "<tr><td style='width:20%; vertical-align:top;'>".LAN_RATING.":</td><td style='width:80%;'>";
 			$sc_style['RATE_INPUT']['post']			= "</td></tr>";
 			
 			$sc_style['COMMENT_INPUT']['pre']		= "<tr><td style='width:20%; vertical-align:top;'>".COMLAN_8.":</td><td id='commentform' style='width:80%;'>";
@@ -1094,7 +1094,7 @@ class comment
 			if ($tablerender)
 			{
 					
-					echo $ns->tablerender("<span id='e-comment-total'>".$this->totalComments."</span> ".COMLAN_99, $TEMPL, 'comment', TRUE);	
+					echo $ns->tablerender("<span id='e-comment-total'>".$this->totalComments."</span> ".LAN_COMMENTS, $TEMPL, 'comment', TRUE);
 			}
 			else
 			{
@@ -1110,7 +1110,7 @@ class comment
 		$ret['comment'] = $text;
 		
 		$ret['comment_form'] = $comment;
-		$ret['caption'] = "<span id='e-comment-total'>".$this->totalComments."</span> ".COMLAN_99;
+		$ret['caption'] = "<span id='e-comment-total'>".$this->totalComments."</span> ".LAN_COMMENTS;
 
 		return (!$return) ? "" : $ret;
 	}

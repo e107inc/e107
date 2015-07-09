@@ -87,7 +87,7 @@ class e107_user_extended
 			4 => UE_LAN_4,
 			5 => UE_LAN_5,
 			6 => UE_LAN_6,
-			7 => UE_LAN_7,
+			7 => LAN_DATE,
 			8 => UE_LAN_8,
 			9 => UE_LAN_9,
 			10=> UE_LAN_10

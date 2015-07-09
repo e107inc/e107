@@ -450,7 +450,7 @@ class poll
 		
 		
 		$VOTE_TOTAL 	= POLLAN_31.": ".$voteTotal;
-		$COMMENTS 		= ($pollArray['poll_comment'] ? " <a href='".e_HTTP."comment.php?comment.poll.".$pollArray['poll_id']."'>".POLLAN_27.": ".$comment_total."</a>" : "");
+		$COMMENTS 		= ($pollArray['poll_comment'] ? " <a href='".e_HTTP."comment.php?comment.poll.".$pollArray['poll_id']."'>".LAN_COMMENTS.": ".$comment_total."</a>" : "");
 		
 		
 		$poll_count 	= $sql->count("polls", "(*)", "WHERE poll_id <= '".$pollArray['poll_id']."'");

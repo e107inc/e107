@@ -187,7 +187,7 @@ class e107Update
 				{
 					if(function_exists("update_".$func))
 					{
-						$message = LAN_UPDATE_7." ".$data['title'];
+						$message = LAN_UPDATE_7." ".$func;
 						$error = call_user_func("update_".$func, "do");
 						
 						if($error != '')
@@ -901,7 +901,7 @@ function update_706_to_800($type='')
 	
 	
 	// Next bit will be needed only by the brave souls who used an early CVS - probably delete before release
-	if ($sql->db_Table_exists('rl_history') && !$sql->db_Table_exists('dblog'))
+	if ($sql->isTable('rl_history') && !$sql->isTable('dblog'))
 	{
 		if ($just_check) return update_needed('Rename rl_history to dblog');
 		$sql->gen('ALTER TABLE `'.MPREFIX.'rl_history` RENAME `'.MPREFIX.'dblog`');
@@ -913,7 +913,7 @@ function update_706_to_800($type='')
 	
 	
 	//---------------------------------
-	if ($sql->db_Table_exists('dblog') && !$sql->db_Table_exists('admin_log'))
+	if ($sql->isTable('dblog') && !$sql->isTable('admin_log'))
 	{
 		if ($just_check) return update_needed('Rename dblog to admin_log');
 		$sql->gen('ALTER TABLE `'.MPREFIX.'dblog` RENAME `'.MPREFIX.'admin_log`');
@@ -929,7 +929,7 @@ function update_706_to_800($type='')
 	/*
 	foreach ($new_tables as $nt)
 	{
-		if (!$sql->db_Table_exists($nt))
+		if (!$sql->isTable($nt))
 		{
 			if ($just_check) return update_needed('Add table: '.$nt);
 			// Get the definition
@@ -1074,7 +1074,7 @@ function update_706_to_800($type='')
 	$sql->mySQLtableList = false; // clear the cached table list. 
 	foreach ($obs_tables as $ot)
 	{
-		if ($sql->db_Table_exists($ot))
+		if ($sql->isTable($ot))
 		{
 			if ($just_check) return update_needed("Delete table: ".$ot);
 			
@@ -1088,7 +1088,7 @@ function update_706_to_800($type='')
 	// Set to varchar(45) - just in case something uses the IPV4 subnet (see http://en.wikipedia.org/wiki/IPV6#Notation)
 	foreach ($ip_upgrade as $t => $f)
 	{
-	  if ($sql->db_Table_exists($t))
+	  if ($sql->isTable($t))
 	  {		// Check for table - might add some core plugin tables in here
 	    if ($field_info = ($sql->db_Field($t, $f, '', TRUE)))
 	    {
@@ -1168,7 +1168,7 @@ function update_706_to_800($type='')
 	//TODO - send notification messages to Log. 
 
 
-	if($sql->field('page','page_theme') && $sql->gen("SELECT * FROM #page WHERE page_theme != '' AND menu_title = '' LIMIT 1"))
+	if($sql->field('page','page_theme') && $sql->gen("SELECT * FROM `#page` WHERE page_theme != '' AND menu_title = '' LIMIT 1"))
 	{
 		if ($just_check)
 		{
@@ -1177,7 +1177,7 @@ function update_706_to_800($type='')
 		
 		if($sql->update('page',"menu_name = page_theme, menu_title = page_title, menu_text = page_text, menu_template='default', page_title = '', page_text = '' WHERE page_theme !='' AND menu_title = '' AND menu_text = '' "))
 		{
-			$sql->gen("ALTER TABLE `#page` DROP `page_theme`");
+			$sql->gen("ALTER TABLE `#page` DROP page_theme ");
 			$mes = e107::getMessage();
 			$log->addDebug("Successfully updated pages/menus table to new format. ");
 		}
@@ -1876,7 +1876,7 @@ function update_needed($message='')
 function addIndexToTable($target, $indexSpec, $just_check, &$updateMessages, $optionalTable=FALSE)
 {
 	global $sql;
-	if (!$sql->db_Table_exists($target))
+	if (!$sql->isTable($target))
 	{
 		if ($optionalTable)
 		{

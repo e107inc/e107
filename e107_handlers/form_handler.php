@@ -4392,7 +4392,7 @@ class e_form
 							</tbody>
 						</table>";
 				
-				$text .= "<div class='alert alert-block alert-info center middle'>".LAN_NO_RECORDS."</div>"; // not prone to column-count issues. 
+				$text .= "<div class='alert alert-block alert-info center middle'>".LAN_NO_RECORDS_FOUND."</div>"; // not prone to column-count issues.
 			}
 			else
 			{
