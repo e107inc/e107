@@ -18,7 +18,7 @@ define("CUSLAN_50", "List Books/Chapters");
 define("CUSLAN_51", "Add Book/Chapter");
 define("CUSLAN_52", "Book");
 define("CUSLAN_53", "Book or Chapter Title");
-//define("CUSLAN_54", "Meta Keywords");//LAN_KEYWORDS
+
 define("CUSLAN_55", "Can be edited by");
 define("CUSLAN_56", "Parent");
 define("CUSLAN_57", "Please choose unique SEF URL string for this entry.");
@@ -44,6 +44,7 @@ define("CUSLAN_76", "Menu with path #");
 define("CUSLAN_77", "deleted");
 define("CUSLAN_78", "Couldn't delete menu with path ");
 
+// define("CUSLAN_54", "Meta Keywords"); //LAN_KEYWORDS
 // define("CUSLAN_1", "Title");
 // define("CUSLAN_2", "Type");
 // define("CUSLAN_3", "Search engine friendly string");
@@ -87,8 +88,6 @@ define("CUSLAN_78", "Couldn't delete menu with path ");
 // define("CUSLAN_46", "Nothing changed - not saved");
 // define("CUSLAN_47", "General Information");
 
-// define("CUSLAN_50", "Existing Menus");
-// define("CUSLAN_51", "Menu saved to database.");
-// define("CUSLAN_52", "Menu added to menus.");
+
 
 ?>

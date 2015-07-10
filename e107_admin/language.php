@@ -1082,10 +1082,7 @@ class lanDeveloper
 			// $lanfile = $_POST['deprecatedLans'];
 			$script = $_POST['deprecatedLans'];
 
-
-
-
-			foreach($_POST['deprecatedLans'] as $k=>$scr)
+			foreach($script as $k=>$scr)
 			{
 				if(strpos($scr,e_ADMIN)!==false) // CORE
 				{
@@ -1103,11 +1100,6 @@ class lanDeveloper
 					//$lanfile = $this->findIncludedFiles($script,vartrue($_POST['deprecatedLansReverse']));
 				}
 
-
-			}
-
-			foreach($script as $scr)
-			{
 				if(!is_readable($scr))
 				{
 					$mes->addError("Not Readable: ".$scr);
@@ -1116,21 +1108,22 @@ class lanDeveloper
 			}
 
 
-
 		//	$found = $this->findIncludedFiles($script,vartrue($_POST['deprecatedLansReverse']));
 
 //	print_a($found);
 
 			// Exceptions - same language loaded by several scripts.
-			if($lanfile == e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_e107_update.php")
-			{
-				$script = e_ADMIN."update_routines.php,".e_ADMIN."e107_update.php";
-			}
+		//	if($lanfile == e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_e107_update.php")
+		//	{
+		//		$script = e_ADMIN."update_routines.php,".e_ADMIN."e107_update.php";
+		//	}
 
-			if(vartrue($_POST['deprecatedLanFile'])) //override.
+			if($_POST['deprecatedLanFile'][0] !='auto') //override.
 			{
 				$lanfile = $_POST['deprecatedLanFile'];
 			}
+
+
 
 			$this->lanFile = $lanfile;
 			$this->scriptFile = $script;
@@ -1297,7 +1290,8 @@ class lanDeveloper
 
 								";
 
-		$text .= "<option value=''>Auto-Detect</option><optgroup label='Specific LAN file:'>\n";
+		$selected = ($_POST['deprecatedLanFile'][0] == 'auto') ? "selected='selected'" :"";
+		$text .= "<option value='auto' {$selected}>Auto-Detect</option><optgroup label='Specific LAN file:'>\n";
 
 		foreach($_SESSION['languageTools_lanFileList'] as $val)
 		{
