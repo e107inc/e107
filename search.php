@@ -174,7 +174,7 @@ class search extends e_shortcode
 	
 	function sc_search_main_submit($parm='')
 	{
-		return "<input class='btn btn-primary button' type='submit' name='s' value='".LAN_180."' />
+		return "<input class='btn btn-primary button' type='submit' name='s' value='".LAN_SEARCH."' />
 		<input type='hidden' name='r' value='0' />";
 	}
 	
@@ -1110,7 +1110,7 @@ if ($search_prefs['selector'] == 1)
   $SEARCH_VARS->SEARCH_MAIN_UNCHECKALL = "<input  type='button' name='UnCheckAll' value='".LAN_SEARCH_2."' onclick='uncheckAll(this); uncheckG();' />";
 }
 */
-//$SEARCH_VARS->SEARCH_MAIN_SUBMIT = "<input type='hidden' name='r' value='0' /><input type='submit' name='s' value='".LAN_180."' />";
+//$SEARCH_VARS->SEARCH_MAIN_SUBMIT = "<input type='hidden' name='r' value='0' /><input type='submit' name='s' value='".LAN_SEARCH."' />";
 
 //$SEARCH_VARS->ENHANCED_ICON = "<img src='".e_IMAGE_ABS."generic/search_basic.png' style='width: 16px; height: 16px; vertical-align: top'
 //alt='".LAN_SEARCH_23."' title='".LAN_SEARCH_23."' onclick=\"expandit('en_in'); expandit('en_ex'); expandit('en_ep'); expandit('en_be')\"/>";

@@ -665,4 +665,27 @@ class language{
 		return $this->list;
 	}
 
+
+
+
+	public function bcDefs()
+	{
+
+		$bcList = array(
+			'LAN_180'   => 'LAN_SEARCH'
+
+		);
+
+
+		foreach($bcList as $old => $new)
+		{
+			if(!defined($old) && defined($new))
+			{
+				define($old, constant($new));
+			}
+
+		}
+
+	}
+
 }

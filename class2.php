@@ -641,6 +641,7 @@ if(is_readable($customLan2)) // FASTER - if exist, should be done 'once' by the 
 }
 unset($customLan, $customLan2);
 
+$lng->bcDefs(); // defined v1.x definitions for old templates.
 
 $sql->db_Mark_Time('Start: Global Language Files');
 if(isset($pref['lan_global_list']))

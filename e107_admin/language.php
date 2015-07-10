@@ -20,10 +20,10 @@ e107::coreLan('language', true);
 
 $e_sub_cat = 'language';
 
-	if(!empty($_GET['iframe']))
-	{
-		define('e_IFRAME', true);
-	}
+if(!empty($_GET['iframe']))
+{
+	define('e_IFRAME', true);
+}
 
 
 
