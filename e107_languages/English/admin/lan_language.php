@@ -17,7 +17,7 @@ define("LANG_LAN_07", "Drop existing tables?");
 define("LANG_LAN_08", "Replace existing tables (data will be lost).");
 // define("LANG_LAN_10", "Confirm delete");
 define("LANG_LAN_11", "Delete unchecked tables above (if they exist).");
-define("LANG_LAN_12", "Enable Multi-Language Tables");
+define("LANG_LAN_12", "Multi-Language Database Tables");
 define("LANG_LAN_13", "Language Preferences");
 define("LANG_LAN_14", "Default Site Language");
 define("LANG_LAN_15", "Tick to copy data from the default language. (Useful for links, news-categories, etc.)");
