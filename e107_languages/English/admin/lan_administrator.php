@@ -24,13 +24,13 @@ define("ADMSLAN_18", "Permissions");
 define("ADMSLAN_21", "Modify administrator permissions");
 //define("ADMSLAN_22", "Moderate users/bans etc");//ADLAN_34
 //define("ADMSLAN_23", "Create/edit custom pages"); //ADLAN_42
-define("ADMSLAN_24", "Manage download categories");
+// define("ADMSLAN_24", "Manage download categories");
 define("ADMSLAN_25", "Upload /manage files");
-define("ADMSLAN_26", "Oversee news categories");
+// define("ADMSLAN_26", "Oversee news categories");
 define("ADMSLAN_27", "Oversee link categories");
 //define("ADMSLAN_28", "Take site down for maintenance");//ADLAN_40
-define("ADMSLAN_29", "Manage banners");
-define("ADMSLAN_30", "Configure news feed headlines");
+// define("ADMSLAN_29", "Manage banners");
+// define("ADMSLAN_30", "Configure news feed headlines");
 //define("ADMSLAN_31", "Configure emoticons");//ADLAN_58
 //define("ADMSLAN_32", "Configure front page content");//ADLAN_60
 //define("ADMSLAN_33", "Configure system logging");//ADLAN_155
@@ -44,7 +44,7 @@ define("ADMSLAN_30", "Configure news feed headlines");
 define("ADMSLAN_41", "Create/edit custom menus");  
 define("ADMSLAN_42", "Post reviews"); // - NOW PLUGIN
 //define("ADMSLAN_43", "Configure URLs");//ADLAN_159
-define("ADMSLAN_44", "Post downloads");
+// define("ADMSLAN_44", "Post downloads");
 //define("ADMSLAN_45", "Schedule Tasks");//ADLAN_157
 //define("ADMSLAN_46", "Welcome message");//ADLAN_28
 //define("ADMSLAN_47", "Moderate submitted news");//LAN_SUBMITTED

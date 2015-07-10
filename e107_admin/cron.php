@@ -46,7 +46,7 @@ class cron_admin extends e_admin_dispatcher
 
 
 	protected $adminMenu = array(
-		'main/list'		=> array('caption'=> LAN_CRON_M_01, 'perm' => '0'),
+		'main/list'		=> array('caption'=> LAN_MANAGE, 'perm' => '0'),
 		'main/refresh' 	=> array('caption'=> LAN_CRON_M_02, 'perm' => '0','url'=>'cron.php'),
 	//	'main/prefs' 	=> array('caption'=> 'Settings', 'perm' => '0'),
 	//	'main/custom'	=> array('caption'=> 'Custom Page', 'perm' => '0')		
@@ -74,12 +74,12 @@ class cron_admin_ui extends e_admin_ui
 			'checkboxes'		=> array('title'=> '',				'type' => null, 			'width' =>'5%', 	'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'cron_id'			=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 	'forced'=> FALSE, 'nolist'=>TRUE),
        		'cron_category'		=> array('title'=> LAN_CATEGORY, 	'type' => 'method', 		'data' => 'str',		'width'=>'auto','readonly' => 1,	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE),
-       		'cron_name'			=> array('title'=> LAN_CRON_1,		'type' => 'text',			'width' => 'auto',	'readonly' => 1),
+       		'cron_name'			=> array('title'=> LAN_NAME,		'type' => 'text',			'width' => 'auto',	'readonly' => 1),
          	'cron_description'	=> array('title'=> LAN_DESCRIPTION,	'type' => 'text',			'width' => '35%',	'readonly' => 1),
          	'cron_function'		=> array('title'=> LAN_CRON_2,		'type' => 'text',			'width' => 'auto', 	'thclass' => 'left first', 'readonly' => 1), 
          	'cron_tab'			=> array('title'=> LAN_CRON_3,		'type' => 'method',			'width' => 'auto'), // Display name
 		 	'cron_lastrun'		=> array('title'=> LAN_CRON_4,		'type' => 'datestamp',		'data' => 'int',	'width' => 'auto', 'readonly' => 2),	
-     		'cron_active' 		=> array('title'=> LAN_CRON_5,		'type' => 'boolean',		'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),
+     		'cron_active' 		=> array('title'=> LAN_ACTIVE,		'type' => 'boolean',		'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),
 			'options' 			=> array('title'=> LAN_OPTIONS,		'type' => 'method',			'data'=> null, 'noedit'=>TRUE, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
 		);
 		
@@ -1028,7 +1028,7 @@ class cron
 		   <thead>
 		   	<tr>
 			   <th>"
-			.LAN_CRON_1."</th>
+			.LAN_CRON_1XXX."</th>
 			   <th>"
 			.LAN_CRON_2."</th>
 			   <th>"
@@ -1036,7 +1036,7 @@ class cron
 			   <th>"
 			.LAN_CRON_4."</th>
 			   <th>"
-			.LAN_CRON_5."</th>
+			.LAN_CRON_5XXXX."</th>
 			   <th>"
 			.LAN_CRON_6."</th>
 			   <th>"

@@ -398,7 +398,7 @@ class frontpage
 					<thead>
 						<tr>
 							<th class='first left'>".LAN_ORDER."</th>
-							<th>".FRTLAN_53."</th>
+							<th>".LAN_USERCLASS."</th>
 							<th>".FRTLAN_49."</th>
 							<th>".FRTLAN_35."</th>
 							<th class='center last'>".LAN_OPTIONS."</th>

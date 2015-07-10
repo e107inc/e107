@@ -9,15 +9,13 @@
 if (!defined("PAGE_NAME")) { define("PAGE_NAME", "Schedule Tasks"); }
 
 // Menu
-define("LAN_CRON_M_01", "Manage"); 
-define("LAN_CRON_M_02", "Refresh"); 
+define("LAN_CRON_M_02", "Refresh");
 
 // Table heading
-define("LAN_CRON_1", "Name");
+
 define("LAN_CRON_2", "Function");
 define("LAN_CRON_3", "Tab");
 define("LAN_CRON_4", "Last-run");
-define("LAN_CRON_5", "Active");
 
 // Default crons
 define("LAN_CRON_01_1", "Test Email");
