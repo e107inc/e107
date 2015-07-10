@@ -1269,7 +1269,7 @@ class lancheck
 				else
 				{
 					$this->checkLog('file',1);
-					$this->newFile(e_LANGUAGEDIR.$checklan."/".$subdir.$lnk,$checklan);
+				//	$this->newFile(e_LANGUAGEDIR.$checklan."/".$subdir.$lnk,$checklan);
 					$text .= "<tr>
 					<td class='forumheader3' style='width:45%'>{$lnk}</td>
 					<td class='forumheader' style='width:50%'>".LAN_CHECK_4."</td>"; // file missing.
@@ -1694,8 +1694,9 @@ class lancheck
 			$f2 = $lan."_custom.php";
 			$root_file = e_LANGUAGEDIR.$lan."/".$lan."_custom.php";
 		}
-	
-	
+
+		$this->newFile($dir2.$f2,$lan);
+
 		$writable = (is_writable($dir2)) ? TRUE : FALSE;
 		$trans = $this->get_lan_file_phrases($dir1,$dir2,$f1,$f2);
 		$keys = array_keys($trans);

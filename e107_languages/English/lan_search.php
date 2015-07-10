@@ -9,7 +9,7 @@
 define("PAGE_NAME", "Search");
 
 define("LAN_140", "Members");
-define("LAN_180", "Search");
+// define("LAN_180", "Search");
 define("LAN_192", "All categories");
 define("LAN_193", "Event Calendar");
 define("LAN_194", "All Categories");
