@@ -719,7 +719,7 @@ class db_verify
 			}	// 
 		}
 
-		$log->flushMessages();
+		$log->flushMessages("Database Table(s) Modified");
 				
 	}	
 	
