@@ -60,13 +60,13 @@ class fpw_shortcodes extends e_shortcode
 	{
 		// return '<button type="submit" name="pwsubmit" class="button btn btn-primary btn-block reset">'.$label.'</button>';
 		// return "<input class='button btn btn-primary btn-block' type='submit' name='pwsubmit' value='".$label."' />";	
-		$label = deftrue('LAN_FPW_102', LAN_156);
+		$label = deftrue('LAN_FPW_102', LAN_SUBMIT);
 		return e107::getForm()->button('pwsubmit', $label); 
 	}
 
 	function sc_fpw_captcha_lan($parm='')
 	{
-		return LAN_FPW2;	
+		return LAN_ENTER_CODE;
 	}
 	
 	function sc_fpw_captcha_hidden($parm='')
@@ -250,7 +250,7 @@ if (isset($_POST['pwsubmit']))
 	{
 		if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify']))
 		{
-			fpw_error(LAN_FPW3);
+			fpw_error(LAN_INVALID_CODE);
 		}
 	}
 	
@@ -358,18 +358,6 @@ if (isset($_POST['pwsubmit']))
 
 $sc = array(); // needed?
 
-
-/*
-if (USE_IMAGECODE)
-{
-	$sc = array (
-		'FPW_TABLE_SECIMG_LAN' => LAN_FPW2,
-		'FPW_TABLE_SECIMG_HIDDEN' => "<input type='hidden' name='rand_num' value='".$sec_img->random_number."' />",
-		'FPW_TABLE_SECIMG_SECIMG' => $sec_img->r_image(),
-		'FPW_TABLE_SECIMG_TEXTBOC' => "<input class='tbox' type='text' name='code_verify' size='15' maxlength='20' />"
-	);
-}
-*/
 
 if(deftrue('BOOTSTRAP'))
 {
