@@ -1177,13 +1177,16 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		$search[7] = '/\{LINK_CLASS\}(.*?)/si';
 		$search[8] = '/\{SUB_CLASS\}(.*?)/si';
 		$search[9] = '/\{LINK_IMAGE\}(.*?)/si';
-		
+		$search[10] = '/\{LINK_DATA\}/si';
+
 		foreach (array_keys($e107_vars) as $act)
 		{
 			if (isset($e107_vars[$act]['perm']) && !getperms($e107_vars[$act]['perm'])) // check perms first.
 			{
 				continue;
 			}
+
+
 			
 			if (isset($e107_vars[$act]['header'])) 
 			{
@@ -1209,6 +1212,9 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			//  print_a($e107_vars[$act]);
 	
 			$replace = array();
+
+
+
 			
 			$rid = str_replace(array(' ', '_'), '-', $act).($id ? "-{$id}" : '');
 			
@@ -1271,6 +1277,19 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			else
 			{
 				$replace[9] = varset($e107_vars[$act]['image']);	
+			}
+
+			if(!empty($e107_vars[$act]['link_data']))
+			{
+
+				$dataTmp = array();
+				foreach($e107_vars[$act]['link_data'] as $k=>$v)
+				{
+					$dataTmp[] = $k.'="'.$v.'"';
+				}
+
+				$replace[10] = implode(" ", $dataTmp); // $e107_vars[$act]['link_data']
+
 			}
 		
 			

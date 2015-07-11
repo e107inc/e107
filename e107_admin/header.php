@@ -541,7 +541,7 @@ echo "</head>
 <body".$body_onload.">\n";
 
 echo getModal();
-// echo getAlert();
+echo getAlert();
 
   function getModal($caption = '', $type='')
     {
@@ -575,11 +575,11 @@ echo getModal();
 
 function getAlert($caption='')
 {
-	
-	return '<div id="uiAlert" class="alert alert-block alert-success hide fade in" style="box-shadow:0px 15px 8px #000;width:300px;position:absolute;left:40%;right:40%;top:15%;z-index:10000">
-  		<!-- rest of alert code goes here --> some
-		Some text goes here and there and everywhere. 
-	</div>';	
+	//  style="box-shadow:0px 15px 8px #000;width:300px;position:absolute;left:40%;right:40%;top:15%;z-index:10000"
+
+
+
+	return '<div id="uiAlert" class="notifications center"><!-- empty --></div>';
 
 }
 
