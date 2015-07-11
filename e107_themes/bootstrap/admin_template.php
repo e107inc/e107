@@ -331,13 +331,13 @@ $E_ADMIN_MENU['start'] = '
 
 $E_ADMIN_MENU['button'] = '
 	<li>
-		<a class="link{LINK_CLASS}" href="{LINK_URL}"{ID}{ONCLICK}><i class="icon-chevron-right"></i>&nbsp;{LINK_TEXT}</a>
+		<a class="link{LINK_CLASS}" {LINK_DATA} href="{LINK_URL}"{ID}{ONCLICK}>{LINK_TEXT}&nbsp;</a>
 		{SUB_MENU}
 	</li>
 ';
 $E_ADMIN_MENU['button_active'] = '
 	<li class="active">
-		<a class="link-active{LINK_CLASS}" href="{LINK_URL}"{ID}{ONCLICK}><i class="icon-chevron-right"></i>&nbsp;{LINK_TEXT}</a>
+		<a class="link-active{LINK_CLASS}" {LINK_DATA} href="{LINK_URL}"{ID}{ONCLICK}>{LINK_TEXT}&nbsp;</a>
 		{SUB_MENU}
 	</li>
 ';

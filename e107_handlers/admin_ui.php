@@ -1549,6 +1549,16 @@ class e_admin_dispatcher
 			/*$var[$key]['text'] = $val['caption'];
 			$var[$key]['link'] = (vartrue($val['url']) ? $tp->replaceConstants($val['url'], 'abs') : e_SELF).'?mode='.$tmp[0].'&action='.$tmp[1];
 			$var[$key]['perm'] = $val['perm'];	*/
+			if(!empty($val['modal']))
+			{
+				$var[$key]['link_class'] = ' e-modal';
+				if(!empty($val['modal-caption']))
+				{
+					$var[$key]['link_data'] = array('data-modal-caption' => $val['modal-caption']);
+				}
+
+			}
+
 		}
 
 
