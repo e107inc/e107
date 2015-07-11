@@ -1200,7 +1200,7 @@ class lanDeveloper
 		$text .= "
 		<form id='lanDev' method='post' action='".e_REQUEST_URI."'>
 			<fieldset id='core-language-package'>
-				<legend class='e-hideme'>".LANG_LAN_23."</legend>
+
 				<table class='table adminform'>
 					<colgroup>
 						<col class='col-label' />

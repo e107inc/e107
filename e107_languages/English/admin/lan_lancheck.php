@@ -23,6 +23,8 @@ define("LAN_CHECK_24", "Summary");
 define("LAN_CHECK_25", "Themes");
 define("LAN_CHECK_PAGE_TITLE", "Languages");
 define("LAN_CHECK_27", "Number of language-pack errors found");
+
+define("LANG_LAN_23", "Create Language-Pack (zip)");
 define("LANG_LAN_30", "Release Date");
 define("LANG_LAN_31", "Compatibility");
 define("LANG_LAN_35", "The following language packs are available for this version of e107.");
