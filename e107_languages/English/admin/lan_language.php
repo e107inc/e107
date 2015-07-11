@@ -27,7 +27,7 @@ define("LANG_LAN_19", "e.g. The domain fr.mydomain.com would set the language to
 define("LANG_LAN_20", "Enter one domain per line. eg. mydomain.com etc. or leave blank to disable.");
 
 define("LANG_LAN_21", "Language-Packs");
-define("LANG_LAN_23", "Create Language-Pack (zip)");
+
 define("LANG_LAN_25", "Language-Pack Creation Status");
 define("LANG_LAN_26", "Load language files only for current language");
 define("LANG_LAN_27", "If checked, and a required language cannot be found, there will be an error");
