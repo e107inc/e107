@@ -1225,7 +1225,7 @@ class lanDeveloper
 
 		$text .= "
 						<tr>
-							<td>Search for Deprecated Lans</td>
+							<td><div class='alert-info alert alert-block'>Hold down CTRL key to select multiple.<br />eg. To check <b>lan_signup.php</b> you'll want to also select <b>signup_shortcodes.php</b> and <b>signup_template.php</b>.</div></td>
 							<td class='form-inline'>
 								<select name='deprecatedLans[]' multiple style='height:200px'>
 									<option value=''>Select Script...</option>";
@@ -1236,9 +1236,11 @@ class lanDeveloper
 		$fl->setFileFilter(array("^e_"));
 		$root = $fl->get_files(e_BASE,'.*?/?.*?\.php',$omit,0);
 
+		$templates = $fl->get_files(e_CORE."templates",'.*?/?.*?\.php',$omit,0);
+		$shortcodes = $fl->get_files(e_CORE."shortcodes",'.*?/?.*?\.php',$omit,1);
 		$exclude = array('lan_admin.php');
 
-		$srch = array(e_ADMIN,e_PLUGIN, e_BASE);
+		$srch = array(e_ADMIN,e_PLUGIN, e_CORE, e_BASE );
 
 
 		$text .= "<optgroup label='Admin Area'>";
@@ -1268,8 +1270,31 @@ class lanDeveloper
 		$text .= "</optgroup>";
 
 
+		$text .= "<optgroup label='Templates'>";
+		foreach($templates as $script=>$lan)
+		{
+			if(in_array(basename($lan),$exclude))
+			{
+				continue;
+			}
+			$selected = (!empty($_POST['deprecatedLans']) && in_array($lan, $_POST['deprecatedLans'])) ? "selected='selected'" : "";
+			$text .= "<option value='".$lan."' {$selected}>".str_replace($srch,"",$lan)."</option>\n";
+		}
 
+		$text .= "</optgroup>";
 
+		$text .= "<optgroup label='Shortcodes'>";
+		foreach($shortcodes as $script=>$lan)
+		{
+			if(in_array(basename($lan),$exclude))
+			{
+				continue;
+			}
+			$selected = (!empty($_POST['deprecatedLans']) && in_array($lan, $_POST['deprecatedLans'])) ? "selected='selected'" : "";
+			$text .= "<option value='".$lan."' {$selected}>".str_replace($srch,"",$lan)."</option>\n";
+		}
+
+		$text .= "</optgroup>";
 
 		$depOptions = array(
 			1 => "Script > Lan File",
