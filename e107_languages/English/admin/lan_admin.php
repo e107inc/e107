@@ -410,7 +410,8 @@ define("LAN_USER_QUICKADD","Quick Add User");
 define("LAN_USER_PRUNE", "Prune Users");
 define("LAN_USER_OPTIONS", "User Options");
 define("LAN_USER_RANKS", "User Ranks");
-
+define("LAN_BASIC", "Basic");
+define("LAN_ADVANCED", "Advanced");
 
 
 // TODO - move e_form related LANS below, add new lan_form.php file (for both front/back-end)
