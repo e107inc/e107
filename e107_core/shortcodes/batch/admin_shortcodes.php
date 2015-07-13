@@ -482,7 +482,7 @@ class admin_shortcodes
 					
 					$allconfigs = multiarray_sort($allconfigs,'title'); //XXX FIXME - not sorting correctly. 
 		
-					$text = "<ul id='e-latest' class='unstyled'>";
+					$text = "<ul id='e-latest' class='unstyled list-unstyled'>";
 					foreach($allconfigs as $k=>$v)
 					{
 						foreach($v as $val)
@@ -1161,7 +1161,7 @@ class admin_shortcodes
 					
 					$allconfigs = multiarray_sort($allconfigs,'title'); //XXX FIXME - not sorting correctly. 
 		
-					$text = "<ul id='e-status' class='unstyled'>";
+					$text = "<ul id='e-status' class='unstyled list-unstyled'>";
 					foreach($allconfigs as $k=>$v)
 					{
 						foreach($v as $val)
