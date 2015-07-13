@@ -295,7 +295,7 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 	{
 		$tp->parseTemplate("{SETIMAGE: w=40}",true); // set thumbnail size. 
 		// FIXME - move to template
-		$CHATBOX_TEMPLATE['start'] 	= "<ul class='media-list unstyled'>";
+		$CHATBOX_TEMPLATE['start'] 	= "<ul class='media-list unstyled list-unstyled'>";
 		$CHATBOX_TEMPLATE['item'] 	= "<li class='media'>
 										<span class='media-object pull-left'>{CB_AVATAR}</span> 
 										<div class='media-body'><b>{CB_USERNAME}</b>&nbsp;

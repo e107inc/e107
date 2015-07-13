@@ -273,11 +273,11 @@ class adminstyle_infopanel
 
 			<!-- INFOPANEL -->
 			<div class="span6 col-md-6">
-			 <ul class="thumbnails">'.$text.'</ul>
+			 <ul class="list-unstyled thumbnails">'.$text.'</ul>
 			 </div>
 			 
 			 <div class="span6 col-md-6">
-			 <ul class="thumbnails">'.$text2.'</ul>
+			 <ul class="list-unstyled thumbnails">'.$text2.'</ul>
 			 </div>
 						 
 			<!--  -->  
@@ -483,7 +483,7 @@ class adminstyle_infopanel
 		$sc = e107::getScBatch('comment');
 				
 		$text = '
-		  <ul class="media-list unstyled">';
+		  <ul class="media-list unstyled list-unstyled">';
 		// <button class='btn btn-mini'><i class='icon-pencil'></i> Edit</button> 
 		
 		//XXX Always keep template hardcoded here - heavy use of ajax and ids. 

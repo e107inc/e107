@@ -789,7 +789,7 @@ class e_layout
 		$text = "<div class='menu-panel'>";
 		$text .= "<div class='menu-panel-header' title=\"".MENLAN_34."\">Area ".$area."</div>\n";
 		$text .= $frm->open('form-area-'.$area,'post',e_SELF);
-		$text .= "<ul id='area-".$area."' class='sortable unstyled'>
+		$text .= "<ul id='area-".$area."' class='sortable unstyled list-unstyled'>
 			<li>&nbsp;</li>";
 		
 		if(vartrue($this->menuData[THEME_LAYOUT]) && is_array($this->menuData[THEME_LAYOUT][$area]))

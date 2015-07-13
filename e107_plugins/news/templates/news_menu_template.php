@@ -77,7 +77,7 @@ $NEWS_MENU_TEMPLATE['other']['end']			= "</div></div>";
 // Other News Menu. 2 
 
 $NEWS_MENU_TEMPLATE['other2']['caption'] 	= TD_MENU_L2;
-$NEWS_MENU_TEMPLATE['other2']['start'] 	= "<ul class='media-list unstyled othernews2-block'>{SETIMAGE: w=100&h=100&crop=1}"; // set the {NEWSIMAGE} dimensions. 	
+$NEWS_MENU_TEMPLATE['other2']['start'] 	= "<ul class='media-list unstyled list-unstyled othernews2-block'>{SETIMAGE: w=100&h=100&crop=1}"; // set the {NEWSIMAGE} dimensions.
 $NEWS_MENU_TEMPLATE['other2']['item'] 	= "<li class='media'>
 										<span class='media-object pull-left'>{NEWSTHUMBNAIL=placeholder}</span> 
 										<div class='media-body'><h4>{NEWSTITLELINK}</h4>
