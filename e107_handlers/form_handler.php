@@ -4699,13 +4699,14 @@ class e_form
 				}
 				else 
 				{
-
-					$leftCellClass = (!empty($writeParms['leftCellClass'])) ? " class='".$writeParms['leftCellClass']."'" : "";
-					$rightCellClass = (!empty($writeParms['rightCellClass'])) ? " class='".$writeParms['rightCellClass']."'" : "";
-
+// rightCellClass
+		//			leftCellClass
+					$leftCellClass  = (!empty($writeParms['tdClassLeft'])) ? " class='".$writeParms['tdClassLeft']."'" : "";
+					$rightCellClass = (!empty($writeParms['tdClassRight'])) ? " class='".$writeParms['tdClassRight']."'" : "";
+					$trClass        = (!empty($writeParms['trClass'])) ? " class='".$writeParms['trClass']."'" : "";
 
 					$text .= "
-					<tr>
+					<tr{$trClass}>
 						<td{$leftCellClass}>
 							".$leftCell."
 						</td>

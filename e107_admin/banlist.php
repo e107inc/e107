@@ -165,7 +165,7 @@ class banlist_ui extends e_admin_ui
 				if($this->getAction() == 'create')
 				{
 					$myip = e107::getIPHandler()->getIP(true);
-					$this->fields['banlist_ip']['writeParms']['rightCellClass']  = 'form-inline';
+					$this->fields['banlist_ip']['writeParms']['tdClassRight']  = 'form-inline';
 					$this->fields['banlist_ip']['writeParms']['pre'] = "<div class='input-append'>";
 					$this->fields['banlist_ip']['writeParms']['post'] = "<button class='btn btn-primary' id='useip' data-ip='{$myip}'>Use My IP</button></div>"; // USERIP;
 				}
