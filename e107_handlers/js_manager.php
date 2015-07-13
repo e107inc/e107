@@ -241,7 +241,7 @@ class e_jsmanager
 		if($this->isInAdmin()) // Include jquery-ui in the admin-area only - Jquery-UI to eventually be removed from e107 completely if possible. 
 		{
 			
-			if(isset($_SERVER['E_B3_ADMIN']) &&  $_SERVER['E_B3_ADMIN'] === 'true') // Test with a Bootstrap 3 admin area. 
+			if(deftrue('e_BOOTSTRAP3_ADMIN')) // Test with a Bootstrap 3 admin area.
 			{
 					$this->_libraries['jquery'] = array(
 					"http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js",

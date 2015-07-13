@@ -58,7 +58,7 @@ class themeHandler
 		$mes = e107::getMessage();
 
 
-		if(isset($_SERVER['E_B3_ADMIN']) &&  $_SERVER['E_B3_ADMIN'] === 'true')
+		if(deftrue('e_BOOTSTRAP3_ADMIN'))
 		{
 			$this->approvedAdminThemes[] = 'bootstrap3';
 		}
