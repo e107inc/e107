@@ -280,7 +280,7 @@ class mailout_main_ui extends e_admin_ui
 		protected $batchDelete 			= true;	
 		protected $batchCopy 			= true;	
 		
-		protected $tabs					= array('Basic','Advanced'); //TODO Add LAN_BASIC and LAN_ADVANCED to lan_admin.php 
+		protected $tabs					= array(''.LAN_BASIC.'',''.LAN_ADVANCED.''); 
 
 	protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null, 		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
