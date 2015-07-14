@@ -5900,7 +5900,7 @@ class e_admin_form_ui extends e_form
 				<fieldset id='admin-ui-list-filter' class='e-filter'>
 					<legend class='e-hideme'>".LAN_LABEL_LABEL_SELECTED."</legend>
 					".$filter_pre."
-					<div  class='row-fluid'>
+					<div class='row-fluid'>
 						<div  class='left form-inline span8 col-md-8' >
 							".$this->text('searchquery', $current_query[0], 50, $input_options)."<i class='fa fa-search searchquery'></i>
 							".$this->select_open('filter_options', array('class' => 'form-control e-tip tbox select filter', 'id' => false, 'title'=>'Filter the results below'))."
