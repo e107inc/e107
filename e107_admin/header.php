@@ -50,12 +50,8 @@ function loadJSAddons()
 // e107::js('core',    'bootstrap/js/bootstrap-modal.js', 'jquery', 2);  // Special Version see: https://github.com/twitter/bootstrap/pull/4224
 
  
-	e107::css('core', 	'bootstrap-editable/css/bootstrap-editable.css', 'jquery');
-	e107::js('core', 	'bootstrap-editable/js/bootstrap-editable.min.js', 'jquery', 2);
-	
-//	e107::css('url', 		"//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap-editable/css/bootstrap-editable.css");
-//	e107::js('url', 		"//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap-editable/js/bootstrap-editable.min.js");
-	
+
+
 	e107::css('core', 	'bootstrap-select/bootstrap-select.min.css', 'jquery');
 	e107::js('core', 	'bootstrap-select/bootstrap-select.min.js', 'jquery', 2);
 	
@@ -274,7 +270,7 @@ if (isset($eplug_css) && $eplug_css)
 
 
 
-	if(e107::getPref('admincss') == "admin_dark.css" && !vartrue($_GET['configure']) && !deftrue('e_BOOTSTRAP3_ADMIN'))
+	if(e107::getPref('admincss') == "admin_dark.css" && !vartrue($_GET['configure']) && e107::getPref('admintheme')!='bootstrap3')
 	{
 	
 		$e_js->coreCSS('bootstrap/css/darkstrap.css');
