@@ -199,7 +199,7 @@ class newsletter
 					<td>".$data['newsletter_id']."</td>
 					<td>".$data['newsletter_issue']."</td>
 					<td>[ ".$data['newsletter_parent']." ] ".$data['newsletter_title']."</td>
-					<td>".($data['newsletter_flag'] ? LAN_YES : "<input class='btn button' type='submit' name='nlmailnow_".$data['newsletter_id']."' value='".NLLAN_17."' onclick=\"return jsconfirm('".$tp->toJS(NLLAN_18)."') \" />")."</td>
+					<td>".($data['newsletter_flag'] ? LAN_YES : "<input class='btn btn-default button' type='submit' name='nlmailnow_".$data['newsletter_id']."' value='".NLLAN_17."' onclick=\"return jsconfirm('".$tp->toJS(NLLAN_18)."') \" />")."</td>
 					<td><a class='btn btn-large' href='".e_SELF."?edit.".$data['newsletter_id']."'>".ADMIN_EDIT_ICON."</a><input type='image' title='".LAN_DELETE."' name='delete[issue_".$data['newsletter_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(NLLAN_19." [ID: ".$data['newsletter_id']." ]")."') \"/>
 				
 				</td>
@@ -607,7 +607,7 @@ class newsletter
 		{	
 			$mes->addError(NLLAN_56);
 			$vs_text .= "<div class='buttons-bar center'>
-							<input class='btn button' type=button value='".LAN_BACK."' onClick=\"window.location='".e_SELF."'\">
+							<input class='btn btn-default button' type=button value='".LAN_BACK."' onClick=\"window.location='".e_SELF."'\">
 						</div>";
 			$ns -> tablerender(NLLAN_65.' '.$p_id, $mes->render() . $vs_text);
 			return;

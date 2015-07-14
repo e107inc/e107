@@ -218,7 +218,7 @@ class e_bootstrap
 		</table>
 
 		<div class='center'>". $frm->admin_button('insertButton','save','other',"Insert") ."
-		<button class='btn ' id='e-cancel'>".LAN_CANCEL."</button>
+		<button class='btn btn-default ' id='e-cancel'>".LAN_CANCEL."</button>
 		</div>";
 		
 		

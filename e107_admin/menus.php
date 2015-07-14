@@ -1038,7 +1038,7 @@ class e_layout
 		
 				<textarea name='pagelist' class='e-save span3' cols='60' rows='8' class='tbox'>".$menu_pages."</textarea>
 			</div>
-			<div class='  span4'><small>".MENLAN_28."</small></div>
+			<div class='  span4 col-md-4'><small>".MENLAN_28."</small></div>
 		</div></td></tr>
 		</table>";
 		

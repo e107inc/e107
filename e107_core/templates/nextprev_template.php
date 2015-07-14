@@ -26,14 +26,14 @@ $NEXTPREV_TEMPLATE['default_end'] = '
 //$NEXTPREV_TEMPLATE['default_nav_caption'] = '<span class="nexprev-caption center">{caption}</span>&nbsp;'; XXX - awaiting the new front-end themes & templates
 $NEXTPREV_TEMPLATE['default_nav_caption'] = ''; // NP_3.'&nbsp;';
 
-$NEXTPREV_TEMPLATE['default_nav_first'] = '<a class="btn nextprev-item first" href="{url}" title="{url_label}">{label}</a>';
-$NEXTPREV_TEMPLATE['default_nav_prev'] = '<a class="btn nextprev-item prev" href="{url}" title="{url_label}">{label}</a>';
-$NEXTPREV_TEMPLATE['default_nav_last'] = '<a class="btn nextprev-item last" href="{url}" title="{url_label}">{label}</a>';
-$NEXTPREV_TEMPLATE['default_nav_next'] = '<a class="btn nextprev-item next" href="{url}" title="{url_label}">{label}</a>';
+$NEXTPREV_TEMPLATE['default_nav_first'] = '<a class="btn btn-default nextprev-item first" href="{url}" title="{url_label}">{label}</a>';
+$NEXTPREV_TEMPLATE['default_nav_prev'] = '<a class="btn btn-default nextprev-item prev" href="{url}" title="{url_label}">{label}</a>';
+$NEXTPREV_TEMPLATE['default_nav_last'] = '<a class="btn btn-default nextprev-item last" href="{url}" title="{url_label}">{label}</a>';
+$NEXTPREV_TEMPLATE['default_nav_next'] = '<a class="btn btn-default nextprev-item next" href="{url}" title="{url_label}">{label}</a>';
 
 $NEXTPREV_TEMPLATE['default_items_start'] = '';
-$NEXTPREV_TEMPLATE['default_item'] = '<a class="btn nextprev-item" href="{url}" title="{url_label}">{label}</a>';
-$NEXTPREV_TEMPLATE['default_item_current'] = '<a class="btn nextprev-item current active" href="#" onclick="return false;" title="{url_label}">{label}</a>';
+$NEXTPREV_TEMPLATE['default_item'] = '<a class="btn btn-default nextprev-item" href="{url}" title="{url_label}">{label}</a>';
+$NEXTPREV_TEMPLATE['default_item_current'] = '<a class="btn btn-default nextprev-item current active" href="#" onclick="return false;" title="{url_label}">{label}</a>';
 $NEXTPREV_TEMPLATE['default_items_end'] = '';
 
 //$NEXTPREV_TEMPLATE['default_separator'] = '<span class="nextprev-sep"><!-- --></span>';
@@ -123,14 +123,14 @@ $NEXTPREV_TEMPLATE['admin_end'] = '
 //$NEXTPREV_TEMPLATE['admin_nav_caption'] = '<span class="nexprev-caption center">{caption}</span>&nbsp;'; XXX - awaiting the new front-end themes & templates
 $NEXTPREV_TEMPLATE['admin_nav_caption'] = ''; // NP_3.'&nbsp;';
 
-$NEXTPREV_TEMPLATE['admin_nav_first'] = '<a class="btn nextprev-item first e-tip" href="{url}" title="{url_label}"><i class="icon-fast-backward"></i></a>'; 
-$NEXTPREV_TEMPLATE['admin_nav_prev'] = '<a class="btn nextprev-item prev e-tip" href="{url}" title="{url_label}"><i class="icon-backward"></i></a>'; 
-$NEXTPREV_TEMPLATE['admin_nav_last'] = '<a class="btn nextprev-item last e-tip" href="{url}" title="{url_label}"><i class="icon-fast-forward"></i></a>';
-$NEXTPREV_TEMPLATE['admin_nav_next'] = '<a class="btn nextprev-item next e-tip" href="{url}" title="{url_label}"><i class="icon-forward"></i></a>';
+$NEXTPREV_TEMPLATE['admin_nav_first'] = '<a class="btn btn-default nextprev-item first e-tip" href="{url}" title="{url_label}"><i class="fa fa-fast-backward"></i></a>';
+$NEXTPREV_TEMPLATE['admin_nav_prev'] = '<a class="btn btn-default nextprev-item prev e-tip" href="{url}" title="{url_label}"><i class="fa fa-backward"></i></a>';
+$NEXTPREV_TEMPLATE['admin_nav_last'] = '<a class="btn btn-default nextprev-item last e-tip" href="{url}" title="{url_label}"><i class="fa fa-fast-forward"></i></a>';
+$NEXTPREV_TEMPLATE['admin_nav_next'] = '<a class="btn btn-default nextprev-item next e-tip" href="{url}" title="{url_label}"><i class="fa fa-forward icon-forward"></i></a>';
 
 $NEXTPREV_TEMPLATE['admin_items_start'] = '';
-$NEXTPREV_TEMPLATE['admin_item'] = '<a class="btn nextprev-item e-tip" href="{url}" title="{url_label}">{label}</a>';
-$NEXTPREV_TEMPLATE['admin_item_current'] = '<a class="btn nextprev-item current active" href="#" onclick="return false;" title="{url_label}">{label}</a>';
+$NEXTPREV_TEMPLATE['admin_item'] = '<a class="btn btn-default nextprev-item e-tip" href="{url}" title="{url_label}">{label}</a>';
+$NEXTPREV_TEMPLATE['admin_item_current'] = '<a class="btn btn-default nextprev-item current active" href="#" onclick="return false;" title="{url_label}">{label}</a>';
 $NEXTPREV_TEMPLATE['admin_items_end'] = '';
 
 //$NEXTPREV_TEMPLATE['admin_separator'] = '<span class="nextprev-sep"><!-- --></span>';

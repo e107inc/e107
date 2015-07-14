@@ -500,7 +500,7 @@ class poll
 				// disable submit when previewing the poll or when NOT viewing the poll in the forum
 				if (('preview' == $type || $preview == TRUE) && strpos(e_REQUEST_SELF, "forum") === FALSE)
 				{
-					$SUBMITBUTTON = "<input class='button btn e-tip' type='button' name='null' title='Disabled' value='".POLLAN_30."' />";
+					$SUBMITBUTTON = "<input class='button btn btn-default e-tip' type='button' name='null' title='Disabled' value='".POLLAN_30."' />";
 				}
 
 				$text .= "\n".preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_NOTVOTED_END : $POLL_NOTVOTED_END))."\n</form>";

@@ -1618,7 +1618,7 @@ class mailout_admin_form_ui extends e_admin_form_ui
 			$link = e_SELF."?mode=main&action=send&id=".$id;	
 			$preview = e_SELF."?mode=main&action=preview&id=".$id;
 			$text .= "<a href='".$link."' class='btn' title='Send Mail'>".E_32_MAIL."</a>";
-			$text .= "<a rel='external' class='btn e-modal' data-modal-caption='Email preview' href='".$preview."' class='btn' title='Preview'>".E_32_SEARCH."</a>";
+			$text .= "<a rel='external' class='btn btn-default e-modal' data-modal-caption='Email preview' href='".$preview."'  title='Preview'>".E_32_SEARCH."</a>";
 			$text .= $this->renderValue('options',$value,$att,$id);
 				
 			return $text;
@@ -1630,8 +1630,8 @@ class mailout_admin_form_ui extends e_admin_form_ui
 			$link = e_SELF."?searchquery=&filter_options=mail_detail_id__".$id."&mode=recipients&action=list&iframe=1";
 			$preview = e_SELF."?mode=main&action=preview&id=".$id.'&user='.$user;
 
-			$text = "<a href='".$link."' class='btn e-modal' data-modal-caption='Recipients for Mail #".$id."' title='Recipients'>".E_32_USER."</a>";
-			$text .= "<a rel='external' class='btn e-modal' data-modal-caption='Email preview' href='".$preview."' class='btn' title='Preview'>".E_32_SEARCH."</a>";
+			$text = "<a href='".$link."' class='btn btn-default e-modal' data-modal-caption='Recipients for Mail #".$id."' title='Recipients'>".E_32_USER."</a>";
+			$text .= "<a rel='external' class='btn btn-default e-modal' data-modal-caption='Email preview' href='".$preview."'  title='Preview'>".E_32_SEARCH."</a>";
 		
 			$att['readParms']['editClass'] = e_UC_NOBODY;
 			$text .= $this->renderValue('options',$value,$att,$id);
@@ -1798,7 +1798,7 @@ class mailout_recipients_form_ui extends e_admin_form_ui
 		$eid = $this->getController()->getListModel()->get('mail_detail_id');
 		
 		$preview = e_SELF."?mode=main&action=preview&id=".$eid.'&user='.$user;
-		$text = "<a rel='external' class='btn e-modal' data-modal-caption='Email preview' href='".$preview."' class='btn' title='Preview'>".E_32_SEARCH."</a>";
+		$text = "<a rel='external' class='btn btn-default e-modal' data-modal-caption='Email preview' href='".$preview."' class='btn' title='Preview'>".E_32_SEARCH."</a>";
 		
 
 
