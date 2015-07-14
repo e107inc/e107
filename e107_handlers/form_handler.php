@@ -2574,13 +2574,14 @@ class e_form
 	{
 		$columnsArray = array_filter($columnsArray);
 		
-	
+	// navbar-header nav-header
+	// navbar-header nav-header
 		$text = '<div class="col-selection dropdown e-tip pull-right" data-placement="left">
     <a class="dropdown-toggle" title="Select columns to display" data-toggle="dropdown" href="#"><b class="caret"></b></a>
-    <ul class="dropdown-menu  col-selection e-noclick" role="menu" aria-labelledby="dLabel">
+    <ul class="list-group dropdown-menu  col-selection e-noclick" role="menu" aria-labelledby="dLabel">
    
-    <li class="navbar-header nav-header">Display Columns</li>
-    <li>
+    <li class="list-group-item "><h5 class="list-group-item-heading">Display Columns</h5></li>
+    <li class="list-group-item">
      <ul class="nav scroll-menu" >';
 		
         unset($columnsArray['options'], $columnsArray['checkboxes']);
@@ -2610,7 +2611,7 @@ class e_form
         $text .= "
 				</ul>
 				</li>
-				 <li class='navbar-header nav-header'>
+				 <li class='list-group-item'>
 				<div id='{$id}-button' class='right'>
 					".$this->admin_button('etrigger_ecolumns', LAN_SAVE, 'btn btn-primary btn-small')."
 				</div>
