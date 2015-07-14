@@ -6,14 +6,23 @@ define("BOOTSTRAP", 	3);
 define('FONTAWESOME',	4);
 
 e107::js("url", 		"http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js");
-e107::css('url', 		'http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css');
+// e107::css('url', 		'http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css');
 e107::css('url', 		"http://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css");
 
-e107::css('url', 		"//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css");
-e107::css('url', 		"//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js");
+// be107::css('url', 		"https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/slate/bootstrap.min.css");
 
-e107::css('theme','admin_style.css');
-e107::css('url', '//maxcdn.bootstrapcdn.com/bootswatch/3.3.2/slate/bootstrap.min.css'); 
+
+
+
+e107::css('url', 		"http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css");
+e107::css('url', 		"http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js");
+
+
+
+e107::css('url', 'http://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/slate/bootstrap.min.css');
+//e107::css('url', 		"https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/cosmo/bootstrap.min.css");
+//e107::css('url', 		"https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/darkly/bootstrap.min.css");
+	e107::css('theme','admin_style.css');
 // e107::css('theme','admin_dark.css');
 e107::css('theme','ie_all.css',null,'all',"<!--[if IE]>","<![endif]-->");
 

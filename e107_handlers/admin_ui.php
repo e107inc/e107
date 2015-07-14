@@ -5901,7 +5901,7 @@ class e_admin_form_ui extends e_form
 					<legend class='e-hideme'>".LAN_LABEL_LABEL_SELECTED."</legend>
 					".$filter_pre."
 					<div class='row-fluid'>
-						<div class='left form-inline span8' style='margin-top:10px;margin-bottom:-10px;'>
+						<div class='left form-inline span8 col-md-8' style='margin-top:10px;margin-bottom:-10px;'>
 							".$this->text('searchquery', $current_query[0], 50, $input_options)."<i class='fa fa-search searchquery'></i>
 							".$this->select_open('filter_options', array('class' => 'e-tip tbox select filter', 'id' => false, 'title'=>'Filter the results below'))."
 								".$this->option(LAN_FILTER_LABEL_DISPLAYALL, '')."
@@ -5915,7 +5915,7 @@ class e_admin_form_ui extends e_form
 								<img src='".e_IMAGE_ABS."generic/loading_16.gif' class='icon action S16' alt='".LAN_LOADING."' />
 							</span>
 						</div>
-						<div class='span4 text-right' style='margin-top:10px;margin-bottom:-10px;padding-top:15px;padding-right:5px'>";
+						<div class='span4 col-md-4 text-right' style='margin-top:10px;margin-bottom:-10px;padding-top:15px;padding-right:5px'>";
 
 						
 						// Let Admin know which language table is being saved to. (avoid default table overwrites) 

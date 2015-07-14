@@ -274,10 +274,10 @@ if (isset($eplug_css) && $eplug_css)
 
 
 
-	if(e107::getPref('admincss') == "admin_dark.css" && !vartrue($_GET['configure']))
+	if(e107::getPref('admincss') == "admin_dark.css" && !vartrue($_GET['configure']) && !deftrue('e_BOOTSTRAP3_ADMIN'))
 	{
 	
-		$e_js->coreCSS('bootstrap/css/darkstrap.css');	
+		$e_js->coreCSS('bootstrap/css/darkstrap.css');
 		
 	} 
 

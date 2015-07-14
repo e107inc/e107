@@ -2025,8 +2025,8 @@ class forumAdmin
 				{
 					$text .= "
 					<div style='text-align:left; padding-left: 30px'>
-					<a class='btn ' href='".e_SELF."?cat.edit.{$parent['forum_id']}'>".ADMIN_EDIT_ICON."</a>
-					<a class='btn ' href='".e_SELF."?delete.{$parent['forum_id']}'>".ADMIN_DELETE_ICON."</a>
+					<a class='btn btn-default ' href='".e_SELF."?cat.edit.{$parent['forum_id']}'>".ADMIN_EDIT_ICON."</a>
+					<a class='btn btn-default ' href='".e_SELF."?delete.{$parent['forum_id']}'>".ADMIN_DELETE_ICON."</a>
 					</div>
 					";
 				}
@@ -2076,9 +2076,9 @@ class forumAdmin
 							$sub_total = count($subList[$forum['forum_parent']][$forum['forum_id']]);
 							$text .= "
 							<div style='text-align:left; padding-left: 30px'>
-							<a class='btn e-tip' href='".e_SELF."?create.edit.{$forum['forum_id']}' title=\"".LAN_EDIT."\">".ADMIN_EDIT_ICON."</a>
-							<a class='btn e-tip' href='".e_SELF."?delete.{$forum['forum_id']}' title=\"".LAN_DELETE."\">".ADMIN_DELETE_ICON."</a>
-							<a class='btn e-tip' href='".e_SELF."?subs.{$forum['forum_id']}' title='Create Sub-Forum. Total: {$sub_total}'>".$sub_img."</a>
+							<a class='btn btn-default e-tip' href='".e_SELF."?create.edit.{$forum['forum_id']}' title=\"".LAN_EDIT."\">".ADMIN_EDIT_ICON."</a>
+							<a class='btn btn-default e-tip' href='".e_SELF."?delete.{$forum['forum_id']}' title=\"".LAN_DELETE."\">".ADMIN_DELETE_ICON."</a>
+							<a class='btn btn-default e-tip' href='".e_SELF."?subs.{$forum['forum_id']}' title='Create Sub-Forum. Total: {$sub_total}'>".$sub_img."</a>
 							</div>
 							";
 						}
