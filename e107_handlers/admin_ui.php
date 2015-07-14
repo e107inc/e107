@@ -6098,14 +6098,14 @@ class e_admin_form_ui extends e_form
 		// XXX Quick Fix for styling - correct. 
 		$text = "
 			<div class='navbar navbar-inner left' style='padding-left:15px; padding-top:8px;'>
-				<div class='span6'>";
+				<div class='span6 col-md-6'>";
 				
 		if(!$this->getController()->getTreeModel()->isEmpty())
 		{		
 			$text .= "
-					<div class='input-append'>
+					<div class='input-group input-group-btn input-append'>
 	         		<img src='".e_IMAGE_ABS."generic/branchbottom.gif' alt='' class='icon action' style='padding-top:5px' />
-						".$this->select_open('etrigger_batch', array('class' => 'tbox select batch e-autosubmit reset', 'id' => false))."
+						".$this->select_open('etrigger_batch', array('class' => 'tbox form-control select batch e-autosubmit reset', 'id' => false))."
 						".$this->option(LAN_BATCH_LABEL_SELECTED, '', false)."
 						".($allow_copy ? $this->option(LAN_COPY, 'copy', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."					
 						".($allow_delete ? $this->option(LAN_DELETE, 'delete', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."					
@@ -6133,7 +6133,7 @@ class e_admin_form_ui extends e_form
 		
 		$text .= "
 				</div>
-				<div class='span6 right' style='padding-top:5px'><span>".e107::getParser()->lanVars(LAN_UI_TOTAL_RECORDS,number_format($this->listTotal))."</span></div>
+				<div class='span6 col-md-6 right' style='padding-top:5px'><span>".e107::getParser()->lanVars(LAN_UI_TOTAL_RECORDS,number_format($this->listTotal))."</span></div>
 			</div>
 		";
 	
