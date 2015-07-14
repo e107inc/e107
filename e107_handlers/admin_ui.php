@@ -5646,11 +5646,11 @@ class e_admin_form_ui extends e_form
 		{
 			if(empty($tabs))
 			{
-				$head = "<div class='text-right' style='margin-top:-10px;padding-bottom:5px;padding-right:5px'>".$multiLangInfo."</div>";
+				$head = "<div id='admin-ui-edit-db-language' class='text-right'>".$multiLangInfo."</div>";
 			}
 			else
 			{
-				$head = "<div class='text-right' style='margin-bottom:-30px;padding-top:10px;padding-right:5px'>".$multiLangInfo."</div>";
+				$head = "<div id='admin-ui-edit-db-language' class='text-right'>".$multiLangInfo."</div>";
 			}
 		}
 		else
@@ -5897,13 +5897,13 @@ class e_admin_form_ui extends e_form
 		}
 		$text = "
 			<form method='get' action='".e_SELF."'>
-				<fieldset class='e-filter'>
+				<fieldset id='admin-ui-list-filter' class='e-filter'>
 					<legend class='e-hideme'>".LAN_LABEL_LABEL_SELECTED."</legend>
 					".$filter_pre."
-					<div class='row-fluid'>
-						<div class='left form-inline span8 col-md-8' style='margin-top:10px;margin-bottom:-10px;'>
+					<div  class='row-fluid'>
+						<div  class='left form-inline span8 col-md-8' >
 							".$this->text('searchquery', $current_query[0], 50, $input_options)."<i class='fa fa-search searchquery'></i>
-							".$this->select_open('filter_options', array('class' => 'e-tip tbox select filter', 'id' => false, 'title'=>'Filter the results below'))."
+							".$this->select_open('filter_options', array('class' => 'form-control e-tip tbox select filter', 'id' => false, 'title'=>'Filter the results below'))."
 								".$this->option(LAN_FILTER_LABEL_DISPLAYALL, '')."
 								".$this->option(LAN_FILTER_LABEL_CLEAR, '___reset___')."
 								".$this->renderBatchFilter('filter', $current_query[1])."
@@ -5915,7 +5915,7 @@ class e_admin_form_ui extends e_form
 								<img src='".e_IMAGE_ABS."generic/loading_16.gif' class='icon action S16' alt='".LAN_LOADING."' />
 							</span>
 						</div>
-						<div class='span4 col-md-4 text-right' style='margin-top:10px;margin-bottom:-10px;padding-top:15px;padding-right:5px'>";
+						<div id='admin-ui-list-db-language' class='span4 col-md-4 text-right' >";
 
 						
 						// Let Admin know which language table is being saved to. (avoid default table overwrites) 
@@ -6097,14 +6097,14 @@ class e_admin_form_ui extends e_form
 		// TODO - core ui-batch-option class!!! REMOVE INLINE STYLE!
 		// XXX Quick Fix for styling - correct. 
 		$text = "
-			<div class='navbar navbar-inner left' style='padding-left:15px; padding-top:8px;'>
+			<div id='admin-ui-list-batch' class='navbar navbar-inner left' >
 				<div class='span6 col-md-6'>";
 				
 		if(!$this->getController()->getTreeModel()->isEmpty())
 		{		
 			$text .= "
 					<div class='input-group input-group-btn input-append'>
-	         		<img src='".e_IMAGE_ABS."generic/branchbottom.gif' alt='' class='icon action' style='padding-top:5px' />
+	         		<img src='".e_IMAGE_ABS."generic/branchbottom.gif' alt='' class='icon action'  />
 						".$this->select_open('etrigger_batch', array('class' => 'tbox form-control select batch e-autosubmit reset', 'id' => false))."
 						".$this->option(LAN_BATCH_LABEL_SELECTED, '', false)."
 						".($allow_copy ? $this->option(LAN_COPY, 'copy', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."					
@@ -6133,7 +6133,7 @@ class e_admin_form_ui extends e_form
 		
 		$text .= "
 				</div>
-				<div class='span6 col-md-6 right' style='padding-top:5px'><span>".e107::getParser()->lanVars(LAN_UI_TOTAL_RECORDS,number_format($this->listTotal))."</span></div>
+				<div id='admin-ui-list-total-records' class='span6 col-md-6 right'><span>".e107::getParser()->lanVars(LAN_UI_TOTAL_RECORDS,number_format($this->listTotal))."</span></div>
 			</div>
 		";
 	
