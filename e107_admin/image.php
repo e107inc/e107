@@ -1175,7 +1175,7 @@ class media_admin_ui extends e_admin_ui
 			$text .= "<div class='tab-pane' id='core-media-style'>
 				
 				<div class='row'>
-				<div class='span6'>
+				<div class='col-md-6 span6'>
 				<table class='table'>
 				<colgroup>
 					<col class='col-label' />
@@ -1217,7 +1217,7 @@ class media_admin_ui extends e_admin_ui
 		
 			</tbody></table>
 			</div>
-			<div class='span6'>
+			<div class='col-md-6 span6'>
 			<h5>Preview</h5>
 		
 			<img class='well' id='preview' src='".e_IMAGE_ABS."generic/blank.gif' style='min-width:220px; min-height:180px;' />

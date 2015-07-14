@@ -17,8 +17,11 @@ e107::js('url',  "http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstr
 
 
 e107::css('url', 'http://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/slate/bootstrap.min.css');
+
 //e107::css('url', 		"https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/cosmo/bootstrap.min.css");
-//e107::css('url', 		"https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/darkly/bootstrap.min.css");
+// e107::css('url', 		"https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/darkly/bootstrap.min.css");
+
+// e107::css('core', 'bootstrap/css/darkstrap.css');
 	e107::css('theme','admin_style.css');
 // e107::css('theme','admin_dark.css');
 e107::css('theme','ie_all.css',null,'all',"<!--[if IE]>","<![endif]-->");

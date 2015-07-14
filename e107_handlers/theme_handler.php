@@ -649,7 +649,7 @@ class themeHandler
 				$mes->addInfo("No Themes found which match your search criteria");		
 			}	
 				
-			 $indicators = '<ol class="carousel-indicators span6">
+			 $indicators = '<ol class="carousel-indicators col-md-6 span6">
 				<li data-target="#myCarousel" data-slide-to="0" class="active"></li>';
 				
 			foreach($slides as $key=>$v)
