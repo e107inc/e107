@@ -12,11 +12,8 @@ e107::css('url', 		"http://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-a
 // be107::css('url', 		"https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/slate/bootstrap.min.css");
 
 
-
-
 e107::css('url', 		"http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css");
-e107::css('url', 		"http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js");
-
+e107::js('url', 		"http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js");
 
 
 e107::css('url', 'http://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/slate/bootstrap.min.css');
