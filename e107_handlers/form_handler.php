@@ -1504,7 +1504,7 @@ class e_form
 		$selector = 'jstarget:'.$selector;
 		if($id) $id = $this->name2id($id);
 		
-		return $this->checkbox($name, $selector, false, array('id' => $id,'class' => 'checkbox toggle-all','label'=>$label));
+		return $this->checkbox($name, $selector, false, array('id' => $id,'class' => 'checkbox checkbox-inline toggle-all','label'=>$label));
 	}
 
 	function uc_checkbox($name, $current_value, $uc_options, $field_options = array())
@@ -1582,12 +1582,13 @@ class e_form
 		$text = "";
 		
 
-		
+
 	//	return print_a($options,true);
 		if($labelFound) // Bootstrap compatible markup
 		{
+			$defaultClass = (deftrue('BOOTSTRAP') === 3) ? 'radio-inline' : 'radio inline';
 			$dis = (!empty($options['disabled'])) ? " disabled" : "";
-			$text .= "<label class='radio inline{$dis}'>";
+			$text .= "<label class='{$defaultClass}{$dis}'>";
 			
 		}
 		
@@ -4502,7 +4503,7 @@ class e_form
 			
 			$text .= "
 				<form method='post' action='".$url."' id='{$form['id']}-form' enctype='multipart/form-data' autocomplete='off' >
-				<div>
+				<div id='admin-ui-edit'>
 				".vartrue($form['header'])."
 				".$this->token()."
 			";

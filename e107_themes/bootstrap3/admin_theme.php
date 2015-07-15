@@ -9,21 +9,18 @@ e107::js("url", 		"http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.m
 // e107::css('url', 		'http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css');
 e107::css('url', 		"http://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css");
 
-// be107::css('url', 		"https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/slate/bootstrap.min.css");
-
-
 e107::css('url', "http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css");
 e107::js('url',  "http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js");
 
 
-e107::css('url', 'http://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/slate/bootstrap.min.css');
+// e107::css('url', 'http://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/slate/bootstrap.min.css');
+// e107::css('url', 'http://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/cyborg/bootstrap.min.css');
+// e107::css('url', "https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/cosmo/bootstrap.min.css");
+// e107::css('url', "https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/darkly/bootstrap.min.css");
 
-//e107::css('url', 		"https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/cosmo/bootstrap.min.css");
-// e107::css('url', 		"https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/darkly/bootstrap.min.css");
+e107::css('theme','css/bootstrap_dark.css');
+e107::css('theme','admin_style.css');
 
-// e107::css('core', 'bootstrap/css/darkstrap.css');
-	e107::css('theme','admin_style.css');
-// e107::css('theme','admin_dark.css');
 e107::css('theme','ie_all.css',null,'all',"<!--[if IE]>","<![endif]-->");
 
 
@@ -67,10 +64,7 @@ class bootstrap3_admintheme
 		global $style;
 		
 		$class = '';
-		
-	
-		
-		
+
 		if(is_string($mode) && $mode == 'admin_help') $class = ' '.str_replace('_', '-', $mode);
 			
 		if($mode == 'e_help')
@@ -100,7 +94,7 @@ class bootstrap3_admintheme
 	
 		if($mode == 'personalize')
 		{
-			echo '
+			/*echo '
 		<!-- Mode: '.$mode.' -->
 		<div class="well" style="padding:10px">  
 					<div class="nav-header">'.$caption.'</div>
@@ -109,13 +103,13 @@ class bootstrap3_admintheme
 					<!-- Content End -->
 				</div>
 		<!-- End Mode: '.$mode.' -->
-		';
-				
-			return;
+		';*/
+			$style = 'admin_menu';
+		//	return;
 		}
 		
 	
-	
+	/*
 		
 		if($style == 'core-infopanel')
 		{
@@ -136,7 +130,7 @@ class bootstrap3_admintheme
 			';
 			return;
 		}
-		
+		*/
 	
 		if(deftrue('e_IFRAME'))
 		{
@@ -155,13 +149,19 @@ class bootstrap3_admintheme
 		{
 			$style = 'no_caption';	
 		}
+
+		$panelType = array('core-infopanel'=>'panel-default','admin_menu'=>'panel-primary', 'site_info'=>'panel-default');
+
+
+
 		
 		
 		switch(varset($style, 'admin_content'))
 		{
-	
+			case 'core-infopanel' :
 			case 'admin_menu' :
-				echo '<div class="panel panel-default">
+			case 'site_info' :
+				echo '<div class="panel '.$panelType[$style].'">
 					  <div class="panel-heading">
 					    <h3 class="panel-title">'.$caption.'</h3>
 					  </div>
@@ -180,16 +180,16 @@ class bootstrap3_admintheme
 			 **/
 			break;
 		
-			case 'site_info' :
+			/*case 'site_info' :
 				echo '
-					<div class="well sidebar-nav" >  
-						<div class="nav-header">'.$caption.'</div>
+					<div class="panel panel-primary" >
+						<div class="panel-heading">'.$caption.'</div>
 						<p style="padding:10px">
 							'.$text.'
 						</p>
 					</div>
 				';
-			break;
+			break;*/
 		/*
 			case 'admin_content':
 				echo '

@@ -59,11 +59,16 @@ a.core-mainpanel-link-icon:hover { text-decoration: none; filter: none; }
 #admin-ui-list-db-language          { padding-top:20px ; padding-right:30px }
 #admin-ui-list-total-records        { padding-top:5px }
 #admin-ui-list-filter .row-fluid    { margin-left: -15px; margin-right: -15px }
+
+#admin-ui-edit                      { }
 #admin-ui-edit-db-language          { margin-bottom: -30px; margin-top:-10px; padding-bottom:5px; padding-right:5px }
 
+.table .nav-tabs a, .table th a, .table td a    { text-decoration: none }
 
-
-
+.label, .badge {
+    text-shadow: 1px 1px 0px #000;
+    box-shadow: 1px 1px 0px #000;
+}
 
 
 
@@ -712,6 +717,8 @@ ul.scroll-menu 								{  max-height:350px; overflow:auto;    }
     box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
 }
 
+.navbar-brand   { padding: 10px 15px; }
+
 ul.recent-comments {padding: 0px;
 margin: 0px;
 list-style: none outside none;
@@ -889,7 +896,7 @@ span.tag button.close {
 	vertical-align:middle;
 }
 
-h4.caption { margin-bottom:20px; }
+h4.caption { margin-bottom:30px; }
 
 .plupload_container  {
 	padding:0px; 

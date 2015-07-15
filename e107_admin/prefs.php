@@ -1650,14 +1650,14 @@ $text .= "
 					<tr>
 						<td><label for='signup-text'>".PRFLAN_126."</label></td>
 						<td>
-							".$frm->textarea('signup_text', $pref['signup_text'], 2, 1)."
+							".$frm->textarea('signup_text', $pref['signup_text'], 3, 80)."
 						</td>
 					</tr>
 
 					<tr>
 						<td><label for='signup-text-after'>".PRFLAN_140."</label></td>
 						<td>
-							".$frm->textarea('signup_text_after', $pref['signup_text_after'], 2, 1)."
+							".$frm->textarea('signup_text_after', $pref['signup_text_after'], 3, 80)."
 						</td>
 					</tr>
 					

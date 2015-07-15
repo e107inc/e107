@@ -84,7 +84,7 @@ class bbcode_shortcodes extends e_shortcode
 	//	$data = "[table]\n[tr]\n\t[td]Cell 1[/td]\n\t[td]Cell 2[/td]\n[/tr]\n[/table]"; // works with jquery, but not onclick. 
 		$data = "[table][tr][td]Cell 1[/td][td]Cell 2[/td][/tr][/table]";
 		$event = $this->getEvent('addtext',$data,'Insert a table',1);
-		$text = "<a {$event} class='btn' id='{$id}' data-function='insert' href='#{$this->var['tagid']}' title='Insert a table' data-bbcode='{$data}'>";
+		$text = "<a {$event} class='btn btn-default' id='{$id}' data-function='insert' href='#{$this->var['tagid']}' title='Insert a table' data-bbcode='{$data}'>";
 	//	$text .= "<img class='btn btn-small bbcode bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/table.png' alt='' title='Insert a table' />";
 			$text .= $this->button(e_IMAGE_ABS."bbcode/table.png", 'table' );
 		$text .= "</a>";
@@ -111,7 +111,7 @@ class bbcode_shortcodes extends e_shortcode
 	//	$data = "[list]\n[*]Item 1\n[*]Item 2\n[/list]"; // works with jquery, but not onclick. 
 	//	$event = $this->getEvent($this->var['trigger'],$data,LANHELP_36);
 		$event = $this->getEvent('addtext',$data,LANHELP_36);
-		$text = "<a {$event} class='btn' id='{$id}' data-function='insert' href='#{$this->var['tagid']}' data-bbcode='{$data}' title='".$this->br2nl(LANHELP_36)."'>";
+		$text = "<a {$event} class='btn btn-default' id='{$id}' data-function='insert' href='#{$this->var['tagid']}' data-bbcode='{$data}' title='".$this->br2nl(LANHELP_36)."'>";
 		
 		$text .= $this->button(e_IMAGE_ABS."bbcode/list.png", 'list', LANHELP_36);
 		
