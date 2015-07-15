@@ -85,7 +85,7 @@ class theme_shortcodes extends e_shortcode
 		<ul class="dropdown-menu">
 		<li><a href="'.e_HTTP.'usersettings.php"><i class="fa fa-cog"></i> '.LAN_SETTINGS.'</a></li>
 		<li><a class="dropdown-toggle no-block" role="button" href="'.e_HTTP.'user.php?id.'.USERID.'"><i class="fa fa-user"></i> '.LAN_LOGINMENU_13.'</a></li>
-		<li class="divider"></li>';
+		<li role="separator" class="divider"></li>';
 		
 		if(ADMIN) 
 		{

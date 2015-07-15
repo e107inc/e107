@@ -20,7 +20,7 @@ e107::js('url',  "http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstr
 
 e107::css('theme','css/bootstrap_dark.css');
 e107::css('theme','admin_style.css');
-
+e107::css('theme','admin_dark.css');
 e107::css('theme','ie_all.css',null,'all',"<!--[if IE]>","<![endif]-->");
 
 

@@ -405,7 +405,7 @@ $E_ADMIN_MENU['end'] = '
 </ul>
 ';
 
-$E_ADMIN_MENU['divider'] = '<li class="divider"></li>'; 
+$E_ADMIN_MENU['divider'] = '<li role="separator" class="divider"></li>';
 
 
 /* NEW ADMIN SLIDE DOWN MENU TEMPLATE

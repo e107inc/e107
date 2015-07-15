@@ -2308,7 +2308,7 @@ th {
   border-bottom-width: 2px;
 }
 .table-striped > tbody > tr:nth-of-type(odd) {
-  background-color: #212121;
+  background-color: #494949;
 }
 .table-hover > tbody > tr:hover {
   background-color: #565656;
