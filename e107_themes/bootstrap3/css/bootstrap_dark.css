@@ -1088,13 +1088,13 @@ textarea {
   line-height: inherit;
 }
 a {
-  color: #ffffff;
+  color: #4f93ce;
   text-decoration: none;
 }
 a:hover,
 a:focus {
   color: #ffffff;
-  text-decoration: underline;
+  text-decoration: none;
 }
 a:focus {
   outline: thin dotted;
@@ -3440,7 +3440,7 @@ fieldset[disabled] .btn-danger.active {
   background-color: #ffffff;
 }
 .btn-link {
-  color: #ffffff;
+  color: #4f93ce;
   font-weight: normal;
   border-radius: 0;
 }
@@ -3462,7 +3462,7 @@ fieldset[disabled] .btn-link {
 .btn-link:hover,
 .btn-link:focus {
   color: #ffffff;
-  text-decoration: underline;
+  text-decoration: none;
   background-color: transparent;
 }
 .btn-link[disabled]:hover,
@@ -4036,7 +4036,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .nav .open > a:hover,
 .nav .open > a:focus {
   background-color: #494949;
-  border-color: #ffffff;
+  border-color: #4f93ce;
 }
 .nav .nav-divider {
   height: 1px;
@@ -4753,7 +4753,7 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
   padding: 8px 12px;
   line-height: 1.42857143;
   text-decoration: none;
-  color: #ffffff;
+  color: #4f93ce;
   background-color: #212121;
   border: 1px solid rgba(0, 0, 0, 0.6);
   margin-left: -1px;
@@ -4949,7 +4949,7 @@ a.label:focus {
   vertical-align: middle;
   white-space: nowrap;
   text-align: center;
-  background-color: #c6c6c6;
+  background-color: #555555;
   border-radius: 10px;
 }
 .badge:empty {
@@ -4972,8 +4972,8 @@ a.badge:focus {
 }
 .list-group-item.active > .badge,
 .nav-pills > .active > a > .badge {
-  color: #ffffff;
-  background-color: #c6c6c6;
+  color: #4f93ce;
+  background-color: #555555;
 }
 .list-group-item > .badge {
   float: right;
@@ -5045,7 +5045,7 @@ a.badge:focus {
 a.thumbnail:hover,
 a.thumbnail:focus,
 a.thumbnail.active {
-  border-color: #ffffff;
+  border-color: #4f93ce;
 }
 .thumbnail .caption {
   padding: 9px;
@@ -6007,7 +6007,7 @@ button.close {
 }
 .tooltip {
   position: absolute;
-  z-index: 1030;
+  z-index: 1070;
   display: block;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-style: normal;
@@ -6123,7 +6123,7 @@ button.close {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 1010;
+  z-index: 1060;
   display: none;
   max-width: 276px;
   padding: 1px;
@@ -6992,7 +6992,6 @@ select {
   border-radius: 4px;
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset;
   transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
-  height: 38px;
   padding: 8px 12px;
   font-size: 14px;
 }

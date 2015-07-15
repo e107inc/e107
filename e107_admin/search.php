@@ -396,7 +396,7 @@ else
 								</select>
 							</td>
 							<td class='center'>
-								<a class='btn btn-large' href='".e_SELF."?edit.c.".$key."'>".ADMIN_EDIT_ICON."</a>
+								<a class='btn btn-default btn-large' href='".e_SELF."?edit.c.".$key."'>".ADMIN_EDIT_ICON."</a>
 							</td>
 						</tr>
 		";
@@ -450,7 +450,7 @@ else
 								</select>
 							</td>
 							<td class='center'>
-								<a class='btn btn-large' href='".e_SELF."?edit.p.".$plug_dir."'>".ADMIN_EDIT_ICON."</a>
+								<a class='btn btn-default btn-large' href='".e_SELF."?edit.p.".$plug_dir."'>".ADMIN_EDIT_ICON."</a>
 							</td>
 						</tr>
 		";

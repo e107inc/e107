@@ -44,10 +44,41 @@ body						{ padding-top: 75px;  }
 .tab-border 				{ border-left: 1px solid #ddd; }
 .tab-content 				{ overflow: visible }
 
-.core-mainpanel-block 		{ text-align:center; width:140px; float:left; height:80px; display:block; padding:1px; margin: 0px 2px 15px 2px;  }
+.core-mainpanel-block 		{ text-align:center; width:140px; float:left; height:100px; display:block; padding:1px; margin: 0;  }
 .core-mainpanel-link-text 	{ text-decoration: none; display:block;  }
-a.core-mainpanel-link-icon	{ height:80px; width: 120px; padding-top:20px;  }
+a.core-mainpanel-link-icon	{ height:100px; width: 141px; padding-top:20px;  }
 a.core-mainpanel-link-icon:hover { text-decoration: none; filter: none; }
+
+table input.form-control, table textarea.form-control,  table select.form-control {
+    width: 206px;
+}
+
+/* Bootstrap 2 styling  //TODO disable when using a mobile device */
+.input-mini, .form-control.input-mini {
+    width:60px
+}
+
+.input-small, .form-control.input-small {
+    width:90px
+}
+
+.input-medium, .form-control.input-medium {
+    width:150px
+}
+
+.input-large, .form-control.input-large {
+    width:210px
+}
+
+.input-xlarge, .form-control.input-xlarge {
+    width:270px
+}
+
+.input-xxlarge, .form-control.input-xxlarge {
+    width:530px
+}
+
+table textarea.input-block-level, input.input-block-level, select.input-block-level { width: 100% }
 
 
 
@@ -62,6 +93,8 @@ a.core-mainpanel-link-icon:hover { text-decoration: none; filter: none; }
 
 #admin-ui-edit                      { }
 #admin-ui-edit-db-language          { margin-bottom: -30px; margin-top:-10px; padding-bottom:5px; padding-right:5px }
+
+td.options .btn-group        {  display: flex; }
 
 .table .nav-tabs a, .table th a, .table td a    { text-decoration: none }
 
@@ -877,17 +910,17 @@ ul#e-latest li  a:hover  		{ text-decoration: none; }
 
 .tag {
 	margin-right:5px;
-	display: inline-block;
+
   	float: none;
   	margin-left: 0;
-  	vertical-align:top;
-  	margin-top:3px;
+    padding:7px;
   	
 }
 
 span.tag button.close {
 	float: none;
 	padding-left:5px;
+    vertical-align: middle;
 }
 
 /* Theme Manager - Find online */

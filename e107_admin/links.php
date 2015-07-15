@@ -55,7 +55,7 @@ class links_admin extends e_admin_dispatcher
 		'main/edit'	=> 'main/list'
 	);
 
-	protected $menuTitle = 'links';
+	protected $menuTitle = 'Links';
 }
 
 class links_admin_ui extends e_admin_ui

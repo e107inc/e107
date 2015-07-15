@@ -422,7 +422,7 @@ class frontpage
 					//		".$frm->admin_button('fp_dec',$order,'down',ADMIN_DOWN_ICON)."
 
 						$text .= "
-							<a class='btn' title='".LAN_EDIT."' href='".e_SELF."?id=".$order."' >".ADMIN_EDIT_ICON."</a>
+							<a class='btn btn-default' title='".LAN_EDIT."' href='".e_SELF."?id=".$order."' >".ADMIN_EDIT_ICON."</a>
 							".$frm->admin_button('fp_delete_rule['.$order.']',$order,'',ADMIN_DELETE_ICON)."					
 						</div>
 						</td>

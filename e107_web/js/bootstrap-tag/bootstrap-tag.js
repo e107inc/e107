@@ -111,7 +111,7 @@
   , createBadge: function ( value ) {
     var that = this
     
-    $('<span class="tag label label-info ">')
+    $('<span class="tag label label-primary ">')
       .text(value)
       .append($('<button type="button" class="close">&times;</button>')
         .on('click', function () {
