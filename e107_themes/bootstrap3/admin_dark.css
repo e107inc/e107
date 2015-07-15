@@ -29,8 +29,8 @@ min-height:50px;
     background-color: rgb(54, 54, 54);
 }
 
-tr.highlight-odd			{ background-color: #212121; }
-tr.highlight-even			{ background-color: #212121; }
+tr.highlight-odd, .table-striped > tbody > tr.highlight-odd			{ background-color: #212121; }
+tr.highlight-even, .table-striped > tbody > tr.highlight-even		{ background-color: #212121; }
 
 .datetimepicker table tr td.day:hover {
 

@@ -109,7 +109,7 @@ $E_ADMIN_NAVIGATION['button_pm'] = '
 	    <li><a href="#">Incoming Message Number 1</a></li>
 	      <li><a href="#">Incoming Message Number 2</a></li>
 	        <li><a href="#">Incoming Message Number 3</a></li>
-	         <li class="divider"></li>
+	         <li role="separator" class="divider"></li>
 	    </ul>
 		<textarea class="e-tip input-block-level" title="Example Only"></textarea>
 		<button class="dropdown-toggle btn btn-primary" >Send</button>	
@@ -367,7 +367,7 @@ $E_ADMIN_MENU['end'] = '
 </ul>
 ';
 
-$E_ADMIN_MENU['divider'] = '<li class="divider"></li>'; 
+$E_ADMIN_MENU['divider'] = '<li role="separator" class="divider"></li>';
 
 
 /* NEW ADMIN SLIDE DOWN MENU TEMPLATE
