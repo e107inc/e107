@@ -554,7 +554,12 @@ class e_form
 		if(!vartrue($options['size'])) $options['size'] = 15;
 		if(!vartrue($options['class'])) $options['class'] = 'tbox number e-spinner input-small form-control';
 		
-		
+		if(!empty($options['size']))
+		{
+			$options['class'] .= 'input-'.$options['size'];
+			unset($options['size']);
+		}
+
 		$options['type'] ='number';
 		
 		$mlength = vartrue($maxlength) ? "maxlength=".$maxlength : "";
@@ -886,7 +891,7 @@ class e_form
 			$thpath = isset($sc_parameters['nothumb']) || vartrue($hide) ? $default : $tp->thumbUrl($default_thumb, $att, true);
 			
 			
-			$label = "<img id='{$name_id}_prev' src='{$default_url}' alt='{$default_url}' class='well well-small image-selector' style='display:block;' />";
+			$label = "<img id='{$name_id}_prev' src='{$default_url}' alt='{$default_url}' class='well well-small image-selector img-responsive' style='display:block;' />";
 			
 			if($cat != 'news' && $cat !='page' && $cat !='') 
 			{
@@ -2243,6 +2248,7 @@ class e_form
 			break;
 	
 			case 'cancel':
+				$options['class'] .= 'btn-default';
 				// use this for neutral colors. 
 			break;
 
@@ -2654,6 +2660,7 @@ class e_form
 		{
 			if ((in_array($key, $columnPref) || $key=='options' || vartrue($val['forced'])) && !vartrue($val['nolist']))
 			{
+
 				$class = vartrue($val['class']) ? 'class="'.$val['class'].'"' : '';
 				$width = vartrue($val['width']) ? ' style="width:'.$val['width'].'"' : '';
 				$text .= '<col '.$class.$width.' />
