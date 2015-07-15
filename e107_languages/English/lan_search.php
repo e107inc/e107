@@ -115,3 +115,4 @@ define("LAN_SEARCH_98", "News");
 define("LAN_SEARCH_201", "Please redefine your search query");
 
 define("LAN_SEARCH_202", "Toggle Advanced Mode");
+define("LAN_SEARCH_BOCHAPT", "Search in Book/Chapter");
