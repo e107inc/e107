@@ -897,6 +897,9 @@ span.tag button.close {
 }
 
 h4.caption { margin-bottom:30px; }
+.block { display: block;  position: relative;}
+.block h4.caption { display: block; position: relative; text-align: left;}
+.block-text h2.caption { display: block; position: relative; font-size: 22px; text-align: left; margin-bottom: 20px;}
 
 .plupload_container  {
 	padding:0px; 
