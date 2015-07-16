@@ -167,6 +167,7 @@ class admin_start
 	{
 		$mes = e107::getMessage();
 		$public = array(e_UPLOAD, e_AVATAR_UPLOAD);
+		$tp = e107::getParser();
 		$exceptions = array(".","..","/","CVS","avatars","Thumbs.db",".ftpquota",".htaccess","php.ini",".cvsignore",'e107.htaccess');
 		
 		//TODO use $file-class to grab list and perform this check. 
@@ -205,7 +206,7 @@ class admin_start
 		if (isset($potential))
 		{
 			//$text = ADLAN_ERR_3."<br /><br />";
-			$mes->addWarning(ADLAN_ERR_3);
+			$mes->addWarning($tp->toHtml(ADLAN_ERR_3, true));
 			$text = '<ul>';
 			foreach ($potential as $p_file)
 			{
