@@ -130,7 +130,7 @@ $NEXTPREV_TEMPLATE['admin_nav_next'] = '<li><a class="nextprev-item next e-tip" 
 
 $NEXTPREV_TEMPLATE['admin_items_start'] = '';
 $NEXTPREV_TEMPLATE['admin_item'] = '<li><a class="nextprev-item e-tip" href="{url}" title="{url_label}">{label}</a></li>';
-$NEXTPREV_TEMPLATE['admin_item_current'] = '<li><a class="nextprev-item current active" href="#" onclick="return false;" title="{url_label}">{label}</a></li>';
+$NEXTPREV_TEMPLATE['admin_item_current'] = '<li class="active"><a class="nextprev-item current active" href="#" onclick="return false;" title="{url_label}">{label}</a></li>';
 $NEXTPREV_TEMPLATE['admin_items_end'] = '';
 
 //$NEXTPREV_TEMPLATE['admin_separator'] = '<span class="nextprev-sep"><!-- --></span>';
