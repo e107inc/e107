@@ -191,7 +191,7 @@ class adminstyle_infopanel
 				}
 			}
 	
-			$mainPanel .= "<div class='clear'>&nbsp;</div>";
+			// $mainPanel .= "<div class='clear'>&nbsp;</div>";
 			$mainPanel .= "</div>
 	      
 			</div>";
@@ -272,12 +272,12 @@ class adminstyle_infopanel
 			echo $mes->render().'
 
 			<!-- INFOPANEL -->
-			<div class="span6 col-md-6">
-			 <ul class="list-unstyled thumbnails">'.$text.'</ul>
+			<div class="col-md-6">
+			 	'.$text.'
 			 </div>
 			 
-			 <div class="span6 col-md-6">
-			 <ul class="list-unstyled thumbnails">'.$text2.'</ul>
+			 <div class="col-md-6">
+			 	'.$text2.'
 			 </div>
 						 
 			<!--  -->  
