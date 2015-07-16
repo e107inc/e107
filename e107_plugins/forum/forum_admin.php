@@ -236,7 +236,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 			if(e107::isInstalled('poll') == false)
 			{
-				$this->prefs['poll']['writeParms']['post'] = " <span class='label label-important'>Not installed</span>";
+				$this->prefs['poll']['writeParms']['post'] = " <span class='label label-important label-danger'>Not installed</span>";
 			}
 
 

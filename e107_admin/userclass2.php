@@ -343,7 +343,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 			$mes->addInfo(UCSLAN_49);
 
-			$text = "<div style='text-align:center'>
+			$text = "<div>
 			<form method='post' action='".e_SELF."?mode=main&action=initial' id='initialForm'>
 			<table class='table table-bordered adminform'>
 			<tr><td>".UCSLAN_43."</td><td>";

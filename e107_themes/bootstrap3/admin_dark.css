@@ -53,6 +53,8 @@ tr.highlight-even, .table-striped > tbody > tr.highlight-even		{ background-colo
 	background-image: none;
 }
 
+#admin-ui-nav-menu a.link-active { color: #fff }
+
 /*
 .bootstrap-select, bootstrap-select button
 {

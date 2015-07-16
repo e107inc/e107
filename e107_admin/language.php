@@ -1472,7 +1472,7 @@ class lanDeveloper
 				if($disabled)
 				{
 					$text .= ADMIN_WARNING_ICON;
-					$label = " <span class='label label-important'>Must be re-enabled</span>";
+					$label = " <span class='label label-important label-danger'>Must be re-enabled</span>";
 					$this->errors++;
 					// $text .= "blabla";
 					//	$class = 'alert alert-warning';
@@ -1519,7 +1519,7 @@ class lanDeveloper
 						//	$color = "background-color:yellow";
 						$value = "<a href='#' title=\"Missing\">".ADMIN_WARNING_ICON."</a>";
 						$this->errors++;
-						$label = "<span class='label label-important label-error'>".LANG_LAN_131."</span>";
+						$label = "<span class='label label-important label-danger'>".LANG_LAN_131."</span>";
 				//		$class = "alert alert-warning";
 					}
 
@@ -1528,7 +1528,7 @@ class lanDeveloper
 				{
 					// $color = "background-color:pink";
 					$class = ' ';
-					$label = " <span class='label label-important'>Unused</span>";
+					$label = " <span class='label label-important label-danger'>Unused</span>";
 					$text .= "-";
 					$this->errors++; 
 				}
@@ -1547,7 +1547,7 @@ class lanDeveloper
 		{
 			//$color = "background-color:yellow";
 			//	$class = "alert alert-warning";
-			$label .= "<div class='label label-important'><i>".$common."</i> ".LANG_LAN_132."<br />(".LANG_LAN_133." <b>".$def."</b> ".LANG_LAN_134.")</div>";
+			$label .= "<div class='label label-important label-danger'><i>".$common."</i> ".LANG_LAN_132."<br />(".LANG_LAN_133." <b>".$def."</b> ".LANG_LAN_134.")</div>";
 
 			// return "<tr><td style='width:25%;'>".$needle .$disabled. "</td><td></td></tr>";
 		}

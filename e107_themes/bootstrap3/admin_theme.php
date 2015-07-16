@@ -1,7 +1,7 @@
 <?php
 if ( ! defined('e107_INIT')) { exit(); }
 
-define("SEP"," <span class='glyphicon glyphicon-icon-play e-breadcrumb'></span> ");
+define("SEP"," <span class='fa fa-play e-breadcrumb'></span> ");
 define("BOOTSTRAP", 	3);
 define('FONTAWESOME',	4);
 

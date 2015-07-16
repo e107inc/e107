@@ -328,7 +328,7 @@ class banlist_ui extends e_admin_ui
 								<div class='field-help'>".$ipAdministrator->getBanTypeString($bt, TRUE)."</div>
 							</td>
 							<td class='left'>
-								".$frm->textarea('ban_text_'.($i), $pref['ban_messages'][$bt], 4, 15)."
+								".$frm->textarea('ban_text_'.($i), $pref['ban_messages'][$bt], 4, 120)."
 							</td>
 							<td class='center'>".ban_time_dropdown('', BANLAN_32, $pref['ban_durations'][$bt], 'ban_time_'.($i))."</td>
 						</tr>
@@ -411,7 +411,7 @@ class banlist_form_ui extends e_admin_form_ui
 				}
 				elseif($this->getController()->getAction() == 'create')
 				{
-					return $this->hidden('banlist_bantype',eIPHandler::BAN_TYPE_MANUAL)."<span class='label label-important'>".BANLAN_121."</span>";
+					return $this->hidden('banlist_bantype',eIPHandler::BAN_TYPE_MANUAL)."<span class='label label-important label-danger'>".BANLAN_121."</span>";
 				}
 
 

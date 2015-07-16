@@ -279,7 +279,7 @@ class forum_post_handler
 		}
 		else
 		{
-			$text = "<div class='alert alert-block alert-error'><h4>".LAN_FORUM_2021 . "</h4><a href='{$url}'>".LAN_FORUM_2022.'</a></div>';
+			$text = "<div class='alert alert-block alert-error alert-danger'><h4>".LAN_FORUM_2021 . "</h4><a href='{$url}'>".LAN_FORUM_2022.'</a></div>';
 		}
 
 		$link = "{e_PLUGIN}forum/forum_admin.php?mode=post&action=list&id=".intval($result);

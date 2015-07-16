@@ -1187,7 +1187,7 @@ $columnInfo = array(
 	          <div class='tab-pane active' id='download-create'>
 	            
 	               
-	                  <table class='table adminform'>
+	                  <table class='table adminform' style='margin:0'>
 	                     <tr>
 	                        <td>".DOWLAN_13."</td>
 	                        <td style='width:80%'>
@@ -1240,7 +1240,7 @@ $columnInfo = array(
 	               </table>
 	            </div>
 	            <div class='tab-pane' id='download-edit-external'>
-	               <table class='table adminform'>
+	               <table class='table adminform' style='margin:0'>
 	                  <tr>
 	                       <td>".DOWLAN_149."</td>
 	                       <td style='width:80%;'>
@@ -1328,7 +1328,7 @@ $columnInfo = array(
 	            </div>
 	           </div>
 	            <fieldset id='download-edit-therest'>
-	               <table class='table adminform'>
+	               <table class='table adminform' >
 	                  <tr>
 	                     <td style='width:20%'>".DOWLAN_11."</td>
 	                     <td style='width:80%'>";

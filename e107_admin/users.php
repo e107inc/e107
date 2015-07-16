@@ -2320,9 +2320,9 @@ class users_admin_form_ui extends e_admin_form_ui
 	{
 		$bo = array(
 			'<span class="label label-success">Active</span>',
-			"<span class='label label-important'>".LAN_BANNED."</span>",
-			"<span class='label'>".LAN_NOTVERIFIED."</span>",
-			"<span class='label label-inverse'>".LAN_BOUNCED."</span>"
+			"<span class='label label-important label-danger'>".LAN_BANNED."</span>",
+			"<span class='label label-default'>".LAN_NOTVERIFIED."</span>",
+			"<span class='label label-info'>".LAN_BOUNCED."</span>"
 		);
 		
 		if($mode == 'filter' || $mode == 'batch')

@@ -930,8 +930,8 @@ class users_ext
 						  	</td>
 							<td class='center' style='width:10%;white-space:nowrap'>
 							
-							<a class='btn' style='text-decoration:none' href='".e_SELF."?editext.".$id."'>".ADMIN_EDIT_ICON."</a>
-		 					".$frm->submit_image('eudel['.$name.']',$id, 'delete',  LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn'.$delcls));
+							<a class='btn btn-default' style='text-decoration:none' href='".e_SELF."?editext.".$id."'>".ADMIN_EDIT_ICON."</a>
+							".$frm->submit_image('eudel['.$name.']',$id, 'delete',  LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn btn-default'.$delcls));
 		 					
 		 					// ."<input class='btn btn-large' type='image' title='".LAN_DELETE."' name='eudel[".$name."]' src='".ADMIN_DELETE_ICON_PATH."' value='".$id."' onclick='return confirm(\"".EXTLAN_27."\")' />
 							$text .= "</td>
