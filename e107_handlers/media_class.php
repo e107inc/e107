@@ -659,7 +659,7 @@ class e_media
 		
 			// Inline style to override jquery-ui stuff. 
 			$text .= "<div class='btn-group'>
-			<div class='input-append' style='margin-top:10px;font-size:12px'>
+			<div id='admin-ui-media-manager-search' class='input-append form-inline' style='margin-top:10px;font-size:12px'>
 			<input type='text' id='media-search' placeholder='Search...' name='search' value='' class='e-tip' data-target='media-select-container' data-src='".$data_src."' />
 			";
 		//	$text .= "<input type='button' value='Go' class='btn btn-primary e-media-nav' data-target='media-select-container' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' /> "; // Manual filter, if onkeyup ajax fails for some reason. 
@@ -1088,7 +1088,7 @@ class e_media
 			'previewUrl'	=> $defaultThumb ,
 			'thumbUrl'		=> $defaultThumb,
 			'title'			=> '',
-			'gridClass'		=> 'span2',
+			'gridClass'		=> 'span2 col-md-2',
 			'bbcode'		=> ''
 			
 		);
@@ -1143,7 +1143,7 @@ class e_media
 			return;	
 		}
 		
-		 $indicators = '<ol class="carousel-indicators span2" style="top:-40px">
+		 $indicators = '<ol class="carousel-indicators col-md-2 span2" style="top:-40px">
 			<li data-target="#'.$uniqueID.'" data-slide-to="0" class="active"></li>';
 				
 		foreach($slides as $key=>$v)
@@ -1243,7 +1243,7 @@ class e_media
 			{
 				$searchPlaceholder = varset($parm['searchPlaceholder'], LAN_SEARCH);
 				
-				$text = '<div class="btn-group"><span class="input-append">';
+				$text = '<div class="btn-group"><span class="input-append form-inline">';
 				$text .= "<input type='text' class='e-ajax-keyup input-xxlarge ' placeholder= '".$searchPlaceholder."...' title=\"".$searchToolttip."\" name='search' value=''  data-target='media-browser-container-".$parm['action']."' data-src='".$data_src."' />";
 		//		$text .= "<span class='field-help'>bablalal</span>";
 			//	$text .= '<button class="btn btn-primary" name="'.$submitName.'" type="submit">'.LAN_GO.'</button>';

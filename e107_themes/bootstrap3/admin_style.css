@@ -51,6 +51,8 @@ body						{ padding-top: 75px;  }
 a.core-mainpanel-link-icon	{ height:80px; width: 100%; padding-top:20px;  }
 a.core-mainpanel-link-icon:hover { text-decoration: none; filter: none; }
 
+.carousel-indicators        { top:10px; max-width: 200px; 	height: 40px; 	margin-left: 100px;  }
+
 
 /* TODO - use col-xx-x markup where core-mainpanel-block occurs. ? */
 @media (max-width: 1700px){ 
@@ -124,6 +126,8 @@ table  label.checkbox                   { margin-left: 20px }
 #admin-ui-list-total-records            { padding-top:5px }
 #admin-ui-list-filter .row-fluid        { margin-left: -15px; margin-right: -15px }
 #admin-ui-list-no-records-found         { margin-bottom: 0 }
+
+#admin-ui-media-manager-search          { margin-bottom: 20px }
 
 .panel-default:hover { transition: color .50s ease-in-out; -moz-transition: color .50s ease-in-out; -webkit-transition: color .50s ease-in-out; color: #fff }
 
@@ -861,8 +865,9 @@ footer 		{ padding-top:150px; padding-bottom:20px; color: rgb(153, 153, 153); }
 }
 
 .media-select-count {
-	margin-top:-40px;	
+	margin-top:-60px;
 	padding:10px;
+	padding-bottom:20px;
 }
 
 a.e-media-select 
