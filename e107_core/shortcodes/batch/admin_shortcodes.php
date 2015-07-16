@@ -46,7 +46,7 @@ class admin_shortcodes
                 	'.E_16_E107.' <b class="caret"></b>
             	</a> 
             	<ul class="dropdown-menu" role="menu">
-                	<li class="nav-header navbar-header">Update Available</li>
+                	<li class="nav-header dropdown-header navbar-header">Update Available</li>
                     <li><a href="'.$installUrl.'">e107 v'.$cacheData.'</a></li>
 	          	 </ul>
 	        	</li>
@@ -706,7 +706,7 @@ class admin_shortcodes
        
        if ($count >0)
        {
-            $countDisp = ' <span class="label label-info">'.$count.'</span> ' ;
+            $countDisp = ' <span class="label label-primary">'.$count.'</span> ' ;
        }
        else
       {
@@ -723,7 +723,7 @@ class admin_shortcodes
                 '.$tp->toGlyph('fa-envelope').$countDisp.'<b class="caret"></b>
             </a> 
             <ul class="dropdown-menu" role="menu" >
-                <li class="nav-header navbar-header">Private Messages</li>
+                <li class="nav-header navbar-header dropdown-header">Private Messages</li>
                     <li><a class="e-modal" data-cache="false" data-modal-caption="Inbox" data-target="#uiModal" href="'.$inboxUrl.'" >Inbox</a></li>
                     <li><a class="e-modal" data-cache="false" data-modal-caption="Outbox" data-target="#uiModal" href="'.$outboxUrl.'">Outbox</a></li>
                     <li><a class="e-modal" data-cache="false" data-modal-caption="Compose" data-target="#uiModal" href="'.$composeUrl.'">Compose</a></li>
@@ -738,7 +738,7 @@ class admin_shortcodes
         
         
         
-        
+       /*
         
 		$text = '
 		<li class="dropdown">
@@ -758,8 +758,9 @@ class admin_shortcodes
 			</div>
 		</li>
 		';
-		
-		return $text;	
+
+		return $text;
+       */
 	}
 
 

@@ -112,7 +112,7 @@ td.options .btn-group                   {  display: flex; }
 #admin-ui-modal                          { width: 90%; }
 
 
-
+.selectize-input                        { width: 206px }
 
 div.bbcode-panel {
 

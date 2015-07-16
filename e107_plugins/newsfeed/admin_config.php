@@ -130,8 +130,8 @@ if($headline_total = $sql->db_Select("newsfeed"))
 			<td>".($newsfeed_updateint ? $newsfeed_updateint : "3600")."</td>
 			<td>".$active[$newsfeed_active]."</td>
 			<td>
-				<a class='btn btn-large' href='".e_SELF."?edit.".$newsfeed_id."'>".ADMIN_EDIT_ICON."</a>
-	            <a class='btn btn-large action delete' href='".e_SELF."?delete.".$newsfeed_id."' rel='no-confirm' title='".LAN_CONFDELETE."'>".ADMIN_DELETE_ICON."</a>
+				<a class='btn btn-default btn-large' href='".e_SELF."?edit.".$newsfeed_id."'>".ADMIN_EDIT_ICON."</a>
+	            <a class='btn btn-default btn-large action delete' href='".e_SELF."?delete.".$newsfeed_id."' rel='no-confirm' title='".LAN_CONFDELETE."'>".ADMIN_DELETE_ICON."</a>
 			</td>
 		</tr>";
 	}

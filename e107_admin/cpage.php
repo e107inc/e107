@@ -165,7 +165,7 @@ class page_chapters_ui extends e_admin_ui
 			'chapter_order' 			=> array('title'=> LAN_ORDER,				'type' => 'text',			'width' => 'auto', 'thclass' => 'right', 'class'=> 'right' ),										
 			'chapter_visibility' 		=> array('title'=> LAN_VISIBILITY,			'type' => 'userclass',		'inline'=>true, 'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
 		
-			'options' 					=> array('title'=> LAN_OPTIONS,				'type' => 'method',			'width' => '10%', 'forced'=>TRUE, 'thclass' => 'left last', 'class' => 'left', 'readParms'=>'sort=1')
+			'options' 					=> array('title'=> LAN_OPTIONS,				'type' => 'method',			'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'left', 'readParms'=>'sort=1')
 		
 		);
 
@@ -291,19 +291,21 @@ class page_chapters_form_ui extends e_admin_form_ui
 		$parent = $this->getController()->getListModel()->get('chapter_parent');
 	//	$id = $this->getController()->getListModel()->get('chapter_id');
 		$att['readParms'] = 'sort=1';
-		$text = "";
+
 		
 		if($attributes['mode'] == 'read')
 		{
-
+			$text = "<div class='btn-group'>";
 			$text .= $this->renderValue('options',$value,$att,$id);
 			
 			if($parent != 0)
 			{
 				$link = e_SELF."?searchquery=&filter_options=page_chapter__".$id."&mode=page&action=list";	
-				$text .= "<a href='".$link."' class='btn' title='".CUSLAN_58."'>".E_32_CUST."</a>";
+				$text .= "<a href='".$link."' class='btn btn-default' title='".CUSLAN_58."'>".E_32_CUST."</a>";
 			}
-			
+
+
+			$text .= "</div>";
 			return $text;
 		}
 	}

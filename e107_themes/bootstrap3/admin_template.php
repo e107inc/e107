@@ -105,7 +105,7 @@ $E_ADMIN_NAVIGATION['button_pm'] = '
 		</a> 
 		<div id="dropdown" class="dropdown-menu pull-right e-noclick" style="padding:10px;width:300px">
 		    <ul class="nav-list">
-	    <li class="nav-header">Unread Messages</li>
+	    <li class="dropdown-header nav-header">Unread Messages</li>
 	    <li><a href="#">Incoming Message Number 1</a></li>
 	      <li><a href="#">Incoming Message Number 2</a></li>
 	        <li><a href="#">Incoming Message Number 3</a></li>

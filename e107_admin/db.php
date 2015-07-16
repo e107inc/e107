@@ -763,6 +763,7 @@ class system_tools
 		$frm 	= e107::getForm();
 		$config = e107::getMySQLConfig();
 		$sql 	= e107::getDb();
+		$tp = e107::getParser();
 		
 		$sql->gen('SHOW TABLE STATUS WHERE Name LIKE "'.$config['mySQLprefix'].'%" ');
 		
@@ -829,7 +830,7 @@ class system_tools
 			$message .= '<li>'.DBLAN_88.'</li>';
 			$message .= '</ul>';
 
-			$mes->add($message, E_MESSAGE_WARNING);
+			$mes->add($tp->toHtml($message,true), E_MESSAGE_WARNING);
 	
 			$text .= "
 				<form method='post' action='".e_SELF."' id='linkform'>

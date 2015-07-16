@@ -567,8 +567,10 @@ class cron_admin_form_ui extends e_admin_form_ui
 		
 		if($attributes['mode'] == 'read')
 		{
-			$text = $this->renderValue('options',$value,'',$id);
+			$text = "<div class='btn-group'>";
+			$text .= $this->renderValue('options',$value,'',$id);
 			$text .= $this->submit_image('cron_execute['.$id.']', 1, 'execute', 'Execute');
+			$text .= "</div>";
 			return $text;
 		}
 	}
