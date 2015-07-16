@@ -1570,7 +1570,7 @@ class themeHandler
 			$text .= "<li><a title='".$val['menu_name']."'>".str_replace("_menu","",$val['menu_name'])."</a></li>";	
 			
 		}					
-			
+
 		$text .= "</ul></div>";
 		return $text;
 		
