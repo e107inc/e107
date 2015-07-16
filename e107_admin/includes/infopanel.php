@@ -272,11 +272,11 @@ class adminstyle_infopanel
 			echo $mes->render().'
 
 			<!-- INFOPANEL -->
-			<div class="col-md-6">
+			<div class="span6 col-md-6">
 			 	'.$text.'
 			 </div>
 			 
-			 <div class="col-md-6">
+			 <div class="span6 col-md-6">
 			 	'.$text2.'
 			 </div>
 						 
