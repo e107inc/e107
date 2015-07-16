@@ -59,10 +59,13 @@ $no_core_css = TRUE;
 class bootstrap3_admintheme
 {
 
-	function tablestyle($caption, $text, $mode) 
+	function tablestyle($caption, $text, $mode, $data)
 	{
-		global $style;
+		// global $style;
 		
+		$style = $data['setStyle'];
+
+	//	echo "Style: ".$style;
 		$class = '';
 
 		if(is_string($mode) && $mode == 'admin_help') $class = ' '.str_replace('_', '-', $mode);
@@ -134,7 +137,7 @@ class bootstrap3_admintheme
 	
 		if(deftrue('e_IFRAME'))
 		{
-			echo '
+			echo '<!-- Start Style: '.$style.' Mode: '.$mode.' and iFrame active -->
 				<div class="block">
 					<div class="block-text">
 						'.$text.'
@@ -204,7 +207,7 @@ class bootstrap3_admintheme
 		*/
 		
 			case 'no_caption' :
-				echo '
+				echo '<!-- Start Style: '.$style.' Mode: '.$mode.' -->
 					<div class="block">
 						<div class="block-text">
 							'.$text.'
@@ -215,7 +218,7 @@ class bootstrap3_admintheme
 		
 		
 			default:
-				echo '
+				echo '<!-- Start Style: '.$style.' Mode: '.$mode.' -->
 					<div class="block">
 						<h4 class="caption">'.$caption.'</h4>
 						<div class="block-text">

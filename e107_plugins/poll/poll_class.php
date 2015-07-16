@@ -780,7 +780,7 @@ class poll
 
 		$formgo = e_SELF.(e_QUERY && !defined("RESET") && strpos(e_QUERY, 'delete') === FALSE ? "?".e_QUERY : "");
 
-		$text = "<div style='text-align:center'>
+		$text = "<div>
 		<form method='post' action='{$formgo}'>
 		<table class='table adminform'>
         <colgroup>
