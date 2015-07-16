@@ -204,12 +204,17 @@ $(document).ready(function()
 		/*  Bootstrap Modal window within an iFrame */
 		$('.e-modal').on('click', function(e) 
 		{
+
 			e.preventDefault();
 			var url 		= $(this).attr('href');
 			var caption  	= $(this).attr('data-modal-caption');
 			var height 		= ($(window).height() * 0.7) - 50;
-			
-			
+
+            if(caption === undefined)
+            {
+                caption = '';
+            }
+
     		$('.modal-body').html('<div class="well"><iframe id="e-modal-iframe" width="100%" height="'+height+'px" frameborder="0" scrolling="auto" style="display:block;background-color:transparent" allowtransparency="true" src="' + url + '"></iframe></div>');
     		$('.modal-caption').html(caption + ' <i id="e-modal-loading" class="fa fa-spin fa-spinner"></i>');
     		$('.modal').modal('show');

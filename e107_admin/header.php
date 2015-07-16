@@ -541,6 +541,12 @@ echo getAlert();
 
   function getModal($caption = '', $type='')
     {
+
+        if(deftrue('BOOTSTRAP') === 3)  // see bootstrap3/admin_template.php 
+        {
+            return '';
+        }
+
     	if(e_PAGE == 'menus.php' && vartrue($_GET['configure'])) // Menu Manager iFrame disable
 		{
 			return;
