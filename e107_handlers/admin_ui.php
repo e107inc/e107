@@ -6103,9 +6103,9 @@ class e_admin_form_ui extends e_form
 		if(!$this->getController()->getTreeModel()->isEmpty())
 		{		
 			$text .= "
-					<div class='form-inline'>
+					<div class='form-inline input-inline'>
 	         		<img src='".e_IMAGE_ABS."generic/branchbottom.gif' alt='' class='icon action'  />
-	         		<div class='input-group'>
+	         		<div class='input-group input-append'>
 						".$this->select_open('etrigger_batch', array('class' => 'tbox form-control input-large select batch e-autosubmit reset', 'id' => false))."
 						".$this->option(LAN_BATCH_LABEL_SELECTED, '', false)."
 						".($allow_copy ? $this->option(LAN_COPY, 'copy', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."					
@@ -6126,7 +6126,7 @@ class e_admin_form_ui extends e_form
 			$text .= "
 				".$this->renderBatchFilter('batch')."
 				".$this->select_close()."
-				<div class='input-group-btn'>
+				<div class='input-group-btn input-append'>
 				".$this->admin_button('e__execute_batch', 'e__execute_batch', 'batch e-hide-if-js', LAN_GO, array('id' => false))."
 				</div></div></div>
 			";
