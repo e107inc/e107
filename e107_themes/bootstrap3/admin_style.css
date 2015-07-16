@@ -51,6 +51,8 @@ body						{ padding-top: 75px;  }
 a.core-mainpanel-link-icon	{ height:80px; width: 100%; padding-top:20px;  }
 a.core-mainpanel-link-icon:hover { text-decoration: none; filter: none; }
 
+
+/* TODO - use col-xx-x markup where core-mainpanel-block occurs. ? */
 @media (max-width: 1700px){ 
 	.core-mainpanel-block 		{ width:25%; }
 }
@@ -73,7 +75,7 @@ a.core-mainpanel-link-icon:hover { text-decoration: none; filter: none; }
 	.core-mainpanel-block 		{ width:50%; }
 }
 @media (max-width: 380px){ 
-	.core-mainpanel-block 		{ width:100%; }
+	.core-mainpanel-block 		{ width:50%; }
 }
 
 

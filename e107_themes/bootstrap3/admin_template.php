@@ -297,7 +297,7 @@ $ADMIN_HEADER .= '<div class="container-fluid">
 			
          </div>
         <div class="col-md-10" id="right-panel" >
-        	<div class="row">
+        	<div>
         
         ';
 
