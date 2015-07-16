@@ -70,7 +70,7 @@ class users_admin extends e_admin_dispatcher
 		'main/test'		=> 'main/list',					
 	);	
 	
-	protected $menuTitle = 'users';
+	protected $menuTitle = ADLAN_36;  // 'Users'
 
 
 	function init()
@@ -1872,12 +1872,12 @@ class users_admin_ui extends e_admin_ui
 		</colgroup>
 		<tr><td>".$caption."<td>
 		<td>
-		<div>Older than ".$frm->select('resendAge', $age, 24).$frm->checkbox('resetPasswords',1,false,'Reset all passwords').
-		$frm->userclass('resendClass',false, null ).
+		<div class='form-inline'>Older than ".$frm->select('resendAge', $age, 24).$frm->checkbox('resetPasswords',1,false,'Reset all passwords').
+		" <div class='input-group'>".$frm->userclass('resendClass',false, null )."<span class='input-group-btn'>".
 		$frm->button('resendToAll', 1, 'warning', LAN_GO)."
 
 
-		</div></td></tr>
+		</span></div></div></td></tr>
 		</table>";
 
 		$text .= $frm->close();
@@ -2436,7 +2436,7 @@ class users_admin_form_ui extends e_admin_form_ui
 
 				<input type='hidden' name='userid[{$user_id}]' value='{$user_id}' />
 				<input type='hidden' name='userip[{$user_id}]' value='{$user_ip}' />
-				<select name='useraction[{$user_id}]' onchange='this.form.submit()' class='e-select tbox' title='Modify' style='text-align:left;width:75%'>
+				<select name='useraction[{$user_id}]' onchange='this.form.submit()' class='e-select tbox' data-placement='left' title='Modify' style='text-align:left;width:75%'>
 				<option selected='selected' value=''>&nbsp;</option>";
 				
 		if ($user_perms != "0")
