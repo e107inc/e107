@@ -61,7 +61,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 
 	function sc_forumjump()
 	{
-		return forumjump();
+		return forumjump(); // FIXME - broken in v1 themes
 	}
 
 	function sc_userbox()
@@ -95,8 +95,8 @@ class plugin_forum_post_shortcodes extends e_shortcode
 
 	function sc_subjectbox()
 	{
-		global $subjectbox, $action;
-		return ($action == 'nt' ? $subjectbox : '');
+		global $subjectbox;
+		return ($this->var['action'] == 'nt' ? $subjectbox : '');
 	}
 
 	function sc_forum_subject()
@@ -207,7 +207,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 
 		$uploadClass = e107::pref('core','upload_class');
 
-		if ($forum->prefs->get('attach') && (check_class($uploadClass) || getperms('0')))
+		if ($this->forum->prefs->get('attach') && (check_class($uploadClass) || getperms('0')))
 		{
 			if (is_writable(e_PLUGIN.'forum/attachments'))
 			{
