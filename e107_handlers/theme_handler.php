@@ -1305,7 +1305,7 @@ class themeHandler
 							{
 								foreach ($pref['sitetheme_custompages'][$key] as $cp)
 								{
-									$custompage_diz .= "<a href='#element-to-be-shown-{$key}' title='Set pages which should automatically use this layout. One per line.' class='e-tip btn btn-xs btn-mini e-expandit'>".trim($cp)."</a>&nbsp;";
+									$custompage_diz .= "<a href='#element-to-be-shown-{$key}' title='Set pages which should automatically use this layout. One per line.' class='e-tip btn btn-default btn-xs btn-mini e-expandit'>".trim($cp)."</a>&nbsp;";
 									if($count > 4)
 									{
 										$custompage_diz .= "...";
@@ -1552,17 +1552,17 @@ class themeHandler
 		
 		$men = new e_menuManager();
 		$men->curLayout = $key;
-		$preset = $men->getMenuPreset(); //FIXME Broken XML format. 
+		$preset = $men->getMenuPreset();
 		
 // 		print_a($preset); 
-		
-		$text .= "<div class='btn-group pull-right'>".$frm->admin_button("setMenuPreset[".$key."]", "Activate Menus",'other');
+		//TODO LAN
+		$text = "<div class='btn-group pull-right'>".$frm->admin_button("setMenuPreset[".$key."]", "Activate Menus",'other');
 		$text .= '<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
 		<span class="caret"></span>
 		</button>
 		<ul class="dropdown-menu col-selection">
 		<!-- dropdown menu links -->
-		<li><strong>Activate the following:</strong></li>
+		<li class="dropdown-header">Activates the following:</li>
 		';
 										
 		foreach($preset as $val)
@@ -1570,8 +1570,7 @@ class themeHandler
 			$text .= "<li><a title='".$val['menu_name']."'>".str_replace("_menu","",$val['menu_name'])."</a></li>";	
 			
 		}					
-				//				$itext .= "<div class='field-help'>".print_a($preset ,true)."</div>";	
-		
+			
 		$text .= "</ul></div>";
 		return $text;
 		
