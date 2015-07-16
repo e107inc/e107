@@ -5,13 +5,16 @@ define("SEP"," <span class='fa fa-play e-breadcrumb'></span> ");
 define("BOOTSTRAP", 	3);
 define('FONTAWESOME',	4);
 
-e107::js("url", 		"http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js");
+e107::js("url", 		"http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js",'jquery', 2);
 // e107::css('url', 		'http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css');
 e107::css('url', 		"http://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css");
 
-e107::css('url', "http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css");
-e107::js('url',  "http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js");
+// Too slow.
+// e107::css('url', "http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css");
+// e107::js('url',  "http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js");
 
+e107::css('core', 	'bootstrap3-editable/css/bootstrap-editable.css', 'jquery');
+e107::js('core', 	'bootstrap3-editable/js/bootstrap-editable.min.js', 'jquery', 4);
 
 // e107::css('url', 'http://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/slate/bootstrap.min.css');
 // e107::css('url', 'http://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/cyborg/bootstrap.min.css');
