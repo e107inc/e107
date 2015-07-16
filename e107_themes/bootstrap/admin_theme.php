@@ -78,7 +78,7 @@ class bootstrap_admintheme
 			//return;
 			echo '	
 		<!-- Start Mode: '.$mode.' -->
-		<li class="span6 '.$mode.'" >
+		<div class="span6 '.$mode.'" >
 					
 					<div class="well" style="padding:10px;min-height:220px;" >  
 					<div class="nav-header">'.$caption.'</div>
@@ -87,7 +87,7 @@ class bootstrap_admintheme
 					<!-- Content End -->
 					</div>
 					
-		</li>
+		</div>
 		<!-- End Mode: '.$mode.' -->
 			';
 			return;
@@ -97,7 +97,7 @@ class bootstrap_admintheme
 		{
 			echo '
 		<!-- Mode: '.$mode.' -->
-		<div class="well" style="padding:10px">  
+		<div class="well clearfix" style="padding:10px">
 					<div class="nav-header">'.$caption.'</div>
 					<!-- Content Start -->
 					'.$text.'
@@ -117,16 +117,16 @@ class bootstrap_admintheme
 			echo '	
 		<!-- Start Style: '.$style.' -->
 			
-		<li class="span12">
+		<div class="core-infopanel span12">
 			
-				<div class="well" >  
+				<div class="well clearfix" >
 					<div class="nav-header">'.$caption.'</div>
 					<!-- Content Start -->
 					'.$text.'
 					<!-- Content End -->
 				</div>
 				
-		</li>
+		</div>
 		<!-- End Style: '.$style.' -->
 			';
 			return;
