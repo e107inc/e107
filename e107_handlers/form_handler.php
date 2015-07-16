@@ -5012,7 +5012,7 @@ class e_form
 									<span class="caret"></span>
 									</button>
 									<ul class="dropdown-menu col-selection">
-									<li class="nav-header">After submit:</li>
+									<li class="dropdown-header nav-header">After submit:</li>
 							';
 							
 							foreach($defsubmitopt as $k=>$v)

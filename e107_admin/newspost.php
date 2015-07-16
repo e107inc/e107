@@ -659,7 +659,7 @@ class news_admin_ui extends e_admin_ui
 
 
 
-		$this->fields['news_email_notify']['writeParms']['post'] = "<span class='radio inline'><a class='e-modal btn btn-xs btn-mini btn-primary' data-modal-caption='".ADLAN_149."' href='notify.php?iframe=1&type=admin_news_notify#/tab-news-events'>".LAN_CONFIGURE."</a></span>";
+		$this->fields['news_email_notify']['writeParms']['post'] = "<span class='radio-inline radio inline'><a class='e-modal btn btn-xs btn-mini btn-primary' data-modal-caption='".ADLAN_149."' href='notify.php?iframe=1&type=admin_news_notify#/tab-news-events'>".LAN_CONFIGURE."</a></span>";
 
 
 	//	e107::getMessage()->addDebug(print_a($_POST,true));
