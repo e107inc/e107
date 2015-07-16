@@ -144,7 +144,7 @@ global $tp;
 				}
 				if($pref['user_tracking'] != "session")
 				{
-					return "<input type='checkbox' name='autologin' id='autologin' value='1' checked='checked' />".($parm ? $parm : "<label for='autologin'>".LAN_LOGINMENU_6."</label>");
+					return "<label for='autologin'><input type='checkbox' name='autologin' id='autologin' value='1' checked='checked' />".($parm ? $parm : "".LAN_LOGINMENU_6."</label>");
 				}
 				return '';
 			}
