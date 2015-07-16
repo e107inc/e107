@@ -191,7 +191,46 @@ $ADMIN_HEADER = '<div class="navbar '.$inverse.' navbar-nav navbar-fixed-top">
 */
 
 
- $ADMIN_HEADER = '<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+/*
+$ADMIN_MODAL =  '<div id="uiModal" class="modal hide fade" tabindex="-1" role="dialog"  aria-hidden="true">
+            <div class="modal-header">
+            	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+             	<h4 class="modal-caption">&nbsp;</h4>
+             </div>
+             <div class="modal-body">
+             <p>Loading…</p>
+             </div>
+             <div class="modal-footer">
+                <a href="#" data-dismiss="modal" class="btn btn-primary">Close</a>
+            </div>
+        </div>';*/
+
+
+	$ADMIN_MODAL =  '<div id="uiModal" class="modal fade">
+  <div id="admin-ui-modal" class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title modal-caption">&nbsp;</h4>
+      </div>
+      <div class="modal-body">
+        <p>Loading...</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->';
+
+
+
+
+
+ $ADMIN_HEADER = $ADMIN_MODAL. '
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="container" >
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
