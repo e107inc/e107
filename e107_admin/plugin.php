@@ -113,7 +113,7 @@ class pluginmanager_form extends e_form
 			$conf_file = e_PLUGIN. $this->plug['plugin_path'].'/'.$this->plug_vars['administration']['configFile'];
 			$conf_title = LAN_CONFIGURE.' '.$tp->toHtml($this->plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable");
 			$plugin_icon = "<a title='{$conf_title}' href='{$conf_file}' >".$plugin_icon."</a>";
-			$plugin_config_icon = "<a class='btn' title='{$conf_title}' href='{$conf_file}' >".ADMIN_CONFIGURE_ICON."</a>";
+			$plugin_config_icon = "<a class='btn btn-default' title='{$conf_title}' href='{$conf_file}' >".ADMIN_CONFIGURE_ICON."</a>";
 		}
 				
 		$text = "<div class='btn-group'>";
@@ -125,7 +125,7 @@ class pluginmanager_form extends e_form
 			
 			if ($this->plug['plugin_installflag'])
 			{
-		  		$text .= ($this->plug['plugin_installflag'] ? "<a class='btn' href=\"".e_SELF."?uninstall.{$this->plug['plugin_id']}\" title='".EPL_ADLAN_1."'  >".ADMIN_UNINSTALLPLUGIN_ICON."</a>" : "<a class='btn' href=\"".e_SELF."?install.{$this->plug['plugin_id']}\" title='".EPL_ADLAN_0."' >".ADMIN_INSTALLPLUGIN_ICON."</a>");
+		  		$text .= ($this->plug['plugin_installflag'] ? "<a class='btn btn-default' href=\"".e_SELF."?uninstall.{$this->plug['plugin_id']}\" title='".EPL_ADLAN_1."'  >".ADMIN_UNINSTALLPLUGIN_ICON."</a>" : "<a class='btn' href=\"".e_SELF."?install.{$this->plug['plugin_id']}\" title='".EPL_ADLAN_0."' >".ADMIN_INSTALLPLUGIN_ICON."</a>");
                            //   $text .= ($this->plug['plugin_installflag'] ? "<button type='button' class='delete' value='no-value' onclick=\"location.href='".e_SELF."?uninstall.{$this->plug['plugin_id']}'\"><span>".EPL_ADLAN_1."</span></button>" : "<button type='button' class='update' value='no-value' onclick=\"location.href='".e_SELF."?install.{$this->plug['plugin_id']}'\"><span>".EPL_ADLAN_0."</span></button>");
 				if (PLUGIN_SHOW_REFRESH && !vartrue($this->plug_vars['plugin_php']))
 				{
@@ -136,7 +136,7 @@ class pluginmanager_form extends e_form
 			{
 			  //	$text .=  "<input type='button' class='btn' onclick=\"location.href='".e_SELF."?install.{$this->plug['plugin_id']}'\" title='".EPL_ADLAN_0."' value='".EPL_ADLAN_0."' />";
 			  //	$text .= "<button type='button' class='update' value='no-value' onclick=\"location.href='".e_SELF."?install.{$this->plug['plugin_id']}'\"><span>".EPL_ADLAN_0."</span></button>";
-	           	$text .= "<a class='btn' href=\"".e_SELF."?install.{$this->plug['plugin_id']}\" title='".EPL_ADLAN_0."' >".ADMIN_INSTALLPLUGIN_ICON."</a>";
+	           	$text .= "<a class='btn btn-default' href=\"".e_SELF."?install.{$this->plug['plugin_id']}\" title='".EPL_ADLAN_0."' >".ADMIN_INSTALLPLUGIN_ICON."</a>";
 			}
 			
 		}
@@ -159,7 +159,7 @@ class pluginmanager_form extends e_form
 		if ($this->plug['plugin_version'] != $this->plug_vars['@attributes']['version'] && $this->plug['plugin_installflag'])
 		{
 		  //	$text .= "<br /><input type='button' class='btn' onclick=\"location.href='".e_SELF."?upgrade.{$this->plug['plugin_id']}'\" title='".EPL_UPGRADE." to v".$this->plug_vars['@attributes']['version']."' value='".EPL_UPGRADE."' />";
-			$text .= "<a class='btn' href='".e_SELF."?upgrade.{$this->plug['plugin_id']}' title=\"".EPL_UPGRADE." to v".$this->plug_vars['@attributes']['version']."\" >".ADMIN_UPGRADEPLUGIN_ICON."</a>";
+			$text .= "<a class='btn btn-default' href='".e_SELF."?upgrade.{$this->plug['plugin_id']}' title=\"".EPL_UPGRADE." to v".$this->plug_vars['@attributes']['version']."\" >".ADMIN_UPGRADEPLUGIN_ICON."</a>";
 		}
 
 		$text .="</div>	";
@@ -182,7 +182,7 @@ function e_help()
 	$help_text = str_replace('[x]', (PLUGIN_SCAN_INTERVAL ? PLUGIN_SCAN_INTERVAL / 60 : 0), EPL_ADLAN_228);
 	return array(
 		'caption'	=> EPL_ADLAN_227,
-		'text'		=> $help_text."<p><a class='btn btn-mini btn-primary' href='".e_SELF."?refresh'>".EPL_ADLAN_229."</a></p>"
+		'text'		=> $help_text."<p><a class='btn btn-xs btn-mini btn-primary' href='".e_SELF."?refresh'>".EPL_ADLAN_229."</a></p>"
 	);
 }
 
@@ -515,8 +515,8 @@ class pluginManager{
 		unset($fieldList['checkboxes']);
 
 		$text = "
-			<form class='form-search' action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='get'>
-			<div class='e-search'>".$frm->search('srch', $srch, 'go', $filterName, $filterArray, $filterVal).$frm->hidden('mode','online')."
+			<form class='form-search form-inline' action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='get'>
+			<div id='admin-ui-list-filter' class='e-search '>".$frm->search('srch', $srch, 'go', $filterName, $filterArray, $filterVal).$frm->hidden('mode','online')."
 			</div>
 			</form>
 			
@@ -1274,7 +1274,7 @@ class pluginManager{
 						$conf_file = e_PLUGIN.$plug['plugin_path'].'/'.$plug_vars['administration']['configFile'];
 						$conf_title = LAN_CONFIGURE.' '.$tp->toHtml($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable");
 					//	$plugin_icon = "<a title='{$conf_title}' href='{$conf_file}' >".$plugin_icon."</a>";
-						$plugin_config_icon = "<a class='btn' title='{$conf_title}' href='{$conf_file}' >".ADMIN_CONFIGURE_ICON."</a>";
+						$plugin_config_icon = "<a class='btn btn-default' title='{$conf_title}' href='{$conf_file}' >".ADMIN_CONFIGURE_ICON."</a>";
 					}
 
 					$plugEmail = varset($plug_vars['author']['@attributes']['email'],'');
@@ -1882,7 +1882,7 @@ class pluginLanguage
 				return "<span class='label label-warning'>".$diz[$mode][$val]."</span>";			
 			}
 			
-			return "<span class='label label-important'>".$diz[$mode][$val]."</span>";	
+			return "<span class='label label-important label-danger'>".$diz[$mode][$val]."</span>";
 		}
 		
 		function shortPath($path,$mode='lan')
@@ -2237,12 +2237,12 @@ class pluginBuilder
 						</colgroup>
 				<tr>
 					<td>".EPL_ADLAN_107."</td>
-					<td><div class='input-append'>".$frm->open('createPlugin','get',e_SELF."?mode=create").$frm->select("newplugin",$newDir).$frm->admin_button('step', 2,'other','Go')."</div> ".$frm->checkbox('createFiles',1,1,'Create Files').$frm->close()."</td>
+					<td><div class='input-append form-inline'>".$frm->open('createPlugin','get',e_SELF."?mode=create").$frm->select("newplugin",$newDir).$frm->admin_button('step', 2,'other','Go')."</div> ".$frm->checkbox('createFiles',1,1,'Create Files').$frm->close()."</td>
 				</tr>
 				
 				<tr>
 					<td>".EPL_ADLAN_108."</td>
-					<td><div class='input-append'>".$frm->open('checkPluginLangs','get',e_SELF."?mode=lans").$frm->select("newplugin",$lanDir).$frm->admin_button('step', 2,'other','Go')."</div> ".$frm->close()."</td>
+					<td><div class='input-append form-inline'>".$frm->open('checkPluginLangs','get',e_SELF."?mode=lans").$frm->select("newplugin",$lanDir).$frm->admin_button('step', 2,'other','Go')."</div> ".$frm->close()."</td>
 				</tr>";
 				
 					

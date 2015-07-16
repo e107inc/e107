@@ -104,7 +104,7 @@ define("LAN_VERSION", "Version");
 define("LAN_DOWNLOAD", "Download");
 define("LAN_COMMENTS", "Comments");
 define("LAN_LOCATION", "Location");
-define("LAN_NO_RECORDS_FOUND","No Records Found.");
+define("LAN_NO_RECORDS_FOUND","No Records Found");
 define("LAN_RATING", "Rating");
 define("LAN_IMAGE","Image");
 define("LAN_ABOUT", "About");

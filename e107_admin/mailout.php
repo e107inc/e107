@@ -280,9 +280,9 @@ class mailout_main_ui extends e_admin_ui
 		protected $batchDelete 			= true;	
 		protected $batchCopy 			= true;	
 		
-		protected $tabs					= array(''.LAN_BASIC.'',''.LAN_ADVANCED.''); 
+		protected $tabs					= array(LAN_BASIC,LAN_ADVANCED);
 
-	protected $fields = array(
+		protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null, 		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'mail_source_id' 		=> array('title' => LAN_MAILOUT_137, 'width' =>'5%', 'thclass' => 'center', 'class'=>'center', 'forced' => TRUE),
 			
@@ -1023,7 +1023,7 @@ class mailout_main_ui extends e_admin_ui
 	$lastload = e107::getCache()->retrieve('emailLastBounce',FALSE,TRUE,TRUE);
 	$lastBounce = round((time() - $lastload) / 60);
 	
-	$lastBounceText = ($lastBounce > 1256474) ? "<span class='label label-important'>Never</span>" : "<span class='label label-success'>".$lastBounce . " minutes ago.</span>"; 
+	$lastBounceText = ($lastBounce > 1256474) ? "<span class='label label-important label-danger'>Never</span>" : "<span class='label label-success'>".$lastBounce . " minutes ago.</span>";
 
 	$text = "
 		<form method='post' action='".e_SELF."?".e_QUERY."' id='mailsettingsform'>
@@ -1617,10 +1617,12 @@ class mailout_admin_form_ui extends e_admin_form_ui
 			
 			$link = e_SELF."?mode=main&action=send&id=".$id;	
 			$preview = e_SELF."?mode=main&action=preview&id=".$id;
-			$text .= "<a href='".$link."' class='btn' title='Send Mail'>".E_32_MAIL."</a>";
+			$text .= "<span class='btn-group'>";
+			$text .= "<a href='".$link."' class='btn btn-default' title='Send Mail'>".E_32_MAIL."</a>";
 			$text .= "<a rel='external' class='btn btn-default e-modal' data-modal-caption='Email preview' href='".$preview."'  title='Preview'>".E_32_SEARCH."</a>";
+
 			$text .= $this->renderValue('options',$value,$att,$id);
-				
+
 			return $text;
 		}
 		
@@ -1630,11 +1632,13 @@ class mailout_admin_form_ui extends e_admin_form_ui
 			$link = e_SELF."?searchquery=&filter_options=mail_detail_id__".$id."&mode=recipients&action=list&iframe=1";
 			$preview = e_SELF."?mode=main&action=preview&id=".$id.'&user='.$user;
 
-			$text = "<a href='".$link."' class='btn btn-default e-modal' data-modal-caption='Recipients for Mail #".$id."' title='Recipients'>".E_32_USER."</a>";
+			$text = "<span class='btn-group'>";
+			$text .= "<a href='".$link."' class='btn btn-default e-modal' data-modal-caption='Recipients for Mail #".$id."' title='Recipients'>".E_32_USER."</a>";
 			$text .= "<a rel='external' class='btn btn-default e-modal' data-modal-caption='Email preview' href='".$preview."'  title='Preview'>".E_32_SEARCH."</a>";
 		
 			$att['readParms']['editClass'] = e_UC_NOBODY;
 			$text .= $this->renderValue('options',$value,$att,$id);
+			$text .= "</span>";
 			return $text;
 		}
 
@@ -1798,7 +1802,9 @@ class mailout_recipients_form_ui extends e_admin_form_ui
 		$eid = $this->getController()->getListModel()->get('mail_detail_id');
 		
 		$preview = e_SELF."?mode=main&action=preview&id=".$eid.'&user='.$user;
-		$text = "<a rel='external' class='btn btn-default e-modal' data-modal-caption='Email preview' href='".$preview."' class='btn' title='Preview'>".E_32_SEARCH."</a>";
+
+		$text = "<span class='btn-group'>";
+		$text .= "<a rel='external' class='btn btn-default e-modal' data-modal-caption='Email preview' href='".$preview."' class='btn' title='Preview'>".E_32_SEARCH."</a>";
 		
 
 
@@ -1812,6 +1818,7 @@ class mailout_recipients_form_ui extends e_admin_form_ui
 		}
 
 		$text .= $this->renderValue('options',$value,$att,$id);
+		$text .= "</span>";
 		return $text;
 	
 		

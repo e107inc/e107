@@ -26,7 +26,8 @@ if (!getperms("P") || !e107::isInstalled('download'))
 
 
 e107::lan('download','download'); // e_PLUGIN.'download/languages/'.e_LANGUAGE.'/download.php'
-e107::lan('download','admin_download'); // e_PLUGIN.'download/languages/'.e_LANGUAGE.'/admin_download.php'
+e107::lan('download', 'admin', true); // e_PLUGIN.'download/languages/'.e_LANGUAGE.'/admin_download.php'
+
 
 
 // require_once(e_PLUGIN.'download/handlers/adminDownload_class.php');

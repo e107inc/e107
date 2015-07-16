@@ -40,7 +40,7 @@ class social_adminarea extends e_admin_dispatcher
 		'main/edit'	=> 'main/list'				
 	);	
 	
-	protected $menuTitle = 'social';
+	protected $menuTitle = 'Social';
 }
 
 

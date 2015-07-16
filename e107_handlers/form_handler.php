@@ -1153,7 +1153,7 @@ class e_form
 		
 		if(vartrue($options['strength']))
 		{
-			$addon .= "<div style='margin-top:4px'><div id='pwdColor' class='progress' style='float:left;display:inline-block;width:218px'><div class='bar' id='pwdMeter' style='width:0%' ></div></div> <div id='pwdStatus' class='smalltext' style='float:left;display:inline-block;width:150px;margin-left:5px'></span></div>";	
+			$addon .= "<div style='margin-top:4px'><div  class='progress' style='float:left;display:inline-block;width:218px'><div class='progress-bar bar' id='pwdMeter' style='width:0%' ></div></div> <div id='pwdStatus' class='smalltext' style='float:left;display:inline-block;width:150px;margin-left:5px'></span></div>";
 		}
 		
 		$options['pattern'] = vartrue($options['pattern'],'[\S]{4,}');
@@ -1883,9 +1883,9 @@ class e_form
 	{
 		$tp = e107::getParser();
 		
-		$text = '<span class="input-append e-search">
-    		'.$this->text($name, $searchVal,20,'class=search-query&placeholder='.LAN_SEARCH).'
-   			 <button class="btn btn-primary" name="'.$submitName.'" type="submit">'.$tp->toGlyph('fa-search',' ').'</button>
+		$text = '<span class="input-append input-group e-search">
+    		'.$this->text($name, $searchVal,20,'class=search-query&placeholder=Search&hellip;').'
+   			 <span class="input-group-btn"><button class="btn btn-primary" name="'.$submitName.'" type="submit">'.$tp->toGlyph('fa-search',' ').'</button></span>
     	</span>';
 		
 		
@@ -2244,7 +2244,7 @@ class e_form
 			break;
 			
 			case 'checkall':
-				$options['class'] .= 'btn-mini';
+				$options['class'] .= 'btn-default btn-mini btn-xs';
 			break;
 	
 			case 'cancel':
@@ -3384,8 +3384,8 @@ class e_form
 					$ttl = vartrue($parms['expand']);
 					if($ttl == 1)
 					{
-						$ttl = $expand."<button class='btn btn-default btn-mini pull-right'>More..</button>";
-						$ttl1 = "<button class='btn btn-default btn-mini pull-right'>..Less</button>";
+						$ttl = $expand."<button class='btn btn-default btn-xs btn-mini pull-right'>More..</button>";
+						$ttl1 = "<button class='btn btn-default btn-xs btn-mini pull-right'>..Less</button>";
 					}
 					else
 					{
@@ -3739,7 +3739,7 @@ class e_form
 				}
 				else
 				{
-					return "<span class='label label-important'>Missing: ".$method."()</span>";
+					return "<span class='label label-important label-danger'>Missing: ".$method."()</span>";
 				}
 			//	 print_a($attributes);
 					// Inline Editing.  
@@ -3881,7 +3881,7 @@ class e_form
 		if(!empty($attributes['multilan']))
 		{
 			$value = is_array($value) ? varset($value[e_LANGUAGE],'') : $value;
-			$parms['post'] = "<small class='e-tip admin-multilanguage-field' style='cursor:help; padding-left:10px' title='Multi-language field'>".$tp->toGlyph('fa-language')."</small>";
+			$parms['post'] = "<small class='e-tip admin-multilanguage-field input-group-addon' style='cursor:help; padding-left:10px' title='Multi-language field'>".$tp->toGlyph('fa-language')."</small>";
 		}
 		
 		if(empty($value) && !empty($parms['default'])) // Allow writeParms to set default value. 
@@ -3982,14 +3982,19 @@ class e_form
 
 				$maxlength = vartrue($parms['maxlength'], 255);
 				unset($parms['maxlength']);
-				
+
 				if(!empty($parms['password'])) // password mechanism without the md5 storage. 
 				{
-					$ret =  vartrue($parms['pre']).$this->password($key, $value, $maxlength, $parms).vartrue($parms['post']);	
+					$ret =  vartrue($parms['pre']).$this->password($key, $value, $maxlength, $parms).vartrue($parms['post']);
 				}
 				else
 				{
 					$ret =  vartrue($parms['pre']).$this->text($key, $value, $maxlength, $parms).vartrue($parms['post']); // vartrue($parms['__options']) is limited. See 'required'=>true
+				}
+
+				if(!empty($attributes['multilan']))
+				{
+					$ret = "<span class='input-group input-xxlarge'>".$ret."</span>";
 				}
 				
 			break;
@@ -4296,7 +4301,7 @@ class e_form
 			break;
 
 			default:// No LAN necessary, debug only. 
-				$ret =  (ADMIN) ? "<span class='alert alert-error'>".LAN_ERROR." Unknown 'type' : ".$attributes['type'] ."</span>" : $value;
+				$ret =  (ADMIN) ? "<span class='alert alert-error alert-danger'>".LAN_ERROR." Unknown 'type' : ".$attributes['type'] ."</span>" : $value;
 			break;
 		}
 
@@ -4401,7 +4406,7 @@ class e_form
 							</tbody>
 						</table>";
 				
-				$text .= "<div class='alert alert-block alert-info center middle'>".LAN_NO_RECORDS_FOUND."</div>"; // not prone to column-count issues.
+				$text .= "<div id='admin-ui-list-no-records-found' class=' alert alert-block alert-info center middle'>".LAN_NO_RECORDS_FOUND."</div>"; // not prone to column-count issues.
 			}
 			else
 			{

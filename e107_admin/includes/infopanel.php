@@ -515,7 +515,7 @@ class adminstyle_infopanel
     	$text .= '
      		</ul>
 		    <div class="right">
-		      <a class="btn btn-mini btn-primary text-right" href="'.e_ADMIN.'comment.php?searchquery=&filter_options=comment_blocked__2">View all</a>
+		      <a class="btn btn-xs btn-mini btn-primary text-right" href="'.e_ADMIN.'comment.php?searchquery=&filter_options=comment_blocked__2">View all</a>
 		    </div>
 		 ';		
 		// $text .= "<small class='text-center text-warning'>Note: Not fully functional at the moment.</small>";
@@ -860,7 +860,7 @@ class adminstyle_infopanel
 			
 		if($type == 'demo')
 		{
-			$text .= "<div class='center'><small>These stats are for demonstration purposes only. <a class='btn btn-mini' href='".e_ADMIN."plugin.php?avail'>Install Site Stats Plugin</a></small></div>";
+			$text .= "<div class='center'><small>These stats are for demonstration purposes only. <a class='btn btn-xs btn-mini' href='".e_ADMIN."plugin.php?avail'>Install Site Stats Plugin</a></small></div>";
 		}
 		else
 		{

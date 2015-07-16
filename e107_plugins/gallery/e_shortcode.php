@@ -92,7 +92,7 @@ class gallery_shortcodes extends e_shortcode
 		elseif(isset($parms['imageurl'])) return $tp->replaceConstants($this->var['media_url'], 'full');
 		
 		$caption = $tp->toAttribute($this->var['media_caption']) ;	
-		$description = ($this->downloadable) ? " <a class='btn btn-mini e-tip' title='Right-click > Save Link As' href='".$srcFull."'>Download</a>" : "";
+		$description = ($this->downloadable) ? " <a class='btn btn-xs btn-default btn-mini e-tip' title='Right-click > Save Link As' href='".$srcFull."'>Download</a>" : "";
 		
 		$description .= $tp->toAttribute($this->var['media_description']);
 		

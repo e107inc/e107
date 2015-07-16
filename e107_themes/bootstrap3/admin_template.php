@@ -240,6 +240,7 @@ $ADMIN_HEADER .= '<div class="container-fluid">
 			{ADMIN_PWORD}
 			{SETSTYLE=site_info}
 			
+			{ADMINUI_HELP}
 			{ADMIN_HELP}
 			{ADMIN_SITEINFO=creditsonly}
 			{SETSTYLE=admin_menu}
@@ -253,7 +254,7 @@ $ADMIN_HEADER .= '<div class="container-fluid">
 			
 		
 			
-			{SETSTYLE=none}
+			{SETSTYLE=default}
 			
          </div>
         <div class="col-lg-10" id="right-panel" >
@@ -364,18 +365,18 @@ $ADMIN_FOOTER = "
  * see function e107::getNav()->admin() in e107_admin/header.php
  */
 $E_ADMIN_MENU['start'] = '
-<ul class="plugin-navigation nav nav-list">
+<ul id="admin-ui-nav-menu" class="plugin-navigation nav nav-list">
 ';
 
 $E_ADMIN_MENU['button'] = '
 	<li>
-		<a class="link{LINK_CLASS}" href="{LINK_URL}"{ID}{ONCLICK}><i class="icon-chevron-right"></i>&nbsp;{LINK_TEXT}</a>
+		<a class="link{LINK_CLASS}" href="{LINK_URL}"{ID}{ONCLICK}>&nbsp;{LINK_TEXT}</a>
 		{SUB_MENU}
 	</li>
 ';
 $E_ADMIN_MENU['button_active'] = '
 	<li class="active">
-		<a class="link-active{LINK_CLASS}" href="{LINK_URL}"{ID}{ONCLICK}><i class="icon-chevron-right"></i>&nbsp;{LINK_TEXT}</a>
+		<a class="link-active{LINK_CLASS}" href="{LINK_URL}"{ID}{ONCLICK}><i class="fa fa-chevron-right"></i>&nbsp;{LINK_TEXT}</a>
 		{SUB_MENU}
 	</li>
 ';
