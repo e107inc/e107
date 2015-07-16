@@ -222,7 +222,7 @@ class bootstrap3_admintheme
 		
 			default:
 				echo '<!-- Start Style: '.$style.' Mode: '.$mode.' -->
-					<div class="block">
+					<div class="block col-md-12">
 						<h4 class="caption">'.$caption.'</h4>
 						<div class="block-text">
 							'.$text.'
