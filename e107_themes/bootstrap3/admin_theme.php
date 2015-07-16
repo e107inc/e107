@@ -83,7 +83,7 @@ class bootstrap3_admintheme
 			//return;
 			echo '	
 		<!-- Start Mode: '.$mode.' -->
-		// <li class="span6  col-md-6 '.$mode.'" >
+
 					
 					<div class="well" style="padding:10px;min-height:220px;" >  
 					<div class="nav-header">'.$caption.'</div>
@@ -92,7 +92,7 @@ class bootstrap3_admintheme
 					<!-- Content End -->
 					</div>
 					
-		// </li>
+
 		<!-- End Mode: '.$mode.' -->
 			';
 			return;
