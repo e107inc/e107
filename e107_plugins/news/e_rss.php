@@ -127,11 +127,12 @@ class news_rss // plugin-folder + '_rss'
 
 		if($row['news_summary'] && $this->summaryDescription == true)
 		{
-			$text = $row['news_summary'];
+			$text = $tp->toHtml($row['news_summary'],true);
 		}
 		else
 		{
-			$text= ($row['news_body']."<br />".$row['news_extended']);
+
+			$text= $tp->toHtml($row['news_body'],true). "<br />".$tp->toHtml($row['news_extended'], true);
 		}
 
 		if($this->showImages == true && !empty($row['news_thumbnail']))
