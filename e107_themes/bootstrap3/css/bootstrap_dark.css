@@ -6810,7 +6810,9 @@ button.close {
   margin-left: 5px;
   margin-right: 5px;
 }
-button.tbox {
+button,
+button.button,
+input.button {
   border-color: rgba(0, 0, 0, 0.6);
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
   background-image: -webkit-linear-gradient(#303030, #212121 60%, #171717);
@@ -6820,7 +6822,9 @@ button.tbox {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff303030', endColorstr='#ff171717', GradientType=0);
   filter: none;
 }
-button.tbox:hover {
+button:hover,
+button.button:hover,
+input.button:hover {
   background-image: -webkit-linear-gradient(#000000, #000000 40%, #000000);
   background-image: -o-linear-gradient(#000000, #000000 40%, #000000);
   background-image: linear-gradient(#000000, #000000 40%, #000000);
