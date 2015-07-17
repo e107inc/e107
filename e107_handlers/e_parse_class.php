@@ -1970,6 +1970,7 @@ class e_parse extends e_parser
 		}
 
 		$text = $this->toEmail($text);
+
 		$search = array("&amp;#039;", "&amp;#036;", "&#039;", "&#036;", e_BASE, "href='request.php");
 		$replace = array("'", '$', "'", '$', SITEURL, "href='".SITEURL."request.php" );
 		$text = str_replace($search, $replace, $text);
@@ -2609,6 +2610,7 @@ class e_parse extends e_parser
 		}
 		else
 		{
+
 			$text = $this->toHTML($text, true, $mods);
 		}
 
@@ -3195,13 +3197,35 @@ class e_parser
 
 
 	/**
+	 * Check if a string contains bbcode.
+	 * @param $text
+	 * @return bool
+	 */
+	function isBBcode($text)
+	{
+		$bbsearch = array('[/h]','[/b]','[/link]', '[/right]');
+
+		if(str_replace($bbsearch,'',$text))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
+	}
+
+
+	/**
 	 * Check if a string is HTML
 	 * @param $text
 	 * @return bool
 	 */
 	function isHtml($text)
 	{
-		if(strpos($text,'[html]') !== false || htmlentities($text, ENT_NOQUOTES,'UTF-8') != $text || preg_match('#(?<=<)\w+(?=[^<]*?>)#', $text))
+
+		if(strpos($text,'[html]') !== false || (htmlentities($text, ENT_NOQUOTES,'UTF-8') != $text && $this->isBBcode($text) === false ) || preg_match('#(?<=<)\w+(?=[^<]*?>)#', $text))
 		{
 			return true;
 		}
