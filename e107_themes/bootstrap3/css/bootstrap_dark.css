@@ -6810,8 +6810,7 @@ button.close {
   margin-left: 5px;
   margin-right: 5px;
 }
-.btn,
-.btn:hover {
+button.tbox {
   border-color: rgba(0, 0, 0, 0.6);
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
   background-image: -webkit-linear-gradient(#303030, #212121 60%, #171717);
@@ -6821,14 +6820,18 @@ button.close {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff303030', endColorstr='#ff171717', GradientType=0);
   filter: none;
 }
-.btn:hover,
-.btn:hover:hover {
+button.tbox:hover {
   background-image: -webkit-linear-gradient(#000000, #000000 40%, #000000);
   background-image: -o-linear-gradient(#000000, #000000 40%, #000000);
   background-image: linear-gradient(#000000, #000000 40%, #000000);
   background-repeat: no-repeat;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff000000', endColorstr='#ff000000', GradientType=0);
   filter: none;
+}
+.btn,
+.btn:hover {
+  border-color: rgba(0, 0, 0, 0.6);
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
 }
 .btn-default {
   background-image: -webkit-linear-gradient(#303030, #212121 60%, #171717);
