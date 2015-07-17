@@ -344,7 +344,7 @@ $(document).ready(function()
 			}
 			else
 			{
-				$(this).multiselect();	
+				$(this).multiselect({ buttonClass: 'btn btn-default'} );
 			}
 			
 		});
