@@ -27,7 +27,7 @@ class themeHandler
 	var $themeConfigObj = null;
 	var $noLog = FALSE;
 	
-	private $approvedAdminThemes = array('bootstrap');
+	private $approvedAdminThemes = array('bootstrap','bootstrap3');
 	
 	public $allowedCategories = array('generic',
 		 'adult',
@@ -57,12 +57,12 @@ class themeHandler
 		global $e107cache,$pref;
 		$mes = e107::getMessage();
 
-
+/*
 		if(deftrue('e_BOOTSTRAP3_ADMIN'))
 		{
 			$this->approvedAdminThemes[] = 'bootstrap3';
 		}
-		
+		*/
 		require_once (e_HANDLER."form_handler.php");
 
 		
