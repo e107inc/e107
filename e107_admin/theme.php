@@ -36,17 +36,19 @@ e107::css("inline","
 require_once(e_HANDLER."theme_handler.php");
 $themec = new themeHandler;
 
+// print_a($_GET);
 
 $mode = varset($_GET['mode'],'main'); // (e_QUERY) ? e_QUERY :"main" ;
 
 
-if(e_AJAX_REQUEST)
+if(!empty($_GET['action']))
 {
 	define('e_IFRAME',true);
 }
 
-if(e_AJAX_REQUEST)
+if(!empty($_GET['action']))
 {
+	require_once("auth.php");
 	switch ($_GET['action']) 
 	{
 		case 'login':	
@@ -71,10 +73,10 @@ if(e_AJAX_REQUEST)
 		*/
 
 		case 'info':
-			$string =  base64_decode($_GET['src']);	
+			$string =  base64_decode($_GET['src']);
 			parse_str($string,$p);
 			echo $themec->renderThemeInfo($p);
-			exit;
+
 		break;
 		
 		case 'preview':
@@ -82,7 +84,7 @@ if(e_AJAX_REQUEST)
 			$tm = (string) $_GET['id'];	
 			$data = $themec->getThemeInfo($tm);
 			echo $themec->renderThemeInfo($data);
-			exit;	
+		//	exit;
 		break;
 
 	}
@@ -108,10 +110,14 @@ if(e_AJAX_REQUEST)
 */
 	// Theme Info Ajax 
 	// FIXME  addd action=preview to the url, remove this block
-	$tm = (string) $_GET['id'];	
-	$data = $themec->getThemeInfo($tm);
-	echo $themec->renderThemeInfo($data);
-	
+	if(!empty($_GET['id']))
+	{
+		$tm = (string) $_GET['id'];
+		$data = $themec->getThemeInfo($tm);
+		echo $themec->renderThemeInfo($data);
+	}
+
+	require_once(e_ADMIN."footer.php");
 	exit;	
 
 }
@@ -150,11 +156,18 @@ if($mode == 'download' && !empty($_GET['src']))
 		$mes = e107::getMessage();		
 		$string =  base64_decode($_GET['src']);	
 		parse_str($string, $data);
+
+		if(!empty($data['price']))
+		{
+			e107::getRedirect()->go($data['url']);
+			return true;
+		}
+
 		
 		$mp = $themec->getMarketplace();	
 	 	$mes->addSuccess("Connecting...");   
 
-		if($mp->download($data['id'], $data['mode'], 'theme'))
+		if($mp->download($data['id'], $data['mode'], 'theme')) // download and unzip theme.
 		{
 			// Auto install?
 		//	$text = e107::getPlugin()->install($data['plugin_folder']); 

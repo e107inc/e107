@@ -206,6 +206,14 @@ $(document).ready(function()
 		{
 
 			e.preventDefault();
+
+            if($(this).attr('data-cache') == 'false')
+            {
+                $('#uiModal').on('shown.bs.modal', function () {
+                    $(this).removeData('bs.modal');
+                });
+            }
+            
 			var url 		= $(this).attr('href');
 			var caption  	= $(this).attr('data-modal-caption');
 			var height 		= ($(window).height() * 0.7) - 50;

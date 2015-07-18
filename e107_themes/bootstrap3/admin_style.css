@@ -140,7 +140,7 @@ td.options .btn-group                   {  display: flex; }
 .table .nav-tabs a,
 .table th a, .table td a                { text-decoration: none }
 
-.table > thead > tr > th                { padding: 15px 10px;  font-weight:bold; font-variant: small-caps; }
+.table > thead > tr > th, tr > th      { padding: 15px 10px;  font-weight:bold; font-variant: small-caps; }
 
 .label, .badge                          { text-shadow: 1px 1px 0px #000;  box-shadow: 1px 1px 0px #000; }
 
@@ -1121,14 +1121,14 @@ li.rssRow > div {
 .notifications.top-left{left:10px;top:25px;}
 .notifications.bottom-left{left:10px;bottom:25px;}
 .notifications.bottom-right{right:10px;bottom:25px;}
-.notifications>div{position:relative;z-index:9999;margin:5px 0px;}
+.notifications>div{ position:relative;z-index:9999;margin:5px 0;}
 .notifications.center{top:30%;left:0;width:100%;}.notifications.center>div{margin:5px auto;width:20%;text-align:center;}
 
 
 
 
 /* Theme selection */
-.admin-theme-thumb			{ 200px; height:130px;overflow:hidden;border:1px solid black; margin:0px; margin-bottom:10px; padding:0px;   }
+.admin-theme-thumb			{ width:100%; height:130px;overflow:hidden;border:1px solid black; margin:0; margin-bottom:10px; padding:0;   }
 .admin-theme-thumb:hover	{ opacity:0.4 }
 
 .admin-theme-options		{
@@ -1142,7 +1142,9 @@ li.rssRow > div {
 	padding-top:50px;
 	white-space:nowrap;
 	background-color:black;
-	display:block;position:relative; text-align:center; vertical-align:middle; top:-141px;}
+	display:block;position:relative;
+	vertical-align:middle; top:-141px;
+	}
 
 .admin-theme-options:hover	{ opacity:0.85; }
 .admin-theme-options .fa-check	{ color: #FAA732 }

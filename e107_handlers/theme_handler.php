@@ -584,7 +584,8 @@ class themeHandler
 						'price'			=> $r['price'],
 						'livedemo'		=> $r['livedemo'],
 					);
-					
+
+
 					$text .= $this->renderTheme(FALSE, $theme);
 					
 					$c++;
@@ -813,7 +814,7 @@ class themeHandler
 		$preview 		= "<a href='".SITEURL."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;width:200px' alt='' />" : "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' title='".TPVLAN_12."' alt='' />")."</a>";
 		$description 	= vartrue($theme['description'],'');
 		$compat			= (intval($theme['compatibility']) == 2) ? "<span class='label label-warning'>".number_format($theme['compatibility'], 1, '.','')."</span><span class='text-warning'> Recommended!</span>": vartrue(number_format($theme['compatibility'], 1, '.',''),'1.0');
-		$price 			= ($theme['price'] > 0) ? "<span class='label label-info'><i class='icon-shopping-cart icon-white'></i> ".$theme['price']."</span>" : "<span class='label label-success'>".Free."</span>";
+		$price 			= (!empty($theme['price'])) ? "<span class='label label-primary'><i class='icon-shopping-cart icon-white'></i> ".$theme['price']."</span>" : "<span class='label label-success'>Free</span>";
 	
 	
 		$text = "<table class='table table-striped'>";
@@ -910,19 +911,20 @@ class themeHandler
 		
 		if(count($theme['preview']))
 			{
-				$text .= "<tr><td colspan='2'>";
+				$text .= "<div class='clearfix'>";
 				foreach($theme['preview'] as $pic)
 				{
 					
 					$picFull = (substr($pic,0,4) == 'http') ? $pic : e_THEME.$theme['path']."/".$pic;
 					
 					
-					$text .= "<div style='padding:5px;width:700px'>
-						<img src='".$picFull."' alt=\"".$theme['name']."\" />
+					$text .= "<div class='col-md-6'>
+						<img class='img-responsive' src='".$picFull."' alt=\"".$theme['name']."\" />
 						</div>";	
 					
 				}
-				
+
+				$text .= "</div>";
 			//	$text .= "</td>
 				// 		</tr>";	
 				
@@ -1042,7 +1044,7 @@ class themeHandler
 	//	$preview 		= "<a href='".e_BASE."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;width:200px' alt='' />" : "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' title='".TPVLAN_12."' alt='' />")."</a>";
 		$main_icon 		= ($pref['sitetheme'] != $theme['path']) ? "<button class='btn btn-default btn-small btn-sm btn-inverse' type='submit'   name='selectmain[".$theme['id']."]' alt=\"".TPVLAN_10."\" title=\"".TPVLAN_10."\" >".$tp->toGlyph('fa-home',array('size'=>'2x'))."</button>" : "<button class='btn btn-small btn-default btn-sm btn-inverse' type='button'>".$tp->toGlyph('fa-check',array('size'=>'2x'))."</button>";
 	//	$info_icon 		= "<a data-toggle='modal' data-target='".e_SELF."' href='#themeInfo_".$theme['id']."' class='e-tip' title='".TPVLAN_7."'><img src='".e_IMAGE_ABS."admin_images/info_32.png' alt='' class='icon S32' /></a>";
-		$info_icon 		= "<a class='btn btn-default btn-small btn-sm btn-inverse' data-toggle='modal' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".e_SELF."?id=".$theme['path']."' data-target='#uiModal'  title='".TPVLAN_7."'>".$tp->toGlyph('fa-info-circle',array('size'=>'2x'))."</a>";
+		$info_icon 		= "<a class='btn btn-default btn-small btn-sm btn-inverse e-modal'  data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".e_SELF."?mode=".$_GET['mode']."&id=".$theme['path']."&action=info'  title='".TPVLAN_7."'>".$tp->toGlyph('fa-info-circle',array('size'=>'2x'))."</a>";
 //		$preview_icon 	= "<a title='Preview : ".$theme['name']."' rel='external' class='e-dialog' href='".e_BASE."index.php?themepreview.".$theme['id']."'>".E_32_SEARCH."</a>";
 		$admin_icon 	= ($pref['admintheme'] != $theme['path'] ) ? "<button class='btn btn-default btn-small btn-sm btn-inverse' type='submit'   name='selectadmin[".$theme['id']."]' alt=\"".TPVLAN_32."\" title=\"".TPVLAN_32."\" >".$tp->toGlyph('fa-gears',array('size'=>'2x'))."</button>" : "<button class='btn btn-small btn-default btn-sm btn-inverse' type='button'>".$tp->toGlyph('fa-check',array('size'=>'2x'))."</button>";
 		$price 			= '';
@@ -1095,8 +1097,8 @@ class themeHandler
 			//$main_icon = "<a data-src='".$downloadUrl."' href='{$downloadUrl}' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='-e-ajax' title='".$LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";		
 		//	$main_icon = "<a data-toggle='modal' data-modal-caption=\"".$caption."\" href='{$downloadUrl}' data-cache='false' data-target='#uiModal' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('download',array('size'=>'2x'))."</a> ";
 			
-		
-			$main_icon = "<a class='e-modal btn-default btn btn-sm btn-small btn-inverse' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" rel='external'  href='{$downloadUrl}' data-cache='false' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('download',array('size'=>'2x'))."</a>";
+			$modalCaption = (empty($theme['price'])) ? 'Downloading '.$theme['name']." ".$theme['version'] : 'Purchase '.$theme['name']." ".$theme['version'];
+			$main_icon = "<a class='e-modal btn-default btn btn-sm btn-small btn-inverse' data-modal-caption=\"".$modalCaption."\" rel='external'  href='{$downloadUrl}' data-cache='false' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('download',array('size'=>'2x'))."</a>";
 		
 			
 		
@@ -1104,15 +1106,14 @@ class themeHandler
 		//	$main_icon = "<a class='e-modal btn btn-small btn-inverse' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" rel='external'  href='{$viewUrl}' data-cache='false' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('download',array('size'=>'2x'))."</a> ";
 		
 			
-			$info_icon 	= "<a class='btn btn-default btn-sm btn-small btn-inverse' data-toggle='modal' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".$infoUrl."' data-cache='false' data-target='#uiModal'  title='".TPVLAN_7."'>".$tp->toGlyph('fa-info-circle',array('size'=>'2x'))."</a>";
+			$info_icon 	= "<a class='btn btn-default btn-sm btn-small btn-inverse e-modal' data-toggle='modal' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".$infoUrl."' data-cache='false'  title='".TPVLAN_7."'>".$tp->toGlyph('fa-info-circle',array('size'=>'2x'))."</a>";
 			
 			if($theme['livedemo'])
 			{
 				$previewPath = $theme['livedemo'];	
 			}
-			//XXX modal-Cache is currently enabled by default. Awaiting inclusion of data-cache feature. 
-			// See here: https://github.com/twitter/bootstrap/pull/4224
-			$price = ($theme['price'] > 0) ? "<span class='label label-primary pull-right'><i class='icon-shopping-cart icon-white'></i> ".$theme['price']."</span>" : "<span class='label label-success pull-right'>".Free."</span>";
+
+			$price = (!empty($theme['price'])) ? "<span class='label label-primary pull-right'>".$theme['price']."</span>" : "<span class='label label-success pull-right'>".Free."</span>";
 	
 		}
 		
