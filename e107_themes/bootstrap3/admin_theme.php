@@ -21,7 +21,7 @@ e107::js('core', 	'bootstrap3-editable/js/bootstrap-editable.min.js', 'jquery', 
 // e107::css('url', "https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/cosmo/bootstrap.min.css");
 // e107::css('url', "https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/darkly/bootstrap.min.css");
 
-e107::css('theme','css/bootstrap_dark.css');
+e107::css('theme','css/bootstrap-dark.min.css');
 e107::css('theme','admin_style.css');
 e107::css('theme','admin_dark.css');
 e107::css('theme','ie_all.css',null,'all',"<!--[if IE]>","<![endif]-->");
