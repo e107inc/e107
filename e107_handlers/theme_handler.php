@@ -264,7 +264,10 @@ class themeHandler
 					$nonadmin = preg_match('/\* Non-Admin(.*?)\*\//', $cssContents) ? true : false;
 					preg_match('/\* info:(.*?)\*\//', $cssContents, $match);
 					$match[1] = varset($match[1], '');
-					$themeArray[$file]['css'][] = array("name"=>$file2,	 "info"=>$match[1], "nonadmin"=>$nonadmin);
+					$scope = ($nonadmin == true) ? 'front' : '';
+
+
+					$themeArray[$file]['css'][] = array("name"=>$file2,	 "info"=>$match[1], "scope"=>$scope, "nonadmin"=>$nonadmin);
 					
 				}
 				else
@@ -291,6 +294,8 @@ class themeHandler
 		{
 			$themeArray[$file]['multipleStylesheets'] = TRUE;	
 		}
+
+
 
 		return $themeArray[$file];
 
@@ -1065,7 +1070,7 @@ class themeHandler
 			$previewPath = e_BASE."index.php?themepreview.".$theme['id'];
 		}
 		
-		$thumbnail = "<img src='".$thumbPath."' style='width:100%; height:130px;'  alt='' />";
+		$thumbnail = "<img src='".$thumbPath."' style='width:100%; max-height:200px;'  alt='' />";
 		
 
 		if($_GET['mode'] == 'online')
@@ -1375,41 +1380,11 @@ class themeHandler
 		
 					$text .= $itext;
 
-					$wildcard = false;
-					$curCss = array();
 
-
-					foreach($theme['css'] as $k=>$vl)
-					{
-						if($vl['name'] == '*')
-						{
-							unset($theme['css'][$k]);
-							$wildcard = true;
-						}
-						else
-						{
-							$curCss[] = $vl['name'];
-						}
-					}
-
-
-					if($wildcard == true)
-					{
-						foreach($theme['files'] as $val)
-						{
-							if(substr($val,-4) == '.css' && substr($val,0,5) != 'admin_' && !in_array($val, $curCss))
-							{
-								$theme['css'][] = array('name'=>$val, 'info'=>'User-added Stylesheet', 'nonadmin'=>1);
-							}
-						}
-
-					}
-
-
-
+					$theme['css'] = $this->filterStylesheets($mode, $theme);
 
 					
-					if(array_key_exists("multipleStylesheets", $theme) && $mode)
+					if(array_key_exists("multipleStylesheets", $theme) && $mode && !empty($theme['css']))
 					{
 						$text .= "
 							<tr><td style='vertical-align:top;'><b>".TPVLAN_22.":</b></td>
@@ -1426,44 +1401,34 @@ class themeHandler
 						{
 								
 							$text2 = "";
-							
-							
-							
-							if($mode == 2) // ADMIN MODE
+
+							switch($mode)
 							{
-								if($css['name'] == "style.css" || !vartrue($css['info'])) // Hide the admin css unless it has a header. eg. /* info: Default stylesheet */
-								{
-									continue;
-								}
-												
-								if(!$css['nonadmin'])
-								{
+								case 2: // admin mode.
+
 									$for = $frm->name2id("admincss-".$css['name']);
 									$text2 = "
 										<td class='center'>".
 										$frm->radio('admincss', $css['name'], vartrue($pref['admincss'])== $css['name'])."
 										</td>
 										<td><label for='".$for."'>".$css['info']."</label></td>";
-										
+
 									$text2 .= "<td>".($css['info'] ? $css['info'] : ($css['name'] == "admin_style.css" ? TPVLAN_23 : TPVLAN_24))."</td>\n";
-								}
-							}
-							
-							if($mode == 1) // SITE-THEME Mode
-							{
-								if(substr($css['name'], 0, 6) == "admin_")
-								{
-									continue;
-								}
-								
-								$text2 = "
+
+									break;
+
+								case 1: // front 'sitetheme' mode.
+
+									$text2 = "
 									<td class='center'>
 									<input id='".$frm->name2id($css['name'])."' type='radio' name='themecss' value='".$css['name']."' ".($pref['themecss'] == $css['name'] || (!$pref['themecss'] && $css['name'] == "style.css") ? " checked='checked'" : "")." />
 									</td>
 									<td><label for='".$frm->name2id($css['name'])."' >".$css['name']."</lable></td>
 									<td>".($css['info'] ? $css['info'] : ($css['name'] == "style.css" ? TPVLAN_23 : TPVLAN_24))."</td>\n";
+								break;
+
 							}
-							
+
 							$text .= ($text2) ? "<tr>".$text2."</tr>" : "";
 						
 						}
@@ -1471,13 +1436,7 @@ class themeHandler
 						$text .= "</table></td></tr>";
 					}
 
-					/*
-					if($mode == 1)
-					{
-						$text .= $this->renderThemeConfig();
-					}
-					*/ 
-					
+
 					$text .= "</table>
 
 
@@ -1543,6 +1502,108 @@ class themeHandler
 	}
 
 
+
+	private function filterStylesheets($mode, $theme)
+	{
+
+		$remove = array();
+		$detected = array();
+
+		if($mode == 1)
+		{
+			foreach($theme['css'] as $k=>$v) // check if wildcard is present.
+			{
+				if($v['name'] == '*')
+				{
+					foreach($theme['files'] as $val) // get wildcard list of css files.
+					{
+						if(substr($val,-4) == '.css' && substr($val, 0, 6) != "admin_")
+						{
+							$detected[$val] = array('name'=>$val, 'info'=>'User-added Stylesheet', 'nonadmin'=>1);
+						}
+					}
+					break;
+				}
+			}
+		}
+
+
+		foreach($theme['css'] as $k=>$vl) // as defined.
+		{
+			if(!empty($detected[$vl['name']])) // remove any detected files which are listed
+			{
+				unset($detected[$vl['name']]);
+			}
+
+			switch($mode)
+			{
+				case 1: // frontend
+
+					if(substr($vl['name'], 0, 6) == "admin_")
+					{
+						$remove[$k] = $vl['name'];
+					}
+
+					if($vl['scope'] == 'admin')
+					{
+						$remove[$k] = $vl['name'];
+					}
+
+					if($vl['name'] == '*' )
+					{
+						$remove[$k] = $vl['name'];
+
+						$wildcard = true;
+						continue;
+					}
+
+				break;
+
+				case 2: // admin
+
+					if($vl['name'] == "style.css" || empty($vl['info'])) // Hide the admin css unless it has a header. eg. /* info: Default stylesheet */
+					{
+						$remove[$k] = $vl['name'];
+					}
+
+					if($vl['name'] == '*' )
+					{
+						$remove[$k] = $vl['name'];
+					}
+
+					if($vl['scope'] == 'front')
+					{
+						$remove[$k] = $vl['name'];
+					}
+
+					if(!empty($vl['nonadmin']))
+					{
+						$remove[$k] = $vl['name'];
+					}
+				break;
+
+
+			}
+
+		}
+
+		foreach($remove as $k=>$file)
+		{
+			unset($theme['css'][$k]);
+		//	unset($detected[$file]);
+		}
+
+		foreach($detected as $k=>$v)
+		{
+			$theme['css'][] = $v;
+		}
+
+	//	print_a($detected);
+	//	print_a($remove);
+
+		return $theme['css'];
+
+	}
 
 
 	function renderPresets($key)
@@ -2162,7 +2223,7 @@ class themeHandler
 			{
 				$notadmin = vartrue($val['@attributes']['admin']) ? false : true;
 				
-				$vars['css'][] = array("name" => $val['@attributes']['file'], "info"=> $val['@attributes']['name'], "nonadmin"=>$notadmin);
+				$vars['css'][] = array("name" => $val['@attributes']['file'], "info"=> $val['@attributes']['name'], "nonadmin"=>$notadmin, 'scope'=>$val['@attributes']['scope']);
 			}
 
 			unset($vars['stylesheets']);
