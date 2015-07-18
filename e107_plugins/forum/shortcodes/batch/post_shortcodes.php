@@ -61,7 +61,18 @@ class plugin_forum_post_shortcodes extends e_shortcode
 
 	function sc_forumjump()
 	{
-		return forumjump(); // FIXME - broken in v1 themes
+		$jumpList = $this->forum->forumGetAllowed('view');
+		$text = "<form class='form-inline' method='post' action='".e_REQUEST_URI."'><div class='btn-group'><p>".LAN_FORUM_1017.": <select name='forumjump' class='tbox form-control'>";
+		foreach($jumpList as $key => $val)
+		{
+			$text .= "\n<option value='".e107::url('forum','forum', $val)."'>".$val['forum_name']."</option>";
+		}
+		$text .= "</select><input class='btn btn-default button' type='submit' name='fjsubmit' value='".LAN_GO."' /></p></div></form>";
+
+		return $text;
+
+
+		// return forumjump(); // FIXME - broken in v1 themes
 	}
 
 	function sc_userbox()
