@@ -53,7 +53,7 @@ a.core-mainpanel-link-icon:hover { text-decoration: none; filter: none; }
 
 .carousel-indicators        { top:10px; max-width: 200px; 	height: 40px; 	margin-left: 100px;  }
 
-li.divider                  {   padding-top: 10px; 	border-bottom: 1px outset #262626; 	margin-bottom: 10px; }
+#admin-ui-nav-menu li.divider                  {   padding-top: 10px; 	border-bottom: 1px outset #262626; 	margin-bottom: 10px; }
 
 /* TODO - use col-xx-x markup where core-mainpanel-block occurs. ? */
 @media (max-width: 1700px){ 
