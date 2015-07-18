@@ -216,7 +216,7 @@ $(document).ready(function()
             
 			var url 		= $(this).attr('href');
 			var caption  	= $(this).attr('data-modal-caption');
-			var height 		= ($(window).height() * 0.7) - 50;
+			var height 		= ($(window).height() * 0.7) - 120;
 
             if(caption === undefined)
             {
