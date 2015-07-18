@@ -88,6 +88,7 @@ class admin_start
 		$this->checkIncompatiblePlugins();
 		$this->checkFileTypes();
 		$this->checkSuspiciousFiles();
+		$this->checkDeprecated();
 		
 	}	
 
@@ -145,6 +146,40 @@ class admin_start
 			$mes->addWarning("The following plugins are not compatible with this version of e107 and should be uninstalled: ".$text."<a class='btn btn-default' href='".e_ADMIN."plugin.php'>uninstall</a>");
 		}	
 		
+	}
+
+
+	function checkDeprecated()
+	{
+		$deprecated = array(
+			e_ADMIN."ad_links.php",
+			e_PLUGIN."tinymce4/e_meta.php", e_THEME."bootstrap3/css/bootstrap_dark.css",
+			e_PLUGIN."search_menu/languages/English.php",
+			e_LANGUAGEDIR."English/lan_parser_functions.php",
+			e_HANDLER."np_class.php",
+			e_CORE."shortcodes/single/user_extended.sc",
+			e_ADMIN."download.php"
+		);
+
+		$found = array();
+		foreach($deprecated as $path)
+		{
+			if(file_exists($path))
+			{
+				$found[] = $path;
+			}
+
+
+		}
+
+		if(!empty($found))
+		{
+			$text = "The following old files can be safely deleted from your system: ";
+			$text .= "<ul><li>".implode("</li><li>", $found)."</li></ul>";
+
+			e107::getMessage()->addWarning($text);
+		}
+
 	}
 
 	
