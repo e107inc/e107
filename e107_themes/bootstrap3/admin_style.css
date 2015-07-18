@@ -51,7 +51,9 @@ body						{ padding-top: 75px;  }
 a.core-mainpanel-link-icon	{ height:80px; width: 100%; padding-top:15px;  }
 a.core-mainpanel-link-icon:hover { text-decoration: none; filter: none; }
 
-.carousel-indicators        { top:10px; max-width: 200px; 	height: 40px; 	margin-left: 100px;  }
+.carousel-indicators        { top:10px; max-width: 200px; 	height: 40px; 	text-align: right; right: 0; left: auto; }
+
+
 
 #admin-ui-nav-menu li.divider                  {   padding-top: 10px; 	border-bottom: 1px outset #262626; 	margin-bottom: 10px; }
 
