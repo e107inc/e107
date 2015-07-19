@@ -1504,11 +1504,11 @@ class e_form
 		return $this->checkbox($name, $value, $checked).$this->label($label ? $label : LAN_ENABLED, $name, $value);
 	}
 
-	function checkbox_toggle($name, $selector = 'multitoggle', $id = false, $label='')
+	function checkbox_toggle($name, $selector = 'multitoggle', $id = false, $label='') //TODO Fixme - labels will break this. Don't use checkbox, use html.
 	{
 		$selector = 'jstarget:'.$selector;
 		if($id) $id = $this->name2id($id);
-		
+
 		return $this->checkbox($name, $selector, false, array('id' => $id,'class' => 'checkbox checkbox-inline toggle-all','label'=>$label));
 	}
 

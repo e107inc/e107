@@ -941,23 +941,23 @@ class db_verify
 		<form method='post' action='".e_SELF.(e_QUERY ? '?'.e_QUERY : '')."' id='core-db-verify-sql-tables-form'>
 			<fieldset id='core-db-verify-sql-tables'>
 				<legend>".DBVLAN_14."</legend>
-				<table class='table adminlist'>
+				<table class='table table-striped adminlist'>
 					<colgroup>
 						<col style='width: 100%'></col>
 					</colgroup>
 					<thead>
 						<tr>
-							<th class='last'>".$frm->checkbox_toggle('check-all-verify', 'verify_table',false,LAN_CHECKALL.' | '.LAN_UNCHECKALL)."</th>
+							<th class='first form-inline'><label for='check-all-verify-jstarget-verify-table'>".$frm->checkbox_toggle('check-all-verify', 'verify_table', false )." ".LAN_CHECKALL.' | '.LAN_UNCHECKALL."</label></th>
 						</tr>
 					</thead>
 					<tbody>
 		";
 	
-		foreach(array_keys($this->tables) as $x)
+		foreach(array_keys($this->tables) as $t=>$x)
 		{
 			$text .= "
 				<tr>
-					<td>".$frm->checkbox('verify_table[]', $x,false,'label='.$x)."</td>
+					<td>".$frm->checkbox('verify_table['.$t.']', $x, false, array('label'=>$x))."</td>
 				</tr>
 			";
 		}
