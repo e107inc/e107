@@ -539,15 +539,18 @@ $(document).ready(function()
 		// Check-All checkbox toggle
 		$("input.toggle-all").click(function(evt) {
 			var selector = 'input[type="checkbox"].checkbox';
+
 			if($(this).val().indexOf('jstarget:') === 0) {
 				selector = 'input[type="checkbox"][name^="' + $(this).val().split(/jstarget\:/)[1] + '"]';
 			}
-			
-			if($(this).is(":checked")){
-				$(selector).attr("checked", "checked");
+
+ 			if($(this).is(":checked")){
+				//$(selector).attr("checked", "checked");
+                $(selector).prop('checked', true);
 			}
 			else{
-				$(selector).removeAttr("checked");
+                $(selector).prop('checked',false);
+			//	$(selector).removeAttr("checked");
 			}
 		});
 		
