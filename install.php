@@ -295,7 +295,7 @@ class e_install
 		{
 			//		$this->form .= "<a class='btn btn-large ' href='javascript:history.go(-1)'>&laquo; ".LAN_BACK."</a>&nbsp;";
 			$prevStage = ($this->stage - 1);
-			$e_forms->form .= "<button class='btn btn-large no-validate ' name='back' value='".$prevStage."' type='submit'>&laquo; ".LAN_BACK."</button>&nbsp;";
+			$e_forms->form .= "<button class='btn btn-default btn-large no-validate ' name='back' value='".$prevStage."' type='submit'>&laquo; ".LAN_BACK."</button>&nbsp;";
 		}
 		if($id != 'back')
 		{
@@ -404,11 +404,13 @@ class e_install
 		$this->add_button("start", LAN_CONTINUE);
 		$output = "
 			<div style='text-align: center;'>
-				<div class='alert alert-info alert-block'>
+				<div class='alert alert-info alert-block text-center'>
 					<label for='language'>".LANINS_005."</label>
 				</div>\n
-				<br /><br /><br />\n
+				<br />\n
+				<div class='col-md-offset-4 col-md-6'>
 				".$e_forms->return_form()."
+				</div><br />
 			</div>";
 		$this->template->SetTag("stage_content", $output);
 		$this->logLine('Stage 1 completed');
@@ -444,11 +446,11 @@ class e_install
 
 		$output = "
 			<div style='width: 100%; padding-left: auto; padding-right: auto;'>
-			<table class='table table-striped' >
+			<table class='table table-striped table-bordered' >
 				<tr>
 					<td style='border-top: 1px solid #999;'><label for='server'>".LANINS_024."</label></td>
 					<td style='border-top: 1px solid #999;'>
-						<input class='tbox' type='text' id='server' name='server' autofocus size='40' value='localhost' maxlength='100' required='required' />
+						<input class='form-control input-large' type='text' id='server' name='server' autofocus size='40' value='localhost' maxlength='100' required='required' />
 						<span class='field-help'>".LANINS_030."</span>
 					</td>
 				</tr>
@@ -456,7 +458,7 @@ class e_install
 				<tr>
 					<td><label for='name'>".LANINS_025."</label></td>
 					<td>
-						<input class='tbox' type='text' name='name' id='name' value='".varset($this->previous_steps['mysql']['user'])."' size='40' value='' maxlength='100' required='required' />
+						<input class='form-control input-large' type='text' name='name' id='name' value='".varset($this->previous_steps['mysql']['user'])."' size='40' value='' maxlength='100' required='required' />
 						<span class='field-help'>".LANINS_031."</span>
 					</td>
 				</tr>
@@ -464,7 +466,7 @@ class e_install
 				<tr>
 					<td><label for='password'>".LANINS_026."</label></td>
 					<td>
-						<input class='tbox' type='password' name='password' size='40' id='password' value='".varset($this->previous_steps['mysql']['password'])."' maxlength='100' {$isrequired}  pattern='[^\x22]+' />
+						<input class='form-control input-large' type='password' name='password' size='40' id='password' value='".varset($this->previous_steps['mysql']['password'])."' maxlength='100' {$isrequired}  pattern='[^\x22]+' />
 						<span class='field-help'>".LANINS_032."</span>
 					</td>
 				</tr>
@@ -472,8 +474,8 @@ class e_install
 				<tr>
 					<td><label for='db'>".LANINS_027."</label></td>
 					<td class='form-inline'>
-						<input type='text' name='db' size='20' id='db' value='' maxlength='100' required='required' pattern='^[a-zA-Z0-9_-]*' />
-						<label class='checkbox inline'><input type='checkbox' name='createdb' value='1' ".($this->previous_steps['mysql']['createdb'] ==1 ? "checked='checked'" : "")." /><small>".LANINS_028."</small></label>
+						<input class='form-control input-large' type='text' name='db' size='20' id='db' value='' maxlength='100' required='required' pattern='^[a-zA-Z0-9_-]*' />
+						<label class='checkbox-inline'><input type='checkbox' name='createdb' value='1' ".($this->previous_steps['mysql']['createdb'] ==1 ? "checked='checked'" : "")." /><small>".LANINS_028."</small></label>
 						<span class='field-help'>".LANINS_033."</span>
 					</td>
 				</tr>
@@ -481,7 +483,7 @@ class e_install
 				<tr>
 					<td><label for='prefix'>".LANINS_029."</label></td>
 					<td>
-						<input type='text' name='prefix' size='20' id='prefix' value='e107_'  pattern='[a-z0-9]*_$' maxlength='100' required='required' />
+						<input class='form-control input-large' type='text' name='prefix' size='20' id='prefix' value='e107_'  pattern='[a-z0-9]*_$' maxlength='100' required='required' />
 						<span class='field-help'>".LANINS_034."</span>
 					</td>
 				</tr>
@@ -577,19 +579,19 @@ class e_install
 			<table cellspacing='0'>
 				<tr>
 					<td style='border-top: 1px solid #999;'><label for='server'>".LANINS_024."</label></td>
-					<td style='border-top: 1px solid #999;'><input class='tbox' type='text' id='server' name='server' size='40' value='{$this->previous_steps['mysql']['server']}' maxlength='100' required /></td>
+					<td style='border-top: 1px solid #999;'><input class='form-control' type='text' id='server' name='server' size='40' value='{$this->previous_steps['mysql']['server']}' maxlength='100' required /></td>
 					<td style='width: 40%; border-top: 1px solid #999;'>".LANINS_030."</td>
 				</tr>
 
 				<tr>
 					<td><label for='name'>".LANINS_025."</label></td>
-					<td><input class='tbox' type='text' name='name' id='name' size='40' value='{$this->previous_steps['mysql']['user']}' maxlength='100' onload='this.focus()'  /></td>
+					<td><input class='form-control' type='text' name='name' id='name' size='40' value='{$this->previous_steps['mysql']['user']}' maxlength='100' onload='this.focus()'  /></td>
 					<td>".LANINS_031."</td>
 				</tr>
 
 				<tr>
 					<td><label for='password'>".LANINS_026."</label></td>
-					<td><input class='tbox' type='password' name='password' id='password' size='40' value='{$this->previous_steps['mysql']['password']}' maxlength='100' /></td>
+					<td><input class='form-control' type='password' name='password' id='password' size='40' value='{$this->previous_steps['mysql']['password']}' maxlength='100' /></td>
 					<td>".LANINS_032."</td>
 				</tr>
 
@@ -636,7 +638,7 @@ class e_install
 			{
 				$success = false; 
 				$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
-				$head = str_replace('[x]', '<b>'.$this->previous_steps['mysql']['db'].'</b>', LANINS_127);
+				$head = str_replace('[x]', '<b>'.$this->previous_steps['mysql']['db'].'</b>', "<div class='alert alert-warning'>". LANINS_127."</div>");
 				$alertType = 'error';
 				$this->add_button('overwritedb', LANINS_128);
 			/*	$e_forms->add_plain_html("
@@ -652,7 +654,7 @@ class e_install
 			else
 			{
 				$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
-				$page_content = "<i class='icon-ok'></i> ".LANINS_042;
+				$page_content = "<span class='glyphicon glyphicon-ok'></span> ".LANINS_042;
 				// @TODO Check database version here?
 /*
 				$mysql_note = mysql_get_server_info();
@@ -668,7 +670,7 @@ class e_install
 				{
 					if($this->dbqry('DROP DATABASE `'.$this->previous_steps['mysql']['db'].'` '))
 					{
-						$page_content .= "<br /><i class='icon-ok'></i> Deleted existing database";
+						$page_content .= "<br /><span class='glyphicon glyphicon-ok'></span> Deleted existing database";
 					}
 					else 
 					{
@@ -680,13 +682,13 @@ class e_install
 				
 				if($this->previous_steps['mysql']['createdb'] == 1)
 				{
-					$notification = "<br /><i class='icon-ok'></i> ".LANINS_044;
+					$notification = "<br /><span class='glyphicon glyphicon-ok'></span> ".LANINS_044;
 				    $query = 'CREATE DATABASE `'.$this->previous_steps['mysql']['db'].'` CHARACTER SET `utf8` ';
 					
 				}
 				else
 				{
-					$notification = "<br /><i class='icon-ok'></i> Found existing database";
+					$notification = "<br /><span class='glyphicon glyphicon-ok'></span> Found existing database";
 				    $query = 'ALTER DATABASE `'.$this->previous_steps['mysql']['db'].'` CHARACTER SET `utf8` ';
 				}
 
@@ -772,13 +774,13 @@ class e_install
 		{	// Must start from an empty e107_config.php
 			$perms_pass = FALSE;
 			$perms_errors = LANINS_121;
-			$perms_notes = "<i class='icon-remove'></i> ".LANINS_122;
+			$perms_notes = "<span class='glyphicon glyphicon-remove'></span> ".LANINS_122;
 		}
 		else
 		{
 			$perms_pass = true;
 			$perms_errors = "&nbsp;";
-			$perms_notes = "<i class='icon-ok'></i> ".LANINS_017;
+			$perms_notes = "<span class='glyphicon glyphicon-ok'></span> ".LANINS_017;
 		}
 
 		if(!function_exists("mysql_connect"))
@@ -797,12 +799,12 @@ class e_install
 			$mysql_note = mysql_get_server_info();
 			if (version_compare($mysql_note, MIN_MYSQL_VERSION, '>='))
 			{
-				$mysql_help = "<i class='icon-ok'></i> ".LANINS_017;
+				$mysql_help = "<span class='glyphicon glyphicon-ok'></span> ".LANINS_017;
 				$mysql_pass = true;
 			}
 			else
 			{
-				$mysql_help = "<i class='icon-remove'></i> ".LANINS_105;
+				$mysql_help = "<span class='glyphicon glyphicon-remove'></span> ".LANINS_105;
 			}
 		}
 		if(!function_exists('utf8_encode'))
@@ -817,11 +819,11 @@ class e_install
 		$php_version = phpversion();
 		if(version_compare($php_version, MIN_PHP_VERSION, ">="))
 		{
-			$php_help = "<i class='icon-ok'></i> ".LANINS_017;
+			$php_help = "<span class='glyphicon glyphicon-ok'></span> ".LANINS_017;
 		}
 		else
 		{
-			$php_help = "<i class='icon-remove'></i> ".LANINS_019;
+			$php_help = "<span class='glyphicon glyphicon-remove'></span> ".LANINS_019;
 		}
 		$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
 		if(!$perms_pass)
@@ -840,7 +842,7 @@ class e_install
 		$mysqlColor	= ($mysql_pass == true) ? "text-success" : "text-error";
 		
 		$output = "
-			<table class='table table-striped' style='width: 100%; margin-left: auto; margin-right: auto;'>
+			<table class='table table-striped table-bordered' style='width: 100%; margin-left: auto; margin-right: auto;'>
 				<tr>
 					<td style='width: 20%;'>".LANINS_014."</td>
 					<td style='width: 40%;'>{$perms_errors}</td>
@@ -862,7 +864,7 @@ class e_install
 				<tr>
 					<td>".LANINS_050."</td>
 					<td>".($xml_installed ? LANINS_051 : LANINS_052)."</td>
-					<td class='{$xmlColor}'>".($xml_installed ? "<i class='icon-ok'></i> ".LANINS_017 : LANINS_053)."</td>
+					<td class='{$xmlColor}'>".($xml_installed ? "<i class='glyphicon glyphicon-ok'></i> ".LANINS_017 : LANINS_053)."</td>
 				</tr>
 			</table>\n";
 		$this->finish_form();
@@ -896,11 +898,11 @@ class e_install
 		$e_forms->start_form("admin_info", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
 		$output = "
 			<div style='width: 100%; padding-left: auto; padding-right: auto;'>
-			<table class='table table-striped'>
+			<table class='table table-striped table-bordered'>
 				<tr>
 					<td><label for='u_name'>".LANINS_072."</label></td>
 					<td>
-						<input class='tbox' type='text' autofocus name='u_name' id='u_name' placeholder='admin' size='30' required='required' value='".(isset($this->previous_steps['admin']['user']) ? $this->previous_steps['admin']['user'] : "")."' maxlength='60' />
+						<input class='form-control' type='text' autofocus name='u_name' id='u_name' placeholder='admin' size='30' required='required' value='".(isset($this->previous_steps['admin']['user']) ? $this->previous_steps['admin']['user'] : "")."' maxlength='60' />
 						<span class='field-help'>".LANINS_073."</span>
 					</td>
 				</tr>
@@ -908,7 +910,7 @@ class e_install
 				<tr>
 					<td><label for='d_name'>".LANINS_074."</label></td>
 					<td>
-						<input class='tbox' type='text' name='d_name' id='d_name' size='30' placeholder='Administrator'  value='".(isset($this->previous_steps['admin']['display']) ? $this->previous_steps['admin']['display'] : "")."' maxlength='60' />
+						<input class='form-control' type='text' name='d_name' id='d_name' size='30' placeholder='Administrator'  value='".(isset($this->previous_steps['admin']['display']) ? $this->previous_steps['admin']['display'] : "")."' maxlength='60' />
 						<span class='field-help'>".LANINS_123."</span>
 					</td>
 				</tr>
@@ -916,7 +918,7 @@ class e_install
 				<tr>
 					<td><label for='pass1'>".LANINS_076."</label></td>
 					<td>
-						<input type='password' name='pass1' size='30' id='pass1' value='' maxlength='60' required='required' />
+						<input class='form-control' type='password' name='pass1' size='30' id='pass1' value='' maxlength='60' required='required' />
 						<span class='field-help'>".LANINS_124."</span>
 					</td>
 				</tr>
@@ -924,7 +926,7 @@ class e_install
 				<tr>
 					<td><label for='pass2'>".LANINS_078."</label></td>
 					<td>
-						<input type='password' name='pass2' size='30' id='pass2' value='' maxlength='60' required='required' />
+						<input class='form-control' type='password' name='pass2' size='30' id='pass2' value='' maxlength='60' required='required' />
 						<span class='field-help'>".LANINS_079."</span>
 					</td>
 				</tr>
@@ -932,7 +934,7 @@ class e_install
 				<tr>
 					<td><label for='email'>".LANINS_080."</label></td>
 					<td>
-						<input type='text' name='email' size='30' id='email' required='required' placeholder='admin@mysite.com' value='".(isset($this->previous_steps['admin']['email']) ? $this->previous_steps['admin']['email'] : '')."' maxlength='100' />
+						<input class='form-control' type='text' name='email' size='30' id='email' required='required' placeholder='admin@mysite.com' value='".(isset($this->previous_steps['admin']['email']) ? $this->previous_steps['admin']['email'] : '')."' maxlength='100' />
 					<span class='field-help'>".LANINS_081."</span>
 					</td>
 				</tr>
@@ -1039,14 +1041,14 @@ class e_install
 				<tr>
 					<td><label for='sitename'>".LANINS_107."</label></td>
 					<td>
-						<input class='tbox' type='text' autofocus placeholder=\"".LANINS_108."\" required='required' name='sitename' id='sitename' size='30' value='".(vartrue($_POST['sitename']) ? $_POST['sitename'] : "")."' maxlength='60' />
+						<input class='form-control' type='text' autofocus placeholder=\"".LANINS_108."\" required='required' name='sitename' id='sitename' size='30' value='".(vartrue($_POST['sitename']) ? $_POST['sitename'] : "")."' maxlength='60' />
 					</td>
 				</tr>
 
 				<tr>
 					<td><label>".LANINS_109."</label></td>
-					<td>
-						<table class='table' >
+					<td style='padding-right:0'>
+						<table class='table table-striped' >
 							<thead>
 								<tr>
 									<th>".LANINS_115."</th>
@@ -1073,7 +1075,7 @@ class e_install
 					$output .= "
 								<tr>
 									<td>
-										<label class='radio'><input type='radio' name='sitetheme' value='{$val}' required='required' $selected />{$title}</label>
+										<label class='radio-inline'><input type='radio' name='sitetheme' value='{$val}' required='required' $selected />{$title}</label>
 									</td>
 									<td>{$category}</td>
 								</tr>";
@@ -1287,8 +1289,7 @@ class e_install
 				
 				if($htaccessError)
 				{
-					
-					$page .= "<p class='text-warning'>".$htaccessError."</p>";		
+					$page .= "<br />".$htaccessError;
 				}	
 				$this->add_button('submit', LAN_CONTINUE);
 			}
@@ -1823,7 +1824,7 @@ class e_forms
 	function add_select_item($id, $labels, $selected)
 	{
 		$this->form .= "
-		<select name='{$id}' id='{$id}'>\n";
+		<select class='form-control input-large' name='{$id}' id='{$id}'>\n";
 		foreach ($labels as $label)
 		{
 			$this->form .= "<option".($label == $selected ? " selected='selected'" : "").">{$label}</option>\n";
@@ -1971,8 +1972,8 @@ function template_data()
 		<meta charset="utf-8">
 		<title>{installation_heading} :: {stage_pre}{stage_num} - {stage_title}</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link href="'.e_JS.'bootstrap/css/bootstrap.min.css" rel="stylesheet">
-		<link href="'.e_THEME.'bootstrap/admin_style.css" rel="stylesheet">
+		<link href="'.e_THEME.'bootstrap3/css/bootstrap-dark.min.css" rel="stylesheet">
+		<link href="'.e_THEME.'bootstrap3/admin_style.css" rel="stylesheet">
 		<style type="text/css">
 		
 		body 					{  padding-top: 40px; padding-bottom: 40px; background-color: #181818; }
@@ -2000,7 +2001,7 @@ function template_data()
 			<ul class="nav nav-pills pull-right" >
 			  <li class="active" style="width:200px;text-align:center" ><a href="#" >Installation: {stage_pre} {stage_num} of 8</a>
 			  <div class="progress progress-{bartype}">
-				<div class="bar" style="width: {percent}%"></div>
+				<div class="progress-bar bar" style="width: {percent}%"></div>
 			</div>
 			</li>
 			 </ul>
@@ -2010,10 +2011,16 @@ function template_data()
 			
 		  </div>
 
-		  <div class="well">
-		  <h4>{stage_title}</h4>
-			{stage_content}
-		  </div>
+			<div class="panel panel-default">
+					  <div class="panel-heading">
+					    <h3 class="panel-title">{stage_title}</h3>
+					  </div>
+					  <div class="panel-body">
+						{stage_content}
+					  </div>
+					</div>
+
+
 
 		  <div class="footer">
 			<p class="pull-left">&copy; e107 Inc. '.date("Y").'</p>
@@ -2025,8 +2032,11 @@ function template_data()
 		<!-- The javascript
 		================================================== -->
 		<!-- Placed at the end of the document so the pages load faster -->
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-		<script src="'.e_JS.'bootstrap/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+		<script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"m type="text/javascript"></script>
+
+
+
 		<script type="text/javascript">
 		
 		$(document).ready(function()
