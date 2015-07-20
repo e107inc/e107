@@ -339,7 +339,7 @@ hr{margin-top:20px;margin-bottom:20px;border:0;border-top:1px solid #0a0a0a}
 p{margin:0 0 10px}
 .lead{margin-bottom:20px;font-size:16px;font-weight:300;line-height:1.4}
 address,blockquote .small,blockquote footer,blockquote small,dd,dt,pre{line-height:1.42857143}
-dt,kbd kbd,label{font-weight:700}
+dt,kbd kbd{font-weight:700}
 @media (min-width:768px){.lead{font-size:21px}
 }
 .small,small{font-size:85%}
@@ -1453,6 +1453,7 @@ h1,h2,h3,h4,h5,h6{text-shadow:-1px -1px 0 rgba(0,0,0,.3)}
 .table .danger,.table .info,.table .success,.table .warning{color:#fff}
 .table-bordered tbody tr.danger td,.table-bordered tbody tr.danger:hover td,.table-bordered tbody tr.success td,.table-bordered tbody tr.success:hover td,.table-bordered tbody tr.warning td,.table-bordered tbody tr.warning:hover td{border-color:#0a0a0a}
 .table-responsive>.table{background-color:#373737}
+label{font-weight:400}
 input,select,textarea{color:#eee;background-color:#222}
 input[type=date],input[type=time],input[type=datetime-local],input[type=month],input[type=text],input[type=password],input[type=datetime],input[type=week],input[type=email],input[type=url],input[type=tel],input[type=color],input[type=number],input[type=search],select,textarea{line-height:1.42857;background-image:none;border:1px solid #171717;border-radius:4px;transition:border-color .15s ease-in-out 0s,box-shadow .15s ease-in-out 0s;padding:8px 12px;font-size:14px}
 .has-warning .control-label,.has-warning .form-control-feedback,.has-warning .help-block{color:#f89406}
