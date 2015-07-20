@@ -1617,6 +1617,10 @@ class user_class_admin extends user_class
 		{
 			return FALSE;
 		}
+		//findNewClassID() always returns an unused ID.
+		//if a plugin.xml adds more than one <class ...> within <userClasses..> tag
+		//it will add 1 class only because class_tree never updates itself after adding classes and will return the same unnused ID
+		$this->class_tree[$classrec['userclass_id']] = $classrec;
 		$this->clearCache();
 		return TRUE;
 	}
