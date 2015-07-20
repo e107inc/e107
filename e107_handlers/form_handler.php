@@ -1333,7 +1333,8 @@ class e_form
 			
 			case 'small':
 				$rows = '7';
-				$height = "style='height:250px'"; // inline required for wysiwyg
+				$height = "style='height:230px'"; // inline required for wysiwyg
+				$size = "input-block-level";
 			break;
 						
 			case 'medium':
@@ -1363,7 +1364,7 @@ class e_form
 		
 		$ret = "<div class='bbarea {$size}'>
 		<div class='field-spacer'><!-- --></div>\n";
-		
+
 
 		$ret .=	e107::getBB()->renderButtons($template,$help_tagid);
 		$ret .=	$this->textarea($name, $value, $rows, 70, $options, $counter); // higher thank 70 will break some layouts. 
@@ -1371,7 +1372,7 @@ class e_form
 		$ret .= "</div>\n";
 		
 		$_SESSION['media_category'] = $mediaCat; // used by TinyMce. 
-		
+
 		e107::wysiwyg(true); // bbarea loaded, so activate wysiwyg (if enabled in preferences)
 	
 		
