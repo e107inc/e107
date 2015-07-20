@@ -220,12 +220,12 @@ $USERSETTINGS_WRAPPER['edit']['USERCLASSES'] = 			"<div class='form-group'>
 														";
 
 $USERSETTINGS_WRAPPER['edit']['AVATAR_UPLOAD'] = 		"<div class='form-group'>
-														<label for='customtitle' class='col-sm-3 control-label'>".LAN_USET_26."</label>
+														<label for='avatar' class='col-sm-3 control-label'>".LAN_USET_26."</label>
 												       	<div class='col-sm-9'>{---}</div>
 													   	</div>
 														";
 $USERSETTINGS_WRAPPER['edit']['PHOTO_UPLOAD'] = 		"<div class='form-group'>
-														<label for='customtitle' class='col-sm-3 control-label'>".LAN_USER_06."</label>
+														<label for='photo' class='col-sm-3 control-label'>".LAN_USER_06."</label>
 												       	<div class='col-sm-9'>{---}</div>
 													   	</div>
 														";
@@ -238,7 +238,7 @@ $USERSETTINGS_WRAPPER['edit']['SIGNATURE']			= "<div class='form-group'>
 													   	</div>
 													 ";
 
-
+	// $USERSETTINGS_WRAPPER['edit']['USEREXTENDED_ALL']	= "<div class='form-group'>{---}</div>";
 
 
 
@@ -249,8 +249,9 @@ $USERSETTINGS_WRAPPER['edit']['SIGNATURE']			= "<div class='form-group'>
 $USERSETTINGS_TEMPLATE['edit'] = "
 
 <div>
-	
+
 	{USERNAME}
+
 	{LOGINNAME}
 
 
@@ -271,7 +272,7 @@ $USERSETTINGS_TEMPLATE['edit'] = "
 	{CUSTOMTITLE}
 
 	{PASSWORD1}
-	{PASSWORD_LEN}
+
 	{PASSWORD2}
 
 
@@ -281,7 +282,7 @@ $USERSETTINGS_TEMPLATE['edit'] = "
 	{HIDEEMAIL=radio}
 	</div>
 	</div>
-	
+
 	<div class='form-group'>
 	<label for='loginname' class='col-sm-3 control-label'>".LAN_USER_07.req($pref['signup_option_image'])."</label>
 	<div class='col-sm-9'>
@@ -292,11 +293,11 @@ $USERSETTINGS_TEMPLATE['edit'] = "
 	{AVATAR_UPLOAD}
 	{PHOTO_UPLOAD}
 
+
 	{USERCLASSES}
 	{USEREXTENDED_ALL=tabs}
 
-	
-	{SIGNATURE=cols=58&rows=4}	
+	{SIGNATURE}
 	{SIGNATURE_HELP}
 
 	 <div class='form-group'>
