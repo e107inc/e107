@@ -658,23 +658,24 @@ class e_media
 			$data_src = $this->mediaSelectNav($category,$tagid, $option); // ."&amp;from=0";
 		
 			// Inline style to override jquery-ui stuff. 
-			$text .= "<div class='btn-group'>
+			$text .= "<div>
 			<div id='admin-ui-media-manager-search' class='input-append form-inline' style='margin-top:10px;font-size:12px'>
 			<input type='text' id='media-search' placeholder='Search...' name='search' value='' class='e-tip' data-target='media-select-container' data-src='".$data_src."' />
 			";
 		//	$text .= "<input type='button' value='Go' class='btn btn-primary e-media-nav' data-target='media-select-container' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' /> "; // Manual filter, if onkeyup ajax fails for some reason. 
-			$text .= "<button type='button'  class='btn btn-primary e-media-nav' data-target='media-select-container' data-src='".$data_src."' >Go</button>"; // Manual filter, if onkeyup ajax fails for some reason. 
+			$text .= "<button type='button'  class='btn btn-primary e-media-nav' data-target='media-select-container' data-src='".$data_src."' >Go</button>"; // Manual filter, if onkeyup ajax fails for some reason.
 	
-			$text .= "<button type='button' title='previous page' class='btn btn-default e-nav e-media-nav e-tip'  data-target='media-select-container' data-nav-total='".$total."' data-nav-dir='down' data-nav-inc='".$limit."' data-src='".$data_src."' >&laquo;</button>"; // see next page of images.
+			$text .= "<button id='admin-ui-media-nav-down' type='button' title='previous page' class='btn btn-default e-nav e-media-nav e-tip' style='outline:0' data-target='media-select-container' data-nav-total='".$total."' data-nav-dir='down' data-nav-inc='".$limit."' data-src='".$data_src."'>&laquo;</button>"; // see next page of images.
 		
-			$text .= "<button type='button' title='next page' class='btn btn-default e-nav e-media-nav e-tip' style='text-align:center'  data-target='media-select-container' data-nav-total='".$total."' data-nav-dir='up' data-nav-inc='".$limit."' data-src='".$data_src."' >&raquo;</button>"; // see next page of images.
+			$text .= "<button id='admin-ui-media-nav-up' type='button' title='next page' class='btn btn-default e-nav e-media-nav e-tip' style='outline:0;text-align:center'  data-target='media-select-container' data-nav-total='".$total."' data-nav-dir='up' data-nav-inc='".$limit."' data-src='".$data_src."' >&raquo;</button>"; // see next page of images.
 			$text .= "</div></div>";
-		
+			$text .= "<div id='admin-ui-media-select-count' class='media-select-count' style='text-align:right; display:block'> Displaying ".($frm +1)."-".($dipTotal)." of ".$total." images.</div>\n";
+
 			$text .= "
 			<div id='media-select-container'>";	
 		}
 		
-		$text .= "<div class='media-select-count' style='text-align:right; display:block'> Displaying ".($frm +1)."-".($dipTotal)." of ".$total." images.</div>\n";
+		$text .= "<div id='admin-ui-media-select-count-hidden' class='media-select-count' data-media-select-current-limit='".$dipTotal."' style='text-align:right; display:none'> Displaying ".($frm +1)."-".($dipTotal)." of ".$total." images.</div>\n";
 		
 		
 		if($bbcode == null) // e107 Media Manager - new-image mode. 

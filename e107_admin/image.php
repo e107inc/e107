@@ -45,11 +45,15 @@ if(isset($_POST['submit_cancel_show']))
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
-
+if($_GET['action'] == 'dialog')
+{
+	e107::css('inline', "body { background-color: #373737 } ");
+}
 
 if(vartrue($_GET['action']) == 'nav' && e_AJAX_REQUEST) //XXX Doesn't work correctly inside the class for some reason 
 {
 	define("e_IFRAME",true);
+
 	// require_once(e_ADMIN."auth.php");
 		$bbcodeMode = ($_GET['bbcode']=='img') ? 'bbcode=img' : FALSE;
 						
@@ -1087,7 +1091,7 @@ class media_admin_ui extends e_admin_ui
 		$options['bbcode'] = ($this->getQuery('bbcode')=='img') ? 'img' : FALSE;
 		
 						
-		$text = "<ul class='nav nav-tabs'>\n";
+		$text = "<ul id='admin-ui-media-manager' class='nav nav-tabs'>\n";
 		
 		if($this->getQuery('bbcode') != 'video' && $this->getQuery('bbcode') != 'glyph')
 		{

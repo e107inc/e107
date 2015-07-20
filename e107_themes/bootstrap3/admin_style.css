@@ -5,7 +5,9 @@ body 						{ }
 	
 body						{ padding-top: 75px;  }
 
-} 
+}
+
+button, button:active                      { outline: 0; }
 
 .container { width: 100% }
       	
