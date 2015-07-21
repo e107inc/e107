@@ -3680,6 +3680,8 @@ class eResponse
 	protected $_META_KEYWORDS = array();
 	protected $_render_mod = array('default' => 'default');
 	protected $_meta_title_separator = ' - ';
+	protected $_meta_name_only = array('keywords', 'viewport'); // Keep FB happy.
+	protected $_meta_property_only = array('article:section', 'article:tag'); // Keep FB happy.
 	protected $_meta = array();
 	protected $_title_separator = ' &raquo; ';
 	protected $_content_type = 'html';
@@ -3692,7 +3694,7 @@ class eResponse
 		'rss' => 'application/rss+xml',
 		'soap' => 'application/soap+xml',
 	);
-	
+
 	protected $_params = array(
 		'render' => true,
 		'meta' => false,
@@ -3972,8 +3974,15 @@ class eResponse
 		{
 		//	$key = (substr($name,0,3) == 'og:') ? 'property' : 'name';
 		//	$attr[$key] = $name;
-			$attr['property'] = $name;  // giving both should be valid and avoid issues with FB and others.
-			$attr['name'] = $name;
+			if(!in_array($name, $this->_meta_name_only))
+			{
+				$attr['property'] = $name;  // giving both should be valid and avoid issues with FB and others.
+			}
+
+			if(!in_array($name, $this->_meta_property_only))
+			{
+				$attr['name'] = $name;
+			}
 		}
 
 
