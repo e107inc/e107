@@ -928,7 +928,8 @@ a.e-media-select
 ul#e-status						{ margin:0px 14px }
 ul#e-status li 					{ padding-bottom:6px; font-size:85% }
 ul#e-status						{ line-height:20px }
-ul#e-status li  a  span.badge	{ float:right; font-size:85% }
+ul#e-status li  a span.badge,
+ul#e-status li  a span.label	{ float:right; font-size:85% }
 ul#e-status li  a:hover  		{ text-decoration: none; }
 
 ul#e-latest						{ margin:0px 14px}
