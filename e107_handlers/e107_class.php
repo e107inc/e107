@@ -2621,15 +2621,38 @@ class e107
 	 * @param string $plugin
 	 * @param $key
 	 * @param array $row
-	 * @param string $mode abs | full
+	 * @param array $options
+	 *  (optional) An associative array of additional options, with the following elements:
+	 *   - 'mode': abs | full
+	 *   - 'query': An array of query key/value-pairs (without any URL-encoding) to append to the URL.
+	 *   - 'fragment': A fragment identifier (named anchor) to append to the URL. Do not include the leading '#' character.
 	 * @return string
 	 */
-	public static function url($plugin='',$key, $row=array(), $mode='abs')
+	public static function url($plugin='',$key, $row=array(), $options = array())
 	{
 		$tmp = e107::getAddonConfig('e_url');
 		$tp = e107::getParser();
 
 		$pref = self::getPref('e_url_alias');
+
+		if(is_string($options)) // backwards compat.
+		{
+			$options = array(
+				'mode' => $options,
+			);
+		}
+
+		// Merge in defaults.
+		$options += array(
+			'mode'     => 'abs',
+			'fragment' => '',
+			'query'    => array(),
+		);
+
+		if(isset($options['fragment']) && $options['fragment'] !== '')
+		{
+			$options['fragment'] = '#' . $options['fragment'];
+		}
 
 		if(varset($tmp[$plugin][$key]['sef']))
 		{
@@ -2659,14 +2682,21 @@ class e107
 			{
 				$rawUrl = $tp->simpleParse($tmp[$plugin][$key]['sef'], $row);
 
-				if($mode == 'full')
+				if($options['mode'] == 'full')
 				{
-					return SITEURL.$rawUrl;
+					$sefUrl = SITEURL.$rawUrl;
 				}
 				else
 				{
-					return e_HTTP.$rawUrl;
+					$sefUrl = e_HTTP.$rawUrl;
 				}
+
+				// Append the query.
+				if (is_array($options['query']) && !empty($options['query'])) {
+					$sefUrl .= (strpos($sefUrl, '?') !== FALSE ? '&' : '?') . self::httpBuildQuery($options['query']);
+				}
+
+				return $sefUrl . $options['fragment'];
 			}
 			else // Legacy URL.
 			{
@@ -2683,12 +2713,17 @@ class e107
 				$template = isset($tmp[$plugin][$key]['legacy']) ? $tmp[$plugin][$key]['legacy'] : $tmp[$plugin][$key]['redirect'];
 
 				$urlTemplate = str_replace($srch,$repl, $template);
-				$urlTemplate = $tp->replaceConstants($urlTemplate, $mode);
+				$urlTemplate = $tp->replaceConstants($urlTemplate, $options['mode']);
 				$legacyUrl = $tp->simpleParse($urlTemplate, $row);
 
 				$legacyUrl = preg_replace('/&?\$[\d]/i', "", $legacyUrl); // remove any left-over $x (including prefix of '&')
 
-				return $legacyUrl;
+				// Append the query.
+				if (is_array($options['query']) && !empty($options['query'])) {
+					$legacyUrl .= (strpos($legacyUrl, '?') !== FALSE ? '&' : '?') . self::httpBuildQuery($options['query']);
+				}
+
+				return $legacyUrl . $options['fragment'];
 			}
 
 
@@ -2703,12 +2738,48 @@ class e107
 		/*
 		elseif(varset($tmp[$plugin][$key]['redirect']))
 		{
-			return self::getParser()->replaceConstants($tmp[$plugin][$key]['redirect'],'full');		
+			return self::getParser()->replaceConstants($tmp[$plugin][$key]['redirect'],'full');
 		}
 
 		return;
 		*/
 
+	}
+
+
+	/**
+	 * Parses an array into a valid, rawurlencoded query string. This differs from http_build_query() as we need to
+	 * rawurlencode() (instead of urlencode()) all query parameters.
+	 * @param array $query The query parameter array to be processed, e.g. $_GET.
+	 * @param string $parent Internal use only. Used to build the $query array key for nested items.
+	 * @return array A rawurlencoded string which can be used as or appended to the URL query string.
+	 */
+	public static function httpBuildQuery(array $query, $parent = '')
+	{
+		$params = array();
+
+		foreach($query as $key => $value)
+		{
+			$key = ($parent ? $parent . '[' . rawurlencode($key) . ']' : rawurlencode($key));
+
+			// Recurse into children.
+			if(is_array($value))
+			{
+				$params [] = self::httpBuildQuery($value, $key);
+			}
+			// If a query parameter value is NULL, only append its key.
+			elseif(!isset($value))
+			{
+				$params [] = $key;
+			}
+			else
+			{
+				// For better readability of paths in query strings, we decode slashes.
+				$params [] = $key . '=' . str_replace('%2F', '/', rawurlencode($value));
+			}
+		}
+
+		return implode('&', $params);
 	}
 
 
