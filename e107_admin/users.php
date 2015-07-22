@@ -428,6 +428,16 @@ class users_admin_ui extends e_admin_ui
 	{
 		$tp = e107::getParser();
 
+		$pwdField = 'user_password_'.$id;
+
+		if(!empty($new_data[$pwdField]))
+		{
+			$new_data['user_password'] = $new_data[$pwdField];
+			unset($new_data[$pwdField]);
+		}
+
+	//	e107::getMessage()->addInfo(print_a($new_data,true));
+
 		if(empty($new_data['user_password']))
 		{
 			$new_data['user_password'] = $old_data['user_password'];
@@ -2304,7 +2314,9 @@ class users_admin_form_ui extends e_admin_form_ui
 		}
 		if($mode == 'write')
 		{
-			return $this->password('user_password', '', 20, array('size' => 50, 'class' => 'tbox e-password', 'placeholder' => 'Leave blank for no change', 'generate' => 1, 'strength' => 1, 'required'=>0))."
+			$fieldName = 'user_password_'. $this->getController()->getId();
+
+			return $this->password($fieldName, '', 20, array('size' => 50, 'class' => 'tbox e-password', 'placeholder' => 'Leave blank for no change', 'generate' => 1, 'strength' => 1, 'required'=>0, 'autocomplete'=>'off'))."
 			";			
 		}
 			
