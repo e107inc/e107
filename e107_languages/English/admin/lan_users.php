@@ -294,8 +294,8 @@ define("USFLAN_6", "User ID");
 define("USFLAN_7", "User Information");
 
 
-define("USRLAN_AS_1", "Login as %s"); //FIXME use [x]
-define("USRLAN_AS_2", "Logout from %s account");
+define("USRLAN_AS_1", "Login as [x]");
+define("USRLAN_AS_2", "Logout from [x] account");
 define("USRLAN_AS_3", "You are already logged in as another user account. Please logout first.");
 
 // Always search lan_admin.php before adding more. 
