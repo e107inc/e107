@@ -1217,26 +1217,26 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		 */
 		 if($type != 'invert')
 		 {
-			 $important = 'badge-important';
-			 $warning   = 'badge-warning';
-			 $info      = 'badge-info';
+			 $important = 'label-important label-danger';
+			 $warning   = 'label-warning';
+			 $info      = 'label-primary';
 			 $invert = false;
 		 }
 		 else // invert
 		 {
-			 $info      = 'badge-important';
-			 $warning   = 'badge-warning';
-			 $important = 'badge-info';
+			 $info      = 'label-important label-danger';
+			 $warning   = 'label-warning';
+			 $important = 'label-primary';
 			 $type = 'latest';
 			 $invert = true;
 		 }
 
 		
-		$class = 'badge ';
+		$class = 'label ';
 
 		if($total > 500 && $invert == true)
 		{
-			$class .= 'badge-success';
+			$class .= 'label-success';
 		}
 		elseif($total > 100 && $type == 'latest')
 		{
@@ -1250,7 +1250,11 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		{
 			$class .= $info;
 		}
-	
+
+		if(deftrue('BOOTSTRAP') !== 3)
+		{
+			$class = str_replace('label', 'badge', $class);
+		}
 		
 		return $class;		
 	}

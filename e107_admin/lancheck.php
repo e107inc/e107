@@ -1003,7 +1003,7 @@ class lancheck
 		<input type='hidden' name='language' value='".$lan."' />
 		<input type='hidden' name='errorsonly' value='".$_SESSION['lancheck-errors-only']."' />    
 	    <input class='btn btn-primary' type='submit' name='ziplang[".$lan."]' value=\"".$just_go_diz."\"  onclick=\"this.value = '".$lan_pleasewait."'\" />
-	    <a href='".e_REQUEST_URI."' class=' btn btn-default button'>".$lang_sel_diz."</a>
+	    <a href='".e_REQUEST_URI."' class='btn btn-default'>".$lang_sel_diz."</a>
 		</div>
 	    </form>
 		";
@@ -1537,8 +1537,11 @@ class lancheck
 		$comp_dir = $folder[$mode];
 	
 		$baselang 	= $this->get_comp_lan_phrases($comp_dir."/languages/","English",1);
-		$check 		= $this->get_comp_lan_phrases($comp_dir."/languages/",$target_lan,1);	
-	
+		$check 		= $this->get_comp_lan_phrases($comp_dir."/languages/",$target_lan,1);
+
+
+
+
 		$text = "";
 		$keys = array_keys($baselang);
 		sort($keys);
