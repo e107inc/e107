@@ -85,7 +85,7 @@ class page_search extends e_search // include plugin-folder in the name.
 		if(!empty($catList))
 		{
 			$search['advanced'] = array(
-								'cat'	=> array('type'	=> 'dropdown', 		'text' => "Search in Book/Chapter", 'list'=>$catList),
+								'cat'	=> array('type'	=> 'dropdown', 		'text' => LAN_PLUGIN_PAGE_BOCHAP, 'list'=>$catList),
 						//		'date'=> array('type'	=> 'date',			'text' => LAN_DATE_POSTED),
 					//			'match'=> array('type'	=> 'dropdown',		'text' =>  LAN_SEARCH_52, 'list'=>$matchList)
 							);
