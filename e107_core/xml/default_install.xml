@@ -9,7 +9,7 @@
 		<core name="adminlanguage"></core>
 		<core name="adminpwordchange">0</core>
 		<core name="adminstyle">infopanel</core>
-		<core name="admintheme">bootstrap</core>
+		<core name="admintheme">bootstrap3</core>
 		<core name="allowCommentEdit">0</core>
 		<core name="allowEmailLogin">2</core>
 		<core name="anon_post">0</core>

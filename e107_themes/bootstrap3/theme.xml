@@ -18,6 +18,7 @@
 	</screenshots>
 	<stylesheets>
 		<css file="style.css" name="Default"  />
+        <css file="css/bootstrap-dark.min.css" name="Bootstrap3 Dark Admin" scope='admin' />
         <css file="*" name="*"  />
 	</stylesheets>
 	<layouts>

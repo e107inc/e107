@@ -206,9 +206,17 @@ $(document).ready(function()
 		{
 
 			e.preventDefault();
+
+            if($(this).attr('data-cache') == 'false')
+            {
+                $('#uiModal').on('shown.bs.modal', function () {
+                    $(this).removeData('bs.modal');
+                });
+            }
+            
 			var url 		= $(this).attr('href');
 			var caption  	= $(this).attr('data-modal-caption');
-			var height 		= ($(window).height() * 0.7) - 50;
+			var height 		= ($(window).height() * 0.7) - 120;
 
             if(caption === undefined)
             {
@@ -344,7 +352,7 @@ $(document).ready(function()
 			}
 			else
 			{
-				$(this).multiselect();	
+				$(this).multiselect({ buttonClass: 'btn btn-default'} );
 			}
 			
 		});
@@ -531,15 +539,18 @@ $(document).ready(function()
 		// Check-All checkbox toggle
 		$("input.toggle-all").click(function(evt) {
 			var selector = 'input[type="checkbox"].checkbox';
+
 			if($(this).val().indexOf('jstarget:') === 0) {
 				selector = 'input[type="checkbox"][name^="' + $(this).val().split(/jstarget\:/)[1] + '"]';
 			}
-			
-			if($(this).is(":checked")){
-				$(selector).attr("checked", "checked");
+
+ 			if($(this).is(":checked")){
+				//$(selector).attr("checked", "checked");
+                $(selector).prop('checked', true);
 			}
 			else{
-				$(selector).removeAttr("checked");
+                $(selector).prop('checked',false);
+			//	$(selector).removeAttr("checked");
 			}
 		});
 		

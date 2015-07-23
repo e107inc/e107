@@ -630,6 +630,16 @@ function update_706_to_800($type='')
 		$log->logMessage(LAN_UPDATE_20.'customtitle', E_MESSAGE_SUCCESS);		
 		$do_save = TRUE;
 	}
+
+	if($pref['admintheme'] == 'bootstrap')//TODO Force an admin theme update or not?
+	{
+		if ($just_check) return update_needed('pref: Admin theme upgrade to bootstrap3 ');
+
+		$pref['admintheme'] = 'bootstrap3';
+		$pref['admincss']    = 'admin_dark.css';
+
+		$do_save = true;
+	}
 	
 	// convert all serialized core prefs to e107 ArrayStorage;
 	$serialz_qry = "SUBSTRING( e107_value,1,5)!='array' AND e107_value !='' ";
@@ -1375,8 +1385,10 @@ function update_706_to_800($type='')
 	//	e107::getSingleton('e107plugin')->install('download',array('nolinks'=>true));
 		e107::getSingleton('e107plugin')->refresh('download');
 	}
-	
-	if (!e107::isInstalled('banner') && $sql->gen("SELECT * FROM #banner LIMIT 1"))
+
+
+
+	if (!e107::isInstalled('banner') && $sql->isTable('banner'))
 	{
 		if ($just_check) return update_needed('Banner Table found, but plugin not installed. Needs to be refreshed.');	
 		e107::getSingleton('e107plugin')->refresh('banner');
@@ -1643,7 +1655,8 @@ function update_706_to_800($type='')
 		
 		if ($do_save)
 		{
-			save_prefs();
+		//	save_prefs();
+			e107::getConfig()->setPref($pref)->save(false,true,true);
 			$log->logMessage(LAN_UPDATE_50);
 		//	$log->logMessage(implode(', ', $accum), E_MESSAGE_NODISPLAY);
 			

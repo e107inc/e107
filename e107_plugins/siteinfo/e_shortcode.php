@@ -141,7 +141,9 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 			
 		}
 		
-		//TODO Parm for resizing the logo image with thumb.php 
+		//TODO Parm for resizing the logo image with thumb.php
+
+		$dimensions = array();
 		
 		if((isset($parm['w']) || isset($parm['h'])))
 		{
@@ -149,12 +151,14 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 			$dimensions[0] = $parm['w'];
 			$dimensions[1] = $parm['h'];	
 		}
-		else
+		elseif(!deftrue('BOOTSTRAP'))
 		{
 			$dimensions = getimagesize($path);
 		}
-		
-		$image = "<img class='logo img-responsive' src='".$logo."' style='width: ".$dimensions[0]."px; height: ".$dimensions[1]."px' alt='".SITENAME."' />\n";
+
+		$imageStyle = (empty($dimensions)) ? '' : " style='width: ".$dimensions[0]."px; height: ".$dimensions[1]."px' ";
+
+		$image = "<img class='logo img-responsive' src='".$logo."' ".$imageStyle." alt='".SITENAME."' />\n";
 	
 
 		

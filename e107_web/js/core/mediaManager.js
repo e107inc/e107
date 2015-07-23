@@ -381,24 +381,40 @@ $(document).ready(function()
   			var loading 	= $(e).attr('data-loading'); // image to show loading.
   			var search 		= $('#media-search').val(); // image to show loading.  
 			var nav			= $(e).attr('data-nav-inc');
-  			
+			var dir         = $(e).attr('data-nav-dir');
+            var curTotal    = $('#admin-ui-media-select-count-hidden').attr('data-media-select-current-limit');
+            var total       = $(e).attr('data-nav-total');
+
+
+
   			if(nav !== null && navid !==null)
   			{
   				eNav(e,navid);	
   			}
-  			
-  			var src 		= $(e).attr("data-src");
-  				
-  			if(target != null)
+
+            if(dir == 'down' && curTotal == 20)
+            {
+              //  $('#admin-ui-media-nav-down').prop("disabled",false);
+                return false;
+            }
+
+            if(dir == 'up' && curTotal == total)
+            {
+            // $('#admin-ui-media-nav-up').prop("disabled",false);
+                return false;
+            }
+
+  			if(target !==  null)
   			{			
   				id = '#' + target; 
   			}
-  						
+
   			if(loading != null)
   			{
   				$(id).html("<img src='"+loading+"' alt='' />");
   			}
-  					
+
+            var src = $(e).attr("data-src"); // heep here.
   			if(src === null) // old way - href='myscript.php#id-to-target
   			{
   				var tmp = src.split('#');
@@ -410,17 +426,63 @@ $(document).ready(function()
   			{
   				src = src + '&search='+search;	
   			}
-  			
-  			 $(id).fadeOut('fast');
-  			
+
+  			if(dir == 'down')
+            {
+                outDir = 'right';
+                inDir = 'left';
+
+            }
+            else
+            {
+
+                outDir = 'left';
+                inDir = 'right';
+            }
+
+            $('#e-modal-loading', window.parent.document).show();
+            $('iframe', window.parent.document).attr('scrolling', 'no'); // hide the scrollbar. 
+
+
+
+            $.get(src, function( data ) {
+
+                $(id).hide('slide', { direction: outDir }, 1200, function(){
+
+                    //   alert('done');
+                    $(id ).html( data );
+                    newVal = $('#admin-ui-media-select-count-hidden').text();
+                    $('#admin-ui-media-select-count').text(newVal).fadeIn();
+
+                    $(id).show('slide', { direction: inDir },1200,function(){
+                        $('#e-modal-loading', window.parent.document).hide();
+
+
+                    });
+
+                });
+
+
+
+            });
+
+
+            $('iframe', window.parent.document).attr('scrolling', 'auto');
+
+            return false;
+            
+
+            /*
+
   			//TODO Animate. 
   			$(id).load(src,function() {
   				// alert(src);
-  				 $(id).fadeIn('fast');
-    			// $(this).show('slow'); // .slideLeft();
+  			//	 $(id).fadeIn('fast');
+                $(id).show('slow');
+    			// $(this).show('slow'); // ;
 			});
 				
-			
+			*/
 			
 		}
 	

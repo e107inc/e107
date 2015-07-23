@@ -550,7 +550,8 @@ class wysiwyg
 			$ret['extended_smileys'] = json_encode($emotes);
 		}
 
-
+	//	$ret['skin']                    = 'e107admin';
+	//	$ret['skin_url']                = SITEURLBASE.e_PLUGIN_ABS.'tinymce4/skins/e107admin';
 
 
 

@@ -718,9 +718,9 @@ class e_parse_shortcode
 		$this->addedCodes = NULL;
 		
 		// former $sc_style - do it once here and not on every doCode loop - performance
-		
-		$this->sc_style = e107::scStyle(); 	//FIXME - BC Problems and conflicts. - XXX Commenting this out will fix #3 below. 
-	
+
+		$this->sc_style = e107::scStyle(); 	//FIXME - BC Problems and conflicts.
+
 		/* --------- BUG TEST Scenario -------------- 
 		 * Front-end Theme: Bootstrap
 		 * MENU-1 contains '{NAVIGATION=side}' on top and chatbox_menu below
@@ -756,9 +756,14 @@ class e_parse_shortcode
 			// Do it only once per parsing cylcle and not on every doCode() loop - performance
 			if(method_exists($this->addedCodes, 'wrapper'))
 			{
-				$this->wrappers = e107::templateWrapper($this->addedCodes->wrapper()); 
+				$tmpWrap = e107::templateWrapper($this->addedCodes->wrapper());
+				if(!empty($tmpWrap)) // FIX for #3 above.
+				{
+					$this->wrappers = array_merge($this->wrappers,$tmpWrap);
+				}
 			}
-			
+
+
 			/*
 			$classname = get_class($extraCodes);
 

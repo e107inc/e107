@@ -172,7 +172,11 @@ if (varset($e107_popup) != 1)
 	}
 	else
 	{
-		echo($rinfo ? "\n<div class='e-footer-info muted center' style='padding-bottom:20px; margin-top:10px'><small>{$rinfo}</small></div>\n" : "");
+
+		if(!deftrue('e_IFRAME'))
+		{
+			echo($rinfo ? "\n<div class='e-footer-info muted center' style='padding-bottom:20px; margin-top:10px'><small>{$rinfo}</small></div>\n" : "");
+		}
 	}
 	
 } // End of regular-page footer (the above NOT done for popups)
