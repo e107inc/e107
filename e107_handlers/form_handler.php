@@ -177,10 +177,18 @@ class e_form
 	// For Comma separated keyword tags. 
 	function tags($name, $value, $maxlength = 200, $options = array())
 	{
-		if(is_string($options)) parse_str($options, $options);
-		$options['class'] = 'tbox span1 e-tags';
-		$options['size'] = 7;
-		return $this->text($name, $value, $maxlength, $options);	
+	  if(is_string($options)) parse_str($options, $options);
+
+	  $defaults['selectize'] = array(
+		'create'   => true,
+		'maxItems' => 7,
+		'mode'     => 'multi',
+		'plugins'  => array('remove_button'),
+	  );
+
+	  $options = array_replace_recursive($defaults, $options);
+
+	  return $this->text($name, $value, $maxlength, $options);
 	}
 
 
@@ -400,7 +408,7 @@ class e_form
 		}	
 		*/
 
-		if(vartrue($options['selectize']['loadPath']))
+		if(vartrue($options['selectize']))
 		{
 			e107::js('core', 'selectize/js/selectize.min.js', 'jquery');
 			e107::css('core', 'selectize/css/selectize.css', 'jquery');
@@ -461,9 +469,11 @@ class e_form
 
 				// Callbacks.
 				load: function(query, callback) {
+					var loadPath = '" . vartrue($ac['loadPath'], '') . "';
+					if (loadPath == '') return callback([]);
 			        if (!query.length) return callback([]);
 					$.ajax({
-						url: '" . $ac['loadPath'] . "',
+						url: loadPath,
 						type: 'POST',
 						dataType: 'json',
 						data: {
@@ -3290,6 +3300,92 @@ class e_form
 			break;
 
 			case 'tags':
+				if(!empty($parms['constant']))
+				{
+					$value = defset($value, $value);
+				}
+
+				if(vartrue($parms['truncate']))
+				{
+					$value = $tp->text_truncate($value, $parms['truncate'], '...');
+				}
+				elseif(vartrue($parms['htmltruncate']))
+				{
+					$value = $tp->html_truncate($value, $parms['htmltruncate'], '...');
+				}
+				if(vartrue($parms['wrap']))
+				{
+					$value = $tp->htmlwrap($value, (int) $parms['wrap'], varset($parms['wrapChar'], ' '));
+				}
+				if(vartrue($parms['link']) && $id/* && is_numeric($id)*/)
+				{
+					$link = str_replace('[id]', $id, $parms['link']);
+					$link = $tp->replaceConstants($link); // SEF URL is not important since we're in admin.
+
+					$dialog = vartrue($parms['target']) == 'dialog' ? " e-dialog" : ""; // iframe
+					$ext = vartrue($parms['target']) == 'blank' ? " rel='external' " : ""; // new window
+					$modal = vartrue($parms['target']) == 'modal' ? " data-toggle='modal' data-cache='false' data-target='#uiModal' " : "";
+
+					if($parms['link'] == 'sef' && $this->getController()
+							->getListModel()
+					)
+					{
+						$model = $this->getController()->getListModel();
+						// copy url config
+						if(!$model->getUrl())
+						{
+							$model->setUrl($this->getController()->getUrl());
+						}
+						// assemble the url
+						$link = $model->url();
+					}
+					elseif(vartrue($data[$parms['link']])) // support for a field-name as the link. eg. link_url.
+					{
+						$link = $tp->replaceConstants(vartrue($data[$parms['link']]));
+					}
+
+					// in case something goes wrong...
+					if($link)
+					{
+						$value = "<a class='e-tip{$dialog}' {$ext} href='" . $link . "' {$modal} title='Quick View' >" . $value . "</a>";
+					}
+				}
+
+				if(empty($value))
+				{
+					$value = '-';
+					$setValue = "data-value=''";
+				}
+				else
+				{
+					$setValue = "";
+
+					if($attributes['type'] == 'tags' && !empty($value))
+					{
+						$setValue = "data-value='" . $value . "'";
+						$value = str_replace(",", ", ", $value); // add spaces so it wraps, but don't change the actual values.
+					}
+				}
+
+
+				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
+				{
+					$options['selectize'] = array(
+						'create'     => true,
+						'maxItems'   => 7,
+						'mode'       => 'multi',
+						'e_editable' => $field . '_' . $id,
+					);
+
+					$tpl = $this->text($field, $value, 80, $options);
+
+					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
+					$value = "<a id='" . $field . '_' . $id . "' class='e-tip e-editable editable-click editable-tags' data-emptytext='-' data-tpl='" . str_replace("'", '"', $tpl) . "' data-name='" . $field . "' title=\"" . LAN_EDIT . " " . $attributes['title'] . "\" data-type='text' data-pk='" . $id . "' " . $setValue . " data-url='" . e_SELF . "?mode={$mode}&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>" . $value . "</a>";
+				}
+
+				$value = vartrue($parms['pre']) . $value . vartrue($parms['post']);
+				break;
+
 			case 'text':
 
 				if(!empty($parms['constant']))
