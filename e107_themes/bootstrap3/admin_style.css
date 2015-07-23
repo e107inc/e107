@@ -935,7 +935,7 @@ ul#e-status li  a:hover  		{ text-decoration: none; }
 ul#e-latest						{ margin:0px 14px}
 ul#e-latest li 					{ padding-bottom:6px;  font-size:85%}
 ul#e-latest						{ line-height:17px }
-ul#e-latest li  a  span.badge	{ float:right;font-size:85% }
+ul#e-latest li  a  span.label	{ float:right;font-size:85% }
 ul#e-latest li  a:hover  		{ text-decoration: none; }
 
 #userclass-tree-structure		{ font-size:80% }
