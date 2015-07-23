@@ -55,6 +55,10 @@ tr.highlight-even, .table-striped > tbody > tr.highlight-even		{ background-colo
 
 #admin-ui-nav-menu a.link-active { color: #fff }
 
+#admin-ui-media-manager.nav-tabs   { background-color: #212121 }
+.tab-content { background-color: #373737 }
+
+
 /*
 .bootstrap-select, bootstrap-select button
 {

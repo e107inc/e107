@@ -26,7 +26,7 @@ define('e_CAPTCHA_FONTCOLOR','#F9A533');
 $core = e107::getConfig('core'); 		
 if($core->get('admintheme') != 'bootstrap' && $core->get('admintheme') != 'bootstrap3')
 {
-	$core->update('admintheme','bootstrap');
+	$core->update('admintheme','bootstrap3');
 	$core->update('adminstyle','infopanel');
 	$core->update('admincss','admin_dark.css');
 	$core->set('e_jslib_core',array('prototype' => 'none', 'jquery'=> 'auto'));

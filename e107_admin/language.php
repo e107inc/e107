@@ -406,14 +406,14 @@ if(!empty($_GET['iframe']))
 				$bcaption = LAN_UPDATE;
 			}
 			$text .= "
-							<tr class='info'>
+							<tr class='warning'>
 								<td><strong>".LANG_LAN_07."</strong></td>
 								<td>
 									".$frm->checkbox('drop', 1)."
 									<div class='smalltext field-help'>".$frm->label(LANG_LAN_08, 'drop', 1)."</div>
 								</td>
 							</tr>
-							<tr class='info'>
+							<tr class='warning'>
 								<td><strong>".LAN_CONFDELETE."</strong></td>
 								<td >
 									".$frm->checkbox('remove', 1)."

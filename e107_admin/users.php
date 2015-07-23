@@ -81,6 +81,33 @@ class users_admin extends e_admin_dispatcher
 		}
 
 
+		$JS = <<<JS
+
+			//	$('#user-action-indicator-'+user).html('<i class="fa fa-cog"></i>'); //
+
+			$(".user-action").click(function(e){
+				// e.stopPropagation();
+
+				var action = $(this).attr('data-action-type');
+				var user = $(this).attr('data-action-user');
+
+			//	$('#user-action-indicator-'+user).html('<i class="fa fa-spin fa-spinner"></i>'); //
+
+				$('.user-action-hidden').val(''); // clear all, incase of back-button or auto-fill.
+				$('#user-action-'+ user).val(action);
+				$('#core-user-list-form').submit();
+
+
+				});
+JS;
+
+		e107::js('footer-inline', $JS);
+		e107::css('inline', '
+			.user-action { cursor: pointer }
+			.btn-user-action { margin-right:15px}
+
+		');
+
 	}
 	
 	/**
@@ -427,6 +454,16 @@ class users_admin_ui extends e_admin_ui
 	public function beforeUpdate($new_data, $old_data, $id)
 	{
 		$tp = e107::getParser();
+
+		$pwdField = 'user_password_'.$id;
+
+		if(!empty($new_data[$pwdField]))
+		{
+			$new_data['user_password'] = $new_data[$pwdField];
+			unset($new_data[$pwdField]);
+		}
+
+	//	e107::getMessage()->addInfo(print_a($new_data,true));
 
 		if(empty($new_data['user_password']))
 		{
@@ -2304,7 +2341,9 @@ class users_admin_form_ui extends e_admin_form_ui
 		}
 		if($mode == 'write')
 		{
-			return $this->password('user_password', '', 20, array('size' => 50, 'class' => 'tbox e-password', 'placeholder' => 'Leave blank for no change', 'generate' => 1, 'strength' => 1, 'required'=>0))."
+			$fieldName = 'user_password_'. $this->getController()->getId();
+
+			return $this->password($fieldName, '', 20, array('size' => 50, 'class' => 'tbox e-password', 'placeholder' => 'Leave blank for no change', 'generate' => 1, 'strength' => 1, 'required'=>0, 'autocomplete'=>'off'))."
 			";			
 		}
 			
@@ -2431,80 +2470,159 @@ class users_admin_form_ui extends e_admin_form_ui
 	
 		
 		extract($row);
+
+		$user_id = $row['user_id'];
+		$user_ip = $row['user_ip'];
+		$user_admin = $row['user_admin'];
+
 		$text = "";
 		$head = "<div>
 
 				<input type='hidden' name='userid[{$user_id}]' value='{$user_id}' />
 				<input type='hidden' name='userip[{$user_id}]' value='{$user_ip}' />
-				<select name='useraction[{$user_id}]' onchange='this.form.submit()' class='e-select tbox' data-placement='left' title='Modify' style='text-align:left;width:75%'>
-				<option selected='selected' value=''>&nbsp;</option>";
-				
-		if ($user_perms != "0")
+				<input type='hidden'  class='user-action-hidden' id='user-action-".$user_id."' name='useraction[{$user_id}]' value='' />
+				";
+
+		//		<select name='useraction[{$user_id}]' onchange='this.form.submit()' class='e-select tbox' data-placement='left' title='Modify' style='text-align:left;width:75%'>
+		//		<option selected='selected' value=''>&nbsp;</option>";
+
+
+		$opts = array();
+
+		if ($row['user_perms'] != "0")
 		{
 			// disabled user info <option value='userinfo'>".USRLAN_80."</option>
-			$text .= "
-					<option value='usersettings'>".LAN_EDIT."</option>
-					";
+		//	$text .= "<option value='usersettings'>".LAN_EDIT."</option>";
+
+
+			$opts['usersettings'] = LAN_EDIT;
+
 			// login/logout As
 			if(getperms('0') && !($row['user_admin'] && getperms('0', $row['user_perms'])))
 			{
-				if(e107::getUser()->getSessionDataAs() == $row['user_id']) $text .= "<option value='logoutas'>".sprintf(USRLAN_AS_2, $row['user_name'])."</option>";
-				else $text .= "<option value='loginas'>".sprintf(USRLAN_AS_1, $row['user_name'])."</option>";
+				if(e107::getUser()->getSessionDataAs() == $row['user_id'])
+				{
+		//		    $text .= "<option value='logoutas'>".sprintf(USRLAN_AS_2, $row['user_name'])."</option>";
+				    $opts['logoutas'] = e107::getParser()->lanVars(USRLAN_AS_2, $row['user_name']);
+				}
+				else
+				{
+		//		    $text .= "<option value='loginas'>".sprintf(USRLAN_AS_1, $row['user_name'])."</option>";
+				    $opts['loginas'] = e107::getParser()->lanVars(USRLAN_AS_1, $row['user_name']);
+				}
 			}
-			switch ($user_ban)
+			switch ($row['user_ban'])
 			{
 				case 0 :
-					$text .= "<option value='ban'>".USRLAN_30."</option>\n";
+		//			$text .= "<option value='ban'>".USRLAN_30."</option>\n";
+					$opts['ban'] = USRLAN_30;
 					break;
 				case 1 :
 					// Banned user
-					$text .= "<option value='unban'>".USRLAN_33."</option>\n";
+			//		$text .= "<option value='unban'>".USRLAN_33."</option>\n";
+					$opts['unban'] = USRLAN_33;
 					break;
 				case 2 :
 					// Unverified
-					$text .= "<option value='ban'>".USRLAN_30."</option>
+			/*		$text .= "<option value='ban'>".USRLAN_30."</option>
 						<option value='verify'>".USRLAN_32."</option>
 						<option value='resend'>".USRLAN_112."</option>
-						<option value='test'>".USRLAN_118."</option>";
+						<option value='test'>".USRLAN_118."</option>";*/
+
+						$opts['ban'] = USRLAN_30;
+						$opts['verify'] = USRLAN_32;
+						$opts['resend'] = USRLAN_112;
+						$opts['test'] = USRLAN_118;
 					break;
 				case 3 :
 					// Bounced
 					// FIXME wrong lan for 'reqverify' - USRLAN_181, wrong lan for 'verify' (USRLAN_182), changed to USRLAN_32
-					$text .= "<option value='ban'>".USRLAN_30."</option>
+				/*	$text .= "<option value='ban'>".USRLAN_30."</option>
 						<option value='reqverify'>Make not verified</option>
-						<option value='verify'>".USRLAN_32/*USRLAN_182*/."</option>
+						<option value='verify'>".USRLAN_32."</option>
 						<option value='test'>".USRLAN_118."</option>";
+						*/
+
+						$opts['ban']        = USRLAN_30;
+						$opts['reqverify'] = "Make not verified";
+						$opts['verify']     = USRLAN_32;
+						$opts['test']       = USRLAN_118;
+
+
 					break;
 				default :
 			}
-			if (!$user_admin && !$user_ban && $user_ban != 2 && getperms('3'))
+			if (!$user_admin && !$row['user_ban'] && $row['user_ban'] != 2 && getperms('3'))
 			{
-				$text .= "<option value='admin'>".USRLAN_35."</option>\n";
+		//		$text .= "<option value='admin'>".USRLAN_35."</option>\n";
+				$opts['admin'] = USRLAN_35;
 			}
 			else
-				if ($user_admin && $user_perms != "0" && getperms('3'))
+				if ($user_admin && $row['user_perms'] != "0" && getperms('3'))
 				{
-					$text .= "<option value='adminperms'>".USRLAN_221."</option>\n";
-					$text .= "<option value='unadmin'>".USRLAN_34."</option>\n";
+			//		$text .= "<option value='adminperms'>".USRLAN_221."</option>\n";
+			//		$text .= "<option value='unadmin'>".USRLAN_34."</option>\n";
+
+					$opts['adminperms'] = USRLAN_221;
+					$opts['uadmin']     = USRLAN_34;
 				}
 		}
-		if ($user_perms == "0" && !getperms("0"))
+		if ($row['user_perms'] == "0" && !getperms("0"))
 		{
-			$text .= "";
+		//	$text .= "";
 		}
 		elseif ($user_id != USERID || getperms("0"))
 		{
 		//	$text .= "<option value='userclass'>".USRLAN_36."</option>\n"; // DEPRECATED. inline & batch should be enough. 
 		}
-		if ($user_perms != "0")
+		if ($row['user_perms'] != "0")
 		{
-			$text .= "<option value='deluser'>".LAN_DELETE."</option>\n";
+		//	$text .= "<option value='deluser'>".LAN_DELETE."</option>\n";
+			$opts['deldiv'] = 'divider';
+			$opts['deluser'] = LAN_DELETE;
 		}
 		
-		$foot = "</select></div>";
+	//	$foot = "</select>";
+	//	$foot = "</div>";
 
+		$btn =  '<div class="btn-group pull-right">
+
+		<button aria-expanded="false" class="btn btn-default btn-user-action dropdown-toggle" data-toggle="dropdown">
+		<span class="user-action-indicators" id="user-action-indicator-'.$user_id.'">'.e107::getParser()->toGlyph('cog').'</span>
+		<span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu">
+
+		<!-- dropdown menu links -->
+		';
+		//<li class="dropdown-header text-right"><strong>'.$row['user_name'].'</strong></li>
+		foreach($opts as $k=>$v)
+		{
+			if($v == 'divider')
+			{
+				$btn .= '<li class="divider" ></li>';
+			}
+			else
+			{
+				$btn .= '<li class="danger user-action-'.$k.'"><a class="user-action text-right"  data-action-user="'.$user_id.'" data-action-type="'.$k.'" >'.$v.'</a></li>';
+			}
+		}
+
+
+
+		$btn .= '
+		</ul></div>';
+
+		if(!empty($opts))
+		{
+			return $head.$btn;
+		}
+		else
+		{
+			return '';
+		}
 		
-		return ($text) ? $head.$text.$foot : "";	
+		// return ($text) ? $head.$text.$foot . $btn : "";
 	}
 
 	

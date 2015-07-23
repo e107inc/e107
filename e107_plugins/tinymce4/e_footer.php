@@ -19,7 +19,7 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
 		//e107::js('tinymce','tiny_mce.js','jquery');
 		//e107::js('tinymce','wysiwyg.php','jquery',5);
 		
-		e107::js('footer', "http://tinymce.cachefly.net/4.1/tinymce.min.js");
+		e107::js('footer', "http://tinymce.cachefly.net/4.2/tinymce.min.js");
 		e107::js('footer',e_PLUGIN.'tinymce4/wysiwyg.php','jquery',5);
 	//	e107::js('inline', "
    //   			 tinymce.init({selector:'.e-wysiwyg'});
@@ -36,7 +36,7 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
 	if(ADMIN)
 	{
 	    $insert = "$('#'+id).after('<div>";
-	    $insert .= "<a href=\"#\" id=\"' + id + '\" class=\"e-wysiwyg-toggle btn btn-inverse btn-mini\">Switch to bbcode<\/a>";
+	    $insert .= "<a href=\"#\" id=\"' + id + '\" class=\"e-wysiwyg-toggle btn btn-xs btn-default btn-inverse btn-mini\">Switch to bbcode<\/a>";
         
 	     if(e_PAGE == 'mailout.php')
         {

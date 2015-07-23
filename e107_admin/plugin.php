@@ -484,7 +484,7 @@ class pluginManager{
 			
 				$badge 		= $this->compatibilityLabel($row['compatibility']);;
 				$featured 	= ($row['featured']== 1) ? " <span class='label label-info'>".EPL_ADLAN_91."</span>" : '';
-				$price 		= ($row['price'] > 0) ? "<span class='label label-info'>".EPL_ADLAN_92."</span>" : "<span class='label label-success'>".EPL_ADLAN_93."</span>";
+				$price 		= (!empty($row['price'])) ? "<span class='label label-primary'>".$row['price']." ".$row['currency']."</span>" : "<span class='label label-success'>".EPL_ADLAN_93."</span>";
 			
 				$data[] = array(
 					'plugin_id'				=> $row['params']['id'],
@@ -504,7 +504,7 @@ class pluginManager{
 					'plugin_website'		=> vartrue($row['authorUrl']),
 					'plugin_url'			=> $row['urlView'],
 					'plugin_notes'			=> '',
-				//	'plugin_price'			=> $price,
+					'plugin_price'			=> $row['price'],
 					'plugin_license'		=> $price
 				);	
 				
@@ -600,9 +600,10 @@ class pluginManager{
 	//	$url = e_SELF.'?action=download&amp;src='.base64_encode($d);//$url.'&amp;action=download';
 		$id = 'plug_'.$data['plugin_id'];
 		//<button type='button' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='btn btn-primary e-ajax middle' value='Download and Install' data-src='".$url."' ><span>Download and Install</span></button>
-		
+		$modalCaption = (!empty($data['plugin_price'])) ? "Purchase ".$data['plugin_name']." ".$data['plugin_version'] : 'Downloading and Installing '.$data['plugin_name']." ".$data['plugin_version'];
+
 		$url = e_SELF.'?mode=download&amp;src='.base64_encode($d);
-		$dicon = '<a title="Download and Install" class="e-modal btn btn-default" href="'.$url.'" rel="external" data-loading="'.e_IMAGE.'/generic/loading_32.gif"  data-cache="false" data-modal-caption="Downloading and Installing '.$data['plugin_name']." ".$data['plugin_version'].'"  target="_blank" >'.ADMIN_INSTALLPLUGIN_ICON.'</a>';
+		$dicon = '<a title="Download and Install" class="e-modal btn btn-default" href="'.$url.'" rel="external" data-loading="'.e_IMAGE.'/generic/loading_32.gif"  data-cache="false" data-modal-caption="'.$modalCaption.'"  target="_blank" >'.ADMIN_INSTALLPLUGIN_ICON.'</a>';
 	
 	
 		// Temporary Pop-up version. 
@@ -627,12 +628,17 @@ class pluginManager{
 		
 		$string =  base64_decode($_GET['src']);	
 		parse_str($string, $data);
-		
-		
+
+		if(!empty($data['plugin_price']))
+		{
+			e107::getRedirect()->go($data['plugin_url']);
+			return true;
+		}
+
 		$mp = $this->getMarketplace();
 	//	$mp->generateAuthKey($e107SiteUsername, $e107SiteUserpass);
 	
-	//	print_a($data); 
+
 		
 		// Server flush useless. It's ajax ready state 4, we can't flush (sadly) before that (at least not for all browsers) 
 	 	$mes->addSuccess(EPL_ADLAN_94);

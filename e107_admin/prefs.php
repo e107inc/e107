@@ -814,7 +814,7 @@ $text .= "
 					$text .= "
 					<tr>
 						<td><label for='inputdate'>".PRFLAN_230."</label></td>
-						<td>
+						<td class='form-inline'>
 							".$frm->select('inputdate',$inputdate, e107::getPref('inputdate'));
 							
 					$text .= $frm->select('inputtime',$inputtime, e107::getPref('inputtime'));

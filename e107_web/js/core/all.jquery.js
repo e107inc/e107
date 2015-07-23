@@ -452,7 +452,10 @@ $(document).ready(function()
 
     $(document).on("click", ".e-dialog-close", function(){
 			parent.$('.modal').modal('hide');
-			
+            $('.modal').modal('hide');
+
+
+         //   $('#modal').modal('hide');
 			// parent.$.colorbox.close()	
 	});
 		

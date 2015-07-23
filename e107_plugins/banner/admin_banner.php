@@ -95,7 +95,7 @@ class banner_ui extends e_admin_ui
 	
 		  'banner_clientname'		=>   array ( 'title' => 'Clientname', 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banner_clientlogin' 		=>   array ( 'title' => BNRLAN_12, 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'banner_clientpassword' 	=>   array ( 'title' => BNRLAN_13, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => 'strength=1&password=1&required=1&generate=1&nomask=1', 'class' => 'center', 'thclass' => 'center',  ),
+		  'banner_clientpassword' 	=>   array ( 'title' => BNRLAN_13, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => 'strength=1&password=1&required=0&generate=1&nomask=1', 'class' => 'center', 'thclass' => 'center',  ),
 		  'banner_image' 			=>   array ( 'title' => BNRLAN_14, 	'type' => 'image', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => 'thumb=0x50', 'writeParms' => 'media=banner&w=600', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banner_clickurl' 		=>   array ( 'title' => BNRLAN_15, 	'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => 'size=xxlarge&required=1', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banner_impurchased' 		=>   array ( 'title' => BNRLAN_16, 	'type' => 'number', 'data' => 'int', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
