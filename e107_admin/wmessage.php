@@ -90,7 +90,8 @@ class generic_ui extends e_admin_ui
 		
 		
 		protected $prefs = array(
-			'wm_enclose'		=> array('title'=> WMLAN_05, 'type'=>'boolean', 'data' => 'int','help'=> WMLAN_06),		); 
+			'wm_enclose'		=> array('title'=> WMLAN_05, 'type'=>'radio', 'data' => 'int','help'=> WMLAN_06, 'writeParms'=>array('optArray'=>array(0=> LAN_DISABLED, 1=> LAN_ENABLED, 2=> "Enclosed with Carousel"))),
+		);
 
 	
 		public function init()

@@ -438,13 +438,26 @@ class e_db_mysql
 		$this->mySQLresult = $sQryRes;
 
 		$this->total_results = false;
-		if ((strpos($query,'SQL_CALC_FOUND_ROWS') !== FALSE) && (strpos($query,'SELECT') !== FALSE))
-		{	// Need to get the total record count as well. Return code is a resource identifier
-			// Have to do this before any debug action, otherwise this bit gets messed up
-			$fr = ($this->pdo) ? $this->mySQLaccess->query('SELECT FOUND_ROWS()') : mysql_query('SELECT FOUND_ROWS()', $this->mySQLaccess);
-			$rc = ($this->pdo) ? $this->fetch() : mysql_fetch_array($fr);
-			$this->total_results = (int) $rc['FOUND_ROWS()'];
+
+		// Need to get the total record count as well. Return code is a resource identifier
+		// Have to do this before any debug action, otherwise this bit gets messed up
+		if ((strpos($query,'SQL_CALC_FOUND_ROWS') !== false) && (strpos($query,'SELECT') !== false))
+		{
+			if($this->pdo)
+			{
+				$fr =  $this->mySQLaccess->query('SELECT FOUND_ROWS()');
+				$rc = $fr->fetchColumn();
+				$this->total_results = (int) $rc;
+			}
+			else
+			{
+				$fr = mysql_query('SELECT FOUND_ROWS()', $this->mySQLaccess);
+				$rc =  mysql_fetch_array($fr);
+				$this->total_results = (int) $rc['FOUND_ROWS()'];
+			}
+
 		}
+
 
 		if (E107_DEBUG_LEVEL)
 		{

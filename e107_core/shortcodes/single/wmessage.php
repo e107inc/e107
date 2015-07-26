@@ -62,12 +62,14 @@ function wmessage_shortcode($parm='')
 			SELECT * FROM #generic
 			WHERE gen_type ='wmessage' AND gen_intdata IN (".USERCLASS_LIST.')';
 			$wmessage = array();
+			$wmessageCaption = array();
 			$wmcaption = '';
 			if($sql->gen($qry))
 			{
 				while ($row = $sql->fetch())
 				{
 					$wmessage[] = $tp->toHTML($row['gen_chardata'], TRUE, 'BODY, defs', 'admin');
+					$wmessageCaption[] =  $tp->toHTML($row['gen_ip'], TRUE, 'TITLE');
 					if(!$wmcaption)
 					{
 						$wmcaption = $tp->toHTML($row['gen_ip'], TRUE, 'TITLE');
@@ -75,10 +77,21 @@ function wmessage_shortcode($parm='')
 				}
 			}
 
+
 			if (isset($wmessage) && $wmessage)
 			{
 				ob_start();
-				if (vartrue($pref['wm_enclose']))
+				if(intval($pref['wm_enclose']) === 2) // carousel
+				{
+					$carousel= array();
+					foreach($wmessage as $k=>$v)
+					{
+						$carousel['slide-'.$k] = array('caption'=>$wmessageCaption[$k], 'text'=>$ns->tablerender($wmessageCaption[$k],$v, 'wm',true));
+					}
+
+					echo e107::getForm()->carousel('wmessage-carousel',$carousel);
+				}
+				elseif(intval($pref['wm_enclose']) === 1)
 				{
 				 	$ns->tablerender($wmcaption, implode("<br />",$wmessage), 'wm');
 				}
