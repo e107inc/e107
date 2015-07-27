@@ -19,7 +19,7 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
 		//e107::js('tinymce','tiny_mce.js','jquery');
 		//e107::js('tinymce','wysiwyg.php','jquery',5);
 		
-		e107::js('footer', "http://tinymce.cachefly.net/4.2/tinymce.min.js");
+		e107::js('footer', "http://tinymce.cachefly.net/4.1/tinymce.min.js");
 		e107::js('footer',e_PLUGIN.'tinymce4/wysiwyg.php','jquery',5);
 	//	e107::js('inline', "
    //   			 tinymce.init({selector:'.e-wysiwyg'});
