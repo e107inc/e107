@@ -191,26 +191,7 @@ $(document).ready(function()
 		
 			// https://github.com/smalot/bootstrap-datetimepicker
 				
-			$("input.e-date").each(function() {			
-        		$(this).datetimepicker({
-        			minView: 'month',
-        			maxView: 'decade',
-        			autoclose: true,
-        			format: $(this).attr("data-date-format"),
-        			weekStart: $(this).attr("data-date-firstday"),
-        			language: $(this).attr("data-date-language")
-        		 });    		 
-    		});
-    	
-    		$("input.e-datetime").each(function() {  			
-        		$(this).datetimepicker({
-        			autoclose: true,
-        			format: $(this).attr("data-date-format"),
-        			weekStart: $(this).attr("data-date-firstday"),
-        			showMeridian: $(this).attr("data-date-ampm"),
-        			language: $(this).attr("data-date-language")
-        		 });    		 
-    		});
+
 		
 		
 		/*	

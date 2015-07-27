@@ -1052,9 +1052,37 @@ class e_form
 	//	$text .= " ({$dformat}) type:".$dateFormat." ".$value;
 
 		// Load it in the footer.
-		e107::css('core', 	'bootstrap-datetimepicker/css/datetimepicker.css', 'jquery');
+		e107::css('core', 	'bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css', 'jquery');
+
 		e107::js('core', 	'bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js', 'jquery', 2);
 
+		if(e_LANGUAGE !== 'English')
+		{
+			e107::js('footer-inline', e107::getDate()->buildDateLocale());
+		}
+
+		e107::js('footer-inline', '
+			$("input.e-date").each(function() {
+        		$(this).datetimepicker({
+        			minView: "month",
+        			maxView: "decade",
+        			autoclose: true,
+        			format: $(this).attr("data-date-format"),
+        			weekStart: $(this).attr("data-date-firstday"),
+        			language: $(this).attr("data-date-language")
+        		 });
+    		});
+
+    		$("input.e-datetime").each(function() {
+        		$(this).datetimepicker({
+        			autoclose: true,
+        			format: $(this).attr("data-date-format"),
+        			weekStart: $(this).attr("data-date-firstday"),
+        			showMeridian: $(this).attr("data-date-ampm"),
+        			language: $(this).attr("data-date-language")
+        		 });
+    		});
+    		');
 
 		return $text;
 
