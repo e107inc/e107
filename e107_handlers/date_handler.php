@@ -24,8 +24,60 @@ class convert
 		
 		
 	}
-	
-	
+
+
+	/**
+	 * Build the datetimepicker() locale, since it must match strftime() values for accurate conversion.
+	 */
+	function buildDateLocale()
+	{
+		$text = '
+		(function($){
+
+		$.fn.datetimepicker.dates["'.e_LAN.'"] = {';
+
+				$dates = array();
+
+				for ($i=1; $i < 8; $i++)
+				{
+					$day = strftime('%A', mktime(1,1,1, 1, $i, 2012));
+					$dates['days'][] = 	$day;
+					$dates['daysShort'][] = strftime('%a', mktime(1,1,1, 1, $i, 2012));
+					$dates['daysMin'][] = substr($day,0,2);
+				}
+
+
+				for ($i=1; $i < 13; $i++)
+				{
+					$dates['months'][] 		= strftime('%B', mktime(1,1,1, $i, 2, 2013));
+					$dates['monthsShort'][] = strftime('%h', mktime(1,1,1, $i, 2, 2013));
+				}
+
+
+				foreach($dates as $key=>$type)
+				{
+					$d = array();
+
+					$text .= "\n".$key.": [";
+					foreach($type as $val)
+					{
+						$d[] = '"'.$val.'"';
+
+					}
+					$text .= implode(",",$d);
+					$text .= "],";
+				}
+
+
+				$text .= '
+		meridiem: ["am", "pm"]
+		};
+		}(jQuery));';
+
+		return $text;
+	}
+
+
 	/**
 	 * Return an array of language terms representing months
 	 * @param $type string : month, month-short, day, day-short, day-shortest
