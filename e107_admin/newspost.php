@@ -454,6 +454,11 @@ class news_admin_ui extends e_admin_ui
 		$tmp = explode(chr(35), $new_data['news_author']);
 		$new_data['news_author'] = intval($tmp[0]);
 
+		if(E107_DBG_SQLQUERIES)
+		{
+			e107::getMessage()->addInfo("<h3>Raw _POST data</h3>".print_a($_POST,true));
+		}
+
 		return $new_data;
 	}
 
@@ -479,6 +484,11 @@ class news_admin_ui extends e_admin_ui
 		{
 			$tmp = explode(chr(35), $new_data['news_author']);
 			$new_data['news_author'] = intval($tmp[0]);
+		}
+
+		if(E107_DBG_SQLQUERIES)
+		{
+			e107::getMessage()->addInfo("<h3>Raw _POST data</h3>".print_a($_POST,true));
 		}
 
 		return $new_data;
