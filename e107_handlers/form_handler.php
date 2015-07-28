@@ -1395,8 +1395,18 @@ class e_form
 		$bbbar 				= '';
 		
 
-		$help_tagid 		= $this->name2id($name)."--preview"; 
-		$options['other'] 	= "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);' {$height}";
+		$help_tagid 		= $this->name2id($name)."--preview";
+
+
+		if(e107::wysiwyg(true) === false) // bbarea loaded, so activate wysiwyg (if enabled in preferences)
+		{
+			$options['other'] 	= "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);' {$height}";
+		}
+		else
+		{
+			$options['other'] 	= " ".$height;
+		}
+
 	
 		$counter 			= vartrue($options['counter'],false); 
 		
@@ -1411,7 +1421,7 @@ class e_form
 		
 		$_SESSION['media_category'] = $mediaCat; // used by TinyMce. 
 
-		e107::wysiwyg(true); // bbarea loaded, so activate wysiwyg (if enabled in preferences)
+
 	
 		
 		return $ret;

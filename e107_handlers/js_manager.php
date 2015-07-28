@@ -244,7 +244,7 @@ class e_jsmanager
 			if(e107::getPref('admintheme')=='bootstrap3') //  Bootstrap 3 admin area.
 			{
 					$this->_libraries['jquery'] = array(
-					"http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js",
+					"http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js",
 					"https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js",
 					"https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css",
 			//		"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js",
