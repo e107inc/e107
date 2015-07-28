@@ -166,7 +166,13 @@ class wysiwyg
 		$this->getConfig($config);	
 		$text = "\n /* TinyMce Config: ".$this->configName." */\n\n";
 		$text .= "tinymce.init({\n";
+	/*	$text .= "setup: function (editor) {
+		editor.on('blur', function () {
+			editor.save();
+		});
+	},\n";*/
 		$text .= $this->config; // Moc: temporary fix for BC with PHP 5.3: https://github.com/e107inc/e107/issues/614
+
 		$text .= "\n});";
 
 
@@ -319,7 +325,7 @@ class wysiwyg
 
 		$ret = array(
 			'selector' 			=> '.e-wysiwyg',
-			'theme'				=> 'modern',
+
 			'plugins'			=> $this->filter_plugins($config['tinymce_plugins']),
 			'language'			=> $this->tinymce_lang()
 			
