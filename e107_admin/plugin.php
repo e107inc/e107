@@ -2413,7 +2413,7 @@ class pluginBuilder
 			
 			for ($i=0; $i < 10; $i++) 
 			{ 		
-				$text .= "<div>".
+				$text .= "<div class='form-inline'>".
 				$frm->text("pluginPrefs[".$i."][index]", '',40,'placeholder='.EPL_ADLAN_129)." ".
 				$frm->text("pluginPrefs[".$i."][value]", '',40,'placeholder='.EPL_ADLAN_130)." ".
 				$frm->select("pluginPrefs[".$i."][type]", $options, '', 'class=null', EPL_ADLAN_131).
@@ -2526,7 +2526,7 @@ class pluginBuilder
 				{
 					$nm = $key.'-'.$type;
 					$name = "xml[$nm]";	
-					$size = (count($val)==1) ? 'span7' : 'span2';
+					$size = (count($val)==1) ? 'span7 col-md-7' : 'span2 col-md-2';
 					$text .= "<div class='{$size}'>".$this->xmlInput($name, $key."-". $type, vartrue($defaults[$nm]))."</div>";	
 				}	
 			
@@ -2747,7 +2747,7 @@ $template = <<<TEMPLATE
 	<category>{CATEGORY_CATEGORY}</category>
 	<copyright>{COPYRIGHT_COPYRIGHT}</copyright>
 	<adminLinks>
-		<link url="admin_config.php" description="{ADMINLINKS_DESCRIPTION}" icon="images/icon_32.png" iconSmall="images/icon_16.png" primary="true" >LAN_CONFIGURE</link>
+		<link url="admin_config.php" description="{ADMINLINKS_DESCRIPTION}" icon="" iconSmall="" primary="true" >LAN_CONFIGURE</link>
 	</adminLinks>
 	{PLUGINPREFS}
 </e107Plugin>

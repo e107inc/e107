@@ -701,17 +701,18 @@ class db_verify
 						// continue;	
 						 
 						 
-						if(mysql_query($query))
+						if(e107::getDb()->gen($query) !== false)
 						{
 							$log->addDebug(LAN_UPDATED.'  ['.$query.']');	
 						} 
 						else 
 						{
 							$log->addWarning(LAN_UPDATED_FAILED.'  ['.$query.']');
-							if(mysql_errno())
+							$log->addWarning(e107::getDb()->getLastErrorText()); // PDO compatible.
+							/*if(mysql_errno())
 							{
 								$log->addWarning('SQL #'.mysql_errno().': '.mysql_error());
-							}
+							}*/
 						}
 					}	
 				}
