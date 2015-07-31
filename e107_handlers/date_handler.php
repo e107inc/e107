@@ -315,8 +315,8 @@ class convert
 	 * Convert date string back to integer (unix timestamp)
 	 * NOTE: after some tests, strptime (compat mode) is adding +1 sec. after parsing to time, investigate!
 	 * 
-	 * @param object $date_string
-	 * @param object $mask [optional]
+	 * @param string $date_string
+	 * @param string $mask [optional]
 	 * @return integer
 	 */
 	function toTime($date_string, $mask = 'input')
