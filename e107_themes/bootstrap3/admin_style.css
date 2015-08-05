@@ -152,7 +152,8 @@ td.options .btn-group                   {  display: flex; }
 #admin-ui-modal                          { width: 90%; }
 
 
-.selectize-input                        { width: 206px }
+
+
 
 div.bbcode-panel {
 
@@ -1122,6 +1123,14 @@ li.rssRow > div {
     color: #ffffff;
 }
 
+.selectize-input                        { width: 530px; max-width: 90%; }
+
+
+.selectize-input.focus                  {
+	border-color: #66AFE9;
+	outline: 0px none;
+	box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px rgba(102, 175, 233, 0.6);
+	}
 
 
 /* uiAlert Styling  */
@@ -1168,6 +1177,7 @@ li.rssRow > div {
 .admin-theme-cell-default   { border:1px dotted silver; background-color:#DDDDDD }
 .admin-theme-cell-site		 { background-color: #d9edf7;  border: 1px solid #bce8f1; }
 .admin-theme-cell-admin	 	 { background-color:#FFFFD5; border: 1px solid #FFCC00; }
+
 
 
 /*
