@@ -477,7 +477,13 @@ class admin_shortcodes
                     }
 
 			
-					$configs = e107::getAddonConfig('e_dashboard','latest');
+					$configs = e107::getAddonConfig('e_dashboard',null, 'latest');
+
+					if(!is_array($configs))
+					{
+						$configs = array();
+					}
+
 					$allconfigs = array_merge($oldconfigs,$configs);	
 					
 					$allconfigs = multiarray_sort($allconfigs,'title'); //XXX FIXME - not sorting correctly. 
@@ -1151,7 +1157,7 @@ class admin_shortcodes
 								
 					// New in v2.x
 				//	$configs = e107::getAddonConfig('e_status');
-					$configs = e107::getAddonConfig('e_dashboard','status');
+					$configs = e107::getAddonConfig('e_dashboard',null, 'status');
 		
 					if(!is_array($configs))
 					{
