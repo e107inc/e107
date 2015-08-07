@@ -666,16 +666,19 @@ class language{
 	}
 
 
-
-
-	public function bcDefs()
+	/**
+	 * Define Legacy LAN constants based on a supplied array.
+	 * @param null $bcList
+	 */
+	public function bcDefs($bcList = null)
 	{
 
-		$bcList = array(
-			'LAN_180'   => 'LAN_SEARCH'
-
-		);
-
+		if(empty($bcList))
+		{
+			$bcList = array(
+				'LAN_180'   => 'LAN_SEARCH'
+			);
+		}
 
 		foreach($bcList as $old => $new)
 		{
