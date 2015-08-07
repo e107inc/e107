@@ -24,13 +24,26 @@
  *
  *	@package	e107_plugins
  *	@subpackage	login
- *	@version 	$Id$;
  *
- *	@todo Convert to new format
  */
 
 if (!defined('e107_INIT')) { exit(); }
 global $tp;
+
+
+// BC LAN Fix.
+
+$bcDefs = array(
+'LOGIN_MENU_L1'     => 'LAN_LOGINMENU_1',
+'LOGIN_MENU_L2'     => 'LAN_LOGINMENU_2',
+'LOGIN_MENU_L3'     => 'LAN_LOGINMENU_3',
+'LOGIN_MENU_L4'     => 'LAN_LOGINMENU_4',
+'LOGIN_MENU_L6'     => 'LAN_LOGINMENU_6',
+'LOGIN_MENU_L40'    => 'LAN_LOGINMENU_40',
+'LOGIN_MENU_L51'    => 'LAN_LOGINMENU_51'
+);
+
+e107::getLanguage()->bcDefs($bcDefs);
 
 
 //$login_menu_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
