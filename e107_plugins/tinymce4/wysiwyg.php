@@ -351,6 +351,16 @@ class wysiwyg
 			$ret['browser_spellcheck']	= true;
 		}
 
+		if(!empty($tPref['visualblocks']))
+		{
+			$ret['visualblocks_default_state']	= true;
+		}
+
+
+		// plugins: "visualblocks",
+
+
+
 		$formats = array(
 			'hilitecolor' => array('inline'=> 'span', 'classes'=> 'hilitecolor', 'styles'=> array('backgroundColor'=> '%value'))
 			//	block : 'h1', attributes : {title : "Header"}, styles : {color : red}
@@ -751,6 +761,8 @@ class wysiwyg
 
 		$plug_array = explode(",",$plugs);
 
+		$tinymce_plugins = array();
+
 		foreach($plug_array as $val)
 		{
 			if(in_array($val,$admin_only) && !ADMIN)
@@ -764,6 +776,14 @@ class wysiwyg
 			}
 
 			$tinymce_plugins[] = $val;
+		}
+
+
+		$tPref = e107::pref('tinymce4');
+
+		if(!empty($tPref['visualblocks']))
+		{
+			$tinymce_plugins[] = 'visualblocks';
 		}
 
 		return $tinymce_plugins;
