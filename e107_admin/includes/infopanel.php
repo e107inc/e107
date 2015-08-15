@@ -376,7 +376,7 @@ class adminstyle_infopanel
 
 		$panelOnline = "
 				
-				<table class='table table-condensed table-striped' style='width:96%;margin-left:auto;margin-right:auto'>
+				<table class='table table-condensed table-striped' >
 				<colgroup>
 					<col style='width: 10%' />
 		            <col style='width: 25%' />
