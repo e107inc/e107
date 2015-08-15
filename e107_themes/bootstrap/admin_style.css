@@ -58,6 +58,11 @@ a.core-mainpanel-link-icon:hover { text-decoration: none; filter: none; }
 #admin-ui-edit-db-language      { margin-bottom: -30px; margin-top:-10px; padding-bottom:5px; padding-right:5px }
 
 
+
+
+
+#e-online table                 { width:96%;margin-left:auto; margin-right:auto }
+
 div.bbcode-panel {
 	
 	background-color: rgb(245, 245, 245);
