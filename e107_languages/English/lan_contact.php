@@ -14,7 +14,8 @@
  * $Author$
  */
 
-define('PAGE_NAME',     'Contact Us');
+
+define('LANCONTACT_00', 'Contact Us');
 define("LANCONTACT_01", "Contact Details");
 define("LANCONTACT_02", "Contact Form");
 define("LANCONTACT_03", "Enter your name:");

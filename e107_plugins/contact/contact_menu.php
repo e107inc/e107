@@ -18,7 +18,7 @@ $contact_shortcodes = e107::getScBatch('contact');
 $text = $tp->parseTemplate($head. $template . $foot, true, $contact_shortcodes);
 
 
-$ns->tablerender("Contact Us", $text, 'contact-menu');
+$ns->tablerender(LANCONTACT_00, $text, 'contact-menu');
 
 
 ?>
