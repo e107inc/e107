@@ -1996,7 +1996,7 @@ class media_admin_ui extends e_admin_ui
 
 
 				$text .= "
-			<div class=' col-md-1  center autocheck avatar-container' >
+			<div class='col-md-2 col-sm-4 center autocheck avatar-container' >
 				<div class='well'>
 				<div class='image-users'>{$users}</div>
 				<div class='image-preview'>{$img_src}</div>

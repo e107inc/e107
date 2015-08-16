@@ -114,6 +114,25 @@ $EMAIL_TEMPLATE['default']['header']		= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHT
 													h4.sitename a { text-decoration:none }
 													a.siteurl { font-size: 14px }
 													a 			{ color: #428BCA }
+
+													/* Bootstrap */
+													table.table {
+													    border-collapse: collapse;
+													    border-spacing: 0;
+													}
+													.table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+													    background-color: #F9F9F9;
+													}
+													.table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {
+													    border: 1px solid #DDD;
+													}
+													.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+													    padding: 8px;
+													    line-height: 1.42857;
+													    vertical-align: top;
+													    border-top: 1px solid #DDD;
+													}
+
 												</style>
 												</head>
 												
