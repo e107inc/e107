@@ -44,6 +44,7 @@ $NEWS_TEMPLATE['list']['item']	= '
                    </p>
  				</div>
 		</div>
+		<hr class="visible-xs" />
 
 ';
 
@@ -112,29 +113,28 @@ $NEWS_TEMPLATE['default']['item'] = '
 // As displayed by news.php?extend.1
 
 $NEWS_TEMPLATE['view']['item'] = '
-{SETIMAGE: w=900&h=300}
+{SETIMAGE: w=900&h=600}
 	<div class="view-item">
-		<h2>{NEWSTITLELINK}</h2>
-		<p class="lead">by {NEWSAUTHOR}</p>
-         <hr>
+		<h2 class="news-title">{NEWSTITLELINK}</h2>
+		  <p class="lead">{NEWSSUMMARY}</p>
+        <hr class="news-heading-sep">
          	<div class="row">
-        		<div class="col-md-4">{GLYPH=time} {NEWSDATE=short} </div>
-        		<div class="col-md-8 text-right options">{GLYPH=tags} &nbsp;{NEWSTAGS} &nbsp; {GLYPH=folder-open} &nbsp;{NEWSCATEGORY} </div>
+        		<div class="col-md-6"><small>{GLYPH=user} &nbsp;{NEWSAUTHOR} &nbsp; {GLYPH=time} &nbsp;{NEWSDATE=short} </small></div>
+        		<div class="col-md-6 text-right options"><small>{GLYPH=tags} &nbsp;{NEWSTAGS} &nbsp; {GLYPH=folder-open} &nbsp;{NEWSCATEGORY} </small></div>
         	</div>
         <hr>
-        {NEWSIMAGE: item=1}
-		{NEWSVIDEO: item=1} 
-         <hr>
-        <p class="lead">{NEWSSUMMARY}</p>  
-        <hr>
+
 
 		<div class="body">
-		 	
-		 	{NEWSVIDEO: item=2} 
-		 	{NEWSVIDEO: item=3}
-			
-			
+			<span class="news-images-main pull-left col-xs-12 col-sm-6 col-md-6"> {NEWSIMAGE: item=1}</span>
 			{NEWSBODY=body}
+			<div class="news-videos-1">
+			{NEWSVIDEO: item=1}
+		 	{NEWSVIDEO: item=2}
+		 	{NEWSVIDEO: item=3}
+			</div>
+
+
 			<br />
 			{SETIMAGE: w=400&h=400}
 			
