@@ -24,6 +24,7 @@ $sec_img = new secure_image;
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
+define('PAGE_NAME', LANCONTACT_00);
 
 require_once(HEADERF);
 
