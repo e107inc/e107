@@ -1870,6 +1870,12 @@ class media_admin_ui extends e_admin_ui
 		}
 
 
+		e107::css('inline', '
+			span.avatar-label { width:100%; display:block; padding:5px; margin-bottom:5px }
+			div.avatar-container { margin-bottom:5px; max-height:350px }
+
+			');
+
 		$sql = e107::getDb();
 		$frm = e107::getForm();
 		$tp = e107::getParser();
@@ -1899,14 +1905,14 @@ class media_admin_ui extends e_admin_ui
 			foreach($tmp as $val)
 			{
 				$id = $val['user_id'];
-				$imageUsed[$id] = $val['user_image'];
+				$imageUsed[$id] = str_replace("-upload-","", $val['user_image']);
 			}
 
 			$userImages = array_flip($imageUsed);
 
 			$text = $frm->open('core-image-avatars');
 
-			$text .= "<fieldset id='core-iamge-show-avatars'>";
+			$text .= "<div  id='core-image-show-avatars' class='row'>";
 
 			$count = 0;
 			while (list($key, $image_name) = each($dirlist))
@@ -1929,8 +1935,14 @@ class media_admin_ui extends e_admin_ui
 			*/
 
 				// :
+		//		$fileName = basename($image_name);
+
+
 				$fileName = basename($image_name);
-				$users = (in_array($fileName,$imageUsed)) ? "<span class='badge badge-warning' style='margin-bottom:5px'>Image in use</span>" : '<span class="badge" style="margin-bottom:5px">Not in use</span>';
+
+
+
+				$users = (in_array($fileName,$imageUsed)) ? "<span class='label label-warning avatar-label'>Image in use</span>" : '<span class="label label-default avatar-label" >Not in use</span>';
 
 				//directory?
 				if(is_dir(e_MEDIA."avatars/".$image_name))
@@ -1953,25 +1965,26 @@ class media_admin_ui extends e_admin_ui
 					//Friendly UI - click text to select a form element
 
 					// Resized on-the-fly - avatar-size no longer an issue.
-					$attr = "aw=".$pref['im_width']."&ah=".$pref['im_height'];
+				//	$attr = "aw=".$pref['im_width']."&ah=".$pref['im_height'];
+					$attr = "aw=200&ah=200";
 					$img_path = $tp->thumbUrl(e_MEDIA_ABS."avatars/".$image_name,$attr);
 
 					$type = dirname($image_name);
 
 					if($prevType != $type)
 					{
-						$text .= "<div class='clearfix'></div>
-					<h5 >".$type."</h5>";
+						$text .= "<div class='col-md-12 clearfix'></div>
+					<h4 class='clearfix col-md-12' >".$type."</h4>";
 					}
 
 
 					$for = $frm->name2id('multiaction-'.$image_name);
 
-					$img_src = "<label for='".$for."' >
+					$img_src = "
 				<div class='thumbnail'>
-				<img  src='".$img_path."' alt='{$image_name}' title='".IMALAN_66.": {$image_name}' />
+				<label for='".$for."' ><img  class='img-responsive' src='".$img_path."' alt='{$image_name}' title='".IMALAN_66.": {$image_name}' /></label>
 				</div>
-				</label>";
+				";
 
 					$prevType = $type;
 
@@ -1983,12 +1996,12 @@ class media_admin_ui extends e_admin_ui
 
 
 				$text .= "
-			<div class='buttons-bar image-box f-left center autocheck' style='margin:5px; width: ".(intval($pref['im_width'])+40)."px; height: ".(intval($pref['im_height'])+100)."px;'>
+			<div class=' col-md-1  center autocheck avatar-container' >
 				<div class='well'>
 				<div class='image-users'>{$users}</div>
 				<div class='image-preview'>{$img_src}</div>
 				<div class='image-delete'>
-					".$frm->checkbox('multiaction[]', intval($userImages[$fileName])."#{$image_pre}{$image_name}", false, array('id' => false, 'disabled' => $disabled))."
+					".$frm->checkbox('multiaction[]', intval($userImages[$fileName])."#{$image_pre}{$image_name}", false, array('id' => $for, 'disabled' => $disabled))."
 				</div>
 
 				</div>
@@ -1997,9 +2010,10 @@ class media_admin_ui extends e_admin_ui
 				$count++;
 			}
 
-			$text .= "
-			<div class='spacer clear'>
-				<div class='buttons-bar'>
+			$text .= "</div>
+
+			<div class='col-md-12 spacer clearfix'>
+				<div class='row buttons-bar'>
 					<input type='hidden' name='show_avatars' value='1' />
 					".$frm->admin_button('e_check_all', LAN_CHECKALL, 'action')."
 					".$frm->admin_button('e_uncheck_all', LAN_UNCHECKALL, 'action')."
@@ -2008,7 +2022,8 @@ class media_admin_ui extends e_admin_ui
 
 				</div>
 			</div>
-			</fieldset>
+
+
 			</form>
 		";
 			// $frm->admin_button('submit_cancel_show', IMALAN_68, 'cancel')
