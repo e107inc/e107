@@ -1117,8 +1117,8 @@ a.badge:focus,a.badge:hover{color:#fff;text-decoration:none;cursor:pointer}
 .alert-success{background-color:#51a351;border-color:#559249;color:#fff}
 .alert-success hr{border-top-color:#4b8140}
 .alert-success .alert-link{color:#e6e6e6}
-.alert-info{background-color:#5bc0de;border-color:#3dced8;color:#fff}
-.alert-info hr{border-top-color:#2ac7d2}
+.alert-info{background-color:#337ab7;border-color:#4f93ce;color:#fff}
+.alert-info hr{border-top-color:#3b87c8}
 .alert-info .alert-link{color:#e6e6e6}
 .alert-warning{background-color:#f89406;border-color:#df6105;color:#fff}
 .alert-warning hr{border-top-color:#c65605}
