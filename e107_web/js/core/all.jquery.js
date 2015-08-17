@@ -288,16 +288,22 @@ $(document).ready(function()
 		$('.e-email').on('blur', function() {
 			// alert('hello');
 		  $(this).mailcheck({
-		    
+
+
 		    suggested: function(element, suggestion) {
-		    	var id = $(element);
-		    	var hint = $(element).next('div').attr('data-hint');
+
+		    	var id = $(element).nextAll('div.e-email-hint');
+             //   console.log("Hint obj", id);
+
+                var hint = id.attr('data-hint');
+
 		    	var mes = hint.replace('[x]',suggestion.full);
-		    	$(element).next('div').html(mes);
-		    	$(element).next('div').show('slow');
+
+                id.html(mes);
+                id.show('slow');
 		    },
 		    empty: function(element) {
-		      $(element).next('div').hide('slow');
+		      $(element).nextAll('div.e-email-hint').hide('slow');
 		    }
 	  		});
 		});
