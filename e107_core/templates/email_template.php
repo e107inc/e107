@@ -119,6 +119,7 @@ $EMAIL_TEMPLATE['default']['header']		= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHT
 													table.table {
 													    border-collapse: collapse;
 													    border-spacing: 0;
+													    width:100%;
 													}
 													.table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
 													    background-color: #F9F9F9;

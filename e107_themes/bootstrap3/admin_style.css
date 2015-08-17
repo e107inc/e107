@@ -987,14 +987,14 @@ h4.caption { margin-bottom:30px; }
 .block-text h2.caption { display: block; position: relative; font-size: 22px; text-align: left; margin-bottom: 20px;}
 
 .plupload_container  {
-	padding:0px; 
+	padding:0;
 	margin: 10px 20px;
 	background: transparent; 
 }
 
 .plupload_header { background: transparent }
 
-.plupload_header_content { background: transparent; padding-left:0px; min-height:30px; } 
+.plupload_header_content { background: transparent; padding-left:0; min-height:30px; }
 
 .plupload_wrapper { font: inherit; }
 .plupload_header_title { display: none; }
@@ -1046,12 +1046,13 @@ li.plupload_delete a {
 	
 	 background: url(images/adminicons_16.png) no-repeat top left;
  	display:inline-block;
- 	width:17px;
  	height:16px;
  	*margin-right: .3em;
 	line-height: 14px;
 	vertical-align: text-top;
-	background-position: -525px 0; width: 16px; height: 16px; 	
+	background-position: -525px 0;
+	width: 16px;
+
 }
 
 li.rssRow > div {

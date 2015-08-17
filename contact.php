@@ -110,11 +110,14 @@ if(isset($_POST['send-contactus']))
 	// No errors - so proceed to email the admin and the user (if selected).
     if(empty($error))
 	{
-		$body .= "\n\nIP:\t".e107::getIPHandler()->getIP(TRUE)."\n";
+		$body .= "<br /><br />
+		<table class='table'>
+		<tr>
+		<td>IP:</td><td>".e107::getIPHandler()->getIP(TRUE)."</td></tr>";
 
 		if (USER)
 		{
-			$body .= "User:\t#".USERID." ".USERNAME."\n";
+			$body .= "<tr><td>User:</td><td>#".USERID." ".USERNAME."</td></tr>";
 		}
 
 		if(empty($_POST['contact_person']) && !empty($pref['sitecontacts'])) // only 1 person, so contact_person not posted.
@@ -160,9 +163,11 @@ if(isset($_POST['send-contactus']))
 		{
 			foreach($_POST as $k=>$v)
 			{
-				$body .=  $k.":\t".$tp->toEmail($v, true,'RAWTEXT')."\n";
+				$body .=  "<tr><td>".$k.":</td><td>".$tp->toEmail($v, true,'RAWTEXT')."</td></tr>";
 			}
 		}
+
+		$body .= "</table>";
 
 		if(!empty($CONTACT_EMAIL['subject']))
 		{

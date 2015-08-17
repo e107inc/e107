@@ -92,7 +92,7 @@ class contact_shortcodes extends e_shortcode
 	{
 		$userName = deftrue('USERNAME');
 
-		return "<input type='text' style='max-width:99%'  id='contactName' title='Your full name' name='author_name' required='required' size='30' class='tbox form-control' value=\"".varset($_POST['author_name'],$userName)."\" />";
+		return "<input type='text'   id='contactName' title='Your full name' name='author_name' required='required' size='30' class='tbox form-control' value=\"".varset($_POST['author_name'],$userName)."\" />";
 		
 	}
 
@@ -103,14 +103,14 @@ class contact_shortcodes extends e_shortcode
 		$userEmail = deftrue('USEREMAIL');
 		$disabled = (!empty($userEmail)) ? 'readonly' : ''; // don't allow change from a verified email address.
 
-		return "<input type='email' style='max-width:99%'  ".$disabled." id='contactEmail' title='a valid email address' name='email_send' required='required' size='30' class='tbox form-control' value='".(vartrue($_POST['email_send']) ? $_POST['email_send'] : USEREMAIL)."' />";
+		return "<input type='email'   ".$disabled." id='contactEmail' title='a valid email address' name='email_send' required='required' size='30' class='tbox form-control' value='".(vartrue($_POST['email_send']) ? $_POST['email_send'] : USEREMAIL)."' />";
 	}
 	
 	
 	
 	function sc_contact_subject($parm='')
 	{
-		return "<input type='text' style='max-width:99%' title='the subject of your enquiry' name='subject' required='required' size='30' class='tbox form-control' value=\"".varset($_POST['subject'])."\" />";			
+		return "<input type='text' title='the subject of your enquiry' name='subject' required='required' size='30' class='tbox form-control' value=\"".varset($_POST['subject'])."\" />";
 	}
 	
 	
@@ -125,7 +125,7 @@ class contact_shortcodes extends e_shortcode
 			$size = 'input-xxlarge';	
 		}
 		
-		return "<textarea cols='{$cols}' style='max-width:99%'  id='contactBody' rows='{$rows}' name='body' required='required' class='tbox {$size} form-control'>".stripslashes(varset($_POST['body']))."</textarea>";	
+		return "<textarea cols='{$cols}'  id='contactBody' rows='{$rows}' name='body' required='required' class='tbox {$size} form-control'>".stripslashes(varset($_POST['body']))."</textarea>";
 	}
 	
 	
