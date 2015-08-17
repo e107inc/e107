@@ -27,6 +27,11 @@ e107::coreLan('date');
 // "ranks" - getperms('4|U3')
 // "default" - getperms('4|U1|U0')
 
+e107::css('inline', "
+
+ .label-status { width:100%; display:block; padding-bottom:5px; padding-top:5px }
+");
+
 class users_admin extends e_admin_dispatcher
 {
 	protected $modes = array(
@@ -2358,10 +2363,10 @@ class users_admin_form_ui extends e_admin_form_ui
 	function user_ban($curval,$mode)
 	{
 		$bo = array(
-			'<span class="label label-success">Active</span>',
-			"<span class='label label-important label-danger'>".LAN_BANNED."</span>",
-			"<span class='label label-default'>".LAN_NOTVERIFIED."</span>",
-			"<span class='label label-info'>".LAN_BOUNCED."</span>"
+			'<span class="label label-success label-status">Active</span>',
+			"<span class='label label-important label-danger label-status'>".LAN_BANNED."</span>",
+			"<span class='label label-default label-status'>".LAN_NOTVERIFIED."</span>",
+			"<span class='label label-info label-status'>".LAN_BOUNCED."</span>"
 		);
 		
 		if($mode == 'filter' || $mode == 'batch')
