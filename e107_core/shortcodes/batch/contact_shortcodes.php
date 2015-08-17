@@ -90,7 +90,9 @@ class contact_shortcodes extends e_shortcode
 	
 	function sc_contact_name($parm='')
 	{
-		return "<input type='text' style='max-width:99%'  id='contactName' title='Your full name' name='author_name' required='required' size='30' class='tbox form-control' value=\"".varset($_POST['author_name'])."\" />";	
+		$userName = deftrue('USERNAME');
+
+		return "<input type='text' style='max-width:99%'  id='contactName' title='Your full name' name='author_name' required='required' size='30' class='tbox form-control' value=\"".varset($_POST['author_name'],$userName)."\" />";
 		
 	}
 
@@ -98,7 +100,10 @@ class contact_shortcodes extends e_shortcode
 
 	function sc_contact_email($parm='')
 	{
-		return "<input type='email' style='max-width:99%'  id='contactEmail' title='a valid email address' name='email_send' required='required' size='30' class='tbox form-control' value='".(vartrue($_POST['email_send']) ? $_POST['email_send'] : USEREMAIL)."' />";
+		$userEmail = deftrue('USEREMAIL');
+		$disabled = (!empty($userEmail)) ? 'readonly' : ''; // don't allow change from a verified email address.
+
+		return "<input type='email' style='max-width:99%'  ".$disabled." id='contactEmail' title='a valid email address' name='email_send' required='required' size='30' class='tbox form-control' value='".(vartrue($_POST['email_send']) ? $_POST['email_send'] : USEREMAIL)."' />";
 	}
 	
 	
