@@ -276,7 +276,7 @@ class signup_shortcodes extends e_shortcode
 		$options['title'] = LAN_SIGNUP_108; // Must be a valid email address.
 
 		$text = e107::getForm()->email('email',vartrue($_POST['email'], ''),100,$options);
-		$text .= "<div class='e-email-hint' style='display:none' data-hint='Did you mean <b>[x]</b>?'><!-- --></div>";
+		$text .= "<div class='e-email-hint alert-warning' style='display:none; padding:10px' data-hint='Did you mean <b>[x]</b>?'><!-- --></div>";
 		$text .= "<input type='text' name='email2' value='' style='display:none' />"; // spam-trap. 
 		return $text;
 	}
