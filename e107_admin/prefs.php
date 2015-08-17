@@ -601,10 +601,10 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 						</td>
 					</tr>
 					<tr>
-						<td><label for='contact_visibility'>Contact Page Visibility</label></td>
+						<td><label for='contact_visibility'>Contact Form Visibility</label></td>
 						<td>
 							".$e_userclass->uc_dropdown('contact_visibility', varset( $pref['contact_visibility'],e_UC_PUBLIC), null, "tabindex='".$frm->getNext()."'")."
-							<div class='smalltext field-help'>Contact information and/or form will only be visible to this userclass group.</div>
+							<div class='smalltext field-help'>Contact form will only be visible to this userclass group.</div>
 						</td>
 					</tr>
 					<tr>

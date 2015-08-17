@@ -65,7 +65,6 @@ $CONTACT_TEMPLATE['menu'] =  '
 	$CONTACT_WRAPPER['form']['CONTACT_EMAIL_COPY'] 			= "<tr><td>{---}".LANCONTACT_07."</td></tr>";
 	$CONTACT_WRAPPER['form']['CONTACT_PERSON']				= "<tr><td>".LANCONTACT_14."<br />{---}</td></tr>";
 
-	//FIXME Upgrade to bootstrap3 non-table format for phone/tablet compatibility. 
 	$CONTACT_TEMPLATE['form'] = "
 	<form action='".e_SELF."' method='post' id='contactForm' >
 	<table class='table'>
@@ -87,14 +86,17 @@ $CONTACT_TEMPLATE['menu'] =  '
 	</td></tr>
 	{CONTACT_IMAGECODE}
 	{CONTACT_IMAGECODE_INPUT}
+
 	<tr><td>
 	{CONTACT_SUBMIT_BUTTON}
 	</td></tr>
 	</table>
 	</form>";
 
-			
-		
+	// Customize the email subject
+	// Variables:  CONTACT_SUBJECT and CONTACT_PERSON as well as any custom fields set in the form. )
+	$CONTACT_TEMPLATE['email']['subject'] = "{CONTACT_SUBJECT}";
+
 	
 
 ?>

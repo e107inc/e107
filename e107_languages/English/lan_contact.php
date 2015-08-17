@@ -32,4 +32,6 @@ define("LANCONTACT_13", "Please include a subject.");
 
 define("LANCONTACT_14", "Send message to:");
 define("LANCONTACT_15", "Incorrect code entered");
+define("LANCONTACT_16", "You must be [registered] and signed-in to use this form.");
+
 
