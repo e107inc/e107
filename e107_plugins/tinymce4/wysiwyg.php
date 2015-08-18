@@ -166,11 +166,16 @@ class wysiwyg
 		$this->getConfig($config);	
 		$text = "\n /* TinyMce Config: ".$this->configName." */\n\n";
 		$text .= "tinymce.init({\n";
-	/*	$text .= "setup: function (editor) {
-		editor.on('blur', function () {
-			editor.save();
-		});
-	},\n";*/
+/*
+		$text .= "save_onsavecallback: function() {console.log('Save'); },\n";
+
+		$text .= "setup: function (editor) {
+			editor.on('blur', function () {
+				editor.save();
+			});
+		},\n";
+*/
+
 		$text .= $this->config; // Moc: temporary fix for BC with PHP 5.3: https://github.com/e107inc/e107/issues/614
 
 		$text .= "\n});";
@@ -325,7 +330,7 @@ class wysiwyg
 
 		$ret = array(
 			'selector' 			=> '.e-wysiwyg',
-
+		//	'editor_selector'   => 'advancedEditor',
 			'plugins'			=> $this->filter_plugins($config['tinymce_plugins']),
 			'language'			=> $this->tinymce_lang()
 			
@@ -355,6 +360,12 @@ class wysiwyg
 		{
 			$ret['visualblocks_default_state']	= true;
 		}
+
+		$ret['autosave_ask_before_unload'] = true;
+		$ret['autosave_retention']         = "30m";
+		$ret['autosave_interval']          = "3s";
+		$ret['autosave_prefix']            = "tinymce-autosave-{path}{query}-{id}-";
+		$ret['verify_html']                 = false;
 
 
 		// plugins: "visualblocks",
@@ -680,7 +691,7 @@ class wysiwyg
 			'apply_source_formatting'			=> 'true',
 			'invalid_elements'					=> 'font,align,script,applet',
 			'auto_cleanup_word'					=> 'true',
-			'cleanup'							=> 'true',
+		//	'cleanup'							=> 'true',
 			'convert_fonts_to_spans'			=> 'true',
 	//		'content_css'						=> $tp->replaceConstants($content_css),
 			'popup_css'							=> 'false', 
