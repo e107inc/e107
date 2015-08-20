@@ -232,11 +232,13 @@ else
 									
 									*/
 								}
+
+			#login-admin div.panel { padding: 0 }
 			
 			#login-admin label 	{ 	display: none; text-align: right	}
 				
 			
-			.admin-submit 		{ 	text-align: center; 	padding:20px;	}
+			.admin-submit 		{ 	text-align: center; 	padding-top:20px;	}
 			
 			.submit				{  }
 
@@ -254,9 +256,9 @@ else
 
 			#userpass			{background: url(".e_IMAGE."admin_images/lock_16.png) no-repeat scroll 7px 9px; padding:7px;padding-left:30px; width:80%; max-width:218px; }
 
-			#code-verify		{ padding: 7px; width: 140px }
+			#code-verify		{ width: 220px; padding: 7px; margin-left: auto; margin-right: auto; }
 
-			input[disabled] 	{	color: silver;	}
+			input[disabled] 	{ color: silver;	}
 			button[disabled] span	{	color: silver;	}
 			.title_clean		{ display:none; }
 
@@ -295,12 +297,12 @@ class auth
 			
 		$text = "<form id='admin-login' method='post' action='".e_SELF."' {$incChap} >
 		<div id='logo' ><img src='".e_IMAGE."logo_template_large.png' alt='login' /></div>
-		<div id='login-admin' class='well center'>
+		<div id='login-admin' class='center'>
 		<div {$class}>
-		<div class='navbar navbar-inner'>
-			<h4>admin area</h4>
-        </div>
-        <div>
+		<div class='panel well panel-primary'>
+			<div class='panel-heading'><h3 class='panel-title'>".LAN_HEADER_04."</h3></div>
+
+        <div class='panel-body'>
 		    <div class='field'>
 		    	<label for='username'>".ADLAN_89."</label> 
 		    	<input class='tbox e-tip' type='text' autofocus required='required' name='authname' placeholder='".ADLAN_89."' id='username' size='30' value='' maxlength='".varset($pref['loginname_maxlength'], 30)."' />
@@ -317,7 +319,7 @@ class auth
 		{
 			$text .= "
 			<div class='field'>
-				<label for='code_verify'>".LAN_ENTER_CODE."</label>"
+				<label for='code-verify'>".LAN_ENTER_CODE."</label>"
 				.$sec_img->renderImage().
 				$sec_img->renderInput()."	
 			</div>";
@@ -334,6 +336,7 @@ class auth
 		$text .= "</div></div>
 		</div>
 		</div>
+		 </div>
 		</form>";
 		    
 		e107::getRender()->tablerender("", $text, 'admin-login');
