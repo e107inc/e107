@@ -112,6 +112,8 @@ $wy = new wysiwyg();
 
 $gen = $wy->renderConfig();
 
+define('USE_GZIP', true);
+
 
 if(ADMIN && e_QUERY == 'debug')
 {
@@ -131,11 +133,8 @@ if(ADMIN && e_QUERY == 'debug')
 	require_once(FOOTERF);
 
 }
-else
+elseif(USE_GZIP === true)
 {
-	//ob_start();
-	//ob_implicit_flush(0);
-	//header("last-modified: " . gmdate("D, d M Y H:i:s",mktime(0,0,0,15,2,2004)) . " GMT");
 	header('Content-type: text/javascript', TRUE);
 	header('Content-Encoding: gzip');
 
@@ -145,7 +144,13 @@ else
 	header('Content-Length: '.strlen($gzipoutput));
 	echo $gzipoutput;
 }
-		
+else
+{
+	ob_start();
+	ob_implicit_flush(0);
+	header('Content-type: text/javascript', TRUE);
+	echo $gen;
+}
 	
 exit;
 
@@ -331,16 +336,24 @@ class wysiwyg
 		$ret = array(
 			'selector' 			=> '.e-wysiwyg',
 		//	'editor_selector'   => 'advancedEditor',
-			'plugins'			=> $this->filter_plugins($config['tinymce_plugins']),
 			'language'			=> $this->tinymce_lang()
 			
 		);
+
 
 		
 		// Loop thru XML parms. 
 		foreach($config as $k=>$xml)
 		{
-			$ret[$k] = $xml; 			
+			if($k == 'plugins')
+			{
+				$ret[$k] = $this->filter_plugins($xml);
+			}
+			else
+			{
+				$ret[$k] = $xml;
+			}
+
 		}
 
 		$tPref = e107::pref('tinymce4');
@@ -770,7 +783,7 @@ class wysiwyg
 
 		$admin_only = array("ibrowser");
 
-		$plug_array = explode(",",$plugs);
+		$plug_array = explode(" ",$plugs);
 
 		$tinymce_plugins = array();
 
@@ -786,18 +799,24 @@ class wysiwyg
 		    	continue;
 			}
 
-			$tinymce_plugins[] = $val;
+			if(!empty($val))
+			{
+				$tinymce_plugins[$val] = trim($val);
+			}
 		}
 
 
 		$tPref = e107::pref('tinymce4');
 
+
 		if(!empty($tPref['visualblocks']))
 		{
-			$tinymce_plugins[] = 'visualblocks';
+			$tinymce_plugins['visualblocks'] = 'visualblocks';
 		}
 
-		return $tinymce_plugins;
+	//	print_a($tinymce_plugins);
+
+		return implode(" ",$tinymce_plugins);
 	}
 
 

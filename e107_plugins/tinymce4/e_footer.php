@@ -19,7 +19,7 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
 		//e107::js('tinymce','tiny_mce.js','jquery');
 		//e107::js('tinymce','wysiwyg.php','jquery',5);
 		
-		e107::js('footer', "https://tinymce.cachefly.net/4.2/tinymce.min.js");
+		e107::js('footer', "https://tinymce.cachefly.net/4.0/tinymce.min.js"); // 4.1 and 4.2 have issues with saving under Firefox.  http://www.tinymce.com/develop/bugtracker_view.php?id=7655
 		e107::js('footer',e_PLUGIN.'tinymce4/wysiwyg.php','jquery',5);
 
 		// Add to e107_config.php to view hidden content when TinyMce not saving correctly
