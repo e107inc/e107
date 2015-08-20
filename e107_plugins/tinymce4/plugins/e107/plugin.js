@@ -12,12 +12,9 @@
 
 (function() {
 	tinymce.create('tinymce.plugins.e107Plugin', {
-	
 		
 		init : function(ed,url) {
-			
-			
-			
+
 			var t = this, dialect = ed.getParam('bbcode_dialect', 'e107').toLowerCase();
 
 
@@ -27,11 +24,10 @@
 
 
 
-
 			ed.on('postProcess', function(e) {
 
-           //     console.log(e);
-           //     alert(e.content); // remove comment to test Firefox issue: http://www.tinymce.com/develop/bugtracker_view.php?id=7655
+          //      console.log(e);
+          //      alert(e.content); // remove comment to test Firefox issue: http://www.tinymce.com/develop/bugtracker_view.php?id=7655
 
 				if (e.set) {
 					e.content = t['_' + dialect + '_bbcode2html'](e.content, url);
