@@ -589,11 +589,11 @@ class admin_shortcodes
 			$str = str_replace('.', '', ADMINPERMS);
 			if (ADMINPERMS == '0')
 			{
-				return '<b>'.ADLAN_48.':</b> '.ADMINNAME.' ('.ADLAN_49.') '.( defined('e_DBLANGUAGE') ? '<b>'.LAN_head_5.'</b>: '.e_DBLANGUAGE : '' );
+				return '<b>'.ADLAN_48.':</b> '.ADMINNAME.' ('.ADLAN_49.') '.( defined('e_DBLANGUAGE') ? '<b>'.LAN_HEADER_05.'</b>: '.e_DBLANGUAGE : '' );
 			}
 			else
 			{
-				return '<b>'.ADLAN_48.':</b> '.ADMINNAME.' '.( defined('e_DBLANGUAGE') ? '<b>'.LAN_head_5.'</b>: '.e_DBLANGUAGE : '' );
+				return '<b>'.ADLAN_48.':</b> '.ADMINNAME.' '.( defined('e_DBLANGUAGE') ? '<b>'.LAN_HEADER_05.'</b>: '.e_DBLANGUAGE : '' );
 			}
 		}
 		else
@@ -780,11 +780,11 @@ class admin_shortcodes
 			ob_start();
 			if(!FILE_UPLOADS)
 			{
-				echo message_handler('ADMIN_MESSAGE', LAN_head_2, __LINE__, __FILE__);
+				echo message_handler('ADMIN_MESSAGE', LAN_HEADER_02, __LINE__, __FILE__);
 			}
 			/*
 			if(OPEN_BASEDIR){
-			echo message_handler('ADMIN_MESSAGE', LAN_head_3, __LINE__, __FILE__);
+			echo message_handler('ADMIN_MESSAGE', LAN_HEADER_03, __LINE__, __FILE__);
 			}
 			*/
 			$message_text = ob_get_contents();
@@ -880,7 +880,7 @@ class admin_shortcodes
 			$e107_var['lout']['link']=e_ADMIN_ABS.'admin.php?logout';
 
 			$text = e_admin_menu('', '', $e107_var);
-			return $ns->tablerender(LAN_head_1, $text, array('id' => 'admin_nav', 'style' => 'button_menu'), TRUE);
+			return $ns->tablerender(LAN_HEADER_01, $text, array('id' => 'admin_nav', 'style' => 'button_menu'), TRUE);
 		}
 	}
 
@@ -940,7 +940,7 @@ class admin_shortcodes
 					}
 				}
 
-				$caption = LAN_head_6;
+				$caption = LAN_HEADER_06;
 				if ($i>0 && $pref['admin_alerts_uniquemenu'] == 1)
 				{
 					$ns -> tablerender($caption, $text);

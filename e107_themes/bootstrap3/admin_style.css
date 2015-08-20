@@ -126,8 +126,11 @@ table  label.checkbox                   { margin-left: 20px }
 #admin-ui-list-batch                    { padding: 10px 15px }
 #admin-ui-list-batch img                { padding-top:5px }
 #admin-ui-list-filter                   { margin-bottom: 15px }
-#admin-ui-list-filter i.searchquery     { z-index:100;   position:relative;  left:-160px; top:3px }
-#admin-ui-list-filter #searchquery      { padding-left:22px; margin-right:-12px; }
+
+.form-control-feedback-left              { left:0; top:0 }
+.has-feedback-left input                { padding-left:30px; }
+
+/* #admin-ui-list-filter #searchquery      { padding-left:22px;  }  */
 #admin-ui-list-db-language              { padding-top:20px ; padding-right:30px }
 #admin-ui-list-total-records            { padding-top:5px }
 #admin-ui-list-filter .row-fluid        { margin-left: -15px; margin-right: -15px }
