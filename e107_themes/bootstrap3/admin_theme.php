@@ -28,9 +28,11 @@ e107::css('theme','ie_all.css',null,'all',"<!--[if IE]>","<![endif]-->");
 
 e107::css('inline', "
 /* TinyMce */
+
 .mce-menubar .mce-caret             { border-top-color: #C6C6C6!important  }
 .mce-menubar:hover .mce-caret       { border-top-color: #FFFFFF!important }
-.mce-menubar .mce-btn button        { color: #C6C6C6!important; }
+.mce-menubar .mce-btn button        { color: #C6C6C6!important; } /* v4.1+ */
+.mce-menubar .mce-btn button span   { color: #C6C6C6!important; } /* v4.0 */
 .mce-menubar .mce-btn button:hover  { color: #FFFFFF!important; }
 .mce-menubar.mce-toolbar            { background-color: #373737!important; }
 .mce-tinymce[role=application]      { border-color: #373737!important; }
