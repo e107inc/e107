@@ -211,7 +211,6 @@
 		<core name="signup_option_realname">0</core>
 		<core name="signup_option_signature">0</core>
 		<core name="signup_pass_len">6</core>
-		<core name="signup_remote_emailcheck">0</core>
 		<core name="signup_text"></core>
 		<core name="signup_text_after"></core>
 		<core name="siteadmin">admin</core>

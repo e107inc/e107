@@ -48,8 +48,8 @@ $update_debug = TRUE;			// TRUE gives extra messages in places
 if (defined('TEST_UPDATE')) $update_debug = TRUE;
 
 
-if (!defined('LAN_UPDATE_8')) { define('LAN_UPDATE_8', ''); }
-if (!defined('LAN_UPDATE_9')) { define('LAN_UPDATE_9', ''); }
+//if (!defined('LAN_UPDATE_8')) { define('LAN_UPDATE_8', ''); }
+//if (!defined('LAN_UPDATE_9')) { define('LAN_UPDATE_9', ''); }
 
 
 // Determine which installed plugins have an update file - save the path and the installed version in an array
@@ -128,8 +128,8 @@ if (!$dont_check_update)
 	}
 	
 	// set 'master' to true to prevent other upgrades from running before it is complete. 
-	$dbupdate['706_to_800'] = array('master'=>true, 'title'=>LAN_UPDATE_8.' 1.x '.LAN_UPDATE_9.' 2.0','message'=> LAN_UPDATE_29);
-	$dbupdate['core_prefs'] = array('master'=>true, 'title'=>LAN_UPDATE_13);						// Prefs check
+	$dbupdate['706_to_800'] = array('master'=>true, 'title'=> e107::getParser()->lanVars(LAN_UPDATE_4, array('1.x','2.0')), 'message'=> LAN_UPDATE_29);
+	$dbupdate['core_prefs'] = array('master'=>true, 'title'=> LAN_UPDATE_13);						// Prefs check
 //	$dbupdate['70x_to_706'] = LAN_UPDATE_8.' .70x '.LAN_UPDATE_9.' .706';
 }		// End if (!$dont_check_update)
 
@@ -176,7 +176,9 @@ class e107Update
 	function updateCore($func='')
 	{
 		$mes = e107::getMessage();
-		
+		$tp = e107::getParser();
+
+
 	//	foreach($this->core as $func => $data)
 	//	{
 			if(function_exists('update_'.$func)) // Legacy Method. 
@@ -187,7 +189,8 @@ class e107Update
 				{
 					if(function_exists("update_".$func))
 					{
-						$message = LAN_UPDATE_7." ".$func;
+						// $message = LAN_UPDATE_7." ".$func;
+						$message = $tp->lanVars(LAN_UPDATE_7, $this->core[$func]['title']);
 						$error = call_user_func("update_".$func, "do");
 						
 						if($error != '')
@@ -254,6 +257,8 @@ class e107Update
 		$mes = e107::getMessage();
 		
 		$text = "";
+
+
 		
 		foreach($this->core as $func => $data)
 		{
@@ -500,7 +505,9 @@ function update_706_to_800($type='')
 	// List of unwanted $pref values which can go
 	$obs_prefs = array('frontpage_type','rss_feeds', 'log_lvcount', 'zone', 'upload_allowedfiletype', 'real', 'forum_user_customtitle',
 						'utf-compatmode','frontpage_method','standards_mode','image_owner','im_quality', 'signup_option_timezone',
-						'modules', 'plug_sc', 'plug_bb', 'plug_status', 'plug_latest', 'subnews_hide_news', 'upload_storagetype'
+						'modules', 'plug_sc', 'plug_bb', 'plug_status', 'plug_latest', 'subnews_hide_news', 'upload_storagetype',
+						'signup_remote_emailcheck'
+
 				);
 
 	// List of DB tables not required (includes a few from 0.6xx)
@@ -1132,7 +1139,8 @@ function update_706_to_800($type='')
 	  {
 	    if ($just_check) return update_needed('Remove obsolete prefs');
 		unset($pref[$p]);
-		$do_save = TRUE;
+		e107::getConfig()->remove($p);
+		$do_save = true;
 		$log->addDebug('Removed obsolete pref: '.$p);
 	//	$accum[] = $p;
 	  }
@@ -1657,6 +1665,7 @@ function update_706_to_800($type='')
 		{
 		//	save_prefs();
 			e107::getConfig()->setPref($pref)->save(false,true,true);
+
 			$log->logMessage(LAN_UPDATE_50);
 		//	$log->logMessage(implode(', ', $accum), E_MESSAGE_NODISPLAY);
 			

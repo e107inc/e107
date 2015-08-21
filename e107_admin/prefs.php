@@ -1469,14 +1469,22 @@ $text .= "
 					$text .= "
 							</select></td>
 					</tr>
+					";
+
+					/*
+					 // Highly problematic.
+					$text .= "
 					<tr>
 						<td><label for='signup-remote-emailcheck'>".PRFLAN_160."</label></td>
 						<td>
 							".$frm->radio_switch('signup_remote_emailcheck', $pref['signup_remote_emailcheck'])."
 						</td>
-					</tr>
+					</tr>";
+
+					*/
 
 
+					$text .= "
 
 					<tr>
 						<td><label for='membersonly-enabled'>".PRFLAN_58."</label></td>
