@@ -1144,7 +1144,7 @@ class validatorClass
 									{
 										$img = e_AVATAR_UPLOAD.str_replace('-upload-', '', $value);		// Its a user-uploaded image
 									}
-									elseif (strpos($avName, '/') !== FALSE)
+									elseif (strpos($value, '//') !== false)
 									{
 										$img = $value;			// Its a remote image
 									}
