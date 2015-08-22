@@ -30,8 +30,9 @@ class forumStats
 
 	function __construct()
 	{
-		include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_stats.php');
-		e107::lan('forum','front');
+		//include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_stats.php');
+		//e107::lan('forum','front');
+		e107::lan('forum', "front", true);
 		e107::css('forum', 'forum.css');
 	}
 
