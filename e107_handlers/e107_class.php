@@ -2182,17 +2182,30 @@ class e107
 		list($templateId, $templateKey) = explode('/', $templateId, 2);
 		
 		$wrapperRegPath = 'templates/wrapper/'.$templateId;
+
 		$wrapper = self::getRegistry($wrapperRegPath);
+
 		if(empty($wrapper) || !is_array($wrapper)) $wrapper = array();
-		
-		if($templateKey) $wrapper = (isset($wrapper[$templateKey])  ? $wrapper[$templateKey] : array());
-		
+
+		if(strpos($templateKey,'/')!==false) // quick fix support for 3 keys eg. news/view/item
+		{
+			list($templateKey,$templateKey2) = explode("/", $templateKey, 2);
+			if($templateKey && $templateKey2)
+			{
+				 $wrapper = (isset($wrapper[$templateKey][$templateKey2])  ? $wrapper[$templateKey][$templateKey2] : array());
+			}
+		}
+		else // support for 2 keys. eg. contact/form
+		{
+			if($templateKey) $wrapper = (isset($wrapper[$templateKey])  ? $wrapper[$templateKey] : array());
+		}
+
 		if(null !== $scName) 
 		{
 			$scName = strtoupper($scName);
 			return isset($wrapper[$scName]) ? $wrapper[$scName] : '';
 		}
-		
+
 		return $wrapper;
 	}
 	

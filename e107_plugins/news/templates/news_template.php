@@ -83,7 +83,7 @@ $NEWS_TEMPLATE['default']['item'] = '
 $NEWS_TEMPLATE['default']['item'] = '
 		{SETIMAGE: w=900&h=300}
 		<h2>{NEWSTITLELINK}</h2>
-          <p class="lead">by {NEWSAUTHOR}</p>
+          <p class="lead">{GLYPH=user} &nbsp;{NEWSAUTHOR}</p>
           <hr>
            <div class="row">
         	<div class="col-md-4">{GLYPH=time} {NEWSDATE=short} </div>
@@ -112,6 +112,9 @@ $NEWS_TEMPLATE['default']['item'] = '
 
 // As displayed by news.php?extend.1
 
+
+$NEWS_WRAPPER['view']['item']['NEWSIMAGE: item=1'] = '<span class="news-images-main pull-left col-xs-12 col-sm-6 col-md-6">{---}</span>';
+
 $NEWS_TEMPLATE['view']['item'] = '
 {SETIMAGE: w=900&h=600}
 	<div class="view-item">
@@ -126,7 +129,7 @@ $NEWS_TEMPLATE['view']['item'] = '
 
 
 		<div class="body">
-			<span class="news-images-main pull-left col-xs-12 col-sm-6 col-md-6"> {NEWSIMAGE: item=1}</span>
+			{NEWSIMAGE: item=1}
 			{NEWSBODY=body}
 			<div class="news-videos-1">
 			{NEWSVIDEO: item=1}
@@ -138,7 +141,7 @@ $NEWS_TEMPLATE['view']['item'] = '
 			<br />
 			{SETIMAGE: w=400&h=400}
 			
-			<div class="row news-images-1">
+			<div class="row  news-images-1">
         		<div class="col-md-6">{NEWSIMAGE: item=2}</div>
         		<div class="col-md-6">{NEWSIMAGE: item=3}</div>
         	</div>

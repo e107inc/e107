@@ -756,11 +756,14 @@ class e_parse_shortcode
 			// Do it only once per parsing cylcle and not on every doCode() loop - performance
 			if(method_exists($this->addedCodes, 'wrapper'))
 			{
+				// $cname = get_class($this->addedCodes);
+
 				$tmpWrap = e107::templateWrapper($this->addedCodes->wrapper());
 				if(!empty($tmpWrap)) // FIX for #3 above.
 				{
 					$this->wrappers = array_merge($this->wrappers,$tmpWrap);
 				}
+
 			}
 
 
@@ -782,7 +785,8 @@ class e_parse_shortcode
 		}
 		elseif (is_array($extraCodes)) // Array value contains the contents of a .sc file which is then parsed. ie. return " whatever "; 
 		{
-			$this->addedCodes = &$extraCodes; 
+			$this->addedCodes = &$extraCodes;
+
 			/*
 			foreach ($extraCodes as $sc => $code)
 			{
@@ -792,6 +796,8 @@ class e_parse_shortcode
 			
 		//	print_a($this);
 		}
+
+
 		$ret = preg_replace_callback('#\{(\S[^\x02]*?\S)\}#', array(&$this, 'doCode'), $text);
 		$this->parseSCFiles = $saveParseSCFiles; // Restore previous value
 		$this->addedCodes = $saveCodes;
@@ -822,6 +828,7 @@ class e_parse_shortcode
 		global $pref, $e107cache, $menu_pref, $parm, $sql;
 		
 		$parmArray = false;
+		$fullShortcodeKey = null;
 
 		if ($this->eVars)
 		{
@@ -837,6 +844,7 @@ class e_parse_shortcode
 
 		if(preg_match('/^([A-Z_]*):(.*)/', $matches[1], $newMatch))
 		{
+			$fullShortcodeKey = $newMatch[0];
 			$code = $newMatch[1];
 			$parmStr = trim($newMatch[2]);
 			$debugParm = $parmStr;
@@ -966,7 +974,7 @@ class e_parse_shortcode
 							// via e107::getScBatch(name)->setParserVars($eVars);
 							// $this->callScFunc($_class, 'setParserVars', $this->eVars);
 							$wrapper = $this->callScFunc($_class, 'wrapper', null);
-							
+
 							$ret = $this->callScFuncA($_class, $_method, array($parm, $sc_mode));
 							
 							/*if (method_exists($this->scClasses[$_class], $_method))
@@ -1079,12 +1087,20 @@ class e_parse_shortcode
 			}
 		}
 
+
+
 		if (isset($ret) && ($ret != '' || is_numeric($ret)))
 		{
 			// Wrapper support - see contact_template.php
-			if(isset($this->wrappers[$code]) && !empty($this->wrappers[$code]))
+			if(isset($this->wrappers[$code]) && !empty($this->wrappers[$code])) // eg: $NEWS_WRAPPER['view']['item']['NEWSIMAGE']
 			{
 				list($pre, $post) = explode("{---}", $this->wrappers[$code], 2); 
+				$ret = $pre.$ret.$post;
+
+			}
+			elseif(!empty($fullShortcodeKey) && !empty($this->wrappers[$fullShortcodeKey]) ) // eg: $NEWS_WRAPPER['view']['item']['NEWSIMAGE: item=1']
+			{
+				list($pre, $post) = explode("{---}", $this->wrappers[$fullShortcodeKey], 2);
 				$ret = $pre.$ret.$post;
 			}
 			else
@@ -1147,12 +1163,24 @@ class e_parse_shortcode
 			{
 				$other = $this->debug_legacy;
 			}
-			
+
+			if(!empty($this->wrappers[$code]))
+			{
+				$other['wrapper'] = $this->wrappers[$code];
+			}
+			elseif(!empty($this->wrappers[$fullShortcodeKey]) )
+			{
+				$other['wrapper'] = $this->wrappers[$fullShortcodeKey];
+			}
+
+
 			$info = (isset($this->registered_codes[$code])) ? print_a($this->registered_codes[$code],true) : print_a($other,true);
 			
 			$tmp = isset($debugParm) ? $debugParm : $parm;
 
 			$db_debug->logCode(2, $code, $tmp, $info);
+
+
 			
 		}
 		
@@ -1278,7 +1306,7 @@ class e_shortcode
 		
 		if(false === $id) $id = null;
 		$this->wrapper = $id;
-		
+
 		return $this;
 	}
 
