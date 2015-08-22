@@ -15,6 +15,7 @@ if(!defined('e107_INIT'))
 	require_once('../../class2.php');
 }
 
+e107::lan('forum', "front", true);
 define('NAVIGATION_ACTIVE','forum');
 
 $e107 = e107::getInstance();
