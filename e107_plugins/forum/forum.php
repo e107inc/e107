@@ -23,7 +23,7 @@ if (!$e107->isInstalled('forum'))
 	header('Location: '.SITEURL);
 	exit;
 }
-
+e107::lan('forum', "front", true);
 // include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum.php'); // using English_front.php now
 
 require_once(e_PLUGIN.'forum/forum_class.php');
