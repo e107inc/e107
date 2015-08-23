@@ -2,6 +2,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+e107::lan('forum', "front", true);
 // e107::lan('forum', 'English_front');
 
 /**

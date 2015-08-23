@@ -17,8 +17,9 @@ if (!getperms('P'))
 }
 
 
-e107::includeLan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/English_admin.php');
-	e107::lan('forum','', 'front');
+e107::lan('forum', 'admin');
+//e107::includeLan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/English_admin.php');
+//e107::lan('forum','', 'front');
 
 $legacy = false;
 
