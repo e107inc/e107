@@ -807,8 +807,18 @@ final class e_core_pref extends e_pref
 	 */
 	function __construct($alias, $load = true)
 	{
+
+
 		$pref_alias = $alias;
+
+		if($alias == 'emote')
+		{
+			$pack = e107::pref('core','emotepack');
+			$this->aliases['emote'] = 'emote_'.$pack;
+		}
+
 		$pref_id = $this->getConfigId($alias);
+
 
 		if(!$pref_id)
 		{
@@ -832,6 +842,8 @@ final class e_core_pref extends e_pref
 		{
 			$this->load();
 		}
+
+
 	}
 
 	/**
@@ -928,7 +940,7 @@ class e_plugin_pref extends e_pref
 		$ret = false;
 		if($this->plugin_id)
 		{
-			$ret = e107::getDb($this->plugin_id)->db_Delete('core', "e107_name='{$this->plugin_id}'");
+			$ret = e107::getDb($this->plugin_id)->delete('core', "e107_name='{$this->plugin_id}'");
 			$this->destroy();
 		}
 		return $ret;
@@ -982,11 +994,11 @@ class prefs
 				$Args .= ($Args ? " OR e107_name='{$v}'" : "e107_name='{$v}'");
 			}
 		}
-		if (!$sql->db_Select('core', '*', $Args, 'default'))
+		if (!$sql->select('core', '*', $Args, 'default'))
 		{
 			return FALSE;
 		}
-		while ($row = $sql->db_Fetch())
+		while ($row = $sql->fetch())
 		{
 			$this->prefVals['core'][$row['e107_name']] = $row['e107_value'];
 		}

@@ -3994,14 +3994,15 @@ class e_emotefilter {
 	{		
 		$pref = e107::getPref();
 		
-		if(!$pref['emotepack'])	
+		if(empty($pref['emotepack']))
 		{	
 			$pref['emotepack'] = "default";
-			save_prefs();
+			e107::getConfig('emote')->clearPrefCache('emote');
+			e107::getConfig('core')->set('emotepack','default')->save(false,true,false);
 		}
-			
+
 		$this->emotes = e107::getConfig("emote")->getPref();
-		
+
 		if(!vartrue($this->emotes))
 		{
 			return;
@@ -4056,12 +4057,14 @@ class e_emotefilter {
 		  }
 		}
 	}
-	 
+
+
 	function filterEmotes($text)
 	{	 
 		$text = str_replace($this->search, $this->replace, $text);
 		return $text;
 	}
+
 	 
 	function filterEmotesRev($text)
 	{
