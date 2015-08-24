@@ -1411,9 +1411,8 @@ class e_media
 		}
 		catch (Exception $e)
 		{
-			$error =  $e->getMessage();
-echo $error;
-			e107::getMessage()->addDebug($error);
+			$error =  array('thumbnailer'=> $e->getMessage(), 'src'=>$src, 'dest'=>$dest, 'savePath'=>$destFilePath, 'backtrace'=>'e_media::resizeImage');;
+			e107::getMessage()->addDebug(print_a($error,true));
 			e107::getLog()->add("RESIZE ERROR",$error,E_LOG_INFORMATIVE,'RESIZE');
 			return false;
 		}
