@@ -288,11 +288,13 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 	$param['itemlink'] = (defined("NEWSLIST_ITEMLINK")) ? NEWSLIST_ITEMLINK : "";
 	$param['thumbnail'] =(defined("NEWSLIST_THUMB")) ? NEWSLIST_THUMB : "border:0px";
 	$param['catlink']  = (defined("NEWSLIST_CATLINK")) ? NEWSLIST_CATLINK : "";
-	$param['caticon'] =  (defined("NEWSLIST_CATICON")) ? NEWSLIST_CATICON : ICONSTYLE;
+	$param['caticon'] =  (defined("NEWSLIST_CATICON")) ? NEWSLIST_CATICON : defset('ICONSTYLE','');
 	$param['current_action'] = $action;
 
 	// NEW - allow news batch shortcode override (e.g. e107::getScBatch('news', 'myplugin', true); )
 	e107::getEvent()->trigger('news_list_parse', $newsList);
+
+	$text = '';
 
 	if(vartrue($template['start']))
 	{
