@@ -3271,8 +3271,13 @@ class e_parser
 	 */
 	function toVideo($file, $parm=array())
 	{
+		if(empty($file))
+		{
+			return false;
+		}
+
 		list($id,$type) = explode(".",$file,2);
-		
+
 		$thumb = vartrue($parm['thumb']);
 		
 		
