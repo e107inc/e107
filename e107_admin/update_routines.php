@@ -127,8 +127,11 @@ if (!$dont_check_update)
 		$dbupdate['test_code'] = 'Test update routine';
 	}
 	
-	// set 'master' to true to prevent other upgrades from running before it is complete. 
-	$dbupdate['706_to_800'] = array('master'=>true, 'title'=> e107::getParser()->lanVars(LAN_UPDATE_4, array('1.x','2.0')), 'message'=> LAN_UPDATE_29);
+	// set 'master' to true to prevent other upgrades from running before it is complete.
+
+	$LAN_UPDATE_4 = deftrue('LAN_UPDATE_4',"Update from [x] to [y]"); // in case language-pack hasn't been upgraded.
+
+	$dbupdate['706_to_800'] = array('master'=>true, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('1.x','2.0')), 'message'=> LAN_UPDATE_29);
 	$dbupdate['core_prefs'] = array('master'=>true, 'title'=> LAN_UPDATE_13);						// Prefs check
 //	$dbupdate['70x_to_706'] = LAN_UPDATE_8.' .70x '.LAN_UPDATE_9.' .706';
 }		// End if (!$dont_check_update)
@@ -1050,11 +1053,16 @@ function update_706_to_800($type='')
 			return update_needed("Pages/Menus Table requires updating.");	
 		}
 		
-		if($sql->update('page',"menu_name = page_theme, menu_title = page_title, menu_text = page_text, menu_template='default', page_title = '', page_text = '' WHERE page_theme !='' AND menu_title = '' AND menu_text = '' "))
+		if($sql->update('page',"menu_name = page_theme, menu_title = page_title, menu_text = page_text, menu_template='default', page_title = '', page_text = '' WHERE page_theme !='' AND menu_title = '' AND menu_text IS NULL "))
 		{
 			$sql->gen("ALTER TABLE `#page` DROP page_theme ");
 			$mes = e107::getMessage();
 			$log->addDebug("Successfully updated pages/menus table to new format. ");
+		}
+		else
+		{
+			$log->addDebug("FAILED to update pages/menus table to new format. ");
+			//$sql->gen("ALTER TABLE `#page` DROP page_theme ");
 		}
 	
 	}
