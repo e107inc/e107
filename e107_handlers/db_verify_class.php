@@ -873,9 +873,7 @@ class db_verify
 	function getSqlData($tbl,$language='')
 	{
 		
-		
 		$mes = e107::getMessage();
-		
 		$prefix = MPREFIX;
 		
 		if($language)
@@ -890,6 +888,13 @@ class db_verify
 		}
 		
 		$sql = e107::getDb();
+
+		if(!$sql->isTable($tbl))
+		{
+			$mes->addDebug('Missing table on db-verify: '.$tbl);
+			return false;
+		}
+
 		$sql->gen('SET SQL_QUOTE_SHOW_CREATE = 1');	
 	//	mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
 		$qry = 'SHOW CREATE TABLE `' . $prefix . $tbl . "`";

@@ -718,7 +718,7 @@ define('USER_REGISTRATION', vartrue($pref['user_reg'],false)); // User Registrat
 define('e_DEVELOPER', $developerMode);
 unset($developerMode);
 
-if(is_array($pref['xurl']))
+if(!empty($pref['xurl']) && is_array($pref['xurl']))
 {
 	define('XURL_FACEBOOK', vartrue($pref['xurl']['facebook'], false));
 	define('XURL_TWITTER', vartrue($pref['xurl']['twitter'], false));
@@ -845,7 +845,8 @@ if (!function_exists('checkvalidtheme'))
 				}
 				closedir($handle);
 			}
-			$e107tmp_theme = search_validtheme();
+
+			$e107tmp_theme = 'bootstrap3'; // set to bootstrap3 by default.  search_validtheme();
 			define('THEME', e_THEME.$e107tmp_theme.'/');
 			define('THEME_ABS', e_THEME_ABS.$e107tmp_theme.'/');
 			if (ADMIN && strpos(e_SELF, $ADMIN_DIRECTORY) === false)

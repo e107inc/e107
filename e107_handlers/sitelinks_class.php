@@ -968,8 +968,8 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 					{
 						continue;
 					}
-					
-					if(!in_array($plugin_path, $pref['lan_global_list']))
+
+					if(!empty($pref['lan_global_list']) && !in_array($plugin_path, $pref['lan_global_list']))
 					{
 						e107::loadLanFiles($plugin_path, 'admin');	
 					}

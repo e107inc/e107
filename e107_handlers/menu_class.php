@@ -64,7 +64,7 @@ class e_menu
 		}
 		
 		//	print_a($eMenuArea);
-		if(varset($_SERVER['E_DEV_MENU']) == 'true') // New in v2.x
+		if(varset($_SERVER['E_DEV_MENU']) == 'true') // New in v2.x Experimental
 		{
 			$layouts = e107::getPref('menu_layouts');
 			if(!is_array($layouts))
@@ -76,7 +76,7 @@ class e_menu
 			$eMenuArea = $this->getData(THEME_LAYOUT);
 			//print_a($eMenuArea);
 		}
-		else // the old v1.x way. 
+		else // standard DB 'table' method.
 		{
 			$eMenuArea = $this->getDataLegacy();
 		}
@@ -188,7 +188,7 @@ class e_menu
 	
 	/** 
 	 * @DEPRECATED 
-	 * Legacy Function to retrieve Menu data from tables. - ie. the old v1.x method. 
+	 * Legacy Function to retrieve Menu data from tables.
 	 */
 	private function getDataLegacy()
 	{

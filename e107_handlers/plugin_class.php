@@ -2371,7 +2371,7 @@ class e107plugin
 
 		if ($mode != "core") // Do only one core pref save during install/uninstall etc.
 		{
-			$config->save();
+			$config->save(true, false, false);
 		}
 		return;
 	}
@@ -2839,7 +2839,7 @@ class e107plugin
 			}
 		}
 
-		$core->save(FALSE);
+		$core->save(FALSE, false, false);
 
 		if ($this->manage_icons())
 		{

@@ -174,7 +174,7 @@ class eMessage
 	 * @param string $mstack message stack which should have only unique message values
 	 * @return eMessage
 	 */
-	public function setUnique($mstack)
+	public function setUnique($mstack='default')
 	{
 		if(!in_array($mstack, $this->_unique))
 		{
