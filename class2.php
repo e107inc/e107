@@ -1363,7 +1363,18 @@ function js_location($qry)
 }
 
 function check_email($email)
-{	
+{
+
+	if(empty($email))
+	{
+		return false;
+	}
+
+	if(is_numeric(substr($email,-1))) // fix for eCaptcha accidently typed on wrong line.
+	{
+		return false;
+	}
+
 	if(filter_var($email, FILTER_VALIDATE_EMAIL))
 	{
 		return $email;	
