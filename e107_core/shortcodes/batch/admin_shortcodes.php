@@ -1485,7 +1485,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 					if(varset($plug_vars['adminLinks']['link']))
 					{
 						
-						if($row['plugin_category'] == 'menu' || !vartrue($plug_vars['adminLinks']['link'][0]['@attributes']['url']))
+						if(!empty($row['plugin_category']) && $row['plugin_category'] == 'menu' || !vartrue($plug_vars['adminLinks']['link'][0]['@attributes']['url']))
 						{
 							continue;
 						}
@@ -1511,7 +1511,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 						$tmp[$id]['perm'] = 'P'.$row['plugin_id'];
 						$tmp[$id]['sub_class'] = '';
 						$tmp[$id]['sort'] = 2;
-						$tmp[$id]['category'] = $row['plugin_category'];
+						$tmp[$id]['category'] = varset($row['plugin_category']);
 
 						if($pref['admin_slidedown_subs'] && vartrue($plug_vars['adminLinks']['link']) )
 						{
@@ -1570,9 +1570,13 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
              foreach($tmp as $pg)
 			 {
-			 	$id = $convert[$pg['category']][1];
-             	$menu_vars[$id]['sub'][] = $pg;
+			    if(!empty($pg['category']))
+			    {
+			 	    $id = $convert[$pg['category']][1];
+             	    $menu_vars[$id]['sub'][] = $pg;
+			    }
 			 }
+
 		   	 unset($menu_vars['plugMenu']);
 			 
 		

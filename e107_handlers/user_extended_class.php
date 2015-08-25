@@ -116,7 +116,7 @@ class e107_user_extended
 
 		if($sql->select('user_extended_struct', '*', "user_extended_struct_text != '_system_' ORDER BY user_extended_struct_order ASC"))
 		{
-			while($row = $sql->db_Fetch(MYSQL_ASSOC))
+			while($row = $sql->fetch(MYSQL_ASSOC))
 			{
 				if ($row['user_extended_struct_type'] == 0)
 				{	// Its a category
@@ -543,15 +543,15 @@ class e107_user_extended
 	  	{
 			extract($name);
 		}
-		
-	 	 if(!is_numeric($type))
+
+	 	if(!is_numeric($type))
 	  	{
 			$type = $this->typeArray[$type];
 	  	}
 
 		if($this->user_extended_field_exist($name))
 		{
-			return TRUE;	
+			return true;
 		}
 
 		if (!$this->user_extended_reserved($name))
@@ -559,7 +559,11 @@ class e107_user_extended
 			$field_info = $this->user_extended_type_text($type, $default);
 		
 			// wrong type
-			if(false === $field_info) return false;
+			if(false === $field_info)
+			{
+				e107::getMessage()->addDebug("\$field_info is false ".__METHOD__);
+				return false;
+			}
 		
 			if($order === '' && $field_info)
 			{
@@ -577,9 +581,31 @@ class e107_user_extended
 			{
 				$sql->gen('ALTER TABLE #user_extended ADD user_'.$tp -> toDB($name, true).' '.$field_info);
 			}
-			
-			$sql->insert('user_extended_struct',"null,'".$tp -> toDB($name, true)."','".$tp -> toDB($text, true)."','".intval($type)."','".$tp -> toDB($parms, true)."','".$tp -> toDB($values, true)."', '".$tp -> toDB($default, true)."', '".intval($read)."', '".intval($write)."', '".intval($required)."', '0', '".intval($applicable)."', '".intval($order)."', '".intval($parent)."'");
-			
+
+		/*	TODO
+				$extStructInsert = array(
+				'user_extended_struct_id'           => '_NULL_',
+				'user_extended_struct_name'         => '',
+				'user_extended_struct_text'         => '',
+				'user_extended_struct_type'         => '',
+				'user_extended_struct_parms'        => '',
+				'user_extended_struct_values'       => '',
+				'user_extended_struct_default'      => '',
+				'user_extended_struct_read'         => '',
+				'user_extended_struct_write'        => '',
+				'user_extended_struct_required'     => '',
+				'user_extended_struct_signup'       => '',
+				'user_extended_struct_applicable'   => '',
+				'user_extended_struct_order'        => '',
+				'user_extended_struct_parent'       => ''
+
+			);
+
+		*/
+
+			$rest = $sql->insert('user_extended_struct',"null,'".$tp -> toDB($name, true)."','".$tp -> toDB($text, true)."','".intval($type)."','".$tp -> toDB($parms, true)."','".$tp -> toDB($values, true)."', '".$tp -> toDB($default, true)."', '".intval($read)."', '".intval($write)."', '".intval($required)."', '0', '".intval($applicable)."', '".intval($order)."', '".intval($parent)."'");
+
+
 			if ($this->user_extended_field_exist($name))
 			{
 			  return TRUE;

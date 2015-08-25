@@ -146,14 +146,14 @@ class user_class
 		}
 		else
 		{
-			$this->sql_r->db_Select('userclass_classes', '*', 'ORDER BY userclass_parent', 'nowhere');		// The order statement should give a consistent return
-
-			while ($row = $this->sql_r->db_Fetch(MYSQL_ASSOC))
+			if($this->sql_r->field('userclass_classes','userclass_parent') &&  $this->sql_r->select('userclass_classes', '*', 'ORDER BY userclass_parent', 'nowhere')) // The order statement should give a consistent return
 			{
-				$this->class_tree[$row['userclass_id']] = $row;
-				$this->class_tree[$row['userclass_id']]['class_children'] = array();		// Create the child array in case needed
+				while ($row = $this->sql_r->fetch(MYSQL_ASSOC))
+				{
+					$this->class_tree[$row['userclass_id']] = $row;
+					$this->class_tree[$row['userclass_id']]['class_children'] = array();		// Create the child array in case needed
+				}
 			}
-
 
 			// Add in any fixed classes that aren't already defined (they historically didn't have a DB entry, although now its facilitated (and necessary for tree structure)
 			foreach ($this->fixed_classes as $c => $d)
