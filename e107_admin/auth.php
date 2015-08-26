@@ -35,7 +35,7 @@ if($core->get('admintheme') != 'bootstrap' && $core->get('admintheme') != 'boots
 }
 
 // Check Admin-Perms for current language and redirect if necessary. 
-if(!getperms('0') && vartrue($pref['multilanguage']) && !getperms(e_LANGUAGE))
+if(USER && !getperms('0') && vartrue($pref['multilanguage']) && !getperms(e_LANGUAGE))
 {
 	$lng = e107::getLanguage();
 
