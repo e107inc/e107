@@ -823,6 +823,7 @@ class e107Email extends PHPMailer
 				//	$eml['body'] = ($tp->toEmail($tmpl['header']). str_replace('{BODY}', $eml['body'], $tmpl['body']). $tp->toEmail($tmpl['footer']));
 		}
 
+		$this->Subject = str_replace("&#039;", "'", $this->Subject);
 
 		// Perform Override from template. 
 		foreach($this->overrides as $k=>$v)
