@@ -87,8 +87,8 @@ class banlist_admin extends e_admin_dispatcher
 	
 	protected $adminMenu = array(
 
-		'main/list'			=> array('caption'=> "Blacklist", 'perm' => '4'), //TODO check for LAN.
-		'main/create'		=> array('caption'=> "Add to Blacklist", 'perm' => '4'),
+		'main/list'			=> array('caption'=> BANLAN_122, 'perm' => '4'),
+		'main/create'		=> array('caption'=> BANLAN_123, 'perm' => '4'),
 		'other'            => array('divider'=>true),
 		// Use FILTER to view whitelist instead. 
 		'white/list'		=> array('caption'=> BANLAN_52, 'perm' => '4'),
@@ -96,7 +96,7 @@ class banlist_admin extends e_admin_dispatcher
 
 		'other1'            => array('divider'=>true),
 
-		'failed/list'       => array('caption'=> 'Failed logins', 'perm'=>'4'),
+		'failed/list'       => array('caption'=> ADLAN_146, 'perm'=>'4'),
 
 		'other2'            => array('divider'=>true),
 		'main/transfer'		=> array('caption'=> BANLAN_35, 'perm' => '4'),
@@ -133,10 +133,10 @@ class banlist_ui extends e_admin_ui
 		  'banlist_ip' 			=>   array ( 'title' => LAN_IP, 			'type' => 'ip', 		'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banlist_bantype' 	=>   array ( 'title' => LAN_TYPE, 			'type' => 'method', 	'data' => 'str', 'width' => 'auto', 'filter'=>true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banlist_datestamp' 	=>   array ( 'title' => LAN_DATESTAMP, 		'type' => 'datestamp', 	'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => 'auto=1&hidden=1&readonly=1', 'class' => 'left', 'thclass' => 'left',  ),
-		  'banlist_banexpires' 	=>   array ( 'title' => 'Expires',	 		'type' => 'method', 	'data' => 'int', 'inline'=>true, 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'banlist_banexpires' 	=>   array ( 'title' => BANLAN_124,	 		'type' => 'method', 	'data' => 'int', 'inline'=>true, 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banlist_admin' 		=>   array ( 'title' => 'Admin', 			'type' => 'text', 	    'data' => 'int', 'noedit'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'banlist_reason' 		=>   array ( 'title' => 'Reason', 			'type' => 'text', 		'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => 'constant=1', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'banlist_notes' 		=>   array ( 'title' => 'Notes', 			'type' => 'text', 		'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'banlist_reason' 		=>   array ( 'title' => BANLAN_7, 			'type' => 'text', 		'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => 'constant=1', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'banlist_notes' 		=>   array ( 'title' => BANLAN_19, 			'type' => 'text', 		'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'options' 			=>   array ( 'title' => LAN_OPTIONS, 		'type' => '', 			'data' => '', 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
 		
@@ -167,7 +167,7 @@ class banlist_ui extends e_admin_ui
 					$myip = e107::getIPHandler()->getIP(true);
 					$this->fields['banlist_ip']['writeParms']['tdClassRight']  = 'form-inline';
 					$this->fields['banlist_ip']['writeParms']['pre'] = "<div class='input-append'>";
-					$this->fields['banlist_ip']['writeParms']['post'] = "<button class='btn btn-primary' id='useip' data-ip='{$myip}'>Use My IP</button></div>"; // USERIP;
+					$this->fields['banlist_ip']['writeParms']['post'] = "<button class='btn btn-primary' id='useip' data-ip='{$myip}'>".BANLAN_125."</button></div>"; // USERIP;
 				}
 
 			}
@@ -1643,3 +1643,4 @@ function headerjs()
 
 require_once(e_ADMIN."footer.php");
 exit;
+?>
