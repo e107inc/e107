@@ -32,7 +32,7 @@ class ArrayData {
              $log->addDebug("Deprecated ArrayStorage Class called by ".str_replace(e_ROOT,"",$d['file'])." on line ".$d['line']);
            }
 		   
-		   $log->save('DEPRECATED');
+	       $log->save('DEPRECATED',E_LOG_NOTICE,'',false, LOG_TO_ROLLING);
 		   
            e107::getMessage()->addDebug("Please remove references to <b>arraystorage_class.php</b> and use e107::serialize() and e107::unserialize() instead."); 
        }

@@ -201,12 +201,22 @@ class redirection
 			return;
 		}
 		
+		if(deftrue('NO_MAINTENANCE')) // per-page disable option. 
+		{
+			return;	
+		}
+		
 		if(e107::getPref('maintainance_flag') && defset('e_PAGE') != 'secure_img_render.php')
 		{
 			// if not admin
-			if(!ADMIN 
+			
+			$allowed = e107::getPref('maintainance_flag'); 
+			
+	//		if(!ADMIN 
 			// or if not mainadmin - ie e_UC_MAINADMIN
-			|| (e_UC_MAINADMIN == e107::getPref('maintainance_flag') && !getperms('0')))
+	//		|| (e_UC_MAINADMIN == e107::getPref('maintainance_flag') && !getperms('0')))
+			
+			if(!check_class($allowed)  && !getperms('0'))
 			{
 				// 307 Temporary Redirect
 				$this->redirect(SITEURL.'sitedown.php', TRUE, 307);
@@ -315,14 +325,15 @@ class redirection
 
 	public function redirect($url, $replace = TRUE, $http_response_code = NULL, $preventCache = true)
 	{
-		return $this->go($url, $replace, $http_response_code, $preventCache);	
+		$this->go($url, $replace, $http_response_code, $preventCache);
+		exit; 	
 	}
 
 	
 	/**
 	 * Redirect to the given URI
 	 *
-	 * @param string $url
+	 * @param string $url or error code number. eg. 404 = Not Found. 
 	 * @param boolean $replace - default TRUE
 	 * @param integer|null $http_response_code - default NULL
 	 * @param boolean $preventCache
@@ -330,6 +341,18 @@ class redirection
 	 */
 	public function go($url, $replace = TRUE, $http_response_code = NULL, $preventCache = true)
 	{
+		$url = str_replace("&amp;", "&", $url); // cleanup when using e_QUERY in $url; 
+					
+		if(defset('e_DEBUG') === 'redirect')
+		{
+			$error = debug_backtrace();
+		
+			e107::getLog()->addDebug("URL: ".$url."\nFile: ".$error[1]['file']."\nLine: ".$error[1]['line']."\nClass: ".$error[1]['class']."\nFunction: ".$error[1]['function']."\n\n");
+			e107::getLog()->toFile('redirect.log',true); 
+			echo "debug active";
+			return; 
+		}
+		
 		if(session_id())
 		{
 			e107::getSession()->end();

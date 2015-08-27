@@ -32,7 +32,7 @@ class gallery_shortcodes extends e_shortcode
 	function sc_gallery_caption($parm='')
 	{
 		$tp = e107::getParser();
-		$text = "<a class='gallery-caption' title='".$tp->toAttribute($this->var['media_caption'])."' href='".$tp->thumbUrl($this->var['media_url'], $this->attFull)."' rel='lightbox.Gallery2' >";
+		$text = "<a class='gallery-caption' title='".$tp->toAttribute($this->var['media_caption'])."' href='".$tp->thumbUrl($this->var['media_url'], $this->attFull)."' data-gal='prettyPhoto[slide]' >";     // Erase  rel"lightbox.Gallery2"  - Write "prettyPhoto[slide]"
 		$text .= $this->var['media_caption'];
 		$text .= "</a>";
 		return $text;
@@ -75,7 +75,7 @@ class gallery_shortcodes extends e_shortcode
 		$w 			= vartrue($parms['w']) ? $parms['w'] : $tp->thumbWidth(); // 190; // 160;
 		$h 			= vartrue($parms['h']) ? $parms['h'] : $tp->thumbHeight(); // 130;	
 		
-		$class 		= ($this->slideMode == TRUE) ? 'gallery-slideshow-thumb img-responsive' : varset($parms['class'],'gallery-thumb img-responsive');
+		$class 		= ($this->slideMode == TRUE) ? 'gallery-slideshow-thumb img-responsive img-rounded' : varset($parms['class'],'gallery-thumb img-responsive');
 	//	$rel 		= ($this->slideMode == TRUE) ? 'lightbox.SlideGallery' : 'lightbox.Gallery';
 			$rel 		= ($this->slideMode == TRUE) ? 'prettyPhoto[slide]' : 'prettyPhoto[gal]';
 		$att 		= 'aw='.$w.'&ah='.$h.'&x=1'; // 'aw=190&ah=150';
@@ -92,11 +92,11 @@ class gallery_shortcodes extends e_shortcode
 		elseif(isset($parms['imageurl'])) return $tp->replaceConstants($this->var['media_url'], 'full');
 		
 		$caption = $tp->toAttribute($this->var['media_caption']) ;	
-		$description = ($this->downloadable) ? " <a class='btn btn-mini e-tip' title='Right-click > Save Link As' href='".$srcFull."'>Download</a>" : "";
+		$description = ($this->downloadable) ? " <a class='btn btn-xs btn-default btn-mini e-tip' title='Right-click > Save Link As' href='".$srcFull."'>Download</a>" : "";
 		
 		$description .= $tp->toAttribute($this->var['media_description']);
 		
-		$text = "<a class='".$class."' title=\"".$description."\" href='".$srcFull."'  rel='{$rel}' >";
+		$text = "<a class='".$class."' title=\"".$description."\" href='".$srcFull."'  data-gal='{$rel}'  >";
 		$text .= "<img class='".$class."' src='".$tp->thumbUrl($this->var['media_url'],$att)."'  alt=\"".$caption."\" />";
 		$text .= "</a>";
 		
@@ -218,7 +218,6 @@ class gallery_shortcodes extends e_shortcode
 		$tp 				= e107::getParser();
 		$this->slideMode 	= TRUE;
 		$parms 				= eHelper::scDualParams($parm);
-		
 		$amount 			= $parms[1] ? intval($parms[1]) : 3; // vartrue(e107::getPlugPref('gallery','slideshow_perslide'),3);
 		$parms 				= $parms[2];
 		$limit 				= (integer) vartrue($parms['limit'], 16);

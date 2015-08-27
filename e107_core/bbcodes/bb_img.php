@@ -20,12 +20,12 @@ class bb_img extends e_bb_base
 		$parms = eHelper::scParams($parm);
 		$safe = array();
 		
-		if(varsettrue($parms['class'])) 	$safe['class'] = eHelper::secureClassAttr($parms['class']);
-		if(varsettrue($parms['id']))		$safe['id'] = eHelper::secureIdAttr($parms['id']);
-		if(varsettrue($parms['style'])) 	$safe['style'] = eHelper::secureStyleAttr($parms['style']);
+		if(vartrue($parms['class'])) 	$safe['class'] = eHelper::secureClassAttr($parms['class']);
+		if(vartrue($parms['id']))		$safe['id']     = eHelper::secureIdAttr($parms['id']);
+		if(vartrue($parms['style'])) 	$safe['style'] = eHelper::secureStyleAttr($parms['style']);
 		if($safe)
 		{
-			return '[img='.eHelper::buildAttr($safe).']'.$code_text.'[/img]';
+			return '[img '.eHelper::buildAttr($safe).']'.$code_text.'[/img]';
 		}
 		return '[img]'.$code_text.'[/img]';
 	}
@@ -39,8 +39,9 @@ class bb_img extends e_bb_base
         $tp = e107::getParser();
           
 		// Replace the bbcode path with a real one. 
-		$code_text = str_replace('{e_MEDIA}','{e_MEDIA_IMAGE}',$code_text); //BC 0.8 fix. 
+		$code_text = str_replace('{e_MEDIA}images/','{e_MEDIA_IMAGE}',$code_text); //BC 0.8 fix.
         $code_text = str_replace('{e_MEDIA_IMAGE}', e_HTTP."thumb.php?src=e_MEDIA_IMAGE/", $code_text);
+		$code_text = str_replace('{e_THEME}', e_HTTP."thumb.php?src=e_THEME/", $code_text);
         $imgParms    = $this->processParm($code_text, $parm);
         
         foreach($imgParms as $k => $v)
@@ -82,11 +83,16 @@ class bb_img extends e_bb_base
         
         parse_str($parm,$imgParms);
         
-      //  foreach($tmp as $p => $v)
+
+		if(!vartrue($imgParms['width']) && strpos($parm,'width')!==false) // Calculate thumbnail width from style. 
         {
-         //   $imgParms[$p]=$v;
-        }
-        
+			preg_match("/width:([\d]*)/i", $parm, $m);
+			if($m[1] > 0)
+			{
+				$imgParms['width'] = $m[1];
+			}
+		}
+		
         if(!vartrue($imgParms['alt'])) // Generate an Alt value from filename if one not found.  
         {
            preg_match("/([\w]*)(?:\.png|\.jpg|\.jpeg|\.gif)/i", $code_text, $match); // Generate required Alt attribute. 
@@ -119,7 +125,7 @@ class bb_img extends e_bb_base
 
         if (trim($code_text) == "") return "";                      // Do nothing on empty file
         
-        if(substr($code_text,0,15) == '{e_MEDIA_IMAGE}') // Image from Media-Manager. 
+        if(substr($code_text,0,15) == '{e_MEDIA_IMAGE}' || substr($code_text,0,9) == '{e_MEDIA}' || substr($code_text,0,9) == '{e_THEME}') // Image from Media-Manager. 
         {  
             return $this->mediaImage($code_text, $parm);          
         }
@@ -196,7 +202,7 @@ class bb_img extends e_bb_base
 		
 		
 		// Check for whether we can display image down here - so we can show image name if appropriate
-		if (!varsettrue($pref['image_post']) || !check_class($pref['image_post_class']))
+		if (!vartrue($pref['image_post']) || !check_class($pref['image_post_class']))
 		{
 			switch ($pref['image_post_disabled_method'])
 			{

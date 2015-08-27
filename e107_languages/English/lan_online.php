@@ -31,7 +31,7 @@ define("ONLINE_EL16", "Information not available");
 define("CLASSRESTRICTED", "Class Restricted Page");
 //define("ARTICLEPAGE", "Article/Review");
 define("CHAT", "Chat");
-define("COMMENT", "Comments");
+// define("COMMENT", "Comments");
 define("DOWNLOAD", "Downloads");
 define("EMAIL", "email.php");
 define("FORUM", "Main Forum Index");
@@ -62,6 +62,6 @@ define("SURVEY", "Survey");
 define("ARTICLE", "Article");
 define("CONTENT", "Content Page");
 define("REVIEW", "Review");
-define('OTHER', 'Other page: ');
+define("OTHER", "Other page: ");
 
 ?>

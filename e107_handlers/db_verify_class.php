@@ -90,7 +90,7 @@ class db_verify
 	 */
 	function verify()
 	{
-					
+		
 		if(vartrue($_POST['verify_table']))
 		{			
 			$this->runComparison($_POST['verify_table']);
@@ -112,7 +112,7 @@ class db_verify
 		
 	function runComparison($fileArray)
 	{
-		
+	
 		$ns = e107::getRender();
 		$mes = e107::getMessage();
 		$frm = e107::getForm();
@@ -175,12 +175,15 @@ class db_verify
 			$this->compare($tb);	
 		}
 			
-		foreach($this->sqlLanguageTables as $lng=>$lantab) // language tables. 
+		if(!empty($this->sqlLanguageTables)) // language tables. 
 		{
-			foreach($dtables as $tb)
+			foreach($this->sqlLanguageTables as $lng=>$lantab) 
 			{
-				$this->compare($tb,$lng);	
-			}			
+				foreach($dtables as $tb)
+				{
+					$this->compare($tb,$lng);	
+				}			
+			}
 		}
 	}
 	
@@ -192,6 +195,10 @@ class db_verify
 	function compare($selection,$language='')
 	{
 		
+		if(empty($this->tables[$selection]['tables']))
+		{
+			return; 	
+		}
 	
 		foreach($this->tables[$selection]['tables'] as $key=>$tbl)
 		{
@@ -366,6 +373,15 @@ class db_verify
 		}
 	
 	}
+
+	/** 
+	 * Returns the number of errors
+	 */
+	public function errors()
+	{
+		return count($this->errors);	
+	}
+
 	
 	
 	function renderResults()
@@ -515,7 +531,7 @@ class db_verify
 	function fixForm($file,$table,$field, $newvalue,$mode,$after ='')
 	{
 		$frm = e107::getForm();
-		$text .= $frm->checkbox("fix[$file][$table][$field][]", $mode, false, array('id'=>false));
+		$text = $frm->checkbox("fix[$file][$table][$field][]", $mode, false, array('id'=>false));
 		
 		return $text;
 	}
@@ -685,17 +701,18 @@ class db_verify
 						// continue;	
 						 
 						 
-						if(mysql_query($query))
+						if(e107::getDb()->gen($query) !== false)
 						{
 							$log->addDebug(LAN_UPDATED.'  ['.$query.']');	
 						} 
 						else 
 						{
 							$log->addWarning(LAN_UPDATED_FAILED.'  ['.$query.']');
-							if(mysql_errno())
+							$log->addWarning(e107::getDb()->getLastErrorText()); // PDO compatible.
+							/*if(mysql_errno())
 							{
 								$log->addWarning('SQL #'.mysql_errno().': '.mysql_error());
-							}
+							}*/
 						}
 					}	
 				}
@@ -703,7 +720,7 @@ class db_verify
 			}	// 
 		}
 
-		$log->flushMessages();
+		$log->flushMessages("Database Table(s) Modified");
 				
 	}	
 	
@@ -744,7 +761,7 @@ class db_verify
 				
 		$ret['tables'] = $tables;
 		$ret['data'] = $match[2];
-		
+		$ret['engine'] = $match[4];
 		
 		
 		
@@ -856,9 +873,7 @@ class db_verify
 	function getSqlData($tbl,$language='')
 	{
 		
-		
 		$mes = e107::getMessage();
-		
 		$prefix = MPREFIX;
 		
 		if($language)
@@ -873,6 +888,13 @@ class db_verify
 		}
 		
 		$sql = e107::getDb();
+
+		if(!$sql->isTable($tbl))
+		{
+			$mes->addDebug('Missing table on db-verify: '.$tbl);
+			return false;
+		}
+
 		$sql->gen('SET SQL_QUOTE_SHOW_CREATE = 1');	
 	//	mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
 		$qry = 'SHOW CREATE TABLE `' . $prefix . $tbl . "`";
@@ -925,23 +947,23 @@ class db_verify
 		<form method='post' action='".e_SELF.(e_QUERY ? '?'.e_QUERY : '')."' id='core-db-verify-sql-tables-form'>
 			<fieldset id='core-db-verify-sql-tables'>
 				<legend>".DBVLAN_14."</legend>
-				<table class='table adminlist'>
+				<table class='table table-striped adminlist'>
 					<colgroup>
 						<col style='width: 100%'></col>
 					</colgroup>
 					<thead>
 						<tr>
-							<th class='last'>".$frm->checkbox_toggle('check-all-verify', 'verify_table',false,LAN_CHECKALL.' | '.LAN_UNCHECKALL)."</th>
+							<th class='first form-inline'><label for='check-all-verify-jstarget-verify-table'>".$frm->checkbox_toggle('check-all-verify', 'verify_table', false )." ".LAN_CHECKALL.' | '.LAN_UNCHECKALL."</label></th>
 						</tr>
 					</thead>
 					<tbody>
 		";
 	
-		foreach(array_keys($this->tables) as $x)
+		foreach(array_keys($this->tables) as $t=>$x)
 		{
 			$text .= "
 				<tr>
-					<td>".$frm->checkbox('verify_table[]', $x,false,'label='.$x)."</td>
+					<td>".$frm->checkbox('verify_table['.$t.']', $x, false, array('label'=>$x))."</td>
 				</tr>
 			";
 		}

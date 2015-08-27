@@ -81,7 +81,7 @@ function nextprev_shortcode($parm = '')
 			$LAN_NP_FIRST 		= $tp->toGlyph("icon-fast-backward.glyph",false);
 			$LAN_NP_PREVIOUS 	= $tp->toGlyph("icon-backward.glyph",false);
 			$LAN_NP_NEXT 		= $tp->toGlyph("icon-forward.glyph",false);
-			$LAN_NP_LAST 		= $tp->toGlyph("icon-fast-forward.glyph",false);
+			$LAN_NP_LAST 		= $tp->toGlyph("fa fa-fast-forward",false);
 		}
 		else
 		{
@@ -409,7 +409,7 @@ function nextprev_shortcode($parm = '')
 
 	if($total_pages > 1)
 	{
-		if(varsettrue($pref['old_np']))
+		if(vartrue($pref['old_np']))
 		{
 
 			$NP_PRE_ACTIVE = '';
@@ -520,11 +520,14 @@ function nextprev_shortcode($parm = '')
 		}
 
 		// Use NEW nextprev method
-		$np_parm['template'] = "[PREV]&nbsp;&nbsp;[DROPDOWN]&nbsp;&nbsp;[NEXT]";
+		$np_parm['template'] = "<span class='form-group form-inline'>[PREV]&nbsp;&nbsp;[DROPDOWN]&nbsp;&nbsp;[NEXT]<span>";
 		$np_parms['prev'] = '&nbsp;&nbsp;&lt;&lt;&nbsp;&nbsp;';
 		$np_parms['next'] = '&nbsp;&nbsp;&gt;&gt;&nbsp;&nbsp;';
-		$np_parms['np_class'] = 'tbox npbutton btn';
-		$np_parms['dropdown_class'] = 'tbox npdropdown';
+		$np_parms['np_class'] = 'tbox npbutton btn btn-default';
+		$np_parms['dropdown_class'] = 'tbox npdropdown form-control';
+		$caption = ''; // legacy has no caption.
+
+
 
 		if($cached_parms = getcachedvars('nextprev'))
 		{
@@ -593,10 +596,12 @@ function nextprev_shortcode($parm = '')
 		}
 		$dropdown .= '</select>';
 		$ret = $np_parm['template'];		// Set default
+
 		if (isset($np_parms['template']) && $np_parms['template'])
 		{
 			$ret = $np_parms['template'];				// Use override
 		}
+
 		$ret = str_replace('[DROPDOWN]', $dropdown, $ret);
 		$ret = str_replace('[PREV]', $prev, $ret);
 		$ret = str_replace('[NEXT]', $next, $ret);

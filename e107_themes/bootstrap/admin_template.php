@@ -109,7 +109,7 @@ $E_ADMIN_NAVIGATION['button_pm'] = '
 	    <li><a href="#">Incoming Message Number 1</a></li>
 	      <li><a href="#">Incoming Message Number 2</a></li>
 	        <li><a href="#">Incoming Message Number 3</a></li>
-	         <li class="divider"></li>
+	         <li role="separator" class="divider"></li>
 	    </ul>
 		<textarea class="e-tip input-block-level" title="Example Only"></textarea>
 		<button class="dropdown-toggle btn btn-primary" >Send</button>	
@@ -188,35 +188,38 @@ $ADMIN_HEADER = '<div class="navbar '.$inverse.' navbar-fixed-top">
     </div>';
 
 $ADMIN_HEADER .= '<div class="container-fluid">
+ <div class="sidebar-toggle"><a href="#" title="Toggle Sidebar" data-toggle-sidebar="true">'.e107::getParser()->toGlyph('fa-caret-right').'</a></div>
+
       <div class="row-fluid">
+
         <div class="span2" id="left-panel">
+
         	{SETSTYLE=admin_menu}
 		
 			{ADMIN_MENU}
 			{ADMIN_MENUMANAGER} 
 			
-		
+
 			{ADMIN_PWORD}
 			{SETSTYLE=site_info}
-			
+
+			{ADMINUI_HELP}
 			{ADMIN_HELP}
 			{ADMIN_SITEINFO=creditsonly}
 			{SETSTYLE=admin_menu}
 			
 			{ADMIN_LATEST=infopanel}
 			{ADMIN_STATUS=infopanel}
-	
-			{ADMIN_LOG=request}
+
 			{ADMIN_MSG=request}
 			{ADMIN_PLUGINS}
 			
 		
 			
-			{SETSTYLE=none}
+			{SETSTYLE=default}
 			
          </div>
         <div class="span10" id="right-panel" >
-        
         ';
 
 
@@ -227,7 +230,7 @@ $ADMIN_FOOTER = '
 
     </div><!--/.fluid-container-->
     <footer class="center mute"> 
-		Copyright &copy; 2008-2013 e107 Inc (e107.org)<br />
+		Copyright &copy; 2008-2015 e107 Inc (e107.org)<br />
       </footer>';
 
 
@@ -328,13 +331,13 @@ $E_ADMIN_MENU['start'] = '
 
 $E_ADMIN_MENU['button'] = '
 	<li>
-		<a class="link{LINK_CLASS}" href="{LINK_URL}"{ID}{ONCLICK}><i class="icon-chevron-right"></i>&nbsp;{LINK_TEXT}</a>
+		<a class="link{LINK_CLASS}" {LINK_DATA} href="{LINK_URL}"{ID}{ONCLICK}>{LINK_TEXT}&nbsp;</a>
 		{SUB_MENU}
 	</li>
 ';
 $E_ADMIN_MENU['button_active'] = '
 	<li class="active">
-		<a class="link-active{LINK_CLASS}" href="{LINK_URL}"{ID}{ONCLICK}><i class="icon-chevron-right"></i>&nbsp;{LINK_TEXT}</a>
+		<a class="link-active{LINK_CLASS}" {LINK_DATA} href="{LINK_URL}"{ID}{ONCLICK}>{LINK_TEXT}&nbsp;</a>
 		{SUB_MENU}
 	</li>
 ';
@@ -364,7 +367,7 @@ $E_ADMIN_MENU['end'] = '
 </ul>
 ';
 
-$E_ADMIN_MENU['divider'] = '<li class="divider"></li>'; 
+$E_ADMIN_MENU['divider'] = '<li role="separator" class="divider"></li>';
 
 
 /* NEW ADMIN SLIDE DOWN MENU TEMPLATE

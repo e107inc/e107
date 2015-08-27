@@ -24,6 +24,7 @@ e107::coreLan('eurl', true);
 $e_sub_cat = 'eurl';
 
 
+
 class eurl_admin extends e_admin_dispatcher
 {
 	protected $modes = array(
@@ -39,6 +40,7 @@ class eurl_admin extends e_admin_dispatcher
 		'main/config'		=> array('caption'=> LAN_EURL_MENU_CONFIG, 'perm' => 'L'),
 		'main/alias' 		=> array('caption'=> LAN_EURL_MENU_ALIASES, 'perm' => 'L'),
 		'main/settings' 	=> array('caption'=> LAN_EURL_MENU_SETTINGS, 'perm' => 'L'),
+		'main/simple' 		=> array('caption'=> LAN_EURL_MENU_REDIRECTS, 'perm' => 'L'),
 	//	'main/help' 		=> array('caption'=> LAN_EURL_MENU_HELP, 'perm' => 'L'),
 	);
 
@@ -62,6 +64,59 @@ class eurl_admin_ui extends e_admin_controller_ui
 	
 	public function init()
 	{
+		if(e_AJAX_REQUEST)
+		{
+			$tp = e107::getParser();
+
+			if(!empty($_POST['pk']) && !empty($_POST['value']))
+			{
+				$cfg = e107::getConfig();
+
+				list($plug,$key) = explode("|", $_POST['pk']);
+
+				if(is_string($cfg->get('e_url_alias')))
+				{
+					$cfg->setPostedData('e_url_alias', array(e_LAN => array($plug => array($key => $tp->filter($_POST['value']))) ), false);
+				}
+				else
+				{
+					$cfg->setPref('e_url_alias/'.e_LAN.'/'.$plug."/".$key, $tp->filter($_POST['value']));
+				}
+
+				$cfg->save(true, true, true);
+			}
+
+
+		//	file_put_contents(e_LOG."e_url.log", print_r($cfg->get('e_url_alias'),true));
+
+			exit;
+
+		}
+
+		$htaccess = file_exists(e_BASE.".htaccess");
+
+		if(function_exists('apache_get_modules'))
+		{
+			$modules = apache_get_modules();
+			$modRewrite = in_array('mod_rewrite', $modules );
+		}
+		else
+		{
+			$modRewrite = true; //we don't really know.
+
+		}
+
+		if($modRewrite === false)
+		{
+			e107::getMessage()->addInfo("Apache mod_rewrite was not found on this server and is required to use this feature. ");
+			e107::getMessage()->addDebug(print_a($modules,true));
+
+		}
+
+		if($htaccess && $modRewrite && !deftrue('e_MOD_REWRITE'))
+		{
+			e107::getMessage()->addInfo("Mod-rewrite is disabled. To enable, please add the following line to your <b>e107_config.php</b> file:<br /><pre>define('e_MOD_REWRITE',true);</pre>");
+		}
 	
 		if(is_array($_POST['rebuild']))
 		{
@@ -146,6 +201,84 @@ class eurl_admin_ui extends e_admin_controller_ui
 		$this->addTitle(LAN_EURL_NAME_HELP);
 		return LAN_EURL_UC;
 	}
+
+	//TODO Checkbox for each plugin to enable/disable
+	public function simplePage()
+	{
+		// $this->addTitle("Simple Redirects");
+		$eUrl =e107::getAddonConfig('e_url');
+		$frm = e107::getForm();
+		$tp = e107::getParser();
+		$cfg = e107::getConfig();
+
+		if(!empty($_POST['saveSimpleSef']))
+		{
+			if(is_string($this->getConfig()->get('e_url_alias')))
+			{
+				$cfg->setPostedData('e_url_alias', array(e_LAN => $_POST['e_url_alias']), false);
+			}
+			else
+			{
+				$cfg->setPref('e_url_alias/'.e_LAN, $_POST['e_url_alias']);
+			}
+
+			$cfg->save(true, true, true);
+
+		}
+
+		$pref = e107::getPref('e_url_alias');
+
+		if(empty($eUrl))
+		{
+			return; 		
+		}
+
+		$text = "<div class='e-container'>";
+		$text .= $frm->open('simpleSef');
+
+		$multilan = "<small class='e-tip admin-multilanguage-field' style='cursor:help; padding-left:10px' title='Multi-language field'>".$tp->toGlyph('fa-language')."</small>";
+
+		$home = "<small>".SITEURL.'</small>';
+
+		foreach($eUrl as $plug=>$val)
+		{
+			$text .= "<h5>".$plug."</h5>";
+			$text .= "<table class='table table-striped table-bordered'>";
+			$text .= "<tr><th>Key</th><th>Regular Expression</th>
+
+
+			<th>".LAN_URL."</th>
+			</tr>";
+			
+			foreach($val as $k=>$v)
+			{
+
+					$alias          = vartrue($pref[e_LAN][$plug][$k], $v['alias']);
+				//	$sefurl         = (!empty($alias)) ? str_replace('{alias}', $alias, $v['sef']) : $v['sef'];
+					$pid            = $plug."|".$k;
+
+					$v['regex'] = str_replace("^",$home,$v['regex']);
+					$aliasForm      = $frm->renderInline('e_url_alias['.$plug.']['.$k.']', $pid, 'e_url_alias['.$plug.']['.$k.']', $alias, $alias,'text',null,array('title'=>LAN_EDIT." (".e_LANGUAGE." Only)", 'url'=>e_REQUEST_SELF));
+					$aliasRender    = str_replace('{alias}', $aliasForm, $v['regex']);
+
+					$text .= "<tr>
+					<td style='width:5%'>".$k."</td>
+					<td style='width:20%'>".$aliasRender."</td>
+
+					<td style='width:30%'>". $v['redirect']."</td>
+					</tr>";
+			}
+		
+					
+			$text .= "</table>";
+		}	
+
+	//	$text .= "<div class='buttons-bar center'>".$frm->button('saveSimpleSef',LAN_SAVE." (".e_LANGUAGE.")",'submit')."</div>";
+		$text .= $frm->close();
+		$text .= "</div>";
+		return $text;		
+	}
+		
 	
 	public function SettingsObserver()
 	{
@@ -188,7 +321,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 	
 	public function SettingsPage()
 	{
-		$this->addTitle(LAN_EURL_NAME_SETTINGS);
+		//$this->addTitle(LAN_EURL_NAME_SETTINGS);
 		return $this->getUI()->urlSettings();
 	}
 	
@@ -224,7 +357,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 	
 	public function AliasPage()
 	{
-		$this->addTitle(LAN_EURL_NAME_ALIASES);
+	//	$this->addTitle(LAN_EURL_NAME_ALIASES);
 		
 		$aliases = e107::getPref('url_aliases', array());
 		
@@ -279,7 +412,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 	
 	public function ConfigPage()
 	{
-		$this->addTitle(LAN_EURL_NAME_CONFIG);
+		// $this->addTitle(LAN_EURL_NAME_CONFIG);
 		$active = e107::getPref('url_config');
 
 		$set = array();
@@ -562,12 +695,14 @@ class eurl_admin_form_ui extends e_admin_form_ui
 				$cssClass = 'e-hideme'; // always hidden for now, some interface changes could come after pre-alpha
 
 				 $exampleUrl = array();
-                foreach($section['examples'] as $ex)
-                {
-                    $exampleUrl[] = str_replace($srch,$repl,$ex);    
-                    
-                }
-                
+				 if(!empty($section['examples']))
+				 {
+	                foreach($section['examples'] as $ex)
+	                {
+	                    $exampleUrl[] = str_replace($srch,$repl,$ex);
+
+	                }
+				 }
                  if(strpos($path,'noid')!==false)
                 {
                //     $exampleUrl .= "  &nbsp; &Dagger;";    //XXX Add footer - denotes more CPU required. ?
@@ -632,7 +767,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 		 
 		 [Miro] Solution comes from the module itself, not related with URL assembling in anyway (as per latest Skype discussion)
 		 */
-		// FIXME TODO XXX
+
 		
 		// Global On/Off Switch Example
 		// [Miro] there is no reason of switch, everything could go through single entry point at any time, without a need of .htaccess (path info)

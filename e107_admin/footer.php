@@ -96,7 +96,7 @@ if (varset($e107_popup) != 1)
 	// B.2 Send footer template, stop timing, send simple page stats
 	//
 	//NEW - Iframe mod
-	if (!defsettrue('e_IFRAME'))
+	if (!deftrue('e_IFRAME'))
 	{
 		parse_admin($ADMIN_FOOTER);
 	}
@@ -172,7 +172,11 @@ if (varset($e107_popup) != 1)
 	}
 	else
 	{
-		echo($rinfo ? "\n<div class='e-footer-info muted center' style='padding-bottom:20px; margin-top:10px'><small>{$rinfo}</small></div>\n" : "");
+
+		if(!deftrue('e_IFRAME'))
+		{
+			echo($rinfo ? "\n<div class='e-footer-info muted center' style='padding-bottom:20px; margin-top:10px'><small>{$rinfo}</small></div>\n" : "");
+		}
 	}
 	
 } // End of regular-page footer (the above NOT done for popups)
@@ -275,7 +279,7 @@ if (function_exists('theme_foot'))
 
 //
 // F any included JS footer scripts
-// DEPRECATED - use  e107::getJs()->footerFile('{e_PLUGIN}myplug/js/my.js', $zone = 2)
+// DEPRECATED - use  e107::js('footer', '{e_PLUGIN}myplug/js/my.js', $zone = 2)
 //
 global $footer_js;
 if (isset($footer_js) && is_array($footer_js))
@@ -287,6 +291,32 @@ if (isset($footer_js) && is_array($footer_js))
 		$js_included[] = $fname;
 	}
 }
+
+
+// Load e_footer.php files. 
+if (is_array($pref['e_footer_list']))
+{
+//	ob_start();
+	
+	foreach($pref['e_footer_list'] as $val)
+	{		
+		$fname = e_PLUGIN.$val."/e_footer.php"; // Do not place inside a function - BC $pref required. . 
+		
+		if(is_readable($fname))
+		{
+			
+			$ret = ($e107_debug || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
+		}	
+	}
+
+//	$e_footer_ouput = ob_get_contents(); // Don't use. 
+//	ob_end_clean();
+	unset($ret);
+}
+
+
+
+
 
 // [JSManager] Load JS Footer Includes by priority
 e107::getJs()->renderJs('footer', true);

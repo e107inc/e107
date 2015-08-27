@@ -7,12 +7,12 @@
 		<link url='admin_gallery.php' description='LAN_CONFIGURE' icon='images/gallery_32.png' iconSmall='images/gallery_16.png' primary='true' >LAN_CONFIGURE</link>		
 	</adminLinks>
 	<siteLinks>
-		<link url="{e_PLUGIN}gallery/gallery.php" sef="gallery" perm="everyone" >LAN_PLUGIN_GALLERY_TITLE</link>	
+		<link url="{e_PLUGIN}gallery/gallery.php"  perm="everyone" >LAN_PLUGIN_GALLERY_TITLE</link>
 	</siteLinks>	
 	<mainPrefs>
 	</mainPrefs>
 	<mediaCategories>
-		<category type="image" sef="gallery-1" image='{e_PLUGIN}gallery/images/butterfly.jpg'>Gallery 1</category>
+		<category type="image" sef="gallery-1" perm="everyone" image='{e_PLUGIN}gallery/images/butterfly.jpg'>Gallery 1</category>
 	</mediaCategories>
 	<pluginPrefs>
 		<pref name="popup_w">800</pref>	

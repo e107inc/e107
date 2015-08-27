@@ -12,8 +12,8 @@ $NAVIGATION_TEMPLATE['main']['start'] = '<ul class="nav navbar-nav">';
 
 // Main Link
 $NAVIGATION_TEMPLATE['main']['item'] = '
-	<li class="dropdown">
-		<a class="dropdown-toggle"  role="button" href="{LINK_URL}"{LINK_OPEN}>
+	<li>
+		<a  role="button" href="{LINK_URL}"{LINK_OPEN} title="{LINK_DESCRIPTION}">
 		 {LINK_ICON}{LINK_NAME} 
 		</a> 
 	</li>
@@ -22,7 +22,7 @@ $NAVIGATION_TEMPLATE['main']['item'] = '
 // Main Link which has a sub menu. 
 $NAVIGATION_TEMPLATE['main']['item_submenu'] = '
 	<li class="dropdown">
-		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
+		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_DESCRIPTION}">
 		 {LINK_ICON}{LINK_NAME} 
 		<b class="caret"></b>
 		</a> 
@@ -41,8 +41,8 @@ $NAVIGATION_TEMPLATE['main']['item_submenu_active'] = '
 ';	
 
 $NAVIGATION_TEMPLATE['main']['item_active'] = '
-	<li class="dropdown active">
-		<a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}"{LINK_OPEN}>
+	<li>
+		<a class="e-tip" role="button"  data-target="#" href="{LINK_URL}"{LINK_OPEN} title="{LINK_DESCRIPTION}">
 		 {LINK_ICON} {LINK_NAME}
 		</a>
 	</li>
@@ -120,7 +120,22 @@ $NAVIGATION_TEMPLATE['side']['submenu_item_active'] = '<li class="active"><a hre
 $NAVIGATION_TEMPLATE['side']['submenu_end'] 		= '';
 
 
-$NAVIGATION_TEMPLATE['footer'] 						= $NAVIGATION_TEMPLATE['side'];
+// Footer links.  - ie. 3 columns of links. 
+
+$NAVIGATION_TEMPLATE["footer"]["start"] 				= "<ul class='list-unstyled nav-footer row'>\n";
+$NAVIGATION_TEMPLATE["footer"]["item"] 					= "<li class='col-md-4'><a href='{LINK_URL}'{LINK_OPEN}>{LINK_ICON}{LINK_NAME}</a></li>\n";
+$NAVIGATION_TEMPLATE["footer"]["item_submenu"] 			= "<li class='nav-header col-md-4'>{LINK_ICON}{LINK_NAME}{LINK_SUB}</li>\n";
+$NAVIGATION_TEMPLATE["footer"]["item_active"] 			= "<li class='active'{LINK_OPEN}><a href='{LINK_URL}'>{LINK_ICON}{LINK_NAME}</a></li>\n";
+$NAVIGATION_TEMPLATE["footer"]["end"] 					= "</ul>\n";
+$NAVIGATION_TEMPLATE["footer"]["submenu_start"] 		= "<ul class='list-unstyled'>";
+$NAVIGATION_TEMPLATE["footer"]["submenu_item"]			= "<li><a href='{LINK_URL}'{LINK_OPEN}>{LINK_ICON}{LINK_NAME}</a></li>\n";
+$NAVIGATION_TEMPLATE["footer"]["submenu_loweritem"] 	= "<li><a href='{LINK_URL}'{LINK_OPEN}>{LINK_ICON}{LINK_NAME}</a>{LINK_SUB}</li>\n";
+$NAVIGATION_TEMPLATE["footer"]["submenu_item_active"] 	= "<li class='active'><a href='{LINK_URL}'>{LINK_ICON}{LINK_NAME}</a></li>\n";
+$NAVIGATION_TEMPLATE["footer"]["submenu_end"] 			= "</ul>";
+
+
+
+
 $NAVIGATION_TEMPLATE['alt'] 						= $NAVIGATION_TEMPLATE['side'];
 $NAVIGATION_TEMPLATE['alt5'] 						= $NAVIGATION_TEMPLATE['side'];
 $NAVIGATION_TEMPLATE['alt6'] 						= $NAVIGATION_TEMPLATE['side'];

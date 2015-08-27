@@ -249,10 +249,14 @@ foreach($pageInfo as $key => $info)
 
 $pagetotal = serialize($pageTotal);
 
+$insertPageTotal = array('log_data'=> $pageTotal, 'WHERE' => "log_id='pageTotal'");
+$sql->replace('logstats', $insertPageTotal);
+
+/*
 if(!$sql->update("logstats", "log_data='{$pagetotal}' WHERE log_id='pageTotal' "))
 {
 	$sql->insert("logstats", "0, 'pageTotal', '{$pagetotal}' ");
-}
+}*/
 
 
 /* now we need to collate the individual page information into an array ... */

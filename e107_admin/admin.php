@@ -71,24 +71,69 @@ class admin_start
 			'aa_jquery'		=> 1.2,
 			'who'			=> 1.0,
 			'ratings'		=> 4.2,
+			'lightbox'		=> 1.5,
 			'e107slider'	=> 0.1
 	);
 
 
 	private $allowed_types = null;
+	private $refresh  = false;
 
 	
 	
 	
 	function __construct()
 	{
+		$this->checkPaths();
+		$this->checkTimezone();
 		$this->checkWritable();
 		$this->checkHtmlarea();	
 		$this->checkIncompatiblePlugins();
 		$this->checkFileTypes();
 		$this->checkSuspiciousFiles();
-		
+		$this->checkDeprecated();
+
+		if($this->refresh == true)
+		{
+			e107::getRedirect()->go(e_SELF);
+		}
+
 	}	
+
+	function checkPaths()
+	{
+		$create_dir = array(e_MEDIA,e_SYSTEM,e_CACHE,e_CACHE_CONTENT,e_CACHE_IMAGE, e_CACHE_DB, e_LOG, e_BACKUP, e_CACHE_URL, e_TEMP, e_IMPORT);
+
+		$refresh = false;
+
+		foreach($create_dir as $dr)
+		{
+			if(!is_dir($dr))
+			{
+				if(mkdir($dr, 0755))
+				{
+					$this->refresh = true;
+				}
+			}
+		}
+
+	}
+
+
+
+	function checkTimezone()
+	{
+		$mes = e107::getMessage();
+		$timezone = e107::pref('core','timezone');
+
+		if(e107::getDate()->isValidTimezone($timezone) == false)
+		{
+			$mes->addWarning("Your timezone setting (".$timezone.") is invalid. It has been reset to UTC. To Modify, please go to Admin -> Preferences -> Date Display Options.", 'default', true);
+			e107::getConfig()->set('timezone','UTC')->save(false,true,false);
+			$this->refresh = true;
+		}
+
+	}
 
 
 	function checkWritable()
@@ -141,9 +186,44 @@ class admin_start
 		if($inCompatText)
 		{
 			$text = "<ul>".$inCompatText."</ul>";
-			$mes->addWarning("The following plugins are not compatible with this version of e107 and should be uninstalled: ".$text."<a class='btn' href='".e_ADMIN."plugin.php'>uninstall</a>");	
+			$mes->addWarning("The following plugins are not compatible with this version of e107 and should be uninstalled: ".$text."<a class='btn btn-default' href='".e_ADMIN."plugin.php'>uninstall</a>");
 		}	
 		
+	}
+
+
+	function checkDeprecated()
+	{
+		$deprecated = array(
+			e_ADMIN."ad_links.php",
+			e_PLUGIN."tinymce4/e_meta.php",
+			e_THEME."bootstrap3/css/bootstrap_dark.css",
+			e_PLUGIN."search_menu/languages/English.php",
+			e_LANGUAGEDIR."English/lan_parser_functions.php",
+			e_HANDLER."np_class.php",
+			e_CORE."shortcodes/single/user_extended.sc",
+			e_ADMIN."download.php"
+		);
+
+		$found = array();
+		foreach($deprecated as $path)
+		{
+			if(file_exists($path))
+			{
+				$found[] = $path;
+			}
+
+
+		}
+
+		if(!empty($found))
+		{
+			$text = "The following old files can be safely deleted from your system: ";
+			$text .= "<ul><li>".implode("</li><li>", $found)."</li></ul>";
+
+			e107::getMessage()->addWarning($text);
+		}
+
 	}
 
 	
@@ -166,6 +246,7 @@ class admin_start
 	{
 		$mes = e107::getMessage();
 		$public = array(e_UPLOAD, e_AVATAR_UPLOAD);
+		$tp = e107::getParser();
 		$exceptions = array(".","..","/","CVS","avatars","Thumbs.db",".ftpquota",".htaccess","php.ini",".cvsignore",'e107.htaccess');
 		
 		//TODO use $file-class to grab list and perform this check. 
@@ -204,7 +285,7 @@ class admin_start
 		if (isset($potential))
 		{
 			//$text = ADLAN_ERR_3."<br /><br />";
-			$mes->addWarning(ADLAN_ERR_3);
+			$mes->addWarning($tp->toHtml(ADLAN_ERR_3, true));
 			$text = '<ul>';
 			foreach ($potential as $p_file)
 			{

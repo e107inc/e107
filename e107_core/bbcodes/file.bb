@@ -8,7 +8,7 @@ $class = e107::getBB()->getClass('file');
 
 if(is_numeric($parm)) // Media-Manager file. 
 {	
-	return "<a class='".$class."' href='".e_BASE."request.php?file={$parm}'>".$code_text."</a>";		
+	return "<a class='".$class."' href='".e_HTTP."request.php?file={$parm}'>".$code_text."</a>";		
 }
 
 

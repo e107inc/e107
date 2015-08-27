@@ -24,7 +24,7 @@
 
 require_once("../../class2.php");
 
-if (!plugInstalled('list_new'))
+if (!e107::isInstalled('list_new'))
 {
 	header("Location: ".e_BASE."index.php");
 	exit;
@@ -56,12 +56,12 @@ if(e_QUERY)
 }
 
 //set mode
-$rc->mode = (varsettrue($mode) == 'new' ? 'new_page' : 'recent_page');
+$rc->mode = (vartrue($mode) == 'new' ? 'new_page' : 'recent_page');
 
 //parse page
 $text = $rc->displayPage();
 
-$caption = varsettrue($rc->list_pref[$rc->mode."_caption"], LIST_MENU_1);
+$caption = vartrue($rc->list_pref[$rc->mode."_caption"], LIST_MENU_1);
 $rc->e107->ns->tablerender($caption, $text);
 unset($text);
 

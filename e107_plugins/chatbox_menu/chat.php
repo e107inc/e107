@@ -9,7 +9,7 @@
  */
 
 require_once('../../class2.php');
-if (!plugInstalled('chatbox_menu')) 
+if (!e107::isInstalled('chatbox_menu')) 
 {
 	header('Location: '.e_BASE.'index.php');
 	exit;
@@ -22,10 +22,10 @@ $mes = e107::getMessage();
 $sql->select("menus", "*", "menu_name='chatbox_menu'");
 $row = $sql->fetch();
 
-if (!check_class($row['menu_class'])) 
+if (!check_class(intval($row['menu_class'])))
 {
 	$mes->addError(CHATBOX_L24); 
-	$ns->tablerender(CHATBOX_L23, $mes->render());
+	$ns->tablerender(LAN_ERROR, $mes->render());
 	require_once(FOOTERF);
 	exit;
 }
@@ -64,7 +64,7 @@ if($_POST['moderate'] && CB_MOD)
 		}
 		$sql->gen("DELETE FROM #chatbox WHERE cb_id IN ({$deletelist})");
 	}
-	$e107cache->clear("nq_chatbox");
+	e107::getCache()->clear("nq_chatbox");
 	$mes->addSuccess(CHATBOX_L18);
 }
 
@@ -109,26 +109,35 @@ $sql->select("chatbox", "*", "{$qry_where} ORDER BY cb_datestamp DESC LIMIT ".in
 $obj2 = new convert;
 
 $chatList = $sql->db_getList();
+$frm = e107::getForm();
 foreach ($chatList as $row)
 {
-	$CHAT_TABLE_DATESTAMP = $obj2->convert_date($row['cb_datestamp'], "long");
+	$CHAT_TABLE_DATESTAMP = $tp->toDate($row['cb_datestamp'], "relative");
 	$CHAT_TABLE_NICK = preg_replace("/[0-9]+\./", "", $row['cb_nick']);
 	$cb_message = $tp->toHTML($row['cb_message'], TRUE,'USER_BODY');
+
 	if($row['cb_blocked'])
 	{
 		$cb_message .= "<br />".CHATBOX_L25;
 	}
+
 	if(CB_MOD)
 	{
-		$cb_message .= "<br /><input type='checkbox' name='delete[{$row['cb_id']}]' value='1' />".CHATBOX_L10;
+		$id = $row['cb_id'];
+		$cb_message .= "<div class='checkbox'>";
+
+		$cb_message .= $frm->checkbox('delete['.$id.']',1, false, array('inline'=>true,'label'=>LAN_DELETE));
+
 		if($row['cb_blocked'])
 		{
-			$cb_message .= "&nbsp;&nbsp;&nbsp;<input type='checkbox' name='unblock[{$row['cb_id']}]' value='1' />".CHATBOX_L7;
+			$cb_message .= $frm->checkbox('unblock['.$id.']',1, false, array('inline'=>true, 'label'=> CHATBOX_L7));
 		}
 		else
 		{
-			$cb_message .= "&nbsp;&nbsp;&nbsp;<input type='checkbox' name='block[{$row['cb_id']}]' value='1' />".CHATBOX_L9;
+			$cb_message .= $frm->checkbox('block['.$id.']',1, false,  array('inline'=>true, 'label'=> CHATBOX_L9));
 		}
+
+		$cb_message .= "</div>";
 	}
 
 	$CHAT_TABLE_MESSAGE = $cb_message;
@@ -164,8 +173,6 @@ $text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}").'</d
 $ns->tablerender(CHATBOX_L20, $mes->render().$text);
 
 
-//require_once(e_HANDLER."np_class.php");
-//$ix = new nextprev("chat.php", $from, 30, $chat_total, CHATBOX_L21);
 
 require_once(FOOTERF);
 ?>

@@ -227,7 +227,7 @@ $FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['list_start'] = '
 $FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['list_end'] = '
 	</div>
 	<div class="clear"><!-- --></div>
-</div>
+
 ';
 // no column support
 $FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['col_start'] = '<div id="tab-{FEATUREBOX_COLSCOUNT}" class="tab-pane {FEATUREBOX_ACTIVE}">';
@@ -242,7 +242,7 @@ $FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['item_separator'] = '<div class=
 $FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['item_empty'] = '';
 
 $FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['nav_start'] = '<ul class="nav nav-tabs">';
-$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['nav_item'] = '<li class="{FEATUREBOX_ACTIVE}"><a data-toggle="tab" href="#tab-{FEATUREBOX_COUNTER}">{FEATUREBOX_TITLE}</a></li>';
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['nav_item'] = '<li class="{FEATUREBOX_ACTIVE}"><a data-toggle="tab" href="#tab-{FEATUREBOX_COLSCOUNT}">{FEATUREBOX_TITLE}</a></li>';
 $FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['nav_end'] = '</ul>';
 $FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['nav_separator'] = '';
 //<div class="e-bootstrap_tabs">
@@ -318,9 +318,10 @@ $FEATUREBOX_CATEGORY_TEMPLATE['camera']['nav_item'] = ''; // <li><a href="#tab-{
 $FEATUREBOX_CATEGORY_TEMPLATE['camera']['nav_end'] = ''; // </ul>';
 $FEATUREBOX_CATEGORY_TEMPLATE['camera']['nav_separator'] = '';
 
-$FEATUREBOX_CATEGORY_TEMPLATE['camera']['js'] = '{e_WEB_JS}camera/scripts/camera.min.js';
-$FEATUREBOX_CATEGORY_TEMPLATE['camera']['js_inline'] = "$('.camera_wrap').camera({FEATUREBOX_PARMS});";
-$FEATUREBOX_CATEGORY_TEMPLATE['camera']['js_type'] = 'jquery';
+// Depracated camera.js, need replacement
+//$FEATUREBOX_CATEGORY_TEMPLATE['camera']['js'] = '{e_WEB_JS}camera/scripts/camera.min.js';
+//$FEATUREBOX_CATEGORY_TEMPLATE['camera']['js_inline'] = "$('.camera_wrap').camera({FEATUREBOX_PARMS});";
+//$FEATUREBOX_CATEGORY_TEMPLATE['camera']['js_type'] = 'jquery';
 
 
 

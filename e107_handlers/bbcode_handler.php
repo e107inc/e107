@@ -39,12 +39,12 @@ class e_bbcode
 		$this->core_bb = array(
 		'blockquote', 'img', 'i', 'u', 'center',
 		'_br', 'color', 'size', 'code',
-		'html', 'flash', 'link', 'email',
+		 'flash', 'link', 'email',
 		'url', 'quote', 'left', 'right',
 		'b', 'justify', 'file', 'stream',
 		'textarea', 'list', 'time',
 		'spoiler', 'hide', 'youtube', 'sanitised', 
-		'p', 'h', 'nobr', 'block','table','th', 'tr','tbody','td','markdown','video'
+		'p', 'h', 'nobr', 'block','table','th', 'tr','tbody','td','markdown','video','glyph'
 		);
 
 		foreach($this->core_bb as $c)
@@ -90,7 +90,7 @@ class e_bbcode
 	 *
 	 *	Code uses a crude stack-based syntax analyser to handle nested bbcodes (including nested 'size' bbcodes, for example)
 	 */
-	function parseBBCodes($value, $p_ID, $force_lower = 'default', $bbStrip = FALSE)
+	function parseBBCodes($value, $p_ID='', $force_lower = 'default', $bbStrip = FALSE)
 	{
 		global $postID;
 		$postID = $p_ID;
@@ -290,17 +290,16 @@ class e_bbcode
 	}
 
 
-
-
 	/**
-	 *	Process a bbcode
+	 *    Process a bbcode
 	 *
-	 *	@var string $code - textual value of the bbcode (already begins with '_' if a single code)
-	 *	@var string $param1 - any text after '=' in the opening code
-	 *	@var string $code_text_par - text between the opening and closing codes
-	 *	@var string $param2 - any text after '=' for the closing code
-	 *	@var char $sep - character separating bbcode name and any parameters
-	 *	@var string $full_text - the 'raw' text between, and including, the opening and closing bbcode tags
+	 * @var string $code - textual value of the bbcode (already begins with '_' if a single code)
+	 * @var string $param1 - any text after '=' in the opening code
+	 * @var string $code_text_par - text between the opening and closing codes
+	 * @var string $param2 - any text after '=' for the closing code
+	 * @var char $sep - character separating bbcode name and any parameters
+	 * @var string $full_text - the 'raw' text between, and including, the opening and closing bbcode tags
+	 * @return string
 	 */
 	private function proc_bbcode($code, $param1='', $code_text_par='', $param2='', $sep='', $full_text='')
 	{
@@ -310,11 +309,8 @@ class e_bbcode
 
 		$code_text = $code_text_par;
 
-		if (E107_DEBUG_LEVEL)
-		{
-			global $db_debug;
-			$db_debug->logCode(1, $code, $parm, $postID);
-		}
+		$className = null;
+		$debugFile = null;
 
 		if (is_array($this->bbList) && array_key_exists($code, $this->bbList))
 		{	// Check the bbcode 'cache'
@@ -326,11 +322,13 @@ class e_bbcode
 			{
 				$bbPath = e_CORE.'bbcodes/';
 				$bbFile = strtolower(str_replace('_', '', $code));
+				$debugFile = $bbFile;
 			}
 			else
 			{	// Add code to check for plugin bbcode addition
 				$bbPath = e_PLUGIN.$this->bbLocation[$code].'/';
 				$bbFile = strtolower($code);
+				$debugFile = $bbFile;
 			}
 			if (file_exists($bbPath.'bb_'.$bbFile.'.php'))
 			{	// Its a bbcode class file
@@ -338,11 +336,13 @@ class e_bbcode
 				//echo "Load: {$bbFile}.php<br />";
 				$className = 'bb_'.$code;
 				$this->bbList[$code] = new $className();
+				$debugFile = $bbPath.'bb_'.$bbFile.'.php';
 			}
 			elseif (file_exists($bbPath.$bbFile.'.bb'))
 			{
 				$bbcode = file_get_contents($bbPath.$bbFile.'.bb');
 				$this->bbList[$code] = $bbcode;
+				$debugFile = $bbPath.$bbFile.'.bb';
 			}
 			else
 			{
@@ -351,6 +351,19 @@ class e_bbcode
 				return false;
 			}
 		}
+		
+		if (E107_DEBUG_LEVEL)
+		{
+			global $db_debug;
+			
+			$info = array(
+				'class' =>$className,
+				'path'	=> $debugFile
+			);
+			
+			$db_debug->logCode(1, $code, $parm, print_a($info,true));
+		}
+		
 		global $e107_debug;
 
 		if (is_object($this->bbList[$code]))

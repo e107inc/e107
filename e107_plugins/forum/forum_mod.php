@@ -26,22 +26,22 @@ function forum_thread_moderate($p)
 			{
 				case 'lock':
 				$sql->update('forum_thread', 'thread_active=0 WHERE thread_id='.$id);
-				return FORLAN_CLOSE;
+				return LAN_FORUM_CLOSE; 
 				break;
 
 				case 'unlock':
 				$sql->update('forum_thread', 'thread_active=1 WHERE thread_id='.$id);
-				return FORLAN_OPEN;
+				return LAN_FORUM_OPEN; 
 				break;
 
 				case 'stick':
 				$sql->update('forum_thread', 'thread_sticky=1 WHERE thread_id='.$id);
-				return FORLAN_STICK;
+				return LAN_FORUM_STICK; 
 				break;
 
 				case 'unstick':
 				$sql->update('forum_thread', 'thread_sticky=0 WHERE thread_id='.$id);
-				return FORLAN_UNSTICK;
+				return LAN_FORUM_UNSTICK; 
 				break;
 
 				case 'deleteThread':
@@ -62,7 +62,7 @@ function forumDeleteThread($threadId)
 	require_once (e_PLUGIN.'forum/forum_class.php');
 	$f = new e107forum;
 	$ret = $f->threadDelete($threadId);
-	return FORLAN_6.' and '.$ret.' '.FORLAN_7.'.';
+	return LAN_CANCEL.' and '.$ret.' '.FORLAN_7.'.';
 }
 
 function forumDeletePost($postId)
@@ -70,7 +70,7 @@ function forumDeletePost($postId)
 	require_once (e_PLUGIN.'forum/forum_class.php');
 	$f = new e107forum;
 	$ret = $f->postDelete($postId);
-	return FORLAN_6.' and '.$ret.' '.FORLAN_7.'.';
+	return LAN_CANCEL.' and '.$ret.' '.FORLAN_7.'.';
 }
 
 ?>

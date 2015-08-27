@@ -34,7 +34,11 @@ if(false === $cached)
 	// initialization + fetch options
 	// ------------------------------
 	$prefix	 			= e_PLUGIN_ABS."blogcalendar_menu";
-	$marray 			= array(BLOGCAL_M1, BLOGCAL_M2, BLOGCAL_M3, BLOGCAL_M4,	BLOGCAL_M5, BLOGCAL_M6, BLOGCAL_M7, BLOGCAL_M8,	BLOGCAL_M9, BLOGCAL_M10, BLOGCAL_M11, BLOGCAL_M12);
+	$marray 			= e107::getDate()->terms('month'); 
+	
+	
+	
+	
 	$pref['blogcal_ws'] = "monday";
 		
 	// ----------------------------------------------
@@ -162,8 +166,8 @@ if(false === $cached)
 	
 	if(deftrue('BOOTSTRAP')) // v2.x
 	{
-		$month_selector = '<div class="btn-group pull-right"><a class="btn btn-mini btn-default btn-xs " href="#blogCalendar" data-slide="prev">‹</a>  
- 		<a class="btn btn-mini btn-default btn-xs" href="#blogCalendar" data-slide="next">›</a></div>';
+		$month_selector = '<span class="btn-group pull-right"><a class="btn btn-mini btn-default btn-xs " href="#blogCalendar" data-slide="prev">‹</a>  
+ 		<a class="btn btn-mini btn-default btn-xs" href="#blogCalendar" data-slide="next">›</a></span>';
 		 
 		$caption = "<span class='inline-text'>".BLOGCAL_L1." ".$month_selector."</span>";	
 		

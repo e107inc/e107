@@ -8,11 +8,41 @@ if (!defined('e107_INIT')) { exit; }
 
 class siteinfo_shortcodes // must match the folder name of the plugin. 
 {
-	function sc_sitebutton()
+	function sc_sitebutton($parm=null)
 	{
-		$path = ($_POST['sitebutton'] && $_POST['ajax_used']) ? e107::getParser()->replaceConstants($_POST['sitebutton']) : (strstr(SITEBUTTON, 'http:') ? SITEBUTTON : e_IMAGE.SITEBUTTON);
-		//TODO use CSS class?
-		return '<a href="'.SITEURL.'"><img src="'.$path.'" alt="'.SITENAME.'" /></a>';
+		
+		if($_POST['sitebutton'] && $_POST['ajax_used'])
+		{
+			$path = e107::getParser()->replaceConstants($_POST['sitebutton']);
+		}
+		else 
+		{
+			$path = (strstr(SITEBUTTON, 'http:') ? SITEBUTTON : e_IMAGE.SITEBUTTON);
+		}
+
+		if($parm['type'] == 'email' || $parm == 'email') // (retain {}  constants )
+		{
+			$h = !empty($parm['h']) ? $parm['h'] : 100;
+
+			$path = e107::getConfig()->get('sitebutton');
+
+			if(empty($path))
+			{
+				return false;
+			}
+
+			$realPath = e107::getParser()->replaceConstants($path);
+
+			if(defined('e_MEDIA') && is_writeable(e_MEDIA."temp/") && ($resized = e107::getMedia()->resizeImage($path, e_MEDIA."temp/".basename($realPath),'h='.$h)))
+			{
+				$path = e107::getParser()->createConstants($resized);
+			}
+		}
+
+		if(!empty($path))
+		{
+			return '<a href="'.SITEURL.'" class="sitebutton"><img src="'.$path.'" alt="'.SITENAME.'" /></a>';
+		}
 	}
 
 	function sc_sitedisclaimer()
@@ -21,18 +51,23 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 
 		$text = deftrue('SITEDISCLAIMER',$default);
 
-		return e107::getParser()->toHtml($text, true, 'constants defs');
+		return e107::getParser()->toHtml($text, true, 'SUMMARY');
 	}
 	
 	function sc_siteurl($parm='')
 	{
+		if(strlen(deftrue('SITEURL')) < 3 ) //fixes CLI/cron
+		{
+			return e107::getPref('siteurl');
+		}
+
 		return SITEURL;	
 	}
 	
 
 	function sc_sitename($parm='')
 	{
-		return ($parm == 'link') ? "<a href='".SITEURL."' title=\"".SITENAME."\">".SITENAME."</a>" : SITENAME;
+		return ($parm == 'link') ? "<a href='".SITEURL."' title='".SITENAME."'>".SITENAME."</a>" : SITENAME;
 	}
 
 	function sc_sitedescription()
@@ -100,6 +135,10 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 				$logo = THEME_ABS.'images/e_logo.png';		// HTML path
 				$path = THEME.'images/e_logo.png';			// PHP path
 			}
+			elseif(varset($parm['fallback']) == 'sitename') // fallback to 
+			{
+				return $this->sc_sitename($parm); 	
+			}
 			else
 			{
 				$logo = e_IMAGE_ABS.'logo.png';				// HTML path
@@ -108,7 +147,9 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 			
 		}
 		
-		//TODO Parm for resizing the logo image with thumb.php 
+		//TODO Parm for resizing the logo image with thumb.php
+
+		$dimensions = array();
 		
 		if((isset($parm['w']) || isset($parm['h'])))
 		{
@@ -116,12 +157,14 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 			$dimensions[0] = $parm['w'];
 			$dimensions[1] = $parm['h'];	
 		}
-		else
+		elseif(!deftrue('BOOTSTRAP'))
 		{
 			$dimensions = getimagesize($path);
 		}
-		
-		$image = "<img class='logo img-responsive' src='".$logo."' style='width: ".$dimensions[0]."px; height: ".$dimensions[1]."px' alt='".SITENAME."' />\n";
+
+		$imageStyle = (empty($dimensions)) ? '' : " style='width: ".$dimensions[0]."px; height: ".$dimensions[1]."px' ";
+
+		$image = "<img class='logo img-responsive' src='".$logo."' ".$imageStyle." alt='".SITENAME."' />\n";
 	
 
 		

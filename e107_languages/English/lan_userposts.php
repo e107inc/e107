@@ -24,7 +24,7 @@ define("UP_LAN_9", " on ");
 define("UP_LAN_10", "Re");
 define("UP_LAN_11", "Posted on");
 define("UP_LAN_12", "Search");
-define("UP_LAN_13", "Comments");
+// define("UP_LAN_13", "Comments");
 define("UP_LAN_14", "Forum Posts");
 define("UP_LAN_15", "Re");
 define("UP_LAN_16", "IP Address");

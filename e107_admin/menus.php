@@ -644,7 +644,7 @@ class e_layout
 			
 		*/
 						
-			$this->curLayout = varsettrue($_GET['configure'], $pref['sitetheme_deflayout']);
+			$this->curLayout = vartrue($_GET['configure'], $pref['sitetheme_deflayout']);
 			$this->renderLayout($this->curLayout);	
 			
 		
@@ -765,10 +765,10 @@ class e_layout
 		global $style;
 		
 		$style = $this->style;
-	
-		echo $tp->parsetemplate($head);
+
+		echo $tp->parseTemplate($head);
 	//	echo "<div>MAIN CONTENT</div>";
-		echo $tp->parsetemplate($foot);
+		echo $tp->parseTemplate($foot);
 
 	}
 
@@ -789,7 +789,7 @@ class e_layout
 		$text = "<div class='menu-panel'>";
 		$text .= "<div class='menu-panel-header' title=\"".MENLAN_34."\">Area ".$area."</div>\n";
 		$text .= $frm->open('form-area-'.$area,'post',e_SELF);
-		$text .= "<ul id='area-".$area."' class='sortable unstyled'>
+		$text .= "<ul id='area-".$area."' class='sortable unstyled list-unstyled'>
 			<li>&nbsp;</li>";
 		
 		if(vartrue($this->menuData[THEME_LAYOUT]) && is_array($this->menuData[THEME_LAYOUT][$area]))
@@ -869,13 +869,13 @@ class e_layout
 		
 		$text .= "<a href='#'  class='menuOption menu-btn menu-btn-mini menu-btn-danger deleteMenu pull-right' data-area='area-".$area."' data-delete='".$uniqueId."'>&times;</a>"; // $('.hello').remove();
 		
-		$text .= '<a class="menuOption e-menumanager-option menu-btn pull-right" data-modal-caption="'.MENLAN_20.'" href="'.$visibilityLink.'" title="'.MENLAN_20.'"><i class="icon-search"></i></a>';
+		$text .= '<a class="menuOption e-menumanager-option menu-btn pull-right" data-modal-caption="'.LAN_VISIBILITY.'" href="'.$visibilityLink.'" title="'.LAN_VISIBILITY.'"><i class="icon-search"></i></a>';
 		
 		/*
 				
 				
 		$text .= '<span class="menu-options-buttons">
-		<a class="e-menumanager-option menu-btn" data-modal-caption="'.MENLAN_20.'" href="'.$visibilityLink.'" title="'.MENLAN_20.'"><i class="S16 e-search-16"></i></a>';
+		<a class="e-menumanager-option menu-btn" data-modal-caption="'.LAN_VISIBILITY.'" href="'.$visibilityLink.'" title="'.LAN_VISIBILITY.'"><i class="S16 e-search-16"></i></a>';
 
 		if($conf)
 		{
@@ -983,7 +983,7 @@ class e_layout
 		
 	//	print_a($_GET);
 		
-
+		$tp = e107::getParser();
 		$sql = e107::getDb();
 		$ns = e107::getRender();
 		$frm = e107::getForm();
@@ -1021,12 +1021,12 @@ class e_layout
 		
 		$checked = ($listtype == 1) ? " checked='checked' " : "";
 		
-		$text .= $frm->radio('listtype', 1, $checked, array('label'=>MENLAN_26, 'class'=> 'e-save'));
+		$text .= $frm->radio('listtype', 1, $checked, array('label'=> $tp->toHtml(MENLAN_26,true), 'class'=> 'e-save'));
 		$text .= "<br />";
 	//	$text .= "<input type='radio' class='e-save' {$checked} name='listtype' value='1' /> ".MENLAN_26."<br />";
 		$checked = ($listtype == 2) ? " checked='checked' " : "";
 		
-		$text .= $frm->radio('listtype', 2, $checked, array('label'=>MENLAN_27, 'class'=> 'e-save'));
+		$text .= $frm->radio('listtype', 2, $checked, array('label'=>  $tp->toHtml(MENLAN_27,true), 'class'=> 'e-save'));
 		
 		
 		// $text .= "<input type='radio' class='e-save' {$checked} name='listtype' value='2' /> ".MENLAN_27."<br />";
@@ -1038,7 +1038,7 @@ class e_layout
 		
 				<textarea name='pagelist' class='e-save span3' cols='60' rows='8' class='tbox'>".$menu_pages."</textarea>
 			</div>
-			<div class='  span4'><small>".MENLAN_28."</small></div>
+			<div class='  span4 col-md-4'><small>".MENLAN_28."</small></div>
 		</div></td></tr>
 		</table>";
 		
@@ -1085,16 +1085,15 @@ class e_layout
             return;
 		};
 		$row = $sql->fetch();
-		
-		// TODO lan
+
 		$text = "<div style='text-align:center;'>
 		<form  id='e-save-form' method='post' action='".e_SELF."?lay=".$this->curLayout."'>
         <fieldset id='core-menus-parametersform'>
-		<legend>Menu parameters ".$row['menu_name']."</legend>
+		<legend>".MENLAN_44." ".$row['menu_name']."</legend>
         <table class='table adminform'>
 		<tr>
 		<td>
-		Parameters (query string format):
+		".MENLAN_45."
 		".$frm->text('menu_parms', $row['menu_parms'], 900, 'class=e-save span7')."
 		</td>
 		</tr>
@@ -1317,7 +1316,7 @@ require_once("auth.php");
 
 if($_POST)
 {
-	$e107cache->clear_sys("menus_");
+	e107::getCache()->clear_sys("menus_");
 }
 
 
@@ -1348,7 +1347,7 @@ if($_POST)
 			$text .= $men->menuVisibilityOptions();
 			$text .= $men->menuInstanceParameters();
             $text .= $men->menuRenderIframe();
-            $ns -> tablerender(ADLAN_6.SEP.LAN_MENULAYOUT, $text, 'menus_config');
+            $ns -> tablerender(ADLAN_6.SEP.LAN_MENULAYOUT, e107::getMessage()->render(). $text, 'menus_config');
 		}
 		else // Within the IFrame.
 		{
@@ -1407,7 +1406,7 @@ require_once("footer.php");
 function menus_adminmenu()
 {
 
-	// See admin_shortcodes_class.php - get_admin_menumanager()
+	// See admin_shortcodes.php -  sc_admin_menumanager()
 	// required there so it can be shared by plugins.
 
 }

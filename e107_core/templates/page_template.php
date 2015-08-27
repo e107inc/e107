@@ -35,7 +35,7 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 	'; 
 	
 	// always used - it's inside the {PAGE} sc from 'page' template
-	$PAGE_TEMPLATE['default']['start'] = '<div id="{CPAGESEF}" class="cpage_body">'; 
+	$PAGE_TEMPLATE['default']['start'] = '<div id="{CPAGESEF}" class="cpage_body cpage-body">{CHAPTER_BREADCRUMB}'; 
 	
 	// page body
 	$PAGE_TEMPLATE['default']['body'] = '
@@ -53,11 +53,20 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 	
 	// used only when password authorization is required
 	$PAGE_TEMPLATE['default']['authorize'] = '
-		<div class="cpage-restrict">
+		<div class="cpage-restrict ">
 			{message}
 			{form_open}
-				<h2>{caption}</h2>
-				<div clas="center">{label} {password} {submit}</div>
+			<div class="panel panel-default">
+				<div class="panel-heading">{caption}</div>
+					<div class="panel-body">
+					    <div class="form-group">
+				       		 <label class="col-sm-3 control-label">{label}</label>
+					        <div class="col-sm-9">
+					               {password} {submit} 
+					        </div>
+			     		</div>
+					</div>
+      			</div>
 			{form_close}
 		</div>
 	';
@@ -83,7 +92,7 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 
 	
 #### No table render example template ####
-	$PAGE_TEMPLATE['custom']['start'] 			= '<div class="cpage_body">'; 
+	$PAGE_TEMPLATE['custom']['start'] 			= '<div id="{CPAGESEF}" class="cpage-body">'; 
 	$PAGE_TEMPLATE['custom']['body'] 			= ''; 
 	$PAGE_TEMPLATE['custom']['authorize'] 		= '
 	';

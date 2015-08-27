@@ -1,0 +1,18 @@
+/* Forum Styling */
+
+.forum-viewforum-pagination                             { margin:0 }
+
+#poll.tab-pane .form-group                              { margin-left: 0; margin-right:0}
+
+#forum-viewtopic                                        { margin-top: 15px }
+#forum-viewtopic li.forum-viewtopic-post                { border-top:1px solid #EEE;  padding:15px 10px }
+#forum-viewtopic li.forum-viewtopic-post:nth-child(odd) { background: #F5F5F5 }
+#forum-viewtopic li ul.thumbnails                       { margin-top:15px }
+#forum-viewtopic li img.user-avatar                     { margin-bottom:10px; display:inline-block }
+
+.forum-attachment-file                                  { margin-top:15px; }
+.forum-user-combo                                       { padding-bottom:5px }
+
+@media all and (min-height: 800px) {
+    #forum, #forum-stats, #forum-rules                  { min-height: 500px;  }
+}

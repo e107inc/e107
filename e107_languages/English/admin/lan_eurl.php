@@ -58,6 +58,7 @@ define("LAN_EURL_MENU_CONFIG", "URL Profiles");
 define("LAN_EURL_MENU_ALIASES", "Aliases");
 define("LAN_EURL_MENU_SETTINGS", "Settings");
 define("LAN_EURL_MENU_HELP", "Help");
+define("LAN_EURL_MENU_REDIRECTS", "Redirects");
 
 define("LAN_EURL_UC", "Under Construction");
 
@@ -65,7 +66,7 @@ define("LAN_EURL_UC", "Under Construction");
 define("LAN_EURL_CORE_MAIN", "Site Root Namespace - alias not in use.");
 
 
-define("LAN_EURL_DEFAULT",    "Default");
+
 define("LAN_EURL_FRIENDLY",   "Friendly");
 define("LAN_EURL_LEGACY", "Legacy direct URLs.");
 

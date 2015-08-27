@@ -4,47 +4,66 @@
 + ----------------------------------------------------------------------------+
 ||     e107 website system
 |
-|     Copyright (C) 2008-2009 e107 Inc 
+|     Copyright (C) 2008-2014 e107 Inc 
 |     http://e107.org
 |
 |
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.8/cron.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
 */
 
 // Usage: [full path to this script]cron.php --u=admin --p=password // use your admin login. 
 // test
 
-$_E107['cli'] = TRUE;
+$_E107['cli'] = true;
 $_E107['debug'] = false;
-$_E107['no_online'] = TRUE;
-$_E107['no_forceuserupdate'] = TRUE;
-$_E107['no_menus'] = TRUE;
+$_E107['no_online'] = true;
+$_E107['no_forceuserupdate'] = true;
+$_E107['no_menus'] = true;
+$_E107['allow_guest'] = true; // allow crons to run while in members-only mode. 
+$_E107['no_maintenance'] = true;
+
 // we allow theme init as cron jobs might need to access current theme templates (e.g. custom email templates)
+
 
 require_once(realpath(dirname(__FILE__)."/class2.php"));
 
+
 	$pwd = ($_E107['debug'] && $_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : trim($_SERVER['argv'][1]);
+	
+	if(!empty($_GET['token']))
+	{
+		$pwd = $_GET['token'];	
+	}
+	else
+	{
+		$pwd = str_replace('token=','',$pwd);
+	}
 		
 	if($pref['e_cron_pwd'] != $pwd)
 	{	
 		require_once(e_HANDLER."mail.php");
+		
 		$message = "Your Cron Schedule is not configured correctly. Your passwords do not match.
 		<br /><br /> 
 		Sent from cron: ".$pwd."<br />
 		Stored in e107: ".$pref['e_cron_pwd']."<br /><br />
 		You should regenerate the cron command in admin and enter it again in your server configuration. 
 		";
+		
+		$message .= "<h2>Debug Info</h2>";
+		$message .= "<h3>_SERVER</h3>";
+		$message .= print_a($_SERVER,true); 
+		$message .= "<h3>_ENV</h3>";
+		$message .= print_a($_ENV,true); 
+		$message .= "<h3>_GET</h3>";
+		$message .= print_a($_GET,true); 
 						
 	    sendemail($pref['siteadminemail'], "e107 - Cron Schedule Misconfigured.", $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);
 		exit;
 	}
+
 
 e107::getCache()->CachePageMD5 = '_';
 e107::getCache()->set('cronLastLoad',time(),TRUE,FALSE,TRUE);
@@ -57,9 +76,9 @@ e107::getCache()->set('cronLastLoad',time(),TRUE,FALSE,TRUE);
 	$list = array();
 
 	$sql = e107::getDb();
-	if($sql->db_Select("cron",'cron_function,cron_tab','cron_active =1'))
+	if($sql->select("cron",'cron_function,cron_tab','cron_active =1'))
 	{
-		while($row = $sql->db_Fetch(MYSQL_ASSOC))
+		while($row = $sql->fetch(MYSQL_ASSOC))
 		{
 			list($class,$function) = explode("::",$row['cron_function'],2);			
 			$key = $class."__".$function;

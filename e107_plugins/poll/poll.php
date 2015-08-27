@@ -13,7 +13,7 @@
  */
 
 require_once('../../class2.php');
-if (!plugInstalled('poll')) 
+if (!e107::isInstalled('poll')) 
 {
 	header('Location: '.e_BASE.'index.php');
 	exit;

@@ -88,7 +88,7 @@ default :
 $text = 'This page shows a list of all IP addresses, hostnames and email addresses which are banned. 
 (Banned users are shown on the user administration page)<br /><br />
 <b>Automatic Bans</b><br />
-E107 automatically bans individual IP addresses if they attempt to flood the site, as well as addresses with failed logins.<br />
+e107 automatically bans individual IP addresses if they attempt to flood the site, as well as addresses with failed logins.<br />
 These bans also appear in this list. You can select (on the options page) what to do for each type of ban.<br /><br />
 <b>Removing a ban</b><br />
 You can set an expiry period for each type of ban, in which case the entry is removed once the ban period expires. Otherwise the

@@ -25,7 +25,445 @@ if (isset($_POST['cancel_cat']))
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+
+	include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+
+
+	function js()
+	{
+
+		//FIXME
+		include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_extended.php");
+		$text = "
+
+
+		function changeHelp(type) {
+	 //<![CDATA[
+		var ftype;
+		var helptext;
+
+
+		";
+		for($i=1; $i<=9; $i++)
+		{
+			$type_const = "UE_LAN_{$i}";
+			$help_const = "\"".str_replace("/","\/","EXTLAN_HELP_{$i}")."\"";
+			$text .= "
+				if(type == \"{$i}\")
+				{
+					xtype=\"".defset($type_const)."\";
+					what=\"".defset($help_const)."\";
+				}";
+		}
+
+		$text .= "
+		//	document.getElementById('ue_type').innerHTML=''+xtype+'';
+		//	document.getElementById('ue_help').innerHTML=''+what+'';
+
+			if(type == 4){
+				document.getElementById('db_mode').style.display = '';
+				document.getElementById('values').style.display = 'none';
+			}else{
+	            document.getElementById('values').style.display = '';
+				document.getElementById('db_mode').style.display = 'none';
+			}
+			   // ]]>
+		}
+
+
+";
+
+		return $text;
+	}
+
+
+	e107::js('inline', js());
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if(E107_DEBUG_LEVEL > 0)
+{
+
+
+
+	class user_extended_adminArea extends e_admin_dispatcher
+	{
+
+		protected $modes = array(
+
+			'main'	=> array(
+				'controller' 	=> 'user_extended_struct_ui',
+				'path' 			=> null,
+				'ui' 			=> 'user_extended_struct_form_ui',
+				'uipath' 		=> null
+			),
+
+
+		);
+
+
+		protected $adminMenu = array(
+
+			'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
+			'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
+
+			// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
+		);
+
+		protected $adminMenuAliases = array(
+			'main/edit'	=> 'main/list'
+		);
+
+		protected $menuTitle = 'user_extended';
+	}
+
+
+
+
+
+	class user_extended_struct_ui extends e_admin_ui
+	{
+
+		protected $pluginTitle		= 'user_extended';
+		protected $pluginName		= 'user_extended';
+		//	protected $eventName		= 'user_extended-user_extended_struct'; // remove comment to enable event triggers in admin.
+		protected $table			= 'user_extended_struct';
+		protected $pid				= 'user_extended_struct_id';
+		protected $perPage			= 10;
+		protected $batchDelete		= true;
+		//	protected $batchCopy		= true;
+		//	protected $sortField		= 'somefield_order';
+		//	protected $orderStep		= 10;
+		//	protected $tabs				= array('Tabl 1','Tab 2'); // Use 'tab'=>0  OR 'tab'=>1 in the $fields below to enable.
+
+		protected $listQry      	= "SELECT * FROM `#user_extended_struct` WHERE user_extended_struct_type != 0 AND user_extended_struct_text != '_system_'  "; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
+
+		protected $listOrder		= 'user_extended_struct_order ASC';
+
+		protected $fields 		= array (  'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
+		             'user_extended_struct_id' =>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		             'user_extended_struct_name' =>   array ( 'title' => LAN_NAME, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => 'pre=user_', 'class' => 'left', 'thclass' => 'left',  ),
+		             'user_extended_struct_text' =>   array ( 'title' => EXTLAN_79, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => 'constant=1', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		             'user_extended_struct_type' =>   array ( 'title' => EXTLAN_2, 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		             'user_extended_struct_values' =>   array ( 'title' => LAN_VALUES, 'type' => 'method', 'nolist'=>true, 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+
+		             'user_extended_struct_parent' =>   array ( 'title' => LAN_CATEGORY, 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		             'user_extended_struct_required' =>   array ( 'title' => EXTLAN_4, 'type' => 'boolean', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		             'user_extended_struct_applicable' =>   array ( 'title' => EXTLAN_5, 'type' => 'userclass', 'data' => 'int', 'width' => '10%', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+
+
+		             'user_extended_struct_parms' =>   array ( 'title' => LAN_PARMS, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		              'user_extended_struct_default' =>   array ( 'title' => LAN_DEFAULT, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		              'user_extended_struct_read' =>   array ( 'title' =>EXTLAN_6, 'type' => 'userclass', 'data' => 'int', 'width' => '10%', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		              'user_extended_struct_write' =>   array ( 'title' => 'Write Access', 'type' => 'userclass', 'data' => 'int', 'width' => '10%', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		              'user_extended_struct_signup' =>   array ( 'title' => 'Signup', 'type' => 'boolean', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		               'user_extended_struct_order' =>   array ( 'title' => LAN_ORDER, 'type' => 'number', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		               'options' =>   array ( 'title' => LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1', 'readParms'=>'sort=1' ),
+		);
+
+		protected $fieldpref = array('user_extended_struct_name', 'user_extended_struct_text', 'user_extended_struct_type', 'user_extended_struct_read', 'user_extended_struct_write', 'user_extended_struct_required', 'user_extended_struct_applicable');
+
+
+		protected $prefs = array(
+		);
+
+
+		public function init()
+		{
+			// Set drop-down values (if any).
+
+			if($this->getAction() == 'edit' || $this->getAction() == 'create')
+			{
+				$this->fields['user_extended_struct_type']['title'] = LAN_TYPE;
+			}
+
+			$this->fields['user_extended_struct_parent']['writeParms'] = array('user_extended_struct_parent_0','user_extended_struct_parent_1', 'user_extended_struct_parent_2'); // Example Drop-down array.
+
+		}
+
+
+		// ------- Customize Create --------
+
+		public function beforeCreate($new_data)
+		{
+			return $new_data;
+		}
+
+		public function afterCreate($new_data, $old_data, $id)
+		{
+			// do something
+		}
+
+		public function onCreateError($new_data, $old_data)
+		{
+			// do something
+		}
+
+
+		// ------- Customize Update --------
+
+		public function beforeUpdate($new_data, $old_data, $id)
+		{
+			return $new_data;
+		}
+
+		public function afterUpdate($new_data, $old_data, $id)
+		{
+			// do something
+		}
+
+		public function onUpdateError($new_data, $old_data, $id)
+		{
+			// do something
+		}
+
+
+		/*
+			// optional - a custom page.
+			public function customPage()
+			{
+				$ns = e107::getRender();
+				$text = 'Hello World!';
+				return $text;
+
+			}
+		*/
+
+	}
+
+
+
+	class user_extended_struct_form_ui extends e_admin_form_ui
+	{
+
+
+		// Custom Method/Function
+		function user_extended_struct_type($curVal,$mode)
+		{
+			$frm = e107::getForm();
+
+			switch($mode)
+			{
+				case 'read': // List Page
+					$ext = $this->getController()->getListModel()->getData();
+					return e107::getUserExt()->user_extended_edit($ext,$uVal);
+				//	reutrn e107::getParser()>toHTML(deftrue($ext['user_extended_struct_text'], $ext['user_extended_struct_text']), FALSE, "defs")
+					break;
+
+				case 'write': // Edit Page
+					$text = "<select onchange='changeHelp(this.value)' class='tbox e-select' name='user_type' id='user_type'>";
+					foreach(e107::getUserExt()->user_extended_types as $key => $val)
+					{
+						$selected = ($curVal == $key) ? " selected='selected'": "";
+						$text .= "<option value='".$key."' $selected>".$val."</option>";
+					}
+
+					if(empty($curVal))
+					{
+						$curtype = '1';
+					}
+					$text .= "
+				</select>";
+					return $text;
+					break;
+
+				case 'filter':
+				case 'batch':
+					return  array();
+					break;
+			}
+		}
+
+
+
+
+
+
+
+		// Custom Method/Function
+		function user_extended_struct_values($curVal,$mode)
+		{
+			$frm = e107::getForm();
+
+			switch($mode)
+			{
+				case 'read': // List Page
+					return $curVal;
+					break;
+
+				case 'write': // Edit Page
+					return $this->renderStructValues($curVal);
+					break;
+
+				case 'filter':
+				case 'batch':
+					return  array();
+					break;
+			}
+		}
+
+
+
+		function renderStructValues($curVal)
+		{
+			$sql = e107::getDb();
+
+			$current = $this->getController()->getModel()->getData();
+
+			$val_hide = ($current['user_extended_struct_type'] != 4) ? "visible" : "none";
+
+			$text = "<div id='values' style='display:$val_hide'>\n";
+			$text .= "<div id='value_container' >\n";
+			$curVals = explode(",",varset($current['user_extended_struct_values']));
+			if(count($curVals) == 0)
+			{
+				$curVals[]='';
+			}
+			$i=0;
+			foreach($curVals as $v)
+			{
+				$id = $i ? "" : " id='value_line'";
+				$i++;
+				$text .= "
+				<span {$id}>
+				<input class='tbox' type='text' name='user_values[]' size='40' value='{$v}' /></span><br />";
+			}
+			$text .= "
+			</div>
+			<input type='button' class='btn btn-primary' value='".EXTLAN_48."' onclick=\"duplicateHTML('value_line','value_container');\"  />
+			<br /><span class='field-help'>".EXTLAN_17."</span></div>";
+// End of Values. --------------------------------------
+
+
+
+
+			$db_hide = ($current['user_extended_struct_type'] == 4) ? "visible" : "none";
+
+			$text .= "<div id='db_mode' style='display:$db_hide'>\n";
+			$text .= "<table style='width:70%;margin-left:0px'><tr><td>";
+			$text .= EXTLAN_62."</td><td style='70%'><select style='width:99%' class='tbox e-select' name='table_db' onchange=\"this.form.submit()\" >
+            <option value='' class='caption'>".EXTLAN_61."</option>\n";
+			$result = mysql_list_tables($mySQLdefaultdb);
+
+			while ($row2 = mysql_fetch_row($result))
+			{
+				$fld = str_replace(MPREFIX,"",$row2[0]);
+				$selected =  (varset($_POST['table_db'],'') == $fld || $curVals[0] == $fld) ? " selected='selected'" : "";
+				if (MPREFIX!='' && strpos($row2[0], MPREFIX)!==FALSE)
+				{
+					$text .= "<option value=\"".$fld."\" $selected>".$fld."</option>\n";
+				}
+			}
+			$text .= " </select></td></tr>";
+
+			if($_POST['table_db'] || $curVals[0])
+			{
+				// Field ID
+				$text .= "<tr><td>".EXTLAN_63."</td><td><select style='width:99%' class='tbox e-select' name='field_id' >\n
+			<option value='' class='caption'>".EXTLAN_61."</option>\n";
+				$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
+
+				if($sql->gen("DESCRIBE ".MPREFIX."{$table_list}"))
+				{
+					while($row3 = $sql->fetch())
+					{
+						$field_name=$row3['Field'];
+						$selected =  ($curVals[1] == $field_name) ? " selected='selected' " : "";
+						$text .="<option value=\"$field_name\" $selected>".$field_name."</option>\n";
+					}
+				}
+				$text .= " </select></td></tr><tr><td>";
+				// Field Value
+				$text .= EXTLAN_64."</td><td><select style='width:99%' class='tbox e-select' name='field_value' >
+			<option value='' class='caption'>".EXTLAN_61."</option>\n";
+				$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
+
+				if($sql->gen("DESCRIBE ".MPREFIX."{$table_list}"))
+				{
+					while($row3 = $sql->fetch())
+					{
+						$field_name=$row3['Field'];
+						$selected =  ($curVals[2] == $field_name) ? " selected='selected' " : "";
+						$text .="<option value=\"$field_name\" $selected>".$field_name."</option>\n";
+					}
+				}
+				$text .= " </select></td></tr><tr><td>";
+
+				$text .= LAN_ORDER."</td><td><select style='width:99%' class='tbox e-select' name='field_order' >
+			<option value='' class='caption'>".EXTLAN_61."</option>\n";
+				$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
+
+				if($sql ->gen("DESCRIBE ".MPREFIX."{$table_list}"))
+				{
+					while($row3 = $sql->fetch())
+					{
+						$field_name=$row3['Field'];
+						$selected =  ($curVals[3] == $field_name) ? " selected='selected' " : "";
+						$text .="<option value=\"$field_name\" $selected>".$field_name."</option>\n";
+					}
+				}
+				$text .= " </select></td></tr>";
+
+			}
+			$text .= "</table></div>";
+// ---------------------------------------------------------
+
+			return $text;
+
+
+		}
+
+	} // end class.
+
+
+
+
+
+
+
+
+
+
+
+
+
+	new user_extended_adminArea();
+
+	require_once(e_ADMIN."auth.php");
+	e107::getAdminUI()->runPage();
+
+	require_once(e_ADMIN."footer.php");
+
+
+
+
+
+
+	exit;
+
+}
+
+
+// -------------------------------------- Old Code --------------------------------------
+
+
+
+
 
 $e_sub_cat = 'user_extended';
 
@@ -67,7 +505,7 @@ if ($tmp)
 	{
 		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_order ='".($_order-1)."'");
 		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_id='".$_id."'");
-		$admin_log->log_event('EUF_01',$_id.', '.$_order.', '.$_parent,E_LOG_INFORMATIVE,'');
+		e107::getLog()->add('EUF_01',$_id.', '.$_order.', '.$_parent,E_LOG_INFORMATIVE,'');
 		e107::getCache()->clear_sys('user_extended_struct', true);
 	}
 }
@@ -85,7 +523,7 @@ if ($tmp)
 	{
 		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_order='".($_order+1)."'");
 		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_id='".$_id."'");
-		$admin_log->log_event('EUF_02',$_id.', '.$_order.', '.$_parent,E_LOG_INFORMATIVE,'');
+		e107::getLog()->add('EUF_02',$_id.', '.$_order.', '.$_parent,E_LOG_INFORMATIVE,'');
 		e107::getCache()->clear_sys('user_extended_struct', true);
 	}
 }
@@ -100,7 +538,7 @@ if (isset($_POST['catup_x']) || isset($_POST['catup']))
 	{
 		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type = 0 AND user_extended_struct_order='".($_order-1)."'");
 		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type = 0 AND user_extended_struct_id='".$_id."'");
-		$admin_log->log_event('EUF_03',$_id.', '.$_order,E_LOG_INFORMATIVE,'');
+		e107::getLog()->add('EUF_03',$_id.', '.$_order,E_LOG_INFORMATIVE,'');
 		e107::getCache()->clear_sys('user_extended_struct', true);
 	}
 }
@@ -115,7 +553,7 @@ if (isset($_POST['catdown_x']) || isset($_POST['catdown']))
 	{
 		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type = 0 AND user_extended_struct_order='".($_order+1)."'");
 		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type = 0 AND user_extended_struct_id='".$_id."'");
-		$admin_log->log_event('EUF_04',$_id.', '.$_order,E_LOG_INFORMATIVE,'');
+		e107::getLog()->add('EUF_04',$_id.', '.$_order,E_LOG_INFORMATIVE,'');
 		e107::getCache()->clear_sys('user_extended_struct', true);
 	}
 }
@@ -153,7 +591,7 @@ if (isset($_POST['add_field']))
 			}
 			else
 			{
-				$admin_log->log_event('EUF_05',$ue_field_name.'[!br!]'.$tp->toDB($_POST['user_text']).'[!br!]'.intval($_POST['user_type']),E_LOG_INFORMATIVE,'');
+				e107::getLog()->add('EUF_05',$ue_field_name.'[!br!]'.$tp->toDB($_POST['user_text']).'[!br!]'.intval($_POST['user_type']),E_LOG_INFORMATIVE,'');
 				e107::getCache()->clear_sys('user_extended_struct', true);
 			}
 		}
@@ -177,7 +615,7 @@ if (isset($_POST['update_field']))
 	$result = $mes->addAuto($ue->user_extended_modify($sub_action, $tp->toDB($_POST['user_field']), $tp->toDB($_POST['user_text']), intval($_POST['user_type']), $upd_parms, $upd_values, $tp->toDB($_POST['user_default']), intval($_POST['user_required']), intval($_POST['user_read']), intval($_POST['user_write']), intval($_POST['user_applicable']), intval($_POST['user_parent'])), 'update', EXTLAN_29, false, false);
 	if($result)
 	{
-		$admin_log->log_event('EUF_06',$tp->toDB($_POST['user_field']).'[!br!]'.$tp->toDB($_POST['user_text']).'[!br!]'.intval($_POST['user_type']),E_LOG_INFORMATIVE,'');
+		e107::getLog()->add('EUF_06',$tp->toDB($_POST['user_field']).'[!br!]'.$tp->toDB($_POST['user_text']).'[!br!]'.intval($_POST['user_type']),E_LOG_INFORMATIVE,'');
 		e107::getCache()->clear_sys('user_extended_struct', true);
 	}
 }
@@ -199,7 +637,7 @@ if (isset($_POST['update_category']))
 		);
 		if($result)
 		{
-			$admin_log->log_event('EUF_09',$name,E_LOG_INFORMATIVE,'');
+			e107::getLog()->add('EUF_09',$name,E_LOG_INFORMATIVE,'');
 			e107::getCache()->clear_sys('user_extended_struct', true);
 		}
 	}
@@ -219,7 +657,7 @@ if (isset($_POST['add_category']))
 		$result = $mes->addAuto($sql->db_Insert("user_extended_struct","'0', '{$name}', '".$tp->toDB($_POST['user_text'])."', 0, '', '', '', '".intval($_POST['user_read'])."', '".intval($_POST['user_write'])."', '0', '0', '".intval($_POST['user_applicable'])."', '0', '0'"), 'insert', EXTLAN_40, false, false);
 		if($result)
 		{
-			$admin_log->log_event('EUF_08',$name,E_LOG_INFORMATIVE,'');
+			e107::getLog()->add('EUF_08',$name,E_LOG_INFORMATIVE,'');
 			e107::getCache()->clear_sys('user_extended_struct', true);
 		}
 	}
@@ -242,7 +680,7 @@ if (varset($_POST['eu_action'],'') == "delcat")
 	}
 	elseif($ue->user_extended_remove($_id, $_name))
 	{
-		$admin_log->log_event('EUF_10',$_id.', '.$_name,E_LOG_INFORMATIVE,'');
+		e107::getLog()->add('EUF_10',$_id.', '.$_name,E_LOG_INFORMATIVE,'');
 		$message = EXTLAN_41;
 		e107::getCache()->clear_sys('user_extended_struct', true);
 	}
@@ -492,8 +930,8 @@ class users_ext
 						  	</td>
 							<td class='center' style='width:10%;white-space:nowrap'>
 							
-							<a class='btn' style='text-decoration:none' href='".e_SELF."?editext.".$id."'>".ADMIN_EDIT_ICON."</a>
-		 					".$frm->submit_image('eudel['.$name.']',$id, 'delete',  LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn'.$delcls));
+							<a class='btn btn-default' style='text-decoration:none' href='".e_SELF."?editext.".$id."'>".ADMIN_EDIT_ICON."</a>
+							".$frm->submit_image('eudel['.$name.']',$id, 'delete',  LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn btn-default'.$delcls));
 		 					
 		 					// ."<input class='btn btn-large' type='image' title='".LAN_DELETE."' name='eudel[".$name."]' src='".ADMIN_DELETE_ICON_PATH."' value='".$id."' onclick='return confirm(\"".EXTLAN_27."\")' />
 							$text .= "</td>
@@ -569,7 +1007,7 @@ class users_ext
 			else
 			{
 				$text .= "
-				<input class='tbox' type='text' name='user_field' size='40' value='".vartrue($current['user_extended_struct_name'])."' maxlength='50' />
+				<input class='tbox' type='text' name='user_field' size='40' value='".vartrue($current['user_extended_struct_name'])."' maxlength='50' required pattern='[a-z0-9_]*' />
 				";
 			}
 			$text .= "
@@ -580,7 +1018,7 @@ class users_ext
 			<tr>
 			<td>".EXTLAN_12.":</td>
 			<td colspan='3'>
-			<input class='tbox' type='text' name='user_text' size='40' value='".vartrue($current['user_extended_struct_text'])."' maxlength='50' /><br />
+			<input class='tbox' type='text' name='user_text' size='40' value='".vartrue($current['user_extended_struct_text'])."' maxlength='50' required /><br />
 			<span class='field-help'>".EXTLAN_13."</span>
 			</td>
 			</tr>
@@ -631,9 +1069,13 @@ class users_ext
 			}
 			$text .= "
 			</div>
-			<input type='button' class='btn btn-primary button' value='".EXTLAN_48."' onclick=\"duplicateHTML('value_line','value_container');\"  />
+			<input type='button' class='btn btn-primary' value='".EXTLAN_48."' onclick=\"duplicateHTML('value_line','value_container');\"  />
 			<br /><span class='field-help'>".EXTLAN_17."</span></div>";
 // End of Values. --------------------------------------
+
+
+
+
        		$db_hide = ($current['user_extended_struct_type'] == 4) ? "visible" : "none";
 
 			$text .= "<div id='db_mode' style='display:$db_hide'>\n";
@@ -702,6 +1144,12 @@ class users_ext
      	}
         $text .= "</table></div>";
 // ---------------------------------------------------------
+
+
+
+
+
+
 			$text .= "
 			</td>
 			</tr>
@@ -754,18 +1202,27 @@ class users_ext
 
 			<tr>
 			<td>".EXTLAN_18."</td>
-			<td colspan='3'>
+			<td colspan='3'>";
+			/*
+			$text .= "
 			<select class='tbox e-select' name='user_required'>
 			";
-			$_r = array('0' => EXTLAN_65, '1' => EXTLAN_66, '2' => EXTLAN_67);
-			foreach($_r as $k => $v) //FIXME change to $frm->select() 
+
+			foreach($_r as $k => $v)
 			{
-				$sel = (varset($current['user_extended_struct_required']) == $k ? " selected='selected' " : "");
+				$sel = (varset($current['user_extended_struct_required'],1) == $k ? " selected='selected' " : "");
 				$text .= "<option value='{$k}' {$sel}>{$v}</option>\n";
 			}
 
+			$text .= "</select>";
+			*/
+
+			$_r = array('0' => EXTLAN_65, '1' => EXTLAN_66, '2' => EXTLAN_67);
+
+			$text .= $frm->select('user_required',$_r, varset($current['user_extended_struct_required'],1),'size=xxlarge');
+
 			$text .= "
-			</select>
+
 			<br />
 			<span class='field-help'>".EXTLAN_19."</span>
 			</td>
@@ -774,7 +1231,7 @@ class users_ext
 			<tr>
 			<td >".EXTLAN_5."</td>
 			<td colspan='3'>
-			".r_userclass("user_applicable", varset($current['user_extended_struct_applicable']), 'off', 'member, admin, main, classes, nobody')."<br /><span class='field-help'>".EXTLAN_20."</span>
+			".r_userclass("user_applicable", varset($current['user_extended_struct_applicable'],253), 'off', 'member, admin, main, classes, nobody')."<br /><span class='field-help'>".EXTLAN_20."</span>
 			</td>
 			</tr>
 
@@ -1182,7 +1639,7 @@ class users_ext
 				$ret .= EXTLAN_70." $f ".EXTLAN_71."<br />";
 			}
 		}
-		$admin_log->log_event('EUF_11',implode(', ',$_POST['activate']),E_LOG_INFORMATIVE,'');
+		e107::getLog()->add('EUF_11',implode(', ',$_POST['activate']),E_LOG_INFORMATIVE,'');
 		return $ret;
 	}
 
@@ -1205,7 +1662,7 @@ class users_ext
 				$ret .= EXTLAN_70." $f ".EXTLAN_73."<br />";
 			}
 		}
-		$admin_log->log_event('EUF_12',implode(', ',$_POST['deactivate']),E_LOG_INFORMATIVE,'');
+		e107::getLog()->add('EUF_12',implode(', ',$_POST['deactivate']),E_LOG_INFORMATIVE,'');
 		return $ret;
 	}
 
@@ -1258,47 +1715,5 @@ class users_ext
 		}
 	}
 
-function headerjs()
-{
 
-	//FIXME
-	include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_extended.php");
-	$text = "
-	<script type='text/javascript'>
-
-	function changeHelp(type) {
-	 //<![CDATA[
-		var ftype;
-		var helptext;
-		";
-		for($i=1; $i<=9; $i++)
-		{
-			$type_const = "UE_LAN_{$i}";
-			$help_const = "\"".str_replace("/","\/","EXTLAN_HELP_{$i}")."\"";
-			$text .= "
-			if(type == \"{$i}\")
-			{
-				xtype=\"".defset($type_const)."\";
-				what=\"".defset($help_const)."\";
-			}";
-		}
-		$text .= "
-		document.getElementById('ue_type').innerHTML=''+xtype+'';
-		document.getElementById('ue_help').innerHTML=''+what+'';
-
-		if(type == 4){
-			document.getElementById('db_mode').style.display = '';
-			document.getElementById('values').style.display = 'none';
-		}else{
-            document.getElementById('values').style.display = '';
-			document.getElementById('db_mode').style.display = 'none';
-		}
-		   // ]]>
-	}
-
-
-	</script>";
-
-	echo $text;
-}
 ?>

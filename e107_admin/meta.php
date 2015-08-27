@@ -56,7 +56,7 @@ if (isset($_POST['metasubmit']))
         unset($meta_tag[e_LANGUAGE]);
     }*/
 
-	$admin_log->log_event('META_01', 'meta_news_summary=>'.$pref['meta_news_summary'].'[!br!]'.e_LANGUAGE, E_LOG_INFORMATIVE, '');
+	e107::getLog()->add('META_01', 'meta_news_summary=>'.$pref['meta_news_summary'].'[!br!]'.e_LANGUAGE, E_LOG_INFORMATIVE, '');
 	save_prefs();
 }
 

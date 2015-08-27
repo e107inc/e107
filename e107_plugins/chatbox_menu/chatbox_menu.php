@@ -30,7 +30,7 @@ $pref = e107::getPref();
 
 
 
-if (!plugInstalled('chatbox_menu')) 
+if (!e107::isInstalled('chatbox_menu')) 
 {
 	return '';
 }
@@ -76,6 +76,7 @@ if(!class_exists('chatbox_shortcodes'))
 			}
 			else
 			{
+				$tp = e107::getParser();
 				$cb_nick = $tp -> toHTML($cb_nick,FALSE,'USER_TITLE, emotes_off, no_make_clickable');
 				$cb_nick = str_replace("Anonymous", LAN_ANONYMOUS, $cb_nick);
 			}
@@ -104,15 +105,16 @@ if(!class_exists('chatbox_shortcodes'))
 			$cb_message = e107::getParser()->toHTML($this->var['cb_message'], false, $emotes_active, $cb_uid, $pref['menu_wordwrap']);
 	
 			return $cb_message;
-	
+			/*
 			$replace[0] = "["; $replace[1] = "]";
 			$search[0] = "&lsqb;"; $search[1] =  "&rsqb;";
-			$cb_message = str_replace($search, $replace, $cb_message);	
+			$cb_message = str_replace($search, $replace, $cb_message);
+			*/
 		}
 	
 		function sc_cb_avatar($parm='')
 		{
-			return e107::getParser()->parseTemplate("{USER_AVATAR=".vartrue($this->var['user_image'])."}");
+			return e107::getParser()->toAvatar($this->var); // parseTemplate("{USER_AVATAR=".vartrue($this->var['user_image'])."}");
 		}
 		
 		function sc_cb_bullet($parm = '')
@@ -223,7 +225,7 @@ else
 	{
 		$texta =  (e_QUERY ? "\n<form id='chatbox' method='post' action='".e_SELF."?".e_QUERY."'>" : "\n<form id='chatbox' method='post' action='".e_SELF."'>");
 	}
-	$texta .= "<div class='control-group' id='chatbox-input-block'>";
+	$texta .= "<div class='control-group form-group' id='chatbox-input-block'>";
 
 	if(($pref['anon_post'] == "1" && USER == FALSE))
 	{
@@ -240,7 +242,7 @@ else
 		$oc = "";
 	}
 	$texta .= "
-	<textarea placeholder=\"".LAN_CHATBOX_100."\" required class='tbox chatbox input-xlarge' id='cmessage' name='cmessage' cols='20' rows='5' style='max-width:97%; ".($cb_width ? "width:".$cb_width.";" : '')." overflow: auto' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
+	<textarea placeholder=\"".LAN_CHATBOX_100."\" required class='tbox chatbox form-control input-xlarge' id='cmessage' name='cmessage' cols='20' rows='5' style='max-width:97%; ".($cb_width ? "width:".$cb_width.";" : '')." overflow: auto' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
 	<br />
 	<input class='btn btn-default button' type='submit' id='chat_submit' name='chat_submit' value='".CHATBOX_L4."' {$oc}/>
 	";
@@ -293,7 +295,7 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 	{
 		$tp->parseTemplate("{SETIMAGE: w=40}",true); // set thumbnail size. 
 		// FIXME - move to template
-		$CHATBOX_TEMPLATE['start'] 	= "<ul class='media-list unstyled'>";
+		$CHATBOX_TEMPLATE['start'] 	= "<ul class='media-list unstyled list-unstyled'>";
 		$CHATBOX_TEMPLATE['item'] 	= "<li class='media'>
 										<span class='media-object pull-left'>{CB_AVATAR}</span> 
 										<div class='media-body'><b>{CB_USERNAME}</b>&nbsp;
@@ -346,7 +348,7 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 
 
 
-$caption = (file_exists(THEME."images/chatbox_menu.png") ? "<img src='".THEME_ABS."images/chatbox_menu.png' alt='' /> ".CHATBOX_L2 : CHATBOX_L2);
+$caption = (file_exists(THEME."images/chatbox_menu.png") ? "<img src='".THEME_ABS."images/chatbox_menu.png' alt='' /> ".LAN_PLUGIN_CHATBOX_MENU_NAME : LAN_PLUGIN_CHATBOX_MENU_NAME);
 
 if($pref['cb_layer'] == 1)
 {

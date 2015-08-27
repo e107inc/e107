@@ -144,7 +144,7 @@ class core_news_url extends eUrlConfig
 				break;
 				
 				case 'tag':
-					$url .= 'tag='.$params['id'].'&page='.$page;
+					$url .= 'tag='.$params['tag'].'&page='.$page;
 				break;
 				
 				case 'short':

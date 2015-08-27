@@ -334,9 +334,7 @@ define("LAN_AL_NEWS_11", "News category rewrite deleted");
 define("LAN_AL_NEWS_12", "News rewrite changed");
 define("LAN_AL_NEWS_13", "News rewrite deleted");
 
-// Comments
-//---------
-define("LAN_AL_COMMENT_01", "Comment(s) deleted");
+
 
 // File Manager
 //-------------
@@ -379,10 +377,12 @@ define("LAN_AL_MISC_07", "");
 
 define("LAN_AL_PING_01", "Ping to service");
 
-define("LAN_AL_ADMINUI_01", "Admin-UI DB Table Insert");
-define("LAN_AL_ADMINUI_02", "Admin-UI DB Table Update");
-define("LAN_AL_ADMINUI_03", "Admin-UI DB Table Delete");
-define("LAN_AL_ADMINUI_04", "Admin-UI DB Error");
+define("LAN_AL_ADMINUI_01", "Admin-UI DB Table Insert: [x]");
+define("LAN_AL_ADMINUI_02", "Admin-UI DB Table Update: [x]");
+define("LAN_AL_ADMINUI_03", "Admin-UI DB Table Delete: [x]");
+define("LAN_AL_ADMINUI_04", "Admin-UI DB Error: [x]");
+
+define("LAN_AL_BACKUP", "Database backup");
 
 
 ?>

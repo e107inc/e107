@@ -16,6 +16,7 @@ CREATE TABLE forum (
   `forum_postclass` smallint(5) NOT NULL default '0',
   `forum_threadclass` smallint(5) NOT NULL default '0',
   `forum_options` text,
+  `forum_sef` varchar(250) default NULL,
   PRIMARY KEY  (`forum_id`),
   KEY `forum_parent` (`forum_parent`),
   KEY `forum_sub` (`forum_sub`)

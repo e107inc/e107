@@ -178,7 +178,7 @@ if ( ! isset($LOGIN_MENU_LOGGED))
     $sc_style['LM_EXTERNAL_LINKS']['pre'] = '<li class="login-menu-external">';
 	$sc_style['LM_EXTERNAL_LINKS']['post'] = '</li>';
 
-    $sc_style['LM_STATS']['pre'] = '<li class="nav-header login-menu-stats smalltext">'.LOGIN_MENU_L25.':</li><li>';
+    $sc_style['LM_STATS']['pre'] = '<li class="nav-header login-menu-stats smalltext">'.LAN_LOGINMENU_25.':</li><li>';
 	$sc_style['LM_STATS']['post'] = '</li>';
 
     $sc_style['LM_LISTNEW_LINK']['pre'] = '<li class="login-menu-listnew">';

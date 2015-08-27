@@ -6,6 +6,7 @@ if(!defined('e107_INIT'))
 
 function menu_shortcode($parm, $mode='')
 {
+	
 	if(is_array($parm)) //v2.x format allowing for parms. {MENU: path=y&count=x}
 	{
 		list($plugin,$menu) = explode("/",$parm['path'],2); 		
@@ -21,7 +22,7 @@ function menu_shortcode($parm, $mode='')
 	else
 	{
 	
-		list($path,$echo) = explode(':', $parm);
+		$path = $parm;
 			
 		if(is_numeric($path)) // eg. {MENU=1} - renders area 1 as found in the e107_menu db table. 
 		{

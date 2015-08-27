@@ -386,6 +386,10 @@ class eDispatcher
 		{
 			case 'plugin':
 				//if($custom) $custom = 'url/'.$custom;
+				if(!defined('e_CURRENT_PLUGIN'))
+				{
+					define('e_CURRENT_PLUGIN', $module); // TODO Move to a better location.
+				}
 				return $sc ? '{e_PLUGIN}'.$module.'url/'.$custom.'url.php' : e_PLUGIN.$module.'url/'.$custom.'url.php';
 			break;
 
@@ -677,20 +681,22 @@ class eDispatcher
 		
 		return self::$_configObjects[$reg];
 	}
-	
+
 	/**
 	 * Auto discover module location from stored in core prefs data
 	 * @param string $module
+	 * @return mixed
 	 */
 	public static function getModuleConfigLocation($module)
 	{
 		//retrieve from config prefs
 		return e107::findPref('url_config/'.$module, '');
 	}
-	
+
 	/**
 	 * Auto discover module location from stored in core prefs data
 	 * @param string $module
+	 * @return mixed|null|string
 	 */
 	public static function getDispatchLocation($module)
 	{
@@ -3573,7 +3579,7 @@ class eRequest
 	 */
 	public function setLegacyQstring($qstring = null)
 	{
-		if(defined('e_QUERY')) return $this;;
+		if(defined('e_QUERY')) return $this;
 		
 		if(null === $qstring)
 		{
@@ -3586,7 +3592,7 @@ class eRequest
 		
 		if(strpos(e_QUERY,"=")!==false ) // Fix for legacyQuery using $_GET ie. ?x=y&z=1 etc. 
 		{
-			parse_str(e_QUERY,$tmp);	
+			parse_str(str_replace(array('&amp;'), array('&'), e_QUERY),$tmp);
 			foreach($tmp as $key=>$value)
 			{
 				$_GET[$key] = $value;	
@@ -3674,6 +3680,8 @@ class eResponse
 	protected $_META_KEYWORDS = array();
 	protected $_render_mod = array('default' => 'default');
 	protected $_meta_title_separator = ' - ';
+	protected $_meta_name_only = array('keywords', 'viewport'); // Keep FB happy.
+	protected $_meta_property_only = array('article:section', 'article:tag'); // Keep FB happy.
 	protected $_meta = array();
 	protected $_title_separator = ' &raquo; ';
 	protected $_content_type = 'html';
@@ -3686,7 +3694,7 @@ class eResponse
 		'rss' => 'application/rss+xml',
 		'soap' => 'application/soap+xml',
 	);
-	
+
 	protected $_params = array(
 		'render' => true,
 		'meta' => false,
@@ -3893,6 +3901,7 @@ class eResponse
 	 * Assemble title
 	 * @param str $ns
 	 * @param bool $reset
+	 * @return string
 	 */
 	function getTitle($ns = 'default', $reset = false)
 	{
@@ -3918,22 +3927,19 @@ class eResponse
 	/**
 	 *
 	 * @param string $render_mod
-	 * @param string $ns
+	 * @param mixed $ns
 	 * @return eResponse
 	 */
 	function setRenderMod($render_mod, $ns = 'default')
 	{
-		if(!is_string($ns) || empty($ns))
-		{
-			return $this;
-		}
-		$this->_render_mod[$ns] = (string) $render_mod;
+		$this->_render_mod[$ns] = $render_mod;
 		return $this;
 	}
 
 	/**
 	 * Retrieve render mod
-	 * @param string $ns
+	 * @param mixed $ns
+     * @return mixed
 	 */
 	function getRenderMod($ns = 'default')
 	{
@@ -3966,9 +3972,21 @@ class eResponse
 				
 		if(null !== $name)
 		{
-			$key = (substr($name,0,3) == 'og:') ? 'property' : 'name';			
-			$attr[$key] = $name;
+		//	$key = (substr($name,0,3) == 'og:') ? 'property' : 'name';
+		//	$attr[$key] = $name;
+			if(!in_array($name, $this->_meta_name_only))
+			{
+				$attr['property'] = $name;  // giving both should be valid and avoid issues with FB and others.
+			}
+
+			if(!in_array($name, $this->_meta_property_only))
+			{
+				$attr['name'] = $name;
+			}
 		}
+
+
+
 		if(null !== $content) $attr['content'] = $content;
 		if(!empty($extended)) 
 		{
@@ -4107,6 +4125,7 @@ class eResponse
 	 * @param string $ns namespace/segment
 	 * @param bool $return
 	 * @param bool $render_message append system messages
+	 * @return null|string
 	 */
 	function send($ns = null, $return = true, $render_message = true)
 	{
@@ -4267,18 +4286,26 @@ class eHelper
 		$descrString = preg_replace('/[\r]*\n[\r]*/', ' ', trim(str_replace(array('"', "'"), '', strip_tags(e107::getParser()->toHTML($descrString, TRUE)))));
 		return trim(preg_replace('/[\s]+/', ' ', str_replace('_', ' ', $descrString)));
 	}
-	
+
 	/**
 	 * Convert title to valid SEF URL string
 	 * Type ending with 'l' stands for 'to lowercase', ending with 'c' - 'to camel case'
 	 * @param string $title
 	 * @param string $type dashl|dashc|dash|underscorel|underscorec|underscore|plusl|plusc|plus|none
+	 * @return mixed|string
 	 */
 	public static function title2sef($title, $type = null)
 	{
-		$title = preg_replace('/[^\w\pL\s.,]/u', '', strip_tags(e107::getParser()->toHTML($title, TRUE)));
+		$title = str_replace(array("&",",","(",")"),'',$title);
+		$title = preg_replace('/[^\w\d\pL\s.]/u', '', strip_tags(e107::getParser()->toHTML($title, TRUE)));
 		$title = trim(preg_replace('/[\s]+/', ' ', str_replace('_', ' ', $title)));
-		
+
+		$words = str_word_count($title,1, '12345678990');
+
+		$limited = array_slice($words, 0, 14); // Limit number of words to 14. - any more and it ain't friendly.
+
+		$title = implode(" ",$limited);
+
 		if(null === $type)
 		{
 			$type = e107::getPref('url_sef_translate'); 

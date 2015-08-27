@@ -63,8 +63,7 @@ function defset($str, $default='')
  */
 function varsettrue(&$val, $default='')
 {
-	if (isset($val) && $val) { return $val; }
-	return $default;
+	return vartrue($val, $default);
 }
 
 /**
@@ -76,7 +75,9 @@ function varsettrue(&$val, $default='')
  */
 function vartrue(&$val, $default='')
 {
-	return varsettrue($val, $default);
+
+	if (isset($val) && $val) { return $val; }
+	return $default;
 }
 
 /**
@@ -324,7 +325,7 @@ if (!function_exists('r_emote'))
 		{
 			$key = str_replace("!", ".", $key);					// Usually '.' was replaced by '!' when saving
 			$key = preg_replace("#_(\w{3})$#", ".\\1", $key);	// '_' followed by exactly 3 chars is file extension
-			$key = e_IMAGE."emotes/" . $pref['emotepack'] . "/" .$key;		// Add in the file path
+			$key = e_IMAGE_ABS."emotes/" . $pref['emotepack'] . "/" .$key;		// Add in the file path
 	
 			$value2 = substr($value, 0, strpos($value, " "));
 			$value = ($value2 ? $value2 : $value);
@@ -468,7 +469,7 @@ class e_array {
     /**
     * @DEPRECATED: Use e107::unserialize(); instead. 
     * Returns an array from stored array data.
-    *
+    * @deprecated
     * @param string $ArrayData
     * @return array stored data
     */

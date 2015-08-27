@@ -11,11 +11,11 @@ $.ajaxSetup({
 
 $(document).ready(function()
 {
-    	 $(".e-hideme").hide();
-    	 $(".e-expandit").show();   	 
+		$(".e-hideme").hide();
+		$(".e-expandit").show();   	
+	
     //	 $(".e-spinner").spinner(); //FIXME breaks tooltips
-    	 
-
+	 
 
     	 
 		 //check all
@@ -73,8 +73,14 @@ $(document).ready(function()
        			
        			$(select).each( function() {
        				
-       				$('#'+ this).toggle("slow");
+       				$('#'+ this).slideToggle("slow");
 				});
+
+                if($(this).attr("data-return")==='true')
+                {
+                    return true;
+                }
+
        			
        			return false;
        		}
@@ -84,13 +90,13 @@ $(document).ready(function()
 			if(href === "#" || href == "") 
 			{
 				idt = $(this).nextAll("div");	
-				$(idt).toggle("slow");
+				$(idt).slideToggle("slow");
 				 return true;			
 			}
 		
 			      		    		
        		//var id = $(this).attr("href");   		
-			$(href).toggle("slow");
+			$(href).slideToggle("slow");
 			
 			return false;
 		}); 
@@ -185,26 +191,7 @@ $(document).ready(function()
 		
 			// https://github.com/smalot/bootstrap-datetimepicker
 				
-			$("input.e-date").each(function() {			
-        		$(this).datetimepicker({
-        			minView: 'month',
-        			maxView: 'decade',
-        			autoclose: true,
-        			format: $(this).attr("data-date-format"),
-        			weekStart: $(this).attr("data-date-firstday"),
-        			language: $(this).attr("data-date-language")
-        		 });    		 
-    		});
-    	
-    		$("input.e-datetime").each(function() {  			
-        		$(this).datetimepicker({
-        			autoclose: true,
-        			format: $(this).attr("data-date-format"),
-        			weekStart: $(this).attr("data-date-firstday"),
-        			showMeridian: $(this).attr("data-date-ampm"),
-        			language: $(this).attr("data-date-language")
-        		 });    		 
-    		});
+
 		
 		
 		/*	
@@ -301,16 +288,22 @@ $(document).ready(function()
 		$('.e-email').on('blur', function() {
 			// alert('hello');
 		  $(this).mailcheck({
-		    
+
+
 		    suggested: function(element, suggestion) {
-		    	var id = $(element);
-		    	var hint = $(element).next('div').attr('data-hint');
+
+		    	var id = $(element).nextAll('div.e-email-hint');
+             //   console.log("Hint obj", id);
+
+                var hint = id.attr('data-hint');
+
 		    	var mes = hint.replace('[x]',suggestion.full);
-		    	$(element).next('div').html(mes);
-		    	$(element).next('div').show('slow');
+
+                id.html(mes);
+                id.show('slow');
 		    },
 		    empty: function(element) {
-		      $(element).next('div').hide('slow');
+		      $(element).nextAll('div.e-email-hint').hide('slow');
 		    }
 	  		});
 		});
@@ -442,13 +435,16 @@ $(document).ready(function()
 
 		});
 		*/
-		
-				
-		$(".e-dialog-close").live("click", function(){
+
+
+    $(document).on("click", ".e-dialog-close", function(){
 			parent.$('.modal').modal('hide');
-			
+            $('.modal').modal('hide');
+
+
+         //   $('#modal').modal('hide');
 			// parent.$.colorbox.close()	
-		}); 
+	});
 		
 		
 		
@@ -718,7 +714,7 @@ $(document).ready(function()
 				 success: function(data) 
 				 {
 				// 	console.log(data);
-					$("#"+target).html(data).hide().show("slow");;
+					$("#"+target).html(data).hide().show("slow");
 				 }
 			});
 			
@@ -808,28 +804,35 @@ $(document).ready(function()
 
 	
 	function expandit(e) {
-					
+
+
+
 		//	var href = ($(e).is("a")) ? $(e).attr("href") : '';
 			if($(e).is("a"))
 			{
 				var href = $(e).attr("href");	
 						
 			}
-				
+			else
+            {
+                var href = '';
+            }
+
 			if(href === "#" || e === null || href === undefined) 
 			{
 				idt = $(e).next("div");	
 								
 				$(idt).toggle("slow");
-				return false;;			
+				return false;
 			}
 			
-			var id = "#" + e; 		
-			
+			var id = "#" + e;
+
+
 			
 			$(id).toggle("slow");
 			return false;
-	};
+	}
 		
 
 	var addinput = function(text,rep) {
@@ -1172,7 +1175,7 @@ function sendInfo(handler, container, form)
 		 success: function(data) 
 		 {
 		// 	console.log(data);
-			$("#"+container).html(data).hide().show("slow");;
+			$("#"+container).html(data).hide().show("slow");
 		 }
 	});
 	

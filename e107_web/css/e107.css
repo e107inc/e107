@@ -108,9 +108,9 @@ a.cpage-np.current { text-decoration: none; }
 /* message text (overall) */
 .warning { color: #FF6600 }
 .success { color: green; }
-.error { color: #FF0000 }
+.error { color: #A94442; }
 .info {}
-.required { color:red }
+.required { color:#A94442; }
 
 /******** Tooltip info */
 .e-info {}
@@ -119,9 +119,12 @@ a.cpage-np.current { text-decoration: none; }
 .image-preview {}
 
 /* BBcode textareas */
-div.bbarea.large, .tbox.large, .helpbox.large { width: 95% !important; }
+div.bbarea.large, .tbox.large, .helpbox.large { width: 95% }
 div.bbarea.medium, .tbox.medium, .helpbox.medium { width: 60% !important; }
 div.bbarea.small, .tbox.small, .helpbox.small { width: 250px !important; }
+
+.bbcode-panel { width: 100% }
+.input-block-level { width: 100% !important }
 
 /******** bbcodes && typgoraphy */
 p {  }

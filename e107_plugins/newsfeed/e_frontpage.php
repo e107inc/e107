@@ -16,20 +16,32 @@
 */
 
 if (!defined('e107_INIT')) { exit; }
-if (!plugInstalled('newsfeed')) 
+
+e107::includeLan(e_PLUGIN.'newsfeed/languages/'.e_LANGUAGE.'_frontpage.php');
+
+
+//v2.x spec.
+class newsfeed_frontpage // include plugin-folder in the name.
 {
-	return;
-}
+	function config()
+	{
+		$frontPage = array();
+		$frontPage['title'] = LAN_PLUGIN_NEWSFEEDS_NAME; // .': '.vartrue($row['content_heading']); LAN_PLUGIN_NEWSFEEDS_NAME ?
+		$frontPage['page'][] = array('page' => '{e_PLUGIN}newsfeed/newsfeed.php', 'title' => NWSF_FP_2);
 
-include_lan(e_PLUGIN.'newsfeed/languages/'.e_LANGUAGE.'_frontpage.php');
+		if (e107::getDb()->select("newsfeed", "newsfeed_id, newsfeed_name"))
+		{
+			while ($row = e107::getDb()->fetch())
+			{
+				$frontPage['page'][] = array('page' => '{e_PLUGIN}newsfeed/newsfeed.php?show.'.$row['newsfeed_id'], 'title' => $row['newsfeed_name']);
+			}
+		}
 
-$front_page['newsfeed']['title'] = NWSF_FP_1.': '.vartrue($row['content_heading']);
-$front_page['newsfeed']['page'][] = array('page' => $PLUGINS_DIRECTORY.'newsfeed/newsfeed.php', 'title' => NWSF_FP_2);
 
-if ($sql -> db_Select("newsfeed", "newsfeed_id, newsfeed_name")) {
-	while ($row = $sql -> db_Fetch()) {
-		$front_page['newsfeed']['page'][] = array('page' => $PLUGINS_DIRECTORY.'newsfeed/newsfeed.php?show.'.$row['newsfeed_id'], 'title' => $row['newsfeed_name']);
+		return $frontPage;
 	}
 }
+
+
 
 ?>

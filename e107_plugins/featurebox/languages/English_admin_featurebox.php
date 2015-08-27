@@ -13,7 +13,7 @@ LAN file needs working from scratch after development is stabilized
 */
 
 
-//define("FBLAN_01", "Feature Box");
+//define("LAN_PLUGIN_FEATUREBOX_NAME", "Feature Box");
 //define("FBLAN_02", "Displays an animated area on the top of your page with news-items and other content you would like to feature.");
 //define("FBLAN_03", "Configure feature box"); //FIXME LAN  - use generic. 
 //define("FBLAN_04", "Feature Box plugin has been successfully installed. To add messages and configure, return to the main admin page and click on the feature box icon in the plugin section.");

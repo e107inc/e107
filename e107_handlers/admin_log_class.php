@@ -118,25 +118,32 @@ class e_admin_log
 	}
 
 
-
 	/**
-	 * Save all logs in the queue to the database and render any unhidden messages with the message handler.   
-	 * @see alias flushMessages() method below. 
+	 * Save all logs in the queue to the database and render any unhidden messages with the message handler.
+	 * @see alias flushMessages() method below.
 	 * @param string $logTitle - title for log entry eg. 'PREF_01'
 	 * @param int $logImportance [optional] default E_LOG_INFORMATIVE - passed directly to admin log
 	 * @param string $logEventCode [optional] - passed directly to admin log
 	 * @param string $mstack [optional] message stack passed to message handler
-	 */ 
-	public function save($logTitle, $logImportance = E_LOG_INFORMATIVE, $logEventCode = '', $mstack = false)
+	 * @param int LOG_TO_ADMIN|LOG_TO_ROLLING|LOG_TO_AUDIT
+	 * @return \e_admin_log
+	 */
+	public function save($logTitle, $logImportance = E_LOG_INFORMATIVE, $logEventCode = '', $mstack = false, $target = LOG_TO_ADMIN)
 	{
-		return $this->flushMessages($logTitle, $logImportance, $logEventCode, $mstack);
+		return $this->flushMessages($logTitle, $logImportance, $logEventCode, $mstack, $target);
 	}
 	
 	
 	
 
 	/**
-	 * Add a Save an event into the admin log. 
+	 * Add and Save an event into the admin, rolling or user log. 
+	 * @param string $event_title
+	 * @param mixed $event_details
+	 * @param integer $event_type [optional] Log level eg. E_LOG_INFORMATIVE, E_LOG_NOTICE, E_LOG_WARNING, E_LOG_FATAL
+	 * @param string $event_code [optional] - eg. 'BOUNCE'
+	 * @param integer $target [optional]  LOG_TO_ADMIN, LOG_TO_AUDIT, LOG_TO_ROLLING
+	 * @return e_admin_log
 	 * 
 	 * Alternative admin log entry point - compatible with legacy calls, and a bit simpler to use than the generic entry point.
 	 * ($eventcode has been added - give it a reference to identify the source module, such as 'NEWS_12' or 'ECAL_03')
@@ -148,13 +155,9 @@ class e_admin_log
 	 * Typically the 'STRING' part of the name defines the area originating the log event, and the 'nn' is a numeric code
 	 * This is stored as 'LAN_AL_STRING_NN', and must be defined in a language file which is loaded during log display.
 	 *
-	 * @param string $event_title
-	 * @param mixed $event_details
-	 * @param integer $event_type [optional] Log level
-	 * @param unknown $event_code [optional]
-	 * @return e_admin_log
+
 	 */
-	public function add($event_title, $event_detail, $event_type = E_LOG_INFORMATIVE , $event_code = '')
+	public function add($event_title, $event_detail, $event_type = E_LOG_INFORMATIVE , $event_code = '', $target = LOG_TO_ADMIN )
 	{
 		if ($event_code == '')
 		{
@@ -200,7 +203,7 @@ class e_admin_log
 		}
 		
 		
-		$this->e_log_event($event_type, -1, $event_code, $event_title, $event_detail, FALSE, LOG_TO_ADMIN);
+		$this->e_log_event($event_type, -1, $event_code, $event_title, $event_detail, FALSE, $target);
 
 		return $this;
 	}
@@ -300,7 +303,7 @@ class e_admin_log
 				'dblog_remarks'		=> $explain
 			);
 			
-			$this->rldb->db_Insert("admin_log", $adminLogInsert);
+			$this->rldb->insert("admin_log", $adminLogInsert);
 		}
 
 		//---------------------------------------
@@ -311,7 +314,7 @@ class e_admin_log
 		//---------------------------------------
 		// 			Rolling Log
 		//---------------------------------------
-		if (($target_logs & LOG_TO_ROLLING) && varsettrue($pref['roll_log_active']))
+		if (($target_logs & LOG_TO_ROLLING) && vartrue($pref['roll_log_active']))
 		{ //	Rolling log
 
 			// 	Process source_call info
@@ -357,10 +360,14 @@ class e_admin_log
 			// else $source_call is a string
 
 			// Save new rolling log record
-			$this->rldb->db_Insert("dblog", "0, ".intval($time_sec).', '.intval($time_usec).", '{$importance}', '{$eventcode}', {$userid}, '{$userstring}', '{$userIP}', '{$source_call}', '{$event_title}', '{$explain}' ");
+			$this->rldb->insert("dblog", "0, ".intval($time_sec).', '.intval($time_usec).", '{$importance}', '{$eventcode}', {$userid}, '{$userstring}', '{$userIP}', '{$source_call}', '{$event_title}', '{$explain}' ");
 
 			// Now delete any old stuff
-			$this->rldb->db_Delete("dblog", "dblog_datestamp < '".intval(time() - (varset($pref['roll_log_days'], 7) * 86400))."' ");
+			if(!empty($pref['roll_log_days']))
+			{
+				$days = intval($pref['roll_log_days']);
+				$this->rldb->delete("dblog", "dblog_datestamp < '".intval(time() - ($days * 86400))."' ");
+			}
 		}
 
 		if ($finished)
@@ -383,12 +390,13 @@ class e_admin_log
 	 */
 	function user_audit($event_type, $event_data, $id = '', $u_name = '')
 	{
-		global $e107,$tp,$pref;
+		global $e107,$tp;
 		list($time_usec, $time_sec) = explode(" ", microtime()); // Log event time immediately to minimise uncertainty
 		$time_usec = $time_usec * 1000000;
 
 		// See whether we should log this
-		$user_logging_opts = array_flip(explode(',', varset($pref['user_audit_opts'], '')));
+		$user_logging_opts = e107::getConfig()->get('user_audit_opts');
+		
 		if (!isset($user_logging_opts[$event_type]))
 			return; // Finished if not set to log this event type
 
@@ -628,7 +636,7 @@ class e_admin_log
 	 */
 	public function addDebug($text, $message = true, $session = false)
 	{
-		return $this->logMessage($text, ($message ? E_MESSAGE_DEBUG : LOG_MESSAGE_NODISPLAY), E_MESSAGE_NOTICE, $session);
+		return $this->logMessage($text, ($message ? E_MESSAGE_DEBUG : LOG_MESSAGE_NODISPLAY), E_MESSAGE_DEBUG, $session);
 	}
 
 
@@ -650,7 +658,7 @@ class e_admin_log
 	 * Add an array to the log queue
 	 * @param $array
 	 * @param $oldArray (optional) - when included, only the changes between the arrays is saved. 
-	 * @param $type (optional) default: LOG_MESSAGE_NODISPLAY. or E_MESSAGE_WARNING, E_MESSAGE_NOTICE, E_MESSAGE_SUCCESS
+	 * @param $type (optional) default: LOG_MESSAGE_NODISPLAY. or E_MESSAGE_WARNING, E_MESSAGE_DEBUG, E_MESSAGE_SUCCESS
 	 */
 	public function addArray($array, $oldArray= null, $type = LOG_MESSAGE_NODISPLAY , $session = false)
 	{
@@ -680,7 +688,7 @@ class e_admin_log
 	 *	@param string $mstack [optional] message stack passed to message handler
 	 *	@return e_admin_log
 	 */
-	public function flushMessages($logTitle, $logImportance = E_LOG_INFORMATIVE, $logEventCode = '', $mstack = false)
+	public function flushMessages($logTitle, $logImportance = E_LOG_INFORMATIVE, $logEventCode = '', $mstack = false, $target =LOG_TO_ADMIN)
 	{
 		$mes = e107::getMessage();
 				
@@ -711,7 +719,7 @@ class e_admin_log
 				else $mes->add($m['message'], $m['dislevel'], $m['session']);
 			}
 		}
-		e107::getAdminLog()->add($logTitle, $logString, $logImportance, $logEventCode);
+		$this->add($logTitle, $logString, $logImportance, $logEventCode, $target);
 		$this->_messages = array();		// Clear the memory for reuse
 
 		return $this;
@@ -751,7 +759,9 @@ class e_admin_log
 		{
 			return; 	
 		}		
-		
+
+		$text = '';
+
 		foreach($this->_allMessages as $m)
 		{
 			$text .= date('Y-m-d H:i:s', $m['time'])."  \t".str_pad($m['dislevel'],10," ",STR_PAD_RIGHT)."\t".strip_tags($m['message'])."\n";
@@ -761,7 +771,7 @@ class e_admin_log
 		
 		$dir = e_LOG;
 		
-		if(e_CURRENT_PLUGIN) // If it's a plugin, create a subfolder. 
+		if(deftrue('e_CURRENT_PLUGIN')) // If it's a plugin, create a subfolder.
 		{
 			$dir = e_LOG.e_CURRENT_PLUGIN."/";
 			

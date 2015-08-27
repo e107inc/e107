@@ -2,17 +2,15 @@
 /*
 * e107 website system
 *
-* Copyright (c) 2008-2009 e107 Inc (e107.org)
+* Copyright (c) 2008-2014 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
 * Featurebox administration
 *
-* $URL$
-* $Id$
 */
 require_once("../../class2.php");
-if (!getperms("P") || !plugInstalled('featurebox')) 
+if (!getperms("P") || !e107::isInstalled('featurebox')) 
 {
 	header("location:".e_BASE."index.php");
 	 exit;
@@ -235,10 +233,9 @@ class fb_main_ui extends e_admin_ui
 	function init()
 	{
 		$categories = array();
-		if(e107::getDb()->db_Select('featurebox_category'))
+		if(e107::getDb()->select('featurebox_category'))
 		{
-			//$categories[0] = LAN_SELECT;
-			while ($row = e107::getDb()->db_Fetch())
+			while ($row = e107::getDb()->fetch())
 			{
 				$id = $row['fb_category_id'];
 				$tmpl = $row['fb_category_template'];
@@ -252,8 +249,8 @@ class fb_main_ui extends e_admin_ui
 		
 		unset($menuCat['unassigned']);
 		
-		$this->prefs['menu_category']['writeParms'] 	= $menuCat;
-		$this->prefs['menu_category']['readParms'] 		= $menuCat;
+		$this->prefs['menu_category']['writeParms']['optArray'] 	= $menuCat;
+		$this->prefs['menu_category']['readParms']['optArray'] 		= $menuCat;
 
 	}
 		

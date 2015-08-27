@@ -76,7 +76,7 @@ class list_comment
 					$record['heading'] = $this->parent->e107->tp->toHTML($rowheading, true);
 				}
 				$category = '';
-				if(varsettrue($this->parent->settings['category']))
+				if(vartrue($this->parent->settings['category']))
 				{
 					if($row['comment_category_url'])
 					{
@@ -87,8 +87,8 @@ class list_comment
 						$record['category'] = $row['comment_category_heading'];
 					}
 				}
-				$record['author'] = (varsettrue($this->parent->settings['author']) ? $row['comment_author'] : '');
-				$record['date'] = (varsettrue($this->parent->settings['date']) ? $this->parent->getListDate($row['comment_datestamp']) : "");
+				$record['author'] = (vartrue($this->parent->settings['author']) ? $row['comment_author'] : '');
+				$record['date'] = (vartrue($this->parent->settings['date']) ? $this->parent->getListDate($row['comment_datestamp']) : "");
 				$record['icon'] = $bullet;
 				$record['info'] = '';
 				

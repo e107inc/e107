@@ -16,7 +16,7 @@
 */
 
  if (!defined('e107_INIT')) { exit; }
-if(!plugInstalled('gsitemap'))
+if(!e107::isInstalled('gsitemap'))
 { 
 	return '';
 }
@@ -44,7 +44,7 @@ function pingit($vals)
 
   	$pinger->ping($xml_rpc_server, $xml_rpc_port, $xml_rpc_path, $xml_rpc_method, $weblog_name, $weblog_url, $changes_url, $cat_or_rss, $extended);
     $log = strip_tags($vals['news_title']."\n".$changes_url."\n".$cat_or_rss."\n".$pinger->smessage);
-	$admin_log->log_event("Gsitemap Google-ping",$log, 4);
+	e107::getLog()->add("Gsitemap Google-ping",$log, 4);
 
 }
 

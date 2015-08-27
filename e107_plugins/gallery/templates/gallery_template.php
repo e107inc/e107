@@ -27,7 +27,7 @@ $GALLERY_TEMPLATE['list_end'] =
 	"</div>
 	<div class='center' >
 		<div class='gallery-list-nextprev'>{GALLERY_NEXTPREV}</div>
-		<div class='gallery-list-back'><a class='btn btn-default' href='{GALLERY_BASEURL}'>Back to Categories</a></div>
+		<div class='gallery-list-back'><a class='btn btn-default' href='{GALLERY_BASEURL}'>".LAN_BACK."</a></div>
 	</div>
 ";
 	
@@ -54,47 +54,6 @@ $GALLERY_TEMPLATE['cat_end'] =
 	";	
 	
 	
-/* //Bootstrap2
-$GALLERY_TEMPLATE['list_start'] = 
-	'{GALLERY_BREADCRUMB}
-	<ul class="thumbnails gallery">';
-
-		
-$GALLERY_TEMPLATE['list_item'] =  '
- <li class="span2">
-	<div class="thumbnail">
-		{GALLERY_THUMB}
-		<h5>{GALLERY_CAPTION}</h5>
-	</div>
-</li>';
-
-$GALLERY_TEMPLATE['list_end'] = 
-	"</ul>
-	<div class='center' >
-		<div class='gallery-list-nextprev'>{GALLERY_NEXTPREV}</div>
-		<div class='gallery-list-back'><a class='btn' href='{GALLERY_BASEURL}'>Back to Categories</a></div>
-	</div>
-";
- 
-$GALLERY_TEMPLATE['cat_start'] = 
-	'{GALLERY_BREADCRUMB}
-	<ul class="thumbnails gallery-cat">';
-	
-	    
-$GALLERY_TEMPLATE['cat_item'] = '
- <li class="span3">
-	<div >
-		{GALLERY_CAT_THUMB}
-		<h3>{GALLERY_CAT_TITLE}</h3>
-	</div>
-</li>';
-
-
-$GALLERY_TEMPLATE['cat_end'] = 
-	"</ul>
-	";
-*/
-
 
 // {GALLERY_SLIDESHOW=X}  X = Gallery Category. Default: 1 (ie. 'gallery_1') Overrides preference in admin. 
 // {GALLERY_SLIDES=X}  X = number of items per slide. 
@@ -103,21 +62,21 @@ $GALLERY_TEMPLATE['cat_end'] =
 $GALLERY_TEMPLATE['slideshow_wrapper'] = '
 			
 			<div id="gallery-slideshow-wrapper">
-			    <div id="gallery-slideshow-content">
+			    <div id="gallery-slideshow-content" >
 			        {GALLERY_SLIDES=4}
 			    </div>
 			</div>
 			
 			<div class="gallery-slideshow-controls">		
-            	<a href="#" class="gallery-control gal-next" style="float: right">Next &rsaquo;</a>           
-                <a href="#" class="gallery-control gal-prev" >&lsaquo; Previous</a>
+            	<a href="#" class="gallery-control gal-next btn btn-xs btn-default" style="float: right">Next {GLYPH=fa-chevron-right}</a>           
+                <a href="#" class="gallery-control gal-prev btn btn-xs btn-default" >{GLYPH=fa-chevron-left} Previous</a>
                 <span class="gallery-slide-jumper-container">{GALLERY_JUMPER}</span>
             </div>
          
             
 		';	
 
-$GALLERY_TEMPLATE['slideshow_slide_item'] = '<span class="gallery-slide-item">{GALLERY_THUMB=w=150&h=120}</span>';
+$GALLERY_TEMPLATE['slideshow_slide_item'] = '<span class="gallery-slide-item">{GALLERY_THUMB: w=150&h=120}</span>';
 
 		
 

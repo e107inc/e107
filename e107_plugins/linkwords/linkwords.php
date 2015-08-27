@@ -22,7 +22,7 @@
 */
 
 if (!defined('e107_INIT')) { exit; }
-// if (!plugInstalled('linkwords')) exit; // This will break a site completely under some circumstance. 
+// if (!e107::isInstalled('linkwords')) exit; // This will break a site completely under some circumstance. 
 
 
 class e_linkwords
@@ -57,7 +57,7 @@ class e_linkwords
 			$pref['e_tohtml_list'][] = 'linkwords';
 		}
 		save_prefs();
-		$admin_log->log_event('LINKWD_05',LWLAN_58.'[!br!]'.$pref['tohtml_hook'],'');			// Log that the update was done
+		e107::getLog()->add('LINKWD_05',LWLAN_58.'[!br!]'.$pref['tohtml_hook'],'');			// Log that the update was done
 		return;
 	}
 

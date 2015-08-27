@@ -23,7 +23,7 @@ if (!$e107->isInstalled('forum'))
 	header('Location: '.SITEURL);
 	exit;
 }
-
+e107::lan('forum', "front", true);
 // include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum.php'); // using English_front.php now
 
 require_once(e_PLUGIN.'forum/forum_class.php');
@@ -53,6 +53,7 @@ if(isset($_GET['f']))
 
 		case 'rules':
 			include_once(HEADERF);
+
 			forum_rules('show');
 			include_once(FOOTERF);
 			exit;
@@ -62,7 +63,7 @@ if(isset($_GET['f']))
 $fVars = new e_vars;
 $gen = new convert;
 
-$fVars->FORUMTITLE = LAN_FORUM_0001;
+$fVars->FORUMTITLE = LAN_PLUGIN_FORUM_NAME;
 $fVars->THREADTITLE = LAN_FORUM_0002;
 $fVars->REPLYTITLE = LAN_FORUM_0003;
 $fVars->LASTPOSTITLE = LAN_FORUM_0004;
@@ -74,6 +75,7 @@ $fVars->NEWIMAGE = IMAGE_new_small;
 $fVars->TRACKTITLE = LAN_FORUM_0073;
 
 $rules_text = forum_rules('check');
+
 $fVars->USERINFO = "<a href='".e_BASE."top.php?0.top.forum.10'>".LAN_FORUM_0010."</a> | <a href='".e_BASE."top.php?0.active'>".LAN_FORUM_0011."</a>";
 if(USER)
 {
@@ -83,10 +85,27 @@ if(USER)
 		$fVars->USERINFO .= " | <a href='".e_PLUGIN."forum/forum_uploads.php'>".LAN_FORUM_0015."</a>";
 	}
 }
-if($rules_text != '')
+if(!empty($rules_text))
 {
-	$fVars->USERINFO .= " | <a href='".$e107->url->create('forum/forum/rules')."'>".LAN_FORUM_0016.'</a>';
+	$fVars->USERINFO .= " | <a href='".e107::url('forum','rules')."'>".LAN_FORUM_0016.'</a>';
 }
+
+
+// v2.x --------------------
+$uInfo = array();
+$uInfo[0] = "<a href='".e107::url('forum','stats')."'>".LAN_FORUM_6013.'</a>';
+
+if(!empty($rules_text))
+{
+	$uInfo[1] = "<a href='".e107::url('forum','rules')."'>".LAN_FORUM_0016.'</a>';
+}
+
+$fVars->USERINFOX = implode(" | ",$uInfo);
+// -----------
+
+
+
+
 $total_topics = $sql->count("forum_thread", "(*)");
 $total_replies = $sql->count("forum_post", "(*)");
 $total_members = $sql->count("user");
@@ -114,7 +133,7 @@ if(!defined('e_TRACKING_DISABLED'))
 }
 $fVars->STATLINK = "<a href='".e_PLUGIN."forum/forum_stats.php'>".LAN_FORUM_0017."</a>\n";
 $fVars->ICONKEY = "
-<table style='width:100%'>\n<tr>
+<table class='table table-bordered' style='width:100%'>\n<tr>
 <td style='width:2%'>".IMAGE_new_small."</td>
 <td style='width:10%'><span class='smallblacktext'>".LAN_FORUM_0039."</span></td>
 <td style='width:2%'>".IMAGE_nonew_small."</td>
@@ -123,13 +142,21 @@ $fVars->ICONKEY = "
 <td style='width:10%'><span class='smallblacktext'>".LAN_FORUM_0041."</span></td>
 </tr>\n</table>\n";
 
+if(!$srchIcon = $tp->toGlyph('fa-search'))
+{
+	$srchIcon = LAN_SEARCH; 	
+}
+
 $fVars->SEARCH = "
 <form method='get' class='form-inline input-append' action='".e_BASE."search.php'>
-
-<input class='tbox' type='text' name='q' size='20' value='' maxlength='50' />
-<input class='btn btn-default button' type='submit' name='s' value='".LAN_SEARCH."' />
+<div class='input-group'>
+<input class='tbox form-control' type='text' name='q' size='20' value='' maxlength='50' />
+<span class='input-group-btn'>
+<button class='btn btn-default button' type='submit' name='s' value='search' />".$srchIcon."</button>
+</span>
 <input type='hidden' name='r' value='0' />
 <input type='hidden' name='ref' value='forum' />
+</div>
 
 </form>\n";
 
@@ -197,7 +224,7 @@ if (USER && vartrue($allread) != TRUE && $total_new_threads && $total_new_thread
 	$fVars->INFO .= "<br /><a href='".e_SELF."?mark.all.as.read'>".LAN_FORUM_0057.'</a>'.(e_QUERY != 'new' ? ", <a href='".e_SELF."?new'>".LAN_FORUM_0058."</a>" : '');
 }
 
-if (USER && varsettrue($forum->prefs->get('track')) && e_QUERY != 'track')
+if (USER && vartrue($forum->prefs->get('track')) && e_QUERY != 'track')
 {
 	$fVars->INFO .= "<br /><a href='".e_SELF."?track'>".LAN_FORUM_0030.'</a>';
 }
@@ -243,7 +270,7 @@ $newflag_list = $forum->forumGetUnreadForums();
 
 if (!$forumList)
 {
-	$ns->tablerender(LAN_FORUM_0001, "<div style='text-align:center'>".LAN_FORUM_0067.'</div>', array('forum', '51'));
+	$ns->tablerender(LAN_PLUGIN_FORUM_NAME, "<div style='text-align:center'>".LAN_FORUM_0067.'</div>', array('forum', '51'));
 	require_once(FOOTERF);
 	exit;
 }
@@ -327,8 +354,11 @@ function parse_forum($f, $restricted_string = '')
 	}
 	$f['forum_name'] = $tp->toHTML($f['forum_name'], true, 'no_hook');
 	$f['forum_description'] = $tp->toHTML($f['forum_description'], true, 'no_hook');
-	
-	$fVars->FORUMNAME = "<a href='".$e107->url->create('forum/forum/view', $f)."'>{$f['forum_name']}</a>";
+
+
+	//$url= $e107->url->create('forum/forum/view', $f);
+	$url = e107::url('forum', 'forum', $f);
+	$fVars->FORUMNAME = "<a href='".$url."'>{$f['forum_name']}</a>";
 	$fVars->FORUMDESCRIPTION = $f['forum_description'].($restricted_string ? "<br /><span class='smalltext'><i>$restricted_string</i></span>" : "");
 	$fVars->THREADS = $f['forum_threads'];
 	$fVars->REPLIES = $f['forum_replies'];
@@ -349,7 +379,7 @@ function parse_forum($f, $restricted_string = '')
 	if(is_array($forumList['subs'][$f['forum_id']]))
 	{
 		list($lastpost_datestamp, $lastpost_thread) = explode('.', $f['forum_lastpost_info']);
-		$ret = parse_subs($forumList['subs'][$f['forum_id']], $lastpost_datestamp);
+		$ret = parse_subs($forumList, $f['forum_id'], $lastpost_datestamp);
 		$fVars->FORUMSUBFORUMS = "<br /><div class='smalltext'>".LAN_FORUM_0069.": {$ret['text']}</div>";
 		$fVars->THREADS += $ret['threads'];
 		$fVars->REPLIES += $ret['replies'];
@@ -374,8 +404,15 @@ function parse_forum($f, $restricted_string = '')
 		{
 			$lastpost_name = $tp->toHTML($f['forum_lastpost_user_anon']);
 		}
+
+		$lastpost = $forum->threadGetLastpost($lastpost_thread); //XXX TODO inefficient to have SQL query here.
+
 		$fVars->LASTPOSTUSER = $lastpost_name;
-		$fVars->LASTPOSTDATE .=  $gen->computeLapse($lastpost_datestamp, time(), false, false, 'short');
+		// {forum_sef}/{thread_id}-{thread_sef}
+
+		$urlData = array('forum_sef'=>$f['forum_sef'], 'thread_id'=>$lastpost['post_thread'],'thread_sef'=>$lastpost['thread_sef']);
+		$url = e107::url('forum', 'topic', $urlData)."?last=1#post-".$lastpost['post_id'];
+		$fVars->LASTPOSTDATE .= "<a href='".$url."'>". $gen->computeLapse($lastpost_datestamp, time(), false, false, 'short')."</a>";
 		$lastpost_datestamp = $gen->convert_date($lastpost_datestamp, 'forum');
 		$fVars->LASTPOST = $lastpost_datestamp.'<br />'.$lastpost_name." <a href='".$e107->url->create('forum/thread/last', array('name' => $lastpost_name, 'id' => $lastpost_thread))."'>".IMAGE_post2.'</a>';
 		
@@ -389,20 +426,31 @@ function parse_forum($f, $restricted_string = '')
 	return $tp->simpleParse($FORUM_MAIN_FORUM, $fVars);
 }
 
-function parse_subs($subList, $lastpost_datestamp)
+
+
+function parse_subs($forumList, $id ='', $lastpost_datestamp)
 {
-	$e107 = e107::getInstance();
+
 	$tp = e107::getParser();
 	$ret = array();
+
+	$subList = $forumList['subs'][$id];
+
 	$ret['text'] = '';
+
 	foreach($subList as $sub)
 	{
 		$ret['text'] .= ($ret['text'] ? ', ' : '');
-		$suburl = $e107->url->create('forum/forum/view', $sub);
-		$ret['text'] .= "<a href='{$suburl}'>".$tp->toHTML($sub['forum_name']).'</a>';
-		$ret['threads'] += $sub['forum_threads'];
-		$ret['replies'] += $sub['forum_replies'];
-		$tmp = explode('.', $sub['forum_lastpost_info']);
+
+		$urlData                = $sub;
+		$urlData['parent_sef']  = $forumList['all'][$sub['forum_sub']]['forum_sef']; //   = array('parent_sef'=>
+		$suburl                 = e107::url('forum','forum', $urlData);
+
+		$ret['text']            .= "<a href='{$suburl}'>".$tp->toHTML($sub['forum_name']).'</a>';
+		$ret['threads']         += $sub['forum_threads'];
+		$ret['replies']         += $sub['forum_replies'];
+		$tmp                    = explode('.', $sub['forum_lastpost_info']);
+
 		if($tmp[0] > $lastpost_datestamp)
 		{
 			$ret['lastpost_info'] = $sub['forum_lastpost_info'];
@@ -412,8 +460,12 @@ function parse_subs($subList, $lastpost_datestamp)
 			$lastpost_datestamp = $tmp[0];
 		}
 	}
+
+
 	return $ret;
 }
+
+
 
 if (e_QUERY == 'track')
 {
@@ -455,6 +507,8 @@ if (e_QUERY == 'track')
 		}
 	}
 }
+
+
 
 if (e_QUERY == 'new')
 {
@@ -500,7 +554,7 @@ if (e_QUERY == 'new')
 $frm = e107::getForm();
 
 $breadarray = array(
-					array('text'=> $forum->prefs->get('title'), 'url' => e_REQUEST_URL )
+					array('text'=> $forum->prefs->get('title'), 'url' => e107::url('forum','index') )
 );
 
 $fVars->FORUM_BREADCRUMB = $frm->breadcrumb($breadarray);
@@ -516,6 +570,14 @@ else
 {
 	echo $forum_main_start.$forum_string.$forum_main_end;
 }
+
+
+
+
+
+
+
+
 require_once(FOOTERF);
 
 function forum_rules($action = 'check')
@@ -544,7 +606,23 @@ function forum_rules($action = 'check')
 	{
 		$rules_text = LAN_FORUM_0072;
 	}
-	e107::getRender()->tablerender(LAN_FORUM_0071, "<div style='text-align:center'>{$rules_text}</div>", array('forum', 'forum_rules'));
+
+	$text = '';
+
+	if(deftrue('BOOTSTRAP'))
+	{
+		$breadarray = array(
+			array('text'=> e107::pref('forum','title', LAN_PLUGIN_FORUM_NAME), 'url' => e107::url('forum','index') ),
+			array('text'=>LAN_FORUM_0016, 'url'=>null)
+		);
+
+		$text = e107::getForm()->breadcrumb($breadarray);
+	}
+
+	$text .= "<div id='forum-rules'>".$rules_text."</div>";
+	$text .=  "<div class='center'>".e107::getForm()->pagination(e107::url('forum','index'), LAN_BACK)."</div>";
+
+	e107::getRender()->tablerender(LAN_FORUM_0016, $text, array('forum', 'forum_rules'));
 }
 
 ?>

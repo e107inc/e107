@@ -26,7 +26,7 @@ class contact_shortcodes extends e_shortcode
 		global $pref;
 		if(!isset($pref['contact_emailcopy']) || !$pref['contact_emailcopy'])
 		{
-			return;
+			return '';
 		}
 		return "<input type='checkbox' name='email_copy'  value='1'  />";
 	}
@@ -41,7 +41,7 @@ class contact_shortcodes extends e_shortcode
 		
 		if(varset($pref['sitecontacts']) == e_UC_ADMIN)
 		{
-			$query = "user_admin =1";
+			$query = "user_admin =1 AND user_ban = 0";
 		}
 		elseif(varset($pref['sitecontacts']) == e_UC_MAINADMIN)
 		{
@@ -49,23 +49,23 @@ class contact_shortcodes extends e_shortcode
 		}
 		else
 		{
-			$query = "FIND_IN_SET(".$pref['sitecontacts'].",user_class) ";
+			$query = "FIND_IN_SET(".$pref['sitecontacts'].",user_class) AND user_ban = 0 ";
 		}
 		
-		$text = "<select name='contact_person' class='tbox contact_person'>\n";
+		$text = "<select name='contact_person' class='tbox contact_person form-control'>\n";
 		
-		$count = $sql -> db_Select("user", "user_id,user_name", $query . " ORDER BY user_name");
+		$count = $sql ->select("user", "user_id,user_name", $query . " ORDER BY user_name");
 		
 		if($count > 1)
 		{
-		    while($row = $sql-> db_Fetch())
+		    while($row = $sql->fetch())
 			{
 		    	$text .= "<option value='".$row['user_id']."'>".$row['user_name']."</option>\n";
 		    }
 		}
 		else
 		{
-			return;
+			return '';
 		}
 		
 		$text .= "</select>";
@@ -90,7 +90,9 @@ class contact_shortcodes extends e_shortcode
 	
 	function sc_contact_name($parm='')
 	{
-		return "<input type='text' style='max-width:99%'  id='contactName' title='Your full name' name='author_name' required='required' size='30' class='tbox' value=\"".varset($_POST['author_name'])."\" />";	
+		$userName = deftrue('USERNAME');
+
+		return "<input type='text'   id='contactName' title='Your full name' name='author_name' required='required' size='30' class='tbox form-control' value=\"".varset($_POST['author_name'],$userName)."\" />";
 		
 	}
 
@@ -98,14 +100,17 @@ class contact_shortcodes extends e_shortcode
 
 	function sc_contact_email($parm='')
 	{
-		return "<input type='email' style='max-width:99%'  id='contactEmail' title='a valid email address' name='email_send' required='required' size='30' class='tbox' value='".(vartrue($_POST['email_send']) ? $_POST['email_send'] : USEREMAIL)."' />";
+		$userEmail = deftrue('USEREMAIL');
+		$disabled = (!empty($userEmail)) ? 'readonly' : ''; // don't allow change from a verified email address.
+
+		return "<input type='email'   ".$disabled." id='contactEmail' title='a valid email address' name='email_send' required='required' size='30' class='tbox form-control' value='".(vartrue($_POST['email_send']) ? $_POST['email_send'] : USEREMAIL)."' />";
 	}
 	
 	
 	
 	function sc_contact_subject($parm='')
 	{
-		return "<input type='text' style='max-width:99%' title='the subject of your enquiry' name='subject' required='required' size='30' class='tbox' value=\"".varset($_POST['subject'])."\" />";			
+		return "<input type='text' title='the subject of your enquiry' name='subject' required='required' size='30' class='tbox form-control' value=\"".varset($_POST['subject'])."\" />";
 	}
 	
 	
@@ -120,7 +125,7 @@ class contact_shortcodes extends e_shortcode
 			$size = 'input-xxlarge';	
 		}
 		
-		return "<textarea cols='{$cols}' style='max-width:99%'  id='contactBody' rows='{$rows}' name='body' required='required' class='tbox {$size}'>".stripslashes(varset($_POST['body']))."</textarea>";	
+		return "<textarea cols='{$cols}'  id='contactBody' rows='{$rows}' name='body' required='required' class='tbox {$size} form-control'>".stripslashes(varset($_POST['body']))."</textarea>";
 	}
 	
 	

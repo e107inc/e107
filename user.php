@@ -23,22 +23,30 @@ $user['user_id'] = USERID;
 
 if(e_AJAX_REQUEST)
 {
-	if(vartrue($_GET['q']))
+	if(vartrue($_POST['q']))
 	{
-		$q = filter_var($_GET['q'], FILTER_SANITIZE_STRING);
-		if($sql->select("user", "user_id,user_name", "user_name LIKE '". $q."%' ORDER BY user_name LIMIT 15"))
+		$q = filter_var($_POST['q'], FILTER_SANITIZE_STRING);
+		$l = vartrue($_POST['l']) ? intval($_POST['l']) : 10;
+
+		$db = e107::getDb();
+
+		if($db->select("user", "user_id,user_name", "user_name LIKE '". $q."%' ORDER BY user_name LIMIT " . $l))
 		{
-			while($row = $sql->db_Fetch())
+			$data = array();
+			while($row = $db->fetch())
 			{
-				$id = $row['user_id'];
-				$data[$id] = $row['user_name'];
+				$data[] = array(
+					'value' => $row['user_id'],
+					'label' => $row['user_name'],
+				);
 			}
-			
+
 			if(count($data))
 			{
-				echo json_encode($data);	
+				header('Content-type: application/json');
+				echo json_encode($data);
 			}
-		}		
+		}
 	}
 	exit;
 }
@@ -68,10 +76,27 @@ if (isset($_POST['delp']))
 $qs = explode(".", e_QUERY);
 $self_page =($qs[0] == 'id' && intval($qs[1]) == USERID);
 
-include_once(e107::coreTemplatePath('user')); //correct way to load a core template.
+
+$USER_TEMPLATE = e107::getCoreTemplate('user');
+e107::scStyle($sc_style);
+
+if(empty($USER_TEMPLATE)) // BC Fix for loading old templates. 
+{
+	e107::getMessage()->addDebug( "Using v1.x user template");
+	include_once(e107::coreTemplatePath('user')); //correct way to load a core template.	
+}
+else
+{
+	$USER_FULL_TEMPLATE         = $USER_TEMPLATE['view'];
+	$USER_SHORT_TEMPLATE_START  = $USER_TEMPLATE['list']['start'] ;
+	$USER_SHORT_TEMPLATE        = $USER_TEMPLATE['list']['item'] ;
+	$USER_SHORT_TEMPLATE_END    = $USER_TEMPLATE['list']['end'];
+}
+
+$TEMPLATE = str_replace('{USER_EMBED_USERPROFILE}','{USER_ADDONS}', $TEMPLATE); // BC Fix
 
 $user_shortcodes = e107::getScBatch('user');
-
+$user_shortcodes->wrapper('user/view');
 
 
 
@@ -150,8 +175,10 @@ if (isset($id))
 
 	$loop_uid = $id;
 
-	$ret = $e_event->trigger("showuser", $id);
-	if ($ret!='')
+	$ret = e107::getEvent()->trigger("showuser", $id);
+	$ret2 = e107::getEvent()->trigger('user_profile_display',$id);
+
+	if (!empty($ret) || !empty($ret2))
 	{
 		$text = "<div style='text-align:center'>".$ret."</div>";
 		$ns->tablerender(LAN_USER_48, $text);
@@ -208,14 +235,16 @@ else
 $ns->tablerender(LAN_USER_52, $text);
 
 $parms = $users_total.",".$records.",".$from.",".e_SELF.'?[FROM].'.$records.".".$order;
-echo "<div class='nextprev'>&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
+echo "<div class='nextprev form-inline'>&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
 
 
 function renderuser($uid, $mode = "verbose")
 {
-	global $sql, $pref, $tp, $sc_style, $user_shortcodes;
-	global $EXTENDED_START, $EXTENDED_TABLE, $EXTENDED_END, $USER_SHORT_TEMPLATE, $USER_FULL_TEMPLATE;
+	global $pref, $sc_style, $user_shortcodes;
+	global $EXTENDED_START, $EXTENDED_TABLE, $EXTENDED_END, $USER_SHORT_TEMPLATE, $USER_FULL_TEMPLATE, $USER_TEMPLATE;
 	global $user;
+
+	$tp = e107::getParser();
 
 	if(is_array($uid))
 	{
@@ -223,7 +252,7 @@ function renderuser($uid, $mode = "verbose")
 	}
 	else
 	{
-		if(!$user = get_user_data($uid))
+		if(!$user = e107::user($uid))
 		{
 			return FALSE;
 		}
@@ -233,7 +262,7 @@ function renderuser($uid, $mode = "verbose")
 
 	if($mode == 'verbose')
 	{
-		return $tp->parseTemplate($USER_FULL_TEMPLATE, TRUE, $user_shortcodes);
+		return $tp->parseTemplate( $USER_FULL_TEMPLATE, TRUE, $user_shortcodes);
 	}
 	else
 	{

@@ -17,15 +17,15 @@ ul.gallery-cat > li > div > h3 		{ text-align: center }
 
 /* SLIDESHOW */
 
-#gallery-slideshow-wrapper 			{ display:block; -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; width: 660px;  height: 146px;  overflow: hidden; background: #000000; margin-left:auto;margin-right:auto }
+#gallery-slideshow-wrapper 			{ display:block; -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; width: 664px;  height: 146px;  overflow: hidden; background: #000000; margin-left:auto;margin-right:auto }
 
 #gallery-slideshow-content 			{ width: 3500px; }
 
-#gallery-slideshow-content .slide 	{ float: left; width: 660px; padding:12px; height: 146px; }
+#gallery-slideshow-content .slide 	{ float: left; width: 679px; padding:12px; height: 146px; white-space:nowrap }
 
-.gallery-slideshow-controls			{ clear:both; width: 660px; margin-left:auto; margin-right:auto; padding-bottom:10px; }
+.gallery-slideshow-controls			{ clear:both; width: 664px; margin-left:auto; margin-right:auto; padding-top:5px; padding-bottom:10px; }
 
-.gallery-slide-item					{ margin-right:8px;   }
+.gallery-slide-item					{ margin-right:8px; display: inline-block;  }
 
 .gallery-slideshow-thumb			{ -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px;  }
 

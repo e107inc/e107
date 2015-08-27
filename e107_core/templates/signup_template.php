@@ -169,6 +169,19 @@ $sc_style['SIGNUP_EMAIL_CONFIRM']['post'] = "
 $sc_style['SIGNUP_XUP']['pre'] = "<div class='center' style='display:block;padding:10px'>";
 $sc_style['SIGNUP_XUP']['post'] = "<h2 class='signup-divider'><span>OR</span></h2></div>";
 
+$sc_style['SIGNUP_PASSWORD1']['pre'] = "<tr>
+				<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_83."<span class='required'> *</span></td>
+				<td class='forumheader3' style='width:70%'>";
+$sc_style['SIGNUP_PASSWORD1']['post'] = "</td>
+			</tr>";
+
+$sc_style['SIGNUP_PASSWORD2']['pre'] = "<tr>
+			<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_84."<span class='required'> *</span></td>
+			<td class='forumheader3' style='width:70%'>";
+$sc_style['SIGNUP_PASSWORD2']['post'] = "</td>
+		</tr>";
+
+
 if(!defined($COPPA_TEMPLATE))
 {
 	$COPPA_TEMPLATE = 
@@ -196,7 +209,7 @@ if(!defined($COPPA_FAIL))
 if(!defined($SIGNUP_BEGIN))
 {
 	$SIGNUP_BEGIN = "
-	{SIGNUP_FORM_OPEN} {SIGNUP_SIGNUP_TEXT}";
+	{SIGNUP_FORM_OPEN} {SIGNUP_ADMINOPTIONS} {SIGNUP_SIGNUP_TEXT}";
 }
 
 if(!defined($SIGNUP_BODY))
@@ -216,18 +229,8 @@ if(!defined($SIGNUP_BODY))
 				</td>
 			</tr>
 			{SIGNUP_EMAIL_CONFIRM}
-			<tr>
-				<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_83."<span class='required'> *</span></td>
-				<td class='forumheader3' style='width:70%'>
-					{SIGNUP_PASSWORD1}
-				</td>
-			</tr>
-			<tr>
-				<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_84."<span class='required'> *</span></td>
-				<td class='forumheader3' style='width:70%'>
-					{SIGNUP_PASSWORD2}
-				</td>
-			</tr>
+			{SIGNUP_PASSWORD1}
+			{SIGNUP_PASSWORD2}
 			{SIGNUP_HIDE_EMAIL}
 			{SIGNUP_USERCLASS_SUBSCRIBE}
 			{SIGNUP_EXTENDED_USER_FIELDS}

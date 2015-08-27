@@ -44,6 +44,7 @@ $NEWS_TEMPLATE['list']['item']	= '
                    </p>
  				</div>
 		</div>
+		<hr class="visible-xs" />
 
 ';
 
@@ -82,22 +83,23 @@ $NEWS_TEMPLATE['default']['item'] = '
 $NEWS_TEMPLATE['default']['item'] = '
 		{SETIMAGE: w=900&h=300}
 		<h2>{NEWSTITLELINK}</h2>
-          <p class="lead">by {NEWSAUTHOR}</p>
+          <p class="lead">{GLYPH=user} &nbsp;{NEWSAUTHOR}</p>
           <hr>
            <div class="row">
         	<div class="col-md-4">{GLYPH=time} {NEWSDATE=short} </div>
         	<div class="col-md-8 text-right options">{GLYPH=tags} &nbsp;{NEWSTAGS} &nbsp; {GLYPH=folder-open} &nbsp;{NEWSCATEGORY} </div>
         	</div>
           <hr>
-          {NEWSIMAGE=placeholder}
+          {NEWSIMAGE: item=1}
+
          
           <hr>
           <p class="lead">{NEWSSUMMARY}</p>
-          {NEWSVIDEO}
+          {NEWSVIDEO: item=1}
           {NEWSBODY}
 		  <hr>
 			<div class="options">
-			<div class="btn-group">{NEWSCOMMENTLINK: glyph=comments&class=btn btn-default} &nbsp; {EMAILICON: class=btn btn-default} &nbsp; {PRINTICON: class=btn btn-default} &nbsp; {PDFICON} &nbsp; {ADMINOPTIONS: class=btn btn-default}</div> 
+			<div class="btn-group">{NEWSCOMMENTLINK: glyph=comments&class=btn btn-default}{PRINTICON: class=btn btn-default}{PDFICON}{SOCIALSHARE}{ADMINOPTIONS: class=btn btn-default}</div>
 			</div>
 
 ';
@@ -110,34 +112,36 @@ $NEWS_TEMPLATE['default']['item'] = '
 
 // As displayed by news.php?extend.1
 
+
+$NEWS_WRAPPER['view']['item']['NEWSIMAGE: item=1'] = '<span class="news-images-main pull-left col-xs-12 col-sm-6 col-md-6">{---}</span>';
+
 $NEWS_TEMPLATE['view']['item'] = '
-{SETIMAGE: w=900&h=300}
+{SETIMAGE: w=900&h=600}
 	<div class="view-item">
-		<h2>{NEWSTITLELINK}</h2>
-		<p class="lead">by {NEWSAUTHOR}</p>
-         <hr>
+		<h2 class="news-title">{NEWSTITLELINK}</h2>
+		  <p class="lead">{NEWSSUMMARY}</p>
+        <hr class="news-heading-sep">
          	<div class="row">
-        		<div class="col-md-4">{GLYPH=time} {NEWSDATE=short} </div>
-        		<div class="col-md-8 text-right options">{GLYPH=tags} &nbsp;{NEWSTAGS} &nbsp; {GLYPH=folder-open} &nbsp;{NEWSCATEGORY} </div>
+        		<div class="col-md-6"><small>{GLYPH=user} &nbsp;{NEWSAUTHOR} &nbsp; {GLYPH=time} &nbsp;{NEWSDATE=short} </small></div>
+        		<div class="col-md-6 text-right options"><small>{GLYPH=tags} &nbsp;{NEWSTAGS} &nbsp; {GLYPH=folder-open} &nbsp;{NEWSCATEGORY} </small></div>
         	</div>
         <hr>
-        {NEWSIMAGE: item=1}
-		{NEWSVIDEO: item=1} 
-         <hr>
-        <p class="lead">{NEWSSUMMARY}</p>  
-        <hr>
+
 
 		<div class="body">
-		 	
-		 	{NEWSVIDEO: item=2} 
-		 	{NEWSVIDEO: item=3}
-			
-			
+			{NEWSIMAGE: item=1}
 			{NEWSBODY=body}
+			<div class="news-videos-1">
+			{NEWSVIDEO: item=1}
+		 	{NEWSVIDEO: item=2}
+		 	{NEWSVIDEO: item=3}
+			</div>
+
+
 			<br />
 			{SETIMAGE: w=400&h=400}
 			
-			<div class="row news-images-1">
+			<div class="row  news-images-1">
         		<div class="col-md-6">{NEWSIMAGE: item=2}</div>
         		<div class="col-md-6">{NEWSIMAGE: item=3}</div>
         	</div>
@@ -158,7 +162,7 @@ $NEWS_TEMPLATE['view']['item'] = '
 		<hr>
 		
 		<div class="options ">
-			<div class="btn-group">{NEWSCOMMENTLINK: glyph=comments&class=btn btn-default} &nbsp; {PRINTICON: class=btn btn-default} {PDFICON} {ADMINOPTIONS: class=btn btn-default} {SOCIALSHARE: dropdown=1}</div> 
+			<div class="btn-group">{NEWSCOMMENTLINK: glyph=comments&class=btn btn-default}{PRINTICON: class=btn btn-default}{ADMINOPTIONS: class=btn btn-default}{SOCIALSHARE}</div>
 		</div>
 			
 	</div>

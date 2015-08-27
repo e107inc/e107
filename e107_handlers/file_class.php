@@ -137,11 +137,12 @@ class e_file
 		$this->fileFilter = $filter;	
 		return $this;	
 	}
-	
+
 	/**
 	 * Clean and rename file name
 	 * @param $f array as returned by get_files();
-	 * @param $rename boolean  - set to true to rename file. 
+	 * @param $rename boolean  - set to true to rename file.
+	 * @return array
 	 */
 	public function cleanFileName($f,$rename=false)
 	{
@@ -264,8 +265,13 @@ class e_file
 								{
 									$finfo = $this->get_file_info($path."/".$file, ('file' != $this->finfo)); // -> 'all' & 'image'
 								}
-								$finfo['path'] = $path."/";  // important: leave this slash here and update other file instead.
-								$finfo['fname'] = $file;
+								else 
+								{
+									$finfo['path'] = $path.'/';  // important: leave this slash here and update other file instead.
+									$finfo['fname'] = $file;
+								}
+							//	$finfo['path'] = $path.'/';  // important: leave this slash here and update other file instead.
+							//	$finfo['fname'] = $file;
 
 								$ret[] = $finfo;
 							break;
@@ -277,13 +283,32 @@ class e_file
 		return $ret;
 	}
 
+
+	function getFileExtension($mimeType)
+	{
+		$extensions = array(
+			'image/jpeg'=>'.jpg',
+			'image/png'	=> '.png',
+			'image/gif'	=> '.gif'
+		);	
+		
+		if(isset($extensions[$mimeType]))
+		{
+			return $extensions[$mimeType];		
+		}
+		
+	}
+
+
+
 	/**
 	 * Collect file information
 	 * @param string $path_to_file
 	 * @param boolean $imgcheck
+	 * @param boolean $auto_fix_ext
 	 * @return array
 	 */
-	function get_file_info($path_to_file, $imgcheck = true)
+	function get_file_info($path_to_file, $imgcheck = true, $auto_fix_ext = true)
 	{
 		$finfo = array();
 		
@@ -291,16 +316,59 @@ class e_file
 		{
 			return false; 	
 		}
+		
+		$finfo['pathinfo'] = pathinfo($path_to_file);
+		
+		if(class_exists('finfo')) // Best Mime detection method. 
+		{
+			$fin = new finfo(FILEINFO_MIME);
+			list($mime, $other) = explode(";", $fin->file($path_to_file));
+			
+			if(!empty($mime))
+			{
+				$finfo['mime'] = $mime;	
+			}
+			
+		}
+
+        if($auto_fix_ext)
+        {
+            // Auto-Fix Files without an extensions using known mime-type.
+            if(empty($finfo['pathinfo']['extension']) && !is_dir($path_to_file) && !empty($finfo['mime']))
+            {
+                if($ext = $this->getFileExtension($finfo['mime']))
+                {
+                    $finfo['pathinfo']['extension'] = $ext;
+
+
+                    $newFile = $path_to_file . $ext;
+                    if(!file_exists($newFile))
+                    {
+                        if(rename($path_to_file,$newFile)===true)
+                        {
+                            $finfo['pathinfo'] = pathinfo($newFile);
+                            $path_to_file = $newFile;
+                        }
+                    }
+                }
+            }
+        }
+
 
 		if($imgcheck && ($tmp = getimagesize($path_to_file)))
 		{
 			$finfo['img-width'] = $tmp[0];
 			$finfo['img-height'] = $tmp[1];
-			$finfo['mime'] = $tmp['mime'];
+			
+			if(empty($finfo['mime']))
+			{
+				$finfo['mime'] = $tmp['mime'];	
+			}
+			
 		}
-
-		$tmp = stat($path_to_file);
 		
+		$tmp = stat($path_to_file);
+
 		if($tmp)
 		{
 			
@@ -309,9 +377,19 @@ class e_file
 		}
 
 		// associative array elements: dirname, basename, extension, filename
-		$finfo['pathinfo'] = pathinfo($path_to_file);
+		
 
-		$finfo['mime'] = vartrue($finfo['mime'],'application/'.$finfo['pathinfo']['extension']);
+		$finfo['fullpath'] 	= $path_to_file;
+		$finfo['fname'] 	= basename($path_to_file);
+		$finfo['path'] 		= dirname($path_to_file).'/';
+
+		if(empty($finfo['mime'])) // last resort. 
+		{
+			$finfo['mime'] = 'application/'.$finfo['pathinfo']['extension'];
+		}
+	
+		
+		
 		return $finfo;
 	}
 
@@ -748,6 +826,7 @@ class e_file
 		$DOWNLOADS_DIRECTORY 	= ($DOWNLOADS_DIR[0] == DIRECTORY_SEPARATOR) ? $DOWNLOADS_DIR : e_BASE.$DOWNLOADS_DIR; // support for full path eg. /home/account/folder. 
 		$FILES_DIRECTORY 		= e_BASE.e107::getFolder('FILES');
 		$MEDIA_DIRECTORY		= realpath(e_MEDIA); //  could be image, file or other type. 
+		$SYSTEM_DIRECTORY		= realpath(e_SYSTEM); // downloading of logs etc. via browser if required. (Admin-only)
 		
 		$file = $tp->replaceConstants($file);
 		
@@ -765,14 +844,20 @@ class e_file
 		$path_downloads = realpath($DOWNLOADS_DIRECTORY);
 		$path_public = realpath($FILES_DIRECTORY."public/");
 		
+		if(strstr($path, $SYSTEM_DIRECTORY) && !ADMIN)
+		{
+			header("location: {$e107->base_path}");
+			exit();
+		}
 		
-		
-		if(!strstr($path, $path_downloads) && !strstr($path,$path_public) && !strstr($path, $MEDIA_DIRECTORY)) 
+		if(!strstr($path, $path_downloads) && !strstr($path,$path_public) && !strstr($path, $MEDIA_DIRECTORY) && !strstr($path, $SYSTEM_DIRECTORY)) 
 		{
 	        if(E107_DEBUG_LEVEL > 0 && ADMIN)
 			{
 				echo "Failed to Download <b>".$file."</b><br />";
-				echo "The file-path <b>".$path."<b> didn't match with either <b>{$path_downloads}</b> or <b>{$path_public}</b><br />";
+				echo "The file-path <b>".$path."<b> didn't match with either of 
+				<ul><li><b>{$path_downloads}</b></li>
+				<li><b>{$path_public}</b></li></ul><br />";
 				echo "Downloads Path: ".$path_downloads. " (".$DOWNLOADS_DIRECTORY.")";
 				exit();
 	        }
@@ -860,11 +945,14 @@ class e_file
 			if($d['folder'] == 1 && $target == $test)  // 
 			{
 			//	$text .= "\\n test = ".$test;
-				$text .= "\\n test=".$test;
-				$text .= "\\n target=".$target;
+				$text = "getRootDirectory: ".$d['stored_filename'];
+				$text .= "<br />test=".$test; 
+				$text .= "<br />target=".$target;
+				
 				if(E107_DEBUG_LEVEL > 0)
 				{
-					echo "<script>alert('".$text."')</script>";
+					e107::getMessage()->addDebug($text); 
+				// 	echo "<script>alert('".$text."')</script>";
 				}
 				return $target; 
 		
@@ -882,7 +970,7 @@ class e_file
 	 * @param string $newFile
 
 	 */	
-	public function zip($filePaths=null, $newFile='')
+	public function zip($filePaths=null, $newFile='', $options=array())
 	{
 		if(empty($newFile))
 		{
@@ -896,8 +984,10 @@ class e_file
 			
 		require_once(e_HANDLER.'pclzip.lib.php');	
 		$archive = new PclZip($newFile);
-		
-		if ($archive->create($filePaths, PCLZIP_OPT_REMOVE_PATH,e_BASE) == 0)
+
+		$removePath = (!empty($options['remove_path'])) ? $options['remove_path'] : e_BASE;
+
+		if ($archive->create($filePaths, PCLZIP_OPT_REMOVE_PATH, $removePath) == 0)
 		{		
 			$error = $archive->errorInfo(true);
 			e107::getAdminLog()->addError($error)->save('FILE',E_LOG_NOTICE);
@@ -910,5 +1000,126 @@ class e_file
 	}		
 
 	
+	/**
+	 * Recursive Directory removal . 
+	 */
+	public function removeDir($dir) 
+	{ 
+	    if (is_dir($dir)) 
+	    { 
+	        $objects = scandir($dir); 
+	        foreach ($objects as $object) 
+	        { 
+	            if ($object != "." && $object != "..") 
+	            { 
+	                if (filetype($dir."/".$object) == "dir")
+					{
+						 $this->removeDir($dir."/".$object);
+					}
+					else
+					{
+						 @unlink($dir."/".$object); 
+					}
+	            } 
+	        }
+			
+	        reset($objects); 
+	        @rmdir($dir); 
+	    }
+	}
+
+	
+	/**
+	 * File-class wrapper for upload handler. (Preferred for v2.x) 
+	 * Process files uploaded in a form post. ie. $_FILES. 
+	 */
+	public function getUploaded($uploaddir, $fileinfo = false, $options = null)
+	{
+		require_once(e_HANDLER."upload_handler.php");
+		return process_uploaded_files($uploaddir, $fileinfo, $options);	
+
+	}
+	
+	
+	/**
+	 * Unzip Plugin or Theme zip file and move to plugin or theme folder. 
+	 * @param string $localfile - filename located in e_TEMP
+	 * @param string $type - addon type, either 'plugin' or 'theme', (possibly 'language' in future). 
+	 * @return string unzipped folder name on success or false. 
+	 */
+	public function unzipArchive($localfile, $type)
+	{
+		$mes = e107::getMessage();
+		
+		chmod(e_TEMP.$localfile, 0755);
+		require_once(e_HANDLER."pclzip.lib.php");
+		
+		$archive 	= new PclZip(e_TEMP.$localfile);
+		$unarc 		= ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_TEMP, PCLZIP_OPT_SET_CHMOD, 0755)); // Store in TEMP first. 
+		$dir 		= $this->getRootFolder($unarc);	
+		$destpath 	= ($type == 'theme') ? e_THEME : e_PLUGIN;
+		$typeDiz 	= ucfirst($type);
+		
+		@copy(e_TEMP.$localfile, e_BACKUP.$dir.".zip"); // Make a Backup in the system folder. 
+		
+		if($dir && is_dir($destpath.$dir))
+		{
+			$mes->addError("(".ucfirst($type).") Already Downloaded - ".basename($destpath).'/'.$dir); 
+			 
+			if(file_exists(e_TEMP.$localfile))
+			{	
+				@unlink(e_TEMP.$localfile);
+			}
+			
+			$this->removeDir(e_TEMP.$dir);
+			return false;
+		}
+	
+		if($dir == '')
+		{
+			$mes->addError("Couldn't detect the root folder in the zip."); //  flush();
+			@unlink(e_TEMP.$localfile);
+			return false;		
+		}
+	
+		if(is_dir(e_TEMP.$dir)) 
+		{
+			if(!rename(e_TEMP.$dir,$destpath.$dir))
+			{
+				$mes->addError("Couldn't Move ".e_TEMP.$dir." to ".$destpath.$dir." Folder"); //  flush(); usleep(50000);
+				@unlink(e_TEMP.$localfile);
+				return false;
+			}	
+			
+
+			
+		//	$dir 		= basename($unarc[0]['filename']);
+		//	$plugPath	= preg_replace("/[^a-z0-9-\._]/", "-", strtolower($dir));	
+			//$status = "Done"; // ADMIN_TRUE_ICON;		
+			@unlink(e_TEMP.$localfile);	
+			
+			return $dir;
+		}
+		
+		return false; 
+	}
+	
+	
+	/**
+	 *	Get an array of permitted filetypes according to a set hierarchy.
+	 *	If a specific file name given, that's used. Otherwise the default hierarchy is used
+	 *
+	 *	@param string $file_mask - comma-separated list of allowed file types
+	 *	@param string $filename - optional override file name - defaults ignored
+	 *
+	 *	@return array of filetypes
+	 */
+	function getFiletypeLimits($file_mask = false, $filename = '') // Wrapper only for now. 
+	{
+		require_once(e_HANDLER."upload_handler.php");
+		$limits =  get_filetypes($file_mask, $filename);
+		ksort($limits);
+		return $limits; 
+	}
 
 }

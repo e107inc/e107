@@ -110,6 +110,6 @@ if ($errorHeader) header($errorHeader);
 
 require_once(HEADERF);
 
-$ns->tablerender(PAGE_NAME, $errorText);
+e107::getRender()->tablerender(PAGE_NAME, $errorText);
 require_once(FOOTERF);
 ?>

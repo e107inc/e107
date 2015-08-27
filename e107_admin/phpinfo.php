@@ -29,12 +29,13 @@ $phpinfo = preg_replace("#^.*<body>#is", "", $phpinfo);
 $phpinfo = str_replace("font","span",$phpinfo);
 $phpinfo = str_replace("</body></html>","",$phpinfo);
 $phpinfo = str_replace('border="0"','',$phpinfo);
-$phpinfo = str_replace('<table ','<table class="table table-striped adminlist" ',$phpinfo);
+//$phpinfo = str_replace('<table ','<table class="table table-striped adminlist" ',$phpinfo);
 $phpinfo = str_replace('name=','id=',$phpinfo);
-$phpinfo = str_replace('class="e"','class="forumheader2"',$phpinfo);
-$phpinfo = str_replace('class="v"','class="forumheader3"',$phpinfo);
-$phpinfo = str_replace('class="v"','class="forumheader3"',$phpinfo);
+$phpinfo = str_replace('class="e"','class="forumheader2 text-left"',$phpinfo);
+$phpinfo = str_replace('class="v"','class="forumheader3 text-left"',$phpinfo);
+$phpinfo = str_replace('class="v"','class="forumheader3 text-left"',$phpinfo);
 $phpinfo = str_replace('class="h"','class="fcaption"',$phpinfo);
+$phpinfo = str_replace('<table  cellpadding="3" width="600">', '<table class="table table-striped adminlist"><colgroup><col style="width:30%" /><col style="width:auto" /></colgroup>', $phpinfo);
 
 $mes = e107::getMessage();
 
@@ -50,8 +51,8 @@ $security_risks = array(
     {
         if(ini_get($risk))
         {
-            $srch = '<tr><td class="forumheader2">'.$risk.'</td><td class="forumheader3">';
-            $repl = '<tr><td class="forumheader2">'.$risk.'</td><td  title="'.$tp->toAttribute($diz).'" class="forumheader3" style="background-color:red">';
+            $srch = '<tr><td class="forumheader2 text-left">'.$risk.'</td><td class="forumheader3">';
+            $repl = '<tr><td class="forumheader2 text-left">'.$risk.'</td><td  title="'.$tp->toAttribute($diz).'" class="forumheader3 alert alert-danger">';
             $phpinfo = str_replace($srch,$repl,$phpinfo);   
             $mes->addWarning("<b>".$risk."</b>: ".$diz);
         }   

@@ -1,11 +1,10 @@
 <?php
 // $Id$
-function user_avatar_shortcode($parm=null)
+function user_avatar_shortcode($parm=null) //TODO new function $tp->toAvatar(); so full arrays can be passed to it. 
 {
 	global $loop_uid;
 	
-	
-	
+		
 	$tp 		= e107::getParser();
 	$width 		= $tp->thumbWidth;
 	$height 	= ($tp->thumbHeight !== 0) ? $tp->thumbHeight : "";
@@ -23,11 +22,11 @@ function user_avatar_shortcode($parm=null)
 		}
 		else
 		{
-			$row = get_user_data(intval($parm));
+			$row = e107::user($parm);
 			$image=$row['user_image'];
 		}
 	}
-	elseif(!is_null($parm))
+	elseif(!empty($parm))
 	{
 		$image=$parm;
 	}
@@ -56,6 +55,7 @@ function user_avatar_shortcode($parm=null)
 		}
 		elseif(substr($image,0,8) == "-upload-")
 		{
+			
 			$image = substr($image,8); // strip the -upload- from the beginning. 
 			if(file_exists(e_AVATAR_UPLOAD.$image)) // Local Default Image
 			{
@@ -63,6 +63,7 @@ function user_avatar_shortcode($parm=null)
 			}	
 			else 
 			{
+				
 				$img = $genericImg;
 			}	
 		}
@@ -72,6 +73,7 @@ function user_avatar_shortcode($parm=null)
 		}
 		else // Image Missing. 
 		{
+			
 			$img = $genericImg;
 		}
 	}

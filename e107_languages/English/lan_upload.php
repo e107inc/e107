@@ -11,25 +11,25 @@
 */
 define("PAGE_NAME", "Upload");
 
-define('LAN_UL_001','Invalid email address');
-define('LAN_UL_002', 'You do not have the correct permissions to upload files to this server.');	// LAN_403
+define("LAN_UL_001","Invalid email address");
+define("LAN_UL_002", "You do not have the correct permissions to upload files to this server.");	// LAN_403
 
-define('LAN_UL_020', 'Error');
-define('LAN_UL_021', 'Upload Failure');
-define('LAN_UL_022', 'May vary by file type');
-define('LAN_UL_023', 'Type');
-define('LAN_UL_024', 'Max Size');
-define('LAN_UL_025', 'Uploads not allowed	');
-define('LAN_UL_026', '');
-define('LAN_UL_027', '');
+define("LAN_UL_020", "Error");
+define("LAN_UL_021", "Upload Failure");
+define("LAN_UL_022", "May vary by file type");
+define("LAN_UL_023", "Type");
+define("LAN_UL_024", "Max Size");
+define("LAN_UL_025", "Uploads not allowed	");
+define("LAN_UL_026", "");
+define("LAN_UL_027", "");
 
-define('LAN_UL_032', 'You must select a category');
-define('LAN_UL_033', 'You must enter a valid email address');
-define('LAN_UL_034', 'You must specify the file name');
-define('LAN_UL_035', 'You must enter a description');
-define('LAN_UL_036', 'You must specify the file to upload');
-define('LAN_UL_037', 'You must specify a category');
-define('LAN_UL_038', '');
+define("LAN_UL_032", "You must select a category");
+define("LAN_UL_033", "You must enter a valid email address");
+define("LAN_UL_034", "You must specify the file name");
+define("LAN_UL_035", "You must enter a description");
+define("LAN_UL_036", "You must specify the file to upload");
+define("LAN_UL_037", "You must specify a category");
+define("LAN_UL_038", "");
 
 define("LAN_61", "Your Name: ");
 define("LAN_112", "Email Address: ");
@@ -43,7 +43,7 @@ define("LAN_408", "Underlined");
 define("LAN_409", "Name of file");
 define("LAN_410", "Version");
 define("LAN_411", "File");
-define("LAN_412", "Screenshot");
+//define("LAN_412", "Screenshot");//LAN_SCREENSHOT
 define("LAN_413", "Description");
 define("LAN_414", "Working demo");
 define("LAN_415", "enter URL to site where demo can be viewed");

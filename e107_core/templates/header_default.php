@@ -23,14 +23,14 @@ $sql = e107::getDb();
 
 $sql->db_Mark_Time('(Header Top)');
 
-e107::css('core', 	'bootstrap-datetimepicker/css/datetimepicker.css', 'jquery');
-e107::js('core', 	'bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js', 'jquery', 2);	
+
 
 e107::js('core',	'bootstrap/js/bootstrap-tooltip.js','jquery');
 e107::css('core',	'bootstrap/css/tooltip.css','jquery');
 
 e107::js('core',	'bootstrap-notify/js/bootstrap-notify.js','jquery');
 e107::css('core',	'bootstrap-notify/css/bootstrap-notify.css','jquery');
+
 
 // ------------------
 
@@ -141,21 +141,27 @@ if(vartrue($pref['meta_author'][e_LANGUAGE])) e107::meta('author',$pref['meta_au
 if($pref['sitebutton']) e107::meta('og:image',$tp->replaceConstants($pref['sitelogo'],'full'));
 if(defined("VIEWPORT")) e107::meta('viewport',VIEWPORT); //BC ONLY 
 
-echo e107::getUrl()->response()->renderMeta()."\n";
 
+// Load Plugin Header Files, allow them to load CSS/JSS/Meta via JS Manager early enouhg
+// NOTE: e_header.php should not output content, it should only register stuff!
+// e_meta.php is more appropriate for outputting header content.
+$e_headers = e107::pref('core','e_header_list');
+if ($e_headers && is_array($e_headers))
+{
+	foreach($e_headers as $val)
+	{
+		// no checks fore existing file - performance
+		e107_include(e_PLUGIN.$val."/e_header.php");
+	}
+}
+unset($e_headers);
+
+echo e107::getUrl()->response()->renderMeta()."\n"; // render all the e107::meta() entries.
 
 echo "<title>".(defined('e_PAGETITLE') ? e_PAGETITLE.' - ' : (defined('PAGE_NAME') ? PAGE_NAME.' - ' : "")).SITENAME."</title>\n\n";
 
 
-// Wysiwyg JS support on or off.
-if (varset($pref['wysiwyg'],FALSE))
-{
-	define("e_WYSIWYG",TRUE);
-}
-else
-{
-	define("e_WYSIWYG",FALSE);
-}
+
 
 
 
@@ -170,24 +176,13 @@ $e_pref = e107::getConfig('core');
 
 // Register Core CSS first, TODO - convert $no_core_css to constant, awaiting for path changes
 // NOTE: PREVIEWTHEME check commented - It shouldn't break anything as it's overridden by theme CSS now
-if (/*!defined("PREVIEWTHEME") && */!isset($no_core_css) || !$no_core_css) 
+if (/*!defined("PREVIEWTHEME") && */! (isset($no_core_css) && $no_core_css !==true) && defset('CORE_CSS') !== false) 
 {
 	//echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
 	$e_js->otherCSS('{e_WEB_CSS}e107.css');
 }
 
-// Load Plugin Header Files, allow them to load CSS/JSS via JS Manager early enouhg
-// NOTE: e_header.php should not output content, it should only register stuff! e_meta.php is more appropriate for outputting header content.
-$e_headers = $e_pref->get('e_header_list');
-if ($e_headers && is_array($e_headers))
-{
-	foreach($e_headers as $val)
-	{
-		// no checks fore existing file - performance
-		e107_include(e_PLUGIN.$val."/e_header.php");
-	}
-}
-unset($e_headers);
+
 
 // re-initalize in case globals are destroyed from $e_headers includes
 $e_js = e107::getJs();
@@ -318,7 +313,15 @@ else
 
 //TODO Additional options for 'bootstrap' and 'style' (ie. THEME_STYLE loaded above). Requires changes to js_manager.php 
 
+
+
+
+
 $CSSORDER = deftrue('CSSORDER') ? explode(",",CSSORDER) : array('other','core','plugin','theme','inline');
+
+
+
+
 
 foreach($CSSORDER as $val)
 {
@@ -327,6 +330,11 @@ foreach($CSSORDER as $val)
 }
 
 unset($CSSORDER);
+
+
+$e_js->renderCached('css');
+
+
 
 /*
 $e_js->renderJs('other_css', false, 'css', false);
@@ -368,7 +376,7 @@ echo "\n<!-- footer_inline_css -->\n";
 e107::getJs()->renderJs('header', 1);
 e107::getJs()->renderJs('header_inline', 1);
 
-// Send Javascript Libraries ALWAYS (for now)
+// Send Javascript Libraries ALWAYS (for now) - loads e_jslib.php
 $jslib = e107::getObject('e_jslib', null, e_HANDLER.'jslib_handler.php');
 $jslib->renderHeader('front', false);
 
@@ -464,10 +472,15 @@ $key_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_keywor
 
 function render_meta($type)
 {
-	global $pref,$tp;
+	$tp = e107::getParser();
+	$pref = e107::getPref();
 
-	if (!isset($pref['meta_'.$type][e_LANGUAGE]) || empty($pref['meta_'.$type][e_LANGUAGE]))
-	{ 
+	$key = 'meta_'.$type;
+	$language = e_LANGUAGE;
+
+	if(empty($pref[$key][$language]))
+	{
+	//	e107::getMessage()->addError("Couldn't find: pref - ".$key);
 		return '';
 	}
 
@@ -571,6 +584,10 @@ e107Event.trigger('loaded', null, document);
 
 e107::getJs()->renderJs('header_inline', 5);
 
+
+e107::getJs()->renderCached('js');
+
+
 echo "</head>\n";
 
 
@@ -580,9 +597,21 @@ echo "</head>\n";
 	{
 		foreach($LAYOUT as $key=>$template)
 		{
-			list($hd,$ft) = explode("{---}",$template);
-			$HEADER[$key] = isset($LAYOUT['_header_']) ? $LAYOUT['_header_'] . $hd : $hd;
-			$FOOTER[$key] = isset($LAYOUT['_footer_']) ? $ft . $LAYOUT['_footer_'] : $ft ;	
+			if($key == '_header_' || $key == '_footer_')
+			{
+				continue;	
+			}
+			
+			if(strpos($template,'{---}') !==false)
+			{
+				list($hd,$ft) = explode("{---}",$template);
+				$HEADER[$key] = isset($LAYOUT['_header_']) ? $LAYOUT['_header_'] . $hd : $hd;
+				$FOOTER[$key] = isset($LAYOUT['_footer_']) ? $ft . $LAYOUT['_footer_'] : $ft ;	
+			}
+			else 
+			{
+				e107::getMessage()->addDebug('Missing "{---}" in $LAYOUT["'.$key.'"] ');
+			}
 		}	
 		unset($hd,$ft);
 	}
@@ -616,8 +645,8 @@ echo "</head>\n";
     
     if(deftrue('e_IFRAME'))
     {
-        $HEADER = "";
-        $FOOTER = ""; 
+        $HEADER = deftrue('e_IFRAME_HEADER',"");
+        $FOOTER = deftrue('e_IFRAME_FOOTER',"");
         $body_onload .= " class='e-iframe'";
     }
 
@@ -723,8 +752,12 @@ if ($e107_popup != 1) {
 		echo "<div id='uiAlert' class='notifications center'></div>"; // Popup Alert Message holder. @see http://nijikokun.github.io/bootstrap-notify/
 	}
 
-	// Display Welcome Message when old method activated.
-	if(strstr($HEADER,"{WMESSAGE")===false && strstr($FOOTER,"{WMESSAGE")===false) // Auto-detection to override old pref. 
+    /**
+     * Display Welcome Message when old method activated.
+     * fix - only when e_FRONTPAGE set to true
+     * @see \core_index_index_controller\actionIndex
+     */
+    if(deftrue('e_FRONTPAGE') && strstr($HEADER,"{WMESSAGE")===false && strstr($FOOTER,"{WMESSAGE")===false) // Auto-detection to override old pref.
 	{
 		echo e107::getParser()->parseTemplate("{WMESSAGE}");
 	}

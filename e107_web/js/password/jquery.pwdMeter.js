@@ -63,37 +63,44 @@ jQuery.fn.pwdMeter = function(options){
 			$('#pwdColor').removeClass();
 			$('#pwdColor').addClass('progress');
 			 $('#pwdMeter').css("width",'1%');
+            $('#pwdMeter').removeClass("progress-bar-danger progress-bar-warning progress-bar-success");
 			// $('#pwdMeter').removeStyle();
 		
 			switch(passwordStrength){
 			case 1:
 			  $('#pwdColor').addClass('progress-danger');
+              $('#pwdMeter').addClass('progress-bar-danger'); //BS3
 			  $('#pwdMeter').css("width",'10%');
 			  $('#pwdStatus').text('Very Weak');
 			  break;
 			case 2:
 			  $('#pwdColor').addClass('progress-danger');
+                $('#pwdMeter').addClass('progress-bar-danger'); //BS3
 			  $('#pwdMeter').css("width",'25%');
 			  $('#pwdStatus').text('Weak');
 			  
 			  break;
 			case 3:
 			 	$('#pwdColor').addClass('progress-warning');
+                $('#pwdMeter').addClass('progress-bar-warning'); //BS3
 			    $('#pwdMeter').css("width",'30%');
 				  $('#pwdStatus').text('Medium');
 			  break;
 			case 4:
 				$('#pwdColor').addClass('progress-warning');
+                $('#pwdMeter').addClass('progress-bar-warning'); //BS3
 			    $('#pwdMeter').css("width",'50%');
 			  $('#pwdStatus').text('Medium');
 			  break;
 			 case 5:
 			  $('#pwdColor').addClass('progress-success');
+              $('#pwdMeter').addClass('progress-bar-success'); //BS3
 			  $('#pwdMeter').css("width",'75%');
 			  $('#pwdStatus').text('Strong');
 			  break;	
 			case 6:
 			  $('#pwdColor').addClass('progress-success');
+               $('#pwdMeter').addClass('progress-bar-success'); //BS3
 			  $('#pwdMeter').css("width",'100%');
 			  $('#pwdStatus').text('Very Strong');
 			  break;		  		  		  

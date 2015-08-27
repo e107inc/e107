@@ -67,14 +67,15 @@ $sc_style['PM_REPLY']['post'] = "</td>
 	</tr>
 ";
 
-$PM_SEND_PM = "<div style='text-align: center'>
-<table style='width:95%' class='table fborder'>
+$PM_SEND_PM = "<div id='pm-send-pm'>
+<table class='table fborder'>
 <tr>
 	<td colspan='2' class='fcaption'>".LAN_PM_1.": </td>
 </tr>
 <tr>
 	<td class='forumheader3' style='width: 30%'>".LAN_PM_2.": </td>
-	<td class='forumheader3' style='width: 70%; text-align:left'>{PM_FORM_TOUSER}<br />{PM_FORM_TOCLASS}</td>
+	<td class='forumheader3' style='width: 70%; text-align:left'>{PM_FORM_TOUSER}<br />
+	<div class='form-inline'>{PM_FORM_TOCLASS}</div></td>
 </tr>
 <tr>
 	<td class='forumheader3'>".LAN_PM_5.": </td>
@@ -106,10 +107,10 @@ $PM_INBOX_HEADER = "
 	<th class='fcaption' style='width:8%'>&nbsp;</th>
 </tr>
 </thead>
+	<tbody>
 ";
 
 $PM_INBOX_TABLE = "
-<tbody>
 <tr>
 	<td class='forumheader3'>{PM_SELECT}</td>
 	<td class='forumheader3'>{PM_READ_ICON}</td>
@@ -159,7 +160,7 @@ $PM_OUTBOX_TABLE = "
 	<td class='forumheader3'>{PM_READ_ICON}</td>
 	<td class='forumheader3'>{PM_SUBJECT=link,outbox}{PM_ATTACHMENT_ICON}</td>
 		<td class='forumheader3'>{PM_TO=link}</td>
-	<td class='forumheader3'>{PM_DATE=lapse}</td>
+	<td class='forumheader3'>{PM_DATE}</td>
 	<td class='forumheader3' style='text-align: center'>{PM_DELETE=outbox}</td>
 </tr>
 ";
@@ -223,10 +224,10 @@ $PM_SHOW =
 "<div style='text-align: center'>
 <table class='table fborder'>
 <tr>
-	<td class='fcaption' colspan='2'>{PM_SUBJECT}</td>
+	<td class='fcaption text-left' colspan='2'>{PM_SUBJECT}</td>
 </tr>
 <tr>
-	<td class='forumheader3' style='width:20%; vertical-align:top'>
+	<td class='forumheader3 text-left' style='width:20%; vertical-align:top'>
 		{PM_FROM_TO}
 		<br />
 		<br />
@@ -238,7 +239,7 @@ $PM_SHOW =
 		<br />
 		{PM_DELETE}
 	</td>
-	<td class='forumheader3' style='width:80%; vertical-align:top'>{PM_MESSAGE}<br /><br />{PM_ATTACHMENTS}</td>
+	<td class='forumheader3 text-left' style='width:80%; vertical-align:top'>{PM_MESSAGE}<br /><br />{PM_ATTACHMENTS}</td>
 </tr>
 {PM_REPLY}
 </table>

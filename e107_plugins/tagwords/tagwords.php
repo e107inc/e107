@@ -24,12 +24,12 @@ require_once(HEADERF);
 require_once(e_PLUGIN."tagwords/tagwords_class.php");
 $tag = new tagwords();
 //echo e107::getUrl()->create('tagwords/search/area', 'area=news&q=something');
-if(varsettrue($tag->pref['tagwords_class']) && !check_class($tag->pref['tagwords_class']) )
+if(vartrue($tag->pref['tagwords_class']) && !check_class($tag->pref['tagwords_class']) )
 {
 	header("location:".SITEURL); exit;
 }
 
-if(varsettrue($_GET['q']))
+if(vartrue($_GET['q']))
 {
 	$tag->TagSearchResults();
 }

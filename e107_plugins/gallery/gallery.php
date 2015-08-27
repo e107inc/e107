@@ -23,11 +23,41 @@
  
 
 require_once("../../class2.php");
-if (!plugInstalled('gallery'))
+if (!e107::isInstalled('gallery'))
 {
 	header('location:'.e_BASE.'index.php');
 	exit;
 }
+
+
+e107::js('gallery', 'jslib/prettyPhoto/js/jquery.prettyPhoto.js','jquery');
+e107::css('gallery', 'jslib/prettyPhoto/css/prettyPhoto.css','jquery');
+e107::css('gallery', 'gallery_style.css');
+
+// Work-around for indent issue. see: https://github.com/twitter/bootstrap/issues/4890
+e107::css('inline', "
+/* Gallery CSS */
+.thumbnails .span2:nth-child(6n+1) {
+margin-left:0;
+}",'jquery');
+
+
+
+	$prettyPhoto = <<<JS
+$(document).ready(function(){
+    $("a[data-gal^='prettyPhoto']").prettyPhoto(
+	    {
+	    	hook: 'data-gal',
+	    	theme: 'pp_default', /* pp_default , light_rounded , dark_rounded , light_square , dark_square ,facebook */
+	    	overlay_gallery: false,
+	    	deeplinking: false
+	    }
+    );
+  });
+JS;
+
+e107::js('inline',$prettyPhoto,'jquery');
+
 
 
 require_once(HEADERF);
@@ -58,7 +88,7 @@ class gallery
 		
 		$text = "";		
 		
-		if(defset('BOOTSTRAP') === true || defset('BOOTSTRAP') === 2) // Convert bootsrap3 to bootstrap2 compat. 
+		if(defset('BOOTSTRAP') === true || defset('BOOTSTRAP') === 2) // Convert bootstrap3 to bootstrap2 compat.
 		{
 			$template['cat_start'] = str_replace('row', 'row-fluid', $template['cat_start']); 
 		}

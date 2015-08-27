@@ -8,9 +8,9 @@ define("BOOTSTRAP", 	3);
 define("FONTAWESOME", 	4);
 define('VIEWPORT', 		"width=device-width, initial-scale=1.0");
 
-e107::js("url", 			"//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js");
-e107::css('url', 			'//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css');
-e107::css('url', 			"//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css");
+e107::js("url", 			"http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js");
+e107::css('url', 			'http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css');
+e107::css('url', 			"http://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css");
 
 e107::js("footer-inline", 	"$('.e-tip').tooltip({container: 'body'})"); // activate bootstrap tooltips. 
 					
@@ -18,17 +18,24 @@ define('OTHERNEWS_COLS',false); // no tables, only divs.
 define('OTHERNEWS_LIMIT', 3); // Limit to 3. 
 define('OTHERNEWS2_COLS',false); // no tables, only divs. 
 define('OTHERNEWS2_LIMIT', 3); // Limit to 3. 
-define('COMMENTLINK', 	$tp->toGlyph('fa-comment'));
+define('COMMENTLINK', 	e107::getParser()->toGlyph('fa-comment'));
 define('COMMENTOFFSTRING', '');
 
 define('PRE_EXTENDEDSTRING', '<br />');
 
-
-function tablestyle($caption, $text, $mode='') 
+/**
+ * @param string $caption
+ * @param string $text
+ * @param string $id : id of the current render
+ * @param array $info : current style and other menu data. 
+ */
+function tablestyle($caption, $text, $id='', $info=array()) 
 {
-	global $style;
+//	global $style; // no longer needed. 
 	
-	echo "<!-- tablestyle: style=".$style." mode=".$mode." -->\n\n";
+	$style = $info['setStyle'];
+	
+	echo "<!-- tablestyle: style=".$style." id=".$id." -->\n\n";
 	
 	$type = $style;
 	if(empty($caption))
@@ -42,22 +49,44 @@ function tablestyle($caption, $text, $mode='')
 		return;
 	}
 	
+	/*
+	if($id == 'wm') // Example - If rendered from 'welcome message' 
+	{
+		
+	}
+	
+	if($id == 'featurebox') // Example - If rendered from 'featurebox' 
+	{
+		
+	}	
+	*/
+	
 	
 	if($style == 'jumbotron')
 	{
 		echo '<div class="jumbotron">
-      	<div class="container">
-        	<h1>'.$caption.'</h1>
-        	<p>'.$text.'</p>
+      	<div class="container">';
+        	if(!empty($caption))
+	        {
+	            echo '<h1>'.$caption.'</h1>';
+	        }
+        echo '
+        	'.$text.'
       	</div>
     	</div>';	
 		return;
 	}
 	
-	if($style == 'col-md-4')
+	if($style == 'col-md-4' || $style == 'col-md-6' || $style == 'col-md-8')
 	{
-		echo ' <div class="col-xs-12 col-md-4">
-          <h2>'.$caption.'</h2>
+		echo ' <div class="col-xs-12 '.$style.'">';
+		
+		if(!empty($caption))
+		{
+            echo '<h2>'.$caption.'</h2>';
+		}
+
+		echo '
           '.$text.'
         </div>';
 		return;	
@@ -84,11 +113,19 @@ function tablestyle($caption, $text, $mode='')
 		</div>';	
 		return;
 	}
-	
-	echo '<h2>'.$caption.'</h2>
-			
-			'.$text.'
-			';
+
+
+
+	// default.
+
+	if(!empty($caption))
+	{
+		echo '<h2 class="caption">'.$caption.'</h2>';
+	}
+
+	echo $text;
+
+
 					
 	return;
 	
@@ -107,11 +144,11 @@ $LAYOUT['_header_'] = '
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="{SITEURL}">{SITENAME}</a>
+          <a class="navbar-brand" href="{SITEURL}">{BOOTSTRAP_BRANDING}</a>
         </div>
-        <div class="navbar-collapse collapse">
+        <div class="navbar-collapse collapse {BOOTSTRAP_NAV_ALIGN}">
         	{NAVIGATION=main}
-         	{BOOTSTRAP_USERNAV}         
+         	{BOOTSTRAP_USERNAV: placement=top}
         </div><!--/.navbar-collapse -->
       </div>
     </div>
@@ -121,18 +158,65 @@ $LAYOUT['_header_'] = '
 ';
 
 // applied after every layout. 
-$LAYOUT['_footer_'] = '  <hr>
+$LAYOUT['_footer_'] = '<hr>
+</div> <!-- /container -->
+{SETSTYLE=default}
+<footer>
+	<div class="container">
+		<div class="row">
 
-	<footer>
-		<div class="col-lg-6">
-			{SITEDISCLAIMER} 
-		</div>
-		<div class="col-lg-6 text-right">
-			{XURL_ICONS: size=2x}
-		</div>
-	</footer>
-	
-    </div> <!-- /container -->
+			<div>
+				<div class="col-lg-6">
+					{MENU=100}
+				</div>
+				<div class="col-lg-6">
+					{MENU=101}
+				</div>
+			</div>
+
+			<div>
+				<div class="col-sm-12 col-lg-4">
+					{MENU=102}
+				</div>
+
+				<div class="col-sm-12 col-lg-8">
+					{MENU=103}
+				</div>
+			</div>
+
+			<div >
+				<div class="col-lg-12">
+					{MENU=104}
+				</div>
+			</div>
+
+			<div>
+				<div class="col-lg-6">
+					{MENU=105}
+					{NAVIGATION=footer}
+					{MENU=106}
+				</div>
+				<div class="col-lg-6 text-right">
+					{XURL_ICONS: size=2x}
+					{BOOTSTRAP_USERNAV: placement=bottom&dir=up}
+				</div>
+			</div>
+
+			<div>
+				<div class="col-lg-12">
+					{MENU=107}
+				</div>
+			</div>
+
+			<div>
+				<div id="sitedisclaimer" class="col-lg-12 text-center">
+					<small >{SITEDISCLAIMER}</small>
+				</div>
+			</div>
+
+		</div>	 <!-- /row -->
+	</div> <!-- /container -->
+</footer>
 ';
 
 
@@ -141,13 +225,18 @@ $LAYOUT['_footer_'] = '  <hr>
 
 $LAYOUT['jumbotron_home'] =  <<<TMPL
   <!-- Main jumbotron for a primary marketing message or call to action -->
+
+  <div class="container">
+     {ALERTS}
+  </div>
+
     {SETSTYLE=jumbotron}
-   
+
 	{WMESSAGE=force}   
 
 	{SETSTYLE=default}
 	<div class="container">	
-	{ALERTS}
+
 	{MENU=1}
 	
 	{---}
@@ -157,17 +246,54 @@ $LAYOUT['jumbotron_home'] =  <<<TMPL
       <!-- Example row of columns -->
       <div class="row">
       {SETSTYLE=col-md-4}
-	  {CMENU=jumbotron-menu-1}
-	  {CMENU=jumbotron-menu-2}
-	  {CMENU=jumbotron-menu-3}
-      </div>
-
-       <div class="row">
-      {SETSTYLE=col-md-4}
 	  {MENU=2}
 	  {MENU=3}
 	  {MENU=4}
       </div>
+
+       <div class="row">
+      {SETSTYLE=col-md-4}
+	  {MENU=5}
+	  {MENU=6}
+	  {MENU=7}
+      </div>
+      {SETSTYLE=default}
+      <div class="row" >
+			<div>
+				<div class="col-lg-6">
+					{MENU=8}
+				</div>
+				<div class="col-lg-6">
+					{MENU=9}
+				</div>
+			</div>
+
+			<div>
+				<div class="col-sm-12 col-lg-4">
+					{MENU=10}
+				</div>
+
+				<div class="col-sm-12 col-lg-8">
+					{MENU=11}
+				</div>
+			</div>
+
+			<div>
+				<div class="col-sm-12 col-lg-8">
+					{MENU=12}
+				</div>
+
+				<div class="col-sm-12 col-lg-4">
+					{MENU=13}
+				</div>
+			</div>
+
+			<div >
+				<div class="col-lg-12">
+					{MENU=14}
+				</div>
+			</div>
+	 </div>
 TMPL;
 
 //TODO Add {GALLERY_PORTFOLIO}  to portfolio_menu.php 
@@ -333,8 +459,45 @@ $LAYOUT['jumbotron_sidebar_right'] =  '
 	
 	</div>
     <div class="container">
-      
+           {SETSTYLE=default}
+      <div class="row" >
+			<div>
+				<div class="col-lg-6">
+					{MENU=2}
+				</div>
+				<div class="col-lg-6">
+					{MENU=3}
+				</div>
+			</div>
 
+			<div>
+				<div class="col-sm-12 col-lg-4">
+					{MENU=4}
+				</div>
+
+				<div class="col-sm-12 col-lg-8">
+					{MENU=5}
+				</div>
+			</div>
+
+			<div>
+				<div class="col-sm-12 col-lg-8">
+					{MENU=6}
+				</div>
+
+				<div class="col-sm-12 col-lg-4">
+					{MENU=7}
+				</div>
+			</div>
+
+			<div >
+				<div class="col-lg-12">
+					{MENU=8}
+				</div>
+			</div>
+	 </div>
+	 </div>
+  <div class="container">
 	';
 
 
@@ -694,7 +857,5 @@ $NEWSCAT_ITEM = "\n\n\n\n<!-- News Category Item -->\n\n\n\n
 		{NEWSTITLELINK}
 		</td></tr></table></div>
 ";
-
-
 
 ?>

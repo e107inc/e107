@@ -29,16 +29,16 @@ $CONTACT_TEMPLATE['info'] = "
 
 $CONTACT_TEMPLATE['menu'] =  '
 	<div class="contactMenuForm">
-		<div class="control-group">
+		<div class="control-group form-group">
 			<label >Name</label>
    			 {CONTACT_NAME}
 		 </div>
 		 
-		<div class="control-group">
+		<div class="control-group form-group">
 			<label class="control-label" for="contactEmail">Email</label>
 				{CONTACT_EMAIL}
 		</div>
-		<div class="control-group">
+		<div class="control-group form-group">
 			<label>Comments</label>
 			{CONTACT_BODY=rows=5&cols=30}							
 		</div>
@@ -60,41 +60,44 @@ $CONTACT_TEMPLATE['menu'] =  '
 	// In this case (see contact.php) e107::getScBatch('contact')->wrapper('contact/form')
 	// Only one Option is used - WRAPPER > SC_STYLE
 
-	$CONTACT_WRAPPER['form']['CONTACT_IMAGECODE'] 			= "<tr><td>".LANCONTACT_16."<br />{---}";
-	$CONTACT_WRAPPER['form']['CONTACT_IMAGECODE_INPUT'] 	= "{---}</td></tr>";
-	$CONTACT_WRAPPER['form']['CONTACT_EMAIL_COPY'] 			= "<tr><td>{---}".LANCONTACT_07."</td></tr>";
-	$CONTACT_WRAPPER['form']['CONTACT_PERSON']				= "<tr><td>".LANCONTACT_14."<br />{---}</td></tr>";
-
+	$CONTACT_WRAPPER['form']['CONTACT_IMAGECODE'] 			= "<div class='control-group form-group'><label>".LAN_ENTER_CODE."</label> {---}";
+	$CONTACT_WRAPPER['form']['CONTACT_IMAGECODE_INPUT'] 	= "{---}</div>";
+	$CONTACT_WRAPPER['form']['CONTACT_EMAIL_COPY'] 			= "<div class='control-group form-group'>{---}".LANCONTACT_07."</div>";
+	$CONTACT_WRAPPER['form']['CONTACT_PERSON']				= "<div class='control-group form-group'><label>".LANCONTACT_14."</label>{---}</div>";
 
 	$CONTACT_TEMPLATE['form'] = "
 	<form action='".e_SELF."' method='post' id='contactForm' >
-	<table class='table' style='".USER_WIDTH."' cellpadding='1' cellspacing='7'>
+
 	{CONTACT_PERSON}
-	<tr><td>".LANCONTACT_03."<br />
-	{CONTACT_NAME}
-	</td></tr>
-	<tr><td>".LANCONTACT_04."<br />
-	{CONTACT_EMAIL}
-	</td></tr>
-	<tr><td>
-	".LANCONTACT_05."<br />
-	{CONTACT_SUBJECT}
-	</td></tr>
-	{CONTACT_EMAIL_COPY}
-	<tr><td>
-    ".LANCONTACT_06."<br />
-    {CONTACT_BODY}
-	</td></tr>
+	<div class='control-group form-group'><label>".LANCONTACT_03."</label>
+		{CONTACT_NAME}
+	</div>
+	<div class='control-group form-group'><label>".LANCONTACT_04."</label>
+		{CONTACT_EMAIL}
+	</div>
+	<div class='control-group form-group'><label>".LANCONTACT_05."</label>
+		{CONTACT_SUBJECT}
+	</div>
+
+		{CONTACT_EMAIL_COPY}
+
+	<div class='control-group form-group'><label>".LANCONTACT_06."</label>
+        {CONTACT_BODY}
+	</div>
+
 	{CONTACT_IMAGECODE}
 	{CONTACT_IMAGECODE_INPUT}
-	<tr><td>
+
+	<div class='form-group'>
 	{CONTACT_SUBMIT_BUTTON}
-	</td></tr>
-	</table>
+	</div>
+
 	</form>";
 
-			
-		
+	// Customize the email subject
+	// Variables:  CONTACT_SUBJECT and CONTACT_PERSON as well as any custom fields set in the form. )
+	$CONTACT_TEMPLATE['email']['subject'] = "{CONTACT_SUBJECT}";
+
 	
 
 ?>

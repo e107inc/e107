@@ -35,16 +35,16 @@ if(!isset($BANNER_LOGIN_TABLE))
 if(!isset($BANNER_TABLE_START))
 {
 		$BANNER_TABLE_START = "
-		<table class='fborder' style='".USER_WIDTH."; border:1px solid #000' border='1'>
-		<tr><td colspan='7' style='text-align:center' class='fcaption'>".BANNERLAN_21."</td></tr>
+		<table class='table fborder' style='".USER_WIDTH.";' >
+		<tr><th colspan='7' style='text-align:center' class='fcaption'>".BANNERLAN_21."</th></tr>
 		<tr>
-			<td class='forumheader' style='text-align:center'>".BANNERLAN_22."</td>
-			<td class='forumheader' style='text-align:center'>".BANNERLAN_23."</td>
-			<td class='forumheader' style='text-align:center'>".BANNERLAN_24."</td>
-			<td class='forumheader' style='text-align:center'>".BANNERLAN_25."</td>
-			<td class='forumheader' style='text-align:center'>".BANNERLAN_26."</td>
-			<td class='forumheader' style='text-align:center'>".BANNERLAN_27."</td>
-			<td class='forumheader' style='text-align:center'>".BANNERLAN_28."</td>
+			<th class='forumheader' style='text-align:center'>".BANNERLAN_22."</th>
+			<th class='forumheader' style='text-align:center'>".BANNERLAN_23."</th>
+			<th class='forumheader' style='text-align:center'>".BANNERLAN_24."</th>
+			<th class='forumheader' style='text-align:center'>".BANNERLAN_25."</th>
+			<th class='forumheader' style='text-align:center'>".BANNERLAN_26."</th>
+			<th class='forumheader' style='text-align:center'>".BANNERLAN_27."</th>
+			<th class='forumheader' style='text-align:center'>".BANNERLAN_28."</th>
 		</tr>";
 }
 if(!isset($BANNER_TABLE))
@@ -96,6 +96,17 @@ if(!isset($BANNER_MENU_END))
 {
 	$BANNER_MENU_END = "</div>";
 }
-// ##### ------------------------------------------------------------------------------------------
+
+
+
+
+
+// ##### ------------------------------------ v2.x ------------------------------------------------------
+
+
+$BANNER_TEMPLATE['menu']['start'] =		"<div class='banner-menu text-center'>{SETIMAGE: w=800}"; 
+$BANNER_TEMPLATE['menu']['item'] =		"<div class='banner-menu-item'>{BANNER}<br /><br /></div>"; 
+$BANNER_TEMPLATE['menu']['end'] = 		"</div>"; 
+
 
 ?>

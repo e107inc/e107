@@ -105,8 +105,14 @@ class comment_shortcodes extends e_shortcode
 	function sc_comment_avatar($parm='')
 	{
 		$tp 	= e107::getParser();
-		$text = $tp->parseTemplate("{USER_AVATAR=".vartrue($this->var['user_image'],USERIMAGE)."}");		
 		
+	//	return $this->var['user_image']; 
+	//	$url = $tp->thumbUrl($this->var['user_image']); 
+	//	$text = $tp->parseTemplate("{USER_AVATAR=".vartrue($this->var['user_image'],USERIMAGE)."}");
+	//	$text = $tp->parseTemplate("{USER_AVATAR=".$this->var['user_id']."}");		
+		
+		$text = $tp->toAvatar($this->var); 		
+	
 		$text .= "<div class='field-help' style='display:none;'>
 		<div class='left'>";
 		$text .= "<h2>".$this->sc_username()."</h2>";
@@ -151,7 +157,7 @@ class comment_shortcodes extends e_shortcode
 	function sc_comments($parm='') 
 	{
 		global $COMMENTS;
-		return (isset($this->var['user_id']) && $this->var['user_id'] ? COMLAN_99.": ".$this->var['user_comments'] : COMLAN_194)."<br />";
+		return (isset($this->var['user_id']) && $this->var['user_id'] ? LAN_COMMENTS.": ".$this->var['user_comments'] : COMLAN_194)."<br />";
 	}
 	
 	
@@ -180,7 +186,7 @@ class comment_shortcodes extends e_shortcode
 		}
 		
 		// TODO put into a <ul> drop-down format. 
-		$text = "<a href='#' data-target='".e_HTTP."comment.php' id='e-comment-delete-".$this->var['comment_id']."' class='e-comment-delete btn btn-default btn-mini btn-xs'>Delete</a> ";
+		$text = "<a href='#' data-target='".e_HTTP."comment.php' id='e-comment-delete-".$this->var['comment_id']."' class='e-comment-delete btn btn-default btn-mini btn-xs'>".LAN_DELETE."</a> ";
 		
 		if($this->var['comment_blocked'] == 2) // pending approval. 
 		{
@@ -192,7 +198,7 @@ class comment_shortcodes extends e_shortcode
 		
 		$unblock 	= "[<a href='".e_ADMIN_ABS."comment.php?unblock-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".COMLAN_1."</a>] ";
 		$block 		= "[<a href='".e_ADMIN_ABS."comment.php?block-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".COMLAN_2."</a>] ";
-		$delete 	= "[<a href='".e_ADMIN_ABS."comment.php?delete-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".COMLAN_3."</a>] ";
+		$delete 	= "[<a href='".e_ADMIN_ABS."comment.php?delete-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".LAN_DELETE."</a>] ";
 		$userinfo 	= "[<a href='".e_ADMIN_ABS."userinfo.php?".e107::getIPHandler()->ipDecode($comrow['comment_ip'])."'>".COMLAN_4."</a>]";
 			
 		return $unblock.$block.$delete.$userinfo;

@@ -68,7 +68,7 @@ class core_user_url extends eUrlConfig
 				break;
 				
 				case 'edit':
-					$url = 'usersettings.php?'.$params['id'];
+					$url = e_ADMIN_ABS."user.php?mode=main&action=edit&id=".$params['id'];// 'usersettings.php?'.$params['id'];
 				break;
 			}
 		}

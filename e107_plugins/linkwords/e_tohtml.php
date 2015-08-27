@@ -28,7 +28,7 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
-// if (!plugInstalled('linkwords')) exit; // This will completely break a site during  upgrades. 
+// if (!e107::isInstalled('linkwords')) exit; // This will completely break a site during  upgrades. 
 
 define('LW_CACHE_ENABLE', FALSE);
 
@@ -46,21 +46,34 @@ class e_tohtml_linkwords
 	var $area_opts	= array();		// Process flags for the various contexts
 	var $block_list = array();		// Array of 'blocked' pages
 
+	protected $customClass  = '';
+	protected $wordCount    = array();
+	protected $maxPerWord   = 3;
+
 	
 	/* constructor */
-	function e_tohtml_linkwords()
+	function __construct()
 	{
-	
-		global $pref, $tp, $e107;
+
+		$tp = e107::getParser();
+	    $pref = e107::pref('core');
+
+		$this->maxPerWord       = vartrue($pref['lw_max_per_word'], 25);
+		$this->customClass      = vartrue($pref['lw_custom_class'],'');
+		$this->area_opts        = $pref['lw_context_visibility'];
+		$this->utfMode          = (strtolower(CHARSET) == 'utf-8') ? 'u' : '';		// Flag to enable utf-8 on regex //@TODO utfMode probably obsolete
+		$this->lwAjaxEnabled    = varset($pref['lw_ajax_enable'],0);
+
 		// See whether they should be active on this page - if not, no point doing anything!
 		if ((strpos(e_SELF, ADMINDIR) !== FALSE) || (strpos(e_PAGE, "admin_") !== FALSE)) return;   // No linkwords on admin directories
 
 		// Now see if disabled on specific pages
 		$check_url = e_SELF.(e_QUERY ? "?".e_QUERY : '');
 		$this->block_list = explode("|",substr(varset($pref['lw_page_visibility'],''),2));    // Knock off the 'show/hide' flag
-		foreach ($this->block_list as $p)
+
+		foreach($this->block_list as $p)
 		{
-			if ($p=trim($p))
+			if($p=trim($p))
 			{
 				if(substr($p, -1) == '!')
 				{
@@ -76,7 +89,8 @@ class e_tohtml_linkwords
 
 		// Will probably need linkwords on this page - so get the info
 		define('LW_CACHE_TAG', 'nomd5_linkwords');		// Put it here to avoid conflict on admin pages
-		if (LW_CACHE_ENABLE && ($temp = e107::getCache()->retrieve_sys(LW_CACHE_TAG)))
+
+		if(LW_CACHE_ENABLE && ($temp = e107::getCache()->retrieve_sys(LW_CACHE_TAG)))
 		{
 			$ret = eval($temp);
 			if ($ret)
@@ -89,55 +103,69 @@ class e_tohtml_linkwords
 				$this->lw_enabled = TRUE;
 			}
 		}
-		if (!vartrue($temp))
-		{	// Either cache disabled, or no info in cache (or error reading/processing cache)
-			$link_sql = new db;
-			if($link_sql -> db_Select("linkwords", "*", "linkword_active!=1"))
+
+		if(!vartrue($temp)) 	// Either cache disabled, or no info in cache (or error reading/processing cache)
+		{
+			$link_sql = e107::getDb('link_sql');
+
+			if($link_sql->select("linkwords", "*", "linkword_active!=1"))
 			{
 				$this->lw_enabled = TRUE;
-				while ($row = $link_sql->db_Fetch())
+				while($row = $link_sql->db_Fetch())
 				{
-					extract($row);
-					$lw = $tp->uStrToLower($linkword_word);					// It was trimmed when saved		*utf	
-					if ($linkword_active == 2) $linkword_link = '';		// Make sure linkword disabled
-					if ($linkword_active < 2) $linkword_tooltip = '';	// Make sure tooltip disabled
+
+					$lw = $tp->uStrToLower($row['linkword_word']);					// It was trimmed when saved		*utf
+
+					if($row['linkword_active'] == 2)
+					{
+						$row['linkword_link'] = '';		// Make sure linkword disabled
+					}
+
+					if($row['linkword_active'] < 2)
+					{
+						$row['linkword_tooltip'] = '';	// Make sure tooltip disabled
+					}
+
 					$lwID = max($row['linkword_tip_id'], $row['linkword_id']);		// If no specific ID defined, use the DB record ID
-					if (strpos($lw,','))
-					{  // Several words to same link
+
+
+					if(strpos($lw,',')) // Several words to same link
+					{
 						$lwlist = explode(',',$lw);
 						foreach ($lwlist as $lw)
 						{
-							$this->word_list[] = trim($lw);
-							$this->link_list[] = $linkword_link;
-							$this->tip_list[] = $linkword_tooltip;
-							$this->ext_list[] = $linkword_newwindow;
-							$this->LinkID[] = $lwID;
+							$this->word_list[]  = trim($lw);
+							$this->link_list[]  = $row['linkword_link'];
+							$this->tip_list[]   = $row['linkword_tooltip'];
+							$this->ext_list[]   = $row['linkword_newwindow'];
+							$this->LinkID[]     = $lwID;
 						}
 					}
 					else
 					{
-						$this->word_list[] = $lw;
-						$this->link_list[] = $linkword_link;
-						$this->tip_list[] = $linkword_tooltip;
-						$this->ext_list[] = $linkword_newwindow;
-						$this->LinkID[] = $lwID;
+						$this->word_list[]      = $lw;
+						$this->link_list[]      = $row['linkword_link'];
+						$this->tip_list[]       = $row['linkword_tooltip'];
+						$this->ext_list[]       = $row['linkword_newwindow'];
+						$this->LinkID[]         = $lwID;
 					}
 				}
-				if (LW_CACHE_ENABLE)
-				{	// Write to file for next time
+
+				if(LW_CACHE_ENABLE) // Write to file for next time
+				{
 					$temp = '';
 					foreach (array('word_list', 'link_list', 'tip_list', 'ext_list', 'LinkID') as $var)
 					{
 						$temp .= '$this->'.$var.'='.var_export($this->$var, TRUE).";\n";
 					}
-					$e107->ecache->set_sys(LW_CACHE_TAG,$temp);
+
+					e107::getCache()->set_sys(LW_CACHE_TAG,$temp);
 				}
 			}
 		}
-	  $this->area_opts = $pref['lw_context_visibility'];
-	  //@TODO utfMode probably obsolete
-	  $this->utfMode = (strtolower(CHARSET) == 'utf-8') ? 'u' : '';		// Flag to enable utf-8 on regex
-	  $this->lwAjaxEnabled = varset($pref['lw_ajax_enable'],0);
+
+
+
 	}
 
 
@@ -165,10 +193,10 @@ class e_tohtml_linkwords
 				if (substr($cont,0,2) == "<a") $lflag = TRUE;
 				if (substr($cont,0,3) == "</a") $lflag = FALSE;
 			} 
-			else 
-			{  // Its the text in between
-				if ($lflag)
-				{  // Its probably within a link - leave unchanged
+			else   // Its the text in between
+			{
+				if ($lflag) // Its probably within a link - leave unchanged
+				{
 					$ptext .= $cont;
 				}
 				else
@@ -185,13 +213,21 @@ class e_tohtml_linkwords
 				}
 			}
 		}
+
+	//	print_a($this->wordCount);
 		return $ptext;
 	}
 
 
-	
+	/**
+	 * This function is called recursively - it splits the text up into blocks - some containing a particular linkword
+	 * @param $text
+	 * @param $first
+	 * @param $limit
+	 * @return string
+	 */
 	function linksproc($text,$first,$limit)
-	{  // This function is called recursively - it splits the text up into blocks - some containing a particular linkword
+	{
 		$tp = e107::getParser();
 		$doSamePage = !e107::getPref('lw_notsamepage');
 
@@ -205,6 +241,7 @@ class e_tohtml_linkwords
 		// If supporting Ajax, use the following:
 		// <a href='link url' rel='external linkwordId::122' class='linkword-ajax'>
 		// linkwordId::122 is a unique ID
+
 		$ret = '';
 		$linkwd = '';
 		$linkrel = array();
@@ -212,29 +249,32 @@ class e_tohtml_linkwords
 		$lwClass  = array();
 		$lw = $this->word_list[$first];		// This is the word we're matching - in lower case in our 'master' list
 		$tooltip = '';
+
 		if ($this->tip_list[$first])
 		{	// Got tooltip
 			if ($this->lwAjaxEnabled)
 			{
 				$linkrel[] = 'linkwordID::'.$this->LinkID[$first];
-				$lwClass[] = 'lw_ajax';
+				$lwClass[] = 'lw-ajax '.$this->customClass;
 			}
 			else
 			{
 				$tooltip = " title='{$this->tip_list[$first]}' ";
-				$lwClass[] = 'lw_tip';
+				$lwClass[] = 'lw-tip '.$this->customClass;
 			}
 		}
-		if ($this->link_list[$first]) 
-		{	// Got link
+		if ($this->link_list[$first])  // Got link
+		{
 			$newLink = $tp->replaceConstants($this->link_list[$first], 'full');
 			if ($doSamePage || ($newLink != e_SELF.'?'.e_QUERY))
 			{
 				$linkwd = " href='".$newLink."' ";
 				if ($this->ext_list[$first]) { $linkrel[] = 'external'; }		// Determine external links
-				$lwClass[] = 'lw_link';
+				$lwClass[] = 'lw-link '.$this->customClass;
 			}
 		}
+
+
 		if (!count($lwClass))
 		{
 			return $this->linksproc($sl,$first+1,$limit);		// Nothing to do - move on to next word (shouldn't really get here)
@@ -243,17 +283,29 @@ class e_tohtml_linkwords
 		{
 			$linkwd .= " rel='".implode(' ',$linkrel)."'";
 		}
+
 		// This splits the text into blocks, some of which will precisely contain a linkword
 		$split_line = preg_split('#\b('.$lw.')\b#i'.$this->utfMode, $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );		// *utf (selected)
 		$class = "class='".implode(' ',$lwClass)."' ";
+
+		$hash = md5($lw);
+
+		if(!isset($this->wordCount[$hash]))
+		{
+			$this->wordCount[$hash] = 0;
+		}
+
 		foreach ($split_line as $sl)
 		{
-			if ($tp->uStrToLower($sl) == $lw)			// We know the linkword is already lower case							// *utf 
-			{  // Do linkword replace
-				$ret .= ' <a '.$class.$linkwd.$tooltip.'>'.$sl.'</a>';
+
+			if ($tp->uStrToLower($sl) == $lw && $this->wordCount[$hash] < $this->maxPerWord)	// Do linkword replace		// We know the linkword is already lower case							// *utf
+			{
+				$this->wordCount[$hash]++;
+
+				$ret .= '<a '.$class.$linkwd.$tooltip.'>'.$sl.'</a>';
 			}
-			elseif (trim($sl))
-			{  // Something worthwhile left - look for more linkwords in it
+			elseif (trim($sl)) // Something worthwhile left - look for more linkwords in it
+			{
 				$ret .= $this->linksproc($sl,$first+1,$limit);
 			}
 			else

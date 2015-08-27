@@ -199,7 +199,7 @@ class adminDownload extends download
                  $sort_link = $sortdirection == 'asc' ? 'desc' : 'asc';
                   $columnInfo = array(
             "checkboxes"	   			=> array("title" => "", "forced"=> TRUE, "width" => "3%", "thclass" => "center first", "toggle" => "dl_selected"),
-            "download_id"              => array("title"=>DOWLAN_67,  "type"=>"", "width"=>"auto", "thclass"=>"", "forced"=>true),
+            "download_id"              => array("title"=>LAN_ID,  "type"=>"", "width"=>"auto", "thclass"=>"", "forced"=>true),
             "download_name"            => array("title"=>DOWLAN_12,  "type"=>"", "width"=>"auto", "thclass"=>""),
             "download_url"             => array("title"=>DOWLAN_13,  "type"=>"", "width"=>"auto", "thclass"=>""),
             "download_author"          => array("title"=>DOWLAN_15,  "type"=>"", "width"=>"auto", "thclass"=>""),
@@ -1187,7 +1187,7 @@ class adminDownload extends download
             $logString .= '[!br!]'.$k.'=>'.$v;
          }
       }
-      $admin_log->log_event($aText,$logString,E_LOG_INFORMATIVE,'');
+      e107::getLog()->add($aText,$logString,E_LOG_INFORMATIVE,'');
    }
 */
 // -----------------------------------------------------------------------------
@@ -1521,7 +1521,7 @@ class adminDownload extends download
                                 <td>
                                    <select name='mirror_order' class='tbox'>".
                                       ($pref['mirror_order'] == "0" ? "<option value='0' selected='selected'>".DOWLAN_161."</option>" : "<option value='0'>".DOWLAN_161."</option>").
-                                    ($pref['mirror_order'] == "1" ? "<option value='1' selected='selected'>".DOWLAN_67."</option>" : "<option value='1'>".DOWLAN_67."</option>").
+                                    ($pref['mirror_order'] == "1" ? "<option value='1' selected='selected'>".LAN_ID."</option>" : "<option value='1'>".LAN_ID."</option>").
                                     ($pref['mirror_order'] == "2" ? "<option value='2' selected='selected'>".DOWLAN_163."</option>" : "<option value='2'>".DOWLAN_12."</option>")."
                                    </select>
                                 </td>
@@ -1612,7 +1612,7 @@ class adminDownload extends download
       $imgd = e_BASE.$IMAGES_DIRECTORY;
       $columnInfo = array(
          "checkboxes"         => array("title" => "", "forced"=> TRUE, "width" => "3%", "thclass" => "center first", "toggle" => "dl_selected"),
-         "upload_id"          => array("title"=>DOWLAN_67,  "type"=>"", "width"=>"auto", "thclass"=>"", "forced"=>true),
+         "upload_id"          => array("title"=>LAN_ID,  "type"=>"", "width"=>"auto", "thclass"=>"", "forced"=>true),
          "upload_date"        => array("title"=>DOWLAN_78,  "type"=>"", "width"=>"auto", "thclass"=>""),
          "upload_uploader"    => array("title"=>DOWLAN_79,  "type"=>"", "width"=>"auto", "thclass"=>""),
          "upload_name"        => array("title"=>DOWLAN_12,  "type"=>"", "width"=>"auto", "thclass"=>""),
@@ -1890,12 +1890,12 @@ class adminDownload extends download
       if ($id)
       {
          admin_update($sql->db_Update("download_category", "download_category_name='{$download_category_name}', download_category_description='{$download_category_description}', download_category_icon ='{$download_category_icon}', download_category_parent= '{$download_categoory_parent}', download_category_class='{$download_category_class}' WHERE download_category_id='{$id}'"), 'update', DOWLAN_48);
-         $admin_log->log_event('DOWNL_03',$download_category_name.'[!br!]'.$download_category_description,E_LOG_INFORMATIVE,'');
+         e107::getLog()->add('DOWNL_03',$download_category_name.'[!br!]'.$download_category_description,E_LOG_INFORMATIVE,'');
       }
       else
       {
          admin_update($sql->db_Insert("download_category", "0, '{$download_category_name}', '{$download_category_description}', '{$download_category_icon}', '{$download_categoory_parent}', '{$download_category_class}', 0 "), 'insert', DOWLAN_47);
-         $admin_log->log_event('DOWNL_02',$download_category_name.'[!br!]'.$download_category_description,E_LOG_INFORMATIVE,'');
+         e107::getLog()->add('DOWNL_02',$download_category_name.'[!br!]'.$download_category_description,E_LOG_INFORMATIVE,'');
       }
       if ($subAction == "sn")
       {
@@ -1914,7 +1914,7 @@ class adminDownload extends download
       if ($delete == "mirror")
       {
          admin_update($sql -> db_Delete("download_mirror", "mirror_id=".$del_id), delete, DOWLAN_135);
-         $admin_log->log_event('DOWNL_14','ID: '.$del_id,E_LOG_INFORMATIVE,'');
+         e107::getLog()->add('DOWNL_14','ID: '.$del_id,E_LOG_INFORMATIVE,'');
       }
 
 
@@ -2059,12 +2059,12 @@ class adminDownload extends download
          if (isset($_POST['id']))
          {
             admin_update($sql -> db_Update("download_mirror", "mirror_name='{$name}', mirror_url='{$url}', mirror_image='".$tp->toDB($_POST['mirror_image'])."', mirror_location='{$location}', mirror_description='{$description}' WHERE mirror_id=".intval($_POST['id'])), 'update', DOWLAN_133);
-            $admin_log->log_event('DOWNL_13','ID: '.intval($_POST['id']).'[!br!]'.$logString,E_LOG_INFORMATIVE,'');
+            e107::getLog()->add('DOWNL_13','ID: '.intval($_POST['id']).'[!br!]'.$logString,E_LOG_INFORMATIVE,'');
          }
          else
          {
             admin_update($sql -> db_Insert("download_mirror", "0, '{$name}', '{$url}', '".$tp->toDB($_POST['mirror_image'])."', '{$location}', '{$description}', 0"), 'insert', DOWLAN_134);
-            $admin_log->log_event('DOWNL_12',$logString,E_LOG_INFORMATIVE,'');
+            e107::getLog()->add('DOWNL_12',$logString,E_LOG_INFORMATIVE,'');
          }
       }
    }*/

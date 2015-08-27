@@ -33,7 +33,7 @@ if (!defined('e107_INIT'))
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_upload_handler.php');
 
 //define("UH_DEBUG",TRUE);
-define("UH_DEBUG", FALSE);
+
 
 //FIXME need another name
 // define('e_UPLOAD_TEMP_DIR', e_MEDIA.'temp/');
@@ -115,30 +115,45 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 	$admin_log = e107::getAdminLog();
 
 	$ul_temp_dir = '';
-	if (ini_get('open_basedir') != '')
-	{ // Need to move file to intermediate directory before we can read its contents to check it.
+	if (ini_get('open_basedir') != '') // Need to move file to intermediate directory before we can read its contents to check it.
+	{ 
 		$ul_temp_dir = e_UPLOAD_TEMP_DIR;
 	}
-
+	
+	if(E107_DEBUG_LEVEL > 0)
+	{
+		define("UH_DEBUG", true);	
+	}
+	else
+	{
+		define("UH_DEBUG", false);		
+	}
+	
 	if (UH_DEBUG)
-		$admin_log->
-			e_log_event(10, debug_backtrace(), "DEBUG", "Upload Handler test", "Process uploads to {$uploaddir}, fileinfo  ".$fileinfo, FALSE, LOG_TO_ROLLING);
+	{
+		e107::getLog()->e_log_event(10, debug_backtrace(), "DEBUG", "Upload Handler test", "Process uploads to {$uploaddir}, fileinfo  ".$fileinfo, FALSE, LOG_TO_ROLLING);
+	}
+	
 	//	$admin_log->e_log_event(10,__FILE__."|".__FUNCTION__."@".__LINE__,"DEBUG","Upload Handler test","Intermediate directory: {$ul_temp_dir} ",FALSE,LOG_TO_ROLLING);
 
 	$overwrite = varset($options['overwrite'], FALSE);
 
 	$uploaddir = realpath($uploaddir); // Mostly to get rid of the grot that might be passed in from legacy code. Also strips any trailing '/'
+	
 	if (!is_dir($uploaddir))
 	{
 		if (UH_DEBUG)
-			$admin_log->
-				e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Invalid directory: ".$uploaddir, FALSE, FALSE);
+		{
+			e107::getLog()->e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Invalid directory: ".$uploaddir, FALSE, FALSE);
+		}
+		
 		return FALSE; // Need a valid directory
 	}
 	if (UH_DEBUG)
-		$admin_log->
-			e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Destination directory: ".$uploaddir, FALSE, FALSE);
-
+	{
+		e107::getLog()->e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Destination directory: ".$uploaddir, FALSE, FALSE);
+	}
+	
 	$final_chmod = varset($options['final_chmod'], 0644);
 
 	if (isset($options['file_array_name']))
@@ -155,26 +170,28 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 	if (!is_array($files))
 	{
 		if (UH_DEBUG)
-			$admin_log->
-				e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "No files uploaded", FALSE, FALSE);
+		{
+			e107::getLog()->e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "No files uploaded", FALSE, FALSE);
+		}
 		return FALSE;
 	}
 
-	$uploaded = array(
-	);
+	$uploaded = array();
 
-	$max_upload_size = calc_max_upload_size(varset($options['max_upload_size'], -1)); // Find overriding maximum upload size
-	$allowed_filetypes = get_filetypes(varset($options['file_mask'], ''), varset($options['filetypes'], ''));
-	$max_upload_size = set_max_size($allowed_filetypes, $max_upload_size);
+	$max_upload_size 	= calc_max_upload_size(varset($options['max_upload_size'], -1)); // Find overriding maximum upload size
+	$allowed_filetypes 	= get_filetypes(varset($options['file_mask'], ''), varset($options['filetypes'], ''));
+	$max_upload_size 	= set_max_size($allowed_filetypes, $max_upload_size);
 
 	// That's the basics set up - we can start processing files now
 
 	if (UH_DEBUG)
-		$admin_log->
-			e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Start individual files: ".count($files['name'])." Max upload: ".$max_upload_size, FALSE, FALSE);
-
+	{
+		e107::getLog()->e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Start individual files: ".count($files['name'])." Max upload: ".$max_upload_size, FALSE, FALSE);
+	}
+	
 	$c = 0;
 	$tp = e107::getParser();
+	
 	foreach ($files['name'] as $key=>$name)
 	{
 		$first_error = FALSE; // Clear error flag
@@ -191,9 +208,10 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 				$files['type'][$key] = 'Unknowm mime-type';
 
 			if (UH_DEBUG)
-				$admin_log->
-					e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Process file {$name}, size ".$files['size'][$key], FALSE, FALSE);
-
+			{
+				e107::getLog()->e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Process file {$name}, size ".$files['size'][$key], FALSE, FALSE);
+			}
+			
 			if ($max_file_count && ($c >= $max_file_count))
 			{
 				$first_error = 249; // 'Too many files uploaded' error
@@ -261,11 +279,15 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 					{ // Need to move file to our own temporary directory
 						$tempfilename = $uploadfile;
 						$uploadfile = $ul_temp_dir.basename($uploadfile);
+						
 						if (UH_DEBUG)
-							$admin_log->
-								e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Move {$tempfilename} to {$uploadfile} ", FALSE, LOG_TO_ROLLING);
+						{
+							e107::getLog()->e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Move {$tempfilename} to {$uploadfile} ", FALSE, LOG_TO_ROLLING);
+						}
+						
 						@move_uploaded_file($tempfilename, $uploadfile); // This should work on all hosts
 					}
+					
 					$tpos = (($file_status = vet_file($uploadfile, $name, $allowed_filetypes, varset($options['extra_file_types'], FALSE))) === TRUE);
 				}
 				if ($tpos === FALSE)
@@ -275,8 +297,8 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 				}
 			}
 
-			if (!$first_error)
-			{ // All tests passed - can store it somewhere
+			if (!$first_error)  // All tests passed - can store it somewhere
+			{
 				$uploaded[$c]['name'] = $name;
 				$uploaded[$c]['rawname'] = $raw_name;
 				$uploaded[$c]['origname'] = $origname;
@@ -288,14 +310,20 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 				if ((!$ul_temp_dir && @move_uploaded_file($uploadfile, $destination_file)) || ($ul_temp_dir && @rename($uploadfile, $destination_file))) // This should work on all hosts
 				{
 					@chmod($destination_file, $final_chmod);
+					
 					if (UH_DEBUG)
-						$admin_log->
-							e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Final chmod() file {$destination_file} to {$final_chmod} ", FALSE, FALSE);
-
+					{
+						e107::getLog()->e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Final chmod() file {$destination_file} to {$final_chmod} ", FALSE, FALSE);
+					}
+									
 					$uploaded[$c]['size'] = $files['size'][$key];
+					$uploaded[$c]['fullpath'] = $uploaddir.DIRECTORY_SEPARATOR.$name;
+					
 					if (UH_DEBUG)
-						$admin_log->
-							e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Saved file {$c} OK: ".$uploaded[$c]['name'], FALSE, FALSE);
+					{
+						e107::getLog()->e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Saved file {$c} OK: ".$uploaded[$c]['name'], FALSE, FALSE);
+					}
+								
 				}
 				else
 				{
@@ -303,8 +331,8 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 				}
 			}
 
-			if (!$first_error)
-			{ // This file succeeded
+			if (!$first_error) // This file succeeded
+			{ 
 				$uploaded[$c]['message'] = LANUPLOAD_3." '".$raw_name."'";
 				$uploaded[$c]['error'] = 0;
 			}
@@ -360,19 +388,24 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 						$error = LANUPLOAD_16;
 				}
 
-				$uploaded[$c]['message'] = LANUPLOAD_11." '".$name."' <br />".LANUPLOAD_12.": ".$error;
+				$uploaded[$c]['message'] = LANUPLOAD_11." '".$name."' <br />".LAN_ERROR.": ".$error;
 				$uploaded[$c]['line'] = __LINE__;
 				$uploaded[$c]['file'] = __FILE__;
-				if (UH_DEBUG)
-					$admin_log->
-						e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Main routine error {$first_error} file {$c}: ".$uploaded[$c]['message'], FALSE, FALSE);
-				// If we need to abort on first error, do so here - could check for specific error codes
+				
+				if (UH_DEBUG) // If we need to abort on first error, do so here - could check for specific error codes
+				{
+					e107::getLog()->e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Main routine error {$first_error} file {$c}: ".$uploaded[$c]['message'], FALSE, FALSE);
+				}
 			}
+			
 			if (is_file($uploadfile))
+			{
 				@unlink($uploadfile); // Don't leave the file on the server if error (although should be auto-deleted)
+			}
 			$c++;
 		}
 	}
+
 	return $uploaded;
 }
 

@@ -86,7 +86,7 @@ class featurebox_setup
 
 	function upgrade_required()
 	{	
-		if(!e107::getDb()->db_Table_exists('featurebox_category'))
+		if(!e107::getDb()->isTable('featurebox_category'))
 		{
 			return true; // true to trigger an upgrade alert, and false to not. 	
 		}

@@ -1,18 +1,10 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Copyright (C) 2001-2002 Steve Dunstan (jalist@e107.org)
-|     Copyright (C) 2008-2013 e107 Inc (e107.org)
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-+----------------------------------------------------------------------------+
-*/
-
+ /**
+ * Copyright (C) e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * 
+ * YouTube BBcode
+ */
+ 
 if (!defined('e107_INIT')) { exit; }
 
 /**
@@ -56,7 +48,7 @@ class bb_youtube extends e_bb_base
 		// Convert Simple URLs. 
 		if(strpos($code_text,"youtube.com/watch?v=")!==FALSE || strpos($code_text,"youtube.com/watch#!v=")!==FALSE )
 		{
-			$validUrls = array("http://","www.","youtube.com/watch?v=","youtube.com/watch#!v=");
+			$validUrls = array("http://", "https://", "www.","youtube.com/watch?v=","youtube.com/watch#!v=");
 			$tmp = str_replace($validUrls,'',$code_text);
 			$qrs = explode("&",$tmp);		
 			$code_text = $qrs[0];
@@ -341,17 +333,27 @@ class bb_youtube extends e_bb_base
 		$class = "bbcode ".e107::getBB()->getClass('youtube'); // consistent classes across all themes. 
 		
 		$ret = "<!-- Start YouTube-".$dimensions."-".$yID." -->\n";	// <-- DO NOT MODIFY - used for detection by bbcode handler. 	
-		$ret .= '<object class="'.$class.'" width="'.$params['w'].'" height="'.$params['h'].'" >
-			<param name="movie" value="'.$url.'" />
-			<param name="allowFullScreen" value="'.$fscr.'" />
-			<param name="allowscriptaccess" value="always" />
-			<param name="wmode" value="transparent" />
-		';		
-			
-		// Not XHTML - but needed for compatibility. 
-		$ret .= '<embed class="'.$class.'" src="'.$url.'" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="'.$fscr.'" wmode="transparent" width="'.$params['w'].'" height="'.$params['h'].'" />';
 		
-		$ret .= '</object>';
+		
+		if(e107::getConfig()->get('youtube_bbcode_responsive') == 1) // Responsive Mode. 
+		{
+			$ret .= e107::getParser()->toVideo($yID.".youtube");	
+		}
+		else // Legacy Mode. 
+		{
+			$ret .= '<object class="'.$class.'" width="'.$params['w'].'" height="'.$params['h'].'" >
+				<param name="movie" value="'.$url.'" />
+				<param name="allowFullScreen" value="'.$fscr.'" />
+				<param name="allowscriptaccess" value="always" />
+				<param name="wmode" value="transparent" />
+			';		
+				
+			// Not XHTML - but needed for compatibility. 
+			$ret .= '<embed class="'.$class.'" src="'.$url.'" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="'.$fscr.'" wmode="transparent" width="'.$params['w'].'" height="'.$params['h'].'" />';
+			
+			$ret .= '</object>';
+		}
+		
 		$ret .= "<!-- End YouTube -->"; // <-- DO NOT MODIFY. 
 
 

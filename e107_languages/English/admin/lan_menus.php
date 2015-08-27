@@ -25,7 +25,7 @@ define("MENLAN_15", "Deactivate");
 define("MENLAN_17", "Move Up");
 define("MENLAN_18", "Move Down");
 define("MENLAN_19", "Move to Area");
-define("MENLAN_20", "Visibility");
+//define("MENLAN_20", "Visibility");//LAN_VISIBILITY
 
 // define("MENLAN_21", "Visible to Guests only");
 define("MENLAN_22", "Inactive Menus");
@@ -34,9 +34,9 @@ define("MENLAN_23", "Move to bottom");
 define("MENLAN_24", "Move to top");
 define("MENLAN_25", "Action...");
 
-define("MENLAN_26", "This menu will only be <strong>SHOWN</strong> on the following pages"); //FIXME HTML
-define("MENLAN_27", "This menu will only be <strong>HIDDEN</strong> on the following pages"); //FIXME HTML
-define("MENLAN_28", "Enter one page per line, enter enough of the url to distinguish it properly.  If you need the ending of the url to match exactly, use a ! at the end of the page name <br />For example: <strong>page.php?1!</strong>"); //FIXME HTML
+define("MENLAN_26", "This menu will only be [b]SHOWN[/b] on the following pages");
+define("MENLAN_27", "This menu will only be [b]HIDDEN[/b] on the following pages");
+define("MENLAN_28", "Enter one page per line, enter enough of the url to distinguish it properly.  If you need the ending of the url to match exactly, use a ! at the end of the page name. For example: [b]page.php?1![/b]");
 
 define("MENLAN_29", "Select Layout");
 define("MENLAN_30", "To see the menu areas and their positions for custom layouts, select the custom layout here.");
@@ -57,6 +57,7 @@ define("MENLAN_41", "The position of all your menus for this layout will be lost
 define("MENLAN_42", "Custom");
 define("MENLAN_43", "Menu Preset Activated");
 
-
+define("MENLAN_44", "Menu parameters");
+define("MENLAN_45", "Parameters (query string format):");
 
 ?>

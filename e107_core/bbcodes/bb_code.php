@@ -20,6 +20,11 @@ class bb_code extends e_bb_base
 	//	$code_text = str_replace('<','&ltr;',$code_text);
 		$code_text = htmlentities($code_text, ENT_QUOTES, 'utf-8');	
 
+	//	$srch = array('{','}');
+	//	$repl = array( '&lbrace;', '&rbrace;'); // avoid code getting parsed as templates or shortcodes. 
+			
+	//	$code_text = str_replace($srch, $repl, $code_text);
+
 		return $paramet ? '[code='.$paramet.']'.$code_text.'[/code]' : '[code]'.$code_text.'[/code]';
 	}
 
@@ -48,6 +53,8 @@ class bb_code extends e_bb_base
 		$search = array(E_NL,'&#092;','&#036;', '&lt;');
 		$replace = array("\r\n","\\",'$', '<');
 		$code_text = str_replace($search, $replace, $code_text);
+
+
 
 
 		if(isset($pref['useGeshi']) && $pref['useGeshi'] && file_exists(e_PLUGIN."geshi/geshi.php")) 
@@ -80,6 +87,11 @@ class bb_code extends e_bb_base
 				$code_text = html_entity_decode($code_text, ENT_QUOTES, 'utf-8');	
 				$code_text = trim($code_text);
 				$code_text = htmlspecialchars($code_text, ENT_QUOTES, 'utf-8');
+
+				$srch = array('{','}');
+				$repl = array('&lbrace;', '&rbrace;'); 
+
+				$code_text = str_replace($srch, $repl, $code_text); // avoid code getting parsed as templates or shortcodes. 
 				
 				if($parm == 'inline')
 				{
@@ -92,7 +104,10 @@ class bb_code extends e_bb_base
 				$ret = "<pre class='prettyprint linenums ".$tp -> toAttribute($divClass)." code-box {$class}' style='unicode-bidi: embed; direction: ltr'>".$code_text."</pre>";
 		}
 			
+	
+			
 		$ret = str_replace("[", "&#091;", $ret);
+		
 		return $ret;
 		
 	}

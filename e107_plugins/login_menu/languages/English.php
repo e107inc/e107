@@ -14,65 +14,65 @@
  * $Author$
  */
 
-define("LOGIN_MENU_L1", "Username: ");
-define("LOGIN_MENU_L2", "Password: ");
-define("LOGIN_MENU_L3", "Signup");
-define("LOGIN_MENU_L4", "Forgot password?");
-define("LOGIN_MENU_L5", "Welcome");
-define("LOGIN_MENU_L6", "Remember me");
-define("LOGIN_MENU_L7", "Unique user ID not recognised (possible corrupted cookie). Please click the logout link below to destroy cookie.");
-define("LOGIN_MENU_L8", "Logout");
-define("LOGIN_MENU_L9", "Login Error");
-define("LOGIN_MENU_L10", "The maintenance flag is true - this means normal visitors are being redirected to sitedown.php. To reset the flag go to admin/maintenance.");
-define("LOGIN_MENU_L11", "Admin Area");
-define("LOGIN_MENU_L12", "Settings");
-define("LOGIN_MENU_L13", "Profile");
-define("LOGIN_MENU_L14", "news item");
-define("LOGIN_MENU_L15", "news items");
-define("LOGIN_MENU_L16", "chatbox post");
-define("LOGIN_MENU_L17", "chatbox posts");
-define("LOGIN_MENU_L18", "comment");
-define("LOGIN_MENU_L19", "comments");
-define("LOGIN_MENU_L20", "forum post");
-define("LOGIN_MENU_L21", "forum posts");
-define("LOGIN_MENU_L22", "new site member");
-define("LOGIN_MENU_L23", "new site members");
-define("LOGIN_MENU_L24", "Click here to see list of new items");
-define("LOGIN_MENU_L25", "Since your last visit there have been");
-define("LOGIN_MENU_L26", "no");
-define("LOGIN_MENU_L27", "and");
-define("LOGIN_MENU_L28", "Login");
-
-//define("LOGIN_MENU_L29", "new article");
-//define("LOGIN_MENU_L30", "new articles");
+define("LAN_LOGINMENU_1", "Username: ");
+define("LAN_LOGINMENU_2", "Password: ");
+define("LAN_LOGINMENU_3", "Sign up");
+define("LAN_LOGINMENU_4", "Forgot password?");
+define("LAN_LOGINMENU_5", "Welcome");
+define("LAN_LOGINMENU_6", "Remember me");
+define("LAN_LOGINMENU_7", "Unique user ID not recognised (possible corrupted cookie). Please click the logout link below to destroy cookie.");
+// define("LAN_LOGINMENU_8", "Logout");
+define("LAN_LOGINMENU_9", "Login Error");
+define("LAN_LOGINMENU_10", "The maintenance flag is true - this means normal visitors are being redirected to sitedown.php. To reset the flag go to admin/maintenance.");
+define("LAN_LOGINMENU_11", "Admin Area");
+// define("LAN_LOGINMENU_12", "Settings");
+define("LAN_LOGINMENU_13", "Profile");
+define("LAN_LOGINMENU_14", "news item");
+define("LAN_LOGINMENU_15", "news items");
+define("LAN_LOGINMENU_16", "chatbox post");
+define("LAN_LOGINMENU_17", "chatbox posts");
+define("LAN_LOGINMENU_18", "comment");
+define("LAN_LOGINMENU_19", "comments");
+define("LAN_LOGINMENU_20", "forum post");
+define("LAN_LOGINMENU_21", "forum posts");
+define("LAN_LOGINMENU_22", "new site member");
+define("LAN_LOGINMENU_23", "new site members");
+define("LAN_LOGINMENU_24", "Click here to see list of new items");
+define("LAN_LOGINMENU_25", "Since your last visit there have been");
+define("LAN_LOGINMENU_26", "no");
+define("LAN_LOGINMENU_27", "and");
+//define("LAN_LOGINMENU_28", "Login");
+//define("LAN_LOGINMENU_29", "new article");
+//define("LAN_LOGINMENU_30", "new articles");
 
 // New config options
-define('LOGIN_MENU_L31', 'Show New News Posts');
-//define('LOGIN_MENU_L32', 'Show New Article Posts');
-//define('LOGIN_MENU_L33', 'Show New Chatbox Posts');
-define('LOGIN_MENU_L34', 'Show New Comment Posts');
-//define('LOGIN_MENU_L35', 'Show New Forum Posts');
-define('LOGIN_MENU_L36', 'Show New Members');
+define("LAN_LOGINMENU_31", "Show New News Posts");
+//define("LAN_LOGINMENU_32", "Show New Article Posts");
+//define("LAN_LOGINMENU_33", "Show New Chatbox Posts");
+define("LAN_LOGINMENU_34", "Show New Comment Posts");
+//define("LAN_LOGINMENU_35", "Show New Forum Posts");
+define("LAN_LOGINMENU_36", "Show New Members");
 
 
-define('LOGIN_MENU_L39', 'Leave Admin');
-define("LOGIN_MENU_L40", "Resend Activation Email");
-define("LOGIN_MENU_L41", "Login Menu Settings");
+define("LAN_LOGINMENU_39", "Leave Admin");
+define("LAN_LOGINMENU_40", "Resend Activation Email");
+define("LAN_LOGINMENU_41", "Login Menu Settings");
 
 //new v0.8
-define('LOGIN_MENU_L37', 'Show');
-define('LOGIN_MENU_L38', 'Login menu - Additional Links');
+define("LAN_LOGINMENU_37", "Show");
+define("LAN_LOGINMENU_38", "Login menu - Additional Links");
 
-define('LOGIN_MENU_L42', 'Login menu - Recent core additions');
-define('LOGIN_MENU_L43', 'Position');
-define('LOGIN_MENU_L44', 'missing link title');
-define('LOGIN_MENU_L45', 'link(s) -');
-define('LOGIN_MENU_L45a', ''); //pre
-define('LOGIN_MENU_L45b', 'plugin'); //post
-define('LOGIN_MENU_L46', 'recent items -');
-define('LOGIN_MENU_L47', 'Login menu - Recent plugin additions');
-define('LOGIN_MENU_L48', 'Menu Config');
-define('LOGIN_MENU_L49', 'Email: ');
-define('LOGIN_MENU_L50', 'Username or Email: '); 
+define("LAN_LOGINMENU_42", "Login menu - Recent core additions");
+define("LAN_LOGINMENU_43", "Position");
+define("LAN_LOGINMENU_44", "missing link title");
+define("LAN_LOGINMENU_45", "link(s) -");
+define("LAN_LOGINMENU_45a", ""); //pre
+define("LAN_LOGINMENU_45b", "plugin"); //post
+define("LAN_LOGINMENU_46", "recent items -");
+define("LAN_LOGINMENU_47", "Login menu - Recent plugin additions");
+define("LAN_LOGINMENU_48", "Menu Config");
+define("LAN_LOGINMENU_49", "Email: ");
+define("LAN_LOGINMENU_50", "Username or Email: ");
+define("LAN_LOGINMENU_51", "Sign In");
 
 ?>

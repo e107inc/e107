@@ -13,6 +13,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 // advanced 
+/*
 $advanced_where = "";
 if (isset($_GET['time']) && is_numeric($_GET['time'])) {
 	$advanced_where .= " page_datestamp ".($_GET['on'] == 'new' ? '>=' : '<=')." '".(time() - $_GET['time'])."' AND";
@@ -41,5 +42,6 @@ function search_pages($row) {
 	$res['detail'] = LAN_SEARCH_3.$con -> convert_date($row['page_datestamp'], "long");
 	return $res;
 }
+*/
 
 ?>

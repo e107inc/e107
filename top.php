@@ -72,18 +72,18 @@ if ($action == 'active')
 		{$from}, {$view}
 	";
 
-	if ($sql->db_Select_gen($qry))
+	if ($sql->gen($qry))
 	{
-		$text = "<div style='text-align:center'>\n<table style='width:auto' class='fborder'>\n";
-		$gen = e107::getDateConvert();
+		$text = "<div>\n<table style='width:auto' class='table fborder'>\n";
+		$gen = e107::gethateConvert();
 
 		$text .= "<tr>
-			<td style='width:5%' class='forumheader'>&nbsp;</td>
-			<td style='width:45%' class='forumheader'>".LAN_1."</td>
-			<td style='width:15%; text-align:center' class='forumheader'>".LAN_2."</td>
-			<td style='width:5%; text-align:center' class='forumheader'>".LAN_3."</td>
-			<td style='width:5%; text-align:center' class='forumheader'>".LAN_4."</td>
-			<td style='width:25%; text-align:center' class='forumheader'>".LAN_5."</td>
+			<th style='width:5%' class='forumheader'>&nbsp;</th>
+			<th style='width:45%' class='forumheader'>".LAN_1."</th>
+			<th style='width:15%; text-align:center' class='forumheader'>".LAN_2."</th>
+			<th style='width:5%; text-align:center' class='forumheader'>".LAN_3."</th>
+			<th style='width:5%; text-align:center' class='forumheader'>".LAN_4."</th>
+			<th style='width:25%; text-align:center' class='forumheader'>".LAN_5."</th>
 			</tr>\n";
 
 		while ($row = $sql->db_Fetch(MYSQL_ASSOC))
@@ -103,7 +103,7 @@ if ($action == 'active')
 			$lastpost_datestamp = $gen->convert_date($row['thread_lastpost'], 'forum');
 			if ($row['user_last'])
 			{
-				$LASTPOST = "<a href='".$e107->url->create('user/profile/view', "name={$row['user_last']}&id={$row['thread_lastuser']}")."'>{$row['user_last']}</a><br />".$lastpost_datestamp;
+				$LASTPOST = "<a href='".e107::getUrl()->create('user/profile/view', "name={$row['user_last']}&id={$row['thread_lastuser']}")."'>{$row['user_last']}</a><br />".$lastpost_datestamp;
 			}
 			else
 			{
@@ -155,17 +155,17 @@ if ($action == 'top')
 		";
 		//		$top_forum_posters = $sql->db_Select("user", "*", "`user_forums` > 0 ORDER BY user_forums DESC LIMIT ".$from.", ".$view."");
 		$text = "
-			<div style='text-align:center'>
-			<table style='width:95%' class='fborder'>
+			<div>
+			<table style='width:95%' class='table table-striped fborder'>
 			<tr>
-			<td style='width:10%; text-align:center' class='forumheader3'>&nbsp;</td>
-			<td style='width:50%' class='forumheader3'>".TOP_LAN_1."</td>
-			<td style='width:10%; text-align:center' class='forumheader3'>".TOP_LAN_2."</td>
-			<td style='width:30%; text-align:center' class='forumheader3'>".TOP_LAN_6."</td>
+			<th style='width:10%; text-align:center' class='forumheader3'>&nbsp;</th>
+			<th style='width:50%' class='forumheader3'>".TOP_LAN_1."</th>
+			<th style='width:10%; text-align:center' class='forumheader3'>".TOP_LAN_2."</th>
+			<th style='width:30%; text-align:center' class='forumheader3'>".TOP_LAN_6."</th>
 			</tr>\n";
 		$counter = 1 + $from;
 		$sql2 = e107::getDb('sql2');
-		if ($sql2->db_Select_gen($qry))
+		if ($sql2->gen($qry))
 		{
 			while ($row = $sql2->db_Fetch(MYSQL_ASSOC))
 			{
@@ -217,13 +217,13 @@ if ($action == 'top')
 			<tr>
 			<td style='width:10%; text-align:center' class='forumheader3'>&nbsp;</td>
 			<td style='width:50%' class='forumheader3'>".TOP_LAN_1."</td>
-			<td style='width:10%; text-align:center' class='forumheader3'>".TOP_LAN_4."</td>
+			<td style='width:10%; text-align:center' class='forumheader3'>".LAN_COMMENTS."</td>
 			<td style='width:30%; text-align:center' class='forumheader3'>".TOP_LAN_6."</td>
 			</tr>\n";
 		$counter = 1;
 		if($top_forum_posters)
 		{
-			while ($row = $sql->db_Fetch())
+			while ($row = $sql->fetch())
 			{
 				// TODO - Custom ranking (comments), LANs
 				$ldata = $rank->getRanks($row);

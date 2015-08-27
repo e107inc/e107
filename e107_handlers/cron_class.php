@@ -17,8 +17,9 @@
 */
 if (!defined('e107_INIT')) { exit; }
 
-define ('CRON_MAIL_DEBUG', TRUE);
-define ('CRON_RETRIGGER_DEBUG', TRUE);
+define ('CRON_MAIL_DEBUG', false);
+define ('CRON_RETRIGGER_DEBUG', false);
+
 class _system_cron 
 {
 	
@@ -29,6 +30,53 @@ class _system_cron
 	{
 	    // Whatever code you wish.
 	}
+	
+	/**
+	 * Update the current Repo. of this e107 installation.  (eg. e107 on github)
+	 */
+	function gitrepo()
+	{
+		$mes = e107::getMessage();
+		$fl = e107::getFile();
+		
+		if(is_dir(e_BASE.".git")) // Check it's a Git Repo
+		{
+
+			$gitPath = defset('e_GIT','git'); // addo to e107_config.php to
+				
+			// Change Dir. 
+			$cmd = 'cd '.e_ROOT;
+			$mes->addDebug($cmd);
+			$text = `$cmd 2>&1`;
+			
+			// Remove any local changes. 
+			$cmd = $gitPath.' reset --hard';
+			$mes->addDebug($cmd);
+			$text .= `$cmd 2>&1`;
+			
+			// Run Pull request
+			$cmd = $gitPath.' pull';
+			$mes->addDebug($cmd);
+			$text .= `$cmd 2>&1`;
+
+			$return = print_a($text,true);
+			$mes->addSuccess($return);
+			
+			if(unlink(e_BASE."install.php"))
+			{
+				$mes->addDebug("Removed install.php");	
+			}
+		}
+		else
+		{
+			$mes->addError("No git repo found");	//TODO LAN
+		}
+		
+		$fl->chmod(e_BASE."cron.php",0755);
+		$fl->chmod(e_HANDLER."bounce_handler.php",0755);
+	}
+	
+	
 	
 	/**
 	 * Burnsy - This is just a test
@@ -124,21 +172,40 @@ class _system_cron
 
 	    sendemail($pref['siteadminemail'], "e107 - TEST Email Sent by cron.".date("r"), $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);
 	}
-	
-	function procEmailQueue()
+
+
+	/**
+	 * Process the Mail Queue
+	 * First create a mail queue then debug with the following:
+	   require_once(e_HANDLER."cron_class.php");
+	   $cron = new _system_cron;
+	   $cron->procEmailQueue(true);
+	 * @param bool $debug
+	 */
+	function procEmailQueue($debug= false)
 	{
-		//global $pref;
+
+		$sendPerHit = e107::getConfig()->get('mail_workpertick',5);
+		$pauseCount =  e107::getConfig()->get('mail_pause',5);
+		$pauseTime =  e107::getConfig()->get('mail_pausetime',2);
+			
 		if (CRON_MAIL_DEBUG)
 		{
-			$e107 = e107::getInstance();
-			$e107->admin_log->e_log_event(10,debug_backtrace(),'DEBUG','CRON Email','Email run started',FALSE,LOG_TO_ROLLING);
+			e107::getLog()->e_log_event(10,debug_backtrace(),'DEBUG','CRON Email','Email run started',FALSE,LOG_TO_ROLLING);
 		}
-		require_once(e_HANDLER.'mail_manager_class.php');
-		$mailManager = new e107MailManager();
-		$mailManager->doEmailTask(varset($pref['mail_workpertick'],5));
+
+		$mailManager = e107::getBulkEmail();
+
+		if($debug === true)
+		{
+			$mailManager->controlDebug(1);
+		}
+
+		$mailManager->doEmailTask($sendPerHit,$pauseCount,$pauseTime);
+		
 		if (CRON_MAIL_DEBUG)
 		{
-			$e107->admin_log->e_log_event(10,debug_backtrace(),'DEBUG','CRON Email','Email run completed',FALSE,LOG_TO_ROLLING);
+			e107::getLog()->e_log_event(10,debug_backtrace(),'DEBUG','CRON Email','Email run completed',FALSE,LOG_TO_ROLLING);
 		}
 	}
 	
@@ -172,7 +239,7 @@ class _system_cron
 		$ipManager->banRetriggerAction();
 		if (CRON_RETRIGGER_DEBUG)
 		{
-			$e107->admin_log->e_log_event(10,debug_backtrace(),'DEBUG','CRON Ban Retrigger','Retrigger processing completed',FALSE,LOG_TO_ROLLING);
+			e107::getLog()->e_log_event(10,debug_backtrace(),'DEBUG','CRON Ban Retrigger','Retrigger processing completed',FALSE,LOG_TO_ROLLING);
 		}
 	}
 	
@@ -181,9 +248,26 @@ class _system_cron
 	{
 		
 		$sql = e107::getDb();
-		$sql->backup('*');
-		
-		
+		$file = $sql->backup('*');
+
+		if(empty($file))
+		{
+			e107::getLog()->addError('Database Backup Failed:'.basename($file))->save('BACKUP');
+			return;
+		}
+
+		$zipFile = $file.".zip";
+		e107::getFile()->zip(array($file),$zipFile, array('remove_path'=>e_BACKUP));
+
+		if(file_exists($zipFile))
+		{
+			e107::getLog()->addSuccess('Database Backup Complete: '.basename($zipFile))->save('BACKUP');
+
+			if(is_file($file))
+			{
+				unlink($file);
+			}
+		}
 		
 		return;
 		

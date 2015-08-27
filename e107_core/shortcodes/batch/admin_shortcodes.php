@@ -40,13 +40,13 @@ class admin_shortcodes
             if($parm=='icon')
             {
 				
-				return '<ul class="nav pill">
+				return '<ul class="nav navbar pill navbar-nav">
         			<li class="dropdown">
             		<a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" href="#">
                 	'.E_16_E107.' <b class="caret"></b>
             	</a> 
             	<ul class="dropdown-menu" role="menu">
-                	<li class="nav-header">Update Available</li>
+                	<li class="nav-header dropdown-header navbar-header">Update Available</li>
                     <li><a href="'.$installUrl.'">e107 v'.$cacheData.'</a></li>
 	          	 </ul>
 	        	</li>
@@ -131,12 +131,24 @@ class admin_shortcodes
 		return $ns -> tablerender(FOOTLAN_14,$text, array('id' => 'admin_docs', 'style' => 'button_menu'), TRUE);
 	}
 
+	function sc_adminui_help()
+	{
+		if (!ADMIN) { return ''; }
+
+		if($tmp = e107::getRegistry('core/e107/adminui/help'))
+		{
+			return  e107::getRender()->tablerender($tmp['caption'],$tmp['text'],'e_help',true);
+		}
+
+	}
+
 	function sc_admin_help()
 	{
 		if (!ADMIN) { return ''; }
 	
 		$ns = e107::getRender();
 		$pref = e107::getPref();
+
 	
 		if(function_exists('e_help') && ($tmp =  e_help())) // new in v2.x for non-admin-ui admin pages. 
 		{
@@ -188,7 +200,7 @@ class admin_shortcodes
 			
 			$e_icon_array = e107::getNav()->getIconArray();
 			
-			if (e_CURRENT_PLUGIN)
+			if (deftrue('e_CURRENT_PLUGIN'))
 			{
 				$eplug_icon = '';
 				$eplug_folder = e_CURRENT_PLUGIN.'/';
@@ -258,6 +270,8 @@ class admin_shortcodes
 		$lanlist = explode(',',e_LANLIST); 
 		sort($lanlist);
 		$text = '';
+
+		$lanperms = array();
 
 		foreach($lanlist as $langval)
 		{
@@ -338,7 +352,7 @@ class admin_shortcodes
 			{
 				$selected = ($lng == $sql->mySQLlanguage || ($lng == $pref['sitelanguage'] && !$sql->mySQLlanguage)) ? " selected='selected'" : "";
 				$urlval = $slng->subdomainUrl($lng);
-				$select .= "<option value='".$urlval."'{$selected}>$lng</option>\n";
+				$select .= "<option value='".$urlval."' {$selected}>$lng</option>\n";
 			}
 			$select .= "</select>";
 
@@ -421,7 +435,12 @@ class admin_shortcodes
 
 					$oldconfigs = array();
 					$oldconfigs['e-news'][0] = array('icon'=>E_16_NEWS, 'title'=>ADLAN_LAT_2, 'url'=> e_ADMIN."newspost.php?mode=sub&amp;action=list", 'total'=>$submitted_news);
-					$oldconfigs['e-comment'][0] = array('icon'=>E_16_COMMENT, 'title'=>ADLAN_LAT_9, 'url'=> e_ADMIN_ABS."comment.php?searchquery=&filter_options=comment_blocked__2", 'total'=>$comments_pending);
+
+					if(empty($pref['comments_disabled']) && varset($pref['comments_engine'],'e107') == 'e107')
+					{
+						$oldconfigs['e-comment'][0] = array('icon'=>E_16_COMMENT, 'title'=>ADLAN_LAT_9, 'url'=> e_ADMIN_ABS."comment.php?searchquery=&filter_options=comment_blocked__2", 'total'=>$comments_pending);
+					}
+
 					$oldconfigs['e-upload'][0] = array('icon'=>E_16_UPLOADS, 'title'=>ADLAN_LAT_7, 'url'=> e_ADMIN."upload.php", 'total'=>$active_uploads);
 				
 					$messageTypes = array('Broken Download', 'Dev Team Message');
@@ -457,12 +476,19 @@ class admin_shortcodes
 						}
                     }
 
-					$configs = e107::getAddonConfig('e_latest');
+			
+					$configs = e107::getAddonConfig('e_dashboard',null, 'latest');
+
+					if(!is_array($configs))
+					{
+						$configs = array();
+					}
+
 					$allconfigs = array_merge($oldconfigs,$configs);	
 					
 					$allconfigs = multiarray_sort($allconfigs,'title'); //XXX FIXME - not sorting correctly. 
 		
-					$text = "<ul id='e-latest' class='unstyled'>";
+					$text = "<ul id='e-latest' class='unstyled list-unstyled'>";
 					foreach($allconfigs as $k=>$v)
 					{
 						foreach($v as $val)
@@ -563,11 +589,11 @@ class admin_shortcodes
 			$str = str_replace('.', '', ADMINPERMS);
 			if (ADMINPERMS == '0')
 			{
-				return '<b>'.ADLAN_48.':</b> '.ADMINNAME.' ('.ADLAN_49.') '.( defined('e_DBLANGUAGE') ? '<b>'.LAN_head_5.'</b>: '.e_DBLANGUAGE : '' );
+				return '<b>'.ADLAN_48.':</b> '.ADMINNAME.' ('.ADLAN_49.') '.( defined('e_DBLANGUAGE') ? '<b>'.LAN_HEADER_05.'</b>: '.e_DBLANGUAGE : '' );
 			}
 			else
 			{
-				return '<b>'.ADLAN_48.':</b> '.ADMINNAME.' '.( defined('e_DBLANGUAGE') ? '<b>'.LAN_head_5.'</b>: '.e_DBLANGUAGE : '' );
+				return '<b>'.ADLAN_48.':</b> '.ADMINNAME.' '.( defined('e_DBLANGUAGE') ? '<b>'.LAN_HEADER_05.'</b>: '.e_DBLANGUAGE : '' );
 			}
 		}
 		else
@@ -686,24 +712,24 @@ class admin_shortcodes
        
        if ($count >0)
        {
-            $countDisp = ' <span class="label label-info">'.$count.'</span> ' ;
+            $countDisp = ' <span class="label label-primary">'.$count.'</span> ' ;
        }
        else
       {
             $countDisp = '';    
       }
          
-		$inboxUrl = e_PLUGIN.'pm/admin_config.php?'.'searchquery=&amp;iframe=1&amp;filter_options=bool__pm_to__'.USERID; 
-		$outboxUrl = e_PLUGIN.'pm/admin_config.php?'.'searchquery=&amp;iframe=1&amp;filter_options=bool__pm_from__'.USERID;
-		$composeUrl = e_PLUGIN.'pm/admin_config.php?'.'mode=main&amp;iframe=1&amp;action=create';
+		$inboxUrl = e_PLUGIN.'pm/admin_config.php?mode=inbox&amp;action=list&amp;iframe=1';
+		$outboxUrl = e_PLUGIN.'pm/admin_config.php?mode=outbox&amp;action=list&amp;iframe=1';
+		$composeUrl = e_PLUGIN.'pm/admin_config.php?mode=outbox&amp;action=create&amp;iframe=1';
 
-       $text = '<ul class="nav nav-pills">
+       $text = '<ul class="nav navbar-nav nav-pills">
         <li class="dropdown">
             <a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" href="#" >
                 '.$tp->toGlyph('fa-envelope').$countDisp.'<b class="caret"></b>
             </a> 
             <ul class="dropdown-menu" role="menu" >
-                <li class="nav-header">Private Messages</li>
+                <li class="nav-header navbar-header dropdown-header">Private Messages</li>
                     <li><a class="e-modal" data-cache="false" data-modal-caption="Inbox" data-target="#uiModal" href="'.$inboxUrl.'" >Inbox</a></li>
                     <li><a class="e-modal" data-cache="false" data-modal-caption="Outbox" data-target="#uiModal" href="'.$outboxUrl.'">Outbox</a></li>
                     <li><a class="e-modal" data-cache="false" data-modal-caption="Compose" data-target="#uiModal" href="'.$composeUrl.'">Compose</a></li>
@@ -718,7 +744,7 @@ class admin_shortcodes
         
         
         
-        
+       /*
         
 		$text = '
 		<li class="dropdown">
@@ -727,19 +753,20 @@ class admin_shortcodes
 			</a> 
 			<div id="dropdown" class="dropdown-menu pull-right e-noclick" style="padding:10px;width:300px">
 				<ul class="nav-list">
-		    		<li class="nav-header">Unread Messages</li>
+		    		<li class="nav-header navbar-header">Unread Messages</li>
 		    		<li><a href="#">Incoming Message Number 1</a></li>
 		      		<li><a href="#">Incoming Message Number 2</a></li>
 		        	<li><a href="#">Incoming Message Number 3</a></li>
-		         	<li class="divider"></li>
+		         	<li role="separator" class="divider"></li>
 		   		</ul>
 				<textarea class="e-tip input-block-level" title="Example Only"></textarea>
 				<button class="dropdown-toggle btn btn-primary">Send</button>	
 			</div>
 		</li>
 		';
-		
-		return $text;	
+
+		return $text;
+       */
 	}
 
 
@@ -753,11 +780,11 @@ class admin_shortcodes
 			ob_start();
 			if(!FILE_UPLOADS)
 			{
-				echo message_handler('ADMIN_MESSAGE', LAN_head_2, __LINE__, __FILE__);
+				echo message_handler('ADMIN_MESSAGE', LAN_HEADER_02, __LINE__, __FILE__);
 			}
 			/*
 			if(OPEN_BASEDIR){
-			echo message_handler('ADMIN_MESSAGE', LAN_head_3, __LINE__, __FILE__);
+			echo message_handler('ADMIN_MESSAGE', LAN_HEADER_03, __LINE__, __FILE__);
 			}
 			*/
 			$message_text = ob_get_contents();
@@ -824,7 +851,7 @@ class admin_shortcodes
 					if (is_readable(e_PLUGIN.$plugin_path.'/plugin.xml'))
 					{
 						$readFile = $xml->loadXMLfile(e_PLUGIN.$plugin_path.'/plugin.xml', true, true);
-						e107::loadLanFiles($plugin_path, 'admin');
+					//	e107::loadLanFiles($plugin_path, 'admin');
 						$eplug_caption 	= $tp->toHTML($readFile['@attributes']['name'], FALSE, 'defs, emotes_off');
 						$eplug_conffile = $readFile['administration']['configFile'];
 					}
@@ -849,11 +876,11 @@ class admin_shortcodes
 				unset($tmp);
 			}
 
-			$e107_var['lout']['text']=ADLAN_46;
+			$e107_var['lout']['text']=LAN_LOGOUT;
 			$e107_var['lout']['link']=e_ADMIN_ABS.'admin.php?logout';
 
 			$text = e_admin_menu('', '', $e107_var);
-			return $ns->tablerender(LAN_head_1, $text, array('id' => 'admin_nav', 'style' => 'button_menu'), TRUE);
+			return $ns->tablerender(LAN_HEADER_01, $text, array('id' => 'admin_nav', 'style' => 'button_menu'), TRUE);
 		}
 	}
 
@@ -913,7 +940,7 @@ class admin_shortcodes
 					}
 				}
 
-				$caption = LAN_head_6;
+				$caption = LAN_HEADER_06;
 				if ($i>0 && $pref['admin_alerts_uniquemenu'] == 1)
 				{
 					$ns -> tablerender($caption, $text);
@@ -1065,7 +1092,7 @@ class admin_shortcodes
 					$pref = e107::getPref();
 					
 					
-					$members 		= $sql->count('user');
+					$members 		= $sql->count('user', '(*)', 'WHERE user_ban=0');
 					$unverified 	= $sql->count('user', '(*)', 'WHERE user_ban=2');
 					$banned 		= $sql->count('user', '(*)', 'WHERE user_ban=1');
 					$comments 		= $sql->count('comments');
@@ -1086,15 +1113,25 @@ class admin_shortcodes
 					// for BC only. 	
 	
 					
-					$oldconfigs['e-user'][0] 		= array('icon'=>E_16_USER, 'title'=>ADLAN_110, 'url'=> e_ADMIN_ABS."users.php?filter=0", 'total'=>$members);
-					$oldconfigs['e-user'][1] 		= array('icon'=>E_16_USER, 'title'=>ADLAN_111, 'url'=> e_ADMIN."users.php?searchquery=&amp;filter_options=user_ban__2&amp;filter=unverified", 'total'=>$unverified);
-					$oldconfigs['e-user'][2] 		= array('icon'=>E_16_BANLIST, 'title'=>ADLAN_112, 'url'=> e_ADMIN."users.php?searchquery=&filter_options=user_ban__1&filter=banned", 'total'=>$banned);
-					$oldconfigs['e-comments'][0] 	= array('icon'=>E_16_COMMENT, 'title'=>ADLAN_114, 'url'=> e_ADMIN_ABS."comment.php", 'total'=>$comments);
-				
+					$oldconfigs['e-user'][0] 		= array('icon'=>E_16_USER, 'title'=>ADLAN_110, 'url'=> e_ADMIN_ABS."users.php?searchquery=&amp;filter_options=user_ban__0", 'total'=>$members, 'invert'=>1);
+					$oldconfigs['e-user'][1] 		= array('icon'=>E_16_USER, 'title'=>ADLAN_111, 'url'=> e_ADMIN."users.php?searchquery=&amp;filter_options=user_ban__2", 'total'=>$unverified);
+					$oldconfigs['e-user'][2] 		= array('icon'=>E_16_BANLIST, 'title'=>ADLAN_112, 'url'=> e_ADMIN."users.php?searchquery=&filter_options=user_ban__1", 'total'=>$banned);
+
+
+					if(empty($pref['comments_disabled']) && varset($pref['comments_engine'],'e107') == 'e107')
+					{
+						$oldconfigs['e-comments'][0] 	= array('icon'=>E_16_COMMENT, 'title'=>LAN_COMMENTS, 'url'=> e_ADMIN_ABS."comment.php", 'total'=>$comments);
+					}
 					if($flo = $sql->count('generic', '(*)', "WHERE gen_type='failed_login'"))
 					{
 						//$text .= "\n\t\t\t\t\t<div style='padding-bottom: 2px;'>".E_16_FAILEDLOGIN." <a href='".e_ADMIN_ABS."fla.php'>".ADLAN_146.": $flo</a></div>";	
-						$oldconfigs['e-failed'][0]	= array('icon'=>E_16_FAILEDLOGIN, 'title'=>ADLAN_146, 'url'=>e_ADMIN_ABS."fla.php", 'total'=>$flo);
+						$oldconfigs['e-failed'][0]	= array('icon'=>E_16_FAILEDLOGIN, 'title'=>ADLAN_146, 'url'=>e_ADMIN_ABS."banlist.php?mode=failed&action=list", 'total'=>$flo);
+					}
+
+					if($emls = $sql->count('mail_recipients', '(*)', "WHERE mail_status = 13"))
+					{
+						//$text .= "\n\t\t\t\t\t<div style='padding-bottom: 2px;'>".E_16_FAILEDLOGIN." <a href='".e_ADMIN_ABS."fla.php'>".ADLAN_146.": $flo</a></div>";
+						$oldconfigs['e-mailout'][0]	= array('icon'=>E_16_MAIL, 'title'=>"Pending Mailshots", 'url'=>e_ADMIN_ABS."mailout.php?mode=pending&action=list", 'total'=>$emls);
 					}
 					
 					
@@ -1119,8 +1156,9 @@ class admin_shortcodes
 					}
 								
 					// New in v2.x
-					$configs = e107::getAddonConfig('e_status');
-					
+				//	$configs = e107::getAddonConfig('e_status');
+					$configs = e107::getAddonConfig('e_dashboard',null, 'status');
+		
 					if(!is_array($configs))
 					{
 						$configs = array();	
@@ -1130,12 +1168,13 @@ class admin_shortcodes
 					
 					$allconfigs = multiarray_sort($allconfigs,'title'); //XXX FIXME - not sorting correctly. 
 		
-					$text = "<ul id='e-status' class='unstyled'>";
+					$text = "<ul id='e-status' class='unstyled list-unstyled'>";
 					foreach($allconfigs as $k=>$v)
 					{
 						foreach($v as $val)
 						{
-							$class = admin_shortcodes::getBadge($val['total']); 
+							$type = empty($val['invert']) ? 'latest' : 'invert';
+							$class = admin_shortcodes::getBadge($val['total'], $type);
 							$link =  "<a href='".$val['url']."'>".str_replace(":"," ",$val['title'])." <span class='".$class."'>".$val['total']."</span></a>";	
 							$text .= "<li>".$val['icon']." ".$link."</li>\n";	
 						}	
@@ -1182,21 +1221,46 @@ Important 	6 	<span class="badge badge-important">6</span>
 Info 	8 	<span class="badge badge-info">8</span>
 Inverse 	10 	<span class="badge badge-inverse">10</span>
 		 */
+		 if($type != 'invert')
+		 {
+			 $important = 'label-important label-danger';
+			 $warning   = 'label-warning';
+			 $info      = 'label-primary';
+			 $invert = false;
+		 }
+		 else // invert
+		 {
+			 $info      = 'label-important label-danger';
+			 $warning   = 'label-warning';
+			 $important = 'label-primary';
+			 $type = 'latest';
+			 $invert = true;
+		 }
+
 		
-		$class = 'badge ';
-		if($total > 100 && $type == 'latest')
+		$class = 'label ';
+
+		if($total > 500 && $invert == true)
 		{
-			$class .= 'badge-important';
+			$class .= 'label-success';
+		}
+		elseif($total > 100 && $type == 'latest')
+		{
+			$class .= $important;
 		}
 		elseif($total > 50 && $type == 'latest')
 		{
-			$class .= 'badge-warning';
+			$class .= $warning;
 		}
 		elseif($total > 0)
 		{
-			$class .= 'badge-info';
+			$class .= $info;
 		}
-	
+
+		if(deftrue('BOOTSTRAP') !== 3)
+		{
+			$class = str_replace('label', 'badge', $class);
+		}
 		
 		return $class;		
 	}
@@ -1358,6 +1422,11 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		//CORE SUBLINKS
 		foreach ($array_functions as $key => $subitem)
 		{
+			if(!empty($subitem[3]) && !getperms($subitem[3]))
+			{
+				continue;
+			}
+
 				$catid = $admin_cat['id'][$subitem[4]];
 				$tmp = array();
 				$tmp['text'] = $subitem[1];
@@ -1397,9 +1466,9 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		$plug = new e107plugin;
 		$tmp = array();
 
-   		if($sql->db_Select("plugin", "*", "plugin_installflag =1 ORDER BY plugin_path"))
+   		if($sql->select("plugin", "*", "plugin_installflag =1 ORDER BY plugin_path"))
 		{
-			while($row = $sql->db_Fetch())
+			while($row = $sql->fetch())
 			{
 				
 				if($plug->parse_plugin($row['plugin_path']))
@@ -1416,7 +1485,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 					if(varset($plug_vars['adminLinks']['link']))
 					{
 						
-						if($row['plugin_category'] == 'menu' || !vartrue($plug_vars['adminLinks']['link'][0]['@attributes']['url']))
+						if(!empty($row['plugin_category']) && $row['plugin_category'] == 'menu' || !vartrue($plug_vars['adminLinks']['link'][0]['@attributes']['url']))
 						{
 							continue;
 						}
@@ -1426,6 +1495,11 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 						$icon_src = varset($plug_vars['administration']['iconSmall']) ? $plugpath.$plug_vars['administration']['iconSmall'] : '';
 						$icon_src_lrg = varset($plug_vars['administration']['icon']) ? $plugpath.$plug_vars['administration']['iconSmall'] : '';
 						$id = 'plugnav-'.$row['plugin_path'];
+
+						if(!getperms('P'.$row['plugin_id']))
+						{
+							continue;
+						}
 
            	  			$tmp[$id]['text'] = e107::getParser()->toHTML($plug_vars['@attributes']['name'], FALSE, "LINKTEXT");
 						$tmp[$id]['description'] = vartrue($plug_vars['description']['@value']);
@@ -1437,7 +1511,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 						$tmp[$id]['perm'] = 'P'.$row['plugin_id'];
 						$tmp[$id]['sub_class'] = '';
 						$tmp[$id]['sort'] = 2;
-						$tmp[$id]['category'] = $row['plugin_category'];
+						$tmp[$id]['category'] = varset($row['plugin_category']);
 
 						if($pref['admin_slidedown_subs'] && vartrue($plug_vars['adminLinks']['link']) )
 						{
@@ -1481,7 +1555,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		// ---------------- Cameron's Bit ---------------------------------
 
-		if(!varsettrue($pref['admin_separate_plugins']))
+		if(!vartrue($pref['admin_separate_plugins']))
 		{
         	// Convert Plugin Categories to Core Categories.
 			$convert = array(
@@ -1496,9 +1570,13 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
              foreach($tmp as $pg)
 			 {
-			 	$id = $convert[$pg['category']][1];
-             	$menu_vars[$id]['sub'][] = $pg;
+			    if(!empty($pg['category']))
+			    {
+			 	    $id = $convert[$pg['category']][1];
+             	    $menu_vars[$id]['sub'][] = $pg;
+			    }
 			 }
+
 		   	 unset($menu_vars['plugMenu']);
 			 
 		
@@ -1515,12 +1593,12 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		// ------------------------------------------------------------------
 
 		//added option to disable leave/logout (ll) - more flexibility for theme developers
-		if(!varsettrue($parms['disable_ll']))
+		if(!vartrue($parms['disable_ll']))
 		{
 		//	$menu_vars += $this->getOtherNav('home');	
 		}
 
-		// print_a($menu_vars);
+	//	 print_a($menu_vars);
 		return e107::getNav()->admin('', e_PAGE, $menu_vars, $$tmpl, FALSE, FALSE);
 		//return e_admin_men/u('', e_PAGE, $menu_vars, $$tmpl, FALSE, FALSE);
 	}
@@ -1571,7 +1649,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		{
 			$tmp = array();
 			
-			$tmp[1]['text'] = ADLAN_CL_1;
+			$tmp[1]['text'] = LAN_SETTINGS;
 			$tmp[1]['description'] = ADLAN_151;
 			$tmp[1]['link'] = e_BASE.'usersettings.php';
 			$tmp[1]['image'] =  "<i class='S16 e-settings-16'></i>"; // "<img src='".E_16_CAT_SETT."' alt='".ADLAN_151."' class='icon S16' />";
@@ -1590,7 +1668,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		//	$tmp[2]['perm'] = '';	
 			
 			
-			$tmp[3]['text'] = ADLAN_46;
+			$tmp[3]['text'] = LAN_LOGOUT;
 			$tmp[3]['description'] = ADLAN_151;
 			$tmp[3]['link'] = e_ADMIN_ABS.'admin.php?logout';
 			$tmp[3]['image'] = "<i class='S16 e-logout-16'></i>"; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
@@ -1601,7 +1679,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				
 				
 					
-			$tmp[4]['text'] = ADLAN_46;
+			$tmp[4]['text'] = LAN_LOGOUT;
 			$tmp[4]['description'] = ADLAN_151;
 			$tmp[4]['link'] = e_ADMIN_ABS.'admin.php?logout';
 			$tmp[4]['image'] = "";
@@ -1653,7 +1731,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$menu_vars['logout']['text'] = ADMINNAME; // ""; // ADMINNAME;
 			$menu_vars['logout']['link'] = '#';
 			$menu_vars['logout']['image'] = $tp->toGlyph('fa-user'); // "<i class='icon-user'></i>"; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
-			$menu_vars['logout']['image_src'] = ADLAN_46;
+			$menu_vars['logout']['image_src'] = LAN_LOGOUT;
 			$menu_vars['logout']['sub'] = $tmp;	
 		}
 
@@ -1713,7 +1791,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				$menu_vars['language']['text'] = strtoupper(e_LAN); // e_LANGUAGE;
 				$menu_vars['language']['link'] = '#';
 				$menu_vars['language']['image'] = $tp->toGlyph('fa-globe'); //  "<i class='icon-globe'></i>" ;
-				$menu_vars['language']['image_src'] = ADLAN_46;
+				$menu_vars['language']['image_src'] = null;
 				$menu_vars['language']['sub'] = $tmp;	
 			}	
 			

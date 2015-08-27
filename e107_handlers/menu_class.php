@@ -64,7 +64,7 @@ class e_menu
 		}
 		
 		//	print_a($eMenuArea);
-		if(varset($_SERVER['E_DEV_MENU']) == 'true') // New in v2.x
+		if(varset($_SERVER['E_DEV_MENU']) == 'true') // New in v2.x Experimental
 		{
 			$layouts = e107::getPref('menu_layouts');
 			if(!is_array($layouts))
@@ -76,7 +76,7 @@ class e_menu
 			$eMenuArea = $this->getData(THEME_LAYOUT);
 			//print_a($eMenuArea);
 		}
-		else // the old v1.x way. 
+		else // standard DB 'table' method.
 		{
 			$eMenuArea = $this->getDataLegacy();
 		}
@@ -188,7 +188,7 @@ class e_menu
 	
 	/** 
 	 * @DEPRECATED 
-	 * Legacy Function to retrieve Menu data from tables. - ie. the old v1.x method. 
+	 * Legacy Function to retrieve Menu data from tables.
 	 */
 	private function getDataLegacy()
 	{
@@ -425,14 +425,21 @@ class e_menu
 			
 			$sql->select("page", "*", $query);
 			$page = $sql->fetch();
+			
+			if(!empty($page['menu_class']) && !check_class($page['menu_class']))
+			{
+				echo "\n<!-- Menu not rendered due to userclass settings -->\n";
+				return;	
+			}
+			
 			$caption = (vartrue($page['menu_icon'])) ? $tp->toIcon($page['menu_icon']) : '';
 			$caption .= $tp->toHTML($page['menu_title'], true, 'parse_sc, constants');
 			
 			if(vartrue($page['menu_template'])) // New v2.x templates. see core/menu_template.php 
 			{
-				$template = e107::getCoreTemplate('menu',$page['menu_template']);	
+				$template = e107::getCoreTemplate('menu',$page['menu_template'],true,true);	// override and merge required. ie. when menu template is not in the theme, but only in the core. 
 				$page_shortcodes = e107::getScBatch('page',null,'cpage');  
-				$page_shortcodes->page = $page;
+				$page_shortcodes->setVars($page);
 				  
 				$head = $tp->parseTemplate($template['start'], true);
 				$foot = $tp->parseTemplate($template['end'], true);

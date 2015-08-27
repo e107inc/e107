@@ -9,6 +9,8 @@
 	<mainPrefs>
 		<pref name="lw_page_visibility"></pref>
 		<pref name="lw_ajax_enable">0</pref>
+        <pref name="lw_max_per_word">2</pref>
+        <pref name="lw_custom_class">e-tip</pref>
 		<pref name="lw_context_visibility">array (
 				'OLDDEFAULT' => '',
 				'TITLE' => '',

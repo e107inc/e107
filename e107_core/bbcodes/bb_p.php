@@ -62,8 +62,8 @@ class bb_p extends e_bb_base
 				
 		$class = " ".e107::getBB()->getClass('p'); // consistent classes across all themes. 
 		
-		$id = varsettrue($parms['id']) ? ' id="'.eHelper::secureIdAttr($parms['id']).'"' : '';
-		$style = varsettrue($parms['style']) ? ' style="'.eHelper::secureStyleAttr($parms['style']).'"' : '';
+		$id = vartrue($parms['id']) ? ' id="'.eHelper::secureIdAttr($parms['id']).'"' : '';
+		$style = vartrue($parms['style']) ? ' style="'.eHelper::secureStyleAttr($parms['style']).'"' : '';
 				
 		return "<p{$id}{$class}{$style}>".$code_text.'</p>';
 	}

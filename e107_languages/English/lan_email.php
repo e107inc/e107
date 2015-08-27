@@ -22,7 +22,7 @@ define("LAN_EMAIL_8", "Comment");
 define("LAN_EMAIL_9", "Sorry - unable to send email");
 define("LAN_EMAIL_10", "Mail sent to");
 define("LAN_EMAIL_11", "Email sent");
-define("LAN_EMAIL_12", "Error");
+//define("LAN_EMAIL_12", "Error"); // new > LAN_ERROR
 define("LAN_EMAIL_13", "Email article to a friend");
 define("LAN_EMAIL_14", "Email news_item to a friend");
 define("LAN_EMAIL_15", "Username: ");

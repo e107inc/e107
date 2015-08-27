@@ -1,0 +1,76 @@
+/* info: Dark stylesheet */
+
+tr.first a, th a {
+    color: rgb(198, 198, 198);
+}
+
+thead tr {
+	
+ background-color: rgb(54, 54, 54);
+    background-image: linear-gradient(to bottom, rgb(68, 68, 68), rgb(34, 34, 34));
+    border: 1px solid rgb(3, 3, 3);
+}
+
+.adminlist tr > td {
+	
+min-height:50px;
+}
+
+.datetimepicker {
+	background-color: #191919;
+}
+
+.datetimepicker thead tr:first-child th:hover, .datetimepicker tfoot tr:first-child th:hover {
+   
+    background-color: #191919;
+}
+
+.nav-collapse .nav > li > a:hover, .nav-collapse .nav > li > a:focus, .nav-collapse .dropdown-menu a:hover, .nav-collapse .dropdown-menu a:focus {
+    background-color: rgb(54, 54, 54);
+}
+
+tr.highlight-odd, .table-striped > tbody > tr.highlight-odd			{ background-color: #212121; }
+tr.highlight-even, .table-striped > tbody > tr.highlight-even		{ background-color: #212121; }
+
+.datetimepicker table tr td.day:hover {
+
+    color: black;
+}
+
+.datetimepicker table tr td span:hover {
+    color: black;
+}
+
+
+
+
+.bootstrap-select.btn-group .dropdown-menu .optgroup-div {
+    color: #363636;
+}
+
+/* Fix for font-awesome / darkstrap overlay issue. */
+.icon-white, .nav-pills > .active > a > [class^="icon-"], .nav-pills > .active > a > [class*=" icon-"], .nav-list > .active > a > [class^="icon-"], .nav-list > .active > a > [class*=" icon-"], .navbar-inverse .nav > .active > a > [class^="icon-"], .navbar-inverse .nav > .active > a > [class*=" icon-"], .dropdown-menu > li > a:hover > [class^="icon-"], .dropdown-menu > li > a:hover > [class*=" icon-"], .dropdown-menu > .active > a > [class^="icon-"], .dropdown-menu > .active > a > [class*=" icon-"], .dropdown-submenu:hover > a > [class^="icon-"], .dropdown-submenu:hover > a > [class*=" icon-"], h1 > [class^="icon-"], h2 > [class^="icon-"], h3 > [class^="icon-"], h4 > [class^="icon-"], h5 > [class^="icon-"], .btn-primary > [class^="icon-"], .nav-tabs > li > a > [class^="icon-"] {
+	background-image: none;
+}
+
+#admin-ui-nav-menu a.link-active { color: #fff }
+
+#admin-ui-media-manager.nav-tabs   { background-color: #212121 }
+.tab-content { background-color: #373737 }
+
+
+input:invalid:focus,
+textarea:invalid:focus,
+select:invalid:focus {
+	border-color: red;
+	box-shadow:  0px 1px 1px 0px rgba(255, 0, 0, 0.75) inset;
+}
+
+
+/*
+.bootstrap-select, bootstrap-select button
+{
+	color: rgb(255, 255, 255);
+	background-color: rgb(34, 34, 34);
+}
+*/
