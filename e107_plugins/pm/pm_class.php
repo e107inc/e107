@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2014 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -11,12 +11,6 @@
  */
 
 
-/**
- *	e107 Private messenger plugin
- *
- *	@package	e107_plugins
- *	@subpackage	pm
- */
 
 if (!defined('e107_INIT')) { exit; }
 
@@ -62,6 +56,7 @@ class private_message
 			{
 				$this->pm_send_receipt($pm_info);
 			}
+		  	e107::getEvent()->trigger('user_pm_read', $pm_id);
 		}
 	}
 
@@ -162,21 +157,21 @@ class private_message
 				'pm_read' => 0,							/* Date read */
 				'pm_subject' => $pm_subject,
 				'pm_text' => $pm_message,
-				'pm_sent_del' => 1,						/* Set when can delete */
+				'pm_sent_del' => 0,						/* Set when can delete */
 				'pm_read_del' => 0,						/* set when can delete */
 				'pm_attachments' => $attachlist,
 				'pm_option' => $pm_options,				/* Options associated with PM - '+rr' for read receipt */
 				'pm_size' => $pmsize
 				);
 		}
+
 		if(isset($vars['to_userclass']) || isset($vars['to_array']))
 		{
 			if(isset($vars['to_userclass']))
 			{
-				require_once(e_HANDLER.'userclass_class.php');
 				$toclass = e107::getUserClass()->uc_get_classname($vars['pm_userclass']);
 				$tolist = $this->get_users_inclass($vars['pm_userclass']);
-				$ret .= LAN_PM_38.": {$vars['to_userclass']}<br />";
+				$ret .= LAN_PM_38.": {$toclass}<br />";
 				$class = TRUE;
 			}
 			else
@@ -216,6 +211,11 @@ class private_message
 
 				if($pmid = $sql->insert('private_msg', $info))
 				{
+					$info['pm_id'] = $pmid;
+					e107::getEvent()->trigger('user_pm_sent', $info);
+
+					unset($info['pm_id']); // prevent it from being used on the next record.
+
 					if($class == FALSE)
 					{
 						$toclass .= $u['user_name'].', ';
@@ -229,6 +229,7 @@ class private_message
 				else
 				{
 					$ret .= LAN_PM_39.": {$u['user_name']} <br />";
+					e107::getMessage()->addDebug($sql->getLastErrorText());
 				}
 			}
 			if ($addOutbox)
@@ -248,6 +249,8 @@ class private_message
 			$info['pm_to'] = intval($vars['to_info']['user_id']);		// Sending to a single user now
 			if($pmid = $sql->insert('private_msg', $info))
 			{
+				$info['pm_id'] = $pmid;
+				e107::getEvent()->trigger('user_pm_sent', $info);
 				if(check_class($this->pmPrefs['notify_class'], $vars['to_info']['user_class']))
 				{
 					set_time_limit(30);
@@ -279,18 +282,22 @@ class private_message
 		if($sql->select('private_msg', '*', 'pm_id = '.$pmid.' AND (pm_from = '.USERID.' OR pm_to = '.USERID.')'))
 		{
 			$row = $sql->fetch();
+
+			// if user is the receiver of the PM
 			if (!$force && ($row['pm_to'] == USERID))
 			{
 				$newvals = 'pm_read_del = 1';
 				$ret .= LAN_PM_42.'<br />';
-				if($row['pm_sent_del'] == 1) { $force = TRUE; }
+				if($row['pm_sent_del'] == 1) { $force = TRUE; } // sender has deleted as well, set force to true so the DB record can be deleted
 			}
+
+			// if user is the sender of the PM
 			if (!$force && ($row['pm_from'] == USERID))
 			{
 				if($newvals != '') { $force = TRUE; }
 				$newvals = 'pm_sent_del = 1';
 				$ret .= LAN_PM_43."<br />";
-				if($row['pm_read_del'] == 1) { $force = TRUE; }
+				if($row['pm_read_del'] == 1) { $force = TRUE; } // receiver has deleted as well, set force to true so the DB record can be deleted
 			}
 
 			if($force == TRUE)
@@ -309,7 +316,9 @@ class private_message
 				}
 				if ($aCount[0] || $aCount[1])
 				{
-					$ret .= str_replace(array('--GOOD--', '--FAIL--'), $aCount, LAN_PM_71).'<br />';
+
+				//	$ret .= str_replace(array('--GOOD--', '--FAIL--'), $aCount, LAN_PM_71).'<br />';
+					$ret .= e107::getParser()->lanVars(LAN_PM_71, $aCount);
 				}
 				$sql->delete('private_msg', 'pm_id = '.$pmid);
 			}
@@ -345,7 +354,8 @@ class private_message
 	{
 		require_once(e_HANDLER.'mail.php');
 		$subject = LAN_PM_100.SITENAME;
-		$pmlink = $this->url('show', 'id='.$pmid, 'full=1&encode=0');
+	//	$pmlink = $this->url('show', 'id='.$pmid, 'full=1&encode=0'); //TODO broken - replace with e_url.php configuration.
+		$pmlink = SITEURLBASE.e_PLUGIN_ABS."pm/pm.php?show.".$pmid;
 		$txt = LAN_PM_101.SITENAME."\n\n";
 		$txt .= LAN_PM_102.USERNAME."\n";
 		$txt .= LAN_PM_103.$pmInfo['pm_subject']."\n";
@@ -369,12 +379,13 @@ class private_message
 	{
 		require_once(e_HANDLER.'mail.php');
 		$subject = LAN_PM_106.$pmInfo['sent_name'];
-		$pmlink = $this->url('show', 'id='.$pmInfo['pm_id'], 'full=1&encode=0');
+	//	$pmlink = $this->url('show', 'id='.$pmInfo['pm_id'], 'full=1&encode=0');
+		$pmlink = SITEURLBASE.e_PLUGIN_ABS."pm/pm.php?show.".$pmInfo['pm_id'];
 		$txt = str_replace("{UNAME}", $pmInfo['sent_name'], LAN_PM_107).date('l F dS Y h:i:s A')."\n\n";
 		$txt .= LAN_PM_108.date('l F dS Y h:i:s A', $pmInfo['pm_sent'])."\n";
 		$txt .= LAN_PM_103.$pmInfo['pm_subject']."\n";
 		$txt .= LAN_PM_105."\n".$pmlink."\n";
-		sendemail($pminfo['from_email'], $subject, $txt, $pmInfo['from_name']);
+		sendemail($pmInfo['from_email'], $subject, $txt, $pmInfo['from_name']);
 	}
 
 
@@ -620,7 +631,7 @@ class private_message
 		$qry = "
 		SELECT SQL_CALC_FOUND_ROWS pm.*, u.user_image, u.user_name FROM #private_msg AS pm
 		LEFT JOIN #user AS u ON u.user_id = pm.pm_to
-		WHERE pm.pm_from='{$uid}' AND pm.pm_sent_del=0
+		WHERE pm.pm_from='{$uid}' AND pm.pm_sent_del = '0'
 		ORDER BY pm.pm_sent DESC
 		LIMIT ".$from.', '.$limit;
 		
@@ -707,4 +718,41 @@ class private_message
 			fclose($res);
 		}
 	}
+
+
+	
+	function updateTemplate($template)
+	{
+		$array = array(
+		'FORM_TOUSER'		=> 'PM_FORM_TOUSER',
+		'FORM_TOCLASS'		=> 'PM_FORM_TOCLASS',
+		'FORM_SUBJECT'		=> 'PM_FORM_SUBJECT',
+		'FORM_MESSAGE'		=> 'PM_FORM_MESSAGE',
+		'EMOTES'			=> 'PM_EMOTES',
+		'ATTACHMENT'		=> 'PM_ATTACHMENT',
+		'RECEIPT'			=> 'PM_RECEIPT',
+		'INBOX_TOTAL'		=> 'PM_INBOX_TOTAL',
+		'INBOX_UNREAD'		=> 'PM_INBOX_UNREAD',
+		'INBOX_FILLED'		=> 'PM_INBOX_FILLED',
+		'OUTBOX_TOTAL'		=> 'PM_OUTBOX_TOTAL',
+		'OUTBOX_UNREAD'		=> 'PM_OUTBOX_UNREAD',
+		'OUTBOX_FILLED'		=> 'PM_OUTBOX_FILLED',
+
+		'SEND_PM_LINK'		=> 'PM_SEND_PM_LINK',
+		'NEWPM_ANIMATE'		=> 'PM_NEWPM_ANIMATE',
+	
+		'BLOCKED_SENDERS_MANAGE'		=> 'PM_BLOCKED_SENDERS_MANAGE',
+		'DELETE_BLOCKED_SELECTED'		=> 'DELETE_BLOCKED_SELECTED'
+		);	
+		
+		
+		foreach($array as $old => $new)
+		{	
+			$template = str_replace("{".$old."}", "{".$new."}", $template);
+		}
+		
+		return $template;
+		
+	}
+
 }

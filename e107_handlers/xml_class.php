@@ -27,7 +27,7 @@ class parseXml extends xmlClass // BC with v1.x
 		$log->addDebug('Deprecated XML Parser Used');
 		
 		$log->addArray($data);
-		$log->save('DEPRECATED',E_LOG_NOTICE);	
+		$log->save('DEPRECATED',E_LOG_NOTICE,'',false, LOG_TO_ROLLING);
 		
 	}
 	
@@ -335,7 +335,7 @@ class xmlClass
 	/**
 	 * Set Xml tags that should always return arrays.
 	 *
-	 * @param object $string (comma separated)
+	 * @param string $string (comma separated)
 	 * @return xmlClass
 	 */
 	public function setOptArrayTags($string)
@@ -578,8 +578,16 @@ class xmlClass
 		{
 			return FALSE;
 		}
-		
-		$xmlData = str_replace('content:encoded', 'content_encoded', $xmlData);
+
+		$extendedTypes = array(
+			'content:encoded'   => 'content_encoded',
+			'<media:'     => '<media_',
+			'</media:'    => '</media_',
+			'<opensearch:'  => '<opensearch_',
+			'</opensearch:' => '</opensearch_'
+		);
+
+		$xmlData = str_replace(array_keys($extendedTypes), array_values($extendedTypes), $xmlData);
 		
 		if(!$xml = simplexml_load_string($xmlData))
 		{
@@ -1081,7 +1089,7 @@ class xmlClass
 				// var_dump(e107::getArrayStorage()->ReadArray($val['@value']));
 				// echo $val['@value'].'</pre>';
 			// }
-			$value = strpos($val['@value'], 'array (') === 0 ? e107::getArrayStorage()->ReadArray($val['@value']) : $val['@value'];
+			$value = strpos($val['@value'], 'array (') === 0 ? e107::unserialize($val['@value']) : $val['@value'];
 			$pref[$name] = $value;
 
 			// $mes->add("Setting up ".$prefType." Pref [".$name."] => ".$value, E_MESSAGE_DEBUG);

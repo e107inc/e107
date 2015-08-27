@@ -25,7 +25,7 @@ if (!defined('e107_INIT')) { exit; }
  *	@todo: - change some routines to access the cached variables rather than DB
  *	@todo: Remove setting up of _FIELD_TYPES array (may be necessary, since UEF data structure not fixed)
  *	@todo: Consider changing field type constants to class constants
- *	@todo - cache field structure (already done in a different way in get_user_data() in class2.php line 1387 or so)
+ *	@todo - cache field structure (already done in a different way in e107::user() in class2.php line 1387 or so)
  *	@todo - class variables - confirm whether public/protected assignments are correct
  *	@todo - consider whether to split system and non-system fields
 
@@ -87,7 +87,7 @@ class e107_user_extended
 			4 => UE_LAN_4,
 			5 => UE_LAN_5,
 			6 => UE_LAN_6,
-			7 => UE_LAN_7,
+			7 => LAN_DATE,
 			8 => UE_LAN_8,
 			9 => UE_LAN_9,
 			10=> UE_LAN_10
@@ -114,9 +114,9 @@ class e107_user_extended
 		$this->systemCount = 0;
 		$this->userCount = 0;
 
-		if($sql->db_Select('user_extended_struct', '*', "user_extended_struct_text != '_system_' ORDER BY user_extended_struct_order ASC"))
+		if($sql->select('user_extended_struct', '*', "user_extended_struct_text != '_system_' ORDER BY user_extended_struct_order ASC"))
 		{
-			while($row = $sql->db_Fetch(MYSQL_ASSOC))
+			while($row = $sql->fetch(MYSQL_ASSOC))
 			{
 				if ($row['user_extended_struct_type'] == 0)
 				{	// Its a category
@@ -344,7 +344,7 @@ class e107_user_extended
 	   	$ret = array();
 		$sql = e107::getDb('ue');
 		
-		if($sql->db_Select("user_extended_struct", "*", "user_extended_struct_type = 0 ORDER BY user_extended_struct_order ASC"))
+		if($sql->select("user_extended_struct", "*", "user_extended_struct_type = 0 ORDER BY user_extended_struct_order ASC"))
 		{
 			if($byID == TRUE)
 			{
@@ -452,6 +452,11 @@ class e107_user_extended
 
 
 	// Return the field creation text for a definition
+	/**
+	 * @param $type
+	 * @param $default
+	 * @return bool|string
+	 */
 	function user_extended_type_text($type, $default)
 	{
 	  $tp = e107::getParser();
@@ -468,7 +473,7 @@ class e107_user_extended
 		  break;
 
 		case EUF_DATE :
-		  $db_type = 'DATE NOT NULL';
+		  $db_type = 'DATE';
 		  break;
 
 		case EUF_TEXTAREA:
@@ -538,15 +543,15 @@ class e107_user_extended
 	  	{
 			extract($name);
 		}
-		
-	 	 if(!is_numeric($type))
+
+	 	if(!is_numeric($type))
 	  	{
 			$type = $this->typeArray[$type];
 	  	}
 
 		if($this->user_extended_field_exist($name))
 		{
-			return TRUE;	
+			return true;
 		}
 
 		if (!$this->user_extended_reserved($name))
@@ -554,7 +559,11 @@ class e107_user_extended
 			$field_info = $this->user_extended_type_text($type, $default);
 		
 			// wrong type
-			if(false === $field_info) return false;
+			if(false === $field_info)
+			{
+				e107::getMessage()->addDebug("\$field_info is false ".__METHOD__);
+				return false;
+			}
 		
 			if($order === '' && $field_info)
 			{
@@ -572,9 +581,31 @@ class e107_user_extended
 			{
 				$sql->gen('ALTER TABLE #user_extended ADD user_'.$tp -> toDB($name, true).' '.$field_info);
 			}
-			
-			$sql->insert('user_extended_struct',"null,'".$tp -> toDB($name, true)."','".$tp -> toDB($text, true)."','".intval($type)."','".$tp -> toDB($parms, true)."','".$tp -> toDB($values, true)."', '".$tp -> toDB($default, true)."', '".intval($read)."', '".intval($write)."', '".intval($required)."', '0', '".intval($applicable)."', '".intval($order)."', '".intval($parent)."'");
-			
+
+		/*	TODO
+				$extStructInsert = array(
+				'user_extended_struct_id'           => '_NULL_',
+				'user_extended_struct_name'         => '',
+				'user_extended_struct_text'         => '',
+				'user_extended_struct_type'         => '',
+				'user_extended_struct_parms'        => '',
+				'user_extended_struct_values'       => '',
+				'user_extended_struct_default'      => '',
+				'user_extended_struct_read'         => '',
+				'user_extended_struct_write'        => '',
+				'user_extended_struct_required'     => '',
+				'user_extended_struct_signup'       => '',
+				'user_extended_struct_applicable'   => '',
+				'user_extended_struct_order'        => '',
+				'user_extended_struct_parent'       => ''
+
+			);
+
+		*/
+
+			$rest = $sql->insert('user_extended_struct',"null,'".$tp -> toDB($name, true)."','".$tp -> toDB($text, true)."','".intval($type)."','".$tp -> toDB($parms, true)."','".$tp -> toDB($values, true)."', '".$tp -> toDB($default, true)."', '".intval($read)."', '".intval($write)."', '".intval($required)."', '0', '".intval($applicable)."', '".intval($order)."', '".intval($parent)."'");
+
+
 			if ($this->user_extended_field_exist($name))
 			{
 			  return TRUE;
@@ -600,23 +631,23 @@ class e107_user_extended
 			// field of type category
 			if($field_info)
 			{
-				$sql->db_Select_gen("ALTER TABLE #user_extended MODIFY user_".$tp -> toDB($name, true)." ".$field_info);
+				$sql->gen("ALTER TABLE #user_extended MODIFY user_".$tp -> toDB($name, true)." ".$field_info);
 			}
 			
 			$newfield_info = "
-			user_extended_struct_text = '".$tp -> toDB($text, true)."',
-			user_extended_struct_type = '".intval($type)."',
-			user_extended_struct_parms = '".$tp -> toDB($parms, true)."',
-			user_extended_struct_values = '".$tp -> toDB($values, true)."',
-			user_extended_struct_default = '".$tp -> toDB($default, true)."',
-			user_extended_struct_required = '".intval($required)."',
-			user_extended_struct_read = '".intval($read)."',
-			user_extended_struct_write = '".intval($write)."',
-			user_extended_struct_applicable = '".intval($applicable)."',
-			user_extended_struct_parent = '".intval($parent)."'
-			WHERE user_extended_struct_id = '".intval($id)."'
+				user_extended_struct_text = '".$tp -> toDB($text, true)."',
+				user_extended_struct_type = '".intval($type)."',
+				user_extended_struct_parms = '".$tp -> toDB($parms, true)."',
+				user_extended_struct_values = '".$tp -> toDB($values, true)."',
+				user_extended_struct_default = '".$tp -> toDB($default, true)."',
+				user_extended_struct_required = '".intval($required)."',
+				user_extended_struct_read = '".intval($read)."',
+				user_extended_struct_write = '".intval($write)."',
+				user_extended_struct_applicable = '".intval($applicable)."',
+				user_extended_struct_parent = '".intval($parent)."'
+				WHERE user_extended_struct_id = '".intval($id)."'
 			";
-			return $sql->db_Update("user_extended_struct", $newfield_info);
+			return $sql->update("user_extended_struct", $newfield_info);
 		}
 	}
 
@@ -630,7 +661,7 @@ class e107_user_extended
 		{
 			// FIXME - no table structure changes for categories
 			// but no good way to detect it right now - ignore the sql error for now, fix it asap
-			$sql->db_Select_gen("ALTER TABLE #user_extended DROP user_".$tp -> toDB($name, true));
+			$sql->gen("ALTER TABLE #user_extended DROP user_".$tp -> toDB($name, true));
 			
 			if(is_numeric($id))
 			{
@@ -675,10 +706,12 @@ class e107_user_extended
 		$regex 		= $tp->toText($parms[1]);
 		$regexfail 	= $tp->toText($parms[2]);
 		$fname 		= "ue[user_".$struct['user_extended_struct_name']."]";
+		$required	= vartrue($struct['user_extended_struct_required']) ? "required"  : "";
+		$fid		= $frm->name2id($fname);
 		
 		if(strpos($include, 'class') === FALSE)
 		{
-			$include .= " class='tbox' ";
+			$include .= " class='form-control tbox' ";
 		}
 
 
@@ -686,7 +719,8 @@ class e107_user_extended
 		{
 			case EUF_TEXT :  //textbox
 			case EUF_INTEGER :  //integer
-		 		$ret = "<input name='{$fname}' value='{$curval}' {$include} />";
+		 		$ret = "<input id='{$fid}' type='text' name='{$fname}' value='{$curval}' {$include} {$required} />";
+			
 		  		return $ret;
 		  	break;
 
@@ -715,12 +749,12 @@ class e107_user_extended
 					
 					if(deftrue('BOOTSTRAP'))
 					{
-						$ret .= $frm->radio($fname,$val,($curval == $val),array('label'=>$label));	
+						$ret .= $frm->radio($fname,$val,($curval == $val),array('label'=>$label, 'required'=> $struct['user_extended_struct_required']));	
 					}
 					else 
 					{
 						$chk = ($curval == $val)? " checked='checked' " : "";
-						$ret .= "<input {$include} type='radio' name='{$fname}' value='{$val}' {$chk} /> {$label}";	
+						$ret .= "<input id='{$fid}' {$include} type='radio' name='{$fname}' value='{$val}' {$chk} {$required} /> {$label}";	
 					}
 					
 				}
@@ -751,7 +785,7 @@ class e107_user_extended
 				
 				if(deftrue('BOOTSTRAP'))
 				{
-					$ret .= $frm->checkbox($fname,$val,($curval == $val),array('label'=>$label));	
+					$ret .= $frm->checkbox($fname,$val,($curval == $val),array('label'=>$label, 'required'=> $struct['user_extended_struct_required']));	
 				}
 				else 
 				{
@@ -764,7 +798,7 @@ class e107_user_extended
 		break;
 
 		case EUF_DROPDOWN : //dropdown
-		  $ret = "<select {$include} name='{$fname}'>\n";
+		  $ret = "<select {$include} id='{$fid}' name='{$fname}' {$required} >\n";
 		  $ret .= "<option value=''>&nbsp;</option>\n";  // ensures that the user chose it.
 		  foreach($choices as $choice)
 		  {
@@ -788,7 +822,7 @@ class e107_user_extended
 			if (!method_exists($className, 'getValue')) return '???-???';
 			$temp->pointerReset();
 			
-			$ret = "<select {$include} name='{$fname}'>\n";
+			$ret = "<select id='{$fid}' {$include} name='{$fname}' {$required} >\n";
 			$ret .= "<option value=''>&nbsp;</option>\n";  // ensures that the user chooses it.
 			while (FALSE !== ($row = $temp->getValue(0, 'next')))
 			{
@@ -806,9 +840,9 @@ class e107_user_extended
 				$sql = e107::getDb('ue');
 				$order = ($choices[3]) ? "ORDER BY ".$tp -> toDB($choices[3], true) : "";
 
-				if($sql->db_Select($tp -> toDB($choices[0], true), $tp -> toDB($choices[1], true).",".$tp -> toDB($choices[2], true), "1 $order")){
+				if($sql->select($tp -> toDB($choices[0], true), $tp -> toDB($choices[1], true).",".$tp -> toDB($choices[2], true), "1 $order")){
 					$choiceList = $sql->db_getList('ALL',FALSE);
-					$ret = "<select {$include} name='{$fname}'  >\n";
+					$ret = "<select id='{$fid}' {$include} name='{$fname}' {$required}  >\n";
 					$ret .= "<option value=''>&nbsp;</option>\n";  // ensures that the user chose it.
 					foreach($choiceList as $cArray)
 					{
@@ -825,7 +859,7 @@ class e107_user_extended
 				break;
 
 			case EUF_TEXTAREA : //textarea
-				return "<textarea {$include} name='{$fname}' >{$curval}</textarea>";
+				return "<textarea id='{$fid}' {$include} name='{$fname}'  {$required} >{$curval}</textarea>";
 				break;
 
 			case EUF_DATE : //date
@@ -839,11 +873,10 @@ class e107_user_extended
 				break;
 
 			case EUF_LANGUAGE : // language
-				require_once(e_HANDLER."file_class.php");
-				$fl = new e_file;
-				$lanlist = $fl->get_dirs(e_LANGUAGEDIR);
+				$lanlist = e107::getLanguage()->installed();
 				sort($lanlist);
-            $ret = "<select {$include} name='{$fname}'>\n";
+				
+            	$ret = "<select {$include} id='{$fid}' name='{$fname}' {$required} >\n";
 				$ret .= "<option value=''>&nbsp;</option>\n";  // ensures that the user chose it.
 				foreach($lanlist as $choice)
 				{
@@ -852,6 +885,7 @@ class e107_user_extended
 					$ret .= "<option value='{$choice}' {$sel}>{$choice}</option>\n";
 				}
 				$ret .= "</select>\n";
+				
            	break;
 
 		}
@@ -1015,7 +1049,7 @@ class e107_user_extended
 		VALUES ({$uid}, {$newvalue})
 		ON DUPLICATE KEY UPDATE {$field_name} = {$newvalue}
 		";
-		return $sql->db_Select_gen($qry);
+		return $sql->gen($qry);
 	}
 
 
@@ -1033,7 +1067,7 @@ class e107_user_extended
 		{
 			$field_name = 'user_'.$field_name;
 		}
-		$uinfo = get_user_data($uid);
+		$uinfo = e107::user($uid);
 		if (!isset($uinfo[$field_name])) return $ifnotset;
 		return $uinfo[$field_name];
 	}

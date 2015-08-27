@@ -75,9 +75,28 @@ class poll
 			{
 				admin_purge_related("poll", $existing);
 			}
-			$admin_log->log_event('POLL_01',LAN_AL_POLL_01.': '.$existing,'');
+			e107::getLog()->add('POLL_01',LAN_AL_POLL_01.': '.$existing,'');
 			//return POLL_ADLAN08;
 		}
+	}
+
+
+
+	/* 
+	function clean_poll_array
+	parameter in: original array with poll answers as entered in the forums
+	parameter out: cleaned array which trims the poll answers (to avoid 'falsely' empty answers) but allows to have '0' as an option
+
+	Note: Used instead of array_filter because array_filter($array, 'trim') would also ignore the value '0' (as that returns FALSE)
+	http://www.bubjavier.com/common-problems-php-arrayfilter-no-callback
+	*/
+
+	function clean_poll_array($val) 
+	{
+ 		$val = trim($val); // trims the array to remove poll answers which are (seemingly) empty but which may contain spaces
+  		$allowed_vals = array("0"); // Allows for '0' to be a poll answer option. Possible to add more allowed values. 
+ 		
+ 		return in_array($val, $allowed_vals, true) ? true : ( $val ? true : false );
 	}
 
 	/*
@@ -89,11 +108,9 @@ class poll
 	function submit_poll($mode=1)
 	{
 		global $admin_log;
-		
-		
+				
 		$tp = e107::getParser();
 		$sql = e107::getDb();
-		
 		
 		$poll_title		= $tp->toDB($_POST['poll_title']);
 		$poll_comment	= $tp->toDB($_POST['poll_comment']);
@@ -105,9 +122,11 @@ class poll
 		$active_end		= (!$_POST['endmonth'] || !$_POST['endday'] || !$_POST['endyear'] ? 0 : mktime (0, 0, 0, $_POST['endmonth'], $_POST['endday'], $_POST['endyear']));
 		$poll_options	= '';
 
-		$_POST['poll_option'] = array_filter($_POST['poll_option']);
+		$_POST['poll_option'] = array_filter($_POST['poll_option'], 'poll::clean_poll_array');
+ 
 		foreach ($_POST['poll_option'] as $key => $value)
 		{
+
 			$poll_options .= $tp->toDB($value).chr(1);
 		}
 
@@ -139,7 +158,7 @@ class poll
 				$sql->update("polls", "poll_votes='".$foo['poll_votes']."' WHERE poll_id='".intval(POLLID)."' ");
 			}
 
-			$admin_log->log_event('POLL_02','ID: '.POLLID.' - '.$poll_title,'');
+			e107::getLog()->add('POLL_02','ID: '.POLLID.' - '.$poll_title,'');
 			//$message = POLLAN_45;
 		} 
 		else 
@@ -162,7 +181,7 @@ class poll
 					}
 				}
 				$ret = $sql->insert("polls", "'0', ".time().", ".intval($active_start).", ".intval($active_end).", ".ADMINID.", '{$poll_title}', '{$poll_options}', '{$votes}', '', '1', '".$tp->toDB($poll_comment)."', '".intval($multipleChoice)."', '".intval($showResults)."', '".intval($pollUserclass)."', '".intval($storageMethod)."'");
-				$admin_log->log_event('POLL_03','ID: '.$ret.' - '.$poll_title,'');		// Intentionally only log admin-entered polls
+				e107::getLog()->add('POLL_03','ID: '.$ret.' - '.$poll_title,'');		// Intentionally only log admin-entered polls
 			}
 			else
 			{
@@ -431,7 +450,7 @@ class poll
 		
 		
 		$VOTE_TOTAL 	= POLLAN_31.": ".$voteTotal;
-		$COMMENTS 		= ($pollArray['poll_comment'] ? " <a href='".e_HTTP."comment.php?comment.poll.".$pollArray['poll_id']."'>".POLLAN_27.": ".$comment_total."</a>" : "");
+		$COMMENTS 		= ($pollArray['poll_comment'] ? " <a href='".e_HTTP."comment.php?comment.poll.".$pollArray['poll_id']."'>".LAN_COMMENTS.": ".$comment_total."</a>" : "");
 		
 		
 		$poll_count 	= $sql->count("polls", "(*)", "WHERE poll_id <= '".$pollArray['poll_id']."'");
@@ -477,10 +496,11 @@ class poll
 				}
 				
 				
-				$SUBMITBUTTON = "<input class='button btn' type='submit' name='pollvote' value='".POLLAN_30."' />";
-				if (('preview' == $type || $preview == TRUE) && strpos(e_SELF, "viewtopic") === FALSE)
+				$SUBMITBUTTON = "<input class='button btn btn-primary' type='submit' name='pollvote' value='".POLLAN_30."' />";
+				// disable submit when previewing the poll or when NOT viewing the poll in the forum
+				if (('preview' == $type || $preview == TRUE) && strpos(e_REQUEST_SELF, "forum") === FALSE)
 				{
-					$SUBMITBUTTON = "<input class='button btn e-tip' type='button' name='null' title='Disabled' value='".POLLAN_30."' />";
+					$SUBMITBUTTON = "<input class='button btn btn-default e-tip' type='button' name='null' title='Disabled' value='".POLLAN_30."' />";
 				}
 
 				$text .= "\n".preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_NOTVOTED_END : $POLL_NOTVOTED_END))."\n</form>";
@@ -506,8 +526,10 @@ class poll
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_VOTED_LOOP : $POLL_VOTED_LOOP));
 						$count ++;
 					}
+						
+					$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_VOTED_END : $POLL_VOTED_END));
 				}
-				$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_VOTED_END : $POLL_VOTED_END));
+			
 				break;
 
 			case 'disallowed':
@@ -565,9 +587,14 @@ class poll
 	{
 		if(deftrue('BOOTSTRAP',false))
 		{
-			return	"<div class='progress'>
-		    <div class='bar' style='width: ".intval($perc)."%;'></div>
-		    </div>";	
+			$val = intval($perc);
+			 return '
+			 <div class="progress">
+			 <div class="bar progress-bar" role="progressbar" aria-valuenow="'.$val.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$val.'%;">
+			   <span class="sr-only">'.$val.'%</span>
+			 </div>
+			 </div>';	
+			
 		}
 		else
 		{
@@ -598,7 +625,7 @@ class poll
 	//	echo "MODE=".$mode;
 		
 		//XXX New v2.x default for front-end. Currently used by forum-post in bootstrap mode. 
-		// TODO Moc - Needs a more generic LAN rewrite when used on another area than forum
+		// TODO LAN - Needs a more generic LAN rewrite when used on another area than forum
 		if ($mode == 'front')
 		{				
 			
@@ -606,33 +633,45 @@ class poll
 			
 			<div class='alert alert-info'>
 				<small >".LAN_FORUM_3029."</small>
-			</div>
-			
-			<div class='control-group'>
-				<div>
-					<input class='tbox input-xxlarge' placeholder='".LAN_FORUM_3030."' type='text' name='poll_title' size='70' value='".$tp->post_toForm(vartrue($_POST['poll_title']))."' maxlength='200' />
+			</div>";
+
+
+		//		$text .= "<form>";
+
+
+			$text .= "
+
+				<div class='form-group'>
+					<label for='poll_title'>Poll question</label>
+					".$frm->text('poll_title', $tp->post_toForm(vartrue($_POST['poll_title'])), '200', array('placeholder' => LAN_FORUM_3030, 'id' => 'poll_title'))." 
 				</div>";
 
 			$option_count = vartrue($_POST['poll_option']) ? count($_POST['poll_option']) : 2;
 			$text .= "		
-				<div id='pollsection'>";
-	
+				<div id='pollsection'>
+					<label for='pollopt'>Poll answers</label>";
+				
 				for($count = 1; $count <= $option_count; $count++)
 				{
-					if ($count != 1 && $_POST['poll_option'][($count-1)] =="")
-					{
-					//	break;
-					}
-					$opt = ($count==1) ? "id='pollopt' class='btn-group input-append' " : "";
-					$text .="<span {$opt}><input placeholder='".LAN_FORUM_3031."' class='tbox' type='text' name='poll_option[]' size='40' value=\"".$_POST['poll_option'][($count-1)]."\" maxlength='200' />";
-					$text .= "</span><br />";
+					// if ($count != 1 && $_POST['poll_option'][($count-1)] =="")
+					// {
+					// //	break;
+					// }
+					
+					$opt = ($count==1) ? "id='poll_answer'" : "";
+
+					$text .= "<div class='form-group' ".$opt.">
+								".$frm->text('poll_option[]', $_POST['poll_option'][($count-1)], '200', array('placeholder' => LAN_FORUM_3031, 'id' => $opt))."
+							  </div>";
 				}
-	
-				$text .="</div>
-				<div class='control-group'>
-				<input class='btn' type='button' name='addoption' value='".LAN_FORUM_3032."' onclick=\"duplicateHTML('pollopt','pollsection')\" /><br />
-				</div>
-			</div>";
+
+				$text .= "</div>"; // end pollsection div
+
+				$text .= "<div  class='form-group control-group'>
+							<input class='btn btn-default' type='button' id='addoption' name='addoption' value='".LAN_FORUM_3032."' />
+						</div>
+
+				";
 			
 			//FIXME - get this looking good with Bootstrap CSS only. 
 			
@@ -640,15 +679,16 @@ class poll
 				
 			// Set to IP address.. Can add a pref to Poll admin for 'default front-end storage method' if demand is there for it. 
 		
-		$text .= "
+		$text .= "<br />
 			 <div class='form-horizontal control-group'>
-			<label class='control-label'>".LAN_FORUM_3033."</label>
-			<div class='controls'>
-			". $frm->radio('multipleChoice',$opts, vartrue($_POST['multipleChoice'], 0) ).$frm->hidden('storageMethod',1)."
-			</div>
-			</div>
-			
+				<label class='control-label'>".LAN_FORUM_3033."</label>
+				<div class='radio controls'>
+					". $frm->radio('multipleChoice',$opts, vartrue($_POST['multipleChoice'], 0) ).$frm->hidden('storageMethod', 1)."
+				</div>
+			</div>			
 		";
+
+	//	$text .= "</form>";
 		
 		return $text;
 		
@@ -740,7 +780,7 @@ class poll
 
 		$formgo = e_SELF.(e_QUERY && !defined("RESET") && strpos(e_QUERY, 'delete') === FALSE ? "?".e_QUERY : "");
 
-		$text = "<div style='text-align:center'>
+		$text = "<div>
 		<form method='post' action='{$formgo}'>
 		<table class='table adminform'>
         <colgroup>
@@ -766,7 +806,7 @@ class poll
 			$text .= "</span><br />";
 		}
 
-		$text .="</div><input class='btn' type='button' name='addoption' value='".POLLAN_8."' onclick=\"duplicateHTML('pollopt','pollsection')\" /><br />
+		$text .="</div><input class='btn btn-default' type='button' name='addoption' value='".POLLAN_8."' onclick=\"duplicateHTML('pollopt','pollsection')\" /><br />
 		</td></tr>
 
 		<tr>

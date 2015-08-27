@@ -139,7 +139,7 @@ class alt_auth_admin extends alt_auth_base
 		$ret = '';
 		foreach ($this->alt_auth_user_fields as $f => $v)
 		{
-			if (varsettrue($v['showAll']) || varsettrue($v[$tableType]))
+			if (vartrue($v['showAll']) || vartrue($v[$tableType]))
 			{
 				$ret .= "<tr><td$log>";
 				if ($v['optional'] == FALSE) $ret .= '*&nbsp;';
@@ -196,7 +196,7 @@ class alt_auth_admin extends alt_auth_base
 		$ret = array();
 		foreach ($this->alt_auth_user_fields as $f => $v)
 		{
-			if (varsettrue($v['showAll']) || varsettrue($v[$tableType]))
+			if (vartrue($v['showAll']) || vartrue($v[$tableType]))
 			{
 	//	  $fieldname = $tableType.'_'.$v['optname'];
 				$fieldname = $tableType.'_xf_'.$f;			// Name of the input box
@@ -326,7 +326,7 @@ class alt_auth_admin extends alt_auth_base
 				}
 			}
 		}
-		e107::getAdminLog()->log_event('AUTH_03',$prefix,E_LOG_INFORMATIVE,'');
+		e107::getLog()->add('AUTH_03',$prefix,E_LOG_INFORMATIVE,'');
 		return LAN_ALT_UPDATED;
 	}
 
@@ -389,7 +389,7 @@ class alt_auth_admin extends alt_auth_base
 				$log_result = $_login->login($val_name, $_POST['passtovalidate'], $pass_vars, ($val_name == ''));
 			}
 
-			$text .= "<tr><td$log>".LAN_ALT_48;
+			$text .= "<tr><td>".LAN_ALT_48;
 			if ($val_name)
 			{
 				$text .= "<br />".LAN_ALT_49.$val_name.'<br />'.LAN_ALT_50;

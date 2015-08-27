@@ -18,7 +18,7 @@ if (!e107::isInstalled('download'))
 	header("location:".e_BASE."index.php");
 }
 
-	e107::lan('download','download'); // Loads e_PLUGIN.'download/languages/'.e_LANGUAGE.'/download.php'
+	e107::lan('download',false, true); // Loads e_PLUGIN.'download/languages/'.e_LANGUAGE.'/English_front.php'
 	
 	require_once(e_PLUGIN.'download/handlers/download_class.php');
 	require_once(e_PLUGIN.'download/handlers/category_class.php');
@@ -65,7 +65,7 @@ if (!e107::isInstalled('download'))
 	
 				e107::getComment()->enter_comment($clean_authorname, $clean_comment, "download", $id, $pid, $clean_subject);
 	//			$e107cache->clear("comment.download.{$sub_action}");	$sub_action not used here
-				$e107cache->clear("comment.download");
+				e107::getCache()->clear("comment.download");
 			}
 		}
 	}

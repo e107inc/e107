@@ -18,7 +18,7 @@ $e107 = e107::getInstance();
 require_once(e_PLUGIN."tagwords/tagwords_class.php");
 $tag = new tagwords();
 
-if(varsettrue($tag->pref['tagwords_class']) && !check_class($tag->pref['tagwords_class']) )
+if(vartrue($tag->pref['tagwords_class']) && !check_class($tag->pref['tagwords_class']) )
 {
 	return;
 }

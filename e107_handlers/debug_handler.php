@@ -46,14 +46,17 @@ if (!defined('e107_INIT')) { exit; }
 // If debugging enabled, set it all up
 // If no debugging, then E107_DEBUG_LEVEL will be zero
 //
-if (strstr(e_MENU, "debug") || isset($_COOKIE['e107_debug_level'])) {
+if (strstr(e_MENU, "debug") || isset($_COOKIE['e107_debug_level'])) 
+{
 	$e107_debug = new e107_debug;
 	require_once(e_HANDLER.'db_debug_class.php');
 	$db_debug = new e107_db_debug;
 	$e107_debug->set_error_reporting();
 	$e107_debug_level = $e107_debug->debug_level;
 	define('E107_DEBUG_LEVEL', $e107_debug_level);
-} else {
+} 
+else 
+{
 	define('E107_DEBUG_LEVEL', 0);
 }
 
@@ -141,7 +144,7 @@ class e107_debug {
 				$dVal |= $curDVal;
 		  }
 		}
-				
+								
 		if (isset($debug_param[3]))
 		{
 		  if ($debug_param[3] == '+' || $debug_param[3] == 'stick')

@@ -20,7 +20,7 @@ define("LANUPLOAD_8", "No file was uploaded.");
 define("LANUPLOAD_9", "Uploaded file size 0 bytes");
 define("LANUPLOAD_10", "Upload failed [Duplicate filename] - A file with the same name already exists.");
 define("LANUPLOAD_11", "The file did not upload. Filename: ");
-define("LANUPLOAD_12", "Error");
+//define("LANUPLOAD_12", "Error"); new > LAN_ERROR
 define("LANUPLOAD_13", "Missing temporary folder");
 define("LANUPLOAD_14", "File write failed");
 define("LANUPLOAD_15", "Upload not allowed");

@@ -13,7 +13,7 @@
  *
 */
 
-if($_GET['action'] == 'dialog')
+if(!empty($_GET['action']) && $_GET['action'] == 'dialog')
 {
 	define('e_MINIMAL',true);
 }
@@ -33,7 +33,7 @@ e107::js('core', 'plupload/plupload.full.js', 'jquery', 2);
 e107::css('core', 'plupload/jquery.plupload.queue/css/jquery.plupload.queue.css', 'jquery');
 e107::js('core', 'plupload/jquery.plupload.queue/jquery.plupload.queue.js', 'jquery', 2);
 e107::js('core', 'core/mediaManager.js',"jquery",5);
-
+e107::wysiwyg(true);
 /*
  * CLOSE - GO TO MAIN SCREEN
  */
@@ -45,11 +45,15 @@ if(isset($_POST['submit_cancel_show']))
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
-
+if($_GET['action'] == 'dialog')
+{
+	e107::css('inline', "body { background-color: #373737 } ");
+}
 
 if(vartrue($_GET['action']) == 'nav' && e_AJAX_REQUEST) //XXX Doesn't work correctly inside the class for some reason 
 {
 	define("e_IFRAME",true);
+
 	// require_once(e_ADMIN."auth.php");
 		$bbcodeMode = ($_GET['bbcode']=='img') ? 'bbcode=img' : FALSE;
 						
@@ -168,9 +172,9 @@ class media_cat_ui extends e_admin_ui
          	'media_cat_image' 		=> array('title'=> LAN_IMAGE,		'type' => 'image', 			'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>FALSE,	'batch' => FALSE, 'filter'=>FALSE),			       	
          	'media_cat_owner' 		=> array('title'=> LAN_OWNER,		'type' => 'dropdown',		'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
          	
-         	'media_cat_type' 		=> array('title'=> LAN_TYPE,		'type' => 'radio',	'data'=>false,		'width' => 'auto', 'thclass' => 'left', 'validate' => true, 'nolist'=>true),
+         	'media_cat_type' 		=> array('title'=> LAN_TYPE,		'type' => 'radio',			'data'=>false,		'width' => 'auto', 'thclass' => 'left', 'validate' => true, 'nolist'=>true),
          	
-			'media_cat_category' 	=> array('title'=> LAN_CATEGORY,	'type' => 'text',	'data'=>'str',		'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),		
+			'media_cat_category' 	=> array('title'=> LAN_CATEGORY,	'type' => 'text',			'data'=>'str',		'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),		
 			'media_cat_title' 		=> array('title'=> LAN_TITLE,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE, 'validate' => true),
          	'media_cat_sef' 		=> array('title'=> LAN_SEFURL,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),        
          	'media_cat_diz' 		=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=150&bb=1','readonly'=>FALSE), // Display name
@@ -210,23 +214,29 @@ class media_cat_ui extends e_admin_ui
 		$sql = e107::getDb();
 		
 	
-		if($sql->db_Select_gen("SELECT media_cat_owner, count(media_cat_id) as number FROM `#core_media_cat` GROUP BY media_cat_owner"))
+		if($sql->gen("SELECT media_cat_owner,  MAX(CAST(SUBSTRING_INDEX(media_cat_category, '_', -1 ) AS UNSIGNED)) as maxnum, count(media_cat_id) as number FROM `#core_media_cat`  GROUP BY media_cat_owner"))
 		{
-			while($row = $sql->db_Fetch())	
+			while($row = $sql->fetch())	
 			{
 				$this->ownerCount[$row['media_cat_owner']] = $row['number'];
-				$own = $row['media_cat_owner'];
+				$own = $row['media_cat_owner']; 
 				if(!in_array($own,$restricted))
-				{
-					
+				{		
 					$this->fields['media_cat_owner']['writeParms'][$own] = $own;	
 					
+					if($row['maxnum'] > 0)
+					{
+						$this->ownerCount[$row['media_cat_owner']] = $row['maxnum']; // $maxnum;	
+					}
 				}		
 			}
 		}
 		
-		
+		e107::getMessage()->addDebug("Max value for category names: ".print_a($this->ownerCount,true));
 	}
+
+
+
 
 
 	public function createPage()
@@ -425,7 +435,7 @@ class media_form_ui extends e_admin_form_ui
 	 */
 	public function resizeImage($oldpath,$img_import_w,$img_import_h)
 	{
-		
+		$mes = e107::getMessage();
 		try
 		{
 		    $thumb = PhpThumbFactory::create($oldpath);
@@ -505,11 +515,11 @@ class media_form_ui extends e_admin_form_ui
 		$pref 	= e107::getPref();
 		
 		$options = array(
-			"news-image" 			=> "News Images",  // TODO LAN.
-			"news-bbcode" 			=> "News [img] bbcode",
-			"page-bbcode" 			=> "Page [img] bbcode",
-		//	"featurebox-image" 		=> "Featurebox Images",
-		//	"featurebox-bbcode" 	=> "Featurebox [img] bbcode",		
+			"news-image" 			=> LAN_IMA_O_001,
+			"news-bbcode" 			=> LAN_IMA_O_002,
+			"page-bbcode" 			=> LAN_IMA_O_003,
+		//	"featurebox-image" 		=> LAN_IMA_O_004,
+		//	"featurebox-bbcode" 	=> LAN_IMA_O_005,
 		);
 		
 		if(vartrue($pref['e_imageresize']) && is_array($pref['e_imageresize']))
@@ -517,7 +527,7 @@ class media_form_ui extends e_admin_form_ui
 			foreach($pref['e_imageresize'] as $k=>$val)
 			{
 			
-				$options[$k]		= ucfirst($k). " [img] bbcode";
+				$options[$k]		= ucfirst($k)." ".LAN_IMA_O_006;
 			}
 		}
 		
@@ -571,21 +581,57 @@ class media_form_ui extends e_admin_form_ui
 	//	$save = ($_GET['bbcode']!='file')  ? "e-dialog-save" : "";
 	// e-dialog-close
 	
-	
-		// File Picker. 
-		if($_GET['action'] == 'dialog')
+		$for = $this->getController()->getQuery('for');
+
+		if(strpos($for, '_file') !==false)
+		{
+			$type = 'file';
+		}
+		else
+		{
+			$type = 'image';
+		}
+
+		// File Picker.
+		if($_GET['action'] == 'dialog' && ($type == 'file'))
 		{		
 			$text = "<input type='button' value='Select' data-placement='left' class='e-media-select e-dialog-save e-dialog-close btn btn-primary btn-large' data-id='{$id}' data-name=\"".$title."\" data-type='file' data-target='{$tagid}' data-bbcode='{$bbcode}' data-path='{$path}' data-preview='{$preview}' title=\"".$title."\"  />";
 		}
-
-		$text .= $this->renderValue('options',$value,'',$id);
+		else
+		{
+			$text = $this->renderValue('options',$value,'',$id);
+		}
 		
 		return "<div class='nowrap'>".$text."</div>";
 		
 	}
 	
 
+	function media_preview($curVal, $mode, $attributes, $id=null)
+	{
+		
+		$attributes['type'] = 'image';
+		
+		switch($mode)
+		{
+			case 'read':
+				$attributes['readParms'] = 'thumb=60&thumb_urlraw=0&thumb_aw=60';
+				$val 	= $this->getController()->getListModel()->get('media_url');	
+			break;
 
+			case 'write':
+				$attributes['readParms'] = 'thumb=180&thumb_urlraw=0&thumb_aw=180';
+				$val 	= $this->getController()->getModel()->get('media_url');		
+			break;
+
+			case 'filter':
+			case 'batch':
+				return '';
+			break;
+		}
+
+		return $this->renderValue('media_preview', $val, $attributes, $id);
+	}
 
 
 /*
@@ -644,18 +690,15 @@ class media_admin_ui extends e_admin_ui
 		public $deleteConfirmScreen = true;
 		public $deleteConfirmMessage = 'You are about to delete [x] records and <strong>ALL CORRESPONDING FILES</strong>! Please confirm to continue!';
 
-		//TODO - finish 'user' type, set 'data' to all editable fields, set 'noedit' for all non-editable fields
-    	/*
-    	 * We need a column with a preview that is generated from the path of another field.
-    	 * ie. the preview column should show a thumbnail which is generated from the media_url column.
-    	 * It needs to also take into consideration the type of media (image, video etc) which comes from another field.
-    	 */
 
+    	protected $preftabs			= array('General',"Watermark", "Youtube"); 
+    	 
 		protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null,			'data'=> null,		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'media_id'				=> array('title'=> LAN_ID,			'type' => 'number',		'data'=> 'int',		'width' =>'5%', 'forced'=> TRUE, 'nolist'=>TRUE),
-      		'media_url' 			=> array('title'=> 'Preview',		'type' => 'image',		'data'=> 'str',		'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>TRUE, 'writeParms'=>'thumb=180&thumb_urlraw=0&thumb_aw=180',	'width' => '110px'),
-			'media_category' 		=> array('title'=> LAN_CATEGORY,	'type' => 'comma',	'inline'=>false,	'data'=> 'str',		'width' => 'auto', 'filter' => true, 'batch' => true, 'class'=>'left'),
+      		'media_preview'			=> array('title'=>'Preview', 		'type'=>'method', 		'data'=>false, 	'forced'=>true, 'width' => '110px', 'thclass' => 'center', 'class'=>'center'),
+      		'media_url' 			=> array('title'=> 'Path',			'type' => 'text',		'data'=> 'str',	'inline'=>false,	'thclass' => 'left', 'class'=>'left', 'width' => 'auto', 'writeParms'=>'size=xxlarge'),
+			'media_category' 		=> array('title'=> LAN_CATEGORY,	'type' => 'comma',	'inline'=>false,	'data'=> 'str',		'width' => '10%', 'filter' => true, 'batch' => true, 'class'=>'left'),
 			
 		// Upload should be managed completely separately via upload-handler.
        	//	'media_upload' 			=> array('title'=> "Upload File",	'type' => 'upload',		'data'=> false,		'readParms' => 'hidden', 'writeParms' => 'disable_button=1', 'width' => '10%', 'nolist' => true),
@@ -663,14 +706,14 @@ class media_admin_ui extends e_admin_ui
 			'media_caption' 		=> array('title'=> "Caption",		'type' => 'text',		'data'=> 'str',		'inline'=>true, 'width' => 'auto'),
          	// media_description is type = textarea until bbarea can be reduced to not include youtube etc
          	'media_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'textarea',		'data'=> 'str',		'width' => 'auto', 'thclass' => 'left first', 'readParms' => 'truncate=100', 'writeParms' => 'counter=0'),
-         	'media_type' 			=> array('title'=> "Mime Type",		'type' => 'text',		'data'=> 'str',		'width' => 'auto', 'noedit'=>TRUE),
+         	'media_type' 			=> array('title'=> "Mime Type",		'type' => 'dropdown',		'data'=> 'str',		'filter'=>true, 'width' => 'auto', 'noedit'=>TRUE),
 			'media_author' 			=> array('title'=> LAN_USER,		'type' => 'user',		'data'=> 'int', 	'width' => 'auto', 'thclass' => 'center', 'class'=>'center','readParms' => 'link=1', 'filter' => true, 'batch' => true, 'noedit'=>TRUE	),
 			'media_datestamp' 		=> array('title'=> LAN_DATESTAMP,	'type' => 'datestamp',	'data'=> 'int',		'width' => '10%', 'noedit'=>TRUE),	// User date
-          	'media_size' 			=> array('title'=> "Size",			'type' => 'number',		'data'=> 'int',		'width' => 'auto', 'noedit'=>TRUE),
+          	'media_size' 			=> array('title'=> "Size",			'type' => 'number',		'data'=> 'int',		'width' => 'auto', 'readonly'=>2),
 			'media_dimensions' 		=> array('title'=> "Dimensions",	'type' => 'text',		'data'=> 'str',		'width' => '5%', 'readonly'=>TRUE, 'class'=>'nowrap','noedit'=>TRUE),
 			'media_userclass' 		=> array('title'=> LAN_USERCLASS,	'type' => 'userclass',	'data'=> 'str',		'inline'=>true, 'width' => '10%', 'thclass' => 'center','filter'=>TRUE,'batch'=>TRUE ),
 			'media_tags' 			=> array('title'=> "Tags/Keywords",	'type' => 'tags',		'data'=> 'str',		'width' => '10%',  'filter'=>TRUE,'batch'=>TRUE ),
-			'media_usedby' 			=> array('title'=> 'Used by',		'type' => '',			'data'=> 'text', 	'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'nolist'=>true, 'readonly'=>TRUE	),
+			'media_usedby' 			=> array('title'=> 'Used by',		'type' => 'hidden',		'data'=> 'text', 	'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'nolist'=>true, 'readonly'=>TRUE	),
 
 			'options' 				=> array('title'=> LAN_OPTIONS,		'type' => 'method',			'data'=> null,		'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center', 'batch'=>true, 'noedit'=>true)
 		);
@@ -685,36 +728,50 @@ class media_admin_ui extends e_admin_ui
 				'video'			=> e_MEDIA_VIDEO,
 				'other'			=> e_MEDIA_FILE
 		);
-	//	protected $fieldpref = array('checkboxes','media_url', 'media_id', 'media_thumb', 'media_title', 'media_caption', 'media_description', 'media_category', 'media_datestamp','media_userclass', 'options');
+		
+		protected $fieldpref = array( 'media_id', 'media_title', 'media_caption', 'media_category', 'media_datestamp','media_userclass', 'options');
 
 
 
 
 	
 	protected $prefs = array(
-		'image_post'	   				=> array('title'=> IMALAN_1, 'type'=>'boolean', 'data'=>'int', 'writeParms'=>'help=IMALAN_2'),
+		'image_post'	   				=> array('title'=> IMALAN_1, 'tab'=>0, 'type'=>'boolean', 'data'=>'int', 'writeParms'=>'help=IMALAN_2'),
 		'image_post_class' 				=> array('title'=> IMALAN_10, 'type' => 'userclass', 'data'=>'int', 'writeParms'=>'help=IMALAN_11&classlist=public,guest,nobody,member,admin,main,classes' ),
 		'image_post_disabled_method'	=> array('title'=> IMALAN_12, 'type' => 'boolean','writeParms'=>'enabled=IMALAN_15&disabled=IMALAN_14'),
 		'resize_method'					=> array('title'=> IMALAN_3, 'type'=>'method', 'data'=>'str'),
-		'thumbnail_quality'				=> array('title'=> "Thumbnail Quality", 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=Set this as low as possible before quality loss is apparent. Max. 100'), //TODO LAN
+		'thumbnail_quality'				=> array('title'=> IMALAN_73, 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=IMALAN_74'),
 	
-		'im_width'						=> array('title'=> "Avatar Width", 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=Avatar images will be constrained to these dimensions (in pixels)'), //TODO LAN
-		'im_height'						=> array('title'=> "Avatar Height", 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=Avatar images will be constrained to these dimensions (in pixels)'),
-		'resize_dimensions'				=> array('title'=> "Resize-Image Dimensions", 'type'=>'method', 'data'=>'str'),
+		'im_width'						=> array('title'=> IMALAN_75, 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=IMALAN_76'),
+		'im_height'						=> array('title'=> IMALAN_77, 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=IMALAN_76'),
+		'resize_dimensions'				=> array('title'=> IMALAN_79, 'type'=>'method', 'data'=>'str'),
 		
-		'watermark_activate'			=> array('title'=> 'Watermark Activation', 'type' => 'number', 'data' => 'str', 'help'=>'All images with a width or height greater than this value will be given a watermark during resizing.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
-		'watermark_text'				=> array('title'=> 'Watermark Text', 'type' => 'text', 'data' => 'str', 'help'=>'Optional Watermark Text'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
-		'watermark_font'				=> array('title'=> 'Watermark Font', 'type' => 'dropdown', 'data' => 'str', 'help'=>'Optional Watermark Font. Upload more .ttf fonts to the /fonts folder in your theme directory.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
-		'watermark_size'				=> array('title'=> 'Watermark Size', 'type' => 'number', 'data' => 'int', 'help'=>'Size of the font in pts'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
+		'watermark_activate'			=> array('title'=> IMALAN_80, 'tab'=>1, 'type' => 'number', 'data' => 'str', 'help'=>IMALAN_81), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
+		'watermark_text'				=> array('title'=> IMALAN_82,'tab'=>1, 'type' => 'text', 'data' => 'str', 'help'=>IMALAN_83), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
+		'watermark_font'				=> array('title'=> IMALAN_84,'tab'=>1, 'type' => 'dropdown', 'data' => 'str', 'help'=>IMALAN_85), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
+		'watermark_size'				=> array('title'=> IMALAN_86, 'tab'=>1,'type' => 'number', 'data' => 'int', 'help'=>IMALAN_87), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
 		
-		'watermark_pos'					=> array('title'=> 'Watermark Position', 'type' => 'dropdown', 'data' => 'str', 'help'=>'Watermark Position'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
-		'watermark_margin'				=> array('title'=> 'Watermark Margin', 'type' => 'number', 'data' => 'int', 'help'=>'The distance that watermark will appear from the edge of the image.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
+		'watermark_pos'					=> array('title'=> IMALAN_88,'tab'=>1, 'type' => 'dropdown', 'data' => 'str', 'help'=>IMALAN_88), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
+		'watermark_margin'				=> array('title'=> IMALAN_90, 'tab'=>1,'type' => 'number', 'data' => 'int', 'help'=>IMALAN_91), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
 		
-		'watermark_color'				=> array('title'=> 'Watermark Color', 'type' => 'text', 'data' => 'str', 'help'=>'Color of the watermark eg. 000000'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
-		'watermark_shadowcolor'			=> array('title'=> 'Watermark Shadow-Color', 'type' => 'text', 'data' => 'str', 'help'=>'Shadow Color of the watermark eg. ffffff '), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
+		'watermark_color'				=> array('title'=> IMALAN_92, 'tab'=>1, 'type' => 'text', 'data' => 'str', 'help'=>IMALAN_93), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
+		'watermark_shadowcolor'			=> array('title'=> IMALAN_94, 'tab'=>1,'type' => 'text', 'data' => 'str', 'help'=>IMALAN_95), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
 	
-		'watermark_opacity'				=> array('title'=> 'Watermark Opacity', 'type' => 'number', 'data' => 'int', 'help'=>'Enter a number between 1 and 100'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
+		'watermark_opacity'				=> array('title'=> IMALAN_96, 'tab'=>1, 'type' => 'number', 'data' => 'int', 'help'=>IMALAN_97), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
+
+		// https://developers.google.com/youtube/player_parameters
+		'youtube_apikey'		        => array('title'=> "YouTube Public API key", 'tab'=>2, 'type' => 'text', 'data'=>'str', 'help'=>IMALAN_99, 'writeParms'=>array('post'=>" <a target='_blank' href='https://code.google.com/apis/console/'>More</a>")),
+
+		'youtube_default_account'		=> array('title'=> IMALAN_98, 'tab'=>2, 'type' => 'text', 'data'=>'str', 'help'=>IMALAN_99),
+
+		'youtube_rel'					=> array('title'=> IMALAN_100, 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
+		'youtube_showinfo'				=> array('title'=> IMALAN_101, 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
+		'youtube_cc_load_policy'		=> array('title'=> IMALAN_102, 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
+		'youtube_modestbranding'		=> array('title'=> IMALAN_103, 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
+		'youtube_bbcode_responsive'		=> array('title'=> IMALAN_104, 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
 	
+		// 
+
 	);
 	
 
@@ -757,11 +814,10 @@ class media_admin_ui extends e_admin_ui
 							</tr>";
 							
 							list($img_import_w,$img_import_h) = explode("x",$pref['img_import_resize']);
-							
-							//TODO LANS
+
 							$text .= "						
 							<tr>
-								<td>Resize images during media import<div class='label-note'>Leave empty to disable</div></td>
+								<td>".IMALAN_105."<div class='label-note'>".IMALAN_106."</div></td>
 								<td>
 									".$frm->text('img_import_resize_w', $img_import_w,4)."px X ".$frm->text('img_import_resize_h', $img_import_h,4)."px
 								</td>
@@ -782,14 +838,19 @@ class media_admin_ui extends e_admin_ui
 	protected $cats = array();
 	protected $owner = array();
 	protected $ownercats = array();
-	
+
 
 	function init()
 	{
+		if(E107_DEBUG_LEVEL > 0)
+		{
+			$this->fields['media_url']['inline'] = true;
+		}
+
 		$sql = e107::getDb();
 	//	$sql->db_Select_gen("SELECT media_cat_title, media_title_nick FROM #core_media as m LEFT JOIN #core_media_cat as c ON m.media_category = c.media_cat_owner GROUP BY m.media_category");
-		$sql->db_Select_gen("SELECT media_cat_title, media_cat_owner, media_cat_category FROM #core_media_cat");
-		while($row = $sql->db_Fetch())
+		$sql->gen("SELECT media_cat_title, media_cat_owner, media_cat_category FROM #core_media_cat");
+		while($row = $sql->fetch())
 		{
 			$cat = $row['media_cat_category'];
 			$owner = $row['media_cat_owner'];
@@ -799,7 +860,19 @@ class media_admin_ui extends e_admin_ui
 		}
 		asort($this->cats);
 		
+		
+		$tmp = $sql->retrieve('core_media','media_type','media_type !="" GROUP BY media_type',true); 
+		$mimeTypes = array(); 
+		foreach($tmp as $val)
+		{
+			$id =  $val['media_type'];
+			$mimeTypes[$id] = $id; 	
+		}
+		asort($mimeTypes);
+		
 		$this->fields['media_category']['writeParms'] = $this->cats;
+		$this->fields['media_type']['writeParms'] = $mimeTypes;
+		
 				
 		$pref 	= e107::getPref();
 		$tp 	= e107::getParser();
@@ -890,7 +963,7 @@ class media_admin_ui extends e_admin_ui
 
 		if($this->getQuery('iframe'))
 		{
-			e107::js('tinymce','tiny_mce_popup.js'); 		
+			e107::js('tinymce4','plugins/compat3x/tiny_mce_popup.js');
  			$this->getResponse()->setIframeMod(); // disable header/footer menus etc. 
  			
  			if(!$this->getQuery('for'))
@@ -1018,15 +1091,24 @@ class media_admin_ui extends e_admin_ui
 		$options['bbcode'] = ($this->getQuery('bbcode')=='img') ? 'img' : FALSE;
 		
 						
-		$text = "<ul class='nav nav-tabs'>\n";
+		$text = "<ul id='admin-ui-media-manager' class='nav nav-tabs'>\n";
 		
-		if($this->getQuery('bbcode') != 'video')
+		if($this->getQuery('bbcode') != 'video' && $this->getQuery('bbcode') != 'glyph')
 		{
 			$text .= "<li class='active'><a data-toggle='tab' href='#core-media-select'>Choose from Library</a></li>\n";	
 		}
 		else
 		{
-			$videoActive = 'active';		
+			if($this->getQuery('bbcode') == 'glyph')
+			{
+				$glyphActive = 'active';	
+			}
+			else 
+			{
+				$videoActive = 'active';		
+			}
+				
+					
 		}
 		
 		if($this->getQuery('bbcode') != 'video' && $this->getQuery('bbcode') !='glyph')
@@ -1041,7 +1123,7 @@ class media_admin_ui extends e_admin_ui
 		
 		if($this->getQuery('glyphs') == 1 || $this->getQuery('bbcode') == 'glyph')
 		{
-			$text .= "<li><a data-toggle='tab' href='#core-media-glyphs'>Glyphs</a></li>\n";	
+			$text .= "<li class='{$glyphActive}'><a data-toggle='tab' href='#core-media-glyphs'>Glyphs</a></li>\n";	
 		}
 		
 		if($this->getQuery('video') == 1 || $this->getQuery('bbcode') == 'video')
@@ -1060,9 +1142,9 @@ class media_admin_ui extends e_admin_ui
 				
 		$text .= "
 			</ul>
-			<div class='tab-content'>";
+			<div class='tab-content media-manager'>";
 			
-		if($this->getQuery('bbcode') != 'video')
+		if($this->getQuery('bbcode') != 'video' && $this->getQuery('bbcode') != 'glyph')
 		{	
 			$text .= "<div class='tab-pane active' id='core-media-select'>			
 					<div class='table' style='display:block'>";
@@ -1097,7 +1179,7 @@ class media_admin_ui extends e_admin_ui
 			$text .= "<div class='tab-pane' id='core-media-style'>
 				
 				<div class='row'>
-				<div class='span6'>
+				<div class='col-md-6 span6'>
 				<table class='table'>
 				<colgroup>
 					<col class='col-label' />
@@ -1139,7 +1221,7 @@ class media_admin_ui extends e_admin_ui
 		
 			</tbody></table>
 			</div>
-			<div class='span6'>
+			<div class='col-md-6 span6'>
 			<h5>Preview</h5>
 		
 			<img class='well' id='preview' src='".e_IMAGE_ABS."generic/blank.gif' style='min-width:220px; min-height:180px;' />
@@ -1153,7 +1235,7 @@ class media_admin_ui extends e_admin_ui
 		if($this->getQuery('glyphs') == 1 || $this->getQuery('bbcode') == 'glyph')
 		{
 			//TODO 
-			$text .= "<div class='tab-pane clearfix' id='core-media-glyphs' style='font-size:24px'>";
+			$text .= "<div class='tab-pane clearfix {$glyphActive}' id='core-media-glyphs' style='font-size:24px'>";
 	
 			$text .= $this->glyphTab();
 			
@@ -1189,7 +1271,7 @@ class media_admin_ui extends e_admin_ui
 			<button type='submit' class='btn btn-success submit e-dialog-save e-dialog-close' data-bbcode='".$options['bbcode']."' data-target='".$this->getQuery('tagid')."' name='save_image' value='Save it'  >
 			<span>Save</span>
 			</button>
-			<button type='submit' class='btn submit e-dialog-close' name='cancel_image' value='Cancel' >
+			<button type='submit' class=' btn btn-default submit e-dialog-close' name='cancel_image' value='Cancel' >
 			<span>Cancel</span>
 			</button>
 			</div>";
@@ -1197,8 +1279,8 @@ class media_admin_ui extends e_admin_ui
 		}
 		
 		$type = (E107_DEBUG_LEVEL > 0) ?  "text" : "hidden";
-		$br = (E107_DEBUG_LEVEL > 0) ?  "<br />" : "";   
-		
+		$br = (E107_DEBUG_LEVEL > 0) ?  "<br />" : "";
+
 		$text .= "
 		".$br."<input title='bbcode' type='{$type}' readonly='readonly' class='span11' id='bbcode_holder' name='bbcode_holder' value='' />
 		".$br."<input title='html/wysiwyg' type='{$type}' class='span11' readonly='readonly' id='html_holder' name='html_holder' value='' />
@@ -1249,7 +1331,7 @@ class media_admin_ui extends e_admin_ui
 			'type'		=>'glyph', 
 			'tagid'		=> $this->getQuery('tagid'), 
 			'action'	=>'glyph', 								// Used by AJAX to identify correct function. 
-			'perPage'	=> 90,
+			'perPage'	=> 80,
 			'gridClass'	=> 'media-carousel-item-glyph pull-left',
 			'bbcode'	=>'glyph',
 			'close'		=> 'true'		
@@ -1307,51 +1389,175 @@ class media_admin_ui extends e_admin_ui
 		
 		return e107::getMedia()->browserCarousel($items, $parms);
 	}
-			
-		
-	
 
+	/**
+	 * Extract Video or Playlist code from a URL
+	 * Currently works with v=xxx or list=xxxx
+	 * @param $url
+	 * @return string
+	 */
+	function getYouTubeCode($url)
+	{
+		$url = str_replace("url:","http://",$url);
+
+		list($tmp,$qry) = explode("?",$url);
+		parse_str($qry,$opt);
+
+
+		if(!empty($opt['list']))
+		{
+			return 'playlist:'.$opt['list'];
+		}
+
+		if(!empty($opt['v']))
+		{
+			return 'video:'.$opt['v'];
+		}
+
+		$pattern = '#^(?:https?://)?(?:www\.|m\.)?(?:youtu\.be/|youtube\.com(?:/embed/|/v/|/watch\?v=|/watch\?.+&v=))([\w-]{11})(?:.+)?$#x';
+		preg_match($pattern, $url, $matches);
+
+		return isset($matches[1]) ? 'video:'.trim($matches[1]) : false;
+
+
+	}
+
+
+	/**
+	 * @param string $parm
+	 * @return mixed|string
+	 * @see https://www.googleapis.com/youtube/v3/search
+	 */
 	function videoTab($parm='')
 	{
-		
-		//	$feed = "https://gdata.youtube.com/feeds/base/users/e107inc/uploads";
-		
-			// @see https://developers.google.com/youtube/2.0/developers_guide_protocol_api_query_parameters
-		
-			if($search = vartrue($this->getQuery('search')))
+	//	$apiKey = e107::pref('core','youtube_apikey');
+
+		$searchQry = $this->getQuery('search');
+
+		if(substr($searchQry,0,4) == 'url:')
+		{
+			$searchQry = $this->getYouTubeCode($searchQry);
+
+		}
+
+		if(!empty($searchQry)) // -- Search Active.
+		{
+			if(substr($searchQry,0,6) == 'video:' || substr($searchQry,0,2) == 'v=') // YouTube video code
 			{
-				$feed = "http://gdata.youtube.com/feeds/api/videos?orderby=relevance&vq=".urlencode($search)."&max-results=50"; // maximum is 50. 
+				$searchQry = (substr($searchQry,0,2) == 'v=') ? trim(substr($searchQry,2)) : trim(substr($searchQry,6));
+				$extension = 'youtube';
+			//	$feed = "https://www.googleapis.com/youtube/v3/videos?part=snippet&id=".urlencode($searchQry)."&key=".$apiKey;
+
+				$data = array();
+				$data['items'][0]['id']['videoId'] = $searchQry;
+				$data['items'][0]['snippet']['thumbnails']['medium']['url'] = "http://i.ytimg.com/vi/".$searchQry."/mqdefault.jpg";
+				$data['items'][0]['snippet']['title'] = 'Specified Video';
+			}
+			elseif(substr($searchQry,0,9) == 'playlist:') // playlist
+			{
+				$searchQry = trim(substr($searchQry,9));
+				$feed = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=".urlencode($searchQry)."&type=playlist&maxResults=1&key=".$apiKey;
+                  $extension = 'youtubepl';
+			}
+			elseif(substr($searchQry,0,8) == 'channel:')
+			{
+				$searchQry = trim(substr($searchQry,8));
+				$extension = 'youtube';
+				$feed = "https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=".urlencode($searchQry)."&type=video&maxResults=20&key=".$apiKey;
 			}
 			else
 			{
-				$feed = "https://gdata.youtube.com/feeds/api/users/e107inc/uploads";	
-			}	
-					
-			$data = e107::getXml()->loadXMLfile($feed,true);
-			
-		//	$text .= "<h2>".$data['title']."</h2>";
-		//	$text .= print_a($data,true);
-			
-			$items = array();
-			
-			foreach($data['entry'] as $value)
-			{
-				$id = str_replace('http://gdata.youtube.com/feeds/api/videos/','',$value['id']); // http://gdata.youtube.com/feeds/api/videos/_j0b9syAuIk
-				$thumbnail = "https://i1.ytimg.com/vi/".$id."/0.jpg";
-				
-				$items[] = array( 
-					'previewUrl'	=> $thumbnail,
-					'saveValue'		=> $id.".youtube",
-					'thumbUrl'		=> $thumbnail,
-					'title'			=> $value['title']
-				); 	
+				$feed = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=".urlencode($searchQry)."&type=video&maxResults=20&key=".$apiKey;
+				$extension = 'youtube';
 			}
-			
-			$parms = array('width' => 200, 'height'=>113, 'type'=>'image', 'bbcode'=>'video', 'tagid'=> $this->getQuery('tagid'), 'action'=>'youtube','searchPlaceholder'=>'Search Youtube');
+
+		}
+		else // -- default state.
+		{
+
+			$defaultAccount = e107::pref('core','youtube_default_account');
+			if(empty($defaultAccount))
+			{
+				$defaultAccount = 'e107inc';
+			}
+
+			$accFeed = "https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername=".$defaultAccount."&key=".$apiKey;
+			$accData = e107::getFile()->getRemoteContent($accFeed);
+			$accData = json_decode($accData,true);
+			$channelID = null;
+
+			foreach($accData['items'] as $val)
+			{
+				if($val['kind'] == 'youtube#channel')
+				{
+						$channelID = $val['id'];
+						break;
+				}
+			}
+
+			$feed = "https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=".$channelID."&type=video&maxResults=20&key=".$apiKey;
+			$extension = 'youtube';
+		}
+
+
+		if(!empty($feed) )
+		{
+
+			if(!empty($apiKey))
+			{
+				$data = e107::getFile()->getRemoteContent($feed);
+				$data = json_decode($data,true);
+				$items = array();
+			}
+			else // empty key.
+			{
+				$items = "<div class='alert alert-info'><p>Youtube search requires a (free) YouTube v3 api key.<br />
+				This key is not required unless you wish to perform a keyword, playlist or channel search.<br />
+				Entering a Youtube video URL directly into the box above will still work without having an api key. <br />
+				<a style='color:black' target='_blank' href='".e_ADMIN."image.php?mode=main&action=prefs#/tab2'>Click here for more information and to enter your api key</a>.
+				</p>
+				</div>";
+			}
+
+		}
+
+
+		if(!empty($data))
+		{
+			foreach($data['items'] as $value)
+			{
+
+				$id = $value['id']['videoId'];
+				$thumbnail = $value['snippet']['thumbnails']['medium']['url'];
+
+				$items[] = array(
+					'previewUrl'	=> $thumbnail,
+					'saveValue'		=> $id.".".$extension, // youtube",
+					'thumbUrl'		=> $thumbnail,
+					'title'			=> varset($value['snippet']['title'],'')
+				);
+
+				if($extension == 'youtubepl') // save Image for background.
+				{
+					$hiresThumbnail = $thumbnail = $value['snippet']['thumbnails']['high']['url'];
+					e107::getMedia()->saveThumb($hiresThumbnail, $id); //TODO move to $tp->Video(); ?
+				}
+			}
+		}
+	//	return print_a($data,true);
+
+		$parms = array('width' => 200, 'height'=>113, 'type'=>'image', 'bbcode'=>'video', 'tagid'=> $this->getQuery('tagid'), 'action'=>'youtube','searchPlaceholder'=>'Search Youtube. Paste any YouTube URL here for a specific video/playlist/channel' );
+		$text = e107::getMedia()->browserCarousel($items, $parms);
 		
-			$text = e107::getMedia()->browserCarousel($items, $parms);
-		
-		
+		if(E107_DEBUG_LEVEL > 0 && !empty($feed))
+		{
+			$text .= "<div><small>Debug: ". $feed."</small></div>";
+			if(!empty($data))
+			{
+				$text .= print_a($data,true);
+			}
+		}
+
 		return $text;
 		
 	}	
@@ -1495,10 +1701,9 @@ class media_admin_ui extends e_admin_ui
 							
 							list($img_import_w,$img_import_h) = explode("x",$pref['img_import_resize']);
 							
-							//TODO LANS
-							$text .= "						
+							$text .= "
 							<tr>
-								<td>Resize images during media import<div class='label-note'>Leave empty to disable</div></td>
+								<td>".IMALAN_105."<div class='label-note'>".IMALAN_106."</div></td>
 								<td>
 									".$frm->text('img_import_resize_w', $img_import_w,4)."px X ".$frm->text('img_import_resize_h', $img_import_h,4)."px
 								</td>
@@ -1566,9 +1771,267 @@ class media_admin_ui extends e_admin_ui
 		//	$ns->tablerender(LAN_MEDIAMANAGER." :: ".IMALAN_7, $mes->render().$text);
 	}
 
+
+	function avatarPageDeleteChecked()
+	{
+
+
+		$sql = e107::getDb();
+		$mes = e107::getMessage();
+
+			if(!empty($_POST['multiaction']))
+			{
+				$tmp = array(); $tmp1 = array(); $message = array();
+
+				foreach ($_POST['multiaction'] as $todel)
+				{
+					list($usr,$path) = explode('#', $todel);
+
+				//	$path = basename($path);
+
+					$path = str_replace("../","",$path); // clean the path.
+
+					$mes->addDebug('usr: '.intval($usr).'  path: '.$path);
+
+					$image_type = 2;
+					if(strpos($path, '-upload-') === 0)
+					{
+						$image_type = 1;
+						$path = substr($path, strlen('-upload-'));
+					}
+
+					//delete it from server
+					$deletePath = e_AVATAR.$path;
+					if(@unlink($deletePath))
+					{
+						$mes->addDebug('Deleted: '.$deletePath);
+						$message[] = basename($path); //admin log & sysmessage
+					}
+					else
+					{
+						$mes->addError('Unable to delete: '.$deletePath); // Do not translate, temporary during beta stage.
+					}
+
+					//It's owned by an user
+					if(!empty($usr))
+					{
+						switch ($image_type)
+						{
+							case 1: //avatar
+								$tmp[] = intval($usr);
+								break;
+
+							case 2: //photo
+								$tmp1[] = intval($usr);
+								break;
+						}
+					}
+					
+				}
+
+				//Reset all deleted user avatars with one query
+				if(!empty($tmp))
+				{
+					$sql->update("user", "user_image='' WHERE user_id IN (".implode(',', $tmp).")");
+					$mes->addDebug("user_image='' WHERE user_id IN (".implode(',', $tmp).")");
+				}
+				//Reset all deleted user photos with one query
+				if(!empty($tmp1))
+				{
+					$sql->update("user", "user_sess='' WHERE user_id IN (".implode(',', $tmp1).")");
+					$mes->addDebug("user_sess='' WHERE user_id IN (".implode(',', $tmp1).")");
+				}
+				unset($tmp, $tmp1);
+
+				//Format system message
+				if(!empty($message))
+				{
+					e107::getLog()->add('IMALAN_01', implode('[!br!]', $message), E_LOG_INFORMATIVE, '');
+					$mes->addSuccess(implode(', ', $message).' '.IMALAN_28);
+				}
+			}
+
+
+
+	}
+
+
+
+
+
+
 	function avatarPage()
 	{
-		show_avatars();
+		global $pref;
+
+		if (isset($_POST['submit_show_delete_multi']))
+		{
+			$this->avatarPageDeleteChecked();
+		}
+
+
+		e107::css('inline', '
+			span.avatar-label { width:100%; display:block; padding:5px; margin-bottom:5px }
+			div.avatar-container { margin-bottom:5px; max-height:350px }
+
+			');
+
+		$sql = e107::getDb();
+		$frm = e107::getForm();
+		$tp = e107::getParser();
+		$mes = e107::getMessage();
+
+		$avFiles = e107::getFile()->get_files(e_MEDIA."avatars/",".jpg|.png|.gif|.jpeg|.JPG|.GIF|.PNG",null,2);
+
+		$dirlist = array();
+
+		foreach($avFiles as $f)
+		{
+			$dirlist[] = str_replace(e_MEDIA."avatars/","",$f['path']). $f['fname'];
+		}
+
+		$text = '';
+
+		if (empty($dirlist))
+		{
+			$text .= IMALAN_29;
+		}
+		else
+		{
+
+			$tmp = $sql->retrieve('user','user_id,user_image','user_image !="" ', true);
+			$imageUsed = array();
+
+			foreach($tmp as $val)
+			{
+				$id = $val['user_id'];
+				$imageUsed[$id] = str_replace("-upload-","", $val['user_image']);
+			}
+
+			$userImages = array_flip($imageUsed);
+
+			$text = $frm->open('core-image-avatars');
+
+			$text .= "<div  id='core-image-show-avatars' class='row'>";
+
+			$count = 0;
+			while (list($key, $image_name) = each($dirlist))
+			{
+				//$users = IMALAN_21." | ";
+				$row = array('user_id' => '');
+				$image_pre = '';
+				$disabled = false;
+				/*
+				if ($sql->db_Select("user", "*", "user_image='-upload-".$tp->toDB($image_name)."' OR user_sess='".$tp->toDB($image_name)."'"))
+				{
+					$row = $sql->db_Fetch();
+					if($row['user_image'] == '-upload-'.$image_name) $image_pre = '-upload-';
+					$users .= "<a href='".$e107->url->create('user/profile/view', 'name='.$row['user_name'].'&id='.$row['user_id'])."'>{$row['user_name']}</a> <span class='smalltext'>(".($row['user_sess'] == $image_name ? IMALAN_24 : IMALAN_23).")</span>";
+				}
+				else
+				{
+
+				}
+			*/
+
+				// :
+		//		$fileName = basename($image_name);
+
+
+				$fileName = basename($image_name);
+
+
+
+				$users = (in_array($fileName,$imageUsed)) ? "<span class='label label-warning avatar-label'>Image in use</span>" : '<span class="label label-default avatar-label" >Not in use</span>';
+
+				//directory?
+				if(is_dir(e_MEDIA."avatars/".$image_name))
+				{
+					//File info
+					$users = "<a href='#' title='".IMALAN_69.": {$image_name}'><img class='e-tip icon S16' src='".e_IMAGE_ABS."admin_images/info_16.png' alt='".IMALAN_66.": {$image_name}' title='".IMALAN_69.": {$image_name}' /></a> <span class='error'>".IMALAN_69."</span>";
+
+					//Friendly UI - click text to select a form element
+					$img_src =  '<span class="error">'.IMALAN_70.'</span>';
+					$disabled = true;
+				}
+				else
+				{
+					//File info
+					//	$users = "<a class='e-tip' href='#' title='".IMALAN_66.": {$image_name}'><img src='".e_IMAGE_ABS."admin_imaXXXges/info_16.png' alt='".IMALAN_66.": {$image_name}' /></a> ".$users;
+
+					// Control over the image size (design)
+					//	$image_size = getimagesize(e_MEDIA."avatars/".$image_name);
+
+					//Friendly UI - click text to select a form element
+
+					// Resized on-the-fly - avatar-size no longer an issue.
+				//	$attr = "aw=".$pref['im_width']."&ah=".$pref['im_height'];
+					$attr = "aw=200&ah=200";
+					$img_path = $tp->thumbUrl(e_MEDIA_ABS."avatars/".$image_name,$attr);
+
+					$type = dirname($image_name);
+
+					if($prevType != $type)
+					{
+						$text .= "<div class='col-md-12 clearfix'></div>
+					<h4 class='clearfix col-md-12' >".$type."</h4>";
+					}
+
+
+					$for = $frm->name2id('multiaction-'.$image_name);
+
+					$img_src = "
+				<div class='thumbnail'>
+				<label for='".$for."' ><img  class='img-responsive' src='".$img_path."' alt='{$image_name}' title='".IMALAN_66.": {$image_name}' /></label>
+				</div>
+				";
+
+					$prevType = $type;
+
+				}
+
+				//style attribute allowed here - server side width/height control
+				//autocheck class - used for JS selectors (see eCoreImage object)
+
+
+
+				$text .= "
+			<div class='col-md-2 col-sm-4 center autocheck avatar-container' >
+				<div class='well'>
+				<div class='image-users'>{$users}</div>
+				<div class='image-preview'>{$img_src}</div>
+				<div class='image-delete'>
+					".$frm->checkbox('multiaction[]', intval($userImages[$fileName])."#{$image_pre}{$image_name}", false, array('id' => $for, 'disabled' => $disabled))."
+				</div>
+
+				</div>
+			</div>
+			";
+				$count++;
+			}
+
+			$text .= "</div>
+
+			<div class='col-md-12 spacer clearfix'>
+				<div class='row buttons-bar'>
+					<input type='hidden' name='show_avatars' value='1' />
+					".$frm->admin_button('e_check_all', LAN_CHECKALL, 'action')."
+					".$frm->admin_button('e_uncheck_all', LAN_UNCHECKALL, 'action')."
+					".$frm->admin_button('submit_show_delete_multi', LAN_DELCHECKED, 'delete')."
+					".$frm->admin_button('submit_show_deleteall', "Delete all unused images", 'delete')."
+
+				</div>
+			</div>
+
+
+			</form>
+		";
+			// $frm->admin_button('submit_cancel_show', IMALAN_68, 'cancel')
+		}
+
+		return $mes->render().$text;
+
+		// $ns->tablerender(LAN_MEDIAMANAGER." :: ".IMALAN_18, $mes->render().$text);
 	}
 
 	function iconsPage()
@@ -1650,7 +2113,7 @@ class media_admin_ui extends e_admin_ui
 
 				if(!$typePath = $this->getPath($upload['type']))
 				{
-					$mes->addError("Couldn't generated path from upload data");
+					$mes->addError(IMALAN_107);
 					return FALSE;
 				}
 				$mes->addDebug(print_a($upload,TRUE));
@@ -1661,7 +2124,10 @@ class media_admin_ui extends e_admin_ui
 
 				if(!rename($oldpath, e_MEDIA.$newpath))
 				{
-					$mes->add("Couldn't move file from ".$oldpath." to ".$newpath, E_MESSAGE_ERROR);
+					$srch = array('[x]','[y]');
+					$repl = array($oldpath,$newpath);
+					$text = str_replace($srch,$repl,IMALAN_108);
+					$mes->add($text, E_MESSAGE_ERROR);
 					return FALSE;
 				};
 
@@ -1692,7 +2158,7 @@ class media_admin_ui extends e_admin_ui
 
 			if(!($typePath = $this->getPath($img_data['media_type'])))
 			{
-				$mes->addError("Couldn't get path ".$typePath);
+				$mes->addError(IMALAN_109." ".$typePath);
 					
 				return FALSE;
 			}
@@ -1709,7 +2175,10 @@ class media_admin_ui extends e_admin_ui
 			
 				if(!rename($oldpath, $newpath))
 				{
-					$mes->add("Couldn't move file from ".$oldpath." to ".str_replace('../', '', $newpath), E_MESSAGE_ERROR);
+					$srch = array('[x]','[y]');
+					$repl = array($oldpath,str_replace('../', '', $newpath));
+					$text = str_replace($srch,$repl,IMALAN_108);
+					$mes->add($text, E_MESSAGE_ERROR);
 					return FALSE;
 				}
 				$img_data['media_url'] = $tp->createConstants($newpath, 'rel');
@@ -1734,7 +2203,7 @@ class media_admin_ui extends e_admin_ui
 		$tp = e107::getParser();
 		$f = e107::getFile()->get_file_info($oldpath,TRUE);
 		
-		$mes->addDebug("checkDupe(): newpath=".$newpath."<br />oldpath=".$oldpath."<br />".print_r($upload,TRUE));
+		$mes->addDebug("checkDupe(): newpath=".$newpath."<br />oldpath=".$oldpath."<br />".print_r($newpath,TRUE));
 		if(file_exists($newpath) || e107::getDb()->db_Select("core_media","*","media_url = '".$tp->createConstants($newpath,'rel')."' LIMIT 1") )
 		{
 			$mes->addWarning($newpath." already exists.");	
@@ -1765,7 +2234,8 @@ class media_admin_ui extends e_admin_ui
 
 		if(!vartrue($this->mimePaths[$pmime]))
 		{
-			$mes->add("Couldn't detect mime-type($mime). Upload failed.", E_MESSAGE_ERROR);
+			$text = str_replace('[x]',$mime,IMALAN_111);
+			$mes->add($text, E_MESSAGE_ERROR);
 			return FALSE;
 		}
 
@@ -1775,7 +2245,8 @@ class media_admin_ui extends e_admin_ui
 		{
 			if(!mkdir($dir, 0755))
 			{
-				$mes->add("Couldn't create folder ($dir).", E_MESSAGE_ERROR);
+				$text = str_replace('[x]',$dir,IMALAN_112);
+				$mes->add($text, E_MESSAGE_ERROR);
 				return FALSE;
 			};
 		}
@@ -1804,14 +2275,14 @@ class media_admin_ui extends e_admin_ui
 
 		if(!vartrue($_POST['batch_import_selected']))
 		{
-			$mes->add("Scanning for new media (images, videos, files) in folder: <b> ".e_IMPORT."</b>", E_MESSAGE_INFO);
+			$mes->add(IMALAN_113." <b> ".e_IMPORT."</b>", E_MESSAGE_INFO);
 		}
 
 		if(!count($files))
 		{
 			if(!vartrue($_POST['batch_import_selected']))
 			{
-				$mes->add("No media Found! Please upload some files.", E_MESSAGE_INFO);
+				$mes->add(IMALAN_114, E_MESSAGE_INFO);
 			}
 			
 			$text = $this->uploadTab();
@@ -1833,15 +2304,15 @@ class media_admin_ui extends e_admin_ui
 							<thead>
 								<tr>
 									<th class='center'>".e107::getForm()->checkbox_toggle('e-column-toggle', 'batch_selected')."</th>
-									<th class='center' style='width:50px'>Preview</th>
+									<th class='center' style='width:50px'>".IMALAN_121."</th>
 									<th class='center'>".LAN_FILE."</th>
-									<th >Title (internal use)</th>
-									<th >Caption (seen by public)</th>
-									<th >Author</th>
-									<th>Mime Type</th>
-									<th>File Size</th>
+									<th>".IMALAN_115."</th>
+									<th>".IMALAN_116."</th>
+									<th>".LAN_AUTHOR."</th>
+									<th>".IMALAN_118."</th>
+									<th>".IMALAN_119."</th>
 									<th>".LAN_DATESTAMP."</th>
-									<th class='center last'>Dimensions</th>
+									<th class='center last'>".IMALAN_120."</th>
 								</tr>
 							</thead>
 							<tbody>";
@@ -1851,11 +2322,13 @@ class media_admin_ui extends e_admin_ui
 		{
 			$default = $this->getFileXml($f['fname']);
 			$f = $fl->cleanFileName($f,true);
+			
 			$c = md5($f['path'].$f['fname']);
 			
 			if($f['error'])
 			{
-				$mes->addWarning($f['fname']." couldn't be renamed. Check file perms.");
+				$text = str_replace('[x]', $f['fname'], IMALAN_122);
+				$mes->addWarning($text);
 			}
 				
 			$large = e107::getParser()->thumbUrl($f['path'].$f['fname'], 'w=800', true);
@@ -1891,11 +2364,11 @@ class media_admin_ui extends e_admin_ui
 				</tbody>
 						</table>
 						<div class='buttons-bar center'>
-						Import into Category: ".$frm->selectbox('batch_category',$this->cats, $_POST['batch_category']);
+						".IMALAN_123." ".$frm->selectbox('batch_category',$this->cats, $_POST['batch_category']);
 			
 		//	$waterMarkPath = e_THEME.e107::getPref('sitetheme')."/images/watermark.png"; // Now performed site-wide dynamically. 				
 					
-			if(is_readable($waterMarkPath))
+		//	if(is_readable($waterMarkPath))
 			{
 		//		$text .= $frm->checkbox_label("Add Watermark", 'batch_import_watermark',1);
 			}
@@ -1903,8 +2376,8 @@ class media_admin_ui extends e_admin_ui
 						$text .= "
 						</div>
 						<div class='buttons-bar center'>
-							".$frm->admin_button('batch_import_selected', "Import Selected Files", 'import')
-							.$frm->admin_button('batch_import_delete', "Delete Selected Files", 'delete');				
+							".$frm->admin_button('batch_import_selected', IMALAN_124, 'import')
+							.$frm->admin_button('batch_import_delete', IMALAN_125, 'delete');
 			$text .= "
 						</div>
 					</fieldset>
@@ -1944,6 +2417,9 @@ class media_admin_ui extends e_admin_ui
 			
 		$srch = array("_","-");	
 		$description = str_replace($srch," ",$file);	
+		
+		$file = utf8_encode($file);
+		$description = utf8_encode($description); 
 			
 		return array('title'=>basename($file),'description'=>$description,'authorName'=>USERNAME,'authorEmail'=>'');
 		
@@ -2011,7 +2487,7 @@ class media_admin_ui extends e_admin_ui
 		
 		if(!count($_POST['batch_selected']))
 		{
-			$mes->addError("Please check at least one file.");
+			$mes->addError(IMALAN_126);
 			return;
 		}
 		
@@ -2052,7 +2528,7 @@ class media_admin_ui extends e_admin_ui
 			if(!$f['mime'])
 			{
 				
-				$mes->add("Couldn't get file info from : ".$oldpath, E_MESSAGE_WARNING);
+				$mes->add(IMALAN_127." ".$oldpath, E_MESSAGE_WARNING);
 				// $mes->add(print_a($f,true), E_MESSAGE_ERROR);
 				$f['mime'] = "other/file";
 			}
@@ -2096,7 +2572,7 @@ class media_admin_ui extends e_admin_ui
 
 				if($sql->db_Insert("core_media",$insert))
 				{
-					$mes->add("Importing Media: ".$f['fname'], E_MESSAGE_SUCCESS);
+					$mes->add(IMALAN_128." ".$f['fname'], E_MESSAGE_SUCCESS);
 					$this->deleteFileXml($f['fname']);
 				}
 				else
@@ -2226,66 +2702,7 @@ if(varset($_GET['action']) == 'settings')
 
 
 
-if (isset($_POST['submit_show_delete_multi']))
-{
-	if(varset($_POST['multiaction']))
-	{
-		$tmp = array(); $tmp1 = array(); $message = array();
 
-		foreach ($_POST['multiaction'] as $todel)
-		{
-			$todel = explode('#', $todel);
-			$todel[1] = basename($todel[1]);
-
-			$image_type = 2;
-			if(strpos($todel[1], '-upload-') === 0)
-			{
-				$image_type = 1;
-				$todel[1] = substr($todel[1], strlen('-upload-'));
-			}
-
-			//delete it from server
-			@unlink(e_UPLOAD."avatars/".$todel[1]);
-
-			//admin log & sysmessage
-			$message[] = $todel[1];
-
-			//It's owned by an user
-			if($todel[0])
-			{
-				switch ($image_type)
-				{
-					case 1: //avatar
-						$tmp[] = intval($todel[0]);
-						break;
-
-					case 2: //photo
-						$tmp1[] = intval($todel[0]);
-						break;
-				}
-			}
-		}
-
-		//Reset all deleted user avatars with one query
-		if(!empty($tmp))
-		{
-			$sql->db_Update("user", "user_image='' WHERE user_id IN (".implode(',', $tmp).")");
-		}
-		//Reset all deleted user photos with one query
-		if(!empty($tmp1))
-		{
-			$sql->db_Update("user", "user_sess='' WHERE user_id IN (".implode(',', $tmp1).")");
-		}
-		unset($tmp, $tmp1);
-
-		//Format system message
-		if(!empty($message))
-		{
-			$admin_log->log_event('IMALAN_01', implode('[!br!]', $message), E_LOG_INFORMATIVE, '');
-			$mes->addSuccess(implode(', ', $message).' '.IMALAN_28);
-		}
-	}
-}
 
 /*
  * DELETE ALL UNUSED IMAGES - SHOW AVATAR SCREEN
@@ -2319,7 +2736,7 @@ if (isset($_POST['submit_show_deleteall']))
 
 		$message = $count." ".IMALAN_26;
 		$mes->addSuccess($message);
-		$admin_log->log_event('IMALAN_02', $message.$imgList,E_LOG_INFORMATIVE, '');
+		e107::getLog()->add('IMALAN_02', $message.$imgList,E_LOG_INFORMATIVE, '');
 		unset($imgList);
 	}
 }
@@ -2343,7 +2760,7 @@ if (isset($_POST['submit_avdelete_multi']))
 		$search_users = $sql->db_getList('ALL', FALSE, FALSE, 'user_id');
 		foreach($_POST['multiaction'] as $uid)
 		{
-			if (varsettrue($search_users[$uid]))
+			if (vartrue($search_users[$uid]))
 			{
 				$avname = avatar($search_users[$uid]['user_image']);
 				if (strpos($avname, "http://") === FALSE)
@@ -2364,7 +2781,7 @@ if (isset($_POST['submit_avdelete_multi']))
 		}
 
 		$mes->addSuccess(IMALAN_51.'<strong>'.implode(', ', $tmp).'</strong> '.IMALAN_28);
-		$admin_log->log_event('IMALAN_03', implode('[!br!]', $avList), E_LOG_INFORMATIVE, '');
+		e107::getLog()->add('IMALAN_03', implode('[!br!]', $avList), E_LOG_INFORMATIVE, '');
 
 		unset($search_users);
 	}
@@ -2374,162 +2791,6 @@ if (isset($_POST['submit_avdelete_multi']))
 
 
 
-/*
- * SHOW AVATARS SCREEN
- */
-function show_avatars()
-{
-	global $e107, $pref;
-
-	$ns = e107::getRender();
-	$sql = e107::getDb();
-	$frm = e107::getForm();
-	$tp = e107::getParser();
-	$mes = e107::getMessage();
-
-
-	$avFiles = e107::getFile()->get_files(e_MEDIA."avatars/",".jpg|.png|.gif|.jpeg|.JPG|.GIF|.PNG",null,2);
-
-	$dirlist = array();
-	
-	foreach($avFiles as $f)
-	{
-		$dirlist[] = str_replace(e_MEDIA."avatars/","",$f['path']). $f['fname'];	
-	}
-
-	$text = '';
-
-	if (empty($dirlist))
-	{
-		$text .= IMALAN_29;
-	}
-	else
-	{
-		
-		$tmp = $sql->retrieve('user','user_image','user_image !="" ', true);
-		$imageUsed = array();
-
-		foreach($tmp as $val)
-		{
-			$imageUsed[] = $val['user_image'];	
-		}
-		$text = "
-			<form method='post' action='".e_SELF."?avatars' id='core-iamge-show-avatars-form'>
-			<fieldset id='core-iamge-show-avatars'>
-		";
-
-		$count = 0;
-		while (list($key, $image_name) = each($dirlist))
-		{
-			//$users = IMALAN_21." | ";
-			$row = array('user_id' => '');
-			$image_pre = '';
-			$disabled = false;
-			/*
-			if ($sql->db_Select("user", "*", "user_image='-upload-".$tp->toDB($image_name)."' OR user_sess='".$tp->toDB($image_name)."'"))
-			{
-				$row = $sql->db_Fetch();
-				if($row['user_image'] == '-upload-'.$image_name) $image_pre = '-upload-';
-				$users .= "<a href='".$e107->url->create('user/profile/view', 'name='.$row['user_name'].'&id='.$row['user_id'])."'>{$row['user_name']}</a> <span class='smalltext'>(".($row['user_sess'] == $image_name ? IMALAN_24 : IMALAN_23).")</span>";
-			}
-			else
-			{
-				
-			}
-		*/
-		
-		// : 
-		
-			$users = (in_array(basename($image_name),$imageUsed)) ? "<span class='badge badge-warning' style='margin-bottom:5px'>Image in use</span>" : '<span class="badge" style="margin-bottom:5px">Not in use</span>';
-			
-			//directory?
-			if(is_dir(e_MEDIA."avatars/".$image_name))
-			{
-				//File info
-				$users = "<a href='#' title='".IMALAN_69.": {$image_name}'><img class='e-tip icon S16' src='".e_IMAGE_ABS."admin_images/info_16.png' alt='".IMALAN_66.": {$image_name}' title='".IMALAN_69.": {$image_name}' /></a> <span class='error'>".IMALAN_69."</span>";
-
-				//Friendly UI - click text to select a form element
-				$img_src =  '<span class="error">'.IMALAN_70.'</span>';
-				$disabled = true;
-			}
-			else
-			{
-				//File info
-			//	$users = "<a class='e-tip' href='#' title='".IMALAN_66.": {$image_name}'><img src='".e_IMAGE_ABS."admin_imaXXXges/info_16.png' alt='".IMALAN_66.": {$image_name}' /></a> ".$users;
-
-				// Control over the image size (design)
-			//	$image_size = getimagesize(e_MEDIA."avatars/".$image_name);
-
-				//Friendly UI - click text to select a form element
-				
-				// Resized on-the-fly - avatar-size no longer an issue. 
-				$attr = "aw=".$pref['im_width']."&ah=".$pref['im_height'];
-				$img_path = $tp->thumbUrl(e_MEDIA_ABS."avatars/".$image_name,$attr);
-				
-				$type = dirname($image_name);
-				
-				if($prevType != $type)
-				{
-					$text .= "<div class='clearfix'></div>
-					<h5 >".$type."</h5>";	
-				}	
-				
-				
-				
-				
-				
-				
-				
-				$for = $frm->name2id('multiaction-'.$image_name);
-				
-				$img_src = "<label for='".$for."' >
-				<div class='thumbnail'>
-				<img  src='".$img_path."' alt='{$image_name}' title='".IMALAN_66.": {$image_name}' />
-				</div>
-				</label>";
-				
-				$prevType = $type;
-
-			}
-
-			//style attribute allowed here - server side width/height control
-			//autocheck class - used for JS selectors (see eCoreImage object)
-			$text .= "
-			<div class='buttons-bar image-box f-left center autocheck' style='margin:5px; width: ".(intval($pref['im_width'])+40)."px; height: ".(intval($pref['im_height'])+100)."px;'>
-				<div class='well'>
-				<div class='image-users'>{$users}</div>
-				<div class='image-preview'>{$img_src}</div>
-				<div class='image-delete'>
-					".$frm->checkbox('multiaction[]', "{$row['user_id']}#{$image_pre}{$image_name}", false, array('id' => false, 'disabled' => $disabled))."
-				</div>
-
-				</div>
-			</div>
-			";
-			$count++;
-		}
-
-		$text .= "
-			<div class='spacer clear'>
-				<div class='buttons-bar'>
-					<input type='hidden' name='show_avatars' value='1' />
-					".$frm->admin_button('e_check_all', LAN_CHECKALL, 'action')."
-					".$frm->admin_button('e_uncheck_all', LAN_UNCHECKALL, 'action')."
-					".$frm->admin_button('submit_show_delete_multi', LAN_DELCHECKED, 'delete')."
-					".$frm->admin_button('submit_show_deleteall', "Delete all unused images", 'delete')."
-					
-				</div>
-			</div>
-			</fieldset>
-			</form>
-		";
-		// $frm->admin_button('submit_cancel_show', IMALAN_68, 'cancel')
-	}
-
-	echo $mes->render().$text;
-	return;
-	// $ns->tablerender(LAN_MEDIAMANAGER." :: ".IMALAN_18, $mes->render().$text);
-}
 
 /*
  * CHECK AVATARS SCREEN

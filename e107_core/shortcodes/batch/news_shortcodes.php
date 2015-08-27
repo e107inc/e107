@@ -30,6 +30,8 @@ class news_shortcodes extends e_shortcode
 	//protected $param;  - shouldn't be set - see __set/__get methods of e_shortcode & news::render_newsitem()
 
 	protected $commentsDisabled;
+
+	protected $commentsEngine = 'e107';
 	
 	private $imageItem;
 	
@@ -42,8 +44,11 @@ class news_shortcodes extends e_shortcode
 		$pref = e107::getPref();
 		
 		$this->commentsDisabled = vartrue($pref['comments_disabled']);
-		
-		
+
+		if(!empty($pref['comments_engine']))
+		{
+			$this->commentsEngine = $pref['comments_engine'];
+		}
 	}
 
 	function sc_newstitle()
@@ -58,7 +63,7 @@ class news_shortcodes extends e_shortcode
 		return '<a href="'.$this->sc_newsurl().'" title="'.preg_replace('/\'|"|<|>/s', '', $this->news_item['news_title']).'">'.$title.'</a>';
 	}
 	
-	function sc_newsbody($parm)
+	function sc_newsbody($parm=null)
 	{
 		$tp = e107::getParser();
 		e107::getBB()->setClass("news"); // For automatic bbcode image resizing. 
@@ -68,7 +73,7 @@ class news_shortcodes extends e_shortcode
 			$news_body = $tp->toHTML($this->news_item['news_body'], true, 'BODY, fromadmin', $this->news_item['news_author']);
 		}
 		
-		if($this->news_item['news_extended'] && (isset($_POST['preview']) || $this->param['current_action'] == 'extend') && ($parm != 'noextend' || $parm != 'body'))
+		if($this->news_item['news_extended'] && (isset($_POST['preview']) || $this->param['current_action'] == 'extend') && ($parm != 'noextend' && $parm != 'body'))
 		{
 			$news_body .= $tp->toHTML($this->news_item['news_extended'], true, 'BODY, fromadmin', $this->news_item['news_author']);
 		}
@@ -76,7 +81,7 @@ class news_shortcodes extends e_shortcode
 		return $news_body;
 	}
 
-	function sc_newsicon($parm)
+	function sc_newsicon($parm=null)
 	{
 
 		return $this->sc_newscaticon('url');
@@ -98,15 +103,15 @@ class news_shortcodes extends e_shortcode
 		return "<a href='http://e107.org'>e107</a>";
 	}
 
-	function sc_newscomments($parm)
+	function sc_newscomments($parm=null)
 	{
 		
 		$pref = e107::getPref();
 		$sql = e107::getDb();
 		
-		if($this->commentsDisabled)
+		if($this->commentsDisabled || ($this->commentsEngine != 'e107'))
 		{
-			return;	
+			return '';
 		}
 				
 		$news_item = $this->news_item;
@@ -114,7 +119,7 @@ class news_shortcodes extends e_shortcode
 
 		if($param['current_action'] == 'extend')
 		{
-			return LAN_NEWS_99.' ('.$news_item['news_comment_total'].')';
+			return LAN_COMMENTS.' ('.$news_item['news_comment_total'].')';
 		}
 
 		if (vartrue($pref['multilanguage']))
@@ -150,10 +155,10 @@ class news_shortcodes extends e_shortcode
 		return (!$news_item['news_allow_comments'] ? ''.($pref['comments_icon'] ? $NEWIMAGE.' ' : '')."<a title='Comments' href='".e107::getUrl()->create('news/view/item', $news_item)."'>".$param['commentlink'].intval($news_item['news_comment_total']).'</a>' : vartrue($param['commentoffstring'],'Disabled') );
 	}
 
-	function sc_trackback($parm)
+	function sc_trackback($parm=null)
 	{
 		global $pref;
-		if(!varsettrue($pref['trackbackEnabled'])) { return ''; }
+		if(!vartrue($pref['trackbackEnabled'])) { return ''; }
 		$news_item = $this->news_item;
 		$news_item['#'] = 'track';
 		
@@ -170,7 +175,7 @@ class news_shortcodes extends e_shortcode
 	 * @example {NEWSNAVLINK: items=category}  // News items for current category. 
 	 * @example {NEWSNAVLINK: text=myCaption}  // Default News item view. ie. news.php
 	 */
-	function sc_newsnavlink($parm='') //TODO add more options. 
+	function sc_newsnavlink($parm=null) //TODO add more options.
 	{
 		
 		if(varset($parm['list']) == 'all') // A list of all items - usually headings and thumbnails
@@ -203,16 +208,17 @@ class news_shortcodes extends e_shortcode
 
 
 
-	function sc_newsheader($parm)
+	function sc_newsheader($parm=null)
 	{
 		return $this->sc_newscaticon('src');
 	}
 
 
-	function sc_newscategory($parm)
+	function sc_newscategory($parm=null)
 	{
 		$category_name = e107::getParser()->toHTML($this->news_item['category_name'], FALSE ,'defs');
-		return "<a class='".$GLOBALS['NEWS_CSSMODE']."_category' style='".(isset($this->param['catlink']) ? $this->param['catlink'] : "#")."' href='".e107::getUrl()->create('news/list/category', $this->news_item)."'>".$category_name."</a>";
+		$category = array('id' => $this->news_item['category_id'], 'name' => $this->news_item['category_sef'] );
+		return "<a class='".$GLOBALS['NEWS_CSSMODE']."_category' style='".(isset($this->param['catlink']) ? $this->param['catlink'] : "#")."' href='".e107::getUrl()->create('news/list/category', $category)."'>".$category_name."</a>";
 	}
 
 	function sc_newsdate($parm)
@@ -248,15 +254,19 @@ class news_shortcodes extends e_shortcode
 
 	/**
 	 * {NEWSCOMMENTLINK: glyph=comments&class=btn btn-default btn-sm}
+	 *
 	 */
-	function sc_newscommentlink($parm='')
+	function sc_newscommentlink($parm=null)
 	{
-		if($this->commentsDisabled)
+
+		if($this->commentsDisabled || ($this->commentsEngine != 'e107'))
 		{
 			return;	
 		}
-		
+
 		$class = varset($parm['class']) ? " ".$parm['class'] : "";
+
+		// When news_allow_comments = 1 then it is disabled. Backward, but that's how it is in v1.x
 		$text = ($this->news_item['news_allow_comments'] ? $this->param['commentoffstring'] : "<a title='".$this->sc_newscommentcount()." comments' class='e-tip".$class."' href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$this->param['commentlink'].'</a>');
 		return $text;
 	}
@@ -264,11 +274,11 @@ class news_shortcodes extends e_shortcode
 	/**
 	 * {NEWSCOMMENTCOUNT: glyph=x}
 	 */
-	function sc_newscommentcount($parm='')
+	function sc_newscommentcount($parm=null)
 	{
-		if($this->commentsDisabled)
+		if($this->commentsDisabled || ($this->commentsEngine != 'e107'))
 		{
-			return;	
+			return;
 		}
 		
 		$text = varset($parm['glyph']) ? e107::getParser()->toGlyph($parm['glyph']) : "";
@@ -320,13 +330,14 @@ class news_shortcodes extends e_shortcode
 		if (ADMIN && getperms('H'))
 		{
 			//TODO - discuss - a pref for 'new browser window' loading, or a parm or leave 'new browser window' as default?
-			$default = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('icon-edit',false) :  "<img src='".e_IMAGE_ABS."admin_images/edit_16.png' alt='".LAN_NEWS_25."' class='icon' />";
+			$default = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('icon-edit',false) :  "<img src='".e_IMAGE_ABS."admin_images/edit_16.png' alt=\"".LAN_EDIT."\" class='icon' />";
+
 			
-			$adop_icon = (file_exists(THEME."images/newsedit.png") ? "<img src='".THEME_ABS."images/newsedit.png' alt='".LAN_NEWS_25."' class='icon' />" : $default);
+			$adop_icon = (file_exists(THEME."images/newsedit.png") ? "<img src='".THEME_ABS."images/newsedit.png' alt=\"".LAN_EDIT."\" class='icon' />" : $default);
 			
 			$class = varset($parm['class']);
 			
-			return "<a class='e-tip ".$class."' rel='external' href='".e_ADMIN_ABS."newspost.php?action=create&amp;sub=edit&amp;id=".$this->news_item['news_id']."' title=\"".LAN_NEWS_25."\">".$adop_icon."</a>\n";
+			return "<a class='e-tip ".$class."' rel='external' href='".e_ADMIN_ABS."newspost.php?action=edit&amp;id=".$this->news_item['news_id']."' title=\"".LAN_EDIT."\">".$adop_icon."</a>\n";
 		}
 		else
 		{
@@ -386,13 +397,14 @@ class news_shortcodes extends e_shortcode
 		{
 			$tp = e107::getParser();
 			$text = $tp->toHtml($this->news_item['news_body'],true);
-			$text = str_replace("<br />"," ",$text);
+			$text = str_replace("<br />","\n",$text);
 			$text = strip_tags($text);	
-			$tmp = preg_split('/\.\s/i', trim($text));	
+			$tmp = preg_split('/(\.\s|!|\r|\n|\?)/i', trim($text));	
+			$tmp = array_filter($tmp);
 			
-			if($tmp[0] && $tmp[1])
+			if($tmp[0])
 			{
-				return trim($tmp[0]).". ".trim($tmp[1]).'.<br />';	
+				return trim($tmp[0]);	
 			}
 		}
 	}
@@ -606,7 +618,7 @@ class news_shortcodes extends e_shortcode
 		$class .= ' news-image-'.$tmp['count'];
 		
 			
-		if($tp->isVideo($this->news_item['news_thumbnail']))
+		if($tp->isVideo($srcPath))
 		{
 			return; 
 		}
@@ -635,9 +647,16 @@ class news_shortcodes extends e_shortcode
 			}
 		}
 		
-		if(vartrue($parm['nolegacy']) && strpos($src,'newspost_images')!==false)
+	
+		
+		if(vartrue($parm['nolegacy'])) // Remove legacy thumbnails. 
 		{
-			return;
+			$legSrc = urldecode($src);
+
+		 	if(strpos($legSrc,'newspost_images/thumb_')!==false)
+			{
+				return;	
+			}
 		}
 		
 
@@ -710,7 +729,7 @@ class news_shortcodes extends e_shortcode
 		switch($parm)
 		{
 			case 'src':
-				return $category_icon;
+				return $src;
 			break;
 
 			case 'tag':
@@ -736,7 +755,7 @@ class news_shortcodes extends e_shortcode
 	 * @param string $parm
 	 * @return string
 	 */
-	function sc_newsitem_schook($parm)
+	function sc_newsitem_schook($parm='')
 	{
 		$parm = explode('|', $parm, 2);
 		$parm[1] = 'news_id='.$this->news_item['news_id'].(varset($parm[1]) ? '&'.$parm[1] : '');

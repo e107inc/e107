@@ -22,6 +22,8 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 $e_sub_cat = 'emoticon';
 
+e107::getConfig('emote')->clearPrefCache('emote');
+
 require_once("auth.php");
 
 $mes = e107::getMessage();
@@ -40,9 +42,10 @@ if (isset($_POST['active']))
 	if ($pref['smiley_activate'] != $_POST['smiley_activate'])
 	{
 		$pref['smiley_activate'] = $_POST['smiley_activate'];
-		$admin_log->log_event($pref['smiley_activate'] ? 'EMOTE_02' : 'EMOTE_03', $pref['emotepack'], E_LOG_INFORMATIVE, '');
+		e107::getLog()->add($pref['smiley_activate'] ? 'EMOTE_02' : 'EMOTE_03', $pref['emotepack'], E_LOG_INFORMATIVE, '');
 		save_prefs();
 		$update = true;
+
 	}
 	else
 	{
@@ -88,7 +91,7 @@ foreach($_POST as $key => $value)
 		{
 			$mes->addInfo(LAN_NO_CHANGE);
 		}
-		$admin_log->log_event('EMOTE_01', $pref['emotepack'], E_LOG_INFORMATIVE, '');
+		e107::getLog()->add('EMOTE_01', $pref['emotepack'], E_LOG_INFORMATIVE, '');
 		break;
 	}
 
@@ -181,12 +184,12 @@ class emotec
 			<form method='post' action='".e_SELF."#etabTabContainer=emoticon-packages'>
 				<fieldset>
 					<legend>".EMOLAN_13."</legend>
-					<table class='table adminlist'>
+					<table class='table adminlist' style='margin-top:10px'>
 						<colgroup>
 							<col style='width:15%' />
 							<col style='width:50%' />
-							<col style='width:15%' />
-							<col style='width:20%' />
+							<col style='width:10%' />
+							<col style='width:25%' />
 						</colgroup>
 						<thead>
 							<tr>
@@ -207,8 +210,8 @@ class emotec
 
 			$text .= "
 			<tr>
-			<td class='forumheader' style='width: 20%;'>{$pack}</td>
-			<td class='forumheader' style='width: 20%;'>
+			<td class='forumheader'>{$pack}</td>
+			<td class='forumheader'>
 			";
 
 			foreach($emoteArray as $emote)
@@ -228,24 +231,21 @@ class emotec
 
 			$text .= "
 								</td>
-								<td class='center middle'>".($pref['emotepack'] == $pack ? LAN_ACTIVE : "<button type='submit' name='defPack_".$pack."' value='".EMOLAN_11."'><span>".EMOLAN_11."</span></button>")."</td>
+								<td class='center middle'>".($pref['emotepack'] == $pack ? "<span class='label label-success'>".LAN_ACTIVE."</span>" : "<button class='btn btn-primary' type='submit' name='defPack_".$pack."' value='".EMOLAN_11."'><span>".EMOLAN_11."</span></button>")."</td>
 								<td>";
 								
 								
 								
 						
-			$text .= $frm->admin_button('subPack_'.$pack,'edit','submit',LAN_CONFIGURE);
+			$text .= $frm->admin_button('subPack_'.$pack,'edit','default',LAN_CONFIGURE);
 			
 			if ($can_scan && ($pack != 'default'))
 			{
-				$text .= "
-									
-									<button class='submit' type='submit' name='scanPack_".$pack."'><span>".EMOLAN_26."</span></button>
-				";
-				$text .= $frm->admin_button('scanPack_'.$pack,'active','submit',EMOLAN_26);
+			//	$text .= "<button class='btn btn-default submit' type='submit' name='scanPack_".$pack."'><span>".EMOLAN_26."</span></button>";
+				$text .= $frm->admin_button('scanPack_'.$pack,'active','default',EMOLAN_26);
 			}
 			
-			$text .= $frm->admin_button('XMLPack_'.$pack,'submit','submit',EMOLAN_28);
+			$text .= $frm->admin_button('XMLPack_'.$pack,'submit','default',EMOLAN_28);
 			$text .= "
 								</td>
 							</tr>
@@ -292,7 +292,7 @@ class emotec
 		<form method='post' action='".e_SELF."#etabTabContainer=emoticon-packages'>
 			<fieldset id='core-emoticon-configure'>
 				<legend class='e-hideme'>".LAN_EDIT."</legend>
-				<div class='info-bar'><strong>".sprintf(str_replace("[x]", "%u", EMOLAN_31), count($eArray))."</strong></div>
+				<div class='info-bar' style='padding-bottom:10px'>".$tp->lanVars(EMOLAN_31, count($eArray))."</div>
 				<table class='table adminlist'>
 					<colgroup>
 						<col style='width:20px' />
@@ -318,11 +318,11 @@ class emotec
 
 			if (!isset($emotecode[$evalue]))
 			{
-			 	$file_back = '<span class="error">&nbsp;&nbsp;'.EMOLAN_37.'</span>';
+			 	$file_back = '&nbsp;&nbsp;<span class="label label-danger error">'.EMOLAN_37.'</span>';
 			}
 			elseif (!$emotecode[$evalue])
 			{
-			   $text_back = '<span class="error">&nbsp;&nbsp;'.EMOLAN_38.'</span>';
+			   $text_back = '&nbsp;&nbsp;<span class="label label-danger error">'.EMOLAN_38.'</span>';
 			}
 			$text .= "
 					<tr>

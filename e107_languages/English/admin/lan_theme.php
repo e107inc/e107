@@ -1,8 +1,6 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $URL$
-* $Id$
 *
 * Theme manager language file
 */
@@ -10,11 +8,11 @@
 define("TPVLAN_1", "You are looking at a preview of the <b>'".PREVIEWTHEMENAME."'</b> theme. It has not been set as the main theme for your site, it has been activated to provide a preview of how the theme looks.<br />To set this theme as your site theme, <a href='".e_ADMIN."theme.php?choose'>return to your theme manager</a> and select 'Set As Site Theme'.<br />To preview more themes please <a href='".e_ADMIN."theme.php'>click here</a>");
 define("TPVLAN_2", "Theme Preview");
 define("TPVLAN_3", "Site theme changed.");
-define("TPVLAN_4", "Author");
+//define("TPVLAN_4", "Author");//LAN_AUTHOR
 define("TPVLAN_5", "Website");
 define("TPVLAN_6", "Release date");
 define("TPVLAN_7", "Information");
-define("TPVLAN_8", "Options");
+//define("TPVLAN_8", "Options");
 define("TPVLAN_9", "Preview Theme");
 define("TPVLAN_10", "Set as Site Theme");
 define("TPVLAN_11", "Version");
@@ -72,7 +70,9 @@ define("TPVLAN_55", "Default");
 define("TPVLAN_56", "Visibility Filter");
 define("TPVLAN_57", "Compatibility");
 
-
-
+define("TPVLAN_58", "This theme comes with pre-installed example content (such as pages and menus) which could be used on your website.");
+define("TPVLAN_59", "Please be aware that the example content will [b]overwrite[/b] your current content with the following");
+define("TPVLAN_60", "[x] record(s) in your [y] table");
+define("TPVLAN_61", "Would you like to [b]replace[/b] your current content with the default example content provided by the theme?");
 
 ?>

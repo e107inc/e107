@@ -10,7 +10,7 @@
  *
 */
 require_once("../../class2.php");
-if(!getperms("P") || !plugInstalled('gsitemap'))
+if(!getperms("P") || !e107::isInstalled('gsitemap'))
 { 
 	header("location:".e_BASE."index.php"); 
 	exit();
@@ -117,7 +117,7 @@ class gsitemap
 			
 			$mes->addInfo($text);
 			
-			$ns -> tablerender(GSLAN_40, $mes->render());
+			$ns -> tablerender(GSLAN_24, $mes->render());
 			return;
 		}
 		else
@@ -164,7 +164,7 @@ class gsitemap
 
 				<td class='center' style='white-space:nowrap'>
 				<div>
-				<button class='btn btn-default' type='submit' name='edit[{$row2['gsitemap_id']}]' value='edit' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' />
+				<button class='btn btn-default' type='submit' name='edit[{$row2['gsitemap_id']}]' value='edit' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' >".ADMIN_EDIT_ICON."</button>
 				<button class='btn btn-default action delete' type='submit' name='delete[{$row2['gsitemap_id']}]' value='del' data-confirm='".$tp->toJS(LAN_CONFIRMDEL." [".$row2['gsitemap_name']."]")."' title='".LAN_DELETE."' >".ADMIN_DELETE_ICON."</button>
 				</div>
 				</td>
@@ -340,6 +340,13 @@ class gsitemap
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
 		
+		$existing = array(); 
+		$sql -> select("gsitemap", "*");  
+		while($row = $sql->fetch())
+		{
+			$existing[] = $row['gsitemap_name'];	
+		}
+			
 		
 		$importArray = array();
 
@@ -348,33 +355,40 @@ class gsitemap
 		$nfArray = $sql -> db_getList();
 		foreach($nfArray as $row)
 		{
-			if(!$sql -> select("gsitemap", "*", "gsitemap_name='".$row['link_name']."' "))
+			if(!in_array($row['link_name'], $existing))
 			{
 				$importArray[] = array('name' => $row['link_name'], 'url' => $row['link_url'], 'type' => GSLAN_1);
 			}
 		}
 
 		/* custom pages ... */
-		$sql -> select("page", "*", "ORDER BY page_datestamp ASC", "no-where");
-		$nfArray = $sql -> db_getList();
-		foreach($nfArray as $row)
+		$query = "SELECT p.page_id, p.page_title, p.page_sef, p.page_chapter, ch.chapter_sef as chapter_sef, b.chapter_sef as book_sef FROM #page as p
+				LEFT JOIN #page_chapters as ch ON p.page_chapter = ch.chapter_id
+				LEFT JOIN #page_chapters as b ON ch.chapter_parent = b.chapter_id
+				WHERE page_title !='' ORDER BY page_datestamp ASC";
+				
+		$data = $sql->retrieve($query,true); 
+		
+		foreach($data as $row)
 		{
-			if(!$sql -> select("gsitemap", "*", "gsitemap_name='".$row['page_title']."' "))
+			if(!in_array($row['page_title'], $existing))
 			{
-				$importArray[] = array('name' => $row['page_title'], 'url' => e107::getUrl()->create('page/view', $row, array('allow' => 'page_sef,page_title,page_id')), 'type' => "Custom Page");
+				$route = ($row['page_chapter'] == 0) ? "page/view/other" : "page/view/index";
+				
+				$importArray[] = array('name' => $row['page_title'], 'url' => e107::getUrl()->create($route, $row, array('full'=>1, 'allow' => 'page_sef,page_title,page_id, chapter_sef, book_sef')), 'type' => "Page");
 			}
 		}
 
 
 
 		/* forums ... */
-		if(plugInstalled('forum'))
+		if(e107::isInstalled('forum'))
 		{ 
 			$sql -> select("forum", "*", "forum_parent!='0' ORDER BY forum_order ASC");
 			$nfArray = $sql -> db_getList();
 			foreach($nfArray as $row)
 			{
-				if(!$sql -> select("gsitemap", "*", "gsitemap_name='".$row['forum_name']."' "))
+				if(!in_array($row['forum_name'], $existing))
 				{
 					$importArray[] = array('name' => $row['forum_name'], 'url' => e107::getUrl()->create('forum/forum/view', $row['forum_id']), 'type' => "Forum");
 				}
@@ -383,7 +397,7 @@ class gsitemap
 
 
 		/* DEPRECATED content pages ...
-		if(plugInstalled('content'))
+		if(e107::isInstalled('content'))
 		{ 	
 			$sql -> select("pcontent", "content_id, content_heading", "LEFT(content_parent,1) = '0' ORDER BY content_heading");
 			$nfArray = $sql -> db_getList();
@@ -550,7 +564,7 @@ function admin_config_adminmenu()
 	$var['import']['link'] = e_SELF."?import";
 	$var['import']['perm'] = "0";
 	
-	show_admin_menu(GSLAN_19, $action, $var);
+	show_admin_menu(LAN_PLUGIN_GSITEMAP_NAME, $action, $var);
 }
 
 ?>

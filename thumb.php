@@ -111,7 +111,7 @@ class e_thumbpage
 			'SYSTEM_DIRECTORY',
 			'CORE_DIRECTORY'
 		);
-		$sql_info = array(); //compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix', 'mySQLcharset');
+	//	$sql_info = array(); //compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix', 'mySQLcharset');
 		//e107::getInstance()->initCore($e107_paths, $self, $sql_info, varset($e107_CONFIG, array()));
 		$e107 = e107::getInstance();
 		
@@ -392,8 +392,7 @@ class e_thumbpage
 	function placeholder($parm)
 	{
 		$getsize = isset($parm['size']) ? $parm['size'] : '100x100';
-		$dimensions = explode('x', $getsize);
-	
+
 		header('location: http://placehold.it/'.$getsize);
 		header('Content-Length: 0');
 		exit();		

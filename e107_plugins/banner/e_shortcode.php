@@ -19,10 +19,14 @@
  *	@subpackage	banner
  */
 
-class banner_shortcodes
-{	
-	function sc_banner($parm)
+class banner_shortcodes extends e_shortcode
+{
+	
+	
+		
+	function sc_banner($parm='')
 	{
+		
 		$e107 = e107::getInstance();
 		$sql = e107::getDb();
 		$tp = e107::getParser();
@@ -41,16 +45,31 @@ class banner_shortcodes
 		if($sql->select('banner', 'banner_id, banner_image, banner_clickurl', $query))
 		{
 			$row = $sql->fetch();
-	
-			if(!$row['banner_image'])
-			{
-				return "<a href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external'>no image assigned to this banner</a>";
-			}
-	
-			$fileext1 = substr(strrchr($row['banner_image'], '.'), 1);
-			$sql->update('banner', 'banner_impressions=banner_impressions+1 WHERE banner_id='.(int)$row['banner_id']);
+			return $this->renderBanner($row); 
 			
-			switch ($fileext1)
+		}
+		else
+		{
+			return '&nbsp;';
+		}
+	}
+
+	// Also used by banner_menu.php 
+	public function renderBanner($row)
+	{
+		$sql = e107::getDb('banner');
+		$tp = e107::getParser();
+		
+		if(!$row['banner_image'])
+		{
+			return "<a href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external'>no image assigned to this banner</a>";
+		}
+	
+		$fileext1 = substr(strrchr($row['banner_image'], '.'), 1);
+		
+		$sql->update('banner', 'banner_impressions=banner_impressions+1 WHERE banner_id='.(int)$row['banner_id']);
+		
+		switch ($fileext1)
 			{
 				case 'swf':
 					return  "
@@ -61,26 +80,26 @@ class banner_shortcodes
 					<embed src=\"".e_IMAGE_ABS."banners/".$row['banner_image']."\" width=\"468\" height=\"60\" scale=\"noborder\" quality=\"high\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\" type=\"application/x-shockwave-flash\"></embed>
 					</object>
 					";
-					break;
+				break;
+					
 				case 'html':
 				case 'js':
 				case 'php':			// Code - may 'echo' text, or may return it as a value
 					$file_data = file_get_contents(e_IMAGE.'banners/'.$row['banner_image']);
 					return $file_data;
-					break;
+				break;
+				
 				default:
 					
-					$src = ($row['banner_image'][0] == '{') ? $tp->replaceConstants($row['banner_image'],'full') : e_IMAGE_ABS.'banners/'.$row['banner_image'];
+					$src = ($row['banner_image'][0] == '{') ? $tp->thumbUrl($row['banner_image']) : e_IMAGE_ABS.'banners/'.$row['banner_image'];
 					
-					$ban_ret = "<img class='e-banner' src='".$src."' alt='".$row['banner_clickurl']."' style='border:0' />";
-					break;
+					$ban_ret = "<img class='e-banner img-responsive' src='".$src."' alt='".$row['banner_clickurl']."' style='border:0' />";
+				break;
 			}
-			return "<a href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external'>".$ban_ret.'</a>';
-		}
-		else
-		{
-			return '&nbsp;';
-		}
+
+			return "<a href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external'>".$ban_ret.'</a>';	
+
 	}
+
 }
 ?>

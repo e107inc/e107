@@ -26,6 +26,54 @@
 if (!defined('e107_INIT')) { exit; }
 if (!e107::isInstalled('pm')) { return ''; }
 
+/**
+ *	Function to show a popup (if enabled) when new PMs arrive.
+ *
+ *	@param	array	$pm_inbox - information about current state of inbox
+ *	@param	int		$alertdelay - delay between popups, in seconds (defaults to 60 if pref not set)
+ *
+ *	@return string - text for display
+ *
+ *	@todo - check JS - may be some problems, especially if using debug in FF
+ */
+if(!function_exists('pm_show_popup'))
+{
+    function pm_show_popup($pm_inbox, $alertdelay = 0)
+    {
+        if($alertdelay == 0) { $alertdelay = 60; }
+        setcookie('pm-alert', 'ON', time()+$alertdelay);
+        $popuptext = "
+	<html>
+		<head>
+			<title>".$pm_inbox['inbox']['new'].' '.LAN_PM_109."</title>
+			<link rel=\'stylesheet\' href=\'".THEME."style.css\'>
+		</head>
+		<body style=\'padding-left:2px;padding-right:2px; padding:2px; padding-bottom:2px; margin:0px; text-align:center\' marginheight=\'0\' marginleft=\'0\' topmargin=\'0\' leftmargin=\'0\'>
+		<table style=\'width:100%; text-align:center; height:99%; padding-bottom:2px\' class=\'bodytable\'>
+			<tr>
+				<td width=100% style='text-align:center'>
+					<b>--- ".LAN_PM." ---</b><br />".$pm_inbox['inbox']['new'].' '.LAN_PM_109."<br />".$pm_inbox['inbox']['unread'].' '.LAN_PM_37."<br /><br />
+					<form>
+						<input class=\'button\' type=\'submit\' onclick=\'self.close();\' value = \'".LAN_OK."\' />
+					</form>
+				</td>
+			</tr>
+		</table>
+		</body>
+	</html> ";
+        $popuptext = str_replace("\n", '', $popuptext);
+        $popuptext = str_replace("\t", '', $popuptext);
+        $text .= "
+	<script type='text/javascript'>
+	winl=(screen.width-200)/2;
+	wint = (screen.height-100)/2;
+	winProp = 'width=200,height=100,left='+winl+',top='+wint+',scrollbars=no';
+	window.open('javascript:document.write(\"".$popuptext."\");', 'pm_popup', winProp);
+	</script >";
+        return $text;
+    }
+}
+
 
 $pm_prefs = e107::getPlugPref('pm');
 //global $sysprefs, $pm_prefs;
@@ -123,52 +171,3 @@ if(check_class($pm_prefs['pm_class']))
 
 	$ns->tablerender(LAN_PM, $txt, 'pm');
 }
-
-
-
-/**
- *	Function to show a popup (if enabled) when new PMs arrive.
- *
- *	@param	array	$pm_inbox - information about current state of inbox
- *	@param	int		$alertdelay - delay between popups, in seconds (defaults to 60 if pref not set)
- *
- *	@return string - text for display
- *
- *	@todo - check JS - may be some problems, especially if using debug in FF
- */
-function pm_show_popup($pm_inbox, $alertdelay = 0)
-{
-	if($alertdelay == 0) { $alertdelay = 60; }
-	setcookie('pm-alert', 'ON', time()+$alertdelay);
-	$popuptext = "
-	<html>
-		<head>
-			<title>".$pm_inbox['inbox']['new'].' '.LAN_PM_109."</title>
-			<link rel=\'stylesheet\' href=\'".THEME."style.css\'>
-		</head>
-		<body style=\'padding-left:2px;padding-right:2px; padding:2px; padding-bottom:2px; margin:0px; text-align:center\' marginheight=\'0\' marginleft=\'0\' topmargin=\'0\' leftmargin=\'0\'>
-		<table style=\'width:100%; text-align:center; height:99%; padding-bottom:2px\' class=\'bodytable\'>
-			<tr>
-				<td width=100% style='text-align:center'>
-					<b>--- ".LAN_PM." ---</b><br />".$pm_inbox['inbox']['new'].' '.LAN_PM_109."<br />".$pm_inbox['inbox']['unread'].' '.LAN_PM_37."<br /><br />
-					<form>
-						<input class=\'button\' type=\'submit\' onclick=\'self.close();\' value = \'".LAN_PM_110."\' />
-					</form>
-				</td>
-			</tr>
-		</table>
-		</body>
-	</html> ";
-	$popuptext = str_replace("\n", '', $popuptext);
-	$popuptext = str_replace("\t", '', $popuptext);
-	$text .= "
-	<script type='text/javascript'>
-	winl=(screen.width-200)/2;
-	wint = (screen.height-100)/2;
-	winProp = 'width=200,height=100,left='+winl+',top='+wint+',scrollbars=no';
-	window.open('javascript:document.write(\"".$popuptext."\");', 'pm_popup', winProp);
-	</script >";
-	return $text;
-}
-
-?>

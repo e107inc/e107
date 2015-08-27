@@ -122,8 +122,8 @@ class login_menu_class
         //$lbox_admin = varsettrue($eplug_admin, false);
         $coreplugs = $this->get_coreplugs(); 
         
-        $lprefs = varsettrue($this->loginPrefs['external_links']) ? explode(',', $this->loginPrefs['external_links']) : array();
-        $sprefs = varsettrue($this->loginPrefs['external_stats']) ? explode(',', $this->loginPrefs['external_stats']) : array();
+        $lprefs = vartrue($this->loginPrefs['external_links']) ? explode(',', $this->loginPrefs['external_links']) : array();
+        $sprefs = vartrue($this->loginPrefs['external_stats']) ? explode(',', $this->loginPrefs['external_stats']) : array();
         
         if($active) 
 		{
@@ -177,10 +177,10 @@ class login_menu_class
             return array();
         
         $lbox_stats = array();
-        $lbox_stats[0]['stat_item']    = LOGIN_MENU_L20;
-        $lbox_stats[0]['stat_items']   = LOGIN_MENU_L21;
+        $lbox_stats[0]['stat_item']    = LAN_LOGINMENU_20;
+        $lbox_stats[0]['stat_items']   = LAN_LOGINMENU_21;
         $lbox_stats[0]['stat_new']     = 0;
-        $lbox_stats[0]['stat_nonew']   = LOGIN_MENU_L26.' '.LOGIN_MENU_L21;
+        $lbox_stats[0]['stat_nonew']   = LAN_LOGINMENU_26.' '.LAN_LOGINMENU_21;
         if($get_stats) {
 
             $nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
@@ -209,10 +209,10 @@ class login_menu_class
         if(!e107::isInstalled('chatbox_menu'))
             return array();
         
-        $lbox_stats[0]['stat_item']     = LOGIN_MENU_L16;
-        $lbox_stats[0]['stat_items']    = LOGIN_MENU_L17;
+        $lbox_stats[0]['stat_item']     = LAN_LOGINMENU_16;
+        $lbox_stats[0]['stat_items']    = LAN_LOGINMENU_17;
         $lbox_stats[0]['stat_new']      = 0;
-        $lbox_stats[0]['stat_nonew']    = LOGIN_MENU_L26.' '.LOGIN_MENU_L17;
+        $lbox_stats[0]['stat_nonew']    = LAN_LOGINMENU_26.' '.LAN_LOGINMENU_17;
         if(vartrue($get_stats)) {
             $lbox_stats['chatbox_menu'][0]['stat_new']  = $sql->db_Count('chatbox', '(*)', 'WHERE `cb_datestamp` > '.USERLV);
         }
@@ -226,15 +226,15 @@ class login_menu_class
         $ret = '';
 
         $lbox_infos = $this->parse_external_list(false);
-        if(!varsettrue($lbox_infos['links'])) return '';
+        if(!vartrue($lbox_infos['links'])) return '';
         
-        $enabled = varsettrue($this->loginPrefs['external_links']) ? explode(',', $this->loginPrefs['external_links']) : array();
+        $enabled = vartrue($this->loginPrefs['external_links']) ? explode(',', $this->loginPrefs['external_links']) : array();
         
         $num = 1;
         foreach ($lbox_infos['links'] as $id => $stack) {
             $links = array();
             foreach ($stack as $value) {
-            	$links[] = '<a href="'.$value['link_url'].'">'.varsettrue($value['link_label'], '['.LOGIN_MENU_L44.']').'</a>';
+            	$links[] = '<a href="'.$value['link_url'].'">'.vartrue($value['link_label'], '['.LAN_LOGINMENU_44.']').'</a>';
             }
             
             $plug_data = $this->get_plugin_data($id);
@@ -243,7 +243,7 @@ class login_menu_class
             
         	$ret .= '
             	<tr>
-            	<td class="forumheader3">'.LOGIN_MENU_L37.' '.(varset($plug_data['eplug_name']) ? LOGIN_MENU_L45.LOGIN_MENU_L45a." {$plug_data['eplug_name']} ".LOGIN_MENU_L45b."<br />" : '').$links.'</td>
+            	<td class="forumheader3">'.LAN_LOGINMENU_37.' '.(varset($plug_data['eplug_name']) ? LAN_LOGINMENU_45.LAN_LOGINMENU_45a." {$plug_data['eplug_name']} ".LAN_LOGINMENU_45b."<br />" : '').$links.'</td>
             	<td style="text-align: left;" class="forumheader3">
 
                    <table style="margin-left: 0px">
@@ -252,7 +252,7 @@ class login_menu_class
                 	   <input type="checkbox" name="external_links['.$id.']" value="1"'.(in_array($id, $enabled) ? ' checked="checked"' : '').' />
                     </td>
                     <td>
-                        '.LOGIN_MENU_L43.': <input type="text" class="tbox" style="text-align: right" size="4" maxlength="3" name="external_links_order['.$id.']" value="'.$num.'" />
+                        '.LAN_LOGINMENU_43.': <input type="text" class="tbox" style="text-align: right" size="4" maxlength="3" name="external_links_order['.$id.']" value="'.$num.'" />
                     </td>                   
                    </tr>
                    </table>
@@ -265,7 +265,7 @@ class login_menu_class
         
         if($ret) 
 		{
-            $ret = '<tr><td colspan="2" class="fcaption">'.LOGIN_MENU_L38.'</td></tr>'.$ret;
+            $ret = '<tr><td colspan="2" class="fcaption">'.LAN_LOGINMENU_38.'</td></tr>'.$ret;
         }
         
         return $ret;
@@ -276,11 +276,11 @@ class login_menu_class
 	{
         $ret = '';
         $lbox_infos = $this->parse_external_list(false);
-        $lbox_infos = varsettrue($lbox_infos['stats'], array());
+        $lbox_infos = vartrue($lbox_infos['stats'], array());
 
         if(!$lbox_infos) return '';
 
-        $enabled = varsettrue($this->loginPrefs['external_stats']) ? explode(',', $this->loginPrefs['external_stats']) : array();
+        $enabled = vartrue($this->loginPrefs['external_stats']) ? explode(',', $this->loginPrefs['external_stats']) : array();
         
         $num = 1;
         foreach ($lbox_infos as $id => $stack) 
@@ -292,7 +292,7 @@ class login_menu_class
 			{
 				$ret .= '
 					<tr>
-					<td class="forumheader3">'.LOGIN_MENU_L37.' '.LOGIN_MENU_L46.LOGIN_MENU_L45a." {$plug_data['eplug_name']} ".LOGIN_MENU_L45b.'<br /></td>
+					<td class="forumheader3">'.LAN_LOGINMENU_37.' '.LAN_LOGINMENU_46.LAN_LOGINMENU_45a." {$plug_data['eplug_name']} ".LAN_LOGINMENU_45b.'<br /></td>
 					<td class="forumheader3">
 					   <input type="checkbox" name="external_stats['.$id.']" value="1"'.(in_array($id, $enabled) ? ' checked="checked"' : '').' />
 					</td>
@@ -304,7 +304,7 @@ class login_menu_class
         
         if($ret) 
 		{
-            $ret = '<tr><td colspan="2" class="fcaption">'.LOGIN_MENU_L47.'</td></tr>'.$ret;
+            $ret = '<tr><td colspan="2" class="fcaption">'.LAN_LOGINMENU_47.'</td></tr>'.$ret;
         }
         
         return $ret;
@@ -314,7 +314,7 @@ class login_menu_class
     function get_stats_total() 
 	{
         $lbox_infos = $this->parse_external_list(true, false);
-        if(!varsettrue($lbox_infos['stats'])) 
+        if(!vartrue($lbox_infos['stats']))
 		{
 			return 0;
 		}
@@ -380,7 +380,7 @@ class login_menu_class
     
         foreach($link_items as $key => $value) 
 		{
-            if(!varsettrue($value['link_url'])) 
+            if(!vartrue($value['link_url']))
 			{
                 unset($link_items[$key]);
             }

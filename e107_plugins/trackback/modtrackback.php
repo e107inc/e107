@@ -17,7 +17,7 @@
 $eplug_admin = true;
 require_once("../../class2.php");
 
-if (!getperms("P") || !plugInstalled('trackback') || !$pref['trackbackEnabled'])
+if (!getperms("P") || !e107::isInstalled('trackback') || !$pref['trackbackEnabled'])
 {
 	header("location:".e_BASE."index.php");
 	exit;
@@ -40,7 +40,7 @@ if (isset($_POST['moderate']))
 		}
 		if (count($temp))
 		{
-			$admin_log->log_event('TRACK_02',implode(', ',$temp), E_LOG_INFORMATIVE,'');
+			e107::getLog()->add('TRACK_02',implode(', ',$temp), E_LOG_INFORMATIVE,'');
 		}
 	}
 	$ns->tablerender("", "<div style='text-align:center'><b>".TRACKBACK_L15."</b></div>");
@@ -77,7 +77,7 @@ else
 		<td class='forumheader3' style='width: 10%;'><input type='checkbox' name='trackback_delete[]' value='$trackback_id' /> ".TRACKBACK_L14."</td>
 		</tr>\n";
 	}
-	$text .= "<tr><td colspan='5' class='forumheader' style='text-align:center'><input class='btn button' type='submit' name='moderate' value='".TRACKBACK_L13."' /></td></tr></table></form></div>";
+	$text .= "<tr><td colspan='5' class='forumheader' style='text-align:center'><input class='btn btn-default button' type='submit' name='moderate' value='".TRACKBACK_L13."' /></td></tr></table></form></div>";
 }
 	
 $ns->tablerender(TRACKBACK_L13, $text);

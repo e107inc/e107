@@ -27,7 +27,7 @@ if(varset($pref['multilanguage_subdomain']))
 	$action = (e_QUERY) ? e_SELF.'?'.e_QUERY : e_SELF;
 	$text = '
 		<div style="text-align:center">
-			<select class="tbox" name="lang_select" style="width:95%" onchange="location.href=this.options[selectedIndex].value">';
+			<select class="tbox form-control" name="lang_select" style="width:95%" onchange="location.href=this.options[selectedIndex].value">';
 	foreach($languageList as $languageFolder)
 	{
 		$selected = ($languageFolder == e_LANGUAGE) ? ' selected="selected"' : '';
@@ -46,7 +46,7 @@ else
 	$text = '
 	<form method="post" action="'.$action.'">
 		<div class="center">
-			<select name="sitelanguage" class="tbox">';
+			<select name="sitelanguage" class="tbox form-control">';
 	foreach($languageList as $languageFolder)
 	{
 		$selected = ($languageFolder == e_LANGUAGE) ? ' selected="selected"' : '';

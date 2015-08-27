@@ -11,7 +11,7 @@ define("ADLAN_1", "Manage news items");
 define("ADLAN_2", "Create news item");
 define("ADLAN_3", "News items List");
 define("ADLAN_3a", "News Settings");
-define("ADLAN_4", "Preferences");
+// define("ADLAN_4", "Preferences");
 define("ADLAN_5", "Edit Site Preferences");
 define("ADLAN_6", "Menu Manager");
 define("ADLAN_7", "Alter the order of your menus");
@@ -29,7 +29,7 @@ define("ADLAN_13", "System documentation");
 //define("ADLAN_19", "Add new/edit/delete reviews");
 //define("ADLAN_22", "Link Categories");
 //define("ADLAN_23", "Add new/edit/delete link categories");
-define("ADLAN_24", "Downloads");
+// define("ADLAN_24", "Downloads");
 define("ADLAN_25", "Manage Downloads");
 //define("ADLAN_26", "Download Categories");
 //define("ADLAN_27", "Add new/edit/delete download categories");
@@ -48,10 +48,10 @@ define("ADLAN_39", "Create/edit user classes");
 define("ADLAN_40", "Maintenance");
 define("ADLAN_41", "Take site down for maintenance");
 define("ADLAN_42", "Pages/Menus");
-define("ADLAN_43", "Create custom menu items");
+define("ADLAN_43", "Create menu items");
 define("ADLAN_44", "Database");
 define("ADLAN_45", "Database utilities");
-define("ADLAN_46", "Logout");
+// define("ADLAN_46", "Logout");
 define("ADLAN_47", "Welcome");
 define("ADLAN_48", "Logged in");
 define("ADLAN_49", "main site administrator");
@@ -59,8 +59,8 @@ define("ADLAN_49", "main site administrator");
 define("ADLAN_51", "Please log in to gain access to administration area");
 define("ADLAN_52", "Admin Front Page");
 define("ADLAN_53", "Leave Admin");
-define("ADLAN_54", "Banners");
-define("ADLAN_55", "Configure banners");
+// define("ADLAN_54", "Banners");
+// define("ADLAN_55", "Configure banners");
 //define("ADLAN_56", "Chatbox");
 //define("ADLAN_57", "Configure chatbox");
 define("ADLAN_58", "Emoticons");
@@ -99,7 +99,7 @@ define("ADLAN_95", "Plugin Management");
 //define("ADLAN_96", "None");
 //define("ADLAN_97", "Click here for FAQ");
 define("ADLAN_98", "Plugin Manager");
-define("ADLAN_99", "Install/upgrade etc. plugins");
+define("ADLAN_99", "Click here to install, maintain and configure plugins which provide additional features on your site.");
 // define("ADLAN_100", "Theme Layout"); // required
 //define("ADLAN_101", "Template Creator");
 define("ADLAN_102", "It has been more than 30 days since you changed the main administrator password - ");
@@ -115,9 +115,9 @@ define("ADLAN_106", "Image Settings");
 define("ADLAN_110", "Registered members");
 define("ADLAN_111", "Unverified members");
 define("ADLAN_112", "Banned users");
-define("ADLAN_113", "Forum posts");
-define("ADLAN_114", "Comments");
-define("ADLAN_115", "Chatbox posts");
+// define("ADLAN_113", "Forum posts"); // should already be loaded from forum global language file. 
+// define("ADLAN_114", "Comments");
+// define("ADLAN_115", "Chatbox posts");
 define("ADLAN_116", "Admin log ...");
 define("ADLAN_117", "Show all entries");
 define("ADLAN_118", "Clear log");
@@ -152,9 +152,9 @@ define("ADLAN_138", "Site Links");
 define("ADLAN_139", "Add/edit/delete links");
 
 define("ADLAN_140", "Theme Manager");
-define("ADLAN_141", "Install / set themes etc");
+define("ADLAN_141", "Click here to install and configure themes, which control the appearance of your site.");
 
-define("ADLAN_142", "Search");
+// define("ADLAN_142", "Search");
 define("ADLAN_143", "Search Configuration");
 define("ADLAN_144", "You are in simple-view mode, to switch to advanced-view");
 define("ADLAN_145", "click here");
@@ -167,7 +167,7 @@ define("ADLAN_149", "Notify");
 define("ADLAN_150", "Admin Email Notifications");
 
 define("ADLAN_151", "Main");
-define("ADLAN_152", "Enter Code");
+// define("ADLAN_152", "Enter Code");
 
 define("ADLAN_153", "Administration Area");
 define("ADLAN_154", "Error contacting Sourceforge to check for new version");
@@ -184,7 +184,7 @@ define("ADLAN_161", "Custom Fields?");
 define("ADLAN_162", "A newer version of your site-theme is available:");
 define("ADLAN_163", "A newer version of an installed plugin is available:");  
 
-define("ADLAN_CL_1", "Settings");
+// define("ADLAN_CL_1", "Settings");
 define("ADLAN_CL_2", "Users");
 define("ADLAN_CL_3", "Content");
 define("ADLAN_CL_4", "Coms");
@@ -194,7 +194,7 @@ define("ADLAN_CL_7", "Plugins");
 
 define("ADLAN_CL_8", "Misc");
 
-define("ADLAN_CL_20", "About");
+// define("ADLAN_CL_20", "About");
 
 define("ADLAN_LAT_1", "Latest");
 
@@ -208,16 +208,19 @@ define("ADLAN_LAT_8", "There are unmoderated administrator messages");
 define("ADLAN_LAT_9", "Comments pending");
 
 //LAN_WARNING define("ADLAN_ERR_1", "Warning!");
-//define("ADLAN_ERR_2", "There are files on your server that are known to be exploitable. These must be removed <b>immediately</b>. The files are related to the older 0.6xx branch of e107. Please delete the following directories and all their contents:");
-define("ADLAN_ERR_3", "There are one or more files in your public upload directories that are not in your allowed upload filetypes list. These may have been placed here by an attacker and if so should be removed <b>immediately</b>. You should <b>not</b> open these files as this may execute any malicious code the file might contain; e.g. do not open them with your browser.<br /><br />If you recognise these files as being legitimate, it is likely that the filetype is no longer in the allowed filetypes list for some reason, and you will need to re-add it (see admin => uploads). You should not allow the upload of .html, .txt, etc as an attacker may upload a file of this type which includes malicious javascript. You should also, of course, not allow the upload of .php files or any other type of executable script.<br /><br />Below is the list of files that could potentially be malicious:");
+//define("ADLAN_ERR_2", "There are files on your server that are known to be exploitable. These must be removed [b]immediately[/b]. The files are related to the older 0.6xx branch of e107. Please delete the following directories and all their contents:");
+define("ADLAN_ERR_3", "There are one or more files in your public upload directories that are not in your allowed upload filetypes list. These may have been placed here by an attacker and if so should be removed [b]immediately[/b]. You should [b]not[/b] open these files as this may execute any malicious code the file might contain; e.g. do not open them with your browser.
+
+If you recognise these files as being legitimate, it is likely that the filetype is no longer in the allowed filetypes list for some reason, and you will need to re-add it (see admin => uploads). You should not allow the upload of .html, .txt, etc as an attacker may upload a file of this type which includes malicious javascript. You should also, of course, not allow the upload of .php files or any other type of executable script.
+
+Below is the list of files that could potentially be malicious:");
 //define("ADLAN_ERR_4", "Deprecated plugin file(s) found");
 //define("ADLAN_ERR_5", "The following files need to be renamed to");
 //define("ADLAN_ERR_6", "Then, click here to re-scan your plugin folders.");
 
 
 // Common Terms
-define("LAN_EDIT","Edit");
-define("LAN_DELETE","Delete");
+
 define("LAN_CREATE","Create");
 define("LAN_MANAGE","Manage");
 define("LAN_UPDATE","Update");
@@ -227,7 +230,7 @@ define("LAN_SAVED","Saved");
 define("LAN_SETSAVED","Your settings have been saved");
 define("LAN_NOCHANGE_NOTSAVED", "Nothing changed - not saved");
 define("LAN_CONFIRMDEL","Please confirm you wish to delete");
-define("LAN_JSCONFIRM","Are you sure?");
+
 define("LAN_OPTIONS","Options");
 define("LAN_PREFS","Preferences");
 define("LAN_DELETED","Successfully deleted");
@@ -243,22 +246,24 @@ define("LAN_NEVER", "Never");
 define("LAN_PRUNE", "Prune");
 define("LAN_RESET","Reset");
 define("LAN_CLEAR","Clear");
+define("LAN_ALL","All");
+define("LAN_IMPORT","Import");
 // define("LAN_OK","OK");     // defined in e107_languages/English/English.php
 
-define("LAN_PRESET","Preset");
-define("LAN_PRESET_SAVED","Preset saved successfully");
+// define("LAN_PRESET","Preset");
+// define("LAN_PRESET_SAVED","Preset saved successfully");
 
-define("LAN_PRESET_DELETED","Preset successfully deleted");
-define("LAN_PRESET_CONFIRMDEL","Are you sure you want to delete this preset?");
+// define("LAN_PRESET_DELETED","Preset successfully deleted");
+// define("LAN_PRESET_CONFIRMDEL","Are you sure you want to delete this preset?");
 define("LAN_NOTWRITABLE"," is not writable, you need to CHMOD 777 the file or folder first.");
-define("LAN_DATE","Date");
+
 define("LAN_TIME","Time");
 // define("LAN_YES","Yes");
 // define("LAN_NO","No");   // defined in e107_languages/English/English.php
 define("LAN_EMPTY","There are no entries in the database yet");
 define("LAN_EXISTING","Existing Entries");
 
-define("LAN_CANCEL","Cancel");
+
 define("LAN_CONFDELETE","Confirm Delete");
 define("LAN_PLUGIN","Plugin");
 define("LAN_ORDER","Order");
@@ -271,11 +276,15 @@ define("LAN_DATESTAMP","Date stamp");
 define("LAN_OPTIONAL", "optional");
 define("LAN_INACTIVE","Inactive");
 define("LAN_ACTIVE","Active");
+define("LAN_ACCEPT","Accept");
+define("LAN_PENDING","Pending");
+define("LAN_SUBMITTED","Submitted");
 
 define("LAN_BAN","Ban");
-define("LAN_RATING", "Rating");
+
 
 define("LAN_UPLOAD", "Upload");
+define("LAN_UPLOADS","Uploads");
 define("LAN_UPLOAD_IMAGES","Upload Images");
 define("LAN_UPLOAD_FILES","Upload Files");
 define("LAN_UPLOAD_ADDFILE","Add Another File");
@@ -286,6 +295,9 @@ define("LAN_UPLOAD_SERVEROFF", "This option is disabled as file uploading is not
 define("LAN_DISABLED","Disabled");
 define("LAN_ENABLED", "Enabled");
 define("LAN_BOOL_REVERSE", "Invert");
+
+define("LAN_NOT_AVAILABLE","Not available");
+define("LAN_AUTO_GENERATED","Auto-generated");
 
 define("LAN_PRESET_CONFIRMSAVE","Save current form values as the default for this page?");
 define("LAN_CONFIGURE", "Configure");
@@ -302,10 +314,10 @@ define("LAN_UNCHECKALL", "Uncheck All");
 define("LAN_DELCHECKED", "Delete Checked");
 
 define("LAN_USERCLASS", "Userclass");
-define("LAN_AUTHOR",	"Author");
-define("LAN_CATEGORY", "Category");
+
 
 define("LAN_HELP", "Help");
+define("LAN_CUSTOM", "Custom configuration");
 define("LAN_MENULAYOUT", "Menu Layout");
 define("LAN_MEDIAMANAGER", "Media Manager");
 
@@ -314,33 +326,39 @@ define("LAN_COMMENTMAN", "Comments Manager");
 
 define("LAN_LIST", "List");
 define("LAN_FILTER", "Filter");
-define("LAN_NO_RECORDS", "No Records Found");
+// define("LAN_NO_RECORDS", "No Records Found");
 define("LAN_STATUS", "Status");
 define("LAN_URL", "URL");
-define("LAN_USER", "User");
+
 define("LAN_OWNER", "Owner");
-define("LAN_NAME", "Name");
-define("LAN_EMAIL","Email address");
+
+
 define("LAN_ID", "ID");
-define("LAN_IP", "IP Address");
-define("LAN_TITLE", "Title");
-define("LAN_DESCRIPTION", "Description");
+
+
+
 define("LAN_VISIBILITY", "Visibility");
 define("LAN_ICON", "Icon");
 define("LAN_LOADING", "Loading...");
-define("LAN_FILE", "File");
+
 // define("LAN_GO","Go"); // Not "Execute"
 define("LAN_RUN","Run"); 
 define("LAN_SEFURL","SEF URL");
 define("LAN_COPY","Copy");
 define("LAN_KEYWORDS","Keywords");
-define("LAN_IMAGE","Image");
+
 define("LAN_TEMPLATE","Template");
-define("LAN_TYPE", "Type");
+
 // define("LAN_NONE", "None");
 define("LAN_CATEGORIES", "Categories");
 define("LAN_DEMO_FORBIDDEN", "Changes on this page are not possible in demo mode.");
 define("LAN_COPYRIGHT", "Copyright");
+define("LAN_MANAGER", "Manage Permissions");
+define("LAN_PING", "Ping");
+define("LAN_START", "Starting");
+define("LAN_END", "Ending");
+
+define("LAN_PREVIEW", "Preview");
 
 define("LAN_CREATE_CATEGORY", "Create Category");
 define("LAN_CREATE_ITEM",	"Create Item");
@@ -384,6 +402,7 @@ define("LAN_UI_DELETE_WARNING", "You are about to delete [x] records. Please con
 define("LAN_UI_BATCH_CREATELINK", "Create Link");
 
 define("LAN_UI_USING_DATABASE_TABLE", "Using [x] database table");
+define("LAN_UI_TOTAL_RECORDS", "Total Records: [x]");
 
 define("LAN_USER_MANAGEALL", "Manage all User, Userclass and Extended User-Field settings");
 define("LAN_USER_LIST", "User List");

@@ -37,6 +37,7 @@ $action = e107::getParser()->toDB(varset($_GET['mode'],'makemail'));
 	  break;
 	case 'savedmail' :
 	case 'makemail' :
+	case 'main' :
 	  $text = 'Create an email, give it a meaningful title, and select the list of recipients. You can save everything as a template for later, or send immediately.<br />';
 	  $text .= 'Email addresses may be contributed by plugins (such as newsletter), and duplicates are removed when the mail is sent<br />';
 	  $text .= 'Any attachment is selected from the list of valid downloads.<br />';
@@ -48,7 +49,7 @@ $action = e107::getParser()->toDB(varset($_GET['mode'],'makemail'));
 		break;
 	case 'prefs' :
 	  $text = '<b>Configure mailshot options.</b><br />
-	  A test email is sent using the current method and settings.<br /><br />';
+	  A test email is sent using the current method and settings. If you are having problems with emails bouncing, try sending a test email to: <i>check-auth@verifier.port25.com</i> to ensure your server MX records are correct. Of course, be sure your site email address is correct before doing so.<br /><br />';
 	  $text .= '<b>Emailing Method</b><br />
 	  Use SMTP to send mail if possible. The settings will depend on your host\'s mail server.<br /><br />';
 	  $text .= '<b>Default email format</b><br />
@@ -56,7 +57,7 @@ $action = e107::getParser()->toDB(varset($_GET['mode'],'makemail'));
 	  security measures. If you select HTML, a separate plain text part is added.<br /><br />';
 	  $text .= '<b>Bulk mail controls</b><br />
 	  The values you set here will depend on your host, and on the number of emails you send; it may be possible to set all values to zero so that the
-	  mail queue is emptied virtually instantly.<br /><br />';
+	  mail queue is emptied virtually instantly. Typically it is best to send less than 500 emails per hour.<br /><br />';
 	  $text .= '<b>Bounced Emails</b><br />
 	  You can specify an email address to receive the return response when an email is undeliverable. If you have control over your server, you can specify the
 	  separate scheduler-driven auto-processing script; this receives bounce messages as they arrive, and updates status instantly. Otherwise you can specify a separate email account,

@@ -22,8 +22,8 @@ define("LAN_MAILOUT_08", "Send Email");
 define("LAN_MAILOUT_09", "Send format");
 define("LAN_MAILOUT_10", "User Subscribed");
 define("LAN_MAILOUT_11", "Insert Variables");
-define("LAN_MAILOUT_12", "All Members");
-define("LAN_MAILOUT_13", "All Unverified Members ");
+define("LAN_MAILOUT_12", "All Users");
+define("LAN_MAILOUT_13", "All Unverified Users ");
 define("LAN_MAILOUT_14", "Display Name");
 define("LAN_MAILOUT_15", "Mailout");
 define("LAN_MAILOUT_16", "Username");
@@ -42,10 +42,10 @@ define("LAN_MAILOUT_28", "Save Changes");
 define("LAN_MAILOUT_29", "seconds");
 define("LAN_MAILOUT_30", "Used mostly with SMTP keepalive. A pause of more than 30 seconds may cause the browser to time-out");
 define("LAN_MAILOUT_31", "Bounced Email Processing");
-define("LAN_MAILOUT_32", "Email address");
+// define("LAN_MAILOUT_32", "Email address");
 define("LAN_MAILOUT_33", "Incoming Mail server");
 define("LAN_MAILOUT_34", "Account (user) Name");
-define("LAN_MAILOUT_35", "Password");
+// define("LAN_MAILOUT_35", "Password");
 define("LAN_MAILOUT_36", "Delete Bounced Mails after checking");
 define("LAN_MAILOUT_37", "Proceed");
 define("LAN_MAILOUT_38", "Cancel");
@@ -59,8 +59,8 @@ define("LAN_MAILOUT_45", "User Email");
 define("LAN_MAILOUT_46", "User-Match");
 define("LAN_MAILOUT_47", "contains");
 define("LAN_MAILOUT_48", "equals");
-define("LAN_MAILOUT_49", "Id");
-define("LAN_MAILOUT_50", "Author");
+//define("LAN_MAILOUT_49", "Id");//LAN_ID
+//define("LAN_MAILOUT_50", "Author");//LAN_AUTHOR
 define("LAN_MAILOUT_51", "Subject");
 define("LAN_MAILOUT_52", "Last mod");
 define("LAN_MAILOUT_53", "Admins");
@@ -87,10 +87,10 @@ define("LAN_MAILOUT_73", "No logging");
 define("LAN_MAILOUT_74", "Logging only (no send)");
 define("LAN_MAILOUT_75", "Log and send");
 define("LAN_MAILOUT_76", "Include email info in log");
-define("LAN_MAILOUT_77", "Supplementary email address sources");
+define("LAN_MAILOUT_77", "Email address sources");
 define("LAN_MAILOUT_78", "Mailshot Status");
 define("LAN_MAILOUT_79", "No mailshots to display");
-define("LAN_MAILOUT_80", "Date");
+//define("LAN_MAILOUT_80", "Date");//LAN_DATE
 define("LAN_MAILOUT_81", "The email has been successfully sent, please check your inbox.");
 define("LAN_MAILOUT_82", "Mails sent");
 define("LAN_MAILOUT_83", "Mails to go");
@@ -122,7 +122,7 @@ define("LAN_MAILOUT_108", "Result");
 define("LAN_MAILOUT_109", "Show detail");
 define("LAN_MAILOUT_110", "Send test email");
 define("LAN_MAILOUT_111", "Email Title (not sent)");
-define("LAN_MAILOUT_112", "Click to send email to");
+define("LAN_MAILOUT_112", "Send test email to");
 define("LAN_MAILOUT_113", "Test email from");
 define("LAN_MAILOUT_114", "This is a test email, it appears that your email settings are working ok! [br][br] Regards [br] from the e107 website system.");
 define("LAN_MAILOUT_115", "Emailing method");
@@ -145,7 +145,7 @@ define("LAN_MAILOUT_131", "Sending Started");
 define("LAN_MAILOUT_132", "Sending Complete");
 define("LAN_MAILOUT_133", "Source");
 define("LAN_MAILOUT_134", "Priority");
-define("LAN_MAILOUT_135", "Title");
+//define("LAN_MAILOUT_135", "Title");//LAN_TITLE
 define("LAN_MAILOUT_136", "Mailout Status");
 define("LAN_MAILOUT_137", "Mail Ref");
 define("LAN_MAILOUT_138", "Email status");
@@ -153,7 +153,7 @@ define("LAN_MAILOUT_139", "Date active");
 define("LAN_MAILOUT_140", "Recipient Email");
 define("LAN_MAILOUT_141", "Recipient Name");
 define("LAN_MAILOUT_142", "Recipient User ID");
-define("LAN_MAILOUT_143", "Email ref.");
+define("LAN_MAILOUT_143", "Recipient ref.");
 define("LAN_MAILOUT_144", "Bounced");
 define("LAN_MAILOUT_145", "New email saved");
 define("LAN_MAILOUT_146", "Error saving email");
@@ -250,7 +250,7 @@ define("LAN_MAILOUT_231", "Bounced emails - Processing method");
 define("LAN_MAILOUT_232", "None");
 define("LAN_MAILOUT_233", "Auto-process script");
 define("LAN_MAILOUT_234", "Mail account");
-define("LAN_MAILOUT_235", "(Your server has to be configured to use this script)");
+define("LAN_MAILOUT_235", "(Your server must forward or 'pipe' from the email address above to the script path above.)");
 define("LAN_MAILOUT_236", "Last Bounce Processed");
 define("LAN_MAILOUT_237", "Summary counters updated on --COUNT-- emails");
 define("LAN_MAILOUT_238", "Earliest time to send");
@@ -273,12 +273,16 @@ define("LAN_MAILOUT_254", "View templated email");
 define("LAN_MAILOUT_255", "Templated Email, ID: ");
 define("LAN_MAILOUT_256", "Return");
 define("LAN_MAILOUT_257", "Generated template");
-define("LAN_MAILOUT_258", "Template: ");
+//define("LAN_MAILOUT_258", "Template: ");//LAN_TEMPLATE
 define("LAN_MAILOUT_259", "");
 
 
 define("LAN_SEND", "Send");
 define("LAN_HOLD", "Hold");
+define("LAN_MAILOUT_260", "User-Type");
+define("LAN_BASIC", "Basic");
+define("LAN_ADVANCED", "Advanced");
+
 //define("LAN_SUBMIT", "Do it!"); LAN_RUN
 
 ?>

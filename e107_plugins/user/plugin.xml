@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Plugin name="User" version="1.0" date="2014-01-01" compatibility="2.0" installRequired="false" >
+	<author name="e107 Inc." url="http://e107.org" />
+	<description>User Theme and Language Menus</description>
+	<category>user</category>
+</e107Plugin>

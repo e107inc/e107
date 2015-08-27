@@ -181,7 +181,7 @@ class adminstyle_infopanel
 		
 		
 			
-				<div class='left' style='padding:32px'>";
+				<div class='left'>";
 			
 			foreach ($this->iconlist as $key=>$val)
 			{
@@ -191,7 +191,7 @@ class adminstyle_infopanel
 				}
 			}
 	
-			$mainPanel .= "<div class='clear'>&nbsp;</div>";
+			// $mainPanel .= "<div class='clear'>&nbsp;</div>";
 			$mainPanel .= "</div>
 	      
 			</div>";
@@ -272,14 +272,15 @@ class adminstyle_infopanel
 			echo $mes->render().'
 
 			<!-- INFOPANEL -->
-			<div class="span6">
-			 <ul class="thumbnails">'.$text.'</ul>
-			 </div>
-			 
-			 <div class="span6">
-			 <ul class="thumbnails">'.$text2.'</ul>
-			 </div>
-						 
+			<div class="row">
+				<div class="span6 col-md-6">
+				    '.$text.'
+				 </div>
+
+				 <div class="span6 col-md-6">
+				    '.$text2.'
+				 </div>
+			</div>
 			<!--  -->  
 			 
 			 
@@ -338,31 +339,29 @@ class adminstyle_infopanel
 		  </div>
 		 */
 		
+		$tab = array();
+		$tab['e-stats'] = array('caption'=>$tp->toGlyph('fa-signal').' Stats', 'text'=>$this->renderChart());
+		$tab['e-online'] = array('caption'=>$tp->toGlyph('fa-user').' Online ('.$this->renderOnlineUsers('count').')', 'text'=>$this->renderOnlineUsers());
 		
-		
-		$dashboard = '
-		  <ul class="nav nav-tabs">
-		    <li class="active"><a href="#tab1" data-toggle="tab">'.$tp->toGlyph('fa-signal').' Stats</a></li>
-		    <li ><a href="#tab2" data-toggle="tab">'.$tp->toGlyph('fa-user').' Online ('.$this->renderOnlineUsers('count').')</a></li>
-		  </ul>
-		  
-		  <div class="tab-content" style="min-height:300px">
-		
-			<div class="tab-pane active" id="tab1">
-		      <div class="separator">
-			'.$this->renderChart().'		
-		      </div>		
-		    </div>
-		
-		    <div class="tab-pane" id="tab2">
-		      <div class="separator">
-		        '.$this->renderOnlineUsers().'
-		      </div>
-			</div>
-			
-		  </div>';	
 
-		return $dashboard;
+
+		if($plugs = e107::getAddonConfig('e_dashboard',null, 'chart'))
+		{
+			foreach($plugs as $plug => $val)
+			{
+				foreach($val as $item)
+				{
+					if(!empty($item))
+					{
+						$tab[] = $item;	
+					}	
+				}			
+			}
+		}
+
+		return e107::getForm()->tabs($tab);
+		
+
 	}
 
 
@@ -377,7 +376,7 @@ class adminstyle_infopanel
 
 		$panelOnline = "
 				
-				<table class='table table-condensed table-striped' style='width:96%;margin-left:auto;margin-right:auto'>
+				<table class='table table-condensed table-striped' >
 				<colgroup>
 					<col style='width: 10%' />
 		            <col style='width: 25%' />
@@ -460,7 +459,7 @@ class adminstyle_infopanel
 	{
 		if($val==0)
 		{
-			return "Guest";
+			return LAN_GUEST;
 		}
 		return $val;
 	}
@@ -478,14 +477,14 @@ class adminstyle_infopanel
 				
 		if(!$rows = $sql->retrieve('comments','*','comment_blocked=2 ORDER BY comment_id DESC LIMIT 25',true) )
 		{
-			return;
+			return null;
 		}
 		
 
 		$sc = e107::getScBatch('comment');
 				
 		$text = '
-		  <ul class="media-list unstyled">';
+		  <ul class="media-list unstyled list-unstyled">';
 		// <button class='btn btn-mini'><i class='icon-pencil'></i> Edit</button> 
 		
 		//XXX Always keep template hardcoded here - heavy use of ajax and ids. 
@@ -494,18 +493,19 @@ class adminstyle_infopanel
 		{
 			$hide = ($count > 3) ? ' hide' : '';
 
-			$TEMPLATE = "{SETIMAGE: w=40}
+			$TEMPLATE = "{SETIMAGE: w=40&h=40}
 			<li id='comment-".$row['comment_id']."' class='media".$hide."'>
 				<span class='media-object pull-left'>{USER_AVATAR=".$row['comment_author_id']."}</span> 
 				<div class='btn-group pull-right'>
-	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='delete' class='btn btn-mini btn-danger'><i class='icon-remove'></i> Delete</button>
-	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='approve' class='btn btn-mini btn-success'><i class='icon-ok'></i> Approve</button>
+	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='delete' class='btn btn-sm btn-mini btn-danger'><i class='icon-remove'></i> Delete</button>
+	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='approve' class='btn btn-sm btn-mini btn-success'><i class='icon-ok'></i> Approve</button>
 	            </div>
 				<div class='media-body'><small class='muted smalltext'>Posted by {USERNAME} {TIMEDATE=relative}</small><br />
 					<p>{COMMENT}</p> 
 				</div>
 				</li>";
-			
+
+			//TODO LAN for 'Posted by [x] ';
 			
 			$sc->setVars($row);  
 		 	$text .= $tp->parseTemplate($TEMPLATE,true,$sc);
@@ -516,7 +516,7 @@ class adminstyle_infopanel
     	$text .= '
      		</ul>
 		    <div class="right">
-		      <a class="btn btn-mini btn-primary text-right" href="'.e_ADMIN.'comment.php?searchquery=&filter_options=comment_blocked__2">View all</a>
+		      <a class="btn btn-xs btn-mini btn-primary text-right" href="'.e_ADMIN.'comment.php?searchquery=&filter_options=comment_blocked__2">View all</a>
 		    </div>
 		 ';		
 		// $text .= "<small class='text-center text-warning'>Note: Not fully functional at the moment.</small>";
@@ -543,7 +543,7 @@ class adminstyle_infopanel
 	
 	
 		
-	function render_infopanel_options($render = false)
+	function render_infopanel_options($render = false) //TODO LAN
 	{
 		// $frm = e107::getSingleton('e_form');
 		$frm = e107::getForm();
@@ -576,7 +576,7 @@ class adminstyle_infopanel
 	//	$end = "</div>";
 			
 		
-		return $mes->render().$text2.$end;
+		return $mes->render().$text2;
 	}
 
 
@@ -585,8 +585,8 @@ class adminstyle_infopanel
 	
 		$frm = e107::getForm();
 		global  $user_pref;
-			
-		$text = "";
+
+		$text = "<div style='padding-left:20px'>";
         
      
 	
@@ -596,7 +596,7 @@ class adminstyle_infopanel
 			if (getperms($icon['perms']))
 			{
 				$checked = (varset($user_pref['core-infopanel-mye107']) && in_array($key, $user_pref['core-infopanel-mye107'])) ? true : false;
-				$text .= "<div class='left f-left list field-spacer' style='display:block;height:24px;width:200px;'>
+				$text .= "<div class='left f-left list field-spacer checkbox' style='display:block;height:24px;width:200px;'>
 		                        ".$icon['icon'].' '.$frm->checkbox_label($icon['title'], 'e-mye107[]', $key, $checked)."</div>";
 								
 			}
@@ -609,12 +609,12 @@ class adminstyle_infopanel
 				if (getperms($icon['perms']))
 				{
 					$checked = (in_array('p-'.$key, $user_pref['core-infopanel-mye107'])) ? true : false;
-					$text .= "<div class='left f-left list field-spacer' style='display:block;height:24px;width:200px;'>
+					$text .= "<div class='left f-left list field-spacer checkbox' style='display:block;height:24px;width:200px;'>
 			                         ".$icon['icon'].$frm->checkbox_label($icon['title'], 'e-mye107[]', $key, $checked)."</div>";
 				}
 			}
 		}
-		$text .= "<div class='clear'>&nbsp;</div>";
+		$text .= "</div><div class='clear'>&nbsp;</div>";
 		return $text;
 	}
 
@@ -632,7 +632,7 @@ class adminstyle_infopanel
 		$pref = e107::getPref();
 		
 	
-		$text = "";
+		$text = "<div style='padding-left:20px'>";
 		$menu_qry = 'SELECT * FROM #menus WHERE menu_id!= 0  GROUP BY menu_name ORDER BY menu_name';
 		$settings = varset($pref['core-infopanel-menus'],array());
 	
@@ -652,7 +652,7 @@ class adminstyle_infopanel
 			}
 		}
 		
-		$text .= "<div class='clear'>&nbsp;</div>";
+		$text .= "</div><div class='clear'>&nbsp;</div>";
 		return $text;
 	}
 	
@@ -686,7 +686,8 @@ class adminstyle_infopanel
 								'strokeColor'  		=>  "rgba(220,220,220,1)",
 								'pointColor '  		=>  "rgba(220,220,220,1)",
 								'pointStrokeColor'  =>  "#fff",
-								'data'				=> array(65,59,90,81,56,55,40)	
+								'data'				=> array(65,59,90,81,56,55,40),
+								'title'				=> "Visits"
 				
 			);
 			
@@ -695,7 +696,8 @@ class adminstyle_infopanel
 								'strokeColor'  		=>  "rgba(151,187,205,1)",
 								'pointColor '  		=>  "rgba(151,187,205,1)",
 								'pointStrokeColor'  =>  "#fff",
-								'data'				=> array(28,48,40,19,96,27,100)		
+								'data'				=> array(28,48,40,19,96,27,100),
+								'title'				=> "Unique Visits"		
 			);	
 			
 			return $data;
@@ -849,13 +851,17 @@ class adminstyle_infopanel
 		
 		$cht = e107::getChart();
 		$cht->setType('line');
+		$cht->setOptions(array(
+			'annotateDisplay' => true,
+			'annotateFontSize' => 8
+		));
 		$cht->setData($data,'canvas');
 		$text = $cht->render('canvas');
 	
 			
 		if($type == 'demo')
 		{
-			$text .= "<div class='center'><small>These stats are for demonstration purposes only. <a class='btn btn-mini' href='".e_ADMIN."plugin.php?avail'>Install Site Stats Plugin</a></small></div>";
+			$text .= "<div class='center'><small>These stats are for demonstration purposes only. <a class='btn btn-xs btn-mini' href='".e_ADMIN."plugin.php?avail'>Install Site Stats Plugin</a></small></div>";
 		}
 		else
 		{

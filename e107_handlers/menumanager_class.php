@@ -58,7 +58,7 @@ class e_menuManager {
 				}
 				else
 				{
-					$this->curLayout = varsettrue($_GET['configure'], $pref['sitetheme_deflayout']);
+					$this->curLayout = vartrue($_GET['configure'], $pref['sitetheme_deflayout']);
 				}
 
 				$this->dbLayout = ($this->curLayout != $pref['sitetheme_deflayout']) ? $this->curLayout : "";  //menu_layout is left blank when it's default.
@@ -272,28 +272,28 @@ class e_menuManager {
 				$menu_count = $sql->count("menus", "(*)", " WHERE menu_location='{$location}' AND menu_layout = '".$this->dbLayout."'  ");
 				$sql->db_Update("menus", "menu_order=".($menu_count+1)." WHERE menu_order='{$position}' AND menu_location='{$location}' AND menu_layout = '$this->dbLayout'  ");
 				$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_location='{$location}' AND menu_order > {$position} AND menu_layout = '".$this->dbLayout."' ");
-				$admin_log->log_event('MENU_06',$location.'[!br!]'.$position.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
+				e107::getLog()->add('MENU_06',$location.'[!br!]'.$position.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
 			}
 
 			if ($menu_act == "top")
 			{
 				$sql->db_Update("menus", "menu_order=menu_order+1 WHERE menu_location='{$location}' AND menu_order < {$position} AND menu_layout = '".$this->dbLayout."' ",$this->debug);
 				$sql->db_Update("menus", "menu_order=1 WHERE menu_id='{$this->menuId}' ");
-				$admin_log->log_event('MENU_05',$location.'[!br!]'.$position.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
+				e107::getLog()->add('MENU_05',$location.'[!br!]'.$position.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
 			}
 
 			if ($menu_act == "dec")
 			{
 				$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_order='".($position+1)."' AND menu_location='{$location}' AND menu_layout = '".$this->dbLayout."' ",$this->debug);
-				$sql->db_Update("menus", "menu_order=menu_order+1 WHERE menu_id='{$this->menuId}' AND menu_location='{$location}' AND menu_layout = '".$this->dbLayout."' ",TRUE);
-				$admin_log->log_event('MENU_08',$location.'[!br!]'.$position.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
+				$sql->db_Update("menus", "menu_order=menu_order+1 WHERE menu_id='{$this->menuId}' AND menu_location='{$location}' AND menu_layout = '".$this->dbLayout."' ");
+				e107::getLog()->add('MENU_08',$location.'[!br!]'.$position.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
 			}
 
 			if ($menu_act == "inc")
 			{
 				$sql->db_Update("menus", "menu_order=menu_order+1 WHERE menu_order='".($position-1)."' AND menu_location='{$location}' AND menu_layout = '".$this->dbLayout."' ",$this->debug);
 				$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_id='{$this->menuId}' AND menu_location='{$location}' AND menu_layout = '".$this->dbLayout."' ");
-				$admin_log->log_event('MENU_07',$location.'[!br!]'.$position.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
+				e107::getLog()->add('MENU_07',$location.'[!br!]'.$position.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
 			}
 
 			if (!isset($_GET['configure']))
@@ -345,7 +345,7 @@ class e_menuManager {
 						);
 
 					$sql->db_Insert("menus",$insert);
-				  	$admin_log->log_event('MENU_01',$row['menu_name'].'[!br!]'.$location.'[!br!]'.$menu_count.'[!br!]'.$row['menu_path'],E_LOG_INFORMATIVE,'');
+				  	e107::getLog()->add('MENU_01',$row['menu_name'].'[!br!]'.$location.'[!br!]'.$menu_count.'[!br!]'.$row['menu_path'],E_LOG_INFORMATIVE,'');
 
 				}
 	         }
@@ -367,6 +367,59 @@ class e_menuManager {
 			$efile->dirFilter = array('/', 'CVS', '.svn', 'languages');
 			$fileList = $efile->get_files(e_PLUGIN,"_menu\.php$",'standard',2);
 			
+			$this->menuAddMessage('Scanning for new menus', E_MESSAGE_DEBUG);
+			
+			$menuList = array(); // existing menus in table. 
+			if($result = $sql->retrieve('menus', 'menu_name', null, true))
+			{
+				foreach($result as $mn)
+				{
+					if($mn['menu_name'])
+					{
+						$menuList[] = $mn['menu_name'];		
+					}
+				}
+			}
+
+
+			//v2.x Scan Custom Page Menus.
+
+			$pageMenus = $sql->retrieve('page','page_id, menu_name, menu_title',"menu_name !='' ", true);
+			foreach($pageMenus as $row)
+			{
+				if(!in_array($row['menu_name'],$menuList))
+				{
+					$insert = array(
+						'menu_id'	=> 0,
+						'menu_name' 	=> $row['menu_name'],
+						'menu_location'	=> 0,
+						'menu_order'	=> 0,
+						'menu_class'	=> 0,
+						'menu_pages'	=> '',
+						'menu_path'		=> $row['page_id'],
+						'menu_layout'  	=> '',
+						'menu_parms'	=> ''
+					);
+
+					if($sql->insert("menus",$insert))
+					{
+						$this->menuAddMessage(MENLAN_10." - ".$row['menu_name'], E_MESSAGE_DEBUG);
+					}
+				}
+
+			}
+
+
+
+
+
+
+
+
+
+
+
+			
 			foreach($fileList as $file)
 			{
 
@@ -374,7 +427,8 @@ class e_menuManager {
 				$file['path'] = str_replace(e_PLUGIN,"",$file['path']);
 				$file['fname'] = str_replace(".php","",$file['fname']);
 				$valid_menu = FALSE;
-				$existing_menu = $sql->count("menus", "(*)", "WHERE menu_name='{$file['fname']}'");
+			
+				$existing_menu = in_array($file['fname'], $menuList); // $sql->count("menus", "(*)", "WHERE menu_name='{$file['fname']}'");
 				if (file_exists(e_PLUGIN.$parent_dir.'/plugin.xml') || file_exists(e_PLUGIN.$parent_dir.'/plugin.php'))
 				{
 					if (e107::isInstalled($parent_dir))
@@ -405,10 +459,14 @@ class e_menuManager {
 							'menu_parms'	=> ''
 						);
 
-   						if($sql->db_Insert("menus",$insert))
+   						if($sql->insert("menus",$insert))
 						{
 					  		// Could do admin logging here - but probably not needed
 							$message .= MENLAN_10." - ".$file['fname']."<br />"; //FIXME
+						}
+						else
+						{
+							$this->menuAddMessage("Couldn't add menu: ".$file['fname']." to table ", E_MESSAGE_DEBUG);	
 						}
 					}
 				}
@@ -438,11 +496,11 @@ class e_menuManager {
 				if (stristr($menustr, $menu_name) === FALSE)
 				{
 					$sql2->db_Delete("menus", "menu_name='$menu_name'");
-					$message .= MENLAN_11." - ".$menu_name."<br />"; // FIXME
+					$message .= MENLAN_11." - ".$menu_name."<br />";
 				}
 			}
 
-			$this->menuAddMessage(vartrue($message), E_MESSAGE_INFO); //FIXME
+			$this->menuAddMessage(vartrue($message), E_MESSAGE_DEBUG);
 
 	}
 
@@ -522,6 +580,8 @@ class e_menuManager {
 		$sql = e107::getDb();
 		$ns = e107::getRender();
 		$frm = e107::getForm();
+		$tp = e107::getParser();
+
 		
 		require_once(e_HANDLER."userclass_class.php");
 		
@@ -546,19 +606,19 @@ class e_menuManager {
 			<td>
 			<input type='hidden' name='menuAct[{$row['menu_id']}]' value='sv.{$row['menu_id']}' />
 			".MENLAN_4." ".
-			r_userclass('menu_class', $row['menu_class'], "off", "public,member,guest,admin,main,classes,nobody")."
+			$frm->userclass('menu_class', $row['menu_class'], 'dropdown', array('options'=>"public,member,guest,admin,main,classes,nobody", 'class'=>'e-save'))."
 			</td>
 			</tr>
 			<tr><td><div class='radio'>
 		";
 		$checked = ($listtype == 1) ? " checked='checked' " : "";
 		
-		$text .= $frm->radio('listtype', 1, $checked, array('label'=>MENLAN_26, 'class'=> 'e-save'));
+		$text .= $frm->radio('listtype', 1, $checked, array('label'=>$tp->toHtml(MENLAN_26,true), 'class'=> 'e-save'));
 		$text .= "<br />";
 	//	$text .= "<input type='radio' class='e-save' {$checked} name='listtype' value='1' /> ".MENLAN_26."<br />";
 		$checked = ($listtype == 2) ? " checked='checked' " : "";
 		
-		$text .= $frm->radio('listtype', 2, $checked, array('label'=>MENLAN_27, 'class'=> 'e-save'));
+		$text .= $frm->radio('listtype', 2, $checked, array('label'=> $tp->toHtml(MENLAN_27,true), 'class'=> 'e-save'));
 		
 		
 		// $text .= "<input type='radio' class='e-save' {$checked} name='listtype' value='2' /> ".MENLAN_27."<br />";
@@ -570,7 +630,7 @@ class e_menuManager {
 		
 				<textarea name='pagelist' class='e-save span3' cols='60' rows='8' class='tbox'>$menu_pages</textarea>
 			</div>
-			<div class='  span4'><small>".MENLAN_28."</small></div>
+			<div class='  span4 col-md-4'><small>".MENLAN_28."</small></div>
 		</div></td></tr>
 		</table>";
 		
@@ -638,7 +698,7 @@ class e_menuManager {
 
 					$sql->db_Insert("menus",$insert, $this->debug);
 
-					$admin_log->log_event('MENU_01',$row['menu_name'].'[!br!]'.$location.'[!br!]'.$menu_count.'[!br!]'.$row['menu_path'],E_LOG_INFORMATIVE,'');
+					e107::getLog()->add('MENU_01',$row['menu_name'].'[!br!]'.$location.'[!br!]'.$menu_count.'[!br!]'.$row['menu_path'],E_LOG_INFORMATIVE,'');
 					$menu_count++;
 				}
 			}
@@ -673,49 +733,27 @@ class e_menuManager {
 	    	return FALSE;
 		}
 
-		$temp = $pref['sitetheme_layouts'][$layout]['menuPresets']['area'];
+		$areas = $pref['sitetheme_layouts'][$layout]['menuPresets']['area'];
 
-	// print_a($temp);
-		$multiple = isset($temp['menu'][1]);	
-
-		foreach($temp as $key=>$val)
+		foreach($areas as $area => $menus)
 		{
-			if($val['id'])
+			$areaID = $menus['@attributes']['id'];	
+			foreach($menus['menu'] as $k=>$v)
 			{
-				$iD = $val['id'];	
-			}
-		//	$iD = $val['id'];
-			
-			if($key == 'menu')
-			{
-				if($multiple)  // More than one menu item under <area> in theme.xml.
-				{
-					foreach($val as $k=>$v)
-					{
-						
-					   //	$uclass = (defined(trim($v['@attributes']['perm']))) ? constant(trim($v['@attributes']['userclass'])) : 0;
-						$menuArea[] = array(
-							'menu_location' => $iD,
-							'menu_order'	=> $k,
-							'menu_name'		=> $v['@attributes']['name']."_menu",
-							'menu_class'	=> $this->menuPresetPerms($v['@attributes']['perm'])
-						);
-					}
-				}
-				else  // Only one menu item under <area> in theme.xml.
-				{
-				  //	$uclass = (defined(trim($val['menu']['@attributes']['userclass']))) ? constant(trim($val['menu']['@attributes']['userclass'])) : 0;
-	                $menuArea[] = array(
-							'menu_location' => $iD,
-							'menu_order'	=> 0,
-							'menu_name'		=> $val['menu']['@attributes']['name']."_menu",
-							'menu_class'	=> $this->menuPresetPerms($v['@attributes']['perm'])
-						);
-				}
+				$menuArea[] = array(
+					'menu_location' => $areaID,
+					'menu_order'	=> $k,
+					'menu_name'		=> $v['@attributes']['name']."_menu",
+					'menu_class'	=> $this->menuPresetPerms($v['@attributes']['perm'])
+				);	
 			}
 		}
+						
+		if(E107_DEBUG_LEVEL > 0)
+		{
+	//		e107::getMessage()->addDebug(print_a($menuArea,true)); 	
+		}
 		
-	//	print_a($menuArea);
 
 	   return $menuArea;
 
@@ -755,7 +793,7 @@ class e_menuManager {
 		{
 			return array('msg'=>'All Okay','error'=>false);
 			// FIXME - menu log
-			//$admin_log->log_event('MENU_02',$_POST['menu_parms'].'[!br!]'.$parms.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
+			//e107::getLog()->add('MENU_02',$_POST['menu_parms'].'[!br!]'.$parms.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
 		//	$this->menuAddMessage(LAN_SAVED,E_MESSAGE_SUCCESS);
 		}
 		elseif(false === $check)
@@ -789,7 +827,7 @@ class e_menuManager {
 
 		if($sql->db_Update("menus", "menu_class='".intval($_POST['menu_class'])."', menu_pages='{$pageparms}' WHERE menu_id=".intval($_POST['menu_id'])))
 		{
-			$admin_log->log_event('MENU_02',$_POST['menu_class'].'[!br!]'.$pageparms.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
+			e107::getLog()->add('MENU_02',$_POST['menu_class'].'[!br!]'.$pageparms.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
 						
 			return array('msg'=>LAN_UPDATED, 'error'=> false);
 			//$this->menuAddMessage($message,E_MESSAGE_SUCCESS);
@@ -810,13 +848,14 @@ class e_menuManager {
 	// -----------------------------------------------------------------------
 
 	function menuDeactivate()
-	{	// Get current menu name
-		global $admin_log;
+	{
+
 		$sql = e107::getDb();
 		$sql2 = e107::getDb();
 		
 		//echo "FOUND= ".$this->menuId;
 		$error = false;
+		$message = '';
 
 		if($sql->gen('SELECT menu_name, menu_location, menu_order FROM #menus WHERE menu_id = '.$this->menuId.' LIMIT 1'))
 		{
@@ -835,15 +874,15 @@ class e_menuManager {
 			else
 			{
 				//menu_location=0 does NOT exist, let's just convert this to it
-				if(!$sql2->db_Update("menus", "menu_location=0, menu_order=0, menu_class=0, menu_pages='' WHERE menu_id=".$this->menuId))
+				if(!$sql2->update("menus", "menu_location=0, menu_order=0, menu_class=0, menu_pages='' WHERE menu_id=".$this->menuId))
 				{
 	            	$message = "FAILED";
 					$error = true;
 				}
 			}
 			//Move all menus up (reduces order number) that have a higher menu order number than one deactivated, in the selected location. 
-			$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_location={$row['menu_location']} AND menu_order > {$row['menu_order']} AND menu_layout = '".$this->dbLayout."' ");
-			$admin_log->log_event('MENU_04',$row['menu_name'].'[!br!]'.$row['menu_location'].'[!br!]'.$row['menu_order'].'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
+			$sql->update("menus", "menu_order=menu_order-1 WHERE menu_location={$row['menu_location']} AND menu_order > {$row['menu_order']} AND menu_layout = '".$this->dbLayout."' ");
+			e107::getLog()->add('MENU_04',$row['menu_name'].'[!br!]'.$row['menu_location'].'[!br!]'.$row['menu_order'].'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
 		}
 		else
 		{
@@ -858,10 +897,13 @@ class e_menuManager {
 
 	// ----------------------------------------------------------------------
 
+	/**
+	 * Move a Menu
+	 */
 	function menuMove()
 	{// Get current menu name
 
-			global $admin_log,$sql;
+			$sql = e107::getDb();
 
 			if($sql->select('menus', 'menu_name', 'menu_id='.$this->menuId, 'default'))
 			{
@@ -873,7 +915,7 @@ class e_menuManager {
 					$sql->db_Update("menus", "menu_location='{$this->menuNewLoc}', menu_order=".($menu_count+1)." WHERE menu_id=".$this->menuId);
 					$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_location='{$location}' AND menu_order > {$position} AND menu_layout='".$this->dbLayout ."' ");
 				}
-				$admin_log->log_event('MENU_03',$row['menu_name'].'[!br!]'.$this->menuNewLoc.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
+				e107::getLog()->add('MENU_03',$row['menu_name'].'[!br!]'.$this->menuNewLoc.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
 			}
 	}
 
@@ -912,13 +954,8 @@ class e_menuManager {
 	    	//	$menuInf = $row['menu_path'];
 	    		
 	    		$text .= "<tr style='background-color:$color;color:black'>
-				<td style='text-align:left; color:black;' class='checkbox'>";
-				
-				
-			//	$text .= "
-			////	<input type='checkbox' id='menuselect-{$row['menu_id']}' name='menuselect[]' value='{$row['menu_id']}' />
-			//	<label class='selection-row' for='menuselect-{$row['menu_id']}'>".$row['menu_name'].$menuInf."</label>";
-				
+				<td style='text-align:left; color:black;' >";
+
 				$text .= $frm->checkbox('menuselect[]',$row['menu_id'],'',array('label'=>$row['menu_name'].$menuInf));
 		
 				$text .= "
@@ -978,7 +1015,7 @@ class e_menuManager {
 		if(!$this->dragDrop)
 		{
 			$text .= "<div class='column' id='portal-column-block-list' style='border:1px inset black;height:250px;display:block;overflow:auto;margin-bottom:20px'>";
-			$text .= "<table class='table table-striped core-menumanager-main' id='core-menumanager-main'  >
+			$text .= "<table class='table table-striped adminlist core-menumanager-main' id='core-menumanager-main'  >
 			<tbody>\n";
 
 		}
@@ -1042,7 +1079,7 @@ class e_menuManager {
 		$text .= "</td>";
 
 		$text .= "</tr></table>";
-		
+
 		if(!count($this->menu_areas))
 		{
 			$text = "<div class='alert alert-block alert-warning text-left'>";
@@ -1157,7 +1194,7 @@ class e_menuManager {
 	
 	function menuSetCode($matches, &$ret)
 	{
-		if(!$matches || !varsettrue($matches[1]))
+		if(!$matches || !vartrue($matches[1]))
 		{
 			return;
 		}
@@ -1185,28 +1222,41 @@ class e_menuManager {
 		$tp     = e107::getParser(); 
 		$ns     = e107::getRender();  
 
-		
+
 		$menuLayout = ($this->curLayout != $pref['sitetheme_deflayout']) ? $this->curLayout : "";
 		
-		if(strstr($str, "LOGO"))
+	//	if(strstr($str, "LOGO"))
+	//	{
+	//		echo $tp->parseTemplate("{LOGO}");
+	//	}
+		if(strstr($str, "SETSTYLE"))
 		{
-			echo $tp->parseTemplate("{LOGO}");
+			$tmp = explode("=", $str);
+			$style = preg_replace("/\{SETSTYLE=(.*?)\}/si", "\\1", $str);
+
+			$this->style = $style;
+			$ns->setStyle($style);
+
 		}
-		elseif(strstr($str, "SITENAME"))
+		/*elseif(strstr($str, "SITENAME"))
 		{
 			echo "[SiteName]";
-		}
-		elseif(strstr($str, "SITETAG"))
+		}*/
+		/*elseif(strstr($str, "SITETAG"))
 		{
 			echo "<div style='padding: 2px'>[SiteTag]</div>";
-		}
-		elseif(strstr($str, "SITELINKS"))
-		{
-			echo "[SiteLinks]";
-		}
+		}*/
+	//	elseif(strstr($str, "SITELINKS"))
+	//	{
+	//		echo "[SiteLinks]";
+	//	}
 		elseif(strstr($str, "NAVIGATION"))
 		{
-			echo "[Navigation Area]";
+			echo "<span class='label label-info'>Navigation Area</span>";
+		}
+		elseif(strstr($str, "ALERT"))
+		{
+			//echo "[Navigation Area]";
 		}
 		elseif(strstr($str, "LANGUAGELINKS"))
 		{
@@ -1338,19 +1388,17 @@ class e_menuManager {
 				}
 			}
 
-			echo $menuText;
+
+			$ns->tablerender('', $menuText);
 		}
-		else if(strstr($str, "SETSTYLE"))
+
+	//.	else if(strstr($str, "SITEDISCLAIMER"))
+	//{
+	//		echo "[Sitedisclaimer]";
+	//	}
+		else
 		{
-			$tmp = explode("=", $str);
-			$style = preg_replace("/\{SETSTYLE=(.*?)\}/si", "\\1", $str);
-			
-			$this->style = $style;
-			
-		}
-		else if(strstr($str, "SITEDISCLAIMER"))
-		{
-			echo "[Sitedisclaimer]";
+			echo $tp->parseTemplate($str,true);
 		}
 	}
 	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -1450,7 +1498,7 @@ class e_menuManager {
 		$visibilityLink = e_SELF."?enc=".base64_encode('lay='.$this->curLayout.'&vis='.$menu_id.'&iframe=1');
 		
 		$text .= '<span class="menu-options-buttons">
-		<a class="e-menumanager-option menu-btn" data-modal-caption="'.MENLAN_20.'" href="'.$visibilityLink.'" title="'.MENLAN_20.'"><i class="S16 e-search-16"></i></a>';
+		<a class="e-menumanager-option menu-btn" data-modal-caption="'.LAN_VISIBILITY.'" href="'.$visibilityLink.'" title="'.LAN_VISIBILITY.'"><i class="S16 e-search-16"></i></a>';
 
 		if($conf)
 		{
@@ -1590,37 +1638,51 @@ class e_menuManager {
 
     function menuSetConfigList()
 	{
+		e107::getMessage()->addDebug("Scanning for Menu config files");
+
         	$sql = e107::getDb();
         	$pref = e107::getPref();
+			$prev_name = '';
+			$search = array('_menu','_');
 
 			$sql -> select("menus", "*", "menu_location != 0 ORDER BY menu_path,menu_name");
 			while($row = $sql-> fetch())
 			{
 				$link = "";
 
-	  			extract($row);
-				$id = substr($menu_path,0,-1);
+				$id = substr($row['menu_path'],0,-1);
 
-				if (file_exists(e_PLUGIN."{$menu_path}{$menu_name}_menu_config.php"))
+				if (file_exists(e_PLUGIN."{$row['menu_path']}{$row['menu_name']}_menu_config.php"))
 				{
-				    $link = "{$menu_path}{$menu_name}_menu_config.php";
+				    $link = $row['menu_path'].$row['menu_name']."_menu_config.php";
 				}
 
-				if(file_exists(e_PLUGIN."{$menu_path}config.php"))
+				if($row['menu_path'] == 'news/')
 				{
-					 $link = "{$menu_path}config.php";
+					$row['menu_path'] = "blogcalendar_menu/";
 				}
+
+				if(file_exists(e_PLUGIN.$row['menu_path']."config.php"))
+				{
+					 $link = $row['menu_path']."config.php";
+				}
+
+
 
 				if($link)
 				{
-         			$tmp[$id]['name'] = ucwords(str_replace("_menu","",$menu_name));
-					if(vartrue($prev) == $id && ($tmp[$id]['name']!=$prev_name))
+
+
+         			$tmp[$id]['name'] = ucwords(str_replace($search,"",$row['menu_name'])); // remove _
+
+					if(vartrue($prev) == $id && ($tmp[$id]['name'] != $prev_name))
 					{
 	                	$tmp[$id]['name'] .= ":".$prev_name;
 					}
 
 					$tmp[$id]['link'] = $link;
 					$prev = $id;
+
 					$prev_name = $tmp[$id]['name'];
 				}
 			}
@@ -1628,6 +1690,6 @@ class e_menuManager {
            $pref['menuconfig_list'] = vartrue($tmp);
 		   
 		   e107::getConfig()->setPref($pref)->save(false,true,false);
-		 //  save_prefs();
+
 	}
 }  // end of Class.

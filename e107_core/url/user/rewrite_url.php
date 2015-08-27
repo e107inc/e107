@@ -34,19 +34,19 @@ class core_user_rewrite_url extends eUrlConfig
 			'rules' => array(
 				// simple matches first - PERFORMANCE
 				'' 					=> array('myprofile/view', 'defaultVars' => array('id' => 0)),
-				'Settings' 			=> array('myprofile/edit', 'defaultVars' => array('id' => 0), 'legacy' => '{e_BASE}usersettings.php'),
-				'List' 				=> array('profile/list', 'allowVars' => array('page'), 'legacyQuery' => '{page}'),
-				'Login' 			=> array('login/index', 'legacy' => '{e_BASE}login.php'),
-				'Register' 			=> array('register/index', 'legacy' => '{e_BASE}signup.php'),
+				'settings' 			=> array('myprofile/edit', 'defaultVars' => array('id' => 0), 'legacy' => '{e_BASE}usersettings.php'),
+				'list' 				=> array('profile/list', 'allowVars' => array('page'), 'legacyQuery' => '{page}'),
+				'login' 			=> array('login/index', 'legacy' => '{e_BASE}login.php'),
+				'register' 			=> array('register/index', 'legacy' => '{e_BASE}signup.php'),
 				
 				// Regex involved next
 				//'<id:[\d]+>' 		=> array('profile/view', 'legacyQuery' => 'id.{id}'),
-				'Edit/<id:[\d]+>' 	=> array('profile/edit', 'legacy' => '{e_BASE}usersettings.php', 'legacyQuery' => '{id}'),
+			//	'edit/<id:[\d]+>' 	=> array('profile/edit', 'legacy' => '{e_ADMIN}users.php', 'legacyQuery' => 'mode=main&action=edit&id={id}'),
 				
 				// Named requests - important to be in the end in this order!
-				'Edit/<name:[\w\pL.\-\s]+>' 	=> array('profile/edit', 'legacy' => '{e_BASE}usersettings.php', 'legacyQuery' => '{id}', 'parseCallback' => 'idByName'),
+			//	'edit/<name:[\w\pL.\-\s]+>' 	=> array('profile/edit','legacy' => '{e_ADMIN}users.php', 'legacyQuery' => 'mode=main&action=edit&id={id}', 'parseCallback' => 'idByName'),
 				// Last one - close to catch all!
-				'<name:[\w\pL.\-\s]+>' 	=> array('profile/view', 'legacyQuery' => 'id.{id}', 'parseCallback' => 'idByName'),
+				'<name:[\w\pL.\-\s\|]+>' 	=> array('profile/view', 'legacyQuery' => 'id.{id}', 'parseCallback' => 'idByName'),
 			) 
 		);
 	}

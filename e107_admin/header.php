@@ -50,28 +50,22 @@ function loadJSAddons()
 // e107::js('core',    'bootstrap/js/bootstrap-modal.js', 'jquery', 2);  // Special Version see: https://github.com/twitter/bootstrap/pull/4224
 
  
-//	e107::css('core', 	'bootstrap-editable/css/bootstrap-editable.css', 'jquery');
-	//e107::js('core', 	'bootstrap-editable/js/bootstrap-editable.min.js', 'jquery', 2);
-	
-	e107::css('url', 		"//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap-editable/css/bootstrap-editable.css");
-	e107::js('url', 		"//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap-editable/js/bootstrap-editable.min.js");
-	
+
+
 	e107::css('core', 	'bootstrap-select/bootstrap-select.min.css', 'jquery');
 	e107::js('core', 	'bootstrap-select/bootstrap-select.min.js', 'jquery', 2);
 	
 	e107::css('core', 	'bootstrap-multiselect/css/bootstrap-multiselect.css', 'jquery');
 	e107::js('core', 	'bootstrap-multiselect/js/bootstrap-multiselect.js', 'jquery', 2);
-	
+
+	// TODO: remove typeahead.
 	e107::js('core', 	'bootstrap-jasny/js/jasny-bootstrap.js', 'jquery', 2);
 	
 	e107::css('core', 	'bootstrap-datetimepicker/css/datetimepicker.css', 'jquery');
 	e107::js('core', 	'bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js', 'jquery', 2);
 	
-	if(e_LAN != 'en')
-	{ 
-		e107::js('inline', buildDateLocale(),'jquery', 2);
-	}
-		
+	e107::js('core',	'jquery.h5validate.min.js','jquery',2);
+	
 	e107::js('core', 	'jquery.elastic.js', 'jquery', 2);
 	e107::js('core', 	'jquery.at.caret.min.js', 'jquery', 2);
 	
@@ -100,54 +94,7 @@ function loadJSAddons()
 
 loadJSAddons();
 
-/** Build the datetimepicker() locale, since it must match strftime() values for accurate conversion. 
- * 
- */
-function buildDateLocale()
-{	
-	$text = ';(function($){
-$.fn.datetimepicker.dates["'.e_LAN.'"] = {';
-	
-	$dates = array();
-	
-	for ($i=1; $i < 8; $i++) 
-	{
-		$day = strftime('%A', mktime(1,1,1, 1, $i, 2012)); 
-		$dates['days'][] = 	$day;
-		$dates['daysShort'][] = strftime('%a', mktime(1,1,1, 1, $i, 2012));	
-		$dates['daysMin'][] = substr($day,0,2);	
-	}
-	
-	
-	for ($i=1; $i < 13; $i++) 
-	{ 
-		$dates['months'][] 		= strftime('%B', mktime(1,1,1, $i, 2, 2013));	
-		$dates['monthsShort'][] = strftime('%h', mktime(1,1,1, $i, 2, 2013));	
-	}
-	
-	
-	foreach($dates as $key=>$type)
-	{
-		$d = array();
-		
-		$text .= "\n".$key.": [";
-		foreach($type as $val)
-		{
-			$d[] = '"'.$val.'"';	
-			
-		}	
-		$text .= implode(",",$d);
-		$text .= "],";
-	}
-	
-	
-	$text .= '
-meridiem: ["am", "pm"]
-};
-}(jQuery));';
-	
-	return $text;
-}
+
 
 
 
@@ -235,8 +182,9 @@ else // XHTML
 echo "<meta name=\"viewport\" content=\"width=device-width; initial-scale=1; maximum-scale=1\" />\n"; // Works better for iOS but still has some issues. 
 // echo (defined("VIEWPORT")) ? "<meta name=\"viewport\" content=\"".VIEWPORT."\" />\n" : "";
 
-echo "<title>".(defined("e_PAGETITLE") ? e_PAGETITLE." - " : (defined("PAGE_NAME") ? PAGE_NAME." - " : "")).LAN_head_4." :: ".SITENAME."</title>\n";
+echo "<title>".(defined("e_PAGETITLE") ? e_PAGETITLE." - " : (defined("PAGE_NAME") ? PAGE_NAME." - " : "")).LAN_HEADER_04." :: ".SITENAME."</title>\n";
 
+// print_a(get_included_files()); 
 //
 // D: Send CSS
 //
@@ -254,6 +202,8 @@ if (!isset($no_core_css) || !$no_core_css)
 // DEPRECATED, use $e_js->pluginCSS('myplug', 'style/myplug.css'[, $media = 'all|screen|...']);
 if (isset($eplug_css) && $eplug_css)
 {
+	e107::getMessage()->addDebug('Deprecated $eplug_css method detected. Use e107::css() in an e_header.php file instead.'.print_a($eplug_css,true)); 
+	
     if(!is_array($eplug_css))
 	{
 		$eplug_css = array($eplug_css);
@@ -268,15 +218,15 @@ if (isset($eplug_css) && $eplug_css)
 
 
 
-	if(e107::getPref('admincss') == "admin_dark.css" && !vartrue($_GET['configure']))
+	if(e107::getPref('admincss') == "admin_dark.css" && !vartrue($_GET['configure']) && e107::getPref('admintheme')!='bootstrap3')
 	{
 	
-		$e_js->coreCSS('bootstrap/css/darkstrap.css');	
+		$e_js->coreCSS('bootstrap/css/darkstrap.css');
 		
 	} 
 
 //NEW - Iframe mod
-if (!defsettrue('e_IFRAME') && isset($pref['admincss']) && $pref['admincss'] && !vartrue($_GET['configure']))
+if (!deftrue('e_IFRAME') && isset($pref['admincss']) && $pref['admincss'] && !vartrue($_GET['configure']))
 {
 	$css_file = file_exists(THEME.'admin_'.$pref['admincss']) ? 'admin_'.$pref['admincss'] : $pref['admincss'];
 	//echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
@@ -321,6 +271,19 @@ if(defined('TEXTDIRECTION') && file_exists(THEME.'/'.strtolower(TEXTDIRECTION).'
 	//<link rel="stylesheet" href="'.THEME_ABS.strtolower(TEXTDIRECTION).'.css" type="text/css" media="all" />';
 	$e_js->themeCSS(strtolower(TEXTDIRECTION).'.css');
 }
+
+
+// --- Load plugin Header  files  before all CSS nad JS zones.  --------
+if (vartrue($pref['e_header_list']) && is_array($pref['e_header_list']))
+{
+	foreach($pref['e_header_list'] as $val)
+	{
+		// no checks fore existing file - performance
+		e107_include(e_PLUGIN.$val."/e_header.php");
+	}
+}
+unset($e_headers);
+
 
 // ################### RENDER CSS
 
@@ -374,6 +337,7 @@ e107::getJs()->renderJs('header_inline', 2);
 //DEPRECATED - use e107::getJs()->headerFile('{e_PLUGIN}myplug/js/my.js', $zone = 2)
 if (isset($eplug_js) && $eplug_js)
 {
+	e107::getMessage()->addDebug('Deprecated $eplug_js method detected. Use e107::js() function inside an e_header.php file instead.'.print_a($eplug_js,true)); 
 	echo "\n<!-- eplug_js -->\n";
 	echo "<script type='text/javascript' src='{$eplug_js}'></script>\n";
 }
@@ -381,7 +345,8 @@ if (isset($eplug_js) && $eplug_js)
 //FIXME - theme.js/user.js should be registered/rendered through e_jsmanager
 if (file_exists(THEME.'theme.js'))
 {
-	echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n";
+	e107::js('theme','theme.js',null,3); 
+//	echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n";
 }
 if (is_readable(e_FILE.'user.js') && filesize(e_FILE.'user.js'))
 {
@@ -411,16 +376,7 @@ if (vartrue($pref['e_meta_list']))
 	}
 }
 
-// --- Load plugin Header  files  --------
-if (vartrue($pref['e_header_list']) && is_array($pref['e_header_list']))
-{
-	foreach($pref['e_header_list'] as $val)
-	{
-		// no checks fore existing file - performance
-		e107_include(e_PLUGIN.$val."/e_header.php");
-	}
-}
-unset($e_headers);
+
 
 if (!USER && ($pref['user_tracking'] == "session") && varset($pref['password_CHAP'],0))
 {
@@ -529,10 +485,16 @@ echo "</head>
 <body".$body_onload.">\n";
 
 echo getModal();
-// echo getAlert();
+echo getAlert();
 
   function getModal($caption = '', $type='')
     {
+
+        if(deftrue('BOOTSTRAP') === 3)  // see bootstrap3/admin_template.php
+        {
+            return '';
+        }
+
     	if(e_PAGE == 'menus.php' && vartrue($_GET['configure'])) // Menu Manager iFrame disable
 		{
 			return;
@@ -563,11 +525,11 @@ echo getModal();
 
 function getAlert($caption='')
 {
-	
-	return '<div id="uiAlert" class="alert alert-block alert-success hide fade in" style="box-shadow:0px 15px 8px #000;width:300px;position:absolute;left:40%;right:40%;top:15%;z-index:10000">
-  		<!-- rest of alert code goes here --> some
-		Some text goes here and there and everywhere. 
-	</div>';	
+	//  style="box-shadow:0px 15px 8px #000;width:300px;position:absolute;left:40%;right:40%;top:15%;z-index:10000"
+
+
+
+	return '<div id="uiAlert" class="notifications center"><!-- empty --></div>';
 
 }
 

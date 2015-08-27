@@ -18,7 +18,7 @@ $eplug_admin = true;
 define('DOWNLOAD_DEBUG',FALSE);
 
 require_once("../../class2.php");
-if (!getperms("P") || !plugInstalled('download'))
+if (!getperms("P") || !e107::isInstalled('download'))
 {
 	header("location:".e_BASE."index.php");
 	exit() ;
@@ -26,7 +26,8 @@ if (!getperms("P") || !plugInstalled('download'))
 
 
 e107::lan('download','download'); // e_PLUGIN.'download/languages/'.e_LANGUAGE.'/download.php'
-e107::lan('download','admin_download'); // e_PLUGIN.'download/languages/'.e_LANGUAGE.'/admin_download.php'
+e107::lan('download', 'admin', true); // e_PLUGIN.'download/languages/'.e_LANGUAGE.'/admin_download.php'
+
 
 
 // require_once(e_PLUGIN.'download/handlers/adminDownload_class.php');
@@ -102,7 +103,7 @@ if (isset($_POST['update_catorder']))
 			$sql -> db_Update("download_category", "download_category_order='".intval($order)."' WHERE download_category_id='".intval($key)."'");
 		}
 	}
-	$admin_log->log_event('DOWNL_08',implode(',',array_keys($_POST['catorder'])),E_LOG_INFORMATIVE,'');
+	e107::getLog()->add('DOWNL_08',implode(',',array_keys($_POST['catorder'])),E_LOG_INFORMATIVE,'');
 	$ns->tablerender("", "<div style='text-align:center'><b>".LAN_UPDATED."</b></div>");
 }
 /*
@@ -175,7 +176,7 @@ if (isset($_POST['addlimit']))
 		if ($sql->db_Insert('generic',$vals))
 		{
 			$message = DOWLAN_117;
-			$admin_log->log_event('DOWNL_09',$valString,E_LOG_INFORMATIVE,'');
+			e107::getLog()->add('DOWNL_09',$valString,E_LOG_INFORMATIVE,'');
 		}
 		else
 		{
@@ -208,7 +209,7 @@ if (isset($_POST['updatelimits']))
 			if ($sql->db_Delete('generic',"gen_id = {$idLim}"))
 			{
 				$message .= $idLim." - ".DOWLAN_119."<br/>";
-				$admin_log->log_event('DOWNL_11','ID: '.$idLim,E_LOG_INFORMATIVE,'');
+				e107::getLog()->add('DOWNL_11','ID: '.$idLim,E_LOG_INFORMATIVE,'');
 			}
 			else
 			{
@@ -224,7 +225,7 @@ if (isset($_POST['updatelimits']))
 			}
 			$valString = implode(',',$vals);
 			$sql->db_UpdateArray('generic',$vals," WHERE gen_id = {$idLim}");
-			$admin_log->log_event('DOWNL_10',$idLim.', '.$valString,E_LOG_INFORMATIVE,'');
+			e107::getLog()->add('DOWNL_10',$idLim.', '.$valString,E_LOG_INFORMATIVE,'');
 			$message .= $idLim." - ".DOWLAN_121."<br/>";
 			unset($vals);
 		}
@@ -326,10 +327,10 @@ if ($action == "uopt")
       global $ns, $sql, $gen, $e107, $tp;
 
       $frm = new e_form(true); //enable inner tabindex counter
-      $imgd = e_BASE.$IMAGES_DIRECTORY;
+
       $columnInfo = array(
          "checkboxes"         => array("title" => "", "forced"=> TRUE, "width" => "3%", "thclass" => "center first", "toggle" => "dl_selected"),
-         "upload_id"          => array("title"=>DOWLAN_67,  "type"=>"", "width"=>"auto", "thclass"=>"", "forced"=>true),
+         "upload_id"          => array("title"=>LAN_ID,  "type"=>"", "width"=>"auto", "thclass"=>"", "forced"=>true),
          "upload_date"        => array("title"=>DOWLAN_78,  "type"=>"", "width"=>"auto", "thclass"=>""),
          "upload_uploader"    => array("title"=>DOWLAN_79,  "type"=>"", "width"=>"auto", "thclass"=>""),
          "upload_name"        => array("title"=>DOWLAN_12,  "type"=>"", "width"=>"auto", "thclass"=>""),
@@ -533,18 +534,14 @@ if ($action == "uopt")
    }
 
 
+	/**
+	 *
+	 */
+	function show_upload_filetypes() {
 
 
-
-
-   function show_upload_filetypes() {
-      global $ns;
-
-      //TODO is there an e107:: copy of this
-      if (!is_object($e_userclass))
-      {
-         $e_userclass = new user_class;
-      }
+      $ns           = e107::getRender();
+      $e_userclass  = e107::getUserClass();
 
       if(!getperms("0")) exit; //TODO still needed?
 
@@ -557,9 +554,9 @@ if ($action == "uopt")
          $file_text = "<e107Filetypes>\n";
          foreach ($_POST['file_class_select'] as $k => $c)
          {
-            if (!isset($_POST['file_line_delete_'.$c]) && varsettrue($_POST['file_type_list'][$k]))
+            if (!isset($_POST['file_line_delete_'.$c]) && vartrue($_POST['file_type_list'][$k]))
             {
-               $file_text .= "   <class name='{$c}' type='{$_POST['file_type_list'][$k]}' maxupload='".varsettrue($_POST['file_maxupload'][$k],ini_get('upload_max_filesize'))."'/>\n";
+               $file_text .= "   <class name='{$c}' type='{$_POST['file_type_list'][$k]}' maxupload='".vartrue($_POST['file_maxupload'][$k],ini_get('upload_max_filesize'))."'/>\n";
             }
          }
          $file_text .= "</e107Filetypes>";

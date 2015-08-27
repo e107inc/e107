@@ -13,6 +13,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 // advanced 
+/*
 $advanced_where = "";
 if (isset($_GET['cat']) && $_GET['cat'] != 'all') {
 	$advanced_where .= " c.category_id='".intval($_GET['cat'])."' AND";
@@ -51,5 +52,5 @@ function search_news($row) {
 	$res['detail'] = LAN_SEARCH_3.$con -> convert_date($row['news_datestamp'], "long");
 	return $res;
 }
-
+*/
 ?>

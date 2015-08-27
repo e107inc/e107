@@ -79,20 +79,21 @@ $FORUM_TRACK_END	= "<br />TRACK-END";
 // New in v2.x - requires a bootstrap theme be loaded.  
 
 
-$FORUM_TEMPLATE['main-start']			= "<div class='row-fluid'>
-											{FORUM_BREADCRUMB}
-											<div class='right'>
-												{SEARCH}
+$FORUM_TEMPLATE['main-start']			= "{FORUM_BREADCRUMB}
+											<div class=''>
+
+												<div class='form-group right'>
+													{SEARCH}
+												</div>
 											</div>
-											
-											</div>
-											<table class='table table-striped'>
+											<div id='forum' >
+											<table class='table table-striped table-bordered table-hover'>
 											<colgroup>
 											<col style='width:3%' />
 											<col />
-											<col />
-											<col />
-											<col />
+											<col class='hidden-xs' style='width:10%' />
+											<col style='width:10%' />
+											<col class='hidden-xs' style='width:20%' />
 											</colgroup>
 											<tr>
 											<th colspan='5'>{FORUMTITLE}</th>
@@ -100,21 +101,22 @@ $FORUM_TEMPLATE['main-start']			= "<div class='row-fluid'>
 
 $FORUM_TEMPLATE['main-parent']			= 	"<tr>
 											<th colspan='2'>{PARENTNAME} {PARENTSTATUS}</th>
-											<th>".LAN_FORUM_0003."</th>
-											<th>".LAN_FORUM_0002."</th>
-											<th>".LAN_FORUM_0004."</th>											
+											<th  class='hidden-xs' >".LAN_FORUM_0003."</th>
+											<th >".LAN_FORUM_0002."</th>
+											<th class='hidden-xs' >".LAN_FORUM_0004."</th>
 											</tr>";											
 											
 																						
 $FORUM_TEMPLATE['main-forum']			= 	"<tr>
 											<td>{NEWFLAG}</td>
 											<td>{FORUMNAME}<br /><small>{FORUMDESCRIPTION}</small>{FORUMSUBFORUMS}</td>
-											<td>{REPLIESX}</td>
-											<td>{THREADSX}</td>
-											<td><small>{LASTPOSTUSER} {LASTPOSTDATE}</small></td>
+											<td class='hidden-xs'>{REPLIESX}</td>
+											<td >{THREADSX}</td>
+											<td class='hidden-xs'><small>{LASTPOSTUSER} {LASTPOSTDATE}</small></td>
 											</tr>";
 
-$FORUM_TEMPLATE['main-end']				= "</table>";
+$FORUM_TEMPLATE['main-end']				= "</table><div class='center'><small>{USERINFOX}</small></div></div>";
+
 /*
 $FORUM_TEMPLATE['main-end']				.= "
 

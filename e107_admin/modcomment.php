@@ -156,7 +156,7 @@ else
 		</tr>";
 	}
 	$text .= "
-	<tr><td colspan='5' class='fcaption'>".MDCLAN_10."</td></tr>
+	<tr><td colspan='5' class='fcaption'>".LAN_OPTIONS."</td></tr>
 	<tr>
 	<td class='forumheader3' style='text-align:right' colspan='4'>".MDCLAN_14.":</td>
 	<td style='width:25%;' class='forumheader3'>

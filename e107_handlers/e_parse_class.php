@@ -250,6 +250,7 @@ class e_parse extends e_parser
 	public function __construct()
 	{
 		// initialise the type of UTF-8 processing methods depending on PHP version and mb string extension
+
 		$this->init();
 		$this->initCharset();
 
@@ -299,9 +300,9 @@ class e_parse extends e_parser
 				{
 					// Must use emulation - will probably be slow!
 					$this->utfAction = 2;
-					require (E_UTF8_PACK.'utils/unicode.php');
+					require_once(E_UTF8_PACK.'utils/unicode.php');
 					// Always load the core routines - bound to need some of them!
-					require (E_UTF8_PACK.'native/core.php');
+					require_once(E_UTF8_PACK.'native/core.php');
 				}
 			}
 //		}
@@ -441,7 +442,7 @@ class e_parse extends e_parser
 				return mb_substr($haystack, $needle, $before_needle);
 		}
 		// No utf8 pack backup
-		return stristr($str, $start, $length);
+		return stristr($haystack, $needle, $before_needle);
 	}
 	
 	/**
@@ -491,12 +492,12 @@ class e_parse extends e_parser
 	 * @return string
 	 * @todo complete the documentation of this essential method
 	 */
-	public function toDB($data, $nostrip = FALSE, $no_encode = FALSE, $mod = FALSE, $original_author = FALSE)
+	public function toDB($data, $nostrip =false, $no_encode = false, $mod = false, $original_author = false)
 	{
-		
 		$core_pref = e107::getConfig();
 		if (is_array($data))
 		{
+			$ret = array();
 			foreach ($data as $key => $var)
 			{
 				//Fix - sanitize keys as well
@@ -505,60 +506,77 @@ class e_parse extends e_parser
 			return $ret;
 		}
 
-	
 
-		if (MAGIC_QUOTES_GPC == TRUE && $nostrip == FALSE)
+
+		if (MAGIC_QUOTES_GPC == true && $nostrip == false)
 		{
 			$data = stripslashes($data);
 		}
 
 		if ($mod != 'pReFs') //XXX We're not saving prefs. 
 		{
-			$data = $this->preFilter($data); // used by bb_xxx.php toDB() functions. bb_code.php toDB() allows us to properly bypass HTML cleaning below. 
-			
-			if (strip_tags($data) != $data) // html tags present. 
+
+			$data = $this->preFilter($data); // used by bb_xxx.php toDB() functions. bb_code.php toDB() allows us to properly bypass HTML cleaning below.
+
+		//	if(strlen($data) != strlen(strip_tags($data))) // html tags present. // strip_tags()  doesn't function doesnt look for unclosed '>'.
+			if(($this->isHtml($data)) && strpos($mod, 'no_html') === false)
 			{
-			//	return $data;
-				$data = $this->cleanHtml($data); // sanitize all html. 
-				
-				$data = urldecode($data); // symptom of cleaning the HTML - urlencodes src attributes containing { and } .eg. {e_BASE} 
+				$this->isHtml = true;
+				$data = $this->cleanHtml($data); // sanitize all html.
+
+				$data = str_replace(array('%7B','%7D'),array('{','}'),$data); // fix for {e_XXX} paths.
+
+
+			//	$data = urldecode($data); //XXX Commented out :  NO LONGER REQUIRED. symptom of cleaning the HTML - urlencodes src attributes containing { and } .eg. {e_BASE}
+
 			}
-			
-			if (!check_class($core_pref->get('post_html', e_UC_MAINADMIN)))
+			else // caused double-encoding of '&'
 			{
-				$data = strip_tags($data); // remove tags from cleaned html. 
-				$data = str_replace(array('[html]','[/html]'),'',$data); 
-			//	$data = $this->dataFilter($data);
+				//$data = str_replace('<','&lt;',$data);
+				//$data = str_replace('>','&gt;',$data);
 			}
 
-			$data = html_entity_decode($data, ENT_QUOTES, 'utf-8');	// Prevent double-entities. Fix for [code]  - see bb_code.php toDB(); 
+			if (!check_class($core_pref->get('post_html', e_UC_MAINADMIN)))
+			{
+				$data = strip_tags($data); // remove tags from cleaned html.
+				$data = str_replace(array('[html]','[/html]'),'',$data);
+			}
+
+
+			//  $data = html_entity_decode($data, ENT_QUOTES, 'utf-8');	// Prevent double-entities. Fix for [code]  - see bb_code.php toDB();
 		}
-	
-		if (check_class($core_pref->get('post_html'))) /*$core_pref->is('post_html') && */
+
+
+
+		if (check_class($core_pref->get('post_html'))) /*$core_pref->is('post_html') && XXX preformecd by cleanHtml() */
 		{
-			$no_encode = TRUE;
+			$no_encode = true;
 		}
 				
 		if (is_numeric($original_author) && !check_class($core_pref->get('post_html'), '', $original_author))
 		{
-			$no_encode = FALSE;
+			$no_encode = false;
 		}
-		if ($no_encode === TRUE && strpos($mod, 'no_html') === FALSE)
+
+
+		if ($no_encode === true && strpos($mod, 'no_html') === false)
 		{
 			$search = array('$', '"', "'", '\\', '<?');
 			$replace = array('&#036;', '&quot;', '&#039;', '&#092;', '&lt;?');
 			$ret = str_replace($search, $replace, $data);
 		}
-		else
+		else // add entities for everything. we want to save the code.
 		{
+
 			$data = htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
 			$data = str_replace('\\', '&#092;', $data);
+
 
 			$ret = preg_replace("/&amp;#(\d*?);/", "&#\\1;", $data);
 		}
 		
 		// XXX - php_bbcode has been deprecated. 
-		if ((strpos($mod, 'no_php') !== FALSE) || !check_class($core_pref->get('php_bbcode')))
+		if ((strpos($mod, 'no_php') !== false) || !check_class($core_pref->get('php_bbcode')))
 		{
 			$ret = preg_replace("#\[(php)#i", "&#91;\\1", $ret);
 		}
@@ -741,17 +759,36 @@ class e_parse extends e_parser
 
 	function toForm($text)
 	{
+
 		if(empty($text)) // fix - handle proper 0, Space etc values.
 		{
 			return $text;
 		}
+
+
+		if(is_string($text) && substr($text,0,6) == '[html]')
+		{
+			// $text = $this->toHtml($text,true);
+			$search = array('&quot;','&#039;','&#092;', '&',); // '&' must be last.
+			$replace = array('"',"'","\\", '&amp;');
+
+		//	return htmlspecialchars_decode($text);
+			$text = str_replace($search,$replace,$text);
+		//	return $text;
+			//$text  = htmlentities($text,ENT_NOQUOTES, "UTF-8");
+
+		//	return $text;
+
+		}
+	//	return htmlentities($text);
+
 		$search = array('&#036;', '&quot;', '<', '>');
 		$replace = array('$', '"', '&lt;', '&gt;');
 		$text = str_replace($search, $replace, $text);
-		if (e_WYSIWYG !== TRUE)
+		if (e107::wysiwyg() !== true)
 		{
 			// fix for utf-8 issue with html_entity_decode(); ???
-			$text = str_replace("&nbsp;", " ", $text);
+		//	$text = str_replace("&nbsp;", " ", $text);
 		}
 		return $text;
 	}
@@ -781,21 +818,68 @@ class e_parse extends e_parser
 		return $this->toHTML($text, TRUE, $extra);
 	}
 
-
+	/**
+	 * @param $text - template to parse.
+	 * @param boolean $parseSCFiles - parse core 'single' shortcodes
+	 * @param array $extraCodes - support legacy shortcode content (eg. content within .sc) as well as simpleParse array format.
+	 * @param object $eVars - XXX more info needed.
+	 * @return string
+	 */
 	function parseTemplate($text, $parseSCFiles = TRUE, $extraCodes = null, $eVars = null)
 	{
+		if(!empty($extraCodes) && $this->isSimpleParse($extraCodes)) // support for a combined simple and standard template parse. - (eg. used by signup email template.) 
+		{
+			$text = $this->simpleParse($text, $extraCodes, false);
+		}
+
 		return e107::getScParser()->parseCodes($text, $parseSCFiles, $extraCodes, $eVars);
 	}
+
+	
+	/**
+	 * Check if we are using the simple-Parse array format, or a legacy .sc format which contains 'return ' 
+	 * @param array $extraCodes
+	 */
+	private function isSimpleParse($extraCodes)
+	{
+		
+		if(!is_array($extraCodes))
+		{
+			return false;	
+		}
+		
+		foreach ($extraCodes as $sc => $code)
+		{
+			if(preg_match('/return(.*);/',$code)) // still problematic. 'return;' Might be used in common speech.
+			{
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		/*	if(!strpos($code, 'return '))
+			{
+				return true;
+			}
+			else 
+			{
+				return false;
+			}*/
+		}		
+	}
+
+
 
 	/**
 	 * Simple parser
 	 *
 	 * @param string $template
-	 * @param e_vars $vars
+	 * @param e_vars|array $vars
 	 * @param string $replaceUnset string to be used if replace variable is not set, false - don't replace
 	 * @return string parsed content
 	 */
-	function simpleParse($template, e_vars $vars, $replaceUnset='')
+	function simpleParse($template, $vars, $replaceUnset='')
 	{
 		$this->replaceVars = $vars;
 		$this->replaceUnset = $replaceUnset;
@@ -808,8 +892,9 @@ class e_parse extends e_parser
 		$key = $tmp[1];
 		if(is_array($this->replaceVars))
 		{
-			return ($this->replaceVars[$key] !== null ? $this->replaceVars[$key]: $unset);	
-		}		
+            $this->replaceVars = new e_vars($this->replaceVars);
+			//return ($this->replaceVars[$key] !== null ? $this->replaceVars[$key]: $unset);
+		}
 	//	
 		return ($this->replaceVars->$tmp[1] !== null ? $this->replaceVars->$tmp[1] : $unset); // Doesn't work. 
 	}
@@ -1305,7 +1390,7 @@ class e_parse extends e_parser
 		{
 			return $text;
 		}
-		
+
 		$pref = e107::getPref();
 
 		global $fromadmin;
@@ -1349,15 +1434,15 @@ class e_parse extends e_parser
 		}
 
 		// Turn off a few things if not enabled in options
-		if(!varsettrue($pref['smiley_activate']))
+		if(!vartrue($pref['smiley_activate']))
 		{
 			$opts['emotes'] = FALSE;
 		}
-		if(!varsettrue($pref['make_clickable']))
+		if(!vartrue($pref['make_clickable']))
 		{
 			$opts['link_click'] = FALSE;
 		}
-		if(!varsettrue($pref['link_replace']))
+		if(!vartrue($pref['link_replace']))
 		{
 			$opts['link_replace'] = FALSE;
 		}
@@ -1477,9 +1562,11 @@ class e_parse extends e_parser
 
 						case 'html' : // This overrides and deprecates html.bb
 							$proc_funcs = TRUE;
+
 							$noBreak = TRUE;
 						//	$code_text = str_replace("\r\n", " ", $code_text);
-							$code_text = html_entity_decode($code_text, ENT_QUOTES, CHARSET);
+						//	$code_text = html_entity_decode($code_text, ENT_QUOTES, CHARSET);
+						//	$code_text = str_replace('&','&amp;',$code_text); // validation safe.
 							$html_start = "<!-- bbcode-html-start -->"; // markers for html-to-bbcode replacement. 
 							$html_end	= "<!-- bbcode-html-end -->";
 							$full_text = str_replace(array("[html]","[/html]"), "",$code_text); // quick fix.. security issue?							
@@ -1487,8 +1574,9 @@ class e_parse extends e_parser
 							$full_text = $html_start.$full_text.$html_end;
 							$full_text = $this->parseBBTags($full_text); // strip <bbcode> tags. 
 							$opts['nobreak'] = true;
+
 							break;
-						
+
 						case 'table' : // strip <br /> from inside of <table>		
 						
 							$convertNL = FALSE;
@@ -1551,10 +1639,11 @@ class e_parse extends e_parser
 					elseif(substr($sub_blk, 0, 6) == '<style')
 					{
 						// Its a style block - just pass it through unaltered - except, do we need the line break stuff? - QUERY XXX-01
-						if(DB_INF_SHOW)
+						if(defined('DB_INF_SHOW'))
 						{
 							echo "Processing stylesheet: {$sub_blk}<br />";
 						}
+
 						$ret_parser .= $sub_blk;
 					}
 					else
@@ -1577,13 +1666,20 @@ class e_parse extends e_parser
 						// Convert URL's to clickable links, unless modifiers or prefs override
 						if ($opts['link_click'])
 						{
-							if ($opts['link_replace'])
+							if ($opts['link_replace'] && ADMIN_AREA !== true)
 							{
 								$_ext = ($pref['links_new_window'] ? " rel=\"external\"" : "");
+								$link_text = $pref['link_text'];
+								
+								if(substr($link_text,-6) == '.glyph')
+								{
+									$link_text = $this->toGlyph($link_text,'');	
+								}
+								
 //								$sub_blk = preg_replace("#(^|[\s])([\w]+?://(?:[\w-%]+?)(?:\.[\w-%]+?)+.*?)(?=$|[\s()[\]<]|\.\s|\.$|,\s|,$)#is", "\\1<a href=\"\\2\" {$_ext}>".$pref['link_text']."</a>", $sub_blk);
 //								$sub_blk = preg_replace("#(^|[\s])((?:www|ftp)(?:\.[\w-%]+?){2}.*?)(?=$|[\s()[\]<]|\.\s|\.$|,\s|,$)#is", "\\1<a href=\"http://\\2\" {$_ext}>".$pref['link_text']."</a>", $sub_blk);
-								$sub_blk = preg_replace("#(^|[\s])([\w]+?://(?:[\w-%]+?)(?:\.[\w-%]+?)+.*?)(?=$|[\s[\]<]|\.\s|\.$|,\s|,$)#is", "\\1<a href=\"\\2\" {$_ext}>".$pref['link_text']."</a>", $sub_blk);
-								$sub_blk = preg_replace("#(^|[\s])((?:www|ftp)(?:\.[\w-%]+?){2}.*?)(?=$|[\s[\]<]|\.\s|\.$|,\s|,$)#is", "\\1<a href=\"http://\\2\" {$_ext}>".$pref['link_text']."</a>", $sub_blk);
+								$sub_blk = preg_replace("#(^|[\s])([\w]+?://(?:[\w-%]+?)(?:\.[\w-%]+?)+.*?)(?=$|[\s[\]<]|\.\s|\.$|,\s|,$)#is", "\\1<a href=\"\\2\" {$_ext}>".$link_text."</a>", $sub_blk);
+								$sub_blk = preg_replace("#(^|[\s])((?:www|ftp)(?:\.[\w-%]+?){2}.*?)(?=$|[\s[\]<]|\.\s|\.$|,\s|,$)#is", "\\1<a href=\"http://\\2\" {$_ext}>".$link_text."</a>", $sub_blk);
 								$email_text = ($pref['email_text']) ? $this->replaceConstants($pref['email_text']) : LAN_EMAIL_SUBS;
 								$sub_blk = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\"; return true;' onmouseout='window.status=\"\";return true;'>".$email_text."</a>", $sub_blk);
 							}
@@ -1812,13 +1908,21 @@ class e_parse extends e_parser
 
 
 
+
+
+	/**
+	 * Use it on html attributes to avoid breaking markup . 
+	 * @example echo "<a href='#' title='".$tp->toAttribute($text)."'>Hello</a>"; 
+	 */
 	function toAttribute($text)
 	{
 		// URLs posted without HTML access may have an &amp; in them.
-		$text = str_replace('&amp;', '&', $text);
+
 		// Xhtml compliance.
 		$text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
-		if(!preg_match('/&#|\'|"|\(|\)|<|>/s', $text))
+
+
+		if(!preg_match('/&#|\'|"|<|>/s', $text))
 		{
 			$text = $this->replaceConstants($text);
 			return $text;
@@ -1857,20 +1961,25 @@ class e_parse extends e_parser
 	 * @param boolean $tags [optional]
 	 * @return string
 	 */
-	function toRss($text, $tags = FALSE)
+	function toRss($text, $tags = false)
 	{
-		if($tags != TRUE)
+		if($tags != true)
 		{
-			$text = $this -> toHTML($text, TRUE);
+			$text = $this -> toHTML($text, true);
 			$text = strip_tags($text);
 		}
 
 		$text = $this->toEmail($text);
-		$search = array("&amp;#039;", "&amp;#036;", "&#039;", "&#036;"," & ", e_BASE, "href='request.php");
-		$replace = array("'", '$', "'", '$',' &amp; ', SITEURL, "href='".SITEURL."request.php" );
+
+		$search = array("&amp;#039;", "&amp;#036;", "&#039;", "&#036;", e_BASE, "href='request.php");
+		$replace = array("'", '$', "'", '$', SITEURL, "href='".SITEURL."request.php" );
 		$text = str_replace($search, $replace, $text);
 
-		if($tags == TRUE && ($text))
+		// Fix any left-over '&'
+		$text = str_replace('&amp;', '&', $text); //first revert any previously converted.
+		$text = str_replace('&', '&amp;', $text);
+
+		if($tags == true && ($text))
 		{
 			$text = "<![CDATA[".$text."]]>";
 		}
@@ -1878,9 +1987,21 @@ class e_parse extends e_parser
 		return $text;
 	}
 
-	//Convert specific characters back to original form, for use in storing code (or regex) values in the db.
+
+	/**
+	 * Convert any string back to plain text.
+	 * @param $text
+	 * @return mixed|string
+	 */
 	function toText($text)
 	{
+
+		if($this->isHtml($text)==true)
+		{
+			$text = $this->toHtml($text,true);
+			$text = strip_tags($text);
+		}
+
 		$search = array("&amp;#039;", "&amp;#036;", "&#039;", "&#036;", "&#092;", "&amp;#092;");
 		$replace = array("'", '$', "'", '$', "\\", "\\");
 		$text = str_replace($search, $replace, $text);
@@ -1920,7 +2041,7 @@ class e_parse extends e_parser
 	 */
 	public function thumbWidth($width=null)
 	{
-		if($val !== null)
+		if($width !== null)
 		{
 			$this->thumbWidth = intval($width);
 		}
@@ -1938,7 +2059,7 @@ class e_parse extends e_parser
 	 */
 	public function thumbHeight($height= null)
 	{
-		if($val !== null)
+		if($height !== null)
 		{
 			$this->thumbHeight = intval($height);
 		}
@@ -2045,8 +2166,10 @@ class e_parse extends e_parser
 			'e_HANDLER/' 		=> '{e_HANDLER}', // BC
 			'e_MEDIA/' 			=> '{e_MEDIA}',
 			'e_WEB/' 			=> '{e_ADMIN}',
+	//		'THEME/'			=> '{THEME}',
 		);
-
+		
+		
 		switch ($type)
 		{
 			case 'sc':
@@ -2479,7 +2602,18 @@ class e_parse extends e_parser
 		}
 
 		$text = (strtolower($mods) != "rawtext") ? $this->replaceConstants($text, "full") : $text;
-		$text = $this->toHTML($text, TRUE, $mods);
+
+		if($this->isHtml($text))
+		{
+			$text = str_replace(array("[html]","[/html]"), "", $text);
+			$text = html_entity_decode( $text, ENT_COMPAT, 'UTF-8');
+		}
+		else
+		{
+
+			$text = $this->toHTML($text, true, $mods);
+		}
+
 		return $text;
 	}
 
@@ -2537,30 +2671,51 @@ class e_parse extends e_parser
  */
 class e_parser
 {
-    public $domObj             = null;
-    private $removedList        = array();
-    private $nodesToDelete      = array();
-    private $nodesToConvert     = array();
-    private $pathList           = array();
-    private $allowedAttributes  = array(
+    /**
+     * @var DOMDocument
+     */
+    public $domObj                = null;
+	public $isHtml                  = false;
+    protected $removedList        = array();
+    protected $nodesToDelete      = array();
+    protected $nodesToConvert     = array();
+    protected $pathList           = array();
+    protected $allowedAttributes  = array(
                                     'default'   => array('id', 'style', 'class'),
                                     'img'       => array('id', 'src', 'style', 'class', 'alt', 'title', 'width', 'height'),
                                     'a'         => array('id', 'href', 'style', 'class', 'title', 'target'),
                                     'script'	=> array('type', 'src', 'language'),
-                                    'iframe'	=> array('id', 'src', 'frameborder', 'class', 'width', 'height', 'style')
-                                  ); 
-    private $badAttrValues       = array("javascript[\s]*?:","alert\(","vbscript[\s]*?:","data:text\/html", "mhtml[\s]*?:", "data:[\s]*?image");
-    private $allowedTags        = array('html', 'body','div','a','img','table','tr', 'td', 'th', 'tbody', 'thead', 'colgroup', 'b', 
-                                        'i', 'pre','code', 'strong', 'u', 'em','ul','li','img','h1','h2','h3','h4','h5','h6','p',
-                                        'div','pre','section','article', 'blockquote','hgroup','aside','figure','span', 'video', 'br',
-                                        'small', 'caption', 'noscript'
+                                    'iframe'	=> array('id', 'src', 'frameborder', 'class', 'width', 'height', 'style'),
+	                                'input'     => array('type','name','value','class','style'),
+	                                'form'      => array('action','method','target'),
+	                                'audio'     => array('src','controls', 'autoplay', 'loop', 'muted', 'preload' ),
+	                                'video'     => array('autoplay', 'controls', 'height', 'loop', 'muted', 'poster', 'preload', 'src', 'width'),
+	                                'td'        => array('id', 'style', 'class', 'colspan', 'rowspan'),
+	                                'th'        => array('id', 'style', 'class', 'colspan', 'rowspan'),
+	                                'col'       => array('id', 'span', 'class','style')
+                                  );
+
+    protected $badAttrValues     = array('javascript[\s]*?:','alert\(','vbscript[\s]*?:','data:text\/html', 'mhtml[\s]*?:', 'data:[\s]*?image');
+
+    protected $replaceAttrValues = array(
+        'default' => array()
+    );
+
+    protected $allowedTags        = array('html', 'body','div','a','img','table','tr', 'td', 'th', 'tbody', 'thead', 'colgroup', 'b',
+                                        'i', 'pre','code', 'strong', 'u', 'em','ul', 'ol', 'li','img','h1','h2','h3','h4','h5','h6','p',
+                                        'div','pre','section','article', 'blockquote','hgroup','aside','figure','span', 'audio', 'video', 'br',
+                                        'small', 'caption', 'noscript', 'hr'
                                    );
-	private $scriptTags 		= array('script','applet','iframe'); //allowed whem $pref['post_script'] is enabled. 
+    protected $scriptTags 		= array('script','applet','iframe','form','input','button'); //allowed when $pref['post_script'] is enabled.
 	
 	protected $blockTags		= array('pre','div','h1','h2','h3','h4','h5','h6','blockquote'); // element includes its own line-break. 
-        
+
+
+    private $scriptAccess      = false; // nobody.
+
     public function __construct()
     {
+
 		$this->init();
          /*
         $meths = get_class_methods('DomDocument');
@@ -2574,20 +2729,62 @@ class e_parser
      */
     function init()
     {
-        $this->domObj = new DOMDocument();    
+        $this->domObj = new DOMDocument();
+
+
     }
-    
-    /**
+
+	/**
+	 * Add Allowed Tags.
+	 * @param string
+	 */
+	public function addAllowedTag($tag)
+	{
+		$this->allowedTags[] = $tag;
+	}
+
+
+	/**
+	 * @param $tag - html tag.
+	 * @param $attArray - array of attributes. eg. array('style', 'id', 'class') etc.
+	 */
+	public function addAllowedAttribute($tag, $attArray)
+	{
+		$this->allowedAttributes[$tag] = (array) $attArray;
+	}
+
+
+	/**
      * Set Allowed Tags. 
      * @param $array 
      */
     public function setAllowedTags($array=array())
     {
         $this->allowedTags = $array;    
-    } 
+    }
 
- 
-     /**
+	/**
+	 * Set Script Access
+	 * @param $val int e_UC_MEMBER, e_UC_NOBODY, e_UC_MAINADMIN or userclass number.
+	 */
+	public function setScriptAccess($val)
+	{
+		$this->scriptAccess = $val;
+	}
+
+	public function getAllowedTags()
+	{
+		return $this->allowedTags;
+
+	}
+
+
+	public function getScriptAccess()
+	{
+		return $this->scriptAccess;
+	}
+
+	/**
      * Set Allowed Attributes. 
      * @param $array 
      */
@@ -2596,8 +2793,15 @@ class e_parser
         $this->allowedAttributes = $array;    
     } 
 
+     /**
+     * Set Script Tags.
+     * @param $array
+     */
+    public function setScriptTags($array=array())
+    {
+        $this->scriptTags = $array;
+    }
 
- 
 	/**
 	 * Add leading zeros to a number. eg. 3 might become 000003
 	 * @param $num integer 
@@ -2610,18 +2814,30 @@ class e_parser
 	}
 
 	/**
-	 * Generic variable translator for LAN definitions. 
+	 * Generic variable translator for LAN definitions.
 	 * @param $lan - string LAN
-	 * @param $vals - either a single value, which will replace '[x]' or an array with key=>value pairs. 
-	 * @example $tp->lanVars("My name is [x] and I own a [y]", array('x'=>"John", 'y'=>"Cat")); 
+	 * @param string | array $vals - either a single value, which will replace '[x]' or an array with key=>value pairs.
+	 * @example $tp->lanVars("My name is [x] and I own a [y]", array('x'=>"John", 'y'=>"Cat"));
+	 * @example $tp->lanVars("My name is [x] and I own a [y]", array("John","Cat"));
+	 * @return string
 	 */
 	function lanVars($lan, $vals, $bold=false)
 	{
 		
 		$array = (!is_array($vals)) ? array('x'=>$vals) : $vals;
-		
+
+		$search = array();
+		$replace = array();
+
+		$defaults = array('x', 'y', 'z');
+
 		foreach($array as $k=>$v)
 		{
+			if(is_numeric($k)) // convert array of numeric to x,y,z
+			{
+				$k = $defaults[$k];
+			}
+
 			$search[] = "[".$k."]";
 			$replace[] = ($bold===true) ? "<strong>".$v."</strong>" : $v;
 		}
@@ -2647,7 +2863,7 @@ class e_parser
 		       
 		$doc->preserveWhiteSpace = true;
 		libxml_use_internal_errors(true);
-        $doc->loadHTML($html); 	
+        $doc->loadHTML($html);
 	
 		$tg = explode(",", $taglist);
 		$ret = array();
@@ -2699,10 +2915,17 @@ class e_parser
 			return false;	
 		}
 		
+		
+		
 		if(is_array($space)) 
 		{
 			$parm = $space;
 			$space = varset($parm['space'],'');
+		}
+		elseif(strpos($space,'='))
+		{
+			parse_str($space,$parm);
+			$space = varset($parm['space'],'');	
 		}
 		else 
 		{
@@ -2737,7 +2960,7 @@ class e_parser
 		{
 			$prefix = 'fa fa-';
 			$size 	= (vartrue($parm['size'])) ?  ' fa-'.$parm['size'] : '';	
-			$tag 	= 'span';
+			$tag 	= 'i';
 		}
 		elseif(deftrue("BOOTSTRAP")) 
 		{
@@ -2769,6 +2992,68 @@ class e_parser
 
 
 
+
+	/**
+	 * Render an avatar based on supplied user data or current user when missing. 
+	 * @param @array  - user data from e107_user. 
+	 * @return <img> tag of avatar.  
+	 */
+	public function toAvatar($userData=null, $options=array())
+	{
+		$tp 		= e107::getParser();
+		$width 		= $tp->thumbWidth;
+		$height 	= ($tp->thumbHeight !== 0) ? $tp->thumbHeight : "";		
+		
+		
+		if(!isset($userData['user_image']) && USERID)
+		{
+			$userData['user_image']	= USERIMAGE;
+			$userData['user_name']	= USERNAME; 
+		}
+		
+		
+		$image = varset($userData['user_image']); 
+		
+		$genericImg = $tp->thumbUrl(e_IMAGE."generic/blank_avatar.jpg","w=".$width."&h=".$height,true);	
+		
+		if (!empty($image)) 
+		{
+			
+			if(strpos($image,"://")!==false) // Remove Image
+			{
+				$img = $image;	
+			}
+			elseif(substr($image,0,8) == "-upload-")
+			{
+				
+				$image = substr($image,8); // strip the -upload- from the beginning. 
+				$img = (file_exists(e_AVATAR_UPLOAD.$image))  ? $tp->thumbUrl(e_AVATAR_UPLOAD.$image,"w=".$width."&h=".$height) : $genericImg;
+			}
+			elseif(file_exists(e_AVATAR_DEFAULT.$image))  // User-Uplaoded Image
+			{
+				$img =	$tp->thumbUrl(e_AVATAR_DEFAULT.$image,"w=".$width."&h=".$height);		
+			}
+			else // Image Missing. 
+			{
+				
+				$img = $genericImg;
+			}
+		}
+		else // No image provided - so send generic. 
+		{
+			$img = $genericImg;
+		}
+		
+		$title = (ADMIN) ? $image : $tp->toAttribute($userData['user_name']);
+		$shape = (vartrue($options['shape'])) ? "img-".$options['shape'] : "img-rounded";
+		
+		$text = "<img class='".$shape." img-responsive user-avatar e-tip' title=\"".$title."\" src='".$img."' alt='' style='width:".$width."px; height:".$height."px' />";
+	//	return $img;
+		return $text;
+		
+	}
+
+
 	
 	/**
 	 * Display an icon. 
@@ -2782,9 +3067,9 @@ class e_parser
 		{
 			return;
 		}
-		
+				
 		$ext = pathinfo($icon, PATHINFO_EXTENSION);
-						
+		
 		if(!$ext || $ext == 'glyph') // Bootstrap or Font-Awesome. 
 		{
 			return $this->toGlyph($icon,$parm);
@@ -2800,14 +3085,18 @@ class e_parser
 		}
 		elseif(vartrue($parm['legacy']))
 		{
-			if(is_readable($parm['legacy'].$icon))
+			
+			$legacyPath = $parm['legacy'].$icon;
+			$filePath = $this->replaceConstants($legacyPath,'rel');
+			
+			if(is_readable($filePath))
 			{
-				$path = $parm['legacy'].$icon;		
+				$path = $this->replaceConstants($legacyPath,'full');	
 			}
 			else
 			{
 				$log = e107::getAdminLog();
-				$log->addDebug('Broken Icon Path: '.$icon, false)->save('IMALAN_00');
+				$log->addDebug('Broken Icon Path: '.$legacyPath."\n".print_r(debug_backtrace(null,2), true), false)->save('IMALAN_00');
 			}
 			
 		}
@@ -2815,9 +3104,137 @@ class e_parser
 		{
 			$path = $icon;
 		}
+	
+		
 		
 		return "<img class='icon' src='".$path."' alt='".basename($path)."'  />";	
-	}	
+	}
+
+
+	/**
+	 * @param $file
+	 * @param array $parm  legacy|w|h
+	 * @return string
+	 * @example $tp->toImage('welcome.png', array('legacy'=>{e_IMAGE}newspost_images/','w'=>200));
+	 */
+	public function toImage($file, $parm=array())
+	{
+
+		if(!vartrue($file))
+		{
+			return '';
+		}
+
+		$file = trim($file);
+
+		$ext = pathinfo($file, PATHINFO_EXTENSION);
+
+		if($ext != 'jpg' && $ext !='gif' && $ext != 'png') // Bootstrap or Font-Awesome.
+		{
+			return '';
+		}
+
+		$tp = e107::getParser();
+
+		if(!empty($parm['w']))
+		{
+			$tp->setThumbSize($parm['w']);
+		}
+
+		if(!empty($parm['h']))
+		{
+			$tp->setThumbSize(null, $parm['h']);
+		}
+
+
+		if(strpos($file,'e_MEDIA')!==false || strpos($file,'e_THEME')!==false) //v2.x path.
+		{
+			$path = $tp->thumbUrl($file,null,null,true);
+		}
+		elseif($file[0] == '{') // Legacy v1.x path. Example: {e_WHEREEVER}
+		{
+			$path = $tp->replaceConstants($file,'full');
+		}
+		elseif(!empty($parm['legacy'])) // Search legacy path for image.
+		{
+
+			$legacyPath = $parm['legacy'].$file;
+			$filePath = $tp->replaceConstants($legacyPath,'rel');
+
+			if(is_readable($filePath))
+			{
+				$path = $tp->replaceConstants($legacyPath,'full');
+			}
+			else
+			{
+				$log = e107::getAdminLog();
+				$log->addDebug('Broken Icon Path: '.$legacyPath."\n".print_r(debug_backtrace(null,2), true), false)->save('IMALAN_00');
+			}
+
+		}
+		else // usually http://....
+		{
+			$path = $file;
+		}
+
+
+		if(empty($style))
+		{
+			$insertStyle = '';
+		}
+		else
+		{
+			$insertStyle = "style='";
+
+		}
+
+
+		$alt = (!empty($parm['alt'])) ? $tp->toAttribute($parm['alt']) : basename($path);
+
+		return "<img class='img-responsive' src='".$path."' alt=\"".$alt."\"  {$insertStyle} />";
+
+	}
+
+
+	/**
+	 * Check if a string contains bbcode.
+	 * @param $text
+	 * @return bool
+	 */
+	function isBBcode($text)
+	{
+		$bbsearch = array('[/h]','[/b]','[/link]', '[/right]');
+
+		if(str_replace($bbsearch,'',$text))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
+	}
+
+
+	/**
+	 * Check if a string is HTML
+	 * @param $text
+	 * @return bool
+	 */
+	function isHtml($text)
+	{
+
+		if(strpos($text,'[html]') !== false || (htmlentities($text, ENT_NOQUOTES,'UTF-8') != $text && $this->isBBcode($text) === false ) || preg_match('#(?<=<)\w+(?=[^<]*?>)#', $text))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
+	}
 
 
 
@@ -2830,8 +3247,20 @@ class e_parser
 	{
 		$ext = pathinfo($file,PATHINFO_EXTENSION);
 			
-		return ($ext == 'youtube') ? true : false;
+		return ($ext == 'youtube' || $ext == 'youtubepl') ? true : false;
 		
+	}
+
+	/**
+	 * Check if a file is an image or not.
+	 * @param $file string
+	 * @return boolean
+	 */
+	function isImage($file)
+	{
+		$ext = pathinfo($file,PATHINFO_EXTENSION);
+
+		return ($ext == 'jpg' || $ext == 'png' || $ext == 'gif' || $ext == 'jpeg') ? true : false;
 	}
 
 	
@@ -2842,19 +3271,55 @@ class e_parser
 	 */
 	function toVideo($file, $parm=array())
 	{
+		if(empty($file))
+		{
+			return false;
+		}
+
 		list($id,$type) = explode(".",$file,2);
-		
+
 		$thumb = vartrue($parm['thumb']);
 		
+		
+		$pref = e107::getPref();
+		$ytpref = array();
+		foreach($pref as $k=>$v) // Find all Youtube Prefs. 
+		{
+			if(substr($k,0,8) == 'youtube_')
+			{
+				$key = substr($k,8);
+				$ytpref[$key] = $v;
+			}	
+		} 
+		
+		$ytqry = http_build_query($ytpref);
+		
 		if($type == 'youtube')
-		{		
-			
-			$video =  '<iframe width="560" height="315" src="//www.youtube.com/embed/'.$id.'" style="border:0px" allowfullscreen></iframe>';
-			$thumbSrc = "https://i1.ytimg.com/vi/".$id."/0.jpg";
+		{
+		//	$thumbSrc = "https://i1.ytimg.com/vi/".$id."/0.jpg";
+			$thumbSrc = "http://i1.ytimg.com/vi/".$id."/mqdefault.jpg";
+			$video =  '<iframe width="560" height="315" src="//www.youtube.com/embed/'.$id.'?'.$ytqry.'" style="background-size: 100%;background-image: url('.$thumbSrc.');border:0px" allowfullscreen></iframe>';
+
 		
 			if($thumb == 'tag')
 			{
 				return "<img class='img-responsive' src='".$thumbSrc."' alt='Youtube Video' style='width:".vartrue($parm['w'],'80')."px'/>";	
+			}
+			
+			if($thumb == 'email')
+			{
+				$thumbSrc = "http://i1.ytimg.com/vi/".$id."/maxresdefault.jpg"; // 640 x 480
+				$filename = 'temp/yt-thumb-'.md5($id).".jpg";
+				$filepath = e_MEDIA.$filename;
+				$url 	= 'http://youtu.be/'.$id;
+				
+				if(!file_exists($filepath))
+				{
+					e107::getFile()->getRemoteFile($thumbSrc, $filename,'media');	
+				}
+								
+				return "<a href='".$url."'><img class='video-responsive video-thumbnail' src='{e_MEDIA}".$filename."' alt='Youtube Video' title='Click to view on Youtube' />
+				<div class='video-thumbnail-caption'><small>Click to watch video</small></div></a>";	
 			}
 			
 			if($thumb == 'src')
@@ -2869,13 +3334,33 @@ class e_parser
 			
 			return '<div class="video-responsive '.vartrue($parm['class']).'">'.$video.'</div>';
 		}
+
+
+		if($type =='youtubepl')
+		{
+
+			if($thumb == 'tag')
+			{
+				$thumbSrc =  e107::getMedia()->getThumb($id);
+				return "<img class='img-responsive' src='".$thumbSrc."' alt='Youtube Video Playlist' style='width:".vartrue($parm['w'],'80')."px'/>";
+
+			}
+
+			if($thumb == 'src')
+			{
+				return e107::getMedia()->getThumb($id);
+			}
+
+			$video = '<iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list='.$id.'" style="border:0" allowfullscreen></iframe>';
+			return '<div class="video-responsive '.vartrue($parm['class']).'">'.$video.'</div>';
+		}
 				
 		if($type == 'mp4') //TODO FIXME 
 		{
 			return '
 			<div class="video-responsive">
 			<video width="320" height="240" controls>
-			  <source src="movie.mp4" type="video/mp4">
+			  <source src="'.$file.'" type="video/mp4">
 		
 			  Your browser does not support the video tag.
 			</video>
@@ -2935,12 +3420,164 @@ class e_parser
     /**
      * Perform and render XSS Test Comparison
      */
-    public function test()
+    public function test($text='',$advanced = false)
     {
       //  $tp = e107::getParser();
         $sql = e107::getDb();
+        $tp = e107::getParser();
+
+	    if(empty($text))
+	    {
+		    $text = <<<TMPL
+[html]<p><strong>bold print</strong></p>
+<pre class="prettyprint linenums">&lt;a href='#'&gt;Something&lt;/a&gt;</pre>
+<p>Some text's and things.</p>
+<p>&nbsp;</p>
+<p><a href="/test.php?w=9&amp;h=12">link</a></p>
+<p>日本語 简体中文</p>
+<p>&nbsp;</p>
+[/html]
+TMPL;
+	    }
+
+	    //   $text .= '[code=inline]<b class="something">Something</b>[/code]日本語 ';
+
+        // -------------------- Encoding ----------------
+
+		$acc = $this->getScriptAccess();
+		$accName = e107::getUserclass()->uc_get_classname($acc);
+
+		echo "<h2>e107 Parser Test <small>with script access by <span class='label label-warning'>".$accName."</span></small></h2>";
+		echo"<h3>User-input <small>(eg. from \$_POST)</small></h3>";
+
+	    print_a($text);
+
+	    $dbText = $tp->toDB($text,true);
+
+		echo "<h3>User-input &gg; toDB() ";
+
+		if($this->isHtml == true)
+		{
+			echo "<small>detected as <span class='label label-warning'>HTML</span></small>";
+		}
+		else
+		{
+			echo "<small>detected as <span class='label label-info'>Plain text</span></small>";
+		}
+
+		echo "</h3>";
+
+	    print_a($dbText);
+
+
+	    if(!empty($advanced))
+	    {
+			echo "<div class='alert alert-warning'>";
+		    $dbText2 = $tp->toDB($text, true, false, 'no_html');
+		    echo "<h3>User-input &gg; toDb(\$text, true, false, 'no_html')</h3>";
+		    print_a($dbText2);
+
+		   // toClean
+		    $filter3 = $tp->filter($text, 'wds');
+		    echo "<h3>User-input &gg; filter(\$text, 'wds')</h3>";
+		    print_a( $filter3);
+
+		    // Filter by String.
+		    $filter1 = $tp->filter($text,'str');
+		    echo "<h3>User-input &gg; filter(\$text, 'str')</h3>";
+		    print_a($filter1);
+
+		    // Filter by Encoded.
+		    $filter2 = $tp->filter($text,'enc');
+		    echo "<h3>User-input &gg; filter(\$text, 'enc')</h3>";
+		    print_a($filter2);
+
+
+		    // toAttribute
+		    $toAtt = $tp->toAttribute($text);
+		    echo "<h3>User-input &gg; toAttribute(\$text)</h3>";
+		    print_a($toAtt);
+
+		    // toEmail
+		    $toEmail = $tp->toEmail($dbText);
+		    echo "<h3>User-input &gg; toEmail(\$text) <small>from DB</small></h3>";
+		    print_a($toEmail);
+
+		    // toEmail
+		    $toRss = $tp->toRss($text);
+		    echo "<h3>User-input &gg; toRss(\$text)</h3>";
+		    print_a($toRss);
+
+		    echo "</div>";
+
+	    }
+
+	    echo "<h3>toDB() &gg; toHtml()</h3>";
+		$html = $tp->toHtml($dbText,true);
+	    print_a($html);
+
+	    echo "<h3>toDB &gg; toHtml() <small>(rendered)</small></h3>";
+	    echo $html;
+
+	    echo "<h3>toDB &gg; toForm()</h3>";
+		$toForm = $tp->toForm($dbText);
+	    $toFormRender = e107::getForm()->open('test');
+	    $toFormRender .= "<textarea cols='100' style='width:100%;height:300px' >".$toForm."</textarea>";
+	    $toFormRender .= e107::getForm()->close();
+
+		echo  $toFormRender;
+
+		if(!empty($advanced))
+		{
+
+			echo "<h3>Allowed Tags</h3>";
+			print_a($this->allowedTags);
+
+
+		    echo "<h3>Converted Paths</h3>";
+		    print_a($this->pathList);
+
+		    echo "<h3>Removed Tags and Attributes</h3>";
+		    print_a($this->removedList);
+
+		    echo "<h3>Nodes to Convert</h3>";
+			print_a($this->nodesToConvert);
+		}
+
+	    similar_text($text, html_entity_decode( $toForm, ENT_COMPAT, 'UTF-8'),$perc);
+	    $scoreStyle = ($perc > 98) ? 'label-success' : 'label-danger';
+	    echo "<h3><span class='label ".$scoreStyle."'>Similarity:  ".number_format($perc)."%</span></h3>";
+
+		echo "<table class='table table-bordered'>
+
+
+		<tr>
+			<th style='width:50%'>User-input</th>
+			<th style='width:50%'>toForm() output</th>
+		</tr>
+		<tr>
+			<td>".print_a($text,true)."</td>
+			<td>". $toFormRender."</td>
+		</tr>
+
+		</table>";
+	  /*  <tr>
+			<td>".print_a(json_encode($text),true)."</td>
+			<td>". print_a(json_encode(html_entity_decode( $toForm, ENT_COMPAT, 'UTF-8')),true)."</td>
+		</tr>*/
+
+	//    print_a($text);
+
+return;
+
+//return;
+        // ---------------------------------
+
+
+		$html = $text;
+
         
-        $html = $this->getXss();
+      //  $html = $this->getXss();
                    
         echo "<h2>Unprocessed XSS</h2>";
         // echo $html; // Remove Comment for a real mess! 
@@ -2950,23 +3587,26 @@ class e_parser
         echo "<h3>\$tp->dataFilter()</h3>";
         // echo $tp->dataFilter($html); // Remove Comment for a real mess! 
         $sql->db_Mark_Time('------ Start Parser Test -------');
-        print_a($this->dataFilter($html));   
+        print_a($tp->dataFilter($html));
         $sql->db_Mark_Time('tp->dataFilter');
          
         echo "<h3>\$tp->toHtml()</h3>";
         // echo $tp->dataFilter($html); // Remove Comment for a real mess! 
-        print_a($this->tohtml($html));
+        print_a($tp->toHTML($html));
         $sql->db_Mark_Time('tp->toHtml');     
         
         echo "<h3>\$tp->toDB()</h3>";
-        // echo $tp->dataFilter($html); // Remove Comment for a real mess! 
-        print_a($this->toDB($html)); 
-        $sql->db_Mark_Time('tp->toDB');             
-        
+        // echo $tp->dataFilter($html); // Remove Comment for a real mess!
+        $todb = $tp->toDB($html);
+        print_a( $todb);
+        $sql->db_Mark_Time('tp->toDB');
+
+	    echo "<h3>\$tp->toForm() with toDB input.</h3>";
+       print_a( $tp->toForm($todb));
         
         echo "<h2>New Parser</h2>"; 
         echo "<h3>Processed</h3>";
-        $cleaned = $this->cleanHtml($html);  
+        $cleaned = $this->cleanHtml($html, true);  // false = don't check html pref.
         print_a($cleaned);
         $sql->db_Mark_Time('new Parser');    
       //  $sql->db_Mark_Time('------ End Parser Test -------');
@@ -2982,20 +3622,80 @@ class e_parser
         
          //   print_a($p); 
     }
- 
-    
+
+
+
+	/**
+	 * Filters/Validates using the PHP5 filter_var() method.
+	 * @param $text
+	 * @param $type string str|int|email|url|w|wds
+	 * @return string | boolean
+	 */
+	function filter($text, $type='str',$validate=false)
+	{
+		if(empty($text))
+		{
+			return $text;
+		}
+
+		if($type == 'w') // words only.
+		{
+			return preg_replace('/[^\w]/',"",$text);
+		}
+
+		if($type == 'wds') // words, digits and spaces only.
+		{
+			return preg_replace('/[^\w\d ]/',"",$text);
+		}
+
+
+		if($validate == false)
+		{
+			$filterTypes = array(
+				'int'   => FILTER_SANITIZE_NUMBER_INT,
+				'str'   => FILTER_SANITIZE_STRING, // no html.
+				'email' => FILTER_SANITIZE_EMAIL,
+				'url'   => FILTER_SANITIZE_URL,
+				'enc'   => FILTER_SANITIZE_ENCODED
+			);
+		}
+		else
+		{
+			$filterTypes = array(
+				'int'   => FILTER_VALIDATE_INT,
+				'email' => FILTER_VALIDATE_EMAIL,
+				'ip'    => FILTER_VALIDATE_IP,
+				'url'   => FILTER_VALIDATE_URL,
+
+			);
+		}
+
+		if(is_array($text))
+		{
+			return filter_var_array($text, $filterTypes[$type]);
+		}
+
+
+		return filter_var($text, $filterTypes[$type]);
+
+	}
+
+
     /**
-     * Process and clean HTML from user input. 
-     * @param $html raw HTML
-     * TODO Html5 tag support. 
+     * Process and clean HTML from user input.
+     * TODO Html5 tag support.
+     * @param string $html raw HTML
+     * @param boolean $checkPref
+     * @return string
      */
-    public function cleanHtml($html='')
+    public function cleanHtml($html='', $checkPref = true)
     {
-        if(!vartrue($html)){ return; }
-        
-   //     $html = mb_convert_encoding($html, 'UTF-8');     
-        
-        if(preg_match("/<body/i",$html)!==true) // HTML Fragment
+        if(empty($html)){ return ''; }
+
+		$html = str_replace('&nbsp;', '@nbsp;', $html); // prevent replacement of &nbsp; with spaces.
+
+
+        if(strpos($html, "<body")===false) // HTML Fragment
 		{
        		$html = '<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html><html><head><meta charset="utf-8"></head><body>'.$html.'</body></html>'; 
 		}
@@ -3011,19 +3711,25 @@ class e_parser
 		{
 			$this->init();	
 		}
-		
-		$post_scripts = e107::getConfig()->get('post_script', e_UC_MAINADMIN); // Pref to Allow <script> tags 
-		
-		if(check_class($post_scripts)) 
+
+		if($this->scriptAccess === false)
 		{
-			$this->allowedTags = array_merge($this->allowedTags,$this->scriptTags);
+	        $this->scriptAccess = e107::getConfig()->get('post_script', e_UC_MAINADMIN); // Pref to Allow <script> tags11;
 		}
+
+		if(check_class($this->scriptAccess))
+        {
+            $this->allowedTags = array_merge($this->allowedTags, $this->scriptTags);
+        }
+
 		
-        // Set it up for processing. 
-        $doc  = $this->domObj;   
-        
-        @$doc->loadHTML($html); 
-        $doc->encoding = 'UTF-8'; //FIXME 
+        // Set it up for processing.
+	//    libxml_use_internal_errors(true); // hides errors.
+        $doc  = $this->domObj;
+	    libxml_use_internal_errors(true);
+        @$doc->loadHTML($html);
+		// $doc->encoding = 'UTF-8';
+
      //   $doc->resolveExternals = true;
         
     //    $tmp = $doc->getElementsByTagName('*');   
@@ -3032,21 +3738,20 @@ class e_parser
 		$this->nodesToDelete 	= array(); // required. 
 		$this->removedList		= array();
 
-		$tmp = $doc->getElementsByTagName('*');   
-		
+		$tmp = $doc->getElementsByTagName('*');
+
+        /** @var DOMElement $node */
         foreach($tmp as $node)
         {
-    
             $path = $node->getNodePath();
-			
+
 		//	echo "<br />Path = ".$path;
-         //   $tag = strval(basename($path));
+        //   $tag = strval(basename($path));
             
             $tag = preg_replace('/([a-z0-9\[\]\/]*)?\/([\w]*)(\[(\d)*\])?$/i', "$2", $path);
             if(!in_array($tag, $this->allowedTags))
             {
-                  
-                 if(strpos($path,'/code/') !== false || strpos($path,'/pre/') !== false) //  treat as html. 
+                 if(strpos($path,'/code/') !== false || strpos($path,'/pre/') !== false) //  treat as html.
                  {
                     $this->pathList[] = $path; 
                     $this->nodesToConvert[] =  $node->parentNode; // $node; 
@@ -3057,28 +3762,50 @@ class e_parser
                 $this->nodesToDelete[] = $node; 
                 continue;
             }
-             
+
             foreach ($node->attributes as $attr)
             {
                 $name = $attr->nodeName;
-                $value = $attr->nodeValue; 
-                
+                $value = $attr->nodeValue;
+
                 $allow = varset($this->allowedAttributes[$tag], $this->allowedAttributes['default']);
+                $removeAttributes = array();
 
                 if(!in_array($name, $allow))
                 {
-                     $node->removeAttribute($name);   
-                     $this->removedList['attributes'][] = $name. " from <".$tag.">";
-                     continue;
+                    $removeAttributes[] = $name;
+                    //$node->removeAttribute($name);
+                    $this->removedList['attributes'][] = $name. " from <".$tag.">";
+                    continue;
                 }
-                
-                if($this->invalidAttributeVal( $value)) // Check value against whitelist. 
+
+                if($this->invalidAttributeValue($value)) // Check value against blacklisted values.
                 {
-					$node->removeAttribute($name);
+					//$node->removeAttribute($name);
                     $node->setAttribute($name, '#---sanitized---#');
 					$this->removedList['sanitized'][] = $tag.'['.$name.']';    
-                }       
-            } 
+                }
+                else
+                {
+                    $_value = $this->secureAttributeValue($name, $value);
+
+                    $node->setAttribute($name, $_value);
+                    if($_value !== $value)
+                    {
+                        $this->removedList['sanitized'][] = $tag.'['.$name.'] converted "'.$value.'" -> "'.$_value.'"';
+                    }
+                }
+            }
+
+            // required - removing attributes in a loop breaks the loop
+            if(!empty($removeAttributes))
+            {
+	            foreach ($removeAttributes as $name)
+	            {
+	                $node->removeAttribute($name);
+	            }
+            }
+
 
         }
         
@@ -3109,35 +3836,48 @@ class e_parser
                 $value = substr($value,0,$end);
             }
             
-            $value = htmlentities(htmlentities($value)); // Needed 
+            $value = htmlentities(htmlentities($value)); // Needed
             $node->nodeValue = $value;
-        }  
-       
-       
-        $cleaned = $doc->saveHTML();
-        
+        }
+
+        $cleaned = $doc->saveHTML($doc->documentElement); // $doc->documentElement fixes utf-8/entities issue. @see http://stackoverflow.com/questions/8218230/php-domdocument-loadhtml-not-encoding-utf-8-correctly
+
+		$cleaned = str_replace ('@nbsp;', '&nbsp;',  $cleaned); // prevent replacement of &nbsp; with spaces. - convert back.
+
         $cleaned = str_replace(array('<body>','</body>','<html>','</html>','<!DOCTYPE html>','<meta charset="UTF-8">','<?xml version="1.0" encoding="utf-8"?>'),'',$cleaned); // filter out tags. 
-    
-        $cleaned = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
+
+
+
+     //   $cleaned = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
         
-        return $cleaned;
+        return trim($cleaned);
+    }
+
+    public function secureAttributeValue($attribute, $value)
+    {
+        $search = isset($this->replaceAttrValues[$attribute]) ? $this->replaceAttrValues[$attribute] : $this->replaceAttrValues['default'];
+        if(!empty($search))
+        {
+            $value = str_replace($search, '', $value);
+        }
+        return $value;
     }
  
  
     /**
      * Check for Invalid Attribute Values
-     * @param $val string 
+     * @param $value string
      * @return true/false
      */   
-    function invalidAttributeVal($val)
+    function invalidAttributeValue($value)
     {
     	
     	
         foreach($this->badAttrValues as $v) // global list because a bad value is bad regardless of the attribute it's in. ;-)
         {
-            if(preg_match('/'.$v.'/i',$val)==true)  
+            if(preg_match('/'.$v.'/i',$value)==true)
             {
-				$this->removedList['blacklist'][]	= "Match found for '{$v}' in '{$val}'";	
+				$this->removedList['blacklist'][]	= "Match found for '{$v}' in '{$value}'";
             	
                 return true;    
             }   
@@ -3152,7 +3892,7 @@ class e_parser
     /**
      * XSS HTML code to test against
      */
-    private function getXss()
+    public function getXss()
     {
 
 $html = <<<EOF
@@ -3259,14 +3999,15 @@ class e_emotefilter {
 	{		
 		$pref = e107::getPref();
 		
-		if(!$pref['emotepack'])	
+		if(empty($pref['emotepack']))
 		{	
 			$pref['emotepack'] = "default";
-			save_prefs();
+			e107::getConfig('emote')->clearPrefCache('emote');
+			e107::getConfig('core')->set('emotepack','default')->save(false,true,false);
 		}
-			
+
 		$this->emotes = e107::getConfig("emote")->getPref();
-		
+
 		if(!vartrue($this->emotes))
 		{
 			return;
@@ -3309,8 +4050,8 @@ class e_emotefilter {
 						$this->search[] = " ".$value;
 						$this->search[] = "\n".$value;
 						//TODO CSS class?
-						$this->replace[] = " <img src='".$filename."' alt='' style='vertical-align:middle; border:0' /> ";
-						$this->replace[] = "\n <img src='".$filename."' alt='' style='vertical-align:middle; border:0' /> ";
+						$this->replace[] = " <img src='".$fileloc."' alt='' style='vertical-align:middle; border:0' /> ";
+						$this->replace[] = "\n <img src='".$fileloc."' alt='' style='vertical-align:middle; border:0' /> ";
 					}
 				}
 			  }
@@ -3321,12 +4062,14 @@ class e_emotefilter {
 		  }
 		}
 	}
-	 
+
+
 	function filterEmotes($text)
 	{	 
 		$text = str_replace($this->search, $this->replace, $text);
 		return $text;
 	}
+
 	 
 	function filterEmotesRev($text)
 	{

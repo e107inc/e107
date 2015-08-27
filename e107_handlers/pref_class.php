@@ -150,6 +150,18 @@ class e_pref extends e_front_model
 		return $this;
 	}
 
+    /**
+     * Reset preference object to given/empty state
+     * @param array $prefs
+     * @return $this
+     */
+    public function reset($prefs = array())
+    {
+        parent::setData(array());
+
+        return $this;
+    }
+
 	/**
 	 * Advanced setter - $pref_name could be path in format 'pref1/pref2/pref3' (multidimensional arrays support)
 	 * Object data reseting is not allowed, adding new preferences is controlled by $strict parameter
@@ -327,6 +339,7 @@ class e_pref extends e_front_model
 	 * @param string|array $pref_name
 	 * @param mixed value
 	 * @param boolean $strict
+	 * @return $this|\e_model
 	 */
 	final public function addData($pref_name, $value = null)
 	{
@@ -587,6 +600,14 @@ class e_pref extends e_front_model
 				}
 				
 				$log->addSuccess('Settings successfully saved.', ($session_messages === null || $session_messages === true));
+
+				$uid = USERID;
+
+				if(empty($uid)) // Log extra details of any pref changes made by a non-user.
+				{
+					$log->addWarning(print_r(debug_backtrace(null,2), true), false);
+				}
+
 				$log->save($logId);
 
 			//	if(!$disallow_logs) $log->logSuccess('Settings successfully saved.', true, $session_messages)->flushMessages($logId, E_LOG_INFORMATIVE, '', $this->prefid);
@@ -786,8 +807,18 @@ final class e_core_pref extends e_pref
 	 */
 	function __construct($alias, $load = true)
 	{
+
+
 		$pref_alias = $alias;
+
+		if($alias == 'emote')
+		{
+			$pack = e107::pref('core','emotepack');
+			$this->aliases['emote'] = 'emote_'.$pack;
+		}
+
 		$pref_id = $this->getConfigId($alias);
+
 
 		if(!$pref_id)
 		{
@@ -811,6 +842,8 @@ final class e_core_pref extends e_pref
 		{
 			$this->load();
 		}
+
+
 	}
 
 	/**
@@ -907,7 +940,7 @@ class e_plugin_pref extends e_pref
 		$ret = false;
 		if($this->plugin_id)
 		{
-			$ret = e107::getDb($this->plugin_id)->db_Delete('core', "e107_name='{$this->plugin_id}'");
+			$ret = e107::getDb($this->plugin_id)->delete('core', "e107_name='{$this->plugin_id}'");
 			$this->destroy();
 		}
 		return $ret;
@@ -961,11 +994,11 @@ class prefs
 				$Args .= ($Args ? " OR e107_name='{$v}'" : "e107_name='{$v}'");
 			}
 		}
-		if (!$sql->db_Select('core', '*', $Args, 'default'))
+		if (!$sql->select('core', '*', $Args, 'default'))
 		{
 			return FALSE;
 		}
-		while ($row = $sql->db_Fetch())
+		while ($row = $sql->fetch())
 		{
 			$this->prefVals['core'][$row['e107_name']] = $row['e107_value'];
 		}

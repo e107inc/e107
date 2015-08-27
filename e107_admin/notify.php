@@ -36,8 +36,12 @@ $nc = new notify_config;
 $uc = new user_class;
 $mes = e107::getMessage();
 
-$uc->fixed_classes['email'] = 'Email Address =>';
-$uc->text_class_link['email'] = 'email';
+if(!empty($_GET['iframe']))
+{
+	define('e_IFRAME', true);
+}
+
+
 
 if (isset($_POST['update']))
 {
@@ -69,17 +73,14 @@ class notify_config
 
 	function __construct() 
 	{
-		global $sysprefs, $eArrayStorage;
-		$ns = e107::getRender();
-		$tp = e107::getParser();
-		$pref = e107::getPref();
-		$sql = e107::getDb();
-
-//		$this -> notify_prefs = $sysprefs -> get('notify_prefs');
-//		$this -> notify_prefs = $eArrayStorage -> ReadArray($this -> notify_prefs);
+		$pref 	= e107::getPref();
 		$this->notify_prefs = e107::getConfig('notify')->getPref();
 
+		$this->prefCleanup();
+		$this->test();
+
 		$recalibrate = FALSE;
+
 		// load every e_notify.php file.
 		if($pref['e_notify_list'])
 		{
@@ -131,13 +132,45 @@ class notify_config
 		
 		if ($recalibrate) 
 		{
-			$s_prefs = $tp -> toDB($this -> notify_prefs);
-			$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
+		//	$s_prefs = $tp -> toDB($this -> notify_prefs);
+		//	$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
 		//	$sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'");
 		}
 	}
 
+	function prefCleanup()
+	{
+		$oldPrefs = e107::getEvent()->oldCoreList();
+		$curData = $this->notify_prefs['event'];
 
+		foreach($curData as $k=>$v)
+		{
+			if(isset($oldPrefs[$k]))
+			{
+				$newKey = $oldPrefs[$k];
+				$this->notify_prefs['event'][$newKey] = $v;
+				unset($this->notify_prefs['event'][$k]);	
+			}		
+		
+		}	
+					
+	}
+		
+
+	function test()
+	{
+		if(!empty($_POST['test']))
+		{
+			$id = key( $_POST['test']);
+			$exampleData = array('id'=>'Test for '.$id, 'data'=>'example data'	);
+			e107::getMessage()->addSuccess('Triggering: '.$id);
+			e107::getEvent()->trigger($id, $exampleData);
+		}
+
+
+	}
+		
+		
 
 	function config()
 	{
@@ -146,8 +179,74 @@ class notify_config
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
 
-// <div>".NT_LAN_2.":</div>
 
+		$events = e107::getEvent()->coreList(); 
+		$tab = array(); 
+		
+		foreach($events as $k=>$cat)
+		{
+			$text = " <table class='table adminform'>
+        	<colgroup>
+        		<col class='col-label' />
+        		<col class='col-control' />
+        	</colgroup>";
+        	
+			foreach($cat as $c=>$ev)
+			{
+				$text .= $this -> render_event($c, $ev);		
+			}	
+			$text .= "</table>";
+			
+			$caption = str_replace("_menu","",ucfirst($k))." ".LAN_NOTIFY_01;
+			
+			$tab[] = array('caption'=>$caption, 'text' => $text);
+		}
+	
+		if(!empty($this->notify_prefs['plugins']))
+		{
+	
+			foreach ($this->notify_prefs['plugins'] as $plugin_id => $plugin_settings)
+			{
+	            if(is_readable(e_PLUGIN.$plugin_id.'/e_notify.php'))
+				{
+					$config_category = $this->pluginConfig[$plugin_id]['category'];
+					$legacy = $this->pluginConfig[$plugin_id]['legacy'];
+						
+					$text = "<table class='table adminform'>
+			        	<colgroup>
+			        		<col class='col-label' />
+			        		<col class='col-control' />
+			        	</colgroup>";
+					;
+	
+					foreach ($this->pluginConfig[$plugin_id]['events'] as $event_id => $event_text)
+					{
+						$text .= $this->render_event($event_id, $event_text, $plugin_id, $legacy);
+					}
+					
+					$text .= "</table>\n";
+					
+					$tab[] = array('caption'=> $config_category, 'text'=> $text); 
+				}
+			}
+		}
+	
+	
+	
+		$text2 = $frm->open('scanform', 'post', e_REQUEST_URL); // <form action='".e_SELF."?results' method='post' id='scanform'>
+		$text2 .= $frm->tabs($tab); 
+		$text2 .= "<div class='buttons-bar center'>". $frm->admin_button('update', LAN_UPDATE,'update') . "</div>";
+		$text2 .= $frm->close(); 
+		
+
+		$ns -> tablerender(NT_LAN_1, $mes->render() . $text2);
+
+
+	return; 
+	
+
+// <div>".NT_LAN_2.":</div>
+	/*
 		$text = "
 		
 		<form action='".e_SELF."?results' method='post' id='scanform'>
@@ -157,9 +256,12 @@ class notify_config
     <li><a href='#mail' data-toggle='tab'>Mail</a></li>
     <li><a href='#files' data-toggle='tab'>Files</a></li>";
 	
-	foreach ($this -> notify_prefs['plugins'] as $id => $var)
+	if(!empty($this->notify_prefs['plugins']))
 	{
-		$text .= "<li><a href='#notify-".$id."' data-toggle='tab'>".ucfirst($id)."</a></li>";
+		foreach ($this -> notify_prefs['plugins'] as $id => $var)
+		{
+			$text .= "<li><a href='#notify-".$id."' data-toggle='tab'>".ucfirst($id)."</a></li>";
+		}
 	}
 	
 	$text .= "
@@ -179,6 +281,7 @@ class notify_config
 		$text .= $this -> render_event('userveri', NU_LAN_3);
 		$text .= $this -> render_event('login', NU_LAN_4);
 		$text .= $this -> render_event('logout', NU_LAN_5);
+		$text .= $this -> render_event('user_xup_', NU_LAN_5);
 
 		$text .= "</table></fieldset>
 		<fieldset id='core-notify-2'>
@@ -245,32 +348,36 @@ class notify_config
 		</fieldset>
 		</div>";
 
-		foreach ($this->notify_prefs['plugins'] as $plugin_id => $plugin_settings)
+		if(!empty($this->notify_prefs['plugins']))
 		{
-            if(is_readable(e_PLUGIN.$plugin_id.'/e_notify.php'))
+	
+			foreach ($this->notify_prefs['plugins'] as $plugin_id => $plugin_settings)
 			{
-				$config_category = $this->pluginConfig[$plugin_id]['category'];
-				$legacy = $this->pluginConfig[$plugin_id]['legacy'];
-				
-			//	require(e_PLUGIN.$plugin_id.'/e_notify.php');
-
-				$text .= "<div class='tab-pane' id='notify-".$plugin_id."'>
-				<fieldset id='core-notify-".str_replace(" ","_",$config_category)."'>
-		        <legend>".$config_category."</legend>
-		        <table class='table adminform'>
-		        	<colgroup>
-		        		<col class='col-label' />
-		        		<col class='col-control' />
-		        	</colgroup>";
-				;
-
-				foreach ($this->pluginConfig[$plugin_id]['events'] as $event_id => $event_text)
+	            if(is_readable(e_PLUGIN.$plugin_id.'/e_notify.php'))
 				{
-					$text .= $this->render_event($event_id, $event_text, $plugin_id, $legacy);
+					$config_category = $this->pluginConfig[$plugin_id]['category'];
+					$legacy = $this->pluginConfig[$plugin_id]['legacy'];
+					
+				//	require(e_PLUGIN.$plugin_id.'/e_notify.php');
+	
+					$text .= "<div class='tab-pane' id='notify-".$plugin_id."'>
+					<fieldset id='core-notify-".str_replace(" ","_",$config_category)."'>
+			        <legend>".$config_category."</legend>
+			        <table class='table adminform'>
+			        	<colgroup>
+			        		<col class='col-label' />
+			        		<col class='col-control' />
+			        	</colgroup>";
+					;
+	
+					foreach ($this->pluginConfig[$plugin_id]['events'] as $event_id => $event_text)
+					{
+						$text .= $this->render_event($event_id, $event_text, $plugin_id, $legacy);
+					}
+					
+					$text .= "</table>
+					</div>";
 				}
-				
-				$text .= "</table>
-				</div>";
 			}
 		}
 
@@ -285,20 +392,33 @@ class notify_config
 		";
 
 		$ns -> tablerender(NT_LAN_1, $mes->render() . $text);
+	 */
+	 
 	}
 
 
 	function render_event($id, $description, $include='', $legacy = 0) 
 	{
-		global $uc; // $rs
 		$tp = e107::getParser();
 		$frm = e107::getForm();
+		$uc = e107::getUserClass();
+		$uc->fixed_classes['email'] = 'Email Address =>';
+		$uc->text_class_link['email'] = 'email';
+
+		
+		if(defined($description))
+		{
+			$description = constant($description); 
+		}
+
+
+		$highlight = varset($_GET['type']) == $id ? " class='text-warning'" : '';
 
 		$text = "
 			<tr>
-				<td >".$description.":	</td>
-				<td  class='nowrap'>
-				".$uc->uc_dropdown('event['.$id.'][class]', varset($this->notify_prefs['event'][$id]['class'],255), "nobody,main,admin,member,classes,email","onchange=\"mail_field(this.value,'event_".$id."');\" ");
+				<td title='".$id."'><span{$highlight}>".$description.":</span></td>
+				<td  class='form-inline nowrap'>
+				".$uc->uc_dropdown('event['.$id.'][class]', varset($this->notify_prefs['event'][$id]['class'], e_UC_NOBODY), "nobody,main,admin,member,classes,email","onchange=\"mail_field(this.value,'event_".$id."');\" ");
 
 			if($this -> notify_prefs['event'][$id]['class'] == 'email')
 			{
@@ -311,10 +431,16 @@ class notify_config
 				$value= "";
 			}
 
-			$text .= "<input type='text' style='width:180px;$disp' class='tbox' id='event_".$id."' name='event[".$id."][email]' value=\"".$value."\" />\n";
+			$text .= "<input type='text' style='width:200px;$disp' class='tbox' id='event_".$id."' name='event[".$id."][email]' value=\"".$value."\" />\n";
 
 		$text .= $frm->hidden("event[".$id."][include]", $include);
 		$text .= $frm->hidden("event[".$id."][legacy]", $legacy); // function or method 
+
+		if(isset($this->notify_prefs['event'][$id]['class']) && $this->notify_prefs['event'][$id]['class'] != e_UC_NOBODY)
+		{
+			$text .= $frm->button('test['.$id.']', $id, 'confirm', 'Test');
+		}
+
 
 		$text .= "</td>
 		</tr>";
@@ -324,40 +450,35 @@ class notify_config
 
 	function update() 
 	{
-		global $sql, $pref, $eArrayStorage;
 		$this->changeList = array();
+
+		$active = false;
+
 		foreach ($_POST['event'] as $key => $value)
 		{
 			if ($this -> update_event($key))
 			{
-				$active = TRUE;
+				$active = true;
 			}
 		}
-        if ($active)
-		{
-		   	$pref['notify'] = TRUE;
-		}
-		else
-		{
-		 	$pref['notify'] = FALSE;
-		}
-	  	save_prefs();
-		
+
 	//	print_a($this->notify_prefs);
 		/*
 		$s_prefs = $tp -> toDB($this -> notify_prefs);
 		$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
 		if($sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'")!==FALSE)
 		*/
+
+		e107::getConfig()->set('notify',$active)->save(true,true,false);
 		e107::getConfig('notify')->updatePref($this->notify_prefs);
 		if (e107::getConfig('notify')->save(FALSE))
 		{
 			// e107::getAdminLog()->logArrayAll('NOTIFY_01',$this->changeList);
-			return TRUE;
+			return true;
 		}
 		else
 		{
-        	return FALSE;
+        	return false;
 		}
 
 	}

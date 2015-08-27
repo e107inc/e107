@@ -1077,7 +1077,7 @@ function AwesomeChart(canvasElementId){
         if(this.title){
             pieAreaHeight = pieAreaHeight - this.titleFontHeight - this.titleMargin;
             marginTop += this.titleFontHeight + this.titleMargin;
-        };
+        }
                
         for(var i=0; i<this.data.length; i++){
             dataSum += this.data[i];

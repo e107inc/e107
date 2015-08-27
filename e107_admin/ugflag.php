@@ -48,7 +48,7 @@ if(isset($_POST['updatesettings']))
 	
 	if($changed)
 	{
-		$admin_log->log_event(($pref['maintainance_flag'] == 0) ? 'MAINT_02' : 'MAINT_01', $pref['maintainance_text'], E_LOG_INFORMATIVE, '');
+		e107::getLog()->add(($pref['maintainance_flag'] == 0) ? 'MAINT_02' : 'MAINT_01', $pref['maintainance_text'], E_LOG_INFORMATIVE, '');
 		save_prefs();
 		$mes->addSuccess(UGFLAN_1);
 	}
@@ -78,9 +78,12 @@ $text = "
 				</colgroup>
 				<tbody>";
 				
-$elements = array(e_UC_PUBLIC=>LAN_DISABLED,
-	 e_UC_ADMIN=>UGFLAN_8,
-	 e_UC_MAINADMIN=>UGFLAN_9);
+$elements = array(
+	e_UC_PUBLIC		=> LAN_DISABLED,
+	e_UC_MEMBER		=> ADLAN_110,
+	e_UC_ADMIN		=> UGFLAN_8,
+	e_UC_MAINADMIN	=> UGFLAN_9
+);
 	 
 $text .= "
 					<tr>

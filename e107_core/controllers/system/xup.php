@@ -82,20 +82,56 @@ class core_system_xup_controller extends eController
 	
 	public function actionTest()
 	{
-		echo 'Login controller<br /><br />';
+		echo '<h3>Social Login Tester</h3>';
+		
+		if(getperms('0'))
+		{
+			echo e107::getMessage()->addError("Please logout of e107 before testing the new-user login/signup procedure.")->render();
+			return; 	
+		}
 		
 		if(isset($_GET['lgt']))
 		{
 			e107::getUser()->logout();
 		}
 		
-		echo 'Logged in: '.(e107::getUser()->isUser() ? 'true' : 'false');
-		
+		$profileData = null;
 		$provider = e107::getUser()->getProvider();
-		if($provider) print_a($provider->getUserProfile());
+		if($provider)
+		{
+			$profileData = $provider->getUserProfile();
+			
+			if(!empty($profileData))
+			{
+				print_a($profileData);	
+			}
 		
-		echo '<br /><br /><a href="'.e107::getUrl()->create('system/xup/test?lgt').'">Test logout</a>';
+			 
+		}
 		
+		echo 'Logged in: '.(e107::getUser()->isUser() && !empty($profileData) ? '<span class="label label-success">true</span>' : '<span class="label label-danger">false</span>');
+	
+	
+		$testUrl = SITEURL."?route=system/xup/test"; 
+		$providers = e107::getPref('social_login', array());
+		
+		foreach($providers as $key=>$var)
+		{
+			if($var['enabled'] == 1)
+			{
+				echo '<h3>'.$key.'</h3><ul>';
+				echo '<li><a class="btn btn-default" href="'.e107::getUrl()->create('system/xup/login?provider='.$key.'&back='.base64_encode($testUrl)).'">Test login only with '.$key.'</a></li>';
+				echo '<li><a class="btn btn-default" href="'.e107::getUrl()->create('system/xup/signup?provider='.$key.'&back='.base64_encode($testUrl)).'">Test signup/login with '.$key.'</a></li>';		
+			
+				echo "</ul>";
+			}
+			
+		//	print_a($var);
+		}
+		
+			echo '<br /><br /><a class="btn btn-default" href="'.e107::getUrl()->create('system/xup/test?lgt').'">Test logout</a>';
+		
+		/*
 		echo '<h3>Facebook</h3>';
 		echo '<br /><a href="'.e107::getUrl()->create('system/xup/login?provider=Facebook').'">Test login with Facebook</a>';
 		echo '<br /><a href="'.e107::getUrl()->create('system/xup/signup?provider=Facebook').'">Test signup with Facebook</a>';
@@ -103,6 +139,8 @@ class core_system_xup_controller extends eController
 		echo '<h3>Twitter</h3>';
 		echo '<br /><a href="'.e107::getUrl()->create('system/xup/login?provider=Twitter').'">Test login with Twitter</a>';
 		echo '<br /><a href="'.e107::getUrl()->create('system/xup/signup?provider=Twitter').'">Test signup with Twitter</a>';
+		
+		 */
 	}
 	
 	public function actionEndpoint()

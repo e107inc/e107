@@ -46,7 +46,7 @@ class cron_admin extends e_admin_dispatcher
 
 
 	protected $adminMenu = array(
-		'main/list'		=> array('caption'=> LAN_CRON_M_01, 'perm' => '0'),
+		'main/list'		=> array('caption'=> LAN_MANAGE, 'perm' => '0'),
 		'main/refresh' 	=> array('caption'=> LAN_CRON_M_02, 'perm' => '0','url'=>'cron.php'),
 	//	'main/prefs' 	=> array('caption'=> 'Settings', 'perm' => '0'),
 	//	'main/custom'	=> array('caption'=> 'Custom Page', 'perm' => '0')		
@@ -66,7 +66,7 @@ class cron_admin_ui extends e_admin_ui
 		protected $pluginName	= 'core';
 		protected $table		= "cron";
 		protected $pid			= "cron_id";
-		protected $listOrder	= 'cron_category';
+		protected $listOrder	= 'cron_category desc'; // Show 'upgrades' on first page. 
 		protected $perPage		= 10;
 		protected $batchDelete	= TRUE;
 			   	
@@ -74,12 +74,12 @@ class cron_admin_ui extends e_admin_ui
 			'checkboxes'		=> array('title'=> '',				'type' => null, 			'width' =>'5%', 	'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'cron_id'			=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 	'forced'=> FALSE, 'nolist'=>TRUE),
        		'cron_category'		=> array('title'=> LAN_CATEGORY, 	'type' => 'method', 		'data' => 'str',		'width'=>'auto','readonly' => 1,	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE),
-       		'cron_name'			=> array('title'=> LAN_CRON_1,		'type' => 'text',			'width' => 'auto',	'readonly' => 1),
+       		'cron_name'			=> array('title'=> LAN_NAME,		'type' => 'text',			'width' => 'auto',	'readonly' => 1),
          	'cron_description'	=> array('title'=> LAN_DESCRIPTION,	'type' => 'text',			'width' => '35%',	'readonly' => 1),
          	'cron_function'		=> array('title'=> LAN_CRON_2,		'type' => 'text',			'width' => 'auto', 	'thclass' => 'left first', 'readonly' => 1), 
          	'cron_tab'			=> array('title'=> LAN_CRON_3,		'type' => 'method',			'width' => 'auto'), // Display name
 		 	'cron_lastrun'		=> array('title'=> LAN_CRON_4,		'type' => 'datestamp',		'data' => 'int',	'width' => 'auto', 'readonly' => 2),	
-     		'cron_active' 		=> array('title'=> LAN_CRON_5,		'type' => 'boolean',		'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),
+     		'cron_active' 		=> array('title'=> LAN_ACTIVE,		'type' => 'boolean',		'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),
 			'options' 			=> array('title'=> LAN_OPTIONS,		'type' => 'method',			'data'=> null, 'noedit'=>TRUE, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
 		);
 		
@@ -108,8 +108,8 @@ class cron_admin_ui extends e_admin_ui
 				$pwd = $this->setCronPwd();
 			}
 			
-			$sql->db_Select_gen("SELECT cron_function,cron_active FROM #cron ");
-			while($row = $sql->db_Fetch(MYSQL_ASSOC))
+			$sql->gen("SELECT cron_function,cron_active FROM #cron ");
+			while($row = $sql->fetch(MYSQL_ASSOC))
 			{
 				$this->curCrons[] = $row['cron_function'];
 				if($row['cron_active']==1)
@@ -164,12 +164,28 @@ class cron_admin_ui extends e_admin_ui
 				),
 				6 => array(
 					'name' 			=> LAN_CRON_20_1,
-					'category'		=> '',
+					'category'		=> 'update',
 					'function' 		=> 'checkCoreUpdate',
 					'description' 	=> LAN_CRON_20_2 ."<br />". LAN_CRON_20_3,
 				//	'available' 	=> e107::getPref('ban_retrigger')
 				),
+				
 			);
+			
+			if(is_dir(e_BASE.".git"))
+			{
+				$cronDefaults['_system'][7] = array(
+					'name' 			=> LAN_CRON_20_4,
+					'category'		=> 'update',
+					'function' 		=> 'gitrepo',
+					'description' 	=> LAN_CRON_20_5."<br />".LAN_CRON_20_6."<br /><span class='label label-warning'>".LAN_CRON_20_7."</span> ".LAN_CRON_20_8,
+				//	'available' 	=> e107::getPref('ban_retrigger')
+				);
+
+			}
+			
+			
+			
 	
 			if(!vartrue($_GET['action']) || $_GET['action'] == 'refresh')
 			{
@@ -260,7 +276,7 @@ class cron_admin_ui extends e_admin_ui
 				return;			
 			}
 			
-			if(!$sql->db_Insert('cron',$insert))
+			if(!$sql->insert('cron',$insert))
 			{
 				e107::getMessage()->add(LAN_CRON_6, E_MESSAGE_ERROR);
 			}
@@ -285,7 +301,7 @@ class cron_admin_ui extends e_admin_ui
 			$cron_function = $insert['cron_function'];
 			unset($insert['cron_function']);
 					
-			if($sql->db_Update('cron',$insert)===FALSE)
+			if($sql->update('cron',$insert)===FALSE)
 			{
 				e107::getMessage()->add(LAN_CRON_7, E_MESSAGE_ERROR);
 			}
@@ -328,11 +344,11 @@ class cron_admin_ui extends e_admin_ui
 			$frm = e107::getForm();
 			
 			e107::getCache()->CachePageMD5 = '_';
-			$lastload = e107::getCache()->retrieve('cronLastLoad', FALSE, TRUE, TRUE);
+			$lastload = e107::getCache()->retrieve('cronLastLoad', false, true, true);
 			
 			$ago = (time() - $lastload);
 	
-			$active = ($ago < 901) ? TRUE : FALSE;
+			$active = ($ago < 1200) ? true : false; // longer than 20 minutes, so lets assume it's inactive.
 			$status = ($active) ? LAN_ENABLED : LAN_DISABLED; // "Enabled" : "Offline";
 	
 			$mins = floor($ago / 60);
@@ -349,13 +365,12 @@ class cron_admin_ui extends e_admin_ui
 			$mes->addInfo(LAN_CRON_11.": <b>".$this->activeCrons."</b>");
 			$mes->addInfo(LAN_CRON_12.": ".$lastRefresh."<br /><br />");
 			
-			
-	
-			//FIXME: for Windows, the is_executable() function only checks the file
+
 			// extensions of exe, com, bat and cmd.
 			
 			$isWin = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
 			$actualPerm = substr(decoct(fileperms(e_BASE."cron.php")),3);
+
 			if($isWin)
 			{
 				$mes->addWarning(LAN_CRON_13);
@@ -367,7 +382,7 @@ class cron_admin_ui extends e_admin_ui
 			elseif (!$active) // show instructions
 			{
 				$setpwd_message = $frm->open("generate")."<small>"
-				.LAN_CRON_15.":</small><br /><pre style='color:black'>".rtrim($_SERVER['DOCUMENT_ROOT'], '/').e_HTTP."cron.php ".$pref['e_cron_pwd'];
+				.LAN_CRON_15.":</small><br /><pre style='color:black'>".e_ROOT."cron.php token=".$pref['e_cron_pwd'].' >/dev/null 2>&1';
 				
 				$setpwd_message .= "</pre><small>". LAN_CRON_16."</small>";
 				if(e_DOMAIN && file_exists("/usr/local/cpanel/version"))
@@ -386,9 +401,9 @@ class cron_admin_ui extends e_admin_ui
 		function cronExecute($cron_id)
 		{
 			$sql = e107::getDb();
-			if($sql->db_Select("cron","cron_name,cron_function","cron_id = ".intval($cron_id)))
+			if($sql->select("cron","cron_name,cron_function","cron_id = ".intval($cron_id)))
 			{
-				$row = $sql->db_Fetch(MYSQL_ASSOC);	
+				$row = $sql->fetch(MYSQL_ASSOC);
 				$class_func = $row['cron_function'];
 				$cron_name = $row['cron_name'];	
 			}
@@ -427,7 +442,8 @@ class cron_admin_ui extends e_admin_ui
 				$obj = new $class_name;
 				if (method_exists($obj, $method_name))
 				{
-					$mes->add("Executing config function <b>".$class_name." : ".$method_name."()</b>", E_MESSAGE_DEBUG);
+					$message = str_replace('[x]', $class_name." : ".$method_name, "Executing config function [b][x][/b]");
+					$mes->add($message, E_MESSAGE_DEBUG);
 					if ($return == 'boolean')
 					{
 						call_user_func(array($obj, $method_name));
@@ -440,7 +456,8 @@ class cron_admin_ui extends e_admin_ui
 				}
 				else
 				{
-					$mes->add("Config function <b>".$method_name."()</b> NOT found.", E_MESSAGE_DEBUG);
+					$message = str_replace('[x]', $method_name."()", "Config function [b][x][/b] NOT found.");
+					$mes->add($message, E_MESSAGE_DEBUG);
 				}
 			}
 			return FALSE;
@@ -475,7 +492,8 @@ class cron_admin_form_ui extends e_admin_form_ui
 						'mail'		=> ADLAN_136,				
 						'notify'	=> ADLAN_149, 
 						'user'		=> LAN_USER,
-						'plugin'	=> ADLAN_CL_7
+						'plugin'	=> ADLAN_CL_7,
+						'update'	=> LAN_UPDATE
 	);
 	
 	/**
@@ -549,8 +567,10 @@ class cron_admin_form_ui extends e_admin_form_ui
 		
 		if($attributes['mode'] == 'read')
 		{
-			$text = $this->renderValue('options',$value,'',$id);
+			$text = "<div class='btn-group'>";
+			$text .= $this->renderValue('options',$value,'',$id);
 			$text .= $this->submit_image('cron_execute['.$id.']', 1, 'execute', 'Execute');
+			$text .= "</div>";
 			return $text;
 		}
 	}
@@ -1010,7 +1030,7 @@ class cron
 		   <thead>
 		   	<tr>
 			   <th>"
-			.LAN_CRON_1."</th>
+			.LAN_CRON_1XXX."</th>
 			   <th>"
 			.LAN_CRON_2."</th>
 			   <th>"
@@ -1018,7 +1038,7 @@ class cron
 			   <th>"
 			.LAN_CRON_4."</th>
 			   <th>"
-			.LAN_CRON_5."</th>
+			.LAN_CRON_5XXXX."</th>
 			   <th>"
 			.LAN_CRON_6."</th>
 			   <th>"

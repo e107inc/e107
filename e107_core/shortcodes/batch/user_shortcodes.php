@@ -15,7 +15,24 @@ if (!defined('e107_INIT')) { exit; }
 
 class user_shortcodes extends e_shortcode
 {
-	
+
+	private $commentsDisabled;
+	private $commentsEngine;
+
+	function __construct()
+	{
+		$pref = e107::getPref();
+
+		$this->commentsDisabled = vartrue($pref['comments_disabled']);
+
+		if(!empty($pref['comments_engine']))
+		{
+			$this->commentsEngine = $pref['comments_engine'];
+		}
+	}
+
+
+
 	function sc_total_chatposts($parm) {
 		$sql = e107::getDb();
 		if(!$chatposts = e107::getRegistry('total_chatposts'))
@@ -60,7 +77,11 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_user_commentposts($parm) 
 	{
-		return $this->var['user_comments'];
+		if($this->commentsDisabled)
+		{
+			return false;
+		}
+		return "<a href='".e_HTTP."userposts.php?0.comments.".$this->var['user_id']."'>".$this->var['user_comments']."</a>";
 	}
 	
 	
@@ -68,7 +89,8 @@ class user_shortcodes extends e_shortcode
 	function sc_user_forumposts($parm) 
 	{
 		//return $this->var['user_forums']; //FIXME column not present in v2. Possible fix on next line.
-		return e107::getDb()->count("forum_thread","(*)","where thread_user=".$this->var['user_id']);
+		//return e107::getDb()->count("forum_thread","(*)","where thread_user=".$this->var['user_id']); // Does not account for pruned posts? #716. Possible fix on next line.
+		return e107::getDb()->retrieve('user_extended', 'user_plugin_forum_posts', 'user_extended_id = '.$this->var['user_id']);
 	}
 	
 	
@@ -92,24 +114,30 @@ class user_shortcodes extends e_shortcode
 			$chatposts = 0; // In case plugin not installed
 	  		if (e107::isInstalled("chatbox_menu"))
 	  		{
-				$chatposts = $sql->count("chatbox");
+				$chatposts = intval($sql->count("chatbox"));
 	  		}
 	  		e107::setRegistry('total_chatposts', $chatposts);
 		}
-		return ($chatposts!=0) ? round(($this->var['user_chats']/$chatposts) * 100, 2): 0;
+		return ($chatposts > 0) ? round(($this->var['user_chats']/$chatposts) * 100, 2) : 0;
 	}
 	
 	
 	
 	function sc_user_commentper($parm) 
 	{
+		if($this->commentsDisabled)
+		{
+			return false;
+		}
+
+
 		$sql = e107::getDb();
 		if(!$commentposts = e107::getRegistry('total_commentposts'))
 		{
-			$commentposts = $sql->count("comments");
+			$commentposts = intval($sql->count("comments"));
 			e107::setRegistry('total_commentposts', $commentposts);
 		}
-		return ($commentposts!=0) ? round(($this->var['user_comments']/$commentposts) * 100, 2): 0;
+		return ($commentposts > 0) ? "<a href='".e_HTTP."userposts.php?0.comments.".$this->var['user_id']."'>".round(($this->var['user_comments']/$commentposts) * 100, 2)."</a>" : 0;
 	}
 	
 	
@@ -117,13 +145,15 @@ class user_shortcodes extends e_shortcode
 	function sc_user_forumper($parm) 
 	{
 		$sql = e107::getDb();
-		if(!$forumposts = e107::getRegistry('total_forumposts'))
+		if(!$total_forumposts = e107::getRegistry('total_forumposts'))
 		{
-			$forumposts = (e107::isInstalled("forum")) ? $sql->count("forum_thread"): 0;
-			e107::setRegistry('total_forumposts', $forumposts);
-			$user_forumposts = $sql->count("forum_thread","(*)","where thread_user=".$this->var['user_id']);
+			$total_forumposts = (e107::isInstalled("forum")) ? intval($sql->count("forum_post")) : 0;
+			e107::setRegistry('total_forumposts', $total_forumposts);
+			//$user_forumposts = $sql->count("forum_thread","(*)","where thread_user=".$this->var['user_id']);
+			$user_forumposts = e107::getDb()->retrieve('user_extended', 'user_plugin_forum_posts', 'user_extended_id = '.$this->var['user_id']);
+
 		}
-		return ($forumposts!==0) ? round(($user_forumposts/$forumposts) * 100, 2): 0;
+		return ($total_forumposts > 0) ? round(($user_forumposts/$total_forumposts) * 100, 2) : 0;
 	}
 	
 
@@ -197,7 +227,7 @@ class user_shortcodes extends e_shortcode
 			return "<img src='".THEME_ABS."images/user_realname.png' alt='' style='vertical-align:middle;' /> ";
 		}
 		
-		return "<img src='".e_IMAGE_ABS."user_icons/user_realname.png' alt='' style='vertical-align:middle;' /> ";
+		return "<img src='".e_IMAGE_ABS."user_icons/user_realname_".IMODE.".png' alt='' style='vertical-align:middle;' /> ";
 	}
 
 	
@@ -275,50 +305,51 @@ class user_shortcodes extends e_shortcode
 	function sc_user_icon($parm='') 
 	{
 		$boot = deftrue('BOOTSTRAP');
+		$tp = e107::getParser();
 		
 		switch ($parm) 
 		{
 			case 'email':
-				return ($boot) ? "<i class='icon-envelope'></i>" : $this->sc_user_email_icon();	
+				return ($boot) ? $tp->toGlyph('envelope') : $this->sc_user_email_icon();	
 			break;
 			
 			case 'lastvisit':
-				return ($boot) ? "<i class='icon-time'></i>" : '';		 	
+				return ($boot) ? $tp->toGlyph('time') : '';		 	
 			break;
 			
 			case 'birthday':
-				return ($boot) ? "<i class='icon-calendar'></i>" : $this->sc_user_birthday_icon();		
+				return ($boot) ? $tp->toGlyph('calendar') : $this->sc_user_birthday_icon();		
 			break;
 
 			case 'level':
-				return ($boot) ? "<i class='icon-signal'></i>" : '';	
+				return ($boot) ? $tp->toGlyph('signal') : '';	
 			break;
 			
 			case 'website':
-				return ($boot) ? "<i class='icon-home'></i>" : '';		
+				return ($boot) ? $tp->toGlyph('home') : '';		
 			break;
 			
 			case 'location':
-				return ($boot) ? "<i class='icon-map-marker'></i>" : '';		
+				return ($boot) ? $tp->toGlyph('map-marker') : '';		
 			break;
 			
 			case 'icq':
-				return ($boot) ? "<i class='icon-comment'></i>" : '';		
+				return ($boot) ? $tp->toGlyph('comment') : '';		
 			break;	
 				
 			case 'msn':
-				return ($boot) ? "<i class='icon-comment'></i>" : '';		
+				return ($boot) ? $tp->toGlyph('comment') : '';		
 			break;		
 
 			default:
 			case 'realname':
 			case 'user':
-				return ($boot) ? "<i class='icon-user'></i>" : $this->sc_user_icon();		
+				return ($boot) ? $tp->toGlyph('user') : $this->sc_user_realname_icon();		
 			break;
 		}
 
 	
-		
+		/*
 		if(defined("USER_ICON"))
 		{
 			return USER_ICON;
@@ -329,6 +360,7 @@ class user_shortcodes extends e_shortcode
 		}
 		
 		return "<img src='".e_IMAGE_ABS."user_icons/user.png' alt='' style='vertical-align:middle;' /> ";
+		*/
 	}
 
 
@@ -426,6 +458,10 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_user_comments_link($parm) 
 	{
+		if($this->commentsDisabled)
+		{
+			return false;
+		}
 		return $this->var['user_comments'] ? "<a href='".e_HTTP."userposts.php?0.comments.".$this->var['user_id']."'>".LAN_USER_36."</a>" : "";
 	}
 
@@ -501,11 +537,15 @@ class user_shortcodes extends e_shortcode
 		if (USERID == $this->var['user_id']) 
 		{
 			//return "<a href='".$url->create('user/myprofile/edit')."'>".LAN_USER_38."</a>";
-			return "<a href='".e_HTTP."usersettings.php'>".LAN_USER_38."</a>"; // TODO: repair dirty fix for usersettings
+			return "<a class='btn btn-default' href='".e_HTTP."usersettings.php'>".LAN_USER_38."</a>"; // TODO: repair dirty fix for usersettings
 		}
 		else if(ADMIN && getperms("4") && !$this->var['user_admin']) 
 		{
-			return "<a href='".$url->create('user/profile/edit', array('id' => $this->var['user_id'], 'name' => $this->var['user_name']))."'>".LAN_USER_39."</a>";
+			$editUrl =  e_ADMIN_ABS."users.php?mode=main&action=edit&id=".$this->var['user_id'];
+
+			return "<a class='btn btn-default' href='".$editUrl."'>".LAN_USER_39."</a>";
+
+			//	return "<a class='btn btn-default' href='".$url->create('user/profile/edit', array('id' => $this->var['user_id'], 'name' => $this->var['user_name']))."'>".LAN_USER_39."</a>";
 		}
 	}
 	
@@ -515,6 +555,8 @@ class user_shortcodes extends e_shortcode
 	{
 		global $full_perms;
 		$sql = e107::getDb();
+		$tp = e107::getParser();
+		
 		if (!$full_perms) return;
 		$url = e107::getUrl();
 		if(!$userjump = e107::getRegistry('userjump'))
@@ -535,13 +577,23 @@ class user_shortcodes extends e_shortcode
 		  }
 		  e107::setRegistry('userjump', $userjump);
 		}
+		
+
+	
 		if($parm == 'prev')
 		{
-			return isset($userjump['prev']['id']) ? "&lt;&lt; ".LAN_USER_40." [ <a href='".$url->create('user/profile/view', $userjump['prev'])."'>".$userjump['prev']['name']."</a> ]" : "&nbsp;";
+		
+			$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('chevron-left') : '&lt;&lt;';			
+	    	return isset($userjump['prev']['id']) ? "<a class='e-tip' href='".$url->create('user/profile/view', $userjump['prev']) ."' title=\"".$userjump['prev']['name']."\">".$icon." ".LAN_USER_40."</a>\n" : "&nbsp;";
+		
+			// return isset($userjump['prev']['id']) ? "&lt;&lt; ".LAN_USER_40." [ <a href='".$url->create('user/profile/view', $userjump['prev'])."'>".$userjump['prev']['name']."</a> ]" : "&nbsp;";
+		
 		}
 		else
 		{
-			return isset($userjump['next']['id']) ? "[ <a href='".$url->create('user/profile/view', $userjump['next'])."'>".$userjump['next']['name']."</a> ] ".LAN_USER_41." &gt;&gt;" : "&nbsp;";
+			$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('chevron-right') : '&gt;&gt;';
+			return isset($userjump['next']['id']) ? "<a class='e-tip' href='".$url->create('user/profile/view', $userjump['next'])."' title=\"".$userjump['next']['name']."\">".LAN_USER_41." ".$icon."</a>\n" : "&nbsp;";
+			// return isset($userjump['next']['id']) ? "[ <a href='".$url->create('user/profile/view', $userjump['next'])."'>".$userjump['next']['name']."</a> ] ".LAN_USER_41." &gt;&gt;" : "&nbsp;";
 		}
 	}
 	
@@ -595,11 +647,18 @@ class user_shortcodes extends e_shortcode
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		
-		global $EXTENDED_CATEGORY_START, $EXTENDED_CATEGORY_END, $EXTENDED_CATEGORY_TABLE;
+		$template = e107::getCoreTemplate('user','extended');
+		
+		
+		$EXTENDED_CATEGORY_START 	= $template['start'];
+		$EXTENDED_CATEGORY_END		= $template['end'];
+		$EXTENDED_CATEGORY_TABLE 	= $template['item'];;
+		
 		$qry = "SELECT f.*, c.user_extended_struct_name AS category_name, c.user_extended_struct_id AS category_id FROM #user_extended_struct as f
 			LEFT JOIN #user_extended_struct as c ON f.user_extended_struct_parent = c.user_extended_struct_id
 			ORDER BY c.user_extended_struct_order ASC, f.user_extended_struct_order ASC
 		";
+		
 		
 		
 		
@@ -608,18 +667,31 @@ class user_shortcodes extends e_shortcode
 		$ue = new e107_user_extended;
 		$ueCatList = $ue->user_extended_get_categories();
 		$ueFieldList = $ue->user_extended_get_fields();
+		
+		
+		
 		$ueCatList[0][0] = array('user_extended_struct_name' => LAN_USER_44, 'user_extended_struct_text' => '');
+		
+	//	print_a($ueFieldList);
+		
 		$ret = "";
 		foreach($ueCatList as $catnum => $cat)
 		{
+			
+			
+			
 			$key = $cat[0]['user_extended_struct_text'] ? $cat[0]['user_extended_struct_text'] : $cat[0]['user_extended_struct_name'];
-			$cat_name = $tp->parseTemplate("{USER_EXTENDED={$key}.text.{$this->var['user_id']}}", TRUE);
+			$cat_name = $tp->parseTemplate("{USER_EXTENDED={$key}.text.{$this->var['user_id']}}", TRUE); //XXX FIXME Fails
+			
+			$cat_name = true; //XXX TEMP Fix. 
+			
 			if($cat_name != FALSE && count($ueFieldList[$catnum]))
 			{
-		
+					
 				$ret .= str_replace("{EXTENDED_NAME}", $key, $EXTENDED_CATEGORY_START);
 				foreach($ueFieldList[$catnum] as $f)
 				{
+					
 					$key = $f['user_extended_struct_name'];
 					if($ue_name = $tp->parseTemplate("{USER_EXTENDED={$key}.text.{$this->var['user_id']}}", TRUE))
 					{
@@ -678,15 +750,10 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_user_form_records($parm='') 
 	{
-		global $records, $user_frm;
-		$ret = $user_frm->form_select_open("records");
-		for($i=10; $i<=30; $i+=10)
-		{
-			$sel = ($i == $records ? true: false);
-			$ret .= $user_frm->form_option($i, $sel, $i);
-		}
-		$ret .= $user_frm->form_select_close();
-		return $ret;
+		global $records;
+		$opts = array(5,10,20,30,50);
+		return e107::getForm()->select('records', $opts, $records,'useValues=1');
+
 	}
 	
 	
@@ -695,14 +762,14 @@ class user_shortcodes extends e_shortcode
 		global $order;
 		if ($order == "ASC")
 		{
-			$ret = "<select name='order' class='tbox'>
+			$ret = "<select name='order' class='form-control tbox'>
 			<option value='DESC'>".LAN_USER_45."</option>
 			<option value='ASC' selected='selected'>".LAN_USER_46."</option>
 			</select>";
 		}
 		else
 		{
-			$ret = "<select name='order' class='tbox'>
+			$ret = "<select name='order' class='form-control tbox'>
 			<option value='DESC' selected='selected'>".LAN_USER_45."</option>
 			<option value='ASC'>".LAN_USER_46."</option>
 			</select>";
@@ -735,11 +802,49 @@ class user_shortcodes extends e_shortcode
 	}
 
 
-	
-	function sc_user_embed_userprofile($parm) 
+	function sc_user_addons($parm='')
 	{
-		global $pref, $USER_EMBED_USERPROFILE_TEMPLATE, $embed_already_rendered;
+		$template 	= e107::getCoreTemplate('user','addon');
+		$tp 		= e107::getParser();
+		$data 		= e107::getAddonConfig('e_user',null,'profile',$this->var);
 		
+		if(empty($data))
+		{
+			return;
+		}
+		
+		$text = '';	
+			
+		foreach($data as $plugin=>$val)
+		{
+			foreach($val as $v)
+			{
+				$value = vartrue($v['url']) ? "<a href=\"".$v['url']."\">".$v['text']."</a>" : $v['text'];		
+
+				$array = array(
+					'USER_ADDON_LABEL' => $v['label'],
+					'USER_ADDON_TEXT' => $value
+				);
+
+				$text .= $tp->parseTemplate($template, true, $array);
+			}		
+				
+		}
+			
+		return $text;			
+
+	}
+
+
+
+
+	/**
+	 * @Deprecated Use {USER_ADDONS} instead. 
+	 */
+	function sc_user_embed_userprofile($parm='') 
+	{
+		
+		return $this->sc_user_addons($parm);
 		//if no parm, it means we render ALL embedded contents
 		//so we're preloading all registerd e_userprofile files
 		$key = varset($pref['e_userprofile_list']); 

@@ -171,7 +171,7 @@ if (isset($_POST['emailsubmit']))
 	}
 	else
 	{
-		$ns->tablerender(LAN_EMAIL_12, "<div style='text-align:center'>".$error."</div>");
+		$ns->tablerender(LAN_ERROR, "<div style='text-align:center'>".$error."</div>");
 	}
 }
 

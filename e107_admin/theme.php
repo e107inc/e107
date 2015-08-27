@@ -25,41 +25,9 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 $e_sub_cat = 'theme_manage';
 
 e107::css("inline","
+.block-text h2.caption 		{ text-align: right; margin-bottom: -30px; padding-right: 10px; }
 .hide						{ display: none }
-.admin-theme-thumb			{ height:130px;overflow:hidden;border:1px solid black; margin:0px; margin-bottom:10px; padding:0px;   }
-.admin-theme-thumb:hover	{ opacity:0.4 }
 
-.admin-theme-options		{ transition: opacity .20s ease-in-out;
-							 -moz-transition: opacity .20s ease-in-out;
-							 -webkit-transition: opacity .20s ease-in-out;
-							 opacity:0; 
-							 width:100%;
-							 height:80px;
-							 padding-top:50px;
-							 white-space:nowrap;
-							 background-color:black;
-							 display:block;position:relative; text-align:center; vertical-align:middle; top:-141px;}
-
-.admin-theme-options:hover	{ opacity:0.8; }
-.admin-theme-options button	{ background: none; color: white; border: none; padding:0px;  margin:3px; }
-.admin-theme-options a {color: inherit; display:inline-block }
-.admin-theme-options a span		{ color: inherit; padding-right: 5px; padding-left:0px; padding-top: 3px; margin-left:3px }
-.admin-theme-options .fa-check	{ color: #FAA732 }
-.admin-theme-title			{ line-height: 18px; overflow:hidden; padding-left:5px; white-space:no-wrap; width:200px; position:relative; top:-132px; }
-
-.admin-theme-select			{border:1px dotted silver;background-color:#DDDDDD;float:left }
-
-.admin-theme-select-active	{ background-color:red;float:left }
-
-.admin-theme-cell			{ width:202px; height:160px; padding:10px; -moz-border-radius: 5px; border-radius: 5px; margin:10px 10px 5px 0px}
-
-.admin-theme-cell-default   { border:1px dotted silver; background-color:#DDDDDD }
-
-
-
-.admin-theme-cell-site		{ background-color: #d9edf7;  border: 1px solid #bce8f1; }
-
-.admin-theme-cell-admin	 	{ background-color:#FFFFD5; border: 1px solid #FFCC00; }
 
 
 ");
@@ -67,13 +35,20 @@ e107::css("inline","
 
 require_once(e_HANDLER."theme_handler.php");
 $themec = new themeHandler;
-if(e_AJAX_REQUEST)
+
+// print_a($_GET);
+
+$mode = varset($_GET['mode'],'main'); // (e_QUERY) ? e_QUERY :"main" ;
+
+
+if(!empty($_GET['action']))
 {
 	define('e_IFRAME',true);
 }
 
-if(e_AJAX_REQUEST)
+if(!empty($_GET['action']))
 {
+	require_once("auth.php");
 	switch ($_GET['action']) 
 	{
 		case 'login':	
@@ -81,25 +56,27 @@ if(e_AJAX_REQUEST)
 			echo $mp->renderLoginForm();
 			exit;	
 		break;
-		
+
+		/*
 		case 'download':
 			$string =  base64_decode($_GET['src']);	
 			parse_str($string, $p);
 			$mp = $themec->getMarketplace();
 			$mp->generateAuthKey($e107SiteUsername, $e107SiteUserpass);
 			// Server flush useless. It's ajax ready state 4, we can't flush (sadly) before that (at least not for all browsers) 
-			echo "<pre>Connecting...\n"; flush(); // FIXME change the modal default label, default is Loading...
+			echo "<pre>Connecting...\n"; flush();
 			// download and flush
 			$mp->download($p['id'], $p['mode'], $p['type']);
 			echo "</pre>"; flush();
 			exit;
 		break;	
-		
+		*/
+
 		case 'info':
-			$string =  base64_decode($_GET['src']);	
+			$string =  base64_decode($_GET['src']);
 			parse_str($string,$p);
 			echo $themec->renderThemeInfo($p);
-			exit;
+
 		break;
 		
 		case 'preview':
@@ -107,7 +84,7 @@ if(e_AJAX_REQUEST)
 			$tm = (string) $_GET['id'];	
 			$data = $themec->getThemeInfo($tm);
 			echo $themec->renderThemeInfo($data);
-			exit;	
+		//	exit;
 		break;
 
 	}
@@ -133,10 +110,14 @@ if(e_AJAX_REQUEST)
 */
 	// Theme Info Ajax 
 	// FIXME  addd action=preview to the url, remove this block
-	$tm = (string) $_GET['id'];	
-	$data = $themec->getThemeInfo($tm);
-	echo $themec->renderThemeInfo($data);
-	
+	if(!empty($_GET['id']))
+	{
+		$tm = (string) $_GET['id'];
+		$data = $themec->getThemeInfo($tm);
+		echo $themec->renderThemeInfo($data);
+	}
+
+	require_once(e_ADMIN."footer.php");
 	exit;	
 
 }
@@ -165,19 +146,52 @@ else
 
 
 
-$mode = varset($_GET['mode'],'main'); // (e_QUERY) ? e_QUERY :"main" ;
 
-if(vartrue($_POST['selectadmin']))
+
+
+if($mode == 'download' && !empty($_GET['src']))
+{
+		define('e_IFRAME', true);
+		$frm = e107::getForm();
+		$mes = e107::getMessage();		
+		$string =  base64_decode($_GET['src']);	
+		parse_str($string, $data);
+
+		if(!empty($data['price']))
+		{
+			e107::getRedirect()->go($data['url']);
+			return true;
+		}
+
+		
+		$mp = $themec->getMarketplace();	
+	 	$mes->addSuccess("Connecting...");   
+
+		if($mp->download($data['id'], $data['mode'], 'theme')) // download and unzip theme.
+		{
+			// Auto install?
+		//	$text = e107::getPlugin()->install($data['plugin_folder']); 
+		//	$mes->addInfo($text); 
+			echo $mes->render('default', 'success'); 
+		}
+		else
+		{
+			echo $mes->addError('Unable to continue')->render('default', 'error'); 
+		}
+		
+		echo $mes->render('default', 'debug'); 
+	
+}
+elseif(vartrue($_POST['selectadmin']))
 {
 	$mode = "admin";
 }
 
 if(vartrue($_POST['upload']))
 {
-	$mode = "choose";
+	$mode = "upload";
 }
-
-if(vartrue($_POST['selectmain']) || varset($_POST['setUploadTheme']))
+elseif(vartrue($_POST['selectmain']) || varset($_POST['setUploadTheme']))
 {
 	$mode = "main";
 }

@@ -11,6 +11,12 @@ if (!defined('e107_INIT')) { exit; }
 $cString = 'nq_news_months_menu_'.md5($parm);
 $cached = e107::getCache()->retrieve($cString);
 
+if(!empty($parm))
+{
+	parse_str($parm, $parms);
+}
+
+
 if(false === $cached)
 {
 	if(!function_exists('newsFormatDate'))
@@ -25,20 +31,21 @@ if(false === $cached)
 		}
 	}
 	
+	if(!isset($parms['showarchive']))
+	{
+		$parms['showarchive'] = 0;
+	}
 
-	//parse_str($parm, $parms); // FIXME - menu settings...
-	$parms['showarchive'] = 0;
 		
-	e107::plugLan('blogcalendar_menu');
+//	e107::lan('blogcalendar_menu', e_LANGUAGE); // FIXME decide on language file structure (#743)
+	e107::includeLan(e_PLUGIN.'blogcalendar_menu/languages/English.php');
+
 	$tp = e107::getParser();
 	$sql = e107::getDb();
 	
-	$marray = array(BLOGCAL_M1, BLOGCAL_M2, BLOGCAL_M3, BLOGCAL_M4,
-		BLOGCAL_M5, BLOGCAL_M6, BLOGCAL_M7, BLOGCAL_M8,
-		BLOGCAL_M9, BLOGCAL_M10, BLOGCAL_M11, BLOGCAL_M12);
-		
+	$marray  = e107::getDate()->terms('month');
 	
-	// TODO parms
+
 	//$parms['year'] = "2011 0";
 	if(vartrue($parms['year']))
 	{
@@ -107,7 +114,7 @@ if(false === $cached)
 	if($cached) 
 	{
 		if(!$parms['showarchive']) $cached .= '<ul class="nav nav-list e-menu-link news-menu-archive"><li><a href="'.e_PLUGIN_ABS.'blogcalendar_menu/archive.php">'.BLOGCAL_L2.'</a></li></ul>';
-		$cached = $ns->tablerender(BLOGCAL_L1.$req_year, $cached, 'news_months_menu', true);
+		$cached = $ns->tablerender(BLOGCAL_L1." ".$req_year, $cached, 'news_months_menu', true);
 	}
 	e107::getCache()->set($cString, $cached);
 }

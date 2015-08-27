@@ -137,7 +137,7 @@ elseif ($action == 'forums')
 
 	/*if(is_numeric($id))
 	{
-		$uinfo = get_user_data($id);
+		$uinfo = e107::user($id);
 		$fcaption = UP_LAN_0.' '.$uinfo['user_name'];
 	}
 	else
@@ -239,7 +239,7 @@ elseif ($action == 'forums')
 		$vars->USERPOSTS_FORUM_SEARCH_VALUE = htmlspecialchars($_POST['f_query'], ENT_QUOTES, CHARSET);
 		$vars->USERPOSTS_FORUM_SEARCH_FIELD = "<input class='tbox input' type='text' name='f_query' size='20' value='{$vars->USERPOSTS_FORUM_SEARCH_VALUE}' maxlength='50' />";
 		$vars->USERPOSTS_FORUM_SEARCH_BUTTON = "<input class='btn btn-default button' type='submit' name='fsearch' value='".UP_LAN_12."' />";
-		$vars->USERPOSTS_FORUM_SEARCH = "<input class='tbox' type='text' name='f_query' size='20' value='{$vars->USERPOSTS_FORUM_SEARCH_VALUE}' maxlength='50' /> <input class='btn button' type='submit' name='fsearch' value='".UP_LAN_12."' />";
+		$vars->USERPOSTS_FORUM_SEARCH = "<input class='tbox' type='text' name='f_query' size='20' value='{$vars->USERPOSTS_FORUM_SEARCH_VALUE}' maxlength='50' /> <input class='btn btn-default button' type='submit' name='fsearch' value='".UP_LAN_12."' />";
 
 		// $userposts_forum_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_FORUM_TABLE_START);
 		$userposts_forum_table_start = $tp->simpleParse($USERPOSTS_TEMPLATE['forum_table_start'], $vars);

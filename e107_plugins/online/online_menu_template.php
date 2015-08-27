@@ -17,7 +17,7 @@
 global $sc_style;
 //##### LASTSEEN MENU ---------------------------------------------------------
 
-$LASTSEEN_TEMPLATE['start']	= "<ul class='lastseen-menu'>";
+$LASTSEEN_TEMPLATE['start']	= "<ul class='lastseen-menu '>";
 $LASTSEEN_TEMPLATE['item']	= "<li>{LASTSEEN_USERLINK} <small class='muted'>{LASTSEEN_DATE}</small></li>";
 $LASTSEEN_TEMPLATE['end']	= "</ul>";
 
@@ -32,7 +32,7 @@ $sc_style['ONLINE_MEMBERS']['post'] = "</li>";
 $sc_style['ONLINE_MEMBERS_LIST']['pre'] = "<ul>";
 $sc_style['ONLINE_MEMBERS_LIST']['post'] = "</ul>";
 
-$sc_style['ONLINE_MEMBERS_LIST_EXTENDED']['pre'] = "<ul class='unstyled'>";
+$sc_style['ONLINE_MEMBERS_LIST_EXTENDED']['pre'] = "<ul class='unstyled list-unstyled'>";
 $sc_style['ONLINE_MEMBERS_LIST_EXTENDED']['post'] = "</ul>";
 
 $sc_style['ONLINE_ONPAGE']['pre'] = "<li>".LAN_ONLINE_3;

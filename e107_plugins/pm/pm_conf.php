@@ -121,7 +121,7 @@ if (isset($_POST['update_prefs']))
 			$temp[$k] = $v;
 		}
 	}
-	if ($e107->admin_log->logArrayDiffs($temp, $pm_prefs, 'PM_ADM_02'))
+	if (e107::getLog()->logArrayDiffs($temp, $pm_prefs, 'PM_ADM_02'))
 	{
 	//	$sysprefs->setArray('pm_prefs');
 	//print_a($temp);
@@ -189,14 +189,15 @@ if(isset($_POST['addlimit']))
 			'gen_intdata' => intval($_POST['new_inbox_size']),
 			'gen_chardata' => intval($_POST['new_outbox_size'])
 			);
-		if($sql->db_Insert('generic', $limArray))
+
+		if($sql->insert('generic', $limArray))
 		{
-			$e107->admin_log->logArrayAll('PM_ADM_05', $limArray);
+			e107::getLog()->logArrayAll('PM_ADM_05', $limArray);
 			$mes->addSuccess(ADLAN_PM_6);
 		}
 		else
 		{
-			$e107->admin_log->log_event('PM_ADM_08', '');
+			e107::getLog()->log_event('PM_ADM_08', '');
 			$mes->addError(ADLAN_PM_7); 
 		}
 	}
@@ -217,14 +218,14 @@ if(isset($_POST['updatelimits']))
 		if($_POST['inbox_count'][$id] == '' && $_POST['outbox_count'][$id] == '' && $_POST['inbox_size'][$id] == '' && $_POST['outbox_size'][$id] == '')
 		{
 			//All entries empty - Remove record
-			if($sql->db_Delete('generic','gen_id = '.$id))
+			if($sql->delete('generic','gen_id = '.$id))
 			{
-				$e107->admin_log->log_event('PM_ADM_07', 'ID: '.$id);
+				e107::getLog()->log_event('PM_ADM_07', 'ID: '.$id);
 				$mes->addSuccess($id.ADLAN_PM_9);
 			}
 			else
 			{
-				$e107->admin_log->log_event('PM_ADM_10', '');
+				e107::getLog()->log_event('PM_ADM_10', '');
 				$mes->addError($id.ADLAN_PM_10);
 			}
 		}
@@ -236,14 +237,14 @@ if(isset($_POST['updatelimits']))
 				'gen_intdata' => intval($_POST['inbox_size'][$id]),
 				'gen_chardata' => intval($_POST['outbox_size'][$id])
 				);
-			if ($sql->db_Update('generic',array('data' => $limArray, 'WHERE' => 'gen_id = '.$id)))
+			if ($sql->update('generic',array('data' => $limArray, 'WHERE' => 'gen_id = '.$id)))
 			{
-				$e107->admin_log->logArrayAll('PM_ADM_06', $limArray);
+				e107::getLog()->logArrayAll('PM_ADM_06', $limArray);
 				$mes->addSuccess($id.ADLAN_PM_11);
 			}
 			else
 			{
-				$e107->admin_log->log_event('PM_ADM_09', '');
+				e107::getLog()->log_event('PM_ADM_09', '');
 				$mes->addError($id.ADLAN_PM_7);
 			}
 		}

@@ -69,6 +69,7 @@ class e_parse_shortcode
 	protected $scClasses = array(); // Batch shortcode classes - TODO make it private
 	protected $scOverride = array(); // Array of codes found in override/shortcodes dir
 	protected $scBatchOverride = array(); // Array of codes found in override/shortcodes/batch dir
+	protected $ignoreCodes = array(); // Shortcodes to be ignored and remain unchanged. (ie. {THEME}, {e_PLUGIN} etc. )
 	/**
 	 * @var e_vars
 	 */
@@ -89,7 +90,7 @@ class e_parse_shortcode
 	function __construct()
 	{
 		$this->parseSCFiles = true; // Default probably never used, but make sure its defined.
-		
+		$this->ignoreCodes = e107::getParser()->getUrlConstants(); // ignore all URL shortcodes. ie. {e_PLUGIN} 
 		$this->loadOverrideShortcodes();
 		$this->loadThemeShortcodes();
 		$this->loadPluginShortcodes();
@@ -461,10 +462,20 @@ class e_parse_shortcode
 	//		$this->registered_codes[$code]['type'] = 'plugin';
 	//					$this->registered_codes[$code]['function'] = strtolower($code).'_shortcode';
 	//					$this->registered_codes[$code]['path'] = e_PLUGIN.$path.'/shortcodes/single/';
-	//					$this->registered_codes[$code]['perms'] = $uclass; 
-		
-	
-	
+	//					$this->registered_codes[$code]['perms'] = $uclass;
+
+
+		if(deftrue('e_DEVELOPER')) // experimental, could break something. - use theme shortcodes in other templates.
+		{
+			if(file_exists(THEME."theme_shortcodes.php"))
+			{
+				$classFunc = 'theme_shortcodes';
+				$path = THEME."theme_shortcodes.php";
+				include_once($path);
+				$this->registerClassMethods($classFunc, $path, false);
+
+			}
+		}
 	
 		if (isset($register_sc) && is_array($register_sc))
 		{
@@ -707,9 +718,9 @@ class e_parse_shortcode
 		$this->addedCodes = NULL;
 		
 		// former $sc_style - do it once here and not on every doCode loop - performance
-		
-		$this->sc_style = e107::scStyle(); 	//FIXME - BC Problems and conflicts. - XXX Commenting this out will fix #3 below. 
-	
+
+		$this->sc_style = e107::scStyle(); 	//FIXME - BC Problems and conflicts.
+
 		/* --------- BUG TEST Scenario -------------- 
 		 * Front-end Theme: Bootstrap
 		 * MENU-1 contains '{NAVIGATION=side}' on top and chatbox_menu below
@@ -745,9 +756,17 @@ class e_parse_shortcode
 			// Do it only once per parsing cylcle and not on every doCode() loop - performance
 			if(method_exists($this->addedCodes, 'wrapper'))
 			{
-				$this->wrappers = e107::templateWrapper($this->addedCodes->wrapper()); 
+				// $cname = get_class($this->addedCodes);
+
+				$tmpWrap = e107::templateWrapper($this->addedCodes->wrapper());
+				if(!empty($tmpWrap)) // FIX for #3 above.
+				{
+					$this->wrappers = array_merge($this->wrappers,$tmpWrap);
+				}
+
 			}
-			
+
+
 			/*
 			$classname = get_class($extraCodes);
 
@@ -764,16 +783,21 @@ class e_parse_shortcode
 			// auto-register eVars if possible - call it manually?
 			// $this->callScFunc($classname, 'setParserVars', $this->eVars);
 		}
-		elseif (is_array($extraCodes))
+		elseif (is_array($extraCodes)) // Array value contains the contents of a .sc file which is then parsed. ie. return " whatever "; 
 		{
 			$this->addedCodes = &$extraCodes;
+
 			/*
 			foreach ($extraCodes as $sc => $code)
 			{
 				$this->scList[$sc] = $code;
 			}
 			*/
+			
+		//	print_a($this);
 		}
+
+
 		$ret = preg_replace_callback('#\{(\S[^\x02]*?\S)\}#', array(&$this, 'doCode'), $text);
 		$this->parseSCFiles = $saveParseSCFiles; // Restore previous value
 		$this->addedCodes = $saveCodes;
@@ -781,7 +805,7 @@ class e_parse_shortcode
 		$this->debug_legacy = null;
 		
 		
-	//	$this->sc_style = array();	 //XXX Adding this will also fix #2 above. 
+			//	$this->sc_style = array();	 //XXX Adding this will also fix #2 above. 
 
 		
 		return $ret;
@@ -793,10 +817,18 @@ class e_parse_shortcode
 	 */
 	function doCode($matches)
 	{
+		// print_a($matches);
+		
+		if(in_array($matches[0],$this->ignoreCodes)) // Ignore all {e_PLUGIN}, {THEME} etc. otherwise it will just return blank for these items. 
+		{
+			return $matches[0];	
+		}
+
 		// XXX remove all globals, $sc_style removed
 		global $pref, $e107cache, $menu_pref, $parm, $sql;
 		
 		$parmArray = false;
+		$fullShortcodeKey = null;
 
 		if ($this->eVars)
 		{
@@ -812,6 +844,7 @@ class e_parse_shortcode
 
 		if(preg_match('/^([A-Z_]*):(.*)/', $matches[1], $newMatch))
 		{
+			$fullShortcodeKey = $newMatch[0];
 			$code = $newMatch[1];
 			$parmStr = trim($newMatch[2]);
 			$debugParm = $parmStr;
@@ -867,6 +900,7 @@ class e_parse_shortcode
 
 		$scCode = '';
 		$scFile = '';
+		$_path = '';
 		$ret = '';
 		$_method = 'sc_'.strtolower($code);
 		if (is_object($this->addedCodes) && method_exists($this->addedCodes, $_method)) //It is class-based batch shortcode.  Class already loaded; call the method
@@ -940,7 +974,7 @@ class e_parse_shortcode
 							// via e107::getScBatch(name)->setParserVars($eVars);
 							// $this->callScFunc($_class, 'setParserVars', $this->eVars);
 							$wrapper = $this->callScFunc($_class, 'wrapper', null);
-							
+
 							$ret = $this->callScFuncA($_class, $_method, array($parm, $sc_mode));
 							
 							/*if (method_exists($this->scClasses[$_class], $_method))
@@ -1018,6 +1052,11 @@ class e_parse_shortcode
 					$scCode = file_get_contents($scFile);
 					$this->scList[$code] = $scCode;
 					$_path = $scFile;
+				}	
+				else
+				{
+				//	$ret = 'Missing!'; 
+					$_path .=	" MISSING!";
 				}
 			}
 
@@ -1039,15 +1078,29 @@ class e_parse_shortcode
 
 		if ($scCode)
 		{
-			$ret = eval($scCode);
+			$ret = @eval($scCode);
+			
+			if($ret === false && E107_DEBUG_LEVEL > 0) // Error in Code. 
+			{
+				$string = print_a($scCode,true);
+				e107::getMessage()->addDebug('Could not parse Shortcode '.$scFile.' :: {'.$code .'} '.$string);
+			}
 		}
+
+
 
 		if (isset($ret) && ($ret != '' || is_numeric($ret)))
 		{
 			// Wrapper support - see contact_template.php
-			if(isset($this->wrappers[$code]) && !empty($this->wrappers[$code]))
+			if(isset($this->wrappers[$code]) && !empty($this->wrappers[$code])) // eg: $NEWS_WRAPPER['view']['item']['NEWSIMAGE']
 			{
 				list($pre, $post) = explode("{---}", $this->wrappers[$code], 2); 
+				$ret = $pre.$ret.$post;
+
+			}
+			elseif(!empty($fullShortcodeKey) && !empty($this->wrappers[$fullShortcodeKey]) ) // eg: $NEWS_WRAPPER['view']['item']['NEWSIMAGE: item=1']
+			{
+				list($pre, $post) = explode("{---}", $this->wrappers[$fullShortcodeKey], 2);
 				$ret = $pre.$ret.$post;
 			}
 			else
@@ -1110,12 +1163,24 @@ class e_parse_shortcode
 			{
 				$other = $this->debug_legacy;
 			}
-			
+
+			if(!empty($this->wrappers[$code]))
+			{
+				$other['wrapper'] = $this->wrappers[$code];
+			}
+			elseif(!empty($this->wrappers[$fullShortcodeKey]) )
+			{
+				$other['wrapper'] = $this->wrappers[$fullShortcodeKey];
+			}
+
+
 			$info = (isset($this->registered_codes[$code])) ? print_a($this->registered_codes[$code],true) : print_a($other,true);
 			
 			$tmp = isset($debugParm) ? $debugParm : $parm;
 
 			$db_debug->logCode(2, $code, $tmp, $info);
+
+
 			
 		}
 		
@@ -1141,7 +1206,7 @@ class e_parse_shortcode
 			}
 			else
 			{
-				$cur_shortcodes = $eArrayStorage->ReadArray($sc_cache);
+				$cur_shortcodes = e107::unserialize($sc_cache);
 				$sc_batch = "";
 			}
 		}
@@ -1241,7 +1306,7 @@ class e_shortcode
 		
 		if(false === $id) $id = null;
 		$this->wrapper = $id;
-		
+
 		return $this;
 	}
 

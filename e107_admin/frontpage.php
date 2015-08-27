@@ -2,14 +2,11 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2015 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Administration Area - Front page
- *
- * $URL$
- * $Id$
  *
 */
 
@@ -38,11 +35,11 @@ $mes = e107::getMessage();
 $frontPref = e107::pref('core');              		 	// Get prefs
 
 // Get list of possible options for front page
-$front_page['news'] = array('page' => 'news.php', 'title' => ADLAN_0);
-//$front_page['download'] = array('page' => 'download.php', 'title' => ADLAN_24);		// Its a plugin now
+$front_page['news'] = array('page' => 'news.php', 'title' => ADLAN_0); // TODO Move to e107_plugins/news
+
 $front_page['wmessage'] = array('page' => 'index.php', 'title' => ADLAN_28);
 
-if($sql->db_Select('page', 'page_id, page_title', "menu_name=''"))
+if($sql->db_Select('page', 'page_id, page_title', "menu_name=''")) // TODO Move to e107_plugins/page
 {
 	$front_page['custom']['title'] = FRTLAN_30;
 	while($row = $sql->db_Fetch())
@@ -52,16 +49,27 @@ if($sql->db_Select('page', 'page_id, page_title', "menu_name=''"))
 }
 
 // Now let any plugins add to the options - must append to the $front_page array as above
-if(varset($frontPref['e_frontpage_list']))
-{
-	foreach($frontPref['e_frontpage_list'] as $val)
+
+
+	//v2.x spec. ----------
+	$new = e107::getAddonConfig('e_frontpage');
+	foreach($new as $k=>$v)
 	{
-		if(is_readable(e_PLUGIN.$val.'/e_frontpage.php'))
+		$front_page[$k] = $v;
+	}
+
+	// v1.x spec.---------------
+	if(!empty($frontPref['e_frontpage_list']))
+	{
+		foreach($frontPref['e_frontpage_list'] as $val)
 		{
-			require_once (e_PLUGIN.$val.'/e_frontpage.php');
+			if(is_readable(e_PLUGIN.$val.'/e_frontpage.php'))
+			{
+				require_once (e_PLUGIN.$val.'/e_frontpage.php');
+			}
 		}
 	}
-}
+
 
 
 
@@ -243,19 +251,23 @@ if(isset($_POST['fp_save_new']))
 	}
 
 	$temp = array('order' => intval($_POST['fp_order']), 'class' => $_POST['class'], 'page' => $frontpage_value, 'force' => trim($forcepage_value));
-	if($temp['order'] == 0)
-	{ // New index to add
+
+	if($temp['order'] == 0) // New index to add
+	{
 		$ind = 0;
 		for($i = 1; $i <= count($fp_settings); $i ++)
 		{
 			if($fp_settings[$i]['class'] == $temp['class'])
 				$ind = $i;
 		}
+
 		if($ind)
 		{
+			$mes->addDebug(print_a($fp_settings,true));
+			$mes->addError(FRTLAN_56." ".$ind);
 			unset($fp_settings[$ind]); // Knock out duplicate definition for class
-			echo "duplicate definition for class: ".$ind."<br />";
 		}
+
 		array_unshift($fp_settings, $temp); // Deliberately add twice
 		array_unshift($fp_settings, $temp); // ....because re-indexed from zero
 		unset($fp_settings[0]); // Then knock out index zero
@@ -270,7 +282,7 @@ if(isset($_POST['fp_save_new']))
 	}
 	else
 	{ // Someone playing games
-		$mes->addError('Software error'); // TODO LAN
+		$mes->addError(FRTLAN_57);
 	}
 }
 
@@ -306,6 +318,8 @@ if($fp_update_prefs)
 	$corePrefs->set('frontpage', $fp_list);
 	$corePrefs->set('frontpage_force', $fp_force);
 	$result = $corePrefs->save(FALSE, TRUE);
+	$mes->addDebug("<h4>Home</h4>".print_a($fp_list, true));
+	$mes->addDebug("<h4>Post-Login</h4>".print_a($fp_force, true));
 }
 
 
@@ -383,8 +397,8 @@ class frontpage
 					</colgroup>
 					<thead>
 						<tr>
-							<th class='first'>".LAN_ORDER."</th>
-							<th>".FRTLAN_53."</th>
+							<th class='first left'>".LAN_ORDER."</th>
+							<th>".LAN_USERCLASS."</th>
 							<th>".FRTLAN_49."</th>
 							<th>".FRTLAN_35."</th>
 							<th class='center last'>".LAN_OPTIONS."</th>
@@ -394,18 +408,21 @@ class frontpage
 
 		foreach($fp_settings as $order => $current_value)
 		{
-			$title = e107::getUserClass()->uc_get_classname($current_value['class']);
+			$title = e107::getUserClass()->getName($current_value['class']);
 			$text .= "
 					<tr>
-						<td class='right'>".$order."</td>
+						<td class='left'>".$order."</td>
 						<td>".$title."</td>
 						<td>".$this->lookup_path($current_value['page'])."</td>
 						<td>".$this->lookup_path($current_value['force'])."</td>
 						<td class='center options last'>
-						<div class='btn-group'>
-							".$frm->admin_button('fp_inc',$order,'up',ADMIN_UP_ICON)."
-							".$frm->admin_button('fp_dec',$order,'down',ADMIN_DOWN_ICON)."
-							<a class='btn' title='".LAN_EDIT."' href='".e_SELF."?id=".$order."' >".ADMIN_EDIT_ICON."</a>
+						<div class='btn-group'>";
+
+					//		".$frm->admin_button('fp_inc',$order,'up',ADMIN_UP_ICON)."
+					//		".$frm->admin_button('fp_dec',$order,'down',ADMIN_DOWN_ICON)."
+
+						$text .= "
+							<a class='btn btn-default' title='".LAN_EDIT."' href='".e_SELF."?id=".$order."' >".ADMIN_EDIT_ICON."</a>
 							".$frm->admin_button('fp_delete_rule['.$order.']',$order,'',ADMIN_DELETE_ICON)."					
 						</div>
 						</td>
@@ -482,14 +499,24 @@ class frontpage
 				<div class='tab-pane active' id='home'>
 					<table class='table adminform'>
 						<colgroup>
-							<col style='width: 30%' />
-							<col style='width: 70%' />
+							<col style='width: 20%' />
+							<col style='width: 80%' />
 						</colgroup>
 						<tbody>
-							".$text_tmp_1."
 							<tr>
-								".$this->add_other('frontpage', $is_other_home, $rule_info['page'])."
+							<td>Selection</td>
+							<td>
+								<table class='table table-striped table-bordered'>
+									<colgroup>
+										<col style='width: 20%' />
+										<col style='width: 80%' />
+									</colgroup>
+									".$text_tmp_1."
+									".$this->add_other('frontpage', $is_other_home, $rule_info['page'])."
+								</table>
+							</td>
 							</tr>
+
 						</tbody>
 					</table>
 				</div>
@@ -497,22 +524,44 @@ class frontpage
 				<div class='tab-pane' id='postlogin'>
 					<table class='table adminform'>
 						<colgroup>
-							<col style='width: 30%' />
-							<col style='width: 70%' />
+							<col style='width: 20%' />
+							<col style='width: 80%' />
 						</colgroup>
-						<tbody>
-							".$text_tmp_2."
-							<tr>
+						<tbody><tr>
+							<td></td>
+							<td>
+								<table class='table table-striped table-bordered'>
+								<colgroup>
+									<col style='width: 20%' />
+									<col style='width: 80%' />
+								</colgroup>
+								".$text_tmp_2."
 								".$this->add_other('fp_force_page', $is_other_force, $rule_info['force'])."
+								</table>
+							</td>
 							</tr>
+
 						</tbody>
 					</table>
 				</div>
 			</div>
+			<table class='table adminform'>
+				<colgroup>
+					<col style='width: 20%' />
+					<col style='width: 80%' />
+				</colgroup>
+				<tr>
+					<td>".FRTLAN_43."</td>
+					<td>".e107::getUserClass()->uc_dropdown('class', $rule_info['class'], 'public,guest,member,admin,main,classes')."</td>
+				</tr>
+				<tr>
+					<td>".LAN_ORDER."</td>
+					<td>".$this->frm->number('fp_order', $rule_info['order'], 3, 'min=0')."</td>
+				</tr>
+			</table>
 			
-				<div class='buttons-bar center'>
-					".$this->frm->hidden('fp_order', $rule_info['order'])."
-					".FRTLAN_43.": ".e107::getUserClass()->uc_dropdown('class', $rule_info['class'], 'public,guest,member,admin,main,classes')."
+				<div class='buttons-bar center form-inline'>
+
 					".$this->frm->admin_button('fp_save_new', LAN_UPDATE, 'update')."
 					".$this->frm->admin_button('fp_cancel', LAN_CANCEL, 'cancel')."
 				</div>
@@ -608,12 +657,14 @@ class frontpage
 				</td>
 				<td>
 			";
-			$text .= $this->frm->select_open($ob_name.'_multipage['.$front_key.']');
+			$text .= $this->frm->select_open($ob_name.'_multipage['.$front_key.']', 'size=xxlarge');
 			foreach($front_value['page'] as $multipage_key => $multipage_value)
 			{
 				$text .= "\n".$this->frm->option($multipage_value['title'], $multipage_key, ($current_setting == $multipage_value['page']))."\n";
 			}
 			$text .= $this->frm->select_close();
+
+
 			$text .= "</td>";
 		}
 		else

@@ -18,19 +18,23 @@
 */
 require_once("class2.php");
 //include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+
 e107::coreLan('print');
 
+/*
 $HEADER="";
 $FOOTER="";
 $CUSTOMHEADER = "";
 $CUSTOMFOOTER = "";
-
+*/
 
 $qs = explode(".", e_QUERY,2);
 if ($qs[0] == "") {
 	header("location:".e_BASE."index.php");
 	 exit;
 }
+define('e_IFRAME', true); 
+
 $source = $qs[0];
 $parms = varset($qs[1],'');
 unset($qs);
@@ -55,6 +59,7 @@ else
 	$con = new convert;
 	$sql->db_Select("news", "*", "news_id='{$parms}'");
 	$row = $sql->db_Fetch(); 
+	$newsUrl = e107::getUrl()->create('news/view/item', $row, 'full=1'); 
 	extract($row);
 	define("e_PAGETITLE", $news_title);
 	$news_body = $tp->toHTML($news_body, TRUE, 'BODY');
@@ -89,8 +94,11 @@ else
 	$print_text .= "<br /><br /></span><hr />".
 	LAN_PRINT_303.SITENAME."
 	<br />
-	( http://".$_SERVER['HTTP_HOST'].e_HTTP."news.php?extend.".$news_id." )
+	( ".$newsUrl." )
 	";
+	
+	
+
 }
 
 
@@ -115,7 +123,7 @@ else
 		<div style='background-color:white'>
 		<div style='text-align:".$align."'>".$tp->parseTemplate("{LOGO}", TRUE)."</div><hr /><br />
 		<div style='text-align:".$align."'>".$print_text."</div><br /><br />
-		<form action=''><div style='text-align:center'><input type='button' value='".LAN_PRINT_307."' onclick='window.print()' /></div></form></div>";
+		<form action=''><div class='hidden-print' style='text-align:center'><input class='btn btn-primary ' type='button' value='".LAN_PRINT_307."' onclick='window.print()' /></div></form></div>";
 }
 require_once(FOOTERF);
 

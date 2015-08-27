@@ -59,7 +59,7 @@ $core_pref = e107::getConfig();
 
 if(!$core_pref->get('timezone'))
 {
-	$core_pref->set('timezone', 'GMT');
+	$core_pref->set('timezone', 'UTC');
 }
 
 $frm = e107::getForm(false, true); //enable inner tabindex counter
@@ -118,6 +118,46 @@ if(isset($_POST['updateprefs']))
 					);
 
 	$pref['post_html'] = intval($_POST['post_html']);			// This ensures the setting is reflected in set text
+
+
+	$smtp_opts = array();
+
+	if(!empty($_POST['smtp_options']))
+	{
+
+		switch (trim($_POST['smtp_options']))
+		{
+			case 'smtp_ssl' :
+				$smtp_opts[] = 'secure=SSL';
+				break;
+			case 'smtp_tls' :
+				$smtp_opts[] = 'secure=TLS';
+				break;
+			case 'smtp_pop3auth' :
+				$smtp_opts[] = 'pop3auth';
+				break;
+		}
+
+		if (!empty($_POST['smtp_keepalive']))
+		{
+			$smtp_opts[] = 'keepalive';
+		}
+
+		if (!empty($_POST['smtp_useVERP']))
+		{
+			$smtp_opts[] = 'useVERP';
+		}
+
+		$_POST['smtp_options'] = implode(',',$smtp_opts);
+
+		unset($_POST['smtp_keepalive'],$_POST['smtp_useVERP']);
+
+		// e107::getMessage()->addDebug(print_a($_POST['smtp_options'],true));
+	}
+
+
+
+
 	
 	$_POST['membersonly_exceptions'] = explode("\n",$_POST['membersonly_exceptions']);
 
@@ -189,7 +229,7 @@ if(isset($_POST['updateprefs']))
 	}
 }
 
-if (plugInstalled('alt_auth'))
+if (e107::isInstalled('alt_auth'))
 {
 	$authlist[] = "e107";
 	$handle = opendir(e_PLUGIN."alt_auth");
@@ -217,13 +257,34 @@ function sendTest()
 	else
 	{
 		$mailheader_e107id = USERID;
-		require_once(e_HANDLER.'mail.php');
+		$pref = e107::pref('core');
+
 		$add = ($pref['mailer']) ? " (".strtoupper($pref['mailer']).")" : ' (PHP)';
 		$sendto = trim($_POST['testaddress']);
-		if (!sendemail($sendto, LAN_MAILOUT_113." ".SITENAME.$add, str_replace("[br]", "\n", LAN_MAILOUT_114),LAN_MAILOUT_189)) 
+		
+		
+		$eml = array(); 
+		
+		$eml['email_subject']		= LAN_MAILOUT_113." ".SITENAME.$add;
+		$eml['email_sender_email']	= null; 
+		$eml['email_sender_name']	= null;
+		$eml['email_replyto']		= null;
+		$eml['email_replytonames']	= null; 
+		$eml['send_html']			= true; 
+		$eml['add_html_header'] 	= null; 
+		$eml['email_body']			= str_replace("[br]", "<br>", LAN_MAILOUT_114);
+		$eml['email_attach']		= null;
+		$eml['template']			= 'default';
+		$eml['e107_header']			= USERID;
+
+		if (!e107::getEmail()->sendEmail($sendto, LAN_MAILOUT_189, $eml)) 
 		{
 			$mes->addError(($pref['mailer'] == 'smtp')  ? LAN_MAILOUT_67 : LAN_MAILOUT_106);
 		} 
+	//	if (!sendemail($sendto, LAN_MAILOUT_113." ".SITENAME.$add, str_replace("[br]", "\n", LAN_MAILOUT_114),LAN_MAILOUT_189)) 
+	//	{
+	//		$mes->addError(($pref['mailer'] == 'smtp')  ? LAN_MAILOUT_67 : LAN_MAILOUT_106);
+	//	} 
 		else 
 		{
 			$mes->addSuccess(LAN_MAILOUT_81. ' ('.$sendto.')');
@@ -254,7 +315,7 @@ $pref['membersonly_exceptions'] = implode("\n",$pref['membersonly_exceptions']);
 
 $text = "
 <div id='core-prefs'>
-	<form class='admin-menu' method='post' action='".e_SELF."'>
+	<form class='admin-menu' method='post' action='".e_SELF."' autocomplete='off'>
 		<fieldset id='core-prefs-main'>
 			<legend>".PRFLAN_1."</legend>
 			<table class='table adminform'>
@@ -266,13 +327,13 @@ $text = "
 					<tr>
 						<td><label for='sitename'>".PRFLAN_2."</label></td>
 						<td>
-							".$frm->text('sitename', $pref['sitename'], 100, 'required=1')."
+							".$frm->text('sitename', $pref['sitename'], 100, 'required=1&size=xxlarge')."
 						</td>
 					</tr>
 					<tr>
 						<td><label for='siteurl'>".PRFLAN_3."</label></td>
 						<td>
-							".$frm->text('siteurl', $pref['siteurl'], 150)."
+							".$frm->text('siteurl', $pref['siteurl'], 150, 'required=1&size=xxlarge')."
 							".($pref['siteurl'] == SITEURL ? "" : "<div class='field-help'>".PRFLAN_159.": <strong>".SITEURL."</strong></div>")."
 						</td>
 					</tr>
@@ -313,35 +374,35 @@ $text .= "<div class='field-spacer'>".$tp->parseTemplate("{IMAGESELECTOR={$parms
 $sLogo = siteinfo_shortcodes::sc_logo();
 */
 
-$text .= $frm->imagepicker('sitebutton',$pref['sitebutton'],'_common','help=Used by Facebook and others. Should be a square image of at least 144px in width and height.');
+$text .= $frm->imagepicker('sitebutton',$pref['sitebutton'],'','help='.PRFLAN_225);
 
 $text .= "
 						</td>
 					</tr>
 					<tr>
 						<td><label for='sitelogo'>".PRFLAN_214."</label></td>
-						<td>".$frm->imagepicker('sitelogo',$pref['sitelogo'],'_common','help=Used by some themes as the header image on some pages.')."</td>
+						<td>".$frm->imagepicker('sitelogo',$pref['sitelogo'],'','help='.PRFLAN_226)."</td>
 					</tr>
 					<tr>
 						<td><label for='sitetag'>".PRFLAN_5."</label></td>
 						<td>
-							".$frm->textarea('sitetag', $pref['sitetag'], 3, 59)."
-							<div class='field-help'>Used by some themes. Place 'SITETAG' in your theme to use this value.</div>
+							".$frm->textarea('sitetag', $tp->toForm($pref['sitetag']), 3, 59)."
+							<div class='field-help'>".PRFLAN_227."</div>
 						</td>
 					</tr>
 					<tr>
 						<td><label for='sitedescription'>".PRFLAN_6."</label></td>
 						<td>
-							".$frm->textarea('sitedescription', $pref['sitedescription'], 3, 80)."
-							<div class='field-help'>Used by some themes. Place 'SITEDESCRIPTION' in your theme to use this value.</div>
+							".$frm->textarea('sitedescription', $tp->toForm($pref['sitedescription']), 3, 80)."
+							<div class='field-help'>".PRFLAN_228."</div>
 						</td>
 					</tr>
 					
 					<tr>
 						<td><label for='sitedisclaimer'>".PRFLAN_9."</label></td>
 						<td>
-							".$frm->textarea('sitedisclaimer', str_replace(array('<', '>', '"'), array('&lt;', '&gt;', '&quot;'), $pref['sitedisclaimer']), 3, 80)."
-							<div class='field-help'>Used by some themes. Place 'SITEDISCLAIMER' in your theme to use this value.</div>
+							".$frm->textarea('sitedisclaimer',$tp->toForm( $pref['sitedisclaimer']), 3, 80)."
+							<div class='field-help'>".PRFLAN_229."</div>
 						</td>
 					</tr>
 				</tbody>
@@ -412,6 +473,8 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 
 			// SMTP. -------------->
 			$smtp_opts = explode(',',varset($pref['smtp_options'],''));
+
+
 			$smtpdisp = ($pref['mailer'] != 'smtp') ? "style='display:none;'" : '';
 			$text .= "<div id='smtp' {$smtpdisp}>
 			<table class='table adminlist' style='margin-right:auto;margin-left:0px;border:0px'>
@@ -444,7 +507,18 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 
 			<tr>
 				<td><label for='smtp_options'>".LAN_MAILOUT_90."</label></td><td>
-				<select class='tbox' name='smtp_options' id='smtp_options'>\n
+				";
+
+		$sslOpts = array(
+				'smtp_ssl' 		=> LAN_MAILOUT_92,
+				'smtp_tls'		=> LAN_MAILOUT_93,
+				'smtp_pop3auth'	=> LAN_MAILOUT_91
+		);
+
+	//	$text .= $frm->select('smtp_options', $sslOpts, $smtp_opts, '', LAN_MAILOUT_96);
+
+
+			$text .="<select class='tbox' name='smtp_options' id='smtp_options'>\n
 				<option value=''>".LAN_MAILOUT_96."</option>\n";
 			$selected = (in_array('secure=SSL',$smtp_opts) ? " selected='selected'" : '');
 			$text .= "<option value='smtp_ssl'{$selected}>".LAN_MAILOUT_92."</option>\n";
@@ -452,23 +526,26 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 			$text .= "<option value='smtp_tls'{$selected}>".LAN_MAILOUT_93."</option>\n";
 			$selected = (in_array('pop3auth',$smtp_opts) ? " selected='selected'" : '');
 			$text .= "<option value='smtp_pop3auth'{$selected}>".LAN_MAILOUT_91."</option>\n";
-			$text .= "</select><span class='field-help'>".LAN_MAILOUT_94."</span></td></tr>";
+			$text .= "</select>";
+
+
+			$text .= "<span class='field-help'>".LAN_MAILOUT_94."</span></td></tr>";
 		
 			$text .= "<tr>
-				<td><label for='smtp_keepalive'>".LAN_MAILOUT_57."</label></td><td>
-				";
-			$checked = (varsettrue($pref['smtp_keepalive']) ) ? "checked='checked'" : '';
-			$text .= "<input type='checkbox' name='smtp_keepalive' id='smtp_keepalive' value='1' {$checked} />
+				<td><label for='smtp_keepalive'>".LAN_MAILOUT_57."</label></td><td>\n";
+
+			$text .= $frm->radio_switch('smtp_keepalive', $pref['smtp_keepalive'])."
 				</td>
 				</tr>";
-		
-			$checked = (in_array('useVERP',$smtp_opts) ? "checked='checked'" : "");
+
+
 			$text .= "<tr>
-				<td><label for='smtp_useVERP'>".LAN_MAILOUT_95."</label></td><td>
-				<input type='checkbox' name='smtp_useVERP' id='smtp_useVERP' value='1' {$checked} />
+				<td><label for='smtp_useVERP'>".LAN_MAILOUT_95."</label></td><td>".$frm->radio_switch('smtp_useVERP',(in_array('useVERP',$smtp_opts)))."
+
 				</td>
 				</tr>
 				</table></div>";
+
 
 			/* FIXME - posting SENDMAIL path triggers Mod-Security rules. 
 			// Sendmail. -------------->
@@ -521,6 +598,13 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 						<td>
 							".$e_userclass->uc_dropdown('sitecontacts', $pref['sitecontacts'], 'nobody,main,admin,classes', "tabindex='".$frm->getNext()."'")."
 							<div class='smalltext field-help'>".PRFLAN_169."</div>
+						</td>
+					</tr>
+					<tr>
+						<td><label for='contact_visibility'>Contact Form Visibility</label></td>
+						<td>
+							".$e_userclass->uc_dropdown('contact_visibility', varset( $pref['contact_visibility'],e_UC_PUBLIC), null, "tabindex='".$frm->getNext()."'")."
+							<div class='smalltext field-help'>Contact form will only be visible to this userclass group.</div>
 						</td>
 					</tr>
 					<tr>
@@ -726,12 +810,11 @@ $text .= "
 			
 			
 			
-					
-					// TODO LAN
+
 					$text .= "
 					<tr>
-						<td><label for='inputdate'>Date/Time Input-Field format</label></td>
-						<td>
+						<td><label for='inputdate'>".PRFLAN_230."</label></td>
+						<td class='form-inline'>
 							".$frm->select('inputdate',$inputdate, e107::getPref('inputdate'));
 							
 					$text .= $frm->select('inputtime',$inputtime, e107::getPref('inputtime'));
@@ -761,545 +844,7 @@ foreach($toffset as $o)
 
 
 
-$timeZones = array(
-"Africa/Abidjan",
-"Africa/Accra",
-"Africa/Addis_Ababa",
-"Africa/Algiers",
-"Africa/Asmara",
-"Africa/Asmera",
-"Africa/Bamako",
-"Africa/Bangui",
-"Africa/Banjul",
-"Africa/Bissau",
-"Africa/Blantyre",
-"Africa/Brazzaville",
-"Africa/Bujumbura",
-"Africa/Cairo",
-"Africa/Casablanca",
-"Africa/Ceuta",
-"Africa/Conakry",
-"Africa/Dakar",
-"Africa/Dar_es_Salaam",
-"Africa/Djibouti",
-"Africa/Douala",
-"Africa/El_Aaiun",
-"Africa/Freetown",
-"Africa/Gaborone",
-"Africa/Harare",
-"Africa/Johannesburg",
-"Africa/Juba",
-"Africa/Kampala",
-"Africa/Khartoum",
-"Africa/Kigali",
-"Africa/Kinshasa",
-"Africa/Lagos",
-"Africa/Libreville",
-"Africa/Lome",
-"Africa/Luanda",
-"Africa/Lubumbashi",
-"Africa/Lusaka",
-"Africa/Malabo",
-"Africa/Maputo",
-"Africa/Maseru",
-"Africa/Mbabane",
-"Africa/Mogadishu",
-"Africa/Monrovia",
-"Africa/Nairobi",
-"Africa/Ndjamena",
-"Africa/Niamey",
-"Africa/Nouakchott",
-"Africa/Ouagadougou",
-"Africa/Porto-Novo",
-"Africa/Sao_Tome",
-"Africa/Timbuktu",
-"Africa/Tripoli",
-"Africa/Tunis",
-"Africa/Windhoek",
-"America/Adak",
-"America/Anchorage",
-"America/Anguilla",
-"America/Antigua",
-"America/Araguaina",
-"America/Argentina/Buenos_Aires",
-"America/Argentina/Catamarca",
-"America/Argentina/ComodRivadavia",
-"America/Argentina/Cordoba",
-"America/Argentina/Jujuy",
-"America/Argentina/La_Rioja",
-"America/Argentina/Mendoza",
-"America/Argentina/Rio_Gallegos",
-"America/Argentina/Salta",
-"America/Argentina/San_Juan",
-"America/Argentina/San_Luis",
-"America/Argentina/Tucuman",
-"America/Argentina/Ushuaia",
-"America/Aruba",
-"America/Asuncion",
-"America/Atikokan",
-"America/Atka",
-"America/Bahia",
-"America/Bahia_Banderas",
-"America/Barbados",
-"America/Belem",
-"America/Belize",
-"America/Blanc-Sablon",
-"America/Boa_Vista",
-"America/Bogota",
-"America/Boise",
-"America/Buenos_Aires",
-"America/Cambridge_Bay",
-"America/Campo_Grande",
-"America/Cancun",
-"America/Caracas",
-"America/Catamarca",
-"America/Cayenne",
-"America/Cayman",
-"America/Chicago",
-"America/Chihuahua",
-"America/Coral_Harbour",
-"America/Cordoba",
-"America/Costa_Rica",
-"America/Creston",
-"America/Cuiaba",
-"America/Curacao",
-"America/Danmarkshavn",
-"America/Dawson",
-"America/Dawson_Creek",
-"America/Denver",
-"America/Detroit",
-"America/Dominica",
-"America/Edmonton",
-"America/Eirunepe",
-"America/El_Salvador",
-"America/Ensenada",
-"America/Fort_Wayne",
-"America/Fortaleza",
-"America/Glace_Bay",
-"America/Godthab",
-"America/Goose_Bay",
-"America/Grand_Turk",
-"America/Grenada",
-"America/Guadeloupe",
-"America/Guatemala",
-"America/Guayaquil",
-"America/Guyana",
-"America/Halifax",
-"America/Havana",
-"America/Hermosillo",
-"America/Indiana/Indianapolis",
-"America/Indiana/Knox",
-"America/Indiana/Marengo",
-"America/Indiana/Petersburg",
-"America/Indiana/Tell_City",
-"America/Indiana/Vevay",
-"America/Indiana/Vincennes",
-"America/Indiana/Winamac",
-"America/Indianapolis",
-"America/Inuvik",
-"America/Iqaluit",
-"America/Jamaica",
-"America/Jujuy",
-"America/Juneau",
-"America/Kentucky/Louisville",
-"America/Kentucky/Monticello",
-"America/Knox_IN",
-"America/Kralendijk",
-"America/La_Paz",
-"America/Lima",
-"America/Los_Angeles",
-"America/Louisville",
-"America/Lower_Princes",
-"America/Maceio",
-"America/Managua",
-"America/Manaus",
-"America/Marigot",
-"America/Martinique",
-"America/Matamoros",
-"America/Mazatlan",
-"America/Mendoza",
-"America/Menominee",
-"America/Merida",
-"America/Metlakatla",
-"America/Mexico_City",
-"America/Miquelon",
-"America/Moncton",
-"America/Monterrey",
-"America/Montevideo",
-"America/Montreal",
-"America/Montserrat",
-"America/Nassau",
-"America/New_York",
-"America/Nipigon",
-"America/Nome",
-"America/Noronha",
-"America/North_Dakota/Beulah",
-"America/North_Dakota/Center",
-"America/North_Dakota/New_Salem",
-"America/Ojinaga",
-"America/Panama",
-"America/Pangnirtung",
-"America/Paramaribo",
-"America/Phoenix",
-"America/Port-au-Prince",
-"America/Port_of_Spain",
-"America/Porto_Acre",
-"America/Porto_Velho",
-"America/Puerto_Rico",
-"America/Rainy_River",
-"America/Rankin_Inlet",
-"America/Recife",
-"America/Regina",
-"America/Resolute",
-"America/Rio_Branco",
-"America/Rosario",
-"America/Santa_Isabel",
-"America/Santarem",
-"America/Santiago",
-"America/Santo_Domingo",
-"America/Sao_Paulo",
-"America/Scoresbysund",
-"America/Shiprock",
-"America/Sitka",
-"America/St_Barthelemy",
-"America/St_Johns",
-"America/St_Kitts",
-"America/St_Lucia",
-"America/St_Thomas",
-"America/St_Vincent",
-"America/Swift_Current",
-"America/Tegucigalpa",
-"America/Thule",
-"America/Thunder_Bay",
-"America/Tijuana",
-"America/Toronto",
-"America/Tortola",
-"America/Vancouver",
-"America/Virgin",
-"America/Whitehorse",
-"America/Winnipeg",
-"America/Yakutat",
-"America/Yellowknife",
-"Antarctica/Casey",
-"Antarctica/Davis",
-"Antarctica/DumontDUrville",
-"Antarctica/Macquarie",
-"Antarctica/Mawson",
-"Antarctica/McMurdo",
-"Antarctica/Palmer",
-"Antarctica/Rothera",
-"Antarctica/South_Pole",
-"Antarctica/Syowa",
-"Antarctica/Vostok",
-"Arctic/Longyearbyen",
-"Asia/Aden",
-"Asia/Almaty",
-"Asia/Amman",
-"Asia/Anadyr",
-"Asia/Aqtau",
-"Asia/Aqtobe",
-"Asia/Ashgabat",
-"Asia/Ashkhabad",
-"Asia/Baghdad",
-"Asia/Bahrain",
-"Asia/Baku",
-"Asia/Bangkok",
-"Asia/Beirut",
-"Asia/Bishkek",
-"Asia/Brunei",
-"Asia/Calcutta",
-"Asia/Choibalsan",
-"Asia/Chongqing",
-"Asia/Chungking",
-"Asia/Colombo",
-"Asia/Dacca",
-"Asia/Damascus",
-"Asia/Dhaka",
-"Asia/Dili",
-"Asia/Dubai",
-"Asia/Dushanbe",
-"Asia/Gaza",
-"Asia/Harbin",
-"Asia/Hebron",
-"Asia/Ho_Chi_Minh",
-"Asia/Hong_Kong",
-"Asia/Hovd",
-"Asia/Irkutsk",
-"Asia/Istanbul",
-"Asia/Jakarta",
-"Asia/Jayapura",
-"Asia/Jerusalem",
-"Asia/Kabul",
-"Asia/Kamchatka",
-"Asia/Karachi",
-"Asia/Kashgar",
-"Asia/Kathmandu",
-"Asia/Katmandu",
-"Asia/Kolkata",
-"Asia/Krasnoyarsk",
-"Asia/Kuala_Lumpur",
-"Asia/Kuching",
-"Asia/Kuwait",
-"Asia/Macao",
-"Asia/Macau",
-"Asia/Magadan",
-"Asia/Makassar",
-"Asia/Manila",
-"Asia/Muscat",
-"Asia/Nicosia",
-"Asia/Novokuznetsk",
-"Asia/Novosibirsk",
-"Asia/Omsk",
-"Asia/Oral",
-"Asia/Phnom_Penh",
-"Asia/Pontianak",
-"Asia/Pyongyang",
-"Asia/Qatar",
-"Asia/Qyzylorda",
-"Asia/Rangoon",
-"Asia/Riyadh",
-"Asia/Saigon",
-"Asia/Sakhalin",
-"Asia/Samarkand",
-"Asia/Seoul",
-"Asia/Shanghai",
-"Asia/Singapore",
-"Asia/Taipei",
-"Asia/Tashkent",
-"Asia/Tbilisi",
-"Asia/Tehran",
-"Asia/Tel_Aviv",
-"Asia/Thimbu",
-"Asia/Thimphu",
-"Asia/Tokyo",
-"Asia/Ujung_Pandang",
-"Asia/Ulaanbaatar",
-"Asia/Ulan_Bator",
-"Asia/Urumqi",
-"Asia/Vientiane",
-"Asia/Vladivostok",
-"Asia/Yakutsk",
-"Asia/Yekaterinburg",
-"Asia/Yerevan",
-"Atlantic/Azores",
-"Atlantic/Bermuda",
-"Atlantic/Canary",
-"Atlantic/Cape_Verde",
-"Atlantic/Faeroe",
-"Atlantic/Faroe",
-"Atlantic/Jan_Mayen",
-"Atlantic/Madeira",
-"Atlantic/Reykjavik",
-"Atlantic/South_Georgia",
-"Atlantic/St_Helena",
-"Atlantic/Stanley",
-"Australia/ACT",
-"Australia/Adelaide",
-"Australia/Brisbane",
-"Australia/Broken_Hill",
-"Australia/Canberra",
-"Australia/Currie",
-"Australia/Darwin",
-"Australia/Eucla",
-"Australia/Hobart",
-"Australia/LHI",
-"Australia/Lindeman",
-"Australia/Lord_Howe",
-"Australia/Melbourne",
-"Australia/NSW",
-"Australia/North",
-"Australia/Perth",
-"Australia/Queensland",
-"Australia/South",
-"Australia/Sydney",
-"Australia/Tasmania",
-"Australia/Victoria",
-"Australia/West",
-"Australia/Yancowinna",
-"Brazil/Acre",
-"Brazil/DeNoronha",
-"Brazil/East",
-"Brazil/West",
-"CET",
-"CST6CDT",
-"Canada/Atlantic",
-"Canada/Central",
-"Canada/East-Saskatchewan",
-"Canada/Eastern",
-"Canada/Mountain",
-"Canada/Newfoundland",
-"Canada/Pacific",
-"Canada/Saskatchewan",
-"Canada/Yukon",
-"Chile/Continental",
-"Chile/EasterIsland",
-"Cuba",
-"EET",
-"EST",
-"EST5EDT",
-"Egypt",
-"Eire",
-"Europe/Amsterdam",
-"Europe/Andorra",
-"Europe/Athens",
-"Europe/Belfast",
-"Europe/Belgrade",
-"Europe/Berlin",
-"Europe/Bratislava",
-"Europe/Brussels",
-"Europe/Bucharest",
-"Europe/Budapest",
-"Europe/Chisinau",
-"Europe/Copenhagen",
-"Europe/Dublin",
-"Europe/Gibraltar",
-"Europe/Guernsey",
-"Europe/Helsinki",
-"Europe/Isle_of_Man",
-"Europe/Istanbul",
-"Europe/Jersey",
-"Europe/Kaliningrad",
-"Europe/Kiev",
-"Europe/Lisbon",
-"Europe/Ljubljana",
-"Europe/London",
-"Europe/Luxembourg",
-"Europe/Madrid",
-"Europe/Malta",
-"Europe/Mariehamn",
-"Europe/Minsk",
-"Europe/Monaco",
-"Europe/Moscow",
-"Europe/Nicosia",
-"Europe/Oslo",
-"Europe/Paris",
-"Europe/Podgorica",
-"Europe/Prague",
-"Europe/Riga",
-"Europe/Rome",
-"Europe/Samara",
-"Europe/San_Marino",
-"Europe/Sarajevo",
-"Europe/Simferopol",
-"Europe/Skopje",
-"Europe/Sofia",
-"Europe/Stockholm",
-"Europe/Tallinn",
-"Europe/Tirane",
-"Europe/Tiraspol",
-"Europe/Uzhgorod",
-"Europe/Vaduz",
-"Europe/Vatican",
-"Europe/Vienna",
-"Europe/Vilnius",
-"Europe/Volgograd",
-"Europe/Warsaw",
-"Europe/Zagreb",
-"Europe/Zaporozhye",
-"Europe/Zurich",
-"Factory",
-"GB",
-"GB-Eire",
-"GMT",
-"Greenwich",
-"HST",
-"Hongkong",
-"Iceland",
-"Indian/Antananarivo",
-"Indian/Chagos",
-"Indian/Christmas",
-"Indian/Cocos",
-"Indian/Comoro",
-"Indian/Kerguelen",
-"Indian/Mahe",
-"Indian/Maldives",
-"Indian/Mauritius",
-"Indian/Mayotte",
-"Indian/Reunion",
-"Iran",
-"Israel",
-"Jamaica",
-"Japan",
-"Kwajalein",
-"Libya",
-"MET",
-"MST",
-"MST7MDT",
-"Mexico/BajaNorte",
-"Mexico/BajaSur",
-"Mexico/General",
-"NZ",
-"NZ-CHAT",
-"Navajo",
-"PRC",
-"PST8PDT",
-"Pacific/Apia",
-"Pacific/Auckland",
-"Pacific/Chatham",
-"Pacific/Chuuk",
-"Pacific/Easter",
-"Pacific/Efate",
-"Pacific/Enderbury",
-"Pacific/Fakaofo",
-"Pacific/Fiji",
-"Pacific/Funafuti",
-"Pacific/Galapagos",
-"Pacific/Gambier",
-"Pacific/Guadalcanal",
-"Pacific/Guam",
-"Pacific/Honolulu",
-"Pacific/Johnston",
-"Pacific/Kiritimati",
-"Pacific/Kosrae",
-"Pacific/Kwajalein",
-"Pacific/Majuro",
-"Pacific/Marquesas",
-"Pacific/Midway",
-"Pacific/Nauru",
-"Pacific/Niue",
-"Pacific/Norfolk",
-"Pacific/Noumea",
-"Pacific/Pago_Pago",
-"Pacific/Palau",
-"Pacific/Pitcairn",
-"Pacific/Pohnpei",
-"Pacific/Ponape",
-"Pacific/Port_Moresby",
-"Pacific/Rarotonga",
-"Pacific/Saipan",
-"Pacific/Samoa",
-"Pacific/Tahiti",
-"Pacific/Tarawa",
-"Pacific/Tongatapu",
-"Pacific/Truk",
-"Pacific/Wake",
-"Pacific/Wallis",
-"Pacific/Yap",
-"Poland",
-"Portugal",
-"ROC",
-"ROK",
-"Singapore",
-"Turkey",
-"UCT" ,
-"US/Alaska",
-"US/Aleutian",
-"US/Arizona",
-"US/Central",
-"US/East-Indiana",
-"US/Eastern",
-"US/Hawaii",
-"US/Indiana-Starke",
-"US/Michigan",
-"US/Mountain",
-"US/Pacific",
-"US/Pacific-New",
-"US/Samoa",
-"UTC",
-"Universal",
-"W-SU",
-"WET",
-"Zulu");
+					$timeZones = timezone_identifiers_list();
 
 
 
@@ -1322,6 +867,12 @@ $text .= "
 ";
 
 // =========== Registration Preferences. ==================
+
+
+
+$elements = array(1=>'Register & Login', 2=> 'Login Only', 0=>LAN_DISABLED); 
+
+
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-registration'>
 			<legend>".PRFLAN_28."</legend>
@@ -1332,12 +883,13 @@ $text .= "
 				</colgroup>
 				<tbody>
 					<tr>
-						<td><label for='user-reg'>".PRFLAN_29."</label></td>
+						<td><label for='user-reg'>".PRFLAN_224."</label></td>
 						<td>
-							".$frm->radio_switch('user_reg', $pref['user_reg'])."
+							".$frm->radio('user_reg', $elements, $pref['user_reg'])."
 							<div class='smalltext field-help'>".PRFLAN_30."</div>
 						</td>
 					</tr>
+
 
 
 					<tr>
@@ -1351,12 +903,18 @@ $text .= "
 								$text .= $frm->option($v_title, $v, ($pref['user_reg_veri'] == $v));
 							}
 
+					$srch = array('[', ']');
+					$repl = array("<a href='".e_ADMIN_ABS."notify.php'>", '</a>');
+
+					$PRFLAN_154a = str_replace($srch,$repl, PRFLAN_154a);
+
 					$text .= "
 							</select>
-							<div class='field-help'>".PRFLAN_154a."</div>
+							<div class='field-help'>".$PRFLAN_154a."</div>
 						</td>
 					</tr>
-                    <tr>
+					
+					 <tr>
 						<td><label for='allowemaillogin'>".PRFLAN_184."</label></td>
 						<td>".$frm->select_open('allowEmailLogin');
                      //   $login_list = array(PRFLAN_201,PRFLAN_202,PRFLAN_203);
@@ -1373,26 +931,23 @@ $text .= "
 					$text .= "
 							</select></td>
 					</tr>
+					";
+
+					/*
+					 // Highly problematic.
+					$text .= "
 					<tr>
 						<td><label for='signup-remote-emailcheck'>".PRFLAN_160."</label></td>
 						<td>
 							".$frm->radio_switch('signup_remote_emailcheck', $pref['signup_remote_emailcheck'])."
 						</td>
-					</tr>
-					<tr>
-						<td><label for='disable-emailcheck'>".PRFLAN_167."</label></td>
-						<td>
-							".$frm->radio_switch('disable_emailcheck', $pref['disable_emailcheck'])."
-						</td>
-					</tr>
+					</tr>";
 
-					<tr>
-						<td><label for='use-coppa'>".PRFLAN_45."</label></td>
-						<td>
-							".$frm->radio_switch('use_coppa', $pref['use_coppa'])."
-							<div class='field-help'>".PRFLAN_46." <a href='http://www.ftc.gov/privacy/coppafaqs.shtm'>".PRFLAN_94."</a></div>
-						</td>
-					</tr>
+					*/
+
+
+					$text .= "
+
 					<tr>
 						<td><label for='membersonly-enabled'>".PRFLAN_58."</label></td>
 						<td>";
@@ -1416,280 +971,6 @@ $text .= "
 						</td>
 					</tr>
 
-
-					<tr>
-						<td><label for='signup-maxip'>".PRFLAN_136."</label></td>
-						<td>
-							".$frm->number('signup_maxip', $pref['signup_maxip'], 3)."
-							<div class='field-help'>".PRFLAN_78."</div>
-						</td>
-					</tr>
-
-				
-				</tbody>
-			</table>
-			".pref_submit('registration')."
-		</fieldset>
-
-	";
-	
-// Single/ Social  Login / / copied from hybridAuth config.php so it's easy to add more. 
-// Used Below. 
-
-$social_logins = array ( 
-			// openid providers
-			"OpenID" => array (
-				"enabled" => true
-			),
-
-			"Yahoo" => array ( 
-				"enabled" => true 
-			),
-
-			"AOL"  => array ( 
-				"enabled" => true 
-			),
-
-			"Google" => array ( 
-				"enabled" => true,
-				"keys"    => array ( "id" => "", "secret" => "" ),
-				"scope"   => ""
-			),
-
-			"Facebook" => array ( 
-				"enabled" => true,
-				"keys"    => array ( "id" => "", "secret" => "" ),
-
-				// A comma-separated list of permissions you want to request from the user. See the Facebook docs for a full list of available permissions: http://developers.facebook.com/docs/reference/api/permissions.
-				"scope"   => "", 
-
-				// The display context to show the authentication page. Options are: page, popup, iframe, touch and wap. Read the Facebook docs for more details: http://developers.facebook.com/docs/reference/dialogs#display. Default: page
-				"display" => "" 
-			),
-
-			"Twitter" => array ( 
-				"enabled" => true,
-				"keys"    => array ( "key" => "", "secret" => "" ) 
-			),
-
-			// windows live
-			"Live" => array ( 
-				"enabled" => true,
-				"keys"    => array ( "id" => "", "secret" => "" ) 
-			),
-
-			"MySpace" => array ( 
-				"enabled" => true,
-				"keys"    => array ( "key" => "", "secret" => "" ) 
-			),
-
-			"LinkedIn" => array ( 
-				"enabled" => true,
-				"keys"    => array ( "key" => "", "secret" => "" ) 
-			),
-
-			"Foursquare" => array (
-				"enabled" => true,
-				"keys"    => array ( "id" => "", "secret" => "" ) 
-			)
-		);
- 
- 
-// Key registration 
-// TODO LAN
-$social_external = array(
-			"Facebook" 		=> "https://developers.facebook.com/apps",
-			"Twitter"		=> "https://dev.twitter.com/apps/new",
-			"Google"		=> "https://code.google.com/apis/console/",
-			"Live"			=> "https://manage.dev.live.com/ApplicationOverview.aspx",
-			"LinkedIn"		=> "https://www.linkedin.com/secure/developer",
-			"Foursquare"	=> "https://www.foursquare.com/oauth/"
-); 
- 
- 
-$text .= "
-		<fieldset class='e-hideme' id='core-prefs-sociallogin'>
-					<legend>Social Options</legend>
-					<div class='alert alert-warning'>Note: This section requires further testing</div>
-					<table class='table adminform'>
-						<colgroup>
-							<col class='col-label' />
-							<col class='col-control' />
-						</colgroup>
-						<tbody>
-						<tr>
-						<th colspan='2'>External Social Pages</th>
-					</tr>";
-					
-//XXX XURL Definitions. 
-$xurls = array(
-	'facebook'		=> 	array('label'=>"Facebook", "placeholder"=>"eg. https://www.facebook.com/e107CMS"),
-	'twitter'		=>	array('label'=>"Twitter",	"placeholder"=>"eg. https://twitter.com/e107"),
-	'youtube'		=>	array('label'=>"Youtube",	"placeholder"=>"eg.https://youtube.com/e107Inc"),
-	'google'		=>	array('label'=>"Google+",	"placeholder"=>""),
-	'linkedin'		=>	array('label'=>"LinkedIn",	"placeholder"=>"eg. http://www.linkedin.com/groups?home=&gid=1782682"),
-	'github'		=>	array('label'=>"Github",	"placeholder"=>"eg. https://github.com/e107inc"),
-	'flickr'		=>	array('label'=>"Flickr",	"placeholder"=>""),
-	'instagram'		=>	array('label'=>"Instagram",	"placeholder"=>""),
-	'pinterest'		=>	array('label'=>"Pinterest",	"placeholder"=>""),
-	'vimeo'			=>	array('label'=>"Vimeo",		"placeholder"=>""),
-);	
-	
-	foreach($xurls as $k=>$var)
-	{
-		$keypref = "xurl[".$k."]";
-		$text_label = "xurl-".$k."";
-		$def = "XURL_". strtoupper($k);
-		
-		$opts = array('size'=>'xxlarge','placeholder'=> $var['placeholder']);	
-						
-		$text .= "
-					<tr>
-						<td><label for='".$text_label."'>Your ".$var['label']." page</label></td>
-						<td>
-							".$frm->text($keypref, $pref['xurl'][$k], false, $opts)."
-							<div class='field-help'>Used by some themes to provide a link to your ".$var['label']." page. (".$def.")</div>
-						</td>
-					</tr>
-				";
-	}		
-					
-			$text .= "		
-					<tr>
-						<th colspan='2'>Social Logins</th>
-					</tr>
-					<tr>
-						<td><label for='social-login-active'>Enable Social Logins</label></td>
-						<td>
-							".$frm->radio_switch('social_login_active', $pref['social_login_active'])."
-						</td>
-					</tr>";
-					
-			if(!is_array($pref['social_login']))
-			{
-				$pref['social_login'] = array();	
-			}
-							
-			foreach($social_logins as $prov=>$val)
-			{
-					
-					$label = varset($social_external[$prov]) ? "<a class='e-tip' rel='external' title='Get a key from the provider' href='".$social_external[$prov]."'>".$prov."</a>" : $prov;
-					$radio_label = strtolower($prov); 				
-					$text .= "
-					<tr>
-						<td><label for='social-login-".$radio_label."-enabled'>".$label."</label></td>
-						<td>
-						";
-					foreach($val as $k=>$v)
-					{
-						switch ($k) {
-							case 'enabled':
-								$eopt = array('class'=>'e-expandit');
-								$text .= $frm->radio_switch('social_login['.$prov.'][enabled]', vartrue($pref['social_login'][$prov]['enabled']),'','',$eopt);
-							break;
-							
-							case 'keys':
-								// $cls = vartrue($pref['single_login'][$prov]['keys'][$tk]) ? "class='e-hideme'" : '';
-								$sty = vartrue($pref['social_login'][$prov]['keys'][vartrue($tk)]) ? "" : "e-hideme";
-								$text .= "<div class='e-expandit-container {$sty}' id='option-{$prov}' >";
-								foreach($v as $tk=>$idk)
-								{
-									$eopt = array('placeholder'=> $tk);
-									$text .= "<br />".$frm->text('social_login['.$prov.'][keys]['.$tk.']', vartrue($pref['social_login'][$prov]['keys'][$tk]), 100, $eopt);								
-								}	
-								$text .= "</div>";
-								
-							break;
-							
-							case 'scope':
-								$text .= $frm->hidden('social_login['.$prov.'][scope]','email');
-							break;
-							
-							default:
-								
-							break;
-						}	
-					}				
-				
-				$text .= "</td>
-					</tr>					
-					";
-			}		
-					
-	
-	
-$text .= "
-				</tbody>
-			</table>
-			".pref_submit('sociallogin')."
-		</fieldset>
-";	
-	
-	
-
-// Signup options ===========================.
-
-
-$text .= "
-		<fieldset class='e-hideme' id='core-prefs-signup'>
-			<legend>".PRFLAN_19."</legend>
-			<table class='table adminform'>
-				<colgroup>
-					<col class='col-label' />
-					<col class='col-control' />
-				</colgroup>
-				<tbody>";
-				
-		$signup_option_names = array(
-	//	"signup_option_loginname" 	=> "Login Name",
-		"signup_option_email_confirm" 	=> "Email Confirmation",
-		"signup_option_realname" 		=> CUSTSIG_2,
-		"signup_option_signature" 		=> CUSTSIG_6,
-		"signup_option_image" 			=> CUSTSIG_7,
-		"signup_option_class" 			=> CUSTSIG_17,
-		'signup_option_customtitle'		=> CUSTSIG_20,
-		'signup_option_hideemail'		=> 'Option to hide email'
-	);
-
-	foreach($signup_option_names as $value => $key)
-	{
-		$label_value = str_replace('_', '-', $value);
-		$text .= "
-						<tr>
-							<td><label for='".$label_value."'>".$key."</label></td>
-							<td>
-								".$frm->radio($value, 0, !$pref[$value], array('label' => CUSTSIG_12))."&nbsp;&nbsp;
-								".$frm->radio($value, 1, ($pref[$value] == 1), array('label' => CUSTSIG_14))."&nbsp;&nbsp;
-								".$frm->radio($value, 2, ($pref[$value] == 2), array('label' => CUSTSIG_15))."
-							</td>
-						</tr>
-		";
-	}			
-				
-				
-				$text .= "
-					<tr>
-						<td><label for='signup-text'>".PRFLAN_126."</label></td>
-						<td>
-							".$frm->textarea('signup_text', $pref['signup_text'], 2, 1)."
-						</td>
-					</tr>
-
-					<tr>
-						<td><label for='signup-text-after'>".PRFLAN_140."</label></td>
-						<td>
-							".$frm->textarea('signup_text_after', $pref['signup_text_after'], 2, 1)."
-						</td>
-					</tr>
-					
-				
-					<tr>
-						<td><label for='predefinedloginname'>".PRFLAN_192.":</label></td>
-						<td>
-							".$frm->text('predefinedLoginName', $pref['predefinedLoginName'], 50)."
-							<div class='field-help'><div style='text-align:left'>".PRFLAN_193."<br />".str_replace("[br]","<br /> ",PRFLAN_194)."</div></div>
-						</td>
-					</tr>
 					<tr>
 						<td><label for='displayname-maxlength'>".PRFLAN_158.":</label></td>
 						<td>
@@ -1702,6 +983,184 @@ $text .= "
 							".$frm->number('loginname_maxlength', $pref['loginname_maxlength'], 3)."
 						</td>
 					</tr>
+					<tr>
+						<td><label for='signup-pass-len'>".CUSTSIG_16."</label></td>
+						<td>
+							".$frm->number('signup_pass_len', $pref['signup_pass_len'], 2)."
+						</td>
+					</tr>
+
+					<tr>
+						<td><label for='signup-maxip'>".PRFLAN_136."</label></td>
+						<td>
+							".$frm->number('signup_maxip', $pref['signup_maxip'], 3)."
+							<div class='field-help'>".PRFLAN_78."</div>
+						</td>
+					</tr>
+
+					
+					</tbody>
+					
+
+			</table>
+			".pref_submit('registration')."
+		</fieldset>
+
+	";
+	
+
+// Key registration 
+
+	
+	
+
+// Signup options ===========================.
+
+$prefOptionPassword = (isset($pref['signup_option_password'])) ? $pref['signup_option_password'] : 2;
+
+$text .= "
+		<fieldset class='e-hideme' id='core-prefs-signup'>
+			<legend>".PRFLAN_19."</legend>
+			<table class='table adminform'>
+				<colgroup>
+					<col class='col-label' />
+					<col class='col-control' />
+				</colgroup>
+				<tbody>
+				<tr>
+						<td>Field options</td><td><table class='table table-striped table-condensed table-bordered' style='margin-bottom:0px'>
+						<colgroup>
+					<col class='col-label' />
+					<col class='col-control' />
+				</colgroup>
+				<tr>
+							<td><label>Email</label></td>
+							<td>
+								".$frm->radio('disable_emailcheck', 2, ($pref['disable_emailcheck']==2), array('label' => CUSTSIG_12, 'disabled'=>true))."
+								".$frm->radio('disable_emailcheck', 1, (intval($pref['disable_emailcheck']) == 1), array('label' => CUSTSIG_14))."
+								".$frm->radio('disable_emailcheck', 0, (intval($pref['disable_emailcheck']) == 0), array('label' => CUSTSIG_15))."
+
+							</td>
+						</tr>
+						<tr>
+							<td><label for='signup-option-password'>Password</label></td>
+							<td>
+								".$frm->radio('signup_option_password', 0, !$prefOptionPassword, array('label' => CUSTSIG_12))."
+								".$frm->radio('signup_option_password', 1, ($prefOptionPassword == 1), array('label' => CUSTSIG_14, 'disabled'=>true))."
+								".$frm->radio('signup_option_password', 2, ($prefOptionPassword == 2), array('label' => CUSTSIG_15))."
+
+							</td>
+						</tr>
+
+
+						";
+				
+		$signup_option_names = array(
+		//	"signup_option_loginname" 	=> "Login Name",
+
+		"signup_option_realname" 		=> CUSTSIG_2,
+		"signup_option_email_confirm" 	=> CUSTSIG_21,
+		"signup_option_image" 			=> CUSTSIG_7,
+
+		'signup_option_customtitle'		=> CUSTSIG_20,
+		'signup_option_hideemail'		=> CUSTSIG_22,
+		"signup_option_class" 			=> CUSTSIG_17,
+		"signup_option_signature" 		=> CUSTSIG_6,
+	);
+
+
+	foreach($signup_option_names as $value => $key)
+	{
+		$label_value = str_replace('_', '-', $value);
+		$text .= "
+						<tr>
+							<td><label for='".$label_value."'>".$key."</label></td>
+							<td>
+								".$frm->radio($value, 0, !$pref[$value], array('label' => CUSTSIG_12))."
+								".$frm->radio($value, 1, ($pref[$value] == 1), array('label' => CUSTSIG_14))."
+								".$frm->radio($value, 2, ($pref[$value] == 2), array('label' => CUSTSIG_15))."
+							</td>
+						</tr>
+		";
+	}			
+				
+				
+				$text .= "
+
+
+	<tr>
+						<td><label for='user-reg-secureveri'>Password in Email Confirmation</label></td>
+						<td>
+							".$frm->radio_switch('user_reg_secureveri', $pref['user_reg_secureveri'], CUSTSIG_12, CUSTSIG_14)."
+						</td>
+					</tr>
+
+
+
+</table>
+						</td></tr>
+
+					<tr>
+						<td><label for='use-coppa'>".PRFLAN_45."</label></td>
+						<td>
+							".$frm->radio_switch('use_coppa', $pref['use_coppa'])."
+							<div class='field-help'>".PRFLAN_46." <a href='http://www.ftc.gov/privacy/coppafaqs.shtm'>".PRFLAN_94."</a></div>
+						</td>
+					</tr>";
+
+/*
+					<tr>
+						<td><label for='disable-emailcheck'>".PRFLAN_167."</label></td>
+						<td>
+							". $pref['disable_emailcheck']."
+						</td>
+					</tr>*/
+
+$text .= "
+					<tr>
+						<td><label for='signup-text'>".PRFLAN_126."</label></td>
+						<td>
+							".$frm->textarea('signup_text', $pref['signup_text'], 3, 80)."
+						</td>
+					</tr>
+
+					<tr>
+						<td><label for='signup-text-after'>".PRFLAN_140."</label></td>
+						<td>
+							".$frm->textarea('signup_text_after', $pref['signup_text_after'], 3, 80)."
+						</td>
+					</tr>
+					
+				
+					<tr>
+						<td><label for='predefinedloginname'>".PRFLAN_192.":</label></td>
+						<td>
+							".$frm->text('predefinedLoginName', $pref['predefinedLoginName'], 50)."
+							<div class='field-help'><div style='text-align:left'>".PRFLAN_193."<br />".str_replace("[br]","<br /> ",PRFLAN_194)."</div></div>
+						</td>
+					</tr>
+
+
+
+						<tr>
+						<td><label for='signup-disallow-text'>".CUSTSIG_18."</label></td>
+						<td>
+							".$frm->tags('signup_disallow_text', $pref['signup_disallow_text'], 500)."
+							<div class='field-help'>".CUSTSIG_19."</div>
+						</td>
+					</tr>
+
+						<tr>
+						<td><label for='displayname_class'>".PRFLAN_155.":</label></td>
+						<td class='form-inline'>
+							".$e_userclass->uc_dropdown('displayname_class', $pref['displayname_class'], 'nobody,member,admin,classes', "tabindex='".$frm->getNext()."'")."
+							".$frm->admin_button('submit_resetdisplaynames', PRFLAN_156, 'delete')."
+						</td>
+					</tr>
+
+
+
+
 ";
 
 /*
@@ -1988,15 +1447,10 @@ $text .= "
  * 
  
  */
-$text .= "					<tr>
-						<td><label for='user-reg-secureveri'>".PRFLAN_92.":</label></td>
-						<td>
-							".$frm->radio_switch('user_reg_secureveri', $pref['user_reg_secureveri'])."
-						</td>
-					</tr>
+$text .= "
 
 					<tr>
-						<td><label for='disallowmultilogin'>".PRFLAN_129.":</label></td>
+						<td><label for='disallowmultilogin'>".PRFLAN_129."</label></td>
 						<td>
 							".$frm->radio_switch('disallowMultiLogin', $pref['disallowMultiLogin'], LAN_YES, LAN_NO)."
 							<div class='smalltext field-help'>".PRFLAN_130."</div>
@@ -2004,40 +1458,18 @@ $text .= "					<tr>
 					</tr>
 
 					<tr>
-						<td><label for='user-tracking-cookie'>".PRFLAN_48.":</label></td>
-						<td class='form-inline'>
-							".$frm->radio('user_tracking', array('cookie' => PRFLAN_49, 'session' => PRFLAN_50), $pref['user_tracking'])." ".PRFLAN_55.": ".$frm->text('cookie_name', $pref['cookie_name'], 20)."
-						</td>
+						<td><label for='user-tracking-cookie'>".PRFLAN_48."</label></td>
+						<td >
+							<div class='form-inline'>
+							".$frm->radio('user_tracking', array('cookie' => PRFLAN_49, 'session' => PRFLAN_50), $pref['user_tracking'])."
+						</div></td>
 					</tr>
 					
 				
-		
 					<tr>
-						<td><label for='signup-disallow-text'>".CUSTSIG_18."</label></td>
-						<td>
-							".$frm->textarea('signup_disallow_text', $pref['signup_disallow_text'], 2, 1)."
-							<div class='field-help'>".CUSTSIG_19."</div>
-						</td>
-					</tr>
-					
-						<tr>
-						<td><label for='displayname_class'>".PRFLAN_155.":</label></td>
-						<td>
-							<div class='field-spacer'>".$e_userclass->uc_dropdown('displayname_class', $pref['displayname_class'], 'nobody,member,admin,classes', "tabindex='".$frm->getNext()."'")."</div>
-							".$frm->admin_button('submit_resetdisplaynames', PRFLAN_156)."
-						</td>
-					</tr>
-					
-					
-					
-					<tr>
-						<td><label for='signup-pass-len'>".CUSTSIG_16."</label></td>
-						<td>
-							".$frm->number('signup_pass_len', $pref['signup_pass_len'], 2)."
-						</td>
-					</tr>
-					
-					
+						<td><label for='cookie-name'>".PRFLAN_55."</label></td>
+						<td >".$frm->text('cookie_name', $pref['cookie_name'], 20)."
+						<div class='field-help'>Should be unique to this website.</div></td></tr>
 					
 					<tr>
 						<td><label for='passwordencoding'>".PRFLAN_188.":</label></td>
@@ -2063,13 +1495,13 @@ $text .= "					<tr>
 					</tr>
 					
 					<tr>
-						<td><label for='antiflood1'>".PRFLAN_35.":</label></td>
+						<td><label for='antiflood1'>".PRFLAN_35."</label></td>
 						<td>
 							".$frm->radio_switch('antiflood1', $pref['antiflood1'])."
 						</td>
 					</tr>
 					<tr>
-						<td><label for='antiflood-timeout'>".PRFLAN_36.":</label></td>
+						<td><label for='antiflood-timeout'>".PRFLAN_36."</label></td>
 						<td>
 							".$frm->number('antiflood_timeout', $pref['antiflood_timeout'], 3)."
 							<div class='smalltext field-help'>".PRFLAN_38."</div>
@@ -2101,7 +1533,14 @@ $text .= "
 						</td>
 					</tr>
 					<tr>
-						<td><label for='adminpwordchange'>".PRFLAN_139.":</label></td>
+						<td><label for='failed-login-limit'>".PRFLAN_231."</label></td>
+						<td>
+							".$frm->number('failed_login_limit', varset($pref['failed_login_limit'],10), 3, array('max'=>10, 'min'=>0))."
+							<div class='smalltext field-help'>".PRFLAN_232."</div>
+						</td>
+					</tr>
+					<tr>
+						<td><label for='adminpwordchange'>".PRFLAN_139."</label></td>
 						<td>
 							".$frm->radio_switch('adminpwordchange', $pref['adminpwordchange'])."
 						</td>
@@ -2162,22 +1601,22 @@ $text .= "
 					</tr>
 
 					<tr>
-						<td>Moderate Comments made by: </td>
+						<td>".PRFLAN_233."</td>
 						<td>
 							".
 							
 							$frm->uc_select('comments_moderate', $pref['comments_moderate'],"nobody,guest,new,bots,public,admin,main,classes").
 							"
-							<div class='field-help'>Comments will require manual approval by an admin prior to being visible to other users</div>
+							<div class='field-help'>".PRFLAN_234."</div>
 						</td>
 					</tr>
 					<tr>
-						<td>Comment Sorting: </td>
+						<td>".PRFLAN_235."</td>
 						<td>";
 						
 						$comment_sort = array(
-							"desc"	=> "Most recent comments first", //default //TODO LAN
-							'asc'	=> "Most recent comments last" 
+							"desc"	=> PRFLAN_236, //default
+							'asc'	=> PRFLAN_237
 						);
 					
 					$text .= $frm->select('comments_sort',$comment_sort, $pref['comments_moderate'])."
@@ -2211,10 +1650,34 @@ $text .= "
 // File Uploads
 
 	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_upload.php");
-
+	require_once(e_HANDLER."upload_handler.php"); 
+	
+	
+	
+	
+	
+	
 	$text .= "
 	<fieldset class='e-hideme' id='core-prefs-uploads'>
-			<legend>File Uploading</legend>
+			<legend>".PRFLAN_238."</legend>";
+	
+	
+	$upload_max_filesize = ini_get('upload_max_filesize');
+	$post_max_size = ini_get('post_max_size');
+	
+	$maxINI = min($upload_max_filesize,$post_max_size); 
+	
+	if($maxINI < $pref['upload_maxfilesize'])
+	{
+		$text .= "<div class='alert-block alert alert-danger'>";
+		$text .= PRFLAN_239." ".$maxINI."</div>";
+		$pref['upload_maxfilesize'] = $maxINI;
+	}
+	
+	
+	
+			
+	$text .= "
 			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
@@ -2237,7 +1700,7 @@ $text .= "
 	<td>".
 	$frm->text('upload_maxfilesize', $pref['upload_maxfilesize'], 10)
 	 ."
-	 <div class='field-help'>".UPLLAN_34." (upload_max_filesize = ".ini_get('upload_max_filesize').", post_max_size = ".ini_get('post_max_size')." )</div>
+	 <div class='field-help'>".UPLLAN_34."</div>
 	</td>
 	</tr>
 
@@ -2247,9 +1710,41 @@ $text .= "
 	<div class='field-help'>".UPLLAN_38."</div>
 	</td>
 	</tr>
+	<tr><td>".PRFLAN_240."</td>
+	<td>
+
+	<table class='table table-striped table-bordered'>
+	<tr><th>".LAN_TYPE."</th><th>".UPLLAN_33."</th>
+	";
+	
+	$fl = e107::getFile();
+	$data = $fl->getFiletypeLimits(); 
+	 
+	foreach($data as $k=>$v)
+	{
+		$text .= "<tr><td>".$k."</td>
+		<td>".$fl->file_size_encode($v)."</td>
+		</tr>";	
+		
+		
+	}
+//	$text .= print_a($data,true); 
+	
+
+	
+	$text .= "</table>
+	
+	<div>".PRFLAN_241." <b>".str_replace("../",'',e_SYSTEM).e_READ_FILETYPES."</b></div>
+	</td>
+	
+	
 	</tbody>
 		</table>
-			".pref_submit('uploads')."
+			".pref_submit('uploads');
+			
+			
+			
+	$text .= "
 		</fieldset>";	
 	
 	
@@ -2257,10 +1752,9 @@ $text .= "
 	
 	
 // Javascript Control
-//TODO LANS
 $text .= "
 			<fieldset class='e-hideme' id='core-prefs-javascript'>
-			<legend>Javascript Frameworks (for testing purposes only)</legend>
+			<legend>".PRFLAN_242."</legend>
 			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
@@ -2269,11 +1763,11 @@ $text .= "
 				<tbody>";
 	
 		$js_options = array(
-			'auto'	=> 'Auto (on-demand)', 	// load based on dependency
-			'admin'	=> 'Admin Area', 		// Always load in admin
-			'front'	=> 'Front-End', 		// Always load in front-end
-			'all'	=> "Both",				// Always load in admin and front-end
-			'none'	=> 'Disabled' 			// disabled
+			'auto'	=> PRFLAN_243, 	// load based on dependency
+			'admin'	=> PRFLAN_244, 		// Always load in admin
+			'front'	=> PRFLAN_245, 		// Always load in front-end
+			'all'	=> PRFLAN_246,				// Always load in admin and front-end
+			'none'	=> PRFLAN_247 			// disabled
 		);	
 	
 		
@@ -2313,31 +1807,31 @@ $text .= "
 				</colgroup>
 				<tbody>
 					<tr>
-						<td>Disable scripts consolidation</td>
+						<td>".PRFLAN_248."</td>
 						<td>
 							".$frm->radio_switch('e_jslib_nocombine', $pref['e_jslib_nocombine'], LAN_YES, LAN_NO)."
-							<div class='smalltext field-help'>If disabled, scripts will be loaded in one consolidated file</div>
+							<div class='smalltext field-help'>".PRFLAN_249."</div>
 						</td>
 					</tr>
 					<tr>
-						<td>Enable consolidated scripts zlib compression:</td>
+						<td>".PRFLAN_250."</td>
 						<td>
 							".$frm->radio_switch('e_jslib_gzip', $pref['e_jslib_gzip'], LAN_YES, LAN_NO)."
-							<div class='smalltext field-help'>Used only when script consolidation is enabled</div>
+							<div class='smalltext field-help'>".PRFLAN_251."</div>
 						</td>
 					</tr>
 					<tr>
-						<td>Disable consolidated scripts server cache:</td>
+						<td>".PRFLAN_252."</td>
 						<td>
 							".$frm->radio_switch('e_jslib_nocache', $pref['e_jslib_nocache'], LAN_YES, LAN_NO)."
-							<div class='smalltext field-help'>Used only when script consolidation is enabled</div>
+							<div class='smalltext field-help'>".PRFLAN_251."</div>
 						</td>
 					</tr>
 					<tr>
-						<td>Disable consolidated scripts browser cache:</td>
+						<td>".PRFLAN_253."</td>
 						<td>
 							".$frm->radio_switch('e_jslib_nobcache', $pref['e_jslib_nobcache'], LAN_YES, LAN_NO)."
-							<div class='smalltext field-help'>Used only when script consolidation is enabled</div>
+							<div class='smalltext field-help'>".PRFLAN_251."</div>
 						</td>
 					</tr>
 		";	
@@ -2479,22 +1973,22 @@ function pref_submit($post_id = '')
 function prefs_adminmenu()
 {
 	$var['core-prefs-main']['text'] = PRFLAN_1;
-	$var['core-prefs-email']['text'] = "Email &amp; Contact Info";
+	$var['core-prefs-email']['text'] = PRFLAN_254;
 	$var['core-prefs-registration']['text'] = PRFLAN_28;
 	$var['core-prefs-signup']['text'] = PRFLAN_19;
-	$var['core-prefs-sociallogin']['text'] = "Social Options";
+//	$var['core-prefs-sociallogin']['text'] = "Social Options"; // Moved into plugin.
 	
 	$var['core-prefs-comments']['text'] = PRFLAN_210;
-	$var['core-prefs-uploads']['text'] = "File Uploading"; // TODO LAN
+	$var['core-prefs-uploads']['text'] = PRFLAN_255;
 	
-	$var['core-prefs-header1']['header'] = "Advanced Options";	
+	$var['core-prefs-header1']['header'] = PRFLAN_256;
 	
 	$var['core-prefs-display']['text'] = PRFLAN_13;
 	$var['core-prefs-admindisp']['text'] = PRFLAN_77;
 	$var['core-prefs-textpost']['text'] = PRFLAN_101;
 	$var['core-prefs-security']['text'] = PRFLAN_47;
 	$var['core-prefs-date']['text'] = PRFLAN_21;	
-	$var['core-prefs-javascript']['text'] = "Javascript Framework"; // TODO LAN
+	$var['core-prefs-javascript']['text'] = PRFLAN_257;
 	$var['core-prefs-advanced']['text'] = PRFLAN_149;
 	
 	e107::getNav()->admin("Basic ".LAN_OPTIONS.'--id--prev_nav', 'core-prefs-main', $var);

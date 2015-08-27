@@ -32,12 +32,17 @@
 	Deny from env=HTTP_SAFE_BADBOT
 
 ### Disable directory listing
-	Options All -Indexes
+	Options -Indexes
 
 ### limit file uploads to 10mb
 ### LimitRequestBody 10240000
 
 <IfModule mod_rewrite.c>
+
+    <IfModule mod_env.c>
+        SetEnv HTTP_MOD_REWRITE On
+    </IfModule>
+
 ### enable rewrites
 	Options +FollowSymLinks 
 	RewriteEngine On

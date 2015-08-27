@@ -66,7 +66,7 @@ function search_forum($row)
 	$res['link'] 		= e_PLUGIN."forum/forum_viewtopic.php?".$link_id.".post";
 	$res['pre_title'] 	= $title ? FOR_SCH_LAN_5.": " : "";
 	$res['title'] 		= $title ? $title : LAN_SEARCH_9;
-	$res['pre_summary'] = "<div class='smalltext' style='padding: 2px 0px'><a href='".e_PLUGIN."forum/forum.php'>".FOR_SCH_LAN_1."</a> -> <a href='".e_PLUGIN."forum/forum_viewforum.php?".$row['forum_id']."'>".$row['forum_name']."</a></div>";
+	$res['pre_summary'] = "<div class='smalltext' style='padding: 2px 0px'><a href='".e_PLUGIN."forum/forum.php'>".LAN_PLUGIN_FORUM_NAME."</a> -> <a href='".e_PLUGIN."forum/forum_viewforum.php?".$row['forum_id']."'>".$row['forum_name']."</a></div>";
 	$res['summary'] 	= $row['post_entry'];
 	$res['detail'] 		= LAN_SEARCH_7."<a href='user.php?id.".$row['user_id']."'>".$row['user_name']."</a>".LAN_SEARCH_8.$datestamp;
 	

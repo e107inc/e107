@@ -24,7 +24,7 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
-if (!$e107->isInstalled('newsletter')) 
+if (!e107::isInstalled('newsletter'))
 {
 	return;
 }

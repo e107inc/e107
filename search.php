@@ -152,7 +152,7 @@ class search extends e_shortcode
 		";
 		
 		$text .= '<ul class="dropdown-menu pull-right">
-          <li><a class="e-expandit" href="#" data-target="search-advanced,search-enhanced"><small>Toggle Advanced Mode</small></a></li>
+          <li><a class="e-expandit" href="#" data-target="search-advanced,search-enhanced"><small>'.LAN_SEARCH_202.'</small></a></li>
         </ul>';
 		
 		$text .= "
@@ -174,7 +174,7 @@ class search extends e_shortcode
 	
 	function sc_search_main_submit($parm='')
 	{
-		return "<input class='btn btn-primary button' type='submit' name='s' value='".LAN_180."' />
+		return "<input class='btn btn-primary button' type='submit' name='s' value='".LAN_SEARCH."' />
 		<input type='hidden' name='r' value='0' />";
 	}
 	
@@ -205,8 +205,8 @@ class search extends e_shortcode
 		
 		
 		
-		return "<input type='radio' name='adv' value='0' ".(varsettrue($_GET['adv']) ? "" : "checked='checked'")." /> ".LAN_SEARCH_29."&nbsp;
-		<input type='radio' name='adv' value='1' ".(varsettrue($_GET['adv']) ? "checked='checked'" : "" )." /> ".LAN_SEARCH_30;	
+		return "<input type='radio' name='adv' value='0' ".(vartrue($_GET['adv']) ? "" : "checked='checked'")." /> ".LAN_SEARCH_29."&nbsp;
+		<input type='radio' name='adv' value='1' ".(vartrue($_GET['adv']) ? "checked='checked'" : "" )." /> ".LAN_SEARCH_30;
 	}
 	
 	function sc_search_dropdown($parm = '')
@@ -403,14 +403,8 @@ class search extends e_shortcode
 					} 
 					else if ($adv_value['type'] == 'author') 
 					{
-					//	require_once(e_HANDLER.'user_select_class.php');
-						
-					//	$us = new user_select;
 						$vars['SEARCH_ADV_A'] = $adv_value['text'];
-						$vars['SEARCH_ADV_B'] = e107::getForm()->userpicker($adv_key."_name",$adv_key,$_GET[$adv_key]); // $us -> select_form('popup', $adv_key, $_GET[$adv_key]);
-						
-						
-						
+						$vars['SEARCH_ADV_B'] = e107::getForm()->userpicker($adv_key."_name",$adv_key,$_GET[$adv_key]);
 					} 
 					else if ($adv_value['type'] == 'dual') 
 					{
@@ -526,7 +520,7 @@ class search extends e_shortcode
 		*/
 		if(e107::getConfig('core')->get('comments_disabled')!=1)  // Only when comments are enabled.
 		{
-			if ($search_info['comments'] = $this->search_info('comments', 'core', false, array('sfile' => e_HANDLER.'search/search_comment.php', 'qtype' => LAN_SEARCH_99, 'refpage' => 'comment.php', 'advanced' => e_HANDLER.'search/advanced_comment.php', 'id' => 'comment'))) {
+			if ($search_info['comments'] = $this->search_info('comments', 'core', false, array('sfile' => e_HANDLER.'search/search_comment.php', 'qtype' => LAN_COMMENTS, 'refpage' => 'comment.php', 'advanced' => e_HANDLER.'search/advanced_comment.php', 'id' => 'comment'))) {
 			   //	$search_id++;
 			} else {
 				unset($search_info['comments']);
@@ -700,7 +694,7 @@ class search extends e_shortcode
 		$ns = e107::getRender();
 		$sch = new e_search;
 		$tp = e107::getParser();
-		 
+	
 		
 		$query = $this->query;
 		
@@ -737,11 +731,12 @@ class search extends e_shortcode
 						{
 							continue;
 						}
+						
 						$obj = new $className;
-	
+						
 						$where = (method_exists($obj,'where')) ? $obj->where($_GET) : "";
 						
-						$ps = $obj->parsesearch($this->search_info[$key]['table'], $this->search_info[$key]['return_fields'], $this->search_info[$key]['search_fields'], $this->search_info[$key]['weights'], 'self', varset($this->search_info[$key]['no_results'],LAN_198), $where , $this->search_info[$key]['order']);
+						$ps = $obj->parsesearch($this->search_info[$key]['table'], $this->search_info[$key]['return_fields'], $this->search_info[$key]['search_fields'], $this->search_info[$key]['weights'], 'self', varset($this->search_info[$key]['no_results'],"<div class='alert alert-danger'>".LAN_198."</div>"), $where , $this->search_info[$key]['order']);
 						
 						$text .= '<div class="search-block">';
 						$text .= $ps['text'];
@@ -1115,7 +1110,7 @@ if ($search_prefs['selector'] == 1)
   $SEARCH_VARS->SEARCH_MAIN_UNCHECKALL = "<input  type='button' name='UnCheckAll' value='".LAN_SEARCH_2."' onclick='uncheckAll(this); uncheckG();' />";
 }
 */
-//$SEARCH_VARS->SEARCH_MAIN_SUBMIT = "<input type='hidden' name='r' value='0' /><input type='submit' name='s' value='".LAN_180."' />";
+//$SEARCH_VARS->SEARCH_MAIN_SUBMIT = "<input type='hidden' name='r' value='0' /><input type='submit' name='s' value='".LAN_SEARCH."' />";
 
 //$SEARCH_VARS->ENHANCED_ICON = "<img src='".e_IMAGE_ABS."generic/search_basic.png' style='width: 16px; height: 16px; vertical-align: top'
 //alt='".LAN_SEARCH_23."' title='".LAN_SEARCH_23."' onclick=\"expandit('en_in'); expandit('en_ex'); expandit('en_ep'); expandit('en_be')\"/>";
@@ -1128,13 +1123,13 @@ $enhanced_types['be'] = LAN_SEARCH_27.':';
 $SEARCH_VARS->ENHANCED_DISPLAY = $enhanced ? "" : "style='display: none'";
 
 // advanced search config
-if (!varsettrue($_GET['adv']) || $_GET['t'] == 'all') 
+if (!vartrue($_GET['adv']) || $_GET['t'] == 'all')
 {
   foreach ($_GET as $gk => $gv) 
   {
 	if ($gk != 't' && $gk != 'q' && $gk != 'r' && $gk != 'in' && $gk != 'ex' && $gk != 'ep' && $gk != 'be' && $gk != 'adv') 
 	{
-	  unset($_GET[$gk]);
+//	  unset($_GET[$gk]);
 	}
   }
 }
@@ -1451,6 +1446,7 @@ function parsesearch($text, $match)
 	$text = preg_replace("/".$match."/i", "<span class='searchhighlight'>".$matchedText."</span>", $text);
 	return($text);
 }
+
 
 function headerjs() {
 	global $search_count, $google_id, $search_prefs, $js_adv, $search_info;

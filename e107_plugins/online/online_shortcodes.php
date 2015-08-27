@@ -42,7 +42,7 @@ class online_shortcodes
 	{
 		$seen_ago = $this->gen->computeLapse($this->currentUser['user_currentvisit'], false, false, true, 'short');
 		return $seen_ago;
-		return ($seen_ago ? $seen_ago : '1 '.LANDT_09).' '.LANDT_AGO;
+		// return ($seen_ago ? $seen_ago : '1 '.LANDT_09).' '.LANDT_AGO;
 	}
 
 
@@ -141,7 +141,14 @@ class online_shortcodes
 	{
 		if($parm == 'avatar')
 		{
-			return e107::getParser()->parseTemplate("{USER_AVATAR=".$this->currentMember['oimage']."}",true);	
+			$userData = array(
+				'user_image' => $this->currentMember['oimage'],
+				'user_name'	=> $this->currentMember['oname']
+			); 
+			
+			return e107::getParser()->toAvatar($userData); 
+			
+		//	return e107::getParser()->parseTemplate("{USER_AVATAR=".$this->currentMember['oimage']."}",true);	
 		}
 		
 		return "<img src='".e_IMAGE_ABS."admin_images/users_16.png' alt='' style='vertical-align:middle' />";

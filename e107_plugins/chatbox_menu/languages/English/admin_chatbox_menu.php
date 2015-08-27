@@ -36,10 +36,10 @@ define("CHBLAN_24", "One day");
 define("CHBLAN_25", "One week");
 define("CHBLAN_26", "One month");
 define("CHBLAN_27", "- Delete all posts -");
-define("CHBLAN_28", "Chatbox pruned.");
+// define("CHBLAN_28", "Chatbox pruned.");
 
 define("CHBLAN_29", "Display chatbox inside scrolling layer with height [x]"); // [x] will be replaced automatically
-define("CHBLAN_30", "Layer height");
+// define("CHBLAN_30", "Layer height");
 define("CHBLAN_31", "Show emoticons");
 define("CHBLAN_32", "Moderator userclass");
 
@@ -53,7 +53,7 @@ define("CHBLAN_38", "Use javascript code to update posts dynamically (AJAX)");
 //define('CHBLAN_39', 'Nothing changed - not updated');
 // define('CHBLAN_40', 'Chatbox');
 // define('CHBLAN_41', 'Chatbox Menu');
-
+define("CHBLAN_42", "Show amount of posts in user profile");
 
 
 

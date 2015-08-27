@@ -111,7 +111,7 @@
   , createBadge: function ( value ) {
     var that = this
     
-    $('<span class="tag label label-info ">')
+    $('<span class="tag label label-primary ">')
       .text(value)
       .append($('<button type="button" class="close">&times;</button>')
         .on('click', function () {
@@ -138,13 +138,13 @@
       this.values.push(value)
       this.createBadge(value)
       
-      this.element.val(this.values.join(', '))
+      this.element.val(this.values.join(','))
     }
   , remove: function ( index ) {
       if ( index >= 0 ) {
         this.values.splice(index, 1)
         this.element.siblings('.tag:eq(' + index + ')').remove()
-        this.element.val(this.values.join(', '))
+        this.element.val(this.values.join(','))
       }
     }
   , process: function () {

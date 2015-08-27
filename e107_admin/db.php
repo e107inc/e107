@@ -35,6 +35,16 @@ $e_sub_cat = 'database';
 $frm = e107::getForm();
 $mes = e107::getMessage();
 
+if(isset($_GET['mode']))
+{
+    $_GET['mode'] = preg_replace('/[^\w-]/', '', $_GET['mode']);
+}
+
+if(isset($_GET['type']))
+{
+    $_GET['type'] = preg_replace('/[^\w-]/', '', $_GET['type']);
+}
+
 /*
  * Execute trigger
  */
@@ -94,15 +104,15 @@ if(e_AJAX_REQUEST )
 			
 		$zip = e107::getFile()->zip($data, e_BACKUP.$newFile.".zip");	
 			
-		echo "File backup complete! <small>(".$zip.")</small><br />";
+		echo DBLAN_60." <small>(".$zip.")</small><br />";
 		
-		echo "Starting database backup...<br />";
+		echo DBLAN_61."<br />";
 
 		$dbfile = e107::getDb()->backup('*', $newFile.".sql", array('nologs'=>1, 'droptable'=>1));
 		
-		echo "Database backup complete! <small>(".$dbfile.")</small>";
+		echo DBLAN_62." <small>(".$dbfile.")</small>";
 
-		e107::getAdminLog()->addSuccess($zip." ".$dbfile, false)->save('Full site backup completed.');
+		e107::getAdminLog()->addSuccess($zip." ".$dbfile, false)->save(DBLAN_63);
 		
 	}
 	
@@ -165,15 +175,18 @@ class system_tools
 			'importForm'			=> array('diz'=>DBLAN_59, 'label'=> DBLAN_59),
 			'exportForm'			=> array('diz'=>DBLAN_58, 'label'=> DBLAN_58),
 			'sc_override_scan'		=> array('diz'=>DBLAN_55, 'label'=> DBLAN_56),
-			'convert_to_utf8'		=> array('diz'=>'Check Database Charset','label'=>'Check Charset'),
-			'correct_perms'			=> array('diz'=>'Correct File and Directory permissions','label'=>'Correct Perms'),
-			'backup'				=> array('diz'=>'Backup Database, Files and Folders','label'=>'Backup Site')									
+			'convert_to_utf8'		=> array('diz'=>DBLAN_64,'label'=>DBLAN_65),
+			'correct_perms'			=> array('diz'=>DBLAN_66,'label'=>DBLAN_67),
+			'backup'				=> array('diz'=>DBLAN_68,'label'=>DBLAN_69)
 		);
 		
-		if(vartrue($_SERVER['E_DEV']))
+		if(deftrue('e_DEVELOPER'))
 		{
-			$this->_options['multisite'] = array('diz'=>'', 'label'=> 'Multi-Site');	
+			$this->_options['multisite'] = array('diz'=>"<span class='label label-warning'>Developer Mode Only</span>", 'label'=> 'Multi-Site' );
+			$this->_options['github'] = array('diz'=>"<span class='label label-warning'>Developer Mode Only</span> Overwrite local files with the latest from github.", 'label'=> 'Sync with Github' );
 		}
+
+
 
 		$this->_options = multiarray_sort($this->_options, 'label');
 				
@@ -201,7 +214,7 @@ class system_tools
 			return;
 		}
 		
-	
+		// ----------------- Processes ------------------
 		
 	//	if(isset($_POST['verify_sql_record']) || varset($_GET['mode'])=='verify_sql_record' || isset($_POST['check_verify_sql_record']) || isset($_POST['delete_verify_sql_record']))
 	//	{
@@ -253,17 +266,28 @@ class system_tools
 			$this->plugin_viewscan('refresh');
 		}
 		
-		if(isset($_POST['create_multisite']))
+		if(!empty($_POST['create_multisite']))
 		{
 			$this->multiSiteProcess();	
 		}	
 
-		if(vartrue($_POST['perform_utf8_convert']))
+		if(!empty($_POST['perform_utf8_convert']))
 		{
 			$this->perform_utf8_convert();
 			return;
 		}
-		
+
+		if(!empty($_POST['githubSyncProcess']))
+		{
+			$this->githubSyncProcess();
+			return;
+		}
+
+
+
+		// --------------------- Modes --------------------------------.
+
+
 		if(varset($_GET['mode'])=='correct_perms')
 		{
 			$this->correct_perms();	
@@ -274,6 +298,11 @@ class system_tools
 		{
 			$this->multiSite();	
 			return;
+		}
+
+		if(varset($_GET['mode']) == 'github')
+		{
+			$this->githubSync();
 		}
 		
 		if(varset($_GET['mode']) == 'backup')
@@ -292,13 +321,160 @@ class system_tools
 	}
 
 
+
+
+
+	// Developer Mode ONly.. No LANS.
+	private function githubSync()
+	{
+
+		$frm = e107::getForm();
+		$mes = e107::getMessage();
+
+	//	$message = DBLAN_70;
+	//	$message .= "<br /><a class='e-ajax btn btn-success' data-loading-text='".DBLAN_71."' href='#backupstatus' data-src='".e_SELF."?mode=backup' >".LAN_CREATE."</a>";
+
+		$message = $frm->open('githubSync');
+		$message .= "<p>This will download the latest .zip file from github to <b>".e_SYSTEM."/temp</b> and then unzip it, overwriting any existing files that it finds on your server. It will take into account any custom folders you may have set in e107_config.php. </p>";
+		$message .= $frm->button('githubSyncProcess',1,'delete', "Overwrite Files");
+		$message .= $frm->close();
+
+
+		$mes->addInfo($message);
+
+	//	$text = "<div id='backupstatus' style='margin-top:20px'></div>";
+
+
+		e107::getRender()->tablerender(DBLAN_10.SEP."Sync with Github", $mes->render());
+
+
+
+	}
+
+
+
+
+
+	// Developer Mode ONly.. No LANS.
+	private function githubSyncProcess()
+	{
+
+		// Delete any existing file.
+		if(file_exists(e_TEMP."e107-master.zip"))
+		{
+			unlink(e_TEMP."e107-master.zip");
+		}
+
+		$result = e107::getFile()->getRemoteFile('https://codeload.github.com/e107inc/e107/zip/master', 'e107-master.zip', 'temp');
+
+		if($result == false)
+		{
+			e107::getMessage()->addError( "Couldn't download .zip file");
+		}
+
+
+		$localfile = 'e107-master.zip';
+
+		chmod(e_TEMP.$localfile, 0755);
+		require_once(e_HANDLER."pclzip.lib.php");
+
+//	$base = realpath(dirname(__FILE__));
+
+
+		$newFolders = array(
+			'e107-master/e107_admin/'       => e_BASE.e107::getFolder('ADMIN'),
+			'e107-master/e107_core/'        => e_BASE.e107::getFolder('CORE'),
+			'e107-master/e107_docs/'        => e_BASE.e107::getFolder('DOCS'),
+			'e107-master/e107_handlers/'    => e_BASE.e107::getFolder('HANDLERS'),
+			'e107-master/e107_images/'      => e_BASE.e107::getFolder('IMAGES'),
+			'e107-master/e107_languages/'   => e_BASE.e107::getFolder('LANGUAGES'),
+			'e107-master/e107_media/'       => e_BASE.e107::getFolder('MEDIA'),
+			'e107-master/e107_plugins/'     => e_BASE.e107::getFolder('PLUGINS'),
+			'e107-master/e107_system/'      => e_BASE.e107::getFolder('SYSTEM'),
+			'e107-master/e107_themes/'      => e_BASE.e107::getFolder('THEMES'),
+			'e107-master/e107_web/'         => e_BASE.e107::getFolder('WEB'),
+			'e107-master/'                  => e_BASE
+		);
+
+		$srch = array_keys($newFolders);
+		$repl = array_values($newFolders);
+
+		$archive 	= new PclZip(e_TEMP.$localfile);
+		$unarc 		= ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_TEMP, PCLZIP_OPT_SET_CHMOD, 0755)); // Store in TEMP first.
+
+		$error = array();
+		$success = array();
+		$skipped = array();
+//	print_a($unarc);
+
+
+		$excludes = array('e107-master/','e107-master/install.php','e107-master/favicon.ico');
+
+		foreach($unarc as $k=>$v)
+		{
+			if(in_array($v['stored_filename'],$excludes))
+			{
+				continue;
+			}
+
+			$oldPath = $v['filename'];
+			$newPath =  str_replace($srch,$repl, $v['stored_filename']);
+
+			$message = "Moving ".$oldPath." to ".$newPath;
+
+			if($v['folder'] ==1 && is_dir($newPath))
+			{
+				// $skipped[] =  $newPath. " (already exists)";
+				continue;
+			}
+
+			if(!rename($oldPath,$newPath))
+			{
+				$error[] =  $message;
+			}
+			else
+			{
+				$success[] = $message;
+			}
+
+
+			//	echo $message."<br />";
+
+		}
+
+		if(!empty($success))
+		{
+			e107::getMessage()->addSuccess(print_a($success,true));
+		}
+
+		if(!empty($skipped))
+		{
+			e107::getMessage()->setTitle("Skipped",E_MESSAGE_INFO)->addInfo(print_a($skipped,true));
+		}
+
+		if(!empty($error))
+		{
+			e107::getMessage()->addError(print_a($error,true));
+		}
+
+
+
+
+		e107::getRender()->tablerender(DBLAN_10.SEP."Sync with Github", e107::getMessage()->render());
+
+	}
+
+
+
+
+
 	private function backup()
 	{
 			
 		$mes = e107::getMessage();
 		
-		$message = "This will create a database dump and a zipped backup of all non-core plugins, your site theme, your media files and system logs";
-		$message .= "<br /><a class='e-ajax btn btn-success' data-loading-text='Please wait...' href='#backupstatus' data-src='".e_SELF."?mode=backup' >".LAN_CREATE."</a>";
+		$message = DBLAN_70;
+		$message .= "<br /><a class='e-ajax btn btn-success' data-loading-text='".DBLAN_71."' href='#backupstatus' data-src='".e_SELF."?mode=backup' >".LAN_CREATE."</a>";
 		
 		
 		$mes->addInfo($message);
@@ -329,10 +505,10 @@ class system_tools
 		}
 		else
 		{
-			$mes->addSuccess("Folder and File permissions have been updated");			
+			$mes->addSuccess(DBLAN_72);
 		}
 		
-		e107::getRender()->tablerender(DBLAN_10.SEP."Correcting File and Directory Permissions", $mes->render());	
+		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_73, $mes->render());
 		
 	}
 	
@@ -349,14 +525,14 @@ class system_tools
 			
 		if($connect = $sql->connect($server,$user, $pass, true))
 		{
-			$mes->addSuccess("Connecting to server");
+			$mes->addSuccess(DBLAN_74);
 			
 			if(vartrue($_POST['createdb']))
 			{
 			
 				if($sql->gen("CREATE DATABASE ".$database." CHARACTER SET `utf8`"))
 				{
-					$mes->addSuccess("Creating Database");
+					$mes->addSuccess(DBLAN_75);
 					
 				//	$sql->gen("CREATE USER ".$user."@'".$server."' IDENTIFIED BY '".$pass."';");
 					$sql->gen("GRANT ALL ON `".$database."`.* TO ".$user."@'".$server."';");
@@ -364,17 +540,17 @@ class system_tools
 				}
 				else
 				{
-					$mes->addError("Creating Database");
+					$mes->addError(DBLAN_75);
 					return;
 				}
 			}
 			
 			if(!$sql->database($database))
 			{
-				$mes->addError("Selecting database");
+				$mes->addError(DBLAN_76);
 			}
 					
-			$mes->addSuccess("Selecting database");
+			$mes->addSuccess(DBLAN_76);
 					
 			if($this->multiSiteCreateTables($sql, $prefix))
 			{
@@ -386,7 +562,7 @@ class system_tools
 		}
 		else
 		{
-			$mes->addSuccess("Connecting to server");
+			$mes->addSuccess(DBLAN_74);
 		}
 		
 		if($error = $sql->getLastErrorText())
@@ -408,7 +584,7 @@ class system_tools
 
 		if (!$sql_data)
 		{
-			$mes->addError("Couldn't read core sql file");
+			$mes->addError(DBLAN_77);
 		}
 
 		preg_match_all("/create(.*?)(?:myisam|innodb);/si", $sql_data, $result );
@@ -436,25 +612,39 @@ class system_tools
 	
 	private function multiSite()
 	{
+
+		if(!deftrue('e_DEVELOPER'))
+		{
+			return false;
+		}
+
 		$mes = e107::getMessage();
 		$frm = e107::getForm();
 		
 		e107::lan('core','installer');
-		
+
+		// Leave here until no longer experimental. - Should be placed inside lan_db.php and LANS renamed.
+		define('LANINS_130', "Parked Domain");
+		define('LANINS_131', "The parked domain which will become a new e107 website.");
+		define('LANINS_132', "mydomain.com");
+		define('LANINS_133', "This will create a fresh installation of e107 at the domain you specify. Using your server administration software (e.g. cPanel) - park your other domain on top of [x]");
+
+
 		e107::getMySQLConfig('user'); // prefix|server|user|password|
 		
 		if(!isset($POST['create_multisite']))
 		{
-			$mes->addInfo("This will create a fresh installation of e107 at the domain you specify. Using your server administration software (eg. cPanel) - park your other domain on top of ".e_DOMAIN);
+			$info = str_replace('[x]', e_DOMAIN, LANINS_133);
+			$mes->addInfo($info);
 		}
 		
 		$text = $frm->open('multisite')."
 			<table class='table table-striped' >
 			<tr>
-					<td><label for='server'>Parked Domain</label></td>
+					<td><label for='server'>".LANINS_130."</label></td>
 					<td>
-						<input class='tbox' type='text' placeholder='mydomain.com' id='domain' name='domain' autofocus size='40' value='' maxlength='100' required='required' />
-						<span class='field-help'>The parked domain which will become a new e107 website.</span>
+						<input class='tbox' type='text' placeholder='".LANINS_132."' id='domain' name='domain' autofocus size='40' value='' maxlength='100' required='required' />
+						<span class='field-help'>".LANINS_131."</span>
 					</td>
 				</tr>
 				";
@@ -573,6 +763,7 @@ class system_tools
 		$frm 	= e107::getForm();
 		$config = e107::getMySQLConfig();
 		$sql 	= e107::getDb();
+		$tp = e107::getParser();
 		
 		$sql->gen('SHOW TABLE STATUS WHERE Name LIKE "'.$config['mySQLprefix'].'%" ');
 		
@@ -587,10 +778,10 @@ class system_tools
 							<thead>
 								<tr>
 									
-									<th>Table</th>
-									<th>Engine</th>
-									<th>Collation</th>
-									<th>Status</th>
+									<th>".DBLAN_78."</th>
+									<th>".DBLAN_79."</th>
+									<th>".DBLAN_80."</th>
+									<th>".DBLAN_81."</th>
 								</tr>
 							</thead>
 							<tbody>";
@@ -626,29 +817,27 @@ class system_tools
 
 		if($invalidCollations == true)
 		{
-			//TODO LAN
-				$message = '
-				This function will permanently modify all tables in your database. ('.$config['mySQLdefaultdb'].')<br />
-				It is <b>HIGHLY</b> recommended that you first backup your database and switch your site into maintenance mode. 
-				<br />
-				<br />
-				Please note:
-				<ul>
-				<li>The conversion process can take up to one minute or much much more depending on the size of your database.</li>
-				<li>The conversion does not work with serialized arrays.</li>
-				<li>Be sure that you have followed all steps of the upgrade process first.</li>
-				<li>Core prefs are ignored during the conversion process due to possibility of corruption. </li>
-				</ul>
-				';
-	
-			$mes->add($message, E_MESSAGE_WARNING);
+			$message = str_replace('[database]', $config['mySQLdefaultdb'], DBLAN_82);
+			$message .= '<br/>';
+			$message .= DBLAN_83;
+			$message .= '<br/>';
+			$message .= '<br/>';
+			$message .= DBLAN_84;
+			$message .= '<ul>';
+			$message .= '<li>'.DBLAN_85.'</li>';
+			$message .= '<li>'.DBLAN_86.'</li>';
+			$message .= '<li>'.DBLAN_87.'</li>';
+			$message .= '<li>'.DBLAN_88.'</li>';
+			$message .= '</ul>';
+
+			$mes->add($tp->toHtml($message,true), E_MESSAGE_WARNING);
 	
 			$text .= "
 				<form method='post' action='".e_SELF."' id='linkform'>
 					<fieldset id='core-db-utf8-convert'>
-						<legend class='e-hideme'>"."Convert Database"."</legend>
+						<legend class='e-hideme'>".DBLAN_89."</legend>
 						<div class='buttons-bar center'>
-							".$frm->admin_button('perform_utf8_convert', "Convert non-UTF8 Tables",false,"Convert non-UTF8 Tables",'class=btn-success&data-loading-text=Please wait...')."
+							".$frm->admin_button('perform_utf8_convert', DBLAN_90,false,DBLAN_90,'class=btn-success&data-loading-text='.DBLAN_91)."
 						</div>
 					</fieldset>
 				</form>";
@@ -656,7 +845,7 @@ class system_tools
 		}
 		else 
 		{
-			$mes->addSuccess("Your tables are using the correct character set.");	
+			$mes->addSuccess(DBLAN_92);
 		}
 
 
@@ -778,11 +967,11 @@ class system_tools
 		}
 		elseif($ERROR != TRUE)
 		{
-			$message = "Database Converted successfully to UTF-8. ";
+			$message = DBLAN_93;
 			//$message .= "<br />Please now add the following line to your e107_config.php file:<br /><b>\$mySQLcharset   = 'utf8';</b>";
 
 			$mes->add($message, E_MESSAGE_SUCCESS);
-			$mes->addSuccess("Please make sure you have the following line in your e107_config.php file:");
+			$mes->addSuccess(DBLAN_94);
 			$mes->addSuccess('$mySQLcharset   = "utf8";');
 			
 		}
@@ -837,7 +1026,8 @@ class system_tools
 
 		$deleted_list = "";
 
-		$config = ($mode == 'core' || $mode='') ? e107::getConfig('core') : e107::getPlugConfig($mode);
+		$config = ($mode == 'core' || $mode=='') ? e107::getConfig('core') : e107::getPlugConfig($mode);
+
 
 		// Single Pref Deletion	using button
 		if(varset($_POST['delpref']))
@@ -915,7 +1105,7 @@ class system_tools
 		{
 			
 			$text .= "<div class='pull-left' style='width:50%;padding-bottom:10px'>
-			<a class='btn btn-large pull-left' style='margin-right:10px' href='".e_SELF."?mode=".$key."' title=\"".$val['label']."\">".ADMIN_EXECUTE_ICON."</a>
+			<a class='btn btn-default btn-large pull-left' style='margin-right:10px' href='".e_SELF."?mode=".$key."' title=\"".$val['label']."\">".ADMIN_EXECUTE_ICON."</a>
 			<h4 style='margin-bottom:3px'><a href='".e_SELF."?mode=".$key."' title=\"".$val['label']."\">".$val['label']."</a></h4><small>".$val['diz']."</small>
 			</div>";
 		
@@ -994,12 +1184,9 @@ class system_tools
 		$mes = e107::getMessage();
 		$frm = e107::getSingleton('e_form');
 
-
-	//TODO LANs
-
 		$text = "<form method='post' action='".e_SELF."?".e_QUERY."' id='core-db-export-form'>
 			<fieldset id='core-db-export'>
-			<legend class='e-hideme'>Export Options</legend>
+			<legend class='e-hideme'>".DBLAN_95."</legend>
 				<table class='table adminlist'>
 				<colgroup>
 					<col style='width: 80%' />
@@ -1007,8 +1194,8 @@ class system_tools
 				</colgroup>
 				<thead>
 				<tr>
-					<th>".$frm->checkbox_toggle('check-all-verify', 'xml_prefs')." Preferences</th>
-					<th class='right'>Rows</th>
+					<th>".$frm->checkbox_toggle('check-all-verify', 'xml_prefs')." ".LAN_PREFS."</th>
+					<th class='right'>".DBLAN_98."</th>
 
 				</tr>
 				</thead>
@@ -1043,8 +1230,8 @@ class system_tools
 				</colgroup>
 				<thead>
 				<tr>
-					<th>".$frm->checkbox_toggle('check-all-verify', 'xml_tables')."Tables</th>
-					<th class='right'>Rows</th>
+					<th>".$frm->checkbox_toggle('check-all-verify', 'xml_tables').DBLAN_97."</th>
+					<th class='right'>".DBLAN_98."</th>
 
 				</tr>
 				</thead>
@@ -1057,7 +1244,7 @@ class system_tools
 						$checked = (vartrue($_POST['xml_tables'][$name]) == $name) ? 1: 0;
 						$text .= "<tr>
 							<td>
-								".$frm->checkbox("xml_tables[".$name."]", $name, $checked, array('label'=>"Table Data: ".$name)).
+								".$frm->checkbox("xml_tables[".$name."]", $name, $checked, array('label'=>DBLAN_99." ".$name)).
 							"</td>
 							<td class='right'>$count</td>
 						</tr>";
@@ -1082,7 +1269,7 @@ class system_tools
 				<tr>
 						<td colspan='2'>";
 						$checked = (vartrue($_POST['package_images'])) ? 1: 0;
-						$text .= $frm->checkbox("package_images",'package_images', $checked)." Convert paths and package images and xml into: <i>".e107::getParser()->replaceConstants(EXPORT_PATH)."</i>
+						$text .= $frm->checkbox("package_images",'package_images', $checked)." ".DBLAN_100." <i>".e107::getParser()->replaceConstants(EXPORT_PATH)."</i>
 
 						</td>
 					</tr>
@@ -1090,13 +1277,13 @@ class system_tools
 				</table>
 
 				<div class='buttons-bar center'>
-					".$frm->admin_button('exportXmlFile', "Export File", 'other')."
+					".$frm->admin_button('exportXmlFile', DBLAN_101, 'other')."
 				</div>
 			</fieldset>
 		</form>	";
 
 
-		e107::getRender()->tablerender(DBLAN_10.SEP."Export Options",$mes->render(). $text);
+		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_102,$mes->render(). $text);
 
 
 	}
@@ -1111,12 +1298,12 @@ class system_tools
 
 		foreach($ret['success'] as $table)
 		{
-			e107::getMessage()->addSuccess("Inserted $table");
+			e107::getMessage()->addSuccess(DBLAN_103." $table");
 		}
 
 		foreach($ret['failed'] as $table)
 		{
-			e107::getMessage()->addError("Failed to Insert $table");
+			e107::getMessage()->addError(DBLAN_104." $table");
 		}
 	}
 
@@ -1151,8 +1338,8 @@ class system_tools
 		$tp = e107::getParser();
 		$pref = e107::getPref();
 
-		$config = ($type == 'core') ? e107::getConfig('core') : e107::getPlugConfig($type);
-
+		$config = ($type == 'core' || $type == 'search'  || $type == 'notify') ? e107::getConfig($type) : e107::getPlugConfig($type);
+		
 		$spref = $config->getPref();
 
 		ksort($spref);
@@ -1163,7 +1350,9 @@ class system_tools
 						<legend class='e-hideme'>".DBLAN_20."</legend>";
 
 		$text .= "<select class='tbox' name='type_select' onchange='urljump(this.options[selectedIndex].value)' >
-		<option value='".e_ADMIN."db.php?mode=".$_GET['mode']."&amp;type=core'>Core</option>\n";
+		<option value='".e_ADMIN."db.php?mode=".$_GET['mode']."&amp;type=core'>Core</option>\n
+		<option value='".e_ADMIN."db.php?mode=".$_GET['mode']."&amp;type=search'>Search</option>
+		<option value='".e_ADMIN."db.php?mode=".$_GET['mode']."&amp;type=notify'>Notify</option>\n";
 
 	//	e107::getConfig($type)->aliases
 
@@ -1267,12 +1456,11 @@ class system_tools
 		//$pref['sc_override'] = $scList;
 		//save_prefs();
 	//	$mes->add(DBLAN_57.':<br />'.$pref['sc_override'], E_MESSAGE_SUCCESS);
-		// FIXME lan
 		e107::getRender()->tablerender(
 			'<strong>'.DBLAN_56, DBLAN_57.':</strong> '
-			.($config->get('sc_override') ? '<br />'.$config->get('sc_override') : '(empty)')
-			.'<br /><br /><strong>Batch shortcodes:</strong>'
-			.($config->get('sc_batch_override') ? '<br />'.$config->get('sc_batch_override') : '(empty)')
+			.($config->get('sc_override') ? '<br />'.$config->get('sc_override') : DBLAN_106)
+			.'<br /><br /><strong>'.DBLAN_105.'</strong>'
+			.($config->get('sc_batch_override') ? '<br />'.$config->get('sc_batch_override') : DBLAN_106)
 		);
 	}
 
@@ -1282,7 +1470,7 @@ class system_tools
 	 */
 	private function plugin_viewscan($mode = 'update')
 	{
-		$error_messages = array(0 => DBLAN_31, 1 => DBLAN_32, 2 => DBLAN_33, 3 => DBLAN_34);
+		$error_messages = array(0 => DBLAN_31, 1 => LAN_ERROR, 2 => DBLAN_33, 3 => DBLAN_34);
 	//	$error_image = array("integrity_pass.png", "integrity_fail.png", "warning.png", "blank.png");
 		$error_glyph = array(ADMIN_TRUE_ICON,ADMIN_FALSE_ICON,"<i class='S16 e-warning-16'></i>","<i style='display:inline-block;width:17px;height:16px;'> </i>");
 		
@@ -1445,8 +1633,6 @@ function exportXmlFile($prefs,$tables,$package=FALSE,$debug=FALSE)
 	$tp = e107::getParser();
 	$mes = e107::getMessage();
 
-	//TODO LANs
-
 	if(vartrue($package))
 	{
 
@@ -1461,7 +1647,8 @@ function exportXmlFile($prefs,$tables,$package=FALSE,$debug=FALSE)
 
 		if(!is_writable($desinationFolder))
 		{
-			$mes->add($desinationFolder." is not writable", E_MESSAGE_ERROR);
+			$message = str_replace('[folder]', $desinationFolder, DBLAN_107);
+			$mes->add($message, E_MESSAGE_ERROR);
 			return ;
 		}
 	}
@@ -1469,7 +1656,7 @@ function exportXmlFile($prefs,$tables,$package=FALSE,$debug=FALSE)
 
 	if($xml->e107Export($prefs,$tables,$debug))
 	{
-		$mes->add("Created: ".$desinationFolder."install.xml", E_MESSAGE_SUCCESS);
+		$mes->add(DBLAN_108." ".$desinationFolder."install.xml", E_MESSAGE_SUCCESS);
 		if(varset($xml->fileConvertLog))
 		{
 			foreach($xml->fileConvertLog as $oldfile)
@@ -1478,11 +1665,11 @@ function exportXmlFile($prefs,$tables,$package=FALSE,$debug=FALSE)
 				$newfile = $desinationFolder.$file;
 				if($oldfile == $newfile || (copy($oldfile,$newfile)))
 				{
-					$mes->add("Copied: ".$newfile, E_MESSAGE_SUCCESS);
+					$mes->add(DBLAN_109." ".$newfile, E_MESSAGE_SUCCESS);
 				}
 				else
 				{
-					$mes->add("Couldn't copy: ".$newfile, E_MESSAGE_ERROR);
+					$mes->add(DBLAN_110." ".$newfile, E_MESSAGE_ERROR);
 				}
 			}
 		}
@@ -1690,7 +1877,7 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 							<thead>
 								<tr>
 									<th>".DBLAN_41."</th>
-									<th>".DBLAN_42."</th>
+									<th>".LAN_ID."</th>
 									<th>".DBLAN_43."</th>
 									<th class='center last'>".LAN_OPTIONS."</th>
 								</tr>

@@ -31,6 +31,8 @@ class core_page_sef_chapters_url extends eUrlConfig
 			),
 
 			### using only title for pages is risky enough (empty sef for old DB's)
+			# reverted. Ultimate solution must allow for root level book-name as well as root level 'page' without the use of 'item' or any other prefix. 
+			# Books/Chapters should take priority as that is the primary purpose of this module. 
 			'rules' => array( 
 				'<book:{sefsecure}>/<chapter:{sefsecure}>/<name:{secure}>' 	=> array('view/index',  	'allowVars' => false, 'mapVars' => array('page_id'=>'id', 'page_sef'=>'name', 'chapter_sef'=>'chapter', 'book_sef'=>'book'), 'legacyQuery' => '{name}.{page}', 'parseCallback' => 'itemIdByTitle'),
 				'<book:{sefsecure}>/<name:{sefsecure}>' 					=> array('chapter/index',  	'allowVars' => false, 'mapVars' => array('chapter_id'=>'id', 'chapter_sef'=>'name', 'book_sef'=>'book'), 'legacyQuery' => 'ch={id}', 'parseCallback' => 'chapterIdByTitle'),

@@ -3,7 +3,8 @@ if ( ! defined('e107_INIT')) { exit(); }
 /*
  * This is a 100% Pure Bootstrap Theme for e107 v2 
  */
-define('BOOTSTRAP',true); 
+define("BOOTSTRAP",true); 
+define("FONTAWESOME", 4); 
 define("VIEWPORT", "width=device-width, initial-scale=1.0");
 define("BODYTAG", '<body data-spy="scroll" data-target=".bs-docs-sidebar" >');
 
@@ -43,7 +44,7 @@ else
 
 e107::css('bootstrap','bootstrap-responsive.min.css');
 e107::css('bootstrap','jquery-ui.custom.css');
-e107::css('url', "//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css");
+e107::css('url', "https://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css");
 
 e107::css('theme', 'js/google-code-prettify/prettify.css');
 e107::js('theme', "js/google-code-prettify/prettify.js");

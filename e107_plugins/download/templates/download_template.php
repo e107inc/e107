@@ -15,6 +15,7 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
+if (!defined('USER_WIDTH')) { define('USER_WIDTH', 'display:block'); } // v1.x compat.
 
 
 // ##### CAT TABLE --------------------------------------------------------------------------------
@@ -37,9 +38,9 @@ if(!isset($DOWNLOAD_CAT_TABLE_START))
 		      </colgroup>
 		      <thead>
                <tr>
-                  <th class='fcaption' colspan='2'>".LAN_dl_19."</th>
-                  <th class='fcaption'>".LAN_dl_20."</th>
-                  <th class='fcaption'>".LAN_dl_21."</th>
+                  <th class='fcaption' colspan='2'>".LAN_CATEGORY."</th>
+                  <th class='fcaption'>".LAN_FILES."</th>
+                  <th class='fcaption'>".LAN_SIZE."</th>
                   <th class='fcaption'>".LAN_dl_77."</th>
                </tr>
             </thead>
@@ -148,12 +149,12 @@ if(!isset($DOWNLOAD_LIST_TABLE_START))
                </colgroup>
                <tr>
                   <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=name}</th>
-                  <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=date}</th>
-                  <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=author}</th>
-                  <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=size}</th>
-                  <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=downloads}</th>
-                  <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=rating}</th>
-                  <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=get}</th>
+	              <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=datestamp}</th>
+	              <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=author}</th>
+	              <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=filesize}</th>
+	              <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=requested}</th>
+	              <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=rating}</th>
+	              <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=link}</th>
                </tr>";
 }
 if(!isset($DOWNLOAD_LIST_TABLE))
@@ -195,7 +196,7 @@ if(!isset($DOWNLOAD_LIST_TABLE_END))
 		</div>\n";
 }
 // ##### VIEW TABLE -------------------------------------------------------------------------------
-$DL_VIEW_PAGETITLE = PAGE_NAME." / {DOWNLOAD_CATEGORY} / {DOWNLOAD_VIEW_NAME}";
+$DL_VIEW_PAGETITLE = LAN_PLUGIN_DOWNLOAD_NAME." / {DOWNLOAD_CATEGORY} / {DOWNLOAD_VIEW_NAME}";
 
 $DL_VIEW_NEXTPREV = "
 <div style='text-align:center'>
@@ -306,10 +307,10 @@ if(!isset($DOWNLOAD_MIRROR_START))
 	      </tr>
 	      <tr>
 	         <th class='forumheader' colspan='2'>".LAN_dl_68."</th>
-	         <th class='forumheader'>".LAN_dl_71."</th>
-	         <th class='forumheader'>".LAN_dl_70."</th>
-	         <th class='forumheader'>".LAN_dl_21."</th>
-	         <th class='forumheader'>".LAN_dl_32."</th>
+	         <th class='forumheader'>".LAN_ABOUT."</th>
+	         <th class='forumheader'>".LAN_LOCATION."</th>
+	         <th class='forumheader'>".LAN_SIZE."</th>
+	         <th class='forumheader'>".LAN_DOWNLOAD."</th>
 	      </tr>
 	";
 }
@@ -360,9 +361,9 @@ $DOWNLOAD_TEMPLATE['categories']['start'] = "
 		      </colgroup>
 		      <thead>
                <tr>
-                  <th colspan='2'>".LAN_dl_19."</th>
-                  <th>".LAN_dl_20."</th>
-                  <th>".LAN_dl_21."</th>
+                  <th colspan='2'>".LAN_CATEGORY."</th>
+                  <th>".LAN_FILES."</th>
+                  <th>".LAN_SIZE."</th>
                   <th>".LAN_dl_77."</th>
                </tr>
             </thead>
@@ -437,7 +438,7 @@ $DOWNLOAD_WRAPPER['view']['DOWNLOAD_VIEW_AUTHORWEBSITE'] 		= "<td style='width:8
 $DOWNLOAD_WRAPPER['view']['DOWNLOAD_REPORT_LINK'] 				= "<tr><td style='width:20%' colspan='2'>{---}</td></tr>";
 
 
-$DOWNLOAD_TEMPLATE['view']['caption'] = LAN_dl_18;
+$DOWNLOAD_TEMPLATE['view']['caption'] = LAN_PLUGIN_DOWNLOAD_NAME;
 $DOWNLOAD_TEMPLATE['view']['start'] = " ";
 
 $DOWNLOAD_TEMPLATE['view']['item'] = "
@@ -616,10 +617,10 @@ $DOWNLOAD_TEMPLATE['mirror']['start'] = "
 	      </tr>
 	      <tr>
 	         <th colspan='2'>".LAN_dl_68."</th>
-	         <th>".LAN_dl_71."</th>
-	         <th>".LAN_dl_70."</th>
-	         <th>".LAN_dl_21."</th>
-	         <th>".LAN_dl_32."</th>
+	         <th>".LAN_ABOUT."</th>
+	         <th>".LAN_LOCATION."</th>
+	         <th>".LAN_SIZE."</th>
+	         <th>".LAN_DOWNLOAD."</th>
 	      </tr>
 	";			
 			

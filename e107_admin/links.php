@@ -48,14 +48,14 @@ class links_admin extends e_admin_dispatcher
 		'main/list'		=> array('caption'=> LAN_MANAGE, 'perm' => 'I'),
 		'main/create' 	=> array('caption'=> LAN_CREATE, 'perm' => 'I'),
 		'main/prefs' 	=> array('caption'=> LAN_OPTIONS, 'perm' => 'I'),
-		'main/sublinks'	=> array('caption'=> LINKLAN_4, 'perm' => 'I')
+		'main/tools'	=> array('caption'=> LINKLAN_4, 'perm' => 'I')
 	);
 
 	protected $adminMenuAliases = array(
 		'main/edit'	=> 'main/list'
 	);
 
-	protected $menuTitle = 'links';
+	protected $menuTitle = 'Links';
 }
 
 class links_admin_ui extends e_admin_ui
@@ -79,23 +79,23 @@ class links_admin_ui extends e_admin_ui
 	protected $fields = array(
 		'checkboxes' 		=> array('title'=> '',				'width' => '3%','forced' => true, 'thclass' => 'center first','class' => 'center first'),
 		'link_button'		=> array('title'=> LAN_ICON, 		'type'=>'icon',			'width'=>'5%', 'thclass' => 'center', 'class'=>'center', 'writeParms'=>'glyphs=1'),
-		'link_id'			=> array('title'=> LAN_ID, 			'type'=>'text','readParms'=>'link=link_url&target=dialog','noedit'=>TRUE),
-		'link_name'	   		=> array('title'=> LCLAN_15,		'width'=>'auto','type'=>'text', 'inline'=>true, 'required' => true, 'validate' => true),
+		'link_id'			=> array('title'=> LAN_ID, 			'type'=>'method','readParms'=>'','noedit'=>TRUE),
+		'link_name'	   		=> array('title'=> LCLAN_15,		'width'=>'auto','type'=>'text', 'inline'=>true, 'required' =>false, 'validate' => false), // not required as only an icon may be used.
 	    'link_category'     => array('title'=> LAN_TEMPLATE,    'type' => 'dropdown', 'inline'=>true, 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
     
-    	'link_parent' 		=> array('title'=> 'Sublink of', 	'type' => 'method', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
-		'link_url'	   		=> array('title'=> LAN_URL, 		'width'=>'auto', 'type'=>'text', 'inline'=>true, 'required'=>true,'validate' => true, 'writeParms'=>'size=xxlarge'),
-	//	'link_sefurl' 		=> array('title'=> LAN_SEFURL, 		'type' => 'text', 'inline'=>true, 'width' => 'auto'),
+    	'link_parent' 		=> array('title'=> LCLAN_104, 	'type' => 'method', 'data'=>'int', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
+		'link_url'	   		=> array('title'=> LAN_URL, 		'width'=>'auto', 'type'=>'method', 'inline'=>true, 'required'=>true,'validate' => true, 'writeParms'=>'size=xxlarge'),
+		'link_sefurl' 		=> array('title'=> LAN_SEFURL, 		'type' => 'method', 'inline'=>false, 'width' => 'auto', 'help'=>LCLAN_107),
 		'link_class' 		=> array('title'=> LAN_USERCLASS, 	'type' => 'userclass','inline'=>true, 'writeParms' => 'classlist=public,guest,nobody,member,classes,admin,main', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
 		'link_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'textarea', 'width' => 'auto'), // 'method'=>'tinymce_plugins',  ?
 		'link_order' 		=> array('title'=> LAN_ORDER, 		'type' => 'number', 'width' => 'auto', 'nolist'=>false, 'inline' => true),
 		'link_open'			=> array('title'=> LCLAN_19, 		'type' => 'dropdown', 'inline'=>true, 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
-		'link_function'		=> array('title'=> 'Function', 		'type' => 'method', 'data'=>'str', 'width' => 'auto', 'thclass' => 'left first'),
-		
+		'link_function'		=> array('title'=> LCLAN_105, 		'type' => 'method', 'data'=>'str', 'width' => 'auto', 'thclass' => 'left first'),
+		'link_owner'		=> array('title'=> LCLAN_106,		'type' => 'hidden', 'data'=>'str'),
 		'options' 			=> array('title'=> LAN_OPTIONS, 	'type'	=> null, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class'=>'center','readParms'=>'sort=1') // quick workaround
 	);
 
-	protected $fieldpref =  array('checkboxes','link_id','link_name','link_sefurl','link_class','link_category','options');
+	protected $fieldpref =  array('checkboxes','link_button', 'link_id','link_name','link_sefurl','link_class','link_category','options');
 
 	protected $prefs = array(
 		'linkpage_screentip'	=> array('title'=>LCLAN_78,	'type'=>'boolean', 'help'=>LCLAN_79),
@@ -144,8 +144,18 @@ class links_admin_ui extends e_admin_ui
 			4 => LCLAN_24, // 4 = miniwindow  600x400
 			5 => LINKLAN_1 // 5 = miniwindow  800x600
 		);
-		
+
+
+
+
+
 	}
+
+
+
+
+
+
 
 	public function handleListLinkParentBatch($selected, $value)
 	{
@@ -161,7 +171,7 @@ class links_admin_ui extends e_admin_ui
 				$found = true;
 			}
 		}
-		if($found) e107::getMessage()->addWarning('Some selections omitted - you can\'t set Link as a Sublink of its Sublink.');
+		if($found) e107::getMessage()->addWarning(LCLAN_108);
 		if(!$selected) return;
 		
 		if(parent::handleListBatch($selected, $field, $value))
@@ -212,7 +222,7 @@ class links_admin_ui extends e_admin_ui
 	/**
 	 * Sublinks generator
 	 */
-	public function sublinksPage()
+	public function toolsPage()
 	{
 		$sublinks = $this->sublink_data();
 		$ui = $this->getUI();
@@ -263,10 +273,24 @@ class links_admin_ui extends e_admin_ui
 			</fieldset>
 		</form>
 		";
+
 		//$e107->ns->tablerender(LINKLAN_4, $emessage->render().$text);
-		$this->addTitle(LINKLAN_4);
+	//	$this->addTitle(LINKLAN_4);
+
 		return $text;
+
 	}
+
+
+
+
+
+
+
+
+
+
+
 
 	function sublink_data($name = "")
 	{
@@ -317,17 +341,17 @@ class links_admin_ui extends e_admin_ui
 
 		if(!$pid)
 		{
-			$mes->warning('Please choose a parent');
+			$mes->warning(LCLAN_109);
 			return;
 		}
 		if(!$subtype)
 		{
-			$mes->warning('Please choose a generator module');
+			$mes->warning(LCLAN_110);
 			return;
 		}
 		if(!$sublink)
 		{
-			$mes->error('Not valid generator module data');
+			$mes->error(LCLAN_111);
 			return;
 		}
 
@@ -634,8 +658,100 @@ class links_admin_form_ui extends e_admin_form_ui
 			return $this->linkFunctions;
 		}
 	}
-	
-	
+
+	function link_id($curVal,$mode)
+	{
+		if($mode == 'read')
+		{
+			$linkUrl = $this->getController()->getListModel()->get('link_url');
+			$linkUrl = e107::getParser()->replaceConstants($linkUrl,'abs');
+			$url = $this->link_url($linkUrl,$mode);
+			return "<a href='".$url."' rel='external'>".$curVal."</a>"; //  $this->linkFunctions[$curVal];
+		}
+	}
+
+
+	function link_sefurl($curVal,$mode)
+	{
+		if($mode == 'read')
+		{
+			$plugin = $this->getController()->getModel()->get('link_owner');
+			return $curVal; //  $this->linkFunctions[$curVal];
+		}
+
+		if($mode == 'write')
+		{
+			$plugin = $this->getController()->getModel()->get('link_owner');
+			$obj    = e107::getAddon($plugin,'e_url');
+			$config = e107::callMethod($obj,'config');
+			$opts   = array();
+
+			if(empty($config))
+			{
+				return $this->hidden('link_sefurl','')."<span class='label label-warning'>".LAN_NOT_AVAILABLE."</span>";
+			}
+
+			foreach($config as $k=>$v)
+			{
+				if(strpos($v['regex'],')')===false) // only provide urls without dynamic elements.
+				{
+					$opts[] = $k;
+				}
+			}
+
+
+			return $this->select('link_sefurl', $opts, $curVal, array('useValues'=>true,'defaultValue'=>'','default'=>'('.LAN_DISABLED.')'));
+		}
+
+	}
+
+	function link_url($curVal,$mode)
+	{
+		if($mode == 'read')
+		{
+			$owner = $this->getController()->getListModel()->get('link_owner');
+			$sef =  $this->getController()->getListModel()->get('link_sefurl');
+
+			if(!empty($owner) && !empty($sef))
+			{
+				$curVal = str_replace(e_HTTP,'',e107::url($owner,$sef));
+			}
+
+			return $curVal; //  $this->linkFunctions[$curVal];
+		}
+
+		if($mode == 'write')
+		{
+			$owner = $this->getController()->getModel()->get('link_owner');
+			$sef =  $this->getController()->getModel()->get('link_sefurl');
+
+			if(!empty($owner) && !empty($sef))
+			{
+
+				$text = str_replace(e_HTTP,'',e107::url($owner,$sef)); // dynamically created.
+				$text .= $this->hidden('link_url',$curVal);
+				$text .= " <span class='label label-warning'>".LAN_AUTO_GENERATED."</span>";
+
+				return $text;
+
+			}
+
+			return $this->text('link_url', $curVal, 255,  array('size'=>'xxlarge'));
+		}
+
+		if($mode == 'inline')
+		{
+			$sef =  $this->getController()->getListModel()->get('link_sefurl');
+
+			if(empty($sef))
+			{
+				return array('inlineType'=>'text');
+			}
+
+			return false;
+		}
+
+	}
 
 	/**
 	 *

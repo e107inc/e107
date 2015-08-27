@@ -27,9 +27,9 @@ if($parm == "request"){
 
 	$agreetext = $tp->toJS($tp->toHTML($pref['agree_text'],FALSE,'DESCRIPTION'));
 	if($row['download_mirror_type']){
-		$text = ($pref['agree_flag'] ? "<a href='".e_BASE."download.php?mirror.".$row['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_BASE."download.php?mirror.".$row['download_id']."' title='".LAN_dl_32."'>");
+		$text = ($pref['agree_flag'] ? "<a href='".e_BASE."download.php?mirror.".$row['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_BASE."download.php?mirror.".$row['download_id']."' title='".LAN_DOWNLOAD."'>");
 	}else{
-		$text = ($pref['agree_flag'] ? "<a href='".e_BASE."request.php?".$row['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_BASE."request.php?".$row['download_id']."' title='".LAN_dl_32."'>");
+		$text = ($pref['agree_flag'] ? "<a href='".e_BASE."request.php?".$row['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_BASE."request.php?".$row['download_id']."' title='".LAN_DOWNLOAD."'>");
 	}
 	$text .= $tp->toHTML($row['download_name'], FALSE, 'USER_TITLE')."</a>";
 	return $text;
@@ -53,7 +53,7 @@ SC_END
 
 SC_BEGIN DOWNLOAD_LIST_ICON
 global $row;
-$img = "<img src='".IMAGE_DOWNLOAD."' alt='' style='border:0' title='".LAN_dl_32."' />";
+$img = "<img src='".IMAGE_DOWNLOAD."' alt='' style='border:0' title='".LAN_DOWNLOAD."' />";
 if($parm == "link"){
 	return "<a href='".e_BASE."download.php?view.".$row['download_id']."' >".$img."</a>";
 }else{
@@ -315,7 +315,7 @@ SC_BEGIN DOWNLOAD_VIEW_RATING
 	else if(!USER) {
 		$text .= "&nbsp;";
 	} else {
-		$text .= LAN_dl_15;
+		$text .= LAN_THANK_YOU;
 	}
 	$text .= "</td></tr></table>";
 return $text;
@@ -338,7 +338,7 @@ SC_END
 
 SC_BEGIN DOWNLOAD_VIEW_AUTHOR_LAN
 global $dl;
-return ($dl['download_author']) ? LAN_dl_24 : "";
+return ($dl['download_author']) ? LAN_AUTHOR : "";
 SC_END
 
 SC_BEGIN DOWNLOAD_VIEW_AUTHOREMAIL_LAN
@@ -353,11 +353,11 @@ SC_END
 
 SC_BEGIN DOWNLOAD_VIEW_DATE_LAN
 global $dl;
-return ($dl['download_datestamp']) ? LAN_dl_22 : "";
+return ($dl['download_datestamp']) ? LAN_DATE : "";
 SC_END
 
 SC_BEGIN DOWNLOAD_VIEW_IMAGE_LAN
-return LAN_dl_11;
+return LAN_IMAGE;
 SC_END
 
 SC_BEGIN DOWNLOAD_VIEW_REQUESTED
@@ -366,15 +366,15 @@ return $dl['download_requested'];
 SC_END
 
 SC_BEGIN DOWNLOAD_VIEW_RATING_LAN
-return LAN_dl_12;
+return LAN_RATING;
 SC_END
 
 SC_BEGIN DOWNLOAD_VIEW_FILESIZE_LAN
-return LAN_dl_10;
+return LAN_SIZE;
 SC_END
 
 SC_BEGIN DOWNLOAD_VIEW_DESCRIPTION_LAN
-return LAN_dl_7;
+return LAN_DESCRIPTION;
 SC_END
 
 SC_BEGIN DOWNLOAD_VIEW_REQUESTED_LAN
@@ -382,7 +382,7 @@ return LAN_dl_77;
 SC_END
 
 SC_BEGIN DOWNLOAD_VIEW_LINK_LAN
-return LAN_dl_32;
+return LAN_DOWNLOAD;
 SC_END
 
 
@@ -417,7 +417,7 @@ SC_END
 
 SC_BEGIN DOWNLOAD_BACK_TO_LIST
 global $dl;
-return "<a href='".e_BASE."download.php?list.".$dl['download_category']."'>".LAN_dl_35."</a>";
+return "<a href='".e_BASE."download.php?list.".$dl['download_category']."'>".LAN_BACK."</a>";
 SC_END
 
 SC_BEGIN DOWNLOAD_BACK_TO_CATEGORY_LIST
@@ -447,7 +447,7 @@ SC_BEGIN DOWNLOAD_CATEGORY_SELECT
 	    	exit;
 	  	}
 
-	  	$boxinfo .= "<select name='download_category' id='download_category' class='tbox'>
+	  	$boxinfo .= "<select name='download_category' id='download_category' class='tbox form-control' required>
 					<option value=''>&nbsp;</option>\n";
 
 		// Its a structured display option - need a 2-step process to create a tree

@@ -443,7 +443,7 @@ class e_session
 		if (empty($this->_options['domain']))
 		{
 			// MULTILANG_SUBDOMAIN set during initial language detection in language handler
-			$doma = ((!e_SUBDOMAIN || defsettrue('MULTILANG_SUBDOMAIN')) && e_DOMAIN != FALSE) ? ".".e_DOMAIN : FALSE; // from v1.x
+			$doma = ((!e_SUBDOMAIN || deftrue('MULTILANG_SUBDOMAIN')) && e_DOMAIN != FALSE) ? ".".e_DOMAIN : FALSE; // from v1.x
 			$this->_options['domain'] = $doma;
 		}
 
@@ -467,12 +467,9 @@ class e_session
 
 		if ($this->_sessionCacheLimiter)
 		{
-			session_cache_limiter((string) $this->_sessionCacheLimiter);
+			session_cache_limiter((string) $this->_sessionCacheLimiter); //XXX Remove and have e_headers class handle it?
 		}
-		elseif(!defined('e_NOCACHE') || !e_NOCACHE)
-		{
-			session_cache_limiter('private'); 
-		}
+		
 	
 		session_start();
 		$this->_sessionStarted = true;
@@ -501,6 +498,15 @@ class e_session
 	public function getSessionId()
 	{
 		return session_id();
+	}
+	
+	/**
+	 * Retrieve current session save method. 
+	 * @return string
+	 */
+	public function getSaveMethod()
+	{
+		return $this->_sessionSaveMethod;	
 	}
 
 	/**

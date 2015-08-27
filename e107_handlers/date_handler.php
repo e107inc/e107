@@ -24,6 +24,115 @@ class convert
 		
 		
 	}
+
+
+	/**
+	 * Build the datetimepicker() locale, since it must match strftime() values for accurate conversion.
+	 */
+	function buildDateLocale()
+	{
+		$text = '
+		(function($){
+
+		$.fn.datetimepicker.dates["'.e_LAN.'"] = {';
+
+				$dates = array();
+
+				for ($i=1; $i < 8; $i++)
+				{
+					$day = strftime('%A', mktime(1,1,1, 1, $i, 2012));
+					$dates['days'][] = 	$day;
+					$dates['daysShort'][] = strftime('%a', mktime(1,1,1, 1, $i, 2012));
+					$dates['daysMin'][] = substr($day,0,2);
+				}
+
+
+				for ($i=1; $i < 13; $i++)
+				{
+					$dates['months'][] 		= strftime('%B', mktime(1,1,1, $i, 2, 2013));
+					$dates['monthsShort'][] = strftime('%h', mktime(1,1,1, $i, 2, 2013));
+				}
+
+
+				foreach($dates as $key=>$type)
+				{
+					$d = array();
+
+					$text .= "\n".$key.": [";
+					foreach($type as $val)
+					{
+						$d[] = '"'.$val.'"';
+
+					}
+					$text .= implode(",",$d);
+					$text .= "],";
+				}
+
+
+				$text .= '
+		meridiem: ["am", "pm"]
+		};
+		}(jQuery));';
+
+		return $text;
+	}
+
+
+	/**
+	 * Return an array of language terms representing months
+	 * @param $type string : month, month-short, day, day-short, day-shortest
+	 * @return array
+	 * TODO Cache!
+	 */
+	public function terms($type='month')
+	{
+		if($type == 'month' || $type == 'month-short')
+		{
+			$val = ($type == 'month-short') ? '%b' : '%B';  //eg. 'Aug' / 'August'
+			$marray = array();
+			for ($i=1; $i < 13; $i++) 
+			{ 
+				$marray[] = strftime($val,mktime(1,1,1,$i,1,2000));	
+			}
+			
+			return $marray;
+		}	
+		
+		if(substr($type,0,3) == 'day')
+		{
+			$days = array();
+			for ($i=2; $i < 9; $i++) 
+			{
+				switch ($type) 
+				{
+					case 'day-shortest': // eg. 'Tu'
+						$days[] = substr(strftime('%a',mktime(1,1,1,6,$i,2014)),0,2);	
+					break;
+					
+					case 'day-short':  // eg. 'Tue'
+						$days[] = strftime('%a',mktime(1,1,1,6,$i,2014));	
+					break;
+					
+					default:  // eg. 'Tuesday'
+						$days[] = strftime('%A',mktime(1,1,1,6,$i,2014));	
+					break;
+				}
+			}
+			
+			return $days;
+		}	
+		
+		
+		
+		return false;
+	}
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * Convert datestamp to human readable date.
 	 * System time offset is considered.
@@ -92,11 +201,11 @@ class convert
 	}
 
 
-
 	/**
 	 * Converts between unix timestamp and human-readable date-time OR vice-versa. (auto-detected)
-	 * @param string $string unix timestamp OR human-readable date-time. 
+	 * @param string $string unix timestamp OR human-readable date-time.
 	 * @param string $mask (optional) long | short | input
+	 * @return bool|int|string
 	 */
 	function convert($string=null, $mask = 'inputdate')
 	{
@@ -250,11 +359,17 @@ class convert
 			return null;
 		}
 		
+		if(STRPTIME_COMPAT !== TRUE) // returns months from 0 - 11 on Unix so we need to +1 
+		{
+			$tdata['tm_mon'] = $tdata['tm_mon'] +1;	 
+		}
+				
+		
 		$unxTimestamp = mktime( 
 			$tdata['tm_hour'], 
 			$tdata['tm_min'], 
 			$tdata['tm_sec'], 
-			$tdata['tm_mon'] + 1, // returns months from 0 - 11 so we need to +1 
+			$tdata['tm_mon'] , 
 			$tdata['tm_mday'], 
 			($tdata['tm_year'] + 1900) 
 		); 
@@ -531,11 +646,11 @@ class convert
 	 */
 	public function strptime($str, $format)
 	{
-		if(STRPTIME_COMPAT !== TRUE && function_exists('strptime'))
+		if(STRPTIME_COMPAT !== TRUE && function_exists('strptime')) // Unix Only.  
 		{
 			$vals = strptime($str,$format); // PHP5 is more accurate than below. 
-			$vals['tm_amon'] = 	strftime('%b', mktime(0,0,0, $vals['mon']) );
-			$vals['tm_fmon'] = 	strftime('%B', mktime(0,0,0, $vals['mon']) );
+			$vals['tm_amon'] = 	strftime('%b', mktime(0,0,0, $vals['tm_mon'] +1) );
+			$vals['tm_fmon'] = 	strftime('%B', mktime(0,0,0, $vals['tm_mon'] +1) );
 			return $vals;
 		}	
 			
@@ -651,9 +766,16 @@ class convert
 			//$vals['tm_sec'] -= 1; always increasing tm_sec + 1 ??????
 			
 			#-- calculate wday/yday
+			//$vals['tm_mon'] = $vals['tm_mon'] + 1; // returns months from 0 - 11 so we need to +1 
+			
+			
 			$unxTimestamp = mktime($vals['tm_hour'], $vals['tm_min'], $vals['tm_sec'], ($vals['tm_mon'] + 1), $vals['tm_mday'], ($vals['tm_year'] + 1900));
+			
+			$vals['tm_fmon'] = strftime('%B', mktime($vals['tm_hour'], $vals['tm_min'], $vals['tm_sec'], $vals['tm_mon']));
 			$vals['tm_wday'] = (int) strftime('%w', $unxTimestamp); // Days since Sunday (0-6)
 			$vals['tm_yday'] = (strftime('%j', $unxTimestamp) - 1); // Days since January 1 (0-365)
+			
+
 			//var_dump($vals, $str, strftime($format, $unxTimestamp), $unxTimestamp);
 		}
 		
@@ -761,6 +883,19 @@ class convert
 		
 		
 	}
+
+
+	/**
+	 * Check if TimeZone is valid
+	 * @param $timezone
+	 * @return bool
+	 */
+	function isValidTimezone($timezone)
+	{
+		return in_array($timezone, timezone_identifiers_list());
+	}
+
+
 
 
 }

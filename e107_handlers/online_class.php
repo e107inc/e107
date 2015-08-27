@@ -212,15 +212,18 @@ class e_online
 			}
 
 			// Always allow localhost - any problems are usually semi-intentional!
-			if ((varset($row['online_ip']) != '127.0.0.1') && (varset($row['online_ip']) != e107::LOCALHOST_IP))
+			if ((varset($row['online_ip']) != '127.0.0.1') && (varset($row['online_ip']) != e107::LOCALHOST_IP)  && (varset($row['online_ip']) != e107::LOCALHOST_IP2))
 			{
 				// Check for excessive access
 				if ($row['online_pagecount'] > $online_bancount)
 				{
-					include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_banlist.php');
-					if (TRUE === e107::getIPHandler()->add_ban(2,str_replace('--HITS--',$row['online_pagecount'],BANLAN_78),$ip,0))
+					e107::lan('core','banlist',true);//e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_banlist.php'
+					$reason = e107::getParser()->lanVars(BANLAN_78,$row['online_pagecount']); //  str_replace('--HITS--',$row['online_pagecount'], BANLAN_78)
+
+					if (true === e107::getIPHandler()->add_ban(2, $reason, $ip,0))
 					{
-						e107::getEvent()->trigger('flood', $ip);
+						e107::getEvent()->trigger('flood', $ip); //BC
+						e107::getEvent()->trigger('user_ban_flood', $ip);
 						exit;
 					}
 				}

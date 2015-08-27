@@ -2,21 +2,104 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2012 e107 Inc (e107.org)
+ * Copyright (C) 2008-2015 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * $URL$
- * $Id$
  */
 
 
 if (!defined('e107_INIT')) { exit; }
 
+
+
 class e107_event
 {
 	var $functions = array();
 	var $includes = array();
+
+	protected $coreEvents;
+
+	protected $oldCoreEvents = array(
+
+		'usersup'		=> 'user_signup_submitted',
+		'userveri'		=> 'user_signup_activated',
+		'flood'			=> 'user_ban_flood',
+		'subnews'		=> 'user_news_submit',
+		'fileupload'	=> 'user_file_upload',
+		'newspost'		=> 'admin_news_created',
+		'newsupd'		=> 'admin_news_updated',
+		'newsdel'		=> 'admin_news_deleted'
+	);
+
+
+	function __construct()
+	{
+
+		//	e107::lan('core','notify'); //FIXME e_LANGUAGE is not defined at this point.
+
+		$this->coreEvents = array( // used by e_notify admin area.
+
+			'session'	=> array(
+
+				'user_signup_submitted'		=> NU_LAN_2,
+				'user_signup_activated'		=> NU_LAN_3,
+				'login' 					=> NU_LAN_4,
+				'logout'					=> NU_LAN_5,
+				'user_xup_login'			=> 'User social login',
+				'user_xup_signup'			=> 'User social signup',
+				'user_ban_flood'			=> NS_LAN_2,
+				'user_ban_failed_login'		=> 'IP banned for multiple failed login attempts',
+				'user_profile_display'      => "User views profile"
+
+			),
+
+			'administrators'	=> array(
+				'admin_password_update'		=> "Administrator updates their password",
+				'admin_user_created'		=> 'Administrator creates a new user',
+				'admin_user_activated'		=> "Administrator activates a new user"
+
+			),
+
+			'news'	=> array(
+
+				'admin_news_created'	=> NN_LAN_3,
+				'admin_news_updated'	=> NN_LAN_4,
+				'admin_news_deleted'	=> NN_LAN_5,
+				'admin_news_notify'     => "News notification triggered", // TODO LAN
+				'user_news_submit'		=> NN_LAN_2,
+
+			),
+
+			'mail'	=> array(
+
+				'maildone'			=> NM_LAN_2,
+			),
+
+			'file'	=> array(
+
+				//		'fileupload'		=> NF_LAN_2,
+				'user_file_upload'	=> NF_LAN_2,
+			),
+
+		);
+
+	}
+	
+
+
+	
+	
+	function coreList()
+	{
+		return $this->coreEvents; 	
+	}
+	
+	function oldCoreList()
+	{
+		return $this->oldCoreEvents; 	
+	}
+	
 
 	/**
 	 * Register event
@@ -43,8 +126,9 @@ class e107_event
 
 	function debug()
 	{
-		
+		echo "<h3>Event Functions</h3>";
 		print_a($this->functions);
+		echo "<h3>Event Includes</h3>";
 		print_a($this->includes);	
 		
 	}
@@ -52,8 +136,7 @@ class e107_event
 
 	/**
 	 * Trigger event
-	 * TODO - admin log for failed callback attempts?
-	 * 
+	 *
 	 * @param string $eventname
 	 * @param mixed $data
 	 * @return mixed
@@ -99,10 +182,7 @@ class e107_event
 					}
 					catch(Exception $e)
 					{
-						//TODO log errors $eventname, $location, $class, $method
-					//	echo "event didn't work. Class=".$class." Method=".$method;
-					//	echo "<br />".$e;
-						//exit;
+						e107::getLog()->add('Event Trigger failed',array('name'=>$eventname,'location'=>$location,'class'=>$class,'method'=>$method,'error'=>$e),E_LOG_WARNING,'EVENT_01'); 
 						continue;
 					}
 				}
@@ -114,7 +194,11 @@ class e107_event
 						break;
 					}
 				}
-				//TODO log errors $eventname, $location, $evt_func
+				else
+				{
+					e107::getLog()->add('Event Trigger failed',array('name'=>$eventname,'location'=>$location,'function'=>$evt_func), E_LOG_WARNING,'EVENT_01'); 
+				}
+				
 			}
 		}
 		return (isset($ret) ? $ret : false);
@@ -123,14 +207,15 @@ class e107_event
 
 
 
-
-
+	/**
+	 * @Deprecated
+	 */
 	function triggerAdminEvent($type, $parms=array())
 	{
 		global $pref;
 		if(!is_array($parms))
 		{
-			$_tmp = parse_str($parms, $parms);
+			parse_str($parms, $parms);
 		}
 		if(isset($pref['e_admin_events_list']) && is_array($pref['e_admin_events_list']))
 		{

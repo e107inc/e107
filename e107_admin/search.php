@@ -34,11 +34,13 @@ $query = explode('.', e_QUERY);
 
 $search_prefs = $sysprefs -> getArray('search_prefs');
 
-//$search_handlers['news'] = ADLAN_0;
-$search_handlers['comments'] = ADLAN_114;
+
+
+//$search_handlers['news'] = ADLAN_0; // Moved to Plugin
+$search_handlers['comments'] = LAN_COMMENTS;
 $search_handlers['users'] = SEALAN_7;
-//$search_handlers['downloads'] = ADLAN_24;
-$search_handlers['pages'] = SEALAN_39;
+//$search_handlers['downloads'] = ADLAN_24; // Moved to Plugin
+// $search_handlers['pages'] = SEALAN_39; // Moved to Plugin
 
 
 foreach($pref['e_search_list'] as $file)
@@ -81,7 +83,7 @@ if (vartrue($save_search))
 //	$sql -> db_Update("core", "e107_value='".$serialpref."' WHERE e107_name='search_prefs'");
 	e107::getConfig('search')->setPref($search_prefs)->save(false,true,false);
 	
-	$admin_log->log_event('SEARCH_03','',E_LOG_INFORMATIVE,'');
+	e107::getLog()->add('SEARCH_03','',E_LOG_INFORMATIVE,'');
 }
 
 
@@ -142,7 +144,7 @@ if (isset($_POST['update_handler']))
 	if($check)
 	{
 		$mes->addSuccess(LAN_UPDATED);
-		$admin_log->log_event('SEARCH_05', $handler_type.', '.$query[2], E_LOG_INFORMATIVE, '');
+		e107::getLog()->add('SEARCH_05', $handler_type.', '.$query[2], E_LOG_INFORMATIVE, '');
 	}
 	elseif(0 === $check) $mes->addInfo(LAN_NO_CHANGE);
 	else
@@ -166,15 +168,18 @@ if (isset($_POST['update_prefs']))
 	$temp['php_limit'] = intval($_POST['php_limit']);
 	$temp['boundary'] = intval($_POST['boundary']);
 
+	e107::getConfig('search')->updatePref($temp)->save(false,true,false);
+/*
 	if ($admin_log->logArrayDiffs($temp, $search_prefs, 'SEARCH_01'))
 	{
+		e107::getConfig('search')->setPref($temp)->save(false,true);
 	//	$tmp = addslashes(serialize($search_prefs));
 		$tmp = e107::getArrayStorage()->writeArray($search_prefs, true);
 		$check = $sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'");
 		if($check)
 		{
 			$mes->addSuccess(LAN_UPDATED);
-			$admin_log->log_event('SEARCH_05', $handler_type.', '.$query[2], E_LOG_INFORMATIVE, '');
+			e107::getLog()->add('SEARCH_05', $handler_type.', '.$query[2], E_LOG_INFORMATIVE, '');
 		}
 		else //it's an error
 		{
@@ -182,16 +187,18 @@ if (isset($_POST['update_prefs']))
 			$mes->addError(LAN_ERROR." ".$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
 		}
 	}
-	else $mes->addInfo(LAN_NO_CHANGE);
+	else $mes->addInfo(LAN_NO_CHANGE);*/
 
 	unset($temp);
 	$temp['search_restrict'] = intval($_POST['search_restrict']);
 	$temp['search_highlight'] = intval($_POST['search_highlight']);
-	if ($admin_log->logArrayDiffs($temp, $pref, 'SEARCH_02'))
-	{ //XXX - additional lan search messages
-		save_prefs();
-	}
+
+	e107::getConfig()->setPref($temp)->save(false,true,true);
+
 }
+
+
+
 
 $handlers_total = count($search_prefs['core_handlers']) + count($search_prefs['plug_handlers']);
 
@@ -389,7 +396,7 @@ else
 								</select>
 							</td>
 							<td class='center'>
-								<a class='btn btn-large' href='".e_SELF."?edit.c.".$key."'>".ADMIN_EDIT_ICON."</a>
+								<a class='btn btn-default btn-large' href='".e_SELF."?edit.c.".$key."'>".ADMIN_EDIT_ICON."</a>
 							</td>
 						</tr>
 		";
@@ -401,17 +408,17 @@ else
 	foreach ($search_prefs['plug_handlers'] as $plug_dir => $active)
 	{
 				
-		if(varset($searchConfigs[$plug_dir]))
+		if(varset($searchConfigs[$plug_dir])) // v2.x 
 		{
 			$search_handlers[] = $searchConfigs[$plug_dir];	
 			$search_info[0]['qtype'] = $searchConfigs[$plug_dir]['name'];
 		}	
-		elseif(e107::isInstalled($plug_dir) && is_readable(e_PLUGIN.$plug_dir."/e_search.php"))
+		elseif(e107::isInstalled($plug_dir) && is_readable(e_PLUGIN.$plug_dir."/e_search.php")) // v1.x
 		{
 			e107::getMessage()->addDebug("Including: ".$plug_dir."/e_search.php");
 			require(e_PLUGIN.$plug_dir."/e_search.php");
 		}
-		else   // workaround for a messy pref data.  Missing a plugin or file. 
+		else   // workaround for messy pref data.  Missing a plugin or file. 
 		{
 			continue;	
 		}
@@ -443,7 +450,7 @@ else
 								</select>
 							</td>
 							<td class='center'>
-								<a class='btn btn-large' href='".e_SELF."?edit.p.".$plug_dir."'>".ADMIN_EDIT_ICON."</a>
+								<a class='btn btn-default btn-large' href='".e_SELF."?edit.p.".$plug_dir."'>".ADMIN_EDIT_ICON."</a>
 							</td>
 						</tr>
 		";
@@ -527,7 +534,7 @@ function search_adminmenu()
 	$var['main']['text'] = SEALAN_41;
 	$var['main']['link'] = e_SELF;
 
-	$var['settings']['text'] = ADLAN_4;
+	$var['settings']['text'] = LAN_PREFS;
 	$var['settings']['link'] = e_SELF."?settings";
 
 	e107::getNav()->admin(SEALAN_40, $action, $var);

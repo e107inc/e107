@@ -32,6 +32,7 @@ if(isset($_POST['updatesettings']))
 	$pref['nfp_posts'] 		= intval(vartrue($_POST['nfp_posts']));
 	$pref['nfp_layer_height'] = intval(($_POST['nfp_layer_height'] ? $_POST['nfp_layer_height'] : 200));
 	save_prefs();
+
 }
 
 $ns->tablerender($caption, $mes->render() . $text);

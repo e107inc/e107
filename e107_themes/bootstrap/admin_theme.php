@@ -11,7 +11,10 @@ e107::js('core','bootstrap/js/bootstrap.min.js');
 e107::css('core','bootstrap/css/bootstrap.min.css');
 e107::css('core','bootstrap/css/bootstrap-responsive.min.css');
 //e107::css('core','font-awesome/css/font-awesome.min.css');
-e107::css('url', "//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css");
+e107::css('url', "http://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css");
+
+e107::css('core', 	'bootstrap-editable/css/bootstrap-editable.css', 'jquery');
+e107::js('core', 	'bootstrap-editable/js/bootstrap-editable.min.js', 'jquery', 2);
 
 // e107::css('core','bootstrap/css/jquery-ui.custom.css');
 e107::css('theme','admin_style.css');
@@ -54,15 +57,15 @@ $no_core_css = TRUE;
 class bootstrap_admintheme
 {
 
-	function tablestyle($caption, $text, $mode) 
+	function tablestyle($caption, $text, $mode, $data)
 	{
-		global $style;
-		
+		// global $style;
+
+		$style = $data['setStyle'];
+
+	//	echo "Style: ".$style;
 		$class = '';
-		
-	
-		
-		
+
 		if(is_string($mode) && $mode == 'admin_help') $class = ' '.str_replace('_', '-', $mode);
 			
 		if($mode == 'e_help')
@@ -75,7 +78,7 @@ class bootstrap_admintheme
 			//return;
 			echo '	
 		<!-- Start Mode: '.$mode.' -->
-		<li class="span6 '.$mode.'" >
+		<div class="span6 '.$mode.'" >
 					
 					<div class="well" style="padding:10px;min-height:220px;" >  
 					<div class="nav-header">'.$caption.'</div>
@@ -84,7 +87,7 @@ class bootstrap_admintheme
 					<!-- Content End -->
 					</div>
 					
-		</li>
+		</div>
 		<!-- End Mode: '.$mode.' -->
 			';
 			return;
@@ -94,7 +97,7 @@ class bootstrap_admintheme
 		{
 			echo '
 		<!-- Mode: '.$mode.' -->
-		<div class="well" style="padding:10px">  
+		<div class="well clearfix" style="padding:10px">
 					<div class="nav-header">'.$caption.'</div>
 					<!-- Content Start -->
 					'.$text.'
@@ -114,16 +117,16 @@ class bootstrap_admintheme
 			echo '	
 		<!-- Start Style: '.$style.' -->
 			
-		<li class="span12">
+		<div class="core-infopanel span12">
 			
-				<div class="well" >  
+				<div class="well clearfix" >
 					<div class="nav-header">'.$caption.'</div>
 					<!-- Content Start -->
 					'.$text.'
 					<!-- Content End -->
 				</div>
 				
-		</li>
+		</div>
 		<!-- End Style: '.$style.' -->
 			';
 			return;
@@ -132,7 +135,7 @@ class bootstrap_admintheme
 	
 		if(deftrue('e_IFRAME'))
 		{
-			echo '
+			echo '<!-- Start Style: '.$style.' Mode: '.$mode.' and iFrame active -->
 				<div class="block">
 					<div class="block-text">
 						'.$text.'
@@ -154,7 +157,7 @@ class bootstrap_admintheme
 	
 			case 'admin_menu' :
 				echo '
-						<div class="well sidebar-nav" >  
+						<div class="well sidebar-nav" >
 						<div class="nav-header">'.$caption.'</div>
 						'.$text.'
 					</div>
@@ -185,7 +188,7 @@ class bootstrap_admintheme
 		*/
 		
 			case 'no_caption' :
-				echo '
+				echo '<!-- Start Style: '.$style.' Mode: '.$mode.' -->
 					<div class="block">
 						<div class="block-text">
 							'.$text.'
@@ -196,7 +199,7 @@ class bootstrap_admintheme
 		
 		
 			default:
-				echo '
+				echo '<!-- Start Style: '.$style.' Mode: '.$mode.' -->
 					<div class="block">
 						<h4 class="caption">'.$caption.'</h4>
 						<div class="block-text">

@@ -24,7 +24,7 @@
 
 //include and require several classes
 require_once("../../class2.php");
-if(!getperms("1") || !plugInstalled('list_new'))
+if(!getperms("1") || !e107::isInstalled('list_new'))
 {
 	header("location:".e_BASE."index.php");
 	exit ;

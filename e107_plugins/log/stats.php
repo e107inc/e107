@@ -9,14 +9,18 @@
  */
 
 
-require_once('../../class2.php');
+if (!defined('e107_INIT'))
+{
+	require_once("../../class2.php");
+}
+
 if (!e107::isInstalled('log')) 
 {
 	header('Location: '.e_BASE.'index.php');
 	exit;
 }
 
-include_lan(e_PLUGIN.'log/languages/'.e_LANGUAGE.'.php');
+e107::includeLan(e_PLUGIN.'log/languages/'.e_LANGUAGE.'.php');
 
 $bar = (file_exists(THEME.'images/bar.png') ? THEME_ABS.'images/bar.png' : e_IMAGE_ABS.'generic/bar.png');
 $mes = e107::getMessage();

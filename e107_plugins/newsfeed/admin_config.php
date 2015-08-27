@@ -11,7 +11,7 @@
  *
 */
 require_once("../../class2.php");
-if (!getperms("P") || !plugInstalled('newsfeed')) 
+if (!getperms("P") || !e107::isInstalled('newsfeed')) 
 {
 	header("location:".e_BASE."index.php");
 	exit;
@@ -74,7 +74,7 @@ if (isset($_POST['createFeed']) || isset($_POST['updateFeed']))
 				$mes->addInfo(LAN_NO_CHANGE.': '.$sql->mySQLerror); 
 			}
 		}
-		$e107->ecache->clear(NEWSFEED_LIST_CACHE_TAG);		// This should actually clear all the newsfeed data in one go
+		e107::getCache()->clear(NEWSFEED_LIST_CACHE_TAG);		// This should actually clear all the newsfeed data in one go
 	} 
 	else 
 	{
@@ -87,7 +87,7 @@ $ns->tablerender($caption, $mes->render() . $text);
 if($action == "delete") 
 {
 	$sql->db_Delete('newsfeed', 'newsfeed_id='.$id);
-	$admin_log->log_event('NEWSFD_03','ID: '.$id,E_LOG_INFORMATIVE,'');
+	e107::getLog()->add('NEWSFD_03','ID: '.$id,E_LOG_INFORMATIVE,'');
 	$mes->addSuccess(LAN_DELETED);
 }
 
@@ -130,8 +130,8 @@ if($headline_total = $sql->db_Select("newsfeed"))
 			<td>".($newsfeed_updateint ? $newsfeed_updateint : "3600")."</td>
 			<td>".$active[$newsfeed_active]."</td>
 			<td>
-				<a class='btn btn-large' href='".e_SELF."?edit.".$newsfeed_id."'>".ADMIN_EDIT_ICON."</a>
-	            <a class='btn btn-large action delete' href='".e_SELF."?delete.".$newsfeed_id."' rel='no-confirm' title='".LAN_CONFDELETE."'>".ADMIN_DELETE_ICON."</a>
+				<a class='btn btn-default btn-large' href='".e_SELF."?edit.".$newsfeed_id."'>".ADMIN_EDIT_ICON."</a>
+	            <a class='btn btn-default btn-large action delete' href='".e_SELF."?delete.".$newsfeed_id."' rel='no-confirm' title='".LAN_CONFDELETE."'>".ADMIN_DELETE_ICON."</a>
 			</td>
 		</tr>";
 	}

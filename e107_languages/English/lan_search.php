@@ -9,7 +9,7 @@
 define("PAGE_NAME", "Search");
 
 define("LAN_140", "Members");
-define("LAN_180", "Search");
+// define("LAN_180", "Search");
 define("LAN_192", "All categories");
 define("LAN_193", "Event Calendar");
 define("LAN_194", "All Categories");
@@ -95,7 +95,7 @@ define("LAN_SEARCH_64", "All Download Categories");
 define("LAN_SEARCH_65", "Downloads");
 define("LAN_SEARCH_66", "Date added");
 define("LAN_SEARCH_67", "All downloads details");
-define("LAN_SEARCH_68", "Date");
+//define("LAN_SEARCH_68", "Date");//LAN_DATE
 define("LAN_SEARCH_69", "Relevance");
 
 define("LAN_SEARCH_70", "Posted to download item");
@@ -110,8 +110,8 @@ define("LAN_SEARCH_77", "Posted on profile page of");
 
 // Following formerly LAN_nnn - renamed to avoid clashes
 define("LAN_SEARCH_98", "News");
-define("LAN_SEARCH_99", "Comments");
+// define("LAN_SEARCH_99", "Comments");
 //define("LAN_SEARCH_200", "Categories:");						// Redundant LAN?
 define("LAN_SEARCH_201", "Please redefine your search query");
 
-?>
+define("LAN_SEARCH_202", "Toggle Advanced Mode");

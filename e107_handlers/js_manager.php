@@ -43,7 +43,8 @@ class e_jsmanager
 		//	"http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/themes/base/jquery-ui.css",
 		//	"http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"	
 		//	"http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js",
-			"http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"
+		//	"http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"
+			"http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"
 	//		,
 	//		"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js",
 	//		"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css",
@@ -54,7 +55,15 @@ class e_jsmanager
 			)	
 			
 	);
-	
+
+	/**
+	 * Dynamic List of files to be cached.
+	 * @var array
+	 */
+	protected $_cache_list = array();
+
+
+
 	protected $_core_prefs = array();
 	
     /**
@@ -231,12 +240,25 @@ class e_jsmanager
 		
 		if($this->isInAdmin()) // Include jquery-ui in the admin-area only - Jquery-UI to eventually be removed from e107 completely if possible. 
 		{
-			$this->_libraries['jquery'] = array(
+
+			if(e107::getPref('admintheme')=='bootstrap3') //  Bootstrap 3 admin area.
+			{
+					$this->_libraries['jquery'] = array(
+					"http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js",
+					"https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js",
+					"https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css",
+			//		"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js",
+			//		"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css",
+					);	
+			}
+			else  //  Bootstrap 2 admin area.
+			{
+				$this->_libraries['jquery'] = array(
 				"http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js",
 				"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js",
 				"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css",
-			);
-			
+				);
+			}
 			
 		}
 		
@@ -511,9 +533,9 @@ class e_jsmanager
 	 * @param integer $zone 1-5 (see header.php)
 	 * @return e_jsmanager
 	 */
-	public function headerCore($file_path, $zone = 2)
+	public function headerCore($file_path, $zone = 2, $pre = '', $post = '')
 	{
-		$this->headerFile('{e_WEB_JS}'.trim($file_path, '/'), $zone);
+		$this->headerFile('{e_WEB_JS}'.trim($file_path, '/'), $zone, $pre, $post);
 		return $this;
 	}
 
@@ -538,9 +560,9 @@ class e_jsmanager
 	 * @param integer $zone 1-5 (see header.php) - REMOVED, actually we need to prevent zone change
 	 * @return e_jsmanager
 	 */
-	public function headerPlugin($plugname, $file_path)
+	public function headerPlugin($plugname, $file_path, $pre, $post)
 	{
-		$this->headerFile('{e_PLUGIN}'.$plugname.'/'.trim($file_path, '/'), 2);	// Zone 2 - after libraries
+		$this->headerFile('{e_PLUGIN}'.$plugname.'/'.trim($file_path, '/'), 2, $pre, $post);	// Zone 2 - after libraries
 		return $this;
 	}
 
@@ -571,9 +593,9 @@ class e_jsmanager
 	 * @param integer $priority 1-5 (see footer.php)
 	 * @return e_jsmanager
 	 */
-	public function footerFile($file_path, $priority = 5)
+	public function footerFile($file_path, $priority = 5, $pre = '', $post = '')
 	{
-		$this->addJs('footer', $file_path, $priority);
+		$this->addJs('footer', $file_path, $priority, $pre, $post);
 		return $this;
 	}
 
@@ -844,7 +866,7 @@ class e_jsmanager
 		{
 			case 'core':
 				// added direct CDN support
-				$file_path = (strpos($file_path, 'http') !== 0 ? '{e_WEB_JS}' : '').trim($file_path, '/');
+				$file_path = (strpos($file_path, 'http') !== 0 ? '{e_WEB_JS}' : '').trim($file_path, '/')."|{$pre}|{$post}";
 				$registry = &$this->_e_jslib_core;
 			break;
 
@@ -1019,7 +1041,7 @@ class e_jsmanager
 			break;
 
 			case 'header':
-				$this->renderFile(varsettrue($this->_runtime_header[$zone], array()), $external, 'Header JS include - zone #'.$zone, $mod);
+				$this->renderFile(vartrue($this->_runtime_header[$zone], array()), $external, 'Header JS include - zone #'.$zone, $mod);
 				unset($this->_runtime_header[$zone]);
 			break;
 
@@ -1061,13 +1083,13 @@ class e_jsmanager
 				}
 				else
 				{
-					$this->renderFile(varsettrue($this->_runtime_footer[$zone], array()), $external, 'Footer JS include - priority #'.$zone, $mod);
+					$this->renderFile(vartrue($this->_runtime_footer[$zone], array()), $external, 'Footer JS include - priority #'.$zone, $mod);
 					unset($this->_runtime_footer[$zone]);
 				}
 			break;
 
 			case 'header_inline':
-				$this->renderInline(varsettrue($this->_runtime_header_src[$zone], array()), 'Header JS - zone #'.$zone);
+				$this->renderInline(vartrue($this->_runtime_header_src[$zone], array()), 'Header JS - zone #'.$zone);
 				unset($this->_runtime_header_src[$zone]);
 			break;
 
@@ -1083,7 +1105,7 @@ class e_jsmanager
 				}
 				else
 				{
-					$this->renderInline(varsettrue($this->_runtime_footer_src[$zone], array()), 'Footer JS - priority #'.$zone);
+					$this->renderInline(vartrue($this->_runtime_footer_src[$zone], array()), 'Footer JS - priority #'.$zone);
 					unset($this->_runtime_footer_src[$zone]);
 				}
 			break;
@@ -1111,9 +1133,11 @@ class e_jsmanager
 		{
 			return '';
 		}
+
+
 		$tp = e107::getParser();
 		echo "\n";
-		if($label) //TODO - print comments only if site debug is on
+		if($label && E107_DEBUG_LEVEL > 0) 
 		{
 			echo $external ? "<!-- [JSManager] ".$label." -->\n" : "/* [JSManager] ".$label." */\n\n";
 		}
@@ -1131,15 +1155,19 @@ class e_jsmanager
 					$pre = varset($path[2]) ? $path[2]."\n" : '';
 					$post = varset($path[3]) ? "\n".$path[3] : '';
 					$path = $path[1];
-					if(strpos($path, 'http') !== 0) $path = $tp->replaceConstants($path, 'abs').'?external=1&amp;'.$this->getCacheId();
+					if(strpos($path, 'http') !== 0)
+					{
+						$path = $tp->replaceConstants($path, 'abs').'?external=1&amp;'.$this->getCacheId();
+					}
 					
 					echo $pre.'<link rel="stylesheet" media="'.$media.'" type="text/css" href="'.$path.'" />'.$post;
 					echo "\n";
+				//	$this->cacheList['css'][] = $path;
 					continue;
 				}
 				elseif($external) //true or 'js'
 				{
-					if(strpos($path, 'http') === 0) continue; // not allowed
+					if(strpos($path, 'http') === 0 || strpos($path, '//') === 0) continue; // not allowed
 					
 					$path = explode('|', $path, 3);
 					$pre = varset($path[1], '');
@@ -1163,7 +1191,7 @@ class e_jsmanager
             {
             	// CDN fix, ignore URLs inside consolidation script, render as external scripts
             	$isExternal = false;
-				if(strpos($path, 'http') === 0) 
+				if(strpos($path, 'http') === 0 || strpos($path, '//') === 0)
 				{
 					if($external !== 'css') $isExternal = true;
 				}
@@ -1177,20 +1205,36 @@ class e_jsmanager
 					$pre = varset($path[2]) ? $path[2]."\n" : '';
 					$post = varset($path[3]) ? "\n".$path[3] : '';
 					$path = $path[1];
-					if(strpos($path, 'http') !== 0) $path = $tp->replaceConstants($path, 'abs').'?'.$this->getCacheId();
+					if(strpos($path, 'http') !== 0) // local file.
+					{
+						if($this->addCache($external,$path) === true) // if cache enabled, then skip and continue.
+						{
+							continue;
+						}
+						$path = $tp->replaceConstants($path, 'abs').'?'.$this->getCacheId();
+					}
 					
-					echo $pre.'<link rel="stylesheet" media="'.$media.'" type="text/css" href="'.$path.'" />'.$post;
+					echo $pre.'<link rel="stylesheet" media="'.$media.'" property="stylesheet" type="text/css" href="'.$path.'" />'.$post;
 					echo "\n";
+
 					continue;
 				}
-				
-				$path = explode('|', $path, 3);
+
+				$path = explode('|', $path, 4);
 				$pre = varset($path[1], '');
 				if($pre) $pre .= "\n";
 				$post = varset($path[2], '');
 				if($post) $post = "\n".$post;
+				$inline = isset($path[3]) ? $path[3] : '';
+				if($inline) $inline = " ".$inline;
 				$path = $path[0];
-				
+
+	            if(!$isExternal && $this->addCache('js',$path)===true)
+	            {
+		            continue;
+	            }
+
+
             	if($external)
 				{
 					// Never use CacheID on a CDN script, always render if it's CDN
@@ -1199,15 +1243,24 @@ class e_jsmanager
 						// don't render non CDN libs as external script calls when script consolidation is enabled
 						if($mod === 'core' || $mod === 'plugin' || $mod === 'theme')
 						{
+
+
 							if(!e107::getPref('e_jslib_nocombine')) continue;
 						}
 						$path = $tp->replaceConstants($path, 'abs').'?'.$this->getCacheId();
 					}
-					echo $pre.'<script type="text/javascript" src="'.$path.'"></script>'.$post;
+
+
+
+					echo $pre.'<script type="text/javascript" src="'.$path.'"'.$inline.'></script>'.$post;
 					echo "\n";
 					continue;
 				}
-				
+
+
+
+
+
 				// never try to consolidate external scripts
 				if($isExternal) continue;
 				$path = $tp->replaceConstants($path, '');
@@ -1217,7 +1270,98 @@ class e_jsmanager
             }
 		}
 
+
+
 		return $lmodified;
+	}
+
+
+
+
+	/**
+	 * @param $type string css|js
+	 * @param $path
+	 * @return bool
+	 */
+	private function addCache($type,$path)
+	{
+		return false; //return false if cache is disabled - CURRENTLY DISABLED - TODO Add Pref etc. 
+
+		$localPath = e107::getParser()->replaceConstants($path);
+		$this->_cache_list[$type][] = $localPath;
+
+		return true;
+	}
+
+
+
+
+	/**
+	 * Render Cached JS or CSS file.
+	 * @param $type
+	 */
+	public function renderCached($type)
+	{
+
+		if(!empty($this->_cache_list[$type]))
+		{
+			$content = '';
+			$cacheId = $this->getCacheFileId($this->_cache_list[$type]);
+
+			$fileName = $cacheId.".".$type;
+			$saveFilePath = e_WEB.'cache/'.$fileName;
+
+			if(!is_readable($saveFilePath))
+			{
+
+				foreach($this->_cache_list[$type] as $k=>$path)
+				{
+					$content .= "\n\n/* ".str_replace("../",'',$path)." */ \n\n";
+					$content .= file_get_contents($path);
+				}
+
+				if(!@file_put_contents($saveFilePath, $content))
+				{
+					e107::getMessage()->addDebug("Couldn't save js/css cache file: ".$saveFilePath);
+				}
+
+			}
+
+			echo "\n\n<!-- Cached ".$type." -->\n";
+
+			if($type == 'js')
+			{
+				echo "<script type='text/javascript' src='".e_WEB_ABS."cache/".$fileName."'></script>\n\n";
+			}
+			else
+			{
+				echo "<link type='text/css' href='".e_WEB_ABS."cache/".$fileName."' rel='stylesheet' property='stylesheet'  />\n\n";
+			}
+
+			// Remove from list, anything we have added.
+			foreach($this->_cache_list[$type] as $k=>$path)
+			{
+				unset($this->_cache_list[$type][$k]);
+			}
+
+
+		}
+
+
+
+	}
+
+
+	function getCacheFileId($paths)
+	{
+		$id = '';
+		foreach($paths as $p)
+		{
+			$id .= str_replace("../","",$p);
+		}
+
+		return hash('crc32', $id) ;
+
 	}
 
 	/**
@@ -1237,10 +1381,32 @@ class e_jsmanager
 		$content_array = array_unique($content_array); //TODO quick fix, we need better control!
 		echo "\n";
 
+		$raw = array();
+
+		if($type == 'js') // support for raw html as inline code. (eg. google/bing/yahoo analytics)
+		{
+			$script = array();
+			foreach($content_array as $code)
+			{
+				$start = substr($code,0,7);
+				if($start == '<script' || $start == '<iframe')
+				{
+					$raw[] = $code;	
+				}
+				else 
+				{
+					$script[] = $code;	
+				}
+			}
+			
+			$content_array = $script;
+		}
+
+
 		switch ($type)
 		{
 			case 'js':
-				if($label) //TODO - print comments only if site debug is on
+				if($label && E107_DEBUG_LEVEL > 0) 
 				{
 					echo "<!-- [JSManager] ".$label." -->\n";
 				}
@@ -1250,14 +1416,24 @@ class e_jsmanager
 				echo "\n//]]>\n";
 				echo '</script>';
 				echo "\n";
+				
+				if(!empty($raw))
+				{
+					if($label) //TODO - print comments only if site debug is on
+					{
+						echo "\n<!-- [JSManager] (Raw) ".$label." -->\n";
+					}
+					echo implode("\n\n", $raw);	
+					echo "\n\n";
+				}
 			break;
 
 			case 'css':
-				if($label) //TODO - print comments only if site debug is on
+				if($label && E107_DEBUG_LEVEL > 0) 
 				{
 					echo "<!-- [CSSManager] ".$label." -->\n";
 				}
-				echo '<style type="text/css">';
+				echo '<style rel="stylesheet" type="text/css" property="stylesheet">';
 				echo implode("\n\n", $content_array);
 				echo '</style>';
 				echo "\n";
@@ -1306,7 +1482,7 @@ class e_jsmanager
 	public function getCurrentTheme()
 	{
 		// XXX - USERTHEME is defined only on user session init
-		return ($this->isInAdmin() ? e107::getPref('admintheme') : defsettrue('USERTHEME', e107::getPref('sitetheme')));
+		return ($this->isInAdmin() ? e107::getPref('admintheme') : deftrue('USERTHEME', e107::getPref('sitetheme')));
 	}
 
 	/**

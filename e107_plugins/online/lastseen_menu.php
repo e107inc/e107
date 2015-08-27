@@ -30,7 +30,7 @@ else
 $menu_pref = e107::getConfig('menu')->getPref('');
 $tp = e107::getParser();
 
-$num = intval(varsettrue($menu_pref['online_ls_amount'],10));
+$num = intval(vartrue($menu_pref['online_ls_amount'],10));
 
 $sql -> db_Select('user', 'user_id, user_name, user_currentvisit', 'ORDER BY user_currentvisit DESC LIMIT 0,'.$num, 'nowhere');
 $lslist = $sql -> db_getList();
@@ -43,7 +43,7 @@ foreach($lslist as $row)
 }
 $text .= $tp -> parseTemplate($LASTSEEN_TEMPLATE['end'], TRUE);
 
-$caption = varsettrue($menu_pref['online_ls_caption'],LAN_LASTSEEN_1);
+$caption = vartrue($menu_pref['online_ls_caption'],LAN_LASTSEEN_1);
 $ns->tablerender($caption, $text, 'lastseen');
 
 ?>

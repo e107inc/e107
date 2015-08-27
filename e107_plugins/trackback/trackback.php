@@ -15,7 +15,7 @@
  *
 */
 require_once("../../class2.php");
-if (!plugInstalled('trackback'))
+if (!e107::isInstalled('trackback'))
 {
 	exit();
 }
