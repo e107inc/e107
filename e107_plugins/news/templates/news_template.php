@@ -31,7 +31,7 @@ $NEWS_TEMPLATE['list']['item']	= '
 		<div class="row row-fluid">
 				<div class="span3 col-md-3">
                    <div class="thumbnail">
-                        {NEWSTHUMBNAIL=}
+                        {NEWSTHUMBNAIL=placeholder}
                     </div>
 				</div>
 				<div class="span9 col-md-9">
@@ -88,8 +88,8 @@ $NEWS_TEMPLATE['default']['item'] = '
         	<div class="col-md-4">{GLYPH=time} {NEWSDATE=short} </div>
         	<div class="col-md-8 text-right options">{GLYPH=tags} &nbsp;{NEWSTAGS} &nbsp; {GLYPH=folder-open} &nbsp;{NEWSCATEGORY} </div>
         	</div>
-          <!--<hr>-->
-          {NEWSIMAGE=}
+          <hr>
+          {NEWSIMAGE=placeholder}
          
           <hr>
           <p class="lead">{NEWSSUMMARY}</p>
@@ -97,7 +97,7 @@ $NEWS_TEMPLATE['default']['item'] = '
           {NEWSBODY}
 		  <hr>
 			<div class="options">
-			<div class="btn-group"><span class="white-space:nowrap;">{NEWSCOMMENTLINK: glyph=comments&class=btn btn-default} {EMAILICON: class=btn btn-default} {PRINTICON: class=btn btn-default} {PDFICON} {ADMINOPTIONS: class=btn btn-default}</span></div> 
+			<div class="btn-group">{NEWSCOMMENTLINK: glyph=comments&class=btn btn-default} &nbsp; {EMAILICON: class=btn btn-default} &nbsp; {PRINTICON: class=btn btn-default} &nbsp; {PDFICON} &nbsp; {ADMINOPTIONS: class=btn btn-default}</div> 
 			</div>
 
 ';
@@ -158,7 +158,7 @@ $NEWS_TEMPLATE['view']['item'] = '
 		<hr>
 		
 		<div class="options ">
-			<div class="btn-group"><span class="white-space:nowrap;">{NEWSCOMMENTLINK: glyph=comments&class=btn btn-default} {PRINTICON: class=btn btn-default} {PDFICON} {ADMINOPTIONS: class=btn btn-default} {SOCIALSHARE: dropdown=1}</span></div> 
+			<div class="btn-group">{NEWSCOMMENTLINK: glyph=comments&class=btn btn-default} &nbsp; {PRINTICON: class=btn btn-default} {PDFICON} {ADMINOPTIONS: class=btn btn-default} {SOCIALSHARE: dropdown=1}</div> 
 		</div>
 			
 	</div>
