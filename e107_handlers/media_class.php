@@ -1380,6 +1380,11 @@ class e_media
 		$pref = e107::getPref();
 		$tp = e107::getParser();
 
+		if(empty($src))
+		{
+			return false;
+		}
+
 		if(is_string($opts))
 		{
 			parse_str($opts,$opts);
