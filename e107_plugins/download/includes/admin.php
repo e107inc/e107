@@ -2031,7 +2031,7 @@ $columnInfo = array(
 		      $order_options = array(
 		         "download_id"        => "Id No.",
 		         "download_datestamp" => LAN_DATE,
-		         "download_requested" => ADLAN_24,
+		         "download_requested" => LAN_PLUGIN_DOWNLOAD_NAME,
 		         "download_name"      => DOWLAN_59,
 		         "download_author"    => DOWLAN_15
 		      );

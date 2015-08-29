@@ -21,6 +21,28 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 global $user;
 $user['user_id'] = USERID;
 
+// BC for v1.x template
+$bcList = array(
+	'LAN_112'   => 'LAN_USER_60',// Email Address
+	'LAN_138'   => 'LAN_USER_52', // Registered members
+	'LAN_139'   => 'LAN_USER_57', // Order
+	"LAN_142"   => "LAN_USER_58", // Member
+	"LAN_145"   => "LAN_USER_59", // Joined
+	"LAN_146"   => "LAN_USER_66", // Visits since...
+	"LAN_147"   => "LAN_USER_67", // Chatbox posts
+	"LAN_148"   => "LAN_USER_68", // Comments posted
+	"LAN_149"   => "LAN_USER_69", // Forum posts
+	"LAN_308"   => "LAN_USER_63", // Real Name
+	"LAN_403"   => "LAN_USER_64", // Site Stats
+	"LAN_404"   => "LAN_USER_65", // Last visit
+	"LAN_419"   => "LAN_USER_70", // Show
+	"LAN_425"   => "LAN_USER_62" // Send Private Message
+);
+
+e107::getLanguage()->bcDefs($bcList);
+
+
+
 if(e_AJAX_REQUEST)
 {
 	if(vartrue($_POST['q']))
@@ -120,7 +142,7 @@ if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
 $full_perms = getperms("0") || check_class(varset($pref['memberlist_access'], 253));		// Controls display of info from other users
 if (!$full_perms && !$self_page)
 {
-	$ns->tablerender(LAN_USER_48, "<div style='text-align:center'>".LAN_USER_55."</div>");
+	$ns->tablerender(LAN_ERROR, "<div style='text-align:center'>".LAN_USER_55."</div>");
 	require_once(FOOTERF);
 	exit;
 }
@@ -168,7 +190,7 @@ if (isset($id))
 	if ($id == 0)
 	{
 		$text = "<div style='text-align:center'>".LAN_USER_49." ".SITENAME."</div>";
-		$ns->tablerender(LAN_USER_48, $text);
+		$ns->tablerender(LAN_ERROR, $text);
 		require_once(FOOTERF);
 		exit;
 	}
@@ -181,7 +203,7 @@ if (isset($id))
 	if (!empty($ret) || !empty($ret2))
 	{
 		$text = "<div style='text-align:center'>".$ret."</div>";
-		$ns->tablerender(LAN_USER_48, $text);
+		$ns->tablerender(LAN_ERROR, $text);
 		require_once(FOOTERF);
 		exit;
 	}
@@ -205,7 +227,7 @@ if (isset($id))
 	else
 	{
 		$text = "<div style='text-align:center'>".LAN_USER_51."</div>";
-		$ns->tablerender(LAN_USER_48, $text);
+		$ns->tablerender(LAN_ERROR, $text);
 	}
 	unset($text);
 	require_once(FOOTERF);

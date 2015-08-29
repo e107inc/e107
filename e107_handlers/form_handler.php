@@ -1334,7 +1334,7 @@ class e_form
 		}
 		elseif(!vartrue($options['noresize']))
 		{
-			$options['class'] = (isset($options['class']) && $options['class']) ? $options['class'].' e-autoheight' : 'tbox span7 e-autoheight';
+			$options['class'] = (isset($options['class']) && $options['class']) ? $options['class'].' e-autoheight' : 'tbox col-md-7 span7 e-autoheight';
 		}
 
 		$options = $this->format_options('textarea', $name, $options);

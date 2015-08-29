@@ -798,7 +798,7 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_user_form_submit($parm) 
 	{
-		return "<input class='btn btn-default button' type='submit' name='submit' value='".LAN_USER_47."' />";
+		return "<input class='btn btn-default button' type='submit' name='submit' value='".LAN_GO."' />";
 	}
 
 
