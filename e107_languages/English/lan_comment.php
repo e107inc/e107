@@ -63,6 +63,11 @@ define("COMLAN_335", "Approved");
 define("COMLAN_336", "Please write something first.");
 define("COMLAN_337", "Updated successfully.");
 
+define("COMLAN_400", "approved");
+define("COMLAN_401", "blocked");
+define("COMLAN_402", "pending");
+
+
 define("COMLAN_TYPE_1", "news");
 define("COMLAN_TYPE_2", "download");
 define("COMLAN_TYPE_3", "faq");

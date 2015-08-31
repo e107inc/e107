@@ -2,16 +2,11 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2015 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Language file - User signup
- *
- * $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_signup.php,v $
- * $Revision$
- * $Date$
- * $Author$
  *
 */
 define("PAGE_NAME", "Register");
@@ -51,7 +46,7 @@ define("LAN_SIGNUP_9", "Unable to proceed.");
 //define("LAN_SIGNUP_10", "Yes");
 define("LAN_SIGNUP_11", ".");
 define("LAN_SIGNUP_12", "please keep your username and password written down in a safe place as if lost they cannot be retrieved.");
-define("LAN_SIGNUP_13", "You can now log in from the Login box, or from <a href='".e_BASE."login.php'>here</a>.");
+define("LAN_SIGNUP_13", "You can now log in from the Login box, or from [here].");
 define("LAN_SIGNUP_14", "here");
 define("LAN_SIGNUP_15", "Please contact the main site admin");
 define("LAN_SIGNUP_16", "if you require assistance.");
@@ -122,7 +117,7 @@ define("LAN_SIGNUP_81", "Username: ");											// LAN_9
 define("LAN_SIGNUP_82", "the name that you use to login");						// LAN_10
 define("LAN_SIGNUP_83", "Password: ");											// LAN_17
 define("LAN_SIGNUP_84", "Re-type Password: ");									// LAN_111
-define("LAN_SIGNUP_85", "Usernames and passwords are <b>case-sensitive</b>.");	// LAN_400
+define("LAN_SIGNUP_85", "Usernames and passwords are case-sensitive.");	// LAN_400
 //define("LAN_SIGNUP_86", "Email Address: ");										// LAN_112 = LAN_USER_60
 //define("LAN_SIGNUP_87", "Hide email address?: ");								// LAN_113 = LAN_USER_83
 //define("LAN_SIGNUP_88", "This will prevent your email address from being displayed on site");	// LAN_114
@@ -157,24 +152,5 @@ define("LAN_SIGNUP_110", "Your full name");
 define("LAN_SIGNUP_111", "Enter a URL to your image or choose an existing avatar.");
 define("LAN_SIGNUP_112", "You are currently logged in as Main Admin.");
 
-// BC for v1.x template
-// //TODO Move into signup.php and use existing definition. eg. define("LAN_7", LAN_SIGNUP_89);
-define("LAN_7", "Display Name: ");
-define("LAN_8", "the name that will be displayed on site");
-define("LAN_9", "Username: ");
-define("LAN_10", "the name that you use to login");
-define("LAN_17", "Password: ");
-define("LAN_109", "This site complies with The Children's Online Privacy Protection Act of 1998 (COPPA) and as such cannot accept registrations from users under the age of 13 without a written permission document from their parent or guardian. For more information you can read the legislation");
-define("LAN_111", "Re-type Password: ");
-define("LAN_112", "Email Address: ");
-define("LAN_113", "Hide email address?: ");
-define("LAN_120", "Signature: ");
-define("LAN_121", "Avatar: ");
-define("LAN_122", "Timezone:");
-define("LAN_123", "Register");	
-define("LAN_308", "Real Name: ");
-define("LAN_309", "Please enter your details below.");
-define("LAN_400", "Usernames and passwords are <b>case-sensitive</b>.");
-define("LAN_410", "Enter code visible in the image");
 
 ?>
