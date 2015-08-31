@@ -112,6 +112,7 @@ define("LAN_USET_42", "Mismatch on validation key");
 define("LAN_USET_43", "Error updating user data");
 
 // BC for v1.x template
+//TODO Move to usersettings.php with bcDefs() method.
 define("LAN_7", "Display Name: ");
 define("LAN_8", "the name displayed on site");
 define("LAN_9", "Username: ");
