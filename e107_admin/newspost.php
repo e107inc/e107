@@ -470,7 +470,7 @@ class news_admin_ui extends e_admin_ui
 			$new_data['news_thumbnail'] = $this->processThumbs($new_data['news_thumbnail']);
 		}
 
-		if(empty($new_data['news_datestamp']))
+		if(isset($new_data['news_datestamp']) && empty($new_data['news_datestamp']))
 		{
 			$new_data['news_datestamp'] = time();
 		}

@@ -1585,6 +1585,12 @@ class media_admin_ui extends e_admin_ui
 		if(vartrue($_POST['upload_remote_url']))
 		{
 			$fileName = basename($_POST['upload_url']);
+
+			if(strpos($fileName,'?')!==false)
+			{
+				list($fileName,$bla) = explode("?", $fileName);
+			}
+
 			if(!$fl->getRemoteFile($_POST['upload_url'], $fileName, 'import'))
 			{
 				$mes->addError("There was a problem grabbing the file");
