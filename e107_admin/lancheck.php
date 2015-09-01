@@ -677,14 +677,18 @@ class lancheck
 
 		$archive = new PclZip($newfile);
 
-		$core       = $this->getFilePaths(e_LANGUAGEDIR.$language."/", $language,'', 0);
-		$core_admin = $this->getFilePaths(e_BASE.$LANGUAGES_DIRECTORY.$language."/admin/", $language,'', 2);
+		$core       = $this->getFilePaths(e_LANGUAGEDIR.$language."/", $language,''); // includes admin area.
+	//	$core_admin = $this->getFilePaths(e_BASE.$LANGUAGES_DIRECTORY.$language."/admin/", $language,'');
+		$core_admin = array();
 		$plugs      = $this->getFilePaths(e_BASE.$PLUGINS_DIRECTORY, $language, $this->core_plugins); // standardized path.
 		$theme      = $this->getFilePaths(e_BASE.$THEMES_DIRECTORY, $language, $this->core_themes);
 		$docs       = $this->getFilePaths(e_BASE.$HELP_DIRECTORY,$language);
 		$handlers   = $this->getFilePaths(e_BASE.$HANDLERS_DIRECTORY,$language); // standardized path.
 
 		$file = array_merge($core,$core_admin, $plugs, $theme, $docs, $handlers);
+
+		$file = array_unique($file);
+
 		$data = implode(",", $file);
 
 		if ($archive->create($data,PCLZIP_OPT_REMOVE_PATH,e_BASE) == 0)
@@ -735,18 +739,20 @@ class lancheck
 	 * @param string $filter
 	 * @return array|bool
 	 */
-	private function getFilePaths($path, $language)
+	private function getFilePaths($path, $language, $restrict=array())
 	{
 		$fl = e107::getFile();
 
-		if ($lanlist = $fl->get_files($path, "", "standard", 4))
+		if ($lanlist = $fl->get_files($path, "", "standard", 4)) // (\.php|\.xml)$
 		{
 			sort($lanlist);
 		}
 		else
 		{
-			return false;
+			return array();
 		}
+
+
 
 		$pzip = array();
 		foreach ($lanlist as $p)
@@ -758,6 +764,30 @@ class lancheck
 				$pzip[] = $fullpath;
 			}
 		}
+
+
+		if(!empty($restrict)) // strip the list according to inclusion list.
+		{
+			$newlist = array();
+			foreach($pzip as $k=>$p)
+			{
+				foreach($restrict as $accept)
+				{
+					if(strpos($p, $accept)!==false)
+					{
+
+						$newlist[] = $p;
+					}
+
+				}
+
+			}
+
+			$pzip = $newlist;
+		}
+
+
+
 		return $pzip;
 	}
 
