@@ -69,8 +69,8 @@ class e_user_model extends e_admin_model
 	protected $_validation_rules = array(
 		'user_name' => array('string', '1', 'LAN_USER_01', 'LAN_USER_HELP_01'), // TODO - regex
 		'user_loginname' => array('string', '1', 'LAN_USER_02', 'LAN_USER_HELP_02'), // TODO - regex
-		'user_password' => array('compare', '5', 'LAN_USER_05', 'LAN_USER_HELP_05'), // TODO - pref - modify it somewhere below - prepare_rules()?
-		'user_email' => array('email', '', 'LAN_USER_08', 'LAN_USER_HELP_08'),
+		'user_password' => array('compare', '5', 'LAN_PASSWORD', 'LAN_USER_HELP_05'), // TODO - pref - modify it somewhere below - prepare_rules()?
+		'user_email' => array('email', '', 'LAN_EMAIL', 'LAN_USER_HELP_08'),
 	);
 
 	/**
