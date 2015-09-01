@@ -413,7 +413,7 @@ class news_admin_ui extends e_admin_ui
 
 	);
 	
-	protected $fieldpref = array('checkboxes','news_id', 'news_thumbnail', 'news_title', 'news_datestamp', 'news_category', 'options');
+	protected $fieldpref = array('checkboxes','news_id', 'news_thumbnail', 'news_title', 'news_datestamp', 'news_category', 'news_class', 'options');
 
 	/* //TODO
 	protected $prefs = array(
