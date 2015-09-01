@@ -74,7 +74,7 @@ define("LANINS_049", "The two passwords you entered are not the same. Please go 
 define("LANINS_050", "XML Extension");
 define("LANINS_051", "Installed");
 define("LANINS_052", "Not Installed");
-define("LANINS_053", "e107 v2.x requires the PHP XML Extension to be installed. Please contact your host or read the information at [link=http://php.net/manual/en/ref.xml.php]php.net[/link] before continuing");
+define("LANINS_053", "e107 v2.x requires the PHP XML Extension to be installed. Please contact your host or read the information at [x] before continuing");
 // define("LANINS_054", " before continuing");
 define("LANINS_055", "Install Confirmation");
 define("LANINS_056", "6");

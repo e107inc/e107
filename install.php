@@ -840,7 +840,9 @@ class e_install
 		$PHPColor 	= ($version_fail == false) ? "text-success" : "text-error";
 		$xmlColor	= ($xml_installed == true) ? "text-success" : "text-error";
 		$mysqlColor	= ($mysql_pass == true) ? "text-success" : "text-error";
-		
+
+		$xmlExtensionLink = "<a href='http://php.net/manual/en/ref.xml.php'>php.net</a>";
+
 		$output = "
 			<table class='table table-striped table-bordered' style='width: 100%; margin-left: auto; margin-right: auto;'>
 				<tr>
@@ -864,7 +866,7 @@ class e_install
 				<tr>
 					<td>".LANINS_050."</td>
 					<td>".($xml_installed ? LANINS_051 : LANINS_052)."</td>
-					<td class='{$xmlColor}'>".($xml_installed ? "<i class='glyphicon glyphicon-ok'></i> ".LANINS_017 : LANINS_053)."</td>
+					<td class='{$xmlColor}'>".($xml_installed ? "<i class='glyphicon glyphicon-ok'></i> ".LANINS_017 : str_replace("[x]",$xmlExtensionLink, LANINS_053) )."</td>
 				</tr>
 			</table>\n";
 		$this->finish_form();

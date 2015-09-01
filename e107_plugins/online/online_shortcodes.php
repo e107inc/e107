@@ -48,7 +48,14 @@ class online_shortcodes
 
 	function sc_online_tracking_disabled()
 	{
-		return e107::getParser()->toHTML(LAN_ONLINE_TRACKING_MESSAGE,TRUE);
+		$url = e_ADMIN."users.php?mode=main&amp;action=prefs";
+
+		$srch = array("[","]");
+		$repl = array("<a href='".$url."'>", "</a>");
+
+		$message = str_replace($srch,$repl, LAN_ONLINE_TRACKING_MESSAGE);
+		return e107::getParser()->toHTML($message, true);
+
 	}
 
 	
