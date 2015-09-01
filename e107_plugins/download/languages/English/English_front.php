@@ -64,7 +64,7 @@ define("LAN_dl_51", "Reporting download: ");
 //define("LAN_dl_52", "Guest");//LAN_GUEST
 define("LAN_dl_53", "Click to view download");
 define("LAN_dl_54", "An administrator will be made aware of this download, please leave a message if you feel it necessary.");
-define("LAN_dl_55", "<b>Do not</b> use this form to contact the admin for any other reason.");
+define("LAN_dl_55", "Do not use this form to contact the admin for any other reason.");
 // define("LAN_dl_56", "Report broken download");  already defined above.
 define("LAN_dl_57", "reported by");
 define("LAN_dl_58", "The following download has been reported as broken from site");
@@ -93,6 +93,6 @@ define("LAN_dl_75", "no image available ");
 //define("LAN_dl_76", "Go to page");    //FIXME Use Generic
 define("LAN_dl_77", "Downloads");		// Intentional duplicate - some languages need it to be different. This is for number of downloads
 
-define('LAN_dl_78', "That download has been disabled or discontinued. Please check in the [link=--LINK--]downloads area[/link] for a more recent version.");
+define('LAN_dl_78', "That download has been disabled or discontinued. Please check in the [downloads area] for a more recent version.");
 
 ?>

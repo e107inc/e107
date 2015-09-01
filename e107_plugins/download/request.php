@@ -138,10 +138,13 @@ if ($type == "file")
 
 		if (check_class($row['download_category_class']) && check_class($row['download_class'])) 
 		{
-			if ($row['download_active'] == 0)
-			{  // Inactive download - don't allow
+			if ($row['download_active'] == 0) // Inactive download - don't allow
+			{
 				require_once(HEADERF);
-				$ns->tablerender(LAN_ERROR, "<div style='text-align:center'>".str_replace('--LINK--',e_HTTP.'download.php',LAN_dl_78).'</div>');
+				$search = array("[","]");
+				$replace = array("<a href='".e_HTTP."download.php'>", "</a>");
+
+				$ns->tablerender(LAN_ERROR, "<div class='alert alert-warning' style='text-align:center'>".str_replace($search, $replace, LAN_dl_78).'</div>');
 				require_once(FOOTERF);
 				exit();
 			}
