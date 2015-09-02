@@ -264,7 +264,7 @@ class forumStats
 		{
 			if($ma['user_name'])
 			{
-				$uinfo = "<a href='".e_BASE."user.php?id.{$ma['user_id']}'>{$ma['user_name']}</a>"; //TODO SEf Url .
+				$uinfo = "<a href='".e_HTTP."user.php ?id.{$ma['user_id']}'>{$ma['user_name']}</a>"; //TODO SEf Url .
 			}
 			else
 			{
@@ -310,7 +310,7 @@ class forumStats
 		{
 			if($ma['user_name'])
 			{
-				$uinfo = "<a href='".e_BASE."user.php?id.{$ma['user_id']}'>".$ma['user_name']."</a>";  //TODO SEf Url .
+				$uinfo = "<a href='".e_HTTP."user.php ?id.{$ma['user_id']}'>".$ma['user_name']."</a>";  //TODO SEf Url .
 			}
 			else
 			{
@@ -360,7 +360,7 @@ class forumStats
 			//TODO SEf Url .
 			$text_3 .= "<tr>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>$count</td>
-			<td style='width: 20%;' class='forumheader3'><a href='".e_BASE."user.php?id.".$ma['user_id']."'>".$ma['user_name']."</a></td>
+			<td style='width: 20%;' class='forumheader3'><a href='".e107::getUrl()->create('user/profile/view', $ma)."'>".$ma['user_name']."</a></td>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>$user_forums</td>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>$percentage%</td>
 			<td style='width: 50%;' class='forumheader3'>".$this->showBar($percentage)."
@@ -398,7 +398,7 @@ class forumStats
 
 			$text_4 .= "<tr>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>$count</td>
-			<td style='width: 20%;' class='forumheader3'><a href='".e_BASE."user.php?id.$user_id'>$user_name</a></td>
+			<td style='width: 20%;' class='forumheader3'><a href='".e107::getUrl()->create('user/profile/view', $ma)."'>$user_name</a></td>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>$user_forums</td>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>$percentage%</td>
 			<td style='width: 50%; text-align: center;' class='forumheader3'>".$this->showBar($percentage)."</td>
@@ -432,7 +432,7 @@ class forumStats
 			$text_5 .= "
 			<tr>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>$count</td>
-			<td style='width: 20%;' class='forumheader3'><a href='".e_BASE."user.php?id.$user_id'>$user_name</a></td>
+			<td style='width: 20%;' class='forumheader3'><a href='".e107::getUrl()->create('user/profile/view', $ma)."'>$user_name</a></td>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>$user_forums</td>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>$percentage%</td>
 			<td style='width: 50%; text-align: center;' class='forumheader3'>".$this->showBar($percentage)."</td>
