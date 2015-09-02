@@ -2508,7 +2508,7 @@ class forumAdmin
     		</colgroup>
 			<tr>
 				<td>".FORLAN_171.":</td>
-				<td><a href='".e_PLUGIN."forum/forum_viewtopic.php?".$row['gen_intdata'].".post' rel='external'>#".$row['gen_intdata']."</a></td>
+				<td><a href='".e_PLUGIN_ABS."forum/forum_viewtopic.php?".$row['gen_intdata'].".post' rel='external'>#".$row['gen_intdata']."</a></td>
 			</tr>
 			<tr>
 				<td>".FORLAN_173.":</td>
@@ -2516,7 +2516,7 @@ class forumAdmin
 			</tr>
 			<tr>
 				<td>".FORLAN_174.":</td>
-				<td><a href='".e_BASE."user.php?id.".$user['user_id']."'>".$user['user_name']."</a>
+				<td><a href='".e107::getUrl()->create('user/profile/view', $user)."'>".$user['user_name']."</a>
 			</td>
 			</tr>
 			<tr>
