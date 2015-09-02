@@ -858,7 +858,7 @@ class e_install
 				</tr>
 				
 				<tr>
-					<td>".LANINS_016."</td>
+					<td>MySQL</td>
 					<td>{$mysql_note}</td>
 					<td class='{$mysqlColor}'>{$mysql_help}</td>
 				</tr>
@@ -1466,7 +1466,7 @@ class e_install
 		$this->previous_steps['prefs']['install_date']  	= time();
 		$this->previous_steps['prefs']['siteurl']			= e_HTTP;
 
-		$this->previous_steps['prefs']['sitetag']			= LAN_PREF_2;
+		$this->previous_steps['prefs']['sitetag']			= "e107 Website System";
 		$this->previous_steps['prefs']['sitedisclaimer']	= '';
 
 		$this->previous_steps['prefs']['replyto_name']		= $this->previous_steps['admin']['display'];

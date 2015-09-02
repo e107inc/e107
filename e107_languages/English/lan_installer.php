@@ -90,22 +90,6 @@ Please ensure the file [b]core_sql.php[/b] exists in the [b]/e107_core/sql[/b] d
 define("LANINS_061", "e107 was unable to create all of the required database tables.
 Please clear the database and rectify any problems before trying again.");
 
-define("LANINS_062", "[b]Welcome to your new website![/b]
-e107 has installed successfully and is now ready to accept content.
-
-Your administration section is [link=e107_admin/admin.php]located here[/link], click to go there now. You will have to login using the name and password you entered during the installation process.
-
-[b]Support[/b]
-e107 Homepage: [link=http://e107.org]http://e107.org[/link], you will find the FAQ and documentation here.
-Forums: [link=http://e107.org/e107_plugins/forum/forum.php]http://e107.org/e107_plugins/forum/forum.php[/link]
-Plugin Developer Community: [link=http://www.e107coders.org]http://e107coders.org[/link]
-
-[b]Downloads[/b]
-Plugins: [link=http://plugins.e107.org]http://plugins.e107.org[/link]
-Themes: [link=http://themes.e107.org]http://themes.e107.org[/link]
-
-Thank you for trying e107, we hope it fulfils your website needs.
-(You can delete this message from your admin section.)");
 
 // define("LANINS_063", "Welcome to e107");
 
@@ -138,7 +122,7 @@ define("LANINS_083", "MySQL Reported Error:");
 define("LANINS_084", "The installer could not establish a connection to the database");
 define("LANINS_085", "The installer could not select database:");
 
-define("LANINS_086", "Admin Username, Admin Password and Admin Email are [b]required[/b] fields. Please return to the last page and ensure the information is correctly entered.");
+define("LANINS_086", "Admin Username, Admin Password and Admin Email are required fields. Please return to the last page and ensure the information is correctly entered.");
 
 // define("LANINS_087", "Misc");
 // define("LANINS_088", "Home");
