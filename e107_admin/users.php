@@ -90,7 +90,7 @@ class users_admin extends e_admin_dispatcher
 
 			//	$('#user-action-indicator-'+user).html('<i class="fa fa-cog"></i>'); //
 
-			$(".user-action").click(function(e){
+			$(document).on('click', ".user-action", function(e){
 				// e.stopPropagation();
 
 				var action = $(this).attr('data-action-type');
