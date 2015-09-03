@@ -18,7 +18,11 @@ class social_comment
 	function __construct()
 	{
 		$social = e107::pref('core','social_login');
-		$this->facebookActive = vartrue($social['Facebook']['keys']['id']);
+
+		if(!empty($social))
+		{
+			$this->facebookActive = vartrue($social['Facebook']['keys']['id']);
+		}
 
 	}
 
