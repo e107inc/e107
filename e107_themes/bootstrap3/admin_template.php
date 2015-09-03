@@ -239,7 +239,7 @@ $ADMIN_MODAL =  '<div id="uiModal" class="modal hide fade" tabindex="-1" role="d
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-         <a class="brand navbar-brand" href="'.e_ADMIN_ABS.'admin.php" title="Return to Front Panel"><img class="admin-logo" src="'.e_THEME_ABS.'bootstrap/images/e107_adminlogo.png" alt="e107" /></a>
+         <a class="brand navbar-brand" href="'.e_ADMIN_ABS.'admin.php" title="Return to Front Panel"><img class="admin-logo" src="'.e_THEME_ABS.'bootstrap3/images/e107_adminlogo.png" alt="e107" /></a>
         </div>
         <div class="navbar-collapse collapse">
         	 <div class="dropdown nav navbar-nav">
