@@ -278,17 +278,27 @@ class language{
 		}
 
 		global $pref;
-				
+
 		if(!$lang)
 		{
 			return (ADMIN_AREA &&  vartrue($pref['adminlanguage'])) ? $pref['adminlanguage'] : $pref['sitelanguage'];
 		}
-		
+
 		if(strpos($lang,"debug")!==false)
 		{
 			 return false;
 		}
-		
+
+		if($lang == 'E_SITELANGUAGE') // allows for overriding language using a scripted 'define' before class2.php is loaded.
+		{
+			$lang = $pref['sitelanguage'];
+		}
+
+		if($lang == 'E_ADMINLANGUAGE')
+		{
+			$lang = $pref['adminlanguage'];
+		}
+
 		if(strlen($lang)== 2)
 		{
 			$iso = $lang;
@@ -453,12 +463,13 @@ class language{
 	
 	/**
  	* Detect a Language Change
-	* 0. Parked Domain          eg. http://mylanguagedomain.com
- 	* 1. Parked subDomain		eg. http://es.mydomain.com (Preferred for SEO)
- 	* 2. e_MENU Query			eg. /index.php?[es]
- 	* 3. $_GET['elan']			eg. /index.php?elan=es
- 	* 4. $_POST['sitelanguage']	eg. <input type='hidden' name='sitelanguage' value='Spanish' /> 
- 	* 5. $GLOBALS['elan']		eg. <?php $GLOBALS['elan']='es' (deprecated) 
+	* 1. Scripted Definition    eg. define('e_PAGE_LANGUAGE', 'English');
+	* 2. Parked Domain          eg. http://mylanguagedomain.com
+ 	* 3. Parked subDomain		eg. http://es.mydomain.com (Preferred for SEO)
+ 	* 4. e_MENU Query			eg. /index.php?[es]
+ 	* 5. $_GET['elan']			eg. /index.php?elan=es
+ 	* 6. $_POST['sitelanguage']	eg. <input type='hidden' name='sitelanguage' value='Spanish' />
+ 	* 7. $GLOBALS['elan']		eg. <?php $GLOBALS['elan']='es' (deprecated)
  	* 
  	* @param boolean $force force detection, don't use cached value
  	*/
@@ -470,7 +481,11 @@ class language{
 		if(false !== $this->detect && !$force) return $this->detect;
 		$this->_cookie_domain = '';
 
-		if(vartrue($pref['multilanguage_subdomain']) && $this->isLangDomain(e_DOMAIN) && (defset('MULTILANG_SUBDOMAIN') !== false))
+		if(defined('e_PAGE_LANGUAGE') && ($detect_language = $this->isValid(e_PAGE_LANGUAGE))) // page specific override.
+		{
+			// Do nothing as $detect_language is set.
+		}
+		elseif(vartrue($pref['multilanguage_subdomain']) && $this->isLangDomain(e_DOMAIN) && (defset('MULTILANG_SUBDOMAIN') !== false))
 		{
 			$detect_language = (e_SUBDOMAIN) ? $this->isValid(e_SUBDOMAIN) : $pref['sitelanguage'];
 			// Done in session handler now, based on MULTILANG_SUBDOMAIN value
