@@ -18,6 +18,7 @@ if (!getperms('P'))
 
 
 e107::lan('forum', 'admin');
+e107::lan('forum','front', true);
 //e107::includeLan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/English_admin.php');
 //e107::lan('forum','', 'front');
 
