@@ -1388,7 +1388,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			return e107::getNav()->admin('', '', $menu_vars, $$tmpl, FALSE, FALSE);
 		}
         
-        
+
         
 		// MAIN LINK
 		if($parm != 'no-main')
@@ -1581,7 +1581,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			 
 		
 			// Clean up - remove empty main sections
-			foreach ($menu_vars as $_m => $_d) 
+			foreach ($menu_vars as $_m => $_d)
 			{
 				if(!isset($_d['sub']) || empty($_d['sub']))
 				{
@@ -1750,6 +1750,8 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				}
 				
 			}
+
+			sort($languages);
 			
 			if(count($languages) > 1)
 			{

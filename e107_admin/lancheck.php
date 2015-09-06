@@ -1433,17 +1433,17 @@ class lancheck
 			$error[] = $def. ": Missing [ and/or ] character(s)";
 		}
 		
-		if((strpos($eng_line,"--LINK--")!==FALSE && strpos($trans_line,"--LINK--")==FALSE))
+		if((strpos($eng_line,"--LINK--")!==false && strpos($trans_line,"--LINK--")===false))
 		{
 			$error[] = $def. ": Missing --LINK--";
 		}
 		
-		if((strpos($eng_line,"e107.org")!==FALSE && strpos($trans_line,"e107.org")==FALSE))
+		if((strpos($eng_line,"e107.org")!==false && strpos($trans_line,"e107.org")===false))
 		{
 			$error[] = $def. ": Missing e107.org URL";
 		}
 		
-		if((strpos($eng_line,"e107coders.org")!==FALSE && strpos($trans_line,"e107coders.org")==FALSE))
+		if((strpos($eng_line,"e107coders.org")!==FALSE && strpos($trans_line,"e107coders.org")===false))
 		{
 			$error[] = $def. ": Missing e107coders.org URL";
 		}

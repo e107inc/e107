@@ -143,6 +143,12 @@ table  label.checkbox                   { margin-left: 20px }
 #admin-ui-edit                          { }
 #admin-ui-edit-db-language              { margin-bottom: -30px; padding-bottom:5px; padding-right:5px }
 
+#admin-ui-list-db-language span,
+#admin-ui-edit-db-language span          { color: #FAA732; cursor: help; }
+
+#admin-ui-edit-db-language span.default,
+#admin-ui-list-db-language span.default  { color: white }
+
 td.options .btn-group                   {  display: flex; }
 
 .table .nav-tabs a,
