@@ -1971,8 +1971,8 @@ class e_parse extends e_parser
 
 		$text = $this->toEmail($text);
 
-		$search = array("&amp;#039;", "&amp;#036;", "&#039;", "&#036;", e_BASE, "href='request.php");
-		$replace = array("'", '$', "'", '$', SITEURL, "href='".SITEURL."request.php" );
+		$search = array("&amp;#039;", "&amp;#036;", "&#039;", "&#036;", e_BASE, "href='request.php","<!-- bbcode-html-start -->","<!-- bbcode-html-end -->");
+		$replace = array("'", '$', "'", '$', SITEURL, "href='".SITEURL."request.php", '', '' );
 		$text = str_replace($search, $replace, $text);
 
 		// Fix any left-over '&'
