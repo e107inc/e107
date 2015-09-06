@@ -1035,6 +1035,12 @@ class e_admin_dispatcher
 		{
 			define('e_ADMIN_UI', true);
 		}
+
+		if(!empty($_GET['iframe']))
+		{
+			define('e_IFRAME', true);
+		}
+
 		require_once(e_ADMIN.'boot.php');
 		
 		if(null === $request || !is_object($request))
