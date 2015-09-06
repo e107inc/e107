@@ -45,30 +45,17 @@ e107::css('inline', 'div.qitem { margin-top:20px }
 
 		);
 
+		protected $adminMenu = array();
 
-		protected $adminMenu = array(
-
-		//	'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
-		//	'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
-		//	'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),
-
-			// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
-		);
-
-		protected $adminMenuAliases = array(
-			'main/edit'	=> 'main/list'
-		);
+		protected $adminMenuAliases = array();
 
 		protected $menuTitle = LAN_DOCS;
 
-		public static $helpList = array();
-
+		protected static $helpList = array();
 
 		public static function getDocs()
 		{
-
 			return self::$helpList;
-
 		}
 
 
@@ -87,6 +74,8 @@ e107::css('inline', 'div.qitem { margin-top:20px }
 				$helplist = $fl->get_files(DOC_PATH);
 			}
 
+			sort($helplist);
+
 			self::$helpList = $helplist;
 
 			foreach($helplist as $key=>$helpdata)
@@ -95,12 +84,7 @@ e107::css('inline', 'div.qitem { margin-top:20px }
 				$id = 'doc-'.$key;
 				$k = 'main/'.$id;
 
-			//	$text_h .= "
-			//		<div class='qitem'>".E_16_DOCS." <a href='#{$id}' class='scroll-to'>".str_replace("_", " ", $helpdata['fname'])."</a></div>
-			//	";
-
 				$this->adminMenu[$k] = array('caption'=> str_replace("_", " ", $helpdata['fname']), 'perm' => false, 'uri'=>"#".$id );
-
 			}
 
 
@@ -145,7 +129,7 @@ e107::css('inline', 'div.qitem { margin-top:20px }
 
 				$text .= "
 				<div class='docs-item' id='{$id}' {$display}>
-					<h4>".str_replace("_", " ", $helpdata['fname'])."</h4>
+					<h4>".LAN_DOCS.SEP.str_replace("_", " ", $helpdata['fname'])."</h4>
 					{$tmp}
 
 				</div>";
