@@ -1479,7 +1479,7 @@ class e_admin_dispatcher
 		foreach($this->adminMenu as $key => $val)
 		{
 
-			if(!empty($val['perm']) && !getperms($val['perm']))
+			if(isset($val['perm']) && $val['perm']!=='' && !getperms($val['perm']))
 			{
 				continue;
 			}
@@ -1569,7 +1569,7 @@ class e_admin_dispatcher
 
 
 		if(empty($var)) return '';
-		
+
 		$request = $this->getRequest();
 		if(!$selected) $selected = $request->getMode().'/'.$request->getAction();
 		$selected = vartrue($this->adminMenuAliases[$selected], $selected);

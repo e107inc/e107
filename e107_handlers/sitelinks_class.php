@@ -790,7 +790,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			
 			$array_functions = array(
 			0 => array(e_ADMIN_ABS.'administrator.php', ADLAN_8,	ADLAN_9,	'3', 2, E_16_ADMIN, E_32_ADMIN),
-			1 => array(e_ADMIN_ABS.'updateadmin.php', 	ADLAN_10,	ADLAN_11,	'', 2, E_16_ADPASS, E_32_ADPASS),
+			1 => array(e_ADMIN_ABS.'updateadmin.php', 	ADLAN_10,	ADLAN_11,	false, 2, E_16_ADPASS, E_32_ADPASS),
 			2 => array(e_ADMIN_ABS.'banlist.php', 		ADLAN_34,	ADLAN_35,	'4', 2, E_16_BANLIST, E_32_BANLIST),
 			4 => array(e_ADMIN_ABS.'cache.php', 		ADLAN_74,	ADLAN_75,	'C', 1, E_16_CACHE, E_32_CACHE),
 			5 => array(e_ADMIN_ABS.'cpage.php', 		ADLAN_42,	ADLAN_43,	'5|J', 3, E_16_CUST, E_32_CUST),
