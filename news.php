@@ -92,7 +92,12 @@ if ($action == 'all' || $action == 'cat')
 	$sub_action = intval(varset($tmp[1],0));
 }
 
-
+if($action == 'extend' && empty($sub_action)) // item not found, redirect to avoid messing up search-engine data.
+{
+	$defaultUrl = e107::getUrl()->create('news/list/items');
+	e107::getRedirect()->go($defaultUrl, null, 301);
+	exit;
+}
 
 
 
@@ -141,9 +146,16 @@ $nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 		$newsRoute = 'list/all';
 		$newsUrlparms['id'] = $sub_action;
 	}
+	else
+	{
+		$newsRoute = 'list/items';
+	}
 
-	else $newsRoute = 'list/items';
+
+
 	$newsRoute = 'news/'.$newsRoute;
+
+
 
 
 if(vartrue($_GET['tag']) || substr($action,0,4) == 'tag=')
@@ -161,6 +173,7 @@ if(vartrue($_GET['tag']) || substr($action,0,4) == 'tag=')
 }
 
 /*
+print_a(e_QUERY);
 echo "route= ".$newsRoute."  ";
 echo "<br />action= ".$action."  ";
 echo "<br />_GET= ".print_a($_GET,true);
