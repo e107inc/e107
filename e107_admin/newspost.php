@@ -475,7 +475,7 @@ class news_admin_ui extends e_admin_ui
 			$new_data['news_datestamp'] = time();
 		}
 
-		if(empty($new_data['news_sef']) && !empty($new_data['news_title']))
+		if(isset($new_data['news_sef']) && empty($new_data['news_sef']) && !empty($new_data['news_title']))
 		{
 			$new_data['news_sef'] = eHelper::title2sef($new_data['news_title']);
 		}
