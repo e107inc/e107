@@ -45,9 +45,9 @@ define("RSS_LAN_ADMINMENU_1", "RSS Options");
 define("RSS_LAN_ADMINMENU_2", "Listing");
 define("RSS_LAN_ADMINMENU_4", "Import");
 
-define("RSS_LAN_ERROR_1", "This is not a valid rss feed<br /><br /><a href='".e_SELF."'><< return to rss feed list</a>");
+define("RSS_LAN_ERROR_1", "This is not a valid rss feed.[br][br][Return to rss feed list]");
 define("RSS_LAN_ERROR_2", "Your e107_config.php file or your language files contain spaces or ï»¿﻿ characters before the &lt;? characters. You should remove this with a non-utf8 text-editor if you wish to have a valid RSS feed.");
-define("RSS_LAN_ERROR_3", "No rss feeds are present yet<br />please use the import feature to import available rss feeds or create a rss feed manually.");
+define("RSS_LAN_ERROR_3", "No rss feeds are present yet[br]please use the import feature to import available rss feeds or create a rss feed manually.");
 define("RSS_LAN_ERROR_4", "No rss feeds are available yet");
 define("RSS_LAN_ERROR_5", "This rss entry does not exist");
 define("RSS_LAN_ERROR_6", "There are no rss feeds to import");
