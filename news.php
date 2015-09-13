@@ -274,6 +274,7 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 		$newsList = $sql->db_getList();
 	}
 
+
 	if($action == 'cat')
 	{
 		setNewsFrontMeta($newsList[1], 'category');
@@ -314,9 +315,16 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 		$text .= $tp->parseTemplate($template['start'], true);		
 	}
 
-	foreach($newsList as $row)
+	if(!empty($newsList))
 	{
-		$text .= $ix->render_newsitem($row, 'return', '', $template['item'], $param);
+		foreach($newsList as $row)
+		{
+			$text .= $ix->render_newsitem($row, 'return', '', $template['item'], $param);
+		}
+	}
+	else // No News - empty.
+	{
+		$text .= "<div class='alert alert-info'>".(strstr(e_QUERY, "month") ? LAN_NEWS_462 : LAN_NEWS_83)."</div>";
 	}
 
 	if(vartrue($template['end']))
@@ -407,9 +415,9 @@ if ($action == 'extend')
 		AND (n.news_end=0 || n.news_end>".time().")
 		AND n.news_id=".intval($sub_action);
 	}
-	if ($sql->db_Select_gen($query))
+	if ($sql->gen($query))
 	{
-		$news = $sql->db_Fetch();
+		$news = $sql->fetch();
 		$id = $news['news_category'];		// Use category of this news item to generate next/prev links
 
 		//***NEW [SecretR] - comments handled inside now
