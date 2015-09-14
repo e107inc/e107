@@ -92,12 +92,7 @@ if ($action == 'all' || $action == 'cat')
 	$sub_action = intval(varset($tmp[1],0));
 }
 
-if($action == 'extend' && empty($sub_action)) // item not found, redirect to avoid messing up search-engine data.
-{
-	$defaultUrl = e107::getUrl()->create('news/list/items');
-	e107::getRedirect()->go($defaultUrl, null, 301);
-	exit;
-}
+
 
 
 
@@ -172,12 +167,18 @@ if(vartrue($_GET['tag']) || substr($action,0,4) == 'tag=')
 	$newsfrom = intval(varset($_GET['page'],0));
 }
 
-/*
-print_a(e_QUERY);
-echo "route= ".$newsRoute."  ";
-echo "<br />action= ".$action."  ";
-echo "<br />_GET= ".print_a($_GET,true);
-*/
+if(E107_DBG_PATH)
+{
+	echo "<div class='alert alert-info'>";
+	echo "<h4>SEF Debug Info</h4>";
+	echo "action= ".$action."  ";
+	echo "<br />route= ".$newsRoute."  ";
+	echo "<br />e_QUERY= ".e_QUERY."  ";
+
+	echo "<br />_GET= ".print_r($_GET,true);
+	echo "</div>";
+}
+
 //------------------------------------------------------
 //		DISPLAY NEWS IN 'CATEGORY' LIST FORMAT HERE
 //------------------------------------------------------
@@ -510,7 +511,13 @@ if ($action == 'extend')
 	}
 	else
 	{
-		$action = 'default';
+	//	$action = 'default';
+
+		//XXX item not found, redirect to avoid messing up search-engine data.
+		$defaultUrl = e107::getUrl()->create('news/list/items');
+		e107::getRedirect()->go($defaultUrl, null, 301);
+		exit;
+
 	}
 }
 
