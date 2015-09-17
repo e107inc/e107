@@ -88,7 +88,7 @@ $(document).ready(function()
 		
 	
 		$('div.e-container').editable({
-			selector: '.e-editable',
+			selector: '.e-editable'
          });
 		
 //		$('.e-editable').editable();
@@ -417,7 +417,7 @@ $(document).ready(function()
 			
 		});
 		
-		$(".e-tags").tag();
+	//	$(".e-tags").tag();
 		
 		
 
@@ -461,12 +461,13 @@ $(document).ready(function()
 		}
 		
 		// backend 
-		$(".e-password").pwdMeter({
+	/*
+	    $(".e-password").pwdMeter({
 	            minLength: 6,
 	            displayGeneratePassword: true,
 	            generatePassText: "Generate",
 	            randomPassLength: 12
-	    });
+	    });*/
 		
 		
 		
