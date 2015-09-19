@@ -69,13 +69,13 @@ define("LANINS_044", "Successfully created database.");
 define("LANINS_045", "Please click on the button to proceed to next stage.");
 define("LANINS_046", "5");
 define("LANINS_047", "Administrator Details");
-// define("LANINS_048", "Go Back To Last Step");
+define("LANINS_048", "EXIF extension");
 define("LANINS_049", "The two passwords you entered are not the same. Please go back and try again.");
 define("LANINS_050", "XML Extension");
 define("LANINS_051", "Installed");
 define("LANINS_052", "Not Installed");
 define("LANINS_053", "e107 v2.x requires the PHP XML Extension to be installed. Please contact your host or read the information at [x] before continuing");
-// define("LANINS_054", " before continuing");
+define("LANINS_054", "e107 v2.x requires the PHP EXIF Extension to be installed. Please contact your host or read the information at [x] before continuing");
 define("LANINS_055", "Install Confirmation");
 define("LANINS_056", "6");
 define("LANINS_057", " e107 now has all the information it needs to complete the installation.
