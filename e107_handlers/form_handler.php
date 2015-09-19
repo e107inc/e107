@@ -1197,7 +1197,19 @@ class e_form
 		$options['pattern'] = vartrue($options['pattern'],'[\S]{4,}');
 		$options['required'] = varset($options['required'], 1);
 		$options['class'] = vartrue($options['class'],'e-password');
-		
+
+
+		e107::js('core', 	'password/jquery.pwdMeter.js', 'jquery', 2);
+
+		e107::js('footer-inline', '
+			$(".e-password").pwdMeter({
+	            minLength: 6,
+	            displayGeneratePassword: true,
+	            generatePassText: "Generate",
+	            randomPassLength: 12
+	        });
+	    ');
+
 		if(deftrue('BOOTSTRAP') == 3)
 		{
 			$options['class'] .= ' form-control';

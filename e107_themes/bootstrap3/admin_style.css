@@ -160,7 +160,7 @@ td.options .btn-group                   {  display: flex; }
 
 #admin-ui-modal                          { width: 90%; }
 
-
+.editable-input .form-control { width:300px } /* x-editable */
 
 
 
