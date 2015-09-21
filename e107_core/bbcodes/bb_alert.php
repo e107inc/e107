@@ -42,7 +42,7 @@ class bb_alert extends e_bb_base
 		}
 		else
 		{
-			$style = "alert alert-default";
+			$style = "alert alert-info";
 		}
 
 		return "<div class='".$style."'>".$code_text."</div>";
