@@ -267,12 +267,14 @@ class cpage_shortcodes extends e_shortcode
 		
 		$buttonText = (empty($this->var['menu_button_text'])) ? LAN_READ_MORE : $this->var['menu_button_text'];
 		$buttonUrl	= (empty($this->var['menu_button_url'])) ? $url : $tp->replaceConstants($this->var['menu_button_url']);
-		
+		$buttonTarget = (empty($this->var['menu_button_target'])) ? '' : ' target="'.$this->var['menu_button_target'].'" '; //TODO add pref to admin area.
+
 		$text = vartrue($options['text'], $buttonText);
 		$size = vartrue($options['size'], "");
+
 		$inc = ($size) ? " btn-".$size : "";
 		
-		return '<a class="cpage btn btn-primary btn-cpage'.$inc.'" href="'.$buttonUrl.'">'.$text.'</a>';
+		return '<a class="cpage btn btn-primary btn-cpage'.$inc.'" href="'.$buttonUrl.'" '.$buttonTarget.'>'.$text.'</a>';
 	}	
 	
 	
@@ -281,7 +283,12 @@ class cpage_shortcodes extends e_shortcode
 		$tp 	= e107::getParser(); 
 	//
 		return $tp->toHTML($this->var['menu_title'], true, 'TITLE');
-	}	
+	}
+
+	function sc_cmenuname($parm='')
+	{
+		return $this->var['menu_name'];
+	}
 
 
 	function sc_cmenubody($parm='')

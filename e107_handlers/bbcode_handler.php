@@ -37,6 +37,7 @@ class e_bbcode
 		$pref = e107::getPref();
 		
 		$this->core_bb = array(
+		'alert',
 		'blockquote', 'img', 'i', 'u', 'center',
 		'_br', 'color', 'size', 'code',
 		 'flash', 'link', 'email',
