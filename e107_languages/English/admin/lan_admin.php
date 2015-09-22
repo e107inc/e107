@@ -363,6 +363,28 @@ define("LAN_PREVIEW", "Preview");
 define("LAN_CREATE_CATEGORY", "Create Category");
 define("LAN_CREATE_ITEM",	"Create Item");
 
+//plugin related messages
+define("LAN_ADD_TABLE",	"Adding Table:");
+define("LAN_ADD_LINK",	"Adding Link:");
+define("LAN_ADD_PREF",	"Adding Pref:");
+define("LAN_ADD_USCLS",	"Adding Userclass:");
+define("LAN_REM_USCLS",	"Removing Userclass:");
+define("LAN_ADD_EXTFIELD",	"Adding Extended Field:");
+define("LAN_REM_EXTFIELD",	"Removing Extended Field:");
+define("LAN_REM_TABLE",	"Removing Table:");
+define("LAN_REM_PREF",	"Removing Pref:");
+define("LAN_REM_ICONS",	"Removing Icons from Media-manager:");
+define("LAN_REM_LINK",	"Removing Link:");
+define("LAN_SET_SAVE",	"Settings successfully saved:");
+define("LAN_INST_COMP",	"Installation Complete.");
+define("LAN_INC_URL",	"with url"); 
+define("LAN_PERM",	"and perm ");
+define("LAN_EXTF",	"Extended Field: ");
+define("LAN_EXTF_PL",	".left in place ");
+define("LAN_UPD_PREF",	"Updating Pref: ");
+
+
+
 
 define("LAN_SECURITYL_0", "Looking for trouble (none)");
 define("LAN_SECURITYL_5", "Balanced");

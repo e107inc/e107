@@ -1573,7 +1573,7 @@ class pluginManager{
 				}
 
 				$opts['delete_ipool'] = array(
-					'label'			=>'Remove icons from Media-Manager',
+					'label'			=> LAN_REM_ICONS,
 					'preview'		=> $iconText,
 					'helpText'		=> EPL_ADLAN_79,
 					'itemList'		=> array(1=>LAN_YES,0=>LAN_NO),
