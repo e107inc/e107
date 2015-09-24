@@ -74,10 +74,10 @@ class log_shortcodes extends e_shortcode
 
 	function sc_log_pagecounter($parm)
 	{
-
+		$url = str_replace("www.", "", e_REQUEST_URL);
 		$id = $this->getKey(e_REQUEST_URL);
 
-		if(isset($this->dbPageInfo[$id]['url']) && ($this->dbPageInfo[$id]['url'] == e_REQUEST_URL))
+		if(isset($this->dbPageInfo[$id]['url']) && ($this->dbPageInfo[$id]['url'] == e_REQUEST_URL || $this->dbPageInfo[$id]['url'] == $url))
 		{
 			return ($parm == 'unique') ? number_format($this->dbPageInfo[$id]['unqv']) : number_format($this->dbPageInfo[$id]['ttlv']);
 		}
