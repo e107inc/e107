@@ -156,7 +156,7 @@ $(document).ready(function()
             e.preventDefault();
             
             $("#left-panel").toggle(1000);
-            $("#right-panel").toggleClass("span10",0);
+            $("#right-panel").toggleClass("col-md-10 col-md-12"); //XXX Control animation direction?
 
         });
 
