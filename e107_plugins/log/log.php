@@ -67,14 +67,52 @@ define('log_INIT', TRUE);
 $pageUnique = array('page' => 1, 'content' => array('content'));
 
 
+
 //$logVals = urldecode(base64_decode($_SERVER['QUERY_STRING']));
-$logVals = urldecode(base64_decode($_GET['lv']));
+//$logVals = urldecode(base64_decode($_GET['lv']));
+
+
+// --------------- Reworked for v2.x ------------------------
+
+
+$logVals = base64_decode($_GET['lv']);
+
+
+$logVals .= "&ip=".USERIP;
+$logVals .= "&iphost=". @gethostbyaddr(USERIP);
+$logVals .= "&lan=".e_LAN;
+$logVals .= "&agent=".$_SERVER['HTTP_USER_AGENT'];
+
+parse_str($logVals, $vals);
+
+$vals['referer'] = urldecode($vals['referer']);
+$vals['eself'] = urldecode($vals['eself']);
+
+if(empty($_SESSION['log_userLoggedPages']) || !in_array($vals['eself'],$_SESSION['log_userLoggedPages']))
+{
+	$_SESSION['log_userLoggedPages'][] = $vals['eself'];
+	$logVals .= "&unique=1";
+}
+else
+{
+	$logVals .= "&unique=0";
+}
+
+
+$logVals = str_replace('%3A',':',$logVals); // make the URLs a bit cleaner, while keeping any urlqueries encoded.
 
 $lg = e107::getAdminLog();
 $lg->addDebug(print_r($logVals, true));
 $lg->toFile('SiteStats','Statistics Log', true);
 
-parse_str($logVals, $vals);
+e107::getEvent()->trigger('user_log_stats',$vals);
+
+
+// ------------------------------------ ---------------------
+
+
+
+
 
 // We MUST have a timezone set in PHP >= 5.3. This should work for PHP >= 5.1:
 // @todo may be able to remove this check once minimum PHP version finalised
