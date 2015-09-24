@@ -12,12 +12,14 @@ class log_shortcodes extends e_shortcode
 
 	private $dbPageInfo;
 
-	function __construct($order)
+	function __construct()
 	{
 		$sql = e107::getDB();
 		$logfile = e_LOG.'logp_'.date('z.Y', time()).'.php'; /* get today's logfile ... */
 
-		if(is_readable($logfile))
+		$pageInfo = array();
+
+		if(is_readable($logfile)) // populate $pageInfo
 		{
 			require($logfile);
 		}
@@ -27,6 +29,7 @@ class log_shortcodes extends e_shortcode
 		if(is_readable($logfile))
 		{
 			require($logfile);
+		//	e107::getMessage()->addDebug("Loading Log File: ".$logfile);
 		}
 
 
@@ -34,6 +37,7 @@ class log_shortcodes extends e_shortcode
 		{
 			$row = $sql->fetch();
 			$this->dbPageInfo = unserialize($row['log_data']);
+	//		e107::getMessage()->addDebug("Loading Logstats from DB: ".print_a($this->dbPageInfo,true));
 		}
 		else
 		{

@@ -1964,7 +1964,7 @@ class siteStats
 	 *
 	 *	@return string text to be displayed
 	 */
-	function bar($percen, $val,$name)
+	function bar($percen, $val,$name='')
 	{
 		if(deftrue('BOOTSTRAP'))
 		{

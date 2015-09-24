@@ -186,25 +186,52 @@ if($ref && !strstr($ref, $_SERVER['HTTP_HOST']))
 }
 
 
-$pageDisallow = "cache|file|eself|admin";
-$tagRemove = "(\\\)|(\s)|(\')|(\")|(eself)|(&nbsp;)|(\.php)|(\.html)";
-$tagRemove2 = "(\\\)|(\s)|(\')|(\")|(eself)|(&nbsp;)";
-
-preg_match("#/(.*?)(\?|$)(.*)#si", $self, $match);
-$match[1] = isset($match[1]) ? $match[1] : '';
-$pageName = substr($match[1], (strrpos($match[1], "/")+1));
-$PN = $pageName;
-$pageName = preg_replace("/".$tagRemove."/si", "", $pageName);
-if($pageName == "") $pageName = "index";
-
-if(preg_match("/".$pageDisallow."/i", $pageName)) return;
 
 
-if ($logQry)
+
+function logGetPageKey($url,$logQry=false,$err_code='')
 {
-	$pageName .= '+'.$match[3];			// All queries match
+	$pageDisallow = "cache|file|eself|admin";
+	$tagRemove = "(\\\)|(\s)|(\')|(\")|(eself)|(&nbsp;)|(\.php)|(\.html)";
+	$tagRemove2 = "(\\\)|(\s)|(\')|(\")|(eself)|(&nbsp;)";
+
+	preg_match("#/(.*?)(\?|$)(.*)#si", $url, $match);
+	$match[1] = isset($match[1]) ? $match[1] : '';
+	$pageName = substr($match[1], (strrpos($match[1], "/")+1));
+	$PN = $pageName;
+
+	$pageName = preg_replace("/".$tagRemove."/si", "", $pageName);
+	if($pageName == "")
+	{
+		return "index";
+	}
+
+	if(preg_match("/".$pageDisallow."/i", $pageName))
+	{
+		return false;
+	}
+
+	if ($logQry)
+	{
+		$pageName .= '+'.$match[3];			// All queries match
+	}
+
+	$pageName = $err_code.$pageName;			// Add the error code at the beginning, so its treated uniquely
+
+
+	return $pageName;
 }
-$pageName = $err_code.$pageName;			// Add the error code at the beginning, so its treated uniquely
+
+
+
+
+if(!$pageName = logGetPageKey($self,$logQry,$err_code))
+{
+	return;
+}
+
+
+
 //$logfp = fopen(e_LOG.'rcvstring.txt', 'a+'); fwrite($logfp, $pageName."\n"); fclose($logfp);
 
 $p_handle = fopen($logPfile, 'r+');
