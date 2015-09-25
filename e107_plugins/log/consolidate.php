@@ -151,7 +151,7 @@ class logConsolidate
 
 
 		// for future use.
-		function collate($pfile)
+		private function collate($pfile)
 		{
 			if(is_readable(e_LOG.$pfile))
 			{
@@ -162,7 +162,11 @@ class logConsolidate
 				return false;
 			}
 
+			return null;
 		}
+
+
+
 
 		/**
 		 * @param $url
@@ -179,7 +183,6 @@ class logConsolidate
 			preg_match("#/(.*?)(\?|$)(.*)#si", $url, $match);
 			$match[1] = isset($match[1]) ? $match[1] : '';
 			$pageName = substr($match[1], (strrpos($match[1], "/")+1));
-			$PN = $pageName;
 
 			$pageName = preg_replace("/".$tagRemove."/si", "", $pageName);
 
@@ -205,7 +208,118 @@ class logConsolidate
 		}
 
 
+		/**
+		 * Process Raw Backup Log File. e. e_LOG."log/2015-09-24_SiteStats.log
+		 * This method can be used in the case of a database corruption to restore stats to the database.
+		 * @param string $file
+		 * @example processRawBackupLog('2015-09-24_SiteStats.log', false);
+		 */
+		function processRawBackupLog($file, $savetoDB=false)
+		{
+			$path = e_LOG."log/".$file;
 
+			if(!is_readable($path))
+			{
+				return false;
+			}
+
+			$handle = fopen($path, "r");
+
+			$pageTotal = array();
+
+			if ($handle)
+			{
+				while (($buffer = fgets($handle, 4096)) !== false)
+				{
+					if($vars = $this->splitRawBackupLine($buffer))
+					{
+						$key = $this->getPageKey($vars['eself']);
+
+						$pageTotal[$key]['url'] = $vars['eself'];
+						$pageTotal[$key]['ttl'] += 1;
+
+						if(!isset($pageTotal[$key]['unq']))
+						{
+							$pageTotal[$key]['unq'] = 0;
+						}
+
+						if(isset($vars['unique']))
+						{
+							if($vars['unique'] == 1)
+							{
+								$pageTotal[$key]['unq'] += 1;
+							}
+						}
+						else
+						{
+							$pageTotal[$key]['unq'] += 1;
+						}
+					}
+				}
+
+				if (!feof($handle))
+				{
+					echo "Error: unexpected fgets() fail\n";
+				}
+
+				fclose($handle);
+
+				echo "<h3>".$file."</h3>";
+				print_a($pageTotal);
+			}
+
+			if($savetoDB === false)
+			{
+				echo "Saving mode is off";
+				return true;
+			}
+
+
+			if(!empty($pageTotal))
+			{
+				list($date,$name) = explode("_", $file, 2);
+
+				$unix = strtotime($date);
+
+				$datestamp = date("Y-m-j", $unix);
+
+				if(!empty($datestamp))
+				{
+					$sql = e107::getDb();
+
+					if($sql->select('logstats','log_id',"log_id='".$datestamp."' "))
+					{
+						$sql->update('logstats', "log_id='".$datestamp."-bak' WHERE log_id='".$datestamp."' ");
+					}
+
+					if($this->collatePageInfo($pageTotal, $datestamp))
+					{
+						echo "<br />Data saved to database with id: ".$datestamp;
+					}
+					else
+					{
+						echo "<br />Couldn't save data to database with id: ".$datestamp;
+					}
+				}
+
+			}
+		}
+
+
+
+
+		private function splitRawBackupLine($line)
+		{
+			list($datestamp,$bla,$data) = explode("\t",$line, 3);
+
+			if(!empty($data))
+			{
+				parse_str($data,$vars);
+				return $vars;
+			}
+
+			return false;
+		}
 
 		/**
 		 * Fix corrupted page data.
@@ -273,6 +387,7 @@ class logConsolidate
 		/**
 		 * collate page total information using today's data and totals stored in DB.
 		 * @param $pageInfo - from today's file.
+		 * @return bool
 		 */
 		function collatePageTotal($pageInfo=array())
 		{
@@ -325,13 +440,13 @@ class logConsolidate
 
 
 		/**
-		 * Collate individual page information into an array
-		 * @param $pageInfo
+		 * Collate individual page information into an array and save to database.
+		 * @param array $pageInfo
+		 * @param string $date  - the value saved to log_id ie. Y-m-j  , 2015-02-1, 2015-02-30
+		 * @return bool
 		 */
-		function collatePageInfo($pageInfo)
+		function collatePageInfo($pageInfo, $date)
 		{
-
-			global $date2;
 
 			$sql = e107::getDb();
 			$tp = e107::getParser();
@@ -348,7 +463,7 @@ class logConsolidate
 			}
 
 			$data = $dailytotal.chr(1).$uniquetotal.chr(1) . $data;
-			$sql->insert("logstats", "0, '$date2', '".$tp -> toDB($data, true)."'");
+			return $sql->insert("logstats", "0, '$date', '".$tp -> toDB($data, true)."'");
 		}
 
 
@@ -605,7 +720,7 @@ else
 
 $lgc->collatePageTotal($pageInfo);
 
-$lgc->collatePageInfo($pageInfo);
+$lgc->collatePageInfo($pageInfo, $date2);
 
 $lgc->resetLogFiles();
 
