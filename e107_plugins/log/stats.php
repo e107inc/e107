@@ -742,7 +742,8 @@ class siteStats
 
 	function renderNav($action)
 	{
-		$path = e_PLUGIN_ABS.'log/stats.php';
+	//	$path = e_PLUGIN_ABS.'log/stats.php';
+		$path = e_REQUEST_SELF;
 		
 		$links = array(
 			1	=> array('label' 	=> ADSTAT_L8, 	'pref' 	=> null),
@@ -872,10 +873,11 @@ class siteStats
 	function renderAlltimeVisits($action, $do_errors = FALSE) 
 	{
 		$sql = e107::getDB();
+		$tp = e107::getParser();
 
 		$text = '';
 		$sql->select("logstats", "*", "log_id='pageTotal' ");
-		$row = $sql -> db_Fetch();
+		$row = $sql->fetch();
 		$pageTotal = unserialize($row['log_data']);
 		$total = 0;
 
@@ -925,7 +927,7 @@ class siteStats
 				$text .= "<tr>
 				<td class='forumheader3' >
 				".($can_delete ? "<a href='".e_SELF."?{$action}.rem.".rawurlencode($key)."'><img src='".e_PLUGIN_ABS."log/images/remove.png' alt='".ADSTAT_L39."' title='".ADSTAT_L39."' style='vertical-align: middle;' /></a> " : "")."
-				<img src='".e_PLUGIN_ABS."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$key."</a>
+				<img src='".e_PLUGIN_ABS."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."' title=\"".$key."\" >".$tp->text_truncate($key,50)."</a>
 				";
 				$text .= "</td>
 				<td class='forumheader3' >".$this->bar($percentage, $info['ttlv'])."</td>
@@ -933,7 +935,7 @@ class siteStats
 				</tr>\n";
 			}
 		}
-		$text .= "<tr><td class='forumheader' colspan='2'>".ADSTAT_L21."</td><td class='forumheader' style='text-align: center;'>{$total}</td><td class='forumheader'></td></tr>\n</table>";
+		$text .= "<tr><td class='forumheader' colspan='2'>".ADSTAT_L21."</td><td class='forumheader' style='text-align: center;'>".number_format($total)."</td><td class='forumheader'></td></tr>\n</table>";
 
 
 		$uniqueArray = array();
@@ -950,7 +952,13 @@ class siteStats
 		$uniqueArray = $this -> arraySort($uniqueArray, "unqv");
 
 		$text .= "<br />
-		<table class='table table-striped fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>Page</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L24."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+		<table class='table table-striped fborder' style='width: 100%;'>
+		<tr>
+			<th class='fcaption' style='width: 20%;'>".ADSTAT_L19."</th>
+			<th class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L24."</th>
+			<th class='fcaption' style='width: 10%; text-align: center;'>%</th>
+		</tr>\n";
+
 		foreach($uniqueArray as $key => $info) 
 		{
 			if ($info['ttlv'])
@@ -958,13 +966,13 @@ class siteStats
 			  if (!$info['url'] && (($key == 'index') || (strpos($key,':index') !== FALSE))) $info['url'] = e_HTTP.'index.php';		// Avoids empty link
 				$percentage = round(($info['unqv']/$totalv) * 100, 2);
 				$text .= "<tr>
-				<td class='forumheader3' style='width: 20%;'><img src='".e_PLUGIN_ABS."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$key."</a></td>
+				<td class='forumheader3' style='width: 20%;'><img src='".e_PLUGIN_ABS."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$tp->text_truncate($key, 50)."</a></td>
 				<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info['unqv'])."</td>
 				<td class='forumheader3' style='width: 10%; text-align: center;'>".$percentage."%</td>
 				</tr>\n";
 			}
 		}
-		$text .= "<tr><td class='forumheader' colspan='2'>".ADSTAT_L21."</td><td class='forumheader' style='text-align: center;'>$totalv</td><td class='forumheader'></td></tr>\n</table>";
+		$text .= "<tr><td class='forumheader' colspan='2'>".ADSTAT_L21."</td><td class='forumheader' style='text-align: center;'>".number_format($totalv)."</td><td class='forumheader'></td></tr>\n</table>";
 		return $text;
 	}
 
@@ -1979,7 +1987,7 @@ class siteStats
 		
 		$text .= "
 		</td>
-		<td style='width:10%; text-align:center' class='forumheader3'>".$val;
+		<td style='width:10%; text-align:right' class='forumheader3'>".number_format($val);
 		
 		return $text;
 	}
