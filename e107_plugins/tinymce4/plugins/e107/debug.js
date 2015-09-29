@@ -28,7 +28,7 @@
 			ed.on('postProcess', function(e) {
 
                console.log(e);
-                alert(e.content); // remove comment to test Firefox issue: http://www.tinymce.com/develop/bugtracker_view.php?id=7655
+                alert('postProcess executed'); // remove comment to test Firefox issue: http://www.tinymce.com/develop/bugtracker_view.php?id=7655
 
 				if (e.set) {
 					e.content = t['_e107_bbcode2html'](e.content, url);
