@@ -530,8 +530,8 @@ class e_layout
 			
 			require_once(e_CORE."templates/admin_icons_template.php");
 
-			e107::js('url',"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js");
-			e107::js('url',	"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css");
+			e107::js('url',"https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js");
+			e107::js('url',	"https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css");
 
 			e107::js('inline','
 			 $(function() 
@@ -581,7 +581,7 @@ class e_layout
 			//			alert("hi there");	
 			//		});
 				
-				// http://jsfiddle.net/DT764/2/	
+				// https://jsfiddle.net/DT764/2/	
 					
 			
 					$( ".draggable", window.top.document).draggable({
