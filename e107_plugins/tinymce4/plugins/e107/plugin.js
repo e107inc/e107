@@ -27,7 +27,7 @@
 			ed.on('postProcess', function(e) {
 
           //      console.log(e);
-          //      alert(e.content); // remove comment to test Firefox issue: http://www.tinymce.com/develop/bugtracker_view.php?id=7655
+          //      alert(e.content); // remove comment to test.
 
 				if (e.set) {
 					e.content = t['_' + dialect + '_bbcode2html'](e.content, url);

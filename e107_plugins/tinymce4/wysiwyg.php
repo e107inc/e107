@@ -450,6 +450,7 @@ class wysiwyg
                  {title: 'Float Clear', block: 'div', classes: 'clearfix'},
                  {title: 'Lead', block: 'p', classes: 'lead'},
                  {title: 'Well', block: 'div', classes: 'well'},
+				 {title: 'Row', block: 'div', classes: 'row'},
                  {title: '1/4 Width Block', block: 'div', classes: 'col-md-3 col-sm-12'},
                  {title: '3/4 Width Block', block: 'div', classes: 'col-md-9 col-sm-12'},
                  {title: '1/3 Width Block', block: 'div', classes: 'col-md-4 col-sm-12'},
