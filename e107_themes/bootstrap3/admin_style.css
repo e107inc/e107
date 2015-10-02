@@ -1106,8 +1106,9 @@ li.rssRow > div {
 
 .core-mainpanel-link-icon img { margin-bottom: 5px }
 
-.sidebar-toggle { width: 50px; display: inline-block; position: absolute; margin-left: -20px;  }
-.sidebar-toggle a {color:#C6C6C6;}
+.sidebar-toggle { width: 14px; height:300px; display: block; position: absolute; margin-left: -25px; margin-top:130px  }
+.sidebar-toggle a {color:#C6C6C6; height:300px; display:block; width:100%; border-right:7px double #77ACD9; opacity: 0; transition:.5s; z-index:5000; outline:0 }
+.sidebar-toggle a:hover { opacity: .8; outline:0 }
 #left-panel.toggled { display: none }
 
 
