@@ -389,10 +389,12 @@ class language{
 
 	/**
 	 * Return a list of Installed Language Packs
-	 * 
+	 * @param str $type - English or Native.
+	 * @example type = english: array(0=>'English', 1=>'French' ...)
+	 * @example type = native: array('English'=>'English', 'French'=>'Francais'...)
 	 * @return array
 	 */
-	function installed()
+	function installed($type='english')
 	{
 		if(null == $this->lanlist)
 		{
@@ -411,6 +413,19 @@ class language{
 			// closedir($handle);
 			
 			$this->lanlist = array_intersect($lanlist,$this->list);
+		}
+
+		if($type == 'native')
+		{
+			$natList = array();
+			foreach($this->lanlist as $lang)
+			{
+				$natList[$lang] = $this->toNative($lang);
+			}
+
+			natsort($natList);
+
+			return $natList;
 		}
 		
 		return $this->lanlist;
