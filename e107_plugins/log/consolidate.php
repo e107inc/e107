@@ -203,6 +203,9 @@ class logConsolidate
 
 			$pageName = $err_code.$pageName;			// Add the error code at the beginning, so its treated uniquely
 
+			// filter out any non-utf8 characters which could halt processing.
+			$pageName = urldecode($pageName);
+			$pageName = iconv('UTF-8', 'ASCII//IGNORE', $pageName);
 
 			return $pageName;
 		}
@@ -220,12 +223,14 @@ class logConsolidate
 
 			if(!is_readable($path))
 			{
+				echo "File Not Found: ".$path;
 				return false;
 			}
 
 			$handle = fopen($path, "r");
 
 			$pageTotal = array();
+			$line = 0;
 
 			if ($handle)
 			{
@@ -233,15 +238,28 @@ class logConsolidate
 				{
 					if($vars = $this->splitRawBackupLine($buffer))
 					{
+
+						if(substr($vars['eself'],0,7) == 'file://')
+						{
+							continue;
+						}
+
 						$key = $this->getPageKey($vars['eself']);
+
+						if(empty($key))
+						{
+							continue;
+						}
+
+						if(!isset($pageTotal[$key]))
+						{
+							$pageTotal[$key] = array('url'=>'', 'ttl'=>0, 'unq'=>0);
+						}
 
 						$pageTotal[$key]['url'] = $vars['eself'];
 						$pageTotal[$key]['ttl'] += 1;
 
-						if(!isset($pageTotal[$key]['unq']))
-						{
-							$pageTotal[$key]['unq'] = 0;
-						}
+					//	echo "\n<br />line: ".$line."   ------- ".$key;
 
 						if(isset($vars['unique']))
 						{
@@ -255,6 +273,8 @@ class logConsolidate
 							$pageTotal[$key]['unq'] += 1;
 						}
 					}
+
+					$line++;
 				}
 
 				if (!feof($handle))
@@ -289,7 +309,7 @@ class logConsolidate
 
 					if($sql->select('logstats','log_id',"log_id='".$datestamp."' "))
 					{
-						$sql->update('logstats', "log_id='".$datestamp."-bak' WHERE log_id='".$datestamp."' ");
+						$sql->update('logstats', "log_id='bak-".$datestamp."' WHERE log_id='".$datestamp."' ");
 					}
 
 					if($this->collatePageInfo($pageTotal, $datestamp))
@@ -329,7 +349,7 @@ class logConsolidate
 		{
 			$sql = e107::getDb();
 
-			$qry = "SELECT * FROM `#logstats` WHERE `log_id` REGEXP '^[0-9]' AND `log_data` LIKE '%http%'";
+			$qry = "SELECT * FROM `#logstats` WHERE `log_id` REGEXP '^[0-9]' AND LENGTH(log_id) > 7 AND `log_data` LIKE '%http%'";
 			$data = $sql->retrieve($qry,true);
 
 			$pageTotal = array();
