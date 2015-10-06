@@ -407,8 +407,10 @@ class e107
 		// override all
 		$this->e107_dirs = array_merge($this->defaultDirs($override), $override);
 		
-		// TODO add e_MEDIA_BASE, e_SYSTEM_BASE (free of site path constants);
-		
+		// Required for e_MEDIA_BASE, e_SYSTEM_BASE (free of site path constants);
+		$this->e107_dirs['MEDIA_BASE_DIRECTORY'] = $this->e107_dirs['MEDIA_DIRECTORY'];
+		$this->e107_dirs['SYSTEM_BASE_DIRECTORY'] = $this->e107_dirs['SYSTEM_DIRECTORY'];
+
 		if(strpos($this->e107_dirs['MEDIA_DIRECTORY'],$this->site_path) === false)
 		{
 			$this->e107_dirs['MEDIA_DIRECTORY'] .= $this->site_path."/"; // multisite support.  
@@ -3344,6 +3346,7 @@ class e107
 			define('e_HELP', $this->get_override_rel('HELP'));
 
 			define('e_MEDIA', $this->get_override_rel('MEDIA'));
+			define('e_MEDIA_BASE', $this->get_override_rel('MEDIA_BASE'));
 			define('e_MEDIA_FILE', $this->get_override_rel('MEDIA_FILES'));
 			define('e_MEDIA_VIDEO', $this->get_override_rel('MEDIA_VIDEOS'));
 			define('e_MEDIA_IMAGE', $this->get_override_rel('MEDIA_IMAGES'));
@@ -3355,6 +3358,7 @@ class e107
 
 			define('e_CORE', $this->get_override_rel('CORE'));
 			define('e_SYSTEM', $this->get_override_rel('SYSTEM'));
+			define('e_SYSTEM_BASE', $this->get_override_rel('SYSTEM_BASE'));
 
 			define('e_WEB', $this->get_override_rel('WEB'));
 			define('e_WEB_JS', $this->get_override_rel('WEB_JS'));
