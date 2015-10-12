@@ -14,35 +14,291 @@
 
 if (!defined('e107_INIT')){ exit; } 
 
-$pathtologs 	= e_LOG;
-$date 			= date("z.Y", time());
-$yesterday 		= date("z.Y",(time() - 86400));		// This makes sure year wraps round OK
-$date2 			= date("Y-m-j", (time() -86400));		// Yesterday's date for the database summary	
-$date3 			= date("Y-m", (time() -86400));			// Current month's date for monthly summary (we're working with yesterday's data)
 
-$pfileprev 		= "logp_".$yesterday.".php";		// Yesterday's log file
-$pfile 			= "logp_".$date.".php";				// Today's log file
-$ifileprev 		= "logi_".$yesterday.".php";
-$ifile 			= "logi_".$date.".php";
 
 // Begin v2.x cleanup.
 class logConsolidate
 {
 
-		function ___construct()
-		{
+		protected $pathtologs;
+		protected $date;
+		protected $yesterday;
+		protected $date2;
+		protected $date3;
 
+		protected $pfileprev;
+		protected $pfile;
+		protected $ifileprev;
+		protected $ifile;
+
+
+		function __construct()
+		{
+			$this->pathtologs 	    = e_LOG;
+			$this->date 			= date("z.Y", time());
+			$this->yesterday 		= date("z.Y",(time() - 86400));		// This makes sure year wraps round OK
+			$this->date2 			= date("Y-m-j", (time() -86400));	// Yesterday's date for the database summary
+			$this->date3 			= date("Y-m", (time() -86400));		// Current month's date for monthly summary (we're working with yesterday's data)
+
+			$this->pfileprev 		= "logp_".$this->yesterday.".php";	// Yesterday's log file
+			$this->pfile 			= "logp_".$this->date.".php";		// Today's log file
+			$this->ifileprev 		= "logi_".$this->yesterday.".php";
+			$this->ifile 			= "logi_".$this->date.".php";
 		}
 
-		function createLog($pathtologs, $statTotal='', $statUnique='')
-		{
-			global $pfile, $ifile;
 
-			if(!is_writable($pathtologs))
+		function run()
+		{
+
+			$sql = e107::getDb();
+			$pref = e107::pref('core');
+
+			$pageInfo       = array();
+			$domainInfo     = array();
+			$screenInfo     = array();
+			$browserInfo    = array();
+			$osInfo         = array();
+			$refInfo        = array();
+			$searchInfo     = array();
+
+			$monthlyInfo    = array();
+			$mon_statBrowser = array();
+			$mon_statOs     = array();
+			$mon_statScreen = array();
+			$mon_statDomain = array();
+			$mon_statQuery  = array();
+			$statBrowser    = array();
+			$statOs         = array();
+			$statScreen     = array();
+			$statDomain     = array();
+			$statQuery      = array();
+			$statReferer    = array();
+
+			$statTotal      = 0;
+			$statUnique     = 0;
+			$siteTotal      = 0;
+			$siteUnique     = 0;
+
+			$MonthlyExistsFlag  = false;
+
+			if(file_exists($this->pathtologs.$this->pfile))  /* log file is up to date, no consolidation required */
 			{
-				echo "Log directory is not writable - please CHMOD ".e_LOG." to 777";
-				echo '<br />Path to logs: '.$pathtologs;
-				return FALSE;
+				return false;
+			}
+			else if(!file_exists($this->pathtologs.$this->pfileprev))  // See if any older log files
+			{
+				if (($retvalue = $this->check_for_old_files($this->pathtologs)) === false) /* no logfile found at all - create - this will only ever happen once ... */
+				{
+					$this->createLog();
+					return false;
+				}
+
+				list($this->pfileprev,$this->ifileprev,$this->date2,$tstamp) = explode('|',$retvalue);  // ... if we've got files
+			}
+
+			unset($tstamp);
+
+			// List of the non-page-based info which is gathered - historically only 'all-time' stats, now we support monthly as well
+			$stats_list = array('statBrowser','statOs','statScreen','statDomain','statReferer','statQuery');
+
+			$qry = "`log_id` IN ('statTotal','statUnique'";
+			foreach ($stats_list as $s)
+			{
+				$qry .= ",'{$s}'";									// Always read the all-time stats
+				if ($pref[$s] == 2) $qry .= ",'{$s}:{$this->date3}'";		// Look for monthlys as well as cumulative
+			}
+			$qry .= ")";
+
+			/* log file is out of date - consolidation required */
+
+			/* get existing stats ... */
+			//if($sql->select("logstats", "*", "log_id='statBrowser' OR log_id='statOs' OR log_id='statScreen' OR log_id='statDomain' OR log_id='statTotal' OR log_id='statUnique' OR log_id='statReferer' OR log_id='statQuery'"))
+			if($sql->select("logstats", "*", $qry))
+			{	// That's read in all the stats we need to modify
+				while($row = $sql->fetch())
+				{
+					if($row['log_id'] == "statUnique")
+					{
+						$statUnique = $row['log_data'];
+					}
+					elseif ($row['log_id'] == "statTotal")
+					{
+						$statTotal = $row['log_data'];
+					}
+					elseif (($pos = strpos($row['log_id'],':')) === false)
+					{  // Its all-time stats
+						$$row['log_id'] = unserialize($row['log_data']);	// $row['log_id'] is the stats type - save in a variable
+					}
+					else
+					{  // Its monthly stats
+						$row['log_id'] = 'mon_'.substr($row['log_id'],0,$pos);	// Create a generic variable for each monthly stats
+						$$row['log_id'] = unserialize($row['log_data']);	// $row['log_id'] is the stats type - save in a variable
+					}
+				}
+			}
+			else
+			{
+				// this must be the first time a consolidation has happened - this will only ever happen once ...
+				$sql->insert("logstats", "0, 'statBrowser', ''");
+				$sql->insert("logstats", "0, 'statOs', ''");
+				$sql->insert("logstats", "0, 'statScreen', ''");
+				$sql->insert("logstats", "0, 'statDomain', ''");
+				$sql->insert("logstats", "0, 'statReferer', ''");
+				$sql->insert("logstats", "0, 'statQuery', ''");
+				$sql->insert("logstats", "0, 'statTotal', '0'");
+				$sql->insert("logstats", "0, 'statUnique', '0'");
+
+				$statBrowser 	=array();
+				$statOs 		=array();
+				$statScreen 	=array();
+				$statDomain 	=array();
+				$statReferer 	=array();
+				$statQuery 		=array();
+			}
+
+
+			foreach ($stats_list as $s)
+			{
+				$varname = 'mon_'.$s;
+				if (!isset($$varname)) $$varname = array();		// Create monthly arrays if they don't exist
+			}
+
+			require($this->pathtologs.$this->pfileprev);		// Yesterday's page accesses - $pageInfo array
+			require($this->pathtologs.$this->ifileprev);		// Yesterdays browser accesses etc
+
+			foreach($browserInfo as $name => $amount)
+			{
+				$statBrowser[$name] += $amount;
+				$mon_statBrowser[$name] += $amount;
+			}
+
+			foreach($osInfo as $name => $amount)
+			{
+				$statOs[$name] += $amount;
+				$mon_statOs[$name] += $amount;
+			}
+
+			foreach($screenInfo as $name => $amount)
+			{
+				$statScreen[$name] += $amount;
+				$mon_statScreen[$name] += $amount;
+			}
+
+
+			foreach($domainInfo as $name => $amount)
+			{
+				if(!is_numeric($name))
+				{
+					$statDomain[$name] += $amount;
+					$mon_statDomain[$name] += $amount;
+				}
+			}
+
+			foreach($refInfo as $name => $info)
+			{
+				$statReferer[$name]['url'] = $info['url'];
+				$statReferer[$name]['ttl'] += $info['ttl'];
+				$mon_statReferer[$name]['url'] = $info['url'];
+				$mon_statReferer[$name]['ttl'] += $info['ttl'];
+			}
+
+
+			foreach($searchInfo as $name => $amount)
+			{
+				$statQuery[$name] += $amount;
+				$mon_statQuery[$name] += $amount;
+			}
+
+			$browser 	= serialize($statBrowser);
+			$os 		= serialize($statOs);
+			$screen 	= serialize($statScreen);
+			$domain 	= serialize($statDomain);
+			$refer 		= serialize($statReferer);
+			$squery 	= serialize($statQuery);
+
+			$statTotal += $siteTotal;
+			$statUnique += $siteUnique;
+
+			// Save cumulative results - always keep track of these, even if the $pref doesn't display them
+			$sql->update("logstats", "log_data='{$browser}' WHERE log_id='statBrowser'");
+			$sql->update("logstats", "log_data='{$os}' WHERE log_id='statOs'");
+			$sql->update("logstats", "log_data='{$screen}' WHERE log_id='statScreen'");
+			$sql->update("logstats", "log_data='{$domain}' WHERE log_id='statDomain'");
+			$sql->update("logstats", "log_data='{$refer}' WHERE log_id='statReferer'");
+			$sql->update("logstats", "log_data='{$squery}' WHERE log_id='statQuery'");
+			$sql->update("logstats", "log_data='".intval($statTotal)."' WHERE log_id='statTotal'");
+			$sql->update("logstats", "log_data='".intval($statUnique)."' WHERE log_id='statUnique'");
+
+
+			// Now save the relevant monthly results - only where enabled
+			foreach ($stats_list as $s)
+			{
+				if (isset($pref[$s]) && ($pref[$s] > 1))
+				{ // Value 2 requires saving of monthly stats
+					$srcvar = 'mon_'.$s;
+					$destvar = 'smon_'.$s;
+					$$destvar = serialize($$srcvar);
+
+					if (!$sql->update("logstats", "log_data='".$$destvar."' WHERE log_id='".$s.":".$this->date3."'"))
+					{
+						$sql->insert("logstats", "0, '".$s.":".$this->date3."', '".$$destvar."'");
+					}
+				}
+			}
+
+
+			/* get page access monthly info from db */
+			if($sql->select("logstats", "*", "log_id='{$this->date3}' "))
+			{
+				$tmp = $sql->fetch();
+				$monthlyInfo = unserialize($tmp['log_data']);
+				unset($tmp);
+				$MonthlyExistsFlag = TRUE;
+			}
+
+			foreach($pageInfo as $key => $info)
+			{
+				$monthlyInfo['TOTAL']['ttlv'] += $info['ttl'];
+				$monthlyInfo['TOTAL']['unqv'] += $info['unq'];
+				$monthlyInfo[$key]['ttlv'] += $info['ttl'];
+				$monthlyInfo[$key]['unqv'] += $info['unq'];
+			}
+
+			$monthlyinfo = serialize($monthlyInfo);
+
+			if($MonthlyExistsFlag)
+			{
+				$sql->update("logstats", "log_data='{$monthlyinfo}' WHERE log_id='{$this->date3}'");
+			}
+			else
+			{
+				$sql->insert("logstats", "0, '{$this->date3}', '{$monthlyinfo}'");
+			}
+
+
+			$this->collatePageTotal($pageInfo);
+			$this->collatePageInfo($pageInfo, $this->date2);
+			$this->resetLogFiles();
+
+			/* and finally, we need to create new logfiles for today ... */
+			$this->createLog();
+
+			return true;
+		}
+
+
+
+
+		function createLog()
+		{
+
+			if(!is_writable($this->pathtologs))
+			{
+				echo "<div class='alert alert-error'>Log directory is not writable - please CHMOD ".e_LOG." to 777";
+				echo '<br />Path to logs: '.$this->pathtologs;
+				echo "</div>";
+
+				return false;
 			}
 
 			$varStart = chr(36);
@@ -61,37 +317,42 @@ class logConsolidate
 
 			$data .= "\n);\n\n?".  chr(62);
 
-			if(!touch($pathtologs.$pfile)) {
-				return FALSE;
+			if(!touch($this->pathtologs.$this->pfile))
+			{
+				return false;
 			}
 
-			if(!touch($pathtologs.$ifile)) {
-				return FALSE;
+			if(!touch($this->pathtologs.$this->ifile))
+			{
+				return false;
 			}
 
-			if(!is_writable($pathtologs.$pfile)) {
+			if(!is_writable($this->pathtologs.$this->pfile))
+			{
 				$old = umask(0);
-				chmod($pathtologs.$pfile, 0777);
+				chmod($this->pathtologs.$this->pfile, 0777);
 				umask($old);
-				//	return FALSE;
+				//	return false;
 			}
 
-			if(!is_writable($pathtologs.$ifile)) {
+			if(!is_writable($this->pathtologs.$this->ifile))
+			{
 				$old = umask(0);
-				chmod($pathtologs.$ifile, 0777);
+				chmod($this->pathtologs.$this->ifile, 0777);
 				umask($old);
-				//	return FALSE;
+				//	return false;
 			}
 
-			if ($handle = fopen($pathtologs.$pfile, 'w'))
+			if ($handle = fopen($this->pathtologs.$this->pfile, 'w'))
 			{
 				fwrite($handle, $data);
 			}
+
 			fclose($handle);
 
 
-			$data = "<?php
-
+			$data = "<?php";
+			$data .= "
 /* e107 website system: Log info file: ".date("z:Y", time())." */
 
 ";
@@ -104,12 +365,13 @@ class logConsolidate
 			$data .= '$visitInfo'." = array();\n\n";
 			$data .= "?>";
 
-			if ($handle = fopen($pathtologs.$ifile, 'w'))
+			if ($handle = fopen($this->pathtologs.$this->ifile, 'w'))
 			{
 				fwrite($handle, $data);
 			}
 			fclose($handle);
-			return;
+
+			return true;
 		}
 
 
@@ -117,14 +379,14 @@ class logConsolidate
 
 		/**
 		* Called if both today's and yesterday's log files missing, to see
-		* if there are any older files we could process. Return FALSE if nothing
+		* if there are any older files we could process. Return false if nothing
 		* Otherwise return a string of relevant information
 	    * @param $pathtologs
 		* @return bool|string
 		*/
 		function check_for_old_files($pathtologs)
 		{
-			$no_files = TRUE;
+		//	$no_files = TRUE;
 			if ($dir_handle = opendir($pathtologs))
 			{
 				while (false !== ($file = readdir($dir_handle)))
@@ -143,7 +405,7 @@ class logConsolidate
 					}
 				}
 			}
-			return FALSE;
+			return false;
 		}
 
 
@@ -178,7 +440,7 @@ class logConsolidate
 		{
 			$pageDisallow = "cache|file|eself|admin";
 			$tagRemove = "(\\\)|(\s)|(\')|(\")|(eself)|(&nbsp;)|(\.php)|(\.html)";
-			$tagRemove2 = "(\\\)|(\s)|(\')|(\")|(eself)|(&nbsp;)";
+		//	$tagRemove2 = "(\\\)|(\s)|(\')|(\")|(eself)|(&nbsp;)";
 
 			preg_match("#/(.*?)(\?|$)(.*)#si", $url, $match);
 			$match[1] = isset($match[1]) ? $match[1] : '';
@@ -215,15 +477,19 @@ class logConsolidate
 		 * Process Raw Backup Log File. e. e_LOG."log/2015-09-24_SiteStats.log
 		 * This method can be used in the case of a database corruption to restore stats to the database.
 		 * @param string $file
+		 * @param bool $savetoDB
+		 * @return bool
 		 * @example processRawBackupLog('2015-09-24_SiteStats.log', false);
 		 */
 		function processRawBackupLog($file, $savetoDB=false)
 		{
 			$path = e_LOG."log/".$file;
 
+			$mes = e107::getMessage();
+
 			if(!is_readable($path))
 			{
-				echo "File Not Found: ".$path;
+				$mes->addError( "File Not Found: ".$path);
 				return false;
 			}
 
@@ -279,18 +545,22 @@ class logConsolidate
 
 				if (!feof($handle))
 				{
-					echo "Error: unexpected fgets() fail\n";
+					$mes->addError( "Error: unexpected fgets() fail.");
 				}
 
 				fclose($handle);
 
-				echo "<h3>".$file."</h3>";
-				print_a($pageTotal);
+
+				if(e_DEBUG)
+				{
+					$mes->addDebug("<h3>".$file."</h3>");
+					$mes->addDebug(print_a($pageTotal,true));
+				}
 			}
 
 			if($savetoDB === false)
 			{
-				echo "Saving mode is off";
+				$mes->addInfo( "Saving mode is off");
 				return true;
 			}
 
@@ -298,6 +568,8 @@ class logConsolidate
 			if(!empty($pageTotal))
 			{
 				list($date,$name) = explode("_", $file, 2);
+
+				unset($name);
 
 				$unix = strtotime($date);
 
@@ -314,15 +586,17 @@ class logConsolidate
 
 					if($this->collatePageInfo($pageTotal, $datestamp))
 					{
-						echo "<br />Data saved to database with id: ".$datestamp;
+						$mes->addSuccess( "Data saved to database with id: ".$datestamp);
 					}
 					else
 					{
-						echo "<br />Couldn't save data to database with id: ".$datestamp;
+						$mes->addError( "Couldn't save data to database with id: ".$datestamp);
 					}
 				}
 
 			}
+
+			return true;
 		}
 
 
@@ -337,6 +611,8 @@ class logConsolidate
 				parse_str($data,$vars);
 				return $vars;
 			}
+
+			unset($datestamp, $bla); // remove editor warnings.
 
 			return false;
 		}
@@ -494,19 +770,17 @@ class logConsolidate
 		function resetLogFiles()
 		{
 
-			global $pathtologs, $pfileprev, $ifileprev;
-
-			if(empty($pfileprev) || empty($ifileprev))
+			if(empty($this->pfileprev) || empty($this->ifileprev))
 			{
 				return false;
 			}
 
 			/* ok, we're finished with the log file now, we can empty it ... */
-			if(!unlink($pathtologs.$pfileprev))
+			if(!unlink($this->pathtologs.$this->pfileprev))
 			{
 				$data = chr(60)."?php\n". chr(47)."* e107 website system: Log file: ".date("z:Y", time())." *". chr(47)."\n\n\n\n".chr(47)."* THE INFORMATION IN THIS LOG FILE HAS BEEN CONSOLIDATED INTO THE DATABASE - YOU CAN SAFELY DELETE IT. *". chr(47)."\n\n\n?".  chr(62);
 
-				if($handle = fopen($pathtologs.$pfileprev, 'w'))
+				if($handle = fopen($this->pathtologs.$this->pfileprev, 'w'))
 				{
 					fwrite($handle, $data);
 				}
@@ -515,11 +789,11 @@ class logConsolidate
 			}
 
 
-			if(!unlink($pathtologs.$ifileprev))
+			if(!unlink($this->pathtologs.$this->ifileprev))
 			{
 				$data = chr(60)."?php\n". chr(47)."* e107 website system: Log file: ".date("z:Y", time())." *". chr(47)."\n\n\n\n".chr(47)."* THE INFORMATION IN THIS LOG INFO FILE HAS BEEN CONSOLIDATED INTO THE DATABASE - YOU CAN SAFELY DELETE IT. *". chr(47)."\n\n\n?".  chr(62);
 
-				if($handle = fopen($pathtologs.$ifileprev, 'w'))
+				if($handle = fopen($this->pathtologs.$this->ifileprev, 'w'))
 				{
 					fwrite($handle, $data);
 				}
@@ -528,225 +802,14 @@ class logConsolidate
 			}
 
 
-
+			return true;
 		}
 }
 
 
-$lgc = new logConsolidate();
 
 
 
-if(file_exists($pathtologs.$pfile))  /* log file is up to date, no consolidation required */
-{
-	return;
-}
-else if(!file_exists($pathtologs.$pfileprev))  // See if any older log files
-{  
-  if (($retvalue = $lgc->check_for_old_files($pathtologs)) === FALSE) /* no logfile found at all - create - this will only ever happen once ... */
-  { 	
-	$lgc->createLog($pathtologs);
-	return FALSE;
-  }
- 
-  list($pfileprev,$ifileprev,$date2,$tstamp) = explode('|',$retvalue);  // ... if we've got files
-}
-
-
-
-// List of the non-page-based info which is gathered - historically only 'all-time' stats, now we support monthly as well
-$stats_list = array('statBrowser','statOs','statScreen','statDomain','statReferer','statQuery');
-
-$qry = "`log_id` IN ('statTotal','statUnique'";
-foreach ($stats_list as $s)
-{
-  $qry .= ",'{$s}'";									// Always read the all-time stats
-  if ($pref[$s] == 2) $qry .= ",'{$s}:{$date3}'";		// Look for monthlys as well as cumulative
-}
-$qry .= ")";
-
-/* log file is out of date - consolidation required */
-
-/* get existing stats ... */
-//if($sql->select("logstats", "*", "log_id='statBrowser' OR log_id='statOs' OR log_id='statScreen' OR log_id='statDomain' OR log_id='statTotal' OR log_id='statUnique' OR log_id='statReferer' OR log_id='statQuery'")) 
-if($sql->select("logstats", "*", $qry)) 
-{	// That's read in all the stats we need to modify
-	while($row = $sql->fetch())
-	{
-		if($row['log_id'] == "statUnique")
-		{
-		  $statUnique = $row['log_data'];
-		}
-		elseif ($row['log_id'] == "statTotal") 
-		{
-		  $statTotal = $row['log_data'];
-		}
-		elseif (($pos = strpos($row['log_id'],':')) === FALSE)
-		{  // Its all-time stats
-		  $$row['log_id'] = unserialize($row['log_data']);	// $row['log_id'] is the stats type - save in a variable
-		}
-		else
-		{  // Its monthly stats
-		  $row['log_id'] = 'mon_'.substr($row['log_id'],0,$pos);	// Create a generic variable for each monthly stats
-		  $$row['log_id'] = unserialize($row['log_data']);	// $row['log_id'] is the stats type - save in a variable
-		}
-	}
-}
-else
-{
-	// this must be the first time a consolidation has happened - this will only ever happen once ... 
-	$sql->insert("logstats", "0, 'statBrowser', ''");
-	$sql->insert("logstats", "0, 'statOs', ''");
-	$sql->insert("logstats", "0, 'statScreen', ''");
-	$sql->insert("logstats", "0, 'statDomain', ''");
-	$sql->insert("logstats", "0, 'statReferer', ''");
-	$sql->insert("logstats", "0, 'statQuery', ''");
-	$sql->insert("logstats", "0, 'statTotal', '0'");
-	$sql->insert("logstats", "0, 'statUnique', '0'");
-	
-	$statBrowser 	=array();
-	$statOs 		=array();
-	$statScreen 	=array();
-	$statDomain 	=array();
-	$statReferer 	=array();
-	$statQuery 		=array();
-}
-
-
-foreach ($stats_list as $s)
-{
-  $varname = 'mon_'.$s;
-  if (!isset($$varname)) $$varname = array();		// Create monthly arrays if they don't exist
-}
-
-
-require_once($pathtologs.$pfileprev);		// Yesterday's page accesses - $pageInfo array
-require_once($pathtologs.$ifileprev);		// Yesterdays browser accesses etc
-
-foreach($browserInfo as $name => $amount) 
-{
-	$statBrowser[$name] += $amount;
-	$mon_statBrowser[$name] += $amount;
-}
-
-foreach($osInfo as $name => $amount) 
-{
-	$statOs[$name] += $amount;
-	$mon_statOs[$name] += $amount;
-}
-
-foreach($screenInfo as $name => $amount) 
-{
-	$statScreen[$name] += $amount;
-	$mon_statScreen[$name] += $amount;
-}
-
-
-foreach($domainInfo as $name => $amount) 
-{
-	if(!is_numeric($name)) 
-	{
-		$statDomain[$name] += $amount;
-		$mon_statDomain[$name] += $amount;
-	}
-}
-
-foreach($refInfo as $name => $info) 
-{
-	$statReferer[$name]['url'] = $info['url'];
-	$statReferer[$name]['ttl'] += $info['ttl'];
-	$mon_statReferer[$name]['url'] = $info['url'];
-	$mon_statReferer[$name]['ttl'] += $info['ttl'];
-}
-
-
-foreach($searchInfo as $name => $amount) 
-{
-	$statQuery[$name] += $amount;
-	$mon_statQuery[$name] += $amount;
-}
-
-$browser 	= serialize($statBrowser);
-$os 		= serialize($statOs);
-$screen 	= serialize($statScreen);
-$domain 	= serialize($statDomain);
-$refer 		= serialize($statReferer);
-$squery 	= serialize($statQuery);
-
-$statTotal += $siteTotal;
-$statUnique += $siteUnique;
-
-// Save cumulative results - always keep track of these, even if the $pref doesn't display them
-$sql->update("logstats", "log_data='{$browser}' WHERE log_id='statBrowser'");
-$sql->update("logstats", "log_data='{$os}' WHERE log_id='statOs'");
-$sql->update("logstats", "log_data='{$screen}' WHERE log_id='statScreen'");
-$sql->update("logstats", "log_data='{$domain}' WHERE log_id='statDomain'");
-$sql->update("logstats", "log_data='{$refer}' WHERE log_id='statReferer'");
-$sql->update("logstats", "log_data='{$squery}' WHERE log_id='statQuery'");
-$sql->update("logstats", "log_data='".intval($statTotal)."' WHERE log_id='statTotal'");
-$sql->update("logstats", "log_data='".intval($statUnique)."' WHERE log_id='statUnique'");
-
-
-// Now save the relevant monthly results - only where enabled
-foreach ($stats_list as $s)
-{
-  if (isset($pref[$s]) && ($pref[$s] > 1))
-  { // Value 2 requires saving of monthly stats
-	$srcvar = 'mon_'.$s;
-    $destvar = 'smon_'.$s;
-	$$destvar = serialize($$srcvar);
-	
-	if (!$sql->update("logstats", "log_data='".$$destvar."' WHERE log_id='".$s.":".$date3."'"))
-	{
-	  $sql->insert("logstats", "0, '".$s.":".$date3."', '".$$destvar."'");
-	}
-  }
-}
-
-
-
-/* get page access monthly info from db */
-if($sql->select("logstats", "*", "log_id='{$date3}' ")) 
-{
-	$tmp = $sql->fetch();
-	$monthlyInfo = unserialize($tmp['log_data']);
-	unset($tmp);
-	$MonthlyExistsFlag = TRUE;
-}
-
-foreach($pageInfo as $key => $info)
-{
-	$monthlyInfo['TOTAL']['ttlv'] += $info['ttl'];
-	$monthlyInfo['TOTAL']['unqv'] += $info['unq'];
-	$monthlyInfo[$key]['ttlv'] += $info['ttl'];
-	$monthlyInfo[$key]['unqv'] += $info['unq'];
-}
-
-$monthlyinfo = serialize($monthlyInfo);
-
-if($MonthlyExistsFlag) 
-{
-	$sql->update("logstats", "log_data='{$monthlyinfo}' WHERE log_id='{$date3}'");
-} 
-else 
-{
-	$sql->insert("logstats", "0, '{$date3}', '{$monthlyinfo}'");
-}
-
-
-
-
-
-
-$lgc->collatePageTotal($pageInfo);
-
-$lgc->collatePageInfo($pageInfo, $date2);
-
-$lgc->resetLogFiles();
-
-
-/* and finally, we need to create new logfiles for today ... */
-$lgc->createLog($pathtologs,$statTotal,$statUnique);
 
 
 
