@@ -788,12 +788,13 @@ class pluginManager{
 				e107::getLog()->add('PLUGMAN_03', $logInfo, E_LOG_INFORMATIVE, '');
 			}
 
-			if($_POST['delete_files'])
+			if(!empty($_POST['delete_files'])  && ($plug['plugin_installflag'] == true))
 			{
-				include_once(e_HANDLER.'file_class.php');
-				$fi = new e_file;
-				$result = $fi->rmtree(e_PLUGIN.$eplug_folder);
-				$text .= ($result ? '<br />'.EPL_ADLAN_86.e_PLUGIN.$eplug_folder : '<br />'.EPL_ADLAN_87.'<br />'.EPL_ADLAN_31.' <b>'.e_PLUGIN.$eplug_folder.'</b> '.EPL_ADLAN_32);
+				if(!empty($eplug_folder))
+				{
+					$result = e107::getFile()->rmtree(e_PLUGIN.$eplug_folder);
+					$text .= ($result ? '<br />'.EPL_ADLAN_86.e_PLUGIN.$eplug_folder : '<br />'.EPL_ADLAN_87.'<br />'.EPL_ADLAN_31.' <b>'.e_PLUGIN.$eplug_folder.'</b> '.EPL_ADLAN_32);
+				}
 			}
 			else
 			{
