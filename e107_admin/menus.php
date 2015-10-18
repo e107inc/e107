@@ -1249,7 +1249,7 @@ if(e_IFRAME) //<-- Check config and delete buttons if modifying
 
 //e107::js('core','bootstrap/js/bootstrap.min.js');
 //e107::css('core','bootstrap/css/bootstrap.min.css');
-	e107::css('url','{e_THEME}/bootstrap/admin_style.css');
+	e107::css('url','{e_THEME}/bootstrap3/admin_style.css');
 
 }
 
