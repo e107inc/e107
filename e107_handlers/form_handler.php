@@ -2918,7 +2918,7 @@ class e_form
 		
 		if(count($list))
 		{
-			return "<div class='e-related clearfix'><hr><h4>Related</h4><ul class='e-related'>".implode("\n",$list)."</ul></div>"; //XXX Tablerender?
+			return "<div class='e-related clearfix'><hr><h4>".defset('LAN_RELATED', 'Related')."</h4><ul class='e-related'>".implode("\n",$list)."</ul></div>"; //XXX Tablerender?
 		}
 		
 	}		
@@ -4762,7 +4762,7 @@ class e_form
 				$key = $att['field'];
 			}
 			
-			if($key == 'checkboxes' || $key == 'options' || ($att['type'] === null))
+			if($key == 'checkboxes' || $key == 'options' || ($att['type'] === null) || ($att['type'] === false))
 			{
 				continue;	
 			}

@@ -45,7 +45,7 @@ class list_news
 		$bullet = $this->parent->getBullet($this->parent->settings['icon']);
 
 		$list_caption = $this->parent->settings['caption'];
-		$list_display = (vartrue($this->parent->settings['open']) ? '' : 'none');
+		$list_display = (vartrue($this->parent->settings['open']) ? '' : LAN_NONE);
 
 		$qry = "
 		SELECT n.*, c.category_id AS news_category_id, c.category_name AS news_category_name, u.user_id AS news_author_id, u.user_name AS news_author_name

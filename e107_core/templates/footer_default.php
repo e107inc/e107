@@ -277,11 +277,11 @@ if (isset($footer_js) && is_array($footer_js))
 	}
 }
 
-// Load e_footer.php files. 
-if (is_array($pref['e_footer_list']))
+// Load e_footer.php files.
+if (!empty($pref['e_footer_list']) && is_array($pref['e_footer_list']))
 {
-	ob_start();
-	
+	//ob_start(); // sometimes raw HTML needs to be added at the bottom of every page. eg. <noscript> etc. so allow 'echo' in e_footer files. (but not e_header)
+
 	foreach($pref['e_footer_list'] as $val)
 	{		
 		$fname = e_PLUGIN.$val."/e_footer.php"; // Do not place inside a function - BC $pref required. . 
@@ -290,11 +290,12 @@ if (is_array($pref['e_footer_list']))
 		{
 			
 			$ret = ($e107_debug || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
+
 		}	
 	}
 
-	$e_footer_ouput = ob_get_contents(); // Don't use. 
-	ob_end_clean();
+//	$e_footer_ouput = ob_get_contents(); // Don't use.
+//	ob_end_clean();
 	unset($ret);
 }
 

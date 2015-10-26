@@ -27,6 +27,9 @@ if (vartrue($pref['statActivate']))
 	if(USER_AREA)
 	{
 		require_once(e_PLUGIN.'log/consolidate.php');
+		$lgc = new logConsolidate();
+		$lgc->run();
+
 		$err_flag = '';
 		if (defined('ERR_PAGE_ACTIVE'))
 		{	// We've got an error - set a flag to log it
