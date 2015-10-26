@@ -86,6 +86,13 @@ class e_thumbpage
 
 		// Config
 		include($self.'/e107_config.php');
+
+		// support early include feature
+		if(isset($CLASS2_INCLUDE) && !empty($CLASS2_INCLUDE))
+		{
+			 require_once(realpath(dirname(__FILE__).'/'.$CLASS2_INCLUDE));
+		}
+
 		$tmp = $self.'/'.$HANDLERS_DIRECTORY;
 
 		//Core functions - now API independent
