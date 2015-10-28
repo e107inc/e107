@@ -1356,8 +1356,8 @@ class system_tools
 
 	//	e107::getConfig($type)->aliases
 
-		e107::getDb()->db_Select_gen("SELECT e107_name FROM #core WHERE e107_name LIKE ('plugin_%') ORDER BY e107_name");
-		while ($row = e107::getDb()->db_Fetch())
+		e107::getDb()->gen("SELECT e107_name FROM #core WHERE e107_name LIKE ('plugin_%') ORDER BY e107_name");
+		while ($row = e107::getDb()->fetch())
 		{
 			$key = str_replace("plugin_","",$row['e107_name']);
 			$selected = (varset($_GET['type'])==$key) ? "selected='selected'" : "";
@@ -1700,7 +1700,7 @@ function table_list()
 
 	foreach($tables as $e107tab)
 	{
-		$count = e107::getDb()->db_Select_gen("SELECT * FROM #".$e107tab);
+		$count = e107::getDb()->gen("SELECT * FROM #".$e107tab);
 
 		if($count)
 		{
@@ -1930,8 +1930,8 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 			$dbtables = array();
 
 			//get all tables in the db
-			$sql2->db_Select_gen("SHOW TABLES");
-			while($row2 = $sql2->db_Fetch())
+			$sql2->gen("SHOW TABLES");
+			while($row2 = $sql2->fetch())
 			{
 				$dbtables[] = $row2[0];
 			}
@@ -1951,7 +1951,7 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 			ORDER BY r.rate_table, r.rate_itemid";
 			$data = array('type' => 'rate', 'table' => 'rate_table', 'itemid' => 'rate_itemid', 'id' => 'rate_id');
 
-			if(!$sql->db_Select_gen($query))
+			if(!$sql->gen($query))
 			{
 				$text .= verify_sql_record_displayresult(DBLAN_49, $data['type']);
 			}
@@ -1963,7 +1963,7 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 				//array which will hold all db tables
 				$dbtables = verify_sql_record_gettables();
 
-				while($row = $sql->db_Fetch())
+				while($row = $sql->fetch())
 				{
 
 					$ctype = $data['type'];
@@ -1977,8 +1977,8 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 					if(in_array(MPREFIX.$ctable, $dbtables))
 					{
 
-						$sql3->db_Select_gen("SHOW COLUMNS FROM ".MPREFIX.$ctable);
-						while($row3 = $sql3->db_Fetch())
+						$sql3->gen("SHOW COLUMNS FROM ".MPREFIX.$ctable);
+						while($row3 = $sql3->fetch())
 						{
 							//find the auto_increment field, since that's the most likely key used
 							if($row3['Extra'] == 'auto_increment')
@@ -2018,7 +2018,7 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 			ORDER BY c.comment_type, c.comment_item_id";
 			$data = array('type' => 'comments', 'table' => 'comment_type', 'itemid' => 'comment_item_id', 'id' => 'comment_id');
 
-			if(!$sql->db_Select_gen($query))
+			if(!$sql->gen($query))
 			{
 				$text .= verify_sql_record_displayresult(DBLAN_49, $data['type']);
 			}
@@ -2036,7 +2036,7 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 				$cobj = new comment();
 				$e_comment = $cobj->get_e_comment();
 
-				while($row = $sql->db_Fetch())
+				while($row = $sql->fetch())
 				{
 
 					$ctype = $data['type'];
@@ -2101,7 +2101,7 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 							if($installed = $sql2->db_Select("plugin", "*", "plugin_path = '".$var['plugin_path']."' AND plugin_installflag = '1' "))
 							{
 								$qryp = str_replace("{NID}", $citemid, $var['qry']);
-								if(!$sql2->db_Select_gen($qryp))
+								if(!$sql2->gen($qryp))
 								{
 									$err[] = array('type' => $ctable, 'sqlid' => $cid, 'table' => $ctable, 'itemid' => $citemid, 'table_exist' => TRUE);
 								}
