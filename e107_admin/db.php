@@ -1311,17 +1311,18 @@ class system_tools
 	 * Optimize SQL
 	 * @return none
 	 */
-	private function optimizesql($mySQLdefaultdb) //FIXME Use mysql class. 
+	private function optimizesql($mySQLdefaultdb) 
 	{
-	//	global $mes;
-		$result = mysql_list_tables($mySQLdefaultdb);
-		while($row = mysql_fetch_row($result))
+		$mes = e107::getMessage();
+		$tables = e107::getDb()->tables();
+		
+		foreach($tables as $table)
 		{
-			mysql_query("OPTIMIZE TABLE ".$row[0]);
+			e107::getDb()->gen("OPTIMIZE TABLE ".$table);
 		}
 
-	//	$mes->add(DBLAN_11." $mySQLdefaultdb ".DBLAN_12, E_MESSAGE_SUCCESS);
-		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_7, DBLAN_11." $mySQLdefaultdb ".DBLAN_12);
+		$mes->addSuccess(e107::getParser()->lanVars(DBLAN_11, $mySQLdefaultdb));
+		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_7, $mes->render());
 	}
 
 	/**
