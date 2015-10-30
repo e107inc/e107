@@ -636,7 +636,7 @@ class e_admin_log
 	 */
 	public function addDebug($text, $message = true, $session = false)
 	{
-		return $this->logMessage($text, ($message ? E_MESSAGE_DEBUG : LOG_MESSAGE_NODISPLAY), E_MESSAGE_NOTICE, $session);
+		return $this->logMessage($text, ($message ? E_MESSAGE_DEBUG : LOG_MESSAGE_NODISPLAY), E_MESSAGE_DEBUG, $session);
 	}
 
 
@@ -658,7 +658,7 @@ class e_admin_log
 	 * Add an array to the log queue
 	 * @param $array
 	 * @param $oldArray (optional) - when included, only the changes between the arrays is saved. 
-	 * @param $type (optional) default: LOG_MESSAGE_NODISPLAY. or E_MESSAGE_WARNING, E_MESSAGE_NOTICE, E_MESSAGE_SUCCESS
+	 * @param $type (optional) default: LOG_MESSAGE_NODISPLAY. or E_MESSAGE_WARNING, E_MESSAGE_DEBUG, E_MESSAGE_SUCCESS
 	 */
 	public function addArray($array, $oldArray= null, $type = LOG_MESSAGE_NODISPLAY , $session = false)
 	{

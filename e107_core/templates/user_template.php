@@ -93,7 +93,7 @@ $sc_style['USER_FORUM_LINK']['post'] = "</td></tr>";
 $sc_style['USER_UPDATE_LINK']['pre'] = "<tr><td colspan='2' class='forumheader3 center'>";
 $sc_style['USER_UPDATE_LINK']['post'] = "</td></tr>";
 
-$sc_style['USER_RATING']['pre'] = "<tr><td colspan='2' class='forumheader3'><div class='f-left'>".LAN_USER_61."</div><div class='f-right'>";
+$sc_style['USER_RATING']['pre'] = "<tr><td colspan='2' class='forumheader3'><div class='f-left'>".LAN_RATING."</div><div class='f-right'>";
 $sc_style['USER_RATING']['post'] = "</div></td></tr>";
 
 $sc_style['USER_LOGINNAME']['pre'] = " : ";

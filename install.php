@@ -816,6 +816,16 @@ class e_install
 			$xml_installed = true;
 		}
 
+		if(!function_exists('exif_imagetype'))
+		{
+			$exif_installed = false;
+		}
+		else
+		{
+			$exif_installed = true;
+		}
+		$exifExtensionLink = "<a href='http://php.net/manual/en/book.exif.php'>php.net</a>";
+
 		$php_version = phpversion();
 		if(version_compare($php_version, MIN_PHP_VERSION, ">="))
 		{
@@ -839,8 +849,11 @@ class e_install
 		$permColor	= ($perms_pass == true) ? "text-success" : "text-error";
 		$PHPColor 	= ($version_fail == false) ? "text-success" : "text-error";
 		$xmlColor	= ($xml_installed == true) ? "text-success" : "text-error";
+		$exifColor	= ($exif_installed == true) ? "text-success" : "text-error";
 		$mysqlColor	= ($mysql_pass == true) ? "text-success" : "text-error";
-		
+
+		$xmlExtensionLink = "<a href='http://php.net/manual/en/ref.xml.php'>php.net</a>";
+
 		$output = "
 			<table class='table table-striped table-bordered' style='width: 100%; margin-left: auto; margin-right: auto;'>
 				<tr>
@@ -856,7 +869,7 @@ class e_install
 				</tr>
 				
 				<tr>
-					<td>".LANINS_016."</td>
+					<td>MySQL</td>
 					<td>{$mysql_note}</td>
 					<td class='{$mysqlColor}'>{$mysql_help}</td>
 				</tr>
@@ -864,7 +877,12 @@ class e_install
 				<tr>
 					<td>".LANINS_050."</td>
 					<td>".($xml_installed ? LANINS_051 : LANINS_052)."</td>
-					<td class='{$xmlColor}'>".($xml_installed ? "<i class='glyphicon glyphicon-ok'></i> ".LANINS_017 : LANINS_053)."</td>
+					<td class='{$xmlColor}'>".($xml_installed ? "<i class='glyphicon glyphicon-ok'></i> ".LANINS_017 : str_replace("[x]",$xmlExtensionLink, LANINS_053) )."</td>
+				</tr>
+				<tr>
+					<td>".LANINS_048."</td>
+					<td>".($exif_installed ? LANINS_051 : LANINS_052)."</td>
+					<td class='{$exifColor}'>".($exif_installed ? "<i class='glyphicon glyphicon-ok'></i> ".LANINS_017 : str_replace("[x]", $exifExtensionLink, LANINS_054) )."</td>
 				</tr>
 			</table>\n";
 		$this->finish_form();
@@ -1464,7 +1482,7 @@ class e_install
 		$this->previous_steps['prefs']['install_date']  	= time();
 		$this->previous_steps['prefs']['siteurl']			= e_HTTP;
 
-		$this->previous_steps['prefs']['sitetag']			= LAN_PREF_2;
+		$this->previous_steps['prefs']['sitetag']			= "e107 Website System";
 		$this->previous_steps['prefs']['sitedisclaimer']	= '';
 
 		$this->previous_steps['prefs']['replyto_name']		= $this->previous_steps['admin']['display'];

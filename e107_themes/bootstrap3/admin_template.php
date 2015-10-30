@@ -52,9 +52,9 @@ $E_ADMIN_NAVIGATION['button_active'] = '
 // Leave Admin Area. 
 $E_ADMIN_NAVIGATION['button_home'] = '
 	<li class="dropdown">
-		<a class="dropdown-toggle" style="display:inline-block; padding-right:0px;margin-right:0px;" title="'.ADLAN_53.'" href="'.e_HTTP.'" >
+		<a class="dropdown-toggle" style="display:inline-block; margin-right:0;" title="'.ADLAN_53.'" href="'.e_HTTP.'" >
 		 {LINK_IMAGE} {LINK_TEXT} 
-		 </a><a style="display:inline-block;margin-left:0px;padding-left:4px;padding-right:8px;margin-right:8px" class="dropdown-toggle" title="'.ADLAN_53.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
+		 </a><a style="display:inline-block;border-left:0;margin-left:0;padding-left:4px" class="dropdown-toggle" title="'.ADLAN_53.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
 		 <b class="caret"></b>
 		</a>
 		{SUB_MENU}
@@ -239,7 +239,7 @@ $ADMIN_MODAL =  '<div id="uiModal" class="modal hide fade" tabindex="-1" role="d
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-         <a class="brand navbar-brand" href="'.e_ADMIN_ABS.'admin.php" title="Return to Front Panel"><img class="admin-logo" src="'.e_THEME_ABS.'bootstrap/images/e107_adminlogo.png" alt="e107" /></a>
+         <a class="brand navbar-brand" href="'.e_ADMIN_ABS.'admin.php" title="Return to Front Panel"><img class="admin-logo" src="'.e_THEME_ABS.'bootstrap3/images/e107_adminlogo.png" alt="e107" /></a>
         </div>
         <div class="navbar-collapse collapse">
         	 <div class="dropdown nav navbar-nav">
@@ -268,6 +268,7 @@ $ADMIN_MODAL =  '<div id="uiModal" class="modal hide fade" tabindex="-1" role="d
 	
 	
 $ADMIN_HEADER .= '<div class="container-fluid">
+
       <div class="row">
         <div class="col-md-2" id="left-panel">
         	{SETSTYLE=admin_menu}
@@ -297,6 +298,7 @@ $ADMIN_HEADER .= '<div class="container-fluid">
 			
          </div>
         <div class="col-md-10" id="right-panel" >
+         <div class="sidebar-toggle"><a href="#" title="Toggle Sidebar" data-toggle-sidebar="true">&nbsp;</a></div>
         	<div>
         
         ';

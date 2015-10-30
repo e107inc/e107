@@ -1971,8 +1971,8 @@ class e_parse extends e_parser
 
 		$text = $this->toEmail($text);
 
-		$search = array("&amp;#039;", "&amp;#036;", "&#039;", "&#036;", e_BASE, "href='request.php");
-		$replace = array("'", '$', "'", '$', SITEURL, "href='".SITEURL."request.php" );
+		$search = array("&amp;#039;", "&amp;#036;", "&#039;", "&#036;", e_BASE, "href='request.php","<!-- bbcode-html-start -->","<!-- bbcode-html-end -->");
+		$replace = array("'", '$', "'", '$', SITEURL, "href='".SITEURL."request.php", '', '' );
 		$text = str_replace($search, $replace, $text);
 
 		// Fix any left-over '&'
@@ -3271,8 +3271,13 @@ class e_parser
 	 */
 	function toVideo($file, $parm=array())
 	{
+		if(empty($file))
+		{
+			return false;
+		}
+
 		list($id,$type) = explode(".",$file,2);
-		
+
 		$thumb = vartrue($parm['thumb']);
 		
 		
@@ -3285,15 +3290,25 @@ class e_parser
 				$key = substr($k,8);
 				$ytpref[$key] = $v;
 			}	
-		} 
-		
+		}
+
+		unset($ytpref['bbcode_responsive']); // do not include in embed code.
+
+		if(!empty($ytpref['cc_load_policy']))
+		{
+			$ytpref['cc_lang_pref'] = e_LAN; // switch captions with chosen user language.
+		}
+
 		$ytqry = http_build_query($ytpref);
-		
+
+		$defClass = (deftrue('BOOTSTRAP')) ? "embed-responsive embed-responsive-16by9" : "video-responsive"; // levacy backup.
+
+
 		if($type == 'youtube')
 		{
 		//	$thumbSrc = "https://i1.ytimg.com/vi/".$id."/0.jpg";
 			$thumbSrc = "http://i1.ytimg.com/vi/".$id."/mqdefault.jpg";
-			$video =  '<iframe width="560" height="315" src="//www.youtube.com/embed/'.$id.'?'.$ytqry.'" style="background-size: 100%;background-image: url('.$thumbSrc.');border:0px" allowfullscreen></iframe>';
+			$video =  '<iframe class="embed-responsive-item" width="560" height="315" src="//www.youtube.com/embed/'.$id.'?'.$ytqry.'" style="background-size: 100%;background-image: url('.$thumbSrc.');border:0px" allowfullscreen></iframe>';
 
 		
 			if($thumb == 'tag')
@@ -3321,13 +3336,15 @@ class e_parser
 			{
 				return $thumbSrc;
 			}
+
+
 			
 			if($thumb == 'video')
 			{
-				return '<div class="video-responsive video-thumbnail thumbnail">'.$video.'</div>';	
+				return '<div class="'.$defClass.' video-thumbnail thumbnail">'.$video.'</div>';
 			}
 			
-			return '<div class="video-responsive '.vartrue($parm['class']).'">'.$video.'</div>';
+			return '<div class="'.$defClass.' '.vartrue($parm['class']).'">'.$video.'</div>';
 		}
 
 
@@ -3347,7 +3364,7 @@ class e_parser
 			}
 
 			$video = '<iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list='.$id.'" style="border:0" allowfullscreen></iframe>';
-			return '<div class="video-responsive '.vartrue($parm['class']).'">'.$video.'</div>';
+			return '<div class="'.$defClass.' '.vartrue($parm['class']).'">'.$video.'</div>';
 		}
 				
 		if($type == 'mp4') //TODO FIXME 
@@ -3994,14 +4011,15 @@ class e_emotefilter {
 	{		
 		$pref = e107::getPref();
 		
-		if(!$pref['emotepack'])	
+		if(empty($pref['emotepack']))
 		{	
 			$pref['emotepack'] = "default";
-			save_prefs();
+			e107::getConfig('emote')->clearPrefCache('emote');
+			e107::getConfig('core')->set('emotepack','default')->save(false,true,false);
 		}
-			
+
 		$this->emotes = e107::getConfig("emote")->getPref();
-		
+
 		if(!vartrue($this->emotes))
 		{
 			return;
@@ -4056,12 +4074,14 @@ class e_emotefilter {
 		  }
 		}
 	}
-	 
+
+
 	function filterEmotes($text)
 	{	 
 		$text = str_replace($this->search, $this->replace, $text);
 		return $text;
 	}
+
 	 
 	function filterEmotesRev($text)
 	{

@@ -174,7 +174,7 @@ class eMessage
 	 * @param string $mstack message stack which should have only unique message values
 	 * @return eMessage
 	 */
-	public function setUnique($mstack)
+	public function setUnique($mstack='default')
 	{
 		if(!in_array($mstack, $this->_unique))
 		{
@@ -990,8 +990,8 @@ function show_emessage($mode, $message, $line = 0, $file = "") {
 		<head>
 		<meta charset="utf-8" />
 		<title>Error</title>
-		<link rel="stylesheet" media="all" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" />
-		<link rel="stylesheet" media="all" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
+		<link rel="stylesheet" media="all" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+		<link rel="stylesheet" media="all" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
 		<link rel="stylesheet" media="all" type="text/css" href="/e107_web/css/e107.css" />
 		</head>
 		<body >

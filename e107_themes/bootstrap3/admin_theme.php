@@ -5,9 +5,16 @@ define("SEP"," <span class='fa fa-play e-breadcrumb'></span> ");
 define("BOOTSTRAP", 	3);
 define('FONTAWESOME',	4);
 
-e107::js("url", 		"http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js",'jquery', 2);
+
+
+// e107::js("url", 		"https://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js",'jquery', 2);
 // e107::css('url', 		'http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css');
-e107::css('url', 		"http://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css");
+// e107::css('url', 		"https://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css");
+
+e107::js("url", 			"https://cdn.jsdelivr.net/bootstrap/3.3.5/js/bootstrap.min.js", 'jquery', 2);
+// e107::css('url', 			'https://cdn.jsdelivr.net/bootstrap/3.3.5/css/bootstrap.min.css');
+e107::css('url',            'https://cdn.jsdelivr.net/fontawesome/4.4.0/css/font-awesome.min.css');
+
 
 // Too slow.
 // e107::css('url', "http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css");
@@ -26,6 +33,22 @@ e107::css('theme','admin_style.css');
 e107::css('theme','admin_dark.css');
 e107::css('theme','ie_all.css',null,'all',"<!--[if IE]>","<![endif]-->");
 
+e107::css('inline', "
+/* TinyMce */
+
+.mce-menubar .mce-caret             { border-top-color: #C6C6C6!important  }
+.mce-menubar:hover .mce-caret       { border-top-color: #FFFFFF!important }
+.mce-menubar .mce-btn button        { color: #C6C6C6!important; } /* v4.1+ */
+.mce-menubar .mce-btn button span   { color: #C6C6C6!important; } /* v4.0 */
+.mce-menubar .mce-btn button:hover  { color: #FFFFFF!important; }
+.mce-menubar.mce-toolbar            { background-color: #373737!important; }
+.mce-tinymce[role=application]      { border-color: #373737!important; }
+.mce-menubar  .mce-menubtn:hover,
+.mce-menubtn:active,
+.mce-menubtn:focus                  { background-color:transparent!important; color: #FFFFFF!important; border-color:transparent!important; }
+.mce-menubar  .mce-btn.mce-active   { color:white!important; border-color:transparent!important; background-color: transparent!important; }
+
+");
 
 /*
 $drop = "

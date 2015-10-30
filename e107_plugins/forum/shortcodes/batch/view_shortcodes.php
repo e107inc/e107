@@ -454,10 +454,12 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		
 		$ue = $tp->parseTemplate("{USER_EXTENDED=location.text_value}",true);	
 		$username = (empty($this->postInfo['user_name'])) ? LAN_ANONYMOUS : $this->postInfo['user_name'];
-								
+
+		$userUrl = empty($this->postInfo['post_user']) ? '#' : e107::getUrl()->create('user/profile/view', array('user_id'=>$this->postInfo['post_user'], 'user_name'=>$username));
+		// e_HTTP.'user.php?id.'.$this->postInfo['post_user']
 		$text = '<div class="btn-group btn-block ">
 
-    <a class="btn btn-default btn-sm col-sm-10 btn-small" href="'.e_BASE.'user.php?id.'.$this->postInfo['post_user'].'">'.$username.'</a>
+    <a class="btn btn-default btn-sm col-sm-10 btn-small" href="'.$userUrl.'">'.$username.'</a>
     <button class="btn btn-default btn-sm col-sm-2 btn-small dropdown-toggle" data-toggle="dropdown">
     <span class="caret"></span>
     </button>

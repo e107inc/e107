@@ -533,6 +533,48 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "", $overwrite = "
 //				 VETTING AND UTILITY ROUTINES
 //====================================================================
 
+/**
+ * Get image (string) mime type
+ * or when extended - array [(string) mime-type, (array) associated extensions)].
+ * A much faster way to retrieve mimes than getimagesize()
+ *
+ * @param $filename
+ * @param bool|false $extended
+ * @return array|string|false
+ */
+function get_image_mime($filename, $extended = false)
+{
+	// mime types as returned from image_type_to_mime_type()
+	// and associated file extensions
+	$imageExtensions = array(
+		'image/gif' 					=> array('gif'),
+		'image/jpeg' 					=> array('jpg'),
+		'image/png' 					=> array('png'),
+		'application/x-shockwave-flash' => array('swf', 'swc'),
+		'image/psd' 					=> array('psd'),
+		'image/bmp' 					=> array('bmp'),
+		'image/tiff' 					=> array('tiff'),
+		'application/octet-stream' 		=> array('jpc', 'jpx', 'jb2'),
+		'image/jp2' 					=> array('jp2'),
+		'image/iff' 					=> array('iff'),
+		'image/vnd.wap.wbmp' 			=> array('wbmp'),
+		'image/xbm' 					=> array('xbm'),
+		'image/vnd.microsoft.icon' 		=> array('ico')
+	);
+
+	$ret = image_type_to_mime_type(exif_imagetype($filename));
+
+	if($extended)
+	{
+		return array(
+			$ret,
+			$ret && isset($imageExtensions[$ret]) ? $imageExtensions[$ret]: array()
+		);
+	}
+
+	return $ret;
+
+}
 
 /**
  *	Check uploaded file to try and identify dodgy content.
@@ -549,7 +591,7 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "", $overwrite = "
  *		2 - can't read file contents
  *		3 - illegal file contents (usually '<?php')
  *		4 - not an image file
- *		5 - bad image parameters
+ *		5 - bad image parameters - REMOVED
  *		6 - not in supplementary list
  *		7 - suspicious file contents
  *		8 - unknown file type
@@ -604,11 +646,25 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 		case 'jpeg':
 		case 'pjpeg':
 		case 'bmp':
-			$ret = getimagesize($filename);
-			if (!is_array($ret))
-				return 4; // getimagesize didn't like something
-			if (($ret[0] == 0) || ($ret[1] == 0))
-				return 5; // Zero size picture or bad file format
+		case 'swf':
+		case 'swc':
+		case 'psd':
+		case 'tiff':
+		case 'jpc': // http://fileinfo.com/extension/jpc
+		case 'jpx': // http://fileinfo.com/extension/jpx
+		case 'jb2': // http://fileinfo.com/extension/jb2
+		case 'jp2': // http://fileinfo.com/extension/jp2
+		case 'iff':
+		case 'wbmp':
+		case 'xbm':
+		case 'ico':
+			$ret = get_image_mime($filename);
+			if ($ret === false)
+			{
+				return 4; // exif_imagetype didn't recognize the image mime
+			}
+			// getimagesize() is extremely slow + it can't handle all required media!!! Abandon this check!
+			//	return 5; // Zero size picture or bad file format
 		break;
 
 		case 'zip':
@@ -621,7 +677,6 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 		case '7z':
 		case 'csv':
 		case 'wmv':
-		case 'swf':
 		case 'flv': //Flash stream
 		case 'f4v': //Flash stream
 		case 'mov': //media

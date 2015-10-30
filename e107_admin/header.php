@@ -75,10 +75,10 @@ function loadJSAddons()
 	//e107::css('core', 	'chosen/chosen.css', 'jquery');
 	//e107::js('core', 	'chosen/chosen.jquery.min.js', 'jquery', 2);
 	
-	e107::js('core', 	'password/jquery.pwdMeter.js', 'jquery', 2);
+	// e107::js('core', 	'password/jquery.pwdMeter.js', 'jquery', 2); // loaded in form-handler.
 	
 	// e107::css('core', 	'bootstrap-tag/bootstrap-tag.css', 'jquery');
-	e107::js('core', 	'bootstrap-tag/bootstrap-tag.js', 'jquery', 2);
+//	e107::js('core', 	'bootstrap-tag/bootstrap-tag.js', 'jquery', 2);
 	
 		
 //	e107::js("core",	"tags/jquery.tagit.js","jquery",3);
@@ -182,7 +182,7 @@ else // XHTML
 echo "<meta name=\"viewport\" content=\"width=device-width; initial-scale=1; maximum-scale=1\" />\n"; // Works better for iOS but still has some issues. 
 // echo (defined("VIEWPORT")) ? "<meta name=\"viewport\" content=\"".VIEWPORT."\" />\n" : "";
 
-echo "<title>".(defined("e_PAGETITLE") ? e_PAGETITLE." - " : (defined("PAGE_NAME") ? PAGE_NAME." - " : "")).LAN_head_4." :: ".SITENAME."</title>\n";
+echo "<title>".(defined("e_PAGETITLE") ? e_PAGETITLE." - " : (defined("PAGE_NAME") ? PAGE_NAME." - " : "")).LAN_HEADER_04." :: ".SITENAME."</title>\n";
 
 // print_a(get_included_files()); 
 //

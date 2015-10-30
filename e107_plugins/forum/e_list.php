@@ -101,7 +101,7 @@ class list_forum
 					$LASTPOST = "";
 					if($lp_name)
 					{
-						$LASTPOST = "<a href='".e_BASE."user.php?id.{$thread_lastuser}'>$lp_name</a>";
+						$LASTPOST = "<a href='".e_HTTP."user.php ?id.{$thread_lastuser}'>$lp_name</a>";
 					}
 					else
 					{
@@ -130,7 +130,7 @@ class list_forum
 				$lnk = ($parent_id ? $thread_id.".post" : $thread_id);
 
 				$record['heading'] = "<a href='".$path."forum_viewtopic.php?$lnk'>".$rowheading."</a>";
-				$record['author'] = ($this->parent->settings['author'] ? ($thread_anon ? $thread_user : "<a href='".e_BASE."user.php?id.$thread_user'>$user_name</a>") : "");
+				$record['author'] = ($this->parent->settings['author'] ? ($thread_anon ? $thread_user : "<a href='".e_HTTP."user.php ?id.$thread_user'>$user_name</a>") : "");
 				$record['category'] = ($this->parent->settings['category'] ? "<a href='".$path."forum_viewforum.php?$forum_id'>$forum_name</a>" : "");
 				$record['date'] = ($this->parent->settings['date'] ? $this->parent->getListDate($thread_datestamp) : "");
 				$record['icon'] = $bullet;

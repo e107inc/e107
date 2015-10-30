@@ -55,9 +55,12 @@ if( !e107::isInstalled('tinymce4'))
 
 
 
+
 		protected $prefs = array(
 			'paste_as_text'		=> array('title'=> 'Paste as text by default', 'type'=>'boolean', 'data' => 'int','help'=> ''),
 			'browser_spellcheck' =>  array('title'=> 'Browser spellcheck', 'type'=>'boolean', 'data' => 'int','help'=> 'Enable this if the browser internal spellchecker should be used.'),
+			'visualblocks' =>  array('title'=> 'Visual Blocks', 'type'=>'boolean', 'data' => 'int','help'=> 'Enable to make html blocks visible during editing.'),
+
 		);
 
 

@@ -141,9 +141,16 @@ $nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 		$newsRoute = 'list/all';
 		$newsUrlparms['id'] = $sub_action;
 	}
+	else
+	{
+		$newsRoute = 'list/items';
+	}
 
-	else $newsRoute = 'list/items';
+
+
 	$newsRoute = 'news/'.$newsRoute;
+
+
 
 
 if(vartrue($_GET['tag']) || substr($action,0,4) == 'tag=')
@@ -160,11 +167,18 @@ if(vartrue($_GET['tag']) || substr($action,0,4) == 'tag=')
 	$newsfrom = intval(varset($_GET['page'],0));
 }
 
-/*
-echo "route= ".$newsRoute."  ";
-echo "<br />action= ".$action."  ";
-echo "<br />_GET= ".print_a($_GET,true);
-*/
+if(E107_DBG_PATH)
+{
+	echo "<div class='alert alert-info'>";
+	echo "<h4>SEF Debug Info</h4>";
+	echo "action= ".$action."  ";
+	echo "<br />route= ".$newsRoute."  ";
+	echo "<br />e_QUERY= ".e_QUERY."  ";
+
+	echo "<br />_GET= ".print_r($_GET,true);
+	echo "</div>";
+}
+
 //------------------------------------------------------
 //		DISPLAY NEWS IN 'CATEGORY' LIST FORMAT HERE
 //------------------------------------------------------
@@ -261,6 +275,7 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 		$newsList = $sql->db_getList();
 	}
 
+
 	if($action == 'cat')
 	{
 		setNewsFrontMeta($newsList[1], 'category');
@@ -288,20 +303,29 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 	$param['itemlink'] = (defined("NEWSLIST_ITEMLINK")) ? NEWSLIST_ITEMLINK : "";
 	$param['thumbnail'] =(defined("NEWSLIST_THUMB")) ? NEWSLIST_THUMB : "border:0px";
 	$param['catlink']  = (defined("NEWSLIST_CATLINK")) ? NEWSLIST_CATLINK : "";
-	$param['caticon'] =  (defined("NEWSLIST_CATICON")) ? NEWSLIST_CATICON : ICONSTYLE;
+	$param['caticon'] =  (defined("NEWSLIST_CATICON")) ? NEWSLIST_CATICON : defset('ICONSTYLE','');
 	$param['current_action'] = $action;
 
 	// NEW - allow news batch shortcode override (e.g. e107::getScBatch('news', 'myplugin', true); )
 	e107::getEvent()->trigger('news_list_parse', $newsList);
+
+	$text = '';
 
 	if(vartrue($template['start']))
 	{
 		$text .= $tp->parseTemplate($template['start'], true);		
 	}
 
-	foreach($newsList as $row)
+	if(!empty($newsList))
 	{
-		$text .= $ix->render_newsitem($row, 'return', '', $template['item'], $param);
+		foreach($newsList as $row)
+		{
+			$text .= $ix->render_newsitem($row, 'return', '', $template['item'], $param);
+		}
+	}
+	else // No News - empty.
+	{
+		$text .= "<div class='alert alert-info'>".(strstr(e_QUERY, "month") ? LAN_NEWS_462 : LAN_NEWS_83)."</div>";
 	}
 
 	if(vartrue($template['end']))
@@ -392,9 +416,9 @@ if ($action == 'extend')
 		AND (n.news_end=0 || n.news_end>".time().")
 		AND n.news_id=".intval($sub_action);
 	}
-	if ($sql->db_Select_gen($query))
+	if ($sql->gen($query))
 	{
-		$news = $sql->db_Fetch();
+		$news = $sql->fetch();
 		$id = $news['news_category'];		// Use category of this news item to generate next/prev links
 
 		//***NEW [SecretR] - comments handled inside now
@@ -487,7 +511,13 @@ if ($action == 'extend')
 	}
 	else
 	{
-		$action = 'default';
+	//	$action = 'default';
+
+		//XXX item not found, redirect to avoid messing up search-engine data.
+		$defaultUrl = e107::getUrl()->create('news/list/items');
+		e107::getRedirect()->go($defaultUrl, null, 301);
+		exit;
+
 	}
 }
 

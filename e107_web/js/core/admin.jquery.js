@@ -88,7 +88,7 @@ $(document).ready(function()
 		
 	
 		$('div.e-container').editable({
-			selector: '.e-editable',
+			selector: '.e-editable'
          });
 		
 //		$('.e-editable').editable();
@@ -156,7 +156,7 @@ $(document).ready(function()
             e.preventDefault();
             
             $("#left-panel").toggle(1000);
-            $("#right-panel").toggleClass("span10",0);
+            $("#right-panel").toggleClass("col-md-10 col-md-12"); //XXX Control animation direction?
 
         });
 
@@ -417,7 +417,7 @@ $(document).ready(function()
 			
 		});
 		
-		$(".e-tags").tag();
+	//	$(".e-tags").tag();
 		
 		
 
@@ -461,12 +461,13 @@ $(document).ready(function()
 		}
 		
 		// backend 
-		$(".e-password").pwdMeter({
+	/*
+	    $(".e-password").pwdMeter({
 	            minLength: 6,
 	            displayGeneratePassword: true,
 	            generatePassText: "Generate",
 	            randomPassLength: 12
-	    });
+	    });*/
 		
 		
 		

@@ -250,15 +250,17 @@ function step3()
 
 
 	$fieldList = array(
-		'plugin_forum_posts' => EUF_INTEGER,
-		'plugin_forum_viewed' => EUF_TEXTAREA
+		'plugin_forum_posts' => 'integer',
+		'plugin_forum_viewed' => 'radio'
 	);
 
 	$failed = false;
+	$ext = e107::getUserExt();
+
 	foreach ($fieldList as $fieldName => $fieldType)
 	{
 
-		$result = e107::getUserExt()->user_extended_add_system($fieldName, $fieldType);
+		$result = $ext->user_extended_add_system($fieldName, $fieldType);
 
 		if ($result === true)
 		{
@@ -267,6 +269,7 @@ function step3()
 		else
 		{
 			$mes -> addError('Creating extended user field user_' . $fieldName);
+			$mes->addDebug(print_a($result,true));
 			$failed = true;
 		}
 	}
@@ -550,7 +553,7 @@ function renderProgress($caption, $step)
 		<div class="row-fluid">
 			<div class="span9 well">
 				<div class="progress progress-success progress-striped active" id="progressouter">
-	   				<div class="bar" id="progress"></div>
+	   				<div class="progress-bar bar" role="progressbar" id="progress"></div>
 				</div>
 			
 			<a id="'.$thisStep.'" data-loading-text="Please wait..." data-progress="' . e_SELF . '"  data-progress-target="progress"  data-progress-mode="'.$step.'" data-progress-show="'.$nextStep.'" data-progress-hide="'.$thisStep.'" class="btn btn-primary e-progress" >'.$caption.'</a>
@@ -1355,12 +1358,11 @@ class forumUpgrade
 
 	function setNewVersion()
 	{
-		$pref = e107::getPref();
 		$sql = e107::getDb();
 
 		$sql -> update('plugin', "plugin_version = '{$this->newVersion}' WHERE plugin_name='Forum'");
-		$pref['plug_installed']['forum'] = $this -> newVersion;
-		save_prefs();
+		e107::getConfig()->setPref('plug_installed/forum', $this->newVersion)->save(false,true,false);
+
 		return "Forum Version updated to version: {$this->newVersion} <br />";
 	}
 
@@ -1740,14 +1742,17 @@ function forum_update_adminmenu()
 		$var[14]['text'] = 'Reset';
 		$var[14]['link'] = e_SELF . "?reset";
 
-		$var[15]['text'] = 'Reset to 6';
-		$var[15]['link'] = e_SELF . "?step=6&reset=6";
+		$var[15]['text'] = 'Reset to 3';
+		$var[15]['link'] = e_SELF . "?step=3&reset=3";
 
-		$var[16]['text'] = 'Reset to 7';
-		$var[16]['link'] = e_SELF . "?step=7&reset=7";
+		$var[16]['text'] = 'Reset to 6';
+		$var[16]['link'] = e_SELF . "?step=6&reset=6";
+
+		$var[17]['text'] = 'Reset to 7';
+		$var[17]['link'] = e_SELF . "?step=7&reset=7";
 		
-		$var[17]['text'] = 'Reset to 10';
-		$var[17]['link'] = e_SELF . "?step=10&reset=10";
+		$var[18]['text'] = 'Reset to 10';
+		$var[18]['link'] = e_SELF . "?step=10&reset=10";
 		
 	}
 	

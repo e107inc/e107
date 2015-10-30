@@ -50,7 +50,7 @@ class e_media
 	 * @param string $fmask [optional] filetypes eg. .jpg|.gif IMAGES is the default mask. 
 	 * @return e_media
 	 */
-	public function import($cat='',$epath,$fmask='',$options=array())
+	public function import($cat='', $epath, $fmask='', $options=array())
 	{
 		if(!vartrue($cat)){ return $this;}
 		
@@ -61,6 +61,7 @@ class e_media
 		
 		if(!is_readable($epath))
 		{
+			e107::getMessage()->addDebug("Unable to import: ".$epath);
 			return $this;
 		}
 			
@@ -70,11 +71,13 @@ class e_media
 		$mes = e107::getMessage();
 	
 		$fl->setFileInfo('all');
-		if(!$fmask)
+
+		if(empty($fmask))
 		{
 			$fmask = '[a-zA-z0-9_-]+\.(png|jpg|jpeg|gif|PNG|JPG|JPEG|GIF)$';
 		}
-		$img_array = $fl->get_files($epath,$fmask,'',2);
+
+		$img_array = $fl->get_files($epath, $fmask,'',2);
 	
 		if(!count($img_array))
 		{
@@ -1377,6 +1380,11 @@ class e_media
 		$pref = e107::getPref();
 		$tp = e107::getParser();
 
+		if(empty($src))
+		{
+			return false;
+		}
+
 		if(is_string($opts))
 		{
 			parse_str($opts,$opts);
@@ -1411,9 +1419,8 @@ class e_media
 		}
 		catch (Exception $e)
 		{
-			$error =  $e->getMessage();
-echo $error;
-			e107::getMessage()->addDebug($error);
+			$error =  array('thumbnailer'=> $e->getMessage(), 'src'=>$src, 'dest'=>$dest, 'savePath'=>$destFilePath, 'backtrace'=>'e_media::resizeImage');;
+			e107::getMessage()->addDebug(print_a($error,true));
 			e107::getLog()->add("RESIZE ERROR",$error,E_LOG_INFORMATIVE,'RESIZE');
 			return false;
 		}

@@ -711,7 +711,10 @@ class page_admin_ui extends e_admin_ui
 		
 		function beforeUpdate($newdata,$olddata)
 		{
-			$newdata['menu_name'] = preg_replace('/[^\w-*]/','',$newdata['menu_name']);
+			if(isset($newdata['menu_name']))
+			{
+				$newdata['menu_name'] = preg_replace('/[^\w-*]/','',$newdata['menu_name']);
+			}
 
 			return $newdata;	
 		}		
@@ -722,6 +725,11 @@ class page_admin_ui extends e_admin_ui
 			$tp = e107::getParser();
 			$sql = e107::getDb();
 			$mes = e107::getMessage();
+
+			if(!isset($newdata['menu_name']))
+			{
+				return true;
+			}
 					
 			$menu_name = $tp->toDB($newdata['menu_name']); // not to be confused with menu-caption.
 				

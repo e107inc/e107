@@ -112,7 +112,8 @@ define("LAN_TITLE", "Title");
 define("LAN_USER", "User");
 define("LAN_EMAIL","Email address");
 define("LAN_WROTE", "wrote"); // as in John wrote.."  ";
-define("LAN_SEARCH", "Search");
+define("LAN_RE_ORDER", "Re-order");
+define("LAN_RELATED", "Related");
 
 define("LAN_ENTER_USRNAME_EMAIL", "Please enter your username or email"); // admin php hover field admin name
 define("LAN_PWD_REQUIRED", "Password is required"); // admin php hover field admin password

@@ -17,8 +17,10 @@ if (!getperms('P'))
 }
 
 
-e107::includeLan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/English_admin.php');
-	e107::lan('forum','', 'front');
+e107::lan('forum', 'admin');
+e107::lan('forum','front', true);
+//e107::includeLan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/English_admin.php');
+//e107::lan('forum','', 'front');
 
 $legacy = false;
 
@@ -2507,7 +2509,7 @@ class forumAdmin
     		</colgroup>
 			<tr>
 				<td>".FORLAN_171.":</td>
-				<td><a href='".e_PLUGIN."forum/forum_viewtopic.php?".$row['gen_intdata'].".post' rel='external'>#".$row['gen_intdata']."</a></td>
+				<td><a href='".e_PLUGIN_ABS."forum/forum_viewtopic.php?".$row['gen_intdata'].".post' rel='external'>#".$row['gen_intdata']."</a></td>
 			</tr>
 			<tr>
 				<td>".FORLAN_173.":</td>
@@ -2515,7 +2517,7 @@ class forumAdmin
 			</tr>
 			<tr>
 				<td>".FORLAN_174.":</td>
-				<td><a href='".e_BASE."user.php?id.".$user['user_id']."'>".$user['user_name']."</a>
+				<td><a href='".e107::getUrl()->create('user/profile/view', $user)."'>".$user['user_name']."</a>
 			</td>
 			</tr>
 			<tr>

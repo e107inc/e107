@@ -15,7 +15,12 @@ if (!getperms("B"))
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_prefs.php');
+// include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_prefs.php');
+
+e107::lan('core', 'comment');
+e107::lan('core', 'prefs', true);
+
+e107::css('inline', "td.status  span.label { display:block; width: 100%; padding: 6px 6px; }  ");
 
 class comments_admin extends e_admin_dispatcher
 {
@@ -64,12 +69,12 @@ class comments_admin_ui extends e_admin_ui
     	protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'comment_id'			=> array('title'=> LAN_ID,			'type' => null,			'width' =>'5%', 'forced'=> TRUE),
-            'comment_blocked' 		=> array('title'=> LAN_STATUS,		'type' => 'method',	 	'inline'=>false, /*'writeParms' => array("approved","blocked","pending"), */'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),	 	// Photo
+            'comment_blocked' 		=> array('title'=> LAN_STATUS,		'type' => 'method',	 	'inline'=>false, /*'writeParms' => array("approved","blocked","pending"), */'data'=> 'int', 'thclass' => 'center', 'class'=>'status center', 'filter' => true, 'batch' => true,	'width' => 'auto'),	 	// Photo
 	
 	   		'comment_type' 			=> array('title'=> LAN_TYPE,			'type' => 'method',			'width' => '10%',  'filter'=>TRUE),	
 			
-			'comment_item_id' 		=> array('title'=> "item id",		'type' => 'text',	'data'=>'int',		'width' => '5%'),
-         	'comment_subject' 		=> array('title'=> "subject",		'type' => 'text',			'width' => 'auto', 'thclass' => 'left first'), // Display name
+			'comment_item_id' 		=> array('title'=> "item id",		'type' => 'text',	'readonly'=>2, 'data'=>'int',		'width' => '5%'),
+         	'comment_subject' 		=> array('title'=> "subject",		'type' => 'text',			'width' => 'auto', 'thclass' => 'left first', 'writeParms'=>array('size'=>'xxlarge')), // Display name
          	'comment_comment' 		=> array('title'=> "comment",		'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
 		 	'comment_author_id' 	=> array('title'=> LAN_AUTHOR,		'type' => 'user',			'data' => 'int',	'width' => 'auto', 'writeParms' => 'nameField=comment_author_name'),	// User id
          	'comment_author_name' 	=> array('title'=> "authorName",	'type' => 'user',			'width' => 'auto', 'readParms'=>'idField=comment_author_id&link=1', 'noedit' => true, 'forceSave' => true),	// User name
@@ -173,14 +178,14 @@ class comments_admin_form_ui extends e_admin_form_ui
 		if($mode == 'read')
 		{
 			return e107::getComment()->getTable($curVal);
-			return $curVal.' (custom!)';
+		//	return $curVal.' (custom!)';
 		}
 		
 		if($mode == 'filter') // Custom Filter List for release_type
 		{
 			$sql = e107::getDb();
-			$sql->db_Select_gen('SELECT * FROM #comments GROUP BY comment_type');
-			while($row = $sql->db_Fetch())
+			$sql->gen('SELECT * FROM #comments GROUP BY comment_type');
+			while($row = $sql->fetch())
 			{
 				$id = $row['comment_type'];
 				$list[$id] = e107::getComment()->getTable($id);
@@ -201,7 +206,8 @@ class comments_admin_form_ui extends e_admin_form_ui
 	{
 		$frm = e107::getForm();
 		
-		$blocked = array("approved", "blocked", "pending");
+	//	$blocked = array("approved", "blocked", "pending");
+		$blocked = array(COMLAN_400, COMLAN_401, COMLAN_402);
 
 		if($mode == 'filter' || $mode == 'batch' || $mode == 'inline') // Custom Filter List for release_type
 		{			
@@ -211,7 +217,14 @@ class comments_admin_form_ui extends e_admin_form_ui
 		if($mode == 'read')
 		{
 			// $blocked = array("","blocked","pending");
-			return varset($blocked[$curVal], ''); // $blocked[$curVal];	
+
+			$blockedDisp = array(
+				"<span class='label label-success'>".COMLAN_400."</span>",
+				"<span class='label label-danger'>".COMLAN_401."</span>",
+				"<span class='label label-warning'>".COMLAN_402."</span>"
+			);
+
+			return varset($blockedDisp[$curVal], ''); // $blocked[$curVal];
 		}
 		
 		if($mode == 'write')

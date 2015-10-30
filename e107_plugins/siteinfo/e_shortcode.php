@@ -25,6 +25,12 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 			$h = !empty($parm['h']) ? $parm['h'] : 100;
 
 			$path = e107::getConfig()->get('sitebutton');
+
+			if(empty($path))
+			{
+				return false;
+			}
+
 			$realPath = e107::getParser()->replaceConstants($path);
 
 			if(defined('e_MEDIA') && is_writeable(e_MEDIA."temp/") && ($resized = e107::getMedia()->resizeImage($path, e_MEDIA."temp/".basename($realPath),'h='.$h)))

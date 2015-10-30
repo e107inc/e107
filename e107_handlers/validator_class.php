@@ -1144,7 +1144,7 @@ class validatorClass
 									{
 										$img = e_AVATAR_UPLOAD.str_replace('-upload-', '', $value);		// Its a user-uploaded image
 									}
-									elseif (strpos($avName, '/') !== FALSE)
+									elseif (strpos($value, '//') !== false)
 									{
 										$img = $value;			// Its a remote image
 									}
@@ -1281,7 +1281,8 @@ class validatorClass
 								}
 								break;
 							case 3 :			// Check email address against remote server
-								if (vartrue($pref['signup_remote_emailcheck']))
+
+							/*	if (vartrue($pref['signup_remote_emailcheck']))
 								{
 									require_once(e_HANDLER."mail_validation_class.php");
 									list($adminuser,$adminhost) = split ("@", SITEADMINEMAIL);
@@ -1296,6 +1297,7 @@ class validatorClass
 										$errMsg = ERR_INVALID_EMAIL;
 									}
 								}
+							*/
 								break;
 							default :
 								echo 'Invalid vetMethod: '.$options['vetMethod'].'<br />';	// Really a debug aid - should never get here

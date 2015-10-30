@@ -77,20 +77,63 @@ class admin_start
 
 
 	private $allowed_types = null;
+	private $refresh  = false;
 
 	
 	
 	
 	function __construct()
 	{
+		$this->checkPaths();
+		$this->checkTimezone();
 		$this->checkWritable();
 		$this->checkHtmlarea();	
 		$this->checkIncompatiblePlugins();
 		$this->checkFileTypes();
 		$this->checkSuspiciousFiles();
 		$this->checkDeprecated();
-		
+
+		if($this->refresh == true)
+		{
+			e107::getRedirect()->go(e_SELF);
+		}
+
 	}	
+
+	function checkPaths()
+	{
+		$create_dir = array(e_MEDIA,e_SYSTEM,e_CACHE,e_CACHE_CONTENT,e_CACHE_IMAGE, e_CACHE_DB, e_LOG, e_BACKUP, e_CACHE_URL, e_TEMP, e_IMPORT);
+
+		$refresh = false;
+
+		foreach($create_dir as $dr)
+		{
+			if(!is_dir($dr))
+			{
+				if(mkdir($dr, 0755))
+				{
+					$this->refresh = true;
+				}
+			}
+		}
+
+	}
+
+
+
+	function checkTimezone()
+	{
+		$mes = e107::getMessage();
+		$timezone = e107::pref('core','timezone');
+
+		if(e107::getDate()->isValidTimezone($timezone) == false)
+		{
+			$mes->addWarning("Your timezone setting (".$timezone.") is invalid. It has been reset to UTC. To Modify, please go to Admin -> Preferences -> Date Display Options.", 'default', true);
+			e107::getConfig()->set('timezone','UTC')->save(false,true,false);
+			$this->refresh = true;
+		}
+
+	}
 
 
 	function checkWritable()
@@ -153,7 +196,8 @@ class admin_start
 	{
 		$deprecated = array(
 			e_ADMIN."ad_links.php",
-			e_PLUGIN."tinymce4/e_meta.php", e_THEME."bootstrap3/css/bootstrap_dark.css",
+			e_PLUGIN."tinymce4/e_meta.php",
+			e_THEME."bootstrap3/css/bootstrap_dark.css",
 			e_PLUGIN."search_menu/languages/English.php",
 			e_LANGUAGEDIR."English/lan_parser_functions.php",
 			e_HANDLER."np_class.php",

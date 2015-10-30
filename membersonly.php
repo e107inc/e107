@@ -53,7 +53,7 @@ class membersonly
 		if (intval($pref['user_reg'])===1)
 		{
 			$srch = array("[","]");
-			$repl = array("<a href='".e_SIGNUP."'>","</a>");
+			$repl = array("<a class='alert-link' href='".e_SIGNUP."'>","</a>");
 			return str_replace($srch,$repl, LAN_MEMBERS_3);
 		}
 
@@ -72,7 +72,7 @@ class membersonly
 	function sc_membersonly_login()
 	{
 		$srch = array("[","]");
-		$repl = array("<a href='".e_LOGIN."'>","</a>");
+		$repl = array("<a class='alert-link' href='".e_LOGIN."'>","</a>");
 		return str_replace($srch,$repl, LAN_MEMBERS_2);
 	}
 
