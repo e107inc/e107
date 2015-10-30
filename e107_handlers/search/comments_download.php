@@ -10,7 +10,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-$comments_title = ADLAN_24;
+$comments_title = LAN_PLUGIN_DOWNLOAD_NAME;
 $comments_type_id = '2';
 $comments_return['download'] = "d.download_id, d.download_name";
 $comments_table['download'] = "LEFT JOIN #download AS d ON c.comment_type=2 AND d.download_id = c.comment_item_id";

@@ -233,11 +233,11 @@ class userlogin
 		$user_email = $this->userData['user_email'];
 
 		/* restrict more than one person logging in using same us/pw */
-		if($pref['disallowMultiLogin'])
+		if(!empty($pref['disallowMultiLogin']) && !empty($user_id))
 		{
-			if($sql->db_Select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'"))
+			if($sql->select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'"))
 			{
-				return $this->invalidLogin($username,LOGIN_MULTIPLE,$user_id);
+				return $this->invalidLogin($username, LOGIN_MULTIPLE, $user_id);
 			}
 		}
 

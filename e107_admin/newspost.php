@@ -392,7 +392,7 @@ class news_admin_ui extends e_admin_ui
 		'news_extended'			=> array('title' => "", 	        'type' => null,     'tab'=>0,  'nolist'=>true, 'writeParms'=>'nolabel=1','data'=>'str',		'width' => 'auto', 	'thclass' => '',  'class' => null, 		'nosort' => false),
 
 		'news_meta_keywords'	=> array('title' => LAN_KEYWORDS, 	'type' => 'tags', 	    'tab'=>1,	'inline'=>true, 'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
-		'news_meta_description'	=> array('title' => LAN_DESCRIPTION,'type' => 'textarea', 	'tab'=>1,	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
+		'news_meta_description'	=> array('title' => LAN_DESCRIPTION,'type' => 'textarea', 	'tab'=>1,	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'writeParms'=>array('size'=>'xxlarge')),
 		'news_sef'				=> array('title' => LAN_SEFURL, 	'type' => 'text',       'tab'=>1,  'writeParms'=>'size=xxlarge',	'inline'=>true, 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 		'news_ping'				=> array('title' => LAN_PING, 	    'type' => 'checkbox',   'tab'=>1, 'data'=>false, 'writeParms'=>'value=0',	'inline'=>true, 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 
@@ -404,16 +404,16 @@ class news_admin_ui extends e_admin_ui
         'news_class'			=> array('title' => LAN_VISIBILITY, 'type' => 'userclasses','tab'=>2,   'inline'=>true, 'width' => 'auto', 	'thclass' => '', 				'class' => null,  'batch'=>true, 'filter'=>true),
 		'news_render_type'		=> array('title' => LAN_TEMPLATE, 	'type' => 'dropdown',   'tab'=>0,   'data'=> 'str',		'inline'=>false, 'width' => 'auto', 	'thclass' => 'left', 			'class' => 'left', 		'nosort' => false, 'batch'=>true, 'filter'=>true),
 		'news_sticky'			=> array('title' => LAN_NEWS_28, 	'type' => 'boolean',    'tab'=>2,	'data' => 'int' , 'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false, 'batch'=>true, 'filter'=>true),
-        'news_allow_comments' 	=> array('title' => LAN_COMMENTS, 		'type' => 'boolean',    'tab'=>2,	'writeParms'=>'inverse=1', 'data' => 'int', 'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false,'batch'=>true, 'filter'=>true,'readParms'=>'reverse=1','writeParms'=>'inverse=1'),
+        'news_allow_comments' 	=> array('title' => LAN_COMMENTS, 		'type' => 'boolean',    'tab'=>2,	'writeParms'=>'inverse=1', 'data' => 'int', 'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false,'batch'=>true, 'filter'=>true,'readParms'=>'reverse=1'),
         'news_comment_total' 	=> array('title' => LAN_NEWS_60, 	'type' => 'number',     'tab'=>2,	'noedit'=>true, 'width' => '10%', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 	//	admin_news_notify
-		'news_email_notify'     => array('title' => "Email notification", 'type' => 'checkbox',   'tab'=>2,  'data'=>false, 'writeParms'=>array('show'=>1), 'help'=>'Trigger an email notification when you submit this form.'),
+		'news_email_notify'     => array('title' => "Email notification", 'type' => 'checkbox',   'tab'=>2,  'data'=>false, 'writeParms'=>array('show'=>1, 'tdClassRight'=>'form-inline'), 'help'=>'Trigger an email notification when you submit this form.'),
 		'submitted_id'          => array('title' => LAN_NEWS_68, 'type' => 'hidden',  'tab'=>2,  'data'=>false, 'writeParms'=>'show=0'),
 		'options'				=> array('title' => LAN_OPTIONS, 	'type' => null, 		'width' => '10%', 	'thclass' => 'center last', 	'class' => 'center', 	'nosort' => true, 'forced' => TRUE)
 
 	);
 	
-	protected $fieldpref = array('checkboxes','news_id', 'news_thumbnail', 'news_title', 'news_datestamp', 'news_category', 'options');
+	protected $fieldpref = array('checkboxes','news_id', 'news_thumbnail', 'news_title', 'news_datestamp', 'news_category', 'news_class', 'options');
 
 	/* //TODO
 	protected $prefs = array(
@@ -470,12 +470,12 @@ class news_admin_ui extends e_admin_ui
 			$new_data['news_thumbnail'] = $this->processThumbs($new_data['news_thumbnail']);
 		}
 
-		if(empty($new_data['news_datestamp']))
+		if(isset($new_data['news_datestamp']) && empty($new_data['news_datestamp']))
 		{
 			$new_data['news_datestamp'] = time();
 		}
 
-		if(empty($new_data['news_sef']) && !empty($new_data['news_title']))
+		if(isset($new_data['news_sef']) && empty($new_data['news_sef']) && !empty($new_data['news_title']))
 		{
 			$new_data['news_sef'] = eHelper::title2sef($new_data['news_title']);
 		}

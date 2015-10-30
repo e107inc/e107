@@ -18,7 +18,7 @@
 define("LAN_LASTSEEN_1", "Last Seen Menu");
 
 //online
-define('LAN_ONLINE_TRACKING_MESSAGE', "Online user tracking is currently disabled, please enable it [link=".e_ADMIN."users.php?options]here[/link][br]");
+define('LAN_ONLINE_TRACKING_MESSAGE', "Online user tracking is currently disabled, please enable it [here]");
 define("LAN_ONLINE_1", "Guests: ");
 define("LAN_ONLINE_2", "Members: ");
 define("LAN_ONLINE_3", "On this page: ");

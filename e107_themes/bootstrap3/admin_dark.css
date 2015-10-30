@@ -59,6 +59,14 @@ tr.highlight-even, .table-striped > tbody > tr.highlight-even		{ background-colo
 .tab-content { background-color: #373737 }
 
 
+input:invalid:focus,
+textarea:invalid:focus,
+select:invalid:focus {
+	border-color: red;
+	box-shadow:  0px 1px 1px 0px rgba(255, 0, 0, 0.75) inset;
+}
+
+
 /*
 .bootstrap-select, bootstrap-select button
 {

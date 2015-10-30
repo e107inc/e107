@@ -188,7 +188,8 @@ class e107plugin
 	/**
 	 * Returns an array containing details of all plugins in the plugin table - should normally use e107plugin::update_plugins_table() first to
 	 * make sure the table is up to date. (Primarily called from plugin manager to get lists of installed and uninstalled plugins.
-	 * @return array plugin details
+	 * @param string $path
+	 * @return int
 	 */
 	function getId($path)
 	{
@@ -1355,17 +1356,17 @@ class e107plugin
 
 	/**
 	 * Install routine for XML file
-	 * @param object $id (the number of the plugin in the DB) or the path to the plugin folder. eg. 'forum' 
-	 * @param object $function install|upgrade|uninstall|refresh (adds things that are missing, but doesn't change any existing settings)
-	 * @param object $options [optional] an array of possible options - ATM used only for uninstall:
+	 * @param mixed $id (the number of the plugin in the DB) or the path to the plugin folder. eg. 'forum'
+	 * @param string $function install|upgrade|uninstall|refresh (adds things that are missing, but doesn't change any existing settings)
+	 * @param array $options [optional] an array of possible options - ATM used only for uninstall:
 	 * 			'delete_userclasses' - to delete userclasses created
 	 * 			'delete_tables' - to delete DB tables
 	 * 			'delete_xfields' - to delete extended fields
 	 * 			'delete_ipool' - to delete icon pool entry
 	 * 			+ any defined in <pluginname>_setup.php in the uninstall_options() method.
-	 * @return TBD
+	 * @return void
 	 */
-	function install_plugin_xml($id, $function = '', $options = FALSE)
+	function install_plugin_xml($id, $function = '', $options = null)
 	{	
 			
 		$pref = e107::getPref();
@@ -1376,20 +1377,20 @@ class e107plugin
 		$error = array(); // Array of error messages
 		$canContinue = TRUE; // Clear flag if must abort part way through
 
-		if(is_string($id)) // Plugin Path. 
-		{
-			$id = $this->getId($id); 
-			$plug = $this->getinfo($id); // Get plugin info from DB		
-		}
-		elseif(is_array($id))
+		if(is_array($id)) // plugin info array
 		{
 			$plug = $id;	
-			$id = $plug['plugin_id'];
+			$id = (int) $plug['plugin_id'];
 		}
-		else 
+		elseif(is_numeric($id)) // plugin database id
 		{
 			$id = (int) $id;
 			$plug = $this->getinfo($id); // Get plugin info from DB	
+		}
+		else // Plugin Path.
+		{
+			$id = $this->getId($id);
+			$plug = $this->getinfo($id); // Get plugin info from DB
 		}
 				
 		$this->current_plug = $plug;
@@ -2371,7 +2372,7 @@ class e107plugin
 
 		if ($mode != "core") // Do only one core pref save during install/uninstall etc.
 		{
-			$config->save();
+			$config->save(true, false, false);
 		}
 		return;
 	}
@@ -2839,7 +2840,7 @@ class e107plugin
 			}
 		}
 
-		$core->save(FALSE);
+		$core->save(FALSE, false, false);
 
 		if ($this->manage_icons())
 		{

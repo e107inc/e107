@@ -1197,7 +1197,19 @@ class e_form
 		$options['pattern'] = vartrue($options['pattern'],'[\S]{4,}');
 		$options['required'] = varset($options['required'], 1);
 		$options['class'] = vartrue($options['class'],'e-password');
-		
+
+
+		e107::js('core', 	'password/jquery.pwdMeter.js', 'jquery', 2);
+
+		e107::js('footer-inline', '
+			$(".e-password").pwdMeter({
+	            minLength: 6,
+	            displayGeneratePassword: true,
+	            generatePassText: "Generate",
+	            randomPassLength: 12
+	        });
+	    ');
+
 		if(deftrue('BOOTSTRAP') == 3)
 		{
 			$options['class'] .= ' form-control';
@@ -1334,7 +1346,7 @@ class e_form
 		}
 		elseif(!vartrue($options['noresize']))
 		{
-			$options['class'] = (isset($options['class']) && $options['class']) ? $options['class'].' e-autoheight' : 'tbox span7 e-autoheight';
+			$options['class'] = (isset($options['class']) && $options['class']) ? $options['class'].' e-autoheight' : 'tbox col-md-7 span7 e-autoheight';
 		}
 
 		$options = $this->format_options('textarea', $name, $options);
@@ -2331,7 +2343,8 @@ class e_form
 			case 'filter e-hide-if-js': // FIXME hide-js shouldn't be here. 
 				$options['class'] .= 'btn-primary';
 			break;
-			
+
+			case 'default':
 			default:
 				$options['class'] .= 'btn-default';
 			break;
@@ -2905,7 +2918,7 @@ class e_form
 		
 		if(count($list))
 		{
-			return "<div class='e-related clearfix'><hr><h4>Related</h4><ul class='e-related'>".implode("\n",$list)."</ul></div>"; //XXX Tablerender?
+			return "<div class='e-related clearfix'><hr><h4>".defset('LAN_RELATED', 'Related')."</h4><ul class='e-related'>".implode("\n",$list)."</ul></div>"; //XXX Tablerender?
 		}
 		
 	}		
@@ -3152,7 +3165,7 @@ class e_form
 					{
 						$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 						$from = intval(vartrue($_GET['from'],0));
-						$value .= "<a class='e-sort sort-trigger btn btn-default' style='cursor:move' data-target='".e_SELF."?mode={$mode}&action=sort&ajax_used=1&from={$from}' title='Re-order'>".ADMIN_SORT_ICON."</a> ";	
+						$value .= "<a class='e-sort sort-trigger btn btn-default' style='cursor:move' data-target='".e_SELF."?mode={$mode}&action=sort&ajax_used=1&from={$from}' title='".LAN_RE_ORDER."'>".ADMIN_SORT_ICON."</a> ";	
 					}	
 					
 					$cls = false;
@@ -4749,7 +4762,7 @@ class e_form
 				$key = $att['field'];
 			}
 			
-			if($key == 'checkboxes' || $key == 'options' || ($att['type'] === null))
+			if($key == 'checkboxes' || $key == 'options' || ($att['type'] === null) || ($att['type'] === false))
 			{
 				continue;	
 			}

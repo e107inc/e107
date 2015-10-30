@@ -36,7 +36,7 @@ class auth_login extends alt_auth_base
 	public	$Available = FALSE;		// Flag indicates whether DB connection available
 	private	$filter;		// Filter for eDirectory search
 	private	$copyAttribs; 	// Any attributes which are to be copied on successful login
-	private	$copyMethods;	// Methods which are to be used to copy attributes
+	public	$copyMethods;	// Methods which are to be used to copy attributes
 
 
 

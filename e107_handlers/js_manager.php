@@ -44,7 +44,8 @@ class e_jsmanager
 		//	"http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"	
 		//	"http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js",
 		//	"http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"
-			"http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"
+		//	"http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"
+			"https://cdn.jsdelivr.net/jquery/2.1.4/jquery.min.js"
 	//		,
 	//		"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js",
 	//		"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css",
@@ -240,26 +241,15 @@ class e_jsmanager
 		
 		if($this->isInAdmin()) // Include jquery-ui in the admin-area only - Jquery-UI to eventually be removed from e107 completely if possible. 
 		{
+			$this->_libraries['jquery'] = array(
+				"https://cdn.jsdelivr.net/jquery/2.1.4/jquery.min.js",
+				"https://cdn.jsdelivr.net/jquery.ui/1.11.4/jquery-ui.min.js",
+				"https://cdn.jsdelivr.net/jquery.ui/1.11.4/themes/smoothness/jquery-ui.min.css"
+			);
 
-			if(e107::getPref('admintheme')=='bootstrap3') //  Bootstrap 3 admin area.
-			{
-					$this->_libraries['jquery'] = array(
-					"http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js",
-					"https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js",
-					"https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css",
-			//		"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js",
-			//		"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css",
-					);	
-			}
-			else  //  Bootstrap 2 admin area.
-			{
-				$this->_libraries['jquery'] = array(
-				"http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js",
-				"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js",
-				"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css",
-				);
-			}
-			
+			//		"https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js",
+			//	"https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css",
+			//https://cdn.jsdelivr.net/jquery.ui/1.11.4/jquery-ui.min.css
 		}
 		
 		if(isset($_SERVER['E_DEV_LOCALJS']) &&  $_SERVER['E_DEV_LOCALJS'] === 'true') // Test with Local JS Framework files. 

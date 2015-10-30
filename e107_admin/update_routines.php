@@ -48,8 +48,8 @@ $update_debug = TRUE;			// TRUE gives extra messages in places
 if (defined('TEST_UPDATE')) $update_debug = TRUE;
 
 
-if (!defined('LAN_UPDATE_8')) { define('LAN_UPDATE_8', ''); }
-if (!defined('LAN_UPDATE_9')) { define('LAN_UPDATE_9', ''); }
+//if (!defined('LAN_UPDATE_8')) { define('LAN_UPDATE_8', ''); }
+//if (!defined('LAN_UPDATE_9')) { define('LAN_UPDATE_9', ''); }
 
 
 // Determine which installed plugins have an update file - save the path and the installed version in an array
@@ -127,9 +127,12 @@ if (!$dont_check_update)
 		$dbupdate['test_code'] = 'Test update routine';
 	}
 	
-	// set 'master' to true to prevent other upgrades from running before it is complete. 
-	$dbupdate['706_to_800'] = array('master'=>true, 'title'=>LAN_UPDATE_8.' 1.x '.LAN_UPDATE_9.' 2.0','message'=> LAN_UPDATE_29);
-	$dbupdate['core_prefs'] = array('master'=>true, 'title'=>LAN_UPDATE_13);						// Prefs check
+	// set 'master' to true to prevent other upgrades from running before it is complete.
+
+	$LAN_UPDATE_4 = deftrue('LAN_UPDATE_4',"Update from [x] to [y]"); // in case language-pack hasn't been upgraded.
+
+	$dbupdate['706_to_800'] = array('master'=>true, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('1.x','2.0')), 'message'=> LAN_UPDATE_29);
+	$dbupdate['core_prefs'] = array('master'=>true, 'title'=> LAN_UPDATE_13);						// Prefs check
 //	$dbupdate['70x_to_706'] = LAN_UPDATE_8.' .70x '.LAN_UPDATE_9.' .706';
 }		// End if (!$dont_check_update)
 
@@ -176,7 +179,9 @@ class e107Update
 	function updateCore($func='')
 	{
 		$mes = e107::getMessage();
-		
+		$tp = e107::getParser();
+
+
 	//	foreach($this->core as $func => $data)
 	//	{
 			if(function_exists('update_'.$func)) // Legacy Method. 
@@ -187,7 +192,8 @@ class e107Update
 				{
 					if(function_exists("update_".$func))
 					{
-						$message = LAN_UPDATE_7." ".$func;
+						// $message = LAN_UPDATE_7." ".$func;
+						$message = $tp->lanVars(LAN_UPDATE_7, $this->core[$func]['title']);
 						$error = call_user_func("update_".$func, "do");
 						
 						if($error != '')
@@ -254,6 +260,8 @@ class e107Update
 		$mes = e107::getMessage();
 		
 		$text = "";
+
+
 		
 		foreach($this->core as $func => $data)
 		{
@@ -437,7 +445,8 @@ function update_core_prefs($type='')
 		if ($k && !array_key_exists($k,$pref))
 		{
 			if ($just_check) return update_needed('Missing pref: '.$k);
-			$pref[$k] = $v;
+		//	$pref[$k] = $v;
+			e107::getConfig()->set($k,$v);
 			$admin_log->logMessage($k.' => '.$v, E_MESSAGE_NODISPLAY, E_MESSAGE_INFO);
 			$do_save = TRUE;
 		}
@@ -445,7 +454,7 @@ function update_core_prefs($type='')
 	if ($do_save)
 	{
 		//save_prefs();
-		e107::getConfig('core')->setPref($pref)->save();
+		e107::getConfig('core')->save(false,true);
 		$admin_log->logMessage(LAN_UPDATE_14.$e107info['e107_version'], E_MESSAGE_NODISPLAY, E_MESSAGE_INFO);
 		$admin_log->flushMessages('UPDATE_03',E_LOG_INFORMATIVE);
 		//e107::getLog()->add('UPDATE_03',LAN_UPDATE_14.$e107info['e107_version'].'[!br!]'.implode(', ',$accum),E_LOG_INFORMATIVE,'');	// Log result of actual update
@@ -497,10 +506,14 @@ function update_706_to_800($type='')
 	e107::getCache()->clearAll('db');
 	e107::getCache()->clearAll('system');
 
+	e107::getMessage()->setUnique();
+
 	// List of unwanted $pref values which can go
 	$obs_prefs = array('frontpage_type','rss_feeds', 'log_lvcount', 'zone', 'upload_allowedfiletype', 'real', 'forum_user_customtitle',
 						'utf-compatmode','frontpage_method','standards_mode','image_owner','im_quality', 'signup_option_timezone',
-						'modules', 'plug_sc', 'plug_bb', 'plug_status', 'plug_latest', 'subnews_hide_news', 'upload_storagetype'
+						'modules', 'plug_sc', 'plug_bb', 'plug_status', 'plug_latest', 'subnews_hide_news', 'upload_storagetype',
+						'signup_remote_emailcheck'
+
 				);
 
 	// List of DB tables not required (includes a few from 0.6xx)
@@ -515,15 +528,7 @@ function update_706_to_800($type='')
 	$serialized_prefs = array("'emote'", "'menu_pref'", "'search_prefs'", "'emote_default'", "'pm_prefs'");
 
 
-	$create_dir = array(e_MEDIA,e_SYSTEM,e_CACHE,e_CACHE_CONTENT,e_CACHE_IMAGE, e_CACHE_DB, e_LOG, e_BACKUP, e_CACHE_URL, e_TEMP, e_IMPORT);
-	
-	foreach($create_dir as $dr)
-	{
-		if(!is_dir($dr))
-		{
-			mkdir($dr, 0755);	
-		}				
-	}
+
 
 	// List of changed DB tables (defined in core_sql.php)
 	// No Longer required. - automatically checked against core_sql.php. 
@@ -599,7 +604,7 @@ function update_706_to_800($type='')
 	$do_save = FALSE;								// Set TRUE to update prefs when update complete
 	$updateMessages = array();						// Used to log actions for the admin log - TODO: will go once all converted to new class
 
-	$just_check = $type == 'do' ? FALSE : TRUE;		// TRUE if we're just seeing whether an update is needed
+	$just_check = ($type == 'do') ? FALSE : TRUE;		// TRUE if we're just seeing whether an update is needed
 
 //	if (!$just_check)
 //	{
@@ -622,14 +627,7 @@ function update_706_to_800($type='')
 
 	$statusTexts = array(E_MESSAGE_SUCCESS => 'Success', E_MESSAGE_ERROR => 'Fail', E_MESSAGE_INFO => 'Info');
 
-	if (isset($pref['forum_user_customtitle']) && !isset($pref['signup_option_customtitle']))
-	{
-		if ($just_check) return update_needed('pref: forum_user_customtitle needs to be renamed');
-		$pref['signup_option_customtitle'] = $pref['forum_user_customtitle'];
-		unset($pref['forum_user_customtitle']);
-		$log->logMessage(LAN_UPDATE_20.'customtitle', E_MESSAGE_SUCCESS);		
-		$do_save = TRUE;
-	}
+
 
 	if($pref['admintheme'] == 'bootstrap')//TODO Force an admin theme update or not?
 	{
@@ -646,7 +644,7 @@ function update_706_to_800($type='')
     $serialz_qry .= "AND e107_name IN (".implode(",",$serialized_prefs).") ";
 	if(e107::getDb()->select("core", "*", $serialz_qry))
 	{
-		if ($just_check) return update_needed('Convert serialized core prefs');
+		if($just_check) return update_needed('Convert serialized core prefs');
 		while ($row = e107::getDb()->fetch(MYSQL_ASSOC))
 		{
 			$status = e107::getDb('sql2')->update('core',"e107_value=\"".convert_serialized($row['e107_value'])."\" WHERE e107_name='".$row['e107_name']."'") ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;				
@@ -886,6 +884,10 @@ function update_706_to_800($type='')
 		$pref['frontpage'] = array(e_UC_PUBLIC => $fpdef);
 		// $_pdateMessages[] = LAN_UPDATE_38; //FIXME
 		$log->logMessage(LAN_UPDATE_20."frontpage",E_MESSAGE_DEBUG);
+
+		e107::getConfig()->add('frontpage_force', $pref['frontpage_force']);
+		e107::getConfig()->add('frontpage', $pref['frontpage']);
+		unset($pref['frontpage_force'], $pref['frontpage']);
 		$do_save = TRUE;
 	}
 
@@ -933,153 +935,15 @@ function update_706_to_800($type='')
 	}
 
 
+	if($sql->isTable('forum_t') && $sql->isEmpty('forum') && $sql->isEmpty('forum_t'))
+	{
+		if ($just_check) return update_needed('Empty forum tables need to be removed.');
+		$obs_tables[] = 'forum_t';
+		$obs_tables[] = 'forum';
+
+	}
 	  
-	// New tables required (list at top. Definitions in core_sql.php)
-	// ALL DEPRECATED by db_verify class.. see below. 
-	/*
-	foreach ($new_tables as $nt)
-	{
-		if (!$sql->isTable($nt))
-		{
-			if ($just_check) return update_needed('Add table: '.$nt);
-			// Get the definition
-			$defs = $db_parser->get_table_def($nt,e_ADMIN.'sql/core_sql.php');
-			if (count($defs)) // **** Add in table here
-			{	
-				$status = $sql->gen('CREATE TABLE `'.MPREFIX.$defs[0][1].'` ('.$defs[0][2].') TYPE='.$defs[0][3]) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-			//	$updateMessages[] = LAN_UPDATE_45.$defs[0][1];		
-				$log->logMessage(LAN_UPDATE_27.$defs[0][1], $status);
-				// catch_error($sql);
-			}
-			else
-			{  // error parsing defs file
-				$log->logMessage(LAN_UPDATE_46.$defs[0][1], E_MESSAGE_ERROR);
-			}
-			unset($defs);
-		}
-	}
 
-	
-	
-	// Tables whose definition needs changing significantly
-     $debugLevel = E107_DBG_SQLDETAILS;
-
-	foreach ($changed_tables as $ct)
-	{
-	  $req_defs = $db_parser->get_table_def($ct,e_ADMIN."sql/core_sql.php");
-	  $req_fields = $db_parser->parse_field_defs($req_defs[0][2]);					// Required definitions
-	  if ($debugLevel)
-	  {
-	  	$log->logMessage("Required table structure: <br />".$db_parser->make_field_list($req_fields), E_MESSAGE_DEBUG);			
-	  } 
-
-	  if ((($actual_defs = $db_parser->get_current_table($ct)) === FALSE) || !is_array($actual_defs))			// Adds current default prefix
-	  {
-			$log->logMessage("Couldn't get table structure: ".$ct, E_MESSAGE_DEBUG);		
-	  }
-	  else
-	  {
-//		echo $db_parser->make_table_list($actual_defs);
-		$actual_fields = $db_parser->parse_field_defs($actual_defs[0][2]);
-		if ($debugLevel)
-		{
-			$log->logMessage("Actual table structure: <br />".$db_parser->make_field_list($actual_fields), E_MESSAGE_DEBUG);		
-		} 
-
-		$diffs = $db_parser->compare_field_lists($req_fields,$actual_fields);
-		if (count($diffs[0]))
-		{  // Changes needed
-		  	if ($just_check) return update_needed("Field changes rqd; table: ".$ct);
-		
-			// Do the changes here
-		  	if ($debugLevel)
-		  	{
-		  		$log->logMessage("List of changes found:<br />".$db_parser->make_changes_list($diffs), E_MESSAGE_DEBUG);		
-		  	} 
-		  
-			$qry = 'ALTER TABLE '.MPREFIX.$ct.' '.implode(', ',$diffs[1]);
-		  
-			if ($debugLevel)
-			{
-				$log->logMessage("Update Query used: ".$qry, E_MESSAGE_DEBUG);	
-			} 
-		  
-			$status = $sql->gen($qry) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR; 
-			$log->logMessage(LAN_UPDATE_21.$ct, $status);
-		  	catch_error($sql);
-		}
-	  }
-	}
-
-
-	// Plugin tables whose definition needs changing significantly
-	foreach ($pluginChangedTables as $plugName => $plugList)
-	{
-		if (e107::isInstalled($plugName))
-		{
-			$ttc = explode(',',$plugList);
-			foreach ($ttc as $ct)
-			{
-				$sqlDefs = e_PLUGIN.$plugName.'/'.str_replace('_menu','',$plugName).'_sql.php';		// Filename containing definitions
-//				echo "Looking at file: {$sqlDefs}, table {$ct}<br />";
-				$req_defs = $db_parser->get_table_def($ct,$sqlDefs);
-				if (!is_array($req_defs))
-				{
-					echo "Couldn't get definitions from file {$sqlDefs}<br />";
-					continue;
-				}
-				$req_fields = $db_parser->parse_field_defs($req_defs[0][2]);					// Required definitions
-				if (E107_DBG_SQLDETAILS)
-				{
-				  $message = "Required plugin table structure: <br />".$db_parser->make_field_list($req_fields);
-				  
-				  $log->logMessage($message, E_MESSAGE_DEBUG);
-				  	
-				} 
-
-				if ((($actual_defs = $db_parser->get_current_table($ct)) === FALSE) || !is_array($actual_defs))			// Adds current default prefix
-				{
-//	    			echo "Couldn't get table structure: {$ct}<br />";
-				}
-				else
-				{
-//					echo $db_parser->make_table_list($actual_defs);
-					$actual_fields = $db_parser->parse_field_defs($actual_defs[0][2]);
-					if (E107_DBG_SQLDETAILS)
-					{					
-						$message= "Actual table structure: <br />".$db_parser->make_field_list($actual_fields);
-						$log->logMessage($message, E_MESSAGE_DEBUG);
-					} 
-
-					$diffs = $db_parser->compare_field_lists($req_fields,$actual_fields);
-					if (count($diffs[0]))
-					{  // Changes needed
-						if (E107_DBG_SQLDETAILS)
-						{
-							$message = "List of changes found:<br />".$db_parser->make_changes_list($diffs);
-							$log->logMessage($message, E_MESSAGE_DEBUG);	
-						} 
-						if ($just_check) return update_needed("Field changes rqd; plugin table: ".$ct);
-						// Do the changes here
-						$qry = 'ALTER TABLE '.MPREFIX.$ct.' '.implode(', ',$diffs[1]);
-						if (E107_DBG_SQLDETAILS)
-						{
-							 $message = "Update Query used: ".$qry."<br />";
-							 $log->logMessage($message, E_MESSAGE_DEBUG);	
-						}
-						$sql->gen($qry);
-						$updateMessages[] = LAN_UPDATE_51.$ct;  
-						$log->logMessage(LAN_UPDATE_51.$ct, E_MESSAGE_SUCCESS);
-						catch_error($sql);
-					}
-				}
-			}
-		}
-	}
-
-*/	
-	
-	
 	// Obsolete tables (list at top)
 	$sql->mySQLtableList = false; // clear the cached table list. 
 	foreach ($obs_tables as $ot)
@@ -1132,11 +996,14 @@ function update_706_to_800($type='')
 	  {
 	    if ($just_check) return update_needed('Remove obsolete prefs');
 		unset($pref[$p]);
-		$do_save = TRUE;
+		e107::getConfig()->remove($p);
+		$do_save = true;
 		$log->addDebug('Removed obsolete pref: '.$p);
 	//	$accum[] = $p;
 	  }
 	}
+
+
 
 
 
@@ -1163,6 +1030,7 @@ function update_706_to_800($type='')
 		if ($just_check)
 		{
 			$mes = e107::getMessage();
+		//	$mes->addDebug(print_a($dbv->errors,true));
 			$log->addDebug(print_a($dbv->errors,true));
 			return update_needed("Database Tables require updating.");
 		}
@@ -1185,11 +1053,16 @@ function update_706_to_800($type='')
 			return update_needed("Pages/Menus Table requires updating.");	
 		}
 		
-		if($sql->update('page',"menu_name = page_theme, menu_title = page_title, menu_text = page_text, menu_template='default', page_title = '', page_text = '' WHERE page_theme !='' AND menu_title = '' AND menu_text = '' "))
+		if($sql->update('page',"menu_name = page_theme, menu_title = page_title, menu_text = page_text, menu_template='default', page_title = '', page_text = '' WHERE page_theme !='' AND menu_title = '' AND menu_text IS NULL "))
 		{
 			$sql->gen("ALTER TABLE `#page` DROP page_theme ");
 			$mes = e107::getMessage();
 			$log->addDebug("Successfully updated pages/menus table to new format. ");
+		}
+		else
+		{
+			$log->addDebug("FAILED to update pages/menus table to new format. ");
+			//$sql->gen("ALTER TABLE `#page` DROP page_theme ");
 		}
 	
 	}
@@ -1253,16 +1126,25 @@ function update_706_to_800($type='')
 		$message = str_replace('--COUNT--',$nt_changed,LAN_UPDATE_20);
 		$log->logMessage($message, $status);
 	}
-	
 
-	
-	
-		 	
+
+
+
+	if (isset($pref['forum_user_customtitle']) && !isset($pref['signup_option_customtitle']))
+	{
+		if ($just_check) return update_needed('pref: forum_user_customtitle needs to be renamed');
+		//	$pref['signup_option_customtitle'] = $pref['forum_user_customtitle'];
+		e107::getConfig()->add('signup_option_customtitle', $pref['forum_user_customtitle']);
+		e107::getConfig()->remove('forum_user_customtitle');
+
+		$log->logMessage(LAN_UPDATE_20.'customtitle', E_MESSAGE_SUCCESS);
+		$do_save = TRUE;
+	}
 	
 		
 	// ---------------  Saved emails - copy across
 	
-	if (!$just_check && $sql->db_Select('generic', '*', "gen_type='massmail'"))
+	if (!$just_check && $sql->select('generic', '*', "gen_type='massmail'"))
 	{
 		if ($just_check) return update_needed('Copy across saved emails');
 		require_once(e_HANDLER.'mail_manager_class.php');
@@ -1296,10 +1178,13 @@ function update_706_to_800($type='')
 	{
 	  	if ($just_check) return update_needed('Legacy shortcode conversion');
 	 	// Reset, legacy and new shortcode list will be generated in plugin update routine
-	  	$pref['shortcode_legacy_list'] = array();
-	 	$pref['shortcode_list'] = array();
-	 	save_prefs();
-	  
+	 // 	$pref['shortcode_legacy_list'] = array();
+	// 	$pref['shortcode_list'] = array();
+
+	 	e107::getConfig()->add('shortcode_legacy_list', array());
+		e107::getConfig()->set('shortcode_list', array());
+		e107::getConfig()->save(false,true,false);
+
 	  	$ep = e107::getPlugin();
 		$ep->update_plugins_table($mode); // scan for e_xxx changes and save to plugin table.
 		$ep->save_addon_prefs($mode); // generate global e_xxx_list prefs from plugin table.
@@ -1532,10 +1417,10 @@ function update_706_to_800($type='')
 //	$publicFilter = array(1);
 	$public_files = $fl->get_files(e_FILE.'public','',$publicFilter);
 	
-	if((count($dl_files) || count($public_files)) && !$sql->gen("SELECT * FROM `#core_media` WHERE `media_category` = 'download_file' "))
+	if((count($dl_files) || count($public_files)) && !$sql->gen("SELECT * FROM `#core_media` WHERE `media_category` = 'download_file' OR  `media_category` = '_common_file' "))
 	{
 		if ($just_check) return update_needed('Import '.count($dl_files).' Download File(s) and '.count($public_files).' Public File(s) into Media Manager');
-		
+
 		if($sql->gen("SELECT download_url FROM `#download` "))
 		{
 			$allowed_types = array();
@@ -1559,9 +1444,23 @@ function update_706_to_800($type='')
 			$allowed_types = array('zip','gz','pdf');	
 		}
 		
-		$fmask = '[a-zA-z0-9_-]+\.('.implode('|',$allowed_types).')$';
+		$fmask = '[a-zA-Z0-9_.-]+\.('.implode('|',$allowed_types).')$';
+
 		$med->import('download_file',e_DOWNLOAD, $fmask);
-		$med->import('_common_file',e_FILE.'public', $fmask);	
+
+		// add found Public file-types.
+		foreach($public_files as $v)
+		{
+			$ext = strrchr($v['fname'], ".");
+			$suffix = ltrim($ext,".");
+			if(!isset($allowed_types[$suffix]))
+			{
+				$allowed_types[$suffix] = $suffix;
+			}
+		}
+
+		$publicFmask = '[a-zA-Z0-9_.-]+\.('.implode('|',$allowed_types).')$';
+		$med->import('_common_file', e_FILE.'public', $publicFmask);
 	}
 
 
@@ -1656,11 +1555,9 @@ function update_706_to_800($type='')
 		if ($do_save)
 		{
 		//	save_prefs();
-			e107::getConfig()->setPref($pref)->save(false,true,true);
-			$log->logMessage(LAN_UPDATE_50);
+			e107::getConfig()->setPref($pref)->save(false,true,false);
+		//	$log->logMessage(LAN_UPDATE_50);
 		//	$log->logMessage(implode(', ', $accum), E_MESSAGE_NODISPLAY);
-			
-			
 			//$updateMessages[] = LAN_UPDATE_50.implode(', ',$accum); 	// Note for admin log
 		}
 
@@ -1675,7 +1572,7 @@ function update_706_to_800($type='')
 	
 
 	
-	
+
 
 	
 	
@@ -1864,16 +1761,12 @@ function copy_user_timezone()
 
 function update_needed($message='')
 {
-	global $ns, $update_debug;
 
-	$emessage = e107::getMessage();
-
-//	if ($update_debug) $emessage->add("Update: ".$message, E_MESSAGE_DEBUG);
 	if(E107_DEBUG_LEVEL)
 	{
 		$tmp = debug_backtrace();
 		//$ns->tablerender("", "<div style='text-align:center'>Update required in ".basename(__FILE__)." on line ".$tmp[0]['line']."</div>");
-		$emessage->add("Update required in ".basename(__FILE__)." on line ".$tmp[0]['line']." (".$message.")", E_MESSAGE_DEBUG);
+		e107::getMessage()->add("Update required in ".basename(__FILE__)." on line ".$tmp[0]['line']." (".$message.")", E_MESSAGE_DEBUG);
 	}
 	return FALSE;
 }

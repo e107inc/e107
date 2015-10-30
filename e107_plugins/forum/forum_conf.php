@@ -22,7 +22,8 @@ $tp = e107::getParser();
 require_once(e_PLUGIN.'forum/forum_class.php');
 $forum = new e107forum;
 
-include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_conf.php');
+e107::lan('forum', 'admin');
+//include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_conf.php');
 
 $e_sub_cat = 'forum';
 

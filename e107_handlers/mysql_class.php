@@ -1904,6 +1904,30 @@ class e_db_mysql
 	}
 
 
+	/**
+	 * Check if a database table is empty or not.
+	 * @param $table
+	 * @return bool
+	 */
+	function isEmpty($table)
+	{
+		if(empty($table))
+		{
+			return false;
+		}
+
+		$result = $this->gen("SELECT NULL FROM `#".$table."` LIMIT 1");
+
+		if($result === 0)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+
+
 
 	/**
 	 * Populate mySQLtableList and mySQLtableListLanguage

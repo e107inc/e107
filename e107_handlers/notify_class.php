@@ -331,7 +331,7 @@ class notify
 
 	function notify_flood($data)
 	{
-		$this->send('flood', NT_LAN_FL_1, NT_LAN_FL_2.': '.e107::getIPHandler()->ipDecode($data));
+		$this->send('flood', NT_LAN_FL_1, NT_LAN_FL_2.': '.e107::getIPHandler()->ipDecode($data, TRUE));
 	}
 
 	function notify_subnews($data)

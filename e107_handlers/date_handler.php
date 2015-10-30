@@ -885,5 +885,18 @@ class convert
 	}
 
 
+	/**
+	 * Check if TimeZone is valid
+	 * @param $timezone
+	 * @return bool
+	 */
+	function isValidTimezone($timezone)
+	{
+		return in_array($timezone, timezone_identifiers_list());
+	}
+
+
+
+
 }
 ?>

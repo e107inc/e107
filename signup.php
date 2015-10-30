@@ -28,6 +28,29 @@ if($qs[0] != 'activate')
 
 e107::coreLan('user'); // Generic user-related language defines
 
+	$bcLans = array(
+	"LAN_7"=> "LAN_SIGNUP_89", // "Display Name: ");
+	"LAN_8"=> "LAN_SIGNUP_90", // "the name that will be displayed on site");
+	"LAN_9"=> "LAN_SIGNUP_81", // "Username: ");
+	"LAN_10"=> "LAN_SIGNUP_82", // "the name that you use to login");
+	"LAN_17"=> "LAN_SIGNUP_83", // "Password: ");
+	"LAN_109"=> "LAN_SIGNUP_77", // "This site complies with The Children's Online Privacy Protection Act of 1998 (COPPA) and as such cannot accept registrations from users under the age of 13 without a written permission document from their parent or guardian. For more information you can read the legislation");
+	"LAN_111"=> "LAN_SIGNUP_84", // "Re-type Password: ");
+	"LAN_112"=> "LAN_USER_60",  // "Email Address: ");
+	"LAN_113"=> "LAN_USER_83", // "Hide email address?: ");
+	"LAN_120"=> "LAN_USER_71", // "Signature: ");
+	"LAN_121"=> "LAN_SIGNUP_94", // "Avatar: ");
+	"LAN_122"=> "", // "Timezone:");
+	"LAN_123"=> "LAN_SIGNUP_79", // "Register");
+	"LAN_308"=> "LAN_SIGNUP_91", // "Real Name: ");
+	"LAN_309"=> "LAN_SIGNUP_80", // "Please enter your details below.");
+	"LAN_400"=> "LAN_SIGNUP_85", // "Usernames and passwords are <b>case-sensitive</b>.");
+	"LAN_410"=> "LAN_SIGNUP_95", // "Enter code visible in the image");
+	);
+
+e107::getLanguage()->bcDefs($bcLans); // Backward compatibility fix.
+
+
 define('SIGNUP_DEBUG', FALSE);
 
 e107::js('core', 'jquery.mailcheck.min.js','jquery',2);
@@ -950,7 +973,8 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 			}
 			else
 			{
-				$text = LAN_SIGNUP_76."&nbsp;".SITENAME.", ".LAN_SIGNUP_12."<br /><br />".LAN_SIGNUP_13;
+				$text = LAN_SIGNUP_76."&nbsp;".SITENAME.", ".LAN_SIGNUP_12."<br /><br />";
+				$text .= str_replace(array('[',']'), array("<a href='".e_BASE."login.php'>", "</a>"), LAN_SIGNUP_13);
 			}
 			
 			$ns->tablerender(LAN_SIGNUP_8,$text);

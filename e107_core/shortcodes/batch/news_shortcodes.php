@@ -214,6 +214,37 @@ class news_shortcodes extends e_shortcode
 	}
 
 
+	function sc_news_category_icon($parm=null)
+	{
+		return $this->sc_newscaticon($parm);
+	}
+
+
+	function sc_news_category_name($parm=null)
+	{
+		return $this->sc_newscategory($parm);
+	}
+
+
+	function sc_news_category_sef($parm=null)
+	{
+		if(!empty($this->news_item['category_sef']))
+		{
+			return strtolower(str_replace(" ","", $this->news_item['category_sef']));
+		}
+	}
+
+
+	function sc_news_category_description($parm=null)
+	{
+		if(!empty($this->news_item['category_meta_description']))
+		{
+			return e107::getParser()->toHTML($this->news_item['category_meta_description'], false ,'BODY');
+		}
+	}
+
+
+
 	function sc_newscategory($parm=null)
 	{
 		$category_name = e107::getParser()->toHTML($this->news_item['category_name'], FALSE ,'defs');
@@ -828,7 +859,8 @@ class news_shortcodes extends e_shortcode
 		
 		return e107::getForm()->renderRelated($array, $this->news_item['news_meta_keywords'], array('news'=>$this->news_item['news_id']));	
 	}
-	
+
+
 	function sc_newsmetadiz()
 	{
   		return e107::getParser()->toHtml($this->news_item['news_meta_description'],true);

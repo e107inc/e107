@@ -64,23 +64,39 @@ class forum_setup
 		{
 			e107::getDb()->gen("ALTER TABLE `#forum_thread` DROP `thread_sef` ");
 		}
-		
+
+		return false;
 	}
 	
 
 	function upgrade_pre($var)
 	{
-		//Redirect upgrade to customized upgrade routine
-		
-		e107::getRedirect()->redirect(e_PLUGIN_ABS.'forum/forum_update.php');
+
+		$sql = e107::getDb();
+
+		if(!$sql->isTable('forum_t')) // no table, so run a default plugin install procedure.
+		{
+			return false;
+		//	e107::getSingleton('e107plugin')->refresh('forum');
+		}
+		else
+		{
+			e107::getRedirect()->go(e_PLUGIN_ABS.'forum/forum_update.php'); //Redirect upgrade to customized upgrade routine
+		}
 		
 		//header('Location: '.e_PLUGIN.'forum/forum_update.php');
 	}
 
 	// After Automatic Upgrade Routine has completed.. run this. ;-)
 	function upgrade_post($var)
-	{	
-		$mes = e107::getMessage();
-		$mes->addSuccess("Migration is required. Please click 'Continue'.<br /><a class='btn btn-primary' href='".e_PLUGIN."forum/forum_update.php'>Continue</a>");		
+	{
+		$sql = e107::getDb();
+
+		if($sql->isEmpty('forum_thread') === true && $sql->isTable('forum_t') && $sql->isEmpty('forum_t') === false)
+		{
+			$mes = e107::getMessage();
+			$mes->addSuccess("Migration is required. Please click 'Continue'.<br /><a class='btn btn-primary' href='".e_PLUGIN."forum/forum_update.php'>Continue</a>");
+		}
+
 	}
 }

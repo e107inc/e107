@@ -1035,6 +1035,12 @@ class e_admin_dispatcher
 		{
 			define('e_ADMIN_UI', true);
 		}
+
+		if(!empty($_GET['iframe']))
+		{
+			define('e_IFRAME', true);
+		}
+
 		require_once(e_ADMIN.'boot.php');
 		
 		if(null === $request || !is_object($request))
@@ -1473,7 +1479,7 @@ class e_admin_dispatcher
 		foreach($this->adminMenu as $key => $val)
 		{
 
-			if(!empty($val['perm']) && !getperms($val['perm']))
+			if(isset($val['perm']) && $val['perm']!=='' && !getperms($val['perm']))
 			{
 				continue;
 			}
@@ -1563,7 +1569,7 @@ class e_admin_dispatcher
 
 
 		if(empty($var)) return '';
-		
+
 		$request = $this->getRequest();
 		if(!$selected) $selected = $request->getMode().'/'.$request->getAction();
 		$selected = vartrue($this->adminMenuAliases[$selected], $selected);
@@ -5902,7 +5908,10 @@ class e_admin_form_ui extends e_form
 					".$filter_pre."
 					<div class='row-fluid'>
 						<div  class='left form-inline span8 col-md-8' >
-							".$this->text('searchquery', $current_query[0], 50, $input_options)."<i class='fa fa-search searchquery'></i>
+							<span class='form-group has-feedback has-feedback-left'>
+								".$this->text('searchquery', $current_query[0], 50, $input_options)."
+								<i class='fa fa-search searchquery form-control-feedback form-control-feedback-left'></i>
+							<span>
 							".$this->select_open('filter_options', array('class' => 'form-control e-tip tbox select filter', 'id' => false, 'title'=>'Filter the results below'))."
 								".$this->option(LAN_FILTER_LABEL_DISPLAYALL, '')."
 								".$this->option(LAN_FILTER_LABEL_CLEAR, '___reset___')."
@@ -6425,7 +6434,8 @@ class e_admin_form_ui extends e_form
 	public function getElementId()
 	{
 		$controller = $this->getController();
-		return str_replace('_', '-', ($controller->getPluginName() == 'core' ? 'core-'.$controller->getTableName() : 'plugin-'.$controller->getPluginName()));
+		$name = str_replace('_', '-', ($controller->getPluginName() == 'core' ? 'core-'.$controller->getTableName() : 'plugin-'.$controller->getPluginName()));
+		return e107::getForm()->name2id($name); // prevent invalid ids.
 	}
 
 	/**

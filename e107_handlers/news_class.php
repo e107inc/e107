@@ -374,9 +374,10 @@ class news {
 
 		// Retrieve batch sc object, set required vars
 		$sc = e107::getScBatch('news')
+			->wrapper('news/view/item')
 			->setScVar('news_item', $news)
 			->setScVar('param', $param);
-			
+
 		$text = e107::getParser()->parseTemplate($NEWS_PARSE, true, $sc);
 
 		if ($mode == 'return')

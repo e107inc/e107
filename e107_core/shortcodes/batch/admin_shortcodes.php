@@ -477,7 +477,13 @@ class admin_shortcodes
                     }
 
 			
-					$configs = e107::getAddonConfig('e_dashboard','latest');
+					$configs = e107::getAddonConfig('e_dashboard',null, 'latest');
+
+					if(!is_array($configs))
+					{
+						$configs = array();
+					}
+
 					$allconfigs = array_merge($oldconfigs,$configs);	
 					
 					$allconfigs = multiarray_sort($allconfigs,'title'); //XXX FIXME - not sorting correctly. 
@@ -583,11 +589,11 @@ class admin_shortcodes
 			$str = str_replace('.', '', ADMINPERMS);
 			if (ADMINPERMS == '0')
 			{
-				return '<b>'.ADLAN_48.':</b> '.ADMINNAME.' ('.ADLAN_49.') '.( defined('e_DBLANGUAGE') ? '<b>'.LAN_head_5.'</b>: '.e_DBLANGUAGE : '' );
+				return '<b>'.ADLAN_48.':</b> '.ADMINNAME.' ('.ADLAN_49.') '.( defined('e_DBLANGUAGE') ? '<b>'.LAN_HEADER_05.'</b>: '.e_DBLANGUAGE : '' );
 			}
 			else
 			{
-				return '<b>'.ADLAN_48.':</b> '.ADMINNAME.' '.( defined('e_DBLANGUAGE') ? '<b>'.LAN_head_5.'</b>: '.e_DBLANGUAGE : '' );
+				return '<b>'.ADLAN_48.':</b> '.ADMINNAME.' '.( defined('e_DBLANGUAGE') ? '<b>'.LAN_HEADER_05.'</b>: '.e_DBLANGUAGE : '' );
 			}
 		}
 		else
@@ -774,11 +780,11 @@ class admin_shortcodes
 			ob_start();
 			if(!FILE_UPLOADS)
 			{
-				echo message_handler('ADMIN_MESSAGE', LAN_head_2, __LINE__, __FILE__);
+				echo message_handler('ADMIN_MESSAGE', LAN_HEADER_02, __LINE__, __FILE__);
 			}
 			/*
 			if(OPEN_BASEDIR){
-			echo message_handler('ADMIN_MESSAGE', LAN_head_3, __LINE__, __FILE__);
+			echo message_handler('ADMIN_MESSAGE', LAN_HEADER_03, __LINE__, __FILE__);
 			}
 			*/
 			$message_text = ob_get_contents();
@@ -874,7 +880,7 @@ class admin_shortcodes
 			$e107_var['lout']['link']=e_ADMIN_ABS.'admin.php?logout';
 
 			$text = e_admin_menu('', '', $e107_var);
-			return $ns->tablerender(LAN_head_1, $text, array('id' => 'admin_nav', 'style' => 'button_menu'), TRUE);
+			return $ns->tablerender(LAN_HEADER_01, $text, array('id' => 'admin_nav', 'style' => 'button_menu'), TRUE);
 		}
 	}
 
@@ -934,7 +940,7 @@ class admin_shortcodes
 					}
 				}
 
-				$caption = LAN_head_6;
+				$caption = LAN_HEADER_06;
 				if ($i>0 && $pref['admin_alerts_uniquemenu'] == 1)
 				{
 					$ns -> tablerender($caption, $text);
@@ -1151,7 +1157,7 @@ class admin_shortcodes
 								
 					// New in v2.x
 				//	$configs = e107::getAddonConfig('e_status');
-					$configs = e107::getAddonConfig('e_dashboard','status');
+					$configs = e107::getAddonConfig('e_dashboard',null, 'status');
 		
 					if(!is_array($configs))
 					{
@@ -1382,7 +1388,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			return e107::getNav()->admin('', '', $menu_vars, $$tmpl, FALSE, FALSE);
 		}
         
-        
+
         
 		// MAIN LINK
 		if($parm != 'no-main')
@@ -1479,7 +1485,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 					if(varset($plug_vars['adminLinks']['link']))
 					{
 						
-						if($row['plugin_category'] == 'menu' || !vartrue($plug_vars['adminLinks']['link'][0]['@attributes']['url']))
+						if(!empty($row['plugin_category']) && $row['plugin_category'] == 'menu' || !vartrue($plug_vars['adminLinks']['link'][0]['@attributes']['url']))
 						{
 							continue;
 						}
@@ -1505,7 +1511,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 						$tmp[$id]['perm'] = 'P'.$row['plugin_id'];
 						$tmp[$id]['sub_class'] = '';
 						$tmp[$id]['sort'] = 2;
-						$tmp[$id]['category'] = $row['plugin_category'];
+						$tmp[$id]['category'] = varset($row['plugin_category']);
 
 						if($pref['admin_slidedown_subs'] && vartrue($plug_vars['adminLinks']['link']) )
 						{
@@ -1564,14 +1570,18 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
              foreach($tmp as $pg)
 			 {
-			 	$id = $convert[$pg['category']][1];
-             	$menu_vars[$id]['sub'][] = $pg;
+			    if(!empty($pg['category']))
+			    {
+			 	    $id = $convert[$pg['category']][1];
+             	    $menu_vars[$id]['sub'][] = $pg;
+			    }
 			 }
+
 		   	 unset($menu_vars['plugMenu']);
 			 
 		
 			// Clean up - remove empty main sections
-			foreach ($menu_vars as $_m => $_d) 
+			foreach ($menu_vars as $_m => $_d)
 			{
 				if(!isset($_d['sub']) || empty($_d['sub']))
 				{
@@ -1740,6 +1750,8 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				}
 				
 			}
+
+			sort($languages);
 			
 			if(count($languages) > 1)
 			{

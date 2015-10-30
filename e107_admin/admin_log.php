@@ -638,8 +638,8 @@ class admin_log_form_ui extends e_admin_form_ui
 				if(strpos($text,'Array')!==false || strlen($text)>300)
 				{
 					$id = $this->getController()->getListModel()->get('dblog_id');
-					$ret ="<a class='e-expandit' href='#".$id."'>Details</a>";
-					$ret .= "<div class='hide' id='".$id."'>";
+					$ret ="<a class='e-expandit' href='#rem-".$id."'>Details</a>";
+					$ret .= "<div style='display:none' id='rem-".$id."'>";
 					$text = str_replace("<br />","\n",$text);
 					$text = str_replace("&#092;","/",$text);
 					

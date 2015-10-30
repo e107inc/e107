@@ -112,6 +112,8 @@ $wy = new wysiwyg();
 
 $gen = $wy->renderConfig();
 
+define('USE_GZIP', true);
+
 
 if(ADMIN && e_QUERY == 'debug')
 {
@@ -131,11 +133,8 @@ if(ADMIN && e_QUERY == 'debug')
 	require_once(FOOTERF);
 
 }
-else
+elseif(USE_GZIP === true)
 {
-	//ob_start();
-	//ob_implicit_flush(0);
-	//header("last-modified: " . gmdate("D, d M Y H:i:s",mktime(0,0,0,15,2,2004)) . " GMT");
 	header('Content-type: text/javascript', TRUE);
 	header('Content-Encoding: gzip');
 
@@ -145,7 +144,13 @@ else
 	header('Content-Length: '.strlen($gzipoutput));
 	echo $gzipoutput;
 }
-		
+else
+{
+	ob_start();
+	ob_implicit_flush(0);
+	header('Content-type: text/javascript', TRUE);
+	echo $gen;
+}
 	
 exit;
 
@@ -166,11 +171,16 @@ class wysiwyg
 		$this->getConfig($config);	
 		$text = "\n /* TinyMce Config: ".$this->configName." */\n\n";
 		$text .= "tinymce.init({\n";
-	/*	$text .= "setup: function (editor) {
-		editor.on('blur', function () {
-			editor.save();
-		});
-	},\n";*/
+/*
+		$text .= "save_onsavecallback: function() {console.log('Save'); },\n";
+
+		$text .= "setup: function (editor) {
+			editor.on('blur', function () {
+				editor.save();
+			});
+		},\n";
+*/
+
 		$text .= $this->config; // Moc: temporary fix for BC with PHP 5.3: https://github.com/e107inc/e107/issues/614
 
 		$text .= "\n});";
@@ -325,17 +335,25 @@ class wysiwyg
 
 		$ret = array(
 			'selector' 			=> '.e-wysiwyg',
-
-			'plugins'			=> $this->filter_plugins($config['tinymce_plugins']),
+		//	'editor_selector'   => 'advancedEditor',
 			'language'			=> $this->tinymce_lang()
 			
 		);
+
 
 		
 		// Loop thru XML parms. 
 		foreach($config as $k=>$xml)
 		{
-			$ret[$k] = $xml; 			
+			if($k == 'plugins')
+			{
+				$ret[$k] = $this->filter_plugins($xml);
+			}
+			else
+			{
+				$ret[$k] = $xml;
+			}
+
 		}
 
 		$tPref = e107::pref('tinymce4');
@@ -350,6 +368,22 @@ class wysiwyg
 		{
 			$ret['browser_spellcheck']	= true;
 		}
+
+		if(!empty($tPref['visualblocks']))
+		{
+			$ret['visualblocks_default_state']	= true;
+		}
+
+		$ret['autosave_ask_before_unload'] = true;
+		$ret['autosave_retention']         = "30m";
+		$ret['autosave_interval']          = "3s";
+		$ret['autosave_prefix']            = "tinymce-autosave-{path}{query}-{id}-";
+		$ret['verify_html']                 = false;
+
+
+		// plugins: "visualblocks",
+
+
 
 		$formats = array(
 			'hilitecolor' => array('inline'=> 'span', 'classes'=> 'hilitecolor', 'styles'=> array('backgroundColor'=> '%value'))
@@ -416,6 +450,7 @@ class wysiwyg
                  {title: 'Float Clear', block: 'div', classes: 'clearfix'},
                  {title: 'Lead', block: 'p', classes: 'lead'},
                  {title: 'Well', block: 'div', classes: 'well'},
+				 {title: 'Row', block: 'div', classes: 'row'},
                  {title: '1/4 Width Block', block: 'div', classes: 'col-md-3 col-sm-12'},
                  {title: '3/4 Width Block', block: 'div', classes: 'col-md-9 col-sm-12'},
                  {title: '1/3 Width Block', block: 'div', classes: 'col-md-4 col-sm-12'},
@@ -670,7 +705,7 @@ class wysiwyg
 			'apply_source_formatting'			=> 'true',
 			'invalid_elements'					=> 'font,align,script,applet',
 			'auto_cleanup_word'					=> 'true',
-			'cleanup'							=> 'true',
+		//	'cleanup'							=> 'true',
 			'convert_fonts_to_spans'			=> 'true',
 	//		'content_css'						=> $tp->replaceConstants($content_css),
 			'popup_css'							=> 'false', 
@@ -749,7 +784,9 @@ class wysiwyg
 
 		$admin_only = array("ibrowser");
 
-		$plug_array = explode(",",$plugs);
+		$plug_array = explode(" ",$plugs);
+
+		$tinymce_plugins = array();
 
 		foreach($plug_array as $val)
 		{
@@ -763,10 +800,24 @@ class wysiwyg
 		    	continue;
 			}
 
-			$tinymce_plugins[] = $val;
+			if(!empty($val))
+			{
+				$tinymce_plugins[$val] = trim($val);
+			}
 		}
 
-		return $tinymce_plugins;
+
+		$tPref = e107::pref('tinymce4');
+
+
+		if(!empty($tPref['visualblocks']))
+		{
+			$tinymce_plugins['visualblocks'] = 'visualblocks';
+		}
+
+	//	print_a($tinymce_plugins);
+
+		return implode(" ",$tinymce_plugins);
 	}
 
 
