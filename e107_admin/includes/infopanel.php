@@ -196,7 +196,7 @@ class adminstyle_infopanel
 	      
 			</div>";
 	
-		$text = $ns->tablerender(ucwords(USERNAME)."'s Control Panel", $mainPanel, "core-infopanel_mye107",true);
+		$text = $ns->tablerender(ucwords(USERNAME). LAN_CP, $mainPanel, "core-infopanel_mye107",true);
 		
 	
 	//  ------------------------------- e107 News --------------------------------
