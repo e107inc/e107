@@ -128,5 +128,6 @@ define("DBLAN_107", "[folder] is not writable");
 define("DBLAN_108", "Created:");
 define("DBLAN_109", "Copied:");
 define("DBLAN_110", "Couldn't copy:");
+define("DBLAN_111", 		"Tables appear to be okay!");
 
 ?>
