@@ -21,7 +21,7 @@ class theme_shortcodes extends e_shortcode
 
 	function sc_bootstrap_branding()
 	{
-		$pref = e107::pref('theme', 'branding', 'sitename');
+		$pref = e107::pref('theme', 'branding');
 
 		switch($pref)
 		{
