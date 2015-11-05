@@ -135,8 +135,8 @@ class banlist_ui extends e_admin_ui
 		  'banlist_datestamp' 	=>   array ( 'title' => LAN_DATESTAMP, 		'type' => 'datestamp', 	'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => 'auto=1&hidden=1&readonly=1', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banlist_banexpires' 	=>   array ( 'title' => BANLAN_124,	 		'type' => 'method', 	'data' => 'int', 'inline'=>true, 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banlist_admin' 		=>   array ( 'title' => 'Admin', 			'type' => 'text', 	    'data' => 'int', 'noedit'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'banlist_reason' 		=>   array ( 'title' => BANLAN_7, 			'type' => 'text', 		'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => 'constant=1', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'banlist_notes' 		=>   array ( 'title' => BANLAN_19, 			'type' => 'text', 		'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'banlist_reason' 		=>   array ( 'title' => BANLAN_7, 			'type' => 'text', 		'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => 'constant=1', 'writeParms' => array('size'=>'xxlarge'), 'class' => 'left', 'thclass' => 'left',  ),
+		  'banlist_notes' 		=>   array ( 'title' => BANLAN_19, 			'type' => 'text', 		'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => array('size'=>'xxlarge'), 'class' => 'left', 'thclass' => 'left',  ),
 		  'options' 			=>   array ( 'title' => LAN_OPTIONS, 		'type' => '', 			'data' => '', 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
 		
