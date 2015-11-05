@@ -1058,8 +1058,12 @@ class media_admin_ui extends e_admin_ui
 	
 	function uploadTab()
 	{
-		if(!ADMIN){ exit; } //TODO check for upload-access in perms. 
-		
+		if(!ADMIN){ exit; }
+
+		if(!getperms('A') && !getperms('A1'))
+		{
+			return '';
+		}
 
 		// if 'for' has no value, files are placed in /temp and not added to the db. 
 		$text = '<div id="uploader" rel="'.e_JS.'plupload/upload.php?for='.$this->getQuery('for').'">
@@ -1111,7 +1115,7 @@ class media_admin_ui extends e_admin_ui
 					
 		}
 		
-		if($this->getQuery('bbcode') != 'video' && $this->getQuery('bbcode') !='glyph')
+		if(getperms('A|A1') && ($this->getQuery('bbcode') != 'video' && $this->getQuery('bbcode') !='glyph'))
 		{
 			$text .= "<li><a data-toggle='tab' href='#core-media-upload'>Upload a File</a></li>";
 		}
@@ -1161,8 +1165,12 @@ class media_admin_ui extends e_admin_ui
 		$this->fields['media_category']['readonly']	= TRUE;
 		$this->fields['media_url']['noedit'] 		= TRUE;
 		$this->fields['media_userclass']['noedit']	= TRUE;
-		
-		$text .=  $this->uploadTab(); // To test upload script with plupload
+
+		if(getperms('A|A1'))
+		{
+			$text .=  $this->uploadTab(); // To test upload script with plupload
+		}
+
 	//	$text .=  $this->CreatePage(); // comment me out to test plupload
 				
 		$text .= "	
