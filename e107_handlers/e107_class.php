@@ -1014,9 +1014,10 @@ class e107
 	 */
 	public static function getThemePref($pref_name = '', $default = null, $index = null)
 	{
+
 		if($pref_name) $pref_name = '/'.$pref_name;
-		$tprefs = e107::getConfig()->getPref('sitetheme_pref'.$pref_name, $default, $index);
-		return !empty($tprefs) ?: array();
+		$tprefs = self::getConfig()->getPref('sitetheme_pref'.$pref_name, $default, $index);
+		return !empty($tprefs) ? $tprefs : array();
 	}
 	
 	/**
