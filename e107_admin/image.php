@@ -849,7 +849,7 @@ class media_admin_ui extends e_admin_ui
 
 		$sql = e107::getDb();
 	//	$sql->db_Select_gen("SELECT media_cat_title, media_title_nick FROM #core_media as m LEFT JOIN #core_media_cat as c ON m.media_category = c.media_cat_owner GROUP BY m.media_category");
-		$sql->gen("SELECT media_cat_title, media_cat_owner, media_cat_category FROM #core_media_cat");
+		$sql->gen("SELECT media_cat_title, media_cat_owner, media_cat_category FROM `#core_media_cat`");
 		while($row = $sql->fetch())
 		{
 			$cat = $row['media_cat_category'];
