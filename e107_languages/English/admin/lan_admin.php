@@ -410,9 +410,9 @@ define("LAN_USER_QUICKADD","Quick Add User");
 define("LAN_USER_PRUNE", "Prune Users");
 define("LAN_USER_OPTIONS", "User Options");
 define("LAN_USER_RANKS", "User Ranks");
-define("LAN_CP", "'s Control Panel");
-define("LAN_CUS_URL", "Custom URL");
-define("LAN_CUS_URL_DIS", "Disabled or Enter Custom URL");
+define("LAN_CONTROL_PANEL", "[x]'s Control Panel");
+define("LAN_CUSTOM_URL", "Custom URL");
+define("LAN_CUSTOM_URL_DISABLED", "Disabled or Enter Custom URL");
 
 
 

@@ -195,8 +195,9 @@ class adminstyle_infopanel
 			$mainPanel .= "</div>
 	      
 			</div>";
-	
-		$text = $ns->tablerender(ucwords(USERNAME). LAN_CP, $mainPanel, "core-infopanel_mye107",true);
+
+		$caption = $tp->lanVars(LAN_CONTROL_PANEL, ucwords(USERNAME));
+		$text = $ns->tablerender($caption, $mainPanel, "core-infopanel_mye107",true);
 		
 	
 	//  ------------------------------- e107 News --------------------------------
