@@ -273,4 +273,11 @@ define("PRFLAN_255", "File Uploading");
 define("PRFLAN_256", "Advanced Options");
 define("PRFLAN_257", "Javascript Framework");
 
+define("PRFLAN_258", "Contact Form Visibility");
+define("PRFLAN_259", "Register & Login");
+define("PRFLAN_260", "Login Only");
+define("PRFLAN_261", "Field options");
+define("PRFLAN_262", "Password in Email Confirmation");
+define("PRFLAN_263", "Should be unique to this website");
+
 ?>
