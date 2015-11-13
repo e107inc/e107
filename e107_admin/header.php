@@ -61,7 +61,7 @@ function loadJSAddons()
 	// TODO: remove typeahead.
 	e107::js('core', 	'bootstrap-jasny/js/jasny-bootstrap.js', 'jquery', 2);
 	
-	e107::css('core', 	'bootstrap-datetimepicker/css/datetimepicker.min.css', 'jquery');
+	e107::css('core', 	'bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css', 'jquery');
 	e107::js('core', 	'bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js', 'jquery', 2);
 	
 	e107::js('core',	'jquery.h5validate.min.js','jquery',2);

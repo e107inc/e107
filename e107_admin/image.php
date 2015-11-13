@@ -1347,13 +1347,13 @@ class media_admin_ui extends e_admin_ui
 		);
 		
 		//TODO FIXME Upgrade to bs3 when Bootstrap3 Admin is ready. 
-		/*
-		$bs2 = e107::getMedia()->getGlyphs('bs2','icon-');
+
+		$bs2 = e107::getMedia()->getGlyphs('bs3','glyphicon-');
 		
 		foreach($bs2 as $val)
 		{
 			$items[] = array( 
-					'previewUrl'	=> $val,
+					'previewUrl'	=> 'glyphicon '.$val,
 					'saveValue'		=> $val.'.glyph',
 					'thumbUrl'		=> $val,
 					'title'			=> $val,
@@ -1362,7 +1362,7 @@ class media_admin_ui extends e_admin_ui
 			); 		
 				
 		}
-		*/
+
 		
 		$fa4 = e107::getMedia()->getGlyphs('fa4');
 
