@@ -1,7 +1,15 @@
 
-body 						{ }
+@media screen and (min-width: 1000px){ 
+	
+body						{ padding-top: 75px;  }
 
-@media (min-width: 1000px){ 
+}
+@media screen and (min-width: 768px) and (max-width: 1000px) { 
+	
+body						{ padding-top: 125px;  }
+
+}
+@media screen and (max-width: 767px){ 
 	
 body						{ padding-top: 75px;  }
 
