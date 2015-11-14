@@ -53,7 +53,10 @@ if(!defined('e_TRACKING_DISABLED'))
 			$ret='';
 			foreach($listuserson as $uinfo => $row) 
 			{
-				
+				if($row['user_active'] != 1)
+				{
+					continue;
+				}
 				$pinfo = $row['user_location'];
 				
 				$online_location_page = str_replace('.php', '', substr(strrchr($pinfo, '/'), 1));

@@ -105,7 +105,7 @@ class e_online
 			// FIXME parse url, trigger registered e_online callbacks
 			$page = e107::getParser()->toDB($page, true);								/// @todo - try not to use toDB() - triggers prefilter
 			$ip = e107::getIPHandler()->getIP(FALSE);
-			$udata = ($user->isUser() ? $user->getId().'.'.$user->getName() : '0');
+			$udata = ($user->isUser() && USER ? $user->getId().'.'.$user->getName() : '0'); // USER check required to make sure they logged in without an error.
 			$agent = $_SERVER['HTTP_USER_AGENT'];
 
 			// XXX - more exceptions, e.g. hide online location for admins/users (pref), e_jlsib.php, etc
@@ -126,7 +126,7 @@ class e_online
 			// !deftrue('e_AJAX_REQUEST')
 			// TODO add option to hide users from online list? boolean online_hide field?
 			// don't do anything if main admin logged in as another user
-			if ($user->isUser() && !$user->getParentId())
+			if ($user->isUser()  && !$user->getParentId())
 			{
 				// Find record that matches IP or visitor, or matches user info
 				if ($sql->select('online', '*', "(`online_ip` = '{$ip}' AND `online_user_id` = '0') OR `online_user_id` = '{$udata}'"))
@@ -140,7 +140,7 @@ class e_online
 						{
 							//It has been at least 'online_timeout' seconds since this user's info last logged
 							//Update user record with timestamp, current IP, current page and set pagecount to 1
-							$query = "online_timestamp='".time()."', online_ip='{$ip}'{$update_page}, online_pagecount=1 WHERE online_user_id='{$row['online_user_id']}'";
+							$query = "online_timestamp='".time()."', online_ip='{$ip}'{$update_page}, online_pagecount=1, `online_active` = 1 WHERE online_user_id='{$row['online_user_id']}'";
 						}
 						else
 						{
@@ -149,7 +149,7 @@ class e_online
 								$row['online_pagecount'] ++;
 							}
 							// Update user record with current IP, current page and increment pagecount
-							$query = "online_ip='{$ip}'{$update_page}, `online_pagecount` = '".intval($row['online_pagecount'])."' WHERE `online_user_id` = '{$row['online_user_id']}'";
+							$query = "online_ip='{$ip}'{$update_page}, `online_pagecount` = '".intval($row['online_pagecount'])."', `online_active` = 1 WHERE `online_user_id` = '{$row['online_user_id']}'";
 						}
 					}
 					else
@@ -159,7 +159,7 @@ class e_online
 						{
 							// It has been at least 'timeout' seconds since this user has connected
 							// Update record with timestamp, current IP, current page and set pagecount to 1
-							$query = "`online_timestamp` = '".time()."', `online_user_id` = '{$udata}'{$update_page}, `online_pagecount` = 1 WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0'";
+							$query = "`online_timestamp` = '".time()."', `online_user_id` = '{$udata}'{$update_page}, `online_pagecount` = 1,  `online_active` = 1 WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0'";
 						}
 						else
 						{	// Another visit within the timeout period
@@ -168,7 +168,7 @@ class e_online
 								$row['online_pagecount'] ++;
 							}
 							//Update record with current IP, current page and increment pagecount
-							$query = "`online_user_id` = '{$udata}'{$update_page}, `online_pagecount` = ".intval($row['online_pagecount'])." WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0'";
+							$query = "`online_user_id` = '{$udata}'{$update_page}, `online_pagecount` = ".intval($row['online_pagecount']).", `online_active` =1  WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0'";
 						}
 					}
 					$sql->update('online', $query);
@@ -182,7 +182,7 @@ class e_online
 			elseif(!$user->getParentId())
 			{
 				//Current page request is from a guest
-				if ($sql->db_Select('online', '*', "`online_ip` = '{$ip}' AND `online_user_id` = '0'"))
+				if ($sql->select('online', '*', "`online_ip` = '{$ip}' AND `online_user_id` = '0'"))
 				{	// Recent visitor
 					$row = $sql->fetch();
 
@@ -267,16 +267,17 @@ class e_online
 							'online_user_id'	=> $row['online_user_id']
 						);	
 		
-						if($row['online_user_id'] != 0)
+						if($row['online_user_id'] != 0 )
 						{
 							$vals = explode('.', $row['online_user_id'], 2);
 							$user['user_id'] = $vals[0];
 							$user['user_name'] = $vals[1];
 							$member_list .= "<a href='".SITEURL."user.php?id.{$vals[0]}'>{$vals[1]}</a> ";
 							$listuserson[$row['online_user_id']] = $row['online_location'];
-		
-							$this->users[] = $user;		
+
+							$this->users[] = $user;
 							$members_online++;
+
 						}
 						else 
 						{
@@ -320,8 +321,7 @@ class e_online
 
 	function userList()
 	{
-		return $this->users;		
-		
+		return $this->users;
 	}
 
 	function guestList()
