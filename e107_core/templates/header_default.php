@@ -762,6 +762,16 @@ if ($e107_popup != 1) {
 		echo e107::getParser()->parseTemplate("{WMESSAGE}");
 	}
 
+	if(!deftrue('e_IFRAME') && (strstr($HEADER,"{ALERTS}")===false && strstr($FOOTER,"{ALERTS}")===false)) // Old theme, missing {ALERTS}
+	{
+		if(deftrue('e_DEBUG'))
+		{
+			e107::getMessage()->addDebug("The {ALERTS} shortcode was not found in the \$HEADER or \$FOOTER template. It has been automatically added here. ");
+		}
+
+		echo e107::getParser()->parseTemplate("{ALERTS}");
+	}
+
 
 	if(defined("PREVIEWTHEME")) 
 	{

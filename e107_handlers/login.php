@@ -580,6 +580,8 @@ class userlogin
 
 		define('LOGINMESSAGE', $message);
 
+	//	$sql->update('online', 'user_active = 0 WHERE user_ip = "'.$this->userIP.'" LIMIT 1');
+
 		if ($doCheck) // See if ban required (formerly the checkibr() function)
 		{
 			if($pref['autoban'] == 1 || $pref['autoban'] == 3) // Flood + Login or Login Only.
