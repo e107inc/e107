@@ -670,7 +670,7 @@ class e_install
 				{
 					if($this->dbqry('DROP DATABASE `'.$this->previous_steps['mysql']['db'].'` '))
 					{
-						$page_content .= "<br /><span class='glyphicon glyphicon-ok'></span> Deleted existing database";
+						$page_content .= "<br /><span class='glyphicon glyphicon-ok'></span>  ".LANINS_132;
 					}
 					else 
 					{
@@ -688,7 +688,7 @@ class e_install
 				}
 				else
 				{
-					$notification = "<br /><span class='glyphicon glyphicon-ok'></span> Found existing database";
+					$notification = "<br /><span class='glyphicon glyphicon-ok'></span> ".LANINS_133;
 				    $query = 'ALTER DATABASE `'.$this->previous_steps['mysql']['db'].'` CHARACTER SET `utf8` ';
 				}
 
@@ -2017,7 +2017,7 @@ function template_data()
 
 		  <div class="masthead">
 			<ul class="nav nav-pills pull-right" >
-			  <li class="active" style="width:200px;text-align:center" ><a href="#" >Installation: {stage_pre} {stage_num} of 8</a>
+			  <li class="active" style="width:200px;text-align:center" ><a href="#" >'.LANINS_130.' &#58 {stage_pre} {stage_num} '.LANINS_131.' 8</a>
 			  <div class="progress progress-{bartype}">
 				<div class="progress-bar bar" style="width: {percent}%"></div>
 			</div>
@@ -2042,7 +2042,7 @@ function template_data()
 
 		  <div class="footer">
 			<p class="pull-left">&copy; e107 Inc. '.date("Y").'</p>
-			<p class="pull-right">Version: '.e_VERSION.'</p> 
+			<p class="pull-right">'.LANINS_134.' &#58 '.e_VERSION.'</p> 
 		  </div>
 		 <div>{debug_info}</div>
 		</div> <!-- /container -->

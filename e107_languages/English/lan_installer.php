@@ -171,3 +171,8 @@ define("LANINS_126", "For security reasons you should now set the file permissio
 define("LANINS_127", "The database [x] already exists. Overwrite it? (any existing data will be lost)"); 
 define("LANINS_128", "Overwrite");
 define("LANINS_129", "Database not found.");
+define("LANINS_130", "Installation");
+define("LANINS_131", "of");   //single time use installer only as in .1 of 8  not replacing by LAN_SEARCH_12
+define("LANINS_132", "Deleted existing database");
+define("LANINS_133", "Found existing database");
+define("LANINS_134", "Version");
