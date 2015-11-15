@@ -73,7 +73,7 @@ define('MAGIC_QUOTES_GPC', (ini_get('magic_quotes_gpc') ? true : false));
 $php_version = phpversion();
 if(version_compare($php_version, MIN_PHP_VERSION, "<"))
 {
-	die_fatal_error('A minimum version of PHP '.MIN_PHP_VERSION.' is required');
+	die_fatal_error(LANINS_145 .MIN_PHP_VERSION. LANINS_146);
 }
 
 //  Ensure that '.' is the first part of the include path
@@ -88,7 +88,7 @@ unset($inc_path);
 
 if(!function_exists("mysql_connect")) //FIXME Adjust this once PDO is fully functional. 
 {
-	die_fatal_error("e107 requires PHP to be installed or compiled with the MySQL extension to work correctly, please see the MySQL manual for more information.");
+	die_fatal_error(LANINS_135);
 }
 
 # Check for the realpath(). Some hosts (I'm looking at you, Awardspace) are totally dumb and
@@ -114,7 +114,7 @@ if($functions_ok == true && function_exists("realpath") == false)
 }
 if($functions_ok == false)
 {
-	die_fatal_error("e107 requires the realpath() function to be enabled and your host appears to have disabled it. This function is required for some <b>important</b> security checks and there is <b>NO workaround</b>. Please contact your host for more information.");
+	die_fatal_error(LANINS_136);
 }
 
 //obsolete $installer_folder_name = 'e107_install';
@@ -141,7 +141,7 @@ $e107 = e107::getInstance();
 $ebase = realpath(dirname(__FILE__));
 if($e107->initInstall($e107_paths, $ebase, $override)===false)
 {
-	die_fatal_error("Error creating the following empty file: <b>".$ebase.DIRECTORY_SEPARATOR."e107_config.php</b><br />Please create it manually and then run the installation again.");
+	die_fatal_error(LANINS_137 .$ebase.DIRECTORY_SEPARATOR. LANINS_138);
 }
 	
 unset($e107_paths,$override,$ebase);
@@ -152,7 +152,7 @@ unset($e107_paths,$override,$ebase);
 if(!function_exists('spl_autoload_register'))
 {
 	// PHP >= 5.1.2 required
-	die_fatal_error('Fatal exception - spl_autoload_* required.');
+	die_fatal_error(LANINS_139);
 }
 
 // register core autoload
@@ -344,7 +344,7 @@ class e_install
 				$this->stage_8();
 				break;
 			default:
-				$this->raise_error("Install stage information from client makes no sense to me.");
+				$this->raise_error(LANINS_140);
 		}
 
 		if($_SERVER['QUERY_STRING'] == "debug")
@@ -440,7 +440,7 @@ class e_install
 		
 		// $this->template->SetTag("onload", "document.getElementById('name').focus()");
 		// $page_info = nl2br(LANINS_023);
-		$page_info = "<div class='alert alert-block alert-info'>Please fill in the form below with your MySQL details. If you do not know this information, please contact your hosting provider. You may hover over each field for additional information.</div>";
+		$page_info = "<div class='alert alert-block alert-info'>".LANINS_141."</div>";
 		$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
 		$isrequired = (($_SERVER['SERVER_ADDR'] == "127.0.0.1") || ($_SERVER['SERVER_ADDR'] == "localhost") || ($_SERVER['SERVER_ADDR'] == "::1") || preg_match('^192\.168\.\d{1,3}\.\d{1,3}$',$_SERVER['SERVER_ADDR'])) ? "" :  "required='required'"; // Deals with IP V6, and 192.168.x.x address ranges, could be improved to validate x.x to a valid IP but for this use, I dont think its required to be that picky.
 
@@ -670,7 +670,7 @@ class e_install
 				{
 					if($this->dbqry('DROP DATABASE `'.$this->previous_steps['mysql']['db'].'` '))
 					{
-						$page_content .= "<br /><span class='glyphicon glyphicon-ok'></span> Deleted existing database";
+						$page_content .= "<br /><span class='glyphicon glyphicon-ok'></span> ".LANINS_132;
 					}
 					else 
 					{
@@ -688,7 +688,7 @@ class e_install
 				}
 				else
 				{
-					$notification = "<br /><span class='glyphicon glyphicon-ok'></span> Found existing database";
+					$notification = "<br /><span class='glyphicon glyphicon-ok'></span> ".LANINS_133;
 				    $query = 'ALTER DATABASE `'.$this->previous_steps['mysql']['db'].'` CHARACTER SET `utf8` ';
 				}
 
@@ -1347,17 +1347,17 @@ class e_install
 		{
 			if(!rename("e107.htaccess",".htaccess"))
 			{
-				$error = "IMPORTANT: Please rename e107.htaccess to .htaccess";
+				$error = LANINS_142;
 			}
 			elseif($_SERVER['QUERY_STRING'] == "debug")
 			{
 				rename(".htaccess","e107.htaccess");
-				$error = "DEBUG: Rename from e107.htaccess to .htaccess was successful";		
+				$error = LANINS_143;		
 			}
 		}
 		elseif(file_exists("e107.htaccess"))
 		{		
-			$error = "IMPORTANT: Please copy and paste the contents of the <b>e107.htaccess</b> into your <b>.htaccess</b> file. Please take care NOT to overwrite any existing data that may be in it.";				
+			$error = LANINS_144;				
 		}		
 		return $error;	
 	}
@@ -2017,7 +2017,7 @@ function template_data()
 
 		  <div class="masthead">
 			<ul class="nav nav-pills pull-right" >
-			  <li class="active" style="width:200px;text-align:center" ><a href="#" >Installation: {stage_pre} {stage_num} of 8</a>
+			  <li class="active" style="width:200px;text-align:center" ><a href="#" >'.LANINS_130.' &#58 {stage_pre} {stage_num} '.LANINS_131.' 8</a>
 			  <div class="progress progress-{bartype}">
 				<div class="progress-bar bar" style="width: {percent}%"></div>
 			</div>
@@ -2042,7 +2042,7 @@ function template_data()
 
 		  <div class="footer">
 			<p class="pull-left">&copy; e107 Inc. '.date("Y").'</p>
-			<p class="pull-right">Version: '.e_VERSION.'</p> 
+			<p class="pull-right">'.LANINS_134.' &#58 '.e_VERSION.'</p> 
 		  </div>
 		 <div>{debug_info}</div>
 		</div> <!-- /container -->
