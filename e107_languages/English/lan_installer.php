@@ -171,3 +171,23 @@ define("LANINS_126", "For security reasons you should now set the file permissio
 define("LANINS_127", "The database [x] already exists. Overwrite it? (any existing data will be lost)"); 
 define("LANINS_128", "Overwrite");
 define("LANINS_129", "Database not found.");
+define("LANINS_130", "Installation");
+define("LANINS_131", "of");   //single time use installer only as in .1 of 8  not replacing by LAN_SEARCH_12
+define("LANINS_132", "Deleted existing database");
+define("LANINS_133", "Found existing database");
+define("LANINS_134", "Version");
+
+define("LANINS_135", "e107 requires PHP to be installed or compiled with the MySQL extension to work correctly, please see the MySQL manual for more information.");
+define("LANINS_136", "e107 requires the realpath() function to be enabled and your host appears to have disabled it. This function is required for some [b]important[/b] security checks and there is [b]NO workaround[/b]. Please contact your host for more information.");
+define("LANINS_137", "Error creating the following empty file : ");
+define("LANINS_138", "e107_config.php[br]Please create it manually and then run the installation again.");
+define("LANINS_139", "Fatal exception - spl_autoload_* required.");
+define("LANINS_140", "Install stage information from client makes no sense to me.");
+define("LANINS_141", "Please fill in the form below with your MySQL details. If you do not know this information, please contact your hosting provider. You may hover over each field for additional information.");
+define("LANINS_142", "IMPORTANT: Please rename e107.htaccess to .htaccess");
+define("LANINS_143", "DEBUG: Rename from e107.htaccess to .htaccess was successful");
+define("LANINS_144", "IMPORTANT: Please copy and paste the contents of the [b]e107.htaccess[/b] into your [b].htaccess[/b] file. Please take care NOT to overwrite any existing data that may be in it.");
+define("LANINS_145", "A minimum version of PHP");
+define("LANINS_146", "is required");
+
+
