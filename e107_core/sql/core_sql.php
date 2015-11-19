@@ -361,6 +361,7 @@ CREATE TABLE online (
   online_pagecount tinyint(3) unsigned NOT NULL default '0',
   online_active int(10) unsigned NOT NULL default '0',
   online_agent varchar(255) NOT NULL default '',
+  online_language varchar(45) NOT NULL default '',
   KEY online_ip (online_ip)
 ) ENGINE=InnoDB;
 # --------------------------------------------------------
@@ -567,6 +568,7 @@ CREATE TABLE userclass_classes (
   userclass_visibility smallint(5) signed NOT NULL default '0',
   userclass_type tinyint(1) unsigned NOT NULL default '0',
   userclass_icon varchar(250) NOT NULL default '',
+  userclass_perms text NOT NULL,
   PRIMARY KEY  (userclass_id)
 ) ENGINE=MyISAM;
 # --------------------------------------------------------

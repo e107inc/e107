@@ -13,9 +13,10 @@
 define("LAN_UPDATE_2", "Action");
 define("LAN_UPDATE_3", "Not Needed");
 define("LAN_UPDATE_4", "Update from [x] to [y]");
+define("LAN_UPDATE_5", "Update core database structure");
 define("LAN_UPDATE_7", "Executed [x]");
 define("LAN_UPDATE_12", "One of your tables contains duplicate entries.");
-define("LAN_UPDATE_13", "Add additional/missing core settings");
+define("LAN_UPDATE_13", "Add new or missing core settings");
 define("LAN_UPDATE_14", "Start version: ");
 
 // Messages as part of 0.7 to 0.8 update process

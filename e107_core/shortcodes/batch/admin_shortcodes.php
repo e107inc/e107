@@ -723,7 +723,7 @@ class admin_shortcodes
 		$outboxUrl = e_PLUGIN.'pm/admin_config.php?mode=outbox&amp;action=list&amp;iframe=1';
 		$composeUrl = e_PLUGIN.'pm/admin_config.php?mode=outbox&amp;action=create&amp;iframe=1';
 
-       $text = '<ul class="nav navbar-nav nav-pills">
+       $text = '<ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
             <a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" href="#" >
                 '.$tp->toGlyph('fa-envelope').$countDisp.'<b class="caret"></b>
@@ -1384,8 +1384,12 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		
 		if($parm == 'home' || $parm == 'logout' || $parm == 'language' || $parm == 'pm')
 		{
+			$template = $$tmpl;
+
+			$template['start'] = $template['start_other'];
+
 			$menu_vars = $this->getOtherNav($parm);	
-			return e107::getNav()->admin('', '', $menu_vars, $$tmpl, FALSE, FALSE);
+			return e107::getNav()->admin('', '', $menu_vars, $template, FALSE, FALSE);
 		}
         
 

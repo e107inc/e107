@@ -130,8 +130,15 @@ if (!$dont_check_update)
 	// set 'master' to true to prevent other upgrades from running before it is complete.
 
 	$LAN_UPDATE_4 = deftrue('LAN_UPDATE_4',"Update from [x] to [y]"); // in case language-pack hasn't been upgraded.
+	$LAN_UPDATE_5 = deftrue('LAN_UPDATE_5', "Core database structure");
 
-	$dbupdate['706_to_800'] = array('master'=>true, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('1.x','2.0')), 'message'=> LAN_UPDATE_29);
+
+
+	$dbupdate['706_to_800'] = array('master'=>true, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('1.x','2.0')), 'message'=> LAN_UPDATE_29, 'hide_when_complete'=>false);
+
+
+	// always run these last.
+	$dbupdate['core_database'] = array('master'=>false, 'title'=> $LAN_UPDATE_5);
 	$dbupdate['core_prefs'] = array('master'=>true, 'title'=> LAN_UPDATE_13);						// Prefs check
 //	$dbupdate['70x_to_706'] = LAN_UPDATE_8.' .70x '.LAN_UPDATE_9.' .706';
 }		// End if (!$dont_check_update)
@@ -265,18 +272,23 @@ class e107Update
 		
 		foreach($this->core as $func => $data)
 		{
+			$text2 = '';
+
 			if(function_exists("update_".$func))
 			{
-				$text .= "<tr><td>".$data['title']."</td>";
-				
-				
-				
+
 				if(call_user_func("update_".$func))
 				{
-					$text .= "<td>".ADMIN_TRUE_ICON."</td>";
+					if(empty($data['hide_when_complete']))
+					{
+						$text2 .= "<td>".$data['title']."</td>";
+						$text2 .= "<td>".ADMIN_TRUE_ICON."</td>";
+					}
 				}
 				else
 				{
+					$text2 .= "<td>".$data['title']."</td>";
+
 					if(vartrue($data['message']))
 					{
 						$mes->addInfo($data['message']);	
@@ -284,13 +296,19 @@ class e107Update
 					
 					$this->updates ++;
 					
-					$text .= "<td>".$frm->admin_button('update_core['.$func.']', LAN_UPDATE, 'warning', '', "id=e-{$func}&disabled=".$this->disabled)."</td>";
+					$text2 .= "<td>".$frm->admin_button('update_core['.$func.']', LAN_UPDATE, 'warning', '', "id=e-{$func}&disabled=".$this->disabled)."</td>";
+
 					if($data['master'] == true)
 					{
 						$this->disabled = 1;	
 					}
 				}
-				$text .= "</tr>\n";
+
+				if(!empty($text2))
+				{
+					$text .= "<tr>".$text2."</tr>\n";
+				}
+
 			}	
 		}
 		
@@ -306,7 +324,7 @@ class e107Update
 		
 		$caption = LAN_UPDATE;
 		$text = "
-		<form method='post' action='".e_SELF."'>
+		<form method='post' action='".e_ADMIN."e107_update.php'>
 			<fieldset id='core-e107-update'>
 			<legend>{$caption}</legend>
 				<table class='table adminlist'>
@@ -483,6 +501,46 @@ if (defined('TEST_UPDATE'))
 		return $just_check;
 	}
 }  // End of test routine
+
+// generic database structure update.
+function update_core_database($type = '')
+{
+	$just_check = ($type == 'do') ? FALSE : TRUE;
+	require_once(e_HANDLER."db_verify_class.php");
+	$dbv = new db_verify;
+	$log = e107::getAdminLog();
+
+	if($plugUpgradeReq = e107::getPlugin()->updateRequired())
+	{
+		$exclude =  array_keys($plugUpgradeReq); // search xxxxx_setup.php and check for 'upgrade_required()' == true.
+		asort($exclude);
+	}
+	else
+	{
+		$exclude = false;
+	}
+
+	$dbv->compareAll($exclude); // core & plugins, but not plugins calling for an update with xxxxx_setup.php
+
+
+	if(count($dbv->errors))
+	{
+		if ($just_check)
+		{
+			$mes = e107::getMessage();
+		//	$mes->addDebug(print_a($dbv->errors,true));
+			$log->addDebug(print_a($dbv->errors,true));
+			$tables = implode(", ", array_keys($dbv->errors));
+			return update_needed("Database Tables require updating: <b>".$tables."</b>");
+		}
+
+		$dbv->compileResults();
+		$dbv->runFix(); // Fix entire core database structure and plugins too.
+	}
+
+
+	return $just_check;
+}
 
 
 
@@ -1032,11 +1090,13 @@ function update_706_to_800($type='')
 			$mes = e107::getMessage();
 		//	$mes->addDebug(print_a($dbv->errors,true));
 			$log->addDebug(print_a($dbv->errors,true));
-			return update_needed("Database Tables require updating.");
+		//	return update_needed("Database Tables require updating."); //
 		}
-		
-		$dbv->compileResults();	
-		$dbv->runFix(); // Fix entire core database structure and plugins too. 	
+		else
+		{
+			$dbv->compileResults();
+			$dbv->runFix(); // Fix entire core database structure and plugins too.
+		}
 	}
 	
 	// print_a($dbv->results);
