@@ -120,7 +120,8 @@ class e_online
 				'online_location'	=> $page,
 				'online_pagecount'	=> 1,
 				'online_active'		=> 0,
-				'online_agent'		=> $agent
+				'online_agent'		=> $agent,
+				'online_language'   => e_LAN
 			);
 
 			// !deftrue('e_AJAX_REQUEST')
