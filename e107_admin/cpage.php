@@ -624,7 +624,8 @@ class page_admin_ui extends e_admin_ui
 			}
 		//	asort($this->cats);			
 			
-			$this->fields['page_chapter']['writeParms'] = $this->cats;
+			$this->fields['page_chapter']['writeParms']['optArray'] = $this->cats;
+			$this->fields['page_chapter']['writeParms']['size'] = 'xxlarge';
 
 		}
 
