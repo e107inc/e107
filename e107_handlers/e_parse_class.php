@@ -3258,6 +3258,12 @@ class e_parser
 	 */
 	function isImage($file)
 	{
+		if(substr($file,0,3)=="{e_")
+		{
+			$file = e107::getParser()->replaceConstants($file);
+		}
+
+
 		$ext = pathinfo($file,PATHINFO_EXTENSION);
 
 		return ($ext == 'jpg' || $ext == 'png' || $ext == 'gif' || $ext == 'jpeg') ? true : false;
