@@ -645,7 +645,16 @@ class pageClass
 		define('e_PAGETITLE', eHelper::formatMetaTitle($this->page['page_title']));
 		if($this->page['page_metadscr']) define('META_DESCRIPTION', eHelper::formatMetaDescription($this->page['page_metadscr']));
 		if($this->page['page_metakeys']) define('META_KEYWORDS', eHelper::formatMetaKeys($this->page['page_metakeys']));
-		//return $ret;
+
+		$tp = e107::getParser();
+
+		if($tp->isImage($this->page['menu_image']))
+		{
+			$mimg = $tp->thumbUrl($this->page['menu_image'],'w=800', false, true);
+			e107::meta('og:image',$mimg);
+		}
+
+			//return $ret;
 	}
 
 	public function checkCache()
