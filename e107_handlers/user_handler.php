@@ -1245,7 +1245,7 @@ class e_userperms
 	protected $full_perms = array();
 
 	protected $permSectionDiz = array(
-		'core'		=> ADMSLAN_74,
+		'core'		=> LAN_GENERAL,
 		'plugin'	=> ADLAN_CL_7,
 		'language'	=> ADLAN_132,
 		'main'		=> ADMSLAN_58
@@ -1446,8 +1446,10 @@ class e_userperms
 			$icon_16	= "";
 			$icon_32	= "";
 		}
-		
-		$par = "<tr>
+
+		$class = getperms($arg, $perms) ? 'active' : '';
+
+		$par = "<tr class='{$class}'>
 			<td style='text-align:center'>".$icon_16."</td>
 			<td style='text-align:center'>".$frm->checkbox('perms[]', $arg, getperms($arg, $perms))."</td>
 			<td>".$frm->label($label,'perms[]', $arg)."</td>
@@ -1618,6 +1620,40 @@ class e_userperms
 	
 	function renderPermTable($type,$a_perms='')
 	{
+
+
+
+		if($type == 'tabs')
+		{
+			$groupedList = $this->getPermList('grouped');
+			$tab = array();
+			foreach($groupedList as $section=>$list)
+			{
+				$text = '';
+				//	$text .= "\t\t<div class='field-section'><h4>".$prm->renderSectionDiz($section)."</h4>"; //XXX Lan - General
+				$text .= "\t\t<table class='table adminlist'>
+				<colgroup>
+					<col class='center' style='width:50px' />
+					<col style='width:50px' />
+					<col  />
+				</colgroup>
+				<tbody>";
+
+				foreach($list as $key=>$diz)
+				{
+					$text .= $this->checkb($key, $a_perms, $diz);
+				}
+
+				$text .= "</tbody></table>";
+
+				$tab[] = array('caption'=>$this->renderSectionDiz($section), 'text'=>$text);
+
+			}
+
+		//	return print_a($groupedList);
+			return e107::getForm()->tabs($tab);
+		}
+
 		$groupedList = $this->getPermList($type);
 			
 		if($type != 'grouped')
