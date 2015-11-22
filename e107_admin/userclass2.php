@@ -82,7 +82,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 		protected $listOrder        = "CASE WHEN userclass_id = 250 THEN 1 WHEN userclass_id =254 THEN 2 WHEN userclass_id = 253 THEN 3  WHEN userclass_id < 250 THEN 4 END, userclass_id DESC ";
 		//	protected $sortField		= 'somefield_order';
 		//	protected $orderStep		= 10;
-		//	protected $tabs			= array('Tabl 1','Tab 2'); // Use 'tab'=>0  OR 'tab'=>1 in the $fields below to enable.
+		protected $tabs			= null;// Use 'tab'=>0  OR 'tab'=>1 in the $fields below to enable.
 
 	//	protected $listQry      	= "SELECT * FROM `#generic` WHERE gen_type='wmessage'  "; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
 
@@ -93,13 +93,14 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 		protected $fields = array(
 			'checkboxes' 		        =>  array ( 'title' => '', 		'type' => null,         'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
 			'userclass_id'				=> array('title'=> LAN_ID,		'type' =>'hidden',  	 'data'=>'int', 'width' => '5%',	'thclass' => 'left'),
-			'userclass_icon' 			=> array('title'=> UCSLAN_68,	'type' => 'icon', 		'data'=>'str', 'width' => '5%',	'thclass' => 'left', 'class' => 'center'),
-			'userclass_name'	   		=> array('title'=> UCSLAN_12,	'type' => 'text', 		'data'=>'str', 'inline'=>true, 'width' => 'auto',	'thclass' => 'left'),
-			'userclass_description'   	=> array('title'=> UCSLAN_13,	'type' => 'text', 		'data'=>'str', 'inline'=>true,'width' => 'auto',	'thclass' => 'left', 'writeParms'=>array('size'=>'xxlarge')),
-			'userclass_type' 			=> array('title'=> UCSLAN_79,	'type' => 'dropdown',	'data'=>'int', 'width' => '10%',	'thclass' => 'left',	'class'=>'left' ),
-			'userclass_editclass' 		=> array('title'=> UCSLAN_24,	'type' => 'userclass',	'data'=>'int', 'width' => 'auto',	'thclass' => 'left', 'writeParms'=>array('classlist'=>'nobody,public,main,admin,classes,matchclass,member, no-excludes')),
-			'userclass_visibility' 		=> array('title'=> UCSLAN_34,	'type' => 'userclass',	'data'=>'int', 'width' => 'auto',	'thclass' => 'left'),
-			'userclass_parent' 			=> array('title'=> UCSLAN_35,	'type' => 'userclass',	'data'=>'int', 'width' => 'auto',	'thclass' => 'left', 'writeParms'=>array('classlist'=>'main,admin,nobody,public,classes,matchclass,member, no-excludes')),
+			'userclass_icon' 			=> array('title'=> UCSLAN_68,	'type' => 'icon', 		'tab'=>0, 'data'=>'str', 'width' => '5%',	'thclass' => 'left', 'class' => 'center'),
+			'userclass_name'	   		=> array('title'=> UCSLAN_12,	'type' => 'text', 		'tab'=>0,'data'=>'str', 'inline'=>true, 'width' => 'auto',	'thclass' => 'left'),
+			'userclass_description'   	=> array('title'=> UCSLAN_13,	'type' => 'text', 		'tab'=>0,'data'=>'str', 'inline'=>true,'width' => 'auto',	'thclass' => 'left', 'writeParms'=>array('size'=>'xxlarge')),
+			'userclass_type' 			=> array('title'=> UCSLAN_79,	'type' => 'dropdown',	'tab'=>0,'data'=>'int', 'width' => '10%',	'thclass' => 'left',	'class'=>'left' ),
+			'userclass_editclass' 		=> array('title'=> UCSLAN_24,	'type' => 'userclass',	'tab'=>0,'data'=>'int', 'width' => 'auto',	'thclass' => 'left', 'writeParms'=>array('classlist'=>'nobody,public,main,admin,classes,matchclass,member, no-excludes')),
+			'userclass_visibility' 		=> array('title'=> UCSLAN_34,	'type' => 'userclass',	'tab'=>0,'data'=>'int', 'width' => 'auto',	'thclass' => 'left'),
+			'userclass_parent' 			=> array('title'=> UCSLAN_35,	'type' => 'userclass',	'tab'=>0,'data'=>'int', 'width' => 'auto',	'thclass' => 'left', 'writeParms'=>array('classlist'=>'main,admin,nobody,public,classes,matchclass,member, no-excludes')),
+			'userclass_perms' 			=> array('title'=> "Perms",	'type' => 'hidden',	'tab'=>0,'data'=>'str', 'width' => 'auto',	'thclass' => 'left'),
 
 			'options' 					=> array('title'=> LAN_OPTIONS, 'type' => 'method',		'width' => '10%',	'thclass' => 'center last', 'forced'=>TRUE,  'class'=>'right', 'readParms' => array('deleteClass' => e_UC_NOBODY))
 		);
@@ -112,6 +113,15 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 		public function init()
 		{
+
+			if(E107_DBG_BASIC && intval($_GET['id']) === 254) // Experimental
+			{
+				e107::getMessage()->addDebug("Experimental Feature active");
+				$this->tabs = array(LAN_GENERAL,"Administrator Permissions");
+				$this->fields['userclass_perms']['type'] = 'method';
+				$this->fields['userclass_perms']['tab'] = 1;
+			}
+
 
 			// Listen for submitted data.
 			$this->initialPageSubmit();
@@ -144,10 +154,22 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 		public function afterCreate($new_data, $old_data, $id)
 		{
 			e107::getUserClass()->clearCache();
+			$e_userclass    = $this->getUserClassAdmin();
+			$e_userclass->calc_tree();
+			$e_userclass->save_tree();
 		}
 
 		public function beforeUpdate($new_data, $old_data, $id)
 		{
+
+
+			if(!empty($new_data['perms']))
+			{
+				$new_data['userclass_perms'] = implode(".",$new_data['perms']);
+			}
+
+			e107::getMessage()->addDebug(print_a($new_data,true));
+
 			return $new_data;
 		}
 
@@ -461,9 +483,29 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 				return $text;
 			}
+
 		}
 
+
+		function userclass_perms($curVal,$mode)
+		{
+			if($mode == 'read')
+			{
+				//	$uid = $this->getController()->getModel()->get('user_id');
+				//	return e107::getUserPerms()->renderPerms($curVal,$uid);
+			}
+			if($mode == 'write')
+			{
+				$prm = e107::getUserPerms();
+				return $prm->renderPermTable('tabs',$curVal);
+
+			}
+		}
 	}
+
+
+
+
 
 
 	new uclass_admin();

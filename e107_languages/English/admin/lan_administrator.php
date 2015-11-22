@@ -79,7 +79,6 @@ define("ADMSLAN_71", "Click here to display privileges");
 define("ADMSLAN_72", "Admin ID: --ID-- name: --NAME-- new permissions: ");
 define("ADMSLAN_73", "Admin ID: --ID-- name: --NAME--");
 
-define("ADMSLAN_74", "General");
 // define("ADMSLAN_75", "");
 //define("ADMSLAN_76", "Manage language-packs");//ADLAN_132
 

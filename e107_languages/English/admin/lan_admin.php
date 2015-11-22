@@ -414,6 +414,6 @@ define("LAN_CONTROL_PANEL", "[x]'s Control Panel");
 define("LAN_CUSTOM_URL", "Custom URL");
 define("LAN_CUSTOM_URL_DISABLED", "Disabled or Enter Custom URL");
 
-
+define("LAN_GENERAL", "General");
 
 // TODO - move e_form related LANS below, add new lan_form.php file (for both front/back-end)

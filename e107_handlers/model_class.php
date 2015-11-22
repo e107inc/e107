@@ -2706,6 +2706,7 @@ class e_front_model extends e_model
 		if(!$this->data_has_changed && !$force)
 		{
 			$this->addMessageInfo(LAN_NO_CHANGE);
+
 			return 0;
 		}
 		$sql = e107::getDb();
