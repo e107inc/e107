@@ -508,6 +508,12 @@ class news_admin_ui extends e_admin_ui
 			e107::getDb()->update('submitnews', "submitnews_auth = 1 WHERE submitnews_id = ".intval($new_data['submitted_id'])." LIMIT 1");
 		}
 
+		if(!empty($new_data['news_sef']) && ($existingSef = e107::getDb()->retrieve('news', 'news_sef', "news_sef = '".$new_data['news_sef']."' AND news_id != ".$id)))
+		{
+			$existingLAN = e107::getParser()->lanVars(LAN_NEWS_95,$existingSef,true );
+			e107::getMessage()->addWarning($existingLAN);
+		}
+
 
 		$this->processPings();
 		e107::getEvent()->trigger('newspost',$new_data);
@@ -535,6 +541,12 @@ class news_admin_ui extends e_admin_ui
 	//	e107::getEvent()->trigger('admin_news_updated',$new_data);
 
 		$this->clearCache();
+
+		if(!empty($new_data['news_sef']) && ($existingSef = e107::getDb()->retrieve('news', 'news_sef', "news_sef = '".$new_data['news_sef']."' AND news_id != ".$id)))
+		{
+			$existingLAN = e107::getParser()->lanVars(LAN_NEWS_95,$existingSef,true );
+			e107::getMessage()->addWarning($existingLAN);
+		}
 
 		//$ecache->clear("nq_news_"); - supported by cache::clear() now
 		//$ecache->clear("nomd5_news_"); supported by cache::clear() now

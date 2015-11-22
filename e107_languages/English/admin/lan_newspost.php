@@ -218,5 +218,6 @@ define("LAN_NEWS_91", "List-view limit per page");
 define("LAN_NEWS_92", "eg. news.php?all or news.php?cat.1 or news.php?tag=xxx");
 define("LAN_NEWS_93", "List-view content");
 define("LAN_NEWS_94", "Items assigned to these templates will be displayed in the list.");
+define("LAN_NEWS_95", "Another news item is using the SEF URL: [x]");
 
 ?>
