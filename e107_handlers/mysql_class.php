@@ -1960,11 +1960,13 @@ class e_db_mysql
 		if(!$this->mySQLtableList)
 		{
 			$table = array();
+
 			if($res = $this->db_Query("SHOW TABLES LIKE '".$this->mySQLPrefix."%' "))
 			{
+				$length = strlen($this->mySQLPrefix);
 				while($rows = $this->fetch(MYSQL_NUM))
 				{
-					$table[] = str_replace($this->mySQLPrefix,"",$rows[0]);
+					$table[] = substr($rows[0],$length);
 				}
 			}
 			return $table;
