@@ -69,6 +69,13 @@ $security_risks = array(
 
 // $phpinfo = preg_replace("#^.*<body>#is", "", $phpinfo);
 ob_end_clean();
+
+
+if(deftrue('e_DEBUG'))
+{
+	$mes->addDebug("Session ID: ".session_id());
+}
+
 $ns->tablerender("PHPInfo", $mes->render(). $phpinfo);
 require_once("footer.php");
 ?>
