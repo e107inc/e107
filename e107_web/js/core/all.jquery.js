@@ -1,9 +1,126 @@
-// handle secured json string - the Prototype implementation
+var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
+// Allow other JavaScript libraries to use $.
+// TODO: Use jQuery.noConflict(), but for this, need to rewrite all e107 javascript to use wrapper: (function ($) { ... })(jQuery);
+// jQuery.noConflict();
+
+(function ($) {
+
+	/**
+	 * Attach all registered behaviors to a page element.
+	 *
+	 * Behaviors are event-triggered actions that attach to page elements, enhancing
+	 * default non-JavaScript UIs. Behaviors are registered in the e107.behaviors
+	 * object using the method 'attach' and optionally also 'detach' as follows:
+	 * @code
+	 *    e107.behaviors.behaviorName = {
+	 *      attach: function (context, settings) {
+	 *        ...
+	 *      },
+	 *      detach: function (context, settings, trigger) {
+	 *        ...
+	 *      }
+	 *    };
+	 * @endcode
+	 *
+	 * e107.attachBehaviors is added below to the jQuery ready event and so
+	 * runs on initial page load. Developers implementing Ajax in their
+	 * solutions should also call this function after new page content has been
+	 * loaded, feeding in an element to be processed, in order to attach all
+	 * behaviors to the new content.
+	 *
+	 * Behaviors should use
+	 * @code
+	 *   $(selector).once('behavior-name', function () {
+	 *     ...
+	 *   });
+	 * @endcode
+	 * to ensure the behavior is attached only once to a given element. (Doing so
+	 * enables the reprocessing of given elements, which may be needed on occasion
+	 * despite the ability to limit behavior attachment to a particular element.)
+	 *
+	 * @param context
+	 *   An element to attach behaviors to. If none is given, the document element
+	 *   is used.
+	 * @param settings
+	 *   An object containing settings for the current context. If none given, the
+	 *   global e107.settings object is used.
+	 */
+	e107.attachBehaviors = function (context, settings) {
+		context = context || document;
+		settings = settings || e107.settings;
+		// Execute all of them.
+		$.each(e107.behaviors, function () {
+			if ($.isFunction(this.attach)) {
+				this.attach(context, settings);
+			}
+		});
+	};
+
+	/**
+	 * Detach registered behaviors from a page element.
+	 *
+	 * Developers implementing AHAH/Ajax in their solutions should call this
+	 * function before page content is about to be removed, feeding in an element
+	 * to be processed, in order to allow special behaviors to detach from the
+	 * content.
+	 *
+	 * Such implementations should look for the class name that was added in their
+	 * corresponding e107.behaviors.behaviorName.attach implementation, i.e.
+	 * behaviorName-processed, to ensure the behavior is detached only from
+	 * previously processed elements.
+	 *
+	 * @param context
+	 *   An element to detach behaviors from. If none is given, the document element
+	 *   is used.
+	 * @param settings
+	 *   An object containing settings for the current context. If none given, the
+	 *   global e107.settings object is used.
+	 * @param trigger
+	 *   A string containing what's causing the behaviors to be detached. The
+	 *   possible triggers are:
+	 *   - unload: (default) The context element is being removed from the DOM.
+	 *   - move: The element is about to be moved within the DOM (for example,
+	 *     during a tabledrag row swap). After the move is completed,
+	 *     e107.attachBehaviors() is called, so that the behavior can undo
+	 *     whatever it did in response to the move. Many behaviors won't need to
+	 *     do anything simply in response to the element being moved, but because
+	 *     IFRAME elements reload their "src" when being moved within the DOM,
+	 *     behaviors bound to IFRAME elements (like WYSIWYG editors) may need to
+	 *     take some action.
+	 *   - serialize: E.g. when an Ajax form is submitted, this is called with the
+	 *     form as the context. This provides every behavior within the form an
+	 *     opportunity to ensure that the field elements have correct content
+	 *     in them before the form is serialized. The canonical use-case is so
+	 *     that WYSIWYG editors can update the hidden textarea to which they are
+	 *     bound.
+	 *
+	 * @see e107.attachBehaviors
+	 */
+	e107.detachBehaviors = function (context, settings, trigger) {
+		context = context || document;
+		settings = settings || e107.settings;
+		trigger = trigger || 'unload';
+		// Execute all of them.
+		$.each(e107.behaviors, function () {
+			if ($.isFunction(this.detach)) {
+				this.detach(context, settings, trigger);
+			}
+		});
+	};
+
+	// Attach all behaviors.
+	$(function () {
+		e107.attachBehaviors(document, e107.settings);
+	});
+
+})(jQuery);
 
 $.ajaxSetup({
-	dataFilter: function(data, type) {
-		if(type != 'json' || !data) return data;
+	dataFilter: function (data, type) {
+		if (type != 'json' || !data) {
+			return data;
+		}
 		return data.replace(/^\/\*-secure-([\s\S]*)\*\/\s*$/, '$1');
 	},
 	cache: false // Was Really NEeded!

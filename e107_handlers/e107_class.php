@@ -1668,6 +1668,10 @@ class e107
 		
 		switch ($type) 
 		{
+			case 'settings':
+				$jshandler->jsSettings($data);
+			break;
+
 			case 'core':
 				// data is e.g. 'core/tabs.js'
 				if(null !== $zone) $jshandler->requireCoreLib($data, $zone);

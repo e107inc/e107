@@ -326,6 +326,10 @@ e107::getJs()->renderJs('footer', true);
 
 e107::getJs()->renderCached('js');
 
+// All JavaScript settings are placed in the footer of the page with the library weight so that inline scripts appear
+// afterwards.
+e107::getJs()->renderJs('settings');
+
 // [JSManager] Load JS Footer inline code by priority
 e107::getJs()->renderJs('footer_inline', true);
 
