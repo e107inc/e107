@@ -348,6 +348,10 @@ if (abs($_serverTime - $lastSet) > 120)
      //  </script>\n";
 }
 
+// All JavaScript settings are placed in the footer of the page with the library weight so that inline scripts appear
+// afterwards.
+e107::getJs()->renderJs('settings');
+
 e107::getJs()->renderJs('footer_inline', true);
 
 //
