@@ -3713,9 +3713,9 @@ class e_form
 				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
 				{
 					// Need a Unique Field ID to store field settings using e107::js('settings').
-					$fieldID = $field . '_' . str_replace('.', '', microtime(true));
+					$fieldID = $this->name2id($field . '_' . microtime(true));
 					// Unique ID for each rows.
-					$eEditableID = $fieldID . '_' . $row_id;
+					$eEditableID = $this->name2id($fieldID . '_' . $row_id);
 					$tpl = $this->userpicker($field, '', $ttl, $id, array('id' => $fieldID, 'selectize' => array('e_editable' => $eEditableID)));
 					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 					$value = "<a id='" . $eEditableID . "' class='e-tip e-editable editable-click editable-userpicker' data-clear='false' data-tpl='" . str_replace("'", '"', $tpl) . "' data-name='" . $field . "' title=\"" . LAN_EDIT . " " . $attributes['title'] . "\" data-type='text' data-pk='" . $row_id . "' data-value='" . $id . "' data-url='" . e_SELF . "?mode={$mode}&amp;action=inline&amp;id={$row_id}&amp;ajax_used=1' href='#'>" . $ttl . "</a>";
