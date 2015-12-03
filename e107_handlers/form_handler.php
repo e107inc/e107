@@ -422,109 +422,20 @@ class e_form
 				e107::css('core', 'selectize/css/selectize.bootstrap2.css', 'jquery');
 			}
 
-			$ac = $options['selectize'];
-			$fieldID = vartrue($options['id'], $this->name2id($name));
+			// Load selectize behavior.
+			e107::js('core', 'selectize/js/selectize.init.js', 'jquery');
 
-			// TODO: better method to create suffix as unique identifier.
-			$optionSuffix = $fieldID . vartrue($options['selectize']['e_editable']);
-			$optionSuffix = md5($optionSuffix);
+			$jsSettings = array(
+				'id'      => vartrue($options['id'], $this->name2id($name)),
+				'options' => $options['selectize'],
+				// Multilingual support.
+				'strings' => array(
+						'anonymous' => LAN_ANONYMOUS,
+				),
+			);
 
-			// We need to declare an options array with unique ID for the selectize.js field, because we have to store
-			// the latest default values, because if the selectize() would be reinitialized, e.g. in x-editable popover,
-			// we have to get the latest value(s).
-			$jsOptions = 'var options' . $optionSuffix . ' = ';
-			$jsOptions .= (vartrue($ac['options']) ? json_encode($ac['options']) : "[]") . ";\n";
-
-			// TODO: more options and callbacks.
-			$js = "$('#" . $fieldID . "').selectize({
-				// General options.
-				items: " . (vartrue($ac['items']) ? json_encode($ac['items']) : '[]') . ",
-				delimiter: '" . (vartrue($ac['delimiter'], ',')) . "',
-				diacritics: " . (vartrue($ac['diacritics'], true) ? 'true' : 'false') . ",
-				create: " . (vartrue($ac['create'], false) ? 'true' : 'false') . ",
-				createOnBlur: " . (vartrue($ac['createOnBlur'], true) ? 'true' : 'false') . ",
-				highlight: " . (vartrue($ac['highlight'], false) ? 'true' : 'false') . ",
-				persist: " . (vartrue($ac['persist'], false) ? 'true' : 'false') . ",
-				openOnFocus: " . (vartrue($ac['openOnFocus'], false) ? 'true' : 'false') . ",
-				maxOptions: " . vartrue($ac['maxOptions'], 'null') . ",
-				maxItems: " . vartrue($ac['maxItems'], 'null') . ",
-				hideSelected: " . (vartrue($ac['hideSelected'], false) ? 'true' : 'false') . ",
-				closeAfterSelect: " . (vartrue($ac['closeAfterSelect'], true) ? 'true' : 'false') . ",
-				allowEmptyOption: " . (vartrue($ac['allowEmptyOption'], false) ? 'true' : 'false') . ",
-				scrollDuration: " . vartrue($ac['scrollDuration'], 60) . ",
-				loadThrottle: " . vartrue($ac['loadThrottle'], 300) . ",
-				loadingClass: '" . vartrue($ac['loadingClass'], 'loading') . "',
-				preload: " . (vartrue($ac['preload'], false) ? 'true' : 'false') . ",
-				dropdownParent: " . vartrue($ac['dropdownParent'], 'null') . ",
-				addPrecedence: " . (vartrue($ac['addPrecedence'], false) ? 'true' : 'false') . ",
-				selectOnTab: " . (vartrue($ac['selectOnTab'], false) ? 'true' : 'false') . ",
-				mode: '" . (vartrue($ac['mode'], 'multi')) . "',
-				plugins: " . (vartrue($ac['plugins']) ? json_encode($ac['plugins']) : '[]') . ",
-
-				// Data / Searching.
-				options: options" . $optionSuffix . ",
-				valueField: '" . vartrue($ac['valueField'], 'value') . "',
-				labelField: '" . vartrue($ac['labelField'], 'label') . "',
-				searchField: '" . vartrue($ac['searchField'], 'label') . "',
-
-				// Callbacks.
-				load: function(query, callback) {
-					var loadPath = '" . vartrue($ac['loadPath'], '') . "';
-					if (loadPath == '') return callback([]);
-			        if (!query.length) return callback([]);
-					$.ajax({
-						url: loadPath,
-						type: 'POST',
-						dataType: 'json',
-						data: {
-							q: query,
-							l: " . vartrue($ac['maxOptions'], 10) . "
-						},
-						error: function() {
-							callback([]);
-						},
-						success: function(data) {
-							// Update items in options array of this field.
-							options" . $optionSuffix . " = data;
-							callback(data);
-						}
-					});
-				}
-			});";
-
-			// We have to generate JS for x-editable field, so we have to initialize selectize.js after popover opens.
-			if(vartrue($options['selectize']['e_editable']))
-			{
-				// TODO: instead of setTimeout, we should use an x-editable callback.
-				$click = "$('#" . $options['selectize']['e_editable'] . "').click(function(){
-					// Attach success callback for replacing user id with name.
-					$.fn.editable.defaults.success = function(response, newValue) {
-						if(response.status == 'error') return;
-						if ($('#" . $options['selectize']['e_editable'] . "').hasClass('editable-userpicker')) {
-							$('#" . $options['selectize']['e_editable'] . "').hide();
-							options" . $optionSuffix . " = options" . $optionSuffix . " || [];
-							userName = '" . LAN_ANONYMOUS . "';
-							$.each(options" . $optionSuffix . ", function(key, value) {
-								if (value." . vartrue($ac['valueField'], 'value') . " == newValue) {
-									userName = value." . vartrue($ac['labelField'], 'label') . ";
-								}
-							});
-							setTimeout(function(){
-								$('#" . $options['selectize']['e_editable'] . "').html(userName).show();
-								$.fn.editable.defaults.success = function(response, newValue) {}
-							}, 300);
-						}
-					};
-					setTimeout(function(){ " . $js . " }, 300);
-				})";
-
-				e107::js('footer-inline', "$(document).ready(function(){" . $jsOptions . $click . "});");
-			}
-			// We have to render JS for a simple form element.
-			else
-			{
-				e107::js('footer-inline', "$(document).ready(function(){" . $jsOptions . $js . "});");
-			}
+			// Merge field settings with other selectize field settings.
+			e107::js('settings', array('selectize' => array($jsSettings)));
 		}
 
 		// TODO: remove typeahead.
@@ -3801,9 +3712,13 @@ class e_form
 				// Inline Editing.
 				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
 				{
-					$tpl = $this->userpicker($field, '', $ttl, $id, array('selectize' => array('e_editable' => $field . '_' . $row_id)));
+					// Need a Unique Field ID to store field settings using e107::js('settings').
+					$fieldID = $this->name2id($field . '_' . microtime(true));
+					// Unique ID for each rows.
+					$eEditableID = $this->name2id($fieldID . '_' . $row_id);
+					$tpl = $this->userpicker($field, '', $ttl, $id, array('id' => $fieldID, 'selectize' => array('e_editable' => $eEditableID)));
 					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
-					$value = "<a id='" . $field . '_' . $row_id . "' class='e-tip e-editable editable-click editable-userpicker' data-clear='false' data-tpl='" . str_replace("'", '"', $tpl) . "' data-name='" . $field . "' title=\"" . LAN_EDIT . " " . $attributes['title'] . "\" data-type='text' data-pk='" . $row_id . "' data-value='" . $id . "' data-url='" . e_SELF . "?mode={$mode}&amp;action=inline&amp;id={$row_id}&amp;ajax_used=1' href='#'>" . $ttl . "</a>";
+					$value = "<a id='" . $eEditableID . "' class='e-tip e-editable editable-click editable-userpicker' data-clear='false' data-tpl='" . str_replace("'", '"', $tpl) . "' data-name='" . $field . "' title=\"" . LAN_EDIT . " " . $attributes['title'] . "\" data-type='text' data-pk='" . $row_id . "' data-value='" . $id . "' data-url='" . e_SELF . "?mode={$mode}&amp;action=inline&amp;id={$row_id}&amp;ajax_used=1' href='#'>" . $ttl . "</a>";
 				}
 				
 			break;

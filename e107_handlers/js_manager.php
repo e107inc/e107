@@ -45,7 +45,10 @@ class e_jsmanager
 		//	"http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js",
 		//	"http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"
 		//	"http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"
-			"https://cdn.jsdelivr.net/jquery/2.1.4/jquery.min.js"
+			"https://cdn.jsdelivr.net/jquery/2.1.4/jquery.min.js",
+			// jQuery Once filters out all elements that had the same filter applied on them before. It can be used to
+			// ensure that a function is only applied once to an element. jQuery Once is used in e107.behaviors.
+			"https://cdnjs.cloudflare.com/ajax/libs/jquery-once/2.1.1/jquery.once.min.js"
 	//		,
 	//		"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js",
 	//		"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css",
@@ -66,6 +69,15 @@ class e_jsmanager
 
 
 	protected $_core_prefs = array();
+
+	/**
+	 * Array to store JavaScript options will be rendered in footer as JSON object.
+	 *
+	 * @var array
+	 */
+	protected $_e_js_settings = array(
+		'basePath' => e_HTTP,
+	);
 	
     /**
      * Core JS library files, loaded via e_jslib.php
@@ -243,6 +255,9 @@ class e_jsmanager
 		{
 			$this->_libraries['jquery'] = array(
 				"https://cdn.jsdelivr.net/jquery/2.1.4/jquery.min.js",
+				// jQuery Once filters out all elements that had the same filter applied on them before. It can be used
+				// to ensure that a function is only applied once to an element. jQuery Once is used in e107.behaviors.
+				"https://cdnjs.cloudflare.com/ajax/libs/jquery-once/2.1.1/jquery.once.min.js",
 				"https://cdn.jsdelivr.net/jquery.ui/1.11.4/jquery-ui.min.js",
 				"https://cdn.jsdelivr.net/jquery.ui/1.11.4/themes/smoothness/jquery-ui.min.css"
 			);
@@ -634,6 +649,18 @@ class e_jsmanager
 		$this->addJs('footer_inline', $js_content, $priority);
 		return $this;
 	}
+
+	/**
+	 * Add JS settings to site footer
+	 *
+	 * @param array $js_settings
+	 * @return e_jsmanager
+	 */
+	public function jsSettings(array $js_settings)
+	{
+		$this->addJs('settings', $js_settings);
+		return $this;
+	}
 	
 	
 	function setDependency($dep)
@@ -816,7 +843,7 @@ class e_jsmanager
 		// FIXME - this could break something after CSS support was added, move it to separate method(s), recursion by type!
 		// Causes the css error on jquery-ui as a css file is loaded as a js. 
 		 
-		if(is_array($file_path) )
+		if(is_array($file_path) && $type != 'settings')
 		{
 		// 	print_a($file_path);
 			foreach ($file_path as $fp => $loc)
@@ -960,6 +987,11 @@ class e_jsmanager
 				return $this;
 			break;
 
+			case 'settings':
+				$this->_e_js_settings = array_merge_recursive($this->_e_js_settings, $file_path);
+				return $this;
+			break;
+
 			default:
 				return $this;
 			break;
@@ -985,7 +1017,7 @@ class e_jsmanager
 	 * @param boolean $return
 	 * @return string JS content - only if $return is true
 	 */
-	public function renderJs($mod, $zone, $external = true, $return = false)
+	public function renderJs($mod, $zone = null, $external = true, $return = false)
 	{
 		if($return)
 		{
@@ -994,6 +1026,15 @@ class e_jsmanager
 
 		switch($mod)
 		{
+			case 'settings':
+				$tp = e107::getParser();
+				$options = $this->arrayMergeDeepArray(array($this->_e_js_settings));
+				$json = $tp->toJSON($options);
+				$js = 'jQuery.extend(e107.settings, ' . $json . ');';
+				echo '<script>' . $js . '</script>';
+				echo "\n";
+			break;
+
 			case 'framework': // CDN frameworks - rendered before consolidation script (if enabled)
 				$fw = array();
 				foreach ($this->_libraries as $lib) 
@@ -1108,6 +1149,36 @@ class e_jsmanager
 			return $ret;
 		}
 	}
+
+
+	/**
+	 * Merges multiple arrays, recursively, and returns the merged array.
+	 */
+	public function arrayMergeDeepArray($arrays) {
+		$result = array();
+
+		foreach ($arrays as $array) {
+			foreach ($array as $key => $value) {
+				// Renumber integer keys as array_merge_recursive() does. Note that PHP
+				// automatically converts array keys that are integer strings (e.g., '1')
+				// to integers.
+				if (is_integer($key)) {
+					$result[] = $value;
+				}
+				// Recurse when both values are arrays.
+				elseif (isset($result[$key]) && is_array($result[$key]) && is_array($value)) {
+					$result[$key] = $this->arrayMergeDeepArray(array($result[$key], $value));
+				}
+				// Otherwise, use the latter value, overriding any previous value.
+				else {
+					$result[$key] = $value;
+				}
+			}
+		}
+
+		return $result;
+	}
+
 
 	/**
 	 * Render JS/CSS file array

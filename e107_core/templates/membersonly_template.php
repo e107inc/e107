@@ -36,7 +36,7 @@ $MEMBERSONLY_END = "<div>";
 													</div>
 													";
 
-	$MEMBERSONLY_TEMPLATE['default']['footer'] = "</div";
+	$MEMBERSONLY_TEMPLATE['default']['footer'] = "</div>";
 
 
 
