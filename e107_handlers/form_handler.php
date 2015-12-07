@@ -3696,7 +3696,7 @@ class e_form
 
 					if (vartrue($parms['__nameval']))
 					{
-						$ttl = vartrue($parms['__nameval']);
+						$ttl = $parms['__nameval'];
 					}
 					else
 					{
