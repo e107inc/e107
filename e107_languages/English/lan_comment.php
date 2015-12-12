@@ -67,6 +67,8 @@ define("COMLAN_400", "approved");
 define("COMLAN_401", "blocked");
 define("COMLAN_402", "pending");
 
+define("COMLAN_403", "Leave a message...");
+define("COMLAN_404", "Approve");
 
 define("COMLAN_TYPE_1", "news");
 define("COMLAN_TYPE_2", "download");
