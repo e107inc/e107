@@ -1,3 +1,6 @@
+// If you don't insert this line into your JS, you may see the error: e107 is not defined.
+var e107 = e107 || {'settings': {}, 'behaviors': {}};
+
 (function ($) {
 
     /**
