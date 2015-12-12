@@ -1873,7 +1873,7 @@ class e107
 	 * @param string $methodName [optional] (if different from 'config')
 	 * @return array
 	 */
-	public static function getAddonConfig($addonName, $className = '', $methodName='config', $param=null )
+	public static function getAddonConfig($addonName, $className = '', $methodName='config', $param=null,$param2=null )
 	{
 		$new_addon = array();
 
@@ -1896,7 +1896,7 @@ class e107
 					include_once(e_PLUGIN.$key.'/'.$filename.'.php');
 
 					$class_name = $key.'_'.$className;
-					$array = self::callMethod($class_name, $methodName,$param);
+					$array = self::callMethod($class_name, $methodName,$param,$param2);
 
 					if($array)
 					{
@@ -1915,10 +1915,11 @@ class e107
 	 * Safe way to call user methods.
 	 * @param string|object $class_name
 	 * @param string $method_name
-	 * @param string $param
+	 * @param mixed $param -1st parameter sent to method
+	 * @param mixed $param2 - 2nd parameter sent to method
 	 * @return array|bool FALSE
 	 */
-	public static function callMethod($class_name, $method_name, $param='')
+	public static function callMethod($class_name, $method_name, $param=null, $param2=null)
 	{
 		$mes = e107::getMessage();
 
@@ -1941,7 +1942,7 @@ class e107
 				{
 					$mes->addDebug('Executing <strong>'.$class_name.' :: '.$method_name.'()</strong>');
 				}
-				return call_user_func(array($obj, $method_name),$param);
+				return call_user_func(array($obj, $method_name),$param, $param2);
 			}
 			else
 			{
