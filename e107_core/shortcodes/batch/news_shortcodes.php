@@ -844,7 +844,7 @@ class news_shortcodes extends e_shortcode
 		}
 		else 
 		{
-			return "None";
+			return LAN_NONE;
 		}			
 	}
 	

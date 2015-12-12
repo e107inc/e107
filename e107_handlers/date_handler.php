@@ -620,7 +620,7 @@ class convert
 		  }
 		  if($format == 'short' && count($outputArray) == 1) { break; }
 		}
-		return ($mode ? $outputArray : implode(", ", $outputArray) . " ago"); //XXX LAN
+		return ($mode ? $outputArray : implode(", ", $outputArray) . " " . LANDT_AGO);
 	}
 
 
