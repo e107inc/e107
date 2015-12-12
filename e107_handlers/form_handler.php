@@ -3693,7 +3693,19 @@ class e_form
 				elseif($value && is_numeric($value))
 				{
 					$id = $value;
-					$ttl = vartrue($parms['__nameval']);
+
+					if (vartrue($parms['__nameval']))
+					{
+						$ttl = $parms['__nameval'];
+					}
+					else
+					{
+						$user = e107::user($value);
+						if (vartrue($user['user_name']))
+						{
+							$ttl = $user['user_name'];
+						}
+					}
 				}
 
 
