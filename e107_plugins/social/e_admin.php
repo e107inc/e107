@@ -57,10 +57,14 @@ class social_admin
 	 * Process Posted Data.
 	 * @param $ui admin-ui object
 	 */
-	public function process($ui)
+	public function process($ui, $id=0)
 	{
 		$data = $ui->getPosted();
+		$action     = $ui->getAction(); // current mode: create, edit, list
 		//e107::getHybridAuth('twitter');
+		e107::getMessage()->addDebug("e107_plugins/social/e_admin.php :: process method called.");
+		e107::getMessage()->addDebug("ID: ".$id);
+		e107::getMessage()->addDebug("Action: ".$action);
 		e107::getMessage()->addDebug(print_a($data,true));
 	}
 

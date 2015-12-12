@@ -4071,7 +4071,13 @@ class e_admin_controller_ui extends e_admin_controller
 		// Scenario I - use request owned POST data - toForm already executed
 		$model->setPostedData($_posted, null, false, false) // insert() or update() dbInsert();
 			->save(true);
-			
+
+
+
+	//	if(!empty($_POST))
+		{
+
+		}
 			
 		// Scenario II - inner model sanitize
 		//$this->getModel()->setPosted($this->convertToData($_POST, null, false, true);
@@ -4081,7 +4087,9 @@ class e_admin_controller_ui extends e_admin_controller
 		{
 			// callback (if any)
 			$new_data 		= $model->getData();
-			$id 			= $model->getId(); 
+			$id 			= $model->getId();
+
+			e107::getAddonConfig('e_admin',null,'process', $this, $id);
 
 			// Trigger Admin-ui event. 'post' 
 			if($triggerName = $this->getEventTriggerName($_posted['etrigger_submit'],'after')) // 'created' or 'updated';
@@ -4272,10 +4280,7 @@ class e_admin_ui extends e_admin_controller_ui
 			}
 		}
 
-		if(!empty($_POST))
-		{
-			e107::getAddonConfig('e_admin',null,'process', $this);
-		}
+
 
 
 	}
