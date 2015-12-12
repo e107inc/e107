@@ -211,7 +211,7 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_user_daysregged($parm) 
 	{
-		return e107::getDate()->computeLapse($this->var['user_join'])." ".LAN_USER_34;
+		return e107::getDate()->computeLapse($this->var['user_join']);
 	}
 
 	
