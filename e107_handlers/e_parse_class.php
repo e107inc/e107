@@ -3416,8 +3416,8 @@ class e_parser
 		list($id,$type) = explode(".",$file,2);
 
 		$thumb = vartrue($parm['thumb']);
-		
-		
+
+
 		$pref = e107::getPref();
 		$ytpref = array();
 		foreach($pref as $k=>$v) // Find all Youtube Prefs. 
@@ -3491,13 +3491,27 @@ class e_parser
 			if($thumb == 'tag')
 			{
 				$thumbSrc =  e107::getMedia()->getThumb($id);
+
+				if(empty($thumbSrc))
+				{
+					$thumbSrc = e_IMAGE_ABS."generic/playlist_120.png";
+				}
 				return "<img class='img-responsive' src='".$thumbSrc."' alt='Youtube Video Playlist' style='width:".vartrue($parm['w'],'80')."px'/>";
 
 			}
 
 			if($thumb == 'src')
 			{
-				return e107::getMedia()->getThumb($id);
+				$thumb = e107::getMedia()->getThumb($id);
+				if(!empty($thumb))
+				{
+					return $thumb;
+				}
+				else
+				{
+					// return "https://cdn0.iconfinder.com/data/icons/internet-2-2/64/youtube_playlist_videos_vid_web_online_internet-256.png";
+					return e_IMAGE_ABS."generic/playlist_120.png";
+				}
 			}
 
 			$video = '<iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list='.$id.'" style="border:0" allowfullscreen></iframe>';

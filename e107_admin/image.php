@@ -1463,9 +1463,22 @@ class media_admin_ui extends e_admin_ui
 			}
 			elseif(substr($searchQry,0,9) == 'playlist:') // playlist
 			{
-				$searchQry = trim(substr($searchQry,9));
-				$feed = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=".urlencode($searchQry)."&type=playlist&maxResults=1&key=".$apiKey;
-                  $extension = 'youtubepl';
+
+				if(empty($apiKey))
+				{
+					$playlistID = substr($searchQry,9);
+					$data = array();
+					$data['items'][0]['id']['videoId'] = $playlistID;
+					$data['items'][0]['snippet']['thumbnails']['medium']['url'] = e_IMAGE_ABS."generic/playlist_120.png"; // "http://i.ytimg.com/vi/".$playlistID."/mqdefault.jpg"; // not really possible, so it will show a generic grey image.
+					$data['items'][0]['snippet']['title'] = 'Specified Playlist';
+				}
+				else
+				{
+					$searchQry = trim(substr($searchQry,9));
+					$feed = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=".urlencode($searchQry)."&type=playlist&maxResults=1&key=".$apiKey;
+				}
+
+				$extension = 'youtubepl';
 			}
 			elseif(substr($searchQry,0,8) == 'channel:')
 			{
