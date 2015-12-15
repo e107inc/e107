@@ -58,11 +58,15 @@ $(document).ready(function()
 						}			
 							
 						// http://nijikokun.github.io/bootstrap-notify/
-						$('#uiAlert').notify({
-							type: alertType,
-   							message: { text: d.msg },
-   							fadeOut: { enabled: true, delay: 3000 }
-  						}).show(); 
+						// fix - only if there
+						 if(jQuery().notify) {
+							 $('#uiAlert').notify({
+								type: alertType,
+								message: { text: d.msg },
+								fadeOut: { enabled: true, delay: 3000 }
+							}).show();
+						 }
+
 						
 						// alert(d.msg);
 					}
@@ -83,6 +87,7 @@ $(document).ready(function()
 							$(d.html).appendTo("#forum-viewtopic").hide().slideDown(1000);
 
 						}
+
 						$('#forum-quickreply-text').val('');
 						return;
 					}
