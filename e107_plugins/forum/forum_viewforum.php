@@ -108,7 +108,11 @@ $threadsViewed = $forum->threadGetUserViewed();
 
 if (!vartrue($FORUM_VIEW_START))
 {
-	if (file_exists(THEME.'forum_viewforum_template.php'))
+	if(file_exists(THEME.'templates/forum/forum_viewforum_template.php'))
+	{
+		require_once(THEME.'templates/forum/forum_viewforum_template.php');
+	}
+	elseif (file_exists(THEME.'forum_viewforum_template.php'))
 	{
 		require_once(THEME.'forum_viewforum_template.php');
 	}
