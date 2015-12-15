@@ -362,6 +362,10 @@ class forum_post_handler
 			{
 				include_once(THEME.$file);
 			}
+			elseif(is_readable(THEME.'templates/forum/'.$file))
+			{
+				include_once(THEME.'templates/forum/'.$file);
+			}
 			else
 			{
 				include_once(e_PLUGIN.'forum/templates/'.$file);
@@ -674,6 +678,10 @@ class forum_post_handler
 				if (file_exists(THEME."forum_preview_template.php"))
 				{
 					require_once(THEME."forum_preview_template.php");
+				}
+				elseif(file_exists(THEME.'templates/forum/forum_preview_template.php'))
+				{
+					require_once(THEME.'templates/forum/forum_preview_template.php');
 				}
 				else
 				{

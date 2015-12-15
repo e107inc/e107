@@ -239,6 +239,10 @@ if (!isset($FORUM_MAIN_START))
 	{
 		include_once(THEME.'forum_template.php');
 	}
+	elseif(file_exists(THEME.'templates/forum/forum_template.php'))
+	{
+		require_once(THEME.'templates/forum/forum_template.php');
+	}
 }
 include(e_PLUGIN.'forum/templates/forum_template.php');
 
