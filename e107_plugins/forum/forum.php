@@ -233,24 +233,23 @@ $fVars->FORUMINFO =
 str_replace("[x]", ($total_topics+$total_replies), LAN_FORUM_0031)." ($total_topics ".($total_topics == 1 ? LAN_FORUM_0032 : LAN_FORUM_0033).", $total_replies ".($total_replies == 1 ? LAN_FORUM_0034 : LAN_FORUM_0035).")
 ".(!defined("e_TRACKING_DISABLED") ? "" : "<br />".$users." ".($users == 1 ? LAN_FORUM_0059 : LAN_FORUM_0060)." (".$member_users." ".($member_users == 1 ? LAN_FORUM_0061 : LAN_FORUM_0062).", ".$guest_users." ".($guest_users == 1 ? LAN_FORUM_0063 : LAN_FORUM_0064).")<br />".LAN_FORUM_0066." ".$total_members."<br />".LAN_FORUM_0065." <a href='".e_HTTP."user.php ?id.".$nuser_id."'>".$nuser_name."</a>.\n"); // FIXME cannot find other references to e_TRACKING_DISABLED, use pref?
 
-if (!isset($FORUM_MAIN_START))
-{
-	if (file_exists(THEME.'forum_template.php'))
-	{
-		include_once(THEME.'forum_template.php');
-	}
-	elseif(file_exists(THEME.'templates/forum/forum_template.php'))
-	{
-		require_once(THEME.'templates/forum/forum_template.php');
-	}
-}
+// FIX - core template always override theme template
+// Include core template
 include(e_PLUGIN.'forum/templates/forum_template.php');
 
+// Override with theme template
+if (file_exists(THEME.'forum_template.php'))
+{
+	include_once(THEME.'forum_template.php');
+}
+elseif(file_exists(THEME.'templates/forum/forum_template.php'))
+{
+	require_once(THEME.'templates/forum/forum_template.php');
+}
 
 if(is_array($FORUM_TEMPLATE) && deftrue('BOOTSTRAP',false)) // new v2.x format. 
 {
-		
-	$FORUM_MAIN_START		= $FORUM_TEMPLATE['main-start']; 
+	$FORUM_MAIN_START		= $FORUM_TEMPLATE['main-start'];
 	$FORUM_MAIN_PARENT 		= $FORUM_TEMPLATE['main-parent'];
 	$FORUM_MAIN_FORUM		= $FORUM_TEMPLATE['main-forum'];
 	$FORUM_MAIN_END			= $FORUM_TEMPLATE['main-end'];
