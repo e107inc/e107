@@ -676,6 +676,8 @@ class e107forum
 
 		$info['data'] = $postInfo;
 		$postId = $sql->insert('forum_post', $info);
+		// Append last inserted ID to data array for passing it to event callbacks.
+		$info['data']['post_id'] = $postId;
 	  	e107::getEvent()->trigger('user_forum_post_created', $info);
 		$forumInfo = array();
 
