@@ -101,7 +101,7 @@ $FORUM_TEMPLATE['main-start']			= "{FORUM_BREADCRUMB}
 
 $FORUM_TEMPLATE['main-parent']			= 	"<tr>
 											<th colspan='2'>{PARENTNAME} {PARENTSTATUS}</th>
-											<th  class='hidden-xs text-center'>".LAN_FORUM_0003."</th>
+											<th class='hidden-xs text-center'>".LAN_FORUM_0003."</th>
 											<th class='text-center'>".LAN_FORUM_0002."</th>
 											<th class='hidden-xs text-center'>".LAN_FORUM_0004."</th>
 											</tr>";
