@@ -386,15 +386,27 @@ $FORUM_VIEWTOPIC_TEMPLATE['thread'] = "
 									";
 
 $FORUM_VIEWTOPIC_TEMPLATE['end'] = "</ul>
-<div class='row row-fluid clearfix'>
-<div class='col-xs-12'><hr /></div>
-		<div class='col-md-3 span3 pull-left'>{GOTOPAGES}</div>
-		<div class='col-xs-12 col-md-6 text-center span6 center'>{QUICKREPLY}</div>
-		<div class='col-xs-12 col-md-3 span3 pull-right right '>{BUTTONSX}</div>
+<div class='col-xs-12'>
+	<hr />
+</div>
+<div class='row'>
+	<div class='col-xs-12 col-md-4'></div>
+	<div class='col-xs-12 col-md-4 text-center'>
+		{GOTOPAGES}
 	</div>
-	{THREADSTATUS}
-	
-	";
+	<div class='col-xs-12 col-md-4'>
+		<div class='pull-right'>
+			{BUTTONSX}
+		</div>
+	</div>
+</div>
+<div class='row'>
+	<div class='col-xs-12 col-md-6 col-md-offset-3'>
+		{QUICKREPLY}
+	</div>
+</div>
+{THREADSTATUS}
+";
 
 
 
