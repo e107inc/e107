@@ -1306,7 +1306,7 @@ class comment
 				foreach ($files as $file=>$perms)
 				{
 					unset($e_comment, $key);
-					include (e_PLUGIN.$file."/e_comment.php");
+					include_once (e_PLUGIN.$file."/e_comment.php");
 					if ($e_comment && is_array($e_comment))
 					{
 						$key = $e_comment['eplug_comment_ids'];
