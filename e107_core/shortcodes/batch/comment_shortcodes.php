@@ -99,11 +99,14 @@ class comment_shortcodes extends e_shortcode
 
 		$pref = e107::getPref();
 		$REPLY = '';
-		if($this->var['comment_lock'] != "1" && $this->var['comment_blocked'] < 1)
+		if(USERID || $pref['anon_post'] == 1)
 		{
-			if ($thisaction == "comment" && $pref['nested_comments'])
+			if($this->var['comment_lock'] != "1" && $this->var['comment_blocked'] < 1)
 			{
-				$REPLY = "<a id='e-comment-reply-".$this->var['comment_id']."' class='e-comment-reply btn btn-default btn-mini btn-xs' data-type='".$this->var['comment_type']."' data-target='".e_HTTP."comment.php' href='".e_HTTP."comment.php?reply.".$thistable.".".$this->var['comment_id'].".".$thisid."'>".COMLAN_326."</a>";
+				if ($thisaction == "comment" && $pref['nested_comments'])
+				{
+					$REPLY = "<a id='e-comment-reply-".$this->var['comment_id']."' class='e-comment-reply btn btn-default btn-mini btn-xs' data-type='".$this->var['comment_type']."' data-target='".e_HTTP."comment.php' href='".e_HTTP."comment.php?reply.".$thistable.".".$this->var['comment_id'].".".$thisid."'>".COMLAN_326."</a>";
+				}
 			}
 		}
 		return $REPLY;
