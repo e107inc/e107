@@ -1204,14 +1204,12 @@ class comment
 		//$from = $from + $this->commentsPerPage;
 		
 		
-		// from calculations are done by eNav() js. 
-		return "
-		<a class='e-ajax btn btn-default btn-mini btn-sm' href='#' data-nav-total='{$this->totalComments}' data-nav-dir='down' data-nav-inc='{$this->commentsPerPage}' data-target='comments-container' data-src='".e_BASE."comment.php?mode=list&amp;type=".$table."&amp;id=".$id."&amp;from=0'>Previous</a>
-		
-		<a class='e-ajax btn btn-default btn-mini btn-sm' href='#' data-nav-total='{$this->totalComments}' data-nav-dir='up' data-nav-inc='{$this->commentsPerPage}' data-target='comments-container' data-src='".e_BASE."comment.php?mode=list&amp;type=".$table."&amp;id=".$id."&amp;from=0'>Next</a>
-		
-		";	
-		
+		// from calculations are done by eNav() js.
+		if($this->totalComments > $this->commentsPerPage)
+		{
+			return "<a class='e-ajax btn btn-default btn-mini btn-sm' href='#' data-nav-total='{$this->totalComments}' data-nav-dir='down' data-nav-inc='{$this->commentsPerPage}' data-target='comments-container' data-src='".e_BASE."comment.php?mode=list&amp;type=".$table."&amp;id=".$id."&amp;from=0'>" . LAN_PREVIOUS . "</a>
+			<a class='e-ajax btn btn-default btn-mini btn-sm' href='#' data-nav-total='{$this->totalComments}' data-nav-dir='up' data-nav-inc='{$this->commentsPerPage}' data-target='comments-container' data-src='".e_BASE."comment.php?mode=list&amp;type=".$table."&amp;id=".$id."&amp;from=0'>" . LAN_NEXT . "</a>";
+		}
 		
 	}
 
