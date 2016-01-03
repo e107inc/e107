@@ -4936,7 +4936,8 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function InlineAjaxPage()
 	{
-		$this->logajax('Field not found');
+		$this->logajax("Inline Ajax Triggered");
+
 		$protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
 		if(!vartrue($_POST['name']) || !vartrue($this->fields[$_POST['name']]))
 		{
@@ -4962,14 +4963,16 @@ class e_admin_ui extends e_admin_controller_ui
 			return;
 		}
 		
-		$this->logajax("OK?");
+
 		
 		$model = $this->getModel()->load($this->getId());
 		$_POST = array(); //reset post
 		$_POST[$_name] = $_value; // set current field only
 		
 		// generic handler - same as regular edit form submit
+
 		$this->convertToData($_POST);
+
 		$model->setPostedData($_POST, null, false, false)
 			->setParam('validateAvailable', true) // new param to control validate of available data only, reset on validate event
 			->update(true);
@@ -4981,25 +4984,32 @@ class e_admin_ui extends e_admin_controller_ui
 			header("Status: 400 Bad Request", true, 400);
 			$this->logajax("Bad Request");
 			// DEBUG e107::getMessage()->addError('Error test.', $model->getMessageStackName())->addError('Another error test.', $model->getMessageStackName());
-			
+
+
 			if(E107_DEBUG_LEVEL) $message = e107::getMessage()->get('debug', $model->getMessageStackName(), true);
 			else $message = e107::getMessage()->get('error', $model->getMessageStackName(), true);
 			
 			if(!empty($message)) echo implode(' ', $message);
-			$this->logajax($message);
+			$this->logajax(implode(' ', $message));
 			return;
 		}
 
+		//TODO ? afterInline trigger?
 		$res = $this->_manageSubmit('beforeUpdate', 'afterUpdate', 'onUpdateError', 'edit');
 	}
 
 	// Temporary - but useful. :-)
 	public function logajax($message)
 	{
-		return;
-		
+		if(e_DEBUG !== true)
+		{
+			return;
+		}
+
 		$message = date('r')."\n".$message."\n";
+		$message .= "\n_POST\n";
 		$message .= print_r($_POST,true);
+		$message .= "\n_GET\n";
 		$message .= print_r($_GET,true);
 		$message .= "---------------";
 		
@@ -5471,6 +5481,7 @@ class e_admin_ui extends e_admin_controller_ui
 	public function _setModel()
 	{
 		// try to create dataFields array if missing
+
 		if(!$this->dataFields)
 		{
 			$this->dataFields = array();
@@ -5492,12 +5503,22 @@ class e_admin_ui extends e_admin_controller_ui
 					$att['rule'] = $_parms;
 					unset($_parms);
 				}
+
+				if($att['data'] == 'array') // FIX for arrays being saved incorrectly with inline editing.
+				{
+					$att['data'] = 'set';
+				}
+
 				if(($key !== 'options' && false !== varset($att['data']) && null !== $att['type'] && !vartrue($att['noedit'])) || vartrue($att['forceSave']))
 				{
 					$this->dataFields[$key] = vartrue($att['data'], 'str');
 				}
+
+
+
 			}
 		}
+
 		// TODO - do it in one loop, or better - separate method(s) -> convertFields(validate), convertFields(data),...
 		if(!$this->validationRules)
 		{
