@@ -136,7 +136,7 @@ if(!class_exists('pm_shortcodes'))
 			return $ret;
 		}
 
-		public function sc_pm_form_toclass()
+		public function sc_pm_form_toclass($parm = '')
 		{
 			if(vartrue($this->var['from_name']))
 			{
@@ -151,7 +151,10 @@ if(!class_exists('pm_shortcodes'))
 
 				$ret = "<div class='input-group'><span class='input-group-addon'>".e107::getForm()->checkbox('to_userclass',1,false, LAN_PM_4)."</span>";
 
-				$args = (ADMIN ? 'admin, classes' : 'classes, matchclass');
+				// Option show by visibility
+				$filterVisible = $parm == 'visible' ? 'matchclass, filter' : 'matchclass';
+
+				$args = (ADMIN ? 'admin, classes' : 'classes, '.$filterVisible);
 				if(check_class($this->pmPrefs['sendall_class']))
 				{
 					$args = 'member, '.$args;
