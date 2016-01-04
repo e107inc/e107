@@ -487,12 +487,9 @@ class user_class
 
 		if ($optlist)
 		{
-			$opt_arr = explode(',',$optlist);
+			$opt_arr = array_map('trim', explode(',',$optlist));
 		}
-		foreach ($opt_arr as &$v)
-		{
-			$v = trim($v);
-		}
+
 		$opt_arr = array_flip($opt_arr);		// This also eliminates duplicates which could arise from applying the other options, although shouldn't matter
 
 		if (isset($opt_arr['no-excludes'])) unset($opt_arr['no-excludes']);
@@ -551,8 +548,9 @@ class user_class
 				if (!array_key_exists($uc_id,$this->fixed_classes)
 				&& (   getperms('0')
 					|| (
-						(!isset($optlist['matchclass']) || check_class($uc_id))
-						&& (!isset($optlist['filter']) || check_class($row['userclass_visibility']))
+						(!isset($opt_arr['matchclass']) || check_class($uc_id))
+						&&
+						(!isset($opt_arr['filter']) || check_class($row['userclass_visibility']))
 					   )
 					)
 					)
