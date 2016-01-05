@@ -1455,7 +1455,7 @@ class e_parse extends e_parser
 
 		if($opts['defs'] && (strlen($text) < 35) && ((strpos($text, '::') === FALSE) && defined(trim($text))))
 		{
-			return constant(trim($text));
+			$text = constant(trim($text)); // don't return yet, words could be hooked with linkwords etc.
 		}
 
 		if ($opts['no_tags'])
