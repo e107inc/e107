@@ -434,7 +434,7 @@ class comment_shortcodes extends e_shortcode
 		if($prov == 'facebook' || $prov == 'twitter')
 		{
 			//TODO Move styling to e107.css 
-			$text = "<img src='/".e_IMAGE."xup/".$prov.".png' style='display:inline-block;width:26px;height:26px;vertical-align:middle' alt='Share' />";
+			$text = "<img src='".e_IMAGE_ABS."xup/".$prov.".png' style='display:inline-block;width:26px;height:26px;vertical-align:middle' alt='Share' />";
 			$text .= e107::getForm()->checkbox('comment_share',$prov,true);
 
 			$text .= LAN_SHARE;
