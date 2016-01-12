@@ -17,7 +17,8 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
 {
 	if(e_PAGE != 'image.php')
 	{
-		e107::js('footer', "https://tinymce.cachefly.net/4.2/tinymce.min.js");
+	//	e107::js('footer', "https://tinymce.cachefly.net/4.2/tinymce.min.js");
+		e107::js('footer', "//cdn.tinymce.com/4/tinymce.min.js");
 		e107::js('footer',e_PLUGIN.'tinymce4/wysiwyg.php','jquery',5);
 
 		// Add to e107_config.php to view hidden content when TinyMce not saving correctly
@@ -113,7 +114,7 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
 
 				var s = $('#bbcode_holder').val();
 
-				alert(s);
+			//	alert(s);
 
 				var p = $.ajax({
 					type: 'POST',
