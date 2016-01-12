@@ -718,7 +718,8 @@ class news_admin_ui extends e_admin_ui
 			$this->cats[$cat] = $row['category_name'];
 		}
 		asort($this->cats);
-		$this->fields['news_category']['writeParms'] = $this->cats;
+		$this->fields['news_category']['writeParms']['optArray'] = $this->cats;
+		$this->fields['news_category']['writeParms']['size'] = 'xlarge';
 		$this->fields['news_render_type']['writeParms']['optArray'] = $this->news_renderTypes; // array(NWSLAN_75,NWSLAN_76,NWSLAN_77,NWSLAN_77." 2","Featurebox");
 		$this->fields['news_render_type']['writeParms']['multiple'] = 1;
 	//	$this->newspost = new admin_newspost;
@@ -1443,6 +1444,7 @@ class news_form_ui extends e_admin_form_ui
 			$text .= $frm->imagepicker('news_thumbnail[3]', varset($thumbTmp[3]),'','media=news&video=1');
 			$text .= $frm->imagepicker('news_thumbnail[4]', varset($thumbTmp[4]),'','media=news&video=1');
 
+		//	$text .= "<div class='field-help'>Insert image/video into designated area of template.</div>";
 			return $text;
 		}
 

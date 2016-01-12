@@ -694,17 +694,17 @@ class e_media
 
 		$srch = array("{MEDIA_URL}","{MEDIA_PATH}");
 		
-		$w	= false;
+		$w	= false; //
 		$h = false;
+		$defaultResizeWidth = 400;
 			
 		if($bbcode) // ie. TinyMce Editor, not imagepicker(); 
 		{
 			e107::getBB()->setClass($category);
-			$w = e107::getBB()->resizeWidth(); // resize the image according to prefs. 
+			$defaultResizeWidth = e107::getBB()->resizeWidth(); // resize the image according to prefs.
 			$h = e107::getBB()->resizeHeight();
 			e107::getBB()->clearclass();
-				
-			
+
 		}
 		
 //		print_a($option);
@@ -722,7 +722,7 @@ class e_media
 		{
 			list($dbWidth,$dbHeight) = explode(" x ",$im['media_dimensions']);	
 				
-			$w = ($dbWidth > 400) ? 400 : intval($dbWidth);		
+			$w = ($dbWidth > $defaultResizeWidth) ? $defaultResizeWidth : intval($dbWidth);
 		//	$w = vartrue($w,0);
        //     $h = vartrue($w,0);		
 								
@@ -733,6 +733,8 @@ class e_media
 			
 			$diz 			= $tp->toAttribute(varset($im['media_title']))."\n".varset($im['media_dimensions']);		
 			$repl 			= array($im['media_url'],$media_path);
+
+			$media_alt      = $tp->toAttribute(vartrue($im['media_caption']));
 			
 			if($bbcode == null) // e107 Media Manager
 			{			
@@ -759,7 +761,7 @@ class e_media
 		 	
 		 	$img_url = ($cat !='_icon') ? e107::getParser()->thumbUrl($im['media_url'], $thumbAtt) : $media_path;
 			
-			$text .= "<a data-toggle='context' class='thumbnail {$class} e-tip' data-id='{$im['media_id']}' data-width='{$w}' data-height='{$h}' data-src='{$media_path}' data-bbcode='{$data_bb}' data-target='{$tagid}' data-path='{$im['media_url']}' data-preview='{$realPath}' title=\"".$diz."\" style='float:left' href='#' onclick=\"{$onclicki}\" >";
+			$text .= "<a data-toggle='context' class='thumbnail {$class} e-tip' data-id='{$im['media_id']}' data-width='{$w}' data-height='{$h}' data-src='{$media_path}' data-bbcode='{$data_bb}' data-target='{$tagid}' data-path='{$im['media_url']}' data-preview='{$realPath}' data-alt=\"".$media_alt."\" title=\"".$diz."\" style='float:left' href='#' onclick=\"{$onclicki}\" >";
 			$text .= "<img class='image-rounded' src='".$img_url."' alt=\"".$im['media_title']."\" title=\"{$diz}\" />";
 			$text .= "</a>\n\n";
 		}	
@@ -1043,6 +1045,7 @@ class e_media
 		}
 				
 		$newpath = $this->checkDupe($oldpath,$typePath.'/'.$file);
+		$newpath = $this->checkFileExtension($newpath, $img_data['media_type']);
 		
 		if(!rename($oldpath, $newpath)) // e_MEDIA.$newpath was working before. 
 		{
@@ -1052,7 +1055,7 @@ class e_media
 		};
 		
 		$img_data['media_url']			= $tp->createConstants($newpath,'rel');
-		$img_data['media_name'] 		= $tp->toDB($file);
+		$img_data['media_name'] 		= $tp->toDB(basename($newpath));
 		$img_data['media_caption'] 		= $new_data['media_caption'];
 		$img_data['media_category'] 	= vartrue($category,'_common_image');
 		$img_data['media_description'] 	= $new_data['media_description'];
@@ -1073,7 +1076,37 @@ class e_media
 		
 		
 	}
-	
+
+
+	/**
+	 * Check File-name against mime-type and add missing extension if necessary.
+	 * @param $path
+	 * @param $mime
+	 * @return string
+	 */
+	private function checkFileExtension($path, $mime)
+	{
+		if(empty($mime))
+		{
+			return $path;
+		}
+
+		list($type,$ext) = explode("/",$mime);
+
+		$ext = str_replace("jpeg",'jpg',$ext);
+
+		if($type == 'image' && (substr($path,-3) != $ext))
+		{
+			return $path.".".$ext;
+		}
+		else
+		{
+			return $path;
+		}
+
+	}
+
+
 	
 	function browserCarouselItem($row = array())
 	{

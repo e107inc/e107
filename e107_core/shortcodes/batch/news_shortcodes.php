@@ -690,8 +690,11 @@ class news_shortcodes extends e_shortcode
 			}
 		}
 		
+		if($tmp['count'] > 1 && empty($parm['type'])) // link first image by default, but not others.
+		{
+			$parm['type'] = 'tag';
+		}
 
-		
 		switch(vartrue($parm['type']))
 		{
 			case 'src':
