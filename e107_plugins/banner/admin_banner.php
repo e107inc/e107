@@ -53,7 +53,7 @@ class banner_admin extends e_admin_dispatcher
 
 		'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
 		'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
-		'main/menu'			=> array('caption'=> BNRLAN_36, 'perm' => 'P'),	
+		'main/menu'			=> array('caption'=> BNRLAN_36, 'perm' => 'P'),
 	//	'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),	
 
 		// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
@@ -237,6 +237,10 @@ class banner_ui extends e_admin_ui
 	
 		public function menuPage()
 		{
+
+			return e107::getMessage()->addInfo("The menu is now configured within the menu-manager.")->render();
+
+
 			$ns = e107::getRender();
 			$sql = e107::getDb();
 			$menu_pref = e107::getConfig('menu')->getPref('');

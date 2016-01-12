@@ -59,14 +59,47 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
  e107::js('core','bootstrap/js/bootstrap-tooltip.js');
 //	e107::css('core','bootstrap/css/bootstrap.min.css');
 
+$JSMODAL = <<<TEMPL
+	$(function() {
+		$('.e-modal-menumanager').on('click', function(e)
+		{
+			e.preventDefault();
+
+            if($(this).attr('data-cache') == 'false')
+            {
+                window.parent.$('#uiModal').on('shown.bs.modal', function () {
+                    $(this).removeData('bs.modal');
+                });
+            }
+
+			var url 		= $(this).attr('href');
+			var caption  	= $(this).attr('data-modal-caption');
+			var height 		= 600;
+
+            if(caption === undefined)
+            {
+                caption = '';
+            }
+
+    		window.parent.$('.modal-body').html('<div class="well"><iframe id="e-modal-iframe" width="100%" height="'+height+'px" frameborder="0" scrolling="auto" style="display:block;background-color:transparent" allowtransparency="true" src="' + url + '"></iframe></div>');
+    		window.parent.$('.modal-caption').html(caption + ' <i id="e-modal-loading" class="fa fa-spin fa-spinner"></i>');
+    		window.parent.$('.modal').modal('show');
+
+    		window.parent.$("#e-modal-iframe").on("load", function () {
+				 window.parent.$('#e-modal-loading').hide();
+			});
+    	});
+
+    });
+TEMPL;
 
 
-
+	e107::js('inline', $JSMODAL );
 
 	e107::js('inline', "
 		$(function() {
 						
-			// Visibility Options
+			// Visibility/Instance Options etc.
 
 			$('.e-menumanager-option').on('click', function(){
     			
@@ -79,14 +112,14 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 					
 						var target 	= window.parent.$('#e-save-form').attr('action');
 						var data 	= window.parent.$('#e-save-form').serialize();
-						
+
 					//	alert(data);
-					
+				//	alert(target);
 						$.post(target, data ,function(ret)
 						{
 						//	alert('Posted: '+ret);
 						  	var a = $.parseJSON(ret);
-					
+
 							if(a.error)
 							{
 								alert(a.msg);
@@ -138,7 +171,12 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 				
 				
 	  	});
-		
+
+
+
+
+
+
 	");
 	
 	
@@ -905,12 +943,10 @@ class e_layout
 		
 	}
 	
-
+/*
 	function menuSaveAjax($mode = null)
 	{
-		//print_r($_POST);
-	//	return;
-		
+
 		if($mode == 'visibility')
 		{
 		
@@ -922,8 +958,10 @@ class e_layout
 		
 		if($mode == 'parms') 
 		{
-			$ret = $this->menuSaveParameters();	
-		//	echo json_encode($ret);
+		//	echo "hi there";
+			$ret =  array('msg'=>'hi there','error'=>true);
+		//	$ret = $this->menuSaveParameters();
+			echo json_encode($ret);
 			return;
 		}
 		
@@ -934,7 +972,7 @@ class e_layout
 	
 
 	}	
-	
+*/
 	/**
 	 * Scan Plugin folders for new _menu files. 
 	 */
@@ -1071,7 +1109,9 @@ class e_layout
 	/**
 	 * This one will be greatly extended, allowing menus to offer UI and us 
 	 * settings per instance later ($parm variable available for menus - same as shortcode's $parm)
+	 * @see menuInstanceParameters() in menumanager_class.php
 	 */
+/*
 	private function renderInstanceParameters()
 	{
 		if(!vartrue($_GET['parmsId'])) return;
@@ -1093,20 +1133,20 @@ class e_layout
         <table class='table adminform'>
 		<tr>
 		<td>
-		".MENLAN_45."
-		".$frm->text('menu_parms', $row['menu_parms'], 900, 'class=e-save span7')."
+		".MENLAN_45."</td><td>
+		".$frm->text('menu_parms', $row['menu_parms'], 900, 'class=e-save ')."
 		</td>
 		</tr>
 		</table>";
-	/*
+
 		
-			$text .= "
-			<div class='buttons-bar center'>";
-			$text .= $frm->admin_button('parms_submit', LAN_SAVE, 'update');
-			$text .= "<input type='hidden' name='menu_id' value='".$id."' />
-			</div>";
+		//	$text .= "
+		//	<div class='buttons-bar center'>";
+		//	$text .= $frm->admin_button('parms_submit', LAN_SAVE, 'update');
+		//	$text .= "<input type='hidden' name='menu_id' value='".$id."' />
+		//	</div>";
 			
-		*/
+
 		$text .= $frm->hidden('mode','parms');
 		$text .= $frm->hidden('menu_id',$id);
 		$text .= "
@@ -1117,6 +1157,7 @@ class e_layout
 		return $text;
 	
 	}
+*/
 
 	/**
 	 * Render the main area with TABS and iframes. 

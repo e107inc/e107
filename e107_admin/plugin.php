@@ -127,9 +127,9 @@ class pluginmanager_form extends e_form
 			{
 		  		$text .= ($this->plug['plugin_installflag'] ? "<a class='btn btn-default' href=\"".e_SELF."?uninstall.{$this->plug['plugin_id']}\" title='".EPL_ADLAN_1."'  >".ADMIN_UNINSTALLPLUGIN_ICON."</a>" : "<a class='btn' href=\"".e_SELF."?install.{$this->plug['plugin_id']}\" title='".EPL_ADLAN_0."' >".ADMIN_INSTALLPLUGIN_ICON."</a>");
                            //   $text .= ($this->plug['plugin_installflag'] ? "<button type='button' class='delete' value='no-value' onclick=\"location.href='".e_SELF."?uninstall.{$this->plug['plugin_id']}'\"><span>".EPL_ADLAN_1."</span></button>" : "<button type='button' class='update' value='no-value' onclick=\"location.href='".e_SELF."?install.{$this->plug['plugin_id']}'\"><span>".EPL_ADLAN_0."</span></button>");
-				if (PLUGIN_SHOW_REFRESH && !vartrue($this->plug_vars['plugin_php']))
+				if (e_DEBUG && !vartrue($this->plug_vars['plugin_php']))
 				{
-					$text .= "<br /><br /><input type='button' class='btn btn-default button' onclick=\"location.href='".e_SELF."?refresh.{$this->plug['plugin_id']}'\" title='".'Refresh plugin settings'."' value='".'Refresh plugin settings'."' /> ";
+			//		$text .= "<br /><br /><input type='button' class='btn btn-default button' onclick=\"location.href='".e_SELF."?refresh.{$this->plug['plugin_id']}'\" title='".'Refresh plugin settings'."' value='".'Refresh plugin settings'."' /> ";
 				}
 			}
 			else
@@ -161,6 +161,13 @@ class pluginmanager_form extends e_form
 		  //	$text .= "<br /><input type='button' class='btn' onclick=\"location.href='".e_SELF."?upgrade.{$this->plug['plugin_id']}'\" title='".EPL_UPGRADE." to v".$this->plug_vars['@attributes']['version']."' value='".EPL_UPGRADE."' />";
 			$text .= "<a class='btn btn-default' href='".e_SELF."?upgrade.{$this->plug['plugin_id']}' title=\"".EPL_UPGRADE." to v".$this->plug_vars['@attributes']['version']."\" >".ADMIN_UPGRADEPLUGIN_ICON."</a>";
 		}
+
+		if ($this->plug['plugin_installflag'] && e_DEBUG == true)
+		{
+				$text .= "<a class='btn btn-default' href='".e_SELF."?refresh.".$this->plug['plugin_id']."' title='".'Repair plugin settings'."'> ".ADMIN_REPAIRPLUGIN_ICON."</a>";
+		}
+
+
 
 		$text .="</div>	";
 				
@@ -1068,12 +1075,13 @@ class pluginManager{
    {
        global $plug;
 
-			$plug = $plugin->getinfo($this->id);
+			$plug = e107::getSingleton('e107plugin')->getinfo($this->id);
 
 			$_path = e_PLUGIN.$plug['plugin_path'].'/';
 			if(file_exists($_path.'plugin.xml'))
 			{
-				$text .= $plugin->install_plugin_xml($this->id, 'refresh');
+				// $text .= $plugin->install_plugin_xml($this->id, 'refresh');
+				e107::getSingleton('e107plugin')->refresh($plug['plugin_path']);
 				e107::getLog()->add('PLUGMAN_04', $this->id.':'.$plug['plugin_path'], E_LOG_INFORMATIVE, '');
 			}
 
