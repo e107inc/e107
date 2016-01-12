@@ -53,6 +53,12 @@ e107::coreLan('footer', true);
 // Get Icon constants, theme override (theme/templates/admin_icons_template.php) is allowed
 include_once(e107::coreTemplatePath('admin_icons'));
 
+if(!empty($_GET['iframe']))
+{
+	define('e_IFRAME', true);
+}
+
+
 
 if(!defset('e_ADMIN_UI') && !defset('e_PAGETITLE'))
 {

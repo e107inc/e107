@@ -450,7 +450,7 @@ class e_form
 		
 		if(vartrue($options['size']) && !is_numeric($options['size']))
 		{
-			$options['class'] .= " input-".$options['size'];	
+			$options['class'] .= " input-".$options['size'];
 			unset($options['size']); // don't include in html 'size='. 	
 		}
 			
@@ -477,7 +477,7 @@ class e_form
 		
 		if(!empty($options['size']))
 		{
-			$options['class'] .= 'input-'.$options['size'];
+			$options['class'] .= ' input-'.$options['size'];
 			unset($options['size']);
 		}
 
@@ -1378,6 +1378,10 @@ class e_form
 			if(strpos($options,"=")!==false)
 			{
 			 	parse_str($options, $options);
+			}
+			elseif(is_array($options))
+			{
+				// do nothing.
 			}
 			else // Assume it's a label. 
 			{
@@ -4023,7 +4027,7 @@ class e_form
 				$maxlength = vartrue($parms['maxlength'], 255);
 				unset($parms['maxlength']);
 				if(!vartrue($parms['size'])) $parms['size'] = 'mini';
-				if(!vartrue($parms['class'])) $parms['class'] = 'tbox number e-spinner';
+				if(!vartrue($parms['class'])) $parms['class'] = 'tbox number e-spinner ';
 				if(!$value) $value = '0';
 				$ret =  vartrue($parms['pre']).$this->number($key, $value, $maxlength, $parms).vartrue($parms['post']);
 			break;
