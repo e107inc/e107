@@ -33,10 +33,11 @@ $(document).ready(function()
 		var margin_bottom 	= $('#margin-bottom').val();	
 		var margin_right 	= $('#margin-right').val();	
 		var margin_left 	= $('#margin-left').val();	
-		var _float 			= $('#float').val();	
+		var _float 			= $('#float').val();
+		var alt             = $('#alt').val();
 
-									
-		if(margin_right !='' && margin_right !== undefined)
+
+        if(margin_right !='' && margin_right !== undefined)
 		{				
 			style  = style + 'margin-right:' + margin_right + 'px;';	
 		}
@@ -95,7 +96,12 @@ $(document).ready(function()
 			{
 				bb = bb + ' style='+style;			
 			}
-			
+
+            if(alt != '')
+            {
+			    bb = bb + '&alt=' + alt;
+            }
+
 			bb = bb + ']';
 			bb = bb + path;
 			bb = bb + '[/img]';
@@ -129,7 +135,7 @@ $(document).ready(function()
 				var width		= $(this).attr('data-width');
 				var height		= ''; // disable for now - will be updated by bb parser. // $(this).attr('data-height');		
 				var type		= $(this).attr('data-type');
-			
+			    var alt         = $(this).attr('data-alt');
 		
 			//	return;
 			//	alert(width);			
@@ -169,13 +175,13 @@ $(document).ready(function()
 				$('#src').attr('src',src);	// working old
 				
 				$('#width').val(width);	
-				$('#height').val(height);		
-				
-			
-			
-				
-				
-				$('img#' + target + "_prev", window.top.document).attr('src',preview); // set new value
+				$('#height').val(height);
+                $('#alt').val(alt);
+
+
+
+
+        $('img#' + target + "_prev", window.top.document).attr('src',preview); // set new value
 					
 					
 				if(type == 'glyph')

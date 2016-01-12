@@ -113,7 +113,7 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
 
 				var s = $('#bbcode_holder').val();
 
-			//	alert(s);
+				alert(s);
 
 				var p = $.ajax({
 					type: 'POST',
@@ -130,7 +130,7 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
 				}).responseText;
 
 				html = p;
-				//		alert(s);
+		//		alert(p);
 
 				if(html === undefined)
 				{
@@ -145,7 +145,7 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
 
 			$('.e-dialog-close').click(function(){
 
-		//	top.tinymce.activeEditor.windowManager.close();
+				top.tinymce.activeEditor.windowManager.close();
 			});
 
 
