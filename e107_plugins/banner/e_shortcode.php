@@ -42,10 +42,10 @@ class banner_shortcodes extends e_shortcode
 		AND banner_active IN (".USERCLASS_LIST.")
 		ORDER BY RAND($seed) LIMIT 1";
 	
-		if($sql->select('banner', 'banner_id, banner_image, banner_clickurl', $query))
+		if($sql->select('banner', 'banner_id, banner_image, banner_clickurl, banner_description', $query))
 		{
 			$row = $sql->fetch();
-			return $this->renderBanner($row); 
+			return $this->renderBanner($row);
 			
 		}
 		else
@@ -59,7 +59,7 @@ class banner_shortcodes extends e_shortcode
 	{
 		$sql = e107::getDb('banner');
 		$tp = e107::getParser();
-		
+
 		if(!$row['banner_image'])
 		{
 			return "<a href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external'>no image assigned to this banner</a>";
@@ -97,7 +97,7 @@ class banner_shortcodes extends e_shortcode
 				break;
 			}
 
-			return "<a href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external'>".$ban_ret.'</a>';	
+			return "<a class='e-tip' href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external' title=\"".$tp->toAttribute($row['banner_description'])."\">".$ban_ret.'</a>';
 
 	}
 

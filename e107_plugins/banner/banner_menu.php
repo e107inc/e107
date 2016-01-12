@@ -140,7 +140,7 @@ if(!empty($menu_pref['banner_campaign']) && !empty($menu_pref['banner_amount']))
 		
 		$query .= "	AND banner_active IN (".USERCLASS_LIST.") ORDER BY RAND($seed) LIMIT ".intval($menu_pref['banner_amount']);
 		
-		if($data = $sql->retrieve('banner', 'banner_id, banner_image, banner_clickurl,banner_campaign', $query,true))
+		if($data = $sql->retrieve('banner', 'banner_id, banner_image, banner_clickurl,banner_campaign, banner_description', $query,true))
 		{
 			foreach($data as $k=>$row)
 			{
