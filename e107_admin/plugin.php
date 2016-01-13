@@ -2379,7 +2379,7 @@ class pluginBuilder
 			$text .= "
 			<div class='buttons-bar center'>
 			".$frm->hidden('newplugin', $this->pluginName)."
-			".$frm->admin_button('step', 3,'other',EPL_ADLAN_111)."
+			".$frm->admin_button('step', 3,'other', LAN_GENERATE)."
 			</div>";
 			
 			$text .= $frm->close();
