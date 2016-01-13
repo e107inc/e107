@@ -22,6 +22,8 @@ if(vartrue($_GET['iframe']) == 1)
 	define('e_IFRAME', true);
 }
 
+
+
 $e_sub_cat = 'main';
 
 if (varset($pref['adminstyle'])=='cascade' || varset($pref['adminstyle'])=='beginner') // Deprecated Admin-include. 

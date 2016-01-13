@@ -20,6 +20,19 @@ if (!defined('e107_INIT'))
 
 header('Content-type: text/html; charset=utf-8', TRUE);
 
+if(!empty($_GET['iframe'])) // global iframe support. 
+{
+	define('e_IFRAME', true);
+}
+
+// .e-sef-generate routine.
+if(ADMIN && defset('e_ADMIN_UI') && varset($_POST['mode']) == 'sef' && !empty($_POST['source']) && e_AJAX_REQUEST)
+{
+	$d = array('converted'=> eHelper::title2sef($_POST['source']));
+	echo json_encode($d);
+	exit;
+}
+
 ### Language files
 e107::coreLan('header', true);
 e107::coreLan('footer', true);
@@ -53,10 +66,7 @@ e107::coreLan('footer', true);
 // Get Icon constants, theme override (theme/templates/admin_icons_template.php) is allowed
 include_once(e107::coreTemplatePath('admin_icons'));
 
-if(!empty($_GET['iframe']))
-{
-	define('e_IFRAME', true);
-}
+
 
 
 
