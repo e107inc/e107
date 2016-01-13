@@ -310,7 +310,7 @@ $FORUM_VIEWFORUM_TEMPLATE['item'] 				= "<tr>
 
 													</td>
 													</div>
-														<td >{REPLIESX}</td><td class='hidden-xs'>{VIEWSX}</td>
+														<td class='text-center'>{REPLIESX}</td><td class='hidden-xs text-center'>{VIEWSX}</td>
 													<td class='hidden-xs'><small>{LASTPOSTUSER} {LASTPOSTDATE} </small><div class='span2 right pull-right'>{ADMINOPTIONS}</div></td>
 													</tr>\n";
 
@@ -320,15 +320,15 @@ $FORUM_VIEWFORUM_TEMPLATE['item-announce'] 		= $FORUM_VIEWFORUM_TEMPLATE['item']
 
 $FORUM_VIEWFORUM_TEMPLATE['sub-header']			= "<tr>
 													<th colspan='2'>".LAN_FORUM_1002."</th>
-													<th>".LAN_FORUM_0003."</th>
-													<th class='hidden-xs'>".LAN_FORUM_0002."</th>
+													<th class='text-center'>".LAN_FORUM_0003."</th>
+													<th class='hidden-xs text-center'>".LAN_FORUM_0002."</th>
 													<th class='hidden-xs'>".LAN_FORUM_0004."</th>
 												</tr>";
 
 $FORUM_VIEWFORUM_TEMPLATE['sub-item']			= "<tr><td>{NEWFLAG}</td>
 												<td><div>{SUB_FORUMTITLE}</div><small>{SUB_DESCRIPTION}</small></td>
-												<td>{SUB_REPLIESX}</td>
-												<td class='hidden-xs'>{SUB_THREADSX}</td>
+												<td class='text-center'>{SUB_REPLIESX}</td>
+												<td class='hidden-xs text-center'>{SUB_THREADSX}</td>
 												<td class='hidden-xs'><small>{SUB_LASTPOSTUSER} {SUB_LASTPOSTDATE}</small></td>
 												</tr>\n";
 

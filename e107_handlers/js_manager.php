@@ -1030,9 +1030,10 @@ class e_jsmanager
 				$tp = e107::getParser();
 				$options = $this->arrayMergeDeepArray(array($this->_e_js_settings));
 				$json = $tp->toJSON($options);
-				$js = 'jQuery.extend(e107.settings, ' . $json . ');';
-				echo '<script>' . $js . '</script>';
-				echo "\n";
+				echo "<script>\n";
+				echo "var e107 = e107 || {'settings': {}, 'behaviors': {}};\n";
+				echo "jQuery.extend(e107.settings, " . $json . ");\n";
+				echo "</script>\n";
 			break;
 
 			case 'framework': // CDN frameworks - rendered before consolidation script (if enabled)
