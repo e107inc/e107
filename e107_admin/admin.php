@@ -202,7 +202,8 @@ class admin_start
 			e_LANGUAGEDIR."English/lan_parser_functions.php",
 			e_HANDLER."np_class.php",
 			e_CORE."shortcodes/single/user_extended.sc",
-			e_ADMIN."download.php"
+			e_ADMIN."download.php",
+			e_PLUGIN."banner/config.php"
 		);
 
 		$found = array();
