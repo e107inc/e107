@@ -106,6 +106,8 @@ if(!empty($menu_pref['banner_campaign']) && !empty($menu_pref['banner_amount']))
 		elseif(e_DEBUG == true)
 		{
 			echo "no banner data";
+			print_a($menu_pref);
+			print_a($query);
 		}
 	
 		$foot = e107::getParser()->parseTemplate($BANNER_MENU_END,true);
