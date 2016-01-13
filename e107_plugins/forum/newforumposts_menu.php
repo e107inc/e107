@@ -39,9 +39,12 @@ LEFT JOIN `#user` AS u ON u.user_id = p.post_user
 WHERE {$maxage} p.post_forum IN ({$forumList})
 ORDER BY p.post_datestamp DESC LIMIT 0, ".$menu_pref['newforumposts_display'];
 
+// Get forum plugin preferences.
+$plugForumPrefs = e107::getPlugConfig('forum')->getPref();
+// New MySQL class instantiation to avoid overrides.
+$db = new e_db_mysql();
 
-
-
+// TODO: cache menu.
 if($results = $sql->gen($qry))
 {
 	$text = "<ul>";
@@ -72,7 +75,21 @@ if($results = $sql->gen($qry))
 		$post = strip_tags($tp->toHTML($row['post_entry'], true, 'emotes_off, no_make_clickable', '', $pref['menu_wordwrap']));
 		$post = $tp->text_truncate($post, $menu_pref['newforumposts_characters'], $menu_pref['newforumposts_postfix']);
 
-		$url = e107::getUrl()->create('forum/thread/last', $row);
+		// Count previous posts for calculating proper (topic) page number for the current post.
+		$postNum = $db->count('forum_post', '(*)', "WHERE post_id <= " . $row['post_id'] . " AND post_thread = " . $row['thread_id'] . " ORDER BY post_id ASC");
+		// Calculate (topic) page number for the current post.
+		$postPage = ceil($postNum / vartrue($plugForumPrefs['postspage'], 10));
+		// Load thread for passing it to e107::url().
+		$thread = $db->retrieve('forum_thread', '*', 'thread_id = ' . $row['thread_id']);
+
+		// Create URL for post.
+		// like: e107_plugins/forum/forum_viewtopic.php?id=1&p=2#post-55
+		$url = e107::url('forum', 'topic', $thread, array(
+			'query'    => array(
+				'p' => $postPage, // proper page number
+			),
+			'fragment' => 'post-' . $row['post_id'], // jump page to post
+		));
 	
 		$text .= "<li>";
 		
