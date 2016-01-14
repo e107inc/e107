@@ -19,7 +19,7 @@ if(isset($_POST['newver']))
 
 if(! getperms("1"))
 {
-	header("location:".e_BASE."index.php");
+	e107::redirect('admin');
 	exit();
 }
 

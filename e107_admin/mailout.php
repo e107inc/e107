@@ -71,7 +71,7 @@ require_once('../class2.php');
 
 if (!getperms('W'))
 {
-	header('location:'.e_BASE.'index.php');
+	e107::redirect('admin');
 	exit;
 }
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_users.php');

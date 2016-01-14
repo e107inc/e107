@@ -15,7 +15,7 @@ if (!defined('e107_INIT'))
 
 if (!e107::isInstalled('download'))
 {
-	header("location:".e_BASE."index.php");
+	e107::redirect();
 }
 
 	e107::lan('download',false, true); // Loads e_PLUGIN.'download/languages/'.e_LANGUAGE.'/English_front.php'
@@ -51,7 +51,7 @@ if (!e107::isInstalled('download'))
 	{
 		if (!$sql->select("download", "download_comment", "download_id = '{$id}' "))
 		{
-			header("location:".e_BASE."index.php");
+			e107::redirect();
 			exit;
 		}
 		else

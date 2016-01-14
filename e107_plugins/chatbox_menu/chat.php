@@ -11,7 +11,7 @@
 require_once('../../class2.php');
 if (!e107::isInstalled('chatbox_menu')) 
 {
-	header('Location: '.e_BASE.'index.php');
+	e107::redirect();
 	exit;
 }
 

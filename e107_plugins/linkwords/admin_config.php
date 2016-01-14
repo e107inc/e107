@@ -14,7 +14,7 @@
 
 	if (!getperms('P') || !e107::isInstalled('linkwords'))
 	{
-		header('location:'.e_BASE.'index.php');
+		e107::redirect('admin');
 		 exit ;
 	}
 

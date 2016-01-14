@@ -2778,6 +2778,17 @@ class e107
 
 
 	/**
+	 * Simple redirect method for developers.
+	 * @param $url string : 'admin' to redirect to admin entry page or leave blank to go to home page (SITEURL)
+	 */
+	public static function redirect($url='')
+	{
+		self::getRedirect()->go($url);
+	}
+
+
+
+	/**
 	 * Parses an array into a valid, rawurlencoded query string. This differs from http_build_query() as we need to
 	 * rawurlencode() (instead of urlencode()) all query parameters.
 	 * @param array $query The query parameter array to be processed, e.g. $_GET.

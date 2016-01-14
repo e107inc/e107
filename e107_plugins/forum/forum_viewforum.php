@@ -15,9 +15,9 @@ if(!defined('e107_INIT'))
 	require_once('../../class2.php');
 }
 $e107 = e107::getInstance();
-if (!$e107->isInstalled('forum'))
+if (!e107::isInstalled('forum'))
 {
-	header('Location: '.SITEURL);
+	e107::redirect();
 	exit;
 }
 e107::lan('forum', "front", true);

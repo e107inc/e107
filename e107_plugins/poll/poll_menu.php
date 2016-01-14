@@ -19,7 +19,7 @@ if(defined("POLLRENDERED"))
 
 if (!e107::isInstalled('poll'))
 {
-  header("location:".e_BASE."index.php");
+	e107::redirect();
 }
 
 if(!defined("POLLCLASS"))

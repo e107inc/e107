@@ -18,7 +18,7 @@ if (!is_object($e_userclass)) $e_userclass = new user_class;
 
 if (!getperms("2")) 		// Same permissions as menu configuration
 {
-	header("location:".e_BASE."index.php");
+	e107::redirect('admin');
 	exit ;
 }
 

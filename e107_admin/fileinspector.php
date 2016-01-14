@@ -22,7 +22,7 @@ e107::lan('core','fileinspector', true);
 
 if (!getperms('Y'))
 {
-	header('location:'.e_BASE.'index.php');
+	e107::redirect('admin');
 	exit;
 }
 $error_handler->debug = FALSE;

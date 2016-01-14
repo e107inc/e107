@@ -16,7 +16,7 @@
 */
 require_once("../class2.php");
 if (!ADMIN) {
-	header("location:".e_BASE."index.php");
+	e107::redirect();
 	exit;
 }
 

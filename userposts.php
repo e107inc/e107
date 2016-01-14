@@ -46,7 +46,7 @@ if(isset($_POST['fsearch']))
 
 if ($action == 'exit')
 {
-	header("Location: ".SITEURL);
+	e107::redirect();
 	exit;
 }
 
@@ -79,7 +79,7 @@ if ($action == "comments")
 	}
 	else // posts by IP currently disabled (see Query filtering - top of the page)
 	{
-		header("Location:".SITEURL."index.php");
+		e107::redirect();
 		exit;
 		/*$dip = $id;
 		if (strlen($dip) == 8)
@@ -155,7 +155,7 @@ elseif ($action == 'forums')
 
 	if(!$user_name)
 	{
-		header("Location:".SITEURL);
+		e107::redirect();
 		exit;
 	}
 
@@ -257,7 +257,7 @@ elseif ($action == 'forums')
 }
 else
 {
-	header("Location: ".SITEURL);
+	e107::redirect();
 	exit;
 }
 

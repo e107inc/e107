@@ -26,7 +26,7 @@ require_once("../../class2.php");
 
 if (!e107::isInstalled('list_new'))
 {
-	header("Location: ".e_BASE."index.php");
+	e107::redirect();
 	exit;
 }
 

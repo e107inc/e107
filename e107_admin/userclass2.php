@@ -22,7 +22,7 @@
 require_once('../class2.php');
 if (!getperms('4'))
 {
-  header('location:'.e_BASE.'index.php');
+  e107::redirect('admin');
   exit;
 }
 
@@ -559,7 +559,7 @@ function checkAllowed($classID, $redirect = true, $fullEdit = FALSE)
 	
 	if ($redirect)
 	{
-		header('location:'.SITEURL);
+		e107::redirect();
 		exit;
 	}
 

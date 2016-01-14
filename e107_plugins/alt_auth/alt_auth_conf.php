@@ -31,7 +31,7 @@ $eplug_admin = true;
 require_once('../../class2.php');
 if(!getperms('P') || !e107::isInstalled('alt_auth'))
 {
-	header('location:'.e_BASE.'index.php'); 
+	e107::redirect('admin');
 	exit(); 
 }
 require_once(e_HANDLER.'form_handler.php');

@@ -14,7 +14,7 @@ require_once('../class2.php');
 
 if (!getperms('H|N|H0|H1|H2|H3|H4|H5'))
 {
-	header('Location:'.e_BASE.'index.php');
+	e107::redirect('admin');
 	exit;
 }
 

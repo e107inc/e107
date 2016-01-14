@@ -11,7 +11,7 @@
 require_once("../../class2.php");
 if( !e107::isInstalled('tinymce4'))
 {
-	header("location:".e_BASE."index.php");
+	e107::redirect('admin');
 	exit();
 }
 
