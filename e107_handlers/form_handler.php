@@ -208,7 +208,7 @@ class e_form
 	 */
 	function tabs($array,$options = array())
 	{
-		
+		$initTab = varset($options['active'],false);
 		$text  ='
 		<!-- Nav tabs -->
 			<ul class="nav nav-tabs">';
@@ -216,17 +216,24 @@ class e_form
 		$c = 0;
 		foreach($array as $key=>$tab)
 		{
+			if($c == 0 & $initTab == false)
+			{
+				$initTab = $key;
+			}
+
 			if(is_numeric($key))
 			{
 				$key = 'tab-'.$this->name2id($tab['caption']);
 			}
 			
-			$active = ($c == 0) ? ' class="active"' : '';
+			$active = ($key ==$initTab) ? ' class="active"' : '';
 			$text .= '<li'.$active.'><a href="#'.$key.'" data-toggle="tab">'.$tab['caption'].'</a></li>';
 			$c++;
 		}
 		
 		$text .= '</ul>';
+
+		$initTab = varset($options['active'],false);
 
 		$text .= '
 		<!-- Tab panes -->
@@ -235,12 +242,19 @@ class e_form
 		$c=0;
 		foreach($array as $key=>$tab)
 		{
+
+
 			if(is_numeric($key))
 			{
 				$key = 'tab-'.$this->name2id($tab['caption']);
 			}
+
+			if($c == 0 & $initTab == false)
+			{
+				$initTab = $key;
+			}
 			
-			$active = ($c == 0) ? ' active' : '';
+			$active = ($key == $initTab) ? ' active' : '';
 			$text .= '<div class="tab-pane'.$active.'" id="'.$key.'">'.$tab['text'].'</div>';
 			$c++;
 		}

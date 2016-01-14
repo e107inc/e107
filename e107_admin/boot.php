@@ -33,6 +33,65 @@ if(ADMIN && defset('e_ADMIN_UI') && varset($_POST['mode']) == 'sef' && !empty($_
 	exit;
 }
 
+if(ADMIN && e_AJAX_REQUEST && varset($_GET['mode']) == 'addons' )
+{
+	$type = ($_GET['type'] == 'plugin') ? 'plugin' : 'theme';
+	$tag = 'infopanel_'.$type;
+
+	$cache = e107::getCache();
+	$cache->setMD5('_');
+
+	if($text = $cache->retrieve($tag,180,true)) // check every 3 hours.
+	{
+		echo $text;
+
+		if(e_DEBUG === true)
+		{
+			echo "<span class='label label-warning'>Cached</span>";
+		}
+		exit;
+	}
+
+
+	if($data = e107::getXml()->getRemoteFile('http://e107.org/feed/?limit=3&type='.$type,3))
+	{
+		$rows = e107::getXml()->parseXml($data, 'advanced');
+//	print_a($rows);
+//  exit;
+		$link = ($type == 'plugin') ? e_ADMIN."plugin.php?mode=online" : e_ADMIN."theme.php?mode=online";
+
+		$text = "<div style='margin-top:10px'>";
+
+		foreach($rows[$type] as $val)
+		{
+			$meta = $val['@attributes'];
+			$img = ($type == 'theme') ? $meta['thumbnail'] : $meta['icon'];
+			$text .= '<div class="media">';
+			$text .= '<div class="media-left">
+		    <a href="'.$link.'">
+		      <img class="media-object img-rounded" src="'.$img.'" style="width:100px">
+		    </a>
+		  </div>
+		  <div class="media-body">
+		    <h4 class="media-heading"><a href="'.$link.'">'.$meta['name'].' v'.$meta['version'].'</a> <small>&mdash; '.$meta['author'].'</small></h4>
+		    '.$val['description'].'
+		  </div>';
+			$text .= '</div>';
+		}
+
+		$text .= "</div>";
+		$text .= "<div class='right'><a href='".$link."'>".LAN_MORE."</a></div>";
+
+		echo $text;
+
+		$cache->set($tag, $text, true);
+
+	}
+	exit;
+
+}
+
+
 ### Language files
 e107::coreLan('header', true);
 e107::coreLan('footer', true);
