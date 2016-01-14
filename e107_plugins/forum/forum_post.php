@@ -27,7 +27,7 @@ $mes = e107::getMessage();
 
 if (!$e107->isInstalled('forum'))
 {
-	header('Location: '.SITEURL.'index.php');
+	e107::redirect();
 	exit;
 }
 

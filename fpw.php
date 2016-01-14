@@ -18,7 +18,7 @@ $tp = e107::getParser();
 
 if (USER && !getperms('0'))
 {
-	header('location:'.e_BASE.'index.php');
+	e107::redirect();
 	exit;
 }
 

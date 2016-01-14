@@ -21,7 +21,7 @@ if (!defined('e107_INIT'))
 //check if plugin is installed
 if (!e107::isInstalled('metaweblog'))
 {
-	header("location:".e_BASE."index.php"); 
+	e107::redirect();
 }
 
 

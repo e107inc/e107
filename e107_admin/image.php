@@ -25,7 +25,7 @@ if (!defined('e107_INIT'))
 
 if (!getperms("A") && ($_GET['action'] != 'dialog')) 
 {
-	header("location:".e_HTTP."index.php");
+	e107::redirect('admin');
 	exit;
 }
 

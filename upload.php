@@ -13,7 +13,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 if (!$pref['upload_enabled'] || $pref['upload_class'] == 255)
 {
-  header("location: ".e_BASE."index.php");
+	e107::redirect();
   exit;
 }
 

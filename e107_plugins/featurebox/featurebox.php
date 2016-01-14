@@ -11,7 +11,7 @@
 if (!defined('e107_INIT')) { exit; }
 if (!e107::isInstalled('featurebox'))
 {
-	header('location:'.e_BASE.'index.php');
+	e107::redirect();
 	exit;
 }
 

@@ -45,7 +45,7 @@ elseif ($action == 'active')
 }
 else
 {
-	header('location:'.e_BASE.'index.php');
+	e107::redirect();
 	exit;
 }	
 
@@ -75,7 +75,7 @@ if ($action == 'active')
 	if ($sql->gen($qry))
 	{
 		$text = "<div>\n<table style='width:auto' class='table fborder'>\n";
-		$gen = e107::gethateConvert();
+		$gen = e107::getDate();
 
 		$text .= "<tr>
 			<th style='width:5%' class='forumheader'>&nbsp;</th>

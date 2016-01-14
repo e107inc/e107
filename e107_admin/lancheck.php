@@ -18,7 +18,7 @@ if (!defined('e107_INIT'))
 
 if (!getperms("L")) 
 {
-	header("location:".e_BASE."index.php");
+	e107::redirect('admin');
 	exit;
 }
 

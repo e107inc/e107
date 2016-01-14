@@ -21,7 +21,7 @@ if(!defined('e107_INIT'))
 
 if (!e107::isInstalled('newsfeed')) 
 {
-	header("location:".e_BASE."index.php");
+	e107::redirect();
 	exit;
 }
 

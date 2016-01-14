@@ -11,8 +11,8 @@
 require_once("../class2.php");
 if (!getperms("M")) 
 {
-	header("location:".e_BASE."index.php");
-	 exit;
+	e107::redirect('admin');
+	exit;
 }
 
 e107::lan('core','wmessage',true);

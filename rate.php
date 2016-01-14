@@ -29,7 +29,7 @@ if(!e_AJAX_REQUEST) // Legacy method.
 	
 	if (!$qs[0] || USER == FALSE || $qs[3] > 10 || $qs[3] < 1 || strpos($qs[2], '://') !== false)
 	{
-		header("location:".e_BASE."index.php");
+		e107::redirect();
 		exit;
 	}
 	

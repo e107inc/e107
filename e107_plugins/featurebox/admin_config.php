@@ -12,8 +12,8 @@
 require_once("../../class2.php");
 if (!getperms("P") || !e107::isInstalled('featurebox')) 
 {
-	header("location:".e_BASE."index.php");
-	 exit;
+	e107::redirect('admin');
+	exit;
 }
 
 // e107::includeLan(e_PLUGIN.'featurebox/languages/'.e_LANGUAGE.'_admin_featurebox.php');

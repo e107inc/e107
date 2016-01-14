@@ -20,9 +20,9 @@
 
 
 require_once('../../class2.php');
-if (!$e107->isInstalled('newsletter') || !ADMIN) 
+if (!e107::isInstalled('newsletter') || !ADMIN)
 {
-	header('Location: '.e_BASE.'index.php');
+	e107::redirect();
 	exit(); 
 }
 include_lan(e_PLUGIN.'newsletter/languages/'.e_LANGUAGE.'.php');

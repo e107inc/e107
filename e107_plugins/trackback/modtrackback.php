@@ -19,7 +19,7 @@ require_once("../../class2.php");
 
 if (!getperms("P") || !e107::isInstalled('trackback') || !$pref['trackbackEnabled'])
 {
-	header("location:".e_BASE."index.php");
+	e107::redirect();
 	exit;
 }
 

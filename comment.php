@@ -183,7 +183,7 @@ if (isset($_POST['commentsubmit']) || isset($_POST['editsubmit']))
 {	// New comment, or edited comment, being posted.
 	if(!ANON && !USER)
 	{
-		header('location: '.e_BASE.'index.php');
+		e107::redirect();
 		exit;
 	}
 
@@ -192,21 +192,21 @@ if (isset($_POST['commentsubmit']) || isset($_POST['editsubmit']))
 		case 'poll' :
 			if (!$sql->db_Select("polls", "poll_title", "`poll_id` = '{$id}' AND `poll_comment` = 1")) 
 			{
-				header('location: '.e_BASE.'index.php');
+				e107::redirect();
 				exit;
 			}
 			break;
 		case 'news' :
 			if (!$sql->db_Select("news", "news_allow_comments", "`news_id` = '{$id}' AND `news_allow_comments` = 0")) 
 			{
-				header('location: '.e_BASE.'index.php');
+				e107::redirect();
 				exit;
 			}
 			break;
 		case 'user' :
 			if (!$sql->db_Select('user', 'user_name', '`user_id` ='.$id)) 
 			{
-				header('location: '.e_BASE.'index.php');
+				e107::redirect();
 				exit;
 			}
 			break;
@@ -243,7 +243,7 @@ if (isset($_POST['replysubmit']))
 {	// Reply to nested comment being posted
 	if ($table == "news" && !$sql->select("news", "news_allow_comments", "news_id='{$nid}' "))
 	{
-		header('location: '.e_BASE.'index.php');
+		e107::redirect();
 		exit;
 	}
 	else
@@ -331,7 +331,7 @@ if ($action == "reply")
 			case 'news' :
 				if (!$sql->db_Select("news", "news_title", "news_id='{$nid}' "))
 				{ 
-					header('location: '.e_BASE.'index.php');
+					e107::redirect();
 					exit;
 				}
 				else
@@ -344,7 +344,7 @@ if ($action == "reply")
 			case 'poll' :
 				if (!$sql->db_Select("polls", "poll_title", "poll_id='{$nid}' "))
 				{
-					header('location: '.e_BASE.'index.php');
+					e107::redirect();
 					exit;
 				}
 				else
@@ -363,7 +363,7 @@ if ($action == "reply")
 				}
 				else
 				{
-					header('location: '.e_BASE.'index.php');
+					e107::redirect();
 					exit;
 				}
 				break;
@@ -376,7 +376,7 @@ if ($action == "reply")
 				}
 				else
 				{
-					header('location: '.e_BASE.'index.php');
+					e107::redirect();
 					exit;
 				}
 				break;
@@ -424,7 +424,7 @@ elseif ($action == 'comment')
 
 				if (!$sql->db_Select_gen($query))
 				{
-					header('location: '.e_BASE.'index.php');
+					e107::redirect();
 					exit;
 				}
 				else
@@ -443,7 +443,7 @@ elseif ($action == 'comment')
 			case 'poll' :
 				if (!$sql->db_Select("polls", "*", "poll_id='{$id}'"))
 				{
-					header('location: '.e_BASE.'index.php');
+					e107::redirect();
 					exit;
 				}
 				else
@@ -474,7 +474,7 @@ elseif ($action == 'comment')
 				}
 				else
 				{
-					header('location: '.e_BASE.'index.php');
+					e107::redirect();
 					exit;
 				}
 				break;
@@ -489,7 +489,7 @@ elseif ($action == 'comment')
 				}
 				else
 				{
-					header('location: '.e_BASE.'index.php');
+					e107::redirect();
 					exit;
 				}
 				break;
@@ -507,7 +507,7 @@ elseif ($action == 'comment')
 					}
 					else
 					{
-						header('location: '.e_BASE.'index.php');
+						e107::redirect();
 						exit;
 					}
 				}
@@ -523,7 +523,7 @@ elseif ($action == 'comment')
 					}
 					else
 					{
-						header('location:'.e_BASE.'index.php');
+						e107::redirect();
 						exit;
 					}
 				}
@@ -532,7 +532,7 @@ elseif ($action == 'comment')
 }
 else
 {	// Invalid action - just exit
-	header('location: '.e_BASE.'index.php');
+	e107::redirect();
 	exit;
 }
 

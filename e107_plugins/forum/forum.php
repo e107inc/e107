@@ -20,7 +20,7 @@ $sql = e107::getDb();
 if (!$e107->isInstalled('forum'))
 {
 	// FIXME GLOBAL - get rid of all e_BASE|e_HTTP|Whatever/index.php - just point to SITEURL
-	header('Location: '.SITEURL);
+	e107::redirect();
 	exit;
 }
 e107::lan('forum', "front", true);
@@ -32,8 +32,6 @@ if(!deftrue('BOOTSTRAP'))
 		'FORLAN_11' => 'LAN_FORUM_0039',
 		'FORLAN_12' => 'LAN_FORUM_0040',
 		'FORLAN_18' => 'LAN_FORUM_0041',
-
-
 	);
 
 	e107::getLanguage()->bcDefs($bcDefs);

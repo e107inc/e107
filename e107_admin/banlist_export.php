@@ -23,7 +23,7 @@
 require_once('../class2.php');
 if (!getperms('4')) 
 {
-	header('location:../index.php');
+	e107::redirect('admin');
 	exit;
 }
 

@@ -15,8 +15,9 @@
  */
 
 require_once("../class2.php");
-if (!getperms("0")) {
-    header("location:".e_BASE."index.php");
+if (!getperms("0"))
+{
+	e107::redirect('admin');
     exit;
 }
 $e_sub_cat = 'phpinfo';

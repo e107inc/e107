@@ -16,7 +16,11 @@
 */
 
 require_once("../../class2.php");
-if (!getperms("P")) { header("location:".e_BASE."index.php"); exit; }
+if (!getperms("P"))
+{
+	e107::redirect('admin');
+	exit;
+}
 
 
 class plugin_blank_admin extends e_admin_dispatcher

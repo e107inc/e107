@@ -13,7 +13,7 @@
 require_once('../class2.php');
 if (!getperms('V')) 
 {
-  header('location:'.e_BASE.'index.php');
+  e107::redirect('admin');
   exit;
 }
 
