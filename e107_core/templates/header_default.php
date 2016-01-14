@@ -28,9 +28,11 @@ $sql->db_Mark_Time('(Header Top)');
 e107::js('core',	'bootstrap/js/bootstrap-tooltip.js','jquery');
 e107::css('core',	'bootstrap/css/tooltip.css','jquery');
 
-e107::js('core',	'bootstrap-notify/js/bootstrap-notify.js','jquery');
-e107::css('core',	'bootstrap-notify/css/bootstrap-notify.css','jquery');
-
+if(deftrue('BOOTSTRAP'))
+{
+	e107::js('core',	'bootstrap-notify/js/bootstrap-notify.js','jquery');
+	e107::css('core',	'bootstrap-notify/css/bootstrap-notify.css','jquery');
+}
 
 // ------------------
 
@@ -182,6 +184,10 @@ if (/*!defined("PREVIEWTHEME") && */! (isset($no_core_css) && $no_core_css !==tr
 	$e_js->otherCSS('{e_WEB_CSS}e107.css');
 }
 
+if(!deftrue('BOOTSTRAP'))
+{
+	$e_js->otherCSS('{e_WEB_CSS}backcompat.css');
+}
 
 
 // re-initalize in case globals are destroyed from $e_headers includes

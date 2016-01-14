@@ -56,15 +56,22 @@ $(document).ready(function()
 						else {
 							var alertType = 'info';
 						}			
-							
+
+
 						// http://nijikokun.github.io/bootstrap-notify/
-						// fix - only if there
+
 						 if(jQuery().notify) {
 							 $('#uiAlert').notify({
 								type: alertType,
 								message: { text: d.msg },
 								fadeOut: { enabled: true, delay: 3000 }
 							}).show();
+						 }
+						 else
+						 {
+						    alert(d.msg);
+						    location.reload();
+						    return;
 						 }
 
 						
@@ -126,6 +133,9 @@ e107::css('forum','forum.css');
 
 
 e107::lan('forum','English_front');
+
+
+
 // include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum.php');
 if(!defined('IMAGE_new') && !defined('IMAGE_e'))
 {
@@ -155,6 +165,14 @@ class e107forum
 
 	public function __construct($update= false)
 	{
+
+		if (!empty($_POST['fjsubmit']) && !empty($_POST['forumjump']))
+		{
+			$url = e107::getParser()->filter($_POST['forumjump'],'url');
+			e107::getRedirect()->go($_POST['forumjump']);
+			exit;
+		}
+
 		$this->e107 = e107::getInstance();
 		$tp = e107::getParser();
 		$this->userViewed = array();

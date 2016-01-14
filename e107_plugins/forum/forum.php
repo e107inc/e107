@@ -26,6 +26,20 @@ if (!$e107->isInstalled('forum'))
 e107::lan('forum', "front", true);
 // include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum.php'); // using English_front.php now
 
+if(!deftrue('BOOTSTRAP'))
+{
+	$bcDefs = array(
+		'FORLAN_11' => 'LAN_FORUM_0039',
+		'FORLAN_12' => 'LAN_FORUM_0040',
+		'FORLAN_18' => 'LAN_FORUM_0041',
+
+
+	);
+
+	e107::getLanguage()->bcDefs($bcDefs);
+}
+
+
 require_once(e_PLUGIN.'forum/forum_class.php');
 $forum = new e107forum;
 

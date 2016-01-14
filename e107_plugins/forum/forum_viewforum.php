@@ -22,15 +22,34 @@ if (!$e107->isInstalled('forum'))
 }
 e107::lan('forum', "front", true);
 //include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_viewforum.php'); // now uses English_front.php
+
+if(!deftrue('BOOTSTRAP'))
+{
+	$bcDefs = array(
+		'FORLAN_11' => 'LAN_FORUM_0039',
+		'FORLAN_12' => 'LAN_FORUM_0040',
+		'FORLAN_13' => 'LAN_FORUM_0040',
+		'FORLAN_14' => 'LAN_FORUM_0040',
+		'FORLAN_16' => 'LAN_FORUM_1012',
+		'FORLAN_17' => 'LAN_FORUM_1013',
+		'FORLAN_18' => 'LAN_FORUM_1014',
+		'LAN_435'   => 'LAN_DELETE',
+		'LAN_401'   => 'LAN_FORUM_4011',
+		'LAN_398'   => 'LAN_FORUM_4012',
+		'LAN_399'   => 'LAN_FORUM_4013',
+		'LAN_400'   => 'LAN_FORUM_4014',
+		'LAN_402'   => 'LAN_FORUM_5019',
+
+	);
+
+	e107::getLanguage()->bcDefs($bcDefs);
+}
+
+
 define('NAVIGATION_ACTIVE','forum');
 
 
-if (isset($_POST['fjsubmit']))
-{
-	// TODO - load from DB and find forum_name
-	header('location:'.e107::getUrl()->create('forum/forum/view', array('id'=>(int) $_POST['forumjump']), '', 'full=1&encode=0'));
-	exit;
-}
+
 
 if (!e_QUERY && empty($_GET))
 {
@@ -606,7 +625,7 @@ function parse_thread($thread_info)
 		<input type='image' ".IMAGE_admin_delete." name='deleteThread_{$threadId}' value='thread_action' onclick=\"return confirm_({$threadId})\" />
 		".($thread_info['thread_sticky'] == 1 ? "<input type='image' ".IMAGE_admin_unstick." name='unstick_{$threadId}' value='thread_action' /> " : "<input type='image' ".IMAGE_admin_stick." name='stick_{$threadId}' value='thread_action' /> ")."
 		".($thread_info['thread_active'] ? "<input type='image' ".IMAGE_admin_lock." name='lock_{$threadId}' value='thread_action' /> " : "<input type='image' ".IMAGE_admin_unlock." name='unlock_{$threadId}' value='thread_action' /> "). "
-		<a href='".$moveUrl."'>".IMAGE_admin_move.'</a>
+		<a class='e-tip' title=\"".LAN_FORUM_5019."\" href='".$moveUrl."'>".IMAGE_admin_move.'</a>
 		</div></form>
 		';
 		
@@ -738,7 +757,7 @@ function forumjump()
 	$text = "<form method='post' action='".e_SELF."'><p>".LAN_FORUM_1017.": <select name='forumjump' class='tbox'>";
 	foreach($jumpList as $key => $val)
 	{
-		$text .= "\n<option value='".e107::url('forum','forum',$val)."'>".$val['forum_name']."</option>";
+		$text .= "\n<option value='".e107::url('forum','forum',$val, 'full')."'>".$val['forum_name']."</option>";
 	}
 	$text .= "</select> <input class='btn btn-default button' type='submit' name='fjsubmit' value='".LAN_GO."' /></form>";
 	return $text;
