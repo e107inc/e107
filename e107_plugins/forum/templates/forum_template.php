@@ -101,18 +101,18 @@ $FORUM_TEMPLATE['main-start']			= "{FORUM_BREADCRUMB}
 
 $FORUM_TEMPLATE['main-parent']			= 	"<tr>
 											<th colspan='2'>{PARENTNAME} {PARENTSTATUS}</th>
-											<th  class='hidden-xs' >".LAN_FORUM_0003."</th>
-											<th >".LAN_FORUM_0002."</th>
-											<th class='hidden-xs' >".LAN_FORUM_0004."</th>
-											</tr>";											
-											
-																						
+											<th class='hidden-xs text-center'>".LAN_FORUM_0003."</th>
+											<th class='text-center'>".LAN_FORUM_0002."</th>
+											<th class='hidden-xs text-center'>".LAN_FORUM_0004."</th>
+											</tr>";
+
+
 $FORUM_TEMPLATE['main-forum']			= 	"<tr>
 											<td>{NEWFLAG}</td>
 											<td>{FORUMNAME}<br /><small>{FORUMDESCRIPTION}</small>{FORUMSUBFORUMS}</td>
-											<td class='hidden-xs'>{REPLIESX}</td>
-											<td >{THREADSX}</td>
-											<td class='hidden-xs'><small>{LASTPOSTUSER} {LASTPOSTDATE}</small></td>
+											<td class='hidden-xs text-center'>{REPLIESX}</td>
+											<td class='text-center'>{THREADSX}</td>
+											<td class='hidden-xs text-center'><small>{LASTPOSTUSER} {LASTPOSTDATE}</small></td>
 											</tr>";
 
 $FORUM_TEMPLATE['main-end']				= "</table><div class='center'><small>{USERINFOX}</small></div></div>";

@@ -1455,7 +1455,7 @@ class e_parse extends e_parser
 
 		if($opts['defs'] && (strlen($text) < 35) && ((strpos($text, '::') === FALSE) && defined(trim($text))))
 		{
-			return constant(trim($text));
+			$text = constant(trim($text)); // don't return yet, words could be hooked with linkwords etc.
 		}
 
 		if ($opts['no_tags'])
@@ -2841,8 +2841,8 @@ class e_parser
 
     protected $allowedTags        = array('html', 'body','div','a','img','table','tr', 'td', 'th', 'tbody', 'thead', 'colgroup', 'b',
                                         'i', 'pre','code', 'strong', 'u', 'em','ul', 'ol', 'li','img','h1','h2','h3','h4','h5','h6','p',
-                                        'div','pre','section','article', 'blockquote','hgroup','aside','figure','span', 'audio', 'video', 'br',
-                                        'small', 'caption', 'noscript', 'hr'
+                                        'div','pre','section','article', 'blockquote','hgroup','aside','figure','figcaption', 'abbr','span', 'audio', 'video', 'br',
+                                        'small', 'caption', 'noscript', 'hr', 'section'
                                    );
     protected $scriptTags 		= array('script','applet','iframe','form','input','button'); //allowed when $pref['post_script'] is enabled.
 	

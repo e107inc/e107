@@ -14,7 +14,7 @@ require_once('../../class2.php');
 
 if (!getperms('P') || !e107::isInstalled('log')) 
 {
-	header('Location: '.e_HTTP.'index.php');
+	e107::redirect('admin');
 	exit;
 }
 

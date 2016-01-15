@@ -22,6 +22,8 @@ if(vartrue($_GET['iframe']) == 1)
 	define('e_IFRAME', true);
 }
 
+
+
 $e_sub_cat = 'main';
 
 if (varset($pref['adminstyle'])=='cascade' || varset($pref['adminstyle'])=='beginner') // Deprecated Admin-include. 
@@ -202,7 +204,8 @@ class admin_start
 			e_LANGUAGEDIR."English/lan_parser_functions.php",
 			e_HANDLER."np_class.php",
 			e_CORE."shortcodes/single/user_extended.sc",
-			e_ADMIN."download.php"
+			e_ADMIN."download.php",
+			e_PLUGIN."banner/config.php"
 		);
 
 		$found = array();

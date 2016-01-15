@@ -4357,11 +4357,12 @@ class eHelper
 
 		$title = str_replace(array_keys($char_map), $char_map, $title);
 
+		$title = str_replace(array('/'),' ',$title);
 		$title = str_replace(array("&",",","(",")"),'',$title);
-		$title = preg_replace('/[^\w\d\pL\s.]/u', '', strip_tags(e107::getParser()->toHTML($title, TRUE)));
+		$title = preg_replace('/[^\w\d\pL\s.-]/u', '', strip_tags(e107::getParser()->toHTML($title, TRUE)));
 		$title = trim(preg_replace('/[\s]+/', ' ', str_replace('_', ' ', $title)));
 
-		$words = str_word_count($title,1, '12345678990');
+		$words = str_word_count($title,1, '1234567890');
 
 		$limited = array_slice($words, 0, 14); // Limit number of words to 14. - any more and it ain't friendly.
 

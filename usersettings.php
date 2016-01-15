@@ -35,7 +35,7 @@ define("US_DEBUG",FALSE);
 
 if (!USER)
 {	// Must be logged in to change settings
-	header('location:'.e_BASE.'index.php');
+	e107::redirect();
 	exit();
 }
 
@@ -132,7 +132,7 @@ $info = e107::user($inp);
 		//Only site admin is able to change setting for other admins
 if(!is_array($info) || ($info['user_admin'] == 1 && (!defined('ADMINPERMS') || ADMINPERMS !== '0')) || ((!defined('ADMINPERMS') || ADMINPERMS !== '0') && !getperms('4')))
 {
-	header('location:'.e_BASE.'index.php');
+	e107::redirect();
 	exit();
 }
 		$adminEdit = TRUE;		// Flag to indicate admin edit
@@ -140,7 +140,7 @@ if(!is_array($info) || ($info['user_admin'] == 1 && (!defined('ADMINPERMS') || A
 	else
 	{
 		//Non admin attempting to edit another user's ID
-		header('location:'.e_BASE.'index.php');
+		e107::redirect();
 		exit();
 	}
 
@@ -596,7 +596,7 @@ if ($dataToSave && !$promptPassword)
 
 	if (e_QUERY == 'update')
 	{
-		header('Location: index.php');
+		e107::redirect();
 	}
 	
 	if($adminEdit && $message)

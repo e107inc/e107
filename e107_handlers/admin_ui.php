@@ -3280,10 +3280,18 @@ class e_admin_controller_ui extends e_admin_controller
 				case 'datestamp':
 					if(!is_numeric($value))
 					{
-						if(vartrue($attributes['writeParms']))
+						if(!empty($attributes['writeParms']))
 						{
-							parse_str($attributes['writeParms'],$opt);	
+							if(is_string($attributes['writeParms']))
+							{
+								parse_str($attributes['writeParms'],$opt);
+							}
+							elseif(is_array($attributes['writeParms']))
+							{
+								$opt = $attributes['writeParms'];
+							}
 						}
+
 						
 						$format = $opt['type'] ? ('input'.$opt['type']) : 'inputdate';
 						$value = trim($value) ? e107::getDate()->toTime($value, $format) : 0;

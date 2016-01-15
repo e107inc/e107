@@ -27,7 +27,7 @@ $mes = e107::getMessage();
 
 if (!$e107->isInstalled('forum'))
 {
-	header('Location: '.SITEURL.'index.php');
+	e107::redirect();
 	exit;
 }
 
@@ -92,11 +92,11 @@ class forum_post_handler
 
 	function checkForumJump()
 	{
-		if(isset($_POST['fjsubmit']))
+		/*if(isset($_POST['fjsubmit']))
 		{
 			$this->redirect(e107::getUrl()->create('forum/forum/view', array('id'=>(int) $_POST['forumjump']), '', 'full=1&encode=0'));
 			exit;
-		}
+		}*/
 
 		if (!e_QUERY || empty($_GET['id']))
 		{

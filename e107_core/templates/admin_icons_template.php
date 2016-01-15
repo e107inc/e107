@@ -450,12 +450,13 @@ define("E_32_TRUE", "<i class='S32 e-true-32'></i>");
 
 	define("ADMIN_ADD_ICON", "<i class='S32 e-add-32'></i>");
 	define("ADMIN_INFO_ICON", "<i class='S16 e-info-16'></i>");
-	define("ADMIN_CONFIGURE_ICON", "<i class='S32 e-configure-32'></i>");	
+	define("ADMIN_CONFIGURE_ICON", "<i class='S32 e-settings-32'></i>");
 	define("ADMIN_VIEW_ICON", "<i class='S32 e-search-32'></i>");	
 	define("ADMIN_URL_ICON", "<i class='S16 e-forums-16'></i>");
 	define("ADMIN_INSTALLPLUGIN_ICON", "<i class='S32 e-plugin_install-32'></i>");
 	define("ADMIN_UNINSTALLPLUGIN_ICON", "<i class='S32 e-plugin_uninstall-32'></i>");
 	define("ADMIN_UPGRADEPLUGIN_ICON", "<i class='S32 e-up-32'></i>");
+	define("ADMIN_REPAIRPLUGIN_ICON", "<i class='S32 e-configure-32'></i>");
 	define("ADMIN_UP_ICON", "<i class='S32 e-up-32'></i>");
 	define("ADMIN_DOWN_ICON", "<i class='S32 e-down-32'></i>");
 	define("ADMIN_SORT_ICON", "<i class='S32 e-sort-32'></i>");

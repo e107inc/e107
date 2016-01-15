@@ -16,7 +16,7 @@ if (!defined('e107_INIT'))
 
 if (!e107::isInstalled('log')) 
 {
-	header('Location: '.e_BASE.'index.php');
+	e107::redirect();
 	exit;
 }
 

@@ -25,7 +25,7 @@ if (!defined('e107_INIT'))
 
 if (!getperms("A") && ($_GET['action'] != 'dialog')) 
 {
-	header("location:".e_HTTP."index.php");
+	e107::redirect('admin');
 	exit;
 }
 
@@ -1065,18 +1065,31 @@ class media_admin_ui extends e_admin_ui
 			return '';
 		}
 
-		// if 'for' has no value, files are placed in /temp and not added to the db. 
-		$text = '<div id="uploader" rel="'.e_JS.'plupload/upload.php?for='.$this->getQuery('for').'">
+		// if 'for' has no value, files are placed in /temp and not added to the db.
+		$text = "<h4>From your computer</h4>";
+		$text .= '<div id="uploader" rel="'.e_JS.'plupload/upload.php?for='.$this->getQuery('for').'">
 	        <p>No HTML5 support.</p>
 		</div>';
-	    
+	    $text .= '<hr />';
 	    $frm = e107::getForm();
-	    
+
 	    $text .= $frm->open('upload-url-form','post');
 		$text .= '<div class="plupload_header_content">';
-		$text .= "<div class='plupload_header_text form-inline' style='padding:20px'>Or upload a remote image or file ";
-		$text .= "<input type='text' name='upload_url' size='255' style='width:70%' placeholder='eg. http://website.com/some-image.jpg' />";
-		$text .= $frm->admin_button('upload_remote_url',1,'create','Start Upload');
+		$text .= "<h4>From a remote location</h4>";
+		$text .= "<div class='plupload_header_text form-inline' style='padding-left:20px;padding-right:20px'>";
+		$text .= "<table class='table'>";
+
+		$text .= "<tr>
+				<td class='text-nowrap'>Image/File URL:</td>
+				<td><input type='text' name='upload_url' size='255' style='width:100%' placeholder='eg. http://website.com/some-image.jpg' /></td>
+				<td style='text-align:left'>".$frm->admin_button('upload_remote_url',1,'create','Start Upload')."</td>
+				</tr>";
+		$text .= "<tr><td>Caption (optional):</td><td><input type='text' name='upload_caption' size='255' style='width:100%' placeholder='eg. My Image Caption' /></td>
+<td></td></tr>";
+
+		$text .= "</table>";
+	//	$text .= ;
+
 	    $text .= "</div>";
 		$text .= "</div>\n\n";
 		
@@ -1182,7 +1195,7 @@ class media_admin_ui extends e_admin_ui
 		 * 
 		 */
 		
-		if($options['bbcode'])
+		if($options['bbcode']) //TODO LAN lan_image.php
 		{
 			$text .= "<div class='tab-pane' id='core-media-style'>
 				
@@ -1195,10 +1208,16 @@ class media_admin_ui extends e_admin_ui
 				</colgroup>
 				<tbody>
 					<tr>
+						<td>Caption: </td>
+						<td>
+						<input type='text' class='e-media-attribute' id='alt' name='alt' size='4' style='width:100%' value='' />
+						</td>
+					</tr>
+					<tr>
 						<td>Dimensions: </td>
 						<td>
-						<input type='text' class='e-media-attribute' id='width' name='width' size='4' style='width:50px' value='' /> px
-						 X <input type='text' class='e-media-attribute' id='height' name='height' size='4' style='width:50px' value=''  /> px
+						<input type='text' class='e-media-attribute' id='width' name='width' size='4' style='width:50px' value='' /> px &nbsp;
+						&#10060; &nbsp;<input type='text' class='e-media-attribute' id='height' name='height' size='4' style='width:50px' value=''  /> px
 						</td>
 					</tr>
 			
@@ -1230,7 +1249,7 @@ class media_admin_ui extends e_admin_ui
 			</tbody></table>
 			</div>
 			<div class='col-md-6 span6'>
-			<h5>Preview</h5>
+			<h5>".LAN_PREVIEW."</h5>
 		
 			<img class='well' id='preview' src='".e_IMAGE_ABS."generic/blank.gif' style='min-width:220px; min-height:180px;' />
 			
@@ -1269,14 +1288,15 @@ class media_admin_ui extends e_admin_ui
 		
 		$text .= "</div>";
 		
-		// For BBCODE mode. //TODO image-float. 
+		// For BBCODE/TinyMce mode.
+		// e-dialog-save
 				
 		if($options['bbcode'] || E107_DEBUG_LEVEL > 0)
 		{
 						
 			$text .= "<div style='text-align:right;padding:5px'>
 			
-			<button type='submit' class='btn btn-success submit e-dialog-save e-dialog-close' data-bbcode='".$options['bbcode']."' data-target='".$this->getQuery('tagid')."' name='save_image' value='Save it'  >
+			<button type='submit' class='btn btn-success submit e-dialog-save' data-bbcode='".$options['bbcode']."' data-target='".$this->getQuery('tagid')."' name='save_image' value='Save it'  >
 			<span>Save</span>
 			</button>
 			<button type='submit' class=' btn btn-default submit e-dialog-close' name='cancel_image' value='Cancel' >
@@ -1612,13 +1632,20 @@ class media_admin_ui extends e_admin_ui
 				list($fileName,$bla) = explode("?", $fileName);
 			}
 
+			// remove script extensions.
+			if(substr($fileName,-4) == ".php" || substr($fileName,-4) == ".htm" || substr($fileName,-5) == ".html" || substr($fileName,-4) == ".asp")
+			{
+				$fileName = empty($_POST['upload_caption']) ? str_replace(array(".php",".html",".asp",".htm"),'',$fileName)."_".time() : eHelper::dasherize(strtolower($_POST['upload_caption']));
+			}
+
 			if(!$fl->getRemoteFile($_POST['upload_url'], $fileName, 'import'))
 			{
 				$mes->addError("There was a problem grabbing the file");
 			}
 			elseif($import == true)
  			{
-				$result = e107::getMedia()->importFile($fileName,$cat);
+ 			    $data = array('media_caption' => e107::getParser()->filter($_POST['upload_caption'],'str'));
+				$result = e107::getMedia()->importFile($fileName,$cat, null, $data);
 			}
 		}
 	}

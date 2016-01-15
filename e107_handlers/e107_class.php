@@ -1846,8 +1846,16 @@ class e107
 		// fixme, temporary adding 's' to className, should be core fixed, better naming
 		if(true === $className) $className = $pluginName.'_'.substr($addonName, 2); // remove 'e_'
 
-		$elist = self::getPref($filename.'_list'); 
-		if(!isset($elist[$pluginName])) return null;
+		$elist = self::getPref($filename.'_list');
+
+		if($filename == 'e_menu')
+		{
+			if(!in_array($pluginName, $elist)) return null;
+		}
+		else
+		{
+			if(!isset($elist[$pluginName])) return null;
+		}
 		
 		// TODO override check comes here
 		$path = e_PLUGIN.$pluginName.'/'.$filename.'.php';
@@ -2767,6 +2775,17 @@ class e107
 		*/
 
 	}
+
+
+	/**
+	 * Simple redirect method for developers.
+	 * @param $url string : 'admin' to redirect to admin entry page or leave blank to go to home page (SITEURL)
+	 */
+	public static function redirect($url='')
+	{
+		self::getRedirect()->go($url);
+	}
+
 
 
 	/**

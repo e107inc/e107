@@ -26,9 +26,9 @@ if (!defined('e107_INIT'))
 
 $e107 = e107::getInstance();
 
-if (!$e107->isInstalled('rss_menu'))
+if (!e107::isInstalled('rss_menu'))
 {
-	header('Location: '.e_BASE.'index.php');
+	e107::redirect();
 	exit;
 }
 

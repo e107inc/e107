@@ -22,18 +22,18 @@ if (!defined('e107_INIT')) { exit; }
 
 if(file_exists(THEME.'templates/banner/banner_template.php')) // v2.x location. 
 {
-	require_once (THEME.'templates/banner/banner_template.php');
+	require(THEME.'templates/banner/banner_template.php'); // don't use require_once as we might use this menu in more than 1 location.
 }
 elseif(file_exists(THEME.'banner_template.php')) // v1.x location. 
 {
-	require_once (THEME.'banner_template.php');
+	require(THEME.'banner_template.php');
 }
 else
 {
-	require_once (e_PLUGIN.'banner/banner_template.php');
+	require(e_PLUGIN.'banner/banner_template.php');
 }
 
-$menu_pref = e107::getConfig('menu')->getPref('');
+$menu_pref = e107::getConfig('menu')->getPref(''); // legacy preference lookup.
 
 if(defset('BOOTSTRAP'))
 {
@@ -50,70 +50,24 @@ else
 
 	if(!empty($parm))
 	{
-		parse_str($parm, $parms);
+		if(!$tmp = e107::unserialize($parm)) // unserailize the v2.x e_menu.php preferences.
+		{
+			parse_str($parm, $parms); // if it fails, use legacy method. (query string format)
+		}
+		else // prefs unserialized so overwrite the legacy preference values.
+		{
+			$menu_pref = $tmp;
+			$menu_pref['banner_campaign'] = implode("|",$menu_pref['banner_campaign']);
+			unset($parm);
+		}
 	}
 
-	if(isset($parms['w']) && isset($parms['h']))
+	if(isset($parms['w']) && isset($parms['h'])) // TODO.
 	{
 		e107::getParser()->setThumbSize(intval($parms['w']), intval($parms['h']));
-
-
 	}
 
-
-/*
-
-
-	if(isset($menu_pref['banner_campaign']) && $menu_pref['banner_campaign'])
-	{
-		$parms = array();
-		if(strstr($menu_pref['banner_campaign'], "|"))
-		{
-			$campaignlist = explode('|', $menu_pref['banner_campaign']);
-			$amount = ($menu_pref['banner_amount'] < 1 ? '1' : $menu_pref['banner_amount']);
-			$amount = ($amount > count($campaignlist) ? count($campaignlist) : $amount);
-			$keys = array_rand($campaignlist, $amount);		// If one entry, returns a single value
-			if (!is_array($keys))
-			{
-				$keys = array($keys);
-			}
-			foreach ($keys as $k=>$v)
-			{
-				$parms[] = $campaignlist[$v];
-			}
-		}
-		else
-		{
-			$parms[] = $menu_pref['banner_campaign'];
-		}
-		
-		$txt = e107::getParser()->parseTemplate($BANNER_MENU_START,true);
-
-		$sc = e107::getScBatch('banner');
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-
-		foreach ($parms as $parm)
-		{
-			$p = array('banner_campaign'=>$parm); 
-			$sc->setVars($p); 
-			
-			$txt .= e107::getParser()->parseTemplate($BANNER_MENU_ITEM, true, $sc); 
-		//	$txt .= e107::getParser()->parseTemplate("{BANNER=".$parm."}",true); 
-		}
-		
-		$txt .= e107::getParser()->parseTemplate($BANNER_MENU_END,true);
-	}
-
-*/
+// print_a($menu_pref);
 
 
 if(!empty($menu_pref['banner_campaign']) && !empty($menu_pref['banner_amount']))
@@ -140,7 +94,7 @@ if(!empty($menu_pref['banner_campaign']) && !empty($menu_pref['banner_amount']))
 		
 		$query .= "	AND banner_active IN (".USERCLASS_LIST.") ORDER BY RAND($seed) LIMIT ".intval($menu_pref['banner_amount']);
 		
-		if($data = $sql->retrieve('banner', 'banner_id, banner_image, banner_clickurl,banner_campaign', $query,true))
+		if($data = $sql->retrieve('banner', 'banner_id, banner_image, banner_clickurl,banner_campaign, banner_description', $query,true))
 		{
 			foreach($data as $k=>$row)
 			{
@@ -149,10 +103,15 @@ if(!empty($menu_pref['banner_campaign']) && !empty($menu_pref['banner_amount']))
 				$ret[$cat][] = $tp->simpleParse($BANNER_MENU_ITEM, $var); 
 			}			
 		}
+		elseif(e_DEBUG == true)
+		{
+			echo "no banner data";
+			print_a($menu_pref);
+			print_a($query);
+		}
 	
 		$foot = e107::getParser()->parseTemplate($BANNER_MENU_END,true);
-	
-	
+
 	
 		switch ($menu_pref['banner_rendertype']) 
 		{

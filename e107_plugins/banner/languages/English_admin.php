@@ -63,4 +63,6 @@ define("BNRLAN_45", "One campaign rendered in a single menu"); // BANNER_MENU_L1
 define("BNRLAN_46", "All selected campaigns rendered in one single menu"); // BANNER_MENU_L13
 define("BNRLAN_47", "All selected campaigns rendered in separate menus"); // BANNER_MENU_L14
 define("BNRLAN_48", "All selected campaigns (no box rendering)");
+
+define("BNRLAN_49", "Description/Tooltip");
 ?>

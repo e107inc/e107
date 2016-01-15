@@ -575,19 +575,55 @@ $(document).ready(function()
 		
 	
 		// Basic Delete Confirmation	
-		$("input.delete,button.delete").click(function(){
-  			var answer = confirm($(this).attr("data-confirm"));
-  			return answer // answer is a boolean
+		$('input.delete,button.delete,a[data-confirm]').click(function(){
+  			answer = confirm($(this).attr("data-confirm"));
+  			return answer; // answer is a boolean
 		});
 		
-		$("e-confirm").click(function(){
-  			var answer = confirm($(this).attr("title"));
-  			return answer // answer is a boolean
-		});    
-		
+		$(".e-confirm").click(function(){
+  			answer = confirm($(this).attr("title"));
+  			return answer; // answer is a boolean
+		});
 
-		
-		// Menu Manager Layout drop-down options
+
+        // see boot.php for main processing. (works only in admin)
+        $(".e-sef-generate").click(function(){
+
+            src         = $(this).attr("data-src");
+            target      = $(this).attr("data-target");
+            toconvert   = $('#'+src).val();
+            script      = window.location;
+
+            $.ajax({
+                type: "POST",
+                url: script,
+                data: { source: toconvert, mode: 'sef' }
+
+            }).done(function( data ) {
+
+                var a = $.parseJSON(data);
+          //      alert(a.converted);
+                if(a.converted)
+                {
+                    $('#'+target).val(a.converted);
+
+                    //	$('#uiAlert').notify({
+                    //		type: 'success',
+                    //       message: { text: 'Completed' },
+                    //        fadeOut: { enabled: true, delay: 2000 }
+                    //    }).show();
+
+                }
+            });
+
+        });
+
+
+
+
+
+
+    // Menu Manager Layout drop-down options
 		$("#menuManagerSelect").change(function(){
 			var link = $(this).val();
 			$("#menu_iframe").attr("src",link);			

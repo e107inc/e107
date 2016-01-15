@@ -13,7 +13,7 @@
 require_once('../class2.php');
 if (!getperms('3'))
 {
-	header('Location:'.SITEURL.'index.php');
+	e107::redirect('admin');
 	exit;
 }
 

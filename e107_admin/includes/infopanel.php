@@ -20,6 +20,10 @@ if (!defined('e107_INIT'))
 define('ADMINFEED', 'http://e107.org/adminfeed');
 define('ADMINFEEDMORE', 'http://e107.org/blog');
 
+
+
+
+
 class adminstyle_infopanel
 {
 	
@@ -33,11 +37,16 @@ class adminstyle_infopanel
 		
 		
 		jQuery(function($){
-		 $('#e-adminfeed').rssfeed('".ADMINFEED."', {
+		    $('#e-adminfeed').rssfeed('".ADMINFEED."', {
     		limit: 3,
     		header: false,
     		linktarget: '_blank'
   			});
+
+  		    $('#e-adminfeed-plugin').load('".e_ADMIN."admin.php?mode=addons&type=plugin');
+
+  		    $('#e-adminfeed-theme').load('".e_ADMIN."admin.php?mode=addons&type=theme');
+
 		});
 ";
 		
@@ -201,8 +210,13 @@ class adminstyle_infopanel
 		
 	
 	//  ------------------------------- e107 News --------------------------------
-		
-		$text2 = $ns->tablerender("e107 News","<div id='e-adminfeed'></div><div class='right'><a rel='external' href='".ADMINFEEDMORE."'>".LAN_MORE."</a></div>","core-infopanel_news",true); 
+
+		$newsTabs = array();
+		$newsTabs['core'] = array('caption'=>'General','text'=>"<div id='e-adminfeed' style='min-height:300px'></div><div class='right'><a rel='external' href='".ADMINFEEDMORE."'>".LAN_MORE."</a></div>");
+		$newsTabs['plugin'] = array('caption'=>'Plugins','text'=>"<div id='e-adminfeed-plugin'></div>");
+		$newsTabs['theme'] = array('caption'=>'Themes','text'=>"<div id='e-adminfeed-theme'></div>");
+
+		$text2 = $ns->tablerender("Latest e107 News",e107::getForm()->tabs($newsTabs, array('active'=>'core')),"core-infopanel_news",true);
 	
 	
 	
@@ -374,6 +388,7 @@ class adminstyle_infopanel
 		
 		$ol = e107::getOnline();
 		$tp = e107::getParser();
+		$multilan = e107::getPref('multilanguage');
 
 		$panelOnline = "
 				
@@ -383,7 +398,15 @@ class adminstyle_infopanel
 		            <col style='width: 25%' />
 					<col style='width: 10%' />
 					<col style='width: 40%' />
-					<col style='width: auto' />
+					<col style='width: auto' />";
+
+
+		$panelOnline .= (!empty($multilan)) ? "<col style='width: auto' />" : "";
+
+
+		// TODO LAN
+		$panelOnline .= "
+
 				</colgroup>
 				<thead>
 					<tr class='first'>
@@ -391,10 +414,16 @@ class adminstyle_infopanel
 						<th>Username</th>
 						<th>IP</th>
 						<th>Page</th>
-						<th class='center'>Agent</th>
+						<th class='center'>Agent</th>";
+
+		$panelOnline .= (!empty($multilan)) ? "<th class='center'>Lang.</th>" : "";
+
+		$panelOnline .= "
 					</tr>
 				</thead>
-				<tbody>";	
+				<tbody>";
+
+
 
 		$online = $ol->userList() + $ol->guestList();
 		
@@ -403,8 +432,10 @@ class adminstyle_infopanel
 			return count($online);	
 		}
 				
-		//	echo "Users: ".print_a($online);
-		
+	//		echo "Users: ".print_a($online);
+
+		$lng = e107::getLanguage();
+
 		foreach ($online as $val)
 		{
 			$panelOnline .= "
@@ -413,7 +444,12 @@ class adminstyle_infopanel
 				<td>".$this->renderOnlineName($val['online_user_id'])."</td>
 				<td>".e107::getIPHandler()->ipDecode($val['user_ip'])."</td>
 				<td><a class='e-tip' href='".$val['user_location']."' title='".$val['user_location']."'>".$tp->html_truncate(basename($val['user_location']),50,"...")."</a></td>
-				<td class='center'><a class='e-tip' href='#' title='".$val['user_agent']."'>".$this->browserIcon($val)."</a></td>
+				<td class='center'><a class='e-tip' href='#' title='".$val['user_agent']."'>".$this->browserIcon($val)."</a></td>";
+
+			$panelOnline .= (!empty($multilan)) ? "<td class='center'><a class='e-tip' href='#' title=\"".$lng->convert($val['user_language'])."\">".$val['user_language']."</a></td>" : "";
+
+
+			$panelOnline .= "
 			</tr>
 			";
 		}

@@ -34,7 +34,7 @@ if(count($_POST) && !varset($_POST['e-token']))
 
 if (!getperms('4'))
 {
-	header('location:'.e_BASE.'index.php');
+	e107::redirect('admin');
 	exit();
 }
 

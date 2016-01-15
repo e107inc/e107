@@ -220,6 +220,7 @@ TEMPL;
 			$style 	= vartrue($img['style'])	? ' style="'.$img['style'].'"' : '';
 			$class 	= vartrue($img['class'])	? ' class="'.$img['class'].'"' : '';
 			$alt 	= vartrue($img['alt'])		? ' alt="'.$img['alt'].'"' : '';
+			$title 	= vartrue($img['title'])		? ' title="'.$img['title'].'"' : '';
 
 			list($url,$qry) = explode("?",$img['src']);
 
@@ -233,7 +234,7 @@ TEMPL;
 
 			$src = $url."?".urldecode(http_build_query($qr));
 
-			$replacement = '<img'.$class.$style.' src="'.$src.'"'.$width.$height.$alt.' />';
+			$replacement = '<img'.$class.$style.' src="'.$src.'"'.$width.$height.$alt.$title.' />';
 
 			$text = preg_replace($regexp, $replacement, $text);
 
