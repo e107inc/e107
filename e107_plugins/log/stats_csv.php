@@ -20,7 +20,7 @@
 require_once('../../class2.php');
 if (!getperms('P')) 
 {
-	header('Location: '.e_BASE.'index.php');
+	e107::redirect();
 	exit;
 }
 
@@ -33,7 +33,7 @@ $action = varset($sl_qs[0],'config');
 $params = varset($sl_qs[1],'');
 if (($action != 'export') || $params) 
 {
-	header('Location: '.e_BASE.'index.php');
+	e107::redirect();
 	exit;
 }
 

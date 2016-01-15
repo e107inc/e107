@@ -16,7 +16,7 @@ define("EXPORT_PATH","{e_THEME}".$theme."/install/");
 
 if(!getperms('0'))
 {
-	header('location:'.e_BASE.'index.php');
+	e107::redirect('admin');
 	exit();
 }
 

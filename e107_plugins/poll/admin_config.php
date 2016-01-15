@@ -12,7 +12,7 @@ require_once("../../class2.php");
 if (!is_object($tp)) $tp = new e_parse;
 if (!getperms("P") || !e107::isInstalled('poll')) 
 {
-	header("location:".e_BASE."index.php");
+	e107::redirect('admin');
 	exit;
 }
 $e_sub_cat = 'poll';

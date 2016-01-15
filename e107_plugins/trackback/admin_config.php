@@ -15,7 +15,7 @@
 require_once("../../class2.php");
 if (!getperms("P") || !e107::isInstalled('trackback')) 
 {
-	header("location:".e_BASE."index.php");
+	e107::redirect('admin');
 	exit() ;
 }
 

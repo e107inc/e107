@@ -265,7 +265,8 @@ class e_online
 							'user_pagecount'	=> $row['online_pagecount'],
 							'user_active'		=> $row['online_active'],
 							'user_image'		=> vartrue($row['user_image'],false),
-							'online_user_id'	=> $row['online_user_id']
+							'online_user_id'	=> $row['online_user_id'],
+							'user_language'     => $row['online_language']
 						);	
 		
 						if($row['online_user_id'] != 0 )

@@ -207,7 +207,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	{
 		if($this->postInfo['user_name'])
 		{
-			return "<a href='".$this->e107->url->create('user/profile/view', array('name' => $this->postInfo['user_name'], 'id' => $this->postInfo['post_user']))."'>{$this->postInfo['user_name']}</a>";
+			return "<a href='".e107::getUrl()->create('user/profile/view', array('name' => $this->postInfo['user_name'], 'id' => $this->postInfo['post_user']))."'>{$this->postInfo['user_name']}</a>";
 		}
 		else
 		{
@@ -315,7 +315,10 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	{
 		if (USER && $this->postInfo['post_user'] == USERID && $this->thread->threadInfo['thread_active'])
 		{
-			return "<a href='".$this->e107->url->create('forum/thread/edit', array('id' => $this->postInfo['post_id']))."'>".IMAGE_edit.'</a> ';
+			$qry =  array('f'=>'edit', 'id'=>$this->postInfo['post_thread'], 'post'=>$this->postInfo['post_id']);
+			$editURL = e107::url('forum','post', null, array('query'=> $qry));
+
+			return "<a class='e-tip' href='".$editURL."' title=\"".LAN_EDIT."\">".IMAGE_edit.'</a> ';
 		}
 	}
 
@@ -323,18 +326,21 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	{
 		if($this->forum->checkperm($this->postInfo['post_forum'], 'post'))
 		{
-			return "<a href='".$this->e107->url->create('forum/thread/quote', array('id' => $this->postInfo['post_id']))."'>".IMAGE_quote.'</a> ';
-			// return "<a href='".$this->e107->url->create('forum/thread/quote', array('id' => $this->postInfo['post_thread'], 'post'=>$this->postInfo['post_id'] ))."'>".IMAGE_quote.'</a> ';
+			$qry =  array('f'=>'quote', 'id'=>$this->postInfo['post_thread'], 'post'=>$this->postInfo['post_id']);
+			$quoteURL = e107::url('forum','post', null, array('query'=> $qry));
+
+			return "<a class='e-tip' href='".$quoteURL."' title=\"".LAN_FORUM_2041."\">".IMAGE_quote.'</a> ';
 		}
 	}
 
 	function sc_reportimg()
 	{
-		global $page;
-		if (USER) {
-		//	$actionUrl= $this->e107->url->create('forum/thread/report', "id={$this->postInfo['post_thread']}&post={$this->postInfo['post_id']}");
-			$actionUrl = e107::url('forum','post')."?f=report&amp;id=".$this->data['thread_id']."&amp;post=".$this->data['post_id'];
-			return "<a href='".$actionUrl."'>".IMAGE_report.'</a> ';
+		if (USER)
+		{
+			$qry =  array('f'=>'report', 'id'=>$this->postInfo['post_thread'], 'post'=>$this->postInfo['post_id']);
+			$reportURL = e107::url('forum','post', null, array('query'=> $qry));
+
+			return "<a class='e-tip' href='".$reportURL."' title=\"".LAN_FORUM_2046."\">".IMAGE_report.'</a> ';
 		}
 	}
 
@@ -421,8 +427,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		{
 			if($parm == 'link')
 			{
-				$e107 = e107::getInstance();
-				$url = $e107->url->create('user/profile/view', array('name' => $this->postInfo['edit_name'], 'id' => $this->postInfo['post_edit_user']));
+				$url = e107::getUrl()->create('user/profile/view', array('name' => $this->postInfo['edit_name'], 'id' => $this->postInfo['post_edit_user']));
 				return "<a href='{$url}'>{$this->postInfo['edit_name']}</a>";
 			}
 			return $this->postInfo['edit_name'];

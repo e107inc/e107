@@ -333,15 +333,27 @@ class redirection
 	/**
 	 * Redirect to the given URI
 	 *
-	 * @param string $url or error code number. eg. 404 = Not Found. 
+	 * @param string $url or error code number. eg. 404 = Not Found. If left empty SITEURL will be used.
 	 * @param boolean $replace - default TRUE
 	 * @param integer|null $http_response_code - default NULL
 	 * @param boolean $preventCache
 	 * @return void
 	 */
-	public function go($url, $replace = TRUE, $http_response_code = NULL, $preventCache = true)
+	public function go($url='', $replace = TRUE, $http_response_code = NULL, $preventCache = true)
 	{
-		$url = str_replace("&amp;", "&", $url); // cleanup when using e_QUERY in $url; 
+		$url = str_replace("&amp;", "&", $url); // cleanup when using e_QUERY in $url;
+
+		if(empty($url))
+		{
+			$url = SITEURL;
+		}
+
+		if($url == 'admin')
+		{
+			$url = SITEURLBASE. e_ADMIN_ABS;
+		}
+
+
 					
 		if(defset('e_DEBUG') === 'redirect')
 		{

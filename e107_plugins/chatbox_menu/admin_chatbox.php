@@ -14,7 +14,7 @@ require_once("../../class2.php");
 
 if (!e107::isInstalled('chatbox_menu') || !getperms("P"))
 {
-	header("Location: ".e_BASE."index.php");
+	e107::redirect('admin');
 	exit;
 }
 

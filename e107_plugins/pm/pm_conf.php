@@ -37,7 +37,7 @@ require_once('../../class2.php');
 
 if (!e107::isInstalled('pm') || !getperms('P'))
 {
-	header('location:'.e_BASE.'index.php');
+	e107::redirect('admin');
 	exit;
 }
 

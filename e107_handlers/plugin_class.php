@@ -39,6 +39,7 @@ class e107plugin
 		'e_frontpage',
 		'e_latest', // @Deprecated  - see e_dashboard
 		'e_status', //@Deprecated  - see e_dashboard
+		'e_menu', // experimental.
 		'e_search',
 		'e_shortcode',
 		'e_module',

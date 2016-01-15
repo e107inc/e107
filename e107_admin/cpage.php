@@ -12,7 +12,7 @@
 define('e_MINIMAL',true);
 require_once('../class2.php');
 
-if (!getperms("5|J")) { header('location:'.e_ADMIN.'admin.php'); exit; }
+if (!getperms("5|J")) { e107::redirect('admin'); exit; }
 
 e107::css('inline',"
 

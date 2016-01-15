@@ -415,5 +415,7 @@ define("LAN_CUSTOM_URL", "Custom URL");
 define("LAN_CUSTOM_URL_DISABLED", "Disabled or Enter Custom URL");
 
 define("LAN_GENERAL", "General");
+define("LAN_GENERATE", "Generate");
+define("LAN_WILL_OVERWRITE_SEF", "This will overwrite your existing SEF URL.");
 
 // TODO - move e_form related LANS below, add new lan_form.php file (for both front/back-end)

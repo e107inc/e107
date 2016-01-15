@@ -2761,5 +2761,5 @@ function sendInfo(handler, container, form) {
  * Core Auto-load
  */
 $w('autoExternalLinks autoNoHistory autoHide toggleObserver toggleManyObserver scrollToObserver executeAutoSubmit').each( function(f) {
-	e107.runOnLoad(e107Helper[f], null, true);
+	// e107.runOnLoad(e107Helper[f], null, true);
 });

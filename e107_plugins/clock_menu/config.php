@@ -15,7 +15,7 @@ $eplug_admin = TRUE;
 require_once('../../class2.php');
 if (!getperms('1')) 
 {
-	header('location:'.e_BASE.'index.php');
+	e107::redirect('admin');
 	 exit ;
 }
 require_once(e_ADMIN.'auth.php');

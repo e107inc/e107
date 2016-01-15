@@ -49,7 +49,7 @@ if (e_QUERY)
 }
 else
 {
-	header('location:'.e_BASE.'index.php');
+	e107::redirect();
 	exit;
 }
 $source = $qs[0];
@@ -77,12 +77,12 @@ if (isset($_POST['emailsubmit']))
 	{
 		if(!isset($_POST['code_verify']) || !isset($_POST['rand_num']))
 		{
-			header('location:'.e_BASE.'index.php');
+			e107::redirect();
 			exit;
 		}
 		if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify']))
 		{
-			header('location:'.e_BASE.'index.php');
+			e107::redirect();
 			exit;
 		}
 	}
@@ -118,7 +118,7 @@ if (isset($_POST['emailsubmit']))
 		}
 		if($text == '')
 		{
-			header('location:'.e_BASE.'index.php');
+			e107::redirect();
 			exit;
 		}
 		$message .= $text;
@@ -127,7 +127,7 @@ if (isset($_POST['emailsubmit']))
 	{
 		if(!isset($_POST['referer']) || $_POST['referer'] == '')
 		{
-			header('location:'.e_BASE.'index.php');
+			e107::redirect();
 			exit;
 		}
 		$message .= strip_tags($_POST['referer']);
@@ -146,7 +146,7 @@ if (isset($_POST['emailsubmit']))
 
 		if($message == '')
 		{
-			header('location:'.e_BASE.'index.php');
+			e107::redirect();
 			exit;
 		}
 	}

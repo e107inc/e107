@@ -39,7 +39,7 @@ if (isset($_POST['submitnews_submit']) && $_POST['submitnews_title'] && $_POST['
 	$fp = new floodprotect;
 	if ($fp->flood("submitnews", "submitnews_datestamp") == FALSE)
 	{
-		header("location:".e_BASE."index.php");
+		e107::redirect();
 		exit;
 	}
 

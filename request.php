@@ -21,7 +21,7 @@ require_once("class2.php");
 
 if (!e_QUERY || isset($_POST['userlogin'])) 
 {
-	header("location: ".SITEURL); // $e107->base_path
+	e107::redirect();
 	exit();
 }
 
