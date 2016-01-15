@@ -2684,8 +2684,15 @@ class e_parse extends e_parser
 			break;
 		}
 
+		$hasCDN = strpos($url, '//') === 0;
+
 		foreach($tmp as $key=>$val)
 		{
+			// Fix - don't break the CDN '//cdn.com' URLs
+			if ($hasCDN && $val == '/') {
+				continue;
+			}
+
 			$len = strlen($val);
 			if(substr($url, 0, $len) == $val)
 			{
