@@ -41,7 +41,7 @@ $NAVIGATION_TEMPLATE['main']['item_submenu_active'] = '
 ';	
 
 $NAVIGATION_TEMPLATE['main']['item_active'] = '
-	<li>
+	<li class="active">
 		<a class="e-tip" role="button"  data-target="#" href="{LINK_URL}"{LINK_OPEN} title="{LINK_DESCRIPTION}">
 		 {LINK_ICON} {LINK_NAME}
 		</a>
