@@ -403,7 +403,7 @@ class news_admin_ui extends e_admin_ui
 
 		'news_meta_keywords'	=> array('title' => LAN_KEYWORDS, 	'type' => 'tags', 	    'tab'=>1,	'inline'=>true, 'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 		'news_meta_description'	=> array('title' => LAN_DESCRIPTION,'type' => 'textarea', 	'tab'=>1,	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'writeParms'=>array('size'=>'xxlarge')),
-		'news_sef'				=> array('title' => LAN_SEFURL, 	'type' => 'text',       'tab'=>1,  'inline'=>true, 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'writeParms'=>array('size'=>'xxlarge', 'show'=>1, 'tdClassRight'=>'form-inline')),
+		'news_sef'				=> array('title' => LAN_SEFURL, 	'type' => 'text',       'tab'=>1,  'inline'=>true, 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'writeParms'=>array('size'=>'xxlarge', 'show'=>1, 'sef'=>'news_title')),
 		'news_ping'				=> array('title' => LAN_PING, 	    'type' => 'checkbox',   'tab'=>1, 'data'=>false, 'writeParms'=>'value=0',	'inline'=>true, 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 
 		'news_author'			=> array('title' => LAN_AUTHOR, 	'type' => 'method', 	'tab'=>0, 	'readParms'=>'idField=user_id&nameField=user_name', 'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
@@ -689,11 +689,7 @@ class news_admin_ui extends e_admin_ui
 		}
 
 
-
-
 		$this->fields['news_email_notify']['writeParms']['post'] = "<span class='radio-inline radio inline'><a class='e-modal btn btn-xs btn-mini btn-primary' data-modal-caption='".ADLAN_149."' href='notify.php?iframe=1&type=admin_news_notify#/tab-news-events'>".LAN_CONFIGURE."</a></span>";
-		$this->fields['news_sef']['writeParms']['post'] = "<span class='form-inline input-group-btn'><a class='e-sef-generate btn btn-default' data-src='news-title' data-target='news-sef' data-confirm=\"".LAN_WILL_OVERWRITE_SEF." ".LAN_JSCONFIRM."\">".LAN_GENERATE."</a></span>";
-
 
 		//	e107::getMessage()->addDebug(print_a($_POST,true));
 
