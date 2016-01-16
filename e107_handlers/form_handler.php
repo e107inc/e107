@@ -3080,13 +3080,7 @@ class e_form
 
 				if(!$value)
 				{
-					parse_str(str_replace('&amp;', '&', e_QUERY), $query); //FIXME - FIX THIS
-					// keep other vars in tact
-					$query['action'] = 'edit';
-					$query['id'] = $id;
 
-					//$edit_query = array('mode' => varset($query['mode']), 'action' => varset($query['action']), 'id' => $id);
-					$query = http_build_query($query);
 					
 					$value = "<div class='btn-group'>";
 					
@@ -3105,12 +3099,29 @@ class e_form
 					}	
 					if((false === $cls || check_class($cls)) && varset($parms['edit'],1) == 1)
 					{
-						/*
-						$value .= "<a href='".e_SELF."?{$query}' class='e-tip btn btn-large' title='".LAN_EDIT."' data-placement='left'>
-												<img class='icon action edit list' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' /></a>";
-												*/
-						
-						$value .= "<a href='".e_SELF."?{$query}' class='btn btn-default' title='".LAN_EDIT."' data-toggle='tooltip' data-placement='left'>
+
+						parse_str(str_replace('&amp;', '&', e_QUERY), $query); //FIXME - FIX THIS
+
+						// keep other vars in tact
+						$query['action'] = 'edit';
+						$query['id'] = $id;
+
+
+						if(!empty($parms['target']) && $parms['target']=='modal')
+						{
+							$eModal = " e-modal ";
+							$eModalCap = "data-modal-caption='#".$id."'";
+							$query['iframe'] = 1;
+						}
+						else
+						{
+							$eModal = "";
+							$eModalCap = "";
+						}
+
+						$query = http_build_query($query);
+
+						$value .= "<a href='".e_SELF."?{$query}' class='btn btn-default".$eModal."' ".$eModalCap." title='".LAN_EDIT."' data-toggle='tooltip' data-placement='left'>
 						".ADMIN_EDIT_ICON."</a>";
 					}
 
