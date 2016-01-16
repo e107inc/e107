@@ -4087,7 +4087,7 @@ class e_form
 				$maxlength = vartrue($parms['maxlength'], 255);
 				unset($parms['maxlength']);
 
-				if(!empty($parms['sef']))
+				if(!empty($parms['sef']) && e_LANGUAGE != "Japanese" && e_LANGUAGE != "Korean" && e_LANGUAGE != "Hebrew") // unsupported languages.(FIXME there are more)
 				{
 					$sefSource = $this->name2id($parms['sef']);
 					$sefTarget = $this->name2id($key);
