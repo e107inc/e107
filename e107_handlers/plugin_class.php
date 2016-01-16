@@ -533,7 +533,7 @@ class e107plugin
 			if (vartrue($this->unInstallOpts['delete_ipool'], FALSE))
 			{
 				$status = ($med->removePath(e_PLUGIN.$plugin, 'icon')) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-				$mes->add('Removing Icons from Media-Manager', $status);
+				$mes->add( LAN_REM_ICONS, $status);
 			}
 			return;
 		}
@@ -663,7 +663,7 @@ class e107plugin
 		$type = $this->ue_field_type($field_attrib);
 		$type_name = $this->ue_field_type_name($type);
 		
-		$mes->addDebug("Extended Field: ".$action.": ".$field_name." : ".$type_name);
+		$mes->addDebug("".LAN_EXTF." ".$action.": ".$field_name." : ".$type_name);
 		
 		// predefined
 		if($type == EUF_PREFIELD)
@@ -1611,7 +1611,7 @@ class e107plugin
 		{
 			if ($function == 'install')
 			{
-				$text = "Installation Complete.";
+				$text = LAN_INST_COMP;
 
 				if ($this->plugConfigFile)
 				{
@@ -1695,7 +1695,7 @@ class e107plugin
 						$query .= $tableData['data'][$k];
 						$query .= "\n) ENGINE=". vartrue($tableData['engine'][$k],"InnoDB")." DEFAULT CHARSET=utf8 ";
 
-						$txt = "Adding Table: <b>{$v}</b> ";
+						$txt = "".LAN_ADD_TABLE." <b>{$v}</b> ";
 						$status = $sql->db_Query($query) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 						break;
 
@@ -1703,7 +1703,7 @@ class e107plugin
 						if (!empty($options['delete_tables']))
 						{
 							$query = "DROP TABLE  `".MPREFIX.$v."`; ";
-							$txt = "Removing Table: {$v} <br />";
+							$txt = "".LAN_REM_TABLE." {$v} <br />";
 							$status = $sql->db_Query_all($query) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 
 						}
@@ -2009,14 +2009,14 @@ class e107plugin
 						if($result !== NULL)
 						{
 							$status = ($result) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-							$mes->add("Adding Link: {$linkName} with url [{$url}] and perm {$perm} ", $status); 
+							$mes->add("".LAN_ADD_LINK." {$linkName} ".LAN_INC_URL." [{$url}] ".LAN_PERM." {$perm} ", $status); 
 						}					
 					}
 
 					if ($function == 'upgrade' && $remove) //remove inactive links on upgrade
 					{
 						$status = ($this->manage_link('remove', $url, $linkName,false, $options)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-						$mes->add("Removing Link: {$linkName} with url [{$url}]", $status);
+						$mes->add("".LAN_REM_LINK." {$linkName} ".LAN_INC_URL." [{$url}]", $status);
 					}
 					break;
 
@@ -2026,7 +2026,7 @@ class e107plugin
 				case 'uninstall': //remove all links
 
 					$status = ($this->manage_link('remove', $url, $linkName, $perm, $options)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-					$mes->add("Removing Link: {$linkName} with url [{$url}]", $status);
+					$mes->add("".LAN_REM_LINK." {$linkName} ".LAN_INC_URL." [{$url}]", $status);
 					break;
 			}
 		}
@@ -2203,7 +2203,7 @@ class e107plugin
 						if($result !== NULL)
 						{
 							$status = ($result) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-							$mes->add('Adding Userclass: '.$name, $status);	
+							$mes->add( LAN_ADD_EXTFIELD .$name, $status);	
 						}						
 					}
 
@@ -2211,7 +2211,7 @@ class e107plugin
 
 					{
 						$status = $this->manage_userclass('remove', $name, $description) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-						$mes->add('Removing Userclass: '.$name, $status);
+						$mes->add( LAN_REM_EXTFIELD .$name, $status);
 					}
 
 					break;
@@ -2221,7 +2221,7 @@ class e107plugin
 					if (vartrue($this->unInstallOpts['delete_userclasses'], FALSE))
 					{
 						$status = $this->manage_userclass('remove', $name, $description) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-						$mes->add('Removing Userclass: '.$name, $status);
+						$mes->add( LAN_REM_USCLS .$name, $status);
 					}
 					else
 					{
@@ -2270,14 +2270,14 @@ class e107plugin
 						//$status = $this->manage_extended_field('add', $name, $type, $attrib['default'], $source) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 
 						$status = $this->manage_extended_field('add', $name, $attrib, $source) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-						$mes->add('Adding Extended Field: '.$name.' ... ', $status);
+						$mes->add( LAN_ADD_EXTFIELD .$name.' ... ', $status);
 					}
 
 					if ($function == 'upgrade' && $remove) //If upgrading, removing any inactive extended fields
 
 					{
 						$status = $this->manage_extended_field('remove', $name, $attrib, $source) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-						$mes->add('Removing Extended Field: '.$name.' ... ', $status);
+						$mes->add( LAN_REM_EXTFIELD .$name.' ... ', $status);
 					}
 					break;
 
@@ -2286,11 +2286,11 @@ class e107plugin
 					if (vartrue($this->unInstallOpts['delete_xfields'], FALSE))
 					{
 						$status = ($this->manage_extended_field('remove', $name, $attrib, $source)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-						$mes->add('Removing Extended Field: '.$name.' ... ', $status);
+						$mes->add( LAN_REM_EXTFIELD .$name.' ... ', $status);
 					}
 					else
 					{
-						$mes->add('Extended Field: '.$name.' left in place', E_MESSAGE_SUCCESS);
+						$mes->add( LAN_EXTF .$name.  LAN_EXTF_PL , E_MESSAGE_SUCCESS);
 					}
 					break;
 			}
@@ -2344,7 +2344,7 @@ class e107plugin
 					$ret = $config->add($key, $value);
 					if($ret->data_has_changed == TRUE)
 					{
-						$mes->addSuccess("Adding Pref: ".$key);	
+						$mes->addSuccess("".LAN_ADD_PREF."".$key);	
 					}								
 					break;
 
@@ -2354,19 +2354,19 @@ class e107plugin
 
 					{
 						$config->remove($key, $value);
-						$mes->addSuccess("Removing Pref: ".$key);
+						$mes->addSuccess(" ".LAN_REM_PREF." ".$key);
 					}
 					else
 					{
 						$config->update($key, $value);
-						$mes->addSuccess("Updating Pref: ".$key);
+						$mes->addSuccess(LAN_UPD_PREF .$key);
 					}
 
 					break;
 
 				case 'uninstall':
 					$config->remove($key, $value);
-					$mes->addSuccess("Removing Pref: ".$key);
+					$mes->addSuccess("".LAN_REM_PREF." ".$key);
 					break;
 			}
 		}
