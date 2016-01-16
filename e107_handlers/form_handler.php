@@ -1263,7 +1263,7 @@ class e_form
 	{
 		if(is_string($options)) parse_str($options, $options);
 		// auto-height support
-	
+
 		if(vartrue($options['size']) && !is_numeric($options['size']))
 		{
 			$options['class'] .= " form-control input-".$options['size'];	
@@ -4040,7 +4040,7 @@ class e_form
 			case 'number':
 				$maxlength = vartrue($parms['maxlength'], 255);
 				unset($parms['maxlength']);
-				if(!vartrue($parms['size'])) $parms['size'] = 'mini';
+				if(!vartrue($parms['size'])) $parms['size'] = 'small';
 				if(!vartrue($parms['class'])) $parms['class'] = 'tbox number e-spinner ';
 				if(!$value) $value = '0';
 				$ret =  vartrue($parms['pre']).$this->number($key, $value, $maxlength, $parms).vartrue($parms['post']);
@@ -4070,20 +4070,30 @@ class e_form
 				$ret =  vartrue($parms['pre']).$this->password($key, $value, $maxlength, $parms).vartrue($parms['post']); // vartrue($parms['__options']) is limited. See 'required'=>true
 			
 			break; 
-		
+
 			case 'text':
 
 				$maxlength = vartrue($parms['maxlength'], 255);
 				unset($parms['maxlength']);
 
+				if(!empty($parms['sef']))
+				{
+					$sefSource = $this->name2id($parms['sef']);
+					$sefTarget = $this->name2id($key);
+					$parms['tdClassRight'] .= 'input-group';
+					$parms['post'] = "<span class='form-inline input-group-btn pull-left'><a class='e-sef-generate btn btn-default' data-src='".$sefSource."' data-target='".$sefTarget."' data-confirm=\"".LAN_WILL_OVERWRITE_SEF." ".LAN_JSCONFIRM."\">".LAN_GENERATE."</a></span>";
+				}
+
 				if(!empty($parms['password'])) // password mechanism without the md5 storage. 
 				{
 					$ret =  vartrue($parms['pre']).$this->password($key, $value, $maxlength, $parms).vartrue($parms['post']);
 				}
+
 				else
 				{
 					$ret =  vartrue($parms['pre']).$this->text($key, $value, $maxlength, $parms).vartrue($parms['post']); // vartrue($parms['__options']) is limited. See 'required'=>true
 				}
+
 
 				if(!empty($attributes['multilan']))
 				{
@@ -4717,6 +4727,8 @@ class e_form
 			$label = vartrue($att['note']) ? '<div class="label-note">'.deftrue($att['note'], $att['note']).'</div>' : '';
 			$help = vartrue($att['help']) ? '<div class="field-help">'.deftrue($att['help'], $att['help']).'</div>' : '';
 
+
+
 			$valPath = trim(vartrue($att['dataPath'], $key), '/');
 			$keyName = $key;
 			if(strpos($valPath, '/')) //not TRUE, cause string doesn't start with /
@@ -4737,8 +4749,11 @@ class e_form
 			{
 				 $writeParms = varset($att['writeParms']);
 			}
-			
-			
+
+			if(!empty($writeParms['sef'])) // group sef generate button with input element.
+			{
+				$writeParms['tdClassRight'] .= 'input-group';
+			}
 			
 			if('hidden' === $att['type'])
 			{
