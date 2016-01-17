@@ -440,7 +440,7 @@ class e_install
 		
 		// $this->template->SetTag("onload", "document.getElementById('name').focus()");
 		// $page_info = nl2br(LANINS_023);
-		$page_info = "<div class='alert alert-block alert-info'>Please fill in the form below with your MySQL details. If you do not know this information, please contact your hosting provider. You may hover over each field for additional information.</div>";
+		$page_info = "<div class='alert alert-block alert-info'>".LANINS_141."</div>";
 		$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
 		$isrequired = (($_SERVER['SERVER_ADDR'] == "127.0.0.1") || ($_SERVER['SERVER_ADDR'] == "localhost") || ($_SERVER['SERVER_ADDR'] == "::1") || preg_match('^192\.168\.\d{1,3}\.\d{1,3}$',$_SERVER['SERVER_ADDR'])) ? "" :  "required='required'"; // Deals with IP V6, and 192.168.x.x address ranges, could be improved to validate x.x to a valid IP but for this use, I dont think its required to be that picky.
 
@@ -670,7 +670,7 @@ class e_install
 				{
 					if($this->dbqry('DROP DATABASE `'.$this->previous_steps['mysql']['db'].'` '))
 					{
-						$page_content .= "<br /><span class='glyphicon glyphicon-ok'></span> Deleted existing database";
+						$page_content .= "<br /><span class='glyphicon glyphicon-ok'></span> ".LANINS_132;
 					}
 					else 
 					{
@@ -688,7 +688,7 @@ class e_install
 				}
 				else
 				{
-					$notification = "<br /><span class='glyphicon glyphicon-ok'></span> Found existing database";
+					$notification = "<br /><span class='glyphicon glyphicon-ok'></span> ".LANINS_133;
 				    $query = 'ALTER DATABASE `'.$this->previous_steps['mysql']['db'].'` CHARACTER SET `utf8` ';
 				}
 
@@ -1347,7 +1347,7 @@ class e_install
 		{
 			if(!rename("e107.htaccess",".htaccess"))
 			{
-				$error = "IMPORTANT: Please rename e107.htaccess to .htaccess";
+				$error = LANINS_142;
 			}
 			elseif($_SERVER['QUERY_STRING'] == "debug")
 			{
@@ -1357,7 +1357,7 @@ class e_install
 		}
 		elseif(file_exists("e107.htaccess"))
 		{		
-			$error = "IMPORTANT: Please copy and paste the contents of the <b>e107.htaccess</b> into your <b>.htaccess</b> file. Please take care NOT to overwrite any existing data that may be in it.";				
+			$error = LANINS_144;				
 		}		
 		return $error;	
 	}
@@ -2017,7 +2017,7 @@ function template_data()
 
 		  <div class="masthead">
 			<ul class="nav nav-pills pull-right" >
-			  <li class="active" style="width:200px;text-align:center" ><a href="#" >Installation: {stage_pre} {stage_num} of 8</a>
+			  <li class="active" style="width:200px;text-align:center" ><a href="#" >'.LANINS_130.' &#58 {stage_pre} {stage_num} '.LANINS_131.' 8</a>
 			  <div class="progress progress-{bartype}">
 				<div class="progress-bar bar" style="width: {percent}%"></div>
 			</div>
@@ -2042,7 +2042,7 @@ function template_data()
 
 		  <div class="footer">
 			<p class="pull-left">&copy; e107 Inc. '.date("Y").'</p>
-			<p class="pull-right">Version: '.e_VERSION.'</p> 
+			<p class="pull-right">'.LANINS_134.' &#58 '.e_VERSION.'</p> 
 		  </div>
 		 <div>{debug_info}</div>
 		</div> <!-- /container -->
