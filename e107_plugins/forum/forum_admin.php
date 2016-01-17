@@ -17,7 +17,7 @@ if (!getperms('P'))
 }
 
 
-e107::lan('forum', 'admin');
+e107::lan('forum', 'admin',true);
 e107::lan('forum','front', true);
 //e107::includeLan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/English_admin.php');
 //e107::lan('forum','', 'front');
@@ -80,7 +80,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 			'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),
 			'opt2'              => array('divider'=>true),
 			'report/list'         => array('caption'=> FORLAN_116, 'perm'=>'P'),
-			'post/list'         => array('caption'=>"Latest Posts", 'perm'=>'P'),
+			'post/list'         => array('caption'=>FORLAN_188, 'perm'=>'P'),
 			'main/prune'		=> array('caption'=> LAN_PRUNE, 'perm' => 'P'),
 			'main/tools'        => array('caption'=>FORLAN_153, 'perm'=>'p')
 
@@ -1046,7 +1046,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 		public function renderHelp()
 		{
-			return array('caption'=>'Help', 'text'=>"<p>Click the 'delete' button to delete the report. <br /><br />Click the 'view' button to view the topic/thread</p>");
+			return array('caption'=>LAN_HELP, 'text'=>FORLAN_189);
 
 		}
 
