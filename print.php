@@ -21,18 +21,25 @@ require_once("class2.php");
 
 e107::coreLan('print');
 
-/*
-$HEADER="";
-$FOOTER="";
-$CUSTOMHEADER = "";
-$CUSTOMFOOTER = "";
-*/
-
 $qs = explode(".", e_QUERY,2);
 if ($qs[0] == "") {
 	header("location:".e_BASE."index.php");
 	 exit;
 }
+
+$CSS = <<<CSS
+@media print {
+
+  a[href]:after {
+    content: none;
+  }
+
+}
+CSS;
+
+
+e107::css('inline',$CSS);
+
 define('e_IFRAME', true); 
 
 $source = $qs[0];
@@ -56,13 +63,22 @@ if(strpos($source,'plugin:') !== FALSE)
 }
 else
 {
-	$con = new convert;
-	$sql->db_Select("news", "*", "news_id='{$parms}'");
-	$row = $sql->db_Fetch(); 
-	$newsUrl = e107::getUrl()->create('news/view/item', $row, 'full=1'); 
-	extract($row);
-	define("e_PAGETITLE", $news_title);
-	$news_body = $tp->toHTML($news_body, TRUE, 'BODY');
+	//$con = new convert;
+
+	$query = "SELECT n.*,c.* FROM `#news` AS n LEFT JOIN `#news_category` AS c ON n.news_category = c.category_id WHERE n.news_id=".intval($parms);
+
+	//$sql->db_Select("news", "*", "news_id='{$parms}'");
+	$sql = e107::getDb();
+	$sql->gen($query);
+	$row = $sql->fetch();
+	$newsUrl = e107::getUrl()->create('news/view/item', $row, 'full=1');
+
+
+//	extract($row);
+//	define("e_PAGETITLE", $news_title);
+	//$news_body = $tp->toHTML($news_body, TRUE, 'BODY');
+
+	/*
 	$news_extended = $tp->toHTML($news_extended, TRUE, 'BODY');
 	if ($news_author == 0)
 	{
@@ -78,7 +94,7 @@ else
 	}
 	$news_datestamp = $con->convert_date($news_datestamp, "long");
 	$print_text = "<span style=\"font-size: 13px; color: black; font-family: tahoma, verdana, arial, helvetica; text-decoration: none\">
-	<b>".LAN_PRINT_135.$news_title."</b>
+	<h2>".LAN_PRINT_135.$news_title."</h2>
 	<br />
 	(".LAN_PRINT_86." ".$tp->toHTML($category_name,FALSE,"defs").")
 	<br />
@@ -87,14 +103,27 @@ else
 	<br /><br />".
 	$news_body;
 
-	if ($news_extended != ""){ $print_text .= "<br /><br />".$news_extended; }
-	if ($news_source != ""){ $print_text .= "<br /><br />".$news_source; }
-	if ($news_url != ""){ $print_text .= "<br />".$news_url; }
-	 
-	$print_text .= "<br /><br /></span><hr />".
-	LAN_PRINT_303.SITENAME."
+	if (!empty($news_extended)){ $print_text .= "<br /><br />".$news_extended; }
+
+	if (!empty($news_extended)){ $print_text .= "<br /><br />".$news_extended; }
+	if (!empty($news_source)){ $print_text .= "<br /><br />".$news_source; }
+	if (!empty($news_url)){ $print_text .= "<br />".$news_url; }
+*/
+
+    $tmp = e107::getTemplate('news', 'news', 'view');
+	$template = $tmp['item'];
+	unset($tmp);
+//	ob_start();
+	require_once(e_HANDLER."news_class.php");
+	$ix = new news;
+
+	$print_text = $ix->render_newsitem($row, 'return', '', $template, null);
+	//$print_text = ob_get_flush();
+
+	$print_text .= "<br /><br /><hr />".
+	LAN_PRINT_303."<b>".SITENAME."</b>
 	<br />
-	( ".$newsUrl." )
+	".$newsUrl."
 	";
 	
 	
@@ -121,9 +150,9 @@ else
 {
 	echo "
 		<div style='background-color:white'>
-		<div style='text-align:".$align."'>".$tp->parseTemplate("{LOGO}", TRUE)."</div><hr /><br />
+		<div style='text-align:".$align."'>".$tp->parseTemplate("{LOGO: h=100}", TRUE)."</div><hr />
 		<div style='text-align:".$align."'>".$print_text."</div><br /><br />
-		<form action=''><div class='hidden-print' style='text-align:center'><input class='btn btn-primary ' type='button' value='".LAN_PRINT_307."' onclick='window.print()' /></div></form></div>";
+		<form action='#'><div class='hidden-print' style='text-align:center'><input class='btn btn-primary ' type='button' value='".LAN_PRINT_307."' onclick='window.print()' /></div></form></div>";
 }
 require_once(FOOTERF);
 

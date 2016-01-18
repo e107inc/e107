@@ -99,7 +99,7 @@ $NEWS_TEMPLATE['default']['item'] = '
           {NEWSBODY}
 		  <hr>
 			<div class="options">
-			<div class="btn-group">{NEWSCOMMENTLINK: glyph=comments&class=btn btn-default}{PRINTICON: class=btn btn-default}{PDFICON}{SOCIALSHARE}{ADMINOPTIONS: class=btn btn-default}</div>
+			<div class="btn-group hidden-print">{NEWSCOMMENTLINK: glyph=comments&class=btn btn-default}{PRINTICON: class=btn btn-default}{PDFICON}{SOCIALSHARE}{ADMINOPTIONS: class=btn btn-default}</div>
 			</div>
 
 ';
@@ -161,7 +161,7 @@ $NEWS_TEMPLATE['view']['item'] = '
 		</div>
 		<hr>
 		
-		<div class="options ">
+		<div class="options hidden-print ">
 			<div class="btn-group">{NEWSCOMMENTLINK: glyph=comments&class=btn btn-default}{PRINTICON: class=btn btn-default}{ADMINOPTIONS: class=btn btn-default}{SOCIALSHARE}</div>
 		</div>
 			

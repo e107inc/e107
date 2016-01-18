@@ -161,7 +161,7 @@ if (varset($e107_popup) != 1)
 	}
 	else
 	{
-		echo($rinfo ? "\n<div class='e-footer-info muted smalltext'><small>{$rinfo}</small></div>\n" : "");
+		echo($rinfo ? "\n<div class='e-footer-info muted smalltext hidden-print'><small>{$rinfo}</small></div>\n" : "");
 	}
 	
 } // End of regular-page footer (the above NOT done for popups)
