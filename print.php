@@ -29,12 +29,18 @@ if ($qs[0] == "") {
 
 $CSS = <<<CSS
 
-	body { background-color: #FFF; color: #000 }
+	body { background: #fff; color: #000 }
 
 @media print {
 
-
-
+	img {
+        display: block;
+    }
+    img, table, ul, ol, .code-snippet {
+        page-break-inside: avoid;
+        page-break-before: auto;
+        page-break-after: auto;
+    }
 
   a[href]:after {
     content: none;
