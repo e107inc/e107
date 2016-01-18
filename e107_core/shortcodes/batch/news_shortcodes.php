@@ -198,7 +198,7 @@ class news_shortcodes extends e_shortcode
 			
 		$caption = vartrue($parm['text'],LAN_BACK);
 		
-		$text = '<ul class="pager">
+		$text = '<ul class="pager hidden-print">
   			<li><a href="'.$url.'">'.e107::getParser()->toHtml($caption,false,'defs').'</a></li>
 		</ul>';
 		

@@ -93,7 +93,7 @@ class social_shortcodes extends e_shortcode
 
 		if($text !='')
 		{
-			return 	'<p class="xurl-social-icons">'.$text.'</p>';
+			return 	'<p class="xurl-social-icons hidden-print">'.$text.'</p>';
 		}
 
 	}	
@@ -273,7 +273,7 @@ class social_shortcodes extends e_shortcode
 		{
 			$dir = ($parm['dropdown'] == 'right') ? 'pull-right' : '';
 	
-			$text = '<div class="btn-group '.$dir.'">
+			$text = '<div class="btn-group hidden-print '.$dir.'">
 				  <a class="e-tip btn btn-dropdown btn-default btn-'.$size.' dropdown-toggle" data-toggle="dropdown" href="#" title="Share">'.$label.'</a>
 				 
 				  <ul class="dropdown-menu" role="menu"  style="min-width:435px">
@@ -290,7 +290,7 @@ class social_shortcodes extends e_shortcode
 		
 			
 			
-			return '<div class="btn-group text-center">'.implode("\n",$opt)."</div>";
+			return '<div class="btn-group text-center hidden-print">'.implode("\n",$opt)."</div>";
 		
 		}	
 		
