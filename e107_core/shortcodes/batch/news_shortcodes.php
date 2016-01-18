@@ -368,7 +368,7 @@ class news_shortcodes extends e_shortcode
 			
 			$class = varset($parm['class']);
 			
-			return "<a class='e-tip ".$class."' rel='external' href='".e_ADMIN_ABS."newspost.php?action=edit&amp;id=".$this->news_item['news_id']."' title=\"".LAN_EDIT."\">".$adop_icon."</a>\n";
+			return "<a class='e-tip ".$class." hidden-print' rel='external' href='".e_ADMIN_ABS."newspost.php?action=edit&amp;id=".$this->news_item['news_id']."' title=\"".LAN_EDIT."\">".$adop_icon."</a>\n";
 		}
 		else
 		{
