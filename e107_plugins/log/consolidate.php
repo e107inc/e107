@@ -440,13 +440,20 @@ class logConsolidate
 		{
 			$pageDisallow = "cache|file|eself|admin";
 			$tagRemove = "(\\\)|(\s)|(\')|(\")|(eself)|(&nbsp;)|(\.php)|(\.html)";
-		//	$tagRemove2 = "(\\\)|(\s)|(\')|(\")|(eself)|(&nbsp;)";
 
 		//	preg_match("#/(.*?)(\?|$)(.*)#si", $url, $match);
 		//	$match[1] = isset($match[1]) ? $match[1] : '';
 		//	$pageName = substr($match[1], (strrpos($match[1], "/")+1));
 
-			$pageName = str_replace(SITEURL,'',$url);
+			if(deftrue('e_DOMAIN'))
+			{
+				list($discard,$pageName) = explode(e_DOMAIN.'/',$url); // everything after the domain.
+			}
+			else // eg. local setup.
+			{
+				$pageName = str_replace(SITEURL,'',$url);
+			}
+
 			$pageName = urldecode($pageName);
 
 			$pageName = preg_replace("/".$tagRemove."/si", "", $pageName);
