@@ -95,7 +95,7 @@ define ('ADSTAT_LAN_82', 'Following values now set:');
 define ('ADSTAT_LAN_83', 'Following log ID entries removed:');
 define ('ADSTAT_LAN_84', 'This proceedure will overwrite the log statistic summaries in your database. (raw log files are left unchanged) Once replaced, the data cannot be recovered. Please backup or export your database first');
 define ('ADSTAT_LAN_85', '[x] log files have been found. Click the button below to process these files.');
-
+define ('ADSTAT_LAN_86', 'Total Hits');
 
 
 ?>

@@ -645,9 +645,9 @@ e107::css('inline', 'td.last.options { padding-right:20px } ');
 		function rempagePage()
 		{
 			$sql = e107::getDb();
-			$ns = e107::getRender();
 			$frm = e107::getForm();
 			$pageInfo = array();
+			$tp = e107::getParser();
 
 			$logfile = e_LOG."logp_".date("z.Y", time()).".php";
 		//	$logfile = e_PLUGIN."log/logs/logp_".date("z.Y", time()).".php";
@@ -659,6 +659,8 @@ e107::css('inline', 'td.last.options { padding-right:20px } ');
 			$sql ->select("logstats", "*", "log_id='pageTotal' ");
 			$row = $sql ->fetch();
 			$pageTotal = unserialize($row['log_data']);
+
+
 
 			foreach($pageInfo as $url => $tmpcon) 
 			{
@@ -674,19 +676,25 @@ e107::css('inline', 'td.last.options { padding-right:20px } ');
 			<table class='table adminlist'>
 
 			<tr>
-			<td style='width:30%' class='forumheader'>".ADSTAT_LAN_29."</td>
-			<td style='width:50%' class='forumheader'>URL</td>
-			<td style='width:30%; text-align: center;'>".ADSTAT_LAN_30." ...</td>
+			<th style='width:100px; text-align: center;'>".ADSTAT_LAN_30." ...</th>
+			<th style='width:100px' class='forumheader'>".ADSTAT_LAN_86."</th>
+			<th style='width:30%' class='forumheader'>".ADSTAT_LAN_29."</th>
+			<th style='width:auto' class='forumheader'>URL</th>
 			</tr>
 			";
 
 			foreach($pageTotal as $key => $page)
 			{
+
+				list($name,$lang) = explode("|",$key);
+
 						$text .= "
 				<tr>
-				<td style='width:30%'>{$key}</td>
-				<td style='width:50%'>".$page['url']."</td>
-				<td style='width:30%; text-align: center;'><input type='checkbox' name='remcb[]' value='{$key}' /></td>
+				<td style='width:100px; text-align: center;'><input type='checkbox' name='remcb[]' value='{$key}' /></td>
+				<td style='width:100px'>".$page['ttlv']."</td>
+				<td style='width:30%'>{$name}</td>
+				<td style='width:auto'>".$tp->text_truncate($page['url'],100)."</td>
+
 				</tr>
 				";
 			}
