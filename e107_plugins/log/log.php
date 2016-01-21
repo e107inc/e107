@@ -174,7 +174,7 @@ $pageDisallow = "cache|file|eself|admin";
 $tagRemove = "(\\\)|(\s)|(\')|(\")|(eself)|(&nbsp;)|(\.php)|(\.html)";
 $tagRemove2 = "(\\\)|(\s)|(\')|(\")|(eself)|(&nbsp;)";
 
-
+/*
 function logGetPageKey($url,$logQry=false,$err_code='')
 {
 	global $pageDisallow, $tagRemove;
@@ -203,12 +203,13 @@ function logGetPageKey($url,$logQry=false,$err_code='')
 
 
 	return $pageName;
-}
+}*/
+
+require_once(e_PLUGIN."log/consolidate.php");
+$lgc = new logConsolidate;
 
 
-
-
-if(!$pageName = logGetPageKey($self,$logQry,$err_code))
+if(!$pageName = $lgc->getPageKey($self,false,$err_code,e_LAN))
 {
 	if(LOG_DEBUG == true)
 	{
@@ -217,7 +218,10 @@ if(!$pageName = logGetPageKey($self,$logQry,$err_code))
 	return;
 }
 
-
+if(LOG_DEBUG == true)
+{
+	echo "<br />File: ".$logPfile;
+}
 
 //$logfp = fopen(e_LOG.'rcvstring.txt', 'a+'); fwrite($logfp, $pageName."\n"); fclose($logfp);
 

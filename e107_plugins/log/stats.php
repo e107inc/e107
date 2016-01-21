@@ -326,6 +326,7 @@ class siteStats
 
 	protected $order;
 	protected $bar;
+	protected $plugFolder;
 
 	protected $filesiteTotal;
 	protected $filesiteUnique;
@@ -737,6 +738,10 @@ class siteStats
 		}
 
 		$this -> bar = (file_exists(THEME.'images/bar.png') ? THEME.'images/bar.png' : e_IMAGE.'generic/bar.png');
+
+
+		$this->plugFolder = e107::getFolder('plugins');
+
 		/* end constructor */
 	}
 
@@ -805,6 +810,21 @@ class siteStats
 	}
 	
 
+	function getLabel($key,$truncate=false)
+	{
+		list($url,$language) = explode("|",$key);
+
+		$url = str_replace($this->plugFolder,'',$url);
+
+		if($truncate)
+		{
+			return e107::getParser()->text_truncate($url,50);
+		}
+
+		return $url;
+	}
+
+
 
 
 	/**
@@ -851,7 +871,7 @@ class siteStats
 			if($info['ttl'])
 			{
 				$percentage = round(($info['ttl']/$totalv) * 100, 2);
-				$text .= "<tr>\n<td class='forumheader3' style='width: 20%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$key."</a>
+				$text .= "<tr>\n<td class='forumheader3' style='width: 20%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$this->getLabel($key)."</a>
 				</td>\n<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info['ttl']." [".$info['unq']."]")."</td>\n<td class='forumheader3' style='width: 10%; text-align: center;'>".$percentage."%</td>\n</tr>\n";
 			}
 		}
@@ -927,7 +947,7 @@ class siteStats
 				$text .= "<tr>
 				<td class='forumheader3' >
 				".($can_delete ? "<a href='".e_SELF."?{$action}.rem.".rawurlencode($key)."'><img src='".e_PLUGIN_ABS."log/images/remove.png' alt='".ADSTAT_L39."' title='".ADSTAT_L39."' style='vertical-align: middle;' /></a> " : "")."
-				<img src='".e_PLUGIN_ABS."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."' title=\"".$key."\" >".$tp->text_truncate($key,50)."</a>
+				<img src='".e_PLUGIN_ABS."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."' title=\"".$this->getLabel($key)."\" >".$this->getLabel($key,true)."</a>
 				";
 				$text .= "</td>
 				<td class='forumheader3' >".$this->bar($percentage, $info['ttlv'])."</td>

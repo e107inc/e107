@@ -436,21 +436,29 @@ class logConsolidate
 		 * @param string $err_code
 		 * @return bool|mixed|string
 		 */
-		function getPageKey($url,$logQry=false,$err_code='')
+		function getPageKey($url,$logQry=false,$err_code='', $lan=null)
 		{
 			$pageDisallow = "cache|file|eself|admin";
 			$tagRemove = "(\\\)|(\s)|(\')|(\")|(eself)|(&nbsp;)|(\.php)|(\.html)";
 		//	$tagRemove2 = "(\\\)|(\s)|(\')|(\")|(eself)|(&nbsp;)";
 
-			preg_match("#/(.*?)(\?|$)(.*)#si", $url, $match);
-			$match[1] = isset($match[1]) ? $match[1] : '';
-			$pageName = substr($match[1], (strrpos($match[1], "/")+1));
+		//	preg_match("#/(.*?)(\?|$)(.*)#si", $url, $match);
+		//	$match[1] = isset($match[1]) ? $match[1] : '';
+		//	$pageName = substr($match[1], (strrpos($match[1], "/")+1));
+
+			$pageName = str_replace(SITEURL,'',$url);
+			$pageName = urldecode($pageName);
 
 			$pageName = preg_replace("/".$tagRemove."/si", "", $pageName);
 
+			if($logQry == false)
+			{
+				list($pageName,$tmp) = explode("?",$pageName);
+			}
+
 			if($pageName == "")
 			{
-				return "index";
+				$pageName = "index";
 			}
 
 			if(preg_match("/".$pageDisallow."/i", $pageName))
@@ -458,16 +466,24 @@ class logConsolidate
 				return false;
 			}
 
-			if ($logQry)
-			{
-				$pageName .= '+'.$match[3];			// All queries match
-			}
+		//	if ($logQry)
+		//	{
+		//		$pageName .= '+'.$match[3];			// All queries match
+		//	}
 
 			$pageName = $err_code.$pageName;			// Add the error code at the beginning, so its treated uniquely
 
 			// filter out any non-utf8 characters which could halt processing.
-			$pageName = urldecode($pageName);
+
 			$pageName = iconv('UTF-8', 'ASCII//IGNORE', $pageName);
+
+			$pageName = trim($pageName,' /');
+
+
+			if(!empty($lan))
+			{
+				$pageName .= "|".$lan;
+			}
 
 			return $pageName;
 		}
@@ -498,6 +514,7 @@ class logConsolidate
 			$pageTotal = array();
 			$line = 0;
 
+
 			if ($handle)
 			{
 				while (($buffer = fgets($handle, 4096)) !== false)
@@ -510,7 +527,8 @@ class logConsolidate
 							continue;
 						}
 
-						$key = $this->getPageKey($vars['eself']);
+						$lan = varset($vars['lan'],null);
+						$key = $this->getPageKey($vars['eself'],false,'',$lan);
 
 						if(empty($key))
 						{
@@ -519,7 +537,7 @@ class logConsolidate
 
 						if(!isset($pageTotal[$key]))
 						{
-							$pageTotal[$key] = array('url'=>'', 'ttl'=>0, 'unq'=>0);
+							$pageTotal[$key] = array('url'=>'', 'ttl'=>0, 'unq'=>0, 'lan'=>'');
 						}
 
 						$pageTotal[$key]['url'] = $vars['eself'];
@@ -538,6 +556,9 @@ class logConsolidate
 						{
 							$pageTotal[$key]['unq'] += 1;
 						}
+
+						$lan = varset($vars['lan'],'');
+						$pageTotal[$key]['lan'] = $lan;
 					}
 
 					$line++;
@@ -579,7 +600,7 @@ class logConsolidate
 				{
 					$sql = e107::getDb();
 
-					if($sql->select('logstats','log_id',"log_id='".$datestamp."' "))
+					if($sql->select('logstats','log_id',"log_id='".$datestamp."' ") && !$sql->select('logstats','log_id',"log_id='bak-".$datestamp."' "))
 					{
 						$sql->update('logstats', "log_id='bak-".$datestamp."' WHERE log_id='".$datestamp."' ");
 					}
@@ -640,14 +661,17 @@ class logConsolidate
 				{
 					if(!empty($val))
 					{
-						list($url,$ttl,$unq) = explode("|",$val);
-						$key = $this->getPageKey($url);
+						list($url,$ttl,$unq,$lan) = explode("|",$val);
+						$lan = vartrue($lan,e_LAN);
+						$key = $this->getPageKey($url,'','', $lan);
 
 						$thisTotal[$key]['url'] = $url;
+						$thisTotal[$key]['lan'] = $lan;
 						$thisTotal[$key]['ttlv'] += $ttl;
 						$thisTotal[$key]['unqv'] += $unq;
 
 						$pageTotal[$key]['url'] = $url;
+						$pageTotal[$key]['lan'] = $lan;
 						$pageTotal[$key]['ttlv'] += $ttl;
 						$pageTotal[$key]['unqv'] += $unq;
 					}
@@ -753,7 +777,7 @@ class logConsolidate
 
 			foreach($pageInfo as $key => $value)
 			{
-				$data .= $value['url']."|".$value['ttl']."|".$value['unq'].chr(1);
+				$data .= $value['url']."|".$value['ttl']."|".$value['unq'].'|'.varset($value['lan'],e_LAN).chr(1);
 				$dailytotal += $value['ttl'];
 				$uniquetotal += $value['unq'];
 			}
