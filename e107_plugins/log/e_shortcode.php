@@ -11,9 +11,14 @@ class log_shortcodes extends e_shortcode
 {
 
 	private $dbPageInfo;
+	private $lgc;
 
 	function __construct()
 	{
+
+		require_once(e_PLUGIN."log/consolidate.php");
+		$this->lgc = new logConsolidate;
+
 		$sql = e107::getDB();
 		$logfile = e_LOG.'logp_'.date('z.Y', time()).'.php'; /* get today's logfile ... */
 
@@ -70,16 +75,23 @@ class log_shortcodes extends e_shortcode
 
 	private function getKey($self)
 	{
-		$base = basename($self);
-		list($url,$qry) = explode(".",$base, 2);
-		return $url;
+		return $this->lgc->getPageKey($self, false, '', e_LAN);
+		//$base = basename($self);
+	//	list($url,$qry) = explode(".",$base, 2);
+	//	return $url;
 	}
 
 
 	function sc_log_pagecounter($parm)
 	{
+
+		//print_a($this->dbPageInfo);
+
 		$url = str_replace("www.", "", e_REQUEST_URL);
 		$id = $this->getKey(e_REQUEST_URL);
+	//	print_a("Checking for: ".$id);
+
+	//	print_a($this->dbPageInfo);
 
 		if(isset($this->dbPageInfo[$id]['url']) && ($this->dbPageInfo[$id]['url'] == e_REQUEST_URL || $this->dbPageInfo[$id]['url'] == $url))
 		{

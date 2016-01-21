@@ -270,7 +270,10 @@ $(document).ready(function()
 				//	alert(data);
 				$("#"+target).css('width', data+'%');   	// update the progress bar width */
 				$("#"+target).html(data+'%');     		// display the numeric value */
-		    
+
+
+		        data = parseInt(data);
+
 				if(data > 99.999) {
 				
 					clearInterval(progresspump);

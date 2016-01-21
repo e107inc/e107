@@ -18,6 +18,72 @@ if (!getperms('P') || !e107::isInstalled('log'))
 	exit;
 }
 
+
+if(e_AJAX_REQUEST && varset($_GET['action']) == 'rebuild')
+{
+	require_once(e_PLUGIN."log/consolidate.php");
+	$lgc = new logConsolidate;
+
+	$count = $_SESSION['stats_log_files_count'];
+	$file = $_SESSION['stats_log_files'][$count]['path'];
+	$totalFiles = $_SESSION['stats_log_files_total'] - 1;
+	//$process = true;
+
+	$lg = e107::getAdminLog();
+//	$lg->addDebug(print_r($logVals, true));
+
+
+	if($_SESSION['stats_log_files'][$count]['complete'] != 1)
+	{
+		$_SESSION['stats_log_files'][$count]['complete'] = 1;
+	//	$lg->addSuccess($count."/".$totalFiles."\t".$file." processing", false);
+	//	if($process)
+		if($lgc->processRawBackupLog($file, true))
+		{
+
+		//	sleep(3);
+			$lg->addSuccess($count."/".$totalFiles."\t".$file." processed.", false);
+			$_SESSION['stats_log_files'][$count]['complete'] = 1;
+			$_SESSION['stats_log_files_count']++;
+		}
+		else
+		{
+			$lg->addError($count."/".$totalFiles."\t".$file." failed.", false);
+		}
+	}
+	else
+	{
+		$lg->addWarning($count."/".$totalFiles."\t".$file." skipped", false);
+		$_SESSION['stats_log_files_count']++;
+	}
+
+
+	$totalOutput = round(( $count/ $totalFiles) * 100, 1);
+	echo $totalOutput;
+
+
+	if($totalOutput > 99.7)
+	{
+	//	echo 100;
+		if($lgc->collatePageTotalDB())
+		{
+			$lg->addSuccess("Processed All-Time PageTotal", false);
+		}
+		else
+		{
+			$lg->addError("Failed to Process All-Time PageTotal", false);
+		}
+
+		$lg->addSuccess("Processing Complete.", false);
+
+	}
+
+	$lg->toFile('SiteStatsUpgrade','Statistics Update Log', true);
+
+	exit;
+
+}
+
 define('LogFlagFile', 'LogFlag.php');
 
 include_lan(e_PLUGIN.'log/languages/'.e_LANGUAGE.'.php');
@@ -80,6 +146,7 @@ e107::css('inline', 'td.last.options { padding-right:20px } ');
 			'main/datasets'		=> array('caption'=> ADSTAT_LAN_63, 'perm' => 'P'),
 			'main/rempage'		=> array('caption'=> ADSTAT_LAN_26, 'perm' => 'P'),
 			'main/history'		=> array('caption'=> ADSTAT_LAN_69, 'perm' => 'P'),
+			'main/rebuild'      => array('caption'=>'Rebuild Statistic Summaries', 'perm'=> 'P'),
 		);
 
 
@@ -633,6 +700,40 @@ e107::css('inline', 'td.last.options { padding-right:20px } ');
 			return $text;
 
 		//	$ns -> tablerender(ADSTAT_LAN_32, $text);
+		}
+
+
+		function rebuildPage()
+		{
+			$frm  = e107::getForm();
+			$mes = e107::getMessage();
+			$tp = e107::getParser();
+
+			$mes->addWarning(ADSTAT_LAN_84);
+			$text = $frm->open('rebuild');
+
+			$files = e107::getFile()->get_files(e_LOG."log",'_SiteStats\.log$');
+
+		//	print_a($_SESSION['stats_log_files']);
+
+			$_SESSION['stats_log_files'] = array();
+			$_SESSION['stats_log_files_count'] = 0;
+
+			foreach($files as $f)
+			{
+				$_SESSION['stats_log_files'][] = array('path'=> $f['fname'], 'complete'=>0);
+			}
+
+			$_SESSION['stats_log_files_total'] = count($_SESSION['stats_log_files']);
+
+		//	$text .=  //  . " log files have been found. Click the button below to process these files.</p>";
+			$mes->addWarning($tp->lanVars(ADSTAT_LAN_85, $_SESSION['stats_log_files_total'], true));
+			$text .= $frm->progressBar('rebuild-progress',0,array("btn-label"=>"Rebuild Stats", 'url'=>e_REQUEST_URI));
+
+			$text .= $frm->close();
+			return $text;
+
+
 		}
 
 
