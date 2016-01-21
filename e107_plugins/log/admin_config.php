@@ -59,12 +59,10 @@ if(e_AJAX_REQUEST && varset($_GET['action']) == 'rebuild')
 
 
 	$totalOutput = round(( $count/ $totalFiles) * 100, 1);
-	echo $totalOutput;
 
-
-	if($totalOutput > 99.7)
+	if($totalOutput > 99.9)
 	{
-	//	echo 100;
+		echo 100;
 		if($lgc->collatePageTotalDB())
 		{
 			$lg->addSuccess("Processed All-Time PageTotal", false);
@@ -76,6 +74,10 @@ if(e_AJAX_REQUEST && varset($_GET['action']) == 'rebuild')
 
 		$lg->addSuccess("Processing Complete.", false);
 
+	}
+	else
+	{
+		echo $totalOutput;
 	}
 
 	$lg->toFile('SiteStatsUpgrade','Statistics Update Log', true);
