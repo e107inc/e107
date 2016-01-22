@@ -677,7 +677,7 @@ e107::css('inline', 'td.last.options { padding-right:20px } ');
 
 			<tr>
 			<th style='width:100px; text-align: center;'>".ADSTAT_LAN_30." ...</th>
-			<th style='width:100px' class='forumheader'>".ADSTAT_LAN_86."</th>
+			<th style='width:100px' class='text-right'>".ADSTAT_LAN_86."</th>
 			<th style='width:30%' class='forumheader'>".ADSTAT_LAN_29."</th>
 			<th style='width:auto' class='forumheader'>URL</th>
 			</tr>
@@ -691,7 +691,7 @@ e107::css('inline', 'td.last.options { padding-right:20px } ');
 						$text .= "
 				<tr>
 				<td style='width:100px; text-align: center;'><input type='checkbox' name='remcb[]' value='{$key}' /></td>
-				<td style='width:100px'>".$page['ttlv']."</td>
+				<td class='text-right' style='width:100px'>".number_format($page['ttlv'])."</td>
 				<td style='width:30%'>{$name}</td>
 				<td style='width:auto'>".$tp->text_truncate($page['url'],100)."</td>
 
