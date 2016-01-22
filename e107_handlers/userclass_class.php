@@ -1899,7 +1899,7 @@ class user_class_admin extends user_class
 							'userclass_parent' => e_UC_MEMBER,
 							'userclass_visibility' => e_UC_ADMIN
 							),
-						array('userclass_id' => e_UC_BOT, 'userclass_name' => UC_LAN_10,
+						array('userclass_id' => e_UC_BOTS, 'userclass_name' => UC_LAN_10,
 							'userclass_description' => UCSLAN_88,
 							'userclass_editclass' => e_UC_MAINADMIN,
 							'userclass_parent' => e_UC_PUBLIC,
