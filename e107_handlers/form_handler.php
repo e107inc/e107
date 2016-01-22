@@ -216,15 +216,18 @@ class e_form
 		$c = 0;
 		foreach($array as $key=>$tab)
 		{
-			if($c == 0 & $initTab == false)
-			{
-				$initTab = $key;
-			}
 
 			if(is_numeric($key))
 			{
 				$key = 'tab-'.$this->name2id($tab['caption']);
 			}
+
+			if($c == 0 & $initTab == false)
+			{
+				$initTab = $key;
+			}
+
+
 			
 			$active = ($key ==$initTab) ? ' class="active"' : '';
 			$text .= '<li'.$active.'><a href="#'.$key.'" data-toggle="tab">'.$tab['caption'].'</a></li>';
