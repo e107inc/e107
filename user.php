@@ -105,7 +105,7 @@ e107::scStyle($sc_style);
 if(empty($USER_TEMPLATE)) // BC Fix for loading old templates. 
 {
 	e107::getMessage()->addDebug( "Using v1.x user template");
-	include_once(e107::coreTemplatePath('user')); //correct way to load a core template.	
+	include(e107::coreTemplatePath('user')); //correct way to load a core template. (don't use 'include_once' in case it has already been loaded).
 }
 else
 {
