@@ -440,7 +440,7 @@ i.s-message-debug	{ background-position: -1480px 0; width: 32px; height: 32px;  
   vertical-align: middle;
   cursor: pointer;
   color: #333333;
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+  /* text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75); */
   background-color: #f5f5f5;
   background-image: -moz-linear-gradient(top, #ffffff, #e6e6e6);
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#e6e6e6));
@@ -466,6 +466,16 @@ i.s-message-debug	{ background-position: -1480px 0; width: 32px; height: 32px;  
   -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
   box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
 }
+
+
+.plupload_start:hover {
+	background-image: linear-gradient(#285128, #363 40%, #397339);
+	background-repeat: no-repeat;
+	filter: none;
+	border:0;
+	}
+
+
 .button:hover,
 .button:active,
 .button.active,
@@ -562,7 +572,7 @@ th label.checkbox { min-height:inherit; } /* Bootstrap Fix but doesn't work */
 
 
 
-i.S16 {
+i.S16, li.plupload_done a {
     background: url(images/adminicons_16.png) no-repeat top left;
  	display:inline-block;
  	width:17px;
@@ -650,7 +660,12 @@ i.e-uploads-16{ background-position: -1575px 0; width: 16px; height: 16px; }
 i.e-userclass-16{ background-position: -1596px 0; width: 16px; height: 16px; } 
 i.e-users-16{ background-position: -1617px 0; width: 16px; height: 16px; } 
 i.e-warning-16{ background-position: -1638px 0; width: 16px; height: 16px; } 
-i.e-welcome-16{ background-position: -1659px 0; width: 16px; height: 16px; } 
+i.e-welcome-16{ background-position: -1659px 0; width: 16px; height: 16px; }
+
+li.plupload_done a {
+	background-position: -1533px 0; width: 16px; height: 16px;
+}
+
 
 i.S32 {
     background: url(images/adminicons_32.png) no-repeat top left;
@@ -801,14 +816,14 @@ ul.scroll-menu 								{  max-height:350px; overflow:auto;    }
   	background-color: rgb(39, 39, 39);
     border-top: 1px solid rgb(51, 51, 51);
     border-left:1px solid rgb(51, 51, 51);
-    border-top:1px solid rgb(51, 51, 51);
-    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 
 .navbar-brand   { padding: 10px 15px; }
 
 ul.recent-comments {padding: 0px;
-margin: 0px;
+margin: 0;
 list-style: none outside none;
 }
 
@@ -907,7 +922,7 @@ a.e-media-select
 /* .nav-tabs 						{ border-bottom: 1px solid rgb(221, 221, 221); margin-bottom:0px;} */
 .nav-tabs li 					{  margin-right: 2px; }
 .nav-tabs li a  				{ cursor: pointer; 
-    							  padding: 0px 15px; line-height: 34px; /* border-bottom: 1px solid rgb(221, 221, 221) */
+    							  padding: 0 15px; line-height: 34px; /* border-bottom: 1px solid rgb(221, 221, 221) */
 								}
 .nav-tabs li a:hover 			{  }
 /*
@@ -927,7 +942,7 @@ a.e-media-select
 */
 
 .tab-pane table tr:first-child td {
-        border-top:0px;
+        border-top:0;
     }
 
 .table .options					{ white-space:nowrap }
@@ -936,14 +951,14 @@ a.e-media-select
 
 /****************************************************************/	
 
-ul#e-status						{ margin:0px 14px }
+ul#e-status						{ margin:0 14px }
 ul#e-status li 					{ padding-bottom:6px; font-size:85% }
 ul#e-status						{ line-height:20px }
 ul#e-status li  a span.badge,
 ul#e-status li  a span.label	{ float:right; font-size:85% }
 ul#e-status li  a:hover  		{ text-decoration: none; }
 
-ul#e-latest						{ margin:0px 14px}
+ul#e-latest						{ margin:0 14px}
 ul#e-latest li 					{ padding-bottom:6px;  font-size:85%}
 ul#e-latest						{ line-height:17px }
 ul#e-latest li  a  span.label	{ float:right;font-size:85% }
@@ -956,12 +971,12 @@ ul#e-latest li  a:hover  		{ text-decoration: none; }
 /* Bootstrap tags input */
 .tags {
 	display: inline-block;
-	margin-bottom:0px;
+	margin-bottom:0;
 	max-width:640px;
 }
 
 .tags input {
-	margin-bottom: 0px;
+	margin-bottom: 0;
 	width: 100px;
 }
 
@@ -1030,14 +1045,17 @@ h4.caption { margin-bottom:30px; }
 
 .plupload_scroll .plupload_filelist
 {
-	background: transparent;
+
+	box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1), 0px 1px 7px 0px rgba(0, 0, 0, 0.8) inset;
+	background: rgba(0, 0, 0, 0.3) none repeat scroll 0% 0%;
+
 }
 
 
 .plupload_start
 {
     color: rgb(255, 255, 255);
-    text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.25);
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
     background-color: rgb(91, 183, 91);
     background-image: linear-gradient(to bottom, rgb(98, 196, 98), rgb(81, 163, 81));
     background-repeat: repeat-x;
@@ -1063,6 +1081,27 @@ li.plupload_delete a {
 	width: 16px;
 
 }
+
+.plupload_add, .plupload_add:hover {
+	background-image: linear-gradient(#3F8ACA, #337AB7 60%, #2F6FA7);
+	background-repeat: no-repeat;
+	filter: none;
+	color: #FFF;
+	background-color: #337AB7;
+	border-color: #2D6DA3;
+	outline:0;
+}
+
+.plupload_add:hover {
+	border-color: rgba(0, 0, 0, 0.6);
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+.plupload_filelist {
+
+	}
+
+
 
 li.rssRow > div {
 	font-size: 80%;
