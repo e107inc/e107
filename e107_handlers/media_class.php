@@ -16,9 +16,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-/**
- * Subject of rewrite/rethinking after the pre-alpha
- */
+
 class e_media
 {
 	protected $imagelist = array();
@@ -40,8 +38,9 @@ class e_media
 		if(E107_DEBUG_LEVEL > 0)
 		{
 			$this->logging = true; 	
-		}	
-		
+		}
+
+		include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_image.php');
 	}
 	/**
 	 * Import files from specified path into media database. 
@@ -530,8 +529,8 @@ class e_media
 			$query .= " LIMIT ".$from." ,".$amount;	
 		}
 		
-		e107::getDb()->db_Select_gen($query);
-		while($row = e107::getDb()->db_Fetch(mySQL_ASSOC))
+		e107::getDb()->gen($query);
+		while($row = e107::getDb()->fetch(mySQL_ASSOC))
 		{
 			$id = $row['media_id'];
 			$ret[$id] = $row;
@@ -550,13 +549,13 @@ class e_media
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		
-		$text .= "<div style='margin-left:500px;text-align:center; position:relative;z-index:1000;float:left;display:none' id='{$formid}'>";
+		$text = "<div style='margin-left:500px;text-align:center; position:relative;z-index:1000;float:left;display:none' id='{$formid}'>";
 		$text .="<div style='-moz-box-shadow: 3px 3px 3px #808080;
 			-webkit-box-shadow: 3px 3px 3px #808080;
 			box-shadow: 3px 3px 3px #808080;
 			background-color:black;border:1px solid black;position:absolute; height:200px;width:205px;overflow-y:scroll; bottom:30px; right:100px'>";
 		
-		$total = ($sql->db_Select_gen("SELECT * FROM `#core_media` WHERE media_category = '_common' OR media_category = '".$cat."' ORDER BY media_category,media_datestamp DESC ")) ? TRUE : FALSE;		
+		$total = ($sql->gen("SELECT * FROM `#core_media` WHERE media_category = '_common' OR media_category = '".$cat."' ORDER BY media_category,media_datestamp DESC ")) ? TRUE : FALSE;
 		$text .= "<div style='font-size:120%;font-weight:bold;text-align:right;margin-right:10px'><a title='Close' style='text-decoration:none;color:white' href='#' onclick=\"expandit('{$formid}'); return false;\" >x</a></div>";
 			
 		while ($row = $sql->db_Fetch())
@@ -941,7 +940,8 @@ class e_media
 		if(!vartrue($this->mimePaths[$pmime]))
 		{
 			$this->log("Couldn't detect mime-type ($mime).");
-			$mes->add("Couldn't detect mime-type ($mime). Upload failed.", E_MESSAGE_ERROR);
+			$text = $text = str_replace('[x]',$mime,IMALAN_111);
+			$mes->add($text, E_MESSAGE_ERROR);
 			return FALSE;
 		}
 
@@ -951,8 +951,10 @@ class e_media
 		{
 			if(!mkdir($dir, 0755))
 			{
+
 				$this->log("Couldn't create folder ($dir).");
-				$mes->add("Couldn't create folder ($dir).", E_MESSAGE_ERROR);
+				$text = str_replace('[x]',$dir,IMALAN_112);
+				$mes->add($text, E_MESSAGE_ERROR);
 				return FALSE;
 			};
 		}

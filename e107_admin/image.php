@@ -723,7 +723,7 @@ class media_admin_ui extends e_admin_ui
 				'text'			=> e_MEDIA_FILE,
 				'multipart'		=> e_MEDIA_FILE,
 				'application'	=> e_MEDIA_FILE,
-			//	'audio'			=> e_MEDIA_AUDIO,
+			//	'audio'			=> e_MEDIA_FILE,
 				'image'			=> e_MEDIA_IMAGE,
 				'video'			=> e_MEDIA_VIDEO,
 				'other'			=> e_MEDIA_FILE
@@ -2282,6 +2282,10 @@ class media_admin_ui extends e_admin_ui
 
 	function getPath($mime)
 	{
+
+		return e107::getMedia()->getPath($mime);
+		/*
+
 		$mes = e107::getMessage();
 
 		list($pmime,$tmp) = explode('/',$mime);
@@ -2304,7 +2308,7 @@ class media_admin_ui extends e_admin_ui
 				return FALSE;
 			};
 		}
-		return $dir;
+		return $dir;*/
 	}
 
 	function batchImportForm()
@@ -2386,10 +2390,12 @@ class media_admin_ui extends e_admin_ui
 			}
 				
 			$large = e107::getParser()->thumbUrl($f['path'].$f['fname'], 'w=800', true);
+			$checked = empty($_POST['batch_selected']) ? true : false;
+
 			$text .= "
 			
 			<tr>
-				<td class='center'>".$frm->checkbox("batch_selected[".$c."]",$f['fname'])."</td>
+				<td class='center'>".$frm->checkbox("batch_selected[".$c."]",$f['fname'],$checked)."</td>
 				<td class='center'>".$this->preview($f)."</td>			
 				<td><a class='e-dialog' href='".$large."'>".$f['fname']."</a></td>
 				<td>".$frm->text('batch_import_name['.$c.']', ($_POST['batch_import_name'][$c] ? $_POST['batch_import_name'][$c] : $default['title']))."</td>
@@ -2417,7 +2423,7 @@ class media_admin_ui extends e_admin_ui
 		$text .= "
 				</tbody>
 						</table>
-						<div class='buttons-bar center'>
+						<div class='buttons-bar center form-inline'>
 						".IMALAN_123." ".$frm->selectbox('batch_category',$this->cats, $_POST['batch_category']);
 			
 		//	$waterMarkPath = e_THEME.e107::getPref('sitetheme')."/images/watermark.png"; // Now performed site-wide dynamically. 				
@@ -2587,7 +2593,12 @@ class media_admin_ui extends e_admin_ui
 				$f['mime'] = "other/file";
 			}
 
-			$newpath = $this->checkDupe($oldpath,$this->getPath($f['mime']).'/'.$file);
+			if(!$newDir = $this->getPath($f['mime']))
+			{
+				continue;
+			}
+
+			$newpath = $this->checkDupe($oldpath,$newDir.'/'.$file);
 			$newname = $tp->toDB($_POST['batch_import_name'][$key]);
 			$newdiz = $tp->toDB($_POST['batch_import_diz'][$key]);
 			
@@ -2624,7 +2635,7 @@ class media_admin_ui extends e_admin_ui
 					);
 
 
-				if($sql->db_Insert("core_media",$insert))
+				if($sql->insert("core_media",$insert))
 				{
 					$mes->add(IMALAN_128." ".$f['fname'], E_MESSAGE_SUCCESS);
 					$this->deleteFileXml($f['fname']);
