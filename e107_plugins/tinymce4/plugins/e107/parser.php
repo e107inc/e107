@@ -41,11 +41,23 @@ class e107TinyMceParser
 		if(!empty($_GET['debug']) && getperms('0'))
 		{
 			$debug = true;  // For future use.
+
+			if(defined("TINYMCE_PARSER_DEBUG_TEXT"))
+			{
+				$text = TINYMCE_PARSER_DEBUG_TEXT;
+				echo "<h1>Original</h1>";
+				print_a($text);
+				echo "<h1>toHtml</h1>";
+			}
+			else
+			{
+
 			$text = <<<TEMPL
 
 	[html][code]Something goes here [b]bold print[/b][/code][/html]
 
 TEMPL;
+			}
 			$_POST['content'] = $text;
 			$_POST['mode'] = 'tohtml';
 		}
@@ -68,6 +80,7 @@ TEMPL;
 		{
 			print_a($html);
 			echo "<hr />";
+			echo "<h1>Rendered</h1>";
 			echo $html;
 		}
 		elseif($this->gzipCompression == true)
@@ -104,8 +117,8 @@ TEMPL;
 			{
 				e107::getBB()->clearClass();
 
-				$content = str_replace('\r\n',"<br />",$content);
-				$content =  nl2br($content, true);
+				//$content = str_replace('\r\n',"<br />",$content);
+				//$content =  nl2br($content, true);
 				$content = $tp->toHtml($content, true);
 			}
 
