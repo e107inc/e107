@@ -123,7 +123,7 @@ class user_shortcodes extends e_shortcode
 	
 	
 	
-	function sc_user_commentper($parm) 
+	function sc_user_commentper($parm='')
 	{
 		if($this->commentsDisabled)
 		{
@@ -142,7 +142,7 @@ class user_shortcodes extends e_shortcode
 	
 	
 	
-	function sc_user_forumper($parm) 
+	function sc_user_forumper($parm='')
 	{
 		$sql = e107::getDb();
 		if(!$total_forumposts = e107::getRegistry('total_forumposts'))
@@ -181,42 +181,42 @@ class user_shortcodes extends e_shortcode
 	
 	
 	
-	function sc_user_lastvisit($parm)
+	function sc_user_lastvisit($parm='')
 	{
 		return $this->var['user_currentvisit'] ? e107::getDate()->convert_date($this->var['user_currentvisit'], "long") : "<i>".LAN_USER_33."</i>";
 	}
 	
 	
 	
-	function sc_user_lastvisit_lapse($parm) 
+	function sc_user_lastvisit_lapse($parm='')
 	{	
 		return $this->var['user_currentvisit'] ? "( ".e107::getDate()->computeLapse($this->var['user_currentvisit'])." ".LAN_USER_34." )" : '';
 	}
 
 
 	
-	function sc_user_visits($parm) 
+	function sc_user_visits($parm='')
 	{
 		return $this->var['user_visits'];
 	}
 
 
 	
-	function sc_user_join($parm) 
+	function sc_user_join($parm='')
 	{
 		return e107::getDate()->convert_date($this->var['user_join'], "forum");
 	}
 	
 	
 	
-	function sc_user_daysregged($parm) 
+	function sc_user_daysregged($parm='')
 	{
 		return e107::getDate()->computeLapse($this->var['user_join']);
 	}
 
 	
 		
-	function sc_user_realname_icon($parm) 
+	function sc_user_realname_icon($parm='')
 	{
 		if(defined("USER_REALNAME_ICON"))
 		{
@@ -232,14 +232,14 @@ class user_shortcodes extends e_shortcode
 
 	
 	
-	function sc_user_realname($parm) 
+	function sc_user_realname($parm='')
 	{
 		return $this->var['user_login'] ? $this->var['user_login'] : "<i>".LAN_USER_33."</i>";
 	}
 
 
 	
-	function sc_user_email_icon($parm) 
+	function sc_user_email_icon($parm='')
 	{
 		if(defined("USER_EMAIL_ICON"))
 		{
@@ -255,7 +255,7 @@ class user_shortcodes extends e_shortcode
 
 
 	
-	function sc_user_email_link($parm) 
+	function sc_user_email_link($parm='')
 	{
 		$tp = e107::getParser();
 		return /* Condition             */ ($this->var['user_hideemail'] && !ADMIN) ?
@@ -265,7 +265,7 @@ class user_shortcodes extends e_shortcode
 
 
 	
-	function sc_user_email($parm) 
+	function sc_user_email($parm='')
 	{
 		$tp = e107::getParser();
 		return /* Condition             */ ($this->var['user_hideemail'] && !ADMIN) ?
@@ -365,7 +365,7 @@ class user_shortcodes extends e_shortcode
 
 
 	
-	function sc_user_icon_link($parm) 
+	function sc_user_icon_link($parm='')
 	{
 
 		$uparams = array('id' => $this->var['user_id'], 'name' => $this->var['user_name']);
@@ -387,21 +387,21 @@ class user_shortcodes extends e_shortcode
 
 
 	
-	function sc_user_id($parm) 
+	function sc_user_id($parm='')
 	{
 		return $this->var['user_id'];
 	}
 	
 	
 	
-	function sc_user_name($parm) 
+	function sc_user_name($parm='')
 	{
 		return $this->var['user_name'];
 	}
 	
 	
 	
-	function sc_user_name_link($parm) 
+	function sc_user_name_link($parm='')
 	{
 		$uparams = array('id' => $this->var['user_id'], 'name' => $this->var['user_name']);
 		return "<a href='".e107::getUrl()->create('user/profile/view', $uparams)."'>".$this->var['user_name']."</a>";
@@ -409,7 +409,7 @@ class user_shortcodes extends e_shortcode
 	
 	
 	
-	function sc_user_loginname($parm) 
+	function sc_user_loginname($parm='')
 	{
 		if(ADMIN && getperms("4")) {
 			return $this->var['user_loginname'];
@@ -418,7 +418,7 @@ class user_shortcodes extends e_shortcode
 
 
 	
-	function sc_user_birthday_icon($parm) 
+	function sc_user_birthday_icon($parm='')
 	{
 		if(defined("USER_BIRTHDAY_ICON"))
 		{
@@ -434,7 +434,7 @@ class user_shortcodes extends e_shortcode
 
 	
 		
-	function sc_user_birthday($parm) 
+	function sc_user_birthday($parm='')
 	{
 		if ($this->var['user_birthday'] != "" && $this->var['user_birthday'] != "0000-00-00" && preg_match("/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})/", $this->var['user_birthday'], $regs))
 		{

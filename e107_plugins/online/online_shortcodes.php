@@ -35,7 +35,12 @@ class online_shortcodes
 	// Last Seen Menu
 	function sc_lastseen_userlink()
 	{
-		return "<a href='".e_BASE."user.php?id.".$this->currentUser['user_id']."'>".$this->currentUser['user_name']."</a>";
+		$uparams = array('id' => $this->currentUser['user_id'], 'name' => $this->currentUser['user_name']);
+		$link = e107::getUrl()->create('user/profile/view', $uparams);
+		return "<a href='".$link."'>".$this->currentUser['user_name']."</a>";
+
+	// $uparams = array('id' => $this->currentUser['user_id'], 'name' => $this->currentUser['user_name']);
+	//	return "<a href='".e_BASE."user.php?id.".$this->currentUser['user_id']."'>".$this->currentUser['user_name']."</a>";
 	}
 
 	function sc_lastseen_date()

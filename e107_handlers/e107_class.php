@@ -2660,6 +2660,29 @@ class e107
 	 */
 	public static function url($plugin='',$key, $row=array(), $options = array())
 	{
+
+		/* TODO backward compat - core keys. */
+		/*
+		if($plugin == 'user')
+		{
+			switch($key)
+			{
+				case "profile":
+					$uparams = array('id' => $row['user_id'], 'name' => $row['user_name']);
+					return self::getUrl()->create('user/profile/view', $uparams);
+				break;
+
+				case "settings":
+					//  code
+					break;
+
+
+
+			}
+		}
+		*/
+
+
 		$tmp = e107::getAddonConfig('e_url');
 		$tp = e107::getParser();
 
