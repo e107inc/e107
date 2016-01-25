@@ -798,7 +798,8 @@ class e_parse_shortcode
 		}
 
 
-		$ret = preg_replace_callback('#\{(\S[^\x02]*?\S)\}#', array(&$this, 'doCode'), $text);
+		$ret = preg_replace_callback('#\{([A-Z][^\x02]*?\S)\}#', array(&$this, 'doCode'), $text); // must always start with uppercase letter
+		// $ret = preg_replace_callback('#\{(\S[^\x02]*?\S)\}#', array(&$this, 'doCode'), $text);
 		$this->parseSCFiles = $saveParseSCFiles; // Restore previous value
 		$this->addedCodes = $saveCodes;
 		$this->eVars = $saveVars; // restore eVars
@@ -841,6 +842,7 @@ class e_parse_shortcode
 		{
 			return $matches[0];
 		}
+
 
 		if(preg_match('/^([A-Z_]*):(.*)/', $matches[1], $newMatch))
 		{
