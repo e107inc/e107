@@ -273,6 +273,28 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 	if($sql->gen($query))
 	{
 		$newsList = $sql->db_getList();
+		$ogImageCount = 0;
+		foreach($newsList as $row)
+		{
+			if(!empty($row['news_thumbnail']))
+			{
+				$iurl = (substr($row['news_thumbnail'],0,3)=="{e_") ? $tp->replaceConstants($row['news_thumbnail'],'full') : SITEURL.e_IMAGE."newspost_images/".$news['news_thumbnail'];
+				$tmp = explode(",", $iurl);
+
+				if($tp->isImage($tmp[0]))
+				{
+					if($ogImageCount > 6)
+					{
+						break;
+					}
+
+					e107::meta('og:image',$tmp[0]);
+					$ogImageCount++;
+
+				}
+			}
+
+		}
 	}
 
 
