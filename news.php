@@ -278,7 +278,7 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 		{
 			if(!empty($row['news_thumbnail']))
 			{
-				$iurl = (substr($row['news_thumbnail'],0,3)=="{e_") ? $tp->replaceConstants($row['news_thumbnail'],'full') : SITEURL.e_IMAGE."newspost_images/".$news['news_thumbnail'];
+				$iurl = (substr($row['news_thumbnail'],0,3)=="{e_") ? $row['news_thumbnail'] : SITEURL.e_IMAGE."newspost_images/".$news['news_thumbnail'];
 				$tmp = explode(",", $iurl);
 
 				if($tp->isImage($tmp[0]))
@@ -288,7 +288,7 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 						break;
 					}
 
-					e107::meta('og:image',$tmp[0]);
+					e107::meta('og:image',$tp->thumbUrl($tmp[0],'w=500',false,true) );
 					$ogImageCount++;
 
 				}
@@ -1141,7 +1141,7 @@ function setNewsFrontMeta($news, $type='news')
 		// include news-thumbnail/image in meta. 
 		if($news['news_thumbnail'])
 		{
-			$iurl = (substr($news['news_thumbnail'],0,3)=="{e_") ? $tp->replaceConstants($news['news_thumbnail'],'full') : SITEURL.e_IMAGE."newspost_images/".$news['news_thumbnail'];	
+			$iurl = (substr($news['news_thumbnail'],0,3)=="{e_") ? $news['news_thumbnail'] : SITEURL.e_IMAGE."newspost_images/".$news['news_thumbnail'];
 			$tmp = explode(",", $iurl);
 			foreach($tmp as $mimg)
 			{
@@ -1149,8 +1149,8 @@ function setNewsFrontMeta($news, $type='news')
 				{
 					continue;
 				}
-				
-				e107::meta('og:image',$mimg);		
+				e107::meta('og:image',$tp->thumbUrl($tmp[0],'w=500',false,true) );
+			//	e107::meta('og:image',$mimg);
 			}
 					
 		}
