@@ -365,12 +365,12 @@ $(document).ready(function()
 						
 			var t = $(this).nextAll(".field-help");
 
-			var placement = 'right';	
+			var placement = 'top';
 			
-			if($(this).is("textarea"))
+		/*	if($(this).is("textarea"))
 			{
 				var placement = 'top';	
-			}
+			}*/
 
             var custplace = $(t).attr('data-placement'); // ie top|left|bottom|right
 
