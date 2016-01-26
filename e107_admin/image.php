@@ -595,7 +595,7 @@ class media_form_ui extends e_admin_form_ui
 		// File Picker.
 		if($_GET['action'] == 'dialog' && ($type == 'file'))
 		{		
-			$text = "<input type='button' value='Select' data-placement='left' class='e-media-select e-dialog-save e-dialog-close btn btn-primary btn-large' data-id='{$id}' data-name=\"".$title."\" data-type='file' data-target='{$tagid}' data-bbcode='{$bbcode}' data-path='{$path}' data-preview='{$preview}' title=\"".$title."\"  />";
+			$text = "<input type='button' value='Select' data-placement='left' class='e-tip e-media-select e-dialog-save e-dialog-close btn btn-primary btn-large' data-id='{$id}' data-name=\"".$title."\" data-type='file' data-target='{$tagid}' data-bbcode='{$bbcode}' data-path='{$path}' data-preview='{$preview}' title=\"".$title."\"  />";
 		}
 		else
 		{
