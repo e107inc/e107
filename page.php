@@ -300,7 +300,7 @@ class pageClass
 		$frm = e107::getForm();
 		
 		// retrieve book information. 
-		if(!$brow = $sql->retrieve('page_chapters','chapter_name,chapter_template','chapter_id = '.intval($book).' AND chapter_visibility IN ('.USERCLASS_LIST.') LIMIT 1'))
+		if(!$brow = $sql->retrieve('page_chapters','chapter_name,chapter_template,chapter_meta_description','chapter_id = '.intval($book).' AND chapter_visibility IN ('.USERCLASS_LIST.') LIMIT 1'))
 		{
 			$layout = 'default';
 		}
