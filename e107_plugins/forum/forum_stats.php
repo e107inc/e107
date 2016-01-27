@@ -266,7 +266,10 @@ class forumStats
 		{
 			if($ma['user_name'])
 			{
-				$uinfo = "<a href='".e_HTTP."user.php ?id.{$ma['user_id']}'>{$ma['user_name']}</a>"; //TODO SEf Url .
+				//$uinfo = "<a href='".e_HTTP."user.php ?id.{$ma['user_id']}'>{$ma['user_name']}</a>"; //TODO SEf Url .
+				$uparams = array('id' => $ma['user_id'], 'name' => $ma['user_name']);
+				$link = e107::getUrl()->create('user/profile/view', $uparams);
+				$uinfo = "<a href='".$link."'>".$ma['user_name']."</a>";
 			}
 			else
 			{
@@ -312,7 +315,10 @@ class forumStats
 		{
 			if($ma['user_name'])
 			{
-				$uinfo = "<a href='".e_HTTP."user.php ?id.{$ma['user_id']}'>".$ma['user_name']."</a>";  //TODO SEf Url .
+				//$uinfo = "<a href='".e_HTTP."user.php ?id.{$ma['user_id']}'>".$ma['user_name']."</a>";  //TODO SEf Url .
+				$uparams = array('id' => $ma['user_id'], 'name' => $ma['user_name']);
+				$link = e107::getUrl()->create('user/profile/view', $uparams);
+				$uinfo = "<a href='".$link."'>".$ma['user_name']."</a>";
 			}
 			else
 			{

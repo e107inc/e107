@@ -48,10 +48,14 @@ class list_members
 		{
 			while($row = $this->parent->e107->sql->fetch())
 			{
-				$record = array();
+				$record = array();    
 				$rowheading = $this->parent->parse_heading($row['user_name']);
+				//<a href='".e_BASE."user.php?id.".$row['user_id']."'>".$rowheading."</a>
+				$uparams = array('id' => $row['user_id'], 'name' => $rowheading);
+				$link = e107::getUrl()->create('user/profile/view', $uparams);
+				$userlink = "<a href='".$link."'>".$rowheading."</a>";
 				$record['icon'] = $bullet;
-				$record['heading'] = (USER ? "<a href='".e_BASE."user.php?id.".$row['user_id']."'>".$rowheading."</a>" : $rowheading);
+				$record['heading'] = (USER ? $userlink : $rowheading);
 				$record['category'] = '';
 				$record['author'] = '';
 				$record['date'] = (vartrue($this->parent->settings['date']) ? $this->parent->getListDate($row['user_join']) : "");

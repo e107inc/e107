@@ -110,7 +110,10 @@ class online_shortcodes
 		{
 			$newest_member_sql = $sql->select('user', 'user_id, user_name', "user_ban='0' ORDER BY user_join DESC LIMIT 1");
 			$row = $sql->fetch();
-			$ret = "<a href='".e_HTTP."user.php?id.".$row['user_id']."'>".$row['user_name']."</a>";
+			//$ret = "<a href='".e_HTTP."user.php?id.".$row['user_id']."'>".$row['user_name']."</a>";
+			$uparams = array('id' => $row['user_id'], 'name' => $row['user_name']);
+			$link = e107::getUrl()->create('user/profile/view', $uparams);
+			$ret = "<a href='".$link."'>".$row['user_name']."</a>";
 			$this->e107->ecache->set('online_menu_member_newest', $ret);
 		}
 		return $ret;
@@ -169,7 +172,10 @@ class online_shortcodes
 
 	function sc_online_member_user()
 	{
-		return "<a href='".e_HTTP."user.php?id.{$this->currentMember['oid']}'>{$this->currentMember['oname']}</a>";
+		//return "<a href='".e_HTTP."user.php?id.{$this->currentMember['oid']}'>{$this->currentMember['oname']}</a>";
+		$uparams = array('id' => $this->currentMember['oid'], 'name' => $this->currentMember['oname']);
+		$link = e107::getUrl()->create('user/profile/view', $uparams);
+		return "<a href='".$link."'>".$this->currentMember['oname']."</a>";
 	}
 
 

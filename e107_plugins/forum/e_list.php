@@ -101,7 +101,10 @@ class list_forum
 					$LASTPOST = "";
 					if($lp_name)
 					{
-						$LASTPOST = "<a href='".e_HTTP."user.php ?id.{$thread_lastuser}'>$lp_name</a>";
+						//$LASTPOST = "<a href='".e_HTTP."user.php ?id.{$thread_lastuser}'>$lp_name</a>";
+						$uparams = array('id' => $thread_lastuser, 'name' => $lp_name);
+						$link = e107::getUrl()->create('user/profile/view', $uparams);
+						$LASTPOST = "<a href='".$link."'>".$lp_name."</a>";
 					}
 					else
 					{
@@ -128,9 +131,12 @@ class list_forum
 				}
 				$rowheading	= $this->parent->parse_heading($parent_name);
 				$lnk = ($parent_id ? $thread_id.".post" : $thread_id);
-
+				//"<a href='".e_HTTP."user.php ?id.$thread_user'>$user_name</a>"
+				$uparams = array('id' => $thread_user, 'name' => $user_name);
+				$link = e107::getUrl()->create('user/profile/view', $uparams);
+				$userlink = "<a href='".$link."'>".$user_name."</a>";
 				$record['heading'] = "<a href='".$path."forum_viewtopic.php?$lnk'>".$rowheading."</a>";
-				$record['author'] = ($this->parent->settings['author'] ? ($thread_anon ? $thread_user : "<a href='".e_HTTP."user.php ?id.$thread_user'>$user_name</a>") : "");
+				$record['author'] = ($this->parent->settings['author'] ? ($thread_anon ? $thread_user : $userlink) : "");
 				$record['category'] = ($this->parent->settings['category'] ? "<a href='".$path."forum_viewforum.php?$forum_id'>$forum_name</a>" : "");
 				$record['date'] = ($this->parent->settings['date'] ? $this->parent->getListDate($thread_datestamp) : "");
 				$record['icon'] = $bullet;

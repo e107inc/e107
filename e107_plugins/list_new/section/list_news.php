@@ -82,7 +82,10 @@ class list_news
 					{
 						if(vartrue($row['news_author_name']))
 						{
-							$record['author'] = "<a href='".e_BASE."user.php?id.".$row['news_author_id']."'>".$row['news_author_name']."</a>";
+							//$record['author'] = "<a href='".e_BASE."user.php?id.".$row['news_author_id']."'>".$row['news_author_name']."</a>";
+							$uparams = array('id' => $row['news_author_id'], 'name' => $row['news_author_name']);
+							$link = e107::getUrl()->create('user/profile/view', $uparams);
+							$record['author'] = "<a href='".$link."'>".$row['news_author_name']."</a>";
 						}
 					}
 				}
