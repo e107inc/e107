@@ -1205,7 +1205,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 }
 
 
-
+/*
 $e_sub_cat = 'forum';
 
 require_once(e_ADMIN.'auth.php');
@@ -2405,11 +2405,11 @@ class forumAdmin
 
 			if(!$pref['image_post'])
 			{
-				$text .= "<br /><b>".FORLAN_139."</b>"; // TODO LAN
+				$text .= "<br /><b>".FORLAN_139."</b>"; //
 			}
 			if(!is_writable(e_PLUGIN.'forum/attachments'))
 			{
-				$text .= "<br /><b>Attachment dir (".e_PLUGIN_ABS.'forum/attachments'.") is not writable!</b>"; // TODO LAN
+				$text .= "<br /><b>Attachment dir (".e_PLUGIN_ABS.'forum/attachments'.") is not writable!</b>"; //
 			}
 
 			$text .= "</td>
@@ -2489,7 +2489,7 @@ class forumAdmin
 
 	function show_reported($sub_action) 
 	{
-		$rs = new form; // FIXME - update to $frm
+		$rs = new form;
 		$sql = e107::getDb();
 		$ns = e107::getRender(); 
 		$tp = e107::getParser();
@@ -2685,8 +2685,9 @@ class forumAdmin
 			</form>";
 			$ns->tablerender(LAN_FORUM_2003, $txt);  
 		}
-
-		// TODO: check media category on $frm->bbarea()
+*/
+		//
+/*
 		function show_rules()
 		{
 			$pref 	= e107::getPref();
@@ -2694,7 +2695,7 @@ class forumAdmin
 			$sql 	= e107::getDB();
 			$tp 	= e107::getParser();
 			$frm 	= e107::getForm();
-
+*/
 			/*
 			$sql->select("wmessage");
 			list($null) = $sql->fetch();
@@ -2705,7 +2706,7 @@ class forumAdmin
 			list($id, $adminrules, $wm_active6) = $sql->fetch();
 			*/
 			
-			
+/*
 			if($sql->select('generic','*',"gen_type='forum_rules_guest'"))
 			{
 				$guest_rules = $sql->fetch();
@@ -2817,4 +2818,5 @@ class forumAdmin
 
 		}
 	}
+		*/
 ?>
