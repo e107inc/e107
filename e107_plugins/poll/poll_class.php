@@ -461,7 +461,11 @@ class poll
 			$OLDPOLLS = ($type == 'menu' ? "<a href='".e_PLUGIN_ABS."poll/oldpolls.php'>".POLLAN_28."</a>" : "");
 		}
 		
-		$AUTHOR 		= POLLAN_35." ".($type == 'preview' || $type == 'forum' ? USERNAME : "<a href='".e_HTTP."user.php?id.".$pollArray['poll_admin_id']."'>".$pollArray['user_name']."</a>");
+		//"<a href='".e_HTTP."user.php?id.".$pollArray['poll_admin_id']."'>".$pollArray['user_name']."</a>"
+		$uparams = array('id' => $pollArray['poll_admin_id'], 'name' => $pollArray['user_name']);
+		$link = e107::getUrl()->create('user/profile/view', $uparams);
+		$userlink = "<a href='".$link."'>".$pollArray['user_name']."</a>";
+		$AUTHOR 		= POLLAN_35." ".($type == 'preview' || $type == 'forum' ? USERNAME : $userlink);
 
 	
 		
