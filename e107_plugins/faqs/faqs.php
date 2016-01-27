@@ -19,7 +19,7 @@ if (!defined('e107_INIT'))
 	require_once("../../class2.php");
 }
 
-if(file_exists(e_PLUGIN."faqs/controllers/list.php"))
+if(file_exists(e_PLUGIN."faqs/controllers/list.php")) // bc for old controller.
 {
 	$url = e107::getUrl()->create('faqs/list/all', false, 'full=1&noencode=1');
 	header('Location: '.$url);
