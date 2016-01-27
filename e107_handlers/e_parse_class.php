@@ -2106,14 +2106,27 @@ class e_parse extends e_parser
 		$replace = array("'", '$', "'", '$', SITEURL, "href='".SITEURL."request.php", '', '' );
 		$text = str_replace($search, $replace, $text);
 
-		// Fix any left-over '&'
-		$text = str_replace('&amp;', '&', $text); //first revert any previously converted.
-		$text = str_replace('&', '&amp;', $text);
+		$text = $this->ampEncode($text);
 
 		if($tags == true && ($text))
 		{
 			$text = "<![CDATA[".$text."]]>";
 		}
+
+		return $text;
+	}
+
+
+	/**
+	 * Clean and Encode Ampersands '&' for output to browser.
+	 * @param string $text
+	 * @return mixed|string
+	 */
+	function ampEncode($text='')
+	{
+		// Fix any left-over '&'
+		$text = str_replace('&amp;', '&', $text); //first revert any previously converted.
+		$text = str_replace('&', '&amp;', $text);
 
 		return $text;
 	}

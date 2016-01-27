@@ -654,6 +654,13 @@ class pageClass
 			e107::meta('og:image',$mimg);
 		}
 
+		$images = e107::getBB()->getContent('img',$this->pageText);
+		foreach($images as $im)
+		{
+			$im = $tp->ampEncode($im);
+			e107::meta('og:image',($im));
+		}
+
 			//return $ret;
 	}
 
