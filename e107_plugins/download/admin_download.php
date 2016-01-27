@@ -364,8 +364,12 @@ if ($action == "uopt")
          foreach($activeUploads as $row)
          {
             $post_author_id = substr($row['upload_poster'], 0, strpos($row['upload_poster'], "."));
-            $post_author_name = substr($row['upload_poster'], (strpos($row['upload_poster'], ".")+1));
-            $poster = (!$post_author_id ? "<b>".$post_author_name."</b>" : "<a href='".e_BASE."user.php?id.".$post_author_id."'><b>".$post_author_name."</b></a>");
+            $post_author_name = substr($row['upload_poster'], (strpos($row['upload_poster'], ".")+1)); 
+            // $poster = (!$post_author_id ? "<b>".$post_author_name."</b>" : "<a href='".e_BASE."user.php?id.".$post_author_id."'><b>".$post_author_name."</b></a>");
+            $uparams = array('id' => $post_author_id, 'name' => $post_author_name);
+            $link = e107::getUrl()->create('user/profile/view', $uparams);
+            $userlink = "<a href='".$link."'><b>".$post_author_name."</b></a>";
+            $poster = (!$post_author_id ? "<b>".$post_author_name."</b>" : $userlink);
             $upload_datestamp = $gen->convert_date($row['upload_datestamp'], "short");
             $text .= "
             <tr>

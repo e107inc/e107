@@ -110,7 +110,10 @@ foreach ($forumArray as $forumInfo)
 		$tmp = explode(".", $thread_lastuser, 2);
 		if($lp_name)
 		{
-			$LASTPOST = "<a href='".e_BASE."user.php?id.{$tmp[0]}'>$lp_name</a>";
+			//$LASTPOST = "<a href='".e_BASE."user.php?id.{$tmp[0]}'>$lp_name</a>";
+			$uparams = array('id' => $tmp[0], 'name' => $lp_name]);
+			$link = e107::getUrl()->create('user/profile/view', $uparams);
+			$LASTPOST = "<a href='".$link."'>".$lp_name."</a>";
 		}
 		else
 		{
@@ -196,7 +199,10 @@ foreach ($forumArray as $forumInfo)
 	$tmp = explode(".", $x[0], 2);
 	if($user_name)
 	{
-		$POSTER = "<a href='".e_BASE."user.php?id.{$tmp[0]}'>$user_name</a>";
+		//$POSTER = "<a href='".e_BASE."user.php?id.{$tmp[0]}'>$user_name</a>";
+		$uparams = array('id' => $tmp[0], 'name' => $user_name]);
+		$link = e107::getUrl()->create('user/profile/view', $uparams);
+		$POSTER = "<a href='".$link."'>".$user_name."</a>";
 	}
 	else
 	{

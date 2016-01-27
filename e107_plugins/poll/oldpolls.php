@@ -54,12 +54,15 @@ if(e_QUERY)
 
 		$start_datestamp = $gen->convert_date($poll_datestamp, "long");
 		$end_datestamp = $gen->convert_date($poll_end_datestamp, "long");
-
+		//<a href='".e_BASE."user.php?id.{$user_id}'>".$user_name."</a>
+		$uparams = array('id' => $user_id, 'name' => $user_name);
+		$link = e107::getUrl()->create('user/profile/view', $uparams);
+		$userlink = "<a href='".$link."'>".$user_name."</a>";
 		$text = "<table style='".USER_WIDTH."'>
 		<tr>
 		<td colspan='2' class='mediumtext' style='text-align:center'>
 		<b>".$tp -> toHTML($poll_title,TRUE,'TITLE')."</b>
-		<div class='smalltext'>".POLLAN_35." <a href='".e_BASE."user.php?id.{$user_id}'>".$user_name."</a>.<br /> ".POLLAN_37." ".$start_datestamp." ".POLLAN_38." ".$end_datestamp.".<br />".POLLAN_26.": {$voteTotal}</div>
+		<div class='smalltext'>".POLLAN_35." ".$userlink."<br /> ".POLLAN_37." ".$start_datestamp." ".POLLAN_38." ".$end_datestamp.".<br />".POLLAN_26.": {$voteTotal}</div>
 		<br />
 
 		</td>
@@ -149,10 +152,13 @@ foreach($oldpollArray as $oldpoll)
 	$to = $gen->convert_date($poll_end_datestamp, "short");
 
 	$poll_title = $tp->e_bb->parseBBCodes($poll_title, 0,TRUE,TRUE);		// Strip bbcodes
-
+//<a href='".e_BASE."user.php?id.{$poll_admin_id}'>{$user_name}</a>
+	$uparams = array('id' => $poll_admin_id, 'name' => $user_name);
+	$link = e107::getUrl()->create('user/profile/view', $uparams);
+	$userlink = "<a href='".$link."'>".$user_name."</a>";
 	$text .= "<tr>
 	<td class='forumheader3' style='width: 55%;'><a href='".e_SELF."?{$poll_id}'>{$poll_title}</a></td>
-	<td class='forumheader3' style='width: 15%;'><a href='".e_BASE."user.php?id.{$poll_admin_id}'>{$user_name}</a></td>
+	<td class='forumheader3' style='width: 15%;'>".$userlink."</td>
 	<td class='forumheader3' style='width: 30%;'>{$from} ".POLLAN_38." {$to}</td>
 	</tr>\n";
 }
