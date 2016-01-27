@@ -72,7 +72,10 @@ if(!class_exists('chatbox_shortcodes'))
 			list($cb_uid, $cb_nick) = explode(".", $this->var['cb_nick'], 2);
 			if($this->var['user_name'])
 			{
-				$cb_nick = "<a href='".e_HTTP."user.php?id.{$cb_uid}'>".$this->var['user_name']."</a>";
+				//$cb_nick = "<a href='".e_HTTP."user.php?id.{$cb_uid}'>".$this->var['user_name']."</a>";
+				$uparams = array('id' => $cb_uid, 'name' => $this->var['user_name']);
+				$link = e107::getUrl()->create('user/profile/view', $uparams);
+				$cb_nick = "<a href='".$link."'>".$this->var['user_name']."</a>";
 			}
 			else
 			{

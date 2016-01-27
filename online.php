@@ -273,7 +273,10 @@ Think these are no longer used
 	
   $ONLINE_TABLE_ICON = (vartrue($pref['plug_installed']['pm']) && $oid != USERID ? $tp->parseTemplate("{SENDPM={$oid}}", 'sendpm.sc') : "<img src='".e_PLUGIN."online_extended_menu/images/user.png' alt='' style='vertical-align:middle' />");
  
-  $ONLINE_TABLE_USERNAME = "<a href='".e_BASE."user.php?id.$oid'>{$oname}</a>";
+  //$ONLINE_TABLE_USERNAME = "<a href='".e_BASE."user.php?id.$oid'>{$oname}</a>";
+  $uparams = array('id' => $oid, 'name' => $oname);
+  $link = e107::getUrl()->create('user/profile/view', $uparams);
+  $ONLINE_TABLE_USERNAME = "<a href='".$link."'>".$oname."</a>";
   $ONLINE_TABLE_LOCATION = ($class_check ? "<a href='{$online_location}'>{$online_location_page}</a>" : $online_location_page);
 
   $textstring .= preg_replace("/\{(.*?)\}/e", '$\1', $ONLINE_TABLE);

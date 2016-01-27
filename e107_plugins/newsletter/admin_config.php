@@ -654,10 +654,14 @@ class newsletter
 						$nl_sql -> db_Select("user", "*", "user_id=".$val);
 						if($nl_row = $nl_sql-> db_Fetch())
 						{
+							//<a href='".e_BASE."user.php?id.{$val}'>".$nl_row['user_name']."</a>
+							$uparams = array('id' => $val, 'name' => $nl_row['user_name']);
+							$link = e107::getUrl()->create('user/profile/view', $uparams);
+							$userlink = "<a href='".$link."'>".$nl_row['user_name']"</a>";
 							$vs_text .= "
 							<tr>
 								<td>".$val."</td>
-								<td><a href='".e_BASE."user.php?id.{$val}'>".$nl_row['user_name']."</a></td>
+								<td>".$userlink."</td>
 								<td>".$nl_row['user_email']."</td>
 								<td><a href='".e_SELF."?remove.{$p_id}.{$val}'>".ADMIN_DELETE_ICON."</a>".(($nl_row['user_ban'] > 0) ? NLLAN_62 : "")."</td>
 							</tr>";
