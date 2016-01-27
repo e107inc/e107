@@ -108,7 +108,7 @@ class faqs_shortcodes extends e_shortcode
 	function sc_faq_question_link($parm='')
 	{
 		$tp = e107::getParser();
-		return "<a class='faq-question' href='". e107::getUrl()->create('faqs/view/item', array('id' => $this->var['faq_id']))."' >".$tp -> toHTML($this->var['faq_question'],true,'TITLE')."</a>";
+		return "<a class='faq-question' href='". e107::url('faqs', 'item', $this->var)."' >".$tp -> toHTML($this->var['faq_question'],true,'TITLE')."</a>";
 	}
 	
 	function sc_faq_answer()
@@ -149,7 +149,8 @@ class faqs_shortcodes extends e_shortcode
 		$urlparms = array();
 		if($this->category) $urlparms['category'] = $this->category;
 		$urlparms['tag'] = $tag;
-		$url = e107::getUrl()->create('faqs/list/all', $urlparms);
+	//	$url = e107::getUrl()->create('faqs/list/all', $urlparms);
+		$url = e107::url('faqs', 'tag', $urlparms);
 		if($parm == 'url') return $url;
 		
 		return '<a href="'.$url.'" title="'.$tag.'">'.$tag.'</a>';
@@ -206,7 +207,7 @@ class faqs_shortcodes extends e_shortcode
 	
 	function sc_faq_caturl()
 	{
-		return e107::getUrl()->create('faqs/list/all', array('category' => $this->var['faq_info_id']));	
+		return e107::url('faqs', 'category', $this->var);
 	}
 
 
