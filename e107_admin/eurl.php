@@ -177,12 +177,12 @@ class eurl_admin_ui extends e_admin_controller_ui
 			
 		if($success)
 		{
-			e107::getMessage()->addSuccess($success." SEF URLs were updated.");
+			e107::getMessage()->addSuccess($success. LAN_EURL_SURL_UPD);
 		}
 		
 		if($failed)
 		{
-			e107::getMessage()->addError($failed." SEF URLs were NOT updated.");	
+			e107::getMessage()->addError($failed. LAN_EURL_SURL_NUPD);	
 		}
 		
 		
@@ -740,7 +740,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 			$bPrimary = $admin['generate']['primary'];
 			
 		
-			$text .= (is_array($admin['generate'])) ? $frm->admin_button('rebuild['.$bTable.']', $bPrimary."::".$bInput."::".$bOutput,'delete',"Rebuild") : "";	  
+			$text .= (is_array($admin['generate'])) ? $frm->admin_button('rebuild['.$bTable.']', $bPrimary."::".$bInput."::".$bOutput,'delete', LAN_EURL_REBUILD) : "";	  
 				  
 
 			$text .= "</td>

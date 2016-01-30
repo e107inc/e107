@@ -232,13 +232,13 @@ function theme_adminmenu()
 		$var['choose']['text'] = TPVLAN_51;
 		$var['choose']['link'] = e_SELF."?mode=choose";
 		
-		$var['online']['text'] = "Find Themes";
+		$var['online']['text'] = TPVLAN_62;
 		$var['online']['link'] = e_SELF."?mode=online";
 
 		$var['upload']['text'] = TPVLAN_38;
 		$var['upload']['link'] = e_SELF."?mode=upload";
 		
-		$var['convert']['text'] = "Convert";
+		$var['convert']['text'] = TPVLAN_63;
 		$var['convert']['link'] = e_SELF."?mode=convert";
 
       //  $selected = (e_QUERY) ? e_QUERY : "main";
@@ -291,12 +291,13 @@ class theme_builder
 				$newDir[$dir] = $dir;
 			}
 			
-			$mes->addInfo("This Wizard will build a theme.xml meta file for your theme.<br />
-				Before you start: <ul>
-						<li>Make sure your theme's directory is writable</b></li>
-						<li>Select your theme's folder to begin.</li>
+			$mes->addInfo(' '.TPVLAN_64.' <br />
+       '.TPVLAN_65.' 
+            <ul> 
+						<li> '.TPVLAN_66.'</li>
+						<li> '.TPVLAN_67.'</li>
 				</ul>
-			");
+	');
 			
 			$text = $frm->open('createPlugin','get',e_SELF."?mode=convert");
 			$text .= "<table class='table adminform'>
@@ -305,7 +306,7 @@ class theme_builder
 							<col class='col-control' />
 						</colgroup>
 				<tr>
-					<td>Select your theme's folder</td>
+					<td> ".TPVLAN_68."</td>
 					<td>".$frm->select("newtheme",$newDir)."</td>
 				</tr>";
 				
@@ -320,12 +321,12 @@ class theme_builder
 			$text .= "				
 				</table>
 				<div class='buttons-bar center'>
-				".$frm->admin_button('step', 2,'other','Go')."
+				".$frm->admin_button('step', 2,'other',LAN_GO)."
 				</div>";
 			
 			$text .= $frm->close();
 			
-			$ns->tablerender(TPVLAN_26.SEP."Converter".SEP."Step 1", $mes->render() . $text);			
+			$ns->tablerender(TPVLAN_26.SEP."Converter".SEP. TPVLAN_CONV_1, $mes->render() . $text);			
 			
 		}	
 
@@ -340,12 +341,12 @@ class theme_builder
 			
 			$data = array(
 				'main' 			=> array('name','lang','version','date', 'compatibility'),
-				'author' 		=> array('name','url'),
-				'summary' 		=> array('summary'),
+			  'author' 		=> array('name','url'),
+				'summary'		=> array('summary'),
 				'description' 	=> array('description'),
 				'keywords' 		=> array('one','two'),
 				'category'		=> array('category'),
-				'copyright'		=> array('copyright'),
+				'copyright' 	=> array('copyright'),
 				'stylesheets' 	=> array('stylesheets')
 		//		'adminLinks'	=> array('url','description','icon','iconSmall','primary'),
 		//		'sitelinks'		=> array('url','description','icon','iconSmall')
@@ -412,12 +413,12 @@ class theme_builder
 			<div class='buttons-bar center'>"
 			.$frm->hidden('newtheme', $this->themeName)
 			.$frm->hidden('xml[custompages]', trim(vartrue($leg['CUSTOMPAGES'])))
-			.$frm->admin_button('step', 3,'other','Generate')."
+			.$frm->admin_button('step', 3,'other',LAN_GENERATE)."
 			</div>";
 			
 			$text .= $frm->close();
 
-			$ns->tablerender(TPVLAN_26.SEP."Converter".SEP."Step 2", $mes->render() . $text);		
+			$ns->tablerender(TPVLAN_26.SEP."Converter".SEP. TPVLAN_CONV_2, $mes->render() . $text);		
 		}
 					
 				
@@ -592,47 +593,47 @@ TEMPLATE;
 			{
 				
 				case 'main-name':
-					$help 		= "The name of your theme. (Must be written in English)";
+					$help 		= TPVLAN_CONV_3;
 					$required 	= true;
 					$pattern 	= "[A-Za-z ]*";
 				break;
 		
 				case 'main-lang':
-					$help 		= "If you have a language file, enter the LAN_XXX value for the theme's name";
+					$help 		= TPVLAN_CONV_4;
 					$required 	= false;
 					$placeholder= " ";
 					$pattern 	= "[A-Z0-9_]*";
 				break;
 				
 				case 'main-date':
-					$help 		= "Creation date of your theme";
+					$help 		= TPVLAN_CONV_6;
 					$required 	= true;
 				break;
 				
 				case 'main-version':
 					$default 	= '1.0';
 					$required 	= true;
-					$help 		= "The version of your theme. Format: x.x";
+					$help 		= TPVLAN_CONV_5;
 					$pattern	= "^[\d]{1,2}\.[\d]{1,2}$";
 				break;
 
 				case 'main-compatibility':
 					$default 	= '2.0';
 					$required 	= true;
-					$help 		= "Compatible with this version of e107";
+					$help 		= TPVLAN_CONV_7;
 					$pattern	= "^[\d]{1,2}\.[\d]{1,2}$";
 				break;
 				
 				case 'author-name':
 					$default 	= (vartrue($default)) ? $default : USERNAME;
 					$required 	= true;
-					$help 		= "Author Name";
+					$help 		= TPVLAN_CONV_8;
 					$pattern	= "[A-Za-z \.0-9]*";
 				break;
 				
 				case 'author-url':
 					$required 	= true;
-					$help 		= "Author Website Url";
+					$help 		= TPVLAN_CONV_9;
 				//	$pattern	= "https?://.+";
 				break;
 				
@@ -641,7 +642,7 @@ TEMPLATE;
 				//break;	
 				
 				case 'summary-summary':
-					$help 		= "A short one-line description of the plugin. (!@#$%^&* characters not permitted) <br />(Must be written in English)";
+					$help 		= TPVLAN_CONV_10;
 					$required 	= true;
 					$size 		= 100;
 					$placeholder= " ";
@@ -650,7 +651,7 @@ TEMPLATE;
 				
 				case 'keywords-one':
 				case 'keywords-two':
-					$help 		= "Keyword/Tag for this theme<br />(Must be written in English)";
+					$help 		= TPVLAN_CONV_11;
 					$required 	= true;
 					$size 		= 20;
 					$placeholder= " ";
@@ -658,7 +659,7 @@ TEMPLATE;
 				break;	
 				
 				case 'description-description':
-					$help 		= "A full description of the theme<br />(Must be written in English)";
+					$help 		= TPVLAN_CONV_12;
 					$required 	= true;
 					$size 		= 100;
 					$placeholder = " ";
@@ -667,7 +668,7 @@ TEMPLATE;
 				
 					
 				case 'category-category':
-					$help 		= "What category of theme is this?";
+					$help 		= TPVLAN_CONV_13;
 					$required 	= true;
 					$size 		= 20;
 				break;
@@ -695,9 +696,9 @@ TEMPLATE;
 						$text .= "<div class='row-fluid'>";
 						$text .= "<div class='controls'>";
 						$text .= "<div class='span3'>".$frm->checkbox($name.'['.$key.'][file]',$file, false, array('label'=>$file))."
-						<div class='field-help'>Enable this stylesheet as a selectable option in the Theme Manager.</div></div>";
+						<div class='field-help'>".TPVLAN_CONV_14."</div></div>";
 						$text .= "<div class='span3'>".$frm->text($name.'['.$key.'][name]', $default, $size, 'placeholder='.$file . $req. $pat)."
-						<div class='field-help'>Give this stylesheet a name</div></div>";
+						<div class='field-help'>".TPVLAN_CONV_15."</div></div>";
 					//	$text .= "<div class='span2'>".$frm->checkbox('css['.$key.'][file]',$file, false, array('label'=>$file))."</div>";
 					//	$text .= "<div class='span2'>".$frm->text('css['.$key.'][name]', $default, $size, 'placeholder='.$placeholder . $req. $pat)."</div>";	
 						$text .= "</div>";
