@@ -74,5 +74,37 @@ define("TPVLAN_58", "This theme comes with pre-installed example content (such a
 define("TPVLAN_59", "Please be aware that the example content will [b]overwrite[/b] your current content with the following");
 define("TPVLAN_60", "[x] record(s) in your [y] table");
 define("TPVLAN_61", "Would you like to [b]replace[/b] your current content with the default example content provided by the theme?");
+define("TPVLAN_62", "Find Themes");
+define("TPVLAN_63", "Convert");
+
+define("TPVLAN_64", "This Wizard will build a theme.xml meta file for your theme.");
+define("TPVLAN_65", "Before you start : ");
+define("TPVLAN_66", "Make sure your theme's directory is writable");
+define("TPVLAN_67", "Select your theme's folder to begin.");
+define("TPVLAN_68", "Select your theme's folder");
+define("TPVLAN_69", "Available for Download");
+define("TPVLAN_70", "Preview/Live-demo : ");
+define("TPVLAN_71", "Not Specified");
+define("TPVLAN_72", "Set pages which should automatically use this layout. One per line.");
+define("TPVLAN_73", "Activate Menus");
+define("TPVLAN_74", "Activates the following:");
+
+// convert
+define("TPVLAN_CONV_1", "Step 1");
+define("TPVLAN_CONV_2", "Step 2");
+define("TPVLAN_CONV_3", "The name of your theme. (Must be written in English)");
+define("TPVLAN_CONV_4", "If you have a language file, enter the LAN_XXX value for the theme's name");
+define("TPVLAN_CONV_5", "The version of your theme. Format: x.x");
+define("TPVLAN_CONV_6", "Creation date of your theme");
+define("TPVLAN_CONV_7", "Compatible with this version of e107");
+define("TPVLAN_CONV_8", "Author Name");
+define("TPVLAN_CONV_9", "Author Website Url");
+define("TPVLAN_CONV_10", "A short one-line description of the plugin. (!@#$%^&* characters not permitted)(Must be written in English)");
+define("TPVLAN_CONV_11", "Keyword/Tag for this theme (Must be written in English)");
+define("TPVLAN_CONV_12", "A full description of the theme (Must be written in English)");
+define("TPVLAN_CONV_13", "What category of theme is this?");
+define("TPVLAN_CONV_14", "Enable this stylesheet as a selectable option in the Theme Manager.");
+define("TPVLAN_CONV_15", "Give this stylesheet a name");
+
 
 ?>

@@ -331,7 +331,8 @@ define("LAN_STATUS", "Status");
 define("LAN_URL", "URL");
 
 define("LAN_OWNER", "Owner");
-
+define("LAN_PURCHASE", "Purchase ");
+define("LAN_DOWN_THEME", "Downloading ");
 
 define("LAN_ID", "ID");
 
@@ -415,7 +416,9 @@ define("LAN_CUSTOM_URL", "Custom URL");
 define("LAN_CUSTOM_URL_DISABLED", "Disabled or Enter Custom URL");
 
 define("LAN_GENERAL", "General");
-define("LAN_GENERATE", "Generate");
+//define("LAN_GENERATE", "Generate"); //moved to English php
+define("LAN_GEN_PW", "Generate a password");
+define("LAN_DISPL_PW", "Display the password");
 define("LAN_WILL_OVERWRITE_SEF", "This will overwrite your existing SEF URL.");
 
 // TODO - move e_form related LANS below, add new lan_form.php file (for both front/back-end)

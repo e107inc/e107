@@ -19,6 +19,7 @@ define("FRTLAN_51", "Other");
 define("FRTLAN_PAGE_TITLE", "Front Page");
 define("FRTLAN_56", "duplicate definition for class:");
 define("FRTLAN_57", "Software error");
+define("FRTLAN_61", "Selection");
 
 // define("FRTLAN_53", "User Class");
 //define("FRTLAN_1", "Front Page settings updated.");
