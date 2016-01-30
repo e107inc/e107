@@ -670,7 +670,7 @@ class themeHandler
 
 			$text .= "</form>";
 
-			$ns->tablerender(TPVLAN_26.SEP."Available for Download", $mes->render().$text);
+			$ns->tablerender(TPVLAN_26.SEP.TPVLAN_69, $mes->render().$text);
 
 	}
 	
@@ -1102,7 +1102,7 @@ class themeHandler
 			//$main_icon = "<a data-src='".$downloadUrl."' href='{$downloadUrl}' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='-e-ajax' title='".$LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";		
 		//	$main_icon = "<a data-toggle='modal' data-modal-caption=\"".$caption."\" href='{$downloadUrl}' data-cache='false' data-target='#uiModal' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('download',array('size'=>'2x'))."</a> ";
 			
-			$modalCaption = (empty($theme['price'])) ? 'Downloading '.$theme['name']." ".$theme['version'] : 'Purchase '.$theme['name']." ".$theme['version'];
+			$modalCaption = (empty($theme['price'])) ? ' '.LAN_DOWN_THEME.' '.$theme['name']." ".$theme['version'] :' '.LAN_PURCHASE.' '.$theme['name']." ".$theme['version'];
 			$main_icon = "<a class='e-modal btn-default btn btn-sm btn-small btn-inverse' data-modal-caption=\"".$modalCaption."\" rel='external'  href='{$downloadUrl}' data-cache='false' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('download',array('size'=>'2x'))."</a>";
 		
 			
@@ -1122,7 +1122,7 @@ class themeHandler
 	
 		}
 		
-		$preview_icon 	= "<a class='e-modal btn btn-default btn-sm btn-small btn-inverse' title='Preview/Live-Demo : ".$theme['name']."' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" rel='external'  href='".$previewPath."'>".$tp->toGlyph('fa-search',array('size'=>'2x'))."</a>";
+		$preview_icon 	= "<a class='e-modal btn btn-default btn-sm btn-small btn-inverse' title=' ".TPVLAN_70." ".$theme['name']."' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" rel='external'  href='".$previewPath."'>".$tp->toGlyph('fa-search',array('size'=>'2x'))."</a>";
 		
 		
 		if(!in_array($theme['path'], $this->approvedAdminThemes))
@@ -1224,7 +1224,7 @@ class themeHandler
 			//		$text .= "<tr><td style='vertical-align:top; width:25%'><b>Price</b>:</td><td style='vertical-align:top'>".$price."</td></tr>";
 					$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_49."</b>:</td>
 						<td style='vertical-align:top' colspan='2'>";
-					$text .= ($theme['xhtmlcompliant']) ? "W3C XHTML ".$theme['xhtmlcompliant'] : "Not Specified";
+					$text .= ($theme['xhtmlcompliant']) ? "W3C XHTML ".$theme['xhtmlcompliant'] : TPVLAN_71;
 					$text .= ($theme['csscompliant']) ? " &amp; CSS ".$theme['csscompliant'] : "";
 					$text .= "</td></tr>";
 		
@@ -1311,7 +1311,7 @@ class themeHandler
 							{
 								foreach ($pref['sitetheme_custompages'][$key] as $cp)
 								{
-									$custompage_diz .= "<a href='#element-to-be-shown-{$key}' title='Set pages which should automatically use this layout. One per line.' class='e-tip btn btn-default btn-xs btn-mini e-expandit'>".trim($cp)."</a>&nbsp;";
+									$custompage_diz .= "<a href='#element-to-be-shown-{$key}' title=' ".TPVLAN_72." ' class='e-tip btn btn-default btn-xs btn-mini e-expandit'>".trim($cp)."</a>&nbsp;";
 									if($count > 4)
 									{
 										$custompage_diz .= "...";
@@ -1322,7 +1322,7 @@ class themeHandler
 							}
 							else
 							{
-								$custompage_diz = "<a href='#element-to-be-shown-{$key}' title='Set pages which should automatically use this layout. One per line.' class='e-tip btn btn-xs btn-default btn-mini e-expandit'>None</a> ";
+								$custompage_diz = "<a href='#element-to-be-shown-{$key}' title=' ".TPVLAN_72." ' class='e-tip btn btn-xs btn-default btn-mini e-expandit'>".LAN_NONE."</a> ";
 							}
 			
 							
@@ -1618,13 +1618,13 @@ class themeHandler
 		
 // 		print_a($preset); 
 		//TODO LAN
-		$text = "<div class='btn-group pull-right'>".$frm->admin_button("setMenuPreset[".$key."]", "Activate Menus",'other');
+		$text = "<div class='btn-group pull-right'>".$frm->admin_button("setMenuPreset[".$key."]", TPVLAN_73,'other');
 		$text .= '<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
 		<span class="caret"></span>
 		</button>
 		<ul class="dropdown-menu col-selection">
 		<!-- dropdown menu links -->
-		<li class="dropdown-header">Activates the following:</li>
+		<li class="dropdown-header">'.TPVLAN_74.'</li>
 		';
 										
 		foreach($preset as $val)
