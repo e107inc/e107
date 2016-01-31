@@ -214,7 +214,7 @@ define("LAN_FORUM_3026", "Post topic as"); // LAN_400 (p)
 define("LAN_FORUM_3028", "Add Poll"); // new // poll - partly in e107_plugins/poll/poll_class.php
 define("LAN_FORUM_3038", "Normal"); // LAN_1
 define("LAN_FORUM_3039", "Deactivate emoticons for this post"); // LAN_FORUMPOST_EMOTES
-define("LAN_FORUM_3040", "Enable email tracking (email sent when reply is posted)"); // LAN_380
+define("LAN_FORUM_3040", "Enable/disable email tracking (email sent when reply is posted)"); // LAN_380
 // missing 41-21
 
 // forum_posted_template

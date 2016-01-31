@@ -69,15 +69,25 @@ if(vartrue($_GET['id']) && isset($_GET['dl']))
 	exit;
 }
 
-if(e_AJAX_REQUEST && varset($_POST['action']) == 'quickreply')
+if(e_AJAX_REQUEST)
 {
-	$forum->ajaxQuickReply();
+    if(varset($_POST['action']) == 'quickreply')
+	{
+		$forum->ajaxQuickReply();
+	}
+
+	if(varset($_POST['action']) == 'track')
+	{
+		$forum->ajaxTrack();
+	}
+
+	if(MODERATOR)
+	{
+		$forum->ajaxModerate();
+	}
+
 }
-	
-if(e_AJAX_REQUEST && MODERATOR) // see javascript above. 
-{
-	$forum->ajaxModerate();
-}
+
 		
 if (isset($_GET['last']))
 {
@@ -91,11 +101,15 @@ if(isset($_GET['f']) && $_GET['f'] == 'post')
 
 $thread->init();
 
+
+/*
 if(isset($_POST['track_toggle']))
 {
 	$thread->toggle_track();
 	exit;
-}
+}*/
+
+
 
 if(!empty($_GET['f']))
 {
@@ -251,11 +265,15 @@ $tVars->NEXTPREV .= "<a class='btn btn-default btn-sm btn-small' href='" . $e107
 if ($forum->prefs->get('track') && USER)
 {
 	$img = ($thread->threadInfo['track_userid'] ? IMAGE_track : IMAGE_untrack);
+
+/*
 	$url = $e107->url->create('forum/thread/view', array('id' => $thread->threadId), 'encode=0'); // encoding could break AJAX call
-	//FIXME
-	/*$tVars->TRACK .= "
+
+	$url = e107::url('forum','index');
+
+	$tVars->TRACK .= "
 			<span id='forum-track-trigger-container'>
-			<a class='btn btn-default btn-sm btn-small' href='{$url}' id='forum-track-trigger'>{$img}</a>
+			<a class='btn btn-default btn-sm btn-small e-ajax' data-target='forum-track-trigger' href='{$url}' id='forum-track-trigger'>{$img}</a>
 			</span>
 			<script type='text/javascript'>
 			e107.runOnLoad(function(){
@@ -272,6 +290,9 @@ if ($forum->prefs->get('track') && USER)
 			}, document, true);
 			</script>
 	";*/
+
+	$tVars->TRACK = "<a id='forum-track-button' href='#' title=\"".LAN_FORUM_3040."\" data-token='".e_TOKEN."' data-forum-insert='forum-track-button'  data-forum-post='".$thread->threadInfo['thread_forum_id']."' data-forum-thread='".$thread->threadInfo['thread_id']."' data-forum-action='track' name='track' class='e-tip btn btn-default' >".$img."</a>
+";
 
 }
 
@@ -754,7 +775,7 @@ class e107ForumThread
 		$this->noInc = false;
 	}
 
-
+/*
 
 	function toggle_track()
 	{
@@ -778,6 +799,7 @@ class e107ForumThread
 			exit();
 		}
 	}
+*/
 
 	/**
 	 * @return bool|null|string|void

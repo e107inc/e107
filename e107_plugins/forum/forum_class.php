@@ -57,6 +57,10 @@ $(document).ready(function()
 							var alertType = 'info';
 						}			
 
+						if(d.status == 'error')
+						{
+							alertType = 'danger';
+						}
 
 						// http://nijikokun.github.io/bootstrap-notify/
 
@@ -82,7 +86,16 @@ $(document).ready(function()
 					{
 						location.reload();
 						return;
-					}		
+					}
+
+					if(action == 'track')
+					{
+						if(d.html != false)
+						{
+							$('#'+ insert).html(d.html);
+						//	alert(d.html);
+						}
+					}
 					
 					if(action == 'quickreply' && d.status == 'ok' )
 					{
@@ -359,8 +372,63 @@ class e107forum
 		exit;
 
 	}
-	
-	
+
+
+	/**
+	* Process Tracking Enable/disable
+	*/
+	public function ajaxTrack()
+	{
+		$ret = array();
+		$ret['status'] 	= 'error';
+
+		$threadID = intval($_POST['thread']);
+
+		if(!USER || empty($threadID))
+		{
+			exit;
+		}
+
+		$sql = e107::getDb();
+
+		if($sql->select('forum_track', '*', "track_userid=".USERID." AND track_thread=".$threadID))
+		{
+			if($this->track('del', USERID, $threadID))
+			{
+				$ret['html'] = IMAGE_untrack;
+				$ret['msg'] = "You are no longer tracking this thread."; //TODO LAN
+				$ret['status'] = 'ok';
+			}
+			else
+			{
+				$ret['msg'] = 'There was a problem disabling the tracking.';  //TODO LAN
+				$ret['status'] = 'error';
+			}
+
+		}
+		else
+		{
+			if($this->track('add', USERID, $threadID))
+			{
+				$ret['msg'] = "You are now tracking this thread. ";  //TODO LAN
+				$ret['html']  = IMAGE_track;
+				$ret['status'] = 'ok';
+			}
+			else
+			{
+				$ret['html'] = IMAGE_untrack;
+				$ret['msg'] = "There was a problem.";  //TODO LAN
+				$ret['status'] = 'error';
+			}
+
+
+		}
+
+		echo json_encode($ret);
+
+		exit;
+
+	}
 	
 	
 	public function ajaxModerate()
@@ -1536,7 +1604,6 @@ class e107forum
 
 	function track($which, $uid, $threadId, $force=false)
 	{
-		$e107 = e107::getInstance();
 		$sql = e107::getDb();
 
 		if ($this->prefs->get('track') != 1 && !$force) { return false; }
