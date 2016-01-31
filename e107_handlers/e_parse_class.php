@@ -3198,7 +3198,10 @@ class e_parser
 		$title = (ADMIN) ? $image : $tp->toAttribute($userData['user_name']);
 		$shape = (vartrue($options['shape'])) ? "img-".$options['shape'] : "img-rounded";
 
-		$text = "<img class='".$shape." img-responsive user-avatar e-tip' title=\"".$title."\" src='".$img."' alt='' width='".$width."' height='".$height."' />";
+
+		$heightInsert = empty($height) ? '' : "height='".$height."'";
+
+		$text = "<img class='".$shape." img-responsive user-avatar e-tip' title=\"".$title."\" src='".$img."' alt='' width='".$width."' ".$heightInsert." />";
 	//	return $img;
 		return $text;
 		

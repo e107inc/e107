@@ -307,7 +307,7 @@ if (!function_exists('asortbyindex'))
 if (!function_exists('r_emote')) 
 {
 	/**
-	 * @DEPRECATED
+	 * Still in use.
 	 */
 	function r_emote()
 	{
@@ -331,10 +331,24 @@ if (!function_exists('r_emote'))
 			$value = ($value2 ? $value2 : $value);
 			$value = ($value == '&|') ? ':((' : $value;
 			$value = " ".$value." ";
-			//TODO CSS class
-			$str .= "\n<a href=\"javascript:addtext('$value',true)\"><img src='$key' alt='' /></a> ";
+
+		//	$str .= "\n<a class='addEmote' data-emote=\"".$value."\" href=\"javascript:addtext('$value',true)\"><img src='$key' alt='' /></a> ";
+			$str .= "\n<a class='addEmote' data-emote=\"".$value."\" href=\"#\"><img src='$key' alt='' /></a> ";
 		}
-	
+
+		$JS = "
+
+		$('.addEmote').click(function(){
+
+			val = $(this).attr('data-emote')
+			addtext(val,true);
+			return false;
+		});
+		";
+
+		e107::js('footer-inline',$JS);
+
+
 		return "<div class='spacer'>".$str."</div>";
 	}
 }
