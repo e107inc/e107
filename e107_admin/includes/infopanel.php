@@ -633,7 +633,7 @@ class adminstyle_infopanel
 			if (getperms($icon['perms']))
 			{
 				$checked = (varset($user_pref['core-infopanel-mye107']) && in_array($key, $user_pref['core-infopanel-mye107'])) ? true : false;
-				$text .= "<div class='left f-left list field-spacer checkbox' style='display:block;height:24px;width:200px;'>
+				$text .= "<div class='left f-left list field-spacer form-inline' style='display:block;height:24px;width:200px;'>
 		                        ".$icon['icon'].' '.$frm->checkbox_label($icon['title'], 'e-mye107[]', $key, $checked)."</div>";
 								
 			}
@@ -646,7 +646,7 @@ class adminstyle_infopanel
 				if (getperms($icon['perms']))
 				{
 					$checked = (in_array('p-'.$key, $user_pref['core-infopanel-mye107'])) ? true : false;
-					$text .= "<div class='left f-left list field-spacer checkbox' style='display:block;height:24px;width:200px;'>
+					$text .= "<div class='left f-left list field-spacer form-inline' style='display:block;height:24px;width:200px;'>
 			                         ".$icon['icon'].$frm->checkbox_label($icon['title'], 'e-mye107[]', $key, $checked)."</div>";
 				}
 			}
