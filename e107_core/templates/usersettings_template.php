@@ -214,7 +214,7 @@ $USERSETTINGS_WRAPPER['edit']['CUSTOMTITLE'] =			"<div class='form-group'>
 														";
 
 $USERSETTINGS_WRAPPER['edit']['USERCLASSES'] = 			"<div class='form-group'>
-															<label for='userclasses' class='col-sm-3 control-label'>".LAN_USER_76.":".req($pref['signup_option_class'])."</label>
+															<label  class='col-sm-3 control-label'>".LAN_USER_76.":".req($pref['signup_option_class'])."</label>
 														       	<div class='col-sm-9'>{---}</div>
 														   </div>
 														";
@@ -256,14 +256,14 @@ $USERSETTINGS_TEMPLATE['edit'] = "
 
 
 	<div class='form-group'>
-	<label for='loginname' class='col-sm-3 control-label'>".LAN_USER_60.req(!$pref['disable_emailcheck'])."</label>
+	<label for='email' class='col-sm-3 control-label'>".LAN_USER_60.req(!$pref['disable_emailcheck'])."</label>
 	<div class='col-sm-9'>
 		{EMAIL}
 	</div>
 	</div>
 
 	<div class='form-group'>
-	<label for='loginname' class='col-sm-3 control-label'>".LAN_USER_63.req($pref['signup_option_realname'])."</label>
+	<label for='realname' class='col-sm-3 control-label'>".LAN_USER_63.req($pref['signup_option_realname'])."</label>
 	<div class='col-sm-9'>
 		{REALNAME}
 	</div>
@@ -277,14 +277,14 @@ $USERSETTINGS_TEMPLATE['edit'] = "
 
 
 	<div class='form-group'>
-	<label for='loginname' class='col-sm-3 control-label'>".LAN_USER_83."</label>
+	<label for='hideemail' class='col-sm-3 control-label'>".LAN_USER_83."</label>
 	<div class='col-sm-9'>
 	{HIDEEMAIL=radio}
 	</div>
 	</div>
 
 	<div class='form-group'>
-	<label for='loginname' class='col-sm-3 control-label'>".LAN_USER_07.req($pref['signup_option_image'])."</label>
+	<label class='col-sm-3 control-label'>".LAN_USER_07.req($pref['signup_option_image'])."</label>
 	<div class='col-sm-9'>
 	{AVATAR_REMOTE}
 	</div>
