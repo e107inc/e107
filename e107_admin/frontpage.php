@@ -37,7 +37,7 @@ $frontPref = e107::pref('core');              		 	// Get prefs
 // Get list of possible options for front page
 $front_page['news'] = array('page' => 'news.php', 'title' => ADLAN_0); // TODO Move to e107_plugins/news
 
-$front_page['wmessage'] = array('page' => 'index.php', 'title' => ADLAN_28);
+$front_page['wmessage'] = array('page' => 'index.php', 'title' => ADLAN_28, 'diz'=>'index.php');
 
 if($sql->db_Select('page', 'page_id, page_title', "menu_name=''")) // TODO Move to e107_plugins/page
 {
@@ -72,7 +72,6 @@ if($sql->db_Select('page', 'page_id, page_title', "menu_name=''")) // TODO Move 
 
 
 
-
 // Make sure links relative to SITEURL
 foreach($front_page as &$front_value)
 {
@@ -91,7 +90,7 @@ foreach($front_page as &$front_value)
 	}
 }
 
-
+// print_a($front_page);
 
 
 // Now sort out list of rules for display (based on $pref data to start with)
@@ -159,6 +158,15 @@ elseif(isset($_POST['fp_dec']))
 
 if (isset($_POST))
 {
+
+	// avoid endless loop. 
+	if($_POST['frontpage'] == 'other' && (trim($_POST['frontpage_other']) == 'index.php' || trim($_POST['frontpage_other']) == '{e_BASE}index.php'))
+	{
+		$_POST['frontpage'] = 'wmessage';
+		$_POST['frontpage_other'] = '';
+	}
+
+
 	foreach ($_POST as $k => $v)
 	{
 		$incDec = substr($k, 0, 6);
@@ -674,7 +682,7 @@ class frontpage
 					".$this->frm->radio($ob_name, $front_key, $type_selected, array('label'=>$front_value['title']))."
 
 				</td>
-				<td>&nbsp;</td>";
+				<td>".vartrue($front_value['diz'],"&nbsp;")."</td>";
 		}
 		return $text;
 	}
