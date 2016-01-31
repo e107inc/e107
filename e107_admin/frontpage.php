@@ -159,7 +159,7 @@ elseif(isset($_POST['fp_dec']))
 if (isset($_POST))
 {
 
-	// avoid endless loop. 
+	// avoid endless loop.
 	if($_POST['frontpage'] == 'other' && (trim($_POST['frontpage_other']) == 'index.php' || trim($_POST['frontpage_other']) == '{e_BASE}index.php'))
 	{
 		$_POST['frontpage'] = 'wmessage';
