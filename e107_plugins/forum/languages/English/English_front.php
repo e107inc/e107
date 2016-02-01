@@ -301,6 +301,17 @@ define("LAN_FORUM_7009","No uploaded files found"); // LAN_FORUM_7009
 
 
 
+// -------- Tracking Email ------------
+
+define("LAN_FORUM_8001", "A new post has been made by [x] under the topic [y] at [z].");
+define("LAN_FORUM_8002", "Please click the following link to view the full post ...");
+define("LAN_FORUM_8003", "Email notifications for this topic are now turned on.");
+define("LAN_FORUM_8004", "Email notifications for this topic are now turned off.");
+
+
+
+
+
 /*  THIS WILL BE DELETED ONCE THE REWRITE IS DONE
 ==================================================
  * 
