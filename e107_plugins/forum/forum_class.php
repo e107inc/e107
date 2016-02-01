@@ -396,8 +396,8 @@ class e107forum
 			if($this->track('del', USERID, $threadID))
 			{
 				$ret['html'] = IMAGE_untrack;
-				$ret['msg'] = "You are no longer tracking this thread."; //TODO LAN
-				$ret['status'] = 'ok';
+				$ret['msg'] = LAN_FORUM_8004; // "Email notifications for this topic are now turned off. ";
+				$ret['status'] = 'info';
 			}
 			else
 			{
@@ -410,7 +410,7 @@ class e107forum
 		{
 			if($this->track('add', USERID, $threadID))
 			{
-				$ret['msg'] = "You are now tracking this thread. ";  //TODO LAN
+				$ret['msg'] = LAN_FORUM_8003; // "Email notifications for this topic are now turned on. ";
 				$ret['html']  = IMAGE_track;
 				$ret['status'] = 'ok';
 			}
@@ -748,10 +748,11 @@ class e107forum
 			return -1;
 		}
 
+
+
 		$addUserPostCount = true;
 		$result = false;
 
-		$e107 = e107::getInstance();
 		$sql = e107::getDb();
 		$info = array();
 		$tp = e107::getParser();
@@ -762,9 +763,17 @@ class e107forum
 
 		$info['data'] = $postInfo;
 		$postId = $sql->insert('forum_post', $info);
-		// Append last inserted ID to data array for passing it to event callbacks.
-		$info['data']['post_id'] = $postId;
+
+		$info['data']['post_id'] = $postId; // Append last inserted ID to data array for passing it to event callbacks.
+
+
+
 	  	e107::getEvent()->trigger('user_forum_post_created', $info);
+
+	  	ob_start(); // precaution so json doesn't break.
+		$this->trackEmail($info['data']);
+		ob_end_clean();
+
 		$forumInfo = array();
 
 		if($postId && $updateThread)
@@ -838,6 +847,10 @@ class e107forum
 			';
 			$result = $sql->gen($qry);
 		}
+
+
+
+
 		return $postId;
 	}
 
@@ -1602,6 +1615,15 @@ class e107forum
 	}
 
 
+
+	/**
+	 * Topic/Thread tracking add/remove
+	 * @param $which
+	 * @param $uid
+	 * @param $threadId
+	 * @param bool|false $force
+	 * @return bool|int
+	 */
 	function track($which, $uid, $threadId, $force=false)
 	{
 		$sql = e107::getDb();
@@ -1633,6 +1655,109 @@ class e107forum
 		return $result;
 	}
 
+
+	/**
+	 * Send an email to users who are tracking the topic/thread.
+	* @param $post
+	 * @return bool
+	*/
+	function trackEmail($post)
+	{
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+
+		$trackingPref = $this->prefs->get('track');
+
+		if(empty($trackingPref))
+		{
+			return false;
+		}
+
+		$data = $sql->retrieve('SELECT t.*, u.user_id, u.user_name, u.user_email, u.user_lastvisit FROM `#forum_track` AS t LEFT JOIN `#user` AS u ON t.track_userid = u.user_id WHERE t.track_thread='.intval($post['post_thread']), true);
+
+		if(empty($data))
+		{
+			return false;
+		}
+
+		$threadData = $this->threadGet($post['post_thread']);
+
+		$recipients = array();
+
+		$thread_name = $tp->toText($threadData['thread_name']);
+	//	$thread_name = str_replace('&quot;', '"', $thread_name);		// This not picked up by toText();
+		$datestamp = $tp->toDate($post['post_datestamp']);
+		$email_post = $tp->toHTML($post['post_entry'], true);
+
+	//	$mail_link = "<a href='".SITEURL.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$thread_parent.".last'>".SITEURL.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$thread_parent.".last</a>";
+
+		$query = array('last'=>1);
+		$mail_link = e107::url('forum','topic', $threadData, array('mode'=>'full','query'=>$query));
+		$subject = $this->prefs->get('eprefix')." ".$thread_name;
+
+		foreach($data as $row)
+		{
+
+			$recipients[] = array(
+							'mail_recipient_id'     => $row['user_id'],
+							'mail_recipient_name'   => $row['user_name'],		// Should this use realname?
+							'mail_recipient_email'  => $row['user_email'],
+							'mail_target_info'		=> array(
+								'USERID'		        => $row['user_id'],
+								'DISPLAYNAME' 	        => $row['user_name'],
+								'SUBJECT'               => $subject,
+								'USERNAME' 		        => $row['user_name'],
+								'USERLASTVISIT'         => $row['user_lastvisit'],
+						//		'UNSUBSCRIBE'	        => (!in_array($notifyTarget, $exclude)) ? $unsubUrl : '',
+						//		'UNSUBSCRIBE_MESSAGE'   => (!in_array($notifyTarget, $exclude)) ? $unsubMessage : '',
+						//		'USERCLASS'             => $notifyTarget,
+								'DATE_SHORT'            => $tp->toDate(time(),'short'),
+								'DATE_LONG'             => $tp->toDate(time(),'long'),
+
+
+							)
+						);
+		}
+
+
+		require_once(e_HANDLER.'mail_manager_class.php');
+
+		$mailer = new e107MailManager;
+
+		$vars = array('x'=>USERNAME, 'y'=>$thread_name, 'z'=>$datestamp);
+
+		$message = "[html]".$tp->lanVars(LAN_FORUM_8001, $vars,true)."<br /><br /><blockquote>".$tp->toEmail($email_post, false)."</blockquote><br />".LAN_FORUM_8002."<br /><a href='".$mail_link."'>".$mail_link."</a>[/html]";
+
+
+			// Create the mail body
+		$mailData = array(
+				'mail_total_count'      => count($recipients),
+				'mail_content_status' 	=> MAIL_STATUS_TEMP,
+				'mail_create_app' 		=> 'forum',
+				'mail_title' 			=> 'FORUM TRACKING',
+				'mail_subject' 			=> $subject,
+				'mail_sender_email' 	=> e107::getPref('replyto_email',SITEADMINEMAIL),
+				'mail_sender_name'		=> e107::getPref('replyto_name',SITEADMIN),
+				'mail_notify_complete' 	=> 0,	// NEVER notify when this email sent!
+				'mail_body' 			=> $message,
+				'template'				=> 'default',
+				'mail_send_style'       => 'default'
+		);
+
+		/*	if(!empty($media) && is_array($media))
+			{
+				foreach($media as $k=>$v)
+				{
+					$mailData['mail_media'][$k] = array('path'=>$v);
+				}
+			}*/
+
+
+		$opts =  array(); // array('mail_force_queue'=>1);
+		$mailer->sendEmails('default', $mailData, $recipients, $opts);
+
+
+	}
 
 
 	function forumGet($forum_id)
