@@ -37,6 +37,12 @@ class forum_url // plugin-folder + '_url'
 			'redirect'		=> '{e_PLUGIN}forum/forum_stats.php',
 		);
 
+		$config['track'] = array(
+			'regex'			=> '^forum/track/?',
+			'sef'			=> 'forum/track',
+			'redirect'		=> '{e_PLUGIN}forum/forum.php?f=track',
+		);
+
 		$config['post'] = array(
 			'regex'			=> '^forum/post/?',
 			'sef'			=> 'forum/post/',

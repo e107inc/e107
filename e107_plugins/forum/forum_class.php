@@ -702,7 +702,7 @@ class e107forum
 		{
 			$ret = array();
 
-			while($row = $sql->fetch(MYSQL_ASSOC))
+			while($row = $sql->fetch())
 			{
 				$ret[] = $row['track_thread'];
 			}
