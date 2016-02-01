@@ -53,7 +53,7 @@ define("LAN_FORUM_0025", "It is now");  // LAN_37
 define("LAN_FORUM_0027", "You have read"); // LAN_196
 define("LAN_FORUM_0028", "of these posts."); // LAN_197
 define("LAN_FORUM_0029", "All new posts have been read."); // LAN_198
-define("LAN_FORUM_0030", "List tracked topics"); // LAN_393
+define("LAN_FORUM_0030", "Tracked topics"); // LAN_393
 define("LAN_FORUM_0031", "The users of this forum have made a total of [x] posts."); // LAN_192 and LAN_404
 define("LAN_FORUM_0032", "topic"); // LAN_411
 define("LAN_FORUM_0033", "topics"); // LAN_413
@@ -132,6 +132,8 @@ define("LAN_FORUM_1016", "Poll"); // FORLAN_23
 define("LAN_FORUM_1017", "Go to"); // LAN_401 (p?)
 define("LAN_FORUM_1018", "New topic");
 // define("LAN_FORUM_1019", "Are you sure?"); // new
+define("LAN_FORUM_1020", "Modify");
+
 
 // starting at LAN_FORUM_2xxx => forum_viewtopic.php
 define("LAN_FORUM_2001", "Previous topic"); // LAN_389 

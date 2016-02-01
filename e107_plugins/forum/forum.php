@@ -41,6 +41,15 @@ if(!deftrue('BOOTSTRAP'))
 require_once(e_PLUGIN.'forum/forum_class.php');
 $forum = new e107forum;
 
+if(e_AJAX_REQUEST)
+{
+	if(varset($_POST['action']) == 'track')
+	{
+		$forum->ajaxTrack();
+	}
+
+}
+
 if ($untrackId = varset($_REQUEST['untrack']))
 {
 	$forum->track('del', USERID, $untrackId);
@@ -64,9 +73,17 @@ if(isset($_GET['f']))
 			break;
 
 		case 'rules':
+		include_once(HEADERF);
+
+		forum_rules('show');
+			include_once(FOOTERF);
+			exit;
+			break;
+
+		case 'track':
 			include_once(HEADERF);
 
-			forum_rules('show');
+			forum_track();
 			include_once(FOOTERF);
 			exit;
 			break;
@@ -112,6 +129,11 @@ if(!empty($rules_text))
 	$uInfo[1] = "<a href='".e107::url('forum','rules')."'>".LAN_FORUM_0016.'</a>';
 }
 
+$trackPref = $forum->prefs->get('track');
+if(!empty($trackPref))
+{
+	$uInfo[2] = "<a href='".e107::url('forum','track')."'>".LAN_FORUM_0030."</a>";
+}
 $fVars->USERINFOX = implode(" | ",$uInfo);
 // -----------
 
@@ -259,23 +281,31 @@ elseif(file_exists(THEME.'templates/forum/forum_template.php'))
 	require_once(THEME.'templates/forum/forum_template.php');
 }
 
+
+
+
 if(is_array($FORUM_TEMPLATE) && deftrue('BOOTSTRAP',false)) // new v2.x format. 
 {
-	$FORUM_MAIN_START		= $FORUM_TEMPLATE['main-start'];
-	$FORUM_MAIN_PARENT 		= $FORUM_TEMPLATE['main-parent'];
-	$FORUM_MAIN_FORUM		= $FORUM_TEMPLATE['main-forum'];
-	$FORUM_MAIN_END			= $FORUM_TEMPLATE['main-end'];
 
-	$FORUM_NEWPOSTS_START	= $FORUM_TEMPLATE['main-start']; // $FORUM_TEMPLATE['new-start'];
-	$FORUM_NEWPOSTS_MAIN 	= $FORUM_TEMPLATE['main-forum']; // $FORUM_TEMPLATE['new-main'];
-	$FORUM_NEWPOSTS_END 	= $FORUM_TEMPLATE['main-end']; // $FORUM_TEMPLATE['new-end'];
+	if(varset($FORUM_TEMPLATE['main-start'])) // correction of previous v2.x setup.
+	{
+		$FORUM_TEMPLATE['main']['start']    = $FORUM_TEMPLATE['main-start'];
+		$FORUM_TEMPLATE['main']['parent']   = $FORUM_TEMPLATE['main-parent'];
+		$FORUM_TEMPLATE['main']['forum']    = $FORUM_TEMPLATE['main-forum'];
+		$FORUM_TEMPLATE['main']['end']      = $FORUM_TEMPLATE['main-end'];
+	}
 
-	$FORUM_TRACK_START		= $FORUM_TEMPLATE['main-start']; // $FORUM_TEMPLATE['track-start'];
-	$FORUM_TRACK_MAIN		= $FORUM_TEMPLATE['main-forum']; // $FORUM_TEMPLATE['track-main'];
-	$FORUM_TRACK_END		= $FORUM_TEMPLATE['main-end']; // $FORUM_TEMPLATE['track-end'];	
+	$FORUM_MAIN_START		= $FORUM_TEMPLATE['main']['start'];
+	$FORUM_MAIN_PARENT 		= $FORUM_TEMPLATE['main']['parent'];
+	$FORUM_MAIN_FORUM		= $FORUM_TEMPLATE['main']['forum'];
+	$FORUM_MAIN_END			= $FORUM_TEMPLATE['main']['end'];
+
+	$FORUM_NEWPOSTS_START	= $FORUM_TEMPLATE['main']['start']; // $FORUM_TEMPLATE['new-start'];
+	$FORUM_NEWPOSTS_MAIN 	= $FORUM_TEMPLATE['main']['forum']; // $FORUM_TEMPLATE['new-main'];
+	$FORUM_NEWPOSTS_END 	= $FORUM_TEMPLATE['main']['end']; // $FORUM_TEMPLATE['new-end'];
+
 		
 }
-
 
 
 require_once(HEADERF);
@@ -484,43 +514,7 @@ function parse_subs($forumList, $id ='', $lastpost_datestamp)
 
 if (e_QUERY == 'track')
 {
-	if($trackedThreadList = $forum->getTrackedThreadList(USERID, 'list'))
-	{
-		$trackVars = new e_vars;
-		$viewed = $forum->threadGetUserViewed();
-		$qry = "
-		SELECT t.*, p.* from `#forum_thread` AS t
-		LEFT JOIN `#forum_post` AS p ON p.post_thread = t.thread_id AND p.post_datestamp = t.thread_datestamp
-		WHERE thread_id IN({$trackedThreadList})
-		ORDER BY thread_lastpost DESC
-		";
-		if($sql->gen($qry))
-		{
-			while($row = $sql->fetch(MYSQL_ASSOC))
-			{
-				$trackVars->NEWIMAGE = IMAGE_nonew_small;
-				if ($row['thread_datestamp'] > USERLV && !in_array($row['thread_id'], $viewed))
-				{
-					$trackVars->NEWIMAGE = IMAGE_new_small;
-				}
 
-				$url = $e107->url->create('forum/thread/view', $row); // configs will be able to map thread_* vars to the url
-				$trackVars->TRACKPOSTNAME = "<a href='{$url}'>".$tp->toHTML($row['thread_name']).'</a>';
-				$trackVars->UNTRACK = "<a href='".e_SELF."?untrack.".$row['thread_id']."'>".LAN_FORUM_0070."</a>";
-				$forum_trackstring .= $tp->simpleParse($FORUM_TRACK_MAIN, $trackVars);
-			}
-		}
-		$forum_track_start = $tp->simpleParse($FORUM_TRACK_START, $trackVars);
-		$forum_track_end = $tp->simpleParse($FORUM_TRACK_END, $trackVars);
-		if ($forum->prefs->get('enclose'))
-		{
-			$ns->tablerender($forum->prefs->get('title'), $forum_track_start.$forum_trackstring.$forum_track_end, array('forum', 'main1'));
-		}
-		else
-		{
-			echo $forum_track_start.$forum_trackstring.$forum_track_end;
-		}
-	}
 }
 
 
@@ -639,5 +633,127 @@ function forum_rules($action = 'check')
 
 	e107::getRender()->tablerender(LAN_FORUM_0016, $text, array('forum', 'forum_rules'));
 }
+
+
+function forum_track()
+{
+	global $forum;
+
+	$trackPref = $forum->prefs->get('track');
+	if(empty($trackPref))
+	{
+		echo "Disabled";
+		return false;
+	}
+
+
+	$FORUM_TEMPLATE = null;
+
+	include(e_PLUGIN.'forum/templates/forum_template.php');
+
+	// Override with theme template
+	if (file_exists(THEME.'forum_template.php'))
+	{
+		include(THEME.'forum_template.php');
+	}
+	elseif(file_exists(THEME.'templates/forum/forum_template.php'))
+	{
+		require(THEME.'templates/forum/forum_template.php');
+	}
+
+	$IMAGE_nonew_small = IMAGE_nonew_small;
+	$IMAGE_new_small = IMAGE_new_small;
+
+	if(is_array($FORUM_TEMPLATE) && deftrue('BOOTSTRAP',false)) // new v2.x format.
+	{
+		$FORUM_TRACK_START		= $FORUM_TEMPLATE['track']['start']; // $FORUM_TEMPLATE['track-start'];
+		$FORUM_TRACK_MAIN		= $FORUM_TEMPLATE['track']['item']; // $FORUM_TEMPLATE['track-main'];
+		$FORUM_TRACK_END		= $FORUM_TEMPLATE['track']['end']; // $FORUM_TEMPLATE['track-end'];
+
+		$IMAGE_nonew_small = IMAGE_nonew;
+		$IMAGE_new_small = IMAGE_new;
+
+	}
+
+	$sql = e107::getDb();
+	$tp = e107::getParser();
+
+	if($trackedThreadList = $forum->getTrackedThreadList(USERID, 'list'))
+	{
+
+		$viewed = $forum->threadGetUserViewed();
+
+		$qry = "SELECT t.*,th.*, f.* FROM `#forum_track` AS t
+		LEFT JOIN `#forum_thread` AS th ON t.track_thread = th.thread_id
+		LEFT JOIN `#forum` AS f ON th.thread_forum_id = f.forum_id
+		WHERE t.track_userid = ".USERID." ORDER BY th.thread_lastpost DESC";
+
+		$forum_trackstring = '';
+		$data = array();
+		if($sql->gen($qry))
+		{
+			while($row = $sql->fetch(MYSQL_ASSOC))
+			{
+				$row['thread_sef'] = eHelper::title2sef($row['thread_name'],'dashl');
+
+				$data['NEWIMAGE'] = $IMAGE_nonew_small;
+				if ($row['thread_datestamp'] > USERLV && !in_array($row['thread_id'], $viewed))
+				{
+					$data['NEWIMAGE'] = $IMAGE_new_small;
+				}
+
+				$buttonId = "forum-track-button-".intval($row['thread_id']);
+
+				$forumUrl = e107::url('forum','forum',$row);
+				$threadUrl = e107::url('forum','topic',$row, array('query'=>array('last'=>1))); // ('forum/thread/view', $row); // configs will be able to map thread_* vars to the url
+				$data['TRACKPOSTNAME'] = "<a href='".$forumUrl."'>". $row['forum_name']."</a> / <a href='".$threadUrl."'>".$tp->toHTML($row['thread_name']).'</a>';
+			//	$data['UNTRACK'] = "<a class='btn btn-default' href='".e_SELF."?untrack.".$row['thread_id']."'>".LAN_FORUM_0070."</a>";
+
+
+				$data['UNTRACK'] = "<a id='".$buttonId."' href='#' title=\"".LAN_FORUM_3040."\" data-token='".e_TOKEN."' data-forum-insert='".$buttonId."'  data-forum-post='".$row['thread_forum_id']."' data-forum-thread='".$row['thread_id']."' data-forum-action='track' name='track' class='btn btn-primary' >".IMAGE_track."</a>";
+
+				$forum_trackstring .= $tp->simpleParse($FORUM_TRACK_MAIN, $data);
+			}
+		}
+	//	print_a($FORUM_TRACK_START);
+
+
+		if(deftrue('BOOTSTRAP'))
+		{
+			$breadarray = array(
+				array('text'=> e107::pref('forum','title', LAN_PLUGIN_FORUM_NAME), 'url' => e107::url('forum','index') ),
+				array('text'=>LAN_FORUM_0030, 'url'=>null)
+			);
+
+			$data['FORUM_BREADCRUMB'] = e107::getForm()->breadcrumb($breadarray);
+		}
+
+
+		$forum_track_start = $tp->simpleParse($FORUM_TRACK_START, $data);
+		$forum_track_end = $tp->simpleParse($FORUM_TRACK_END, $data);
+
+	//	if ($forum->prefs->get('enclose'))
+		{
+			// $ns->tablerender($forum->prefs->get('title'), $forum_track_start.$forum_trackstring.$forum_track_end, array('forum', 'main1'));
+		}
+	//	else
+		{
+			$tracktext =  $forum_track_start.$forum_trackstring.$forum_track_end;
+		}
+	}
+
+
+	$text ='';
+
+
+
+	$text .= $tracktext;
+	$text .=  "<div class='center'>".e107::getForm()->pagination(e107::url('forum','index'), LAN_BACK)."</div>";
+
+	e107::getRender()->tablerender(LAN_FORUM_0030, $text, array('forum', 'forum_track'));
+
+
+}
+
 
 ?>
