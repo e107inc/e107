@@ -2952,6 +2952,9 @@ if (isset($_POST['check_avatar_sizes']))
 			//If not found or too large, allow delete
 			if (strlen($sBadImage))
 			{
+				$uparams = array('id' => $row['user_id'], 'name' => $row['user_name']);
+				$ulink = e107::getUrl()->create('user/profile/view', $uparams);
+
 				$found = true;
 				$text .= "
 				<tr>
@@ -2959,7 +2962,7 @@ if (isset($_POST['check_avatar_sizes']))
 						<input class='checkbox' type='checkbox' name='multiaction[]' id='avdelete-{$row['user_id']}' value='{$row['user_id']}' />
 					</td>
 					<td>
-						<label for='avdelete-{$row['user_id']}' title='".IMALAN_56."'>".IMALAN_51."</label><a href='".e_BASE."user.php?id.{$row['user_id']}'>".$row['user_name']."</a>
+						<label for='avdelete-{$row['user_id']}' title='".IMALAN_56."'>".IMALAN_51."</label><a href='".$ulink."'>".$row['user_name']."</a>
 					</td>
 					<td>".$sBadImage."</td>
 					<td>".$avname."</td>

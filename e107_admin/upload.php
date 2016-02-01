@@ -665,6 +665,8 @@ switch ($action)
 	$row = $sql->db_Fetch();
 	 extract($row);
 
+
+
 	$post_author_id = substr($upload_poster, 0, strpos($upload_poster, "."));
 	$post_author_name = substr($upload_poster, (strpos($upload_poster, ".")+1));
 	$poster = (!$post_author_id ? "<b>".$post_author_name."</b>" : "<a href='".e_BASE."user.php?id.".$post_author_id."'><b>".$post_author_name."</b></a>");
