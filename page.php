@@ -342,7 +342,7 @@ class pageClass
 		
 		if($sql->select("page_chapters", "*", "chapter_parent = ".intval($book)."  AND chapter_visibility IN (".USERCLASS_LIST.") ORDER BY chapter_order ASC "))
 		{
-			$text .= $template['start']; 
+			$text .= $tp->simpleParse($template['start'],$bvar);
 			
 			while($row = $sql->fetch())
 			{
@@ -371,7 +371,7 @@ class pageClass
 
 			}
 			
-			$text .= $template['end'];		
+			$text .= $tp->simpleParse($template['end'], $bvar);		
 			
 		}
 		else
