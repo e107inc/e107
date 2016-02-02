@@ -439,7 +439,8 @@ class e_parse extends e_parser
 			case 0:
 				return stristr($haystack, $needle, $before_needle);
 			case 1:
-				return mb_substr($haystack, $needle, $before_needle);
+				//return mb_substr($haystack, $needle, $before_needle);
+				return mb_stristr($haystack, $needle, $before_needle);
 		}
 		// No utf8 pack backup
 		return stristr($haystack, $needle, $before_needle);

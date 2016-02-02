@@ -81,7 +81,7 @@ function nextprev_shortcode($parm = '')
 			$LAN_NP_FIRST 		= $tp->toGlyph("icon-fast-backward.glyph",false);
 			$LAN_NP_PREVIOUS 	= $tp->toGlyph("icon-backward.glyph",false);
 			$LAN_NP_NEXT 		= $tp->toGlyph("icon-forward.glyph",false);
-			$LAN_NP_LAST 		= $tp->toGlyph("fa fa-fast-forward",false);
+			$LAN_NP_LAST 		= $tp->toGlyph("icon-fast-forward",false);
 		}
 		else
 		{
