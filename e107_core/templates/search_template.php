@@ -57,7 +57,7 @@ if(!isset($SEARCH_CATS))
 	{SEARCH_MAIN_CHECKALL} {SEARCH_MAIN_UNCHECKALL}
 	</td>
 	<td style='width:70%' class='forumheader3'>
-	{SEARCH_MAIN_CHECKBOXES}{SEARCH_DROPDOWN}&nbsp;{SEARCH_ADVANCED}
+	{SEARCH_MAIN_CHECKBOXES}{SEARCH_DROPDOWN}&nbsp;<table>{SEARCH_ADVANCED}</table>
 	<br />
 	</td>
 	</tr>";
@@ -181,9 +181,11 @@ $SEARCH_TEMPLATE['form']['category'] = '
 	<div class="form-group">
 	    <label for="inputPassword3" class="col-sm-3 control-label">'.LAN_SEARCH_19.'</label>
 	    <div class="col-sm-9">
-	   {SEARCH_MAIN_CHECKBOXES}{SEARCH_DROPDOWN}&nbsp;{SEARCH_ADVANCED}
+	   {SEARCH_MAIN_CHECKBOXES}{SEARCH_DROPDOWN}&nbsp;
 	    </div>
-	</div>';
+
+	</div>
+	 {SEARCH_ADVANCED}';
 
 $SEARCH_TEMPLATE['form']['end'] = "
 	</form>

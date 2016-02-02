@@ -16,4 +16,6 @@
 a.btn           {  }
 .s-message .s-message-title
 				{ margin-top: 0; background: transparent none no-repeat scroll 0 50%; font-size:150%	}
-mark            {text-decoration: underline; color:#FF0000; font-weight:bold; } /* .searchhighlight */
+
+mark            { text-decoration: underline; color:#FF0000; font-weight:bold; } /* .searchhighlight */
+.list-unstyled  { list-style: outside none none; }
