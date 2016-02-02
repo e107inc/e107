@@ -15,133 +15,7 @@
 /* Forum Header File */
 if (!defined('e107_INIT')) { exit; }
 
-$jscode = <<<EON
-
-$(document).ready(function() 
-{
-	$('a[data-forum-action], input[data-forum-action]').on('click', function(e)
-	{
-			
-		var action = $(this).attr('data-forum-action');	
-		var thread = $(this).attr('data-forum-thread');		
-		var post 	= $(this).attr('data-forum-post');		
-		var text 	= $('#forum-quickreply-text').val();
-		var insert	= $(this).attr('data-forum-insert');
-		var token	= $(this).attr('data-token');
-		
-		e.preventDefault();
-					
-		var script = $(this).attr("src"); 
-
-		$.ajax({
-			type: "POST",
-			url: script,
-			data: { thread: thread, action: action, post: post, text: text, insert:insert, e_token: token },
-			success: function(data) {
-			  		
-			 //		 alert(data); 	
-			  	
-				var d = $.parseJSON(data);
-				
-				if(d)
-				{
-		
-									
-					if(d.msg)
-					{
-						if(d.status == 'ok')
-						{
-							var alertType = 'success';
-						}
-						else {
-							var alertType = 'info';
-						}			
-
-						if(d.status == 'error')
-						{
-							alertType = 'danger';
-						}
-
-						// http://nijikokun.github.io/bootstrap-notify/
-
-						 if(jQuery().notify) {
-							 $('#uiAlert').notify({
-								type: alertType,
-								message: { text: d.msg },
-								fadeOut: { enabled: true, delay: 3000 }
-							}).show();
-						 }
-						 else
-						 {
-						    alert(d.msg);
-						    location.reload();
-						    return;
-						 }
-
-						
-						// alert(d.msg);
-					}
-					
-					if(action == 'stick' || action == 'unstick' || action == 'lock' || action == 'unlock')
-					{
-						location.reload();
-						return;
-					}
-
-					if(action == 'track')
-					{
-						if(d.html != false)
-						{
-							$('#'+ insert).html(d.html);
-						//	alert(d.html);
-						}
-					}
-					
-					if(action == 'quickreply' && d.status == 'ok' )
-					{
-					//	alert(d.html);
-						if(d.html != false)
-						{
-							// $('#forum-viewtopic li:last').after(d.html).hide().slideDown(800);
-
-							$(d.html).appendTo("#forum-viewtopic").hide().slideDown(1000);
-
-						}
-
-						$('#forum-quickreply-text').val('');
-						return;
-					}
-					
-					
-					if(d.hide)
-					{
-						var t = '#thread-' + thread ; 
-						var p = '#post-' + post ; 
-						
-				//		alert(p);
-						$(t).hide('slow');
-						$(p).hide('slow').slideUp(800);
-					}
-					
-					
-					
-				}					
-			}
-		  
-		});
-		
-							
-		
-		// return false;
-	});
-	
-});
-			
-		
-
-EON;
-
-e107::js('inline',$jscode,'jquery');
+e107::js('forum', 'js/forum.js', 'jquery', 5);
 e107::css('forum','forum.css');
 
 
@@ -300,77 +174,75 @@ class e107forum
 
 
 	/**
-	 * Handle the Ajax quick-reply. 
+	 * Handle the Ajax quick-reply.
 	 */
 	function ajaxQuickReply()
 	{
 		$tp = e107::getParser();
-		
-		if(!isset($_POST['e_token'])) // Set the token if not included 
+
+		if(!isset($_POST['e_token'])) // Set the token if not included
 		{
-			$_POST['e_token'] = '';	
+			$_POST['e_token'] = '';
 		}
-				
+
 		if(!e107::getSession()->check(false) || !$this->checkPerm($_POST['post'], 'post'))
 		{
-			//$ret['status'] = 'ok';
-		//	$ret['msg'] = "Token Error";
-
-		//	echo json_encode($ret);  
-			
+			// Invalid token.
 			exit;
 		}
 
 		if(varset($_POST['action']) == 'quickreply' && vartrue($_POST['text']))
-		{		
-	
-				$postInfo = array();
-				$postInfo['post_ip'] = e107::getIPHandler()->getIP(FALSE);
-				
-				if (USER)
-				{
-					$postInfo['post_user'] = USERID;
+		{
 
-				}
-				else
-				{
-					$postInfo['post_user_anon'] = $_POST['anonname'];
-				}
-				
-				$postInfo['post_entry'] 		= $_POST['text'];
-				$postInfo['post_forum'] 		= intval($_POST['post']);
-				$postInfo['post_datestamp'] 	= time();
-				$postInfo['post_thread'] 		= intval($_POST['thread']);
-				
-				$postInfo['post_id']  = $this->postAdd($postInfo); // save it. 
-					
-				$postInfo['user_name'] = USERNAME;
-				$postInfo['user_email'] = USEREMAIL;
-				$postInfo['user_image'] = USERIMAGE; 
-				$postInfo['user_signature'] = USERSIGNATURE; 
+			$postInfo = array();
+			$postInfo['post_ip'] = e107::getIPHandler()->getIP(false);
 
-				if($_POST['insert'] == 1)
-				{
-					$tmpl = e107::getTemplate('forum','forum_viewtopic','replies');
-					$sc  = e107::getScBatch('view', 'forum');
-					$sc->setScVar('postInfo', $postInfo);
-					$ret['html'] = $tp->parseTemplate($tmpl, true, $sc) . "\n";
-				}
-				else 
-				{
-					$ret['html'] = false;
-				}
-				
-				$ret['status'] = 'ok';
-				$ret['msg'] = "Your post has been added"; 
+			if(USER)
+			{
+				$postInfo['post_user'] = USERID;
+			}
+			else
+			{
+				$postInfo['post_user_anon'] = $_POST['anonname'];
+			}
 
-			//echo $ret;
-			 echo json_encode($ret);  
-		}	
+			$postInfo['post_entry'] = $_POST['text'];
+			$postInfo['post_forum'] = intval($_POST['post']);
+			$postInfo['post_datestamp'] = time();
+			$postInfo['post_thread'] = intval($_POST['thread']);
+
+			$postInfo['post_id'] = $this->postAdd($postInfo); // save it.
+
+			$postInfo['user_name'] = USERNAME;
+			$postInfo['user_email'] = USEREMAIL;
+			$postInfo['user_image'] = USERIMAGE;
+			$postInfo['user_signature'] = USERSIGNATURE;
+
+			if($_POST['insert'] == 1)
+			{
+				$tmpl = e107::getTemplate('forum', 'forum_viewtopic', 'replies');
+				$sc = e107::getScBatch('view', 'forum');
+				$sc->setScVar('postInfo', $postInfo);
+				$ret['html'] = $tp->parseTemplate($tmpl, true, $sc) . "\n";
+			}
+			else
+			{
+				$ret['html'] = false;
+			}
+
+			$ret['status'] = 'ok';
+			$ret['msg'] = "Your post has been added"; // TODO lan.
+		}
 
 		e107::getSession()->reset();
-		exit;
 
+		if(varset($ret, false))
+		{
+			$ret['e_token'] = e107::getSession()->getFormToken();
+		}
+
+		echo $tp->toJSON($ret);
+		exit;
 	}
 
 
