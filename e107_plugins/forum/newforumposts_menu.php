@@ -90,7 +90,10 @@ if($results = $sql->gen($qry))
 			),
 			'fragment' => 'post-' . $row['post_id'], // jump page to post
 		));
-	
+
+		//FIXME Use f=post/id query.
+
+
 		$text .= "<li>";
 		
 		if ($menu_pref['newforumposts_title'])

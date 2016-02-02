@@ -829,8 +829,16 @@ class e107ForumThread
 				$postInfo = $forum->postGet($postId,'post');
 				$postNum = $forum->postGetPostNum($postInfo['post_thread'], $postId);
 				$postPage = ceil($postNum / $forum->prefs->get('postspage'));
-				$url = e107::getUrl()->create('forum/thread/view', array('id' => $postInfo['post_thread'], 'name' => $postInfo['thread_name'], 'page' => $postPage), 'full=1&encode=0');
-				header('location: '.$url);
+
+				$url = e107::url('forum', 'topic', $postInfo, array(
+					'query'    => array(
+						'p' => $postPage, // proper page number
+					),
+					'fragment' => 'post-' . $postId, // jump page to post
+					'mode'=>'full'
+				));
+
+				e107::redirect($url);
 				exit;
 				break;
 

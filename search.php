@@ -455,6 +455,7 @@ class search extends e_shortcode
 			
 			if ($plug_require) 
 			{
+				$search_info = array();
 				require_once($plug_require);
 				$ret = $search_info[0];
 			} 
@@ -487,7 +488,7 @@ class search extends e_shortcode
 			$ret['results'] 		= $this->search_prefs[$type.'_handlers'][$id]['results'];
 			$ret['pre_title'] 		= $this->search_prefs[$type.'_handlers'][$id]['pre_title'];
 			$ret['pre_title_alt'] 	= $tp -> toHtml($this->search_prefs[$type.'_handlers'][$id]['pre_title_alt']);
-			$ret['order'] 			= (isset($this->search_prefs[$type.'_handlers'][$id]['order']) && $this->search_prefs[$type.'_handlers'][$id]['order']) ? $this->search_prefs[$type.'_handlers'][$id]['order'] : $this->auto_order;
+		//	$ret['order'] 			= (isset($this->search_prefs[$type.'_handlers'][$id]['order']) && $this->search_prefs[$type.'_handlers'][$id]['order']) ? $this->search_prefs[$type.'_handlers'][$id]['order'] : $this->auto_order;
 			
 			$this->auto_order++;
 			
@@ -522,6 +523,7 @@ class search extends e_shortcode
 		{
 			if ($search_info['comments'] = $this->search_info('comments', 'core', false, array('sfile' => e_HANDLER.'search/search_comment.php', 'qtype' => LAN_COMMENTS, 'refpage' => 'comment.php', 'advanced' => e_HANDLER.'search/advanced_comment.php', 'id' => 'comment'))) {
 			   //	$search_id++;
+			   $search_info['comments']['listorder'] = $this->search_prefs['core_handlers']['comments']['order'];
 			} else {
 				unset($search_info['comments']);
 			}
@@ -532,18 +534,20 @@ class search extends e_shortcode
 		{
 			if ($search_info['users'] = $this->search_info('users', 'core', false, array('sfile' => e_HANDLER.'search/search_user.php', 'qtype' => LAN_140, 'refpage' => 'user.php', 'advanced' => e_HANDLER.'search/advanced_user.php', 'id' => 'user'))) {
 				//	$search_id++;
+				$search_info['users']['listorder']  = $this->search_prefs['core_handlers']['users']['order'];
+
 			} else {
 				unset($search_info['users']);
 			}
 		}
 		
-		
+	/*
 		if ($search_info['pages'] = $this->search_info('pages', 'core', false, array('sfile' => e_HANDLER.'search/search_pages.php', 'qtype' => LAN_418, 'refpage' => 'page.php', 'advanced' => e_HANDLER.'search/advanced_pages.php', 'id' => 'pages'))) {
 		   //	$search_id++;
 		} else {
 			unset($search_info['pages']);
 		}
-		
+	*/
 		 $e_searchList = e107::getConfig('core')->get('e_search_list');
 		
 		
@@ -559,26 +563,31 @@ class search extends e_shortcode
 			{
 				if ($search_info[$plug_dir] = $this->search_info($plug_dir, 'plug', e_PLUGIN.$plug_dir."/e_search.php"))
 				{
+					$search_info[$plug_dir]['listorder'] = $active['order'];
 				  //	$search_id++;
 				}
 				else
 				{
 					unset($search_info[$plug_dir]);
 				}
+
+
 			}
 			
 			
 		}
 		
 		// order search routines
-		
-		 $search_info = $this->array_sort($search_info, 'order', SORT_ASC);	
-		 
+
+
+		 $search_info = $this->array_sort($search_info, 'listorder', SORT_ASC);
 		 $this->search_info = $search_info;
-		 
-		// print_a($this->search_prefs);
-		// print_a($this->search_info);
-		 
+
+		if(e_DEBUG)
+		{
+	//		echo e107::getMessage()->addDebug(print_a($this->search_info,true))->render();
+		}
+
 		 return $search_info;
 	}	
 
@@ -692,11 +701,15 @@ class search extends e_shortcode
 		global $query, $search_prefs, $pre_title, $search_chars, $search_res, $result_flag;
 		
 		$ns = e107::getRender();
-		$sch = new e_search;
+
 		$tp = e107::getParser();
 	
-		
+		$con = e107::getDateConvert(); // BC Fix
+
+        $sch = new e_search; // BC Fix
+
 		$query = $this->query;
+
 		
 		$_GET['q'] = rawurlencode($_GET['q']);
 		$_GET['t'] = preg_replace('/[^\w\-]/i', '', $_GET['t']);
@@ -709,7 +722,8 @@ class search extends e_shortcode
 			if (isset($this->searchtype[$key]) || isset($this->searchtype['all'])) 
 			{
 				
-				unset($text);
+				$text = "";
+
 				//if (file_exists($this->search_info[$key]['sfile'])) 
 				{
 					$pre_title 		= ($this->search_info[$key]['pre_title'] == 2) ? $this->search_info[$key]['pre_title_alt'] : $this->search_info[$key]['pre_title'];
@@ -732,12 +746,19 @@ class search extends e_shortcode
 							continue;
 						}
 						
-						$obj = new $className;
+						$obj = new $className($this->query);
 						
 						$where = (method_exists($obj,'where')) ? $obj->where($_GET) : "";
 						
 						$ps = $obj->parsesearch($this->search_info[$key]['table'], $this->search_info[$key]['return_fields'], $this->search_info[$key]['search_fields'], $this->search_info[$key]['weights'], 'self', varset($this->search_info[$key]['no_results'],"<div class='alert alert-danger'>".LAN_198."</div>"), $where , $this->search_info[$key]['order']);
-						
+
+						if(e_DEBUG)
+						{
+						//	echo e107::getMessage()->addDebug(print_a($this->search_info,true))->render();// "DEBUG: Order is missing";
+
+						}
+
+
 						$text .= '<div class="search-block">';
 						$text .= $ps['text'];
 						$text .= '</div>';
