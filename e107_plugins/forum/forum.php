@@ -189,7 +189,8 @@ $fVars->SEARCH = "
 <button class='btn btn-default button' type='submit' name='s' value='search' />".$srchIcon."</button>
 </span>
 <input type='hidden' name='r' value='0' />
-<input type='hidden' name='ref' value='forum' />
+<input type='hidden' name='t' value='forum' />
+<input type='hidden' name='forum' value='all' />
 </div>
 
 </form>\n";

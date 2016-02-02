@@ -40,7 +40,7 @@ class forum_search extends e_search // include plugin-folder in the name.
 								'forum'	=> array('type'	=> 'dropdown', 		'text' => FOR_SCH_LAN_2, 'list'=>$catList),
 								'date'	=> array('type'	=> 'date', 		'text' => LAN_DATE_POSTED),
 								'author'=> array('type'	=> 'author',	'text' => LAN_SEARCH_61),
-								'match'=> array('type'	=> 'dropdown',	'text' => LAN_SEARCH_61, 'list'=>$matchList)
+								'match'=> array('type'	=> 'dropdown',	'text' => LAN_SEARCH_52, 'list'=>$matchList) // not functional yet.
 							),
 
 			'return_fields'	=> array('t.thread_id', 't.thread_name', 'p.post_id', 'p.post_entry', 't.thread_forum_id', 't.thread_datestamp', 't.thread_user', 'u.user_id', 'u.user_name', 'f.forum_class', 'f.forum_id', 'f.forum_name', 'f.forum_sef'),
@@ -49,6 +49,13 @@ class forum_search extends e_search // include plugin-folder in the name.
 			'order'			=>  array('thread_datestamp' => DESC),
 			'refpage'		=> 'forum'
 		);
+
+		$params = $this->getParams(); // retrieve URL query values.
+
+		if(!empty($params['match']))
+		{
+			$search['search_fields'] = array('t.thread_name'=>'1.5');
+		}
 
 
 		return $search;
@@ -61,16 +68,7 @@ class forum_search extends e_search // include plugin-folder in the name.
 	{
 		$tp = e107::getParser();
 
-
-
 		$res = array();
-
-	/*	$res['link'] 		= e_PLUGIN."chatbox_menu/chat.php?".$row['cb_id'].".fs";
-		$res['pre_title'] 	= LAN_SEARCH_7;
-		$res['title'] 		= $user[2];
-		$res['summary'] 	= $row['cb_message'];
-		$res['detail'] 		= $tp->toDate($row['cb_datestamp'], "long");*/
-
 		$datestamp = $tp->toDate($row['thread_datestamp'], "long");
 
 		if ($row['thread_parent'])
@@ -84,17 +82,18 @@ class forum_search extends e_search // include plugin-folder in the name.
 
 	$link_id = $row['thread_id'];
 
-	//<a href='user.php?id.".$row['user_id']."'>".$row['user_name']."</a>
 	$uparams = array('id' => $row['user_id'], 'name' => $row['user_name']);
 	$link = e107::getUrl()->create('user/profile/view', $uparams);
 	$userlink = "<a href='".$link."'>".$row['user_name']."</a>";
 
 	$row['thread_sef'] = eHelper::title2sef($row['thread_name'],'dashl');
 
+	$forumTitle = "<a href='".e107::url('forum','forum',$row)."'>".$row['forum_name']."</a>";
+
 	$res['link'] 		= e107::url('forum','topic', $row, array('query'=>array('f'=>'post','id'=>$row['post_id']))); // e_PLUGIN."forum/forum_viewtopic.php?".$link_id.".post";
-	$res['pre_title'] 	= $title ? FOR_SCH_LAN_5.": " : "";
-	$res['title'] 		= $title ? $title : LAN_SEARCH_9;
-	$res['pre_summary'] = "<div class='smalltext'><a href='".e107::url('forum','forum',$row)."'>".$row['forum_name']."</a></div>";
+	$res['pre_title'] 	= ''; // $title ? FOR_SCH_LAN_5.": " : "";
+	$res['title'] 		= $title ? $forumTitle . " | ". $title : LAN_SEARCH_9;
+	$res['pre_summary'] = "";
 	$res['summary'] 	= $row['post_entry'];
 	$res['detail'] 		= LAN_SEARCH_7.$userlink.LAN_SEARCH_8.$datestamp;
 
