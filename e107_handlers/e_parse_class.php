@@ -3062,6 +3062,9 @@ class e_parser
 	 */ 
 	public function toGlyph($text, $space=" ")
 	{
+
+
+
 		if(!deftrue('BOOTSTRAP') || empty($text))
 		{
 			return false;	
@@ -3221,6 +3224,11 @@ class e_parser
 		if(!vartrue($icon))
 		{
 			return;
+		}
+
+		if(substr($icon,0,3) == '<i ') // if it's html (ie. css sprite) return the code.
+		{
+			return $icon;
 		}
 				
 		$ext = pathinfo($icon, PATHINFO_EXTENSION);
