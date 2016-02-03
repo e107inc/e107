@@ -2561,8 +2561,15 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		return deftrue($this->pluginTitle, $this->pluginTitle);
 	}
-	
-	
+
+	/**
+	 * Get Sort Field data
+	 * @return string
+	 */
+	public function getSortField()
+	{
+		return $this->sortField;
+	}
 	
 	/**
 	 * Get Tab data
@@ -5808,6 +5815,11 @@ class e_admin_form_ui extends e_form
 			{
 				$fields[$k]['inline'] = false;
 			}
+		}
+
+		if(!$controller->getSortField())
+		{
+			$fields['options']['sort'] = false;
 		}
 
 		// ------------------------------------------
