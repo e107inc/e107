@@ -8,7 +8,7 @@
  */
 
 
-if(empty($_POST['content']) && empty($_GET['debug']))
+if(empty($_POST['content']) && empty($_GET['debug']) && !defined('TINYMCE_DEBUG'))
 {
 	header('Content-Length: 0');
 	exit;
@@ -17,7 +17,11 @@ if(empty($_POST['content']) && empty($_GET['debug']))
 $_E107['no_online'] = true;
 $_E107['no_menus'] = true;
 $_E107['no_forceuserupdate'] = true;
-require_once("../../../../class2.php");
+
+if(!defined('TINYMCE_DEBUG'))
+{
+	require_once("../../../../class2.php");
+}
 
 /**
  * Two Modes supported below going to and from the Tinymce wysiwyg editor.
@@ -29,7 +33,7 @@ require_once("../../../../class2.php");
 class e107TinyMceParser
 {
 
-	protected $gzipCompression = true;
+	protected $gzipCompression = false;
 
 	/**
 	 *
@@ -37,6 +41,11 @@ class e107TinyMceParser
 	function __construct()
 	{
 		$html = '';
+
+		if(defined('TINYMCE_DEBUG'))
+		{
+			$this->gzipCompression = false;
+		}
 
 		if(!empty($_GET['debug']) && getperms('0'))
 		{
@@ -214,7 +223,41 @@ TEMPL;
 
 
 	/**
+	 * Split a thumb.php url into an array which can be parsed back into the thumbUrl method. .
+	 * @param $src
+	 * @return array
+	 */
+	function thumbUrlDecode($src)
+	{
+		list($url,$qry) = explode("?",$src);
+
+		$ret = array();
+
+		if(strstr($url,"thumb.php") && !empty($qry)) // Regular
+		{
+			parse_str($qry,$val);
+			$ret = $val;
+		}
+		elseif(preg_match('/media\/img\/(a)?([\d]*)x(a)?([\d]*)\/(.*)/',$url,$match)) // SEF
+		{
+			$wKey = $match[1].'w';
+			$hKey = $match[3].'h';
+
+			$ret = array(
+				'src'=> 'e_MEDIA_IMAGE/'.$match[5],
+				$wKey => $match[2],
+				$hKey => $match[4]
+			);
+		}
+
+		return $ret;
+	}
+
+
+	/**
 	 * Rebuld <img> tags with modified thumbnail size.
+	 * @param $text
+	 * @return mixed
 	 */
 	function updateImg($text)
 	{
@@ -235,34 +278,29 @@ TEMPL;
 			$alt 	= vartrue($img['alt'])		? ' alt="'.$img['alt'].'"' : '';
 			$title 	= vartrue($img['title'])		? ' title="'.$img['title'].'"' : '';
 
-			list($url,$qry) = explode("?",$img['src']);
+			$qr = $this->thumbUrlDecode($img['src']);
 
-			parse_str($qry,$qr);
-
-			if(substr($url,0,4)!=='http' && empty($qr['w']) && empty($qr['aw']))
+			if(substr($qr['src'],0,4)!=='http' && empty($qr['w']) && empty($qr['aw']))
 			{
 				$qr['w'] = $img['width'];
 				$qr['h'] = $img['height'];
 			}
 
-			$src = $url."?".urldecode(http_build_query($qr));
+			$src = e107::getParser()->thumbUrl($qr['src'],$qr);
 
-			$replacement = '<img'.$class.$style.' src="'.$src.'"'.$width.$height.$alt.$title.' />';
+			$replacement = '<img src="'.$src.'" '.$style.$alt.$title.$class.$width.$height.' />';
 
 			$text = preg_replace($regexp, $replacement, $text);
-
 
 		}
 
 		return $text;
-
-
 	}
 
 
 }
 
-new	e107TinyMceParser();
+$mce = new	e107TinyMceParser();
 
 
 ?>
