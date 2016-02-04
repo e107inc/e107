@@ -2266,16 +2266,60 @@ class e_parse extends e_parser
 			}
 			$thurl .= 'w='.((integer) vartrue($options['w'], 0)).'&amp;h='.((integer) vartrue($options['h'], 0));
 		}
-		
-		
+
+
+		if(e_MOD_REWRITE_MEDIA == true && (strstr($thurl, 'e_MEDIA_IMAGE') || !empty($options['x'])))// Experimental SEF URL support.
+		{
+			$options['full'] = $full;
+			$options['ext'] = substr($url,-3);
+			$options['thurl'] = $thurl;
+			return $this->thumbUrlSEF($url,$options);
+		}
+
 		if(vartrue($options['x']))//base64 encode url
 		{
 			$thurl = 'id='.base64_encode($thurl);
 		}
 
-	//	echo "<br /><br />".$thurl; 
-		
 		return $baseurl.$thurl;
+	}
+
+	/**
+	 * Used by thumbUrl when SEF Image URLS is active. @see e107.htaccess
+	 * @param $url
+	 * @param array $options
+	 * @return string
+	 */
+	private function thumbUrlSEF($url='', $options=array())
+	{
+		$clean = array('{e_MEDIA_IMAGE}','e_MEDIA_IMAGE/');
+
+		$base = (!empty($options['full'])) ? SITEURL : e_HTTP;
+
+		// Build URL for:  RewriteRule ^media\/img\/([-A-Za-z0-9+/]*={0,3})\.(jpg|gif|png)?$ thumb.php?id=$1
+		if(!empty($options['x']) && !empty($options['ext']))
+		{
+			$ext = strtolower($options['ext']);
+			return $base.'media/img/'.base64_encode($options['thurl']).'.'.str_replace("jpeg", "jpg", $ext);
+		}
+
+		// Build URL for ReWriteRule ^media\/img\/(a)?([\d]*)x(a)?([\d]*)\/(.*)?$ thumb.php?src=e_MEDIA_IMAGE/$5&$1w=$2&$3h=$4
+		$sefUrl =  $base.'media/img/';
+
+		if(vartrue($options['aw']) || vartrue($options['ah']))
+		{
+			$sefUrl .= 'a'.intval($options['aw']) .'xa'. intval($options['ah']);
+		}
+		else
+		{
+			$sefUrl .= intval($options['w']) .'x'. intval($options['h']);
+		}
+
+		$sefUrl .= '/';
+		$sefUrl .= str_replace($clean,'',$url);
+
+		return $sefUrl;
+
 	}
 
 	/**

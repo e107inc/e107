@@ -3218,6 +3218,12 @@ class e107
 		{
 			define('e_MOD_REWRITE', (getenv('HTTP_MOD_REWRITE')=='On' ? true : false));
 		}
+
+		if(!defined('e_MOD_REWRITE_MEDIA')) // Allow e107_config.php to override.
+		{
+			define('e_MOD_REWRITE_MEDIA', (getenv('HTTP_MOD_REWRITE_MEDIA')=='On' ? true : false));
+		}
+
 		// Define the domain name and subdomain name.
 		if(is_numeric(str_replace(".","",$_SERVER['HTTP_HOST'])))
 		{
