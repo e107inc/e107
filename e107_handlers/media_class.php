@@ -730,7 +730,7 @@ class e_media
 				
 			$realPath 		= $tp->thumbUrl($im['media_url'], $prevAtt); // Parsed back to Form as Preview Image. 
 			
-			$diz 			= $tp->toAttribute(varset($im['media_title']))."\n".varset($im['media_dimensions']);		
+			$diz 			= $tp->toAttribute(varset($im['media_name']))." (".str_replace(" ","", varset($im['media_dimensions'])).")";
 			$repl 			= array($im['media_url'],$media_path);
 
 			$media_alt      = $tp->toAttribute(vartrue($im['media_caption']));
