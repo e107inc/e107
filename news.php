@@ -1122,23 +1122,8 @@ function setNewsFrontMeta($news, $type='news')
 		{
 			e107::meta('og:description',$news['news_summary']);		
 		}
-	
-		// grab all images in news-body and add to meta. 
-		$images = e107::getBB()->getContent('img',$news['news_body'],SITEURL.e_IMAGE."newspost_images/");
-		foreach($images as $im)
-		{
-			e107::meta('og:image',$im);		
-		}
-		
-		// grab all youtube videos in news-body and add thumbnails to meta. 
-		$youtube = e107::getBB()->getContent('youtube',$news['news_body']);
-		foreach($youtube as $yt)
-		{
-			list($img,$tmp) = explode("?",$yt);
-			e107::meta('og:image',"http://img.youtube.com/vi/".$img."/0.jpg");		
-		}	
 
-		// include news-thumbnail/image in meta. 
+		// include news-thumbnail/image in meta. - always put this one first.
 		if($news['news_thumbnail'])
 		{
 			$iurl = (substr($news['news_thumbnail'],0,3)=="{e_") ? $news['news_thumbnail'] : SITEURL.e_IMAGE."newspost_images/".$news['news_thumbnail'];
@@ -1152,8 +1137,31 @@ function setNewsFrontMeta($news, $type='news')
 				e107::meta('og:image',$tp->thumbUrl($tmp[0],'w=500',false,true) );
 			//	e107::meta('og:image',$mimg);
 			}
-					
+
 		}
+	
+		// grab all images in news-body and add to meta. 
+		$images = e107::getBB()->getContent('img',$news['news_body'],SITEURL.e_IMAGE."newspost_images/");
+		$c =1;
+		foreach($images as $im)
+		{
+			if($c == 4){ break; }
+			e107::meta('og:image',$im);
+			$c++;
+		}
+		
+		// grab all youtube videos in news-body and add thumbnails to meta. 
+		$youtube = e107::getBB()->getContent('youtube',$news['news_body']);
+		$c = 1;
+		foreach($youtube as $yt)
+		{
+			if($c == 3){ break; }
+			list($img,$tmp) = explode("?",$yt);
+			e107::meta('og:image',"http://img.youtube.com/vi/".$img."/0.jpg");
+			$c++;
+		}
+
+
 
 		$url = e107::getUrl()->create('news/view/item', $news,'full=1');
 		e107::meta('og:url',$url);	
