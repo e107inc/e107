@@ -42,8 +42,8 @@ class bb_img extends e_bb_base
           
 		// Replace the bbcode path with a real one. 
 		$code_text = str_replace('{e_MEDIA}images/','{e_MEDIA_IMAGE}',$code_text); //BC 0.8 fix.
-        $code_text = str_replace('{e_MEDIA_IMAGE}', e_HTTP."thumb.php?src=e_MEDIA_IMAGE/", $code_text);
-		$code_text = str_replace('{e_THEME}', e_HTTP."thumb.php?src=e_THEME/", $code_text);
+     //   $code_text = str_replace('{e_MEDIA_IMAGE}', e_HTTP."thumb.php?src=e_MEDIA_IMAGE/", $code_text);
+	//	$code_text = str_replace('{e_THEME}', e_HTTP."thumb.php?src=e_THEME/", $code_text);
         $imgParms    = $this->processParm($code_text, $parm);
 
         $figcaption = false;
@@ -60,25 +60,22 @@ class bb_img extends e_bb_base
            // $parmStr .= " ".$k.'="'.$v.'"';
             $p[] = $tp->toAttribute($k).'="'.$tp->toAttribute($v).'"';
         } 
-        
-       
-    //    $w = e107::getBB()->resizeWidth(); // varies depending on the class set by external script. see admin->media-manager->prefs
-        
-        
+
         $w = vartrue($imgParms['width']) ? intval($imgParms['width']) : vartrue(e107::getBB()->resizeWidth(),0);
      //   $h = vartrue($imgParms['height']) ? intval($imgParms['height']) : e107::getBB()->resizeHeight();
         
         $resize = "&w=".$w; // Always resize - otherwise the thumbnailer returns nothing. 
         $parmStr = implode(" ",$p);
-    
+
    //     print_a($imgParms);
    //     print_a($parmStr);
 
+        $url = e107::getParser()->thumbUrl($code_text, $resize);
 
 		if(!empty($figcaption))
 		{
 			$html = "<figure>\n";
-			$html .= "<img src=\"".$code_text.$resize."\" {$parmStr} />\n";
+			$html .= "<img src=\"".$url."\" {$parmStr} />";
 			$html .= "<figcaption>".e107::getParser()->filter($figcaption,'str')."</figcaption>\n";
 			$html .= "</figure>";
 
@@ -86,7 +83,7 @@ class bb_img extends e_bb_base
 		}
 		else
 		{
-			return "<img src=\"".$code_text.$resize."\" {$parmStr} />";
+			return "<img src=\"".$url."\" {$parmStr} />";
 		}
     }
 
