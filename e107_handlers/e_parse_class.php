@@ -2268,12 +2268,16 @@ class e_parse extends e_parser
 		}
 
 
-		if(e_MOD_REWRITE_MEDIA == true && (strstr($thurl, 'e_MEDIA_IMAGE') || !empty($options['x'])))// Experimental SEF URL support.
+		if(e_MOD_REWRITE_MEDIA == true)// Experimental SEF URL support.
 		{
 			$options['full'] = $full;
 			$options['ext'] = substr($url,-3);
 			$options['thurl'] = $thurl;
-			return $this->thumbUrlSEF($url,$options);
+
+			if($sefUrl = $this->thumbUrlSEF($url,$options))
+			{
+				return $sefUrl;
+			}
 		}
 
 		if(vartrue($options['x']))//base64 encode url
@@ -2292,19 +2296,31 @@ class e_parse extends e_parser
 	 */
 	private function thumbUrlSEF($url='', $options=array())
 	{
-		$clean = array('{e_MEDIA_IMAGE}','e_MEDIA_IMAGE/');
 
 		$base = (!empty($options['full'])) ? SITEURL : e_HTTP;
 
-		// Build URL for:  RewriteRule ^media\/img\/([-A-Za-z0-9+/]*={0,3})\.(jpg|gif|png)?$ thumb.php?id=$1
-		if(!empty($options['x']) && !empty($options['ext']))
+		if(!empty($options['x'])  && !empty($options['ext'])) // base64 encoded. Build URL for:  RewriteRule ^media\/img\/([-A-Za-z0-9+/]*={0,3})\.(jpg|gif|png)?$ thumb.php?id=$1
 		{
 			$ext = strtolower($options['ext']);
 			return $base.'media/img/'.base64_encode($options['thurl']).'.'.str_replace("jpeg", "jpg", $ext);
 		}
+		elseif(strstr($url, 'e_MEDIA_IMAGE')) // media images.
+		{
+			$sefPath = 'media/img/';
+			$clean = array('{e_MEDIA_IMAGE}','e_MEDIA_IMAGE/');
+		}
+		elseif(strstr($url, 'e_AVATAR')) // avatars
+		{
+			$sefPath = 'media/avatar/';
+			$clean = array('{e_AVATAR}','e_AVATAR/');
+		}
+		else
+		{
+			return false;
+		}
 
 		// Build URL for ReWriteRule ^media\/img\/(a)?([\d]*)x(a)?([\d]*)\/(.*)?$ thumb.php?src=e_MEDIA_IMAGE/$5&$1w=$2&$3h=$4
-		$sefUrl =  $base.'media/img/';
+		$sefUrl =  $base.$sefPath;
 
 		if(vartrue($options['aw']) || vartrue($options['ah']))
 		{
