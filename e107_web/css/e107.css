@@ -193,8 +193,8 @@ a.comment-edit										{ }
 */
 div.e-comment-edit-save								{ margin-top:8px; padding: 5px }
 .e-comment-edit-active								{ -webkit-box-shadow:#CCCCCC 0px 0px 10px; -moz-box-shadow:#CCCCCC  0px 0px 10px; box-shadow:#CCCCCC 0px 0px 10px; -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px;}
-.e-comment-edit-success								{ padding:5px; text-align:center; background-color:#DFFFDF; border: 1px solid #009900; -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; }										
-.e-comment-edit-error								{ padding:5px; text-align:center; background-color:#FFCECE; border: 1px solid #CC0000;  -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; }										
+.e-comment-edit-success								{ padding:8px; text-align:center; }
+.e-comment-edit-error								{ padding:8px; text-align:center; }
 
 .e-rate-up img										{ opacity: 0.4 }
 .e-rate-down img									{ opacity: 0.4 }

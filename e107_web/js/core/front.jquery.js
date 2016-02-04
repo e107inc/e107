@@ -167,13 +167,14 @@ $(document).ready(function()
 	});
 
 
-    $("form").on("click", "input.e-comment-edit-save", function(){
+    $(document).on("click", "input.e-comment-edit-save", function(){
 			
 			var url 	= $(this).attr("data-target");
 			var sp 		= $(this).attr('id').split("-");	
 			var id 		= "#comment-" + sp[4] + "-edit";
 			var comment = $(id).text();
-			
+
+
 			$(id).attr('contentEditable',false);
 			
 		        $.ajax({
@@ -191,20 +192,20 @@ $(document).ready(function()
 		            	{
 		            	 	$("div.e-comment-edit-save")
 		            	 	.hide()
-		                    .addClass("e-comment-edit-success")
+		                    .addClass("alert alert-success e-comment-edit-success")
 		                    .html(a.msg)
 		                    .fadeIn('slow')
-		                    .delay(1000)
-		                    .fadeOut('slow');
+		                    .delay(1500)
+		                    .fadeOut(2000);
 		                    
 						}
 						else
 						{
 							 $("div.e-comment-edit-save")
-		                    .addClass("e-comment-edit-error")
+		                    .addClass("alert alert-danger e-comment-edit-error")
 		                    .html(a.msg)
 		                    .fadeIn('slow')
-		                    .delay(1000)
+		                    .delay(1500)
 		                    .fadeOut('slow');				
 						}
 		            	$(id).removeClass("e-comment-edit-active");
