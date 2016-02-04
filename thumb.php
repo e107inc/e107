@@ -258,6 +258,8 @@ class e_thumbpage
 			$this->sendHeaders($thumbnfo);
 		
 
+				//$bench->end()->logResult('thumb.php', $_GET['src'].' - 304 not modified');
+			// 	exit;
 			// check browser cache
 			if (@$_SERVER['HTTP_IF_MODIFIED_SINCE'] && ($thumbnfo['lmodified'] <= strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE'])) && (isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) == $thumbnfo['md5s']))
 			{
@@ -362,6 +364,7 @@ class e_thumbpage
 		}
 		//header('Pragma:');
 		header('Cache-Control: must-revalidate');
+	//	header('Cache-Control: public, max-age=3600');
 		header('Last-Modified: '.gmdate('D, d M Y H:i:s', $thumbnfo['lmodified']).' GMT');
 		header('Content-Length: '.$thumbnfo['fsize']);
 		header('Content-Disposition: filename='.$thumbnfo['basename']); // important for right-click save-as. 
