@@ -206,6 +206,9 @@ class e_jsmanager
 	 */
 	protected $_dependenceLoaded = array();
 
+
+	protected $_cache_enabled = false;
+
 	/**
 	 * Constructor
 	 *
@@ -275,6 +278,7 @@ class e_jsmanager
 		}
 		
 		$customJqueryUrls = e107::getPref('library-jquery-urls');
+		$this->_cache_enabled = e107::getPref('jscsscachestatus',false);
 		
 		if(vartrue($customJqueryUrls) && $this->_in_admin === false)
 		{
@@ -1345,7 +1349,12 @@ class e_jsmanager
 	 */
 	private function addCache($type,$path)
 	{
-		return false; //return false if cache is disabled - CURRENTLY DISABLED - TODO Add Pref etc. 
+		if($this->_cache_enabled != true)
+		{
+			return false;
+		}
+
+		if(substr($path,0,2) == '//' || e_ADMIN_AREA){ return false; }
 
 		$localPath = e107::getParser()->replaceConstants($path);
 		$this->_cache_list[$type][] = $localPath;
@@ -1362,6 +1371,10 @@ class e_jsmanager
 	 */
 	public function renderCached($type)
 	{
+		if($this->_cache_enabled != true)
+		{
+			return false;
+		}
 
 		if(!empty($this->_cache_list[$type]))
 		{
@@ -1376,8 +1389,8 @@ class e_jsmanager
 
 				foreach($this->_cache_list[$type] as $k=>$path)
 				{
-					$content .= "\n\n/* ".str_replace("../",'',$path)." */ \n\n";
-					$content .= file_get_contents($path);
+					$content .= "\n\n/* File: ".str_replace("../",'',$path)." */ \n\n";
+					$content .= $this->getCacheFileContent($path, $type);
 				}
 
 				if(!@file_put_contents($saveFilePath, $content))
@@ -1409,6 +1422,46 @@ class e_jsmanager
 
 
 
+	}
+
+
+	/**
+	 * Get js/css file to be cached and update url links.
+	 * @param $path string
+	 * @param $type string (js|css)
+	 * @return mixed|string
+	 */
+	function getCacheFileContent($path, $type)
+	{
+		$content = @file_get_contents($path);
+
+		if($type == 'js')
+		{
+			// e107::minify() todo
+			return $content;
+		}
+
+		preg_match_all('/url\([\'"]?([^\'"\) ]*)[\'"]?\)/',$content, $match);
+		$newpath = array();
+
+		if(empty($match[0]))
+		{
+			return $content;
+		}
+
+		foreach($match[1] as $k=>$v)
+		{
+			if(substr($v,5) == 'data:')
+			{
+				unset($match[0][$k]);
+				continue;
+			}
+
+			$dir = "url(../../".dirname($path)."/".$v.")"; // relative to e_WEB_ABS."cache/";
+			$newpath[$k] = $dir;
+		}
+
+		return str_replace($match[0], $newpath, $content);
 	}
 
 

@@ -55,6 +55,7 @@ if (isset($_POST['submit_cache']))
 {
 	e107::getConfig()->set('cachestatus', intval($_POST['cachestatus']))
 		->set('syscachestatus', intval($_POST['syscachestatus']))
+		->set('jscsscachestatus', intval($_POST['jscsscachestatus']))
 		->save(false);
 }
 
@@ -89,6 +90,11 @@ if (isset($_POST['trigger_empty_cache']))
 			e107::getAdminLog()->flushMessages(CACLAN_25);
 		break;
 
+		case 'empty_jscss':
+			e107::getCache()->clearAll('jscss');
+		//	e107::getAdminLog()->flushMessages(CACLAN_5);
+		break;
+
 		// all
 		default:
 			e107::getCache()->clearAll('content');
@@ -105,16 +111,19 @@ $syscache_files = glob(e_CACHE_CONTENT.'S_*.*');
 $cache_files = glob(e_CACHE_CONTENT.'C_*.*');
 $imgcache_files = glob(e_CACHE_IMAGE.'*.cache.bin');
 $dbcache_files = glob(e_CACHE_DB.'*.php');
+$jscsscache_files = glob(e_WEB.'cache/*.*');
 
 $syscache_files_num = count($syscache_files);
 $cache_files_num = count($cache_files);
 $imgcache_files_num = count($imgcache_files);
 $dbcache_files_num = count($dbcache_files);
+$jscsscache_files_num    = count($jscsscache_files);
 
 $syscache_label = $syscache_files_num.' '.($syscache_files_num != 1 ? CACLAN_19 : CACLAN_18);
 $contentcache_label = $cache_files_num.' '.($cache_files_num != 1 ? CACLAN_19 : CACLAN_18);
 $imgcache_label = $imgcache_files_num.' '.($imgcache_files_num != 1 ? CACLAN_19 : CACLAN_18);
 $dbcache_label = $dbcache_files_num.' '.($dbcache_files_num != 1 ? CACLAN_19 : CACLAN_18);
+$jscsscache_label = $jscsscache_files_num.' '.($jscsscache_files_num != 1 ? CACLAN_19 : CACLAN_18);
 
 $text = "
 	<form method='post' action='".e_SELF."'>
@@ -154,6 +163,19 @@ $text = "
 							".$frm->radio_switch('syscachestatus', e107::getPref('syscachestatus'))."
 						</td>
 					</tr>
+
+						<tr>
+						<td>
+							<strong class='e-tip'>".CACLAN_28." <span class='label label-warning'>Experimental</span></strong>
+							<div class='field-help'>".CACLAN_29."</div>
+						</td>
+						<td>{$jscsscache_label}</td>
+						<td class='left middle'>
+							".$frm->radio_switch('jscsscachestatus', e107::getPref('jscsscachestatus'))."
+						</td>
+					</tr>
+
+
 					<tr>
 						<td>
 							<strong class='e-tip'>".CACLAN_20."</strong>
@@ -174,6 +196,9 @@ $text = "
 							".LAN_ENABLED."
 						</td>
 					</tr>
+
+
+
 				</tbody>
 			</table>
 			<div class='buttons-bar form-inline'>
@@ -182,6 +207,7 @@ $text = "
 					'empty_all' => CACLAN_26,
 					'empty_contentcache' => CACLAN_5,
 					'empty_syscache' => CACLAN_16,
+					'empty_jscss' => CACLAN_30,
 					'empty_dbcache' => CACLAN_24,
 					'empty_imgcache' => CACLAN_25,
 					'empty_browsercache' => CACLAN_27,
