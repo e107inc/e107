@@ -32,4 +32,8 @@ define("CACLAN_24", "Empty DB Structure Cache");
 define("CACLAN_25", "Empty Thumbnail Cache");
 define("CACLAN_26", "Empty All Cache");
 define("CACLAN_27", "Empty Browser Cache");
+
+define("CACLAN_28", "JS/CSS Cache");
+define("CACLAN_29", "Consolidate and cache javascript files and cascading stylesheet files.");
+define("CACLAN_30", "Empty JS/CSS Cache");
 ?>
