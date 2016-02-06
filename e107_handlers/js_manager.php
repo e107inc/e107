@@ -1349,12 +1349,10 @@ class e_jsmanager
 	 */
 	private function addCache($type,$path)
 	{
-		if($this->_cache_enabled != true)
+		if($this->_cache_enabled != true  || $this->isInAdmin() || substr($path,0,2) == '//' )
 		{
 			return false;
 		}
-
-		if(substr($path,0,2) == '//' || e_ADMIN_AREA){ return false; }
 
 		$localPath = e107::getParser()->replaceConstants($path);
 		$this->_cache_list[$type][] = $localPath;
@@ -1371,7 +1369,7 @@ class e_jsmanager
 	 */
 	public function renderCached($type)
 	{
-		if($this->_cache_enabled != true)
+		if($this->_cache_enabled != true || $this->isInAdmin())
 		{
 			return false;
 		}
@@ -1389,7 +1387,7 @@ class e_jsmanager
 
 				foreach($this->_cache_list[$type] as $k=>$path)
 				{
-					$content .= "\n\n/* File: ".str_replace("../",'',$path)." */ \n\n";
+					$content .= "\n\n/* File: ".str_replace("../",'',$path)." */\n";
 					$content .= $this->getCacheFileContent($path, $type);
 				}
 
@@ -1438,7 +1436,7 @@ class e_jsmanager
 		if($type == 'js')
 		{
 			// e107::minify() todo
-			return $content;
+			return $this->compress($content);
 		}
 
 		preg_match_all('/url\([\'"]?([^\'"\) ]*)[\'"]?\)/',$content, $match);
@@ -1446,7 +1444,7 @@ class e_jsmanager
 
 		if(empty($match[0]))
 		{
-			return $content;
+			return $this->compress($content);
 		}
 
 		foreach($match[1] as $k=>$v)
@@ -1461,8 +1459,21 @@ class e_jsmanager
 			$newpath[$k] = $dir;
 		}
 
-		return str_replace($match[0], $newpath, $content);
+		$result = str_replace($match[0], $newpath, $content);
+		return $this->compress($result);
 	}
+
+
+	function compress( $minify )
+    {
+		/* remove comments */
+    	$minify = preg_replace( '!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $minify );
+
+        /* remove tabs, spaces, newlines, etc. */
+    	$minify = str_replace( array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $minify );
+
+        return $minify;
+    }
 
 
 	function getCacheFileId($paths)
