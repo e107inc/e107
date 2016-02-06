@@ -91,7 +91,8 @@ if (isset($_POST['trigger_empty_cache']))
 		break;
 
 		case 'empty_jscss':
-			e107::getCache()->clearAll('jscss');
+			e107::getCache()->clearAll('js');
+			e107::getCache()->clearAll('css');
 		//	e107::getAdminLog()->flushMessages(CACLAN_5);
 		break;
 
@@ -111,7 +112,7 @@ $syscache_files = glob(e_CACHE_CONTENT.'S_*.*');
 $cache_files = glob(e_CACHE_CONTENT.'C_*.*');
 $imgcache_files = glob(e_CACHE_IMAGE.'*.cache.bin');
 $dbcache_files = glob(e_CACHE_DB.'*.php');
-$jscsscache_files = glob(e_WEB.'cache/*.*');
+$jscsscache_files = glob(e_WEB.'cache/*.{css,js}',GLOB_BRACE);
 
 $syscache_files_num = count($syscache_files);
 $cache_files_num = count($cache_files);
