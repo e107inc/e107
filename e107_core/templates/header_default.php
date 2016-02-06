@@ -642,11 +642,18 @@ echo "</head>\n";
         $HEADER = ($CUSTOMHEADER[$def]) ? $CUSTOMHEADER[$def] : $HEADER;
         $FOOTER = ($CUSTOMFOOTER[$def]) ? $CUSTOMFOOTER[$def] : $FOOTER;
     }
-    elseif($def && isset($HEADER[$def]) && isset($FOOTER[$def])) // 2.0 themes - we use only $HEADER and $FOOTER arrays.
+    elseif($def) // 2.0 themes - we use only $HEADER and $FOOTER arrays.
     {
       //    echo " MODE 0.8";
-        $HEADER = $HEADER[$def];
-        $FOOTER = $FOOTER[$def];
+        if(isset($HEADER[$def]) && isset($FOOTER[$def]))
+	    {
+            $HEADER = $HEADER[$def];
+            $FOOTER = $FOOTER[$def];
+	    }
+	    else // Debug info only. No need for LAN.
+	    {
+	        echo e107::getMessage()->addError("There is no layout in theme.php with the key: <b>".$def."</b>")->render();
+	    }
     }
     
     if(deftrue('e_IFRAME'))
