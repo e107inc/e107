@@ -58,10 +58,10 @@ if(isset($_POST['send-contactus']))
 	$sender_name    = $tp->toEmail($_POST['author_name'], true,'RAWTEXT');
 	$sender         = check_email($_POST['email_send']);
 	$subject        = $tp->toEmail($_POST['subject'], true,'RAWTEXT');
-	$body           = $tp->toEmail($_POST['body'], true,'RAWTEXT');
+	$body           = nl2br($tp->toEmail($_POST['body'], true,'RAWTEXT'));
 
 	$email_copy     = !empty($_POST['email_copy']) ? 1 : 0;
-
+	
 // Check Image-Code
     if (isset($_POST['rand_num']) && !$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify']))
 	{
