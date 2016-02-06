@@ -242,7 +242,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 
 		foreach($eUrl as $plug=>$val)
 		{
-			$text .= "<h5>".$plug."</h5>";
+			$text .= "<h4>".$plug."</h4>";
 			$text .= "<table class='table table-striped table-bordered'>";
 			$text .= "<tr><th>Key</th><th>Regular Expression</th>
 
@@ -466,9 +466,11 @@ class eurl_admin_ui extends e_admin_controller_ui
 
 		$ret = array();
 		$url = e107::getUrl();
-		
-		
+
 		ksort($locations);
+
+		unset($locations['forum'],$locations['faqs'], $locations['pm']); // using new system so hide from here.
+
 		foreach ($locations as $module => $l) 
 		{
 			$data = new e_vars(array(
@@ -481,10 +483,12 @@ class eurl_admin_ui extends e_admin_controller_ui
 			$data->locations = $l;
 			$data->defaultLocation = $l[0];
 			$data->config = $obj;
-			
+
 			$ret[] = $data;
 		}
-		
+
+
+
 		return $this->getUI()->moduleRows($ret);
 	}
 	
@@ -629,7 +633,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 		$text = '';
 		$tp = e107::getParser();
 		$frm = e107::getForm();
-		
+
 		if(empty($data))
 		{
 			return "
@@ -703,6 +707,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 
 	                }
 				 }
+
                  if(strpos($path,'noid')!==false)
                 {
                //     $exampleUrl .= "  &nbsp; &Dagger;";    //XXX Add footer - denotes more CPU required. ?

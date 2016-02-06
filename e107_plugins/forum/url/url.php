@@ -154,6 +154,8 @@ class plugin_forum_url extends eUrlConfig
 	 */
 	public function admin()
 	{
+		return false; // whole file deprecated.
+	/*
 		// static may be used for performance
 		e107::plugLan('forum', 'lan_forum_url');
 		static $admin = array(
@@ -166,7 +168,7 @@ class plugin_forum_url extends eUrlConfig
 			'form' => array(), // Under construction - additional configuration options
 			'callbacks' => array(), // Under construction - could be used for e.g. URL generator functionallity
 		);
-		
+		*/
 		return $admin;
 	}
 }
