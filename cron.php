@@ -65,8 +65,8 @@ require_once(realpath(dirname(__FILE__)."/class2.php"));
 	}
 
 
-e107::getCache()->CachePageMD5 = '_';
-e107::getCache()->set('cronLastLoad',time(),TRUE,FALSE,TRUE);
+// e107::getCache()->CachePageMD5 = '_';
+@file_put_contents(e_CACHE.'cronLastLoad.php',time());
 
 
 

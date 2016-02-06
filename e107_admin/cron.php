@@ -343,9 +343,9 @@ class cron_admin_ui extends e_admin_ui
 			$mes 	= e107::getMessage();
 			$frm = e107::getForm();
 			
-			e107::getCache()->CachePageMD5 = '_';
-			$lastload = e107::getCache()->retrieve('cronLastLoad', false, true, true);
-			
+
+			$lastload = intval(@file_get_contents(e_CACHE.'cronLastLoad.php'));
+
 			$ago = (time() - $lastload);
 	
 			$active = ($ago < 1200) ? true : false; // longer than 20 minutes, so lets assume it's inactive.
