@@ -1387,8 +1387,9 @@ class e_jsmanager
 
 				foreach($this->_cache_list[$type] as $k=>$path)
 				{
-					$content .= "\n\n/* File: ".str_replace("../",'',$path)." */\n";
+					$content .= "/* File: ".str_replace("../",'',$path)." */\n";
 					$content .= $this->getCacheFileContent($path, $type);
+					$content .= "\n\n";
 				}
 
 				if(!@file_put_contents($saveFilePath, $content))
@@ -1429,22 +1430,22 @@ class e_jsmanager
 	 * @param $type string (js|css)
 	 * @return mixed|string
 	 */
-	function getCacheFileContent($path, $type)
+	private function getCacheFileContent($path, $type)
 	{
 		$content = @file_get_contents($path);
 
 		if($type == 'js')
 		{
-			// e107::minify() todo
-			return $this->compress($content);
+			return $this->compress($content, 'js');
 		}
 
+		// Correct relative paths in css files.
 		preg_match_all('/url\([\'"]?([^\'"\) ]*)[\'"]?\)/',$content, $match);
 		$newpath = array();
 
 		if(empty($match[0]))
 		{
-			return $this->compress($content);
+			return $this->compress($content, 'css');
 		}
 
 		foreach($match[1] as $k=>$v)
@@ -1460,12 +1461,27 @@ class e_jsmanager
 		}
 
 		$result = str_replace($match[0], $newpath, $content);
-		return $this->compress($result);
+
+		return $this->compress($result, 'css');
 	}
 
 
-	function compress( $minify )
+	/**
+	 * Minify JS/CSS for output
+	 * @param string $minify
+	 * @param string $type (js|css)
+	 * @return string
+	 */
+	private function compress($minify, $type = 'js' )
     {
+
+        if($type == 'js')
+        {
+            return e107::minify($minify);
+        }
+
+		// css
+
 		/* remove comments */
     	$minify = preg_replace( '!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $minify );
 
@@ -1476,7 +1492,12 @@ class e_jsmanager
     }
 
 
-	function getCacheFileId($paths)
+	/**
+	 * Generate a Cache-File ID from path list.
+	 * @param array $paths
+	 * @return string
+	 */
+	private function getCacheFileId($paths)
 	{
 		$id = '';
 		foreach($paths as $p)

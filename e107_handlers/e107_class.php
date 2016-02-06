@@ -2851,7 +2851,7 @@ class e107
 	{
 		if(empty($js))
 		{
-			return;
+			return null;
 		}
 
 		require_once(e_HANDLER."jsshrink/Minifier.php");
