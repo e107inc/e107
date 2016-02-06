@@ -154,6 +154,7 @@ class plugin_forum_rewrite_url extends eUrlConfig
 	public function admin()
 	{
 		// static may be used for performance
+		/*
 		e107::plugLan('forum', 'lan_forum_url');
 		static $admin = array(
 			'labels' => array(
@@ -166,6 +167,6 @@ class plugin_forum_rewrite_url extends eUrlConfig
 			'callbacks' => array(), // Under construction - could be used for e.g. URL generator functionallity
 		);
 		
-		return $admin;
+		return $admin;*/
 	}
 }
