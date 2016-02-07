@@ -269,8 +269,8 @@ define ('EPL_ADLAN_227',"Scan for Changes");
 define ('EPL_ADLAN_228',"Plugin folders are scanned every [x] minutes for changes. Click the button below to scan now.");
 define ('EPL_ADLAN_229',"Refresh");
 
-define('LAN_UPGRADE_SUCCESSFUL', "Upgrade Successful");
-define('LAN_INSTALL_SUCCESSFUL', "Installation Successful");
-define('LAN_INSTALL_FAIL', "Instalation Failed");
+define('LAN_UPGRADE_SUCCESSFUL', "Upgrade successful");
+define('LAN_INSTALL_SUCCESSFUL', "Installation successful");
+define('LAN_INSTALL_FAIL', "Installation failed!");
 
 ?>
