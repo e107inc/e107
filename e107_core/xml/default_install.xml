@@ -25,6 +25,7 @@
 		<core name="check_updates">1</core>
 		<core name="comments_disabled">0</core>
 		<core name="comments_emoticons">0</core>
+		<core name="comments_engine">e107</core>
 		<core name="comments_icon">0</core>
 		<core name="comments_moderate">247</core>
 		<core name="comments_sort">desc</core>
@@ -65,9 +66,9 @@
 )]]></core>
 		<core name="e_jslib_browser_cache">0</core>
 		<core name="e_jslib_nobcache">1</core>
-		<core name="e_jslib_nocache">0</core>
+		<core name="e_jslib_nocache">1</core>
 		<core name="e_jslib_gzip">1</core>
-		<core name="e_jslib_nocombine">0</core>
+		<core name="e_jslib_nocombine">1</core>
 		<core name="e_jslib_core"><![CDATA[array (
 'prototype' => 'none',
 'jquery' => 'auto',
@@ -114,6 +115,7 @@
 		<core name="image_post">1</core>
 		<core name="image_post_class">0</core>
 		<core name="image_preload">0</core>
+		<core name="img_import_resize">1200x800</core>
 		<core name="inputdate">%A, %d %b, %Y</core>
 		<core name="inputtime">%I:%M %p</core>
 		<core name="install_date">1251664949</core>
