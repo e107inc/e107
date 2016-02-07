@@ -986,7 +986,7 @@ class GdThumb extends ThumbBase
 				{ 
 					header('Content-type: image/png'); 
 				}
-				imagepng($this->oldImage);
+				imagepng($this->oldImage, null, 9); // modified by e107
 				break;
 		}
 		
@@ -1073,7 +1073,7 @@ class GdThumb extends ThumbBase
 				imagejpeg($this->oldImage, $fileName, $this->options['jpegQuality']);
 				break;
 			case 'PNG':
-				imagepng($this->oldImage, $fileName);
+				imagepng($this->oldImage, $fileName, 9); // modified by e107
 				break;
 		}
 		

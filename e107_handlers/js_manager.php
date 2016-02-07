@@ -1354,7 +1354,7 @@ class e_jsmanager
 			return false;
 		}
 
-		if(e_REQUEST_HTTP == e_ADMIN_ABS."menus.php") // disabled in menu-manager. 
+		if(e_REQUEST_HTTP == e_ADMIN_ABS."menus.php") // disabled in menu-manager.
 		{
 			return false;
 		}
