@@ -3309,6 +3309,7 @@ class e_parser
 		}
 				
 		$ext = pathinfo($icon, PATHINFO_EXTENSION);
+		$dimensions = null;
 		
 		if(!$ext || $ext == 'glyph') // Bootstrap or Font-Awesome. 
 		{
@@ -3318,6 +3319,7 @@ class e_parser
 		if(strpos($icon,'e_MEDIA')!==FALSE)
 		{
 			$path = $this->thumbUrl($icon);
+			$dimensions = $this->thumbDimensions();
 		}
 		elseif($icon[0] == '{')
 		{
@@ -3344,10 +3346,11 @@ class e_parser
 		{
 			$path = $icon;
 		}
-	
+
+
+
 		
-		
-		return "<img class='icon' src='".$path."' alt='".basename($path)."'  />";	
+		return "<img class='icon' src='".$path."' alt='".basename($path)."' ".$dimensions." />";
 	}
 
 
@@ -3386,10 +3389,12 @@ class e_parser
 			$tp->setThumbSize(null, $parm['h']);
 		}
 
+		$dimensions = null;
 
 		if(strpos($file,'e_MEDIA')!==false || strpos($file,'e_THEME')!==false) //v2.x path.
 		{
 			$path = $tp->thumbUrl($file,null,null,true);
+			$dimensions = $this->thumbDimensions();
 		}
 		elseif($file[0] == '{') // Legacy v1.x path. Example: {e_WHEREEVER}
 		{
@@ -3431,7 +3436,7 @@ class e_parser
 
 		$alt = (!empty($parm['alt'])) ? $tp->toAttribute($parm['alt']) : basename($path);
 
-		return "<img class='img-responsive' src='".$path."' alt=\"".$alt."\"  {$insertStyle} />";
+		return "<img class='img-responsive' src='".$path."' alt=\"".$alt."\"  {$insertStyle} {$dimensions} />";
 
 	}
 
