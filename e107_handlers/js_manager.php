@@ -1354,6 +1354,12 @@ class e_jsmanager
 			return false;
 		}
 
+		if(e_REQUEST_HTTP == e_ADMIN_ABS."menus.php") // disabled in menu-manager. 
+		{
+			return false;
+		}
+
+
 		$localPath = e107::getParser()->replaceConstants($path);
 		$this->_cache_list[$type][] = $localPath;
 
