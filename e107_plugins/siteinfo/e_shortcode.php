@@ -153,9 +153,14 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 		
 		if((isset($parm['w']) || isset($parm['h'])))
 		{
-			// $logo = $tp->thumbUrl($logopref,"w=".$parm['h']);
+			//
 			$dimensions[0] = $parm['w'];
-			$dimensions[1] = $parm['h'];	
+			$dimensions[1] = $parm['h'];
+
+			if(empty($parm['noresize']) && !empty($logopref)) // resize by default - avoiding large files.
+			{
+				 $logo = $tp->thumbUrl($logopref,$parm);
+			}
 		}
 		elseif(!deftrue('BOOTSTRAP'))
 		{
