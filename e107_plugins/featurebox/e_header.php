@@ -1,6 +1,6 @@
 <?php
 if (!defined('e107_INIT')){ exit; } 
-//XXX If you need 'camera' please include it in your theme file. 
+//XXX If you need 'camera' please include it in your theme file.
 /*
 if(USER_AREA)
 {
