@@ -51,9 +51,16 @@ class news_shortcodes extends e_shortcode
 		}
 	}
 
-	function sc_newstitle()
+	function sc_newstitle($parm)
 	{
-		return e107::getParser()->toHTML($this->news_item['news_title'], TRUE, 'TITLE');
+		$text = e107::getParser()->toHTML($this->news_item['news_title'], TRUE, 'TITLE');
+
+		if(!empty($parm['attribute']))
+		{
+			$text = e107::getParser()->toAttribute($text);
+		}
+
+		return $text;
 	}
 
 	function sc_newsurltitle()

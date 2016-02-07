@@ -683,9 +683,15 @@ class e_news_tree extends e_front_tree_model
 			
 		$batch->wrapper('news_menu/latest'); //@SecretR - Please FIXME, I'm lost in here. (Cam) 
 		$i = 1;
-		
 
-		foreach ($this->getTree() as $news)
+		$items = $this->getTree();
+
+		if(!empty($items))
+		{
+			$start = $parser->parseTemplate($template['start'], true, $vars); // must be here in case {SETIMAGE} is present and used for items below.
+		}
+
+		foreach ($items as $news)
 		{
 			$vars->counter = $i;
 			$batch->setScVar('news_item', $news->getData());
@@ -693,10 +699,15 @@ class e_news_tree extends e_front_tree_model
 			$i++;
 		}
 
+		if(!empty($items))
+		{
+			$end = $parser->parseTemplate($template['end'], true, $vars);
+		}
 		if($ret)
 		{
+
 			$separator = varset($template['separator'], '');
-			$ret = $parser->simpleParse($template['start'], $vars).implode($separator, $ret).$parser->simpleParse($template['end'], $vars);
+			$ret = $start.implode($separator, $ret).$end;
 			$return = isset($parms['return']) ? true : false;
 
 			if($tablerender)
