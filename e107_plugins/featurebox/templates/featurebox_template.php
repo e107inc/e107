@@ -118,7 +118,7 @@ $FEATUREBOX_TEMPLATE['image_right'] = '
 	</div>
 ';
 
-
+/*
 
 $FEATUREBOX_TEMPLATE['camera'] = '
 	<div class="featurebox-item" data-thumb="{FEATUREBOX_THUMB=src}" data-src="{FEATUREBOX_IMAGE|camera=src}" data-link="{FEATUREBOX_URL}">
@@ -138,7 +138,7 @@ $FEATUREBOX_TEMPLATE['camera_caption'] = '
 			{FEATUREBOX_TEXT|camera}
 		</div>
 	</div>
-';
+';*/
 
 $FEATUREBOX_TEMPLATE['accordion'] = '
 	<h3 class="featurebox-title-accordion"><a href="#">{FEATUREBOX_TITLE|accordion}</a></h3>
@@ -170,8 +170,8 @@ $FEATUREBOX_INFO = array(
 	'image_left'					=> array('title' => 'Generic - (Image-left)'	, 			'description' => 'Left floated image'),
 	'image_right' 					=> array('title' => 'Generic - (Image-right)',				'description' => 'Right floated image'),
 
-	'camera'						=> array('title' => 'Camera item',							'description' => 'For use with the "camera" category'),
-	'camera_caption' 				=> array('title' => 'Camera item with caption',				'description' => 'For use with the "camera" category'),
+	// 'camera'						=> array('title' => 'Camera item',							'description' => 'For use with the "camera" category'),
+	// 'camera_caption' 				=> array('title' => 'Camera item with caption',				'description' => 'For use with the "camera" category'),
 	'accordion' 					=> array('title' => 'Accordion Item',						'description' => 'For use with accordion'),
 	'tabs' 							=> array('title' => 'Tab Item',								'description' => 'For use with tabs')
 );
