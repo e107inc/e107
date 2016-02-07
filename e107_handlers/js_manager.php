@@ -1448,15 +1448,19 @@ class e_jsmanager
 			return $this->compress($content, 'css');
 		}
 
+		$path = str_replace("../",'',$path);
+
+		$basePath = SITEURL.dirname($path)."/";
+
 		foreach($match[1] as $k=>$v)
 		{
-			if(substr($v,5) == 'data:')
+			if(substr($v,5) == 'data:' || substr($v,4) == 'http')
 			{
 				unset($match[0][$k]);
 				continue;
 			}
 
-			$dir = "url(../../".dirname($path)."/".$v.")"; // relative to e_WEB_ABS."cache/";
+			$dir = "url(".$basePath.$v.")"; // relative to e_WEB_ABS."cache/";
 			$newpath[$k] = $dir;
 		}
 
