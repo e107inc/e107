@@ -2314,6 +2314,11 @@ class e_parse extends e_parser
 			$sefPath = 'media/avatar/';
 			$clean = array('{e_AVATAR}','e_AVATAR/');
 		}
+		elseif(strstr($url, 'e_THEME')) // theme folder images.
+		{
+			$sefPath = 'theme/img/';
+			$clean = array('{e_THEME}','e_THEME/');
+		}
 		else
 		{
 			return false;

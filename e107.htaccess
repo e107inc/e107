@@ -63,6 +63,7 @@
     ReWriteRule ^media\/img\/(a)?([\d]*)x(a)?([\d]*)\/(.*)?$ thumb.php?src=e_MEDIA_IMAGE/$5&$1w=$2&$3h=$4 [NC,L]
     ReWriteRule ^media\/avatar\/(a)?([\d]*)x(a)?([\d]*)\/(.*)?$ thumb.php?src=e_AVATAR/$5&$1w=$2&$3h=$4 [NC,L]
     RewriteRule ^media\/img\/([-A-Za-z0-9+/]*={0,3})\.(jpg|gif|png)?$ thumb.php?id=$1 [NC,L]
+    ReWriteRule ^theme\/img\/(a)?([\d]*)x(a)?([\d]*)\/(.*)?$ thumb.php?src=e_THEME/$5&$1w=$2&$3h=$4 [NC,L]
 
 ### send 404 on missing files in these folders 
 	RewriteCond %{REQUEST_URI} !^/(e107_images|e107_files)/ 
