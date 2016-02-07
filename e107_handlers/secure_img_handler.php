@@ -391,10 +391,10 @@ class secure_image
 		switch($type)
 		{
 			case "jpeg":
-				imagejpeg($image);
+				imagejpeg($image, null, 60 );
 				break;
 			case "png":
-				imagepng($image);
+				imagepng($image, null, 9);
 				break;
 			case "gif":
 				imagegif($image);
