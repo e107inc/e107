@@ -2177,7 +2177,19 @@ class e_parse extends e_parser
 	}
 
 
+	/**
+	 * Retrieve img tag width and height attributes for current thumbnail.
+	 * @return string
+	 */
+	public function thumbDimensions($type = 'single')
+	{
+		if(!empty($this->thumbCrop) && !empty($this->thumbWidth) && !empty($this->thumbHeight)) // dimensions are known.
+		{
+			return ($type == 'double') ? 'width="'.$this->thumbWidth.'" height="'.$this->thumbHeight.'"' : "width='".$this->thumbWidth."' height='".$this->thumbHeight."'";
+		}
 
+		return null;
+	}
 
 
 	/**
