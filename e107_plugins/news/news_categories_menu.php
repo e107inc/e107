@@ -14,7 +14,15 @@ if(false === $cached)
 {
 	e107::plugLan('news');
 
-	parse_str($parm, $parms);
+	if(is_string($parm))
+	{
+		parse_str($parm, $parms);
+	}
+	else
+	{
+		$parms = $parm;
+	}
+
 	$ctree = e107::getObject('e_news_category_tree', null, e_HANDLER.'news_class.php');
 
 	$template = e107::getTemplate('news', 'news_menu', 'category');

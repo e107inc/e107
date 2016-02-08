@@ -26,12 +26,12 @@ class banner_menu
 	 * Configuration Fields.
 	 * @return array
 	 */
-	public function config()
+	public function config($menu='')
 	{
 		$renderTypes = array(BNRLAN_48,'1 - '.BNRLAN_45,'2 - '.BNRLAN_46, "3 - ".BNRLAN_47);
 
 		$fields = array();
-		$fields['banner_caption']       = array('title'=> BNRLAN_37, 'type'=>'text', 'writeParms'=>array('size'=>'xxlarge'));
+		$fields['banner_caption']       = array('title'=> BNRLAN_37, 'type'=>'text', 'multilan'=>true, 'writeParms'=>array('size'=>'xxlarge'));
 		$fields['banner_campaign']      = array('title'=> BNRLAN_39, 'type'=>'method');
 		$fields['banner_amount']        = array('title'=> BNRLAN_41, 'type'=>'text', 'writeParms'=>array('pattern'=>'[0-9]*'));
 		$fields['banner_rendertype']    = array('title'=> BNRLAN_43, 'type'=>'dropdown', 'writeParms'=>array('optArray'=>$renderTypes));

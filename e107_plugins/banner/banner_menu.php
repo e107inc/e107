@@ -50,13 +50,20 @@ else
 
 	if(!empty($parm))
 	{
-		if(!$tmp = e107::unserialize($parm)) // unserailize the v2.x e_menu.php preferences.
+		if(is_string($parm)) // unserailize the v2.x e_menu.php preferences.
 		{
 			parse_str($parm, $parms); // if it fails, use legacy method. (query string format)
 		}
-		else // prefs unserialized so overwrite the legacy preference values.
+		elseif(is_array($parm)) // prefs array so overwrite the legacy preference values.
 		{
-			$menu_pref = $tmp;
+			if(isset($parm['banner_caption'][e_LANGUAGE]))
+			{
+				$parm['banner_caption'] = $parm['banner_caption'][e_LANGUAGE];
+			}
+
+			$menu_pref = $parm;
+
+
 			$menu_pref['banner_campaign'] = implode("|",$menu_pref['banner_campaign']);
 			unset($parm);
 		}
