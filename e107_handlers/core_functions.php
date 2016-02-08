@@ -422,6 +422,11 @@ class e_array {
         if ($ArrayData == ""){
             return false;
         }
+
+        if(is_array($ArrayData))
+        {
+            return false;
+        }
         
         // Saftety mechanism for 0.7 -> 0.8 transition. 
         if(substr($ArrayData,0,2)=='a:' || substr($ArrayData,0,2)=='s:')
@@ -429,12 +434,19 @@ class e_array {
             $dat = unserialize($ArrayData);
             $ArrayData = $this->WriteArray($dat,FALSE);
         }
-        
+
+        $ArrayData = trim($ArrayData);
+
+        if(strtolower(substr($ArrayData,0,5)) != 'array')
+        {
+            return false;
+        }
         
         $data = "";
-        $ArrayData = '$data = '.trim($ArrayData).';';
+        $ArrayData = '$data = '.$ArrayData.';';
         @eval($ArrayData);
-        if (!isset($data) || !is_array($data)) {
+        if (!isset($data) || !is_array($data))
+        {
             trigger_error("Bad stored array data - <br /><br />".htmlentities($ArrayData), E_USER_ERROR);
             return false;
         }

@@ -14,29 +14,61 @@ if (!defined('e107_INIT')) { exit; }
 //v2.x Standard for extending menu configuration within Menu Manager. (replacement for v1.x config.php)
 //TODO Configure for news menus. 
 
-class newsTODO_menu
+class news_menu
 {
+
 	function __construct()
 	{
-		e107::lan('news','admin', 'true');
+		// e107::lan('news','admin', 'true');
 	}
-
 
 	/**
 	 * Configuration Fields.
 	 * @return array
 	 */
-	public function config()
+	public function config($menu='')
 	{
-		$renderTypes = array(BNRLAN_48,'1 - '.BNRLAN_45,'2 - '.BNRLAN_46, "3 - ".BNRLAN_47);
-
 		$fields = array();
-		$fields['caption']       = array('title'=> BNRLAN_37, 'type'=>'text', 'writeParms'=>array('size'=>'xxlarge'));
-		$fields['count']      = array('title'=> BNRLAN_39, 'type'=>'method');
-		$fields['order']        = array('title'=> BNRLAN_41, 'type'=>'text', 'writeParms'=>array('pattern'=>'[0-9]*'));
-		$fields['category']    = array('title'=> BNRLAN_43, 'type'=>'dropdown', 'writeParms'=>array('optArray'=>$renderTypes));
+		$categories = array();
 
-        return $fields;
+		$tmp =  e107::getDb()->retrieve('news_category','category_id,category_name',null, true);
+
+		foreach($tmp as $val)
+		{
+			$id = $val['category_id'];
+			$categories[$id] = $val['category_name'];
+		}
+
+		switch($menu)
+		{
+			case "latestnews":
+					$fields['caption']      = array('title'=> LAN_CAPTION, 'type'=>'text', 'multilan'=>true, 'writeParms'=>array('size'=>'xxlarge'));
+					$fields['count']        = array('title'=> LAN_LIMIT, 'type'=>'text', 'writeParms'=>array('pattern'=>'[0-9]*', 'size'=>'mini'));
+					$fields['category']     = array('title'=> LAN_CATEGORY, 'type'=>'dropdown', 'writeParms'=>array('optArray'=>$categories, 'default'=>'blank'));
+			break;
+
+
+			case "news_categories":
+					$fields['caption']      = array('title'=> LAN_CAPTION, 'type'=>'text', 'multilan'=>true, 'writeParms'=>array('size'=>'xxlarge'));
+					$fields['count']        = array('title'=> LAN_LIMIT, 'type'=>'text', 'writeParms'=>array('pattern'=>'[0-9]*'));
+				break;
+
+			case "news_months":
+					$fields['showarchive']  = array('title'=> "Display Archive Link", 'type'=>'boolean');
+					$fields['year']         = array('title'=> "Year", 'type'=>'text', 'writeParms'=>array('pattern'=>'[0-9]*', 'size'=>'mini'));
+				break;
+
+			case "other_news":
+			case "other_news2":
+					$fields['caption']   = array('title'=> LAN_CAPTION, 'type'=>'text', 'multilan'=>true, 'writeParms'=>array('size'=>'xxlarge'));
+				break;
+
+		}
+
+		 return $fields;
+
+
+
 
 	}
 

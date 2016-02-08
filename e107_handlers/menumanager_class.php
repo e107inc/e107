@@ -559,7 +559,18 @@ class e_menuManager {
 
 			$obj = e107::getAddon($plug,'e_menu');
 
-			$fields = e107::callMethod($obj,'config');
+			if(!is_object($obj))
+			{
+				$text .= "<tr><td colspan='2' class='alert alert-danger'>{$plug} object not found. Try re-scanning plugin directories in Tools > Database. </td></tr>";
+			}
+			else
+			{
+
+				$menuName = substr($row['menu_name'],0,-5);
+			}
+
+
+			$fields = e107::callMethod($obj,'config',$menuName);
 
 			if(!$form = e107::getAddon($plug,'e_menu',$plug."_menu_form"))
 			{
@@ -568,11 +579,30 @@ class e_menuManager {
 
 			$value = e107::unserialize($row['menu_parms']);
 
-			foreach($fields as $k=>$v)
+			if(!empty($fields))
 			{
-				$text .= "<tr><td class='text-left'>".$v['title']."</td>";
-				$v['writeParms']['class'] = 'e-save';
-				$text .= "<td class='text-left'>".$form->renderElement($k, $value[$k], $v)."</td></tr>";
+				foreach($fields as $k=>$v)
+				{
+					$text .= "<tr><td class='text-left'>".$v['title']."</td>";
+					$v['writeParms']['class'] = 'e-save';
+					$i = $k;
+					if(!empty($v['multilan']))
+					{
+						$i = $k.'['.e_LANGUAGE.']';
+
+						if(isset($value[$k][e_LANGUAGE]))
+						{
+							$value[$k] = varset($value[$k][e_LANGUAGE],'');
+						}
+
+					}
+
+					$text .= "<td class='text-left'>".$form->renderElement($i, $value[$k], $v)."</td></tr>";
+				}
+			}
+			else
+			{
+				$text .= "<tr><td colspan='2' class='alert alert-danger'>No Fields Set in ".$row['menu_path']."e_menu.php</td></tr>";
 			}
 
 		}

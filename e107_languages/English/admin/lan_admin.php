@@ -421,4 +421,7 @@ define("LAN_GEN_PW", "Generate a password");
 define("LAN_DISPL_PW", "Display the password");
 define("LAN_WILL_OVERWRITE_SEF", "This will overwrite your existing SEF URL.");
 
+define("LAN_CAPTION", "Caption");
+define("LAN_LIMIT", "Limit");
+
 // TODO - move e_form related LANS below, add new lan_form.php file (for both front/back-end)
