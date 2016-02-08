@@ -1,5 +1,48 @@
 /* global $ */
 
+var e107 = e107 || {'settings': {}, 'behaviors': {}};
+
+(function ($)
+{
+	// In case the page was opened with a hash, prevent jumping to it.
+	// http://stackoverflow.com/questions/3659072/how-to-disable-anchor-jump-when-loading-a-page
+	if(window.location.hash)
+	{
+		$('html, body').stop().animate({scrollTop: 0});
+	}
+
+	/**
+	 * Behavior to initialize Smooth Scrolling on document, if URL has a fragment.
+	 * TODO: create theme option on the admin panel to:
+	 * - enable/disable smooth scrolling
+	 * - change animation duration
+	 * - set top-offset if theme has a fixed top navigation bar
+	 *
+	 * @type {{attach: Function}}
+	 */
+	e107.behaviors.initializeSmoothScrolling = {
+		attach: function (context, settings)
+		{
+			if(window.location.hash)
+			{
+				$(context).find('body').once('initialize-smooth-scrolling').each(function ()
+				{
+					if($(window.location.hash).length !== 0)
+					{
+						$('html, body').stop().animate({
+							scrollTop: $(window.location.hash).offset().top
+						}, 2000);
+
+						return false;
+					}
+				});
+			}
+		}
+	};
+
+})(jQuery);
+
+
 $(document).ready(function()
 {
 		$(":input").tooltip();	
