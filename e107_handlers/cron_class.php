@@ -167,12 +167,63 @@ class _system_cron
 		global $pref, $_E107;
 		if($_E107['debug'])	{ 	echo "<br />sendEmail() executed"; }
 		
-	    require_once(e_HANDLER.'mail.php');
-		$message = "Your Cron test worked correctly. Sent at ".date("r").".";
+	  //  require_once(e_HANDLER.'mail.php');
+		$message = "Your Cron test worked correctly. Sent on ".date("r").".";
 
-	    sendemail($pref['siteadminemail'], "e107 - TEST Email Sent by cron.".date("r"), $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);
+		$message .= "<h2>Environment Variables</h2>";
+
+		$userCon = get_defined_constants(true);
+		ksort($userCon['user']);
+
+		$userVars = array();
+		foreach($userCon['user'] as $k=>$v)
+		{
+			if(substr($k,0,2) == 'e_')
+			{
+				$userVars[$k] = $v;
+			}
+		}
+
+		$message .= "<h3>e107 PATHS</h3>";
+		$message .= $this->renderTable($userVars);
+
+		$message .= "<h3>_SERVER</h3>";
+		$message .= $this->renderTable($_SERVER);
+		$message .= "<h3>_ENV</h3>";
+		$message .= $this->renderTable($_ENV);
+
+		$eml = array(
+					'subject' 		=> "TEST Email Sent by cron. ".date("r"),
+				//	'sender_email'	=> $email,
+					'sender_name'	=> SITENAME . " Automation",
+			//		'replyto'		=> $email,
+					'html'			=> true,
+					'template'		=> 'default',
+					'body'			=> $message
+				);
+
+		e107::getEmail()->sendEmail($pref['siteadminemail'],  $pref['siteadmin'], $eml);
+
+	   // sendemail($pref['siteadminemail'], "e107 - TEST Email Sent by cron.".date("r"), $message, $pref['siteadmin'],SITEEMAIL, $pref['siteadmin']);
 	}
 
+	private function renderTable($array)
+	{
+		$text = "<table class='table table-striped table-bordered' style='width:600px'>";
+
+		foreach($array as $k=>$v)
+		{
+			$text .= "<tr>
+				<td>".$k."</td>
+				<td>".print_a($v,true)."</td>
+				</tr>
+				";
+
+		}
+
+		$text .= "</table>";
+		return $text;
+	}
 
 	/**
 	 * Process the Mail Queue
