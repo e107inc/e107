@@ -1724,7 +1724,7 @@ class e107forum
 		";
 		if ($sql->gen($qry))
 		{
-			$row = $sql->fetch(MYSQL_ASSOC);
+			$row = $sql->fetch();
 			$row['thread_sef'] = eHelper::title2sef($row['thread_name'],'dashl');
 			return $row;
 		}
