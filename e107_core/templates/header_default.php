@@ -326,9 +326,6 @@ else
 $CSSORDER = deftrue('CSSORDER') ? explode(",",CSSORDER) : array('other','core','plugin','theme','inline');
 
 
-
-
-
 foreach($CSSORDER as $val)
 {
 	$cssId = $val."_css";
@@ -340,7 +337,7 @@ unset($CSSORDER);
 
 $e_js->renderCached('css');
 
-
+$e_js->renderLinks();
 
 /*
 $e_js->renderJs('other_css', false, 'css', false);
@@ -522,8 +519,8 @@ elseif (file_exists(e_BASE."favicon.ico"))
 
 //
 // FIXME H: Generate JS for image preloads (do we really need this?)
-//
-
+/* @DEPRECATED  */
+/*
 if ($pref['image_preload'] && is_dir(THEME.'images'))
 {
 	$ejs_listpics = '';
@@ -551,7 +548,7 @@ if (isset($script_text) && $script_text)
 	echo $script_text;
 	echo "// -->\n";
 	echo "</script>\n";
-}
+}*/
 
 
 //
@@ -642,7 +639,7 @@ echo "</head>\n";
         $HEADER = ($CUSTOMHEADER[$def]) ? $CUSTOMHEADER[$def] : $HEADER;
         $FOOTER = ($CUSTOMFOOTER[$def]) ? $CUSTOMFOOTER[$def] : $FOOTER;
     }
-    elseif($def) // 2.0 themes - we use only $HEADER and $FOOTER arrays.
+    elseif(!empty($def) && is_array($HEADER)) // 2.0 themes - we use only $HEADER and $FOOTER arrays.
     {
       //    echo " MODE 0.8";
         if(isset($HEADER[$def]) && isset($FOOTER[$def]))
