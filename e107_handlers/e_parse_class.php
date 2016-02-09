@@ -2159,17 +2159,17 @@ class e_parse extends e_parser
 	 */
 	public function setThumbSize($w=null,$h=null,$crop=null)
 	{
-		if($w)
+		if($w !== null)
 		{
 			$this->thumbWidth = intval($w);	
 		}
 		
-		if($h)
+		if($h !== null)
 		{
 			$this->thumbHeight = intval($h);	
 		}	
 		
-		if($crop)
+		if($crop !== null)
 		{
 			$this->thumbCrop = intval($crop);	
 		}				
@@ -3405,29 +3405,32 @@ class e_parser
 
 
 	/**
-	 * @param $file
-	 * @param array $parm  legacy|w|h
+	 * Render an <img> tag.
+	 * @param string $file
+	 * @param array $parm  legacy|w|h|alt|class|id|crop
 	 * @return string
 	 * @example $tp->toImage('welcome.png', array('legacy'=>{e_IMAGE}newspost_images/','w'=>200));
 	 */
 	public function toImage($file, $parm=array())
 	{
 
-		if(!vartrue($file))
+		if(empty($file))
 		{
-			return '';
+			return null;
 		}
 
-		$file = trim($file);
+		$dimensions = null;
+		$srcset     = null;
+		$path       = null;
+		$file       = trim($file);
+		$ext        = pathinfo($file, PATHINFO_EXTENSION);
+		$accepted   = array('jpg','gif','png','jpeg');
+		$tp         = $this;
 
-		$ext = pathinfo($file, PATHINFO_EXTENSION);
-
-		if($ext != 'jpg' && $ext !='gif' && $ext != 'png') // Bootstrap or Font-Awesome.
+		if(!in_array($ext,$accepted))
 		{
-			return '';
+			return null;
 		}
-
-		$tp = e107::getParser();
 
 		if(!empty($parm['w']))
 		{
@@ -3439,25 +3442,32 @@ class e_parser
 			$tp->setThumbSize(null, $parm['h']);
 		}
 
-		$dimensions = null;
+		if(!empty($parm['crop']))
+		{
+			$tp->setThumbSize(null,null,true);
+		}
 
 		if(strpos($file,'e_MEDIA')!==false || strpos($file,'e_THEME')!==false) //v2.x path.
 		{
-			$path = $tp->thumbUrl($file,null,null,true);
-			$dimensions = $this->thumbDimensions();
-			$width2x = ($parm['w']*2);
-			$height2x = ($parm['h']*2);
+			$path = $tp->thumbUrl($file,null,null);
 
-			$path2x = $tp->thumbUrl($file,array('w'=> $width2x ,'h'=> $height2x ));
+			$parm['srcset'] = $tp->thumbSrcSet($file, '2x');
 
-			print_a($path2x);
+			if(empty($parm['w']))
+			{
+				$parm['w'] = $tp->thumbWidth();
+			}
 
+			if(empty($parm['h']))
+			{
+				$parm['h'] = $tp->thumbHeight();
+			}
 		}
-		elseif($file[0] == '{') // Legacy v1.x path. Example: {e_WHEREEVER}
+		elseif($file[0] == '{') // Legacy v1.x path. Example: {e_PLUGIN}myplugin/images/fixedimage.png
 		{
-			$path = $tp->replaceConstants($file,'full');
+			$path = $tp->replaceConstants($file,'abs');
 		}
-		elseif(!empty($parm['legacy'])) // Search legacy path for image.
+		elseif(!empty($parm['legacy'])) // Search legacy path for image in a specific folder. No path, only file name provided.
 		{
 
 			$legacyPath = $parm['legacy'].$file;
@@ -3465,12 +3475,12 @@ class e_parser
 
 			if(is_readable($filePath))
 			{
-				$path = $tp->replaceConstants($legacyPath,'full');
+				$path = $tp->replaceConstants($legacyPath,'abs');
 			}
 			else
 			{
 				$log = e107::getAdminLog();
-				$log->addDebug('Broken Icon Path: '.$legacyPath."\n".print_r(debug_backtrace(null,2), true), false)->save('IMALAN_00');
+				$log->addDebug('Broken Image Path: '.$legacyPath."\n".print_r(debug_backtrace(null,2), true), false)->save('IMALAN_00');
 			}
 
 		}
@@ -3479,21 +3489,15 @@ class e_parser
 			$path = $file;
 		}
 
+		$id     = (!empty($parm['id']))     ? "id=\"".$parm['id']."\" " :  ""  ;
+		$class  = (!empty($parm['class']))  ? " ".$parm['class'] : "";
+		$alt    = (!empty($parm['alt']))    ? $tp->toAttribute($parm['alt']) : basename($path);
+		$style  = (!empty($parm['style']))  ? "style=\"".$parm['style']."\" " :  ""  ;
+		$srcset = (!empty($parm['srcset'])) ? "srcset=\"".$parm['srcset']."\" " : "";
+		$width  = (!empty($parm['w']))      ? "width=\"".intval($parm['w'])."\" " : "";
+		$height = (!empty($parm['h']))      ? "height=\"".intval($parm['h'])."\" " : "";
 
-		if(empty($style))
-		{
-			$insertStyle = '';
-		}
-		else
-		{
-			$insertStyle = "style='";
-
-		}
-
-
-		$alt = (!empty($parm['alt'])) ? $tp->toAttribute($parm['alt']) : basename($path);
-
-		return "<img class='img-responsive' src='".$path."' alt=\"".$alt."\"  {$insertStyle} {$dimensions} />";
+		return "<img {$id}class='img-responsive{$class}' src='".$path."' alt=\"".$alt."\" ".$srcset.$width.$height.$style." />";
 
 	}
 
