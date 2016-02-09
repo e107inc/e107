@@ -2300,6 +2300,56 @@ class e_parse extends e_parser
 		return $baseurl.$thurl;
 	}
 
+
+	/**
+	 * Experimental: Generate a Thumb URL for use in the img srcset attribute.
+	 * @param string $src eg. {e_MEDIA_IMAGE}myimage.jpg
+	 * @param int|str $width - desired size in px or '2x' or '3x' or null for all
+	 * @return string
+	 */
+	function thumbSrcSet($src='', $width=null)
+	{
+
+		if($width == null || $width=='all')
+		{
+			$links = array();
+			$mag = ($width == null) ? array(1, 2) : array(160,320,460,600,780,920,1100);
+			foreach($mag as $v)
+			{
+				$w = ($this->thumbWidth * $v);
+				$h = ($this->thumbHeight * $v);
+
+				$parms = !empty($this->thumbCrop) ? array('aw' => $w, 'ah' => $h) : array('w' => $w, 'h' => $h);
+
+				$add = ($width == null) ? " ".$v."x" : " ".$v."w";
+				$links[] = $this->thumbUrl($src, $parms).$add; // " w".$width; //
+			}
+
+			return implode(", ",$links);
+
+		}
+		elseif($width == '2x')
+		{
+			$width = ($this->thumbWidth * 2);
+			$height = ($this->thumbHeight * 2);
+		}
+		elseif($width == '3x')
+		{
+			$width = ($this->thumbWidth * 3);
+			$height = ($this->thumbHeight * 3);
+		}
+		else
+		{
+			$height = (($this->thumbHeight * $width) / $this->thumbWidth);
+		}
+
+		$parms = !empty($this->thumbCrop) ? array('aw' => $width, 'ah' => $height) : array('w'  => $width,	'h'  => $height	);
+
+		return $this->thumbUrl($src, $parms)." ".$width."w";
+
+	}
+
+
 	/**
 	 * Used by thumbUrl when SEF Image URLS is active. @see e107.htaccess
 	 * @param $url
@@ -3395,6 +3445,13 @@ class e_parser
 		{
 			$path = $tp->thumbUrl($file,null,null,true);
 			$dimensions = $this->thumbDimensions();
+			$width2x = ($parm['w']*2);
+			$height2x = ($parm['h']*2);
+
+			$path2x = $tp->thumbUrl($file,array('w'=> $width2x ,'h'=> $height2x ));
+
+			print_a($path2x);
+
 		}
 		elseif($file[0] == '{') // Legacy v1.x path. Example: {e_WHEREEVER}
 		{

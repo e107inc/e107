@@ -469,6 +469,8 @@ class news_shortcodes extends e_shortcode
 		
 		$class = 'news-thumbnail-'.$tmp['count'];
 		$dimensions = null;
+		$srcset = null;
+		$tp = e107::getParser();
 		
 		if(!$newsThumb && $parm != 'placeholder')
 		{
@@ -486,7 +488,7 @@ class news_shortcodes extends e_shortcode
 			
 			if(empty($parms[2])) // get {SETIMAGE} values when no parm provided. 
 			{
-				$parms[2] = array('aw' => e107::getParser()->thumbWidth(), 'ah'=> e107::getParser()->thumbHeight());
+				$parms[2] = array('aw' => $tp->thumbWidth(), 'ah'=> $tp->thumbHeight());
 			}
 			
 			
@@ -513,8 +515,10 @@ class news_shortcodes extends e_shortcode
 		
 			if($parms[2] || $parms[1] == 'placeholder')
 			{
+				//  $srcset = "srcset='".$tp->thumbSrcSet($src,'all')."' size='100vw' ";
 				  $src = e107::getParser()->thumbUrl($src, $parms[2]);
 				  $dimensions = e107::getParser()->thumbDimensions();
+
 			}
 		}
 		
@@ -528,15 +532,15 @@ class news_shortcodes extends e_shortcode
 			break;
 
 			case 'tag':
-				return "<img class='news_image ".$class."' src='".$src."' alt='' style='".$this->param['thumbnail']."' {$dimensions} />";
+				return "<img class='news_image ".$class."' src='".$src."' alt='' style='".$this->param['thumbnail']."' {$dimensions} {$srcset} />";
 			break;
 
 			case 'img':
-				return "<a href='".$_src."' rel='external image'><img class='news_image ".$class."' src='".$src."' alt='' style='".$this->param['thumbnail']."' {$dimensions} /></a>";
+				return "<a href='".$_src."' rel='external image'><img class='news_image ".$class."' src='".$src."' alt='' style='".$this->param['thumbnail']."' {$dimensions} {$srcset} /></a>";
 			break;
 
 			default:
-				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='news_image img-responsive img-rounded ".$class."' src='".$src."' alt='' style='".$this->param['thumbnail']."' {$dimensions}  /></a>";
+				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='news_image img-responsive img-rounded ".$class."' src='".$src."' alt='' style='".$this->param['thumbnail']."' {$dimensions} {$srcset} /></a>";
 			break;
 		}
 	}
@@ -660,7 +664,7 @@ class news_shortcodes extends e_shortcode
 		$class = "news_image news-image img-responsive img-rounded";
 		$class .= ' news-image-'.$tmp['count'];
 		$dimensions = null;
-		
+		$srcset = null;
 			
 		if($tp->isVideo($srcPath))
 		{
@@ -685,6 +689,7 @@ class news_shortcodes extends e_shortcode
 			{
 				$src = $tp->thumbUrl($srcPath);
 				$dimensions = $tp->thumbDimensions();
+
 			}
 			else
 			{
@@ -717,12 +722,12 @@ class news_shortcodes extends e_shortcode
 			break;
 
 			case 'tag':
-				return "<img class='{$class}' src='".$src."' alt='' style='".$this->param['thumbnail']."' {$dimensions} />";
+				return "<img class='{$class}' src='".$src."' alt='' style='".$this->param['thumbnail']."' {$dimensions} {$srcset} />";
 			break;
 
 			case 'url':
 			default:
-				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='{$class}' src='".$src."' alt='' style='".$this->param['thumbnail']."' {$dimensions} /></a>";
+				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='{$class}' src='".$src."' alt='' style='".$this->param['thumbnail']."' {$dimensions} {$srcset} /></a>";
 			break;
 		}
 	}
