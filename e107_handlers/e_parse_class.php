@@ -3449,9 +3449,12 @@ class e_parser
 
 		if(strpos($file,'e_MEDIA')!==false || strpos($file,'e_THEME')!==false) //v2.x path.
 		{
-			$path = $tp->thumbUrl($file,null,null);
+			$path = $tp->thumbUrl($file,$parm,null);
 
-			$parm['srcset'] = $tp->thumbSrcSet($file, '2x');
+			if(empty($parm['x']))
+			{
+				$parm['srcset'] = $tp->thumbSrcSet($file, '2x');
+			}
 
 			if(empty($parm['w']))
 			{
