@@ -8,21 +8,23 @@ define("BOOTSTRAP", 	3);
 define("FONTAWESOME", 	4);
 define('VIEWPORT', 		"width=device-width, initial-scale=1.0");
 
-//e107::js("url", 			"https://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js");
-//e107::css('url', 			'https://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css');
-// e107::css('url', 			"https://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css");
 
-// @see https://www.cdnperf.com
+/* @see https://www.cdnperf.com */
 // Warning: Some bootstrap CDNs are not compiled with popup.js
 // use https if e107 is using https.
+
 e107::js("url", 			"https://cdn.jsdelivr.net/bootstrap/3.3.6/js/bootstrap.min.js", 'jquery', 2);
 e107::css('url', 			'https://cdn.jsdelivr.net/bootstrap/3.3.6/css/bootstrap.min.css');
-e107::css('url',            'https://cdn.jsdelivr.net/fontawesome/4.4.0/css/font-awesome.min.css');
+e107::css('url',            'https://cdn.jsdelivr.net/fontawesome/4.5.0/css/font-awesome.min.css');
+
+/* @example prefetch  */
+//e107::link(array('rel'=>'prefetch', 'href'=>THEME.'images/browsers.png'));
 
 
 
 e107::js("footer-inline", 	"$('.e-tip').tooltip({container: 'body'})"); // activate bootstrap tooltips. 
-					
+
+// Legacy Stuff.
 define('OTHERNEWS_COLS',false); // no tables, only divs. 
 define('OTHERNEWS_LIMIT', 3); // Limit to 3. 
 define('OTHERNEWS2_COLS',false); // no tables, only divs. 

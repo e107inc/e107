@@ -1249,14 +1249,14 @@ class themeHandler
 						$text .= "&nbsp;</td>
 							</tr>";
 						
-						$text .= "
+						/*$text .= "
 							<tr>
 			                    <td style='vertical-align:top; width:24%;'><b>".TPVLAN_30."</b></td>
 								<td colspan='2' style='vertical-align:top width:auto;'>
 								<input type='radio' name='image_preload' value='1'".($pref['image_preload'] ? " checked='checked'" : "")." /> ".TPVLAN_28."&nbsp;&nbsp;
 								<input type='radio' name='image_preload' value='0'".(!$pref['image_preload'] ? " checked='checked'" : "")." /> ".TPVLAN_29."
 								</td>
-							</tr>";
+							</tr>";*/
 					}
 		
 					// New in 0.8   ----   site theme.
@@ -1909,8 +1909,7 @@ class themeHandler
 		$mes = e107::getMessage();
 		
 		//TODO adminlog
-		e107::getConfig()->setPosted('themecss', $_POST['themecss'])->setPosted('image_preload', $_POST['image_preload'])->setPosted('sitetheme_deflayout',
-			 $_POST['layout_default']);
+		e107::getConfig()->setPosted('themecss', $_POST['themecss'])->setPosted('sitetheme_deflayout', $_POST['layout_default']);
 		
 		$msg = $this->setThemeConfig();
 		if($msg)

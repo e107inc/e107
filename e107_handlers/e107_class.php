@@ -1725,6 +1725,20 @@ class e107
 		$jshandler->resetDependency();
 	}
 
+
+	/**
+	 * Add a <link> tag to the head of the html document.
+	 * @param array $attributes
+	 * @example e107::link(array('rel'=>"dns-prefetch", "href" => "http://example-domain.com/"));
+	 */
+	public static function link($attributes=array())
+	{
+		self::getJs()->addLink($attributes);
+	}
+
+
+
+
 	/**
 	 * CSS Common Public Function. Prefered is shortcode script path
 	 * @param string $type core|theme|footer|inline|footer-inline|url or any existing plugin_name
