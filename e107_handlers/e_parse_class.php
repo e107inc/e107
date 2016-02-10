@@ -72,6 +72,8 @@ class e_parse extends e_parser
 	
 	public $thumbCrop = 0;
 
+	private $thumbEncode = 0;
+
 	// Set up the defaults
 	var $e_optDefault = array(
 		// default context: reflects legacy settings (many items enabled)
@@ -2176,6 +2178,18 @@ class e_parse extends e_parser
 		
 	}
 
+	public function thumbEncode($val = null)
+	{
+
+		if($val !== null)
+		{
+			$this->thumbEncode = intval($val);
+			return null;
+		}
+
+		return $this->thumbEncode;
+	}
+
 
 	/**
 	 * Retrieve img tag width and height attributes for current thumbnail.
@@ -2258,6 +2272,16 @@ class e_parse extends e_parser
 		$baseurl = ($full ? SITEURL : e_HTTP).'thumb.php?';
         
 		$thurl = 'src='.urlencode($url).'&amp;';
+
+		if(isset($options['crop']))
+		{
+			$this->thumbCrop = intval($options['crop']);
+		}
+
+		if(isset($options['x']))
+		{
+			$this->thumbEncode($options['x']);
+		}
 				
 		if(vartrue($options['aw']) || vartrue($options['ah']) || $this->thumbCrop == 1)
 		{
@@ -2285,6 +2309,7 @@ class e_parse extends e_parser
 			$options['full'] = $full;
 			$options['ext'] = substr($url,-3);
 			$options['thurl'] = $thurl;
+			$options['x'] = $this->thumbEncode();
 
 			if($sefUrl = $this->thumbUrlSEF($url,$options))
 			{
@@ -2292,7 +2317,7 @@ class e_parse extends e_parser
 			}
 		}
 
-		if(vartrue($options['x']))//base64 encode url
+		if(!empty($this->thumbEncode))//base64 encode url
 		{
 			$thurl = 'id='.base64_encode($thurl);
 		}
@@ -2304,12 +2329,32 @@ class e_parse extends e_parser
 	/**
 	 * Experimental: Generate a Thumb URL for use in the img srcset attribute.
 	 * @param string $src eg. {e_MEDIA_IMAGE}myimage.jpg
-	 * @param int|str $width - desired size in px or '2x' or '3x' or null for all
+	 * @param int|str $width - desired size in px or '2x' or '3x' or null for all or array (
 	 * @return string
 	 */
 	function thumbSrcSet($src='', $width=null)
 	{
+		if(is_array($width))
+		{
+			$parm = $width;
+			$width = $width['size'];
 
+			if(!empty($parm['aw']) || !empty($parm['aw']) )
+			{
+				$this->thumbWidth($parm['aw']);
+				$this->thumbHeight($parm['ah']);
+				$this->thumbCrop = 1;
+			}
+			elseif(!empty($parm['w']) || !empty($parm['w']) )
+			{
+				$this->thumbWidth($parm['w']);
+				$this->thumbHeight($parm['h']);
+
+			}
+
+		}
+
+		$encode =  $this->thumbEncode();;
 		if($width == null || $width=='all')
 		{
 			$links = array();
@@ -2317,12 +2362,13 @@ class e_parse extends e_parser
 			foreach($mag as $v)
 			{
 				$w = ($this->thumbWidth * $v);
-				$h = ($this->thumbHeight * $v);
+				$h =  ($this->thumbHeight * $v);
 
-				$parms = !empty($this->thumbCrop) ? array('aw' => $w, 'ah' => $h) : array('w' => $w, 'h' => $h);
+				$att = (!empty($this->thumbCrop)) ? array('aw' => $w, 'ah' => $h) : array('w' => $w, 'h' => $h);
+				$att['x'] = $encode;
 
 				$add = ($width == null) ? " ".$v."x" : " ".$v."w";
-				$links[] = $this->thumbUrl($src, $parms).$add; // " w".$width; //
+				$links[] = $this->thumbUrl($src, $att).$add; // " w".$width; //
 			}
 
 			return implode(", ",$links);
@@ -2335,8 +2381,8 @@ class e_parse extends e_parser
 		}
 		elseif($width == '3x')
 		{
-			$width = ($this->thumbWidth * 3);
-			$height = ($this->thumbHeight * 3);
+			$width = (!empty($parm['w'])) ? ($parm['w'] * 3) : ($this->thumbWidth * 3);
+			$height = (!empty($parm['h'])) ? ($parm['h'] * 3) : ($this->thumbHeight * 3);
 		}
 		else
 		{
@@ -2345,6 +2391,7 @@ class e_parse extends e_parser
 
 		$parms = !empty($this->thumbCrop) ? array('aw' => $width, 'ah' => $height) : array('w'  => $width,	'h'  => $height	);
 
+		$parms['x'] = $encode;
 		return $this->thumbUrl($src, $parms)." ".$width."w";
 
 	}
@@ -3353,6 +3400,11 @@ class e_parser
 			return;
 		}
 
+		if(strpos($icon,'e_MEDIA_IMAGE')!==false)
+		{
+		//	return "<div class='alert alert-danger'>Use \$tp->toImage() instead of toIcon() for ".$icon."</div>"; // debug info only.
+		}
+
 		if(substr($icon,0,3) == '<i ') // if it's html (ie. css sprite) return the code.
 		{
 			return $icon;
@@ -3419,7 +3471,12 @@ class e_parser
 			return null;
 		}
 
-		$dimensions = null;
+		if(strpos($file,'e_AVATAR')!==false)
+		{
+			return "<div class='alert alert-danger'>Use \$tp->toAvatar() instead of toImage() for ".$file."</div>"; // debug info only.
+
+		}
+
 		$srcset     = null;
 		$path       = null;
 		$file       = trim($file);
@@ -3432,6 +3489,14 @@ class e_parser
 			return null;
 		}
 
+		if(!empty($parm['aw']) || !empty($parm['ah']))
+		{
+			$parm['w'] = $parm['aw'];
+			$parm['h'] = $parm['ah'];
+			$parm['crop'] = 1;
+			unset($parm['aw'],$parm['ah']);
+		}
+
 		if(!empty($parm['w']))
 		{
 			$tp->setThumbSize($parm['w']);
@@ -3442,29 +3507,30 @@ class e_parser
 			$tp->setThumbSize(null, $parm['h']);
 		}
 
+
 		if(!empty($parm['crop']))
 		{
-			$tp->setThumbSize(null,null,true);
+			$tp->setThumbSize(null, null, 1);
 		}
 
-		if(strpos($file,'e_MEDIA')!==false || strpos($file,'e_THEME')!==false) //v2.x path.
+		if(!empty($parm['x']))
 		{
-			$path = $tp->thumbUrl($file,$parm,null);
+			$tp->thumbEncode(true);
+		}
 
-			if(empty($parm['x']))
-			{
-				$parm['srcset'] = $tp->thumbSrcSet($file, '2x');
-			}
+		if(empty($parm['w']))
+		{
+			$parm['w'] = $tp->thumbWidth();
+		}
 
-			if(empty($parm['w']))
-			{
-				$parm['w'] = $tp->thumbWidth();
-			}
+		if(strpos($file,'e_MEDIA')!==false || strpos($file,'e_THEME')!==false || strpos($file,'e_PLUGIN')!==false) //v2.x path.
+		{
 
-			if(empty($parm['h']))
-			{
-				$parm['h'] = $tp->thumbHeight();
-			}
+			$path = $tp->thumbUrl($file);
+			$srcSetParm = $parm;
+			$srcSetParm['size'] = '2x';
+			$parm['srcset'] = $tp->thumbSrcSet($file, $srcSetParm);
+
 		}
 		elseif($file[0] == '{') // Legacy v1.x path. Example: {e_PLUGIN}myplugin/images/fixedimage.png
 		{
@@ -3493,14 +3559,14 @@ class e_parser
 		}
 
 		$id     = (!empty($parm['id']))     ? "id=\"".$parm['id']."\" " :  ""  ;
-		$class  = (!empty($parm['class']))  ? " ".$parm['class'] : "";
-		$alt    = (!empty($parm['alt']))    ? $tp->toAttribute($parm['alt']) : basename($path);
+		$class  = (!empty($parm['class']))  ? $parm['class'] : "img-responsive";
+		$alt    = (!empty($parm['alt']))    ? $tp->toAttribute($parm['alt']) : basename($file);
 		$style  = (!empty($parm['style']))  ? "style=\"".$parm['style']."\" " :  ""  ;
 		$srcset = (!empty($parm['srcset'])) ? "srcset=\"".$parm['srcset']."\" " : "";
 		$width  = (!empty($parm['w']))      ? "width=\"".intval($parm['w'])."\" " : "";
 		$height = (!empty($parm['h']))      ? "height=\"".intval($parm['h'])."\" " : "";
 
-		return "<img {$id}class='img-responsive{$class}' src='".$path."' alt=\"".$alt."\" ".$srcset.$width.$height.$style." />";
+		return "<img {$id}class='{$class}' src='".$path."' alt=\"".$alt."\" ".$srcset.$width.$height.$style." />";
 
 	}
 
