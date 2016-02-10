@@ -190,11 +190,18 @@ function step2()
 	$ret = '';
 	$failed = false;
 	$text = '';
+	$sql = e107::getDb();
 	foreach ($tabList as $name => $rename)
 	{
 		$message = 'Creating table ' . ($rename ? $rename : $name);
 
-		$result = $db -> createTable(e_PLUGIN . 'forum/forum_sql.php', $name, true, $rename);
+		if($sql->isTable($name) && $sql->isEmpty($name))
+		{
+			$mes -> addSuccess("Skipping table ".$name." (already exists)");
+			continue;
+		}
+
+		$result = $db->createTable(e_PLUGIN . 'forum/forum_sql.php', $name, true, $rename);
 		if ($result === true)
 		{
 			$mes -> addSuccess($message);
@@ -221,9 +228,9 @@ function step2()
 	$ns -> tablerender('Step 2: Forum table creation', $mes -> render() . $text);
 }
 
-// FIXME - use e107::getPlugin()->manage_extended_field('add', $name, $attrib,
-// $source)
 
+
+// FIXME - use e107::getPlugin()->manage_extended_field('add', $name, $attrib, $source)
 function step3()
 {
 	$ns = e107::getRender();
