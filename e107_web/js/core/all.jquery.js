@@ -122,40 +122,50 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	 * @type {{attach: Function}}
 	 */
 	e107.behaviors.eAjaxLink = {
-		attach: function (context, settings) {
-			$(context).find('a.e-ajax').once('e-ajax-link').each(function () {
-				$(this).click(function () {
+		attach: function (context, settings)
+		{
+			$(context).find('a.e-ajax').once('e-ajax-link').each(function ()
+			{
+				$(this).click(function ()
+				{
 					var id = $(this).attr("href");
-					var target = $(this).attr("data-target"); // support for input buttons etc.
-					var loading = $(this).attr('data-loading'); // image to show loading.
+					// Target container for result.
+					var target = $(this).attr("data-target");
+					// Image to show loading.
+					var loading = $(this).attr('data-loading');
 					var nav = $(this).attr('data-nav-inc');
 
-					if (nav != null) {
-						e107.callbacks.eNav(this, '.e-ajax');	//modify data-src value for next/prev. 'from='
+					if(nav != null)
+					{
+						// Modify data-src value for next/prev. 'from='
+						e107.callbacks.eNav(this, '.e-ajax');
 					}
 
 					var src = $(this).attr("data-src");
 
-					if (target != null) {
+					if(target != null)
+					{
 						id = '#' + target;
 					}
 
-					if (loading != null) {
+					if(loading != null)
+					{
 						$(id).html("<img src='" + loading + "' alt='' />");
 					}
 
-					if (src === null) // old way - href='myscript.php#id-to-target
+					if(src === null) // Old way - href='myscript.php#id-to-target
 					{
 						var tmp = src.split('#');
 						id = tmp[1];
 						src = tmp[0];
 					}
-					//	var effect = $(this).attr("data-effect");
-					//	alert(id);
+					// var effect = $(this).attr("data-effect");
+					// alert(id);
 
-					$(id).load(src, function () {
+					$(id).load(src, function ()
+					{
 						// alert(src);
-						//$(this).hide();
+						// $(this).hide();
 						// $(this).fadeIn();
 					});
 
@@ -171,51 +181,73 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	 * @type {{attach: Function}}
 	 */
 	e107.behaviors.eAjaxSelect = {
-		attach: function (context, settings) {
-			$(context).find('select.e-ajax').once('e-ajax-select').each(function () {
+		attach: function (context, settings)
+		{
+			$(context).find('select.e-ajax').once('e-ajax-select').each(function ()
+			{
 				$(this).on('change', function ()
 				{
 					var form = $(this).closest("form").attr('id');
 
-					var target = $(this).attr("data-target"); // support for input buttons etc.
-					var loading = $(this).attr('data-loading'); // image to show loading.
+					// Target container for result.
+					var target = $(this).attr("data-target");
+					// Image to show loading.
+					var loading = $(this).attr('data-loading');
+					// URL for Ajax request.
 					var handler = $(this).attr('data-src');
+					// Method: 'replaceWith', 'append', 'prepend', 'before', 'after', 'html' (default).
 					var method = $(this).attr('data-method');
 
 					var data = $('#' + form).serialize();
 					var $target = $("#" + target);
+					var html = null;
+					var $loadingImage = null;
 
+					// TODO: set default loading icon?
 					if(loading != null)
 					{
-						$target.html("<img src='" + loading + "' alt='' />");
+						$loadingImage = $("<img src='" + loading + "' alt='' class='e-ajax-progress' />");
+						$(this).after($loadingImage);
 					}
 
 					$.ajax({
 						type: 'post',
 						url: handler,
 						data: data,
+						complete: function ()
+						{
+							if($loadingImage)
+							{
+								$loadingImage.remove();
+							}
+						},
 						success: function (data)
 						{
 							switch(method)
 							{
 								case 'replaceWith':
-									$target.replaceWith($(data));
+									html = $.parseHTML(data);
+									$target.replaceWith(html);
 									break;
 
 								case 'append':
-									$target.append($(data));
+									html = $.parseHTML(data);
+									$target.append(html);
 									break;
 
 								case 'prepend':
-									$target.prepend($(data));
+									html = $.parseHTML(data);
+									$target.prepend(html);
 									break;
 
 								case 'before':
-									$target.before($(data));
+									html = $.parseHTML(data);
+									$target.before(html);
 									break;
 
 								case 'after':
-									$target.after($(data));
+									html = $.parseHTML(data);
+									$target.after(html);
 									break;
 
 								case 'html':
@@ -241,7 +273,8 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	 * @param e object (eg. from selector)
 	 * @param navid - class with data-src that needs 'from=' value updated. (often 2 of them eg. next/prev)
 	 */
-	e107.callbacks.eNav = function (e, navid) {
+	e107.callbacks.eNav = function (e, navid)
+	{
 		var src = $(e).attr("data-src");
 		var inc = parseInt($(e).attr("data-nav-inc"));
 		var dir = $(e).attr("data-nav-dir");
@@ -257,23 +290,28 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
 		$(e).show();
 
-		if (add > tot) {
+		if(add > tot)
+		{
 			add = amt;
-			//	$(e).hide();
+			// $(e).hide();
 		}
 
-		if (sub < 0) {
+		if(sub < 0)
+		{
 			sub = 0
 		}
 
-		if (dir == 'down') {
+		if(dir == 'down')
+		{
 			newVal = 'from=' + sub;
 		}
-		else {
+		else
+		{
 			newVal = 'from=' + add;
 		}
 
-		if (newVal) {
+		if(newVal)
+		{
 			src = src.replace(oldVal, newVal);
 			$(navid).attr("data-src", src);
 		}
@@ -948,6 +986,10 @@ $(document).ready(function()
 
 
 	/**
+	 * TODO:
+	 * This function is only used by mediaNav() in mediaManager.js. So need to rewrite mediaManager.js to use
+	 * e107.behaviors, and e107.callbacks.eNav() could be used instead of this function.
+	 *
 	 * dynamic next/prev  
 	 * @param e object (eg. from selector)
 	 * @param navid - class with data-src that needs 'from=' value updated. (often 2 of them eg. next/prev)
