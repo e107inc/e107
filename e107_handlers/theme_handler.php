@@ -1744,10 +1744,12 @@ class themeHandler
 		
 		if($contentCheck === true)
 		{
-			$sql->db_Delete("menus", "menu_layout !='' ");
+			$sql->delete("menus", "menu_layout !='' ");
 		}
 		
 		e107::getCache()->clear();
+		e107::getCache()->clearAll('js');
+		e107::getCache()->clearAll('css');
 		
 		if($core->save())
 		{

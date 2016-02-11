@@ -703,9 +703,10 @@ function update_706_to_800($type='')
 	if(e107::getDb()->select("core", "*", $serialz_qry))
 	{
 		if($just_check) return update_needed('Convert serialized core prefs');
-		while ($row = e107::getDb()->fetch(MYSQL_ASSOC))
+		while ($row = e107::getDb()->fetch())
 		{
-			$status = e107::getDb('sql2')->update('core',"e107_value=\"".convert_serialized($row['e107_value'])."\" WHERE e107_name='".$row['e107_name']."'") ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;				
+
+			$status = e107::getDb('sql2')->update('core',"e107_value=\"".convert_serialized($row['e107_value'])."\" WHERE e107_name='".$row['e107_name']."'") ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 			
 			$log->addDebug(LAN_UPDATE_22.$row['e107_name'].": ". $status);
 		}	
@@ -1896,10 +1897,11 @@ function get_default_prefs()
 	return $pref;
 }
 
-function convert_serialized($serializedData)
+function convert_serialized($serializedData, $type='')
 {
 	$arrayData = unserialize($serializedData);
-	return e107::serialize($arrayData,FALSE);
+	$data = e107::serialize($arrayData,FALSE);
+	return $data;
 }
 
 
