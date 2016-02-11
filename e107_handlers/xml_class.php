@@ -1186,7 +1186,9 @@ class xmlClass
 					}
 					else
 					{
-						$ret['failed'][] = $table;
+						$error = $sql->getLastErrorText();
+						$lastQry = $sql->getLastQuery();
+						$ret['failed'][] = $table. "\n[".$error."]\n".$lastQry."\n\n";
 					}
 				}
 			}
