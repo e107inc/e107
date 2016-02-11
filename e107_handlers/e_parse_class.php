@@ -3233,19 +3233,18 @@ class e_parser
 	 * Parse xxxxx.glyph file to bootstrap glyph format. 
 	 * @param string $text 
 	 * @param array of $parms
+	 * @example $tp->toGlyph('fa-spinner', 'spin=1');
+	 * @example $tp->toGlyph('fa-spinner', array('spin'=>1));
+	 * @example $tp->toGlyph('fa-shield', array('rotate'=>90, 'size'=>'2x'));
 	 */ 
 	public function toGlyph($text, $space=" ")
 	{
-
-
 
 		if(!deftrue('BOOTSTRAP') || empty($text))
 		{
 			return false;	
 		}
-		
-		
-		
+
 		if(is_array($space)) 
 		{
 			$parm = $space;
@@ -3281,8 +3280,10 @@ class e_parser
 		$removePrefix = array('glyphicon-','icon-','fa-');
 		
 		$id = str_replace($removePrefix, "", $cls);
-		
-		
+
+		$spin = null;
+		$rotate = null;
+
 	//	return print_r($fa4,true);
 		
 		if(deftrue('FONTAWESOME') &&  in_array($id ,$fa4)) // Contains FontAwesome 3 set also. 
@@ -3290,6 +3291,8 @@ class e_parser
 			$prefix = 'fa fa-';
 			$size 	= (vartrue($parm['size'])) ?  ' fa-'.$parm['size'] : '';	
 			$tag 	= 'i';
+			$spin   = !empty($parm['spin']) ? ' fa-spin' : '';
+			$rotate = !empty($parm['rotate']) ? ' fa-rotate-'.intval($parm['rotate']) : '';
 		}
 		elseif(deftrue("BOOTSTRAP")) 
 		{
@@ -3308,7 +3311,7 @@ class e_parser
 			
 		}
 		
-		$text = "<".$tag." class='".$prefix.$id.$size."'></".$tag.">" ;
+		$text = "<".$tag." class='".$prefix.$id.$size.$spin.$rotate."'></".$tag.">" ;
 		$text .= ($space !== false) ? $space : "";
 		
 		return $text;
