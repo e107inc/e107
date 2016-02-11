@@ -65,6 +65,12 @@ class forum_setup
 			e107::getDb()->gen("ALTER TABLE `#forum_thread` DROP `thread_sef` ");
 		}
 
+		$legacyMenuPref = e107::getConfig('menu')->getPref();
+		if(isset($legacyMenuPref['newforumposts_caption']))
+		{
+
+		}
+
 		return false;
 	}
 	

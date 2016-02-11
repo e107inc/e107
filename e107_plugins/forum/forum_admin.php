@@ -99,8 +99,10 @@ if(!deftrue('OLD_FORUMADMIN'))
 			{
 				$this->adminMenu['opt3'] = array('divider'=>true);
 				$this->adminMenu['main/update'] = array('caption'=>"Redo v1.x Forum Upgrade", 'perm'=>0, 'uri'=>'{e_PLUGIN}forum/forum_update.php');
-			}
 
+
+
+			}
 
 		}
 	}
@@ -257,6 +259,11 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 			require_once(e_PLUGIN.'forum/forum_class.php');
 			$this->forumObj	=  new e107forum;
+
+			if(E107_DEBUG_LEVEL > 0) // check fpr legacy prefs in debug mode. Should normally be done during upgrade.
+			{
+				$this->forumObj->upgradeLegacyPrefs();
+			}
 
 
 			if (!empty($_POST['do_prune']) && !empty($_POST['prune_days']) && !empty($_POST['pruneForum']))
