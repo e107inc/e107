@@ -128,12 +128,16 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 			{
 				$(this).click(function ()
 				{
-					var id = $(this).attr("href");
+					// Old way - href='myscript.php#id-to-target
+					var href = $(this).attr("href");
 					// Target container for result.
 					var target = $(this).attr("data-target");
 					// Image to show loading.
 					var loading = $(this).attr('data-loading');
+					// If this is a navigation controller, e.g. pager...
 					var nav = $(this).attr('data-nav-inc');
+					// Method: 'replaceWith', 'append', 'prepend', 'before', 'after', 'html' (default).
+					var method = $(this).attr('data-method');
 
 					if(nav != null)
 					{
@@ -141,32 +145,87 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 						e107.callbacks.eNav(this, '.e-ajax');
 					}
 
-					var src = $(this).attr("data-src");
+					// URL for Ajax request.
+					var handler = $(this).attr("data-src");
 
-					if(target != null)
-					{
-						id = '#' + target;
-					}
+					var $target = $("#" + target);
+					var html = null; // Ajax result.
+					var $loadingImage = null;
 
+					// TODO: set default loading icon?
 					if(loading != null)
 					{
-						$(id).html("<img src='" + loading + "' alt='' />");
+						$loadingImage = $("<img src='" + loading + "' alt='' class='e-ajax-progress' />");
+						$(this).after($loadingImage);
 					}
 
-					if(src === null) // Old way - href='myscript.php#id-to-target
+					if(target == null || handler == null) // Old way - href='myscript.php#id-to-target
 					{
-						var tmp = src.split('#');
-						id = tmp[1];
-						src = tmp[0];
-					}
-					// var effect = $(this).attr("data-effect");
-					// alert(id);
+						if(href != null)
+						{
+							var tmp = href.split('#');
+							var id = tmp[1];
 
-					$(id).load(src, function ()
-					{
-						// alert(src);
-						// $(this).hide();
-						// $(this).fadeIn();
+							if(handler == null)
+							{
+								handler = tmp[0];
+							}
+
+							if(target == null)
+							{
+								$target = $('#' + id);
+							}
+						}
+					}
+
+					$.ajax({
+						type: 'GET',
+						url: handler,
+						complete: function ()
+						{
+							if($loadingImage)
+							{
+								$loadingImage.remove();
+							}
+						},
+						success: function (data)
+						{
+							switch(method)
+							{
+								case 'replaceWith':
+									html = $.parseHTML(data);
+									$target.replaceWith(html);
+									break;
+
+								case 'append':
+									html = $.parseHTML(data);
+									$target.append(html);
+									break;
+
+								case 'prepend':
+									html = $.parseHTML(data);
+									$target.prepend(html);
+									break;
+
+								case 'before':
+									html = $.parseHTML(data);
+									$target.before(html);
+									break;
+
+								case 'after':
+									html = $.parseHTML(data);
+									$target.after(html);
+									break;
+
+								case 'html':
+								default:
+									$target.html(data).hide().show("slow");
+									break;
+							}
+
+							// Attach all registered behaviors to the new content.
+							e107.attachBehaviors();
+						}
 					});
 
 					return false;
