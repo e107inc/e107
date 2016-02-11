@@ -138,11 +138,8 @@ class forum_newforumposts_menu // plugin folder + menu name (without the .php)
 			$text = LAN_FORUM_MENU_002;
 		}
 
-
-		e107::getRender()->tablerender($this->menuPref['caption'], $text, 'nfp_menu');
-
-
-
+		$caption = varset($this->menuPref['caption'][e_LANGUAGE], $this->menuPref['caption']);
+		e107::getRender()->tablerender($caption, $text, 'nfp_menu');
 
 	}
 

@@ -205,7 +205,9 @@ class admin_start
 			e_HANDLER."np_class.php",
 			e_CORE."shortcodes/single/user_extended.sc",
 			e_ADMIN."download.php",
-			e_PLUGIN."banner/config.php"
+			e_PLUGIN."banner/config.php",
+			e_PLUGIN."forum/newforumposts_menu_config.php",
+
 		);
 
 		$found = array();
