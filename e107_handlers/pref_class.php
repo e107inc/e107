@@ -877,6 +877,54 @@ final class e_core_pref extends e_pref
 		$prefid = trim($prefid);
 		return array_search($prefid, $this->aliases);
 	}
+
+
+	/**
+	 * Export data from core pref and remove if needed. Useful for core pref -> menu table parm migration.
+	 * @param array $prefList  key/value pairs.  key = oldpref value = new pref key
+	 * @param bool|false $remove
+	 * @return array|false if no match found.
+	 */
+	public function migrateData($prefList=array(), $remove=false)
+	{
+		$data = self::getData();
+		$array = array();
+		$save = false;
+
+		if(empty($prefList))
+		{
+			return false;
+		}
+
+		foreach($data as $k=>$v)
+		{
+			if(isset($prefList[$k]))
+			{
+				$key = $prefList[$k];
+				$array[$key] = $v;
+
+				if($remove == true)
+				{
+					self::remove($k);
+					$save = true;
+				}
+			}
+
+		}
+
+		if(empty($array))
+		{
+			return false;
+		}
+
+		if(!empty($save))
+		{
+			self::save(false,true,false);
+		}
+
+		return $array;
+
+	}
 }
 
 /**

@@ -745,11 +745,17 @@ class e107forum
 			$postInfo['post_thread'] = $newThreadId;
 			$newPostId = $this->postAdd($postInfo, false);
 			$this->threadMarkAsRead($newThreadId);
-			$threadInfo['thread_sef'] = eHelper::title2sef($threadInfo['thread_name'],'dashl');
+			$threadInfo['thread_sef'] = $this->getThreadsef($threadInfo);
 
 			return array('postid' => $newPostId, 'threadid' => $newThreadId, 'threadsef'=>$threadInfo['thread_sef']);
 		}
 		return false;
+	}
+
+
+	function getThreadSef($threadInfo)
+	{
+		return eHelper::title2sef($threadInfo['thread_name'],'dashl');
 	}
 
 
@@ -2197,6 +2203,42 @@ class e107forum
 		}
 		return $deleted; // return boolean. $threadInfo['thread_total_replies'];
 	}
+
+
+	/**
+	 *  Check for legacy Prefernces and upgrade if neccessary.
+	 */
+	public function upgradeLegacyPrefs()
+	{
+
+			e107::getMessage()->addDebug("Legacy Forum Menu Pref Detected. Upgrading..");
+
+			$legacyMenuPrefs = array(
+				'newforumposts_caption'     => 'caption',
+				'newforumposts_display'     => 'display',
+				'newforumposts_maxage'      => 'maxage',
+				'newforumposts_characters'  => 'chars',
+				'newforumposts_postfix'     => 'postfix',
+				'newforumposts_title'       => 'title'
+			);
+
+			if($newPrefs = e107::getConfig('menu')->migrateData($legacyMenuPrefs, true)) // returns false if no match found.
+			{
+				if(e107::getMenu()->setParms('forum','newforumposts_menu', $newPrefs) !== false)
+				{
+					e107::getMessage()->addDebug("Sucessfully Migrated newforumposts prefs from core to menu table. ");
+				}
+				else
+				{
+					e107::getMessage()->addDebug("Legacy Forum Menu Pref Detected. Upgrading..");
+				}
+			}
+
+	}
+
+
+
+
 
 }
 

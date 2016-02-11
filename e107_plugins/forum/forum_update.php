@@ -353,6 +353,15 @@ function step4()
 	$fconf -> setPref($old_prefs) -> save(false, true);
 	$coreConfig -> save(false, true);
 
+
+	// -----Upgrade old menu prefs ----------------
+	global $forum;
+	$forum->upgradeLegacyPrefs();
+
+	// --------------------
+
+
+
 	$result = array(
 		'usercount' => 0,
 		'viewcount' => 0,
@@ -1268,7 +1277,7 @@ function step12()
 
 class forumUpgrade
 {
-	var $newVersion = '2.0';
+	private $newVersion = '2.0';
 	var $error = array();
 	public $updateInfo;
 	private $attachmentData;
@@ -1365,10 +1374,12 @@ class forumUpgrade
 
 	function setNewVersion()
 	{
-		$sql = e107::getDb();
+		// $sql = e107::getDb();
 
-		$sql -> update('plugin', "plugin_version = '{$this->newVersion}' WHERE plugin_name='Forum'");
-		e107::getConfig()->setPref('plug_installed/forum', $this->newVersion)->save(false,true,false);
+	//	$sql -> update('plugin', "plugin_version = '{$this->newVersion}' WHERE plugin_name='Forum' OR plugin_name = 'LAN_PLUGIN_FORUM_NAME'");
+	//	e107::getConfig()->setPref('plug_installed/forum', $this->newVersion)->save(false,true,false);
+
+		e107::getPlugin()->refresh('forum');
 
 		return "Forum Version updated to version: {$this->newVersion} <br />";
 	}
