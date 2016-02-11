@@ -3310,8 +3310,10 @@ class e_parser
 			$size = '';
 			
 		}
+
+		$idAtt = (!empty($parm['id'])) ? "id='".$parm['id']."' " : '';
 		
-		$text = "<".$tag." class='".$prefix.$id.$size.$spin.$rotate."'></".$tag.">" ;
+		$text = "<".$tag." {$idAtt}class='".$prefix.$id.$size.$spin.$rotate."'></".$tag.">" ;
 		$text .= ($space !== false) ? $space : "";
 		
 		return $text;
