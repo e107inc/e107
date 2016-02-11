@@ -3978,10 +3978,21 @@ class e_form
 	 */
 	function renderElement($key, $value, $attributes, $required_data = array(), $id = 0)
 	{
-	//	return print_a($value,true);
-		$parms = vartrue($attributes['writeParms'], array());
-
 		$tp = e107::getParser();
+
+		$ajaxParms = array();
+
+		if(varset($attributes['writeParms']['ajax']))
+		{
+			$ajaxParms['data-src'] = varset($attributes['writeParms']['ajax']['src']);
+			$ajaxParms['data-target'] = varset($attributes['writeParms']['ajax']['target']);
+			$ajaxParms['data-method'] = varset($attributes['writeParms']['ajax']['method'], 'html');
+			$ajaxParms['data-loading'] = varset($attributes['writeParms']['ajax']['loading'], $tp->toGlyph('fa-spinner', array('spin'=>1)));
+
+			unset($attributes['writeParms']['ajax']);
+		}
+
+		$parms = vartrue($attributes['writeParms'], array());
 
 		if(is_string($parms)) parse_str($parms, $parms);
 
@@ -4303,6 +4314,14 @@ class e_form
 				if($attributes['type'] === 'comma') $eloptions['multiple'] = true;
 				unset($parms['__options']);
 				if(vartrue($eloptions['multiple']) && !is_array($value)) $value = explode(',', $value);
+
+				// Allow Ajax API.
+				if(!empty($ajaxParms))
+				{
+					$eloptions = array_merge_recursive($eloptions, $ajaxParms);
+					$eloptions['class'] = 'e-ajax ' . varset($eloptions['class']);
+				}
+
 				$ret =  vartrue($eloptions['pre']).$this->selectbox($key, $parms, $value, $eloptions).vartrue($eloptions['post']);
 			break;
 
