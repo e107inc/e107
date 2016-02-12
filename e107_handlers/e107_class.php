@@ -1639,6 +1639,44 @@ class e107
 	}
 
 	/**
+	 * Retrieve Library Manager singleton object
+	 *
+	 * @return e_library_manager
+	 */
+	public static function getLibrary()
+	{
+		static $included = false;
+		if(!$included)
+		{
+			e107_require_once(e_HANDLER . 'library_manager.php');
+			$included = true;
+		}
+		return e_library_manager::getInstance();
+	}
+
+	/**
+	 * Library Common Public Function.
+	 *
+	 * @param string $action detect|load
+	 * @param string $library
+	 */
+	public static function library($action, $library)
+	{
+		$libraryHandler = e107::getLibrary();
+
+		switch ($action)
+		{
+			case 'detect':
+				$libraryHandler->libraryDetect($library);
+				break;
+
+			case 'load':
+				$libraryHandler->libraryLoad($library);
+				break;
+		}
+	}
+
+	/**
 	 * Retrieve JS Manager singleton object
 	 *
 	 * @return e_jsmanager
