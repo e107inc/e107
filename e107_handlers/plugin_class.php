@@ -60,7 +60,8 @@ class e107plugin
 		'e_related',
 		'e_rss',
 		'e_upload',
-		'e_user'
+		'e_user',
+		'e_library', // For third-party libraries are defined by plugins/themes.
 	);
 
 
