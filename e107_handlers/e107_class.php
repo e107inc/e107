@@ -1657,8 +1657,16 @@ class e107
 	/**
 	 * Library Common Public Function.
 	 *
-	 * @param string $action detect|load
+	 * @param string $action
+	 *  - 'detect': Tries to detect a library and its installed version.
+	 *  - 'load': Loads a library.
 	 * @param string $library
+	 *  The name of the library to detect/load.
+	 *
+	 * @return array|boolean
+	 *  - In case of 'detect': An associative array of the library information.
+	 *  - In case of 'load': An associative array containing registered information for the library specified by $name,
+	 *    or FALSE if the library $name is not registered.
 	 */
 	public static function library($action, $library)
 	{
@@ -1667,11 +1675,11 @@ class e107
 		switch ($action)
 		{
 			case 'detect':
-				$libraryHandler->libraryDetect($library);
+				return $libraryHandler->libraryDetect($library);
 				break;
 
 			case 'load':
-				$libraryHandler->libraryLoad($library);
+				return $libraryHandler->libraryLoad($library);
 				break;
 		}
 	}
