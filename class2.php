@@ -2068,11 +2068,22 @@ class error_handler
 
 	var $errors;
 	var $debug = false;
+	protected $xdebug = false;
+	protected $docroot = '';
+	protected $label = array();
 
-	function error_handler()
+	function __construct()
 	{
-		//
+		$this->label = array(E_NOTICE => "Notice", E_WARNING => "Warning", E_DEPRECATED => "Deprecated", E_STRICT => "Strict");
+		$this->color = array(E_NOTICE=> 'info', E_WARNING=>'warning', E_DEPRECATED => 'danger', E_STRICT => 'primary');
+		$this->docroot = dirname(realpath(__FILE__)).DIRECTORY_SEPARATOR;
+
 		// This is initialized before the current debug level is known
+		if(function_exists('xdebug_get_function_stack'))
+		{
+			$this->xdebug = true;
+		}
+
 		//
 		global $_E107;
 		if(isset($_E107['debug']))
@@ -2100,16 +2111,31 @@ class error_handler
 
 	function handle_error($type, $message, $file, $line, $context) {
 		$startup_error = (!defined('E107_DEBUG_LEVEL')); // Error before debug system initialized
-		
-		
+
+
+
 		switch($type) {
 			case E_NOTICE:
+			case E_DEPRECATED:
+		//	case E_STRICT:
+
 			if ($startup_error || E107_DBG_ALLERRORS || E107_DBG_ERRBACKTRACE)
 			{
-				$error['short'] = "Notice: {$message}, Line {$line} of {$file}<br />\n";
-				$trace = debug_backtrace();
-				$backtrace[0] = (isset($trace[1]) ? $trace[1] : "");
-				$backtrace[1] = (isset($trace[2]) ? $trace[2] : "");
+
+
+				$error['short'] = "<span class='label label-".$this->color[$type]."'>".$this->label[$type]."</span> {$message}, Line {$line} of {$file}<br />\n";
+
+				if($this->xdebug)
+				{
+					$backtrace = xdebug_get_function_stack();
+				}
+				else
+				{
+					$trace = debug_backtrace();
+					$backtrace[0] = (isset($trace[1]) ? $trace[1] : "");
+					$backtrace[1] = (isset($trace[2]) ? $trace[2] : "");
+				}
+
 				$error['trace'] = $backtrace;
 				$this->errors[] = $error;
 			}
@@ -2117,10 +2143,20 @@ class error_handler
 			case E_WARNING:
 			if ($startup_error || E107_DBG_BASIC || E107_DBG_ERRBACKTRACE)
 			{
-				$error['short'] = "Warning: {$message}, Line {$line} of {$file}<br />\n";
-				$trace = debug_backtrace();
-				$backtrace[0] = (isset($trace[1]) ? $trace[1] : "");
-				$backtrace[1] = (isset($trace[2]) ? $trace[2] : "");
+			//	$error['short'] = "Warning: {$message}, Line {$line} of {$file}<br />\n";
+				$error['short'] = "<span class='label label-".$this->color[$type]."'>".$this->label[$type]."</span> {$message}, Line {$line} of {$file}<br />\n";
+
+				if($this->xdebug)
+				{
+					$backtrace = xdebug_get_function_stack();
+				}
+				else
+				{
+					$trace = debug_backtrace();
+					$backtrace[0] = (isset($trace[1]) ? $trace[1] : "");
+					$backtrace[1] = (isset($trace[2]) ? $trace[2] : "");
+				}
+
 				$error['trace'] = $backtrace;
 				$this->errors[] = $error;
 			}
@@ -2141,6 +2177,44 @@ class error_handler
 		}
 	}
 
+
+
+	function render_trace($array)
+	{
+		if($this->xdebug == false)
+		{
+			return print_a($array, true);
+		}
+
+		array_pop($array);
+
+
+		$text = "<table class='table table-bordered table-striped'>
+		<tr class='danger'><th>#</th><th>Function</th><th>Location</th></tr>";
+		foreach($array as $key=>$val)
+		{
+			$text .= "
+			<tr>
+				<td>".$key."</td>
+				<td>";
+			$text .= !empty($val['class']) ? $val['class']."->" : '';
+			$text .= !empty($val['include_filename']) ? "include: ". str_replace($this->docroot,'', $val['include_filename']) : '';
+			$text .= !empty($val['function']) ? $val['function']."(" : "";
+			$text .= !empty($val['params']) ? print_r($val['params'],true) : '';
+			$text .= !empty($val['function']) ? ")" : "";
+			$text .="</td>
+				<td>";
+			$text .= str_replace($this->docroot,'', $val['file']).":".$val['line'];
+			$text .= "</td>
+			</tr>";
+		}
+
+		$text .= "</table>";
+
+		return $text;
+
+	}
+
 	function return_errors()
 	{
 		$index = 0; $colours[0] = "#C1C1C1"; $colours[1] = "#B6B6B6";
@@ -2150,10 +2224,13 @@ class error_handler
 
 		if (E107_DBG_ERRBACKTRACE)
 		{
+
+
+
 			foreach ($this->errors as $key => $value)
 			{
 				$ret .= "\t<tr>\n\t\t<td class='forumheader3' >{$value['short']}</td><td><input class='btn btn-info button e-expandit' data-target = 'bt_{$key}' type ='button' style='cursor: hand; cursor: pointer;' size='30' value='Back Trace'  />\n";
-				$ret .= "\t<tr>\n<td style='display: none;' colspan='2' id='bt_{$key}'>".print_a($value['trace'], true)."</td></tr>\n";
+				$ret .= "\t<tr>\n<td style='display: none;' colspan='2' id='bt_{$key}'>".$this->render_trace($value['trace'])."</td></tr>\n";
 				$ret .= "</td>\n\t</tr>";
 				if($index == 0) { $index = 1; } else { $index = 0; }
 			}

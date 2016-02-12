@@ -207,6 +207,8 @@ class admin_start
 			e_ADMIN."download.php",
 			e_PLUGIN."banner/config.php",
 			e_PLUGIN."forum/newforumposts_menu_config.php",
+			e_PLUGIN."forum/e_latest.php",
+			e_PLUGIN."forum/e_status.php"
 
 		);
 

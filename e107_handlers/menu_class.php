@@ -521,7 +521,8 @@ class e_menu
 			$e107_debug ? include(e_PLUGIN.$mpath.$mname.'.php') : @include(e_PLUGIN.$mpath.$mname.'.php');
 		}
 		e107::getDB()->db_Mark_Time("(After ".$mname.")");
-		if($error_handler->debug==true)
+
+		if(e_DEBUG === true)
 		{
 			echo "\n<!-- Menu End: ".$mname." -->\n";
 		}
