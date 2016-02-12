@@ -67,7 +67,11 @@ class themeHandler
 
 		
 		//enable inner tabindex counter
-		$this->frm = new e_form();
+		if(!deftrue("E107_INSTALL"))
+		{
+			 $this->frm = new e_form();
+		}
+
 		
 		$this->fl = e107::getFile();
 		
