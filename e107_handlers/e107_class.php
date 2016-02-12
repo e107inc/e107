@@ -3274,7 +3274,10 @@ class e107
 		define('e_UC_ADMIN', 254);
 		define('e_UC_NOBODY', 255);
 		
-
+		if(!defined('e_DEBUG'))
+		{
+			define('e_DEBUG', false);
+		}
 
 		return $this;
 	}
@@ -3629,8 +3632,6 @@ class e107
 		{
 			define('e_SELF', e_REQUEST_SELF);
 		}
-
-
 
 
 
