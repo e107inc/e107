@@ -764,6 +764,7 @@ class adminstyle_infopanel
 			foreach($array as $key => $value) 
 			{
 				extract($value);
+				$log_id = substr($log_id, 0, 4).'-'.substr($log_id, 5, 2).'-'.str_pad(substr($log_id, 8), 2, '0', STR_PAD_LEFT);
 				if(is_array($log_data)) {
 					$entries[0] = $log_data['host'];
 					$entries[1] = $log_data['date'];
