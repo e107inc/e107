@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<e107Export version="0.8.0 (cvs)" timestamp="1251856226">
+<e107Export version="2.0" timestamp="1251856226">
 	<prefs>
 		<core name="admin_alerts_ok">1</core>
 		<core name="admin_alerts_uniquemenu">0</core>

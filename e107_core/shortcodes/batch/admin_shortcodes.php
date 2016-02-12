@@ -1057,7 +1057,7 @@ class admin_shortcodes
 			<br /><br />
 			<b>".FOOTLAN_12."</b>
 			<br />
-			".e107::getDB()->mySqlServerInfo.
+			".e107::getDB()->getServerInfo(). // mySqlServerInfo.
 			"<br />
 			".FOOTLAN_16.": ".$mySQLdefaultdb."
 			<br /><br />
