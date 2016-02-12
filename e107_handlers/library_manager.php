@@ -1042,7 +1042,7 @@ class e_library_manager
 			'cols'    => 200,
 		);
 
-		$file = e_ROOT . $library['library path'] . '/' . $options['file'];
+		$file = $library['library path'] . '/' . $options['file'];
 		if(empty($options['file']) || !file_exists($file))
 		{
 			return;
