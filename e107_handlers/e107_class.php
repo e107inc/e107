@@ -1664,9 +1664,9 @@ class e107
 	 *  The name of the library to detect/load.
 	 *
 	 * @return array|boolean
-	 *  - In case of 'detect': An associative array of the library information.
-	 *  - In case of 'load': An associative array containing registered information for the library specified by $name,
-	 *    or FALSE if the library $name is not registered.
+	 *  - In case of 'detect': An associative array containing registered information for the library specified by
+	 *    $name, or FALSE if the library $name is not registered.
+	 *  - In case of 'load': An associative array of the library information.
 	 */
 	public static function library($action, $library)
 	{
