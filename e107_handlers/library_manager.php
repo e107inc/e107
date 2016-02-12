@@ -52,7 +52,7 @@ class e_library_manager
 	/**
 	 * Get singleton instance.
 	 *
-	 * @return e_jsmanager
+	 * @return e_library_manager
 	 */
 	public static function getInstance()
 	{
