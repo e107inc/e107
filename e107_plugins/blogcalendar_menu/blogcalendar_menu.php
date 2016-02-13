@@ -122,7 +122,7 @@ if(false === $cached)
 		$xyear = date("Y", $news['news_datestamp']);
 		if (!isset($month_links[$xmonth]) || !$month_links[$xmonth])
 		{
-			$month_links[$xmonth] = e107::getUrl()->create('news/list/month', 'idv='.formatDate($req_year, $xmonth));//e_BASE."news.php?month.".formatDate($req_year, $xmonth);
+			$month_links[$xmonth] = e107::getUrl()->create('news/list/month', 'id='.formatDate($req_year, $xmonth));//e_BASE."news.php?month.".formatDate($req_year, $xmonth);
 		}
 	//	if(($news['news_datestamp'] >= $month_start && $news['news_datestamp'] <= $month_end) || (deftrue('BOOTSTRAP') && $news['news_datestamp'] >= $year_start && $news['news_datestamp'] <= $year_end))
 		{
@@ -178,7 +178,7 @@ if(false === $cached)
 		{
 			foreach($val as $month=>$v)
 			{
-				$menu .= calendar($req_day, $month, $year, $links[$year][$month], $pref['blogcal_ws']);
+				$menu .= calendar($req_day, $month, $year, varset($links[$year][$month],array()), $pref['blogcal_ws']);
 			}
 		}
 		
