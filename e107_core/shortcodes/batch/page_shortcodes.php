@@ -88,7 +88,7 @@ class cpage_shortcodes extends e_shortcode
 	
 	function sc_cpagesubtitle()
 	{
-		$subtitle = $this->var['sub_title'];
+		$subtitle = varset($this->var['sub_title']);
 		return $subtitle ? e107::getParser()->toHTML($subtitle, true, 'TITLE') : '';
 	}
 

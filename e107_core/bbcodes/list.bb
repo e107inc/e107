@@ -29,6 +29,7 @@ if ($parm == '')
 {	/* unordered list */
   $listtext = "<ul class='bbcode'>";
   $trailer = "</ul>";
+  $type = '';
 }
 else
 {

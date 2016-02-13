@@ -237,8 +237,8 @@ class e_install
 
 		if(defined('PDO::ATTR_DRIVER_NAME')) // TODO Uncomment when ready. 
 		{
-			// $this->pdo = true;
-			// define('e_PDO', true);
+			 $this->pdo = true;
+			 define('e_PDO', true);
 		}
 
 		if(!empty($this->previous_steps['mysql']['prefix']))

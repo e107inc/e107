@@ -2228,7 +2228,7 @@ class themeHandler
 			{
 				$notadmin = vartrue($val['@attributes']['admin']) ? false : true;
 				
-				$vars['css'][] = array("name" => $val['@attributes']['file'], "info"=> $val['@attributes']['name'], "nonadmin"=>$notadmin, 'scope'=>$val['@attributes']['scope']);
+				$vars['css'][] = array("name" => $val['@attributes']['file'], "info"=> $val['@attributes']['name'], "nonadmin"=>$notadmin, 'scope'=> vartrue($val['@attributes']['scope']));
 			}
 
 			unset($vars['stylesheets']);

@@ -1432,7 +1432,7 @@ class e107plugin
 		}
 			
 		// Load install language file and set lan_global pref. 
-		$this->XmlLanguageFiles($function, $plug_vars['languageFiles'], 'pre'); // First of all, see if there's a language file specific to install
+		$this->XmlLanguageFiles($function, varset($plug_vars['languageFiles']), 'pre'); // First of all, see if there's a language file specific to install
 
 		// Next most important, if installing or upgrading, check that any dependencies are met
 		if ($canContinue && ($function != 'uninstall') && isset($plug_vars['dependencies']))
@@ -2116,7 +2116,7 @@ class e107plugin
 					$data['title'] 		= $v['@value'];
 					$data['sef'] 		= vartrue($v['@attributes']['sef']);
 				//	$data['type'] = $v['@attributes']['type']; //TODO
-					$data['class'] 		= $this->getPerm($v['@attributes']['perm'], 'member');
+					$data['class'] 		= $this->getPerm(varset($v['@attributes']['perm']), 'member');
 					
 					$status = e107::getMedia()->createCategory($data) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 					$mes->add("Adding Media Category: {$data['category']}", $status);				
