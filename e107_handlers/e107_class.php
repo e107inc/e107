@@ -1650,6 +1650,52 @@ class e107
 	}
 
 	/**
+	 * Retrieve Library Manager singleton object
+	 *
+	 * @return e_library_manager
+	 */
+	public static function getLibrary()
+	{
+		static $included = false;
+		if(!$included)
+		{
+			e107_require_once(e_HANDLER . 'library_manager.php');
+			$included = true;
+		}
+		return e_library_manager::getInstance();
+	}
+
+	/**
+	 * Library Common Public Function.
+	 *
+	 * @param string $action
+	 *  - 'detect': Tries to detect a library and its installed version.
+	 *  - 'load': Loads a library.
+	 * @param string $library
+	 *  The name of the library to detect/load.
+	 *
+	 * @return array|boolean
+	 *  - In case of 'detect': An associative array containing registered information for the library specified by
+	 *    $name, or FALSE if the library $name is not registered.
+	 *  - In case of 'load': An associative array of the library information.
+	 */
+	public static function library($action, $library)
+	{
+		$libraryHandler = e107::getLibrary();
+
+		switch ($action)
+		{
+			case 'detect':
+				return $libraryHandler->libraryDetect($library);
+				break;
+
+			case 'load':
+				return $libraryHandler->libraryLoad($library);
+				break;
+		}
+	}
+
+	/**
 	 * Retrieve JS Manager singleton object
 	 *
 	 * @return e_jsmanager
