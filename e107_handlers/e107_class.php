@@ -213,7 +213,8 @@ class e107
 		'userlogin'					 	 => '{e_HANDLER}login.php',
 		'validatorClass'				 => '{e_HANDLER}validator_class.php',
 		'xmlClass'						 => '{e_HANDLER}xml_class.php',
-		'e107MailManager'                => '{e_HANDLER}mail_manager_class.php'
+		'e107MailManager'                => '{e_HANDLER}mail_manager_class.php',
+		'e_library_manager'              => '{e_HANDLER}library_manager.php'
 	);
 
 	/**
@@ -1650,19 +1651,21 @@ class e107
 	}
 
 	/**
-	 * Retrieve Library Manager singleton object
+	 * Retrieve Library Manager singleton object (internal use only. Use e107::library())
 	 *
 	 * @return e_library_manager
 	 */
-	public static function getLibrary()
+	private static function getLibrary()
 	{
-		static $included = false;
+		/*static $included = false;
 		if(!$included)
 		{
 			e107_require_once(e_HANDLER . 'library_manager.php');
 			$included = true;
-		}
-		return e_library_manager::getInstance();
+		}*/
+
+		return self::getSingleton('e_library_manager', true); /* @FIXME Use this instead? */
+	//	return e_library_manager::getInstance();
 	}
 
 	/**

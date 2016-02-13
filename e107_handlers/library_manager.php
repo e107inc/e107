@@ -11,7 +11,7 @@
 
 // [e_LANGUAGEDIR]/[e_LANGUAGE]/lan_library_manager.php
 e107::lan('core', 'library_manager');
-
+/*FIXME Remove 'library' prefix from method names */
 
 /**
  * Class e_library_manager.
@@ -54,7 +54,7 @@ class e_library_manager
 	 *
 	 * @return e_library_manager
 	 */
-	public static function getInstance()
+	public static function getInstance() /* FIXME Still Neeeded? */
 	{
 		if(null === self::$_instance)
 		{
@@ -161,7 +161,8 @@ class e_library_manager
 				// indexed array of multiple parameters.
 				if(isset($library['version arguments'][0]))
 				{
-					if(isset($addonClass) && class_exists($addonClass))
+
+					if(isset($addonClass) && class_exists($addonClass)) /* @FIXME Perhaps use e107::callMethod() ?  */
 					{
 						$class = new $addonClass();
 						if(method_exists($class, $library['version callback']))
@@ -221,6 +222,7 @@ class e_library_manager
 				$replace = array('[x]', '[y]');
 				$replace_with = array($library['version'], $library['name']);
 
+				/* @XXX - $tp->lanVars() ? */
 				$library['error message'] = str_replace($replace, $replace_with, LAN_LIBRARY_MANAGER_05);
 
 				return $library;
@@ -245,6 +247,7 @@ class e_library_manager
 				{
 					if(varset($library['plugin'], false))
 					{
+					//	e107::getAddon($library['plugin'],'e_library'); /* @FIXME Use this to avoid additional class_exists and method_exists checking */
 						e107_require_once(e_PLUGIN . $library['plugin'] . '/e_library.php');
 						$addonClass = $library['plugin'] . '_library';
 					}
@@ -341,7 +344,7 @@ class e_library_manager
 	 */
 	public function libraryLoad($name, $variant = null)
 	{
-		static $loaded;
+		static $loaded; /* @FIXME Still needed? */
 
 		if(!isset($loaded[$name]))
 		{
@@ -459,6 +462,7 @@ class e_library_manager
 		$dir = e_WEB . 'lib';
 
 		// Retrieve list of directories.
+		/* FIXME Use e107::getFile() or just scandir() ? */
 		$directories = array();
 		$nomask = array('CVS');
 		if(is_dir($dir) && $handle = opendir($dir))
@@ -505,7 +509,7 @@ class e_library_manager
 			$themes = array();
 
 			// Gather information from PLUGIN_library::config().
-			$pluginInfo = e107::getAddonConfig('e_library', 'library', 'config');
+			$pluginInfo = e107::getAddonConfig('e_library', 'library'); // 'config' is the default.
 			foreach($pluginInfo as $plugin => $info)
 			{
 				foreach($info as $machine_name => $properties)
@@ -523,9 +527,9 @@ class e_library_manager
 
 			foreach(array($siteTheme, $adminTheme) as $theme)
 			{
-				if(is_readable(e_THEME . $theme . '/e_library.php'))
+				if(is_readable(e_THEME . $theme . '/theme_library.php')) // we don't use e_XXXX for themes.
 				{
-					e107_require_once(e_THEME . $theme . '/e_library.php');
+					e107_require_once(e_THEME . $theme . '/theme_library.php');
 
 					$className = $theme . '_library';
 					if(class_exists($className))
@@ -557,6 +561,7 @@ class e_library_manager
 			}
 
 			// Allow enabled plugins (with e_library.php file) to alter the registered libraries.
+		//	e107::getAddon($plugin, 'e_library','config_alter'); /* FIXME Use e107::getAddon() instead? */
 			foreach($plugins as $plugin)
 			{
 				e107_require_once(e_PLUGIN . $plugin . '/e_library.php');
@@ -572,10 +577,12 @@ class e_library_manager
 				}
 			}
 
-			// Allow enabled themes (with e_library.php file) to alter the registered libraries.
+			// Allow enabled themes (with theme_library.php file) to alter the registered libraries.
+
+
 			foreach($themes as $theme)
 			{
-				e107_require_once(e_THEME . $theme . '/e_library.php');
+				e107_require_once(e_THEME . $theme . '/theme_library.php');
 				$addonClass = $theme . '_library';
 
 				if(class_exists($addonClass))
@@ -624,6 +631,9 @@ class e_library_manager
 	 */
 	private function libraryInfoDefaults(&$library, $name)
 	{
+
+		/* FIXME Avoid spaces in keys, use _ underscores */
+
 		$library += array(
 			'machine name'      => $name,
 			'name'              => $name,
@@ -746,7 +756,7 @@ class e_library_manager
 					$replace = array('[x]', '[y]');
 					$replace_with = array($dependency['name'], $library['name']);
 
-					$library['error message'] = str_replace($replace, $replace_with, LAN_LIBRARY_MANAGER_01);
+					$library['error message'] = str_replace($replace, $replace_with, LAN_LIBRARY_MANAGER_01); /* FIXME $tp->lanVars() */
 				}
 				elseif($this->libraryCheckIncompatibility($dependency_info, $dependency['version']))
 				{
@@ -756,7 +766,7 @@ class e_library_manager
 					$replace = array('[x]', '[y]', '[z]');
 					$replace_with = array($dependency['version'], $library['name'], $library['name']);
 
-					$library['error message'] = str_replace($replace, $replace_with, LAN_LIBRARY_MANAGER_02);
+					$library['error message'] = str_replace($replace, $replace_with, LAN_LIBRARY_MANAGER_02); /* FIXME $tp->lanVars() */
 				}
 
 				// Remove the version string from the dependency, so libraryLoad() can load the libraries directly.
