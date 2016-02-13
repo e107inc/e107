@@ -15,10 +15,7 @@ class sitelinks_alt
 {
 	function sitelinks_alt_shortcode($parm)
 	{
-		$sql = e107::getDb();
-				
-		global $pref;
-		
+
 		$params = explode('+', $parm);
 		
 		if (vartrue($params[0]) && ($params[0] != 'no_icons') && ($params[0] != 'default'))
@@ -52,12 +49,18 @@ class sitelinks_alt
 		
 		
 		// Loops thru parents.
-		
+	//	print_a($linklist);
 		
 	
 		foreach ($linklist['head_menu'] as $lk)
 		{
-			$lk['link_url'] = $tp->replaceConstants($lk['link_url'], TRUE, TRUE);
+
+			if(substr($lk['link_url'],0,3) != '{e_' && strpos($lk['link_url'], '://') === false)
+			{
+				$lk['link_url'] = '{e_BASE}'.$lk['link_url'];
+			}
+
+			$lk['link_url'] = $tp->replaceConstants($lk['link_url'], 'abs', true);
 			
 			if ($params[0] == 'no_icons')
 			{
@@ -65,7 +68,7 @@ class sitelinks_alt
 			}
 			else
 			{
-				$link_icon = $lk['link_button'] ? e_IMAGE.'icons/'.$lk['link_button'] : $icon;
+				$link_icon = $lk['link_button'] ? e_IMAGE_ABS.'icons/'.$lk['link_button'] : $icon;
 			}
 			
 			$main_linkid = $lk['link_id'];
@@ -91,8 +94,8 @@ class sitelinks_alt
 	function adnav_cat($cat_title, $cat_link, $cat_img, $cat_id = FALSE, $cat_open = FALSE)
 	{
 			$tp = e107::getParser();
-						
-			$cat_link = (strpos($cat_link, '://') === FALSE && strpos($cat_link, 'mailto:') !== 0 ? e_HTTP.$cat_link : $cat_link);
+
+		//	$cat_link = (strpos($cat_link, '://') === FALSE && strpos($cat_link, 'mailto:') !== 0 ? e_HTTP.$cat_link : $cat_link);
 			
 			if ($cat_open == 4 || $cat_open == 5)
 			{
@@ -126,8 +129,8 @@ class sitelinks_alt
 			$tp = e107::getParser();
 			
 			
-			$cat_link = (strpos($cat_link, '://') === FALSE) ? e_HTTP.$cat_link : $cat_link;
-			$cat_link = $tp->replaceConstants($cat_link, TRUE, TRUE);
+		//	$cat_link = (strpos($cat_link, '://') === FALSE) ? e_HTTP.$cat_link : $cat_link;
+			$cat_link = $tp->replaceConstants($cat_link, 'abs', TRUE);
 			
 			if ($cat_open == 4 || $cat_open == 5)
 			{
