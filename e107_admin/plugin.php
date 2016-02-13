@@ -2757,7 +2757,7 @@ $template = <<<TEMPLATE
 	<category>{CATEGORY_CATEGORY}</category>
 	<copyright>{COPYRIGHT_COPYRIGHT}</copyright>
 	<adminLinks>
-		<link url="admin_config.php" description="{ADMINLINKS_DESCRIPTION}" icon="" iconSmall="" primary="true" >LAN_CONFIGURE</link>
+		<link url="admin_config.php" description="{ADMINLINKS_DESCRIPTION}" icon="" iconSmall="" icon128="" primary="true" >LAN_CONFIGURE</link>
 	</adminLinks>
 	{PLUGINPREFS}
 </e107Plugin>
