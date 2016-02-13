@@ -17,7 +17,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 $caption = "Newspost Help";
-if (e_QUERY) list($action,$junk) = explode('.',e_QUERY); else $action = 'list';
+$action = varset($_GET['action']);
 switch ($action)
 {
   case 'create' :

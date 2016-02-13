@@ -647,6 +647,7 @@ class news_admin_ui extends e_admin_ui
 		'news_meta_description' ,
 		'news_ping',
 
+		'news_email_notify',
 		'news_allow_comments' ,
 		'news_start' ,
 		'news_end' ,
@@ -655,6 +656,7 @@ class news_admin_ui extends e_admin_ui
 		'news_sticky',
 
 		'news_comment_total' ,
+		'submitted_id',
 		'options' );
 
 
@@ -672,10 +674,11 @@ class news_admin_ui extends e_admin_ui
 
 		$order = array_flip($newOrder);
 
-		if ($order[$a] == $order[$b])
+		if($order[$a] == $order[$b])
 		{
 			return 0;
 		}
+
 		return ($order[$a] < $order[$b]) ? -1 : 1;
 
 	}

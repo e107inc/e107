@@ -5519,7 +5519,7 @@ class e_admin_ui extends e_admin_controller_ui
 					unset($_parms);
 				}
 
-				if($att['data'] == 'array' && ($this->getAction() == 'inline')) // FIX for arrays being saved incorrectly with inline editing.
+				if(!empty($att['data']) && $att['data'] == 'array' && ($this->getAction() == 'inline')) // FIX for arrays being saved incorrectly with inline editing.
 				{
 					$att['data'] = 'set';
 				}
