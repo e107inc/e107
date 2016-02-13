@@ -169,9 +169,9 @@ class eIPHandler
 		$ipStatus = $this->checkIP($this->ourIP);
 		if ($ipStatus != 0)
 		{
-			$this->logBanItem($ipStatus, 'result --> '.$ipStatus);
 			if ($ipStatus < 0)
 			{	// Blacklisted
+				$this->logBanItem($ipStatus, 'result --> '.$ipStatus); // only log blacklist
 				$this->banAction($ipStatus);		// This will abort if appropriate
 			}
 			elseif ($ipStatus > 0)
