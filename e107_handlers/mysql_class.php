@@ -66,41 +66,36 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
 class e_db_mysql
 {
 	// TODO switch to protected vars where needed
-	public $mySQLserver;
-	public $mySQLuser;
-	protected $mySQLpassword;
-	protected $mySQLdefaultdb;
-	public $mySQLPrefix;
-	protected $mySQLaccess;
-	public $mySQLresult;
-	public $mySQLrows;
-	public $mySQLerror = '';			// Error reporting mode - TRUE shows messages
+	public      $mySQLserver;
+	public       $mySQLuser;
+	protected   $mySQLpassword;
+	protected   $mySQLdefaultdb;
+	public      $mySQLPrefix;
+	protected   $mySQLaccess;
+	public      $mySQLresult;
+	public      $mySQLrows;
+	public      $mySQLerror = '';			// Error reporting mode - TRUE shows messages
 
-	protected $mySQLlastErrNum = 0;		// Number of last error - now protected, use getLastErrorNumber()
-	protected $mySQLlastErrText = '';		// Text of last error - now protected, use getLastErrorText()
-	protected $mySQLlastQuery = '';
+	protected   $mySQLlastErrNum = 0;		// Number of last error - now protected, use getLastErrorNumber()
+	protected   $mySQLlastErrText = '';		// Text of last error - now protected, use getLastErrorText()
+	protected   $mySQLlastQuery = '';
 
-	public $mySQLcurTable;
-	public $mySQLlanguage;
-	public $mySQLinfo;
-	public $tabset;
-	public $mySQLtableList = array(); // list of all Db tables.
+	public      $mySQLcurTable;
+	public       $mySQLlanguage;
+	public      $mySQLinfo;
+	public      $tabset;
+	public      $mySQLtableList = array(); // list of all Db tables.
 
-	public $mySQLtableListLanguage = array(); // Db table list for the currently selected language
-	public $mySQLtablelist = array();
+	public      $mySQLtableListLanguage = array(); // Db table list for the currently selected language
+	public      $mySQLtablelist = array();
 
 	protected	$dbFieldDefs = array();		// Local cache - Field type definitions for _FIELD_DEFS and _NOTNULL arrays
-	/**
-	 * MySQL Charset
-	 *
-	 * @var string
-	 */
-	public $mySQLcharset;
-	public	$mySqlServerInfo = '?';			// Server info - needed for various things
+	public      $mySQLcharset;
+	public	    $mySqlServerInfo = '?';			// Server info - needed for various things
 
-	public $total_results = false;			// Total number of results
+	public      $total_results = false;			// Total number of results
 	
-	private $pdo = false; // using PDO or not. 
+	private     $pdo = false; // using PDO or not.
 
 	/**
 	* Constructor - gets language options from the cookie or session
@@ -448,13 +443,14 @@ class e_db_mysql
 		//	print_a($prep);
 		//	echo "<hr>";
 		//	$sQryRes = $prep->execute($query);
+
 			try
 			{
 				$sQryRes = is_null($rli) ? $this->mySQLaccess->query($query) : $rli->query($query);
 			}
 			catch(PDOException $ex)
 			{
-				// $sQryRes = null;
+				$sQryRes = false;
 			}
 
 		}
@@ -507,7 +503,7 @@ class e_db_mysql
 			if(is_object($db_debug))
 			{
 				$buglink = is_null($rli) ? $this->mySQLaccess : $rli;
-			   	$nFields = $db_debug->Mark_Query($query, $buglink, $sQryRes, $aTrace, $mytime, $pTable);
+			   	$db_debug->Mark_Query($query, $buglink, $sQryRes, $aTrace, $mytime, $pTable);
 			}
 			else
 			{
@@ -861,6 +857,16 @@ class e_db_mysql
 
 	public function rowCount($result=null)
 	{
+
+		if($this->pdo)
+		{
+			if(!$this->mySQLresult)
+			{
+				return -1;
+			}
+
+		}
+
 		$rows = $this->mySQLrows = ($this->pdo) ? $this->mySQLresult->rowCount() :  mysql_num_rows($this->mySQLresult);
 		$this->dbError('db_Rows');
 		return $rows;	

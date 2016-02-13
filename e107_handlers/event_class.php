@@ -36,7 +36,12 @@ class e107_event
 	function __construct()
 	{
 
-		//	e107::lan('core','notify'); //FIXME e_LANGUAGE is not defined at this point.
+
+	}
+	
+
+	function coreList()
+	{
 
 		$this->coreEvents = array( // used by e_notify admin area.
 
@@ -84,14 +89,7 @@ class e107_event
 
 		);
 
-	}
-	
 
-
-	
-	
-	function coreList()
-	{
 		return $this->coreEvents; 	
 	}
 	

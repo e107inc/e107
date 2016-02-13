@@ -625,7 +625,7 @@ class e107
 	 * @param string $for prefix|server|user|password|defaultdb - leave blank for full array. 
 	 * @return string or array
 	 */
-	function getMySQLConfig($for='')
+	public static function getMySQLConfig($for='')
 	{
 		$key = 'mySQL'.$for;
 		$self = self::getInstance();
@@ -798,7 +798,18 @@ class e107
 
 		if($path && is_string($path) && !class_exists($class_name, false))
 		{
-			e107_require_once($path); //no existence/security checks here!
+			global $e107_debug, $_E107;
+
+			if(($e107_debug || isset($_E107['debug']) || (defined('e_DEBUG') && e_DEBUG === true) ))
+			{
+				require_once($path);
+			}
+			else
+			{
+				@require_once($path);
+			}
+
+			// remove the need for external function.
 			//e107_require_once() is available without class2.php. - see core_functions.php
 		}
 		if(class_exists($class_name, false))
@@ -1359,7 +1370,7 @@ class e107
 	/**
 	 * Retrieve override handler singleton object
 	 *
-	 * @return notify
+	 * @return override
 	 */
 	public static function getOverride()
 	{
@@ -2536,7 +2547,7 @@ class e107
 			$path = e_PLUGIN.$plugin.'/languages/'.$fname.'.php';	
 		}
 		
-		if(E107_DBG_INCLUDES)
+		if(deftrue('E107_DBG_INCLUDES'))
 		{
 			e107::getMessage()->addDebug("Attempting to Load: ".$path);	
 		}	
@@ -3224,7 +3235,7 @@ class e107
 	{
 		define('MAGIC_QUOTES_GPC', (ini_get('magic_quotes_gpc') ? true : false));
 
-		define('MPREFIX', $this->getMySQLConfig('prefix')); // mysql prefix
+		define('MPREFIX', self::getMySQLConfig('prefix')); // mysql prefix
 
 		define('CHARSET', 'utf-8'); // set CHARSET for backward compatibility
 
@@ -3273,11 +3284,7 @@ class e107
 		define('e_UC_MEMBER', 253);
 		define('e_UC_ADMIN', 254);
 		define('e_UC_NOBODY', 255);
-		
-		if(!defined('e_DEBUG'))
-		{
-			define('e_DEBUG', false);
-		}
+
 
 		return $this;
 	}

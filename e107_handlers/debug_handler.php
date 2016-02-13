@@ -60,6 +60,12 @@ else
 	define('E107_DEBUG_LEVEL', 0);
 }
 
+if(!defined('e_DEBUG'))
+{
+	$e_DEBUG = (E107_DEBUG_LEVEL > 0) ? true: false;
+	define('e_DEBUG', $e_DEBUG);
+}
+
 // 
 // Define all debug constants -- each one will be zero or a value
 // They all have different values and can be 'or'ed together

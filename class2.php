@@ -2123,7 +2123,7 @@ class error_handler
 			{
 
 
-				$error['short'] = "<span class='label label-".$this->color[$type]."'>".$this->label[$type]."</span> {$message}, Line {$line} of {$file}<br />\n";
+				$error['short'] = "<span class='label label-".$this->color[$type]."'>".$this->label[$type]."</span> {$message}, Line <mark>{$line}</mark> of {$file}<br />\n";
 
 				if($this->xdebug)
 				{
@@ -2144,7 +2144,7 @@ class error_handler
 			if ($startup_error || E107_DBG_BASIC || E107_DBG_ERRBACKTRACE)
 			{
 			//	$error['short'] = "Warning: {$message}, Line {$line} of {$file}<br />\n";
-				$error['short'] = "<span class='label label-".$this->color[$type]."'>".$this->label[$type]."</span> {$message}, Line {$line} of {$file}<br />\n";
+				$error['short'] = "<span class='label label-".$this->color[$type]."'>".$this->label[$type]."</span> {$message}, Line <mark>{$line}</mark> of {$file}<br />\n";
 
 				if($this->xdebug)
 				{
@@ -2164,7 +2164,7 @@ class error_handler
 			case E_USER_ERROR:
 			if ($this->debug == true)
 			{
-				$error['short'] = "&nbsp;&nbsp;&nbsp;&nbsp;Internal Error Message: {$message}, Line {$line} of {$file}<br />\n";
+				$error['short'] = "&nbsp;&nbsp;&nbsp;&nbsp;Internal Error Message: {$message}, Line <mark>{$line}</mark> of {$file}<br />\n";
 				$trace = debug_backtrace();
 				$backtrace[0] = (isset($trace[1]) ? $trace[1] : "");
 				$backtrace[1] = (isset($trace[2]) ? $trace[2] : "");
@@ -2189,7 +2189,7 @@ class error_handler
 		array_pop($array);
 
 
-		$text = "<table class='table table-bordered table-striped'>
+		$text = "<table class='table table-bordered table-striped table-condensed'>
 		<tr class='danger'><th>#</th><th>Function</th><th>Location</th></tr>";
 		foreach($array as $key=>$val)
 		{
@@ -2230,8 +2230,9 @@ class error_handler
 			foreach ($this->errors as $key => $value)
 			{
 				$ret .= "\t<tr>\n\t\t<td class='forumheader3' >{$value['short']}</td><td><input class='btn btn-info button e-expandit' data-target = 'bt_{$key}' type ='button' style='cursor: hand; cursor: pointer;' size='30' value='Back Trace'  />\n";
+					$ret .= "</td>\n\t</tr>";
 				$ret .= "\t<tr>\n<td style='display: none;' colspan='2' id='bt_{$key}'>".$this->render_trace($value['trace'])."</td></tr>\n";
-				$ret .= "</td>\n\t</tr>";
+
 				if($index == 0) { $index = 1; } else { $index = 0; }
 			}
 		

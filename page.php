@@ -733,7 +733,7 @@ class pageClass
 
 			$ret = e107::getParser()->parseTemplate($ret, true, $this->batch);
 
-			if($vars->cachecontrol) $this->setCache($ret, $this->batch->sc_cpagetitle(), $this->page['page_comment_flag']);
+			if(is_object($vars) && $vars->cachecontrol) $this->setCache($ret, $this->batch->sc_cpagetitle(), $this->page['page_comment_flag']);
 			
 			//return str_replace('[[PAGECOMMENTS]]', $this->batch->cpagecomments(), $ret);
             $this->pageOutput = array('text' => str_replace('[[PAGECOMMENTS]]', $this->batch->cpagecomments(), $ret), 'caption'=>$arr['caption'],'mode'=>$arr['mode']);
