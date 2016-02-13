@@ -345,8 +345,21 @@ class e_library_manager
 
 		if(!isset($loaded[$name]))
 		{
-			// TODO: cache result from libraryDetect() !!!!!!
-			$library = $this->libraryDetect($name);
+			$cache = e107::getCache();
+			$cacheID = 'library_manager_' . md5($name);
+			$cached = $cache->retrieve($cacheID, false, true, true);
+
+			if($cached)
+			{
+				$library = unserialize($cached);
+			}
+
+			if(!varset($library, false))
+			{
+				$library = $this->libraryDetect($name);
+				$cacheData = serialize($library);
+				$cache->set($cacheID, $cacheData, true, false, true);
+			}
 
 			// Exit early if the library was not found.
 			if($library === false)
