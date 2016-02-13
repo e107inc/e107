@@ -126,7 +126,7 @@ class comment
 			$sc_style['COMMENT_INPUT']['pre']		= "<tr><td style='width:20%; vertical-align:top;'>".COMLAN_8.":</td><td id='commentform' style='width:80%;'>";
 			$sc_style['COMMENT_INPUT']['post']		= "</td></tr>";
 			
-			$sc_style['COMMENT_BUTTON']['pre']		= "<tr style='vertical-align:top'><td colspan='2' id='commentformbutton' style='width:80%;'>";
+			$sc_style['COMMENT_BUTTON']['pre']		= "<tr style='vertical-align:top'><td style='width:20%; vertical-align:top;'>&nbsp;</td><td id='commentformbutton' style='width:80%;'>";
 			$sc_style['COMMENT_BUTTON']['post']		= "</td></tr>";
 					
 		}	
@@ -1088,7 +1088,11 @@ class comment
 		$search = array("{MODERATE}","{COMMENTS}","{COMMENTFORM}","{COMMENTNAV}");
 		$replace = array($modcomment,$text,$comment,$pagination);
 		$TEMPL = str_replace($search,$replace,$this->template['layout']);		
-			
+
+
+	//	$return = null;
+	//	$tablerender = true;
+
 		if(!$return)
 		{		
 			if ($tablerender)
@@ -1103,6 +1107,11 @@ class comment
 		}		
 			//echo $modcomment.$comment;
 			//echo $text;
+
+		if(!deftrue('BOOTSTRAP')) //v1.x
+		{
+			$comment = $ns->tablerender(COMLAN_9, $comment, 'comment', true );
+		}
 		
 		
 		
