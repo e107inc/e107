@@ -2044,7 +2044,7 @@ class e_front_model extends e_model
     {
     	$d = $this->getDataFields();
 		
-		if($d[$key] == 'array')
+		if(!empty($d[$key]) && ($d[$key] == 'array'))
 		{
 			return e107::unserialize($this->getData((string) $key, $default, $index));	
 		}   

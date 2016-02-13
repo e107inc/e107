@@ -1267,6 +1267,11 @@ class e_form
 		if(is_string($options)) parse_str($options, $options);
 		// auto-height support
 
+		if(empty($options['class']))
+		{
+			$options['class'] = '';
+		}
+
 		if(vartrue($options['size']) && !is_numeric($options['size']))
 		{
 			$options['class'] .= " form-control input-".$options['size'];	
@@ -1300,6 +1305,7 @@ class e_form
 		//size - large|medium|small
 		//width should be explicit set by current admin theme
 	//	$size = 'input-large';
+		$height = '';
 		
 		switch($size)
 		{
@@ -1746,7 +1752,15 @@ class e_form
 		
 		if(vartrue($options['size']) && !is_numeric($options['size']))
 		{
-			$options['class'] .= " input-".$options['size'];	
+			if(!empty($options['class']))
+			{
+				$options['class'] .= " input-".$options['size'];
+			}
+			else
+			{
+				$options['class'] = "input-".$options['size'];
+			}
+
 			unset($options['size']); // don't include in html 'size='. 	
 		}
 		$options = $this->format_options('select', $name, $options);
@@ -4105,7 +4119,15 @@ class e_form
 				{
 					$sefSource = $this->name2id($parms['sef']);
 					$sefTarget = $this->name2id($key);
-					$parms['tdClassRight'] .= 'input-group';
+					if(!empty($parms['tdClassRight']))
+					{
+						$parms['tdClassRight'] .= 'input-group';
+					}
+					else
+					{
+						$parms['tdClassRight'] = 'input-group';
+					}
+
 					$parms['post'] = "<span class='form-inline input-group-btn pull-left'><a class='e-sef-generate btn btn-default' data-src='".$sefSource."' data-target='".$sefTarget."' data-confirm=\"".LAN_WILL_OVERWRITE_SEF." ".LAN_JSCONFIRM."\">".LAN_GENERATE."</a></span>";
 				}
 
@@ -4785,7 +4807,16 @@ class e_form
 
 			if(!empty($writeParms['sef'])) // group sef generate button with input element.
 			{
-				$writeParms['tdClassRight'] .= 'input-group';
+				if(empty($writeParms['tdClassRight']))
+				{
+					$writeParms['tdClassRight'] = 'input-group';
+
+				}
+				else
+				{
+					$writeParms['tdClassRight'] .= ' input-group';
+				}
+
 			}
 			
 			if('hidden' === $att['type'])
