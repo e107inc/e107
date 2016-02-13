@@ -18,7 +18,7 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
-
+e107::lan('banner');
 
 if(file_exists(THEME.'templates/banner/banner_template.php')) // v2.x location. 
 {
@@ -32,6 +32,9 @@ else
 {
 	require(e_PLUGIN.'banner/banner_template.php');
 }
+
+
+
 
 $menu_pref = e107::getConfig('menu')->getPref(''); // legacy preference lookup.
 
