@@ -3982,7 +3982,7 @@ class e_form
 
 		$ajaxParms = array();
 
-		if(varset($attributes['writeParms']['ajax']))
+		if(!empty($attributes['writeParms']['ajax']))
 		{
 			$ajaxParms['data-src'] = varset($attributes['writeParms']['ajax']['src']);
 			$ajaxParms['data-target'] = varset($attributes['writeParms']['ajax']['target']);
