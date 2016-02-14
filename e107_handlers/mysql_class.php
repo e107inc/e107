@@ -179,7 +179,7 @@ class e_db_mysql
 		{		
 			try
 			{
-				$this->mySQLaccess = new PDO("mysql:host=".$this->mySQLserver."; port=3307", $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+				$this->mySQLaccess = new PDO("mysql:host=".$this->mySQLserver."; port=3306", $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
 			}
 			catch(PDOException $ex)
 			{
@@ -261,7 +261,7 @@ class e_db_mysql
 		{		
 			try
 			{
-				$this->mySQLaccess = new PDO("mysql:host=".$this->mySQLserver."; port=3307", $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+				$this->mySQLaccess = new PDO("mysql:host=".$this->mySQLserver."; port=3306", $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
 			}
 			catch(PDOException $ex)
 			{
