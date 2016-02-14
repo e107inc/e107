@@ -1657,15 +1657,7 @@ class e107
 	 */
 	private static function getLibrary()
 	{
-		/*static $included = false;
-		if(!$included)
-		{
-			e107_require_once(e_HANDLER . 'library_manager.php');
-			$included = true;
-		}*/
-
-		return self::getSingleton('e_library_manager', true); /* @FIXME Use this instead? */
-	//	return e_library_manager::getInstance();
+		return self::getSingleton('e_library_manager', true);
 	}
 
 	/**
@@ -1689,11 +1681,11 @@ class e107
 		switch ($action)
 		{
 			case 'detect':
-				return $libraryHandler->libraryDetect($library);
+				return $libraryHandler->detect($library);
 				break;
 
 			case 'load':
-				return $libraryHandler->libraryLoad($library);
+				return $libraryHandler->load($library);
 				break;
 		}
 	}
