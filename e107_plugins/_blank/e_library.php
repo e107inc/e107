@@ -21,33 +21,33 @@ class PLUGIN_library
 	 *   Each key is the directory name below the '{e_WEB}/lib' directory, in which the library may be found. Each
 	 *   value is an associative array containing:
 	 *   - name: The official, human-readable name of the library.
-	 *   - vendor url: The URL of the homepage of the library.
-	 *   - download url: The URL of a web page on which the library can be obtained.
+	 *   - vendor_url: The URL of the homepage of the library.
+	 *   - download_url: The URL of a web page on which the library can be obtained.
 	 *   - path: (optional) A relative path from the directory of the library to the actual library. Only required if
 	 *     the extracted download package contains the actual library files in a sub-directory.
-	 *   - library path: (optional) The absolute path to the library directory. This should not be declared normally, as
+	 *   - library_path: (optional) The absolute path to the library directory. This should not be declared normally, as
 	 *     it is automatically detected, to allow for multiple possible library locations. A valid use-case is an
 	 *     external library, in which case the full URL to the library should be specified here.
 	 *   - version: (optional) The version of the library. This should not be declared normally, as it is automatically
-	 *     detected (see 'version callback' below) to allow for version changes of libraries without code changes of
+	 *     detected (see 'version_callback' below) to allow for version changes of libraries without code changes of
 	 *     implementing plugins and to support different versions of a library simultaneously. A valid use-case is an
-	 *     external library whose version cannot be determined programmatically. Either 'version' or 'version callback'
-	 *     (or 'version arguments' in case libraryGetVersion() is being used as a version callback) must be declared.
-	 *   - version callback: (optional) The name of a function that detects and returns the full version string of the
+	 *     external library whose version cannot be determined programmatically. Either 'version' or 'version_callback'
+	 *     (or 'version_arguments' in case libraryGetVersion() is being used as a version callback) must be declared.
+	 *   - version_callback: (optional) The name of a function that detects and returns the full version string of the
 	 *     library. The first argument is always $library, an array containing all library information as described here.
 	 *     There are two ways to declare the version callback's additional arguments, either as a single $options
 	 *     parameter or as multiple parameters, which correspond to the two ways to specify the argument values (see
-	 *     'version arguments'). Defaults to libraryGetVersion(). Unless 'version' is declared or libraryGetVersion()
-	 *     is being used as a version callback, 'version callback' must be declared. In the latter case, however,
-	 *     'version arguments' must be declared in the specified way.
-	 *   - version arguments: (optional) A list of arguments to pass to the version callback. Version arguments can be
+	 *     'version_arguments'). Defaults to libraryGetVersion(). Unless 'version' is declared or libraryGetVersion()
+	 *     is being used as a version callback, 'version_callback' must be declared. In the latter case, however,
+	 *     'version_arguments' must be declared in the specified way.
+	 *   - version_arguments: (optional) A list of arguments to pass to the version callback. Version arguments can be
 	 *     declared either as an associative array whose keys are the argument names or as an indexed array without
 	 *     specifying keys. If declared as an associative array, the arguments get passed to the version callback as a
 	 *     single $options parameter whose keys are the argument names (i.e. $options is identical to the specified
 	 *     array). If declared as an indexed array, the array values get passed to the version callback as separate
 	 *     arguments in the order they were declared. The default version callback libraryGetVersion() expects a
 	 *     single, associative array with named keys:
-	 *     - file: The filename to parse for the version, relative to the path specified as the 'library path' property
+	 *     - file: The filename to parse for the version, relative to the path specified as the 'library_path' property
 	 *       (see above). For example: 'docs/changelog.txt'.
 	 *     - pattern: A string containing a regular expression (PCRE) to match the library version. For example:
 	 *       '@version\s+([0-9a-zA-Z\.-]+)@'. Note that the returned version is not the match of the entire pattern
@@ -56,8 +56,8 @@ class PLUGIN_library
 	 *     - lines: (optional) The maximum number of lines to search the pattern in. Defaults to 20.
 	 *     - cols: (optional) The maximum number of characters per line to take into account. Defaults to 200. In case
 	 *       of minified or compressed files, this prevents reading the entire file into memory.
-	 *     Defaults to an empty array. 'version arguments' must be specified unless 'version' is declared or the
-	 *     specified 'version callback' does not require any arguments. The latter might be the case with a
+	 *     Defaults to an empty array. 'version_arguments' must be specified unless 'version' is declared or the
+	 *     specified 'version_callback' does not require any arguments. The latter might be the case with a
 	 *     library-specific version callback, for example.
 	 *   - files: An associative array of library files to load. Supported keys are:
 	 *     - js: A list of JavaScript files to load.
@@ -89,13 +89,13 @@ class PLUGIN_library
 	 *     'minified' or 'source'. Each value is an associative array of top-level properties that are entirely
 	 *     overridden by the variant, most often just 'files'. Additionally, each variant can contain following
 	 *     properties:
-	 *     - variant callback: (optional) The name of a function that detects the variant and returns TRUE or FALSE,
+	 *     - variant_callback: (optional) The name of a function that detects the variant and returns TRUE or FALSE,
 	 *       depending on whether the variant is available or not. The first argument is always $library, an array
 	 *       containing all library information as described here. The second argument is always a string containing the
 	 *       variant name. There are two ways to declare the variant callback's additional arguments, either as a single
 	 *       $options parameter or as multiple parameters, which correspond to the two ways to specify the argument
-	 *       values (see 'variant arguments'). If omitted, the variant is expected to always be available.
-	 *     - variant arguments: A list of arguments to pass to the variant callback. Variant arguments can be declared
+	 *       values (see 'variant_arguments'). If omitted, the variant is expected to always be available.
+	 *     - variant_arguments: A list of arguments to pass to the variant callback. Variant arguments can be declared
 	 *       either as an associative array whose keys are the argument names or as an indexed array without specifying
 	 *       keys. If declared as an associative array, the arguments get passed to the variant callback as a single
 	 *       $options parameter whose keys are the argument names (i.e. $options is identical to the specified array).
@@ -107,7 +107,7 @@ class PLUGIN_library
 	 *     loaded, different 'variants' may become available, or e107 plugins need to load different integration files
 	 *     adapted to the new version. Each key is a version *string* (PHP does not support floats as keys). Each value
 	 *     is an associative array of top-level properties that are entirely overridden by the version.
-	 *   - integration files: (optional) Sets of files to load for the plugin, using the same notion as the top-level
+	 *   - integration_files: (optional) Sets of files to load for the plugin, using the same notion as the top-level
 	 *     'files' property. Each specified file should contain the path to the file relative to the plugin it belongs
 	 *     to.
 	 *   Additional top-level properties can be registered as needed.
@@ -120,19 +120,19 @@ class PLUGIN_library
 		$libraries['example'] = array(
 			// Only used in administrative UI of Libraries API.
 			'name'              => 'Example library',
-			'vendor url'        => 'http://example.com',
-			'download url'      => 'http://example.com/download',
+			'vendor_url'        => 'http://example.com',
+			'download_url'      => 'http://example.com/download',
 			// Override default library location ({e_WEB}/lib).
-			'library path'      => e_PLUGIN . 'example',
+			'library_path'      => e_PLUGIN . 'example',
 			// Optional: If, after extraction, the actual library files are contained in 'e107_web/lib/example/lib',
 			// specify the relative path here.
 			'path'              => 'lib',
 			// Optional: Define a custom version detection callback, if required. Need to be in your 'PLUGIN_library'
 			// class.
-			'version callback'  => 'example_custom_version_callback',
+			'version_callback'  => 'example_custom_version_callback',
 			// Specify arguments for the version callback.
 			// By default, libraryGetVersion() takes a named argument array:
-			'version arguments' => array(
+			'version_arguments' => array(
 				'file'    => 'docs/CHANGELOG.txt',
 				'pattern' => '@version\s+([0-9a-zA-Z\.-]+)@',
 				'lines'   => 5,
@@ -141,7 +141,7 @@ class PLUGIN_library
 			// Default list of files of the library to load. Important: Only specify third-party files belonging to the
 			// library here, not integration files of your plugin.
 			'files'             => array(
-				// 'js' and 'css' file paths are relative to the library path.
+				// 'js' and 'css' file paths are relative to the library_path.
 				'js'  => array(
 					'exlib.js'       => array(
 						'zone' => 3, // If not set, the default: 2. See: e107::js()
@@ -155,7 +155,7 @@ class PLUGIN_library
 					'lib_style.css',
 					'skin/example.css',
 				),
-				// For PHP libraries, specify include files here, still relative to the library path.
+				// For PHP libraries, specify include files here, still relative to the library_path.
 				'php' => array(
 					'exlib.php',
 					'exlib.inc',
@@ -176,8 +176,8 @@ class PLUGIN_library
 						),
 					),
 					// Your variant callback needs to be in your 'PLUGIN_library' class.
-					'variant callback'  => 'example_custom_variant_callback',
-					'variant arguments' => array(
+					'variant_callback'  => 'example_custom_variant_callback',
+					'variant_arguments' => array(
 						'variant' => 'minified',
 					),
 				),
@@ -187,7 +187,7 @@ class PLUGIN_library
 			//
 			// Note:
 			// - When registering 'versions', it usually does not make sense to register 'files', 'variants', and
-			// 'integration files' on the top-level, as most of those likely need to be different per version and there
+			// 'integration_files' on the top-level, as most of those likely need to be different per version and there
 			// are no defaults.
 			// - The array keys have to be strings, as PHP does not support floats for array keys.
 			'versions'          => array(
@@ -218,7 +218,7 @@ class PLUGIN_library
 			),
 			// Optional: Register files to auto-load for your plugin. All files must be keyed by plugin, and follow the
 			// syntax of the 'files' property.
-			'integration files' => array(
+			'integration_files' => array(
 				'MYPLUGIN' => array(
 					'js' => array('ex_lib.inc'),
 				),
@@ -229,9 +229,9 @@ class PLUGIN_library
 		// 'e107_web/lib/simple'.
 		$libraries['simple'] = array(
 			'name'              => 'Simple library',
-			'vendor url'        => 'http://example.com/simple',
-			'download url'      => 'http://example.com/simple',
-			'version arguments' => array(
+			'vendor_url'        => 'http://example.com/simple',
+			'download_url'      => 'http://example.com/simple',
+			'version_arguments' => array(
 				'file'    => 'readme.txt',
 				// Best practice: Document the actual version strings for later reference.
 				// 1.x: Version 1.0
@@ -251,13 +251,13 @@ class PLUGIN_library
 		// A library that (naturally) evolves over time with API changes.
 		$libraries['tinymce'] = array(
 			'name'              => 'TinyMCE',
-			'vendor url'        => 'http://tinymce.moxiecode.com',
-			'download url'      => 'http://tinymce.moxiecode.com/download.php',
+			'vendor_url'        => 'http://tinymce.moxiecode.com',
+			'download_url'      => 'http://tinymce.moxiecode.com/download.php',
 			'path'              => 'jscripts/tiny_mce',
 			// The regular expression catches two parts (the major and the minor version), which libraryGetVersion()
 			// doesn't allow.
-			'version callback'  => 'tinymce_get_version',
-			'version arguments' => array(
+			'version_callback'  => 'tinymce_get_version',
+			'version_arguments' => array(
 				// It can be easier to parse the first characters of a minified file instead of doing a multi-line
 				// pattern matching in a source file. See 'lines' and 'cols' below.
 				'file'    => 'jscripts/tiny_mce/tiny_mce.js',
@@ -280,7 +280,7 @@ class PLUGIN_library
 							),
 						),
 					),
-					'integration files' => array(
+					'integration_files' => array(
 						'wysiwyg' => array(
 							'js'  => array('editors/js/tinymce-2.js'),
 							'css' => array('editors/js/tinymce-2.css'),
@@ -311,7 +311,7 @@ class PLUGIN_library
 							),
 						),
 					),
-					'integration files' => array(
+					'integration_files' => array(
 						'wysiwyg' => array(
 							'js'  => array('editors/js/tinymce-3.js'),
 							'css' => array('editors/js/tinymce-3.css'),
@@ -324,9 +324,9 @@ class PLUGIN_library
 		// Example for Facebook PHP SDK v4.
 		$libraries['facebook-php-sdk-v4'] = array(
 			'name'              => 'Facebook PHP SDK v4',
-			'vendor url'        => 'https://github.com/facebook/facebook-php-sdk-v4',
-			'download url'      => 'https://github.com/facebook/facebook-php-sdk-v4/archive/4.0.23.tar.gz',
-			'version arguments' => array(
+			'vendor_url'        => 'https://github.com/facebook/facebook-php-sdk-v4',
+			'download_url'      => 'https://github.com/facebook/facebook-php-sdk-v4/archive/4.0.23.tar.gz',
+			'version_arguments' => array(
 				'file'    => 'src/Facebook/FacebookRequest.php',
 				// const VERSION = '4.0.23';
 				'pattern' => '/const\s+VERSION\s+=\s+\'(4\.\d\.\d+)\'/',
@@ -342,9 +342,9 @@ class PLUGIN_library
 		// Example for Facebook PHP SDK v5.
 		$libraries['facebook-php-sdk-v5'] = array(
 			'name'              => 'Facebook PHP SDK v5',
-			'vendor url'        => 'https://github.com/facebook/facebook-php-sdk-v4',
-			'download url'      => 'https://github.com/facebook/facebook-php-sdk-v4/archive/5.1.2.tar.gz',
-			'version arguments' => array(
+			'vendor_url'        => 'https://github.com/facebook/facebook-php-sdk-v4',
+			'download_url'      => 'https://github.com/facebook/facebook-php-sdk-v4/archive/5.1.2.tar.gz',
+			'version_arguments' => array(
 				'file'    => 'src/Facebook/Facebook.php',
 				// const VERSION = '5.1.2';
 				'pattern' => '/const\s+VERSION\s+=\s+\'(5\.\d\.\d+)\'/',
@@ -373,7 +373,7 @@ class PLUGIN_library
 			'php' => array('example_plugin.php_spellchecker.inc'),
 		);
 
-		$libraries['php_spellchecker']['integration files']['example_plugin'] = $files;
+		$libraries['php_spellchecker']['integration_files']['example_plugin'] = $files;
 	}
 
 }
