@@ -87,10 +87,8 @@ class e_library_manager
 		{
 			$library['error'] = LAN_LIBRARY_MANAGER_09;
 
-			$replace = array('[x]');
 			$replace_with = array($library['name']);
-
-			$library['error message'] = str_replace($replace, $replace_with, LAN_LIBRARY_MANAGER_03);
+			$library['error message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_03, $replace_with);
 
 			return $library;
 		}
@@ -138,7 +136,6 @@ class e_library_manager
 				// indexed array of multiple parameters.
 				if(isset($library['version arguments'][0]))
 				{
-
 					if(isset($addonClass) && class_exists($addonClass)) /* @FIXME Perhaps use e107::callMethod() ?  */
 					{
 						$class = new $addonClass();
@@ -171,10 +168,8 @@ class e_library_manager
 			{
 				$library['error'] = LAN_LIBRARY_MANAGER_10;
 
-				$replace = array('[x]');
 				$replace_with = array($library['name']);
-
-				$library['error message'] = str_replace($replace, $replace_with, LAN_LIBRARY_MANAGER_04);
+				$library['error message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_04, $replace_with);
 
 				return $library;
 			}
@@ -196,11 +191,8 @@ class e_library_manager
 			{
 				$library['error'] = LAN_LIBRARY_MANAGER_11;
 
-				$replace = array('[x]', '[y]');
 				$replace_with = array($library['version'], $library['name']);
-
-				/* @XXX - $tp->lanVars() ? */
-				$library['error message'] = str_replace($replace, $replace_with, LAN_LIBRARY_MANAGER_05);
+				$library['error message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_05, $replace_with);
 
 				return $library;
 			}
@@ -284,10 +276,8 @@ class e_library_manager
 					{
 						$variant['error'] = LAN_LIBRARY_MANAGER_09;
 
-						$replace = array('[x]', '[y]');
 						$replace_with = array($variant_name, $library['name']);
-
-						$variant['error message'] = str_replace($replace, $replace_with, LAN_LIBRARY_MANAGER_06);
+						$variant['error message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_06, $replace_with);
 					}
 				}
 			}
@@ -725,20 +715,16 @@ class e_library_manager
 					$library['installed'] = false;
 					$library['error'] = LAN_LIBRARY_MANAGER_07;
 
-					$replace = array('[x]', '[y]');
 					$replace_with = array($dependency['name'], $library['name']);
-
-					$library['error message'] = str_replace($replace, $replace_with, LAN_LIBRARY_MANAGER_01); /* FIXME $tp->lanVars() */
+					$library['error message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_01, $replace_with);
 				}
 				elseif($this->checkIncompatibility($dependency_info, $dependency['version']))
 				{
 					$library['installed'] = false;
 					$library['error'] = LAN_LIBRARY_MANAGER_08;
 
-					$replace = array('[x]', '[y]', '[z]');
 					$replace_with = array($dependency['version'], $library['name'], $library['name']);
-
-					$library['error message'] = str_replace($replace, $replace_with, LAN_LIBRARY_MANAGER_02); /* FIXME $tp->lanVars() */
+					$library['error message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_02, $replace_with);
 				}
 
 				// Remove the version string from the dependency, so load() can load the libraries directly.
