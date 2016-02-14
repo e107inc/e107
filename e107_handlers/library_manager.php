@@ -406,24 +406,15 @@ class e_library_manager
 	private function getLibraries()
 	{
 		$dir = e_WEB . 'lib';
+		$directories = array();
 
 		// Retrieve list of directories.
-		/* FIXME Use e107::getFile() or just scandir() ? */
-		$directories = array();
-		$nomask = array('CVS');
-		if(is_dir($dir) && $handle = opendir($dir))
+		$file = e107::getFile();
+		$dirs = $file->get_dirs($dir);
+
+		foreach($dirs as $dirName)
 		{
-			while(false !== ($file = readdir($handle)))
-			{
-				if(!in_array($file, $nomask) && $file[0] != '.')
-				{
-					if(is_dir("$dir/$file"))
-					{
-						$directories[$file] = "{e_WEB}lib/$file";
-					}
-				}
-			}
-			closedir($handle);
+			$directories[$dirName] = "{e_WEB}lib/$dirName";
 		}
 
 		return $directories;
