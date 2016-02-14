@@ -2007,7 +2007,7 @@ class forumAdmin
 				<th colspan='2'>".LAN_FORUM_1001."</th>
 				<th>".LAN_OPTIONS."</th>
 			</tr>";
-			while ($row = $sql->fetch(MYSQL_ASSOC))
+			while ($row = $sql->fetch())
 			{
 				$parentList[] = $row;
 			}
@@ -2049,7 +2049,7 @@ class forumAdmin
 				else
 				{
 					$forumList = array();
-					while ($row = $sql->fetch(MYSQL_ASSOC))
+					while ($row = $sql->fetch())
 					{
 						$forumList[] = $row;
 					}
@@ -2123,7 +2123,7 @@ class forumAdmin
 		{
 			if ($sql->select('forum', '*', "forum_id=$id"))
 			{
-				$row = $sql->fetch(MYSQL_ASSOC);
+				$row = $sql->fetch();
 			}
 		}
 		else
@@ -2188,7 +2188,7 @@ class forumAdmin
 		{
 			if ($sql->select('forum', '*', "forum_id=$id"))
 			{
-				$fInfo = $sql->fetch(MYSQL_ASSOC);
+				$fInfo = $sql->fetch();
 			}
 		}
 		else
@@ -2215,7 +2215,7 @@ class forumAdmin
 
 			$sql->select('forum', '*', 'forum_parent=0');
 			$text .= "<select name='forum_parent' class='tbox'>\n";
-			while (list($fid, $fname) = $sql->fetch(MYSQL_NUM))
+			while (list($fid, $fname) = $sql->fetch('num'))
 			{
 				$sel = ($fid == vartrue($fInfo['forum_parent']) ? "selected='selected'" : '');
 				$text .= "<option value='{$fid}' {$sel}>{$fname}</option>\n";

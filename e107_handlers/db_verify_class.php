@@ -919,7 +919,7 @@ class db_verify
 		if($z)
 		{
 		//	$row = mysql_fetch_row($z);
-			$row = $sql->fetch(MYSQL_NUM);
+			$row = $sql->fetch('num');
 			//return $row[1];
 			return stripslashes($row[1]).';'; // backticks needed. 
 			// return str_replace("`", "", stripslashes($row[1])).';';

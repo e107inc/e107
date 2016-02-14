@@ -122,7 +122,7 @@ class e107_debug {
 														// removed: inline debug breaks pages!
 	);
 
-	function e107_debug() 
+	function __construct()
 	{
 	  if (preg_match('/debug(=?)(.*?),?(\+|stick|-|unstick|$)/', e_MENU, $debug_param) || isset($_COOKIE['e107_debug_level'])) 
 	  {

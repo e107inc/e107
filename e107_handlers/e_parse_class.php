@@ -4407,7 +4407,7 @@ class e_emotefilter {
 	var $replace;
 	var $emotes;
 	 
-	function e_emotefilter() /* constructor */
+	function __construct() /* constructor */
 	{		
 		$pref = e107::getPref();
 		
@@ -4495,7 +4495,7 @@ class e_profanityFilter
 {
 	var $profanityList;
 
-	function e_profanityFilter() 
+	function __construct()
 	{
 		global $pref;
 

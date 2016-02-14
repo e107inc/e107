@@ -1308,7 +1308,7 @@ class news_form_ui extends e_admin_form_ui
 		{
 			$auth = ($curVal) ? intval($curVal) : USERID;
 			$sql->select("user", "user_name", "user_id={$auth} LIMIT 1");
-			$row = $sql->fetch(MYSQL_ASSOC);
+			$row = $sql->fetch();
 			$text .= "<input type='hidden' name='news_author' value='".$auth.chr(35).$row['user_name']."' />";
 			$text .= "<a href='".e107::getUrl()->create('user/profile/view', 'name='.$row['user_name'].'&id='.$curVal."'>".$row['user_name'])."</a>";
 		}
@@ -2841,7 +2841,7 @@ class admin_newspost
 		{
 			$auth = ($_POST['news_author']) ? intval($_POST['news_author']) : USERID;
 			$sql->select("user", "user_name", "user_id={$auth} LIMIT 1");
-           	$row = $sql->fetch(MYSQL_ASSOC);
+           	$row = $sql->fetch();
 			$text .= "<input type='hidden' name='news_author' value='".$auth.chr(35).$row['user_name']."' />";
 			$text .= "<a href='".$e107->url->create('user/profile/view', 'name='.$row['user_name'].'&id='.$_POST['news_author'])."'>".$row['user_name']."</a>";
 		}
@@ -3922,7 +3922,7 @@ class admin_newspost
 		$canDelete = isset($_POST['newsdeletecomments']);
 		if ($result = e107::getDb()->db_Select_gen($qry))
 		{
-			while ($row = e107::getDb()->fetch(MYSQL_ASSOC))
+			while ($row = e107::getDb()->fetch())
 			{
 				if ($canDelete && ($row['news_allow_comments'] != 0) && ($row['c_count'] > 0))	// N.B. sense of 'news_allow_comments' is 0 = allow!!!
 				{		// Delete comments

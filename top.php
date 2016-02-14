@@ -86,7 +86,7 @@ if ($action == 'active')
 			<th style='width:25%; text-align:center' class='forumheader'>".LAN_5."</th>
 			</tr>\n";
 
-		while ($row = $sql->db_Fetch(MYSQL_ASSOC))
+		while ($row = $sql->fetch())
 		{
 			if ($row['user_name'])
 			{
@@ -167,7 +167,7 @@ if ($action == 'top')
 		$sql2 = e107::getDb('sql2');
 		if ($sql2->gen($qry))
 		{
-			while ($row = $sql2->db_Fetch(MYSQL_ASSOC))
+			while ($row = $sql2->fetch())
 			{
 				//$ldata = get_level($row['user_id'], $row['user_plugin_forum_posts'], $row['user_comments'], $row['user_chats'], $row['user_visits'], $row['user_join'], $row['user_admin'], $row['user_perms'], $pref);
 				$ldata = $rank->getRanks($row, (USER && $forum->isModerator(USERID)));

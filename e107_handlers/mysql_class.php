@@ -63,6 +63,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which should be the main E107 DB - then used as default
 
 
+
+
 class e_db_mysql
 {
 	// TODO switch to protected vars where needed
@@ -105,7 +107,8 @@ class e_db_mysql
 	{
 
 		global $pref, $db_defaultPrefix;
-		
+
+
 		if(defined('e_PDO') && e_PDO === true)
 		{
 			$this->pdo = true;	
@@ -1142,6 +1145,7 @@ class e_db_mysql
 
 
 	/**
+	 * @param string $type assoc|num|both
 	* @return array MySQL row
 	* @desc Fetch an array containing row data (see PHP's mysql_fetch_array() docs)<br />
 	* @example
@@ -1152,31 +1156,57 @@ class e_db_mysql
 	*
 	* @access public
 	*/
-	function fetch($type = MYSQL_ASSOC)
+	function fetch($type = 'assoc')
 	{
-		if (!(is_int($type)))
+		if (!is_int($type))
 		{
-			$type=MYSQL_ASSOC;
+	//		$type='assoc';
 		}
-		
-		if($this->pdo) // convert type to PDO. 
+
+		if(defined('MYSQL_ASSOC'))
 		{
-			switch ($type) 
+			switch ($type)
 			{
-				case MYSQL_BOTH: // 3
-					$type = PDO::FETCH_BOTH;	
-				break;
-				
-				case MYSQL_NUM: // 2
-					$type = PDO::FETCH_NUM;	
-				break;
-				
-				case MYSQL_ASSOC: // 1
-				default:
-					$type = PDO::FETCH_ASSOC;
-				break;
+					case 'both':
+					case MYSQL_BOTH:
+						$type = MYSQL_BOTH; // 3
+					break;
+
+					case 'num':
+					case MYSQL_NUM: // 2
+						$type = MYSQL_NUM;
+					break;
+
+					case 'assoc':
+					case MYSQL_ASSOC: // 1
+					default:
+						$type = MYSQL_ASSOC;
+					break;
+				}
+		}
+		else
+		{
+
+			if($this->pdo) // convert type to PDO.
+			{
+				switch ($type)
+				{
+					case 'both': // 3
+						$type = PDO::FETCH_BOTH;
+					break;
+
+					case 'num': // 2
+						$type = PDO::FETCH_NUM;
+					break;
+
+					case 'assoc': // 1
+					default:
+						$type = PDO::FETCH_ASSOC;
+					break;
+				}
 			}
 		}
+
 		
 		$b = microtime();
 		if($this->mySQLresult)
@@ -1197,7 +1227,7 @@ class e_db_mysql
 	 * fetch() alias
 	 * @deprecated
 	 */
-	function db_Fetch($type = MYSQL_ASSOC)
+	function db_Fetch($type = null)
 	{
 		return $this->fetch($type);
 	}
@@ -1862,12 +1892,7 @@ class e_db_mysql
 	 */
 	function escape($data, $strip = true)
 	{
-		
-		if($this->pdo)
-		{
-			return $data;
-		}
-		
+
 		if ($strip)
 		{
 			$data = strip_if_magic($data);
@@ -1879,7 +1904,11 @@ class e_db_mysql
         	$this->mySQLaccess = $db_ConnectionID;
 		}
 		
-		
+		if($this->pdo)
+		{
+			return $data;
+		//	return $this->mySQLaccess->quote($data);
+		}
 
 		return mysql_real_escape_string($data,$this->mySQLaccess);
 	}
@@ -1983,7 +2012,7 @@ class e_db_mysql
 				$table = array();
 				if($res = $this->db_Query("SHOW TABLES LIKE '".$this->mySQLPrefix."lan_".strtolower($language)."%' "))
 				{
-					while($rows = $this->fetch(MYSQL_NUM))
+					while($rows = $this->fetch('num'))
 					{
 						$table[] = str_replace($this->mySQLPrefix,"",$rows[0]);
 					}
@@ -2004,7 +2033,7 @@ class e_db_mysql
 			if($res = $this->db_Query("SHOW TABLES LIKE '".$this->mySQLPrefix."%' "))
 			{
 				$length = strlen($this->mySQLPrefix);
-				while($rows = $this->fetch(MYSQL_NUM))
+				while($rows = $this->fetch('num'))
 				{
 					$table[] = substr($rows[0],$length);
 				}
@@ -2137,7 +2166,7 @@ class e_db_mysql
 		$qry = "SHOW CREATE TABLE {$old}";
 		if ($this->gen($qry))
 		{
-			$row = $this->fetch(MYSQL_NUM);
+			$row = $this->fetch('num');
 			$qry = $row[1];
 			//        $qry = str_replace($old, $new, $qry);
 			$qry = preg_replace("#CREATE\sTABLE\s`{0,1}".$old."`{0,1}\s#", "CREATE TABLE `{$new}` ", $qry, 1); // More selective search

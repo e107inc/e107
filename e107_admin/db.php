@@ -987,7 +987,7 @@ class system_tools
 		
 		if($sql->gen($query))
 		{
-			while ($row = $sql->fetch(MYSQL_NUM))
+			while ($row = $sql->fetch('num'))
 			{
 	   			 $qry[] = $row[0];
 			}
@@ -1006,7 +1006,7 @@ class system_tools
 			$mes->addError("Query Failed: ".$query);
 			return;
 		}
-		while ($row = mysql_fetch_array($result, MYSQL_NUM))
+		while ($row = mysql_fetch_array($result, 'num'))
 		{
    			 $qry[] = $row[0];
 		}

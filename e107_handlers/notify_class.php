@@ -179,7 +179,7 @@ class notify
 			if (false !== ($count = $sql->gen($qry)))
 			{
 				// Now add email addresses to the list
-				while ($row = $sql->fetch(MYSQL_ASSOC))
+				while ($row = $sql->fetch())
 				{
 					if ($row['user_email'] != $emailFilter)
 					{

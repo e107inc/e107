@@ -93,7 +93,7 @@ class newsfeedClass
 		
 		if ($sql->select("newsfeed", $fieldList, '`newsfeed_active` > 0'))		// Read in all the newsfeed info on the first go
 		{
-			while ($row = $sql->fetch(MYSQL_ASSOC))
+			while ($row = $sql->fetch())
 			{
 				$nfID = $row['newsfeed_id'];
 				

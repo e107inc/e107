@@ -360,7 +360,7 @@ class e_media
 		$qry .= "ORDER BY media_cat_order";
 		
 		e107::getDb()->gen($qry);
-		while($row = e107::getDb()->fetch(MYSQL_ASSOC))
+		while($row = e107::getDb()->fetch())
 		{
 			$id = $row['media_cat_category'];
 			$ret[$id] = $row;
@@ -494,7 +494,7 @@ class e_media
 			$query .= " LIMIT ".$from." ,".$amount;	
 		}
 		e107::getDb()->gen($query);
-		while($row = e107::getDb()->fetch(MYSQL_ASSOC))
+		while($row = e107::getDb()->fetch())
 		{
 			$id = $row['media_id'];
 			$ret[$id] = $row;

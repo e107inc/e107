@@ -452,7 +452,7 @@ SC_BEGIN DOWNLOAD_CATEGORY_SELECT
 
 		// Its a structured display option - need a 2-step process to create a tree
 	    $catlist = array();
-	    while ($row = $sql->db_Fetch(MYSQL_ASSOC))
+	    while ($row = $sql->db_Fetch())
 	    {
 			$tmp = $row['download_category_parent'];
 	      	if ($tmp == '0')

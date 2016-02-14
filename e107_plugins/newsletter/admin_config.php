@@ -424,14 +424,14 @@ class newsletter
 		{
 			return FALSE;
 		}
-		$newsletterInfo = $sql->fetch(MYSQL_ASSOC);
+		$newsletterInfo = $sql->fetch();
 
 		// Get parent details - has header/footer and subscriber list
 		if(!$sql->select('newsletter', '*', "newsletter_id='".$newsletterInfo['newsletter_parent']."' "))
 		{
 			return FALSE;
 		}
-		$newsletterParentInfo = $sql->fetch(MYSQL_ASSOC);
+		$newsletterParentInfo = $sql->fetch();
 		$memberArray = explode(chr(1), $newsletterParentInfo['newsletter_subscribers']);
 
 		require(e_HANDLER.'mail_manager_class.php');
@@ -478,7 +478,7 @@ class newsletter
 			{
 				if($sql->select('user', 'user_name,user_email,user_loginname,user_lastvisit', 'user_id='.$memberID))
 				{
-					$row = $sql->db_Fetch(MYSQL_ASSOC);
+					$row = $sql->db_Fetch();
 					$uTarget = array('mail_recipient_id' => $memberID,
 									 'mail_recipient_name' => $row['user_name'],		// Should this use realname?
 									 'mail_recipient_email' => $row['user_email'],
@@ -704,7 +704,7 @@ class newsletter
 	{
 		$sql = e107::getDb();
 		$sql ->select('newsletter', '*', 'newsletter_id='.intval($p_id));
-		if($nl_row = $sql->fetch(MYSQL_ASSOC))
+		if($nl_row = $sql->fetch())
 		{
 			$subscribers_list = array_flip(explode(chr(1), $nl_row['newsletter_subscribers']));
 			unset($subscribers_list[$p_key]);

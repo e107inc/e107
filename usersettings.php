@@ -742,8 +742,8 @@ SELECT u.*, ue.* FROM #user AS u
 LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id
 WHERE u.user_id=".intval($uuid);
 
-$sql->db_Select_gen($qry);
-$curVal=$sql->db_Fetch(MYSQL_ASSOC);
+$sql->gen($qry);
+$curVal=$sql->fetch();
 $curVal['user_class'] = varset($changedUserData['user_class'], $curVal['user_class']);
 $curVal['userclass_list'] = $userMethods->addCommonClasses($curVal, FALSE);
 

@@ -1175,6 +1175,7 @@ class xmlClass
 						$fieldval = (isset($f['@value'])) ? $f['@value'] : "";
 
 						$insert_array[$fieldkey] = $fieldval;
+
 					}
 					if(($mode == "replace") && $sql->replace($table, $insert_array)!==FALSE)
 					{

@@ -206,7 +206,7 @@ elseif ($action == 'forums')
 		$userposts_forum_table_string = '';
 		while(true)
 		{
-			$row = $sql->db_Fetch(MYSQL_ASSOC);
+			$row = $sql->fetch();
 			if(empty($row)) break;
 
 			$datestamp = $gen->convert_date($row['post_datestamp'], 'short');

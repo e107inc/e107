@@ -357,7 +357,7 @@ class userlogin
 		}
 
 		// User is in DB here
-		$this->userData = e107::getDb()->fetch(MYSQL_ASSOC);		// Get user info
+		$this->userData = e107::getDb()->fetch();		// Get user info
 		$this->userData['user_perms'] = trim($this->userData['user_perms']);
 		$this->lookEmail = $this->lookEmail && ($username == $this->userData['user_email']);		// Know whether login name or email address used now
 		
