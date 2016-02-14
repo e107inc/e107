@@ -50,6 +50,7 @@ define("LAN_EDIT","Edit");
 define("LAN_DELETE","Delete");
 define("LAN_DEFAULT","Default");
 define("LAN_MORE", "More..");
+define("LAN_LESS", "..Less");
 define("LAN_READ_MORE", "Read more..");
 define("LAN_GOPAGE", "Go to page");
 define("LAN_GOTOPAGEX", "Go to page [x]");

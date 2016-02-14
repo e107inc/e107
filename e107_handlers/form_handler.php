@@ -3477,9 +3477,9 @@ class e_form
 				{
 					return $this->renderInline($field,$id,$attributes['title'],$value,substr($value,0,50)."...",'textarea'); //FIXME.
 				}
-				
-				
-				$expand = '...';
+
+
+				$expand = '<span class="e-expandit-ellipsis">...</span>';
 				$toexpand = false;
 				if($attributes['type'] == 'bbarea' && !isset($parms['bb'])) $parms['bb'] = true; //force bb parsing for bbareas
 				$elid = trim(str_replace('_', '-', $field)).'-'.$id;
@@ -3489,17 +3489,11 @@ class e_form
 					$ttl = vartrue($parms['expand']);
 					if($ttl == 1)
 					{
-						$ttl = $expand."<button class='btn btn-default btn-xs btn-mini pull-right'>More..</button>";
-						$ttl1 = "<button class='btn btn-default btn-xs btn-mini pull-right'>..Less</button>";
-					}
-					else
-					{
-						$ttl1 = null;
+						$dataAttr = "data-text-more='" . LAN_MORE . "' data-text-less='" . LAN_LESS . "'";
+						$ttl = $expand."<button class='btn btn-default btn-xs btn-mini pull-right' {$dataAttr}>" . LAN_MORE . "</button>";
 					}
 					
 					$expands = '<a href="#'.$elid.'-expand" class="e-show-if-js e-expandit">'.defset($ttl, $ttl)."</a>";
-					$contracts = '<a href="#'.$elid.'-expand" class="e-show-if-js e-expandit">'.defset($ttl1, $ttl1)."</a>";
-					
 				}
 
 				$oldval = $value;
@@ -3517,9 +3511,8 @@ class e_form
 				if($toexpand)
 				{
 					// force hide! TODO - core style .expand-c (expand container)
-					// TODO: Hide 'More..' button when text fully displayed.
-					$value .= '<span class="expand-c" style="display: none" id="'.$elid.'-expand"><span>'.str_replace($value,'',$oldval).$contracts.'</span></span>';
-					$value .= $expands; 	// 'More..' button. Keep it at the bottom so it does't cut the sentence. 
+					$value .= '<span class="expand-c" style="display: none" id="'.$elid.'-expand"><span>'.str_replace($value,'',$oldval).'</span></span>';
+					$value .= varset($expands); 	// 'More..' button. Keep it at the bottom so it does't cut the sentence.
 				}
 				
 				
