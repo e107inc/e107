@@ -12,6 +12,7 @@
 // [e_LANGUAGEDIR]/[e_LANGUAGE]/lan_library_manager.php
 e107::lan('core', 'library_manager');
 
+
 /**
  * Class e_library_manager.
  */
@@ -110,7 +111,7 @@ class e_library_manager
 					// Add the library as the first argument.
 					$classMethod = array($this, $library['version callback']);
 					$params = array_merge(array($library), $library['version arguments']);
-					$variant['installed'] = call_user_func_array($classMethod, $params);
+					$variant['version'] = call_user_func_array($classMethod, $params);
 				}
 				else
 				{
@@ -121,45 +122,40 @@ class e_library_manager
 			// If version callback is a method in e_library.php file.
 			else
 			{
+				$variant['version'] = '';
+				$class = false;
+
 				if(varset($library['plugin'], false))
 				{
-					e107_require_once(e_PLUGIN . $library['plugin'] . '/e_library.php');
-					$addonClass = $library['plugin'] . '_library';
+					$class = e107::getAddon($library['plugin'], 'e_library');
 				}
 				elseif(varset($library['theme'], false))
 				{
-					e107_require_once(e_THEME . $library['theme'] . '/e_library.php');
+					// e107::getAddon() does not support theme folders.
+					e107_require_once(e_THEME . $library['theme'] . '/theme_library.php');
 					$addonClass = $library['theme'] . '_library';
+
+					if(isset($addonClass) && class_exists($addonClass))
+					{
+						$class = new $addonClass();
+					}
 				}
 
 				// We support both a single parameter, which is an associative array, and an
 				// indexed array of multiple parameters.
 				if(isset($library['version arguments'][0]))
 				{
-					if(isset($addonClass) && class_exists($addonClass)) /* @FIXME Perhaps use e107::callMethod() ?  */
+					if($class)
 					{
-						$class = new $addonClass();
-						if(method_exists($class, $library['version callback']))
-						{
-							// Add the library as the first argument.
-							// Call PLUGIN/THEME_library::VERSION_CALLBACK().
-							$classMethod = array($class, $library['version callback']);
-							$params = array_merge(array($library), $library['version arguments']);
-							$variant['installed'] = call_user_func_array($classMethod, $params);
-						}
+						$params = array_merge(array($library), $library['version arguments']);
+						$variant['version'] = e107::callMethod($class, $library['version callback'], $params);
 					}
 				}
 				else
 				{
-					if(isset($addonClass) && class_exists($addonClass))
+					if($class)
 					{
-						$class = new $addonClass();
-						if(method_exists($class, $library['version callback']))
-						{
-							// Call PLUGIN/THEME_library::VERSION_CALLBACK().
-							$method = $library['version callback'];
-							$library['version'] = $class->$method($library, $library['version arguments']);
-						}
+						$variant['version'] = e107::callMethod($class, $library['version callback'], $library, $library['version arguments']);
 					}
 				}
 			}
@@ -214,64 +210,56 @@ class e_library_manager
 				}
 				else
 				{
+					$class = false;
+
 					if(varset($library['plugin'], false))
 					{
-						//	e107::getAddon($library['plugin'],'e_library'); /* @FIXME Use this to avoid additional class_exists and method_exists checking */
-						e107_require_once(e_PLUGIN . $library['plugin'] . '/e_library.php');
-						$addonClass = $library['plugin'] . '_library';
+						$class = e107::getAddon($library['plugin'], 'e_library');
 					}
 					elseif(varset($library['theme'], false))
 					{
-						e107_require_once(e_THEME . $library['theme'] . '/e_library.php');
+						// e107::getAddon() does not support theme folders.
+						e107_require_once(e_THEME . $library['theme'] . '/theme_library.php');
 						$addonClass = $library['theme'] . '_library';
+
+						if(isset($addonClass) && class_exists($addonClass))
+						{
+							$class = new $addonClass();
+						}
 					}
 
 					// We support both a single parameter, which is an associative array, and an indexed array of
 					// multiple parameters.
 					if(isset($variant['variant arguments'][0]))
 					{
-						if(isset($addonClass) && class_exists($addonClass))
+						if($class)
 						{
-							$class = new $addonClass();
-							if(method_exists($class, $variant['variant callback']))
-							{
-								// Add the library as the first argument, and the variant name as the second.
-								// Call PLUGIN/THEME_library::VARIANT_CALLBACK().
-								$classMethod = array($class, $library['variant callback']);
-								$params = array_merge(array($library, $variant_name), $variant['variant arguments']);
-								$variant['installed'] = call_user_func_array($classMethod, $params);
-							}
-							else
-							{
-								$variant['installed'] = true;
-							}
+							$params = array_merge(array($library, $variant_name), $variant['variant arguments']);
+							$variant['installed'] = e107::callMethod($class, $library['variant callback'], $params);
 						}
 						else
 						{
-							$variant['installed'] = true;
+							$variant['installed'] = false;
 						}
 					}
 					else
 					{
-						if(isset($addonClass) && class_exists($addonClass))
+						if($class)
 						{
-							$class = new $addonClass();
+							// Can't use e107::callMethod(), because it only supports 2 params.
 							if(method_exists($class, $variant['variant callback']))
 							{
 								// Call PLUGIN/THEME_library::VARIANT_CALLBACK().
 								$method = $variant['variant callback'];
 								$variant['installed'] = $class->$method($library, $variant_name, $variant['variant arguments']);
 							}
-							else
-							{
-								$variant['installed'] = true;
-							}
 						}
 						else
 						{
-							$variant['installed'] = true;
+							$variant['installed'] = false;
 						}
 					}
+
 					if(!$variant['installed'])
 					{
 						$variant['error'] = LAN_LIBRARY_MANAGER_09;
@@ -311,7 +299,8 @@ class e_library_manager
 	 */
 	public function load($name, $variant = null)
 	{
-		static $loaded; /* @FIXME Still needed? */
+		static $loaded;
+		/* @FIXME Still needed? */
 
 		if(!isset($loaded[$name]))
 		{
@@ -525,19 +514,13 @@ class e_library_manager
 			}
 
 			// Allow enabled plugins (with e_library.php file) to alter the registered libraries.
-			//	e107::getAddon($plugin, 'e_library','config_alter'); /* FIXME Use e107::getAddon() instead? */
 			foreach($plugins as $plugin)
 			{
-				e107_require_once(e_PLUGIN . $plugin . '/e_library.php');
-				$addonClass = $plugin . '_library';
-
-				if(class_exists($addonClass))
+				$class = e107::getAddon($plugin, 'e_library');
+				if($class && method_exists($class, 'config_alter'))
 				{
-					$class = new $addonClass();
-					if(method_exists($class, 'config_alter'))
-					{
-						$class->config_alter($libraries);
-					}
+					// The library definitions are passed by reference.
+					$class->config_alter($libraries);
 				}
 			}
 
