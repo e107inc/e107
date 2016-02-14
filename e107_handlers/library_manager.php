@@ -292,8 +292,8 @@ class e_library_manager
 	 */
 	public function load($name, $variant = null)
 	{
+		// Re-use the statically cached value to save memory.
 		static $loaded;
-		/* @FIXME Still needed? */
 
 		if(!isset($loaded[$name]))
 		{
