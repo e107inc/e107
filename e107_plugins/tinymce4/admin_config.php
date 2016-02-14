@@ -339,7 +339,7 @@ class tinymce
 		{
 			$query = str_replace("{ID}",$id,$this->editQry);
 			$sql->db_Select_gen($query);
-			$row = $sql->db_Fetch(MYSQL_ASSOC);			
+			$row = $sql->db_Fetch();
 		}
 		else
 		{

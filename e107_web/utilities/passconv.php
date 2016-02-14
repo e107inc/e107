@@ -138,7 +138,7 @@ if (isset($_POST['GetOnWithIt']))
 	}
 	if (!$error && $pc_db->db_Select('user_backup','*'))
 	{
-	  while ($row = $pc_db->db_Fetch(MYSQL_ASSOC))
+	  while ($row = $pc_db->db_Fetch())
 	  {
 		$uid = $row['user_id'];
 		unset($row['user_id']);

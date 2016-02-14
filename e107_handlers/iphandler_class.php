@@ -972,7 +972,7 @@ class eIPHandler
 		// See if address already in the banlist
 		if ($sql->select('banlist', '`banlist_bantype`', "`banlist_ip`='{$ban_ip}'"))
 		{
-			list($banType) = $sql->fetch(MYSQL_ASSOC);
+			list($banType) = $sql->fetch();
 			
 			if ($banType >= eIPHandler::BAN_TYPE_WHITELIST)
 			{ // Got a whitelist entry for this
@@ -1134,7 +1134,7 @@ class eIPHandler
 		$gotIP = FALSE;
 		$gotBrowser = FALSE;
 		$bestRow = FALSE;
-		while (FALSE !== ($row = $ourDB->fetch(MYSQL_ASSOC)))
+		while (FALSE !== ($row = $ourDB->fetch()))
 		{
 			if ($row['user_token'] == $browser)
 			{
@@ -1273,7 +1273,7 @@ class banlistManager
 
 		if ($sql->db_Select_gen($qry))
 		{
-			while ($row = $sql->db_Fetch(MYSQL_ASSOC))
+			while ($row = $sql->db_Fetch())
 			{
 				$row['banlist_ip'] = $this->trimWildcard($row['banlist_ip']);
 				if ($row['banlist_ip'] == '') continue;								// Ignore empty IP addresses

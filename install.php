@@ -226,7 +226,7 @@ class e_install
 	protected $pdo = false;
 
 	//	public function __construct()
-	function e_install()
+	function __construct()
 	{
 		// notice removal, required from various core routines
 		define('USERID', 1);
@@ -1461,7 +1461,7 @@ if($this->pdo == true)
 
 		define('PREVIEWTHEMENAME',""); // Notice Removal.
 
-		include_lan($this->e107->e107_dirs['LANGUAGES_DIRECTORY'].$this->previous_steps['language']."/lan_prefs.php");
+//		include_lan($this->e107->e107_dirs['LANGUAGES_DIRECTORY'].$this->previous_steps['language']."/lan_prefs.php");
 		include_lan($this->e107->e107_dirs['LANGUAGES_DIRECTORY'].$this->previous_steps['language']."/admin/lan_theme.php");
 
 		// [SecretR] should work now - fixed log errors (argument noLogs = true) change to false to enable log
@@ -1856,7 +1856,7 @@ if($this->pdo == true)
 
 	function dbqry($qry)
 	{
-		mysql_query($qry);
+		// mysql_query($qry);
 		$sql = e107::getDb();
 		$sql->db_Query($qry);
 

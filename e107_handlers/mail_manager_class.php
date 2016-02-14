@@ -623,7 +623,7 @@ class e107MailManager
 		{
 			return false;
 		}
-		if ($result = $this->db->fetch(MYSQL_ASSOC))
+		if ($result = $this->db->fetch())
 		{
 			$this->queryActive--;
 			return $this->dbToBoth($result);
@@ -1444,7 +1444,7 @@ class e107MailManager
 					$errors[] = 'Not found in DB: '.$vals[1].'/'.$vals[2];
 				}
 				
-				$row = $this->db->fetch(MYSQL_ASSOC);
+				$row = $this->db->fetch();
 				
 				$row = $this->dbToBoth($row);
 				
@@ -1715,7 +1715,7 @@ class e107MailManager
 	 */
 	public function getNextTargetStatus()
 	{
-		$result = $this->db2->db_Fetch(MYSQL_ASSOC);
+		$result = $this->db2->db_Fetch();
 		if (is_array($result)) { return $this->dbToTarget($result); }
 		return FALSE;
 	}

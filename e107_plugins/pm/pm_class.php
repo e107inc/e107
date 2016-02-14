@@ -403,7 +403,7 @@ class private_message
 		$to = intval($to);		// Precautionary
 		if ($sql->select('private_msg_block', 'pm_block_from', 'pm_block_to = '.$to))
 		{
-			while($row = $sql->fetch(MYSQL_ASSOC))
+			while($row = $sql->fetch())
 			{
 				$ret[] = $row['pm_block_from'];
 			}
@@ -426,7 +426,7 @@ class private_message
 		$to = intval($to);		// Precautionary
 		if ($sql->gen('SELECT pm.*, u.user_name FROM `#private_msg_block` AS pm LEFT JOIN `#user` AS u ON `pm`.`pm_block_from` = `u`.`user_id` WHERE pm_block_to = '.$to))
 		{
-			while($row = $sql->fetch(MYSQL_ASSOC))
+			while($row = $sql->fetch())
 			{
 				$ret[] = $row;
 			}

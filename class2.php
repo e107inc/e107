@@ -132,6 +132,7 @@ set_error_handler(array(&$error_handler, 'handle_error'));
 //
 define('e107_INIT', true);
 
+
 // MOVED TO $e107->prepare_request()
 // setup some php options
 //e107_ini_set('magic_quotes_runtime',     0);

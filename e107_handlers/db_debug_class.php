@@ -171,7 +171,7 @@ class e107_db_debug {
 		$t['caller']	= "$sCallingFile($sCallingLine)";
 		$t['query']		= $query;
 		$t['ok']		= $sQryRes ? TRUE : FALSE;
-		$t['error']		= $sQryRes ? '' : mysql_error();
+		$t['error']		= $sQryRes ? '' : $sql->getLastErrorText(); // mysql_error();
 		$t['nFields']	= $nFields;
 		$t['time']		= $mytime;
 

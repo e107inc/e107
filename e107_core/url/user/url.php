@@ -40,7 +40,7 @@ class core_user_url extends eUrlConfig
 	 * - login/index (or just 'login') -> login.php
 	 * - register/index (or just 'register') -> signup.php
 	 */
-	public function create($route, $params = array())
+	public function create($route, $params = array(), $options = array())
 	{
 		if(!$params) return 'user.php';
 		
@@ -115,8 +115,8 @@ class core_user_url extends eUrlConfig
 		
 		return $admin;
 	}
-	
-	public function parse($pathInfo)
+
+	public function parse($pathInfo, $params = array(), $request = NULL, $router = NULL, $config = array())
 	{
 		// this config doesn't support parsing, it's done by the module entry script (news.php)
 		// this means News are not available via single entry point if this config is currently active

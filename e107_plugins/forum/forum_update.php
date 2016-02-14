@@ -373,7 +373,7 @@ function step4()
 		require_once (e_HANDLER . 'user_extended_class.php');
 		$ue = new e107_user_extended;
 
-		while ($row = $db -> fetch(MYSQL_ASSOC))
+		while ($row = $db -> fetch())
 		{
 			$result['usercount']++;
 			$userId = (int)$row['user_id'];
@@ -716,7 +716,7 @@ function step8_ajax()
 
 	if ($sql->select('forum', 'forum_id', 'forum_parent != 0 AND forum_id > '.$lastThread.' ORDER BY forum_id LIMIT 2'))
 	{
-		while ($row = $sql->fetch(MYSQL_ASSOC))
+		while ($row = $sql->fetch())
 		{
 			$parentList[] = $row['forum_id'];
 		}
@@ -766,7 +766,7 @@ function step9()
 	";
 	if ($sql -> gen($qry))
 	{
-		while ($row = $sql -> fetch(MYSQL_ASSOC))
+		while ($row = $sql -> fetch())
 		{
 			$threadList[] = $row['thread_id'];
 		}
@@ -774,7 +774,7 @@ function step9()
 		{
 			if ($sql -> select('forum_thread', 'thread_options', 'thread_id = ' . $threadId, 'default'))
 			{
-				$row = $sql -> fetch(MYSQL_ASSOC);
+				$row = $sql -> fetch();
 				if ($row['thread_options'])
 				{
 					$opts = unserialize($row['thread_options']);
@@ -880,7 +880,7 @@ function step10_ajax()//TODO
 	
 	if ($sql->gen($qry))
 	{
-		while ($row = $sql->fetch(MYSQL_ASSOC))
+		while ($row = $sql->fetch())
 		{
 			$postList[] = $row;
 		}
@@ -1354,7 +1354,7 @@ class forumUpgrade
 		/*
 		if ($sql -> select('generic', '*', "gen_type = 'forumUpgrade'"))
 		{
-			$row = $sql -> fetch(MYSQL_ASSOC);
+			$row = $sql -> fetch();
 			$this -> updateInfo = unserialize($row['gen_chardata']);
 		}
 		else

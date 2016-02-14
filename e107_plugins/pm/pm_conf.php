@@ -625,7 +625,7 @@ function doMaint($opts, $pmPrefs)
 		if ($res = $db2->gen("SELECT pm.pm_id FROM `#private_msg` AS pm LEFT JOIN `#user` AS u ON pm.`pm_from` = `#user`.`user_id`
 					WHERE (pm.`pm_read_del = 1) AND `#user`.`user_id` IS NULL"))
 		{
-			while ($row = $db2->fetch(MYSQL_ASSOC))
+			while ($row = $db2->fetch())
 			{
 				if ($pmHandler->del($row['pm_id']) !== FALSE)
 				{
@@ -642,7 +642,7 @@ function doMaint($opts, $pmPrefs)
 		if ($res = $db2->gen("SELECT pm.pm_id FROM `#private_msg` AS pm LEFT JOIN `#user` AS u ON pm.`pm_to` = `#user`.`user_id`
 					WHERE (pm.`pm_sent_del = 1) AND `#user`.`user_id` IS NULL"))
 		{
-			while ($row = $db2->fetch(MYSQL_ASSOC))
+			while ($row = $db2->fetch())
 			{
 				if ($pmHandler->del($row['pm_id']) !== FALSE)
 				{
@@ -703,7 +703,7 @@ function doMaint($opts, $pmPrefs)
 			$cnt = 0;
 			if($db2->db_Select('private_msg', 'pm_id', $qry))
 			{
-				while ($row = $db2->db_Fetch(MYSQL_ASSOC))
+				while ($row = $db2->db_Fetch())
 				{
 					if ($pmHandler->del($row['pm_id']) !== FALSE)
 					{
@@ -731,7 +731,7 @@ function doMaint($opts, $pmPrefs)
 		$fileArray = $fl->get_files(e_PLUGIN.'pm/attachments');
 		if ($db2->select('private_msg', 'pm_id, pm_attachments', "pm_attachments != ''"))
 		{
-			while ($row = $db2->fetch(MYSQL_ASSOC))
+			while ($row = $db2->fetch())
 			{
 				$attachList = explode(chr(0), $row['pm_attachments']);
 				foreach ($attachList as $a)

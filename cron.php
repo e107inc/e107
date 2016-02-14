@@ -78,7 +78,7 @@ require_once(realpath(dirname(__FILE__)."/class2.php"));
 	$sql = e107::getDb();
 	if($sql->select("cron",'cron_function,cron_tab','cron_active =1'))
 	{
-		while($row = $sql->fetch(MYSQL_ASSOC))
+		while($row = $sql->fetch())
 		{
 			list($class,$function) = explode("::",$row['cron_function'],2);			
 			$key = $class."__".$function;

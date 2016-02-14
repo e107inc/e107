@@ -281,7 +281,7 @@ class e_admin_log
 		}
 		
 		
-		$explain = mysql_real_escape_string($tp->toDB($explain, true, false, 'no_html'));
+		$explain = e107::getDb()->escape($tp->toDB($explain, true, false, 'no_html'));
 		$event_title = $tp->toDB($event_title, true, false, 'no_html');
 
 		//---------------------------------------

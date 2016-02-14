@@ -1211,7 +1211,7 @@ function update_706_to_800($type='')
 		require_once(e_HANDLER.'mail_manager_class.php');
 		$mailHandler = new e107MailManager;
 		$i = 0;
-		while ($row = $sql->db_Fetch(MYSQL_ASSOC))
+		while ($row = $sql->fetch())
 		{
 			$mailRecord = array(
 				'mail_create_date' => $row['gen_datestamp'],

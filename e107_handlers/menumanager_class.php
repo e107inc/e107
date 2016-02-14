@@ -493,7 +493,7 @@ class e_menuManager {
 				$location_count--;
 			}
 			$sql->select("menus", "*", "menu_path NOT REGEXP('[0-9]+') ");
-			while (list($menu_id, $menu_name, $menu_location, $menu_order) = $sql->fetch(MYSQL_NUM))
+			while (list($menu_id, $menu_name, $menu_location, $menu_order) = $sql->fetch('num'))
 			{
 				if (stristr($menustr, $menu_name) === FALSE)
 				{
@@ -1433,7 +1433,7 @@ class e_menuManager {
 						$cl = ($this->dragDrop) ? "'portlet" : "regularMenu";
 						
 						$menuText .= "\n<div class='column' id='area-".$menu."'>\n\n";
-						while($row = $sql9->fetch(MYSQL_ASSOC))
+						while($row = $sql9->fetch())
 						{
 							$menuText .= "\n\n\n <!-- Menu Start ".$row['menu_name']. "-->\n";
 							$menuText .= "<div class='{$cl}' id='block-".$row['menu_id']."-".$menu."'>\n";

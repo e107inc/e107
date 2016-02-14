@@ -693,7 +693,7 @@ function forum_track()
 		$data = array();
 		if($sql->gen($qry))
 		{
-			while($row = $sql->fetch(MYSQL_ASSOC))
+			while($row = $sql->fetch())
 			{
 				$row['thread_sef'] = eHelper::title2sef($row['thread_name'],'dashl');
 

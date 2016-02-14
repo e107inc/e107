@@ -199,7 +199,7 @@ class e107plugin
 
 		if ($sql->select("plugin", "plugin_id", "plugin_path = '".(string) $path."' LIMIT 1"))
 		{
-			$row = $sql->fetch(MYSQL_ASSOC);
+			$row = $sql->fetch();
 			return intval($row['plugin_id']);
 		}
 		
@@ -320,7 +320,7 @@ class e107plugin
 		if ($sql->select('plugin', "*")) // Read all the plugin DB info into an array to save lots of accesses
 
 		{
-			while ($row = $sql->fetch(MYSQL_ASSOC))
+			while ($row = $sql->fetch())
 			{
 				$pluginDBList[$row['plugin_path']] = $row;
 				$pluginDBList[$row['plugin_path']]['status'] = 'read';
