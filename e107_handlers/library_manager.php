@@ -111,7 +111,7 @@ class e_library_manager
 					// Add the library as the first argument.
 					$classMethod = array($this, $library['version_callback']);
 					$params = array_merge(array($library), $library['version_arguments']);
-					$variant['version'] = call_user_func_array($classMethod, $params);
+					$library['version'] = call_user_func_array($classMethod, $params);
 				}
 				else
 				{
@@ -122,7 +122,7 @@ class e_library_manager
 			// If version_callback is a method in e_library.php file.
 			else
 			{
-				$variant['version'] = '';
+				$library['version'] = '';
 				$class = false;
 
 				if(varset($library['plugin'], false))
@@ -148,14 +148,14 @@ class e_library_manager
 					if($class)
 					{
 						$params = array_merge(array($library), $library['version_arguments']);
-						$variant['version'] = e107::callMethod($class, $library['version_callback'], $params);
+						$library['version'] = e107::callMethod($class, $library['version_callback'], $params);
 					}
 				}
 				else
 				{
 					if($class)
 					{
-						$variant['version'] = e107::callMethod($class, $library['version_callback'], $library, $library['version_arguments']);
+						$library['version'] = e107::callMethod($class, $library['version_callback'], $library, $library['version_arguments']);
 					}
 				}
 			}
