@@ -11,7 +11,6 @@
 
 // [e_LANGUAGEDIR]/[e_LANGUAGE]/lan_library_manager.php
 e107::lan('core', 'library_manager');
-/*FIXME Remove 'library' prefix from method names */
 
 /**
  * Class e_library_manager.
@@ -20,18 +19,10 @@ class e_library_manager
 {
 
 	/**
-	 * Singleton instance.
-	 * Allow class extends - override {@link getInstance()}
-	 *
-	 * @var e_library_manager
-	 */
-	protected static $_instance = null;
-
-	/**
 	 * Constructor
 	 * Use {@link getInstance()}, direct instantiating is not possible for signleton objects.
 	 */
-	protected function __construct()
+	public function __construct()
 	{
 	}
 
@@ -50,21 +41,6 @@ class e_library_manager
 	}
 
 	/**
-	 * Get singleton instance.
-	 *
-	 * @return e_library_manager
-	 */
-	public static function getInstance() /* FIXME Still Neeeded? */
-	{
-		if(null === self::$_instance)
-		{
-			self::$_instance = new self();
-			self::$_instance->_init();
-		}
-		return self::$_instance;
-	}
-
-	/**
 	 * Tries to detect a library and its installed version.
 	 *
 	 * @param $name
@@ -72,7 +48,7 @@ class e_library_manager
 	 *
 	 * @return array|false
 	 *   An associative array containing registered information for the library specified by $name, or FALSE if the
-	 *   library $name is not registered. In addition to the keys returned by libraryInfo(), the following keys are
+	 *   library $name is not registered. In addition to the keys returned by info(), the following keys are
 	 *   contained:
 	 *   - installed: A boolean indicating whether the library is installed. Note that not only the top-level library,
 	 *     but also each variant contains this key.
@@ -81,10 +57,10 @@ class e_library_manager
 	 *     "not found", "not detected", "not supported".
 	 *   - error message: If an error occurred during library detection, a detailed error message.
 	 */
-	public function libraryDetect($name)
+	public function detect($name)
 	{
-		// Re-use the statically cached value of libraryInfo() to save memory.
-		$library = &$this->libraryInfo($name);
+		// Re-use the statically cached value of info() to save memory.
+		$library = &$this->info($name);
 
 		// Exit early if the library was not found.
 		if($library === false)
@@ -103,10 +79,11 @@ class e_library_manager
 		// Check whether the library exists.
 		if(!isset($library['library path']))
 		{
-			$library['library path'] = $this->libraryGetPath($library['machine name']);
+			$library['library path'] = $this->getPath($library['machine name']);
 		}
 
-		if($library['library path'] === false || !file_exists($library['library path']))
+		$libraryPath = e107::getParser()->replaceConstants($library['library path']);
+		if($library['library path'] === false || !file_exists($libraryPath))
 		{
 			$library['error'] = LAN_LIBRARY_MANAGER_09;
 
@@ -120,7 +97,7 @@ class e_library_manager
 
 		// TODO:
 		// Invoke callbacks in the 'pre-detect' group.
-		$this->libraryInvoke('pre-detect', $library);
+		$this->invoke('pre-detect', $library);
 
 		// Detect library version, if not hardcoded.
 		if(!isset($library['version']))
@@ -247,7 +224,7 @@ class e_library_manager
 				{
 					if(varset($library['plugin'], false))
 					{
-					//	e107::getAddon($library['plugin'],'e_library'); /* @FIXME Use this to avoid additional class_exists and method_exists checking */
+						//	e107::getAddon($library['plugin'],'e_library'); /* @FIXME Use this to avoid additional class_exists and method_exists checking */
 						e107_require_once(e_PLUGIN . $library['plugin'] . '/e_library.php');
 						$addonClass = $library['plugin'] . '_library';
 					}
@@ -320,7 +297,7 @@ class e_library_manager
 		$library['installed'] = true;
 
 		// Invoke callbacks in the 'post-detect' group.
-		$this->libraryInvoke('post-detect', $library);
+		$this->invoke('post-detect', $library);
 
 		return $library;
 	}
@@ -336,13 +313,13 @@ class e_library_manager
 	 *   ignored.
 	 *
 	 * @return
-	 *   An associative array of the library information as returned from libraryInfo(). The top-level properties
+	 *   An associative array of the library information as returned from info(). The top-level properties
 	 *   contain the effective definition of the library (variant) that has been loaded. Additionally:
-	 *   - installed: Whether the library is installed, as determined by libraryDetectLibrary().
+	 *   - installed: Whether the library is installed, as determined by detectLibrary().
 	 *   - loaded: Either the amount of library files that have been loaded, or FALSE if the library could not be
-	 *   loaded. See MYPLUGIN_library::libraryInfo() for more information.
+	 *   loaded. See MYPLUGIN_library::info() for more information.
 	 */
-	public function libraryLoad($name, $variant = null)
+	public function load($name, $variant = null)
 	{
 		static $loaded; /* @FIXME Still needed? */
 
@@ -359,7 +336,7 @@ class e_library_manager
 
 			if(!varset($library, false))
 			{
-				$library = $this->libraryDetect($name);
+				$library = $this->detect($name);
 				$cacheData = serialize($library);
 				$cache->set($cacheID, $cacheData, true, false, true);
 			}
@@ -385,7 +362,7 @@ class e_library_manager
 
 			// TODO:
 			// Invoke callbacks in the 'pre-dependencies-load' group.
-			$this->libraryInvoke('pre-dependencies-load', $library);
+			$this->invoke('pre-dependencies-load', $library);
 
 			// If the library (variant) is installed, load it.
 			$library['loaded'] = false;
@@ -396,20 +373,20 @@ class e_library_manager
 				{
 					foreach($library['dependencies'] as $dependency)
 					{
-						$this->libraryLoad($dependency);
+						$this->load($dependency);
 					}
 				}
 
 				// TODO:
 				// Invoke callbacks in the 'pre-load' group.
-				$this->libraryInvoke('pre-load', $library);
+				$this->invoke('pre-load', $library);
 
 				// Load all the files associated with the library.
-				$library['loaded'] = $this->libraryLoadFiles($library);
+				$library['loaded'] = $this->loadFiles($library);
 
 				// TODO:
 				// Invoke callbacks in the 'post-load' group.
-				$this->libraryInvoke('post-load', $library);
+				$this->invoke('post-load', $library);
 			}
 			$loaded[$name] = $library;
 		}
@@ -422,23 +399,20 @@ class e_library_manager
 	 *
 	 * @param $name
 	 *   The machine name of a library to return the path for.
-	 * @param $base_path
-	 *   Whether to prefix the resulting path with base_path().
 	 *
 	 * @return string
 	 *   The path to the specified library or FALSE if the library wasn't found.
 	 */
-	private function libraryGetPath($name, $base_path = false)
+	private function getPath($name)
 	{
 		static $libraries;
 
 		if(!isset($libraries))
 		{
-			$libraries = $this->libraryGetLibraries();
+			$libraries = $this->getLibraries();
 		}
 
-		// e_HTTP will at least default to '/'.
-		$path = ($base_path ? e_HTTP : '');
+		$path = '';
 		if(!isset($libraries[$name]))
 		{
 			return false;
@@ -457,7 +431,7 @@ class e_library_manager
 	 * @return array
 	 *   A list of library directories.
 	 */
-	private function libraryGetLibraries()
+	private function getLibraries()
 	{
 		$dir = e_WEB . 'lib';
 
@@ -473,7 +447,7 @@ class e_library_manager
 				{
 					if(is_dir("$dir/$file"))
 					{
-						$directories[$file] = "$dir/$file";
+						$directories[$file] = "{e_WEB}lib/$file";
 					}
 				}
 			}
@@ -496,9 +470,9 @@ class e_library_manager
 	 *   An associative array containing registered information for all libraries, the registered information for the
 	 *   library specified by $name, or FALSE if the library $name is not registered.
 	 */
-	private function &libraryInfo($library = null)
+	private function &info($library = null)
 	{
-		// This static cache is re-used by libraryDetect() to save memory.
+		// This static cache is re-used by detect() to save memory.
 		static $libraries;
 
 		if(!isset($libraries))
@@ -557,11 +531,11 @@ class e_library_manager
 			// Provide defaults.
 			foreach($libraries as $machine_name => &$properties)
 			{
-				$this->libraryInfoDefaults($properties, $machine_name);
+				$this->infoDefaults($properties, $machine_name);
 			}
 
 			// Allow enabled plugins (with e_library.php file) to alter the registered libraries.
-		//	e107::getAddon($plugin, 'e_library','config_alter'); /* FIXME Use e107::getAddon() instead? */
+			//	e107::getAddon($plugin, 'e_library','config_alter'); /* FIXME Use e107::getAddon() instead? */
 			foreach($plugins as $plugin)
 			{
 				e107_require_once(e_PLUGIN . $plugin . '/e_library.php');
@@ -578,8 +552,6 @@ class e_library_manager
 			}
 
 			// Allow enabled themes (with theme_library.php file) to alter the registered libraries.
-
-
 			foreach($themes as $theme)
 			{
 				e107_require_once(e_THEME . $theme . '/theme_library.php');
@@ -599,7 +571,7 @@ class e_library_manager
 			// Invoke callbacks in the 'info' group.
 			foreach($libraries as &$properties)
 			{
-				$this->libraryInvoke('info', $properties);
+				$this->invoke('info', $properties);
 			}
 		}
 
@@ -629,7 +601,7 @@ class e_library_manager
 	 *
 	 * @return array
 	 */
-	private function libraryInfoDefaults(&$library, $name)
+	private function infoDefaults(&$library, $name)
 	{
 
 		/* FIXME Avoid spaces in keys, use _ underscores */
@@ -641,7 +613,7 @@ class e_library_manager
 			'download url'      => '',
 			'path'              => '',
 			'library path'      => null,
-			'version callback'  => 'libraryGetVersion',
+			'version callback'  => 'getVersion',
 			'version arguments' => array(),
 			'files'             => array(),
 			'dependencies'      => array(),
@@ -661,8 +633,8 @@ class e_library_manager
 		);
 
 		// Add our own callbacks before any others.
-		array_unshift($library['callbacks']['info'], 'libraryPrepareFiles');
-		array_unshift($library['callbacks']['post-detect'], 'libraryDetectDependencies');
+		array_unshift($library['callbacks']['info'], 'prepareFiles');
+		array_unshift($library['callbacks']['post-detect'], 'detectDependencies');
 
 		return $library;
 	}
@@ -690,7 +662,7 @@ class e_library_manager
 	 * @param $variant
 	 *   If the library information belongs to a specific variant, the variant name. NULL otherwise.
 	 */
-	private function libraryPrepareFiles(&$library, $version = null, $variant = null)
+	private function prepareFiles(&$library, $version = null, $variant = null)
 	{
 		// Both the 'files' property and the 'integration files' property contain file declarations, and we want to make
 		// both consistent.
@@ -740,14 +712,14 @@ class e_library_manager
 	 * @param $variant
 	 *   If the library information belongs to a specific variant, the variant name. NULL otherwise.
 	 */
-	private function libraryDetectDependencies(&$library, $version = null, $variant = null)
+	private function detectDependencies(&$library, $version = null, $variant = null)
 	{
 		if(isset($library['dependencies']))
 		{
 			foreach($library['dependencies'] as &$dependency_string)
 			{
-				$dependency_info = $this->libraryParseDependency($dependency_string);
-				$dependency = $this->libraryDetect($dependency_info['name']);
+				$dependency_info = $this->parseDependency($dependency_string);
+				$dependency = $this->detect($dependency_info['name']);
 				if(!$dependency['installed'])
 				{
 					$library['installed'] = false;
@@ -758,7 +730,7 @@ class e_library_manager
 
 					$library['error message'] = str_replace($replace, $replace_with, LAN_LIBRARY_MANAGER_01); /* FIXME $tp->lanVars() */
 				}
-				elseif($this->libraryCheckIncompatibility($dependency_info, $dependency['version']))
+				elseif($this->checkIncompatibility($dependency_info, $dependency['version']))
 				{
 					$library['installed'] = false;
 					$library['error'] = LAN_LIBRARY_MANAGER_08;
@@ -769,7 +741,7 @@ class e_library_manager
 					$library['error message'] = str_replace($replace, $replace_with, LAN_LIBRARY_MANAGER_02); /* FIXME $tp->lanVars() */
 				}
 
-				// Remove the version string from the dependency, so libraryLoad() can load the libraries directly.
+				// Remove the version string from the dependency, so load() can load the libraries directly.
 				$dependency_string = $dependency_info['name'];
 			}
 		}
@@ -783,7 +755,7 @@ class e_library_manager
 	 * @param $library
 	 *   An array of library information, passed by reference.
 	 */
-	private function libraryInvoke($group, &$library)
+	private function invoke($group, &$library)
 	{
 		// When introducing new callback groups in newer versions, stale cached library information somehow reaches
 		// this point during the database update before clearing the library cache.
@@ -794,7 +766,7 @@ class e_library_manager
 
 		foreach($library['callbacks'][$group] as $callback)
 		{
-			$this->libraryTraverseLibrary($library, $callback);
+			$this->traverseLibrary($library, $callback);
 		}
 	}
 
@@ -810,7 +782,7 @@ class e_library_manager
 	 * @param $callback
 	 *   A string containing the callback to apply to all parts of a library.
 	 */
-	private function libraryTraverseLibrary(&$library, $callback)
+	private function traverseLibrary(&$library, $callback)
 	{
 		// If callback belongs to $this class.
 		if(method_exists($this, $callback))
@@ -857,12 +829,12 @@ class e_library_manager
 	 * Loads a library's files.
 	 *
 	 * @param $library
-	 *   An array of library information as returned by libraryInfo().
+	 *   An array of library information as returned by info().
 	 *
 	 * @return int
 	 *   The number of loaded files.
 	 */
-	private function libraryLoadFiles($library)
+	private function loadFiles($library)
 	{
 		$siteTheme = e107::getPref('sitetheme');
 		$adminTheme = e107::getPref('admintheme');
@@ -875,7 +847,7 @@ class e_library_manager
 				// If provider is an installed plugin.
 				if(e107::isInstalled($provider))
 				{
-					$this->libraryLoadFiles(array(
+					$this->loadFiles(array(
 						'files'                       => $files,
 						'path'                        => '',
 						'library path'                => e_PLUGIN . $provider,
@@ -885,17 +857,17 @@ class e_library_manager
 				// If provider is the admin theme, we only allow it for admin pages.
 				elseif(e_ADMIN_AREA && $provider == $adminTheme)
 				{
-					$this->libraryLoadFiles(array(
+					$this->loadFiles(array(
 						'files'                       => $files,
 						'path'                        => '',
 						'library path'                => e_THEME . $provider,
 						'post-load integration files' => false,
 					));
 				}
-				// If provider is the site theme, we only allow it for on the user area.
+				// If provider is the site theme, we only allow it on user areas.
 				elseif(!deftrue(e_ADMIN_AREA, false) && $provider == $siteTheme)
 				{
-					$this->libraryLoadFiles(array(
+					$this->loadFiles(array(
 						'files'                       => $files,
 						'path'                        => '',
 						'library path'                => e_THEME . $provider,
@@ -906,7 +878,7 @@ class e_library_manager
 		}
 
 		// Construct the full path to the library for later use.
-		$path = $library['library path'];
+		$path = e107::getParser()->replaceConstants($library['library path']);
 		$path = ($library['path'] !== '' ? $path . '/' . $library['path'] : $path);
 
 		// Count the number of loaded files for the return value.
@@ -962,18 +934,17 @@ class e_library_manager
 		{
 			foreach($library['files']['php'] as $file => $array)
 			{
-				// TODO: review these includes.
 				$file_path1 = $path . '/' . $file;
 				$file_path2 = e_ROOT . $path . '/' . $file;
 
 				if(file_exists($file_path1))
 				{
-					$this->_libraryRequireOnce($file_path1);
+					$this->_requireOnce($file_path1);
 					$count++;
 				}
 				elseif(file_exists($file_path2))
 				{
-					$this->_libraryRequireOnce($file_path2);
+					$this->_requireOnce($file_path2);
 					$count++;
 				}
 			}
@@ -987,7 +958,7 @@ class e_library_manager
 				// If provider is an installed plugin.
 				if(e107::isInstalled($provider))
 				{
-					$this->libraryLoadFiles(array(
+					$this->loadFiles(array(
 						'files'                       => $files,
 						'path'                        => '',
 						'library path'                => e_PLUGIN . $provider,
@@ -997,17 +968,17 @@ class e_library_manager
 				// If provider is the admin theme, we only allow it for admin pages.
 				elseif(e_ADMIN_AREA && $provider == $adminTheme)
 				{
-					$this->libraryLoadFiles(array(
+					$this->loadFiles(array(
 						'files'                       => $files,
 						'path'                        => '',
 						'library path'                => e_THEME . $provider,
 						'post-load integration files' => false,
 					));
 				}
-				// If provider is the site theme, we only allow it for on the user area.
+				// If provider is the site theme, we only allow it on user areas.
 				elseif(!deftrue(e_ADMIN_AREA, false) && $provider == $siteTheme)
 				{
-					$this->libraryLoadFiles(array(
+					$this->loadFiles(array(
 						'files'                       => $files,
 						'path'                        => '',
 						'library path'                => e_THEME . $provider,
@@ -1023,14 +994,14 @@ class e_library_manager
 	/**
 	 * Wrapper function for require_once.
 	 *
-	 * A library file could set a $path variable in file scope. Requiring such a file directly in libraryLoadFiles()
+	 * A library file could set a $path variable in file scope. Requiring such a file directly in loadFiles()
 	 * would lead to the local $path variable being overridden after the require_once statement. This would break
 	 * loading further files. Therefore we use this trivial wrapper which has no local state that can be tampered with.
 	 *
 	 * @param $file_path
 	 *   The file path of the file to require.
 	 */
-	private function _libraryRequireOnce($file_path)
+	private function _requireOnce($file_path)
 	{
 		// TODO: use e107_require_once() instead?
 		require_once $file_path;
@@ -1055,7 +1026,7 @@ class e_library_manager
 	 * @return mixed
 	 *   A string containing the version of the library.
 	 */
-	private function libraryGetVersion($library, $options)
+	private function getVersion($library, $options)
 	{
 		// Provide defaults.
 		$options += array(
@@ -1065,7 +1036,8 @@ class e_library_manager
 			'cols'    => 200,
 		);
 
-		$file = $library['library path'] . '/' . $options['file'];
+		$libraryPath = e107::getParser()->replaceConstants($library['library path']);
+		$file = $libraryPath . '/' . $options['file'];
 		if(empty($options['file']) || !file_exists($file))
 		{
 			return;
@@ -1085,7 +1057,7 @@ class e_library_manager
 	}
 
 	/**
-	 * Parses a dependency for comparison by libraryCheckIncompatibility().
+	 * Parses a dependency for comparison by checkIncompatibility().
 	 *
 	 * @param $dependency
 	 *   A dependency string, which specifies a plugin dependency, and versions that are supported. Supported formats
@@ -1100,9 +1072,9 @@ class e_library_manager
 	 *     incompatibilities).
 	 *   - 'versions' is a list of associative arrays, each containing the keys 'op' and 'version'. 'op' can be one of:
 	 *     '=', '==', '!=', '<>', '<', '<=', '>', or '>='. 'version' is one piece like '4.5-beta3'.
-	 *   Callers should pass this structure to libraryCheckIncompatibility().
+	 *   Callers should pass this structure to checkIncompatibility().
 	 */
-	private function libraryParseDependency($dependency)
+	private function parseDependency($dependency)
 	{
 		$value = array();
 
@@ -1152,16 +1124,16 @@ class e_library_manager
 	 * Checks whether a version is compatible with a given dependency.
 	 *
 	 * @param $v
-	 *   The parsed dependency structure from libraryParseDependency().
+	 *   The parsed dependency structure from parseDependency().
 	 * @param $current_version
 	 *   The version to check against (like 4.2).
 	 *
 	 * @return
 	 *   NULL if compatible, otherwise the original dependency version string that caused the incompatibility.
 	 *
-	 * @see libraryParseDependency()
+	 * @see parseDependency()
 	 */
-	private function libraryCheckIncompatibility($v, $current_version)
+	private function checkIncompatibility($v, $current_version)
 	{
 		if(!empty($v['versions']))
 		{
