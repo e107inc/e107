@@ -13,7 +13,7 @@
 // minimal software version
 define('MIN_PHP_VERSION',   '5.3');
 define('MIN_MYSQL_VERSION', '4.1.2');
-define('MAKE_INSTALL_LOG', false);
+define('MAKE_INSTALL_LOG', true);
 
 // ensure CHARSET is UTF-8 if used
 //define('CHARSET', 'utf-8');
@@ -224,6 +224,7 @@ class e_install
 	var	$dbLink = NULL;		// DB link - needed for PHP5.3 bug
 	var $session = null;
 	protected $pdo = false;
+	protected $debug = false;
 
 	//	public function __construct()
 	function __construct()
@@ -234,6 +235,11 @@ class e_install
 		define('ADMIN', true);
 		define('e_UC_MAINADMIN', 250);
 		define('E107_DEBUG_LEVEL',0);
+
+		if($_SERVER['QUERY_STRING'] == "debug")
+		{
+			$this->debug = true;
+		}
 
 		if(defined('PDO::ATTR_DRIVER_NAME')) // TODO Uncomment when ready. 
 		{
@@ -839,15 +845,6 @@ class e_install
 			}
 		}
 
-
-		$xml_installed = (!function_exists('utf8_encode')) ? false : true;
-		$exif_installed = (!function_exists('exif_imagetype')) ? false : true;
-		$gdlib_installed = (extension_loaded('gd') && function_exists('gd_info')) ? true : false;
-		$curl_installed = (function_exists('curl_version')) ?  true : false;
-
-
-
-		$exifExtensionLink = "<a href='http://php.net/manual/en/book.exif.php'>php.net</a>";
 		$php_version = phpversion();
 
 		if(version_compare($php_version, MIN_PHP_VERSION, ">="))
@@ -861,28 +858,21 @@ class e_install
 
 		$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
 
-		if(!$perms_pass)
-		{
-			$this->add_button("retest_perms", LANINS_009);
-			$this->stage = 3; // make the installer jump back a step
-		}
-		elseif ($perms_pass && !$version_fail && $xml_installed)
-		{
-			$this->add_button("continue_install", LAN_CONTINUE);
-		}
+
 		
 		$permColor	= ($perms_pass == true) ? "text-success" : "text-error";
 		$PHPColor 	= ($version_fail == false) ? "text-success" : "text-error";
-		$xmlColor	= ($xml_installed == true) ? "text-success" : "text-error";
-		$exifColor	= ($exif_installed == true) ? "text-success" : "text-error";
 		$mysqlColor	= ($mysql_pass == true) ? "text-success" : "text-error";
 
-		$gdLibColor = ($gdlib_installed == true) ? "text-success" : "text-error";
-		$curlColor = ($curl_installed == true) ? "text-success" : "text-error"; //TODO Below.
 
-		$xmlExtensionLink = "<a href='http://php.net/manual/en/ref.xml.php'>php.net</a>";
+		$extensionCheck = array(
+			'xml'       => array('label'=> LANINS_050,      'status'=> function_exists('utf8_encode'),      'url'=> 'http://php.net/manual/en/ref.xml.php'),
+			'exif'      => array('label'=> LANINS_048,      'status'=> function_exists('exif_imagetype'),   'url'=> 'http://php.net/manual/en/book.exif.php'),
+			'gd'        => array('label'=> 'GD Library',    'status'=> function_exists('gd_info'),          'url'=> 'http://php.net/manual/en/book.image.php'),
+			'curl'      => array('label'=>'Curl Library',   'status'=> function_exists('curl_version'),     'url'=>'http://php.net/manual/en/book.curl.php')
+		);
 
-		// TODO Lots of repetition below - clean it up with an array and loop.
+
 
 		$output = "
 			<table class='table table-striped table-bordered' style='width: 100%; margin-left: auto; margin-right: auto;'>
@@ -902,25 +892,35 @@ class e_install
 					<td>MySQL</td>
 					<td>{$mysql_note}</td>
 					<td class='{$mysqlColor}'>{$mysql_help}</td>
-				</tr>
+				</tr>";
 
-				<tr>
-					<td>GD Extension</td>
-					<td>".($gdlib_installed ? LANINS_051 : LANINS_052)."</td>
-					<td class='{$gdLibColor}'>".($gdlib_installed ? "<i class='glyphicon glyphicon-ok'></i> ".LANINS_017 : str_replace("[x]",$xmlExtensionLink, LANINS_053) )."</td>
-				</tr>
-				
-				<tr>
-					<td>".LANINS_050."</td>
-					<td>".($xml_installed ? LANINS_051 : LANINS_052)."</td>
-					<td class='{$xmlColor}'>".($xml_installed ? "<i class='glyphicon glyphicon-ok'></i> ".LANINS_017 : str_replace("[x]",$xmlExtensionLink, LANINS_053) )."</td>
-				</tr>
-				<tr>
-					<td>".LANINS_048."</td>
-					<td>".($exif_installed ? LANINS_051 : LANINS_052)."</td>
-					<td class='{$exifColor}'>".($exif_installed ? "<i class='glyphicon glyphicon-ok'></i> ".LANINS_017 : str_replace("[x]", $exifExtensionLink, LANINS_054) )."</td>
-				</tr>
+				foreach($extensionCheck as $ext)
+				{
+					$statusText = ($ext['status'] === true) ? LANINS_051 : LANINS_052;
+					$statusColor = ($ext['status'] === true) ? "text-success" : "text-error";
+					$statusIcon = ($ext['status'] === true) ? "<i class='glyphicon glyphicon-ok'></i> ".LANINS_017 : str_replace(array("[x]",'[y]'), array($ext['label'], "<a href='".$ext['url']."'>php.net</a>"), LANINS_145);
+
+					$output .= "
+					<tr>
+						<td>".$ext['label']."</td>
+						<td>".$statusText."</td>
+						<td class='".$statusColor."'>".$statusIcon."</td>
+					</tr>";
+				}
+
+
+				$output .= "
 			</table>\n";
+
+		if(!$perms_pass || (($extensionCheck['xml']['status'] !== true)))
+		{
+			$this->add_button("retest_perms", LANINS_009);
+			$this->stage = 3; // make the installer jump back a step
+		}
+		elseif ($perms_pass && !$version_fail && ($extensionCheck['xml']['status'] == true))
+		{
+			$this->add_button("continue_install", LAN_CONTINUE);
+		}
 
 		$this->finish_form();
 		$this->template->SetTag("stage_content", $output.$e_forms->return_form());
@@ -1837,6 +1837,16 @@ if($this->pdo == true)
 
 			if (!$this->dbqry($sql_table, $link))
 			{
+				if($this->debug)
+				{
+					echo "<h3>filename</h3>";
+					var_dump($filename);
+
+					echo "<h3>sql_table</h3>";
+					var_dump($sql_table);
+					echo "<h3>result[0]</h3>";
+					var_dump($result[0]);
+				}
 				return nl2br(LANINS_061."\n\n<b>".LANINS_083."\n</b><i>".e107::getDb()->getLastErrorText()."</i>");
 			}
 		}
@@ -1861,18 +1871,17 @@ if($this->pdo == true)
 
 	function dbqry($qry)
 	{
-		// mysql_query($qry);
 		$sql = e107::getDb();
-		$sql->db_Query($qry);
+		return $sql->db_Query($qry);
 
-		if($error = $sql->getLastErrorNumber())
+		/*if($error = $sql->getLastErrorNumber())
 		{
 			$errorInfo = 'Query Error [#'.$error.']: '.$sql->getLastErrorText()."\nQuery: {$qry}";
 			$this->debug_db_info['db_error_log'][] = $errorInfo;
 			return false;
 		}
 
-		return true;
+		return true;*/
 	}
 }
 
@@ -2090,7 +2099,7 @@ function template_data()
 
 		  <div class="footer">
 			<p class="pull-left">&copy; e107 Inc. '.date("Y").'</p>
-			<p class="pull-right">'.LANINS_138.' &#58 '.e_VERSION.'</p> 
+			<p class="pull-right">'.LAN_VERSION.' &#58 '.e_VERSION.'</p>
 		  </div>
 		 <div>{debug_info}</div>
 		</div> <!-- /container -->
